@@ -63,15 +63,6 @@ def makescalew():
                     grid=(
                         [
                             [
-                                ("显示帧率", 4),
-                                D_getsimpleswitch(
-                                    magpie_config["profiles"][
-                                        globalconfig["profiles_index"]
-                                    ],
-                                    "showFPS",
-                                ),
-                            ],
-                            [
                                 ("限制帧率", 4),
                                 D_getsimpleswitch(
                                     magpie_config["profiles"][
@@ -145,14 +136,6 @@ def makescalew():
                     grid=(
                         [
                             [
-                                ("绘制光标", 4),
-                                D_getsimpleswitch(
-                                    magpie_config["profiles"][
-                                        globalconfig["profiles_index"]
-                                    ],
-                                    "drawCursor",
-                                ),
-                                "",
                                 "缩放系数",
                                 D_getsimplecombobox(
                                     [
@@ -171,9 +154,6 @@ def makescalew():
                                 ),
                             ],
                             [
-                                ("", 4),
-                                "",
-                                "",
                                 "插值算法",
                                 D_getsimplecombobox(
                                     ["最邻近", "双线性"],
@@ -184,7 +164,7 @@ def makescalew():
                                 ),
                             ],
                             [
-                                ("缩放时调整光标速度", 4),
+                                "缩放时调整光标速度", 
                                 D_getsimpleswitch(
                                     magpie_config["profiles"][
                                         globalconfig["profiles_index"]

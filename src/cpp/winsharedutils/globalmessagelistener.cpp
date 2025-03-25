@@ -1,6 +1,7 @@
 ﻿#include "clipboard.hpp"
 static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPARED_OK");
 static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
+static auto Magpie_Core_CLI_ToastMessage = RegisterWindowMessage(L"Magpie_Core_CLI_ToastMessage");
 static auto WM_SYS_HOTKEY = RegisterWindowMessage(L"SYS_HOTKEY_REG_UNREG");
 bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
@@ -26,6 +27,14 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
             static int idx = 1;
             if (IsColorSchemeChangeMessage(lParam) && ((idx++) % 2))
                 callback(0, false, NULL);
+        }
+        else if (message == Magpie_Core_CLI_ToastMessage)
+        {
+            ATOM atom = (ATOM)wParam;
+            WCHAR buffer[0x1000];
+            GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer));
+            GlobalDeleteAtom(atom);
+            callback(4, false, buffer);
         }
         else if (message == WM_MAGPIE_SCALINGCHANGED)
         {
@@ -110,6 +119,7 @@ DECLARE_API void globalmessagelistener(WinEventHookCALLBACK_t callback1, WindowM
     SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
     ChangeWindowMessageFilterEx(hWnd, LUNA_UPDATE_PREPARED_OK, MSGFLT_ALLOW, nullptr);
     ChangeWindowMessageFilterEx(hWnd, WM_MAGPIE_SCALINGCHANGED, MSGFLT_ALLOW, nullptr);
+    ChangeWindowMessageFilterEx(hWnd, Magpie_Core_CLI_ToastMessage, MSGFLT_ALLOW, nullptr);
     WinEventHookCALLBACK = callback1;
     SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, wc.hInstance, WinEventHookPROC, 0, 0, 0);
     SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_DESTROY, wc.hInstance, WinEventHookPROC, 0, 0, 0);

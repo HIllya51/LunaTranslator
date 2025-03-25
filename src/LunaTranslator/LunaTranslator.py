@@ -1356,6 +1356,8 @@ class MAINUI:
             self.translation_ui.closesignal.emit()
         elif msg == 3:
             self.translation_ui.clipboardcallback.emit(boolvalue, strvalue)
+        elif msg == 4:
+            self.showtraymessage("Magpie", strvalue, lambda: 1)
 
     def _dowhenwndcreate(self, obj):
         if not isinstance(obj, QWidget):
