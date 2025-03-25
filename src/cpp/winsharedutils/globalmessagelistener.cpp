@@ -31,10 +31,12 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
         else if (message == Magpie_Core_CLI_ToastMessage)
         {
             ATOM atom = (ATOM)wParam;
-            WCHAR buffer[0x1000];
-            GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer));
-            GlobalDeleteAtom(atom);
-            callback(4, false, buffer);
+            WCHAR buffer[256];
+            if (GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer)))
+            {
+                GlobalDeleteAtom(atom);
+                callback(4, false, buffer);
+            }
         }
         else if (message == WM_MAGPIE_SCALINGCHANGED)
         {
