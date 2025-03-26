@@ -401,8 +401,8 @@ def _TR(k: str) -> str:
 
         return re.sub("(<a.*?>)(.*?)(</a>)", replace_match, k)
     if "_" in k:
-        splits = k.split("_")
-        return " ".join([_TR(_) for _ in splits])
+        fnd = k.find("_")
+        return _TR(k[:fnd]) + " " + _TR(k[fnd + 1 :])
     if isascii(k):
         return k
     loadlanguage()

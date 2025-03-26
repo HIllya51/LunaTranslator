@@ -1049,14 +1049,15 @@ def dynamiccishuname(apiuid):
 
 def getannotatedapiname(x):
     tp = globalconfig["fanyi"][x].get("type", "free")
+    is_gpt_like = globalconfig["fanyi"][x].get("is_gpt_like", False)
     return (
         dynamicapiname(x)
         + "_("
         + {
-            "free": "在线翻译",
-            "api": "注册在线翻译",
+            "free": "传统",
+            "api": ("传统_API", "大模型")[is_gpt_like],
             "pre": "预翻译",
-            "offline": "离线翻译",
+            "offline": ("过时的", "大模型_离线翻译")[is_gpt_like],
         }.get(tp, "unknown type")
         + ")"
     )
