@@ -432,10 +432,10 @@
 			"prefill": "",
 			"prefill_use": false,
 			"hidethinking": true,
-			"markdowntohtml": false
+			"markdown2html": false
 		},
 		"argstype": {
-			"markdowntohtml": {
+			"markdown2html": {
 				"hide": true
 			},
 			"hidethinking": {

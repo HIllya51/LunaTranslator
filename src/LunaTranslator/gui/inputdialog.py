@@ -685,6 +685,8 @@ class autoinitdialog(LDialog):
                     _TR("取消")
                 )
             elif line["type"] == "lineedit":
+                if not isinstance(dd[key], str):
+                    continue
                 lineW = QLineEdit(dd[key])
                 regist[key] = lineW.text
             elif line["type"] == "multiline":

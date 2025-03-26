@@ -38,9 +38,8 @@ def stream_event_parser(response: requests.Response):
 
 
 def commonparseresponse_good(
-    response: requests.Response, hidethinking: bool, markdowntohtml: bool
+    response: requests.Response, hidethinking: bool, markdown2html: bool
 ):
-    markdowntohtmllast = ""
     message = ""
     thinkcnt = 0
     isthinking = False
@@ -82,7 +81,7 @@ def commonparseresponse_good(
                         pass
                     else:
                         message += msg
-                        if markdowntohtml:
+                        if markdown2html:
                             _msg = markdown_to_html(message)
                             yield "\0"
                             yield "LUNASHOWHTML" + _msg
@@ -96,15 +95,20 @@ def commonparseresponse_good(
     return message
 
 
-def parseresponsegemini(response: requests.Response):
+def parseresponsegemini(response: requests.Response, markdown2html: bool):
     line = ""
     for __x in response.iter_lines(decode_unicode=True):
         __x = __x.strip()
         if not __x.startswith('"text":'):
             continue
         __x = json.loads("{" + __x + "}")["text"]
-        yield __x
         line += __x
+        if markdown2html:
+            _msg = markdown_to_html(line)
+            yield "\0"
+            yield "LUNASHOWHTML" + _msg
+        else:
+            yield __x
     return line
 
 
@@ -134,7 +138,7 @@ def parseresponseclaude(response: requests.Response):
 
 
 def parsestreamresp(
-    apiurl: str, response: requests.Response, hidethinking: bool, markdowntohtml: bool
+    apiurl: str, response: requests.Response, hidethinking: bool, markdown2html: bool
 ):
     if (response.status_code != 200) and (
         not response.headers["Content-Type"].startswith("text/event-stream")
@@ -143,12 +147,12 @@ def parsestreamresp(
         # text/html
         raise Exception(response)
     if apiurl.startswith("https://generativelanguage.googleapis.com"):
-        respmessage = yield from parseresponsegemini(response)
+        respmessage = yield from parseresponsegemini(response, markdown2html)
     elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
         respmessage = yield from parseresponseclaude(response)
     else:
         respmessage = yield from commonparseresponse_good(
-            response, hidethinking, markdowntohtml
+            response, hidethinking, markdown2html
         )
     return respmessage
 
@@ -279,16 +283,16 @@ class gptcommon(basetrans):
                 stream=usingstream,
             )
         hidethinking = self.config.get("hidethinking", False)
-        markdowntohtml = self.config.get("markdowntohtml", False)
+        markdown2html = self.config.get("markdown2html", False)
         if usingstream:
             respmessage = yield from parsestreamresp(
-                self.apiurl, response, hidethinking, markdowntohtml
+                self.apiurl, response, hidethinking, markdown2html
             )
         else:
             respmessage = common_parse_normal_response(
                 response, self.apiurl, hidethinking=hidethinking
             )
-            if markdowntohtml:
+            if markdown2html:
                 yield "LUNASHOWHTML" + markdown_to_html(respmessage)
             else:
                 yield respmessage
