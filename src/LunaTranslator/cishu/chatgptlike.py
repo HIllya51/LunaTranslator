@@ -1,4 +1,4 @@
-from myutils.utils import createurl, common_list_models, common_parse_normal_response
+from myutils.utils import createurl, common_list_models, common_parse_normal_response, markdown_to_html
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 from translator.gptcommon import createheaders
@@ -59,7 +59,7 @@ class chatgptlike(cishubase):
             resp = self.query_cld(sysprompt, query)
         else:
             resp = self.search_1(sysprompt, query)
-        return self.markdown_to_html(common_parse_normal_response(resp, apiurl))
+        return markdown_to_html(common_parse_normal_response(resp, apiurl))
 
     def createheaders(self):
         return createheaders(

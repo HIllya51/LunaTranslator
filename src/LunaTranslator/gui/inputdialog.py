@@ -540,6 +540,8 @@ class autoinitdialog(LDialog):
         cachecombo = {}
         cachehasref = {}
         for line in lines:
+            if line.get("hide"):
+                continue
             if "k" in line:
                 key = line["k"]
             if line["type"] == "label":

@@ -76,57 +76,6 @@ class cishubase(commonbase):
 
         return fmt.format(template, srclang=self.srclang, tgtlang=self.tgtlang)
 
-    def markdown_to_html(self, markdown_text: str):
-        print(markdown_text)
-        lines = markdown_text.split("\n")
-        html_lines = []
-        lastli = ""
-        lideep = 0
-
-        def switchli():
-            nonlocal lideep, lastli
-            while lideep:
-                html_lines.append("</ul>")
-                lideep -= 1
-            lastli = ""
-
-        for line in lines:
-            if not line:
-                continue
-            m = re.match(r"#+ ", line)
-            if m:
-                switchli()
-                html_lines.append(
-                    "<h{hi}>{inner}</h{hi}>".format(
-                        hi=m.span()[1] - 1, inner=line[m.span()[1] :]
-                    )
-                )
-            else:
-
-                def parsex(line):
-                    line = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", line)
-                    line = re.sub(r"\*(.*?)\*", r"<em>\1</em>", line)
-                    return line
-
-                m = re.match(r" *[-\*] ", line)
-                if m:
-                    if lastli != m.group():
-                        if len(lastli) < len(m.group()):
-                            html_lines.append("<ul>")
-                            lideep += 1
-                        else:
-                            html_lines.append("</ul>")
-                            lideep -= 1
-                        lastli = m.group()
-                    html_lines.append("<li>{}</li>".format(parsex(line[m.span()[1] :])))
-                else:
-                    switchli()
-                    html_lines.append("<p>{}</p>".format(parsex(line)))
-
-        switchli()
-
-        return "".join(html_lines)
-
     def __parseaqr(self, rule: QualifiedRule, divclass):
         start = True
         idx = 0

@@ -62,6 +62,7 @@
         document.getElementById('rootele').appendChild(span)
         scrollend()
     }
+    const content_is_html_sig = 'LUNASHOWHTML'
     function getnewtrans(time, api, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
@@ -73,11 +74,18 @@
         apis.classList.add('apiname')
         span.appendChild(apis)
         let sent = document.createElement('span')
-        sent.innerText = decodeURIComponent(sentence)
+        sentence = decodeURIComponent(sentence)
+        if (sentence.startsWith(content_is_html_sig))
+            sent.innerHTML = sentence.substr(content_is_html_sig.length)
+        else
+            sent.innerText = sentence
         span.appendChild(sent)
         span.classList.add('trans')
         document.getElementById('rootele').appendChild(span)
         scrollend()
+    }
+    const escapeHtml = (unsafe) => {
+        return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
     }
     function fastinit(data) {
         data = JSON.parse(decodeURIComponent(data))
@@ -87,10 +95,11 @@
                 if (innerhtml.length) {
                     innerhtml += '<br>'
                 }
-                innerhtml += `<div class="origin"><span class="gettime">${line[1][0]} </span><span>${line[1][1]}</span></div>`
+                innerhtml += `<div class="origin"><span class="gettime">${escapeHtml(line[1][0])} </span><span>${escapeHtml(line[1][1])}</span></div>`
             }
             else if (line[0] == 1) {
-                innerhtml += `<div class="trans"><span class="gettime">${line[1][0]} </span><span class="apiname">${line[1][1]} </span><span>${line[1][2]}</span></div>`
+                let ts = line[1][2].startsWith(content_is_html_sig) ? line[1][2].substr(content_is_html_sig.length) : escapeHtml(line[1][2])
+                innerhtml += `<div class="trans"><span class="gettime">${escapeHtml(line[1][0])} </span><span class="apiname">${escapeHtml(line[1][1])} </span><span>${ts}</span></div>`
             }
         });
         document.getElementById('rootele').innerHTML = innerhtml

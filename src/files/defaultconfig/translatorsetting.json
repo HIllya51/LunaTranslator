@@ -431,9 +431,13 @@
 			"s2": "",
 			"prefill": "",
 			"prefill_use": false,
-			"hidethinking": true
+			"hidethinking": true,
+			"markdowntohtml": false
 		},
 		"argstype": {
+			"markdowntohtml": {
+				"hide": true
+			},
 			"hidethinking": {
 				"type": "switch",
 				"name": "隐藏思考过程",

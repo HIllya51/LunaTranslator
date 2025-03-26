@@ -211,6 +211,8 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID)
 
 		MH_Initialize();
 
+		// https://stackoverflow.com/questions/331536/windows-threading-beginthread-vs-beginthreadex-vs-createthread-c
+		// CreateThread is part of kernel32.dll (a DLL that all processes have already loaded into memory by the time any user DLLs are brought in), it is among a very small set of functions that are safe to call from DllMain (...). _beginthreadex offers no guarantee of safety and I would imagine the fact that it implicitly requires the Visual C++ runtime to be initialized will be the source of deadlocks if you attempt to do this from DllMain.
 		CloseHandle(CreateThread(nullptr, 0, Pipe, nullptr, 0, nullptr)); // Using std::thread here = deadlock
 	}
 	break;
