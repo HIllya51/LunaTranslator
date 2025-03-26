@@ -436,7 +436,8 @@
 		},
 		"argstype": {
 			"markdown2html": {
-				"hide": true
+				"hide": true,
+				"type": "switch"
 			},
 			"hidethinking": {
 				"type": "switch",
