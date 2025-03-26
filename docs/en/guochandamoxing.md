@@ -1,4 +1,4 @@
-# Large Model API Translation
+# Large Model Online Translation
 
 ::: details Using Multiple Large Model Interfaces Simultaneously?
 If you only have multiple different keys and want to poll them, simply separate them with `|`.

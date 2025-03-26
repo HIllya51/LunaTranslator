@@ -51,7 +51,7 @@ export const en = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'Traditional online translation interface', link: '/en/useapis/tsapi' },
-                            { text: 'Large Model API for Translation', link: '/en/guochandamoxing' },
+                            { text: 'Large Model Online Translation', link: '/en/guochandamoxing' },
                             { text: 'Large Model Offline Translation', link: '/en/offlinellm' }
                         ]
                     },
