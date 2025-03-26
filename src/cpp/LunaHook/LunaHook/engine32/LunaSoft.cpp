@@ -515,10 +515,27 @@ namespace
     }
   } // namespace ScenarioHook
 } // unnamed namespace
-
+namespace
+{
+  bool PrincessSoft()
+  {
+    // https://vndb.org/v5385
+    // F ~ファナティック~
+    auto _ = {L"pac/voice.hed", L"pac/voice.pac",
+              L"pac/se.hed", L"pac/se.pac",
+              L"pac/snd.hed", L"pac/snd.pac",
+              L"pac/vis.hed", L"pac/vis.pac",
+              L"pac/tak.hed", L"pac/tak.pac"};
+    if (!std::all_of(_.begin(), _.end(), Util::CheckFile))
+      return false;
+    PcHooks::hookGDIFunctions(GetGlyphOutlineA);
+    return true;
+  }
+}
 bool LunaSoft::attach_function()
 {
-
+  if (PrincessSoft())
+    return true;
   bool b1 = InsertLunaSoftHook();
   bool b2 = InsertXXkata();
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);

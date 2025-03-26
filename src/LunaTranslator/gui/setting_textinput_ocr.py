@@ -16,6 +16,8 @@ from gui.usefulwidget import (
     selectcolor,
     TableViewW,
     saveposwindow,
+    check_grid_append,
+    IconButton,
     pixmapviewer,
     LStandardItemModel,
     SuperCombo,
@@ -130,6 +132,19 @@ class triggereditor(LDialog):
         self.hctable.setIndexWidget(self.hcmodel.index(0, 1), combo)
 
 
+def createmanybtn():
+    w = NQGroupBox()
+    hbox = QHBoxLayout(w)
+    hbox.setContentsMargins(0, 0, 0, 0)
+
+    btn = IconButton("fa.question", fix=False)
+    hbox.addWidget(btn)
+    btn.clicked.connect(
+        lambda: os.startfile(dynamiclink("{docs_server}/useapis/ocrapi.html"))
+    )
+    return w
+
+
 def initgridsources(self, names):
     line = []
     i = 0
@@ -182,6 +197,13 @@ def initgridsources(self, names):
         i += 1
     if len(line):
         grids_source.append(line)
+    rm = check_grid_append(grids_source)
+
+    if i % 3 == 0:
+        grids_source.append([])
+    if i % 3 != 2:
+        grids_source[-1].append(("", 4 * (2 - i % 3)))
+    grids_source[-1].append((createmanybtn, 3 - rm))
     return grids_source
 
 
@@ -378,28 +400,8 @@ def internal(self):
         [(functools.partial(offlinelinks, "ocr"), 0)],
     ]
     engines = [
-        [
-            (
-                dict(
-                    title="离线",
-                    type="grid",
-                    grid=offgrids,
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="在线",
-                    type="grid",
-                    grid=initgridsources(self, online),
-                ),
-                0,
-                "group",
-            )
-        ],
+        [dict(title="离线", type="grid", grid=offgrids)],
+        [dict(title="在线", type="grid", grid=initgridsources(self, online))],
     ]
     autorun = [
         [
@@ -528,27 +530,9 @@ def internal(self):
         ],
     ]
     allothers = [
-        [
-            (
-                dict(title="识别设置", type="grid", grid=reco),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(title="后处理", type="grid", grid=after),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(title="其他设置", type="grid", grid=others),
-                0,
-                "group",
-            )
-        ],
+        [dict(title="识别设置", type="grid", grid=reco)],
+        [dict(title="后处理", type="grid", grid=after)],
+        [dict(title="其他设置", type="grid", grid=others)],
     ]
 
     return makesubtab_lazy(

@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     getspinbox,
     ClickableLabel,
     getcolorbutton,
+    check_grid_append,
 )
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
 from gui.setting_about import offlinelinks
@@ -146,6 +147,7 @@ def gethiragrid(self):
         i += 1
     if len(line):
         grids.append(line)
+    grids[-1] += [""] * (4 + 4 + 3 - len(grids[-1]))
     return grids
 
 
@@ -252,51 +254,34 @@ def initinternal(self, names):
     if len(line):
         cishugrid.append(line)
     cishugrid[-1] += [""] * (4 + 4 + 3 - len(cishugrid[-1]))
+    check_grid_append(cishugrid)
     return cishugrid
 
 
 def setTabcishu_l(self):
 
-    grids_1 = [
-        (
-            dict(title="分词器", type="grid", grid=gethiragrid(self)),
-            0,
-            "group",
-        )
-    ]
+    grids_1 = [dict(title="分词器", type="grid", grid=gethiragrid(self))]
     offline, online = splitocrtypes(globalconfig["cishu"])
     grids2 = [
-        (
-            dict(
-                title="辞书",
-                type="grid",
-                grid=[
-                    [
-                        (
-                            dict(
-                                title="离线",
-                                type="grid",
-                                grid=initinternal(self, offline),
-                            ),
-                            0,
-                            "group",
-                        )
-                    ],
-                    [
-                        (
-                            dict(
-                                title="在线",
-                                type="grid",
-                                grid=initinternal(self, online),
-                            ),
-                            0,
-                            "group",
-                        )
-                    ],
+        dict(
+            title="辞书",
+            type="grid",
+            grid=[
+                [
+                    dict(
+                        title="离线",
+                        type="grid",
+                        grid=initinternal(self, offline),
+                    )
                 ],
-            ),
-            0,
-            "group",
+                [
+                    dict(
+                        title="在线",
+                        type="grid",
+                        grid=initinternal(self, online),
+                    )
+                ],
+            ],
         )
     ]
     grids = [
@@ -305,147 +290,130 @@ def setTabcishu_l(self):
         grids2,
         [],
         [
-            (
-                dict(
-                    title="分词_&&_注音",
-                    type="grid",
-                    parent=self,
-                    name="fenyinsettings",
-                    enable=globalconfig["isshowrawtext"],
-                    grid=(
-                        [
-                            "显示注音",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "isshowhira",
-                                callback=gobject.baseobject.translation_ui.translate_text.showhidert,
-                            ),
-                            "",
-                            "颜色",
-                            D_getcolorbutton(
+            dict(
+                title="分词_&&_注音",
+                type="grid",
+                parent=self,
+                name="fenyinsettings",
+                enable=globalconfig["isshowrawtext"],
+                grid=(
+                    [
+                        "显示注音",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "isshowhira",
+                            callback=gobject.baseobject.translation_ui.translate_text.showhidert,
+                        ),
+                        "",
+                        "颜色",
+                        D_getcolorbutton(
+                            globalconfig,
+                            "jiamingcolor",
+                            callback=lambda: selectcolor(
+                                self,
                                 globalconfig,
                                 "jiamingcolor",
-                                callback=lambda: selectcolor(
-                                    self,
-                                    globalconfig,
-                                    "jiamingcolor",
-                                    self.jiamingcolor_b,
-                                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                                ),
-                                name="jiamingcolor_b",
-                                parent=self,
-                            ),
-                            "",
-                            "字体缩放",
-                            D_getspinbox(
-                                0.1,
-                                1,
-                                globalconfig,
-                                "kanarate",
-                                double=True,
-                                step=0.05,
-                                callback=gobject.baseobject.translation_ui.translate_text.setfontstyle,
-                            ),
-                        ],
-                        [
-                            "日语注音方案",
-                            D_getsimplecombobox(
-                                [
-                                    "平假名",
-                                    "片假名",
-                                    "罗马音",
-                                ],
-                                globalconfig,
-                                "hira_vis_type",
-                                callback=lambda _: gobject.baseobject.translation_ui.translate_text.refreshcontent(),
-                            ),
-                            "",
-                            "语法加亮",
-                            D_getsimpleswitch(
-                                globalconfig,
-                                "show_fenci",
+                                self.jiamingcolor_b,
                                 callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                             ),
-                            "",
-                            "词性颜色",
-                            D_getIconButton(callback=lambda: multicolorset(self)),
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="查词",
-                    type="grid",
-                    grid=[
-                        [
-                            "查词",
-                            D_getIconButton(
-                                lambda: gobject.baseobject.searchwordW.showsignal.emit(),
-                                icon="fa.search",
-                            ),
-                            "",
-                            "",
-                            "辞书显示顺序",
-                            D_getIconButton(functools.partial(vistranslate_rank, self)),
-                            "",
-                        ],
-                        [
-                            "点击单词查词",
-                            (
-                                D_getsimpleswitch(
-                                    globalconfig,
-                                    "usesearchword",
-                                    callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
-                                ),
-                                1,
-                            ),
-                            getcolorbutton(
-                                globalconfig,
-                                "hovercolor",
-                                callback=functools.partial(
-                                    selectcolor,
-                                    self,
-                                    globalconfig,
-                                    "hovercolor",
-                                    None,
-                                    self,
-                                    "hovercolor",
-                                    callback=lambda: gobject.baseobject.translation_ui.translate_text.sethovercolor(
-                                        globalconfig["hovercolor"]
-                                    ),
-                                    alpha=True,
-                                ),
-                                name="hovercolor",
-                                parent=self,
-                            ),
-                            "",
-                            "点击单词复制",
-                            (
-                                D_getsimpleswitch(
-                                    globalconfig,
-                                    "usecopyword",
-                                    callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
-                                ),
-                                1,
-                            ),
-                            "",
-                            "",
-                            "使用原型查询",
-                            (
-                                D_getsimpleswitch(globalconfig, "usewordorigin"),
-                                1,
-                            ),
-                        ],
+                            name="jiamingcolor_b",
+                            parent=self,
+                        ),
+                        "",
+                        "字体缩放",
+                        D_getspinbox(
+                            0.1,
+                            1,
+                            globalconfig,
+                            "kanarate",
+                            double=True,
+                            step=0.05,
+                            callback=gobject.baseobject.translation_ui.translate_text.setfontstyle,
+                        ),
+                    ],
+                    [
+                        "日语注音方案",
+                        D_getsimplecombobox(
+                            [
+                                "平假名",
+                                "片假名",
+                                "罗马音",
+                            ],
+                            globalconfig,
+                            "hira_vis_type",
+                            callback=lambda _: gobject.baseobject.translation_ui.translate_text.refreshcontent(),
+                        ),
+                        "",
+                        "语法加亮",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "show_fenci",
+                            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                        ),
+                        "",
+                        "词性颜色",
+                        D_getIconButton(callback=lambda: multicolorset(self)),
                     ],
                 ),
-                0,
-                "group",
-            )
+            ),
+        ],
+        [
+            dict(
+                title="查词",
+                type="grid",
+                grid=[
+                    [
+                        "查词",
+                        D_getIconButton(
+                            lambda: gobject.baseobject.searchwordW.showsignal.emit(),
+                            icon="fa.search",
+                        ),
+                        "",
+                        "",
+                        "辞书显示顺序",
+                        D_getIconButton(functools.partial(vistranslate_rank, self)),
+                        "",
+                    ],
+                    [
+                        "点击单词查词",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "usesearchword",
+                            callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                        ),
+                        getcolorbutton(
+                            globalconfig,
+                            "hovercolor",
+                            callback=functools.partial(
+                                selectcolor,
+                                self,
+                                globalconfig,
+                                "hovercolor",
+                                None,
+                                self,
+                                "hovercolor",
+                                callback=lambda: gobject.baseobject.translation_ui.translate_text.sethovercolor(
+                                    globalconfig["hovercolor"]
+                                ),
+                                alpha=True,
+                            ),
+                            name="hovercolor",
+                            parent=self,
+                        ),
+                        "",
+                        "点击单词复制",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "usecopyword",
+                            callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                        ),
+                        "",
+                        "",
+                        "使用原型查询",
+                        D_getsimpleswitch(globalconfig, "usewordorigin"),
+                    ],
+                ],
+            ),
         ],
     ]
     return grids

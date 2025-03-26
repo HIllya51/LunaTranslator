@@ -329,6 +329,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | 0100B6501FE4C000 | 喧嘩番長 乙女 ダブルパック |
 |  | 010008401AB4A000 | Yukar From The Abyss |
 |  | 010047E01E22A000 | Voice Love on Air |
+|  | 010033401FE40000 | 罪ノ光ランデヴー |
 
 == PSP
 
@@ -797,6 +798,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | PCSG01034 | 戦極姫７～戦雲つらぬく紅蓮の遺志～ |
 |  | PCSG00481 | 新装版クリムゾン・エンパイア |
 |  | PCSG01081 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
+|  | PCSG00745 | スカーレッドライダーゼクス |
 
 == PS2
 

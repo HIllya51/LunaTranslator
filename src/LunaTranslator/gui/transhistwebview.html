@@ -49,7 +49,7 @@
         document.getElementById('rootele').innerHTML = ""
     }
 
-    function __getnewsentence(time, sentence) {
+    function getnewsentence(time, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
         times.innerText = decodeURIComponent(time) + " "
@@ -60,12 +60,9 @@
         span.appendChild(sent)
         span.classList.add('origin')
         document.getElementById('rootele').appendChild(span)
-    }
-    function getnewsentence(time, sentence) {
-        __getnewsentence(time, sentence)
         scrollend()
     }
-    function __getnewtrans(time, api, sentence) {
+    function getnewtrans(time, api, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
         times.innerText = decodeURIComponent(time) + " "
@@ -80,23 +77,23 @@
         span.appendChild(sent)
         span.classList.add('trans')
         document.getElementById('rootele').appendChild(span)
-    }
-    function getnewtrans(time, api, sentence) {
-        __getnewtrans(time, api, sentence)
         scrollend()
     }
     function fastinit(data) {
         data = JSON.parse(decodeURIComponent(data))
+        let innerhtml = ""
         data.forEach(line => {
             if (line[0] == 0) {
-                addbr()
-                __getnewsentence(line[1][0], line[1][1])
+                if (innerhtml.length) {
+                    innerhtml += '<br>'
+                }
+                innerhtml += `<div class="origin"><span class="gettime">${line[1][0]} </span><span>${line[1][1]}</span></div>`
             }
             else if (line[0] == 1) {
-                __getnewtrans(line[1][0], line[1][1], line[1][2])
-
+                innerhtml += `<div class="trans"><span class="gettime">${line[1][0]} </span><span class="apiname">${line[1][1]} </span><span>${line[1][2]}</span></div>`
             }
         });
+        document.getElementById('rootele').innerHTML = innerhtml
         scrollend()
     }
     function scrollend() {

@@ -7,8 +7,6 @@ from myutils.utils import (
     splittranslatortypes,
     dynamiclink,
     translate_exits,
-    _TR,
-    getannotatedapiname,
     dynamicapiname,
 )
 from gui.pretransfile import sqlite2json
@@ -18,19 +16,19 @@ from gui.usefulwidget import (
     getIconButton,
     D_getcolorbutton,
     getcolorbutton,
+    check_grid_append,
     getsimpleswitch,
     D_getIconButton,
     D_getsimpleswitch,
-    listediter,
     selectcolor,
-    makegrid,
-    CollapsibleBoxWithButton,
+    createfoldgrid,
     makesubtab_lazy,
     getspinbox,
     ClickableLabel,
     automakegrid,
     FocusFontCombo,
     getsmalllabel,
+    NQGroupBox,
     makescrollgrid,
     IconButton,
     PopupWidget,
@@ -55,11 +53,11 @@ def splitapillm(l):
 def loadvisinternal(btnplus, copy):
     __vis = []
     __uid = []
-    lixians, pre, mianfei, shoufei = splittranslatortypes()
+    res = splittranslatortypes()
     if btnplus == "api":
-        is_gpt_likes, not_is_gpt_like = splitapillm(shoufei)
+        is_gpt_likes, not_is_gpt_like = splitapillm(res.api)
     elif btnplus == "offline":
-        is_gpt_likes, not_is_gpt_like = splitapillm(lixians)
+        is_gpt_likes, not_is_gpt_like = splitapillm(res.offline)
 
     for _ in is_gpt_likes:
         if copy:
@@ -356,10 +354,6 @@ def btnpluscallback(self, countnum, btnplus):
     )
 
 
-class Shit(QGroupBox):
-    pass
-
-
 def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
     _f2 = "./userconfig/copyed/{}.py".format(fanyi)
     try:
@@ -381,7 +375,7 @@ def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
 
         w = layout.itemAt(off + i).widget()
         i += 1
-        if isinstance(w, Shit):
+        if isinstance(w, NQGroupBox):
             continue
         elif isinstance(w, QLabel) and w.text() == "":
             continue
@@ -401,21 +395,28 @@ def btndeccallback(self, countnum, btnplus):
 
 
 def createmanybtn(self, countnum, btnplus):
-    w = Shit()
+    w = NQGroupBox()
     hbox = QHBoxLayout(w)
     hbox.setContentsMargins(0, 0, 0, 0)
+    if btnplus == "api1":
+        btn = IconButton("fa.question", fix=False)
+        hbox.addWidget(btn)
+        btn.clicked.connect(
+            lambda: os.startfile(dynamiclink("{docs_server}/useapis/tsapi.html"))
+        )
+        return w
 
-    btn = IconButton("fa.plus")
+    btn = IconButton("fa.plus", fix=False)
     btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btnplus))
 
     hbox.addWidget(btn)
 
-    btn = IconButton("fa.minus")
+    btn = IconButton("fa.minus", fix=False)
     btn.clicked.connect(functools.partial(btndeccallback, self, countnum, btnplus))
 
     hbox.addWidget(btn)
 
-    btn = IconButton("fa.question")
+    btn = IconButton("fa.question", fix=False)
     if btnplus == "offline":
         btn.clicked.connect(
             lambda: os.startfile(dynamiclink("{docs_server}/offlinellm.html"))
@@ -484,6 +485,7 @@ def initsome11(self, l, label=None, btnplus=False):
             line += [""]
     if len(line):
         grids.append(line)
+    check_grid_append(grids)
     if btnplus:
 
         if i % 3 == 0:
@@ -491,23 +493,10 @@ def initsome11(self, l, label=None, btnplus=False):
         if i % 3 != 2:
             grids[-1].append(("", 5 * (2 - i % 3)))
         grids[-1].append((functools.partial(createmanybtn, self, countnum, btnplus), 4))
-
+    elif len(grids) == 1:
+        if i % 3 != 0:
+            grids[-1].append(("", 5 * (3 - i % 3)))
     return grids
-
-
-def delayfoldoldtrans(self, lay):
-
-    _, not_is_gpt_like = splitapillm(splittranslatortypes()[0])
-    not_is_gpt_like = initsome11(self, not_is_gpt_like)
-    w, do = makegrid(not_is_gpt_like, delay=True)
-    lay.addWidget(w)
-    do()
-
-
-def foldoldtrans(self):
-
-    box = CollapsibleBoxWithButton(functools.partial(delayfoldoldtrans, self), "过时的")
-    return box
 
 
 def initsome21(self, l, label=None, btnplus=None):
@@ -516,50 +505,63 @@ def initsome21(self, l, label=None, btnplus=None):
     is_gpt_likes = initsome11(self, is_gpt_likes, label, btnplus=btnplus)
     grids = [
         [
-            (
-                dict(
-                    type="grid",
-                    title="大模型",
-                    grid=is_gpt_likes,
-                    internallayoutname=(
-                        ("damoxinggridinternal" + btnplus) if btnplus else None
-                    ),
-                    parent=self,
-                ),
-                0,
-                "group",
+            functools.partial(
+                createfoldgrid,
+                is_gpt_likes,
+                "大模型",
+                globalconfig["foldstatus"]["ts"],
+                "gptoffline",
+                ("damoxinggridinternal" + btnplus) if btnplus else None,
+                self,
             )
         ],
-        [functools.partial(foldoldtrans, self)],
+        [
+            functools.partial(
+                createfoldgrid,
+                not_is_gpt_like,
+                "过时的",
+                globalconfig["foldstatus"]["ts"],
+                "outdate",
+            )
+        ],
     ]
     return grids
 
 
-def initsome2(self, l, label=None, btnplus=None):
+def initsome2(self, mianfei, l, label=None, btnplus=None):
+
+    onlinegrid = initsome11(self, mianfei)
     is_gpt_likes, not_is_gpt_like = splitapillm(l)
-    not_is_gpt_like = initsome11(self, not_is_gpt_like, label)
+    not_is_gpt_like = initsome11(self, not_is_gpt_like, label, btnplus="api1")
     is_gpt_likes = initsome11(self, is_gpt_likes, label, btnplus=btnplus)
     grids = [
         [
-            (
-                dict(type="grid", title="传统", grid=not_is_gpt_like),
-                0,
-                "group",
+            functools.partial(
+                createfoldgrid,
+                is_gpt_likes,
+                "大模型",
+                globalconfig["foldstatus"]["ts"],
+                "gpt",
+                "damoxinggridinternal" + btnplus,
+                self,
             )
         ],
         [
-            (
-                dict(
-                    type="grid",
-                    title="大模型",
-                    grid=is_gpt_likes,
-                    internallayoutname=(
-                        ("damoxinggridinternal" + btnplus) if btnplus else None
-                    ),
-                    parent=self,
-                ),
-                0,
-                "group",
+            functools.partial(
+                createfoldgrid,
+                onlinegrid,
+                "传统",
+                globalconfig["foldstatus"]["ts"],
+                "free",
+            )
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
+                not_is_gpt_like,
+                "传统_API",
+                globalconfig["foldstatus"]["ts"],
+                "api",
             )
         ],
     ]
@@ -573,110 +575,68 @@ def createbtnexport(self):
     return bt
 
 
-def __changeuibuttonstate2(self, x):
-    gobject.baseobject.translation_ui.refreshtoolicon()
-    gobject.baseobject.maybeneedtranslateshowhidetranslate()
-
-
-def vistranslate_rank(self):
-    _not = []
-    for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
-        if not translate_exits(k):
-            _not.append(i)
-    for _ in reversed(_not):
-        globalconfig["fix_translate_rank_rank"].pop(_)
-    listediter(
-        self,
-        "显示顺序",
-        globalconfig["fix_translate_rank_rank"],
-        isrankeditor=True,
-        namemapfunction=lambda k: _TR(getannotatedapiname(k)),
-        exec=True,
-    )
-
-
 def setTabTwo_lazy(self, basel: QVBoxLayout):
-    # 均衡负载  loadbalance
-    # 单次负载个数 loadbalance_oncenum
-    # 过时的，不再在ui中展示
-    grids = [
-        [
-            "使用翻译",
-            D_getsimpleswitch(
-                globalconfig,
-                "showfanyi",
-                callback=lambda x: __changeuibuttonstate2(self, x),
-                name="show_fany_switch",
-                parent=self,
-            ),
-            "",
-            "显示翻译器名称",
-            D_getsimpleswitch(
-                globalconfig,
-                "showfanyisource",
-                callback=gobject.baseobject.translation_ui.translate_text.showhidename,
-            ),
-            "",
-            "固定翻译显示顺序",
-            D_getsimpleswitch(globalconfig, "fix_translate_rank"),
-            D_getIconButton(functools.partial(vistranslate_rank, self)),
-        ],
-        [
-            "最短翻译字数",
-            D_getspinbox(0, 9999, globalconfig, "minlength"),
-            "",
-            "最长翻译字数",
-            D_getspinbox(0, 9999, globalconfig, "maxlength"),
-            "",
-            "翻译请求间隔_(s)",
-            (
-                D_getspinbox(
-                    0, 9999, globalconfig, "requestinterval", step=0.1, double=True
-                ),
-                0,
-            ),
-        ],
-    ]
-    online_reg_grid = [[("若有多个api key，用|将每个key连接后填入，即可轮流使用", -1)]]
+
+    res = splittranslatortypes()
+
+    offlinegrid = initsome21(self, res.offline, btnplus="offline")
+    offlinegrid += [[functools.partial(offlinelinks, "translate")]]
+    online_reg_grid = initsome2(self, res.free, res.api, btnplus="api")
+
     pretransgrid = [
         [
-            (
-                dict(
-                    type="grid",
-                    grid=(
-                        [
-                            "模糊匹配_相似度_%",
-                            D_getspinbox(0, 100, globalconfig, "premtsimi2"),
-                            "",
-                            "",
-                            "",
-                        ],
-                        [
-                            (functools.partial(createbtnexport, self), 0),
-                        ],
-                    ),
-                ),
-                0,
-                "group",
-            )
+            dict(
+                type="grid",
+                title="其他设置",
+                grid=[
+                    [
+                        "最短翻译字数",
+                        D_getspinbox(0, 9999, globalconfig, "minlength"),
+                        "",
+                        "最长翻译字数",
+                        D_getspinbox(0, 9999, globalconfig, "maxlength"),
+                        "",
+                        "翻译请求间隔_(s)",
+                        D_getspinbox(
+                            0,
+                            9999,
+                            globalconfig,
+                            "requestinterval",
+                            step=0.1,
+                            double=True,
+                        ),
+                    ],
+                ],
+            ),
         ],
         [],
+        [
+            dict(
+                title="预翻译",
+                grid=[
+                    [
+                        dict(
+                            type="grid",
+                            grid=[
+                                [
+                                    "模糊匹配_相似度_%",
+                                    D_getspinbox(0, 100, globalconfig, "premtsimi2"),
+                                    "",
+                                    functools.partial(createbtnexport, self),
+                                ],
+                            ],
+                        ),
+                    ],
+                    [dict(type="grid", grid=initsome11(self, res.pre))],
+                ],
+            ),
+        ],
+        [dict(type="grid", title="其他", grid=initsome11(self, res.other))],
     ]
 
-    lixians, pre, mianfei, shoufei = splittranslatortypes()
-
-    offlinegrid = initsome21(self, lixians, btnplus="offline")
-    offlinegrid += [[functools.partial(offlinelinks, "translate")]]
-    onlinegrid = initsome11(self, mianfei)
-    online_reg_grid += initsome2(self, shoufei, btnplus="api")
-    pretransgrid += initsome11(self, pre)
-
-    gridlayoutwidget, do = makegrid(grids, delay=True)
-    basel.addWidget(gridlayoutwidget)
     tab, dotab = makesubtab_lazy(
-        ["在线翻译", "注册在线翻译", "离线翻译", "预翻译"],
+        ["在线翻译", "离线翻译", "其他"],
         [
-            functools.partial(makescrollgrid, onlinegrid),
             functools.partial(makescrollgrid, online_reg_grid),
             functools.partial(makescrollgrid, offlinegrid),
             functools.partial(makescrollgrid, pretransgrid),
@@ -684,7 +644,4 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
         delay=True,
     )
     basel.addWidget(tab)
-
-    basel.setSpacing(0)
-    do()
     dotab()

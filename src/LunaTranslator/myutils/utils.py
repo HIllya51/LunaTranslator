@@ -392,16 +392,25 @@ def checkportavailable(port):
 
 
 def splittranslatortypes():
-    pre, offline, free, api = [], [], [], []
+    class __:
+        def __init__(self):
+            self.pre, self.offline, self.free, self.api = [], [], [], []
+            self.other = []
+
+    ls = __()
     for k in globalconfig["fanyi"]:
         try:
-            {"pre": pre, "offline": offline, "free": free, "api": api}[
-                globalconfig["fanyi"][k].get("type", "free")
-            ].append(k)
+            {
+                "pre": ls.pre,
+                "offline": ls.offline,
+                "free": ls.free,
+                "api": ls.api,
+                "other": ls.other,
+            }[globalconfig["fanyi"][k].get("type", "free")].append(k)
         except:
             pass
 
-    return offline, pre, free, api
+    return ls
 
 
 def splitocrtypes(dic):

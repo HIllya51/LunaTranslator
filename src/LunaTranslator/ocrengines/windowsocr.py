@@ -114,13 +114,6 @@ def question():
 
 class OCR(baseocr):
 
-    def getlanguagespace(self, lang: str):
-        lang = lang.split("-")[0]
-        try:
-            return Languages.fromcode(lang).space
-        except:
-            return " "
-
     def langmap(self):
         return {Languages.Chinese: "zh-Hans", Languages.TradChinese: "zh-Hant"}
 
@@ -152,9 +145,7 @@ class OCR(baseocr):
                     )
                 )
             uselang = self.srclang
-        ret = winsharedutils.WinRT.OCR(
-            imagebinary, uselang, self.getlanguagespace(uselang)
-        )
+        ret = winsharedutils.WinRT.OCR(imagebinary, uselang)
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
         return {"box": boxs, "text": texts}

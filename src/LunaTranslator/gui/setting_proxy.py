@@ -1,6 +1,7 @@
 from qtsymbols import *
 import os, functools, re
 from myutils.config import globalconfig
+from gui.setting_translate import splitapillm
 from myutils.utils import (
     splittranslatortypes,
     translate_exits,
@@ -10,6 +11,7 @@ from myutils.utils import (
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makegrid,
+    createfoldgrid,
     makesubtab_lazy,
     makescrollgrid,
     D_getsimplecombobox,
@@ -103,17 +105,48 @@ def makegridW(grid, lay, save=False, savelist=None, savelay=None):
 
 def makeproxytab():
 
-    lixians, pre, mianfei, shoufei = splittranslatortypes()
-
+    res = splittranslatortypes()
+    is_gpt_likes, not_is_gpt_like = splitapillm(res.api)
     mianfei = getall(
-        l=mianfei,
-        item="fanyi",
-        name="./Lunatranslator/translator/%s.py",
-        getname=dynamicapiname,
+        l=res.free, item="fanyi", name=translate_exits, getname=dynamicapiname
     )
-    shoufei = getall(
-        l=shoufei, item="fanyi", name=translate_exits, getname=dynamicapiname
+    is_gpt_likes = getall(
+        l=is_gpt_likes, item="fanyi", name=translate_exits, getname=dynamicapiname
     )
+    not_is_gpt_like = getall(
+        l=not_is_gpt_like, item="fanyi", name=translate_exits, getname=dynamicapiname
+    )
+
+    tsgrids = [
+        [
+            functools.partial(
+                createfoldgrid,
+                is_gpt_likes,
+                "大模型",
+                globalconfig["foldstatus"]["proxy"],
+                "gpt",
+            )
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
+                mianfei,
+                "传统",
+                globalconfig["foldstatus"]["proxy"],
+                "free",
+            )
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
+                not_is_gpt_like,
+                "传统_API",
+                globalconfig["foldstatus"]["proxy"],
+                "api",
+            )
+        ],
+    ]
+
     ocrs = getall(
         l=getnotofflines("ocr"),
         item="ocr",
@@ -137,15 +170,13 @@ def makeproxytab():
     )
     titles = [
         "在线翻译",
-        "注册在线翻译",
         "OCR",
         "语音合成",
         "辞书",
         "元数据",
     ]
     funcs = [
-        functools.partial(makegridW, mianfei),
-        functools.partial(makegridW, shoufei),
+        functools.partial(makegridW, tsgrids),
         functools.partial(makegridW, ocrs),
         functools.partial(makegridW, readers),
         functools.partial(makegridW, cishus),
@@ -162,86 +193,62 @@ def makeproxytab():
 
 def setTab_proxy(self, l):
     grids1 = [
-        (
-            dict(
-                title="网络请求",
-                type="grid",
-                grid=[
-                    [
-                        "HTTP",
-                        (
-                            D_getsimplecombobox(
-                                ["winhttp", "libcurl"],
-                                globalconfig,
-                                "network",
-                                static=True,
-                            ),
-                            5,
+        dict(
+            title="网络请求",
+            type="grid",
+            grid=[
+                [
+                    "HTTP",
+                    (
+                        D_getsimplecombobox(
+                            ["winhttp", "libcurl"],
+                            globalconfig,
+                            "network",
+                            static=True,
                         ),
-                        "",
-                        "WebSocket",
-                        (
-                            D_getsimplecombobox(
-                                ["winhttp", "libcurl"],
-                                globalconfig,
-                                "network_websocket",
-                                static=True,
-                            ),
-                            5,
+                        5,
+                    ),
+                    "",
+                    "WebSocket",
+                    (
+                        D_getsimplecombobox(
+                            ["winhttp", "libcurl"],
+                            globalconfig,
+                            "network_websocket",
+                            static=True,
                         ),
-                    ],
+                        5,
+                    ),
                 ],
-            ),
-            0,
-            "group",
-        )
+            ],
+        ),
     ]
     grids = [
         grids1,
         [
-            (
-                dict(
-                    title="代理设置",
-                    type="grid",
-                    grid=[
-                        [
-                            ("使用代理", 5),
-                            (D_getsimpleswitch(globalconfig, "useproxy"), 1),
-                            ("", 10),
-                        ],
-                        [
-                            ("自动获取系统代理", 5),
-                            (
-                                D_getsimpleswitch(
-                                    globalconfig,
-                                    "usesysproxy",
-                                    callback=lambda x: _ifusesysproxy(self, x),
-                                )
-                            ),
-                        ],
-                        [
-                            ("手动设置代理_(ip:port)", 5),
-                            (functools.partial(createproxyedit, self), 5),
-                            (functools.partial(createproxyedit_check, self), 5),
-                        ],
+            dict(
+                title="代理设置",
+                type="grid",
+                grid=[
+                    [
+                        "使用代理",
+                        D_getsimpleswitch(globalconfig, "useproxy"),
                     ],
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="使用代理的项目",
-                    type="grid",
-                    grid=[
-                        [(makeproxytab, -1)],
+                    [
+                        "自动获取系统代理",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "usesysproxy",
+                            callback=lambda x: _ifusesysproxy(self, x),
+                        ),
+                        "",
+                        "手动设置代理_(ip:port)",
+                        functools.partial(createproxyedit, self),
+                        functools.partial(createproxyedit_check, self),
                     ],
-                ),
-                0,
-                "group",
-            )
+                ],
+            ),
         ],
+        [dict(title="使用代理的项目", grid=[[makeproxytab]])],
     ]
     makescrollgrid(grids, l)

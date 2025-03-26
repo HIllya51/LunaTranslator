@@ -1,6 +1,6 @@
 from qtsymbols import *
-import platform, functools
-import winsharedutils, queue, hashlib
+import functools
+import winsharedutils, queue, hashlib, threading
 from myutils.config import globalconfig, static_data, _TR, get_platform
 from myutils.wrapper import threader, tryprint
 from myutils.hwnd import getcurrexe
@@ -14,9 +14,8 @@ from traceback import print_exc
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makescrollgrid,
-    CollapsibleBoxWithButton,
+    createfoldgrid,
     D_getsimplecombobox,
-    makegrid,
     D_getIconButton,
     getsmalllabel,
     getboxlayout,
@@ -32,21 +31,29 @@ versionchecktask = queue.Queue()
 
 
 def tryqueryfromhost():
-
+    wait = threading.Semaphore(0)
+    results = []
+    proxy = getproxy()
     for i, main_server in enumerate(static_data["main_server"]):
-        try:
+
+        @threader
+        def __(i, main_server, proxy):
+
             res = requests.get(
                 "{main_server}/version".format(main_server=main_server),
                 verify=False,
-                proxies=getproxy(),
+                proxies=proxy,
             )
             res = res.json()
-            gobject.serverindex = i
-            _version = res["version"]
+            results.append((i, res))
+            wait.release()
 
-            return _version, res
-        except:
-            pass
+        __(i, main_server, proxy)
+        if proxy.get("https"):
+            __(i, main_server, None)
+    wait.acquire()
+    gobject.serverindex = results[0][0]
+    return results[0][1]["version"], results[0][1]
 
 
 def tryqueryfromgithub():
@@ -68,6 +75,7 @@ def trygetupdate():
     try:
         version, links = tryqueryfromhost()
     except:
+        print_exc()
         try:
             version, links = tryqueryfromgithub()
         except:
@@ -246,7 +254,7 @@ def createimageview(self):
     return lb
 
 
-def delayloadlinks(key, lay):
+def delayloadlinks(key):
     sources = static_data["aboutsource"][key]
     grid = []
     for source in sources:
@@ -270,22 +278,12 @@ def delayloadlinks(key, lay):
                     ]
                     + ([link.get("about")] if link.get("about") else [])
                 )
-        grid.append(
-            [
-                (
-                    dict(title=source.get("name", None), type="grid", grid=__grid),
-                    0,
-                    "group",
-                )
-            ]
-        )
-    w, do = makegrid(grid, delay=True)
-    lay.addWidget(w)
-    do()
+        grid.append([dict(title=source.get("name", None), type="grid", grid=__grid)])
+    return grid
 
 
 def offlinelinks(key):
-    box = CollapsibleBoxWithButton(functools.partial(delayloadlinks, key), "下载")
+    box = createfoldgrid(delayloadlinks(key), "资源下载")
     return box
 
 
@@ -417,32 +415,28 @@ def setTab_about(self, basel):
         [
             [functools.partial(updatexx, self)],
             [
-                (
-                    dict(
-                        type="grid",
-                        grid=[
-                            [
-                                getsmalllabel("软件显示语言"),
-                                D_getsimplecombobox(
-                                    vis,
-                                    globalconfig,
-                                    "languageuse2",
-                                    callback=changeUIlanguage,
-                                    static=True,
-                                    internal=inner,
+                dict(
+                    type="grid",
+                    grid=[
+                        [
+                            getsmalllabel("软件显示语言"),
+                            D_getsimplecombobox(
+                                vis,
+                                globalconfig,
+                                "languageuse2",
+                                callback=changeUIlanguage,
+                                static=True,
+                                internal=inner,
+                            ),
+                            D_getIconButton(
+                                callback=lambda: os.startfile(
+                                    os.path.abspath(
+                                        "./files/lang/{}.json".format(getlanguse())
+                                    )
                                 ),
-                                D_getIconButton(
-                                    callback=lambda: os.startfile(
-                                        os.path.abspath(
-                                            "./files/lang/{}.json".format(getlanguse())
-                                        )
-                                    ),
-                                ),
-                            ],
+                            ),
                         ],
-                    ),
-                    0,
-                    "group",
+                    ],
                 ),
             ],
             [aboutwidget],

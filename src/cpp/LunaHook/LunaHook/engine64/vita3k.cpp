@@ -1447,6 +1447,8 @@ namespace
             {0x800125AE, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00481"}},
             // うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
             {0x80052B34, {0, 0, 0x24, PCSG00595, 0, "PCSG01081"}},
+            // スカーレッドライダーゼクス
+            {0x8000c2d4, {CODEC_UTF8, 12, 8, 0, PCSG01247, "PCSG00745"}},
         };
         return 1;
     }();

@@ -28,6 +28,20 @@
     "network": 1,
     "useextrahtml": false,
     "ocrselectalpha": 0.3,
+    "foldstatus": {
+        "proxy": {
+            "gpt": true,
+            "api": false,
+            "free": true
+        },
+        "ts": {
+            "gptoffline": true,
+            "outdate": false,
+            "gpt": true,
+            "api": false,
+            "free": true
+        }
+    },
     "usecustomankigen": false,
     "is_search_word_auto_tts": false,
     "network_websocket": 1,
@@ -1809,13 +1823,13 @@
             "name": "华为云"
         },
         "hanshant": {
-            "type": "offline",
+            "type": "other",
             "use": false,
             "color": "blue",
             "name": "繁简转换"
         },
         "selfbuild": {
-            "type": "offline",
+            "type": "other",
             "use": false,
             "color": "blue",
             "name": "自定义翻译",
@@ -1858,7 +1872,6 @@
     "autostarthook": true,
     "minlength": 0,
     "maxlength": 1000,
-    "maxoriginlength": 1000,
     "srclang4": "auto",
     "tgtlang4": "zh",
     "transkiroku": false,

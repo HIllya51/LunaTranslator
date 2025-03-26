@@ -525,7 +525,7 @@ def unregisthotkey(uid):
 
 # winrt
 winrt_OCR = utilsdll.winrt_OCR
-winrt_OCR.argtypes = c_void_p, c_size_t, c_wchar_p, c_wchar_p, c_void_p
+winrt_OCR.argtypes = c_void_p, c_size_t, c_wchar_p, c_void_p
 
 winrt_OCR_check_language_valid = utilsdll.winrt_OCR_check_language_valid
 winrt_OCR_check_language_valid.argtypes = (c_wchar_p,)
@@ -546,7 +546,7 @@ class WinRT:
         return winrt_OCR_check_language_valid(lang)
 
     @staticmethod
-    def OCR(data: bytes, lang: str, space: str):
+    def OCR(data: bytes, lang: str):
         ret = []
 
         def cb(x1, y1, x2, y2, text):
@@ -556,7 +556,6 @@ class WinRT:
             data,
             len(data),
             lang,
-            space,
             CFUNCTYPE(None, c_uint, c_uint, c_uint, c_uint, c_wchar_p)(cb),
         )
         return ret

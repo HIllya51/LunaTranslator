@@ -189,7 +189,7 @@ def creategamefont_comboBox():
     return gamefont_comboBox
 
 
-def getTabclip(self):
+def getTabclip():
 
     grids = [
         [
@@ -249,103 +249,84 @@ def createdownloadprogress(self):
 def filetranslate(self):
     grids = [
         [
-            (
-                dict(
-                    title="文件翻译",
-                    type="grid",
-                    grid=[
-                        [
-                            "文件",
-                            D_getIconButton(
-                                functools.partial(selectfile, self),
-                                icon="fa.folder-open",
-                            ),
-                            "",
-                            "",
-                        ],
-                        [(functools.partial(createdownloadprogress, self), 0)],
+            dict(
+                title="文件翻译",
+                grid=[
+                    [
+                        "文件",
+                        D_getIconButton(
+                            functools.partial(selectfile, self),
+                            icon="fa.folder-open",
+                        ),
                     ],
-                ),
-                0,
-                "group",
+                    [functools.partial(createdownloadprogress, self)],
+                ],
             ),
         ],
     ]
     return grids
 
 
-def outputgrid(self):
+def outputgrid():
 
     grids = [
         [
-            (
-                dict(
-                    title="输出的内容",
-                    grid=(
-                        [
-                            "原文",
-                            D_getsimpleswitch(globalconfig, "textoutput_origin"),
-                        ],
-                        [
-                            "翻译",
-                            D_getsimpleswitch(globalconfig, "textoutput_trans"),
-                        ],
-                    ),
+            dict(
+                title="输出的内容",
+                grid=(
+                    [
+                        "原文",
+                        D_getsimpleswitch(globalconfig, "textoutput_origin"),
+                    ],
+                    [
+                        "翻译",
+                        D_getsimpleswitch(globalconfig, "textoutput_trans"),
+                    ],
                 ),
-                0,
-                "group",
-            )
+            ),
         ],
         [],
         [
-            (
-                dict(
-                    title="剪贴板",
-                    grid=(
-                        [
-                            "自动输出",
-                            D_getsimpleswitch(
-                                globalconfig["textoutputer"]["clipboard"], "use"
-                            ),
-                        ],
-                    ),
+            dict(
+                title="剪贴板",
+                grid=(
+                    [
+                        "自动输出",
+                        D_getsimpleswitch(
+                            globalconfig["textoutputer"]["clipboard"], "use"
+                        ),
+                    ],
                 ),
-                0,
-                "group",
-            )
+            ),
         ],
         [
-            (
-                dict(
-                    title="WebSocket",
-                    grid=(
-                        [
-                            "自动输出",
-                            D_getsimpleswitch(
-                                globalconfig["textoutputer"]["websocket"],
-                                "use",
-                                callback=lambda _: gobject.baseobject.startoutputer_re(
-                                    "websocket"
-                                ),
+            dict(
+                title="WebSocket",
+                grid=(
+                    [
+                        "自动输出",
+                        D_getsimpleswitch(
+                            globalconfig["textoutputer"]["websocket"],
+                            "use",
+                            callback=lambda _: gobject.baseobject.startoutputer_re(
+                                "websocket"
                             ),
-                        ],
-                        [
-                            "端口号",
-                            D_getspinbox(
-                                0,
-                                65535,
-                                globalconfig["textoutputer"]["websocket"],
-                                "port",
-                                callback=lambda _: gobject.baseobject.startoutputer_re(
-                                    "websocket"
-                                ),
+                        ),
+                    ],
+                    [
+                        "端口号",
+                        D_getspinbox(
+                            0,
+                            65535,
+                            globalconfig["textoutputer"]["websocket"],
+                            "port",
+                            callback=lambda _: gobject.baseobject.startoutputer_re(
+                                "websocket"
                             ),
-                        ],
-                    ),
+                        ),
+                    ],
                 ),
-                0,
-                "group",
-            )
+            ),
         ],
     ]
     return grids
@@ -442,20 +423,8 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         )
         __.append("")
     tab1grids = [
-        [
-            (
-                dict(title="语言设置", type="grid", grid=setTablanglz()),
-                0,
-                "group",
-            ),
-        ],
-        [
-            (
-                dict(title="文本输入", type="grid", grid=[__]),
-                0,
-                "group",
-            ),
-        ],
+        [dict(title="语言设置", type="grid", grid=setTablanglz())],
+        [dict(title="文本输入", type="grid", grid=[__])],
     ]
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     basel.addWidget(gridlayoutwidget)
@@ -463,9 +432,9 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     funcs = [
         lambda l: setTabOne_lazy_h(self, l),
         lambda l: getocrgrid_table(self, l),
-        lambda l: makescrollgrid(getTabclip(self), l),
+        lambda l: makescrollgrid(getTabclip(), l),
         lambda l: makescrollgrid(filetranslate(self), l),
-        lambda l: makescrollgrid(outputgrid(self), l),
+        lambda l: makescrollgrid(outputgrid(), l),
     ]
 
     tab, dotab = makesubtab_lazy(

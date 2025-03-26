@@ -574,7 +574,7 @@ class MySwitch(QAbstractButton):
         if event.button() != Qt.MouseButton.LeftButton:
             return
         try:
-            self.setChecked(not self.isChecked())
+            super().setChecked(not self.isChecked())
             self.clicked.emit(self.isChecked())
             self.runanime()
             # 父窗口deletelater
@@ -878,6 +878,23 @@ def D_getIconButton(
 ):
     return lambda: getIconButton(callback, icon, enable, qicon, callback2=callback2)
 
+
+def check_grid_append(grids):
+    if len(grids) < 2:
+        return
+    len0 = len(grids[0])
+    notx = True
+    for line in grids:
+        if len(line) != len0:
+            continue
+        if line[-1] != "":
+            notx = False
+    if notx:
+        for line in grids:
+            if len(line) != len0:
+                continue
+            line.pop(-1)
+    return notx
 
 def getcolorbutton(
     d,
@@ -2108,6 +2125,9 @@ def makeforms(lay: LFormLayout, lis):
                 hb.insertStretch(0)
                 hb.addStretch()
             wid = hb
+        elif isinstance(wid, dict):
+            # group
+            wid = makegroupingrid(wid)
         else:
             if callable(wid):
                 try:
@@ -2172,7 +2192,7 @@ def makegroupingrid(args):
 
 def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
 
-    maxl = 0
+    maxl = 1
     linecolss = []
     for nowr, line in enumerate(lis):
         nowc = 0
@@ -2180,6 +2200,8 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         for item in line:
             if type(item) == str:
                 cols = 1
+            elif isinstance(item, dict):
+                cols = 0
             elif type(item) != tuple:
                 wid, cols = item, 1
             elif len(item) == 2:
@@ -2200,6 +2222,10 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
             if type(item) == str:
                 cols = 1
                 wid = LLabel(item)
+            elif isinstance(item, dict):
+                # group
+                wid = makegroupingrid(item)
+                cols = 0
             elif type(item) != tuple:
                 wid, cols = item, 1
             elif len(item) == 2:
@@ -2213,8 +2239,6 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
                     wid = LLabel(wid)
                     if arg == "link":
                         wid.setOpenExternalLinks(True)
-                elif arg == "group":
-                    wid = makegroupingrid(wid)
             if cols > 0:
                 cols = cols
             elif cols == 0:
@@ -2823,19 +2847,25 @@ class IconButton(QPushButton):
 
     def resizedirect(self):
         h = QFontMetricsF(self.font()).height()
-        h = int(h * gobject.Consts.btnscale)
-        sz = QSize(h, h)
-        self.setFixedSize(sz)
+        sz = (QSizeF(h, h) * gobject.Consts.btnscale).toSize()
+        if self.fix:
+            self.setFixedSize(sz)
+        else:
+            self.setFixedHeight(sz.height())
         self.setIconSize(sz)
         self.sizeChanged.emit(sz)
 
-    def __init__(self, icon, enable=True, qicon=None, parent=None, checkable=False):
+    def __init__(
+        self, icon, enable=True, qicon=None, parent=None, checkable=False, fix=True
+    ):
         super().__init__(parent)
         self._icon = icon
         self.clicked.connect(self.clicked_1)
         self.clicked.connect(self.seticon)
         self._qicon = qicon
-        self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        self.fix = fix
+        if fix:
+            self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setStyleSheet("border:transparent;padding: 0px;")
         self.setCheckable(checkable)
@@ -3020,13 +3050,15 @@ class CollapsibleBox(NQGroupBox):
 
 
 class CollapsibleBoxWithButton(QWidget):
+    toggled = pyqtSignal(bool)
 
-    def __init__(self, delayloadfunction=None, title="", parent=None):
+    def __init__(self, delayloadfunction=None, title="", parent=None, toggled=False):
         super(CollapsibleBoxWithButton, self).__init__(parent)
         self.toggle_button = LToolButton(text=title, checkable=True, checked=False)
         self.toggle_button.setToolButtonStyle(
             Qt.ToolButtonStyle.ToolButtonTextBesideIcon
         )
+        self.toggle_button.toggled.connect(self.__toggled)
         self.toggle_button.toggled.connect(self.toggled)
         self.content_area = CollapsibleBox(delayloadfunction, self)
         lay = QVBoxLayout(self)
@@ -3034,14 +3066,34 @@ class CollapsibleBoxWithButton(QWidget):
         lay.setContentsMargins(0, 0, 0, 0)
         lay.addWidget(self.toggle_button)
         lay.addWidget(self.content_area)
-        self.toggled(False)
+        self.__toggled(toggled)
 
-    def toggled(self, checked):
+    def __toggled(self, checked):
         self.toggle_button.setChecked(checked)
         self.content_area.toggle(checked)
         self.toggle_button.setIcon(
             qtawesome.icon("fa.chevron-down" if checked else "fa.chevron-right")
         )
+
+
+def createfoldgrid(
+    grid, title, d: dict = None, k=None, internallayoutname=None, parent=None
+):
+
+    def __(grid, internallayoutname, parent, lay: QLayout):
+        w, do = makegrid(grid, delay=True)
+        lay.addWidget(w)
+        if internallayoutname:
+            setattr(parent, internallayoutname, w.layout())
+        do()
+
+    toggled = d[k] if d else False
+    box = CollapsibleBoxWithButton(
+        functools.partial(__, grid, internallayoutname, parent), title, toggled=toggled
+    )
+    if d:
+        box.toggled.connect(functools.partial(d.__setitem__, k))
+    return box
 
 
 class editswitchTextBrowser(QWidget):

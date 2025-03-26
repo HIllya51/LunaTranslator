@@ -8,7 +8,7 @@ from gui.usefulwidget import makesubtab_lazy, makescrollgrid
 from myutils.config import get_platform
 
 
-def setTabThree_lazy(self, basel):
+def setTabThree_lazy(self, basel: QLayout):
     titles = ["文本设置", "界面设置", "工具按钮", "窗口缩放"]
     funcs = [
         lambda l: makescrollgrid(xianshigrid_style(self), l),

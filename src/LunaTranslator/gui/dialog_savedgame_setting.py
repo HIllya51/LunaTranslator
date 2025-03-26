@@ -515,13 +515,13 @@ class dialog_setting_game_internal(QWidget):
         self._timelabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
-        formLayout.addLayout(getboxlayout([LLabel(("文字计数")), self._wordlabel]))
+        formLayout.addLayout(getboxlayout(["文字计数", self._wordlabel]))
 
         t = QTimer(self)
         formLayout.addLayout(
             getboxlayout(
                 [
-                    LLabel("游戏时间"),
+                    "游戏时间",
                     self._timelabel,
                     getsmalllabel("严格的"),
                     getsimpleswitch(

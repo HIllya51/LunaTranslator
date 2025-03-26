@@ -12,7 +12,6 @@ from gui.inputdialog import (
 from tts.basettsclass import TTSbase
 from gui.setting_about import offlinelinks
 from gui.usefulwidget import (
-    D_getsimplecombobox,
     D_getspinbox,
     makescrollgrid,
     D_getIconButton,
@@ -21,6 +20,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     getboxlayout,
     getsmalllabel,
+    check_grid_append,
 )
 
 
@@ -190,6 +190,7 @@ def getttsgrid(self, names):
         i += 1
     if len(line):
         grids.append(line)
+    check_grid_append(grids)
     return grids
 
 
@@ -202,182 +203,128 @@ def setTab5lz(self):
     ]
     grids += [
         [
-            (
-                dict(
-                    title="引擎",
-                    type="grid",
-                    grid=[
-                        [
-                            (
-                                dict(
-                                    title="离线",
-                                    type="grid",
-                                    grid=offilesgrid,
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                        [
-                            (
-                                dict(
-                                    title="在线",
-                                    type="grid",
-                                    grid=getttsgrid(self, online),
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                    ],
-                ),
-                0,
-                "group",
-            )
+            dict(
+                title="引擎",
+                grid=[
+                    [dict(title="离线", type="grid", grid=offilesgrid)],
+                    [dict(title="在线", type="grid", grid=getttsgrid(self, online))],
+                ],
+            ),
         ],
         [
-            (
-                dict(
-                    title="声音",
-                    type="grid",
-                    grid=[
-                        [
-                            getsmalllabel("选择声音"),
-                            (functools.partial(createvoicecombo, self)),
-                        ],
-                        [
-                            (
-                                getboxlayout(
-                                    [
-                                        getboxlayout(
-                                            [
-                                                "音量_(0~100)",
-                                                D_getspinbox(
-                                                    0,
-                                                    100,
-                                                    globalconfig["ttscommon"],
-                                                    "volume",
-                                                ),
-                                            ],
-                                            margin0=True,
-                                            makewidget=True,
-                                        ),
-                                        "",
-                                        functools.partial(createrate, self),
-                                        "",
-                                        functools.partial(createpitch, self),
-                                    ],
-                                    margin0=True,
-                                    makewidget=True,
-                                ),
-                                -1,
-                            )
-                        ],
+            dict(
+                title="声音",
+                grid=[
+                    [
+                        "选择声音",
+                        functools.partial(createvoicecombo, self),
                     ],
-                ),
-                0,
-                "group",
-            )
-        ],
-        [
-            (
-                dict(
-                    title="行为",
-                    type="grid",
-                    grid=[
-                        [
-                            (
-                                dict(
-                                    type="grid",
-                                    grid=[
+                    [
+                            getboxlayout(
+                                [
+                                    getboxlayout(
                                         [
-                                            "自动朗读",
-                                            D_getsimpleswitch(
-                                                globalconfig,
-                                                "autoread",
-                                                name="autoread",
-                                                parent=self,
-                                            ),
-                                            "",
-                                            "不被打断",
-                                            D_getsimpleswitch(
-                                                globalconfig, "ttsnointerrupt"
-                                            ),
-                                            "",
-                                            "自动前进",
-                                            D_getsimpleswitch(
-                                                globalconfig, "ttsautoforward"
-                                            ),
-                                        ],
-                                        [
-                                            "朗读原文",
-                                            D_getsimpleswitch(globalconfig, "read_raw"),
-                                            "",
-                                            "朗读翻译",
-                                            D_getsimpleswitch(
-                                                globalconfig, "read_trans"
-                                            ),
-                                        ],
-                                    ],
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
-                        [
-                            (
-                                dict(
-                                    type="grid",
-                                    grid=[
-                                        [
-                                            "语音指定",
-                                            D_getsimpleswitch(
-                                                globalconfig["ttscommon"], "tts_skip"
-                                            ),
-                                            D_getIconButton(
-                                                callback=lambda: yuyinzhidingsetting(
-                                                    self,
-                                                    globalconfig["ttscommon"][
-                                                        "tts_skip_regex"
-                                                    ],
-                                                )
-                                            ),
-                                        ],
-                                        [
-                                            "语音修正",
-                                            D_getsimpleswitch(
-                                                globalconfig["ttscommon"], "tts_repair"
-                                            ),
-                                            D_getIconButton(
-                                                callback=lambda: noundictconfigdialog1(
-                                                    self,
-                                                    globalconfig["ttscommon"][
-                                                        "tts_repair_regex"
-                                                    ],
-                                                    "语音修正",
-                                                    ["正则", "转义", "原文", "替换"],
-                                                )
-                                            ),
-                                            "",
-                                            D_getsimpleswitch(
+                                            "音量_(0~100)",
+                                            D_getspinbox(
+                                                0,
+                                                100,
                                                 globalconfig["ttscommon"],
-                                                "tts_repair_use_at_translate",
+                                                "volume",
                                             ),
-                                            "作用于翻译",
-                                            "",
-                                            "",
                                         ],
-                                    ],
-                                ),
-                                0,
-                                "group",
-                            )
-                        ],
+                                        margin0=True,
+                                        makewidget=True,
+                                    ),
+                                    "",
+                                    functools.partial(createrate, self),
+                                    "",
+                                    functools.partial(createpitch, self),
+                                ],
+                                margin0=True,
+                                makewidget=True,
+                            ),
                     ],
-                ),
-                0,
-                "group",
-            )
+                ],
+            ),
+        ],
+        [
+            dict(
+                title="行为",
+                grid=[
+                    [
+                        dict(
+                            type="grid",
+                            grid=[
+                                [
+                                    "自动朗读",
+                                    D_getsimpleswitch(
+                                        globalconfig,
+                                        "autoread",
+                                        name="autoread",
+                                        parent=self,
+                                    ),
+                                    "",
+                                    "不被打断",
+                                    D_getsimpleswitch(globalconfig, "ttsnointerrupt"),
+                                    "",
+                                    "自动前进",
+                                    D_getsimpleswitch(globalconfig, "ttsautoforward"),
+                                ],
+                                [
+                                    "朗读原文",
+                                    D_getsimpleswitch(globalconfig, "read_raw"),
+                                    "",
+                                    "朗读翻译",
+                                    D_getsimpleswitch(globalconfig, "read_trans"),
+                                ],
+                            ],
+                        ),
+                    ],
+                    [
+                        dict(
+                            type="grid",
+                            grid=[
+                                [
+                                    "语音指定",
+                                    D_getsimpleswitch(
+                                        globalconfig["ttscommon"], "tts_skip"
+                                    ),
+                                    D_getIconButton(
+                                        callback=lambda: yuyinzhidingsetting(
+                                            self,
+                                            globalconfig["ttscommon"]["tts_skip_regex"],
+                                        )
+                                    ),
+                                ],
+                                [
+                                    "语音修正",
+                                    D_getsimpleswitch(
+                                        globalconfig["ttscommon"], "tts_repair"
+                                    ),
+                                    D_getIconButton(
+                                        callback=lambda: noundictconfigdialog1(
+                                            self,
+                                            globalconfig["ttscommon"][
+                                                "tts_repair_regex"
+                                            ],
+                                            "语音修正",
+                                            ["正则", "转义", "原文", "替换"],
+                                        )
+                                    ),
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["ttscommon"],
+                                        "tts_repair_use_at_translate",
+                                    ),
+                                    "作用于翻译",
+                                    "",
+                                    "",
+                                ],
+                            ],
+                        ),
+                    ],
+                ],
+            ),
         ],
     ]
     return grids

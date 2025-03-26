@@ -57,31 +57,30 @@ def usewhichonnxruntime():
     return myonnx
 
 
-usewhich = usewhichonnxruntime()
-print(usewhich)
-
-# msvcp140已被qt导入
-# onnxruntime v1.13.1 用于win7兼容
-onnxruntimedll = CDLL(usewhich)
-LunaOCR = CDLL(gobject.GetDllpath("LunaOCR.dll"))
-OcrListProviders = LunaOCR.OcrListProviders
-OcrListProviders()
-
-OcrInit = LunaOCR.OcrInit
-OcrInit.restype = c_void_p
-OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
-
-OcrDetect = LunaOCR.OcrDetect
-OcrDetect.argtypes = (c_void_p, c_void_p, c_size_t, c_int32, c_void_p)
-
-OcrDestroy = LunaOCR.OcrDestroy
-OcrDestroy.argtypes = (c_void_p,)
-
-
 class ocrwrapper:
 
     def __init__(self, det, rec, key) -> None:
-        self.pOcrObj = OcrInit(det, rec, key, 4)
+        usewhich = usewhichonnxruntime()
+        print(usewhich)
+
+        # msvcp140已被qt导入
+        # onnxruntime v1.13.1 用于win7兼容
+        self._onnxruntimedll = CDLL(usewhich)
+        self._LunaOCR = CDLL(gobject.GetDllpath("LunaOCR.dll"))
+        OcrListProviders = self._LunaOCR.OcrListProviders
+        OcrListProviders()
+
+        self._OcrInit = self._LunaOCR.OcrInit
+        self._OcrInit.restype = c_void_p
+        self._OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
+
+        self._OcrDetect = self._LunaOCR.OcrDetect
+        self._OcrDetect.argtypes = (c_void_p, c_void_p, c_size_t, c_int32, c_void_p)
+
+        self._OcrDestroy = self._LunaOCR.OcrDestroy
+        self._OcrDestroy.argtypes = (c_void_p,)
+
+        self.pOcrObj = self._OcrInit(det, rec, key, 4)
 
     def __OcrDetect(self, data: bytes, mode: int):
 
@@ -92,7 +91,7 @@ class ocrwrapper:
             pss.append((ps.x1, ps.y1, ps.x2, ps.y2, ps.x3, ps.y3, ps.x4, ps.y4))
             texts.append(text.decode("utf8"))
 
-        OcrDetect(
+        self._OcrDetect(
             self.pOcrObj,
             data,
             len(data),
@@ -109,7 +108,7 @@ class ocrwrapper:
             return [], []
 
     def __del__(self):
-        OcrDestroy(self.pOcrObj)
+        self._OcrDestroy(self.pOcrObj)
 
 
 def findmodel(langcode):
