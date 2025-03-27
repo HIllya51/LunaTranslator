@@ -1,3 +1,5 @@
+![img](https://p.inari.site/guest/25-03/27/67e496dc09efd.jpg)
+
 # LunaTranslator
 
 > **一款galgame翻译器**
