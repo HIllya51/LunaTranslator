@@ -300,6 +300,10 @@ namespace
         auto address = VITA3K::emu_arg(context)[0];
         buffer->from(address + 0x1C, (*(DWORD *)(address + 0x14)));
     }
+    void PCSG00615(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN(L"＿"));
+    }
     void PCSG01247(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("\\n"));
@@ -536,6 +540,16 @@ namespace
         strReplace(ws, L"\x02");
         Trim(ws);
         buffer->fromWA(ws);
+    }
+    void PCSB00985(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = VITA3K::emu_arg(context)[hp->offset];
+        std::wstring str = (WCHAR *)address;
+        auto istext = re::search(str, LR"([ \n\.\?!,"'—;:])");
+        *split = bool(istext) && (str != L"????");
+        str = re::sub(str, LR"(\$\w\[(.*?)\])");
+        strReplace(str, L"\n", L" ");
+        buffer->from(str);
     }
     void PCSG01046(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -1449,6 +1463,10 @@ namespace
             {0x80052B34, {0, 0, 0x24, PCSG00595, 0, "PCSG01081"}},
             // スカーレッドライダーゼクス
             {0x8000c2d4, {CODEC_UTF8, 12, 8, 0, PCSG01247, "PCSG00745"}},
+            // 東京喰種トーキョーグール JAIL
+            {0x800714BC, {CODEC_UTF16, 4, 0, 0, PCSG00615, "PCSG00615"}}, // 时断时续
+            // PSYCHO-PASS MANDATORY HAPPINESS
+            {0x8004D360, {CODEC_UTF16, 0, 0, PCSB00985, 0, "PCSB00985"}},
         };
         return 1;
     }();

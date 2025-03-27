@@ -674,7 +674,7 @@ class dialog_savedgame_v3(QWidget):
         except:
             pass
 
-    def __init__(self, parent) -> None:
+    def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent)
         parent.setWindowTitle("游戏管理")
         self.setAcceptDrops(True)
@@ -684,30 +684,33 @@ class dialog_savedgame_v3(QWidget):
         self.keepindexobject = {}
 
         class ___(stackedlist):
-            def keyPressEvent(self, e: QKeyEvent):
-                if self.ref.currentfocusuid:
+            def __init__(self_, ref: dialog_savedgame_v3):
+                super().__init__()
+                self_.ref = ref
+
+            def keyPressEvent(self_, e: QKeyEvent):
+                if self_.ref.currentfocusuid:
                     if e.key() == Qt.Key.Key_Return:
                         startgamecheck(
-                            self.ref,
-                            getreflist(self.ref.reftagid),
-                            self.ref.currentfocusuid,
+                            self_.ref,
+                            getreflist(self_.ref.reftagid),
+                            self_.ref.currentfocusuid,
                         )
                     elif e.key() == Qt.Key.Key_Delete:
-                        self.ref.shanchuyouxi()
+                        self_.ref.shanchuyouxi()
                     elif e.key() == Qt.Key.Key_Left:
-                        self.ref.moverank(-1)
+                        self_.ref.moverank(-1)
                     elif e.key() == Qt.Key.Key_Right:
-                        self.ref.moverank(1)
+                        self_.ref.moverank(1)
                     elif e.key() == Qt.Key.Key_Down:
-                        self.ref.movefocus(1)
+                        self_.ref.movefocus(1)
                         return e.ignore()
                     elif e.key() == Qt.Key.Key_Up:
-                        self.ref.movefocus(-1)
+                        self_.ref.movefocus(-1)
                         return e.ignore()
                 super().keyPressEvent(e)
 
-        self.stack = ___()
-        self.stack.ref = self
+        self.stack = ___(self)
         self.stack.setheight(
             globalconfig["dialog_savegame_layout"]["listitemheight"] + 1
         )
@@ -746,11 +749,6 @@ class dialog_savedgame_v3(QWidget):
 
         isfirst = True
         for i, tag in enumerate(savegametaged):
-            # None
-            # {
-            #     "title":xxx
-            #     "games":[]
-            # }
             if tag is None:
                 title = "GLOBAL"
                 lst = savehook_new_list

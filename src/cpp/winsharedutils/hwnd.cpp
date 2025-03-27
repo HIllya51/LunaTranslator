@@ -302,3 +302,8 @@ DECLARE_API DWORD GetParentProcessID(DWORD dwProcessId)
 
     return dwParentPID;
 }
+DECLARE_API void MouseMoveWindow(HWND hwnd)
+{
+    ReleaseCapture();
+    SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, NULL);
+}

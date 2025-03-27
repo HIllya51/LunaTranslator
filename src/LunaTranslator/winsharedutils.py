@@ -16,7 +16,18 @@ from ctypes import (
     c_char,
     CFUNCTYPE,
 )
-from ctypes.wintypes import WORD, HWND, DWORD, RECT, HANDLE, UINT, BOOL, LONG, LPCWSTR, MAX_PATH
+from ctypes.wintypes import (
+    WORD,
+    HWND,
+    DWORD,
+    RECT,
+    HANDLE,
+    UINT,
+    BOOL,
+    LONG,
+    LPCWSTR,
+    MAX_PATH,
+)
 import platform, windows, functools, os, re
 
 isbit64 = platform.architecture()[0] == "64bit"
@@ -605,3 +616,5 @@ str_alloc.restype = c_void_p
 GetParentProcessID = utilsdll.GetParentProcessID
 GetParentProcessID.argtypes = (DWORD,)
 GetParentProcessID.restype = DWORD
+MouseMoveWindow = utilsdll.MouseMoveWindow
+MouseMoveWindow.argtypes = (HWND,)

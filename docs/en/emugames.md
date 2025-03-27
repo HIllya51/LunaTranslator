@@ -799,6 +799,8 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | PCSG00481 | 新装版クリムゾン・エンパイア |
 |  | PCSG01081 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 |  | PCSG00745 | スカーレッドライダーゼクス |
+|  | PCSG00615 | 東京喰種トーキョーグール JAIL |
+|  | PCSB00985 | PSYCHO-PASS MANDATORY HAPPINESS |
 
 == PS2
 

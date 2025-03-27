@@ -799,6 +799,8 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | PCSG00481 | 新装版クリムゾン・エンパイア |
 |  | PCSG01081 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 |  | PCSG00745 | スカーレッドライダーゼクス |
+|  | PCSG00615 | 東京喰種トーキョーグール JAIL |
+|  | PCSB00985 | PSYCHO-PASS MANDATORY HAPPINESS |
 
 == PS2
 
