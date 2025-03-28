@@ -307,3 +307,37 @@ DECLARE_API void MouseMoveWindow(HWND hwnd)
     ReleaseCapture();
     SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, NULL);
 }
+
+#ifndef WINXP
+#include <shellscalingapi.h>
+#else
+typedef enum MONITOR_DPI_TYPE
+{
+    MDT_EFFECTIVE_DPI = 0,
+    MDT_ANGULAR_DPI = 1,
+    MDT_RAW_DPI = 2,
+    MDT_DEFAULT = MDT_EFFECTIVE_DPI
+} MONITOR_DPI_TYPE;
+STDAPI GetDpiForMonitor(
+    _In_ HMONITOR hmonitor,
+    _In_ MONITOR_DPI_TYPE dpiType,
+    _Out_ UINT *dpiX,
+    _Out_ UINT *dpiY);
+#endif
+DECLARE_API bool NeedUseSysMove()
+{
+    int numMonitors = GetSystemMetrics(SM_CMONITORS);
+    if (numMonitors <= 1)
+        return false;
+    std::set<UINT> dpis;
+    EnumDisplayMonitors(NULL, NULL, [](HMONITOR hMonitor, HDC, LPRECT, LPARAM lp) -> BOOL
+                        {
+                            auto dpis=(std::set<UINT>*)lp;
+                            UINT dpiX, dpiY;
+                            if (SUCCEEDED(GetDpiForMonitor(hMonitor, MDT_EFFECTIVE_DPI, &dpiX, &dpiY)))
+                            {
+                                dpis->insert(dpiX);
+                            }
+                            return TRUE; }, (LPARAM)&dpis);
+    return dpis.size() >= 2;
+}

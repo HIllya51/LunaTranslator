@@ -262,7 +262,8 @@ class ButtonBar(QFrame):
         if _type not in self.stylebuttons:
             self.stylebuttons[_type] = []
         self.stylebuttons[_type].append(button)
-        button.setObjectName("IconLabelX{}".format(_type))
+        if clicked:
+            button.setObjectName("IconLabelX{}".format(_type))
         button.reflayout = None
         button.belong = belong
         self.buttons[name] = button

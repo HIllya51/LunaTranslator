@@ -594,6 +594,7 @@ class resizableframeless(saveposwindow):
         self.setMouseTracking(True)
         # WS_THICKFRAME可以让无边框窗口可resize，但不兼容透明窗口
         self._padding = 5
+        self.usesysmove = False
         self.resetflags()
 
     def setCursor(self, a0):
@@ -674,7 +675,12 @@ class resizableframeless(saveposwindow):
             self._corner_drag_zuoshang = True
             self.isDragging.emit(True)
         else:
-            winsharedutils.MouseMoveWindow(int(self.winId()))
+            # 用系统拖放有时会有问题。有时会和游戏竞争鼠标，导致窗口位置抖动。
+            # 那么尽量不使用系统拖放，以避免触发这个问题，暂时没办法解决。
+            # 检查DPI，仅当多屏幕且DPI不一致时才使用系统移动。
+            self.usesysmove = winsharedutils.NeedUseSysMove()
+            if self.usesysmove:
+                winsharedutils.MouseMoveWindow(int(self.winId()))
             self._move_drag = True
             self.move_DragPosition = gpos - self.pos()
 
@@ -749,7 +755,8 @@ class resizableframeless(saveposwindow):
             self.resize(pos.x(), pos.y())
         elif self._move_drag:
             self.isDragging.emit(True)
-            # self.move(gpos - self.move_DragPosition)
+            if not self.usesysmove:
+                self.move(gpos - self.move_DragPosition)
 
     def mouseReleaseEvent(self, e: QMouseEvent):
         self.resetflags()

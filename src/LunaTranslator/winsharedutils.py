@@ -618,3 +618,5 @@ GetParentProcessID.argtypes = (DWORD,)
 GetParentProcessID.restype = DWORD
 MouseMoveWindow = utilsdll.MouseMoveWindow
 MouseMoveWindow.argtypes = (HWND,)
+NeedUseSysMove = utilsdll.NeedUseSysMove
+NeedUseSysMove.restype = c_bool
