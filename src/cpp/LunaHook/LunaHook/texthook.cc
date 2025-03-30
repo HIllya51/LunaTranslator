@@ -516,7 +516,9 @@ void TextHook::Read()
 				if (!location)
 					continue;
 				int currentLen = HookStrlen((BYTE *)location);
-				if (currentLen == buff.size && (memcmp(pbData, location, buff.size) == 0))
+				if(!currentLen)
+					continue;
+				if ((currentLen == buff.size) && (memcmp(pbData, location, buff.size) == 0))
 					continue;
 				buff.from(location, currentLen);
 				if (hp.filter_fun && (!SafeFilterFun(hp, buff)))

@@ -445,6 +445,24 @@ namespace
         }
         last = s;
     }
+    void SLPS25801(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        auto s = buffer->strA();
+        static std::string last;
+        if (last.size() && startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+        }
+        else
+        {
+            std::string name = (char *)emu_addr(0x342B0F);
+            if (name.size())
+                name = u8"【" + name + u8"】";
+            buffer->from(name + buffer->strA());
+        }
+        last = s;
+    }
     void SLPS25902(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -849,6 +867,8 @@ namespace
             {0x83907A, {DIRECT_READ, 0, 0, 0, SLPS25902, "SLPS-25902"}},
             // 今日からマ王！はじマりの旅 [プレミアムBOX]
             {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
+            // 今日からマ王！ 眞マ国の休日
+            {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
         };
         return 0;
     }();
