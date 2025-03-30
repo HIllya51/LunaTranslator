@@ -97,7 +97,11 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 
 	return true;
 }
-
+#ifndef WINXP
+#define PYDLL L"python3.dll"
+#else
+#define PYDLL L"python34.dll"
+#endif
 //---------------------------------------------------------------------
 // load python
 //---------------------------------------------------------------------
@@ -114,11 +118,9 @@ bool PyStand::LoadPython()
 	// python dll must be load under "runtime"
 	SetCurrentDirectoryW(runtime.c_str());
 	// LoadLibrary
-#ifndef WINXP
-	_hDLL = (HINSTANCE)LoadLibraryA("python3.dll");
-#else
-	_hDLL = (HINSTANCE)LoadLibraryA("python34.dll");
-#endif
+
+	std::wstring pydll = runtime + L"\\" + PYDLL;
+	_hDLL = (HINSTANCE)LoadLibraryW(pydll.c_str());
 	if (_hDLL)
 	{
 		_Py_Main = (t_Py_Main)GetProcAddress(_hDLL, "Py_Main");
@@ -136,7 +138,7 @@ bool PyStand::LoadPython()
 	else if (_Py_Main == NULL)
 	{
 		std::wstring msg = L"Cannot find Py_Main() in:\r\n";
-		msg += runtime + L"\\python3.dll";
+		msg += pydll;
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}

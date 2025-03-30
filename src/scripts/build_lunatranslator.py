@@ -28,7 +28,7 @@ mylinks = {
     "ocr_models": {
         "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
     },
-    "magpie.zip": "https://github.com/HIllya51/Magpie_CLI/releases/download/common/magpie.zip",
+    "magpie.zip": "https://github.com/HIllya51/Magpie/releases/download/common/magpie.zip",
 }
 
 
