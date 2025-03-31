@@ -414,8 +414,10 @@ void TextHook::Send(hook_context *context)
 				}
 				else if (hp.type & EMBED_AFTER_OVERWRITE)
 				{
+					// 可能会导致最后一个字符损坏。但没办法，总不能溢出吧。
+					memset((char *)lpDataIn, 0, size_origin);
 					memcpy((void *)lpDataIn, buff.buff, buff.size);
-					memset((char *)lpDataIn + buff.size, 0, max(size_origin, zeros));
+					memset((char *)lpDataIn + size_origin - zeros, 0, zeros);
 				}
 				else if (hp.embed_fun)
 					hp.embed_fun(context, buff);
@@ -516,7 +518,7 @@ void TextHook::Read()
 				if (!location)
 					continue;
 				int currentLen = HookStrlen((BYTE *)location);
-				if(!currentLen)
+				if (!currentLen)
 					continue;
 				if ((currentLen == buff.size) && (memcmp(pbData, location, buff.size) == 0))
 					continue;
