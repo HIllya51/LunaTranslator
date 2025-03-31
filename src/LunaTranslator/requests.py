@@ -5,7 +5,7 @@ from urllib.parse import urlencode, urlsplit
 from functools import partial
 from myutils.config import globalconfig
 
-default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
 
 default_timeout = 10
 
@@ -423,6 +423,11 @@ class Requester_common:
         return _ct, b"".join(_ + b"\r\n" for _ in items)
 
 
+class Requesters:
+    winhttp = 0
+    libcurl = 1
+
+
 class Session:
     def __init__(self):
 
@@ -443,19 +448,22 @@ class Session:
     def __exit__(self, *args):
         pass
 
-    @property
-    def requester(self) -> Requester_common:
-        if self._libidx == globalconfig["network"]:
+    def _loadwitch(self, idx):
+        if self._libidx == idx:
             return self._requester
-        if globalconfig["network"] == 1:
+        if idx == 1:
             from network.libcurl.requester import Requester
-        elif globalconfig["network"] == 0:
+        elif idx == 0:
             from network.winhttp.requester import Requester
         self._requester = Requester()
-        self._libidx = globalconfig["network"]
+        self._libidx = idx
         # 不需要设置Accept-Encoding，会自动处理。设置了反而有问题。
-        self.headers.update({"User-Agent": self.requester.default_UA})
+        self.headers.update({"User-Agent": self._requester.default_UA})
         return self._requester
+
+    @property
+    def requester(self) -> Requester_common:
+        return self._loadwitch(globalconfig["network"])
 
     def request(
         self,
@@ -475,16 +483,20 @@ class Session:
         stream=None,
         verify=False,
         cert=None,
+        requester: Requesters = None,
     ):
-        requester = self.requester
+        if requester is None:
+            requester_ = self.requester
+        else:
+            requester_ = self._loadwitch(requester)
 
         _h = self.headers.copy()
         if headers:
             _h.update(headers)
-            self.cookies.update(requester._parsecookiestring(_h.get("cookie", "")))
+            self.cookies.update(requester_._parsecookiestring(_h.get("cookie", "")))
         if cookies:
             self.cookies.update(cookies)
-        response = requester.request(
+        response = requester_.request(
             method.upper(),
             url,
             params=params,

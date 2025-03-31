@@ -1,5 +1,6 @@
 from ocrengines.baseocrclass import baseocr
 import json, time, random, string
+from requests import Requesters
 from urllib.parse import parse_qs, urlparse
 
 # https://github.com/dmMaze/BallonsTranslator/blob/dev/modules/ocr/ocr_google_lens.py
@@ -72,6 +73,7 @@ class OCR(baseocr):
             headers=upload_headers,
             files=files,
             params=params_upload,
+            requester=Requesters.winhttp,
         )
         response_upload.raise_for_status()  # Проверка на HTTP ошибки
 
@@ -116,6 +118,7 @@ class OCR(baseocr):
             LENS_METADATA_ENDPOINT,
             headers=metadata_headers,
             params=metadata_params,
+            requester=Requesters.winhttp,
         )
         response_metadata.raise_for_status()
 
