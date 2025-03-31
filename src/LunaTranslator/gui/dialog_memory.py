@@ -248,7 +248,7 @@ class dialog_memory(saveposwindow):
                 return
             file = self.recorders.stop_save()
             self.recorders = None
-            self.cropcallback(file)
+            self.audiocallback(file)
 
     def AudioSelect(self):
         if self.insertaudiobtnisrecoding:
@@ -268,7 +268,7 @@ class dialog_memory(saveposwindow):
             self.startorendrecord(self.insertaudiobtn, True)
             self.insertaudiobtn.setIcon(qtawesome.icon("fa.stop"))
         elif action == audio:
-            f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
+            f = QFileDialog.getOpenFileName()
             res = f[0]
             self.audiocallback(res)
 
