@@ -1,5 +1,4 @@
 
-#include <dxgi.h>
 typedef enum DXGI_GPU_PREFERENCE
 {
     DXGI_GPU_PREFERENCE_UNSPECIFIED = 0,
