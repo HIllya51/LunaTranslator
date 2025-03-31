@@ -17,6 +17,7 @@ class SuperCombo__1(SuperCombo):
 def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
     combo.blockSignals(True)
     combo.clear()
+    adapterinfos.sort(key=lambda _: _[0])
     infosx = list(_[:3] for _ in adapterinfos)
     visx = list(_[3] for _ in adapterinfos)
     combo.addItems(["默认"] + visx, [(-1, 0, 0)] + infosx)
