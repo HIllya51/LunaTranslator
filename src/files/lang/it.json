@@ -393,7 +393,6 @@
     "默认": "default",
     "明亮主题": "Tema luminoso",
     "黑暗主题": "Tema scuro",
-    "限制帧率": "Limite frame rate",
     "最大帧率": "Velocità massima dei fotogrammi",
     "开发者选项": "Opzioni dello sviluppatore",
     "调试模式": "Modalità debug",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Se ritieni che il software ti sia utile,",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Benvenuto in Be My <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Grazie ~",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

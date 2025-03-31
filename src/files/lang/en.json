@@ -392,7 +392,6 @@
     "默认": "Default",
     "明亮主题": "Bright Theme",
     "黑暗主题": "Dark Theme",
-    "限制帧率": "Limit Frame Rate",
     "最大帧率": "Maximum Frame Rate",
     "开发者选项": "Developer Options",
     "调试模式": "Debug Mode",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "If you feel that the software is helpful to you, ",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "welcome to become my <a href=\"https://patreon.com/HIllya51\">sponsor</a>. Thank you ~ ",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

@@ -393,7 +393,6 @@
     "默认": "domyślne",
     "明亮主题": "Jasny motyw",
     "黑暗主题": "Ciemny motyw",
-    "限制帧率": "Ograniczenie częstotliwości klatek",
     "最大帧率": "Maksymalna szybkość klatek",
     "开发者选项": "Opcje programistów",
     "调试模式": "Tryb debugowania",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Jeśli uważasz, że oprogramowanie jest dla Ciebie pomocne,",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Witamy jako mój <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Dziękuję ~",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

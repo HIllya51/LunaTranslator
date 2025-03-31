@@ -393,7 +393,6 @@
     "默认": "Mặc định",
     "明亮主题": "Sắc thái tươi sáng",
     "黑暗主题": "Chủ đề tối",
-    "限制帧率": "Giới hạn khung hình",
     "最大帧率": "Tốc độ khung hình tối đa",
     "开发者选项": "Tùy chọn nhà phát triển",
     "调试模式": "Chế độ gỡ lỗi",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Nếu bạn cảm thấy phần mềm này hữu ích cho bạn,",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Chào mừng bạn đến với <a href = \"https://patreon.com/hillya51\"> Nhà tài trợ </a>. Cảm ơn bạn ~",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

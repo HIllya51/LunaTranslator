@@ -1,10 +1,60 @@
 from qtsymbols import *
 from myutils.config import globalconfig, magpie_config
-from gui.usefulwidget import D_getsimplecombobox, D_getspinbox, D_getsimpleswitch
+from gui.usefulwidget import (
+    D_getsimplecombobox,
+    D_getspinbox,
+    D_getsimpleswitch,
+    SuperCombo,
+)
+from myutils.magpie_builtin import AdapterService
+import functools
+
+
+class SuperCombo__1(SuperCombo):
+    signal = pyqtSignal(list)
+
+
+def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
+    combo.blockSignals(True)
+    combo.clear()
+    infosx = list(_[:3] for _ in adapterinfos)
+    visx = list(_[3] for _ in adapterinfos)
+    combo.addItems(["默认"] + visx, [(-1, 0, 0)] + infosx)
+    combo.blockSignals(False)
+    graphicsCardId: dict = magpie_config["profiles"][globalconfig["profiles_index"]][
+        "graphicsCardId"
+    ]
+    curr = (
+        graphicsCardId["idx"],
+        graphicsCardId["vendorId"],
+        graphicsCardId["deviceId"],
+    )
+    if curr not in infosx:
+        combo.setCurrentIndex(0)
+    else:
+        combo.setCurrentIndex(infosx.index(curr) + 1)
+
+
+def __changed(combo: SuperCombo, idx):
+    data = combo.getIndexData(idx)
+    graphicsCardId: dict = magpie_config["profiles"][globalconfig["profiles_index"]][
+        "graphicsCardId"
+    ]
+    graphicsCardId.update(idx=data[0], vendorId=data[1], deviceId=data[2])
+
+
+def createadaptercombo():
+    # AdapterServic对于不使用的人来说，开销太大了，太浪费。
+    # 因此偷懒起见，如果不修改显示卡，则直接使用配置里的设置去调用，不去加载AdapterService以检查有效性。
+    # 仅在使用这个修改显示卡时，才加载AdapterService
+    combo = SuperCombo__1()
+    combo.signal.connect(functools.partial(adapterchangedcallback, combo))
+    combo.currentIndexChanged.connect(functools.partial(__changed, combo))
+    AdapterService().init(combo.signal.emit)
+    return combo
 
 
 def makescalew():
-
     innermagpie = [
         [
             dict(
@@ -57,8 +107,9 @@ def makescalew():
                 type="grid",
                 grid=(
                     [
+                        ["显示卡", (createadaptercombo, 0)],
                         [
-                            "限制帧率",
+                            "帧率限制",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
                                     globalconfig["profiles_index"]

@@ -620,3 +620,11 @@ MouseMoveWindow = utilsdll.MouseMoveWindow
 MouseMoveWindow.argtypes = (HWND,)
 NeedUseSysMove = utilsdll.NeedUseSysMove
 NeedUseSysMove.restype = c_bool
+
+AdaptersServiceUninitialize = utilsdll.AdaptersServiceUninitialize
+AdaptersServiceStartMonitor_Callback = CFUNCTYPE(None)
+AdaptersServiceStartMonitor = utilsdll.AdaptersServiceStartMonitor
+AdaptersServiceStartMonitor.argtypes = (AdaptersServiceStartMonitor_Callback,)
+AdaptersServiceAdapterInfos_Callback = CFUNCTYPE(None, c_uint, c_uint, c_uint, LPCWSTR)
+AdaptersServiceAdapterInfos = utilsdll.AdaptersServiceAdapterInfos
+AdaptersServiceAdapterInfos.argtypes = (AdaptersServiceAdapterInfos_Callback,)

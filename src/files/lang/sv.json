@@ -400,7 +400,6 @@
     "默认": "standard",
     "明亮主题": "Ljust tema",
     "黑暗主题": "Mörkt tema",
-    "限制帧率": "Gränsvärde för bildfrekvens",
     "最大帧率": "Maximal bildhastighet",
     "开发者选项": "Utvecklingsalternativ",
     "调试模式": "Felsökningsläge",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Om du tycker att programvaran är till hjälp för dig,",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Välkommen till att vara min <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Tack ~",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

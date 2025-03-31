@@ -393,7 +393,6 @@
     "默认": "öntanımlı",
     "明亮主题": "Işık Tema",
     "黑暗主题": "Karanlık Tema",
-    "限制帧率": "Çerçeve hızı sınır",
     "最大帧率": "En yüksek fotoğraf hızı",
     "开发者选项": "Geliştirici Seçenekleri",
     "调试模式": "Hata ayıklama modu",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Yazılımın size yardımcı olduğunu düşünüyorsanız,",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Benim <a href = \"https://patreon.com/hillya51\"> sponsor </a> olmak için hoş geldiniz. Teşekkürler ~",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

@@ -346,6 +346,10 @@ if True:  # transerrorfixdictconfig cast v1 to v2:
 
 
 syncconfig(magpie_config, dfmagpie_config, skipdict=True)
+syncconfig(
+    magpie_config["profiles"][globalconfig["profiles_index"]],
+    dfmagpie_config["profiles"][0],
+)
 syncconfig(translatorsetting, translatordfsetting)
 
 syncconfig(ocrsetting, ocrdfsetting)

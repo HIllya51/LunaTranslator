@@ -12,7 +12,7 @@ from myutils.config import (
     savehook_new_list,
     translatorsetting,
 )
-from myutils.magpie_builtin import MagpieBuiltin
+from myutils.magpie_builtin import MagpieBuiltin, AdapterService
 from gui.dialog_savedgame import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
@@ -1722,6 +1722,7 @@ class TranslatorWindow(resizableframeless):
         try:
             if self.fullscreenmanager:
                 self.fullscreenmanager.endX()
+            AdapterService.uninit()
             gobject.baseobject.isrunning = False
             self.hide()
 

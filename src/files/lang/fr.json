@@ -393,7 +393,6 @@
     "默认": "Par défaut",
     "明亮主题": "Thème lumineux",
     "黑暗主题": "Thème sombre",
-    "限制帧率": "Limiter le framerate",
     "最大帧率": "Max framerate",
     "开发者选项": "Options pour les développeurs",
     "调试模式": "Mode de débogage",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Si vous sentez que le logiciel vous est utile,",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Bienvenue pour être mon <a href = \"https://patreon.com/hillya51\"> sponsor </a>. Merci ~",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

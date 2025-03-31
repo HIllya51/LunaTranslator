@@ -400,7 +400,6 @@
     "默认": "výchozí",
     "明亮主题": "Jasný motiv",
     "黑暗主题": "Tmavý motiv",
-    "限制帧率": "Omezení snímkové frekvence",
     "最大帧率": "Maximální snímková frekvence",
     "开发者选项": "Možnosti vývojáře",
     "调试模式": "Režim ladění",
@@ -791,5 +790,7 @@
     "QQ群": "",
     "如果你感觉该软件对你有帮助，": "Pokud máte pocit, že je pro vás software užitečný,",
     "欢迎成为我的<a href=\"https://patreon.com/HIllya51\">sponsor</a>。谢谢~": "Vítejte, abych byl můj <a href = \"https://patreon.com/hillya51\"> sponzor </a>. Děkuji ~",
-    "过时的": ""
+    "过时的": "",
+    "显示卡": "",
+    "帧率限制": ""
 }

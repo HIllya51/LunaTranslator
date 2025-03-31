@@ -1,8 +1,45 @@
 import json
 import windows, gobject
 from myutils.config import globalconfig, magpie_config
-import winsharedutils
+import winsharedutils, functools
 from myutils.wrapper import threader
+
+
+class AdapterService:
+    AdaptersServiceStartMonitor_Callback_ptr = None
+
+    @staticmethod
+    def AdaptersServiceStartMonitor_Callback(callback):
+        callback(AdapterService.Infos())
+
+    @staticmethod
+    def Infos():
+        ret = []
+
+        def __(idx, vendorId, deviceId, description):
+            ret.append((idx, vendorId, deviceId, description))
+
+        winsharedutils.AdaptersServiceAdapterInfos(
+            winsharedutils.AdaptersServiceAdapterInfos_Callback(__)
+        )
+        return ret
+
+    @staticmethod
+    def init(callback):
+        AdapterService.AdaptersServiceStartMonitor_Callback_ptr = (
+            winsharedutils.AdaptersServiceStartMonitor_Callback(
+                functools.partial(
+                    AdapterService.AdaptersServiceStartMonitor_Callback, callback
+                )
+            )
+        )
+        winsharedutils.AdaptersServiceStartMonitor(
+            AdapterService.AdaptersServiceStartMonitor_Callback_ptr
+        )
+
+    @staticmethod
+    def uninit():
+        winsharedutils.AdaptersServiceUninitialize()
 
 
 class MagpieBuiltin:
@@ -14,6 +51,7 @@ class MagpieBuiltin:
         )
 
     def __init__(self, setuistatus) -> None:
+
         self._setuistatus = setuistatus
         self.full = True
         self.hwnd = None
