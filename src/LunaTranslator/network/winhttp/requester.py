@@ -5,7 +5,13 @@ import gzip, zlib, platform
 from ctypes import pointer, create_string_buffer, create_unicode_buffer
 
 
-class Response(Response):
+class Response_1(Response):
+    def __init__(self, stream):
+        super().__init__(stream)
+        self.hreq = None
+        self.hSession = None
+        self.hconn = None
+
     def iter_content_impl(self, chunk_size=1):
         availableSize = DWORD()
         downloadedSize = DWORD()
@@ -34,7 +40,8 @@ class Response(Response):
 
 class Requester(Requester_common):
 
-    def _getheaders(self, hreq):
+    @staticmethod
+    def _getheaders(hreq):
         dwSize = DWORD()
         WinHttpQueryHeaders(
             hreq,
@@ -58,7 +65,8 @@ class Requester(Requester_common):
             return ""
         return pszCookies.value
 
-    def _getStatusCode(self, hreq):
+    @staticmethod
+    def _getStatusCode(hreq):
         dwSize = DWORD(sizeof(DWORD))
         dwStatusCode = DWORD()
         MaybeRaiseException0(
@@ -73,11 +81,13 @@ class Requester(Requester_common):
         )
         return dwStatusCode.value
 
-    def _set_proxy(self, hsess, proxy):
+    @staticmethod
+    def _set_proxy(hsess, proxy):
         if proxy:
             winhttpsetproxy(hsess, proxy)
 
-    def _set_verify(self, hRequest, verify):
+    @staticmethod
+    def _set_verify(hRequest, verify):
         if verify == False:
             dwFlags = DWORD(SECURITY_FLAG_IGNORE_ALL_CERT_ERRORS)
             WinHttpSetOption(
@@ -87,7 +97,8 @@ class Requester(Requester_common):
                 sizeof(dwFlags),
             )
 
-    def _set_allow_redirects(self, hRequest, allow_redirects):
+    @staticmethod
+    def _set_allow_redirects(hRequest, allow_redirects):
         if allow_redirects:
             dwFlags = DWORD(WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS)
         else:
@@ -96,7 +107,8 @@ class Requester(Requester_common):
             hRequest, WINHTTP_OPTION_REDIRECT_POLICY, pointer(dwFlags), sizeof(dwFlags)
         )
 
-    def _set_auto_decompress(self, hRequest):
+    @staticmethod
+    def _set_auto_decompress(hRequest):
         if tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 2):
             return
 
@@ -118,6 +130,16 @@ class Requester(Requester_common):
             )
         )
         MaybeRaiseException0(self.hSession)
+
+    @staticmethod
+    def queryurl(hreq):
+        dwSize = DWORD(0)
+        WinHttpQueryOption(hreq, WINHTTP_OPTION_URL, NULL, pointer(dwSize))
+        pwszUrl = create_unicode_buffer(dwSize.value + 1)
+        MaybeRaiseException0(
+            WinHttpQueryOption(hreq, WINHTTP_OPTION_URL, pwszUrl, pointer(dwSize))
+        )
+        return pwszUrl.value
 
     def request_impl(
         self,
@@ -167,12 +189,12 @@ class Requester(Requester_common):
             )
         )
         MaybeRaiseException0(WinHttpReceiveResponse(hRequest, None))
-        resp = Response(stream)
+        resp = Response_1(stream)
         resp.headers, resp.cookies, resp.reason = self._parseheader2dict(
             self._getheaders(hRequest)
         )
         resp.status_code = self._getStatusCode(hRequest)
-        resp.url = url
+        resp.url = self.queryurl(hRequest)
         if stream:
             resp.hSession = self.hSession
             resp.hconn = hConnect

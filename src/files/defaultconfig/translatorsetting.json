@@ -57,7 +57,7 @@
 	"deepl": {
 		"args": {
 			"usewhich": 2,
-			"github": "https://github.com/OwO-Network/DeepLX",
+			"github": "https://github.com/OwO-Network/DeepLX/releases",
 			"api": "http://127.0.0.1:1188/translate",
 			"chromepath": "",
 			"debugport": 9222

@@ -4,7 +4,7 @@ from ctypes import c_long, cast, pointer, POINTER, c_char
 from requests import Response, Requester_common
 
 
-class Response(Response):
+class Response_1(Response):
     def __init__(self, stream=False):
         super().__init__(stream)
         self.keeprefs = []
@@ -177,7 +177,7 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.POSTFIELDS, databytes)
             curl_easy_setopt(curl, CURLoption.POSTFIELDSIZE, len(databytes))
 
-        resp = Response(stream)
+        resp = Response_1(stream)
         resp.keeprefs.append(curl)
         resp.keeprefs.append(__)
         if stream:

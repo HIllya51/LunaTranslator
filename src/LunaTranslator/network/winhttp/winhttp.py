@@ -91,6 +91,9 @@ WinHttpQueryHeaders.restype = BOOL
 WinHttpSetOption = Winhttp.WinHttpSetOption
 WinHttpSetOption.argtypes = HINTERNET, DWORD, LPVOID, DWORD
 WinHttpSetOption.restype = BOOL
+WinHttpQueryOption = Winhttp.WinHttpQueryOption
+WinHttpQueryOption.argtypes = HINTERNET, DWORD, LPVOID, LPDWORD
+WinHttpQueryOption.restype = BOOL
 
 
 class WINHTTP_PROXY_INFO(Structure):
@@ -139,7 +142,7 @@ WINHTTP_WEB_SOCKET_CLOSE_BUFFER_TYPE = 4
 ERROR_SUCCESS = 0
 WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS = 1000
 
-
+WINHTTP_OPTION_URL = 34
 WINHTTP_OPTION_REDIRECT_POLICY = 88
 WINHTTP_OPTION_REDIRECT_POLICY_ALWAYS = 2
 WINHTTP_OPTION_REDIRECT_POLICY_NEVER = 0

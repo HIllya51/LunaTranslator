@@ -43,7 +43,7 @@ class OCR(baseocr):
             "model": self.config["model"],
             "document": {
                 "type": "image_url",
-                "image_url": f"data:image/jpeg;base64,{base64_image}",
+                "image_url": "data:image/jpeg;base64,{}".format(base64_image),
             },
         }
         response = self.proxysession.post(

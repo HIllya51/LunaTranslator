@@ -97,7 +97,7 @@
         "isExUse": true
     },
     "_6EX": {
-        "use": true,
+        "use": false,
         "name": "过滤换行符",
         "isExUse": true
     },
