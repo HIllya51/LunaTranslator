@@ -73,6 +73,8 @@
 
 #include <memory>
 
+#include <d3d11.h>
+#include <dxgi.h>
 #pragma comment(lib, "shlwapi.lib")
 #pragma comment(lib, "winmm.lib")
 #pragma comment(lib, "Psapi.lib")

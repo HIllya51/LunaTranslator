@@ -1,6 +1,4 @@
 ﻿#ifndef WINXP
-#include <d3d11.h>
-#include <dxgi.h>
 #include <winstring.h>
 #include <roapi.h>
 #include <inspectable.h>
