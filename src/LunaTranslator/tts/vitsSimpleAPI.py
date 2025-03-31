@@ -6,7 +6,8 @@ from urllib.parse import quote
 class TTS(TTSbase):
     def getvoicelist(self):
         responseVits: dict = self.proxysession.get(
-            urlpathjoin(self.config["URL"], self.config["voices"])
+            urlpathjoin(self.config["URL"], self.config["voices"]),
+            headers={"ngrok-skip-browser-warning": "true"},
         ).json()
         voicelist = []
         internal = []
@@ -36,6 +37,9 @@ class TTS(TTSbase):
             text=encoded_content,
             length=length,
         )
-        response = self.proxysession.get(urlpathjoin(self.config["URL"], speak)).content
+        response = self.proxysession.get(
+            urlpathjoin(self.config["URL"], speak),
+            headers={"ngrok-skip-browser-warning": "true"},
+        ).content
 
         return response
