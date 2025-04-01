@@ -17,9 +17,7 @@ target_compile_options(wcocr
 )
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-   target_link_libraries(wcocr ${CMAKE_CURRENT_SOURCE_DIR}/wechat-ocr/spt/x64/libprotobuf-lite.lib ${CMAKE_CURRENT_SOURCE_DIR}/wechat-ocr/spt/x64/mmmojo_64.lib)
-   target_link_options(wcocr PRIVATE "/DELAYLOAD:mmmojo_64.dll")
+   target_link_libraries(wcocr ${CMAKE_CURRENT_SOURCE_DIR}/wechat-ocr/spt/x64/libprotobuf-lite.lib)
 else()
-   target_link_libraries(wcocr ${CMAKE_CURRENT_SOURCE_DIR}/wechat-ocr/spt/x86/libprotobuf-lite.lib ${CMAKE_CURRENT_SOURCE_DIR}/wechat-ocr/spt/x86/mmmojo.lib)
-   target_link_options(wcocr PRIVATE "/DELAYLOAD:mmmojo.dll")
+   target_link_libraries(wcocr ${CMAKE_CURRENT_SOURCE_DIR}/wechat-ocr/spt/x86/libprotobuf-lite.lib)
 endif()

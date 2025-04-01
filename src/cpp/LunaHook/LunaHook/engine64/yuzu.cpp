@@ -1041,6 +1041,7 @@ namespace
     {
         StringReplacer(buffer, TEXTANDLEN(u8"㊤"), TEXTANDLEN(u8"―"));
         StringReplacer(buffer, TEXTANDLEN(u8"㊥"), TEXTANDLEN(u8"―"));
+        StringReplacer(buffer, TEXTANDLEN(u8"㊦"), TEXTANDLEN(u8"―"));
         StringReplacer(buffer, TEXTANDLEN(u8"^㌻"), TEXTANDLEN(u8" ")); // \n
     }
 

@@ -541,6 +541,34 @@ namespace
         Trim(ws);
         buffer->fromWA(ws);
     }
+    void PCSG00769(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = VITA3K::emu_arg(context)[hp->offset];
+        while (true)
+        {
+            while (*(BYTE *)address)
+                address -= 1;
+            while (!((*(BYTE *)address) && (*(BYTE *)(1 + address))))
+                address += 1;
+            if (*(BYTE *)(address - 2))
+                address -= 2;
+            else
+                break;
+        }
+        std::string collect;
+        while (*(BYTE *)address)
+        {
+            std::string sub = (char *)address;
+            collect += sub;
+            address += sub.size() + 1;
+        }
+        strReplace(collect, "\x87\x85", "\x81\x5c");
+        strReplace(collect, "\x87\x86", "\x81\x5c");
+        strReplace(collect, "\x87\x87", "\x81\x5c");
+        strReplace(collect, "\x81\x40");
+        strReplace(collect, "\n");
+        buffer->from(collect);
+    }
     void PCSB00985(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = VITA3K::emu_arg(context)[hp->offset];
@@ -1467,6 +1495,8 @@ namespace
             {0x800714BC, {CODEC_UTF16, 4, 0, 0, PCSG00615, "PCSG00615"}}, // 时断时续
             // PSYCHO-PASS MANDATORY HAPPINESS
             {0x8004D360, {CODEC_UTF16, 0, 0, PCSB00985, 0, "PCSB00985"}},
+            // 逢魔が刻～かくりよの縁～
+            {0x8003CA08, {0, 3, 0, PCSG00769, 0, "PCSG00769"}},
         };
         return 1;
     }();

@@ -802,6 +802,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | PCSG00745 | スカーレッドライダーゼクス |
 |  | PCSG00615 | 東京喰種トーキョーグール JAIL |
 |  | PCSB00985 | PSYCHO-PASS MANDATORY HAPPINESS |
+|  | PCSG00769 | 逢魔が刻～かくりよの縁～ |
 
 == PS2
 
