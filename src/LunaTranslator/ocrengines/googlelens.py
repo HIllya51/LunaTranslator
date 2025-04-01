@@ -133,6 +133,9 @@ class OCR(baseocr):
             # Используем json5 для парсинга
             metadata_json = json.loads(response_text)
             res = []
+            if not metadata_json[0][2][0]:
+                # 空白图片
+                return
             for __ in metadata_json[0][2][0][0]:
                 res.append("".join(_[1] for _ in __[1][0][0]))
             return res

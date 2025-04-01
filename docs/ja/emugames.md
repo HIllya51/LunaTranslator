@@ -330,6 +330,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | 010008401AB4A000 | Yukar From The Abyss |
 |  | 010047E01E22A000 | Voice Love on Air |
 |  | 010033401FE40000 | 罪ノ光ランデヴー |
+|  | 0100DA2019044000 | 結合男子 |
 
 == PSP
 
