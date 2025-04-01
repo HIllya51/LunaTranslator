@@ -1,10 +1,9 @@
 import dataclasses
 import enum
 import inspect
-import json
 import struct
 from abc import ABC
-from base64 import b64encode, b64decode
+from base64 import b64encode
 from datetime import datetime, timedelta, timezone
 from typing import (
     Any,
@@ -967,66 +966,6 @@ class Message(ABC):
                     output[cased_name] = v
         return output
 
-    def from_dict(self: T, value: dict) -> T:
-        """
-        Parse the key/value pairs in `value` into this message instance. This
-        returns the instance itself and is therefore assignable and chainable.
-        """
-        self._serialized_on_wire = True
-        fields_by_name = {f.name: f for f in dataclasses.fields(self)}
-        for key in value:
-            snake_cased = safe_snake_case(key)
-            if snake_cased in fields_by_name:
-                field = fields_by_name[snake_cased]
-                meta = FieldMetadata.get(field)
-
-                if value[key] is not None:
-                    if meta.proto_type == "message":
-                        v = getattr(self, field.name)
-                        if isinstance(v, list):
-                            cls = self._betterproto.cls_by_field[field.name]
-                            for i in range(len(value[key])):
-                                v.append(cls().from_dict(value[key][i]))
-                        elif isinstance(v, datetime):
-                            v = datetime.fromisoformat(
-                                value[key].replace("Z", "+00:00")
-                            )
-                            setattr(self, field.name, v)
-                        elif isinstance(v, timedelta):
-                            v = timedelta(seconds=float(value[key][:-1]))
-                            setattr(self, field.name, v)
-                        elif meta.wraps:
-                            setattr(self, field.name, value[key])
-                        else:
-                            v.from_dict(value[key])
-                    elif meta.map_types and meta.map_types[1] == TYPE_MESSAGE:
-                        v = getattr(self, field.name)
-                        cls = self._betterproto.cls_by_field[field.name + ".value"]
-                        for k in value[key]:
-                            v[k] = cls().from_dict(value[key][k])
-                    else:
-                        v = value[key]
-                        if meta.proto_type in INT_64_TYPES:
-                            if isinstance(value[key], list):
-                                v = [int(n) for n in value[key]]
-                            else:
-                                v = int(value[key])
-                        elif meta.proto_type == TYPE_BYTES:
-                            if isinstance(value[key], list):
-                                v = [b64decode(n) for n in value[key]]
-                            else:
-                                v = b64decode(value[key])
-                        elif meta.proto_type == TYPE_ENUM:
-                            enum_cls = self._betterproto.cls_by_field[field.name]
-                            if isinstance(v, list):
-                                v = [enum_cls.from_string(e) for e in v]
-                            elif isinstance(v, str):
-                                v = enum_cls.from_string(v)
-
-                        if v is not None:
-                            setattr(self, field.name, v)
-        return self
-
 
 @dataclasses.dataclass
 class _Duration(Message):
@@ -1096,11 +1035,6 @@ class _WrappedMessage(Message):
 
     def to_dict(self, casing: Casing = Casing.CAMEL) -> Any:
         return self.value
-
-    def from_dict(self: T, value: Any) -> T:
-        if value is not None:
-            self.value = value
-        return self
 
 
 @dataclasses.dataclass
