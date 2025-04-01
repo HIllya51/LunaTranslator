@@ -30,8 +30,8 @@ class maybejson:
 
 
 class proxysession(requests.Session):
-    def __init__(self, _key1, _key2):
-        super().__init__()
+    def __init__(self, _key1, _key2, *a, **kw):
+        super().__init__(*a, **kw)
         self.proxyconf = _key1, _key2
 
     def request(self, *args, **kwargs):

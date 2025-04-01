@@ -60,8 +60,12 @@ def ocr_run(qimage: QImage):
     thisocrtype = _nowuseocrx
     try:
         ocr_init()
-        thisocrtype = _ocrengine.typename
-        image = qimage2binary(qimage, _ocrengine.required_image_format)
+        thisocrtype: str = _ocrengine.typename
+        required_image_format: str = _ocrengine.required_image_format
+        if required_image_format == QImage:
+            image = qimage
+        else:
+            image = qimage2binary(qimage, required_image_format)
         if not image:
             return "", None
         res = _ocrengine._private_ocr(image)

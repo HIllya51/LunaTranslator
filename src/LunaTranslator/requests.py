@@ -429,7 +429,10 @@ class Requesters:
 
 
 class Session:
-    def __init__(self):
+    def __init__(
+        self,
+        requester: Requesters = None,
+    ):
 
         self.cookies = {}
         self._requester = None
@@ -441,6 +444,9 @@ class Session:
                 "Connection": "keep-alive",
             }
         )
+        if requester is not None:
+            self._loadwitch(requester)
+        self.requester_idx = requester
 
     def __enter__(self):
         return self
@@ -463,7 +469,11 @@ class Session:
 
     @property
     def requester(self) -> Requester_common:
-        return self._loadwitch(globalconfig["network"])
+        if self.requester_idx is None:
+            idx = globalconfig["network"]
+        else:
+            idx = self.requester_idx
+        return self._loadwitch(idx)
 
     def request(
         self,
@@ -483,12 +493,8 @@ class Session:
         stream=None,
         verify=False,
         cert=None,
-        requester: Requesters = None,
     ):
-        if requester is None:
-            requester_ = self.requester
-        else:
-            requester_ = self._loadwitch(requester)
+        requester_ = self.requester
 
         _h = self.headers.copy()
         if headers:

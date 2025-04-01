@@ -45,7 +45,7 @@ def usewhichonnxruntime():
     ver = ver if ver else (0,)
     myonnx = gobject.GetDllpath("onnxruntime.dll")
     vermy = winsharedutils.queryversion(myonnx)
-    vermy = vermy if vermy else (0, )
+    vermy = vermy if vermy else (0,)
     print(sysonnx, ver)
     print(myonnx, vermy)
     # 但最多尝试到v1.20.1版本，v1.21.0开始会不兼容。
@@ -281,9 +281,7 @@ class question(QWidget):
 
 
 class OCR(baseocr):
-    @property
-    def required_image_format(self):
-        return "BMP"
+    required_image_format = "BMP"
 
     def langmap(self):
         return {Languages.TradChinese: "cht"}

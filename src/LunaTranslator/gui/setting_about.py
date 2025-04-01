@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools
 import winsharedutils, queue, hashlib, threading
 from myutils.config import globalconfig, static_data, _TR, get_platform
-from myutils.wrapper import threader, tryprint
+from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
 import requests, importlib
@@ -37,6 +37,7 @@ def tryqueryfromhost():
     for i, main_server in enumerate(static_data["main_server"]):
 
         @threader
+        @trypass
         def __(i, main_server, proxy):
 
             res = requests.get(
