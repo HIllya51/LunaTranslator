@@ -16,6 +16,3 @@
 [submodule "src/cpp/libs/mecab"]
 	path = src/cpp/libs/mecab
 	url = https://github.com/HIllya51/mecab
-[submodule "src/LunaTranslator/ocrengines/OCR"]
-	path = src/LunaTranslator/ocrengines/OCR
-	url = https://github.com/HIllya51/OCR
