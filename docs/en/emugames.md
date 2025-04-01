@@ -861,6 +861,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPS-25902 | 純情ロマンチカ ～恋のドキドキ大作戦 |
 |  | SLPS-25662 | 今日からマ王！はじマりの旅 [プレミアムBOX] |
 |  | SLPS-25801 | 今日からマ王！ 眞マ国の休日 |
+|  | SLPM-66344 | 遙かなる時空の中で3 運命の迷宮 [Triple Pack] |
 
 == PS3
 

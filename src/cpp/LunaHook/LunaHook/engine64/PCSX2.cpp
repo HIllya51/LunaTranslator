@@ -598,6 +598,25 @@ namespace
         }
         last1 = collect;
     }
+    void SLPM66344(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto addrs = {0x1FFE9D8, 0x1FFE9F4, 0x1FFEA10};
+        std::string collect;
+        for (auto str : addrs)
+        {
+            std::string __ = (char *)emu_addr(str);
+            if (startWith(__, "\x81\x40"))
+            {
+                __ = __.substr(2);
+            }
+            collect += __;
+        }
+        static std::string last;
+        if (last == collect)
+            return;
+        last = collect;
+        buffer->from(collect);
+    }
     void SLPM66817(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static std::string last;
@@ -869,6 +888,8 @@ namespace
             {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
             // 今日からマ王！ 眞マ国の休日
             {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
+            // 遙かなる時空の中で3 運命の迷宮 [Triple Pack]
+            {0x1FFE9D8, {DIRECT_READ, 0, 0, SLPM66344, 0, "SLPM-66344"}},
         };
         return 0;
     }();
