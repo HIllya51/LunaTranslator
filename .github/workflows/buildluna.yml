@@ -134,6 +134,8 @@ jobs:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
       - run: git submodule update src/files/LunaTranslator_qss
+      - run: git submodule init src/LunaTranslator/ocrengines/OCR
+      - run: git submodule update src/LunaTranslator/ocrengines/OCR
       - uses: actions/download-artifact@v4
         with:
             path: build
