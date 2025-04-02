@@ -44,6 +44,7 @@ def commonparseresponse_good(
     thinkcnt = 0
     isthinking = False
     isreasoning_content = False
+    unsafethinkonce = True
     for json_data in stream_event_parser(response):
         try:
             if len(json_data["choices"]) == 0:
@@ -76,7 +77,13 @@ def commonparseresponse_good(
                         yield "thinking {} ...".format(thinkcnt)
 
                 else:
-                    if hidethinking and (not message) and (not msg.strip()):
+                    # 有时，会没有<think>只有</think>比如使用prefill的时候。移除第一个</think>之前的内容
+                    if hidethinking and unsafethinkonce and (msg.strip() == "</think>"):
+                        isthinking = False
+                        message = ""
+                        unsafethinkonce = False
+                        yield "\0"
+                    elif hidethinking and (not message) and (not msg.strip()):
                         # 跳过</think>后的\n
                         pass
                     else:
