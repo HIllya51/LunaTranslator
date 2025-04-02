@@ -129,6 +129,8 @@ class Requester(Requester_common):
             cookie = self._parsecookie(cookies)
             curl_easy_setopt(curl, CURLoption.COOKIE, cookie.encode("utf8"))
 
+    Accept_Encoding = "gzip, deflate, br, zstd"
+
     def request_impl(
         self,
         method,
@@ -159,8 +161,13 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout[0])
         if timeout[1]:
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, sum(timeout))
-        # 不需要设置CURLoption.ACCEPT_ENCODING，直接使用内置的默认值。设置了反而有问题。
-
+        MaybeRaiseException(
+            curl_easy_setopt(
+                curl,
+                CURLoption.ACCEPT_ENCODING,
+                headers.get("Accept-Encoding", self.Accept_Encoding).encode("utf8"),
+            )
+        )
         if method == "HEAD":
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)
         MaybeRaiseException(

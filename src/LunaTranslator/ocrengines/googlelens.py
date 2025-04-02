@@ -2577,7 +2577,6 @@ class GoogleLens:
 
 from qtsymbols import *
 from ocrengines.baseocrclass import baseocr
-from requests import Requesters
 from myutils.commonbase import proxysession
 from myutils.utils import qimage2binary
 
@@ -2585,11 +2584,6 @@ from myutils.utils import qimage2binary
 class OCR(baseocr):
 
     required_image_format = QImage
-
-    def renewsesion(self):
-        self.proxysession = proxysession(
-            self._globalconfig_key, self.typename, Requesters.winhttp
-        )
 
     def ocr(self, data: QImage):
         return GoogleLens(self.proxysession)(
