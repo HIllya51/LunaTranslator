@@ -129,8 +129,24 @@ def updatemethod(urls, self):
     savep = gobject.getcachedir("update/" + url.split("/")[-1])
     if not savep.endswith(".zip"):
         savep += ".zip"
-    r2 = requests.head(url, verify=False, proxies=getproxy())
-    size = int(r2.headers["Content-Length"])
+    wait = threading.Semaphore(0)
+    results = []
+    proxies = [None]
+    if getproxy().get("https"):
+        proxies.append(getproxy())
+    for proxy in proxies:
+
+        @threader
+        @trypass
+        def __(proxy):
+
+            r2 = requests.head(url, verify=False, proxies=proxy)
+            results.append((proxy, r2))
+            wait.release()
+
+        __(proxy)
+    wait.acquire()
+    size = int(results[0][1].headers["Content-Length"])
     if check_interrupt():
         return
     if updatemethod_checkalready(size, savep, sha256):
@@ -141,7 +157,7 @@ def updatemethod(urls, self):
             url,
             stream=True,
             verify=False,
-            proxies=getproxy(),
+            proxies=results[0][0],
         )
         file_size = 0
         for i in r.iter_content(chunk_size=1024 * 32):
