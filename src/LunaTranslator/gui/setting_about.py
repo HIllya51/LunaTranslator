@@ -408,9 +408,16 @@ class aboutwidget(NQGroupBox):
 
 
 class delayloadsvg(QSvgWidget):
-    def __init__(self, link):
+    def __init__(self, REPO):
         super().__init__()
+        self.REPO = REPO
+        link = "https://img.shields.io/github/license/" + REPO
         self._load(link)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+
+    def mouseReleaseEvent(self, _: QMouseEvent):
+        if _.button() == Qt.MouseButton.LeftButton:
+            os.startfile("https://github.com/{repo}".format(repo=self.REPO))
 
     def event(self, a0: QEvent) -> bool:
         if a0.type() == QEvent.Type.FontChange:
@@ -431,14 +438,10 @@ class delayloadsvg(QSvgWidget):
 
 
 def makelink(repo):
-    return getboxlayout(
-        [
-            functools.partial(
-                delayloadsvg, "https://img.shields.io/github/license/" + repo
-            ),
-            '<a href="https://github.com/{repo}">{repo}</a>'.format(repo=repo),
-        ]
-    )
+    return [
+        functools.partial(delayloadsvg, repo),
+        '<a href="https://github.com/{repo}">{repo}</a>'.format(repo=repo),
+    ]
 
 
 def setTab_about(self, basel):
@@ -478,31 +481,35 @@ def setTab_about(self, basel):
                     createfoldgrid,
                     [
                         [
-                            'LunaTranslator使用 <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a> 许可证。',
+                            functools.partial(
+                                delayloadsvg,
+                                "HIllya51/LunaTranslator",
+                            ),
+                            '<a href="https://github.com/HIllya51/LunaTranslator">LunaTranslator</a> 使用 <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a> 许可证。',
                         ],
-                        ["引用的项目", makelink("Artikash/Textractor")],
-                        ["", makelink("RapidAI/RapidOcrOnnx")],
-                        ["", makelink("PaddlePaddle/PaddleOCR")],
-                        ["", makelink("Blinue/Magpie")],
-                        ["", makelink("nanokina/ebyroid")],
-                        ["", makelink("xupefei/Locale-Emulator")],
-                        ["", makelink("InWILL/Locale_Remulator")],
-                        ["", makelink("zxyacb/ntlea")],
-                        ["", makelink("Chuyu-Team/YY-Thunks")],
-                        ["", makelink("Chuyu-Team/VC-LTL5")],
-                        ["", makelink("uyjulian/AtlasTranslate")],
-                        ["", makelink("ilius/pyglossary")],
-                        ["", makelink("ikegami-yukino/mecab")],
-                        ["", makelink("AngusJohnson/Clipper2")],
-                        ["", makelink("rapidfuzz/rapidfuzz-cpp")],
-                        ["", makelink("TsudaKageyu/minhook")],
-                        ["", makelink("lobehub/lobe-icons")],
-                        ["", makelink("kokke/tiny-AES-c")],
-                        ["", makelink("TPN-Team/OCR")],
-                        ["", makelink("AuroraWright/owocr")],
+                        [("引用的项目", -1)],
+                        makelink("Artikash/Textractor"),
+                        makelink("RapidAI/RapidOcrOnnx"),
+                        makelink("PaddlePaddle/PaddleOCR"),
+                        makelink("Blinue/Magpie"),
+                        makelink("nanokina/ebyroid"),
+                        makelink("xupefei/Locale-Emulator"),
+                        makelink("InWILL/Locale_Remulator"),
+                        makelink("zxyacb/ntlea"),
+                        makelink("Chuyu-Team/YY-Thunks"),
+                        makelink("Chuyu-Team/VC-LTL5"),
+                        makelink("uyjulian/AtlasTranslate"),
+                        makelink("ilius/pyglossary"),
+                        makelink("ikegami-yukino/mecab"),
+                        makelink("AngusJohnson/Clipper2"),
+                        makelink("rapidfuzz/rapidfuzz-cpp"),
+                        makelink("TsudaKageyu/minhook"),
+                        makelink("lobehub/lobe-icons"),
+                        makelink("kokke/tiny-AES-c"),
+                        makelink("TPN-Team/OCR"),
+                        makelink("AuroraWright/owocr"),
                     ],
                     "LICENSE",
-                    form=True,
                 )
             ],
         ],

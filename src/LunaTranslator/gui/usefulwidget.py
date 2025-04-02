@@ -3092,27 +3092,18 @@ def createfoldgrid(
     k=None,
     internallayoutname=None,
     parent=None,
-    form=False,
 ):
 
-    def __(grid, internallayoutname, parent, form: bool, lay: QLayout):
-        if form:
-            w = QWidget(parent)
-            lay.addWidget(w)
-            f = LFormLayout(w)
-            makeforms(f, grid)
-            if internallayoutname:
-                setattr(parent, internallayoutname, f)
-        else:
-            w, do = makegrid(grid, delay=True)
-            lay.addWidget(w)
-            if internallayoutname:
-                setattr(parent, internallayoutname, w.layout())
-            do()
+    def __(grid, internallayoutname, parent, lay: QLayout):
+        w, do = makegrid(grid, delay=True)
+        lay.addWidget(w)
+        if internallayoutname:
+            setattr(parent, internallayoutname, w.layout())
+        do()
 
     toggled = d[k] if d else False
     box = CollapsibleBoxWithButton(
-        functools.partial(__, grid, internallayoutname, parent, form),
+        functools.partial(__, grid, internallayoutname, parent),
         title,
         toggled=toggled,
     )
