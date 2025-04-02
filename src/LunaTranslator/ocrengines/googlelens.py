@@ -2556,6 +2556,7 @@ class GoogleLens:
         response_dict = response_proto.to_dict()
 
         result = []
+        boxs = []
         paragraphs = (
             response_dict.get("objectsResponse", {})
             .get("text", {})
@@ -2571,13 +2572,26 @@ class GoogleLens:
                     plain_text = word.get("plainText", "")
                     separator_text = word.get("textSeparator", "")
                     lines += plain_text + separator_text
-            result.append(lines)
-        return result
+            if lines:
+                boundingBox = paragraph["geometry"]["boundingBox"]
+                centerX = boundingBox["centerX"] * width
+                centerY = boundingBox["centerY"] * height
+                _width = boundingBox["width"] * width / 2
+                _height = boundingBox["height"] * height / 2
+                boxs.append(
+                    [
+                        centerX - _width,
+                        centerY - _height,
+                        centerX + _width,
+                        centerY + _height,
+                    ]
+                )
+                result.append(lines)
+        return {"box": boxs, "text": result}
 
 
 from qtsymbols import *
 from ocrengines.baseocrclass import baseocr
-from myutils.commonbase import proxysession
 from myutils.utils import qimage2binary
 
 

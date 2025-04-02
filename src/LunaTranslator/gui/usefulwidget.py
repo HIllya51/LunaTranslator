@@ -1063,12 +1063,12 @@ def getboxlayout(
     w = QWidget() if makewidget else None
     cp_layout = lc(w)
 
-    def __do(cp_layout, widgets):
+    def __do(cp_layout: QBoxLayout, widgets):
         for w in widgets:
             if callable(w):
                 w = w()
             elif isinstance(w, str):
-                w = LLabel(w)
+                w = makelabel(w)
             if isinstance(w, QWidget):
                 cp_layout.addWidget(w)
             elif isinstance(w, QLayout):
@@ -2110,6 +2110,14 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
     tab.addTab(q, title)
 
 
+def makelabel(s: str):
+    islink = ("<a" in s) and ("</a>" in s)
+    wid = LLabel(s)
+    if islink:
+        wid.setOpenExternalLinks(True)
+    return wid
+
+
 def makeforms(lay: LFormLayout, lis):
     for line in lis:
         if len(line) == 0:
@@ -2126,7 +2134,7 @@ def makeforms(lay: LFormLayout, lis):
             needstretch = False
             for w in wid:
                 if callable(w):
-                    w = w()
+                    w: QWidget = w()
                 if w.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
                     needstretch = True
                 hb.addWidget(w)
@@ -2145,18 +2153,18 @@ def makeforms(lay: LFormLayout, lis):
                     print_exc()
                     wid = QWidget()
             elif isinstance(wid, str):
-                wid = QLabel(wid)
-                wid.setOpenExternalLinks(True)
-            if wid.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed:
+                wid = makelabel(wid)
+            if isinstance(wid, QWidget) and (
+                wid.sizePolicy().horizontalPolicy() == QSizePolicy.Policy.Fixed
+            ):
                 hb = QHBoxLayout()
                 hb.setContentsMargins(0, 0, 0, 0)
                 hb.addStretch()
                 hb.addWidget(wid)
                 hb.addStretch()
                 wid = hb
-        if name:
+        if name is not None:
             lay.addRow(name, wid)
-
         else:
             lay.addRow(wid)
 
@@ -2216,8 +2224,6 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
             elif len(item) == 2:
 
                 wid, cols = item
-            elif len(item) == 3:
-                wid, cols, arg = item
             nowc += cols
             linecolssx.append(cols)
         maxl = max(maxl, nowc)
@@ -2230,7 +2236,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         for item in line:
             if type(item) == str:
                 cols = 1
-                wid = LLabel(item)
+                wid = makelabel(item)
             elif isinstance(item, dict):
                 # group
                 wid = makegroupingrid(item)
@@ -2241,13 +2247,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
 
                 wid, cols = item
                 if type(wid) == str:
-                    wid = LLabel(wid)
-            elif len(item) == 3:
-                wid, cols, arg = item
-                if type(wid) == str:
-                    wid = LLabel(wid)
-                    if arg == "link":
-                        wid.setOpenExternalLinks(True)
+                    wid = makelabel(wid)
             if cols > 0:
                 cols = cols
             elif cols == 0:
@@ -3086,19 +3086,35 @@ class CollapsibleBoxWithButton(QWidget):
 
 
 def createfoldgrid(
-    grid, title, d: dict = None, k=None, internallayoutname=None, parent=None
+    grid,
+    title,
+    d: dict = None,
+    k=None,
+    internallayoutname=None,
+    parent=None,
+    form=False,
 ):
 
-    def __(grid, internallayoutname, parent, lay: QLayout):
-        w, do = makegrid(grid, delay=True)
-        lay.addWidget(w)
-        if internallayoutname:
-            setattr(parent, internallayoutname, w.layout())
-        do()
+    def __(grid, internallayoutname, parent, form: bool, lay: QLayout):
+        if form:
+            w = QWidget(parent)
+            lay.addWidget(w)
+            f = LFormLayout(w)
+            makeforms(f, grid)
+            if internallayoutname:
+                setattr(parent, internallayoutname, f)
+        else:
+            w, do = makegrid(grid, delay=True)
+            lay.addWidget(w)
+            if internallayoutname:
+                setattr(parent, internallayoutname, w.layout())
+            do()
 
     toggled = d[k] if d else False
     box = CollapsibleBoxWithButton(
-        functools.partial(__, grid, internallayoutname, parent), title, toggled=toggled
+        functools.partial(__, grid, internallayoutname, parent, form),
+        title,
+        toggled=toggled,
     )
     if d:
         box.toggled.connect(functools.partial(d.__setitem__, k))

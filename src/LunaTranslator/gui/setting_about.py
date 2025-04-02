@@ -261,7 +261,7 @@ def delayloadlinks(key):
                 __grid.append(
                     [
                         link["name"],
-                        (makehtml(link["link"], link.get("vis", None)), 2, "link"),
+                        (makehtml(link["link"], link.get("vis", None)), 2),
                     ]
                     + ([link.get("about")] if link.get("about") else [])
                 )
@@ -400,12 +400,45 @@ class aboutwidget(NQGroupBox):
                     (
                         '欢迎成为我的<a href="https://patreon.com/HIllya51">sponsor</a>。谢谢~',
                         -1,
-                        "link",
                     )
                 ],
             ]
 
         automakegrid(self.grid, shuominggrid)
+
+
+class delayloadsvg(QSvgWidget):
+    def __init__(self, link):
+        super().__init__()
+        self._load(link)
+
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.FontChange:
+            self.loadh()
+        return super().event(a0)
+
+    def loadh(self):
+        h = QFontMetricsF(self.font()).height()
+        renderer = self.renderer()
+        if renderer != None:
+            size = renderer.defaultSize()
+            self.setFixedSize(QSizeF(size.width() * h / size.height(), h).toSize())
+
+    @threader
+    def _load(self, link):
+        self.load(requests.get(link).content)
+        self.loadh()
+
+
+def makelink(repo):
+    return getboxlayout(
+        [
+            functools.partial(
+                delayloadsvg, "https://img.shields.io/github/license/" + repo
+            ),
+            '<a href="https://github.com/{repo}">{repo}</a>'.format(repo=repo),
+        ]
+    )
 
 
 def setTab_about(self, basel):
@@ -440,6 +473,38 @@ def setTab_about(self, basel):
                 ),
             ],
             [aboutwidget],
+            [
+                functools.partial(
+                    createfoldgrid,
+                    [
+                        [
+                            'LunaTranslator使用 <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a> 许可证。',
+                        ],
+                        ["引用的项目", makelink("Artikash/Textractor")],
+                        ["", makelink("RapidAI/RapidOcrOnnx")],
+                        ["", makelink("PaddlePaddle/PaddleOCR")],
+                        ["", makelink("Blinue/Magpie")],
+                        ["", makelink("nanokina/ebyroid")],
+                        ["", makelink("xupefei/Locale-Emulator")],
+                        ["", makelink("InWILL/Locale_Remulator")],
+                        ["", makelink("zxyacb/ntlea")],
+                        ["", makelink("Chuyu-Team/YY-Thunks")],
+                        ["", makelink("Chuyu-Team/VC-LTL5")],
+                        ["", makelink("uyjulian/AtlasTranslate")],
+                        ["", makelink("ilius/pyglossary")],
+                        ["", makelink("ikegami-yukino/mecab")],
+                        ["", makelink("AngusJohnson/Clipper2")],
+                        ["", makelink("rapidfuzz/rapidfuzz-cpp")],
+                        ["", makelink("TsudaKageyu/minhook")],
+                        ["", makelink("lobehub/lobe-icons")],
+                        ["", makelink("kokke/tiny-AES-c")],
+                        ["", makelink("TPN-Team/OCR")],
+                        ["", makelink("AuroraWright/owocr")],
+                    ],
+                    "LICENSE",
+                    form=True,
+                )
+            ],
         ],
         basel,
     )

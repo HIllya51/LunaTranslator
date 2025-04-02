@@ -1525,6 +1525,10 @@
             "use": false,
             "name": "Google Lens"
         },
+        "bing": {
+            "use": false,
+            "name": "Bing"
+        },
         "xunfei": {
             "use": false,
             "useproxy": false,
