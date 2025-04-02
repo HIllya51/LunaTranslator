@@ -98,16 +98,6 @@
             }
         }
     },
-    "docsumo": {
-        "args": {
-            "token": ""
-        },
-        "argstype": {
-            "token": {
-                "type": "textlist"
-            }
-        }
-    },
     "youdaocr": {
         "args": {
             "interface": 0,

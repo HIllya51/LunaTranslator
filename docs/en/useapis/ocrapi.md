@@ -165,10 +165,6 @@ https://www.xfyun.cn/doc/platform/quickguide.html
 
 https://cloud.google.com/vision/docs
 
-== Docsumo
-
-https://www.docsumo.com/
-
 == Ocr.space
 
 https://ocr.space/

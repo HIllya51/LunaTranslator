@@ -1517,11 +1517,6 @@
             "useproxy": false,
             "name": "ocrspace"
         },
-        "docsumo": {
-            "use": false,
-            "useproxy": false,
-            "name": "docsumo"
-        },
         "googlecloudvision": {
             "use": false,
             "name": "Google Cloud Vision"
