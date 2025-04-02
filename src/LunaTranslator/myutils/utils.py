@@ -939,7 +939,7 @@ def common_parse_normal_response(
     resp = common_parse_normal_response_1(response, apiurl)
     if hidethinking:
         # 有时，会没有<think>只有</think>比如使用prefill的时候。移除第一个</think>之前的内容
-        resp = re.sub(r"([\s\S]*)</think>\n+", "", resp)
+        resp = re.sub(r"([\s\S]*)</think>\n*", "", resp)
     return resp
 
 
