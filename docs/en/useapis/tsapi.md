@@ -77,7 +77,7 @@ https://ai.youdao.com/doc.s#guide
 
 **Create Key** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
-== Caiyun
+== LingoCloud
 
 If you want to test, you can use `3975l6lr5pcbvidl6jl2` as a test Token. We do not guarantee the availability of this Token, so if you intend to use it continuously, please apply for a formal Token.
 
@@ -87,7 +87,7 @@ New users receive a free translation quota of 1 million characters, valid for on
 
 https://docs.caiyunapp.com/lingocloud-api/#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%E4%BB%A4%E7%89%8C
 
-== Volcano Engine
+== Volcengine
 
 ### Activate the Service
 
