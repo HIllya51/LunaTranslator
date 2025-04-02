@@ -49,6 +49,8 @@ def parsecode(code: str):
 
 for _dir, _, _fs in os.walk("./LunaTranslator"):
     for _f in _fs:
+        if _f == "googlelens.py":
+            continue
         if not _f.endswith(".py"):
             continue
         path = os.path.normpath(os.path.abspath(os.path.join(_dir, _f)))

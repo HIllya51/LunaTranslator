@@ -287,7 +287,6 @@ class Requester_common:
             headers["Content-Length"] = str(len(databytes))
         if contenttype and ("Content-Type" not in headers):
             headers["Content-Type"] = contenttype
-        print(headers)
         proxy = proxies.get(scheme, None) if proxies else None
         proxy = None if proxy == "" else proxy
         if timeout:

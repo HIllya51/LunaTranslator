@@ -241,20 +241,6 @@ def versionlabelmaybesettext(self, x):
         self.versionlabel_cache = x
 
 
-def createimageview(self):
-    lb = QLabel()
-    img = QPixmap.fromImage(QImage("./files/zan.jpg"))
-    img.setDevicePixelRatio(self.devicePixelRatioF())
-    img = img.scaled(
-        500,
-        500,
-        Qt.AspectRatioMode.KeepAspectRatio,
-        Qt.TransformationMode.SmoothTransformation,
-    )
-    lb.setPixmap(img)
-    return lb
-
-
 def delayloadlinks(key):
     sources = static_data["aboutsource"][key]
     grid = []
@@ -356,6 +342,19 @@ class aboutwidget(NQGroupBox):
         self.lastlangcomp = {Languages.Chinese: 1, Languages.TradChinese: 2, None: -1}
         self.updatelangtext()
 
+    def createimageview(self):
+        lb = QLabel()
+        img = QPixmap.fromImage(QImage("./files/zan.jpg"))
+        img.setDevicePixelRatio(self.devicePixelRatioF())
+        img = img.scaled(
+            500,
+            500,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        lb.setPixmap(img)
+        return lb
+
     def updatelangtext(self):
         if self.lastlangcomp.get(self.lastlang, 0) == self.lastlangcomp.get(
             getlanguse(), 0
@@ -386,7 +385,7 @@ class aboutwidget(NQGroupBox):
             shuominggrid = [
                 commonlink,
                 [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", -1)],
-                [(functools.partial(createimageview, self), -1)],
+                [(self.createimageview, -1)],
             ]
 
         else:
