@@ -54,6 +54,13 @@ class Requester(Requester_common):
         curl_easy_setopt(curl, CURLoption.USERAGENT, self.default_UA.encode("utf8"))
         return curl
 
+    def _getrespurl(self, curl):
+        url = c_char_p()
+        MaybeRaiseException(
+            curl_easy_getinfo(curl, CURLINFO.EFFECTIVE_URL, pointer(url))
+        )
+        return url.value.decode()
+
     def _getStatusCode(self, curl):
         status_code = c_long()
         MaybeRaiseException(
@@ -233,6 +240,6 @@ class Requester(Requester_common):
 
         resp.headers, resp.cookies, resp.reason = self._parseheader2dict(header)
         resp.status_code = self._getStatusCode(curl)
-        resp.url = url
+        resp.url = self._getrespurl(curl)
 
         return resp
