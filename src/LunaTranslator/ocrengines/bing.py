@@ -14,6 +14,7 @@ class Bing:
 
     def __call__(self, img_bytes: bytes, w: int, h: int):
 
+        host = "www.bing.com"
         upload_url = "https://www.bing.com/images/search?view=detailv2&iss=sbiupload"
         upload_headers = {
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
@@ -27,20 +28,23 @@ class Bing:
             "cbir": (None, "sbi"),
             "imageBin": (None, base64.b64encode(img_bytes).decode("utf-8")),
         }
+        for _ in range(2):
+            res = self.requests_session.post(
+                upload_url,
+                headers=upload_headers,
+                files=files,
+                allow_redirects=False,
+            )
+            if res.status_code != 302:
+                raise Exception("Unknown error!")
 
-        res = self.requests_session.post(
-            upload_url,
-            headers=upload_headers,
-            files=files,
-            allow_redirects=False,
-        )
-        if res.status_code != 302:
-            raise Exception("Unknown error!")
-
-        redirect_url: str = res.headers.get("Location")
-        if not redirect_url:
-            raise Exception("Error getting redirect URL!")
-
+            redirect_url: str = res.headers.get("Location")
+            if not redirect_url:
+                raise Exception("Error getting redirect URL!")
+            if not redirect_url.startswith("https://"):
+                break
+            host = urlparse(redirect_url).netloc
+            upload_url = redirect_url
         parsed_url = urlparse(redirect_url)
         query_params = parse_qs(parsed_url.query)
 
@@ -49,12 +53,14 @@ class Bing:
             raise Exception("Error getting token!")
         image_insights_token = image_insights_token[0]
 
-        api_url = "https://www.bing.com/images/api/custom/knowledge"
+        api_url = "https://{}/images/api/custom/knowledge".format(host)
         api_headers = {
             "accept": "*/*",
             "accept-language": "ja-JP;q=0.6,ja;q=0.5",
             "origin": "https://www.bing.com",
-            "referer": f"https://www.bing.com/images/search?view=detailV2&insightstoken={image_insights_token}",
+            "referer": "https://www.bing.com/images/search?view=detailV2&insightstoken={}".format(
+                image_insights_token
+            ),
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0",
         }
         api_data_json = {
@@ -68,7 +74,6 @@ class Bing:
         res = self.requests_session.post(api_url, headers=api_headers, files=files)
 
         data = res.json()
-
         text_tag = None
         for tag in data["tags"]:
             if tag.get("displayName") == "##TextRecognition":
