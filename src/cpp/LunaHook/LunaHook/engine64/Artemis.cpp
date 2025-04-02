@@ -1,53 +1,25 @@
-#include "Artemis.h"
-
-bool InsertArtemisHook()
+﻿#include "Artemis.h"
+namespace
 {
-
-	/*
-	 * Sample games:
-	 * https://vndb.org/v45247
-	 */
-	const BYTE bytes[] = {
-		0xCC,							   // int 3
-		0x40, 0x57,						   // push rdi          <- hook here
-		0x48, 0x83, 0xEC, 0x40,			   // sub rsp,40
-		0x48, 0xC7, 0x44, 0x24, 0x30, XX4, // mov qword ptr [rsp+30],FFFFFFFFFFFFFFFE
-		0x48, 0x89, 0x5C, 0x24, 0x50	   // mov [rsp+50],rbx
-	};
-
-	for (auto addr : Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE, processStartAddress, processStopAddress))
+	void filtercommon(TextBuffer *buffer, HookParam *hp)
 	{
-		HookParam hp;
-		hp.address = addr + 1;
-		hp.offset = regoffset(rdx);
-		hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
-		hp.filter_fun = Utf8TypeChecker;
-		return NewHook(hp, "Artemis");
+		Utf8TypeChecker(buffer, hp);
+		if (hp->type & CODEC_UTF8)
+		{
+			if (buffer->viewA() == u8"「」（）『』")
+				buffer->clear();
+			else if (buffer->viewA() == u8"　")
+				buffer->clear();
+		}
+		else
+		{
+			if (buffer->viewA() == "\x81\x75\x81\x76\x81\x69\x81\x6a\x81\x77\x81\x78")
+				buffer->clear();
+			else if (buffer->viewA() == "\x81\x40")
+				buffer->clear();
+		}
 	}
-	return false;
 }
-bool Artemis64()
-{
-
-	const BYTE BYTES[] = {
-		0x48, 0x89, 0x5C, 0x24, 0x20, 0x55, 0x56, 0x57, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57, 0x48, 0x83, 0xec, 0x60
-		//__int64 __fastcall sub_14017A760(__int64 a1, char *a2, char **a3)
-		// FLIP FLOP IO
-	};
-	auto addrs = Util::SearchMemory(BYTES, sizeof(BYTES), PAGE_EXECUTE_READ, processStartAddress, processStopAddress);
-	for (auto addr : addrs)
-	{
-		HookParam hp;
-		hp.address = addr;
-		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
-		hp.offset = regoffset(rdx); // rdx
-		hp.filter_fun = Utf8TypeChecker;
-		return NewHook(hp, "Artemis64");
-	}
-
-	return false;
-}
-
 bool Artemis64x()
 {
 	// https://vndb.org/v50832
@@ -94,15 +66,73 @@ bool Artemis64x()
 		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | USING_SPLIT | NO_CONTEXT;
 		hp.offset = regoffset(rdx);
 		hp.split = regoffset(rcx);
-		hp.filter_fun = Utf8TypeChecker;
+		hp.filter_fun = filtercommon;
 		succ |= NewHook(hp, "Artemis64x");
 	}
 
 	return succ;
 }
+bool InsertArtemisHook()
+{
+	const BYTE bytes[] = {
+		0x41, 0x0f, 0xb6, 0xc1,
+		0x83, 0xf0, 0x20,
+		0x2d, 0xa1, 0x00, 0x00, 0x00,
+		0x41, 0x8b, XX,
+		0x83, 0xf8, 0x3c,
+		0x0f, 0x92, 0xc1,
+		0xeb, XX,
+		0x83, 0xf8, 0x01,
+		0x75, 0x1a,
+		0x41, 0x8d, 0x41, 0x5f,
+		0x3c, 0x53,
+		0x76, XX,
+		0x41, 0x80, 0xf9, 0x8e,
+		0x74, XX};
+	auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+	if (!addr)
+		return false;
+	addr = MemDbg::findEnclosingAlignedFunction(addr);
+	if (!addr)
+		return false;
+	HookParam hp;
+	hp.address = addr;
+	hp.offset = regoffset(r8);
+	hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
+	hp.filter_fun = Utf8TypeChecker;
+	return NewHook(hp, "Artemis");
+}
+bool InsertArtemisHook2()
+{
+	// 妹(姉)は兄(弟)の性癖を歪ませたい！
+	// きら☆かの
+	const BYTE bytes[] = {
+		0x48, 0x89, 0x5c, 0x24, 0x20,
+		0x55, 0x56, 0x57,
+		0x48, 0x83, 0xec, XX,
+		0x48, 0x8b, 0x05, XX4,
+		0x48, 0x33, 0xc4,
+		0x48, 0x89, 0x44, 0x24, XX,
+		// v4 = *a1;
+		// if ( *a2 == 10 )
+		0x48,
+		0x8b, 0xfa,
+		0x48, 0x8b, 0xd9,
+		0x48, 0x8b, 0x01,
+		0x80, 0x3a, 0x0a,
+		0x75, 0x0d};
+	auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+	if (!addr)
+		return false;
+	HookParam hp;
+	hp.address = addr;
+	hp.offset = regoffset(rdx);
+	hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
+	hp.filter_fun = Utf8TypeChecker;
+	return NewHook(hp, "Artemis");
+}
 bool Artemis::attach_function()
 {
-	bool b1 = Artemis64();
-	b1 = InsertArtemisHook() || b1;
-	return b1 || Artemis64x();
+	// 后两者能提取到rubytext
+	return Artemis64x() | (InsertArtemisHook() || InsertArtemisHook2());
 }
