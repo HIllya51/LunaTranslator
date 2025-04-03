@@ -16,8 +16,6 @@
 
 - **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
 
-- **网络服务** 提供一些 [HTTP/WebSocket API](https://docs.lunatranslator.org/tcpapi.html) 以供和其他程序交互
-
 #### 翻译器
 
 支持几乎所有能想得到的翻译引擎，包括： 

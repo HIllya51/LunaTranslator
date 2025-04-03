@@ -20,8 +20,6 @@ If you feel that the software is helpful to you, welcome to become my [sponsor](
 
 - **Clipboard** Supports retrieving text from the clipboard for translation and can also output extracted text to the clipboard.
 
-- **Network Service** Provides some [HTTP/WebSocket APIs](https://docs.lunatranslator.org/tcpapi.html) for interaction with other programs.
-
 #### Translator
 
 Supports almost all conceivable translation engines, including:
