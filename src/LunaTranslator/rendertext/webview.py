@@ -139,7 +139,7 @@ class TextBrowser(WebviewWidget, dataget):
             return
         for _ in [
             "userconfig/extrahtml.html",
-            r"LunaTranslator\rendertext\exampleextrahtml.html",
+            r"file\static\extrahtml\mainui.html",
         ]:
             if not os.path.exists(_):
                 continue

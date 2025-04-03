@@ -7,23 +7,7 @@ import json, os, re
 from cishu.mdict_.readmdict import MDX, MDD, MDict
 import hashlib, sqlite3, functools
 import winsharedutils
-
-cachejson = None
-
-
-def query_mime(ext):
-    # https://gist.github.com/AshHeskes/6038140
-    global cachejson
-    if not cachejson:
-        with open(
-            os.path.join(
-                os.path.dirname(__file__), "file-extension-to-mime-types.json"
-            ),
-            "r",
-            encoding="utf8",
-        ) as ff:
-            cachejson = json.load(ff)
-    return cachejson.get(ext, "application/octet-stream")
+from myutils.mimehelper import query_mime
 
 
 class IndexBuilder(object):
@@ -356,7 +340,7 @@ class mdict(cishubase):
             varname = "var_" + hashlib.md5(file_content).hexdigest()
             audiob64vals[varname] = base64.b64encode(file_content).decode()
             return 3, "javascript:mdict_play_sound('{}',{})".format(
-                query_mime("." + ext), varname
+                query_mime(ext), varname
             )
         file_content = self.parse_url_in_mdd(index, url)
         if not file_content:
@@ -406,7 +390,7 @@ class mdict(cishubase):
             varname = "var_" + hashlib.md5(file_content).hexdigest()
             hrefsrcvals[varname] = (
                 _type_1,
-                query_mime(os.path.splitext(url)[1].lower()),
+                query_mime(url),
                 base64.b64encode(file_content).decode(),
             )
             return matchall.replace(url, varname)

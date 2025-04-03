@@ -23,7 +23,7 @@ class dialog_selecticon(LDialog):
         self.key = key
         self.setWindowTitle("选择图标")
         with open(
-            "./files/fonts/fontawesome4.7-webfont-charmap.json", "r", encoding="utf8"
+            "files/static/fonts/fontawesome4.7-webfont-charmap.json", "r", encoding="utf8"
         ) as ff:
             js = json.load(ff)
 

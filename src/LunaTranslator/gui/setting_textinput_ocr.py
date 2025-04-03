@@ -405,13 +405,13 @@ def internal(self):
     ]
     autorun = [
         [
-            "自动化执行方法",
             D_getIconButton(
                 callback=lambda: os.startfile(
                     dynamiclink("{docs_server}/ocrparam.html")
                 ),
                 icon="fa.question",
             ),
+            "自动化执行方法",
             (
                 D_getsimplecombobox(
                     [

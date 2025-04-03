@@ -50,7 +50,7 @@ class IconicFont(QObject):
         self.load_font(ttf_filename, charmap_filename)
 
     def load_font(self, ttf_filename, charmap_filename):
-        directory = "./files/fonts"
+        directory = "files/static/fonts"
 
         with open(os.path.join(directory, ttf_filename), "rb") as font_data:
             id_ = QFontDatabase.addApplicationFontFromData(QByteArray(font_data.read()))

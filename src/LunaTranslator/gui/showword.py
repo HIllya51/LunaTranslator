@@ -787,11 +787,11 @@ class AnkiWindow(QWidget):
             with open("userconfig/anki_2/style.css", "r", encoding="utf8") as ff:
                 model_css = ff.read()
         except:
-            with open("files/anki/back.html", "r", encoding="utf8") as ff:
+            with open("files/static/anki/back.html", "r", encoding="utf8") as ff:
                 model_htmlback = ff.read()
-            with open("files/anki/front.html", "r", encoding="utf8") as ff:
+            with open("files/static/anki/front.html", "r", encoding="utf8") as ff:
                 model_htmlfront = ff.read()
-            with open("files/anki/style.css", "r", encoding="utf8") as ff:
+            with open("files/static/anki/style.css", "r", encoding="utf8") as ff:
                 model_css = ff.read()
         return model_htmlfront, model_htmlback, model_css
 

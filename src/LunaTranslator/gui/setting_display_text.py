@@ -228,7 +228,7 @@ def resetgroudswitchcallback(self, group):
                 extrahtml,
                 self,
                 "extrahtml.html",
-                r"LunaTranslator\rendertext\exampleextrahtml.html",
+                r"file\static\extrahtml\mainui.html",
                 gobject.baseobject.translation_ui.translate_text.textbrowser,
             ),
             icon="fa.edit",

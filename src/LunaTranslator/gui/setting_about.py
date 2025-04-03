@@ -360,7 +360,7 @@ class aboutwidget(NQGroupBox):
 
     def createimageview(self):
         lb = QLabel()
-        img = QPixmap.fromImage(QImage("./files/zan.jpg"))
+        img = QPixmap.fromImage(QImage("files/static/zan.jpg"))
         img.setDevicePixelRatio(self.devicePixelRatioF())
         img = img.scaled(
             500,

@@ -203,6 +203,7 @@ def getTabclip():
                 ),
             ),
         ],
+        [],
         [
             dict(
                 title="输出",

@@ -1,6 +1,6 @@
 import json
 
-_DEFAULT_DICT = "./files/zhconv/zhcdict.json"
+_DEFAULT_DICT = "files/static/zhcdict.json"
 DICTIONARY = _DEFAULT_DICT
 
 zhcdicts = None
