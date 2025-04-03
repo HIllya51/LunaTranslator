@@ -121,8 +121,12 @@ class TextBrowser(WebviewWidget, dataget):
         self.eval('switchcursor("{}")'.format(cursor_map.get(cursor, "default")))
 
     def loadex(self, extra=None):
+        self.navigate(self.loadex_(extra=extra))
+
+    @staticmethod
+    def loadex_(extra=None):
         if not extra:
-            extra = self.loadextra()
+            extra = TextBrowser.loadextra()
             extra = extra if extra else ""
         with open(
             r"LunaTranslator\rendertext\webview.html", "r", encoding="utf8"
@@ -132,9 +136,10 @@ class TextBrowser(WebviewWidget, dataget):
             r"LunaTranslator\rendertext\webview_parsed.html", "w", encoding="utf8"
         ) as ff:
             ff.write(html)
-        self.navigate(os.path.abspath(r"LunaTranslator\rendertext\webview_parsed.html"))
+        return os.path.abspath(r"LunaTranslator\rendertext\webview_parsed.html")
 
-    def loadextra(self):
+    @staticmethod
+    def loadextra():
         if not globalconfig["useextrahtml"]:
             return
         for _ in [

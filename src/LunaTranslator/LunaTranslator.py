@@ -54,7 +54,23 @@ from gui.dynalang import LAction
 from gui.setting_textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
 from rendertext.texttype import TextType, SpecialColor, TranslateColor
-from network.tcpservice import TCPService, WSHandler
+from gui.transhist import wvtranshist
+from rendertext.webview import TextBrowser as WVTextBrowser
+from network.tcpservice import TCPService, WSHandler, HTTPHandler, FileResponse
+
+
+class Pagetranshist(HTTPHandler):
+    path = "/transhist"
+
+    def parse(self, _):
+        return FileResponse(wvtranshist.loadex_())
+
+
+class PageMainui(HTTPHandler):
+    path = "/mainui"
+
+    def parse(self, _):
+        return FileResponse(WVTextBrowser.loadex_())
 
 
 class MAINUI:
@@ -91,8 +107,9 @@ class MAINUI:
         self.autoswitchgameuid = True
         self.istriggertoupdate = False
         self.thishastranslated = True
-        self.wsoutputsave: list[WSHandler] = []
         self.service = TCPService()
+        self.service.register(PageMainui)
+        self.service.register(Pagetranshist)
         self.serviceinit()
 
     @threader

@@ -70,7 +70,7 @@ class wvtranshist(WebviewWidget):
             functools.partial(
                 extrahtml,
                 self,
-                "extrahtml_transhist",
+                "extrahtml_transhist.html",
                 r"files\static\extrahtml\transhist.html",
                 self,
             ),
@@ -108,8 +108,12 @@ class wvtranshist(WebviewWidget):
         self.loadex()
 
     def loadex(self, extra=None):
+        self.navigate(self.loadex_(extra=extra))
+
+    @staticmethod
+    def loadex_(extra=None):
         if not extra:
-            extra = self.loadextra()
+            extra = wvtranshist.loadextra()
             extra = extra if extra else ""
         with open(
             r"LunaTranslator\gui\transhistwebview.html", "r", encoding="utf8"
@@ -119,11 +123,10 @@ class wvtranshist(WebviewWidget):
             r"LunaTranslator\gui\transhistwebview_parsed.html", "w", encoding="utf8"
         ) as ff:
             ff.write(html)
-        self.navigate(
-            os.path.abspath(r"LunaTranslator\gui\transhistwebview_parsed.html")
-        )
+        return os.path.abspath(r"LunaTranslator\gui\transhistwebview_parsed.html")
 
-    def loadextra(self):
+    @staticmethod
+    def loadextra():
         for _ in [
             "userconfig/extrahtml_transhist.html",
             r"files\static\extrahtml\transhist.html",
