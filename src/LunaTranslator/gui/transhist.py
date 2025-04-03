@@ -9,9 +9,118 @@ from urllib.parse import quote
 from myutils.wrapper import threader
 from traceback import print_exc
 from gui.setting_display_text import extrahtml
+from network.tcpservice import WSHandler, HTTPHandler, FileResponse, WSForEach
+from urllib.parse import quote
+from typing import List
+
+wsoutputsave: List["internalservicetranshistws"] = []
 
 
-class wvtranshist(WebviewWidget):
+class somecommon:
+
+    def debugeval(self, js: str): ...
+
+    def calllunaloadready(self):
+
+        self.debugeval(
+            "showhideorigin({})".format(int(globalconfig["history"]["showorigin"]))
+        )
+        self.debugeval(
+            "showhidetransname({})".format(
+                int(globalconfig["history"]["showtransname"])
+            )
+        )
+        self.debugeval(
+            "showhidetrans({})".format(int(globalconfig["history"]["showtrans"]))
+        )
+        self.debugeval(
+            "showhidetime({})".format(int(globalconfig["history"]["showtime"]))
+        )
+        self.setf()
+        self.refresh()
+
+    def refresh(self):
+        self.debugeval(
+            'fastinit("{}");'.format(
+                quote(json.dumps(gobject.baseobject.transhis.trace))
+            )
+        )
+
+    def setf(self):
+        key = "histfont"
+        fontstring = globalconfig.get(key, "")
+        if fontstring:
+            _f = QFont()
+            _f.fromString(fontstring)
+            _style = "font-size:{}pt;".format(_f.pointSize())
+            _style += 'font-family:"{}";'.format(_f.family())
+            self.debugeval("setfont('body{{{}}}')".format(quote(_style)))
+
+    def addbr(self):
+        self.debugeval("addbr();")
+
+    def getnewsentence(self, sentence):
+        self.addbr()
+        sentence = sentence[1]
+        self.debugeval(
+            'getnewsentence("{}","{}");'.format(quote(sentence[0]), quote(sentence[1]))
+        )
+
+    def getnewtrans(self, sentence):
+        sentence = sentence[1]
+        self.debugeval(
+            'getnewtrans("{}","{}","{}");'.format(
+                quote(sentence[0]), quote(sentence[1]), quote(sentence[2])
+            )
+        )
+
+    def showhideraw(self):
+        self.debugeval(
+            "showhideorigin({})".format(int(globalconfig["history"]["showorigin"]))
+        )
+
+    def showtrans(self):
+        self.debugeval(
+            "showhidetrans({})".format(int(globalconfig["history"]["showtrans"]))
+        )
+
+    def showtransname(self):
+        self.debugeval(
+            "showhidetransname({})".format(
+                int(globalconfig["history"]["showtransname"])
+            )
+        )
+
+    def showhidetime(self):
+        self.debugeval(
+            "showhidetime({})".format(int(globalconfig["history"]["showtime"]))
+        )
+
+
+class internalservicetranshistws(WSHandler, somecommon):
+    path = "/__internalservice/transhistws"
+
+    def parse(self, info):
+        wsoutputsave.append(self)
+
+    def onmessage(self, message: str):
+        message: dict = json.loads(message)
+        function = message["function"]
+        args = message.get("args", tuple())
+        dict(calllunaloadready=self.calllunaloadready)[function](*args)
+
+    def debugeval(self, js: str):
+        self.send_text(js)
+
+
+class Pagetranshist(HTTPHandler):
+    path = "/transhist"
+
+    def parse(self, _):
+        return FileResponse(wvtranshist.loadex_())
+
+
+class wvtranshist(WebviewWidget, somecommon):
     pluginsedit = pyqtSignal()
     reloadx = pyqtSignal()
 
@@ -20,7 +129,7 @@ class wvtranshist(WebviewWidget):
 
     def __init__(self, p):
         super().__init__(p, loadext=globalconfig["history"]["webviewLoadExt"])
-        self.bind("calllunaloadready", self.setflags)
+        self.bind("calllunaloadready", self.calllunaloadready)
         self.pluginsedit.connect(functools.partial(Exteditor, self))
         self.reloadx.connect(self.appendext)
         nexti = self.add_menu_noselect(0, lambda: _TR("清空"), self.clear)
@@ -30,28 +139,28 @@ class wvtranshist(WebviewWidget):
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("显示原文"),
-            self.showhideraw,
+            self.showhideraw_,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showorigin"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("显示翻译"),
-            self.showtrans,
+            self.showtrans_,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtrans"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("显示翻译器名称"),
-            self.showtransname,
+            self.showtransname_,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtransname"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("显示时间"),
-            self.showhidetime,
+            self.showhidetime_,
             checkable=True,
             getchecked=lambda: globalconfig["history"]["showtime"],
         )
@@ -146,16 +255,7 @@ class wvtranshist(WebviewWidget):
             _s = font.toString()
             globalconfig["histfont"] = _s
             self.setf()
-
-    def setf(self):
-        key = "histfont"
-        fontstring = globalconfig.get(key, "")
-        if fontstring:
-            _f = QFont()
-            _f.fromString(fontstring)
-            _style = "font-size:{}pt;".format(_f.pointSize())
-            _style += 'font-family:"{}";'.format(_f.family())
-            self.debugeval("setfont('body{{{}}}')".format(quote(_style)))
+            self.parent().setf()
 
     def appendext(self):
         globalconfig["history"]["webviewLoadExt"] = not globalconfig["history"][
@@ -169,82 +269,37 @@ class wvtranshist(WebviewWidget):
         ]
         self.parent().loadviewer()
 
-    def showhideraw(self):
-        globalconfig["history"]["showorigin"] = not globalconfig["history"][
-            "showorigin"
-        ]
-        self.debugeval(
-            "showhideorigin({})".format(int(globalconfig["history"]["showorigin"]))
-        )
-
-    def showtrans(self):
-        globalconfig["history"]["showtrans"] = not globalconfig["history"]["showtrans"]
-        self.debugeval(
-            "showhidetrans({})".format(int(globalconfig["history"]["showtrans"]))
-        )
-
-    def showtransname(self):
-        globalconfig["history"]["showtransname"] = not globalconfig["history"][
-            "showtransname"
-        ]
-        self.debugeval(
-            "showhidetransname({})".format(
-                int(globalconfig["history"]["showtransname"])
-            )
-        )
-
-    def showhidetime(self):
-        globalconfig["history"]["showtime"] = not globalconfig["history"]["showtime"]
-        self.debugeval(
-            "showhidetime({})".format(int(globalconfig["history"]["showtime"]))
-        )
-
-    def setflags(self):
-        self.debugeval(
-            "showhideorigin({})".format(int(globalconfig["history"]["showorigin"]))
-        )
-        self.debugeval(
-            "showhidetransname({})".format(
-                int(globalconfig["history"]["showtransname"])
-            )
-        )
-        self.debugeval(
-            "showhidetrans({})".format(int(globalconfig["history"]["showtrans"]))
-        )
-        self.debugeval(
-            "showhidetime({})".format(int(globalconfig["history"]["showtime"]))
-        )
-        self.setf()
-        self.refresh()
-
     def clear(self, _=None):
         self.debugeval("clear()")
         self.parent().trace.clear()
 
-    def refresh(self):
-        self.debugeval('fastinit("{}");'.format(quote(json.dumps(self.parent().trace))))
-
-    def addbr(self):
-        self.debugeval("addbr();")
-
-    def getnewsentence(self, sentence):
-        self.addbr()
-        sentence = sentence[1]
-        self.debugeval(
-            'getnewsentence("{}","{}");'.format(quote(sentence[0]), quote(sentence[1]))
-        )
-
-    def getnewtrans(self, sentence):
-        sentence = sentence[1]
-        self.debugeval(
-            'getnewtrans("{}","{}","{}");'.format(
-                quote(sentence[0]), quote(sentence[1]), quote(sentence[2])
-            )
-        )
-
     def debugeval(self, js):
         # print(js)
         self.eval(js)
+
+    def showhideraw_(self):
+        globalconfig["history"]["showorigin"] = not globalconfig["history"][
+            "showorigin"
+        ]
+        self.showhideraw()
+        self.parent().showhideraw()
+
+    def showtrans_(self):
+        globalconfig["history"]["showtrans"] = not globalconfig["history"]["showtrans"]
+        self.showtrans()
+        self.parent().showtrans()
+
+    def showtransname_(self):
+        globalconfig["history"]["showtransname"] = not globalconfig["history"][
+            "showtransname"
+        ]
+        self.showtransname()
+        self.parent().showtransname()
+
+    def showhidetime_(self):
+        globalconfig["history"]["showtime"] = not globalconfig["history"]["showtime"]
+        self.showhidetime()
+        self.parent().showhidetime()
 
 
 class Qtranshist(QPlainTextEdit):
@@ -333,17 +388,22 @@ class Qtranshist(QPlainTextEdit):
                 _s = font.toString()
                 globalconfig["histfont"] = _s
                 self.setf()
+                self.parent().setf()
         elif action == hideshowtransname:
             globalconfig["history"]["showtransname"] = hideshowtransname.isChecked()
+            self.parent().showtransname()
             self.refresh()
         elif action == hideshowtrans:
             globalconfig["history"]["showtrans"] = hideshowtrans.isChecked()
+            self.parent().showtrans()
             self.refresh()
         elif action == hideshowraw:
             globalconfig["history"]["showorigin"] = hideshowraw.isChecked()
+            self.parent().showhideraw()
             self.refresh()
         elif action == hidetime:
             globalconfig["history"]["showtime"] = hidetime.isChecked()
+            self.parent().showhidetime()
             self.refresh()
         elif action == scrolltoend:
             scrollbar = self.verticalScrollBar()
@@ -439,17 +499,34 @@ class transhist(closeashidewindow):
         super().showEvent(e)
         self.__load()
 
+    def setf(self):
+        WSForEach(wsoutputsave, lambda _: _.setf())
+
+    def showtransname(self):
+        WSForEach(wsoutputsave, lambda _: _.showtransname())
+
+    def showhidetime(self):
+        WSForEach(wsoutputsave, lambda _: _.showhidetime())
+
+    def showtrans(self):
+        WSForEach(wsoutputsave, lambda _: _.showtrans())
+
+    def showhideraw(self):
+        WSForEach(wsoutputsave, lambda _: _.showhideraw())
+
     def getnewsentence(self, sentence):
         tm = get_time_stamp()
         self.trace.append((0, (tm, sentence)))
         if self.state == 2:
             self.textOutput.getnewsentence(self.trace[-1])
+        WSForEach(wsoutputsave, lambda _: _.getnewsentence(self.trace[-1]))
 
     def getnewtrans(self, api, sentence):
         tm = get_time_stamp()
         self.trace.append((1, (tm, api, sentence)))
         if self.state == 2:
             self.textOutput.getnewtrans(self.trace[-1])
+        WSForEach(wsoutputsave, lambda _: _.getnewtrans(self.trace[-1]))
 
     def loadviewer(self, shoudong=False):
         if self.textOutput:

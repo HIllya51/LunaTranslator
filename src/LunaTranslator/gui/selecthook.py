@@ -7,6 +7,7 @@ from textsource.texthook import codepage_display, codepage_real
 from myutils.config import savehook_new_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
 from gui.dialog_savedgame import dialog_setting_game
+from typing import List
 from gui.usefulwidget import (
     closeashidewindow,
     getsimplecombobox,
@@ -60,7 +61,7 @@ class QButtonGroup_switch_widegt(QWidget):
         self.selectlayout.setContentsMargins(0, 0, 0, 0)
         self.mainlayout.addLayout(self.selectlayout)
         self.selectGroup = QButtonGroup()
-        self.wlist: list[QWidget] = []
+        self.wlist: List[QWidget] = []
         self.selectGroup.buttonClicked.connect(self.selectmodelf)
 
     def idx(self):

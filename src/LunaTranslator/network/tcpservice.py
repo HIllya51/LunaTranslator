@@ -3,12 +3,9 @@ import socket, re
 from base64 import encodebytes as base64encode
 import hashlib, os
 import time, types
-import io, json
+import io, json, struct
+from typing import List
 
-if __name__ == "__main__":
-    import sys
-
-    sys.path.append(".")
 from network.structures import CaseInsensitiveDict
 from myutils.wrapper import threader
 from myutils.mimehelper import query_mime
@@ -146,6 +143,17 @@ class HandlerBase:
     def parse(self, info: RequestInfo): ...
 
 
+def WSForEach(LS: list, func):
+    for L in tuple(LS):
+        try:
+            func(L)
+        except:
+            try:
+                LS.remove(L)
+            except:
+                pass
+
+
 class WSHandler(HandlerBase):
     path = ...
 
@@ -172,33 +180,127 @@ class WSHandler(HandlerBase):
             101, "Switching Protocols", headers=self._upgrade(info.headers)
         ).write(sock)
         self.parse(info)
+        self.__recv()
 
-    def _maketextframe(self, message: str):
+    @threader
+    def __recv(self):
+        while True:
+            msg = self.__readstr()
+            if not msg:
+                break
+            self.onmessage(msg)
+        self.sock.close()
 
-        fin = 1
-        opcode = 0x1
-        payload = message.encode("utf-8")
-        length = len(payload)
+    @staticmethod
+    def receive_frame(client_socket: socket.socket):
+        """接收并解析WebSocket帧"""
+        try:
+            # 读取前2字节
+            header = client_socket.recv(2)
+            if len(header) < 2:
+                return None, None
 
+            first_byte, second_byte = header[0], header[1]
+            fin = (first_byte & 0x80) >> 7
+            opcode = first_byte & 0x0F
+            mask = (second_byte & 0x80) >> 7
+            payload_length = second_byte & 0x7F
+
+            # 处理扩展长度
+            if payload_length == 126:
+                extended_length = client_socket.recv(2)
+                if len(extended_length) < 2:
+                    return None, None
+                payload_length = struct.unpack(">H", extended_length)[0]
+            elif payload_length == 127:
+                extended_length = client_socket.recv(8)
+                if len(extended_length) < 8:
+                    return None, None
+                payload_length = struct.unpack(">Q", extended_length)[0]
+
+            # 读取掩码键
+            masking_key = client_socket.recv(4) if mask else None
+
+            # 读取载荷数据
+            payload = client_socket.recv(payload_length)
+            if len(payload) < payload_length:
+                return None, None
+
+            # 如果有掩码，解码数据
+            if mask and masking_key:
+                payload = bytearray(payload)
+                for i in range(len(payload)):
+                    payload[i] ^= masking_key[i % 4]
+
+            # 如果是文本帧，解码为字符串
+            if opcode == 0x1:
+                return opcode, payload.decode("utf-8")
+            else:
+                return opcode, payload
+
+        except Exception as e:
+            return None, None
+
+    def __readstr(self):
+        # 读取WebSocket帧
+        opcode, payload = self.receive_frame(self.sock)
+
+        if opcode is None:
+            return
+
+        if opcode == 0x1:  # 文本帧
+            return payload
+
+        elif opcode == 0x8:  # 关闭帧
+            status_code = (payload[0] << 8) + payload[1] if len(payload) >= 2 else None
+            reason = (
+                payload[2:].decode("utf-8", errors="ignore")
+                if len(payload) > 2
+                else None
+            )
+            self.send_close_frame(self.sock, status_code, reason)
+
+    def send_close_frame(
+        self, client_socket: socket.socket, status_code=1000, reason=""
+    ):
+        payload = struct.pack(">H", status_code) + (
+            reason.encode("utf-8") if reason else b""
+        )
+        frame = self.build_frame(0x8, payload)
+        client_socket.send(frame)
+
+    def build_frame(self, opcode, payload):
+        """构建WebSocket帧"""
+        fin = 0x80
         frame = bytearray()
-        frame.append((fin << 7) | opcode)
 
-        if length <= 125:
-            frame.append(length)
-        elif length <= 65535:
-            frame.extend([126, (length >> 8) & 0xFF, length & 0xFF])
+        # 第一个字节: FIN + opcode
+        frame.append(fin | opcode)
+
+        # 第二个字节: MASK + 载荷长度
+        mask = 0  # 服务器发送不需要掩码
+        payload_length = len(payload)
+
+        if payload_length <= 125:
+            frame.append(mask << 7 | payload_length)
+        elif payload_length <= 65535:
+            frame.append(mask << 7 | 126)
+            frame.extend(struct.pack(">H", payload_length))
         else:
-            frame.extend([127] + [(length >> (8 * i)) & 0xFF for i in range(7, -1, -1)])
+            frame.append(mask << 7 | 127)
+            frame.extend(struct.pack(">Q", payload_length))
 
+        # 添加载荷
         frame.extend(payload)
+
         return frame
 
-    def sendtext(self, text: str):
-        frame = self._maketextframe(text)
-        try:
-            self.sock.send(frame)
-        except:
-            self.sock = None
+    def onmessage(self, message: str): ...
+
+    def send_text(self, message: str):
+        payload = message.encode("utf-8")
+        frame = self.build_frame(0x1, payload)
+        self.sock.send(frame)
 
 
 class HTTPHandler(HandlerBase):
@@ -237,7 +339,7 @@ class HTTPHandler(HandlerBase):
 class TCPService:
     def __init__(self):
         self.server_socket = None
-        self.handlers: list[HandlerBase] = []
+        self.handlers: List[HandlerBase] = []
 
     def register(self, Handler):
         self.handlers.append(Handler)
@@ -284,30 +386,3 @@ class TCPService:
         if not matchclass:
             return
         matchclass(info, client_socket)
-
-
-if __name__ == "__main__":
-    ws = TCPService()
-
-    class TextOutput(WSHandler):
-        path = "/"
-
-        def parse(self, info: RequestInfo):
-            while True:
-                time.sleep(1)
-                self.sendtext(str(time.time()))
-
-    class APItest(HTTPHandler):
-        path = "/"
-
-        def parse(self, info: RequestInfo):
-            # return FileResponse(r"C:\Users\11737\Music\12eve\天門 - Again.mp3")
-
-            # for i in range(100):
-            #     yield str(i)
-
-            return {"shit": 1}
-
-    ws.register(TextOutput)
-    ws.register(APItest)
-    ws.init(8011)

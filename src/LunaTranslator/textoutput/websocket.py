@@ -1,8 +1,9 @@
 from textoutput.outputerbase import Base
-from network.tcpservice import WSHandler, RequestInfo
+from network.tcpservice import WSHandler, RequestInfo, WSForEach
 import gobject
+from typing import List
 
-wsoutputsave: list[WSHandler] = []
+wsoutputsave: List[WSHandler] = []
 
 
 class TextOutputOrigin(WSHandler):
@@ -29,17 +30,10 @@ class Outputer(Base):
         return bool(len(wsoutputsave))
 
     def dispatch(self, text: str, isorigin: bool):
-        bad = []
-        for handle in wsoutputsave:
-            try:
-                if isorigin and isinstance(handle, TextOutputOrigin):
-                    handle.sendtext(text)
-                elif (not isorigin) and isinstance(handle, TextOutputTrans):
-                    handle.sendtext(text)
-            except:
-                bad.append(handle)
-        for _ in bad:
-            try:
-                wsoutputsave.remove(_)
-            except:
-                pass
+        def __(handle):
+            if isorigin and isinstance(handle, TextOutputOrigin):
+                handle.send_text(text)
+            elif (not isorigin) and isinstance(handle, TextOutputTrans):
+                handle.send_text(text)
+
+        WSForEach(wsoutputsave, __)

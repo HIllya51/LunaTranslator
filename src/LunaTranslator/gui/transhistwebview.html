@@ -111,7 +111,33 @@
             behavior: 'instant'
         });
     }
+</script>
+
+<script>
+
+    function __internalservice() {
+        if (window.LUNAJSObject)
+            return;
+
+        const scheme = window.location.protocol; // 包含冒号，例如 "https:"
+
+        const wsUrl = ((scheme == 'http:') ? 'ws' : 'wss') + '://' + window.location.host + '/__internalservice/transhistws';
+
+        var socket = new WebSocket(wsUrl);
+
+        socket.onopen = (event) => {
+            socket.send(JSON.stringify({ function: 'calllunaloadready' }))
+        };
+
+        socket.onmessage = (event) => {
+            eval(event.data)
+        };
+
+    };
     if (window.LUNAJSObject)
         LUNAJSObject.calllunaloadready()
+    else
+        __internalservice()
+
 </script>
 __PLACEHOLDER_EXTRA_HTML_

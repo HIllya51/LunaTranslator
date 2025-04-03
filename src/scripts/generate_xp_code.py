@@ -34,6 +34,7 @@ def typeHintRemover(source):
 
 
 def parsecode(code: str):
+    code = re.sub("from typing import .*", "", code)
     # PyQt
     code = code.replace("self.screen().geometry().height()", "99999")
     code = code.replace("self.parent().devicePixelRatioF()", "1")
