@@ -22,7 +22,7 @@ from gui.usefulwidget import (
     NQGroupBox,
     VisLFormLayout,
     clearlayout,
-    automakegrid,
+    makeforms,
 )
 from language import UILanguages, Languages
 from gui.dynalang import LLabel
@@ -353,7 +353,7 @@ def updatexx(self):
 class aboutwidget(NQGroupBox):
     def __init__(self, *a):
         super().__init__(*a)
-        self.grid = QGridLayout(self)
+        self.grid = QFormLayout(self)
         self.lastlang = None
         self.lastlangcomp = {Languages.Chinese: 1, Languages.TradChinese: 2, None: -1}
         self.updatelangtext()
@@ -399,9 +399,9 @@ class aboutwidget(NQGroupBox):
         if getlanguse() == Languages.Chinese:
             commonlink += qqqun + [""]
             shuominggrid = [
-                commonlink,
-                [("如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~", -1)],
-                [(self.createimageview, -1)],
+                [getboxlayout(commonlink)],
+                ["如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~"],
+                [self.createimageview],
             ]
 
         else:
@@ -409,18 +409,15 @@ class aboutwidget(NQGroupBox):
                 discord = qqqun + discord
             commonlink += discord + [""]
             shuominggrid = [
-                commonlink,
+                [getboxlayout(commonlink)],
                 [],
-                [("如果你感觉该软件对你有帮助，", -1)],
+                ["如果你感觉该软件对你有帮助，"],
                 [
-                    (
-                        '欢迎成为我的<a href="https://patreon.com/HIllya51">sponsor</a>。谢谢~',
-                        -1,
-                    )
+                    '欢迎成为我的<a href="https://patreon.com/HIllya51">sponsor</a>。谢谢~'
                 ],
             ]
 
-        automakegrid(self.grid, shuominggrid)
+        makeforms(self.grid, shuominggrid)
 
 
 class delayloadsvg(QSvgWidget):
