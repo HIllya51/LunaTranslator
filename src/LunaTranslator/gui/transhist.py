@@ -417,7 +417,7 @@ class Qtranshist(QPlainTextEdit):
             _f.fromString(fontstring)
             _style = "font-size:{}pt;".format(_f.pointSize())
             _style += 'font-family:"{}";'.format(_f.family())
-            self.setStyleSheet(_style)
+            self.setStyleSheet("QPlainTextEdit{" + _style + "}")
 
     def refresh(self):
         collect = ""
