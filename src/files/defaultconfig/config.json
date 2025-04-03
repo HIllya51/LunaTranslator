@@ -273,15 +273,11 @@
             "https://vndb.org/"
         ]
     ],
+    "networktcpport": 2333,
+    "networktcpenable": false,
     "textoutputer": {
         "clipboard": {
             "use": false,
-            "origin": true,
-            "trans": false
-        },
-        "websocket": {
-            "use": false,
-            "port": 2333,
             "origin": true,
             "trans": false
         }

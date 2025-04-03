@@ -54,6 +54,7 @@ from gui.dynalang import LAction
 from gui.setting_textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
 from rendertext.texttype import TextType, SpecialColor, TranslateColor
+from network.tcpservice import TCPService, WSHandler
 
 
 class MAINUI:
@@ -90,6 +91,15 @@ class MAINUI:
         self.autoswitchgameuid = True
         self.istriggertoupdate = False
         self.thishastranslated = True
+        self.wsoutputsave: list[WSHandler] = []
+        self.service = TCPService()
+        self.serviceinit()
+
+    @threader
+    def serviceinit(self):
+        self.service.stop()
+        if globalconfig["networktcpenable"]:
+            self.service.init(globalconfig["networktcpport"])
 
     @threader
     def ttsautoforward(self):
@@ -868,10 +878,6 @@ class MAINUI:
                 print_exc()
 
     @threader
-    def startoutputer_re(self, klass):
-        self.outputers[klass].init()
-
-    @threader
     def startoutputer(self):
         for classname in globalconfig["textoutputer"]:
             if not os.path.exists("./LunaTranslator/textoutput/" + classname + ".py"):
@@ -880,7 +886,7 @@ class MAINUI:
             self.outputers[classname] = aclass(classname)
 
     def dispatchoutputer(self, text, isorigin):
-        for _, kls in self.outputers.items():
+        for kls in self.outputers.values():
             kls.puttask(text, isorigin)
 
     def fanyiinitmethod(self, classname):

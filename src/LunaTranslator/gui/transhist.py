@@ -71,7 +71,7 @@ class wvtranshist(WebviewWidget):
                 extrahtml,
                 self,
                 "extrahtml_transhist",
-                r"file\static\extrahtml\transhist.html",
+                r"files\static\extrahtml\transhist.html",
                 self,
             ),
         )
@@ -126,7 +126,7 @@ class wvtranshist(WebviewWidget):
     def loadextra(self):
         for _ in [
             "userconfig/extrahtml_transhist.html",
-            r"file\static\extrahtml\transhist.html",
+            r"files\static\extrahtml\transhist.html",
         ]:
             if not os.path.exists(_):
                 continue

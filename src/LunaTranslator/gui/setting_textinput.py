@@ -311,53 +311,23 @@ def outputgrid():
 
     grids = [
         [
-            dict(
-                title="WebSocket",
-                grid=(
-                    [
-                        "自动输出文本",
-                        D_getsimpleswitch(
-                            globalconfig["textoutputer"]["websocket"],
-                            "use",
-                            callback=lambda _: gobject.baseobject.startoutputer_re(
-                                "websocket"
-                            ),
-                        ),
-                    ],
-                    [
-                        "端口号",
-                        D_getspinbox(
-                            0,
-                            65535,
-                            globalconfig["textoutputer"]["websocket"],
-                            "port",
-                            callback=lambda _: gobject.baseobject.startoutputer_re(
-                                "websocket"
-                            ),
-                        ),
-                    ],
-                    [
-                        dict(
-                            type="grid",
-                            title="内容",
-                            grid=(
-                                [
-                                    "原文",
-                                    D_getsimpleswitch(
-                                        globalconfig["textoutputer"]["websocket"],
-                                        "origin",
-                                    ),
-                                    "",
-                                    "翻译",
-                                    D_getsimpleswitch(
-                                        globalconfig["textoutputer"]["websocket"],
-                                        "trans",
-                                    ),
-                                ],
-                            ),
-                        ),
-                    ],
-                ),
+            "开启",
+            D_getsimpleswitch(
+                globalconfig,
+                "networktcpenable",
+                callback=lambda _: gobject.baseobject.serviceinit(),
+            ),
+            "",
+            "",
+        ],
+        [
+            "端口号",
+            D_getspinbox(
+                0,
+                65535,
+                globalconfig,
+                "networktcpport",
+                callback=lambda _: gobject.baseobject.serviceinit(),
             ),
         ],
     ]

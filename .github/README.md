@@ -14,9 +14,9 @@
 
 - **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** ( 内置OCR引擎、WindowsOCR、Tesseract5、manga-ocr、WeChat/QQ OCR ) 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
 
-- **剪贴板** 支持从剪贴板中获取文本进行翻译
+- **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
 
-- **文本输出** 提取的文本可以输出到剪贴板、Websocket，以供其他程序使用。
+- **网络服务** 提供一些 [HTTP/WebSocket API](https://docs.lunatranslator.org/tcpapi.html) 以供和其他程序交互
 
 #### 翻译器
 

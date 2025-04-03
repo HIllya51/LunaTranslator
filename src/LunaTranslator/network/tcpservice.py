@@ -235,17 +235,20 @@ class HTTPHandler(HandlerBase):
 
 
 class TCPService:
+    def __init__(self):
+        self.server_socket = None
+        self.handlers: list[HandlerBase] = []
 
     def register(self, Handler):
         self.handlers.append(Handler)
 
     def stop(self):
-        self.server_socket.close()
+        if self.server_socket:
+            self.server_socket.close()
 
-    def __init__(self, port):
+    def init(self, port):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.bind(("0.0.0.0", port))
-        self.handlers: list[HandlerBase] = []
         self.listen()
 
     @threader
@@ -254,7 +257,6 @@ class TCPService:
         self.server_socket.listen(1)
         while True:
             client_socket, _ = self.server_socket.accept()
-
             self.handle_client(client_socket)
 
     def __checkifwebsocket(self, headers: dict):
@@ -285,7 +287,7 @@ class TCPService:
 
 
 if __name__ == "__main__":
-    ws = TCPService(8011)
+    ws = TCPService()
 
     class TextOutput(WSHandler):
         path = "/"
@@ -308,3 +310,4 @@ if __name__ == "__main__":
 
     ws.register(TextOutput)
     ws.register(APItest)
+    ws.init(8011)

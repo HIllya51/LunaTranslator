@@ -18,9 +18,9 @@ If you feel that the software is helpful to you, welcome to become my [sponsor](
 
 - **OCR** supports **[offline OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** ( built-in OCR, WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **[online OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
 
-- **Clipboard** Supports obtaining text from the clipboard for translation
+- **Clipboard** Supports retrieving text from the clipboard for translation and can also output extracted text to the clipboard.
 
-- **Text Output** Extracted text can be output to the clipboard, Websocket, for use by other programs.
+- **Network Service** Provides some [HTTP/WebSocket APIs](https://docs.lunatranslator.org/tcpapi.html) for interaction with other programs.
 
 #### Translator
 
