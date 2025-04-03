@@ -504,7 +504,7 @@
     "测试": "",
     "跟随游戏窗口": "",
     "主题": "",
-    "自动输出": "",
+    "自动输出文本": "",
     "引擎": "",
     "注音": "",
     "字体缩放": "",
@@ -654,7 +654,6 @@
     "目标列表": "",
     "显示/隐藏翻译": "",
     "prompt格式（需要根据模型版本决定）": "",
-    "输出的内容": "",
     "选取OCR范围时不透明度": "",
     "设为图标": "",
     "拉丁语": "",
@@ -794,5 +793,9 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "网络服务": ""
 }

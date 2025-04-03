@@ -495,7 +495,6 @@
     "测试": "test",
     "跟随游戏窗口": "Följ spelfönstret",
     "主题": "tema",
-    "自动输出": "Automatisk utmatning",
     "引擎": "motor",
     "注音": "Fonetisk anteckning",
     "字体缩放": "Skalning av teckensnitt",
@@ -641,7 +640,6 @@
     "复制自": "Kopiera från",
     "目标列表": "Mållista",
     "prompt格式（需要根据模型版本决定）": "Frågaformat (beroende på modellversion)",
-    "输出的内容": "Utdatainnehåll",
     "选取OCR范围时不透明度": "Opacitet vid val av OCR-område",
     "设为图标": "Ange som ikon",
     "拉丁语": "Latinska språk",
@@ -794,5 +792,10 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

@@ -491,7 +491,6 @@
     "测试": "prova",
     "范围框颜色": "Colore della casella intervallo",
     "主题": "tema",
-    "自动输出": "Uscita automatica",
     "引擎": "motore",
     "注音": "Zhuyin",
     "字体缩放": "Scalamento dei caratteri",
@@ -641,7 +640,6 @@
     "复制自": "Copia da",
     "目标列表": "Elenco target",
     "prompt格式（需要根据模型版本决定）": "Formato di richiesta (a seconda della versione del modello)",
-    "输出的内容": "Contenuto di output",
     "选取OCR范围时不透明度": "Opacità durante la selezione dell'intervallo OCR",
     "设为图标": "Imposta come icona",
     "拉丁语": "Lingua latina",
@@ -794,5 +792,10 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

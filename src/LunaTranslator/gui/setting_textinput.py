@@ -193,11 +193,50 @@ def getTabclip():
 
     grids = [
         [
-            "排除复制自翻译器的文本",
-            D_getsimpleswitch(globalconfig, "excule_from_self"),
-            "",
-            "",
-        ]
+            dict(
+                title="输入",
+                grid=(
+                    [
+                        "排除复制自翻译器的文本",
+                        D_getsimpleswitch(globalconfig, "excule_from_self"),
+                    ],
+                ),
+            ),
+        ],
+        [
+            dict(
+                title="输出",
+                grid=(
+                    [
+                        "自动输出文本",
+                        D_getsimpleswitch(
+                            globalconfig["textoutputer"]["clipboard"], "use"
+                        ),
+                    ],
+                    [
+                        dict(
+                            type="grid",
+                            title="内容",
+                            grid=(
+                                [
+                                    "原文",
+                                    D_getsimpleswitch(
+                                        globalconfig["textoutputer"]["clipboard"],
+                                        "origin",
+                                    ),
+                                    "",
+                                    "翻译",
+                                    D_getsimpleswitch(
+                                        globalconfig["textoutputer"]["clipboard"],
+                                        "trans",
+                                    ),
+                                ],
+                            ),
+                        ),
+                    ],
+                ),
+            ),
+        ],
     ]
     return grids
 
@@ -272,39 +311,10 @@ def outputgrid():
     grids = [
         [
             dict(
-                title="输出的内容",
-                grid=(
-                    [
-                        "原文",
-                        D_getsimpleswitch(globalconfig, "textoutput_origin"),
-                    ],
-                    [
-                        "翻译",
-                        D_getsimpleswitch(globalconfig, "textoutput_trans"),
-                    ],
-                ),
-            ),
-        ],
-        [],
-        [
-            dict(
-                title="剪贴板",
-                grid=(
-                    [
-                        "自动输出",
-                        D_getsimpleswitch(
-                            globalconfig["textoutputer"]["clipboard"], "use"
-                        ),
-                    ],
-                ),
-            ),
-        ],
-        [
-            dict(
                 title="WebSocket",
                 grid=(
                     [
-                        "自动输出",
+                        "自动输出文本",
                         D_getsimpleswitch(
                             globalconfig["textoutputer"]["websocket"],
                             "use",
@@ -322,6 +332,27 @@ def outputgrid():
                             "port",
                             callback=lambda _: gobject.baseobject.startoutputer_re(
                                 "websocket"
+                            ),
+                        ),
+                    ],
+                    [
+                        dict(
+                            type="grid",
+                            title="内容",
+                            grid=(
+                                [
+                                    "原文",
+                                    D_getsimpleswitch(
+                                        globalconfig["textoutputer"]["websocket"],
+                                        "origin",
+                                    ),
+                                    "",
+                                    "翻译",
+                                    D_getsimpleswitch(
+                                        globalconfig["textoutputer"]["websocket"],
+                                        "trans",
+                                    ),
+                                ],
                             ),
                         ),
                     ],
@@ -428,7 +459,7 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     ]
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     basel.addWidget(gridlayoutwidget)
-    titles = ["HOOK设置", "OCR设置", "剪贴板", "其他", "文本输出"]
+    titles = ["HOOK设置", "OCR设置", "剪贴板", "其他", "网络服务"]
     funcs = [
         lambda l: setTabOne_lazy_h(self, l),
         lambda l: getocrgrid_table(self, l),

@@ -491,7 +491,6 @@
     "测试": "Test",
     "范围框颜色": "Gamme Box couleur",
     "主题": "Thèmes",
-    "自动输出": "Sortie automatique",
     "引擎": "Moteur",
     "注音": "Accent",
     "字体缩放": "Zoom de police",
@@ -641,7 +640,6 @@
     "复制自": "Copié depuis",
     "目标列表": "Liste des objectifs",
     "prompt格式（需要根据模型版本决定）": "Format prompt (à décider en fonction de la version du modèle)",
-    "输出的内容": "Contenu de la sortie",
     "选取OCR范围时不透明度": "Opacité lorsque la plage OCR est sélectionnée",
     "设为图标": "Faire une icône",
     "拉丁语": "Latin",
@@ -794,5 +792,10 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

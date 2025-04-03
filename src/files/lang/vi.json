@@ -491,7 +491,6 @@
     "测试": "Thử nghiệm",
     "范围框颜色": "Màu hộp phạm vi",
     "主题": "Chủ đề",
-    "自动输出": "Đầu ra tự động",
     "引擎": "Động cơ",
     "注音": "Ghi chú",
     "字体缩放": "Thu phóng phông chữ",
@@ -641,7 +640,6 @@
     "复制自": "Copy từ",
     "目标列表": "Danh sách mục tiêu",
     "prompt格式（需要根据模型版本决定）": "Định dạng prompt (cần được quyết định dựa trên phiên bản model)",
-    "输出的内容": "Nội dung xuất",
     "选取OCR范围时不透明度": "Độ mờ đục khi chọn phạm vi OCR",
     "设为图标": "Đặt làm biểu tượng",
     "拉丁语": "Tiếng Việt",
@@ -794,5 +792,10 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

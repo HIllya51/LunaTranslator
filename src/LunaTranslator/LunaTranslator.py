@@ -373,8 +373,7 @@ class MAINUI:
                     text = self.readcurrent(needresult=True)
                 else:
                     self.readcurrent()
-            if globalconfig["textoutput_origin"]:
-                self.dispatchoutputer(text)
+            self.dispatchoutputer(text, True)
 
             _showrawfunction_unsafe = functools.partial(
                 self.translation_ui.displayraw1.emit, text
@@ -615,8 +614,7 @@ class MAINUI:
                         self.readcurrent()
                         read_trans_once_check.append(classname)
 
-                    if globalconfig["textoutput_trans"]:
-                        self.dispatchoutputer(res)
+                    self.dispatchoutputer(res, False)
                 try:
                     self.textsource.sqlqueueput((contentraw, classname, res))
                 except:
@@ -881,10 +879,9 @@ class MAINUI:
             aclass = importlib.import_module("textoutput." + classname).Outputer
             self.outputers[classname] = aclass(classname)
 
-    def dispatchoutputer(self, text):
+    def dispatchoutputer(self, text, isorigin):
         for _, kls in self.outputers.items():
-            if kls.config["use"]:
-                kls.puttask(text)
+            kls.puttask(text, isorigin)
 
     def fanyiinitmethod(self, classname):
         try:

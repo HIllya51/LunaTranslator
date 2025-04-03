@@ -25,5 +25,12 @@ class Base:
             text = self.queue.get()
             self.dispatch(text)
 
-    def puttask(self, text):
+    def puttask(self, text, isorigin):
+        if not self.config["use"]:
+            return
+        if not (
+            (isorigin and self.config["origin"])
+            or ((not isorigin) and self.config["trans"])
+        ):
+            return
         self.queue.put(text)

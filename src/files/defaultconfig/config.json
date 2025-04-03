@@ -275,11 +275,15 @@
     ],
     "textoutputer": {
         "clipboard": {
-            "use": false
+            "use": false,
+            "origin": true,
+            "trans": false
         },
         "websocket": {
             "use": false,
-            "port": 2333
+            "port": 2333,
+            "origin": true,
+            "trans": false
         }
     },
     "embedded": {
@@ -1910,8 +1914,6 @@
     "autoupdate": true,
     "proxies": null,
     "viewlistpos": 0,
-    "textoutput_origin": true,
-    "textoutput_trans": false,
     "wordlabel": [],
     "getWordFallbackClipboard": true,
     "verticalhorizontal": false,

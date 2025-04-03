@@ -491,7 +491,6 @@
     "测试": "test",
     "范围框颜色": "Aralık kutusu rengi",
     "主题": "tema",
-    "自动输出": "Otomatik çıkış",
     "引擎": "motor",
     "注音": "Zhuyin",
     "字体缩放": "Yazıtipi ölçü",
@@ -641,7 +640,6 @@
     "复制自": "Kopyalayın",
     "目标列表": "Hedef Listesi",
     "prompt格式（需要根据模型版本决定）": "Soru format ı (model versiyonuna bağlı)",
-    "输出的内容": "Çıkış içeriği",
     "选取OCR范围时不透明度": "OCR menzilini seçerken meşgullük",
     "设为图标": "İşaretçi olarak ayarlayın",
     "拉丁语": "Latin dili",
@@ -794,5 +792,10 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

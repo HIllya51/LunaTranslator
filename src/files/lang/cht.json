@@ -491,7 +491,6 @@
     "测试": "測試",
     "范围框颜色": "範圍框顏色",
     "主题": "主題",
-    "自动输出": "自動輸出",
     "引擎": "引擎",
     "注音": "讀音標註",
     "字体缩放": "字型縮放",
@@ -641,7 +640,6 @@
     "复制自": "複製自",
     "目标列表": "目標清單",
     "prompt格式（需要根据模型版本决定）": "prompt 格式（需要根據模型版本決定）",
-    "输出的内容": "輸出的內容",
     "选取OCR范围时不透明度": "選取 OCR 範圍時不透明度",
     "设为图标": "設為圖示",
     "拉丁语": "拉丁語",
@@ -794,5 +792,10 @@
     "显示卡": "顯示卡",
     "帧率限制": "幀率限制",
     "引用的项目": "引用的專案",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 授權條款。"
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 授權條款。",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

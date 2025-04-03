@@ -491,7 +491,6 @@
     "测试": "Prueba",
     "范围框颜色": "Color del marco de rango",
     "主题": "Tema",
-    "自动输出": "Salida automática",
     "引擎": "Motor",
     "注音": "Anotación fonética",
     "字体缩放": "Tamaño de la fuente",
@@ -641,7 +640,6 @@
     "复制自": "Copiado de",
     "目标列表": "Lista de objetivos",
     "prompt格式（需要根据模型版本决定）": "Formato prompt (debe decidirse en función de la versión del modelo)",
-    "输出的内容": "Contenido exportado",
     "选取OCR范围时不透明度": "Opacidad al seleccionar el rango OCR",
     "设为图标": "Establecer como icono",
     "拉丁语": "Latín",
@@ -794,5 +792,10 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

@@ -491,7 +491,6 @@
     "测试": "テスト",
     "范围框颜色": "範囲枠の色",
     "主题": "テーマ",
-    "自动输出": "自動出力",
     "引擎": "エンジン",
     "注音": "ルビ",
     "字体缩放": "フォント拡大縮小",
@@ -641,7 +640,6 @@
     "复制自": "コピー元",
     "目标列表": "対象リスト",
     "prompt格式（需要根据模型版本决定）": "プロンプト形式（モデルバージョンに応じて決定）",
-    "输出的内容": "出力内容",
     "选取OCR范围时不透明度": "OCR範囲選択時の不透明度",
     "设为图标": "アイコンに設定",
     "拉丁语": "ラテン語",
@@ -794,5 +792,10 @@
     "显示卡": "グラフィックカード",
     "帧率限制": "フレームレート制限",
     "引用的项目": "引用されたプロジェクト",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a>は<a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a>ライセンスを使用しています。"
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a>は<a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a>ライセンスを使用しています。",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }

@@ -495,7 +495,6 @@
     "测试": "Prüfung",
     "跟随游戏窗口": "Folgen Sie dem Spielfenster",
     "主题": "Thema",
-    "自动输出": "Automatische Ausgabe",
     "引擎": "Motor",
     "注音": "Phonetische Anmerkung",
     "字体缩放": "Schriftgröße",
@@ -641,7 +640,6 @@
     "复制自": "Kopieren von",
     "目标列表": "Zielliste",
     "prompt格式（需要根据模型版本决定）": "Aufforderungsformat (abhängig von der Modellversion)",
-    "输出的内容": "Ausgabeinhalt",
     "选取OCR范围时不透明度": "Deckkraft bei Auswahl des OCR-Bereichs",
     "设为图标": "Als Symbol festlegen",
     "拉丁语": "Lateinische Sprache",
@@ -794,5 +792,10 @@
     "显示卡": "",
     "帧率限制": "",
     "引用的项目": "",
-    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": ""
+    "<a href=\"https://github.com/HIllya51/LunaTranslator\">LunaTranslator</a> 使用 <a href=\"https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE\">GPLv3</a> 许可证。": "",
+    "输入": "",
+    "输出": "",
+    "内容": "",
+    "自动输出文本": "",
+    "网络服务": ""
 }
