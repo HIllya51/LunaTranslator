@@ -143,15 +143,19 @@ class HandlerBase:
     def parse(self, info: RequestInfo): ...
 
 
+@threader
 def WSForEach(LS: list, func):
     for L in tuple(LS):
         try:
             func(L)
-        except:
-            try:
-                LS.remove(L)
-            except:
-                pass
+        except Exception as e:
+            if not isinstance(e, OSError):
+                print_exc()
+            else:
+                try:
+                    LS.remove(L)
+                except:
+                    pass
 
 
 class WSHandler(HandlerBase):

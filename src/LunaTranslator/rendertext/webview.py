@@ -6,17 +6,272 @@ from rendertext.texttype import (
     SpecialColor,
     FenciColor,
 )
-import gobject, uuid, json, os, functools
+import gobject, hashlib, json, os, functools
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
 import copy
 from gui.usefulwidget import WebviewWidget
+from network.tcpservice import WSHandler, HTTPHandler, FileResponse
+from urllib.parse import quote
+from typing import List
 
-testsavejs = False
+wsoutputsave: List["internalservicemainuiws"] = []
 
 
-class TextBrowser(WebviewWidget, dataget):
+class somecommon(dataget):
+    def __init__(self):
+        self.colorset = set()
+        self.ts_klass = {}
+        self.saveiterclasspointer = {}
+
+    def debugeval(self, js: str): ...
+
+    def calllunaloadready(self):
+        self.colorset.clear()
+        self.ts_klass.clear()
+        self.setselectable(globalconfig["selectable"])
+        self.showhideerror(globalconfig["showtranexception"])
+        self.showhideorigin(globalconfig["isshowrawtext"])
+        self.showhidetranslate(globalconfig["showfanyi"])
+        self.showhidename(globalconfig["showfanyisource"])
+        self.showatcenter(globalconfig["showatcenter"])
+        self.showhideclick()
+        self.showhidert(globalconfig["isshowhira"])
+        self.setfontstyle()
+        self.setdisplayrank(globalconfig["displayrank"])
+        self.sethovercolor(globalconfig["hovercolor"])
+        self.verticalhorizontal(globalconfig["verticalhorizontal"])
+        gobject.baseobject.translation_ui.translate_text.refreshcontent()
+
+    # js api
+    def sethovercolor(self, color):
+        self.debugeval('sethovercolor("{}")'.format(quote(color)))
+
+    def setdisplayrank(self, rank):
+        self.debugeval("setdisplayrank({})".format(int(rank)))
+
+    def setselectable(self, b):
+        self.debugeval("setselectable({})".format(int(b)))
+
+    def showatcenter(self, show):
+        self.debugeval("showatcenter({})".format(int(show)))
+
+    def showhidert(self, show):
+        self.debugeval("showhidert({})".format(int(show)))
+
+    def showhideclick(self, _=None):
+        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        self.debugeval("showhideclick({})".format(int(show)))
+
+    def showhidename(self, show):
+        self.debugeval("showhidename({})".format(int(show)))
+
+    def showhidetranslate(self, show):
+        self.debugeval("showhidetranslate({})".format(int(show)))
+
+    def showhideorigin(self, show):
+        self.debugeval("showhideorigin({})".format(int(show)))
+
+    def verticalhorizontal(self, v):
+        self.debugeval("verticalhorizontal({})".format(int(v)))
+
+    def showhideerror(self, show):
+        self.debugeval("showhideerror({})".format(int(show)))
+
+    # native api end
+    def setfontstyle(self):
+        def updateextra(args: dict, lhdict: dict):
+            if lhdict:
+                args.update(
+                    lineHeight=lhdict.get("lineHeight", 0),
+                    lineHeightNormal=lhdict.get("lineHeightNormal", True),
+                    marginTop=lhdict.get("marginTop", 0),
+                    marginBottom=lhdict.get("marginBottom", 0),
+                )
+
+        def loadfont(argc, lhdict=None):
+            fm, fs, bold = argc
+            args = dict(fontFamily=fm, fontSize=fs, bold=bold)
+            updateextra(args, lhdict)
+            return args
+
+        extra = {}
+        for klass, data in self.ts_klass.items():
+            klassextra = {}
+            if (not data.get("fontfamily_df", True)) and ("fontfamily" in data):
+                klassextra["fontFamily"] = data["fontfamily"]
+            if (not data.get("fontsize_df", True)) and ("fontsize" in data):
+                klassextra["fontSize"] = data["fontsize"]
+            if (not data.get("showbold_df", True)) and ("showbold" in data):
+                klassextra["bold"] = data["showbold"]
+            if not data.get("lineheight_df", True):
+                updateextra(klassextra, data)
+            extra[klass] = klassextra
+        origin = loadfont(
+            self._getfontinfo(TextType.Origin), globalconfig["lineheights"]
+        )
+        trans = loadfont(
+            self._getfontinfo(TextType.Translate), globalconfig["lineheightstrans"]
+        )
+        hira = loadfont(self._getfontinfo_kana())
+        args = dict(origin=origin, trans=trans, hira=hira, extra=extra)
+        args = quote(json.dumps(args))
+        self.debugeval('setfontstyle("{}");'.format(args))
+
+    def create_div_line_id(self, _id, texttype: TextType, klass: str):
+        args = quote(json.dumps(dict(klass=klass, texttype=texttype)))
+        self.debugeval('create_div_line_id("{}","{}")'.format(_id, args))
+
+    def clear_all(self):
+        self.debugeval("clear_all()")
+
+    def create_internal_text(self, style, styleargs, _id, name, text, args):
+        name = quote(name)
+        text = quote(text)
+        args = quote(json.dumps(args))
+        styleargs = quote(json.dumps(styleargs))
+        self.debugeval(
+            'create_internal_text("{}","{}","{}","{}","{}","{}");'.format(
+                style, styleargs, _id, name, text, args
+            )
+        )
+
+    def create_internal_rubytext(self, style, styleargs, _id, tag, args):
+        tag = quote(json.dumps(tag))
+        args = quote(json.dumps(args))
+        styleargs = quote(json.dumps(styleargs))
+        self.debugeval(
+            'create_internal_rubytext("{}","{}","{}","{}","{}");'.format(
+                style, styleargs, _id, tag, args
+            )
+        )
+
+    def iter_append(
+        self,
+        iter_context_class,
+        texttype: TextType,
+        name,
+        text,
+        color: ColorControl,
+        klass,
+    ):
+
+        if iter_context_class not in self.saveiterclasspointer:
+            _id = self.createtextlineid(texttype, klass)
+            self.saveiterclasspointer[iter_context_class] = _id
+
+        _id = self.saveiterclasspointer[iter_context_class]
+        self._webview_append(_id, name, text, [], color)
+
+    def createtextlineid(self, texttype: TextType, klass: str):
+        self.setfontextra(klass)
+        _id = "luna_{}".format(
+            hashlib.sha256((str(texttype) + str(klass)).encode()).hexdigest()
+        )
+        self.create_div_line_id(_id, texttype, klass)
+        return _id
+
+    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
+        _id = self.createtextlineid(texttype, klass)
+        self._webview_append(_id, name, text, tag, color)
+
+    def _getstylevalid(self):
+        currenttype = globalconfig["rendertext_using_internal"]["webview"]
+        if currenttype not in static_data["textrender"]["webview"]:
+            currenttype = static_data["textrender"]["webview"][0]
+            globalconfig["rendertext_using_internal"]["webview"] = static_data[
+                "textrender"
+            ]["webview"][0]
+        return currenttype
+
+    def _webview_append(self, _id, name, text: str, tag, color: ColorControl):
+        self._setcolors(color)
+        style = self._getstylevalid()
+        styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
+        if len(tag):
+            for word in tag:
+                color1 = FenciColor(word)
+                word["color"] = color1.asklass()
+                self._setcolors(color1)
+            self._setcolors(SpecialColor.KanaColor)
+            args = dict(
+                color=color.asklass(),
+                kanacolor=SpecialColor.KanaColor.asklass(),
+            )
+            self.create_internal_rubytext(style, styleargs, _id, tag, args)
+        else:
+            sig = "LUNASHOWHTML"
+            userawhtml = text.startswith(sig)
+            if userawhtml:
+                text = text[len(sig) :]
+
+            args = dict(color=color.asklass(), userawhtml=userawhtml)
+
+            self.create_internal_text(style, styleargs, _id, name, text, args)
+
+    def clear(self):
+
+        self.clear_all()
+        self.saveiterclasspointer.clear()
+
+    def _setcolors(self, color: ColorControl = None):
+        if color in self.colorset:
+            return
+        self.colorset.add(color)
+        self.setcolorstyle()
+
+    def setcolorstyle(self, _=None):
+        mp = {}
+        for color in self.colorset:
+            mp[color.asklass()] = color.get()
+        style = self._getstylevalid()
+        styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
+        infos = dict(color=mp, style=style, styleargs=styleargs)
+        self.debugeval("setcolorstyle('{}')".format(quote(json.dumps(infos))))
+
+    def setfontextra(self, klass: str):
+        if not klass:
+            return
+        curr = copy.deepcopy(globalconfig["fanyi"][klass].get("privatefont", {}))
+        if curr == self.ts_klass.get(klass, None):
+            return
+        self.ts_klass[klass] = curr
+        self.setfontstyle()
+
+    def resetstyle(self):
+        gobject.baseobject.translation_ui.translate_text.refreshcontent()
+        self.setcolorstyle()
+
+
+class internalservicemainuiws(WSHandler, somecommon):
+    path = "/__internalservice/mainuiws"
+
+    def __init__(self, info, sock):
+        super().__init__(info, sock)
+        somecommon.__init__(self)
+
+    def parse(self, info):
+        wsoutputsave.append(self)
+
+    def onmessage(self, message: str):
+        message: dict = json.loads(message)
+        function = message["function"]
+        args = message.get("args", tuple())
+        dict(calllunaloadready=self.calllunaloadready)[function](*args)
+
+    def debugeval(self, js: str):
+        self.send_text(js)
+
+
+class PageMainui(HTTPHandler):
+    path = "/mainui"
+
+    def parse(self, _):
+        return FileResponse(TextBrowser.loadex_())
+
+
+class TextBrowser(WebviewWidget, somecommon):
     contentsChanged = pyqtSignal(QSize)
     _switchcursor = pyqtSignal(Qt.CursorShape)
     _isDragging = pyqtSignal(bool)
@@ -52,15 +307,12 @@ class TextBrowser(WebviewWidget, dataget):
         self.bind("calllunaheightchange", self.calllunaheightchange)
         self.bind("calllunaEnter", self.calllunaEnter)
         self.bind("calllunaLeave", self.calllunaLeave)
-        self.bind("calllunaloadready", self.resetflags)
+        self.bind("calllunaloadready", self.calllunaloadready)
         self.set_zoom(globalconfig["ZoomFactor2"])
         self.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor2")
         )
-        self.saveiterclasspointer = {}
         self.isfirst = True
-        self.colorset = set()
-        self.ts_klass = {}
         self.window().cursorSet.connect(self._switchcursor)
         self._switchcursor.connect(self.switchcursor)
         self.window().isDragging.connect(self._isDragging)
@@ -72,23 +324,6 @@ class TextBrowser(WebviewWidget, dataget):
     def ___cleartext(self):
         self.parent().clear()
         gobject.baseobject.currenttext = ""
-
-    def resetflags(self):
-        self.colorset.clear()
-        self.ts_klass.clear()
-        self.setselectable(globalconfig["selectable"])
-        self.showhideerror(globalconfig["showtranexception"])
-        self.showhideorigin(globalconfig["isshowrawtext"])
-        self.showhidetranslate(globalconfig["showfanyi"])
-        self.showhidename(globalconfig["showfanyisource"])
-        self.showatcenter(globalconfig["showatcenter"])
-        self.showhideclick()
-        self.showhidert(globalconfig["isshowhira"])
-        self.setfontstyle()
-        self.setdisplayrank(globalconfig["displayrank"])
-        self.sethovercolor(globalconfig["hovercolor"])
-        self.verticalhorizontal(globalconfig["verticalhorizontal"])
-        self.parent().refreshcontent()
 
     def refreshcontent_before(self):
         self.debugeval("refreshcontent_before()")
@@ -155,63 +390,6 @@ class TextBrowser(WebviewWidget, dataget):
         # print(js)
         self.eval(js)
 
-    # js api
-    def setselectable(self, b):
-        self.debugeval("setselectable({})".format(int(b)))
-
-    def showatcenter(self, show):
-        self.debugeval("showatcenter({})".format(int(show)))
-
-    def showhidert(self, show):
-        self.debugeval("showhidert({})".format(int(show)))
-
-    def showhideclick(self, _=None):
-        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
-        self.debugeval("showhideclick({})".format(int(show)))
-
-    def showhidename(self, show):
-        self.debugeval("showhidename({})".format(int(show)))
-
-    def showhidetranslate(self, show):
-        self.debugeval("showhidetranslate({})".format(int(show)))
-
-    def showhideorigin(self, show):
-        self.debugeval("showhideorigin({})".format(int(show)))
-
-    def verticalhorizontal(self, v):
-        self.debugeval("verticalhorizontal({})".format(int(v)))
-
-    def showhideerror(self, show):
-        self.debugeval("showhideerror({})".format(int(show)))
-
-    def create_div_line_id(self, _id, texttype: TextType, klass: str):
-        args = quote(json.dumps(dict(klass=klass, texttype=texttype)))
-        self.debugeval('create_div_line_id("{}","{}")'.format(_id, args))
-
-    def clear_all(self):
-        self.debugeval("clear_all()")
-
-    def create_internal_text(self, style, styleargs, _id, name, text, args):
-        name = quote(name)
-        text = quote(text)
-        args = quote(json.dumps(args))
-        styleargs = quote(json.dumps(styleargs))
-        self.debugeval(
-            'create_internal_text("{}","{}","{}","{}","{}","{}");'.format(
-                style, styleargs, _id, name, text, args
-            )
-        )
-
-    def create_internal_rubytext(self, style, styleargs, _id, tag, args):
-        tag = quote(json.dumps(tag))
-        args = quote(json.dumps(args))
-        styleargs = quote(json.dumps(styleargs))
-        self.debugeval(
-            'create_internal_rubytext("{}","{}","{}","{}","{}");'.format(
-                style, styleargs, _id, tag, args
-            )
-        )
-
     def calllunaheightchange(self, h):
         self.contentsChanged.emit(
             QSize(
@@ -248,9 +426,6 @@ class TextBrowser(WebviewWidget, dataget):
         )
         QApplication.sendEvent(self, event)
 
-    def sethovercolor(self, color):
-        self.debugeval('sethovercolor("{}")'.format(quote(color)))
-
     def calllunaEnter(self):
         QApplication.sendEvent(self.window(), QEvent(QEvent.Type.Enter))
 
@@ -281,151 +456,6 @@ class TextBrowser(WebviewWidget, dataget):
             Qt.KeyboardModifier.NoModifier,
         )
         QApplication.sendEvent(self, event)
-
-    def resetstyle(self):
-        self.parent().refreshcontent()
-        self.setcolorstyle()
-
-    # native api end
-    def setfontstyle(self):
-        def updateextra(args: dict, lhdict: dict):
-            if lhdict:
-                args.update(
-                    lineHeight=lhdict.get("lineHeight", 0),
-                    lineHeightNormal=lhdict.get("lineHeightNormal", True),
-                    marginTop=lhdict.get("marginTop", 0),
-                    marginBottom=lhdict.get("marginBottom", 0),
-                )
-
-        def loadfont(argc, lhdict=None):
-            fm, fs, bold = argc
-            args = dict(fontFamily=fm, fontSize=fs, bold=bold)
-            updateextra(args, lhdict)
-            return args
-
-        extra = {}
-        for klass, data in self.ts_klass.items():
-            klassextra = {}
-            if (not data.get("fontfamily_df", True)) and ("fontfamily" in data):
-                klassextra["fontFamily"] = data["fontfamily"]
-            if (not data.get("fontsize_df", True)) and ("fontsize" in data):
-                klassextra["fontSize"] = data["fontsize"]
-            if (not data.get("showbold_df", True)) and ("showbold" in data):
-                klassextra["bold"] = data["showbold"]
-            if not data.get("lineheight_df", True):
-                updateextra(klassextra, data)
-            extra[klass] = klassextra
-        origin = loadfont(
-            self._getfontinfo(TextType.Origin), globalconfig["lineheights"]
-        )
-        trans = loadfont(
-            self._getfontinfo(TextType.Translate), globalconfig["lineheightstrans"]
-        )
-        hira = loadfont(self._getfontinfo_kana())
-        args = dict(origin=origin, trans=trans, hira=hira, extra=extra)
-        args = quote(json.dumps(args))
-        self.debugeval('setfontstyle("{}");'.format(args))
-
-    def iter_append(
-        self,
-        iter_context_class,
-        texttype: TextType,
-        name,
-        text,
-        color: ColorControl,
-        klass,
-    ):
-
-        if iter_context_class not in self.saveiterclasspointer:
-            _id = self.createtextlineid(texttype, klass)
-            self.saveiterclasspointer[iter_context_class] = _id
-
-        _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, name, text, [], color)
-
-    def createtextlineid(self, texttype: TextType, klass: str):
-        self.setfontextra(klass)
-        _id = "luna_{}".format(uuid.uuid4())
-        self.create_div_line_id(_id, texttype, klass)
-        return _id
-
-    def setdisplayrank(self, rank):
-        self.debugeval("setdisplayrank({})".format(int(rank)))
-
-    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
-        _id = self.createtextlineid(texttype, klass)
-        self._webview_append(_id, name, text, tag, color)
-
-    def measureH(self, font_family, font_size, bold):
-        font = QFont()
-        font.setFamily(font_family)
-        font.setPointSizeF(font_size)
-        font.setBold(bold)
-        fmetrics = QFontMetricsF(font)
-        return fmetrics.height()
-
-    def _getstylevalid(self):
-        currenttype = globalconfig["rendertext_using_internal"]["webview"]
-        if currenttype not in static_data["textrender"]["webview"]:
-            currenttype = static_data["textrender"]["webview"][0]
-            globalconfig["rendertext_using_internal"]["webview"] = static_data[
-                "textrender"
-            ]["webview"][0]
-        return currenttype
-
-    def setcolorstyle(self, _=None):
-        mp = {}
-        for color in self.colorset:
-            mp[color.asklass()] = color.get()
-        style = self._getstylevalid()
-        styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
-        infos = dict(color=mp, style=style, styleargs=styleargs)
-        self.debugeval("setcolorstyle('{}')".format(quote(json.dumps(infos))))
-
-    def _setcolors(self, color: ColorControl = None):
-        if color in self.colorset:
-            return
-        self.colorset.add(color)
-        self.setcolorstyle()
-
-    def setfontextra(self, klass: str):
-        if not klass:
-            return
-        curr = copy.deepcopy(globalconfig["fanyi"][klass].get("privatefont", {}))
-        if curr == self.ts_klass.get(klass, None):
-            return
-        self.ts_klass[klass] = curr
-        self.setfontstyle()
-
-    def _webview_append(self, _id, name, text: str, tag, color: ColorControl):
-        self._setcolors(color)
-        style = self._getstylevalid()
-        styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
-        if len(tag):
-            for word in tag:
-                color1 = FenciColor(word)
-                word["color"] = color1.asklass()
-                self._setcolors(color1)
-            self._setcolors(SpecialColor.KanaColor)
-            args = dict(
-                color=color.asklass(),
-                kanacolor=SpecialColor.KanaColor.asklass(),
-            )
-            self.create_internal_rubytext(style, styleargs, _id, tag, args)
-        else:
-            sig = "LUNASHOWHTML"
-            userawhtml = text.startswith(sig)
-            if userawhtml:
-                text = text[len(sig) :]
-
-            args = dict(color=color.asklass(), userawhtml=userawhtml)
-
-            self.create_internal_text(style, styleargs, _id, name, text, args)
-
-    def clear(self):
-
-        self.clear_all()
-        self.saveiterclasspointer.clear()
 
     def GetSelectedText(self):
         ret = []

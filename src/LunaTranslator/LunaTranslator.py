@@ -55,15 +55,8 @@ from gui.setting_textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
 from rendertext.texttype import TextType, SpecialColor, TranslateColor
 from gui.transhist import internalservicetranshistws, Pagetranshist
-from rendertext.webview import TextBrowser as WVTextBrowser
-from network.tcpservice import TCPService, HTTPHandler, FileResponse
-
-
-class PageMainui(HTTPHandler):
-    path = "/mainui"
-
-    def parse(self, _):
-        return FileResponse(WVTextBrowser.loadex_())
+from rendertext.webview import PageMainui, internalservicemainuiws
+from network.tcpservice import TCPService
 
 
 class MAINUI:
@@ -102,6 +95,7 @@ class MAINUI:
         self.thishastranslated = True
         self.service = TCPService()
         self.service.register(PageMainui)
+        self.service.register(internalservicemainuiws)
         self.service.register(Pagetranshist)
         self.service.register(internalservicetranshistws)
         self.serviceinit()

@@ -639,7 +639,56 @@
     }
 </script>
 <script>
+
+    function __internalservice() {
+        if (window.LUNAJSObject)
+            return;
+        const scheme = window.location.protocol;
+        const wsUrl = ((scheme == 'http:') ? 'ws' : 'wss') + '://' + window.location.host + '/__internalservice/mainuiws';
+        let webSocket = null;
+        let isConnect = false;
+        let rec = null;
+        function createWebSocket() {
+            try {
+                webSocket = new WebSocket(wsUrl);
+                initWebSocket();
+            } catch (e) {
+                reConnect();
+            }
+        }
+
+        function initWebSocket() {
+            webSocket.onopen = function (e) {
+                webSocket.send(JSON.stringify({ function: 'calllunaloadready' }))
+                isConnect = true;
+            };
+            webSocket.onclose = function (e) {
+                isConnect = false;
+                reConnect();
+            };
+            webSocket.onmessage = function (e) {
+                eval(e.data)
+            };
+            webSocket.onerror = function (e) {
+                isConnect = false;
+                reConnect();
+            };
+        }
+
+        function reConnect() {
+            if (isConnect) return;
+            if (rec) clearTimeout(rec);
+            rec = setTimeout(function () {
+                createWebSocket();
+            }, 1000);
+        }
+        createWebSocket()
+
+    };
     if (window.LUNAJSObject)
         LUNAJSObject.calllunaloadready()
+    else
+        __internalservice()
+
 </script>
 __PLACEHOLDER_EXTRA_HTML_

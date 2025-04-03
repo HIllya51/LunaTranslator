@@ -115,29 +115,54 @@
 
 <script>
 
-    function __internalservice() {
+function __internalservice() {
         if (window.LUNAJSObject)
             return;
-
-        const scheme = window.location.protocol; // 包含冒号，例如 "https:"
-
+        const scheme = window.location.protocol;
         const wsUrl = ((scheme == 'http:') ? 'ws' : 'wss') + '://' + window.location.host + '/__internalservice/transhistws';
+        let webSocket = null;
+        let isConnect = false;
+        let rec = null;
+        function createWebSocket() {
+            try {
+                webSocket = new WebSocket(wsUrl);
+                initWebSocket();
+            } catch (e) {
+                reConnect();
+            }
+        }
 
-        var socket = new WebSocket(wsUrl);
+        function initWebSocket() {
+            webSocket.onopen = function (e) {
+                webSocket.send(JSON.stringify({ function: 'calllunaloadready' }))
+                isConnect = true;
+            };
+            webSocket.onclose = function (e) {
+                isConnect = false;
+                reConnect();
+            };
+            webSocket.onmessage = function (e) {
+                eval(e.data)
+            };
+            webSocket.onerror = function (e) {
+                isConnect = false;
+                reConnect();
+            };
+        }
 
-        socket.onopen = (event) => {
-            socket.send(JSON.stringify({ function: 'calllunaloadready' }))
-        };
-
-        socket.onmessage = (event) => {
-            eval(event.data)
-        };
+        function reConnect() {
+            if (isConnect) return;
+            if (rec) clearTimeout(rec);
+            rec = setTimeout(function () {
+                createWebSocket();
+            }, 1000);
+        }
+        createWebSocket()
 
     };
     if (window.LUNAJSObject)
         LUNAJSObject.calllunaloadready()
     else
         __internalservice()
-
 </script>
 __PLACEHOLDER_EXTRA_HTML_
