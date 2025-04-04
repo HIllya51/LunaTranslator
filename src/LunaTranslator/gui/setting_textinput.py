@@ -3,6 +3,7 @@ import functools
 import gobject, os
 from myutils.config import globalconfig
 from myutils.wrapper import threader
+from myutils.utils import dynamiclink
 from textsource.texthook import codepage_display
 from traceback import print_exc
 from language import TransLanguages
@@ -21,7 +22,6 @@ from gui.usefulwidget import (
     makescrollgrid,
     FocusFontCombo,
     getsmalllabel,
-    LPushButton,
 )
 
 
@@ -347,6 +347,12 @@ def createlabellink(url):
 def outputgrid():
 
     grids = [
+        [
+            D_getIconButton(
+                lambda: os.startfile(dynamiclink("{docs_server}/apiservice.html")),
+                "fa.question",
+            ),
+        ],
         [
             "开启",
             D_getsimpleswitch(

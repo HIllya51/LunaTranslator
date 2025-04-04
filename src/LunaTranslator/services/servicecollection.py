@@ -117,14 +117,14 @@ class PageMainui(HTTPHandler):
 
 
 class TextOutputOrigin(WSHandler):
-    path = "/text_origin"
+    path = "/api/ws/text/origin"
 
     def parse(self, _):
         wsoutputsave.append(self)
 
 
 class TextOutputTrans(WSHandler):
-    path = "/text_trans"
+    path = "/api/ws/text/trans"
 
     def parse(self, _):
         wsoutputsave.append(self)
