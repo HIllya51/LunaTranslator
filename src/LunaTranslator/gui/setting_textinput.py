@@ -324,9 +324,8 @@ def open___(url):
     chrome = getpath()
     link = "http://127.0.0.1:{}{}".format(globalconfig["networktcpport"], url)
     if chrome:
-        cmd = '"{}"'.format(chrome)
-        if globalconfig["chromeapp"]:
-            cmd += " --app={}".format(link)
+        app = ["", "--app="][globalconfig["chromeapp"]]
+        cmd = '"{}" {}{}'.format(chrome, app, link)
         threader(os.system)(cmd)
     else:
         os.startfile(link)
