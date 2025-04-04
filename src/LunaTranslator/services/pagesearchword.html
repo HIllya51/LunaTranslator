@@ -178,10 +178,12 @@
             document.getElementById('contentsdiv').appendChild(div)
             let div2 = document.createElement('div')
             //对于存在script的，shadow里面没法运行script，只好退而求其次放在外面。目前为止这样做没有问题。
-            if (_setHTMLWithScript(div2, data.result)) {
+            if (data.result.includes(`<script>`)) {
                 div.appendChild(div2)
+                _setHTMLWithScript(div2, data.result)
             }
             else {
+                div2.innerHTML = data.result
                 let shadow = div.attachShadow({ mode: 'open' });
                 shadow.appendChild(div2);
             }
