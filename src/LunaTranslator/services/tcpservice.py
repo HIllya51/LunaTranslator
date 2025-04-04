@@ -21,6 +21,11 @@ class FileResponse:
         self.type = query_mime(filename)
 
 
+class RedirectResponse:
+    def __init__(self, target):
+        self.target = target
+
+
 class ResponseInfo:
     @staticmethod
     def _404(sock: socket.socket):
@@ -53,6 +58,10 @@ class ResponseInfo:
         elif isinstance(body, FileResponse):
             self.headers["Content-Type"] = body.type
             self.headers["Content-Length"] = body.length
+        elif isinstance(body, RedirectResponse):
+            self.code = 302
+            self.headers["Location"] = body.target
+            body = None
         elif isinstance(body, types.GeneratorType):
             self.headers["Content-Type"] = "text/event-stream; charset=utf-8"
         self.body = body

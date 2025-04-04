@@ -1,3 +1,6 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+</head>
 <script>
     function onclickbtn_1_internal(_id) {
         tabPanes = document.querySelectorAll('.tab-widget_1_internal .tab-pane_1_internal');
@@ -46,6 +49,54 @@
         display: block;
     }
 </style>
+<style>
+    .search-container {
+        display: flex;
+        width: 100%;
+        max-width: 500px;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
+    .search-input {
+        padding: 10px 15px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        width: 100%;
+        outline: none;
+    }
+
+    .search-button {
+        padding: 10px 20px;
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .search-button:hover {
+        background-color: #3367d6;
+    }
+</style>
+<script>
+    function performSearch() {
+        const url = new URL(window.location.pathname, window.location.origin);
+        url.searchParams.append('word', document.getElementById('searchInput').value)
+        console.log(url.toString())
+        window.location = url.toString()
+    }
+</script>
+<div class="search-container">
+    <input type="text" class="search-input" id="searchInput">
+    <button class="search-button" onclick="performSearch()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21L16.65 16.65" />
+        </svg></button>
+</div>
 <div class="tab-widget_1_internal">
     <div class="centerdiv_1_internal" id="btnsdiv">
         <div> </div>
@@ -85,7 +136,6 @@
     const newUrl = currentUrl.toString();
     var idx = 0
 
-
     function _runScript(script) {
         let newScript = document.createElement('script');
         newScript.innerHTML = script.innerHTML;
@@ -102,29 +152,35 @@
         }
         return scripts.length
     }
-    fetchSSE(newUrl, (data) => {
-        data = JSON.parse(data)
-        klass2 = "tab-pane_1_internal"
-        klass1 = "tab-button_1_internal"
-        if (idx == 0) {
-            klass2 += " active"
-            klass1 += " active"
-        }
-        idx += 1
-        document.getElementById('btnsdiv').innerHTML +=
-            `<button type="button" onclick="onclickbtn_1_internal('buttonid_1_internal${idx}')" id="buttonid_1_internal${idx}" class="${klass1}" data-tab="tab_1_internal${idx}">${data.name}</button>`
-        let div = document.createElement('div')
-        div.className = klass2
-        div.id = `tab_1_internal${idx}`
-        document.getElementById('contentsdiv').appendChild(div)
-        let div2 = document.createElement('div')
-        //对于存在script的，shadow里面没法运行script，只好退而求其次放在外面。目前为止这样做没有问题。
-        if (_setHTMLWithScript(div2, data.result)) {
-            div.appendChild(div2)
-        }
-        else {
-            let shadow = div.attachShadow({ mode: 'open' });
-            shadow.appendChild(div2);
-        }
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const word = urlParams.get('word');
+    if (word) {
+        document.getElementById('searchInput').value = word
+        fetchSSE(newUrl, (data) => {
+            data = JSON.parse(data)
+            klass2 = "tab-pane_1_internal"
+            klass1 = "tab-button_1_internal"
+            if (idx == 0) {
+                klass2 += " active"
+                klass1 += " active"
+            }
+            idx += 1
+            document.getElementById('btnsdiv').innerHTML +=
+                `<button type="button" onclick="onclickbtn_1_internal('buttonid_1_internal${idx}')" id="buttonid_1_internal${idx}" class="${klass1}" data-tab="tab_1_internal${idx}">${data.name}</button>`
+            let div = document.createElement('div')
+            div.className = klass2
+            div.id = `tab_1_internal${idx}`
+            document.getElementById('contentsdiv').appendChild(div)
+            let div2 = document.createElement('div')
+            //对于存在script的，shadow里面没法运行script，只好退而求其次放在外面。目前为止这样做没有问题。
+            if (_setHTMLWithScript(div2, data.result)) {
+                div.appendChild(div2)
+            }
+            else {
+                let shadow = div.attachShadow({ mode: 'open' });
+                shadow.appendChild(div2);
+            }
+        });
+    }
 </script>

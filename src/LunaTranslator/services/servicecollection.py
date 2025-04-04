@@ -4,7 +4,9 @@ from services.tcpservice import (
     FileResponse,
     TCPService,
     RequestInfo,
+    RedirectResponse,
 )
+from urllib.parse import quote
 import json, gobject, re, os
 from rendertext.webview import TextBrowser, somecommon as somecommon_1
 from gui.transhist import somecommon as somecommon_2, wvtranshist
@@ -68,19 +70,25 @@ class PageSearchWord(HTTPHandler):
     path = re.compile(r"/page/searchword(\?.*)?")
 
     def parse(self, _: RequestInfo):
-        return FileResponse(
-            os.path.join(os.path.dirname(__file__), "pagesearchword.html")
-        )
+        page = os.path.join(os.path.dirname(__file__), "pagesearchword.html")
+        if _.query.get("word"):
+            return FileResponse(page)
+
+        if globalconfig["usewordorigin"] == False:
+            word = _.query.get("orig")
+        else:
+            word = _.query.get("origorig", word.get("orig"))
+        if word:
+            return RedirectResponse(r"/page/searchword?word=" + quote(word))
+        else:
+            return FileResponse(page)
 
 
 class APISearchWord(HTTPHandler):
     path = re.compile(r"/api/searchword(\?.*)?")
 
     def parse(self, _: RequestInfo):
-        if globalconfig["usewordorigin"] == False:
-            word = _.query.get("orig")
-        else:
-            word = _.query.get("origorig", word["orig"])
+        word = _.query.get("word")
         if not word:
             raise Exception("")
         cnt = 0
@@ -91,7 +99,6 @@ class APISearchWord(HTTPHandler):
             cishu.safesearch(word, functools.partial(self.__notify, k, sema, ret))
         for _ in range(cnt):
             sema.acquire()
-            print(ret[_])
             k, result = ret[_]
             if not result:
                 continue
