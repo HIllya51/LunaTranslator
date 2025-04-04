@@ -152,12 +152,13 @@ def updatemethod(urls, self):
     if updatemethod_checkalready(size, savep, sha256):
         return savep
     with open(savep, "wb") as file:
-        sess = requests.session()
+        sess = requests.Session()
         r = sess.get(
             url,
             stream=True,
             verify=False,
             proxies=results[0][0],
+            headers={"Accept-Encoding": ""},
         )
         file_size = 0
         for i in r.iter_content(chunk_size=1024 * 32):

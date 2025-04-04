@@ -90,18 +90,20 @@ class Requester(Requester_common):
         curl_easy_setopt(curl, CURLoption.FOLLOWLOCATION, int(allow_redirects))
         # curl_easy_setopt(curl, CURLoption.MAXREDIRS, 100) #默认50够了
 
-    def __WriteMemoryCallback(self, headerqueue, que, contents, size, nmemb, userp):
+    def __WriteMemoryCallback(
+        self, headerqueue: queue.Queue, que, contents, size, nmemb, userp
+    ):
         if headerqueue:
             headerqueue.put(0)
         realsize = size * nmemb
-        bs = cast(contents, POINTER(c_char))[:realsize]
+        bs: bytes = cast(contents, POINTER(c_char))[:realsize]
         if isinstance(que, queue.Queue):
             que.put(bs)
         elif isinstance(que, list):
             que.append(bs)
         return realsize
 
-    def _filter_header(self, headertext):
+    def _filter_header(self, headertext: str):
         header = []
         for line in headertext.split("\n"):
             if line.startswith("HTTP/"):
@@ -138,6 +140,16 @@ class Requester(Requester_common):
 
     Accept_Encoding = "gzip, deflate, br, zstd"
 
+    def maybesetencoding(self, headers: dict, curl):
+        # 如果显示指定空encoding，则不要设置此项
+        # 主要针对R2有时会aws-thunked，导致BAD_CONTENT_ENCODING
+        if ("Accept-Encoding" in headers) and (not headers.get("Accept-Encoding")):
+            return
+        encoding: str = headers.get("Accept-Encoding", self.Accept_Encoding)
+        MaybeRaiseException(
+            curl_easy_setopt(curl, CURLoption.ACCEPT_ENCODING, encoding.encode("utf8"))
+        )
+
     def request_impl(
         self,
         method,
@@ -146,7 +158,7 @@ class Requester(Requester_common):
         port,
         param,
         url: str,
-        headers,
+        headers: dict,
         cookies,
         databytes,
         proxy,
@@ -168,13 +180,7 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout[0])
         if timeout[1]:
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, sum(timeout))
-        MaybeRaiseException(
-            curl_easy_setopt(
-                curl,
-                CURLoption.ACCEPT_ENCODING,
-                headers.get("Accept-Encoding", self.Accept_Encoding).encode("utf8"),
-            )
-        )
+        self.maybesetencoding(headers, curl)
         if method == "HEAD":
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)
         MaybeRaiseException(
