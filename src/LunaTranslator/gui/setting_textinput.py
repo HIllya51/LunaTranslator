@@ -320,19 +320,14 @@ def getpath():
     return None
 
 
-def open___():
+def open___(url):
     chrome = getpath()
-    link = "http://127.0.0.1:{}".format(globalconfig["networktcpport"])
+    link = "http://127.0.0.1:{}{}".format(globalconfig["networktcpport"], url)
+    print(url, link)
     if globalconfig["chromeapp"] and chrome:
         threader(os.system)('"{}" --app={}'.format(chrome, link))
     else:
         os.startfile(link)
-
-
-def btnopen():
-    btn = LPushButton("打开")
-    btn.clicked.connect(open___)
-    return btn
 
 
 def selectbrowser():
@@ -341,6 +336,12 @@ def selectbrowser():
     )
     res = f[0]
     globalconfig["chromepath"] = res
+
+
+def createlabellink(url):
+    l = QLabel('<a href="{}">{}</a>'.format(url, url))
+    l.linkActivated.connect(open___)
+    return l
 
 
 def outputgrid():
@@ -368,9 +369,10 @@ def outputgrid():
             ),
         ],
         [],
-        [
-            (btnopen, 2),
-        ],
+        [(functools.partial(createlabellink, "/"), -1)],
+        [(functools.partial(createlabellink, "/page/mainui"), -1)],
+        [(functools.partial(createlabellink, "/page/transhist"), -1)],
+        [(functools.partial(createlabellink, "/page/searchword"), -1)],
         ["Chrome", D_getIconButton(selectbrowser)],
         [
             "APP",
