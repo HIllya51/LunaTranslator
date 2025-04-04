@@ -1,0 +1,25 @@
+<style>
+    body {
+        margin: 0;
+    }
+</style>
+<div style="height: calc(50% - 2px); display: flex;">
+    <div style="width: 50%; border: 1px solid #ccc;">
+        <object data="/page/transhist" width="100%" height="100%"></object>
+    </div>
+    <div style="width: 50%; border: 1px solid #ccc;">
+        <object data="/page/searchword" width="100%" height="100%" id="searchword"></object>
+    </div>
+</div>
+
+<div style="height: calc(50% - 2px);width: calc(100% - 2px); border: 1px solid #ccc;">
+    <object data="/page/mainui" width="100%" height="100%" id="mainui"></object>
+</div>
+<script>
+    const iframe = document.getElementById('mainui')
+    iframe.contentWindow.open=(url)=>{
+        console.log(url)
+         document.getElementById('searchword').data=url
+    }
+
+</script>

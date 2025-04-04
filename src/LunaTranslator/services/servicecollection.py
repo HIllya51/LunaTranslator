@@ -130,8 +130,15 @@ class TextOutputTrans(WSHandler):
         wsoutputsave.append(self)
 
 
-def registerall(service: TCPService):
+class BasePage(HTTPHandler):
+    path = "/"
 
+    def parse(self, _):
+        return FileResponse(os.path.join(os.path.dirname(__file__), "basepage.html"))
+
+
+def registerall(service: TCPService):
+    service.register(BasePage)
     service.register(APISearchWord)
     service.register(PageSearchWord)
     service.register(PageMainui)

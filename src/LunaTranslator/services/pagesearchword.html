@@ -148,7 +148,11 @@
         container.innerHTML = rawHTML;
         let scripts = container.querySelectorAll('script');
         for (let script of scripts) {
-            _runScript(script);
+            try {
+                _runScript(script);
+            } catch (e) {
+                console.error(e)
+            }
         }
         return scripts.length
     }
