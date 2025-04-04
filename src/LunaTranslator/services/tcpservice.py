@@ -2,10 +2,10 @@ from traceback import print_exc
 import socket, re
 from base64 import encodebytes as base64encode
 import hashlib, os
-import time, types
+import types
 import io, json, struct
-from typing import List
-
+from typing import List, Union
+from urllib.parse import parse_qsl, urlsplit
 from network.structures import CaseInsensitiveDict
 from myutils.wrapper import threader
 from myutils.mimehelper import query_mime
@@ -22,6 +22,11 @@ class FileResponse:
 
 
 class ResponseInfo:
+    @staticmethod
+    def _404(sock: socket.socket):
+        ResponseInfo(404, "Not Found", body="Not Found").write(sock)
+        sock.close()
+
     def __init__(
         self,
         code: int = 200,
@@ -79,6 +84,10 @@ class ResponseInfo:
 
 
 class RequestInfo:
+    @property
+    def query(self) -> dict:
+        return dict(parse_qsl(urlsplit(self.path).query))
+
     def __str__(self):
         vis = dict(
             method=self.method,
@@ -136,26 +145,11 @@ class RequestInfo:
 
 
 class HandlerBase:
-    path: str = ...
+    path: Union[str | re.Pattern] = ...
 
     def __init__(self, info: RequestInfo, sock: socket.socket): ...
 
     def parse(self, info: RequestInfo): ...
-
-
-@threader
-def WSForEach(LS: list, func):
-    for L in tuple(LS):
-        try:
-            func(L)
-        except Exception as e:
-            if not isinstance(e, OSError):
-                print_exc()
-            else:
-                try:
-                    LS.remove(L)
-                except:
-                    pass
 
 
 class WSHandler(HandlerBase):
@@ -321,10 +315,10 @@ class HTTPHandler(HandlerBase):
                 resp.write(client_socket)
             except:
                 print_exc()
+            client_socket.close()
         except Exception as e:
             print_exc()
             self._404(client_socket)
-        client_socket.close()
 
     def _checkmethod(self, method: str):
         method = method.lower()
@@ -337,7 +331,7 @@ class HTTPHandler(HandlerBase):
         return True
 
     def _404(self, client_socket):
-        ResponseInfo(404).write(client_socket)
+        ResponseInfo._404(client_socket)
 
 
 class TCPService:
@@ -381,12 +375,17 @@ class TCPService:
                 (not iswsreq) and issubclass(handler, WSHandler)
             ):
                 continue
-            m = re.match(handler.path, info.path)
-            if not m:
-                continue
-            if m.span()[1] > matchlen:
-                matchlen = m.span()[1]
-                matchclass = handler
+            if isinstance(handler.path, str):
+                if handler.path == info.path:
+                    matchclass = handler
+                    break
+            elif isinstance(handler.path, re.Pattern):
+                m = handler.path.match(info.path)
+                if not m:
+                    continue
+                if m.span()[1] > matchlen:
+                    matchlen = m.span()[1]
+                    matchclass = handler
         if not matchclass:
-            return
+            return ResponseInfo._404(client_socket)
         matchclass(info, client_socket)

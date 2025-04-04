@@ -81,6 +81,14 @@
     function safe_calllunaclickedword(word, app) {
         if (window.LUNAJSObject)
             LUNAJSObject.calllunaclickedword(word, app)
+        else {
+            //wsinvoke('calllunaclickedword', [word, app])
+            //比起在luna里打开，用新的标签页打开似乎是更好的选择
+            const url = new URL('/page/searchword', window.location.origin);
+            url.searchParams.append('orig', word['orig'])
+            url.searchParams.append('origorig', word['origorig'])
+            window.open(url.toString())
+        }
     }
 </script>
 <script>
@@ -639,13 +647,19 @@
     }
 </script>
 <script>
-
+    var webSocket = null;
+    function wsinvoke(fname, args) {
+        if (!webSocket) return
+        try {
+            webSocket.send(JSON.stringify({ function: fname, args: args }))
+        } catch (e) { }
+    }
     function __internalservice() {
         if (window.LUNAJSObject)
             return;
         const scheme = window.location.protocol;
         const wsUrl = ((scheme == 'http:') ? 'ws' : 'wss') + '://' + window.location.host + '/__internalservice/mainuiws';
-        let webSocket = null;
+
         let isConnect = false;
         let rec = null;
         function createWebSocket() {
@@ -659,7 +673,7 @@
 
         function initWebSocket() {
             webSocket.onopen = function (e) {
-                webSocket.send(JSON.stringify({ function: 'calllunaloadready' }))
+                wsinvoke('calllunaloadready')
                 isConnect = true;
             };
             webSocket.onclose = function (e) {
@@ -691,4 +705,5 @@
         __internalservice()
 
 </script>
+
 __PLACEHOLDER_EXTRA_HTML_

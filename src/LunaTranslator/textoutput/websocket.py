@@ -1,29 +1,9 @@
 from textoutput.outputerbase import Base
-from network.tcpservice import WSHandler, RequestInfo, WSForEach
-import gobject
-from typing import List
-
-wsoutputsave: List[WSHandler] = []
-
-
-class TextOutputOrigin(WSHandler):
-    path = "/text_origin"
-
-    def parse(self, _: RequestInfo):
-        wsoutputsave.append(self)
-
-
-class TextOutputTrans(WSHandler):
-    path = "/text_trans"
-
-    def parse(self, _: RequestInfo):
-        wsoutputsave.append(self)
+from services.servicecollection import TextOutputOrigin, TextOutputTrans
+from services.servicecollection_1 import WSForEach, wsoutputsave
 
 
 class Outputer(Base):
-    def init(self):
-        gobject.baseobject.service.register(TextOutputOrigin)
-        gobject.baseobject.service.register(TextOutputTrans)
 
     @property
     def using(self):

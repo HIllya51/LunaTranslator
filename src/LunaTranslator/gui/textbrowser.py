@@ -5,9 +5,9 @@ from traceback import print_exc
 from gui.usefulwidget import WebviewWidget
 from hiraparse.basehira import basehira
 from rendertext.texttype import TextType, ColorControl
-from rendertext.webview import TextBrowser as WebviewTextbrowser, wsoutputsave
+from rendertext.webview import TextBrowser as WebviewTextbrowser
 from rendertext.textbrowser import TextBrowser as QtTextbrowser
-from network.tcpservice import WSForEach
+from services.servicecollection_1 import mainuiwsoutputsave, WSForEach
 
 
 def checkusewhich():
@@ -118,7 +118,7 @@ class Textbrowser(QFrame):
             iter_context_class, texttype, name, text, color, klass
         )
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.iter_append(
                 iter_context_class, texttype, name, text, color, klass
             ),
@@ -143,7 +143,7 @@ class Textbrowser(QFrame):
             texttype, name, text, basehira.parseastarget(tag), color, klass
         )
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.append(
                 texttype, name, text, basehira.parseastarget(tag), color, klass
             ),
@@ -154,63 +154,63 @@ class Textbrowser(QFrame):
         self.trace.clear()
         self.textbrowser.clear()
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.clear(),
         )
 
     def setcolorstyle(self, _=None):
         self.textbrowser.setcolorstyle()
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.setcolorstyle(),
         )
 
     def setfontstyle(self, _=None):
         self.textbrowser.setfontstyle()
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.setfontstyle(),
         )
 
     def setfontextra(self, klass):
         self.textbrowser.setfontextra(klass)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.setfontextra(klass),
         )
 
     def showhidert(self, _):
         self.textbrowser.showhidert(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.showhidert(_),
         )
 
     def showhideclick(self, _):
         self.textbrowser.showhideclick(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.showhideclick(_),
         )
 
     def showhidename(self, _):
         self.textbrowser.showhidename(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.showhidename(_),
         )
 
     def showatcenter(self, _):
         self.textbrowser.showatcenter(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.showatcenter(_),
         )
 
     def showhidetranslate(self, _):
         self.textbrowser.showhidetranslate(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.showhidetranslate(_),
         )
 
@@ -220,28 +220,28 @@ class Textbrowser(QFrame):
     def showhideorigin(self, _):
         self.textbrowser.showhideorigin(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.showhideorigin(_),
         )
 
     def showhideerror(self, _):
         self.textbrowser.showhideerror(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.showhideerror(_),
         )
 
     def resetstyle(self):
         self.textbrowser.resetstyle()
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.resetstyle(),
         )
 
     def setdisplayrank(self, type):
         self.textbrowser.setdisplayrank(type)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.setdisplayrank(type),
         )
 
@@ -251,13 +251,13 @@ class Textbrowser(QFrame):
     def sethovercolor(self, color):
         self.textbrowser.sethovercolor(color)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.sethovercolor(color),
         )
 
     def verticalhorizontal(self, _):
         self.textbrowser.verticalhorizontal(_)
         WSForEach(
-            wsoutputsave,
+            mainuiwsoutputsave,
             lambda _1: _1.verticalhorizontal(_),
         )

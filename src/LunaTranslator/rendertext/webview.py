@@ -12,11 +12,6 @@ from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
 import copy
 from gui.usefulwidget import WebviewWidget
-from network.tcpservice import WSHandler, HTTPHandler, FileResponse
-from urllib.parse import quote
-from typing import List
-
-wsoutputsave: List["internalservicemainuiws"] = []
 
 
 class somecommon(dataget):
@@ -243,32 +238,6 @@ class somecommon(dataget):
         gobject.baseobject.translation_ui.translate_text.refreshcontent()
         self.setcolorstyle()
 
-
-class internalservicemainuiws(WSHandler, somecommon):
-    path = "/__internalservice/mainuiws"
-
-    def __init__(self, info, sock):
-        super().__init__(info, sock)
-        somecommon.__init__(self)
-
-    def parse(self, info):
-        wsoutputsave.append(self)
-
-    def onmessage(self, message: str):
-        message: dict = json.loads(message)
-        function = message["function"]
-        args = message.get("args", tuple())
-        dict(calllunaloadready=self.calllunaloadready)[function](*args)
-
-    def debugeval(self, js: str):
-        self.send_text(js)
-
-
-class PageMainui(HTTPHandler):
-    path = "/mainui"
-
-    def parse(self, _):
-        return FileResponse(TextBrowser.loadex_())
 
 
 class TextBrowser(WebviewWidget, somecommon):

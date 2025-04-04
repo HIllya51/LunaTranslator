@@ -54,9 +54,8 @@ from gui.dynalang import LAction
 from gui.setting_textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
 from rendertext.texttype import TextType, SpecialColor, TranslateColor
-from gui.transhist import internalservicetranshistws, Pagetranshist
-from rendertext.webview import PageMainui, internalservicemainuiws
-from network.tcpservice import TCPService
+from services.servicecollection import registerall
+from services.tcpservice import TCPService
 
 
 class MAINUI:
@@ -94,11 +93,7 @@ class MAINUI:
         self.istriggertoupdate = False
         self.thishastranslated = True
         self.service = TCPService()
-        self.service.register(PageMainui)
-        self.service.register(internalservicemainuiws)
-        self.service.register(Pagetranshist)
-        self.service.register(internalservicetranshistws)
-        self.serviceinit()
+        registerall(self.service)
 
     @threader
     def serviceinit(self):
@@ -1294,6 +1289,7 @@ class MAINUI:
         self.inittray()
         self.playtimemanager = playtimemanager()
         self.urlprotocol()
+        self.serviceinit()
 
     def WinEventHookCALLBACK(self, event, hwnd, idObject):
         try:

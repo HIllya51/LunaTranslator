@@ -9,11 +9,7 @@ from urllib.parse import quote
 from myutils.wrapper import threader
 from traceback import print_exc
 from gui.setting_display_text import extrahtml
-from network.tcpservice import WSHandler, HTTPHandler, FileResponse, WSForEach
-from urllib.parse import quote
-from typing import List
-
-wsoutputsave: List["internalservicetranshistws"] = []
+from services.servicecollection_1 import WSForEach, transhistwsoutputsave
 
 
 class somecommon:
@@ -95,29 +91,6 @@ class somecommon:
         self.debugeval(
             "showhidetime({})".format(int(globalconfig["history"]["showtime"]))
         )
-
-
-class internalservicetranshistws(WSHandler, somecommon):
-    path = "/__internalservice/transhistws"
-
-    def parse(self, info):
-        wsoutputsave.append(self)
-
-    def onmessage(self, message: str):
-        message: dict = json.loads(message)
-        function = message["function"]
-        args = message.get("args", tuple())
-        dict(calllunaloadready=self.calllunaloadready)[function](*args)
-
-    def debugeval(self, js: str):
-        self.send_text(js)
-
-
-class Pagetranshist(HTTPHandler):
-    path = "/transhist"
-
-    def parse(self, _):
-        return FileResponse(wvtranshist.loadex_())
 
 
 class wvtranshist(WebviewWidget, somecommon):
@@ -500,33 +473,33 @@ class transhist(closeashidewindow):
         self.__load()
 
     def setf(self):
-        WSForEach(wsoutputsave, lambda _: _.setf())
+        WSForEach(transhistwsoutputsave, lambda _: _.setf())
 
     def showtransname(self):
-        WSForEach(wsoutputsave, lambda _: _.showtransname())
+        WSForEach(transhistwsoutputsave, lambda _: _.showtransname())
 
     def showhidetime(self):
-        WSForEach(wsoutputsave, lambda _: _.showhidetime())
+        WSForEach(transhistwsoutputsave, lambda _: _.showhidetime())
 
     def showtrans(self):
-        WSForEach(wsoutputsave, lambda _: _.showtrans())
+        WSForEach(transhistwsoutputsave, lambda _: _.showtrans())
 
     def showhideraw(self):
-        WSForEach(wsoutputsave, lambda _: _.showhideraw())
+        WSForEach(transhistwsoutputsave, lambda _: _.showhideraw())
 
     def getnewsentence(self, sentence):
         tm = get_time_stamp()
         self.trace.append((0, (tm, sentence)))
         if self.state == 2:
             self.textOutput.getnewsentence(self.trace[-1])
-        WSForEach(wsoutputsave, lambda _: _.getnewsentence(self.trace[-1]))
+        WSForEach(transhistwsoutputsave, lambda _: _.getnewsentence(self.trace[-1]))
 
     def getnewtrans(self, api, sentence):
         tm = get_time_stamp()
         self.trace.append((1, (tm, api, sentence)))
         if self.state == 2:
             self.textOutput.getnewtrans(self.trace[-1])
-        WSForEach(wsoutputsave, lambda _: _.getnewtrans(self.trace[-1]))
+        WSForEach(transhistwsoutputsave, lambda _: _.getnewtrans(self.trace[-1]))
 
     def loadviewer(self, shoudong=False):
         if self.textOutput:

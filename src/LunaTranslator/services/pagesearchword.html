@@ -1,0 +1,130 @@
+<script>
+    function onclickbtn_1_internal(_id) {
+        tabPanes = document.querySelectorAll('.tab-widget_1_internal .tab-pane_1_internal');
+        tabButtons = document.querySelectorAll('.tab-widget_1_internal .tab-button_1_internal');
+        for (i = 0; i < tabButtons.length; i++)
+            tabButtons[i].classList.remove('active');
+        for (i = 0; i < tabPanes.length; i++)
+            tabPanes[i].classList.remove('active');
+
+        document.getElementById(_id).classList.add('active');
+
+        tabId = document.getElementById(_id).getAttribute('data-tab');
+        tabPane = document.getElementById(tabId);
+        tabPane.classList.add('active');
+    }
+</script>
+<style>
+    .centerdiv_1_internal {
+        display: flex;
+        justify-content: center;
+    }
+
+    .tab-widget_1_internal .tab-button_1_internals_1_internal {
+        display: flex;
+    }
+
+    .tab-widget_1_internal .tab-button_1_internal {
+        padding: 7px 15px;
+        background-color: #cccccccc;
+        border: none;
+        cursor: pointer;
+        display: inline-block;
+        line-height: 20px;
+    }
+
+    .tab-widget_1_internal .tab-button_1_internal.active {
+        background-color: #cccccc44;
+    }
+
+    .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal {
+        display: none;
+        padding: 10px;
+    }
+
+    .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal.active {
+        display: block;
+    }
+</style>
+<div class="tab-widget_1_internal">
+    <div class="centerdiv_1_internal" id="btnsdiv">
+        <div> </div>
+    </div>
+    <div>
+        <div class="tab-content_1_internal" id="contentsdiv"> </div>
+    </div>
+</div>
+<script>
+    async function fetchSSE(url, onMessage) {
+        const response = await fetch(url, {
+            headers: { 'Accept': 'text/event-stream' }
+        });
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop();
+
+            for (const line of lines) {
+                if (line.startsWith('data:')) {
+                    const data = line.replace(/^data:\s*/, '').trim();
+                    if (data) onMessage(data);
+                }
+            }
+        }
+    }
+    const currentUrl = new URL(window.location.href);
+    currentUrl.pathname = '/api/searchword';
+    const newUrl = currentUrl.toString();
+    var idx = 0
+
+
+    function _runScript(script) {
+        let newScript = document.createElement('script');
+        newScript.innerHTML = script.innerHTML;
+        let src = script.getAttribute('src');
+        if (src) newScript.setAttribute('src', src);
+        document.head.appendChild(newScript);
+        document.head.removeChild(newScript);
+    }
+    function _setHTMLWithScript(container, rawHTML) {
+        container.innerHTML = rawHTML;
+        let scripts = container.querySelectorAll('script');
+        for (let script of scripts) {
+            _runScript(script);
+        }
+        return scripts.length
+    }
+    fetchSSE(newUrl, (data) => {
+        data = JSON.parse(data)
+        klass2 = "tab-pane_1_internal"
+        klass1 = "tab-button_1_internal"
+        if (idx == 0) {
+            klass2 += " active"
+            klass1 += " active"
+        }
+        idx += 1
+        document.getElementById('btnsdiv').innerHTML +=
+            `<button type="button" onclick="onclickbtn_1_internal('buttonid_1_internal${idx}')" id="buttonid_1_internal${idx}" class="${klass1}" data-tab="tab_1_internal${idx}">${data.name}</button>`
+        let div = document.createElement('div')
+        div.className = klass2
+        div.id = `tab_1_internal${idx}`
+        document.getElementById('contentsdiv').appendChild(div)
+        let div2 = document.createElement('div')
+        //对于存在script的，shadow里面没法运行script，只好退而求其次放在外面。目前为止这样做没有问题。
+        if (_setHTMLWithScript(div2, data.result)) {
+            div.appendChild(div2)
+        }
+        else {
+            let shadow = div.attachShadow({ mode: 'open' });
+            shadow.appendChild(div2);
+        }
+    });
+</script>
