@@ -147,7 +147,6 @@
     "颜色": "colore",
     "空白": "vuoto",
     "合并多行识别结果": "Unisci i risultati del riconoscimento di più righe",
-    "选取OCR范围后立即进行一次识别": "Eseguire immediatamente il riconoscimento dopo aver selezionato l'intervallo OCR",
     "未查到": "Non trovato",
     "保存": "conservare",
     "当前版本": "versione corrente",
@@ -800,5 +799,6 @@
     "网络服务": "",
     "开启": "",
     "已安装": "",
-    "未安装": ""
+    "未安装": "",
+    "OCR引擎": ""
 }

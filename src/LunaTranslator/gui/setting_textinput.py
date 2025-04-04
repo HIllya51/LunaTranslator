@@ -52,6 +52,9 @@ def gethookgrid_em(self):
                 "clearText",
                 callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
             ),
+            "",
+            "",
+            "",
         ],
         [
             "显示模式",

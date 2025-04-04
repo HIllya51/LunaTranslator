@@ -149,7 +149,6 @@
     "合并多行识别结果": "Merge Multi-line Recognition Results",
     "未查到": "Not Found",
     "保存": "Save",
-    "选取OCR范围后立即进行一次识别": "Perform OCR Immediately After Selecting Region",
     "当前版本": "Current Version",
     "最新版本": "Latest Version",
     "项目网站": "Project Website",
@@ -800,5 +799,6 @@
     "网络服务": "",
     "开启": "",
     "已安装": "",
-    "未安装": ""
+    "未安装": "",
+    "OCR引擎": ""
 }

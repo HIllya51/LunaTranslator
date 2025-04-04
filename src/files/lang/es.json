@@ -147,7 +147,6 @@
     "颜色": "Color",
     "空白": "Vacío",
     "合并多行识别结果": "Fusionar los resultados de identificación de varias líneas",
-    "选取OCR范围后立即进行一次识别": "Reconocimiento una vez seleccionado el rango OCR",
     "未查到": "No se ha detectado",
     "保存": "Guardar",
     "当前版本": "Versión actual",
@@ -800,5 +799,6 @@
     "网络服务": "",
     "开启": "",
     "已安装": "",
-    "未安装": ""
+    "未安装": "",
+    "OCR引擎": ""
 }

@@ -868,10 +868,10 @@ def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, defaul
 
 
 def getIconButton(
-    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None
+    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True
 ):
 
-    b = IconButton(icon, enable, qicon)
+    b = IconButton(icon, enable, qicon, fix=fix)
 
     if callback:
         b.clicked_1.connect(callback)
@@ -882,9 +882,9 @@ def getIconButton(
 
 
 def D_getIconButton(
-    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None
+    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True
 ):
-    return lambda: getIconButton(callback, icon, enable, qicon, callback2=callback2)
+    return lambda: getIconButton(callback, icon, enable, qicon, callback2=callback2, fix=fix)
 
 
 def check_grid_append(grids):

@@ -78,7 +78,6 @@
     "桜乃そら": "Sakura no Suo ら",
     "修改字体字符集": "Schriftzeichensatz ändern",
     "转区": "Transferzone",
-    "选取OCR范围后立即进行一次识别": "Führen Sie sofort nach Auswahl des OCR-Bereichs eine Erkennung durch",
     "过滤文本中的非日语字符集字符": "Nicht japanische Zeichen im Text filtern",
     "显示翻译器名称": "Name des Übersetzers anzeigen",
     "最长翻译字数": "Maximale Anzahl von Übersetzungswörtern",
@@ -800,5 +799,6 @@
     "网络服务": "",
     "开启": "",
     "已安装": "",
-    "未安装": ""
+    "未安装": "",
+    "OCR引擎": ""
 }

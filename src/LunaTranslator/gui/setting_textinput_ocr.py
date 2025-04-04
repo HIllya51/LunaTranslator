@@ -17,7 +17,7 @@ from gui.usefulwidget import (
     TableViewW,
     saveposwindow,
     check_grid_append,
-    IconButton,
+    getsmalllabel,
     pixmapviewer,
     LStandardItemModel,
     SuperCombo,
@@ -132,19 +132,6 @@ class triggereditor(LDialog):
         self.hctable.setIndexWidget(self.hcmodel.index(0, 1), combo)
 
 
-def createmanybtn():
-    w = NQGroupBox()
-    hbox = QHBoxLayout(w)
-    hbox.setContentsMargins(0, 0, 0, 0)
-
-    btn = IconButton("fa.question", fix=False)
-    hbox.addWidget(btn)
-    btn.clicked.connect(
-        lambda: os.startfile(dynamiclink("{docs_server}/useapis/ocrapi.html"))
-    )
-    return w
-
-
 def initgridsources(self, names):
     line = []
     i = 0
@@ -197,13 +184,8 @@ def initgridsources(self, names):
         i += 1
     if len(line):
         grids_source.append(line)
-    rm = check_grid_append(grids_source)
+    check_grid_append(grids_source)
 
-    if i % 3 == 0:
-        grids_source.append([])
-    if i % 3 != 2:
-        grids_source[-1].append(("", 4 * (2 - i % 3)))
-    grids_source[-1].append((createmanybtn, 3 - rm))
     return grids_source
 
 
@@ -400,69 +382,75 @@ def internal(self):
         [(functools.partial(offlinelinks, "ocr"), 0)],
     ]
     engines = [
+        [
+            D_getIconButton(
+                callback=gobject.baseobject.createshowocrimage,
+                icon="fa.picture-o",
+                fix=False,
+            ),
+            D_getIconButton(
+                callback=lambda: os.startfile(
+                    dynamiclink("{docs_server}/useapis/ocrapi.html")
+                ),
+                icon="fa.question",
+                fix=False,
+            ),
+            "",
+            "",
+            "",
+        ],
         [dict(title="离线", type="grid", grid=offgrids)],
         [dict(title="在线", type="grid", grid=initgridsources(self, online))],
     ]
     autorun = [
         [
-            D_getIconButton(
-                callback=lambda: os.startfile(
-                    dynamiclink("{docs_server}/ocrparam.html")
-                ),
-                icon="fa.question",
-            ),
             "自动化执行方法",
-            (
-                D_getsimplecombobox(
-                    [
-                        "分析图像更新",
-                        "周期执行",
-                        "分析图像更新+周期执行",
-                        "鼠标键盘触发+等待稳定",
-                    ],
-                    globalconfig,
-                    "ocr_auto_method",
-                    callback=functools.partial(_ocrparam_create, self),
-                ),
-                12,
+            getboxlayout(
+                [
+                    D_getIconButton(
+                        callback=lambda: os.startfile(
+                            dynamiclink("{docs_server}/ocrparam.html")
+                        ),
+                        icon="fa.question",
+                    ),
+                    D_getsimplecombobox(
+                        [
+                            "分析图像更新",
+                            "周期执行",
+                            "分析图像更新+周期执行",
+                            "鼠标键盘触发+等待稳定",
+                        ],
+                        globalconfig,
+                        "ocr_auto_method",
+                        callback=functools.partial(_ocrparam_create, self),
+                    ),
+                ]
             ),
         ],
-        [(functools.partial(_ocrparam, self), 0)],
+        [functools.partial(_ocrparam, self)],
     ]
     reco = [
         [
             "识别方向",
-            (
-                D_getsimplecombobox(
-                    ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
-                ),
-                2,
+            D_getsimplecombobox(
+                ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
             ),
             "",
-            D_getIconButton(
-                gobject.baseobject.createshowocrimage,
-                icon="fa.picture-o",
-            ),
-            "",
-            "",
-        ],
-        [
             "多重区域模式",
             D_getsimpleswitch(
                 globalconfig,
                 "multiregion",
                 callback=lambda _: gobject.baseobject.textsource.leaveone(),
             ),
+            "",
+            "",
+            "",
         ],
-    ]
-    after = [
         [
-            (("合并多行识别结果"), 12),
+            "合并多行识别结果",
             D_getsimpleswitch(globalconfig, "ocrmergelines"),
-            ("", 12),
-        ],
-        [
-            (("易错内容修正"), 12),
+            "",
+            "易错内容修正",
             D_getsimpleswitch(ocrerrorfix, "use"),
             D_getIconButton(
                 callback=functools.partial(
@@ -492,54 +480,44 @@ def internal(self):
                 name="ocrrangecolor_button",
                 parent=self,
             ),
-        ],
-        [
+            "",
             "范围框宽度",
-            (
-                D_getspinbox(
-                    1,
-                    100,
-                    globalconfig,
-                    "ocrrangewidth",
-                    callback=lambda x: gobject.baseobject.textsource.setstyle(),
-                ),
-                2,
+            D_getspinbox(
+                1,
+                100,
+                globalconfig,
+                "ocrrangewidth",
+                callback=lambda x: gobject.baseobject.textsource.setstyle(),
             ),
-        ],
-        [
-            "选取OCR范围后立即进行一次识别",
-            D_getsimpleswitch(globalconfig, "ocrafterrangeselect"),
+            "",
+            "",
+            "",
         ],
         [
             "选取OCR范围后显示范围框",
             D_getsimpleswitch(globalconfig, "showrangeafterrangeselect"),
-        ],
-        [
+            "",
             "选取OCR范围时不透明度",
-            (
-                D_getspinbox(
-                    0,
-                    1,
-                    globalconfig,
-                    "ocrselectalpha",
-                    double=True,
-                    step=0.01,
-                ),
-                2,
+            D_getspinbox(
+                0,
+                1,
+                globalconfig,
+                "ocrselectalpha",
+                double=True,
+                step=0.01,
             ),
         ],
     ]
     allothers = [
         [dict(title="识别设置", type="grid", grid=reco)],
-        [dict(title="后处理", type="grid", grid=after)],
-        [dict(title="其他设置", type="grid", grid=others)],
+        [dict(title="自动化执行", grid=autorun)],
+        [dict(title="其他设置",type="grid", grid=others)],
     ]
 
     return makesubtab_lazy(
-        ["引擎", "自动化执行", "其他设置"],
+        ["OCR引擎", "其他设置"],
         [
             lambda l: makescrollgrid(engines, l),
-            lambda l: makescrollgrid(autorun, l),
             lambda l: makescrollgrid(allothers, l),
         ],
         delay=True,

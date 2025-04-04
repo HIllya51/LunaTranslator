@@ -1596,10 +1596,10 @@ class TranslatorWindow(resizableframeless):
         self.showhideocrrange()
         if globalconfig["showrangeafterrangeselect"] == False:
             self.showhideocrrange()
-        if globalconfig["ocrafterrangeselect"]:
-            self.startTranslater()
-            if not globalconfig["keepontop"]:
-                windows.SetForegroundWindow(self.winid)
+
+        self.startTranslater()
+        if not globalconfig["keepontop"]:
+            windows.SetForegroundWindow(self.winid)
 
     def startTranslater(self):
         if gobject.baseobject.textsource:
