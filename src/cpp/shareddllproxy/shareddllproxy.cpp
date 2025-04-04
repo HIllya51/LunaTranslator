@@ -14,6 +14,7 @@ int neospeechlist(int argc, wchar_t *argv[]);
 int eztrans(int argc, wchar_t *argv[]);
 int atlaswmain(int argc, wchar_t *argv[]);
 #else
+int SnippingTool(int argc, wchar_t *argv[]);
 #endif // !_WIN64
 
 void listprocessmodule_1(std::ofstream &of, DWORD processPID)
@@ -71,6 +72,7 @@ int wmain(int argc, wchar_t *argv[])
         {L"atlaswmain", atlaswmain},
 #else
 
+        {L"SnippingTool", SnippingTool},
 #endif // !_WIN64
     };
     return fm[argv0](argc - 1, argv + 1);

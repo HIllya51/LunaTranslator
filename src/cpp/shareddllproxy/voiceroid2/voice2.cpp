@@ -19,10 +19,10 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
 
     std::string last;
     float rate = -1;
-    auto handle = CreateFileMappingA(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, 1024 * 1024 * 10, argv[5]);
+    auto handle = CreateFileMappingA(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, 1024 * 1024 * 16, argv[5]);
 
-    auto mapview = (char *)MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, 1024 * 1024 * 10);
-    memset(mapview, 0, 1024 * 1024 * 10);
+    auto mapview = (char *)MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, 1024 * 1024 * 16);
+    memset(mapview, 0, 1024 * 1024 * 16);
     SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[4]));
     ConnectNamedPipe(hPipe, NULL);
     Ebyroid *ebyroid = Ebyroid::Create(argv[1], argv[2], argv[6], argv[7]);
@@ -70,7 +70,7 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
         result = ebyroid->Speech(output.data(), binary);
         size_t output_size = binary.size() * 2;
         int fsize = output_size + 44;
-        if (fsize > 1024 * 1024 * 10)
+        if (fsize > 1024 * 1024 * 16)
         {
             fsize = 0;
         }

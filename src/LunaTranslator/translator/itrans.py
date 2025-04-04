@@ -5,7 +5,7 @@ from translator.basetranslator import basetrans
 
 class TS(basetrans):
 
-    def inittranslator(self):
+    def init(self):
         mainjsurl = self.proxysession.get(
             "https://itranslate-webapp-production.web.app/manifest.json"
         ).json()["main.js"]

@@ -8,7 +8,7 @@ class TS(basetrans):
     def langmap(self):
         return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
-    def inittranslator(self):
+    def init(self):
         headers = {
             "authority": "papago.naver.com",
             "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",

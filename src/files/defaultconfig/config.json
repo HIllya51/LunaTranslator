@@ -1499,6 +1499,11 @@
             "name": "WindowsOCR",
             "type": "offline"
         },
+        "SnippingTool": {
+            "use": false,
+            "name": "SnippingTool",
+            "type": "offline"
+        },
         "tesseract5": {
             "use": false,
             "name": "Tesseract5",

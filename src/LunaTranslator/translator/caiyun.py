@@ -26,7 +26,7 @@ def decrypt(cipher_text):
 
 
 class TS(basetrans):
-    def inittranslator(self):
+    def init(self):
         # self.engine=Caiyun()
         # self.engine._=None
 

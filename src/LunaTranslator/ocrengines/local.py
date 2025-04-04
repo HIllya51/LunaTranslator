@@ -5,7 +5,6 @@ from ocrengines.baseocrclass import baseocr
 from ctypes import (
     CDLL,
     c_char_p,
-    c_size_t,
     c_void_p,
     c_int32,
     Structure,
@@ -75,14 +74,22 @@ class ocrwrapper:
         self._OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
 
         self._OcrDetect = self._LunaOCR.OcrDetect
-        self._OcrDetect.argtypes = (c_void_p, c_void_p, c_size_t, c_int32, c_void_p)
+        self._OcrDetect.argtypes = (
+            c_void_p,
+            c_void_p,
+            c_int32,
+            c_int32,
+            c_int32,
+            c_int32,
+            c_void_p,
+        )
 
         self._OcrDestroy = self._LunaOCR.OcrDestroy
         self._OcrDestroy.argtypes = (c_void_p,)
 
         self.pOcrObj = self._OcrInit(det, rec, key, 4)
 
-    def __OcrDetect(self, data: bytes, mode: int):
+    def __OcrDetect(self, image: QImage, mode: int):
 
         texts = []
         pss = []
@@ -91,18 +98,22 @@ class ocrwrapper:
             pss.append((ps.x1, ps.y1, ps.x2, ps.y2, ps.x3, ps.y3, ps.x4, ps.y4))
             texts.append(text.decode("utf8"))
 
+        if image.format() != QImage.Format.Format_RGB888:
+            image = image.convertToFormat(QImage.Format.Format_RGB888)
         self._OcrDetect(
             self.pOcrObj,
-            data,
-            len(data),
+            int(image.bits()),
+            image.width(),
+            image.height(),
+            image.bytesPerLine(),
             mode,
             CFUNCTYPE(None, ocrpoints, c_char_p)(cb),
         )
         return pss, texts
 
-    def ocr(self, data, mode):
+    def ocr(self, image: QImage, mode):
         try:
-            return self.__OcrDetect(data, mode)
+            return self.__OcrDetect(image, mode)
         except:
             print_exc()
             return [], []
@@ -188,14 +199,14 @@ class question(QWidget):
         except Exception as e:
             self.installsucc.emit(False, stringfyerror(e))
 
-    def downloadx(self, url):
+    def downloadx(self, url: str):
 
         self.progresssetval.emit("……", 0)
         req = requests.head(url, verify=False, proxies=getproxy())
         size = int(req.headers["Content-Length"])
         file_size = 0
         req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
-        target = gobject.getcachedir("ocrmodel/" + self.cururl.split("/")[-1])
+        target = gobject.getcachedir("ocrmodel/" + url.split("/")[-1])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
@@ -281,12 +292,12 @@ class question(QWidget):
 
 
 class OCR(baseocr):
-    required_image_format = "BMP"
+    required_image_format = QImage
 
     def langmap(self):
         return {Languages.TradChinese: "cht"}
 
-    def initocr(self):
+    def init(self):
         self._ocr = None
         self._savelang = None
         self._savelang1 = None
@@ -324,11 +335,11 @@ class OCR(baseocr):
         self._savelang = uselang
         self._savelang1 = self.srclang
 
-    def ocr(self, imagebinary):
+    def ocr(self, image: QImage):
         self.checkchange()
 
         pss, texts = self._ocr.ocr(
-            imagebinary,
+            image,
             globalconfig["verticalocr"],
         )
         return {"box": pss, "text": texts}

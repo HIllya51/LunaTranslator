@@ -4,7 +4,7 @@ from language import Languages
 
 class TS(basetrans):
 
-    def inittranslator(self):
+    def init(self):
         self.mostmaybelang = "jpn"
         self.host_url = "https://www.reverso.net/text-translation"
         self.api_url = "https://api.reverso.net/translate/v1/translation"

@@ -1,4 +1,4 @@
-#ifndef WINXP
+﻿#ifndef WINXP
 #include <winstring.h>
 #include <roapi.h>
 #include <shcore.h>
@@ -139,6 +139,7 @@ DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, void (*cb
     CHECK_FAILURE_NORET(pOcrLines->get_Size(&nlines));
     for (uint32_t i = 0; i < nlines; ++i)
     {
+        // IOcrLine::get_Text对于日语句子单词间也tm有空格。但自己用IOcrWord::get_Text然后拼接也不是很好。就这样吧反正效果也是个辣鸡。
         CComPtr<IOcrLine> pOcrLine;
         CHECK_FAILURE_CONTINUE(pOcrLines->GetAt(i, &pOcrLine));
 

@@ -569,7 +569,7 @@ public:
     {
     }
 
-    std::vector<TextBlock> detect(const void *binptr, size_t size,
+    std::vector<TextBlock> detect(const void *ptr, int width, int height, int bytesPerLine, // const void *binptr, size_t size,
                                   int padding, int maxSideLen,
                                   float boxScoreThresh, float boxThresh, float unClipRatio, Directional);
 
@@ -612,14 +612,21 @@ namespace
         cv::flip(mat, mat, 0);
         return std::move(mat);
     }
+    cv::Mat LoadMatFromQImageFormat_RGB888(const void *ptr, int width, int height, int bytesPerLine)
+    {
+        auto mat = cv::Mat(height, width, CV_8UC3, (void *)ptr, bytesPerLine);
+        return std::move(mat);
+    }
 }
-std::vector<TextBlock> OcrLite::detect(const void *binptr, size_t size,
-                                       const int padding, const int maxSideLen,
+std::vector<TextBlock> OcrLite::detect(const void *ptr, int width, int height, int bytesPerLine, // const void *binptr, size_t size,
+                                       const int padding,
+                                       const int maxSideLen,
                                        float boxScoreThresh, float boxThresh, float unClipRatio, Directional mode)
 {
     // std::vector<uchar> bytes{(uchar *)binptr, (uchar *)binptr + size};
     // cv::Mat originSrc = imdecode(bytes, cv::IMREAD_COLOR); // default : BGR
-    cv::Mat originSrc = std::move(LoadMatFromBMP(binptr, size));
+    // cv::Mat originSrc = std::move(LoadMatFromBMP(binptr, size));
+    cv::Mat originSrc = std::move(LoadMatFromQImageFormat_RGB888(ptr, width, height, bytesPerLine));
     int originMaxSide = (std::max)(originSrc.cols, originSrc.rows);
     int resize;
     if (maxSideLen <= 0 || maxSideLen > originMaxSide)
@@ -745,14 +752,16 @@ DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecMode
     }
 }
 
-DECLARE_API void OcrDetect(OcrLite *pOcrObj, const void *binptr, size_t size, Directional mode, void (*cb)(ocrpoints, const char *))
+DECLARE_API void OcrDetect(OcrLite *pOcrObj, const void *ptr, int width, int height, int bytesPerLine, // const void *binptr, size_t size,
+                           Directional mode, void (*cb)(ocrpoints, const char *))
 {
     if (!pOcrObj)
         return;
 
     try
     {
-        auto result = pOcrObj->detect(binptr, size, 50, 1024, 0.1, 0.1, 2.0, mode);
+        // auto result = pOcrObj->detect(binptr, size, 50, 1024, 0.1, 0.1, 2.0, mode);
+        auto result = pOcrObj->detect(ptr, width, height, bytesPerLine, 50, 1024, 0.1, 0.1, 2.0, mode);
 
         for (auto item : result)
         {

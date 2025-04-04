@@ -5,7 +5,7 @@ import random
 
 
 class TS(basetrans):
-    def inittranslator(self):
+    def init(self):
         self.access = {}
 
     def langmap(self):

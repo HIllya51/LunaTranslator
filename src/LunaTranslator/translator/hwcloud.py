@@ -257,7 +257,7 @@ class Signer(object):
 
 
 class TS(basetrans):
-    def inittranslator(self):
+    def init(self):
         self.cacheproject = {}
 
     def translate(self, query):

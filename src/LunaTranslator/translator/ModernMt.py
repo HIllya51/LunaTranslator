@@ -6,7 +6,7 @@ from language import Languages
 
 class TS(basetrans):
 
-    def inittranslator(self):
+    def init(self):
         _ = self.proxysession.get(
             "https://www.modernmt.com/translate",
             headers={

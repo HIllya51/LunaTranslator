@@ -124,7 +124,7 @@ class cdp_deepl(cdp_helper):
 
 
 class TS(basetrans):
-    def inittranslator(self):
+    def init(self):
         self.devtool = None
         if self.config["usewhich"] == 2:
             self.devtool = cdp_deepl(self)

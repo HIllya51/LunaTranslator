@@ -61,7 +61,7 @@ class basetrans(commonbase):
         # But the exception is cht. If api support cht, if must be explicitly declared the support of cht, otherwise it will translate to chs and then convert to cht.
         return {}
 
-    def inittranslator(self):
+    def init(self):
         pass
 
     def translate(self, content):
@@ -126,7 +126,7 @@ class basetrans(commonbase):
 
     def _private_init(self):
         self.initok = False
-        self.inittranslator()
+        self.init()
         self.initok = True
 
     def _sqlitethread(self):

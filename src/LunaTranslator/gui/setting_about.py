@@ -522,6 +522,7 @@ def setTab_about(self, basel):
                         makelink("kokke/tiny-AES-c"),
                         makelink("TPN-Team/OCR"),
                         makelink("AuroraWright/owocr"),
+                        makelink("b1tg/win11-oneocr"),
                     ],
                     "LICENSE",
                 )

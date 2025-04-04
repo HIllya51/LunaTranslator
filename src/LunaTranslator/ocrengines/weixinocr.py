@@ -120,7 +120,7 @@ globalonce = None
 
 
 class OCR(baseocr):
-    def initocr(self):
+    def init(self):
         global globalonce
         if globalonce is None:
             globalonce = 0

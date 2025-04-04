@@ -46,7 +46,7 @@ class TS(basetrans):
     def langmap(self):
         return Languages.createenglishlangmap()
 
-    def inittranslator(self):
+    def init(self):
         self.devtool = None
         self.checkinterface()
 

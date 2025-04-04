@@ -5,7 +5,7 @@ import windows, ctypes, winsharedutils
 
 
 class TS(basetrans):
-    def inittranslator(self):
+    def init(self):
         self.lock = threading.Lock()
         self.path = None
         self.userdict = None
@@ -61,5 +61,5 @@ class TS(basetrans):
             windows.WriteFile(self.hPipe, code1)
             size = ctypes.c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
             if not size:
-                raise Exception("not installed")
+                raise Exception(_TR("未安装"))
             return windows.ReadFile(self.hPipe, size).decode("utf-16-le")

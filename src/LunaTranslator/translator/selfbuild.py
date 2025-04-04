@@ -10,7 +10,7 @@ class TS(basetrans):
         if module:
             self.internal = module.TS("selfbuild")
 
-    def inittranslator(self):
+    def init(self):
         self.internal = None
         self.mayreinit()
 

@@ -28,7 +28,7 @@ class OCR(baseocr):
 
     def list_langs(self):
         if not (self.path and os.path.exists(self.path)):
-            raise Exception(_TR("not installed"))
+            raise Exception(_TR("未安装"))
         res = subprochiderun('"{}" --list-langs'.format(self.path)).stdout
         return res.split("\n")[1:-1]
 
@@ -59,14 +59,14 @@ class OCR(baseocr):
             Languages.Latin: "lat",
         }
 
-    def initocr(self):
+    def init(self):
         self.path = self.findts()
         self.langs = self.list_langs()
         print(self.langs)
 
     def ocr(self, imagebinary):
         if not (self.path and os.path.exists(self.path)):
-            raise Exception(_TR("not installed"))
+            raise Exception(_TR("未安装"))
         self.raise_cant_be_auto_lang()
         lang = self.srclang
         psm = 6

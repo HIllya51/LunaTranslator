@@ -5,7 +5,7 @@ from translator.basetranslator import basetrans
 
 class TS(basetrans):
 
-    def inittranslator(self):
+    def init(self):
         _ = self.proxysession.get("https://www.translate.com/machine-translation")
 
     def translate(self, content):

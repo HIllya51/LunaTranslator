@@ -221,6 +221,13 @@
                 ]
             },
             {
+                "name": "SnippingTool",
+                "function": [
+                    "ocrengines.SnippingTool",
+                    "question"
+                ]
+            },
+            {
                 "name": "WindowsOCR",
                 "function": [
                     "ocrengines.windowsocr",

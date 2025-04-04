@@ -7,7 +7,7 @@ class baseocr(commonbase):
     def langmap(self):
         return {}
 
-    def initocr(self):
+    def init(self):
         pass
 
     def ocr(self, imagebinary):
@@ -120,7 +120,7 @@ class baseocr(commonbase):
     def level2init(self):
         self.needinit = True
         try:
-            self.initocr()
+            self.init()
         except Exception as e:
             raise e
         self.needinit = False

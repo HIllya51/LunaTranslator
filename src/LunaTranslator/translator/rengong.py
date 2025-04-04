@@ -44,7 +44,7 @@ class TS(basetrans):
         except:
             return None
 
-    def inittranslator(self):
+    def init(self):
         self.paths = (None, None)
         self.checkfilechanged(
             self.unsafegetcurrentgameconfig(), tuple(self.config["jsonfile"])

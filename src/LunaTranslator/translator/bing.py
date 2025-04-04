@@ -4,7 +4,7 @@ from language import Languages
 
 
 class TS(basetrans):
-    def inittranslator(self):
+    def init(self):
         host_html = self.proxysession.get("https://www.bing.com/Translator").text
         self.tk = self.get_tk(host_html)
         self.ig_iid = self.get_ig_iid(host_html)

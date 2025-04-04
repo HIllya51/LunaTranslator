@@ -7,7 +7,7 @@ from language import Languages
 
 
 class TS(basetrans):
-    def inittranslator(self):
+    def init(self):
         self.lock = threading.Lock()
         self.path = None
         self.userdict = None

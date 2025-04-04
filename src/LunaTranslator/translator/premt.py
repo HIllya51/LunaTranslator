@@ -28,7 +28,7 @@ class TS(basetrans):
                     self.sql = autosql(sqlite3.connect(p1, check_same_thread=False))
             self.paths = (p1, p)
 
-    def inittranslator(self):
+    def init(self):
         self.sql = None
         self.paths = (None, None)
         self.checkfilechanged(

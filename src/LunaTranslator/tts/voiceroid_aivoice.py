@@ -140,7 +140,7 @@ class TTS(TTSbase):
             windows.FILE_MAP_READ | windows.FILE_MAP_WRITE,
             0,
             0,
-            1024 * 1024 * 10,
+            1024 * 1024 * 16,
         )
 
     def linear_map(self, x):

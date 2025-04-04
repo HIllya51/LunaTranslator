@@ -7,7 +7,7 @@ class TS(basetrans):
     def langmap(self):
         return {Languages.TradChinese: "zh-tw"}
 
-    def inittranslator(self):
+    def init(self):
 
         self.proxysession.get(
             "https://translate.alibaba.com",

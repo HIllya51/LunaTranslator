@@ -21,7 +21,7 @@ class TS(basetrans):
             for i in range(len(index_list) - 1)
         ]
 
-    def inittranslator(self):
+    def init(self):
         self.host_url = "https://transmart.qq.com"
         self.api_url = "https://transmart.qq.com/api/imt"
         _ = self.proxysession.get(self.host_url).text

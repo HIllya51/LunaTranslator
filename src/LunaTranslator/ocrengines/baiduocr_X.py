@@ -165,7 +165,7 @@ class OCR(baseocr):
             Languages.Arabic: "ARA",
         }
 
-    def initocr(self):
+    def init(self):
         self.access = {}
 
     def get_access_token(self, API_KEY, SECRET_KEY):

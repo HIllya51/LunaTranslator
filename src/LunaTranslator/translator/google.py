@@ -29,7 +29,7 @@ class TS(basetrans):
     def langmap(self):
         return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
-    def inittranslator(self):
+    def init(self):
 
         self.devtool = None
         if self.config["usewhich"] == 2:
