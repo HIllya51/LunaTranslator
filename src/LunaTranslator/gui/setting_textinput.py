@@ -1,7 +1,8 @@
 from qtsymbols import *
 import functools
-import gobject
+import gobject, os
 from myutils.config import globalconfig
+from myutils.wrapper import threader
 from textsource.texthook import codepage_display
 from traceback import print_exc
 from language import TransLanguages
@@ -20,6 +21,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     FocusFontCombo,
     getsmalllabel,
+    LPushButton,
 )
 
 
@@ -307,6 +309,40 @@ def filetranslate(self):
     return grids
 
 
+def getpath():
+    for syspath in [
+        globalconfig["chromepath"],
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    ]:
+        if os.path.exists(syspath) and os.path.isfile(syspath):
+            return syspath
+    return None
+
+
+def open___():
+    chrome = getpath()
+    link = "http://127.0.0.1:{}".format(globalconfig["networktcpport"])
+    if globalconfig["chromeapp"] and chrome:
+        threader(os.system)('"{}" --app={}'.format(chrome, link))
+    else:
+        os.startfile(link)
+
+
+def btnopen():
+    btn = LPushButton("打开")
+    btn.clicked.connect(open___)
+    return btn
+
+
+def selectbrowser():
+    f = QFileDialog.getOpenFileName(
+        filter="*.exe", directory=os.path.dirname(getpath())
+    )
+    res = f[0]
+    globalconfig["chromepath"] = res
+
+
 def outputgrid():
 
     grids = [
@@ -319,6 +355,7 @@ def outputgrid():
             ),
             "",
             "",
+            "",
         ],
         [
             "端口号",
@@ -329,6 +366,15 @@ def outputgrid():
                 "networktcpport",
                 callback=lambda _: gobject.baseobject.serviceinit(),
             ),
+        ],
+        [],
+        [
+            (btnopen, 2),
+        ],
+        ["Chrome", D_getIconButton(selectbrowser)],
+        [
+            "APP",
+            D_getsimpleswitch(globalconfig, "chromeapp"),
         ],
     ]
     return grids
