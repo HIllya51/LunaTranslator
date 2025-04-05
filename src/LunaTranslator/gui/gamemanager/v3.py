@@ -9,6 +9,7 @@ from myutils.config import (
     extradatas,
     globalconfig,
 )
+from myutils.wrapper import trypass
 from myutils.hwnd import clipboard_set_image
 from myutils.utils import get_time_stamp, getimageformatlist, targetmod
 from gui.inputdialog import autoinitdialog
@@ -169,9 +170,20 @@ def getselectpos(parent, callback):
 
 PathRole = Qt.ItemDataRole.UserRole + 1
 ImageRequestedRole = PathRole + 1
+IsNullImage = ImageRequestedRole + 1
 
 
 class ImageDelegate(QStyledItemDelegate):
+    def paint(self, painter, option, index: QModelIndex):
+        if index.data(IsNullImage):
+            return
+        return super().paint(painter, option, index)
+
+    def sizeHint(self, option, index: QModelIndex):
+        if index.data(IsNullImage):
+            return QSize()
+        return super().sizeHint(option, index)
+
     def initStyleOption(self, opt: QStyleOptionViewItem, index: QModelIndex):
         super().initStyleOption(opt, index)
         if not index.data(ImageRequestedRole):
@@ -217,7 +229,7 @@ class MyQListWidget(QListWidget):
                         self.model().setData(index, True, ImageRequestedRole)
                         image = getcachedimage(index.data(PathRole), True)
                         if image.isNull():
-                            self.takeItem(index.row())
+                            self.model().setData(index, True, IsNullImage)
                         else:
                             self.item(index.row()).setIcon(QIcon(image))
         except:
@@ -246,6 +258,10 @@ class previewimages(QWidget):
         self.lay.setContentsMargins(0, 0, 0, 0)
         self.list = MyQListWidget(self)
         self.list.currentRowChanged.connect(self._visidx)
+
+        self.list.setDragEnabled(True)
+        self.list.setDragDropMode(QListWidget.DragDropMode.InternalMove)
+        self.list.setDefaultDropAction(Qt.DropAction.MoveAction)
         self.lay.addWidget(self.list)
 
     def tolastnext(self, dx):
@@ -253,16 +269,29 @@ class previewimages(QWidget):
             return self.list.setCurrentRow(-1)
         self.list.setCurrentRow((self.list.currentRow() + dx) % self.list.count())
 
-    def setpixmaps(self, paths, currentpath):
-        self.list.setCurrentRow(-1)
+    def dumppaths(self):
+        nlst = []
+        for i in range(self.list.model().rowCount()):
+            nlst.append(self.list.model().data(self.list.model().index(i, 0), PathRole))
+        return nlst
+
+    def additems(self, paths, clear=True, insert=False):
         self.list.blockSignals(True)
-        self.list.clear()
+        if clear:
+            self.list.clear()
         for path in paths:
             item = QListWidgetItem()
             item.setData(PathRole, path)
             item.setData(ImageRequestedRole, False)
-            self.list.addItem(item)
+            if insert:
+                self.list.insertItem(self.list.currentRow() + 1, item)
+            else:
+                self.list.addItem(item)
         self.list.blockSignals(False)
+
+    def setpixmaps(self, paths, currentpath):
+        self.list.setCurrentRow(-1)
+        self.additems(paths)
         pixmapi = 0
         if currentpath in paths:
             pixmapi = paths.index(currentpath)
@@ -423,10 +452,13 @@ class pixwrapper(QWidget):
 
         if "imagepath_all" not in savehook_new_data[self.k]:
             savehook_new_data[self.k]["imagepath_all"] = []
-        for _ in newf:
-            savehook_new_data[self.k]["imagepath_all"].insert(0, _)
-        self.setpix(self.k)
-        self.previewimages.list.setCurrentRow(0)
+        self.previewimages.additems(newf, clear=False, insert=True)
+        self._rowsMoved()
+
+    def _rowsMoved(self):
+        lst: list = savehook_new_data[self.k]["imagepath_all"]
+        lst.clear()
+        lst.extend(self.previewimages.dumppaths())
 
     def setrank(self, rank):
         if rank:
@@ -454,6 +486,7 @@ class pixwrapper(QWidget):
         hor = (globalconfig["viewlistpos"] % 2) == 0
 
         self.previewimages = previewimages(self)
+        self.previewimages.list.model().rowsMoved.connect(self._rowsMoved)
         self.vlayout = QVBoxLayout(self)
         self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.pixview = viewpixmap_x(self)
