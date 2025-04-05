@@ -183,14 +183,13 @@ def getExeIcon(name: str, icon=True, cache=False, large=False):
     data = winsharedutils.extracticon2data(name, large=large)
     if cache:
         fn = gobject.getcachedir(
-            "icon/{}.bmp".format(hashlib.md5(name.encode("utf8")).hexdigest())
+            "icon/{}.png".format(hashlib.md5(name.encode("utf8")).hexdigest())
         )
     if data:
         pixmap = QPixmap()
         pixmap.loadFromData(data)
         if cache:
-            with open(fn, "wb") as ff:
-                ff.write(data)
+            pixmap.save(fn)
     else:
         succ = False
         if cache and os.path.exists(fn):

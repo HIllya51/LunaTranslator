@@ -382,6 +382,48 @@ class viewpixmap_x(QWidget):
 class pixwrapper(QWidget):
     startgame = pyqtSignal()
 
+    def keyPressEvent(self, e: QKeyEvent):
+        if e.key() == Qt.Key.Key_Delete:
+            self.removecurrent(False)
+        elif e.key() == Qt.Key.Key_Left:
+            self.previewimages.tolastnext(-1)
+        elif e.key() == Qt.Key.Key_Right:
+            self.previewimages.tolastnext(1)
+        elif e.key() == Qt.Key.Key_Down:
+            self.previewimages.tolastnext(1)
+        elif e.key() == Qt.Key.Key_Up:
+            self.previewimages.tolastnext(-1)
+        elif e.key() == Qt.Key.Key_Return:
+            startgamecheck(
+                self.ref,
+                getreflist(self.ref.reftagid),
+                self.ref.currentfocusuid,
+            )
+        return super().keyPressEvent(e)
+
+    def dragEnterEvent(self, event: QDragEnterEvent):
+        if event.mimeData().hasUrls():
+            event.accept()
+        else:
+            event.ignore()
+
+    def dropEvent(self, event: QDropEvent):
+        files = [u.toLocalFile() for u in event.mimeData().urls()]
+
+        newf = []
+        for f in files:
+            if f not in savehook_new_data[self.k].get("imagepath_all", []):
+                newf.append(f)
+        if not newf:
+            return
+
+        if "imagepath_all" not in savehook_new_data[self.k]:
+            savehook_new_data[self.k]["imagepath_all"] = []
+        for _ in newf:
+            savehook_new_data[self.k]["imagepath_all"].insert(0, _)
+        self.setpix(self.k)
+        self.previewimages.list.setCurrentRow(0)
+
     def setrank(self, rank):
         if rank:
             self.spliter.addWidget(self.pixview)
@@ -399,8 +441,11 @@ class pixwrapper(QWidget):
             self.spliter.setOrientation(Qt.Orientation.Horizontal)
         self.previewimages.sethor(hor)
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, p: "dialog_savedgame_v3") -> None:
+        super().__init__(p)
+        self.ref = p
+        self.setAcceptDrops(True)
+        self.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
         rank = (globalconfig["viewlistpos"] // 2) == 0
         hor = (globalconfig["viewlistpos"] % 2) == 0
 
@@ -440,7 +485,6 @@ class pixwrapper(QWidget):
         deleteimage = LAction("删除图片", menu)
         copyimage = LAction("复制图片", menu)
         deleteimage_x = LAction("删除图片文件", menu)
-        hualang = LAction("画廊", menu)
         pos = LAction("位置", menu)
         if curr and os.path.exists(extradatas["localedpath"].get(curr, curr)):
             menu.addAction(setimage)
@@ -448,7 +492,6 @@ class pixwrapper(QWidget):
             menu.addAction(copyimage)
             menu.addAction(deleteimage)
             menu.addAction(deleteimage_x)
-        menu.addAction(hualang)
         if _1:
             menu.addSeparator()
             menu.addAction(pos)
@@ -462,16 +505,6 @@ class pixwrapper(QWidget):
         elif action == pos:
             getselectpos(self, self.switchpos)
 
-        elif action == hualang:
-            if "imagepath_all" not in savehook_new_data[self.k]:
-                savehook_new_data[self.k]["imagepath_all"] = []
-            listediter(
-                self,
-                "画廊",
-                savehook_new_data[self.k]["imagepath_all"],
-                closecallback=lambda changed: self.setpix(self.k) if changed else None,
-                ispathsedit=dict(filter1=getimagefilefilter()),
-            )
         elif action == setimage:
             savehook_new_data[self.k]["currentmainimage"] = curr
         elif action == seticon:
@@ -506,6 +539,7 @@ class pixwrapper(QWidget):
 
 
 class dialog_savedgame_v3(QWidget):
+
     def viewitem(self, k):
         try:
             self.pixview.setpix(k)
@@ -677,7 +711,6 @@ class dialog_savedgame_v3(QWidget):
     def __init__(self, parent: QMainWindow) -> None:
         super().__init__(parent)
         parent.setWindowTitle("游戏管理")
-        self.setAcceptDrops(True)
         self.currentfocusuid = None
         self.reftagid = None
         self.reallist = {}
@@ -726,7 +759,7 @@ class dialog_savedgame_v3(QWidget):
 
         spl.addWidget(self.stack)
         self.righttop = makesubtab_lazy()
-        self.pixview = pixwrapper()
+        self.pixview = pixwrapper(self)
         self.pixview.startgame.connect(
             lambda: startgamecheck(
                 self, getreflist(self.reftagid), self.currentfocusuid
@@ -955,13 +988,3 @@ class dialog_savedgame_v3(QWidget):
 
     def clicked(self):
         startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
-
-    def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasUrls():
-            event.accept()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event: QDropEvent):
-        files = [u.toLocalFile() for u in event.mimeData().urls()]
-        addgamebatch_x(self.addgame, savehook_new_list, files)

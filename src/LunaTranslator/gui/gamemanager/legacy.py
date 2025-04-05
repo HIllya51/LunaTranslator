@@ -98,16 +98,6 @@ class LazyLoadTableView(TableViewW):
 
 class dialog_savedgame_legacy(QWidget):
 
-    def dragEnterEvent(self, event: QDragEnterEvent):
-        if event.mimeData().hasUrls():
-            event.accept()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event: QDropEvent):
-        files = [u.toLocalFile() for u in event.mimeData().urls()]
-        addgamebatch_x(self.addgame, savehook_new_list, files)
-
     def directshow(self):
         pass
 
@@ -192,7 +182,6 @@ class dialog_savedgame_legacy(QWidget):
         # dialog_savedgame._sigleton=True
         super().__init__(parent)
         self.parent_ = parent
-        self.setAcceptDrops(True)
         formLayout = QVBoxLayout(self)  #
         model = LStandardItemModel()
         model.setHorizontalHeaderLabels(["转区", "", "设置", "游戏"])  # ,'HOOK'])

@@ -3,35 +3,25 @@ import os
 from qtsymbols import *
 
 
-class CharIconPainter:
+class CharIconEngine(QIconEngine):
 
-    def paint(self, iconic, painter, rect, mode, state, char, color):
+    def __init__(self, iconic: "IconicFont", char, color):
+        super().__init__()
+        self.iconic = iconic
+        self.char = char
+        self.color = QColor(color)
+
+    def paint(self, painter: QPainter, rect: QRect, mode, state):
         painter.save()
-        qcolor = QColor(color)
-        painter.setPen(qcolor)
+        painter.setPen(self.color)
         draw_size = round(0.875 * rect.height())
-        painter.setFont(iconic.font(draw_size))
+        painter.setFont(self.iconic.font(draw_size))
         painter.drawText(
             rect,
             int(Qt.AlignmentFlag.AlignCenter | Qt.AlignmentFlag.AlignVCenter),
-            char,
+            self.char,
         )
         painter.restore()
-
-
-class CharIconEngine(QIconEngine):
-
-    def __init__(self, iconic, painter, char, color):
-        super().__init__()
-        self.iconic = iconic
-        self.painter = painter
-        self.char = char
-        self.color = color
-
-    def paint(self, painter, rect, mode, state):
-        self.painter.paint(
-            self.iconic, painter, rect, mode, state, self.char, self.color
-        )
 
     def pixmap(self, size, mode, state):
         pm = QPixmap(size)
@@ -44,7 +34,6 @@ class IconicFont(QObject):
     def __init__(self, ttf_filename, charmap_filename):
 
         super().__init__()
-        self.painter = CharIconPainter()
         self.charmap = {}
         self.icon_cache = {}
         self.load_font(ttf_filename, charmap_filename)
@@ -69,9 +58,7 @@ class IconicFont(QObject):
         if cache_key not in self.icon_cache:
 
             char = chr(int((self.charmap[name[3:]]), 16))
-            self.icon_cache[cache_key] = self._icon_by_painter(
-                self.painter, char, color
-            )
+            self.icon_cache[cache_key] = self._icon_by_painter(char, color)
 
         return self.icon_cache[cache_key]
 
@@ -81,8 +68,8 @@ class IconicFont(QObject):
         font.setPixelSize(round(size))
         return font
 
-    def _icon_by_painter(self, painter, char, color):
-        engine = CharIconEngine(self, painter, char, color)
+    def _icon_by_painter(self, char, color):
+        engine = CharIconEngine(self, char, color)
         return QIcon(engine)
 
 

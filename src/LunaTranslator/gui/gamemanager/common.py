@@ -160,24 +160,24 @@ def getcachedimage(src, small) -> QPixmap:
         return QPixmap(src)
     if not os.path.exists(src):
         return QPixmap()
-    src2 = gobject.getcachedir("icon2/{}.jpg".format(__b64string(src)))
-    _pix = QPixmap(src2)
+    srcsave = gobject.getcachedir("icon3/{}.webp".format(__b64string(src)))
+    _pix = QPixmap(srcsave)
     if not _pix.isNull():
         return _pix
     _pix = QPixmap(src)
     if _pix.isNull():
         return _pix
-    __scaletosize(_pix, src2)
+    __scaletosize(_pix, srcsave)
     return _pix
 
 
 def getpixfunction(kk, small=False, iconfirst=False) -> QPixmap:
     checks = []
     key = ["currentmainimage", "currenticon"][iconfirst]
-    if savehook_new_data[kk].get(key) in savehook_new_data[kk].get("imagepath_all",[]):
+    if savehook_new_data[kk].get(key) in savehook_new_data[kk].get("imagepath_all", []):
         checks = [savehook_new_data[kk].get(key)]
     elif not iconfirst:
-        checks = savehook_new_data[kk].get("imagepath_all",[])
+        checks = savehook_new_data[kk].get("imagepath_all", [])
     for _ in checks:
         pix = getcachedimage(_, small)
         if not pix.isNull():
