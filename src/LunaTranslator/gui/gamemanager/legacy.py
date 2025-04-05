@@ -9,9 +9,9 @@ from gui.usefulwidget import (
     getIconButton,
     IconButton,
 )
-from gui.dialog_savedgame_setting import dialog_setting_game
+from gui.gamemanager.setting import dialog_setting_game
 from gui.dynalang import LPushButton, LStandardItemModel
-from gui.dialog_savedgame_common import (
+from gui.gamemanager.common import (
     opendirforgameuid,
     startgamecheck,
     addgamesingle,

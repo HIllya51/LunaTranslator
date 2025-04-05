@@ -1,5 +1,5 @@
 from qtsymbols import *
-from rendertext.textbrowser_imp.base import base
+from gui.rendertext.textbrowser_imp.base import base
 
 
 class TextLine(base):

@@ -1,5 +1,5 @@
 from qtsymbols import *
-from rendertext.textbrowser_imp.normal import TextLine as TextLabel_0
+from gui.rendertext.textbrowser_imp.normal import TextLine as TextLabel_0
 
 
 class QGraphicsDropShadowEffect_multi(QGraphicsDropShadowEffect):

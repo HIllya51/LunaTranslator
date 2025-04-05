@@ -106,18 +106,13 @@ class FocusSpinBase(QAbstractSpinBox):
         else:
             return super().wheelEvent(e)
 
-    def stepBy(self, steps):
-        _ = super().stepBy(steps)
-        self.stepbysignal.emit(steps)
-        return _
-
 
 class FocusSpin(QSpinBox, FocusSpinBase):
-    stepbysignal = pyqtSignal(int)
+    pass
 
 
 class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
-    stepbysignal = pyqtSignal(int)
+    pass
 
 
 class TableViewW(QTableView):
@@ -884,7 +879,9 @@ def getIconButton(
 def D_getIconButton(
     callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True
 ):
-    return lambda: getIconButton(callback, icon, enable, qicon, callback2=callback2, fix=fix)
+    return lambda: getIconButton(
+        callback, icon, enable, qicon, callback2=callback2, fix=fix
+    )
 
 
 def check_grid_append(grids):
@@ -2757,6 +2754,40 @@ def getsimplepatheditor(
         w.setLayout(lay)
         lay = w
     return lay
+
+
+class threeswitch(QWidget):
+    btnclicked = pyqtSignal(int)
+    sizeChanged = pyqtSignal(QSize)
+
+    def selectlayout(self, i):
+        try:
+            for _ in range(len(self.btns)):
+                self.btns[(i + _) % len(self.btns)].setEnabled(False)
+            for _ in range(len(self.btns)):
+                self.btns[(i + _) % len(self.btns)].setChecked(_ == 0)
+            self.btnclicked.emit(i)
+            for _ in range(1, len(self.btns)):
+                self.btns[(i + _) % len(self.btns)].setEnabled(True)
+        except:
+            pass
+
+    def __init__(self, p, icons):
+        super().__init__(p)
+        self.btns = []
+        hv = QHBoxLayout(self)
+        hv.setContentsMargins(0, 0, 0, 0)
+        hv.setSpacing(0)
+        for i, icon in enumerate(icons):
+            btn = IconButton(parent=self, icon=icon, checkable=True)
+            btn.clicked.connect(functools.partial(self.selectlayout, i))
+            btn.sizeChanged.connect(self.sizechange)
+            self.btns.append(btn)
+            hv.addWidget(btn)
+
+    def sizechange(self, size: QSize):
+        self.setFixedSize(QSize(size.width() * len(self.btns), size.height()))
+        self.sizeChanged.emit(self.size())
 
 
 class pixmapviewer(QWidget):

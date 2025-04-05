@@ -3,15 +3,15 @@ import functools
 import qtawesome
 from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
-from gui.setting_textinput import setTabOne_lazy
-from gui.setting_translate import setTabTwo_lazy
-from gui.setting_display import setTabThree_lazy
-from gui.setting_tts import setTab5, showvoicelist
-from gui.setting_cishu import setTabcishu
-from gui.setting_hotkey import setTab_quick, registrhotkeys
-from gui.setting_proxy import setTab_proxy
-from gui.setting_transopti import setTab7_lazy, delaysetcomparetext
-from gui.setting_about import (
+from gui.setting.textinput import setTabOne_lazy
+from gui.setting.translate import setTabTwo_lazy
+from gui.setting.display import setTabThree_lazy
+from gui.setting.tts import setTab5, showvoicelist
+from gui.setting.cishu import setTabcishu
+from gui.setting.hotkey import setTab_quick, registrhotkeys
+from gui.setting.proxy import setTab_proxy
+from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
+from gui.setting.about import (
     setTab_about,
     versionlabelmaybesettext,
     versioncheckthread,

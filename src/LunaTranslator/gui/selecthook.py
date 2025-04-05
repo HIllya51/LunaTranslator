@@ -6,7 +6,7 @@ import qtawesome, windows, winsharedutils, gobject, os
 from textsource.texthook import codepage_display, codepage_real
 from myutils.config import savehook_new_data, globalconfig, _TR, isascii
 from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
-from gui.dialog_savedgame import dialog_setting_game
+from gui.gamemanager.dialog import dialog_setting_game
 from typing import List
 from gui.usefulwidget import (
     closeashidewindow,

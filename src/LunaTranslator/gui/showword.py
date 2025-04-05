@@ -39,11 +39,11 @@ from gui.usefulwidget import (
     getIconButton,
     saveposwindow,
     tabadd_lazy,
+    threeswitch,
     VisLFormLayout,
 )
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
 from myutils.audioplayer import bass_code_cast
-from gui.dialog_savedgame import threeswitch
 
 
 class AnkiWindow(QWidget):
@@ -787,11 +787,11 @@ class AnkiWindow(QWidget):
             with open("userconfig/anki_2/style.css", "r", encoding="utf8") as ff:
                 model_css = ff.read()
         except:
-            with open("files/static/anki/back.html", "r", encoding="utf8") as ff:
+            with open("files/html/anki/back.html", "r", encoding="utf8") as ff:
                 model_htmlback = ff.read()
-            with open("files/static/anki/front.html", "r", encoding="utf8") as ff:
+            with open("files/html/anki/front.html", "r", encoding="utf8") as ff:
                 model_htmlfront = ff.read()
-            with open("files/static/anki/style.css", "r", encoding="utf8") as ff:
+            with open("files/html/anki/style.css", "r", encoding="utf8") as ff:
                 model_css = ff.read()
         return model_htmlfront, model_htmlback, model_css
 
@@ -1208,7 +1208,7 @@ class searchwordW(closeashidewindow):
             html = self.cache_results_highlighted.get(k, self.cache_results[k])
         except:
             return
-        path = os.path.join(os.path.dirname(__file__), "showwordframework.html")
+        path = r"files\html\uiwebview\searchword.html"
         with open(path, "r", encoding="utf8") as ff:
             frame = ff.read()
         html = frame.replace("__luna_dict_internal_view__", html)

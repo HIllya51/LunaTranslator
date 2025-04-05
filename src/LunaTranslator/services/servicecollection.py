@@ -8,7 +8,7 @@ from services.tcpservice import (
 )
 from urllib.parse import quote
 import json, gobject, re, os
-from rendertext.webview import TextBrowser, somecommon as somecommon_1
+from gui.rendertext.webview import TextBrowser, somecommon as somecommon_1
 from gui.transhist import somecommon as somecommon_2, wvtranshist
 from services.servicecollection_1 import (
     mainuiwsoutputsave,
@@ -70,7 +70,7 @@ class PageSearchWord(HTTPHandler):
     path = re.compile(r"/page/searchword(\?.*)?")
 
     def parse(self, _: RequestInfo):
-        page = os.path.join(os.path.dirname(__file__), "pagesearchword.html")
+        page = r"files\html\service\searchword.html"
         if _.query.get("word"):
             return FileResponse(page)
 
@@ -134,7 +134,7 @@ class BasePage(HTTPHandler):
     path = "/"
 
     def parse(self, _):
-        return FileResponse(os.path.join(os.path.dirname(__file__), "basepage.html"))
+        return FileResponse(r"files\html\service\basepage.html")
 
 
 def registerall(service: TCPService):

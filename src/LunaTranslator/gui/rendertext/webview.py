@@ -1,5 +1,5 @@
 from qtsymbols import *
-from rendertext.texttype import (
+from gui.rendertext.texttype import (
     dataget,
     TextType,
     ColorControl,
@@ -239,7 +239,6 @@ class somecommon(dataget):
         self.setcolorstyle()
 
 
-
 class TextBrowser(WebviewWidget, somecommon):
     contentsChanged = pyqtSignal(QSize)
     _switchcursor = pyqtSignal(Qt.CursorShape)
@@ -331,16 +330,15 @@ class TextBrowser(WebviewWidget, somecommon):
     def loadex_(extra=None):
         if not extra:
             extra = TextBrowser.loadextra()
-            extra = extra if extra else ""
-        with open(
-            r"LunaTranslator\rendertext\webview.html", "r", encoding="utf8"
-        ) as ff:
-            html = ff.read().replace("__PLACEHOLDER_EXTRA_HTML_", extra)
-        with open(
-            r"LunaTranslator\rendertext\webview_parsed.html", "w", encoding="utf8"
-        ) as ff:
+        basepath = r"files\html\uiwebview\mainui.html"
+        if not extra:
+            return os.path.abspath(basepath)
+        with open(basepath, "r", encoding="utf8") as ff:
+            html = ff.read() + extra
+        path = gobject.gettempdir("mainui.html")
+        with open(path, "w", encoding="utf8") as ff:
             ff.write(html)
-        return os.path.abspath(r"LunaTranslator\rendertext\webview_parsed.html")
+        return os.path.abspath(path)
 
     @staticmethod
     def loadextra():
@@ -348,7 +346,7 @@ class TextBrowser(WebviewWidget, somecommon):
             return
         for _ in [
             "userconfig/extrahtml.html",
-            r"files\static\extrahtml\mainui.html",
+            r"files\html\uiwebview\extrahtml\mainui.html",
         ]:
             if not os.path.exists(_):
                 continue

@@ -9,7 +9,7 @@ from gui.usefulwidget import (
     getIconButton,
     IconButton,
 )
-from rendertext.texttype import TranslateColor
+from gui.rendertext.texttype import TranslateColor
 from gui.dynalang import LPushButton, LMainWindow
 from myutils.utils import translate_exits, getannotatedapiname
 

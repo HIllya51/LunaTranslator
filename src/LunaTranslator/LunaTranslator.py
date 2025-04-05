@@ -40,20 +40,20 @@ from gui.transhist import transhist
 from gui.edittext import edittext
 import importlib, qtawesome
 from functools import partial
-from gui.setting import Setting
 from gui.attachprocessdialog import AttachProcessDialog
 import windows
 import winsharedutils
-from gui.dialog_savedgame_common import startgame
+from gui.gamemanager.common import startgame
 from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark, dynamicapiname
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction
-from gui.setting_textinput_ocr import showocrimage
+from gui.setting.setting import Setting
+from gui.setting.textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
-from rendertext.texttype import TextType, SpecialColor, TranslateColor
+from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
 from services.servicecollection import registerall
 from services.tcpservice import TCPService
 

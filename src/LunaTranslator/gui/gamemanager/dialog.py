@@ -4,9 +4,9 @@ from traceback import print_exc
 import gobject, qtawesome
 from gui.inputdialog import autoinitdialog
 from gui.dynalang import LAction
-from gui.dialog_savedgame_v3 import dialog_savedgame_v3
-from gui.dialog_savedgame_legacy import dialog_savedgame_legacy
-from gui.dialog_savedgame_setting import dialog_setting_game, userlabelset
+from gui.gamemanager.v3 import dialog_savedgame_v3
+from gui.gamemanager.legacy import dialog_savedgame_legacy
+from gui.gamemanager.setting import dialog_setting_game, userlabelset
 from myutils.utils import targetmod
 from myutils.wrapper import Singleton_close, tryprint
 from gui.specialwidget import lazyscrollflow
@@ -22,11 +22,12 @@ from gui.usefulwidget import (
     saveposwindow,
     getboxlayout,
     IconButton,
+    threeswitch,
     getsimplecombobox,
     FQLineEdit,
     FocusCombo,
 )
-from gui.dialog_savedgame_common import (
+from gui.gamemanager.common import (
     dialog_syssetting,
     tagitem,
     startgamecheck,
@@ -42,40 +43,6 @@ from gui.dialog_savedgame_common import (
     addgamebatch,
     addgamebatch_x,
 )
-
-
-class threeswitch(QWidget):
-    btnclicked = pyqtSignal(int)
-    sizeChanged = pyqtSignal(QSize)
-
-    def selectlayout(self, i):
-        try:
-            for _ in range(len(self.btns)):
-                self.btns[(i + _) % len(self.btns)].setEnabled(False)
-            for _ in range(len(self.btns)):
-                self.btns[(i + _) % len(self.btns)].setChecked(_ == 0)
-            self.btnclicked.emit(i)
-            for _ in range(1, len(self.btns)):
-                self.btns[(i + _) % len(self.btns)].setEnabled(True)
-        except:
-            pass
-
-    def __init__(self, p, icons):
-        super().__init__(p)
-        self.btns = []
-        hv = QHBoxLayout(self)
-        hv.setContentsMargins(0, 0, 0, 0)
-        hv.setSpacing(0)
-        for i, icon in enumerate(icons):
-            btn = IconButton(parent=self, icon=icon, checkable=True)
-            btn.clicked.connect(functools.partial(self.selectlayout, i))
-            btn.sizeChanged.connect(self.sizechange)
-            self.btns.append(btn)
-            hv.addWidget(btn)
-
-    def sizechange(self, size: QSize):
-        self.setFixedSize(QSize(size.width() * len(self.btns), size.height()))
-        self.sizeChanged.emit(self.size())
 
 
 @Singleton_close

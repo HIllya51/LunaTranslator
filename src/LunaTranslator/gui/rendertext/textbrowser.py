@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig, static_data
-from rendertext.texttype import (
+from gui.rendertext.texttype import (
     dataget,
     TextType,
     ColorControl,
@@ -9,7 +9,7 @@ from rendertext.texttype import (
 )
 import gobject, functools, importlib, winsharedutils
 from traceback import print_exc
-from rendertext.textbrowser_imp.base import base
+from gui.rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
 
 reference = []
@@ -348,7 +348,7 @@ class TextBrowser(QWidget, dataget):
                 "textrender"
             ]["textbrowser"][0]
 
-        __ = importlib.import_module("rendertext.textbrowser_imp." + self.currenttype)
+        __ = importlib.import_module("gui.rendertext.textbrowser_imp." + self.currenttype)
 
         self.currentclass = functools.partial(__.TextLine, self.currenttype)
 

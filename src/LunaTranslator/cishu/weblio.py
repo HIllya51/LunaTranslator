@@ -72,7 +72,7 @@ function safe_weblio_search_word(word){
         for t in ts:
             t.join()
         style += "".join(self.cache.get(link) for link in links)
-        style = re.sub("([^-])width:\d+px", "\\1", style)
+        style = re.sub(r"([^-])width:\d+px", "\\1", style)
         return '<style>{}</style><div class="{}">{}</div>'.format(
             style, self.klass, join
         )

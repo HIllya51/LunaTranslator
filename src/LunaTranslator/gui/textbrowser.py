@@ -4,9 +4,9 @@ import importlib, copy, os, platform
 from traceback import print_exc
 from gui.usefulwidget import WebviewWidget
 from hiraparse.basehira import basehira
-from rendertext.texttype import TextType, ColorControl
-from rendertext.webview import TextBrowser as WebviewTextbrowser
-from rendertext.textbrowser import TextBrowser as QtTextbrowser
+from gui.rendertext.texttype import TextType, ColorControl
+from gui.rendertext.webview import TextBrowser as WebviewTextbrowser
+from gui.rendertext.textbrowser import TextBrowser as QtTextbrowser
 from services.servicecollection_1 import mainuiwsoutputsave, WSForEach
 
 
@@ -62,7 +62,7 @@ class Textbrowser(QFrame):
             if shoudong:
                 WebviewWidget.showError(e)
             globalconfig["rendertext_using"] = "textbrowser"
-            tb = importlib.import_module("rendertext.textbrowser").TextBrowser
+            tb = importlib.import_module("gui.rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
 
         if tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1):

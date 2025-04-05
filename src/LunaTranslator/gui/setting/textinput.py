@@ -7,8 +7,8 @@ from myutils.utils import dynamiclink
 from textsource.texthook import codepage_display
 from traceback import print_exc
 from language import TransLanguages
-from gui.setting_textinput_ocr import getocrgrid_table
-from gui.dialog_savedgame import dialog_savedgame_integrated
+from gui.setting.textinput_ocr import getocrgrid_table
+from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,

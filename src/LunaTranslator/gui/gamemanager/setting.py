@@ -74,7 +74,7 @@ from gui.dynalang import (
     LDialog,
     LGroupBox,
 )
-from gui.dialog_savedgame_common import tagitem
+from gui.gamemanager.common import tagitem
 from gui.inputdialog import postconfigdialog_
 
 

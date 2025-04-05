@@ -47,7 +47,7 @@ src/cpp/libs/onnxruntime-*
 src/cpp/LunaHook/.vscode/settings.json
 src/cpp/libs/YY-Thunks
 src/LunaTranslator/.vscode/settings.json
-src/files/static/yearsummary/yearsummary.value.js
+src/files/html/yearsummary/yearsummary.value.js
 docs/.vitepress/cache
 docs/node_modules
 docs/.vitepress/dist

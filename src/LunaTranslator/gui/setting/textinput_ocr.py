@@ -31,7 +31,7 @@ import gobject, qtawesome
 from gui.dynalang import LFormLayout, LDialog, LAction
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton_close
-from gui.setting_about import offlinelinks
+from gui.setting.about import offlinelinks
 
 
 def __label1(self):

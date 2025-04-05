@@ -8,7 +8,7 @@ from gui.dynalang import LAction
 from urllib.parse import quote
 from myutils.wrapper import threader
 from traceback import print_exc
-from gui.setting_display_text import extrahtml
+from gui.setting.display_text import extrahtml
 from services.servicecollection_1 import WSForEach, transhistwsoutputsave
 
 
@@ -153,7 +153,7 @@ class wvtranshist(WebviewWidget, somecommon):
                 extrahtml,
                 self,
                 "extrahtml_transhist.html",
-                r"files\static\extrahtml\transhist.html",
+                r"files\html\uiwebview\extrahtml\transhist.html",
                 self,
             ),
         )
@@ -196,22 +196,21 @@ class wvtranshist(WebviewWidget, somecommon):
     def loadex_(extra=None):
         if not extra:
             extra = wvtranshist.loadextra()
-            extra = extra if extra else ""
-        with open(
-            r"LunaTranslator\gui\transhistwebview.html", "r", encoding="utf8"
-        ) as ff:
-            html = ff.read().replace("__PLACEHOLDER_EXTRA_HTML_", extra)
-        with open(
-            r"LunaTranslator\gui\transhistwebview_parsed.html", "w", encoding="utf8"
-        ) as ff:
+        basepath = r"files\html\uiwebview\transhist.html"
+        if not extra:
+            return os.path.abspath(basepath)
+        with open(basepath, "r", encoding="utf8") as ff:
+            html = ff.read() + extra
+        path = gobject.gettempdir("transhist.html")
+        with open(path, "w", encoding="utf8") as ff:
             ff.write(html)
-        return os.path.abspath(r"LunaTranslator\gui\transhistwebview_parsed.html")
+        return os.path.abspath(path)
 
     @staticmethod
     def loadextra():
         for _ in [
             "userconfig/extrahtml_transhist.html",
-            r"files\static\extrahtml\transhist.html",
+            r"files\html\uiwebview\extrahtml\transhist.html",
         ]:
             if not os.path.exists(_):
                 continue

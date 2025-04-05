@@ -22,7 +22,7 @@ from gui.usefulwidget import (
     check_grid_append,
 )
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
-from gui.setting_about import offlinelinks
+from gui.setting.about import offlinelinks
 
 
 @Singleton_close

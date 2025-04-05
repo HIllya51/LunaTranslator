@@ -13,7 +13,7 @@ from myutils.config import (
     translatorsetting,
 )
 from myutils.magpie_builtin import MagpieBuiltin, AdapterService
-from gui.dialog_savedgame import dialog_setting_game
+from gui.gamemanager.dialog import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
     loadpostsettingwindowmethod,
@@ -23,16 +23,16 @@ from myutils.utils import (
     find_or_create_uid,
 )
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
-from gui.setting_about import doupdate
+from gui.setting.about import doupdate
 from gui.dialog_memory import dialog_memory
-from rendertext.texttype import TextType, SpecialColor
+from gui.rendertext.texttype import TextType, SpecialColor
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, findnearestscreen
 from gui.edittext import edittrans
-from gui.dialog_savedgame import dialog_savedgame_integrated
-from gui.dialog_savedgame_setting import favorites, calculate_centered_rect
-from gui.dialog_savedgame_common import startgame
+from gui.gamemanager.dialog import dialog_savedgame_integrated
+from gui.gamemanager.setting import favorites, calculate_centered_rect
+from gui.gamemanager.common import startgame
 from gui.dynalang import LDialog, LLabel
 
 

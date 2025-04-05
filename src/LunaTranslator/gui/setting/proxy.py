@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools, re
 from myutils.config import globalconfig
-from gui.setting_translate import splitapillm
+from gui.setting.translate import splitapillm
 from myutils.utils import (
     splittranslatortypes,
     translate_exits,

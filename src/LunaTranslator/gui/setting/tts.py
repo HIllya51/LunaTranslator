@@ -10,7 +10,7 @@ from gui.inputdialog import (
     yuyinzhidingsetting,
 )
 from tts.basettsclass import TTSbase
-from gui.setting_about import offlinelinks
+from gui.setting.about import offlinelinks
 from gui.usefulwidget import (
     D_getspinbox,
     makescrollgrid,

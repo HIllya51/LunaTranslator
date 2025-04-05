@@ -1,7 +1,7 @@
 from qtsymbols import *
 from myutils.config import globalconfig
 import unicodedata
-from rendertext.texttype import ColorControl, SpecialColor
+from gui.rendertext.texttype import ColorControl, SpecialColor
 
 
 class base(QWidget):

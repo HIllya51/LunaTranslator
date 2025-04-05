@@ -14,8 +14,8 @@ from myutils.utils import get_time_stamp, getimagefilefilter, targetmod
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
 from gui.usefulwidget import pixmapviewer, makesubtab_lazy, tabadd_lazy, listediter
-from gui.dialog_savedgame_setting import dialog_setting_game_internal
-from gui.dialog_savedgame_common import (
+from gui.gamemanager.setting import dialog_setting_game_internal
+from gui.gamemanager.common import (
     getalistname,
     startgamecheck,
     getreflist,

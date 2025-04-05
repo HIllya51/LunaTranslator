@@ -4,7 +4,7 @@ from myutils.utils import initanewitem, gamdidchangedtask
 import functools, time, json, gobject
 from qtsymbols import *
 from metadata.abstract import common
-from gui.dialog_savedgame import getreflist, getalistname
+from gui.gamemanager.dialog import getreflist, getalistname
 from myutils.wrapper import threader
 from gui.usefulwidget import threebuttons
 
