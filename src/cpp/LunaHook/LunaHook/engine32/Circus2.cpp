@@ -3,8 +3,9 @@ namespace
 {
   void filter(TextBuffer *buffer, HookParam *hp)
   {
-    auto data = buffer->buff;
+    StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
     StringFilter(buffer, TEXTANDLEN("@s"));
+    auto data = buffer->buff;
     if (strstr((char *)data, "@i") || strstr((char *)data, "@y"))
       return buffer->clear();
     // ｛てんきゅう／天穹｝
@@ -13,6 +14,7 @@ namespace
       StringFilter(buffer, TEXTANDLEN("\x81\x70"));
       StringFilterBetween(buffer, TEXTANDLEN("\x81\x6f"), TEXTANDLEN("\x81\x5e"));
     }
+    CharFilter(buffer, '\n');
   };
 }
 /**
@@ -104,6 +106,127 @@ namespace
       NewHook(hp, "Circus2");
     }
     return funcaddr || funcaddr2;
+  }
+  bool c3()
+  {
+    // v17743 D.C.III With You～ダ・カーポIII～ウィズユー
+    // v21192 D.C.III Dream Days～ダ・カーポIII～ドリームデイズ
+    /*
+    //sub_434D40   <---- c2的目标，但他有时是stack[1]有时是stack[2]，不如这个函数稳定stack[1]
+    int __thiscall sub_435C00(void *this, char *Str)
+{
+  char *v2; // esi
+  char *v5; // edi
+  char v6[260]; // [esp+8h] [ebp-108h] BYREF
+
+  v2 = Str;
+  if ( strlen(Str) > 0x104 )
+    return MessageBoxA(
+             0,
+             "SetStr暥帤悢僆乕僶乕",
+             "D.C.嘨 With You 乣僟丒僇乕億嘨乣 僂傿僘儐乕",
+             0x42000u);
+  if ( strstr(Str, word_47983C) )
+  {
+    strcpy(v6, Str);
+    v2 = v6;
+    if ( strstr(v6, word_47983C) )
+    {
+      do
+      {
+        v5 = strstr(v2, word_47983C);
+        *v5 = 0;
+        sub_434D40((int)this, v2);
+        v2 = v5 + 1;
+      }
+      while ( strstr(v5 + 1, word_47983C) );
+    }
+  }
+  return sub_434D40((int)this, v2);
+}
+    */
+    /*
+    int __thiscall sub_43FA40(_DWORD *this, char *Str)
+ {
+   char *v2; // esi
+   int result; // eax
+   int v5; // ebp
+   char *v6; // edi
+   char v7[260]; // [esp+8h] [ebp-108h] BYREF
+
+   v2 = Str;
+   if ( strlen(Str) > 0x104 )
+     return MessageBoxA(0, "SetStr overflow", "D.C.嘨 DreamDays乣僟丒僇乕億嘨乣僪儕乕儉僨僀僘", 0x42000u);
+   v5 = this[17];
+   if ( strstr(Str, word_484938) )
+   {
+     strcpy(v7, Str);
+     v2 = v7;
+     if ( strstr(v7, word_484938) )
+     {
+       do
+       {
+         v6 = strstr(v2, word_484938);
+         *v6 = 0;
+         sub_43F860((int)this, v2);
+         v2 = v6 + 1;
+       }
+       while ( strstr(v6 + 1, word_484938) );
+     }
+   }
+   result = sub_43F860((int)this, v2);
+   this[17] = v5;
+   this[30] = 0;
+   return result;
+ }
+    */
+    auto check1 = []() -> uintptr_t
+    {
+      char overflow[] = "\x53\x65\x74\x53\x74\x72\x95\xB6\x8E\x9A\x90\x94\x83\x49\x81\x5b\x83\x6f\x81\x5b"; // SetStr文字数オーバー
+      char overflow2[] = "SetStr overflow";
+      auto addr = MemDbg::findBytes(overflow, sizeof(overflow), processStartAddress, processStopAddress);
+      if (!addr)
+        addr = MemDbg::findBytes(overflow2, ::strlen(overflow2), processStartAddress, processStopAddress);
+      if (!addr)
+        return 0;
+      addr = MemDbg::findPushAddress(addr, processStartAddress, processStopAddress);
+      if (!addr)
+        return 0;
+      return addr;
+    };
+    auto addr = check1();
+    if (!addr)
+    {
+      const BYTE bytes[] = {
+          /*
+          if ( strlen(Str) > 0x104 )
+       return MessageBoxA(0,。。。)
+          */
+          0x8a, 0x08,
+          0x40,
+          0x84, 0xc9,
+          0x75, 0xf9,
+          0x2b, 0xc2,
+          0x3d, 0x04, 0x01, 0x00, 0x00,
+          0x76, XX,
+          0x68, 0x00, 0x20, 0x04, 0x00,
+          0x68, XX4,
+          0x68, XX4,
+          0x6a, 0x00,
+          0xff, 0x15, XX4};
+      addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    }
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(1);
+    hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
+    hp.filter_fun = filter;
+    return NewHook(hp, "Circus2");
   }
 }
 
@@ -349,7 +472,7 @@ namespace
 bool Circus2::attach_function()
 {
   bool ch2 = InsertCircusHook2();
-  bool _1 = ch2 || c2();
+  bool _1 = ch2 || c3() || c2();
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
   return _1 || embed;
 }
