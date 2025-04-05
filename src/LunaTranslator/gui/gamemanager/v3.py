@@ -10,10 +10,10 @@ from myutils.config import (
     globalconfig,
 )
 from myutils.hwnd import clipboard_set_image
-from myutils.utils import get_time_stamp, getimagefilefilter, targetmod
+from myutils.utils import get_time_stamp, getimageformatlist, targetmod
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
-from gui.usefulwidget import pixmapviewer, makesubtab_lazy, tabadd_lazy, listediter
+from gui.usefulwidget import pixmapviewer, makesubtab_lazy, tabadd_lazy
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
     getalistname,
@@ -409,11 +409,15 @@ class pixwrapper(QWidget):
 
     def dropEvent(self, event: QDropEvent):
         files = [u.toLocalFile() for u in event.mimeData().urls()]
-
         newf = []
+        sups = getimageformatlist()
         for f in files:
-            if f not in savehook_new_data[self.k].get("imagepath_all", []):
-                newf.append(f)
+            if f in savehook_new_data[self.k].get("imagepath_all", []):
+                continue
+            ext = os.path.splitext(f)[1]
+            if ext.lower()[1:] not in sups:
+                continue
+            newf.append(f)
         if not newf:
             return
 
