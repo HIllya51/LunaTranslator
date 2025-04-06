@@ -2204,8 +2204,8 @@ def makegroupingrid(args):
     return group
 
 
-def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
-
+def automakegrid(grid: QGridLayout, lis, savelist=None):
+    save = isinstance(savelist, list)
     maxl = 1
     linecolss = []
     for nowr, line in enumerate(lis):
@@ -2271,7 +2271,7 @@ def automakegrid(grid: QGridLayout, lis, save=False, savelist=None):
         grid.setRowMinimumHeight(nowr, 25)
 
 
-def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
+def makegrid(grid=None, savelist=None, savelay=None, delay=False):
 
     class gridwidget(QWidget):
         pass
@@ -2281,12 +2281,12 @@ def makegrid(grid=None, save=False, savelist=None, savelay=None, delay=False):
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
-    def do(gridlay, grid, save, savelist, savelay):
-        automakegrid(gridlay, grid, save, savelist)
-        if save:
+    def do(gridlay, grid, savelist, savelay):
+        automakegrid(gridlay, grid, savelist)
+        if isinstance(savelay, list):
             savelay.append(gridlay)
 
-    __do = functools.partial(do, gridlay, grid, save, savelist, savelay)
+    __do = functools.partial(do, gridlay, grid, savelist, savelay)
 
     if not delay:
         __do()
@@ -2302,8 +2302,8 @@ def makescroll():
     return scroll
 
 
-def makescrollgrid(grid, lay, save=False, savelist=None, savelay=None):
-    wid, do = makegrid(grid, save, savelist, savelay, delay=True)
+def makescrollgrid(grid, lay, savelist=None, savelay=None):
+    wid, do = makegrid(grid, savelist, savelay, delay=True)
     swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)

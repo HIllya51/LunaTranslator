@@ -38,7 +38,8 @@
             "outdate": false,
             "gpt": true,
             "api": false,
-            "free": true
+            "free": true,
+            "external": true
         }
     },
     "usecustomankigen": false,

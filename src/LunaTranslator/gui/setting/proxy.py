@@ -97,7 +97,7 @@ def checkxx(key):
 
 
 def makegridW(grid, lay, save=False, savelist=None, savelay=None):
-    wid, do = makegrid(grid, save, savelist, savelay, delay=True)
+    wid, do = makegrid(grid, savelist, savelay, delay=True)
     lay.addWidget(wid)
     do()
     return wid

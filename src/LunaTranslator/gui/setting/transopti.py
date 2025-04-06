@@ -58,7 +58,7 @@ def getcomparelayout(self):
     return w
 
 
-def setTab7_lazy(self, basel):
+def setTab7_lazy(self, basel: QLayout):
     grids = [
         [
             D_getIconButton(
@@ -74,7 +74,7 @@ def setTab7_lazy(self, basel):
     ]
     if set(postprocessconfig.keys()) != set(globalconfig["postprocess_rank"]):
         globalconfig["postprocess_rank"] = list(postprocessconfig.keys())
-    sortlist = globalconfig["postprocess_rank"]
+    sortlist: list = globalconfig["postprocess_rank"]
     savelist = []
     savelay = []
 
@@ -90,16 +90,15 @@ def setTab7_lazy(self, basel):
         headoffset = 1
         sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
         for i, ww in enumerate(savelist[idx + headoffset]):
-
-            w1 = savelay[0].indexOf(ww)
-            w2 = savelay[0].indexOf(savelist[idx2 + headoffset][i])
-            p1 = savelay[0].getItemPosition(w1)
-            p2 = savelay[0].getItemPosition(w2)
-            savelay[0].removeWidget(ww)
-            savelay[0].removeWidget(savelist[idx2 + headoffset][i])
-
-            savelay[0].addWidget(savelist[idx2 + headoffset][i], *p1)
-            savelay[0].addWidget(ww, *p2)
+            ll: QGridLayout = savelay[0]
+            w1 = ll.indexOf(ww)
+            w2 = ll.indexOf(savelist[idx2 + headoffset][i])
+            p1 = ll.getItemPosition(w1)
+            p2 = ll.getItemPosition(w2)
+            ll.removeWidget(ww)
+            ll.removeWidget(savelist[idx2 + headoffset][i])
+            ll.addWidget(savelist[idx2 + headoffset][i], *p1)
+            ll.addWidget(ww, *p2)
         savelist[idx + headoffset], savelist[idx2 + headoffset] = (
             savelist[idx2 + headoffset],
             savelist[idx + headoffset],
@@ -204,7 +203,7 @@ def setTab7_lazy(self, basel):
             [], lc=QVBoxLayout, margin0=True, makewidget=True, both=True
         )
         lay.addWidget(vboxw)
-        makescrollgrid(grids, vbox, True, savelist, savelay)
+        makescrollgrid(grids, vbox, savelist, savelay)
 
         lay.addWidget(getcomparelayout(self))
 

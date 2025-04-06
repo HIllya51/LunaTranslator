@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, os
-import gobject, uuid, shutil, copy
+import gobject, uuid, shutil, copy, importlib
 from myutils.config import globalconfig, translatorsetting, _TR
 from myutils.utils import (
     selectdebugfile,
@@ -16,6 +16,7 @@ from traceback import print_exc
 from gui.usefulwidget import SuperCombo
 from collections import Counter
 from myutils.wrapper import tryprint
+from translator.basetranslator import basetrans
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getspinbox,
@@ -25,6 +26,7 @@ from gui.usefulwidget import (
     check_grid_append,
     getsimpleswitch,
     D_getIconButton,
+    makegroupingrid,
     D_getsimpleswitch,
     selectcolor,
     createfoldgrid,
@@ -289,7 +291,7 @@ def loadbutton(self, fanyi):
     )
 
 
-def selectllmcallback(self, countnum, btnplus, fanyi, name):
+def selectllmcallback(self, countnum: list, btnplus, fanyi, name):
     uid = str(uuid.uuid4())
     _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
     _f12 = "userconfig/copyed/{}.py".format(fanyi)
@@ -372,6 +374,8 @@ def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
     except:
         pass
     layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
+    if not layout:
+        return
     idx = countnum.index(fanyi)
     line = idx // 3
     off = line * 14 + (idx % 3) * 5
@@ -436,7 +440,7 @@ def createmanybtn(self, countnum, btnplus):
     return w
 
 
-def initsome11(self, l, label=None, btnplus=False):
+def initsome11(self, l, label=None, btnplus=False, savecountnum=False):
     grids = []
     if label:
         grids.append([(label, 8)])
@@ -502,6 +506,8 @@ def initsome11(self, l, label=None, btnplus=False):
     elif len(grids) == 1:
         if i % 3 != 0:
             grids[-1].append(("", 5 * (3 - i % 3)))
+    if savecountnum:
+        return grids, countnum
     return grids
 
 
@@ -534,7 +540,7 @@ def initsome21(self, l, label=None, btnplus=None):
     return grids
 
 
-def initsome2(self, mianfei, l, label=None, btnplus=None):
+def initsome2(self, mianfei, l, external: list, label=None, btnplus=None):
 
     onlinegrid = initsome11(self, mianfei)
     is_gpt_likes, not_is_gpt_like = splitapillm(l)
@@ -571,6 +577,24 @@ def initsome2(self, mianfei, l, label=None, btnplus=None):
             )
         ],
     ]
+    if external:
+        external, self.countnumexternal = initsome11(
+            self, external, label, savecountnum=True
+        )
+        if external:
+            grids += [
+                [
+                    functools.partial(
+                        createfoldgrid,
+                        external,
+                        "其他",
+                        globalconfig["foldstatus"]["ts"],
+                        "external",
+                        internallayoutname="damoxinggridinternalfuckyou",
+                        parent=self,
+                    )
+                ],
+            ]
     return grids
 
 
@@ -691,8 +715,7 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
 
     offlinegrid = initsome21(self, res.offline, btnplus="offline")
     offlinegrid += [[functools.partial(offlinelinks, "translate")]]
-    online_reg_grid = initsome2(self, res.free, res.api, btnplus="api")
-
+    online_reg_grid = initsome2(self, res.free, res.api, res.external, btnplus="api")
     pretransgrid = [
         [
             dict(
@@ -743,15 +766,119 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
         ],
         [dict(type="grid", title="其他", grid=initsome11(self, res.other))],
     ]
-
+    savelay = []
     tab, dotab = makesubtab_lazy(
         ["在线翻译", "离线翻译", "其他"],
         [
-            functools.partial(makescrollgrid, online_reg_grid),
+            functools.partial(makescrollgrid, online_reg_grid, savelay=savelay),
             functools.partial(makescrollgrid, offlinegrid),
             functools.partial(makescrollgrid, pretransgrid),
         ],
         delay=True,
     )
+    tab.setAcceptDrops(True)
+    tab.dragEnterEvent = __dragEnterEvent
+    tab.dropEvent = functools.partial(__dropEvent, self, savelay)
     basel.addWidget(tab)
     dotab()
+
+
+def __dragEnterEvent(event: QDragEnterEvent):
+    if event.mimeData().hasUrls():
+        event.accept()
+    else:
+        event.ignore()
+
+
+def ___appendex(self, ll: QGridLayout):
+    if ll.count() > 3:
+        return
+    fold = createfoldgrid(
+        [],
+        "其他",
+        globalconfig["foldstatus"]["ts"],
+        "external",
+        internallayoutname="damoxinggridinternalfuckyou",
+        parent=self,
+    )
+    ll.addWidget(fold)
+    self.countnumexternal = []
+
+
+def __additem(self, layout: QGridLayout, uid):
+    countnum: list = self.countnumexternal
+    last = getIconButton(callback=functools.partial(loadbutton, self, uid))
+
+    name = getrenameablellabel(uid, self, countnum, "fuckyou")
+    swc = getsimpleswitch(
+        globalconfig["fanyi"][uid],
+        "use",
+        callback=functools.partial(gobject.baseobject.prepare, uid),
+    )
+    color = getcolorbutton(
+        globalconfig["fanyi"][uid],
+        "color",
+        parent=self,
+        name="fanyicolor_" + uid,
+        callback=functools.partial(
+            selectcolor,
+            self,
+            globalconfig["fanyi"][uid],
+            "color",
+            None,
+            self,
+            "fanyicolor_" + uid,
+        ),
+    )
+    offset = 5 * (len(countnum) % 3)
+    rx = len(countnum) % 3 == 0
+    r = layout.rowCount() - 1 + rx
+    layout.addWidget(name, r, offset + 0)
+    layout.addWidget(swc, r, offset + 1)
+    layout.addWidget(color, r, offset + 2)
+    layout.addWidget(last, r, offset + 3)
+    if len(countnum) % 3 != 2:
+        layout.addWidget(QLabel(), r, offset + 4)
+
+    countnum.append(uid)
+
+
+@tryprint
+def __importnew(self, savelay, f):
+
+    fanyi = str(uuid.uuid4())
+    os.makedirs("userconfig/copyed", exist_ok=True)
+    shutil.copy(f, "userconfig/copyed/{}.py".format(fanyi))
+    module = importlib.import_module("userconfig.copyed." + fanyi)
+    TS = module.TS
+    if not issubclass(TS, basetrans):
+        raise Exception("")
+    default = {
+        "type": "external",
+        "color": "blue",
+        "name": os.path.basename(os.path.splitext(f)[0]),
+    }
+    try:
+        basic_config = module.basic_config
+    except:
+        basic_config = {}
+    try:
+        translator_config = module.translator_config
+    except:
+        translator_config = {}
+    default.update(basic_config)
+    default["use"] = False
+    globalconfig["fanyi"][fanyi] = default
+    if translator_config:
+        translatorsetting[fanyi] = translator_config
+    ll: QGridLayout = savelay[0]
+    ___appendex(self, ll)
+    __additem(self, self.damoxinggridinternalfuckyou, fanyi)
+
+
+def __dropEvent(self, savelay: list, event: QDropEvent):
+    files = [u.toLocalFile() for u in event.mimeData().urls()]
+    for f in files:
+        if os.path.splitext(f)[1].lower() != ".py":
+            continue
+        __importnew(self, savelay, f)

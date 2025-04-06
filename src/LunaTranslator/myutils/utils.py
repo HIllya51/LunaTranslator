@@ -396,6 +396,7 @@ def splittranslatortypes():
         def __init__(self):
             self.pre, self.offline, self.free, self.api = [], [], [], []
             self.other = []
+            self.external = []
 
     ls = __()
     for k in globalconfig["fanyi"]:
@@ -406,6 +407,7 @@ def splittranslatortypes():
                 "free": ls.free,
                 "api": ls.api,
                 "other": ls.other,
+                "external": ls.external,
             }[globalconfig["fanyi"][k].get("type", "free")].append(k)
         except:
             pass

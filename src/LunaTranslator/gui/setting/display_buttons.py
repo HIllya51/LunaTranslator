@@ -54,7 +54,7 @@ def doadjust(_):
     gobject.baseobject.translation_ui.enterfunction()
 
 
-def changerank(item, up, tomax, sortlist, savelist, savelay):
+def changerank(item, up, tomax, sortlist: list, savelist, savelay):
 
     idx = sortlist.index(item)
     if tomax:
@@ -66,16 +66,15 @@ def changerank(item, up, tomax, sortlist, savelist, savelay):
     headoffset = 1
     sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
     for i, ww in enumerate(savelist[idx + headoffset]):
-
-        w1 = savelay[0].indexOf(ww)
-        w2 = savelay[0].indexOf(savelist[idx2 + headoffset][i])
-        p1 = savelay[0].getItemPosition(w1)
-        p2 = savelay[0].getItemPosition(w2)
-        savelay[0].removeWidget(ww)
-        savelay[0].removeWidget(savelist[idx2 + headoffset][i])
-
-        savelay[0].addWidget(savelist[idx2 + headoffset][i], *p1)
-        savelay[0].addWidget(ww, *p2)
+        ll: QGridLayout = savelay[0]
+        w1 = ll.indexOf(ww)
+        w2 = ll.indexOf(savelist[idx2 + headoffset][i])
+        p1 = ll.getItemPosition(w1)
+        p2 = ll.getItemPosition(w2)
+        ll.removeWidget(ww)
+        ll.removeWidget(savelist[idx2 + headoffset][i])
+        ll.addWidget(savelist[idx2 + headoffset][i], *p1)
+        ll.addWidget(ww, *p2)
     savelist[idx + headoffset], savelist[idx2 + headoffset] = (
         savelist[idx2 + headoffset],
         savelist[idx + headoffset],
@@ -162,4 +161,4 @@ def createbuttonwidget(self, lay):
             belong = ""
         l.append(globalconfig["toolbutton"]["buttons"][k]["tip"] + belong)
         grids.append(l)
-    makescrollgrid(grids, lay, True, savelist, savelay)
+    makescrollgrid(grids, lay, savelist, savelay)
