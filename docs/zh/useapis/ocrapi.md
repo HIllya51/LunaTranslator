@@ -182,7 +182,20 @@ https://ocr.space/
 
 ::: tabs
 
+== 本地OCR
+
+内置仅已包含日语识别模型。
+
+如果需要识别其他语言，需要在`资源下载`中添加对应语言的识别模型。
+
+== SnippingTool
+
+如果是最新版windows 11系统则可以直接使用，否则需要在`资源下载`中安装该模块以使用。
+
 == manga-ocr
+
+>[!WARNING]
+>此OCR引擎对于横向文本识别不效果不佳。
 
 CPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 
@@ -223,10 +236,10 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
 == WindowsOCR
 
-### WindowsOCR如何安装额外的语言支持？
-
 >[!WARNING]
 >WindowsOCR仅支持win10-win11操作系统
+
+### WindowsOCR如何安装额外的语言支持？
 
 #### 如何查询 OCR 语言包
 

@@ -16,7 +16,7 @@ If you feel that the software is helpful to you, welcome to become my [sponsor](
 
 - **HOOK** Supports obtaining text using HOOK methods. For some engines, it also supports [embedded translation](https://docs.lunatranslator.org/embedtranslate.html). And Extracting text from games running on some [Emulators](https://docs.lunatranslator.org/emugames.html) is also supported. For games that are not supported or not well supported, please [submit feedback](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
 
-- **OCR** supports **[offline OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** ( built-in OCR, WindowsOCR, Tesseract5, manga-ocr, WeChat/QQ OCR) and **[online OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
+- **OCR** supports **[offline OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** and **[online OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
 
 - **Clipboard** Supports retrieving text from the clipboard for translation and can also output extracted text to the clipboard.
 

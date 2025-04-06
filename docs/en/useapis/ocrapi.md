@@ -179,7 +179,22 @@ Same as [Translation](/en/guochandamoxing.html)
 
 ::: tabs
 
+== Local OCR
+
+The built-in package includes a Japanese recognition model. 
+
+If you need to recognize other languages, you must download the corresponding language recognition model from `Resource Download`.
+
+== SnippingTool
+
+If you are using the latest version of Windows 11, you can use it directly. 
+
+Otherwise, you need to install this module from `Resource Download` to enable its functionality.
+
 == Manga-OCR
+
+>[!WARNING]
+>This OCR engine performs poorly in recognizing horizontal text.
 
 CPU Integration Package https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 
@@ -192,10 +207,10 @@ Requires installation of WeChat or the latest version of QQ
 
 == WindowsOCR
 
-### How to Install Additional Language Support for WindowsOCR?
-
 >[!WARNING]
 > WindowsOCR only supports Windows 10 and Windows 11 operating systems.
+
+### How to Install Additional Language Support for WindowsOCR?
 
 #### How to query for OCR language packs
 
