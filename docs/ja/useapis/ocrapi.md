@@ -262,6 +262,9 @@ https://learn.microsoft.com/ja-jp/windows/powertoys/text-extractor#supported-lan
 
 == Tesseract5
 
+>[!WARNING]
+>性能が低すぎるため、使用は推奨されません。
+
 https://github.com/tesseract-ocr/tesseract/releases
 
 :::

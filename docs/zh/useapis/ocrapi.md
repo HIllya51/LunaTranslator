@@ -292,6 +292,9 @@ https://learn.microsoft.com/zh-cn/windows/powertoys/text-extractor#supported-lan
 
 == Tesseract5
 
+>[!WARNING]
+>效果太差，不推荐使用。
+
 https://github.com/tesseract-ocr/tesseract/releases
 
 :::
