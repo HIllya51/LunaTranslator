@@ -2882,7 +2882,7 @@ class IconButton(QPushButton):
         if e.type() == QEvent.Type.FontChange:
             self.resizedirect()
         elif e.type() == QEvent.Type.EnabledChange:
-            self.seticon()
+            self.__seticon()
         return super().event(e)
 
     def resizedirect(self):
