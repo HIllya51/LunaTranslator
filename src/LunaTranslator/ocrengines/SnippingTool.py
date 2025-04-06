@@ -75,11 +75,7 @@ class question(QWidget):
         data = "type=ProductId&url=9mz95kl8mr0l"
 
         response = requests.post(
-            "https://store.rg-adguard.net/api/GetFiles",
-            headers=headers,
-            data=data,
-            verify=False,
-            proxies=getproxy(),
+            "https://store.rg-adguard.net/api/GetFiles", headers=headers, data=data
         )
 
         saves = []
@@ -95,10 +91,10 @@ class question(QWidget):
             saves.append((version, link, package))
         saves.sort(key=lambda _: _[0])
         url = saves[-1][1]
-        req = requests.head(url, verify=False, proxies=getproxy())
+        req = requests.head(url)
         size = int(req.headers["Content-Length"])
         file_size = 0
-        req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
+        req = requests.get(url, stream=True)
         target = gobject.gettempdir(saves[-1][2])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
