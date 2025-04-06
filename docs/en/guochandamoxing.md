@@ -200,7 +200,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 **Model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
 
 >[!WARNING]
->**API Key** should be generated using Baidu Intelligent Cloud IAM's Access Key and Secret Key to create the BearerToken for the interface, or directly fill in the format `{Access Key}:{Secret Key}` in the **API Key** field. Note that this is not the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder; they are not interchangeable.
+>**API Key** should be generated using Baidu Intelligent Cloud IAM's Access Key and Secret Key to create the BearerToken for the interface, or directly fill in the format `Access Key`:`Secret Key` in the **API Key** field. Note that this is not the API Key and Secret Key for the old v1 version of Qianfan ModelBuilder; they are not interchangeable.
 
 == MiniMax
 

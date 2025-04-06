@@ -200,7 +200,7 @@
 **model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
 
 >[!WARNING]
->**API Key**は、百度智能雲IAMのAccess KeyとSecret Keyを使用してインターフェースのBearerTokenを生成し、それを**API Key**として記入するか、`{Access Key}:{Secret Key}`の形式で直接記入してください。千帆ModelBuilderの旧版v1バージョンのAPI KeyとSecret Keyとは互換性がないので注意してください。
+>**API Key**は、百度智能雲IAMのAccess KeyとSecret Keyを使用してインターフェースのBearerTokenを生成し、それを**API Key**として記入するか、`Access Key`:`Secret Key`の形式で直接記入してください。千帆ModelBuilderの旧版v1バージョンのAPI KeyとSecret Keyとは互換性がないので注意してください。
 
 == MiniMax
 
