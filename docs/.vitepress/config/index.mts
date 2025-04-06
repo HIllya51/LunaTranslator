@@ -12,24 +12,24 @@ export default defineConfig({
     ['script', {},
       `
 window.onmousemove = function(){
-    if (!window.location.hostname.startsWith('docs'))return;
-    (()=>{
-      let replacetarget = window.location.protocol + '//image.' + window.location.hostname.substring(5);
-      let origin='https://image.lunatranslator.org'
-      if(origin==replacetarget)return;
-      let images = document.getElementsByTagName('img');
-      for (var i = 0; i < images.length; i++) {
-          images[i].src = images[i].src.replace('https://image.lunatranslator.org', replacetarget)
-      }
-    })()
+  if (!window.location.hostname.startsWith('docs'))return;
   {
-      let replacetarget = window.location.protocol + '//' + window.location.hostname.substring(5);
-      let origin='https://lunatranslator.org'
-      if(origin==replacetarget)return;
-      let srcs = document.getElementsByTagName('a');
-      for (var i = 0; i < srcs.length; i++) {
-          srcs[i].href = srcs[i].href.replace(origin, replacetarget)
-      }
+    let replacetarget = window.location.protocol + '//image.' + window.location.hostname.substring(5);
+    let origin='https://image.lunatranslator.org'
+    let images = document.getElementsByTagName('img');
+    for (var i = 0; i < images.length; i++) {
+      if(images[i].src!=images[i].src.replace(origin, replacetarget))
+        images[i].src = images[i].src.replace(origin, replacetarget)
+    }
+  }
+  {
+    let replacetarget = window.location.protocol + '//' + window.location.hostname.substring(5);
+    let origin='https://lunatranslator.org'
+    let srcs = document.getElementsByTagName('a');
+    for (var i = 0; i < srcs.length; i++) {
+      if(srcs[i].href!=srcs[i].href.replace(origin, replacetarget))
+        srcs[i].href = srcs[i].href.replace(origin, replacetarget)
+    }
   }
 }
       `]
