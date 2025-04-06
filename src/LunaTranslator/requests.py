@@ -50,7 +50,7 @@ class Response:
     @content.setter
     def content(self, c):
         if self.stream:
-            raise RequestException()
+            raise RequestException("")
         self.__content = c
 
     @property
@@ -83,10 +83,10 @@ class Response:
 
     def iter_content(self, chunk_size=1, decode_unicode=False):
         if not self.stream:
-            raise RequestException()
+            raise RequestException("")
 
         if not self.iter_once:
-            raise RequestException()
+            raise RequestException("")
         self.iter_once = False
 
         def __generate():
