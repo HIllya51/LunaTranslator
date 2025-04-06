@@ -30,7 +30,7 @@ from myutils.keycode import vkcode_map
 import gobject, qtawesome
 from gui.dynalang import LFormLayout, LDialog, LAction
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
-from myutils.wrapper import threader, Singleton_close
+from myutils.wrapper import threader, Singleton
 from gui.setting.about import offlinelinks
 
 
@@ -52,7 +52,7 @@ def __directinitend(engine, _ok):
         ocr_end()
 
 
-@Singleton_close
+@Singleton
 class triggereditor(LDialog):
     def showmenu(self, p: QPoint):
         curr = self.hctable.currentIndex()
@@ -279,7 +279,7 @@ def _ocrparam(self):
     return self._ocrparam
 
 
-@Singleton_close
+@Singleton
 class showocrimage(saveposwindow):
     setimage = pyqtSignal(QImage)
     setresult = pyqtSignal(dict)
@@ -386,17 +386,13 @@ def internal(self):
             D_getIconButton(
                 callback=gobject.baseobject.createshowocrimage,
                 icon="fa.picture-o",
-                fix=False,
             ),
             D_getIconButton(
                 callback=lambda: os.startfile(
                     dynamiclink("{docs_server}/useapis/ocrapi.html")
                 ),
                 icon="fa.question",
-                fix=False,
             ),
-            "",
-            "",
             "",
         ],
         [dict(title="离线", type="grid", grid=offgrids)],
@@ -511,7 +507,7 @@ def internal(self):
     allothers = [
         [dict(title="识别设置", type="grid", grid=reco)],
         [dict(title="自动化执行", grid=autorun)],
-        [dict(title="其他设置",type="grid", grid=others)],
+        [dict(title="其他设置", type="grid", grid=others)],
     ]
 
     return makesubtab_lazy(

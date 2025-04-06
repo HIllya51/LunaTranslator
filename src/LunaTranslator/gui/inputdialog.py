@@ -5,7 +5,7 @@ import os, gobject, requests
 from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR, static_data
 from myutils.utils import makehtml
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     MySwitch,
     getsimpleswitch,
@@ -30,7 +30,7 @@ from gui.dynalang import (
 )
 
 
-@Singleton_close
+@Singleton
 class noundictconfigdialog1(LDialog):
     def newline(self, row, item: dict):
         self.model.insertRow(
@@ -242,7 +242,7 @@ class voiceselect(LDialog):
                 self._layout.removeRow(1)
 
 
-@Singleton_close
+@Singleton
 class yuyinzhidingsetting(LDialog):
     def newline(self, row, item):
 
@@ -479,7 +479,7 @@ class SuperComboX(SuperCombo):
             painter.drawControl(QStyle.ControlElement.CE_ComboBoxLabel, opt)
 
 
-@Singleton_close
+@Singleton
 class autoinitdialog(LDialog):
     def __init__(
         self,
@@ -789,7 +789,7 @@ class autoinitdialog(LDialog):
             self.show()
 
 
-@Singleton_close
+@Singleton
 class postconfigdialog_(LDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.button.setFocus()

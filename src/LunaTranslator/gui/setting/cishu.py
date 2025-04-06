@@ -3,7 +3,7 @@ import functools, os
 import gobject
 from myutils.utils import splitocrtypes, dynamiccishuname
 from myutils.config import globalconfig, _TR
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton
 from gui.inputdialog import autoinitdialog_items, autoinitdialog
 from gui.usefulwidget import (
     yuitsu_switch,
@@ -25,7 +25,7 @@ from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
 from gui.setting.about import offlinelinks
 
 
-@Singleton_close
+@Singleton
 class multicolorset(LDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)

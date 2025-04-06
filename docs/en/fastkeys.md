@@ -157,4 +157,8 @@
 1. #### Read Word
     Reads the word in the current dictionary lookup window.
 
+== Customize
+
+You can add more arbitrary shortcut keys by implementing the `OnHotKeyClicked` function yourself, which will be called when the shortcut key is triggered.
+
 :::

@@ -324,22 +324,8 @@ def getpath():
 
 
 def open___(url):
-    chrome = getpath()
     link = "http://127.0.0.1:{}{}".format(globalconfig["networktcpport"], url)
-    if chrome:
-        app = ["", "--app="][globalconfig["chromeapp"]]
-        cmd = '"{}" {}{}'.format(chrome, app, link)
-        threader(os.system)(cmd)
-    else:
-        os.startfile(link)
-
-
-def selectbrowser():
-    f = QFileDialog.getOpenFileName(
-        filter="*.exe", directory=os.path.dirname(getpath())
-    )
-    res = f[0]
-    globalconfig["chromepath"] = res
+    os.startfile(link)
 
 
 def createlabellink(url):
@@ -383,11 +369,6 @@ def outputgrid():
         [(functools.partial(createlabellink, "/page/mainui"), -1)],
         [(functools.partial(createlabellink, "/page/transhist"), -1)],
         [(functools.partial(createlabellink, "/page/searchword"), -1)],
-        ["Chrome", D_getIconButton(selectbrowser)],
-        [
-            "APP",
-            D_getsimpleswitch(globalconfig, "chromeapp"),
-        ],
     ]
     return grids
 

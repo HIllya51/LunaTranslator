@@ -2,10 +2,10 @@ from qtsymbols import *
 import functools, json
 import gobject
 from myutils.config import globalconfig
-from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getIconButton,
+    IconButton,
     getIconButton,
     makescrollgrid,
     D_getsimpleswitch,
@@ -14,16 +14,18 @@ from gui.usefulwidget import (
 from gui.dynalang import LDialog
 
 
-@Singleton
 class dialog_selecticon(LDialog):
-    def __init__(self, parent, dict, key) -> None:
+    def __init__(self, parent, dict, key, btn: IconButton) -> None:
 
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.dict = dict
+        self.btn = btn
         self.key = key
         self.setWindowTitle("选择图标")
         with open(
-            "files/static/fonts/fontawesome4.7-webfont-charmap.json", "r", encoding="utf8"
+            "files/static/fonts/fontawesome4.7-webfont-charmap.json",
+            "r",
+            encoding="utf8",
         ) as ff:
             js = json.load(ff)
 
@@ -43,6 +45,8 @@ class dialog_selecticon(LDialog):
         print(_)
         self.dict[self.key] = _
         self.close()
+        gobject.baseobject.translation_ui.refreshtoolicon()
+        self.btn.setIconStr(_)
 
 
 def doadjust(_):
@@ -77,6 +81,22 @@ def changerank(item, up, tomax, sortlist, savelist, savelay):
         savelist[idx + headoffset],
     )
     doadjust(None)
+
+
+def createbtn(self, k, key):
+    btn = getIconButton(
+        icon=globalconfig["toolbutton"]["buttons"][k][key],
+    )
+    btn.clicked.connect(
+        functools.partial(
+            dialog_selecticon,
+            self,
+            globalconfig["toolbutton"]["buttons"][k],
+            key,
+            btn,
+        )
+    )
+    return btn
 
 
 def createbuttonwidget(self, lay):
@@ -123,29 +143,11 @@ def createbuttonwidget(self, lay):
                 fixedsize=True,
             ),
             getsmalllabel(),
-            D_getIconButton(
-                functools.partial(
-                    dialog_selecticon,
-                    self,
-                    globalconfig["toolbutton"]["buttons"][k],
-                    "icon",
-                ),
-                icon=globalconfig["toolbutton"]["buttons"][k]["icon"],
-            ),
+            functools.partial(createbtn, self, k, "icon"),
             getsmalllabel(),
         ]
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
-            l.append(
-                D_getIconButton(
-                    functools.partial(
-                        dialog_selecticon,
-                        self,
-                        globalconfig["toolbutton"]["buttons"][k],
-                        "icon2",
-                    ),
-                    icon=globalconfig["toolbutton"]["buttons"][k]["icon2"],
-                ),
-            )
+            l.append(functools.partial(createbtn, self, k, "icon2"))
         else:
             l.append("")
         l.append(getsmalllabel())

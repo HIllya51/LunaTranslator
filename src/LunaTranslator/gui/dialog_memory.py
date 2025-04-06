@@ -1,7 +1,7 @@
 from qtsymbols import *
 import gobject, qtawesome, os, json, functools, uuid
 from myutils.config import globalconfig, get_launchpath, savehook_new_data
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton
 from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR
 from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
@@ -119,7 +119,7 @@ class editswitchTextBrowserEx(QWidget):
         return self.editstack.text()
 
 
-@Singleton_close
+@Singleton
 class dialog_memory(saveposwindow):
     # _sigleton=False
 

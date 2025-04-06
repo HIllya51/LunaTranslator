@@ -3,13 +3,13 @@ import os, functools
 import windows, qtawesome, gobject
 from winsharedutils import getpidhwndfirst
 from myutils.config import globalconfig, _TR
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton
 from myutils.hwnd import getpidexe, ListProcess, mouseselectwindow, getExeIcon
 from gui.usefulwidget import saveposwindow
 from gui.dynalang import LPushButton, LLabel, LCheckBox
 
 
-@Singleton_close
+@Singleton
 class AttachProcessDialog(saveposwindow):
 
     setcurrentpidpnamesignal = pyqtSignal(int, int)

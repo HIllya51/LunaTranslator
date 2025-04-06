@@ -813,7 +813,7 @@ class AnkiWindow(QWidget):
         anki.Deck.create(DeckName)
         fields = static_data["model_fileds"]
         if globalconfig["usecustomankigen"]:
-            module = checkmd5reloadmodule("./userconfig/myanki_v2.py", "myanki_v2")[1]
+            module = checkmd5reloadmodule("userconfig/myanki_v2.py", "myanki_v2")[1]
             if module:
                 try:
                     fields = module.AnkiFields(fields)
@@ -883,7 +883,7 @@ class AnkiWindow(QWidget):
 
     def custompass(self, text_fields: dict, audios: list, pictures: list):
         if globalconfig["usecustomankigen"]:
-            module = checkmd5reloadmodule("./userconfig/myanki_v2.py", "myanki_v2")[1]
+            module = checkmd5reloadmodule("userconfig/myanki_v2.py", "myanki_v2")[1]
             if module:
                 try:
                     text_fields, audios, pictures = module.ParseFieldsData(

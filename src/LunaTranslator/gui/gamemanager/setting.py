@@ -19,7 +19,7 @@ from gui.dialog_memory import dialog_memory
 from textsource.texthook import codepage_display
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
-from myutils.wrapper import Singleton, Singleton_close
+from myutils.wrapper import Singleton
 from myutils.utils import (
     gamdidchangedtask,
     checkpostlangmatch,
@@ -996,6 +996,8 @@ class dialog_setting_game_internal(QWidget):
         )
 
     def __checkaddnewmethod(self, row, _internal):
+        if _internal not in postprocessconfig:
+            return
         self.__textprocinternalmodel.insertRow(
             row,
             [
@@ -1366,7 +1368,7 @@ class dialog_setting_game_internal(QWidget):
         return _w, do
 
 
-@Singleton_close
+@Singleton
 class embeddisabler(LDialog):
 
     def __init__(
@@ -1427,7 +1429,7 @@ def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
     return new_rect
 
 
-@Singleton_close
+@Singleton
 class dialog_setting_game(QDialog):
 
     def __init__(self, parent, gameuid, setindexhook=0) -> None:

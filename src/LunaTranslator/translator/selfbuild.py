@@ -4,7 +4,7 @@ from myutils.utils import checkmd5reloadmodule
 
 class TS(basetrans):
     def mayreinit(self):
-        isnew, module = checkmd5reloadmodule("./userconfig/selfbuild.py", "selfbuild")
+        isnew, module = checkmd5reloadmodule("userconfig/selfbuild.py", "selfbuild")
         if (not isnew) and self.internal:
             return
         if module:

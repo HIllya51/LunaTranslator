@@ -71,12 +71,15 @@ def Singleton_impl(cls, behavior="activate"):
     return _singleton
 
 
-def Singleton(cls):
+def Singleton_activate(cls):
     return Singleton_impl(cls, behavior="activate")
 
 
 def Singleton_close(cls):
     return Singleton_impl(cls, behavior="close")
+
+
+Singleton = Singleton_close
 
 
 def retryer(**kw):

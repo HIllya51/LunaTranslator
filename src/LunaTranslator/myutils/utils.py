@@ -426,7 +426,7 @@ def splitocrtypes(dic):
     return offline, online
 
 
-def selectdebugfile(path: str, ismypost=False):
+def selectdebugfile(path: str, ismypost=False, ishotkey=False):
     if ismypost:
         path = "./userconfig/posts/{}.py".format(path)
 
@@ -442,6 +442,8 @@ def selectdebugfile(path: str, ismypost=False):
         }.get(path)
         if ismypost:
             tgt = "mypost.py"
+        if ishotkey:
+            tgt = "hotkey.py"
         shutil.copy(
             "LunaTranslator/myutils/template/" + tgt,
             p,

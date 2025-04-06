@@ -3,7 +3,7 @@ import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, winsharedutils, gobject, platform, threading
 from myutils.config import _TR, globalconfig, mayberelpath
-from myutils.wrapper import Singleton_close, threader
+from myutils.wrapper import Singleton, threader
 from myutils.utils import nowisdark, checkisusingwine
 from ctypes import POINTER, cast, c_char
 from gui.dynalang import (
@@ -1285,7 +1285,7 @@ def ExtensionSetting(name, settingurl, icon):
     SingleExtensionSetting.createpage(name, settingurl, icon)
 
 
-@Singleton_close
+@Singleton
 class Exteditor(LDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
@@ -2354,7 +2354,7 @@ def makesubtab_lazy(
         return tab, ___do
 
 
-@Singleton_close
+@Singleton
 class listediter(LDialog):
     def showmenu(self, p: QPoint):
         curr = self.hctable.currentIndex()
@@ -2901,7 +2901,7 @@ class IconButton(QPushButton):
         super().__init__(parent)
         self._icon = icon
         self.clicked.connect(self.clicked_1)
-        self.clicked.connect(self.seticon)
+        self.clicked.connect(self.__seticon)
         self._qicon = qicon
         self.fix = fix
         if fix:
@@ -2913,7 +2913,11 @@ class IconButton(QPushButton):
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.resizedirect()
 
-    def seticon(self):
+    def setIconStr(self, icon: str):
+        self._icon = icon
+        self.__seticon()
+
+    def __seticon(self):
         if self._qicon:
             icon = self._qicon
         else:
@@ -2938,11 +2942,11 @@ class IconButton(QPushButton):
 
     def setChecked(self, a0):
         super().setChecked(a0)
-        self.seticon()
+        self.__seticon()
 
     def setEnabled(self, _):
         super().setEnabled(_)
-        self.seticon()
+        self.__seticon()
 
 
 class SplitLine(QFrame):

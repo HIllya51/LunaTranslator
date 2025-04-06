@@ -6,7 +6,7 @@ from myutils.wrapper import tryprint
 from myutils.utils import translate_exits, _TR, getannotatedapiname
 from gui.usefulwidget import (
     getsimplecombobox,
-    Singleton_close,
+    Singleton,
     saveposwindow,
     D_getspinbox,
     clearlayout,
@@ -60,7 +60,7 @@ def createtextfontcom(key):
     return font_comboBox
 
 
-@Singleton_close
+@Singleton
 class extrahtml(saveposwindow):
     def tryload(self):
 

@@ -90,6 +90,7 @@ class Setting(closeashidewindow):
     progresssignal4 = pyqtSignal(str, int)
     progresssignal3 = pyqtSignal(int)
     showandsolvesig = pyqtSignal(str, str)
+    safeinvokefunction = pyqtSignal(list)
 
     def _progresssignal4(self, text, val):
         try:
@@ -103,7 +104,7 @@ class Setting(closeashidewindow):
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
-
+        self.safeinvokefunction.connect(lambda _: _[0]())
         self.progresssignal4.connect(self._progresssignal4)
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.voicelistsignal.connect(functools.partial(showvoicelist, self))

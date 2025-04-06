@@ -2,7 +2,7 @@ from qtsymbols import *
 import threading, windows
 import gobject, qtawesome, os, json
 from myutils.config import globalconfig, savehook_new_data, translatorsetting
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     saveposwindow,
     getsimplecombobox,
@@ -33,7 +33,7 @@ def loadvalidtss():
     return sortAwithB(alltransvis, alltrans)
 
 
-@Singleton_close
+@Singleton
 class edittext(saveposwindow):
     getnewsentencesignal = pyqtSignal(str)
 
@@ -103,7 +103,7 @@ class ctrlenter(QPlainTextEdit):
             super().keyPressEvent(e)
 
 
-@Singleton_close
+@Singleton
 class edittrans(LMainWindow):
     dispatch = pyqtSignal(str, str)
 

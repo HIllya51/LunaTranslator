@@ -8,7 +8,7 @@ from gui.gamemanager.v3 import dialog_savedgame_v3
 from gui.gamemanager.legacy import dialog_savedgame_legacy
 from gui.gamemanager.setting import dialog_setting_game, userlabelset
 from myutils.utils import targetmod
-from myutils.wrapper import Singleton_close, tryprint
+from myutils.wrapper import Singleton, tryprint
 from gui.specialwidget import lazyscrollflow
 from myutils.config import (
     savehook_new_data,
@@ -45,7 +45,7 @@ from gui.gamemanager.common import (
 )
 
 
-@Singleton_close
+@Singleton
 class dialog_savedgame_integrated(saveposwindow):
 
     def selectlayout(self, type):

@@ -1,18 +1,30 @@
 from qtsymbols import *
-import functools, time
-import gobject, windows, winsharedutils
+import functools
+import gobject, winsharedutils, uuid, os, shutil
 from myutils.config import globalconfig, _TR
 from myutils.hwnd import grabwindow
-from myutils.utils import parsekeystringtomodvkcode, unsupportkey
+from traceback import print_exc
+from myutils.utils import (
+    parsekeystringtomodvkcode,
+    unsupportkey,
+    selectdebugfile,
+    checkmd5reloadmodule,
+)
 from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplekeyseq,
     makescrollgrid,
     getsmalllabel,
+    D_getIconButton,
     makesubtab_lazy,
     getboxlayout,
+    VisLFormLayout,
+    IconButton,
+    makescroll,
+    ClickableLabel,
 )
-from gui.dynalang import LLabel
+from gui.inputdialog import autoinitdialog
+from gui.dynalang import LLabel, LAction
 from myutils.magpie_builtin import MagpieBuiltin
 
 
@@ -53,6 +65,16 @@ def safeGet():
     return t
 
 
+def createreloadablewrapper(self, name):
+    _, module = checkmd5reloadmodule(
+        "userconfig/myhotkeys/{}.py".format(name), "myhotkeys." + name
+    )
+    try:
+        self.safeinvokefunction.emit([lambda: module.OnHotKeyClicked()])
+    except:
+        print_exc()
+
+
 def registrhotkeys(self):
     self.referlabels = {}
     self.referlabels_data = {}
@@ -87,7 +109,6 @@ def registrhotkeys(self):
         "_26_1": lambda: gobject.baseobject.translation_ui.ocr_do_function(
             gobject.baseobject.translation_ui.ocr_once_follow_rect
         ),
-        "_27": gobject.baseobject.translation_ui.simulate_key_enter,
         "_28": lambda: winsharedutils.clipboard_set(
             gobject.baseobject.currenttranslate
         ),
@@ -108,6 +129,11 @@ def registrhotkeys(self):
             safeGet()
         ),
     }
+
+    for name in globalconfig["myquickkeys"]:
+        self.bindfunctions[name] = functools.partial(
+            createreloadablewrapper, self, name
+        )
     for name in self.bindfunctions:
         regist_or_not_key(self, name)
 
@@ -121,9 +147,117 @@ hotkeys = [
     ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
-    ["游戏", ["_15", "_21", "_22", "41", "42", "_25", "_27"]],
+    ["游戏", ["_15", "_21", "_22", "41", "42", "_25"]],
     ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
 ]
+
+
+def renameapi(qlabel: QLabel, name, self, form: VisLFormLayout, cnt, _=None):
+    menu = QMenu(qlabel)
+    editname = LAction("重命名", menu)
+    delete = LAction("删除", menu)
+    menu.addAction(editname)
+    menu.addAction(delete)
+    action = menu.exec(QCursor.pos())
+    if action == delete:
+        form.setRowVisible(cnt, False)
+        globalconfig["myquickkeys"].remove(name)
+        globalconfig["quick_setting"]["all"][name]["use"] = False
+        regist_or_not_key(self, name)
+    elif action == editname:
+        before = globalconfig["quick_setting"]["all"][name]["name"]
+        __d = {"k": before}
+
+        def cb(__d):
+            title = __d["k"]
+            if title not in ("", before):
+                globalconfig["quick_setting"]["all"][name]["name"] = title
+                qlabel.setText(title)
+
+        autoinitdialog(
+            self,
+            __d,
+            "重命名",
+            600,
+            [
+                {
+                    "type": "lineedit",
+                    "name": "名称",
+                    "k": "k",
+                },
+                {
+                    "type": "okcancel",
+                    "callback": functools.partial(cb, __d),
+                },
+            ],
+            exec_=True,
+        )
+
+
+def getrenameablellabel(form: VisLFormLayout, cnt: int, uid: str, self):
+    bl = ClickableLabel(globalconfig["quick_setting"]["all"][uid]["name"])
+    fn = functools.partial(renameapi, bl, uid, self, form, cnt)
+    bl.clicked.connect(fn)
+    return bl
+
+
+def createmykeyline(self, form: QFormLayout, name):
+    cnt = form.rowCount()
+    form.addRow(
+        getrenameablellabel(form, cnt, name, self),
+        getboxlayout(
+            [
+                D_getsimpleswitch(
+                    globalconfig["quick_setting"]["all"][name],
+                    "use",
+                    callback=functools.partial(regist_or_not_key, self, name),
+                ),
+                D_getIconButton(
+                    callback=lambda: selectdebugfile(
+                        "userconfig/myhotkeys/{}.py".format(name), ishotkey=True
+                    ),
+                    icon="fa.edit",
+                ),
+                D_getsimplekeyseq(
+                    globalconfig["quick_setting"]["all"][name],
+                    "keystring",
+                    functools.partial(regist_or_not_key, self, name),
+                ),
+                functools.partial(delaycreatereferlabels, self, name),
+            ]
+        ),
+    )
+
+
+def plusclicked(self, form):
+    name = str(uuid.uuid4())
+    self.bindfunctions[name] = functools.partial(createreloadablewrapper, self, name)
+    globalconfig["myquickkeys"].append(name)
+    globalconfig["quick_setting"]["all"][name] = {
+        "use": False,
+        "name": name,
+        "keystring": "",
+    }
+    os.makedirs("userconfig/myhotkeys", exist_ok=True)
+    shutil.copy(
+        "LunaTranslator/myutils/template/hotkey.py",
+        "userconfig/myhotkeys/{}.py".format(name),
+    )
+    createmykeyline(self, form, name)
+
+
+def selfdefkeys(self, lay: QLayout):
+    wid = QWidget()
+    form = VisLFormLayout(wid)
+    swid = makescroll()
+    lay.addWidget(swid)
+    swid.setWidget(wid)
+    plus = IconButton(icon="fa.plus")
+    plus.clicked.connect(functools.partial(plusclicked, self, form))
+    form.addRow(plus)
+    for name in globalconfig["myquickkeys"]:
+        createmykeyline(self, form, name)
+    return wid
 
 
 def setTab_quick(self, l: QVBoxLayout):
@@ -150,6 +284,8 @@ def setTab_quick(self, l: QVBoxLayout):
     for _ in hotkeys:
         __vis.append(_[0])
         __.append(functools.partial(___x, _[1]))
+    __vis.append("自定义")
+    __.append(functools.partial(selfdefkeys, self))
     tab, do = makesubtab_lazy(__vis, __, delay=True)
 
     l.addWidget(tab)
@@ -167,7 +303,7 @@ def setTab_quick_lazy(self, ls):
                 D_getsimpleswitch(
                     globalconfig["quick_setting"]["all"][name],
                     "use",
-                    callback=functools.partial(fanyiselect, self, name),
+                    callback=functools.partial(regist_or_not_key, self, name),
                 ),
                 D_getsimplekeyseq(
                     globalconfig["quick_setting"]["all"][name],
@@ -188,11 +324,7 @@ def __enable(self, x):
         regist_or_not_key(self, quick)
 
 
-def fanyiselect(self, who, checked):
-    regist_or_not_key(self, who)
-
-
-def regist_or_not_key(self, name):
+def regist_or_not_key(self, name, _=None):
     maybesetreferlabels(self, name, "")
 
     if name in self.registok:

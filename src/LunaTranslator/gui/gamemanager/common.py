@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools
 from traceback import print_exc
-from myutils.wrapper import threader, Singleton_close
+from myutils.wrapper import threader, Singleton
 from myutils.utils import find_or_create_uid, duplicateconfig
 from myutils.hwnd import getExeIcon, getcurrexe
 import gobject, hashlib, winsharedutils, uuid, re
@@ -361,7 +361,7 @@ def getreflist(reftagid):
     return tag["games"]
 
 
-@Singleton_close
+@Singleton
 class dialog_syssetting(LDialog):
     def selectfont(self, key, fontstring):
         globalconfig[key] = fontstring

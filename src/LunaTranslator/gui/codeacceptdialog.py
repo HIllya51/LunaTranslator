@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, codecs
 from myutils.config import globalconfig
-from myutils.wrapper import Singleton_close
+from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     getspinbox,
     threebuttons,
@@ -31,7 +31,7 @@ def checkencoding(code):
         return False
 
 
-@Singleton_close
+@Singleton
 class codeacceptdialog(LDialog):
     def _setcode_i(self, combox: QComboBox, itemsaver_, code="", idx=0):
         itemsaver_.saveidx = idx

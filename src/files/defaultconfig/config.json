@@ -272,8 +272,6 @@
             "https://vndb.org/"
         ]
     ],
-    "chromeapp": true,
-    "chromepath": "",
     "networktcpport": 2333,
     "networktcpenable": false,
     "textoutputer": {
@@ -865,6 +863,7 @@
         "記号": false,
         "空白": false
     },
+    "myquickkeys": [],
     "quick_setting": {
         "use": true,
         "all": {
@@ -1006,11 +1005,6 @@
             "_26_1": {
                 "use": false,
                 "name": "再次进行OCR",
-                "keystring": ""
-            },
-            "_27": {
-                "use": false,
-                "name": "模拟按键Enter",
                 "keystring": ""
             },
             "_28": {

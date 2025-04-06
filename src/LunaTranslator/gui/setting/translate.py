@@ -291,10 +291,10 @@ def loadbutton(self, fanyi):
 
 def selectllmcallback(self, countnum, btnplus, fanyi, name):
     uid = str(uuid.uuid4())
-    _f11 = "./Lunatranslator/translator/{}.py".format(fanyi)
-    _f12 = "./userconfig/copyed/{}.py".format(fanyi)
-    _f2 = "./userconfig/copyed/{}.py".format(uid)
-    os.makedirs("./userconfig/copyed", exist_ok=True)
+    _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
+    _f12 = "userconfig/copyed/{}.py".format(fanyi)
+    _f2 = "userconfig/copyed/{}.py".format(uid)
+    os.makedirs("userconfig/copyed", exist_ok=True)
     try:
         shutil.copy(_f11, _f2)
     except:

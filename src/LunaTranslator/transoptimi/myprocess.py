@@ -4,7 +4,7 @@ from myutils.utils import selectdebugfile, checkmd5reloadmodule
 class Process:
     @staticmethod
     def get_setting_window(_):
-        return selectdebugfile("./userconfig/myprocess.py")
+        return selectdebugfile("userconfig/myprocess.py")
 
     def process_after(self, res, contenxt):
         self.mayreinit()
@@ -24,7 +24,7 @@ class Process:
         self.mayreinit()
 
     def mayreinit(self):
-        isnew, module = checkmd5reloadmodule("./userconfig/myprocess.py", "myprocess")
+        isnew, module = checkmd5reloadmodule("userconfig/myprocess.py", "myprocess")
         if not isnew:
             return
         if module:
