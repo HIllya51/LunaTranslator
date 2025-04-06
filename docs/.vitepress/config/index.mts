@@ -11,17 +11,26 @@ export default defineConfig({
     ['link', { rel: 'icon', href: 'https://image.lunatranslator.org/luna.ico' }],
     ['script', {},
       `
-window.onload = function () {
-  if (window.location.hostname.startsWith('docs')) {
-    let replacetarget2 = window.location.protocol + '//' + window.location.hostname.substring(5);
-    let ele = document.querySelector("#app > div > header > div > div.wrapper > div > div.content > div > nav > a:nth-child(2)")
-    if (ele) {
-      ele.href = ele.href.replace('https://lunatranslator.org', replacetarget2)
-    }
+window.onmousemove = function(){
+    if (!window.location.hostname.startsWith('docs'))return;
+    (()=>{
+      let replacetarget = window.location.protocol + '//image.' + window.location.hostname.substring(5);
+      let origin='https://image.lunatranslator.org'
+      if(origin==replacetarget)return;
+      let images = document.getElementsByTagName('img');
+      for (var i = 0; i < images.length; i++) {
+          images[i].src = images[i].src.replace('https://image.lunatranslator.org', replacetarget)
+      }
+    })()
+  {
+      let replacetarget = window.location.protocol + '//' + window.location.hostname.substring(5);
+      let origin='https://lunatranslator.org'
+      if(origin==replacetarget)return;
+      let srcs = document.getElementsByTagName('a');
+      for (var i = 0; i < srcs.length; i++) {
+          srcs[i].href = srcs[i].href.replace(origin, replacetarget)
+      }
   }
-}
-function openlink(url) {
-    window.open(window.location.protocol + '//' + window.location.hostname.substring(5) + '/' + url, "_blank")
 }
       `]
   ],

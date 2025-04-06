@@ -4,13 +4,13 @@
 
 ### Windows 7 及以上系统
 
-64位 <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/64')" ><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 
+64位 <a href="https://lunatranslator.org/Resource/DownloadLuna/64"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 
 
-32位 <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/32')"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+32位 <a href="https://lunatranslator.org/Resource/DownloadLuna/32"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
 
 ### Windows XP & Vista系统
 
-32位 <a href="javascript:void(0)" onclick="openlink('Resource/DownloadLuna/xp')"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
+32位 <a href="https://lunatranslator.org/Resource/DownloadLuna/xp"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
 ## 启动
 
