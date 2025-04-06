@@ -27,11 +27,12 @@ flist = ["oneocr.dll", "oneocr.onemodel", "onnxruntime.dll"]
 testdirs = ["cache/SnippingTool"]
 
 
+def checkdir(d):
+    return os.path.isdir(d) and all((os.path.isfile(os.path.join(d, _)) for _ in flist))
+
+
 def selectdir():
-    check = lambda d: os.path.isdir(d) and all(
-        (os.path.isfile(os.path.join(d, _)) for _ in flist)
-    )
-    if check(testdirs[0]):
+    if checkdir(testdirs[0]):
         return testdirs[0]
     if len(testdirs) == 1:
         try:
@@ -46,17 +47,94 @@ def selectdir():
             )
         except:
             testdirs.append("")
-    if check(testdirs[1]):
+    if checkdir(testdirs[1]):
         return testdirs[1]
     return None
 
 
 class question(QWidget):
+    def downloadofficial(self):
+        headers = {
+            "accept": "*/*",
+            "accept-language": "zh-CN,zh;q=0.9,ru;q=0.8,ar;q=0.7,sq;q=0.6",
+            "cache-control": "no-cache",
+            "content-type": "application/x-www-form-urlencoded",
+            "origin": "https://store.rg-adguard.net",
+            "pragma": "no-cache",
+            "priority": "u=1, i",
+            "referer": "https://store.rg-adguard.net/",
+            "sec-ch-ua": '"Chromium";v="134", "Not:A-Brand";v="24", "Google Chrome";v="134"',
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": '"Windows"',
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
+        }
+
+        data = "type=ProductId&url=9mz95kl8mr0l"
+
+        response = requests.post(
+            "https://store.rg-adguard.net/api/GetFiles",
+            headers=headers,
+            data=data,
+            verify=False,
+            proxies=getproxy(),
+        )
+
+        saves = []
+        for link, package in re.findall('<a href="(.*?)".*?>(.*?)</a>', response.text):
+            if not package.startswith("Microsoft.ScreenSketch"):
+                continue
+            if not package.endswith(".msixbundle"):
+                continue
+            version = re.search(r"\d+\.\d+\.\d+\.\d+", package)
+            if not version:
+                continue
+            version = tuple(int(_) for _ in version.group().split("."))
+            saves.append((version, link, package))
+        saves.sort(key=lambda _: _[0])
+        url = saves[-1][1]
+        req = requests.head(url, verify=False, proxies=getproxy())
+        size = int(req.headers["Content-Length"])
+        file_size = 0
+        req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
+        target = gobject.gettempdir(saves[-1][2])
+        with open(target, "wb") as ff:
+            for _ in req.iter_content(chunk_size=1024 * 32):
+                ff.write(_)
+                file_size += len(_)
+                prg = int(10000 * file_size / size)
+                prg100 = prg / 100
+                sz = int(1000 * (int(size / 1024) / 1024)) / 1000
+                self.progresssetval.emit(
+                    _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
+                    prg,
+                )
+
+        self.progresssetval.emit(_TR("正在解压"), 10000)
+        namemsix = None
+        with zipfile.ZipFile(target) as ff:
+            for name in ff.namelist():
+                if name.startswith("SnippingTool") and name.endswith("_x64.msix"):
+                    namemsix = name
+                    break
+            ff.extract(namemsix, gobject.gettempdir())
+        if not namemsix:
+            raise Exception("")
+        with zipfile.ZipFile(gobject.gettempdir(namemsix)) as ff:
+            collect = []
+            for name in ff.namelist():
+                if name.startswith("SnippingTool/"):
+                    collect.append(name)
+            ff.extractall(r"cache", collect)
+        if not checkdir(testdirs[0]):
+            raise Exception("")
+
     installsucc = pyqtSignal(bool, str)
-    url = dynamiclink("{main_server}") + "/Resource/SnippingTool"
 
     def downloadauto(self):
-        self.downloadxSafe(self.url)
+        self.downloadxSafe(dynamiclink("{main_server}") + "/Resource/SnippingTool")
         self.formLayout.setRowVisible(1, False)
         self.formLayout.setRowVisible(2, True)
 
@@ -65,19 +143,24 @@ class question(QWidget):
     @threader
     def downloadxSafe(self, url):
         try:
-            self.downloadx(url)
+            self.progresssetval.emit("……", 0)
+            try:
+                self.downloadofficial()
+            except:
+                self.downloadx(url)
+                print_exc()
+                self.progresssetval.emit("……", 0)
             self.installsucc.emit(True, "")
         except Exception as e:
             self.installsucc.emit(False, stringfyerror(e))
 
     def downloadx(self, url: str):
 
-        self.progresssetval.emit("……", 0)
         req = requests.head(url, verify=False, proxies=getproxy())
         size = int(req.headers["Content-Length"])
         file_size = 0
         req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
-        target = gobject.getcachedir("ocrmodel/" + url.split("/")[-1])
+        target = gobject.gettempdir(url.split("/")[-1])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
@@ -92,6 +175,8 @@ class question(QWidget):
         self.progresssetval.emit(_TR("正在解压"), 10000)
         with zipfile.ZipFile(target) as zipf:
             zipf.extractall("cache")
+        if not checkdir(testdirs[0]):
+            raise Exception("")
 
     def _installsucc(self, succ, failreason):
         if succ:
@@ -108,7 +193,7 @@ class question(QWidget):
                 failreason + "\n\n" + _TR("自动添加失败，是否手动添加？"),
             )
             if res == QMessageBox.StandardButton.Yes:
-                os.startfile(self.url)
+                os.startfile(dynamiclink("{main_server}") + "/Resource/SnippingTool")
                 f = QFileDialog.getOpenFileName(
                     self,
                     filter="SnippingTool.zip",

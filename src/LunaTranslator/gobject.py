@@ -39,7 +39,7 @@ def gettempdir_1():
     return tgt
 
 
-def gettempdir(filename):
+def gettempdir(filename=""):
     tgt = getcachedir(os.path.join("temp/{}".format(os.getpid()), filename))
     return tgt
 

@@ -206,7 +206,7 @@ class question(QWidget):
         size = int(req.headers["Content-Length"])
         file_size = 0
         req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
-        target = gobject.getcachedir("ocrmodel/" + url.split("/")[-1])
+        target = gobject.gettempdir("ocrmodel/" + url.split("/")[-1])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
