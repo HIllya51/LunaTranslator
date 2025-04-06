@@ -496,7 +496,7 @@ def initsome11(self, l, label=None, btnplus=False, savecountnum=False):
     if len(line):
         grids.append(line)
     check_grid_append(grids)
-    if btnplus:
+    if btnplus and btnplus != "fuckyou":
 
         if i % 3 == 0:
             grids.append([])
@@ -579,7 +579,7 @@ def initsome2(self, mianfei, l, external: list, label=None, btnplus=None):
     ]
     if external:
         external, self.countnumexternal = initsome11(
-            self, external, label, savecountnum=True
+            self, external, label, savecountnum=True, btnplus="fuckyou"
         )
         if external:
             grids += [
