@@ -803,6 +803,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS3上の多
 |  | PCSG00615 | 東京喰種トーキョーグール JAIL |
 |  | PCSB00985 | PSYCHO-PASS MANDATORY HAPPINESS |
 |  | PCSG00769 | 逢魔が刻～かくりよの縁～ |
+|  | PCSG00367 | Goes!  |
 
 == PS2
 

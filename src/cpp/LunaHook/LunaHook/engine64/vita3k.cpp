@@ -444,6 +444,11 @@ namespace
         if (endWith(s, u8"。!"))
             buffer->from(s.substr(0, s.size() - 1));
     }
+    void PCSG00367(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN(L"\\　"));
+        CharFilter(buffer, L'\\');
+    }
     void PCSG01167(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1497,6 +1502,8 @@ namespace
             {0x8004D360, {CODEC_UTF16, 0, 0, PCSB00985, 0, "PCSB00985"}},
             // 逢魔が刻～かくりよの縁～
             {0x8003CA08, {0, 3, 0, PCSG00769, 0, "PCSG00769"}},
+            // Goes! 
+            {0x8004D2D4, {CODEC_UTF16, 0xe, 0, 0, PCSG00367, "PCSG00367"}},
         };
         return 1;
     }();
