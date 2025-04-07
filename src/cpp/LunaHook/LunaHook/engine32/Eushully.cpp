@@ -594,6 +594,7 @@ namespace
     hp.address = (DWORD)GetTextExtentPoint32W;
     hp.offset = stackoffset(2);
     succ |= NewHook(hp, "eushully");
+    PcHooks::hookGDIFunctions(GetTextExtentPoint32A);
     return succ;
   }
 }

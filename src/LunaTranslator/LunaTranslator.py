@@ -1170,23 +1170,21 @@ class MAINUI:
                         style = ff.read()
             except:
                 print_exc()
-        style += (
-            "*{font: %spt '" % (globalconfig["settingfontsize"])
-            + (globalconfig["settingfonttype"])
-            + "' ;  }"
-        )
-        style += """
-        QListWidget {{
-                font:{fontsize}pt  {fonttype};  }}
-            """.format(
-            fontsize=globalconfig["settingfontsize"] + 2,
+        fontstr = lambda fsize: "font:{fontsize}pt  {fonttype}; {bold}".format(
+            fontsize=fsize,
             fonttype=globalconfig["settingfonttype"],
+            bold=("", "font-weight: bold;")[globalconfig["settingfontbold"]],
+        )
+        style += "*{{  {}  }}".format(fontstr(globalconfig["settingfontsize"]))
+        style += "QListWidget {{ {} }}".format(
+            fontstr(globalconfig["settingfontsize"] + 2)
         )
         style += "QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
         self.commonstylebase.setStyleSheet(style)
         font = QFont()
         font.setFamily(globalconfig["settingfonttype"])
         font.setPointSizeF(globalconfig["settingfontsize"])
+        font.setBold(globalconfig["settingfontbold"])
         QApplication.instance().setFont(font)
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:

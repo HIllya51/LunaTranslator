@@ -513,7 +513,7 @@ def mainuisetting(self):
                                     D_getsimpleswitch(globalconfig, "autodisappear"),
                                     lambda: createdynamicswitch(self),
                                     lambda: createdynamicdelay(self),
-                                    "(s)"
+                                    "(s)",
                                 ],
                                 makewidget=True,
                                 margin0=True,
@@ -561,8 +561,9 @@ def otheruisetting(self):
                 grid=(
                     [
                         "字体",
-                        createfontcombo,
-                        "",
+                        (createfontcombo, 0),
+                    ],
+                    [
                         "字体大小",
                         D_getspinbox(
                             5,
@@ -573,6 +574,14 @@ def otheruisetting(self):
                             step=0.1,
                             callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                         ),
+                        "",
+                        "加粗",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "settingfontbold",
+                            callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                        ),
+                        "",
                     ],
                 ),
             ),

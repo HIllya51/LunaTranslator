@@ -1,4 +1,4 @@
-#include "NeXAS.h"
+﻿#include "NeXAS.h"
 
 /** jichi 7/6/2014 NeXAS
  *  Sample game: BALDRSKYZERO EXTREME
@@ -338,11 +338,11 @@ bool InsertNeXASHookA()
   // hp.address = (DWORD)::GetGlyphOutlineA;
   hp.address = addr;
   // hp.type = USING_STRING|USING_SPLIT;
-  hp.type = CODEC_ANSI_BE | NO_CONTEXT | USING_SPLIT;
+  hp.type = CODEC_ANSI_BE | NO_CONTEXT;
   hp.offset = stackoffset(1);
 
   // Either lpgm or lpmat2 are good choices
-  hp.split = stackoffset(3);
+  // hp.split = stackoffset(3); //虽然可以将人名分开，但也会把一个句子点击快进的文本也给分开，还不如不分。
   // hp.split = arg7_lpmat2; // = 0x18, arg7
 
   ConsoleOutput("INSERT NeXAS");

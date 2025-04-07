@@ -474,6 +474,7 @@
     ],
     "global_namemap2": [],
     "settingfontsize": 12,
+    "settingfontbold": false,
     "accept_encoding": [
         "shift-jis"
     ],
