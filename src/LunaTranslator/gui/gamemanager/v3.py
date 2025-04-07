@@ -170,19 +170,9 @@ def getselectpos(parent, callback):
 
 PathRole = Qt.ItemDataRole.UserRole + 1
 ImageRequestedRole = PathRole + 1
-IsNullImage = ImageRequestedRole + 1
 
 
 class ImageDelegate(QStyledItemDelegate):
-    def paint(self, painter, option, index: QModelIndex):
-        if index.data(IsNullImage):
-            return
-        return super().paint(painter, option, index)
-
-    def sizeHint(self, option, index: QModelIndex):
-        if index.data(IsNullImage):
-            return QSize()
-        return super().sizeHint(option, index)
 
     def initStyleOption(self, opt: QStyleOptionViewItem, index: QModelIndex):
         super().initStyleOption(opt, index)
@@ -228,10 +218,13 @@ class MyQListWidget(QListWidget):
                     if not index.data(ImageRequestedRole):
                         self.model().setData(index, True, ImageRequestedRole)
                         image = getcachedimage(index.data(PathRole), True)
+                        item = self.itemFromIndex(index)
+                        if not item:
+                            continue
                         if image.isNull():
-                            self.model().setData(index, True, IsNullImage)
+                            item.setHidden(True)
                         else:
-                            self.item(index.row()).setIcon(QIcon(image))
+                            item.setIcon(QIcon(image))
         except:
             print_exc()
 

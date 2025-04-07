@@ -29,14 +29,14 @@ def ns():
     ret = []
     for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
-        m = re.search("(.*?) //([\w\d]{16})", game)
+        m = re.search(r"(.*?) //([\w\d]{16})", game)
         if m:
             _id = m.groups()[1]
             game = m.groups()[0].strip()
         else:
             _id = " & ".join(
                 re.findall(
-                    "0x([\w\d]{16})ull", content[match.span()[1] :].split("\n")[0]
+                    r"0x([\w\d]{16})ull", content[match.span()[1] :].split("\n")[0]
                 )
             )
             game = game.split("//")[0].strip()

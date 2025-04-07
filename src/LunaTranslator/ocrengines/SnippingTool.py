@@ -9,22 +9,14 @@ import gobject, requests
 from traceback import print_exc
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
-import winreg, re
+import re
 from gui.dynalang import LPushButton, LLabel
 from gui.usefulwidget import VisLFormLayout
 
 
-def trygetsysst():
-    hk = winreg.OpenKey(
-        winreg.HKEY_CURRENT_USER, r"Software\RegisteredApplications\PackagedApps"
-    )
-    va = winreg.QueryValueEx(hk, "Microsoft.ScreenSketch_8wekyb3d8bbwe!App")[0]
-    winreg.CloseKey(hk)
-    return re.search("(Microsoft\\.ScreenSketch.*?)\\\\", va).groups()[0]
-
-
 flist = ["oneocr.dll", "oneocr.onemodel", "onnxruntime.dll"]
-testdirs = ["cache/SnippingTool"]
+cachedir = "cache/SnippingTool"
+packageFamilyName = "Microsoft.ScreenSketch_8wekyb3d8bbwe"
 
 
 def checkdir(d):
@@ -32,24 +24,15 @@ def checkdir(d):
 
 
 def selectdir():
-    if checkdir(testdirs[0]):
-        return testdirs[0]
-    if len(testdirs) == 1:
-        try:
-            path = trygetsysst()
-            testdirs.append(
-                os.path.join(
-                    os.environ["PROGRAMFILES"],
-                    "WindowsApps",
-                    path,
-                    "SnippingTool",
-                )
-            )
-        except:
-            testdirs.append("")
-    if checkdir(testdirs[1]):
-        return testdirs[1]
-    return None
+    if checkdir(cachedir):
+        return cachedir
+    path = winsharedutils.GetPackagePathByPackageFamily(packageFamilyName)
+    if not path:
+        return None
+    path = os.path.join(path, "SnippingTool")
+    if not checkdir(path):
+        return None
+    return path
 
 
 class question(QWidget):
@@ -58,7 +41,6 @@ class question(QWidget):
             "accept": "*/*",
             "accept-language": "zh-CN,zh;q=0.9,ru;q=0.8,ar;q=0.7,sq;q=0.6",
             "cache-control": "no-cache",
-            "content-type": "application/x-www-form-urlencoded",
             "origin": "https://store.rg-adguard.net",
             "pragma": "no-cache",
             "priority": "u=1, i",
@@ -72,7 +54,7 @@ class question(QWidget):
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36",
         }
 
-        data = "type=ProductId&url=9mz95kl8mr0l"
+        data = dict(type="PackageFamilyName", url=packageFamilyName)
 
         response = requests.post(
             "https://store.rg-adguard.net/api/GetFiles", headers=headers, data=data
@@ -124,7 +106,7 @@ class question(QWidget):
                 if name.startswith("SnippingTool/"):
                     collect.append(name)
             ff.extractall(r"cache", collect)
-        if not checkdir(testdirs[0]):
+        if not checkdir(cachedir):
             raise Exception("")
 
     installsucc = pyqtSignal(bool, str)
@@ -171,7 +153,7 @@ class question(QWidget):
         self.progresssetval.emit(_TR("正在解压"), 10000)
         with zipfile.ZipFile(target) as zipf:
             zipf.extractall("cache")
-        if not checkdir(testdirs[0]):
+        if not checkdir(cachedir):
             raise Exception("")
 
     def _installsucc(self, succ, failreason):
@@ -275,8 +257,8 @@ class OCR(baseocr):
         dir_ = selectdir()
         if not dir_:
             raise Exception(_TR("未安装"))
-        if dir_ != testdirs[0]:
-            shutil.copytree(dir_, testdirs[0])
+        if dir_ != cachedir:
+            shutil.copytree(dir_, cachedir)
         self.lock = threading.Lock()
         t = time.time()
         t = str(t)
@@ -291,7 +273,7 @@ class OCR(baseocr):
                 waitsignal,
                 mapname,
             ),
-            testdirs[0],
+            cachedir,
         )
         windows.WaitForSingleObject(
             windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),

@@ -513,6 +513,7 @@ def mainuisetting(self):
                                     D_getsimpleswitch(globalconfig, "autodisappear"),
                                     lambda: createdynamicswitch(self),
                                     lambda: createdynamicdelay(self),
+                                    "(s)"
                                 ],
                                 makewidget=True,
                                 margin0=True,
@@ -560,9 +561,8 @@ def otheruisetting(self):
                 grid=(
                     [
                         "字体",
-                        (createfontcombo, 0),
-                    ],
-                    [
+                        createfontcombo,
+                        "",
                         "字体大小",
                         D_getspinbox(
                             5,
@@ -572,13 +572,6 @@ def otheruisetting(self):
                             double=True,
                             step=0.1,
                             callback=lambda _: gobject.baseobject.setcommonstylesheet(),
-                        ),
-                        "",
-                        "任务栏中显示",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "showintab_sub",
-                            callback=lambda _: gobject.baseobject.setshowintab(),
                         ),
                     ],
                 ),
@@ -639,20 +632,24 @@ def otheruisetting(self):
         ],
         [
             dict(
+                type="grid",
                 grid=(
                     [
                         "窗口特效",
-                        D_getsimplecombobox(
-                            [
-                                "Solid",
-                                "Acrylic",
-                                "Mica",
-                                "MicaAlt",
-                            ],
-                            globalconfig,
-                            "WindowBackdrop",
-                            callback=lambda _: gobject.baseobject.setcommonstylesheet(),
-                            static=True,
+                        (
+                            D_getsimplecombobox(
+                                [
+                                    "Solid",
+                                    "Acrylic",
+                                    "Mica",
+                                    "MicaAlt",
+                                ],
+                                globalconfig,
+                                "WindowBackdrop",
+                                callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                                static=True,
+                            ),
+                            0,
                         ),
                     ],
                     [
@@ -662,6 +659,14 @@ def otheruisetting(self):
                             "force_rect",
                             callback=lambda _: gobject.baseobject.cornerornot(),
                         ),
+                        "",
+                        "任务栏中显示",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "showintab_sub",
+                            callback=lambda _: gobject.baseobject.setshowintab(),
+                        ),
+                        "",
                     ],
                 ),
             ),

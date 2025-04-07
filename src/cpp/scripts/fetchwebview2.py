@@ -1,8 +1,10 @@
 mswebview2_version = "1.0.2535.41"
 
-import os, subprocess
+import os, subprocess, re
 
-target = os.path.normpath(os.path.join(os.path.dirname(__file__), r"..\libs\webview2"))
+dfile = os.path.dirname(__file__)
+
+target = os.path.normpath(os.path.join(dfile, r"..\libs\webview2"))
 os.makedirs(target, exist_ok=True)
 nuget_exe = os.path.join(target, "nuget.exe")
 print(nuget_exe)
@@ -21,35 +23,36 @@ if os.path.exists(mswebview2_dir) == False:
         rf'"{nuget_exe}" install Microsoft.Web.Webview2 -Verbosity quiet -Version "{mswebview2_version}" -OutputDirectory {target}'
     )
 
+with open(os.path.join(dfile, "../LunaOCR/CMakeLists.txt"), "r", encoding="utf8") as ff:
+    onnxver = re.search(r"set\(onnxruntime_version (.*?)\)", ff.read()).groups()[0]
 
 onnx_1 = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../libs/onnxruntime-win-x64-1.13.1/lib/onnxruntime.dll")
+    os.path.join(dfile, f"../libs/onnxruntime-win-x64-{onnxver}/lib/onnxruntime.dll")
 )
 if os.path.exists(onnx_1) == False:
     os.system(
-        rf'curl -SLo ../libs/onnxruntime-win-x64-1.13.1.zip https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-win-x64-1.13.1.zip'
+        rf"curl -SLo ../libs/onnxruntime-win-x64-{onnxver}.zip https://github.com/microsoft/onnxruntime/releases/download/v{onnxver}/onnxruntime-win-x64-{onnxver}.zip"
     )
-    os.system(rf'7z x -y ../libs/onnxruntime-win-x64-1.13.1.zip -o../libs/')
+    os.system(rf"7z x -y ../libs/onnxruntime-win-x64-{onnxver}.zip -o../libs/")
 
 onnx_1 = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), "../libs/onnxruntime-win-x86-1.13.1/lib/onnxruntime.dll")
+    os.path.join(dfile, f"../libs/onnxruntime-win-x86-{onnxver}/lib/onnxruntime.dll")
 )
 if os.path.exists(onnx_1) == False:
     os.system(
-        rf'curl -SLo ../libs/onnxruntime-win-x86-1.13.1.zip https://github.com/microsoft/onnxruntime/releases/download/v1.13.1/onnxruntime-win-x86-1.13.1.zip'
+        rf"curl -SLo ../libs/onnxruntime-win-x86-{onnxver}.zip https://github.com/microsoft/onnxruntime/releases/download/v{onnxver}/onnxruntime-win-x86-{onnxver}.zip"
     )
-    os.system(rf'7z x -y ../libs/onnxruntime-win-x86-1.13.1.zip -o../libs/')
-
+    os.system(rf"7z x -y ../libs/onnxruntime-win-x86-{onnxver}.zip -o../libs/")
 
 
 opencv = os.path.normpath(
     os.path.join(
-        os.path.dirname(__file__),
+        dfile,
         r"..\libs\opencv-static\windows-x64\x64\vc16\staticlib\opencv_core470.lib",
     )
 )
 opencv_1 = os.path.normpath(
-    os.path.join(os.path.dirname(__file__), r"..\libs\opencv-static\opencv-static.7z")
+    os.path.join(dfile, r"..\libs\opencv-static\opencv-static.7z")
 )
 
 if os.path.exists(opencv) == False:
@@ -58,7 +61,6 @@ if os.path.exists(opencv) == False:
         rf'curl -SLo "{opencv_1}" https://github.com/RapidAI/OpenCVBuilder/releases/download/4.7.0/opencv-4.7.0-windows-vs2019-mt.7z'
     )
     os.system(rf'7z x -y "{opencv_1}" -o{os.path.dirname(opencv_1)}')
-
 
 
 url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.1.6/YY-Thunks-Objs.zip"

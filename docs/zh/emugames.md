@@ -804,6 +804,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | PCSB00985 | PSYCHO-PASS MANDATORY HAPPINESS |
 |  | PCSG00769 | 逢魔が刻～かくりよの縁～ |
 |  | PCSG00367 | Goes!  |
+|  | PCSG00382 | RE:VICE[D] |
 
 == PS2
 

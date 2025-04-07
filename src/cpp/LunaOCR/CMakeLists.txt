@@ -1,10 +1,30 @@
 project(LunaOCR)
 
+file(GLOB Clipper2LibSrc ${CMAKE_SOURCE_DIR}/libs/Clipper2/CPP/Clipper2Lib/src/*.cpp)
+add_library(Clipper2Lib ${Clipper2LibSrc})
+target_include_directories(Clipper2Lib PUBLIC ${CMAKE_SOURCE_DIR}/libs/Clipper2/CPP/Clipper2Lib/include)
+
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-    set(onnxruntimedir ${CMAKE_SOURCE_DIR}/libs/onnxruntime-win-x64-1.13.1)
+    set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/libs/opencv-static/windows-x64)
+    set(OpenCV_ARCH x64)
 else()
-    set(onnxruntimedir ${CMAKE_SOURCE_DIR}/libs/onnxruntime-win-x86-1.13.1)
+    set(OpenCV_DIR ${CMAKE_SOURCE_DIR}/libs/opencv-static/windows-x86)
+    set(OpenCV_ARCH x86)
+endif()
+set(OpenCV_RUNTIME vc16)
+
+#onnxruntime版本：
+#1.13.1 最后一个原生支持win7的版本
+#1.9.0 最早的可运行paddleocr的版本
+#1.10.0 体积比1.9.0还要小一点
+
+set(onnxruntime_version 1.10.0)
+
+if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+    set(onnxruntimedir ${CMAKE_SOURCE_DIR}/libs/onnxruntime-win-x64-${onnxruntime_version})
+else()
+    set(onnxruntimedir ${CMAKE_SOURCE_DIR}/libs/onnxruntime-win-x86-${onnxruntime_version})
 endif()
 
 add_library(onnxruntime INTERFACE)

@@ -34,20 +34,6 @@ else()
         include("${CMAKE_CURRENT_LIST_DIR}/VC-LTL helper for cmake.cmake")
     endif()
 
-
-    file(GLOB Clipper2LibSrc ${CMAKE_CURRENT_LIST_DIR}/Clipper2/CPP/Clipper2Lib/src/*.cpp)
-    add_library(Clipper2Lib ${Clipper2LibSrc})
-    target_include_directories(Clipper2Lib PUBLIC ${CMAKE_CURRENT_LIST_DIR}/Clipper2/CPP/Clipper2Lib/include)
-
-
-    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-        set(OpenCV_DIR ${CMAKE_CURRENT_LIST_DIR}/opencv-static/windows-x64)
-        set(OpenCV_ARCH x64)
-    else()
-        set(OpenCV_DIR ${CMAKE_CURRENT_LIST_DIR}/opencv-static/windows-x86)
-        set(OpenCV_ARCH x86)
-    endif()
-    set(OpenCV_RUNTIME vc16)
 endif()
 
 option(WINXP "WINXP" OFF)

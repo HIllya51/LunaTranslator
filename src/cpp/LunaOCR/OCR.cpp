@@ -20,11 +20,21 @@ struct ScaleParam
     float ratioWidth;
     float ratioHeight;
 };
-
+#if ORT_API_VERSION <= 10
+#define STRINGT const char *
+#define FGetInputName GetInputName
+#define FGetOutputName GetOutputName
+#define GetVector(X) X
+#else
+#define STRINGT Ort::AllocatedStringPtr
+#define FGetInputName GetInputNameAllocated
+#define FGetOutputName GetOutputNameAllocated
+#define GetVector(X) {X.data()->get()}
+#endif
 class CommonOnnxModel
 {
-    std::vector<Ort::AllocatedStringPtr> inputNamesPtr;
-    std::vector<Ort::AllocatedStringPtr> outputNamesPtr;
+    std::vector<STRINGT> inputNamesPtr;
+    std::vector<STRINGT> outputNamesPtr;
     std::unique_ptr<Ort::Session> session;
     Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR);
     Ort::SessionOptions sessionOptions = Ort::SessionOptions();
@@ -80,8 +90,8 @@ public:
                                                                  inputTensorValues.size(), inputShape.data(),
                                                                  inputShape.size());
         assert(inputTensor.IsTensor());
-        std::vector<const char *> inputNames = {inputNamesPtr.data()->get()};
-        std::vector<const char *> outputNames = {outputNamesPtr.data()->get()};
+        std::vector<const char *> inputNames = GetVector(inputNamesPtr);
+        std::vector<const char *> outputNames = GetVector(outputNamesPtr);
         auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
                                          inputNames.size(), outputNames.data(), outputNames.size());
         assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
@@ -95,8 +105,8 @@ public:
     {
         setNumThread(numOfThread);
         session = std::make_unique<Ort::Session>(env, path.c_str(), sessionOptions);
-        getinputoutputNames(inputNamesPtr, &Ort::Session::GetInputCount, &Ort::Session::GetInputNameAllocated);
-        getinputoutputNames(outputNamesPtr, &Ort::Session::GetOutputCount, &Ort::Session::GetOutputNameAllocated);
+        getinputoutputNames(inputNamesPtr, &Ort::Session::GetInputCount, &Ort::Session::FGetInputName);
+        getinputoutputNames(outputNamesPtr, &Ort::Session::GetOutputCount, &Ort::Session::FGetOutputName);
     }
 };
 

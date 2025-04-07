@@ -804,6 +804,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | PCSB00985 | PSYCHO-PASS MANDATORY HAPPINESS |
 |  | PCSG00769 | 逢魔が刻～かくりよの縁～ |
 |  | PCSG00367 | Goes!  |
+|  | PCSG00382 | RE:VICE[D] |
 
 == PS2
 

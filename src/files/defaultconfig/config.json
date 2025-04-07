@@ -31,7 +31,8 @@
         "proxy": {
             "gpt": true,
             "api": false,
-            "free": true
+            "free": true,
+            "external": true
         },
         "ts": {
             "gptoffline": true,

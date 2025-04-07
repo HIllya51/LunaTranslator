@@ -628,3 +628,20 @@ AdaptersServiceStartMonitor.argtypes = (AdaptersServiceStartMonitor_Callback,)
 AdaptersServiceAdapterInfos_Callback = CFUNCTYPE(None, c_uint, c_uint, c_uint, LPCWSTR)
 AdaptersServiceAdapterInfos = utilsdll.AdaptersServiceAdapterInfos
 AdaptersServiceAdapterInfos.argtypes = (AdaptersServiceAdapterInfos_Callback,)
+
+
+_GetPackagePathByPackageFamily = utilsdll.GetPackagePathByPackageFamily
+GetPackagePathByPackageFamily_CALLBACK = CFUNCTYPE(None, LPCWSTR)
+_GetPackagePathByPackageFamily.argtypes = (
+    LPCWSTR,
+    GetPackagePathByPackageFamily_CALLBACK,
+)
+
+
+def GetPackagePathByPackageFamily(packagename: str):
+    ret: "list[str]" = []
+    cb = GetPackagePathByPackageFamily_CALLBACK(ret.append)
+    _GetPackagePathByPackageFamily(packagename, cb)
+    if ret:
+        return ret[0]
+    return None
