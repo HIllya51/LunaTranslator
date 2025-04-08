@@ -13,6 +13,7 @@ from myutils.config import (
     get_platform,
     isascii,
 )
+from myutils.mecab import mecab, latin
 from myutils.utils import (
     parsemayberegexreplace,
     dynamiclink,
@@ -260,12 +261,12 @@ class MAINUI:
 
     def parsehira(self, text):
         try:
-            if self.hira_:
-                return self.hira_.safeparse(text)
+            if self.mecab_:
+                return self.mecab_.safeparse(text)
             else:
-                return []
+                raise Exception("")
         except:
-            return []
+            return latin().safeparse(text)
 
     def displayinfomessage(self, text, infotype):
         if infotype == "<notrans>":
@@ -856,26 +857,15 @@ class MAINUI:
                 self.textsource = classes[use]()
 
     @threader
-    def starthira(self, _=None, checked=True):
-        self.hira_ = None
+    def startmecab(self, _=None, checked=True):
+        self.mecab_ = None
         if checked:
-            hirasettingbase = globalconfig["hirasetting"]
-            _hira = None
-            for name in hirasettingbase:
-                if hirasettingbase[name]["use"]:
-                    if (
-                        os.path.exists("./LunaTranslator/hiraparse/" + name + ".py")
-                        == False
-                    ):
-                        continue
-                    _hira = importlib.import_module("hiraparse." + name)
-                    _hira = getattr(_hira, name)
-                    break
-            try:
-                if _hira:
-                    self.hira_ = _hira(name)
-            except:
-                print_exc()
+            use = globalconfig["hirasetting"]["mecab"]["use"]
+            if use:
+                try:
+                    self.mecab_ = mecab()
+                except:
+                    print_exc()
 
     @threader
     def startoutputer(self):
@@ -1266,7 +1256,7 @@ class MAINUI:
         self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()
-        self.starthira()
+        self.startmecab()
         self.startoutputer()
 
         class commonstylebase(QWidget):

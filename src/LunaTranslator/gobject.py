@@ -12,35 +12,35 @@ def GetDllpath(_, base=None):
         return os.path.join(base, _[isbit64])
 
 
-def getcachedir(name, basedir="cache", abspath=True):
+def __getdir(name="", basedir="cache"):
 
     fd = os.path.dirname(name)
     fn = os.path.basename(name)
-    if abspath:
-        fn1 = os.path.abspath(basedir)
-    else:
-        fn1 = basedir
+    fn1 = os.path.abspath(basedir)
     fn1 = os.path.join(fn1, fd)
     os.makedirs(fn1, exist_ok=True)
     fn1 = os.path.join(fn1, fn)
     return fn1
 
+def getcachedir(name=""):
+    return __getdir(name)
+
 
 def getuserconfigdir(name):
-    return getcachedir(name, "userconfig")
+    return __getdir(name, "userconfig")
 
 
 def gettranslationrecorddir(name):
-    return getcachedir(name, "translation_record")
+    return __getdir(name, "translation_record")
 
 
 def gettempdir_1():
-    tgt = getcachedir("temp")
+    tgt = __getdir("temp")
     return tgt
 
 
 def gettempdir(filename=""):
-    tgt = getcachedir(os.path.join("temp/{}".format(os.getpid()), filename))
+    tgt = __getdir(os.path.join("temp/{}".format(os.getpid()), filename))
     return tgt
 
 

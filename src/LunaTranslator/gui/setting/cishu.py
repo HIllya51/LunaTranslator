@@ -98,14 +98,10 @@ def gethiragrid(self):
     i = 0
     self.hiraswitchs = {}
     line = []
-    for name in globalconfig["hirasetting"]:
-
-        _f = "./LunaTranslator/hiraparse/{}.py".format(name)
-        if os.path.exists(_f) == False:
-            continue
+    for name in ("mecab",):
         if "args" in globalconfig["hirasetting"][name]:
             items = autoinitdialog_items(globalconfig["hirasetting"][name])
-            items[-1]["callback"] = gobject.baseobject.starthira
+            items[-1]["callback"] = gobject.baseobject.startmecab
             _3 = D_getIconButton(
                 callback=functools.partial(
                     autoinitdialog,
@@ -133,7 +129,7 @@ def gethiragrid(self):
                     globalconfig["hirasetting"],
                     "hiraswitchs",
                     name,
-                    gobject.baseobject.starthira,
+                    gobject.baseobject.startmecab,
                 ),
                 pair="hiraswitchs",
             ),

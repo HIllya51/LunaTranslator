@@ -57,7 +57,10 @@ class question(QWidget):
         data = dict(type="PackageFamilyName", url=packageFamilyName)
 
         response = requests.post(
-            "https://store.rg-adguard.net/api/GetFiles", headers=headers, data=data
+            "https://store.rg-adguard.net/api/GetFiles",
+            headers=headers,
+            data=data,
+            proxies=getproxy(),
         )
 
         saves = []
@@ -73,10 +76,10 @@ class question(QWidget):
             saves.append((version, link, package))
         saves.sort(key=lambda _: _[0])
         url = saves[-1][1]
-        req = requests.head(url)
+        req = requests.head(url, proxies=getproxy())
         size = int(req.headers["Content-Length"])
         file_size = 0
-        req = requests.get(url, stream=True)
+        req = requests.get(url, stream=True, proxies=getproxy())
         target = gobject.gettempdir(saves[-1][2])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
@@ -105,7 +108,7 @@ class question(QWidget):
             for name in ff.namelist():
                 if name.startswith("SnippingTool/"):
                     collect.append(name)
-            ff.extractall(r"cache", collect)
+            ff.extractall(gobject.getcachedir(), collect)
         if not checkdir(cachedir):
             raise Exception("")
 
@@ -152,7 +155,7 @@ class question(QWidget):
                 )
         self.progresssetval.emit(_TR("正在解压"), 10000)
         with zipfile.ZipFile(target) as zipf:
-            zipf.extractall("cache")
+            zipf.extractall(gobject.getcachedir())
         if not checkdir(cachedir):
             raise Exception("")
 
@@ -180,7 +183,7 @@ class question(QWidget):
                 if fn:
                     try:
                         with zipfile.ZipFile(fn) as zipf:
-                            zipf.extractall("cache")
+                            zipf.extractall(gobject.getcachedir())
                         QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
                         self.formLayout.setRowVisible(0, True)
                         self.formLayout.setRowVisible(1, False)

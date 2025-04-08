@@ -251,15 +251,9 @@
         "dict": [
             {
                 "name": "MeCab",
-                "links": [
-                    {
-                        "name": "unidic-2.1.2",
-                        "link": "https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip"
-                    },
-                    {
-                        "name": "unidic",
-                        "link": "https://clrd.ninjal.ac.jp/unidic/"
-                    }
+                "function": [
+                    "myutils.mecab",
+                    "resourcewidget"
                 ]
             },
             {

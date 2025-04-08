@@ -1184,7 +1184,7 @@ class TranslatorWindow(resizableframeless):
         globalconfig["hirasetting"]["mecab"]["args"]["path"] = filer
         self.displaystatus.emit(_TR("成功设置_Mecab_路径_ " + filer), TextType.Info)
         if changed:
-            gobject.baseobject.starthira()
+            gobject.baseobject.startmecab()
 
     def __parsedropmdx(self, file):
         isfile = os.path.isfile(file)

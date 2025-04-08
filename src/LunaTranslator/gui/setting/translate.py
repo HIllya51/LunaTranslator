@@ -16,7 +16,6 @@ from traceback import print_exc
 from gui.usefulwidget import SuperCombo
 from collections import Counter
 from myutils.wrapper import tryprint
-from translator.basetranslator import basetrans
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getspinbox,
@@ -26,7 +25,6 @@ from gui.usefulwidget import (
     check_grid_append,
     getsimpleswitch,
     D_getIconButton,
-    makegroupingrid,
     D_getsimpleswitch,
     selectcolor,
     createfoldgrid,
@@ -845,6 +843,8 @@ def __additem(self, layout: QGridLayout, uid):
 
 @tryprint
 def __importnew(self, savelay, f):
+
+    from translator.basetranslator import basetrans
 
     fanyi = str(uuid.uuid4())
     os.makedirs("userconfig/copyed", exist_ok=True)

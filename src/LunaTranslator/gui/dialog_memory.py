@@ -5,7 +5,7 @@ from myutils.wrapper import Singleton
 from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR
 from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
-from hiraparse.basehira import basehira
+from myutils.mecab import mecab
 from gui.inputdialog import autoinitdialog
 from myutils.hwnd import grabwindow, getExeIcon
 from gui.usefulwidget import (
@@ -353,7 +353,7 @@ class dialog_memory(saveposwindow):
             self.__wrap(gobject.baseobject.currenttranslate)
         elif action == origin_hira:
             self.__wrap(
-                basehira.makerubyhtml(
+                mecab.makerubyhtml(
                     gobject.baseobject.parsehira(gobject.baseobject.currenttext)
                 )
             )

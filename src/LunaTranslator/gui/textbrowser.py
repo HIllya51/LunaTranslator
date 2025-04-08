@@ -3,7 +3,7 @@ from myutils.config import globalconfig
 import importlib, copy, os, platform
 from traceback import print_exc
 from gui.usefulwidget import WebviewWidget
-from hiraparse.basehira import basehira
+from myutils.mecab import mecab
 from gui.rendertext.texttype import TextType, ColorControl
 from gui.rendertext.webview import TextBrowser as WebviewTextbrowser
 from gui.rendertext.textbrowser import TextBrowser as QtTextbrowser
@@ -140,12 +140,12 @@ class Textbrowser(QFrame):
         )
         self.cleared = False
         self.textbrowser.append(
-            texttype, name, text, basehira.parseastarget(tag), color, klass
+            texttype, name, text, mecab.parseastarget(tag), color, klass
         )
         WSForEach(
             mainuiwsoutputsave,
             lambda _1: _1.append(
-                texttype, name, text, basehira.parseastarget(tag), color, klass
+                texttype, name, text, mecab.parseastarget(tag), color, klass
             ),
         )
 

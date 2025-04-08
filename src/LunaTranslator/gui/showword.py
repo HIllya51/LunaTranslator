@@ -16,7 +16,7 @@ from myutils.utils import (
     checkmd5reloadmodule,
     getimageformat,
 )
-from hiraparse.basehira import basehira
+from myutils.mecab import mecab
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
@@ -266,7 +266,7 @@ class AnkiWindow(QWidget):
         if globalconfig["ankiconnect"]["boldword"]:
             if self.example.hiras is None:
                 _hs = gobject.baseobject.parsehira(example)
-                self.example.hiras = basehira.parseastarget(_hs)
+                self.example.hiras = mecab.parseastarget(_hs)
             collect = []
             for hira in self.example.hiras:
                 if hira["orig"] == word or hira.get("origorig", None) == word:
@@ -738,7 +738,7 @@ class AnkiWindow(QWidget):
         self.currentword = text
         if text and len(text):
             _hs = gobject.baseobject.parsehira(text)
-            self.zhuyinedit.setPlainText(basehira.makerubyhtml(_hs))
+            self.zhuyinedit.setPlainText(mecab.makerubyhtml(_hs))
         else:
             self.zhuyinedit.clear()
 

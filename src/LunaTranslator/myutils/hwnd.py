@@ -4,7 +4,7 @@ from qtsymbols import *
 import gobject
 import os, subprocess, functools
 import time, winsharedutils, hashlib
-from myutils.config import savehook_new_data, globalconfig
+from myutils.config import savehook_new_data, globalconfig, mayberelpath
 from myutils.wrapper import threader
 from myutils.utils import qimage2binary
 
@@ -51,9 +51,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
             os.makedirs(dirname, exist_ok=True)
             fname = os.path.join(dirname, tmsp)
         except:
-            fname = gobject.getcachedir(
-                "screenshot/{}/{}".format(exename, tmsp), abspath=False
-            )
+            fname = mayberelpath(gobject.getcachedir("screenshot/{}/{}".format(exename, tmsp)))
 
     def callback_1(callback_origin, uid, tocliponly, p: QPixmap, fn):
         if p.isNull():

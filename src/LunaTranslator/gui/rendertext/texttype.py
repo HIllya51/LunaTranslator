@@ -81,8 +81,10 @@ class FenciColor(ColorControl):
             return None
         if not globalconfig["show_fenci"]:
             return None
-        c = QColor("white")
-        if self.cixing:
+        c = QColor(Qt.GlobalColor.white)
+        if self.cixing == "0":
+            return (0, 0, 0, 0)
+        elif self.cixing:
             try:
                 if globalconfig["cixingcolorshow"][self.cixing] == False:
                     return None
