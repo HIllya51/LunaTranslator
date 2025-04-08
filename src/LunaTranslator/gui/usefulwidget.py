@@ -2852,7 +2852,9 @@ class pixmapviewer(QWidget):
                         painter.setFont(font)
                         painter.setPen(pen)
                         if not boxs:
-                            painter.drawText(QPointF(0, self.height()), "\n".join(texts))
+                            self.drawTextLines(
+                                QPointF(0, parsey(0)), painter, texts
+                            )
                         else:
                             for i in range(len(boxs)):
                                 painter.drawText(
@@ -2875,6 +2877,16 @@ class pixmapviewer(QWidget):
             painter = QPainter(self)
             painter.drawPixmap(0, 0, self._pix)
         return super().paintEvent(e)
+
+    def drawTextLines(self, pos: QPointF, painter: QPainter, lines):
+
+        font_metrics = painter.fontMetrics()
+        line_height = font_metrics.height()
+
+        pos.setY(pos.y() + line_height)
+        for line in lines:
+            painter.drawText(QPointF(pos.x(), pos.y()), line)
+            pos.setY(pos.y() + line_height)
 
 
 class IconButton(QPushButton):
