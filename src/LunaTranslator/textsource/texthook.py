@@ -503,6 +503,8 @@ class texthook(basetext):
             for _ in text.split("\n"):
                 if _ and self.safeembedcheck(_):
                     _ = self.waitfortranslation(_)
+                    if not _:
+                        continue
                 collect.append(_)
             trans = "\n".join(collect)
         if not trans:

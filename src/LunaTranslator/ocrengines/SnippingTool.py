@@ -1,7 +1,7 @@
 import threading, time, winsharedutils, windows
 from qtsymbols import *
 from ctypes import Structure, memmove, c_longlong, c_int, c_float, c_int32, c_int64
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 import os, zipfile, shutil
 from myutils.utils import dynamiclink, stringfyerror
 from myutils.config import _TR
@@ -337,4 +337,4 @@ class OCR(baseocr):
                 boxs.append(
                     (box.x1, box.y1, box.x2, box.y2, box.x3, box.y3, box.x4, box.y4)
                 )
-            return {"box": boxs, "text": texts}
+            return OCRResult(boxs=boxs, texts=texts)

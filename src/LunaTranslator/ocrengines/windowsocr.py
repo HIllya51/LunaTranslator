@@ -3,7 +3,7 @@ import windows, re, os
 from myutils.hwnd import subprochiderun
 from myutils.config import _TR, getlang_inner2show
 from myutils.utils import dynamiclink
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 from qtsymbols import *
 from gui.dynalang import LPushButton, LLabel
 from gui.dynalang import LPushButton, LFormLayout, LLabel
@@ -148,4 +148,4 @@ class OCR(baseocr):
         ret = winsharedutils.WinRT.OCR(imagebinary, uselang)
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
-        return {"box": boxs, "text": texts}
+        return OCRResult(boxs=boxs, texts=texts)

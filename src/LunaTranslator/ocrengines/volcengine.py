@@ -535,9 +535,8 @@ class VisualService(Service):
         )
 
 
-import requests
 import base64
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 
 
 class OCR(baseocr):
@@ -564,6 +563,6 @@ class OCR(baseocr):
             boxs = self.flatten4point(
                 [box["rect"] for box in resp["data"]["ocr_infos"]]
             )
-            return {"box": boxs, "text": texts}
+            return OCRResult(boxs=boxs, texts=texts)
         except:
             raise Exception(resp)

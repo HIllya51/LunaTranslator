@@ -2,7 +2,7 @@ import base64
 import uuid
 import time
 import hashlib
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 from language import Languages
 
 
@@ -38,13 +38,13 @@ class OCR(baseocr):
 
         try:
 
-            return {
-                "box": [
+            return OCRResult(
+                boxs=[
                     [int(_) for _ in l["boundingBox"].split(",")]
                     for l in response.json()["lines"]
                 ],
-                "text": [l["words"] for l in response.json()["lines"]],
-            }
+                texts=[l["words"] for l in response.json()["lines"]],
+            )
         except:
             raise Exception(response)
 
@@ -61,7 +61,10 @@ class OCR(baseocr):
             return hash_algorithm.hexdigest()
 
         self.checkempty(["APP_KEY", "APP_SECRET"])
-        APP_KEY, APP_SECRET = self.multiapikeycurrent["APP_KEY"], self.multiapikeycurrent["APP_SECRET"]
+        APP_KEY, APP_SECRET = (
+            self.multiapikeycurrent["APP_KEY"],
+            self.multiapikeycurrent["APP_SECRET"],
+        )
         YOUDAO_URL = "https://openapi.youdao.com/ocrapi"
         content = base64.b64encode(imagebinary).decode("utf-8")
 
@@ -87,10 +90,10 @@ class OCR(baseocr):
             _ = []
             for l in response.json()["Result"]["regions"]:
                 _ += l["lines"]
-            return {
-                "box": [[int(_) for _ in l["boundingBox"].split(",")] for l in _],
-                "text": [l["text"] for l in _],
-            }
+            return OCRResult(
+                boxs=[[int(_) for _ in l["boundingBox"].split(",")] for l in _],
+                texts=[l["text"] for l in _],
+            )
         except:
             raise Exception(response)
 
@@ -122,17 +125,20 @@ class OCR(baseocr):
         )
 
         try:
-            return {
-                "text": [l["tranContent"] for l in response.json()["lines"]],
-                "isocrtranslate": True,
-            }
+            return OCRResult(
+                texts=[l["tranContent"] for l in response.json()["lines"]],
+                isocrtranslate=True,
+            )
         except:
             raise Exception(response)
 
     def ocrapi_ts(self, imagebinary):
 
         self.checkempty(["APP_KEY", "APP_SECRET"])
-        APP_KEY, APP_SECRET = self.multiapikeycurrent["APP_KEY"], self.multiapikeycurrent["APP_SECRET"]
+        APP_KEY, APP_SECRET = (
+            self.multiapikeycurrent["APP_KEY"],
+            self.multiapikeycurrent["APP_SECRET"],
+        )
 
         """
         添加鉴权相关参数 -
@@ -233,7 +239,7 @@ class OCR(baseocr):
                 [int(_) for _ in l["boundingBox"].split(",")]
                 for l in response.json()["resRegions"]
             ]
-            return {"box": box, "text": text, "isocrtranslate": True}
+            return OCRResult(boxs=box, texts=text, isocrtranslate=True)
         except:
             raise Exception(response)
 

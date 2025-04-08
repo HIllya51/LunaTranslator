@@ -12,6 +12,18 @@ from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
 import copy
 from gui.usefulwidget import WebviewWidget
+from sometypes import WordSegResult
+
+
+class wordwithcolor:
+    def __init__(self, word: WordSegResult, color: str):
+        self.word = word
+        self.color = color
+
+    def as_dict(self):
+        d = self.word.as_dict()
+        d.update(color=self.color)
+        return d
 
 
 class somecommon(dataget):
@@ -21,7 +33,7 @@ class somecommon(dataget):
         self.saveiterclasspointer = {}
 
     def debugeval(self, js: str): ...
-
+    def refreshcontent(self): ...
     def calllunaloadready(self):
         self.colorset.clear()
         self.ts_klass.clear()
@@ -37,7 +49,7 @@ class somecommon(dataget):
         self.setdisplayrank(globalconfig["displayrank"])
         self.sethovercolor(globalconfig["hovercolor"])
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
-        gobject.baseobject.translation_ui.translate_text.refreshcontent()
+        self.refreshcontent()
 
     # js api
     def sethovercolor(self, color):
@@ -132,8 +144,10 @@ class somecommon(dataget):
             )
         )
 
-    def create_internal_rubytext(self, style, styleargs, _id, tag, args):
-        tag = quote(json.dumps(tag))
+    def create_internal_rubytext(
+        self, style, styleargs, _id, tag: "list[wordwithcolor]", args
+    ):
+        tag = quote(json.dumps(tuple(_.as_dict() for _ in tag)))
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
@@ -180,21 +194,25 @@ class somecommon(dataget):
             ]["webview"][0]
         return currenttype
 
-    def _webview_append(self, _id, name, text: str, tag, color: ColorControl):
+    def _webview_append(
+        self, _id, name, text: str, tag: "list[WordSegResult]", color: ColorControl
+    ):
         self._setcolors(color)
         style = self._getstylevalid()
         styleargs = globalconfig["rendertext"]["webview"][style].get("args", {})
         if len(tag):
+            tagx: "list[wordwithcolor]" = []
             for word in tag:
                 color1 = FenciColor(word)
-                word["color"] = color1.asklass()
+                wordx = wordwithcolor(word, color1.asklass())
+                tagx.append(wordx)
                 self._setcolors(color1)
             self._setcolors(SpecialColor.KanaColor)
             args = dict(
                 color=color.asklass(),
                 kanacolor=SpecialColor.KanaColor.asklass(),
             )
-            self.create_internal_rubytext(style, styleargs, _id, tag, args)
+            self.create_internal_rubytext(style, styleargs, _id, tagx, args)
         else:
             sig = "LUNASHOWHTML"
             userawhtml = text.startswith(sig)
@@ -235,7 +253,7 @@ class somecommon(dataget):
         self.setfontstyle()
 
     def resetstyle(self):
-        gobject.baseobject.translation_ui.translate_text.refreshcontent()
+        self.refreshcontent()
         self.setcolorstyle()
 
 
@@ -292,6 +310,9 @@ class TextBrowser(WebviewWidget, somecommon):
     def ___cleartext(self):
         self.parent().clear()
         gobject.baseobject.currenttext = ""
+
+    def refreshcontent(self):
+        gobject.baseobject.translation_ui.translate_text.refreshcontent()
 
     def refreshcontent_before(self):
         self.debugeval("refreshcontent_before()")

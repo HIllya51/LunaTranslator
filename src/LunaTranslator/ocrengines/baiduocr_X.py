@@ -1,6 +1,6 @@
 import base64
 from myutils.config import globalconfig
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 import random, zhconv
 from hashlib import md5
 from language import Languages
@@ -49,7 +49,7 @@ class OCR(baseocr):
                 )
                 for l in js["data"]["content"]
             ]
-            return {"box": box, "text": text, "isocrtranslate": True}
+            return OCRResult(boxs=box, texts=text, isocrtranslate=True)
         except:
             raise Exception(response)
 
@@ -116,7 +116,7 @@ class OCR(baseocr):
                 )
                 for l in js["data"]["content"]
             ]
-            return {"box": box, "text": text, "isocrtranslate": True}
+            return OCRResult(boxs=box, texts=text, isocrtranslate=True)
         except:
             raise Exception(response)
 
@@ -248,7 +248,9 @@ class OCR(baseocr):
         try:
 
             if interfacetype in [0, 2]:
-                return {"text": [x["words"] for x in response.json()["words_result"]]}
+                return OCRResult(
+                    texts=[x["words"] for x in response.json()["words_result"]]
+                )
             else:
                 texts = [x["words"] for x in response.json()["words_result"]]
                 boxs = [
@@ -260,6 +262,6 @@ class OCR(baseocr):
                     )
                     for x in response.json()["words_result"]
                 ]
-                return {"box": boxs, "text": texts}
+                return OCRResult(boxs=boxs, texts=texts)
         except:
             raise Exception(response)

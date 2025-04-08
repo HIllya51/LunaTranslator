@@ -1,6 +1,6 @@
 from qtsymbols import *
 import requests, base64, json
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 from urllib.parse import urlparse, parse_qs
 from myutils.utils import qimage2binary
 
@@ -115,7 +115,7 @@ class Bing:
                     ]
                 )
 
-        return {"box": boxs, "text": texts}
+        return OCRResult(boxs=boxs, texts=texts)
 
 
 class OCR(baseocr):

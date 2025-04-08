@@ -2,6 +2,7 @@ import time, uuid
 import os, threading, re, winreg, copy
 from qtsymbols import *
 from traceback import print_exc
+from sometypes import TranslateResult, TranslateError, WordSegResult
 from myutils.config import (
     globalconfig,
     savehook_new_list,
@@ -123,10 +124,10 @@ class MAINUI:
     def maybesetocrresult(self, pair):
         if self.showocrimage:
             try:
-                self.showocrimage.setresult.emit(pair)
+                self.showocrimage.setresult.emit([pair])
             except:
                 print_exc()
-        self.showocrimage_cached2 = pair
+        self.showocrimage_cached2 = [pair]
 
     def createshowocrimage(self):
         try:
@@ -307,6 +308,8 @@ class MAINUI:
         is_auto_run=True,
         waitforresultcallback=None,
         waitforresultcallbackengine=None,
+        waitforresultcallbackengine_force=False,
+        erroroutput=None,
         donttrans=False,
     ):
         with self.solvegottextlock:
@@ -315,10 +318,20 @@ class MAINUI:
                 is_auto_run,
                 waitforresultcallback,
                 waitforresultcallbackengine,
+                waitforresultcallbackengine_force,
+                erroroutput,
                 donttrans,
             )
             if waitforresultcallback and not succ:
-                waitforresultcallback("")
+                waitforresultcallback(TranslateResult())
+
+    def __erroroutput(self, klass, erroroutput, e, t):
+
+        if erroroutput:
+            return erroroutput(TranslateError(klass, e))
+        if klass:
+            e = _TR(dynamicapiname(klass)) + " " + e
+        self.translation_ui.displaystatus.emit(e, t)
 
     def textgetmethod_1(
         self,
@@ -326,6 +339,8 @@ class MAINUI:
         is_auto_run=True,
         waitforresultcallback=None,
         waitforresultcallbackengine=None,
+        waitforresultcallbackengine_force=False,
+        erroroutput=None,
         donttrans=False,
     ):
         if not text:
@@ -335,6 +350,7 @@ class MAINUI:
         if is_auto_run and text == self.currenttext:
             return
         origin = text
+        __erroroutput = functools.partial(self.__erroroutput, None, erroroutput)
         currentsignature = uuid.uuid4()
         try:
             text = POSTSOLVE(text, isEx=waitforresultcallback)
@@ -342,9 +358,7 @@ class MAINUI:
             if not text:
                 return
         except Exception as e:
-            self.translation_ui.displaystatus.emit(
-                stringfyerror(e), TextType.Error_origin
-            )
+            __erroroutput(stringfyerror(e), TextType.Error_origin)
             return
 
         if is_auto_run and text == self.currenttext:
@@ -452,8 +466,8 @@ class MAINUI:
         if waitforresultcallbackengine:
             if waitforresultcallbackengine in real_fix_rank:
                 real_fix_rank = [waitforresultcallbackengine]
-            else:
-                waitforresultcallbackengine = None
+            elif waitforresultcallbackengine_force:
+                return
 
         usefultranslators = real_fix_rank.copy()
         if globalconfig["fix_translate_rank"] and (not waitforresultcallback):
@@ -481,6 +495,7 @@ class MAINUI:
                 is_auto_run,
                 result=maybehaspremt.get(engine),
                 read_trans_once_check=read_trans_once_check,
+                erroroutput=erroroutput,
             )
         return True
 
@@ -520,6 +535,7 @@ class MAINUI:
         is_auto_run,
         result,
         read_trans_once_check: list,
+        erroroutput,
     ):
         callback = partial(
             self.GetTranslationCallback,
@@ -531,6 +547,7 @@ class MAINUI:
             _showrawfunction,
             text,
             read_trans_once_check,
+            erroroutput,
         )
         task = (
             callback,
@@ -547,6 +564,11 @@ class MAINUI:
 
             self.translators[engine].gettask(task)
 
+    def __safecallback(self, waitforresultcallback, klass, result=None):
+        if not waitforresultcallback:
+            return
+        waitforresultcallback(TranslateResult(klass, result))
+
     def GetTranslationCallback(
         self,
         usefultranslators: list,
@@ -557,6 +579,7 @@ class MAINUI:
         _showrawfunction,
         contentraw,
         read_trans_once_check: list,
+        erroroutput,
         res: str,
         iter_res_status,
         iserror=False,
@@ -570,23 +593,23 @@ class MAINUI:
             ):
                 return
 
-            safe_callback = (
-                waitforresultcallback if waitforresultcallback else lambda _: 1
+            safe_callback = functools.partial(
+                self.__safecallback, waitforresultcallback, classname
             )
-            apiname = _TR(dynamicapiname(classname))
+            __erroroutput = functools.partial(
+                self.__erroroutput, classname, erroroutput
+            )
             if iserror:
-                if currentsignature == self.currentsignature:
-                    self.translation_ui.displaystatus.emit(
-                        apiname + " " + res, TextType.Error_translator
-                    )
+                if erroroutput or (currentsignature == self.currentsignature):
+                    __erroroutput(res, TextType.Error_translator)
                 if len(usefultranslators) == 0:
-                    safe_callback("")
+                    safe_callback()
                 return
 
             res = self.solveaftertrans(res, optimization_params)
             if not res:
                 if len(usefultranslators) == 0:
-                    safe_callback("")
+                    safe_callback()
                 return
             needshowraw = (
                 _showrawfunction
@@ -601,7 +624,7 @@ class MAINUI:
                 and (not waitforresultcallback)
             ):
                 displayreskwargs = dict(
-                    name=apiname,
+                    name=_TR(dynamicapiname(classname)),
                     color=TranslateColor(classname),
                     res=res,
                     iter_context=(iter_res_status, classname),
@@ -610,7 +633,9 @@ class MAINUI:
                 self.translation_ui.displayres.emit(displayreskwargs)
             if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
 
-                self.transhis.getnewtranssignal.emit(apiname, res)
+                self.transhis.getnewtranssignal.emit(
+                    _TR(dynamicapiname(classname)), res
+                )
                 if not waitforresultcallback:
                     if (
                         globalconfig["read_trans"]
@@ -1006,12 +1031,12 @@ class MAINUI:
             winsharedutils.setbackdropX(int(widget.winId()), name == "QTWin11", dark)
 
     @threader
-    def clickwordcallback(self, word, append=False):
-        if globalconfig["usewordorigin"] == False:
-            word = word["orig"]
-        else:
-            word = word.get("origorig", word["orig"])
-
+    def clickwordcallback(self, wordd: dict, append=False):
+        if isinstance(wordd, WordSegResult):
+            word = wordd
+        elif isinstance(wordd, dict):
+            word = WordSegResult.from_dict(wordd)
+        word = (word.word, word.prototype)[globalconfig["usewordorigin"]]
         if globalconfig["usecopyword"]:
             winsharedutils.clipboard_set(
                 (winsharedutils.clipboard_get() + word) if append else word

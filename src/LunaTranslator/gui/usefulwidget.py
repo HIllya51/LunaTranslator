@@ -2851,22 +2851,25 @@ class pixmapviewer(QWidget):
                         pen.setColor(QColor(globalconfig["rawtextcolor"]))
                         painter.setFont(font)
                         painter.setPen(pen)
-                        for i in range(len(boxs)):
-                            painter.drawText(
-                                QPointF(parsex(boxs[i][0]), parsey(boxs[i][1])),
-                                texts[i],
-                            )
-                            for j in range(len(boxs[i]) // 2):
-                                painter.drawLine(
-                                    QPointF(
-                                        parsex(boxs[i][j * 2]),
-                                        parsey(boxs[i][j * 2 + 1]),
-                                    ),
-                                    QPointF(
-                                        parsex(boxs[i][(j * 2 + 2) % len(boxs[i])]),
-                                        parsey(boxs[i][(j * 2 + 3) % len(boxs[i])]),
-                                    ),
+                        if not boxs:
+                            painter.drawText(QPointF(0, self.height()), "\n".join(texts))
+                        else:
+                            for i in range(len(boxs)):
+                                painter.drawText(
+                                    QPointF(parsex(boxs[i][0]), parsey(boxs[i][1])),
+                                    texts[i],
                                 )
+                                for j in range(len(boxs[i]) // 2):
+                                    painter.drawLine(
+                                        QPointF(
+                                            parsex(boxs[i][j * 2]),
+                                            parsey(boxs[i][j * 2 + 1]),
+                                        ),
+                                        QPointF(
+                                            parsex(boxs[i][(j * 2 + 2) % len(boxs[i])]),
+                                            parsey(boxs[i][(j * 2 + 3) % len(boxs[i])]),
+                                        ),
+                                    )
                     except:
                         print_exc()
             painter = QPainter(self)

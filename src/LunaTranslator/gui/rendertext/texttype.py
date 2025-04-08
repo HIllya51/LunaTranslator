@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
-
+from sometypes import WordSegResult
 
 class TextType:
     Origin = 0
@@ -71,9 +71,9 @@ class TranslateColor(ColorControl):
 
 
 class FenciColor(ColorControl):
-    def __init__(self, word):
-        self.isdeli = word.get("isdeli", False)
-        self.cixing = word.get("cixing", None)
+    def __init__(self, word:WordSegResult):
+        self.isdeli = word.isdeli
+        self.cixing = word.wordclass
         super().__init__(ColorControl.FENCI_COLOR, (self.isdeli, self.cixing))
 
     def _randomcolor_1(self):
@@ -82,9 +82,7 @@ class FenciColor(ColorControl):
         if not globalconfig["show_fenci"]:
             return None
         c = QColor(Qt.GlobalColor.white)
-        if self.cixing == "0":
-            return (0, 0, 0, 0)
-        elif self.cixing:
+        if self.cixing:
             try:
                 if globalconfig["cixingcolorshow"][self.cixing] == False:
                     return None

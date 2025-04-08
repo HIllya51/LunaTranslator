@@ -1,6 +1,6 @@
 from hashlib import sha1
 import time, random, hmac, base64, uuid, hashlib, json
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 import zhconv
 from language import Languages
 
@@ -103,7 +103,9 @@ class OCR(baseocr):
             + "\n"
             + hashedCanonicalRequest
         )
-        kDate = sha256(date.encode(), ("TC3" + self.multiapikeycurrent["SecretKey"]).encode())
+        kDate = sha256(
+            date.encode(), ("TC3" + self.multiapikeycurrent["SecretKey"]).encode()
+        )
         kService = sha256(service.encode(), kDate)
         kSigning = sha256("tc3_request".encode(), kService)
         signature = sha256(stringToSign.encode(), kSigning)
@@ -150,7 +152,7 @@ class OCR(baseocr):
                 )
                 for _ in r.json()["Response"]["ImageRecord"]["Value"]
             ]
-            return {"box": boxs, "text": texts, "isocrtranslate": True}
+            return OCRResult(boxs=boxs, texts=texts, isocrtranslate=True)
         except:
             raise Exception(r)
 
@@ -197,7 +199,7 @@ class OCR(baseocr):
                 for _ in r.json()["Response"]["TextDetections"]
             ]
             texts = [_["DetectedText"] for _ in r.json()["Response"]["TextDetections"]]
-            return {"box": boxs, "text": texts}
+            return OCRResult(boxs=boxs, texts=texts)
         except:
             raise Exception(r)
 

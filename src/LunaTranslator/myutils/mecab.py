@@ -5,11 +5,12 @@ from traceback import print_exc
 import requests, zipfile, gobject
 from gui.usefulwidget import VisLFormLayout, getsmalllabel, getboxlayout
 from myutils.utils import makehtml, stringfyerror
-from myutils.config import _TR, mayberelpath
+from myutils.config import _TR, mayberelpath, isascii
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
 from qtsymbols import *
 from gui.dynalang import LPushButton
+from sometypes import WordSegResult
 
 # fmt: off
 allkata="ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼソゾタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶヽヾ"
@@ -19,6 +20,12 @@ kata_s=["ア","イ","ウ","エ","オ","カ","キ","ク","ケ","コ","サ","シ",
 roma_s=["a","i","u","e","o","ka","ki","ku","ke","ko","sa","shi","su","se","so","ta","chi","tsu","te","to","na","ni","nu","ne","no","ha","hi","hu","he","ho","ma","mi","mu","me","mo","ya","yu","yo","ra","ri","ru","re","ro","wa","wo","n","ga","gi","gu","ge","go","za","ji","zu","ze","zo","da","ji","du","de","do","ba","bi","bu","be","bo","pa","pi","pu","pe","po","kya","kyi","kyu","kye","kyo","sha","syi","shu","she","sho","cha","cyi","chu","che","cho","nya","nyi","nyu","nye","nyo","hya","hyi","hyu","hye","hyo","mya","myi","myu","mye","myo","rya","ryi","ryu","rye","ryo","gya","gyi","gyu","gye","gyo","ja","ji","ju","je","jo","dya","dyi","dyu","dye","dyo","bya","byi","byu","bye","byo","pya","pyi","pyu","pye","pyo","gwa","gwi","gwu","gwe","gwo","tsa","tsi","tse","tso","fa","fi","fe","fo","wha","whi","whu","whe","who","va","vi","vu","ve","vo","dha","dhi","dhu","dhe","dho","tha","thi","thu","the","tho","-"]
 # fmt: on
 
+# fmt: off
+punctuations = [
+    "【","】","。","，","！","？","　","‘","’","“","”","、","《","》","；","：","……","（","）","」","「",
+    " ",",","·",".","'","\"","?","/",";",":","|","[","]","{","}","-","_","=","+","`","~","!","#","$","%","^","&","*","(",")"
+]
+# fmt: on
 
 castkata2hira = str.maketrans(allkata, allhira)
 casthira2kata = str.maketrans(allhira, allkata)
@@ -28,8 +35,7 @@ class _base:
     def init(self):
         pass
 
-    def parse(self, text):
-        return []
+    def parse(self, text) -> "list[WordSegResult]": ...
 
     def __init__(self, typename) -> None:
         self.typename = typename
@@ -54,7 +60,6 @@ class _base:
 
     def safeparse(self, text):
         try:
-
             if self.needinit:
                 self.init()
                 self.needinit = False
@@ -64,53 +69,62 @@ class _base:
             self.needinit = True
             return []
 
-    def parse_multilines(self, text):
+    def parse_multilines(self, text: str):
 
-        hira = []
+        hira: "list[WordSegResult]" = []
         for i, _ in enumerate(text.split("\n")):
             h = self.parse_singleline(_)
-            if "".join(__["orig"] for __ in h) != _:
+            if "".join(__.word for __ in h) != _:
                 raise Exception("not match")
             if i:
-                hira += [{"orig": "\n", "hira": "\n"}]
+                hira += [WordSegResult("\n")]
             hira += h
         return hira
 
     def parse_singleline(self, text):
         hira = self.parse(text)
 
-        __parsekonge = []
+        __parsekonge: "list[WordSegResult]" = []
         for word in hira:
-            ori = word["orig"]
-            start, w, end = self.splitspace(ori)
+            if word.word in punctuations:
+                __parsekonge.append(WordSegResult(word.word, isdeli=True))
+                continue
+            start, w, end = self.splitspace(word.word)
             if len(start) == 0 and len(end) == 0:
                 __parsekonge.append(word)
                 continue
-            word["orig"] = w
-            word["hira"] = self.splitspace(word["hira"])[1]
+            word.word = w
+            if word.kana:
+                word.kana = self.splitspace(word.kana)[1]
 
-            if len(start):
-                __parsekonge.append({"orig": start, "hira": start})
-            __parsekonge.append(word)
-            if len(end):
-                __parsekonge.append({"orig": end, "hira": end})
+            if start:
+                __parsekonge.append(WordSegResult(start, isdeli=True))
+            if word.word:
+                __parsekonge.append(word)
+            if end:
+                __parsekonge.append(WordSegResult(end, isdeli=True))
+        for _ in __parsekonge:
+            if isascii(_.word):
+                _.kana = None
         return __parsekonge
 
     @staticmethod
-    def parseastarget(hira):
+    def parseastarget(hira: "list[WordSegResult]"):
         for _1 in range(len(hira)):
             _ = len(hira) - 1 - _1
+            if not hira[_].kana:
+                continue
             if globalconfig["hira_vis_type"] == 0:
-                hira[_]["hira"] = hira[_]["hira"].translate(castkata2hira)
+                hira[_].kana = hira[_].kana.translate(castkata2hira)
             elif globalconfig["hira_vis_type"] == 1:
-                hira[_]["hira"] = hira[_]["hira"].translate(casthira2kata)
+                hira[_].kana = hira[_].kana.translate(casthira2kata)
             elif globalconfig["hira_vis_type"] == 2:
                 __kanas = [hira_s, kata_s]
                 target = roma_s
                 for _ka in __kanas:
                     for __idx in range(len(_ka)):
                         _reverse_idx = len(_ka) - 1 - __idx
-                        hira[_]["hira"] = hira[_]["hira"].replace(
+                        hira[_].kana = hira[_].kana.replace(
                             _ka[_reverse_idx], target[_reverse_idx]
                         )
         return hira
@@ -123,10 +137,10 @@ class _base:
         html = ""
         allsame = True
         for i in range(len(ruby)):
-            html += ruby[i]["orig"]
-            if ruby[i]["orig"] != ruby[i]["hira"]:
+            html += ruby[i].word
+            if ruby[i].kana and (ruby[i].word != ruby[i].kana):
                 allsame = False
-                html += "<rt>" + ruby[i]["hira"] + "</rt>"
+                html += "<rt>" + ruby[i].kana + "</rt>"
             else:
                 html += "<rt></rt>"
         if allsame:
@@ -171,12 +185,10 @@ class mecabwrap:
                     os.path.abspath(_dir).encode("utf8")
                 )
                 if self.kks:
-                    self.codec: str = winsharedutils.mecab_dictionary_codec(
-                        self.kks
-                    ).decode()
-                    self.isutf16 = (self.codec.lower().startswith("utf-16")) or (
-                        self.codec.lower().startswith("utf16")
-                    )
+                    codec: bytes = winsharedutils.mecab_dictionary_codec(self.kks)
+                    self.codec = codec.decode()
+                    cl = self.codec.lower()
+                    self.isutf16 = (cl.startswith("utf-16")) or (cl.startswith("utf16"))
                     return
         raise Exception("not find")
 
@@ -227,7 +239,7 @@ class mecab(_base):
 
     def parse(self, text):
         start = 0
-        result = []
+        result: "list[WordSegResult]" = []
         for node, fields in self.kks.parse(text):
             kana = ""
             origorig = ""
@@ -272,13 +284,11 @@ class mecab(_base):
                 kana = ""
 
             result.append(
-                {"orig": orig, "hira": kana, "cixing": pos1, "origorig": origorig}
+                WordSegResult(orig, kana=kana, prototype=origorig, wordclass=pos1)
             )
         extras = text[start:]
         if len(extras):
-            result.append(
-                {"orig": extras, "hira": extras, "cixing": "", "origorig": extras}
-            )
+            result.append(WordSegResult(extras, kana=extras, prototype=extras))
         return result
 
 
@@ -306,12 +316,6 @@ def splitstr(input_str: str, delimiters):
     return lst
 
 
-# fmt: off
-punctuations = [
-    "【","】","。","，","！","？","　","‘","’","“","”","、","《","》","；","：","……","（","）",
-    " ",",","·",".","'","\"","?","/",";",":","|","[","]","{","}","-","_","=","+","`","~","!","#","$","%","^","&","*","(",")"
-]
-# fmt: on
 class latin(_base):
 
     def __init__(self, typename="latin") -> None:
@@ -319,15 +323,7 @@ class latin(_base):
 
     def parse(self, text: str):
 
-        sps = splitstr(text, punctuations)
-
-        _x = []
-        for c in sps:
-            if c in punctuations:
-                _x.append({"orig": c, "hira": "", "isdeli": True})
-            else:
-                _x.append({"orig": c, "hira": c, "cixing": "0"})
-        return _x
+        return (WordSegResult(_) for _ in splitstr(text, punctuations))
 
 
 class resourcewidget(QWidget):

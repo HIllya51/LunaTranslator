@@ -3,6 +3,7 @@ import sqlite3, json
 from traceback import print_exc
 from myutils.config import globalconfig, savehook_new_data
 from myutils.utils import autosql
+from sometypes import TranslateResult
 
 
 class basetext:
@@ -59,7 +60,8 @@ class basetext:
             waitforresultcallback=resultwaitor.put,
             waitforresultcallbackengine=globalconfig["toppest_translator"],
         )
-        return resultwaitor.get()
+        tsres: TranslateResult = resultwaitor.get()
+        return tsres.result
 
     @property
     def isautorunning(self):

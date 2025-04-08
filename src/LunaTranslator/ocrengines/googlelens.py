@@ -2587,11 +2587,11 @@ class GoogleLens:
                     ]
                 )
                 result.append(lines)
-        return {"box": boxs, "text": result}
+        return OCRResult(boxs=boxs, texts=result)
 
 
 from qtsymbols import *
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 from myutils.utils import qimage2binary
 
 

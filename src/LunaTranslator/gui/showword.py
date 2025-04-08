@@ -16,6 +16,7 @@ from myutils.utils import (
     checkmd5reloadmodule,
     getimageformat,
 )
+from sometypes import WordSegResult
 from myutils.mecab import mecab
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
@@ -86,7 +87,7 @@ class AnkiWindow(QWidget):
 
     @threader
     def asyncocr(self, img):
-        self.__ocrsettext.emit(ocr_run(img)[0])
+        self.__ocrsettext.emit(ocr_run(img).textonly)
 
     def crophide(self, s=False):
         currpos = gobject.baseobject.translation_ui.pos()
@@ -264,15 +265,15 @@ class AnkiWindow(QWidget):
         remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
         if globalconfig["ankiconnect"]["boldword"]:
-            if self.example.hiras is None:
+            if self.example_hiras is None:
                 _hs = gobject.baseobject.parsehira(example)
-                self.example.hiras = mecab.parseastarget(_hs)
+                self.example_hiras = mecab.parseastarget(_hs)
             collect = []
-            for hira in self.example.hiras:
-                if hira["orig"] == word or hira.get("origorig", None) == word:
-                    collect.append("<b>{}</b>".format(hira["orig"]))
+            for hira in self.example_hiras:
+                if hira.word == word or hira.prototype == word:
+                    collect.append("<b>{}</b>".format(hira.word))
                 else:
-                    collect.append(hira["orig"])
+                    collect.append(hira.word)
             example = "".join(collect)
         ruby = self.zhuyinedit.toPlainText()
         dictionaryInfo = []
@@ -555,10 +556,10 @@ class AnkiWindow(QWidget):
         self.zhuyinedit = ctrlbedit()
         self.wordedit = FQLineEdit()
         self.wordedit.textChanged.connect(self.wordedit_t)
-        self.example.hiras = None
+        self.example_hiras: "list[WordSegResult]" = None
 
         def __():
-            self.example.hiras = None
+            self.example_hiras = None
 
         self.example.textChanged.connect(__)
         self.remarks = ctrlbedit()
@@ -1148,11 +1149,10 @@ class searchwordW(closeashidewindow):
             return
         if not img:
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-        text, infotype = ocr_run(img)
-        if infotype:
-            gobject.baseobject.displayinfomessage(text, infotype)
-        else:
-            self.search_word.emit(text, False)
+        result = ocr_run(img)
+        if result.error:
+            return result.displayerror()
+        self.search_word.emit(result.textonly, False)
 
     def __load(self):
         if self.state != 0:

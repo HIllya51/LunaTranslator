@@ -11,8 +11,29 @@ import gobject, functools, importlib, winsharedutils
 from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
+from sometypes import WordSegResult
 
-reference = []
+reference: "list[QLabel]" = []
+
+
+class WordSegResultX(WordSegResult):
+    def __init__(self, *a, **w):
+        super().__init__(*a, **w)
+        self.word_X: str = w.get("word_X")
+        self.ref: bool = w.get("ref", False)
+
+    @staticmethod
+    def fromW(w: WordSegResult):
+        return WordSegResultX(w.word, w.kana, w.isdeli, w.wordclass, w._prototype)
+
+    def copy(self):
+        _ = WordSegResultX.fromW(self)
+        _.word = self.word
+        _.ref = self.ref
+        return _
+
+    def __repr__(self):
+        return super().__repr__() + str(dict(word_X=self.word_X, ref=self.ref))
 
 
 class Qlabel_c(QLabel):
@@ -46,7 +67,7 @@ class Qlabel_c(QLabel):
                 self.company.ref.setStyleSheet(
                     "background-color: " + globalconfig["hovercolor"]
                 )
-                reference.append(self.company.ref.setStyleSheet)
+                reference.append(self.company.ref)
         except:
             pass
         self.ref.setStyleSheet("background-color: " + globalconfig["hovercolor"])
@@ -177,8 +198,8 @@ class QTextBrowser_1(QTextEdit):
                 targetlabel.company.refmask.setStyleSheet(
                     "background-color: " + globalconfig["hovercolor"]
                 )
-                reference.append(self.refmask.setStyleSheet)
-                reference.append(self.company.refmask.setStyleSheet)
+                reference.append(self.refmask)
+                reference.append(self.company.refmask)
             except:
                 pass
         if not self.ismousehastext(ev):
@@ -348,7 +369,9 @@ class TextBrowser(QWidget, dataget):
                 "textrender"
             ]["textbrowser"][0]
 
-        __ = importlib.import_module("gui.rendertext.textbrowser_imp." + self.currenttype)
+        __ = importlib.import_module(
+            "gui.rendertext.textbrowser_imp." + self.currenttype
+        )
 
         self.currentclass = functools.partial(__.TextLine, self.currenttype)
 
@@ -550,13 +573,22 @@ class TextBrowser(QWidget, dataget):
     def setdisplayrank(self, type):
         pass
 
-    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
+    def append(
+        self,
+        texttype: TextType,
+        name,
+        text,
+        tag: "list[WordSegResult]",
+        color: ColorControl,
+        klass,
+    ):
         if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
         if len(tag):
             isshowhira = globalconfig["isshowhira"]
             font = self._createqfont(texttype, klass)
+            tag = list(WordSegResultX.fromW(word) for word in tag)
             textlines, linetags = self._splitlinestags(font, tag, text)
             text = "\n".join(textlines)
             tag = self._join_tags(linetags, True)
@@ -595,29 +627,29 @@ class TextBrowser(QWidget, dataget):
             self._addtag(tag)
         self._showyinyingtext(blockcount, blockcount_after, color, font)
 
-    def _join_tags(self, tag, space):
-        tags = []
+    def _join_tags(self, tag: "list[list[WordSegResultX]]", space):
+        tags: "list[WordSegResultX]" = []
         for i in range(len(tag)):
             if i != 0 and space:
-                tags.append({"orig_X": "\n", "orig": "\n", "hira": "\n"})
+                tags.append(WordSegResultX("\n", word_X="\n"))
             tags += tag[i]
         return tags
 
-    def _split_tags(self, tag):
-        taglines = [[]]
-        for word in tag:
-            if word["orig"] == "\n":
+    def _split_tags(self, tag: "list[WordSegResultX]"):
+        taglines: "list[list[WordSegResultX]]" = [[]]
+        for i, word in enumerate(tag):
+            if word.word == "\n":
                 taglines.append([])
                 continue
             else:
                 taglines[-1].append(word)
         return taglines
 
-    def _splitlinestags(self, font, tag, text: str):
+    def _splitlinestags(self, font, tag: "list[WordSegResultX]", text: str):
         lines = text.split("\n")
         textlines = []
         taglines = self._join_tags(self._split_tags(tag), False)
-        newtags = []
+        newtags: "list[list[WordSegResultX]]" = []
         for linetext in lines:
 
             layout = QTextLayout()
@@ -625,7 +657,7 @@ class TextBrowser(QWidget, dataget):
             layout.setTextOption(QTextOption(Qt.AlignmentFlag.AlignLeft))
             layout.setText(linetext)
             layout.beginLayout()
-            newtag = []
+            newtag: "list[WordSegResultX]" = []
             __ = ""
             while True:
                 line = layout.createLine()
@@ -636,30 +668,36 @@ class TextBrowser(QWidget, dataget):
                     linetext[line.textStart() : line.textStart() + line.textLength()]
                 )
                 while len(taglines) and len(__) < len(textlines[-1]):
-                    __ += taglines[0]["orig"]
-                    taglines[0]["orig_X"] = taglines[0]["orig"]
+                    __ += taglines[0].word
+                    taglines[0].word_X = taglines[0].word
                     newtag.append(taglines[0])
                     taglines = taglines[1:]
                 if len(__) != len(textlines[-1]):
-                    orig = newtag[-1]["orig"]
+                    orig = newtag[-1].word
                     l1 = len(orig) - (len(__) - len(textlines[-1]))
                     sub = orig[:l1]
                     end = orig[l1:]
                     __ = end
-                    if newtag[-1]["orig"] == newtag[-1]["hira"]:
-                        newtag[-1].update({"orig_X": sub, "hira": sub})
+                    if newtag[-1].word == newtag[-1].kana:
+                        newtag[-1].word_X = sub
+                        newtag[-1].kana = sub
                         _tag = newtag[-1].copy()
-                        _tag.update({"orig_X": end, "hira": end, "ref": True})
-                        newtag.append({"orig_X": "\n", "orig": "\n", "hira": ""})
+                        _tag.word_X = end
+                        _tag.kana = end
+                        _tag.ref = True
+                        newtag.append(WordSegResultX("\n", word_X="\n"))
                         newtag.append(_tag)
                     else:
-                        hiras = [newtag[-1]["hira"], ""]
+                        hiras = [newtag[-1].kana, ""]
                         if len(end) > len(sub):
                             hiras.reverse()
-                        newtag[-1].update({"orig_X": sub, "hira": hiras[0]})
+                        newtag[-1].word_X = sub
+                        newtag[-1].kana = hiras[0]
                         _tag = newtag[-1].copy()
-                        _tag.update({"orig_X": end, "hira": hiras[1], "ref": True})
-                        newtag.append({"orig_X": "\n", "orig": "\n", "hira": ""})
+                        _tag.word_X = end
+                        _tag.kana = hiras[1]
+                        _tag.ref = True
+                        newtag.append(WordSegResultX("\n", word_X="\n"))
                         newtag.append(_tag)
                 else:
                     __ = ""
@@ -673,21 +711,21 @@ class TextBrowser(QWidget, dataget):
         for i in range(len(newtags)):
             if i != 0:
                 if not hasbreak:
-                    newtag.append({"orig_X": "\n", "orig": "\n", "hira": "\n"})
+                    newtag.append(WordSegResultX("\n", word_X="\n"))
             newtag += newtags[i]
             hasbreak = False
             for _ in newtags[i]:
-                if _["orig_X"] == "\n":
+                if _.word_X == "\n":
                     hasbreak = True
                     break
         return textlines, self._split_tags(newtag)
 
-    def _checkwordhastag(self, word):
-        if word["hira"] == word["orig_X"]:
+    def _checkwordhastag(self, word: WordSegResultX):
+        if word.kana == word.word_X:
             return False
-        if word["orig_X"].strip() == "":
+        if not (word.word_X.strip()):
             return False
-        if word["hira"].strip() == "":
+        if not (word.kana and word.kana.strip()):
             return False
         return True
 
@@ -696,7 +734,7 @@ class TextBrowser(QWidget, dataget):
             1 if dic.get("lineHeightNormal", True) else dic.get("lineHeight", 1)
         )
 
-    def _setlineheight_x(self, b1, b2, linetags):
+    def _setlineheight_x(self, b1, b2, linetags: "list[list[WordSegResultX]]"):
         fha, _ = self._getfh(True)
 
         for i in range(b1, b2):
@@ -921,7 +959,7 @@ class TextBrowser(QWidget, dataget):
         self.searchmasklabels_clicked2[i].setVisible(show)
         self.searchmasklabels[i].setVisible(True)
 
-    def addsearchwordmask(self, x):
+    def addsearchwordmask(self, x: "list[WordSegResultX]"):
         if len(x) == 0:
             return
         pos = 0
@@ -931,7 +969,7 @@ class TextBrowser(QWidget, dataget):
 
         heigth, _ = self._getfh(False)
         for word in x:
-            l = len(word["orig_X"])
+            l = len(word.word_X)
 
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
 
@@ -939,14 +977,14 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setPosition(pos)
             self.textbrowser.setTextCursor(self.textcursor)
 
-            if len(word["hira"].strip()) == 0:
+            if word.isdeli:
                 continue
             tl2 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
             color = FenciColor(word)
             dyna_h = int((heigth + tl2.y() - tl1.y()) / 2)
             pos1 = tl1.x(), tl1.y(), tl2.x() - tl1.x(), dyna_h
             self._add_searchlabel(labeli, pos1, word, color)
-            if word.get("ref", False):
+            if word.ref:
                 self.searchmasklabels_clicked[labeli - 1].company = (
                     self.searchmasklabels_clicked[labeli]
                 )
@@ -983,9 +1021,8 @@ class TextBrowser(QWidget, dataget):
     def labeloffset_y(self):
         return self.textbrowser.y()
 
-    def _addtag(self, x):
+    def _addtag(self, x: "list[WordSegResultX]"):
         pos = 0
-
         fha, fonthira = self._getfh(True)
         fontori_m = self._getfh(False, getfm=True)
 
@@ -994,7 +1031,7 @@ class TextBrowser(QWidget, dataget):
         lines = [[]]
         maxh = self.maxvisheight
         for word in x:
-            l = len(word["orig_X"])
+            l = len(word.word_X)
             tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
             self.settextposcursor(pos + l)
             pos += l
@@ -1023,7 +1060,7 @@ class TextBrowser(QWidget, dataget):
         else:
             return None
 
-    def _dyna_merge_label(self, line):
+    def _dyna_merge_label(self, line: "list[base]"):
         if len(line) <= 0:
             return
         if line[0].x() < 0:
@@ -1051,13 +1088,15 @@ class TextBrowser(QWidget, dataget):
         self.textcursor.setPosition(pos)
         self.textbrowser.setTextCursor(self.textcursor)
 
-    def solvejiaminglabel(self, idx, word, font, fontori_m: QFontMetricsF, tl1, fha):
+    def solvejiaminglabel(
+        self, idx, word: WordSegResultX, font, fontori_m: QFontMetricsF, tl1, fha
+    ):
         if idx >= len(self.savetaglabels):
             self.savetaglabels.append(self.currentclass(self.atback2))
         _: base = self.savetaglabels[idx]
         _.setColor(SpecialColor.KanaColor)
-        _.setText(word["hira"])
-        origin = word["orig_X"]
+        _.setText(word.kana)
+        origin = word.word_X
         w_origin = fontori_m.size(0, origin).width()
         y = tl1.y() - fha
         center = tl1.x() + w_origin / 2

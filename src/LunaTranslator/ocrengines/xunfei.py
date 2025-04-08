@@ -1,5 +1,5 @@
 import base64, hashlib
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 from datetime import datetime
 from wsgiref.handlers import format_date_time
 from time import mktime
@@ -192,4 +192,4 @@ class OCR(baseocr):
                 imagebinary,
             )
 
-        return {"box": boxs, "text": texts}
+        return OCRResult(boxs=boxs, texts=texts)

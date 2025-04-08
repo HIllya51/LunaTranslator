@@ -598,11 +598,10 @@ class TranslatorWindow(resizableframeless):
             return
         if not img:
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-        text, infotype = ocr_run(img)
-        if infotype:
-            gobject.baseobject.displayinfomessage(text, infotype)
-        else:
-            gobject.baseobject.textgetmethod(text, False)
+        result = ocr_run(img)
+        result = result.maybeerror()
+        if result:
+            gobject.baseobject.textgetmethod(result, False)
 
     def ocr_once_function(self):
         def ocroncefunction(rect, img=None):

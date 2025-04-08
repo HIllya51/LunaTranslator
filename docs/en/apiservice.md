@@ -22,12 +22,38 @@
 
 ### HTTP Service
 
+1. #### /api/translate
+
+   The query parameter `text` must be specified.
+
+   If the parameter `id` (translator ID) is specified, that translator will be used for translation. Otherwise, the fastest available translation API will be returned.
+
+   Returns `application/json`, including the translator ID `id`, name `name`, and translation result `result`.
+
 1. #### /api/searchword
 
-    Requires the query parameter `word`.
+    The query parameter `word` must be specified.
 
-    Returns `event/text-stream`, where each event is a JSON object containing the dictionary name `name` and HTML content `result`.
+    If the parameter `id` (the ID of the dictionary) is specified, it will return the query result of that dictionary as an `application/json` object, containing the dictionary ID `id`, dictionary name `name`, and HTML content `result`. If the query fails, an empty object will be returned.
 
+    Otherwise, it will query all dictionaries and return `event/text-stream`, where each event is a JSON object containing the dictionary ID `id`, dictionary name `name`, and HTML content `result`.
+
+1. #### /api/mecab
+
+   The query parameter `text` must be specified.
+
+   Returns Mecab's parsing result for `text`.
+
+1. #### /api/tts
+
+   The query parameter `text` must be specified.
+
+   Returns audio binary data.
+
+1. #### /api/ocr
+
+   Use POST method to send a JSON request containing an `image` field with base64 encoded image data.
+   
 ### WebSocket Service
 
 1.  #### /api/ws/text/origin

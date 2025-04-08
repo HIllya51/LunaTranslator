@@ -17,7 +17,6 @@ from gui.usefulwidget import (
     TableViewW,
     saveposwindow,
     check_grid_append,
-    getsmalllabel,
     pixmapviewer,
     LStandardItemModel,
     SuperCombo,
@@ -32,6 +31,7 @@ from gui.dynalang import LFormLayout, LDialog, LAction
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton
 from gui.setting.about import offlinelinks
+from ocrengines.baseocrclass import OCRResult
 
 
 def __label1(self):
@@ -282,7 +282,7 @@ def _ocrparam(self):
 @Singleton
 class showocrimage(saveposwindow):
     setimage = pyqtSignal(QImage)
-    setresult = pyqtSignal(dict)
+    setresult = pyqtSignal(list)
 
     def closeEvent(self, e):
         gobject.baseobject.showocrimage = None
@@ -301,11 +301,10 @@ class showocrimage(saveposwindow):
             return
         self.originimage = img
         self.setimagefunction(img)
-        text, infotype = ocr_run(img)
-        if infotype:
-            gobject.baseobject.displayinfomessage(text, infotype)
-        else:
-            gobject.baseobject.textgetmethod(text, False)
+        result = ocr_run(img)
+        result = result.maybeerror()
+        if result:
+            gobject.baseobject.textgetmethod(result, False)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
@@ -361,18 +360,18 @@ class showocrimage(saveposwindow):
             return
         transform = QTransform()
         transform.rotate(self.dial.value())
-        text, infotype = ocr_run(self.originimage.transformed(transform))
-        if infotype:
-            gobject.baseobject.displayinfomessage(text, infotype)
-        else:
-            gobject.baseobject.textgetmethod(text, False)
+        result = ocr_run(self.originimage.transformed(transform))
+        result = result.maybeerror()
+        if result:
+            gobject.baseobject.textgetmethod(result, False)
 
     def setimagefunction(self, originimage):
         self.originimage = originimage
         self.originlabel.showpixmap(QPixmap.fromImage(originimage))
 
     def setocr(self, result):
-        self.originlabel.showboxtext(result.get("box"), result.get("text"))
+        result: OCRResult = result[0]
+        self.originlabel.showboxtext(result.boxs, result.texts)
 
 
 def internal(self):

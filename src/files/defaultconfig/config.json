@@ -1146,16 +1146,6 @@
             "voice": "",
             "name": "edgeTTS"
         },
-        "youdaotts": {
-            "use": false,
-            "voice": "",
-            "name": "有道TTS",
-            "useproxy": false,
-            "arg_not_sup": [
-                "pitch",
-                "rate"
-            ]
-        },
         "NeoSpeech": {
             "use": false,
             "voice": "",

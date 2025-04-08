@@ -1,5 +1,5 @@
 import gobject, os, uuid
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_int
 import winsharedutils
 import winreg
@@ -131,4 +131,4 @@ class OCR(baseocr):
         if not globalonce:
             raise Exception()
         boxs, texts = globalonce.ocr(imagebinary)
-        return {"box": boxs, "text": texts}
+        return OCRResult(boxs=boxs, texts=texts)

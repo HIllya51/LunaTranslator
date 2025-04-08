@@ -1,7 +1,7 @@
 import os, zipfile
 from myutils.utils import dynamiclink, stringfyerror
 from myutils.config import _TR, getlang_inner2show, globalconfig
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 from ctypes import (
     CDLL,
     c_char_p,
@@ -342,4 +342,4 @@ class OCR(baseocr):
             image,
             globalconfig["verticalocr"],
         )
-        return {"box": pss, "text": texts}
+        return OCRResult(boxs=pss, texts=texts)

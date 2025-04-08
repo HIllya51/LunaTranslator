@@ -47,7 +47,9 @@ class ResponseInfo:
         )
         self.version = version
 
-        if isinstance(body, str):
+        if isinstance(body, bytes):
+            self.headers["Content-Length"] = len(body)
+        elif isinstance(body, str):
             body: bytes = body.encode()
             self.headers["Content-Type"] = "text/html; charset=utf-8"
             self.headers["Content-Length"] = len(body)
@@ -92,6 +94,15 @@ class ResponseInfo:
                 client_socket.send(b"data: " + body + b"\n\n")
 
 
+class RequestBody:
+    def __init__(self, bs: bytes):
+        self.bs = bs
+
+    @property
+    def json(self):
+        return json.loads(self.bs.decode())
+
+
 class RequestInfo:
     @property
     def query(self) -> dict:
@@ -108,15 +119,23 @@ class RequestInfo:
 
     @staticmethod
     def readfrom(client_socket: socket.socket):
-        return RequestInfo._parseheader(
-            RequestInfo._read_headers(client_socket.makefile("rb"))
-        )
+        fp = client_socket.makefile("rb")
+        info = RequestInfo._parseheader(RequestInfo._read_headers(fp))
+        clen = info.headers.get("Content-Length")
+        if clen:
+            try:
+                clen = int(clen)
+                info.body = RequestBody(fp.read(clen))
+            except:
+                pass
+        return info
 
     def __init__(
         self, method: str, path: str, version: str, headers: CaseInsensitiveDict
     ):
         self.method, self.path, self.version = (method, path, version)
         self.headers = headers
+        self.body: RequestBody = None
 
     @staticmethod
     def _parseheader(lines: str):
@@ -312,7 +331,7 @@ class WSHandler(HandlerBase):
 
 class HTTPHandler(HandlerBase):
     path = ...
-    method = None
+    method: "str|list[str]|tuple[str]" = None
 
     def __init__(self, info: RequestInfo, client_socket: socket.socket):
         try:
@@ -377,7 +396,6 @@ class TCPService:
         info = RequestInfo.readfrom(client_socket)
 
         iswsreq = self.__checkifwebsocket(info.headers)
-        matchlen = 0
         matchclass = None
         for handler in self.handlers:
             if (iswsreq and issubclass(handler, HTTPHandler)) or (
@@ -392,9 +410,7 @@ class TCPService:
                 m = handler.path.match(info.path)
                 if not m:
                     continue
-                if m.span()[1] > matchlen:
-                    matchlen = m.span()[1]
-                    matchclass = handler
+                matchclass = handler
         if not matchclass:
             return ResponseInfo._404(client_socket)
         matchclass(info, client_socket)

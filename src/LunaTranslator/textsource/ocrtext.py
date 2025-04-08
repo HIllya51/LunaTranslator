@@ -8,6 +8,7 @@ import time, gobject
 from qtsymbols import *
 from myutils.keycode import vkcode_map
 from textsource.textsourcebase import basetext
+from ocrengines.baseocrclass import OCRResultParsed
 
 
 def normqimage(img: QImage):
@@ -178,7 +179,9 @@ class ocrtext(basetext):
 
         if i == 0:
             try:
-                gobject.baseobject.settin_ui.threshold1label.setText(str(float(image_score)))
+                gobject.baseobject.settin_ui.threshold1label.setText(
+                    str(float(image_score))
+                )
             except:
                 pass
         self.savelastimg[i] = imgr1
@@ -248,29 +251,28 @@ class ocrtext(basetext):
                 ok = False
         if ok == False:
             return
-        text, infotype = ocr_run(imgr)
+        result = ocr_run(imgr)
+        t = result.textonly
         self.lastocrtime[i] = time.time()
         if self.savelasttext[i] is not None:
-            sim = winsharedutils.distance(self.savelasttext[i], text)
-            self.savelasttext[i] = text
+            sim = winsharedutils.distance(self.savelasttext[i], t)
+            self.savelasttext[i] = t
             if sim < globalconfig["ocr_text_diff"]:
                 return
-        self.savelasttext[i] = text
-        return text, infotype
+        self.savelasttext[i] = t
+        return result
 
     def getresmanual(self, i, imgr):
-
-        text, infotype = ocr_run(imgr)
+        result = ocr_run(imgr)
         imgr1 = normqimage(imgr)
         self.savelastimg[i] = imgr1
         self.savelastrecimg[i] = imgr1
         self.lastocrtime[i] = time.time()
-        self.savelasttext[i] = text
-        return text, infotype
+        self.savelasttext[i] = result.textonly
+        return result
 
     def getallres(self, auto):
-        __text = []
-        info = None
+        __text: "list[OCRResultParsed]" = []
         for i, range_ui in enumerate(self.range_ui):
             rect = range_ui.getrect()
             if rect is None:
@@ -280,21 +282,19 @@ class ocrtext(basetext):
             )
             if auto:
                 _ = self.getresauto(i, img)
-                if not _:
-                    continue
-                text, info = _
             else:
-                text, info = self.getresmanual(i, img)
-            if not text:
+                _ = self.getresmanual(i, img)
+            if _ is None:
                 continue
-            if info and info != "<notrans>":
-                gobject.baseobject.displayinfomessage(text, info)
+            if _.error:
+                _.displayerror()
                 return
-            __text.append(text)
-
-        text = "\n".join(__text)
-        if info:
-            gobject.baseobject.displayinfomessage(text, info)
+            __text.append(_)
+        if not __text:
+            return
+        text = "\n".join(_.textonly for _ in __text)
+        if __text[0].isocrtranslate:
+            gobject.baseobject.displayinfomessage(text, "<notrans>")
         else:
             return text
 

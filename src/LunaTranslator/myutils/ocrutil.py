@@ -6,6 +6,7 @@ from myutils.hwnd import safepixmap
 from myutils.utils import stringfyerror, qimage2binary
 from traceback import print_exc
 import threading, gobject, winsharedutils
+from ocrengines.baseocrclass import baseocr, OCRResultParsed
 
 
 def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
@@ -14,7 +15,7 @@ def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
 
 _nowuseocrx = None
 _nowuseocr = None
-_ocrengine = None
+_ocrengine: baseocr = None
 _initlock = threading.Lock()
 
 
@@ -55,7 +56,7 @@ def __ocr_init():
 def ocr_run(qimage: QImage):
     gobject.baseobject.maybesetimage(qimage)
     if qimage.isNull():
-        return "", None
+        return OCRResultParsed()
     global _nowuseocrx, _ocrengine
     thisocrtype = _nowuseocrx
     try:
@@ -67,25 +68,14 @@ def ocr_run(qimage: QImage):
         else:
             image = qimage2binary(qimage, required_image_format)
         if not image:
-            return "", None
+            return OCRResultParsed()
         res = _ocrengine._private_ocr(image)
-        if not res:
-            return "", None
         gobject.baseobject.maybesetocrresult(res)
-        text = res["textonly"]
-        if res["isocrtranslate"]:
-            return text, "<notrans>"
-        else:
-            return text, None
+        return res
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):
             msg = str(e)
         else:
             print_exc()
             msg = stringfyerror(e)
-        text = (
-            (_TR(globalconfig["ocr"][thisocrtype]["name"]) if thisocrtype else "")
-            + " "
-            + msg
-        )
-        return text, "<msg_error_Origin>"
+        return OCRResultParsed(error=msg, engine=thisocrtype)

@@ -1,6 +1,6 @@
 import base64
 from language import Languages
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 
 
 class OCR(baseocr):
@@ -76,6 +76,6 @@ class OCR(baseocr):
                 _["LineText"]
                 for _ in response.json()["ParsedResults"][0]["TextOverlay"]["Lines"]
             ]
-            return {"box": boxs, "text": texts}
+            return OCRResult(boxs=boxs, texts=texts)
         except:
             raise Exception(response)

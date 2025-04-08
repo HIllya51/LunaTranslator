@@ -85,8 +85,8 @@
             //wsinvoke('calllunaclickedword', [word, app])
             //比起在luna里打开，用新的标签页打开似乎是更好的选择
             const url = new URL('/page/searchword', window.location.origin);
-            url.searchParams.append('orig', word['orig'])
-            url.searchParams.append('origorig', word['origorig'])
+            url.searchParams.append('word', word['word'])
+            url.searchParams.append('prototype', word['prototype'])
             window.open(url.toString())
         }
     }
@@ -368,7 +368,7 @@
         let currentSubArray = [];
 
         tag.forEach(item => {
-            if (item.orig === "\n") {
+            if (item.word === "\n") {
                 if (currentSubArray.length > 0) {
                     result.push(currentSubArray);
                 }
@@ -385,7 +385,6 @@
         return result
     }
     function create_internal_rubytext(style, styleargsjson, _id, tagjson, argsjson) {
-
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let tags = JSON.parse(decodeURIComponent(tagjson))
@@ -393,13 +392,13 @@
         let kanacolor = args.kanacolor
         let ele = document.getElementById(_id)
         tags.forEach(word => {
-            if (word.orig == '\n') {
+            if (word.word == '\n') {
                 ele.appendChild(document.createElement('br'))
                 return
             }
-            let eleori = dispatch_text_style(style, styleargs, '', word.orig, { color: color })
+            let eleori = dispatch_text_style(style, styleargs, '', word.word, { color: color })
             eleori = makeinlineblock(eleori)//使其他字体和描边字体的对齐一致
-            if (!word.hira.trim().length) {
+            if (word.isdeli) {
                 ele.appendChild(eleori)
                 return
             }
@@ -426,12 +425,12 @@
             eleori.classList.add('lunatranslator_clickword')
             eleori.appendChild(style1)
 
-            if ((word.orig != word.hira) && (word.hira.trim().length)) {
+            if ((word.word != word.kana) && word.kana && (word.kana.trim().length)) {
 
                 let ruby = document.createElement('ruby')
                 ruby.appendChild(eleori)
                 let rt = document.createElement('rt')
-                rt.appendChild(makeinlineblock(dispatch_text_style(style, styleargs, '', word.hira, { color: kanacolor })))
+                rt.appendChild(makeinlineblock(dispatch_text_style(style, styleargs, '', word.kana, { color: kanacolor })))
                 rt.classList.add('klass_font_hira')
                 rt.classList.add('lunatranslator_rt')
                 ruby.appendChild(rt)

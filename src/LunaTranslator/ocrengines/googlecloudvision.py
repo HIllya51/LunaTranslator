@@ -1,4 +1,4 @@
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 import base64
 
 
@@ -47,6 +47,6 @@ class OCR(baseocr):
                             vertices[3]["y"],
                         ]
                     )
-            return {"box": boxs, "text": texts}
+            return OCRResult(boxs=boxs, texts=texts)
         except:
             raise Exception(response)
