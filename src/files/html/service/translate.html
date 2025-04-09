@@ -72,9 +72,11 @@
         background-color: #4285f4;
         color: white;
         border: none;
-        border-radius: 0 4px 4px 0;
+        /* border-radius: 0 4px 4px 0; */
         cursor: pointer;
         font-size: 16px;
+        width: 100%;
+        height: 50%;
     }
 
     .search-button:hover {
@@ -82,6 +84,12 @@
     }
 </style>
 <script>
+    function read() {
+        const url = new URL('/api/tts', window.location.origin);
+        url.searchParams.append('text', document.getElementById('searchInput').value)
+        const audio = new Audio(url.toString());
+        audio.play()
+    }
     function performSearch() {
         const url = new URL(window.location.pathname, window.location.origin);
         url.searchParams.append('text', document.getElementById('searchInput').value)
@@ -91,11 +99,20 @@
 </script>
 <div class="search-container">
     <textarea class="search-input" id="searchInput"></textarea>
-    <button class="search-button" onclick="performSearch()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8" />
-            <path d="M21 21L16.65 16.65" />
-        </svg></button>
+    <div>
+        <button class="search-button" onclick="performSearch()"><svg width="24" height="24" viewBox="0 0 24 24"
+                fill="none" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8" />
+                <path d="M21 21L16.65 16.65" />
+            </svg></button>
+        <button class="search-button" onclick="read()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg></button>
+    </div>
 </div>
 <style>
     .collapsible-list {

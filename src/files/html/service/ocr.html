@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        #drop-area {
+            border: 3px dashed #ccc;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        #drop-area.highlight {
+            background: #f0f0f0;
+            border-color: #999;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        #preview-container {
+            position: relative;
+            margin-top: 20px;
+        }
+
+        #image-preview {
+            max-width: 100%;
+            display: block;
+        }
+
+        .ocr-result {
+            position: absolute;
+            border: 1px solid red;
+            padding: 2px;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+
+        #status {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, .3);
+            border-radius: 50%;
+            border-top-color: #4CAF50;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .vertical {
+            writing-mode: vertical-rl;
+        }
+
+        .full-width-text {
+            font-size: 1vw; 
+        }
+    </style>
+</head>
+
+<body>
+    <div id="drop-area">
+        <p>拖拽图片到此处 或</p>
+        <button id="select-btn">选择图片</button>
+        <input type="file" id="file-input" accept="image/*">
+    </div>
+    <script>
+        function showall() {
+            if (document.getElementById('showall').checked) {
+                document.querySelectorAll('.ocr-result-text').forEach(ele => {
+                    ele.style.display = 'block';
+                })
+                document.querySelectorAll('.ocr-result').forEach(ele => {
+                    ele.style.background = 'white'
+                })
+            }
+            else {
+                document.querySelectorAll('.ocr-result-text').forEach(ele => {
+                    ele.style.display = 'none';
+                })
+                document.querySelectorAll('.ocr-result').forEach(ele => {
+                    ele.style.background = ''
+                })
+            }
+
+        }
+    </script>
+    <div><input type="checkbox" id="showall" onclick="showall()">显示全部结果</div>
+    <div id="status"></div>
+
+    <div id="preview-container"></div>
+
+    <script>
+        // DOM元素
+        const dropArea = document.getElementById('drop-area');
+        const fileInput = document.getElementById('file-input');
+        const selectBtn = document.getElementById('select-btn');
+        const previewContainer = document.getElementById('preview-container');
+        const statusText = document.getElementById('status');
+
+        // 防止默认拖放行为
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+            document.body.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        // 高亮拖放区域
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropArea.classList.add('highlight');
+        }
+
+        function unhighlight() {
+            dropArea.classList.remove('highlight');
+        }
+
+        // 处理拖放文件
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        // 处理选择文件
+        selectBtn.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', () => {
+            handleFiles(fileInput.files);
+        });
+
+        // 处理文件
+        function handleFiles(files) {
+            if (files.length === 0) return;
+
+            const file = files[0];
+            if (!file.type.match('image.*')) {
+                statusText.textContent = '请选择图片文件';
+                return;
+            }
+
+            // 显示图片预览
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                previewContainer.innerHTML = '';
+                const img = document.createElement('img');
+                img.id = 'image-preview';
+                img.src = e.target.result;
+                previewContainer.appendChild(img);
+
+                // 显示加载状态
+                statusText.innerHTML = '<div class="loading"></div> 正在识别...';
+
+                // 转换为base64并调用OCR API
+                const base64Data = e.target.result.split(',')[1];
+                callOcrApi(base64Data, img);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // 调用OCR API
+        async function callOcrApi(base64Image, imgElement) {
+            try {
+                const response = await fetch('/api/ocr', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        image: base64Image
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                statusText.textContent = '识别完成！';
+                displayOCRResults(data, imgElement);
+            } catch (error) {
+                console.error('OCR识别失败:', error);
+                statusText.textContent = `识别失败: ${error.message}`;
+            }
+        }
+
+        function displayOCRResults(ocrData, imgElement) {
+
+            if (!ocrData.results || !ocrData.results[0].box) {
+                const resultDiv = document.createElement('div');
+                resultDiv.innerText = ocrData.text;
+                resultDiv.style.left = '10px';
+                resultDiv.style.top = '10px';
+                previewContainer.appendChild(resultDiv);
+            }
+
+            const imgRect = imgElement.getBoundingClientRect();
+            const scaleX = imgElement.naturalWidth / imgRect.width;
+            const scaleY = imgElement.naturalHeight / imgRect.height;
+
+            ocrData.results.forEach(line => {
+                if (!line.text.trim()) return;
+                const resultDiv = document.createElement('div');
+                let internaltext = document.createElement('div')
+                internaltext.innerText = line.text;
+                internaltext.className = 'ocr-result-text full-width-text'
+                resultDiv.className = 'ocr-result';
+                resultDiv.appendChild(internaltext)
+                if (ocrData.vertical) {
+                    internaltext.className += ' vertical'
+                }
+                resultDiv.addEventListener('mouseout', () => {
+                    if (document.getElementById('showall').checked)
+                        return
+                    internaltext.style.display = 'none';
+                    resultDiv.style.background = ''
+                })
+                resultDiv.addEventListener('mouseover', () => {
+                    internaltext.style.display = 'block';
+                    resultDiv.style.background = 'white'
+                })
+                const left = (line.box[0].x) / scaleX;
+                const top = (line.box[0].y) / scaleY;
+                const width = (line.box[2].x - line.box[0].x) / scaleX;
+                const height = (line.box[2].y - line.box[0].y) / scaleY;
+
+                resultDiv.style.left = `${left}px`;
+                resultDiv.style.top = `${top}px`;
+                resultDiv.style.width = `${width}px`;
+                resultDiv.style.height = `${height}px`;
+
+                previewContainer.appendChild(resultDiv);
+
+            });
+            showall()
+        }
+    </script>
+</body>
+
+</html>

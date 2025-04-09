@@ -46,7 +46,7 @@ class ResponseInfo:
             CaseInsensitiveDict(headers),
         )
         self.version = version
-
+        self.headers["Access-Control-Allow-Origin"] = "*"
         if isinstance(body, bytes):
             self.headers["Content-Length"] = len(body)
         elif isinstance(body, str):

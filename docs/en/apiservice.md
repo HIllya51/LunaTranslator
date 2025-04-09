@@ -22,6 +22,11 @@
 
     Translation interface
 
+
+1. #### /page/ocr
+
+    OCR interface
+
 ## API Services
 
 ### HTTP Service

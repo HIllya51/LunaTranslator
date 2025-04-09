@@ -371,7 +371,7 @@ class showocrimage(saveposwindow):
 
     def setocr(self, result):
         result: OCRResult = result[0]
-        self.originlabel.showboxtext(result.boxs, result.texts)
+        self.originlabel.showboxtext(result)
 
 
 def internal(self):

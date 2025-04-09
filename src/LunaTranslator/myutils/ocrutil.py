@@ -70,7 +70,7 @@ def ocr_run(qimage: QImage):
         if not image:
             return OCRResultParsed()
         res = _ocrengine._private_ocr(image)
-        gobject.baseobject.maybesetocrresult(res)
+        gobject.baseobject.maybesetocrresult(res.result)
         return res
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):

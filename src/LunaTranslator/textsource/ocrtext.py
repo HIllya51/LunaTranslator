@@ -293,7 +293,7 @@ class ocrtext(basetext):
         if not __text:
             return
         text = "\n".join(_.textonly for _ in __text)
-        if __text[0].isocrtranslate:
+        if __text[0].result.isocrtranslate:
             gobject.baseobject.displayinfomessage(text, "<notrans>")
         else:
             return text

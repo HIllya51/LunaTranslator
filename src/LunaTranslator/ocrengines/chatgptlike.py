@@ -1,4 +1,4 @@
-from ocrengines.baseocrclass import baseocr, OCRResult
+from ocrengines.baseocrclass import baseocr
 import base64
 from language import Languages
 from myutils.utils import createurl, common_list_models, common_parse_normal_response

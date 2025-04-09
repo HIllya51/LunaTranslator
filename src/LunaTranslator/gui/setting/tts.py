@@ -19,7 +19,6 @@ from gui.usefulwidget import (
     FocusCombo,
     D_getsimpleswitch,
     getboxlayout,
-    getsmalllabel,
     check_grid_append,
 )
 
@@ -220,29 +219,29 @@ def setTab5lz(self):
                         functools.partial(createvoicecombo, self),
                     ],
                     [
-                            getboxlayout(
-                                [
-                                    getboxlayout(
-                                        [
-                                            "音量_(0~100)",
-                                            D_getspinbox(
-                                                0,
-                                                100,
-                                                globalconfig["ttscommon"],
-                                                "volume",
-                                            ),
-                                        ],
-                                        margin0=True,
-                                        makewidget=True,
-                                    ),
-                                    "",
-                                    functools.partial(createrate, self),
-                                    "",
-                                    functools.partial(createpitch, self),
-                                ],
-                                margin0=True,
-                                makewidget=True,
-                            ),
+                        getboxlayout(
+                            [
+                                getboxlayout(
+                                    [
+                                        "音量_(0~100)",
+                                        D_getspinbox(
+                                            0,
+                                            100,
+                                            globalconfig["ttscommon"],
+                                            "volume",
+                                        ),
+                                    ],
+                                    margin0=True,
+                                    makewidget=True,
+                                ),
+                                "",
+                                functools.partial(createrate, self),
+                                "",
+                                functools.partial(createpitch, self),
+                            ],
+                            margin0=True,
+                            makewidget=True,
+                        ),
                     ],
                 ],
             ),

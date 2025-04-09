@@ -263,6 +263,14 @@ class PageMainui(HTTPHandler):
         return FileResponse(TextBrowser.loadex_())
 
 
+class Pageocr(HTTPHandler):
+    path = "/page/ocr"
+
+    def parse(self, _):
+        page = r"files\html\service\ocr.html"
+        return FileResponse(page)
+
+
 class TextOutputOrigin(WSHandler):
     path = "/api/ws/text/origin"
 
@@ -295,6 +303,7 @@ def registerall(service: TCPService):
     service.register(APITranslate)
     service.register(PageSearchWord)
     service.register(Pagetranslate)
+    service.register(Pageocr)
     service.register(PageMainui)
     service.register(internalservicemainuiws)
     service.register(Pagetranshist)
