@@ -1,0 +1,195 @@
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+</head>
+<script>
+    function onclickbtn_1_internal(_id) {
+        tabPanes = document.querySelectorAll('.tab-widget_1_internal .tab-pane_1_internal');
+        tabButtons = document.querySelectorAll('.tab-widget_1_internal .tab-button_1_internal');
+        for (i = 0; i < tabButtons.length; i++)
+            tabButtons[i].classList.remove('active');
+        for (i = 0; i < tabPanes.length; i++)
+            tabPanes[i].classList.remove('active');
+
+        document.getElementById(_id).classList.add('active');
+
+        tabId = document.getElementById(_id).getAttribute('data-tab');
+        tabPane = document.getElementById(tabId);
+        tabPane.classList.add('active');
+    }
+</script>
+<style>
+    .centerdiv_1_internal {
+        display: flex;
+        justify-content: center;
+    }
+
+    .tab-widget_1_internal .tab-button_1_internals_1_internal {
+        display: flex;
+    }
+
+    .tab-widget_1_internal .tab-button_1_internal {
+        padding: 7px 15px;
+        background-color: #cccccccc;
+        border: none;
+        cursor: pointer;
+        display: inline-block;
+        line-height: 20px;
+    }
+
+    .tab-widget_1_internal .tab-button_1_internal.active {
+        background-color: #cccccc44;
+    }
+
+    .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal {
+        display: none;
+        padding: 10px;
+    }
+
+    .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal.active {
+        display: block;
+    }
+</style>
+<style>
+    .search-container {
+        display: flex;
+        width: 100%;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+
+    .search-input {
+        padding: 10px 15px;
+        font-size: 16px;
+        border: 1px solid #ddd;
+        border-radius: 4px 0 0 4px;
+        width: 100%;
+        height: 200px;
+        outline: none;
+    }
+
+    .search-button {
+        padding: 10px 20px;
+        background-color: #4285f4;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .search-button:hover {
+        background-color: #3367d6;
+    }
+</style>
+<script>
+    function performSearch() {
+        const url = new URL(window.location.pathname, window.location.origin);
+        url.searchParams.append('text', document.getElementById('searchInput').value)
+        console.log(url.toString())
+        window.location = url.toString()
+    }
+</script>
+<div class="search-container">
+    <textarea class="search-input" id="searchInput"></textarea>
+    <button class="search-button" onclick="performSearch()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21L16.65 16.65" />
+        </svg></button>
+</div>
+<style>
+    .collapsible-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .collapsible-header {
+        background-color: #dddddd50;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-bottom: none;
+    }
+
+    .flex-parent {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .collapsible-content {
+        display: none;
+        padding: 10px;
+        border: 1px solid #ddd;
+    }
+
+    .align-right {
+        margin-left: auto;
+    }
+
+    .align-left {
+        margin-right: auto;
+    }
+</style>
+<div class="collapsible-list" id="results">
+</div>
+<script>
+    async function gettranslators() {
+        const url = new URL('/api/list/translator', window.location.origin);
+        const response = await fetch(url.toString());
+        const js = await response.json()
+        return js
+    }
+    async function researchx(id) {
+        document.getElementById(`btnid_${id}`).style = "display: none;"
+        document.getElementById(`tsresid_${id}`).innerText = ""
+        document.getElementById(`tsresid_${id}`).style = ""
+        let url = new URL('/api/translate', window.location.origin);
+        url.searchParams.append('text', document.getElementById('searchInput').value)
+        url.searchParams.append('id', id)
+        fetch(url.toString()).then(resp => {
+            resp.json().then(resjson => {
+                document.getElementById(`tsresid_${resjson.id}`).innerText = resjson.error ? resjson.error : resjson.result
+                document.getElementById(`tsresid_${resjson.id}`).style = "display: block;"
+                if (resjson.error) {
+                    document.getElementById(`tsresid_${resjson.id}`).style.backgroundColor = 'red'
+                }
+                document.getElementById(`btnid_${resjson.id}`).style = "display: block;"
+            })
+        })
+    }
+    async function translateall(text) {
+        if (!text) return
+        let tss = await gettranslators()
+        tss.forEach(element => {
+            let html = `<div><div class="collapsible-header flex-parent " id="tsid_${element.id}"><div class="align-left">${element.name}</div><button class="align-right" onclick="researchx('${element.id}')" id="btnid_${element.id}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <path d="M21 21L16.65 16.65" />
+        </svg></button></div><div class="collapsible-content" style="display: none;" id="tsresid_${element.id}"></div></div>`
+            let div = document.createElement('div')
+            div.innerHTML = html
+            document.getElementById('results').appendChild(div)
+        });
+        tss.forEach(element => {
+            document.getElementById(`btnid_${element.id}`).style = "display: none;"
+            let url = new URL('/api/translate', window.location.origin);
+            url.searchParams.append('text', text)
+            url.searchParams.append('id', element.id)
+            console.log(url, urlParams)
+            fetch(url.toString()).then(resp => {
+                resp.json().then(resjson => {
+                    document.getElementById(`tsresid_${resjson.id}`).innerText = resjson.error ? resjson.error : resjson.result
+                    document.getElementById(`tsresid_${resjson.id}`).style = "display: block;"
+                    if (resjson.error) {
+                        document.getElementById(`tsresid_${resjson.id}`).style.backgroundColor = 'red'
+                    }
+                    document.getElementById(`btnid_${resjson.id}`).style = "display: block;"
+                })
+            })
+        });
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    gettranslators()
+    const word = urlParams.get('text');
+    translateall(word)
+    document.getElementById('searchInput').value = word
+</script>

@@ -368,7 +368,8 @@ def outputgrid():
         [(functools.partial(createlabellink, "/"), -1)],
         [(functools.partial(createlabellink, "/page/mainui"), -1)],
         [(functools.partial(createlabellink, "/page/transhist"), -1)],
-        [(functools.partial(createlabellink, "/page/searchword"), -1)],
+        [(functools.partial(createlabellink, "/page/dictionary"), -1)],
+        [(functools.partial(createlabellink, "/page/translate"), -1)],
     ]
     return grids
 

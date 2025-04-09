@@ -10,13 +10,17 @@
 
     与历史文本显示的文本内容同步
 
-1. #### /page/searchword
+1. #### /page/dictionary
 
     查询单词页面。在/page/mainui中进行点击单词查词时会唤出该页面。
 
 1. #### /
 
-    整合上述三个页面的一个页面。在该窗口中的/page/mainui子区域中进行点击单词查词时，不会打开新的查词窗口，而是会在当前窗口的/page/searchword子区域中进行查词
+    整合上述三个页面的一个页面。在该窗口中的/page/mainui子区域中进行点击单词查词时，不会打开新的查词窗口，而是会在当前窗口的/page/dictionary子区域中进行查词
+
+1. #### /page/translate
+
+    翻译界面
 
 ## API服务
 
@@ -30,7 +34,7 @@
 
     返回`application/json`，包含翻译器ID`id`、名称`name`和翻译结果`result`
 
-1. #### /api/searchword
+1. #### /api/dictionary
 
     必须指定查询参数`word`
 
@@ -53,6 +57,15 @@
 1. #### /api/ocr
     
     使用POST方法，发送json请求，包含`image`字段，内容为base64编码的图像。
+
+1. #### /api/list/dictionary
+
+    列出当前可用的辞书
+
+1. #### /api/list/translator
+
+    列出当前可用的翻译器
+
 
 ### WebSocket服务
 

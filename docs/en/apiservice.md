@@ -10,13 +10,17 @@
 
     Synchronizes with the text content displayed in the translation history.
 
-1. #### /page/searchword
+1. #### /page/dictionary
 
     Word lookup page. This page is triggered when clicking a word for lookup in `/page/mainui`.
 
 1. #### /
 
-    A consolidated page combining the three pages mentioned above. When clicking a word for lookup in the `/page/mainui` sub-section of this window, it will not open a new lookup window but will instead display the results in the `/page/searchword` sub-section of the current window.
+    A consolidated page combining the three pages mentioned above. When clicking a word for lookup in the `/page/mainui` sub-section of this window, it will not open a new lookup window but will instead display the results in the `/page/dictionary` sub-section of the current window.
+
+1. #### /page/translate
+
+    Translation interface
 
 ## API Services
 
@@ -30,7 +34,7 @@
 
    Returns `application/json`, including the translator ID `id`, name `name`, and translation result `result`.
 
-1. #### /api/searchword
+1. #### /api/dictionary
 
     The query parameter `word` must be specified.
 
@@ -53,7 +57,15 @@
 1. #### /api/ocr
 
    Use POST method to send a JSON request containing an `image` field with base64 encoded image data.
-   
+
+1. #### /api/list/dictionary  
+
+    List all currently available dictionaries  
+
+1. #### /api/list/translator  
+
+    List all currently available translation tools  
+
 ### WebSocket Service
 
 1.  #### /api/ws/text/origin

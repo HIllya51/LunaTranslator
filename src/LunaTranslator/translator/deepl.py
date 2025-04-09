@@ -76,10 +76,13 @@ class cdp_deepl(cdp_helper):
         return self.ref.tgtlang_1
 
     def translate(self, content):
+        self.Runtime_evaluate(
+            'document.querySelector("#translator-source-clear-button").click()'
+        )
+        self.wait_for_result(
+            'document.getElementsByTagName("d-textarea")[1].textContent', util=""
+        )
         if self.ref.is_src_auto:
-            self.Runtime_evaluate(
-                'document.querySelector("#translator-source-clear-button").click()'
-            )
             self.Runtime_evaluate(
                 "document.getElementsByTagName('d-textarea')[0].focus()"
             )

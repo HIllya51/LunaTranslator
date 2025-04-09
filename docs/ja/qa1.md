@@ -1,11 +1,21 @@
-# Mecabによる分かち書き＆品詞の色付け
+# MeCabによる分かち書き & 品詞色分け表示
 
-まず、MecabのUnidic辞書をダウンロードする必要があります。[常用バージョン](https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip)または[公式最新バージョン](https://clrd.ninjal.ac.jp/unidic/)をダウンロードしてください。
+1. ## MeCab用UniDic辞書のダウンロード
+    
+    1. ### 方法1：自動ダウンロード
 
-ソフトウェアのディレクトリに解凍すると、自動的に検出されます。または、任意の場所に解凍してから解凍先のパスを設定することもできます。
+        **辞書設定**の**リソースダウンロード**を開くと、UniDic辞書が未ダウンロードの場合**ダウンロード**ボタンが表示されます。これをクリックすると自動的にダウンロードされパスが設定されます。
 
-![img](https://image.lunatranslator.org/zh/mecab.png)
+        ![img](https://image.lunatranslator.org/zh/unidic.png)
 
-次に、**ルビ表示**（デフォルトで有効）と**構文強調表示**を有効にします。
+    1. ### 方法2：手動ダウンロード
+
+        自動ダウンロードでは[常用バージョン](https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip)のみがダウンロードされます。他のバージョンのUniDic辞書を使用したい場合は、手動でダウンロードして設定できます。
+        
+        例えば[公式最新版](https://clrd.ninjal.ac.jp/unidic/)をダウンロード後、ソフトウェアのインストールディレクトリに解凍すると、再起動時に自動的にパスが認識されます。または任意の場所に解凍後、パスを手動設定することも可能です。
+
+        ![img](https://image.lunatranslator.org/zh/mecab.png)
+
+1. ## **ルビ表示**（デフォルトで有効）と**文法ハイライト**の有効化
 
 ![img](https://image.lunatranslator.org/zh/fenci.png)

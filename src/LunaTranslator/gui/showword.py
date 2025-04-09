@@ -1208,7 +1208,7 @@ class searchwordW(closeashidewindow):
             html = self.cache_results_highlighted.get(k, self.cache_results[k])
         except:
             return
-        path = r"files\html\uiwebview\searchword.html"
+        path = r"files\html\uiwebview\dictionary.html"
         with open(path, "r", encoding="utf8") as ff:
             frame = ff.read()
         html = frame.replace("__luna_dict_internal_view__", html)

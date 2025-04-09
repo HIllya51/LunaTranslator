@@ -79,10 +79,10 @@ class internalservicemainuiws(WSHandler, somecommon_1):
 
 
 class PageSearchWord(HTTPHandler):
-    path = re.compile(r"/page/searchword(\?.*)?")
+    path = re.compile(r"/page/dictionary(\?.*)?")
 
     def parse(self, _: RequestInfo):
-        page = r"files\html\service\searchword.html"
+        page = r"files\html\service\dictionary.html"
         if not _.query.get("word"):
             return FileResponse(page)
         seg = WordSegResult.from_dict(_.query)
@@ -90,9 +90,17 @@ class PageSearchWord(HTTPHandler):
             return FileResponse(page)
         word = (seg.word, seg.prototype)[globalconfig["usewordorigin"]]
         if word:
-            return RedirectResponse(r"/page/searchword?word=" + quote(word))
+            return RedirectResponse(r"/page/dictionary?word=" + quote(word))
         else:
             return FileResponse(page)
+
+
+class Pagetranslate(HTTPHandler):
+    path = re.compile(r"/page/translate(\?.*)?")
+
+    def parse(self, _: RequestInfo):
+        page = r"files\html\service\translate.html"
+        return FileResponse(page)
 
 
 class APImecab(HTTPHandler):
@@ -143,6 +151,30 @@ class APIocr(HTTPHandler):
         return result.json
 
 
+class APITranslators(HTTPHandler):
+    path = re.compile(r"/api/list/translator")
+
+    def parse(self, _: RequestInfo):
+        res = []
+        for engine in globalconfig["fix_translate_rank_rank"]:
+            if engine not in gobject.baseobject.translators:
+                continue
+            res.append(dict(id=engine, name=_TR(dynamicapiname(engine))))
+        return res
+
+
+class APIdicts(HTTPHandler):
+    path = re.compile(r"/api/list/dictionary")
+
+    def parse(self, _: RequestInfo):
+        res = []
+        for engine in globalconfig["cishuvisrank"]:
+            if engine not in gobject.baseobject.cishus:
+                continue
+            res.append(dict(id=engine, name=_TR(dynamiccishuname(engine))))
+        return res
+
+
 class APITranslate(HTTPHandler):
     path = re.compile(r"/api/translate(\?.*)?")
 
@@ -183,7 +215,7 @@ class APITranslate(HTTPHandler):
 
 
 class APISearchWord(HTTPHandler):
-    path = re.compile(r"/api/searchword(\?.*)?")
+    path = re.compile(r"/api/dictionary(\?.*)?")
 
     def iterhelper(self, word):
         cnt = 0
@@ -256,10 +288,13 @@ def registerall(service: TCPService):
     service.register(BasePage)
     service.register(APISearchWord)
     service.register(APImecab)
+    service.register(APITranslators)
+    service.register(APIdicts)
     service.register(APItts)
     service.register(APIocr)
     service.register(APITranslate)
     service.register(PageSearchWord)
+    service.register(Pagetranslate)
     service.register(PageMainui)
     service.register(internalservicemainuiws)
     service.register(Pagetranshist)
