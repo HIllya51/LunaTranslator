@@ -88,9 +88,6 @@
             writing-mode: vertical-rl;
         }
 
-        .full-width-text {
-            font-size: 1vw; 
-        }
     </style>
 </head>
 
@@ -256,7 +253,7 @@
                 const resultDiv = document.createElement('div');
                 let internaltext = document.createElement('div')
                 internaltext.innerText = line.text;
-                internaltext.className = 'ocr-result-text full-width-text'
+                internaltext.className = 'ocr-result-text'
                 resultDiv.className = 'ocr-result';
                 resultDiv.appendChild(internaltext)
                 if (ocrData.vertical) {
