@@ -87,7 +87,6 @@
         .vertical {
             writing-mode: vertical-rl;
         }
-
     </style>
 </head>
 
@@ -118,11 +117,25 @@
 
         }
     </script>
-    <div><input type="checkbox" id="showall" onclick="showall()">显示全部结果</div>
+    <div>显示全部结果<input type="checkbox" id="showall" onclick="showall()">
+        &emsp; &emsp; &emsp; &emsp;
+        <label for="native-spinbox">字体</label>
+        <input type="number" id="native-spinbox" min="0" max="100" step="1">
+    </div>
     <div id="status"></div>
 
     <div id="preview-container"></div>
-
+    <script>
+        const numberInput = document.getElementById('native-spinbox');
+        let startvalue = window.localStorage.startvalue ? window.localStorage.startvalue : 15
+        numberInput.value = startvalue
+        numberInput.addEventListener('input', function (e) {
+            window.localStorage.startvalue = e.target.value
+            document.querySelectorAll('.ocr-result-text').forEach(ele => {
+                ele.style.fontSize = e.target.value + 'px'
+            })
+        });
+    </script>
     <script>
         // DOM元素
         const dropArea = document.getElementById('drop-area');
@@ -254,6 +267,7 @@
                 let internaltext = document.createElement('div')
                 internaltext.innerText = line.text;
                 internaltext.className = 'ocr-result-text'
+                internaltext.style.fontSize = document.getElementById('native-spinbox').value + 'px'
                 resultDiv.className = 'ocr-result';
                 resultDiv.appendChild(internaltext)
                 if (ocrData.vertical) {
