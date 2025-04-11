@@ -79,7 +79,7 @@ class internalservicemainuiws(WSHandler, somecommon_1):
 
 
 class PageSearchWord(HTTPHandler):
-    path = re.compile(r"/page/dictionary(\?.*)?")
+    path = "/page/dictionary"
 
     def parse(self, _: RequestInfo):
         page = r"files\html\service\dictionary.html"
@@ -96,7 +96,7 @@ class PageSearchWord(HTTPHandler):
 
 
 class Pagetranslate(HTTPHandler):
-    path = re.compile(r"/page/translate(\?.*)?")
+    path = "/page/translate"
 
     def parse(self, _: RequestInfo):
         page = r"files\html\service\translate.html"
@@ -104,7 +104,7 @@ class Pagetranslate(HTTPHandler):
 
 
 class APImecab(HTTPHandler):
-    path = re.compile(r"/api/mecab(\?.*)?")
+    path = "/api/mecab"
 
     def parse(self, _: RequestInfo):
         text = _.query.get("text")
@@ -114,7 +114,7 @@ class APImecab(HTTPHandler):
 
 
 class APItts(HTTPHandler):
-    path = re.compile(r"/api/tts(\?.*)?")
+    path = "/api/tts"
 
     def parse(self, _: RequestInfo):
         text = _.query.get("text")
@@ -135,7 +135,7 @@ class APItts(HTTPHandler):
 
 
 class APIocr(HTTPHandler):
-    path = re.compile(r"/api/ocr")
+    path = "/api/ocr"
     method = "POST"
 
     def parse(self, _: RequestInfo):
@@ -152,7 +152,7 @@ class APIocr(HTTPHandler):
 
 
 class APITranslators(HTTPHandler):
-    path = re.compile(r"/api/list/translator")
+    path = "/api/list/translator"
 
     def parse(self, _: RequestInfo):
         res = []
@@ -164,7 +164,7 @@ class APITranslators(HTTPHandler):
 
 
 class APIdicts(HTTPHandler):
-    path = re.compile(r"/api/list/dictionary")
+    path = "/api/list/dictionary"
 
     def parse(self, _: RequestInfo):
         res = []
@@ -176,7 +176,7 @@ class APIdicts(HTTPHandler):
 
 
 class APITranslate(HTTPHandler):
-    path = re.compile(r"/api/translate(\?.*)?")
+    path = "/api/translate"
 
     def parse(self, _: RequestInfo):
         text = _.query.get("text")
@@ -215,7 +215,7 @@ class APITranslate(HTTPHandler):
 
 
 class APISearchWord(HTTPHandler):
-    path = re.compile(r"/api/dictionary(\?.*)?")
+    path = "/api/dictionary"
 
     def iterhelper(self, word):
         cnt = 0

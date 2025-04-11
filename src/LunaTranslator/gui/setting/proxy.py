@@ -96,8 +96,8 @@ def checkxx(key):
     return globalconfig["fanyi"][key].get("is_gpt_like", False)
 
 
-def makegridW(grid, lay, save=False, savelist=None, savelay=None):
-    wid, do = makegrid(grid, savelist, savelay, delay=True)
+def makegridW(grid, lay):
+    wid, do = makegrid(grid, delay=True)
     lay.addWidget(wid)
     do()
     return wid

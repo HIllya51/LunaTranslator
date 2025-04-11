@@ -132,7 +132,7 @@ export const ja = defineConfig({
                     },
                     { text: 'ツールボタン', link: '/ja/alltoolbuttons' },
                     { text: 'ショートカットキー', link: '/ja/fastkeys' },
-                    { text: 'ネットワークサービス', link: '/zh/apiservice' },
+                    { text: 'ネットワークサービス', link: '/ja/apiservice' },
                 ]
             }
         ]

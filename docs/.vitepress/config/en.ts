@@ -74,7 +74,7 @@ export const en = defineConfig({
                     },
                     { text: 'Tool Buttons', link: '/en/alltoolbuttons' },
                     { text: 'Shortcut Keys', link: '/en/fastkeys' },
-                    { text: 'Network Service', link: '/zh/apiservice' },
+                    { text: 'Network Service', link: '/en/apiservice' },
                 ]
             }
         ]

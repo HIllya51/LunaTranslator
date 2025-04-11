@@ -294,8 +294,7 @@ def setTab5lz(self):
                                             globalconfig["ttscommon"]["tts_skip_regex"],
                                         )
                                     ),
-                                ],
-                                [
+                                    "",
                                     "语音修正",
                                     D_getsimpleswitch(
                                         globalconfig["ttscommon"], "tts_repair"
@@ -310,13 +309,6 @@ def setTab5lz(self):
                                             ["正则", "转义", "原文", "替换"],
                                         )
                                     ),
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["ttscommon"],
-                                        "tts_repair_use_at_translate",
-                                    ),
-                                    "作用于翻译",
-                                    "",
                                     "",
                                 ],
                             ],

@@ -10,7 +10,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 | NS | yuzu, sudachi, citron, suyu |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) |
-| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) |
+| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) v1.7.4473 ~ |
 | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
 :::
 

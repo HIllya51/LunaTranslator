@@ -818,15 +818,6 @@ class dialog_setting_game_internal(QWidget):
                     D_getsimpleswitch(
                         savehook_new_data[gameuid], "tts_repair_merge", default=False
                     ),
-                    "",
-                    D_getsimpleswitch(
-                        savehook_new_data[gameuid],
-                        "tts_repair_use_at_translate",
-                        default=globalconfig["ttscommon"]["tts_repair"],
-                    ),
-                    getsmalllabel("作用于翻译"),
-                    "",
-                    "",
                 ],
             ],
         )

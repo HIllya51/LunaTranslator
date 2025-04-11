@@ -16,7 +16,6 @@ from gui.gamemanager.common import (
     startgamecheck,
     addgamesingle,
     showcountgame,
-    addgamebatch_x,
 )
 
 
@@ -146,17 +145,16 @@ class dialog_savedgame_legacy(QWidget):
         else:
             savehook_new_data[k]["launch_method"] = "direct"
 
+    KRole = Qt.ItemDataRole.UserRole + 1
+
     def newline(self, row, k):
         keyitem = QStandardItem()
         keyitem.savetext = k
+        title = QStandardItem(savehook_new_data[k]["title"])
+        title.setData(k, self.KRole)
         self.model.insertRow(
             row,
-            [
-                QStandardItem(),
-                QStandardItem(),
-                keyitem,
-                QStandardItem((savehook_new_data[k]["title"])),
-            ],
+            [QStandardItem(), QStandardItem(), keyitem, title],
         )
         self.table.setIndexWidget(
             self.model.index(row, 0),
@@ -176,6 +174,10 @@ class dialog_savedgame_legacy(QWidget):
             D_getIconButton(functools.partial(self.showsettingdialog, k)),
         )
 
+    def on_data_changed(self, idx, *_):
+        k = self.model.data(idx, self.KRole)
+        savehook_new_data[k]["title"] = self.model.data(idx)
+
     def __init__(self, parent) -> None:
         # if dialog_savedgame._sigleton :
         #         return
@@ -192,8 +194,8 @@ class dialog_savedgame_legacy(QWidget):
         table.horizontalHeader().setSectionResizeMode(
             QHeaderView.ResizeMode.ResizeToContents
         )
+        model.dataChanged.connect(self.on_data_changed)
         table.horizontalHeader().setStretchLastSection(True)
-        # table.setEditTriggers(QAbstractItemView.NoEditTriggers);
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
         table.setWordWrap(False)

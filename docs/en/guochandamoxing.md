@@ -107,9 +107,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **Model** Supports `llama3.1-8b`, `llama3.1-70b`, `llama-3.3-70b`
 
-**API Key** Go to [https://inference.cerebras.ai](https://inference.cerebras.ai/), select a model, send a message, and then capture the request. Check the `Headers` -> `Request Headers` -> `Authorization` value, which will be `Bearer demo-xxxxhahaha`. The `demo-xxxxhahaha` part is the API Key.
-
-![img](https://image.lunatranslator.org/zh/damoxing/cerebras.png)
+**API Key** https://cloud.cerebras.ai/  ->  API Keys
 
 :::
 

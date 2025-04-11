@@ -9,7 +9,6 @@ from myutils.config import (
     extradatas,
     globalconfig,
 )
-from myutils.wrapper import trypass
 from myutils.hwnd import clipboard_set_image
 from myutils.utils import get_time_stamp, getimageformatlist, targetmod
 from gui.inputdialog import autoinitdialog
@@ -27,7 +26,6 @@ from gui.gamemanager.common import (
     getpixfunctionAlign,
     addgamesingle,
     addgamebatch,
-    addgamebatch_x,
 )
 from gui.dynalang import LAction, LLabel
 

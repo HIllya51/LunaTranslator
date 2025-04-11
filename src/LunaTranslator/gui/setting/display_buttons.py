@@ -100,7 +100,7 @@ def createbtn(self, k, key):
 
 def createbuttonwidget(self, lay):
     # return table
-    grids = [["显示", "", "", "对齐", "", "图标", "", "图标_2", "", "说明"]]
+    grids = [["显示", "", "", "对齐", "", ("图标", 2), "", "说明"]]
     sortlist = globalconfig["toolbutton"]["rank2"]
     savelist = []
     savelay = []
@@ -143,22 +143,17 @@ def createbuttonwidget(self, lay):
             ),
             getsmalllabel(),
             functools.partial(createbtn, self, k, "icon"),
-            getsmalllabel(),
         ]
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
             l.append(functools.partial(createbtn, self, k, "icon2"))
         else:
             l.append("")
         l.append(getsmalllabel())
+        t = globalconfig["toolbutton"]["buttons"][k]["tip"]
         if "belong" in globalconfig["toolbutton"]["buttons"][k]:
-            belong = (
-                "_"
-                + "仅"
-                + "_"
-                + " ".join(globalconfig["toolbutton"]["buttons"][k]["belong"])
+            t += "_(仅_{})".format(
+                " ".join(globalconfig["toolbutton"]["buttons"][k]["belong"])
             )
-        else:
-            belong = ""
-        l.append(globalconfig["toolbutton"]["buttons"][k]["tip"] + belong)
+        l.append(t)
         grids.append(l)
     makescrollgrid(grids, lay, savelist, savelay)

@@ -1407,7 +1407,6 @@
         "pitch": 0,
         "volume": 100.0,
         "tts_repair": false,
-        "tts_repair_use_at_translate": false,
         "tts_repair_regex": [],
         "tts_skip": false,
         "tts_skip_regex": []

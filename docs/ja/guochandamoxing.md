@@ -107,9 +107,7 @@
 
 **model** `llama3.1-8b`、`llama3.1-70b`、`llama-3.3-70b`をサポート
 
-**API Key** [https://inference.cerebras.ai](https://inference.cerebras.ai/)でモデルを選択し、メッセージを送信した後、パケットキャプチャを行い、`ヘッダー` -> `リクエストヘッダー` -> `Authorization`の値を確認します。`Bearer demo-xxxxhahaha`という値のうち、`demo-xxxxhahaha`がAPI Keyです。
-
-![img](https://image.lunatranslator.org/zh/damoxing/cerebras.png)
+**API Key** https://cloud.cerebras.ai/  ->  API Keys
 
 :::
 

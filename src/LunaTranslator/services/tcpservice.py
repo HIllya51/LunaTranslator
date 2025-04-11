@@ -1,10 +1,9 @@
 from traceback import print_exc
-import socket, re
+import socket
 from base64 import encodebytes as base64encode
 import hashlib, os
 import types
 import io, json, struct
-from typing import List, Union
 from urllib.parse import parse_qsl, urlsplit
 from network.structures import CaseInsensitiveDict
 from myutils.wrapper import threader
@@ -105,13 +104,13 @@ class RequestBody:
 
 class RequestInfo:
     @property
-    def query(self) -> dict:
-        return dict(parse_qsl(urlsplit(self.path).query))
+    def log(self):
+        return "{} {}".format(self.method, self.rawpath)
 
     def __str__(self):
         vis = dict(
             method=self.method,
-            path=self.path,
+            path=self.rawpath,
             version=self.version,
             headers=self.headers,
         )
@@ -131,9 +130,13 @@ class RequestInfo:
         return info
 
     def __init__(
-        self, method: str, path: str, version: str, headers: CaseInsensitiveDict
+        self, method: str, rawpath: str, version: str, headers: CaseInsensitiveDict
     ):
-        self.method, self.path, self.version = (method, path, version)
+        self.rawpath = rawpath
+        spls = urlsplit(rawpath)
+        self.path = spls.path
+        self.query = dict(parse_qsl(spls.query))
+        self.method, self.version = (method.upper(), version)
         self.headers = headers
         self.body: RequestBody = None
 
@@ -173,7 +176,7 @@ class RequestInfo:
 
 
 class HandlerBase:
-    path: "Union[str | re.Pattern]" = ...
+    path: str = ...
 
     def __init__(self, info: RequestInfo, sock: socket.socket): ...
 
@@ -349,13 +352,12 @@ class HTTPHandler(HandlerBase):
             self._404(client_socket)
 
     def _checkmethod(self, method: str):
-        method = method.lower()
         if not self.method:
             return True
         if isinstance(self.method, str):
-            return self.method.lower() == method.lower()
+            return self.method == method
         if isinstance(self.method, (list, tuple)):
-            return method.lower() in (_.lower() for _ in self.method)
+            return method in self.method
         return True
 
     def _404(self, client_socket):
@@ -365,7 +367,7 @@ class HTTPHandler(HandlerBase):
 class TCPService:
     def __init__(self):
         self.server_socket = None
-        self.handlers: List[HandlerBase] = []
+        self.handlers: "list[HandlerBase]" = []
 
     def register(self, Handler):
         self.handlers.append(Handler)
@@ -394,23 +396,13 @@ class TCPService:
     @threader
     def handle_client(self, client_socket: socket.socket):
         info = RequestInfo.readfrom(client_socket)
-
+        print(info.log)
         iswsreq = self.__checkifwebsocket(info.headers)
-        matchclass = None
         for handler in self.handlers:
             if (iswsreq and issubclass(handler, HTTPHandler)) or (
                 (not iswsreq) and issubclass(handler, WSHandler)
             ):
                 continue
-            if isinstance(handler.path, str):
-                if handler.path == info.path:
-                    matchclass = handler
-                    break
-            elif isinstance(handler.path, re.Pattern):
-                m = handler.path.match(info.path)
-                if not m:
-                    continue
-                matchclass = handler
-        if not matchclass:
-            return ResponseInfo._404(client_socket)
-        matchclass(info, client_socket)
+            if info.path == handler.path:
+                return handler(info, client_socket)
+        return ResponseInfo._404(client_socket)

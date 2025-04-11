@@ -390,14 +390,7 @@ class MAINUI:
             if globalconfig["read_raw"]:
                 self.currentread = text
                 self.currentread_from_origin = True
-                which = self.__usewhich()
-                if which.get(
-                    "tts_repair_use_at_translate",
-                    globalconfig["ttscommon"]["tts_repair_use_at_translate"],
-                ):
-                    text = self.readcurrent(needresult=True)
-                else:
-                    self.readcurrent()
+                self.readcurrent()
             self.dispatchoutputer(text, True)
 
             _showrawfunction_unsafe = functools.partial(
@@ -737,7 +730,7 @@ class MAINUI:
         return None
 
     @threader
-    def __readcurrent(self, text2, force=False):
+    def readcurrent(self, force=False):
         if (not force) and (not globalconfig["autoread"]):
             return
         text1 = self.currentread
@@ -768,8 +761,7 @@ class MAINUI:
                         self.specialreaders[key] = -1
         if reader is None:
             return
-        if text2 is None:
-            text2 = self.ttsrepair(text1, self.__usewhich())
+        text2 = self.ttsrepair(text1, self.__usewhich())
         self.audioplayer.timestamp = uuid.uuid4()
         reader.read(text2, force, self.audioplayer.timestamp)
 
@@ -779,14 +771,6 @@ class MAINUI:
             return
         self.audioplayer.timestamp = uuid.uuid4()
         self.reader.read(text, True, self.audioplayer.timestamp)
-
-    def readcurrent(self, force=False, needresult=False):
-        if needresult:
-            text = self.ttsrepair(self.currentread, self.__usewhich())
-            self.__readcurrent(text, force)
-            return text
-        else:
-            self.__readcurrent(None, force)
 
     def loadreader(self, use, privateconfig=None, init=True, uid=None):
         aclass = importlib.import_module("tts." + use).TTS

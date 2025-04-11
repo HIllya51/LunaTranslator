@@ -640,6 +640,8 @@ void _SearchForHooks(SearchParam spUser)
 		}
 		successaddr = add_veh_hook(successaddr, funcs);
 		ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], successaddr.size());
+		if (successaddr.size() == 0)
+			return;
 		ConsoleOutput(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
 		Sleep(sp.searchTime);
 		// remove_veh_hook(successaddr);

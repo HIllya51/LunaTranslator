@@ -38,26 +38,3 @@ When the current text meets the condition, the action specified in `Assign To` i
     Use the default voice for content that meets the condition. Usually, when using a very lenient judgment, it is easy to cause false positives. Moving the judgment set to this action before a more lenient judgment can avoid false positives.
 1. Select Voice
     After selection, a window will pop up to select the voice engine and voice. When the condition is met, this voice will be used for reading.
-
-## Some Issues with Voice Correction
-
-The entire process is:
-
-1. Extract text
-1. Text processing - Pre-processing
-1. Voice assignment
-1. Voice correction
-1. -> Execute text-to-speech
-1. Display original text (not refreshed upon receiving translation)
-1. Translation optimization - Pre-processing
-1. Translation
-1. Translation optimization - Post-processing
-1. Display translation
-
-If you want to read according to the character name and do not want the name to appear in the original text and translation, you must insert an action before displaying the original text and executing text-to-speech.
-
-Considering that in most cases, the correction target and voice correction target are the same, the `Apply to Translation` option is introduced, making the text passed to translation consistent with the corrected reading text.
-
-Of course, if using a large model for translation, keeping the character name in the original text is also a good decision, so this option is not activated by default.
-
-Of course, if you do not want to keep the character name in the translation, you can also consider filtering out the name in `Translation Optimization`, but this way, the original text will still contain the name, which I do not like.

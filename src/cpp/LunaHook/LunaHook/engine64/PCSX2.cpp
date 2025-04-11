@@ -54,35 +54,35 @@ namespace
     constexpr BYTE sig_BaseBlocksNew[] = {
         0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x56, 0x57, 0x55, 0x53,
         0x48, 0x83, 0xEC, 0x28,
-        0x4c, 0x89, 0xc7,
-        0x89, 0xd3,
-        0x48, 0x89, 0xce,
-        0x48, 0x8b, 0x01,
-        0x48, 0x8d, 0x50, 0x08,
-        0x4c, 0x8b, 0x40, 0x08,
-        0x41, 0x80, 0x78, 0x19, 0x00};
-    constexpr BYTE sig_recRecompile[] = {
-        0x89, 0xcd,
-        0x48, 0x8b, 0x05, XX4,
-        0x48, 0x3b, 0x05, XX4,
-        0x72, 0x07,
-        0xc6, 0x05, XX4, 0x01,
         XX, 0x89, XX,
-        0x41, 0xc1, XX, 0x10,
-        0x4c, 0x8d, XX, XX4};
+        0x89, 0xd3,
+        XX, 0x89, XX,
+        0x48, 0x8b, XX,
+        0x48, 0x8d, XX, 0x08,
+        XX, 0x8b, XX, 0x08};
     constexpr BYTE sig_AddBreakPoint[] = {
         0x89, 0xd0,
         0x25, 0x00, 0x00, 0x00, 0x60,
         0x3d, 0x00, 0x00, 0x00, 0x20,
         0xb8, 0xff, 0xff, 0xff, 0x0f,
         0xb9, 0xff, 0xff, 0xff, 0x7f};
-    BYTE sig_OpCodeImpl_CACHE[] = {
+    BYTE sig_OpCodeImpl_CACHE_1[] = {
         0x48, 0x83, 0xec, XX,
         0x8b, 0x05, XX4,
         0x89, 0xc2,
         0xc1, 0xea, 0x10,
         0x83, 0xe2, 0x1f,
         0x8d, 0x4a, 0xf9,
+        0x83, 0xf9, 0x15,
+        0x0f, 0x87, XX4};
+    BYTE sig_OpCodeImpl_CACHE_2[] = {
+        // v1.7.4977
+        0x48, 0x83, 0xec, XX,
+        0x8b, XX, XX4,
+        0x41, 0x89, XX,
+        0x41, 0xc1, 0xe8, 0x10,
+        0x41, 0x83, 0xe0, 0x1f,
+        0x41, 0x8d, 0x48, 0xf9,
         0x83, 0xf9, 0x15,
         0x0f, 0x87, XX4};
 #define FINDALIGN(X)                                                     \
@@ -102,8 +102,32 @@ namespace
         fmtstrptr = MemDbg::find_leaorpush_addr(fmtstrptr, processStartAddress, processStopAddress);
         if (!fmtstrptr)
             return false;
-        startGameListEntry = MemDbg::findEnclosingAlignedFunction(fmtstrptr);
+        BYTE sig2[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54};
+        startGameListEntry = reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x200, fmtstrptr, 0, true);
+        if (!startGameListEntry)
+        {
+            BYTE sig3[] = {0x55, 0x41, 0x57, 0x41, 0x56, 0x41, 0x54}; // v1.7.4473
+            startGameListEntry = reverseFindBytes(sig3, sizeof(sig3), fmtstrptr - 0x200, fmtstrptr, 0, true);
+        }
         return startGameListEntry;
+    }
+    bool findrecRecompile()
+    {
+        char fmtstr[] = "recRecompile: Could not enable launch arguments for fast boot mode; unidentified BIOS version! Please report this to the PCSX2 developers.";
+        auto fmtstrptr = MemDbg::findBytes(fmtstr, sizeof(fmtstr), processStartAddress, processStopAddress);
+        if (!fmtstrptr)
+            return false;
+        fmtstrptr = MemDbg::find_leaorpush_addr(fmtstrptr, processStartAddress, processStopAddress);
+        if (!fmtstrptr)
+            return false;
+        BYTE sig2[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54};
+        recRecompile = (decltype(recRecompile))reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x1000, fmtstrptr, 0, true);
+        if (!recRecompile)
+        {
+            BYTE sig3[] = {0x55, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54}; // v1.7.4473
+            recRecompile = reverseFindBytes(sig3, sizeof(sig3), fmtstrptr - 0x300, fmtstrptr, 0, true);
+        }
+        return recRecompile;
     }
     bool hookFunctions()
     {
@@ -112,18 +136,25 @@ namespace
         FINDFUNCTION(dynarecCheckBreakpoint);
         FINDALIGN(dynarecCheckBreakpoint);
         FINDFUNCTION(BaseBlocksNew);
-        FINDFUNCTION(recRecompile);
-        FINDALIGN(recRecompile);
-        FINDFUNCTION(AddBreakPoint);
-        FINDALIGN(AddBreakPoint);
-        uint64_t OpCodeImpl_CACHE;
-        FINDFUNCTION(OpCodeImpl_CACHE);
+        if (!findrecRecompile())
+            return false;
+        {
+            BYTE sig2[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x54};
+            FINDFUNCTION(AddBreakPoint);
+            AddBreakPoint = (decltype(AddBreakPoint))reverseFindBytes(sig2, sizeof(sig2), (uintptr_t)AddBreakPoint - 0x600, (uintptr_t)AddBreakPoint, 0, true);
+        }
+        auto OpCodeImpl_CACHE = MemDbg::findBytes(sig_OpCodeImpl_CACHE_1, sizeof(sig_OpCodeImpl_CACHE_1), processStartAddress, processStopAddress);
+        if (!OpCodeImpl_CACHE)
+        {
+            OpCodeImpl_CACHE = MemDbg::findBytes(sig_OpCodeImpl_CACHE_2, sizeof(sig_OpCodeImpl_CACHE_2), processStartAddress, processStopAddress);
+        }
+        if (!OpCodeImpl_CACHE)
+            return false;
         _cpuRegistersPack = (decltype(_cpuRegistersPack))(OpCodeImpl_CACHE + 4 + 6 + *(int *)(OpCodeImpl_CACHE + 4 + 2) - 0x2ac);
         auto EEmem = GetProcAddress(GetModuleHandle(NULL), "EEmem");
         if (!EEmem)
             return false;
         eeMem = *(decltype(eeMem) *)EEmem;
-        ConsoleOutput("eeMem %p", eeMem);
         return true;
     }
     void SafeAddBreakPoint(u32 addr, bool enable = true)
@@ -890,6 +921,8 @@ namespace
             {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
             // 遙かなる時空の中で3 運命の迷宮 [Triple Pack]
             {0x1FFE9D8, {DIRECT_READ, 0, 0, SLPM66344, 0, "SLPM-66344"}},
+            // Angel's Feather
+            {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
         };
         return 0;
     }();
