@@ -311,6 +311,12 @@ class OCR(baseocr):
         if qimage.format() != QImage.Format.Format_RGBA8888:
             qimage = qimage.convertToFormat(QImage.Format.Format_RGBA8888)
         with self.lock:
+            scale = 1
+            if qimage.height() < 50:
+                scale = 50 / qimage.height()
+                qimage = qimage.scaledToHeight(
+                    50, Qt.TransformationMode.SmoothTransformation
+                )
             img_struct = Img(
                 t=3,
                 col=qimage.width(),
@@ -334,7 +340,7 @@ class OCR(baseocr):
                 box = OcrLineBoundingBox.from_buffer_copy(
                     windows.ReadFile(self.hPipe, 32)
                 )
-                boxs.append(
-                    (box.x1, box.y1, box.x2, box.y2, box.x3, box.y3, box.x4, box.y4)
-                )
+                box = (box.x1, box.y1, box.x2, box.y2, box.x3, box.y3, box.x4, box.y4)
+                box = tuple(_ / scale for _ in box)
+                boxs.append(box)
             return OCRResult(boxs=boxs, texts=texts)

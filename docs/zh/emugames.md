@@ -331,6 +331,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | 010047E01E22A000 | Voice Love on Air |
 |  | 010033401FE40000 | 罪ノ光ランデヴー |
 |  | 0100DA2019044000 | 結合男子 |
+|  | 0100EA9015126000 | 古書店街の橋姫 Hashihime of the Old Book Town append |
 
 == PSP
 
@@ -803,8 +804,9 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | PCSG00615 | 東京喰種トーキョーグール JAIL |
 |  | PCSB00985 | PSYCHO-PASS MANDATORY HAPPINESS |
 |  | PCSG00769 | 逢魔が刻～かくりよの縁～ |
-|  | PCSG00367 | Goes!  |
+|  | PCSG00367 | Goes! |
 |  | PCSG00382 | RE:VICE[D] |
+|  | PCSG00640 | SA7 -Silent Ability Seven- |
 
 == PS2
 

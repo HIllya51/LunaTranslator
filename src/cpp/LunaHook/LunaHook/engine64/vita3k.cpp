@@ -446,8 +446,8 @@ namespace
     }
     void PCSG00367(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, TEXTANDLEN(L"\\　"));
         CharFilter(buffer, L'\\');
+        CharFilter(buffer, L'#');
     }
     void PCSG01167(TextBuffer *buffer, HookParam *hp)
     {
@@ -1502,10 +1502,13 @@ namespace
             {0x8004D360, {CODEC_UTF16, 0, 0, PCSB00985, 0, "PCSB00985"}},
             // 逢魔が刻～かくりよの縁～
             {0x8003CA08, {0, 3, 0, PCSG00769, 0, "PCSG00769"}},
-            // Goes! 
+            // Goes!
             {0x8004D2D4, {CODEC_UTF16, 0xe, 0, 0, PCSG00367, "PCSG00367"}},
             // RE:VICE[D]
             {0x8002D4CA, {0, 0, 0, 0, PCSG00472, "PCSG00382"}},
+            // SA7 -Silent Ability Seven-
+            {0x800291B2, {CODEC_UTF16, 2, 0, 0, PCSG00367, "PCSG00640"}},
+            {0x80045C48, {CODEC_UTF16, 1, 0, 0, PCSG00367, "PCSG00640"}},
         };
         return 1;
     }();

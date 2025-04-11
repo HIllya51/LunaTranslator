@@ -1010,7 +1010,6 @@ namespace
     }
     void F0100ADC014DA0000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, L"[~^$(,)]");
         s = re::sub(s, L"[A-Za-z0-9]");
@@ -1024,6 +1023,42 @@ namespace
         s = re::sub(s, R"((\\n)+)", " ");
         s = re::sub(s, R"(\\d$|^\@[a-z]+|#.*?#|\$)");
         buffer->from(s);
+    }
+    DECLARE_FUNCTION(T0100EA9015126000, const char *_);
+    void FUCKT0100EA9015126000(const std::string &s, HookParam *hpx)
+    {
+        HookParam hp;
+        hp.address = (uintptr_t)T0100EA9015126000;
+        hp.offset = GETARG(1);
+        hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT | FULL_STRING;
+        hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+        {
+            auto s = buffer->strA();
+            static std::string last;
+            if (startWith(s, last))
+                buffer->from(s.substr(last.size()));
+            if (endWith(last, s))
+                return buffer->clear();
+            last = s;
+        };
+        static auto _ = NewHook(hp, hpx->name);
+        T0100EA9015126000(s.c_str());
+    }
+    void F0100EA9015126000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\n');
+        static lru_cache<std::string> cache(5);
+        auto s = buffer->strA();
+        if (cache.touch(s))
+            return buffer->clear();
+        FUCKT0100EA9015126000(buffer->strA(), hp);
+        buffer->clear();
+    }
+    void F0100EA9015126000(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '^');
+        FUCKT0100EA9015126000(buffer->strA(), hp);
+        buffer->clear();
     }
     void F0100C1E0102B8000(TextBuffer *buffer, HookParam *hp)
     {
@@ -4015,6 +4050,9 @@ namespace
             {0x804CC780, {CODEC_UTF8, 0, 0, 0, F010081E0161B2000, 0x010033401FE40000ull, "1.0.0"}},
             // 結合男子
             {0x81C49080, {CODEC_UTF16, 1, 0x14, 0, F0100D7E01E998000, 0x0100DA2019044000ull, "1.0.0"}},
+            // 古書店街の橋姫 Hashihime of the Old Book Town append
+            {0x800670F0, {CODEC_UTF8, 0, 0, 0, F0100EA9015126000, 0x0100EA9015126000ull, "1.0.0"}},
+            {0x800B22A4, {CODEC_UTF8, 1, 0, 0, F0100EA9015126000_1, 0x0100EA9015126000ull, "1.0.0"}},
         };
         return 1;
     }();
