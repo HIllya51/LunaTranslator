@@ -63,7 +63,7 @@ if os.path.exists(opencv) == False:
     os.system(rf'7z x -y "{opencv_1}" -o{os.path.dirname(opencv_1)}')
 
 
-url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.1.6/YY-Thunks-Objs.zip"
+url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.1.7-Beta6/YY-Thunks-Objs.zip"
 target = "../libs/YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj"
 if os.path.exists(target) == False:
     os.system(rf"curl -SLo ../libs/YY-Thunks-Objs.zip " + url)

@@ -18,3 +18,9 @@ target_link_libraries(winsharedutils aes Dbghelp libmecab rapidfuzz webview2 mfu
 else()
 target_link_libraries(winsharedutils aes Dbghelp libmecab rapidfuzz webview2 mfuuid ${YY_Thunks})
 endif()
+
+target_link_options(winsharedutils PRIVATE "/DELAYLOAD:Dbghelp.dll")
+if(NOT WINXP)
+    target_link_options(winsharedutils PRIVATE "/DELAYLOAD:MFPlat.dll")
+    target_link_options(winsharedutils PRIVATE "/DELAYLOAD:dxgi.dll")
+endif()
