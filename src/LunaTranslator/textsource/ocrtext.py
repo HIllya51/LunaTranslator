@@ -3,7 +3,8 @@ from myutils.config import globalconfig
 import winsharedutils, windows
 from gui.rangeselect import rangeadjust
 from myutils.wrapper import threader
-from myutils.ocrutil import imageCut, ocr_run, ocr_init, qimage2binary
+from myutils.ocrutil import imageCut, ocr_run, ocr_init
+from myutils.utils import qimage2binary
 import time, gobject
 from qtsymbols import *
 from myutils.keycode import vkcode_map

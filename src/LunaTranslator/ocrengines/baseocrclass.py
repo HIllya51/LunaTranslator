@@ -1,7 +1,9 @@
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR, isascii
 from myutils.commonbase import commonbase
 from language import Languages
+from myutils.utils import qimage2binary
 import re, gobject, math
+from qtsymbols import *
 
 
 def _sort_text_lines(boxs, texts, vertical, space: str):
@@ -193,9 +195,12 @@ class OCRResult:
                 vertical = vertical != 0
         self.vertical = bool(vertical)
 
-    def parse(self, space):
+    def parse(self, space, scale):
         if not self:
             return
+        if self.blocks and scale != 1:
+            for block in self.blocks:
+                block.box = tuple(_ / scale for _ in block.box)
         if globalconfig["ocrmergelines"] and self.hasboxs:
             self.__nearmergeboxs(space)
 
@@ -310,6 +315,7 @@ class OCRResultParsed:
         srclang_1: Languages = None,
         error=None,
         engine=None,
+        scale=1,
     ):
         self.engine = engine
         self.error = error
@@ -318,7 +324,7 @@ class OCRResultParsed:
         self.srclang_1 = srclang_1
         self.result = result
         if result:
-            result.parse(self.space)
+            result.parse(self.space, scale)
 
     @property
     def textonly(self):
@@ -353,7 +359,7 @@ class baseocr(commonbase):
     ############################################################
 
     required_image_format = "PNG"
-
+    required_mini_height = 0
     _globalconfig_key = "ocr"
     _setting_dict = ocrsetting
 
@@ -389,13 +395,27 @@ class baseocr(commonbase):
             raise e
         self.needinit = False
 
-    def _private_ocr(self, imagebinary):
+    def _private_ocr(self, qimage: QImage):
         if self.needinit:
             self.level2init()
         try:
-            result = self.multiapikeywrapper(self.ocr)(imagebinary)
+            scale = 1
+            if qimage.height() < self.required_mini_height:
+                scale = self.required_mini_height / qimage.height()
+                qimage = qimage.scaledToHeight(
+                    self.required_mini_height,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            required_image_format: str = self.required_image_format
+            if required_image_format == QImage:
+                image = qimage
+            else:
+                image = qimage2binary(qimage, required_image_format)
+            if not image:
+                return OCRResultParsed()
+            result = self.multiapikeywrapper(self.ocr)(image)
             return OCRResultParsed(
-                result, srclang_1=self.srclang_1, engine=self.typename
+                result, srclang_1=self.srclang_1, engine=self.typename, scale=scale
             )
         except Exception as e:
             self.needinit = True

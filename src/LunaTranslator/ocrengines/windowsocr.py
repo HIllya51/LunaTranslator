@@ -113,6 +113,7 @@ def question():
 
 
 class OCR(baseocr):
+    required_mini_height = 40
 
     def langmap(self):
         return {Languages.Chinese: "zh-Hans", Languages.TradChinese: "zh-Hant"}

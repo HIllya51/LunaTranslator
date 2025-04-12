@@ -1,9 +1,9 @@
 import os, importlib
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig
 from qtsymbols import *
 from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import safepixmap
-from myutils.utils import stringfyerror, qimage2binary
+from myutils.utils import stringfyerror
 from traceback import print_exc
 import threading, gobject, winsharedutils
 from ocrengines.baseocrclass import baseocr, OCRResultParsed
@@ -62,14 +62,7 @@ def ocr_run(qimage: QImage):
     try:
         ocr_init()
         thisocrtype: str = _ocrengine.typename
-        required_image_format: str = _ocrengine.required_image_format
-        if required_image_format == QImage:
-            image = qimage
-        else:
-            image = qimage2binary(qimage, required_image_format)
-        if not image:
-            return OCRResultParsed()
-        res = _ocrengine._private_ocr(image)
+        res = _ocrengine._private_ocr(qimage)
         gobject.baseobject.maybesetocrresult(res.result)
         return res
     except Exception as e:
