@@ -53,10 +53,6 @@ After unchecking this setting, Simplified Chinese can be displayed correctly. Ho
 
     The principle of embedded translation is to pause the game in a certain function before the game displays the text, send the text to be displayed to the translator, wait for the translation, modify the text memory from the translated text, and then let the game continue to display the translation. Therefore, **when using a slower translation, it will definitely cause the game to stutter**. You can avoid long-term stuttering caused by slow translation by limiting the waiting time.
 
-1. #### Use Specified Translator
-
-    When multiple translation sources are activated, you can choose to embed a specified translation with the best effect. If not activated, or if the specified translator is not activated, the fastest translation will be used to reduce game lag.
-
 1. #### Convert Characters to Traditional/Japanese
 
     Omitted
