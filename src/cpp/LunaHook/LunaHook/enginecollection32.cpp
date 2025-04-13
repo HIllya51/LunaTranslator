@@ -15,6 +15,7 @@
 #include "engine32/CoffeeMaker.h"
 #include "engine32/TACTICS.h"
 #include "engine32/splushwave.h"
+#include "engine32/GJ.h"
 #include "engine32/FrontWing.h"
 #include "engine32/TAKUYO.h"
 #include "engine32/GSX.h"
@@ -447,5 +448,6 @@ std::vector<ENGINE *> check_engines()
         new GROOVER,
         new SmartAdv,
         new MapleColors,
-        new Hug};
+        new Hug,
+        new GJ};
 }

@@ -2,6 +2,8 @@
 
 bool InsertXUSEHook2()
 {
+  PcHooks::hookGDIFunctions(GetCharABCWidthsA); // 神様のゲーム
+
   // 最果てのイマ -COMPLETE-
 
   BYTE bytes[] = {
@@ -20,6 +22,13 @@ bool InsertXUSEHook2()
     hp.offset = regoffset(eax);
     hp.type = CODEC_ANSI_BE | NO_CONTEXT | USING_SPLIT;
     hp.split = 0;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      auto s = buffer->viewA();
+      if (std::all_of(s.begin(), s.end(), [](char c)
+                      { return c == 0 || c == ' '; }))
+        buffer->clear();
+    };
     succ |= NewHook(hp, "XUSE2");
   }
   return succ;
