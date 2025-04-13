@@ -241,7 +241,7 @@ class gptcommon(basetrans):
             temperature=temperature,
             stream=self.config["流式输出"],
         )
-        if "api.mistral.ai" not in self.apiurl:
+        if self.config.get("frequency_penalty_use", False):
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         data.update(extra)
         return data

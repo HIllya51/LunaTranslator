@@ -31,7 +31,7 @@ class OCR(baseocr):
             top_p=self.config["top_p"],
             temperature=temperature,
         )
-        if "api.mistral.ai" not in self.config["apiurl"]:
+        if self.config.get("frequency_penalty_use", False):
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         return data
 

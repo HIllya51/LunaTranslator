@@ -420,9 +420,10 @@
 			"自定义promt": "",
 			"流式输出": true,
 			"Temperature": 0.3,
-			"top_p": 0.3,
 			"max_tokens": 1024,
+			"top_p": 0.3,
 			"frequency_penalty": 0,
+			"frequency_penalty_use": false,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
 			"other_args": "{}",
@@ -495,6 +496,7 @@
 			},
 			"frequency_penalty": {
 				"type": "spin",
+				"refswitch": "frequency_penalty_use",
 				"min": -2,
 				"max": 2,
 				"step": 0.05
@@ -846,9 +848,10 @@
 			"自定义promt": "",
 			"流式输出": true,
 			"Temperature": 0.3,
-			"top_p": 0.3,
 			"max_tokens": 1024,
+			"top_p": 0.3,
 			"frequency_penalty": 0,
+			"frequency_penalty_use": false,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
 			"other_args": "{}",
@@ -914,6 +917,7 @@
 				"step": 0.01
 			},
 			"frequency_penalty": {
+				"refswitch": "frequency_penalty_use",
 				"type": "spin",
 				"min": -2,
 				"max": 2,

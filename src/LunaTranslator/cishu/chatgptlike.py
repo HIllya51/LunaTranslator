@@ -1,4 +1,9 @@
-from myutils.utils import createurl, common_list_models, common_parse_normal_response, markdown_to_html
+from myutils.utils import (
+    createurl,
+    common_list_models,
+    common_parse_normal_response,
+    markdown_to_html,
+)
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 from translator.gptcommon import createheaders
@@ -32,7 +37,7 @@ class chatgptlike(cishubase):
             top_p=self.config["top_p"],
             temperature=temperature,
         )
-        if "api.mistral.ai" not in self.apiurl:
+        if self.config.get("frequency_penalty_use", False):
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         return data
 

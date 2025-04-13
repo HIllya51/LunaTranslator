@@ -1280,9 +1280,10 @@
                 "使用自定义promt": false,
                 "自定义promt": "",
                 "Temperature": 0.3,
-                "top_p": 0.3,
                 "max_tokens": 1024,
+                "top_p": 0.3,
                 "frequency_penalty": 0,
+                "frequency_penalty_use": 0,
                 "user_user_prompt": "{sentence}",
                 "use_user_user_prompt": false,
                 "s": "",
@@ -1327,6 +1328,7 @@
                     "step": 0.01
                 },
                 "frequency_penalty": {
+                    "refswitch": "frequency_penalty_use",
                     "type": "spin",
                     "min": 0,
                     "max": 2,
