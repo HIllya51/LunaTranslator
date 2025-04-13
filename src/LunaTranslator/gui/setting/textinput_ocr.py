@@ -35,17 +35,19 @@ from ocrengines.baseocrclass import OCRResult
 
 
 def __label1(self):
-    self.threshold1label = QLabel()
-    return self.threshold1label
+    threshold1label = QLabel()
+    self.thresholdsett1.connect(threshold1label.setText)
+    return threshold1label
 
 
 def __label2(self):
-    self.threshold2label = QLabel()
-    return self.threshold2label
+    threshold2label = QLabel()
+    self.thresholdsett2.connect(threshold2label.setText)
+    return threshold2label
 
 
 @threader
-def __directinitend(engine, _ok):
+def __directinitend(_, _ok):
     if _ok:
         ocr_init()
     else:

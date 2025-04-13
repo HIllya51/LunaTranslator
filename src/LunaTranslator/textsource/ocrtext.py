@@ -180,7 +180,7 @@ class ocrtext(basetext):
 
         if i == 0:
             try:
-                gobject.baseobject.settin_ui.threshold1label.setText(
+                gobject.baseobject.settin_ui.thresholdsett1.emit(
                     str(float(image_score))
                 )
             except:
@@ -218,7 +218,7 @@ class ocrtext(basetext):
                 image_score = 0
             if i == 0:
                 try:
-                    gobject.baseobject.settin_ui.threshold1label.setText(
+                    gobject.baseobject.settin_ui.thresholdsett1.emit(
                         str(image_score)
                     )
                 except:
@@ -234,7 +234,7 @@ class ocrtext(basetext):
                     image_score2 = 0
                 if i == 0:
                     try:
-                        gobject.baseobject.settin_ui.threshold2label.setText(
+                        gobject.baseobject.settin_ui.thresholdsett2.emit(
                             str(image_score2)
                         )
                     except:

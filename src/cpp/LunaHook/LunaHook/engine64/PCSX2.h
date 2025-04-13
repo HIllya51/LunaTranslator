@@ -12,4 +12,5 @@ public:
         { return Util::CheckFile(L"pcsx2-qt.exe") || Util::SearchResourceString(L"PCSX2"); };
     };
     bool attach_function();
+    bool attach_function1();
 };

@@ -1,42 +1,5 @@
 #include "godot.h"
 
-bool queryversion(WORD *_1, WORD *_2, WORD *_3, WORD *_4)
-{
-  wchar_t fileName[MAX_PATH];
-  GetModuleFileNameW(NULL, fileName, MAX_PATH);
-  DWORD dwHandle;
-  DWORD dwSize = GetFileVersionInfoSizeW(fileName, &dwHandle);
-  if (dwSize == 0)
-  {
-    return false;
-  }
-
-  std::vector<char> versionInfoBuffer(dwSize);
-  if (!GetFileVersionInfoW(fileName, dwHandle, dwSize, versionInfoBuffer.data()))
-  {
-    return false;
-  }
-
-  VS_FIXEDFILEINFO *pFileInfo;
-  UINT fileInfoSize;
-  if (!VerQueryValueW(versionInfoBuffer.data(), L"\\", reinterpret_cast<LPVOID *>(&pFileInfo), &fileInfoSize))
-  {
-    return false;
-  }
-
-  DWORD ms = pFileInfo->dwFileVersionMS;
-  DWORD ls = pFileInfo->dwFileVersionLS;
-
-  WORD majorVersion = HIWORD(ms);
-  WORD minorVersion = LOWORD(ms);
-  WORD buildNumber = HIWORD(ls);
-  WORD revisionNumber = LOWORD(ls);
-  *_1 = majorVersion;
-  *_2 = minorVersion;
-  *_3 = buildNumber;
-  *_4 = revisionNumber;
-  return true;
-}
 namespace
 {
   bool godot35()
@@ -226,10 +189,8 @@ namespace
 }
 bool godot::attach_function()
 {
-  WORD _1, _2, _3, _4;
-  queryversion(&_1, &_2, &_3, &_4);
-  ConsoleOutput("%d %d %d %d", _1, _2, _3, _4);
-  if (_1 == 3 && _2 == 5)
+  auto version = queryversion();
+  if (version && std::get<0>(version.value()) == 3 && std::get<1>(version.value()) == 5)
   {
     return godot35();
   }

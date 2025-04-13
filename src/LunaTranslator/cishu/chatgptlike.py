@@ -7,6 +7,7 @@ from myutils.utils import (
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 from translator.gptcommon import createheaders
+from gui.customparams import customparams, getcustombodyheaders
 
 
 def list_models(typename, regist):
@@ -25,7 +26,7 @@ class chatgptlike(cishubase):
     def apiurl(self):
         return self.config["API接口地址"].strip()
 
-    def createdata(self, message):
+    def createdata(self, message, extra):
         temperature = self.config["Temperature"]
         data = dict(
             model=self.config["model"],
@@ -39,42 +40,45 @@ class chatgptlike(cishubase):
         )
         if self.config.get("frequency_penalty_use", False):
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
+        data.update(extra)
         return data
 
-    def search_1(self, sysprompt, query):
-
+    def search_1(self, sysprompt, query, extrabody, extraheader):
         message = [{"role": "system", "content": sysprompt}]
         message.append({"role": "user", "content": query})
         response = self.proxysession.post(
             self.createurl(),
-            headers=self.createheaders(),
-            json=self.createdata(message),
+            headers=self.createheaders(extraheader),
+            json=self.createdata(message, extrabody),
         )
         return response
 
     def search(self, word):
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
         query = self._gptlike_createquery(
             word, "use_user_user_prompt", "user_user_prompt"
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
         apiurl = self.config["API接口地址"]
         if apiurl.startswith("https://generativelanguage.googleapis.com"):
-            resp = self.query_gemini(sysprompt, query)
+            resp = self.query_gemini(sysprompt, query, extrabody, extraheader)
         if apiurl.startswith("https://api.anthropic.com/v1/messages"):
-            resp = self.query_cld(sysprompt, query)
+            resp = self.query_cld(sysprompt, query, extrabody, extraheader)
         else:
-            resp = self.search_1(sysprompt, query)
+            resp = self.search_1(sysprompt, query, extrabody, extraheader)
         return markdown_to_html(common_parse_normal_response(resp, apiurl))
 
-    def createheaders(self):
-        return createheaders(
+    def createheaders(self, extra):
+        h = createheaders(
             self.apiurl, self.multiapikeycurrent, self.maybeuse, self.proxy
         )
+        h.update(extra)
+        return h
 
     def createurl(self):
         return createurl(self.apiurl)
 
-    def query_cld(self, sysprompt, query):
+    def query_cld(self, sysprompt, query, extrabody, extraheader):
         temperature = self.config["Temperature"]
 
         message = []
@@ -91,6 +95,8 @@ class chatgptlike(cishubase):
             max_tokens=self.config["max_tokens"],
             temperature=temperature,
         )
+        data.update(extrabody)
+        headers.update(extraheader)
         response = self.proxysession.post(
             "https://api.anthropic.com/v1/messages",
             headers=headers,
@@ -98,7 +104,7 @@ class chatgptlike(cishubase):
         )
         return response
 
-    def query_gemini(self, sysprompt, query):
+    def query_gemini(self, sysprompt, query, extrabody, extraheader):
         safety = {
             "safety_settings": [
                 {
@@ -137,15 +143,13 @@ class chatgptlike(cishubase):
         payload.update(safety)
         payload.update(sys_message)
         payload.update(gen_config)
-
-        # Set up the request headers and URL
-        headers = {"Content-Type": "application/json"}
+        payload.update(extrabody)
         # Send the request
         response = self.proxysession.post(
             "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
                 self.config["model"], self.multiapikeycurrent["SECRET_KEY"]
             ),
-            headers=headers,
+            headers=extraheader,
             json=payload,
         )
         return response

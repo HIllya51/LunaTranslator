@@ -155,7 +155,7 @@ https://www.huaweicloud.com/product/nlpmt.html
 
 == IBM
 
-https://cloud.ibm.com/apidocs/language-translator
+https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
 
 :::
 

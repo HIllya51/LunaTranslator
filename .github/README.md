@@ -27,16 +27,10 @@
 - **预翻译** 支持读取预翻译文件，支持翻译缓存
 
 - **支持自定义翻译扩展** 支持使用python语言扩展其他翻译接口
- 
 
-#### 语音合成
+#### 其他功能
 
-- **离线TTS** 支持WindowsTTS、VoiceRoid2/VoiceRoid+、NeoSpeech、VOICEVOX、VITS
-
-- **在线TTS** 支持火山TTS、有道TTS、EdgeTTS、谷歌TTS、OpenAI
-
-
-#### 日语学习
+- **语音合成** 支持 **离线TTS** 和 **在线TTS**
 
 - **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
 

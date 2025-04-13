@@ -252,9 +252,8 @@ struct NSGameInfoC
         info = std::move(game_info);
     }
 };
-bool yuzu::attach_function()
+bool yuzu::attach_function1()
 {
-    ConsoleOutput("[Compatibility] Yuzu 1616+");
     auto DoJitPtr = getDoJitAddress();
     if (!DoJitPtr)
         return false;
@@ -274,6 +273,12 @@ bool yuzu::attach_function()
         delayinsertNewHook(em_address);
     };
     return NewHook(hp, "YuzuDoJit");
+}
+bool yuzu::attach_function()
+{
+    if (!attach_function1())
+        HostInfo(HOSTINFO::Warning, TR[EMUVERSIONTOOOLD]);
+    return true;
 }
 
 namespace

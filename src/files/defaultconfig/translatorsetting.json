@@ -426,16 +426,20 @@
 			"frequency_penalty_use": false,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
-			"other_args": "{}",
-			"use_other_args": false,
 			"s": "",
 			"s2": "",
 			"prefill": "",
 			"prefill_use": false,
 			"hidethinking": true,
-			"markdown2html": false
+			"markdown2html": false,
+			"customparams": []
 		},
 		"argstype": {
+			"customparams": {
+				"name": "其他参数",
+				"type": "custom",
+				"function": "customparams"
+			},
 			"markdown2html": {
 				"hide": true,
 				"type": "switch"
@@ -451,11 +455,6 @@
 			},
 			"prefill_use": {
 				"type": "switch"
-			},
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
 			},
 			"user_user_prompt": {
 				"name": "自定义_user message",
@@ -854,13 +853,12 @@
 			"frequency_penalty_use": false,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
-			"other_args": "{}",
-			"use_other_args": false,
 			"s": "",
 			"s2": "",
 			"prefill": "",
 			"prefill_use": false,
-			"hidethinking": false
+			"hidethinking": false,
+			"customparams": []
 		},
 		"argstype": {
 			"hidethinking": {
@@ -875,10 +873,10 @@
 			"prefill_use": {
 				"type": "switch"
 			},
-			"other_args": {
-				"type": "multiline",
-				"refswitch": "use_other_args",
-				"name": "其他参数"
+			"customparams": {
+				"name": "其他参数",
+				"type": "custom",
+				"function": "customparams"
 			},
 			"user_user_prompt": {
 				"name": "自定义_user message",

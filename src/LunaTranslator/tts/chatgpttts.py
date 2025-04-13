@@ -1,6 +1,7 @@
 from tts.basettsclass import TTSbase, SpeechParam
 from myutils.utils import createurl, common_list_models
 from myutils.proxy import getproxy
+from gui.customparams import getcustombodyheaders, customparams
 
 
 def list_models(typename, regist):
@@ -49,6 +50,9 @@ class TTS(TTSbase):
             "speed": speed,  # 0.25 to 4.0. 1.0 is the default.
         }
 
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        headers.update(extraheader)
+        json_data.update(extrabody)
         response = self.proxysession.post(
             self.createurl(), headers=headers, json=json_data
         )

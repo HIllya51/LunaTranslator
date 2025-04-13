@@ -192,9 +192,15 @@
             "frequency_penalty": 0,
             "frequency_penalty_use": false,
             "modellistcache": [],
-            "s": ""
+            "s": "",
+            "customparams": []
         },
         "argstype": {
+            "customparams": {
+                "name": "其他参数",
+                "type": "custom",
+                "function": "customparams"
+            },
             "SECRET_KEY": {
                 "rank": 0.5,
                 "name": "API Key",

@@ -32,13 +32,9 @@ Supports almost all conceivable translation engines, including:
 
 - **Support for Custom Translation Extensions** Supports extending other translation interfaces using the Python language
 
-#### Text-to-Speech
+#### Other Functions
 
-- **Offline TTS** Supports WindowsTTS, VoiceRoid2/VoiceRoid+, NeoSpeech, VOICEVOX, VITS
-
-- **Online TTS** Supports Volcano TTS, Youdao TTS, Edge TTS, Google TTS, OpenAI
-
-#### Japanese Learning
+- **Text-to-Speech** supports **Offline TTS** and **Online TTS**
 
 - **Japanese Word Segmentation and Kana Display** Supports word segmentation and kana display using Mecab, etc.
 

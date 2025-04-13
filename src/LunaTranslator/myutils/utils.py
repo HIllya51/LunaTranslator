@@ -803,7 +803,7 @@ class SafeFormatter(Formatter):
             return super().get_value(key, args, kwargs)
         else:
             print("{} is missing".format(key))
-            return key
+            return "{" + key + "}"
 
 
 def checkv1(api_url: str):

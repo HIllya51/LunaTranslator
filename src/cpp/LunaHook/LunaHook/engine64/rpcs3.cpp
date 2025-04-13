@@ -236,7 +236,6 @@ namespace
 }
 bool rpcs3::attach_function()
 {
-    ConsoleOutput("[Compatibility] RPCS3");
     auto DoJitPtr = getDoJitAddress();
     if (DoJitPtr == 0)
         return false;

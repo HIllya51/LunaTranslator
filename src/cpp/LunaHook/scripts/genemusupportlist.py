@@ -115,16 +115,49 @@ def maketable(lst):
     return res
 
 
+append = r"""
+| - | - |
+| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/Citron/Citron) |
+| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
+| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
+| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
+| PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
+:::
+
+::: tabs
+
+== NS
+
+NS_GAME_LIST
+
+== PSP
+
+PSP_GAME_LIST
+
+== PSV
+
+PSV_GAME_LIST
+
+== PS2
+
+PS2_GAME_LIST
+
+== PS3
+
+PS3_GAME_LIST
+
+:::"""
+
 for lang in ["zh", "en", "ja"]:
     with open(
         f"../../../../docs/{lang}/emugames_template.md", "r", encoding="utf8"
     ) as ff:
         temp = ff.read()
 
-    temp = temp.replace("NS_GAME_LIST", maketable(ns))
-    temp = temp.replace("PSP_GAME_LIST", maketable(psp))
-    temp = temp.replace("PSV_GAME_LIST", maketable(psv))
-    temp = temp.replace("PS3_GAME_LIST", maketable(rpcs3))
-    temp = temp.replace("PS2_GAME_LIST", maketable(pcsx2))
+    append = append.replace("NS_GAME_LIST", maketable(ns))
+    append = append.replace("PSP_GAME_LIST", maketable(psp))
+    append = append.replace("PSV_GAME_LIST", maketable(psv))
+    append = append.replace("PS3_GAME_LIST", maketable(rpcs3))
+    append = append.replace("PS2_GAME_LIST", maketable(pcsx2))
     with open(f"../../../../docs/{lang}/emugames.md", "w", encoding="utf8") as ff:
-        ff.write(temp)
+        ff.write(temp + append)

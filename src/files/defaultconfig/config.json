@@ -1065,7 +1065,6 @@
     "reader": {
         "windowstts": {
             "use": true,
-            "voice": "",
             "name": "WindowsTTS",
             "type": "offline",
             "arg_not_sup": [
@@ -1074,7 +1073,6 @@
         },
         "huoshantts": {
             "use": false,
-            "voice": "",
             "name": "火山TTS",
             "useproxy": false,
             "arg_not_sup": [
@@ -1084,7 +1082,6 @@
         },
         "bcuttts": {
             "use": false,
-            "voice": "",
             "name": "BCUT TTS",
             "useproxy": false,
             "arg_not_sup": [
@@ -1094,7 +1091,6 @@
         },
         "chatgpttts": {
             "use": false,
-            "voice": "",
             "name": "大模型通用接口",
             "arg_not_sup": [
                 "pitch"
@@ -1114,9 +1110,15 @@
                     "nova",
                     "sage",
                     "shimmer"
-                ]
+                ],
+                "customparams": []
             },
             "argstype": {
+                "customparams": {
+                    "name": "其他参数",
+                    "type": "custom",
+                    "function": "customparams"
+                },
                 "API接口地址": {
                     "rank": 0,
                     "type": "listedit_with_name"
@@ -1143,12 +1145,10 @@
         },
         "edgetts": {
             "use": false,
-            "voice": "",
             "name": "edgeTTS"
         },
         "NeoSpeech": {
             "use": false,
-            "voice": "",
             "name": "NeoSpeech",
             "type": "offline",
             "arg_not_sup": [
@@ -1157,7 +1157,6 @@
         },
         "voiceroid2": {
             "use": false,
-            "voice": "",
             "name": "VoiceRoid2/VoiceRoid+",
             "type": "offline",
             "args": {
@@ -1173,7 +1172,6 @@
         },
         "voicevox": {
             "use": false,
-            "voice": "",
             "name": "VOICEVOX",
             "type": "offline",
             "args": {
@@ -1189,19 +1187,89 @@
                 }
             }
         },
+        "gptsovits": {
+            "use": false,
+            "name": "GPT-SoVITS",
+            "type": "offline",
+            "args": {
+                "URL": "http://127.0.0.1:9880",
+                "apiv": "v2",
+                "customparams": [
+                    {
+                        "key": "ref_audio_path",
+                        "value": "",
+                        "type": "string"
+                    },
+                    {
+                        "key": "prompt_text",
+                        "value": "",
+                        "type": "string"
+                    },
+                    {
+                        "key": "prompt_lang",
+                        "value": "",
+                        "type": "string"
+                    }
+                ]
+            },
+            "argstype": {
+                "apiv": {
+                    "type": "combo",
+                    "name": "API version",
+                    "list": [
+                        "v2",
+                        "v1"
+                    ],
+                    "internal": [
+                        "v2",
+                        "v1"
+                    ]
+                },
+                "customparams": {
+                    "name": "其他参数",
+                    "type": "custom",
+                    "function": "customparams"
+                }
+            },
+            "arg_not_sup": [
+                "pitch",
+                "rate"
+            ]
+        },
         "vitsSimpleAPI": {
             "use": false,
-            "voice": "",
             "name": "vits-simple-api",
             "type": "offline",
             "args": {
                 "URL": "http://127.0.0.1:23456",
-                "voices": "/voice/speakers",
-                "speak2": "/voice/{model_lower}?text={text}&id={id}&length={length}&lang=auto&prompt_lang=auto&format=wav&preset=default"
+                "customparams": [
+                    {
+                        "key": "lang",
+                        "value": "auto",
+                        "type": "string"
+                    },
+                    {
+                        "key": "prompt_lang",
+                        "value": "auto",
+                        "type": "string"
+                    },
+                    {
+                        "key": "format",
+                        "value": "wav",
+                        "type": "string"
+                    },
+                    {
+                        "key": "preset",
+                        "value": "default",
+                        "type": "string"
+                    }
+                ]
             },
             "argstype": {
-                "speak2": {
-                    "name": "speak"
+                "customparams": {
+                    "name": "其他参数",
+                    "type": "custom",
+                    "function": "vitsparams"
                 }
             },
             "arg_not_sup": [
@@ -1211,7 +1279,6 @@
         "gtts": {
             "use": false,
             "name": "GoogleTTS",
-            "voice": "",
             "arg_not_sup": [
                 "pitch"
             ]
@@ -1287,9 +1354,15 @@
                 "user_user_prompt": "{sentence}",
                 "use_user_user_prompt": false,
                 "s": "",
-                "s2": ""
+                "s2": "",
+                "customparams": []
             },
             "argstype": {
+                "customparams": {
+                    "name": "其他参数",
+                    "type": "custom",
+                    "function": "customparams"
+                },
                 "user_user_prompt": {
                     "name": "自定义_user message",
                     "refswitch": "use_user_user_prompt",

@@ -190,6 +190,9 @@ https://ocr.space/
 
 == SnippingTool
 
+>[!WARNING]
+仅支持win10-win11操作系统
+
 如果是最新版windows 11系统则可以直接使用，否则需要在`资源下载`中安装该模块以使用。
 
 == manga-ocr
@@ -237,7 +240,7 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 == WindowsOCR
 
 >[!WARNING]
->WindowsOCR仅支持win10-win11操作系统
+仅支持win10-win11操作系统
 
 ### WindowsOCR如何安装额外的语言支持？
 

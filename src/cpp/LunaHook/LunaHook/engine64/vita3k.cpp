@@ -151,11 +151,14 @@ namespace
     };
 }
 
-bool vita3k::attach_function()
+bool vita3k::attach_function1()
 {
-    ConsoleOutput("[Compatibility] Vita3k 0.1.9 3339+");
+    auto minver = std::make_tuple(0, 1, 9, 3339);
+    auto version = queryversion();
+    if (version && version < minver)
+        return false;
     auto DoJitPtr = getDoJitAddress();
-    if (DoJitPtr == 0)
+    if (!DoJitPtr)
         return false;
     JIT_Keeper<IDremember>::CreateStatic(CheckEmAddrHOOKable);
     trygetgameinwindowtitle();
@@ -177,6 +180,12 @@ bool vita3k::attach_function()
         delayinsertNewHook(em_address);
     };
     return NewHook(hp, "vita3kjit");
+}
+bool vita3k::attach_function()
+{
+    if (!attach_function1())
+        HostInfo(HOSTINFO::Warning, TR[EMUVERSIONTOOOLD]);
+    return true;
 }
 
 namespace

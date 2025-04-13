@@ -47,7 +47,7 @@ class TTSbase(commonbase):
 
     @property
     def voice(self):
-        _v = self.privateconfig["voice"]
+        _v = self.privateconfig.get("voice")
         if isinstance(self.voicelist[0], tuple):
             # vits的tuple在json.load后变成list了
             _v = tuple(_v)

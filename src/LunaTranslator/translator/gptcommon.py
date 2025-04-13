@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import json, requests, hmac, hashlib, re
+import json, requests, hmac, hashlib
 from datetime import datetime, timezone
 from myutils.utils import (
     createurl,
@@ -9,6 +9,7 @@ from myutils.utils import (
 )
 from myutils.proxy import getproxy
 from language import Languages
+from gui.customparams import getcustombodyheaders
 
 
 def list_models(typename, regist):
@@ -250,21 +251,20 @@ class gptcommon(basetrans):
         headers = createheaders(
             self.apiurl, self.multiapikeycurrent, self.maybeuse, self.proxy
         )
-        if "luna_headers" in extra:
-            hh = extra.pop("luna_headers")
-            headers.update(hh)
+        headers.update(extra)
         return headers
 
     def translate(self, query):
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
         query = self._gptlike_createquery(
             query, "use_user_user_prompt", "user_user_prompt"
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
         usingstream = self.config["流式输出"]
         if self.apiurl.startswith("https://generativelanguage.googleapis.com"):
-            response = self.request_gemini(sysprompt, query)
+            response = self.request_gemini(sysprompt, query, extrabody, extraheader)
         elif self.apiurl.startswith("https://api.anthropic.com/v1/messages"):
-            response = self.req_claude(sysprompt, query)
+            response = self.req_claude(sysprompt, query, extrabody, extraheader)
         else:
             message = [{"role": "system", "content": sysprompt}]
             self._gpt_common_parse_context(
@@ -274,19 +274,11 @@ class gptcommon(basetrans):
             prefill = self._gptlike_create_prefill("prefill_use", "prefill")
             if prefill:
                 message.append({"role": "assistant", "content": prefill})
-            try:
-                extra = {}
-                if self.config["use_other_args"]:
-                    try:
-                        extra = json.loads(self.config["other_args"])
-                    except:
-                        extra = eval(self.config["other_args"])
-            except:
-                pass
+
             response = self.proxysession.post(
                 self.createurl(),
-                headers=self.createheaders(extra),
-                json=self.createdata(message, extra),
+                headers=self.createheaders(extraheader),
+                json=self.createdata(message, extrabody),
                 stream=usingstream,
             )
         hidethinking = self.config.get("hidethinking", False)
@@ -311,7 +303,7 @@ class gptcommon(basetrans):
     def createurl(self):
         return createurl(self.apiurl)
 
-    def request_gemini(self, sysprompt, query):
+    def request_gemini(self, sysprompt, query, extrabody, extraheader):
         gen_config = {
             "generationConfig": {
                 "stopSequences": [" \n"],
@@ -362,17 +354,19 @@ class gptcommon(basetrans):
         payload.update(safety)
         payload.update(sys_message)
         payload.update(gen_config)
+        payload.update(extrabody)
         res = self.proxysession.post(
             "https://generativelanguage.googleapis.com/v1beta/models/{}:{}".format(
                 model, ["generateContent", "streamGenerateContent"][usingstream]
             ),
+            headers=extraheader,
             params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             json=payload,
             stream=usingstream,
         )
         return res
 
-    def req_claude(self, sysprompt, query):
+    def req_claude(self, sysprompt, query, extrabody, extraheader):
         temperature = self.config["Temperature"]
 
         message = []
@@ -398,6 +392,8 @@ class gptcommon(basetrans):
             temperature=temperature,
             stream=usingstream,
         )
+        headers.update(extraheader)
+        data.update(extrabody)
         response = self.proxysession.post(
             "https://api.anthropic.com/v1/messages",
             headers=headers,

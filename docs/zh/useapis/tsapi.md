@@ -135,7 +135,6 @@ https://www.deepl.com/en/products/api
 
 == Azure
 
-
 https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-reference#authentication
 
 **key1** Ocp-Apim-Subscription-Key	
@@ -154,10 +153,9 @@ https://yandex.cloud/en/docs/translate/api-ref/authentication#service-account_1
 
 https://www.huaweicloud.com/product/nlpmt.html
 
-
 == IBM
 
-https://cloud.ibm.com/apidocs/language-translator
+https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
 
 :::
 

@@ -565,32 +565,23 @@ class autoinitdialog(LDialog):
                     return l
 
                 regist[key] = functools.partial(__getv, __list, directedit)
+            elif line["type"] == "custom":
+                try:
+                    lineWF = getattr(
+                        importlib.import_module(modelfile), line["function"]
+                    )
+                    lineW = lineWF(dd[key])
+                    regist[key] = lineW.value
+                except:
+                    print_exc()
             elif line["type"] == "combo":
                 lineW = SuperCombo()
-                if "list_function" in line:
-                    try:
-                        func = getattr(
-                            importlib.import_module(line["list_function"][0]),
-                            line["list_function"][1],
-                        )
-                        items = func()
-                    except:
-                        items = []
-                else:
-                    items = line["list"]
-                lineW.addItems(items)
+                items = line["list"]
+                lineW.addItems(items, line.get("internal"))
 
                 if "internal" in line:
-                    lineW.setCurrentIndex(
-                        line["internal"].index(dd.get(key))
-                        if dd.get(key) in line["internal"]
-                        else 0
-                    )
-
-                    def __(lineW, line):
-                        return line["internal"][lineW.currentIndex()]
-
-                    regist[key] = functools.partial(__, lineW, line)
+                    lineW.setCurrentData(dd.get(key))
+                    regist[key] = lineW.getCurrentData
                 else:
                     lineW.setCurrentIndex(dd.get(key, 0))
                     regist[key] = lineW.currentIndex
@@ -755,12 +746,15 @@ class autoinitdialog(LDialog):
             if refcombo:
                 if refcombo not in cachehasref:
                     cachehasref[refcombo] = []
-                cachehasref[refcombo].append((lineW, line))
-        for comboname, refitems in cachehasref.items():
+                cachehasref[refcombo].append((line, formLayout.rowCount() - 1))
+        for (
+            comboname,
+            refitems,
+        ) in cachehasref.items():
 
             def refcombofunction(refitems, _i):
                 viss = []
-                for w, linwinfo in refitems:
+                for linwinfo, row in refitems:
                     vis = True
                     if linwinfo.get("refcombo_i") is not None:
                         vis = linwinfo.get("refcombo_i") == _i
@@ -769,11 +763,11 @@ class autoinitdialog(LDialog):
                     elif linwinfo.get("refcombo_l") is not None:
                         vis = _i in linwinfo.get("refcombo_l")
                     if not vis:
-                        formLayout.setRowVisible(w, False)
+                        formLayout.setRowVisible(row, False)
                     else:
-                        viss.append(w)
-                for w in viss:
-                    formLayout.setRowVisible(w, True)
+                        viss.append(row)
+                for row in viss:
+                    formLayout.setRowVisible(row, True)
                 QApplication.processEvents()
                 self.resize(self.width(), 1)
 

@@ -3,6 +3,7 @@ import base64
 from language import Languages
 from myutils.utils import createurl, common_list_models, common_parse_normal_response
 from myutils.proxy import getproxy
+from gui.customparams import customparams, getcustombodyheaders
 
 
 def list_models(typename, regist):
@@ -35,10 +36,12 @@ class OCR(baseocr):
             data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
         return data
 
-    def createheaders(self):
-        return {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
+    def createheaders(self, extraheader):
+        h = {"Authorization": "Bearer " + self.multiapikeycurrent["SECRET_KEY"]}
+        h.update(extraheader)
+        return h
 
-    def ocr_mistral(self, _, base64_image):
+    def ocr_mistral(self, _, base64_image, extrabody, extraheader):
         payload = {
             "model": self.config["model"],
             "document": {
@@ -46,9 +49,10 @@ class OCR(baseocr):
                 "image_url": "data:image/jpeg;base64,{}".format(base64_image),
             },
         }
+        payload.update(extrabody)
         response = self.proxysession.post(
             "https://api.mistral.ai/v1/ocr",
-            headers=self.createheaders(),
+            headers=self.createheaders(extraheader),
             json=payload,
         )
         try:
@@ -59,7 +63,7 @@ class OCR(baseocr):
         except:
             raise Exception(response)
 
-    def ocr_gemini(self, prompt, base64_image):
+    def ocr_gemini(self, prompt, base64_image, extrabody, extraheader):
         payload = {
             "contents": [
                 {
@@ -100,15 +104,17 @@ class OCR(baseocr):
             ]
         }
         payload.update(safety)
+        payload.update(extrabody)
         response = self.proxysession.post(
             "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
                 self.config["model"], self.multiapikeycurrent["SECRET_KEY"]
             ),
+            headers=extraheader,
             json=payload,
         )
         return response
 
-    def ocr_normal(self, prompt, base64_image):
+    def ocr_normal(self, prompt, base64_image, extrabody, extraheader):
 
         message = [
             {
@@ -125,16 +131,18 @@ class OCR(baseocr):
                 ],
             }
         ]
-
+        h = self.createheaders(extraheader)
+        b = self.createdata(message)
+        b.update(extrabody)
         response = self.proxysession.post(
             createurl(self.config["apiurl"]),
-            headers=self.createheaders(),
-            json=self.createdata(message),
+            headers=h,
+            json=b,
         )
         return response
 
     def ocr(self, imagebinary):
-
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
         if self.config["use_custom_prompt"]:
             prompt = self.config["custom_prompt"]
         else:
@@ -145,9 +153,9 @@ class OCR(baseocr):
         if self.config["apiurl"].startswith(
             "https://generativelanguage.googleapis.com"
         ):
-            response = self.ocr_gemini(prompt, base64_image)
+            response = self.ocr_gemini(prompt, base64_image, extrabody, extraheader)
         elif self.config["apiurl"].startswith("https://api.mistral.ai/v1"):
-            return self.ocr_mistral(prompt, base64_image)
+            return self.ocr_mistral(prompt, base64_image, extrabody, extraheader)
         else:
-            response = self.ocr_normal(prompt, base64_image)
+            response = self.ocr_normal(prompt, base64_image, extrabody, extraheader)
         return common_parse_normal_response(response, self.config["apiurl"])

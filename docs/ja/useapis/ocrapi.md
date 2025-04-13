@@ -187,6 +187,9 @@ https://ocr.space/
 
 == SnippingTool
 
+>[!WARNING]
+> Windows 10およびWindows 11オペレーティングシステムのみをサポートしています。
+
 最新版のWindows 11システムであれば直接使用できます。
 
 それ以外の場合は、`リソースダウンロードで`このモジュールをインストールする必要があります。
@@ -207,7 +210,7 @@ WeChatまたは最新バージョンのQQのインストールが必要です
 == WindowsOCR
 
 >[!WARNING]
-> WindowsOCRはWindows 10およびWindows 11オペレーティングシステムのみをサポートしています。
+> Windows 10およびWindows 11オペレーティングシステムのみをサポートしています。
 
 ### WindowsOCRの追加言語サポートをインストールする方法
 

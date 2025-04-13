@@ -11,4 +11,5 @@ public:
         check_by_target = L"Vita3K.exe";
     };
     bool attach_function();
+    bool attach_function1();
 };

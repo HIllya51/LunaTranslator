@@ -234,8 +234,12 @@ bool PCSX2_UserHook_delayinsert(uint32_t addr)
     }
     return false;
 }
-bool PCSX2::attach_function()
+bool PCSX2::attach_function1()
 {
+    auto minver = std::make_tuple(1, 7, 4473, 0);
+    auto version = queryversion();
+    if (version && version < minver)
+        return false;
     if (!hookFunctions())
         return false;
     bool succ = true;
@@ -330,6 +334,12 @@ bool PCSX2::attach_function()
     return true;
 }
 
+bool PCSX2::attach_function()
+{
+    if (!attach_function1())
+        HostInfo(HOSTINFO::Warning, TR[EMUVERSIONTOOOLD]);
+    return true;
+}
 namespace
 {
     void FSLPM66136(TextBuffer *buffer, HookParam *hp)

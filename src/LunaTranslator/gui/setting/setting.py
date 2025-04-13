@@ -91,6 +91,8 @@ class Setting(closeashidewindow):
     progresssignal3 = pyqtSignal(int)
     showandsolvesig = pyqtSignal(str, str)
     safeinvokefunction = pyqtSignal(list)
+    thresholdsett2 = pyqtSignal(str)
+    thresholdsett1 = pyqtSignal(str)
 
     def _progresssignal4(self, text, val):
         try:

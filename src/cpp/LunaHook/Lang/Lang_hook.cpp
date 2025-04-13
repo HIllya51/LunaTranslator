@@ -173,12 +173,16 @@ std::unordered_map<LANG_STRINGS_HOOK, std::unordered_map<SUPPORT_LANG, const cha
                        {Russian, u8"ПРЕДУПРЕЖДЕНИЕ: внедренный процесс очень мал, возможно, это пустышка!"},
                    }},
     {RYUJINXUNSUPPORT, {
-                           {English, "not support ryujinx, please use yuzu/sudachi/citron instead."},
-                           {Chinese, u8"不支持ryujinx，请使用yuzu/sudachi/citron"},
+                           {English, "not support ryujinx, please use yuzu/sudachi/Citron instead."},
+                           {Chinese, u8"不支持ryujinx，请使用yuzu/sudachi/Citron"},
                            {TradChinese, u8"不支援 Ryujinx，請使用 yuzu／Sudachi／Citron"},
-                           {Russian, u8"Не поддерживайте ryujinx, используйте yuzu / sudachi / citron"},
-                       }}
-
-};
+                           {Russian, u8"Не поддерживайте ryujinx, используйте yuzu / sudachi / Citron"},
+                       }},
+    {EMUVERSIONTOOOLD, {
+                           {English, "The emulator version is too old, please use the latest version"},
+                           {Chinese, u8"模拟器版本过旧，请使用新版模拟器"},
+                           {TradChinese, u8"模擬器版本過舊，請使用新版模擬器"},
+                           {Russian, u8"Устаревшая версия симулятора, используйте новую версию симулятора"},
+                       }}};
 
 DEFINEFUNCTION(LANG_STRINGS_HOOK, _internal_lang_strings_hook, char)

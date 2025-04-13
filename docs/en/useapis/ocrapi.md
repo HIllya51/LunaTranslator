@@ -187,6 +187,9 @@ If you need to recognize other languages, you must download the corresponding la
 
 == SnippingTool
 
+>[!WARNING]
+>Only supports Windows 10 and Windows 11 operating systems.
+
 If you are using the latest version of Windows 11, you can use it directly. 
 
 Otherwise, you need to install this module from `Resource Download` to enable its functionality.
@@ -208,7 +211,7 @@ Requires installation of WeChat or the latest version of QQ
 == WindowsOCR
 
 >[!WARNING]
-> WindowsOCR only supports Windows 10 and Windows 11 operating systems.
+>Only supports Windows 10 and Windows 11 operating systems.
 
 ### How to Install Additional Language Support for WindowsOCR?
 

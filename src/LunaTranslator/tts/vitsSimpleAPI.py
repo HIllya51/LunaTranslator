@@ -1,12 +1,15 @@
 from myutils.utils import urlpathjoin
 from tts.basettsclass import TTSbase, SpeechParam
-from urllib.parse import quote
+import functools
+from gui.customparams import customparams, getcustombodyheaders
+
+vitsparams = functools.partial(customparams, stringonly=True)
 
 
 class TTS(TTSbase):
     def getvoicelist(self):
         responseVits: dict = self.proxysession.get(
-            urlpathjoin(self.config["URL"], self.config["voices"]),
+            urlpathjoin(self.config["URL"], "voice/speakers"),
             headers={"ngrok-skip-browser-warning": "true"},
         ).json()
         voicelist = []
@@ -28,17 +31,13 @@ class TTS(TTSbase):
             length = 1 - param.speed / 15
         else:
             length = 1 - param.speed / 5
-        encoded_content = quote(content)
         model, idx, _ = voice
-        speak = self.config["speak2"].format(
-            model_lower=model.lower(),
-            model=model,
-            id=idx,
-            text=encoded_content,
-            length=length,
-        )
+        query = dict(text=content, id=idx, length=length)
+        extrabody, _ = getcustombodyheaders(self.config.get("customparams"))
+        query.update(extrabody)
         response = self.proxysession.get(
-            urlpathjoin(self.config["URL"], speak),
+            urlpathjoin(self.config["URL"], "voice/" + model.lower()),
+            params=query,
             headers={"ngrok-skip-browser-warning": "true"},
         ).content
 

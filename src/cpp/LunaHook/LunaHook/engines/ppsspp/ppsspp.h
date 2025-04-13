@@ -10,4 +10,5 @@ public:
         jittype = JITTYPE::PPSSPP;
     };
     bool attach_function();
+    bool attach_function1();
 };

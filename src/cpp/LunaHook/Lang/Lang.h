@@ -89,7 +89,8 @@ enum LANG_STRINGS_HOOK
     Attach_Stop,
     ProcessRange,
     WarningDummy,
-    RYUJINXUNSUPPORT
+    RYUJINXUNSUPPORT,
+    EMUVERSIONTOOOLD,
 };
 enum SUPPORT_LANG;
 SUPPORT_LANG map_to_support_lang(const char *);

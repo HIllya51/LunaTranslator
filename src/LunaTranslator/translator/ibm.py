@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import json
+from myutils.utils import urlpathjoin
 
 
 class TS(basetrans):
@@ -8,7 +8,7 @@ class TS(basetrans):
         self.checkempty(["apikey"])
         self.checkempty(["apiurl"])
         apikey = self.multiapikeycurrent["apikey"]
-        url = self.config["apiurl"] + "/v3/translate?version=2018-05-01"
+        url = urlpathjoin(self.config["apiurl"], "v3/translate?version=2018-05-01")
         data = {"text": [query], "target": self.tgtlang}
         if not self.is_src_auto:
             data.update({"source": self.srclang})

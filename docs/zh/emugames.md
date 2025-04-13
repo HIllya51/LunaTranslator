@@ -7,10 +7,10 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 ::: details 支持的模拟器
 | 平台 | 模拟器 |
 | - | - |
-| NS | yuzu, sudachi, citron, suyu |
-| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) |
-| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) |
-| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) v1.7.4473 ~ |
+| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/Citron/Citron) |
+| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
+| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
+| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
 | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
 :::
 

@@ -39,3 +39,4 @@ void delayinsertadd(HookParam, std::string);
 void delayinsertNewHook(uint64_t);
 inline bool dont_detach = false;
 inline bool host_connected = false;
+std::optional<std::tuple<DWORD, DWORD, DWORD, DWORD>> queryversion();

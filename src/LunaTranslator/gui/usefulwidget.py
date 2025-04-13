@@ -77,6 +77,24 @@ class SuperCombo(FocusCombo):
                 _TR(item.data(self.Visoriginrole)), Qt.ItemDataRole.DisplayRole
             )
 
+    def __setCurrentIndex(self, i, force=False):
+        if force and self.currentIndex() == i:
+            self.currentIndexChanged.emit(i)
+        else:
+            self.setCurrentIndex(i)
+
+    def setCurrentData(self, data, force=False):
+        for i in range(self.mo.rowCount()):
+            idx = self.mo.index(i, 0)
+            d = self.mo.data(idx, self.Internalrole)
+            if d == data:
+                self.__setCurrentIndex(i, force)
+                return
+        self.__setCurrentIndex(0, force)
+
+    def getCurrentData(self):
+        return self.getIndexData(self.currentIndex())
+
     def getIndexData(self, index):
         item = self.mo.item(index, 0)
         return item.data(self.Internalrole)
@@ -3023,75 +3041,83 @@ class FQLineEdit(QLineEdit):
         return super().mousePressEvent(a0)
 
 
-class VisLFormLayout(LFormLayout):
-    # 简易实现
+class VisGridLayout(QGridLayout):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._row_widgets = {}
-        self._reverse = {}
-        self._row_vis = {}
-        if "takeRow" not in dir(self):
-            # qt5.5兼容
-            self.takeRow = self.__takeRow
+        self.ws = {}
+        self.wr = {}
+        self.rv = {}
 
-    def __takeRow(self, row):
-        label_item = self.itemAt(row, QFormLayout.ItemRole.LabelRole)
-        field_item = self.itemAt(row, QFormLayout.ItemRole.FieldRole)
-        if label_item:
-            self.removeItem(label_item)
-        if field_item:
-            self.removeItem(field_item)
+    def rowVisible(self, r) -> bool:
+        return self.rv.get(r, True)
 
-        class __res:
-            def __init__(self_, fieldItem, labelItem):
-                self_.labelItem, self_.fieldItem = labelItem, fieldItem
+    def rowCount(self):
+        if not self.ws:
+            return 0
+        return super().rowCount()
 
-        return __res(field_item, label_item)
+    def addWidget(self, w, r, c, rs=1, cs=1):
+        if r not in self.ws:
+            self.ws[r] = []
+        self.wr[w] = r
+        self.ws[r].append((w, r, c, rs, cs))
+        super().addWidget(w, r, c, rs, cs)
+
+    def setRowVisible(self, row_index, visible):
+        if row_index not in self.ws:
+            return
+        self.rv[row_index] = visible
+        for w, r, c, rs, cs in self.ws[row_index]:
+            if not visible:
+                if self.wr.get(w) != r:
+                    continue
+                w.hide()
+                self.removeWidget(w)
+            else:
+                if not w.isVisible():
+                    w.setVisible(True)
+                super().addWidget(w, r, c, rs, cs)
+
+
+class VisLFormLayout(VisGridLayout):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.setAlignment(Qt.AlignmentFlag.AlignTop)
 
     def addRow(self, label_or_field, field=None):
         row_index = self.rowCount()
-        if field is None:
-            super().addRow(label_or_field)
-            field = label_or_field
-            label_or_field = None
-        else:
-            super().addRow(label_or_field, field)
-        self._row_widgets[row_index] = (label_or_field, field)
-        self._row_vis[row_index] = True
-        self._reverse[field] = row_index
+        if isinstance(label_or_field, (QWidget, str)) or not label_or_field:
+            if isinstance(label_or_field, str):
+                lb = getsmalllabel(label_or_field)()
+                super().addWidget(lb, row_index, 0, 1, 1)
+            elif isinstance(label_or_field, QWidget):
+                super().addWidget(label_or_field, row_index, 0, 1, 1 if field else 2)
+
+            if field:
+                if isinstance(field, QWidget):
+                    super().addWidget(field, row_index, 1, 1, 1)
+                elif isinstance(field, QLayout):
+                    w = QWidget()
+                    w.setLayout(field)
+                    w.setSizePolicy(
+                        QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
+                    )
+                    field.setContentsMargins(0, 0, 0, 0)
+                    super().addWidget(w, row_index, 1, 1, 1)
+                else:
+                    print(field)
+        elif isinstance(label_or_field, QLayout):
+            if field:
+                print(field)
+            w = QWidget()
+            w.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+            w.setLayout(label_or_field)
+            label_or_field.setContentsMargins(0, 0, 0, 0)
+            super().addWidget(w, row_index, 0, 1, 2)
         return row_index
 
-    def setRowVisible(self, row_index, visible):
-        if isinstance(row_index, int):
-            pass
-        elif isinstance(row_index, (QWidget, QLayout)):
-            row_index = self._reverse[row_index]
-        if self._row_vis[row_index] == visible:
-            return
-        insert_position = sum(1 for i in range(row_index) if self._row_vis[i])
-        if visible:
-            label, field = self._row_widgets[row_index]
-            if label is not None:
-                super().insertRow(insert_position, label, field)
-            else:
-                super().insertRow(insert_position, field)
-            if isinstance(field, QWidget):
-                if not field.isVisible():
-                    field.setVisible(True)
-            else:
-                showhidelayout(field, True)
-        else:
-            tres = self.takeRow(insert_position)
-            label = tres.labelItem
-            if label:
-                self.removeItem(label)
-                label.widget().deleteLater()
-            if tres.fieldItem:
-                if tres.fieldItem.widget():
-                    tres.fieldItem.widget().hide()
-                else:
-                    showhidelayout(tres.fieldItem.layout(), False)
-        self._row_vis[row_index] = visible
+    def addWidget(self, w):
+        self.addRow(None, w)
 
 
 class CollapsibleBox(NQGroupBox):
