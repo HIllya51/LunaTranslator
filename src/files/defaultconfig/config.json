@@ -1232,8 +1232,7 @@
                 }
             },
             "arg_not_sup": [
-                "pitch",
-                "rate"
+                "pitch"
             ]
         },
         "vitsSimpleAPI": {
