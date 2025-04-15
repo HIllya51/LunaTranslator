@@ -18,5 +18,5 @@ class TTS(TTSbase):
         extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
 
         js.update(extrabody)
-        response = self.proxysession.get(url, headers=extraheader, json=js).content
+        response = self.proxysession.post(url, headers=extraheader, json=js).content
         return response
