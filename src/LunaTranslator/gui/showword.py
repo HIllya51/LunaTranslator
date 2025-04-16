@@ -27,6 +27,7 @@ from gui.usefulwidget import (
     WebviewWidget,
     IconButton,
     getboxlayout,
+    getboxwidget,
     getspinbox,
     getsimplecombobox,
     getlineedit,
@@ -45,6 +46,7 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
 from myutils.audioplayer import bass_code_cast
+from tts.basettsclass import TTSResult
 
 
 class AnkiWindow(QWidget):
@@ -55,10 +57,12 @@ class AnkiWindow(QWidget):
     def settextsignalf(self, obj: QLineEdit, text):
         obj.setText(text)
 
-    def callbacktts(self, edit, sig, data):
+    def callbacktts(self, edit, sig, data: TTSResult):
+        if not data:
+            return
         if sig != edit.sig:
             return
-        data, ext = bass_code_cast(data, "mp3")
+        data, ext = bass_code_cast(data.data, data.ext)
         fname = gobject.gettempdir(str(uuid.uuid4()) + "." + ext)
         with open(fname, "wb") as ff:
             ff.write(data)
@@ -204,14 +208,12 @@ class AnkiWindow(QWidget):
         savebtn.clicked.connect(self.saveedits)
 
         spliter.addWidget(
-            getboxlayout(
+            getboxwidget(
                 [
                     edittemptab,
-                    getboxlayout([revertbtn, savebtn], makewidget=True),
+                    getboxlayout([revertbtn, savebtn]),
                 ],
                 lc=QVBoxLayout,
-                margin0=True,
-                makewidget=True,
             )
         )
 
@@ -220,12 +222,7 @@ class AnkiWindow(QWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         spliter.addWidget(
-            getboxlayout(
-                [self.previewtab, self.htmlbrowser],
-                lc=QVBoxLayout,
-                margin0=True,
-                makewidget=True,
-            )
+            getboxwidget([self.previewtab, self.htmlbrowser], lc=QVBoxLayout)
         )
         self.fronttext = FQPlainTextEdit()
         self.backtext = FQPlainTextEdit()
@@ -362,9 +359,7 @@ class AnkiWindow(QWidget):
                         icon="fa.edit",
                     ),
                     "",
-                ],
-                makewidget=True,
-                margin0=True,
+                ]
             ),
         )
         layout.addRow(
@@ -637,26 +632,12 @@ class AnkiWindow(QWidget):
                                     ),
                                 ]
                             ),
+                            getboxlayout([LLabel("单词"), self.wordedit], QHBoxLayout),
                             getboxlayout(
-                                [LLabel("单词"), self.wordedit],
-                                QHBoxLayout,
-                                margin0=True,
+                                [LLabel("注音"), self.zhuyinedit], QVBoxLayout
                             ),
-                            getboxlayout(
-                                [LLabel("注音"), self.zhuyinedit],
-                                QVBoxLayout,
-                                margin0=True,
-                            ),
-                            getboxlayout(
-                                [LLabel("例句"), self.example],
-                                QVBoxLayout,
-                                margin0=True,
-                            ),
-                            getboxlayout(
-                                [LLabel("备注"), self.remarks],
-                                QVBoxLayout,
-                                margin0=True,
-                            ),
+                            getboxlayout([LLabel("例句"), self.example], QVBoxLayout),
+                            getboxlayout([LLabel("备注"), self.remarks], QVBoxLayout),
                             getboxlayout(
                                 [
                                     LLabel("标签"),

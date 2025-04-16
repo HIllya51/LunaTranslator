@@ -26,10 +26,6 @@ Most processing methods do not take effect when embedding translations to reduce
 
     This method will filter out ```!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``` in the text.
 
-1. #### Filter Other Garbled Text
-
-    This requires setting the allowed character encoding or Unicode range in the settings. Characters not allowed will be filtered out.
-
 1. #### Filter Characters Outside「」
 
     For example: `こなみ「ひとめぼれってやつだよね……」` will be processed into `「ひとめぼれってやつだよね……」`

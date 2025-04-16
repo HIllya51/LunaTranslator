@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
-import os, time, threading
+import os, uuid, threading
 import windows, ctypes, winsharedutils
 
 
@@ -19,10 +19,8 @@ class TS(basetrans):
         if self.config["path"] != self.path:
             self.path = self.config["path"]
 
-            t = time.time()
-            t = str(t)
-            pipename = "\\\\.\\Pipe\\xxx_" + t
-            waitsignal = "waitload_" + t
+            pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+            waitsignal = str(uuid.uuid4())
 
             self.engine = winsharedutils.AutoKillProcess(
                 './files/plugins/shareddllproxy32.exe eztrans "{}" {} {}'.format(

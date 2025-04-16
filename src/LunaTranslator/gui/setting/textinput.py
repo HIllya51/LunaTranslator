@@ -2,7 +2,6 @@ from qtsymbols import *
 import functools
 import gobject, os
 from myutils.config import globalconfig
-from myutils.wrapper import threader
 from myutils.utils import dynamiclink
 from textsource.texthook import codepage_display
 from traceback import print_exc

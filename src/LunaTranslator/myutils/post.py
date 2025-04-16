@@ -3,7 +3,6 @@ from traceback import print_exc
 from collections import Counter
 import gobject
 from myutils.utils import (
-    checkchaos,
     checkmd5reloadmodule,
     LRUCache,
     getlangsrc,
@@ -309,15 +308,6 @@ def lines_threshold(line, args):
     return line
 
 
-def _remove_chaos(line):
-    newline = ""
-    for c in line:
-        if checkchaos(c):
-            continue
-        newline += c
-    return newline
-
-
 def _mypostloader(line, file, module):
 
     _ = checkmd5reloadmodule(file, module)[1]
@@ -346,7 +336,7 @@ processfunctions = {
     "_7_zhuanyi": _7_zhuanyi_f,  # depracated
     "_remove_non_shiftjis_char": _remove_non_shiftjis_char,
     "_remove_control": _remove_control,
-    "_remove_chaos": _remove_chaos,
+    # "_remove_chaos": _remove_chaos,
     "_remove_not_in_ja_bracket": _remove_not_in_ja_bracket,
     "dedump": dedump,  # depracated
     "lines_threshold_1": lines_threshold,

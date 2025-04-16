@@ -2101,16 +2101,20 @@ namespace
         s = re::sub(s, LR"(\[[^\]]*\])");
         buffer->from(s);
     }
+    template <bool x = true>
     void F01000EA00B23C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
         s = re::sub(s, L"[`@](.*?)@", L"$1");
-        s = re::sub(s, L"\\$\\[(.*?)\\$/(.*?)\\$\\]", L"$1");
-        s = re::sub(s, L"\\$K\\d+(.*?)\\$K\\d+", L"$1");
-        s = re::sub(s, L"\\$A\\d+");
-        strReplace(s, L"$2", L"花");
-        strReplace(s, L"$1", L"山田");
-        strReplace(s, L"$(3)", L"花");
+        s = re::sub(s, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
+        s = re::sub(s, LR"(\$K\d+(.*?)\$K\d+)", L"$1");
+        s = re::sub(s, LR"(\$A\d+)");
+        if constexpr (x)
+        {
+            strReplace(s, L"$2", L"花");
+            strReplace(s, L"$1", L"山田");
+            strReplace(s, L"$(3)", L"花");
+        }
         buffer->from(s);
     }
     void F010060301588A000(TextBuffer *buffer, HookParam *hp)
@@ -4058,6 +4062,8 @@ namespace
             // 古書店街の橋姫 Hashihime of the Old Book Town append
             {0x800670F0, {CODEC_UTF8, 0, 0, 0, F0100EA9015126000, 0x0100EA9015126000ull, "1.0.0"}},
             {0x800B22A4, {CODEC_UTF8, 1, 0, 0, F0100EA9015126000_1, 0x0100EA9015126000ull, "1.0.0"}},
+            // Summer Pockets REFLECTION BLUE // 1.0.0 & 1.0.1
+            {0x8007A878, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F01000EA00B23C000<false>, 0x0100273013ECA000ull, nullptr}},
         };
         return 1;
     }();

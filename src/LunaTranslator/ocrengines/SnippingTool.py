@@ -1,4 +1,4 @@
-import threading, time, winsharedutils, windows
+import threading, winsharedutils, windows
 from qtsymbols import *
 from ctypes import Structure, memmove, c_longlong, c_int, c_float, c_int32, c_int64
 from ocrengines.baseocrclass import baseocr, OCRResult
@@ -9,7 +9,7 @@ import gobject, requests
 from traceback import print_exc
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
-import re
+import re, uuid
 from gui.dynalang import LPushButton, LLabel
 from gui.usefulwidget import VisLFormLayout
 
@@ -264,11 +264,9 @@ class OCR(baseocr):
         if dir_ != cachedir:
             shutil.copytree(dir_, cachedir)
         self.lock = threading.Lock()
-        t = time.time()
-        t = str(t)
-        pipename = "\\\\.\\Pipe\\voiceroid2_" + t
-        waitsignal = "voiceroid2waitload_" + t
-        mapname = "voiceroid2filemap" + t
+        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+        waitsignal = str(uuid.uuid4())
+        mapname = str(uuid.uuid4())
         exepath = os.path.abspath("files/plugins/shareddllproxy64.exe")
         self.engine = winsharedutils.AutoKillProcess(
             '"{}" SnippingTool {} {} {}'.format(

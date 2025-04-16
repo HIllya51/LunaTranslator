@@ -56,7 +56,4 @@ class TTS(TTSbase):
         response = self.proxysession.post(
             self.createurl(), headers=headers, json=json_data
         )
-        if 400 <= response.status_code < 600:
-            raise Exception(response)
-
-        return response.content
+        return response

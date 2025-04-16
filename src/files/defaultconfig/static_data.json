@@ -1,26 +1,21 @@
 {
-    "themes": {
-        "dark": [
-            {
-                "file": "PyQtDarkTheme/dark.py",
-                "name": "PyQtDarkTheme"
-            },
-            {
-                "file": "QTWin11/dark.py",
-                "name": "QTWin11"
+    "themes": [
+        {
+            "name": "PyQtDarkTheme",
+            "file": {
+                "dark": "PyQtDarkTheme/dark.py",
+                "light": "PyQtDarkTheme/light.py",
+                "setting": "PyQtDarkTheme/setting.py"
             }
-        ],
-        "light": [
-            {
-                "file": "PyQtDarkTheme/light.py",
-                "name": "PyQtDarkTheme"
-            },
-            {
-                "file": "QTWin11/light.py",
-                "name": "QTWin11"
+        },
+        {
+            "name": "QTWin11",
+            "file": {
+                "dark": "QTWin11/dark.py",
+                "light": "QTWin11/light.py"
             }
-        ]
-    },
+        }
+    ],
     "font_type_default": {
         "default": [
             "Segoe UI",
@@ -191,7 +186,7 @@
                     },
                     {
                         "name": "Sugoi",
-                        "link": "{main_server}/Resource/translate/Sugoi_V11.1_990825.7z",
+                        "link": "{main_server}/Resource/translate/Sugoi_V12.1_683043.7z",
                         "about": "日语_->_英语"
                     },
                     {

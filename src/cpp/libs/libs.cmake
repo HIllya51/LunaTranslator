@@ -12,7 +12,7 @@ else()
 
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/rapidfuzz-cpp)
 
-    add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src)
+    include(${CMAKE_CURRENT_LIST_DIR}/mecab.cmake)
 
 
     add_library(webview2 INTERFACE)

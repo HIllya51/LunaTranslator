@@ -1,4 +1,4 @@
-import time
+import uuid
 import os, io
 import windows, winsharedutils
 from tts.basettsclass import TTSbase, SpeechParam
@@ -92,11 +92,9 @@ class TTS(TTSbase):
         if not os.path.isfile(dllpath):
             raise Exception()
 
-        t = time.time()
-        t = str(t)
-        pipename = "\\\\.\\Pipe\\voiceroid2_" + t
-        waitsignal = "voiceroid2waitload_" + t
-        mapname = "voiceroid2filemap" + t
+        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+        waitsignal = str(uuid.uuid4())
+        mapname = str(uuid.uuid4())
         is64 = winsharedutils.IsDLLBit64(dllpath)
         # AIVoice & AIVoice2 -> 64位
         exepath = os.path.abspath(

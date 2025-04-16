@@ -91,7 +91,7 @@ DECLARE_API void setdwmextendframe(HWND hwnd)
     DwmExtendFrameIntoClientArea(hwnd, &mar);
 }
 
-DECLARE_API void _SetTheme(
+DECLARE_API void SetTheme(
     HWND _hWnd,
     bool dark,
     int backdrop,

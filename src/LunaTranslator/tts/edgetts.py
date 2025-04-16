@@ -4,7 +4,7 @@ from datetime import datetime
 import time
 import re
 import uuid, hashlib
-from tts.basettsclass import TTSbase, SpeechParam
+from tts.basettsclass import TTSbase, SpeechParam, TTSResult
 
 # https://github.com/rany2/edge-tts
 
@@ -279,4 +279,4 @@ def transferMsTTSData(content, voice, proxy, param: SpeechParam):
         else:
             break
     ws.close()
-    return audio_stream
+    return TTSResult(audio_stream, type="audio/mpeg")

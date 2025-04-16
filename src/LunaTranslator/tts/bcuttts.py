@@ -66,6 +66,4 @@ class TTS(TTSbase):
             response.json()["data"]["result"]["results"][0]["url"],
             headers=headers,
         )
-        if 400 <= response.status_code < 600:
-            raise Exception(response)
-        return response.content
+        return response

@@ -8,9 +8,11 @@ vitsparams = functools.partial(customparams, stringonly=True)
 
 class TTS(TTSbase):
     def getvoicelist(self):
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        headers = {"ngrok-skip-browser-warning": "true"}
+        headers.update(extraheader)
         responseVits: dict = self.proxysession.get(
-            urlpathjoin(self.config["URL"], "voice/speakers"),
-            headers={"ngrok-skip-browser-warning": "true"},
+            urlpathjoin(self.config["URL"], "voice/speakers"), headers=headers
         ).json()
         voicelist = []
         internal = []
@@ -33,12 +35,14 @@ class TTS(TTSbase):
             length = 1 - param.speed / 5
         model, idx, _ = voice
         query = dict(text=content, id=idx, length=length)
-        extrabody, _ = getcustombodyheaders(self.config.get("customparams"))
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        headers = {"ngrok-skip-browser-warning": "true"}
+        headers.update(extraheader)
         query.update(extrabody)
         response = self.proxysession.get(
             urlpathjoin(self.config["URL"], "voice/" + model.lower()),
             params=query,
-            headers={"ngrok-skip-browser-warning": "true"},
-        ).content
+            headers=headers,
+        )
 
         return response

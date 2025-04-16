@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
-import os, time
+import os, uuid
 import windows, winsharedutils, threading
 from language import Languages
 
@@ -25,10 +25,8 @@ class TS(basetrans):
             self.path = self.config["path"]
 
             self.pair = pairs
-            t = time.time()
-            t = str(t)
-            pipename = "\\\\.\\Pipe\\dreye_" + t
-            waitsignal = "dreyewaitload_" + t
+            pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+            waitsignal = str(uuid.uuid4())
             mp = {("zh", "en"): 2, ("en", "zh"): 1, ("zh", "ja"): 3, ("ja", "zh"): 10}
             path = os.path.abspath(os.path.join(self.path, "DreyeMT\\SDK\\bin"))
             if mp[pairs] in [3, 10]:

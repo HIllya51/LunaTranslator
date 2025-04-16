@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import ctypes, time
+import ctypes, uuid
 from myutils.config import _TR
 import windows, winsharedutils, threading
 
@@ -7,10 +7,8 @@ import windows, winsharedutils, threading
 class TS(basetrans):
     def init(self):
         self.lock = threading.Lock()
-        t = time.time()
-        t = str(t)
-        pipename = "\\\\.\\Pipe\\dreye_" + t
-        waitsignal = "dreyewaitload_" + t
+        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+        waitsignal = str(uuid.uuid4())
         self.engine = winsharedutils.AutoKillProcess(
             "./files/plugins/shareddllproxy32.exe atlaswmain {} {}".format(
                 pipename, waitsignal

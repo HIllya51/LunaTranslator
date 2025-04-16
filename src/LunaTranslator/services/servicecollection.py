@@ -5,10 +5,11 @@ from services.tcpservice import (
     TCPService,
     RequestInfo,
     RedirectResponse,
+    ResponseWithHeader,
 )
 from sometypes import TranslateResult, TranslateError, WordSegResult
 from urllib.parse import quote
-import json, gobject, re, base64
+import json, gobject, base64
 from myutils.ocrutil import ocr_run
 from gui.rendertext.webview import TextBrowser, somecommon as somecommon_1
 from gui.transhist import somecommon as somecommon_2, wvtranshist
@@ -21,6 +22,7 @@ import threading, functools
 from qtsymbols import *
 from myutils.config import globalconfig, _TR
 from myutils.utils import dynamiccishuname, dynamicapiname
+from tts.basettsclass import TTSResult
 
 
 class internalservicetranshistws(WSHandler, somecommon_2):
@@ -120,16 +122,20 @@ class APItts(HTTPHandler):
         text = _.query.get("text")
         if not text:
             raise Exception("")
-        ret = []
+        ret: "list[TTSResult]" = []
         sema = threading.Semaphore(0)
         gobject.baseobject.reader.ttscallback(
             text,
             functools.partial(self.callbacktts, sema, ret),
         )
         sema.acquire()
-        return ret[0]
+        if ret[0].error:
+            return {"error": ret[0].error}
+        return ResponseWithHeader(
+            data=ret[0].data, headers={"content-type": ret[0].mime}
+        )
 
-    def callbacktts(self, sema: threading.Semaphore, ret: list, result):
+    def callbacktts(self, sema: threading.Semaphore, ret: list, result: TTSResult):
         ret.append(result)
         sema.release()
 

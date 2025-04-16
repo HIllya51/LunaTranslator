@@ -144,7 +144,8 @@ static void SpecialHookMink(hook_context *context, HookParam *hp, TextBuffer *bu
   DWORD size = LeadByteTable[ch & 0xff]; // Slightly faster than IsDBCSLeadByte
   if (size == 1 && ::ispunct(ch & 0xff)) // skip ascii punctuations, since garbage is like ":text:"
     return;
-
+  if (!IsShiftjisLeadByte(ch))
+    return;
   // Issue: still have lots of garbage
   *split = context->stack[25];
   //*split = *(DWORD *)(esp_base + 0x48);
@@ -212,54 +213,52 @@ bool Mink2::attach_function()
   }
   return found;
 }
-namespace
+
+static bool MdePink()
 {
-  bool mink1()
+  // (18禁ゲーム) [100903][minkm_0012][M de Pink] しすたー・すきーむ2 アニメーション追加版 DL版
+  // 催眠学級 HD https://vndb.org/r30973
+  const BYTE pattern[] = {
+      0X80, 0XFB, 0X81,
+      0X72, 0X05,
+      0X80, 0XFB, 0X9F,
+      0X76, 0X08,
+      0X8A, 0XC3,
+      0X04, 0X20,
+      0X3C, 0X1C,
+      0X77, 0X13,
+      0X0F, 0XB6, XX,
+      0XC1, 0XE3, 0X08,
+      0X03, XX,
+      XX,
+      0X89, XX, 0X24, 0X14,
+      0X89, XX, 0X24, XX,
+      0XEB, 0X08};
+  auto addr = MemDbg::findBytes(pattern, sizeof(pattern), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.type = USING_STRING;
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    // https://vndb.org/r30973
-    // 催眠学級 HD
-    const BYTE pattern[] = {
-        0xf7, 0xc3, 0x00, 0xff, 0x00, 0x00,
-        0x74, XX,
-        0x33, 0xd2,
-        0x8d, 0xbe, XX4,
-        0x66, 0x89, 0x17,
-        0x33, 0xc9,
-        0x33, 0xc0,
-        0x83, 0xca, 0xff,
-        0x66, 0x89, 0x8e, XX4,
-        0x66, 0x89, 0x96, XX4,
-        0xb9, 0x01, 0x00, 0x00, 0x00,
-        0x33, 0xd2};
-    bool succ = false;
-    for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
-    {
-      addr = MemDbg::findEnclosingAlignedFunction(addr);
-      if (!addr)
-        continue;
-      HookParam hp;
-      hp.address = addr;
-      hp.type = CODEC_ANSI_BE | USING_CHAR;
-      hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-      {
-        *split = context->argof(3);
-        static int _0 = 0, _4 = 0;
-        if (*split == 0)
-          if (_0++ % 3 != 0)
-            return;
-        if (*split == 4)
-          if (_4++ % 3 != 0)
-            return;
-        buffer->from_t(context->argof(1));
-      };
-      succ |= NewHook(hp, "Mink");
-    }
-    return succ;
-  }
+    *split = context->stack[5];
+    if (!(*split == 0xff000000 || *split == 0xffFFFFF || *split == 0xff0f0f0f || *split == 0xff7f0f0f))
+      return;
+    if (*split == 0xff000000 || *split == 0xffFFFFF)
+      *split = 2;
+    if (*split == 0xff0f0f0f || *split == 0xff7f0f0f)
+      *split = 1;
+    buffer->from((char *)context->edx);
+  };
+  return NewHook(hp, "MdePink");
 }
 bool Mink::attach_function()
 {
-  return mink1() || InsertMinkHook();
+  return MdePink() || InsertMinkHook();
 }
 
 bool Mink3::attach_function()

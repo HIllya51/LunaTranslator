@@ -457,5 +457,5 @@ std::optional<std::tuple<DWORD, DWORD, DWORD, DWORD>> queryversion()
 	WORD _1, _2, _3, _4;
 	if (!_queryversion(&_1, &_2, &_3, &_4))
 		return {};
-	return std::make_tuple(1, _2, _3, _4);
+	return std::make_tuple(_1, _2, _3, _4);
 }

@@ -4,6 +4,45 @@ from myutils.wrapper import threader
 from traceback import print_exc
 from myutils.utils import LRUCache, stringfyerror
 from myutils.commonbase import commonbase
+from requests import Response
+import types
+from myutils.mimehelper import query_mime
+
+
+class TTSResult:
+    def __bool__(self):
+        return bool((not self.error) and self.data)
+
+    @property
+    def ext(self):
+        if "/" in self._type:
+            return self._type.split("/")[1]
+        return "wav"
+
+    @property
+    def mime(self):
+        if "/" in self._type:
+            return self._type
+        return query_mime(self._type)
+
+    def __init__(
+        self,
+        data: "bytes|Response|TTSResult|types.GeneratorType" = None,
+        type: str = "audio/wav",
+        error=None,
+    ):
+        if isinstance(data, TTSResult):
+            self.data = data.data
+            self.error = data.error
+            self._type = data._type
+        elif isinstance(data, Response):
+            data.raise_for_status()
+            self.data = data.content
+            self._type = data.headers.get("content-type", type)
+        else:
+            self.data = data
+            self._type = type
+        self.error = error
 
 
 class SpeechParam:
@@ -85,8 +124,10 @@ class TTSbase(commonbase):
 
     def read(self, content, force=False, timestamp=None):
 
-        def _(force, volume, timestamp, data):
-            self.playaudiofunction(data, volume, force, timestamp)
+        def _(force, volume, timestamp, data: TTSResult):
+            if not data:
+                return
+            self.playaudiofunction(data.data, volume, force, timestamp)
 
         self.ttscallback(content, functools.partial(_, force, self.volume, timestamp))
 
@@ -104,11 +145,16 @@ class TTSbase(commonbase):
                 return callback(data)
             data = self.multiapikeywrapper(self.speak)(content, self.voice, self.param)
             if data:
+                data = TTSResult(data)
                 callback(data)
                 self.LRUCache.put(key, data)
+            else:
+                callback(None)
         except Exception as e:
             print_exc()
-            print(stringfyerror(e))
+            res = TTSResult(error=stringfyerror(e))
+            print(res.error)
+            callback(res)
             return
 
     def ttscachekey(self, content, voice, param):

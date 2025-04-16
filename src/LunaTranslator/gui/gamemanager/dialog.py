@@ -20,7 +20,6 @@ from myutils.config import (
 )
 from gui.usefulwidget import (
     saveposwindow,
-    getboxlayout,
     IconButton,
     threeswitch,
     getsimplecombobox,
@@ -77,9 +76,9 @@ class dialog_savedgame_integrated(saveposwindow):
         self.setWindowIcon(
             qtawesome.icon(globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"])
         )
-        w, self.internallayout = getboxlayout(
-            [], margin0=True, makewidget=True, both=True
-        )
+        w = QWidget()
+        self.internallayout = QHBoxLayout(w)
+        self.internallayout.setContentsMargins(0, 0, 0, 0)
         self.__internal = None
         self.internallayout.addWidget(QWidget())
         self.setCentralWidget(w)

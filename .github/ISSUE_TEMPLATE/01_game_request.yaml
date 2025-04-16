@@ -14,9 +14,9 @@ body:
   attributes:
     label: Game resource 游戏资源
     description: >
-      Give me the game resource via onedrive or googledrive or other unlimited speed network disk. Not accept any network disk that requires installing clients or logging in to download, such as Baidu, Pikpak, etc.
+      Give me the game resource via onedrive or googledrive or other unlimited speed network disk. Not accept any network disk that requires installing clients or logging in to download, such as Baidu, Pikpak, Terabox, etc.
 
-      使用onedrive或googledrive或其他不限速网盘给我游戏资源。不接受任何需要安装客户端、需要登录下载的网盘，例如百度、pikpak等。
+      使用onedrive或googledrive或其他不限速网盘给我游戏资源。不接受任何需要安装客户端、需要登录下载的网盘，例如百度、pikpak、Terabox等。
   validations:
     required: true
 - type: textarea

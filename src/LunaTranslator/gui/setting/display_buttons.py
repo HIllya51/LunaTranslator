@@ -10,16 +10,22 @@ from gui.usefulwidget import (
     makescrollgrid,
     D_getsimpleswitch,
     getsmalllabel,
+    qtawesome,
+    D_getspinbox,
+    D_getcolorbutton,
+    makegrid,
 )
 from gui.dynalang import LDialog
+from gui.setting.display_ui import toolcolorchange
 
 
 class dialog_selecticon(LDialog):
-    def __init__(self, parent, dict, key, btn: IconButton) -> None:
+    def __init__(self, parent, dict, name, key, btn: IconButton) -> None:
 
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.dict = dict
         self.btn = btn
+        self.name = name
         self.key = key
         self.setWindowTitle("选择图标")
         with open(
@@ -46,7 +52,14 @@ class dialog_selecticon(LDialog):
         self.dict[self.key] = _
         self.close()
         gobject.baseobject.translation_ui.refreshtoolicon()
-        self.btn.setIconStr(_)
+
+        color = (
+            globalconfig["buttoncolor_1"]
+            if "icon" == self.key
+            and globalconfig["toolbutton"]["buttons"][self.name].get("icon2")
+            else globalconfig["buttoncolor"]
+        )
+        self.btn.setIcon(qtawesome.icon(_, color=color))
 
 
 def doadjust(_):
@@ -82,15 +95,39 @@ def changerank(item, up, tomax, sortlist: list, savelist, savelay):
     doadjust(None)
 
 
-def createbtn(self, k, key):
+savebtns = {}
+
+
+def refreshtoolicon():
+    for (name, key), btn in savebtns.items():
+
+        color = (
+            globalconfig["buttoncolor_1"]
+            if "icon" == key
+            and globalconfig["toolbutton"]["buttons"][name].get("icon2")
+            else globalconfig["buttoncolor"]
+        )
+        icon = globalconfig["toolbutton"]["buttons"][name][key]
+        btn.setIcon(qtawesome.icon(icon, color=color))
+        btn.setStyleSheet(
+            """IconButton{{border:transparent;padding: 0px;}} 
+            IconButton:hover{{ background-color: {color1}; }}""".format(
+                color1=globalconfig["button_color_normal"] if name != "quit" else "red",
+            )
+        )
+
+
+def createbtn(self, name, key):
     btn = getIconButton(
-        icon=globalconfig["toolbutton"]["buttons"][k][key],
+        icon=globalconfig["toolbutton"]["buttons"][name][key],
     )
+    savebtns[(name, key)] = btn
     btn.clicked.connect(
         functools.partial(
             dialog_selecticon,
             self,
-            globalconfig["toolbutton"]["buttons"][k],
+            globalconfig["toolbutton"]["buttons"][name],
+            name,
             key,
             btn,
         )
@@ -98,13 +135,48 @@ def createbtn(self, k, key):
     return btn
 
 
-def createbuttonwidget(self, lay):
-    # return table
-    grids = [["显示", "", "", "对齐", "", ("图标", 2), "", "说明"]]
+def createbuttonwidget(self, lay: QLayout):
+    grids = [
+        [
+            getsmalllabel("大小"),
+            D_getspinbox(
+                5,
+                100,
+                globalconfig,
+                "buttonsize",
+                callback=lambda _: toolcolorchange(),
+            ),
+            getsmalllabel(""),
+            getsmalllabel("颜色"),
+            D_getcolorbutton(
+                self,
+                globalconfig,
+                "buttoncolor",
+                callback=lambda: (toolcolorchange(), refreshtoolicon()),
+            ),
+            D_getcolorbutton(
+                self,
+                globalconfig,
+                "buttoncolor_1",
+                callback=lambda: (toolcolorchange(), refreshtoolicon()),
+            ),
+            D_getcolorbutton(
+                self,
+                globalconfig,
+                "button_color_normal",
+                callback=lambda: (toolcolorchange(), refreshtoolicon()),
+            ),
+            "",
+        ]
+    ]
+    wid, do = makegrid(grids, delay=True)
+    lay.addWidget(wid)
+    do()
+
     sortlist = globalconfig["toolbutton"]["rank2"]
     savelist = []
     savelay = []
-
+    grids = [["显示", "", "", "对齐", "", ("图标", 2), "", "说明"]]
     for i, k in enumerate(sortlist):
 
         button_up = D_getIconButton(
@@ -157,3 +229,4 @@ def createbuttonwidget(self, lay):
         l.append(t)
         grids.append(l)
     makescrollgrid(grids, lay, savelist, savelay)
+    refreshtoolicon()

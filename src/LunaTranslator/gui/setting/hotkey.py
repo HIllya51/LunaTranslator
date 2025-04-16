@@ -14,9 +14,9 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplekeyseq,
     makescrollgrid,
-    getsmalllabel,
     D_getIconButton,
     makesubtab_lazy,
+    makegrid,
     getboxlayout,
     VisLFormLayout,
     IconButton,
@@ -261,20 +261,31 @@ def selfdefkeys(self, lay: QLayout):
 
 
 def setTab_quick(self, l: QVBoxLayout):
-    l.addWidget(
-        getboxlayout(
-            [
-                getsmalllabel("是否使用快捷键"),
-                D_getsimpleswitch(
-                    globalconfig["quick_setting"],
-                    "use",
-                    callback=functools.partial(__enable, self),
-                ),
-                "",
-            ],
-            makewidget=True,
-        )
-    )
+
+    tab1grids = [
+        [
+            dict(
+                grid=[
+                    [
+                        "使用快捷键",
+                        getboxlayout(
+                            [
+                                D_getsimpleswitch(
+                                    globalconfig["quick_setting"],
+                                    "use",
+                                    callback=functools.partial(__enable, self),
+                                ),
+                                "",
+                            ],
+                        ),
+                    ]
+                ]
+            )
+        ],
+    ]
+    gridlayoutwidget, do = makegrid(tab1grids, delay=True)
+    l.addWidget(gridlayoutwidget)
+    do()
     __ = []
     __vis = []
 

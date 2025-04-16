@@ -1,4 +1,4 @@
-import time
+import uuid
 import os
 import windows, winsharedutils, threading
 from tts.basettsclass import TTSbase, SpeechParam
@@ -10,12 +10,9 @@ class TTS(TTSbase):
     def init(self):
         self.lock = threading.Lock()
         exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
-        t = time.time()
-        t = str(t)
-        pipename = "\\\\.\\Pipe\\voiceroid2_" + t
-        waitsignal = "voiceroid2waitload_" + t
-        mapname = "voiceroid2filemap" + t
-
+        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+        waitsignal = str(uuid.uuid4())
+        mapname = str(uuid.uuid4())
         cmd = '"{}" neospeech {} {} {}'.format(exepath, pipename, waitsignal, mapname)
 
         self.engine = winsharedutils.AutoKillProcess(cmd)
@@ -51,7 +48,7 @@ class TTS(TTSbase):
         )
 
     def getvoicelist(self):
-        cachefname = gobject.gettempdir("{}.txt".format(time.time()))
+        cachefname = gobject.gettempdir("{}.txt".format(uuid.uuid4()))
         exe = os.path.abspath("./files/plugins/shareddllproxy32.exe")
         subprocess.run('"{}"  neospeechlist "{}"'.format(exe, cachefname))
 

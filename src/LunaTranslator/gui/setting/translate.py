@@ -26,7 +26,6 @@ from gui.usefulwidget import (
     getsimpleswitch,
     D_getIconButton,
     D_getsimpleswitch,
-    selectcolor,
     createfoldgrid,
     makesubtab_lazy,
     getspinbox,
@@ -147,7 +146,7 @@ class SpecialFont(PopupWidget):
                 w.setCurrentFont(QFont(dd.get(k, globalconfig["fonttype2"])))
                 w.currentTextChanged.connect(functools.partial(_f, dd, k))
             elif i == 1:
-                t = "字体大小"
+                t = "大小"
                 k = "fontsize"
                 w = getspinbox(
                     1,
@@ -321,19 +320,10 @@ def selectllmcallback(self, countnum: list, btnplus, fanyi, name):
         callback=functools.partial(gobject.baseobject.prepare, uid),
     )
     color = getcolorbutton(
+        self,
         globalconfig["fanyi"][uid],
         "color",
-        parent=self,
-        name="fanyicolor_" + uid,
-        callback=functools.partial(
-            selectcolor,
-            self,
-            globalconfig["fanyi"][uid],
-            "color",
-            None,
-            self,
-            "fanyicolor_" + uid,
-        ),
+        callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
     )
 
     offset = 5 * (len(countnum) % 3)
@@ -468,20 +458,10 @@ def initsome11(self, l, label=None, btnplus=False, savecountnum=False):
                 callback=functools.partial(gobject.baseobject.prepare, fanyi),
             ),
             D_getcolorbutton(
+                self,
                 globalconfig["fanyi"][fanyi],
                 "color",
-                parent=self,
-                name="fanyicolor_" + fanyi,
-                callback=functools.partial(
-                    selectcolor,
-                    self,
-                    globalconfig["fanyi"][fanyi],
-                    "color",
-                    None,
-                    self,
-                    "fanyicolor_" + fanyi,
-                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                ),
+                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
             ),
             last,
         ]
@@ -814,19 +794,10 @@ def __additem(self, layout: QGridLayout, uid):
         callback=functools.partial(gobject.baseobject.prepare, uid),
     )
     color = getcolorbutton(
+        self,
         globalconfig["fanyi"][uid],
         "color",
-        parent=self,
-        name="fanyicolor_" + uid,
-        callback=functools.partial(
-            selectcolor,
-            self,
-            globalconfig["fanyi"][uid],
-            "color",
-            None,
-            self,
-            "fanyicolor_" + uid,
-        ),
+        callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
     )
     offset = 5 * (len(countnum) % 3)
     rx = len(countnum) % 3 == 0

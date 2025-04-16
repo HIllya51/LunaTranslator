@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 from myutils.config import _TR
-import os, time
+import os, uuid
 import windows, winsharedutils, threading
 from language import Languages
 
@@ -34,10 +34,8 @@ class TS(basetrans):
             self.path = os.path.join(base, dll)
             self.path2 = os.path.join(base, "DCT")
 
-            t = time.time()
-            t = str(t)
-            pipename = "\\\\.\\Pipe\\ks_" + t
-            waitsignal = "kswaitload_" + t
+            pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+            waitsignal = str(uuid.uuid4())
             self.engine = winsharedutils.AutoKillProcess(
                 './files/plugins/shareddllproxy32.exe kingsoft "{}" "{}" {} {}'.format(
                     self.path, self.path2, pipename, waitsignal

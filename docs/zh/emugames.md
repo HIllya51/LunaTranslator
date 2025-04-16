@@ -332,6 +332,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | 010033401FE40000 | 罪ノ光ランデヴー |
 |  | 0100DA2019044000 | 結合男子 |
 |  | 0100EA9015126000 | 古書店街の橋姫 Hashihime of the Old Book Town append |
+|  | 0100273013ECA000 | Summer Pockets REFLECTION BLUE |
 
 == PSP
 
@@ -868,6 +869,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPS-25801 | 今日からマ王！ 眞マ国の休日 |
 |  | SLPM-66344 | 遙かなる時空の中で3 運命の迷宮 [Triple Pack] |
 |  | SLPM-65512 & SLPM-65513 | Angel's Feather |
+|  | SLPM-65848 | 空色の風琴 ～Remix～ |
 
 == PS3
 

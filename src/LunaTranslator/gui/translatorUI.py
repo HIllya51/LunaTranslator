@@ -222,7 +222,7 @@ class ButtonBar(QFrame):
         """.format(
             bottomr3=bottomr3,
             color1=globalconfig["button_color_normal"],
-            color0=globalconfig["button_color_close"],
+            color0="red",
             bottomr=bottomr,
             color2=str2rgba(
                 globalconfig["backcolor_tool"], globalconfig["transparent_tool"]
@@ -620,14 +620,10 @@ class TranslatorWindow(resizableframeless):
         windows.keybd_event(windows.VK_RETURN, 0, windows.KEYEVENTF_KEYUP, 0)
 
     def btnsetontopfunction(self):
-        try:
+        globalconfig["keepontop"] = not globalconfig["keepontop"]
 
-            gobject.baseobject.settin_ui.keepontopbutton.clicksignal.emit()
-        except:
-            globalconfig["keepontop"] = not globalconfig["keepontop"]
-
-            self.refreshtoolicon()
-            self.setontopthread()
+        self.refreshtoolicon()
+        self.setontopthread()
 
     def favoritesmenu(self):
         menu = QMenu(gobject.baseobject.commonstylebase)
@@ -1264,21 +1260,15 @@ class TranslatorWindow(resizableframeless):
 
     def setselectableEx(self):
         globalconfig["selectableEx"] = True
-        try:
-            gobject.baseobject.settin_ui.selectable_btn.clicksignal.emit()
-        except:
-            globalconfig["selectable"] = not globalconfig["selectable"]
-            self.translate_text.setselectable(globalconfig["selectable"])
-            self.refreshtoolicon()
+        globalconfig["selectable"] = not globalconfig["selectable"]
+        self.translate_text.setselectable(globalconfig["selectable"])
+        self.refreshtoolicon()
 
     def setselectable(self):
         globalconfig["selectableEx"] = False
-        try:
-            gobject.baseobject.settin_ui.selectable_btn.clicksignal.emit()
-        except:
-            globalconfig["selectable"] = not globalconfig["selectable"]
-            self.translate_text.setselectable(globalconfig["selectable"])
-            self.refreshtoolicon()
+        globalconfig["selectable"] = not globalconfig["selectable"]
+        self.translate_text.setselectable(globalconfig["selectable"])
+        self.refreshtoolicon()
 
     def createborderradiusstring(self, r, merge, top=False):
         if merge:
@@ -1427,11 +1417,8 @@ class TranslatorWindow(resizableframeless):
     def changemousetransparentstate(self, idx):
         if idx == 0:
 
-            try:
-                gobject.baseobject.settin_ui.mousetransbutton.clicksignal.emit()
-            except:
-                globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
-                self.mousetransparent_check()
+            globalconfig["mousetransparent"] = not globalconfig["mousetransparent"]
+            self.mousetransparent_check()
         elif idx == 1:
             globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
@@ -1493,19 +1480,13 @@ class TranslatorWindow(resizableframeless):
 
     def changetoolslockstateEx(self):
         globalconfig["locktoolsEx"] = True
-        try:
-            gobject.baseobject.settin_ui.locktoolsbutton.clicksignal.emit()
-        except:
-            globalconfig["locktools"] = not globalconfig["locktools"]
-            self.refreshtoolicon()
+        globalconfig["locktools"] = not globalconfig["locktools"]
+        self.refreshtoolicon()
 
     def changetoolslockstate(self):
         globalconfig["locktoolsEx"] = False
-        try:
-            gobject.baseobject.settin_ui.locktoolsbutton.clicksignal.emit()
-        except:
-            globalconfig["locktools"] = not globalconfig["locktools"]
-            self.refreshtoolicon()
+        globalconfig["locktools"] = not globalconfig["locktools"]
+        self.refreshtoolicon()
 
     def dynamicextraheight(self):
 

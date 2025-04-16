@@ -10,6 +10,12 @@ from myutils.wrapper import threader
 from myutils.mimehelper import query_mime
 
 
+class ResponseWithHeader:
+    def __init__(self, data, headers):
+        self.headers = headers
+        self.data = data
+
+
 class FileResponse:
 
     def __init__(self, filename):
@@ -46,6 +52,9 @@ class ResponseInfo:
         )
         self.version = version
         self.headers["Access-Control-Allow-Origin"] = "*"
+        if isinstance(body, ResponseWithHeader):
+            self.headers.update(body.headers)
+            body = body.data
         if isinstance(body, bytes):
             self.headers["Content-Length"] = len(body)
         elif isinstance(body, str):

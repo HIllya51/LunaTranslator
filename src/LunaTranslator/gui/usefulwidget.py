@@ -921,48 +921,21 @@ def check_grid_append(grids):
     return notx
 
 
-def getcolorbutton(
-    d,
-    key,
-    callback=None,
-    name=None,
-    parent=None,
-    icon="fa.paint-brush",
-    constcolor=None,
-    enable=True,
-    qicon=None,
-):
-    if qicon is None:
-        qicon = qtawesome.icon(icon, color=constcolor if constcolor else d[key])
-    b = IconButton(None, enable=enable, parent=parent, qicon=qicon)
-    if callback:
-        b.clicked.connect(callback)
-    if name:
-        setattr(parent, name, b)
+def getcolorbutton(parent, d, key, callback=None, alpha=False):
+    qicon = qtawesome.icon("fa.paint-brush", color=d[key])
+    b = IconButton(None, qicon=qicon)
+    cb = functools.partial(__selectcolor, parent, b, d, key, callback, alpha=alpha)
+    b.clicked.connect(cb)
     return b
 
 
-def D_getcolorbutton(
-    d,
-    key,
-    callback,
-    name=None,
-    parent=None,
-    icon="fa.paint-brush",
-    constcolor=None,
-    enable=True,
-    qicon=None,
-):
+def D_getcolorbutton(parent, d, key, callback, alpha=False):
     return lambda: getcolorbutton(
+        parent,
         d,
         key,
         callback,
-        name,
-        parent,
-        icon,
-        constcolor,
-        enable,
-        qicon,
+        alpha=alpha,
     )
 
 
@@ -1046,13 +1019,11 @@ def getColor(color, parent, alpha=False):
     return color_dialog.selectedColor()
 
 
-def selectcolor(
-    parent,
+def __selectcolor(
+    parent: QWidget,
+    button: QPushButton,
     configdict,
     configkey,
-    button,
-    item=None,
-    name=None,
     callback=None,
     alpha=False,
 ):
@@ -1060,8 +1031,6 @@ def selectcolor(
     color = getColor(QColor(configdict[configkey]), parent, alpha)
     if not color.isValid():
         return
-    if button is None:
-        button = getattr(item, name)
     button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
     configdict[configkey] = (
         color.name(QColor.NameFormat.HexArgb) if alpha else color.name()
@@ -1073,9 +1042,7 @@ def selectcolor(
             print_exc()
 
 
-def getboxlayout(
-    widgets, lc=QHBoxLayout, margin0=False, makewidget=False, delay=False, both=False
-):
+def __getboxlayout(widgets, lc=QHBoxLayout, makewidget=False, delay=False):
     w = QWidget() if makewidget else None
     cp_layout = lc(w)
 
@@ -1091,17 +1058,22 @@ def getboxlayout(
                 cp_layout.addLayout(w)
 
     _do = functools.partial(__do, cp_layout, widgets)
-    if margin0:
-        cp_layout.setContentsMargins(0, 0, 0, 0)
+    cp_layout.setContentsMargins(0, 0, 0, 0)
     if not delay:
         _do()
     if delay:
         return w, _do
-    if both:
-        return w, cp_layout
     if makewidget:
         return w
     return cp_layout
+
+
+def getboxlayout(widgets, lc=QHBoxLayout, delay=False):
+    return __getboxlayout(widgets=widgets, lc=lc, makewidget=False, delay=delay)
+
+
+def getboxwidget(widgets, lc=QHBoxLayout, delay=False):
+    return __getboxlayout(widgets=widgets, lc=lc, makewidget=True, delay=delay)
 
 
 class abstractwebview(QWidget):
@@ -2279,7 +2251,10 @@ def automakegrid(grid: QGridLayout, lis, savelist=None):
                     wid = QWidget()
                 if isinstance(wid, tuple):
                     wid, do = wid
-            grid.addWidget(wid, nowr, nowc, 1, cols)
+            if isinstance(wid, QWidget):
+                grid.addWidget(wid, nowr, nowc, 1, cols)
+            else:
+                grid.addLayout(wid, nowr, nowc, 1, cols)
             if do:
                 do()
             if save:

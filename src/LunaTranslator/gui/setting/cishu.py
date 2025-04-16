@@ -11,7 +11,6 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     listediter,
     D_getIconButton,
-    selectcolor,
     D_getspinbox,
     D_getcolorbutton,
     getsimpleswitch,
@@ -65,21 +64,10 @@ class multicolorset(LDialog):
             )
 
             p = getcolorbutton(
+                self,
                 globalconfig["cixingcolor"],
                 k,
-                name="miaobian_color_button",
-                parent=self,
-            )
-
-            p.clicked.connect(
-                functools.partial(
-                    selectcolor,
-                    self,
-                    globalconfig["cixingcolor"],
-                    k,
-                    p,
-                    callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                )
+                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
             )
             hori.addWidget(b)
             hori.addWidget(p)
@@ -303,17 +291,10 @@ def setTabcishu_l(self):
                         "",
                         "颜色",
                         D_getcolorbutton(
+                            self,
                             globalconfig,
                             "jiamingcolor",
-                            callback=lambda: selectcolor(
-                                self,
-                                globalconfig,
-                                "jiamingcolor",
-                                self.jiamingcolor_b,
-                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                            ),
-                            name="jiamingcolor_b",
-                            parent=self,
+                            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                         ),
                         "",
                         "字体缩放",
@@ -378,23 +359,13 @@ def setTabcishu_l(self):
                             callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
                         ),
                         getcolorbutton(
+                            self,
                             globalconfig,
                             "hovercolor",
-                            callback=functools.partial(
-                                selectcolor,
-                                self,
-                                globalconfig,
-                                "hovercolor",
-                                None,
-                                self,
-                                "hovercolor",
-                                callback=lambda: gobject.baseobject.translation_ui.translate_text.sethovercolor(
-                                    globalconfig["hovercolor"]
-                                ),
-                                alpha=True,
+                            callback=lambda: gobject.baseobject.translation_ui.translate_text.sethovercolor(
+                                globalconfig["hovercolor"]
                             ),
-                            name="hovercolor",
-                            parent=self,
+                            alpha=True,
                         ),
                         "",
                         "点击单词复制",

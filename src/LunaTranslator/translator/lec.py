@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import ctypes, time
+import ctypes, uuid
 from myutils.config import _TR
 import windows, winsharedutils, threading
 from language import Languages
@@ -21,10 +21,8 @@ class TS(basetrans):
         if pairs == self.pair:
             return
         self.pair = pairs
-        t = time.time()
-        t = str(t)
-        pipename = "\\\\.\\Pipe\\dreye_" + t
-        waitsignal = "dreyewaitload_" + t
+        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+        waitsignal = str(uuid.uuid4())
         self.engine = winsharedutils.AutoKillProcess(
             "./files/plugins/shareddllproxy32.exe lec {} {} {} {}".format(
                 pipename, waitsignal, self.srclang, self.tgtlang

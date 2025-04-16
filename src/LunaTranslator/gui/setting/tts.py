@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     FocusCombo,
     D_getsimpleswitch,
     getboxlayout,
+    getboxwidget,
     check_grid_append,
 )
 
@@ -67,7 +68,7 @@ def changevoice(self, _):
 
 
 def createrate(self):
-    self.rate____ = getboxlayout(
+    self.rate____ = getboxwidget(
         [
             "语速_(-10~10)",
             D_getspinbox(
@@ -79,8 +80,6 @@ def createrate(self):
                 double=True,
             ),
         ],
-        margin0=True,
-        makewidget=True,
     )
     try:
         self.rate____.setEnabled(self.rate____c)
@@ -90,7 +89,7 @@ def createrate(self):
 
 
 def createpitch(self):
-    self.pitch____ = getboxlayout(
+    self.pitch____ = getboxwidget(
         [
             "音高_(-10~10)",
             D_getspinbox(
@@ -102,8 +101,6 @@ def createpitch(self):
                 double=True,
             ),
         ],
-        margin0=True,
-        makewidget=True,
     )
     try:
         self.pitch____.setEnabled(self.pitch____c)
@@ -231,16 +228,12 @@ def setTab5lz(self):
                                             "volume",
                                         ),
                                     ],
-                                    margin0=True,
-                                    makewidget=True,
                                 ),
                                 "",
                                 functools.partial(createrate, self),
                                 "",
                                 functools.partial(createpitch, self),
                             ],
-                            margin0=True,
-                            makewidget=True,
                         ),
                     ],
                 ],

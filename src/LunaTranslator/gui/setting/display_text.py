@@ -11,6 +11,7 @@ from gui.usefulwidget import (
     D_getspinbox,
     clearlayout,
     getboxlayout,
+    getboxwidget,
     D_getcolorbutton,
     getcolorbutton,
     saveposwindow,
@@ -18,7 +19,6 @@ from gui.usefulwidget import (
     getIconButton,
     getsimpleswitch,
     D_getsimpleswitch,
-    selectcolor,
     FocusFontCombo,
     SuperCombo,
     NQGroupBox,
@@ -122,7 +122,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 keyx = "shadowR"
             widthline = __internal["argstype"].get(keyx, None)
             if widthline is not None:
-                __ = getsmalllabel("x_字体大小_+")()
+                __ = getsmalllabel("x_大小_+")()
                 forml.addRow(
                     name,
                     getboxlayout(
@@ -154,21 +154,10 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
             continue
         if _type == "colorselect":
             lineW = getcolorbutton(
+                self,
                 dd,
                 key,
-                callback=functools.partial(
-                    lambda dd, key: selectcolor(
-                        self,
-                        dd,
-                        key,
-                        self.miaobian_color_button,
-                        callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                    ),
-                    dd,
-                    key,
-                ),
-                name="miaobian_color_button",
-                parent=self,
+                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
             )
         elif _type in ["spin", "intspin"]:
             lineW = getspinbox(
@@ -330,7 +319,7 @@ def GetFormForLineHeight(parent, dic, callback):
         "下边距",
         getspinbox(-100, 100, dic, "marginBottom", callback=callback, default=0),
     )
-    value = getboxlayout(
+    value = getboxwidget(
         [
             getspinbox(
                 0,
@@ -344,8 +333,6 @@ def GetFormForLineHeight(parent, dic, callback):
             ),
             "倍",
         ],
-        margin0=True,
-        makewidget=True,
     )
     value.setEnabled(not dic.get("lineHeightNormal", True))
     lineheigth = getboxlayout(
@@ -363,12 +350,10 @@ def GetFormForLineHeight(parent, dic, callback):
                         default=True,
                     ),
                 ],
-                margin0=True,
             ),
             value,
         ],
         lc=QVBoxLayout,
-        margin0=True,
     )
     form.addRow(SplitLine())
     form.addRow("行高", lineheigth)
@@ -426,21 +411,12 @@ def xianshigrid_style(self):
                                     "",
                                     "颜色",
                                     D_getcolorbutton(
+                                        self,
                                         globalconfig,
                                         "rawtextcolor",
-                                        callback=lambda: selectcolor(
-                                            self,
-                                            globalconfig,
-                                            "rawtextcolor",
-                                            self.original_color_button,
-                                            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
-                                        ),
-                                        name="original_color_button",
-                                        parent=self,
+                                        callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                                     ),
-                                ],
-                                makewidget=True,
-                                margin0=True,
+                                ]
                             ),
                             0,
                         ),
@@ -455,7 +431,7 @@ def xianshigrid_style(self):
                         ),
                     ],
                     [
-                        "字体大小",
+                        "大小",
                         D_getspinbox(
                             5,
                             100,
@@ -504,7 +480,7 @@ def xianshigrid_style(self):
                         ),
                     ],
                     [
-                        "字体大小",
+                        "大小",
                         D_getspinbox(
                             1,
                             100,

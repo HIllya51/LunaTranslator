@@ -28,7 +28,6 @@ from myutils.utils import (
     selectdebugfile,
     targetmod,
 )
-from gui.codeacceptdialog import codeacceptdialog
 from gui.inputdialog import (
     noundictconfigdialog1,
     yuyinzhidingsetting,
@@ -159,9 +158,7 @@ def maybehavebutton(self, gameuid, post):
     else:
         if post not in postprocessconfig:
             return
-        if post == "_remove_chaos":
-            return getIconButton(callback=lambda: codeacceptdialog(self))
-        elif "args" in postprocessconfig[post]:
+        if "args" in postprocessconfig[post]:
             if post == "stringreplace":
                 callback = functools.partial(
                     postconfigdialog2x,
@@ -1166,9 +1163,7 @@ class dialog_setting_game_internal(QWidget):
                         "limittextlength_length",
                         default=globalconfig["embedded"]["limittextlength_length"],
                     ),
-                ],
-                makewidget=True,
-                margin0=True,
+                ]
             ),
         )
         formLayout2.addRow(
@@ -1182,9 +1177,7 @@ class dialog_setting_game_internal(QWidget):
                         callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
                     ),
                     functools.partial(self.creategamefont_comboBox, gameuid),
-                ],
-                makewidget=True,
-                margin0=True,
+                ]
             ),
         )
         formLayout2.addRow(

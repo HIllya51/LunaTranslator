@@ -19,7 +19,7 @@ from traceback import print_exc
 from qtsymbols import *
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
-from gui.usefulwidget import SuperCombo, getboxlayout
+from gui.usefulwidget import SuperCombo, getboxwidget
 from gui.dynalang import LPushButton, LLabel
 from gui.usefulwidget import VisLFormLayout
 
@@ -273,9 +273,7 @@ class question(QWidget):
         btninstall.clicked.connect(self.downloadauto)
         self.btninstall = btninstall
         self.loadcombo()
-        self.lineX = getboxlayout(
-            [self.combo, btninstall], makewidget=True, margin0=True
-        )
+        self.lineX = getboxwidget([self.combo, btninstall])
         formLayout.addRow("添加语言包", self.lineX)
 
         downloadprogress = QProgressBar()

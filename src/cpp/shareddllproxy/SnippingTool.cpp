@@ -18,13 +18,14 @@ typedef __int64(__cdecl *GetOcrLineWordCount_t)(__int64, __int64 *);
 typedef __int64(__cdecl *GetOcrWord_t)(__int64, __int64, __int64 *);
 typedef __int64(__cdecl *GetOcrWordContent_t)(__int64, __int64 *);
 typedef __int64(__cdecl *GetOcrWordBoundingBox_t)(__int64, __int64 *);
-typedef __int64(__cdecl *OcrProcessOptionsSetMaxRecognitionLineCount_t)(
-    __int64, __int64);
+typedef __int64(__cdecl *OcrProcessOptionsSetMaxRecognitionLineCount_t)(__int64, __int64);
 typedef __int64(__cdecl *RunOcrPipeline_t)(__int64, Img *, __int64, __int64 *);
 typedef __int64(__cdecl *CreateOcrProcessOptions_t)(__int64 *);
 typedef __int64(__cdecl *OcrInitOptionsSetUseModelDelayLoad_t)(__int64, char);
-typedef __int64(__cdecl *CreateOcrPipeline_t)(__int64, __int64, __int64,
-                                              __int64 *);
+typedef __int64(__cdecl *CreateOcrPipeline_t)(const char *, const char *, __int64, __int64 *);
+typedef void(__cdecl *ReleaseOcrResult_t)(__int64);
+
+#define GetProc(Name) Name##_t Name = (Name##_t)GetProcAddress(hDLL, #Name);
 
 int SnippingTool(int argc, wchar_t *argv[])
 {
@@ -49,36 +50,21 @@ int SnippingTool(int argc, wchar_t *argv[])
         return 0;
     }
     // Get function pointers
-    CreateOcrInitOptions_t CreateOcrInitOptions =
-        (CreateOcrInitOptions_t)GetProcAddress(hDLL, "CreateOcrInitOptions");
-    GetOcrLineCount_t GetOcrLineCount =
-        (GetOcrLineCount_t)GetProcAddress(hDLL, "GetOcrLineCount");
-    CreateOcrProcessOptions_t CreateOcrProcessOptions =
-        (CreateOcrProcessOptions_t)GetProcAddress(hDLL,
-                                                  "CreateOcrProcessOptions");
-    CreateOcrPipeline_t CreateOcrPipeline =
-        (CreateOcrPipeline_t)GetProcAddress(hDLL, "CreateOcrPipeline");
-    OcrInitOptionsSetUseModelDelayLoad_t OcrInitOptionsSetUseModelDelayLoad =
-        (OcrInitOptionsSetUseModelDelayLoad_t)GetProcAddress(
-            hDLL, "OcrInitOptionsSetUseModelDelayLoad");
-    OcrProcessOptionsSetMaxRecognitionLineCount_t
-        OcrProcessOptionsSetMaxRecognitionLineCount =
-            (OcrProcessOptionsSetMaxRecognitionLineCount_t)GetProcAddress(
-                hDLL, "OcrProcessOptionsSetMaxRecognitionLineCount");
-    RunOcrPipeline_t RunOcrPipeline =
-        (RunOcrPipeline_t)GetProcAddress(hDLL, "RunOcrPipeline");
-    GetOcrLine_t GetOcrLine = (GetOcrLine_t)GetProcAddress(hDLL, "GetOcrLine");
-    GetOcrLineContent_t GetOcrLineContent =
-        (GetOcrLineContent_t)GetProcAddress(hDLL, "GetOcrLineContent");
-    GetOcrLineBoundingBox_t GetOcrLineBoundingBox =
-        (GetOcrLineBoundingBox_t)GetProcAddress(hDLL, "GetOcrLineBoundingBox");
-    GetOcrLineWordCount_t GetOcrLineWordCount =
-        (GetOcrLineWordCount_t)GetProcAddress(hDLL, "GetOcrLineWordCount");
-    GetOcrWord_t GetOcrWord = (GetOcrWord_t)GetProcAddress(hDLL, "GetOcrWord");
-    GetOcrWordContent_t GetOcrWordContent =
-        (GetOcrWordContent_t)GetProcAddress(hDLL, "GetOcrWordContent");
-    GetOcrWordBoundingBox_t GetOcrWordBoundingBox =
-        (GetOcrWordBoundingBox_t)GetProcAddress(hDLL, "GetOcrWordBoundingBox");
+    GetProc(ReleaseOcrResult);
+    GetProc(CreateOcrInitOptions);
+    GetProc(CreateOcrProcessOptions);
+    GetProc(CreateOcrPipeline);
+    GetProc(OcrInitOptionsSetUseModelDelayLoad);
+    GetProc(OcrProcessOptionsSetMaxRecognitionLineCount);
+    GetProc(RunOcrPipeline);
+    GetProc(GetOcrLine);
+    GetProc(GetOcrLineContent);
+    GetProc(GetOcrLineCount);
+    GetProc(GetOcrLineBoundingBox);
+    GetProc(GetOcrLineWordCount);
+    GetProc(GetOcrWord);
+    GetProc(GetOcrWordContent);
+    GetProc(GetOcrWordBoundingBox);
     __int64 ctx = 0;
     __int64 pipeline = 0;
     __int64 opt = 0;
@@ -90,8 +76,7 @@ int SnippingTool(int argc, wchar_t *argv[])
     // key: kj)TGtrK>f]b[Piow.gU+nC@s""""""4
     const char *key = {"kj)TGtrK>f]b[Piow.gU+nC@s\"\"\"\"\"\"4"};
     auto model = std::filesystem::current_path() / "oneocr.onemodel";
-    res = CreateOcrPipeline((__int64)model.string().c_str(), (__int64)key, ctx,
-                            &pipeline);
+    res = CreateOcrPipeline(model.string().c_str(), key, ctx, &pipeline);
     printf("OCR model loaded...\n");
     //  printf("res: %lld, ctx: 0x%llx, pipeline: 0x%llx\n", res, ctx, pipeline);
     //  The key is for the AI model, if key is not right, CreateOcrPipeline will
@@ -111,8 +96,8 @@ int SnippingTool(int argc, wchar_t *argv[])
         res = RunOcrPipeline(pipeline, &img, opt, &instance);
 
         __int64 lc;
-        res = GetOcrLineCount(instance, &lc);
-        assert(res == 0);
+        auto succ = GetOcrLineCount(instance, &lc);
+        assert(succ == 0);
         printf("Recognize %lld lines\n", lc);
         DWORD _;
         WriteFile(hPipe, &lc, sizeof(lc), &_, NULL);
@@ -152,6 +137,7 @@ int SnippingTool(int argc, wchar_t *argv[])
             //     GetOcrWordBoundingBox(v105, &v107);
             // }
         }
+        ReleaseOcrResult(res);
     }
     return 0;
 }

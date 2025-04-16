@@ -68,4 +68,4 @@ class TTS(TTSbase):
             headers=headers,
             json=resp,
         )
-        return response.content
+        return response

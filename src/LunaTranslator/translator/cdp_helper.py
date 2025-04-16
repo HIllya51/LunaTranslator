@@ -82,23 +82,15 @@ class cdp_helper:
     def Runtime_evaluate(self, expression):
         return self._SendRequest("Runtime.evaluate", {"expression": expression})
 
-    def wait_for_result(self, expression, badresult="", multi=False, util=None):
+    def wait_for_result(self, expression):
         for i in range(10000):
             if self.using == False:
                 return
             state = self.Runtime_evaluate(expression)
             try:
                 value = state["result"]["value"]
-                if util is not None:
-                    if value == util:
-                        return value
-                    continue
-                if multi:
-                    if not (value in badresult):
-                        return value
-                else:
-                    if value != badresult:
-                        return value
+                if value:
+                    return value
             except:
                 pass
             time.sleep(0.1)

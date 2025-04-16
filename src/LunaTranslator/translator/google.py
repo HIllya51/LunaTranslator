@@ -13,13 +13,29 @@ class cdp_gg(cdp_helper):
     def using(self):
         return self.ref.using and self.config["usewhich"] == 2
 
-    def translate(self, content):
+    def __init__(self, ref):
+        super().__init__(ref)
+        self.langs = None
+
+    def checklang(self):
+        if (self.ref.srclang, self.ref.tgtlang) == self.langs:
+            return
+        self.langs = (self.ref.srclang, self.ref.tgtlang)
         self.Page_navigate(
-            "https://translate.google.com/?sl={}&tl={}&text={}&op=translate".format(
-                self.ref.srclang, self.ref.tgtlang, quote(content)
+            "https://translate.google.com/?sl={}&tl={}&op=translate".format(
+                self.ref.srclang, self.ref.tgtlang
             )
         )
 
+    def translate(self, content):
+
+        self.checklang()
+
+        self.Runtime_evaluate(
+            "document.querySelector('.DVHrxd').querySelector('button').click()"
+        )
+        self.Runtime_evaluate("document.querySelector('textarea').focus()")
+        self.send_keys(content)
         return self.wait_for_result(
             """document.querySelector('div[class="lRu31"]').innerText""",
         )
@@ -82,7 +98,7 @@ class TS(basetrans):
         )
         json_data = json.loads(response.text[6:])
         data = json.loads(json_data[0][2])
-        return " ".join([x[0] for x in (data[1][0][0][5] or data[1][0])])
+        return " ".join([x[0] for x in (data[1][0][0][5] or data[1][0]) if x[0]])
 
     def translate(self, content):
         if self.config["usewhich"] == 0:

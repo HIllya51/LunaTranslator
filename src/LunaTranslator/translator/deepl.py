@@ -75,55 +75,34 @@ class cdp_deepl(cdp_helper):
             return "zh-hant"
         return self.ref.tgtlang_1
 
+    def __init__(self, ref):
+        super().__init__(ref)
+        self.langs = None
+
+    def checklang(self):
+        if (self.srclang, self.tgtlang) == self.langs:
+            return
+        self.langs = (self.srclang, self.tgtlang)
+        self.Page_navigate(
+            "https://www.deepl.com/en/translator#{}/{}".format(
+                self.srclang, self.tgtlang
+            )
+        )
+
     def translate(self, content):
+        self.checklang()
+
         self.Runtime_evaluate(
             'document.querySelector("#translator-source-clear-button").click()'
         )
-        self.wait_for_result(
-            'document.getElementsByTagName("d-textarea")[1].textContent', util=""
+        self.Runtime_evaluate(
+            """document.getElementsByTagName("d-textarea")[1].querySelectorAll('span').forEach(e=>{e.innerText=''})"""
         )
-        if self.ref.is_src_auto:
-            self.Runtime_evaluate(
-                "document.getElementsByTagName('d-textarea')[0].focus()"
-            )
-            self.send_keys(content)
-            result = self.wait_for_result(
-                'document.getElementsByTagName("d-textarea")[1].textContent',
-                ("complete", ""),
-                multi=True,
-            )
-            while True:
-                href: str = self.wait_for_result("window.location.href")
-                try:
-                    src, tgt = href.split("#")[1].split("/")[:2]
-                    break
-                except:
-                    time.sleep(0.1)
-            if tgt != self.tgtlang:
-                self.Page_navigate(
-                    "https://www.deepl.com/en/translator#{}/{}/{}".format(
-                        src, self.tgtlang, quote(content)
-                    )
-                )
-                return self.wait_for_result(
-                    'document.getElementsByTagName("d-textarea")[1].textContent',
-                    ("complete", ""),
-                    multi=True,
-                )
-            else:
-                return result
-
-        else:
-            self.Page_navigate(
-                "https://www.deepl.com/en/translator#{}/{}/{}".format(
-                    self.srclang, self.tgtlang, quote(content)
-                )
-            )
-            return self.wait_for_result(
-                'document.getElementsByTagName("d-textarea")[1].textContent',
-                ("complete", ""),
-                multi=True,
-            )
+        self.Runtime_evaluate("document.getElementsByTagName('d-textarea')[0].focus()")
+        self.send_keys(content)
+        return self.wait_for_result(
+            'document.getElementsByTagName("d-textarea")[1].textContent'
+        )
 
 
 class TS(basetrans):

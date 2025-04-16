@@ -12,7 +12,7 @@ def setTabThree_lazy(self, basel: QLayout):
     titles = ["文本设置", "界面设置", "工具按钮", "窗口缩放"]
     funcs = [
         lambda l: makescrollgrid(xianshigrid_style(self), l),
-        functools.partial(uisetting, self),
+        lambda l: makescrollgrid(uisetting(self), l),
         functools.partial(createbuttonwidget, self),
         lambda l: makescrollgrid(makescalew(), l),
     ]

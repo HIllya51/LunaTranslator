@@ -5,7 +5,7 @@ from traceback import print_exc
 import qtawesome, windows, winsharedutils, gobject, os
 from textsource.texthook import codepage_display, codepage_real
 from myutils.config import savehook_new_data, globalconfig, _TR, isascii
-from myutils.utils import checkchaos, get_time_stamp, dynamiclink, is_ascii_control
+from myutils.utils import get_time_stamp, dynamiclink, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
 from typing import List
 from gui.usefulwidget import (
@@ -752,12 +752,20 @@ class hookselect(closeashidewindow):
         except:
             print_exc()
 
+    def checkchaos(self, text):
+        try:
+            text.encode("shift-jis")
+            return False
+        except:
+            pass
+        return True
+
     def gethide(self, res: str):
         if self.checkfilt_notascii.isChecked():
             if isascii(res):
                 return True
         if self.checkfilt_notshiftjis.isChecked():
-            if checkchaos(res):
+            if self.checkchaos(res):
                 return True
         if self.checkfilt_notcontrol.isChecked():
             for r in res:

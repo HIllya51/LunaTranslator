@@ -13,7 +13,6 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     clearlayout,
     getboxlayout,
-    selectcolor,
     TableViewW,
     saveposwindow,
     check_grid_append,
@@ -465,17 +464,10 @@ def internal(self):
         [
             "范围框颜色",
             D_getcolorbutton(
+                self,
                 globalconfig,
                 "ocrrangecolor",
-                callback=lambda: selectcolor(
-                    self,
-                    globalconfig,
-                    "ocrrangecolor",
-                    self.ocrrangecolor_button,
-                    callback=lambda: gobject.baseobject.textsource.setstyle(),
-                ),
-                name="ocrrangecolor_button",
-                parent=self,
+                callback=lambda: gobject.baseobject.textsource.setstyle(),
             ),
             "",
             "范围框宽度",

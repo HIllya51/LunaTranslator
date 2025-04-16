@@ -46,6 +46,7 @@ src/cpp/libs/opencv-*
 src/cpp/libs/onnxruntime-*
 src/cpp/LunaHook/.vscode/settings.json
 src/cpp/libs/YY-Thunks
+src/cpp/libs/VC-LTL
 src/LunaTranslator/.vscode/settings.json
 src/files/html/yearsummary/yearsummary.value.js
 docs/.vitepress/cache

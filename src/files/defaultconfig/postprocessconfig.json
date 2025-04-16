@@ -19,10 +19,6 @@
         "use": false,
         "name": "过滤英文标点"
     },
-    "_remove_chaos": {
-        "use": false,
-        "name": "过滤其他乱码"
-    },
     "_remove_not_in_ja_bracket": {
         "use": false,
         "name": "过滤「」以外的字符"

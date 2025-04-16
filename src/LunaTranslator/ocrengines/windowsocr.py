@@ -105,10 +105,7 @@ def question():
             )
         )
         lst.append(btndownload)
-    formLayout.addRow(
-        "添加语言包",
-        getboxlayout(lst, makewidget=True, margin0=True),
-    )
+    formLayout.addRow("添加语言包", getboxlayout(lst))
     return dialog
 
 

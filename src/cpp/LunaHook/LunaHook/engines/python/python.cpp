@@ -96,17 +96,15 @@ namespace
         auto singletask = [&](int i)
         {
             HINSTANCE hGdi32 = GetModuleHandleA("gdi32.dll");
-            if (hGdi32 == 0)
+            if (!hGdi32)
                 return;
             PGFRI GetFontResourceInfo = (PGFRI)GetProcAddress(hGdi32, "GetFontResourceInfoW");
             for (auto j = i; j < collectfile.size(); j += LOADFONTTHREADNUM)
             {
                 auto fontfile = collectfile[j];
                 DWORD dwFontsLoaded = AddFontResourceExW(fontfile.c_str(), FR_PRIVATE, 0);
-                if (dwFontsLoaded == 0)
-                {
+                if (!dwFontsLoaded)
                     continue;
-                }
 
                 auto lpLogfonts = std::make_unique<LOGFONTW[]>(dwFontsLoaded);
                 DWORD cbBuffer = dwFontsLoaded * sizeof(LOGFONTW);

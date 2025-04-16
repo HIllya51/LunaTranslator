@@ -6,8 +6,8 @@ public:
     Mink()
     {
 
-        check_by = CHECK_BY::FILE;
-        check_by_target = L"*.at2"; // Mink, sample files: voice.at2, voice.det, voice.nme
+        check_by = CHECK_BY::FILE_ANY;
+        check_by_target = check_by_list{L"*.at2", L"*.atm"}; // Mink, sample files: voice.at2, voice.det, voice.nme
     };
     bool attach_function();
 };

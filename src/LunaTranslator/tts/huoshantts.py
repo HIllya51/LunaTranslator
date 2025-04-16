@@ -1,5 +1,5 @@
 import base64
-from tts.basettsclass import TTSbase
+from tts.basettsclass import TTSbase, TTSResult
 
 
 class TTS(TTSbase):
@@ -74,6 +74,6 @@ class TTS(TTSbase):
         )
         try:
             b64 = base64.b64decode(response.json()["audio"]["data"])
-            return b64
+            return TTSResult(b64, "mp3")
         except:
             raise Exception(response)

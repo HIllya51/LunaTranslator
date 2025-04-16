@@ -66,6 +66,7 @@ class IconicFont(QObject):
         font = QFont()
         font.setFamily(self.fontname)
         font.setPixelSize(round(size))
+        font.setBold(False)
         return font
 
     def _icon_by_painter(self, char, color):

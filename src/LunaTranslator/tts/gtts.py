@@ -223,7 +223,7 @@ class Speed:
     NORMAL = None
 
 
-from tts.basettsclass import TTSbase, SpeechParam
+from tts.basettsclass import TTSbase, SpeechParam, TTSResult
 
 
 class TTS(TTSbase):
@@ -308,13 +308,15 @@ class TTS(TTSbase):
             yield r
 
     def langdetect(self, text):
-        param = [[text, self.srclang, self.tgtlang, True], [1]]
-        freq = {"f.req": [[["MkEWBc", param, None, "generic"]]]}
+        param = json.dumps([[text, self.srclang, self.tgtlang, True], [1]])
+        freq = json.dumps([[["MkEWBc", param, None, "generic"]]])
+        freq = {"f.req": freq}
 
         headers = {
             "Origin": "https://translate.google.com",
             "Referer": "https://translate.google.com",
             "X-Requested-With": "XMLHttpRequest",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
         }
 
         response = self.proxysession.post(
@@ -360,7 +362,9 @@ class TTS(TTSbase):
         return [""], [""]
 
     def speak(self, content, _, speed: SpeechParam):
-        return b"".join(self.stream(content, speed.speed < 0))
+        return TTSResult(
+            b"".join(self.stream(content, speed.speed < 0)), type="audio/mpeg"
+        )
 
     def ttscachekey(self, *argc):
         return self.srclang, super().ttscachekey(*argc)

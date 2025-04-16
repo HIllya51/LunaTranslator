@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans
 import ctypes
-import os, time
+import os, uuid
 import windows, winsharedutils, threading
 from myutils.config import _TR
 from language import Languages
@@ -35,10 +35,8 @@ class TS(basetrans):
                 d = os.path.abspath(os.path.join(d, "Jcuser"))
                 dictpath += ' "{}" '.format(d)
 
-            t = time.time()
-            t = str(t)
-            pipename = "\\\\.\\Pipe\\jbj7_" + t
-            waitsignal = "jbjwaitload_" + t
+            pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+            waitsignal = str(uuid.uuid4())
 
             self.engine = winsharedutils.AutoKillProcess(
                 './files/plugins/shareddllproxy32.exe jbj7 "{}" {} {}'.format(

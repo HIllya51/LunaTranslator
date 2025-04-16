@@ -1092,25 +1092,6 @@ def is_ascii_control(c: str):
     return cinranges(c, (0, 0x9), (0xB, 0xC), (0xE, 0x1F), (0x7F, 0xA0))
 
 
-def checkchaos(text):
-    code = globalconfig["accept_encoding"]
-    text = filter(lambda x: x not in globalconfig["accept_character"], text)
-
-    if globalconfig["accept_use_unicode"]:
-        _start = globalconfig["accept_use_unicode_start"]
-        _end = globalconfig["accept_use_unicode_end"]
-        return not all(cinranges(c, (_start, _end)) for c in text)
-    else:
-        text = "".join(text)
-        for c in code:
-            try:
-                text.encode(c)
-                return False
-            except:
-                pass
-        return True
-
-
 def markdown_to_html(markdown_text: str):
     print(markdown_text)
     lines = markdown_text.split("\n")

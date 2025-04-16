@@ -10,7 +10,7 @@ import gobject, hashlib, json, os, functools
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
-import copy
+import copy, uuid
 from gui.usefulwidget import WebviewWidget
 from sometypes import WordSegResult
 
@@ -175,9 +175,7 @@ class somecommon(dataget):
 
     def createtextlineid(self, texttype: TextType, klass: str):
         self.setfontextra(klass)
-        _id = "luna_{}".format(
-            hashlib.sha256((str(texttype) + str(klass)).encode()).hexdigest()
-        )
+        _id = "luna_{}".format(uuid.uuid4())
         self.create_div_line_id(_id, texttype, klass)
         return _id
 

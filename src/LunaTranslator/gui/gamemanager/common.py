@@ -26,7 +26,6 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getsimplepatheditor,
     getspinbox,
-    selectcolor,
     ClickableLabel,
     SplitLine,
 )
@@ -450,21 +449,11 @@ class dialog_syssetting(LDialog):
             formLayout.addRow(
                 name,
                 getcolorbutton(
+                    self,
                     globalconfig["dialog_savegame_layout"],
                     key,
-                    callback=functools.partial(
-                        selectcolor,
-                        self,
-                        globalconfig["dialog_savegame_layout"],
-                        key,
-                        None,
-                        self,
-                        key,
-                        callback=self.parent().setstyle,
-                        alpha=True,
-                    ),
-                    name=key,
-                    parent=self,
+                    callback=self.parent().setstyle,
+                    alpha=True,
                 ),
             )
         self.show()

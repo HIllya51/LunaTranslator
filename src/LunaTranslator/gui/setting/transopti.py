@@ -7,14 +7,13 @@ from myutils.utils import (
     dynamiclink,
     loadpostsettingwindowmethod,
 )
+from myutils.post import processfunctions
 from myutils.config import globalconfig, postprocessconfig, static_data
-from gui.codeacceptdialog import codeacceptdialog
 from gui.usefulwidget import (
     D_getIconButton,
     getIconButton,
     D_getsimpleswitch,
     makescrollgrid,
-    getboxlayout,
     makesubtab_lazy,
 )
 from gui.inputdialog import (
@@ -74,6 +73,12 @@ def setTab7_lazy(self, basel: QLayout):
     ]
     if set(postprocessconfig.keys()) != set(globalconfig["postprocess_rank"]):
         globalconfig["postprocess_rank"] = list(postprocessconfig.keys())
+    _bads = []
+    for _ in globalconfig["postprocess_rank"]:
+        if _ not in processfunctions:
+            _bads.append(_)
+    for _ in _bads:
+        globalconfig["postprocess_rank"].remove(_)
     sortlist: list = globalconfig["postprocess_rank"]
     savelist = []
     savelay = []
@@ -111,13 +116,7 @@ def setTab7_lazy(self, basel: QLayout):
                 icon="fa.edit",
             )
         else:
-            if post not in postprocessconfig:
-                continue
-            if post == "_remove_chaos":
-                config = D_getIconButton(
-                    callback=lambda: codeacceptdialog(self),
-                )
-            elif "args" in postprocessconfig[post]:
+            if "args" in postprocessconfig[post]:
 
                 if post == "stringreplace":
                     callback = functools.partial(
@@ -199,9 +198,9 @@ def setTab7_lazy(self, basel: QLayout):
     grids2 += [[("", 15)]]
 
     def ___(lay: QVBoxLayout):
-        vboxw, vbox = getboxlayout(
-            [], lc=QVBoxLayout, margin0=True, makewidget=True, both=True
-        )
+        vboxw = QWidget()
+        vbox = QVBoxLayout(vboxw)
+        vbox.setContentsMargins(0, 0, 0, 0)
         lay.addWidget(vboxw)
         makescrollgrid(grids, vbox, savelist, savelay)
 

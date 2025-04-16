@@ -58,6 +58,7 @@ from gui.usefulwidget import PopupWidget
 from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
 from services.servicecollection import registerall
 from services.tcpservice import TCPService
+from tts.basettsclass import TTSbase
 
 
 class MAINUI:
@@ -140,7 +141,7 @@ class MAINUI:
             print_exc()
 
     @property
-    def reader(self):
+    def reader(self) -> TTSbase:
         return self._internal_reader
 
     @reader.setter
@@ -1010,8 +1011,7 @@ class MAINUI:
             globalconfig["force_rect"],
         )
         if ismenulist:
-            darklight = ["light", "dark"][self.currentisdark]
-            name = globalconfig[darklight + "theme2"]
+            name = globalconfig["theme3"]
             winsharedutils.setbackdropX(int(widget.winId()), name == "QTWin11", dark)
 
     @threader
@@ -1147,11 +1147,11 @@ class MAINUI:
         style = ""
         for _ in (0,):
             try:
-                name = globalconfig[darklight + "theme2"]
+                name = globalconfig["theme3"]
                 _fn = None
-                for n in static_data["themes"][darklight]:
+                for n in static_data["themes"]:
                     if n["name"] == name:
-                        _fn = n["file"]
+                        _fn = n["file"][darklight]
                         break
 
                 if not _fn:
@@ -1178,7 +1178,7 @@ class MAINUI:
         style += "QListWidget {{ {} }}".format(
             fontstr(globalconfig["settingfontsize"] + 2)
         )
-        style += "QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
+        style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
         self.commonstylebase.setStyleSheet(style)
         font = QFont()
         font.setFamily(globalconfig["settingfonttype"])
