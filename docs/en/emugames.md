@@ -1,6 +1,6 @@
 # Emulator Game Support
 
-LunaTranslator supports a wide range of games on NS/PSP/PSV/PS3 through HOOK emulator. 
+LunaTranslator supports a wide range of games on NS/PSP/PSV/PS2 through HOOK emulator. 
 
 For games that are not supported, please send an [issue](https://lunatranslator.org/Resource/game_support)
 
@@ -11,7 +11,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
 | PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
-| PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
+<!-- | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |-->
 :::
 
 ::: tabs
@@ -870,13 +870,5 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-66344 | 遙かなる時空の中で3 運命の迷宮 [Triple Pack] |
 |  | SLPM-65512 & SLPM-65513 | Angel's Feather |
 |  | SLPM-65848 | 空色の風琴 ～Remix～ |
-
-== PS3
-
-
-|  | ID       | Game                |
-| ---- | ---------- | ------------------- |
-|  | BLJM61131 | ‘＆’ - 空の向こうで咲きますように - |
-|  | BLJM60347 | Dunamis15 |
 
 :::

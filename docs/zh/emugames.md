@@ -1,6 +1,6 @@
 # 模拟器游戏支持
 
-LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
+LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 对于未支持的游戏，请向我发[issue](https://lunatranslator.org/Resource/game_support)。
 
@@ -11,7 +11,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
 | PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
-| PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |
+<!-- | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |-->
 :::
 
 ::: tabs
@@ -870,13 +870,5 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS3上的大量游戏。
 |  | SLPM-66344 | 遙かなる時空の中で3 運命の迷宮 [Triple Pack] |
 |  | SLPM-65512 & SLPM-65513 | Angel's Feather |
 |  | SLPM-65848 | 空色の風琴 ～Remix～ |
-
-== PS3
-
-
-|  | ID       | Game                |
-| ---- | ---------- | ------------------- |
-|  | BLJM61131 | ‘＆’ - 空の向こうで咲きますように - |
-|  | BLJM60347 | Dunamis15 |
 
 :::
