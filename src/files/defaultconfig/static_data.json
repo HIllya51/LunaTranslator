@@ -7,6 +7,13 @@
                 "light": "PyQtDarkTheme/light.py",
                 "setting": "PyQtDarkTheme/setting.py"
             }
+        },
+        {
+            "name": "QTWin11",
+            "file": {
+                "dark": "QTWin11/dark.py",
+                "light": "QTWin11/light.py"
+            }
         }
     ],
     "font_type_default": {
