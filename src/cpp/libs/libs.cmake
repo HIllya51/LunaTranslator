@@ -1,7 +1,4 @@
 ﻿
-add_library(nlohmann INTERFACE)
-target_include_directories(nlohmann INTERFACE ${CMAKE_CURRENT_LIST_DIR})
-
 option(WINXP "WINXP" OFF)
 
 # add_library(Detours ${CMAKE_CURRENT_LIST_DIR}/Detours/src/creatwth.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/detours.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/modules.cpp ${CMAKE_CURRENT_LIST_DIR}/Detours/src/disasm.cpp)
