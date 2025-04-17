@@ -4,6 +4,10 @@ add_executable(LunaHost WIN32 ../injector.cpp confighelper.cpp controls.cpp main
 target_precompile_headers(LunaHost REUSE_FROM pch) 
 set_target_properties(LunaHost PROPERTIES OUTPUT_NAME "LunaHost${bitappendix}")
 
-target_include_directories(LunaHost ${CMAKE_SOURCE_DIR}/../libs)
-target_link_libraries(LunaHost comctl32 winhttp pch host nlohmann ${YY_Thunks} lang_ui)
+include(FetchContent)
+
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.12.0/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
+target_link_libraries(LunaHost comctl32 winhttp pch host nlohmann_json::nlohmann_json ${YY_Thunks} lang_ui)
 endif()
