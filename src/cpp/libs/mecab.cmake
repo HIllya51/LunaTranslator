@@ -1,40 +1,45 @@
-project(mecab)
-
-if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/mecab/mecab.h)
-    file(GLOB SOURCES "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/*.cpp")
-    file(GLOB SOURCESH "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/*.h")
 
 
-    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/mecab-cost-train.cpp")
-    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/mecab-dict-gen.cpp")
-    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/mecab-dict-index.cpp")
-    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/mecab-system-eval.cpp")
-    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/mecab-test-gen.cpp")
+set(mecabsrc "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src")
+set(mecabsrcnew "${CMAKE_CURRENT_BINARY_DIR}/mecab")
 
 
-    list(REMOVE_ITEM SOURCES "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/dictionary.cpp")
 
-    list(REMOVE_ITEM SOURCESH "${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/mecab.h")
+if(NOT EXISTS "${mecabsrcnew}/mecab.h")
+    
+    file(GLOB SOURCES "${mecabsrc}/*.cpp")
+    file(GLOB SOURCESH "${mecabsrc}/*.h")
 
-    file(COPY ${SOURCES} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/mecab")
-    file(COPY ${SOURCESH} DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/mecab")
+    list(REMOVE_ITEM SOURCES "${mecabsrc}/mecab-cost-train.cpp")
+    list(REMOVE_ITEM SOURCES "${mecabsrc}/mecab-dict-gen.cpp")
+    list(REMOVE_ITEM SOURCES "${mecabsrc}/mecab-dict-index.cpp")
+    list(REMOVE_ITEM SOURCES "${mecabsrc}/mecab-system-eval.cpp")
+    list(REMOVE_ITEM SOURCES "${mecabsrc}/mecab-test-gen.cpp")
 
+    list(REMOVE_ITEM SOURCESH "${mecabsrc}/mecab.h")
 
-    file(READ ${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/dictionary.cpp dictionary)
-    set(dictionary "namespace std{\n    template<class Argv1, class Argv2, class Result>\n      struct binary_function\n      {\n          typedef Argv1 first_argument_type;\n          typedef Argv2 second_argument_type;\n          typedef Result result_type;\n      };\n  }\n"${dictionary})
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/mecab/dictionary.cpp "${dictionary}")
+    file(COPY ${SOURCES} DESTINATION "${mecabsrcnew}")
+    file(COPY ${SOURCESH} DESTINATION "${mecabsrcnew}")
 
-    file(READ ${CMAKE_CURRENT_LIST_DIR}/mecab/mecab/src/mecab.h mecabh)
+    if(NOT WINXP)
+        file(READ "${mecabsrc}/dictionary.cpp" dictionary)
+        set(dictionary "namespace std{\n    template<class Argv1, class Argv2, class Result>\n      struct binary_function\n      {\n          typedef Argv1 first_argument_type;\n          typedef Argv2 second_argument_type;\n          typedef Result result_type;\n      };\n  }\n"${dictionary})
+        file(WRITE "${mecabsrcnew}/dictionary.cpp" "${dictionary}")
+        list(REMOVE_ITEM SOURCES "${mecabsrc}/dictionary.cpp")
+        list(APPEND SOURCES "${mecabsrcnew}/dictionary.cpp")
+    endif()
+
+    file(READ "${mecabsrc}/mecab.h" mecabh)
     string(REPLACE "#  ifdef DLL_EXPORT\n#    define MECAB_DLL_EXTERN  __declspec(dllexport)\n#    define MECAB_DLL_CLASS_EXTERN  __declspec(dllexport)\n#  else\n#    define MECAB_DLL_EXTERN  __declspec(dllimport)\n#  endif" "" mecabh "${mecabh}")
-    file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/mecab/mecab.h "${mecabh}")
-
+    file(WRITE "${mecabsrcnew}/mecab.h" "${mecabh}")
 endif()
 
-file(GLOB SOURCES "${CMAKE_CURRENT_BINARY_DIR}/mecab/*.cpp")
+file(GLOB SOURCES "${mecabsrcnew}/*.cpp") 
+
 
 add_library(libmecab ${SOURCES})
 
-target_include_directories(libmecab PUBLIC ${CMAKE_CURRENT_BINARY_DIR}/mecab)
+target_include_directories(libmecab INTERFACE "${mecabsrc}")
 target_compile_options(libmecab PRIVATE /EHsc
                                         /std:c++14
                                         /GL         

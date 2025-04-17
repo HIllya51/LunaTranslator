@@ -2,6 +2,7 @@
 add_library(nlohmann INTERFACE)
 target_include_directories(nlohmann INTERFACE ${CMAKE_CURRENT_LIST_DIR})
 
+option(WINXP "WINXP" OFF)
 option(IS_LUNAHOOK "IS_LUNAHOOK" OFF)
 if(IS_LUNAHOOK)
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/minhook ${CMAKE_BINARY_DIR}/minhook)
@@ -36,7 +37,6 @@ else()
 
 endif()
 
-option(WINXP "WINXP" OFF)
 if(WINXP)
     add_definitions(-DWINXP=${WINXP})
     set(YY_Thunks ${CMAKE_CURRENT_LIST_DIR}/YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj)
