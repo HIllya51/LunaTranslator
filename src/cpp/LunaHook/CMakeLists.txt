@@ -57,7 +57,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $<1:${binary_out_putpath}>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${binary_out_putpath}>)
 
 include_directories(.)
-option(USE_VCLTL "USE_VCLTL" OFF)
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/../libs/minhook ${CMAKE_BINARY_DIR}/minhook)
 
