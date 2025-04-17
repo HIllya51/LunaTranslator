@@ -4,13 +4,13 @@
 
 ### Windows 7 and above systems
 
-64-bit <a href="https://lunatranslator.org/Resource/DownloadLuna/64"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 
+<a href="https://lunatranslator.org/Resource/DownloadLuna/64"> 64-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_64bit-blue"/> </a>
 
-32-bit <a href="https://lunatranslator.org/Resource/DownloadLuna/32"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+<a href="https://lunatranslator.org/Resource/DownloadLuna/32"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit-blue"/> </a>
 
 ### Windows XP & Vista systems
 
-32-bit <a href="https://lunatranslator.org/Resource/DownloadLuna/xp"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
+<a href="https://lunatranslator.org/Resource/DownloadLuna/xp"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
 ## Launch
 

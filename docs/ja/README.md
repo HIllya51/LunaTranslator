@@ -4,13 +4,13 @@
 
 ### Windows 7 以降のシステム
 
-64ビット <a href="https://lunatranslator.org/Resource/DownloadLuna/64"><img src="https://img.shields.io/badge/download_64bit-blue"/></a> 
+<a href="https://lunatranslator.org/Resource/DownloadLuna/64"> 64ビット <img style="display:inline-block" src="https://img.shields.io/badge/download_64bit-blue"/> </a>
 
-32ビット <a href="https://lunatranslator.org/Resource/DownloadLuna/32"><img src="https://img.shields.io/badge/download_32bit-blue"/></a>
+<a href="https://lunatranslator.org/Resource/DownloadLuna/32"> 32ビット <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit-blue"/> </a>
 
 ### Windows XP & Vista システム
 
-32ビット <a href="https://lunatranslator.org/Resource/DownloadLuna/xp"><img src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
+<a href="https://lunatranslator.org/Resource/DownloadLuna/xp"> 32ビット <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
 ## 起動
 
