@@ -41,7 +41,6 @@ checkdir(
         r"wcocr\wechat-ocr",
         r"LunaHook\build",
         r"LunaHook\builds",
-        r"LunaHook\LunaHost\GUI\Plugin\extensions",
     ),
 )
 print(cnt)
