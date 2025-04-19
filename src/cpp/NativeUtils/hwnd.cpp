@@ -2,7 +2,7 @@
 #include <uiautomation.h>
 #include "osversion.hpp"
 
-DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
+DECLARE_API void SetWindowInTaskbar(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
     LONG style = GetWindowLong(hwnd, GWL_STYLE);
@@ -28,7 +28,7 @@ DECLARE_API void showintab(HWND hwnd, bool show, bool tool)
 #else
 #define FUCKPRIVI (GetOSVersion().IsleWinXP() ? PROCESS_QUERY_INFORMATION : PROCESS_QUERY_LIMITED_INFORMATION)
 #endif
-DECLARE_API bool pid_running(DWORD pid)
+DECLARE_API bool IsProcessRunning(DWORD pid)
 {
     CHandle hprocess{OpenProcess(FUCKPRIVI, FALSE, pid)};
     if (!hprocess)
@@ -60,7 +60,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
     }
     return TRUE;
 }
-DECLARE_API HWND getpidhwndfirst(DWORD pid)
+DECLARE_API HWND GetProcessFirstWindow(DWORD pid)
 {
     __EnumWindowsProc info = {pid, 0};
     EnumWindows(EnumWindowsProc, (LPARAM)&info);
@@ -87,7 +87,7 @@ DECLARE_API bool Is64bit(DWORD pid)
     return f64bitProc;
 }
 
-DECLARE_API void getprocesses(void (*cb)(DWORD, const wchar_t *))
+DECLARE_API void ListProcesses(void (*cb)(DWORD, const wchar_t *))
 {
     std::unordered_map<std::wstring, std::vector<int>> exe_pid;
     CHandle hSnapshot{CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)};
@@ -106,7 +106,7 @@ DECLARE_API void getprocesses(void (*cb)(DWORD, const wchar_t *))
     }
 }
 
-DECLARE_API bool check_window_viewable(HWND hwnd)
+DECLARE_API bool IsWindowViewable(HWND hwnd)
 {
     RECT windowRect;
     if (!GetWindowRect(hwnd, &windowRect))
@@ -181,12 +181,15 @@ DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
     }
     return succ;
 }
-
-DECLARE_API void *get_allAccess_ptr()
+DECLARE_API HANDLE SimpleCreateEvent(LPCWSTR N)
 {
-    return &allAccess;
+    return CreateEventW(&allAccess, FALSE, FALSE, N);
 }
-DECLARE_API HANDLE createprocess(LPCWSTR command, LPCWSTR path, DWORD *pid)
+DECLARE_API HANDLE SimpleCreateMutex(LPCWSTR N)
+{
+    return CreateMutexW(&allAccess, FALSE, N);
+}
+DECLARE_API HANDLE CreateAutoKillProcess(LPCWSTR command, LPCWSTR path, DWORD *pid)
 {
     // 防止进程意外退出时，子进程僵死
     std::wstring _ = command;

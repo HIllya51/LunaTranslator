@@ -82,7 +82,7 @@ std::optional<SimpleBMP> getbmp(HICON hicon)
     return CreateBMP(hBitmap);
 }
 extern HWND globalmessagehwnd;
-DECLARE_API bool extracticon2data(bool large, const wchar_t *name, void (*cb)(const byte *, size_t))
+DECLARE_API bool ExtractExeIconData(bool large, const wchar_t *name, void (*cb)(const byte *, size_t))
 {
     // if (UINT_MAX == ExtractIconExW(name, 0, &h1, &h2, 1))
     //     return false;

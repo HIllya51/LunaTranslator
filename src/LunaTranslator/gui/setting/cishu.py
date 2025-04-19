@@ -194,7 +194,7 @@ def initinternal(self, names):
     line = []
     i = 0
     for cishu in names:
-        _f = "./LunaTranslator/cishu/{}.py".format(cishu)
+        _f = "LunaTranslator/cishu/{}.py".format(cishu)
         if os.path.exists(_f) == False:
             continue
 

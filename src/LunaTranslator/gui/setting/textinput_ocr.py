@@ -20,6 +20,7 @@ from gui.usefulwidget import (
     LStandardItemModel,
     SuperCombo,
     NQGroupBox,
+    getsmalllabel,
     threebuttons,
     makesubtab_lazy,
     makescrollgrid,
@@ -138,7 +139,7 @@ def initgridsources(self, names):
     i = 0
     grids_source = []
     for name in names:
-        _f = "./Lunatranslator/ocrengines/{}.py".format(name)
+        _f = "Lunatranslator/ocrengines/{}.py".format(name)
         if os.path.exists(_f) == False:
             continue
         if name in ocrsetting:
@@ -190,9 +191,9 @@ def initgridsources(self, names):
     return grids_source
 
 
-def _ocrparam_create(self, idx):
+def _ocrparam_create(self, f):
     clearlayout(self._ocrparaml)
-    if idx in [1, 2]:
+    if f == "period":
         self._ocrparaml.addRow(
             "执行周期_(s)",
             getboxlayout(
@@ -209,7 +210,7 @@ def _ocrparam_create(self, idx):
                 ]
             ),
         )
-    if idx in [3]:
+    if f == "trigger":
         self._ocrparaml.addRow(
             "触发事件",
             getboxlayout([D_getIconButton(functools.partial(triggereditor, self))]),
@@ -230,7 +231,7 @@ def _ocrparam_create(self, idx):
                 ]
             ),
         )
-    if idx in [0, 2, 3]:
+    if f in ["analysis", "trigger"]:
         self._ocrparaml.addRow(
             "图像稳定性阈值",
             getboxlayout(
@@ -239,7 +240,7 @@ def _ocrparam_create(self, idx):
                         0,
                         1,
                         globalconfig,
-                        ("ocr_stable_sim", "ocr_stable_sim2")[idx == 3],
+                        ("ocr_stable_sim_v2", "ocr_stable_sim2_v2")[f == "trigger"],
                         double=True,
                         step=0.001,
                     ),
@@ -247,7 +248,7 @@ def _ocrparam_create(self, idx):
                 ]
             ),
         )
-    if idx in [0, 2]:
+    if f == "analysis":
         self._ocrparaml.addRow(
             "图像一致性阈值",
             getboxlayout(
@@ -256,7 +257,7 @@ def _ocrparam_create(self, idx):
                         0,
                         1,
                         globalconfig,
-                        "ocr_diff_sim",
+                        "ocr_diff_sim_v2",
                         double=True,
                         step=0.001,
                     ),
@@ -264,19 +265,16 @@ def _ocrparam_create(self, idx):
                 ]
             ),
         )
-    if idx in [0, 1, 2]:
-        self._ocrparaml.addRow(
-            "文本相似度阈值",
-            getboxlayout(
-                [D_getspinbox(0, 100000, globalconfig, "ocr_text_diff"), QLabel]
-            ),
-        )
+    self._ocrparaml.addRow(
+        "文本相似度阈值",
+        getboxlayout([D_getspinbox(0, 100000, globalconfig, "ocr_text_diff"), QLabel]),
+    )
 
 
 def _ocrparam(self):
     self._ocrparam = NQGroupBox()
     self._ocrparaml = LFormLayout(self._ocrparam)
-    _ocrparam_create(self, globalconfig["ocr_auto_method"])
+    _ocrparam_create(self, globalconfig["ocr_auto_method_v2"])
     return self._ocrparam
 
 
@@ -304,8 +302,6 @@ class showocrimage(saveposwindow):
         self.setimagefunction(img)
         result = ocr_run(img)
         result = result.maybeerror()
-        if result:
-            gobject.baseobject.textgetmethod(result, False)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
@@ -363,8 +359,6 @@ class showocrimage(saveposwindow):
         transform.rotate(self.dial.value())
         result = ocr_run(self.originimage.transformed(transform))
         result = result.maybeerror()
-        if result:
-            gobject.baseobject.textgetmethod(result, False)
 
     def setimagefunction(self, originimage):
         self.originimage = originimage
@@ -389,7 +383,7 @@ def internal(self):
             ),
             D_getIconButton(
                 callback=lambda: os.startfile(
-                    dynamiclink("{docs_server}/useapis/ocrapi.html")
+                    dynamiclink("/useapis/ocrapi.html", docs=True)
                 ),
                 icon="fa.question",
             ),
@@ -405,7 +399,7 @@ def internal(self):
                 [
                     D_getIconButton(
                         callback=lambda: os.startfile(
-                            dynamiclink("{docs_server}/ocrparam.html")
+                            dynamiclink("/ocrparam.html", docs=True)
                         ),
                         icon="fa.question",
                     ),
@@ -413,11 +407,11 @@ def internal(self):
                         [
                             "分析图像更新",
                             "周期执行",
-                            "分析图像更新+周期执行",
                             "鼠标键盘触发+等待稳定",
                         ],
                         globalconfig,
-                        "ocr_auto_method",
+                        "ocr_auto_method_v2",
+                        internal=["analysis", "period", "trigger"],
                         callback=functools.partial(_ocrparam_create, self),
                     ),
                 ]
@@ -432,19 +426,24 @@ def internal(self):
                 ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
             ),
             "",
+            "合并临近行",
+            D_getsimpleswitch(globalconfig, "ocrmergelines"),
+            getsmalllabel("距离"),
+            D_getspinbox(
+                0, 3, globalconfig, "ocrmergelines_distance", double=True, step=0.01
+            ),
+            getsmalllabel("x"),
+            "",
+            "",
+            "",
+        ],
+        [
             "多重区域模式",
             D_getsimpleswitch(
                 globalconfig,
                 "multiregion",
                 callback=lambda _: gobject.baseobject.textsource.leaveone(),
             ),
-            "",
-            "",
-            "",
-        ],
-        [
-            "合并多行识别结果",
-            D_getsimpleswitch(globalconfig, "ocrmergelines"),
             "",
             "易错内容修正",
             D_getsimpleswitch(ocrerrorfix, "use"),

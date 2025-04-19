@@ -111,7 +111,7 @@ class APImecab(HTTPHandler):
     def parse(self, _: RequestInfo):
         text = _.query.get("text")
         if not text:
-            raise Exception("")
+            raise Exception()
         return tuple(_.as_dict() for _ in gobject.baseobject.parsehira(text))
 
 
@@ -121,7 +121,7 @@ class APItts(HTTPHandler):
     def parse(self, _: RequestInfo):
         text = _.query.get("text")
         if not text:
-            raise Exception("")
+            raise Exception()
         ret: "list[TTSResult]" = []
         sema = threading.Semaphore(0)
         gobject.baseobject.reader.ttscallback(
@@ -147,12 +147,12 @@ class APIocr(HTTPHandler):
     def parse(self, _: RequestInfo):
         image = _.body.json.get("image")
         if not image:
-            raise Exception("")
+            raise Exception()
         img = base64.b64decode(image)
         qi = QImage()
         qi.loadFromData(img)
         if qi.isNull():
-            raise Exception("")
+            raise Exception()
         result = ocr_run(qi)
         return result.json
 
@@ -187,7 +187,7 @@ class APITranslate(HTTPHandler):
     def parse(self, _: RequestInfo):
         text = _.query.get("text")
         if not text:
-            raise Exception("")
+            raise Exception()
         tsid = _.query.get("id")
 
         ret = []
@@ -240,7 +240,7 @@ class APISearchWord(HTTPHandler):
     def parse(self, _: RequestInfo):
         word = _.query.get("word")
         if not word:
-            raise Exception("")
+            raise Exception()
         dictid = _.query.get("id")
         if not dictid:
             return self.iterhelper(word)

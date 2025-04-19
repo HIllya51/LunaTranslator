@@ -13,26 +13,29 @@ add_compile_options(
 )
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	set(CMAKE_FINAL_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/builds/${CMAKE_BUILD_TYPE}_x64)
+    set(platform "x64")
 else()
-	set(CMAKE_FINAL_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/builds/${CMAKE_BUILD_TYPE}_x86)
+    set(platform "x86")
 endif()
+
+set(CMAKE_FINAL_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/builds/${CMAKE_BUILD_TYPE}_${platform})
+
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${CMAKE_FINAL_OUTPUT_DIRECTORY}>)
 
-include(libs/libs.cmake)
+option(USE_VC_LTL "USE_VC_LTL" ON)
+include(winxphelper.cmake)
 
 include(${CMAKE_SOURCE_DIR}/version.cmake)
 
 add_library(pch pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)
 
-
 add_subdirectory(exec)
-add_subdirectory(winsharedutils)
+add_subdirectory(NativeUtils)
 add_subdirectory(shareddllproxy)
+add_subdirectory(CVUtils)
 if(NOT WINXP)
-add_subdirectory(LunaOCR)
 add_subdirectory(wcocr)
 endif()

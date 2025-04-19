@@ -98,7 +98,7 @@ class LunaHost : public mainwindow
     Settingwindow *settingwindow = 0;
     Pluginmanager *plugins;
     std::atomic<bool> hasstoped = false;
-    bool on_text_recv(TextThread &thread, std::wstring &sentence);
+    void on_text_recv(TextThread &thread, std::wstring &sentence);
     void on_text_recv_checkissaved(TextThread &thread);
     void on_thread_create(TextThread &thread);
     void on_thread_delete(TextThread &thread);
@@ -113,7 +113,6 @@ public:
     confighelper *configs;
     int64_t currentselect = 0;
     bool check_toclipboard;
-    bool check_toclipboard_selection;
     Font uifont;
     bool autoattach;
     bool autoattach_savedonly;

@@ -135,7 +135,7 @@ def getttsgrid(self, names):
     line = []
     for name in names:
 
-        _f = "./LunaTranslator/tts/{}.py".format(name)
+        _f = "LunaTranslator/tts/{}.py".format(name)
         if os.path.exists(_f) == False:
             continue
         if "args" in globalconfig["reader"][name]:

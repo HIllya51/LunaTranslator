@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
-import winsharedutils, queue, hashlib, threading
-from myutils.config import globalconfig, static_data, _TR, get_platform
+import NativeUtils, queue, hashlib, threading
+from myutils.config import globalconfig, static_data, _TR, is_xp, is_bit_64
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
@@ -72,7 +72,7 @@ def tryqueryfromgithub():
 
 def trygetupdate():
 
-    bit = get_platform()
+    bit = (("32", "64")[is_bit_64], "xp")[is_xp]
     try:
         version, links = tryqueryfromhost()
     except:
@@ -87,16 +87,15 @@ def trygetupdate():
 def doupdate():
     if not gobject.baseobject.update_avalable:
         return
-    plat = get_platform()
-    if plat == "xp":
+    if is_xp:
         _6432 = "32"
         bit = "_x86_winxp"
-    elif plat == "32":
-        bit = "_x86"
-        _6432 = plat
-    elif plat == "64":
+    elif is_bit_64:
         bit = ""
-        _6432 = plat
+        _6432 = "64"
+    else:
+        bit = "_x86"
+        _6432 = "32"
     shutil.copy(
         r".\files\plugins\shareddllproxy{}.exe".format(_6432),
         gobject.getcachedir("Updater.exe"),
@@ -210,7 +209,7 @@ def versioncheckthread(self):
         self.versiontextsignal.emit(sversion)
         if getcurrexe().endswith("python.exe"):
             continue
-        version = winsharedutils.queryversion(getcurrexe())
+        version = NativeUtils.QueryVersion(getcurrexe())
         need = (
             version
             and _version
@@ -239,7 +238,7 @@ def createversionlabel(self):
     versionlabel = LLabel()
     versionlabel.setOpenExternalLinks(False)
     versionlabel.linkActivated.connect(
-        lambda _: os.startfile(dynamiclink("{main_server}/ChangeLog"))
+        lambda _: os.startfile(dynamiclink("/ChangeLog"))
     )
     versionlabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse)
     try:
@@ -301,7 +300,7 @@ def changeUIlanguage(_):
 
 
 def updatexx(self):
-    version = winsharedutils.queryversion(getcurrexe())
+    version = NativeUtils.QueryVersion(getcurrexe())
     if version is None:
         versionstring = "unknown"
     else:
@@ -381,20 +380,20 @@ class aboutwidget(NQGroupBox):
         clearlayout(self.grid)
         commonlink = [
             getsmalllabel(
-                makehtml("{main_server}/Github/LunaTranslator", show="Github")
+                makehtml("/Github/LunaTranslator", show="Github")
             ),
-            getsmalllabel(makehtml("{main_server}/", show="项目网站")),
-            getsmalllabel(makehtml("{docs_server}", show="使用说明")),
+            getsmalllabel(makehtml("/", show="项目网站")),
+            getsmalllabel(makehtml("", show="使用说明", docs=True)),
         ]
         qqqun = [
-            getsmalllabel(makehtml("{main_server}/Resource/Bilibili", show="Bilibili")),
+            getsmalllabel(makehtml("/Resource/Bilibili", show="Bilibili")),
             getsmalllabel(
-                makehtml("{main_server}/Resource/QQGroup", show="QQ群_963119821")
+                makehtml("/Resource/QQGroup", show="QQ群_963119821")
             ),
         ]
         discord = [
             getsmalllabel(
-                makehtml("{main_server}/Resource/DiscordGroup", show="Discord")
+                makehtml("/Resource/DiscordGroup", show="Discord")
             )
         ]
         if getlanguse() == Languages.Chinese:
@@ -481,7 +480,7 @@ def setTab_about(self, basel):
                             D_getIconButton(
                                 callback=lambda: os.startfile(
                                     os.path.abspath(
-                                        "./files/lang/{}.json".format(getlanguse())
+                                        "files/lang/{}.json".format(getlanguse())
                                     )
                                 ),
                             ),
@@ -502,6 +501,8 @@ def setTab_about(self, basel):
                             '<a href="https://github.com/HIllya51/LunaTranslator">LunaTranslator</a> 使用 <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a> 许可证。',
                         ],
                         [("引用的项目", -1)],
+                        makelink("opencv/opencv"),
+                        makelink("microsoft/onnxruntime"),
                         makelink("Artikash/Textractor"),
                         makelink("RapidAI/RapidOcrOnnx"),
                         makelink("PaddlePaddle/PaddleOCR"),
@@ -523,6 +524,8 @@ def setTab_about(self, basel):
                         makelink("TPN-Team/OCR"),
                         makelink("AuroraWright/owocr"),
                         makelink("b1tg/win11-oneocr"),
+                        makelink("mity/md4c"),
+                        makelink("swigger/wechat-ocr"),
                     ],
                     "LICENSE",
                 )

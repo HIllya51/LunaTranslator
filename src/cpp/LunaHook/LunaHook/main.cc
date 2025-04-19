@@ -160,17 +160,16 @@ void NotifyHookFound(HookParam hp, wchar_t *text)
 {
 	if (hp.jittype == JITTYPE::PC)
 		if (!(hp.type & MODULE_OFFSET))
-			if (AutoHandle<> process = OpenProcess(PROCESS_VM_READ | PROCESS_QUERY_INFORMATION, FALSE, GetCurrentProcessId()))
-				if (MEMORY_BASIC_INFORMATION info = {}; VirtualQueryEx(process, (LPCVOID)hp.address, &info, sizeof(info)))
+			if (MEMORY_BASIC_INFORMATION info = {}; VirtualQuery((LPCVOID)hp.address, &info, sizeof(info)))
+			{
+				auto mm = querymodule((uintptr_t)info.AllocationBase);
+				if (mm.size())
 				{
-					auto mm = querymodule((uintptr_t)info.AllocationBase);
-					if (mm.size())
-					{
-						hp.type |= MODULE_OFFSET;
-						hp.address -= (uint64_t)info.AllocationBase;
-						wcsncpy_s(hp.module, mm.c_str(), MAX_MODULE_SIZE - 1);
-					}
+					hp.type |= MODULE_OFFSET;
+					hp.address -= (uint64_t)info.AllocationBase;
+					wcsncpy_s(hp.module, mm.c_str(), MAX_MODULE_SIZE - 1);
 				}
+			}
 	HookFoundNotif buffer(hp, text);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }

@@ -6,7 +6,7 @@ from myutils.audioplayer import bass_code_cast
 import json, os, re
 from cishu.mdict_.readmdict import MDX, MDD, MDict
 import hashlib, sqlite3, functools
-import winsharedutils
+import NativeUtils
 from myutils.mimehelper import query_mime
 
 
@@ -297,7 +297,7 @@ class mdict(cishubase):
             if k in dedump:
                 continue
             dedump.add(k)
-            dis = winsharedutils.distance(k, word)
+            dis = NativeUtils.distance(k, word)
             if dis <= distance:
                 results.append(k)
                 diss[k] = dis

@@ -2,16 +2,16 @@
     "language": "zh-hans",
     "theme": 0,
     "windowPos": {
-        "centerX": 1708.0,
-        "centerY": 859.0,
+        "centerX": 1680.0,
+        "centerY": 821.0,
         "width": 998.6666870117188,
         "height": 806.6666870117188,
         "maximized": false
     },
     "shortcuts": {
         "scale": 593,
-        "windowedModeScale": 2385,
-        "overlay": 2372
+        "windowedModeScale": 583,
+        "overlay": 584
     },
     "countdownSeconds": 3,
     "developerMode": false,
@@ -151,5 +151,15 @@
                 "bottom": 0.0
             }
         }
-    ]
+    ],
+    "overlay": {
+        "windows": {
+            "profiler": {
+                "hArea": 2,
+                "vArea": 1,
+                "hPos": 60.0,
+                "vPos": 0.5
+            }
+        }
+    }
 }

@@ -25,7 +25,7 @@ class Process:
         postconfigdialog_(
             parent_window,
             savehook_new_data[gameuid]["noundictconfig_ex"],
-            "专有名词翻译_-_" + savehook_new_data[gameuid]["title"],
+            "专有名词翻译_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
             ["原文", "翻译", "注释"],
             dictkeys=["src", "dst", "info"],
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))

@@ -2,6 +2,10 @@
 
 LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多数のゲームをサポートしています。
 
+::: warning
+シミュレータにゲームをロードする前に、翻訳者にシミュレータをフックさせてください。そうしないと、ゲームが認識されません。
+:::
+
 サポートされていないゲームについては、[issue](https://lunatranslator.org/Resource/game_support)を送信してください。
 
 ::: details サポートされているエミュレータ
@@ -808,6 +812,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 |  | PCSG00367 | Goes! |
 |  | PCSG00382 | RE:VICE[D] |
 |  | PCSG00640 | SA7 -Silent Ability Seven- |
+|  | PCSG00780 | 赤い砂堕ちる月 |
 
 == PS2
 

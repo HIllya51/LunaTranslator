@@ -441,8 +441,9 @@
 				"function": "customparams"
 			},
 			"markdown2html": {
-				"hide": true,
-				"type": "switch"
+				"name": "转换Markdown为HTML",
+				"type": "switch",
+				"rank": 3.6
 			},
 			"hidethinking": {
 				"type": "switch",
@@ -858,6 +859,7 @@
 			"prefill": "",
 			"prefill_use": false,
 			"hidethinking": false,
+			"markdown2html": false,
 			"customparams": []
 		},
 		"argstype": {
@@ -865,6 +867,11 @@
 				"type": "switch",
 				"name": "隐藏思考过程",
 				"rank": 3.5
+			},
+			"markdown2html": {
+				"name": "转换Markdown为HTML",
+				"type": "switch",
+				"rank": 3.6
 			},
 			"prefill": {
 				"refswitch": "prefill_use",

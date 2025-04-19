@@ -12,8 +12,10 @@ from ctypes import (
     create_unicode_buffer,
     create_string_buffer,
     c_size_t,
+    c_float,
     c_double,
     c_char,
+    c_ushort,
     CFUNCTYPE,
 )
 from ctypes.wintypes import (
@@ -28,15 +30,12 @@ from ctypes.wintypes import (
     LPCWSTR,
     MAX_PATH,
 )
-import platform, windows, functools, os, re
+from windows import AutoHandle
+import gobject
+import platform, windows, functools, os, re, csv
 
 isbit64 = platform.architecture()[0] == "64bit"
-utilsdll = CDLL(
-    os.path.join(
-        os.path.abspath("files/plugins/DLL" + ("32", "64")[isbit64]),
-        "winsharedutils.dll",
-    )
-)
+utilsdll = CDLL(gobject.GetDllpath("NativeUtils.dll"))
 
 OpenFileEx = utilsdll.OpenFileEx
 OpenFileEx.argtypes = (LPCWSTR,)
@@ -47,6 +46,7 @@ MonitorPidVolume.argtypes = (DWORD,)
 MonitorPidVolume_callback_t = CFUNCTYPE(None, BOOL)
 StartMonitorVolume = utilsdll.StartMonitorVolume
 StartMonitorVolume.argtypes = (MonitorPidVolume_callback_t,)
+
 _SAPI_List = utilsdll.SAPI_List
 _SAPI_List.argtypes = (c_uint, c_void_p)
 
@@ -55,54 +55,33 @@ _SAPI_Speak.argtypes = (c_wchar_p, c_uint, c_uint, c_uint, c_uint, c_void_p)
 _SAPI_Speak.restype = c_bool
 
 
+class SAPI:
+    @staticmethod
+    def List(v):
+        ret = []
+        _SAPI_List(v, CFUNCTYPE(None, c_wchar_p)(ret.append))
+        return ret
+
+    @staticmethod
+    def Speak(content, v, voiceid, rate, volume):
+        ret = []
+
+        def _cb(ptr, size):
+            ret.append(ptr[:size])
+
+        fp = CFUNCTYPE(None, POINTER(c_char), c_size_t)(_cb)
+        succ = _SAPI_Speak(content, v, voiceid, int(rate), int(volume), fp)
+        if not succ:
+            return None
+        return ret[0]
+
+
 levenshtein_distance = utilsdll.levenshtein_distance
 levenshtein_distance.argtypes = c_size_t, c_wchar_p, c_size_t, c_wchar_p
 levenshtein_distance.restype = c_size_t
 levenshtein_normalized_similarity = utilsdll.levenshtein_normalized_similarity
 levenshtein_normalized_similarity.argtypes = c_size_t, c_wchar_p, c_size_t, c_wchar_p
 levenshtein_normalized_similarity.restype = c_double
-
-mecab_init = utilsdll.mecab_init
-mecab_init.argtypes = (c_char_p,)
-mecab_init.restype = c_void_p
-mecab_parse_cb_a = CFUNCTYPE(None, c_char_p, c_char_p)
-mecab_parse_cb_w = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
-mecab_parse = utilsdll.mecab_parse
-mecab_parse.argtypes = (c_void_p, c_char_p, c_void_p)
-mecab_parse.restype = c_bool
-mecab_dictionary_codec = utilsdll.mecab_dictionary_codec
-mecab_dictionary_codec.argtypes = (c_void_p,)
-mecab_dictionary_codec.restype = c_char_p
-mecab_end = utilsdll.mecab_end
-mecab_end.argtypes = (c_void_p,)
-
-_clipboard_get = utilsdll.clipboard_get
-_clipboard_get.argtypes = (c_void_p,)
-_clipboard_get.restype = c_bool
-clipboard_set = utilsdll.clipboard_set
-clipboard_set.argtypes = (c_wchar_p,)
-_clipboard_set_image = utilsdll.clipboard_set_image
-_clipboard_set_image.argtypes = (c_void_p, c_size_t)
-_clipboard_set_image.restype = c_bool
-
-
-def SAPI_List(v):
-    ret = []
-    _SAPI_List(v, CFUNCTYPE(None, c_wchar_p)(ret.append))
-    return ret
-
-
-def SAPI_Speak(content, v, voiceid, rate, volume):
-    ret = []
-
-    def _cb(ptr, size):
-        ret.append(cast(ptr, POINTER(c_char))[:size])
-
-    fp = CFUNCTYPE(None, c_void_p, c_size_t)(_cb)
-    succ = _SAPI_Speak(content, v, voiceid, int(rate), int(volume), fp)
-    if not succ:
-        return None
-    return ret[0]
 
 
 def distance(s1, s2):
@@ -114,16 +93,89 @@ def similarity(s1, s2):
     return levenshtein_normalized_similarity(len(s1), s1, len(s2), s2)
 
 
-def clipboard_set_image(bytes_):
-    return _clipboard_set_image(bytes_, len(bytes_))
+class mecab(c_void_p):
+    @staticmethod
+    def create(path: str) -> "mecab":
+        return mecab_init(path.encode("utf8"))
+
+    def __del__(self):
+        mecab_end(self)
+
+    @property
+    def dictionary_codec(self):
+        codec: bytes = mecab_dictionary_codec(self)
+        return codec.decode("utf8")
+
+    def __cba(self, res: list, codec: str, surface: bytes, feature: bytes):
+        surface = surface.decode(codec)
+        feature = feature.decode(codec)
+        self.__cbw(res, surface, feature)
+
+    def __cbw(self, res: list, surface: str, feature: str):
+        res.append([surface, list(csv.reader([feature]))[0]])
+
+    def parse(self, text: str):
+        res = []
+        cl = self.dictionary_codec.lower()
+        isutf16 = (cl.startswith("utf-16")) or (cl.startswith("utf16"))
+        fp = (
+            mecab_parse_cb_w(functools.partial(self.__cbw, res))
+            if isutf16
+            else mecab_parse_cb_a(functools.partial(self.__cba, res, cl))
+        )
+        succ = mecab_parse(self, text.encode(cl), cast(fp, c_void_p))
+        if not succ:
+            raise Exception()
+        return res
 
 
-def clipboard_get():
-    ret = []
-    if not _clipboard_get(CFUNCTYPE(None, c_wchar_p)(ret.append)):
-        return ""
-    return ret[0]
+mecab_init = utilsdll.mecab_init
+mecab_init.argtypes = (c_char_p,)
+mecab_init.restype = mecab
+mecab_parse_cb_a = CFUNCTYPE(None, c_char_p, c_char_p)
+mecab_parse_cb_w = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
+mecab_parse = utilsdll.mecab_parse
+mecab_parse.argtypes = (c_void_p, c_char_p, c_void_p)
+mecab_parse.restype = c_bool
+mecab_dictionary_codec = utilsdll.mecab_dictionary_codec
+mecab_dictionary_codec.argtypes = (mecab,)
+mecab_dictionary_codec.restype = c_char_p
+mecab_end = utilsdll.mecab_end
+mecab_end.argtypes = (mecab,)
 
+_ClipBoardGetText = utilsdll.ClipBoardGetText
+_ClipBoardGetText.argtypes = (c_void_p,)
+_ClipBoardGetText.restype = c_bool
+_ClipBoardSetText = utilsdll.ClipBoardSetText
+_ClipBoardSetText.argtypes = (c_wchar_p,)
+_ClipBoardSetImage = utilsdll.ClipBoardSetImage
+_ClipBoardSetImage.argtypes = (c_void_p, c_size_t)
+_ClipBoardSetImage.restype = c_bool
+
+
+class _ClipBoard:
+    @property
+    def text(self):
+        ret = []
+        if not _ClipBoardGetText(CFUNCTYPE(None, c_wchar_p)(ret.append)):
+            return ""
+        return ret[0]
+
+    @text.setter
+    def text(self, t: str):
+        _ClipBoardSetText(t)
+
+    @property
+    def image(self): ...
+    @image.setter
+    def image(self, bytes_: bytes):
+        _ClipBoardSetImage(bytes_, len(bytes_))
+
+    def setText(self, t: str):
+        self.text = t
+
+
+ClipBoard = _ClipBoard()
 
 _GetLnkTargetPath = utilsdll.GetLnkTargetPath
 _GetLnkTargetPath.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p
@@ -138,12 +190,12 @@ def GetLnkTargetPath(lnk):
     return exe.value, arg.value, icon.value, dirp.value
 
 
-_extracticon2data = utilsdll.extracticon2data
-_extracticon2data.argtypes = c_bool, c_wchar_p, c_void_p
-_extracticon2data.restype = c_bool
+_ExtractExeIconData = utilsdll.ExtractExeIconData
+_ExtractExeIconData.argtypes = c_bool, c_wchar_p, c_void_p
+_ExtractExeIconData.restype = c_bool
 
 
-def extracticon2data(file, large=False):
+def ExtractExeIconData(file, large=False):
 
     file = windows.check_maybe_unc_file(file)
     if not file:
@@ -151,15 +203,16 @@ def extracticon2data(file, large=False):
     ret = []
 
     def cb(ptr, size):
-        ret.append(cast(ptr, POINTER(c_char))[:size])
+        ret.append(ptr[:size])
 
-    succ = _extracticon2data(large, file, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    cb = CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb)
+    succ = _ExtractExeIconData(large, file, cb)
     if not succ:
         return None
     return ret[0]
 
 
-_queryversion = utilsdll.queryversion
+_queryversion = utilsdll.QueryVersion
 _queryversion.restype = c_bool
 _queryversion.argtypes = (
     c_wchar_p,
@@ -170,7 +223,7 @@ _queryversion.argtypes = (
 )
 
 
-def queryversion(exe):
+def QueryVersion(exe):
     _1 = WORD()
     _2 = WORD()
     _3 = WORD()
@@ -181,8 +234,8 @@ def queryversion(exe):
     return None
 
 
-startclipboardlisten = utilsdll.startclipboardlisten
-stopclipboardlisten = utilsdll.stopclipboardlisten
+ClipBoardListenerStart = utilsdll.ClipBoardListenerStart
+ClipBoardListenerStop = utilsdll.ClipBoardListenerStop
 WindowMessageCallback_t = CFUNCTYPE(None, c_int, c_bool, c_wchar_p)
 WinEventHookCALLBACK_t = CFUNCTYPE(None, DWORD, HWND, LONG)
 globalmessagelistener = utilsdll.globalmessagelistener
@@ -192,77 +245,77 @@ globalmessagelistener.argtypes = (
 )
 dispatchcloseevent = utilsdll.dispatchcloseevent
 
-setdwmextendframe = utilsdll.setdwmextendframe
-setdwmextendframe.argtypes = (HWND,)
+SetWindowExtendFrame = utilsdll.SetWindowExtendFrame
+SetWindowExtendFrame.argtypes = (HWND,)
 
 SetTheme = utilsdll.SetTheme
 SetTheme.argtypes = HWND, c_bool, c_int, c_bool
 
 
-getprocesses = utilsdll.getprocesses
-getprocesses.argtypes = (c_void_p,)
+_ListProcesses = utilsdll.ListProcesses
+_ListProcesses.argtypes = (c_void_p,)
 
 
-def Getprcesses():
+def ListProcesses():
     ret = []
-    getprocesses(
+    _ListProcesses(
         CFUNCTYPE(None, DWORD, c_wchar_p)(lambda pid, exe: ret.append((pid, exe)))
     )
     return ret
 
 
-showintab = utilsdll.showintab
-showintab.argtypes = HWND, c_bool, c_bool
+SetWindowInTaskbar = utilsdll.SetWindowInTaskbar
+SetWindowInTaskbar.argtypes = HWND, c_bool, c_bool
 
 
-pid_running = utilsdll.pid_running
-pid_running.argtypes = (DWORD,)
-pid_running.restype = c_bool
+IsProcessRunning = utilsdll.IsProcessRunning
+IsProcessRunning.argtypes = (DWORD,)
+IsProcessRunning.restype = c_bool
 
 
 def collect_running_pids(pids):
     _ = []
     for __ in pids:
-        if not pid_running(__):
+        if not IsProcessRunning(__):
             continue
         _.append(__)
     return _
 
 
-getpidhwndfirst = utilsdll.getpidhwndfirst
-getpidhwndfirst.argtypes = (DWORD,)
-getpidhwndfirst.restype = HWND
+GetProcessFirstWindow = utilsdll.GetProcessFirstWindow
+GetProcessFirstWindow.argtypes = (DWORD,)
+GetProcessFirstWindow.restype = HWND
 
 Is64bit = utilsdll.Is64bit
 Is64bit.argtypes = (DWORD,)
 Is64bit.restype = c_bool
 
-isDark = utilsdll.isDark
-isDark.restype = c_bool
+IsDark = utilsdll.IsDark
+IsDark.restype = c_bool
 
 
-_gdi_screenshot = utilsdll.gdi_screenshot
-_gdi_screenshot.argtypes = HWND, c_void_p
+_GdiGrabWindow = utilsdll.GdiGrabWindow
+_GdiGrabWindow.argtypes = HWND, c_void_p
 
-_crop_image = utilsdll.crop_image
-_crop_image.argtypes = HWND, RECT, c_void_p
+_GdiCropImage = utilsdll.GdiCropImage
+_GdiCropImage.argtypes = HWND, RECT, c_void_p
 
 
-def gdi_screenshot(hwnd):
+def GdiGrabWindow(hwnd):
     if windows.GetClassName(hwnd) == "UnityWndClass":
         return None
     ret = []
 
     def cb(ptr, size):
-        ret.append(cast(ptr, POINTER(c_char))[:size])
+        ret.append(ptr[:size])
 
-    _gdi_screenshot(hwnd, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    _GdiGrabWindow(hwnd, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb))
     if len(ret) == 0:
         return None
     return ret[0]
 
 
-def crop_image(x1, y1, x2, y2, hwnd=None):
+def GdiCropImage(x1, y1, x2, y2, hwnd=None):
     rect = RECT()
     rect.left = x1
     rect.top = y1
@@ -271,20 +324,20 @@ def crop_image(x1, y1, x2, y2, hwnd=None):
     ret = []
 
     def cb(ptr, size):
-        ret.append(cast(ptr, POINTER(c_char))[:size])
+        ret.append(ptr[:size])
 
     if windows.GetClassName(hwnd) == "UnityWndClass":
         hwnd = None
-    _crop_image(hwnd, rect, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+    _GdiCropImage(hwnd, rect, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb))
     if len(ret) == 0:
         return None
     return ret[0]
 
 
-maximum_window = utilsdll.maximum_window
-maximum_window.argtypes = (HWND,)
-setbackdropX = utilsdll.setbackdropX
-setbackdropX.argtypes = HWND, c_bool, c_bool
+MaximumWindow = utilsdll.MaximumWindow
+MaximumWindow.argtypes = (HWND,)
+SetWindowBackdrop = utilsdll.SetWindowBackdrop
+SetWindowBackdrop.argtypes = HWND, c_bool, c_bool
 setAeroEffect = utilsdll.setAeroEffect
 setAeroEffect.argtypes = (HWND, c_bool)
 setAcrylicEffect = utilsdll.setAcrylicEffect
@@ -377,7 +430,7 @@ webview2_navigating_callback_t = CFUNCTYPE(None, c_wchar_p, c_bool)
 webview2_webmessage_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_FilesDropped_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_titlechange_callback_t = CFUNCTYPE(None, c_wchar_p)
-webview2_IconChanged_callback_t = CFUNCTYPE(None, c_void_p, c_size_t)
+webview2_IconChanged_callback_t = CFUNCTYPE(None, POINTER(c_char), c_size_t)
 webview2_set_observe_ptrs.argtypes = (
     WebView2PTR,
     webview2_zoomchange_callback_t,
@@ -441,7 +494,7 @@ webview2_get_userdir.argtypes = (webview2_get_userdir_callback,)
 # WebView2
 
 # LoopBack
-StartCaptureAsync_cb = CFUNCTYPE(None, c_void_p, c_size_t)
+StartCaptureAsync_cb = CFUNCTYPE(None, POINTER(c_char), c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (POINTER(c_void_p),)
 StartCaptureAsync.restype = LONG
@@ -451,7 +504,7 @@ StopCaptureAsync.argtypes = (c_void_p, StartCaptureAsync_cb)
 
 class loopbackrecorder:
     def __datacollect(self, ptr, size):
-        self.data = cast(ptr, POINTER(c_char))[:size]
+        self.data = ptr[:size]
 
     def stop(self):
         __ = StartCaptureAsync_cb(self.__datacollect)
@@ -469,9 +522,9 @@ class loopbackrecorder:
 
 # LoopBack
 
-check_window_viewable = utilsdll.check_window_viewable
-check_window_viewable.argtypes = (HWND,)
-check_window_viewable.restype = c_bool
+IsWindowViewable = utilsdll.IsWindowViewable
+IsWindowViewable.argtypes = (HWND,)
+IsWindowViewable.restype = c_bool
 _GetSelectedText = utilsdll.GetSelectedText
 _GetSelectedText.argtypes = (c_void_p,)
 _GetSelectedText.restype = c_bool
@@ -487,47 +540,51 @@ def GetSelectedText():
     return ""
 
 
-get_allAccess_ptr = utilsdll.get_allAccess_ptr
-get_allAccess_ptr.restype = c_void_p
-windows.CreateEvent = functools.partial(windows.CreateEvent, psecu=get_allAccess_ptr())
-windows.CreateMutex = functools.partial(windows.CreateMutex, psecu=get_allAccess_ptr())
+SimpleCreateEvent = utilsdll.SimpleCreateEvent
+SimpleCreateEvent.argtypes = (LPCWSTR,)
+SimpleCreateEvent.restype = AutoHandle
+SimpleCreateMutex = utilsdll.SimpleCreateMutex
+SimpleCreateMutex.argtypes = (LPCWSTR,)
+SimpleCreateMutex.restype = AutoHandle
 
-createprocess = utilsdll.createprocess
-createprocess.argtypes = c_wchar_p, c_wchar_p, POINTER(DWORD)
-createprocess.restype = HANDLE
+CreateAutoKillProcess = utilsdll.CreateAutoKillProcess
+CreateAutoKillProcess.argtypes = c_wchar_p, c_wchar_p, POINTER(DWORD)
+CreateAutoKillProcess.restype = AutoHandle
 
 
-class AutoKillProcess_:
+class _AutoKillProcess:
     def __init__(self, handle, pid):
-        self.handle = windows.AutoHandle(handle)
+        self.handle = handle
         self.pid = pid
 
 
 def AutoKillProcess(command, path=None):
     pid = DWORD()
-    return AutoKillProcess_(createprocess(command, path, pointer(pid)), pid.value)
+    return _AutoKillProcess(
+        CreateAutoKillProcess(command, path, pointer(pid)), pid.value
+    )
 
 
-_registhotkey = utilsdll.registhotkey
+_SysRegisterHotKey = utilsdll.SysRegisterHotKey
 hotkeycallback_t = CFUNCTYPE(None)
-_registhotkey.argtypes = UINT, UINT, hotkeycallback_t
-_registhotkey.restype = c_int
-_unregisthotkey = utilsdll.unregisthotkey
-_unregisthotkey.argtypes = (c_int,)
+_SysRegisterHotKey.argtypes = UINT, UINT, hotkeycallback_t
+_SysRegisterHotKey.restype = c_int
+_SysUnRegisterHotKey = utilsdll.SysUnRegisterHotKey
+_SysUnRegisterHotKey.argtypes = (c_int,)
 __hotkeycallback_s = {}
 
 
-def registhotkey(_, cb):
+def RegisterHotKey(_, cb):
     mod, vk = _
     cb = hotkeycallback_t(cb)
-    uid = _registhotkey(mod, vk, cb)
+    uid = _SysRegisterHotKey(mod, vk, cb)
     if uid:
         __hotkeycallback_s[uid] = cb
     return uid
 
 
-def unregisthotkey(uid):
-    _unregisthotkey(uid)
+def UnRegisterHotKey(uid):
+    _SysUnRegisterHotKey(uid)
     try:
         __hotkeycallback_s.pop(uid)
     except:
@@ -567,7 +624,7 @@ class WinRT:
             data,
             len(data),
             lang,
-            CFUNCTYPE(None, c_uint, c_uint, c_uint, c_uint, c_wchar_p)(cb),
+            CFUNCTYPE(None, c_float, c_float, c_float, c_float, c_wchar_p)(cb),
         )
         return ret
 
@@ -584,9 +641,9 @@ class WinRT:
         ret = []
 
         def cb(ptr, size):
-            ret.append(cast(ptr, POINTER(c_char))[:size])
+            ret.append(ptr[:size])
 
-        winrt_capture_window(hwnd, CFUNCTYPE(None, c_void_p, c_size_t)(cb))
+        winrt_capture_window(hwnd, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb))
         if len(ret):
             return ret[0]
         return None
@@ -645,3 +702,16 @@ def GetPackagePathByPackageFamily(packagename: str):
     if ret:
         return ret[0]
     return None
+
+
+_Markdown2Html = utilsdll.Markdown2Html
+_Markdown2Html_cb = CFUNCTYPE(None, c_char_p)
+_Markdown2Html.argtypes = c_char_p, _Markdown2Html_cb
+
+
+def Markdown2Html(md: str):
+    ret: "list[bytes]" = []
+    _Markdown2Html(md.encode("utf8"), _Markdown2Html_cb(ret.append))
+    if ret:
+        return ret[0].decode("utf8")
+    return md

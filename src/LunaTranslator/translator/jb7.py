@@ -1,7 +1,7 @@
 from translator.basetranslator import basetrans
 import ctypes
 import os, uuid
-import windows, winsharedutils, threading
+import windows, NativeUtils, threading
 from myutils.config import _TR
 from language import Languages
 
@@ -38,28 +38,15 @@ class TS(basetrans):
             pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
             waitsignal = str(uuid.uuid4())
 
-            self.engine = winsharedutils.AutoKillProcess(
-                './files/plugins/shareddllproxy32.exe jbj7 "{}" {} {}'.format(
+            self.engine = NativeUtils.AutoKillProcess(
+                'files/plugins/shareddllproxy32.exe jbj7 "{}" {} {}'.format(
                     self.dllpath, pipename, waitsignal
                 )
                 + dictpath,
             )
-            windows.WaitForSingleObject(
-                windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
-                windows.INFINITE,
-            )
-            windows.WaitNamedPipe(pipename, windows.NMPWAIT_WAIT_FOREVER)
-            self.hPipe = windows.AutoHandle(
-                windows.CreateFile(
-                    pipename,
-                    windows.GENERIC_READ | windows.GENERIC_WRITE,
-                    0,
-                    None,
-                    windows.OPEN_EXISTING,
-                    windows.FILE_ATTRIBUTE_NORMAL,
-                    None,
-                )
-            )
+            windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
+            windows.WaitNamedPipe(pipename)
+            self.hPipe = windows.CreateFile(pipename)
         return True
 
     def translate(self, content: str):

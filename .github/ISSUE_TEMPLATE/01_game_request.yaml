@@ -1,30 +1,55 @@
 name: Game Compatibility 游戏适配
-description: >
-  Request for an unsupported game, or hooked text is incorrect 
-  
+description: |
+  Request for an unsupported game, or hooked text is incorrect<br>
   请求支持尚未支持的游戏，或提取的文本不正确
 labels: enhancement
 body:
 - type: input
   attributes:
+    label: Software Version
+    description: >
+      此项用以提醒你确认你正使用软件的最新版本，以避免请求一个在软件的新版本中已经支持过的游戏，浪费时间。<br>
+      This is to remind you to make sure you are using the latest version of the software to avoid wasting time by requesting a game that is already supported in the new version of software.
+  validations:
+    required: true
+- type: input
+  attributes:
     label: vndb link/id
+    description: >
+      这是视觉小说翻译器，请确认你要让我适配的游戏是视觉小说，而不是别的什么乱七八糟的游戏。<br>
+      This is a visual novel translator, please make sure the game you want me to adapt is a visual novel, instead of any random games.
   validations:
     required: true
 - type: textarea
   attributes:
     label: Game resource 游戏资源
     description: >
-      Give me the game resource via onedrive or googledrive or other unlimited speed network disk. Not accept any network disk that requires installing clients or logging in to download, such as Baidu, Pikpak, Terabox, etc.
-
-      使用onedrive或googledrive或其他不限速网盘给我游戏资源。不接受任何需要安装客户端、需要登录下载的网盘，例如百度、pikpak、Terabox等。
+      请使用onedrive或googledrive或其他不限速网盘给我游戏资源。<br>
+      不接受任何需要安装客户端、需要登录下载的网盘，例如百度、pikpak、Terabox等。<br>
+      请确保链接符合要求，如果你不给我符合要求的链接，我将无法获取游戏进行测试，无法受理你的请求。<br>
+      Give me the game resource via onedrive or googledrive or other unlimited speed network disk. <br>
+      Not accept any network disk that requires installing clients or logging in to download, such as Baidu, Pikpak, Terabox, etc.<br>
+      Please Confirm that the link meets the requirements. If you don't give me a link that meets the requirements, I won't be able to get the game to test it, so I won't be able to process your request.
   validations:
     required: true
 - type: textarea
   attributes:
     label: screenshot 截图
     description: >
-      screenshot of game and screenshot of extracted text
-
-      游戏截图和提取的文本截图
+      游戏截图和选择文本窗口截图。<br>
+      Game screenshots and Select Text window screenshots
   validations:
     required: true
+- type: checkboxes
+  attributes:
+    label: Validations
+    description: 检查以下问题，否则问题将不会得到受理。Please check the following questions, otherwise your question will not be processed.
+    options:
+      - label: 确认你正使用使用软件的最新版本。Make sure you are using the latest version of the software.
+        required: true
+      - label: 确认游戏是视觉小说。Make sure the game is a visual novel.
+        required: true
+      - label: 确认游戏资源链接符合要求。Confirm that the game resource link meets the requirements.
+        required: true
+      - label: 确认上传了有效的截图。Confirm that a valid screenshot has been uploaded.
+        required: true

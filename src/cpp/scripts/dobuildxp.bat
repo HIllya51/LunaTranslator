@@ -1,5 +1,3 @@
-python edit_target.py
-
 @echo off
 setlocal enabledelayedexpansion
 goto :main

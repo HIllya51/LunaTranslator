@@ -1,11 +1,10 @@
 from qtsymbols import *
 import os, re, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
-import windows, qtawesome, winsharedutils, gobject, platform, threading
+import windows, qtawesome, NativeUtils, gobject, platform, threading
 from myutils.config import _TR, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader
 from myutils.utils import nowisdark, checkisusingwine
-from ctypes import POINTER, cast, c_char
 from ocrengines.baseocrclass import OCRResult
 from gui.dynalang import (
     LLabel,
@@ -335,13 +334,13 @@ class TableViewW(QTableView):
             csv_writer.writerow(row)
         csv_str = output.getvalue()
         output.close()
-        winsharedutils.clipboard_set(csv_str)
+        NativeUtils.ClipBoard.text = csv_str
 
     def pastetable(self):
         current = self.currentIndex()
         if not current.isValid():
             return
-        string = winsharedutils.clipboard_get()
+        string = NativeUtils.ClipBoard.text
         try:
             csv_file = io.StringIO(string)
             csv_reader = csv.reader(csv_file, delimiter="\t")
@@ -692,9 +691,9 @@ class resizableframeless(saveposwindow):
             # 用系统拖放有时会有问题。有时会和游戏竞争鼠标，导致窗口位置抖动。
             # 那么尽量不使用系统拖放，以避免触发这个问题，暂时没办法解决。
             # 检查DPI，仅当多屏幕且DPI不一致时才使用系统移动。
-            self.usesysmove = winsharedutils.NeedUseSysMove()
+            self.usesysmove = NativeUtils.NeedUseSysMove()
             if self.usesysmove:
-                winsharedutils.MouseMoveWindow(int(self.winId()))
+                NativeUtils.MouseMoveWindow(int(self.winId()))
             self._move_drag = True
             self.move_DragPosition = gpos - self.pos()
 
@@ -1097,7 +1096,7 @@ class abstractwebview(QWidget):
 
         def __(f):
             _ = f()
-            return winsharedutils.str_alloc(_)
+            return NativeUtils.str_alloc(_)
 
         return functools.partial(__, getlabel)
 
@@ -1361,8 +1360,8 @@ class Exteditor(LDialog):
         action = menu.exec(self.table.cursor().pos())
 
         if action == copyid:
-            winsharedutils.clipboard_set(
-                self.table.model().data(curr, Qt.ItemDataRole.UserRole + 10)
+            NativeUtils.ClipBoard.text = self.table.model().data(
+                curr, Qt.ItemDataRole.UserRole + 10
             )
 
     def listexts(self):
@@ -1482,21 +1481,19 @@ class WebviewWidget(abstractwebview):
 
     def bind(self, fname, func):
         self.binds[fname] = func
-        winsharedutils.webview2_bind(self.webview, fname)
+        NativeUtils.webview2_bind(self.webview, fname)
 
     def eval(self, js, callback=None):
-        cb = winsharedutils.webview2_evaljs_CALLBACK(callback) if callback else None
-        winsharedutils.webview2_evaljs(self.webview, js, cb)
+        cb = NativeUtils.webview2_evaljs_CALLBACK(callback) if callback else None
+        NativeUtils.webview2_evaljs(self.webview, js, cb)
 
     def add_menu(self, index=0, getlabel=None, callback=None):
-        __ = winsharedutils.webview2_add_menu_CALLBACK(callback) if callback else None
+        __ = NativeUtils.webview2_add_menu_CALLBACK(callback) if callback else None
         self.callbacks.append(__)
         getlabel = self.wrapgetlabel(getlabel)
-        __3 = (
-            winsharedutils.webview2_contextmenu_gettext(getlabel) if getlabel else None
-        )
+        __3 = NativeUtils.webview2_contextmenu_gettext(getlabel) if getlabel else None
         self.callbacks.append(__3)
-        winsharedutils.webview2_add_menu(self.webview, index, __3, __)
+        NativeUtils.webview2_add_menu(self.webview, index, __3, __)
         return index + 1
 
     def add_menu_noselect(
@@ -1509,27 +1506,23 @@ class WebviewWidget(abstractwebview):
         getuse=None,
     ):
         __ = (
-            winsharedutils.webview2_add_menu_noselect_CALLBACK(callback)
+            NativeUtils.webview2_add_menu_noselect_CALLBACK(callback)
             if callback
             else None
         )
         self.callbacks.append(__)
         __1 = (
-            winsharedutils.webview2_add_menu_noselect_getchecked(getchecked)
+            NativeUtils.webview2_add_menu_noselect_getchecked(getchecked)
             if getchecked
             else None
         )
         self.callbacks.append(__1)
-        __2 = (
-            winsharedutils.webview2_add_menu_noselect_getuse(getuse) if getuse else None
-        )
+        __2 = NativeUtils.webview2_add_menu_noselect_getuse(getuse) if getuse else None
         self.callbacks.append(__2)
         getlabel = self.wrapgetlabel(getlabel)
-        __3 = (
-            winsharedutils.webview2_contextmenu_gettext(getlabel) if getlabel else None
-        )
+        __3 = NativeUtils.webview2_contextmenu_gettext(getlabel) if getlabel else None
         self.callbacks.append(__3)
-        winsharedutils.webview2_add_menu_noselect(
+        NativeUtils.webview2_add_menu_noselect(
             self.webview, index, __3, __, checkable, __1, __2
         )
         return index + 1
@@ -1555,8 +1548,8 @@ class WebviewWidget(abstractwebview):
     @staticmethod
     def __getuserdir():
         _ = []
-        __ = winsharedutils.webview2_get_userdir_callback(_.append)
-        winsharedutils.webview2_get_userdir(__)
+        __ = NativeUtils.webview2_get_userdir_callback(_.append)
+        NativeUtils.webview2_get_userdir(__)
         if _:
             return _[0]
 
@@ -1608,21 +1601,21 @@ class WebviewWidget(abstractwebview):
         def __(_, _1, _2):
             collect.append((_, _1, _2))
 
-        _ = winsharedutils.webview2_list_ext_CALLBACK_T(__)
-        windows.CHECK_FAILURE(winsharedutils.webview2_ext_list(_))
+        _ = NativeUtils.webview2_list_ext_CALLBACK_T(__)
+        windows.CHECK_FAILURE(NativeUtils.webview2_ext_list(_))
         return collect
 
     @staticmethod
     def Extensions_Enable(_id, enable):
-        windows.CHECK_FAILURE(winsharedutils.webview2_ext_enable(_id, enable))
+        windows.CHECK_FAILURE(NativeUtils.webview2_ext_enable(_id, enable))
 
     @staticmethod
     def Extensions_Remove(_id):
-        windows.CHECK_FAILURE(winsharedutils.webview2_ext_rm(_id))
+        windows.CHECK_FAILURE(NativeUtils.webview2_ext_rm(_id))
 
     @staticmethod
     def Extensions_Add(path):
-        windows.CHECK_FAILURE(winsharedutils.webview2_ext_add(path))
+        windows.CHECK_FAILURE(NativeUtils.webview2_ext_add(path))
 
     @staticmethod
     def findFixedRuntime():
@@ -1635,7 +1628,7 @@ class WebviewWidget(abstractwebview):
 
         for f in os.listdir("."):
             f = os.path.abspath(f)
-            version = winsharedutils.detect_webview2_version(f)
+            version = NativeUtils.detect_webview2_version(f)
             # 这个API似乎可以检测runtime是否是有效的，比自己查询版本更好
             if not version:
                 continue
@@ -1649,11 +1642,11 @@ class WebviewWidget(abstractwebview):
 
     @staticmethod
     def onDestroy(ptr):
-        winsharedutils.webview2_destroy(ptr)
+        NativeUtils.webview2_destroy(ptr)
 
     def event(self, a0: QEvent):
         if a0.type() == QEvent.Type.User + 1:
-            winsharedutils.webview2_put_PreferredColorScheme(
+            NativeUtils.webview2_put_PreferredColorScheme(
                 self.webview, globalconfig["darklight2"]
             )
         return super().event(a0)
@@ -1669,37 +1662,37 @@ class WebviewWidget(abstractwebview):
             os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
             # 在共享路径上无法运行
             os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
-        self.webview = winsharedutils.WebView2PTR()
+        self.webview = NativeUtils.WebView2PTR()
         windows.CHECK_FAILURE(
-            winsharedutils.webview2_create(
+            NativeUtils.webview2_create(
                 windows.pointer(self.webview), int(self.winId()), transp, loadext
             )
         )
-        winsharedutils.webview2_put_PreferredColorScheme(
+        NativeUtils.webview2_put_PreferredColorScheme(
             self.webview, globalconfig["darklight2"]
         )
         self.loadextensionwindow.connect(self.__loadextensionwindow)
         self.destroyed.connect(functools.partial(WebviewWidget.onDestroy, self.webview))
         self.monitorptrs = []
         self.monitorptrs.append(
-            winsharedutils.webview2_zoomchange_callback_t(self.zoomchange)
+            NativeUtils.webview2_zoomchange_callback_t(self.zoomchange)
         )
         self.monitorptrs.append(
-            winsharedutils.webview2_navigating_callback_t(self.__on_load)
+            NativeUtils.webview2_navigating_callback_t(self.__on_load)
         )
         self.monitorptrs.append(
-            winsharedutils.webview2_webmessage_callback_t(self.webmessage_callback_f)
+            NativeUtils.webview2_webmessage_callback_t(self.webmessage_callback_f)
         )
         self.monitorptrs.append(
-            winsharedutils.webview2_FilesDropped_callback_t(self.dropfilecallback.emit)
+            NativeUtils.webview2_FilesDropped_callback_t(self.dropfilecallback.emit)
         )
         self.monitorptrs.append(
-            winsharedutils.webview2_titlechange_callback_t(self.titlechanged.emit)
+            NativeUtils.webview2_titlechange_callback_t(self.titlechanged.emit)
         )
         self.monitorptrs.append(
-            winsharedutils.webview2_IconChanged_callback_t(self.IconChangedF)
+            NativeUtils.webview2_IconChanged_callback_t(self.IconChangedF)
         )
-        winsharedutils.webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
+        NativeUtils.webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
 
         self.add_menu()
         self.add_menu_noselect()
@@ -1707,7 +1700,7 @@ class WebviewWidget(abstractwebview):
 
     def IconChangedF(self, ptr, size):
         pixmap = QPixmap()
-        pixmap.loadFromData(cast(ptr, POINTER(c_char))[:size])
+        pixmap.loadFromData(ptr[:size])
         if not pixmap.isNull():
             self.IconChanged.emit(QIcon(pixmap))
 
@@ -1739,24 +1732,24 @@ class WebviewWidget(abstractwebview):
         self.set_zoom(zoom)  # 置为默认值，档navi/sethtml时才能保持
 
     def set_zoom(self, zoom):
-        winsharedutils.webview2_put_ZoomFactor(self.webview, zoom)
-        self.cachezoom = winsharedutils.webview2_get_ZoomFactor(self.webview)
+        NativeUtils.webview2_put_ZoomFactor(self.webview, zoom)
+        self.cachezoom = NativeUtils.webview2_get_ZoomFactor(self.webview)
 
     def get_zoom(self):
-        # winsharedutils.get_ZoomFactor(self.get_controller()) 性能略差
+        # NativeUtils.get_ZoomFactor(self.get_controller()) 性能略差
         return self.cachezoom
 
     def navigate(self, url):
-        winsharedutils.webview2_navigate(self.webview, url)
+        NativeUtils.webview2_navigate(self.webview, url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         r = self.devicePixelRatioF()
-        winsharedutils.webview2_resize(
+        NativeUtils.webview2_resize(
             self.webview, int(r * a0.size().width()), int(r * a0.size().height())
         )
 
     def setHtml(self, html):
-        winsharedutils.webview2_sethtml(self.webview, html)
+        NativeUtils.webview2_sethtml(self.webview, html)
 
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
@@ -1797,14 +1790,14 @@ class WebviewWidget_for_auto(WebviewWidget):
 class mshtmlWidget(abstractwebview):
     def getHtml(self, elementid):
         _ = []
-        cb = winsharedutils.html_get_select_text_cb(_.append)
-        winsharedutils.html_get_html(self.browser, cb, elementid)
+        cb = NativeUtils.html_get_select_text_cb(_.append)
+        NativeUtils.html_get_html(self.browser, cb, elementid)
         if not _:
             return ""
         return _[0]
 
     def eval(self, js):
-        winsharedutils.html_eval(self.browser, js)
+        NativeUtils.html_eval(self.browser, js)
 
     def __bindhelper(self, func, ppwc, argc):
         argv = []
@@ -1813,24 +1806,24 @@ class mshtmlWidget(abstractwebview):
         func(*argv)
 
     def bind(self, fname, func):
-        __f = winsharedutils.html_bind_function_FT(
+        __f = NativeUtils.html_bind_function_FT(
             functools.partial(self.__bindhelper, func)
         )
         self.bindfs.append(__f)
-        winsharedutils.html_bind_function(self.browser, fname, __f)
+        NativeUtils.html_bind_function(self.browser, fname, __f)
 
     @staticmethod
     def onDestroy(ptr):
-        winsharedutils.html_release(ptr)
+        NativeUtils.html_release(ptr)
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.callbacks = []
         self.bindfs = []
         iswine = checkisusingwine()
-        if iswine or (winsharedutils.html_version() < 10001):  # ie10之前，sethtml会乱码
+        if iswine or (NativeUtils.html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
-        self.browser = winsharedutils.html_new(int(self.winId()))
+        self.browser = NativeUtils.html_new(int(self.winId()))
         self.destroyed.connect(functools.partial(mshtmlWidget.onDestroy, self.browser))
         self.curr_url = None
         t = QTimer(self)
@@ -1838,7 +1831,7 @@ class mshtmlWidget(abstractwebview):
         t.timeout.connect(self.__getcurrent)
         t.timeout.emit()
         t.start()
-        self.add_menu(0, lambda: _TR("复制"), winsharedutils.clipboard_set)
+        self.add_menu(0, lambda: _TR("复制"), NativeUtils.ClipBoard.setText)
         self.add_menu(0)
 
     def __getcurrent(self):
@@ -1847,33 +1840,33 @@ class mshtmlWidget(abstractwebview):
                 self.curr_url = _u
                 self.on_load.emit(_u)
 
-        cb = winsharedutils.html_get_select_text_cb(__)
-        winsharedutils.html_get_current_url(self.browser, cb)
+        cb = NativeUtils.html_get_select_text_cb(__)
+        NativeUtils.html_get_current_url(self.browser, cb)
 
-        if winsharedutils.html_check_ctrlc(self.browser):
-            cb = winsharedutils.html_get_select_text_cb(winsharedutils.clipboard_set)
-            winsharedutils.html_get_select_text(self.browser, cb)
+        if NativeUtils.html_check_ctrlc(self.browser):
+            cb = NativeUtils.html_get_select_text_cb(NativeUtils.ClipBoard.setText)
+            NativeUtils.html_get_select_text(self.browser, cb)
 
     def navigate(self, url):
-        winsharedutils.html_navigate(self.browser, url)
+        NativeUtils.html_navigate(self.browser, url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         size = a0.size() * self.devicePixelRatioF()
-        winsharedutils.html_resize(self.browser, 0, 0, size.width(), size.height())
+        NativeUtils.html_resize(self.browser, 0, 0, size.width(), size.height())
 
     def setHtml(self, html):
-        winsharedutils.html_set_html(self.browser, html)
+        NativeUtils.html_set_html(self.browser, html)
 
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
 
     def add_menu(self, index=0, getlabel=None, callback=None):
-        cb = winsharedutils.html_add_menu_cb(callback) if callback else None
+        cb = NativeUtils.html_add_menu_cb(callback) if callback else None
         self.callbacks.append(cb)
         getlabel = self.wrapgetlabel(getlabel)
-        cb2 = winsharedutils.html_add_menu_gettext(getlabel) if getlabel else None
+        cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
         self.callbacks.append(cb2)
-        winsharedutils.html_add_menu(self.browser, index, cb2, cb)
+        NativeUtils.html_add_menu(self.browser, index, cb2, cb)
         return index + 1
 
     def add_menu_noselect(
@@ -1885,12 +1878,12 @@ class mshtmlWidget(abstractwebview):
         getchecked=None,
         getuse=None,
     ):
-        cb = winsharedutils.html_add_menu_cb2(callback) if callback else None
+        cb = NativeUtils.html_add_menu_cb2(callback) if callback else None
         self.callbacks.append(cb)
         getlabel = self.wrapgetlabel(getlabel)
-        cb2 = winsharedutils.html_add_menu_gettext(getlabel) if getlabel else None
+        cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
         self.callbacks.append(cb2)
-        winsharedutils.html_add_menu_noselect(self.browser, index, cb2, cb)
+        NativeUtils.html_add_menu_noselect(self.browser, index, cb2, cb)
         return index + 1
 
 
@@ -2371,7 +2364,7 @@ class listediter(LDialog):
             self.hcmodel.removeRow(curr.row())
             self.internalrealname.pop(curr.row())
         elif action == copy:
-            winsharedutils.clipboard_set(self.hcmodel.itemFromIndex(curr).text())
+            NativeUtils.ClipBoard.text = self.hcmodel.itemFromIndex(curr).text()
 
         elif action == up:
 

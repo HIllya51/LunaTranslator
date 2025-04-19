@@ -1,9 +1,8 @@
 from qtsymbols import *
 import functools
 import gobject, os
-from myutils.config import globalconfig
+from myutils.config import globalconfig, static_data
 from myutils.utils import dynamiclink
-from textsource.texthook import codepage_display
 from traceback import print_exc
 from language import TransLanguages
 from gui.setting.textinput_ocr import getocrgrid_table
@@ -123,10 +122,11 @@ def gethookgrid(self):
             "代码页",
             (
                 D_getsimplecombobox(
-                    codepage_display,
+                    static_data["codepage_display"],
                     globalconfig,
-                    "codepage_index",
+                    "codepage_value",
                     lambda x: gobject.baseobject.textsource.setsettings(),
+                    internal=static_data["codepage_real"],
                 ),
                 2,
             ),
@@ -338,7 +338,7 @@ def outputgrid():
     grids = [
         [
             D_getIconButton(
-                lambda: os.startfile(dynamiclink("{docs_server}/apiservice.html")),
+                lambda: os.startfile(dynamiclink("/apiservice.html", docs=True)),
                 "fa.question",
             ),
         ],

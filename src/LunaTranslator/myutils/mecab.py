@@ -1,5 +1,5 @@
-import winsharedutils
-import os, csv
+import NativeUtils
+import os
 from myutils.config import isascii, globalconfig
 from traceback import print_exc
 import requests, zipfile, gobject
@@ -169,11 +169,13 @@ class _base:
 #         'aModType lid lemma_id'.split(' '))
 
 
-class mecabwrap:
+class mecab(_base):
+    def __init__(self, typename="mecab") -> None:
+        super().__init__(typename)
 
-    def __init__(self, mecabpath) -> None:
+    def init(self) -> None:
         for ___ in (
-            mecabpath,
+            self.config["path"],
             ".",
             r"C:\Program Files\MeCab\dic",
             r"C:\Program Files (x86)\MeCab\dic",
@@ -181,55 +183,10 @@ class mecabwrap:
             if not os.path.isdir(___):
                 continue
             for _dir, _, __ in os.walk(___):
-                self.kks = winsharedutils.mecab_init(
-                    os.path.abspath(_dir).encode("utf8")
-                )
+                self.kks = NativeUtils.mecab.create(os.path.abspath(_dir))
                 if self.kks:
-                    codec: bytes = winsharedutils.mecab_dictionary_codec(self.kks)
-                    self.codec = codec.decode()
-                    cl = self.codec.lower()
-                    self.isutf16 = (cl.startswith("utf-16")) or (cl.startswith("utf16"))
                     return
         raise Exception("not find")
-
-    def __del__(self):
-        winsharedutils.mecab_end(self.kks)
-
-    def parse(self, text: str):
-        res = []
-        codec = self.codec
-        if self.isutf16:
-
-            def cb(surface: str, feature: str):
-                fields = list(csv.reader([feature]))[0]
-                res.append((surface, fields))
-
-            fp = winsharedutils.mecab_parse_cb_w(cb)
-        else:
-
-            def cb(surface: bytes, feature: bytes):
-                fields = list(csv.reader([feature.decode(codec)]))[0]
-                res.append((surface.decode(codec), fields))
-
-            fp = winsharedutils.mecab_parse_cb_a(cb)
-        succ = winsharedutils.mecab_parse(
-            self.kks,
-            text.encode(codec),
-            winsharedutils.cast(fp, winsharedutils.c_void_p).value,
-        )
-        if not succ:
-            raise Exception("mecab parse failed")
-
-        return res
-
-
-class mecab(_base):
-    def __init__(self, typename="mecab") -> None:
-        super().__init__(typename)
-
-    def init(self) -> None:
-        mecabpath = self.config["path"]
-        self.kks = mecabwrap(mecabpath)
 
     def maybeenglish(self, field: str):
         _ = field.split("-")
@@ -322,8 +279,7 @@ class latin(_base):
         super().__init__(typename)
 
     def parse(self, text: str):
-
-        return (WordSegResult(_) for _ in splitstr(text, punctuations))
+        return (WordSegResult(_, donthighlight=True) for _ in splitstr(text, punctuations))
 
 
 class resourcewidget(QWidget):

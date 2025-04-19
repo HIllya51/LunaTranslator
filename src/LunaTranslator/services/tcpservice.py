@@ -21,7 +21,7 @@ class FileResponse:
     def __init__(self, filename):
         self.filename = filename
         if not os.path.isfile(filename):
-            raise Exception("")
+            raise Exception()
         self.length = os.stat(filename).st_size
         self.type = query_mime(filename)
 
@@ -85,15 +85,15 @@ class ResponseInfo:
         if not self.body:
             return
         if isinstance(self.body, bytes):
-            return client_socket.send(self.body)
-        if isinstance(self.body, FileResponse):
+            client_socket.send(self.body)
+        elif isinstance(self.body, FileResponse):
             with open(self.body.filename, "rb") as ff:
                 while True:
                     bs = ff.read(1024)
                     if not bs:
                         break
                     client_socket.send(bs)
-        if isinstance(self.body, types.GeneratorType):
+        elif isinstance(self.body, types.GeneratorType):
             for body in self.body:
                 if isinstance(body, str):
                     body: bytes = body.encode()
@@ -171,9 +171,9 @@ class RequestInfo:
         while True:
             line: bytes = fp.readline(65536 + 1)
             if len(line) > 65536:
-                raise Exception("")
+                raise Exception()
             if len(headers) > 65536:
-                raise Exception("")
+                raise Exception()
             if line in (b"\r\n", b"\n", b""):
                 break
             line = line.decode("iso-8859-1")
@@ -348,7 +348,7 @@ class HTTPHandler(HandlerBase):
     def __init__(self, info: RequestInfo, client_socket: socket.socket):
         try:
             if not self._checkmethod(info.method):
-                raise Exception("")
+                raise Exception()
             ret = self.parse(info)
             resp = ResponseInfo(body=ret)
             try:

@@ -29,23 +29,23 @@
 
 == OpenAI
 
-**API接口地址** `https://api.openai.com/v1` 
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.openai.com/v1`</del>
 
 **API Key** https://platform.openai.com/api-keys
 
-**model** https://platform.openai.com/docs/models
+**model** 在软件内下拉列表中选取即可 [~~https://platform.openai.com/docs/models~~](https://platform.openai.com/docs/models)
 
 == Gemini
 
-**API接口地址** `https://generativelanguage.googleapis.com`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://generativelanguage.googleapis.com`</del>
 
 **API Key** https://aistudio.google.com/app/apikey
 
-**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+**model** 在软件内下拉列表中选取即可 [~~https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models~~](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)
 
 == claude
 
-**API接口地址** `https://api.anthropic.com/v1/messages`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.anthropic.com/v1/messages`</del>
 
 **API Key** https://console.anthropic.com/
 
@@ -53,41 +53,44 @@
 
 == cohere
 
-**API接口地址** `https://api.cohere.ai/compatibility/v1`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.cohere.ai/compatibility/v1`</del>
 
 **API Key** https://dashboard.cohere.com/api-keys
 
-**model** https://docs.cohere.com/docs/models
+**model** 在软件内下拉列表中选取即可 [~~https://docs.cohere.com/docs/models~~](https://docs.cohere.com/docs/models)
 
 == x.ai
 
-**API接口地址** `https://api.x.ai/`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.x.ai/`</del>
 
 **API Key** https://console.x.ai/
 
+**model** 在软件内下拉列表中选取即可
+
 == groq
 
-**API接口地址** `https://api.groq.com/openai/v1/chat/completions`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.groq.com/openai/v1/chat/completions`</del>
 
 **API Key** https://console.groq.com/keys
 
-**model** https://console.groq.com/docs/models 填写`Model ID`
+**model** 在软件内下拉列表中选取即可 [~~https://console.groq.com/docs/models~~](https://console.groq.com/docs/models)
 
 == OpenRouter
 
-**API接口地址** `https://openrouter.ai/api/v1/chat/completions`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://openrouter.ai/api/v1/chat/completions`</del>
 
 **API Key** https://openrouter.ai/settings/keys
 
-**model** https://openrouter.ai/docs/models
+**model** 在软件内下拉列表中选取即可 [~~https://openrouter.ai/docs/models~~](https://openrouter.ai/docs/models)
+
 
 == Mistral AI
 
-**API接口地址** `https://api.mistral.ai/v1/chat/completions`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.mistral.ai/v1/chat/completions`</del>
 
 **API Key** https://console.mistral.ai/api-keys/
 
-**model** https://docs.mistral.ai/getting-started/models/
+**model** 在软件内下拉列表中选取即可 [~~https://docs.mistral.ai/getting-started/models/~~](https://docs.mistral.ai/getting-started/models/)
 
 == Azure
 
@@ -97,17 +100,19 @@
 
 == deepinfra
 
-**API接口地址** `https://api.deepinfra.com/v1/openai/chat/completions` 
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.deepinfra.com/v1/openai/chat/completions`</del>
 
 **API Key** https://deepinfra.com/dash/api_keys
 
+**model** 在软件内下拉列表中选取即可
+
 == cerebras
 
-**API接口地址** `https://api.cerebras.ai/v1/chat/completions` 
-
-**model** 支持`llama3.1-8b` `llama3.1-70b` `llama-3.3-70b`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.cerebras.ai/v1/chat/completions`</del>
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
+
+**model** 在软件内下拉列表中选取即可
 
 :::
 
@@ -117,15 +122,15 @@
 
 == DeepSeek
 
-**API接口地址** `https://api.deepseek.com`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.deepseek.com`</del>
 
 **API Key** https://platform.deepseek.com/api_keys
 
-**model** https://platform.deepseek.com/api-docs/zh-cn/pricing
+**model** 在软件内下拉列表中选取即可 [~~https://api-docs.deepseek.com/zh-cn/quick_start/pricing~~](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)
 
 == 阿里云百炼大模型
 
-**API接口地址** `https://dashscope.aliyuncs.com/compatible-mode/v1`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://dashscope.aliyuncs.com/compatible-mode/v1`</del>
 
 **API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key
 
@@ -133,7 +138,7 @@
 
 == 字节跳动豆包大模型
 
-**API接口地址** `https://ark.cn-beijing.volces.com/api/v3`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://ark.cn-beijing.volces.com/api/v3`</del>
 
 **API Key** [创建API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)获取
 
@@ -144,15 +149,15 @@
 
 == 月之暗面
 
-**API接口地址** `https://api.moonshot.cn`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.moonshot.cn`</del>
 
 **API Key** https://platform.moonshot.cn/console/api-keys
 
-**model** https://platform.moonshot.cn/docs/intro
+**model** 在软件内下拉列表中选取即可 [~~https://platform.moonshot.cn/docs/intro~~](https://platform.moonshot.cn/docs/intro)
 
 == 智谱AI
 
-**API接口地址** `https://open.bigmodel.cn/api/paas/v4/chat/completions`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://open.bigmodel.cn/api/paas/v4/chat/completions`</del>
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
@@ -160,23 +165,23 @@
 
 == 零一万物
 
-**API接口地址** `https://api.lingyiwanwu.com`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.lingyiwanwu.com`</del>
 
 **API Key** https://platform.lingyiwanwu.com/apikeys
 
-**model** https://platform.lingyiwanwu.com/docs/api-reference#list-models
- 
+**model** 在软件内下拉列表中选取即可 [~~https://platform.lingyiwanwu.com/docs/api-reference#list-models~~](https://platform.lingyiwanwu.com/docs/api-reference#list-models)
+
 == 硅基流动
 
-**API接口地址** `https://api.siliconflow.cn`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.siliconflow.cn`</del>
 
 **API Key** https://cloud-hk.siliconflow.cn/account/ak
 
-**model** https://docs.siliconflow.cn/docs/model-names
+**model** 在软件内下拉列表中选取即可 [~~https://docs.siliconflow.cn/docs/model-names~~](https://docs.siliconflow.cn/docs/model-names)
 
 == 讯飞星火大模型
 
-**API接口地址** `https://spark-api-open.xf-yun.com/v1`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://spark-api-open.xf-yun.com/v1`</del>
 
 **API Key** 参考[官方文档](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)获取**APIKey**和**APISecret**后，按照**APIKey:APISecret**的格式填入
 
@@ -184,7 +189,7 @@
 
 == 腾讯混元大模型
 
-**API接口地址** `https://api.hunyuan.cloud.tencent.com/v1`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.hunyuan.cloud.tencent.com/v1`</del>
 <!-- 
 **SecretId** & **SecretKey** https://console.cloud.tencent.com/cam/capi -->
 **API Key** 参考[官方文档](https://cloud.tencent.com/document/product/1729/111008)
@@ -193,7 +198,7 @@
 
 == 百度千帆大模型
 
-**API接口地址** `https://qianfan.baidubce.com/v2`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://qianfan.baidubce.com/v2`</del>
 
 **API Key** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps
 
@@ -204,10 +209,10 @@
 
 == MiniMax
 
-**API接口地址** `https://api.minimax.chat/v1`
+**API接口地址** 在软件内下拉列表中选取即可 <del>`https://api.minimax.chat/v1`</del>
 
 **API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
 
-**model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
+**model** 在软件内下拉列表中选取即可 [~~https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4~~](https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4)
 
 :::

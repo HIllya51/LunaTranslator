@@ -50,7 +50,7 @@ class TTS(TTSbase):
             "speed": speed,  # 0.25 to 4.0. 1.0 is the default.
         }
 
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
         headers.update(extraheader)
         json_data.update(extrabody)
         response = self.proxysession.post(

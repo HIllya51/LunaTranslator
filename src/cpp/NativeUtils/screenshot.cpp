@@ -72,14 +72,14 @@ std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
         return {};
     return bmp;
 }
-DECLARE_API void gdi_screenshot(HWND hwnd, void (*cb)(byte *, size_t))
+DECLARE_API void GdiGrabWindow(HWND hwnd, void (*cb)(byte *, size_t))
 {
     RECT rect{-1, -1, -1, -1};
     auto bf = __gdi_screenshot(hwnd, rect);
     if (bf)
         cb(bf.value().data.get(), bf.value().size);
 }
-DECLARE_API void crop_image(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
+DECLARE_API void GdiCropImage(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
 {
     for (int i = 0; i < 2; i++)
     {
@@ -116,7 +116,7 @@ DECLARE_API void crop_image(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
     }
 }
 
-DECLARE_API void maximum_window(HWND hwnd)
+DECLARE_API void MaximumWindow(HWND hwnd)
 {
     RECT rect;
     GetVirtualDesktopRect(rect);

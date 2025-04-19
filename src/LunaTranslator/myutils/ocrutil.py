@@ -5,12 +5,12 @@ from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import safepixmap
 from myutils.utils import stringfyerror
 from traceback import print_exc
-import threading, gobject, winsharedutils
+import threading, gobject, NativeUtils
 from ocrengines.baseocrclass import baseocr, OCRResultParsed
 
 
 def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
-    return safepixmap(winsharedutils.crop_image(x1, y1, x2, y2, hwnd)).toImage()
+    return safepixmap(NativeUtils.GdiCropImage(x1, y1, x2, y2, hwnd)).toImage()
 
 
 _nowuseocrx = None
@@ -37,7 +37,7 @@ def __ocr_init():
     use = None
     for k in globalconfig["ocr"]:
         if globalconfig["ocr"][k]["use"] == True and os.path.exists(
-            ("./LunaTranslator/ocrengines/" + k + ".py")
+            ("LunaTranslator/ocrengines/" + k + ".py")
         ):
             use = k
             break

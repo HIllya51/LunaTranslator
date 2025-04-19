@@ -1,9 +1,9 @@
 import uuid
 import os
-import windows, winsharedutils, threading
+import windows, NativeUtils, threading
 from tts.basettsclass import TTSbase, SpeechParam
 import ctypes, subprocess, gobject
-from ctypes import cast, POINTER, c_char, c_int32
+from ctypes import c_int32
 
 
 class TTS(TTSbase):
@@ -15,41 +15,18 @@ class TTS(TTSbase):
         mapname = str(uuid.uuid4())
         cmd = '"{}" neospeech {} {} {}'.format(exepath, pipename, waitsignal, mapname)
 
-        self.engine = winsharedutils.AutoKillProcess(cmd)
+        self.engine = NativeUtils.AutoKillProcess(cmd)
 
-        windows.WaitForSingleObject(
-            windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
-            windows.INFINITE,
-        )
-        windows.WaitNamedPipe(pipename, windows.NMPWAIT_WAIT_FOREVER)
-        self.hPipe = windows.AutoHandle(
-            windows.CreateFile(
-                pipename,
-                windows.GENERIC_READ | windows.GENERIC_WRITE,
-                0,
-                None,
-                windows.OPEN_EXISTING,
-                windows.FILE_ATTRIBUTE_NORMAL,
-                None,
-            )
-        )
+        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
+        windows.WaitNamedPipe(pipename)
+        self.hPipe = windows.CreateFile(pipename)
 
-        self.mappedFile2 = windows.AutoHandle(
-            windows.OpenFileMapping(
-                windows.FILE_MAP_READ | windows.FILE_MAP_WRITE, False, mapname
-            )
-        )
-        self.mem = windows.MapViewOfFile(
-            self.mappedFile2,
-            windows.FILE_MAP_READ | windows.FILE_MAP_WRITE,
-            0,
-            0,
-            1024 * 1024 * 16,
-        )
+        self.mappedFile2 = windows.OpenFileMapping(mapname)
+        self.mem = windows.MapViewOfFile(self.mappedFile2)
 
     def getvoicelist(self):
         cachefname = gobject.gettempdir("{}.txt".format(uuid.uuid4()))
-        exe = os.path.abspath("./files/plugins/shareddllproxy32.exe")
+        exe = os.path.abspath("files/plugins/shareddllproxy32.exe")
         subprocess.run('"{}"  neospeechlist "{}"'.format(exe, cachefname))
 
         with open(cachefname, "r", encoding="utf-16-le") as ff:
@@ -73,4 +50,4 @@ class TTS(TTSbase):
             windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(idx))))
             size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
 
-            return cast(self.mem, POINTER(c_char))[:size]
+            return self.mem[:size]

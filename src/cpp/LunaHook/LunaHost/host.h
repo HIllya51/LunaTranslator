@@ -9,13 +9,11 @@ namespace Host
 	using HookEventHandler = std::function<void(const HookParam &, const std::wstring &text)>;
 	using HookInsertHandler = std::function<void(DWORD, uint64_t, const std::wstring &)>;
 	using EmbedCallback = std::function<void(const std::wstring &, const ThreadParam &)>;
-	void Start(ProcessEventHandler Connect, ProcessEventHandler Disconnect, ThreadEventHandler Create, ThreadEventHandler Destroy, TextThread::OutputCallback Output, bool createconsole = true);
-	void StartEx(std::optional<ProcessEventHandler> Connect, std::optional<ProcessEventHandler> Disconnect, std::optional<ThreadEventHandler> Create, std::optional<ThreadEventHandler> Destroy, std::optional<TextThread::OutputCallback> Output, bool consolethread, std::optional<HostInfoHandler> hostinfo, std::optional<HookInsertHandler> hookinsert, std::optional<EmbedCallback> embed);
-	void InjectProcess(DWORD processId, const std::wstring locationX = L"");
-	bool CreatePipeAndCheck(DWORD processId);
-
+	void Start(std::optional<ProcessEventHandler> Connect, std::optional<ProcessEventHandler> Disconnect, std::optional<ThreadEventHandler> Create, std::optional<ThreadEventHandler> Destroy, std::optional<TextThread::OutputCallback> Output, std::optional<HostInfoHandler> hostinfo, std::optional<HookInsertHandler> hookinsert, std::optional<EmbedCallback> embed);
+	void ConnectAndInjectProcess(DWORD processId);
+	void ConnectProcess(DWORD processId);
+	bool CheckIfNeedInject(DWORD processId);
 	void DetachProcess(DWORD processId);
-
 	void InsertHook(DWORD processId, HookParam hp);
 	void SetLanguage(const char *);
 	void InsertPCHooks(DWORD processId, int which);
@@ -29,7 +27,6 @@ namespace Host
 
 	inline int defaultCodepage = SHIFT_JIS;
 
-	constexpr ThreadParam console{0, 0, 0, 0};
 	bool CheckIsUsingEmbed(ThreadParam tp);
 
 }

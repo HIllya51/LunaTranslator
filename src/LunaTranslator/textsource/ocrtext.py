@@ -1,28 +1,108 @@
 import time, copy, threading
 from myutils.config import globalconfig
-import winsharedutils, windows
+import NativeUtils, windows
 from gui.rangeselect import rangeadjust
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run, ocr_init
-from myutils.utils import qimage2binary
 import time, gobject
 from qtsymbols import *
 from myutils.keycode import vkcode_map
 from textsource.textsourcebase import basetext
 from ocrengines.baseocrclass import OCRResultParsed
+from CVUtils import cvMat
 
 
-def normqimage(img: QImage):
-    img = img.scaled(128, 8 * 3)
-    return img
+class rangemanger:
+    def __init__(self):
+        self.range_ui = rangeadjust(gobject.baseobject.settin_ui)
+        self.savelastimg: cvMat = None
+        self.savelastrecimg: cvMat = None
+        self.lastocrtime: float = 0
+        self.savelasttext: str = None
 
+    def __del__(self):
+        self.range_ui.closesignal.emit()
 
-def compareImage(img1, img2, h=24, w=128):
-    cnt = 0
-    for i in range(w):
-        for j in range(h):
-            cnt += img1.pixel(i, j) == img2.pixel(i, j)
-    return cnt / (w * h)
+    def getresmanual(self):
+        rect = self.range_ui.getrect()
+        if rect is None:
+            return
+        imgr = imageCut(
+            gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+        )
+        result = ocr_run(imgr)
+        self.savelastimg = cvMat.fromQImage(imgr)
+        self.savelastrecimg = self.savelastimg
+        self.lastocrtime = time.time()
+        self.savelasttext = result.textonly
+        return result
+
+    def getresauto(self):
+        rect = self.range_ui.getrect()
+        if rect is None:
+            return
+        imgr = imageCut(
+            gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+        )
+        ok = True
+        if globalconfig["ocr_auto_method_v2"] == "analysis":
+            imgr1 = cvMat.fromQImage(imgr)
+
+            image_score = imgr1.MSSIM(self.savelastimg)
+
+            try:
+                gobject.baseobject.settin_ui.thresholdsett1.emit(str(image_score))
+            except:
+                pass
+            self.savelastimg = imgr1
+
+            if image_score > globalconfig["ocr_stable_sim_v2"]:
+
+                image_score2 = imgr1.MSSIM(self.savelastrecimg)
+
+                try:
+                    gobject.baseobject.settin_ui.thresholdsett2.emit(str(image_score2))
+                except:
+                    pass
+                if image_score2 > globalconfig["ocr_diff_sim_v2"]:
+                    ok = False
+                else:
+                    self.savelastrecimg = imgr1
+            else:
+                ok = False
+        elif globalconfig["ocr_auto_method_v2"] == "period":
+            if time.time() - self.lastocrtime > globalconfig["ocr_interval"]:
+                ok = True
+            else:
+                ok = False
+        if ok == False:
+            return
+        result = ocr_run(imgr)
+        t = result.textonly
+        self.lastocrtime = time.time()
+        sim = NativeUtils.distance(self.savelasttext, t)
+        self.savelasttext = t
+        if sim < globalconfig["ocr_text_diff"]:
+            return
+        self.savelasttext = t
+        return result
+
+    def waitforstable(self):
+        rect = self.range_ui.getrect()
+        if rect is None:
+            return False
+        imgr = imageCut(
+            gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+        )
+        imgr1 = cvMat.fromQImage(imgr)
+        image_score = imgr1.MSSIM(self.savelastimg)
+
+        try:
+            gobject.baseobject.settin_ui.thresholdsett1.emit(str(float(image_score)))
+        except:
+            pass
+        self.savelastimg = imgr1
+        return image_score > globalconfig["ocr_stable_sim2_v2"]
 
 
 class ocrtext(basetext):
@@ -30,68 +110,48 @@ class ocrtext(basetext):
     def init(self):
         self.startsql(gobject.gettranslationrecorddir("0_ocr.sqlite"))
         threading.Thread(target=ocr_init).start()
-        self.savelastimg = []
-        self.savelastrecimg = []
-        self.savelasttext = []
-        self.lastocrtime = []
-        self.range_ui = []
+        self.ranges: "list[rangemanger]" = []
         self.gettextthread()
 
     def clearrange(self):
-        for _ in self.range_ui:
-            _.close()
-        self.range_ui.clear()
-        self.savelastimg.clear()
-        self.savelastrecimg.clear()
-        self.lastocrtime.clear()
-        self.savelasttext.clear()
+        self.ranges.clear()
         globalconfig["ocrregions"].clear()
 
     def leaveone(self):
-        for _ in self.range_ui[:-1]:
-            _.close()
-        self.range_ui = self.range_ui[-1:]
-        self.savelastimg = self.savelastimg[-1:]
-        self.savelastrecimg = self.savelastrecimg[-1:]
-        self.lastocrtime = self.lastocrtime[-1:]
-        self.savelasttext = self.savelasttext[-1:]
+        self.ranges = self.ranges[-1:]
 
     def newrangeadjustor(self):
-        if len(self.range_ui) == 0 or globalconfig["multiregion"]:
-            self.range_ui.append(rangeadjust(gobject.baseobject.settin_ui))
-            self.savelastimg.append(None)
-            self.savelastrecimg.append(None)
-            self.lastocrtime.append(0)
-            self.savelasttext.append(None)
+        if len(self.ranges) == 0 or globalconfig["multiregion"]:
+            self.ranges.append(rangemanger())
 
     def starttrace(self, pos):
-        for _r in self.range_ui:
-            _r.starttrace(pos)
+        for _r in self.ranges:
+            _r.range_ui.starttrace(pos)
 
     def traceoffset(self, curr):
-        for _r in self.range_ui:
-            _r.traceoffsetsignal.emit(curr)
+        for _r in self.ranges:
+            _r.range_ui.traceoffsetsignal.emit(curr)
 
     def setrect(self, rect):
-        self.range_ui[-1].setrect(rect)
+        self.ranges[-1].range_ui.setrect(rect)
 
     def setstyle(self):
-        [_.setstyle() for _ in self.range_ui]
+        [_.range_ui.setstyle() for _ in self.ranges]
 
     def showhiderangeui(self, b):
-        if b and len(self.range_ui) == 0:
+        if b and len(self.ranges) == 0:
             for region in globalconfig["ocrregions"]:
                 if region:
                     self.newrangeadjustor()
                     self.setrect(region)
             return
-        for _ in self.range_ui:
+        for _ in self.ranges:
             if b:
-                _r = _.getrect()
+                _r = _.range_ui.getrect()
                 if _r:
-                    _.setrect(_r)
+                    _.range_ui.setrect(_r)
             else:
-                _.hide()
+                _.range_ui.hide()
 
     @threader
     def gettextthread(self):
@@ -102,7 +162,7 @@ class ocrtext(basetext):
                 time.sleep(0.1)
                 continue
 
-            if globalconfig["ocr_auto_method"] == 3:
+            if globalconfig["ocr_auto_method_v2"] == "trigger":
                 triggered = False
                 this = tuple(
                     (
@@ -138,12 +198,18 @@ class ocrtext(basetext):
                                 break
                             time.sleep(0.1)
 
-                    else:
-                        triggered = self.waitforstablex(strict=True)
                 if triggered:
-                    time.sleep(globalconfig["ocr_trigger_delay"])
 
-                    while (not self.ending) and (globalconfig["ocr_auto_method"] == 3):
+                    t1 = time.time()
+                    while (not self.ending) and (
+                        globalconfig["ocr_auto_method_v2"] == "trigger"
+                    ):
+                        time.sleep(0.1)
+                        if time.time() - t1 >= globalconfig["ocr_trigger_delay"]:
+                            break
+                    while (not self.ending) and (
+                        globalconfig["ocr_auto_method_v2"] == "trigger"
+                    ):
                         if self.waitforstablex():
                             break
                         time.sleep(0.1)
@@ -160,131 +226,20 @@ class ocrtext(basetext):
                     self.dispatchtext(t)
                 time.sleep(0.1)
 
-    def waitforstable(self, i, imgr, strict):
-        if strict:
-            imgr1 = imgr
-            if self.savelastimg[i] is not None:
-                a = qimage2binary(imgr1)
-                b = qimage2binary(self.savelastimg[i])
-                image_score = a != b
-            else:
-                image_score = 0
-        else:
-            imgr1 = normqimage(imgr)
-            if (self.savelastimg[i] is not None) and (
-                imgr1.size() == self.savelastimg[i].size()
-            ):
-                image_score = compareImage(imgr1, self.savelastimg[i])
-            else:
-                image_score = 0
-
-        if i == 0:
-            try:
-                gobject.baseobject.settin_ui.thresholdsett1.emit(
-                    str(float(image_score))
-                )
-            except:
-                pass
-        self.savelastimg[i] = imgr1
-        if strict:
-            return image_score != 0
-        else:
-            return image_score > globalconfig["ocr_stable_sim2"]
-
-    def waitforstablex(self, strict=False):
-        for i, range_ui in enumerate(self.range_ui):
-            rect = range_ui.getrect()
-            if rect is None:
-                continue
-            img = imageCut(
-                gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
-            )
-            if not self.waitforstable(i, img, strict):
+    def waitforstablex(self):
+        for range_ui in self.ranges:
+            if not range_ui.waitforstable():
                 return False
         return True
 
-    def getresauto(self, i, imgr):
-        ok = True
-        if globalconfig["ocr_auto_method"] in [0, 2]:
-            imgr1 = normqimage(imgr)
-
-            if self.savelastimg[i] is not None and (
-                imgr1.size() == self.savelastimg[i].size()
-            ):
-
-                image_score = compareImage(imgr1, self.savelastimg[i])
-
-            else:
-                image_score = 0
-            if i == 0:
-                try:
-                    gobject.baseobject.settin_ui.thresholdsett1.emit(
-                        str(image_score)
-                    )
-                except:
-                    pass
-            self.savelastimg[i] = imgr1
-
-            if image_score > globalconfig["ocr_stable_sim"]:
-                if self.savelastrecimg[i] is not None and (
-                    imgr1.size() == self.savelastrecimg[i].size()
-                ):
-                    image_score2 = compareImage(imgr1, self.savelastrecimg[i])
-                else:
-                    image_score2 = 0
-                if i == 0:
-                    try:
-                        gobject.baseobject.settin_ui.thresholdsett2.emit(
-                            str(image_score2)
-                        )
-                    except:
-                        pass
-                if image_score2 > globalconfig["ocr_diff_sim"]:
-                    ok = False
-                else:
-                    self.savelastrecimg[i] = imgr1
-            else:
-                ok = False
-        if globalconfig["ocr_auto_method"] in [1, 2]:
-            if time.time() - self.lastocrtime[i] > globalconfig["ocr_interval"]:
-                ok = True
-            else:
-                ok = False
-        if ok == False:
-            return
-        result = ocr_run(imgr)
-        t = result.textonly
-        self.lastocrtime[i] = time.time()
-        if self.savelasttext[i] is not None:
-            sim = winsharedutils.distance(self.savelasttext[i], t)
-            self.savelasttext[i] = t
-            if sim < globalconfig["ocr_text_diff"]:
-                return
-        self.savelasttext[i] = t
-        return result
-
-    def getresmanual(self, i, imgr):
-        result = ocr_run(imgr)
-        imgr1 = normqimage(imgr)
-        self.savelastimg[i] = imgr1
-        self.savelastrecimg[i] = imgr1
-        self.lastocrtime[i] = time.time()
-        self.savelasttext[i] = result.textonly
-        return result
-
     def getallres(self, auto):
         __text: "list[OCRResultParsed]" = []
-        for i, range_ui in enumerate(self.range_ui):
-            rect = range_ui.getrect()
-            if rect is None:
-                continue
-            img = imageCut(
-                gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
-            )
+        for r in self.ranges:
+
             if auto:
-                _ = self.getresauto(i, img)
+                _ = r.getresauto()
             else:
-                _ = self.getresmanual(i, img)
+                _ = r.getresmanual()
             if _ is None:
                 continue
             if _.error:
@@ -303,5 +258,4 @@ class ocrtext(basetext):
         return self.getallres(False)
 
     def end(self):
-        globalconfig["ocrregions"] = [_.getrect() for _ in self.range_ui]
-        [_.closesignal.emit() for _ in self.range_ui]
+        globalconfig["ocrregions"] = [_.range_ui.getrect() for _ in self.ranges]

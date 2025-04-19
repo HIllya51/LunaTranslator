@@ -1,8 +1,8 @@
 import uuid
 import os, io
-import windows, winsharedutils
+import windows, NativeUtils
 from tts.basettsclass import TTSbase, SpeechParam
-from ctypes import cast, POINTER, c_char, c_int32, c_float
+from ctypes import c_int32, c_float
 import xml.etree.ElementTree as ET
 import hashlib, zlib, threading
 from traceback import print_exc
@@ -43,7 +43,7 @@ class TTS(TTSbase):
             inflated += decompress.flush()
             return inflated
 
-        return inflate(winsharedutils.AES_decrypt(key, iv, bs)).decode()
+        return inflate(NativeUtils.AES_decrypt(key, iv, bs)).decode()
 
     def readinfobin(self, voicedir, voice):
 
@@ -95,12 +95,12 @@ class TTS(TTSbase):
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
-        is64 = winsharedutils.IsDLLBit64(dllpath)
+        is64 = NativeUtils.IsDLLBit64(dllpath)
         # AIVoice & AIVoice2 -> 64位
         exepath = os.path.abspath(
             "files/plugins/shareddllproxy{}.exe".format([32, 64][is64])
         )
-        self.engine = winsharedutils.AutoKillProcess(
+        self.engine = NativeUtils.AutoKillProcess(
             '"{}" voiceroid2 "{}" "{}" {} {} {} {} {}'.format(
                 exepath,
                 os.path.dirname(dllpath),
@@ -112,34 +112,11 @@ class TTS(TTSbase):
                 self.cacheDialect[self.voice],
             )
         )
-        windows.WaitForSingleObject(
-            windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
-            windows.INFINITE,
-        )
-        windows.WaitNamedPipe(pipename, windows.NMPWAIT_WAIT_FOREVER)
-        self.hPipe = windows.AutoHandle(
-            windows.CreateFile(
-                pipename,
-                windows.GENERIC_READ | windows.GENERIC_WRITE,
-                0,
-                None,
-                windows.OPEN_EXISTING,
-                windows.FILE_ATTRIBUTE_NORMAL,
-                None,
-            )
-        )
-        self.mappedFile2 = windows.AutoHandle(
-            windows.OpenFileMapping(
-                windows.FILE_MAP_READ | windows.FILE_MAP_WRITE, False, mapname
-            )
-        )
-        self.mem = windows.MapViewOfFile(
-            self.mappedFile2,
-            windows.FILE_MAP_READ | windows.FILE_MAP_WRITE,
-            0,
-            0,
-            1024 * 1024 * 16,
-        )
+        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
+        windows.WaitNamedPipe(pipename)
+        self.hPipe = windows.CreateFile(pipename)
+        self.mappedFile2 = windows.OpenFileMapping(mapname)
+        self.mem = windows.MapViewOfFile(self.mappedFile2)
 
     def linear_map(self, x):
         # 0.5-4
@@ -177,4 +154,4 @@ class TTS(TTSbase):
             size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
             if size == 0:
                 return None
-            return cast(self.mem, POINTER(c_char))[:size]
+            return self.mem[:size]

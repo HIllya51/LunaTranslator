@@ -25,14 +25,14 @@ else()
 		ShinyDaysGame MarineHeart ShinaRio CaramelBox UnisonShift Escude Ryokucha Alice Footy2
 		utawarerumono System4x Abalone Abel 5pb HorkEye XUSE Leaf Nekopack AXL AGS AdobeFlash10
 		FocasLens Tamamo Ages3ResT H_do_C RScript TYPEMOON TAKUYO MixwillSoft MerRouge GROOVER
-		SmartAdv Hug GJ)
+		SmartAdv Hug GJ Pinpai)
 	set(enginepath "engine32")
 	set(collector "enginecollection32.cpp")
 endif()
 string(REPLACE ";" ".cpp;${enginepath}/" enginessrc "${enginessrc}")
-#message("${enginessrc}")
+
 set(enginessrc "${enginepath}/${enginessrc}.cpp")
-message("${enginessrc}")
+
 set_source_files_properties(${enginessrc} PROPERTIES SOURCE_ENCODING "UTF-8")
 
 

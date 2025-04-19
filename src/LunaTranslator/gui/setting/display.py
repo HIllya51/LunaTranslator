@@ -5,7 +5,6 @@ from gui.setting.display_text import xianshigrid_style
 from gui.setting.display_ui import uisetting
 from gui.setting.display_scale import makescalew
 from gui.usefulwidget import makesubtab_lazy, makescrollgrid
-from myutils.config import get_platform
 
 
 def setTabThree_lazy(self, basel: QLayout):
@@ -16,9 +15,6 @@ def setTabThree_lazy(self, basel: QLayout):
         functools.partial(createbuttonwidget, self),
         lambda l: makescrollgrid(makescalew(), l),
     ]
-    if get_platform() == "xp":
-        titles.pop(3)
-        funcs.pop(3)
     tab, do = makesubtab_lazy(
         titles,
         funcs,

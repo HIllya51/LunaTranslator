@@ -3,6 +3,7 @@ from myutils.config import globalconfig, magpie_config
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
+    createfoldgrid,
     D_getsimpleswitch,
     SuperCombo,
 )
@@ -263,77 +264,78 @@ def makescalew():
             ),
         ],
         [
-            dict(
-                title="开发者选项",
-                grid=(
+            functools.partial(
+                createfoldgrid,
+                [
                     [
-                        [
-                            "调试模式",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "debugMode",
-                            ),
-                        ],
-                        [
-                            "性能测试模式",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "benchmarkMode",
-                            ),
-                        ],
-                        [
-                            "禁用效果缓存",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "disableEffectCache",
-                            ),
-                        ],
-                        [
-                            "解析效果时保存源代码",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "saveEffectSources",
-                            ),
-                        ],
-                        [
-                            "编译效果时将警告视为错误",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "warningsAreErrors",
-                            ),
-                        ],
-                        [
-                            "禁止在着色器中使用 FP16",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "disableFP16",
-                            ),
-                        ],
-                        [
-                            "禁用字体缓存",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "disableFontCache",
-                            ),
-                        ],
-                        [
-                            "检测重复帧",
-                            D_getsimplecombobox(
-                                ["总是检测", "动态检测", "从不检测"],
-                                magpie_config,
-                                "duplicateFrameDetectionMode",
-                            ),
-                        ],
-                        [
-                            "启用动态检测统计",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "enableStatisticsForDynamicDetection",
-                            ),
-                        ],
-                    ]
-                ),
-            ),
+                        "调试模式",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "debugMode",
+                        ),
+                    ],
+                    [
+                        "性能测试模式",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "benchmarkMode",
+                        ),
+                    ],
+                    [
+                        "禁用效果缓存",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "disableEffectCache",
+                        ),
+                    ],
+                    [
+                        "解析效果时保存源代码",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "saveEffectSources",
+                        ),
+                    ],
+                    [
+                        "编译效果时将警告视为错误",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "warningsAreErrors",
+                        ),
+                    ],
+                    [
+                        "禁止在着色器中使用 FP16",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "disableFP16",
+                        ),
+                    ],
+                    [
+                        "禁用字体缓存",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "disableFontCache",
+                        ),
+                    ],
+                    [
+                        "检测重复帧",
+                        D_getsimplecombobox(
+                            ["总是检测", "动态检测", "从不检测"],
+                            magpie_config,
+                            "duplicateFrameDetectionMode",
+                        ),
+                    ],
+                    [
+                        "启用动态检测统计",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "enableStatisticsForDynamicDetection",
+                        ),
+                    ],
+                ],
+                "开发者选项",
+                magpie_config,
+                "developerMode",
+            )
         ],
     ]
 

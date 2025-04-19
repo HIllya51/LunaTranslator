@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools
 import windows, qtawesome, gobject
-from winsharedutils import getpidhwndfirst
+from NativeUtils import GetProcessFirstWindow
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton
 from myutils.hwnd import getpidexe, ListProcess, mouseselectwindow, getExeIcon
@@ -16,7 +16,9 @@ class AttachProcessDialog(saveposwindow):
 
     def selectwindowcallback(self, pid, hwnd):
         if pid == os.getpid():
-            return
+            return mouseselectwindow(self.setcurrentpidpnamesignal.emit)
+        self.setEnabled(True)
+        self.button.setText("点击此按钮后点击游戏窗口"),
         name = getpidexe(pid)
         if not name:
             QMessageBox.critical(
@@ -66,8 +68,17 @@ class AttachProcessDialog(saveposwindow):
                 return QSize(size.width(), 2 * size.height())
 
         self.button = __LPushButton("点击此按钮后点击游戏窗口")
+        self.button.setCheckable(True)
+        self.button.setStyleSheet("font-weight: bold;")
+        self.button.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         self.button.clicked.connect(
-            functools.partial(mouseselectwindow, self.setcurrentpidpnamesignal.emit)
+            lambda: (
+                self.button.setText("请点击游戏窗口"),
+                self.setEnabled(False),
+                mouseselectwindow(self.setcurrentpidpnamesignal.emit),
+            )
         )
         self.layout1.addWidget(self.label)
         self.layout1.addWidget(self.button)
@@ -187,7 +198,7 @@ class AttachProcessDialog(saveposwindow):
 
     def guesshwnd(self, pids):
         for pid in pids:
-            hwnd = getpidhwndfirst(pid)
+            hwnd = GetProcessFirstWindow(pid)
             if (hwnd) != 0:
                 return hwnd
         return 0

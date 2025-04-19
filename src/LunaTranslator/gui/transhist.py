@@ -1,6 +1,6 @@
 from qtsymbols import *
 import gobject, os
-import qtawesome, winsharedutils, functools, json
+import qtawesome, NativeUtils, functools, json
 from myutils.config import globalconfig, _TR
 from myutils.utils import get_time_stamp
 from gui.usefulwidget import closeashidewindow, WebviewWidget, Exteditor
@@ -343,7 +343,7 @@ class Qtranshist(QPlainTextEdit):
         elif action == tts:
             gobject.baseobject.read_text(self.textCursor().selectedText())
         elif action == copy:
-            winsharedutils.clipboard_set(self.textCursor().selectedText())
+            NativeUtils.ClipBoard.text = self.textCursor().selectedText()
         elif action == baocun:
             ff = QFileDialog.getSaveFileName(self, directory="save.txt")
             if ff[0] == "":

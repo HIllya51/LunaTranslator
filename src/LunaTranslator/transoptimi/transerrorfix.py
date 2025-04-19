@@ -24,7 +24,7 @@ class Process:
         noundictconfigdialog1(
             parent_window,
             savehook_new_data[gameuid]["transerrorfix"],
-            "翻译结果修正_-_" + savehook_new_data[gameuid]["title"],
+            "翻译结果修正_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
             ["正则", "转义", "翻译", "替换"],
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 

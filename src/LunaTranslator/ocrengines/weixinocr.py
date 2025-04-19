@@ -1,7 +1,7 @@
 import gobject, os, uuid
 from ocrengines.baseocrclass import baseocr, OCRResult
-from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_int
-import winsharedutils
+from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_float
+import NativeUtils, threading
 import winreg
 from traceback import print_exc
 
@@ -18,7 +18,10 @@ class wcocr:
         self.pobj = None
         for function in [self.findwechat, self.findqqnt]:
             try:
-                wechatocr_path, wechat_path = function()
+                _ = function()
+                if not _:
+                    continue
+                wechatocr_path, wechat_path = _
                 if any([not os.path.exists(_) for _ in (wechatocr_path, wechat_path)]):
                     continue
                 self.pobj = wcocr_init(wechatocr_path, wechat_path)
@@ -31,9 +34,9 @@ class wcocr:
 
     def findqqnt(self):
         default = r"C:\Program Files\Tencent\QQNT"
-        version = winsharedutils.queryversion(os.path.join(default, "QQ.exe"))
+        version = NativeUtils.QueryVersion(os.path.join(default, "QQ.exe"))
         if not version:
-            raise Exception()
+            return
         mojo = os.path.join(
             default,
             r"resources\app\versions",
@@ -55,9 +58,9 @@ class wcocr:
         if not os.path.exists(WeChatexe):
             # 4.x
             WeChatexe = os.path.join(base, "Weixin.exe")
-        version = winsharedutils.queryversion(WeChatexe)
+        version = NativeUtils.QueryVersion(WeChatexe)
         if not version:
-            raise Exception()
+            return
         versionf = ".".join((str(_) for _ in version))
         APPDATA = os.getenv("APPDATA")
         if version[0] == 4:
@@ -101,7 +104,7 @@ class wcocr:
         def cb(x1, y1, x2, y2, text: bytes):
             ret.append((x1, y1, x2, y2, text.decode("utf8")))
 
-        fp = CFUNCTYPE(None, c_int, c_int, c_int, c_int, c_char_p)(cb)
+        fp = CFUNCTYPE(None, c_float, c_float, c_float, c_float, c_char_p)(cb)
         succ = wcocr_ocr(self.pobj, imgfile.encode("utf8"), fp)
         os.remove(imgfile)
         if not succ:
@@ -115,20 +118,19 @@ class wcocr:
         return boxs, texts
 
 
+globaloncelock = threading.Lock()
 globalonce = None
 # 这个wcocr，析构有问题。既然内存占用也不高，干脆不要释放了。
 
 
 class OCR(baseocr):
     def init(self):
-        global globalonce
+        global globalonce, globaloncelock
         if globalonce is None:
-            globalonce = 0
-            globalonce = wcocr()
+            with globaloncelock:
+                globalonce = wcocr()
 
     def ocr(self, imagebinary):
         global globalonce
-        if not globalonce:
-            raise Exception()
         boxs, texts = globalonce.ocr(imagebinary)
         return OCRResult(boxs=boxs, texts=texts)

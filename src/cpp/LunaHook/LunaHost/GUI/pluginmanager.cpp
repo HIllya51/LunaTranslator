@@ -151,7 +151,6 @@ void Pluginmanager::add(const pluginitem &item)
 }
 int Pluginmanager::count()
 {
-    return 0;
     return configs->configs[pluginkey].size();
 }
 pluginitem Pluginmanager::get(int i)

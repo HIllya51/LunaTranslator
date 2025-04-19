@@ -22,6 +22,7 @@ def __getdir(name="", basedir="cache"):
     fn1 = os.path.join(fn1, fn)
     return fn1
 
+
 def getcachedir(name=""):
     return __getdir(name)
 
@@ -44,9 +45,14 @@ def gettempdir(filename=""):
     return tgt
 
 
-from LunaTranslator import MAINUI
-
-baseobject: MAINUI = None
+try:
+    TYPE_CHECKING = False
+    from typing import TYPE_CHECKING
+except:
+    pass
+if TYPE_CHECKING:
+    from LunaTranslator import MAINUI
+baseobject: "MAINUI" = None
 global_dialog_savedgame_new = None
 global_dialog_setting_game = None
 serverindex = 0

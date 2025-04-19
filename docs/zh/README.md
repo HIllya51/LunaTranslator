@@ -16,6 +16,10 @@
 
 下载后解压到任意目录
 
+::: warning
+但请不要把软件放到**C:\Program Files**等特殊路径下，否则即使使用管理员权限，也可能无法保存配置和缓存文件，甚至无法运行。
+:::
+
 **LunaTranslator.exe** 会以普通模式启动 
 
 **LunaTranslator_admin.exe** 会以管理员权限启动，部分游戏需要管理员权限才能HOOK，仅这时需要使用这个，其他时候普通模式启动即可。
@@ -43,6 +47,6 @@
 
 ### Error/PermissionError
 
-如果软件被放到`Program Files`等特殊文件夹，可能会没有读写权限。请使用管理员权限运行。
+如果软件被放到`C:\Program Files`等特殊文件夹，可能会无法正常运行。
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png"  width=400>

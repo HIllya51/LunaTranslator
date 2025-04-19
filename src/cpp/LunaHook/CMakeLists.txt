@@ -19,6 +19,8 @@ add_compile_options(
   /wd4573
 )
 
+include(FetchContent)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -30,25 +32,15 @@ else()
 endif()
 
 option(BUILD_GUI "BUILD_GUI" OFF)
-option(BUILD_CLI "BUILD_CLI" OFF)
 option(WINXP "WINXP" OFF)
 
 if(WINXP)
   set(WINXPAPP "_winxp")
-  add_definitions(-DWINXP=${WINXP})
-  set(YY_Thunks ${CMAKE_SOURCE_DIR}/../libs/YY-Thunks/objs/X86/YY_Thunks_for_WinXP.obj)
 else()
   set(WINXPAPP "")
-  if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-      set(YY_Thunks ${CMAKE_SOURCE_DIR}/../libs/YY-Thunks/objs/X64/YY_Thunks_for_Win7.obj)
-  else()
-      set(YY_Thunks ${CMAKE_SOURCE_DIR}/../libs/YY-Thunks/objs/X86/YY_Thunks_for_Win7.obj)
-  endif()
 endif()
 
-if(NOT EXISTS ${YY_Thunks})
-    set(YY_Thunks )
-endif()
+include(../winxphelper.cmake)
 
 set(CMAKE_FINAL_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/builds/${CMAKE_BUILD_TYPE}_x${bitappendix}${WINXPAPP}) 
 set(binary_out_putpath ${CMAKE_SOURCE_DIR}/builds/${CMAKE_BUILD_TYPE}${WINXPAPP}) 
@@ -58,7 +50,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${binary_out_putpath}>)
 
 include_directories(.)
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/../libs/minhook ${CMAKE_BINARY_DIR}/minhook)
+FetchContent_Declare(minhook 
+  GIT_REPOSITORY https://github.com/TsudaKageyu/minhook
+  GIT_TAG 2b003bb063d66f016cc1aef7d63951350ce60f35
+)
+FetchContent_MakeAvailable(minhook)
 
 include_directories(include)
 

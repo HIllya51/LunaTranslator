@@ -350,7 +350,7 @@ def POSTSOLVE(line, isEx=False):
         return ""
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig
-    usemypostpath = "./userconfig/mypost.py"
+    usemypostpath = "userconfig/mypost.py"
     usemodule = "mypost"
     try:
 
@@ -367,7 +367,7 @@ def POSTSOLVE(line, isEx=False):
                     "posts."
                     + savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                 )
-                usemypostpath = "./userconfig/posts/{}.py".format(
+                usemypostpath = "userconfig/posts/{}.py".format(
                     savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                 )
     except:

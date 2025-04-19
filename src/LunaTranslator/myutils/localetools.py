@@ -1,10 +1,10 @@
-import windows, os, winsharedutils, functools
+import windows, os, NativeUtils, functools
 from qtsymbols import *
 from myutils.config import (
     savehook_new_data,
     get_launchpath,
     globalconfig,
-    get_platform,
+    is_xp,
     _TR,
 )
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
@@ -34,7 +34,7 @@ class LEbase(Launcher):
         execheck3264 = game
         usearg = '"{}"'.format(game)
         if game.lower().endswith(".lnk"):
-            exepath, args, iconpath, dirp = winsharedutils.GetLnkTargetPath(game)
+            exepath, args, iconpath, dirp = NativeUtils.GetLnkTargetPath(game)
 
             if args != "":
                 usearg = '"{}" {}'.format(exepath, args)
@@ -133,7 +133,9 @@ class le_internal(LEbase):
 
     def setting(self, layout, config):
         Names, Guids, _ = self.profiles(config)
-        self.__profiles = getsimplecombobox(Names, config, "leguid", internal=Guids)
+        self.__profiles = getsimplecombobox(
+            Names, config, "leguid", internal=Guids, static=True
+        )
         layout.addRow(
             "路径",
             getsimplepatheditor(
@@ -146,10 +148,7 @@ class le_internal(LEbase):
                 icons=("fa.gear", "fa.refresh"),
             ),
         )
-        layout.addRow(
-            "Profile",
-            self.__profiles,
-        )
+        layout.addRow("Profile", self.__profiles)
 
     def loaddf(self, config):
         for k, v in self.default.items():
@@ -307,7 +306,9 @@ class lr_internal(LEbase):
 
     def setting(self, layout, config):
         Names, Guids, _ = self.profiles(config)
-        self.__profiles = getsimplecombobox(Names, config, "lrguid", internal=Guids)
+        self.__profiles = getsimplecombobox(
+            Names, config, "lrguid", internal=Guids, static=True
+        )
         layout.addRow(
             "路径",
             getsimplepatheditor(
@@ -320,10 +321,7 @@ class lr_internal(LEbase):
                 icons=("fa.gear", "fa.refresh"),
             ),
         )
-        layout.addRow(
-            "Profile",
-            self.__profiles,
-        )
+        layout.addRow("Profile", self.__profiles)
 
 
 class CommandLine(Launcher):
@@ -365,22 +363,18 @@ class Direct(Launcher):
         windows.ShellExecute(None, "open", gameexe, "", dirpath, windows.SW_SHOW)
 
 
-if get_platform() == "xp":
-    x86tools = [
-        NTLEAS32,
-        CommandLine,
-        Direct,
-    ]
-    x64tools = [NTLEAS64, CommandLine, Direct]
-else:
-    x86tools = [
-        le_internal,
-        lr_internal,
-        NTLEAS32,
-        CommandLine,
-        Direct,
-    ]
-    x64tools = [lr_internal, NTLEAS64, CommandLine, Direct]
+x86tools = [
+    le_internal,
+    lr_internal,
+    NTLEAS32,
+    CommandLine,
+    Direct,
+]
+x64tools = [lr_internal, NTLEAS64, CommandLine, Direct]
+
+if is_xp:
+    x86tools.remove(NTLEAS32)
+    x86tools.insert(0, NTLEAS32)
 
 
 def getgamecamptools(gameexe, b=None):

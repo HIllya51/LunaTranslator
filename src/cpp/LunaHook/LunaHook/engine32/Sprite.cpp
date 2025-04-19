@@ -95,9 +95,56 @@ namespace
     return NewHook(hp, "TextXtra");
   }
 }
+namespace
+{
+  bool h5()
+  {
+    // https://vndb.org/v2444
+    // Deep Fantasy
+    auto m = GetModuleHandle(L"iml32.dll");
+    if (!m)
+      return false;
+    auto IML32_1114 = GetProcAddress(m, (LPCSTR)1114);
+    if (!IML32_1114)
+      return false;
+    m = GetModuleHandle(L"dirapi.dll");
+    auto [minAddress, maxAddress] = Util::QueryModuleLimits(m);
+    const BYTE bytes[] = {
+        0x8B, 0xBC, 0x24, 0x18, 0x01, 0x00, 0x00,
+        0x85, 0XFF,
+        0X0F, 0X8C, XX4,
+        0X8B, 0XAC, 0X24, 0X14, 0X01, 0X00, 0X00,
+        0X8B, 0X55, 0X04,
+        0X2B, 0XD7,
+        0X85, 0XD2,
+        0X0F, 0X8E, XX4,
+        0X8B, 0X45, 0X00,
+        0X85, 0XC0,
+        0X0F, 0X84, XX4,
+        0X50,
+        0XE8, XX4, // call    IML32_1114
+    };
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), minAddress, maxAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr + sizeof(bytes);
+    hp.type = USING_STRING;
+    hp.offset = regoffset(eax);
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      static std::string last;
+      auto s = buffer->strA();
+      if (s == last)
+        return buffer->clear();
+      last = s;
+    };
+    return NewHook(hp, "dirapi");
+  }
+}
 bool Sprite::attach_function()
 {
-  return Sprite_attach_function() | _h1() | _h2();
+  return (Sprite_attach_function() | _h1() | _h2()) || h5();
 }
 namespace
 {

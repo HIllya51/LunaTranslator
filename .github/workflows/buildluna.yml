@@ -1,4 +1,4 @@
-name: buildluna
+name: _
 on:
   workflow_call:
 jobs:
@@ -6,8 +6,6 @@ jobs:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -21,8 +19,6 @@ jobs:
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init src/cpp/libs/minhook
-      - run: git submodule update src/cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -44,8 +40,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - run: git submodule init src/cpp/libs/minhook
-      - run: git submodule update src/cpp/libs/minhook
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -79,8 +73,6 @@ jobs:
         architecture: [x86, x64]
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -123,7 +115,7 @@ jobs:
           path: src/build/${{matrix.fname}}.zip
   merge_xp:
     runs-on: windows-latest
-    needs: [build_cpp_xp,hook_xp]
+    needs: [build_cpp_xp,hook_xp,build_cpp,hook]
     permissions:
       id-token: write
       attestations: write

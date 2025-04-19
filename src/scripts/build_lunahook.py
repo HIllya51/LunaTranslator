@@ -36,7 +36,7 @@ print(rootDir)
 
 def build_langx(bit, onlycore):
     config = (
-        f"-DBUILD_PLUGIN=OFF -DWINXP=OFF -DBUILD_GUI=ON -DBUILD_CLI=ON"
+        f"-DBUILD_PLUGIN=OFF -DWINXP=OFF -DBUILD_GUI=ON "
         if not onlycore
         else ""
     )
@@ -63,7 +63,7 @@ def build_langx_xp( core):
     os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
     os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../../libs/YY-Thunks")
     os.system("dir")
-    flags = "" if core else " -DBUILD_GUI=ON -DBUILD_CLI=ON "
+    flags = "" if core else " -DBUILD_GUI=ON "
     with open("do.bat", "w") as ff:
         ff.write(
             rf"""

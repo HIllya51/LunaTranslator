@@ -184,7 +184,7 @@ class voiceselect(LDialog):
         self.engine_internal = []
         for name in globalconfig["reader"]:
 
-            _f = "./LunaTranslator/tts/{}.py".format(name)
+            _f = "LunaTranslator/tts/{}.py".format(name)
             if os.path.exists(_f) == False:
                 continue
             self.engine_vis.append(globalconfig["reader"][name]["name"])

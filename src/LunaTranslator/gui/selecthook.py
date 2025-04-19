@@ -2,9 +2,8 @@ from qtsymbols import *
 import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
-import qtawesome, windows, winsharedutils, gobject, os
-from textsource.texthook import codepage_display, codepage_real
-from myutils.config import savehook_new_data, globalconfig, _TR, isascii
+import qtawesome, windows, NativeUtils, gobject, os
+from myutils.config import savehook_new_data, globalconfig, _TR, isascii, static_data
 from myutils.utils import get_time_stamp, dynamiclink, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
 from typing import List
@@ -126,13 +125,12 @@ class searchhookparam(LDialog):
         dumpvalues = {}
         idx = self.searchmethod.idx()
         usestruct = gobject.baseobject.textsource.defaultsp()
+        usestruct.codepage = self.codepagesave["spcp"]
         if idx == 0:
             usestruct.length = 0
-            usestruct.codepage = codepage_real[self.codepagesave["spcp"]]
             # sp = spUser.length == 0 ? spDefault : spUser;
         elif idx == 1:  # 0默认
             # usestruct.codepage=self.codepage.value()
-            usestruct.codepage = codepage_real[self.codepagesave["spcp"]]
             usestruct.text = self.searchtext.text()[:30]
             if len(usestruct.text) < 3:
                 QMessageBox.information(self, _TR("警告"), _TR("搜索文本过短！"))
@@ -180,9 +178,6 @@ class searchhookparam(LDialog):
                 )
             usestruct.padding = dumpvalues["stroffset"]
             usestruct.offset = dumpvalues["offset"]
-            usestruct.codepage = codepage_real[
-                self.codepagesave["spcp"]
-            ]  # dumpvalues[6]
             usestruct.searchTime = dumpvalues["time"] * 1000  # dumpvalues[7]
             usestruct.maxRecords = dumpvalues["maxrecords"]  # dumpvalues[8]
         gobject.baseobject.textsource.findhook(
@@ -237,14 +232,19 @@ class searchhookparam(LDialog):
         if savehook_new_data[gobject.baseobject.gameuid].get(
             "hooksetting_follow_default", True
         ):
-            cp = globalconfig["codepage_index"]
+            cp = globalconfig["codepage_value"]
         else:
             cp = savehook_new_data[gobject.baseobject.gameuid][
                 "hooksetting_private"
-            ].get("codepage_index", globalconfig["codepage_index"])
+            ].get("codepage_value", globalconfig["codepage_value"])
         self.codepagesave = {"spcp": cp}
         layout1.addWidget(
-            getsimplecombobox(codepage_display, self.codepagesave, "spcp")
+            getsimplecombobox(
+                static_data["codepage_display"],
+                self.codepagesave,
+                "spcp",
+                internal=static_data["codepage_real"],
+            )
         )
 
         mainlayout.addLayout(layout1)
@@ -553,7 +553,7 @@ class hookselect(closeashidewindow):
 
     def _check_tp_using(self, key):
         hc, hn, tp = key
-        _isusing = gobject.baseobject.textsource.Luna_checkisusingembed(tp)
+        _isusing = gobject.baseobject.textsource.Luna_CheckIsUsingEmbed(tp)
         if _isusing:
 
             if hn[:8] == "UserHook":
@@ -570,7 +570,7 @@ class hookselect(closeashidewindow):
 
     def _embedbtnfn(self, key, use):
         hc, hn, tp = key
-        gobject.baseobject.textsource.Luna_useembed(tp, use)
+        gobject.baseobject.textsource.Luna_UseEmbed(tp, use)
         _use = self._check_tp_using(key)
         if "embedablehook" not in savehook_new_data[gobject.baseobject.gameuid]:
             savehook_new_data[gobject.baseobject.gameuid]["embedablehook"] = []
@@ -639,9 +639,7 @@ class hookselect(closeashidewindow):
         self.searchtextlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchtextlayout)
         __ = LPushButton("游戏适配")
-        __.clicked.connect(
-            lambda: os.startfile(dynamiclink("{main_server}/Resource/game_support"))
-        )
+        __.clicked.connect(lambda: os.startfile(dynamiclink("/Resource/game_support")))
 
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
@@ -652,7 +650,7 @@ class hookselect(closeashidewindow):
         self.userhookinsert = IconButton("fa.question")
         self.userhookinsert.clicked.connect(
             lambda: os.startfile(
-                dynamiclink("{docs_server}/zh/hooksettings.html#特殊码格式")
+                dynamiclink("/zh/hooksettings.html#特殊码格式", docs=True)
             )
         )
         self.searchtextlayout.addWidget(self.userhookinsert)
@@ -719,7 +717,10 @@ class hookselect(closeashidewindow):
         menu.addAction(removeforever)
         menu.addAction(copy)
         action = menu.exec(self.tttable.cursor().pos())
-        hc, hn, tp = self.querykeyofrow(index)
+        _ = self.querykeyofrow(index)
+        if not _:
+            return
+        hc, hn, tp = _
         if action in (remove, removeforever):
             gobject.baseobject.textsource.Luna_RemoveHook(tp.processId, tp.addr)
             if hn[:8] == "UserHook":
@@ -738,7 +739,7 @@ class hookselect(closeashidewindow):
                     {"removeforeverhook": removeforeverhook}
                 )
         elif action == copy:
-            winsharedutils.clipboard_set(hc)
+            NativeUtils.ClipBoard.text = hc
 
     def opensolvetext(self):
         try:

@@ -81,7 +81,7 @@ processlistwindow::processlistwindow(mainwindow *p) : mainwindow(p)
                 {
                 }
                 if (pid)
-                    Host::InjectProcess(pid);
+                    Host::ConnectAndInjectProcess(pid);
             }
         }
     };

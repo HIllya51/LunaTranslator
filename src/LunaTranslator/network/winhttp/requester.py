@@ -120,14 +120,12 @@ class Requester(Requester_common):
         )
 
     def __init__(self) -> None:
-        self.hSession = AutoWinHttpHandle(
-            WinHttpOpen(
-                self.default_UA,
-                WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
-                WINHTTP_NO_PROXY_NAME,
-                WINHTTP_NO_PROXY_BYPASS,
-                0,
-            )
+        self.hSession = WinHttpOpen(
+            self.default_UA,
+            WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+            WINHTTP_NO_PROXY_NAME,
+            WINHTTP_NO_PROXY_BYPASS,
+            0,
         )
         MaybeRaiseException0(self.hSession)
 
@@ -160,18 +158,16 @@ class Requester(Requester_common):
     ):
         flag = WINHTTP_FLAG_SECURE if scheme == "https" else 0
 
-        hConnect = AutoWinHttpHandle(WinHttpConnect(self.hSession, server, port, 0))
+        hConnect = WinHttpConnect(self.hSession, server, port, 0)
         MaybeRaiseException0(hConnect)
-        hRequest = AutoWinHttpHandle(
-            WinHttpOpenRequest(
-                hConnect,
-                method,
-                param,
-                None,
-                WINHTTP_NO_REFERER,
-                WINHTTP_DEFAULT_ACCEPT_TYPES,
-                flag,
-            )
+        hRequest = WinHttpOpenRequest(
+            hConnect,
+            method,
+            param,
+            None,
+            WINHTTP_NO_REFERER,
+            WINHTTP_DEFAULT_ACCEPT_TYPES,
+            flag,
         )
         tconnect = timeout[0]
         tsendrecv = timeout[1]

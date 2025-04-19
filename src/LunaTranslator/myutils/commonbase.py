@@ -1,5 +1,5 @@
 from myutils.proxy import getproxy
-from myutils.utils import getlangtgt, getlangsrc, getlanguse
+from myutils.utils import getlangtgt, getlangsrc, getlanguse, stringfyerror
 from myutils.config import _TR
 from myutils.wrapper import stripwrapper
 from language import Languages
@@ -97,6 +97,7 @@ class multikeyhelper:
                 else:
                     return ret
             except Exception as e:
+                print(stringfyerror(e))
                 self.__error_happend(curridx)
                 raise e
 

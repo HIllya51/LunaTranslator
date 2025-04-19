@@ -1,6 +1,7 @@
 ﻿
 #include <mecab.h>
 #include <rapidfuzz/distance.hpp>
+#include <aes.hpp>
 DECLARE_API size_t levenshtein_distance(size_t len1, const wchar_t *string1,
                                         size_t len2, const wchar_t *string2)
 {
@@ -61,4 +62,36 @@ DECLARE_API LPWSTR str_alloc(LPCWSTR str)
     auto _ = new WCHAR[wcslen(str) + 1];
     wcscpy(_, str);
     return _;
+}
+
+DECLARE_API void AES_decrypt(uint8_t *key, uint8_t *iv, uint8_t *ptr, size_t size)
+{
+    AES_ctx ctx;
+    AES_init_ctx_iv(&ctx, key, iv);
+    AES_CBC_decrypt_buffer(&ctx, ptr, size);
+}
+
+// #include <maddy/parser.h>
+
+// DECLARE_API void Markdown2Html(const char *str, void (*cb)(const char *))
+// {
+//     std::string s = str;
+//     std::istringstream iss(s);
+//     maddy::Parser p{};
+//     auto result = p.Parse(iss);
+//     cb(result.c_str());
+// }
+#include <md4c-html.h>
+
+static void
+process_output(const MD_CHAR *text, MD_SIZE size, void *userdata)
+{
+    reinterpret_cast<std::string *>(userdata)->append(std::string_view(text, size));
+}
+
+DECLARE_API void Markdown2Html(const char *str, void (*cb)(const char *))
+{
+    std::string output;
+    md_html(str, strlen(str), process_output, &output, 0, 0);
+    cb(output.c_str());
 }

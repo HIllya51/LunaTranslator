@@ -1,11 +1,10 @@
 from translator.basetranslator import basetrans
-import json, requests, hmac, hashlib
+import json, requests, hmac, hashlib, NativeUtils
 from datetime import datetime, timezone
 from myutils.utils import (
     createurl,
     common_list_models,
     common_parse_normal_response,
-    markdown_to_html,
 )
 from myutils.proxy import getproxy
 from language import Languages
@@ -90,7 +89,7 @@ def commonparseresponse_good(
                     else:
                         message += msg
                         if markdown2html:
-                            _msg = markdown_to_html(message)
+                            _msg = NativeUtils.Markdown2Html(message)
                             yield "\0"
                             yield "LUNASHOWHTML" + _msg
                         else:
@@ -112,7 +111,7 @@ def parseresponsegemini(response: requests.Response, markdown2html: bool):
         __x = json.loads("{" + __x + "}")["text"]
         line += __x
         if markdown2html:
-            _msg = markdown_to_html(line)
+            _msg = NativeUtils.Markdown2Html(line)
             yield "\0"
             yield "LUNASHOWHTML" + _msg
         else:
@@ -255,7 +254,7 @@ class gptcommon(basetrans):
         return headers
 
     def translate(self, query):
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
         query = self._gptlike_createquery(
             query, "use_user_user_prompt", "user_user_prompt"
         )
@@ -292,7 +291,7 @@ class gptcommon(basetrans):
                 response, self.apiurl, hidethinking=hidethinking
             )
             if markdown2html:
-                yield "LUNASHOWHTML" + markdown_to_html(respmessage)
+                yield "LUNASHOWHTML" + NativeUtils.Markdown2Html(respmessage)
             else:
                 yield respmessage
         if not (query.strip() and respmessage.strip()):

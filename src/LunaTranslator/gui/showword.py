@@ -2,7 +2,7 @@ from qtsymbols import *
 import json, time, functools, os, base64, uuid
 from urllib.parse import quote
 from traceback import print_exc
-import qtawesome, requests, gobject, windows, winsharedutils
+import qtawesome, requests, gobject, windows, NativeUtils
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, static_data, _TR
@@ -354,7 +354,7 @@ class AnkiWindow(QWidget):
                     getsimpleswitch(globalconfig, "usecustomankigen"),
                     getIconButton(
                         callback=functools.partial(
-                            selectdebugfile, "./userconfig/myanki_v2.py"
+                            selectdebugfile, "userconfig/myanki_v2.py"
                         ),
                         icon="fa.edit",
                     ),
@@ -1011,7 +1011,7 @@ class showdiction(QWidget):
         if action == search:
             self.model.onDoubleClicked(idx)
         elif copy == action:
-            winsharedutils.clipboard_set(item.text())
+            NativeUtils.ClipBoard.text = item.text()
         elif action == label:
             if not idx.data(isLabeleddWord):
                 item.setData(True, isLabeleddWord)
@@ -1346,7 +1346,7 @@ class searchwordW(closeashidewindow):
         nexti = self.textOutput.add_menu_noselect(
             nexti, lambda: _TR("清除加亮"), self.clear_hightlight
         )
-        self.textOutput.set_zoom(globalconfig["ZoomFactor"])
+        self.textOutput.set_zoom(globalconfig.get("ZoomFactor", 1))
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")
         )
@@ -1478,7 +1478,7 @@ class searchwordW(closeashidewindow):
             word = self.searchtext.text() + word
         self.searchtext.setText(word)
         self.activate()
-        self.search(word)
+        self.search(word, append)
         self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
@@ -1493,19 +1493,21 @@ class searchwordW(closeashidewindow):
                 ),
             )
 
-    def __parsehistory(self, word):
+    def __parsehistory(self, word, append):
+        if append and self.historys:
+            self.historys.pop(0)
         if word in self.historys:
             self.historys.remove(word)
         self.historys.insert(0, word)
         self.history_btn.setEnabled(True)
 
-    def search(self, word: str):
+    def search(self, word: str, append=False):
         current = time.time()
         self.current = current
         word = word.strip()
         if not word:
             return
-        self.__parsehistory(word)
+        self.__parsehistory(word, append)
         if globalconfig["is_search_word_auto_tts"]:
             gobject.baseobject.read_text(self.searchtext.text())
         self.ankiwindow.maybereset(word)

@@ -26,12 +26,6 @@ std::unordered_map<LANG_STRINGS_HOST, std::unordered_map<SUPPORT_LANG, const wch
                                {TradChinese, L"無法轉換文字（無效的字碼頁？）"},
                                {Russian, L"Не удалось преобразовать текст (неверная кодовая страница?)"},
                            }},
-        {CONSOLE, {
-                      {English, L"Console"},
-                      {Chinese, L"控制台"},
-                      {TradChinese, L"控制台"},
-                      {Russian, L"Консоль"},
-                  }},
         {PROC_CONN, {
                         {English, L"process connected %d"},
                         {Chinese, L"进程 %d 已连接"},
@@ -44,12 +38,6 @@ std::unordered_map<LANG_STRINGS_HOST, std::unordered_map<SUPPORT_LANG, const wch
                            {TradChinese, L"處理程序已中斷連接 %d"},
                            {Russian, L"Процесс отключен %d"},
                        }},
-        {ProjectHomePage, {
-                              {English, L"Github: https://github.com/HIllya51/LunaTranslator\nHomepage: https://lunatranslator.org\npatreon: https://patreon.com/HIllya51\nDiscord: https://discord.com/invite/ErtDwVeAbB"},
-                              {Chinese, L"Github： https://github.com/HIllya51/LunaTranslator\n项目主页： https://lunatranslator.org\npatreon：https://patreon.com/HIllya51\nDiscord：https://discord.com/invite/ErtDwVeAbB"},
-                              {TradChinese, L"GitHub：https://github.com/HIllya51/LunaTranslator\n專案首頁：https://lunatranslator.org\nPatreon：https://patreon.com/HIllya51\nDiscord：https://discord.com/invite/ErtDwVeAbB"},
-                              {Russian, L"Github: https://github.com/HIllya51/LunaTranslator\nСтраница проекта: https://lunatranslator.org\npatreon: https://patreon.com/HIllya51\nDiscord: https://discord.com/invite/ErtDwVeAbB"},
-                          }},
         {UNMATCHABLEVERSION, {
                                  {English, L"The file version cannot be matched, may not work properly, please re-download again!"},
                                  {Chinese, L"文件版本无法匹配，可能无法正常工作，请重新下载！"},

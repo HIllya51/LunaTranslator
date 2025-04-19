@@ -292,7 +292,7 @@ class TextBrowser(WebviewWidget, somecommon):
         self.bind("calllunaEnter", self.calllunaEnter)
         self.bind("calllunaLeave", self.calllunaLeave)
         self.bind("calllunaloadready", self.calllunaloadready)
-        self.set_zoom(globalconfig["ZoomFactor2"])
+        self.set_zoom(globalconfig.get("ZoomFactor2", 1))
         self.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor2")
         )

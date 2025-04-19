@@ -357,6 +357,15 @@ syncconfig(ocrerrorfix, ocrerrorfixdefault)
 syncconfig(postprocessconfig, defaultpost, deep=3)
 
 
+def _checkcpsetting(_d):
+    if "codepage_index" in _d:
+        _d["codepage_value"] = static_data["codepage_real"][_d.pop("codepage_index")]
+
+
+_checkcpsetting(globalconfig)
+for _ in savehook_new_data.values():
+    _checkcpsetting(_.get("hooksetting_private", {}))
+
 for key in defaultglobalconfig["toolbutton"]["buttons"]:
     if key not in globalconfig["toolbutton"]["rank2"]:
         globalconfig["toolbutton"]["rank2"].append(key)
@@ -377,7 +386,7 @@ def getlanguse() -> Languages:
 
 
 def langfile(lang) -> str:
-    return "./files/lang/{}.json".format(lang)
+    return "files/lang/{}.json".format(lang)
 
 
 def loadlanguage():
@@ -393,17 +402,23 @@ def loadlanguage():
         languageshow = {}
 
 
+def __parsenottr(match: re.Match):
+    return "{}{}{}".format(_TR(match.group(1)), match.group(2), _TR(match.group(3)))
+
+
+def __partagA(match: re.Match):
+    return "{}{}{}".format(match.group(1), _TR(match.group(2)), match.group(3))
+
+
 def _TR(k: str) -> str:
     if not k:
         return ""
+    if "[[" in k and "]]" in k:
+        return re.sub(r"(.*)\[\[(.*?)\]\](.*)", __parsenottr, k)
     if k.startswith("(") and k.endswith(")"):
         return "(" + _TR(k[1:-1]) + ")"
     if k.startswith("<a") and k.endswith("</a>"):
-
-        def replace_match(match: re.Match):
-            return "{}{}{}".format(match.group(1), _TR(match.group(2)), match.group(3))
-
-        return re.sub("(<a.*?>)(.*?)(</a>)", replace_match, k)
+        return re.sub("(<a.*?>)(.*?)(</a>)", __partagA, k)
     if "_" in k:
         fnd = k.find("_")
         return _TR(k[:fnd]) + " " + _TR(k[fnd + 1 :])
@@ -474,12 +489,5 @@ def saveallconfig(test=False):
         )
 
 
-# font_default_used = {}
-def get_platform():
-    if tuple(sys.version_info)[:2] == (3, 4):
-        bit = "xp"
-    elif platform.architecture()[0] == "64bit":
-        bit = "64"
-    elif platform.architecture()[0] == "32bit":
-        bit = "32"
-    return bit
+is_xp = tuple(sys.version_info)[:2] == (3, 4)
+is_bit_64 = platform.architecture()[0] == "64bit"

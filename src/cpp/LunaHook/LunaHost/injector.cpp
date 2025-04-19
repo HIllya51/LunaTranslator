@@ -60,14 +60,14 @@ namespace
         }
         return f64bitProc;
     }
-    bool InjectDll(DWORD processId, const std::wstring locationX)
+    bool InjectDll(DWORD processId)
     {
         AutoHandle<> process = OpenProcess(PROCESS_INJECT_ACCESS, FALSE, processId);
         if (!process)
             return false;
         bool proc64 = Is64BitProcess(process);
         auto dllname = proc64 ? LUNA_HOOK_DLL_64 : LUNA_HOOK_DLL_32;
-        std::wstring location = locationX.size() ? (locationX + L"\\" + dllname) : std::filesystem::path(getModuleFilename().value()).replace_filename(dllname);
+        std::wstring location = std::filesystem::path(getModuleFilename().value()).replace_filename(dllname);
         if (proc64 == x64)
         {
             return (SafeInject(process, location));
@@ -81,16 +81,15 @@ namespace
 namespace Host
 {
 
-    void InjectProcess(DWORD processId, const std::wstring locationX)
+    void ConnectAndInjectProcess(DWORD processId)
     {
-
-        auto check = Host::CreatePipeAndCheck(processId);
-        if (check == false)
+        Host::ConnectProcess(processId);
+        if (!Host::CheckIfNeedInject(processId))
             return;
 
         std::thread([=]
                     {
-			if(InjectDll(processId,locationX))return ;
+			if(InjectDll(processId))return ;
 			Host::AddConsoleOutput(TR[INJECT_FAILED]); })
             .detach();
     }

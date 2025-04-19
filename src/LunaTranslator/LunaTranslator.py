@@ -1,4 +1,4 @@
-import time, uuid
+import time, uuid, json
 import os, threading, re, winreg, copy
 from qtsymbols import *
 from traceback import print_exc
@@ -7,11 +7,12 @@ from myutils.config import (
     globalconfig,
     savehook_new_list,
     findgameuidofpath,
+    magpie_config,
     savehook_new_data,
     static_data,
     getlanguse,
     _TR,
-    get_platform,
+    is_xp,
     isascii,
 )
 from myutils.mecab import mecab, latin
@@ -44,9 +45,8 @@ import importlib, qtawesome
 from functools import partial
 from gui.attachprocessdialog import AttachProcessDialog
 import windows
-import winsharedutils
+import NativeUtils
 from gui.gamemanager.common import startgame
-from winsharedutils import collect_running_pids
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark, dynamicapiname
 from myutils.traceplaytime import playtimemanager
@@ -177,7 +177,7 @@ class MAINUI:
         else:
             _pid = windows.GetWindowThreadProcessId(__hwnd)
             if _pid:
-                winsharedutils.MonitorPidVolume(_pid)
+                NativeUtils.MonitorPidVolume(_pid)
                 self.translation_ui.isbindedwindow = True
                 self.translation_ui.refreshtooliconsignal.emit()
                 try:
@@ -211,7 +211,7 @@ class MAINUI:
         for item in static_data["transoptimi"]:
             name = item["name"]
             try:
-                checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
+                checkpath = "LunaTranslator/transoptimi/" + name + ".py"
                 if os.path.exists(checkpath) == False:
                     continue
                 mm = "transoptimi." + name
@@ -266,7 +266,7 @@ class MAINUI:
             if self.mecab_:
                 return self.mecab_.safeparse(text)
             else:
-                raise Exception("")
+                raise Exception()
         except:
             return latin().safeparse(text)
 
@@ -326,12 +326,13 @@ class MAINUI:
             if waitforresultcallback and not succ:
                 waitforresultcallback(TranslateResult())
 
-    def __erroroutput(self, klass, erroroutput, e, t):
+    def __erroroutput(self, klass, erroroutput, _showrawfunction, e, t):
 
         if erroroutput:
             return erroroutput(TranslateError(klass, e))
         if klass:
             e = _TR(dynamicapiname(klass)) + " " + e
+        self._delayshowraw(_showrawfunction)
         self.translation_ui.displaystatus.emit(e, t)
 
     def textgetmethod_1(
@@ -351,7 +352,7 @@ class MAINUI:
         if is_auto_run and text == self.currenttext:
             return
         origin = text
-        __erroroutput = functools.partial(self.__erroroutput, None, erroroutput)
+        __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
         currentsignature = uuid.uuid4()
         try:
             text = POSTSOLVE(text, isEx=waitforresultcallback)
@@ -563,6 +564,14 @@ class MAINUI:
             return
         waitforresultcallback(TranslateResult(klass, result))
 
+    def _delayshowraw(self, _showrawfunction):
+        needshowraw = (
+            _showrawfunction and self.refresh_on_get_trans_signature != _showrawfunction
+        )
+        if needshowraw:
+            self.refresh_on_get_trans_signature = _showrawfunction
+            _showrawfunction()
+
     def GetTranslationCallback(
         self,
         usefultranslators: list,
@@ -591,7 +600,7 @@ class MAINUI:
                 self.__safecallback, waitforresultcallback, classname
             )
             __erroroutput = functools.partial(
-                self.__erroroutput, classname, erroroutput
+                self.__erroroutput, classname, erroroutput, _showrawfunction
             )
             if iserror:
                 if erroroutput or (currentsignature == self.currentsignature):
@@ -605,13 +614,7 @@ class MAINUI:
                 if len(usefultranslators) == 0:
                     safe_callback()
                 return
-            needshowraw = (
-                _showrawfunction
-                and self.refresh_on_get_trans_signature != _showrawfunction
-            )
-            if needshowraw:
-                self.refresh_on_get_trans_signature = _showrawfunction
-                _showrawfunction()
+            self._delayshowraw(_showrawfunction)
             if (
                 (currentsignature == self.currentsignature)
                 and (iter_res_status in (0, 1))
@@ -784,7 +787,7 @@ class MAINUI:
 
         for key in globalconfig["reader"]:
             if globalconfig["reader"][key]["use"] and os.path.exists(
-                ("./LunaTranslator/tts/" + key + ".py")
+                ("LunaTranslator/tts/" + key + ".py")
             ):
                 return key
         return None
@@ -813,7 +816,7 @@ class MAINUI:
     @tryprint
     def selectprocess(self, selectedp, title):
         pids, pexe, hwnd = selectedp
-        if len(collect_running_pids(pids)) == 0:
+        if len(NativeUtils.collect_running_pids(pids)) == 0:
             return
         if not title:
             title = windows.GetWindowText(hwnd)
@@ -880,7 +883,7 @@ class MAINUI:
     @threader
     def startoutputer(self):
         for classname in globalconfig["textoutputer"]:
-            if not os.path.exists("./LunaTranslator/textoutput/" + classname + ".py"):
+            if not os.path.exists("LunaTranslator/textoutput/" + classname + ".py"):
                 continue
             aclass = importlib.import_module("textoutput." + classname).Outputer
             self.outputers[classname] = aclass(classname)
@@ -1004,7 +1007,7 @@ class MAINUI:
         )
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
-        winsharedutils.SetTheme(
+        NativeUtils.SetTheme(
             int(widget.winId()),
             dark,
             globalconfig["WindowBackdrop"],
@@ -1012,7 +1015,7 @@ class MAINUI:
         )
         if ismenulist:
             name = globalconfig["theme3"]
-            winsharedutils.setbackdropX(int(widget.winId()), name == "QTWin11", dark)
+            NativeUtils.SetWindowBackdrop(int(widget.winId()), name == "QTWin11", dark)
 
     @threader
     def clickwordcallback(self, wordd: dict, append=False):
@@ -1022,8 +1025,8 @@ class MAINUI:
             word = WordSegResult.from_dict(wordd)
         word = (word.word, word.prototype)[globalconfig["usewordorigin"]]
         if globalconfig["usecopyword"]:
-            winsharedutils.clipboard_set(
-                (winsharedutils.clipboard_get() + word) if append else word
+            NativeUtils.ClipBoard.text = (
+                (NativeUtils.ClipBoard.text + word) if append else word
             )
         if globalconfig["usesearchword"]:
             self.searchwordW.search_word.emit(word, append)
@@ -1043,7 +1046,7 @@ class MAINUI:
         except:
             return
         if widget == self.translation_ui:
-            winsharedutils.showintab(
+            NativeUtils.SetWindowInTaskbar(
                 int(widget.winId()), globalconfig["showintab"], True
             )
             return
@@ -1058,7 +1061,7 @@ class MAINUI:
         ):
             # combobox的下拉框，然后这个widget会迅速销毁，会导致任务栏闪一下。没别的办法了姑且这样过滤一下
             return
-        winsharedutils.showintab(
+        NativeUtils.SetWindowInTaskbar(
             int(widget.winId()), globalconfig["showintab_sub"], False
         )
 
@@ -1085,12 +1088,12 @@ class MAINUI:
         self.tray.messageClicked.connect(self.__trayclicked)
         self.trayclicked = print
         self.tray.show()
-        version = winsharedutils.queryversion(getcurrexe())
+        version = NativeUtils.QueryVersion(getcurrexe())
         if "load_doc_or_log" not in globalconfig:
             self.showtraymessage(
                 _TR("使用说明"),
                 "",
-                lambda: os.startfile(dynamiclink("{docs_server}")),
+                lambda: os.startfile(dynamiclink(docs=True)),
             )
         elif version != tuple(globalconfig["load_doc_or_log"]):
             vs = ".".join(str(_) for _ in version)
@@ -1099,7 +1102,7 @@ class MAINUI:
             self.showtraymessage(
                 "v" + vs,
                 _TR("更新记录"),
-                lambda: os.startfile(dynamiclink("{main_server}/ChangeLog")),
+                lambda: os.startfile(dynamiclink("/ChangeLog")),
             )
 
         globalconfig["load_doc_or_log"] = version
@@ -1109,7 +1112,7 @@ class MAINUI:
 
     def triggertoupdate(self):
         self.istriggertoupdate = True
-        winsharedutils.dispatchcloseevent()
+        NativeUtils.dispatchcloseevent()
 
     def leftclicktray(self, reason):
         if reason == QSystemTrayIcon.ActivationReason.Trigger:
@@ -1163,7 +1166,7 @@ class MAINUI:
                     ).stylesheet()
                 elif _fn.endswith(".qss"):
                     with open(
-                        "./files/LunaTranslator_qss/{}".format(_fn),
+                        "files/LunaTranslator_qss/{}".format(_fn),
                         "r",
                     ) as ff:
                         style = ff.read()
@@ -1199,11 +1202,7 @@ class MAINUI:
         if isinstance(static_data[t][l], list):
             fontlist = static_data[t][l]
         elif isinstance(static_data[t][l], dict):
-            if get_platform() == "xp":
-                target = "xp"
-            else:
-                target = "normal"
-            fontlist = static_data[t][l].get(target, [])
+            fontlist = static_data[t][l].get(("normal", "xp")[is_xp], [])
         else:
             fontlist = []
         is_font_installed = lambda font: QFont(font).exactMatch()
@@ -1239,7 +1238,7 @@ class MAINUI:
         self.loadmetadatas()
 
         self.translation_ui = TranslatorWindow()
-        winsharedutils.showintab(
+        NativeUtils.SetWindowInTaskbar(
             int(self.translation_ui.winId()), globalconfig["showintab"], True
         )
         self.translation_ui.show()
@@ -1249,19 +1248,19 @@ class MAINUI:
             startgame(startwithgameuid)
 
     def mainuiloadafter(self):
-        self.WindowMessageCallback_ptr = winsharedutils.WindowMessageCallback_t(
+        self.WindowMessageCallback_ptr = NativeUtils.WindowMessageCallback_t(
             self.WindowMessageCallback
         )
-        self.WinEventHookCALLBACK_ptr = winsharedutils.WinEventHookCALLBACK_t(
+        self.WinEventHookCALLBACK_ptr = NativeUtils.WinEventHookCALLBACK_t(
             self.WinEventHookCALLBACK
         )
-        winsharedutils.globalmessagelistener(
+        NativeUtils.globalmessagelistener(
             self.WinEventHookCALLBACK_ptr, self.WindowMessageCallback_ptr
         )
-        self.MonitorPidVolume_callback = winsharedutils.MonitorPidVolume_callback_t(
+        self.MonitorPidVolume_callback = NativeUtils.MonitorPidVolume_callback_t(
             self.MonitorPidVolume_callback_f
         )
-        winsharedutils.StartMonitorVolume(self.MonitorPidVolume_callback)
+        NativeUtils.StartMonitorVolume(self.MonitorPidVolume_callback)
         self.safeloadprocessmodels()
         self.prepare()
         self.startxiaoxueguan()
@@ -1359,6 +1358,8 @@ class MAINUI:
             self.translation_ui.clipboardcallback.emit(boolvalue, strvalue)
         elif msg == 4:
             self.showtraymessage("Magpie", strvalue, lambda: 1)
+        elif msg == 5:
+            magpie_config.update(json.loads(strvalue))
 
     def _dowhenwndcreate(self, obj):
         if not isinstance(obj, QWidget):
@@ -1371,7 +1372,7 @@ class MAINUI:
             "Magpie.ToolWindow",
             windows.HANDLE(1),
         )
-        winsharedutils.setdwmextendframe(int(hwnd))
+        NativeUtils.SetWindowExtendFrame(int(hwnd))
         if self.currentisdark is not None:
             self.setdarkandbackdrop(obj, self.currentisdark)
         self.setshowintab_checked(obj)

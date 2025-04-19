@@ -99,7 +99,7 @@ DECLARE_API void winrt_OCR_get_AvailableRecognizerLanguages(void (*cb)(LPCWSTR, 
         cb(LanguageTag, DisplayName);
     }
 }
-DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, void (*cb)(int, int, int, int, LPCWSTR))
+DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, void (*cb)(float, float, float, float, LPCWSTR))
 {
     CComPtr<ILanguage> language;
     CHECK_FAILURE_NORET(CreateLanguage(&language, lang));
@@ -149,17 +149,17 @@ DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, void (*cb
         CHECK_FAILURE_CONTINUE(pOcrLine->get_Text(&htext));
         uint32_t nwords;
         CHECK_FAILURE_CONTINUE(pOcrWords->get_Size(&nwords));
-        unsigned int x1 = -1, x2 = 0, y1 = -1, y2 = 0;
+        float x1 = std::numeric_limits<float>::max(), x2 = 0, y1 = std::numeric_limits<float>::max(), y2 = 0;
         for (uint32_t j = 0; j < nwords; ++j)
         {
             CComPtr<IOcrWord> pOcrWord;
             CHECK_FAILURE_CONTINUE(pOcrWords->GetAt(j, &pOcrWord));
             ABI::Windows::Foundation::Rect rect;
             CHECK_FAILURE_CONTINUE(pOcrWord->get_BoundingRect(&rect));
-            x1 = std::min((unsigned int)rect.X, x1);
-            x2 = std::max(x2, (unsigned int)(rect.X + rect.Width));
-            y1 = std::min((unsigned int)rect.Y, y1);
-            y2 = std::max(y2, (unsigned int)(rect.Y + rect.Height));
+            x1 = std::min(rect.X, x1);
+            x2 = std::max(x2, (rect.X + rect.Width));
+            y1 = std::min(rect.Y, y1);
+            y2 = std::max(y2, (rect.Y + rect.Height));
         }
         cb(x1, y1, x2, y2, htext);
     }

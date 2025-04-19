@@ -61,7 +61,7 @@ def setTab7_lazy(self, basel: QLayout):
     grids = [
         [
             D_getIconButton(
-                lambda: os.startfile(dynamiclink("{docs_server}/textprocess.html")),
+                lambda: os.startfile(dynamiclink("/textprocess.html", docs=True)),
                 "fa.question",
             ),
             ("预处理方法", 5),
@@ -71,8 +71,9 @@ def setTab7_lazy(self, basel: QLayout):
             ("调整执行顺序", 6),
         ]
     ]
-    if set(postprocessconfig.keys()) != set(globalconfig["postprocess_rank"]):
-        globalconfig["postprocess_rank"] = list(postprocessconfig.keys())
+    for k in postprocessconfig:
+        if k not in globalconfig["postprocess_rank"]:
+            globalconfig["postprocess_rank"].append(k)
     _bads = []
     for _ in globalconfig["postprocess_rank"]:
         if _ not in processfunctions:
@@ -112,7 +113,7 @@ def setTab7_lazy(self, basel: QLayout):
     for i, post in enumerate(sortlist):
         if post == "_11":
             config = D_getIconButton(
-                callback=lambda: selectdebugfile("./userconfig/mypost.py"),
+                callback=lambda: selectdebugfile("userconfig/mypost.py"),
                 icon="fa.edit",
             )
         else:
@@ -173,7 +174,7 @@ def setTab7_lazy(self, basel: QLayout):
     grids2 = [
         [
             D_getIconButton(
-                lambda: os.startfile(dynamiclink("{docs_server}/transoptimi.html")),
+                lambda: os.startfile(dynamiclink("/transoptimi.html", docs=True)),
                 "fa.question",
             )
         ]

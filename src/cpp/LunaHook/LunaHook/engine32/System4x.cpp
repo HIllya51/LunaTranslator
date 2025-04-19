@@ -1748,9 +1748,45 @@ namespace
     hp.split = regoffset(esp);
     hp.type = NO_CONTEXT | USING_STRING | USING_SPLIT;
     hp.filter_fun = System42Filter;
-    ConsoleOutput("INSERT System42");
     return NewHook(hp, "System42");
   }
+}
+static bool Evenicle()
+{
+  // https://vndb.org/v16640
+  const BYTE bytes[] = {
+      0xb8, XX4,
+      0xe8, XX4,
+      0x83, 0xec, 0x18,
+      0x8b, 0x01,
+      0x56,
+      0x8b, 0xf2,
+      0xff, 0x10, // v3 = (const char *)(**a1)(a1); ->EAX
+      0x50,
+      0x8d, 0x4d, 0xdc,
+      0xe8, XX4,
+      0x83, 0x65, 0xfc, 0x00,
+      0x8d, 0x45, 0xdc,
+      0x8b, 0x0d, XX4,
+      0x56,
+      0x50,
+      0x8d, 0x49, 0x04,
+      0xe8, XX4,
+      0x8d, 0x4d, 0xdc,
+      0xe8, XX4,
+      0x8b, 0x4d, 0xf4,
+      0x5e,
+      0x64, 0x89, 0x0d, 0x00, 0x00, 0x00, 0x00,
+      0xc9,
+      0xc3};
+  auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr + 5 + 5 + 3 + 2 + 1 + 2 + 2;
+  hp.offset = regoffset(eax);
+  hp.type = USING_STRING;
+  return NewHook(hp, "Evenicle");
 }
 bool System4x::attach_function()
 {
@@ -1758,5 +1794,5 @@ bool System4x::attach_function()
     if (InsertSystem42Hook())
       return true;
   auto _ = system4X(processStartAddress, processStopAddress);
-  return InsertSystem43Hook() || _;
+  return InsertSystem43Hook() || _ || Evenicle();
 }

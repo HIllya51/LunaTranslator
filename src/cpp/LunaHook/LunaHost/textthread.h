@@ -3,7 +3,7 @@
 class TextThread
 {
 public:
-	using OutputCallback = std::function<bool(TextThread &, std::wstring &)>;
+	using OutputCallback = std::function<void(TextThread &, std::wstring &)>;
 	inline static OutputCallback Output;
 
 	inline static bool filterRepetition = false;

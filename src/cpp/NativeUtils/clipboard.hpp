@@ -39,7 +39,7 @@ std::optional<std::wstring> clipboard_get_internal()
     return data;
 }
 
-DECLARE_API bool clipboard_get(void (*cb)(const wchar_t *))
+DECLARE_API bool ClipBoardGetText(void (*cb)(const wchar_t *))
 {
     auto data = std::move(clipboard_get_internal());
     if (!data)
@@ -49,7 +49,7 @@ DECLARE_API bool clipboard_get(void (*cb)(const wchar_t *))
 }
 extern HWND globalmessagehwnd;
 
-DECLARE_API bool clipboard_set(wchar_t *text)
+DECLARE_API bool ClipBoardSetText(wchar_t *text)
 {
     bool success = false;
     if (tryopenclipboard(globalmessagehwnd) == false)
@@ -175,7 +175,7 @@ BOOL removeClipboardFormatListener(HWND _hWnd)
 }
 #endif
 
-DECLARE_API bool clipboard_set_image(void *ptr, size_t size)
+DECLARE_API bool ClipBoardSetImage(void *ptr, size_t size)
 {
     size -= sizeof(BITMAPFILEHEADER);
     HGLOBAL hDib = GlobalAlloc(GMEM_MOVEABLE, size);

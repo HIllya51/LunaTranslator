@@ -165,22 +165,22 @@ def makeproxytab():
     ocrs = getall(
         l=getnotofflines("ocr"),
         item="ocr",
-        name="./Lunatranslator/ocrengines/%s.py",
+        name="Lunatranslator/ocrengines/%s.py",
     )
     meta = getall(
         l=globalconfig["metadata"],
         item="metadata",
-        name="./LunaTranslator/metadata/%s.py",
+        name="LunaTranslator/metadata/%s.py",
     )
     readers = getall(
         l=getnotofflines("reader"),
         item="reader",
-        name="./LunaTranslator/tts/%s.py",
+        name="LunaTranslator/tts/%s.py",
     )
     cishus = getall(
         l=getnotofflines("cishu"),
         item="cishu",
-        name="./LunaTranslator/cishu/%s.py",
+        name="LunaTranslator/cishu/%s.py",
         getname=dynamiccishuname,
     )
     titles = [

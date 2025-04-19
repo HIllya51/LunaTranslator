@@ -171,37 +171,37 @@
                 "links": [
                     {
                         "name": "J北京7",
-                        "link": "{main_server}/Resource/translate/JBeijing7.zip",
+                        "link": "/Resource/translate/JBeijing7.zip",
                         "about": "日语_->_简体中文"
                     },
                     {
                         "name": "金山快译",
-                        "link": "{main_server}/Resource/translate/FastAIT09_Setup.25269.4101.zip",
+                        "link": "/Resource/translate/FastAIT09_Setup.25269.4101.zip",
                         "about": "日语_->_简体中文"
                     },
                     {
                         "name": "快译通",
-                        "link": "{main_server}/Resource/translate/DR.eye.zip",
+                        "link": "/Resource/translate/DR.eye.zip",
                         "about": "日语_->_简体中文"
                     },
                     {
                         "name": "Sugoi",
-                        "link": "{main_server}/Resource/translate/Sugoi_V12.1_683043.7z",
+                        "link": "/Resource/translate/Sugoi_V12.1_683043.7z",
                         "about": "日语_->_英语"
                     },
                     {
                         "name": "LEC",
-                        "link": "{main_server}/Resource/translate/LEC",
+                        "link": "/Resource/translate/LEC",
                         "about": "日语_->_英语"
                     },
                     {
                         "name": "Atlas",
-                        "link": "{main_server}/Resource/translate/Atlas",
+                        "link": "/Resource/translate/Atlas",
                         "about": "日语_->_英语"
                     },
                     {
                         "name": "ezTrans",
-                        "link": "{main_server}/Resource/translate/ezTrans",
+                        "link": "/Resource/translate/ezTrans",
                         "about": "日语_->_韩语"
                     }
                 ]
@@ -234,11 +234,11 @@
                 "links": [
                     {
                         "name": "整合包_CPU",
-                        "link": "{main_server}/Resource/IntegrationPack/manga_ocr/cpu"
+                        "link": "/Resource/IntegrationPack/manga_ocr/cpu"
                     },
                     {
                         "name": "整合包_GPU",
-                        "link": "{main_server}/Resource/IntegrationPack/manga_ocr/gpu"
+                        "link": "/Resource/IntegrationPack/manga_ocr/gpu"
                     }
                 ]
             }
@@ -275,11 +275,11 @@
                 "links": [
                     {
                         "name": "Misaki",
-                        "link": "{main_server}/Resource/voice/NeoSpeech.Japanese.Misaki.zip"
+                        "link": "/Resource/voice/NeoSpeech.Japanese.Misaki.zip"
                     },
                     {
                         "name": "Show",
-                        "link": "{main_server}/Resource/voice/NeoSpeech.TTS.NeoSpeech.Japanese.Show_v3.10.0.0.zip"
+                        "link": "/Resource/voice/NeoSpeech.TTS.NeoSpeech.Japanese.Show_v3.10.0.0.zip"
                     }
                 ]
             },
@@ -297,20 +297,11 @@
                 "links": [
                     {
                         "name": "整合包_CPU",
-                        "link": "{main_server}/Resource/IntegrationPack/vits-simple-api/cpu"
+                        "link": "/Resource/IntegrationPack/vits-simple-api/cpu"
                     },
                     {
                         "name": "整合包_GPU",
-                        "link": "{main_server}/Resource/IntegrationPack/vits-simple-api/gpu"
-                    }
-                ]
-            },
-            {
-                "name": "VoiceRoid+",
-                "links": [
-                    {
-                        "name": "東北ずん子/东北俊子",
-                        "link": "{main_server}/Resource/voice/VOICEROID+zunko.7z"
+                        "link": "/Resource/IntegrationPack/vits-simple-api/gpu"
                     }
                 ]
             },
@@ -319,107 +310,111 @@
                 "links": [
                     {
                         "name": "SFE_結月ゆかり/结月缘",
-                        "link": "{main_server}/Resource/voice/Yukari2.zip"
+                        "link": "/Resource/voice/Yukari2.zip"
                     },
                     {
                         "name": "結月ゆかり/结月缘",
-                        "link": "{main_server}/Resource/voice/VOICEROID2_Yuzuki_Yukari.zip"
+                        "link": "/Resource/voice/VOICEROID2_Yuzuki_Yukari.zip"
                     },
                     {
                         "name": "紲星あかり/绁星灯",
-                        "link": "{main_server}/Resource/voice/VOICEROID2_Kizuna_Akari.zip"
+                        "link": "/Resource/voice/VOICEROID2_Kizuna_Akari.zip"
                     },
                     {
                         "name": "琴葉 茜・葵",
-                        "link": "{main_server}/Resource/voice/VOICEROID2_Kotonoha_Akane_Aoi.zip"
+                        "link": "/Resource/voice/VOICEROID2_Kotonoha_Akane_Aoi.zip"
                     },
                     {
                         "name": "伊織弓鶴",
-                        "link": "{main_server}/Resource/voice/VOICEROID2_Iori_Yuzuru.zip"
+                        "link": "/Resource/voice/VOICEROID2_Iori_Yuzuru.zip"
                     },
                     {
                         "name": "ついなちゃん",
-                        "link": "{main_server}/Resource/voice/VOICEROID2_tsuina-chan_dl_e.zip"
+                        "link": "/Resource/voice/VOICEROID2_tsuina-chan_dl_e.zip"
                     },
                     {
                         "name": "東北イタコ/东北伊达子",
-                        "link": "{main_server}/Resource/voice/VOICEROID2_Tohoku_Itako.zip"
+                        "link": "/Resource/voice/VOICEROID2_Tohoku_Itako.zip"
                     },
                     {
                         "name": "附加音源_結月ゆかり",
-                        "link": "{main_server}/Resource/voice/yukari_emo_44.zip"
+                        "link": "/Resource/voice/yukari_emo_44.zip"
                     },
                     {
                         "name": "附加音源_紲星あかり",
-                        "link": "{main_server}/Resource/voice/akari_44.zip"
+                        "link": "/Resource/voice/akari_44.zip"
                     },
                     {
                         "name": "附加音源_東北きりたん",
-                        "link": "{main_server}/Resource/voice/kiritan_44.zip"
+                        "link": "/Resource/voice/kiritan_44.zip"
                     },
                     {
                         "name": "附加音源_東北イタコ",
-                        "link": "{main_server}/Resource/voice/itako_emo_44.zip"
+                        "link": "/Resource/voice/itako_emo_44.zip"
                     },
                     {
                         "name": "附加音源_東北ずん子",
-                        "link": "{main_server}/Resource/voice/zunko_44.zip"
+                        "link": "/Resource/voice/zunko_44.zip"
                     },
                     {
                         "name": "附加音源_伊織弓鶴",
-                        "link": "{main_server}/Resource/voice/yuzuru_emo_44.zip"
+                        "link": "/Resource/voice/yuzuru_emo_44.zip"
                     },
                     {
                         "name": "附加音源_ついなちゃん",
-                        "link": "{main_server}/Resource/voice/tsuina_44.zip"
+                        "link": "/Resource/voice/tsuina_44.zip"
                     },
                     {
                         "name": "附加音源_ついなちゃん（関西弁）",
-                        "link": "{main_server}/Resource/voice/tsuina_west_44.zip"
+                        "link": "/Resource/voice/tsuina_west_44.zip"
                     },
                     {
                         "name": "附加音源_琴葉茜",
-                        "link": "{main_server}/Resource/voice/akane_west_emo_44.zip"
+                        "link": "/Resource/voice/akane_west_emo_44.zip"
                     },
                     {
                         "name": "附加音源_琴葉葵",
-                        "link": "{main_server}/Resource/voice/aoi_emo_44.zip"
+                        "link": "/Resource/voice/aoi_emo_44.zip"
                     },
                     {
                         "name": "附加音源_水奈瀬コウ",
-                        "link": "{main_server}/Resource/voice/kou_44.zip"
+                        "link": "/Resource/voice/kou_44.zip"
                     },
                     {
                         "name": "附加音源_桜乃そら",
-                        "link": "{main_server}/Resource/voice/sora_44.zip"
+                        "link": "/Resource/voice/sora_44.zip"
                     },
                     {
                         "name": "附加音源_民安ともえ",
-                        "link": "{main_server}/Resource/voice/tamiyasu_44.zip"
+                        "link": "/Resource/voice/tamiyasu_44.zip"
                     },
                     {
                         "name": "附加音源_月読アイ",
-                        "link": "{main_server}/Resource/voice/ai_44.zip"
+                        "link": "/Resource/voice/ai_44.zip"
                     },
                     {
                         "name": "附加音源_月読ショウタ",
-                        "link": "{main_server}/Resource/voice/shouta_44.zip"
+                        "link": "/Resource/voice/shouta_44.zip"
                     },
                     {
                         "name": "附加音源_京町セイカ",
-                        "link": "{main_server}/Resource/voice/seika_44.zip"
+                        "link": "/Resource/voice/seika_44.zip"
                     },
                     {
                         "name": "附加音源_音街ウナ",
-                        "link": "{main_server}/Resource/voice/una_44.zip"
+                        "link": "/Resource/voice/una_44.zip"
                     },
                     {
                         "name": "附加音源_鷹の爪吉田",
-                        "link": "{main_server}/Resource/voice/yoshidakun_44.zip"
+                        "link": "/Resource/voice/yoshidakun_44.zip"
                     },
                     {
                         "name": "附加音源_ギャラ子",
-                        "link": "{main_server}/Resource/voice/galaco_44.zip"
+                        "link": "/Resource/voice/galaco_44.zip"
+                    },
+                    {
+                        "name": "VoiceRoid+_東北ずん子/东北俊子",
+                        "link": "/Resource/voice/VOICEROID+zunko.7z"
                     }
                 ]
             }
@@ -434,46 +429,10 @@
                     },
                     {
                         "name": "win7适配版",
-                        "link": "{main_server}/Resource/Magpie9_Win7"
+                        "link": "/Resource/Magpie9_Win7"
                     }
                 ]
             }
-        ]
-    },
-    "checkintegrity": {
-        "xp": [
-            "./files/plugins/shareddllproxy32.exe",
-            "./files/plugins/LunaHook/LunaHook32.dll",
-            "./files/plugins/LunaHook/LunaHost32.dll",
-            "./files/plugins/DLL32/winsharedutils.dll",
-            "./files/plugins/DLL32/bass.dll",
-            "./files/plugins/DLL32/bass_spx.dll",
-            "./files/plugins/DLL32/bass_aac.dll"
-        ],
-        "shared": [
-            "./files/plugins/shareddllproxy32.exe",
-            "./files/plugins/shareddllproxy64.exe",
-            "./files/plugins/Magpie/Magpie.Core.exe",
-            "./files/plugins/LunaHook/LunaHook32.dll",
-            "./files/plugins/LunaHook/LunaHook64.dll"
-        ],
-        "64": [
-            "./files/plugins/LunaHook/LunaHost64.dll",
-            "./files/plugins/DLL64/winsharedutils.dll",
-            "./files/plugins/DLL64/LunaOCR.dll",
-            "./files/plugins/DLL64/libcurl-x64.dll",
-            "./files/plugins/DLL64/bass.dll",
-            "./files/plugins/DLL64/bass_spx.dll",
-            "./files/plugins/DLL64/bass_aac.dll"
-        ],
-        "32": [
-            "./files/plugins/LunaHook/LunaHost32.dll",
-            "./files/plugins/DLL32/winsharedutils.dll",
-            "./files/plugins/DLL32/LunaOCR.dll",
-            "./files/plugins/DLL32/libcurl.dll",
-            "./files/plugins/DLL32/bass.dll",
-            "./files/plugins/DLL32/bass_spx.dll",
-            "./files/plugins/DLL32/bass_aac.dll"
         ]
     },
     "transoptimi": [
@@ -498,6 +457,42 @@
             "visname": "arabic reshaper",
             "languageuse": "ar"
         }
+    ],
+    "codepage_real": [
+        932,
+        65001,
+        936,
+        950,
+        949,
+        1258,
+        874,
+        1256,
+        1255,
+        1254,
+        1253,
+        1257,
+        1250,
+        1251,
+        1252,
+        437
+    ],
+    "codepage_display": [
+        "日语_(CP932,SHIFT-JIS)",
+        "UTF8_(CP65001)",
+        "简体中文_(CP936,GBK)",
+        "繁体中文_(CP950,BIG5)",
+        "韩语_(CP949,EUC-KR)",
+        "越南语_(CP1258)",
+        "泰语_(CP874)",
+        "阿拉伯语_(CP1256)",
+        "希伯来语_(CP1255)",
+        "土耳其语_(CP1254)",
+        "希腊语_(CP1253)",
+        "北欧_(CP1257)",
+        "中东欧_(CP1250)",
+        "西里尔_(CP1251)",
+        "拉丁_(CP1252)",
+        "英语_(CP437)"
     ],
     "model_fileds": [
         "word",

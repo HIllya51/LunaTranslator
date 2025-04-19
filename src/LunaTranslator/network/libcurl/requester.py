@@ -1,6 +1,6 @@
 from .libcurl import *
 import threading, functools, queue
-from ctypes import c_long, cast, pointer, POINTER, c_char
+from ctypes import c_long, cast, pointer
 from requests import Response, Requester_common
 
 
@@ -34,7 +34,7 @@ class Response_1(Response):
 
 
 class autostatus:
-    def __init__(self, ref) -> None:
+    def __init__(self, ref: "Requester") -> None:
         self.ref = ref
         ref.occupied = True
 
@@ -50,7 +50,7 @@ class Requester(Requester_common):
         self.curl = self.initcurl()
 
     def initcurl(self):
-        curl = AutoCURLHandle(curl_easy_init())
+        curl = curl_easy_init()
         curl_easy_setopt(curl, CURLoption.USERAGENT, self.default_UA.encode("utf8"))
         return curl
 
@@ -96,7 +96,7 @@ class Requester(Requester_common):
         if headerqueue:
             headerqueue.put(0)
         realsize = size * nmemb
-        bs: bytes = cast(contents, POINTER(c_char))[:realsize]
+        bs: bytes = contents[:realsize]
         if isinstance(que, queue.Queue):
             que.put(bs)
         elif isinstance(que, list):
@@ -127,16 +127,15 @@ class Requester(Requester_common):
         return self._filter_header(b"".join(header).decode("utf8"))
 
     def _setheaders(self, curl, headers, cookies):
-        lheaders = Autoslist()
+        lheaders = auto_curl_slist()
         for _ in self._parseheader(headers, None):
-            lheaders = curl_slist_append(
-                cast(lheaders, POINTER(curl_slist)), _.encode("utf8")
-            )
-        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders))
+            lheaders.append(_)
+        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders.ptr))
 
         if cookies:
             cookie = self._parsecookie(cookies)
             curl_easy_setopt(curl, CURLoption.COOKIE, cookie.encode("utf8"))
+        return lheaders
 
     Accept_Encoding = "gzip, deflate, br, zstd"
 
@@ -171,7 +170,7 @@ class Requester(Requester_common):
             curl = self.curl
             __ = autostatus(self)
         else:
-            curl = AutoCURLHandle(curl_easy_duphandle(self.curl))
+            curl = curl_easy_duphandle(self.curl)
             __ = 0
 
         curl_easy_reset(curl)
@@ -188,7 +187,7 @@ class Requester(Requester_common):
         )
         MaybeRaiseException(curl_easy_setopt(curl, CURLoption.URL, url.encode("utf8")))
         MaybeRaiseException(curl_easy_setopt(curl, CURLoption.PORT, port))
-        self._setheaders(curl, headers, cookies)
+        lheaders = self._setheaders(curl, headers, cookies)
 
         self._set_verify(curl, verify)
         self._set_proxy(curl, proxy)
@@ -200,6 +199,7 @@ class Requester(Requester_common):
         resp = Response_1(stream)
         resp.keeprefs.append(curl)
         resp.keeprefs.append(__)
+        resp.keeprefs.append(lheaders)
         if stream:
             headerqueue = queue.Queue()
             _notif = headerqueue
@@ -213,17 +213,8 @@ class Requester(Requester_common):
         keepref2 = WRITEFUNCTION(
             functools.partial(self.__WriteMemoryCallback, None, headerqueue)
         )
-        curl_easy_setopt(
-            curl,
-            CURLoption.WRITEFUNCTION,
-            cast(keepref1, c_void_p).value,
-        )
-
-        curl_easy_setopt(
-            curl,
-            CURLoption.HEADERFUNCTION,
-            cast(keepref2, c_void_p).value,
-        )
+        curl_easy_setopt(curl, CURLoption.WRITEFUNCTION, cast(keepref1, c_void_p))
+        curl_easy_setopt(curl, CURLoption.HEADERFUNCTION, cast(keepref2, c_void_p))
         resp.keeprefs += [keepref1, keepref2]
 
         if stream:

@@ -156,7 +156,7 @@ DECLARE_API void clearEffect(HWND hwnd)
 #define DWMWCP_ROUND 2
 #define DWMWA_WINDOW_CORNER_PREFERENCE 33
 #endif
-DECLARE_API void setbackdropX(HWND hwnd, bool good, bool dark)
+DECLARE_API void SetWindowBackdrop(HWND hwnd, bool good, bool dark)
 {
 	if (GetOSVersion().IsleWin8())
 		return;
