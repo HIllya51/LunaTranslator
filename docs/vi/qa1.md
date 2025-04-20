@@ -1,21 +1,21 @@
-# Using MeCab for Word Segmentation & Part-of-Speech Color Highlighting
+# Sử dụng MeCab cho Phân đoạn Từ & Tô màu Từ loại
 
-1. ## Downloading MeCab's UniDic Dictionary
+1. ## Tải xuống Từ điển UniDic của MeCab
     
-    1. ### Method 1: Automatic Download
+    1. ### Phương pháp 1: Tải xuống Tự động
 
-        In the **Dictionary Settings**, expand **Resource Download**. If the UniDic dictionary hasn't been downloaded before, a **Download** button will appear. Clicking this button will automatically download and configure the path.
+        Trong **Cài đặt Từ điển**, mở rộng **Tải xuống Tài nguyên**. Nếu từ điển UniDic chưa được tải xuống trước đó, một nút **Tải xuống** sẽ xuất hiện. Nhấp vào nút này sẽ tự động tải xuống và cấu hình đường dẫn.
 
         ![img](https://image.lunatranslator.org/zh/unidic.png)
 
-    1. ### Method 2: Manual Download
+    1. ### Phương pháp 2: Tải xuống Thủ công
 
-        The automatic download only fetches the [commonly used version](https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip). If you want to use other versions of the UniDic dictionary, you can manually download and configure it.
+        Tải xuống tự động chỉ tải [phiên bản thường dùng](https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip). Nếu bạn muốn sử dụng các phiên bản khác của từ điển UniDic, bạn có thể tải xuống và cấu hình thủ công.
         
-        For example, after downloading the [official latest version](https://clrd.ninjal.ac.jp/unidic/), extract it to the software's directory. It will automatically detect the path upon restarting. Alternatively, you can extract it to any directory and then set the path manually.
+        Ví dụ, sau khi tải xuống [phiên bản chính thức mới nhất](https://clrd.ninjal.ac.jp/unidic/), giải nén nó vào thư mục của phần mềm. Nó sẽ tự động phát hiện đường dẫn khi khởi động lại. Ngoài ra, bạn có thể giải nén nó vào bất kỳ thư mục nào và sau đó đặt đường dẫn thủ công.
 
         ![img](https://image.lunatranslator.org/zh/mecab.png)
 
-1. ## Activate **Furigana Display** (enabled by default) and **Syntax Highlighting**
+1. ## Kích hoạt **Hiển thị Furigana** (đã bật theo mặc định) và **Tô sáng Cú pháp**
 
 ![img](https://image.lunatranslator.org/zh/fenci.png)

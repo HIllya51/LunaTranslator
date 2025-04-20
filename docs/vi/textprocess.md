@@ -1,104 +1,104 @@
-# Functions and Usage of Various Text Processing Methods
+# Chức năng và Cách Sử dụng Các Phương pháp Xử lý Văn bản
 
 ::: info
-Generally, in HOOK mode, sometimes incorrect text is read, such as repeated text or other messy text. In such cases, text processing is needed to resolve the issue.
+Thông thường, trong chế độ HOOK, đôi khi văn bản không chính xác được đọc, chẳng hạn như văn bản lặp lại hoặc văn bản lộn xộn khác. Trong những trường hợp như vậy, cần xử lý văn bản để giải quyết vấn đề.
 :::
 
 ::: tip
-If there are very complex error forms, you can activate multiple processing methods and adjust their execution order to obtain a rich combination of processing methods.
+Nếu có những hình thức lỗi rất phức tạp, bạn có thể kích hoạt nhiều phương pháp xử lý và điều chỉnh thứ tự thực hiện của chúng để có được sự kết hợp phong phú của các phương pháp xử lý.
 :::
 
 ::: tip
-Most processing methods do not take effect when embedding translations to reduce the possibility of game crashes. The methods that can be used include: `Filter Newline Characters`, `String Replacement`,  `Custom Python Processing`, `Filter Angle Brackets <>`, `Remove Curly Braces {}`
+Hầu hết các phương pháp xử lý không có hiệu lực khi nhúng bản dịch để giảm khả năng trò chơi bị sự cố. Các phương pháp có thể được sử dụng bao gồm: `Lọc Ký tự Xuống dòng`, `Thay thế Chuỗi`, `Xử lý Python Tùy chỉnh`, `Lọc Dấu Ngoặc Nhọn <>`, `Xóa Dấu Ngoặc Móc {}`
 :::
 
-1. #### Filter Non-Japanese Character Set Characters in Text
+1. #### Lọc Các Ký tự Không thuộc Bộ Ký tự Tiếng Nhật trong Văn bản
 
-    Sometimes, garbled text is hooked. Since this problem usually occurs in Japanese games, this method is preset to filter out **characters that cannot be encoded using the shift-jis character set**, for example:
+    Đôi khi, văn bản bị lỗi được hook. Vì vấn đề này thường xảy ra trong các trò chơi tiếng Nhật, phương pháp này được thiết lập sẵn để lọc ra **các ký tự không thể được mã hóa bằng bộ ký tự shift-jis**, ví dụ:
 
-    `エマさんԟのイԠラストは全部大好き！` will be processed into `エマさんのイラストは全部大好き！`
+    `エマさんԟのイԠラストは全部大好き！` sẽ được xử lý thành `エマさんのイラストは全部大好き！`
 
-1. #### Filter Control Characters
+1. #### Lọc Ký tự Điều khiển
 
-    This method will filter out ASCII control characters in the text, such as `` etc.
+    Phương pháp này sẽ lọc ra các ký tự điều khiển ASCII trong văn bản, chẳng hạn như `` v.v.
 
-1. #### Filter English Punctuation
+1. #### Lọc Dấu câu tiếng Anh
 
-    This method will filter out ```!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``` in the text.
+    Phương pháp này sẽ lọc ra ```!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``` trong văn bản.
 
-1. #### Filter Characters Outside「」
+1. #### Lọc Ký tự Bên ngoài「」
 
-    For example: `こなみ「ひとめぼれってやつだよね……」` will be processed into `「ひとめぼれってやつだよね……」`
+    Ví dụ: `こなみ「ひとめぼれってやつだよね……」` sẽ được xử lý thành `「ひとめぼれってやつだよね……」`
 
-1. #### Remove Curly Braces {}
+1. #### Xóa Dấu Ngoặc Móc {}
 
-    Many game scripts use {} and some other characters to add furigana to kanji, for example: `{kanji/furigana}` and `{kanji:furigana}`, such as `「{恵麻/えま}さん、まだ{起き/おき}てる？」` or `「{恵麻:えま}さん、まだ{起き:おき}てる？」` will be processed into `「恵麻さん、まだ起きてる？」`. It will first attempt to remove the furigana according to these patterns, and then remove all curly braces and their contents.
+    Nhiều kịch bản trò chơi sử dụng {} và một số ký tự khác để thêm furigana vào kanji, ví dụ: `{kanji/furigana}` và `{kanji:furigana}`, chẳng hạn như `「{恵麻/えま}さん、まだ{起き/おき}てる？」` hoặc `「{恵麻:えま}さん、まだ{起き:おき}てる？」` sẽ được xử lý thành `「恵麻さん、まだ起きてる？」`. Nó sẽ trước tiên cố gắng loại bỏ furigana theo các mẫu này, sau đó loại bỏ tất cả các dấu ngoặc móc và nội dung của chúng.
 
-1. #### Extract Specified Number of Lines
+1. #### Trích xuất Số lượng Dòng Cụ thể
 
-    This method will extract the number of lines specified by **Number of Lines to Extract**.
+    Phương pháp này sẽ trích xuất số dòng được chỉ định bởi **Số Dòng Cần Trích xuất**.
 
-    If **Extract from End** is activated, it will extract the specified number of lines from the end of the text.
+    Nếu **Trích xuất từ Cuối** được kích hoạt, nó sẽ trích xuất số dòng chỉ định từ cuối văn bản.
 
-1. #### Remove Duplicate Characters _AAAABBBBCCCC->ABC
+1. #### Xóa Ký tự Trùng lặp _AAAABBBBCCCC->ABC
 
-    This is the most commonly used filter.
+    Đây là bộ lọc được sử dụng phổ biến nhất.
 
-    Due to the way games sometimes draw text (e.g., drawing text, then shadow, then outline), HOOK mode may extract the same characters multiple times. For example, `恵恵恵麻麻麻さささんんんははは再再再びびび液液液タタタブブブへへへ視視視線線線ををを落落落とととすすす。。。` will be processed into `恵麻さんは再び液タブへ視線を落とす。`. The default repetition count is `1`, which automatically analyzes the number of repeated characters, but there may be inaccuracies, so it is recommended to specify a definite repetition count.
+    Do cách các trò chơi đôi khi vẽ văn bản (ví dụ: vẽ văn bản, sau đó là bóng, sau đó là viền), chế độ HOOK có thể trích xuất cùng một ký tự nhiều lần. Ví dụ, `恵恵恵麻麻麻さささんんんははは再再再びびび液液液タタタブブブへへへ視視視線線線ををを落落落とととすすす。。。` sẽ được xử lý thành `恵麻さんは再び液タブへ視線を落とす。`. Số lần lặp lại mặc định là `1`, tự động phân tích số lượng ký tự lặp lại, nhưng có thể có sự không chính xác, vì vậy nên chỉ định một số lần lặp lại cụ thể.
 
-1. #### Remove Duplicate Lines _ABCDABCDABCD->ABCD
+1. #### Xóa Dòng Trùng lặp _ABCDABCDABCD->ABCD
 
-    This is also common, similar to the above, but generally does not refresh repeatedly, but quickly refreshes multiple times. The effect is `恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。` will become `恵麻さんは再び液タブへ視線を落とす。`. Similarly, the default repetition count is `1`, which automatically analyzes the number of repeated characters, but there may be inaccuracies, so it is recommended to specify a definite repetition count.
+    Điều này cũng phổ biến, tương tự như trên, nhưng thường không làm mới lặp lại, mà làm mới nhanh nhiều lần. Hiệu ứng là `恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。` sẽ trở thành `恵麻さんは再び液タブへ視線を落とす。`. Tương tự, số lần lặp lại mặc định là `1`, tự động phân tích số lượng ký tự lặp lại, nhưng có thể có sự không chính xác, vì vậy nên chỉ định một số lần lặp lại cụ thể.
 
-1. #### Remove Duplicate Lines _S1S1S1S2S2S2->S1S2
+1. #### Xóa Dòng Trùng lặp _S1S1S1S2S2S2->S1S2
 
-    This is relatively complex; sometimes, the refresh count of each sentence is not exactly the same, so the program must analyze how to deduplicate. For example, `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。私は恵麻さんの目元を優しくハンカチで拭う。` where `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。` repeats 3 times, `なんてニヤニヤしていると、恵麻さんが振り返った。` does not repeat, and `私は恵麻さんの目元を優しくハンカチで拭う。` repeats 2 times, the final analysis will get `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。`, where due to the complexity, there may be a few analysis errors, which is unavoidable, but generally, it can get the correct result.
+    Điều này tương đối phức tạp; đôi khi, số lần làm mới của mỗi câu không hoàn toàn giống nhau, vì vậy chương trình phải phân tích cách loại bỏ trùng lặp. Ví dụ, `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。私は恵麻さんの目元を優しくハンカチで拭う。` nơi `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。` lặp lại 3 lần, `なんてニヤニヤしていると、恵麻さんが振り返った。` không lặp lại, và `私は恵麻さんの目元を優しくハンカチで拭う。` lặp lại 2 lần, phân tích cuối cùng sẽ nhận được `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。`, nơi do sự phức tạp, có thể có một vài lỗi phân tích, điều này không thể tránh khỏi, nhưng nói chung, nó có thể nhận được kết quả chính xác.
 
-1. #### Filter Angle Brackets <>
+1. #### Lọc Dấu Ngoặc Nhọn <>
 
-    This is actually filtering HTML tags, but the name is written this way to avoid confusion for beginners. For example, `<div>`, `</div>`, and `<div id="dsds">` will be filtered. This is mainly used in TyranoScript games where the HOOK extracts the text as innerHTML, usually containing many such tags.
+    Đây thực sự là lọc các thẻ HTML, nhưng tên được viết như vậy để tránh nhầm lẫn cho người mới bắt đầu. Ví dụ, `<div>`, `</div>`, và `<div id="dsds">` sẽ được lọc. Điều này chủ yếu được sử dụng trong các trò chơi TyranoScript nơi chế độ HOOK trích xuất văn bản dưới dạng innerHTML, thường chứa nhiều thẻ như vậy.
 
-1. #### Filter Newline Characters
+1. #### Lọc Ký tự Xuống dòng
 
-    Originally named **Filter Newline Characters Language Adaptive**, the old **Filter Newline Characters** has been deprecated.
+    Ban đầu được đặt tên là **Lọc Ký tự Xuống dòng Ngôn ngữ Thích ứng**, **Lọc Ký tự Xuống dòng** cũ đã bị ngừng sử dụng.
 
-    If the source language is not Japanese, when filtering newline characters, they will be replaced with spaces instead of being filtered out to avoid multiple words being connected together.
+    Nếu ngôn ngữ nguồn không phải là tiếng Nhật, khi lọc ký tự xuống dòng, chúng sẽ được thay thế bằng khoảng trắng thay vì bị lọc ra để tránh nhiều từ bị nối liền nhau.
 
-1. #### Filter Numbers
-
-    N/A
-
-1. #### Filter English Letters
+1. #### Lọc Số
 
     N/A
 
-1. #### Remove Duplicate Lines _ABCDBCDCDD->ABCD
+1. #### Lọc Chữ cái tiếng Anh
 
-    This is also common. The reason for this is that sometimes the function HOOKed to display text has the displayed text as a parameter, which is called every time a character is displayed, and each time the parameter string points to the next character, resulting in the fact that the first call has already obtained the complete text, and subsequent calls output the remaining substring until the length decreases to 0. For example, `恵麻さんは再び液タブへ視線を落とす。麻さんは再び液タブへ視線を落とす。さんは再び液タブへ視線を落とす。んは再び液タブへ視線を落とす。は再び液タブへ視線を落とす。再び液タブへ視線を落とす。び液タブへ視線を落とす。液タブへ視線を落とす。タブへ視線を落とす。ブへ視線を落とす。へ視線を落とす。視線を落とす。線を落とす。を落とす。落とす。とす。す。。` will be analyzed to determine that the real text should be `恵麻さんは再び液タブへ視線を落とす。`
+    N/A
 
-1. #### Remove Duplicate Lines _AABABCABCD->ABCD
+1. #### Xóa Dòng Trùng lặp _ABCDBCDCDD->ABCD
 
-    This is also common. The reason for this is that every time a character is drawn, the previous characters are redrawn when the next character is drawn. For example, `恵麻恵麻さ恵麻さん恵麻さんは恵麻さんは再恵麻さんは再び恵麻さんは再び液恵麻さんは再び液タ恵麻さんは再び液タブ恵麻さんは再び液タブへ恵麻さんは再び液タブへ視恵麻さんは再び液タブへ視線恵麻さんは再び液タブへ視線を恵麻さんは再び液タブへ視線を落恵麻さんは再び液タブへ視線を落と恵麻さんは再び液タブへ視線を落とす恵麻さんは再び液タブへ視線を落とす。` will be analyzed to determine that the real text should be `恵麻さんは再び液タブへ視線を落とす。`
+    Điều này cũng phổ biến. Lý do cho điều này là đôi khi chức năng HOOK để hiển thị văn bản có văn bản hiển thị dưới dạng tham số, được gọi mỗi khi một ký tự được hiển thị, và mỗi lần chuỗi tham số trỏ đến ký tự tiếp theo, dẫn đến việc cuộc gọi đầu tiên đã nhận được văn bản hoàn chỉnh, và các cuộc gọi tiếp theo xuất ra chuỗi con còn lại cho đến khi độ dài giảm xuống 0. Ví dụ, `恵麻さんは再び液タブへ視線を落とす。麻さんは再び液タブへ視線を落とす。さんは再び液タブへ視線を落とす。んは再び液タブへ視線を落とす。は再び液タブへ視線を落とす。再び液タブへ視線を落とす。び液タブへ視線を落とす。液タブへ視線を落とす。タブへ視線を落とす。ブへ視線を落とす。へ視線を落とす。視線を落とす。線を落とす。を落とす。落とす。とす。す。。` sẽ được phân tích để xác định rằng văn bản thực sự nên là `恵麻さんは再び液タブへ視線を落とす。`
 
-    When there are multiple lines of text, each line is processed separately according to the above logic, which brings more complexity. Due to the complexity, this processing often fails to handle correctly. If encountered, it is recommended to write a custom Python script to solve it.
+1. #### Xóa Dòng Trùng lặp _AABABCABCD->ABCD
 
-1. #### Custom Python Processing
+    Điều này cũng phổ biến. Lý do cho điều này là mỗi khi một ký tự được vẽ, các ký tự trước đó được vẽ lại khi ký tự tiếp theo được vẽ. Ví dụ, `恵麻恵麻さ恵麻さん恵麻さんは恵麻さんは再恵麻さんは再び恵麻さんは再び液恵麻さんは再び液タ恵麻さんは再び液タブ恵麻さんは再び液タブへ恵麻さんは再び液タブへ視恵麻さんは再び液タブへ視線恵麻さんは再び液タブへ視線を恵麻さんは再び液タブへ視線を落恵麻さんは再び液タブへ視線を落と恵麻さんは再び液タブへ視線を落とす恵麻さんは再び液タブへ視線を落とす。` sẽ được phân tích để xác định rằng văn bản thực sự nên là `恵麻さんは再び液タブへ視線を落とす。`
 
-    Write a Python script for more complex processing. When the processing script does not exist, it will automatically generate a `mypost.py` file and the following template in the userconfig directory:
+    Khi có nhiều dòng văn bản, mỗi dòng được xử lý riêng biệt theo logic trên, điều này mang lại nhiều phức tạp hơn. Do sự phức tạp, việc xử lý này thường không thể xử lý chính xác. Nếu gặp phải, nên viết một kịch bản Python tùy chỉnh để giải quyết.
+
+1. #### Xử lý Python Tùy chỉnh
+
+    Viết một kịch bản Python cho việc xử lý phức tạp hơn. Khi kịch bản xử lý không tồn tại, nó sẽ tự động tạo một tệp `mypost.py` và mẫu sau trong thư mục userconfig:
 
     ```
     def POSTSOLVE(line):
         return line
     ```
 
-1. #### String Replacement
+1. #### Thay thế Chuỗi
 
-    Not only replacement but also mainly used for filtering. For example, fixed garbled characters, repeatedly refreshed inverted triangle characters, etc., can be filtered by replacing them with blanks.
+    Không chỉ thay thế mà còn chủ yếu được sử dụng để lọc. Ví dụ, các ký tự bị lỗi cố định, các ký tự tam giác ngược được làm mới lặp lại, v.v., có thể được lọc bằng cách thay thế chúng bằng khoảng trắng.
 
-    Both the `Regex` and `Escape` options can be activated simultaneously, or only one of them, or neither.
+    Cả hai tùy chọn `Regex` và `Escape` có thể được kích hoạt đồng thời, hoặc chỉ một trong số chúng, hoặc không có cái nào.
 
-    When neither is activated, ordinary string replacement will be used.
+    Khi không có cái nào được kích hoạt, sẽ sử dụng thay thế chuỗi thông thường.
 
-    When `Escape` is activated, the input content will be treated as an escaped string rather than a string literal. For example, `\n` can be used to represent a newline character, thus enabling filtering of characters that appear only before or after newline characters.
+    Khi `Escape` được kích hoạt, nội dung nhập sẽ được coi là một chuỗi đã thoát thay vì một chuỗi ký tự. Ví dụ, `\n` có thể được sử dụng để đại diện cho ký tự xuống dòng, do đó cho phép lọc các ký tự chỉ xuất hiện trước hoặc sau ký tự xuống dòng.
 
-    When `Regex` is activated, regular expression replacement will be used.
+    Khi `Regex` được kích hoạt, sẽ sử dụng thay thế biểu thức chính quy.

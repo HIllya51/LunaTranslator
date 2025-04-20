@@ -11,10 +11,10 @@ hero:
   #   alt: LunaTranslator  
   actions:  
     - theme: brand  
-      text: Download and Start  
+      text: Tải xuống và Bắt đầu  
       link: ./README  
     - theme: alt  
-      text: Basic Usage  
+      text: Sử dụng Cơ bản  
       link: ./basicuse  
     - theme: alt  
       text: Github  
@@ -22,24 +22,24 @@ hero:
 
 features:  
   - title: HOOK  
-    details: Primarily uses HOOK to extract game text, compatible with almost all popular and niche visual novels.  
+    details: Chủ yếu sử dụng HOOK để trích xuất văn bản trò chơi, tương thích với hầu hết tất cả các tiểu thuyết trực quan phổ biến và ngách.  
     link: ./hooksettings
-  - title: Embedded Translation  
-    details: Some games also support directly embedding translations into the game for an immersive experience.
+  - title: Dịch Nhúng  
+    details: Một số trò chơi cũng hỗ trợ nhúng bản dịch trực tiếp vào trò chơi để tạo trải nghiệm đắm chìm.
     link: ./embedtranslate
-  - title: HOOK Emulator  
-    details: Supports HOOK emulators to directly extract text from most games on NS/PSP/PSV/PS3.
+  - title: Giả lập HOOK  
+    details: Hỗ trợ giả lập HOOK để trích xuất văn bản trực tiếp từ hầu hết các trò chơi trên NS/PSP/PSV/PS3.
     link: ./emugames
   - title: OCR  
-    details: Built-in high-precision OCR model, supporting many other online & offline OCR engines for flexible text extraction.  
+    details: Mô hình OCR độ chính xác cao tích hợp, hỗ trợ nhiều công cụ OCR trực tuyến & ngoại tuyến khác để trích xuất văn bản linh hoạt.  
     link: ./useapis/ocrapi
-  - title: Rich Translation APIs  
-    details: Supports almost all translation engines, including large language model translation, offline translation, and more.
+  - title: API Dịch Phong phú  
+    details: Hỗ trợ hầu hết tất cả các công cụ dịch, bao gồm dịch mô hình ngôn ngữ lớn, dịch ngoại tuyến, và nhiều hơn nữa.
     link: ./useapis/tsapi
-  - title: Dictionary & Anki Integration  
-    details: Supports Mecab, MDict, online dictionaries, and AnkiConnect.
+  - title: Tích hợp Từ điển & Anki  
+    details: Hỗ trợ Mecab, MDict, từ điển trực tuyến và AnkiConnect.
     link: ./qa1
-  - title: Text-to-Speech  
-    details: Supports a wide range of online & offline text-to-speech engines.  
-  - title: Highly Configurable  
-    details: Offers extensive configuration options to tailor the translation experience to your needs.  
+  - title: Chuyển văn bản thành giọng nói  
+    details: Hỗ trợ nhiều công cụ chuyển văn bản thành giọng nói trực tuyến & ngoại tuyến.  
+  - title: Cấu hình Cao  
+    details: Cung cấp nhiều tùy chọn cấu hình mở rộng để điều chỉnh trải nghiệm dịch thuật theo nhu cầu của bạn.

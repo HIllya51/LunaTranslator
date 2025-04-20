@@ -1,67 +1,67 @@
-# OCR Automation Execution Methods
+# Phương thức Thực thi Tự động OCR
 
-To accommodate the different text refresh methods of various games, the software offers four distinct methods to automatically capture screenshots from the game at a certain frequency.
+Để phù hợp với các phương thức làm mới văn bản khác nhau của nhiều trò chơi, phần mềm cung cấp bốn phương thức riêng biệt để tự động chụp ảnh màn hình từ trò chơi với tần suất nhất định.
 
 
-## Periodic Execution
+## Thực thi Định kỳ
 
 ::: tip
-If you find the parameters of the other settings difficult to understand, please use this method instead, as it is the simplest approach.
+Nếu bạn thấy các thông số của các cài đặt khác khó hiểu, vui lòng sử dụng phương pháp này thay thế, vì đây là cách tiếp cận đơn giản nhất.
 :::
 
-This method executes periodically based on the “Execution Interval” and uses the “Text Similarity Threshold” to avoid translating the same text repeatedly.
+Phương pháp này thực thi định kỳ dựa trên "Khoảng thời gian Thực thi" và sử dụng "Ngưỡng Tương đồng Văn bản" để tránh dịch cùng một văn bản nhiều lần.
 
 
-## Analyze Image Update
+## Phân tích Cập nhật Hình ảnh
 
-This method utilizes parameters such as “Image Stability Threshold,” “Image Consistency Threshold,” and “Text Similarity Threshold.”
+Phương pháp này sử dụng các thông số như "Ngưỡng Ổn định Hình ảnh", "Ngưỡng Nhất quán Hình ảnh" và "Ngưỡng Tương đồng Văn bản".
 
-1. #### Image Stability Threshold
+1. #### Ngưỡng Ổn định Hình ảnh
 
-    When game text does not appear immediately (text speed is not the fastest), or when the game has a dynamic background or live2D elements, the captured images will continuously change.
+    Khi văn bản trò chơi không xuất hiện ngay lập tức (tốc độ văn bản không phải nhanh nhất), hoặc khi trò chơi có nền động hoặc các yếu tố live2D, hình ảnh được chụp sẽ liên tục thay đổi.
 
-    Each time a screenshot is taken, it is compared to the previous screenshot to calculate similarity. When the similarity exceeds the threshold, the image is considered stable, and the next step is performed.
+    Mỗi lần chụp ảnh màn hình, nó được so sánh với ảnh chụp màn hình trước đó để tính toán độ tương đồng. Khi độ tương đồng vượt quá ngưỡng, hình ảnh được coi là ổn định, và bước tiếp theo được thực hiện.
 
-    If it can be confirmed that the game is completely static, this value can be set to 0. Conversely, if it isn't, this value should be appropriately increased.
+    Nếu có thể xác nhận rằng trò chơi hoàn toàn tĩnh, giá trị này có thể được đặt thành 0. Ngược lại, nếu không phải vậy, giá trị này nên được tăng lên một cách thích hợp.
 
-1. #### Image Consistency Threshold
+1. #### Ngưỡng Nhất quán Hình ảnh
 
-    This parameter is the most important one.
+    Thông số này là thông số quan trọng nhất.
 
-    After the image stabilizes, the current image is compared to the image at the last OCR execution (not the last screenshot). When the similarity is lower than this threshold, it is considered that the game text has changed, and OCR is performed.
+    Sau khi hình ảnh ổn định, hình ảnh hiện tại được so sánh với hình ảnh tại lần thực thi OCR cuối cùng (không phải ảnh chụp màn hình cuối cùng). Khi độ tương đồng thấp hơn ngưỡng này, được coi là văn bản trò chơi đã thay đổi, và OCR được thực hiện.
 
-    If the OCR frequency is too high, this value can be appropriately increased; conversely, if it is too sluggish, it can be appropriately decreased.
+    Nếu tần suất OCR quá cao, giá trị này có thể được tăng lên một cách thích hợp; ngược lại, nếu nó quá chậm, có thể giảm xuống một cách thích hợp.
 
-1. #### Text Similarity Threshold
+1. #### Ngưỡng Tương đồng Văn bản
 
-    The results of OCR are unstable, and minor disturbances in the image can cause slight changes in the text, leading to repeated translations.
+    Kết quả của OCR không ổn định, và nhiễu loạn nhỏ trong hình ảnh có thể gây ra thay đổi nhỏ trong văn bản, dẫn đến lặp lại dịch thuật.
 
-    After each OCR invocation, the current OCR result is compared to the previous OCR result (using edit distance). Only when the edit distance is greater than the threshold will the text be outputted.
-
-
-## Analyze Image Update + Periodic Execution
-
-Combining the above two methods, OCR is executed at least once every “Execution Interval.” It also employs the “Text Similarity Threshold” to avoid translating identical text. Additionally, OCR is performed within intervals based on “Analyze Image Update,” resetting the interval timer.
+    Sau mỗi lần gọi OCR, kết quả OCR hiện tại được so sánh với kết quả OCR trước đó (sử dụng khoảng cách chỉnh sửa). Chỉ khi khoảng cách chỉnh sửa lớn hơn ngưỡng thì văn bản mới được đưa ra.
 
 
-## Mouse/Keyboard Trigger + Wait for Stability
+## Phân tích Cập nhật Hình ảnh + Thực thi Định kỳ
 
-1. #### Trigger Events
+Kết hợp hai phương pháp trên, OCR được thực hiện ít nhất một lần mỗi "Khoảng thời gian Thực thi". Nó cũng sử dụng "Ngưỡng Tương đồng Văn bản" để tránh dịch văn bản giống nhau. Ngoài ra, OCR được thực hiện trong các khoảng thời gian dựa trên "Phân tích Cập nhật Hình ảnh", đặt lại bộ đếm thời gian khoảng.
 
-    By default, the following mouse/keyboard events trigger this method: pressing the left mouse button, pressing Enter, releasing Ctrl, releasing Shift, and releasing Alt. If the game window is bound, the method is triggered only when the game window is the foreground window.
 
-    After triggering the method, a short wait period is required for the game to render new text, considering that text may not appear immediately (if the text speed is not the fastest).
+## Kích hoạt Chuột/Bàn phím + Chờ Ổn định
 
-    Once the method is triggered and stability is achieved, a translation is always performed, without considering the similarity of the text.
+1. #### Sự kiện Kích hoạt
 
-    If the text speed is the fastest, both of the following parameters can be set to 0. Otherwise, the time needed to wait is determined by the following parameters:
+    Theo mặc định, các sự kiện chuột/bàn phím sau đây kích hoạt phương pháp này: nhấn nút chuột trái, nhấn Enter, thả Ctrl, thả Shift và thả Alt. Nếu cửa sổ trò chơi được ràng buộc, phương pháp này chỉ được kích hoạt khi cửa sổ trò chơi là cửa sổ nền trước.
 
-1. #### Delay (s)
+    Sau khi kích hoạt phương pháp, cần thời gian chờ ngắn để trò chơi hiển thị văn bản mới, xem xét rằng văn bản có thể không xuất hiện ngay lập tức (nếu tốc độ văn bản không phải là nhanh nhất).
 
-    Wait for a fixed delay time (there is an inherent delay of 0.1 seconds built-in to accommodate the internal logic handling of game engines).
+    Một khi phương pháp được kích hoạt và đạt được sự ổn định, dịch thuật luôn được thực hiện, mà không cần xem xét đến sự tương đồng của văn bản.
 
-1. #### Image Stability Threshold
+    Nếu tốc độ văn bản là nhanh nhất, cả hai thông số sau đây có thể được đặt thành 0. Nếu không, thời gian cần chờ được xác định bởi các thông số sau:
 
-    This value is similar to the previously mentioned parameter with the same name. However, this is used solely to determine whether the text rendering is complete, and thus it does not share the configuration with the similarly named parameter above.
+1. #### Độ trễ (giây)
 
-    Due to the unpredictable rendering times of slower text speeds, a specified fixed delay might not suffice. The action is executed when the similarity between the image and the previous screenshot is higher than the threshold.
+    Chờ trong thời gian trễ cố định (có độ trễ vốn có 0.1 giây được tích hợp để đáp ứng xử lý logic nội bộ của các động cơ trò chơi).
+
+1. #### Ngưỡng Ổn định Hình ảnh
+
+    Giá trị này tương tự như thông số cùng tên đã đề cập trước đó. Tuy nhiên, điều này chỉ được sử dụng để xác định xem việc hiển thị văn bản đã hoàn thành hay chưa, và do đó nó không chia sẻ cấu hình với thông số cùng tên ở trên.
+
+    Do thời gian hiển thị không thể đoán trước của tốc độ văn bản chậm hơn, độ trễ cố định được chỉ định có thể không đủ. Hành động được thực hiện khi độ tương đồng giữa hình ảnh và ảnh chụp màn hình trước đó cao hơn ngưỡng.

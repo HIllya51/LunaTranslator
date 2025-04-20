@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { en } from './en'
 import { zh, zhSearch } from './zh'
 import { ja, jaSearch } from './ja'
+import { vi, viSearch } from './vi'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 
 // https://vitepress.dev/reference/site-config
@@ -51,7 +52,8 @@ window.onmousemove = function(){
       provider: 'local', options: {
         locales: {
           ...zhSearch,
-          ...jaSearch
+          ...jaSearch,
+          ...viSearch
         }
       }
     },
@@ -61,7 +63,8 @@ window.onmousemove = function(){
   locales: {
     zh: { label: '简体中文', ...zh },
     en: { label: 'English', ...en },
-    ja: { label: '日本語', ...ja }
+    ja: { label: '日本語', ...ja },
+    vi: { label: 'Tiếng Việt', ...vi }
   },
   ignoreDeadLinks: true,
   markdown: {

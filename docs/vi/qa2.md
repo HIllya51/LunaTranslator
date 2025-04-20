@@ -1,12 +1,12 @@
-# Anki Integration
+# Tích hợp Anki
 
-1. Install Anki, https://apps.ankiweb.net/ go to the homepage to download and install.
+1. Cài đặt Anki, truy cập trang chủ https://apps.ankiweb.net/ để tải xuống và cài đặt.
 
-2. Search for Anki Connect, the first result.
+2. Tìm kiếm Anki Connect, kết quả đầu tiên.
 
 ![img](https://image.lunatranslator.org/zh/anki/336449205-4eb7ce93-a9e9-489b-be8a-da67cfdca6ea.png)
 
-It will provide a number, currently 2055492159.
+Nó sẽ cung cấp một con số, hiện tại là 2055492159.
 
 3.
 
@@ -16,11 +16,11 @@ It will provide a number, currently 2055492159.
 
 ![img](https://image.lunatranslator.org/zh/anki/336450025-9bf64445-f62e-4bfe-86f7-da99a7100e92.png)
 
-Enter the number and restart Anki.
+Nhập số và khởi động lại Anki.
 
 ---
 
-On the Luna side, after clicking on the word lookup.
+Ở phía Luna, sau khi nhấp vào tra từ.
 
 ![img](https://image.lunatranslator.org/zh/anki/336451202-a2dd54c0-e4ee-4c27-9183-8b4ab05c4819.png)
 
@@ -28,4 +28,4 @@ On the Luna side, after clicking on the word lookup.
 
 ---
 
-Reference: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/796)
+Tham khảo: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/796)

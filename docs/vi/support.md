@@ -1,3 +1,3 @@
-# Sponsorship
+# Tài trợ
  
-If you feel that the software is helpful to you, welcome to become my [sponsor](https://patreon.com/HIllya51). Thank you ~ 
+Nếu bạn cảm thấy phần mềm này hữu ích cho bạn, hãy trở thành [nhà tài trợ](https://patreon.com/HIllya51) của tôi. Xin cảm ơn ~
