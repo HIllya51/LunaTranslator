@@ -1026,7 +1026,7 @@ class MAINUI:
                 (winsharedutils.clipboard_get() + word) if append else word
             )
         if globalconfig["usesearchword"]:
-            self.searchwordW.search_word.emit(word, append)
+            self.searchwordW.search_word.emit(word, False)
 
     def __dontshowintaborsetbackdrop(self, widget: QWidget):
         window_flags = widget.windowFlags()
