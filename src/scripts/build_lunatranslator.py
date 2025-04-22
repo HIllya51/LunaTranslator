@@ -322,7 +322,6 @@ if __name__ == "__main__":
             shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
             shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
             os.system(f"robocopy cpp/builds/_x86 files/plugins/DLL32 *.dll")
-            os.remove("files/plugins/DLL32/onnxruntime.dll")
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
             exit()
         shutil.copytree(
