@@ -44,45 +44,82 @@ export const viSearch = {
 }
 
 export const vi = defineConfig({
+
   themeConfig: {
-    outline: {
-      level: [2, 3],
-      label: "Điều hướng trang"
-    },
-    footer: {
-      copyright: `Phát hành theo giấy phép <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a>`
-    },
-    editLink: {
-      pattern: 'https://github.com/HIllya51/LunaTranslator/edit/main/docs/:path',
-      text: 'Chỉnh sửa trang này trên GitHub'
-    },
-    docFooter: {
-      prev: 'Trang trước',
-      next: 'Trang tiếp theo'
-    },
-    lastUpdated: {
-      text: 'Cập nhật lần cuối',
-      formatOptions: {
-        dateStyle: 'short',
-        timeStyle: 'medium'
-      }
-    },
-    nav: [
-      { text: "Trang chủ", link: "https://lunatranslator.org/" },
-      { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
-      { text: "Tài trợ", link: "/vi/support" },
-    ],
-    sidebar: [
-      {
-        text: 'Cơ bản',
-        items: [
-          { text: 'Tải xuống và Khởi chạy', link: '/vi/README' },
-          { text: 'Sử dụng Cơ bản', link: '/vi/basicuse' },
-          { text: 'Cập nhật Phần mềm', link: '/vi/update' },
-          { text: 'Tài trợ', link: '/vi/support' }
-        ]
+      footer: {
+          copyright: `Phát hành theo giấy phép <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a>`
       },
-      // Thêm các mục sidebar khác tương tự như các ngôn ngữ khác
-    ]
+      nav: [
+          { text: "Trang chủ", link: "https://lunatranslator.org/" },
+          { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
+          { text: "Tài trợ", link: "/vi/support" },
+      ],
+      editLink: {
+          pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
+          text: 'Chỉnh sửa trang này trên GitHub'
+      },
+      sidebar: [
+          {
+              text: 'Cơ bản',
+              items: [
+                  { text: 'Tải xuống và khởi chạy', link: '/vi/README' },
+                  { text: 'Sử dụng cơ bản', link: '/vi/basicuse' },
+                  { text: 'Cập nhật phần mềm', link: '/vi/update' },
+                  { text: 'Tài trợ', link: '/vi/support' }
+              ]
+          },
+          {
+              text: 'Chi tiết',
+              items: [
+                  {
+                      text: 'Cài đặt liên quan đến HOOK', link: '/vi/hooksettings',
+                      collapsed: true,
+                      items: [
+                          { text: 'Cài đặt HOOK', link: '/vi/hooksettings' },
+                          { text: 'Dịch nhúng', link: '/vi/embedtranslate' },
+                          { text: 'Hỗ trợ trò chơi giả lập', link: '/vi/emugames' },
+                      ]
+                  },
+                  {
+                      text: 'Cài đặt liên quan đến OCR', link: '/vi/useapis/ocrapi',
+                      collapsed: true,
+                      items: [
+                          { text: 'Cài đặt giao diện OCR', link: '/vi/useapis/ocrapi' },
+                          { text: 'Phương pháp thực thi tự động OCR', link: '/vi/ocrparam' },
+                          { text: 'Gắn cửa sổ trò chơi trong chế độ OCR', link: '/vi/gooduseocr' }
+                      ]
+                  },
+                  {
+                      text: 'Cài đặt giao diện dịch thuật', link: '/vi/useapis/tsapi',
+                      collapsed: true,
+                      items: [
+                          { text: 'Dịch mô hình lớn trực tuyến', link: '/vi/guochandamoxing' },
+                          { text: 'Dịch mô hình lớn ngoại tuyến', link: '/vi/offlinellm' },
+                          { text: 'Giao diện dịch thuật trực tuyến truyền thống', link: '/vi/useapis/tsapi' },
+                      ]
+                  },
+                  {
+                      text: 'Xử lý văn bản & Tối ưu hóa dịch thuật', link: '/vi/textprocess',
+                      collapsed: true,
+                      items: [
+                          { text: 'Chức năng và cách sử dụng các phương pháp xử lý văn bản', link: '/vi/textprocess' },
+                          { text: 'Chức năng của các tối ưu hóa dịch thuật', link: '/vi/transoptimi' }
+                      ]
+                  },
+                  { text: 'Tổng hợp giọng nói', link: '/vi/ttsofname' },
+                  {
+                      text: 'Phân đoạn & Từ điển', link: '/vi/qa1',
+                      collapsed: true,
+                      items: [
+                          { text: 'Sử dụng Mecab để phân đoạn & tô màu theo loại từ', link: '/vi/qa1' },
+                          { text: 'Tích hợp Anki', link: '/vi/qa2' }
+                      ]
+                  },
+                  { text: 'Nút công cụ', link: '/vi/alltoolbuttons' },
+                  { text: 'Phím tắt', link: '/vi/fastkeys' },
+                  { text: 'Dịch vụ mạng', link: '/vi/apiservice' },
+              ]
+          }
+      ]
   }
 })
