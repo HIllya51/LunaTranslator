@@ -1,14 +1,14 @@
-# Dịch vụ mạng
+# Dịch vụ Mạng
 
-## Trang web
+## Trang Web
 
 1. #### /page/mainui
 
-    Đồng bộ hóa với nội dung văn bản hiển thị trong cửa sổ chính.
+    Đồng bộ với nội dung văn bản hiển thị trong cửa sổ chính.
 
 1. #### /page/transhist
 
-    Đồng bộ hóa với nội dung văn bản hiển thị trong lịch sử dịch.
+    Đồng bộ với nội dung văn bản hiển thị trong lịch sử dịch.
 
 1. #### /page/dictionary
 
@@ -34,7 +34,7 @@
 
    Tham số truy vấn `text` phải được chỉ định.
 
-   Nếu tham số `id` (ID của trình dịch) được chỉ định, trình dịch đó sẽ được sử dụng để dịch. Nếu không, API dịch nhanh nhất hiện có sẽ được trả về.
+   Nếu tham số `id` (ID trình dịch) được chỉ định, trình dịch đó sẽ được sử dụng để dịch. Nếu không, API dịch nhanh nhất hiện có sẽ được trả về.
 
    Trả về `application/json`, bao gồm ID trình dịch `id`, tên `name`, và kết quả dịch `result`.
 
@@ -42,7 +42,7 @@
 
     Tham số truy vấn `word` phải được chỉ định.
 
-    Nếu tham số `id` (ID của từ điển) được chỉ định, nó sẽ trả về kết quả truy vấn của từ điển đó dưới dạng đối tượng `application/json`, chứa ID từ điển `id`, tên từ điển `name`, và nội dung HTML `result`. Nếu truy vấn thất bại, một đối tượng rỗng sẽ được trả về.
+    Nếu tham số `id` (ID từ điển) được chỉ định, nó sẽ trả về kết quả truy vấn của từ điển đó dưới dạng đối tượng `application/json`, chứa ID từ điển `id`, tên từ điển `name`, và nội dung HTML `result`. Nếu truy vấn thất bại, một đối tượng rỗng sẽ được trả về.
 
     Nếu không, nó sẽ truy vấn tất cả các từ điển và trả về `event/text-stream`, trong đó mỗi sự kiện là một đối tượng JSON chứa ID từ điển `id`, tên từ điển `name`, và nội dung HTML `result`.
 
@@ -56,7 +56,7 @@
 
    Tham số truy vấn `text` phải được chỉ định.
 
-   Trả về dữ liệu nhị phân âm thanh.
+   Trả về dữ liệu âm thanh nhị phân.
 
 1. #### /api/ocr
 
@@ -64,18 +64,18 @@
 
 1. #### /api/list/dictionary  
 
-    Liệt kê tất cả các từ điển hiện có.  
+    Liệt kê tất cả các từ điển hiện có.
 
 1. #### /api/list/translator  
 
-    Liệt kê tất cả các công cụ dịch thuật hiện có.  
+    Liệt kê tất cả các công cụ dịch thuật hiện có.
 
 ### Dịch vụ WebSocket
 
 1.  #### /api/ws/text/origin
 
-    Liên tục xuất tất cả các văn bản gốc đã được trích xuất.
+    Liên tục xuất tất cả các văn bản gốc được trích xuất.
 
 1.  #### /api/ws/text/trans
 
-    Liên tục xuất tất cả các kết quả dịch.
+    Liên tục xuất tất cả các kết quả dịch thuật.

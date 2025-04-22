@@ -4,17 +4,17 @@ layout: home
 
 hero:  
   name: "LunaTranslator"  
-  # text: "Galgame Translator, supporting HOOK, OCR, Clipboard, and more"  
-  # tagline: 💡 Quick translation, easy Japanese learning!  
+  # text: "Trình dịch Galgame, hỗ trợ HOOK, OCR, Clipboard và nhiều hơn nữa"  
+  # tagline: 💡 Dịch nhanh chóng, học tiếng Nhật dễ dàng!  
   # image:  
   #   src: /assets/bg.jpg  
   #   alt: LunaTranslator  
   actions:  
     - theme: brand  
-      text: Tải xuống và Bắt đầu  
+      text: Tải xuống và bắt đầu  
       link: ./README  
     - theme: alt  
-      text: Sử dụng Cơ bản  
+      text: Hướng dẫn cơ bản  
       link: ./basicuse  
     - theme: alt  
       text: Github  
@@ -22,24 +22,24 @@ hero:
 
 features:  
   - title: HOOK  
-    details: Chủ yếu sử dụng HOOK để trích xuất văn bản trò chơi, tương thích với hầu hết tất cả các tiểu thuyết trực quan phổ biến và ngách.  
+    details: Chủ yếu sử dụng HOOK để trích xuất văn bản trò chơi, tương thích với hầu hết các visual novel phổ biến và ít phổ biến.  
     link: ./hooksettings
-  - title: Dịch Nhúng  
-    details: Một số trò chơi cũng hỗ trợ nhúng bản dịch trực tiếp vào trò chơi để tạo trải nghiệm đắm chìm.
+  - title: Dịch nhúng  
+    details: Một số trò chơi cũng hỗ trợ nhúng trực tiếp bản dịch vào trò chơi để có trải nghiệm nhập vai.  
     link: ./embedtranslate
-  - title: Giả lập HOOK  
-    details: Hỗ trợ giả lập HOOK để trích xuất văn bản trực tiếp từ hầu hết các trò chơi trên NS/PSP/PSV/PS3.
+  - title: Trình giả lập HOOK  
+    details: Hỗ trợ trình giả lập HOOK để trích xuất văn bản trực tiếp từ hầu hết các trò chơi trên NS/PSP/PSV/PS3.  
     link: ./emugames
   - title: OCR  
-    details: Mô hình OCR độ chính xác cao tích hợp, hỗ trợ nhiều công cụ OCR trực tuyến & ngoại tuyến khác để trích xuất văn bản linh hoạt.  
+    details: Mô hình OCR tích hợp có độ chính xác cao, hỗ trợ nhiều công cụ OCR trực tuyến & ngoại tuyến khác để trích xuất văn bản linh hoạt.  
     link: ./useapis/ocrapi
-  - title: API Dịch Phong phú  
-    details: Hỗ trợ hầu hết tất cả các công cụ dịch, bao gồm dịch mô hình ngôn ngữ lớn, dịch ngoại tuyến, và nhiều hơn nữa.
+  - title: API dịch phong phú  
+    details: Hỗ trợ hầu hết các công cụ dịch, bao gồm dịch bằng mô hình ngôn ngữ lớn, dịch ngoại tuyến và nhiều hơn nữa.  
     link: ./useapis/tsapi
-  - title: Tích hợp Từ điển & Anki  
-    details: Hỗ trợ Mecab, MDict, từ điển trực tuyến và AnkiConnect.
+  - title: Tích hợp từ điển & Anki  
+    details: Hỗ trợ Mecab, MDict, từ điển trực tuyến và AnkiConnect.  
     link: ./qa1
   - title: Chuyển văn bản thành giọng nói  
     details: Hỗ trợ nhiều công cụ chuyển văn bản thành giọng nói trực tuyến & ngoại tuyến.  
-  - title: Cấu hình Cao  
-    details: Cung cấp nhiều tùy chọn cấu hình mở rộng để điều chỉnh trải nghiệm dịch thuật theo nhu cầu của bạn.
+  - title: Tùy chỉnh cao  
+    details: Cung cấp nhiều tùy chọn cấu hình để điều chỉnh trải nghiệm dịch theo nhu cầu của bạn.  

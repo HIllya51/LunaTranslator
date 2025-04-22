@@ -1,12 +1,12 @@
 # Tích hợp Anki
 
-1. Cài đặt Anki, truy cập trang chủ https://apps.ankiweb.net/ để tải xuống và cài đặt.
+1. Cài đặt Anki, truy cập https://apps.ankiweb.net/ để tải xuống và cài đặt.
 
 2. Tìm kiếm Anki Connect, kết quả đầu tiên.
 
 ![img](https://image.lunatranslator.org/zh/anki/336449205-4eb7ce93-a9e9-489b-be8a-da67cfdca6ea.png)
 
-Nó sẽ cung cấp một con số, hiện tại là 2055492159.
+Nó sẽ cung cấp một số, hiện tại là 2055492159.
 
 3.
 
@@ -20,7 +20,7 @@ Nhập số và khởi động lại Anki.
 
 ---
 
-Ở phía Luna, sau khi nhấp vào tra từ.
+Phía Luna, sau khi nhấp vào tra cứu từ.
 
 ![img](https://image.lunatranslator.org/zh/anki/336451202-a2dd54c0-e4ee-4c27-9183-8b4ab05c4819.png)
 

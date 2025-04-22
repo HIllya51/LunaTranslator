@@ -1,11 +1,15 @@
-# Hỗ trợ trò chơi giả lập
+# Emulator Game Support
 
-LunaTranslator hỗ trợ nhiều loại trò chơi trên NS/PSP/PSV/PS2 thông qua HOOK giả lập.
+LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua trình giả lập HOOK.
 
-Đối với các trò chơi không được hỗ trợ, vui lòng gửi [vấn đề](https://lunatranslator.org/Resource/game_support)
+::: warning
+Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò chơi trên trình giả lập, nếu không trò chơi sẽ không được nhận diện.
+:::
 
-::: details Các giả lập được hỗ trợ
-| Nền tảng | Giả lập |
+Đối với các trò chơi không được hỗ trợ, vui lòng gửi một [issue](https://lunatranslator.org/Resource/game_support).
+
+::: details Trình giả lập được hỗ trợ
+| Nền tảng | Trình giả lập |
 | - | - |
 | NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/Citron/Citron) |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
@@ -19,7 +23,7 @@ LunaTranslator hỗ trợ nhiều loại trò chơi trên NS/PSP/PSV/PS2 thông 
 == NS
 
 
-|  | ID       | Game                |
+|  | ID       | Trò chơi                |
 | ---- | ---------- | ------------------- |
 |  | 0100978013276000 | Memories Off |
 |  | 0100B4A01326E000 | Memories Off ～それから～ |
@@ -334,7 +338,6 @@ LunaTranslator hỗ trợ nhiều loại trò chơi trên NS/PSP/PSV/PS2 thông 
 |  | 0100EA9015126000 | 古書店街の橋姫 Hashihime of the Old Book Town append |
 |  | 0100273013ECA000 | Summer Pockets REFLECTION BLUE |
 
-
 == PSP
 
 
@@ -487,6 +490,7 @@ LunaTranslator hỗ trợ nhiều loại trò chơi trên NS/PSP/PSV/PS2 thông 
 |  | ULJM06252 | 遙かなる時空の中で～八葉抄～ |
 |  | ULJM05019 | 遙かなる時空の中で２ |
 |  | ULJM05441 | 遙かなる時空の中で３ with 十六夜記 愛蔵版 |
+|  | ULJM05547 | 遙かなる時空の中で３ 運命の迷宮 愛蔵版 |
 |  | ULJM05810 | 遙かなる時空の中で４ 愛蔵版 |
 |  | ULJM06025 | 遙かなる時空の中で５ 風花記 |
 |  | NPJH50901 | 遙かなる時空の中で６ |
@@ -808,6 +812,7 @@ LunaTranslator hỗ trợ nhiều loại trò chơi trên NS/PSP/PSV/PS2 thông 
 |  | PCSG00367 | Goes! |
 |  | PCSG00382 | RE:VICE[D] |
 |  | PCSG00640 | SA7 -Silent Ability Seven- |
+|  | PCSG00780 | 赤い砂堕ちる月 |
 
 == PS2
 

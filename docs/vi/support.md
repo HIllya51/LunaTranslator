@@ -1,3 +1,3 @@
 # Tài trợ
- 
-Nếu bạn cảm thấy phần mềm này hữu ích cho bạn, hãy trở thành [nhà tài trợ](https://patreon.com/HIllya51) của tôi. Xin cảm ơn ~
+
+Nếu bạn cảm thấy phần mềm hữu ích với bạn, hãy trở thành [nhà tài trợ](https://patreon.com/HIllya51) của tôi. Cảm ơn bạn ~
