@@ -179,7 +179,7 @@ class dialog_memory(saveposwindow):
         self.setWindowTitle(
             "备忘录"
             + (
-                ("_-_" + savehook_new_data[self.gameuid]["title"])
+                ("_-_[[{}]]".format(savehook_new_data[self.gameuid]["title"]))
                 if self.gameuid
                 else ""
             )

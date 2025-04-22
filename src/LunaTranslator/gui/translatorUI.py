@@ -1,7 +1,7 @@
 from qtsymbols import *
 import time, functools, threading, os, shutil, uuid
 from traceback import print_exc
-import windows, qtawesome, gobject, winsharedutils
+import windows, qtawesome, gobject, NativeUtils
 from myutils.wrapper import threader, tryprint
 from myutils.config import (
     globalconfig,
@@ -405,7 +405,7 @@ class TranslatorWindow(resizableframeless):
             if not rect:
                 lastpos = None
                 continue
-            if not winsharedutils.check_window_viewable(hwnd):
+            if not NativeUtils.IsWindowViewable(hwnd):
                 lastpos = None
                 continue
             rate = self.devicePixelRatioF()
@@ -672,7 +672,7 @@ class TranslatorWindow(resizableframeless):
             ("setting", lambda: gobject.baseobject.settin_ui.showsignal.emit()),
             (
                 "copy",
-                lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
+                lambda: NativeUtils.ClipBoard.setText(gobject.baseobject.currenttext),
             ),
             ("edit", gobject.baseobject.createedittextui),
             ("edittrans", lambda: edittrans(gobject.baseobject.commonstylebase)),
@@ -841,12 +841,12 @@ class TranslatorWindow(resizableframeless):
                 "copy_once",
                 buttonfunctions(
                     clicked=lambda: gobject.baseobject.textgetmethod(
-                        winsharedutils.clipboard_get(), False
+                        NativeUtils.ClipBoard.text, False
                     ),
                     rightclick=lambda: gobject.baseobject.textgetmethod(
                         gobject.baseobject.currenttext
                         + (getlangsrc().space if gobject.baseobject.currenttext else "")
-                        + winsharedutils.clipboard_get(),
+                        + NativeUtils.ClipBoard.text,
                         False,
                     ),
                 ),
@@ -1018,15 +1018,13 @@ class TranslatorWindow(resizableframeless):
 
     def seteffect(self):
         if globalconfig["WindowEffect"] == 0:
-            winsharedutils.clearEffect(self.winid)
+            NativeUtils.clearEffect(self.winid)
         elif globalconfig["WindowEffect"] == 1:
-            winsharedutils.setAcrylicEffect(
+            NativeUtils.setAcrylicEffect(
                 self.winid, globalconfig["WindowEffect_shadow"]
             )
         elif globalconfig["WindowEffect"] == 2:
-            winsharedutils.setAeroEffect(
-                self.winid, globalconfig["WindowEffect_shadow"]
-            )
+            NativeUtils.setAeroEffect(self.winid, globalconfig["WindowEffect_shadow"])
 
     def initvalues(self):
         self.enter_sig = 0
@@ -1097,10 +1095,22 @@ class TranslatorWindow(resizableframeless):
         )
 
     def safemove(self, pos: QPoint):
-        if pos.x() < 0:
+        if pos.x() < -self.width() / 2:
             return
         if pos.y() < 0:
             return
+        if len(QApplication.screens()) == 1:
+            if (
+                pos.x() + self.width() / 2
+                > QApplication.primaryScreen().geometry().width()
+            ):
+                return
+            if (
+                pos.y() + self.height()
+                > QApplication.primaryScreen().geometry().height()
+            ):
+                return
+
         self.move(pos)
 
     def __init__(self):
@@ -1110,10 +1120,8 @@ class TranslatorWindow(resizableframeless):
         if globalconfig["keepontop"]:
             flags |= Qt.WindowType.WindowStaysOnTopHint
         super(TranslatorWindow, self).__init__(
-            None,
-            flags=flags,
-            poslist=globalconfig["transuigeo"],
-        )  # 设置为顶级窗口，无边框
+            None, flags=flags, poslist=globalconfig["transuigeo"]
+        )
 
         self.fullscreenmanager = None
         self.magpiecallback.connect(
@@ -1123,8 +1131,7 @@ class TranslatorWindow(resizableframeless):
                 else None
             )
         )
-        icon = getExeIcon(getcurrexe())  #'./LunaTranslator.exe')# QIcon()
-        # icon.addPixmap(QPixmap('./files/luna.png'), QIcon.Normal, QIcon.On)
+        icon = getExeIcon(getcurrexe())
         self.setWindowIcon(icon)
         self.firstshow = True
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
@@ -1332,7 +1339,7 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.setstyle(bottomr, bottomr3)
 
     def muteprocessfuntion(self):
-        winsharedutils.SetCurrProcessMute(not self.processismuteed)
+        NativeUtils.SetCurrProcessMute(not self.processismuteed)
 
     def _externalfsend(self, current):
         self.isletgamefullscreened = current
@@ -1678,7 +1685,7 @@ class TranslatorWindow(resizableframeless):
                     pid = int(f)
                 except:
                     continue
-                if (pid != os.getpid()) and (winsharedutils.pid_running(pid)):
+                if (pid != os.getpid()) and (NativeUtils.IsProcessRunning(pid)):
                     allisremoved = False
                     continue
 
@@ -1692,7 +1699,7 @@ class TranslatorWindow(resizableframeless):
                 except:
                     pass
             try:
-                os.remove("./cache/Updater.exe")
+                os.remove("cache/Updater.exe")
             except:
                 pass
         except:
@@ -1708,7 +1715,7 @@ class TranslatorWindow(resizableframeless):
 
             gobject.baseobject.textsource = None
             gobject.baseobject.destroytray()
-            handle = windows.CreateMutex(False, "LUNASAVECONFIGUPDATE")
+            handle = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
             if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
                 saveallconfig()
                 self.tryremoveuseless()

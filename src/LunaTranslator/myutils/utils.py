@@ -19,7 +19,7 @@ from myutils.config import (
 from myutils.keycode import vkcode_map, mod_map
 from language import Languages
 import threading, winreg
-import re, heapq, winsharedutils
+import re, heapq, NativeUtils
 from myutils.wrapper import tryprint
 from html.parser import HTMLParser
 from myutils.audioplayer import bass_code_cast
@@ -95,8 +95,8 @@ def __internal__getlang(k1: str, k2: str) -> str:
 
 def translate_exits(fanyi, which=False):
     _fs = [
-        "./Lunatranslator/translator/{}.py".format(fanyi),
-        "./userconfig/copyed/{}.py".format(fanyi),
+        "Lunatranslator/translator/{}.py".format(fanyi),
+        "userconfig/copyed/{}.py".format(fanyi),
     ]
     if not which:
         if all([not os.path.exists(_) for _ in _fs]):
@@ -182,7 +182,7 @@ def nowisdark() -> bool:
     elif dl == 2:
         dark = True
     elif dl == 0:
-        dark = winsharedutils.isDark()
+        dark = NativeUtils.IsDark()
     return dark
 
 
@@ -349,7 +349,7 @@ def find_or_create_uid(targetlist, gamepath: str, title=None):
                 + os.path.basename(gamepath)
             )
         if gamepath.lower().endswith(".lnk"):
-            exepath, _, _, _ = winsharedutils.GetLnkTargetPath(gamepath)
+            exepath, _, _, _ = NativeUtils.GetLnkTargetPath(gamepath)
             uid2gamepath[uid] = exepath
             savehook_new_data[uid]["launchpath"] = gamepath
         else:
@@ -430,17 +430,17 @@ def splitocrtypes(dic):
 
 def selectdebugfile(path: str, ismypost=False, ishotkey=False):
     if ismypost:
-        path = "./userconfig/posts/{}.py".format(path)
+        path = "userconfig/posts/{}.py".format(path)
 
     p = os.path.abspath((path))
     os.makedirs(os.path.dirname(p), exist_ok=True)
     print(path)
     if os.path.exists(p) == False:
         tgt = {
-            "./userconfig/selfbuild.py": "selfbuild.py",
-            "./userconfig/mypost.py": "mypost.py",
-            "./userconfig/myprocess.py": "myprocess.py",
-            "./userconfig/myanki_v2.py": "myanki_v2.py",
+            "userconfig/selfbuild.py": "selfbuild.py",
+            "userconfig/mypost.py": "mypost.py",
+            "userconfig/myprocess.py": "myprocess.py",
+            "userconfig/myanki_v2.py": "myanki_v2.py",
         }.get(path)
         if ismypost:
             tgt = "mypost.py"
@@ -450,26 +450,24 @@ def selectdebugfile(path: str, ismypost=False, ishotkey=False):
             "LunaTranslator/myutils/template/" + tgt,
             p,
         )
-    winsharedutils.OpenFileEx(os.path.normpath(p))
+    NativeUtils.OpenFileEx(os.path.normpath(p))
     return p
 
 
-def dynamiclink(text: str) -> str:
-    return text.format(
-        main_server=static_data["main_server"][gobject.serverindex],
-        docs_server=static_data["docs_server"][gobject.serverindex],
-    )
+def dynamiclink(text: str = "", docs=False) -> str:
+    return static_data[("main_server", "docs_server")[docs]][gobject.serverindex] + text
 
 
-def makehtml(text: str, show=None) -> str:
+def makehtml(text: str, show=None, docs=False) -> str:
 
+    if (not text) or (text[0] == "/"):
+        text = dynamiclink(text, docs=docs)
     if text[-8:] == "releases":
         __ = False
     elif text[-1] == "/":
         __ = False
     else:
         __ = True
-    text = dynamiclink(text)
     if show:
         pass
     elif __:
@@ -581,7 +579,7 @@ def postusewhich(name1):
 
 
 def loadpostsettingwindowmethod_1(xx, name):
-    checkpath = "./LunaTranslator/transoptimi/" + name + ".py"
+    checkpath = "LunaTranslator/transoptimi/{}.py".format(name)
     if os.path.exists(checkpath) == False:
         return None
     mm = "transoptimi." + name
@@ -751,7 +749,7 @@ def checkmd5reloadmodule(filename: str, module: str):
 
 class loopbackrecorder:
     def __init__(self):
-        self.capture = winsharedutils.loopbackrecorder()
+        self.capture = NativeUtils.loopbackrecorder()
 
     def stop(self):
         if not self.capture:
@@ -1090,55 +1088,3 @@ def is_ascii_symbo(c: str):
 def is_ascii_control(c: str):
     # 不要管\r\n
     return cinranges(c, (0, 0x9), (0xB, 0xC), (0xE, 0x1F), (0x7F, 0xA0))
-
-
-def markdown_to_html(markdown_text: str):
-    print(markdown_text)
-    lines = markdown_text.split("\n")
-    html_lines = []
-    lastli = ""
-    lideep = 0
-
-    def switchli():
-        nonlocal lideep, lastli
-        while lideep:
-            html_lines.append("</ul>")
-            lideep -= 1
-        lastli = ""
-
-    for line in lines:
-        if not line:
-            continue
-        m = re.match(r"#+ ", line)
-        if m:
-            switchli()
-            html_lines.append(
-                "<h{hi}>{inner}</h{hi}>".format(
-                    hi=m.span()[1] - 1, inner=line[m.span()[1] :]
-                )
-            )
-        else:
-
-            def parsex(line):
-                line = re.sub(r"\*\*(.*?)\*\*", r"<strong>\1</strong>", line)
-                line = re.sub(r"\*(.*?)\*", r"<em>\1</em>", line)
-                return line
-
-            m = re.match(r" *[-\*] ", line)
-            if m:
-                if lastli != m.group():
-                    if len(lastli) < len(m.group()):
-                        html_lines.append("<ul>")
-                        lideep += 1
-                    else:
-                        html_lines.append("</ul>")
-                        lideep -= 1
-                    lastli = m.group()
-                html_lines.append("<li>{}</li>".format(parsex(line[m.span()[1] :])))
-            else:
-                switchli()
-                html_lines.append("<p>{}</p>".format(parsex(line)))
-
-    switchli()
-
-    return "".join(html_lines)

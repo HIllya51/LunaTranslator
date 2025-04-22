@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools
-import gobject, winsharedutils, uuid, os, shutil
+import gobject, NativeUtils, uuid, os, shutil
 from myutils.config import globalconfig, _TR
 from myutils.hwnd import grabwindow
 from traceback import print_exc
@@ -54,9 +54,9 @@ def autoreadswitch(self):
 
 def safeGet():
 
-    t = winsharedutils.GetSelectedText()
+    t = NativeUtils.GetSelectedText()
     if (t is None) and (globalconfig["getWordFallbackClipboard"]):
-        t = winsharedutils.clipboard_get()
+        t = NativeUtils.ClipBoard.text
     if 0:
         QToolTip.showText(
             QCursor.pos(), _TR("取词失败"), gobject.baseobject.commonstylebase
@@ -83,7 +83,7 @@ def registrhotkeys(self):
         "_1": gobject.baseobject.translation_ui.startTranslater,
         "_2": gobject.baseobject.translation_ui.changeTranslateMode,
         "_3": self.showsignal.emit,
-        "_4": lambda: winsharedutils.clipboard_set(gobject.baseobject.currenttext),
+        "_4": lambda: NativeUtils.ClipBoard.setText(gobject.baseobject.currenttext),
         "_5": gobject.baseobject.translation_ui.changeshowhiderawsig.emit,
         "_51": gobject.baseobject.translation_ui.changeshowhidetranssig.emit,
         "_6": lambda: gobject.baseobject.transhis.showsignal.emit(),
@@ -109,7 +109,7 @@ def registrhotkeys(self):
         "_26_1": lambda: gobject.baseobject.translation_ui.ocr_do_function(
             gobject.baseobject.translation_ui.ocr_once_follow_rect
         ),
-        "_28": lambda: winsharedutils.clipboard_set(
+        "_28": lambda: NativeUtils.ClipBoard.setText(
             gobject.baseobject.currenttranslate
         ),
         "_29": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn1.click(),
@@ -120,7 +120,7 @@ def registrhotkeys(self):
             QPoint()
         ),
         "36": lambda: gobject.baseobject.textgetmethod(
-            winsharedutils.clipboard_get(), False
+            NativeUtils.ClipBoard.text, False
         ),
         "37": lambda: gobject.baseobject.searchwordW.search_word.emit(safeGet(), False),
         "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit(),
@@ -339,7 +339,7 @@ def regist_or_not_key(self, name, _=None):
     maybesetreferlabels(self, name, "")
 
     if name in self.registok:
-        winsharedutils.unregisthotkey(self.registok[name])
+        NativeUtils.UnRegisterHotKey(self.registok[name])
 
     keystring = globalconfig["quick_setting"]["all"][name]["keystring"]
     if keystring == "" or (
@@ -355,7 +355,7 @@ def regist_or_not_key(self, name, _=None):
     except unsupportkey as e:
         maybesetreferlabels(self, name, ("不支持的键位_") + ",".join(e.args[0]))
         return
-    uid = winsharedutils.registhotkey((mode, vkcode), self.bindfunctions[name])
+    uid = NativeUtils.RegisterHotKey((mode, vkcode), self.bindfunctions[name])
 
     if not uid:
         maybesetreferlabels(self, name, ("快捷键冲突"))

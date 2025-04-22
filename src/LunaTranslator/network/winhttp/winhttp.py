@@ -4,8 +4,13 @@ from requests import RequestException, Timeout
 import windows
 
 
+class HINTERNET(LPVOID):
+    def __del__(self):
+        if self:
+            WinHttpCloseHandle(self)
+
+
 # typedef
-HINTERNET = LPVOID
 INTERNET_PORT = WORD
 DWORD_PTR = POINTER(DWORD)
 LPDWORD = POINTER(DWORD)
@@ -104,24 +109,29 @@ class WINHTTP_PROXY_INFO(Structure):
     ]
 
 
-class AutoWinHttpHandle(HINTERNET):
+class HWEBSOCKET(LPVOID):
     def __del__(self):
         if self:
-            WinHttpCloseHandle(self)
+            WinHttpWebSocketClose(
+                self,
+                WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS,
+                NULL,
+                None,
+            )
 
 
 try:
     WinHttpWebSocketCompleteUpgrade = Winhttp.WinHttpWebSocketCompleteUpgrade
     WinHttpWebSocketCompleteUpgrade.argtypes = HINTERNET, DWORD_PTR
-    WinHttpWebSocketCompleteUpgrade.restype = HINTERNET
+    WinHttpWebSocketCompleteUpgrade.restype = HWEBSOCKET
     WinHttpWebSocketSend = Winhttp.WinHttpWebSocketSend
-    WinHttpWebSocketSend.argtypes = HINTERNET, DWORD, LPVOID, DWORD
+    WinHttpWebSocketSend.argtypes = HWEBSOCKET, DWORD, LPVOID, DWORD
     WinHttpWebSocketSend.restype = DWORD
     WinHttpWebSocketReceive = Winhttp.WinHttpWebSocketReceive
-    WinHttpWebSocketReceive.argtypes = HINTERNET, LPVOID, DWORD, DWORD_PTR, DWORD_PTR
+    WinHttpWebSocketReceive.argtypes = HWEBSOCKET, LPVOID, DWORD, DWORD_PTR, DWORD_PTR
     WinHttpWebSocketReceive.restype = DWORD
     WinHttpWebSocketClose = Winhttp.WinHttpWebSocketClose
-    WinHttpWebSocketClose.argtypes = HINTERNET, USHORT, LPVOID, DWORD_PTR
+    WinHttpWebSocketClose.argtypes = HWEBSOCKET, USHORT, LPVOID, DWORD_PTR
     WinHttpWebSocketClose.restype = DWORD
 except:
 

@@ -108,8 +108,16 @@ class edittrans(LMainWindow):
     dispatch = pyqtSignal(str, str)
 
     def __init__(self, parent):
-        super().__init__(parent, Qt.WindowType.FramelessWindowHint)
+        self.followhwnd = gobject.baseobject.hwnd
+        rect = windows.GetWindowRect(self.followhwnd)
+        if rect is None:
+            super().__init__(parent)
+        else:
+            super().__init__(parent, Qt.WindowType.FramelessWindowHint)
+        self.setWindowTitle("编辑_翻译记录")
         self.setupUi()
+        if rect is None:
+            return self.show()
         self.idx = 0
         self.dispatch.connect(self.dispatchF)
         self.trykeeppos()
@@ -121,10 +129,6 @@ class edittrans(LMainWindow):
         self.textOutput.setPlainText(ts)
 
     def trykeeppos(self):
-        self.followhwnd = gobject.baseobject.hwnd
-        rect = windows.GetWindowRect(self.followhwnd)
-        if rect is None:
-            raise Exception()
         t = QTimer(self)
         t.setInterval(100)
         t.timeout.connect(self.follow)

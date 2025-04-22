@@ -3,7 +3,7 @@ import threading
 from qtsymbols import *
 import gobject
 import os, subprocess, functools
-import time, winsharedutils, hashlib
+import time, NativeUtils, hashlib
 from myutils.config import savehook_new_data, globalconfig, mayberelpath
 from myutils.wrapper import threader
 from myutils.utils import qimage2binary
@@ -18,7 +18,7 @@ def clipboard_set_image(p: QImage):
         p = qimg
     if p.isNull():
         return
-    winsharedutils.clipboard_set_image(qimage2binary(p))
+    NativeUtils.ClipBoard.image = qimage2binary(p)
 
 
 @threader
@@ -51,7 +51,9 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
             os.makedirs(dirname, exist_ok=True)
             fname = os.path.join(dirname, tmsp)
         except:
-            fname = mayberelpath(gobject.getcachedir("screenshot/{}/{}".format(exename, tmsp)))
+            fname = mayberelpath(
+                gobject.getcachedir("screenshot/{}/{}".format(exename, tmsp))
+            )
 
     def callback_1(callback_origin, uid, tocliponly, p: QPixmap, fn):
         if p.isNull():
@@ -72,14 +74,14 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
         return
     hwnd = windows.GetAncestor(hwnd)
     if not usewgc:
-        p = safepixmap(winsharedutils.gdi_screenshot(hwnd))
+        p = safepixmap(NativeUtils.GdiGrabWindow(hwnd))
         callback(p, fname + "_gdi." + app)
     isshit = (not callback_origin) and (not tocliponly)
     if usewgc or (p.isNull() or isshit):
 
         @threader
         def _():
-            p = safepixmap(winsharedutils.WinRT.capture_window(hwnd))
+            p = safepixmap(NativeUtils.WinRT.capture_window(hwnd))
             callback(p, fname + "_winrt." + app)
 
         _()
@@ -94,7 +96,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
 
             @threader
             def _():
-                p = safepixmap(winsharedutils.WinRT.capture_window(hwnd))
+                p = safepixmap(NativeUtils.WinRT.capture_window(hwnd))
                 callback(p, fname + "_winrt_magpie." + app)
 
             _()
@@ -112,7 +114,7 @@ def getpidexe(pid):
         windows.PROCESS_QUERY_INFORMATION,  # XP
         windows.PROCESS_QUERY_LIMITED_INFORMATION,
     ):
-        hproc = windows.AutoHandle(windows.OpenProcess(_, False, pid))
+        hproc = windows.OpenProcess(_, False, pid)
         if not hproc:
             continue
         name_ = windows.GetProcessFileName(hproc)
@@ -127,11 +129,7 @@ def getcurrexe():
 
 
 def test_injectable_1(pid):
-    return bool(
-        windows.AutoHandle(
-            windows.OpenProcess(windows.PROCESS_INJECT_ACCESS, False, pid)
-        )
-    )
+    return bool(windows.OpenProcess(windows.PROCESS_INJECT_ACCESS, False, pid))
 
 
 def test_injectable(pids):
@@ -143,7 +141,7 @@ def test_injectable(pids):
 
 def ListProcess(exe=None):
     ret = {}
-    for pid, exebase in winsharedutils.Getprcesses():
+    for pid, exebase in NativeUtils.ListProcesses():
         if os.getpid() == pid:
             continue
         try:
@@ -173,12 +171,12 @@ def ListProcess(exe=None):
 
 def getExeIcon(name: str, icon=True, cache=False, large=False):
     if name.lower().endswith(".lnk"):
-        exepath, args, iconpath, dirp = winsharedutils.GetLnkTargetPath(name)
+        exepath, args, iconpath, dirp = NativeUtils.GetLnkTargetPath(name)
         if os.path.exists(iconpath):
             name = iconpath
         elif os.path.exists(exepath):
             name = exepath
-    data = winsharedutils.extracticon2data(name, large=large)
+    data = NativeUtils.ExtractExeIconData(name, large=large)
     if cache:
         fn = gobject.getcachedir(
             "icon/{}.png".format(hashlib.md5(name.encode("utf8")).hexdigest())
@@ -208,7 +206,7 @@ def getExeIcon(name: str, icon=True, cache=False, large=False):
 
 def injectdll(injectpids, bit, dll):
 
-    injecter = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(bit))
+    injecter = os.path.abspath("files/plugins/shareddllproxy{}.exe".format(bit))
     pid = " ".join([str(_) for _ in injectpids])
     for _ in (0,):
         if not test_injectable(injectpids):
@@ -219,7 +217,7 @@ def injectdll(injectpids, bit, dll):
         ).returncode
         if ret:
             return
-        pids = winsharedutils.collect_running_pids(injectpids)
+        pids = NativeUtils.collect_running_pids(injectpids)
         pid = " ".join([str(_) for _ in pids])
 
     windows.ShellExecute(

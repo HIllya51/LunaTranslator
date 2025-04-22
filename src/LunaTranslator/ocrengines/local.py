@@ -2,19 +2,9 @@ import os, zipfile
 from myutils.utils import dynamiclink, stringfyerror
 from myutils.config import _TR, getlang_inner2show, globalconfig
 from ocrengines.baseocrclass import baseocr, OCRResult
-from ctypes import (
-    CDLL,
-    c_char_p,
-    c_void_p,
-    c_int32,
-    Structure,
-    c_char_p,
-    c_wchar_p,
-    CFUNCTYPE,
-)
-import os
+from CVUtils import LocalOCR, SysNotSupport, ModelLoadFailed
 from language import Languages
-import gobject, requests, winsharedutils, windows
+import gobject, requests
 from traceback import print_exc
 from qtsymbols import *
 from myutils.wrapper import threader
@@ -22,104 +12,6 @@ from myutils.proxy import getproxy
 from gui.usefulwidget import SuperCombo, getboxwidget
 from gui.dynalang import LPushButton, LLabel
 from gui.usefulwidget import VisLFormLayout
-
-
-class ocrpoints(Structure):
-    _fields_ = [
-        ("x1", c_int32),
-        ("y1", c_int32),
-        ("x2", c_int32),
-        ("y2", c_int32),
-        ("x3", c_int32),
-        ("y3", c_int32),
-        ("x4", c_int32),
-        ("y4", c_int32),
-    ]
-
-
-def usewhichonnxruntime():
-    # 尝试加载系统onnxruntime，有directml优化，速度稍快一丢丢
-    sysonnx = windows.SearchPath("onnxruntime.dll")
-    ver = winsharedutils.queryversion(sysonnx)
-    ver = ver if ver else (0,)
-    myonnx = gobject.GetDllpath("onnxruntime.dll")
-    vermy = winsharedutils.queryversion(myonnx)
-    vermy = vermy if vermy else (0,)
-    print(sysonnx, ver)
-    print(myonnx, vermy)
-    # 但最多尝试到v1.20.1版本，v1.21.0开始会不兼容。
-    # https://github.com/microsoft/onnxruntime/releases/tag/v1.21.0
-    # All the prebuilt Windows packages now require VC++ Runtime version >= 14.40(instead of 14.38). If your VC++ runtime version is lower than that, you may see a crash when ONNX Runtime was initializing. See https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710 for more details.
-    # 不过实测在更古老py37(14.00)上是没问题的，但在py311(14.38)或pyqt(14.26)上确实会崩溃，保险起见不要加载。
-    if (ver >= vermy) and (ver < (1, 21)):
-        return sysonnx
-    return myonnx
-
-
-class ocrwrapper:
-
-    def __init__(self, det, rec, key) -> None:
-        usewhich = usewhichonnxruntime()
-        print(usewhich)
-
-        # msvcp140已被qt导入
-        # onnxruntime v1.13.1 用于win7兼容
-        self._onnxruntimedll = CDLL(usewhich)
-        self._LunaOCR = CDLL(gobject.GetDllpath("LunaOCR.dll"))
-        OcrListProviders = self._LunaOCR.OcrListProviders
-        OcrListProviders()
-
-        self._OcrInit = self._LunaOCR.OcrInit
-        self._OcrInit.restype = c_void_p
-        self._OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
-
-        self._OcrDetect = self._LunaOCR.OcrDetect
-        self._OcrDetect.argtypes = (
-            c_void_p,
-            c_void_p,
-            c_int32,
-            c_int32,
-            c_int32,
-            c_int32,
-            c_void_p,
-        )
-
-        self._OcrDestroy = self._LunaOCR.OcrDestroy
-        self._OcrDestroy.argtypes = (c_void_p,)
-
-        self.pOcrObj = self._OcrInit(det, rec, key, 4)
-
-    def __OcrDetect(self, image: QImage, mode: int):
-
-        texts = []
-        pss = []
-
-        def cb(ps: ocrpoints, text: bytes):
-            pss.append((ps.x1, ps.y1, ps.x2, ps.y2, ps.x3, ps.y3, ps.x4, ps.y4))
-            texts.append(text.decode("utf8"))
-
-        if image.format() != QImage.Format.Format_RGB888:
-            image = image.convertToFormat(QImage.Format.Format_RGB888)
-        self._OcrDetect(
-            self.pOcrObj,
-            int(image.bits()),
-            image.width(),
-            image.height(),
-            image.bytesPerLine(),
-            mode,
-            CFUNCTYPE(None, ocrpoints, c_char_p)(cb),
-        )
-        return pss, texts
-
-    def ocr(self, image: QImage, mode):
-        try:
-            return self.__OcrDetect(image, mode)
-        except:
-            print_exc()
-            return [], []
-
-    def __del__(self):
-        self._OcrDestroy(self.pOcrObj)
 
 
 def findmodel(langcode):
@@ -130,7 +22,7 @@ def findmodel(langcode):
         and os.path.isfile(path + "/dict.txt")
     )
     for path in [
-        "./files/ocrmodel/{}".format(langcode),
+        "files/ocrmodel/{}".format(langcode),
         "cache/ocrmodel/{}".format(langcode),
     ]:
         if check(path):
@@ -139,7 +31,7 @@ def findmodel(langcode):
 
 def getallsupports():
     validlangs = []
-    for d in ["./files/ocrmodel", "cache/ocrmodel"]:
+    for d in ["files/ocrmodel", "cache/ocrmodel"]:
         if os.path.isdir(d):
             for lang in os.listdir(d):
                 if findmodel(lang):
@@ -180,7 +72,7 @@ class question(QWidget):
         if not self.allsupports:
             return
         lang = self.allsupports[self.combo.currentIndex()]
-        return dynamiclink("{main_server}") + "/Resource/ocr_models/{}.zip".format(lang)
+        return dynamiclink("/Resource/ocr_models/{}.zip".format(lang))
 
     def downloadauto(self):
         if not self.cururl:
@@ -296,7 +188,6 @@ class OCR(baseocr):
         return {Languages.TradChinese: "cht"}
 
     def init(self):
-        self._ocr = None
         self._savelang = None
         self._savelang1 = None
         self.checkchange()
@@ -325,18 +216,22 @@ class OCR(baseocr):
                     )
                 )
 
-        self._ocr = None
         path = findmodel(uselang)
-        self._ocr = ocrwrapper(
-            path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt"
-        )
+        try:
+            self._ocr = LocalOCR(
+                path + "/det.onnx", path + "/rec.onnx", path + "/dict.txt"
+            )
+        except SysNotSupport:
+            raise Exception(_TR("系统不支持"))
+        except ModelLoadFailed:
+            raise Exception(_TR("模型加载失败"))
         self._savelang = uselang
         self._savelang1 = self.srclang
 
     def ocr(self, image: QImage):
         self.checkchange()
 
-        pss, texts = self._ocr.ocr(
+        pss, texts = self._ocr.OcrDetect(
             image,
             globalconfig["verticalocr"],
         )

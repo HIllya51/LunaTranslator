@@ -108,9 +108,9 @@ export const ja = defineConfig({
                         text: '翻訳インターフェース設定', link: '/ja/useapis/tsapi',
                         collapsed: true,
                         items: [
-                            { text: '従来のオンライン翻訳インターフェース', link: '/ja/useapis/tsapi' },
                             { text: '大規模モデルオンライン翻訳', link: '/ja/guochandamoxing' },
-                            { text: '大規模モデルオフライン翻訳', link: '/ja/offlinellm' }
+                            { text: '大規模モデルオフライン翻訳', link: '/ja/offlinellm' },
+                            { text: '従来のオンライン翻訳インターフェース', link: '/ja/useapis/tsapi' },
                         ]
                     },
                     {

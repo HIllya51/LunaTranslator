@@ -49,7 +49,6 @@ void LunaHost::on_close()
 void LunaHost::savesettings()
 {
     configs->set("ToClipboard", check_toclipboard);
-    configs->set("ToClipboardSelection", check_toclipboard_selection);
     configs->set("AutoAttach", autoattach);
     configs->set("AutoAttach_SavedOnly", autoattach_savedonly);
     configs->set("flushDelay", TextThread::flushDelay);
@@ -85,8 +84,7 @@ void LunaHost::loadsettings()
     uifont.bold = configs->get("font_bold", false);
     uifont.fontsize = configs->get("fontsize", 14);
     uifont.fontfamily = StringToWideString(configs->get("DefaultFont2", WideStringToString(TR[DefaultFont])));
-    check_toclipboard_selection = configs->get("ToClipboardSelection", false);
-    check_toclipboard = configs->get("ToClipboard", false);
+    check_toclipboard = configs->get("ToClipboard", true);
     autoattach = configs->get("AutoAttach", false);
     autoattach_savedonly = configs->get("AutoAttach_SavedOnly", true);
     TextThread::flushDelay = configs->get("flushDelay", TextThread::flushDelay);
@@ -121,7 +119,7 @@ void LunaHost::doautoattach()
                 continue;
 
             if (attachedprocess.find(pid) == attachedprocess.end())
-                Host::InjectProcess(pid);
+                Host::ConnectAndInjectProcess(pid);
         }
 
         break;
@@ -260,13 +258,12 @@ LunaHost::LunaHost()
     g_showtexts = new multilineedit(this);
     g_showtexts->setreadonly(true);
 
-    Host::StartEx(
+    Host::Start(
         std::bind(&LunaHost::on_proc_connect, this, std::placeholders::_1),
         std::bind(&LunaHost::on_proc_disconnect, this, std::placeholders::_1),
         std::bind(&LunaHost::on_thread_create, this, std::placeholders::_1),
         std::bind(&LunaHost::on_thread_delete, this, std::placeholders::_1),
         std::bind(&LunaHost::on_text_recv, this, std::placeholders::_1, std::placeholders::_2),
-        true,
         [=](HOSTINFO type, const std::wstring &output)
         { on_info(type, output); },
         {},
@@ -289,24 +286,6 @@ LunaHost::LunaHost()
     setcentral(1200, 800);
     std::wstring title = TR[WndLunaHostGui];
     settext(title);
-
-    std::thread([&]()
-                {
-        std::wstring sel;
-        while(1)
-        {
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
-            if(check_toclipboard_selection)
-            {
-                    
-                auto _sel=g_showtexts->getsel();
-                if(_sel!=sel){
-                    sel=_sel;
-                    sendclipboarddata(sel,winId);
-                }
-            }
-        } })
-        .detach();
 
     std::thread([&]
                 {
@@ -402,12 +381,12 @@ void LunaHost::updatelisttext(const std::wstring &text, LONG_PTR data)
         g_hListBox_listtext->settext(idx, 1, __output);
     }
 }
-bool LunaHost::on_text_recv(TextThread &thread, std::wstring &output)
+void LunaHost::on_text_recv(TextThread &thread, std::wstring &output)
 {
     if (hasstoped)
-        return true;
+        return;
     if (!plugins->dispatch(thread, output))
-        return false;
+        return;
 
     updatelisttext(output, (LONG_PTR)&thread);
 
@@ -415,7 +394,6 @@ bool LunaHost::on_text_recv(TextThread &thread, std::wstring &output)
     {
         showtext(output, false);
     }
-    return true;
 }
 void LunaHost::on_info(HOSTINFO type, const std::wstring &warning)
 {
@@ -424,6 +402,8 @@ void LunaHost::on_info(HOSTINFO type, const std::wstring &warning)
     case HOSTINFO::Warning:
         MessageBoxW(winId, warning.c_str(), TR[T_WARNING], 0);
         break;
+    default:
+        showtext(warning, false);
     }
 }
 void LunaHost::on_thread_create(TextThread &thread)
@@ -499,12 +479,6 @@ Settingwindow::Settingwindow(LunaHost *host) : mainwindow(host)
         host->check_toclipboard = g_check_clipboard->ischecked();
     };
     g_check_clipboard->setcheck(host->check_toclipboard);
-
-    // copyselect=new checkbox(this,COPYSELECTION);
-    // copyselect->onclick=[=](){
-    //     host->check_toclipboard_selection=copyselect->ischecked();
-    // };
-    // copyselect->setcheck(host->check_toclipboard_selection);
 
     autoattach = new checkbox(this, TR[LblAutoAttach]);
     autoattach->onclick = [=]()

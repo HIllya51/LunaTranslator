@@ -34,9 +34,6 @@ mylinks = {
 
 pluginDirs = ["DLL32", "DLL64"]
 
-vcltlFile = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z"
-
-
 localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip"
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.5.3-beta.1/Locale_Remulator.1.5.3-beta.1.zip"
 
@@ -56,13 +53,6 @@ def createPluginDirs():
         if not os.path.exists(pluginDir):
             os.mkdir(pluginDir)
     os.chdir(rootDir)
-
-
-def installVCLTL():
-    subprocess.run(f"curl -C - -LO {vcltlFile}")
-    subprocess.run(f"7z x -y {vcltlFile.split('/')[-1]} -oVC-LTL5")
-    os.chdir("VC-LTL5")
-    subprocess.run("cmd /c Install.cmd")
 
 
 def move_directory_contents(source_dir, destination_dir):
@@ -170,7 +160,9 @@ def downloadCurl(arch):
         subprocess.run(f"7z x -y {curlFile32xp.split('/')[-1]}")
         os.chdir(rootDir)
         outputDirName32 = curlFile32xp.split("/")[-1].replace(".zip", "")
-        fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32")
+        fuckmove(
+            f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32"
+        )
         return
     os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {curlFile32}")
@@ -267,12 +259,12 @@ def downloadalls(arch):
     downloadNtlea()
     downloadbass()
     downloadCurl(arch)
+    downloadLocaleEmulator()
+    downloadlr()
     if arch == "xp":
         return
     downloadmapie()
-    downloadLocaleEmulator()
     downloadOCRModel()
-    downloadlr()
 
 
 if __name__ == "__main__":
@@ -291,7 +283,6 @@ if __name__ == "__main__":
             print("version=" + versionstring)
             exit()
     elif sys.argv[1] == "cpp":
-        installVCLTL()
         buildPlugins(sys.argv[2])
     elif sys.argv[1] == "pyrt":
         version = sys.argv[3]
@@ -319,12 +310,18 @@ if __name__ == "__main__":
         os.chdir(rootDir)
         if sys.argv[2] == "xp":
             shutil.copytree("../build/cpp_xp", "cpp/builds", dirs_exist_ok=True)
+            shutil.copytree("../build/cpp_x64", "cpp/builds", dirs_exist_ok=True)
             shutil.copytree(
                 "../build/hook_xp", "files/plugins/LunaHook", dirs_exist_ok=True
             )
+            shutil.copytree(
+                "../build/hook_64", "files/plugins/LunaHook", dirs_exist_ok=True
+            )
+            os.remove("files/plugins/LunaHook/LunaHost64.dll")
             os.makedirs("files/plugins/DLL32", exist_ok=True)
             shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
-            shutil.copy("cpp/builds/_x86/winsharedutils.dll", "files/plugins/DLL32")
+            shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
+            os.system(f"robocopy cpp/builds/_x86 files/plugins/DLL32 *.dll")
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
             exit()
         shutil.copytree(

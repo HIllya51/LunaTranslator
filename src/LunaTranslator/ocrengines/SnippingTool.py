@@ -1,4 +1,4 @@
-import threading, winsharedutils, windows
+import threading, NativeUtils, windows
 from qtsymbols import *
 from ctypes import Structure, memmove, c_longlong, c_int, c_float, c_int32, c_int64
 from ocrengines.baseocrclass import baseocr, OCRResult
@@ -26,7 +26,7 @@ def checkdir(d):
 def selectdir():
     if checkdir(cachedir):
         return cachedir
-    path = winsharedutils.GetPackagePathByPackageFamily(packageFamilyName)
+    path = NativeUtils.GetPackagePathByPackageFamily(packageFamilyName)
     if not path:
         return None
     path = os.path.join(path, "SnippingTool")
@@ -102,7 +102,7 @@ class question(QWidget):
                     break
             ff.extract(namemsix, gobject.gettempdir())
         if not namemsix:
-            raise Exception("")
+            raise Exception()
         with zipfile.ZipFile(gobject.gettempdir(namemsix)) as ff:
             collect = []
             for name in ff.namelist():
@@ -110,12 +110,12 @@ class question(QWidget):
                     collect.append(name)
             ff.extractall(gobject.getcachedir(), collect)
         if not checkdir(cachedir):
-            raise Exception("")
+            raise Exception()
 
     installsucc = pyqtSignal(bool, str)
 
     def downloadauto(self):
-        self.downloadxSafe(dynamiclink("{main_server}") + "/Resource/SnippingTool")
+        self.downloadxSafe(dynamiclink("/Resource/SnippingTool"))
         self.formLayout.setRowVisible(1, False)
         self.formLayout.setRowVisible(2, True)
 
@@ -157,7 +157,7 @@ class question(QWidget):
         with zipfile.ZipFile(target) as zipf:
             zipf.extractall(gobject.getcachedir())
         if not checkdir(cachedir):
-            raise Exception("")
+            raise Exception()
 
     def _installsucc(self, succ, failreason):
         if succ:
@@ -174,7 +174,7 @@ class question(QWidget):
                 failreason + "\n\n" + _TR("自动添加失败，是否手动添加？"),
             )
             if res == QMessageBox.StandardButton.Yes:
-                os.startfile(dynamiclink("{main_server}") + "/Resource/SnippingTool")
+                os.startfile(dynamiclink("/Resource/SnippingTool"))
                 f = QFileDialog.getOpenFileName(
                     self,
                     filter="SnippingTool.zip",
@@ -268,7 +268,7 @@ class OCR(baseocr):
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
         exepath = os.path.abspath("files/plugins/shareddllproxy64.exe")
-        self.engine = winsharedutils.AutoKillProcess(
+        self.engine = NativeUtils.AutoKillProcess(
             '"{}" SnippingTool {} {} {}'.format(
                 exepath,
                 pipename,
@@ -277,34 +277,11 @@ class OCR(baseocr):
             ),
             cachedir,
         )
-        windows.WaitForSingleObject(
-            windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
-            windows.INFINITE,
-        )
-        windows.WaitNamedPipe(pipename, windows.NMPWAIT_WAIT_FOREVER)
-        self.hPipe = windows.AutoHandle(
-            windows.CreateFile(
-                pipename,
-                windows.GENERIC_READ | windows.GENERIC_WRITE,
-                0,
-                None,
-                windows.OPEN_EXISTING,
-                windows.FILE_ATTRIBUTE_NORMAL,
-                None,
-            )
-        )
-        self.mappedFile2 = windows.AutoHandle(
-            windows.OpenFileMapping(
-                windows.FILE_MAP_READ | windows.FILE_MAP_WRITE, False, mapname
-            )
-        )
-        self.mem = windows.MapViewOfFile(
-            self.mappedFile2,
-            windows.FILE_MAP_READ | windows.FILE_MAP_WRITE,
-            0,
-            0,
-            1024 * 1024 * 16,
-        )
+        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
+        windows.WaitNamedPipe(pipename)
+        self.hPipe = windows.CreateFile(pipename)
+        self.mappedFile2 = windows.OpenFileMapping(mapname)
+        self.mem = windows.MapViewOfFile(self.mappedFile2)
 
     def ocr(self, qimage: QImage):
         if qimage.format() != QImage.Format.Format_RGBA8888:

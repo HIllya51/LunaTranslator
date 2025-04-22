@@ -3,7 +3,7 @@ from myutils.wrapper import threader
 from traceback import print_exc
 from myutils.utils import SafeFormatter
 from myutils.commonbase import commonbase
-import re, uuid
+import uuid
 from tinycss2 import parse_stylesheet, serialize
 from tinycss2.ast import (
     WhitespaceToken,

@@ -8,15 +8,14 @@ from gui.rendertext.texttype import TextType, ColorControl
 from gui.rendertext.webview import TextBrowser as WebviewTextbrowser
 from gui.rendertext.textbrowser import TextBrowser as QtTextbrowser
 from services.servicecollection_1 import mainuiwsoutputsave, WSForEach
+import NativeUtils
 
 
 def checkusewhich():
     if "rendertext_using" not in globalconfig:
         v = platform.version().split(".")
-        import winsharedutils
-
         iswin8later = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
-        webview2version = winsharedutils.detect_webview2_version()
+        webview2version = NativeUtils.detect_webview2_version()
         if iswin8later:
             if WebviewWidget.findFixedRuntime():
                 # 如果手动放置，那一定选手动的，不管功能完不完整。

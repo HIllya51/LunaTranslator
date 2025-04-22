@@ -351,7 +351,7 @@ def btnpluscallback(self, countnum, btnplus):
 
 
 def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
-    _f2 = "./userconfig/copyed/{}.py".format(fanyi)
+    _f2 = "userconfig/copyed/{}.py".format(fanyi)
     try:
         os.remove(_f2)
     except:
@@ -400,7 +400,7 @@ def createmanybtn(self, countnum, btnplus):
         btn = IconButton("fa.question", fix=False)
         hbox.addWidget(btn)
         btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("{docs_server}/useapis/tsapi.html"))
+            lambda: os.startfile(dynamiclink("/useapis/tsapi.html", docs=True))
         )
         return w
 
@@ -417,11 +417,11 @@ def createmanybtn(self, countnum, btnplus):
     btn = IconButton("fa.question", fix=False)
     if btnplus == "offline":
         btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("{docs_server}/offlinellm.html"))
+            lambda: os.startfile(dynamiclink("/offlinellm.html", docs=True))
         )
     elif btnplus == "api":
         btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("{docs_server}/guochandamoxing.html"))
+            lambda: os.startfile(dynamiclink("/guochandamoxing.html", docs=True))
         )
     hbox.addWidget(btn)
     setattr(self, "btnmany" + btnplus, w)
@@ -445,7 +445,7 @@ def initsome11(self, l, label=None, btnplus=False, savecountnum=False):
             last = D_getIconButton(callback=functools.partial(loadbutton, self, fanyi))
         elif fanyi == "selfbuild":
             last = D_getIconButton(
-                callback=lambda: selectdebugfile("./userconfig/selfbuild.py"),
+                callback=lambda: selectdebugfile("userconfig/selfbuild.py"),
                 icon="fa.edit",
             )
         else:
@@ -823,7 +823,7 @@ def __importnew(self, savelay, f):
     module = importlib.import_module("userconfig.copyed." + fanyi)
     TS = module.TS
     if not issubclass(TS, basetrans):
-        raise Exception("")
+        raise Exception()
     default = {
         "type": "external",
         "color": "blue",

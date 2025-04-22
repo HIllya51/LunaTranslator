@@ -3,7 +3,7 @@ import functools, uuid, os
 from datetime import datetime, timedelta
 from traceback import print_exc
 from language import TransLanguages
-import gobject, winsharedutils
+import gobject, NativeUtils
 import copy
 from myutils.post import processfunctions
 from myutils.config import (
@@ -16,7 +16,6 @@ from myutils.config import (
     static_data,
 )
 from gui.dialog_memory import dialog_memory
-from textsource.texthook import codepage_display
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton
@@ -633,7 +632,7 @@ class dialog_setting_game_internal(QWidget):
             try:
                 gobject.global_dialog_savedgame_new.tagswidget.addTag(*_)
             except:
-                winsharedutils.clipboard_set(_[0])
+                NativeUtils.ClipBoard.text = _[0]
                 QToolTip.showText(QCursor.pos(), _TR("已复制到剪贴板"), self)
 
         qw.labelclicked.connect(safeaddtags)
@@ -1275,11 +1274,12 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "代码页",
             getsimplecombobox(
-                codepage_display,
+                static_data["codepage_display"],
                 savehook_new_data[gameuid]["hooksetting_private"],
-                "codepage_index",
+                "codepage_value",
                 lambda _: gobject.baseobject.textsource.setsettings(),
-                default=globalconfig["codepage_index"],
+                default=globalconfig["codepage_value"],
+                internal=static_data["codepage_real"],
             ),
         )
 

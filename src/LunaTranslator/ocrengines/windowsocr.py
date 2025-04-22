@@ -1,4 +1,4 @@
-import winsharedutils
+import NativeUtils
 import windows, re, os
 from myutils.hwnd import subprochiderun
 from myutils.config import _TR, getlang_inner2show
@@ -57,7 +57,7 @@ def installx(combo: _SuperCombo, btninstall, supportlang):
     combo.setEnabled(True)
     supportlang.setText(
         ", ".join(
-            [_[1] for _ in winsharedutils.WinRT.OCR_get_AvailableRecognizerLanguages()]
+            [_[1] for _ in NativeUtils.WinRT.OCR_get_AvailableRecognizerLanguages()]
         )
     )
 
@@ -69,7 +69,7 @@ def question():
     supportlang = QLabel()
     supportlang.setText(
         ", ".join(
-            [_[1] for _ in winsharedutils.WinRT.OCR_get_AvailableRecognizerLanguages()]
+            [_[1] for _ in NativeUtils.WinRT.OCR_get_AvailableRecognizerLanguages()]
         )
     )
     supportlang.setWordWrap(True)
@@ -82,7 +82,7 @@ def question():
         btndownload = LPushButton("添加语言包")
         btndownload.clicked.connect(
             lambda: os.startfile(
-                dynamiclink("{docs_server}/useapis/ocrapi.html#离线ocr")
+                dynamiclink("/useapis/ocrapi.html#离线ocr", docs=True)
             )
         )
         lst.append(btndownload)
@@ -101,7 +101,7 @@ def question():
         btndownload = IconButton("fa.question")
         btndownload.clicked.connect(
             lambda: os.startfile(
-                dynamiclink("{docs_server}/useapis/ocrapi.html#离线ocr")
+                dynamiclink("/useapis/ocrapi.html#离线ocr", docs=True)
             )
         )
         lst.append(btndownload)
@@ -117,7 +117,7 @@ class OCR(baseocr):
 
     def ocr(self, imagebinary):
         supports = [
-            _[0] for _ in winsharedutils.WinRT.OCR_get_AvailableRecognizerLanguages()
+            _[0] for _ in NativeUtils.WinRT.OCR_get_AvailableRecognizerLanguages()
         ]
         if len(supports) == 0:
 
@@ -128,7 +128,7 @@ class OCR(baseocr):
             else:
                 self.raise_cant_be_auto_lang()
         else:
-            if not winsharedutils.WinRT.OCR_check_language_valid(self.srclang):
+            if not NativeUtils.WinRT.OCR_check_language_valid(self.srclang):
                 raise Exception(
                     _TR(
                         "系统未安装“{currlang}”的OCR模型\n当前支持的语言：{langs}"
@@ -137,13 +137,13 @@ class OCR(baseocr):
                         langs=", ".join(
                             [
                                 _[1]
-                                for _ in winsharedutils.WinRT.OCR_get_AvailableRecognizerLanguages()
+                                for _ in NativeUtils.WinRT.OCR_get_AvailableRecognizerLanguages()
                             ]
                         ),
                     )
                 )
             uselang = self.srclang
-        ret = winsharedutils.WinRT.OCR(imagebinary, uselang)
+        ret = NativeUtils.WinRT.OCR(imagebinary, uselang)
         boxs = [_[1:] for _ in ret]
         texts = [_[0] for _ in ret]
         return OCRResult(boxs=boxs, texts=texts)

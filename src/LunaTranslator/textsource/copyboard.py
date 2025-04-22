@@ -1,12 +1,12 @@
 from textsource.textsourcebase import basetext
 from myutils.config import globalconfig
-import winsharedutils, gobject
+import NativeUtils, gobject
 
 
 class copyboard(basetext):
 
     def end(self):
-        winsharedutils.stopclipboardlisten()
+        NativeUtils.ClipBoardListenerStop()
         gobject.baseobject.translation_ui.clipboardcallback.disconnect()
 
     def __callback(self, ismy, string):
@@ -17,7 +17,7 @@ class copyboard(basetext):
     def init(self) -> None:
         self.startsql(gobject.gettranslationrecorddir("0_copy.sqlite"))
         gobject.baseobject.translation_ui.clipboardcallback.connect(self.__callback)
-        winsharedutils.startclipboardlisten()
+        NativeUtils.ClipBoardListenerStart()
 
     def gettextonce(self):
-        return winsharedutils.clipboard_get()
+        return NativeUtils.ClipBoard.text

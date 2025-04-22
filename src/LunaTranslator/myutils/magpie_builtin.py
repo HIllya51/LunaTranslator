@@ -1,7 +1,7 @@
 import json
 import windows, gobject
 from myutils.config import globalconfig, magpie_config
-import winsharedutils, functools
+import NativeUtils, functools
 from myutils.wrapper import threader
 
 
@@ -19,27 +19,27 @@ class AdapterService:
         def __(idx, vendorId, deviceId, description):
             ret.append((idx, vendorId, deviceId, description))
 
-        winsharedutils.AdaptersServiceAdapterInfos(
-            winsharedutils.AdaptersServiceAdapterInfos_Callback(__)
+        NativeUtils.AdaptersServiceAdapterInfos(
+            NativeUtils.AdaptersServiceAdapterInfos_Callback(__)
         )
         return ret
 
     @staticmethod
     def init(callback):
         AdapterService.AdaptersServiceStartMonitor_Callback_ptr = (
-            winsharedutils.AdaptersServiceStartMonitor_Callback(
+            NativeUtils.AdaptersServiceStartMonitor_Callback(
                 functools.partial(
                     AdapterService.AdaptersServiceStartMonitor_Callback, callback
                 )
             )
         )
-        winsharedutils.AdaptersServiceStartMonitor(
+        NativeUtils.AdaptersServiceStartMonitor(
             AdapterService.AdaptersServiceStartMonitor_Callback_ptr
         )
 
     @staticmethod
     def uninit():
-        winsharedutils.AdaptersServiceUninitialize()
+        NativeUtils.AdaptersServiceUninitialize()
 
 
 class MagpieBuiltin:
@@ -93,15 +93,12 @@ class MagpieBuiltin:
 
     def init(self):
         self.jspath = gobject.gettempdir("magpie.config.json")
-        self.engine = winsharedutils.AutoKillProcess(
-            './files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
-            "./files/plugins/Magpie/",
+        self.engine = NativeUtils.AutoKillProcess(
+            'files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
+            "files/plugins/Magpie",
         )
         waitsignal = "Magpie_notify_prepared_ok_" + str(self.engine.pid)
-        windows.WaitForSingleObject(
-            windows.AutoHandle(windows.CreateEvent(False, False, waitsignal)),
-            windows.INFINITE,
-        )
+        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
 
     def end(self):
         windows.SendMessage(

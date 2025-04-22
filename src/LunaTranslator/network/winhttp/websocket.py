@@ -42,22 +42,12 @@ class WebSocket:
             return pbCurrentBufferPointer[: dwBytesTransferred.value]
 
     def close(self):
-        if self.hWebSocketHandle:
-            WinHttpWebSocketClose(
-                self.hWebSocketHandle,
-                WINHTTP_WEB_SOCKET_SUCCESS_CLOSE_STATUS,
-                NULL,
-                None,
-            )
-            self.hWebSocketHandle = 0
-
-    def __del__(self):
-        self.close()
+        self.hWebSocketHandle = None
 
     def __init__(self) -> None:
-        self.hWebSocketHandle = 0
-        self.hConnect = 0
-        self.hSession = 0
+        self.hWebSocketHandle = None
+        self.hConnect = None
+        self.hSession = None
 
     def _parseurl2serverandpath(self, url):
         url = url.strip()
@@ -104,31 +94,25 @@ class WebSocket:
             flag = WINHTTP_FLAG_SECURE
         else:
             flag = 0
-        self.hSession = AutoWinHttpHandle(
-            WinHttpOpen(
-                "WebSocket Client",
-                WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
-                WINHTTP_NO_PROXY_NAME,
-                WINHTTP_NO_PROXY_BYPASS,
-                0,
-            )
+        self.hSession = WinHttpOpen(
+            "WebSocket Client",
+            WINHTTP_ACCESS_TYPE_DEFAULT_PROXY,
+            WINHTTP_NO_PROXY_NAME,
+            WINHTTP_NO_PROXY_BYPASS,
+            0,
         )
         MaybeRaiseException0(self.hSession)
         self._setproxy(self.hSession, http_proxy_host, http_proxy_port)
-        self.hConnect = AutoWinHttpHandle(
-            WinHttpConnect(self.hSession, server, port, 0)
-        )
+        self.hConnect = WinHttpConnect(self.hSession, server, port, 0)
         MaybeRaiseException0(self.hConnect)
-        hRequest = AutoWinHttpHandle(
-            WinHttpOpenRequest(
-                self.hConnect,
-                "GET",
-                path,
-                None,
-                WINHTTP_NO_REFERER,
-                WINHTTP_DEFAULT_ACCEPT_TYPES,
-                flag,
-            )
+        hRequest = WinHttpOpenRequest(
+            self.hConnect,
+            "GET",
+            path,
+            None,
+            WINHTTP_NO_REFERER,
+            WINHTTP_DEFAULT_ACCEPT_TYPES,
+            flag,
         )
         MaybeRaiseException0(hRequest)
         MaybeRaiseException0(
@@ -146,7 +130,5 @@ class WebSocket:
             )
         )
         MaybeRaiseException0(WinHttpReceiveResponse(hRequest, 0))
-        self.hWebSocketHandle = AutoWinHttpHandle(
-            WinHttpWebSocketCompleteUpgrade(hRequest, NULL)
-        )
+        self.hWebSocketHandle = WinHttpWebSocketCompleteUpgrade(hRequest, NULL)
         MaybeRaiseException0(self.hWebSocketHandle)

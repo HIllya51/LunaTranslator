@@ -2,6 +2,7 @@
 static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPARED_OK");
 static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
 static auto Magpie_Core_CLI_ToastMessage = RegisterWindowMessage(L"Magpie_Core_CLI_ToastMessage");
+static auto Magpie_Core_CLI_ScalingOptions_Save = RegisterWindowMessage(L"Magpie_Core_CLI_ScalingOptions_Save");
 static auto WM_SYS_HOTKEY = RegisterWindowMessage(L"SYS_HOTKEY_REG_UNREG");
 bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
@@ -36,6 +37,16 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
             {
                 GlobalDeleteAtom(atom);
                 callback(4, false, buffer);
+            }
+        }
+        else if (message == Magpie_Core_CLI_ScalingOptions_Save)
+        {
+            ATOM atom = (ATOM)wParam;
+            WCHAR buffer[1024];
+            if (GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer)))
+            {
+                GlobalDeleteAtom(atom);
+                callback(5, false, buffer);
             }
         }
         else if (message == WM_MAGPIE_SCALINGCHANGED)
@@ -86,11 +97,11 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
 HWND globalmessagehwnd;
-DECLARE_API void startclipboardlisten()
+DECLARE_API void ClipBoardListenerStart()
 {
     addClipboardFormatListener(globalmessagehwnd);
 }
-DECLARE_API void stopclipboardlisten()
+DECLARE_API void ClipBoardListenerStop()
 {
     removeClipboardFormatListener(globalmessagehwnd);
 }
@@ -130,14 +141,14 @@ DECLARE_API void dispatchcloseevent()
 {
     PostMessage(HWND_BROADCAST, LUNA_UPDATE_PREPARED_OK, 0, 0);
 }
-DECLARE_API int registhotkey(UINT fsModifiers, UINT vk, hotkeycallback_t callback)
+DECLARE_API int SysRegisterHotKey(UINT fsModifiers, UINT vk, hotkeycallback_t callback)
 {
     auto info = new hotkeymessageLP{fsModifiers, vk, callback};
     auto ret = SendMessage(globalmessagehwnd, WM_SYS_HOTKEY, 1, (LPARAM)info);
     delete info;
     return ret;
 }
-DECLARE_API void unregisthotkey(int _id)
+DECLARE_API void SysUnRegisterHotKey(int _id)
 {
     SendMessage(globalmessagehwnd, WM_SYS_HOTKEY, 0, (LPARAM)_id);
 }

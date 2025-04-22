@@ -4,7 +4,7 @@ from traceback import print_exc
 from myutils.wrapper import threader, Singleton
 from myutils.utils import find_or_create_uid, duplicateconfig
 from myutils.hwnd import getExeIcon, getcurrexe
-import gobject, hashlib, winsharedutils, uuid, re
+import gobject, hashlib, NativeUtils, uuid, re
 from gui.inputdialog import autoinitdialog
 from gui.dynalang import LFormLayout, LDialog
 from myutils.localetools import localeswitchedrun
@@ -210,7 +210,7 @@ def CreateShortcutForUid(gameuid):
     icon = getpixfunctionAlign(gameuid, small=True, iconfirst=True)
     path = gobject.getcachedir("shutcuticon/{}.ico".format(uuid.uuid4()))
     icon.save(path)
-    winsharedutils.CreateShortcut(
+    NativeUtils.CreateShortcut(
         re.sub(r'[/\\?%*:|"<>]', " ", savehook_new_data[gameuid]["title"]),
         getcurrexe(),
         "--Exec {}".format(gameuid),

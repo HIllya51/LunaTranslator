@@ -45,7 +45,6 @@
     "搜索": "pesquisa",
     "特殊码": "código específico",
     "取消": "cancelar",
-    "合并多行识别结果": "Juntar várias linhas de resultados de reconhecimento",
     "附加音源": "Fonte de áudio adicional",
     "如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Se você acha que este software é útil para você, por favor, digitalize o código QR no WeChat para patrocinar.",
     "窗口截图": "Imagem da janela",
@@ -791,5 +790,12 @@
     "整数": "",
     "布尔": "",
     "大小": "",
-    "使用快捷键": ""
+    "使用快捷键": "",
+    "系统不支持": "",
+    "模型加载失败": "",
+    "请点击游戏窗口": "",
+    "转换Markdown为HTML": "",
+    "可编辑的": "",
+    "合并临近行": "",
+    "距离": ""
 }

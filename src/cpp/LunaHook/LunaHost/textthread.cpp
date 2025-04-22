@@ -57,15 +57,19 @@ void TextThread::Push(BYTE *data, int length)
 			length = 0;
 		}
 	}
-	auto converted = commonparsestring(data, length, &hp, Host::defaultCodepage);
-	if (converted)
+	if (length)
 	{
-		buffer.append(converted.value());
-		if (hp.type & FULL_STRING && converted.value().size() > 1)
-			buffer.push_back(L'\n');
+		if (auto converted = commonparsestring(data, length, &hp, Host::defaultCodepage))
+		{
+			buffer.append(converted.value());
+			if (hp.type & FULL_STRING && converted.value().size() > 1)
+				buffer.push_back(L'\n');
+		}
+		else
+		{
+			Host::AddConsoleOutput(TR[INVALID_CODEPAGE]);
+		}
 	}
-	else
-		Host::AddConsoleOutput(TR[INVALID_CODEPAGE]);
 
 	UpdateFlushTime();
 
@@ -124,11 +128,9 @@ void TextThread::Flush()
 	for (auto &sentence : sentences)
 	{
 		sentence.erase(std::remove(sentence.begin(), sentence.end(), 0), sentence.end());
-		if (Output(*this, sentence))
-		{
-			storage->append(sentence + L"\n");
-			latest->assign(sentence.c_str());
-		}
+		Output(*this, sentence);
+		storage->append(sentence + L"\n");
+		latest->assign(sentence.c_str());
 	}
 
 	std::scoped_lock lock(bufferMutex);

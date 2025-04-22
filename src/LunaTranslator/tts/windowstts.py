@@ -1,12 +1,12 @@
-import winsharedutils
+import NativeUtils
 from tts.basettsclass import TTSbase, SpeechParam
 
 
 class TTS(TTSbase):
 
     def getvoicelist(self):
-        self._7 = winsharedutils.SAPI_List(7)
-        self._10 = winsharedutils.SAPI_List(10)
+        self._7 = NativeUtils.SAPI.List(7)
+        self._10 = NativeUtils.SAPI.List(10)
         __ = []
         for _ in range(len(self._7)):
             __.append((7, _))
@@ -17,5 +17,5 @@ class TTS(TTSbase):
     def speak(self, content, voice, param: SpeechParam):
         version, voice_idx = voice
 
-        data = winsharedutils.SAPI_Speak(content, version, voice_idx, param.speed, 100)
+        data = NativeUtils.SAPI.Speak(content, version, voice_idx, param.speed, 100)
         return data

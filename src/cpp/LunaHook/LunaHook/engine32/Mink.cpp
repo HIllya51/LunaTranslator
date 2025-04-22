@@ -246,12 +246,12 @@ static bool MdePink()
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     *split = context->stack[5];
-    if (!(*split == 0xff000000 || *split == 0xffFFFFF || *split == 0xff0f0f0f || *split == 0xff7f0f0f))
-      return;
-    if (*split == 0xff000000 || *split == 0xffFFFFF)
+    if (*split == 0xff000000 || *split == 0xffFFFFF || *split == 0x7f0f3f0f)
       *split = 2;
-    if (*split == 0xff0f0f0f || *split == 0xff7f0f0f)
+    else if (*split == 0xff0f0f0f || *split == 0xff7f0f0f)
       *split = 1;
+    else
+      return;
     buffer->from((char *)context->edx);
   };
   return NewHook(hp, "MdePink");

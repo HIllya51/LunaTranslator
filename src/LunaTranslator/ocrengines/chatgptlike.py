@@ -106,9 +106,10 @@ class OCR(baseocr):
         payload.update(safety)
         payload.update(extrabody)
         response = self.proxysession.post(
-            "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
-                self.config["model"], self.multiapikeycurrent["SECRET_KEY"]
+            "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent".format(
+                self.config["model"]
             ),
+            params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             headers=extraheader,
             json=payload,
         )
@@ -142,7 +143,7 @@ class OCR(baseocr):
         return response
 
     def ocr(self, imagebinary):
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
         if self.config["use_custom_prompt"]:
             prompt = self.config["custom_prompt"]
         else:

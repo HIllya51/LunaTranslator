@@ -19,7 +19,7 @@ class TTS(TTSbase):
         else:
             url = self.config["URL"]
             query.update(text_language=self.srclang, speed=speed)
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
         headers = {"ngrok-skip-browser-warning": "true"}
         headers.update(extraheader)
         query.update(extrabody)

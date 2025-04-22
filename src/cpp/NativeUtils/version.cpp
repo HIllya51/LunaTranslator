@@ -1,6 +1,6 @@
 
 
-DECLARE_API bool queryversion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4)
+DECLARE_API bool QueryVersion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4)
 {
 
     DWORD dwHandle;

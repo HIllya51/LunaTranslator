@@ -29,23 +29,23 @@
 
 == OpenAI
 
-**APIインターフェースアドレス** `https://api.openai.com/v1`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.openai.com/v1`</del>
 
 **API Key** https://platform.openai.com/api-keys
 
-**model** https://platform.openai.com/docs/models
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://platform.openai.com/docs/models~~](https://platform.openai.com/docs/models)
 
 == Gemini
 
-**APIインターフェースアドレス** `https://generativelanguage.googleapis.com`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://generativelanguage.googleapis.com`</del>
 
 **API Key** https://aistudio.google.com/app/apikey
 
-**model** https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models~~](https://cloud.google.com/vertex-ai/generative-ai/docs/learn/models)
 
 == Claude
 
-**APIインターフェースアドレス** `https://api.anthropic.com/v1/messages`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.anthropic.com/v1/messages`</del>
 
 **API Key** https://console.anthropic.com/
 
@@ -53,41 +53,43 @@
 
 == Cohere
 
-**APIインターフェースアドレス** `https://api.cohere.ai/compatibility/v1`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.cohere.ai/compatibility/v1`</del>
 
 **API Key** https://dashboard.cohere.com/api-keys
 
-**model** https://docs.cohere.com/docs/models
+**API Interface Address** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.cohere.ai/compatibility/v1`</del>
 
 == x.ai
 
-**APIインターフェースアドレス** `https://api.x.ai/`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.x.ai/`</del>
 
 **API Key** https://console.x.ai/
 
+**model** ソフトウェアのドロップダウンリストから選択してください
+
 == Groq
 
-**APIインターフェースアドレス** `https://api.groq.com/openai/v1/chat/completions`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.groq.com/openai/v1/chat/completions`</del>
 
 **API Key** https://console.groq.com/keys
 
-**model** https://console.groq.com/docs/models `Model ID`を記入
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://console.groq.com/docs/models~~](https://console.groq.com/docs/models)
 
 == OpenRouter
 
-**APIインターフェースアドレス** `https://openrouter.ai/api/v1/chat/completions`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://openrouter.ai/api/v1/chat/completions`</del>
 
 **API Key** https://openrouter.ai/settings/keys
 
-**model** https://openrouter.ai/docs/models
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://openrouter.ai/docs/models~~](https://openrouter.ai/docs/models)
 
 == Mistral AI
 
-**APIインターフェースアドレス** `https://api.mistral.ai/v1/chat/completions`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.mistral.ai/v1/chat/completions`</del>
 
 **API Key** https://console.mistral.ai/api-keys/
 
-**model** https://docs.mistral.ai/getting-started/models/
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://docs.mistral.ai/getting-started/models/~~](https://docs.mistral.ai/getting-started/models/)
 
 == Azure
 
@@ -97,17 +99,19 @@
 
 == Deepinfra
 
-**APIインターフェースアドレス** `https://api.deepinfra.com/v1/openai/chat/completions`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.deepinfra.com/v1/openai/chat/completions`</del>
 
 **API Key** https://deepinfra.com/dash/api_keys
 
+**model** ソフトウェアのドロップダウンリストから選択してください
+
 == Cerebras
 
-**APIインターフェースアドレス** `https://api.cerebras.ai/v1/chat/completions`
-
-**model** `llama3.1-8b`、`llama3.1-70b`、`llama-3.3-70b`をサポート
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.cerebras.ai/v1/chat/completions`</del>
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
+
+**model** ソフトウェアのドロップダウンリストから選択してください
 
 :::
 
@@ -117,15 +121,15 @@
 
 == DeepSeek
 
-**APIインターフェースアドレス** `https://api.deepseek.com`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.deepseek.com`</del>
 
 **API Key** https://platform.deepseek.com/api_keys
 
-**model** https://platform.deepseek.com/api-docs/zh-cn/pricing
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://api-docs.deepseek.com/zh-cn/quick_start/pricing~~](https://api-docs.deepseek.com/zh-cn/quick_start/pricing)
 
 == 阿里雲百煉大模型
 
-**APIインターフェースアドレス** `https://dashscope.aliyuncs.com/compatible-mode/v1`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://dashscope.aliyuncs.com/compatible-mode/v1`</del>
 
 **API Key** https://bailian.console.aliyun.com/?apiKey=1#/api-key
 
@@ -133,7 +137,7 @@
 
 == 字節跳動豆包大模型
 
-**APIインターフェースアドレス** `https://ark.cn-beijing.volces.com/api/v3`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://ark.cn-beijing.volces.com/api/v3`</del>
 
 **API Key** [API Keyを作成](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)して取得
 
@@ -143,15 +147,15 @@
 
 == 月の暗面
 
-**APIインターフェースアドレス** `https://api.moonshot.cn`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.moonshot.cn`</del>
 
 **API Key** https://platform.moonshot.cn/console/api-keys
 
-**model** https://platform.moonshot.cn/docs/intro
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://platform.moonshot.cn/docs/intro~~](https://platform.moonshot.cn/docs/intro)
 
 == 智譜AI
 
-**APIインターフェースアドレス** `https://open.bigmodel.cn/api/paas/v4/chat/completions`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://open.bigmodel.cn/api/paas/v4/chat/completions`</del>
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
@@ -159,23 +163,23 @@
 
 == 零一万物
 
-**APIインターフェースアドレス** `https://api.lingyiwanwu.com`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.lingyiwanwu.com`</del>
 
 **API Key** https://platform.lingyiwanwu.com/apikeys
 
-**model** https://platform.lingyiwanwu.com/docs/api-reference#list-models
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://platform.lingyiwanwu.com/docs/api-reference#list-models~~](https://platform.lingyiwanwu.com/docs/api-reference#list-models)
 
 == 硅基流動
 
-**APIインターフェースアドレス** `https://api.siliconflow.cn`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.siliconflow.cn`</del>
 
 **API Key** https://cloud-hk.siliconflow.cn/account/ak
 
-**model** https://docs.siliconflow.cn/docs/model-names
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://docs.siliconflow.cn/docs/model-names~~](https://docs.siliconflow.cn/docs/model-names)
 
 == 訊飛星火大模型
 
-**APIインターフェースアドレス** `https://spark-api-open.xf-yun.com/v1`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://spark-api-open.xf-yun.com/v1`</del>
 
 **API Key** [公式ドキュメント](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)を参照して**APIKey**と**APISecret**を取得し、`APIKey:APISecret`の形式で記入
 
@@ -183,7 +187,7 @@
 
 == テンセント混元大模型
 
-**APIインターフェースアドレス** `https://api.hunyuan.cloud.tencent.com/v1`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.hunyuan.cloud.tencent.com/v1`</del>
 
 **API Key** [公式ドキュメント](https://cloud.tencent.com/document/product/1729/111008)を参照
 
@@ -191,7 +195,7 @@
 
 == 百度千帆大模型
 
-**APIインターフェースアドレス** `https://qianfan.baidubce.com/v2`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://qianfan.baidubce.com/v2`</del>
 
 **API Key** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Um2wxbaps
 
@@ -202,10 +206,10 @@
 
 == MiniMax
 
-**APIインターフェースアドレス** `https://api.minimax.chat/v1`
+**APIインターフェースアドレス** ソフトウェアのドロップダウンリストから選択してください <del>`https://api.minimax.chat/v1`</del>
 
 **API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
 
-**model** https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4
+**model** ソフトウェアのドロップダウンリストから選択してください [~~https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4~~](https://platform.minimaxi.com/document/Models?key=66701cb01d57f38758d581a4)
 
 :::

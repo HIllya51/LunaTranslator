@@ -16,6 +16,10 @@
 
 After downloading, extract the files to any directory.
 
+::: warning
+But please do not put the software in special paths such as **C:\Program Files**, otherwise, even with administrator privileges, you may not be able to save configuration and cache files, or even run the program.
+:::
+
 - **LunaTranslator.exe** will start in normal mode.
 - **LunaTranslator_admin.exe** will start with administrator privileges, which is required for hooking some games; use this only when necessary, otherwise start in normal mode.
 - **LunaTranslator_debug.exe** will display a command-line window.
@@ -42,6 +46,6 @@ Note: To achieve HOOK extraction of game text, it is necessary to inject Dll int
 
 ### Error/PermissionError
 
-If the software is placed in special folders such as `Program Files`, it may not have read and write permissions. Please run with administrator privileges.
+If the software is placed in special folders such as `C:\Program Files`, it may not work properly.
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png"  width=400>

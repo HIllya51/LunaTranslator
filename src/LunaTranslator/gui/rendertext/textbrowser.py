@@ -7,7 +7,7 @@ from gui.rendertext.texttype import (
     SpecialColor,
     FenciColor,
 )
-import gobject, functools, importlib, winsharedutils
+import gobject, functools, importlib, NativeUtils
 from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
@@ -287,7 +287,7 @@ class TextBrowser(QWidget, dataget):
         if action == search:
             gobject.baseobject.searchwordW.search_word.emit(curr, False)
         elif action == copy:
-            winsharedutils.clipboard_set(curr)
+            NativeUtils.ClipBoard.text = curr
         elif action == tts:
             gobject.baseobject.read_text(curr)
         elif action == translate:

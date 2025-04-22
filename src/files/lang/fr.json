@@ -142,7 +142,6 @@
     "是否显示": "Afficher ou non",
     "颜色": "Couleur",
     "空白": "Blanc",
-    "合并多行识别结果": "Fusionner les résultats de l'identification multiligne",
     "未查到": "Non trouvé",
     "保存": "Enregistrer",
     "当前版本": "Version actuelle",
@@ -791,5 +790,12 @@
     "整数": "",
     "布尔": "",
     "大小": "",
-    "使用快捷键": ""
+    "使用快捷键": "",
+    "系统不支持": "",
+    "模型加载失败": "",
+    "请点击游戏窗口": "",
+    "转换Markdown为HTML": "",
+    "可编辑的": "",
+    "合并临近行": "",
+    "距离": ""
 }

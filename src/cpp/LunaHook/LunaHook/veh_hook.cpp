@@ -7,7 +7,6 @@ Version: 24-March-2008
 #include <windows.h>
 #include "veh_hook.h"
 #include <mutex>
-std::mutex vehlistlock;
 struct veh_node
 {
     void *origFunc;
@@ -23,16 +22,18 @@ struct veh_node
     }
 };
 
+static std::mutex vehlistlock;
 static std::map<void *, veh_node> list;
 
-veh_node *get_veh_node(void *origFunc)
+static veh_node *get_veh_node(void *origFunc)
 {
     if (list.find(origFunc) == list.end())
         return nullptr;
     return &list.at(origFunc);
 }
 
-bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
+LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo);
+static bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
 {
     DWORD oldProtect;
     if (get_veh_node(origFunc))
@@ -52,7 +53,7 @@ bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
     newnode.origBaseByte = *(BYTE *)origFunc;
     *(BYTE *)origFunc = OPCODE_INT3;
     VirtualProtect(origFunc, sizeof(int), newnode.OldProtect, &oldProtect);
-    newnode.handle = AddVectoredExceptionHandler(1, (PVECTORED_EXCEPTION_HANDLER)veh_dispatch);
+    newnode.handle = AddVectoredExceptionHandler(1, veh_dispatch);
     list.emplace(std::make_pair(origFunc, newnode));
     return true;
 }
@@ -73,7 +74,7 @@ std::vector<void *> add_veh_hook(std::vector<void *> origFuncs, std::vector<newF
     }
     return succ;
 }
-void repair_origin(veh_node *node)
+static void repair_origin(veh_node *node)
 {
     DWORD _p;
     if (!VirtualProtect(node->origFunc, sizeof(int), PAGE_EXECUTE_READWRITE, &_p))
@@ -102,8 +103,8 @@ bool remove_veh_hook(void *origFunc)
     RemoveNode(node);
     return true;
 }
-thread_local veh_node *lastnode;
-LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
+static thread_local veh_node *lastnode;
+static LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo)
 {
 
     DWORD oldProtect;

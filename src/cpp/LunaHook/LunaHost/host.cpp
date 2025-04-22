@@ -1,6 +1,6 @@
 #include "host.h"
 #define HOOK_SEARCH_LENGTH STRING
-//#define HOOK_SEARCH_LENGTH 0
+// #define HOOK_SEARCH_LENGTH 0
 namespace
 {
 	class ProcessRecord
@@ -45,10 +45,9 @@ namespace
 
 	Host::ProcessEventHandler OnConnect, OnDisconnect;
 	Host::ThreadEventHandler OnCreate, OnDestroy;
-	Host::HostInfoHandler OnHostInfo = 0;
-	Host::HookInsertHandler HookInsert = 0;
-	Host::EmbedCallback embedcallback = 0;
-	TextThread *consolethread = nullptr;
+	Host::HostInfoHandler OnHostInfo;
+	Host::HookInsertHandler HookInsert;
+	Host::EmbedCallback embedcallback;
 	void RemoveThreads(std::function<bool(ThreadParam)> removeIf)
 	{
 		std::vector<TextThread *> threadsToRemove;
@@ -131,11 +130,8 @@ namespace
 			break;
 			case HOST_NOTIFICATION_INSERTING_HOOK:
 			{
-				if (HookInsert)
-				{
-					auto info = (HookInsertingNotif *)buffer;
-					HookInsert(processId, info->addr, info->hookcode);
-				}
+				auto info = (HookInsertingNotif *)buffer;
+				HookInsert(processId, info->addr, info->hookcode);
 			}
 			break;
 			case HOST_NOTIFICATION_TEXT:
@@ -175,18 +171,15 @@ namespace
 				thread->second.hp.type = data->type;
 				thread->second.Push(data->data, length);
 
-				if (embedcallback)
+				auto &thp = thread->second.hp;
+				if (thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp))
 				{
-					auto &hp = thread->second.hp;
-					if (hp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp))
+					if (auto t = commonparsestring(data->data, length, &thp, Host::defaultCodepage))
 					{
-						if (auto t = commonparsestring(data->data, length, &hp, Host::defaultCodepage))
+						auto text = t.value();
+						if (text.size())
 						{
-							auto text = t.value();
-							if (text.size())
-							{
-								embedcallback(text, tp);
-							}
+							embedcallback(text, tp);
 						}
 					}
 				}
@@ -200,18 +193,14 @@ namespace
 		Host::AddConsoleOutput(FormatString(TR[PROC_DISCONN], processId));
 		processRecordsByIds->erase(processId);
 	}
-	void CreatePipe(int pid)
-	{
-		HANDLE
-		hookPipe = CreateNamedPipeW((std::wstring(HOOK_PIPE) + std::to_wstring(pid)).c_str(), PIPE_ACCESS_INBOUND, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, PIPE_UNLIMITED_INSTANCES, 0, PIPE_BUFFER_SIZE, MAXDWORD, &allAccess),
-		hostPipe = CreateNamedPipeW((std::wstring(HOST_PIPE) + std::to_wstring(pid)).c_str(), PIPE_ACCESS_OUTBOUND, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, PIPE_UNLIMITED_INSTANCES, PIPE_BUFFER_SIZE, 0, MAXDWORD, &allAccess);
-		HANDLE pipeAvailableEvent = CreateEventW(&allAccess, FALSE, FALSE, (std::wstring(PIPE_AVAILABLE_EVENT) + std::to_wstring(pid)).c_str());
-
-		SetEvent(pipeAvailableEvent);
-		std::thread(__handlepipethread, hookPipe, hostPipe, pipeAvailableEvent).detach();
-	}
 }
-
+#define IF_HASVAL_DISPATCH_1(Lock, X, V) \
+	if (X)                               \
+	{                                    \
+		std::lock_guard _(Lock);         \
+		X.value()(V);                    \
+	}
+#define IF_HASVAL_DISPATCH(Lock, X) IF_HASVAL_DISPATCH_1(Lock, X, std::forward<decltype(args)>(args)...)
 namespace Host
 {
 	std::mutex threadmutex;
@@ -227,55 +216,42 @@ namespace Host
 			record.Send(SetLanguageCmd(curr_lang));
 		}
 	}
-	void Start(ProcessEventHandler Connect, ProcessEventHandler Disconnect, ThreadEventHandler Create, ThreadEventHandler Destroy, TextThread::OutputCallback Output, bool createconsole)
+	void Start(std::optional<ProcessEventHandler> Connect,
+			   std::optional<ProcessEventHandler> Disconnect,
+			   std::optional<ThreadEventHandler> Create,
+			   std::optional<ThreadEventHandler> Destroy,
+			   std::optional<TextThread::OutputCallback> Output,
+			   std::optional<HostInfoHandler> hostinfo,
+			   std::optional<HookInsertHandler> hookinsert,
+			   std::optional<EmbedCallback> embed)
 	{
 		OnConnect = [=](auto &&...args)
-		{std::lock_guard _(procmutex);Connect(std::forward<decltype(args)>(args)...); };
+		{ IF_HASVAL_DISPATCH(procmutex, Connect); };
 		OnDisconnect = [=](auto &&...args)
-		{std::lock_guard _(procmutex);Disconnect(std::forward<decltype(args)>(args)...); };
+		{ IF_HASVAL_DISPATCH(procmutex, Disconnect); };
 		OnCreate = [=](TextThread &thread)
-		{{std::lock_guard _(threadmutex); Create(thread);} thread.Start(); };
-		OnDestroy = [=](TextThread &thread)
-		{thread.Stop(); {std::lock_guard _(threadmutex); Destroy(thread);} };
-		TextThread::Output = [=](auto &&...args)
-		{std::lock_guard _(outputmutex);return Output(std::forward<decltype(args)>(args)...); };
-
-		if (createconsole)
 		{
-			OnCreate(textThreadsByParams->try_emplace(console, console, HookParam{}, TR[CONSOLE]).first->second);
-			consolethread = &textThreadsByParams->at(console);
-			Host::AddConsoleOutput(TR[ProjectHomePage]);
-		}
-		// CreatePipe();
+			IF_HASVAL_DISPATCH_1(threadmutex, Create, thread);
+			thread.Start();
+		};
+		OnDestroy = [=](TextThread &thread)
+		{
+			thread.Stop();
+			IF_HASVAL_DISPATCH_1(threadmutex, Destroy, thread);
+		};
+		TextThread::Output = [=](auto &&...args)
+		{ IF_HASVAL_DISPATCH(outputmutex, Output); };
+		OnHostInfo = [=](auto &&...args)
+		{ IF_HASVAL_DISPATCH(outputmutex, hostinfo); };
+		HookInsert = [=](auto &&...args)
+		{ IF_HASVAL_DISPATCH(threadmutex, hookinsert); };
+		embedcallback = [=](auto &&...args)
+		{ IF_HASVAL_DISPATCH(outputmutex, embed); };
 	}
-	void StartEx(std::optional<ProcessEventHandler> Connect,
-				 std::optional<ProcessEventHandler> Disconnect,
-				 std::optional<ThreadEventHandler> Create,
-				 std::optional<ThreadEventHandler> Destroy,
-				 std::optional<TextThread::OutputCallback> Output,
-				 bool consolethread,
-				 std::optional<HostInfoHandler> hostinfo,
-				 std::optional<HookInsertHandler> hookinsert,
-				 std::optional<EmbedCallback> embed)
-	{
-		Start(Connect.value_or([](auto) {}), Disconnect.value_or([](auto) {}), Create.value_or([](auto &) {}), Destroy.value_or([](auto &) {}), Output.value_or([](auto &, auto &)
-																																								{ return false; }),
-			  consolethread);
-		if (hostinfo)
-			OnHostInfo = [=](auto &&...args)
-			{std::lock_guard _(outputmutex);hostinfo.value()(std::forward<decltype(args)>(args)...); };
-		if (hookinsert)
-			HookInsert = [=](auto &&...args)
-			{std::lock_guard _(threadmutex);hookinsert.value()(std::forward<decltype(args)>(args)...); };
-		if (embed)
-			embedcallback = [=](auto &&...args)
-			{std::lock_guard _(outputmutex);embed.value()(std::forward<decltype(args)>(args)...); };
-	}
-	bool CheckProcess(DWORD processId)
+	bool CheckIfNeedInject(DWORD processId)
 	{
 		if (processId == GetCurrentProcessId())
 			return false;
-
 		WinMutex(ITH_HOOKMAN_MUTEX_ + std::to_wstring(processId));
 		if (GetLastError() == ERROR_ALREADY_EXISTS)
 		{
@@ -284,10 +260,15 @@ namespace Host
 		}
 		return true;
 	}
-	bool CreatePipeAndCheck(DWORD processId)
+	void ConnectProcess(DWORD processId)
 	{
-		CreatePipe(processId);
-		return CheckProcess(processId);
+		if (processId == GetCurrentProcessId())
+			return;
+		HANDLE hookPipe = CreateNamedPipeW((std::wstring(HOOK_PIPE) + std::to_wstring(processId)).c_str(), PIPE_ACCESS_INBOUND, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, PIPE_UNLIMITED_INSTANCES, 0, PIPE_BUFFER_SIZE, MAXDWORD, &allAccess);
+		HANDLE hostPipe = CreateNamedPipeW((std::wstring(HOST_PIPE) + std::to_wstring(processId)).c_str(), PIPE_ACCESS_OUTBOUND, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE, PIPE_UNLIMITED_INSTANCES, PIPE_BUFFER_SIZE, 0, MAXDWORD, &allAccess);
+		HANDLE pipeAvailableEvent = CreateEventW(&allAccess, FALSE, FALSE, (std::wstring(PIPE_AVAILABLE_EVENT) + std::to_wstring(processId)).c_str());
+		SetEvent(pipeAvailableEvent);
+		std::thread(__handlepipethread, hookPipe, hostPipe, pipeAvailableEvent).detach();
 	}
 	void DetachProcess(DWORD processId)
 	{
@@ -367,10 +348,9 @@ namespace Host
 	}
 	void InfoOutput(HOSTINFO type, std::wstring text)
 	{
-		if (OnHostInfo)
-			OnHostInfo(type, std::move(text));
+		OnHostInfo(type, std::move(text));
 
-		if (consolethread || (type != HOSTINFO::Console))
+		if (type != HOSTINFO::Console)
 		{
 			switch (type)
 			{
@@ -381,9 +361,7 @@ namespace Host
 				text = L"[Game] " + text;
 				break;
 			}
-			if (consolethread)
-				consolethread->AddSentence(std::move(text));
-			else if (type != HOSTINFO::Console)
+			if (type != HOSTINFO::Console)
 				OnHostInfo(HOSTINFO::Console, std::move(text));
 		}
 	}

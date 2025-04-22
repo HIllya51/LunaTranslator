@@ -2,7 +2,7 @@ from translator.basetranslator import basetrans
 from myutils.config import globalconfig, savehook_new_data
 import os
 import json
-import winsharedutils
+import NativeUtils
 import gobject
 
 
@@ -104,7 +104,7 @@ class TS(basetrans):
                 if not jx:
                     continue
                 for jc in jx:
-                    dis = winsharedutils.similarity(content, jc)
+                    dis = NativeUtils.similarity(content, jc)
                     if dis > maxsim:
                         maxsim = dis
                         if maxsim * 100 >= globalconfig["premtsimi2"]:

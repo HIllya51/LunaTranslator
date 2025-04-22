@@ -8,23 +8,14 @@ from ctypes import (
     c_long,
     CFUNCTYPE,
     c_size_t,
+    c_char,
     Structure,
     POINTER,
     c_int64,
     c_uint,
 )
 
-libcurl = CDLL(gobject.GetDllpath(("./libcurl.dll", "./libcurl-x64.dll")))
-
-CURL = c_void_p
-CURLSH = c_void_p
-
-
-class curl_slist(Structure):
-    pass
-
-
-curl_slist._fields_ = [("data", c_char_p), ("next", POINTER(curl_slist))]
+libcurl = CDLL(gobject.GetDllpath(("libcurl.dll", "libcurl-x64.dll")))
 
 
 class curl_ws_frame(Structure):
@@ -164,6 +155,34 @@ class CURLINFO(c_int):
     LASTONE = 64
 
 
+class CURL(c_void_p):
+    def __del__(self):
+        if self:
+            curl_easy_cleanup(self)
+
+
+class curl_slist(Structure):
+    pass
+
+
+curl_slist._fields_ = [("data", c_char_p), ("next", POINTER(curl_slist))]
+
+
+class auto_curl_slist:
+    def __del__(self):
+        if self.ptr:
+            curl_slist_free_all(self.ptr)
+
+    def __init__(self):
+        self.ptr = None
+        self.tail = None
+
+    def append(self, value: str):
+        self.tail = curl_slist_append(self.tail, value.encode("utf8"))
+        if not self.ptr:
+            self.ptr = self.tail
+
+
 curl_global_init = libcurl.curl_global_init
 curl_global_init.argtypes = (c_long,)
 curl_global_init.restype = CURLcode
@@ -224,19 +243,7 @@ except:
 CURLWS_TEXT = 1 << 0
 CURLWS_BINARY = 1 << 1
 CURLWS_CLOSE = 1 << 3
-WRITEFUNCTION = CFUNCTYPE(c_size_t, c_void_p, c_size_t, c_size_t, c_void_p)
-
-
-class Autoslist(c_void_p):
-    def __del__(self):
-        if self:
-            curl_slist_free_all(self)
-
-
-class AutoCURLHandle(CURL):
-    def __del__(self):
-        if self:
-            curl_easy_cleanup(self)
+WRITEFUNCTION = CFUNCTYPE(c_size_t, POINTER(c_char), c_size_t, c_size_t, c_void_p)
 
 
 class CURLException(RequestException):

@@ -2,8 +2,8 @@ from myutils.utils import (
     createurl,
     common_list_models,
     common_parse_normal_response,
-    markdown_to_html,
 )
+import NativeUtils
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 from translator.gptcommon import createheaders
@@ -54,7 +54,7 @@ class chatgptlike(cishubase):
         return response
 
     def search(self, word):
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"))
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
         query = self._gptlike_createquery(
             word, "use_user_user_prompt", "user_user_prompt"
         )
@@ -62,11 +62,11 @@ class chatgptlike(cishubase):
         apiurl = self.config["API接口地址"]
         if apiurl.startswith("https://generativelanguage.googleapis.com"):
             resp = self.query_gemini(sysprompt, query, extrabody, extraheader)
-        if apiurl.startswith("https://api.anthropic.com/v1/messages"):
+        elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
             resp = self.query_cld(sysprompt, query, extrabody, extraheader)
         else:
             resp = self.search_1(sysprompt, query, extrabody, extraheader)
-        return markdown_to_html(common_parse_normal_response(resp, apiurl))
+        return NativeUtils.Markdown2Html(common_parse_normal_response(resp, apiurl))
 
     def createheaders(self, extra):
         h = createheaders(
@@ -146,9 +146,10 @@ class chatgptlike(cishubase):
         payload.update(extrabody)
         # Send the request
         response = self.proxysession.post(
-            "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent?key={}".format(
-                self.config["model"], self.multiapikeycurrent["SECRET_KEY"]
+            "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent".format(
+                self.config["model"]
             ),
+            params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             headers=extraheader,
             json=payload,
         )

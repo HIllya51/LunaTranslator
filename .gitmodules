@@ -1,18 +1,3 @@
-[submodule "src/plugins/libs/rapidfuzz-cpp"]
-	path = src/cpp/libs/rapidfuzz-cpp
-	url = https://github.com/rapidfuzz/rapidfuzz-cpp
-[submodule "src/plugins/libs/Clipper2"]
-	path = src/cpp/libs/Clipper2
-	url = https://github.com/AngusJohnson/Clipper2
-[submodule "src/plugins/libs/minhook"]
-	path = src/cpp/libs/minhook
-	url = https://github.com/TsudaKageyu/minhook
 [submodule "py/files/LunaTranslator_qss"]
 	path = src/files/LunaTranslator_qss
 	url = https://github.com/HIllya51/LunaTranslator_qss.git
-[submodule "cpp/wcocr/wechat-ocr"]
-	path = src/cpp/wcocr/wechat-ocr
-	url = https://github.com/swigger/wechat-ocr
-[submodule "src/cpp/libs/mecab"]
-	path = src/cpp/libs/mecab
-	url = https://github.com/ikegami-yukino/mecab

@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools
+import functools, json
 from myutils.wrapper import tryprint
 from gui.usefulwidget import (
     getIconButton,
@@ -18,7 +18,7 @@ class typeswitcheditor(QWidget):
         self.t = None
         self.l = QHBoxLayout(self)
         self.l.setContentsMargins(0, 0, 0, 0)
-        self.w: "FocusDoubleSpin|FocusSpin|QLineEdit|MySwitch" = None
+        self.w: "FocusDoubleSpin|FocusSpin|QLineEdit|MySwitch|QPlainTextEdit" = None
 
     def gettype(self):
         return self.t
@@ -39,6 +39,8 @@ class typeswitcheditor(QWidget):
             self.w.setMinimum(-0x7FFFFFFF)
         elif t == "bool":
             self.w = MySwitch()
+        elif t == "other":
+            self.w = QPlainTextEdit()
         else:
             self.w = QLineEdit()
         self.l.addWidget(self.w)
@@ -56,6 +58,8 @@ class typeswitcheditor(QWidget):
             self.w.setValue(v)
         elif self.t == "bool":
             self.w.setChecked(v)
+        elif self.t == "other":
+            self.w.setPlainText(v)
         else:
             self.w.setText(v)
 
@@ -69,6 +73,8 @@ class typeswitcheditor(QWidget):
             return self.w.value()
         elif self.t == "bool":
             return self.w.isChecked()
+        elif self.t == "other":
+            return self.w.toPlainText()
         else:
             return self.w.text()
 
@@ -140,8 +146,7 @@ class customparams(QWidget):
         return collect
 
 
-def getcustombodyheaders(customparams: "list[dict]"):
-
+def getcustombodyheaders(customparams: "list[dict]", **kw):
     extrabody = {}
     extraheader = {}
     for other in customparams if customparams else []:
@@ -171,8 +176,11 @@ def getcustombodyheaders(customparams: "list[dict]"):
                     v = json.loads(v)
                 except:
                     try:
-                        v = eval(v)
+                        v = eval(v, kw)
                     except:
+                        from traceback import print_exc
+
+                        print_exc()
                         continue
             extrabody[k] = v
     return extrabody, extraheader

@@ -209,27 +209,37 @@ bool InsertMajiroHook()
   ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::TextOutA, funcs, FunctionCount, processStartAddress, processStopAddress);
   // ULONG addr = MemDbg::findCallerAddress((ULONG)::TextOutA, 0x83ec8b55, processStartAddress, processStopAddress);
   if (!addr)
-  {
-    ConsoleOutput("Majiro: failed");
     return false;
-  }
 
   bool newMajiro = 0x55 == *(BYTE *)addr;
-
+  BYTE checknew[] = {
+      0x8D, 0x04, 0x8D, 0x00, 0x00, 0x00, 0x00,
+      0x8B, 0x4D, 0x08,
+      0x89, 0x45, XX,
+      0x89, 0x4d, XX,
+      0x38, 0x19,
+      0x0f, 0x84, XX4};
+  auto isverynew = newMajiro && MemDbg::findBytes(checknew, sizeof(checknew), addr, addr + 0x300);
   HookParam hp;
-  // hp.type|=USING_STRING|USING_SPLIT|SPLIT_INDIRECT;
   hp.address = addr;
+  if (isverynew)
+  {
+    // https://vndb.org/r128573
+    // みずいろリメイク
+    hp.offset = stackoffset(1);
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+    hp.embed_hook_font = F_TextOutA;
+    return NewHook(hp, "Majiro2Ex");
+  }
   hp.text_fun = SpecialHookMajiro;
   hp.user_value = newMajiro;
   if (newMajiro)
   {
     hp.type = NO_CONTEXT; // do not use return address for new majiro
-    ConsoleOutput("INSERT Majiro2");
     return NewHook(hp, "Majiro2");
   }
   else
   {
-    ConsoleOutput("INSERT Majiro");
     return NewHook(hp, "Majiro");
   }
   // RegisterEngineType(ENGINE_MAJIRO);
@@ -285,7 +295,6 @@ bool InsertMajiro2Hookx()
   hp.address = addr;
   hp.offset = stackoffset(2);
   hp.type = USING_STRING;
-  ConsoleOutput("INSERT majiro4 %p", addr);
   return NewHook(hp, "majiro4");
 }
 bool InsertMajiro3Hook()
@@ -307,20 +316,14 @@ bool InsertMajiro3Hook()
       0x8D, 0x95, XX4   // lea edx,[ebp-00000404]
   };
 
-  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
-  {
-    ConsoleOutput("Majiro3: pattern not found");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(esi);
   hp.type = USING_STRING;
-  ConsoleOutput("INSERT Majiro3");
-  ConsoleOutput("Majiro3: To separate the text between lines flag the \"Flush delay string spacing\" option");
   return NewHook(hp, "Majiro3");
 }
 bool Majiro::attach_function()

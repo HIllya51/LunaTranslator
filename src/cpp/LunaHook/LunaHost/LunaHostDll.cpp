@@ -18,7 +18,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 typedef void (*ProcessEvent)(DWORD pid);
 typedef void (*ThreadEvent_maybe_embed)(const wchar_t *hookcode, const char *hookname, ThreadParam, bool isembedable);
 typedef void (*ThreadEvent)(const wchar_t *hookcode, const char *hookname, ThreadParam);
-typedef bool (*OutputCallback)(const wchar_t *hookcode, const char *hookname, ThreadParam, const wchar_t *text);
+typedef void (*OutputCallback)(const wchar_t *hookcode, const char *hookname, ThreadParam, const wchar_t *text);
 typedef void (*HostInfoHandler)(HOSTINFO type, const wchar_t *log);
 typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t *hookcode);
 typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
@@ -33,7 +33,7 @@ std::optional<T> checkoption(bool check, T &&t)
 
 C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed)
 {
-    Host::StartEx(
+    Host::Start(
         checkoption(Connect, std::function<void(DWORD)>(Connect)),
         checkoption(Disconnect, std::function<void(DWORD)>(Disconnect)),
         checkoption(Create, [=](const TextThread &thread)
@@ -41,8 +41,7 @@ C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, Thread
         checkoption(Destroy, [=](const TextThread &thread)
                     { Destroy(thread.hp.hookcode, thread.hp.name, thread.tp); }),
         checkoption(Output, [=](const TextThread &thread, std::wstring &output)
-                    { return Output(thread.hp.hookcode, thread.hp.name, thread.tp, output.c_str()); }),
-        false,
+                    { Output(thread.hp.hookcode, thread.hp.name, thread.tp, output.c_str()); }),
         checkoption(hostinfo, [=](HOSTINFO type, const std::wstring &output)
                     { hostinfo(type, output.c_str()); }),
         checkoption(hookinsert, [=](DWORD pid, uint64_t addr, const std::wstring &hookcode)
@@ -51,16 +50,20 @@ C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, Thread
                     { embed(output.c_str(), tp); }));
 }
 #if 0
-C_LUNA_API void Luna_Inject(DWORD pid, LPCWSTR basepath)
+C_LUNA_API void Luna_ConnectAndInjectProcess(DWORD pid)
 {
-    Host::InjectProcess(pid, basepath);
+    Host::ConnectAndInjectProcess(pid);
 }
 #endif
-C_LUNA_API bool Luna_CreatePipeAndCheck(DWORD pid)
+C_LUNA_API bool Luna_CheckIfNeedInject(DWORD pid)
 {
-    return Host::CreatePipeAndCheck(pid);
+    return Host::CheckIfNeedInject(pid);
 }
-C_LUNA_API void Luna_Detach(DWORD pid)
+C_LUNA_API void Luna_ConnectProcess(DWORD pid)
+{
+    Host::ConnectProcess(pid);
+}
+C_LUNA_API void Luna_DetachProcess(DWORD pid)
 {
     Host::DetachProcess(pid);
 }
@@ -120,11 +123,11 @@ C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet
     sm->fastskipignore = fastskipignore;
     sm->clearText = clearText;
 }
-C_LUNA_API bool Luna_checkisusingembed(ThreadParam tp)
+C_LUNA_API bool Luna_CheckIsUsingEmbed(ThreadParam tp)
 {
     return Host::CheckIsUsingEmbed(tp);
 }
-C_LUNA_API void Luna_useembed(ThreadParam tp, bool use)
+C_LUNA_API void Luna_UseEmbed(ThreadParam tp, bool use)
 {
     auto sm = Host::GetCommonSharedMem(tp.processId);
     if (!sm)
@@ -148,7 +151,7 @@ C_LUNA_API void Luna_useembed(ThreadParam tp, bool use)
         }
 }
 
-C_LUNA_API void Luna_embedcallback(ThreadParam tp, LPCWSTR text, LPCWSTR trans)
+C_LUNA_API void Luna_EmbedCallback(ThreadParam tp, LPCWSTR text, LPCWSTR trans)
 {
     auto sm = Host::GetCommonSharedMem(tp.processId);
     if (!sm)

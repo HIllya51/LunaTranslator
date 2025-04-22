@@ -26,10 +26,5 @@ bool add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type = VEH_HK_
 std::vector<void *> add_veh_hook(std::vector<void *> origFuncs, std::vector<newFuncType> newFuncs, DWORD hook_type = VEH_HK_INT3);
 bool remove_veh_hook(void *origFunc);
 
-// The VEH dispathing function is called by Windows every time an exception is encountered.
-// the function dispatches calls to the correct inctercept function.
-LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo);
-
-// Functions used internally by the library.
 
 #endif // LIST_T_H_INCLUDED

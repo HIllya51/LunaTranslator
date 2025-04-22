@@ -392,13 +392,13 @@
         500,
         500
     ],
-    "codepage_index": 0,
+    "codepage_value": 932,
     "currvislistuid": null,
     "multiregion": false,
     "ocrregions": [],
-    "ocr_stable_sim": 0,
-    "ocr_stable_sim2": 0,
-    "ocr_diff_sim": 0.95,
+    "ocr_stable_sim_v2": 0.5,
+    "ocr_stable_sim2_v2": 0.95,
+    "ocr_diff_sim_v2": 0.95,
     "ocr_text_diff": 3,
     "autorun": true,
     "fontsize": 17.0,
@@ -557,7 +557,7 @@
                 "align": 2
             },
             "automodebutton": {
-                "use": true,
+                "use": false,
                 "tip": "自动翻译",
                 "icon": "fa.forward",
                 "icon2": "fa.play",
@@ -792,7 +792,7 @@
             },
             "selectable": {
                 "use": false,
-                "tip": "可选取的",
+                "tip": "可选取的_&_可编辑的",
                 "icon": "fa.i-cursor",
                 "align": 0
             },
@@ -1149,7 +1149,7 @@
         },
         "voiceroid2": {
             "use": false,
-            "name": "VoiceRoid2/VoiceRoid+",
+            "name": "VoiceRoid2",
             "type": "offline",
             "args": {
                 "path": ""
@@ -1493,6 +1493,7 @@
     },
     "verticalocr": 2,
     "ocrmergelines": true,
+    "ocrmergelines_distance": 0.4,
     "ocr": {
         "local": {
             "use": true,
@@ -1875,22 +1876,16 @@
             "name": "实时编辑"
         }
     },
-    "ZoomFactor": 1,
-    "ZoomFactor2": 1,
     "realtime_edit_target": "realtime_edit",
     "movefollow": false,
     "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,
-    "maxlength": 1000,
+    "maxlength": 10000,
     "srclang4": "auto",
     "tgtlang4": "zh",
-    "transkiroku": false,
-    "transkirokuuse": "baidu",
     "showatcenter": true,
-    "image_analyse": true,
-    "time_period": false,
-    "ocr_auto_method": 0,
+    "ocr_auto_method_v2": "analysis",
     "ocr_interval": 5,
     "ocr_trigger_delay": 0,
     "ocr_trigger_events": [
@@ -1915,8 +1910,6 @@
             "event": 1
         }
     ],
-    "mustocr_interval": 5,
-    "ocrmininterval": 1,
     "selectable": true,
     "selectableEx": false,
     "autoupdate": true,

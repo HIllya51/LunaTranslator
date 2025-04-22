@@ -52,15 +52,15 @@ def overridepathexists():
 
 def prepareqtenv():
     import windows
-    from myutils.config import get_platform
+    from myutils.config import is_xp
 
     # win7 no vcredist2015
-    windows.addenvpath("./files/runtime/")
-    if get_platform() != "xp":
-        windows.LoadLibraryW("./files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
+    windows.addenvpath("files/runtime/")
+    if not is_xp:
+        windows.LoadLibrary("files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
     else:
-        windows.addenvpath("./files/runtime/Lib/site-packages/PyQt5")
-        windows.LoadLibraryW("./files/runtime/Lib/site-packages/PyQt5/Qt5Core.dll")
+        windows.addenvpath("files/runtime/Lib/site-packages/PyQt5")
+        windows.LoadLibrary("files/runtime/Lib/site-packages/PyQt5/Qt5Core.dll")
 
     from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 
@@ -68,17 +68,17 @@ def prepareqtenv():
 
     if isqt5:
         # 中文字符下不能自动加载
-        if get_platform() != "xp":
-            plgs = "./files/runtime/PyQt5/Qt5/plugins"
+        if not is_xp:
+            plgs = "files/runtime/PyQt5/Qt5/plugins"
         else:
-            plgs = "./files/runtime/Lib/site-packages/PyQt5/plugins"
+            plgs = "files/runtime/Lib/site-packages/PyQt5/plugins"
 
         if os.path.exists(plgs):
             QApplication.addLibraryPath(plgs)
-        if get_platform() != "xp":
+        if not is_xp:
             QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
-    if get_platform() != "xp":
+    if not is_xp:
         QApplication.setHighDpiScaleFactorRoundingPolicy(
             Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
         )
@@ -155,19 +155,43 @@ def checklang():
 
 
 def checkintegrity():
-    from myutils.config import _TR, static_data, get_platform
+    from myutils.config import _TR
     from qtsymbols import QMessageBox
+    from myutils.config import is_xp
+    import platform, gobject
 
-    js = static_data["checkintegrity"]
-    flist = js["shared"]
-    plat = get_platform()
-    if plat == "xp":
-        flist = js["xp"]
-    else:
-        flist += js[plat]
+    dll3264 = [
+        "NativeUtils.dll",
+        "OrtWrapper.dll",
+        "onnxruntime.dll" if not is_xp else None,
+        "CVUtils.dll",
+        "bass.dll",
+        "bass_spx.dll",
+        "bass_aac.dll",
+    ]
+
+    isbit64 = platform.architecture()[0] == "64bit"
+    dll3264.append(("libcurl.dll", "libcurl-x64.dll")[isbit64])
+
+    flist = []
+    for f in dll3264:
+        if f:
+            flist.append(gobject.GetDllpath(f))
+
+    dllshared = [
+        "LunaHook/" + ("LunaHost32.dll", "LunaHost64.dll")[isbit64],
+        "shareddllproxy32.exe",
+        "shareddllproxy64.exe",
+        "Magpie/Magpie.Core.exe" if not is_xp else None,
+        "LunaHook/LunaHook32.dll",
+        "LunaHook/LunaHook64.dll",
+    ]
+    for f in dllshared:
+        if f:
+            flist.append("files/plugins/" + f)
     collect = []
     for f in flist:
-        if os.path.exists(f) == False:
+        if not os.path.exists(f):
             collect.append(os.path.normpath(os.path.abspath(f)))
     if len(collect):
         QMessageBox.critical(
@@ -183,22 +207,15 @@ def checkintegrity():
 def switchdir():
     dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(dirname)
-    sys.path.insert(1, "./")
-    sys.path.insert(1, "./userconfig")
+    sys.path.insert(1, ".")
+    sys.path.insert(1, "userconfig")
     # 0 是当前目录
     # 后面的是系统库或runtime
     # 由于自动更新不会删除，runtime下可能有历史遗留的同名文件被优先导入
-    import shutil
-
-    # 远古版本的遗留文件，同名导入冲突
-    try:
-        shutil.rmtree("./LunaTranslator/requests")
-    except:
-        pass
 
 
 def urlprotocol():
-    import argparse, gobject, sys
+    import argparse, gobject
     from urllib.parse import urlsplit
     from traceback import print_exc
 

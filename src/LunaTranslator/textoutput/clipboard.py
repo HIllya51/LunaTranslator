@@ -1,6 +1,6 @@
 from textoutput.outputerbase import Base
 from myutils.config import globalconfig
-import winsharedutils
+import NativeUtils
 
 
 class Outputer(Base):
@@ -15,4 +15,4 @@ class Outputer(Base):
         ):
             return
 
-        winsharedutils.clipboard_set(text)
+        NativeUtils.ClipBoard.text = text

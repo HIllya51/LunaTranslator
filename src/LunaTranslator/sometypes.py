@@ -25,8 +25,10 @@ class WordSegResult:
         isdeli=False,
         wordclass: str = None,
         prototype: str = None,
+        donthighlight=False,
         **_
     ):
+        self.donthighlight = donthighlight
         self.word = word
         self.kana = kana
         self.isdeli = isdeli

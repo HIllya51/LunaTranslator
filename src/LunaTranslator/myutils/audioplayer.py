@@ -15,7 +15,6 @@ from ctypes import (
     POINTER,
     c_void_p,
     create_string_buffer,
-    cast,
     c_wchar_p,
     c_char,
 )
@@ -118,15 +117,15 @@ for _ in plugins:
 
 
 def ENCODEPROCEXF(ret: list, _, _1, buffer, size, _2, _3):
-    ret.append(cast(buffer, POINTER(c_char))[:size])
+    ret.append(buffer[:size])
 
 
 def ENCODEPROCF(ret: list, _, _1, buffer, size, _2):
-    ret.append(cast(buffer, POINTER(c_char))[:size])
+    ret.append(buffer[:size])
 
 
-ENCODEPROC = WINFUNCTYPE(None, HENCODE, DWORD, c_void_p, DWORD, c_void_p)
-ENCODEPROCEX = WINFUNCTYPE(None, HENCODE, DWORD, c_void_p, DWORD, QWORD, c_void_p)
+ENCODEPROC = WINFUNCTYPE(None, HENCODE, DWORD, POINTER(c_char), DWORD, c_void_p)
+ENCODEPROCEX = WINFUNCTYPE(None, HENCODE, DWORD, POINTER(c_char), DWORD, QWORD, c_void_p)
 encoders = {
     "mp3": [
         "bassenc_mp3.dll",

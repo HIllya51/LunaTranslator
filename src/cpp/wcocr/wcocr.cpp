@@ -22,7 +22,7 @@ DECLARE_API void wcocr_destroy(CWeChatOCR *pobj)
         return;
     delete pobj;
 }
-DECLARE_API bool wcocr_ocr(CWeChatOCR *pobj, const char *u8path, void (*cb)(int, int, int, int, LPCSTR))
+DECLARE_API bool wcocr_ocr(CWeChatOCR *pobj, const char *u8path, void (*cb)(float, float, float, float, LPCSTR))
 {
     if (!pobj)
         return false;

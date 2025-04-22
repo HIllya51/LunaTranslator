@@ -87,7 +87,7 @@ class _OCRBlockS:
 
         return [x_min, y_min, x_max, y_max]
 
-    def asblock(self, vertical, space):
+    def asblock(self, vertical, space: str):
         texts = _sort_text_lines(
             list(_.box4 for _ in self.blocks),
             list(_.text for _ in self.blocks),
@@ -97,7 +97,7 @@ class _OCRBlockS:
         box0 = self.blocks[0].box4
         for i in range(1, len(self.blocks)):
             box0 = self.four_point_box_union(box0, self.blocks[i].box4)
-        return OCRBlock(text="".join(texts), box=box0)
+        return OCRBlock(text=space.join(texts), box=box0)
 
 
 class OCRBlock:
@@ -245,7 +245,9 @@ class OCRResult:
             box1 = blocksX[i]
             for j in range(i + 1, len(blocksX)):
                 box2 = blocksX[j]
-                if box1.distance(box2) <= 0.4 * min(box1.whmin, box2.whmin):
+                if box1.distance(box2) <= globalconfig["ocrmergelines_distance"] * min(
+                    box1.whmin, box2.whmin
+                ):
                     return i, j
 
 

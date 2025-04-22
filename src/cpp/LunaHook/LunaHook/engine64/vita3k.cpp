@@ -1036,6 +1036,13 @@ namespace
         ws = re::sub(ws, LR"(<(.*?)>(.*?)|)", L"$2");
         buffer->fromWA(ws);
     }
+    void PCSG00780(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strAW();
+        strReplace(ws, L"^");
+        ws = re::sub(ws, LR"(<(.*?),(.*?)>)", L"$1");
+        buffer->fromWA(ws);
+    }
     void PCSG01151(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = buffer->strAW();
@@ -1518,6 +1525,8 @@ namespace
             // SA7 -Silent Ability Seven-
             {0x800291B2, {CODEC_UTF16, 2, 0, 0, PCSG00367, "PCSG00640"}},
             {0x80045C48, {CODEC_UTF16, 1, 0, 0, PCSG00367, "PCSG00640"}},
+            // 赤い砂堕ちる月
+            {0x8006DF02, {0, 1, 0, 0, PCSG00780, "PCSG00780"}},
         };
         return 1;
     }();

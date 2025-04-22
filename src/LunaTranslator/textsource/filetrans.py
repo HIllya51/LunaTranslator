@@ -1,6 +1,6 @@
 from textsource.textsourcebase import basetext
 from myutils.wrapper import threader
-import json, time, os, gobject, winsharedutils
+import json, time, os, gobject, NativeUtils
 from myutils.config import globalconfig
 
 
@@ -32,7 +32,7 @@ class parsejson:
             if not (isinstance(k, str) and (self.data[k], str)):
                 yield None
                 continue
-            if self.data[k] and winsharedutils.similarity(self.data[k], k) < 0.2:
+            if self.data[k] and NativeUtils.similarity(self.data[k], k) < 0.2:
                 yield None
                 continue
             yield k

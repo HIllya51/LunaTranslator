@@ -3,7 +3,7 @@ import re, os
 import time, gobject, windows
 from qtsymbols import *
 import zhconv, functools
-from winsharedutils import Is64bit
+from NativeUtils import Is64bit
 from myutils.config import (
     globalconfig,
     savehook_new_data,
@@ -29,7 +29,6 @@ from ctypes import (
     c_uint64,
     c_int64,
     c_void_p,
-    cast,
     c_wchar,
     c_uint32,
     c_uint8,
@@ -37,43 +36,6 @@ from ctypes import (
     c_char,
 )
 from ctypes.wintypes import DWORD, LPCWSTR
-
-codepage_real = [
-    932,
-    65001,
-    936,
-    950,
-    949,
-    1258,
-    874,
-    1256,
-    1255,
-    1254,
-    1253,
-    1257,
-    1250,
-    1251,
-    1252,
-    437,
-]
-codepage_display = [
-    "日语_(CP932,SHIFT-JIS)",
-    "UTF8_(CP65001)",
-    "简体中文_(CP936,GBK)",
-    "繁体中文_(CP950,BIG5)",
-    "韩语_(CP949,EUC-KR)",
-    "越南语_(CP1258)",
-    "泰语_(CP874)",
-    "阿拉伯语_(CP1256)",
-    "希伯来语_(CP1255)",
-    "土耳其语_(CP1254)",
-    "希腊语_(CP1253)",
-    "北欧_(CP1257)",
-    "中东欧_(CP1250)",
-    "西里尔_(CP1251)",
-    "拉丁_(CP1252)",
-    "英语_(CP437)",
-]
 
 
 class ThreadParam(Structure):
@@ -116,11 +78,11 @@ class SearchParam(Structure):
     ]
 
 
-findhookcallback_t = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
+FindHooksCallback_t = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
 ProcessEvent = CFUNCTYPE(None, DWORD)
-ThreadEvent_maybe_embed = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_bool)
+ThreadEvent_maybeEmbed = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_bool)
 ThreadEvent = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam)
-OutputCallback = CFUNCTYPE(c_bool, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
+OutputCallback = CFUNCTYPE(None, c_wchar_p, c_char_p, ThreadParam, c_wchar_p)
 HostInfoHandler = CFUNCTYPE(None, c_int, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, DWORD, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
@@ -209,32 +171,34 @@ class texthook(basetext):
         self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int, c_int
         self.Luna_Start = LunaHost.Luna_Start
         self.Luna_Start.argtypes = (
-            c_void_p,
-            c_void_p,
-            c_void_p,
-            c_void_p,
-            c_void_p,
-            c_void_p,
-            c_void_p,
-            c_void_p,
+            ProcessEvent,
+            ProcessEvent,
+            ThreadEvent_maybeEmbed,
+            ThreadEvent,
+            OutputCallback,
+            HostInfoHandler,
+            HookInsertHandler,
+            EmbedCallback,
         )
-        self.Luna_CreatePipeAndCheck = LunaHost.Luna_CreatePipeAndCheck
-        self.Luna_CreatePipeAndCheck.argtypes = (DWORD,)
-        self.Luna_CreatePipeAndCheck.restype = c_bool
+        self.Luna_ConnectProcess = LunaHost.Luna_ConnectProcess
+        self.Luna_ConnectProcess.argtypes = (DWORD,)
+        self.Luna_CheckIfNeedInject = LunaHost.Luna_CheckIfNeedInject
+        self.Luna_CheckIfNeedInject.argtypes = (DWORD,)
+        self.Luna_CheckIfNeedInject.restype = c_bool
         self.Luna_InsertHookCode = LunaHost.Luna_InsertHookCode
         self.Luna_InsertHookCode.argtypes = DWORD, LPCWSTR
         self.Luna_InsertHookCode.restype = c_bool
         self.Luna_RemoveHook = LunaHost.Luna_RemoveHook
         self.Luna_RemoveHook.argtypes = DWORD, c_uint64
-        self.Luna_Detach = LunaHost.Luna_Detach
-        self.Luna_Detach.argtypes = (DWORD,)
+        self.Luna_DetachProcess = LunaHost.Luna_DetachProcess
+        self.Luna_DetachProcess.argtypes = (DWORD,)
         self.Luna_SetLanguage = LunaHost.Luna_SetLanguage
         self.Luna_SetLanguage.argtypes = (c_char_p,)
         self.Luna_FindHooks = LunaHost.Luna_FindHooks
         self.Luna_FindHooks.argtypes = (
             DWORD,
             SearchParam,
-            c_void_p,
+            FindHooksCallback_t,
             c_wchar_p,
         )
         self.Luna_EmbedSettings = LunaHost.Luna_EmbedSettings
@@ -248,20 +212,20 @@ class texthook(basetext):
             c_bool,
             c_bool,
         )
-        self.Luna_checkisusingembed = LunaHost.Luna_checkisusingembed
-        self.Luna_checkisusingembed.argtypes = (ThreadParam,)
-        self.Luna_checkisusingembed.restype = c_bool
-        self.Luna_useembed = LunaHost.Luna_useembed
-        self.Luna_useembed.argtypes = ThreadParam, c_bool
-        self.Luna_embedcallback = LunaHost.Luna_embedcallback
-        self.Luna_embedcallback.argtypes = ThreadParam, LPCWSTR, LPCWSTR
+        self.Luna_CheckIsUsingEmbed = LunaHost.Luna_CheckIsUsingEmbed
+        self.Luna_CheckIsUsingEmbed.argtypes = (ThreadParam,)
+        self.Luna_CheckIsUsingEmbed.restype = c_bool
+        self.Luna_UseEmbed = LunaHost.Luna_UseEmbed
+        self.Luna_UseEmbed.argtypes = ThreadParam, c_bool
+        self.Luna_EmbedCallback = LunaHost.Luna_EmbedCallback
+        self.Luna_EmbedCallback.argtypes = ThreadParam, LPCWSTR, LPCWSTR
 
         self.Luna_QueryThreadHistory = LunaHost.Luna_QueryThreadHistory
         self.Luna_QueryThreadHistory.argtypes = (ThreadParam, c_bool, c_void_p)
         procs = [
             ProcessEvent(self.onprocconnect),
             ProcessEvent(self.removeproc),
-            ThreadEvent_maybe_embed(self.onnewhook),
+            ThreadEvent_maybeEmbed(self.onnewhook),
             ThreadEvent(self.onremovehook),
             OutputCallback(self.handle_output),
             HostInfoHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
@@ -269,26 +233,22 @@ class texthook(basetext):
             EmbedCallback(self.getembedtext),
         ]
         self.keepref += procs
-        ptrs = [cast(_, c_void_p).value for _ in procs]
-        self.Luna_Start(*ptrs)
+        self.Luna_Start(*procs)
         self.setsettings()
         self.setlang()
 
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
         arch = "64" if self.is64bit else "32"
-        exe = os.path.abspath("./files/plugins/shareddllproxy{}.exe".format(arch))
+        exe = os.path.abspath("files/plugins/shareddllproxy{}.exe".format(arch))
         pid = " ".join([str(_) for _ in self.pids])
         subprocess.run('"{}"  listpm "{}" {}'.format(exe, cachefname, pid))
 
         with open(cachefname, "r", encoding="utf-16-le") as ff:
             readf = ff.read()
-
         os.remove(cachefname)
-        _list = readf.split("\n")[:-1]
-        if len(_list) == 0:
-            return []
-
+        _list = readf.split("\n")
+        print("\n".join(sorted(_list)))
         ret = []
         hasprogram = "c:\\program files" in _list[0].lower()
         for name_ in _list:
@@ -404,13 +364,12 @@ class texthook(basetext):
     def start_unsafe(self, pids):
         injectpids = []
         for pid in pids:
-            if self.Luna_CreatePipeAndCheck(pid):
+            self.Luna_ConnectProcess(pid)
+            if self.Luna_CheckIfNeedInject(pid):
                 injectpids.append(pid)
         if len(injectpids):
             arch = ["32", "64"][self.is64bit]
-            dll = os.path.abspath(
-                "./files/plugins/LunaHook/LunaHook{}.dll".format(arch)
-            )
+            dll = os.path.abspath("files/plugins/LunaHook/LunaHook{}.dll".format(arch))
             injectdll(injectpids, arch, dll)
 
     @threader
@@ -437,8 +396,7 @@ class texthook(basetext):
         # 如果有进程一闪而逝，没来的及注入，导致无法自动重连
         self.maybepids.append(pid)
         windows.WaitForSingleObject(
-            windows.AutoHandle(windows.OpenProcess(windows.SYNCHRONIZE, False, pid)),
-            windows.INFINITE,
+            windows.OpenProcess(windows.SYNCHRONIZE, False, pid)
         )
         with self.maybepidslock:
             if len(self.pids) == 0 and len(self.maybepids):
@@ -479,7 +437,7 @@ class texthook(basetext):
                 tp.addr = addr
                 tp.ctx = _ctx1
                 tp.ctx2 = _ctx2
-                self.Luna_useembed(tp, True)
+                self.Luna_UseEmbed(tp, True)
 
     def safeembedcheck(self, text):
         try:
@@ -515,7 +473,7 @@ class texthook(basetext):
 
     def embedcallback(self, text: str, trans: str, tp: ThreadParam):
         trans = self.splitembedlines(trans)
-        self.Luna_embedcallback(tp, text, trans)
+        self.Luna_EmbedCallback(tp, text, trans)
 
     def splitembedlines(self, trans: str):
         if len(trans) and self.embedconfig["limittextlength_use"]:
@@ -610,12 +568,7 @@ class texthook(basetext):
         )
 
     def codepage(self):
-        try:
-            cpi = self.config["codepage_index"]
-            cp = codepage_real[cpi]
-        except:
-            cp = 932
-        return cp
+        return self.config.get("codepage_value", 932)
 
     def defaultsp(self):
         usestruct = SearchParam()
@@ -642,22 +595,20 @@ class texthook(basetext):
 
     @threader
     def findhook(self, usestruct, addresses):
-        savefound = {}
+        savefound: "dict[str, list]" = {}
         pids = self.pids.copy()
         cntref = []
 
-        def __callback(cntref, hcode, text):
+        def __callback(cntref: list, hcode, text):
             if hcode not in savefound:
                 savefound[hcode] = []
             savefound[hcode].append(text)
             cntref.append(0)
 
-        _callback = findhookcallback_t(functools.partial(__callback, cntref))
+        _callback = FindHooksCallback_t(functools.partial(__callback, cntref))
         self.keepref.append(_callback)
         for pid in pids:
-            self.Luna_FindHooks(
-                pid, usestruct, cast(_callback, c_void_p).value, addresses
-            )
+            self.Luna_FindHooks(pid, usestruct, _callback, addresses)
 
         while True:
             lastsize = len(cntref)
@@ -715,8 +666,6 @@ class texthook(basetext):
 
         gobject.baseobject.hookselectdialog.update_item_new_line.emit(key, output)
 
-        return True
-
     def serialkey(self, key):
         hc, hn, tp = key
         return (tp.processId, tp.addr, tp.ctx, tp.ctx2, hn, hc)
@@ -749,4 +698,4 @@ class texthook(basetext):
 
     def detachall(self):
         for pid in self.pids.copy():
-            self.Luna_Detach(pid)
+            self.Luna_DetachProcess(pid)

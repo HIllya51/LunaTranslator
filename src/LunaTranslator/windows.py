@@ -15,6 +15,7 @@ from ctypes import (
     create_string_buffer,
     Structure,
     sizeof,
+    c_char,
     byref,
     cast,
 )
@@ -94,7 +95,6 @@ SW_SHOWNORMAL = 1
 WS_EX_TOOLWINDOW = 128
 SWP_NOSIZE = 1
 SW_SHOW = 5
-NMPWAIT_WAIT_FOREVER = -1
 
 FILE_SHARE_READ = 0x00000001
 FILE_ATTRIBUTE_NORMAL = 0x80
@@ -176,6 +176,21 @@ _kernel32 = windll.Kernel32
 _psapi = windll.Psapi
 _Advapi32 = windll.Advapi32
 
+CloseHandle = _kernel32.CloseHandle
+CloseHandle.argtypes = (HANDLE,)
+CloseHandle.restype = BOOL
+
+
+class AutoHandle(HANDLE):
+
+    def __del__(self):
+        if self:
+            CloseHandle(self)
+
+    def __bool__(self):
+        return (self.value != INVALID_HANDLE_VALUE) and (self.value != None)
+
+
 _GetWindowRect = _user32.GetWindowRect
 _GetWindowRect.argtypes = HWND, POINTER(RECT)
 GetForegroundWindow = _user32.GetForegroundWindow
@@ -234,9 +249,7 @@ _ShellExecuteW = _shell32.ShellExecuteW
 _ShellExecuteW.argtypes = c_void_p, c_wchar_p, c_wchar_p, c_wchar_p, c_wchar_p, c_int
 _OpenProcess = _kernel32.OpenProcess
 _OpenProcess.argtypes = c_uint, c_bool, c_uint
-CloseHandle = _kernel32.CloseHandle
-CloseHandle.argtypes = (HANDLE,)
-CloseHandle.restype = BOOL
+_OpenProcess.restype = AutoHandle
 _SendMessage = _user32.SendMessageW
 _SendMessage.argtypes = HWND, UINT, c_void_p, c_void_p
 _keybd_event = _user32.keybd_event
@@ -340,17 +353,17 @@ def check_unc_file(v: str):
 
 _CreateFileW = _kernel32.CreateFileW
 _CreateFileW.argtypes = (LPCWSTR, DWORD, DWORD, LPCVOID, DWORD, DWORD, HANDLE)
-_CreateFileW.restype = HANDLE
+_CreateFileW.restype = AutoHandle
 
 
 def CreateFile(
     fileName,
-    desiredAccess,
-    shareMode,
-    attributes,
-    CreationDisposition,
-    flagsAndAttributes,
-    hTemplateFile,
+    desiredAccess=GENERIC_READ | GENERIC_WRITE,
+    shareMode=0,
+    attributes=None,
+    CreationDisposition=OPEN_EXISTING,
+    flagsAndAttributes=FILE_ATTRIBUTE_NORMAL,
+    hTemplateFile=None,
 ):
     return _CreateFileW(
         fileName,
@@ -371,30 +384,15 @@ except:
     GetFinalPathNameByHandleW = None
 
 
-class AutoHandle(HANDLE):
-    def __new__(cls, value) -> None:
-        instance = super().__new__(cls, value)
-        return instance
-
-    def __del__(self):
-        if self:
-            CloseHandle(self)
-
-    def __bool__(self):
-        return (self.value != INVALID_HANDLE_VALUE) and (self.value != None)
-
-
 def parseuncex(v: str, t) -> str:
-    hFile = AutoHandle(
-        CreateFile(
-            v,
-            GENERIC_READ,
-            FILE_SHARE_READ,
-            None,
-            OPEN_EXISTING,
-            FILE_ATTRIBUTE_NORMAL,
-            None,
-        )
+    hFile = CreateFile(
+        v,
+        GENERIC_READ,
+        FILE_SHARE_READ,
+        None,
+        OPEN_EXISTING,
+        FILE_ATTRIBUTE_NORMAL,
+        None,
     )
     if not GetFinalPathNameByHandleW:
         return
@@ -553,33 +551,20 @@ def keybd_event(bVk, bScan, dwFlags, _):
     _keybd_event(bVk, bScan, dwFlags, _)
 
 
-WaitForSingleObject = _kernel32.WaitForSingleObject
-WaitForSingleObject.argtypes = HANDLE, DWORD
-WaitForSingleObject.restype = DWORD
-
+_WaitForSingleObject = _kernel32.WaitForSingleObject
+_WaitForSingleObject.argtypes = HANDLE, DWORD
+_WaitForSingleObject.restype = DWORD
 
 INFINITE = -1
+
+
+def WaitForSingleObject(obj, _=INFINITE):
+    return _WaitForSingleObject(obj, _)
+
 
 SetEvent = _kernel32.SetEvent
 SetEvent.argtypes = (HANDLE,)
 SetEvent.restype = BOOL
-
-
-_CreateEventW = _kernel32.CreateEventW
-_CreateEventW.argtypes = c_void_p, c_bool, c_bool, c_wchar_p
-
-
-def CreateEvent(bManualReset, bInitialState, lpName, psecu=None):
-    return _CreateEventW(psecu, bManualReset, bInitialState, lpName)
-
-
-_CreateMutexW = _kernel32.CreateMutexW
-_CreateMutexW.argtypes = c_void_p, BOOL, LPCWSTR
-
-
-def CreateMutex(bInitialOwner, lpName, psecu=None):
-    return _CreateMutexW(psecu, bInitialOwner, lpName)
-
 
 GetLastError = _kernel32.GetLastError
 GetLastError.restype = DWORD
@@ -616,9 +601,13 @@ def WriteFile(handle, _bytes):
     return _WriteFile(handle, c_char_p(_bytes), len(_bytes), pointer(dwread), None)
 
 
-WaitNamedPipe = _kernel32.WaitNamedPipeW
-WaitNamedPipe.argtypes = LPCWSTR, DWORD
-WaitNamedPipe.restype = BOOL
+_WaitNamedPipe = _kernel32.WaitNamedPipeW
+_WaitNamedPipe.argtypes = LPCWSTR, DWORD
+_WaitNamedPipe.restype = BOOL
+
+
+def WaitNamedPipe(pipename, _=NMPWAIT_WAIT_FOREVER):
+    return _WaitNamedPipe(pipename, _)
 
 
 # _TerminateProcess=_kernel32.TerminateProcess
@@ -722,9 +711,14 @@ def addenvpath(path):
     _SetEnvironmentVariableW("PATH", env.value + ";" + path)
 
 
-LoadLibraryW = _kernel32.LoadLibraryW
-LoadLibraryW.argtypes = (LPCWSTR,)
+GetModuleHandle = _kernel32.GetModuleHandleW
+GetModuleHandle.argtypes = (LPCWSTR,)
+GetModuleHandle.restype = HMODULE
 
+
+LoadLibrary = _kernel32.LoadLibraryW
+LoadLibrary.argtypes = (LPCWSTR,)
+LoadLibrary.restype = HMODULE
 
 SECTION_MAP_WRITE = 0x0002
 SECTION_MAP_READ = 0x0004
@@ -732,19 +726,25 @@ FILE_MAP_WRITE = SECTION_MAP_WRITE
 FILE_MAP_READ = SECTION_MAP_READ
 _OpenFileMapping = _kernel32.OpenFileMappingW
 _OpenFileMapping.argtypes = DWORD, BOOL, LPCWSTR
-_OpenFileMapping.restype = HANDLE
+_OpenFileMapping.restype = AutoHandle
 
 
-def OpenFileMapping(acc, inher, name):
+def OpenFileMapping(name, acc=FILE_MAP_READ | FILE_MAP_WRITE, inher=False):
     return _OpenFileMapping(acc, inher, name)
 
 
 _MapViewOfFile = _kernel32.MapViewOfFile
 _MapViewOfFile.argtypes = HANDLE, DWORD, DWORD, DWORD, c_size_t
-_MapViewOfFile.restype = c_void_p
+_MapViewOfFile.restype = POINTER(c_char)
 
 
-def MapViewOfFile(hfmap, acc, high, low, size):
+def MapViewOfFile(
+    hfmap,
+    acc=FILE_MAP_READ | FILE_MAP_WRITE,
+    high=0,
+    low=0,
+    size=1024 * 1024 * 16,
+):
     return _MapViewOfFile(hfmap, acc, high, low, size)
 
 
@@ -820,16 +820,3 @@ def GetClassName(hwnd):
     if not ret:
         return
     return buff.value
-
-
-_SearchPath = _kernel32.SearchPathW
-_SearchPath.argtypes = (LPCWSTR, LPCWSTR, LPCWSTR, DWORD, LPWSTR, LPWSTR)
-_SearchPath.restype = DWORD
-
-
-def SearchPath(dll_name):
-    path_buffer = create_unicode_buffer(MAX_PATH)
-    result = _SearchPath(None, dll_name, None, MAX_PATH, path_buffer, None)
-    if result == 0:
-        return None
-    return path_buffer.value
