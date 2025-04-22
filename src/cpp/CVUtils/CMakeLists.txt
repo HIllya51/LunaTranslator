@@ -61,7 +61,7 @@ if ((NOT WINXP) AND (NOT EXISTS ${CMAKE_FINAL_OUTPUT_DIRECTORY}/onnxruntime.dll)
     add_custom_command(TARGET CVUtils
         POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy
-        ${onnxruntimedir}/lib/onnxruntime.dll
+        ${onnxruntime_SOURCE_DIR}/lib/onnxruntime.dll
         ${CMAKE_FINAL_OUTPUT_DIRECTORY}/onnxruntime.dll
     )
 endif()

@@ -55,7 +55,6 @@ def createPluginDirs():
     os.chdir(rootDir)
 
 
-
 def move_directory_contents(source_dir, destination_dir):
     contents = os.listdir(source_dir)
 
@@ -311,6 +310,7 @@ if __name__ == "__main__":
         os.chdir(rootDir)
         if sys.argv[2] == "xp":
             shutil.copytree("../build/cpp_xp", "cpp/builds", dirs_exist_ok=True)
+            shutil.copytree("../build/cpp_x64", "cpp/builds", dirs_exist_ok=True)
             shutil.copytree(
                 "../build/hook_xp", "files/plugins/LunaHook", dirs_exist_ok=True
             )
@@ -322,7 +322,7 @@ if __name__ == "__main__":
             shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
             shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
             os.system(f"robocopy cpp/builds/_x86 files/plugins/DLL32 *.dll")
-            os.remove("files/plugins/DLL32/pnnxruntime.dll")
+            os.remove("files/plugins/DLL32/onnxruntime.dll")
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
             exit()
         shutil.copytree(
