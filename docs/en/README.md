@@ -21,8 +21,10 @@ But please do not put the software in special paths such as **C:\Program Files**
 :::
 
 - **LunaTranslator.exe** will start in normal mode.
+
 - **LunaTranslator_admin.exe** will start with administrator privileges, which is required for hooking some games; use this only when necessary, otherwise start in normal mode.
-- **LunaTranslator_debug.exe** will display a command-line window.
+
+- **LunaTranslator_debug.bat** will display a command-line window.
 
 
 ## Unable to Start the Software

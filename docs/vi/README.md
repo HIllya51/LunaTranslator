@@ -21,8 +21,10 @@ Nhưng vui lòng không đặt phần mềm vào các đường dẫn đặc bi�
 :::
 
 - **LunaTranslator.exe** sẽ khởi động ở chế độ bình thường.
+
 - **LunaTranslator_admin.exe** sẽ khởi động với quyền quản trị viên, cần thiết để hook một số trò chơi; chỉ sử dụng khi cần thiết, nếu không hãy khởi động ở chế độ bình thường.
-- **LunaTranslator_debug.exe** sẽ hiển thị cửa sổ dòng lệnh.
+
+- **LunaTranslator_debug.bat** sẽ hiển thị cửa sổ dòng lệnh.
 
 ## Không thể khởi động phần mềm
 

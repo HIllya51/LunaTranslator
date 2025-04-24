@@ -24,7 +24,7 @@
 
 **LunaTranslator_admin.exe** 会以管理员权限启动，部分游戏需要管理员权限才能HOOK，仅这时需要使用这个，其他时候普通模式启动即可。
 
-**LunaTranslator_debug.exe** 会显示命令行窗口
+**LunaTranslator_debug.bat** 会显示命令行窗口
 
 ## 无法启动软件
 

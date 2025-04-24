@@ -1,7 +1,8 @@
 import shutil, os
 import platform
 import sys
-os.system('python scripts/generate_xp_code.py')
+
+os.system("python scripts/generate_xp_code.py")
 os.system("git clone --depth 1 https://github.com/HIllya51/py3.4_pyqt5.5.1")
 os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
 
@@ -26,7 +27,12 @@ def copycheck(src, tgt):
 
 
 copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
-copycheck(os.path.join(launch, "LunaTranslator_debug.exe"), targetdir)
+with open(os.path.join(targetdir, "LunaTranslator_debug.bat"), "w") as ff:
+    ff.write(
+        r""".\LunaTranslator.exe
+pause"""
+    )
+# copycheck(os.path.join(launch, "LunaTranslator_debug.exe"), targetdir)
 copycheck("./LunaTranslator", targetdir)
 copycheck(r".\files", targetdir)
 copycheck("runtime", targetdir + "/files")

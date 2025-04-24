@@ -21,8 +21,10 @@
 :::
 
 - **LunaTranslator.exe** は通常モードで起動します。
+
 - **LunaTranslator_admin.exe** は管理者権限で起動します。一部のゲームのフックには管理者権限が必要です。必要な場合のみ使用し、通常は通常モードで起動してください。
-- **LunaTranslator_debug.exe** はコマンドラインウィンドウを表示します。
+
+- **LunaTranslator_debug.bat** はコマンドラインウィンドウを表示します。
 
 ## ソフトウェアが起動しない
 

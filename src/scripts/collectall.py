@@ -37,7 +37,13 @@ def copycheck(src, tgt):
 
 copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
 copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
-copycheck(os.path.join(launch, "LunaTranslator_debug.exe"), targetdir)
+with open(os.path.join(targetdir, "LunaTranslator_debug.bat"), "w") as ff:
+    ff.write(
+        r""".\LunaTranslator.exe
+pause"""
+    )
+# copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
+# copycheck(os.path.join(launch, "LunaTranslator_debug.exe"), targetdir)
 copycheck("./LunaTranslator", targetdir)
 copycheck(r".\files", targetdir)
 copycheck(pyrt, targetdir + "/files")
