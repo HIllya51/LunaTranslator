@@ -532,7 +532,7 @@ void _SearchForHooks(SearchParam spUser)
 		}
 		else if (sp.search_method == 3)
 		{
-			auto fm = OpenFileMappingW(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, sp.sharememname);
+			AutoHandle fm = OpenFileMappingW(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, sp.sharememname);
 			auto ptr = (LPWSTR)MapViewOfFile(fm, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, sp.sharememsize);
 			for (auto line : strSplit(ptr, L"\n"))
 			{
@@ -540,6 +540,11 @@ void _SearchForHooks(SearchParam spUser)
 					continue;
 				if (startWith(line, L"//"))
 					continue;
+				auto spls = strSplit(line, L"\t");
+				if (spls.size() > 3)
+				{
+					line = spls[2];
+				}
 				try
 				{
 					std::wsmatch match;
@@ -564,6 +569,7 @@ void _SearchForHooks(SearchParam spUser)
 				{
 				}
 			}
+			UnmapViewOfFile(ptr);
 		}
 		mergevector(addresses, addresses1);
 
