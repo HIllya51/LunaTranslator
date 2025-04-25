@@ -924,7 +924,7 @@ bool InsertSystem43bHook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
     return false;
-  HookParam hp = {};
+  HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(edx);
   hp.split = stackoffset(12);

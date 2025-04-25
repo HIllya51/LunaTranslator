@@ -23,36 +23,38 @@ bool InsertAIL2Hook()
       0x3c, 0x73,
       0x74, XX};
   auto addr1 = MemDbg::findBytes(bytes1, sizeof(bytes1), processStartAddress, processStopAddress);
-  if (addr1 == 0)
+  if (!addr1)
     return false;
   addr1 = findalign(addr1);
-  if (addr1 == 0)
+  if (!addr1)
     return false;
   ConsoleOutput("AIL1 %p", addr1);
-  HookParam hp;
-  hp.address = addr1;
-  hp.codepage = 932;
-  hp.offset = stackoffset(3);
-  hp.type = USING_STRING;
-  succ |= NewHook(hp, "AIL1");
-
+  {
+    HookParam hp;
+    hp.address = addr1;
+    hp.codepage = 932;
+    hp.offset = stackoffset(3);
+    hp.type = USING_STRING;
+    succ |= NewHook(hp, "AIL1");
+  }
   BYTE bytes[] = {// if ( v12 != 32 && v12 != 33088 )
                   0x3d, 0x40, 0x81, 0x00, 0x00, 0x0f};
 
   addr1 = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (addr1 == 0)
+  if (!addr1)
     return succ;
   addr1 = MemDbg::findEnclosingAlignedFunction(addr1);
-  if (addr1 == 0)
+  if (!addr1)
     return succ;
-  hp = {};
-  hp.address = addr1;
-  hp.codepage = 932;
-  hp.offset = stackoffset(4);
-  hp.type = USING_STRING | USING_SPLIT;
-  hp.split_index = 0;
-  succ |= NewHook(hp, "AIL2");
-
+  {
+    HookParam hp;
+    hp.address = addr1;
+    hp.codepage = 932;
+    hp.offset = stackoffset(4);
+    hp.type = USING_STRING | USING_SPLIT;
+    hp.split_index = 0;
+    succ |= NewHook(hp, "AIL2");
+  }
   return succ;
 }
 bool AILold()

@@ -713,7 +713,7 @@ bool InsertCotophaHook4()
   if (!addr)
     return false;
 
-  HookParam hp = {};
+  HookParam hp;
   hp.address = addr + 1;
   hp.offset = stackoffset(1);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;

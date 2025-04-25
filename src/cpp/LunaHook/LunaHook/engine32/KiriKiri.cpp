@@ -1251,12 +1251,20 @@ namespace
     if (!addr)
       return false;
     auto succ = false;
-    HookParam hp = {};
+    HookParam hp;
     hp.address = addr;
     hp.offset = stackoffset(2);
     hp.type = CODEC_UTF16 | USING_STRING;
     hp.filter_fun = KiriKiri4Filter;
     return NewHook(hp, "KAGParser");
+  }
+  auto filterkrkrz(std::wstring &ws)
+  {
+    strReplace(ws, L"／");
+    strReplace(ws, L"　");
+    ws = re::sub(ws, LR"(\$r:(.*?),(.*?);)", L"$1");
+    ws = re::sub(ws, LR"(\$(.*?);)");
+    return ws;
   }
   bool krkrzx()
   {
@@ -1285,11 +1293,7 @@ namespace
       if (ws == last)
         return buffer->clear();
       last = ws;
-      strReplace(ws, L"／");
-      strReplace(ws, L"　");
-      ws = re::sub(ws, LR"(\$r:(.*?),(.*?);)", L"$1");
-      ws = re::sub(ws, LR"(\$(.*?);)");
-      buffer->from(ws);
+      buffer->from(filterkrkrz(ws));
     };
     return NewHook(hp, "KiriKiriZX");
   }
@@ -1667,12 +1671,55 @@ bool InsertKiriKiri4Hook()
   if (!addr)
     return false;
 
-  HookParam hp = {};
+  HookParam hp;
   hp.address = addr + sizeof(bytes) - 5;
   hp.offset = regoffset(edx);
   hp.type = NO_CONTEXT | CODEC_UTF16 | USING_STRING;
   hp.filter_fun = KiriKiri4Filter;
   return NewHook(hp, "KiriKiri4");
+}
+namespace
+{
+  bool krkrz2()
+  {
+    // すれ違う兄妹の壊れる倫理観
+    const BYTE bytes[] = {
+        0x3b, 0xd7,
+        0x73, 0x18,
+        0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00,
+        0x8b, 0x43, 0x38,
+        0x56,
+        0x8b, 0x00,
+        0xff, 0xd0,
+        0x03, 0xf0,
+        0x83, 0xc4, 0x04,
+        0x3b, 0xf7,
+        0x72, XX,
+        0x8b, 0x43, 0x4c,
+        0x8b, 0xce,
+        0x48,
+        0x83, 0xf8, 0x04,
+        0x0f, 0x87, XX4,
+        0xff, 0x24, 0x85, XX4};
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = regoffset(edx);
+    hp.type = CODEC_UTF16 | USING_STRING;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      static int idx;
+      if (idx++ % 2 == 0)
+        return buffer->clear();
+      buffer->from(filterkrkrz(buffer->strW()));
+    };
+    return NewHook(hp, "krkrz2");
+  }
 }
 bool KiriKiri::attach_function()
 {
@@ -1684,7 +1731,7 @@ bool KiriKiri::attach_function()
     // else if (Util::CheckFile(L"plugin\\KAGParserEx.dll"))
     //  InsertKAGParserExHook();
     bool krz = Private::attach(processStartAddress, processStopAddress);
-    if (InsertKiriKiriZHook() || krz)
+    if (InsertKiriKiriZHook() || krkrz2() || krz)
       return true;
   }
   bool b1 = attachkr2(processStartAddress, processStopAddress);

@@ -518,7 +518,7 @@ bool InsertStuffScript3Hook()
   if (!addr)
     return false;
 
-  HookParam hp = {};
+  HookParam hp;
   hp.address = addr + 1;
   hp.offset = regoffset(ecx);
   hp.type = USING_STRING | NO_CONTEXT;
