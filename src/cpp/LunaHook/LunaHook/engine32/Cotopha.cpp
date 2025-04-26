@@ -662,16 +662,24 @@ bool InsertCotophaHook1()
 
 bool InsertCotophaHook2()
 {
-  if (void *addr = GetProcAddress(GetModuleHandleW(NULL), "eslHeapFree"))
+  void *eslHeapFree = GetProcAddress(GetModuleHandleW(NULL), "eslHeapFree");
+  void *eslHeapGetLength = GetProcAddress(GetModuleHandleW(NULL), "eslHeapGetLength");
+  if (!(eslHeapFree && eslHeapGetLength))
+    return false;
+  HookParam hp;
+  hp.address = (uintptr_t)eslHeapFree;
+  hp.offset = stackoffset(2);
+  hp.user_value = (uintptr_t)eslHeapGetLength;
+  hp.type = CODEC_UTF16 | USING_STRING;
+  hp.filter_fun = CotophaFilter;
+  hp.text_fun = [](hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    HookParam hp;
-    hp.address = (uintptr_t)addr;
-    hp.offset = stackoffset(2);
-    hp.type = CODEC_UTF16 | USING_STRING;
-    hp.filter_fun = CotophaFilter;
-    return NewHook(hp, "Cotopha2");
-  }
-  return false;
+    auto eslHeapGetLength = (int(__cdecl *)(int a1, int a2))hp->user_value;
+    auto len = eslHeapGetLength(s->stack[1], s->stack[2]);
+    len = wcsnlen((wchar_t *)s->stack[2], len / 2);
+    buffer->from(s->stack[2], len * 2);
+  };
+  return NewHook(hp, "Cotopha2");
 }
 bool InsertCotophaHook3()
 {
