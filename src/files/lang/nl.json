@@ -559,7 +559,6 @@
     "荷兰语": "Nederlands",
     "捷克语": "Tsjechisch",
     "英语": "Engels",
-    "直接替换": "Direct vervangen",
     "词典": "Woordenboek",
     "注释": "notities",
     "打开链接": "Koppeling openen",
@@ -797,5 +796,6 @@
     "转换Markdown为HTML": "",
     "可编辑的": "",
     "合并临近行": "",
-    "距离": ""
+    "距离": "",
+    "翻译前替换": ""
 }

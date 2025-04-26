@@ -1,6 +1,6 @@
 # Chức Năng của Các Tối Ưu Hóa Dịch Thuật
 
-1. ## Dịch Tên Riêng - Thay Thế Trực Tiếp
+1. ## Dịch Tên Riêng - Thay thế trước khi dịch
 
     Phương pháp này thay thế trực tiếp văn bản gốc bằng văn bản đã dịch trước khi dịch. Nó hỗ trợ sử dụng `Regex` và `Escape` để thực hiện các thay thế phức tạp hơn.
 

@@ -438,7 +438,7 @@
     "transoptimi": [
         {
             "name": "vndbnamemap",
-            "visname": "专有名词翻译_直接替换"
+            "visname": "专有名词翻译_翻译前替换"
         },
         {
             "name": "noundict",

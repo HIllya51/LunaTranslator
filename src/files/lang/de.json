@@ -559,7 +559,6 @@
     "荷兰语": "Niederländisch",
     "捷克语": "Tschechisch",
     "英语": "Englisch",
-    "直接替换": "Direkt ersetzen",
     "词典": "Wörterbuch",
     "注释": "Anmerkungen",
     "打开链接": "Link öffnen",
@@ -797,5 +796,6 @@
     "转换Markdown为HTML": "",
     "可编辑的": "",
     "合并临近行": "",
-    "距离": ""
+    "距离": "",
+    "翻译前替换": ""
 }

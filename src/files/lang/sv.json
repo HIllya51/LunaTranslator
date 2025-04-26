@@ -559,7 +559,6 @@
     "荷兰语": "Nederländska",
     "捷克语": "Tjeckiska",
     "英语": "Engelska",
-    "直接替换": "Byt direkt ut",
     "词典": "Ordbok",
     "注释": "anteckningar",
     "打开链接": "Öppna länk",
@@ -797,5 +796,6 @@
     "转换Markdown为HTML": "",
     "可编辑的": "",
     "合并临近行": "",
-    "距离": ""
+    "距离": "",
+    "翻译前替换": ""
 }
