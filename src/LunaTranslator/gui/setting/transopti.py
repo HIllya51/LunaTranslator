@@ -11,6 +11,7 @@ from myutils.post import processfunctions
 from myutils.config import globalconfig, postprocessconfig, static_data
 from gui.usefulwidget import (
     D_getIconButton,
+    D_getIconButton_mousefollow,
     getIconButton,
     D_getsimpleswitch,
     makescrollgrid,
@@ -83,8 +84,9 @@ def setTab7_lazy(self, basel: QLayout):
     sortlist: list = globalconfig["postprocess_rank"]
     savelist = []
     savelay = []
+    savescroll = []
 
-    def changerank(item, up, tomax):
+    def changerank(item, up, tomax, savescroll):
 
         idx = sortlist.index(item)
         if tomax:
@@ -109,6 +111,16 @@ def setTab7_lazy(self, basel: QLayout):
             savelist[idx2 + headoffset],
             savelist[idx + headoffset],
         )
+        if tomax:
+            scroll: QScrollArea = savescroll[0]
+            if up:
+                scroll.verticalScrollBar().setValue(
+                    scroll.verticalScrollBar().minimum()
+                )
+            else:
+                scroll.verticalScrollBar().setValue(
+                    scroll.verticalScrollBar().maximum()
+                )
 
     for i, post in enumerate(sortlist):
         if post == "_11":
@@ -151,15 +163,15 @@ def setTab7_lazy(self, basel: QLayout):
             else:
                 config = ""
 
-        button_up = D_getIconButton(
-            callback=functools.partial(changerank, post, True, False),
+        button_up = D_getIconButton_mousefollow(
+            callback=functools.partial(changerank, post, True, False, savescroll),
             icon="fa.arrow-up",
-            callback2=functools.partial(changerank, post, True, True),
+            callback2=functools.partial(changerank, post, True, True, savescroll),
         )
-        button_down = D_getIconButton(
-            callback=functools.partial(changerank, post, False, False),
+        button_down = D_getIconButton_mousefollow(
+            callback=functools.partial(changerank, post, False, False, savescroll),
             icon="fa.arrow-down",
-            callback2=functools.partial(changerank, post, False, True),
+            callback2=functools.partial(changerank, post, False, True, savescroll),
         )
 
         l = [
@@ -204,7 +216,7 @@ def setTab7_lazy(self, basel: QLayout):
         vbox.setContentsMargins(0, 0, 0, 0)
         lay.addWidget(vboxw)
         makescrollgrid(grids, vbox, savelist, savelay)
-
+        savescroll.append(vbox.itemAt(vbox.count() - 1).widget())
         lay.addWidget(getcomparelayout(self))
 
     tab, dotab = makesubtab_lazy(

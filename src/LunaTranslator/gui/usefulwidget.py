@@ -902,6 +902,30 @@ def D_getIconButton(
     )
 
 
+def __mousefollowfunction(btn: "IconButton", functionorigin):
+
+    functionorigin()
+    QApplication.processEvents()
+    button_rect = btn.frameGeometry()
+    center_point = button_rect.center()
+    QCursor.setPos(btn.parentWidget().mapToGlobal(center_point))
+
+
+def D_getIconButton_mousefollow(
+    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True
+):
+    b = IconButton(icon, enable, qicon, fix=fix)
+
+    if callback:
+        b.clicked_1.connect(functools.partial(__mousefollowfunction, b, callback))
+    if callback2:
+        b.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        b.customContextMenuRequested.connect(
+            functools.partial(__mousefollowfunction, b, callback2)
+        )
+    return b
+
+
 def check_grid_append(grids):
     if len(grids) < 2:
         return

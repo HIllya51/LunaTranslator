@@ -4,9 +4,9 @@ import gobject
 from myutils.config import globalconfig
 from gui.usefulwidget import (
     D_getsimplecombobox,
-    D_getIconButton,
     IconButton,
     getIconButton,
+    D_getIconButton_mousefollow,
     makescrollgrid,
     D_getsimpleswitch,
     getsmalllabel,
@@ -67,8 +67,7 @@ def doadjust(_):
     gobject.baseobject.translation_ui.enterfunction()
 
 
-def changerank(item, up, tomax, sortlist: list, savelist, savelay):
-
+def changerank(item, up, tomax, sortlist: list, savelist, savelay, savescroll):
     idx = sortlist.index(item)
     if tomax:
         idx2 = 0 if up else (len(sortlist) - 1)
@@ -92,6 +91,12 @@ def changerank(item, up, tomax, sortlist: list, savelist, savelay):
         savelist[idx2 + headoffset],
         savelist[idx + headoffset],
     )
+    if tomax:
+        scroll: QScrollArea = savescroll[0]
+        if up:
+            scroll.verticalScrollBar().setValue(scroll.verticalScrollBar().minimum())
+        else:
+            scroll.verticalScrollBar().setValue(scroll.verticalScrollBar().maximum())
     doadjust(None)
 
 
@@ -176,25 +181,26 @@ def createbuttonwidget(self, lay: QLayout):
     sortlist = globalconfig["toolbutton"]["rank2"]
     savelist = []
     savelay = []
+    savescroll = []
     grids = [["显示", "", "", "对齐", "", ("图标", 2), "", "说明"]]
     for i, k in enumerate(sortlist):
 
-        button_up = D_getIconButton(
+        button_up = D_getIconButton_mousefollow(
             callback=functools.partial(
-                changerank, k, True, False, sortlist, savelist, savelay
+                changerank, k, True, False, sortlist, savelist, savelay, savescroll
             ),
             icon="fa.arrow-up",
             callback2=functools.partial(
-                changerank, k, True, True, sortlist, savelist, savelay
+                changerank, k, True, True, sortlist, savelist, savelay, savescroll
             ),
         )
-        button_down = D_getIconButton(
+        button_down = D_getIconButton_mousefollow(
             callback=functools.partial(
-                changerank, k, False, False, sortlist, savelist, savelay
+                changerank, k, False, False, sortlist, savelist, savelay, savescroll
             ),
             icon="fa.arrow-down",
             callback2=functools.partial(
-                changerank, k, False, True, sortlist, savelist, savelay
+                changerank, k, False, True, sortlist, savelist, savelay, savescroll
             ),
         )
 
@@ -229,4 +235,5 @@ def createbuttonwidget(self, lay: QLayout):
         l.append(t)
         grids.append(l)
     makescrollgrid(grids, lay, savelist, savelay)
+    savescroll.append(lay.itemAt(lay.count() - 1).widget())
     refreshtoolicon()
