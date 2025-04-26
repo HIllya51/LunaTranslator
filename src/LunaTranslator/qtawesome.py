@@ -52,8 +52,11 @@ class IconicFont(QObject):
             self.charmap = json.load(codes)
 
     def icon(self, name, color):
+        if isinstance(color, QColor):
+            cache_key = "{}{}".format(name, color.name())
+        else:
+            cache_key = "{}{}".format(name, color)
 
-        cache_key = "{}{}".format(name, color)
 
         if cache_key not in self.icon_cache:
 
