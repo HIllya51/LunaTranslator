@@ -127,7 +127,7 @@ namespace
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       auto tu = (TextUnionW *)context->rdx;
-      auto str = std::wstring_view(tu->getText(), tu->size);
+      auto str = tu->view();
       if (startWith(str, L"\\n") && endWith(str, L"\\n"))
       {
         *split = 1;
@@ -171,7 +171,7 @@ namespace
         {
           // wstring=TextUnionW for msvc c++17
           auto tu = (TextUnionW *)context->rdx;
-          buffer->from(std::wstring_view(tu->getText(), tu->size));
+          buffer->from(tu->view());
         };
         hp.filter_fun = commonfilter;
         succ |= NewHook(hp, "Light.VN.12");

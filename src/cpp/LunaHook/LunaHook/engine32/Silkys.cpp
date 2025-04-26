@@ -255,7 +255,7 @@ void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *r
                                        // s->ebx > 0x0fffffff ? Engine::ChoiceRole : // edx is a pointer for choice
           Engine::ScenarioRole;
 
-  buffer->from(arg->getText(), arg->size);
+  buffer->from(arg->view());
 }
 TextUnionA *arg_,
     argValue_;

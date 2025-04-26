@@ -512,7 +512,7 @@ namespace
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       auto _ = (TextUnionA *)context->eax;
-      buffer->from(_->getText(), _->size);
+      buffer->from(_->view());
     };
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {

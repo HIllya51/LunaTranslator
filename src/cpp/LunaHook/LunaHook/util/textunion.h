@@ -32,6 +32,10 @@ struct TextUnion
     return capacity < ShortTextCapacity ? chars : text;
   }
 
+  std::basic_string_view<CharT> view() const
+  {
+    return std::basic_string_view<CharT>(getText(), size);
+  }
   void setText(const CharT *_text, size_t _size)
   {
     if (_size < ShortTextCapacity)

@@ -1567,7 +1567,7 @@ bool InsertSiglus4Hook()
   {
     // 写回有乱码
     auto textu = (TextUnionW *)(context->ecx + 4);
-    buffer->from(textu->getText(), textu->size * 2);
+    buffer->from(textu->view());
   }
 
   // jichi: 8/17/2013: Change return type to bool
@@ -1759,7 +1759,7 @@ namespace
         auto arg = (TextUnionW *)(type_ == Type1 ? s->ecx : s->stack[1]);
         if (!arg || !arg->isValid())
           return;
-        buffer->from(arg->getText(), arg->size * 2);
+        buffer->from(arg->view());
       }
       void hookafter(hook_context *s, TextBuffer buffer)
       {

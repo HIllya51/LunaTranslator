@@ -2,9 +2,9 @@
 #include "pchhook.h"
 bool InsertWaffleDynamicHook(LPVOID addr, hook_context *context)
 {
-  ConsoleOutput("WaffleDynamic:triggered");
   if (addr != ::GetTextExtentPoint32A)
     return false;
+  ConsoleOutput("WaffleDynamic:triggered");
 
   auto tib = (NT_TIB *)__readfsdword(0);
   auto exception = tib->ExceptionList;
@@ -602,6 +602,57 @@ namespace
     return NewHook(hp, "waffle3");
   }
 }
+namespace
+{
+  bool fantacyfhd()
+  {
+    //[250425] [WAFFLE] 巨乳ファンタジー３ -ユリナス編- フルHDバンドル版
+    const uint8_t bytes[] = {
+        0x33, 0XC9,
+        0X6A, 0X04,
+        0X5A,
+        0XF7, 0XE2,
+        0X0F, 0X90, 0XC1,
+        0XF7, 0XD9,
+        0X0B, 0XC8,
+        0X51,
+        0XE8, XX4,
+        0X8B, 0X8B, XX4,
+        0XC1, 0XE1, 0X02,
+        0X51,
+        0X6A, 0X00,
+        0X50,
+        0X89, 0X45, XX,
+        0XE8, XX4};
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    const uint8_t START[] = {
+        0X55,
+        0X8D, 0XAC, 0X24, XX4};
+    addr = reverseFindBytes(START, sizeof(START), addr - 0x100, addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      buffer->from(((TextUnionA *)context->stack[1])->view());
+    };
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      CharFilter(buffer, '\n');
+      StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    };
+    hp.embed_hook_font = F_TextOutA | F_GetTextExtentPoint32A;
+    hp.type = EMBED_ABLE | USING_STRING | EMBED_DYNA_SJIS;
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    {
+      ((TextUnionA *)context->stack[1])->setText(buffer.viewA());
+    };
+    return NewHook(hp, "waffle5");
+  }
+}
 bool Waffle::attach_function()
 {
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
@@ -609,8 +660,7 @@ bool Waffle::attach_function()
   bool b2 = InsertWaffleHookx();
   bool b3 = hh();
   b3 |= waffle3();
-  auto succ = b1 || b2 || embed || b3;
-  // ConsoleOutput("Probably Waffle. Wait for text.");
+  auto succ = b1 || b2 || embed || b3 || fantacyfhd();
   if (!succ)
   {
     succ = waffleoldhook();
