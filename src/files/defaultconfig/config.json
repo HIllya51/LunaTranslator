@@ -656,7 +656,7 @@
             },
             "noundict_direct": {
                 "use": false,
-                "tip": "专有名词翻译_直接替换",
+                "tip": "专有名词翻译_翻译前替换",
                 "icon": "fa.book",
                 "align": 0
             },
