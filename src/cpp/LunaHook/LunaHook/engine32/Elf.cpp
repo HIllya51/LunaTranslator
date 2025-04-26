@@ -415,7 +415,7 @@ namespace
           break;
         }
         auto text = (TextUnionA *)ptr;
-        buffer->from(text->getText(), text->size);
+        buffer->from(text->view());
       };
       hp.filter_fun = all_ascii_Filter;
       succ |= NewHook(hp, "elf3");

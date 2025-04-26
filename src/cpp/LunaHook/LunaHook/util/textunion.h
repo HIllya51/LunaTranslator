@@ -4,7 +4,7 @@ inline size_t str_len(const char *s) { return strlen(s); }
 inline size_t str_len(const wchar_t *s) { return wcslen(s); }
 
 template <class CharT>
-struct TextUnion
+class TextUnion
 {
   enum
   {
@@ -18,24 +18,11 @@ struct TextUnion
   };
   size_t size, // 0x10
       capacity;
-
-  bool isValid() const
-  {
-    if (size <= 0 || size > capacity)
-      return false;
-    const CharT *t = getText();
-    return Engine::isAddressWritable(t, size) && str_len(t) == size;
-  }
-
   const CharT *getText() const
   {
     return capacity < ShortTextCapacity ? chars : text;
   }
 
-  std::basic_string_view<CharT> view() const
-  {
-    return std::basic_string_view<CharT>(getText(), size);
-  }
   void setText(const CharT *_text, size_t _size)
   {
     if (_size < ShortTextCapacity)
@@ -47,6 +34,19 @@ struct TextUnion
     capacity = size = _size;
   }
 
+public:
+  bool isValid() const
+  {
+    if (size <= 0 || size > capacity)
+      return false;
+    const CharT *t = getText();
+    return Engine::isAddressWritable(t, size) && str_len(t) == size;
+  }
+
+  const std::basic_string_view<CharT> view() const
+  {
+    return std::basic_string_view<CharT>(getText(), size);
+  }
   template <typename StringT, typename = std::enable_if_t<!std::is_pointer_v<StringT>>>
   void setText(const StringT &text)
   {

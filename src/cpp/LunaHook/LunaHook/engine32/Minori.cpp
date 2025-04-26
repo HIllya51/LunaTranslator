@@ -401,10 +401,11 @@ namespace
         auto arg = (TextUnionA *)s->stack[0]; // arg1
         if (!arg || !arg->isValid())
           return;
-        auto text = arg->getText();
+        auto vw = arg->view();
+        auto text = vw.data();
         if (all_ascii(text))
           return;
-        int size = arg->size,
+        int size = vw.size(),
             trimmedSize = size;
         auto trimmedText = trim(text, &trimmedSize);
         if (!trimmedSize || !*trimmedText)
@@ -422,8 +423,9 @@ namespace
       {
         std::string newData = buffer.strA();
         auto arg = (TextUnionA *)s->stack[0]; // arg1
-        auto text = arg->getText();
-        int size = arg->size,
+        auto vw = arg->view();
+        auto text = vw.data();
+        int size = vw.size(),
             trimmedSize = size;
         auto trimmedText = trim(text, &trimmedSize);
         int prefixSize = trimmedText - text,

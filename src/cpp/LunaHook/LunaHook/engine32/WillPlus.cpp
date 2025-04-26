@@ -1600,7 +1600,7 @@ namespace
     hp.embed_hook_font = F_GetGlyphOutlineW;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      buffer->from(((TextUnionW *)context->ecx)->getText());
+      buffer->from(((TextUnionW *)context->ecx)->view());
       *split = context->ebx;
     };
     hp.embed_fun = [](hook_context *context, TextBuffer buffer)

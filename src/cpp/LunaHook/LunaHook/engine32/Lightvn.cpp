@@ -203,7 +203,7 @@ namespace
 		{
 			if (context->stack[1] != context->THISCALLTHIS)
 			{
-				buffer->from(((TextUnionW *)context->stack[1])->getText());
+				buffer->from(((TextUnionW *)context->stack[1])->view());
 			}
 		};
 		hp.type = USING_STRING | CODEC_UTF16;

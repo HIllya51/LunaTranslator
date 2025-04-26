@@ -17,8 +17,9 @@ static void SpecialGameHookShinyDays(hook_context *context, HookParam *hp, TextB
   if (esi <= edi)
   {
     auto tu = (TextUnionW *)esi;
-    text_str = (LPWSTR)tu->getText();
-    l = tu->size * 2;
+    auto vw = tu->view();
+    text_str = (LPWSTR)vw.data();
+    l = vw.size() * 2;
   }
   if (::memcmp(fun_str, L"[PlayVoice]", 0x18) == 0)
   {

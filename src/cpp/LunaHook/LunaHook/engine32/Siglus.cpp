@@ -1796,10 +1796,10 @@ namespace OtherHook
       auto arg = (TextUnionW *)s->stack[0];
       if (!arg || !arg->isValid())
         return;
-
-      LPCWSTR text = arg->getText();
+      auto vw = arg->view();
+      LPCWSTR text = vw.data();
       // Skip all ascii
-      if (!text || !*text || *text <= 127 || arg->size > 1500) // there could be garbage
+      if (!text || !*text || *text <= 127 || vw.size() > 1500) // there could be garbage
         return;
 
       *role = Engine::OtherRole;
@@ -1821,7 +1821,7 @@ namespace OtherHook
       }
       // auto sig = Engine::hashThreadSignature(role, split);
 
-      buffer->from(text, arg->size * 2);
+      buffer->from(vw);
       //           newText = EngineController::instance()->dispatchTextWSTD(oldText, role, sig);
     }
     void hookafter2(hook_context *s, TextBuffer buffer)

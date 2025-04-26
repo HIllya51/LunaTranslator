@@ -327,10 +327,10 @@ namespace
 
   ULONG moduleBaseAddress_; // saved only for debugging purposes
 
-  bool isBadText(LPCWSTR text)
+  bool isBadText(std::wstring_view text)
   {
-    return text[0] <= 127 || text[::wcslen(text) - 1] <= 127 // skip ascii text
-           || ::wcschr(text, 0xff3f);                        // Skip system text containing: ＿
+    return text[0] <= 127 || text[text.size() - 1] <= 127 // skip ascii text
+           || ::wcschr(text.data(), 0xff3f);                        // Skip system text containing: ＿
   }
 
   namespace ScenarioHook1
@@ -348,7 +348,7 @@ namespace
         if (!arg->isValid())
           return;
 
-        auto text = arg->getText();
+        auto text = arg->view();
         if (isBadText(text))
           return;
         buffer->from(text);
@@ -441,7 +441,7 @@ namespace
         if (!arg->isValid())
           return;
 
-        auto text = arg->getText();
+        auto text = arg->view();
         if (isBadText(text))
           return;
         buffer->from(text);

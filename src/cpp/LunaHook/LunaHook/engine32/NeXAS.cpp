@@ -467,7 +467,7 @@ namespace
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       auto a2 = (TextUnionA *)context->stack[1]; // std::string*
-      buffer->from(a2->getText());
+      buffer->from(a2->view());
     };
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
