@@ -645,6 +645,20 @@
         document.getElementById('maybevertical').innerHTML = css;
         safe_calllunaheightchange()
     }
+    function report_clickword_positions() {
+        result = []
+        document.querySelectorAll('.lunatranslator_clickword').forEach(
+            element => {
+                const rect = element.getBoundingClientRect();
+                const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const absoluteTop = rect.top + scrollTop;
+                const absoluteLeft = rect.left + scrollLeft;
+                result.push({ y: absoluteTop, x: absoluteLeft, h: rect.height, w: rect.width, word: JSON.parse(element.getAttribute('word')) })
+            }
+        )
+        return result
+    }
 </script>
 <script>
     var webSocket = null;

@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, functools, uuid, threading
+import os, functools, uuid, threading, NativeUtils
 from traceback import print_exc
 from myutils.config import (
     savehook_new_list,
@@ -115,21 +115,37 @@ class clickitem(QWidget):
 class fadeoutlabel(QLabel):
     def __init__(self, p=None):
         super().__init__(p)
-
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showmenu)
         effect = QGraphicsOpacityEffect(self)
+        effect.setOpacity(0)
         self.setGraphicsEffect(effect)
+        self.effect = effect
 
         self.setStyleSheet("""background-color: rgba(255,255,255, 0);""")
         self.animation = QPropertyAnimation(effect, b"opacity")
-        self.animation.setDuration(4000)
+        self.animation.setDuration(2000)
         self.animation.setStartValue(1.0)
         self.animation.setEndValue(0.0)
         self.animation.setDirection(QPropertyAnimation.Direction.Forward)
 
-    def setText(self, t):
-        super().setText(t)
+    def enterEvent(self, a0):
         self.animation.stop()
+        self.effect.setOpacity(1)
+        return super().enterEvent(a0)
+
+    def leaveEvent(self, a0):
         self.animation.start()
+        return super().leaveEvent(a0)
+
+    def showmenu(self, _):
+        menu = QMenu(self)
+        copy = LAction("复制", menu)
+        menu.addAction(copy)
+
+        action = menu.exec(QCursor.pos())
+        if action == copy:
+            NativeUtils.ClipBoard.text = self.text()
 
 
 def getselectpos(parent, callback):
@@ -258,7 +274,15 @@ class previewimages(QWidget):
     def tolastnext(self, dx):
         if self.list.count() == 0:
             return self.list.setCurrentRow(-1)
-        self.list.setCurrentRow((self.list.currentRow() + dx) % self.list.count())
+        first = (self.list.currentRow() + dx) % self.list.count()
+        test = first
+        while True:
+            self.list.setCurrentRow(test)
+            if not self.list.item(test).isHidden():
+                break
+            test = (test + 1) % self.list.count()
+            if test == first:
+                break
 
     def dumppaths(self):
         nlst = []
@@ -360,14 +384,13 @@ class viewpixmap_x(QWidget):
         self.pixmapviewer.tolastnext.connect(self.tolastnext)
         self.bottombtn = hoverbtn("开始游戏", self)
         self.bottombtn.clicked.connect(self.startgame)
-        self.pathview = fadeoutlabel(self)
         self.infoview = fadeoutlabel(self)
         self.infoview.setAlignment(Qt.AlignmentFlag.AlignRight)
+        self.infoview.setScaledContents(True)
         self.currentimage = None
 
     def resizeEvent(self, e: QResizeEvent):
         self.pixmapviewer.resize(e.size())
-        self.pathview.resize(e.size().width(), self.pathview.height())
         self.infoview.resize(e.size().width(), self.infoview.height())
         self.bottombtn.setGeometry(
             e.size().width() // 5,
@@ -378,18 +401,21 @@ class viewpixmap_x(QWidget):
         super().resizeEvent(e)
 
     def changepixmappath(self, path):
-
+        t = path
         self.currentimage = path
-        self.pathview.setText(path)
         try:
             if not os.path.isfile(extradatas["localedpath"].get(path, path)):
                 raise Exception()
-            timestamp = get_time_stamp(
+            t += "\n" + get_time_stamp(
                 ct=os.path.getctime(extradatas["localedpath"].get(path, path)), ms=False
             )
         except:
-            timestamp = None
-        self.infoview.setText(timestamp)
+            pass
+
+        self.infoview.setText(t)
+        self.infoview.resize(
+            self.infoview.width(), self.infoview.heightForWidth(self.infoview.width())
+        )
         if not path:
             pixmap = QPixmap()
         else:

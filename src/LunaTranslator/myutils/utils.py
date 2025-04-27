@@ -377,7 +377,10 @@ def stringfyerror(e: Exception):
             e.args[0].reason,
             str(maybejson(e.args[0])).replace("\n", " ").replace("\r", ""),
         )
-    return str(type(e))[8:-2] + " " + str(e).replace("\n", " ").replace("\r", "")
+    error = str(type(e))[8:-2] + " " + str(e)
+    if len(error.splitlines()) > 5:
+        error = error.replace("\n", " ").replace("\r", "")
+    return error
 
 
 def checkportavailable(port):
@@ -789,12 +792,15 @@ def copytree(src, dst, copy_function=shutil.copy2):
 
 class SafeFormatter(Formatter):
     def format(self, format_string, must_exists=None, *args, **kwargs):
+        format_string_1 = format_string
         if must_exists:
             check = "{" + must_exists + "}"
             if check not in format_string:
                 format_string += check
-
-        return super().format(format_string, *args, **kwargs)
+        try:
+            return super().format(format_string, *args, **kwargs)
+        except Exception as e:
+            raise Exception("Invalid text: " + format_string_1 + "\n" + str(e))
 
     def get_value(self, key, args, kwargs):
         if key in kwargs:

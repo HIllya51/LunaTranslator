@@ -1,4 +1,4 @@
-name: Build LunaTranslator
+name: Build
 
 on:
   push:

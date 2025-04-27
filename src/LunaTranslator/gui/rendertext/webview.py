@@ -6,7 +6,7 @@ from gui.rendertext.texttype import (
     SpecialColor,
     FenciColor,
 )
-import gobject, hashlib, json, os, functools
+import gobject, windows, json, os, functools, time
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
@@ -260,6 +260,54 @@ class TextBrowser(WebviewWidget, somecommon):
     _switchcursor = pyqtSignal(Qt.CursorShape)
     _isDragging = pyqtSignal(bool)
 
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.User + 2:
+            self.__starttrans0checker()
+        return super().event(a0)
+
+    def __starttrans0checker(self):
+        if gobject.baseobject.translation_ui.transparent_value_actually == 0:
+            self.trans0checker.start()
+        else:
+            self.trans0checker.stop()
+
+    def __checkmousestate(self):
+        if not self.geometry().contains(self.mapFromGlobal(QCursor.pos())):
+            return
+        lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
+        rb = windows.GetKeyState(windows.VK_RBUTTON) < 0
+        if not lb and not rb:
+            return
+        uid = uuid.uuid4()
+        self.trans0checkercheck = uid
+        self.eval(
+            "report_clickword_positions()", functools.partial(self.__callback, rb, uid)
+        )
+
+    @threader
+    def __callback(self, rb1, uid, result):
+        time.sleep(0.05)
+        if uid != self.trans0checkercheck:
+            return
+        lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
+        rb = windows.GetKeyState(windows.VK_RBUTTON) < 0
+        if lb or rb:
+            return
+        z = self.get_zoom()
+
+        for ww in json.loads(result):
+            __ = ww["x"], ww["y"], ww["w"], ww["h"]
+            x, y, w, h = (_ * z for _ in __)
+            pos = self.mapToGlobal(QPointF(x, y).toPoint())
+            rect = QRectF()
+            rect.setTopLeft(pos)
+            rect.setWidth(w)
+            rect.setHeight(h)
+            if not rect.contains(QCursor.pos()):
+                continue
+            gobject.baseobject.clickwordcallback(ww["word"], rb1)
+            break
+
     def __init__(self, parent) -> None:
         super().__init__(parent, transp=True, loadext=globalconfig["webviewLoadExt"])
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
@@ -304,6 +352,9 @@ class TextBrowser(WebviewWidget, somecommon):
             lambda b: self.setselectable(False if b else globalconfig["selectable"])
         )
         self.loadex()
+        self.trans0checkercheck = None
+        self.trans0checker = QTimer(self)
+        self.trans0checker.timeout.connect(self.__checkmousestate)
 
     def ___cleartext(self):
         self.parent().clear()

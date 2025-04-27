@@ -1075,9 +1075,11 @@ class TranslatorWindow(resizableframeless):
         )
         self.clickRange_signal.connect(self.clickRange)
         self.showhide_signal.connect(self.showhideocrrange)
-        self.clear_signal_1.connect(
-            lambda: self.clearstate() or gobject.baseobject.textsource.clearrange()
-        )
+
+        def __():
+            self.clearstate() or gobject.baseobject.textsource.clearrange()
+
+        self.clear_signal_1.connect(tryprint(__))
         self.bindcropwindow_signal.connect(
             functools.partial(mouseselectwindow, self.bindcropwindowcallback)
         )
@@ -1326,17 +1328,18 @@ class TranslatorWindow(resizableframeless):
             "Textbrowser{border-width: 0;%s;background-color: %s}"
             % (
                 topr,
-                str2rgba(
-                    globalconfig["backcolor"],
-                    max(
-                        (1 - globalconfig["transparent_EX"]) * 100 / 255,
-                        globalconfig["transparent"]
-                        * (not globalconfig["backtransparent"]),
-                    ),
-                ),
+                str2rgba(globalconfig["backcolor"], self.transparent_value_actually),
             )
         )
         self.titlebar.setstyle(bottomr, bottomr3)
+        QApplication.postEvent(self.translate_text.textbrowser, QEvent(QEvent.Type.User + 2))
+
+    @property
+    def transparent_value_actually(self):
+        return max(
+            (1 - globalconfig["transparent_EX"]) * 100 / 255,
+            globalconfig["transparent"] * (not globalconfig["backtransparent"]),
+        )
 
     def muteprocessfuntion(self):
         NativeUtils.SetCurrProcessMute(not self.processismuteed)
