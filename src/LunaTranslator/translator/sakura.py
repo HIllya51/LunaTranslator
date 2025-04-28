@@ -53,9 +53,9 @@ class TS(basetrans):
         gpt_dict_raw_text = "\n".join(gpt_dict_text_list)
         return gpt_dict_raw_text
 
-    def _gpt_common_parse_context_2(self, messages, context, contextnum, ja=False):
+    def _gpt_common_parse_context_2(self, messages, context, contextnum, query, ja=False):
         msgs = []
-        self._gpt_common_parse_context(msgs, context, contextnum)
+        self._gpt_common_parse_context(msgs, context, contextnum, query)
         __ja, __zh = [], []
         for i, _ in enumerate(msgs):
             [__zh, __ja][i % 2 == 0].append(_.strip())
@@ -81,7 +81,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum, query)
             messages.append(
                 {"role": "user", "content": "将下面的日文文本翻译成中文：" + query}
             )
@@ -92,7 +92,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地使用给定的术语表以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，注意不要混淆使役态和被动态的主语和宾语，不要擅自添加原文中没有的代词，也不要擅自增加或减少换行。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum, query)
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
             content = (
                 "根据以下术语表（可以为空）：\n"
@@ -109,7 +109,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum, True)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum, query, True)
             if gpt_dict:
                 content = (
                     "根据以下术语表（可以为空）：\n"
@@ -128,7 +128,7 @@ class TS(basetrans):
                     "content": "你是一个视觉小说翻译模型，可以通顺地使用给定的术语表以指定的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，注意不要混淆使役态和被动态的主语和宾语，不要擅自添加原文中没有的特殊符号，也不要擅自增加或减少换行。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum, True)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum, query, True)
             if gpt_dict:
                 content = (
                     "参考以下术语表（可为空，格式为src->dst #备注）\n"

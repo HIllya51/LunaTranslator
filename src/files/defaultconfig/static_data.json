@@ -562,7 +562,7 @@
             "icon": "files/static/llm_icons/qwen.svg"
         },
         {
-            "vis": "字节跳动豆包大模型",
+            "vis": "字节跳动火山引擎",
             "value": "https://ark.cn-beijing.volces.com/api/v3",
             "icon": "files/static/llm_icons/doubao.svg"
         },
@@ -640,6 +640,11 @@
             "vis": "MiniMax",
             "value": "https://api.minimax.chat/v1",
             "icon": "files/static/llm_icons/minimax.svg"
+        },
+        {
+            "vis": "Chute",
+            "value": "https://llm.chutes.ai/v1/chat/completions",
+            "icon": "files/static/llm_icons/chutes.webp"
         }
     ]
 }

@@ -278,19 +278,23 @@ class basetrans(commonbase):
         return user_prompt
 
     def _gpt_common_parse_context(
-        self, messages: list, context: list, num: int, isgemini=False
+        self, messages: list, context: list, num: int, query=None
     ):
-
-        for _i in range(min(len(context) // 2, num)):
-            i = len(context) // 2 - min(len(context) // 2, num) + _i
-            messages.append(context[i * 2])
-            messages.append(context[i * 2 + 1])
-        if isgemini:
-            for i, item in enumerate(messages):
-                messages[i] = {
-                    "role": {"assistant": "model", "user": "user"}[item["role"]],
-                    "parts": [{"text": item["content"]}],
-                }
+        offset = 0
+        _i = 0
+        msgs = []
+        dedump = set([query])
+        while (_i + offset < (len(context) // 2)) and (_i < num):
+            i = len(context) // 2 - _i - offset - 1
+            c_q = context[i * 2]["content"]
+            if c_q in dedump:
+                offset += 1
+                continue
+            dedump.add(c_q)
+            msgs.append(context[i * 2 + 1])
+            msgs.append(context[i * 2])
+            _i += 1
+        messages.extend(reversed(msgs))
 
     def maybeneedreinit(self):
         if not (self.needreinit or not self.initok):

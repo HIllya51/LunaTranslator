@@ -253,31 +253,21 @@ class gptcommon(basetrans):
         headers.update(extra)
         return headers
 
-    def translate(self, query):
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
-        query = self._gptlike_createquery(
-            query, "use_user_user_prompt", "user_user_prompt"
+    def translate(self, query_1: str):
+        extrabody, extraheader = getcustombodyheaders(
+            self.config.get("customparams"), **locals()
         )
-        sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
         usingstream = self.config["流式输出"]
+        messages = self.commoncreatemessages(query_1)
         if self.apiurl.startswith("https://generativelanguage.googleapis.com"):
-            response = self.request_gemini(sysprompt, query, extrabody, extraheader)
+            response = self.request_gemini(messages, extrabody, extraheader)
         elif self.apiurl.startswith("https://api.anthropic.com/v1/messages"):
-            response = self.req_claude(sysprompt, query, extrabody, extraheader)
+            response = self.req_claude(messages, extrabody, extraheader)
         else:
-            message = [{"role": "system", "content": sysprompt}]
-            self._gpt_common_parse_context(
-                message, self.context, self.config["附带上下文个数"]
-            )
-            message.append({"role": "user", "content": query})
-            prefill = self._gptlike_create_prefill("prefill_use", "prefill")
-            if prefill:
-                message.append({"role": "assistant", "content": prefill})
-
             response = self.proxysession.post(
                 self.createurl(),
                 headers=self.createheaders(extraheader),
-                json=self.createdata(message, extrabody),
+                json=self.createdata(messages, extrabody),
                 stream=usingstream,
             )
         hidethinking = self.config.get("hidethinking", False)
@@ -294,15 +284,30 @@ class gptcommon(basetrans):
                 yield "LUNASHOWHTML" + NativeUtils.Markdown2Html(respmessage)
             else:
                 yield respmessage
-        if not (query.strip() and respmessage.strip()):
+        if not (query_1.strip() and respmessage.strip()):
             return
-        self.context.append({"role": "user", "content": query})
+        self.context.append({"role": "user", "content": query_1})
         self.context.append({"role": "assistant", "content": respmessage})
 
     def createurl(self):
         return createurl(self.apiurl)
 
-    def request_gemini(self, sysprompt, query, extrabody, extraheader):
+    def commoncreatemessages(self, query_1):
+        query = self._gptlike_createquery(
+            query_1, "use_user_user_prompt", "user_user_prompt"
+        )
+        sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
+        message = [{"role": "system", "content": sysprompt}]
+        self._gpt_common_parse_context(
+            message, self.context, self.config["附带上下文个数"], query=query_1
+        )
+        message.append({"role": "user", "content": query})
+        prefill = self._gptlike_create_prefill("prefill_use", "prefill")
+        if prefill:
+            message.append({"role": "assistant", "content": prefill})
+        return message
+
+    def request_gemini(self, messages: list, extrabody, extraheader):
         gen_config = {
             "generationConfig": {
                 "stopSequences": [" \n"],
@@ -335,18 +340,17 @@ class gptcommon(basetrans):
             ]
         }
         # https://discuss.ai.google.dev/t/gemma-3-missing-features-despite-announcement/71692/13
+        sysprompt = messages[0]["content"]
+        messages.pop(0)
         sys_message = (
             {"systemInstruction": {"parts": {"text": sysprompt}}} if sysprompt else {}
         )
-        message = []
-        self._gpt_common_parse_context(
-            message, self.context, self.config["附带上下文个数"], isgemini=True
-        )
-        message.append({"role": "user", "parts": [{"text": query}]})
-        prefill = self._gptlike_create_prefill("prefill_use", "prefill")
-        if prefill:
-            message.append({"role": "model", "parts": [{"text": prefill}]})
-        contents = dict(contents=message)
+        for i, item in enumerate(messages):
+            messages[i] = {
+                "role": {"assistant": "model", "user": "user"}[item["role"]],
+                "parts": [{"text": item["content"]}],
+            }
+        contents = dict(contents=messages)
         usingstream = self.config["流式输出"]
         payload = {}
         payload.update(contents)
@@ -365,17 +369,10 @@ class gptcommon(basetrans):
         )
         return res
 
-    def req_claude(self, sysprompt, query, extrabody, extraheader):
+    def req_claude(self, messages: list, extrabody, extraheader):
         temperature = self.config["Temperature"]
-
-        message = []
-        self._gpt_common_parse_context(
-            message, self.context, self.config["附带上下文个数"]
-        )
-        message.append({"role": "user", "content": query})
-        prefill = self._gptlike_create_prefill("prefill_use", "prefill")
-        if prefill:
-            message.append({"role": "assistant", "content": prefill})
+        sysprompt = messages[0]["content"]
+        messages.pop(0)
         headers = {
             "anthropic-version": "2023-06-01",
             "accept": "application/json",
@@ -385,7 +382,7 @@ class gptcommon(basetrans):
         usingstream = self.config["流式输出"]
         data = dict(
             model=self.config["model"],
-            messages=message,
+            messages=messages,
             system=sysprompt,
             max_tokens=self.config["max_tokens"],
             temperature=temperature,

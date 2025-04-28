@@ -363,7 +363,7 @@ class Direct(Launcher):
         windows.ShellExecute(None, "open", gameexe, "", dirpath, windows.SW_SHOW)
 
 
-x86tools = [
+x86tools: "list[LEbase]" = [
     le_internal,
     lr_internal,
     NTLEAS32,
@@ -403,7 +403,7 @@ def localeswitchedrun(gameuid):
     gameexe = get_launchpath(gameuid)
     gameexe = os.path.abspath(gameexe)
     b = windows.GetBinaryType(gameexe)
-    launch_method = config.get("launch_method", {6: "direct", 0: "le"}.get(b))
+    launch_method = config.get("launch_method", {6: "direct", 0: x86tools[0].id}.get(b))
     tools = getgamecamptools(gameexe, b)
     ids = [_.id for _ in tools]
     if launch_method not in ids:

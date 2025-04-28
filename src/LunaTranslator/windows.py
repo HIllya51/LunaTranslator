@@ -262,9 +262,9 @@ _GetWindowThreadProcessId.argtypes = HWND, c_void_p
 GetClipboardOwner = _user32.GetClipboardOwner
 GetClipboardOwner.restype = HWND
 try:
-    _GetModuleFileNameExW = _psapi.GetModuleFileNameExW
+    _GetModuleFileNameExW = _kernel32.K32GetModuleFileNameExW
 except:
-    _GetModuleFileNameExW = _kernel32.GetModuleFileNameExW
+    _GetModuleFileNameExW = _psapi.GetModuleFileNameExW
 _GetModuleFileNameExW.argtypes = HANDLE, HMODULE, LPWSTR, DWORD
 _GetModuleFileNameExW.restype = DWORD
 
@@ -273,9 +273,9 @@ _QueryDosDeviceW = _kernel32.QueryDosDeviceW
 _QueryDosDeviceW.argtypes = c_wchar_p, c_wchar_p, c_uint
 
 try:
-    _GetProcessImageFileNameW = _psapi.GetProcessImageFileNameW
+    _GetProcessImageFileNameW = _kernel32.K32GetProcessImageFileNameW
 except:
-    _GetProcessImageFileNameW = _kernel32.GetProcessImageFileNameW
+    _GetProcessImageFileNameW = _psapi.GetProcessImageFileNameW
 _GetProcessImageFileNameW.argtypes = c_void_p, c_wchar_p, c_uint
 
 _Mpr = windll.Mpr
