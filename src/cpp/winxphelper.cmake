@@ -1,4 +1,4 @@
-﻿set(YY_Thunks_VERSION "v1.1.7-Beta6")
+﻿set(YY_Thunks_VERSION "v1.1.7")
 option(WINXP "WINXP" OFF)
 option(USE_VC_LTL "USE_VC_LTL" OFF)
 
