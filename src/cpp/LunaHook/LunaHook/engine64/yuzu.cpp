@@ -2117,6 +2117,17 @@ namespace
         }
         buffer->from(s);
     }
+    void F010057C020702000(TextBuffer *buffer, HookParam *hp)
+    {
+        F010039F0202BC000(buffer, hp);
+        auto s = buffer->strW();
+        static std::wstring last;
+        if (startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+        }
+        last = s;
+    }
     void F010060301588A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -4064,6 +4075,8 @@ namespace
             {0x800B22A4, {CODEC_UTF8, 1, 0, 0, F0100EA9015126000_1, 0x0100EA9015126000ull, "1.0.0"}},
             // Summer Pockets REFLECTION BLUE // 1.0.0 & 1.0.1
             {0x8007A878, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F01000EA00B23C000<false>, 0x0100273013ECA000ull, nullptr}},
+            // Scarlet Snowfall
+            {0x818D8570, {CODEC_UTF16, 1, 0x14, 0, F010057C020702000, 0x010057C020702000ull, "1.0.0"}},
         };
         return 1;
     }();

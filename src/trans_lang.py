@@ -1,5 +1,6 @@
-import sys, time
+import sys, os
 
+os.chdir(os.path.dirname(__file__))
 sys.path.insert(0, "./LunaTranslator")
 from translator.youdaodict import TS
 

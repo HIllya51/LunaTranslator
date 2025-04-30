@@ -337,6 +337,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | 0100DA2019044000 | 結合男子 |
 |  | 0100EA9015126000 | 古書店街の橋姫 Hashihime of the Old Book Town append |
 |  | 0100273013ECA000 | Summer Pockets REFLECTION BLUE |
+|  | 010057C020702000 | Scarlet Snowfall |
 
 == PSP
 
