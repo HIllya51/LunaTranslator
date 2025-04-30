@@ -86,10 +86,18 @@ levenshtein_normalized_similarity.restype = c_double
 
 def distance(s1, s2):
     # 词典更适合用编辑距离，因为就一两个字符，相似度会很小，预翻译适合用相似度
+    if not s1:
+        s1 = ""
+    if not s2:
+        s2 = ""
     return levenshtein_distance(len(s1), s1, len(s2), s2)
 
 
 def similarity(s1, s2):
+    if not s1:
+        s1 = ""
+    if not s2:
+        s2 = ""
     return levenshtein_normalized_similarity(len(s1), s1, len(s2), s2)
 
 
