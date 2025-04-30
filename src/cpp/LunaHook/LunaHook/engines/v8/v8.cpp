@@ -9,7 +9,7 @@ namespace
 }
 namespace
 {
-	bool useclipboard = true;
+	bool useclipboard = false;
 	bool usehttp = true;
 	int usehttp_port = 0;
 }
@@ -372,21 +372,23 @@ bool tryhookv8()
 		auto succ = stringsucc;
 		if (funcsucc)
 		{
-			useclipboard = !std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.clipboard"));
-			usehttp = !(GetOSVersion().IsleWinXP() || std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.http")));
-			if (usehttp)
+			// useclipboard = !std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.clipboard"));
+			// usehttp = !(GetOSVersion().IsleWinXP() || std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.http")));
+			// if (usehttp)
 			{
 				usehttp_port = makehttpgetserverinternal();
 				ConsoleOutput("%d %d", GetCurrentProcessId(), usehttp_port);
 				hook_LUNA_CONTENTBYPASS();
 				dont_detach = true;
 			}
-			if (useclipboard)
+			// if (useclipboard)
+			//{
+			//	hookClipboard();
+			// }
+			// if (useclipboard || usehttp)
 			{
-				hookClipboard();
-			}
-			if (useclipboard || usehttp)
 				succ |= v8script::v8runscript(hm);
+			}
 		}
 		if (stringsucc || funcsucc)
 			return succ;
