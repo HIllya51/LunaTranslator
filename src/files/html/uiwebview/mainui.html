@@ -447,9 +447,11 @@
     }
     _clear_all = clear_all //保留符号
     function setselectable(b) {
-        document.body.contentEditable = Boolean(b);
         document.getElementById('luna_root_div').style.userSelect = b ? 'text' : 'none';
         document.getElementById('luna_overlay_div').style.display = b ? 'none' : 'block';
+    }
+    function seteditable(b) {
+        document.body.contentEditable = Boolean(b);
     }
     function isPointOverText(x, y) {
         //https://stackoverflow.com/questions/10389459/is-there-a-way-to-detect-if-im-hovering-over-text

@@ -38,6 +38,7 @@ class somecommon(dataget):
         self.colorset.clear()
         self.ts_klass.clear()
         self.setselectable(globalconfig["selectable"])
+        self.seteditable(globalconfig["editable"])
         self.showhideerror(globalconfig["showtranexception"])
         self.showhideorigin(globalconfig["isshowrawtext"])
         self.showhidetranslate(globalconfig["showfanyi"])
@@ -57,6 +58,9 @@ class somecommon(dataget):
 
     def setdisplayrank(self, rank):
         self.debugeval("setdisplayrank({})".format(int(rank)))
+
+    def seteditable(self, b):
+        self.debugeval("seteditable({})".format(int(b)))
 
     def setselectable(self, b):
         self.debugeval("setselectable({})".format(int(b)))

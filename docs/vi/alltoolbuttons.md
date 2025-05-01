@@ -172,12 +172,14 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> Luôn ở trên cùng
     Hủy bỏ/Luôn ở trên cùng cửa sổ dịch
-1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> Có thể chọn & chỉnh sửa
+
+1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> Có thể chọn
     Làm cho văn bản trong khu vực văn bản của cửa sổ dịch có thể chọn được.
 
-    Nếu hiển thị hiện tại là Webview2, văn bản trong cửa sổ cũng có thể chỉnh sửa được.
-
     Nếu nhấp chuột phải trong khi kích hoạt, kéo các khu vực không phải văn bản để di chuyển cửa sổ sẽ bị cấm.
+
+1. #### <i class="fa fa-italic"></i> <i class="btnstatus2 fa fa-italic"></i> chỉnh sửa
+    WebView2 chỉ hoạt động khi nó được hiển thị. Làm cho văn bản bên trong cửa sổ có thể chỉnh sửa được.
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Tra cứu
     Nếu hiện tại có văn bản được chọn, văn bản đã chọn sẽ được truy vấn và một cửa sổ tìm kiếm từ khóa sẽ được mở. Nếu không, nó sẽ chỉ mở hoặc đóng cửa sổ tìm kiếm từ khóa.

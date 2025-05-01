@@ -409,6 +409,9 @@ class TextBrowser(QWidget, dataget):
     def setselectable(self, b):
         self.masklabel.setHidden(b)
 
+    def seteditable(self, _):
+        pass
+
     def _createqfont(self, texttype: TextType, klass):
         fm, fs, bold = self._getfontinfo(texttype)
         if klass:

@@ -172,12 +172,14 @@
 
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> 常に最前面に表示
     翻訳ウィンドウの常に最前面をキャンセル/有効にする。
-1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 選択可能 & 編集可能
+    
+1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 選択可能
     翻訳ウィンドウのテキストエリア内のテキストを選択可能にします。
 
-    現在のディスプレイが Webview2 の場合、ウィンドウ内のテキストも同時に編集可能になります。
-
     アクティブ時にマウスの右ボタンをクリックすると、テキスト以外の領域をドラッグしてウィンドウを移動できなくなります。
+
+1. #### <i class="fa fa-italic"></i> <i class="btnstatus2 fa fa-italic"></i> 編集可能
+    Webview 2表示時のみ有効です。ウィンドウ内のテキストを編集可能にします。
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 検索
     現在選択されているテキストがある場合は、選択されているテキストを問い合せ、単語検索ウィンドウを開きます。それ以外の場合は単に単語検索ウィンドウを開いたり閉じたりします。

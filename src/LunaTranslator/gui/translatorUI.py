@@ -882,6 +882,13 @@ class TranslatorWindow(resizableframeless):
                     rightclick=self.setselectableEx,
                 ),
             ),
+            (
+                "editable",
+                buttonfunctions(
+                    clicked=self.seteditable,
+                    colorstate=lambda: globalconfig["editable"],
+                ),
+            ),
         )
 
         _type = {"quit": 2}
@@ -1279,6 +1286,11 @@ class TranslatorWindow(resizableframeless):
         self.translate_text.setselectable(globalconfig["selectable"])
         self.refreshtoolicon()
 
+    def seteditable(self):
+        globalconfig["editable"] = not globalconfig["editable"]
+        self.translate_text.seteditable(globalconfig["editable"])
+        self.refreshtoolicon()
+
     def createborderradiusstring(self, r, merge, top=False):
         if merge:
             if top:
@@ -1332,7 +1344,9 @@ class TranslatorWindow(resizableframeless):
             )
         )
         self.titlebar.setstyle(bottomr, bottomr3)
-        QApplication.postEvent(self.translate_text.textbrowser, QEvent(QEvent.Type.User + 2))
+        QApplication.postEvent(
+            self.translate_text.textbrowser, QEvent(QEvent.Type.User + 2)
+        )
 
     @property
     def transparent_value_actually(self):

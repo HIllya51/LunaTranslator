@@ -792,8 +792,14 @@
             },
             "selectable": {
                 "use": false,
-                "tip": "可选取的_&_可编辑的",
+                "tip": "可选取的",
                 "icon": "fa.i-cursor",
+                "align": 0
+            },
+            "editable": {
+                "use": false,
+                "tip": "可编辑的",
+                "icon": "fa.italic",
                 "align": 0
             },
             "searchwordW": {
@@ -1911,6 +1917,7 @@
         }
     ],
     "selectable": true,
+    "editable": false,
     "selectableEx": false,
     "autoupdate": true,
     "proxies": null,

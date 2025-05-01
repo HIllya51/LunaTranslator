@@ -172,12 +172,14 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> Always on Top
     Cancel/Always on Top translation window
-1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> Selectable & Editable
+
+1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> Selectable
     Make the text in the translation window's text area selectable.
 
-    If the current display is Webview2, the text in the window is also editable.
-
     If the right mouse button is clicked during activation, dragging non-text areas to move the window will be prohibited.
+
+1. #### <i class="fa fa-italic"></i> <i class="btnstatus2 fa fa-italic"></i> Editable
+    Only valid when displayed in Webview2. Make the text within the window editable.
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Look Up
     If there is currently text selected, the selected text will be queried and a word search window will be opened. Otherwise, it will only open or close the keyword search window.
