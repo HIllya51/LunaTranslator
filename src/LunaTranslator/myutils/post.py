@@ -199,15 +199,8 @@ def _4_f(line):
 
 def _6_fEX(line: str):
     white = getlangsrc().space
-    while True:
-        curr = line
-        for _ in "\r\n\u2028\u2029":
-            line = line.replace(_ + " ", " ").replace(" " + _, " ")
-        if line == curr:
-            break
-
-    line = re.sub(r"[\r\n\u2028\u2029]+", white, line)
-
+    sections = [sec.strip() for sec in line.splitlines()]
+    line = white.join(sec for sec in sections if sec)
     return line
 
 
