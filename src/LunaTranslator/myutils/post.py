@@ -199,8 +199,7 @@ def _4_f(line):
 
 def _6_fEX(line: str):
     white = getlangsrc().space
-    sections = [sec.strip() for sec in line.splitlines()]
-    line = white.join(sec for sec in sections if sec)
+    line = white.join(sec for sec in line.splitlines() if sec)
     return line
 
 
