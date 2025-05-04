@@ -488,6 +488,3 @@ def saveallconfig(test=False):
             "files/lang/{}.json".format(getlanguse()), languageshow, isconfig=False
         )
 
-
-is_xp = tuple(sys.version_info)[:2] == (3, 4)
-is_bit_64 = platform.architecture()[0] == "64bit"

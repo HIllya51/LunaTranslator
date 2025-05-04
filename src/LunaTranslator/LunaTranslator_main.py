@@ -52,7 +52,7 @@ def overridepathexists():
 
 def prepareqtenv():
     import windows
-    from myutils.config import is_xp
+    from gobject import is_xp
 
     # win7 no vcredist2015
     windows.addenvpath("files/runtime/")
@@ -157,7 +157,7 @@ def checklang():
 def checkintegrity():
     from myutils.config import _TR
     from qtsymbols import QMessageBox
-    from myutils.config import is_xp
+    from gobject import is_xp
     import platform, gobject
 
     dll3264 = [

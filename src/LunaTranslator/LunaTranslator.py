@@ -12,9 +12,9 @@ from myutils.config import (
     static_data,
     getlanguse,
     _TR,
-    is_xp,
     isascii,
 )
+from gobject import is_xp
 from myutils.mecab import mecab, latin
 from myutils.utils import (
     parsemayberegexreplace,

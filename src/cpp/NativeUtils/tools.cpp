@@ -92,6 +92,6 @@ process_output(const MD_CHAR *text, MD_SIZE size, void *userdata)
 DECLARE_API void Markdown2Html(const char *str, void (*cb)(const char *))
 {
     std::string output;
-    md_html(str, strlen(str), process_output, &output, 0, 0);
+    md_html(str, strlen(str), process_output, &output, MD_DIALECT_GITHUB, 0);
     cb(output.c_str());
 }

@@ -13,7 +13,6 @@ import NativeUtils
 
 def checkusewhich():
     if "rendertext_using" not in globalconfig:
-        v = platform.version().split(".")
         iswin8later = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
         webview2version = NativeUtils.detect_webview2_version()
         if iswin8later:

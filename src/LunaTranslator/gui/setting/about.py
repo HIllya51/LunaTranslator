@@ -1,7 +1,8 @@
 from qtsymbols import *
 import functools
 import NativeUtils, queue, hashlib, threading
-from myutils.config import globalconfig, static_data, _TR, is_xp, is_bit_64
+from myutils.config import globalconfig, static_data, _TR
+from gobject import is_xp, is_bit_64
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
@@ -526,6 +527,8 @@ def setTab_about(self, basel):
                         makelink("b1tg/win11-oneocr"),
                         makelink("mity/md4c"),
                         makelink("swigger/wechat-ocr"),
+                        makelink("rupeshk/MarkdownHighlighter"),
+                        makelink("sindresorhus/github-markdown-css"),
                     ],
                     "LICENSE",
                 )

@@ -12,7 +12,7 @@ from myutils.config import (
     _TR,
 )
 from textsource.textsourcebase import basetext
-from myutils.utils import getlangtgt, safe_escape
+from myutils.utils import getlangtgt, safe_escape, stringfyerror
 from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import injectdll, ListProcess, getpidexe
 from myutils.wrapper import threader
@@ -385,10 +385,10 @@ class texthook(basetext):
             return
         try:
             self.start_unsafe(pids)
-        except:
+        except Exception as e:
             print_exc()
             gobject.baseobject.translation_ui.displaymessagebox.emit(
-                "错误", "权限不足，请以管理员权限运行！"
+                "错误", stringfyerror(e)
             )
 
     @threader

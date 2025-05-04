@@ -1,12 +1,7 @@
 import windows, os, NativeUtils, functools
 from qtsymbols import *
-from myutils.config import (
-    savehook_new_data,
-    get_launchpath,
-    globalconfig,
-    is_xp,
-    _TR,
-)
+from myutils.config import savehook_new_data, get_launchpath, globalconfig, _TR
+from gobject import is_xp
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
 from traceback import print_exc
 import xml.etree.ElementTree as ET

@@ -1,4 +1,4 @@
-import platform, os
+import platform, os, sys
 
 
 def GetDllpath(_, base=None):
@@ -65,3 +65,7 @@ class Consts:
     btnscale = 1.2
     toolwdivh = 4 / 3
     toolscale = 1.5
+
+
+is_xp = tuple(sys.version_info)[:2] == (3, 4)
+is_bit_64 = platform.architecture()[0] == "64bit"

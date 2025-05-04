@@ -1,5 +1,6 @@
 from qtsymbols import *
 import gobject, qtawesome, os, json, functools, uuid
+import NativeUtils, re
 from myutils.config import globalconfig, get_launchpath, savehook_new_data
 from myutils.wrapper import Singleton
 from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR
@@ -16,44 +17,7 @@ from gui.usefulwidget import (
     auto_select_webview,
 )
 from gui.dynalang import LAction
-
-
-class TextEditOrPlain(QStackedWidget):
-    textChanged = pyqtSignal(str)
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.edit2 = QPlainTextEdit()
-        self.edit2.textChanged.connect(functools.partial(self.__changed1, 1))
-        self.edit = QTextEdit()
-        self.edit.textChanged.connect(functools.partial(self.__changed1, 0))
-        self.addWidget(self.edit)
-        self.addWidget(self.edit2)
-
-    def text(self):
-        return self.edit2.toPlainText()
-
-    def settext(self, text):
-        self.edit.setHtml(text)
-        self.edit2.setPlainText(text)
-
-    def __changed1(self, i):
-        if i == 0:
-            if self.currentIndex() == 0:
-                html = self.edit.toHtml()
-                self.edit2.setPlainText(html)
-                self.textChanged.emit(html)
-        elif i == 1:
-            if self.currentIndex() == 1:
-                self.edit.setHtml(self.text())
-                self.textChanged.emit(self.text())
-
-    def inserttext(self, text):
-        if self.currentIndex() == 0:
-            self.edit.insertHtml(text)
-
-        elif self.currentIndex() == 1:
-            self.edit2.insertPlainText(text)
+from gui.markdownhighlighter import MarkdownHighlighter
 
 
 class QMenuEx(QMenu):
@@ -66,6 +30,134 @@ class QMenuEx(QMenu):
         super().mouseReleaseEvent(event)
 
 
+class HtmlPlainTextEdit(QTextEdit):
+
+    def contextMenuEvent(self, event: QContextMenuEvent):
+        data = QApplication.clipboard().mimeData()
+        if not (data.hasHtml() and not data.hasImage()):
+            return super().contextMenuEvent(event)
+        menu = self.createStandardContextMenu()
+        menu.addSeparator()
+
+        custom_action = LAction("粘贴纯文本", self)
+        custom_action.setShortcut("Ctrl+Shift+V")
+        custom_action.triggered.connect(self.handle_custom_action)
+        menu.addAction(custom_action)
+
+        menu.exec_(event.globalPos())
+
+    def handle_custom_action(self):
+        self.insertPlainText(NativeUtils.ClipBoard.text)
+
+    def __init__(self, ref: str):
+        self.ref = os.path.dirname(ref)
+        super().__init__()
+        self.upper_shortcut = QShortcut(QKeySequence("Ctrl+Shift+V"), self)
+        self.upper_shortcut.activated.connect(self.handle_custom_action)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.hl = MarkdownHighlighter(self)
+        fn = os.path.join(os.path.dirname(__file__), "markdownhighlighter.theme.json")
+        with open(fn, "r") as ff:
+            self.hl.setTheme(json.load(ff)["solarized"])
+
+    def createMimeDataFromSelection(self) -> QMimeData:
+        mime_data = super().createMimeDataFromSelection()
+        if mime_data is not None:
+            text = mime_data.text()
+            mime_data = QMimeData()
+            mime_data.setText(text)
+        return mime_data
+
+    def insertFromMimeData(self, source: QMimeData):
+
+        if source.hasImage():
+            image: QImage = source.imageData()
+            p = os.path.join(self.ref, str(uuid.uuid4()) + ".webp")
+            image.save(p)
+            fn = os.path.basename(p)
+            source = QMimeData()
+            source.setText("\n![img]({})\n".format(fn))
+        elif source.hasHtml():
+            html = source.html()
+            if html.startswith("<html>"):
+                html = html[6:]
+            if html.startswith("\n"):
+                html = html[1:]
+            if html.startswith("<body>"):
+                html = html[6:]
+            if html.startswith("\n"):
+                html = html[1:]
+            if html.endswith("</html>"):
+                html = html[:-7]
+            if html.endswith("\n"):
+                html = html[:-1]
+            if html.endswith("</body>"):
+                html = html[:-7]
+            if html.endswith("\n"):
+                html = html[:-1]
+
+            source = QMimeData()
+            source.setText("\n{}\n".format(html))
+        super().insertFromMimeData(source)
+
+
+def convert_newlines(text):
+    # 修改markdown规则，使其更符合非计算机人员直觉
+    # 对于```code```，不进行修改
+    # 对于一个\n，直接替换成\n\n，使其满足markdown换行语法
+    # 对于两个\n\n，不进行修改，以使得大部分正确语法的markdown格式得以保持
+    # 两个以上\n，插入n-2个<br>来便捷的进行换行。
+
+    # 例外：
+    # | MD_FLAG_TABLES
+    # [ 图标
+    # - MD_FLAG_TASKLISTS
+
+    parts = re.split(r"(```.*?```)", text, flags=re.DOTALL)
+
+    processed_parts = []
+    for i, part in enumerate(parts):
+        if i % 2 == 1:
+            processed_parts.append(part)
+            continue
+
+        laststart = [0]
+
+        def replace_newlines(laststart: "list[int]", match: re.Match):
+            thisline: str = match.string[laststart[0] : match.start()]
+            laststart[0] = match.end()
+
+            if thisline.startswith(("[", "|")):
+                return match.group(0)
+            if re.match(" *-", thisline):
+                # MD_FLAG_TASKLISTS
+                return match.group(0)
+
+            n = len(match.group(0))
+            if n == 1:
+                return "\n\n"
+            else:
+                return "\n\n" + "\n\n<br>\n\n" * (n - 2)
+
+        part = re.sub(r"\n+", functools.partial(replace_newlines, laststart), part)
+        processed_parts.append(part)
+    return "".join(processed_parts)
+
+
+def parsetasklistcheckbox(md: str):
+    # MD_FLAG_TASKLISTS
+    # 解析不太正确，修复一下。
+    md = md.replace(
+        '<input type="checkbox" class="task-list-item-checkbox" disabled checked><p>',
+        '<p><input type="checkbox" class="task-list-item-checkbox" disabled checked>',
+    )
+    md = md.replace(
+        '<input type="checkbox" class="task-list-item-checkbox" disabled><p>',
+        '<p><input type="checkbox" class="task-list-item-checkbox" disabled>',
+    )
+    return md
+
+
 class editswitchTextBrowserEx(QWidget):
     textChanged = pyqtSignal(str)
 
@@ -73,28 +165,48 @@ class editswitchTextBrowserEx(QWidget):
         if i == 1 and self.readoreditstack.count() == 1:
             self.browser = auto_select_webview(self, loadex=False)
             self.readoreditstack.addWidget(self.browser)
+            self.switch(i)
+
+    def switch(self, i):
+        if i == 1:
             if os.path.isfile(self.fn):
-                self.browser.navigate(self.fn)
+                with open(self.fn, "r", encoding="utf8") as ff:
+                    text = ff.read()
+                self.__markdown(text)
             else:
                 self.browser.setHtml("")
+
+    def __markdown(self, text: str):
+        with open(
+            "files/static/github-markdown-css/template.html", "r", encoding="utf8"
+        ) as ff:
+            template = ff.read()
+        md = parsetasklistcheckbox(NativeUtils.Markdown2Html(convert_newlines(text)))
+        md = template.replace("__MARKDOWN__BODY__", md)
+        with open(self.cache, "w", encoding="utf8") as ff:
+            ff.write(md)
+        self.browser.navigate(self.cache)
 
     def textchanged(self, text):
         self.textChanged.emit(text)
 
-    def __init__(self, parent: "dialog_memory", fn, config):
+    def __init__(self, parent: "dialog_memory", fn: str, config: dict):
         super().__init__(parent)
+        self.browser = None
         self.parent1 = parent
+        self.fn = fn
         readoreditstack = QStackedWidget()
-
+        self.cache = self.fn + ".cache.html"
         self.readoreditstack = readoreditstack
+        readoreditstack.currentChanged.connect(self.switch)
         l = QHBoxLayout(self)
         l.setContentsMargins(0, 0, 0, 0)
         l.addWidget(readoreditstack)
-        editstack = TextEditOrPlain()
-        self.editstack = editstack
-        editstack.textChanged.connect(self.textchanged)
-        readoreditstack.addWidget(editstack)
-        self.fn = fn
+        self.editstack = HtmlPlainTextEdit(ref=self.fn)
+        self.editstack.textChanged.connect(
+            lambda: self.textchanged(self.editstack.toPlainText())
+        )
+        readoreditstack.addWidget(self.editstack)
         try:
             with open(fn, "r", encoding="utf8") as ff:
                 text = ff.read()
@@ -104,19 +216,18 @@ class editswitchTextBrowserEx(QWidget):
         self.textChanged.connect(functools.partial(self.save, fn))
         self.delayload(1 - config.get("edit", True))
         self.readoreditstack.setCurrentIndex(1 - config.get("edit", True))
-        self.editstack.setCurrentIndex(config.get("plain", True))
 
     def save(self, fn, text) -> None:
         with open(fn, "w", encoding="utf8") as ff:
             ff.write(text)
-        if self.readoreditstack.count() > 1:
-            self.browser.navigate(self.fn)
+        if self.readoreditstack.currentIndex() == 1:
+            self.__markdown(text)
 
     def settext(self, text):
-        self.editstack.settext(text)
+        self.editstack.setPlainText(text)
 
     def text(self):
-        return self.editstack.text()
+        return self.editstack.toPlainText()
 
 
 @Singleton
@@ -141,7 +252,7 @@ class dialog_memory(saveposwindow):
             except:
                 pass
 
-    def createview(self, config, i, lay: QHBoxLayout):
+    def createview(self, config: dict, i, lay: QHBoxLayout):
 
         fn = os.path.join(self.rwpath, config.get("file", str(i) + ".html"))
         showtext = editswitchTextBrowserEx(self, fn, config)
@@ -197,9 +308,8 @@ class dialog_memory(saveposwindow):
         self.btnplus = IconButton(parent=self, icon="fa.plus")
         self.btnplus.clicked.connect(self._plus)
         self.switch = IconButton(parent=self, icon="fa.edit", checkable=True)
+        self.switch.setChecked(True)
         self.switch.clicked.connect(self.switchreadonly)
-        self.switch3 = IconButton(parent=self, icon="fa.file-code-o", checkable=True)
-        self.switch3.clicked.connect(self.__switch)
         self.insertpicbtn = IconButton(parent=self, icon="fa.picture-o")
         self.insertaudiobtn = IconButton(parent=self, icon="fa.music")
         self.insertaudiobtnisrecoding = False
@@ -207,7 +317,6 @@ class dialog_memory(saveposwindow):
         self.buttonslayout.addWidget(self.textbtn)
         self.buttonslayout.addWidget(self.insertaudiobtn)
         self.buttonslayout.addWidget(self.insertpicbtn)
-        self.buttonslayout.addWidget(self.switch3)
         self.buttonslayout.addWidget(self.switch)
         self.insertpicbtn.clicked.connect(self.Picselect)
         self.insertaudiobtn.clicked.connect(self.AudioSelect)
@@ -278,10 +387,10 @@ class dialog_memory(saveposwindow):
         tgt = os.path.join(self.rwpath, os.path.basename(path))
         os.rename(path, tgt)
         tgt = mayberelpath(tgt)
-        html = """\n<audio controls src="{b64}"></audio>\n""".format(
-            b64=os.path.basename(path)
+        html = """\n<audio controls src="{}"></audio>\n""".format(
+            os.path.basename(path)
         )
-        self.editor.inserttext(html)
+        self.editor.insertPlainText(html)
 
     def Picselect(self):
         menu = QMenuEx(self)
@@ -334,9 +443,7 @@ class dialog_memory(saveposwindow):
         tgt = os.path.join(self.rwpath, os.path.basename(path))
         os.rename(path, tgt)
         tgt = mayberelpath(tgt)
-        self.editor.inserttext(
-            '\n<img src="{}" style="max-width: 100%">\n'.format(os.path.basename(path))
-        )
+        self.editor.insertPlainText("\n![img]({})\n".format(os.path.basename(path)))
 
     def TextInsert(self):
         menu = QMenu(self)
@@ -359,20 +466,15 @@ class dialog_memory(saveposwindow):
             )
 
     def __wrap(self, t: str):
-        self.editor.inserttext("\n<br>\n" + t.replace("\n", "\n<br>\n") + "\n<br>\n")
+        self.editor.insertPlainText(t + "\n")
 
     @property
-    def editor(self) -> TextEditOrPlain:
+    def editor(self):
         return self.editororview.editstack
 
     @property
     def editororview(self) -> editswitchTextBrowserEx:
         return self.tab.currentWidget().layout().itemAt(0).widget()
-
-    def __switch(self, x):
-        self.editor.setCurrentIndex(x)
-        self.config[self.tab.currentIndex()]["plain"] = x
-        self.saveconfig()
 
     def switchreadonly(self, i):
         self.editororview.delayload(1 - i)
@@ -396,8 +498,7 @@ class dialog_memory(saveposwindow):
             return
         if index >= len(self.config):
             return
-        config = self.config[index]
-        self.switch3.setChecked(config.get("plain", True))
+        config: dict = self.config[index]
         self.insertpicbtn.setChecked(config.get("edit", True))
         self.switch.setChecked(config.get("edit", True))
         i = config.get("edit", True)
@@ -407,7 +508,6 @@ class dialog_memory(saveposwindow):
         self.insertpicbtn.setVisible(i)
         self.insertaudiobtn.setVisible(i)
         self.textbtn.setVisible(i)
-        self.switch3.setVisible(i)
 
     def tabmenu(self, position):
         index = self.tab.tabBar().tabAt(position)

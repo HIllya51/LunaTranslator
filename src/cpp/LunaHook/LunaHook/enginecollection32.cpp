@@ -10,6 +10,7 @@
 #include "engine32/Hug.h"
 #include "engine32/Cage.h"
 #include "engine32/ONScripterru.h"
+#include "engine32/ADVSystem.h"
 #include "engine32/Pinpai.h"
 #include "engine32/AbogadoPowers.h"
 #include "engine32/Winters.h"
@@ -451,5 +452,7 @@ std::vector<ENGINE *> check_engines()
         new MapleColors,
         new Hug,
         new GJ,
-        new Pinpai};
+        new Pinpai,
+        new ADVSystem,
+    };
 }

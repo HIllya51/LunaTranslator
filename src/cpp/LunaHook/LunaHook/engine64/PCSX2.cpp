@@ -41,58 +41,40 @@ namespace
     typedef void(__fastcall *tAddBreadPoint)(BreakPointCpu cpu, u32 addr, bool temp, bool enabled);
     tAddBreadPoint AddBreakPoint = nullptr;
 
-    constexpr BYTE sig_dynarecCheckBreakpoint[] = {
-        0x48, 0x83, 0xec, XX,
-        0x8b, 0x35, XX4,
-        0x8b, 0x05, XX4,
-        0x48, 0x39, 0x05, XX4,
-        0x75, 0x0d,
-        0x83, 0x3d, XX4, 0x00,
-        0x0f, 0x85, XX4,
-        0xb9, 0x01, 0x00, 0x00, 0x00,
-        0x89, 0xf2};
-    constexpr BYTE sig_BaseBlocksNew[] = {
-        0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x56, 0x57, 0x55, 0x53,
-        0x48, 0x83, 0xEC, 0x28,
-        XX, 0x89, XX,
-        0x89, 0xd3,
-        XX, 0x89, XX,
-        0x48, 0x8b, XX,
-        0x48, 0x8d, XX, 0x08,
-        XX, 0x8b, XX, 0x08};
-    constexpr BYTE sig_AddBreakPoint[] = {
-        0x89, 0xd0,
-        0x25, 0x00, 0x00, 0x00, 0x60,
-        0x3d, 0x00, 0x00, 0x00, 0x20,
-        0xb8, 0xff, 0xff, 0xff, 0x0f,
-        0xb9, 0xff, 0xff, 0xff, 0x7f};
-    BYTE sig_OpCodeImpl_CACHE_1[] = {
-        0x48, 0x83, 0xec, XX,
-        0x8b, 0x05, XX4,
-        0x89, 0xc2,
-        0xc1, 0xea, 0x10,
-        0x83, 0xe2, 0x1f,
-        0x8d, 0x4a, 0xf9,
-        0x83, 0xf9, 0x15,
-        0x0f, 0x87, XX4};
-    BYTE sig_OpCodeImpl_CACHE_2[] = {
-        // v1.7.4977
-        0x48, 0x83, 0xec, XX,
-        0x8b, XX, XX4,
-        0x41, 0x89, XX,
-        0x41, 0xc1, 0xe8, 0x10,
-        0x41, 0x83, 0xe0, 0x1f,
-        0x41, 0x8d, 0x48, 0xf9,
-        0x83, 0xf9, 0x15,
-        0x0f, 0x87, XX4};
-#define FINDALIGN(X)                                                     \
-    X = (decltype(X))MemDbg::findEnclosingAlignedFunction((uintptr_t)X); \
-    if (!X)                                                              \
-        return false;
-#define FINDFUNCTION(X)                                                                                    \
-    X = (decltype(X))MemDbg::findBytes(sig_##X, sizeof(sig_##X), processStartAddress, processStopAddress); \
-    if (!X)                                                                                                \
-        return false;
+    bool find_BaseBlocksNew_and_dynarecCheckBreakpoint()
+    {
+        constexpr BYTE sig_dynarecCheckBreakpoint[] = {
+            0x48, 0x83, 0xec, XX,
+            0x8b, 0x35, XX4,
+            0x8b, 0x05, XX4,
+            0x48, 0x39, 0x05, XX4,
+            0x75, 0x0d,
+            0x83, 0x3d, XX4, 0x00,
+            0x0f, 0x85, XX4,
+            0xb9, 0x01, 0x00, 0x00, 0x00,
+            0x89, 0xf2};
+        constexpr BYTE sig_BaseBlocksNew[] = {
+            0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x56, 0x57, 0x55, 0x53,
+            0x48, 0x83, 0xEC, 0x28,
+            XX, 0x89, XX,
+            0x89, 0xd3,
+            XX, 0x89, XX,
+            0x48, 0x8b, XX,
+            0x48, 0x8d, XX, 0x08,
+            XX, 0x8b, XX, 0x08};
+
+        dynarecCheckBreakpoint = MemDbg::findBytes(sig_dynarecCheckBreakpoint, sizeof(sig_dynarecCheckBreakpoint), processStartAddress, processStopAddress);
+        if (!dynarecCheckBreakpoint)
+            return false;
+        dynarecCheckBreakpoint = MemDbg::findEnclosingAlignedFunction((uintptr_t)dynarecCheckBreakpoint);
+        if (!dynarecCheckBreakpoint)
+            return false;
+
+        BaseBlocksNew = MemDbg::findBytes(sig_BaseBlocksNew, sizeof(sig_BaseBlocksNew), processStartAddress, processStopAddress);
+        if (!BaseBlocksNew)
+            return false;
+        return true;
+    }
     bool findstartGameListEntry()
     {
         char fmtstr[] = "This save state does not exist.";
@@ -129,20 +111,54 @@ namespace
         }
         return recRecompile;
     }
-    bool hookFunctions()
+    bool findAddBreakPoint()
     {
-        if (!findstartGameListEntry())
-            return false;
-        FINDFUNCTION(dynarecCheckBreakpoint);
-        FINDALIGN(dynarecCheckBreakpoint);
-        FINDFUNCTION(BaseBlocksNew);
-        if (!findrecRecompile())
-            return false;
+        constexpr BYTE sig_AddBreakPoint_1[] = {
+            0x89, 0xd0,
+            0x25, 0x00, 0x00, 0x00, 0x60,
+            0x3d, 0x00, 0x00, 0x00, 0x20,
+            0xb8, 0xff, 0xff, 0xff, 0x0f,
+            0xb9, 0xff, 0xff, 0xff, 0x7f};
+        constexpr BYTE sig_AddBreakPoint_2[] = {
+            0x89, 0xc8,
+            0x25, 0x00, 0x00, 0x00, 0x60,
+            0x3d, 0x00, 0x00, 0x00, 0x20,
+            0xb8, 0xff, 0xff, 0xff, 0x0f,
+            0x41, 0xbb, 0xff, 0xff, 0xff, 0x7f};
+        AddBreakPoint = (decltype(AddBreakPoint))MemDbg::findBytes(sig_AddBreakPoint_1, sizeof(sig_AddBreakPoint_1), processStartAddress, processStopAddress);
+        if (!AddBreakPoint)
         {
-            BYTE sig2[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x54};
-            FINDFUNCTION(AddBreakPoint);
-            AddBreakPoint = (decltype(AddBreakPoint))reverseFindBytes(sig2, sizeof(sig2), (uintptr_t)AddBreakPoint - 0x600, (uintptr_t)AddBreakPoint, 0, true);
+            AddBreakPoint = (decltype(AddBreakPoint))MemDbg::findBytes(sig_AddBreakPoint_2, sizeof(sig_AddBreakPoint_2), processStartAddress, processStopAddress);
         }
+        if (!AddBreakPoint)
+            return false;
+        BYTE sig2[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x54};
+        AddBreakPoint = (decltype(AddBreakPoint))reverseFindBytes(sig2, sizeof(sig2), (uintptr_t)AddBreakPoint - 0x600, (uintptr_t)AddBreakPoint, 0, true);
+        if (!AddBreakPoint)
+            return false;
+        return true;
+    }
+    bool find_cpuRegistersPack()
+    {
+        BYTE sig_OpCodeImpl_CACHE_1[] = {
+            0x48, 0x83, 0xec, XX,
+            0x8b, 0x05, XX4,
+            0x89, 0xc2,
+            0xc1, 0xea, 0x10,
+            0x83, 0xe2, 0x1f,
+            0x8d, 0x4a, 0xf9,
+            0x83, 0xf9, 0x15,
+            0x0f, 0x87, XX4};
+        BYTE sig_OpCodeImpl_CACHE_2[] = {
+            // v1.7.4977
+            0x48, 0x83, 0xec, XX,
+            0x8b, XX, XX4,
+            0x41, 0x89, XX,
+            0x41, 0xc1, 0xe8, 0x10,
+            0x41, 0x83, 0xe0, 0x1f,
+            0x41, 0x8d, 0x48, 0xf9,
+            0x83, 0xf9, 0x15,
+            0x0f, 0x87, XX4};
         auto OpCodeImpl_CACHE = MemDbg::findBytes(sig_OpCodeImpl_CACHE_1, sizeof(sig_OpCodeImpl_CACHE_1), processStartAddress, processStopAddress);
         if (!OpCodeImpl_CACHE)
         {
@@ -151,6 +167,17 @@ namespace
         if (!OpCodeImpl_CACHE)
             return false;
         _cpuRegistersPack = (decltype(_cpuRegistersPack))(OpCodeImpl_CACHE + 4 + 6 + *(int *)(OpCodeImpl_CACHE + 4 + 2) - 0x2ac);
+        return true;
+    }
+    bool hookFunctions()
+    {
+        if (!(findstartGameListEntry() &&
+              find_BaseBlocksNew_and_dynarecCheckBreakpoint() &&
+              findrecRecompile() &&
+              findAddBreakPoint() &&
+              find_cpuRegistersPack()))
+            return false;
+
         auto EEmem = GetProcAddress(GetModuleHandle(NULL), "EEmem");
         if (!EEmem)
             return false;

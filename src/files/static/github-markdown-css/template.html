@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimal-ui">
+	<title>GitHub Markdown CSS demo</title>
+	<meta name="color-scheme" content="light dark">
+	<link rel="stylesheet" href="../../../files/static/github-markdown-css/github-markdown.css">
+	<style>
+		body {
+			box-sizing: border-box;
+			/* min-width: 200px;
+				max-width: 980px; */
+			margin: 0 auto;
+			padding: 1em;
+			/* padding: 45px; */
+		}
+
+		@media (prefers-color-scheme: dark) {
+			body {
+				background-color: #0d1117;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<article class="markdown-body">__MARKDOWN__BODY__
+	</article>
+	<script>
+		function isolateHTMLFragments() {
+			const walker = document.createTreeWalker(
+				document.body,
+				NodeFilter.SHOW_COMMENT,
+				{
+					acceptNode: node =>
+						node.nodeValue.trim() === 'StartFragment' ||
+							node.nodeValue.trim() === 'EndFragment'
+							? NodeFilter.FILTER_ACCEPT
+							: NodeFilter.FILTER_REJECT
+				},
+				false
+			);
+
+			const stack = [];
+			const fragments = [];
+
+			let comment;
+			while (comment = walker.nextNode()) {
+				if (comment.nodeValue.trim() === 'StartFragment') {
+					stack.push(comment);
+				} else if (stack.length > 0) {
+					const start = stack.pop();
+					fragments.push({ start, end: comment });
+				}
+			}
+
+			fragments.forEach(({ start, end }) => {
+				const range = document.createRange();
+				range.setStartAfter(start);
+				range.setEndBefore(end);
+
+				const fragment = range.extractContents();
+				const shadowHost = document.createElement('div');
+				shadowHost.className = 'html-fragment-host';
+
+				// 复制原始属性（如果有）
+				if (start.nextSibling && start.nextSibling.nodeType === Node.ELEMENT_NODE) {
+					Array.from(start.nextSibling.attributes).forEach(attr => {
+						shadowHost.setAttribute(attr.name, attr.value);
+					});
+				}
+
+				start.parentNode.replaceChild(shadowHost, start);
+				if (end.parentNode) end.parentNode.removeChild(end);
+
+				const shadowRoot = shadowHost.attachShadow({ mode: 'open' });
+
+				// 添加基本样式重置（可选）
+				const style = document.createElement('style');
+				style.textContent = `
+      :host {
+        all: initial;
+        display: block;
+        contain: content;
+      }
+    `;
+				shadowRoot.appendChild(style);
+
+				shadowRoot.appendChild(fragment);
+			});
+		}
+
+		if (document.readyState !== 'loading') {
+			isolateHTMLFragments();
+		} else {
+			document.addEventListener('DOMContentLoaded', isolateHTMLFragments);
+		}
+	</script>
+</body>
+
+</html>

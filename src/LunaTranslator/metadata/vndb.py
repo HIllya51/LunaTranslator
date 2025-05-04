@@ -10,7 +10,7 @@ from myutils.wrapper import threader
 from gui.usefulwidget import threebuttons
 
 
-def saferequestvndb(proxy, method, url, json=None, headers=None, failnone=True):
+def saferequestvndb(proxy, method, url, json=None, headers=None):
     print(method, url, json)
     resp = requests.request(
         method,
@@ -33,10 +33,7 @@ def saferequestvndb(proxy, method, url, json=None, headers=None, failnone=True):
             except:
                 print(resp.status_code)
                 print(resp.text)
-                if failnone:
-                    return None
-                else:
-                    return resp.text
+                return resp.text
 
 
 def safegetvndbjson(proxy, url, json=None, headers=None):
@@ -269,7 +266,7 @@ class vndbsettings(QFormLayout):
         if k != self._ref.config["Token"]:
             self._ref.config["Token"] = k
         response = saferequestvndb(
-            self._ref.proxy, "GET", "authinfo", headers=self.headers, failnone=False
+            self._ref.proxy, "GET", "authinfo", headers=self.headers
         )
         if t != self.tm:
             return

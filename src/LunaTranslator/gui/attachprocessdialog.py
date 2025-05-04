@@ -1,10 +1,16 @@
 from qtsymbols import *
-import os, functools
+import os
 import windows, qtawesome, gobject
 from NativeUtils import GetProcessFirstWindow
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton
-from myutils.hwnd import getpidexe, ListProcess, mouseselectwindow, getExeIcon
+from myutils.hwnd import (
+    getpidexe,
+    ListProcess,
+    mouseselectwindow,
+    getExeIcon,
+    test_injectable,
+)
 from gui.usefulwidget import saveposwindow
 from gui.dynalang import LPushButton, LLabel, LCheckBox
 
@@ -33,6 +39,7 @@ class AttachProcessDialog(saveposwindow):
         self.processIdEdit.setCursorPosition(0)
         self.windowtext.setCursorPosition(0)
         self.selectedp = (_pids, name, hwnd)
+        self.testifneedadmin()
 
     def closeEvent(self, e):
         gobject.baseobject.AttachProcessDialog = None
@@ -126,6 +133,16 @@ class AttachProcessDialog(saveposwindow):
         # self.processEdit.setReadOnly(True)
         self.processEdit.textEdited.connect(self.filterproc)
 
+    @property
+    def adminicon(self):
+        return QApplication.style().standardIcon(QStyle.StandardPixmap.SP_VistaShield)
+
+    def testifneedadmin(self):
+        icon = self.adminicon
+        pids: "list[int]" = self.selectedp[0]
+        btn = self.buttonBox.button(QDialogButtonBox.StandardButton.Ok)
+        btn.setIcon(icon if not test_injectable(pids) else QIcon())
+
     def filterproc(self):
         self.processIdEdit.clear()
         self.windowtext.clear()
@@ -180,6 +197,7 @@ class AttachProcessDialog(saveposwindow):
             self.processEdit.clear()
             return
         self.selectedp = (pids, getpidexe(pids[0]), self.guesshwnd(pids))
+        self.testifneedadmin()
         self.windowtext.setText(windows.GetWindowText(self.selectedp[-1]))
         self.processEdit.setText(self.selectedp[1])
         self.windowtext.setCursorPosition(0)
@@ -191,6 +209,7 @@ class AttachProcessDialog(saveposwindow):
         self.processEdit.setText(pexe)
         self.processIdEdit.setText(",".join([str(pid) for pid in pids]))
         self.selectedp = pids, pexe, self.guesshwnd(pids)
+        self.testifneedadmin()
         self.windowtext.setText(windows.GetWindowText(self.selectedp[-1]))
         self.processEdit.setCursorPosition(0)
         self.processIdEdit.setCursorPosition(0)

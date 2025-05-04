@@ -128,15 +128,11 @@ def getcurrexe():
     return os.environ.get("LUNA_EXE_NAME", getpidexe(os.getpid()))
 
 
-def test_injectable_1(pid):
-    return bool(windows.OpenProcess(windows.PROCESS_INJECT_ACCESS, False, pid))
-
-
 def test_injectable(pids):
-    for pid in pids:
-        if not test_injectable_1(pid):
-            return False
-    return True
+    __ = lambda pid: bool(
+        windows.OpenProcess(windows.PROCESS_INJECT_ACCESS, False, pid)
+    )
+    return all(__(pid) for pid in pids)
 
 
 def ListProcess(exe=None):
