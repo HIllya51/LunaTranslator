@@ -354,7 +354,6 @@
     "Sakura大模型": "Sakura LLM",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Enable Context-Aware Translation (Improves quality by using previous text for translation context, but may be slower)",
     "去除重复字符": "Remove Duplicate Characters",
-    "游戏内叠加层": "In-Game Overlay Layer",
     "内联效果参数": "Inline Effect Parameters",
     "保持非重复字符": "Keep Unique Characters",
     "多重区域模式": "Multi-Region Mode",
@@ -797,5 +796,7 @@
     "合并临近行": "Merge Adjacent Lines",
     "距离": "Distance",
     "翻译前替换": "",
-    "字节跳动火山引擎": ""
+    "字节跳动火山引擎": "",
+    "始终显示": "",
+    "工具栏初始状态": ""
 }

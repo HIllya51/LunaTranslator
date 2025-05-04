@@ -993,11 +993,6 @@
                 "name": "Magpie_窗口化缩放",
                 "keystring": ""
             },
-            "_25": {
-                "use": false,
-                "name": "Magpie_游戏内叠加层",
-                "keystring": ""
-            },
             "_26": {
                 "use": false,
                 "name": "进行一次OCR",

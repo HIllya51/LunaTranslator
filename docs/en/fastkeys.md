@@ -129,9 +129,6 @@
 1. #### Magpie Windowed Scaling
     Allows one-click windowed scaling of the game window using the built-in Magpie.
 
-1. #### Magpie In-Game Overlay
-    Enables the built-in Magpie to show/hide the in-game overlay.
-
 == Dictionary Lookup
 
 1. #### Retrieve and search for words

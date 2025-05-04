@@ -355,7 +355,6 @@
     "Sakura大模型": "Sakura Lớn Mô hình",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Sử dụng thông tin trên để dịch (thường có một số hiệu ứng tăng lên, nhưng có thể dẫn đến chậm hơn)",
     "去除重复字符": "Loại bỏ các ký tự trùng lặp",
-    "游戏内叠加层": "Lớp phủ trong trò chơi",
     "内联效果参数": "Tham số hiệu ứng nội tuyến",
     "保持非重复字符": "Giữ các ký tự không trùng lặp",
     "多重区域模式": "Chế độ đa vùng",
@@ -797,5 +796,7 @@
     "合并临近行": "",
     "距离": "",
     "翻译前替换": "",
-    "字节跳动火山引擎": ""
+    "字节跳动火山引擎": "",
+    "始终显示": "",
+    "工具栏初始状态": ""
 }

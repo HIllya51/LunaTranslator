@@ -296,7 +296,7 @@ def findgameuidofpath(gamepath, findall=False):
         return None, None
 
 
-def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
+def syncconfig(config1, default, drop=False, deep=0):
 
     for key in default:
         if key not in config1:
@@ -321,8 +321,8 @@ def syncconfig(config1, default, drop=False, deep=0, skipdict=False):
             ):
                 config1[key] = default[key]
             elif type(default[key]) == dict:
-                if skipdict == False:
-                    syncconfig(config1[key], default[key], drop, deep - 1)
+                syncconfig(config1[key], default[key], drop, deep - 1)
+
     if isinstance(config1, dict) and isinstance(default, dict):
         for key in ("name", "tip", "argstype", "args"):
             if key in config1 and key not in default:
@@ -345,7 +345,7 @@ if True:  # transerrorfixdictconfig cast v1 to v2:
         transerrorfixdictconfig.pop("dict")
 
 
-syncconfig(magpie_config, dfmagpie_config, skipdict=True)
+syncconfig(magpie_config, dfmagpie_config)
 syncconfig(
     magpie_config["profiles"][globalconfig["profiles_index"]],
     dfmagpie_config["profiles"][0],

@@ -355,7 +355,6 @@
     "Sakura大模型": "Sakura Büyük Modeli",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)",
     "去除重复字符": "Çift karakterleri sil",
-    "游戏内叠加层": "Oyun üzerindeki katı",
     "内联效果参数": "İçeri etkisi parametreleri",
     "保持非重复字符": "Tekrarlamayan karakterleri tut",
     "多重区域模式": "Çok bölge modu",
@@ -797,5 +796,7 @@
     "合并临近行": "",
     "距离": "",
     "翻译前替换": "",
-    "字节跳动火山引擎": ""
+    "字节跳动火山引擎": "",
+    "始终显示": "",
+    "工具栏初始状态": ""
 }

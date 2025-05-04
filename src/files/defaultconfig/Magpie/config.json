@@ -2,8 +2,8 @@
     "language": "zh-hans",
     "theme": 0,
     "windowPos": {
-        "centerX": 1680.0,
-        "centerY": 821.0,
+        "centerX": 1741.0,
+        "centerY": 876.0,
         "width": 998.6666870117188,
         "height": 806.6666870117188,
         "maximized": false
@@ -11,7 +11,7 @@
     "shortcuts": {
         "scale": 593,
         "windowedModeScale": 583,
-        "overlay": 584
+        "toolbar": 584
     },
     "countdownSeconds": 3,
     "developerMode": false,
@@ -153,6 +153,7 @@
         }
     ],
     "overlay": {
+        "initialToolbarState": 2,
         "windows": {
             "profiler": {
                 "hArea": 2,

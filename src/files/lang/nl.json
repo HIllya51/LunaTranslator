@@ -361,7 +361,6 @@
     "Sakura大模型": "Groot model Sakura",
     "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Vertalen met behulp van de informatie in de vorige tekst (meestal met enige verbetering, maar kan resulteren in tragere vertaling)",
     "去除重复字符": "Dubbele tekens verwijderen",
-    "游戏内叠加层": "Overlaylaag in het spel",
     "内联效果参数": "Inline-effectparameters",
     "保持非重复字符": "Niet-herhalende tekens behouden",
     "多重区域模式": "Multiregionale modus",
@@ -797,5 +796,7 @@
     "合并临近行": "",
     "距离": "",
     "翻译前替换": "",
-    "字节跳动火山引擎": ""
+    "字节跳动火山引擎": "",
+    "始终显示": "",
+    "工具栏初始状态": ""
 }

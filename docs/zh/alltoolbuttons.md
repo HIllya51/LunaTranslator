@@ -116,7 +116,7 @@
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 窗口缩放
     可以一键对游戏窗口使用内置的Magpie进行缩放。
 
-    左键为窗口化缩放，右键为全屏缩放。中键为打开游戏内叠加层。
+    左键为窗口化缩放，右键为全屏缩放。
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 窗口截图
     可以对绑定的窗口进行截图，（默认会截两张图，GDI和Winrt，两者均有一定概率会失败）。最好的地方是，如果当前正在使用Magpie进行缩放，还会对放大的窗口进行截图。

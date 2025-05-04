@@ -102,7 +102,6 @@ def registrhotkeys(self):
         "_17": gobject.baseobject.translation_ui.quitf_signal.emit,
         "_21": grabwindow,
         "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
-        "_25": MagpieBuiltin.overlay,
         "41": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(False),
         "42": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(True),
         "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
@@ -147,7 +146,7 @@ hotkeys = [
     ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
-    ["游戏", ["_15", "_21", "_22", "41", "42", "_25"]],
+    ["游戏", ["_15", "_21", "_22", "41", "42"]],
     ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
 ]
 

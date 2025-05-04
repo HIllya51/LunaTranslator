@@ -99,6 +99,14 @@ def makescalew():
                                 "3DGameMode",
                             ),
                         ],
+                        [
+                            "工具栏初始状态",
+                            D_getsimplecombobox(
+                                ["关闭", "始终显示", "自动隐藏"],
+                                magpie_config["overlay"],
+                                "initialToolbarState",
+                            ),
+                        ],
                     ]
                 ),
             ),

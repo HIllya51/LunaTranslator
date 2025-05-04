@@ -128,9 +128,6 @@
 1. #### Tỷ Lệ Cửa Sổ Magpie
     Cho phép tỷ lệ cửa sổ trò chơi chỉ với một lần nhấn bằng cách sử dụng Magpie tích hợp.
 
-1. #### Lớp Phủ Trong Trò Chơi Magpie
-    Bật lớp phủ trong trò chơi của Magpie tích hợp để hiển thị/ẩn.
-
 == Tra Từ Điển
 
 1. #### Truy Xuất và Tra Từ

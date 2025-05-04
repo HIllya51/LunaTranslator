@@ -43,13 +43,6 @@ class AdapterService:
 
 
 class MagpieBuiltin:
-    @staticmethod
-    def overlay():
-        windows.SendMessage(
-            windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
-            windows.RegisterWindowMessage("Magpie_Core_CLI_Message_ToggleOverlay"),
-        )
-
     def __init__(self, setuistatus) -> None:
 
         self._setuistatus = setuistatus
