@@ -16,6 +16,7 @@ from myutils.magpie_builtin import MagpieBuiltin, AdapterService
 from gui.gamemanager.dialog import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.utils import (
+    stringfyerror,
     loadpostsettingwindowmethod,
     makehtml,
     getlangsrc,
@@ -1727,7 +1728,14 @@ class TranslatorWindow(resizableframeless):
             gobject.baseobject.destroytray()
             handle = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
             if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
-                saveallconfig()
+                errors = saveallconfig()
+                if errors:
+                    errors = [f + "\n\t" + stringfyerror(e) for e, f in errors]
+                    QMessageBox.critical(
+                        gobject.baseobject.commonstylebase,
+                        _TR("错误"),
+                        "\n\n".join(errors),
+                    )
                 self.tryremoveuseless()
                 doupdate()
                 windows.CloseHandle(handle)

@@ -462,29 +462,38 @@ def unsafesave(fname: str, js, beatiful=True, isconfig=True):
         ff.write(js)
 
 
-def safesave(*argc, **kw):
+def safesave(errorcollect: list, *argc, **kw):
     try:
         unsafesave(*argc, **kw)
-    except:
+    except Exception as e:
+        errorcollect.append((e, argc[0]))
         print_exc()
 
 
 def saveallconfig(test=False):
-
-    safesave("userconfig/config.json", globalconfig)
-    safesave("userconfig/postprocessconfig.json", postprocessconfig)
-    safesave("userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig)
-    safesave("userconfig/translatorsetting.json", translatorsetting)
-    safesave("userconfig/ocrerrorfix.json", ocrerrorfix)
-    safesave("userconfig/ocrsetting.json", ocrsetting)
+    errorcollect = []
+    safesave(errorcollect, "userconfig/config.json", globalconfig)
+    safesave(errorcollect, "userconfig/postprocessconfig.json", postprocessconfig)
     safesave(
+        errorcollect, "userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig
+    )
+    safesave(errorcollect, "userconfig/translatorsetting.json", translatorsetting)
+    safesave(errorcollect, "userconfig/ocrerrorfix.json", ocrerrorfix)
+    safesave(errorcollect, "userconfig/ocrsetting.json", ocrsetting)
+    safesave(
+        errorcollect,
         "userconfig/savegamedata_5.3.1.json",
         [savehook_new_list, savehook_new_data, savegametaged, None, extradatas],
         beatiful=False,
     )
-    safesave("userconfig/Magpie/config.json", magpie_config, isconfig=False)
+    safesave(
+        errorcollect, "userconfig/Magpie/config.json", magpie_config, isconfig=False
+    )
     if not test:
         safesave(
-            "files/lang/{}.json".format(getlanguse()), languageshow, isconfig=False
+            errorcollect,
+            "files/lang/{}.json".format(getlanguse()),
+            languageshow,
+            isconfig=False,
         )
-
+    return errorcollect
