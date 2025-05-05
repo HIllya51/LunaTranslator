@@ -247,25 +247,15 @@
             {
                 "name": "MeCab",
                 "function": [
-                    "myutils.mecab",
+                    "gui.rcdownload",
                     "resourcewidget"
                 ]
             },
             {
                 "name": "MDict",
-                "links": [
-                    {
-                        "name": "论坛",
-                        "link": "https://forum.freemdict.com/"
-                    },
-                    {
-                        "name": "freemdict",
-                        "link": "https://search.freemdict.com/"
-                    },
-                    {
-                        "name": "Jitendex",
-                        "link": "https://github.com/stephenmk/stephenmk.github.io/releases/latest/download/jitendex-mdict.zip"
-                    }
+                "function": [
+                    "gui.rcdownload",
+                    "resourcewidget2"
                 ]
             }
         ],

@@ -257,7 +257,7 @@ class mdict(cishubase):
         self.builders = []
         self.dedump = set()
         for f in self.config["paths"]:
-            if f.strip() == "":
+            if not f.strip():
                 continue
             if not os.path.exists(f):
                 continue
