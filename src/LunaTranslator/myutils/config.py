@@ -448,18 +448,16 @@ def getlang_inner2show(langcode):
     ).get(langcode, "??")
 
 
-def unsafesave(fname: str, js, beatiful=True, isconfig=True):
+def unsafesave(fname: str, js, beatiful=True):
     # 有时保存时意外退出，会导致config文件被清空
     os.makedirs(os.path.dirname(fname), exist_ok=True)
-    if isconfig and os.path.isfile(fname):
-        backup = os.path.join(os.path.dirname(fname), "backup")
-        os.makedirs(backup, exist_ok=True)
-        shutil.copy(fname, os.path.join(backup, os.path.basename(fname)))
+
     js = json.dumps(
         js, ensure_ascii=False, sort_keys=False, indent=4 if beatiful else None
     )
-    with open(fname, "w", encoding="utf-8") as ff:
+    with open(fname + ".tmp", "w", encoding="utf-8") as ff:
         ff.write(js)
+    os.replace(fname + ".tmp", fname)
 
 
 def safesave(errorcollect: list, *argc, **kw):
@@ -486,14 +484,7 @@ def saveallconfig(test=False):
         [savehook_new_list, savehook_new_data, savegametaged, None, extradatas],
         beatiful=False,
     )
-    safesave(
-        errorcollect, "userconfig/Magpie/config.json", magpie_config, isconfig=False
-    )
+    safesave(errorcollect, "userconfig/Magpie/config.json", magpie_config)
     if not test:
-        safesave(
-            errorcollect,
-            "files/lang/{}.json".format(getlanguse()),
-            languageshow,
-            isconfig=False,
-        )
+        safesave(errorcollect, "files/lang/{}.json".format(getlanguse()), languageshow)
     return errorcollect
