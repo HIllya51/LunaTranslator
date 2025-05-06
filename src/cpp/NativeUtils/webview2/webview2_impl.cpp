@@ -399,11 +399,8 @@ std::optional<std::wstring> WebView2::UserDir(bool loadextension)
     return userDataFolder;
 }
 
-#ifndef WINXP
 #include <WebView2EnvironmentOptions.h>
-#else
-#include "WebView2EnvironmentOptionsFuckWRL.h"
-#endif
+
 HRESULT WebView2::init(bool loadextension_)
 {
     loadextension = loadextension_;
