@@ -1,31 +1,4 @@
 #include "ShinaRio.h"
-template <void *funcA, void *funcW, int depth = 100>
-bool StackSearchingTrigger(LPVOID funcAddr, DWORD, DWORD stack)
-{
-  bool ret = false;
-  if (funcAddr != funcA && funcAddr != funcW)
-    return false;
-  for (int i = 0; i < depth; ++i)
-  {
-    // Address of text is somewhere on stack in call to func. Search for it.
-    DWORD addr = *((DWORD *)stack + i);
-    // ConsoleOutput(std::to_string((DWORD)*addr).c_str());
-    if (IthGetMemoryRange((void *)addr, nullptr, nullptr))
-    {
-      if (strlen((char *)addr) > 9)
-      {
-        HookParam hp;
-        hp.type = DIRECT_READ;
-        if (funcAddr == funcW)
-          hp.type |= CODEC_UTF16;
-        hp.address = addr;
-        ConsoleOutput("triggered: adding dynamic reader");
-        ret |= NewHook(hp, "READ");
-      }
-    };
-  }
-  return ret;
-}
 
 /********************************************************************************************
 ShinaRio hook:
@@ -41,52 +14,7 @@ ShinaRio hook:
   New ShinaRio engine (>=2.48) uses different approach.
 ********************************************************************************************/
 namespace
-{ // unnamed
-  // jichi 3/1/2015: hook for new ShinaRio games
-
-  char text_buffer_prev[0x1000];
-  void SpecialHookShina2(hook_context *context, HookParam *, uintptr_t *data, uintptr_t *split, size_t *len)
-  {
-    DWORD ptr = context->esi; // jichi: esi
-    *split = ptr;             // [esi]
-    char *str = *(char **)(ptr + 0x160);
-    strcpy(text_buffer, str);
-    int skip = 0;
-    for (str = text_buffer; *str; str++)
-      if (str[0] == 0x5f)
-      {                     // jichi 7/10/2015: Skip _r (new line)
-        if (str[1] == 0x72) // jichi 7/10/2015: Skip _t until /
-          str[0] = str[1] = 1;
-        else if (str[1] == 0x74)
-        {
-          while (str[0] != 0x2f)
-            *str++ = 1;
-          *str = 1;
-        }
-      }
-
-    for (str = text_buffer; str[skip];)
-      if (str[skip] == 1)
-        skip++;
-      else
-      {
-        str[0] = str[skip];
-        str++;
-      }
-
-    str[0] = 0;
-    if (strcmp(text_buffer, text_buffer_prev) == 0)
-      *len = 0;
-    else
-    {
-      for (skip = 0; text_buffer[skip]; skip++)
-        text_buffer_prev[skip] = text_buffer[skip];
-      text_buffer_prev[skip] = 0;
-      *data = (DWORD)text_buffer_prev;
-      *len = skip;
-    }
-  }
-
+{
   // jichi 3/1/2015: hook for old ShinaRio games
   // Used to merge correct text thread.
   // 1. Only keep threads with 0 and -1 split
@@ -155,7 +83,7 @@ namespace
   bool IsSJIS(char *text)
   {
     for (int i = 0; i < 3; ++i)
-      if (!IsShiftjisLeadByte(text[i * 2]))
+      if (!IsShiftjisWord(((WORD *)text)[i]))
         return false;
     return true;
   }
@@ -169,8 +97,8 @@ bool InsertShinaHook(int ver)
 
   if (ver >= 50)
   {
-    PcHooks::hookGDIFunctions();
-    // trigger_fun = StackSearchingTrigger<GetGlyphOutlineA, NULL>;
+    PcHooks::hookGDIFunctions(GetGlyphOutlineA);
+    PcHooks::hookGDIFunctions(GetTextExtentPoint32A);
     trigger_fun = [](LPVOID funcAddr, hook_context *context)
     {
       bool ret = false;
@@ -635,7 +563,7 @@ namespace
       void hookafter(hook_context *s, TextBuffer buffer)
       {
 
-        std::string newData = buffer.strA();
+        std::string newData = buffer.strA() + "\x20\x81\x40\x20";
 
         DWORD argaddr;
         if (hookStackIndex_ == 1)
@@ -980,9 +908,17 @@ namespace
       hp.embed_hook_font = F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        buffer->from(re::sub(buffer->strA(), "_t!.*?[/>]"));
+        auto s = buffer->strA();
+        if (endWith(s, "\x20\x81\x40\x20"))
+          return buffer->clear();
+        static std::string last;
+        if (last == s)
+          return buffer->clear();
+        last = s;
+        strReplace(s, "\n");
+        buffer->from(re::sub(s, "_t!.*?[/>]"));
       };
-      return NewHook(hp, "EmbedShario");
+      return NewHook(hp, "EmbedShinario");
     }
 
   } // namespace ScenarioHook
