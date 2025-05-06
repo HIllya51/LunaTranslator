@@ -2547,8 +2547,8 @@ namespace
             strReplace(s, "\\n");
             strReplace(s, u8"Ц", "!!");
             strReplace(s, u8"Щ", "!!?");
-            strReplace(s, u8"└┐", "～～");
-            strReplace(s, u8"└─┐", "～～");
+            strReplace(s, u8"└┐", u8"～～");
+            strReplace(s, u8"└─┐", u8"～～");
             s = re::sub(s, R"(\{W\d+\})");
             s = re::sub(s, R"(\[(.*?)\*(.*?)\])", "$1");
             F010059D020670000_collect(s.c_str());
