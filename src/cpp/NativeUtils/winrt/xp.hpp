@@ -1,4 +1,7 @@
-#include "../webview2/EventToken.h"
+typedef struct EventRegistrationToken
+{
+    __int64 value;
+} EventRegistrationToken;
 //////////////////////////////////OCR
 enum class AsyncStatus
 {
@@ -225,7 +228,7 @@ public:
     IUnknown                                                                                     \
     {                                                                                            \
     public:                                                                                      \
-        virtual HRESULT STDMETHODCALLTYPE Invoke(operation *asyncInfo, AsyncStatus status) = 0;  \
+        virtual HRESULT STDMETHODCALLTYPE Invoke(operation * asyncInfo, AsyncStatus status) = 0; \
     };                                                                                           \
     MIDL_INTERFACE(operationid)                                                                  \
     operation:                                                                                   \
@@ -233,9 +236,9 @@ public                                                                          
     IInspectable                                                                                 \
     {                                                                                            \
     public:                                                                                      \
-        virtual HRESULT STDMETHODCALLTYPE put_Completed(handler *handler) = 0;                   \
-        virtual HRESULT STDMETHODCALLTYPE get_Completed(handler **handler) = 0;                  \
-        virtual HRESULT STDMETHODCALLTYPE GetResults(resulttype **results) = 0;                  \
+        virtual HRESULT STDMETHODCALLTYPE put_Completed(handler * handler) = 0;                  \
+        virtual HRESULT STDMETHODCALLTYPE get_Completed(handler * *handler) = 0;                 \
+        virtual HRESULT STDMETHODCALLTYPE GetResults(resulttype * *results) = 0;                 \
     };
 
 DEFINE_IASYNC_OPERATION_CALLBACK(__FIAsyncOperation_1_Windows__CGraphics__CImaging__CBitmapDecoder, "aa94d8e9-caef-53f6-823d-91b6e8340510", __FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CBitmapDecoder, "bb6514f2-3cfb-566f-82bc-60aabd302d53", BitmapDecoder)
