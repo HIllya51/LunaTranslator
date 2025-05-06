@@ -1,4 +1,4 @@
-#include "Xbangbang.h"
+﻿#include "Xbangbang.h"
 
 bool Xbangbang::attach_function()
 {

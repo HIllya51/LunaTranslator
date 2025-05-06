@@ -1,4 +1,4 @@
-#include "TACTICS.h"
+﻿#include "TACTICS.h"
 // 鈴がうたう日
 // https://vndb.org/v8528
 

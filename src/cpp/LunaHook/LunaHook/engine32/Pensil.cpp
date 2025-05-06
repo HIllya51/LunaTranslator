@@ -1,4 +1,4 @@
-#include "Pensil.h"
+﻿#include "Pensil.h"
 bool InsertPensilHook()
 {
   for (DWORD i = processStartAddress; i < processStopAddress - 4; i++)

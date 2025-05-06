@@ -1,4 +1,4 @@
-#include "SideB.h"
+﻿#include "SideB.h"
 
 /** jichi 8/2/2014 side-B
  *  Sample games:

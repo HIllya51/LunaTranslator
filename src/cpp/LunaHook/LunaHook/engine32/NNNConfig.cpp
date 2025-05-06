@@ -1,4 +1,4 @@
-#include "NNNConfig.h"
+﻿#include "NNNConfig.h"
 bool NNNConfig::attach_function()
 {
 	// blackcyc

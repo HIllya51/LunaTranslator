@@ -1,4 +1,4 @@
-#include "Ruf.h"
+﻿#include "Ruf.h"
 
 bool Ruf::attach_function()
 {

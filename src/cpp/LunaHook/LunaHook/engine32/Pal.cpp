@@ -1,4 +1,4 @@
-#include "Pal.h"
+﻿#include "Pal.h"
 /** jichi 6/1/2014 AMUSE CRAFT
  *  Related brands: http://erogetrailers.com/brand/2047
  *  Sample game: 魔女こいにっ� *  See:  http://sakuradite.com/topic/223

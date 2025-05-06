@@ -93,7 +93,7 @@ DECLARE_API bool OcrLoadRuntime()
     // https://github.com/microsoft/onnxruntime/releases/tag/v1.21.0
     // All the prebuilt Windows packages now require VC++ Runtime version >= 14.40(instead of 14.38). If your VC++ runtime version is lower than that, you may see a crash when ONNX Runtime was initializing. See https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710 for more details.
     // 不过实测在更古老py37(14.00)上是没问题的，但在py311(14.38)或pyqt(14.26)上确实会崩溃，保险起见不要加载。
-    auto usewhichonnxruntime = (((ver >= vermy) && (ver < std::make_tuple(1, 21, 0, 0)))) ? sysonnx : myonnx;
+    auto usewhichonnxruntime = (((ver >= vermy) && (ver < std::make_tuple(1u, 21u, 0u, 0u)))) ? sysonnx : myonnx;
     if (!usewhichonnxruntime)
         return false;
     std::wcout << usewhichonnxruntime.value() << L"\n";

@@ -1,4 +1,4 @@
-#include "Syuntada.h"
+﻿#include "Syuntada.h"
 
 /** jichi 2/6/2015 Syuntada
  *  Sample game: [140816] [平安亭] カノジョのお母さん�好きですか-- /HA-18@6944C:kanojo.exe

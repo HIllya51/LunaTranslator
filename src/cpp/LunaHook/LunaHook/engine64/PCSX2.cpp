@@ -263,7 +263,7 @@ bool PCSX2_UserHook_delayinsert(uint32_t addr)
 }
 bool PCSX2::attach_function1()
 {
-    auto minver = std::make_tuple(1, 7, 4473, 0);
+    auto minver = std::make_tuple(1u, 7u, 4473u, 0u);
     auto version = queryversion();
     if (version && version < minver)
         return false;

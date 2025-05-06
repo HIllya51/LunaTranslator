@@ -1,4 +1,4 @@
-#include "Circus1.h"
+﻿#include "Circus1.h"
 /********************************************************************************************
 CIRCUS hook:
  Game folder contains advdata folder. Used by CIRCUS games.

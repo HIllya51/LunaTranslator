@@ -1,4 +1,4 @@
-#include "ransel.h"
+﻿#include "ransel.h"
 // [020726][苺みるく] たんぽぽ ～Everything Nice～ (bin+cue)
 // HS-8@4B377C
 // int __fastcall sub_4B377C(int a1, char *a2)

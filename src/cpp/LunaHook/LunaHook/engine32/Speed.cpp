@@ -1,4 +1,4 @@
-#include "Speed.h"
+﻿#include "Speed.h"
 
 bool Speed::attach_function()
 {

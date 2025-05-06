@@ -1,4 +1,4 @@
-
+﻿
 #include "MinHook.h"
 #include "veh_hook.h"
 #define HOOK_SEARCH_UNSAFE 0
@@ -561,7 +561,7 @@ void _SearchForHooks(SearchParam spUser)
 					{
 						hp.type |= FUNCTION_OFFSET;
 						std::wstring func = match[3];
-						strncpy_s(hp.function, std::string(func.begin(), func.end()).erase(0, 1).c_str(), MAX_MODULE_SIZE - 1);
+						strncpy_s(hp.function, wcasta(func).erase(0, 1).c_str(), MAX_MODULE_SIZE - 1);
 					}
 					addresses1.push_back(getasbaddr(hp));
 				}

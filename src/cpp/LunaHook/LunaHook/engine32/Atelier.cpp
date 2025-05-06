@@ -1,4 +1,4 @@
-#include "Atelier.h"
+﻿#include "Atelier.h"
 /********************************************************************************************
 AtelierKaguya hook:
   Game folder contains message.dat. Used by AtelierKaguya games.

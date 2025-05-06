@@ -1,4 +1,4 @@
-#include "AXL.h"
+﻿#include "AXL.h"
 bool InsertAXLHook()
 {
   // キミの声がきこえる

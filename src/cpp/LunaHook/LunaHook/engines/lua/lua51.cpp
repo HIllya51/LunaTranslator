@@ -1,4 +1,4 @@
-#include "lua51.h"
+﻿#include "lua51.h"
 
 bool lua51::attach_function()
 {

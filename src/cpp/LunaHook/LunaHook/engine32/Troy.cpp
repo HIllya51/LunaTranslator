@@ -1,4 +1,4 @@
-#include "Troy.h"
+﻿#include "Troy.h"
 
 bool Troy::attach_function()
 {

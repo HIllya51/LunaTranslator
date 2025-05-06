@@ -1,4 +1,4 @@
-#include "XUSE.h"
+﻿#include "XUSE.h"
 
 bool InsertXUSEHook2()
 {

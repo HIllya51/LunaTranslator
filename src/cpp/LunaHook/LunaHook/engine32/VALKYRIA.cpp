@@ -1,4 +1,4 @@
-#include "VALKYRIA.h"
+﻿#include "VALKYRIA.h"
 
 bool VALKYRIA::attach_function()
 {

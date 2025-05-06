@@ -1,4 +1,4 @@
-#include "VitaminSoft.h"
+﻿#include "VitaminSoft.h"
 
 namespace
 {

@@ -1,4 +1,4 @@
-#include "AIL.h"
+﻿#include "AIL.h"
 bool InsertAIL2Hook()
 {
   auto findalign = [](uintptr_t addr1)

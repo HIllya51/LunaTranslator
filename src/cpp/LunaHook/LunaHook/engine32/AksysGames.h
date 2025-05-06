@@ -1,4 +1,4 @@
-// https://store.steampowered.com/app/828380/Death_Mark_Vol1/
+﻿// https://store.steampowered.com/app/828380/Death_Mark_Vol1/
 // Death Mark Vol.1 - 死印之迷雾
 /*
 FILEVERSION    1,0,0,0

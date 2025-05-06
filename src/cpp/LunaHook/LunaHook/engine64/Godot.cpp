@@ -1,4 +1,4 @@
-#include "Godot.h"
+﻿#include "Godot.h"
 
 bool InsertGodotHook_X64()
 {

@@ -1,4 +1,4 @@
-#include "AGS.h"
+﻿#include "AGS.h"
 
 bool InsertAGSHook()
 {

@@ -17,9 +17,6 @@ target_compile_options(wcocr_1
   PUBLIC 
   /std:c++20
   /MD
-  /wd4018
-  /DUNICODE
-  /D_UNICODE
 )
 
 target_link_libraries(wcocr_1 ${wechat_ocr_SOURCE_DIR}/spt/${platform}/libprotobuf-lite.lib)

@@ -1,4 +1,4 @@
-#include "Interheart.h"
+﻿#include "Interheart.h"
 
 bool Interheart::attach_function()
 {

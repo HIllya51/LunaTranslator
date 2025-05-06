@@ -1,4 +1,4 @@
-#include "akatombo.h"
+﻿#include "akatombo.h"
 
 bool akatombo::attach_function()
 {

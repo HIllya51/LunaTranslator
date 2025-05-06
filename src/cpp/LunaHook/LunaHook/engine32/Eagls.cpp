@@ -1,4 +1,4 @@
-#include "Eagls.h"
+﻿#include "Eagls.h"
 
 /** jichi 7/26/2014: E.A.G.L.S engine for TechArts games (SQUEEZ, May-Be Soft)
  *  Sample games: [May-Be Soft] ちぽ�んじ� *  Should also work for SQUEEZ's 孕ませシリーズ

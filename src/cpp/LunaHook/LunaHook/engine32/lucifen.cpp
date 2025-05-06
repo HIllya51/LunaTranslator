@@ -1,4 +1,4 @@
-#include "Lucifen.h"
+﻿#include "Lucifen.h"
 /********************************************************************************************
 Lucifen hook:
   Game folder contains *.lpk. Used by Navel games.

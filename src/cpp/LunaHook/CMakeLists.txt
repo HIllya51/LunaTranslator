@@ -8,16 +8,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 add_definitions(-DUNICODE -D_UNICODE)
-add_compile_options(
-  /MP
-  /wd4018 
-  /wd4819 
-  /wd4244
-  /wd4267
-  /wd4340
-  /wd4369
-  /wd4573
-)
+add_compile_options(/MP)
 
 include(FetchContent)
 

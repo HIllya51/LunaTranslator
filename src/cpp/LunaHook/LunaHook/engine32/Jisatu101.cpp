@@ -1,4 +1,4 @@
-#include "Jisatu101.h"
+﻿#include "Jisatu101.h"
 
 bool Jisatu101::attach_function()
 {

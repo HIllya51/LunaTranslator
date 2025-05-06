@@ -1,4 +1,4 @@
-#include "shyakunage.h"
+﻿#include "shyakunage.h"
 
 bool shyakunage::attach_function()
 {

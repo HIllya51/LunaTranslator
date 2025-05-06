@@ -1,4 +1,4 @@
-#include "CodeX.h"
+﻿#include "CodeX.h"
 
 void CodeXFilter(TextBuffer *buffer, HookParam *)
 {

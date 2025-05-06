@@ -1,4 +1,4 @@
-#include "GXP.h"
+﻿#include "GXP.h"
 /**
  *  jichi 5/11/2014: Hook to the beginning of a function
  *

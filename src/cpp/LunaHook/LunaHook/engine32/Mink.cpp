@@ -1,4 +1,4 @@
-#include "Mink.h"
+﻿#include "Mink.h"
 /** 12/23/2014 jichi: Mink games (not sure the engine name)
  *  Sample game:
  *  - [130111] [Mink EGO] お�ちも�にはぜったい言えなぁ�ぁ�つなこと�-- /HB-4*0:64@45164A

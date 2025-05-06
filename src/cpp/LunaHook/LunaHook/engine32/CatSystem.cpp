@@ -1,4 +1,4 @@
-#include "CatSystem.h"
+﻿#include "CatSystem.h"
 // jichi 5/10/2014
 // See also: http://bbs.sumisora.org/read.php?tid=11044704&fpage=2
 //

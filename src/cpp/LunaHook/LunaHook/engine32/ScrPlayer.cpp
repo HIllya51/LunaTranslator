@@ -1,4 +1,4 @@
-#include "ScrPlayer.h"
+﻿#include "ScrPlayer.h"
 
 bool ScrPlayer_attach_function1()
 {

@@ -1,4 +1,4 @@
-#include "Cotopha.h"
+﻿#include "Cotopha.h"
 #define s2_mov_ecx_edi 0xcf8b
 
 namespace

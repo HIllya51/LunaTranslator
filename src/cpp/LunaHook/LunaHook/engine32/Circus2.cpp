@@ -1,4 +1,4 @@
-#include "Circus2.h"
+﻿#include "Circus2.h"
 namespace
 {
   void filter(TextBuffer *buffer, HookParam *hp)

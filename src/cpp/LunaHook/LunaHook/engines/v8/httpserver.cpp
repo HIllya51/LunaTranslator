@@ -1,4 +1,4 @@
-// https://github.com/microsoft/Windows-classic-samples/blob/main/Samples/Win7Samples/netds/http/HttpV2Server/main.c
+﻿// https://github.com/microsoft/Windows-classic-samples/blob/main/Samples/Win7Samples/netds/http/HttpV2Server/main.c
 /*++
  Copyright (c) 2002 - 2002 Microsoft Corporation.  All Rights Reserved.
 

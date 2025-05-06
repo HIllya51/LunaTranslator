@@ -1,4 +1,4 @@
-#include "def_mono.hpp"
+﻿#include "def_mono.hpp"
 #include "def_il2cpp.hpp"
 #include "monostringapis.h"
 namespace

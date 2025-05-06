@@ -8,9 +8,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 add_definitions(-DUNICODE -D_UNICODE)
-add_compile_options(
-  /wd4018 
-)
+add_compile_options(/MP)
+
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
     set(platform "x64")

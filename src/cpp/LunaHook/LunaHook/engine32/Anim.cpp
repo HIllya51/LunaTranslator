@@ -1,4 +1,4 @@
-#include "Anim.h"
+﻿#include "Anim.h"
 
 bool InsertAnimHook()
 {

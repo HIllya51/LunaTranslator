@@ -1,4 +1,4 @@
-#include "AksysGames.h"
+﻿#include "AksysGames.h"
 
 bool AksysGames::attach_function()
 {

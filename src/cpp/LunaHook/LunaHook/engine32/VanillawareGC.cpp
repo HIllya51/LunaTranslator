@@ -1,4 +1,4 @@
-#include "VanillawareGC.h"
+﻿#include "VanillawareGC.h"
 
 /** jichi 7/20/2014 Vanillaware
  *  Tested game: 朧村正

@@ -1,4 +1,4 @@
-#include "Regista.h"
+﻿#include "Regista.h"
 namespace
 {
 	// ルートダブル -Before Crime * After Days-

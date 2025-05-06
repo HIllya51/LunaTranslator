@@ -1,4 +1,4 @@
-#include "H_do_C.h"
+﻿#include "H_do_C.h"
 // https://vndb.org/v565
 // 夢見師
 namespace

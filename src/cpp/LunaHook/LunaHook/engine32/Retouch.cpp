@@ -1,4 +1,4 @@
-#include "Retouch.h"
+﻿#include "Retouch.h"
 
 // jichi 6/21/2015
 namespace

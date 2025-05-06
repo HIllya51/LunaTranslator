@@ -1,4 +1,4 @@
-#include "AdobeAir.h"
+﻿#include "AdobeAir.h"
 
 /**
  *  jichi 4/15/2014: Insert Adobe AIR hook

@@ -1,4 +1,4 @@
-#include "lucasystem.h"
+﻿#include "lucasystem.h"
 
 void IG64filter(TextBuffer *buffer, HookParam *)
 {

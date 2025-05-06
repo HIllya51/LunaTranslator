@@ -1,4 +1,4 @@
-#include "Moonstone.h"
+﻿#include "Moonstone.h"
 // https://vndb.org/v464
 // あした出逢った少女
 

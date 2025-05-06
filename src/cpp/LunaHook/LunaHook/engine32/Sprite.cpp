@@ -1,4 +1,4 @@
-#include "Sprite.h"
+﻿#include "Sprite.h"
 
 bool Sprite_attach_function()
 {

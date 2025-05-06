@@ -1,4 +1,4 @@
-#include "engine32/LovaGame.h"
+﻿#include "engine32/LovaGame.h"
 #include "engine32/VanillawareGC.h"
 #include "engine32/V8.h"
 #include "engine32/cef.h"

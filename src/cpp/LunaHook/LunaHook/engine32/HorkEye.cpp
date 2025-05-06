@@ -1,4 +1,4 @@
-#include "HorkEye.h"
+﻿#include "HorkEye.h"
 
 /** 10/20/2014 jichi: HorkEye, http://horkeye.com
  *  Sample game: [150226] 結城友奈�勀��ある 体験版

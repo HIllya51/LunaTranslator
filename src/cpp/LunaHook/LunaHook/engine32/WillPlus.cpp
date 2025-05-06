@@ -1,4 +1,4 @@
-#include "WillPlus.h"
+﻿#include "WillPlus.h"
 /** 1/18/2015 jichi Add new WillPlus
  *  The old hook no longer works for new game.
  *  Sample game: [150129] [honeybee] RE:BIRTHDAY SONG

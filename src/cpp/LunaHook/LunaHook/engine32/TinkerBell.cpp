@@ -1,4 +1,4 @@
-#include "TinkerBell.h"
+﻿#include "TinkerBell.h"
 bool InsertTinkerBellHook()
 {
   // DWORD s1,s2,i;

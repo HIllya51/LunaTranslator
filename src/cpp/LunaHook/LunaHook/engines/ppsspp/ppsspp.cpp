@@ -1,4 +1,4 @@
-#include "ppsspp.h"
+﻿#include "ppsspp.h"
 #include "specialgames.hpp"
 #include "JIT_Keeper.hpp"
 // See: https://github.com/hrydgard/ppsspp
@@ -292,7 +292,7 @@ namespace ppsspp
             return false;
         }
     }
-    void dohookemaddr(uintptr_t em_address, uintptr_t ret)
+    void dohookemaddr(uint64_t em_address, uintptr_t ret)
     {
         jitaddraddr(em_address, ret, JITTYPE::PPSSPP);
 
@@ -763,7 +763,7 @@ namespace ppsspp
 }
 bool PPSSPPWindows::attach_function1()
 {
-    auto minver = std::make_tuple(1, 15, 0, 0);
+    auto minver = std::make_tuple(1u, 15u, 0u, 0u);
     auto version = queryversion();
     if (version && version < minver)
         return false;

@@ -1,4 +1,4 @@
-#include "Ryokucha.h"
+﻿#include "Ryokucha.h"
 static void SpecialHookRyokucha(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   for (DWORD i = 1; i < 5; i++)

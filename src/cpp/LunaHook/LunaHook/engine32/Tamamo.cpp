@@ -1,4 +1,4 @@
-#include "Tamamo.h"
+﻿#include "Tamamo.h"
 
 /** jichi 8/23/2015 Tamamo
  *  Sample game: 閃光の騎士 ～カリスティアナイト～ Ver1.03

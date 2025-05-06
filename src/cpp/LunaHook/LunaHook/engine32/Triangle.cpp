@@ -1,4 +1,4 @@
-#include "Triangle.h"
+﻿#include "Triangle.h"
 bool InsertTriangleHook()
 {
   for (DWORD i = processStartAddress; i < processStopAddress - 4; i++)

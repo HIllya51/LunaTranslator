@@ -1,4 +1,4 @@
-#include "splushwave.h"
+﻿#include "splushwave.h"
 bool splushwave_(const char *buf, int size)
 {
   auto addr = MemDbg::findBytes(buf, size, processStartAddress, processStopAddress);

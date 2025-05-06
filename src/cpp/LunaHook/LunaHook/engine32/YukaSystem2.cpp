@@ -1,4 +1,4 @@
-#include "YukaSystem2.h"
+﻿#include "YukaSystem2.h"
 /** jichi 7/6/2014 YukaSystem2
  *  Sample game: セミラミスの天秤
  *

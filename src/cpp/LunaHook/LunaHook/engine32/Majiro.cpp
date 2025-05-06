@@ -1,4 +1,4 @@
-#include "Majiro.h"
+﻿#include "Majiro.h"
 
 /** jichi 12/28/2014: new Majiro hook pattern
  *

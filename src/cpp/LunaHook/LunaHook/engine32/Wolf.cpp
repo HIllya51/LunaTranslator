@@ -1,4 +1,4 @@
-#include "Wolf.h"
+﻿#include "Wolf.h"
 /**
  *  jichi 10/12/2014
  *  P.S.: Another approach

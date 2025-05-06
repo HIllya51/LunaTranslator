@@ -1,4 +1,4 @@
-#include "Tanuki.h"
+﻿#include "Tanuki.h"
 
 /** jichi 9/14/2013
  *  TanukiSoft (*.tac)

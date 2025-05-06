@@ -1,4 +1,4 @@
-#include "Nexton.h"
+﻿#include "Nexton.h"
 /**
  *  jichi 9/5/2013: NEXTON games with aInfo.db
  *  Sample games:

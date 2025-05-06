@@ -37,7 +37,7 @@ add_library(NativeUtils SHARED
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
 
-target_link_libraries(NativeUtils tiny-aes Dbghelp libmecab rapidfuzz webview2 mfuuid md4c-all dwmapi d3d11 ${YY_Thunks})
+target_link_libraries(NativeUtils tiny-aes Dbghelp libmecab rapidfuzz webview2 mfuuid md4c-all dwmapi d3d11 version ${YY_Thunks})
 
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:Dbghelp.dll")
 if(NOT WINXP)

@@ -1,4 +1,4 @@
-#include "Nijyuei.h"
+﻿#include "Nijyuei.h"
 
 bool Nijyuei::attach_function()
 {

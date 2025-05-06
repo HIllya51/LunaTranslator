@@ -1,4 +1,4 @@
-#include "Nitroplus.h"
+﻿#include "Nitroplus.h"
 
 bool InsertNitroplusHook()
 {

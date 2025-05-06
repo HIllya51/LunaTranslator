@@ -1,4 +1,4 @@
-#include "Chunsoft.h"
+﻿#include "Chunsoft.h"
 namespace
 {
   // https://vndb.org/r124342

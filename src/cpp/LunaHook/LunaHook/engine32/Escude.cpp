@@ -1,4 +1,4 @@
-#include "Escude.h"
+﻿#include "Escude.h"
 /** jichi 7/23/2015 Escude
  *  Sample game: Re;Lord ��ルフォルト�魔女とぬぁ�るみ *  See: http://capita.tistory.com/m/post/210
  *

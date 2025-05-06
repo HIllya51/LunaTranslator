@@ -1,4 +1,4 @@
-#include "QLIE.h"
+﻿#include "QLIE.h"
 /**
  * jichi 8/18/2013:  QLIE identified by GameData/data0.pack
  *
