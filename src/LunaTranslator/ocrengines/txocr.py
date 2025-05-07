@@ -20,9 +20,11 @@ class OCR(baseocr):
         except:
             return "ap-beijing"
 
-    def langmap(self):
+    @property
+    def langocr(self):
         # https://cloud.tencent.com/document/product/866/33526
-        return {
+        s = self.srclang_1
+        m = {
             Languages.Chinese: "zh",
             Languages.TradChinese: "zh",
             Languages.Japanese: "jap",
@@ -40,19 +42,30 @@ class OCR(baseocr):
             Languages.Thai: "tha",
             Languages.Arabic: "ara",
         }
+        return m.get(s, "auto")
 
     @property
-    def langocr(self):
+    def srclang2(self):
+        # https://cloud.tencent.com/document/product/551/17232
         s = self.srclang_1
-        return self.langmap().get(s, "auto")
+        if s == Languages.TradChinese:
+            s = "zh-TW"
+        return s
+
+    @property
+    def tgtlang2(self):
+        s = self.tgtlang_1
+        if s == Languages.TradChinese:
+            s = "zh-TW"
+        return s
 
     def ocr_fy(self, imagebinary):
         self.checkempty(["SecretId", "SecretKey"])
 
         encodestr = str(base64.b64encode(imagebinary), "utf-8")
         req_para = {
-            "Source": self.langocr,
-            "Target": self.tgtlang,
+            "Source": self.srclang2,
+            "Target": self.tgtlang2,
             "ProjectId": int(self.multiapikeycurrent["ProjectId"]),
             "Data": encodestr,
             "SessionUuid": str(uuid.uuid4()),
