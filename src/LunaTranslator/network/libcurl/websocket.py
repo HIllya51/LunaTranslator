@@ -57,7 +57,7 @@ class WebSocket:
         proxy = "{}:{}".format(http_proxy_host, http_proxy_port)
         curl_easy_setopt(curl, CURLoption.PROXY, proxy.encode("utf8"))
 
-    def _parseurl2serverandpath(self, url):
+    def _parseurl2serverandpath(self, url: str):
         url = url.strip()
         scheme, server, path, query, _ = urlsplit(url)
         if scheme == "wss":
@@ -65,7 +65,7 @@ class WebSocket:
         elif scheme == "ws":
             ishttps = False
         else:
-            raise Exception("unknown scheme " + scheme)
+            raise RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -77,7 +77,7 @@ class WebSocket:
             else:
                 port = 80
         else:
-            raise Exception("invalid url")
+            raise RequestException("invalid url " + url)
         if len(query):
             path += "?" + query
         return ishttps, server, port, path

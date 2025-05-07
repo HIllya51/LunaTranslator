@@ -484,11 +484,10 @@ import sqlite3
 
 
 class autosql(sqlite3.Connection):
-    def __new__(cls, v) -> None:
-        return v
 
     def __del__(self):
         self.close()
+        super().__del__()
 
 
 def safe_escape(string: str) -> str:

@@ -29,24 +29,14 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
             if (IsColorSchemeChangeMessage(lParam) && ((idx++) % 2))
                 callback(0, false, NULL);
         }
-        else if (message == Magpie_Core_CLI_ToastMessage)
+        else if (message == Magpie_Core_CLI_ToastMessage || message == Magpie_Core_CLI_ScalingOptions_Save)
         {
             ATOM atom = (ATOM)wParam;
             WCHAR buffer[256];
             if (GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer)))
             {
                 GlobalDeleteAtom(atom);
-                callback(4, false, buffer);
-            }
-        }
-        else if (message == Magpie_Core_CLI_ScalingOptions_Save)
-        {
-            ATOM atom = (ATOM)wParam;
-            WCHAR buffer[1024];
-            if (GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer)))
-            {
-                GlobalDeleteAtom(atom);
-                callback(5, false, buffer);
+                callback(message == Magpie_Core_CLI_ToastMessage ? 4 : 5, false, buffer);
             }
         }
         else if (message == WM_MAGPIE_SCALINGCHANGED)

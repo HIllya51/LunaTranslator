@@ -1,4 +1,4 @@
-#include "python.h"
+﻿#include "python.h"
 #include <dwrite.h>
 #include <atlbase.h>
 extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_call_host(const wchar_t *text, int split)
@@ -28,47 +28,54 @@ extern "C" __declspec(dllexport) bool luna_internal_renpy_call_is_embed_using(in
 }
 namespace
 {
-
+    struct PyObject;
     typedef enum
     {
         PyGILState_LOCKED,
         PyGILState_UNLOCKED
     } PyGILState_STATE;
-    typedef PyGILState_STATE (*PyGILState_Ensure_t)(void);
-    typedef void (*PyGILState_Release_t)(PyGILState_STATE);
-    typedef int (*PyRun_SimpleString_t)(const char *command);
-
-    PyRun_SimpleString_t PyRun_SimpleString;
-    PyGILState_Release_t PyGILState_Release;
-    PyGILState_Ensure_t PyGILState_Ensure;
-
+    PyGILState_STATE (*PyGILState_Ensure)(void);
+    void (*PyGILState_Release)(PyGILState_STATE);
+    int (*PyRun_SimpleString)(const char *command);
+    PyObject *(*PyImport_ImportModule)(const char *name);
     bool LoadPyRun(HMODULE module)
     {
-        PyGILState_Ensure = (PyGILState_Ensure_t)GetProcAddress(module, "PyGILState_Ensure");
-        PyGILState_Release = (PyGILState_Release_t)GetProcAddress(module, "PyGILState_Release");
-        PyRun_SimpleString = (PyRun_SimpleString_t)GetProcAddress(module, "PyRun_SimpleString");
-        return PyGILState_Ensure && PyGILState_Release && PyRun_SimpleString;
+        PyGILState_Ensure = (decltype(PyGILState_Ensure))GetProcAddress(module, "PyGILState_Ensure");
+        PyGILState_Release = (decltype(PyGILState_Release))GetProcAddress(module, "PyGILState_Release");
+        PyRun_SimpleString = (decltype(PyRun_SimpleString))GetProcAddress(module, "PyRun_SimpleString");
+        PyImport_ImportModule = (decltype(PyImport_ImportModule))GetProcAddress(module, "PyImport_ImportModule");
+        return PyGILState_Ensure && PyGILState_Release && PyRun_SimpleString && PyImport_ImportModule;
     }
-
-    void PyRunScript(const char *script)
+    struct PyGILState
     {
-        if (!(PyGILState_Ensure && PyGILState_Release && PyRun_SimpleString))
-            return;
-
-        auto state = PyGILState_Ensure();
+        PyGILState_STATE s;
+        PyGILState()
+        {
+            s = PyGILState_Ensure();
+        }
+        ~PyGILState()
+        {
+            PyGILState_Release(s);
+        }
+    };
+    bool PyRunScript(const char *script)
+    {
+        PyGILState state;
+        // renpy4.0~6.13(python23~python26)会报语法错误，原因未知，6.14起改为py27就没问题了。
+        // 而且旧版本没有ctypes，得用PyCFunction_NewEx来搞，太麻烦，算了吧。
         PyRun_SimpleString(script);
-        PyGILState_Release(state);
+        return true;
     }
 
-    void hook_internal_renpy_call_host()
+    bool hook_internal_renpy_call_host()
     {
         HookParam hp_internal;
         hp_internal.address = (uintptr_t)luna_internal_renpy_call_host;
         hp_internal.offset = GETARG(1);
         hp_internal.split = GETARG(2);
         hp_internal.type = USING_SPLIT | USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT | FULL_STRING;
-        NewHook(hp_internal, "luna_internal_renpy_call_host");
-        PyRunScript(LoadResData(L"renpy_hook_text", L"PYSOURCE").c_str());
+        return NewHook(hp_internal, "luna_internal_renpy_call_host") &&
+               PyRunScript(LoadResData(L"renpy_hook_text", L"PYSOURCE").c_str());
     }
 
     typedef BOOL(WINAPI *PGFRI)(LPCWSTR, LPDWORD, LPVOID, DWORD);
@@ -246,11 +253,12 @@ bool hookrenpy(HMODULE module)
 {
     if (!LoadPyRun(module))
         return false;
+    if (!hook_internal_renpy_call_host())
+        return false;
     patch_fun = []()
     {
         PyRunScript(LoadResData(L"renpy_hook_font", L"PYSOURCE").c_str());
     };
-    hook_internal_renpy_call_host();
     dont_detach = true;
     return true;
 }

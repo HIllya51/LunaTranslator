@@ -579,7 +579,7 @@ def initsome2(self, mianfei, l, external: list, label=None, btnplus=None):
 @tryprint
 def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     try:
-        sql = autosql(sqlite3.connect(sqlitefile, check_same_thread=False))
+        sql = autosql(sqlitefile, check_same_thread=False)
         ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
         js_format2 = {}
         collect = []

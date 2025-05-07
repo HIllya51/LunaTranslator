@@ -22,10 +22,10 @@ class TS(basetrans):
             self.sql = None
             if p:
                 if os.path.exists(p):
-                    self.sql = autosql(sqlite3.connect(p, check_same_thread=False))
+                    self.sql = autosql(p, check_same_thread=False)
             if p1:
                 if os.path.exists(p1):
-                    self.sql = autosql(sqlite3.connect(p1, check_same_thread=False))
+                    self.sql = autosql(p1, check_same_thread=False)
             self.paths = (p1, p)
 
     def init(self):

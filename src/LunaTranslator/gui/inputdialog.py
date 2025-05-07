@@ -693,7 +693,6 @@ class autoinitdialog(LDialog):
                     callback=functools.partial(__temp.__setitem__, "k"),
                     reflist=__temp["k"],
                     name=line.get("name", ""),
-                    header=line.get("name", ""),
                     dirorfile=line.get("dirorfile", False),
                 )
 

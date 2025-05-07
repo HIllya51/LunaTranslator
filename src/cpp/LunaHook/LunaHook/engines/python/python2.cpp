@@ -1,4 +1,4 @@
-#include "python.h"
+﻿#include "python.h"
 namespace
 {
     typedef wchar_t Py_UNICODE;
@@ -74,7 +74,6 @@ namespace
     PyUnicode_FromUnicode_t PyUnicode_FromUnicode;
 
 }
-
 bool InsertRenpyHook()
 {
     wchar_t python[] = L"python2X.dll", libpython[] = L"libpython2.X.dll";
@@ -109,9 +108,9 @@ bool InsertRenpyHook()
                             context->argof(1) = (uintptr_t)PyUnicode_FromUnicode((Py_UNICODE *)buffer.buff, buffer.size / 2);
                         };
                     }
-                    return NewHook(hp, "Ren'py");
+                    return NewHook(hp, "PyUnicodeUCS2_Format");
                 }();
-                auto f3 = hookrenpy(module);
+                auto f3 = pythonMinorVersion <= 6 ? false : hookrenpy(module);
 
                 return f1 || f3;
             }

@@ -5,9 +5,6 @@ class TS(basetrans):
 
     def translate(self, content):
 
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 YaBrowser/24.1.5.825 Yowser/2.5 Safari/537.36"
-        }
         if self.is_src_auto:
             params = {
                 "srv": "browser_video_translation",
@@ -15,9 +12,7 @@ class TS(basetrans):
             }
 
             response = self.proxysession.get(
-                "https://translate.yandex.net/api/v1/tr.json/detect",
-                params=params,
-                headers=headers,
+                "https://translate.yandex.net/api/v1/tr.json/detect", params=params
             )
             lang = response.json()["lang"]
         else:
@@ -32,7 +27,6 @@ class TS(basetrans):
             url=url,
             params=params,
             data={"maxRetryCount": 2, "fetchAbortTimeout": 500},
-            headers=headers,
         )
 
         try:

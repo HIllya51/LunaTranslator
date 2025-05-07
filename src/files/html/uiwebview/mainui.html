@@ -425,7 +425,7 @@
             eleori.classList.add('lunatranslator_clickword')
             eleori.appendChild(style1)
 
-            if ((word.word != word.kana) && word.kana && (word.kana.trim().length)) {
+            if ((word.word != word.kana) && word.kana && (!word.hidekana) && (word.kana.trim().length)) {
 
                 let ruby = document.createElement('ruby')
                 ruby.appendChild(eleori)

@@ -1501,19 +1501,19 @@
             "name": "本地OCR",
             "type": "offline"
         },
-        "windowsocr": {
-            "use": false,
-            "name": "WindowsOCR",
-            "type": "offline"
-        },
         "SnippingTool": {
             "use": false,
             "name": "SnippingTool",
             "type": "offline"
         },
-        "tesseract5": {
+        "weixinocr": {
             "use": false,
-            "name": "Tesseract5",
+            "name": "WeChat/QQ OCR",
+            "type": "offline"
+        },
+        "windowsocr": {
+            "use": false,
+            "name": "WindowsOCR",
             "type": "offline"
         },
         "baiduocr_X": {
@@ -1567,9 +1567,9 @@
             "name": "manga-ocr",
             "type": "offline"
         },
-        "weixinocr": {
+        "tesseract5": {
             "use": false,
-            "name": "WeChat/QQ OCR",
+            "name": "Tesseract5",
             "type": "offline"
         },
         "chatgptlike": {
@@ -1650,7 +1650,7 @@
             "color": "blue",
             "name": "彩云"
         },
-        "deepl": {
+        "deepl_1": {
             "use": false,
             "color": "blue",
             "name": "DeepL",

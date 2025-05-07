@@ -24,7 +24,9 @@ class WordSegResultX(WordSegResult):
 
     @staticmethod
     def fromW(w: WordSegResult):
-        return WordSegResultX(w.word, w.kana, w.isdeli, w.wordclass, w._prototype)
+        return WordSegResultX(
+            w.word, w.kana, w.isdeli, w.wordclass, w._prototype, hidekana=w.hidekana
+        )
 
     def copy(self):
         _ = WordSegResultX.fromW(self)
@@ -36,7 +38,16 @@ class WordSegResultX(WordSegResult):
         return super().__repr__() + str(dict(word_X=self.word_X, ref=self.ref))
 
 
-class Qlabel_c(QLabel):
+class QLabel_w(QLabel):
+    def __init__(self, *argc):
+        super().__init__(*argc)
+        self.word: str = None
+        self.refmask: QLabel_w = None
+        self.ref: QLabel_w = None
+        self.company: QLabel_w = None
+
+
+class Qlabel_c(QLabel_w):
     def mousePressEvent(self, ev):
         self.pr = True
         return super().mousePressEvent(ev)
@@ -51,9 +62,9 @@ class Qlabel_c(QLabel):
                 try:
                     if self.pr:
                         if event.button() == Qt.MouseButton.LeftButton:
-                            self.callback(False)
+                            gobject.baseobject.clickwordcallback(self.word, False)
                         elif event.button() == Qt.MouseButton.RightButton:
-                            self.callback(True)
+                            gobject.baseobject.clickwordcallback(self.word, True)
                 except:
                     print_exc()
             self.pr = False
@@ -89,7 +100,7 @@ class Qlabel_c(QLabel):
         return super().leaveEvent(a0)
 
 
-class FenciQLabel(QLabel):
+class FenciQLabel(QLabel_w):
     def __init__(self, *argc, **kw):
         self.last = None
         self.color = None
@@ -110,8 +121,9 @@ class FenciQLabel(QLabel):
 
 
 class QTextBrowser_1(QTextEdit):
-    def __init__(self, parent) -> None:
+    def __init__(self, parent: "TextBrowser") -> None:
         super().__init__(parent)
+        self.p = parent
         self.pr = None
         self.setReadOnly(True)
         self.prpos = QPoint()
@@ -122,7 +134,7 @@ class QTextBrowser_1(QTextEdit):
         self.pr = self.textCursor().selectedText()
 
     def getcurrlabel(self, pos: QPoint):
-        for label in self.parent().searchmasklabels:
+        for label in self.p.searchmasklabels:
             if not label.isVisible():
                 continue
             if not label.geometry().contains(pos):
@@ -144,13 +156,13 @@ class QTextBrowser_1(QTextEdit):
     def mouseReleaseEvent(self, event: QMouseEvent) -> None:
         try:
             label = self.getcurrlabel(event.pos())
-            if label and label.refmask.callback:
+            if label and label.refmask.word:
                 if event.button() == Qt.MouseButton.LeftButton:
                     if self.prpos == event.pos() or not self.pr:
-                        label.refmask.callback(False)
+                        gobject.baseobject.clickwordcallback(label.refmask.word, False)
                 elif event.button() == Qt.MouseButton.RightButton:
                     if not self.pr:
-                        label.refmask.callback(True)
+                        gobject.baseobject.clickwordcallback(label.refmask.word, True)
                         return event.ignore()
         except:
             pass
@@ -177,7 +189,7 @@ class QTextBrowser_1(QTextEdit):
     def mouseMoveEvent(self, ev: QMouseEvent):
         if globalconfig["selectable"] and globalconfig["selectableEx"]:
             return super().mouseMoveEvent(ev)
-        for label in self.parent().searchmasklabels:
+        for label in self.p.searchmasklabels:
             if label.geometry().contains(ev.pos()):
                 continue
             try:
@@ -198,8 +210,8 @@ class QTextBrowser_1(QTextEdit):
                 targetlabel.company.refmask.setStyleSheet(
                     "background-color: " + globalconfig["hovercolor"]
                 )
-                reference.append(self.refmask)
-                reference.append(self.company.refmask)
+                reference.append(targetlabel.refmask)
+                reference.append(targetlabel.company.refmask)
             except:
                 pass
         if not self.ismousehastext(ev):
@@ -295,19 +307,18 @@ class TextBrowser(QWidget, dataget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.savetaglabels = []
-        self.searchmasklabels_clicked = []
-        self.searchmasklabels_clicked2 = []
+        self.savetaglabels: "list[FenciQLabel]" = []
+        self.searchmasklabels_clicked: "list[QLabel_w]" = []
+        self.searchmasklabels_clicked2: "list[Qlabel_c]" = []
         self.searchmasklabels_clicked_num = 0
-        self.searchmasklabels = []
-        self.backcolorlabels = []
+        self.searchmasklabels: "list[FenciQLabel]" = []
         self.showatcenterflag = globalconfig["showatcenter"]
-        self.yinyinglabels = []
+        self.yinyinglabels: "list[base]" = []
         self.yinyinglabels_idx = 0
 
         self.yinyingposline = 0
         self.lastcolor = None
-        self.iteryinyinglabelsave = {}
+        self.iteryinyinglabelsave: "dict[str, list[FenciQLabel]]" = {}
         self.saveiterclasspointer = {}
         self.cleared = True
 
@@ -640,7 +651,7 @@ class TextBrowser(QWidget, dataget):
 
     def _split_tags(self, tag: "list[WordSegResultX]"):
         taglines: "list[list[WordSegResultX]]" = [[]]
-        for i, word in enumerate(tag):
+        for word in tag:
             if word.word == "\n":
                 taglines.append([])
                 continue
@@ -724,6 +735,8 @@ class TextBrowser(QWidget, dataget):
         return textlines, self._split_tags(newtag)
 
     def _checkwordhastag(self, word: WordSegResultX):
+        if word.hidekana:
+            return False
         if word.kana == word.word_X:
             return False
         if not (word.word_X.strip()):
@@ -923,12 +936,12 @@ class TextBrowser(QWidget, dataget):
                 linei += 1
         self.yinyingposline = linei
 
-    def _add_searchlabel(self, labeli, pos1, word, color: ColorControl):
+    def _add_searchlabel(self, labeli: int, pos1, word, color: ColorControl):
         if labeli >= len(self.searchmasklabels_clicked):
             ql = FenciQLabel(self.atback_color)
             ql.setMouseTracking(True)
             self.searchmasklabels.append(ql)
-            ql_1 = QLabel(ql)
+            ql_1 = QLabel_w(ql)
             ql_1.setMouseTracking(True)
             ql.refmask = ql_1
             ql_1.setStyleSheet("background-color: rgba(0,0,0,0.01);")
@@ -939,13 +952,9 @@ class TextBrowser(QWidget, dataget):
             ql.setStyleSheet("background-color: rgba(0,0,0,0.01);")
             self.searchmasklabels_clicked2.append(ql)
         self.searchmasklabels_clicked[labeli].setGeometry(0, 0, pos1[2], pos1[3])
-        self.searchmasklabels_clicked[labeli].callback = functools.partial(
-            gobject.baseobject.clickwordcallback, word
-        )
+        self.searchmasklabels_clicked[labeli].word = word
         self.searchmasklabels_clicked2[labeli].setGeometry(*pos1)
-        self.searchmasklabels_clicked2[labeli].callback = functools.partial(
-            gobject.baseobject.clickwordcallback, word
-        )
+        self.searchmasklabels_clicked2[labeli].word = word
         self.searchmasklabels[labeli].setGeometry(*pos1)
         self.searchmasklabels[labeli].setColor(color)
         self.showhideclick_i(labeli)
@@ -956,7 +965,7 @@ class TextBrowser(QWidget, dataget):
             self.searchmasklabels_clicked[i].setVisible(show)
             self.searchmasklabels_clicked2[i].setVisible(show)
 
-    def showhideclick_i(self, i):
+    def showhideclick_i(self, i: int):
         show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
         self.searchmasklabels_clicked[i].setVisible(show)
         self.searchmasklabels_clicked2[i].setVisible(show)

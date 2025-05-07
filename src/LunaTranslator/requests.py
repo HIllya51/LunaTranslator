@@ -4,7 +4,7 @@ from functools import partial
 from myutils.config import globalconfig
 from network.structures import CaseInsensitiveDict
 
-default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36"
+default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36"
 
 default_timeout = 10
 
@@ -58,7 +58,7 @@ class Response:
         try:
             return self.content.decode(self.charset)
         except:
-            raise Exception("unenable to decode with {}".format(self.charset))
+            raise RequestException("unenable to decode with {}".format(self.charset))
 
     @property
     def charset(self):
@@ -175,7 +175,7 @@ class Requester_common:
         url = url.strip()
         scheme, server, path, query, _ = urlsplit(url)
         if scheme not in ["https", "http"]:
-            raise Exception("unknown scheme " + scheme)
+            raise RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -187,7 +187,7 @@ class Requester_common:
             else:
                 port = 80
         else:
-            raise Exception("invalid url")
+            raise RequestException("invalid url " + url)
         if param:
             param = self._encode_params(param)
             query += ("&" if len(query) else "") + param

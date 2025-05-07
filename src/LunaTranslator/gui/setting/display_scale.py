@@ -252,10 +252,10 @@ def makescalew():
                         [
                             "最小帧率",
                             D_getsimplecombobox(
-                                ["0", "5", "10", "20", "30"],
+                                ["0", "5", "10", "15", "20", "30", "60"],
                                 magpie_config,
                                 "minFrameRate",
-                                internal=[0, 5, 10, 20, 30],
+                                internal=[0, 5, 10, 15, 20, 30, 60],
                             ),
                         ],
                         [

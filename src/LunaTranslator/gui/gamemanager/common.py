@@ -26,7 +26,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getsimplepatheditor,
     getspinbox,
-    ClickableLabel,
+    SClickableLabel,
     SplitLine,
 )
 
@@ -89,7 +89,7 @@ class tagitem(QFrame):
         tagLayout.setSpacing(0)
 
         key = (tag, _type, refdata)
-        lb = ClickableLabel()
+        lb = SClickableLabel()
         lb.setText(tag)
         lb.clicked.connect(functools.partial(self.labelclicked.emit, key))
         if removeable:

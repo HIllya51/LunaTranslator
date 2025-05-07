@@ -26,6 +26,7 @@ class WordSegResult:
         wordclass: str = None,
         prototype: str = None,
         donthighlight=False,
+        hidekana=False,
         **_
     ):
         self.donthighlight = donthighlight
@@ -34,6 +35,7 @@ class WordSegResult:
         self.isdeli = isdeli
         self.wordclass = wordclass
         self._prototype = prototype
+        self.hidekana = hidekana
 
     @property
     def prototype(self):
@@ -48,6 +50,7 @@ class WordSegResult:
             isdeli=self.isdeli,
             wordclass=self.wordclass,
             prototype=self._prototype,
+            hidekana=self.hidekana,
         )
 
     def __str__(self):

@@ -92,7 +92,7 @@ QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
 class texthook(basetext):
 
     @property
-    def embedconfig(self):
+    def embedconfig(self) -> dict:
         if self.hconfig.get("embed_follow_default", True):
             return globalconfig["embedded"]
 
@@ -106,7 +106,7 @@ class texthook(basetext):
         return __shitdict(self.hconfig["embed_setting_private"])
 
     @property
-    def config(self):
+    def config(self) -> dict:
         if self.hconfig.get("hooksetting_follow_default", True):
             return globalconfig
 
@@ -120,7 +120,7 @@ class texthook(basetext):
         return __shitdict(self.hconfig["hooksetting_private"])
 
     @property
-    def hconfig(self):
+    def hconfig(self) -> dict:
         return savehook_new_data.get(self.gameuid, {})
 
     def init(self):
@@ -510,7 +510,7 @@ class texthook(basetext):
                 self.embedconfig["clearText"],
             )
 
-    def onremovehook(self, hc, hn, tp):
+    def onremovehook(self, hc, hn: bytes, tp):
         key = (hc, hn.decode("utf8"), tp)
         gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
 
@@ -531,7 +531,7 @@ class texthook(basetext):
                 return _i
         return -1
 
-    def onnewhook(self, hc, hn, tp, isembedable):
+    def onnewhook(self, hc, hn: bytes, tp, isembedable):
         if hc in self.hconfig.get("removeforeverhook", []):
             return
         key = (hc, hn.decode("utf8"), tp)
@@ -640,7 +640,7 @@ class texthook(basetext):
                 self.dispatchtextlines(self.multiselectedcollector)
                 self.multiselectedcollector.clear()
 
-    def dispatchtextlines(self, keyandtexts):
+    def dispatchtextlines(self, keyandtexts: list):
         try:
             keyandtexts.sort(key=lambda xx: self.selectedhook.index(xx[0]))
         except:
@@ -653,7 +653,7 @@ class texthook(basetext):
             self.lastflushtime = time.time()
             self.multiselectedcollector.append((key, text))
 
-    def handle_output(self, hc, hn, tp, output):
+    def handle_output(self, hc, hn: bytes, tp, output):
 
         key = (hc, hn.decode("utf8"), tp)
         if key in self.selectedhook:

@@ -212,6 +212,7 @@ std::vector<ENGINE *> check_engines()
         new mono,
         new sakanagl,
         new PONScripter,
+        new Patisserie,
         new Renpy,
         new Lightvn,
         new KiriKiri,

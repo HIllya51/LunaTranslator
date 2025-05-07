@@ -152,14 +152,10 @@ namespace
    */
   void EscudeFilter(TextBuffer *buffer, HookParam *)
   {
-    auto text = reinterpret_cast<LPSTR>(buffer->buff);
-
-    StringCharReplacer(buffer, TEXTANDLEN("<r>"), '\n');
-    if (cpp_strnstr(text, "<ruby", buffer->size))
-    {
-      StringFilter(buffer, TEXTANDLEN("</ruby>"));
-      StringFilterBetween(buffer, TEXTANDLEN("<ruby"), TEXTANDLEN("'>"));
-    }
+    auto s = buffer->strA();
+    strReplace(s, "<r>", "\n");
+    s = re::sub(s, "<ruby(.*?)>(.*?)</ruby>", "$2");
+    buffer->from(s);
   }
   LPCSTR _escudeltrim(LPCSTR text)
   {

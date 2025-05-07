@@ -59,16 +59,19 @@ from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
 from services.servicecollection import registerall
 from services.tcpservice import TCPService
 from tts.basettsclass import TTSbase
+from cishu.cishubase import cishubase
+from translator.basetranslator import basetrans
+from textoutput.outputerbase import Base as outputerbase
 
 
 class MAINUI:
     def __init__(self) -> None:
         super().__init__()
         self.update_avalable = False
-        self.translators = {}
-        self.cishus = {}
-        self.specialreaders = {}
-        self.textsource_p = None
+        self.translators: "dict[str, basetrans]" = {}
+        self.cishus: "dict[str, cishubase]" = {}
+        self.specialreaders: "dict[object, TTSbase]" = {}
+        self.textsource_p: basetext = None
         self.currenttext = ""
         self.currenttranslate = ""
         self.currentread = ""
@@ -78,7 +81,7 @@ class MAINUI:
         self.isrunning = True
         self.solvegottextlock = threading.Lock()
         self.gettranslatelock = threading.Lock()
-        self.outputers = {}
+        self.outputers: "dict[str, outputerbase]" = {}
         self.processmethods = []
         self.AttachProcessDialog = None
         self.edittextui = None

@@ -52,13 +52,14 @@ class HtmlPlainTextEdit(QTextEdit):
     def __init__(self, ref: str):
         self.ref = os.path.dirname(ref)
         super().__init__()
+        try:
+            self.setTabStopDistance(self.fontMetrics().size(0, ' ').width()*8)
+        except:
+            self.setTabStopWidth(self.fontMetrics().size(0, ' ').width()*8)
         self.upper_shortcut = QShortcut(QKeySequence("Ctrl+Shift+V"), self)
         self.upper_shortcut.activated.connect(self.handle_custom_action)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         self.hl = MarkdownHighlighter(self)
-        fn = os.path.join(os.path.dirname(__file__), "markdownhighlighter.theme.json")
-        with open(fn, "r") as ff:
-            self.hl.setTheme(json.load(ff)["solarized"])
 
     def createMimeDataFromSelection(self) -> QMimeData:
         mime_data = super().createMimeDataFromSelection()

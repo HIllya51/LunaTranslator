@@ -196,7 +196,7 @@ bool InsertRenpy3Hook()
                             context->rcx = (uintptr_t)PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer.buff, buffer.size / 2);
                         };
                     };
-                    return NewHook(hp, "python3");
+                    return NewHook(hp, "PyUnicode_Format");
                 }();
 
                 auto f2 = hookrenpy(module);

@@ -8,7 +8,8 @@ class chartwidget(QWidget):
     def __init__(self) -> None:
         super().__init__()
 
-        font = QFont("Arial", 10)
+        font = QFont()
+        font.setPointSize(10)
         fmetrics = QFontMetricsF(font)
 
         fhall = fmetrics.height()
@@ -99,7 +100,7 @@ class chartwidget(QWidget):
                 points.append((int(x_coord), int(y_coord)))
 
             # 绘制折线
-            rects = []
+            rects: "list[QRectF]" = []
             texth = self.fmetrics.height()
             for i in range(len(points) - 1):
                 x1, y1 = points[i]
@@ -119,17 +120,14 @@ class chartwidget(QWidget):
             for i, (x, y) in enumerate(points):
                 painter.drawLine(
                     QPointF(x, ymargin + height), QPointF(x, ymargin + height + 5)
-                )  # 刻度线
+                )
 
                 thisw = self.fmetrics.size(0, x_labels[i]).width()
                 thisx = x - thisw / 2
 
                 if thisx > lastx2:
 
-                    painter.drawText(
-                        QPointF(thisx, ymargin + height + 20),
-                        x_labels[i],
-                    )  # 标签
+                    painter.drawText(QPointF(thisx, ymargin + height + 20), x_labels[i])
                     lastx2 = thisx + thisw
 
         except:

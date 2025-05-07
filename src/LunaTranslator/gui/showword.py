@@ -16,6 +16,7 @@ from myutils.utils import (
     checkmd5reloadmodule,
     getimageformat,
 )
+from cishu.cishubase import DictTree
 from sometypes import WordSegResult
 from myutils.mecab import mecab
 from myutils.wrapper import threader, tryprint
@@ -258,7 +259,7 @@ class AnkiWindow(QWidget):
 
     def loadfileds(self):
         word = self.currentword
-        dictionarys = self.refsearchw.generate_dictionarys()
+        dictionarys = self.refsearchw.wordviewer.generate_dictionarys()
         remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
         if globalconfig["ankiconnect"]["boldword"]:
@@ -281,7 +282,7 @@ class AnkiWindow(QWidget):
             )
 
             dictionaryContent[_["dict"]] = quote(
-                _["content"] + self.refsearchw.loadmdictfoldstate(_["dict"])
+                _["content"] + self.refsearchw.wordviewer.loadmdictfoldstate(_["dict"])
             )
         fields = {
             "word": word,
@@ -467,7 +468,7 @@ class AnkiWindow(QWidget):
         for mode in modes:
             windows.keybd_event(mode, 0, windows.KEYEVENTF_KEYUP, 0)
 
-    def startorendrecord(self, btn: QPushButton, ii, target: QLineEdit, idx):
+    def startorendrecord(self, btn: QPushButton, ii: int, target: QLineEdit, idx):
         if idx:
             try:
                 self.recorders[ii] = loopbackrecorder()
@@ -485,7 +486,7 @@ class AnkiWindow(QWidget):
             self.settextsignal.emit(target, file)
 
     def createaddtab(self):
-        self.recorders = {}
+        self.recorders: "dict[int, loopbackrecorder]" = {}
         wid = QWidget()
         layout = QVBoxLayout(wid)
         soundbutton = IconButton("fa.music")
@@ -704,7 +705,7 @@ class AnkiWindow(QWidget):
             pix = QPixmap.fromImage(QImage(src))
         self.viewimagelabel.showpixmap(pix)
 
-    def selecfile2(self, item):
+    def selecfile2(self, item: QLineEdit):
         f = QFileDialog.getOpenFileName(filter=getimagefilefilter() + ";;*")
         res = f[0]
         if res != "":
@@ -888,8 +889,6 @@ class CustomTabBar(LTabBar):
         return self.savesizehint
 
 
-from cishu.cishubase import DictTree
-
 DictNodeRole = Qt.ItemDataRole.UserRole + 1
 DeterminedhasChildren = DictNodeRole + 1
 isWordNode = DeterminedhasChildren + 1
@@ -930,6 +929,7 @@ class DynamicTreeModel(QStandardItemModel):
                 t = c
                 has = False
             else:
+                c: QLineEdit = c
                 t = c.text()
                 has = True
             item = QStandardItem(t.replace("\n", ""))
@@ -1071,7 +1071,10 @@ class showdiction(QWidget):
         self.model.clear()
         root = self.model.invisibleRootItem()
         rows = []
-        cishus = []
+
+        from cishu.mdict import mdict
+
+        cishus: list[mdict] = []
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.baseobject.cishus.get(k)
             if not hasattr(cishu, "tree"):
@@ -1101,55 +1104,13 @@ class showdiction(QWidget):
         root.setData(len(rows) > 0, DeterminedhasChildren)
 
 
-class showwordfastwebview(auto_select_webview):
-    def _createwebview(self, *argc, **kw):
-        web = super()._createwebview(*argc, **kw)
-        if isinstance(web, WebviewWidget):
-            web.html_limit = 1
-        return web
-
-
-class searchwordW(closeashidewindow):
+class WordViewer(QWidget):
     search_word = pyqtSignal(str, bool)
-    show_dict_result = pyqtSignal(float, str, str)
     search_word_in_new_window = pyqtSignal(str)
-    ocr_once_signal = pyqtSignal()
+    __show_dict_result = pyqtSignal(object, str, str)
 
-    def __init__(self, parent):
-        super(searchwordW, self).__init__(parent, globalconfig["sw_geo"])
-        # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
-        self.search_word.connect(self.__click_word_search_function)
-        self.search_word_in_new_window.connect(self.searchwinnewwindow)
-        self.show_dict_result.connect(self.__show_dict_result_function)
-        self.ocr_once_signal.connect(lambda: rangeselct_function(self.ocr_do_function))
-        self.state = 0
-
-    @threader
-    def ocr_do_function(self, rect, img=None):
-        if not rect:
-            return
-        if not img:
-            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-        result = ocr_run(img)
-        if result.error:
-            return result.displayerror()
-        self.search_word.emit(result.textonly, False)
-
-    def __load(self):
-        if self.state != 0:
-            return
-        self.state = 1
-        self.setupUi()
-        self.state = 2
-
-    def showEvent(self, e):
-        super().showEvent(e)
-        self.__load()
-        self.activate()
-
-    def activate(self):
-        self.activateWindow()
-        self.searchtext.setFocus()
+    def show_dict_result(self, timestamp, k, res):
+        self.__show_dict_result.emit(timestamp, k, res)
 
     @tryprint
     def __show_dict_result_function(self, timestamp, k, res):
@@ -1181,140 +1142,76 @@ class searchwordW(closeashidewindow):
                 self.tab.tabBarClicked.emit(0)
                 self.hasclicked = True
 
-    def tabclicked(self, idx):
-        self.tab.setCurrentIndex(idx)
-        self.hasclicked = True
-        try:
-            k = self.tabks[idx]
-            html = self.cache_results_highlighted.get(k, self.cache_results[k])
-        except:
-            return
-        path = r"files\html\uiwebview\dictionary.html"
-        with open(path, "r", encoding="utf8") as ff:
-            frame = ff.read()
-        html = frame.replace("__luna_dict_internal_view__", html)
-        html += self.loadmdictfoldstate(k)
-        self.textOutput.setHtml(html)
+    def generate_dictionarys(self):
+        res = []
+        tabks = []
+        for k in self.cache_results:
+            if k in globalconfig["ignoredict"]:
+                continue
+            v = self.cache_results_highlighted.get(k, self.cache_results[k])
+            if len(v) == 0:
+                continue
+            thisp = self.thisps.get(k, 0)
 
-    def loadmdictfoldstate(self, k):
-        if k != "mdict":
-            return ""
-        if not self.savemdictfoldstate:
-            return ""
-        datas = []
-        for _id, fold in self.savemdictfoldstate.items():
-            datas.append(
-                "document.getElementById('{}').nextElementSibling.style.display='{}';".format(
-                    _id, ("block", "none")[fold]
-                )
-            )
-        if not datas:
-            return ""
-        return """<script>{}</script>""".format("".join(datas))
+            idx = 0
+            for i in tabks:
+                if i >= thisp:
+                    idx += 1
+            tabks.append(thisp)
+            res.insert(idx, {"dict": k, "content": v})
+        return res
 
-    def searchwinnewwindow(self, word):
+    def reset(self, current):
+        self.current = current
+        pxx = 999
+        for k in globalconfig["cishuvisrank"]:
+            self.thisps[k] = pxx
+            pxx -= 1
 
-        class searchwordWx(searchwordW):
-            def closeEvent(self1, event: QCloseEvent):
-                self1.deleteLater()
-                super(saveposwindow, self1).closeEvent(event)
-
-        _ = searchwordWx(self.parent())
-        _.move(_.pos() + QPoint(20, 20))
-        _.show()
-        _.search_word.emit(word, False)
-
-    def _createnewwindowsearch(self, _):
-        word = self.searchtext.text()
-        self.searchwinnewwindow(word)
-
-    def showmenu_auto_sound(self, _):
-
-        menu = QMenu(self)
-        auto = LAction("自动", menu)
-        auto.setCheckable(True)
-        auto.setChecked(globalconfig["is_search_word_auto_tts"])
-        menu.addAction(auto)
-        action = menu.exec(QCursor.pos())
-        if action == auto:
-            globalconfig["is_search_word_auto_tts"] = auto.isChecked()
-
-    def historymenu(self):
-        menu = QMenu(self)
-        __ = []
-        for word in self.historys[:16]:
-            act = QAction(word, menu)
-            __.append(act)
-            menu.addAction(act)
-        action = menu.exec(QCursor.pos())
-        if action:
-            self.searchtext.setText(action.text())
-            self.search(action.text())
-
-    def setupUi(self):
-        self.setWindowTitle("查词")
-        self.ankiwindow = AnkiWindow(self)
-        self.setWindowIcon(qtawesome.icon("fa.search"))
-        self.thisps = {}
         self.hasclicked = False
-        ww = QWidget(self)
-        self.vboxlayout = QVBoxLayout(ww)
-        self.searchlayout = QHBoxLayout()
-        self.vboxlayout.addLayout(self.searchlayout)
-        self.searchtext = FQLineEdit()
-        self.searchtext.textChanged.connect(self.ankiwindow.maybereset)
+        for _ in range(self.tab.count()):
+            self.tab.removeTab(0)
+        self.tabks.clear()
+        self.textOutput.clear()
+        self.cache_results.clear()
+        self.cache_results_highlighted.clear()
+        self.savemdictfoldstate.clear()
 
-        self.dictbutton = IconButton(icon="fa.book", checkable=True)
-        self.historys = []
-        self.history_btn = IconButton(icon="fa.history")
-        self.history_btn.setEnabled(False)
-        self.history_btn.clicked.connect(self.historymenu)
+    def __tabcurrentChanged(self, idx):
+        if self.tabcurrentindex == idx:
+            return
+        self.tabcurrentindex = idx
+        if idx == -1:
+            return
+        if not self.hasclicked:
+            return
+        self.tabclicked(idx)
 
-        self.searchlayout.addWidget(self.dictbutton)
-        self.searchlayout.addWidget(self.history_btn)
-        self.searchlayout.addWidget(self.searchtext)
-        searchbutton = getIconButton(
-            icon="fa.search",
-            callback=lambda: self.search(self.searchtext.text()),
-            callback2=self._createnewwindowsearch,
-        )
-        self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
-        self.searchlayout.addWidget(searchbutton)
-
-        self.soundbutton = getIconButton(
-            icon="fa.music",
-            callback=lambda: gobject.baseobject.read_text(self.searchtext.text()),
-            callback2=self.showmenu_auto_sound,
-        )
-        self.searchlayout.addWidget(self.soundbutton)
-
-        ankiconnect = IconButton(icon="fa.adn", checkable=True)
-        ankiconnect.clicked.connect(self.onceaddankiwindow)
-        ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        ankiconnect.customContextMenuRequested.connect(
-            lambda _: self.ankiwindow.errorwrap()
-        )
-        self.ankiconnect = ankiconnect
-        self.searchlayout.addWidget(ankiconnect)
-
+        tablayout = QVBoxLayout(self)
+        self.current = None
+        self.hasclicked = False
+        self.thisps = {}
+        self.tabks = []
+        self.cache_results = {}
+        self.cache_results_highlighted = {}
         self.tab = CustomTabBar()
+        self.__show_dict_result.connect(self.__show_dict_result_function)
         self.tab.tabBarClicked.connect(self.tabclicked)
         self.tabcurrentindex = -1
 
-        def __(idx):
-            if self.tabcurrentindex == idx:
-                return
-            self.tabcurrentindex = idx
-            if idx == -1:
-                return
-            if not self.hasclicked:
-                return
-            self.tabclicked(idx)
-
-        self.tab.currentChanged.connect(__)
+        self.tab.currentChanged.connect(self.__tabcurrentChanged)
         self.tabks = []
-        self.setCentralWidget(ww)
+
+        class showwordfastwebview(auto_select_webview):
+            def _createwebview(self, *argc, **kw):
+                web = super()._createwebview(*argc, **kw)
+                if isinstance(web, WebviewWidget):
+                    web.html_limit = 1
+                return web
+
         self.textOutput = showwordfastwebview(self, True)
         nexti = self.textOutput.add_menu(
             0, lambda: _TR("查词"), lambda w: self.search_word.emit(w, False)
@@ -1367,16 +1264,198 @@ class searchwordW(closeashidewindow):
                 base64.b64decode(b64.encode()), force=True
             ),
         )
-        self.cache_results = {}
-        self.cache_results_highlighted = {}
-
-        self.spliter = QSplitter()
-        w = QWidget()
-        tablayout = QVBoxLayout(w)
         tablayout.setContentsMargins(0, 0, 0, 0)
         tablayout.setSpacing(0)
         tablayout.addWidget(self.tab)
         tablayout.addWidget(self.textOutput)
+
+    def callvalue(self):
+        if isinstance(self.textOutput.internal, WebviewWidget):
+            self.textOutput.eval("iswebview2=true")
+            return self.ishightlight
+        # mshtml会死锁。
+        self.ishightlight = not self.ishightlight
+        return self.ishightlight
+
+    def luna_recheck_current_html(self, html):
+        self.cache_results_highlighted[self.tabks[self.tab.currentIndex()]] = html
+
+    def switch_hightlightmode_callback(self, ishightlight):
+        self.ishightlight = ishightlight
+
+    def mdict_fold_callback(self, i, display):
+        self.savemdictfoldstate[i] = display == "none"
+
+    def clear_hightlight(self):
+        self.textOutput.eval("clear_hightlight()")
+        k = self.tabks[self.tab.currentIndex()]
+        if k in self.cache_results_highlighted:
+            self.cache_results_highlighted.pop(k)
+
+    def tabclicked(self, idx):
+        self.tab.setCurrentIndex(idx)
+        self.hasclicked = True
+        try:
+            k = self.tabks[idx]
+            html = self.cache_results_highlighted.get(k, self.cache_results[k])
+        except:
+            return
+        path = r"files\html\uiwebview\dictionary.html"
+        with open(path, "r", encoding="utf8") as ff:
+            frame = ff.read()
+        html = frame.replace("__luna_dict_internal_view__", html)
+        html += self.loadmdictfoldstate(k)
+        self.textOutput.setHtml(html)
+
+    def loadmdictfoldstate(self, k):
+        if k != "mdict":
+            return ""
+        if not self.savemdictfoldstate:
+            return ""
+        datas = []
+        for _id, fold in self.savemdictfoldstate.items():
+            datas.append(
+                "document.getElementById('{}').nextElementSibling.style.display='{}';".format(
+                    _id, ("block", "none")[fold]
+                )
+            )
+        if not datas:
+            return ""
+        return """<script>{}</script>""".format("".join(datas))
+
+
+class searchwordW(closeashidewindow):
+    search_word = pyqtSignal(str, bool)
+    search_word_in_new_window = pyqtSignal(str)
+    ocr_once_signal = pyqtSignal()
+
+    def __init__(self, parent):
+        super(searchwordW, self).__init__(parent, globalconfig["sw_geo"])
+        self.search_word.connect(self.__click_word_search_function)
+        self.search_word_in_new_window.connect(self.searchwinnewwindow)
+        self.ocr_once_signal.connect(lambda: rangeselct_function(self.ocr_do_function))
+        self.__state = 0
+
+    @threader
+    def ocr_do_function(self, rect, img=None):
+        if not rect:
+            return
+        if not img:
+            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        result = ocr_run(img)
+        if result.error:
+            return result.displayerror()
+        self.search_word.emit(result.textonly, False)
+
+    def __load(self):
+        if self.__state != 0:
+            return
+        self.__state = 1
+        self.setupUi()
+        self.__state = 2
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        self.__load()
+        self.activate()
+
+    def activate(self):
+        self.activateWindow()
+        self.searchtext.setFocus()
+
+    def searchwinnewwindow(self, word):
+
+        class searchwordWx(searchwordW):
+            def closeEvent(self1, event: QCloseEvent):
+                self1.deleteLater()
+                super(saveposwindow, self1).closeEvent(event)
+
+        _ = searchwordWx(self.parent())
+        _.move(_.pos() + QPoint(20, 20))
+        _.show()
+        _.search_word.emit(word, False)
+
+    def _createnewwindowsearch(self, _):
+        word = self.searchtext.text()
+        self.searchwinnewwindow(word)
+
+    def showmenu_auto_sound(self, _):
+
+        menu = QMenu(self)
+        auto = LAction("自动", menu)
+        auto.setCheckable(True)
+        auto.setChecked(globalconfig["is_search_word_auto_tts"])
+        menu.addAction(auto)
+        action = menu.exec(QCursor.pos())
+        if action == auto:
+            globalconfig["is_search_word_auto_tts"] = auto.isChecked()
+
+    def historymenu(self):
+        menu = QMenu(self)
+        __ = []
+        for word in self.historys[:16]:
+            act = QAction(word, menu)
+            __.append(act)
+            menu.addAction(act)
+        action = menu.exec(QCursor.pos())
+        if action:
+            self.searchtext.setText(action.text())
+            self.search(action.text())
+
+    def setupUi(self):
+        self.setWindowTitle("查词")
+        self.ankiwindow = AnkiWindow(self)
+        self.setWindowIcon(qtawesome.icon("fa.search"))
+        ww = QWidget(self)
+        self.vboxlayout = QVBoxLayout(ww)
+        self.searchlayout = QHBoxLayout()
+        self.vboxlayout.addLayout(self.searchlayout)
+        self.searchtext = FQLineEdit()
+        self.searchtext.textChanged.connect(self.ankiwindow.maybereset)
+
+        self.dictbutton = IconButton(icon="fa.book", checkable=True)
+        self.historys = []
+        self.history_btn = IconButton(icon="fa.history")
+        self.history_btn.setEnabled(False)
+        self.history_btn.clicked.connect(self.historymenu)
+
+        self.searchlayout.addWidget(self.dictbutton)
+        self.searchlayout.addWidget(self.history_btn)
+        self.searchlayout.addWidget(self.searchtext)
+        searchbutton = getIconButton(
+            icon="fa.search",
+            callback=lambda: self.search(self.searchtext.text()),
+            callback2=self._createnewwindowsearch,
+        )
+        self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
+
+        self.searchlayout.addWidget(searchbutton)
+
+        self.soundbutton = getIconButton(
+            icon="fa.music",
+            callback=lambda: gobject.baseobject.read_text(self.searchtext.text()),
+            callback2=self.showmenu_auto_sound,
+        )
+        self.searchlayout.addWidget(self.soundbutton)
+
+        ankiconnect = IconButton(icon="fa.adn", checkable=True)
+        ankiconnect.clicked.connect(self.onceaddankiwindow)
+        ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        ankiconnect.customContextMenuRequested.connect(
+            lambda _: self.ankiwindow.errorwrap()
+        )
+        self.ankiconnect = ankiconnect
+        self.searchlayout.addWidget(ankiconnect)
+
+        self.setCentralWidget(ww)
+
+        self.spliter = QSplitter()
+
+        self.wordviewer = WordViewer()
+        self.wordviewer.search_word.connect(self.search_word)
+        self.wordviewer.search_word_in_new_window.connect(
+            self.search_word_in_new_window
+        )
         self.vboxlayout.addWidget(self.spliter)
         self.isfirstshowdictwidget = True
         self.spliter.setOrientation(
@@ -1386,7 +1465,7 @@ class searchwordW(closeashidewindow):
         )
 
         self.dict_textoutput_spl = QSplitter()
-        self.dict_textoutput_spl.addWidget(w)
+        self.dict_textoutput_spl.addWidget(self.wordviewer)
         self.spliter.addWidget(self.dict_textoutput_spl)
         self.dictbutton.clicked.connect(self.onceaddshowdictwidget)
         self.spliter.addWidget(self.ankiwindow)
@@ -1401,29 +1480,6 @@ class searchwordW(closeashidewindow):
         self.spliter.setStretchFactor(1, 0)
         self.ankiwindow.setMinimumHeight(1)
         self.ankiwindow.setMinimumWidth(1)
-
-    def mdict_fold_callback(self, i, display):
-        self.savemdictfoldstate[i] = display == "none"
-
-    def callvalue(self):
-        if isinstance(self.textOutput.internal, WebviewWidget):
-            self.textOutput.eval("iswebview2=true")
-            return self.ishightlight
-        # mshtml会死锁。
-        self.ishightlight = not self.ishightlight
-        return self.ishightlight
-
-    def switch_hightlightmode_callback(self, ishightlight):
-        self.ishightlight = ishightlight
-
-    def clear_hightlight(self):
-        self.textOutput.eval("clear_hightlight()")
-        k = self.tabks[self.tab.currentIndex()]
-        if k in self.cache_results_highlighted:
-            self.cache_results_highlighted.pop(k)
-
-    def luna_recheck_current_html(self, html):
-        self.cache_results_highlighted[self.tabks[self.tab.currentIndex()]] = html
 
     def onceaddshowdictwidget(self, idx):
         if idx:
@@ -1450,28 +1506,9 @@ class searchwordW(closeashidewindow):
         else:
             self.ankiwindow.hide()
 
-    def generate_dictionarys(self):
-        res = []
-        tabks = []
-        for k in self.cache_results:
-            if k in globalconfig["ignoredict"]:
-                continue
-            v = self.cache_results_highlighted.get(k, self.cache_results[k])
-            if len(v) == 0:
-                continue
-            thisp = self.thisps.get(k, 0)
-
-            idx = 0
-            for i in tabks:
-                if i >= thisp:
-                    idx += 1
-            tabks.append(thisp)
-            res.insert(idx, {"dict": k, "content": v})
-        return res
-
     def __click_word_search_function(self, word: str, append):
         self.showNormal()
-        if self.state != 2:
+        if self.__state != 2:
             return
         word = word.strip()
         if append:
@@ -1502,29 +1539,17 @@ class searchwordW(closeashidewindow):
         self.history_btn.setEnabled(True)
 
     def search(self, word: str, append=False):
-        current = time.time()
-        self.current = current
         word = word.strip()
         if not word:
             return
+        current = uuid.uuid4()
         self.__parsehistory(word, append)
         if globalconfig["is_search_word_auto_tts"]:
             gobject.baseobject.read_text(self.searchtext.text())
         self.ankiwindow.maybereset(word)
-        for i in range(self.tab.count()):
-            self.tab.removeTab(0)
-        self.tabks.clear()
-        self.textOutput.clear()
-        self.cache_results.clear()
-        self.cache_results_highlighted.clear()
-        self.savemdictfoldstate.clear()
-        self.thisps.clear()
-        self.hasclicked = False
-        pxx = 999
-        for k in globalconfig["cishuvisrank"]:
-            self.thisps[k] = pxx
-            pxx -= 1
+        self.wordviewer.reset(current)
         for k, cishu in gobject.baseobject.cishus.items():
             cishu.safesearch(
-                word, functools.partial(self.show_dict_result.emit, current, k)
+                word,
+                functools.partial(self.wordviewer.show_dict_result, current, k),
             )

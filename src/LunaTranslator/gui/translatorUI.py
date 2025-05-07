@@ -1191,7 +1191,7 @@ class TranslatorWindow(resizableframeless):
         if changed:
             gobject.baseobject.startmecab()
 
-    def __parsedropmdx(self, file):
+    def __parsedropmdx(self, file: str):
         isfile = os.path.isfile(file)
         flow = os.path.basename(file).lower()
         if isfile and flow == "dicrc":
@@ -1220,7 +1220,7 @@ class TranslatorWindow(resizableframeless):
         except:
             print_exc()
 
-            _path = translatorsetting["rengong"]["args"]["jsonfile"]
+            _path: list = translatorsetting["rengong"]["args"]["jsonfile"]
             filer = mayberelpath(file)
             if filer not in _path:
                 _path.append(filer)

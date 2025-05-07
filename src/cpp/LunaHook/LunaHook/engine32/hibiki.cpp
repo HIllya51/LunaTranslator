@@ -20,17 +20,12 @@ bool hibikihook()
   {
     addr = MemDbg::findEnclosingAlignedFunction(addr);
     if (!addr)
-    {
       continue;
-    }
     HookParam hp;
     hp.address = addr;
 
     hp.offset = stackoffset(3);
     hp.type = CODEC_UTF16;
-
-    ConsoleOutput("INSERT hibiki_extra %p", addr);
-
     succ |= NewHook(hp, "hibiki_extra");
   }
 
@@ -38,23 +33,20 @@ bool hibikihook()
 }
 void YaneSDKFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
   static std::wstring prevText;
-  text[buffer->size / sizeof(wchar_t)] = L'\0'; // clean text
-
-  if (!prevText.compare(text))
+  auto s = buffer->strW();
+  if (prevText == s)
     return buffer->clear();
-  prevText = text;
+  prevText = s;
 
-  StringCharReplacer(buffer, TEXTANDLEN(L"[r]"), L' ');
-  StringFilter(buffer, TEXTANDLEN(L"[np]"));
+  strReplace(s, L"[r]", L" ");
+  strReplace(s, L"[np]");
 
-  if (cpp_wcsnstr(text, L"'", buffer->size / sizeof(wchar_t)))
-  { // [桜木'さくらぎ]
-    StringFilterBetween(buffer, TEXTANDLEN(L"'"), TEXTANDLEN(L"]"));
-  }
-  CharFilter(buffer, L'[');
-  CharFilter(buffer, L']');
+  // [桜木'さくらぎ]
+  s = re::sub(s, LR"(\[(.*?)'(.*?)\])", L"$1");
+  strReplace(s, L"[");
+  strReplace(s, L"]");
+  buffer->from(s);
 }
 
 bool InsertYaneSDKHook()
@@ -77,18 +69,13 @@ bool InsertYaneSDKHook()
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
-  {
-    ConsoleOutput("YaneSDK: pattern not found");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(eax);
   hp.filter_fun = YaneSDKFilter;
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-  ConsoleOutput("INSERT YaneSDK");
-
   return NewHook(hp, "YaneSDK");
 }
 bool hibiki::attach_function()

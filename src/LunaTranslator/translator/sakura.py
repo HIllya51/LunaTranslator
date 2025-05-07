@@ -53,7 +53,9 @@ class TS(basetrans):
         gpt_dict_raw_text = "\n".join(gpt_dict_text_list)
         return gpt_dict_raw_text
 
-    def _gpt_common_parse_context_2(self, messages, context, contextnum, query, ja=False):
+    def _gpt_common_parse_context_2(
+        self, messages, context, contextnum, query, ja=False
+    ):
         msgs = []
         self._gpt_common_parse_context(msgs, context, contextnum, query)
         __ja, __zh = [], []
@@ -109,7 +111,9 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum, query, True)
+            self._gpt_common_parse_context_2(
+                messages, self.context, contextnum, query, True
+            )
             if gpt_dict:
                 content = (
                     "根据以下术语表（可以为空）：\n"
@@ -128,19 +132,20 @@ class TS(basetrans):
                     "content": "你是一个视觉小说翻译模型，可以通顺地使用给定的术语表以指定的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，注意不要混淆使役态和被动态的主语和宾语，不要擅自添加原文中没有的特殊符号，也不要擅自增加或减少换行。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum, query, True)
-            if gpt_dict:
-                content = (
-                    "参考以下术语表（可为空，格式为src->dst #备注）\n"
-                    + self.make_gpt_dict_text(gpt_dict)
-                    + "\n"
-                    + "根据以上术语表的对应关系和备注，结合历史剧情和上下文，将下面的文本从日文翻译成简体中文："
-                    + "\n"
-                    + query
-                )
-            else:
-                content = "将下面的文本从日文翻译成简体中文：" + query
+            __gptdict = self.make_gpt_dict_text(gpt_dict)
+            if __gptdict:
+                __gptdict += "\n"
+            __msg = []
+            self._gpt_common_parse_context_2(__msg, self.context, contextnum, query)
+            content = (
+                (("历史翻译：" + __msg[0]["content"] + "\n") if __msg else "")
+                + "参考以下术语表（可为空，格式为src->dst #备注）\n"
+                + __gptdict
+                + "根据以上术语表的对应关系和备注，结合历史剧情和上下文，将下面的文本从日文翻译成简体中文：\n"
+                + query
+            )
             messages.append({"role": "user", "content": content})
+            print(json.dumps(messages, ensure_ascii=False, indent=4))
         return messages
 
     def send_request(self, messages, is_test=False, **kwargs):

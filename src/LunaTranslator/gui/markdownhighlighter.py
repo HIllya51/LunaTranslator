@@ -24,7 +24,7 @@
 Highlight Markdown text
 '''
 
-import re
+import re, os, json
 from qtsymbols import *
 
 class MarkdownHighlighter(QSyntaxHighlighter):
@@ -53,13 +53,13 @@ class MarkdownHighlighter(QSyntaxHighlighter):
     def __init__(self, parent):
         QSyntaxHighlighter.__init__(self, parent)
         self.parent:QTextEdit = parent
-        try:
-            self.parent.setTabStopDistance(self.parent.fontMetrics().size(0, ' ').width()*8)
-        except:
-            self.parent.setTabStopWidth(self.parent.fontMetrics().size(0, ' ').width()*8)
 
         self.defaultTheme =  {"background-color":"#d7d7d7", "color":"#191970", "bold": {"color":"#859900", "font-weight":"bold", "font-style":"normal"}, "emphasis": {"color":"#b58900", "font-weight":"bold", "font-style":"italic"}, "link": {"color":"#cb4b16", "font-weight":"normal", "font-style":"normal"}, "image": {"color":"#cb4b16", "font-weight":"normal", "font-style":"normal"}, "header": {"color":"#2aa198", "font-weight":"bold", "font-style":"normal"}, "unorderedlist": {"color":"#dc322f", "font-weight":"normal", "font-style":"normal"}, "orderedlist": {"color":"#dc322f", "font-weight":"normal", "font-style":"normal"}, "blockquote": {"color":"#dc322f", "font-weight":"normal", "font-style":"normal"}, "codespan": {"color":"#dc322f", "font-weight":"normal", "font-style":"normal"}, "codeblock": {"color":"#ff9900", "font-weight":"normal", "font-style":"normal"}, "line": {"color":"#2aa198", "font-weight":"normal", "font-style":"normal"}, "html": {"color":"#c000c0", "font-weight":"normal", "font-style":"normal"}}
-        self.setTheme(self.defaultTheme)
+        #self.setTheme(self.defaultTheme)
+        
+        fn = os.path.join(os.path.dirname(__file__), "markdownhighlighter.theme.json")
+        with open(fn, "r") as ff:
+            self.setTheme(json.load(ff)["solarized"])
 
     def setTheme(self, theme):
         self.theme = theme

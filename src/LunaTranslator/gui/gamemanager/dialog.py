@@ -58,7 +58,7 @@ class dialog_savedgame_integrated(saveposwindow):
             ][type]
             _old = self.internallayout.takeAt(0).widget()
             _old.hide()
-            _ = klass(self)
+            _: dialog_savedgame_new = klass(self)
             self.internallayout.addWidget(_)
             _.directshow()
             _old.deleteLater()
@@ -179,7 +179,7 @@ class TagWidget(QWidget):
         qw = tagitem(tag, _type=_type, refdata=refdata)
         qw.removesignal.connect(self.removeTag)
         qw.labelclicked.connect(self.tagclicked.emit)
-        layout = self.layout()
+        layout: QHBoxLayout = self.layout()
         layout.insertWidget(layout.count() - 2, qw)
         self.tag2widget[key] = qw
         self.lineEdit.setFocus()

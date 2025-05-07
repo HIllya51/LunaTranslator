@@ -228,12 +228,7 @@ from tts.basettsclass import TTSbase, SpeechParam, TTSResult
 
 class TTS(TTSbase):
     GOOGLE_TTS_MAX_CHARS = 100  # Max characters the Google TTS API takes at a time
-    GOOGLE_TTS_HEADERS = {
-        "Referer": "http://translate.google.com/",
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/47.0.2526.106 Safari/537.36",
-    }
+    GOOGLE_TTS_HEADERS = {"Referer": "http://translate.google.com/"}
     GOOGLE_TTS_RPC = "jQ1olc"
 
     def init(self):
@@ -316,7 +311,6 @@ class TTS(TTSbase):
             "Origin": "https://translate.google.com",
             "Referer": "https://translate.google.com",
             "X-Requested-With": "XMLHttpRequest",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
         }
 
         response = self.proxysession.post(

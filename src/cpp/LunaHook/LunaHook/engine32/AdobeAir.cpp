@@ -68,7 +68,6 @@ bool InsertAdobeAirHook()
   DWORD base = (DWORD)GetModuleHandleW(L"Adobe AIR.dll");
   if (!base)
   {
-    ConsoleOutput("Adobe AIR: module not found");
     return false;
   }
 
@@ -99,7 +98,6 @@ bool InsertAdobeAirHook()
   // GROWL(reladdr);
   if (!addr)
   {
-    ConsoleOutput("Adobe AIR: pattern not found");
     return false;
   }
 
@@ -111,8 +109,9 @@ bool InsertAdobeAirHook()
   // hp.type = USING_SPLIT|MODULE_OFFSET|CODEC_UTF16|DATA_INDIRECT; // 0x5a;
   hp.type = USING_SPLIT | CODEC_UTF16 | DATA_INDIRECT;
 
-  ConsoleOutput("INSERT Adobe AIR");
-
+  if (NewHook(hp, "Adobe AIR"))
+    return true;
+  hp.type |= BREAK_POINT;
   return NewHook(hp, "Adobe AIR");
 }
 

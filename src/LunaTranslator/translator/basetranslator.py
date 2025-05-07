@@ -99,13 +99,11 @@ class basetrans(commonbase):
             try:
 
                 self.sqlwrite2 = autosql(
-                    sqlite3.connect(
-                        gobject.gettranslationrecorddir(
-                            "cache/{}.sqlite".format(self.typename)
-                        ),
-                        check_same_thread=False,
-                        isolation_level=None,
-                    )
+                    gobject.gettranslationrecorddir(
+                        "cache/{}.sqlite".format(self.typename)
+                    ),
+                    check_same_thread=False,
+                    isolation_level=None,
                 )
                 try:
                     self.sqlwrite2.execute(
@@ -268,7 +266,7 @@ class basetrans(commonbase):
         if self.config[usekey]:
             template = self.config[tempk]
         else:
-            template = "You are a translator. Please help me translate the following {srclang} text into {tgtlang}, and you should only tell me the translation."
+            template = "You are a translator. Please help me translate the following {srclang} text into {tgtlang}. You should only tell me the translation result without any additional explanations."
         return fmt.format(template, srclang=self.srclang, tgtlang=self.tgtlang)
 
     def _gptlike_create_prefill(self, usekey, tempk):

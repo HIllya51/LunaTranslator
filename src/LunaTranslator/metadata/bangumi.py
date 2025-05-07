@@ -14,7 +14,6 @@ class bgmsettings(QFormLayout):
     @property
     def headers(self):
         return {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
             "Authorization": "Bearer " + self._ref.config["access-token"].strip(),
         }
 
@@ -128,14 +127,9 @@ class bgmsettings(QFormLayout):
         if k != self._ref.config["access-token"]:
             self._ref.config["access-token"] = k
             self._ref.config["refresh_token"] = ""
-        headers = {
-            "accept": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        }
         response = requests.post(
             "https://bgm.tv/oauth/token_status",
             params={"access_token": k},
-            headers=headers,
             proxies=self._ref.proxy,
         ).json()
         if t != self.tm:
@@ -297,18 +291,13 @@ class searcher(common):
 
     def getidbytitle(self, title):
 
-        headers = {
-            "accept": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        }
-
         params = {
             "type": "4",
             "responseGroup": "small",
         }
 
         response = self.proxysession.get(
-            "https://api.bgm.tv/search/subject/" + title, params=params, headers=headers
+            "https://api.bgm.tv/search/subject/" + title, params=params
         )
         print(response.text)
         try:
@@ -324,10 +313,7 @@ class searcher(common):
 
     def searchfordata(self, sid):
 
-        headers = {
-            "accept": "application/json",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        }
+        headers = {}
         if self.config["access-token"].strip() != "":
             headers["Authorization"] = "Bearer " + self.config["access-token"]
         response = self.proxysession.get(

@@ -21,11 +21,10 @@ from gui.usefulwidget import (
     VisLFormLayout,
     IconButton,
     makescroll,
-    ClickableLabel,
+    SClickableLabel,
 )
 from gui.inputdialog import autoinitdialog
 from gui.dynalang import LLabel, LAction
-from myutils.magpie_builtin import MagpieBuiltin
 
 
 def delaycreatereferlabels(self, name):
@@ -194,7 +193,7 @@ def renameapi(qlabel: QLabel, name, self, form: VisLFormLayout, cnt, _=None):
 
 
 def getrenameablellabel(form: VisLFormLayout, cnt: int, uid: str, self):
-    bl = ClickableLabel(globalconfig["quick_setting"]["all"][uid]["name"])
+    bl = SClickableLabel(globalconfig["quick_setting"]["all"][uid]["name"])
     fn = functools.partial(renameapi, bl, uid, self, form, cnt)
     bl.clicked.connect(fn)
     return bl

@@ -2603,7 +2603,7 @@ class ClickableLine(QLineEdit):
         super().mousePressEvent(e)
 
 
-class listediterline(QWidget):
+class listediterline(QHBoxLayout):
 
     def text(self):
         return self.edit.text()
@@ -2624,14 +2624,13 @@ class listediterline(QWidget):
         self.edit = ClickableLine()
         self.reflist = reflist
         self.setText("|".join((str(_) for _ in reflist)))
-        hbox = QHBoxLayout(self)
-        hbox.setContentsMargins(0, 0, 0, 0)
-        hbox.addWidget(self.edit)
+        self.setContentsMargins(0, 0, 0, 0)
+        self.addWidget(self.edit)
         if not specialklass:
             specialklass = listediter
         callback = functools.partial(
             specialklass,
-            self,
+            self.edit,
             name,
             reflist,
             closecallback=self.callback,
@@ -2651,7 +2650,7 @@ class listediterline(QWidget):
                 self.edit.setReadOnly(True)
                 callback()
 
-            hbox.addWidget(getIconButton(callback=__2))
+            self.addWidget(getIconButton(callback=__2))
         else:
             self.edit.setReadOnly(True)
             self.edit.clicked.connect(callback)
@@ -2692,23 +2691,20 @@ def getsimplepatheditor(
     icons=None,
     reflist=None,
     name=None,
-    header=None,
     dirorfile=False,
     clearable=True,
     clearset=None,
     isfontselector=False,
-    w=False,
 ):
-    lay = QHBoxLayout()
-    lay.setContentsMargins(0, 0, 0, 0)
     if multi:
-        e = listediterline(
+        lay = listediterline(
             name,
             reflist,
             dict(isdir=isdir, multi=False, filter1=filter1, dirorfile=dirorfile),
         )
-        lay.addWidget(e)
     else:
+        lay = QHBoxLayout()
+        lay.setContentsMargins(0, 0, 0, 0)
         e = QLineEdit(text)
         e.setReadOnly(True)
         if icons:
@@ -2719,12 +2715,10 @@ def getsimplepatheditor(
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
             if clearable:
                 clear = LPushButton("清除")
-        if clearable:
-            lay.clear = clear
 
         if isfontselector:
 
-            def __selectfont(callback, e):
+            def __selectfont(callback, e: QLineEdit):
                 f = QFont()
                 text = e.text()
                 if text:
@@ -2751,7 +2745,7 @@ def getsimplepatheditor(
         lay.addWidget(bu)
         if clearable:
 
-            def __(_cb, _e, t):
+            def __(_cb, _e: QLineEdit, t):
                 _cb("")
                 if not t:
                     _e.setText("")
@@ -2760,10 +2754,6 @@ def getsimplepatheditor(
 
             clear.clicked.connect(functools.partial(__, callback, e, clearset))
             lay.addWidget(clear)
-    if w and isinstance(lay, QLayout):
-        w = QWidget()
-        w.setLayout(lay)
-        lay = w
     return lay
 
 
@@ -2771,7 +2761,7 @@ class threeswitch(QWidget):
     btnclicked = pyqtSignal(int)
     sizeChanged = pyqtSignal(QSize)
 
-    def selectlayout(self, i):
+    def selectlayout(self, i: int):
         try:
             for _ in range(len(self.btns)):
                 self.btns[(i + _) % len(self.btns)].setEnabled(False)
@@ -2785,7 +2775,7 @@ class threeswitch(QWidget):
 
     def __init__(self, p, icons):
         super().__init__(p)
-        self.btns = []
+        self.btns: "list[QPushButton]" = []
         hv = QHBoxLayout(self)
         hv.setContentsMargins(0, 0, 0, 0)
         hv.setSpacing(0)
@@ -3288,32 +3278,30 @@ class FlowWidget(QWidget):
         self.doresize()
 
 
-class ClickableLabel(LLabel):
+class SClickableLabel(QLabel):
     def __init__(self, *argc, **kw):
         super().__init__(*argc, **kw)
-        self.setClickable(True)
         self.setStyleSheet(
-            r"""ClickableLabel{
+            r"""QLabel{
                 background:transparent
             }
-            ClickableLabel:hover{
+            QLabel:hover{
                 background-color: rgba(128,128,128,0.3)
             }"""
             ""
         )
 
-    def setClickable(self, clickable: bool):
-        self._clickable = clickable
-
     def mouseReleaseEvent(self, event: QMouseEvent):
-        if (
-            self._clickable
-            and event.button() == Qt.MouseButton.LeftButton
-            and self.rect().contains(event.pos())
+        if event.button() == Qt.MouseButton.LeftButton and self.rect().contains(
+            event.pos()
         ):
             self.clicked.emit()
 
     clicked = pyqtSignal()
+
+
+class ClickableLabel(SClickableLabel, LLabel):
+    pass
 
 
 class PopupWidget(QWidget):

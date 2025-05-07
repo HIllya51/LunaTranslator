@@ -26,6 +26,10 @@ ar
 https://paddleocr.bj.bcebos.com/PP-OCRv3/english/en_PP-OCRv3_det_infer.tar
 https://paddleocr.bj.bcebos.com/PP-OCRv4/multilingual/arabic_PP-OCRv4_rec_infer.tar
 https://github.com/PaddlePaddle/PaddleOCR/blob/main/ppocr/utils/dict/arabic_dict.txt
+de/fr
+https://paddleocr.bj.bcebos.com/PP-OCRv3/english/en_PP-OCRv3_det_infer.tar
+https://paddleocr.bj.bcebos.com/PP-OCRv3/multilingual/latin_PP-OCRv3_rec_infer.tar
+https://github.com/PaddlePaddle/PaddleOCR/blob/main/ppocr/utils/dict/latin_dict.txt
 
 
 

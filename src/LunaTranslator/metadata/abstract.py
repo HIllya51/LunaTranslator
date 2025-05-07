@@ -119,9 +119,7 @@ class common:
         headers = {
             "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
             "Referer": "https://vndb.org/",
-            "sec-ch-ua-mobile": "?0",
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.42",
-            "sec-ch-ua-platform": '"Windows"',
+            "sec-ch-ua-mobile": "?0"
         }
 
         _content = self.proxysession.get(url, headers=headers).content

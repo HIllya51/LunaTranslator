@@ -29,9 +29,7 @@ class basetext:
 
             # self.sqlwrite=sqlite3.connect(self.sqlfname,check_same_thread = False, isolation_level=None)
             self.sqlwrite2 = autosql(
-                sqlite3.connect(
-                    sqlfname_all, check_same_thread=False, isolation_level=None
-                )
+                sqlfname_all, check_same_thread=False, isolation_level=None
             )
             # try:
             #     self.sqlwrite.execute('CREATE TABLE artificialtrans(id INTEGER PRIMARY KEY AUTOINCREMENT,source TEXT,machineTrans TEXT,userTrans TEXT);')

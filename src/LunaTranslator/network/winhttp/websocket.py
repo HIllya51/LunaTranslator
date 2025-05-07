@@ -19,7 +19,7 @@ class WebSocket:
         dwBytesTransferred = DWORD()
         newBufferSize = DWORD(10240)
 
-        pbCurrentBufferPointer = create_string_buffer(10240)
+        pbCurrentBufferPointer: bytes = create_string_buffer(10240)
 
         dwError = WinHttpWebSocketReceive(
             self.hWebSocketHandle,
@@ -49,7 +49,7 @@ class WebSocket:
         self.hConnect = None
         self.hSession = None
 
-    def _parseurl2serverandpath(self, url):
+    def _parseurl2serverandpath(self, url: str):
         url = url.strip()
         scheme, server, path, query, _ = urlsplit(url)
         if scheme == "wss":
@@ -57,7 +57,7 @@ class WebSocket:
         elif scheme == "ws":
             ishttps = False
         else:
-            raise RequestException("unknown scheme " + scheme)
+            raise RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -69,12 +69,12 @@ class WebSocket:
             else:
                 port = INTERNET_DEFAULT_HTTP_PORT
         else:
-            raise RequestException("invalid url")
+            raise RequestException("invalid url " + url)
         if len(query):
             path += "?" + query
         return ishttps, server, port, path
 
-    def _parseheader(self, headers):
+    def _parseheader(self, headers: dict):
         if not headers:
             return WINHTTP_NO_ADDITIONAL_HEADERS
         _x = []

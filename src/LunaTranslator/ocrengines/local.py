@@ -56,6 +56,8 @@ class question(QWidget):
             Languages.Russian,
             Languages.Arabic,
             Languages.Ukrainian,
+            Languages.German,
+            Languages.French,
         ]
         self.allsupports.clear()
         for l in _allsupports:
