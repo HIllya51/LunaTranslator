@@ -281,7 +281,8 @@
             "use": false,
             "origin": true,
             "trans": false
-        }
+        },
+        "websocket": {}
     },
     "embedded": {
         "safecheck_use": true,
