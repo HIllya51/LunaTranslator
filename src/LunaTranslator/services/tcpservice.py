@@ -395,7 +395,10 @@ class TCPService:
 
         self.server_socket.listen(1)
         while True:
-            client_socket, _ = self.server_socket.accept()
+            try:
+                client_socket, _ = self.server_socket.accept()
+            except OSError:
+                break
             self.handle_client(client_socket)
 
     def __checkifwebsocket(self, headers: dict):

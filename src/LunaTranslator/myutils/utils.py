@@ -487,7 +487,10 @@ class autosql(sqlite3.Connection):
 
     def __del__(self):
         self.close()
-        super().__del__()
+        try:
+            super().__del__()
+        except:
+            pass
 
 
 def safe_escape(string: str) -> str:

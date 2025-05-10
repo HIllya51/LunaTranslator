@@ -103,9 +103,13 @@ class MAINUI:
 
     @threader
     def serviceinit(self):
+        self.settin_ui.portconflict.emit("")
         self.service.stop()
         if globalconfig["networktcpenable"]:
-            self.service.init(globalconfig["networktcpport"])
+            try:
+                self.service.init(globalconfig["networktcpport"])
+            except OSError:
+                self.settin_ui.portconflict.emit("端口冲突")
 
     @threader
     def ttsautoforward(self):

@@ -7,6 +7,7 @@ from traceback import print_exc
 from language import TransLanguages
 from gui.setting.textinput_ocr import getocrgrid_table
 from gui.gamemanager.dialog import dialog_savedgame_integrated
+from gui.dynalang import LLabel
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -333,7 +334,17 @@ def createlabellink(url):
     return l
 
 
-def outputgrid():
+def __portconflict(self):
+
+    _ = LLabel()
+    if self.portconflictcache:
+        _.setText(self.portconflictcache[-1])
+    self._ = _
+    self.portconflict.connect(_.setText)
+    return _
+
+
+def outputgrid(self):
 
     grids = [
         [
@@ -349,6 +360,7 @@ def outputgrid():
                 "networktcpenable",
                 callback=lambda _: gobject.baseobject.serviceinit(),
             ),
+            functools.partial(__portconflict, self),
             "",
             "",
             "",
@@ -476,7 +488,7 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         lambda l: getocrgrid_table(self, l),
         lambda l: makescrollgrid(getTabclip(), l),
         lambda l: makescrollgrid(filetranslate(self), l),
-        lambda l: makescrollgrid(outputgrid(), l),
+        lambda l: makescrollgrid(outputgrid(self), l),
     ]
 
     tab, dotab = makesubtab_lazy(
