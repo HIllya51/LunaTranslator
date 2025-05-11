@@ -126,7 +126,7 @@ bool GreenGreen2()
     std::wstring result;
     for (int i = 0; i < ws.size(); i++)
     {
-      if (katakanaMap.find(ws[i]) != katakanaMap.end())
+      if (katakanaMap.count(ws[i]))
       {
         auto wc = katakanaMap[ws[i]];
         if (0xff9e == ws[i + 1])

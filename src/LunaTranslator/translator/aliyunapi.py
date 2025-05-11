@@ -5,9 +5,13 @@ import uuid
 import datetime
 import base64
 from translator.basetranslator import basetrans
+from language import Languages
 
 
 class TS(basetrans):
+    def langmap(self):
+        return {Languages.TradChinese: "zh-tw"}
+
     def translate(self, query):
         self.checkempty(["Access_Key"])
         self.checkempty(["SECRET_KEY"])

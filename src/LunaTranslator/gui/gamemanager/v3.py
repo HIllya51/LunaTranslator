@@ -280,7 +280,7 @@ class previewimages(QWidget):
             self.list.setCurrentRow(test)
             if not self.list.item(test).isHidden():
                 break
-            test = (test + 1) % self.list.count()
+            test = (test + dx) % self.list.count()
             if test == first:
                 break
 

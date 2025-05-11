@@ -39,21 +39,6 @@
 			}
 		}
 	},
-	"reverso": {
-		"args": {
-			"origin": 0
-		},
-		"argstype": {
-			"origin": {
-				"rank": 0,
-				"type": "combo",
-				"list": [
-					"translation.web",
-					"contextweb"
-				]
-			}
-		}
-	},
 	"deepl_1": {
 		"args": {
 			"usewhich": 0,

@@ -24,14 +24,13 @@ from gui.usefulwidget import (
     getspinbox,
     getcolorbutton,
     getsimpleswitch,
-    getsimplepatheditor,
     getspinbox,
     SClickableLabel,
     SplitLine,
 )
 
 
-def showcountgame(window, num):
+def showcountgame(window: QMainWindow, num):
     if num:
         window.setWindowTitle("游戏管理__-__" + str(num))
     else:
@@ -360,12 +359,45 @@ def getreflist(reftagid):
     return tag["games"]
 
 
+def getfonteditor(d: dict, k: str, callback=None):
+    lay = QHBoxLayout()
+    lay.setContentsMargins(0, 0, 0, 0)
+    e = QLineEdit(d.get(k, ""))
+    e.setReadOnly(True)
+    icons = ("fa.font", "fa.refresh")
+    bu = getIconButton(icon=icons[0])
+    clear = getIconButton(icon=icons[1])
+
+    def __selectfont(d: dict, k: str, callback, e: QLineEdit):
+        f = QFont()
+        text = e.text()
+        if text:
+            f.fromString(text)
+        font, ok = QFontDialog.getFont(f, e)
+        if ok:
+            _s = font.toString()
+            d[k] = _s
+            callback(_s)
+            e.setText(_s)
+
+    _cb = functools.partial(__selectfont, d, k, callback, e)
+
+    bu.clicked.connect(_cb)
+    lay.addWidget(e)
+    lay.addWidget(bu)
+
+    def __(d: dict, k: str, _cb, _e: QLineEdit):
+        d[k] = ""
+        _cb("")
+        _e.setText("")
+
+    clear.clicked.connect(functools.partial(__, d, k, callback, e))
+    lay.addWidget(clear)
+    return lay
+
+
 @Singleton
 class dialog_syssetting(LDialog):
-    def selectfont(self, key, fontstring):
-        globalconfig[key] = fontstring
-
-        self.parent().setstyle()
 
     def closeEvent(self, e):
         self.parent().callchange()
@@ -406,11 +438,10 @@ class dialog_syssetting(LDialog):
                 spin.valueChanged.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
                 "字体",
-                getsimplepatheditor(
-                    text=globalconfig.get("savegame_textfont1", ""),
-                    callback=functools.partial(self.selectfont, "savegame_textfont1"),
-                    icons=("fa.font", "fa.refresh"),
-                    isfontselector=True,
+                getfonteditor(
+                    d=globalconfig,
+                    k="savegame_textfont1",
+                    callback=lambda _: self.parent().setstyle(),
                 ),
             )
             formLayout.addRow(
@@ -432,11 +463,10 @@ class dialog_syssetting(LDialog):
                 spin.valueChanged.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
                 "字体",
-                getsimplepatheditor(
-                    text=globalconfig.get("savegame_textfont2", ""),
-                    callback=functools.partial(self.selectfont, "savegame_textfont2"),
-                    icons=("fa.font", "fa.refresh"),
-                    isfontselector=True,
+                getfonteditor(
+                    d=globalconfig,
+                    k="savegame_textfont2",
+                    callback=lambda _: self.parent().setstyle(),
                 ),
             )
 

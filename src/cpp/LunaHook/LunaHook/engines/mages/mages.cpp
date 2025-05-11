@@ -65,7 +65,8 @@ namespace mages
     std::wstring mages_decode(WORD charCode, int _idx)
     {
         static auto table = createTable(_idx);
-        if (table.find(charCode) == table.end())
+        auto found = table.find(charCode);
+        if (found == table.end())
         {
             std::wstringstream _;
             _ << std::hex << charCode;
@@ -73,7 +74,7 @@ namespace mages
         }
         else
         {
-            return table[charCode];
+            return found->second;
         }
     }
     std::wstring readString(uintptr_t address, int _idx)

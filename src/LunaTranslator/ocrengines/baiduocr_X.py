@@ -1,7 +1,7 @@
 import base64
 from myutils.config import globalconfig
 from ocrengines.baseocrclass import baseocr, OCRResult
-import random, zhconv
+import random
 from hashlib import md5
 from language import Languages
 
@@ -29,11 +29,7 @@ class OCR(baseocr):
         try:
             js = response.json()
             text = [
-                (
-                    zhconv.convert(_["dst"], "zh-tw")
-                    if (Languages.TradChinese == self.tgtlang_1)
-                    else _["dst"]
-                )
+                self.checklangzhconv(self.tgtlang_1, _["dst"])
                 for _ in js["data"]["content"]
             ]
             box = [
@@ -71,7 +67,7 @@ class OCR(baseocr):
         mac = "mac"
 
         # Generate salt and sign
-        def get_md5(string, encoding="utf-8"):
+        def get_md5(string: str, encoding="utf-8"):
             return md5(string.encode(encoding)).hexdigest()
 
         salt = random.randint(32768, 65536)
@@ -96,11 +92,7 @@ class OCR(baseocr):
         try:
             js = response.json()
             text = [
-                (
-                    zhconv.convert(_["dst"], "zh-tw")
-                    if (Languages.TradChinese == self.tgtlang_1)
-                    else _["dst"]
-                )
+                self.checklangzhconv(self.tgtlang_1, _["dst"])
                 for _ in js["data"]["content"]
             ]
             box = [

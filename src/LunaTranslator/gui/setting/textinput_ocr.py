@@ -21,7 +21,7 @@ from gui.usefulwidget import (
     SuperCombo,
     NQGroupBox,
     getsmalllabel,
-    threebuttons,
+    manybuttonlayout,
     makesubtab_lazy,
     makescrollgrid,
 )
@@ -105,11 +105,10 @@ class triggereditor(LDialog):
             combo.addItems(["按下", "松开"])
             combo.setCurrentIndex(k["event"])
             self.hctable.setIndexWidget(self.hcmodel.index(row, 1), combo)
-        self.buttons = threebuttons(texts=["添加行", "删除行"])
-        self.buttons.btn1clicked.connect(self.click1)
-        self.buttons.btn2clicked.connect(self.hctable.removeselectedrows)
-
-        formLayout.addWidget(self.buttons)
+        buttons = manybuttonlayout(
+            (("添加行", self.click1), ("删除行", self.hctable.removeselectedrows))
+        )
+        formLayout.addLayout(buttons)
         self.resize(600, self.sizeHint().height())
         self.show()
 

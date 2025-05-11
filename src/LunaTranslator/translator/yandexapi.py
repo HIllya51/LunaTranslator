@@ -2,6 +2,7 @@ from translator.basetranslator import basetrans
 
 
 class TS(basetrans):
+    needzhconv = True
 
     def translate(self, content):
         self.checkempty(["key"])

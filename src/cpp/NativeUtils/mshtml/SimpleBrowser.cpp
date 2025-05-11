@@ -126,18 +126,21 @@ LRESULT CALLBACK Extra_Menu_Handle(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
     auto thisptr = (MWebBrowserEx *)GetProp(hwnd, L"THIS_PTR");
     if (msg == WM_COMMAND)
     {
-        if (thisptr->menucallbacks.find((int)wp) != thisptr->menucallbacks.end())
+        auto found = thisptr->menucallbacks.find((int)wp);
+        if (found != thisptr->menucallbacks.end())
         {
             [&]()
             {
                 CComBSTR selectedText;
                 CHECK_FAILURE_NORET(thisptr->getselectedtext(&selectedText));
-                thisptr->menucallbacks[(int)wp](selectedText);
+                found->second(selectedText);
             }();
         }
-        else if (thisptr->menucallbacks_noselect.find((int)wp) != thisptr->menucallbacks_noselect.end())
+        else
         {
-            thisptr->menucallbacks_noselect[(int)wp]();
+            auto found2 = thisptr->menucallbacks_noselect.find((int)wp);
+            if (found2 != thisptr->menucallbacks_noselect.end())
+                found2->second();
         }
     }
     return proc(hwnd, msg, wp, lp);

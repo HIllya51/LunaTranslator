@@ -27,9 +27,10 @@ static std::map<void *, veh_node> list;
 
 static veh_node *get_veh_node(void *origFunc)
 {
-    if (list.find(origFunc) == list.end())
+    auto&& found=list.find(origFunc);
+    if (found == list.end())
         return nullptr;
-    return &list.at(origFunc);
+    return &found->second;
 }
 
 LONG CALLBACK veh_dispatch(PEXCEPTION_POINTERS ExceptionInfo);

@@ -1,8 +1,8 @@
 include_directories(. util engines)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8) 
 	set(enginessrc 
-		BGI MKXPZ Ryujinx livecaptions Kincaid vita3k rpcs3 yuzu TYPEMOON UnrealEngine AGES7
-		Godot 5pb lucasystem LightVN V8 Artemis KiriKiri YOX CMVS Suika2 GameMaker PCSX2
+		BGI MKXPZ livecaptions Kincaid TYPEMOON UnrealEngine AGES7
+		Godot 5pb lucasystem LightVN V8 Artemis KiriKiri YOX CMVS Suika2 GameMaker
 		Chunsoft)
 	set(enginepath "engine64")
 	set(collector "enginecollection64.cpp")
@@ -54,6 +54,7 @@ set(texthook_src
 
 add_subdirectory(util)
 add_subdirectory(engines)
+add_subdirectory(emulators)
 
 
 
@@ -63,7 +64,7 @@ target_precompile_headers(LunaHook REUSE_FROM pchhook)
 
 set_target_properties(LunaHook PROPERTIES OUTPUT_NAME "LunaHook${bitappendix}")
 
-target_link_libraries(LunaHook lang_hook VERSION_DEF Version httpapi ws2_32 Shlwapi pch minhook commonengine utils ${YY_Thunks})
+target_link_libraries(LunaHook lang_hook VERSION_DEF Version httpapi ws2_32 Shlwapi pch minhook commonengine emulators utils ${YY_Thunks})
 
 target_link_options(LunaHook PRIVATE "/DELAYLOAD:httpapi.dll")
 target_link_options(LunaHook PRIVATE "/DELAYLOAD:WS2_32.dll")

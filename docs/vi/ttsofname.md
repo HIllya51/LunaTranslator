@@ -9,7 +9,6 @@ Sau đó, vào `Cài đặt trò chơi` -> `Giọng nói` (hoặc `Cài đặt g
 ![img](https://image.lunatranslator.org/zh/tts/1.png) 
 
 Tuy nhiên, vì văn bản tên được chọn thêm, nội dung hiển thị và dịch bao gồm cả tên, và giọng nói cũng sẽ đọc tên. Để giải quyết vấn đề này, bật `Chỉnh sửa giọng nói`, nơi bạn có thể sử dụng biểu thức chính quy để lọc tên và các ký hiệu của nó.  
-Nếu `Áp dụng cho bản dịch` cũng được bật, chỉnh sửa giọng nói này cũng sẽ loại bỏ tên khỏi nội dung hiển thị và dịch, làm cho nội dung hiển thị giống như khi không chọn mục nhập tên.
 
 ![img](https://image.lunatranslator.org/zh/tts/3.png)   
 

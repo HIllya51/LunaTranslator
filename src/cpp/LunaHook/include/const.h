@@ -53,7 +53,7 @@ enum class HOSTINFO
       x = v,                \
       DUMMY2_##x = DUMMY1_##x - 1
 
-enum HookParamType : uint64_t
+enum HookParamType : int32_t
 {
   // 默认为CODEC_ANSI_LE&USING_CHAR
   // 若使用了text_fun|hook_before，会改为默认USING_STRING，这时若其实是USING_CHAR，需标明USING_STRING
@@ -96,7 +96,7 @@ enum HookParamType : uint64_t
   NEXT_MASK(HOOK_EMPTY),
 };
 
-enum HookFontType : unsigned
+enum HookFontType : int32_t
 {
   DECLARE_VALUE(NOT_HOOK_FONT, 0),
   NEXT_MASK(DISABLE_FONT_SWITCH),

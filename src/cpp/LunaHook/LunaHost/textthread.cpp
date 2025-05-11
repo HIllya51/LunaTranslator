@@ -76,7 +76,7 @@ void TextThread::Push(BYTE *data, int length)
 	if (filterRepetition)
 	{
 		if (std::all_of(buffer.begin(), buffer.end(), [&](wchar_t ch)
-						{ return repeatingChars.find(ch) != repeatingChars.end(); }))
+						{ return repeatingChars.count(ch); }))
 			buffer.clear();
 		if (RemoveRepetition(buffer)) // sentence repetition detected, which means the entire sentence has already been received
 		{
@@ -98,8 +98,6 @@ void TextThread::UpdateFlushTime(bool recursive)
 	if (!recursive)
 		return;
 	auto &&ths = syncThreads.Acquire().contents;
-	if (ths.find(this) == ths.end())
-		return;
 	for (auto t : ths)
 	{
 		if (t == this)

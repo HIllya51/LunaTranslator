@@ -44,6 +44,7 @@ list(FILTER SOURCES EXCLUDE REGEX ".*/mecab-[a-z\\-]*\\.cpp")
 add_library(libmecab ${SOURCES})
 
 target_include_directories(libmecab INTERFACE "${mecabsrc}")
+if(MSVC)
 target_compile_options(libmecab PRIVATE /EHsc
                                         /std:c++14
                                         /GL         
@@ -56,6 +57,9 @@ target_compile_options(libmecab PRIVATE /EHsc
                                         /wd4305
                                         /wd4267
                                         /wd4244)
+else()
+target_compile_options(libmecab PRIVATE -std=c++14)
+endif()
 target_compile_definitions(
     libmecab PRIVATE
     -D_CRT_SECURE_NO_DEPRECATE

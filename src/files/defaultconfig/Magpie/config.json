@@ -154,6 +154,7 @@
     ],
     "overlay": {
         "initialToolbarState": 2,
+        "screenshotsDir": "",
         "windows": {
             "profiler": {
                 "hArea": 2,

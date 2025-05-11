@@ -26,6 +26,8 @@ from ctypes.wintypes import (
     POINT,
     HWND,
     BOOL,
+    LCID,
+    LCTYPE,
     DWORD,
     LONG,
     HMONITOR,
@@ -820,3 +822,20 @@ def GetClassName(hwnd):
     if not ret:
         return
     return buff.value
+
+
+GetUserDefaultLCID = _kernel32.GetUserDefaultLCID
+GetUserDefaultLCID.restype = LCID
+GetLocaleInfoW = _kernel32.GetLocaleInfoW
+GetLocaleInfoW.argtypes = LCID, LCTYPE, LPCWSTR, c_int
+LOCALE_SISO639LANGNAME = 0x59
+LOCALE_SISO3166CTRYNAME = 0x5A
+
+
+def GetLocale():
+    lcid = GetUserDefaultLCID()
+    buff = create_unicode_buffer(10)
+    buff2 = create_unicode_buffer(10)
+    GetLocaleInfoW(lcid, LOCALE_SISO639LANGNAME, buff, 10)
+    GetLocaleInfoW(lcid, LOCALE_SISO3166CTRYNAME, buff2, 10)
+    return buff.value, buff2.value

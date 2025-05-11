@@ -18,7 +18,7 @@
 #include "embed_util.h"
 #include "hijackfuns.h"
 
-#include "engines/emujitarg.hpp"
+#include "emulators/emujitarg.hpp"
 #include "engines/mono/monoil2cpp.h"
 #include "hookfinder.h"
 #include "util/textunion.h"

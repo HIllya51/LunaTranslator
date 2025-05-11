@@ -116,7 +116,7 @@ def _3_2(line):
     return cache
 
 
-def _10_f(line):
+def _10_f(line: str):
     cnt = Counter(line)
     saveline = []
     for k in sorted(cnt.keys(), key=lambda x: -cnt[x]):
@@ -139,7 +139,7 @@ def _10_f(line):
     return line
 
 
-def _13_f(line):  # 递增式
+def _13_f(line: str):  # 递增式
     cnt = Counter(line)
     saveline = []
     for k in sorted(cnt.keys(), key=lambda x: -cnt[x]):
@@ -218,7 +218,7 @@ def stringreplace(line, args):
     return parsemayberegexreplace(filters, line)
 
 
-def _7_zhuanyi_f(line, args):
+def _7_zhuanyi_f(line: str, args):
     filters = args["替换内容"]
     for fil in filters:
         if fil == "":
@@ -228,7 +228,7 @@ def _7_zhuanyi_f(line, args):
     return line
 
 
-def _7_f(line, args):
+def _7_f(line: str, args):
     filters = args["替换内容"]
     for fil in filters:
         if fil == "":
@@ -251,7 +251,7 @@ def _8_f(line, args):
     return line
 
 
-def _remove_non_shiftjis_char(line):
+def _remove_non_shiftjis_char(line: str):
     newline = ""
     for char in line:
         try:
@@ -281,7 +281,7 @@ def _remove_control(line):
     return newline
 
 
-def _remove_not_in_ja_bracket(line):
+def _remove_not_in_ja_bracket(line: str):
     if "「" in line and "」" in line:
         _1 = line.index("「")
         _2 = line.rindex("」")
@@ -290,8 +290,8 @@ def _remove_not_in_ja_bracket(line):
     return line
 
 
-def lines_threshold(line, args):
-    sps = line.split("\n")
+def lines_threshold(line: str, args: dict):
+    sps = line.splitlines()
     if len(sps) >= abs(args["maxzishu"]):
         if args.get("cut_reverse", True):
             return "\n".join(sps[-args["maxzishu"] :])

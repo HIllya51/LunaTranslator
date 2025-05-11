@@ -55,7 +55,7 @@ bool Jellyfish::Jellyfish_attach_function2()
     _ = findfuncstart(_);
     if (_ == 0)
       continue;
-    if (count.find(_) == count.end())
+    if (!count.count(_))
       count[_] = 0;
     count[_] += 1;
     if (count[_] >= maxi)

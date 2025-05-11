@@ -1,17 +1,17 @@
-# Emulator Game Support
+# Hỗ Trợ Trò Chơi Giả Lập
 
 LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua trình giả lập HOOK.
 
-::: warning
+::: cảnh báo
 Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò chơi trên trình giả lập, nếu không trò chơi sẽ không được nhận diện.
 :::
 
-Đối với các trò chơi không được hỗ trợ, vui lòng gửi một [issue](https://lunatranslator.org/Resource/game_support).
+Đối với các trò chơi không được hỗ trợ, vui lòng gửi một [vấn đề](https://lunatranslator.org/Resource/game_support)
 
-::: details Trình giả lập được hỗ trợ
+::: chi tiết Các trình giả lập được hỗ trợ
 | Nền tảng | Trình giả lập |
 | - | - |
-| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/Citron/Citron) |
+| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/Citron/Citron), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
 | PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
@@ -23,7 +23,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 == NS
 
 
-|  | ID       | Trò chơi                |
+|  | ID       | Game                |
 | ---- | ---------- | ------------------- |
 |  | 0100978013276000 | Memories Off |
 |  | 0100B4A01326E000 | Memories Off ～それから～ |
@@ -226,7 +226,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | 01002C00177AE000 | 天獄ストラグル -strayside- |
 |  | 0100EA100DF92000 | 明治活劇 ハイカラ流星組 －成敗しませう、世直し稼業－ |
 |  | 0100FA001E160000 | 7'scarlet |
-|  | 0100FA10185B0000 | SympathyKiss (JP) |
+|  | 0100FA10185B0000 | SympathyKiss |
 |  | 010021D01474E000 | 君は雪間に希う |
 |  | 010061300DF48000 | DAIROKU：AYAKASHIMORI |
 |  | 0100CEF0152DE000 | Charade Maniacs |
@@ -331,12 +331,16 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | 010081E0161B2000 | D.C.4 Fortunate Departures ～ダ・カーポ4～ フォーチュネイトデパーチャーズ |
 |  | 010048101D49E000 | Re;quartz零度 |
 |  | 0100B6501FE4C000 | 喧嘩番長 乙女 ダブルパック |
-|  | 010008401AB4A000 | Yukar From The Abyss |
-|  | 010047E01E22A000 | Voice Love on Air |
+|  | 010008401AB4A000 | 深淵のユカラ (Yukar From The Abyss) |
+|  | 010047E01E22A000 | 純愛聲放送 - Voice Love on Air (Voice Love on Air) |
 |  | 010033401FE40000 | 罪ノ光ランデヴー |
 |  | 0100DA2019044000 | 結合男子 |
 |  | 0100EA9015126000 | 古書店街の橋姫 Hashihime of the Old Book Town append |
 |  | 0100273013ECA000 | Summer Pockets REFLECTION BLUE |
+|  | 010057C020702000 | 緋染めの雪 (Scarlet Snowfall) |
+|  | 0100003020D46000 | StreamLove Voyage |
+|  | 01003A401F75A000 | ハイスピードエトワール パドックストーリーズ |
+|  | 0100EE5021C9E000 | たねつみの歌 (Seedsow Lullaby) |
 
 == PSP
 

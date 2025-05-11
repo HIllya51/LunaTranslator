@@ -134,14 +134,30 @@ class commonbase(multikeyhelper):
     def is_src_auto(self):
         return self.srclang_1 == Languages.Auto
 
-    @property
-    def srclang(self):
-        l = self.srclang_1
-        return self.langmap_.get(l, l)
+    needzhconv = False
+
+    def checklangzhconv(self, lang, text):
+        if not text:
+            return text
+        if Languages.TradChinese != lang:
+            return text
+
+        import zhconv
+
+        return zhconv.convert(text, "zh-tw")
+
+    def __getlang(self, l: Languages):
+        if self.needzhconv and l == Languages.TradChinese:
+            l = Languages.Chinese
+        return self.langmap_.get(l, l.code)
 
     @property
     def srclang_1(self) -> Languages:
         return getlangsrc()
+
+    @property
+    def srclang(self):
+        return self.__getlang(self.srclang_1)
 
     @property
     def tgtlang_1(self) -> Languages:
@@ -149,8 +165,7 @@ class commonbase(multikeyhelper):
 
     @property
     def tgtlang(self):
-        l = self.tgtlang_1
-        return self.langmap_.get(l, l)
+        return self.__getlang(self.tgtlang_1)
 
     @property
     def config(self):

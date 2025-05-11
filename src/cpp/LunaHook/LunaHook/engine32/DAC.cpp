@@ -26,7 +26,7 @@ bool DACattach_function()
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     static std::map<DWORD, std::string> mp;
-    if (mp.find(context->retaddr) == mp.end())
+    if (!mp.count(context->retaddr))
       mp.insert({context->retaddr, ""});
     auto &&thisthread = mp.at(context->retaddr);
 
@@ -74,7 +74,7 @@ bool DACattach_function2()
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     static std::map<DWORD, std::string> mp;
-    if (mp.find(context->retaddr) == mp.end())
+    if (!mp.count(context->retaddr))
       mp.insert({context->retaddr, ""});
     auto &&thisthread = mp.at(context->retaddr);
     auto s = std::string((char *)context->stack[6]);

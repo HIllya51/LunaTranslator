@@ -11,7 +11,7 @@ bool MerRouge::attach_function()
   {
     static std::set<uintptr_t> addrs;
     auto addr = context->stack[4];
-    if (addrs.find(addr - 4) != addrs.end())
+    if (addrs.count(addr - 4))
       return;
     addrs.insert(addr);
     buffer->from((char *)addr);

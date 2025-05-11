@@ -45,9 +45,7 @@
 #include <winbase.h>
 #include <wincon.h>
 
-#include <sapi.h>
 #include <stdio.h>
-#include <sphelper.h>
 
 #include <windowsx.h>
 #include <commctrl.h>

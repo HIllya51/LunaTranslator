@@ -54,7 +54,7 @@ from gui.usefulwidget import (
     getIconButton,
     makesubtab_lazy,
     getsimpleswitch,
-    threebuttons,
+    manybuttonlayout,
     getspinbox,
     CollapsibleBox,
     getsmalllabel,
@@ -117,14 +117,16 @@ class favorites(LDialog):
         )
         formLayout.addWidget(table)
         self.table = table
-        button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
-        button.btn1clicked.connect(functools.partial(table.insertplainrow, 0))
-        button.btn2clicked.connect(table.removeselectedrows)
-        button.btn5clicked.connect(self.apply)
-        button.btn3clicked.connect(functools.partial(table.moverank, -1))
-        button.btn4clicked.connect(functools.partial(table.moverank, 1))
-        self.button = button
-        formLayout.addWidget(button)
+        button = manybuttonlayout(
+            [
+                ("添加行", functools.partial(table.insertplainrow, 0)),
+                ("删除行", table.removeselectedrows),
+                ("上移", functools.partial(table.moverank, -1)),
+                ("下移", functools.partial(table.moverank, 1)),
+                ("立即应用", self.apply),
+            ]
+        )
+        formLayout.addLayout(button)
         self.resize(QSize(600, 400))
         self.show()
 
@@ -137,7 +139,7 @@ class favorites(LDialog):
             self.reflist.append((k, v))
 
     def closeEvent(self, a0: QCloseEvent) -> None:
-        self.button.setFocus()
+        self.setFocus()
         self.apply()
 
 
@@ -934,17 +936,15 @@ class dialog_setting_game_internal(QWidget):
         ):
             self.__checkaddnewmethod(row, k)
         vbox.addWidget(table)
-        buttons = threebuttons(texts=["添加行", "删除行", "上移", "下移"])
-        buttons.btn1clicked.connect(self.__privatetextproc_btn1)
-        buttons.btn2clicked.connect(self.removerows)
-        buttons.btn3clicked.connect(
-            functools.partial(self.__privatetextproc_moverank, -1)
+        button = manybuttonlayout(
+            [
+                ("添加行", self.__privatetextproc_btn1),
+                ("删除行", self.removerows),
+                ("上移", functools.partial(self.__privatetextproc_moverank, -1)),
+                ("下移", functools.partial(self.__privatetextproc_moverank, 1)),
+            ]
         )
-        buttons.btn4clicked.connect(
-            functools.partial(self.__privatetextproc_moverank, 1)
-        )
-        vbox.addWidget(buttons)
-        vbox.addWidget(buttons)
+        vbox.addRow(button)
 
     def __privatetextproc_showmenu(self, p):
         r = self.__textprocinternaltable.currentIndex().row()
@@ -1388,9 +1388,9 @@ class embeddisabler(LDialog):
         for row, k in enumerate(lst):
             item = QStandardItem(str(k))
             self.hcmodel.insertRow(row, [item])
-        self.buttons = threebuttons(texts=["删除行"])
-        self.buttons.btn1clicked.connect(self.clicked2)
-        formLayout.addWidget(self.buttons)
+        btn = LPushButton("删除行")
+        btn.clicked.connect(self.clicked2)
+        formLayout.addWidget(btn)
         self.resize(600, self.sizeHint().height())
         self.show()
         self.changed = False

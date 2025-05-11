@@ -49,7 +49,7 @@ bool GuruGuruSMF4::attach_function()
               return false;
             if (startWith(ws, L"VER"))
               return false;
-            if (dedump.find(ws) != dedump.end())
+            if (dedump.count(ws))
               return false;
             dedump.insert(ws);
             return true;

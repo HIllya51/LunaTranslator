@@ -180,12 +180,13 @@ namespace
     void dohookemaddr(uintptr_t em_address, uintptr_t ret)
     {
         jitaddraddr(em_address, ret, JITTYPE::RPCS3);
-        if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
+        auto found = emfunctionhooks.find(em_address);
+        if (found == emfunctionhooks.end())
             return;
-        if (!(checkiscurrentgame(emfunctionhooks.at(em_address))))
+        auto op = found->second;
+        if (!(checkiscurrentgame(op)))
             return;
         timeoutbreaks.insert(std::make_pair(em_address, ret));
-        auto op = emfunctionhooks.at(em_address);
         HookParam hpinternal;
         hpinternal.address = ret;
         hpinternal.emu_addr = em_address; // 用于生成hcode
@@ -225,7 +226,7 @@ namespace
                 if (!funcaddr)
                     continue;
                 auto p = std::make_pair(addr, funcaddr);
-                if (timeoutbreaks.find(p) != timeoutbreaks.end())
+                if (timeoutbreaks.count(p))
                     continue;
                 dohookemaddr(addr, funcaddr);
                 delayinsertNewHook(addr);

@@ -62,7 +62,7 @@ SimpleMutex hookoncelock; // xp上这个谜之导致dll free时崩溃。虽然�
       if (ptr)                                                                                                     \
         dohook = currptr == ptr;                                                                                   \
       else                                                                                                         \
-        dohook = hookonce.find(currptr) == hookonce.end();                                                         \
+        dohook = !hookonce.count(currptr);                                                                         \
       if (dohook)                                                                                                  \
       {                                                                                                            \
         NewHook(hp, #_fun);                                                                                        \
@@ -92,7 +92,7 @@ SimpleMutex hookoncelock; // xp上这个谜之导致dll free时崩溃。虽然�
       if (ptr)                                                                                         \
         dohook = currptr == ptr;                                                                       \
       else                                                                                             \
-        dohook = hookonce.find(currptr) == hookonce.end();                                             \
+        dohook = !hookonce.count(currptr);                                             \
       if (dohook)                                                                                      \
       {                                                                                                \
         NewHook(hp, #_fun);                                                                            \

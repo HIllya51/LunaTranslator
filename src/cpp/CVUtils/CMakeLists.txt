@@ -56,7 +56,9 @@ add_library(CVUtils SHARED)
 target_precompile_headers(CVUtils REUSE_FROM pch)
 target_sources(CVUtils PRIVATE similarity.cpp dbcrnn.cpp localocr.cpp ${versioninfo})
 target_link_libraries(CVUtils Clipper2Lib OrtWrapper libOpenCV NativeUtils)
+if(MSVC)
 target_link_options(CVUtils PRIVATE "/DELAYLOAD:OrtWrapper.dll")
+endif()
 if ((NOT WINXP) AND (NOT EXISTS ${CMAKE_FINAL_OUTPUT_DIRECTORY}/onnxruntime.dll))
     add_custom_command(TARGET CVUtils
         POST_BUILD

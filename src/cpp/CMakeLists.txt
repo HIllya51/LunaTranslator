@@ -8,8 +8,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 add_definitions(-DUNICODE -D_UNICODE)
+if(MSVC)
 add_compile_options(/MP)
-
+endif()
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
     set(platform "x64")
@@ -36,5 +37,7 @@ add_subdirectory(NativeUtils)
 add_subdirectory(shareddllproxy)
 add_subdirectory(CVUtils)
 if(NOT WINXP)
+if(MSVC)
 add_subdirectory(wcocr)
+endif()
 endif()

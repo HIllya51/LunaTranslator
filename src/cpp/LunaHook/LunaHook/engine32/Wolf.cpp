@@ -301,7 +301,7 @@ namespace
           if (*text)
           {
             std::string data = text;
-            if (dataSet_.find(data) == dataSet_.end())
+            if (!dataSet_.count(data))
             {
               auto role = text == self->text && self->isScenarioText() ? Engine::ScenarioRole : Engine::OtherRole;
               auto split = s->stack[0]; // retaddr
@@ -341,7 +341,7 @@ namespace
           if (*text)
           {
             std::string data = text;
-            if (dataSet_.find(data) == dataSet_.end())
+            if (!dataSet_.count(data))
             {
               auto role = text == self->text && self->isScenarioText() ? Engine::ScenarioRole : Engine::OtherRole;
               auto split = s->stack[0]; // retaddr

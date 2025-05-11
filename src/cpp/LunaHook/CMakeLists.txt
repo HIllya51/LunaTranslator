@@ -8,8 +8,9 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 add_definitions(-DUNICODE -D_UNICODE)
+if(MSVC)
 add_compile_options(/MP)
-
+endif()
 include(FetchContent)
 
 if(NOT CMAKE_BUILD_TYPE)

@@ -2,8 +2,8 @@ from traceback import print_exc
 from queue import Queue
 from threading import Thread
 import time, types
-import zhconv, gobject
-import sqlite3, json
+import gobject
+import json
 import functools
 from myutils.config import globalconfig, translatorsetting
 from myutils.utils import (
@@ -14,7 +14,6 @@ from myutils.utils import (
     dynamicapiname,
 )
 from myutils.commonbase import ArgsEmptyExc, commonbase
-from language import Languages
 
 
 class Interrupted(Exception):
@@ -159,14 +158,6 @@ class basetrans(commonbase):
         return globalconfig["fanyi"][self.typename].get("manual", False)
 
     @property
-    def needzhconv(self):
-        # The API does not support direct translation to Traditional Chinese, only Simplified Chinese can be translated first and then converted to Traditional Chinese
-        return (
-            self.tgtlang_1 == Languages.TradChinese
-            and Languages.TradChinese not in self.langmap()
-        )
-
-    @property
     def using(self):
         return globalconfig["fanyi"][self.typename]["use"]
 
@@ -307,15 +298,15 @@ class basetrans(commonbase):
         except Exception as e:
             raise Exception("init translator failed : " + str(stringfyerror(e)))
 
-    def maybezhconvwrapper(self, callback):
-        def __maybeshow(callback, res, is_iter_res):
+    def maybezhconvwrapper(self, callback, tgtlang_1):
+        def __maybeshow(callback, tgtlang_1, res, is_iter_res):
             if self.needzhconv:
-                res = zhconv.convert(res, "zh-tw")
+                res = self.checklangzhconv(tgtlang_1, res)
             callback(res, is_iter_res)
 
-        return functools.partial(__maybeshow, callback)
+        return functools.partial(__maybeshow, callback, tgtlang_1)
 
-    def translate_and_collect(self, contentsolved, is_auto_run, callback):
+    def translate_and_collect(self, tgtlang_1, contentsolved, is_auto_run, callback):
         if isinstance(contentsolved, dict):
             if self._compatible_flag_is_sakura_less_than_5_52_3:
                 query_use = json.dumps(contentsolved)
@@ -332,7 +323,7 @@ class basetrans(commonbase):
         # 不能因为被打断而放弃后面的操作，发出的请求不会因为不再处理而无效，所以与其浪费不如存下来
         # gettranslationcallback里已经有了是否为当前请求的校验，这里无脑输出就行了
 
-        callback = self.maybezhconvwrapper(callback)
+        callback = self.maybezhconvwrapper(callback, tgtlang_1)
         if isinstance(res, types.GeneratorType):
             collectiterres = ""
             for _res in res:
@@ -410,6 +401,7 @@ class basetrans(commonbase):
 
                 func = functools.partial(
                     self.translate_and_collect,
+                    self.tgtlang_1,
                     contentsolved,
                     is_auto_run,
                     callback,

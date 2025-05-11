@@ -37,8 +37,10 @@ class TS(basetrans):
             "https://www.bing.com/ttranslatev3",
             params=self.ig_iid,
             data=form_data,
+            allow_redirects=False,
         )
-
+        if r.status_code == 302:
+            r = self.proxysession.post(r.headers["Location"], data=form_data)
         try:
             data = r.json()
             return data[0]["translations"][0]["text"]

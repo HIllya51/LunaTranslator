@@ -1,8 +1,11 @@
 from translator.basetranslator import basetrans
-import json
+from language import Languages
 
 
 class TS(basetrans):
+    def langmap(self):
+        return {Languages.TradChinese: "zh-Hant"}
+
     def translate(self, query):
         self.checkempty(["Token"])
 

@@ -164,8 +164,9 @@ uintptr_t queryrelativeret(HookParam &hp, uintptr_t retaddr)
 {
 	// 不需要区分是相对于哪个module的偏移，只需要得到偏移就可以了，用来确保重启程序后ret值恒定
 	auto &re = retaddr2relative.Acquire().contents;
-	if (re.find(retaddr) != re.end())
-		return re.at(retaddr);
+	auto found = re.find(retaddr);
+	if (found != re.end())
+		return found->second;
 	uintptr_t relative = retaddr;
 	if (hp.jittype == JITTYPE::UNITY)
 	{

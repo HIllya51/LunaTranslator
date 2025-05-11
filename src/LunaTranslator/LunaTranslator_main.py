@@ -103,55 +103,14 @@ def loadmainui(startwithgameuid):
 def checklang():
 
     from myutils.config import globalconfig
-    from qtsymbols import (
-        QDialog,
-        pyqtSignal,
-        Qt,
-        QFont,
-        QComboBox,
-        QVBoxLayout,
-        QPushButton,
-    )
-    from language import UILanguages
-    import qtawesome
-
-    class languageset(QDialog):
-        getnewsentencesignal = pyqtSignal(str)
-        getnewtranssignal = pyqtSignal(str, str)
-        showsignal = pyqtSignal()
-
-        def __init__(self):
-
-            super(languageset, self).__init__(None, Qt.WindowType.WindowStaysOnTopHint)
-            self.setWindowIcon(qtawesome.icon("fa.language"))
-            self.setMinimumSize(400, 100)
-            self.setWindowTitle("语言设置 LanguageSetting")
-            font = QFont()
-            font.setFamily("Arial")
-            font.setPointSize(20)
-            self.setFont(font)
-            self.current = "zh"
-            language_listcombox = QComboBox()
-            inner, vis = [_.code for _ in UILanguages], [
-                _.nativename for _ in UILanguages
-            ]
-            language_listcombox.addItems(vis)
-            language_listcombox.currentIndexChanged.connect(
-                lambda x: setattr(self, "current", inner[x])
-            )
-            vb = QVBoxLayout(self)
-
-            vb.addWidget(language_listcombox)
-            bt = QPushButton("OK")
-            vb.addWidget(bt)
-            bt.clicked.connect(self.accept)
+    from language import GetUILanguage
+    import windows
 
     if "languageuse2" in globalconfig:
         return
-    x = languageset()
-    x.exec()
-    globalconfig["languageuse2"] = x.current
-    globalconfig["tgtlang4"] = x.current
+    lang = GetUILanguage(windows.GetLocale())
+    globalconfig["languageuse2"] = lang.code
+    globalconfig["tgtlang4"] = lang.code
 
 
 def checkintegrity():

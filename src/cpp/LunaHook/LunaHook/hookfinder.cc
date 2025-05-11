@@ -285,7 +285,7 @@ bool SendJitVeh(PCONTEXT pcontext, uintptr_t address, uint64_t em_addr, JITTYPE 
 {
 	if (safeleave)
 		return false;
-	if (addresscalledtime.find(address) == addresscalledtime.end())
+	if (!addresscalledtime.count(address))
 		addresscalledtime[address] = 0;
 	auto tm = GetTickCount64();
 	if (tm - addresscalledtime[address] < 100)

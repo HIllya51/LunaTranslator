@@ -16,16 +16,16 @@
 #include "engine64/Kincaid.h"
 #include "engine64/BGI.h"
 #include "engine64/LightVN.h"
-#include "engine64/yuzu.h"
-#include "engine64/Ryujinx.h"
-#include "engine64/vita3k.h"
-#include "engine64/rpcs3.h"
-#include "engine64/PCSX2.h"
 #include "engine64/MKXPZ.h"
 #include "engines/mono/mono.h"
 #include "engines/lua/lua51.h"
 #include "engines/python/Renpy.h"
-#include "engines/ppsspp/ppsspp.h"
+#include "emulators/ppsspp.h"
+#include "emulators/yuzu.h"
+#include "emulators/Ryujinx.h"
+#include "emulators/vita3k.h"
+#include "emulators/rpcs3.h"
+#include "emulators/PCSX2.h"
 std::vector<ENGINE *> check_engines()
 {
     return {

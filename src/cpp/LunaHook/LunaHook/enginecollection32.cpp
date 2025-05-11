@@ -200,7 +200,7 @@
 #include "engines/mono/mono.h"
 #include "engines/lua/lua51.h"
 #include "engines/python/Renpy.h"
-#include "engines/ppsspp/ppsspp.h"
+#include "emulators/ppsspp.h"
 std::vector<ENGINE *> check_engines()
 {
     return {

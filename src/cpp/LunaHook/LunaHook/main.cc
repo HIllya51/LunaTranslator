@@ -143,8 +143,9 @@ Synchronized<std::unordered_map<uintptr_t, std::wstring>> modulecache;
 std::wstring &querymodule(uintptr_t addr)
 {
 	auto &re = modulecache.Acquire().contents;
-	if (re.find(addr) != re.end())
-		return re.at(addr);
+	auto found = re.find(addr);
+	if (found != re.end())
+		return found->second;
 	WCHAR fn[MAX_PATH];
 	if (GetModuleFileNameW((HMODULE)addr, fn, MAX_PATH))
 	{
@@ -355,7 +356,7 @@ bool NewHook(HookParam hp, LPCSTR name)
 		}
 		else if (PCSX2_UserHook_delayinsert(hp.emu_addr))
 			return true;
-		else if (emuaddr2jitaddr.find(hp.emu_addr) == emuaddr2jitaddr.end())
+		else if (!emuaddr2jitaddr.count(hp.emu_addr))
 		{
 			delayinsertadd(hp, name);
 			return true;
@@ -364,7 +365,7 @@ bool NewHook(HookParam hp, LPCSTR name)
 	else
 #endif
 	{
-		if (emuaddr2jitaddr.find(hp.emu_addr) == emuaddr2jitaddr.end())
+		if (!emuaddr2jitaddr.count(hp.emu_addr))
 		{
 			delayinsertadd(hp, name);
 			return true;

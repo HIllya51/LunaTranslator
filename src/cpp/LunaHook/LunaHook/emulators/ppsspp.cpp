@@ -1,5 +1,5 @@
 ﻿#include "ppsspp.h"
-#include "specialgames.hpp"
+#include "ppsspp_1.h"
 #include "JIT_Keeper.hpp"
 // See: https://github.com/hrydgard/ppsspp
 
@@ -241,6 +241,7 @@ uintptr_t getDoJitAddress()
 
 namespace ppsspp
 {
+    std::unordered_map<DWORD, emfuncinfo> emfunctionhooks;
     struct GameInfo
     {
         std::string DISC_ID{""};
@@ -295,13 +296,13 @@ namespace ppsspp
     void dohookemaddr(uint64_t em_address, uintptr_t ret)
     {
         jitaddraddr(em_address, ret, JITTYPE::PPSSPP);
-
-        if (emfunctionhooks.find(em_address) == emfunctionhooks.end())
+        auto found = emfunctionhooks.find(em_address);
+        if (found == emfunctionhooks.end())
             return;
-        if (!(checkiscurrentgame(emfunctionhooks.at(em_address))))
+        if (!(checkiscurrentgame(found->second)))
             return;
 
-        auto op = emfunctionhooks.at(em_address);
+        auto op = found->second;
 #ifndef _WIN64
         BYTE sig[] = {
             0x8b, XX2,                    // mov reg,[ebp-off]
@@ -458,7 +459,7 @@ namespace ppsspp
             if (IsValidAddress(blocks_[i].originalAddress) && blocks_[i].normalEntry)
             {
                 auto breakpoint = (uintptr_t)blocks_[i].normalEntry;
-                if (breakpoints.find(breakpoint) != breakpoints.end())
+                if (breakpoints.count(breakpoint))
                     continue;
                 breakpoints.insert(breakpoint);
                 dohookemaddr(blocks_[i].originalAddress, breakpoint);
@@ -723,6 +724,7 @@ namespace ppsspp
         auto DoJitPtr = getDoJitAddress();
         if (!DoJitPtr)
             return false;
+        ppsspp_load_functions(emfunctionhooks);
         JIT_Keeper<GameInfoC>::CreateStatic(dohookemaddr);
         if (!Load_PSP_ISO_StringFromFormat())
             return false;
@@ -747,7 +749,7 @@ namespace ppsspp
                 [&]()
                 {
                     auto ret = context->LASTRETVAL;
-                    if (breakpoints.find(ret) != breakpoints.end())
+                    if (breakpoints.count(ret))
                         return;
                     breakpoints.insert(ret);
 

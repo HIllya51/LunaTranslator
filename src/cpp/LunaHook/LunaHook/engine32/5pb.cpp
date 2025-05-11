@@ -632,7 +632,7 @@ namespace
         addr = MemDbg::findEnclosingAlignedFunction(addr);
         if (!addr)
           continue;
-        if (addr_hit.find(addr) == addr_hit.end())
+        if (!addr_hit.count(addr))
         {
           addr_hit[addr] = 1;
         }

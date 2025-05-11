@@ -2,7 +2,7 @@ import os, hashlib, queue, gobject
 from myutils.proxy import getproxy
 from threading import Thread
 from myutils.commonbase import proxysession
-from myutils.config import globalconfig, savehook_new_data, namemapcast, extradatas
+from myutils.config import globalconfig, savehook_new_data, extradatas
 from myutils.utils import getlangtgt
 from traceback import print_exc
 from requests import RequestException
@@ -11,10 +11,10 @@ from requests import RequestException
 class common:
     typename = None
 
-    def searchfordata(_id):
+    def searchfordata(_id) -> "dict[str,str]":
         return None
 
-    def refmainpage(_id):
+    def refmainpage(_id) -> str:
         return None
 
     def getidbytitle(title):
@@ -119,7 +119,7 @@ class common:
         headers = {
             "sec-ch-ua": '"Microsoft Edge";v="113", "Chromium";v="113", "Not-A.Brand";v="24"',
             "Referer": "https://vndb.org/",
-            "sec-ch-ua-mobile": "?0"
+            "sec-ch-ua-mobile": "?0",
         }
 
         _content = self.proxysession.get(url, headers=headers).content
@@ -127,7 +127,7 @@ class common:
         with open(save, "wb") as ff:
             ff.write(_content)
 
-    def dispatchdownloadtask(self, url):
+    def dispatchdownloadtask(self, url: str):
         if not url:
             return None
         __routine = "cache/metadata/" + self.typename
@@ -147,9 +147,21 @@ class common:
     def __b64string(self, a: str):
         return hashlib.md5(a.encode("utf8")).hexdigest()
 
-    def __do_searchfordata(self, gameuid, vid):
+    def namemapcast(self, namemap: "dict[str,str]"):
+        bettermap = namemap.copy()
+        for k, v in namemap.items():
+            for sp in ["・", " "]:
+                spja = k.split(sp)
+                spen = v.split(sp if k == v else " ")
+                if len(spja) == len(spen) and len(spen) > 1:
+                    for i in range(len(spja)):
+                        if len(spja[i]) >= 2:
+                            bettermap[spja[i]] = spen[i]
+        return bettermap
 
-        data = self.searchfordata(vid)
+    def __do_searchfordata(self, gameuid, vid: str):
+
+        data: "dict[str,str]" = self.searchfordata(vid)
         title = data.get("title", None)
         namemap = data.get("namemap", None)
         developers = data.get("developers", [])
@@ -182,7 +194,7 @@ class common:
             dedump = set()
             for _ in savehook_new_data[gameuid].get("namemap2", []):
                 dedump.add(_.get("key", ""))
-            namemap = namemapcast(namemap)
+            namemap = self.namemapcast(namemap)
             usenamemap = getlangtgt() == "en"
             for name in namemap:
                 if name in dedump:

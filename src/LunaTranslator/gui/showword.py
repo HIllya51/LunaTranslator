@@ -165,7 +165,7 @@ class AnkiWindow(QWidget):
         if idx == 2:
             self.refreshhtml.emit()
 
-    def parse_template(self, template, data):
+    def parse_template(self, template: str, data):
         result = ""
         i = 0
         while i < len(template):
@@ -234,10 +234,10 @@ class AnkiWindow(QWidget):
         self.previewtab.addTab("正面")
         self.previewtab.addTab("背面")
         self.loadedits()
-        self.fronttext.textChanged.connect(lambda: self.refreshhtml.emit())
-        self.backtext.textChanged.connect(lambda: self.refreshhtml.emit())
-        self.csstext.textChanged.connect(lambda: self.refreshhtml.emit())
-        self.previewtab.currentChanged.connect(lambda: self.refreshhtml.emit())
+        self.fronttext.textChanged.connect(self.refreshhtml)
+        self.backtext.textChanged.connect(self.refreshhtml)
+        self.csstext.textChanged.connect(self.refreshhtml)
+        self.previewtab.currentChanged.connect(self.refreshhtml)
 
     def loadedits(self):
         for text, object in zip(

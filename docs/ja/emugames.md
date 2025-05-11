@@ -226,7 +226,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 |  | 01002C00177AE000 | 天獄ストラグル -strayside- |
 |  | 0100EA100DF92000 | 明治活劇 ハイカラ流星組 －成敗しませう、世直し稼業－ |
 |  | 0100FA001E160000 | 7'scarlet |
-|  | 0100FA10185B0000 | SympathyKiss (JP) |
+|  | 0100FA10185B0000 | SympathyKiss |
 |  | 010021D01474E000 | 君は雪間に希う |
 |  | 010061300DF48000 | DAIROKU：AYAKASHIMORI |
 |  | 0100CEF0152DE000 | Charade Maniacs |
@@ -331,13 +331,16 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 |  | 010081E0161B2000 | D.C.4 Fortunate Departures ～ダ・カーポ4～ フォーチュネイトデパーチャーズ |
 |  | 010048101D49E000 | Re;quartz零度 |
 |  | 0100B6501FE4C000 | 喧嘩番長 乙女 ダブルパック |
-|  | 010008401AB4A000 | Yukar From The Abyss |
-|  | 010047E01E22A000 | Voice Love on Air |
+|  | 010008401AB4A000 | 深淵のユカラ (Yukar From The Abyss) |
+|  | 010047E01E22A000 | 純愛聲放送 - Voice Love on Air (Voice Love on Air) |
 |  | 010033401FE40000 | 罪ノ光ランデヴー |
 |  | 0100DA2019044000 | 結合男子 |
 |  | 0100EA9015126000 | 古書店街の橋姫 Hashihime of the Old Book Town append |
 |  | 0100273013ECA000 | Summer Pockets REFLECTION BLUE |
-|  | 010057C020702000 | Scarlet Snowfall |
+|  | 010057C020702000 | 緋染めの雪 (Scarlet Snowfall) |
+|  | 0100003020D46000 | StreamLove Voyage |
+|  | 01003A401F75A000 | ハイスピードエトワール パドックストーリーズ |
+|  | 0100EE5021C9E000 | たねつみの歌 (Seedsow Lullaby) |
 
 == PSP
 

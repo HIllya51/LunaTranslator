@@ -1066,7 +1066,7 @@ namespace
         if (split > 0xff || split && split < 0xf)
           return;
         auto arg = (TextArgument *)s->stack[0]; // arg1
-        if (!arg || !arg->isValid() || hashes_.find(simplehash::hashCharArray(arg->text)) != hashes_.end())
+        if (!arg || !arg->isValid() || hashes_.count(simplehash::hashCharArray(arg->text)))
           return;
         if (arg->size < 0xf && split > 0 && !isOtherText(arg->text))
           return;

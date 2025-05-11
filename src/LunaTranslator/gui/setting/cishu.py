@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getspinbox,
     D_getcolorbutton,
+    getsmalllabel,
     getsimpleswitch,
     D_getsimplecombobox,
     getspinbox,
@@ -288,8 +289,8 @@ def setTabcishu_l(self):
                             "isshowhira",
                             callback=gobject.baseobject.translation_ui.translate_text.showhidert,
                         ),
-                        "",
-                        "颜色",
+                        getsmalllabel(""),
+                        getsmalllabel("颜色"),
                         D_getcolorbutton(
                             self,
                             globalconfig,
@@ -307,8 +308,7 @@ def setTabcishu_l(self):
                             step=0.05,
                             callback=gobject.baseobject.translation_ui.translate_text.setfontstyle,
                         ),
-                    ],
-                    [
+                        "",
                         "日语注音方案",
                         D_getsimplecombobox(
                             [
@@ -320,15 +320,16 @@ def setTabcishu_l(self):
                             "hira_vis_type",
                             callback=lambda _: gobject.baseobject.translation_ui.translate_text.refreshcontent(),
                         ),
-                        "",
+                    ],
+                    [
                         "语法加亮",
                         D_getsimpleswitch(
                             globalconfig,
                             "show_fenci",
                             callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
                         ),
-                        "",
-                        "词性颜色",
+                        getsmalllabel(""),
+                        getsmalllabel("颜色"),
                         D_getIconButton(callback=lambda: multicolorset(self)),
                     ],
                 ),

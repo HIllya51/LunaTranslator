@@ -282,9 +282,14 @@ class rangeadjust(Mainw):
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
+screen_shot_ui = None
+
+
 class rangeselect(QMainWindow):
 
     def closeEvent(self, a0):
+        global screen_shot_ui
+        screen_shot_ui = None
         self.deleteLater()
         windows.SetForegroundWindow(self.originhwnd)
         return super().closeEvent(a0)
@@ -534,12 +539,17 @@ class rangeselect_1(QMainWindow):
             self.callbackfunction(event)
 
     def closeEvent(self, a0):
+        global screen_shot_ui
+        screen_shot_ui = None
         self.deleteLater()
         windows.SetForegroundWindow(self.originhwnd)
         return super().closeEvent(a0)
 
 
 def rangeselct_function(callback, x=True):
+    global screen_shot_ui
+    if screen_shot_ui:
+        screen_shot_ui.close()
     if len(QApplication.screens()) == 1:
         screen_shot_ui = rangeselect_1(gobject.baseobject.translation_ui, x)
     else:

@@ -11,7 +11,6 @@ class TS(basetrans):
             Languages.Korean: "kor",
             Languages.French: "fra",
             Languages.Japanese: "jp",
-            Languages.TradChinese: "cht",
             Languages.Vietnamese: "vie",
             Languages.Ukrainian: "ukr",
             Languages.Arabic: "ara",

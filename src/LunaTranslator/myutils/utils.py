@@ -953,11 +953,6 @@ def common_parse_normal_response(
     return resp
 
 
-def createenglishlangmap():
-    # 兼容性保留
-    return Languages.createenglishlangmap()
-
-
 class IDParser(HTMLParser):
     """Modified HTMLParser that isolates a tag with the specified id"""
 

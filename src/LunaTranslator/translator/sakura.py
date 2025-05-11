@@ -2,6 +2,7 @@ from translator.basetranslator import basetrans
 import requests
 import json, zhconv
 from myutils.utils import urlpathjoin
+from language import Languages
 from translator.gptcommon import list_models
 
 
@@ -29,20 +30,13 @@ class TS(basetrans):
         # OpenAI
         # self.client = OpenAI(api_key="114514", base_url=api_url)
 
-    def make_gpt_dict_text(self, gpt_dict):
+    def make_gpt_dict_text(self, gpt_dict: "list[dict]"):
         gpt_dict_text_list = []
         for gpt in gpt_dict:
             src = gpt["src"]
-            if self.needzhconv:
-                dst = zhconv.convert(gpt["dst"], "zh-hans")
-                info = (
-                    zhconv.convert(gpt["info"], "zh-hans")
-                    if "info" in gpt.keys()
-                    else None
-                )
-            else:
-                dst = gpt["dst"]
-                info = gpt["info"] if "info" in gpt.keys() else None
+
+            dst = self.checklangzhconv(self.srclang, gpt["dst"])
+            info = self.checklangzhconv(self.srclang, gpt.get("info"))
 
             if info:
                 single = "{}->{} #{}".format(src, dst, info)

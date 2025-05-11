@@ -341,10 +341,11 @@ def updatexx(self):
 
     try:
         text, val = self.downloadprogress_cache
+        downloadprogress.setValue(val)
+        downloadprogress.setFormat(text)
     except:
-        return
-    downloadprogress.setValue(val)
-    downloadprogress.setFormat(text)
+        text = ""
+        val = 0
     l.addRow(downloadprogress)
 
     l.setRowVisible(1, val or text)
@@ -380,23 +381,15 @@ class aboutwidget(NQGroupBox):
         self.lastlan = getlanguse()
         clearlayout(self.grid)
         commonlink = [
-            getsmalllabel(
-                makehtml("/Github/LunaTranslator", show="Github")
-            ),
+            getsmalllabel(makehtml("/Github/LunaTranslator", show="Github")),
             getsmalllabel(makehtml("/", show="项目网站")),
             getsmalllabel(makehtml("", show="使用说明", docs=True)),
         ]
         qqqun = [
             getsmalllabel(makehtml("/Resource/Bilibili", show="Bilibili")),
-            getsmalllabel(
-                makehtml("/Resource/QQGroup", show="QQ群_963119821")
-            ),
+            getsmalllabel(makehtml("/Resource/QQGroup", show="QQ群_963119821")),
         ]
-        discord = [
-            getsmalllabel(
-                makehtml("/Resource/DiscordGroup", show="Discord")
-            )
-        ]
+        discord = [getsmalllabel(makehtml("/Resource/DiscordGroup", show="Discord"))]
         if getlanguse() == Languages.Chinese:
             commonlink += qqqun + [""]
             shuominggrid = [

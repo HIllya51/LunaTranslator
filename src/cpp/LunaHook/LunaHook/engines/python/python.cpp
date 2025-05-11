@@ -243,10 +243,11 @@ extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_get_font()
     else
     {
         static auto fontname2fontfile = std::move(loadfontfiles());
-        if (fontname2fontfile.find(commonsharedmem->fontFamily) == fontname2fontfile.end())
+        auto found = fontname2fontfile.find(commonsharedmem->fontFamily);
+        if (found == fontname2fontfile.end())
             return NULL;
         else
-            return fontname2fontfile.at(commonsharedmem->fontFamily).c_str();
+            return found->second.c_str();
     }
 }
 bool hookrenpy(HMODULE module)

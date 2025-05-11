@@ -3,6 +3,7 @@ import uuid, time
 
 
 class TS(basetrans):
+    needzhconv = True
 
     def translate(self, query):
 

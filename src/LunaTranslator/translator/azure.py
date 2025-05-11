@@ -1,8 +1,12 @@
 from translator.basetranslator import basetrans
 import uuid
+from language import Languages
 
 
 class TS(basetrans):
+    def langmap(self):
+        return {Languages.TradChinese: "zh-Hant", Languages.Chinese: "zh-Hans"}
+
     def translate(self, query):
         self.checkempty(["key1"])
 

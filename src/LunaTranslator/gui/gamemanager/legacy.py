@@ -7,10 +7,11 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getIconButton,
     getIconButton,
+    manybuttonlayout,
     IconButton,
 )
 from gui.gamemanager.setting import dialog_setting_game
-from gui.dynalang import LPushButton, LStandardItemModel
+from gui.dynalang import LStandardItemModel
 from gui.gamemanager.common import (
     opendirforgameuid,
     startgamecheck,
@@ -207,20 +208,13 @@ class dialog_savedgame_legacy(QWidget):
 
         showcountgame(self.parent_, len(self.savelist))
         self.table.starttraceir()
-        bottom = QHBoxLayout()
-
-        button = LPushButton("开始游戏")
-        self.button = button
-        button.clicked.connect(self.clicked)
-        button3 = LPushButton("添加游戏")
-
-        button3.clicked.connect(self.clicked3)
-        button2 = LPushButton("删除游戏")
-
-        button2.clicked.connect(self.clicked2)
-        bottom.addWidget(button)
-        bottom.addWidget(button2)
-        bottom.addWidget(button3)
+        bottom = manybuttonlayout(
+            (
+                ("开始游戏", self.clicked),
+                ("删除游戏", self.clicked2),
+                ("添加游戏", self.clicked3),
+            )
+        )
         btn = IconButton(None)
         btn.setStyleSheet("border:transparent;padding: 0px;background:transparent;")
         formLayout.addWidget(btn)

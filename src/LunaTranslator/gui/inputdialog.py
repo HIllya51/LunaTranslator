@@ -9,7 +9,7 @@ from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     MySwitch,
     getsimpleswitch,
-    threebuttons,
+    manybuttonlayout,
     listediterline,
     TableViewW,
     getsimplepatheditor,
@@ -91,24 +91,25 @@ class noundictconfigdialog1(LDialog):
         search.addWidget(button4)
         table.getindexdata = self.__getindexwidgetdata
         table.setindexdata = self.__setindexwidget
-        self.table = table
-        for row, item in enumerate(reflist):
-            self.newline(row, item)
-        button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         table.insertplainrow = lambda row: self.newline(
             row, {"key": "", "value": "", "regex": False}
         )
+        self.table = table
+        for row, item in enumerate(reflist):
+            self.newline(row, item)
+        button = manybuttonlayout(
+            [
+                ("添加行", functools.partial(table.insertplainrow, 0)),
+                ("删除行", self.table.removeselectedrows),
+                ("上移", functools.partial(table.moverank, 1)),
+                ("下移", functools.partial(table.moverank, 1)),
+                ("立即应用", self.apply),
+            ]
+        )
 
-        button.btn1clicked.connect(functools.partial(table.insertplainrow, 0))
-
-        button.btn2clicked.connect(self.table.removeselectedrows)
-        button.btn5clicked.connect(self.apply)
-        button.btn3clicked.connect(functools.partial(table.moverank, -1))
-        button.btn4clicked.connect(functools.partial(table.moverank, 1))
-        self.button = button
         formLayout.addWidget(table)
         formLayout.addLayout(search)
-        formLayout.addWidget(button)
+        formLayout.addLayout(button)
 
         self.resize(QSize(600, 400))
         self.show()
@@ -156,7 +157,7 @@ class noundictconfigdialog1(LDialog):
             )
 
     def closeEvent(self, a0: QCloseEvent) -> None:
-        self.button.setFocus()
+        self.setFocus()
         self.apply()
 
 
@@ -356,18 +357,18 @@ class yuyinzhidingsetting(LDialog):
 
         button4.clicked.connect(clicked4)
         search.addWidget(button4)
-
-        button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
-
-        button.btn1clicked.connect(functools.partial(self.table.insertplainrow, 0))
-        button.btn2clicked.connect(table.removeselectedrows)
-        button.btn5clicked.connect(self.apply)
-        button.btn3clicked.connect(functools.partial(table.moverank, -1))
-        button.btn4clicked.connect(functools.partial(table.moverank, 1))
-        self.button = button
+        button = manybuttonlayout(
+            [
+                ("添加行", functools.partial(self.table.insertplainrow, 0)),
+                ("删除行", table.removeselectedrows),
+                ("上移", functools.partial(table.moverank, -1)),
+                ("下移", functools.partial(table.moverank, 1)),
+                ("立即应用", self.apply),
+            ]
+        )
         formLayout.addWidget(table)
         formLayout.addLayout(search)
-        formLayout.addWidget(button)
+        formLayout.addLayout(button)
 
         self.resize(QSize(600, 400))
         self.show()
@@ -437,7 +438,7 @@ class yuyinzhidingsetting(LDialog):
             )
 
     def closeEvent(self, a0: QCloseEvent) -> None:
-        self.button.setFocus()
+        self.setFocus()
         self.apply()
 
 
@@ -785,7 +786,7 @@ class autoinitdialog(LDialog):
 @Singleton
 class postconfigdialog_(LDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
-        self.button.setFocus()
+        self.setFocus()
         self.apply()
 
     def apply(self):
@@ -836,15 +837,16 @@ class postconfigdialog_(LDialog):
         table.setModel(model)
         table.setWordWrap(False)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        button = threebuttons(texts=["添加行", "删除行", "上移", "下移", "立即应用"])
         self.table = table
-        button.btn1clicked.connect(table.insertplainrow)
-        button.btn2clicked.connect(table.removeselectedrows)
-
-        button.btn3clicked.connect(functools.partial(table.moverank, -1))
-        button.btn4clicked.connect(functools.partial(table.moverank, 1))
-        button.btn5clicked.connect(self.apply)
-        self.button = button
+        button = manybuttonlayout(
+            (
+                ("添加行", table.insertplainrow),
+                ("删除行", table.removeselectedrows),
+                ("上移", functools.partial(table.moverank, -1)),
+                ("下移", functools.partial(table.moverank, 1)),
+                ("立即应用", self.apply),
+            )
+        )
         self.model = model
         self.configdict = configdict
         search = QHBoxLayout()
@@ -870,7 +872,7 @@ class postconfigdialog_(LDialog):
 
         formLayout.addWidget(table)
         formLayout.addLayout(search)
-        formLayout.addWidget(button)
+        formLayout.addLayout(button)
         self.resize(QSize(600, 400))
         self.show()
 

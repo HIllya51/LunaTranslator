@@ -25,7 +25,7 @@ bool Hug::attach_function()
     *split = x;
     static std::map<std::pair<int, int>, std::string> lasts;
     auto p = std::make_pair(x, y);
-    if (lasts.find(p) == lasts.end())
+    if (!lasts.count(p))
       lasts[p] = "";
     auto &thislast = lasts[p];
 

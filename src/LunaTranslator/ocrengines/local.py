@@ -40,40 +40,39 @@ def getallsupports():
 
 
 class question(QWidget):
-
+    allsupports = [
+        Languages.Japanese,
+        Languages.English,
+        Languages.Chinese,
+        Languages.TradChinese,
+        Languages.Korean,
+        Languages.Russian,
+        Languages.Arabic,
+        Languages.Ukrainian,
+        Languages.German,
+        Languages.French,
+    ]
     installsucc = pyqtSignal(bool, str)
 
     def loadcombo(self):
 
+        data = self.combo.getCurrentData()
         langs = getallsupports()
         self.supportlang.setText("_,_".join([getlang_inner2show(f) for f in langs]))
-        _allsupports = [
-            Languages.Japanese,
-            Languages.English,
-            Languages.Chinese,
-            Languages.TradChinese,
-            Languages.Korean,
-            Languages.Russian,
-            Languages.Arabic,
-            Languages.Ukrainian,
-            Languages.German,
-            Languages.French,
-        ]
-        self.allsupports.clear()
-        for l in _allsupports:
-            if l not in langs:
-                self.allsupports.append(l)
-        vis = [getlang_inner2show(f) for f in self.allsupports]
+        _allsupports = [l for l in self.allsupports if l not in langs]
+        vis = [getlang_inner2show(f) for f in _allsupports]
         self.combo.clear()
-        self.combo.addItems(vis)
-        if not self.allsupports:
+        self.combo.addItems(vis, _allsupports)
+        if data:
+            self.combo.setCurrentData(data)
+        if not _allsupports:
             self.btninstall.setEnabled(False)
 
     @property
     def cururl(self):
-        if not self.allsupports:
+        lang = self.combo.getCurrentData()
+        if not lang:
             return
-        lang = self.allsupports[self.combo.currentIndex()]
         return dynamiclink("/Resource/ocr_models/{}.zip".format(lang))
 
     def downloadauto(self):
@@ -94,7 +93,6 @@ class question(QWidget):
             self.installsucc.emit(False, stringfyerror(e))
 
     def downloadx(self, url: str):
-
         self.progresssetval.emit("……", 0)
         req = requests.head(url, verify=False, proxies=getproxy())
         size = int(req.headers["Content-Length"])
@@ -161,7 +159,6 @@ class question(QWidget):
         self.supportlang.setWordWrap(True)
         formLayout.addRow("当前支持的语言", self.supportlang)
         self.combo = SuperCombo()
-        self.allsupports = []
 
         btninstall = LPushButton("添加")
         btninstall.clicked.connect(self.downloadauto)
@@ -185,9 +182,6 @@ class question(QWidget):
 
 class OCR(baseocr):
     required_image_format = QImage
-
-    def langmap(self):
-        return {Languages.TradChinese: "cht"}
 
     def init(self):
         self._savelang = None

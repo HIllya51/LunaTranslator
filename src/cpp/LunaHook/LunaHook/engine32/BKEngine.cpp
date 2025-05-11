@@ -47,7 +47,7 @@ namespace
 			addr = MemDbg::findEnclosingAlignedFunction(addr);
 			if (!addr)
 				continue;
-			if (mp.find(addr) == mp.end())
+			if (!mp.count(addr))
 				mp[addr] = 0;
 			mp[addr] += 1;
 			if (mp[addr] > maxi)

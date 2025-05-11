@@ -100,38 +100,26 @@
     },
     "youdaocr": {
         "args": {
-            "interface": 0,
+            "interface1": 0,
             "APP_KEY": "",
             "APP_SECRET": ""
         },
         "argstype": {
             "APP_SECRET": {
                 "name": "应用密钥",
-                "refcombo": "interface",
-                "refcombo_l": [
-                    0,
-                    2
-                ],
                 "type": "textlist"
             },
             "APP_KEY": {
                 "name": "应用ID",
-                "refcombo": "interface",
-                "refcombo_l": [
-                    0,
-                    2
-                ],
                 "type": "textlist"
             },
-            "interface": {
+            "interface1": {
                 "rank": 0,
                 "name": "接口",
                 "type": "combo",
                 "list": [
                     "OCR_通用文字识别",
-                    "OCR_通用文字识别_试用",
-                    "图片翻译",
-                    "图片翻译_试用"
+                    "图片翻译"
                 ]
             }
         }

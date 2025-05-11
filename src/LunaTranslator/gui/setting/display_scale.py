@@ -5,10 +5,11 @@ from gui.usefulwidget import (
     D_getspinbox,
     createfoldgrid,
     D_getsimpleswitch,
+    getsimplepatheditor,
     SuperCombo,
 )
 from myutils.magpie_builtin import AdapterService
-import functools
+import functools, os
 
 
 class SuperCombo__1(SuperCombo):
@@ -56,6 +57,16 @@ def createadaptercombo():
     return combo
 
 
+def __getsavedir():
+    screenshotsDir = magpie_config["overlay"]["screenshotsDir"]
+    if not screenshotsDir:
+        try:
+            return os.path.join(os.environ["USERPROFILE"], r"Pictures\Screenshots")
+        except:
+            pass
+    return screenshotsDir
+
+
 def makescalew():
     innermagpie = [
         [
@@ -99,17 +110,36 @@ def makescalew():
                                 "3DGameMode",
                             ),
                         ],
-                        [
-                            "工具栏初始状态",
-                            D_getsimplecombobox(
-                                ["关闭", "始终显示", "自动隐藏"],
-                                magpie_config["overlay"],
-                                "initialToolbarState",
-                            ),
-                        ],
                     ]
                 ),
             ),
+        ],
+        [
+            dict(
+                title="工具栏",
+                grid=[
+                    [
+                        "工具栏初始状态",
+                        D_getsimplecombobox(
+                            ["关闭", "始终显示", "自动隐藏"],
+                            magpie_config["overlay"],
+                            "initialToolbarState",
+                        ),
+                    ],
+                    [
+                        "截图保存目录",
+                        functools.partial(
+                            getsimplepatheditor,
+                            text=__getsavedir(),
+                            isdir=True,
+                            clearset=__getsavedir,
+                            callback=functools.partial(
+                                magpie_config["overlay"].__setitem__, "screenshotsDir"
+                            ),
+                        ),
+                    ],
+                ],
+            )
         ],
         [
             dict(

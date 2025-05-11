@@ -257,6 +257,8 @@ class Signer(object):
 
 
 class TS(basetrans):
+    needzhconv = True
+
     def init(self):
         self.cacheproject = {}
 

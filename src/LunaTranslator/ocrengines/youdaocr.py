@@ -10,43 +10,6 @@ class OCR(baseocr):
     def langmap(self):
         return {Languages.Chinese: "zh-CHS", Languages.TradChinese: "zh-CHT"}
 
-    def freetest(self, imagebinary):
-        headers = {
-            "authority": "aidemo.youdao.com",
-            "accept": "*/*",
-            "accept-language": "zh-CN,zh;q=0.9",
-            "origin": "https://ai.youdao.com",
-            "referer": "https://ai.youdao.com/",
-            "sec-ch-ua": '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site",
-        }
-        b64 = base64.b64encode(imagebinary)
-        data = {
-            "imgBase": "data:image/jpeg;base64," + str(b64, encoding="utf8"),
-            "lang": "",
-            "company": "",
-        }
-
-        response = self.proxysession.post(
-            "https://aidemo.youdao.com/ocrapi1", headers=headers, data=data
-        )
-
-        try:
-
-            return OCRResult(
-                boxs=[
-                    [int(_) for _ in l["boundingBox"].split(",")]
-                    for l in response.json()["lines"]
-                ],
-                texts=[l["words"] for l in response.json()["lines"]],
-            )
-        except:
-            raise Exception(response)
-
     def ocrapi(self, imagebinary):
         def truncate(q):
             if q is None:
@@ -54,7 +17,7 @@ class OCR(baseocr):
             size = len(q)
             return q if size <= 20 else q[0:10] + str(size) + q[size - 10 : size]
 
-        def encrypt(signStr):
+        def encrypt(signStr: str):
             hash_algorithm = hashlib.sha256()
             hash_algorithm.update(signStr.encode("utf-8"))
             return hash_algorithm.hexdigest()
@@ -83,8 +46,7 @@ class OCR(baseocr):
         data["salt"] = salt
         data["sign"] = sign
 
-        headers = {"Content-Type": "application/x-www-form-urlencoded"}
-        response = self.proxysession.post(YOUDAO_URL, data=data, headers=headers)
+        response = self.proxysession.post(YOUDAO_URL, data=data)
         try:
             _ = []
             for l in response.json()["Result"]["regions"]:
@@ -92,40 +54,6 @@ class OCR(baseocr):
             return OCRResult(
                 boxs=[[int(_) for _ in l["boundingBox"].split(",")] for l in _],
                 texts=[l["text"] for l in _],
-            )
-        except:
-            raise Exception(response)
-
-    def freetest_ts(self, imagebinary):
-
-        headers = {
-            "authority": "aidemo.youdao.com",
-            "accept": "*/*",
-            "accept-language": "zh-CN,zh;q=0.9",
-            "origin": "https://ai.youdao.com",
-            "referer": "https://ai.youdao.com/",
-            "sec-ch-ua": '"Chromium";v="106", "Google Chrome";v="106", "Not;A=Brand";v="99"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site",
-        }
-        b64 = base64.b64encode(imagebinary)
-        data = {
-            "imgBase": "data:image/jpeg;base64," + str(b64, encoding="utf8"),
-            "lang": "",
-            "company": "",
-        }
-
-        response = self.proxysession.post(
-            "https://aidemo.youdao.com/ocrtransapi1", headers=headers, data=data
-        )
-
-        try:
-            return OCRResult(
-                texts=[l["tranContent"] for l in response.json()["lines"]],
-                isocrtranslate=True,
             )
         except:
             raise Exception(response)
@@ -151,10 +79,8 @@ class OCR(baseocr):
             @param paramsMap 请求参数表
         """
 
-        def addAuthParams(appKey, appSecret, params):
+        def addAuthParams(appKey, appSecret, params: dict):
             q = params.get("q")
-            if q is None:
-                q = params.get("img")
             salt = str(uuid.uuid1())
             curtime = str(int(time.time()))
             sign = calculateSign(appKey, appSecret, q, salt, curtime)
@@ -179,7 +105,7 @@ class OCR(baseocr):
             strSrc = appKey + getInput(q) + salt + curtime + appSecret
             return encrypt(strSrc)
 
-        def encrypt(strSrc):
+        def encrypt(strSrc: str):
             hash_algorithm = hashlib.sha256()
             hash_algorithm.update(strSrc.encode("utf-8"))
             return hash_algorithm.hexdigest()
@@ -216,15 +142,9 @@ class OCR(baseocr):
 
             addAuthParams(APP_KEY, APP_SECRET, data)
 
-            header = {"Content-Type": "application/x-www-form-urlencoded"}
-            res = doCall("https://openapi.youdao.com/ocrtransapi", header, data, "post")
-            return res
-
-        def doCall(url, header, params, method):
-            if "get" == method:
-                return self.proxysession.get(url, params)
-            elif "post" == method:
-                return self.proxysession.post(url, params, header)
+            return self.proxysession.post(
+                "https://openapi.youdao.com/ocrtransapi", data=data
+            )
 
         def readFileAsBase64(imagebinary):
             return str(base64.b64encode(imagebinary), "utf-8")
@@ -242,13 +162,9 @@ class OCR(baseocr):
             raise Exception(response)
 
     def ocr(self, imagebinary):
-        interfacetype = self.config["interface"]
+        interfacetype = self.config["interface1"]
         if interfacetype == 1:
-            return self.freetest(imagebinary)
+            return self.ocrapi_ts(imagebinary)
         elif interfacetype == 0:
             return self.ocrapi(imagebinary)
-        elif interfacetype == 2:
-            return self.ocrapi_ts(imagebinary)
-        elif interfacetype == 3:
-            return self.freetest_ts(imagebinary)
         raise Exception("unknown")

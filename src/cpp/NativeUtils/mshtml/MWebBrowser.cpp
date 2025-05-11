@@ -71,9 +71,10 @@ HRESULT STDMETHODCALLTYPE JSObject::Invoke(DISPID dispIdMember, REFIID riid,
             BSTR bstrArg = pDispParams->rgvarg[i].bstrVal;
             args.push_back(bstrArg);
         }
-        if (funcmap.find(dispIdMember) == funcmap.end())
+        auto found = funcmap.find(dispIdMember);
+        if (found == funcmap.end())
             return DISP_E_MEMBERNOTFOUND;
-        funcmap[dispIdMember](args.data(), args.size());
+        found->second(args.data(), args.size());
         return S_OK;
     }
 

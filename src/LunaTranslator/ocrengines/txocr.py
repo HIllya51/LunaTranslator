@@ -1,7 +1,6 @@
 from hashlib import sha1
 import time, random, hmac, base64, uuid, hashlib, json
 from ocrengines.baseocrclass import baseocr, OCRResult
-import zhconv
 from language import Languages
 
 
@@ -147,11 +146,7 @@ class OCR(baseocr):
                 for _ in r.json()["Response"]["ImageRecord"]["Value"]
             ]
             texts = [
-                (
-                    zhconv.convert(_["TargetText"], "zh-tw")
-                    if (Languages.TradChinese == self.tgtlang_1)
-                    else _["TargetText"]
-                )
+                self.checklangzhconv(self.tgtlang_1, _["TargetText"])
                 for _ in r.json()["Response"]["ImageRecord"]["Value"]
             ]
             return OCRResult(boxs=boxs, texts=texts, isocrtranslate=True)

@@ -77,6 +77,8 @@ class question(QWidget):
         url = saves[-1][1]
         req = requests.head(url, proxies=getproxy())
         size = int(req.headers["Content-Length"])
+        self.failedlink = lambda: url
+        self.skiplink2 = True
         file_size = 0
         req = requests.get(url, stream=True, proxies=getproxy())
         target = gobject.gettempdir(saves[-1][2])
@@ -93,8 +95,11 @@ class question(QWidget):
                 )
 
         self.progresssetval.emit(_TR("正在解压"), 10000)
+        self.unzipmsix(target)
+
+    def unzipmsix(self, file):
         namemsix = None
-        with zipfile.ZipFile(target) as ff:
+        with zipfile.ZipFile(file) as ff:
             for name in ff.namelist():
                 if name.startswith("SnippingTool") and name.endswith("_x64.msix"):
                     namemsix = name
@@ -127,6 +132,8 @@ class question(QWidget):
             try:
                 self.downloadofficial()
             except:
+                if self.skiplink2:
+                    raise Exception()
                 self.downloadx(url)
                 print_exc()
                 self.progresssetval.emit("……", 0)
@@ -173,16 +180,21 @@ class question(QWidget):
                 failreason + "\n\n" + _TR("自动添加失败，是否手动添加？"),
             )
             if res == QMessageBox.StandardButton.Yes:
-                os.startfile(dynamiclink("/Resource/SnippingTool"))
+                os.startfile(self.failedlink())
                 f = QFileDialog.getOpenFileName(
                     self,
-                    filter="SnippingTool.zip",
+                    filter="*.msixbundle" if self.skiplink2 else "SnippingTool.zip",
                 )
                 fn = f[0]
                 if fn:
                     try:
-                        with zipfile.ZipFile(fn) as zipf:
-                            zipf.extractall(gobject.getcachedir())
+                        if self.skiplink2:
+                            self.unzipmsix(fn)
+                        else:
+                            with zipfile.ZipFile(fn) as zipf:
+                                zipf.extractall(gobject.getcachedir())
+                            if not checkdir(cachedir):
+                                raise Exception()
                         QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
                         self.formLayout.setRowVisible(0, True)
                         self.formLayout.setRowVisible(1, False)
@@ -202,6 +214,8 @@ class question(QWidget):
     def __init__(self, *argc, **kw):
         super().__init__(*argc, **kw)
         self.installsucc.connect(self._installsucc)
+        self.failedlink = lambda: dynamiclink("/Resource/SnippingTool")
+        self.skiplink2 = False
         formLayout = VisLFormLayout(self)
         formLayout.setContentsMargins(0, 0, 0, 0)
         lb = LLabel("已安装")

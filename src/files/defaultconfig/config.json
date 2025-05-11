@@ -1719,12 +1719,6 @@
             "useproxy": false,
             "name": "lingva"
         },
-        "reverso": {
-            "use": false,
-            "color": "blue",
-            "useproxy": false,
-            "name": "reverso"
-        },
         "TranslateCom": {
             "use": false,
             "color": "blue",

@@ -1,11 +1,9 @@
-import re, html
+import html
 from translator.basetranslator import basetrans
-from language import Languages
 
 
 class TS(basetrans):
-    def langmap(self):
-        return {Languages.TradChinese: "zh-tw"}
+    needzhconv = True
 
     def init(self):
 

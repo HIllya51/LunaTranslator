@@ -273,40 +273,45 @@ namespace Host
 	void DetachProcess(DWORD processId)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
-		if (prs.find(processId) == prs.end())
+		auto found = prs.find(processId);
+		if (found == prs.end())
 			return;
-		prs.at(processId).Send(HOST_COMMAND_DETACH);
+		found->second.Send(HOST_COMMAND_DETACH);
 	}
 	void InsertPCHooks(DWORD processId, int which)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
-		if (prs.find(processId) == prs.end())
+		auto found = prs.find(processId);
+		if (found == prs.end())
 			return;
-		prs.at(processId).Send(InsertPCHooksCmd(which));
+		found->second.Send(InsertPCHooksCmd(which));
 	}
 	void InsertHook(DWORD processId, HookParam hp)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
-		if (prs.find(processId) == prs.end())
+		auto found = prs.find(processId);
+		if (found == prs.end())
 			return;
-		prs.at(processId).Send(InsertHookCmd(hp));
+		found->second.Send(InsertHookCmd(hp));
 	}
 
 	void RemoveHook(DWORD processId, uint64_t address)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
-		if (prs.find(processId) == prs.end())
+		auto found = prs.find(processId);
+		if (found == prs.end())
 			return;
-		prs.at(processId).Send(RemoveHookCmd(address));
+		found->second.Send(RemoveHookCmd(address));
 	}
 
 	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound, LPCWSTR addresses)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
-		if (prs.find(processId) == prs.end())
+		auto found = prs.find(processId);
+		if (found == prs.end())
 			return;
 		if (HookFound)
-			prs.at(processId).OnHookFound = HookFound;
+			found->second.OnHookFound = HookFound;
 		static int idx = 0;
 		if (sp.search_method == 3)
 		{
@@ -338,9 +343,10 @@ namespace Host
 	CommonSharedMem *GetCommonSharedMem(DWORD processId)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
-		if (prs.find(processId) == prs.end())
-			return 0;
-		return prs.at(processId).commonsharedmem;
+		auto found = prs.find(processId);
+		if (found == prs.end())
+			return nullptr;
+		return found->second.commonsharedmem;
 	}
 	void AddConsoleOutput(std::wstring text)
 	{

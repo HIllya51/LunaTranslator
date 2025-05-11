@@ -96,6 +96,8 @@ class SuperCombo(FocusCombo):
 
     def getIndexData(self, index):
         item = self.mo.item(index, 0)
+        if not item:
+            return
         return item.data(self.Internalrole)
 
     def setRowVisible(self, row, vis):
@@ -1926,7 +1928,7 @@ class CustomKeySequenceEdit(QKeySequenceEdit):
         self.setKeySequence(QKeySequence(value))
 
 
-def getsimplekeyseq(dic, key, callback=None):
+def getsimplekeyseq(dic: "dict[str,str]", key, callback=None):
     key1 = CustomKeySequenceEdit(QKeySequence(dic[key].replace("Win", "Meta")))
 
     def __(_d, _k, cb, s):
@@ -1942,7 +1944,7 @@ def D_getsimplekeyseq(dic, key, callback=None):
     return lambda: getsimplekeyseq(dic, key, callback)
 
 
-switchtypes = []
+switchtypes: "list[auto_select_webview]" = []
 
 
 class auto_select_webview(QWidget):
@@ -2068,43 +2070,15 @@ class auto_select_webview(QWidget):
         return browser
 
 
-class threebuttons(QWidget):
-    btn1clicked = pyqtSignal()
-    btn2clicked = pyqtSignal()
-    btn3clicked = pyqtSignal()
-    btn4clicked = pyqtSignal()
-    btn5clicked = pyqtSignal()
-
-    def __init__(self, texts=None):
-        super().__init__()
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        if len(texts) >= 1:
-            button = LPushButton(self)
-            button.setText(texts[0])
-            button.clicked.connect(self.btn1clicked)
-            layout.addWidget(button)
-        if len(texts) >= 2:
-            button2 = LPushButton(self)
-            button2.setText(texts[1])
-            button2.clicked.connect(self.btn2clicked)
-
-            layout.addWidget(button2)
-        if len(texts) >= 3:
-            button3 = LPushButton(self)
-            button3.setText(texts[2])
-            button3.clicked.connect(self.btn3clicked)
-            layout.addWidget(button3)
-        if len(texts) >= 4:
-            button4 = LPushButton(self)
-            button4.setText(texts[3])
-            button4.clicked.connect(self.btn4clicked)
-            layout.addWidget(button4)
-        if len(texts) >= 5:
-            button5 = LPushButton(self)
-            button5.setText(texts[4])
-            button5.clicked.connect(self.btn5clicked)
-            layout.addWidget(button5)
+def manybuttonlayout(textandfunctions: list):
+    layout = QHBoxLayout()
+    layout.setContentsMargins(0, 0, 0, 0)
+    for text, func in textandfunctions:
+        button = LPushButton()
+        button.setText(text)
+        button.clicked.connect(func)
+        layout.addWidget(button)
+    return layout
 
 
 def tabadd_lazy(tab, title, getrealwidgetfunction):
@@ -2180,7 +2154,7 @@ class NQGroupBox(QGroupBox):
         self.setObjectName("notitle")
 
 
-def makegroupingrid(args):
+def makegroupingrid(args: dict):
     lis = args.get("grid")
     title = args.get("title", None)
     _type = args.get("type", "form")
@@ -2307,13 +2281,12 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False):
 
 def makescroll():
     scroll = QScrollArea()
-    # scroll.setHorizontalScrollBarPolicy(1)
     scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
     scroll.setWidgetResizable(True)
     return scroll
 
 
-def makescrollgrid(grid, lay, savelist=None, savelay=None):
+def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None):
     wid, do = makegrid(grid, savelist, savelay, delay=True)
     swid = makescroll()
     lay.addWidget(swid)
@@ -2470,30 +2443,26 @@ class listediter(LDialog):
                     )
                     self.hctable.setIndexWidget(self.hcmodel.index(row, 0), combo)
             if isrankeditor:
-                self.buttons = threebuttons(texts=["上移", "下移"])
-                self.buttons.btn1clicked.connect(functools.partial(self.moverank, -1))
-                self.buttons.btn2clicked.connect(functools.partial(self.moverank, 1))
+                buttons = manybuttonlayout(
+                    (
+                        ("上移", functools.partial(self.moverank, -1)),
+                        ("下移", functools.partial(self.moverank, 1)),
+                    )
+                )
             elif self.candidates:
-                self.buttons = threebuttons(texts=["添加行", "删除行"])
-                self.buttons.btn1clicked.connect(self.click1)
-                self.buttons.btn2clicked.connect(self.clicked2)
+                buttons = manybuttonlayout(
+                    (("添加行", self.click1), ("删除行", self.clicked2))
+                )
             else:
                 if self.ispathsedit and self.ispathsedit.get("dirorfile", False):
-                    self.buttons = threebuttons(
-                        texts=["添加文件", "添加文件夹", "删除行", "上移", "下移"]
-                    )
-                    self.buttons.btn1clicked.connect(
-                        functools.partial(self._addfile, False)
-                    )
-                    self.buttons.btn2clicked.connect(
-                        functools.partial(self._addfile, True)
-                    )
-                    self.buttons.btn3clicked.connect(self.clicked2)
-                    self.buttons.btn4clicked.connect(
-                        functools.partial(self.moverank, -1)
-                    )
-                    self.buttons.btn5clicked.connect(
-                        functools.partial(self.moverank, 1)
+                    buttons = manybuttonlayout(
+                        (
+                            ("添加文件", functools.partial(self._addfile, False)),
+                            ("添加文件夹", functools.partial(self._addfile, True)),
+                            ("删除行", self.clicked2),
+                            ("上移", functools.partial(self.moverank, -1)),
+                            ("下移", functools.partial(self.moverank, 1)),
+                        )
                     )
                 else:
                     xx = "添加行"
@@ -2502,17 +2471,16 @@ class listediter(LDialog):
                             xx = "添加文件夹"
                         else:
                             xx = "添加文件"
-                    self.buttons = threebuttons(texts=[xx, "删除行", "上移", "下移"])
-                    self.buttons.btn1clicked.connect(self.click1)
-                    self.buttons.btn2clicked.connect(self.clicked2)
-                    self.buttons.btn3clicked.connect(
-                        functools.partial(self.moverank, -1)
-                    )
-                    self.buttons.btn4clicked.connect(
-                        functools.partial(self.moverank, 1)
+                    buttons = manybuttonlayout(
+                        (
+                            (xx, self.click1),
+                            ("删除行", self.clicked2),
+                            ("上移", functools.partial(self.moverank, -1)),
+                            ("下移", functools.partial(self.moverank, 1)),
+                        )
                     )
 
-            formLayout.addWidget(self.buttons)
+            formLayout.addLayout(buttons)
             self.resize(600, self.sizeHint().height())
             if exec:
                 self.exec()
@@ -2527,7 +2495,7 @@ class listediter(LDialog):
             self.internalrealname.pop(row)
 
     def closeEvent(self, a0: QCloseEvent) -> None:
-        self.buttons.setFocus()
+        self.setFocus()
 
         rows = self.hcmodel.rowCount()
         rowoffset = 0
@@ -2694,7 +2662,6 @@ def getsimplepatheditor(
     dirorfile=False,
     clearable=True,
     clearset=None,
-    isfontselector=False,
 ):
     if multi:
         lay = listediterline(
@@ -2715,31 +2682,18 @@ def getsimplepatheditor(
             bu = LPushButton("选择" + ("文件夹" if isdir else "文件"))
             if clearable:
                 clear = LPushButton("清除")
+        if clearable:
+            lay.clear = clear
 
-        if isfontselector:
-
-            def __selectfont(callback, e: QLineEdit):
-                f = QFont()
-                text = e.text()
-                if text:
-                    f.fromString(text)
-                font, ok = QFontDialog.getFont(f, e)
-                if ok:
-                    _s = font.toString()
-                    callback(_s)
-                    e.setText(_s)
-
-            _cb = functools.partial(__selectfont, callback, e)
-        else:
-            _cb = functools.partial(
-                openfiledirectory,
-                text,
-                multi,
-                e,
-                isdir,
-                "" if isdir else filter1,
-                callback,
-            )
+        _cb = functools.partial(
+            openfiledirectory,
+            text,
+            multi,
+            e,
+            isdir,
+            "" if isdir else filter1,
+            callback,
+        )
         bu.clicked.connect(_cb)
         lay.addWidget(e)
         lay.addWidget(bu)
@@ -2987,25 +2941,6 @@ def clearlayout(ll: QLayout):
         if l:
             clearlayout(l)
             l.deleteLater()
-            continue
-
-
-def showhidelayout(ll: QLayout, vis):
-    for _ in range(ll.count()):
-        item = ll.itemAt(_)
-        if not item:
-            continue
-        w = item.widget()
-        if w:
-            if vis:
-                if not w.isVisible():
-                    w.setVisible(True)
-            else:
-                w.setVisible(False)
-            continue
-        l = item.layout()
-        if l:
-            showhidelayout(l, vis)
             continue
 
 

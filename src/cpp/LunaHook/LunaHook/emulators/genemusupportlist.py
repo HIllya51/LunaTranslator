@@ -4,12 +4,10 @@ os.chdir(os.path.dirname(__file__))
 
 
 def psp():
-    with open(
-        "../LunaHook/engines/ppsspp/specialgames.hpp", "r", encoding="utf8"
-    ) as ff:
+    with open("ppsspp_1.cpp", "r", encoding="utf8") as ff:
         content = ff.read().split(" = {")[-1]
     ret = []
-    for match in re.finditer(r"^		// (.*?)\n", content, re.MULTILINE):
+    for match in re.finditer(r"^    // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
         m = re.search("(.*?) //(.*)", game)
         if m:
@@ -24,10 +22,11 @@ def psp():
 
 
 def ns():
-    with open("../LunaHook/engine64/yuzu.cpp", "r", encoding="utf8") as ff:
+    with open("yuzu_1.cpp", "r", encoding="utf8") as ff:
         content = ff.read().split(" = {")[-1]
+    content = content[: content.find("};")]
     ret = []
-    for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
+    for match in re.finditer(r"^    // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
         m = re.search(r"(.*?) //([\w\d]{16})", game)
         if m:
@@ -46,10 +45,10 @@ def ns():
 
 
 def psv():
-    with open("../LunaHook/engine64/vita3k.cpp", "r", encoding="utf8") as ff:
+    with open("vita3k_1.cpp", "r", encoding="utf8") as ff:
         content = ff.read().split(" = {")[-1]
     ret = []
-    for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
+    for match in re.finditer(r"^    // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
         m = re.search("(.*?) //(.*)", game)
         if m:
@@ -64,7 +63,7 @@ def psv():
 
 
 def rpcs3():
-    with open("../LunaHook/engine64/rpcs3.cpp", "r", encoding="utf8") as ff:
+    with open("rpcs3.cpp", "r", encoding="utf8") as ff:
         content = ff.read()
     ret = []
     for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
@@ -82,10 +81,10 @@ def rpcs3():
 
 
 def pcsx2():
-    with open("../LunaHook/engine64/PCSX2.cpp", "r", encoding="utf8") as ff:
+    with open("PCSX2_1.cpp", "r", encoding="utf8") as ff:
         content = ff.read()
     ret = []
-    for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
+    for match in re.finditer(r"^    // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
         m = re.search("(.*?) //(.*)", game)
         if m:
@@ -144,9 +143,9 @@ PS2_GAME_LIST
 
 :::"""
 
-for lang in ["zh", "en", "ja"]:
+for lang in ["zh", "en", "ja", "vi"]:
     with open(
-        f"../../../../docs/{lang}/emugames_template.md", "r", encoding="utf8"
+        f"../../../../../docs/{lang}/emugames_template.md", "r", encoding="utf8"
     ) as ff:
         temp = ff.read()
 
@@ -155,5 +154,5 @@ for lang in ["zh", "en", "ja"]:
     append = append.replace("PSV_GAME_LIST", maketable(psv))
     append = append.replace("PS3_GAME_LIST", maketable(rpcs3))
     append = append.replace("PS2_GAME_LIST", maketable(pcsx2))
-    with open(f"../../../../docs/{lang}/emugames.md", "w", encoding="utf8") as ff:
+    with open(f"../../../../../docs/{lang}/emugames.md", "w", encoding="utf8") as ff:
         ff.write(temp + append)

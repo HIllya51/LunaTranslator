@@ -1,5 +1,5 @@
 import json
-import os, time, uuid, shutil, sys, platform, re
+import os, time, uuid, re
 from traceback import print_exc
 from language import TransLanguages, Languages
 
@@ -31,19 +31,6 @@ def isascii(s: str):
             return True
         except:
             return False
-
-
-def namemapcast(namemap):
-    bettermap = namemap.copy()
-    for k, v in namemap.items():
-        for sp in ["・", " "]:
-            spja = k.split(sp)
-            spen = v.split(sp if k == v else " ")
-            if len(spja) == len(spen) and len(spen) > 1:
-                for i in range(len(spja)):
-                    if len(spja[i]) >= 2:
-                        bettermap[spja[i]] = spen[i]
-    return bettermap
 
 
 def tryreadconfig(path, default=None):
@@ -335,15 +322,6 @@ def syncconfig(config1, default, drop=False, deep=0):
 
 syncconfig(globalconfig, defaultglobalconfig)
 syncconfig(transerrorfixdictconfig, defaulterrorfix)
-if True:  # transerrorfixdictconfig cast v1 to v2:
-    if "dict" in transerrorfixdictconfig:
-        for key in transerrorfixdictconfig["dict"]:
-            value = transerrorfixdictconfig["dict"][key]
-            transerrorfixdictconfig["dict_v2"].append(
-                {"key": key, "value": value, "regex": False}
-            )
-        transerrorfixdictconfig.pop("dict")
-
 
 syncconfig(magpie_config, dfmagpie_config)
 syncconfig(
@@ -439,7 +417,7 @@ def _TRL(kk):
     return x
 
 
-def getlang_inner2show(langcode):
+def getlang_inner2show(langcode: "str | Languages"):
     return dict(
         zip(
             [_.code for _ in TransLanguages],

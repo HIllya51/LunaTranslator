@@ -620,7 +620,7 @@ namespace
                          suffix,
                          trimmedText = trim(oldText, &prefix, &suffix);
 
-            if (!trimmedText.empty() && (texts_.find(trimmedText) == texts_.end()))
+            if (!trimmedText.empty() && (!texts_.count(trimmedText)))
             { // skip text beginning with ascii character
 
               // ULONG split = arg->unknown2[0]; // always 2
@@ -669,7 +669,7 @@ namespace
                          suffix,
                          trimmedText = trim(oldText, &prefix, &suffix);
 
-            if (!trimmedText.empty() && (texts_.find(trimmedText) == texts_.end()))
+            if (!trimmedText.empty() && (!texts_.count(trimmedText)))
             { // skip text beginning with ascii character
 
               const bool sendAllowed = (std::find(recentTexts_.begin(), recentTexts_.end(), oldText) == recentTexts_.end());

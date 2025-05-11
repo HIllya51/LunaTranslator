@@ -1,9 +1,19 @@
 class _LanguageInfo:
-    def __init__(self, code: str, zhsname: str, engname: str, nativename: str):
+    def __init__(
+        self,
+        code: str,
+        zhsname: str,
+        engname: str,
+        nativename: str,
+        isoLANGNAME=None,
+        isoCTRYNAME=None,
+    ):
         self.code = code
         self.zhsname = zhsname
         self.engname = engname
         self.nativename = nativename
+        self.isoLANGNAME = isoLANGNAME if isoLANGNAME else code
+        self.isoCTRYNAME = isoCTRYNAME
         self.space = "" if (code in ("zh", "ja", "cht")) else " "
 
     def __eq__(self, value):
@@ -31,7 +41,14 @@ class Languages(_LanguageInfo):
     Auto = _LanguageInfo("auto", "", "", "")
     Chinese = _LanguageInfo("zh", "简体中文", "Simplified Chinese", "简体中文")
     Japanese = _LanguageInfo("ja", "日语", "Japanese", "日本語")
-    TradChinese = _LanguageInfo("cht", "繁体中文", "Traditional Chinese", "繁體中文")
+    TradChinese = _LanguageInfo(
+        "cht",
+        "繁体中文",
+        "Traditional Chinese",
+        "繁體中文",
+        isoLANGNAME="zh",
+        isoCTRYNAME=["HK", "TW"],
+    )
     English = _LanguageInfo("en", "英语", "English", "English")
     Russian = _LanguageInfo("ru", "俄语", "Russian", "Русский язык")
     Spanish = _LanguageInfo("es", "西班牙语", "Spanish", "Español")
@@ -69,8 +86,6 @@ class Languages(_LanguageInfo):
                 [_.code for _ in TransLanguages],
             )
         )
-
-        _.update({Languages.TradChinese: "zh", Languages.Auto: "auto"})
         if langmap:
             _.update(langmap)
         return _
@@ -135,3 +150,22 @@ TransLanguages = [
     Languages.Hungarian,
     Languages.Latin,
 ]
+
+
+def GetUILanguage(code: "tuple[str,str]"):
+    lang, ctry = code
+    matchs: "list[_LanguageInfo]" = []
+    for v in UILanguages:
+        if v.isoLANGNAME == lang:
+            matchs.append(v)
+    if not matchs:
+        return Languages.English
+    if len(matchs) == 1:
+        return matchs[0]
+    for _ in matchs:
+        if _.isoCTRYNAME and ctry in _.isoCTRYNAME:
+            return _
+    for _ in matchs:
+        if not _.isoCTRYNAME:
+            return _
+    return matchs[0]
