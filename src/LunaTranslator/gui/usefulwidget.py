@@ -883,12 +883,16 @@ def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, defaul
 
 
 def getIconButton(
-    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True, tips=None
+    callback=None,
+    icon="fa.gear",
+    enable=True,
+    qicon=None,
+    callback2=None,
+    fix=True,
+    tips=None,
 ):
 
-    b = IconButton(icon, enable, qicon, fix=fix)
-    if tips:
-        b.setToolTip(tips)
+    b = IconButton(icon, enable, qicon, fix=fix, tips=tips)
     if callback:
         b.clicked_1.connect(callback)
     if callback2:
@@ -2868,9 +2872,18 @@ class IconButton(LPushButton):
         self.sizeChanged.emit(sz)
 
     def __init__(
-        self, icon, enable=True, qicon=None, parent=None, checkable=False, fix=True
+        self,
+        icon,
+        enable=True,
+        qicon=None,
+        parent=None,
+        checkable=False,
+        fix=True,
+        tips=None,
     ):
         super().__init__(parent)
+        if tips:
+            self.setToolTip(tips)
         self._icon = icon
         self.clicked.connect(self.clicked_1)
         self.clicked.connect(self.__seticon)

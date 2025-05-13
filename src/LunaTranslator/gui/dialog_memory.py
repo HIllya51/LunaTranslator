@@ -220,6 +220,20 @@ class editswitchTextBrowserEx(QWidget):
     def text(self):
         return self.editstack.toPlainText()
 
+    @property
+    def sourcefile(self):
+        if self.readoreditstack.currentIndex() == 1:
+            return self.cache
+        else:
+            return self.fn
+
+    def sourcefileopen(self):
+        f = self.sourcefile
+        if not os.path.isfile(f):
+            with open(f, "w") as ff:
+                pass
+        os.startfile(f)
+
 
 @Singleton
 class dialog_memory(saveposwindow):
@@ -298,17 +312,24 @@ class dialog_memory(saveposwindow):
         self.buttonslayout.setSpacing(0)
         self.btnplus = IconButton(parent=self, icon="fa.plus")
         self.btnplus.clicked.connect(self._plus)
-        self.switch = IconButton(parent=self, icon="fa.edit", checkable=True)
+        self.switch = IconButton(
+            parent=self, icon="fa.edit", checkable=True, tips="编辑_/_查看"
+        )
         self.switch.setChecked(True)
         self.switch.clicked.connect(self.switchreadonly)
-        self.insertpicbtn = IconButton(parent=self, icon="fa.picture-o")
-        self.insertaudiobtn = IconButton(parent=self, icon="fa.music")
+        self.insertpicbtn = IconButton(
+            parent=self, icon="fa.picture-o", tips="插入图片"
+        )
+        self.insertaudiobtn = IconButton(parent=self, icon="fa.music", tips="插入音频")
         self.insertaudiobtnisrecoding = False
-        self.textbtn = IconButton(parent=self, icon="fa.text-height")
+        self.textbtn = IconButton(parent=self, icon="fa.text-height", tips="插入文本")
+        openfile = IconButton(parent=self, icon="fa.external-link", tips="打开文件")
+        openfile.clicked.connect(lambda: self.editororview.sourcefileopen())
         self.buttonslayout.addWidget(self.textbtn)
         self.buttonslayout.addWidget(self.insertaudiobtn)
         self.buttonslayout.addWidget(self.insertpicbtn)
         self.buttonslayout.addWidget(self.switch)
+        self.buttonslayout.addWidget(openfile)
         self.insertpicbtn.clicked.connect(self.Picselect)
         self.insertaudiobtn.clicked.connect(self.AudioSelect)
         self.textbtn.clicked.connect(self.TextInsert)
@@ -533,7 +554,7 @@ class dialog_memory(saveposwindow):
             self.saveconfig()
 
         elif action == openfile:
-            NativeUtils.OpenFileEx(file)
+            os.startfile(file)
         elif action == rename:
             before = self.tab.tabText(index)
             __d = {"k": before}
