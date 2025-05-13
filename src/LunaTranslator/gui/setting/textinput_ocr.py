@@ -379,12 +379,14 @@ def internal(self):
             D_getIconButton(
                 callback=gobject.baseobject.createshowocrimage,
                 icon="fa.picture-o",
+                tips="查看",
             ),
             D_getIconButton(
                 callback=lambda: os.startfile(
                     dynamiclink("/useapis/ocrapi.html", docs=True)
                 ),
                 icon="fa.question",
+                tips="使用说明",
             ),
             "",
         ],

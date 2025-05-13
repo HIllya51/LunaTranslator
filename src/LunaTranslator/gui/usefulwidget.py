@@ -902,10 +902,16 @@ def getIconButton(
 
 
 def D_getIconButton(
-    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True
+    callback=None,
+    icon="fa.gear",
+    enable=True,
+    qicon=None,
+    callback2=None,
+    fix=True,
+    tips=None,
 ):
     return lambda: getIconButton(
-        callback, icon, enable, qicon, callback2=callback2, fix=fix
+        callback, icon, enable, qicon, callback2=callback2, fix=fix, tips=tips
     )
 
 
