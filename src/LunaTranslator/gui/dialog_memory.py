@@ -239,18 +239,18 @@ class dialog_memory(saveposwindow):
         if os.path.isfile(rwpath):
             try:
                 os.rename(rwpath, os.path.join(self.rwpath, "0.html"))
-                self.config.append({"title": "0", "file": "0.html"})
+                self.config.append({"title": "  0  ", "file": "0.html"})
             except:
                 pass
 
     def createview(self, config: dict, i, lay: QHBoxLayout):
 
-        fn = os.path.join(self.rwpath, config.get("file", str(i) + ".html"))
+        fn = os.path.join(self.rwpath, config.get("file", str(i) + ".md"))
         showtext = editswitchTextBrowserEx(self, fn, config)
         lay.addWidget(showtext)
 
     def createnewconfig(self, i):
-        self.config.insert(i, {"file": str(i) + ".html", "title": str(i)})
+        self.config.insert(i, {"file": str(i) + ".md", "title": "  {}  ".format(i)})
         self.saveconfig()
         return self.config[i]
 
@@ -487,7 +487,7 @@ class dialog_memory(saveposwindow):
     def _plus(self):
         index = self.tab.count()
         W = QWidget()
-        self.tab.addTab(W, str(index))
+        self.tab.addTab(W, "  {}  ".format(index))
         lay = QVBoxLayout(W)
         lay.setContentsMargins(0, 0, 0, 0)
         config = self.createnewconfig(index)
@@ -515,8 +515,15 @@ class dialog_memory(saveposwindow):
         if index == -1:
             return
         menu = QMenu(self)
+        openfile = LAction("打开文件", menu)
         rename = LAction("重命名", menu)
         rm = LAction("删除", menu)
+        file = self.config[index].get("file")
+        file = os.path.join(self.rwpath, file)
+        if not self.switch.isChecked():
+            file += ".cache.html"
+        if os.path.isfile(file):
+            menu.addAction(openfile)
         menu.addAction(rename)
         menu.addAction(rm)
         action = menu.exec(QCursor.pos())
@@ -525,6 +532,8 @@ class dialog_memory(saveposwindow):
             self.tab.removeTab(index)
             self.saveconfig()
 
+        elif action == openfile:
+            NativeUtils.OpenFileEx(file)
         elif action == rename:
             before = self.tab.tabText(index)
             __d = {"k": before}
