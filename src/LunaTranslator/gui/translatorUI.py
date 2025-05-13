@@ -32,7 +32,7 @@ from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless, findnearestscreen
 from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
-from gui.gamemanager.setting import favorites, calculate_centered_rect
+from gui.gamemanager.setting import calculate_centered_rect
 from gui.gamemanager.common import startgame
 from gui.dynalang import LDialog, LLabel
 
@@ -620,30 +620,6 @@ class TranslatorWindow(resizableframeless):
         self.refreshtoolicon()
         self.setontopthread()
 
-    def favoritesmenu(self):
-        menu = QMenu(gobject.baseobject.commonstylebase)
-        gameuid = gobject.baseobject.gameuid
-        maps = {}
-        if gameuid:
-            for name, link in savehook_new_data[gameuid].get("relationlinks", []):
-                act = QAction(name, menu)
-                maps[act] = link
-                menu.addAction(act)
-        if (
-            globalconfig["relationlinks"]
-            and gameuid
-            and savehook_new_data[gameuid].get("relationlinks", [])
-        ):
-            menu.addSeparator()
-        for name, link in globalconfig["relationlinks"]:
-            act = QAction(name, menu)
-            maps[act] = link
-            menu.addAction(act)
-        action = menu.exec(QCursor.pos())
-        link = maps.get(action)
-        if link:
-            os.startfile(link)
-
     def addbuttons(self):
         def simulate_key_ctrl():
             windows.SetForegroundWindow(gobject.baseobject.hwnd)
@@ -842,16 +818,6 @@ class TranslatorWindow(resizableframeless):
                         + (getlangsrc().space if gobject.baseobject.currenttext else "")
                         + NativeUtils.ClipBoard.text,
                         False,
-                    ),
-                ),
-            ),
-            (
-                "game_ref_favorites",
-                buttonfunctions(
-                    clicked=self.favoritesmenu,
-                    rightclick=lambda: favorites(
-                        gobject.baseobject.commonstylebase,
-                        gobject.baseobject.gameuid,
                     ),
                 ),
             ),

@@ -181,13 +181,6 @@ class common:
         if title:
             if not savehook_new_data[gameuid].get("istitlesetted", False):
                 savehook_new_data[gameuid]["title"] = title
-            _vis = globalconfig["metadata"][self.typename]["name"]
-            _url = self.refmainpage(vid)
-            _urls = [_[1] for _ in savehook_new_data[gameuid].get("relationlinks", [])]
-            if _url not in _urls:
-                if "relationlinks" not in savehook_new_data[gameuid]:
-                    savehook_new_data[gameuid]["relationlinks"] = []
-                savehook_new_data[gameuid]["relationlinks"].append((_vis, _url))
         if description and not savehook_new_data[gameuid].get("description"):
             savehook_new_data[gameuid]["description"] = description
         if namemap:

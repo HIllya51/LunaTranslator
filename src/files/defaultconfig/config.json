@@ -268,12 +268,6 @@
             "target": "steamid"
         }
     },
-    "relationlinks": [
-        [
-            "vndb",
-            "https://vndb.org/"
-        ]
-    ],
     "networktcpport": 2333,
     "networktcpenable": false,
     "textoutputer": {
@@ -575,12 +569,6 @@
                 "tip": "读取剪贴板",
                 "icon": "fa.file-o",
                 "align": 2
-            },
-            "game_ref_favorites": {
-                "use": false,
-                "tip": "收藏夹",
-                "icon": "fa.heart",
-                "align": 0
             },
             "open_game_setting": {
                 "use": false,

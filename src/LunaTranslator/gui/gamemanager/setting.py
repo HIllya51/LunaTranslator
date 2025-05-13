@@ -76,73 +76,6 @@ from gui.gamemanager.common import tagitem
 from gui.inputdialog import postconfigdialog_
 
 
-@Singleton
-class favorites(LDialog):
-
-    def __init__(self, parent, gameuid=None) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        if gameuid:
-            self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
-        self.setWindowTitle("收藏夹")
-        self.gameuid = gameuid
-        if gameuid:
-            if "relationlinks" not in savehook_new_data[self.gameuid]:
-                savehook_new_data[self.gameuid]["relationlinks"] = []
-        self.reflist = (
-            savehook_new_data[self.gameuid]["relationlinks"]
-            if gameuid
-            else globalconfig["relationlinks"]
-        )
-        model = LStandardItemModel()
-        model.setHorizontalHeaderLabels(["名称", "链接"])
-        formLayout = QVBoxLayout(self)
-        table = TableViewW(self, copypaste=True, updown=True)
-        table.setModel(model)
-        table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.Interactive
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Interactive
-        )
-        table.horizontalHeader().setStretchLastSection(True)
-        for item in self.reflist:
-            model.appendRow([QStandardItem(item[0]), QStandardItem(item[1])])
-
-        table.insertplainrow = lambda row: model.insertRow(
-            row,
-            [
-                QStandardItem(),
-                QStandardItem(),
-            ],
-        )
-        formLayout.addWidget(table)
-        self.table = table
-        button = manybuttonlayout(
-            [
-                ("添加行", functools.partial(table.insertplainrow, 0)),
-                ("删除行", table.removeselectedrows),
-                ("上移", functools.partial(table.moverank, -1)),
-                ("下移", functools.partial(table.moverank, 1)),
-                ("立即应用", self.apply),
-            ]
-        )
-        formLayout.addLayout(button)
-        self.resize(QSize(600, 400))
-        self.show()
-
-    def apply(self):
-        self.reflist.clear()
-        self.table.dedumpmodel(1)
-        for row in range(self.table.model().rowCount()):
-            k = self.table.getdata(row, 0)
-            v = self.table.getdata(row, 1)
-            self.reflist.append((k, v))
-
-    def closeEvent(self, a0: QCloseEvent) -> None:
-        self.setFocus()
-        self.apply()
-
-
 def maybehavebutton(self, gameuid, post):
     save_text_process_info = savehook_new_data[gameuid]["save_text_process_info"]
     if post == "_11":
@@ -229,10 +162,6 @@ class dialog_setting_game_internal(QWidget):
                         callback=self.selectexe,
                         clearable=False,
                         icons=("fa.gear",),
-                    ),
-                    getIconButton(
-                        lambda: favorites(self, gameuid),
-                        icon="fa.heart",
                     ),
                     getIconButton(
                         lambda: dialog_memory(self, gameuid=gameuid),

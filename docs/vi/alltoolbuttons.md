@@ -41,11 +41,6 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Ý nghĩa thực tế là đọc văn bản một lần từ clipboard bất kể nguồn đầu vào văn bản mặc định hiện tại và chuyển nó đến quá trình dịch/tts/... tiếp theo
 
     Nhấp chuột phải vào nút sẽ thêm văn bản đã đọc vào văn bản hiện tại.
-1. #### <i class="fa fa-heart"></i> <i class="fa fa-icon fa-rotate-right"></i> Yêu thích
-    Có thể tạo một thư mục yêu thích nhỏ cho mỗi trò chơi. Nó bao gồm tự động truy vấn siêu dữ liệu cho các trang liên quan đến trò chơi như vndb/bangumi/dlsite/, và bạn cũng có thể thêm thủ công một số trang web liên quan đến trò chơi (chẳng hạn như các trang chiến lược trò chơi) để dễ dàng xem. Nó tiết kiệm rắc rối của việc tạo và quản lý dấu trang trong trình duyệt.
-
-    Nhấp chuột phải vào nút sẽ hiển thị menu liệt kê các trang web yêu thích, trong khi nhấp chuột trái vào nút sẽ hiển thị cửa sổ cho phép chỉnh sửa nội dung yêu thích.
-
 1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> Cài đặt trò chơi
     Khi sử dụng chế độ HOOK để kết nối với trò chơi, hoặc sử dụng chế độ OCR để liên kết cửa sổ trò chơi, bạn có thể trực tiếp mở cửa sổ cài đặt trò chơi hiện tại thông qua nút này
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> Cửa sổ xuyên chuột

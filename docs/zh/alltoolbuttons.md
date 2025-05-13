@@ -42,10 +42,6 @@
     这个的实际意义是，不管当前的默认文本输入源是什么，都从剪贴板读取一次文本，并传给之后的翻译/tts/...流程
 
     右击按钮会追加读取到的文本到当前文本之后。
-1. #### <i class="fa fa-heart"></i> <i class="fa fa-icon fa-rotate-right"></i> 收藏夹
-    可以为每个游戏，单独创建一个小的收藏夹。会包含自动查询元数据收藏游戏的vndb/bangumi/dlsite/等页面，也可以手动再添加一些和这个游戏关联的网页进去（例如游戏攻略的网页，除了用备忘录外，也可以用这个功能进行收藏），方便查看。免去了在浏览器里创建收藏夹进行管理的麻烦。
-    
-    右击按钮将会弹出菜单列出收藏的网页，左击按钮将会弹出窗口以允许编辑收藏的内容。
 1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> 游戏设置
     当使用HOOK模式连接到游戏，或使用OCR模式绑定游戏窗口后，则可以通过这个按钮直接打开当前游戏的设置窗口
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 鼠标穿透窗口

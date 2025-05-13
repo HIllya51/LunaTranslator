@@ -179,7 +179,6 @@ def getdefaultsavehook(title=None):
         # "tts_skip_regex": [],
         # "gamejsonfile": [],  # 之前是"",后面改成[]
         # "gamesqlitefile": "",
-        # "relationlinks": [],
         # "istitlesetted": False,
         # "currentvisimage": None,
         # "currentmainimage": "",
