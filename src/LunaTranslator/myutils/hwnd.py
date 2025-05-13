@@ -65,6 +65,8 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
         if callback_origin:
             callback_origin(os.path.abspath(fn))
         if uid:
+            if "imagepath_all" not in savehook_new_data[uid]:
+                savehook_new_data[uid]["imagepath_all"] = []
             savehook_new_data[uid]["imagepath_all"].append(fn)
 
     callback = functools.partial(callback_1, callback_origin, uid, tocliponly)
@@ -86,7 +88,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
 
         _()
 
-    if isshit:
+    if usewgc or isshit:
         gobject.baseobject.displayinfomessage("saved to " + fname, "<msg_info_refresh>")
 
         hwnd = windows.FindWindow(

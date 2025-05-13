@@ -497,7 +497,12 @@ class AnkiWindow(QWidget):
         cropbutton = getIconButton(
             icon="fa.crop",
             callback=functools.partial(self.crophide, False),
-            callback2=functools.partial(self.crophide, True),
+            tips="截图",
+        )
+        cropbutton2 = getIconButton(
+            icon="fa.crop",
+            callback=functools.partial(self.crophide, True),
+            tips="隐藏并截图",
         )
         grabwindowbtn = getIconButton(
             icon="fa.camera",
@@ -505,11 +510,16 @@ class AnkiWindow(QWidget):
                 getimageformat(),
                 functools.partial(self.settextsignal.emit, self.editpath),
             ),
-            callback2=lambda: grabwindow(
+            tips="窗口截图_gdi",
+        )
+        grabwindowbtn2 = getIconButton(
+            icon="fa.camera",
+            callback=lambda: grabwindow(
                 getimageformat(),
                 functools.partial(self.settextsignal.emit, self.editpath),
                 usewgc=True,
             ),
+            tips="窗口截图_winrt",
         )
 
         def createtbn(target: QLineEdit):
@@ -679,7 +689,9 @@ class AnkiWindow(QWidget):
                                     LLabel("截图"),
                                     self.editpath,
                                     cropbutton,
+                                    cropbutton2,
                                     grabwindowbtn,
+                                    grabwindowbtn2,
                                     folder_open3,
                                     functools.partial(createtbn, self.editpath),
                                 ]

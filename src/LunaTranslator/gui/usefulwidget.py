@@ -883,11 +883,12 @@ def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, defaul
 
 
 def getIconButton(
-    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True
+    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True, tips=None
 ):
 
     b = IconButton(icon, enable, qicon, fix=fix)
-
+    if tips:
+        b.setToolTip(tips)
     if callback:
         b.clicked_1.connect(callback)
     if callback2:
@@ -2845,7 +2846,7 @@ class pixmapviewer(QWidget):
             pos.setY(pos.y() + line_height)
 
 
-class IconButton(QPushButton):
+class IconButton(LPushButton):
     clicked_1 = pyqtSignal()
     sizeChanged = pyqtSignal(QSize)
 

@@ -20,16 +20,6 @@ from gui.dynalang import LAction
 from gui.markdownhighlighter import MarkdownHighlighter
 
 
-class QMenuEx(QMenu):
-    def __init__(self, *a, **k):
-        super().__init__(*a, **k)
-        self.left = True
-
-    def mouseReleaseEvent(self, event: QMouseEvent):
-        self.left = event.button() == Qt.MouseButton.LeftButton
-        super().mouseReleaseEvent(event)
-
-
 class HtmlPlainTextEdit(QTextEdit):
 
     def contextMenuEvent(self, event: QContextMenuEvent):
@@ -53,9 +43,9 @@ class HtmlPlainTextEdit(QTextEdit):
         self.ref = os.path.dirname(ref)
         super().__init__()
         try:
-            self.setTabStopDistance(self.fontMetrics().size(0, ' ').width()*8)
+            self.setTabStopDistance(self.fontMetrics().size(0, " ").width() * 8)
         except:
-            self.setTabStopWidth(self.fontMetrics().size(0, ' ').width()*8)
+            self.setTabStopWidth(self.fontMetrics().size(0, " ").width() * 8)
         self.upper_shortcut = QShortcut(QKeySequence("Ctrl+Shift+V"), self)
         self.upper_shortcut.activated.connect(self.handle_custom_action)
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
@@ -365,7 +355,7 @@ class dialog_memory(saveposwindow):
             self.startorendrecord(self.insertaudiobtn, False)
             self.insertaudiobtnisrecoding = False
             return
-        menu = QMenuEx(self)
+        menu = QMenu(self)
         record = LAction("录音", menu)
         audio = LAction("音频", menu)
         record.setIcon(qtawesome.icon("fa.microphone"))
@@ -394,21 +384,31 @@ class dialog_memory(saveposwindow):
         self.editor.insertPlainText(html)
 
     def Picselect(self):
-        menu = QMenuEx(self)
+        menu = QMenu(self)
         crop = LAction("截图", menu)
-        crophwnd = LAction("窗口截图", menu)
+        crop2 = LAction("隐藏并截图", menu)
+        crophwnd = LAction("窗口截图_gdi", menu)
+        crophwnd2 = LAction("窗口截图_winrt", menu)
         select = LAction("图片", menu)
         crop.setIcon(qtawesome.icon("fa.crop"))
+        crop2.setIcon(qtawesome.icon("fa.crop"))
         crophwnd.setIcon(qtawesome.icon("fa.camera"))
+        crophwnd2.setIcon(qtawesome.icon("fa.camera"))
         select.setIcon(qtawesome.icon("fa.folder-open"))
         menu.addAction(crop)
+        menu.addAction(crop2)
         menu.addAction(crophwnd)
+        menu.addAction(crophwnd2)
         menu.addAction(select)
         action = menu.exec(QCursor.pos())
         if action == crop:
-            self.crophide(not menu.left)
+            self.crophide()
+        elif action == crop2:
+            self.crophide(s=True)
         elif action == crophwnd:
-            grabwindow(getimageformat(), self.cropcallback, usewgc=menu.left)
+            grabwindow(getimageformat(), self.cropcallback, usewgc=False)
+        elif action == crophwnd2:
+            grabwindow(getimageformat(), self.cropcallback, usewgc=True)
         elif action == select:
             f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
             res = f[0]
