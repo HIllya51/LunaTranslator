@@ -32,10 +32,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   
-  updatenotify:
-    runs-on: ubuntu-latest
-    steps:
-       - run: |
+      - run: |
           curl --request GET \
           --url https://lunatranslator.org/githubupdatenotify \
           --header 'updatenotifytoken: ${{ secrets.updatenotifytoken }}'
