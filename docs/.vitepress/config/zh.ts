@@ -131,7 +131,6 @@ export const zh = defineConfig({
                         items: [
                             { text: '使用Mecab分词&词性颜色标注', link: '/zh/qa1' },
                             { text: 'Anki集成', link: '/zh/qa2' },
-                            { text: 'Anki本地同步服务器', link: '/zh/ankisync' },
                         ]
                     },
                     { text: '工具按钮', link: '/zh/alltoolbuttons' },

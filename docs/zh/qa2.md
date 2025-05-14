@@ -29,4 +29,4 @@
 
 ---
 
-Reference: [asukaminato0721](https://github.com/HIllya51/LunaTranslator/issues/796)
+# [Anki本地同步服务器](/zh/ankisync)
