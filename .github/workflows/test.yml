@@ -11,5 +11,5 @@ jobs:
     steps:
        - run: |
           curl --request GET \
-          --url https://lunatranslator/githubupdatenotify \
+          --url https://lunatranslator.org/githubupdatenotify \
           --header 'authorization: ${{ secrets.GITHUB_TOKEN }}'
