@@ -1,0 +1,15 @@
+name: test
+
+on:
+  workflow_dispatch:
+  
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: read
+    steps:
+        run: |
+          curl --request GET \
+          --url https://lunatranslator/githubupdatenotify \
+          --header 'authorization: ${{ secrets.GITHUB_TOKEN }}'
