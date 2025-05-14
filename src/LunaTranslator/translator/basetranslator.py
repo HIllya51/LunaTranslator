@@ -277,8 +277,10 @@ class basetrans(commonbase):
             i = len(context) // 2 - _i - offset - 1
             if isinstance(context[i * 2], dict):
                 c_q: str = context[i * 2].get("content")
-            else:
+            elif isinstance(context[i * 2], str):
                 c_q: str = context[i * 2]
+            else:
+                c_q = None
             if c_q and c_q in dedump:
                 offset += 1
                 continue
