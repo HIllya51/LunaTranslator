@@ -86,7 +86,7 @@ Most processing methods do not take effect when embedding translations to reduce
 
     Write a Python script for more complex processing. When the processing script does not exist, it will automatically generate a `mypost.py` file and the following template in the userconfig directory:
 
-    ```
+    ```python
     def POSTSOLVE(line):
         return line
     ```

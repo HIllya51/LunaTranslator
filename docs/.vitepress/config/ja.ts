@@ -123,7 +123,7 @@ export const ja = defineConfig({
                     },
                     { text: '音声合成', link: '/ja/ttsofname' },
                     {
-                        text: '形態素解析＆辞書', link: '/ja/qa1',
+                        text: '形態素解析＆辞書&Anki', link: '/ja/qa1',
                         collapsed: true,
                         items: [
                             { text: 'Mecabを使用した形態素解析＆品詞カラー表示', link: '/ja/qa1' },

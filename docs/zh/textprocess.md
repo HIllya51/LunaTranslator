@@ -87,7 +87,7 @@
 
     撰写一个python脚本来进行更加复杂的处理，当处理脚本不存在时，将自动在userconfig目录下生成`mypost.py`文件和以下模板：
 
-    ```
+    ```python
     def POSTSOLVE(line):
         # 请在这里编写自定义处理
         return line

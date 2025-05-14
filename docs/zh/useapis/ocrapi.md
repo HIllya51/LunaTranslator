@@ -248,7 +248,7 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
 若要返回所有支持的语言包的列表，请以管理员身份打开 PowerShell（右键单击，然后选择“以管理员身份运行”），并输入以下命令：
 
-```
+```powershell
 Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }
 ```
 
@@ -277,7 +277,7 @@ State : NotPresent
 
 以下为安装“en-US”OCR 包的命令：
 
-```
+```powershell
 $Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
 $Capability | Add-WindowsCapability -Online
 ```
@@ -286,7 +286,7 @@ $Capability | Add-WindowsCapability -Online
 
 以下为移除“en-US”OCR 包的命令：
 
-```
+```powershell
 $Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }
 $Capability | Remove-WindowsCapability -Online
 ```

@@ -218,7 +218,7 @@ Yêu cầu cài đặt WeChat hoặc phiên bản mới nhất của QQ
 
 Để trả về danh sách tất cả các gói ngôn ngữ được hỗ trợ, mở PowerShell với quyền Quản trị viên (nhấp chuột phải, sau đó chọn "Chạy với quyền Quản trị viên") và nhập lệnh sau:
 
-```
+```powershell
 Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }
 ```
 
@@ -247,7 +247,7 @@ Ngôn ngữ và vị trí được viết tắt, vì vậy "en-US" sẽ là "Ti�
 
 Các lệnh sau đây cài đặt gói OCR cho "en-US":
 
-```
+```powershell
 $Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
 $Capability | Add-WindowsCapability -Online
 ```
@@ -256,7 +256,7 @@ $Capability | Add-WindowsCapability -Online
 
 Các lệnh sau đây gỡ bỏ gói OCR cho "en-US":
 
-```
+```powershell
 $Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }
 $Capability | Remove-WindowsCapability -Online
 ```

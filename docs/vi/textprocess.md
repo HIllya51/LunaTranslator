@@ -86,7 +86,7 @@ Hầu hết các phương pháp xử lý không có hiệu lực khi nhúng bả
 
     Viết một script Python để xử lý phức tạp hơn. Khi script xử lý không tồn tại, nó sẽ tự động tạo một tệp `mypost.py` và mẫu sau trong thư mục userconfig:
 
-    ```
+    ```python
     def POSTSOLVE(line):
         return line
     ```

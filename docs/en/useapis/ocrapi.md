@@ -219,7 +219,7 @@ Requires installation of WeChat or the latest version of QQ
 
 To return the list of all supported language packs, open PowerShell as an Administrator (right-click, then select "Run as Administrator") and enter the following command:
 
-```
+```powershell
 Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*' }
 ```
 
@@ -248,7 +248,7 @@ The language and location is abbreviated, so "en-US" would be "English-United St
 
 The following commands install the OCR pack for "en-US":
 
-```
+```powershell
 $Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
 $Capability | Add-WindowsCapability -Online
 ```
@@ -257,7 +257,7 @@ $Capability | Add-WindowsCapability -Online
 
 The following commands remove the OCR pack for "en-US":
 
-```
+```powershell
 $Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }
 $Capability | Remove-WindowsCapability -Online
 ```

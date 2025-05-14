@@ -108,7 +108,7 @@ export const vi = defineConfig({
                   },
                   { text: 'Tổng hợp giọng nói', link: '/vi/ttsofname' },
                   {
-                      text: 'Phân đoạn & Từ điển', link: '/vi/qa1',
+                      text: 'Phân đoạn & Từ điển & Anki', link: '/vi/qa1',
                       collapsed: true,
                       items: [
                           { text: 'Sử dụng Mecab để phân đoạn & tô màu theo loại từ', link: '/vi/qa1' },

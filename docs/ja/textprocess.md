@@ -86,7 +86,7 @@
 
     より複雑な処理のためにPythonスクリプトを作成します。処理スクリプトが存在しない場合、userconfigディレクトリに`mypost.py`ファイルと以下のテンプレートが自動生成されます：
 
-    ```
+    ```python
     def POSTSOLVE(line):
         return line
     ```
