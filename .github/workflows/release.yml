@@ -31,3 +31,11 @@ jobs:
             build/LunaTranslator/LunaTranslator.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  updatenotify:
+    runs-on: ubuntu-latest
+    steps:
+       - run: |
+          curl --request GET \
+          --url https://lunatranslator.org/githubupdatenotify \
+          --header 'updatenotifytoken: ${{ secrets.updatenotifytoken }}'
