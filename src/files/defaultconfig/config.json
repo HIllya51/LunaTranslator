@@ -1861,7 +1861,7 @@
         }
     },
     "realtime_edit_target": "realtime_edit",
-    "movefollow": false,
+    "movefollow": true,
     "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,

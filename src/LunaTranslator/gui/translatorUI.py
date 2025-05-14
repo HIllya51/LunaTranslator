@@ -1142,7 +1142,7 @@ class TranslatorWindow(resizableframeless):
             savehook_new_list.insert(0, uid)
         startgame(uid)
         self.displaystatus.emit(
-            _TR("启动游戏_ " + savehook_new_data[uid]["title"]), TextType.Info
+            _TR("启动游戏") + savehook_new_data[uid]["title"], TextType.Info
         )
 
     def __parsedropmecab(self, file):
