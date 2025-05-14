@@ -9,7 +9,7 @@ jobs:
     permissions:
       issues: read
     steps:
-        run: |
+       - run: |
           curl --request GET \
           --url https://lunatranslator/githubupdatenotify \
           --header 'authorization: ${{ secrets.GITHUB_TOKEN }}'
