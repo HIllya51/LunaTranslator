@@ -296,7 +296,11 @@ if __name__ == "__main__":
             )
         os.chdir(rootDir)
         subprocess.run(f"{py37Path} -m pip install --upgrade pip")
-        subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
+        if version.startWith('3.7'):
+            subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
+        else:
+            subprocess.run(f"{py37Path} -m pip install -r requirements_6.txt")
+
         # 3.8之后会莫名其妙引用这个b东西，然后这个b东西会把一堆没用的东西导入进来
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\test"))
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))
