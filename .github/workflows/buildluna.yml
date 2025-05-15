@@ -30,6 +30,7 @@ jobs:
           name: cpp_xp
           path: src/cpp/builds
   hook_xp:
+    if: ${{inputs.buildbit32}}
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
