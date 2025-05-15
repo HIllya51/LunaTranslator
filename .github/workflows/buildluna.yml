@@ -67,13 +67,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        # architecture: [x86, x64]
-        architecture: ${{ 
-          inputs.buildbit32 
-            && '["x86", "x64"]' 
-            || '["x64"]' 
-          | fromJSON 
-        }}
+        architecture: [x86, x64]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -81,8 +75,11 @@ jobs:
           python-version: ${{inputs.pythonversion}}
           architecture: ${{ matrix.architecture }}
       
-      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} ${{inputs.pythonversion}}
-      - uses: actions/upload-artifact@v4
+      - if:  ${{inputs.buildbit32}} == false || ${{ matrix.architecture }}=='x64'
+        run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} ${{inputs.pythonversion}}
+
+      - if:  ${{inputs.buildbit32}} == false || ${{ matrix.architecture }}=='x64'
+        uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
           path: src/pyrt
@@ -114,16 +111,10 @@ jobs:
     strategy:
       matrix:
         include:
-          # - architecture: x86
-          #   fname: LunaTranslator_x86
-          # - architecture: x64
-          #   fname: LunaTranslator
-          ${{ 
-          inputs.buildbit32 
-            && '[{"architecture": "x86", "fname": "LunaTranslator_x86"}, {"architecture": "x64", "fname": "LunaTranslator"}]' 
-            || '[{"architecture": "x64", "fname": "LunaTranslator"}]' 
-          | fromJSON 
-        }}
+          - architecture: x86
+            fname: LunaTranslator_x86
+          - architecture: x64
+            fname: LunaTranslator
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
