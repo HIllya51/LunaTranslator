@@ -164,6 +164,7 @@ jobs:
         run: python src/scripts/build_lunatranslator.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
 
   release:
+    if: ${{inputs.createrelease}}
     loadversion:
       if: ${{inputs.createrelease}}
     runs-on: windows-latest
