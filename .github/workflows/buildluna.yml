@@ -84,12 +84,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix: 
-        architecture: ${{ 
-          inputs.buildbit32 
-            && '[x86, x64]' 
-            || '[x64]' 
-          | fromJSON 
-        }}
+        architecture: [x86, x64]
     steps:
       - uses: actions/checkout@v4
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
@@ -113,7 +108,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - ${{ inputs.buildbit32 && '{"architecture": "x86", "fname": "LunaTranslator_x86"}' || 'null' }}
+          - architecture: x86
+            fname: LunaTranslator_x86
           - architecture: x64
             fname: LunaTranslator
     steps:
