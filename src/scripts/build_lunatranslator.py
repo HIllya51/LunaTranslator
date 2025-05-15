@@ -296,7 +296,7 @@ if __name__ == "__main__":
             )
         os.chdir(rootDir)
         subprocess.run(f"{py37Path} -m pip install --upgrade pip")
-        if version.startWith('3.7'):
+        if version.startswith('3.7'):
             subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
         else:
             subprocess.run(f"{py37Path} -m pip install -r requirements_6.txt")
