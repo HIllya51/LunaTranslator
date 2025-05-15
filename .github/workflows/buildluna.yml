@@ -69,8 +69,12 @@ jobs:
     strategy:
       matrix:
         architecture: [x86, x64]
+
+        shouldRelease:
+          - ${{inputs.buildbit32}}
         exclude:
-          architecture: ${{ inputs.buildbit32  && 'x86' }}
+          - shouldRelease: false
+            architecture: x86
     steps:
       - uses: actions/checkout@v4
 
