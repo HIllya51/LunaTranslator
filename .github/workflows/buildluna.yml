@@ -67,7 +67,13 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        architecture: [x86, x64]
+        # architecture: [x86, x64]
+        architecture: ${{ 
+          inputs.buildbit32 
+            && '[x86, x64]' 
+            || '[x64]' 
+          | fromJSON 
+        }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -108,10 +114,16 @@ jobs:
     strategy:
       matrix:
         include:
-          - architecture: x86
-            fname: LunaTranslator_x86
-          - architecture: x64
-            fname: LunaTranslator
+          # - architecture: x86
+          #   fname: LunaTranslator_x86
+          # - architecture: x64
+          #   fname: LunaTranslator
+          ${{ 
+          inputs.buildbit32 
+            && '[{"architecture": "x86", "fname": "LunaTranslator_x86"}, {"architecture": "x64", "fname": "LunaTranslator"}]' 
+            || '[{"architecture": "x64", "fname": "LunaTranslator"}]' 
+          | fromJSON 
+        }}
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
