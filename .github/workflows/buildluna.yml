@@ -7,6 +7,14 @@ on:
         type: string
         default: '3.7.9'
         required: false
+      createrelease:
+        type: bool
+        default: false
+        required: false
+      buildbit32:
+        type: bool
+        default: true
+        required: false
 jobs:
   build_cpp_xp:
     runs-on: windows-2019
@@ -76,7 +84,12 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix: 
-        architecture: [x86, x64]
+        architecture: ${{ 
+          inputs.buildbit32 
+            && '[x86, x64]' 
+            || '[x64]' 
+          | fromJSON 
+        }}
     steps:
       - uses: actions/checkout@v4
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
@@ -100,8 +113,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - architecture: x86
-            fname: LunaTranslator_x86
+          - ${{ inputs.buildbit32 && '{"architecture": "x86", "fname": "LunaTranslator_x86"}' || 'null' }}
           - architecture: x64
             fname: LunaTranslator
     steps:
@@ -120,6 +132,7 @@ jobs:
           name: ${{ matrix.fname }}
           path: src/build/${{matrix.fname}}.zip
   merge_xp:
+    if: ${{inputs.buildbit32}}
     runs-on: windows-latest
     needs: [build_cpp_xp,hook_xp,build_cpp,hook]
     permissions:
@@ -141,3 +154,34 @@ jobs:
         with:
           name: LunaTranslator_x86_winxp
           path: src/build/LunaTranslator_x86_winxp.zip
+  loadversion:
+    if: ${{inputs.createrelease}}
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.loadversion.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: loadversion
+        run: python src/scripts/build_lunatranslator.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+  release:
+    loadversion:
+      if: ${{inputs.createrelease}}
+    runs-on: windows-latest
+    needs: [buildluna,loadversion]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+            path: build
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.loadversion.outputs.version }}
+          files: |
+            build/LunaTranslator_x86_winxp/LunaTranslator_x86_winxp.zip
+            build/LunaTranslator_x86/LunaTranslator_x86.zip
+            build/LunaTranslator/LunaTranslator.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - run: |
+          curl --request GET --url https://lunatranslator.org/githubupdatenotify --header 'updatenotifytoken: ${{ secrets.updatenotifytoken }}'
