@@ -1,6 +1,4 @@
 name: _
-on:
-  workflow_call:
 inputs:
   pythonversion:
     required: false
