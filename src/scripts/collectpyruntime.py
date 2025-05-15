@@ -177,6 +177,13 @@ copycheck(
     ),
     os.path.join(runtime, f"Py{qtver}/{qtver}/plugins/platforms"),
 )
+
+copycheck(
+    os.path.join(
+        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qmodernwindowsstyle.dll"
+    ),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/plugins/styles"),
+)
 copycheck(
     os.path.join(
         py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qwindowsvistastyle.dll"
