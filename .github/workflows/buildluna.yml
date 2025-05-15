@@ -165,8 +165,6 @@ jobs:
 
   release:
     if: ${{inputs.createrelease}}
-    loadversion:
-      if: ${{inputs.createrelease}}
     runs-on: windows-latest
     needs: [buildluna,loadversion]
     steps:
