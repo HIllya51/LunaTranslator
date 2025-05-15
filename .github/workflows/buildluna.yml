@@ -116,17 +116,17 @@ jobs:
       contents: write
     strategy:
       matrix:
-        include:
-          - architecture: x86
-            fname: LunaTranslator_x86
-          - architecture: x64
-            fname: LunaTranslator
+        # include:
+        #   - architecture: x86
+        #     fname: LunaTranslator_x86
+        #   - architecture: x64
+        #     fname: LunaTranslator
+        architecture: [x86, x64]
 
         shouldRelease:
           - ${{inputs.buildbit32}}
         exclude:
           - shouldRelease: false
-            fname: LunaTranslator_x86
             architecture: x86
     steps:
       - uses: actions/checkout@v4
@@ -138,11 +138,11 @@ jobs:
       - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
       - uses: actions/attest-build-provenance@v2.2.0
         with:
-            subject-path: src/build/${{matrix.fname}}.zip
+            subject-path: src/build/LunaTranslator${{ matrix.architecture == 'x86' && '_x86' || '' }}.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.fname }}
-          path: src/build/${{matrix.fname}}.zip
+          name: LunaTranslator${{ matrix.architecture == 'x86' && '_x86' || '' }}
+          path: src/build/LunaTranslator${{ matrix.architecture == 'x86' && '_x86' || '' }}.zip
   merge_xp:
     if: ${{inputs.buildbit32}}
     runs-on: windows-latest
