@@ -1,5 +1,4 @@
 name: _
-description: "build lunatranslator"
 
 on:
   workflow_call:

@@ -5,7 +5,7 @@ on:
   
 jobs:
   buildluna:
-    uses: ./.github/buildluna
+    uses: ./.github/workflows/buildluna.yml
   loadversion:
     runs-on: windows-latest
     outputs:
