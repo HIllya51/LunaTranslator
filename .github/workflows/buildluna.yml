@@ -121,6 +121,13 @@ jobs:
             fname: LunaTranslator_x86
           - architecture: x64
             fname: LunaTranslator
+
+        shouldRelease:
+          - ${{inputs.buildbit32}}
+        exclude:
+          - shouldRelease: false
+            fname: LunaTranslator_x86
+            architecture: x86
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
