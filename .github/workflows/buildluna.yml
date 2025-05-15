@@ -68,11 +68,9 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        if:  ${{inputs.buildbit32}}
         architecture: [x86, x64]
-
-        if: ! ${{inputs.buildbit32}}
-        architecture: [x64]
+        exclude:
+          architecture: ${{ inputs.buildbit32  && 'x86' }}
     steps:
       - uses: actions/checkout@v4
 
