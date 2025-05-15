@@ -70,8 +70,8 @@ jobs:
         # architecture: [x86, x64]
         architecture: ${{ 
           inputs.buildbit32 
-            && '[x86, x64]' 
-            || '[x64]' 
+            && '["x86", "x64"]' 
+            || '["x64"]' 
           | fromJSON 
         }}
     steps:
