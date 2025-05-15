@@ -8,5 +8,5 @@ on:
 
 jobs:
   buildluna:
-    uses: ./.github/workflows/buildluna
+    uses: ./.github/buildluna
   
