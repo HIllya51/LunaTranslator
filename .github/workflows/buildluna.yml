@@ -68,22 +68,22 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
+        if:  ${{inputs.buildbit32}}
         architecture: [x86, x64]
-    steps:
-      - if:  ${{inputs.buildbit32}} || ${{ matrix.architecture }}=='x64'
-        uses: actions/checkout@v4
 
-      - if:  ${{inputs.buildbit32}} || ${{ matrix.architecture }}=='x64'
-        uses: actions/setup-python@v5
+        if: ! ${{inputs.buildbit32}}
+        architecture: [x64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{inputs.pythonversion}}
           architecture: ${{ matrix.architecture }}
       
-      - if:  ${{inputs.buildbit32}} || ${{ matrix.architecture }}=='x64'
-        run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} ${{inputs.pythonversion}}
+      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} ${{inputs.pythonversion}}
 
-      - if:  ${{inputs.buildbit32}} || ${{ matrix.architecture }}=='x64'
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
           path: src/pyrt
