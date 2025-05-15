@@ -8,11 +8,11 @@ on:
         default: '3.7.9'
         required: false
       createrelease:
-        type: bool
+        type: boolean
         default: false
         required: false
       buildbit32:
-        type: bool
+        type: boolean
         default: true
         required: false
 jobs:
