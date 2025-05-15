@@ -1,6 +1,10 @@
 name: _
 on:
   workflow_call:
+inputs:
+  pythonversion:
+    required: false
+    default: '3.7.9'
 jobs:
   build_cpp_xp:
     runs-on: windows-2019
@@ -58,10 +62,10 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.7.9'
+          python-version: ${{inputs.pythonversion}}
           architecture: ${{ matrix.architecture }}
       
-      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} 3.7.9
+      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} ${{inputs.pythonversion}}
       - uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
