@@ -1,4 +1,5 @@
 name: _
+description: "build lunatranslator"
 inputs:
   pythonversion:
     required: false
