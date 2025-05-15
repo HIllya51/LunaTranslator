@@ -75,6 +75,10 @@ for f in collect:
         for _dll, offset in imports:
             if _dll.lower()=='api-ms-win-core-synch-l1-2-0.dll':
                 continue
+            if _dll.lower()=='api-ms-win-core-winrt-string-l1-1-0.dll':
+                continue
+            if _dll.lower()=='api-ms-win-core-winrt-l1-1-0.dll':
+                continue
             elif _dll.lower() == "api-ms-win-core-shlwapi-legacy-l1-1-0.dll":
                 _target = "Shlwapi.dll"
             elif _dll.lower() == "api-ms-win-eventing-provider-l1-1-0.dll":
