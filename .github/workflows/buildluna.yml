@@ -166,7 +166,7 @@ jobs:
   release:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest
-    needs: [buildluna,loadversion]
+    needs: [merge_xp,merge,loadversion]
     steps:
       - uses: actions/download-artifact@v4
         with:
