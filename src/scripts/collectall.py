@@ -73,7 +73,7 @@ for f in collect:
         with open(f, "rb") as ff:
             bs = bytearray(ff.read())
         for _dll, offset in imports:
-            if _dll.lower()=='api_ms_win_core_synch_l1_2_0.dll':
+            if _dll.lower()=='api-ms-win-core-synch-l1-2-0.dll':
                 continue
             elif _dll.lower() == "api-ms-win-core-shlwapi-legacy-l1-1-0.dll":
                 _target = "Shlwapi.dll"
