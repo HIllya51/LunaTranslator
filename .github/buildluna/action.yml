@@ -1,9 +1,13 @@
 name: _
 description: "build lunatranslator"
-inputs:
-  pythonversion:
-    required: false
-    default: '3.7.9'
+
+on:
+  workflow_call:
+    inputs:
+      pythonversion:
+        type: string
+        default: '3.7.9'
+        required: false
 jobs:
   build_cpp_xp:
     runs-on: windows-2019
