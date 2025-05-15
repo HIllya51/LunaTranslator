@@ -131,55 +131,55 @@ copycheck(
     os.path.join(runtime),
 )
 copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/bin/msvcp140.dll"),
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/msvcp140.dll"),
     os.path.join(runtime),
 )
 copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/bin/msvcp140_1.dll"),
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/msvcp140_1.dll"),
     os.path.join(runtime),
 )
-for _ in os.listdir(os.path.join(py37Path, "Lib/site-packages/Py{qtver}")):
+for _ in os.listdir(os.path.join(py37Path, f"Lib/site-packages/Py{qtver}")):
     if _.startswith("sip"):
         copycheck(
-            os.path.join(py37Path, "Lib/site-packages/Py{qtver}", _),
-            os.path.join(runtime, "Py{qtver}"),
+            os.path.join(py37Path, f"Lib/site-packages/Py{qtver}", _),
+            os.path.join(runtime, f"Py{qtver}"),
         )
 
 copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Core.dll"),
-    os.path.join(runtime, "Py{qtver}/{qtver}/bin"),
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Core.dll"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
 copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Svg.dll"),
-    os.path.join(runtime, "Py{qtver}/{qtver}/bin"),
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Svg.dll"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
 copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Gui.dll"),
-    os.path.join(runtime, "Py{qtver}/{qtver}/bin"),
-)
-
-copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Widgets.dll"),
-    os.path.join(runtime, "Py{qtver}/{qtver}/bin"),
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Gui.dll"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
 
 copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/plugins/iconengines"),
-    os.path.join(runtime, "Py{qtver}/{qtver}/plugins"),
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Widgets.dll"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
+)
+
+copycheck(
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/iconengines"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/plugins"),
 )
 copycheck(
-    os.path.join(py37Path, "Lib/site-packages/Py{qtver}/{qtver}/plugins/imageformats"),
-    os.path.join(runtime, "Py{qtver}/{qtver}/plugins"),
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/imageformats"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/plugins"),
 )
 copycheck(
     os.path.join(
-        py37Path, "Lib/site-packages/Py{qtver}/{qtver}/plugins/platforms/qwindows.dll"
+        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/platforms/qwindows.dll"
     ),
-    os.path.join(runtime, "Py{qtver}/{qtver}/plugins/platforms"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/plugins/platforms"),
 )
 copycheck(
     os.path.join(
-        py37Path, "Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qwindowsvistastyle.dll"
+        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qwindowsvistastyle.dll"
     ),
-    os.path.join(runtime, "Py{qtver}/{qtver}/plugins/styles"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/plugins/styles"),
 )
