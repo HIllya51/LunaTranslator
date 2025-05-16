@@ -79,6 +79,8 @@ for f in collect:
                 continue
             if _dll.lower()=='api-ms-win-core-winrt-l1-1-0.dll':
                 continue
+            if _dll.lower()=='api-ms-win-core-path-l1-1-0.dll':
+                continue
             elif _dll.lower() == "api-ms-win-core-shlwapi-legacy-l1-1-0.dll":
                 _target = "Shlwapi.dll"
             elif _dll.lower() == "api-ms-win-eventing-provider-l1-1-0.dll":
