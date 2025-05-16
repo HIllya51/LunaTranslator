@@ -34,12 +34,14 @@ print(__file__)
 print(rootDir)
 
 
-def build_langx(bit, onlycore):
+def build_langx(bit, onlycore, win10above=False):
     config = (
         f"-DBUILD_PLUGIN=OFF -DWINXP=OFF -DBUILD_GUI=ON "
         if not onlycore
         else ""
     )
+    if win10above:
+        config+=" -DWIN10ABOVE=ON " 
     with open("do.bat", "w") as ff:
         if bit == "32":
             ff.write(
@@ -101,5 +103,5 @@ elif sys.argv[1] == "build":
     elif bit == "winxp_core":
         build_langx_xp(True)
     else:
-        onlycore = int(sys.argv[3]) if len(sys.argv) >= 4 else False
-        build_langx(bit, onlycore)
+        onlycore = int(sys.argv[3]) if len(sys.argv) >3 else False
+        build_langx(bit, onlycore, len(sys.argv)>4 and sys.argv[4].startswith('3.7'))

@@ -205,7 +205,7 @@ def buildPlugins(arch, win10above=False):
     subprocess.run("python fetchwebview2.py")
     if arch == "x86":
         subprocess.run(
-            f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+            f'cmake {"-DWIN10ABOVE=ON" if win10above else ""} ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
         )
         subprocess.run(
             f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
