@@ -101,7 +101,7 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }}
+      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }} ${{inputs.pythonversion}}
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_${{ matrix.architecture }}

@@ -1,5 +1,6 @@
 ﻿set(YY_Thunks_VERSION "v1.1.7")
 option(WINXP "WINXP" OFF)
+option(WIN10ABOVE "WIN10ABOVE" OFF)
 option(USE_VC_LTL "USE_VC_LTL" OFF)
 
 include(FetchContent)
@@ -11,7 +12,6 @@ FetchContent_Declare(vc_ltl
     URL https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.0.9/VC-LTL-5.0.9-Binary.7z
     DOWNLOAD_EXTRACT_TIMESTAMP true
 )
-FetchContent_MakeAvailable(yy_thunks)
 
 if(USE_VC_LTL)
     FetchContent_MakeAvailable(vc_ltl)
@@ -24,14 +24,18 @@ if(USE_VC_LTL)
     include("${vc_ltl_SOURCE_DIR}/VC-LTL helper for cmake.cmake")
 endif()
 
-
-if(WINXP)
-    add_definitions(-DWINXP=${WINXP})
-    set(YY_Thunks ${yy_thunks_SOURCE_DIR}/objs/X86/YY_Thunks_for_WinXP.obj)
+if(WIN10ABOVE)
+    set(YY_Thunks )
 else()
-    if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-        set(YY_Thunks ${yy_thunks_SOURCE_DIR}/objs/X64/YY_Thunks_for_Win7.obj)
+    FetchContent_MakeAvailable(yy_thunks)
+    if(WINXP)
+        add_definitions(-DWINXP=${WINXP})
+        set(YY_Thunks ${yy_thunks_SOURCE_DIR}/objs/X86/YY_Thunks_for_WinXP.obj)
     else()
-        set(YY_Thunks ${yy_thunks_SOURCE_DIR}/objs/X86/YY_Thunks_for_Win7.obj)
+        if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+            set(YY_Thunks ${yy_thunks_SOURCE_DIR}/objs/X64/YY_Thunks_for_Win7.obj)
+        else()
+            set(YY_Thunks ${yy_thunks_SOURCE_DIR}/objs/X86/YY_Thunks_for_Win7.obj)
+        endif()
     endif()
 endif()

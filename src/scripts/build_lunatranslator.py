@@ -200,7 +200,7 @@ def get_url_as_json(url):
             time.sleep(3)
 
 
-def buildPlugins(arch):
+def buildPlugins(arch, win10above=Fase):
     os.chdir(rootDir + "/cpp/scripts")
     subprocess.run("python fetchwebview2.py")
     if arch == "x86":
@@ -213,7 +213,7 @@ def buildPlugins(arch):
     # subprocess.run(f"python copytarget.py 1")
     elif arch == "x64":
         subprocess.run(
-            f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+            f'cmake {"-DWIN10ABOVE=ON" if win10above else ""} ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
         )
         subprocess.run(
             f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
@@ -283,7 +283,7 @@ if __name__ == "__main__":
             print("version=" + versionstring)
             exit()
     elif sys.argv[1] == "cpp":
-        buildPlugins(sys.argv[2])
+        buildPlugins(sys.argv[2], len(sys.argv)>3 and sys.argv[3].startswith('3.7'))
     elif sys.argv[1] == "pyrt":
         version = sys.argv[3]
         if sys.argv[2] == "x86":
