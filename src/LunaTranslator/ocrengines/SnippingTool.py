@@ -75,12 +75,13 @@ class question(QWidget):
             saves.append((version, link, package))
         saves.sort(key=lambda _: _[0])
         url = saves[-1][1]
-        req = requests.head(url, proxies=getproxy())
+        file_size = 0
+        req = requests.get(
+            url, stream=True, proxies=getproxy(), headers={"Accept-Encoding": ""}
+        )
         size = int(req.headers["Content-Length"])
         self.failedlink = lambda: url
         self.skiplink2 = True
-        file_size = 0
-        req = requests.get(url, stream=True, proxies=getproxy())
         target = gobject.gettempdir(saves[-1][2])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
@@ -143,10 +144,9 @@ class question(QWidget):
 
     def downloadx(self, url: str):
 
-        req = requests.head(url, verify=False, proxies=getproxy())
-        size = int(req.headers["Content-Length"])
         file_size = 0
         req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
+        size = int(req.headers["Content-Length"])
         target = gobject.gettempdir(url.split("/")[-1])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):

@@ -20,6 +20,7 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     makescrollgrid,
     FocusFontCombo,
+    getboxlayout,
     getsmalllabel,
 )
 
@@ -308,6 +309,66 @@ def filetranslate(self):
                 ],
             ),
         ],
+        [],
+        [
+            dict(
+                title="网络服务",
+                grid=[
+                    [
+                        "开启",
+                        getboxlayout(
+                            [
+                                D_getsimpleswitch(
+                                    globalconfig,
+                                    "networktcpenable",
+                                    callback=lambda _: gobject.baseobject.serviceinit(),
+                                ),
+                                D_getIconButton(
+                                    lambda: os.startfile(
+                                        dynamiclink("/apiservice.html", docs=True)
+                                    ),
+                                    "fa.question",
+                                    tips="使用说明",
+                                ),
+                                "",
+                            ]
+                        ),
+                    ],
+                    [
+                        "端口号",
+                        getboxlayout(
+                            [
+                                D_getspinbox(
+                                    0,
+                                    65535,
+                                    globalconfig,
+                                    "networktcpport",
+                                    callback=lambda _: gobject.baseobject.serviceinit(),
+                                ),
+                                functools.partial(__portconflict, self),
+                            ]
+                        ),
+                    ],
+                    [],
+                    [functools.partial(createlabellink, "/")],
+                    [
+                        functools.partial(createlabellink, "/page/mainui"),
+                    ],
+                    [
+                        functools.partial(createlabellink, "/page/transhist"),
+                    ],
+                    [
+                        functools.partial(createlabellink, "/page/dictionary"),
+                    ],
+                    [
+                        functools.partial(createlabellink, "/page/translate"),
+                    ],
+                    [
+                        functools.partial(createlabellink, "/page/ocr"),
+                    ],
+                ],
+            ),
+        ],
     ]
     return grids
 
@@ -342,49 +403,6 @@ def __portconflict(self):
     self._ = _
     self.portconflict.connect(_.setText)
     return _
-
-
-def outputgrid(self):
-
-    grids = [
-        [
-            D_getIconButton(
-                lambda: os.startfile(dynamiclink("/apiservice.html", docs=True)),
-                "fa.question",
-                tips="使用说明",
-            ),
-        ],
-        [
-            "开启",
-            D_getsimpleswitch(
-                globalconfig,
-                "networktcpenable",
-                callback=lambda _: gobject.baseobject.serviceinit(),
-            ),
-            functools.partial(__portconflict, self),
-            "",
-            "",
-            "",
-        ],
-        [
-            "端口号",
-            D_getspinbox(
-                0,
-                65535,
-                globalconfig,
-                "networktcpport",
-                callback=lambda _: gobject.baseobject.serviceinit(),
-            ),
-        ],
-        [],
-        [(functools.partial(createlabellink, "/"), -1)],
-        [(functools.partial(createlabellink, "/page/mainui"), -1)],
-        [(functools.partial(createlabellink, "/page/transhist"), -1)],
-        [(functools.partial(createlabellink, "/page/dictionary"), -1)],
-        [(functools.partial(createlabellink, "/page/translate"), -1)],
-        [(functools.partial(createlabellink, "/page/ocr"), -1)],
-    ]
-    return grids
 
 
 def setTablanglz():
@@ -483,13 +501,12 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     ]
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     basel.addWidget(gridlayoutwidget)
-    titles = ["HOOK设置", "OCR设置", "剪贴板", "其他", "网络服务"]
+    titles = ["HOOK设置", "OCR设置", "剪贴板", "其他"]
     funcs = [
         lambda l: setTabOne_lazy_h(self, l),
         lambda l: getocrgrid_table(self, l),
         lambda l: makescrollgrid(getTabclip(), l),
         lambda l: makescrollgrid(filetranslate(self), l),
-        lambda l: makescrollgrid(outputgrid(self), l),
     ]
 
     tab, dotab = makesubtab_lazy(

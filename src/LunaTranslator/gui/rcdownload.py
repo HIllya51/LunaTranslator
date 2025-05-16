@@ -40,10 +40,9 @@ class resourcewidget(QWidget):
 
     def downloadofficial(self):
         url = self.oldlink
-        req = requests.head(url, proxies=getproxy())
-        size = int(req.headers["Content-Length"])
         file_size = 0
         req = requests.get(url, stream=True, proxies=getproxy())
+        size = int(req.headers["Content-Length"])
         target = gobject.gettempdir(self.oldlinkfnname)
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
@@ -165,10 +164,11 @@ class resourcewidget2(QWidget):
         tgt = gobject.getcachedir("mdict/jitendex/jitendex.mdx")
         if not os.path.isfile(tgt):
             url = self.oldlink
-            req = requests.head(url, proxies=getproxy())
-            size = int(req.headers["Content-Length"])
             file_size = 0
-            req = requests.get(url, stream=True, proxies=getproxy())
+            req = requests.get(
+                url, stream=True, proxies=getproxy(), headers={"Accept-Encoding": ""}
+            )
+            size = int(req.headers["Content-Length"])
             target = gobject.gettempdir(url.split("/")[-1])
             with open(target, "wb") as ff:
                 for _ in req.iter_content(chunk_size=1024 * 32):

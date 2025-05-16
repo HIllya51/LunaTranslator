@@ -94,10 +94,15 @@ class question(QWidget):
 
     def downloadx(self, url: str):
         self.progresssetval.emit("……", 0)
-        req = requests.head(url, verify=False, proxies=getproxy())
-        size = int(req.headers["Content-Length"])
         file_size = 0
-        req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
+        req = requests.get(
+            url,
+            verify=False,
+            proxies=getproxy(),
+            stream=True,
+            headers={"Accept-Encoding": ""},
+        )
+        size = int(req.headers["Content-Length"])
         target = gobject.gettempdir("ocrmodel/" + url.split("/")[-1])
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
