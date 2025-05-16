@@ -36,14 +36,16 @@ add_library(NativeUtils SHARED
     ${loopback_src} ${winrt_src} ${mshtml_src} ${webview2_src} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
-target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz webview2 mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI Mmdevapi windowsapp)
+target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz webview2 mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI windowsapp)
 
 if(MSVC)
     target_link_libraries(NativeUtils PRIVATE ${YY_Thunks})
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:Dbghelp.dll")
     if(NOT WINXP)
-        target_link_libraries(NativeUtils PRIVATE ShCore)
+        target_link_libraries(NativeUtils PRIVATE ShCore Mmdevapi)
         target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MFPlat.dll")
         target_link_options(NativeUtils PRIVATE "/DELAYLOAD:dxgi.dll")
     endif()
+else()
+    target_link_libraries(NativeUtils PRIVATE ShCore Mmdevapi)
 endif()
