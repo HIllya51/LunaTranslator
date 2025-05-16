@@ -81,6 +81,8 @@ for f in collect:
                 "api-ms-win-core-path-l1-1-0.dll",
             ):
                 continue
+            elif low=='api-ms-win-core-com-l1-1-0.dll':
+                _target='Ole32.dll'
             elif low == "api-ms-win-core-shlwapi-legacy-l1-1-0.dll":
                 _target = "Shlwapi.dll"
             elif low == "api-ms-win-eventing-provider-l1-1-0.dll":
