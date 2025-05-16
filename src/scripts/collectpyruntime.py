@@ -150,6 +150,18 @@ copycheck(
     os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
 copycheck(
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Svg.dll"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
+)
+copycheck(
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}SvgWidgets.dll"),
+    os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
+)
+copycheck(
+    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/QtSvg.pyd"),
+    os.path.join(runtime, f"Py{qtver}"),
+)
+copycheck(
     os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Gui.dll"),
     os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
