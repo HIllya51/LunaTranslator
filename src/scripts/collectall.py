@@ -85,11 +85,15 @@ for f in collect:
                 _target='Ole32.dll'
             elif low == "api-ms-win-core-shlwapi-legacy-l1-1-0.dll":
                 _target = "Shlwapi.dll"
-            elif low == "api-ms-win-eventing-provider-l1-1-0.dll":
+            elif low in ("api-ms-win-eventing-provider-l1-1-0.dll", "api-ms-win-security-base-l1-1-0.dll"):
                 _target = "Advapi32.dll"
+            elif low in ("api-ms-win-core-synch-l1-2-0.dll",):
+                _target = "Kernel32.dll"
+            elif low in ("api-ms-win-ntuser-sysparams-l1-1-0.dll",):
+                _target = "User32.dll"
             elif low.startswith("api-ms-win-core"):
                 # 其实对于api-ms-win-core-winrt-XXX实际上是到ComBase.dll之类的，不过此项目中不包含这些
-                _target = "kernel32.dll"
+                _target = "Kernel32.dll"
             elif low.startswith("api-ms-win-crt"):
                 _target = "ucrtbase.dll"
             else:
