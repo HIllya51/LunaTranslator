@@ -200,7 +200,7 @@ def get_url_as_json(url):
             time.sleep(3)
 
 
-def buildPlugins(arch, win10above=Fase):
+def buildPlugins(arch, win10above=False):
     os.chdir(rootDir + "/cpp/scripts")
     subprocess.run("python fetchwebview2.py")
     if arch == "x86":
