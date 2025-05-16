@@ -283,7 +283,7 @@ if __name__ == "__main__":
             print("version=" + versionstring)
             exit()
     elif sys.argv[1] == "cpp":
-        buildPlugins(sys.argv[2], len(sys.argv)>3 and sys.argv[3].startswith('3.7'))
+        buildPlugins(sys.argv[2], len(sys.argv)>3 and not sys.argv[3].startswith('3.7'))
     elif sys.argv[1] == "pyrt":
         version = sys.argv[3]
         if sys.argv[2] == "x86":

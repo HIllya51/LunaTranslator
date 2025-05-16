@@ -100,4 +100,4 @@ elif sys.argv[1] == "build":
         build_langx_xp(True)
     else:
         onlycore = int(sys.argv[3]) if len(sys.argv) >3 else False
-        build_langx(bit, onlycore, len(sys.argv)>4 and sys.argv[4].startswith('3.7'))
+        build_langx(bit, onlycore, len(sys.argv)>4 and not sys.argv[4].startswith('3.7'))
