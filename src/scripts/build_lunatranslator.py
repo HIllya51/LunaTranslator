@@ -299,7 +299,7 @@ if __name__ == "__main__":
         if version.startswith('3.7'):
             subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
         else:
-            subprocess.run(f"{py37Path} -m pip install -r requirements_6.txt")
+            subprocess.run(f"{py37Path} -m pip install -r tinycss pyqt6")
 
         # 3.8之后会莫名其妙引用这个b东西，然后这个b东西会把一堆没用的东西导入进来
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\test"))
