@@ -58,6 +58,7 @@ def prepareqtenv():
     windows.addenvpath("files/runtime/")
     if not is_xp:
         windows.LoadLibrary("files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
+        windows.LoadLibrary("files/runtime/PyQt6/Qt6/bin/Qt6Core.dll")
     else:
         windows.addenvpath("files/runtime/Lib/site-packages/PyQt5")
         windows.LoadLibrary("files/runtime/Lib/site-packages/PyQt5/Qt5Core.dll")

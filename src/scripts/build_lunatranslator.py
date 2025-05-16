@@ -200,12 +200,12 @@ def get_url_as_json(url):
             time.sleep(3)
 
 
-def buildPlugins(arch):
+def buildPlugins(arch, win10above=False):
     os.chdir(rootDir + "/cpp/scripts")
     subprocess.run("python fetchwebview2.py")
     if arch == "x86":
         subprocess.run(
-            f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+            f'cmake {"-DWIN10ABOVE=ON" if win10above else ""} ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
         )
         subprocess.run(
             f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
@@ -213,7 +213,7 @@ def buildPlugins(arch):
     # subprocess.run(f"python copytarget.py 1")
     elif arch == "x64":
         subprocess.run(
-            f'cmake ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+            f'cmake {"-DWIN10ABOVE=ON" if win10above else ""} ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
         )
         subprocess.run(
             f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
@@ -283,7 +283,7 @@ if __name__ == "__main__":
             print("version=" + versionstring)
             exit()
     elif sys.argv[1] == "cpp":
-        buildPlugins(sys.argv[2])
+        buildPlugins(sys.argv[2], len(sys.argv)>3 and not sys.argv[3].startswith('3.7'))
     elif sys.argv[1] == "pyrt":
         version = sys.argv[3]
         if sys.argv[2] == "x86":
@@ -296,7 +296,11 @@ if __name__ == "__main__":
             )
         os.chdir(rootDir)
         subprocess.run(f"{py37Path} -m pip install --upgrade pip")
-        subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
+        if version.startswith('3.7'):
+            subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
+        else:
+            subprocess.run(f"{py37Path} -m pip install tinycss2 pyqt6")
+
         # 3.8之后会莫名其妙引用这个b东西，然后这个b东西会把一堆没用的东西导入进来
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\test"))
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))

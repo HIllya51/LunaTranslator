@@ -1,8 +1,23 @@
 name: _
+
 on:
   workflow_call:
+    inputs:
+      pythonversion:
+        type: string
+        default: '3.7.9'
+        required: false
+      createrelease:
+        type: boolean
+        default: false
+        required: false
+      buildbit32:
+        type: boolean
+        default: true
+        required: false
 jobs:
   build_cpp_xp:
+    if: ${{inputs.buildbit32}}
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
@@ -16,6 +31,7 @@ jobs:
           name: cpp_xp
           path: src/cpp/builds
   hook_xp:
+    if: ${{inputs.buildbit32}}
     runs-on: windows-2019
     steps:
       - uses: actions/checkout@v4
@@ -43,7 +59,7 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python src/scripts/build_lunahook.py build ${{matrix.bits}} 1
+      - run: python src/scripts/build_lunahook.py build ${{matrix.bits}} 1 ${{inputs.pythonversion}}
 
       - uses: actions/upload-artifact@v4
         with:
@@ -54,14 +70,22 @@ jobs:
     strategy:
       matrix:
         architecture: [x86, x64]
+
+        shouldRelease:
+          - ${{inputs.buildbit32}}
+        exclude:
+          - shouldRelease: false
+            architecture: x86
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.7.9'
+          python-version: ${{inputs.pythonversion}}
           architecture: ${{ matrix.architecture }}
       
-      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} 3.7.9
+      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.architecture }} ${{inputs.pythonversion}}
+
       - uses: actions/upload-artifact@v4
         with:
           name: pyrt_${{ matrix.architecture }}
@@ -77,7 +101,7 @@ jobs:
         with:
           sdk-version: 22621
       
-      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }}
+      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.architecture }} ${{inputs.pythonversion}}
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_${{ matrix.architecture }}
@@ -93,11 +117,18 @@ jobs:
       contents: write
     strategy:
       matrix:
-        include:
-          - architecture: x86
-            fname: LunaTranslator_x86
-          - architecture: x64
-            fname: LunaTranslator
+        # include:
+        #   - architecture: x86
+        #     fname: LunaTranslator_x86
+        #   - architecture: x64
+        #     fname: LunaTranslator
+        architecture: [x86, x64]
+
+        shouldRelease:
+          - ${{inputs.buildbit32}}
+        exclude:
+          - shouldRelease: false
+            architecture: x86
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
@@ -108,12 +139,13 @@ jobs:
       - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.architecture }}
       - uses: actions/attest-build-provenance@v2.2.0
         with:
-            subject-path: src/build/${{matrix.fname}}.zip
+            subject-path: src/build/LunaTranslator${{ matrix.architecture == 'x86' && '_x86' || '' }}.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.fname }}
-          path: src/build/${{matrix.fname}}.zip
+          name: LunaTranslator${{ matrix.architecture == 'x86' && '_x86' || '' }}
+          path: src/build/LunaTranslator${{ matrix.architecture == 'x86' && '_x86' || '' }}.zip
   merge_xp:
+    if: ${{inputs.buildbit32}}
     runs-on: windows-latest
     needs: [build_cpp_xp,hook_xp,build_cpp,hook]
     permissions:
@@ -135,3 +167,33 @@ jobs:
         with:
           name: LunaTranslator_x86_winxp
           path: src/build/LunaTranslator_x86_winxp.zip
+  loadversion:
+    if: ${{inputs.createrelease}}
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.loadversion.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: loadversion
+        run: python src/scripts/build_lunatranslator.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
+
+  release:
+    if: ${{inputs.createrelease}}
+    runs-on: windows-latest
+    needs: [merge_xp,merge,loadversion]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+            path: build
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.loadversion.outputs.version }}
+          files: |
+            build/LunaTranslator_x86_winxp/LunaTranslator_x86_winxp.zip
+            build/LunaTranslator_x86/LunaTranslator_x86.zip
+            build/LunaTranslator/LunaTranslator.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+      - run: |
+          curl --request GET --url https://lunatranslator.org/githubupdatenotify --header 'updatenotifytoken: ${{ secrets.updatenotifytoken }}'
