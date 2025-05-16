@@ -61,10 +61,6 @@ cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14
 
 
 def build_langx_xp( core):
-    url = "https://github.com/Chuyu-Team/YY-Thunks/releases/download/v1.0.7/YY-Thunks-1.0.7-Binary.zip"
-    os.system(rf"curl -SLo YY-Thunks-1.0.7-Binary.zip " + url)
-    os.system(rf"7z x -y YY-Thunks-1.0.7-Binary.zip -o../../libs/YY-Thunks")
-    os.system("dir")
     flags = "" if core else " -DBUILD_GUI=ON "
     with open("do.bat", "w") as ff:
         ff.write(
