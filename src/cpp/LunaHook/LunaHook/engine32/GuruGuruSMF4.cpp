@@ -1,5 +1,5 @@
 #include "GuruGuruSMF4.h"
-
+bool wolf_hook56();
 bool GuruGuruSMF4::attach_function()
 {
 
@@ -60,5 +60,5 @@ bool GuruGuruSMF4::attach_function()
     return true;
   };
 
-  return false;
+  return wolf_hook56();
 }

@@ -64,6 +64,7 @@ def setTab7_lazy(self, basel: QLayout):
             D_getIconButton(
                 lambda: os.startfile(dynamiclink("/textprocess.html", docs=True)),
                 "fa.question",
+                tips="使用说明",
             ),
             ("预处理方法", 5),
             "",
@@ -188,6 +189,7 @@ def setTab7_lazy(self, basel: QLayout):
             D_getIconButton(
                 lambda: os.startfile(dynamiclink("/transoptimi.html", docs=True)),
                 "fa.question",
+                tips="使用说明",
             )
         ]
     ]

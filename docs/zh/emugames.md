@@ -341,6 +341,9 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 0100003020D46000 | StreamLove Voyage |
 |  | 01003A401F75A000 | ハイスピードエトワール パドックストーリーズ |
 |  | 0100EE5021C9E000 | たねつみの歌 (Seedsow Lullaby) |
+|  | 0100AC600EB4C000 | 幻想牢獄のカレイドスコープ |
+|  | 0100451020714000 | 幻想牢獄のカレイドスコープ２ |
+|  | 01002080191CE000 | 戦場の円舞曲 for Nintendo Switch |
 
 == PSP
 

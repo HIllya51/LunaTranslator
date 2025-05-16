@@ -86,6 +86,7 @@ class noundictconfigdialog1(LDialog):
                         ishide = False
                         break
                 table.setRowHidden(row, ishide)
+            table.updateVisibleArea()
 
         button4.clicked.connect(clicked4)
         search.addWidget(button4)
@@ -97,6 +98,7 @@ class noundictconfigdialog1(LDialog):
         self.table = table
         for row, item in enumerate(reflist):
             self.newline(row, item)
+        table.startObserveInserted()
         button = manybuttonlayout(
             [
                 ("添加行", functools.partial(table.insertplainrow, 0)),
@@ -115,20 +117,15 @@ class noundictconfigdialog1(LDialog):
         self.show()
 
     def __setindexwidget(self, index: QModelIndex, data):
-        if index.column() == 0:
-            data = {"regex": self.table.compatiblebool(data)}
-            self.table.setIndexWidget(index, getsimpleswitch(data, "regex"))
-        elif index.column() == 1:
-            data = {"escape": self.table.compatiblebool(data)}
-            self.table.setIndexWidget(index, getsimpleswitch(data, "escape"))
+        if index.column() in (0, 1):
+            bval = self.table.compatiblebool(data)
+            self.table.setIndexData(index, bval)
         else:
             self.table.model().setItem(index.row(), index.column(), QStandardItem(data))
 
     def __getindexwidgetdata(self, index: QModelIndex):
-        if index.column() == 0:
-            return self.table.indexWidgetX(index).isChecked()
-        if index.column() == 1:
-            return self.table.indexWidgetX(index).isChecked()
+        if index.column() in (0, 1):
+            return index.data(self.table.ValRole)
         return self.model.itemFromIndex(index).text()
 
     def apply(self):
@@ -320,7 +317,7 @@ class yuyinzhidingsetting(LDialog):
 
         self.model = LStandardItemModel()
         self.model.setHorizontalHeaderLabels(["范围", "正则", "条件", "目标", "指定为"])
-        table = TableViewW(self, updown=True, copypaste=True)
+        table = TableViewW(self, updown=True)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
         for _ in [0, 1, 2, 4]:

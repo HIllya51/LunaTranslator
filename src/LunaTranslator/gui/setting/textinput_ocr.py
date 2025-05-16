@@ -71,7 +71,7 @@ class triggereditor(LDialog):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
-        self.list = globalconfig["ocr_trigger_events"]
+        self.list: "list[dict]" = globalconfig["ocr_trigger_events"]
 
         self.setWindowTitle("触发事件")
         model = LStandardItemModel()
@@ -84,7 +84,7 @@ class triggereditor(LDialog):
         table.horizontalHeader().setStretchLastSection(True)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         table.setWordWrap(False)
         table.setModel(model)
         table.getindexdata = self.__getindexwidgetdata
@@ -99,11 +99,14 @@ class triggereditor(LDialog):
             self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem()])
             combo = SuperCombo()
             combo.addItems(self.vkeys)
-            combo.setCurrentIndex(self.vkeys.index(k["vkey"]))
+            try:
+                combo.setCurrentIndex(self.vkeys.index(k["vkey"]))
+            except:
+                pass
             self.hctable.setIndexWidget(self.hcmodel.index(row, 0), combo)
             combo = SuperCombo()
             combo.addItems(["按下", "松开"])
-            combo.setCurrentIndex(k["event"])
+            combo.setCurrentIndex(k.get("event", 0))
             self.hctable.setIndexWidget(self.hcmodel.index(row, 1), combo)
         buttons = manybuttonlayout(
             (("添加行", self.click1), ("删除行", self.hctable.removeselectedrows))

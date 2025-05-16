@@ -1,6 +1,10 @@
 #include "format.hpp"
 using namespace cv;
 
+DECLARE_API cv::Mat *cvMatFromRGB888(const void *ptr, int width, int height, int bytesPerLine)
+{
+    return __cvMatFromRGB888(ptr, width, height, bytesPerLine).release();
+}
 DECLARE_API cv::Mat *cvMatFromBGR888(const void *ptr, int width, int height, int bytesPerLine)
 {
     return __cvMatFromBGR888(ptr, width, height, bytesPerLine).release();

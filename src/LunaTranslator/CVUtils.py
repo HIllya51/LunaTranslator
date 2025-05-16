@@ -42,16 +42,14 @@ class cvMat(c_void_p):
     @staticmethod
     def fromQImage(image: QImage):
         _CVUtils = _DelayLoadCVUtils()
-        cvMatFromBGR888 = _CVUtils.cvMatFromBGR888
-        cvMatFromBGR888.argtypes = c_void_p, c_int, c_int, c_int
-        cvMatFromBGR888.restype = cvMat
-
-        if image.format() != QImage.Format.Format_BGR888:
-            image = image.convertToFormat(QImage.Format.Format_BGR888)
-        ptr: cvMat = cvMatFromBGR888(
+        cvMatFromRGB888 = _CVUtils.cvMatFromRGB888
+        cvMatFromRGB888.argtypes = c_void_p, c_int, c_int, c_int
+        cvMatFromRGB888.restype = cvMat
+        if image.format() != QImage.Format.Format_RGB888:
+            image = image.convertToFormat(QImage.Format.Format_RGB888)
+        ptr: cvMat = cvMatFromRGB888(
             int(image.bits()), image.width(), image.height(), image.bytesPerLine()
         )
-
         if not ptr:
             raise InvalidImage()
         return ptr

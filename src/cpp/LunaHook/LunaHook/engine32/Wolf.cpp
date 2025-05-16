@@ -244,14 +244,14 @@ namespace
 
     return ok;
   }
-  bool hook56()
-  {
-    bool _1 = hook5();
-    bool _2 = hook6();
-    return _1 || _2;
-  }
 }
 
+bool wolf_hook56()
+{
+  bool _1 = hook5();
+  bool _2 = hook6();
+  return _1 || _2;
+}
 namespace
 { // unnamed
 
@@ -912,5 +912,5 @@ namespace
 bool Wolf::attach_function()
 {
   auto _ = ScenarioHook::attach(processStartAddress, processStopAddress);
-  return InsertWolfHook() || hook56() || _ || wolf7();
+  return InsertWolfHook() || wolf_hook56() || _ || wolf7();
 }

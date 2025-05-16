@@ -135,7 +135,165 @@ class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
     pass
 
 
-class TableViewW(QTableView):
+class DelayLoadScrollAreaEventFilter(QObject):
+    def eventFilter(_, obj: "DelayLoadScrollArea", event: QEvent):
+        if event.type() == QEvent.Type.Resize:
+            obj._updateVisibleArea_1()
+
+        return False
+
+
+class DelayLoadScrollArea(QAbstractScrollArea):
+
+    def __init__(self, *a, **k):
+        QAbstractScrollArea.__init__(self, *a, **k)
+        self.verticalScrollBar().valueChanged.connect(self._updateVisibleArea_1)
+        self.__f = DelayLoadScrollAreaEventFilter(self)
+        self.installEventFilter(self.__f)
+
+    def _updateVisibleArea_1(self):
+        viewport_rect = self.viewport().rect()
+        self._updateVisibleArea(viewport_rect)
+
+    def _updateVisibleArea(self, area: QRect):
+        raise NotImplementedError()
+
+
+class DelayLoadTableView(QTableView, DelayLoadScrollArea):
+    __delayloadfunction = Qt.ItemDataRole.UserRole + 10
+    __switchwidget = __delayloadfunction + 1
+    ValRole = __switchwidget + 1
+
+    def createIndexWidget(self, index: QModelIndex):
+        wf = index.data(self.__delayloadfunction)
+        if not wf:
+            return
+        val = index.data(self.ValRole)
+        if isinstance(val, bool):
+            w = getsimpleswitch(
+                {None: val},
+                None,
+                callback=functools.partial(self.setIndexData, index),
+            )
+        else:
+            w = wf()
+        self.model().setData(index, None, self.__delayloadfunction)
+        self.model().setData(index, w, self.__switchwidget)
+        return w
+
+    def setIndexData(self, index: QModelIndex, data):
+        if isinstance(data, bool):
+            self.model().setData(index, data, self.ValRole)
+            self.model().setData(index, 1, self.__delayloadfunction)
+            if self.isstartObserveInserted:
+                self.updateVisibleArea()
+
+    def updateIndex(self, index: QModelIndex):
+        w: MySwitch = index.data(self.__switchwidget)
+        val: bool = index.data(self.ValRole)
+        if isinstance(w, MySwitch) and isinstance(val, bool):
+            w.setChecked(val)
+
+    def __init__(self, *a, **k):
+        QTableView.__init__(self)
+        DelayLoadScrollArea.__init__(self)
+        self.isstartObserveInserted = False
+
+    def setIndexWidget_1(self, index: QModelIndex, w: QWidget):
+
+        if not w:
+            return
+        __w = QWidget()
+        __l = QHBoxLayout(__w)
+        __l.setContentsMargins(0, 0, 0, 0)
+        __l.addWidget(w)
+        super().setIndexWidget(index, __w)
+        if self.rowHeight(index.row()) < w.height():
+            self.setRowHeight(index.row(), w.height())
+
+    def setIndexWidget(self, index: QModelIndex, w: QWidget):
+        if not index.isValid():
+            return
+        if not w:
+            return
+        if isinstance(w, QWidget):
+            self.setIndexWidget_1(index, w)
+        elif callable(w):
+            if self.__index_visual(index):
+                self.setIndexWidget_1(index, w())
+            else:
+                self.model().setData(index, w, self.__delayloadfunction)
+
+    def __index_visual(self, index: QModelIndex):
+        if not index.isValid():
+            return False
+        rect = self.visualRect(index)
+        if rect.isEmpty():
+            return False
+        viewport_rect = self.viewport().rect()
+
+        return viewport_rect.intersects(rect)
+
+    def _updateVisibleArea(self, area: QRect):
+        r1, c1, r2, c2 = (
+            self.rowAt(area.top()),
+            self.columnAt(area.left()),
+            self.rowAt(area.bottom()),
+            self.columnAt(area.right()),
+        )
+        if r1 == -1:
+            r1 = 0
+        if r2 == -1:
+            r2 = self.model().rowCount() - 1
+        if c1 == -1:
+            c1 = 0
+        if c2 == -1:
+            c2 = self.model().columnCount() - 1
+
+        def __(index: QModelIndex):
+            if self.indexWidget(index):
+                return
+            if self.visualRect(index).isEmpty():
+                return
+            w = self.createIndexWidget(index)
+            if not w:
+                return
+            self.setIndexWidget(index, w)
+
+        self.__loopallindex(r1, c1, r2, c2, __)
+
+    def setModel(self, model):
+        super().setModel(model)
+        model.dataChanged.connect(self.__updateIndexWidget)
+
+    def startObserveInserted(self):
+        self.isstartObserveInserted = True
+        self.model().rowsInserted.connect(self.updateVisibleArea)
+
+    def __loopallindex(self, r1, c1, r2, c2, do):
+        for row in range(r1, r2 + 1):
+            for col in range(c1, c2 + 1):
+                index = self.model().index(row, col)
+                if not index.isValid():
+                    continue
+                do(index)
+
+    def updateVisibleArea(self, *_):
+        viewport_rect = self.viewport().rect()
+        self._updateVisibleArea(viewport_rect)
+
+    def __updateIndexWidget(self, topLeft: QModelIndex, bottomRight: QModelIndex):
+
+        self.__loopallindex(
+            topLeft.row(),
+            topLeft.column(),
+            bottomRight.row(),
+            bottomRight.column(),
+            self.updateIndex,
+        )
+
+
+class TableViewW(DelayLoadTableView):
     def __init__(self, *argc, updown=False, copypaste=False) -> None:
         super().__init__(*argc)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection)
@@ -268,17 +426,6 @@ class TableViewW(QTableView):
         else:
             event.accept()
 
-    def setIndexWidget(self, index: QModelIndex, w: QWidget):
-        if w is None:
-            return
-        __w = QWidget()
-        __l = QHBoxLayout(__w)
-        __l.setContentsMargins(0, 0, 0, 0)
-        __l.addWidget(w)
-        super().setIndexWidget(index, __w)
-        if self.rowHeight(index.row()) < w.height():
-            self.setRowHeight(index.row(), w.height())
-
     def updatelangtext(self):
         m = self.model()
         if isinstance(m, LStandardItemModel):
@@ -351,16 +498,14 @@ class TableViewW(QTableView):
             if len(my_list) == 1 and len(my_list[0]) == 1:
                 self.setindexdata(current, my_list[0][0])
                 return
+            self.model().insertRows(current.row() + 1, len(my_list))
             for j, line in enumerate(my_list):
-                self.insertplainrow(current.row() + 1)
-            for j, line in enumerate(my_list):
-                for i in range(len(line)):
+                for _ in range(max(0, self.model().columnCount() - len(line))):
+                    line.insert(0, "")
+                for i in range(0, self.model().columnCount()):
                     data = line[i]
-                    c = current.column() + i
-                    if c >= self.model().columnCount():
-                        continue
                     self.setindexdata(
-                        self.model().index(current.row() + 1 + j, c), data
+                        self.model().index(current.row() + 1 + j, i), data
                     )
         except:
             print_exc()
@@ -861,7 +1006,7 @@ def getlineedit(d, key, callback=None, readonly=False):
 
 
 def getspinbox(
-    mini, maxi, d: dict, key: str, double=False, step=1, callback=None, default=None
+    mini, maxi, d: dict, key: str, double=False, step=1, callback=None, default=0
 ):
     initvar = d.get(key, default)
     if double:
@@ -878,7 +1023,7 @@ def getspinbox(
     return s
 
 
-def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, default=None):
+def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, default=0):
     return lambda: getspinbox(mini, maxi, d, key, double, step, callback, default)
 
 
@@ -993,7 +1138,7 @@ def getsimpleswitch(
     name=None,
     pair=None,
     parent=None,
-    default=None,
+    default=False,
 ):
     initvar = d.get(key, default)
     b = MySwitch(sign=initvar, enable=enable)
@@ -1020,7 +1165,7 @@ def getsmalllabel(text=""):
 
 
 def D_getsimpleswitch(
-    d, key, enable=True, callback=None, name=None, pair=None, parent=None, default=None
+    d, key, enable=True, callback=None, name=None, pair=None, parent=None, default=False
 ):
     return lambda: getsimpleswitch(
         d, key, enable, callback, name, pair, parent, default
@@ -1340,7 +1485,7 @@ class Exteditor(LDialog):
         table.horizontalHeader().setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         table.setWordWrap(False)
         table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         table.customContextMenuRequested.connect(self.__menu)
@@ -2420,7 +2565,7 @@ class listediter(LDialog):
             if isrankeditor or (not (ispathsedit is None)) or self.candidates:
                 table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
             table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-            table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+            table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
             table.setWordWrap(False)
             table.setModel(model)
 

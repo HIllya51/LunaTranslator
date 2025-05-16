@@ -500,6 +500,26 @@ namespace
         s = re::sub(s, R"(#Color\[\d+?\])");
         buffer->from(s);
     }
+    void f0100AC600EB4C000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strAW();
+        ws = remapkatakana(ws);
+        strReplace(ws, L"\uF8F0");
+        strReplace(ws, L"@r", L"\n");
+        ws = re::sub(ws, LR"(@v\w+\.)");
+        ws = re::sub(ws, LR"(@z\d+\.)");
+        ws = re::sub(ws, LR"(@b(.*?)\.@<(.*?)@>)", L"$2");
+        buffer->fromWA(ws);
+    }
+    void f0100451020714000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strA();
+        strReplace(ws, "@r", "\n");
+        ws = re::sub(ws, R"(@v\w+\.)");
+        ws = re::sub(ws, R"(@z\d+\.)");
+        ws = re::sub(ws, R"(@b(.*?)\.@<(.*?)@>)", "$2");
+        buffer->from(ws);
+    }
     void F01003A401F75A000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = buffer->strA();
@@ -3819,6 +3839,14 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x805CEDAC, {CODEC_UTF8, 1, 0, 0, F01003A401F75A000, 0x01003A401F75A000ull, "1.0.0"}}, // NAME+TEXT
     // たねつみの歌 (Seedsow Lullaby)
     {0x80056A24, {CODEC_UTF8, 0XF, 0, 0, 0, 0x0100EE5021C9E000ull, "1.0.0"}},
+    // 幻想牢獄のカレイドスコープ
+    {0x800C4C48, {0, 0, 0, 0, f0100AC600EB4C000, 0x0100AC600EB4C000ull, "1.0.0"}},
+    {0x800C4BC8, {0, 0, 0, 0, f0100AC600EB4C000, 0x0100AC600EB4C000ull, "1.0.2"}},
+    // 幻想牢獄のカレイドスコープ２
+    {0x800C4C1C, {CODEC_UTF8, 0, 0, 0, f0100451020714000, 0x0100451020714000ull, "1.0.0"}},
+    // 戦場の円舞曲 for Nintendo Switch
+    {0x80040010, {0, 0, 0, 0, F01005AF00E9DC000, 0x01002080191CE000ull, "1.0.0"}},
+
 };
 
 extern void yuzu_load_functions(std::unordered_map<DWORD, emfuncinfo> &m)

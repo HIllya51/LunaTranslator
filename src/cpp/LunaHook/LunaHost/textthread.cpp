@@ -98,6 +98,8 @@ void TextThread::UpdateFlushTime(bool recursive)
 	if (!recursive)
 		return;
 	auto &&ths = syncThreads.Acquire().contents;
+	if (!ths.count(this))
+		return;
 	for (auto t : ths)
 	{
 		if (t == this)

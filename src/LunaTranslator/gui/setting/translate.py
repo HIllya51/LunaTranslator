@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os
 import gobject, uuid, shutil, copy, importlib
-from myutils.config import globalconfig, translatorsetting, _TR
+from myutils.config import globalconfig, translatorsetting, _TR, defaultglobalconfig
 from myutils.utils import (
     selectdebugfile,
     splittranslatortypes,
@@ -11,7 +11,7 @@ from myutils.utils import (
     autosql,
     getannotatedapiname,
 )
-import sqlite3, json
+import json
 from traceback import print_exc
 from gui.usefulwidget import SuperCombo
 from collections import Counter
@@ -263,6 +263,11 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
 
 def getrenameablellabel(uid, self, countnum, btnplus):
     name = ClickableLabel(dynamicapiname(uid))
+    isdeprecated = uid not in defaultglobalconfig["fanyi"] and (
+        0 == translate_exits(uid, which=True)
+    )
+    if isdeprecated:
+        name.setStyleSheet("QLabel{background:red}")
     fn = functools.partial(renameapi, name, uid, self, countnum, btnplus)
     name.clicked.connect(fn)
     return name
@@ -397,24 +402,28 @@ def createmanybtn(self, countnum, btnplus):
     hbox = QHBoxLayout(w)
     hbox.setContentsMargins(0, 0, 0, 0)
     if btnplus == "api1":
-        btn = IconButton("fa.question", fix=False)
+        btn = IconButton("fa.question", fix=False, tips="使用说明")
         hbox.addWidget(btn)
         btn.clicked.connect(
             lambda: os.startfile(dynamiclink("/useapis/tsapi.html", docs=True))
         )
         return w
 
-    btn = IconButton("fa.plus", fix=False)
+    btn = IconButton("fa.plus", fix=False, tips="复制")
     btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btnplus))
 
     hbox.addWidget(btn)
 
-    btn = IconButton("fa.minus", fix=False)
+    btn = IconButton("fa.minus", fix=False, tips="删除")
     btn.clicked.connect(functools.partial(btndeccallback, self, countnum, btnplus))
 
     hbox.addWidget(btn)
 
-    btn = IconButton("fa.question", fix=False)
+    btn = IconButton(
+        "fa.question",
+        fix=False,
+        tips="使用说明",
+    )
     if btnplus == "offline":
         btn.clicked.connect(
             lambda: os.startfile(dynamiclink("/offlinellm.html", docs=True))

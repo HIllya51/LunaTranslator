@@ -174,10 +174,10 @@ def uisetting(self):
                             type="grid",
                             grid=(
                                 [
-                                    "窗口特效",
+                                    getsmalllabel("窗口特效"),
                                     functools.partial(createxxx, self),
                                     "",
-                                    "圆角_半径",
+                                    getsmalllabel("圆角_半径"),
                                     D_getspinbox(
                                         0,
                                         100,
@@ -186,7 +186,7 @@ def uisetting(self):
                                         callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
                                     ),
                                     "",
-                                    "任务栏中显示",
+                                    getsmalllabel("任务栏中显示"),
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "showintab",
@@ -242,10 +242,10 @@ def uisetting(self):
                             type="grid",
                             grid=[
                                 [
-                                    "字体",
+                                    getsmalllabel("字体"),
                                     createfontcombo,
                                     "",
-                                    "大小",
+                                    getsmalllabel("大小"),
                                     D_getspinbox(
                                         5,
                                         100,
@@ -256,7 +256,7 @@ def uisetting(self):
                                         callback=lambda _: gobject.baseobject.setcommonstylesheet(),
                                     ),
                                     "",
-                                    "加粗",
+                                    getsmalllabel("加粗"),
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "settingfontbold",
@@ -271,7 +271,7 @@ def uisetting(self):
                             type="grid",
                             grid=[
                                 [
-                                    "窗口特效",
+                                    getsmalllabel("窗口特效"),
                                     D_getsimplecombobox(
                                         [
                                             "Solid",
@@ -285,14 +285,14 @@ def uisetting(self):
                                         static=True,
                                     ),
                                     "",
-                                    "强制直角",
+                                    getsmalllabel("强制直角"),
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "force_rect",
                                         callback=lambda _: gobject.baseobject.cornerornot(),
                                     ),
                                     "",
-                                    "任务栏中显示",
+                                    getsmalllabel("任务栏中显示"),
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "showintab_sub",

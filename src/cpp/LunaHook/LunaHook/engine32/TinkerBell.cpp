@@ -29,12 +29,13 @@ bool InsertTinkerBellHook()
       }
       if (hp.address)
       {
-        char hook_name[0x20];
-        ::strcpy(hook_name, "TinkerBell"); // size = 0xa
-        hook_name[0xa] = '0' + count;
-        hook_name[0xb] = 0;
-        ConsoleOutput("INSERT TinkerBell");
-        count += NewHook(hp, hook_name);
+        auto succ = NewHook(hp, "TinkerBell");
+        if (!succ)
+        {
+          hp.type |= BREAK_POINT;
+          succ = NewHook(hp, "TinkerBell");
+        }
+        count += succ;
         hp.address = 0;
       }
     }
@@ -284,7 +285,7 @@ namespace
             }())
           buffer->clear();
       };
-      succ |= NewHook(hp, "TinkerBell");
+      succ |= NewHook(hp, "TinkerBell2");
     }
     if (succ)
     {
@@ -306,5 +307,5 @@ bool TinkerBellold::attach_function()
   hp.offset = stackoffset(6);
   hp.type = USING_STRING | USING_SPLIT;
   hp.split = stackoffset(5);
-  return NewHook(hp, "TinkerBell");
+  return NewHook(hp, "TinkerBellold");
 }

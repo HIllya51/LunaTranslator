@@ -1343,7 +1343,7 @@ class MAINUI:
         self.translation_ui.processismuteed = mute
         self.translation_ui.refreshtooliconsignal.emit()
 
-    def openlink(self, file):
+    def openlink(self, file: str):
         if file.startswith("http") and checkisusingwine():
             self.translation_ui.displaylink.emit(file)
             return

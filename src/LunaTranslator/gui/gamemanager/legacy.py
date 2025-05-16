@@ -131,7 +131,7 @@ class dialog_savedgame_legacy(QWidget):
         startgamecheck(
             self,
             savehook_new_list,
-            self.model.item(self.table.currentIndex().row(), 2).savetext,
+            self.model.item(self.table.currentIndex().row(), 3).data(self.KRole),
         )
 
     def delayloadicon(self, k):
@@ -149,13 +149,11 @@ class dialog_savedgame_legacy(QWidget):
     KRole = Qt.ItemDataRole.UserRole + 1
 
     def newline(self, row, k):
-        keyitem = QStandardItem()
-        keyitem.savetext = k
         title = QStandardItem(savehook_new_data[k]["title"])
         title.setData(k, self.KRole)
         self.model.insertRow(
             row,
-            [QStandardItem(), QStandardItem(), keyitem, title],
+            [QStandardItem(), QStandardItem(), QStandardItem(), title],
         )
         self.table.setIndexWidget(
             self.model.index(row, 0),
@@ -198,7 +196,7 @@ class dialog_savedgame_legacy(QWidget):
         model.dataChanged.connect(self.on_data_changed)
         table.horizontalHeader().setStretchLastSection(True)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         table.setWordWrap(False)
         self.table = table
         self.savelist = []

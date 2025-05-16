@@ -852,7 +852,7 @@ class dialog_setting_game_internal(QWidget):
         table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         table.setWordWrap(False)
 
         table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -1296,18 +1296,18 @@ class embeddisabler(LDialog):
         self.setWindowFlags(
             self.windowFlags() & ~Qt.WindowType.WindowContextHelpButtonHint
         )
-        self.lst = lst
+        self.lst: list = lst
         self.closecallback = closecallback
 
         self.setWindowTitle(name)
-        model = LStandardItemModel()
+        model = QStandardItemModel()
         self.hcmodel = model
-        table = TableViewW()
+        table = QTableView()
         table.horizontalHeader().setVisible(False)
         table.horizontalHeader().setStretchLastSection(True)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode((QAbstractItemView.SelectionMode.SingleSelection))
+        table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         table.setWordWrap(False)
         table.setModel(model)
 
@@ -1325,12 +1325,14 @@ class embeddisabler(LDialog):
         self.changed = False
 
     def clicked2(self):
-        skip = self.hctable.removeselectedrows()
-        for row in skip:
-            self.lst.pop(row)
-            self.changed = True
+        idx = self.hctable.currentIndex()
+        if not idx.isValid():
+            return
+        self.lst.pop(idx.row())
+        self.hctable.model().removeRow(idx.row())
+        self.changed = True
 
-    def closeEvent(self, a0):
+    def closeEvent(self, _):
         self.closecallback(self.changed)
 
 

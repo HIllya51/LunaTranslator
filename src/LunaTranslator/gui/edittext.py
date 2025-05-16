@@ -139,8 +139,8 @@ class edittrans(LMainWindow):
         rect = windows.GetWindowRect(self.followhwnd)
         if rect is None:
             return
-        self.move((QPoint(rect[0], rect[3])) / self.devicePixelRatioF())
-        self.resize((QSize(rect[2] - rect[0], 1)) / self.devicePixelRatioF())
+        self.move(QPoint(rect[0], rect[3]) / self.devicePixelRatioF())
+        self.resize(QSize(rect[2] - rect[0], 1) / self.devicePixelRatioF())
         if self.idx == 0:
             self.show()
         self.idx += 1

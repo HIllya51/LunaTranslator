@@ -351,6 +351,7 @@ def outputgrid(self):
             D_getIconButton(
                 lambda: os.startfile(dynamiclink("/apiservice.html", docs=True)),
                 "fa.question",
+                tips="使用说明",
             ),
         ],
         [

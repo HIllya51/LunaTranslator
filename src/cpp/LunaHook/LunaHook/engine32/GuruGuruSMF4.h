@@ -6,9 +6,9 @@ public:
     GuruGuruSMF4()
     {
         check_by = CHECK_BY::CUSTOM;
-        check_by_target = []()
+        check_by_target = []() -> bool
         {
-            return (bool)GetModuleHandle(L"GuruGuruSMF4.dll");
+            return GetModuleHandle(L"GuruGuruSMF4.dll");
         };
     };
     bool attach_function();

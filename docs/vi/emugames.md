@@ -341,6 +341,9 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | 0100003020D46000 | StreamLove Voyage |
 |  | 01003A401F75A000 | ハイスピードエトワール パドックストーリーズ |
 |  | 0100EE5021C9E000 | たねつみの歌 (Seedsow Lullaby) |
+|  | 0100AC600EB4C000 | 幻想牢獄のカレイドスコープ |
+|  | 0100451020714000 | 幻想牢獄のカレイドスコープ２ |
+|  | 01002080191CE000 | 戦場の円舞曲 for Nintendo Switch |
 
 == PSP
 

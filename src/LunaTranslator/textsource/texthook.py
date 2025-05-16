@@ -3,7 +3,6 @@ import re, os
 import time, gobject, windows
 from qtsymbols import *
 import zhconv, functools
-from NativeUtils import Is64bit
 from myutils.config import (
     globalconfig,
     savehook_new_data,
@@ -14,10 +13,10 @@ from myutils.config import (
 from textsource.textsourcebase import basetext
 from myutils.utils import getlangtgt, safe_escape, stringfyerror
 from myutils.kanjitrans import kanjitrans
-from myutils.hwnd import injectdll, ListProcess, getpidexe
+from myutils.hwnd import test_injectable, ListProcess, getpidexe
 from myutils.wrapper import threader
 from traceback import print_exc
-import subprocess
+import subprocess, NativeUtils
 from ctypes import (
     CDLL,
     CFUNCTYPE,
@@ -341,7 +340,7 @@ class texthook(basetext):
         self.removedaddress = []
 
         self.gamepath = gamepath
-        self.is64bit = Is64bit(pids[0])
+        self.is64bit = NativeUtils.Is64bit(pids[0])
         if (
             len(autostarthookcode) == 0
             and len(self.hconfig.get("embedablehook", [])) == 0
@@ -370,7 +369,32 @@ class texthook(basetext):
         if len(injectpids):
             arch = ["32", "64"][self.is64bit]
             dll = os.path.abspath("files/plugins/LunaHook/LunaHook{}.dll".format(arch))
-            injectdll(injectpids, arch, dll)
+            self.injectdll(injectpids, arch, dll)
+
+    def injectdll(self, injectpids, bit, dll):
+
+        injecter = os.path.abspath("files/plugins/shareddllproxy{}.exe".format(bit))
+        pid = " ".join([str(_) for _ in injectpids])
+        for _ in (0,):
+            if not test_injectable(injectpids):
+                break
+
+            ret = subprocess.run(
+                '"{}" dllinject {} "{}"'.format(injecter, pid, dll)
+            ).returncode
+            if ret:
+                return
+            pids = NativeUtils.collect_running_pids(injectpids)
+            pid = " ".join([str(_) for _ in pids])
+
+        windows.ShellExecute(
+            0,
+            "runas",
+            injecter,
+            'dllinject {} "{}"'.format(pid, dll),
+            None,
+            windows.SW_HIDE,
+        )
 
     @threader
     def injectproc(self, injecttimeout, pids):

@@ -202,32 +202,6 @@ def getExeIcon(name: str, icon=True, cache=False, large=False):
         return pixmap
 
 
-def injectdll(injectpids, bit, dll):
-
-    injecter = os.path.abspath("files/plugins/shareddllproxy{}.exe".format(bit))
-    pid = " ".join([str(_) for _ in injectpids])
-    for _ in (0,):
-        if not test_injectable(injectpids):
-            break
-
-        ret = subprocess.run(
-            '"{}" dllinject {} "{}"'.format(injecter, pid, dll)
-        ).returncode
-        if ret:
-            return
-        pids = NativeUtils.collect_running_pids(injectpids)
-        pid = " ".join([str(_) for _ in pids])
-
-    windows.ShellExecute(
-        0,
-        "runas",
-        injecter,
-        'dllinject {} "{}"'.format(pid, dll),
-        None,
-        windows.SW_HIDE,
-    )
-
-
 def mouseselectwindow(callback):
 
     def _loop():

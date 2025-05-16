@@ -82,7 +82,7 @@ namespace
 
   bool IsSJIS(char *text)
   {
-    for (int i = 0; i < 3; ++i)
+    for (int i = 0; i < 5; ++i)
       if (!IsShiftjisWord(((WORD *)text)[i]))
         return false;
     return true;
