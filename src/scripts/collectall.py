@@ -87,8 +87,6 @@ for f in collect:
                 _target = "Shlwapi.dll"
             elif low in ("api-ms-win-eventing-provider-l1-1-0.dll", "api-ms-win-security-base-l1-1-0.dll"):
                 _target = "Advapi32.dll"
-            elif low in ("api-ms-win-core-synch-l1-2-0.dll",):
-                _target = "Kernel32.dll"
             elif low in ("api-ms-win-ntuser-sysparams-l1-1-0.dll",):
                 _target = "User32.dll"
             elif low.startswith("api-ms-win-core"):
