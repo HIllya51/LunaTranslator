@@ -6,27 +6,29 @@
 #include <windows.graphics.directx.direct3d11.interop.h>
 #include <windows.graphics.directx.direct3d11.h>
 #include <windows.graphics.directx.direct3d11.h>
+#else
+#include "xp.hpp"
+#endif
+
+#include "hstring.hpp"
+#include "../bmpx.hpp"
+
 using ABI::Windows::Foundation::GetActivationFactory;
 using ABI::Windows::Foundation::IClosable;
+using ABI::Windows::Foundation::ITypedEventHandler;
 using ABI::Windows::Graphics::SizeInt32;
 using ABI::Windows::Graphics::Capture::Direct3D11CaptureFramePool;
-using ABI::Windows::Graphics::Capture::GraphicsCaptureItem;
 using ABI::Windows::Graphics::Capture::IDirect3D11CaptureFrame;
 using ABI::Windows::Graphics::Capture::IDirect3D11CaptureFramePool;
 using ABI::Windows::Graphics::Capture::IDirect3D11CaptureFramePoolStatics;
 using ABI::Windows::Graphics::Capture::IGraphicsCaptureItem;
-using ABI::Windows::Graphics::Capture::IGraphicsCaptureItemStatics;
 using ABI::Windows::Graphics::Capture::IGraphicsCaptureSession;
 using ABI::Windows::Graphics::Capture::IGraphicsCaptureSession2;
 using ABI::Windows::Graphics::DirectX::DirectXPixelFormat;
 using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice;
 using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DSurface;
 using Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess;
-#else
-#include "xp.hpp"
-#endif
-#include "hstring.hpp"
-#include "../bmpx.hpp"
+
 _Use_decl_annotations_
     HRESULT
     GetTextureFromSurface(
@@ -38,7 +40,7 @@ _Use_decl_annotations_
     CHECK_FAILURE(spDXGIInterfaceAccess->GetInterface(IID_PPV_ARGS(ppTexture)));
     return S_OK;
 }
-struct FrameArrivedCallback : ComImpl<__FITypedEventHandler_2_Windows__CGraphics__CCapture__CDirect3D11CaptureFramePool_IInspectable>
+struct FrameArrivedCallback : ComImpl<ITypedEventHandler<Direct3D11CaptureFramePool *, IInspectable *>>
 {
     CComPtr<ID3D11Texture2D> &texture;
     std::atomic_flag &waitforloadflag;
