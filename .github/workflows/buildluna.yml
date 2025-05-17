@@ -8,12 +8,11 @@ on:
         default: false
         required: false 
 jobs:
-  cpps:
+  hook:
     runs-on: ${{matrix.runson}}
     strategy:
       matrix:
-        work: ['hook', 'cpp']
-        include:
+        include: &commoninclude
           - arch: x86
             target: win7  
             runson: windows-latest
@@ -38,21 +37,29 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - if: ${{matrix.work=='hook'}}
-        run: python src/scripts/build_lunahook.py build ${{matrix.arch}} 1 ${{matrix.target}}
-      - if: ${{matrix.work=='cpp'}}
-        run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{matrix.target}}
+      - run: python src/scripts/build_lunahook.py build ${{matrix.arch}} 1 ${{matrix.target}}
 
-      - if: ${{matrix.work=='cpp'}}
-        uses: actions/upload-artifact@v4
-        with:
-          name: cpp_${{matrix.arch}}_${{matrix.target}}
-          path: src/cpp/builds
-      - if: ${{matrix.work=='hook'}}
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: hook_${{matrix.arch}}_${{matrix.target}}
           path: src/cpp/LunaHook/builds/Release${{matrix.target=='xp' &&'_winxp'||''}}
+  build_cpp:
+    runs-on: ${{matrix.runson}}
+    strategy:
+      matrix: 
+        include: *commoninclude
+    steps:
+      - uses: actions/checkout@v4
+      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
+        with:
+          sdk-version: 22621
+      
+      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{matrix.target}}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cpp_${{matrix.arch}}_${{matrix.target}}
+          path: src/cpp/builds
+          
   pyrt:
     runs-on: windows-latest
     strategy:
@@ -84,7 +91,7 @@ jobs:
   
   merge:
     runs-on: windows-latest
-    needs: [pyrt,cpps]
+    needs: [pyrt,build_cpp,hook]
     permissions:
       id-token: write
       attestations: write
@@ -118,7 +125,7 @@ jobs:
           path: src/build/${{ matrix.savename }}.zip
   merge_xp:
     runs-on: windows-latest
-    needs: [cpps]
+    needs: [build_cpp,hook]
     permissions:
       id-token: write
       attestations: write
