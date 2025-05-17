@@ -10,13 +10,11 @@ launch = f"../src/cpp/builds/_{arch}"
 if arch == "x86":
     targetdir = r"build\LunaTranslator_x86"
     baddll = "DLL64"
-    downlevel = r"C:\Windows\SysWOW64\downlevel"
 else:
     baddll = "DLL32"
     targetdir = r"build\LunaTranslator"
     if target == "win10":
         targetdir += "_win10"
-    downlevel = r"C:\Windows\system32\downlevel"
 
 
 def copycheck(src, tgt):
@@ -58,8 +56,8 @@ collect = []
 for _dir, _, fs in os.walk(targetdir):
     for f in fs:
         collect.append(os.path.join(_dir, f))
-
-collectapisets = set()
+if target == "win10":
+    collect.clear()
 for f in collect:
     if f.endswith(".pyc") or f.endswith("Thumbs.db"):
         os.remove(f)
@@ -109,10 +107,7 @@ for f in collect:
             # print(len(bs))
         with open(f, "wb") as ff:
             ff.write(bs)
-#         for _dll, _ in imports:
-#             collectapisets.add(_dll)
-# for api in collectapisets:
-#     copycheck(rf"{downlevel}\{api}", targetdir + "/files/runtime")
+
 target = os.path.basename(targetdir)
 os.chdir(os.path.dirname(targetdir))
 if os.path.exists(rf"{target}.zip"):
