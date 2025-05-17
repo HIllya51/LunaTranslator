@@ -292,7 +292,7 @@ if __name__ == "__main__":
         shutil.rmtree(os.path.join(os.path.dirname(py37Path), "Lib\\unittest"))
         # 放弃，3.8需要安装KB2533623才能运行，3.7用不着。
         subprocess.run(
-            f"{py37Path} {os.path.join(rootthisfiledir,'collectpyruntime.py')}"
+            f"{py37Path} {os.path.join(rootthisfiledir,'collectpyruntime.py')} {target}"
         )
     elif sys.argv[1] == "merge":
         arch = sys.argv[2]
