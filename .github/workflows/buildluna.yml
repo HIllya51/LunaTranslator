@@ -12,7 +12,7 @@ jobs:
     runs-on: ${{matrix.runson}}
     strategy:
       matrix:
-        include: &commoninclude
+        include:
           - arch: x86
             target: win7  
             runson: windows-latest
@@ -47,7 +47,22 @@ jobs:
     runs-on: ${{matrix.runson}}
     strategy:
       matrix: 
-        include: *commoninclude
+        include:
+          - arch: x86
+            target: win7  
+            runson: windows-latest
+          - arch: x64
+            target: win7  
+            runson: windows-latest
+          - arch: x64
+            target: win10  
+            runson: windows-latest
+          - arch: x86
+            target: win10  
+            runson: windows-latest
+          - arch: x86
+            target: xp
+            runson: windows-2019
     steps:
       - uses: actions/checkout@v4
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
