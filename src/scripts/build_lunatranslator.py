@@ -153,8 +153,8 @@ def downloadNtlea():
     )
 
 
-def downloadCurl(arch):
-    if arch == "xp":
+def downloadCurl(target):
+    if target == "xp":
         os.chdir(f"{rootDir}/scripts/temp")
         subprocess.run(f"curl -C - -LO {curlFile32xp}")
         subprocess.run(f"7z x -y {curlFile32xp.split('/')[-1]}")
@@ -200,26 +200,8 @@ def get_url_as_json(url):
             time.sleep(3)
 
 
-def buildPlugins(arch, win10above=False):
-    os.chdir(rootDir + "/cpp/scripts")
-    subprocess.run("python fetchwebview2.py")
-    if arch == "x86":
-        subprocess.run(
-            f'cmake {"-DWIN10ABOVE=ON" if win10above else ""} ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-        )
-        subprocess.run(
-            f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
-        )
-    # subprocess.run(f"python copytarget.py 1")
-    elif arch == "x64":
-        subprocess.run(
-            f'cmake {"-DWIN10ABOVE=ON" if win10above else ""} ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-        )
-        subprocess.run(
-            f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
-        )
-        # subprocess.run(f"python copytarget.py 0")
-    elif arch == "xp":
+def buildPlugins(arch, target):
+    if target == "xp":
         with open("do.bat", "w") as ff:
             ff.write(
                 rf"""
@@ -229,6 +211,22 @@ cmake --build ../build/x86_xp --config Release --target ALL_BUILD -j 14
 """
             )
         os.system(f"cmd /c do.bat")
+    else:
+        flag = "-DWIN10ABOVE=ON" if target == "win10" else ""
+        if arch == "x86":
+            subprocess.run(
+                f'cmake {flag} ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+            )
+            subprocess.run(
+                f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
+            )
+        elif arch == "x64":
+            subprocess.run(
+                f'cmake {flag} ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
+            )
+            subprocess.run(
+                f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
+            )
 
 
 def downloadbass():
@@ -252,16 +250,16 @@ def downloadbass():
         fuckmove(f"scripts/temp/{d}/x64/{d[:-2]}.dll", "files/plugins/DLL64")
 
 
-def downloadalls(arch):
+def downloadalls(target):
     os.chdir(rootDir)
     os.makedirs("scripts/temp", exist_ok=True)
     createPluginDirs()
     downloadNtlea()
     downloadbass()
-    downloadCurl(arch)
+    downloadCurl(target)
     downloadLocaleEmulator()
     downloadlr()
-    if arch == "xp":
+    if target == "xp":
         return
     downloadmapie()
     downloadOCRModel()
@@ -283,20 +281,17 @@ if __name__ == "__main__":
             print("version=" + versionstring)
             exit()
     elif sys.argv[1] == "cpp":
-        buildPlugins(sys.argv[2], len(sys.argv)>3 and not sys.argv[3].startswith('3.7'))
+        buildPlugins(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "pyrt":
-        version = sys.argv[3]
-        if sys.argv[2] == "x86":
-            py37Path = (
-                f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x86\\python.exe"
-            )
-        else:
-            py37Path = (
-                f"C:\\hostedtoolcache\\windows\\Python\\{version}\\x64\\python.exe"
-            )
+        arch = sys.argv[2]
+        pythonversion = sys.argv[3]
+        target = sys.argv[4]
+        py37Path = (
+            f"C:\\hostedtoolcache\\windows\\Python\\{pythonversion}\\{arch}\\python.exe"
+        )
         os.chdir(rootDir)
         subprocess.run(f"{py37Path} -m pip install --upgrade pip")
-        if version.startswith('3.7'):
+        if target == "win7":
             subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
         else:
             subprocess.run(f"{py37Path} -m pip install tinycss2 pyqt6")
@@ -309,17 +304,19 @@ if __name__ == "__main__":
             f"{py37Path} {os.path.join(rootthisfiledir,'collectpyruntime.py')}"
         )
     elif sys.argv[1] == "merge":
-        downloadalls(sys.argv[2])
+        arch = sys.argv[2]
+        target = sys.argv[3]
+        downloadalls(target)
 
         os.chdir(rootDir)
-        if sys.argv[2] == "xp":
-            shutil.copytree("../build/cpp_xp", "cpp/builds", dirs_exist_ok=True)
-            shutil.copytree("../build/cpp_x64", "cpp/builds", dirs_exist_ok=True)
+        if target == "xp":
+            shutil.copytree("../build/cpp_x86_xp", "cpp/builds", dirs_exist_ok=True)
+            shutil.copytree("../build/cpp_x64_win7", "cpp/builds", dirs_exist_ok=True)
             shutil.copytree(
-                "../build/hook_xp", "files/plugins/LunaHook", dirs_exist_ok=True
+                "../build/hook_x86_xp", "files/plugins/LunaHook", dirs_exist_ok=True
             )
             shutil.copytree(
-                "../build/hook_64", "files/plugins/LunaHook", dirs_exist_ok=True
+                "../build/hook_x64_win7", "files/plugins/LunaHook", dirs_exist_ok=True
             )
             os.remove("files/plugins/LunaHook/LunaHost64.dll")
             os.makedirs("files/plugins/DLL32", exist_ok=True)
@@ -329,13 +326,13 @@ if __name__ == "__main__":
             os.system(f"python {os.path.join(rootthisfiledir,'collectall_xp.py')}")
             exit()
         shutil.copytree(
-            "../build/hook_64", "files/plugins/LunaHook", dirs_exist_ok=True
+            f"../build/hook_x64_{target}", "files/plugins/LunaHook", dirs_exist_ok=True
         )
         shutil.copytree(
-            "../build/hook_32", "files/plugins/LunaHook", dirs_exist_ok=True
+            f"../build/hook_x86_{target}", "files/plugins/LunaHook", dirs_exist_ok=True
         )
-        shutil.copytree("../build/cpp_x64", "cpp/builds", dirs_exist_ok=True)
-        shutil.copytree("../build/cpp_x86", "cpp/builds", dirs_exist_ok=True)
+        shutil.copytree(f"../build/cpp_x64_{target}", "cpp/builds", dirs_exist_ok=True)
+        shutil.copytree(f"../build/cpp_x86_{target}", "cpp/builds", dirs_exist_ok=True)
 
         os.makedirs("files/plugins/DLL32", exist_ok=True)
         shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
@@ -344,9 +341,9 @@ if __name__ == "__main__":
         shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
         os.system(f"robocopy cpp/builds/_x64 files/plugins/DLL64 *.dll")
 
-        if sys.argv[2] == "x86":
-            os.remove("files/plugins/LunaHook/LunaHost64.dll")
-            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 32")
+        if arch == "x86":
+            os.remove(f"files/plugins/LunaHook/LunaHost64.dll")
+            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 32 {target}")
         else:
             os.remove("files/plugins/LunaHook/LunaHost32.dll")
-            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 64")
+            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 64 {target}")

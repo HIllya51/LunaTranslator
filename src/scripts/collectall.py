@@ -3,7 +3,7 @@ import platform
 import sys
 from importanalysis import importanalysis
 
-x86 = platform.architecture()[0] == "32bit"
+target = sys.argv[2]
 if sys.argv[1] == "32":
     targetdir = r"build\LunaTranslator_x86"
     launch = "../src/cpp/builds/_x86"
@@ -14,6 +14,8 @@ else:
     baddll = "DLL32"
     launch = "../src/cpp/builds/_x64"
     targetdir = r"build\LunaTranslator"
+    if target == "win10":
+        targetdir += "_win10"
     pyrt = "../build/pyrt_x64/runtime"
     downlevel = r"C:\Windows\system32\downlevel"
 
@@ -81,11 +83,14 @@ for f in collect:
                 "api-ms-win-core-path-l1-1-0.dll",
             ):
                 continue
-            elif low=='api-ms-win-core-com-l1-1-0.dll':
-                _target='Ole32.dll'
+            elif low == "api-ms-win-core-com-l1-1-0.dll":
+                _target = "Ole32.dll"
             elif low == "api-ms-win-core-shlwapi-legacy-l1-1-0.dll":
                 _target = "Shlwapi.dll"
-            elif low in ("api-ms-win-eventing-provider-l1-1-0.dll", "api-ms-win-security-base-l1-1-0.dll"):
+            elif low in (
+                "api-ms-win-eventing-provider-l1-1-0.dll",
+                "api-ms-win-security-base-l1-1-0.dll",
+            ):
                 _target = "Advapi32.dll"
             elif low in ("api-ms-win-ntuser-sysparams-l1-1-0.dll",):
                 _target = "User32.dll"

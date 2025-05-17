@@ -8,8 +8,8 @@ if not rootDir:
     rootDir = os.path.abspath(".")
 else:
     rootDir = os.path.abspath(rootDir)
-rootthisfiledir=rootDir
-rootDir=os.path.abspath(os.path.join(rootDir,'../../src'))
+rootthisfiledir = rootDir
+rootDir = os.path.abspath(os.path.join(rootDir, "../../src"))
 pyversion = platform.python_version()
 pyversion2 = "".join(pyversion.split(".")[:2])
 x86 = platform.architecture()[0] == "32bit"
@@ -118,8 +118,12 @@ copycheck(os.path.join(py37Path, "DLLs/libffi-7.dll"), runtime)
 
 copycheck(rf"{downlevel}\ucrtbase.dll", runtime)
 
+try:
+    from PyQt5 import QtCore
 
-qtver='Qt5' if sys.version_info.minor==7 else 'Qt6'
+    qtver = "Qt5"
+except:
+    qtver = "Qt6"
 
 
 copycheck(
@@ -127,7 +131,9 @@ copycheck(
     os.path.join(runtime),
 )
 copycheck(
-    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/vcruntime140_1.dll"),
+    os.path.join(
+        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/vcruntime140_1.dll"
+    ),
     os.path.join(runtime),
 )
 copycheck(
@@ -154,7 +160,9 @@ copycheck(
     os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
 copycheck(
-    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}SvgWidgets.dll"),
+    os.path.join(
+        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}SvgWidgets.dll"
+    ),
     os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
 copycheck(
@@ -167,7 +175,9 @@ copycheck(
 )
 
 copycheck(
-    os.path.join(py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Widgets.dll"),
+    os.path.join(
+        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/bin/{qtver}Widgets.dll"
+    ),
     os.path.join(runtime, f"Py{qtver}/{qtver}/bin"),
 )
 
@@ -188,13 +198,15 @@ copycheck(
 
 copycheck(
     os.path.join(
-        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qmodernwindowsstyle.dll"
+        py37Path,
+        f"Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qmodernwindowsstyle.dll",
     ),
     os.path.join(runtime, f"Py{qtver}/{qtver}/plugins/styles"),
 )
 copycheck(
     os.path.join(
-        py37Path, f"Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qwindowsvistastyle.dll"
+        py37Path,
+        f"Lib/site-packages/Py{qtver}/{qtver}/plugins/styles/qwindowsvistastyle.dll",
     ),
     os.path.join(runtime, f"Py{qtver}/{qtver}/plugins/styles"),
 )

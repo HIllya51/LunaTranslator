@@ -10,7 +10,7 @@ if len(sys.argv) and sys.argv[1] == "merge":
     os.chdir(rootDir)
     os.mkdir("../build")
     os.mkdir("builds")
-    
+
     shutil.copytree(
         f"build/64/Release",
         f"../build/Release",
@@ -35,13 +35,9 @@ print(rootDir)
 
 
 def build_langx(bit, onlycore, win10above=False):
-    config = (
-        f"-DBUILD_PLUGIN=OFF -DWINXP=OFF -DBUILD_GUI=ON "
-        if not onlycore
-        else ""
-    )
+    config = f"-DBUILD_PLUGIN=OFF -DWINXP=OFF -DBUILD_GUI=ON " if not onlycore else ""
     if win10above:
-        config+=" -DWIN10ABOVE=ON " 
+        config += " -DWIN10ABOVE=ON "
     with open("do.bat", "w") as ff:
         if bit == "32":
             ff.write(
@@ -60,7 +56,7 @@ cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14
     os.system(f"cmd /c do.bat")
 
 
-def build_langx_xp( core):
+def build_langx_xp(core):
     flags = "" if core else " -DBUILD_GUI=ON "
     with open("do.bat", "w") as ff:
         ff.write(
@@ -99,5 +95,5 @@ elif sys.argv[1] == "build":
     elif bit == "winxp_core":
         build_langx_xp(True)
     else:
-        onlycore = int(sys.argv[3]) if len(sys.argv) >3 else False
-        build_langx(bit, onlycore, len(sys.argv)>4 and not sys.argv[4].startswith('3.7'))
+        onlycore = int(sys.argv[3]) if len(sys.argv) > 3 else False
+        build_langx(bit, onlycore, len(sys.argv) > 4 and sys.argv[4] == "win10")
