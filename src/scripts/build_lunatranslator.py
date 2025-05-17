@@ -218,6 +218,11 @@ def buildPlugins(arch, target):
     subprocess.run(
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
     )
+    for _dir, _, _fs in os.walk(""):
+        for _f in _fs:
+            ff = os.path.join(_dir, _f)
+            if os.path.splitext(ff)[1].lower() not in (".dll", ".exe"):
+                os.remove(ff)
 
 
 def downloadbass():
