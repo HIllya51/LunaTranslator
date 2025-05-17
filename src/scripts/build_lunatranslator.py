@@ -334,11 +334,8 @@ if __name__ == "__main__":
 
         if arch == "x86":
             os.remove(f"files/plugins/LunaHook/LunaHost64.dll")
-            os.system(
-                f"python {os.path.join(rootthisfiledir,'collectall.py')} 32 {target}"
-            )
         else:
             os.remove("files/plugins/LunaHook/LunaHost32.dll")
-            os.system(
-                f"python {os.path.join(rootthisfiledir,'collectall.py')} 64 {target}"
-            )
+        os.system(
+            f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
+        )

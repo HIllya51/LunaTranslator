@@ -3,20 +3,19 @@ import platform
 import sys
 from importanalysis import importanalysis
 
+arch = sys.argv[1]
 target = sys.argv[2]
-if sys.argv[1] == "32":
+pyrt = f"../build/pyrt_{arch}_{target}/runtime"
+launch = f"../src/cpp/builds/_{arch}"
+if arch == "x86":
     targetdir = r"build\LunaTranslator_x86"
-    launch = "../src/cpp/builds/_x86"
     baddll = "DLL64"
-    pyrt = "../build/pyrt_x86/runtime"
     downlevel = r"C:\Windows\SysWOW64\downlevel"
 else:
     baddll = "DLL32"
-    launch = "../src/cpp/builds/_x64"
     targetdir = r"build\LunaTranslator"
     if target == "win10":
         targetdir += "_win10"
-    pyrt = "../build/pyrt_x64/runtime"
     downlevel = r"C:\Windows\system32\downlevel"
 
 
