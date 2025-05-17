@@ -110,5 +110,4 @@ class WebSocket:
                 lheaders.append(_)
         curl_easy_setopt(self.curl, CURLoption.HTTPHEADER, lheaders.ptr)
 
-        error = curl_easy_perform(self.curl)
-        MaybeRaiseException(error)
+        curl_easy_perform(self.curl)

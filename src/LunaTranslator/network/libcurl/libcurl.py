@@ -9,6 +9,7 @@ from ctypes import (
     CFUNCTYPE,
     c_size_t,
     c_char,
+    pointer,
     Structure,
     POINTER,
     c_int64,
@@ -190,12 +191,12 @@ curl_global_init(3)
 curl_global_cleanup = libcurl.curl_global_cleanup
 curl_easy_init = libcurl.curl_easy_init
 curl_easy_init.restype = CURL
-curl_easy_setopt = libcurl.curl_easy_setopt
-curl_easy_setopt.argtypes = CURL, CURLoption, c_void_p
-curl_easy_setopt.restype = CURLcode
-curl_easy_perform = libcurl.curl_easy_perform
-curl_easy_perform.argtypes = (CURL,)
-curl_easy_perform.restype = CURLcode
+_curl_easy_setopt = libcurl.curl_easy_setopt
+_curl_easy_setopt.argtypes = CURL, CURLoption, c_void_p
+_curl_easy_setopt.restype = CURLcode
+_curl_easy_perform = libcurl.curl_easy_perform
+_curl_easy_perform.argtypes = (CURL,)
+_curl_easy_perform.restype = CURLcode
 curl_easy_cleanup = libcurl.curl_easy_cleanup
 curl_easy_cleanup.argtypes = (CURL,)
 curl_slist_append = libcurl.curl_slist_append
@@ -203,9 +204,9 @@ curl_slist_append.argtypes = POINTER(curl_slist), c_char_p
 curl_slist_append.restype = POINTER(curl_slist)
 curl_slist_free_all = libcurl.curl_slist_free_all
 curl_slist_free_all.argtypes = (POINTER(curl_slist),)
-curl_easy_getinfo = libcurl.curl_easy_getinfo
-curl_easy_getinfo.argtypes = CURL, CURLINFO, c_void_p
-curl_easy_getinfo.restype = CURLcode
+_curl_easy_getinfo = libcurl.curl_easy_getinfo
+_curl_easy_getinfo.argtypes = CURL, CURLINFO, c_void_p
+_curl_easy_getinfo.restype = CURLcode
 curl_easy_recv = libcurl.curl_easy_recv
 curl_easy_recv.argtypes = CURL, c_void_p, c_size_t, POINTER(c_size_t)
 curl_easy_recv.restype = CURLcode
@@ -217,6 +218,21 @@ curl_easy_duphandle.argtypes = (CURL,)
 curl_easy_duphandle.restype = CURL
 curl_easy_reset = libcurl.curl_easy_reset
 curl_easy_reset.argtypes = (CURL,)
+
+
+def curl_easy_perform(curl: CURL):
+    MaybeRaiseException(_curl_easy_perform(curl))
+
+
+def curl_easy_setopt(curl: CURL, option: CURLoption, data):
+    MaybeRaiseException(_curl_easy_setopt(curl, option, data))
+
+
+def curl_easy_getinfo(curl: CURL, info: CURLINFO, T):
+    buff = T()
+    MaybeRaiseException(_curl_easy_getinfo(curl, info, pointer(buff)))
+    return buff.value
+
 
 try:
     curl_ws_recv = libcurl.curl_ws_recv

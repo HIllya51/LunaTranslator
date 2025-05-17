@@ -1,6 +1,6 @@
 from .libcurl import *
 import threading, functools, queue
-from ctypes import c_long, cast, pointer
+from ctypes import c_long, cast
 from requests import Response, Requester_common
 
 
@@ -47,48 +47,9 @@ class Requester(Requester_common):
     def __init__(self) -> None:
         # 用tls不太行，因为为了防止阻塞，每次请求都是完全重新开的线程，会100%重新initcurl
         self.occupied = 0
-        self.curl = self.initcurl()
-
-    def initcurl(self):
         curl = curl_easy_init()
         curl_easy_setopt(curl, CURLoption.USERAGENT, self.default_UA.encode("utf8"))
-        return curl
-
-    def _getrespurl(self, curl):
-        url = c_char_p()
-        MaybeRaiseException(
-            curl_easy_getinfo(curl, CURLINFO.EFFECTIVE_URL, pointer(url))
-        )
-        return url.value.decode()
-
-    def _getStatusCode(self, curl):
-        status_code = c_long()
-        MaybeRaiseException(
-            curl_easy_getinfo(curl, CURLINFO.RESPONSE_CODE, pointer(status_code))
-        )
-        return status_code.value
-
-    def _set_proxy(self, curl, proxy):
-        if proxy:
-            MaybeRaiseException(
-                curl_easy_setopt(curl, CURLoption.PROXY, proxy.encode("utf8"))
-            )
-
-    def _set_verify(self, curl, verify):
-        if verify == False:
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, 0)
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 0)
-        else:
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, 1)
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 2)
-
-    def _perform(self, curl):
-        MaybeRaiseException(curl_easy_perform(curl))
-
-    def _set_allow_redirects(self, curl, allow_redirects):
-
-        curl_easy_setopt(curl, CURLoption.FOLLOWLOCATION, int(allow_redirects))
-        # curl_easy_setopt(curl, CURLoption.MAXREDIRS, 100) #默认50够了
+        self.curl = curl
 
     def __WriteMemoryCallback(
         self, headerqueue: queue.Queue, que, contents, size, nmemb, userp
@@ -130,7 +91,7 @@ class Requester(Requester_common):
         lheaders = auto_curl_slist()
         for _ in self._parseheader(headers, None):
             lheaders.append(_)
-        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders.ptr))
+        curl_easy_setopt(curl, CURLoption.HTTPHEADER, lheaders.ptr)
 
         if cookies:
             cookie = self._parsecookie(cookies)
@@ -150,7 +111,7 @@ class Requester(Requester_common):
         headers: dict,
         cookies,
         databytes,
-        proxy,
+        proxy: str,
         stream,
         verify,
         timeout,
@@ -173,22 +134,20 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)
         encoding: str = headers.get("Accept-Encoding", self.Accept_Encoding)
         if encoding:
-            MaybeRaiseException(
-                curl_easy_setopt(
-                    curl, CURLoption.ACCEPT_ENCODING, encoding.encode("utf8")
-                )
-            )
-        MaybeRaiseException(
-            curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.encode("utf8"))
-        )
-        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.URL, url.encode("utf8")))
-        MaybeRaiseException(curl_easy_setopt(curl, CURLoption.PORT, port))
+            curl_easy_setopt(curl, CURLoption.ACCEPT_ENCODING, encoding.encode("utf8"))
+        curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.encode("utf8"))
+        curl_easy_setopt(curl, CURLoption.URL, url.encode("utf8"))
+        curl_easy_setopt(curl, CURLoption.PORT, port)
         lheaders = self._setheaders(curl, headers, cookies)
 
-        self._set_verify(curl, verify)
-        self._set_proxy(curl, proxy)
-        self._set_allow_redirects(curl, allow_redirects)
-        if len(databytes):
+        curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, (0, 1)[bool(verify)])
+        curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, (0, 2)[bool(verify)])
+
+        if proxy:
+            curl_easy_setopt(curl, CURLoption.PROXY, proxy.encode("utf8"))
+        curl_easy_setopt(curl, CURLoption.FOLLOWLOCATION, int(allow_redirects))
+        # curl_easy_setopt(curl, CURLoption.MAXREDIRS, 100) #默认50够了
+        if databytes:
             curl_easy_setopt(curl, CURLoption.POSTFIELDS, databytes)
             curl_easy_setopt(curl, CURLoption.POSTFIELDSIZE, len(databytes))
 
@@ -217,7 +176,7 @@ class Requester(Requester_common):
 
             def ___perform():
                 try:
-                    self._perform(curl)
+                    curl_easy_perform(curl)
                 except Exception as e:
                     headerqueue.put(e)
                 resp.queue.put(None)
@@ -225,14 +184,13 @@ class Requester(Requester_common):
             threading.Thread(target=___perform, daemon=True).start()
 
         else:
-
-            self._perform(curl)
+            curl_easy_perform(curl)
         header = self.__getrealheader(headerqueue)
         if not stream:
             resp.content = b"".join(resp.queue)
 
         resp.headers, resp.cookies, resp.reason = self._parseheader2dict(header)
-        resp.status_code = self._getStatusCode(curl)
-        resp.url = self._getrespurl(curl)
+        resp.status_code = curl_easy_getinfo(curl, CURLINFO.RESPONSE_CODE, c_long)
+        resp.url = curl_easy_getinfo(curl, CURLINFO.EFFECTIVE_URL, c_char_p).decode()
 
         return resp
