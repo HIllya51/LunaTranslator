@@ -21,7 +21,6 @@ endif()
 
 FetchContent_Declare(opencv 
     URL https://github.com/RapidAI/OpenCVBuilder/releases/download/4.7.0/opencv-4.7.0-windows-vs2019-${mtmd}.7z
-    URL_HASH SHA1=fff392a1dab68b447c8ad06a60566e2967e7c04d
     DOWNLOAD_EXTRACT_TIMESTAMP true
 )
 FetchContent_Declare(onnxruntime 
