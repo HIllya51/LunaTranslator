@@ -14,7 +14,7 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python src/scripts/build_lunahook.py build winxp
+      - run: python src/scripts/build_lunahook.py build x86 0 xp
       - run: python src/scripts/packlunahook.py
 
       - uses: actions/upload-artifact@v4
@@ -76,7 +76,7 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
-      - run: python src/scripts/build_lunahook.py build ${{matrix.bits}}
+      - run: python src/scripts/build_lunahook.py build x64 0 win7
 
       - uses: actions/upload-artifact@v4
         with:
