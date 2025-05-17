@@ -114,6 +114,7 @@ copycheck(os.path.join(py37Path, "Dlls/sqlite3.dll"), runtime)
 
 copycheck(os.path.join(py37Path, "Lib/encodings"), runtime)
 copycheck(os.path.join(py37Path, "DLLs/libffi-7.dll"), runtime)
+copycheck(os.path.join(py37Path, "DLLs/libffi-8.dll"), runtime)
 
 
 copycheck(rf"{downlevel}\ucrtbase.dll", runtime)

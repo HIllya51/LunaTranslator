@@ -201,32 +201,22 @@ def get_url_as_json(url):
 
 
 def buildPlugins(arch, target):
-    if target == "xp":
-        with open("do.bat", "w") as ff:
-            ff.write(
-                rf"""
+    os.chdir(rootDir + "/cpp")
+    archA = ("win32", "x64")[arch == "x64"]
 
-cmake -DWINXP=ON ../CMakeLists.txt -G "Visual Studio 16 2019" -A win32 -T v141_xp -B ../build/x86_xp
-cmake --build ../build/x86_xp --config Release --target ALL_BUILD -j 14
-"""
-            )
-        os.system(f"cmd /c do.bat")
-    else:
-        flag = "-DWIN10ABOVE=ON" if target == "win10" else ""
-        if arch == "x86":
-            subprocess.run(
-                f'cmake {flag} ../CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ../build/x86 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-            )
-            subprocess.run(
-                f"cmake --build ../build/x86 --config Release --target ALL_BUILD -j 14"
-            )
-        elif arch == "x64":
-            subprocess.run(
-                f'cmake {flag} ../CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ../build/x64 -DCMAKE_SYSTEM_VERSION=10.0.26621.0'
-            )
-            subprocess.run(
-                f"cmake --build ../build/x64 --config Release --target ALL_BUILD -j 14"
-            )
+    flag = (
+        "-DWIN10ABOVE=ON"
+        if target == "win10"
+        else (" -DWINXP=ON " if target == "xp" else "")
+    )
+    vsver = "Visual Studio 16 2019" if target == "xp" else "Visual Studio 17 2022"
+    Tool = "v141_xp" if target == "xp" else f"host={arch}"
+    subprocess.run(
+        f'cmake {flag} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
+    )
+    subprocess.run(
+        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
+    )
 
 
 def downloadbass():
@@ -343,7 +333,11 @@ if __name__ == "__main__":
 
         if arch == "x86":
             os.remove(f"files/plugins/LunaHook/LunaHost64.dll")
-            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 32 {target}")
+            os.system(
+                f"python {os.path.join(rootthisfiledir,'collectall.py')} 32 {target}"
+            )
         else:
             os.remove("files/plugins/LunaHook/LunaHost32.dll")
-            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} 64 {target}")
+            os.system(
+                f"python {os.path.join(rootthisfiledir,'collectall.py')} 64 {target}"
+            )
