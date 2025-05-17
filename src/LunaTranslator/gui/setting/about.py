@@ -102,8 +102,8 @@ def doupdate():
         gobject.getcachedir("Updater.exe"),
     )
     subprocess.Popen(
-        r".\cache\Updater.exe update {} .\cache\update\LunaTranslator{}".format(
-            int(gobject.baseobject.istriggertoupdate), bit
+        r".\cache\Updater.exe update {} .\cache\update\LunaTranslator{} {}".format(
+            int(gobject.baseobject.istriggertoupdate), bit, os.getpid()
         )
     )
 

@@ -1692,7 +1692,7 @@ class TranslatorWindow(resizableframeless):
 
             gobject.baseobject.textsource = None
             gobject.baseobject.destroytray()
-            handle = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
+            _ = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
             if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
                 errors = saveallconfig()
                 if errors:
@@ -1704,7 +1704,6 @@ class TranslatorWindow(resizableframeless):
                     )
                 self.tryremoveuseless()
                 doupdate()
-                windows.CloseHandle(handle)
             os._exit(0)
 
         except:

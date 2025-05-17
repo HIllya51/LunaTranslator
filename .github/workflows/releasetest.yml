@@ -7,5 +7,5 @@ jobs:
   buildluna:
     uses: ./.github/workflows/buildluna.yml
     with:
-      pythonversion: 3.9.13
+      pythonversion: 3.12.10
       buildbit32: false
