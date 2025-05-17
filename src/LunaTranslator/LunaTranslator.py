@@ -115,6 +115,8 @@ class MAINUI:
     def ttsautoforward(self):
         if not globalconfig["ttsautoforward"]:
             return
+        if not globalconfig["autorun"]:
+            return
         windows.SetForegroundWindow(self.hwnd)
         time.sleep(0.001)
         windows.keybd_event(windows.VK_RETURN, 0, 0, 0)
