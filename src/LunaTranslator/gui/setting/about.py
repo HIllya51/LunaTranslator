@@ -108,14 +108,13 @@ def doupdate():
     )
 
 
-def updatemethod_checkalready(size, savep, sha256):
+def updatemethod_checkalready(savep, sha256):
     if not os.path.exists(savep):
         return False
     if not sha256:
         return True
     with open(savep, "rb") as ff:
         newsha256 = hashlib.sha256(ff.read()).hexdigest()
-        # print(newsha256, sha256)
         return newsha256 == sha256
 
 
@@ -129,31 +128,13 @@ def updatemethod(urls, self):
     savep = gobject.getcachedir("update/" + url.split("/")[-1])
     if not savep.endswith(".zip"):
         savep += ".zip"
-    wait = threading.Semaphore(0)
-    results = []
-    proxies = [None]
-    if getproxy().get("https"):
-        proxies.append(getproxy())
-    for proxy in proxies:
-
-        @threader
-        @trypass
-        def __(proxy):
-
-            r2 = requests.head(url, verify=False, proxies=proxy)
-            results.append((proxy, r2))
-            wait.release()
-
-        __(proxy)
-    wait.acquire()
-    size = int(results[0][1].headers["Content-Length"])
     if check_interrupt():
         return
-    if updatemethod_checkalready(size, savep, sha256):
+    if updatemethod_checkalready(savep, sha256):
         return savep
     with open(savep, "wb") as file:
-        sess = requests.Session()
-        r = sess.get(url, stream=True, verify=False, proxies=results[0][0])
+        r = requests.get(url, stream=True, verify=False, proxies=getproxy())
+        size = int(r.headers["Content-Length"])
         file_size = 0
         for i in r.iter_content(chunk_size=1024 * 32):
             if check_interrupt():
@@ -174,7 +155,7 @@ def updatemethod(urls, self):
 
     if check_interrupt():
         return
-    if updatemethod_checkalready(size, savep, sha256):
+    if updatemethod_checkalready(savep, sha256):
         return savep
 
 
