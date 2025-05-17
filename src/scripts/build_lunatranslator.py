@@ -209,10 +209,11 @@ def buildPlugins(arch, target):
         if target == "win10"
         else (" -DWINXP=ON " if target == "xp" else "")
     )
+    sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 " if target != "xp" else ""
     vsver = "Visual Studio 16 2019" if target == "xp" else "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "xp" else f"host={arch}"
     subprocess.run(
-        f'cmake {flag} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
+        f'cmake {flag} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
     )
     subprocess.run(
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
