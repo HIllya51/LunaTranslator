@@ -116,11 +116,10 @@ class TS(basetrans):
         response = self.proxysession.post(
             "https://fanyi.baidu.com/ait/text/translate",
             headers=headers,
-            json=json_data,
-            stream=True,
+            json=json_data 
         )
 
-        for text in response.iter_lines():
+        for text in response.text.splitlines():
             # print(text,text[:5]!=b'data:',text[:5],b'data:')
             if len(text) == 0 or text[:5] != b"data:":
                 continue

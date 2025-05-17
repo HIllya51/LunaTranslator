@@ -2,7 +2,7 @@ import os
 from myutils.config import globalconfig
 import requests, zipfile, gobject
 from gui.usefulwidget import VisLFormLayout, getsmalllabel, getboxlayout
-from myutils.utils import makehtml, stringfyerror
+from myutils.utils import makehtml, stringfyerror, dynamiclink
 from myutils.config import _TR, mayberelpath
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
@@ -31,9 +31,9 @@ class resourcewidget(QWidget):
             self.formLayout.setRowVisible(2, False)
             self.btninstall.setEnabled(True)
 
-    oldlink = (
-        "https://clrd.ninjal.ac.jp/unidic_archive/cwj/2.1.2/unidic-mecab-2.1.2_bin.zip"
-    )
+    @property
+    def oldlink(self):
+        return dynamiclink("/Resource/dictionary/unidic-mecab-2.1.2_bin.zip")
 
     checkdirname = "unidic-mecab-2.1.2_bin"
     oldlinkfnname = "unidic-mecab-2.1.2_bin.zip"
@@ -158,7 +158,9 @@ class resourcewidget2(QWidget):
             self.formLayout.setRowVisible(3, False)
             self.btninstall.setEnabled(True)
 
-    oldlink = "https://github.com/stephenmk/stephenmk.github.io/releases/latest/download/jitendex-mdict.zip"
+    @property
+    def oldlink(self):
+        return dynamiclink("/Resource/dictionary/jitendex-mdict.zip")
 
     def downloadofficial(self):
         tgt = gobject.getcachedir("mdict/jitendex/jitendex.mdx")
