@@ -83,7 +83,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{matrix.pythonversion}}
-          architecture: x${{ matrix.arch }}
+          architecture: ${{ matrix.arch }}
       
       - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{matrix.pythonversion}} ${{matrix.target}}
 
