@@ -223,6 +223,7 @@ class WinhttpException(RequestException):
     ERROR_WINHTTP_FEATURE_DISABLED = WINHTTP_ERROR_BASE + 192
 
     def __init__(self, code) -> None:
+        self.code = code
         module = None
         if (
             WinhttpException.WINHTTP_ERROR_BASE <= code

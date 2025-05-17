@@ -2499,7 +2499,6 @@ class GoogleLens:
         "Sec-Fetch-Site": "none",
         "Sec-Fetch-Mode": "no-cors",
         "Sec-Fetch-Dest": "empty",
-        "Accept-Encoding": "gzip, deflate, br, zstd",
     }
 
     def __init__(self, session: requests.Session):

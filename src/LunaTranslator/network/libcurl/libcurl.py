@@ -343,6 +343,7 @@ class CURLException(RequestException):
     LAST = 102
 
     def __init__(self, code) -> None:
+        self.code = code
         error = "UNKNOWN ERROR {}".format(code)
         message = curl_easy_strerror(code).decode("utf8")
         for _ in dir(self):
@@ -354,10 +355,16 @@ class CURLException(RequestException):
         super().__init__(error)
 
 
+class CURLException_BAD_CONTENT_ENCODING(Exception):
+    pass
+
+
 def MaybeRaiseException(error):
     if not error:
         return
     e = CURLException(error)
     if error == CURLException.OPERATION_TIMEDOUT:
         raise Timeout(e)
+    if error == CURLException.BAD_CONTENT_ENCODING:
+        raise CURLException_BAD_CONTENT_ENCODING(e)
     raise e

@@ -140,16 +140,23 @@ class Requester(Requester_common):
     Accept_Encoding = "gzip, deflate, br, zstd"
 
     def maybesetencoding(self, headers: dict, curl):
-        # 如果显示指定空encoding，则不要设置此项
-        # 主要针对R2有时会aws-thunked，导致BAD_CONTENT_ENCODING
-        if ("Accept-Encoding" in headers) and (not headers.get("Accept-Encoding")):
-            return
         encoding: str = headers.get("Accept-Encoding", self.Accept_Encoding)
+        if not encoding:
+            return
         MaybeRaiseException(
             curl_easy_setopt(curl, CURLoption.ACCEPT_ENCODING, encoding.encode("utf8"))
         )
 
-    def request_impl(
+    def request_impl(self, *a):
+        try:
+            resp = self.request_impl_1(*a)
+            return resp
+        except CURLException_BAD_CONTENT_ENCODING:
+            # R2 返回content-encoding: aws-thunked，导致BAD_CONTENT_ENCODING
+            resp = self.request_impl_1(*a, BAD_CONTENT_ENCODING_RETEST=True)
+            return resp
+
+    def request_impl_1(
         self,
         method,
         scheme,
@@ -165,6 +172,7 @@ class Requester(Requester_common):
         verify,
         timeout,
         allow_redirects,
+        BAD_CONTENT_ENCODING_RETEST=False,
     ):
         if self.occupied == False:
             curl = self.curl
@@ -179,7 +187,8 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout[0])
         if timeout[1]:
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, sum(timeout))
-        self.maybesetencoding(headers, curl)
+        if not BAD_CONTENT_ENCODING_RETEST:
+            self.maybesetencoding(headers, curl)
         if method == "HEAD":
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)
         MaybeRaiseException(

@@ -153,13 +153,7 @@ def updatemethod(urls, self):
         return savep
     with open(savep, "wb") as file:
         sess = requests.Session()
-        r = sess.get(
-            url,
-            stream=True,
-            verify=False,
-            proxies=results[0][0],
-            headers={"Accept-Encoding": ""},
-        )
+        r = sess.get(url, stream=True, verify=False, proxies=results[0][0])
         file_size = 0
         for i in r.iter_content(chunk_size=1024 * 32):
             if check_interrupt():

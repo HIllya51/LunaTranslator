@@ -76,9 +76,7 @@ class question(QWidget):
         saves.sort(key=lambda _: _[0])
         url = saves[-1][1]
         file_size = 0
-        req = requests.get(
-            url, stream=True, proxies=getproxy(), headers={"Accept-Encoding": ""}
-        )
+        req = requests.get(url, stream=True, proxies=getproxy())
         size = int(req.headers["Content-Length"])
         self.failedlink = lambda: url
         self.skiplink2 = True

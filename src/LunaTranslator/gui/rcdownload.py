@@ -165,9 +165,7 @@ class resourcewidget2(QWidget):
         if not os.path.isfile(tgt):
             url = self.oldlink
             file_size = 0
-            req = requests.get(
-                url, stream=True, proxies=getproxy(), headers={"Accept-Encoding": ""}
-            )
+            req = requests.get(url, stream=True, proxies=getproxy())
             size = int(req.headers["Content-Length"])
             target = gobject.gettempdir(url.split("/")[-1])
             with open(target, "wb") as ff:
