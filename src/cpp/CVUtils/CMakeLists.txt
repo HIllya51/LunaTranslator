@@ -14,9 +14,9 @@ FetchContent_Declare(clipper2
     GIT_TAG 3dd975ad6d6d770ed5be02e5b898a0937c21b806
 )
 if(WIN10ABOVE)
-    set(mtmd "mt")
-else()
     set(mtmd "md")
+else()
+    set(mtmd "mt")
 endif()
 
 FetchContent_Declare(opencv 
