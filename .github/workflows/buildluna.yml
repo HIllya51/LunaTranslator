@@ -119,10 +119,10 @@ jobs:
             savename: LunaTranslator_x86
           - arch: x64
             target: win7 
-            savename: LunaTranslator
+            savename: LunaTranslator_x64
           - arch: x64
             target: win10 
-            savename: LunaTranslator_win10 
+            savename: LunaTranslator_x64_win10 
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
@@ -184,7 +184,7 @@ jobs:
           files: |
             build/LunaTranslator_x86_winxp/LunaTranslator_x86_winxp.zip
             build/LunaTranslator_x86/LunaTranslator_x86.zip
-            build/LunaTranslator/LunaTranslator.zip
-          #  build/LunaTranslator_win10/LunaTranslator_win10.zip
+            build/LunaTranslator_x64/LunaTranslator_x64.zip
+          #  build/LunaTranslator_x64_win10/LunaTranslator_x64_win10.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

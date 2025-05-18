@@ -7,14 +7,13 @@ arch = sys.argv[1]
 target = sys.argv[2]
 pyrt = f"../build/pyrt_{arch}_{target}/runtime"
 launch = f"../src/cpp/builds/_{arch}"
+targetdir = rf"build\LunaTranslator_{arch}"
+if target == "win10":
+    targetdir += "_win10"
 if arch == "x86":
-    targetdir = r"build\LunaTranslator_x86"
     baddll = "DLL64"
 else:
     baddll = "DLL32"
-    targetdir = r"build\LunaTranslator"
-    if target == "win10":
-        targetdir += "_win10"
 
 
 def copycheck(src, tgt):
