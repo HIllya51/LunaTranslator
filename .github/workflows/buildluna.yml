@@ -124,7 +124,7 @@ jobs:
             target: win10 
             savename: LunaTranslator_x64_win10 
           - arch: x86
-            target: win7 
+            target: xp
             savename: LunaTranslator_x86_winxp 
     steps:
       - uses: actions/checkout@v4
