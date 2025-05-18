@@ -6,12 +6,12 @@
 #1.10.0 体积比1.9.0还要小一点
 set(ort_version 1.10.0)
 #
-
+include(ExternalProject)
 include(FetchContent)
 
 FetchContent_Declare(clipper2 
     GIT_REPOSITORY https://github.com/AngusJohnson/Clipper2
-    GIT_TAG 3dd975ad6d6d770ed5be02e5b898a0937c21b806
+    GIT_TAG Clipper2_1.5.3
 )
 if(WIN10ABOVE)
     set(mtmd "md")
