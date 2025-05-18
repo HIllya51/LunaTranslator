@@ -72,8 +72,6 @@ def tryqueryfromgithub():
 
 
 def trygetupdate():
-
-    bit = (("32", "64")[is_bit_64], "xp")[is_xp]
     try:
         version, links = tryqueryfromhost()
     except:
@@ -82,28 +80,29 @@ def trygetupdate():
             version, links = tryqueryfromgithub()
         except:
             return None
+    bit = ("x86", "x64")[is_bit_64]
+    if is_xp:
+        bit += "_winxp"
+    if not isqt5:
+        bit += "_win10"
     return version, links[bit], links.get("sha256", {}).get(bit, None)
 
 
 def doupdate():
     if not gobject.baseobject.update_avalable:
         return
-    if is_xp:
-        _6432 = "32"
-        bit = "_x86_winxp"
-    elif is_bit_64:
-        bit = ""
-        _6432 = "64"
-    else:
-        bit = "_x86"
-        _6432 = "32"
     shutil.copy(
-        r".\files\plugins\shareddllproxy{}.exe".format(_6432),
+        r".\files\plugins\shareddllproxy{}.exe".format(("32", "64")[is_bit_64]),
         gobject.getcachedir("Updater.exe"),
     )
+
+    for _dir, _, _fs in os.walk(r".\cache\update"):
+        for _f in _fs:
+            if _f.lower() == "lunatranslator.exe":
+                found = _dir
     subprocess.Popen(
-        r".\cache\Updater.exe update {} .\cache\update\LunaTranslator{} {}".format(
-            int(gobject.baseobject.istriggertoupdate), bit, os.getpid()
+        r".\cache\Updater.exe update {} {} {}".format(
+            int(gobject.baseobject.istriggertoupdate), found, os.getpid()
         )
     )
 
