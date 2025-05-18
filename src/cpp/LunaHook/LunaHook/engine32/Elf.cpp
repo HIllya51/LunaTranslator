@@ -484,11 +484,71 @@ namespace
     hp.index = 0x10;
     return NewHook(hp, "Elf4");
   }
+  bool malunohuanzhe()
+  {
+    // 麻呂の患者はガテン系３完結編
+    BYTE sig[] = {
+        0x8b, 0x4e, 0x20,
+        0x83, 0xf9, 0x10,
+        0x72, 0x05,
+        0x8b, 0x46, 0x0c,
+        0xeb, 0x03,
+        0x8d, 0x46, 0x0c,
+        0x80, 0x3c, 0x18, 0x00,
+        0x0f, 0x84, XX4,
+        0x83, 0xf9, 0x10,
+        0x72, 0x05,
+        0x8b, 0x46, 0x0c,
+        0xeb, 0x03,
+        0x8d, 0x46, 0x0c,
+        0x8a, 0x04, 0x18,
+        0x3c, 0x81,
+        0x72, 0x04,
+        0x3c, 0x9f,
+        0x76, 0x06,
+        0x04, 0x20,
+        0x3c, 0x0f,
+        0x77, XX};
+    ULONG addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = [addr]() -> uintptr_t
+    {
+      auto addr1 = MemDbg::findEnclosingAlignedFunction(addr);
+      if (!addr1)
+        return 0;
+      auto addr2 = findfuncstart(addr);
+      if (!addr2)
+        return 0;
+      if (addr2 == addr1)
+        return addr2;
+      return 0;
+    }();
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      auto a2 = context->stack[1];
+      auto text = (TextUnionA *)(a2 + 12);
+      buffer->from(text->view());
+    };
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    {
+      auto a2 = context->stack[1];
+      auto text = (TextUnionA *)(a2 + 12);
+      text->setText(buffer.viewA());
+    };
+    hp.embed_hook_font = F_TextOutA;
+    return NewHook(hp, "elf5");
+  }
 }
 bool Elf::attach_function()
 {
 
-  auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || elf3();
+  auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || elf3();
   return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
 }
 

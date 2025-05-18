@@ -3,6 +3,16 @@
 
 namespace
 {
+
+    inline std::string filterBlankLinesFromString(const std::string &s)
+    {
+        return re::sub(s, R"((?:\r\n|\n|^)\s*(?=\r\n|\n|$))");
+    }
+    inline std::wstring filterBlankLinesFromString(const std::wstring &s)
+    {
+        return re::sub(s, LR"((?:\r\n|\n|^)\s*(?=\r\n|\n|$))");
+    }
+
     void T010012A017F18000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[2];
@@ -160,15 +170,13 @@ namespace
         auto s = buffer->strW();
         s = re::sub(s, L"\\$d", L"\n");
         s = re::sub(s, L"＿", L" ");
-        s = re::sub(s, L"@", L" ");
-        s = re::sub(s, L"\\[([^\\/\\]]+)\\/[^\\/\\]]+\\]", L"$1");
-        s = re::sub(s, L"[~^$❝.❞'?,(-)!—:;-❛ ❜]");
-        s = re::sub(s, L"[A-Za-z0-9]");
+        strReplace(s, L"@");
+        s = re::sub(s, LR"(\[([^\/\]]+)\/[^\/\]]+\])", L"$1");
+        s = re::sub(s, L"[~^$❝.❞'?,(-)!—:;❛❜]");
+        strReplace(s, L"-");
         s = re::sub(s, L"^\\s+");
-        while (re::search(s, L"^\\s*$"))
-        {
-            s = re::sub(s, L"^\\s*$");
-        }
+        s = re::sub(s, L"[A-Za-z0-9]"); // 这作日英都用，但是英语会很乱，删了干脆。
+        s = filterBlankLinesFromString(s);
         buffer->from(s);
     }
 
@@ -872,10 +880,7 @@ namespace
         s = re::sub(s, "[A-Za-z0-9]");
         s = re::sub(s, "[,(-)_]");
         s = re::sub(s, "^\\s+");
-        while (re::search(s, "^\\s*$"))
-        {
-            s = re::sub(s, "^\\s*$");
-        }
+        s = filterBlankLinesFromString(s);
         buffer->from(s);
     }
 
@@ -1063,10 +1068,7 @@ namespace
         {
             s = re::sub(s, _);
         }
-        while (re::search(s, L"^\\s*$"))
-        {
-            s = re::sub(s, L"^\\s*$");
-        }
+        s = filterBlankLinesFromString(s);
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1310,10 +1312,7 @@ namespace
         auto s = buffer->strW();
         s = re::sub(s, L"\\d");
         s = re::sub(s, L"<[^>]*>");
-        while (re::search(s, L"^\\s*$"))
-        {
-            s = re::sub(s, L"^\\s*$");
-        }
+        s = filterBlankLinesFromString(s);
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -1608,10 +1607,7 @@ namespace
 
         s = re::sub(s, L"[A-Za-z0-9]");
         s = re::sub(s, L"[().%,_!#©&:?/]");
-        while (re::search(s, L"^\\s*$"))
-        {
-            s = re::sub(s, L"^\\s*$");
-        }
+        s = filterBlankLinesFromString(s);
         buffer->from(s);
     }
 
@@ -1713,10 +1709,7 @@ namespace
         {
             s = re::sub(s, (_));
         }
-        while (re::search(s, L"^\\s*$"))
-        {
-            s = re::sub(s, L"^\\s*$");
-        }
+        s = filterBlankLinesFromString(s);
         static std::wstring last;
         if (last == s)
             return buffer->clear();
@@ -2207,10 +2200,7 @@ namespace
         s = re::sub(s, u8"ズーム|回転|身長|体重");
         s = re::sub(s, "[A-Za-z0-9]");
         s = re::sub(s, "[().%,!#/]");
-        while (re::search(s, "^\\s*$"))
-        {
-            s = re::sub(s, "^\\s*$");
-        }
+        s = filterBlankLinesFromString(s);
         static std::string last;
         if (last == s)
             return buffer->clear();
@@ -2481,10 +2471,7 @@ namespace
     void F01001EF017BE6000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        while (re::search(s, L"^\\s*$"))
-        {
-            s = re::sub(s, L"^\\s*$");
-        }
+        s = filterBlankLinesFromString(s);
         buffer->from(s);
     }
     void F01000EA00D2EE000(TextBuffer *buffer, HookParam *hp)
@@ -2566,8 +2553,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // VARIABLE BARRICADE NS
     {0x800e3424, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, //"System Messages + Choices"), //Also includes the names of characters,
     {0x800fb080, {CODEC_UTF8, 3, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, // Main Text
-    // 蝶の毒 華の鎖
-    {0x80095010, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, 0x0100A1200CA3C000ull, "2.0.1"}}, // Main Text + Names
+    // 蝶の毒 華の鎖～大正艶恋異聞～
+    {0x800968BC, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, 0x0100A1200CA3C000ull, "1.0.0"}},
+    {0x80095010, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, 0x0100A1200CA3C000ull, nullptr}}, // 2.0.1 & 2.0.4  // Main Text + Names
     // Live a Live
     {0x80a05170, {CODEC_UTF16, 0, 0, 0, F0100982015606000, 0x0100C29017106000ull, "1.0.0"}},
     // さくらの雲＊スカアレットの恋
