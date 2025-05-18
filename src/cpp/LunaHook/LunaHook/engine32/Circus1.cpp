@@ -38,7 +38,6 @@ bool InsertCircusHook1() // jichi 10/2/2013: Change return type to bool
       }
   // break;
   // ConsoleOutput("Unknown CIRCUS engine");
-  ConsoleOutput("CIRCUS1: failed");
   return false;
 }
 namespace
@@ -80,11 +79,136 @@ namespace
     hp.embed_hook_font = F_GetGlyphOutlineA;
     return NewHook(hp, "Circus1");
   }
+  bool dcold_name()
+  {
+    BYTE sig[] = {
+        0x57,
+        0x6a, 0x01,
+        0x68, 0x58, 0x02, 0x00, 0x00,
+        0x68, 0x20, 0x03, 0x00, 0x00,
+        0x6a, 0x00,
+        0x6a, 0x00,
+        0xe8, XX4,
+        0x8b, 0x7c, 0x24, 0x1c,
+        0x83, 0xc4, 0x14,
+        0x80, 0x3f, 0x00,
+        0x74, XX,
+        0x8b, 0xc7,
+        0x8d, 0x50, 0x01,
+        0x8a, 0x08,
+        0x40,
+        0x84, 0xc9,
+        0x75, XX,
+        0x2b, 0xc2,
+        0x6b, 0xc0, 0x1a};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(1);
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_NEW;
+    hp.embed_hook_font = F_GetGlyphOutlineA;
+    return NewHook(hp, "dcold_name");
+  }
+  bool dcold_setakushi()
+  {
+    BYTE sig[] = {
+        0X56,
+        0X8B, 0X74, 0X24, 0X08,
+        0X8B, 0X46, 0X04,
+        0X8B, 0X56, 0X1C,
+        0X8B, 0X0E,
+        0X57,
+        0X03, 0XD0,
+        0X52,
+        0X8B, 0X56, 0X18,
+        0X03, 0XD1,
+        0X52, 0X50, 0X51,
+        0XE8, XX4,
+        0X8B, 0X7C, 0X24, 0X20,
+        0X83, 0XC4, 0X10,
+        0X80, 0X3F, 0X40,
+        0X75, XX,
+        0X80, 0X7F, 0X01, 0X73,
+        0X75, XX,
+        0XF6, 0X46, 0X08, 0X80,
+        0X74, XX};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(2);
+    hp.type = USING_STRING | FULL_STRING | NO_CONTEXT;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      static lru_cache<std::string> cache(3);
+      auto s = buffer->strA();
+      if (cache.touch(s))
+        buffer->clear();
+    };
+    return NewHook(hp, "dcold_setakushi");
+  }
+  bool dcold_TEXT()
+  {
+    BYTE sig[] = {
+        /*
+         if ( byte_8FA790[0] == 64 && byte_8FA791 == 75 )
+        dword_8FAB90 = 2;
+      dword_8DBC38 = strlen(byte_8FA790);
+        */
+        0x80, 0x3d, XX4, 0x40,
+        0x89, 0x35, XX4,
+        0x75, 0x13,
+        0x80, 0x3d, XX4, 0x4b,
+        0x75, 0x0a,
+        0xc7, 0x05, XX4, 0x02, 0x00, 0x00, 0x00,
+        0xb8, XX4,
+        0x8d, 0x50, 0x01,
+        0xeb, XX};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    static auto byte_8FA790 = (char *)*(DWORD *)(addr + 2);
+    auto byte_8FA791 = (char *)*(DWORD *)(addr + 7 + 6 + 2 + 2);
+    if (byte_8FA790 + 1 != byte_8FA791)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS;
+    hp.embed_hook_font = F_GetGlyphOutlineA;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      buffer->from(byte_8FA790);
+    };
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      // 看起来需要过滤@k的样子，不过c了一会儿没遇到，算了先不弄它。
+      auto s = buffer->strA();
+      s = re::sub(s, R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)", "$2"); // ｛みす／御簾｝
+      strReplace(s, "\x81\x40");
+      strReplace(s, "\n");
+      buffer->from(s);
+    };
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    {
+      strcpy(byte_8FA790, buffer.strA().c_str());
+    };
+    return NewHook(hp, "dcold_TEXT");
+  }
+  bool dcold()
+  {
+    // D.C.～ダ・カーポ～　MEMORIES DISC
+    auto succ = dcold_name() && dcold_TEXT();
+    if (succ)
+      succ |= dcold_setakushi();
+    return succ;
+  }
 }
 bool Circus1::attach_function()
 {
-
-  return InsertCircusHook1() | circus12();
+  return (InsertCircusHook1() | circus12()) || dcold();
 }
 
 bool Circus_old::attach_function()
