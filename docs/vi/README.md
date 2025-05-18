@@ -4,13 +4,13 @@
 
 ### Hệ thống Windows 7 trở lên
 
-<a href="https://lunatranslator.org/Resource/DownloadLuna/64"> 64-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_64bit-blue"/> </a>
+<a href="https://lunatranslator.org/Resource/DownloadLuna/x64"> 64-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_64bit-blue"/> </a>
 
-<a href="https://lunatranslator.org/Resource/DownloadLuna/32"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit-blue"/> </a>
+<a href="https://lunatranslator.org/Resource/DownloadLuna/x86"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit-blue"/> </a>
 
 ### Hệ thống Windows XP & Vista
 
-<a href="https://lunatranslator.org/Resource/DownloadLuna/xp"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
+<a href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
 ## Khởi chạy
 
