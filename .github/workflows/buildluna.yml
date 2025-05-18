@@ -123,6 +123,9 @@ jobs:
           - arch: x64
             target: win10 
             savename: LunaTranslator_x64_win10 
+          - arch: x86
+            target: win7 
+            savename: LunaTranslator_x86_winxp 
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
@@ -138,28 +141,7 @@ jobs:
         with:
           name: ${{ matrix.savename }}
           path: src/build/${{ matrix.savename }}.zip
-  merge_xp:
-    runs-on: windows-latest
-    needs: [build_cpp,hook]
-    permissions:
-      id-token: write
-      attestations: write
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-      - run: git submodule init src/files/LunaTranslator_qss
-      - run: git submodule update src/files/LunaTranslator_qss
-      - uses: actions/download-artifact@v4
-        with:
-            path: build
-      - run:  python src/scripts/build_lunatranslator.py merge x86 xp
-      - uses: actions/attest-build-provenance@v2.2.0
-        with:
-            subject-path: src/build/LunaTranslator_x86_winxp.zip
-      - uses: actions/upload-artifact@v4
-        with:
-          name: LunaTranslator_x86_winxp
-          path: src/build/LunaTranslator_x86_winxp.zip
+
   loadversion:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest
@@ -173,7 +155,7 @@ jobs:
   release:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest
-    needs: [merge_xp,merge,loadversion]
+    needs: [merge,loadversion]
     steps:
       - uses: actions/download-artifact@v4
         with:

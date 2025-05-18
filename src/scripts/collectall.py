@@ -5,11 +5,21 @@ from importanalysis import importanalysis
 
 arch = sys.argv[1]
 target = sys.argv[2]
-pyrt = f"../build/pyrt_{arch}_{target}/runtime"
+
+if target == "xp":
+    os.system("python scripts/generate_xp_code.py")
+    os.system("git clone --depth 1 https://github.com/HIllya51/py3.4_pyqt5.5.1")
+    os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
+
+    pyrt = "runtime"
+else:
+    pyrt = f"../build/pyrt_{arch}_{target}/runtime"
 launch = f"../src/cpp/builds/_{arch}"
 targetdir = rf"build\LunaTranslator_{arch}"
 if target == "win10":
     targetdir += "_win10"
+elif target == "xp":
+    targetdir += "_winxp"
 if arch == "x86":
     baddll = "DLL64"
 else:
@@ -55,7 +65,7 @@ collect = []
 for _dir, _, fs in os.walk(targetdir):
     for f in fs:
         collect.append(os.path.join(_dir, f))
-if target == "win10":
+if target in ("win10", "xp"):
     collect.clear()
 for f in collect:
     if f.endswith(".pyc") or f.endswith("Thumbs.db"):
