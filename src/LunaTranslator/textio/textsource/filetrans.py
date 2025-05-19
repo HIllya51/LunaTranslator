@@ -1,4 +1,4 @@
-from textsource.textsourcebase import basetext
+from textio.textsource.textsourcebase import basetext
 from myutils.wrapper import threader
 import json, time, os, gobject, NativeUtils
 from myutils.config import globalconfig

@@ -120,7 +120,7 @@ def registrhotkeys(self):
         "36": lambda: gobject.baseobject.textgetmethod(
             NativeUtils.ClipBoard.text, False
         ),
-        "37": lambda: gobject.baseobject.searchwordW.search_word.emit(safeGet(), False),
+        "37": lambda: gobject.baseobject.searchwordW.search_word.emit(safeGet(), None, False),
         "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit(),
         "38": lambda: gobject.baseobject.textgetmethod(safeGet(), False),
         "40": lambda: gobject.baseobject.searchwordW.search_word_in_new_window.emit(

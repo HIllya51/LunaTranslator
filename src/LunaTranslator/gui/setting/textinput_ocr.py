@@ -25,13 +25,14 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     makescrollgrid,
 )
+from traceback import print_exc
 from myutils.keycode import vkcode_map
-import gobject, qtawesome
+import gobject, qtawesome, importlib
 from gui.dynalang import LFormLayout, LDialog, LAction
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton
 from gui.setting.about import offlinelinks
-from ocrengines.baseocrclass import OCRResult
+from ocrengines.baseocrclass import OCRResultParsed
 
 
 def __label1(self):
@@ -136,6 +137,14 @@ class triggereditor(LDialog):
         self.hctable.setIndexWidget(self.hcmodel.index(0, 1), combo)
 
 
+def safeloadfunction(p, args, file, func, name):
+    try:
+        func = getattr(importlib.import_module(file), func)
+        func(p, args, name)
+    except:
+        print_exc()
+
+
 def initgridsources(self, names):
     line = []
     i = 0
@@ -144,7 +153,18 @@ def initgridsources(self, names):
         _f = "Lunatranslator/ocrengines/{}.py".format(name)
         if os.path.exists(_f) == False:
             continue
-        if name in ocrsetting:
+        if globalconfig["ocr"][name].get("argstype", None):
+            _3 = D_getIconButton(
+                callback=functools.partial(
+                    safeloadfunction,
+                    self,
+                    ocrsetting[name]["args"],
+                    "ocrengines." + name,
+                    globalconfig["ocr"][name].get("argstype", None),
+                    globalconfig["ocr"][name]["name"],
+                )
+            )
+        elif name in ocrsetting:
             items = autoinitdialog_items(ocrsetting[name])
             _3 = D_getIconButton(
                 callback=functools.partial(
@@ -283,7 +303,7 @@ def _ocrparam(self):
 @Singleton
 class showocrimage(saveposwindow):
     setimage = pyqtSignal(QImage)
-    setresult = pyqtSignal(list)
+    setresult = pyqtSignal(object)
 
     def closeEvent(self, e):
         gobject.baseobject.showocrimage = None
@@ -338,6 +358,11 @@ class showocrimage(saveposwindow):
         self.dial.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         hb.addWidget(self.dial)
         self.layout1.addLayout(hb)
+        self.timecost = QLabel()
+        self.timecost.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed
+        )
+        self.layout1.addWidget(self.timecost)
         self.layout1.addWidget(self.originlabel)
         self.setimage.connect(self.setimagefunction)
         self.setresult.connect(self.setocr)
@@ -366,9 +391,9 @@ class showocrimage(saveposwindow):
         self.originimage = originimage
         self.originlabel.showpixmap(QPixmap.fromImage(originimage))
 
-    def setocr(self, result):
-        result: OCRResult = result[0]
-        self.originlabel.showboxtext(result)
+    def setocr(self, result: OCRResultParsed):
+        self.timecost.setText("time: {}".format(result.timecost))
+        self.originlabel.showboxtext(result.result)
 
 
 def internal(self):
@@ -470,7 +495,7 @@ def internal(self):
                 self,
                 globalconfig,
                 "ocrrangecolor",
-                callback=lambda: gobject.baseobject.textsource.setstyle(),
+                callback=lambda _: gobject.baseobject.textsource.setstyle(),
             ),
             "",
             "范围框宽度",
@@ -479,7 +504,7 @@ def internal(self):
                 100,
                 globalconfig,
                 "ocrrangewidth",
-                callback=lambda x: gobject.baseobject.textsource.setstyle(),
+                callback=lambda _: gobject.baseobject.textsource.setstyle(),
             ),
             "",
             "",

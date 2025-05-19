@@ -175,11 +175,7 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebVie
         {
             if (!ref->backgroundtransparent)
                 return;
-            COREWEBVIEW2_COLOR color;
-            ZeroMemory(&color, sizeof(color));
-            CComPtr<ICoreWebView2Controller2> coreWebView2;
-            CHECK_FAILURE_NORET(ref->m_webViewController.QueryInterface(&coreWebView2));
-            coreWebView2->put_DefaultBackgroundColor(color);
+            ref->set_transparent(true);
         }();
         CHECK_FAILURE_NORET(ref->m_webViewController->get_CoreWebView2(&ref->m_webView));
         ref->m_webView->add_WebMessageReceived(this, &token);
@@ -479,6 +475,21 @@ HRESULT WebView2::ListExtensionDoSomething(List_Ext_callback_t cb, LPCWSTR id, B
     CHECK_FAILURE(exts->listerror);
     CHECK_FAILURE(exts->editerror);
     return S_OK;
+}
+void WebView2::set_transparent(bool ts)
+{
+    COREWEBVIEW2_COLOR color;
+    if (ts)
+    {
+        ZeroMemory(&color, sizeof(color));
+    }
+    else
+    {
+        memset(&color, 255, sizeof(color));
+    }
+    CComPtr<ICoreWebView2Controller2> coreWebView2;
+    CHECK_FAILURE_NORET(m_webViewController.QueryInterface(&coreWebView2));
+    coreWebView2->put_DefaultBackgroundColor(color);
 }
 void WebView2::put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
 {

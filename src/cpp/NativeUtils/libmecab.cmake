@@ -39,7 +39,7 @@ namespace std
 endif()
 
 file(GLOB SOURCES "${mecabsrc}/*.cpp")
-list(FILTER SOURCES EXCLUDE REGEX ".*/mecab-[a-z\\-]*\\.cpp")
+list(FILTER SOURCES EXCLUDE REGEX ".*/mecab[a-z\\-]*\\.cpp")
 
 add_library(libmecab ${SOURCES})
 

@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
-import os, gobject, requests
+import os, gobject, requests, sys
 from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR, static_data
 from myutils.utils import makehtml
@@ -163,12 +163,10 @@ class voiceselect(LDialog):
 
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
+        self.resize(500, 10)
         self.setWindowTitle("选择声音")
         self.setWindowFlags(
-            self.windowFlags()
-            & ~Qt.WindowType.WindowContextHelpButtonHint
-            & ~Qt.WindowType.WindowCloseButtonHint
-            | Qt.WindowType.WindowStaysOnTopHint
+            self.windowFlags() & ~Qt.WindowType.WindowContextHelpButtonHint
         )
         _layout = LFormLayout(self)
 
@@ -219,6 +217,8 @@ class voiceselect(LDialog):
             "voice",
             internal=obj.voicelist,
             callback=functools.partial(self._selectvoice, obj),
+            sizeX=True,
+            static=True,
         )
         self._layout.insertRow(1, "语音", voices)
         voices.currentIndexChanged.emit(voices.currentIndex())
@@ -261,7 +261,7 @@ class yuyinzhidingsetting(LDialog):
         self.table.setindexdata(self.model.index(row, 4), item["target"])
 
     def createacombox(self, config):
-        com = SuperCombo()
+        com = SuperCombo(sizeX=True)
         com.addItems(["跳过", "默认", "选择声音"])
         target = config.get("target", "skip")
         com.target = target
@@ -271,7 +271,7 @@ class yuyinzhidingsetting(LDialog):
             com.setCurrentIndex(1)
         else:
             ttsklass, ttsvoice, voicename = target
-            com.addItem(voicename)
+            com.addItem("[[" + voicename + "]]")
             com.setCurrentIndex(3)
         com.currentIndexChanged.connect(
             functools.partial(self.__comchange, com, config)
@@ -300,7 +300,9 @@ class yuyinzhidingsetting(LDialog):
                 )
                 com.blockSignals(True)
                 com.clear()
-                com.addItems(["跳过", "默认", "选择声音", voice.datas["vis"]])
+                com.addItems(
+                    ["跳过", "默认", "选择声音", "[[" + voice.datas["vis"] + "]]"]
+                )
                 com.setCurrentIndex(3)
                 com.blockSignals(False)
             else:
@@ -320,7 +322,8 @@ class yuyinzhidingsetting(LDialog):
         table = TableViewW(self, updown=True)
         table.setModel(self.model)
         table.horizontalHeader().setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
-        for _ in [0, 1, 2, 4]:
+        table.horizontalHeader().setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
+        for _ in [0, 1, 2]:
             table.horizontalHeader().setSectionResizeMode(
                 _, QHeaderView.ResizeMode.ResizeToContents
             )
@@ -447,7 +450,7 @@ def autoinitdialog_items(dic):
         if "argstype" in dic and arg in dic["argstype"]:
             default.update(dic["argstype"][arg])
         items.append(default)
-    items.append({"type": "okcancel"})
+    items.append(dict(type="okcancel", rank=-sys.float_info.min))
     return items
 
 
@@ -507,15 +510,20 @@ class autoinitdialog(LDialog):
                     print_exc()
 
         hasrank = []
+        negarank = []
         hasnorank = []
         for line in lines:
             rank = line.get("rank", None)
             if rank is None:
                 hasnorank.append(line)
                 continue
-            hasrank.append(line)
+            if rank >= 0:
+                hasrank.append(line)
+            else:
+                negarank.append(line)
         hasrank.sort(key=lambda line: line.get("rank", None))
-        lines = hasrank + hasnorank
+        negarank.sort(key=lambda line: line.get("rank", None))
+        lines = hasrank + hasnorank + negarank
 
         refname2line = {}
         for line in lines:

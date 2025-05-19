@@ -1,2 +1,2 @@
-python.exe -B LunaTranslator\LunaTranslator_main.py
+python.exe -B LunaTranslator\main.py
 pause

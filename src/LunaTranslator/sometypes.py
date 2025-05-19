@@ -27,6 +27,8 @@ class WordSegResult:
         prototype: str = None,
         donthighlight=False,
         hidekana=False,
+        info=None,
+        isshit=False,
         **_
     ):
         self.donthighlight = donthighlight
@@ -36,6 +38,8 @@ class WordSegResult:
         self.wordclass = wordclass
         self._prototype = prototype
         self.hidekana = hidekana
+        self.info = info
+        self.isshit = isshit
 
     @property
     def prototype(self):
@@ -51,6 +55,8 @@ class WordSegResult:
             wordclass=self.wordclass,
             prototype=self._prototype,
             hidekana=self.hidekana,
+            info=self.info,
+            isshit=self.isshit,
         )
 
     def __str__(self):
@@ -67,4 +73,6 @@ class WordSegResult:
             d.get("isdeli", False),
             d.get("wordclass"),
             d.get("prototype"),
+            info=d.get("info"),
+            isshit=d.get("isshit", False),
         )

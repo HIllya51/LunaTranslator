@@ -7,7 +7,7 @@ from myutils.ocrutil import imageCut, ocr_run, ocr_init
 import time, gobject
 from qtsymbols import *
 from myutils.keycode import vkcode_map
-from textsource.textsourcebase import basetext
+from textio.textsource.textsourcebase import basetext
 from ocrengines.baseocrclass import OCRResultParsed
 from CVUtils import cvMat
 

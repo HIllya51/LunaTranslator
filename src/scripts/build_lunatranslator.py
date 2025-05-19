@@ -1,8 +1,7 @@
-import os, sys, re, json
-import shutil, json
+import os, sys, re
+import shutil
 import subprocess, time
-import urllib.request
-from traceback import print_exc
+import hashlib
 
 rootDir = os.path.dirname(__file__)
 if not rootDir:
@@ -24,14 +23,6 @@ def fuckmove(src, tgt):
             shutil.copytree(src, tgt, dirs_exist_ok=True)
 
 
-mylinks = {
-    "ocr_models": {
-        "ja.zip": "https://github.com/test123456654321/RESOURCES/releases/download/ocr_models/ja.zip",
-    },
-    "magpie.zip": "https://github.com/HIllya51/Magpie/releases/download/common/magpie.zip",
-}
-
-
 pluginDirs = ["DLL32", "DLL64"]
 
 localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/download/v2.5.0.1/Locale.Emulator.2.5.0.1.zip"
@@ -46,9 +37,6 @@ availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 def createPluginDirs():
     os.chdir(rootDir + "\\files")
-    if not os.path.exists("plugins"):
-        os.mkdir("plugins")
-    os.chdir("plugins")
     for pluginDir in pluginDirs:
         if not os.path.exists(pluginDir):
             os.mkdir(pluginDir)
@@ -73,10 +61,12 @@ def move_directory_contents(source_dir, destination_dir):
 
 def downloadmapie():
     os.chdir(f"{rootDir}/scripts/temp")
-    subprocess.run(f"curl -C - -LO {mylinks['magpie.zip']}")
+    subprocess.run(
+        f"curl -C - -LO https://github.com/HIllya51/Magpie/releases/download/common/magpie.zip"
+    )
     subprocess.run(f"7z x -y magpie.zip")
     os.chdir(rootDir)
-    os.rename("scripts/temp/Magpie", "files/plugins/Magpie")
+    os.rename("scripts/temp/Magpie", "files/Magpie")
 
 
 def downloadlr():
@@ -87,7 +77,7 @@ def downloadlr():
     fn = os.path.splitext(base)[0]
     subprocess.run(f"7z x -y {base}")
     os.chdir(rootDir)
-    os.makedirs("files/plugins/Locale/Locale_Remulator", exist_ok=True)
+    os.makedirs("files/Locale/Locale_Remulator", exist_ok=True)
 
     for f in [
         "LRHookx64.dll",
@@ -97,7 +87,7 @@ def downloadlr():
         "LRSubMenus.dll",
     ]:
         fuckmove(
-            os.path.join("scripts/temp", fn, f), "files/plugins/Locale/Locale_Remulator"
+            os.path.join("scripts/temp", fn, f), "files/Locale/Locale_Remulator"
         )
 
 
@@ -122,12 +112,12 @@ def downloadLocaleEmulator():
     ]:
         os.chdir(rootDir)
         os.makedirs(
-            "files/plugins/Locale/Locale.Emulator",
+            "files/Locale/Locale.Emulator",
             exist_ok=True,
         )
         fuckmove(
             os.path.join("scripts/temp/LocaleEmulator", f),
-            "files/plugins/Locale/Locale.Emulator",
+            "files/Locale/Locale.Emulator",
         )
 
 
@@ -140,15 +130,15 @@ def downloadNtlea():
     subprocess.run(f"7z x -y {ntleaFile.split('/')[-1]} -ontlea")
 
     os.chdir(rootDir)
-    os.makedirs("files/plugins/Locale/ntleas046_x64", exist_ok=True)
+    os.makedirs("files/Locale/ntleas046_x64", exist_ok=True)
     shutil.copytree(
         "scripts/temp/ntlea/x86",
-        "files/plugins/Locale/ntleas046_x64/x86",
+        "files/Locale/ntleas046_x64/x86",
         dirs_exist_ok=True,
     )
     shutil.copytree(
         "scripts/temp/ntlea/x64",
-        "files/plugins/Locale/ntleas046_x64/x64",
+        "files/Locale/ntleas046_x64/x64",
         dirs_exist_ok=True,
     )
 
@@ -161,7 +151,7 @@ def downloadCurl(target):
         os.chdir(rootDir)
         outputDirName32 = curlFile32xp.split("/")[-1].replace(".zip", "")
         fuckmove(
-            f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32"
+            f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32"
         )
         return
     os.chdir(f"{rootDir}/scripts/temp")
@@ -171,33 +161,24 @@ def downloadCurl(target):
     subprocess.run(f"7z x -y {curlFile64.split('/')[-1]}")
     os.chdir(rootDir)
     outputDirName32 = curlFile32.split("/")[-1].replace(".zip", "")
-    fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/plugins/DLL32")
+    fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32")
     outputDirName64 = curlFile64.split("/")[-1].replace(".zip", "")
     fuckmove(
-        f"scripts/temp/{outputDirName64}/bin/libcurl-x64.dll", "files/plugins/DLL64"
+        f"scripts/temp/{outputDirName64}/bin/libcurl-x64.dll", "files/DLL64"
     )
 
 
 def downloadOCRModel():
     os.chdir(rootDir + "\\files")
     if not os.path.exists("ocrmodel"):
-        os.mkdir("ocrmodel")
+        os.mkdir("ocrmodel/")
+    link = "https://lunatranslator.org/r2/luna/ocr_models_v5/jazhchten.zip"
     os.chdir("ocrmodel")
-    subprocess.run(f"curl -C - -LO {mylinks['ocr_models']['ja.zip']}")
-    subprocess.run(f"7z x -y ja.zip")
-    os.remove(f"ja.zip")
+    os.chdir(hashlib.md5(link.encode()).hexdigest())
+    subprocess.run(f"curl -C - -LO {link}")
+    subprocess.run(f"7z x -y jazhchten.zip")
+    os.remove(f"jazhchten.zip")
     os.chdir(rootDir)
-
-
-def get_url_as_json(url):
-    for i in range(10):
-        try:
-            response = urllib.request.urlopen(url)
-            data = response.read().decode("utf-8")
-            json_data = json.loads(data)
-            return json_data
-        except:
-            time.sleep(3)
 
 
 def buildPlugins(arch, target):
@@ -243,8 +224,8 @@ def downloadbass():
         subprocess.run("curl -C - -LO " + link)
         subprocess.run(f"7z x -y {name} -o{d}")
         os.chdir(rootDir)
-        fuckmove(f"scripts/temp/{d}/{d[:-2]}.dll", "files/plugins/DLL32")
-        fuckmove(f"scripts/temp/{d}/x64/{d[:-2]}.dll", "files/plugins/DLL64")
+        fuckmove(f"scripts/temp/{d}/{d[:-2]}.dll", "files/DLL32")
+        fuckmove(f"scripts/temp/{d}/x64/{d[:-2]}.dll", "files/DLL64")
 
 
 def downloadalls(target):
@@ -310,38 +291,40 @@ if __name__ == "__main__":
             shutil.copytree("../build/cpp_x86_xp", "cpp/builds", dirs_exist_ok=True)
             shutil.copytree("../build/cpp_x64_win7", "cpp/builds", dirs_exist_ok=True)
             shutil.copytree(
-                "../build/hook_x86_xp", "files/plugins/LunaHook", dirs_exist_ok=True
+                "../build/hook_x86_xp", "files/LunaHook", dirs_exist_ok=True
             )
             shutil.copytree(
-                "../build/hook_x64_win7", "files/plugins/LunaHook", dirs_exist_ok=True
+                "../build/hook_x64_win7", "files/LunaHook", dirs_exist_ok=True
             )
-            os.remove("files/plugins/LunaHook/LunaHost64.dll")
-            os.makedirs("files/plugins/DLL32", exist_ok=True)
-            shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
-            shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
-            os.system(f"robocopy cpp/builds/_x86 files/plugins/DLL32 *.dll")
-            os.system(f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}")
+            os.remove("files/LunaHook/LunaHost64.dll")
+            os.makedirs("files/DLL32", exist_ok=True)
+            shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files")
+            shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files")
+            os.system(f"robocopy cpp/builds/_x86 files/DLL32 *.dll")
+            os.system(
+                f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
+            )
             exit()
         shutil.copytree(
-            f"../build/hook_x64_{target}", "files/plugins/LunaHook", dirs_exist_ok=True
+            f"../build/hook_x64_{target}", "files/LunaHook", dirs_exist_ok=True
         )
         shutil.copytree(
-            f"../build/hook_x86_{target}", "files/plugins/LunaHook", dirs_exist_ok=True
+            f"../build/hook_x86_{target}", "files/LunaHook", dirs_exist_ok=True
         )
         shutil.copytree(f"../build/cpp_x64_{target}", "cpp/builds", dirs_exist_ok=True)
         shutil.copytree(f"../build/cpp_x86_{target}", "cpp/builds", dirs_exist_ok=True)
 
-        os.makedirs("files/plugins/DLL32", exist_ok=True)
-        shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files/plugins")
-        os.system(f"robocopy cpp/builds/_x86 files/plugins/DLL32 *.dll")
-        os.makedirs("files/plugins/DLL64", exist_ok=True)
-        shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files/plugins")
-        os.system(f"robocopy cpp/builds/_x64 files/plugins/DLL64 *.dll")
+        os.makedirs("files/DLL32", exist_ok=True)
+        shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files")
+        os.system(f"robocopy cpp/builds/_x86 files/DLL32 *.dll")
+        os.makedirs("files/DLL64", exist_ok=True)
+        shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files")
+        os.system(f"robocopy cpp/builds/_x64 files/DLL64 *.dll")
 
         if arch == "x86":
-            os.remove(f"files/plugins/LunaHook/LunaHost64.dll")
+            os.remove(f"files/LunaHook/LunaHost64.dll")
         else:
-            os.remove("files/plugins/LunaHook/LunaHost32.dll")
+            os.remove("files/LunaHook/LunaHost32.dll")
         os.system(
             f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
         )

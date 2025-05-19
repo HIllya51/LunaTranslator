@@ -40,7 +40,6 @@ from gui.usefulwidget import (
     TableViewW,
     automakegrid,
     D_getspinbox,
-    FlowWidget,
     FocusFontCombo,
     getsimpleswitch,
     getsimplepatheditor,
@@ -59,7 +58,6 @@ from gui.usefulwidget import (
     CollapsibleBox,
     getsmalllabel,
     listediterline,
-    editswitchTextBrowser,
     FocusCombo,
     VisLFormLayout,
 )
@@ -128,6 +126,58 @@ def maybehavebutton(self, gameuid, post):
             return getIconButton(callback=callback)
         else:
             return None
+
+
+class FlowWidget(QWidget):
+    def __init__(self, parent=None, groups=3):
+        super().__init__(parent)
+        self.margin = QMargins(5, 5, 5, 5)
+        self.spacing = 5
+        self._item_list: "list[list[QWidget]]" = [[] for _ in range(groups)]
+
+    def insertWidget(self, group: int, index, w: QWidget):
+        w.setParent(self)
+        w.show()
+        self._item_list[group].insert(index, w)
+        self.doresize()
+
+    def addWidget(self, group, w: QWidget):
+        self.insertWidget(group, len(self._item_list[group]), w)
+
+    def removeWidget(self, w: QWidget):
+        for _ in self._item_list:
+            if w in _:
+                _.remove(w)
+                w.deleteLater()
+                self.doresize()
+                break
+
+    def doresize(self):
+        line_height = 0
+        spacing = self.spacing
+        y = self.margin.left()
+        for listi in self._item_list:
+            x = self.margin.top()
+            for i, item in enumerate(listi):
+
+                next_x = x + item.sizeHint().width() + spacing
+                if (
+                    next_x - spacing + self.margin.right() > self.width()
+                    and line_height > 0
+                ):
+                    x = self.margin.top()
+                    y = y + line_height + spacing
+                    next_x = x + item.sizeHint().width() + spacing
+
+                size = item.sizeHint()
+                item.setGeometry(QRect(QPoint(x, y), size))
+                line_height = max(line_height, size.height())
+                x = next_x
+            y = y + line_height + spacing
+        self.setFixedHeight(y + self.margin.bottom() - spacing)
+
+    def resizeEvent(self, a0):
+        self.doresize()
 
 
 def userlabelset(key="usertags"):
@@ -234,7 +284,7 @@ class dialog_setting_game_internal(QWidget):
         functs = [
             ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
             ("统计", functools.partial(self.___tabf2, self.getstatistic)),
-            ("信息", functools.partial(self.___tabf2, self.getlabelsetting)),
+            ("标签", functools.partial(self.___tabf2, self.getlabelsetting)),
         ]
         methodtab, do = makesubtab_lazy(
             [_[0] for _ in functs],
@@ -284,28 +334,13 @@ class dialog_setting_game_internal(QWidget):
     def metadataorigin(self, formLayout: LFormLayout, gameuid):
         vislf = VisLFormLayout()
         formLayout.addRow(vislf)
-        combo = getsimplecombobox(
-            ["无"] + list(targetmod.keys()),
-            globalconfig,
-            "primitivtemetaorigin",
-            internal=[None] + list(targetmod.keys()),
-        )
-        vislf.addRow("首选的", combo)
 
-        def valid(idx, x):
-            if x:
-                if combo.currentIndex() == 0:
-                    combo.setCurrentIndex(idx + 1)
-            else:
-                if combo.currentIndex() == idx + 1:
-                    combo.setCurrentIndex(0)
-            combo.setRowVisible(idx + 1, x)
-
-        linei = 1
+        linei = 0
         notvislineis = []
         for i, key in enumerate(targetmod):
             try:
                 idname = targetmod[key].idname
+                name = targetmod[key].name
 
                 vndbid = QLineEdit()
                 vndbid.setText(str(savehook_new_data[gameuid].get(idname, "")))
@@ -319,13 +354,10 @@ class dialog_setting_game_internal(QWidget):
                 vndbid.returnPressed.connect(
                     functools.partial(gamdidchangedtask, key, idname, gameuid)
                 )
-                if not globalconfig["metadata"][key]["auto"]:
-                    combo.setRowVisible(i + 1, False)
                 _vbox_internal = [
                     getsimpleswitch(
                         globalconfig["metadata"][key],
                         "auto",
-                        callback=functools.partial(valid, i),
                     ),
                     vndbid,
                     getIconButton(
@@ -355,18 +387,12 @@ class dialog_setting_game_internal(QWidget):
                     2,
                     getIconButton(functools.partial(_revert, coll, linei + 1)),
                 )
-                vislf.addRow(
-                    key,
-                    getboxlayout(_vbox_internal),
-                )
+                vislf.addRow(name, getboxlayout(_vbox_internal))
                 vislf.addRow(coll)
                 notvislineis.append(linei + 1)
                 linei += 2
             except:
-                vislf.addRow(
-                    key,
-                    getboxlayout(_vbox_internal),
-                )
+                vislf.addRow(name, getboxlayout(_vbox_internal))
                 linei += 1
         for _ in notvislineis:
             vislf.setRowVisible(_, False)
@@ -597,18 +623,6 @@ class dialog_setting_game_internal(QWidget):
 
         for i in range(len(self.tagtypes)):
             createflows(self.tagtypes_zh[i], self.tagtypes[i], self.tagtypes_1[i], i)
-        flowwidget.addWidget(3, LLabel("简介"))
-        edit = editswitchTextBrowser()
-        edit.settext(savehook_new_data[gameuid].get("description", ""))
-
-        def __(t: str):
-            if not t.strip():
-                savehook_new_data[gameuid]["description"] = ""
-            else:
-                savehook_new_data[gameuid]["description"] = t.strip()
-
-        edit.textChanged.connect(__)
-        flowwidget.addWidget(3, edit)
 
         button = LPushButton("添加")
         typecombo = getsimplecombobox(self.tagtypes_zh, default=2)
@@ -1155,12 +1169,6 @@ class dialog_setting_game_internal(QWidget):
 
     def gethooktab_internal(self, formLayout: LFormLayout, gameuid):
 
-        formLayout.addRow(
-            "延迟注入_(ms)",
-            getspinbox(
-                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=500
-            ),
-        )
         box = LGroupBox()
         box.setTitle("额外的钩子")
         settinglayout = LFormLayout(box)
@@ -1243,6 +1251,12 @@ class dialog_setting_game_internal(QWidget):
                 "maxHistorySize",
                 callback=lambda _: gobject.baseobject.textsource.setsettings(),
                 default=globalconfig["maxHistorySize"],
+            ),
+        )
+        formLayout2.addRow(
+            "延迟注入_(ms)",
+            getspinbox(
+                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=500
             ),
         )
         if savehook_new_data[gameuid].get("removeforeverhook"):

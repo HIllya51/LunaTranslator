@@ -1,4 +1,4 @@
-from textoutput.outputerbase import Base
+from textio.textoutput.outputerbase import Base
 from myutils.config import globalconfig
 import NativeUtils
 

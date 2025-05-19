@@ -1,4 +1,3 @@
-from urllib.parse import quote
 import re
 from myutils.utils import localcachehelper
 from cishu.cishubase import cishubase
@@ -11,7 +10,7 @@ class goo(cishubase):
         self.klass = "lunagoocsswrapper"
 
     def search(self, word):
-        url = "https://dictionary.goo.ne.jp/srch/all/{}/m1u/".format(quote(word))
+        url = "https://dictionary.goo.ne.jp/srch/all/{}/m1u/".format(word)
         x = self.proxysession.get(url).text
         xx = re.findall("<section>([\\s\\S]*?)</section>", x)
         if not xx:

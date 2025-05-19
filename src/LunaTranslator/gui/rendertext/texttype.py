@@ -2,6 +2,7 @@ from qtsymbols import *
 from myutils.config import globalconfig
 from sometypes import WordSegResult
 
+
 class TextType:
     Origin = 0
     Translate = 1
@@ -71,7 +72,7 @@ class TranslateColor(ColorControl):
 
 
 class FenciColor(ColorControl):
-    def __init__(self, word:WordSegResult):
+    def __init__(self, word: WordSegResult):
         self.isdeli = word.isdeli
         self.cixing = word.wordclass
         self.donthighlight = word.donthighlight
@@ -115,6 +116,23 @@ class SpecialColor:
 
 
 class dataget:
+    @property
+    def _clickable(self):
+        return (
+            globalconfig["usesearchword"]
+            or globalconfig["usecopyword"]
+            or globalconfig["useopenlink"]
+            or globalconfig["usesearchword_S"]
+        )
+
+    @property
+    def _clickhovershow(self):
+        return (
+            self._clickable
+            or globalconfig["word_hover_show_word_info"]
+            or globalconfig["show_fenci"]
+        )
+
     def _getfontinfo(self, texttype: TextType):
         if texttype == TextType.Origin:
             fm = globalconfig["fonttype"]
@@ -129,3 +147,20 @@ class dataget:
     def _getfontinfo_kana(self):
         fm, fs, bold = self._getfontinfo(TextType.Origin)
         return fm, fs * globalconfig["kanarate"], bold
+
+    def _createqfont(self, texttype: TextType, klass=None):
+        fm, fs, bold = self._getfontinfo(texttype)
+        if klass:
+            data: dict = globalconfig["fanyi"][klass].get("privatefont", {})
+            if (not data.get("fontfamily_df", True)) and ("fontfamily" in data):
+                fm = data["fontfamily"]
+            if (not data.get("fontsize_df", True)) and ("fontsize" in data):
+                fs = data["fontsize"]
+            if (not data.get("showbold_df", True)) and ("showbold" in data):
+                bold = data["showbold"]
+
+        font = QFont()
+        font.setFamily(fm)
+        font.setPointSizeF(fs)
+        font.setBold(bold)
+        return font

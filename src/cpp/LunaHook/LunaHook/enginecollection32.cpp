@@ -195,7 +195,6 @@
 #include "engine32/DAC.h"
 #include "engine32/ACTGS.h"
 #include "engine32/e_Erekiteru.h"
-#include "engine32/GuruGuruSMF4.h"
 #include "NoEngine.h"
 #include "engines/mono/mono.h"
 #include "engines/lua/lua51.h"
@@ -369,7 +368,6 @@ std::vector<ENGINE *> check_engines()
         new CaramelBox2,
         new TeethingRing,
         new lua51,
-        new GuruGuruSMF4,
         new A98SYS,
         new godot,
         new Erogos,

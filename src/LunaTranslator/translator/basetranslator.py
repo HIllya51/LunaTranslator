@@ -10,7 +10,6 @@ from myutils.utils import (
     stringfyerror,
     autosql,
     PriorityQueue,
-    SafeFormatter,
     dynamicapiname,
 )
 from myutils.commonbase import ArgsEmptyExc, commonbase
@@ -248,17 +247,19 @@ class basetrans(commonbase):
         user_prompt = (
             self.config.get(tempk, "") if self.config.get(usekey, False) else ""
         )
-        fmt = SafeFormatter()
-        return fmt.format(user_prompt, must_exists="sentence", sentence=query)
+        if "{sentence}" not in user_prompt:
+            user_prompt += "{sentence}"
+        return user_prompt.replace("{sentence}", query)
 
     def _gptlike_createsys(self, usekey, tempk):
 
-        fmt = SafeFormatter()
         if self.config[usekey]:
             template = self.config[tempk]
         else:
             template = "You are a translator. Please help me translate the following {srclang} text into {tgtlang}. You should only tell me the translation result without any additional explanations."
-        return fmt.format(template, srclang=self.srclang, tgtlang=self.tgtlang)
+        template = template.replace("{srclang}", self.srclang)
+        template = template.replace("{tgtlang}", self.tgtlang)
+        return template
 
     def _gptlike_create_prefill(self, usekey, tempk):
         user_prompt = (

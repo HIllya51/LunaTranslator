@@ -13,6 +13,7 @@ from myutils.wrapper import threader
 import copy, uuid
 from gui.usefulwidget import WebviewWidget
 from sometypes import WordSegResult
+from gui.rendertext.tooltipswidget import tooltipswidget
 
 
 class wordwithcolor:
@@ -49,12 +50,20 @@ class somecommon(dataget):
         self.setfontstyle()
         self.setdisplayrank(globalconfig["displayrank"])
         self.sethovercolor(globalconfig["hovercolor"])
+        self.settooltipsstyle(
+            globalconfig["word_hover_bg_color"],
+            globalconfig["word_hover_text_color"],
+            globalconfig["word_hover_border"],
+            globalconfig["word_hover_border_R"],
+        )
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
+        self.setwordhoveruse(globalconfig["word_hover_action_usewb2"])
+        self.set_word_hover_show_word_info(globalconfig["word_hover_show_word_info"])
         self.refreshcontent()
 
     # js api
     def sethovercolor(self, color):
-        self.debugeval('sethovercolor("{}")'.format(quote(color)))
+        self.debugeval('sethovercolor("{}")'.format(self._qcolor_as_rgba(color)))
 
     def setdisplayrank(self, rank):
         self.debugeval("setdisplayrank({})".format(int(rank)))
@@ -72,8 +81,11 @@ class somecommon(dataget):
         self.debugeval("showhidert({})".format(int(show)))
 
     def showhideclick(self, _=None):
-        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
-        self.debugeval("showhideclick({})".format(int(show)))
+        self.debugeval(
+            "showhideclick({},{})".format(
+                int(self._clickhovershow), int(self._clickable)
+            )
+        )
 
     def showhidename(self, show):
         self.debugeval("showhidename({})".format(int(show)))
@@ -84,11 +96,30 @@ class somecommon(dataget):
     def showhideorigin(self, show):
         self.debugeval("showhideorigin({})".format(int(show)))
 
+    def setwordhoveruse(self, v):
+        self.debugeval("setwordhoveruse({})".format(int(v)))
+
     def verticalhorizontal(self, v):
         self.debugeval("verticalhorizontal({})".format(int(v)))
 
+    def set_word_hover_show_word_info(self, action):
+        self.debugeval('set_word_hover_show_word_info("{}")'.format(action))
+
     def showhideerror(self, show):
         self.debugeval("showhideerror({})".format(int(show)))
+
+    def _qcolor_as_rgba(self, color: str):
+        c = QColor(color)
+        return "#{:02x}{:02x}{:02x}{:02x}".format(
+            c.red(), c.green(), c.blue(), c.alpha()
+        )
+
+    def settooltipsstyle(self, c1, c2, pd, r):
+        self.debugeval(
+            'settooltipsstyle("{}","{}",{},{})'.format(
+                self._qcolor_as_rgba(c1), self._qcolor_as_rgba(c2), pd, r
+            )
+        )
 
     # native api end
     def setfontstyle(self):
@@ -263,6 +294,7 @@ class TextBrowser(WebviewWidget, somecommon):
     contentsChanged = pyqtSignal(QSize)
     _switchcursor = pyqtSignal(Qt.CursorShape)
     _isDragging = pyqtSignal(bool)
+    __tooltipshelper = pyqtSignal(object)
 
     def event(self, a0: QEvent) -> bool:
         if a0.type() == QEvent.Type.User + 2:
@@ -278,27 +310,11 @@ class TextBrowser(WebviewWidget, somecommon):
     def __checkmousestate(self):
         if not self.geometry().contains(self.mapFromGlobal(QCursor.pos())):
             return
-        lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
-        rb = windows.GetKeyState(windows.VK_RBUTTON) < 0
-        if not lb and not rb:
-            return
-        uid = uuid.uuid4()
-        self.trans0checkercheck = uid
-        self.eval(
-            "report_clickword_positions()", functools.partial(self.__callback, rb, uid)
-        )
+        self.eval("report_clickword_positions()", self.__callback)
 
-    @threader
-    def __callback(self, rb1, uid, result):
-        time.sleep(0.05)
-        if uid != self.trans0checkercheck:
-            return
-        lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
-        rb = windows.GetKeyState(windows.VK_RBUTTON) < 0
-        if lb or rb:
-            return
+    def getundermouseword(self, result):
+
         z = self.get_zoom()
-
         for ww in json.loads(result):
             __ = ww["x"], ww["y"], ww["w"], ww["h"]
             x, y, w, h = (_ * z for _ in __)
@@ -309,8 +325,35 @@ class TextBrowser(WebviewWidget, somecommon):
             rect.setHeight(h)
             if not rect.contains(QCursor.pos()):
                 continue
-            gobject.baseobject.clickwordcallback(ww["word"], rb1)
-            break
+            return ww["word"]
+
+    @threader
+    def __callback(self, result):
+        word = self.getundermouseword(result)
+        if not word:
+            self.__tooltipshelper.emit(tooltipswidget.hidetooltipwindow)
+            return
+        self.__tooltipshelper.emit(
+            functools.partial(
+                tooltipswidget.tracetooltipwindow,
+                WordSegResult.from_dict(word),
+                QCursor.pos(),
+            )
+        )
+        lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
+        rb1 = windows.GetKeyState(windows.VK_RBUTTON) < 0
+        if not lb and not rb1:
+            return
+        uid = uuid.uuid4()
+        self.trans0checkercheck = uid
+        time.sleep(0.05)
+        if uid != self.trans0checkercheck:
+            return
+        lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
+        rb = windows.GetKeyState(windows.VK_RBUTTON) < 0
+        if lb or rb:
+            return
+        gobject.baseobject.clickwordcallback(word, rb1)
 
     def __init__(self, parent) -> None:
         super().__init__(parent, transp=True, loadext=globalconfig["webviewLoadExt"])
@@ -321,7 +364,7 @@ class TextBrowser(WebviewWidget, somecommon):
             lambda: _TR("查词"),
             threader(
                 lambda w: gobject.baseobject.searchwordW.search_word.emit(
-                    w.replace("\n", "").strip(), False
+                    w.replace("\n", "").strip(), None, False
                 )
             ),
         )
@@ -344,6 +387,7 @@ class TextBrowser(WebviewWidget, somecommon):
         self.bind("calllunaEnter", self.calllunaEnter)
         self.bind("calllunaLeave", self.calllunaLeave)
         self.bind("calllunaloadready", self.calllunaloadready)
+        self.bind("calllunaMouseHoverWord", self.calllunaMouseHoverWord)
         self.set_zoom(globalconfig.get("ZoomFactor2", 1))
         self.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor2")
@@ -356,6 +400,7 @@ class TextBrowser(WebviewWidget, somecommon):
             lambda b: self.setselectable(False if b else globalconfig["selectable"])
         )
         self.loadex()
+        self.__tooltipshelper.connect(lambda f: f())
         self.trans0checkercheck = None
         self.trans0checker = QTimer(self)
         self.trans0checker.timeout.connect(self.__checkmousestate)
@@ -404,7 +449,7 @@ class TextBrowser(WebviewWidget, somecommon):
     def loadex_(extra=None):
         if not extra:
             extra = TextBrowser.loadextra()
-        basepath = r"files\html\uiwebview\mainui.html"
+        basepath = r"LunaTranslator\htmlcode\uiwebview\mainui.html"
         if not extra:
             return os.path.abspath(basepath)
         with open(basepath, "r", encoding="utf8") as ff:
@@ -420,7 +465,7 @@ class TextBrowser(WebviewWidget, somecommon):
             return
         for _ in [
             "userconfig/extrahtml.html",
-            r"files\html\uiwebview\extrahtml\mainui.html",
+            r"LunaTranslator\htmlcode\uiwebview\extrahtml\mainui.html",
         ]:
             if not os.path.exists(_):
                 continue
@@ -484,6 +529,15 @@ class TextBrowser(WebviewWidget, somecommon):
             Qt.KeyboardModifier.NoModifier,
         )
         QApplication.sendEvent(self, event)
+
+    def calllunaMouseHoverWord(self, event, x, y, word: str):
+        if event in ("mouseenter", "mousemove"):
+            tooltipswidget.tracetooltipwindow(
+                WordSegResult.from_dict((word)),
+                self.mapToGlobal(self.parsexyaspos(x, y).toPoint()),
+            )
+        elif event == "mouseleave":
+            tooltipswidget.hidetooltipwindow()
 
     def calllunaMouseMove(self, x, y):
         if globalconfig["selectable"] and globalconfig["selectableEx"]:

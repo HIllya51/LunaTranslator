@@ -174,6 +174,13 @@ class commonbase(multikeyhelper):
         except:
             return {}
 
+    @property
+    def rawconfig(self):
+        try:
+            return self._setting_dict[self.typename]["args"]
+        except:
+            return {}
+
     def countnum(self, query=None):
         # 防报错兼容性留置
         pass

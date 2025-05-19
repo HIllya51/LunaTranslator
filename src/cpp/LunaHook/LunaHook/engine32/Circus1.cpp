@@ -29,7 +29,6 @@ bool InsertCircusHook1() // jichi 10/2/2013: Change return type to bool
             hp.offset = stackoffset(3);
             hp.split = regoffset(esp);
             hp.type = DATA_INDIRECT | USING_SPLIT;
-            ConsoleOutput("INSERT CIRCUS#1");
 
             // RegisterEngineType(ENGINE_CIRCUS);
             return NewHook(hp, "Circus1");

@@ -10,30 +10,6 @@ export default defineConfig({
   title: "LunaTranslator",
   head: [
     ['link', { rel: 'icon', href: 'https://image.lunatranslator.org/luna.ico' }],
-    ['script', {},
-      `
-window.onmousemove = function(){
-  if (!window.location.hostname.startsWith('docs'))return;
-  {
-    let replacetarget = window.location.protocol + '//image.' + window.location.hostname.substring(5);
-    let origin='https://image.lunatranslator.org'
-    let images = document.getElementsByTagName('img');
-    for (var i = 0; i < images.length; i++) {
-      if(images[i].src!=images[i].src.replace(origin, replacetarget))
-        images[i].src = images[i].src.replace(origin, replacetarget)
-    }
-  }
-  {
-    let replacetarget = window.location.protocol + '//' + window.location.hostname.substring(5);
-    let origin='https://lunatranslator.org'
-    let srcs = document.getElementsByTagName('a');
-    for (var i = 0; i < srcs.length; i++) {
-      if(srcs[i].href!=srcs[i].href.replace(origin, replacetarget))
-        srcs[i].href = srcs[i].href.replace(origin, replacetarget)
-    }
-  }
-}
-      `]
   ],
   rewrites: {
     //  'zh/:rest*': ':rest*'

@@ -164,46 +164,17 @@ class question(QWidget):
             raise Exception()
 
     def _installsucc(self, succ, failreason):
+        self.formLayout.setRowVisible(0, succ)
+        self.formLayout.setRowVisible(1, not succ)
+        self.formLayout.setRowVisible(2, False)
         if succ:
-            self.progresssetval.emit(_TR("添加成功"), 10000)
             QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
-            self.formLayout.setRowVisible(0, True)
-            self.formLayout.setRowVisible(1, False)
-            self.formLayout.setRowVisible(2, False)
         else:
-            self.progresssetval.emit(_TR("添加失败"), 0)
-            res = QMessageBox.question(
+            QMessageBox.critical(
                 self,
-                _TR("错误"),
-                failreason + "\n\n" + _TR("自动添加失败，是否手动添加？"),
+                _TR("添加失败"),
+                _TR("错误") + "\n" + failreason,
             )
-            if res == QMessageBox.StandardButton.Yes:
-                os.startfile(self.failedlink())
-                f = QFileDialog.getOpenFileName(
-                    self,
-                    filter="*.msixbundle" if self.skiplink2 else "SnippingTool.zip",
-                )
-                fn = f[0]
-                if fn:
-                    try:
-                        if self.skiplink2:
-                            self.unzipmsix(fn)
-                        else:
-                            with zipfile.ZipFile(fn) as zipf:
-                                zipf.extractall(gobject.getcachedir())
-                            if not checkdir(cachedir):
-                                raise Exception()
-                        QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
-                        self.formLayout.setRowVisible(0, True)
-                        self.formLayout.setRowVisible(1, False)
-                        self.formLayout.setRowVisible(2, False)
-                        return
-                    except:
-                        QMessageBox.information(self, _TR("错误"), _TR("添加失败"))
-                        print_exc()
-            self.formLayout.setRowVisible(0, False)
-            self.formLayout.setRowVisible(1, True)
-            self.formLayout.setRowVisible(2, False)
 
     def progresssetval_(self, text, val):
         self.downloadprogress.setValue(val)
@@ -278,7 +249,7 @@ class OCR(baseocr):
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
-        exepath = os.path.abspath("files/plugins/shareddllproxy64.exe")
+        exepath = os.path.abspath("files/shareddllproxy64.exe")
         self.engine = NativeUtils.AutoKillProcess(
             '"{}" SnippingTool {} {} {}'.format(
                 exepath,

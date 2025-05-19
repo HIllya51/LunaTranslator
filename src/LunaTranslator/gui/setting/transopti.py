@@ -208,7 +208,7 @@ def setTab7_lazy(self, basel: QLayout):
             if setting:
                 kwarg = dict(callback=functools.partial(__, setting, self))
                 if name == "myprocess":
-                    kwarg.update(dict(icon="fa.edit"))
+                    kwarg.update(icon="fa.edit")
                 grids2[-1].append(D_getIconButton(**kwarg))
     grids2 += [[("", 15)]]
 

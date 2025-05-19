@@ -1,6 +1,6 @@
-from textoutput.outputerbase import Base
-from services.servicecollection import TextOutputOrigin, TextOutputTrans
-from services.servicecollection_1 import WSForEach, wsoutputsave
+from textio.textoutput.outputerbase import Base
+from network.server.servicecollection import TextOutputOrigin, TextOutputTrans
+from network.server.servicecollection_1 import WSForEach, wsoutputsave
 
 
 class Outputer(Base):

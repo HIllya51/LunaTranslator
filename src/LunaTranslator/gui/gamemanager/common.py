@@ -482,7 +482,7 @@ class dialog_syssetting(LDialog):
                     self,
                     globalconfig["dialog_savegame_layout"],
                     key,
-                    callback=self.parent().setstyle,
+                    callback=lambda _: self.parent().setstyle(),
                     alpha=True,
                 ),
             )

@@ -107,13 +107,13 @@
 		},
 		"argstype": {
 			"chromepath": {
-				"rank": -99,
+				"rank": 2,
 				"name": "Chromium_路径",
 				"type": "file",
 				"dir": false
 			},
 			"debugport": {
-				"rank": -98,
+				"rank": 3,
 				"name": "端口号",
 				"type": "intspin",
 				"min": 0,
@@ -121,7 +121,7 @@
 				"step": 1
 			},
 			"usewhich": {
-				"rank": -100,
+				"rank": 1,
 				"type": "combo",
 				"name": "类型",
 				"list": [
@@ -130,61 +130,61 @@
 				]
 			},
 			"S2": {
-				"rank": -11,
+				"rank": 4,
 				"type": "split"
 			},
 			"target_url": {
 				"refcombo": "usewhich",
 				"refcombo_i": 1,
-				"rank": -10
-			},
-			"S": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 0,
-				"type": "split"
+				"rank": 10
 			},
 			"textarea_selector": {
 				"refcombo": "usewhich",
 				"refcombo_i": 1,
-				"rank": -6,
+				"rank": 14,
 				"name": "CSS selector for textarea"
 			},
 			"button_selector": {
 				"refcombo": "usewhich",
 				"refcombo_i": 1,
-				"rank": -5,
+				"rank": 15,
 				"name": "CSS selector for button"
 			},
 			"extracttextfunction": {
 				"refcombo": "usewhich",
 				"refcombo_i": 1,
-				"rank": -7,
+				"rank": 13,
 				"name": "Function2 (extract text in stream chunk)"
 			},
 			"checkneturlfunction": {
 				"refcombo": "usewhich",
 				"refcombo_i": 1,
-				"rank": -8,
+				"rank": 12,
 				"name": "Function1 (check if url is backend url)"
 			},
 			"request_method": {
 				"refcombo": "usewhich",
 				"refcombo_i": 1,
-				"rank": -9,
+				"rank": 11,
 				"type": "combo",
 				"list": [
 					"fetch",
 					"xhr"
 				]
 			},
+			"S": {
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"rank": 19,
+				"type": "split"
+			},
 			"usingstream": {
-				"rank": 1,
+				"rank": 20,
 				"name": "流式输出",
 				"type": "switch"
 			},
 			"custom_prompt": {
-				"rank": 2,
+				"rank": 21,
 				"name": "自定义_promt",
 				"type": "multiline",
 				"refswitch": "use_custom_prompt"
@@ -408,6 +408,8 @@
 			"top_p": 0.3,
 			"frequency_penalty": 0,
 			"frequency_penalty_use": false,
+			"reasoning_effort": "medium",
+			"reasoning_effort_use": false,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
 			"s": "",
@@ -422,7 +424,8 @@
 			"customparams": {
 				"name": "其他参数",
 				"type": "custom",
-				"function": "customparams"
+				"function": "customparams",
+				"rank": -1
 			},
 			"markdown2html": {
 				"name": "转换Markdown为HTML",
@@ -484,6 +487,20 @@
 				"min": -2,
 				"max": 2,
 				"step": 0.05
+			},
+			"reasoning_effort": {
+				"type": "combo",
+				"refswitch": "reasoning_effort_use",
+				"internal": [
+					"low",
+					"medium",
+					"high"
+				],
+				"list": [
+					"low",
+					"medium",
+					"high"
+				]
 			},
 			"max_tokens": {
 				"type": "intspin",
@@ -642,82 +659,6 @@
 			}
 		}
 	},
-	"dev_chatgpt": {
-		"args": {
-			"usingstream": true,
-			"use_custom_prompt": false,
-			"custom_prompt": ""
-		},
-		"argstype": {
-			"usingstream": {
-				"name": "流式输出",
-				"type": "switch"
-			},
-			"custom_prompt": {
-				"name": "自定义_promt",
-				"type": "multiline",
-				"refswitch": "use_custom_prompt"
-			}
-		}
-	},
-	"dev_chatgpt_mirror": {
-		"args": {
-			"target_url": "https://chatgpt.com/",
-			"request_method": 0,
-			"checkneturlfunction": "url.includes(\"conversation\")",
-			"extracttextfunction": "thistext = chunk.message.content.parts[0]",
-			"textarea_selector": "#prompt-textarea",
-			"button_selector": "#__next > div.relative.z-0.flex.h-full.w-full.overflow-hidden > div.relative.flex.h-full.max-w-full.flex-1.flex-col.overflow-hidden > main > div.flex.h-full.flex-col.focus-visible\\\\:outline-0 > div.md\\\\:pt-0.dark\\\\:border-white\\\\/20.md\\\\:border-transparent.md\\\\:dark\\\\:border-transparent.w-full > div.text-base.px-3.md\\\\:px-4.m-auto.md\\\\:px-5.lg\\\\:px-1.xl\\\\:px-5 > div > form > div > div.flex.w-full.items-center > div > div > button",
-			"S": "",
-			"usingstream": true,
-			"use_custom_prompt": false,
-			"custom_prompt": ""
-		},
-		"argstype": {
-			"target_url": {
-				"rank": -10
-			},
-			"S": {
-				"rank": 0,
-				"type": "split"
-			},
-			"textarea_selector": {
-				"rank": -6,
-				"name": "CSS selector for textarea"
-			},
-			"button_selector": {
-				"rank": -5,
-				"name": "CSS selector for button"
-			},
-			"extracttextfunction": {
-				"rank": -7,
-				"name": "Function2 (extract text in stream chunk)"
-			},
-			"checkneturlfunction": {
-				"rank": -8,
-				"name": "Function1 (check if url is backend url)"
-			},
-			"request_method": {
-				"rank": -9,
-				"type": "combo",
-				"list": [
-					"fetch",
-					"xhr"
-				]
-			},
-			"usingstream": {
-				"rank": 1,
-				"name": "流式输出",
-				"type": "switch"
-			},
-			"custom_prompt": {
-				"rank": 2,
-				"name": "自定义_promt",
-				"type": "multiline",
-				"refswitch": "use_custom_prompt"
-			}
-		}
-	},
 	"sakura": {
 		"args": {
 			"API接口地址": "http://127.0.0.1:8080/",
@@ -836,6 +777,8 @@
 			"top_p": 0.3,
 			"frequency_penalty": 0,
 			"frequency_penalty_use": false,
+			"reasoning_effort": "medium",
+			"reasoning_effort_use": false,
 			"user_user_prompt": "{sentence}",
 			"use_user_user_prompt": false,
 			"s": "",
@@ -847,6 +790,12 @@
 			"customparams": []
 		},
 		"argstype": {
+			"customparams": {
+				"name": "其他参数",
+				"type": "custom",
+				"function": "customparams",
+				"rank": -1
+			},
 			"hidethinking": {
 				"type": "switch",
 				"name": "隐藏思考过程",
@@ -864,11 +813,6 @@
 			"prefill_use": {
 				"type": "switch"
 			},
-			"customparams": {
-				"name": "其他参数",
-				"type": "custom",
-				"function": "customparams"
-			},
 			"user_user_prompt": {
 				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
@@ -884,6 +828,20 @@
 			},
 			"API接口地址": {
 				"rank": 0
+			},
+			"reasoning_effort": {
+				"type": "combo",
+				"refswitch": "reasoning_effort_use",
+				"internal": [
+					"low",
+					"medium",
+					"high"
+				],
+				"list": [
+					"low",
+					"medium",
+					"high"
+				]
 			},
 			"SECRET_KEY": {
 				"rank": 6,

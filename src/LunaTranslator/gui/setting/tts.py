@@ -111,7 +111,7 @@ def createpitch(self):
 
 def createvoicecombo(self):
 
-    self.voicecombo = FocusCombo()
+    self.voicecombo = FocusCombo(sizeX=True)
     self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self, x))
     try:
         vl, idx = self.voicecombo_cache

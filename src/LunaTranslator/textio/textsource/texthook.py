@@ -10,7 +10,7 @@ from myutils.config import (
     getlanguse,
     _TR,
 )
-from textsource.textsourcebase import basetext
+from textio.textsource.textsourcebase import basetext
 from myutils.utils import getlangtgt, safe_escape, stringfyerror
 from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import test_injectable, ListProcess, getpidexe
@@ -159,7 +159,7 @@ class texthook(basetext):
         LunaHost = CDLL(
             gobject.GetDllpath(
                 ("LunaHost32.dll", "LunaHost64.dll"),
-                os.path.abspath("files/plugins/LunaHook"),
+                os.path.abspath("files/LunaHook"),
             )
         )
         self.Luna_SyncThread = LunaHost.Luna_SyncThread
@@ -239,7 +239,7 @@ class texthook(basetext):
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
         arch = "64" if self.is64bit else "32"
-        exe = os.path.abspath("files/plugins/shareddllproxy{}.exe".format(arch))
+        exe = os.path.abspath("files/shareddllproxy{}.exe".format(arch))
         pid = " ".join([str(_) for _ in self.pids])
         subprocess.run('"{}"  listpm "{}" {}'.format(exe, cachefname, pid))
 
@@ -368,12 +368,12 @@ class texthook(basetext):
                 injectpids.append(pid)
         if len(injectpids):
             arch = ["32", "64"][self.is64bit]
-            dll = os.path.abspath("files/plugins/LunaHook/LunaHook{}.dll".format(arch))
+            dll = os.path.abspath("files/LunaHook/LunaHook{}.dll".format(arch))
             self.injectdll(injectpids, arch, dll)
 
     def injectdll(self, injectpids, bit, dll):
 
-        injecter = os.path.abspath("files/plugins/shareddllproxy{}.exe".format(bit))
+        injecter = os.path.abspath("files/shareddllproxy{}.exe".format(bit))
         pid = " ".join([str(_) for _ in injectpids])
         for _ in (0,):
             if not test_injectable(injectpids):

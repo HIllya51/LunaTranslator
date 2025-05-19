@@ -109,7 +109,7 @@ class TTSbase(commonbase):
         super().__init__(typename)
         self.playaudiofunction = playaudiofunction
         self.uid = uid
-        self.LRUCache = LRUCache(3)
+        self.LRUCache = LRUCache(32)
         if privateconfig is None:
             self.privateconfig = globalconfig["reader"][self.typename]
         else:

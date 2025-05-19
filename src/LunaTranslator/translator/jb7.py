@@ -39,7 +39,7 @@ class TS(basetrans):
             waitsignal = str(uuid.uuid4())
 
             self.engine = NativeUtils.AutoKillProcess(
-                'files/plugins/shareddllproxy32.exe jbj7 "{}" {} {}'.format(
+                'files/shareddllproxy32.exe jbj7 "{}" {} {}'.format(
                     self.dllpath, pipename, waitsignal
                 )
                 + dictpath,

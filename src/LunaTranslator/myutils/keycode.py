@@ -1,4 +1,5 @@
 mod_map = {"CTRL": 2, "SHIFT": 4, "WIN": 8, "ALT": 1}
+mod_map_r = {2: 17, 4: 16, 8: 91, 1: 18}
 vkcode_map = {
     "LBUTTON": 1,
     "RBUTTON": 2,

@@ -181,9 +181,9 @@ Giống như [Dịch thuật](/en/guochandamoxing.html)
 
 == Local OCR
 
-Gói tích hợp sẵn bao gồm một mô hình nhận dạng tiếng Nhật.
+Mô hình nhận dạng nhẹ tích hợp sẵn bao gồm tiếng Trung, tiếng Nhật và tiếng Anh. Nếu bạn cần nhận dạng ngôn ngữ khác, vui lòng tải thêm mô hình ngôn ngữ tương ứng trong mục `Tải tài nguyên`.  
 
-Nếu bạn cần nhận dạng các ngôn ngữ khác, bạn phải tải xuống mô hình nhận dạng ngôn ngữ tương ứng từ `Tải xuống Tài nguyên`.
+Ngoài ra, `Tải tài nguyên` cũng cung cấp mô hình độ chính xác cao cho tiếng Trung, tiếng Nhật và tiếng Anh. Nếu bạn đang sử dụng phiên bản Windows 10, Hoặc hệ thống là Windows 11, bạn có thể thiết lập sử dụng GPU để chạy mô hình, giúp tăng hiệu suất nhận dạng của mô hình độ chính xác cao.  
 
 == SnippingTool
 

@@ -11,12 +11,9 @@ from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
 from gui.setting.proxy import setTab_proxy
 from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
-from gui.setting.about import (
-    setTab_about,
-    versionlabelmaybesettext,
-    versioncheckthread,
-)
+from gui.setting.about import setTab_about, versionlabelmaybesettext, versioncheckthread
 from gui.dynalang import LListWidgetItem, LListWidget
+from gui.flowsearchword import WordViewTooltip
 
 
 class TabWidget(QWidget):
@@ -84,6 +81,7 @@ class TabWidget(QWidget):
 
 
 class Setting(closeashidewindow):
+    search_word = pyqtSignal(str, str, bool)
     voicelistsignal = pyqtSignal(object)
     versiontextsignal = pyqtSignal(str)
     progresssignal2 = pyqtSignal(str, int)
@@ -119,6 +117,8 @@ class Setting(closeashidewindow):
         self.isfirst = True
         versioncheckthread(self)
         registrhotkeys(self)
+        self.__WordViewer = WordViewTooltip(self)
+        self.search_word.connect(self.__WordViewer.searchword)
 
     def showEvent(self, e: QShowEvent):
         if self.isfirst:

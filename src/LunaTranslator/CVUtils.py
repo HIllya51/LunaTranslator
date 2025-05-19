@@ -87,11 +87,19 @@ _OcrDetectCallback = CFUNCTYPE(
     c_float,
     c_char_p,
 )
+_error = CFUNCTYPE(None, c_char_p)
+
+
+def OcrIsDMLAvailable():
+    _CVUtils = _DelayLoadCVUtils()
+    OcrIsDMLAvailable = _CVUtils.OcrIsDMLAvailable
+    OcrIsDMLAvailable.restype = c_bool
+    return OcrIsDMLAvailable()
 
 
 class LocalOCR:
 
-    def __init__(self, det, rec, key) -> None:
+    def __init__(self, det, rec, key, thread: int, gpu: bool, device: int) -> None:
 
         _CVUtils = _DelayLoadCVUtils()
         OcrLoadRuntime = _CVUtils.OcrLoadRuntime
@@ -101,15 +109,27 @@ class LocalOCR:
 
         self._OcrInit = _CVUtils.OcrInit
         self._OcrInit.restype = c_void_p
-        self._OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32
+        self._OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32, c_bool, c_int
 
         self._OcrDetect = _CVUtils.OcrDetect
-        self._OcrDetect.argtypes = (c_void_p, cvMat, c_int32, _OcrDetectCallback)
+        self._OcrDetect.argtypes = (
+            c_void_p,
+            cvMat,
+            c_int32,
+            _OcrDetectCallback,
+            _error,
+        )
 
         OcrDestroy = _CVUtils.OcrDestroy
         OcrDestroy.argtypes = (c_void_p,)
 
-        self.pOcrObj = _unique_ptr(self._OcrInit(det, rec, key, 4), OcrDestroy)
+        error: "list[bytes]" = []
+        self.pOcrObj = _unique_ptr(
+            self._OcrInit(det, rec, key, thread, gpu, device, _error(error.append)),
+            OcrDestroy,
+        )
+        if error:
+            raise Exception(error[0].decode(errors="ignore"))
         if not self.pOcrObj:
             raise ModelLoadFailed()
 
@@ -123,5 +143,10 @@ class LocalOCR:
             texts.append(text.decode("utf8"))
 
         mat = cvMat.fromQImage(image)
-        self._OcrDetect(self.pOcrObj, mat, mode, _OcrDetectCallback(cb))
+        error: "list[bytes]" = []
+        self._OcrDetect(
+            self.pOcrObj, mat, mode, _OcrDetectCallback(cb), _error(error.append)
+        )
+        if error:
+            raise Exception(error[0].decode(errors="ignore"))
         return pss, texts

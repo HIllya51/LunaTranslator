@@ -221,7 +221,7 @@ cv::RotatedRect unClip(const TextBox &box, float unClipRatio)
     }
     return res;
 }
-CrnnNet::CrnnNet(const std::wstring &pathStr, const std::wstring &keysPath, int numOfThread) : CommonOnnxModel(pathStr, {127.5, 127.5, 127.5}, {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5}, numOfThread)
+CrnnNet::CrnnNet(const std::wstring &pathStr, const std::wstring &keysPath, int numOfThread, bool gpu, int device) : CommonOnnxModel(pathStr, {127.5, 127.5, 127.5}, {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5}, numOfThread, gpu, device)
 {
     // load keys
     std::ifstream in(keysPath.c_str());
@@ -252,10 +252,10 @@ TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, size_t h
     auto keySize = keys.size();
     auto dataSize = outputData.size();
     std::string strRes;
-    std::vector<float> scores;
+    // std::vector<float> scores;
     size_t lastIndex = 0;
     size_t maxIndex;
-    float maxValue;
+    // float maxValue;
 
     for (size_t i = 0; i < h; i++)
     {
@@ -266,11 +266,11 @@ TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, size_t h
             stop = (i + 1) * w - 1;
         }
         maxIndex = int(argmax(&outputData[start], &outputData[stop]));
-        maxValue = float(*std::max_element(&outputData[start], &outputData[stop]));
+        // maxValue = float(*std::max_element(&outputData[start], &outputData[stop]));
 
         if (maxIndex > 0 && maxIndex < keySize && (!(i > 0 && maxIndex == lastIndex)))
         {
-            scores.emplace_back(maxValue);
+            // scores.emplace_back(maxValue);
             strRes.append(keys[maxIndex]);
         }
         lastIndex = maxIndex;
@@ -418,8 +418,9 @@ cv::Mat makePadding(const cv::Mat &src, const int padding)
     return paddingSrc;
 }
 std::vector<TextBlock> OcrLite::detect(const cv::Mat &src, // const void *binptr, size_t size,
-                                       const int padding,
-                                       float boxScoreThresh, float boxThresh, float unClipRatio, Directional mode)
+                                       Directional mode,
+                                       int padding,
+                                       float boxScoreThresh, float boxThresh, float unClipRatio)
 {
     int originMaxSide = std::max(src.cols, src.rows);
     int resize = originMaxSide;

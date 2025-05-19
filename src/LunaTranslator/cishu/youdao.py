@@ -1,4 +1,3 @@
-from urllib.parse import quote
 import re
 from cishu.cishubase import cishubase
 from myutils.utils import get_element_by, simplehtmlparser
@@ -7,6 +6,7 @@ from language import Languages
 
 
 class youdao(cishubase):
+    backgroundparser = "document.querySelectorAll('*').forEach((ele) => {ele.style.backgroundColor = {color}});"
 
     def search(self, word: str):
         lang = self.srclang
@@ -15,8 +15,8 @@ class youdao(cishubase):
                 lang = Languages.English
             else:
                 lang = Languages.Japanese
-        url = "https://dict.youdao.com/result?word={}&lang={}".format(quote(word), lang)
-        text = self.proxysession.get(url).text
+        url = "https://dict.youdao.com/result"
+        text = self.proxysession.get(url, params={"word": word, "lang": lang}).text
         if not get_element_by("class", "word-head", text):
             return
         text = re.sub("<header([\\s\\S]*?)></header>", "", text)

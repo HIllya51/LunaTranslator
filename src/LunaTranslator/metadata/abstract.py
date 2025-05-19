@@ -1,4 +1,4 @@
-import os, hashlib, queue, gobject
+import os, hashlib, queue, gobject, json
 from myutils.proxy import getproxy
 from threading import Thread
 from myutils.commonbase import proxysession
@@ -6,6 +6,7 @@ from myutils.config import globalconfig, savehook_new_data, extradatas
 from myutils.utils import getlangtgt
 from traceback import print_exc
 from requests import RequestException
+from myutils.wrapper import tryprint
 
 
 class common:
@@ -30,6 +31,10 @@ class common:
             return globalconfig["metadata"][self.typename]
         except:
             return {}
+
+    @property
+    def name(self):
+        return self.config_all.get("name", self.typename)
 
     @property
     def idname(self):
@@ -75,7 +80,7 @@ class common:
             elif len(pair) == 3:
                 gameuid, vid, retrytime = pair
             remove = True
-            info = "{}: {} ".format(self.config_all["name"], vid)
+            info = "{}: {} ".format(self.name, vid)
             try:
                 self.__do_searchfordata(gameuid, vid)
                 vis = info + "data loaded success"
@@ -159,6 +164,32 @@ class common:
                             bettermap[spja[i]] = spen[i]
         return bettermap
 
+    @tryprint
+    def __tryinserttomemory(self, description, gameuid):
+        rwpath = gobject.getuserconfigdir("memory/{}".format(gameuid))
+        os.makedirs(rwpath, exist_ok=True)
+
+        try:
+            with open(os.path.join(rwpath, "config.json"), "r", encoding="utf8") as ff:
+                config = json.load(ff)
+        except:
+            config = []
+        filename = None
+        for _ in config:
+            if _.get("fromweb") == self.typename:
+                filename = _.get("file")
+        if not filename:
+            filename = self.typename + ".md"
+            config.append(
+                {"file": filename, "title": self.name, "fromweb": self.typename, "edit": False}
+            )
+            with open(os.path.join(rwpath, "config.json"), "w", encoding="utf8") as ff:
+                json.dump(config, ff)
+        with open(
+            os.path.join(rwpath, self.typename + ".md"), "w", encoding="utf8"
+        ) as ff:
+            ff.write(description)
+
     def __do_searchfordata(self, gameuid, vid: str):
 
         data: "dict[str,str]" = self.searchfordata(vid)
@@ -168,6 +199,9 @@ class common:
         webtags = data.get("webtags", [])
         images = data.get("images", [])
         description = data.get("description", None)
+        if description:
+            self.__tryinserttomemory(description, gameuid)
+        self.typename
         for _ in images:
             if not _:
                 continue
@@ -181,8 +215,6 @@ class common:
         if title:
             if not savehook_new_data[gameuid].get("istitlesetted", False):
                 savehook_new_data[gameuid]["title"] = title
-        if description and not savehook_new_data[gameuid].get("description"):
-            savehook_new_data[gameuid]["description"] = description
         if namemap:
             dedump = set()
             for _ in savehook_new_data[gameuid].get("namemap2", []):

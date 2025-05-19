@@ -7,15 +7,15 @@ from myutils.mecab import mecab
 from gui.rendertext.texttype import TextType, ColorControl
 from gui.rendertext.webview import TextBrowser as WebviewTextbrowser
 from gui.rendertext.textbrowser import TextBrowser as QtTextbrowser
-from services.servicecollection_1 import mainuiwsoutputsave, WSForEach
+from network.server.servicecollection_1 import mainuiwsoutputsave, WSForEach
 import NativeUtils
+import gobject
 
 
 def checkusewhich():
     if "rendertext_using" not in globalconfig:
-        iswin8later = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
         webview2version = NativeUtils.detect_webview2_version()
-        if iswin8later:
+        if gobject.sys_ge_win8:
             if WebviewWidget.findFixedRuntime():
                 # 如果手动放置，那一定选手动的，不管功能完不完整。
                 globalconfig["rendertext_using"] = "webview"
@@ -38,6 +38,7 @@ class Textbrowser(QFrame):
         self.textbrowser.resize(event.size())
 
     def _contentsChanged(self, size: QSize):
+        size.setHeight(max(size.height(), globalconfig["min_auto_height"]))
         self.contentsChanged.emit(size)
 
     def loadinternal(self, shoudong=False, forceReload=False):
@@ -63,7 +64,7 @@ class Textbrowser(QFrame):
             tb = importlib.import_module("gui.rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
 
-        if tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1):
+        if gobject.sys_le_win7:
             # win7不可以同时FramelessWindowHint和WA_TranslucentBackground，否则会导致无法显示
             # win8没问题
             self.window().setAttribute(
@@ -99,7 +100,6 @@ class Textbrowser(QFrame):
         self.cleared = True
         self.curr_eng = None
         self.trace = []
-        self.loadinternal()
 
     def iter_append(
         self,
@@ -225,6 +225,13 @@ class Textbrowser(QFrame):
             lambda _1: _1.showhideorigin(_),
         )
 
+    def settooltipsstyle(self, *_):
+        self.textbrowser.settooltipsstyle(*_)
+        WSForEach(
+            mainuiwsoutputsave,
+            lambda _1: _1.settooltipsstyle(*_),
+        )
+
     def showhideerror(self, _):
         self.textbrowser.showhideerror(_)
         WSForEach(
@@ -261,4 +268,18 @@ class Textbrowser(QFrame):
         WSForEach(
             mainuiwsoutputsave,
             lambda _1: _1.verticalhorizontal(_),
+        )
+
+    def setwordhoveruse(self, _):
+        self.textbrowser.setwordhoveruse(_)
+        WSForEach(
+            mainuiwsoutputsave,
+            lambda _1: _1.setwordhoveruse(_),
+        )
+
+    def set_word_hover_show_word_info(self, _):
+        self.textbrowser.set_word_hover_show_word_info(_)
+        WSForEach(
+            mainuiwsoutputsave,
+            lambda _1: _1.set_word_hover_show_word_info(_),
         )

@@ -199,4 +199,12 @@
         }
     </style>
     __luna_dict_internal_view__
+    <script>
+        const colorSchemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        function handleColorSchemeChange(e) {
+            __luna_dict_internal_handle_bgcolor__
+        }
+        handleColorSchemeChange(colorSchemeQuery);
+        colorSchemeQuery.addEventListener('change', handleColorSchemeChange); 
+    </script>
 </div>

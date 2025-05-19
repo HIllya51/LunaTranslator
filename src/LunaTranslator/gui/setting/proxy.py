@@ -146,22 +146,6 @@ def makeproxytab():
             )
         ],
     ]
-    if res.external:
-        external = getall(
-            l=res.external, item="fanyi", name=translate_exits, getname=dynamicapiname
-        )
-        if external:
-            tsgrids += [
-                [
-                    functools.partial(
-                        createfoldgrid,
-                        external,
-                        "其他",
-                        globalconfig["foldstatus"]["proxy"],
-                        "external",
-                    )
-                ]
-            ]
     ocrs = getall(
         l=getnotofflines("ocr"),
         item="ocr",

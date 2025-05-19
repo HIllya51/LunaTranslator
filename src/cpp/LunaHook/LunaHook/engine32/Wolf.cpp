@@ -70,13 +70,10 @@ namespace
             hp.split = regoffset(esp);
             hp.type = DATA_INDIRECT | USING_SPLIT;
             // GROWL_DWORD(hp.address); // jichi 6/5/2014: 淫乱勀��フィのRPG = 0x50a400
-            ConsoleOutput("INSERT WolfRPG");
             return NewHook(hp, "WolfRPG");
           }
       }
 
-    // ConsoleOutput("Unknown WolfRPG engine.");
-    ConsoleOutput("WolfRPG: failed");
     return false;
   }
 
@@ -88,7 +85,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-      ConsoleOutput("WolfRPG: pattern3 not found");
       return false;
     }
 
@@ -100,11 +96,7 @@ namespace
     myhp.type |= DATA_INDIRECT;
 
     myhp.index = 4;
-
-    char nameForUser[HOOK_NAME_SIZE] = "WolfRPG_String_Copy";
-
-    ConsoleOutput("Insert: WolfRPG_String_Copy Hook");
-    return NewHook(myhp, nameForUser);
+    return NewHook(myhp, "WolfRPG_String_Copy");
   }
 
   bool InsertWolf4Hook()
@@ -114,7 +106,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-      ConsoleOutput("WolfRPG: pattern4 not found");
       return false;
     }
 
@@ -129,7 +120,6 @@ namespace
 
     char nameForUser[HOOK_NAME_SIZE] = "WolfRPG4";
 
-    ConsoleOutput("Insert: WolfRPG4 Hook");
     return NewHook(myhp, nameForUser);
   }
 
@@ -154,7 +144,7 @@ namespace
       auto filterpath = {
           ".png", ".jpg", ".bmp",
           ".mp3", ".ogg",
-          ".webm", ".mp4",
+          ".webm", ".mp4", ".sys", ".dat", ".sav",
           ".otf", ".mps"};
       for (auto _ : filterpath)
         if (str.find(_) != str.npos)
@@ -208,7 +198,6 @@ namespace
     if (!addr)
       return false;
     addr = MemDbg::findEnclosingAlignedFunction(addr);
-
     if (!addr)
       return false;
     if (hook5_1(addr))
@@ -909,8 +898,148 @@ namespace
     return NewHook(hp, "Wolf7");
   }
 }
+
+namespace GuruGuruSMF4
+{
+  bool h1()
+  {
+    const BYTE bytes[] = {
+        0x50,
+        0x8d, 0x4d, 0x24,
+        0xe8, XX4,
+        0x80, 0x38, 0x40,
+        0x0f, 0x85, XX4,
+        0x6a, 0x00,
+        0x68, XX4,
+        0x8d, 0x4d, 0x24,
+        0xe8, XX4,
+        0x8b, 0xf8,
+        0x83, 0xff, 0xff,
+        0x75, XX,
+        0x6a, 0x00,
+        0x68, XX4,
+        0x8d, 0x4d, 0x24,
+        0xe8, XX4,
+        0xe9, XX4,
+        0x8d, 0x47, 0xff,
+        0x83, 0xf8, 0x09,
+        0x7e, XX,
+        0x83, 0xec, 0x18};
+    const BYTE bytes2[] = {
+        // https://www.smallnight.net/?p=359
+        0x57,
+        0x8d, 0x4d, 0x24,
+        0xe8, XX4,
+        0x80, 0x38, 0x40,
+        0x0f, 0x85, XX4,
+        0x57,
+        0x68, XX4,
+        0x8d, 0x4d, 0x24,
+        0xe8, XX4,
+        0x89, 0x85, XX4,
+        0x83, 0xf8, 0xff,
+        0x75, XX,
+        0x68, XX4,
+        0x8d, 0x4d, 0x24,
+        0xe8, XX4,
+        0xe9, XX4,
+        0x48,
+        0x83, 0xf8, 0x09,
+        0x7e, XX,
+        0x83, 0xec, 0x18};
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = max(findfuncstart(addr), MemDbg::findEnclosingAlignedFunction(addr));
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr; //(DWORD)0x53F7B0 + processStartAddress;
+    hp.type = CODEC_UTF8 | USING_STRING;
+    hp.offset = stackoffset(8);
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      commonfilter(buffer, hp);
+      auto s = buffer->strA();
+      if (startWith(s, "@1"))
+      {
+        s = s.substr(2);
+      }
+      s = re::sub(s, R"(\\\w\[\\\w+\[\d+\]\])");
+      s = re::sub(s, R"(\\\w+\[\d+\])");
+      s = re::sub(s, R"(\\-\[\d+\])");
+      s = re::sub(s, R"(/\w*\[\d+\])");
+      s = re::sub(s, R"(\\E)");
+      s = re::sub(s, R"(\\r\[(.*?),(.*?)\])", "$1");
+      s = re::sub(s, R"(\[\d+\])");
+      buffer->from(s);
+    };
+    return NewHook(hp, "GuruGuruSMF4_2");
+  }
+}
 bool Wolf::attach_function()
 {
+  bool succ = false;
+
   auto _ = ScenarioHook::attach(processStartAddress, processStopAddress);
-  return InsertWolfHook() || wolf_hook56() || _ || wolf7();
+  succ |= InsertWolfHook() || wolf_hook56() || _ || wolf7();
+
+  succ |= GuruGuruSMF4::h1();
+  PcHooks::hookGDIFunctions();
+  // 奈落の森の花
+  trigger_fun = [](LPVOID addr1, hook_context *context)
+  {
+    if (addr1 != GetGlyphOutlineW)
+      return false;
+    auto addr = MemDbg::findEnclosingAlignedFunction((DWORD)context->retaddr, 0x500);
+    if (!addr)
+      return true;
+    auto xrefs = findxref_reverse_checkcallop(addr, max(processStartAddress, addr - 0x100000), min(processStopAddress, addr + 0x100000), 0xe8);
+    if (xrefs.size() != 1)
+      return true;
+    addr = xrefs[0];
+    ConsoleOutput("%p", addr);
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    ConsoleOutput("%p", addr);
+    if (!addr)
+      return true;
+    auto xrefs2 = findxref_reverse_checkcallop(addr, max(processStartAddress, addr - 0x100000), min(processStopAddress, addr + 0x100000), 0xe8);
+    if (xrefs2.size() != 2)
+      return true;
+    addr = xrefs2[1];
+    addr = findfuncstart(addr, 0x300); // MemDbg::findEnclosingAlignedFunction(addr,0x500);
+    if (!addr)
+      return true;
+    HookParam hp;
+    hp.address = (DWORD)addr;
+    hp.offset = stackoffset(2);
+    hp.type = CODEC_UTF16 | USING_STRING;
+
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      auto ws = buffer->strW();
+
+      static std::set<std::wstring> dedump;
+      if (![&]()
+          {
+            if (endWith(ws, L"FPS"))
+              return false;
+            if (startWith(ws, L"ver"))
+              return false;
+            if (startWith(ws, L"VER"))
+              return false;
+            if (dedump.count(ws))
+              return false;
+            dedump.insert(ws);
+            return true;
+          }())
+        buffer->clear();
+    };
+    NewHook(hp, "GuruGuruSMF4");
+    return true;
+  };
+
+  return succ;
 }

@@ -181,9 +181,9 @@ Same as [Translation](/en/guochandamoxing.html)
 
 == Local OCR
 
-The built-in package includes a Japanese recognition model. 
+The built-in system includes lightweight recognition models for Chinese, Japanese, and English. If you need to recognize other languages, you can download the corresponding language models from the `Resource Download` section.
 
-If you need to recognize other languages, you must download the corresponding language recognition model from `Resource Download`.
+Additionally, high-precision models for Chinese, Japanese, and English are also available in `Resource Download`. If you are using the Windows 10 version of the software, or the system is Windows 11, you can enable GPU acceleration to improve the recognition efficiency of high-precision models.
 
 == SnippingTool
 

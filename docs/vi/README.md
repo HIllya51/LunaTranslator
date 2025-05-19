@@ -2,15 +2,12 @@
 
 ## Tải xuống
 
-### Hệ thống Windows 7 trở lên
+| Phiên bản | Hệ điều hành | 32-bit | 64-bit | Mô tả |
+| - | - | - | - | - |
+| Bản thử nghiệm | Windows 10 & 11 (phiên bản mới) |  | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10"></a> | Phiên bản này chỉ hỗ trợ các bản Windows 10 mới để có hiệu suất cao hơn và tính năng mới.<br>Nếu dùng phiên bản Windows 10 cũ, có thể không chạy được - vui lòng dùng bản ổn định. |
+| Bản ổn định | Windows 7 trở lên | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x86"></a> | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64"></a> | |
+| Bản cũ | Windows XP & Vista | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp"></a> | | Phiên bản này chỉ dùng để trích xuất văn bản từ các game rất cũ chỉ chạy được trên máy ảo XP. Chức năng hạn chế, không ổn định và chạy chậm. Không khuyến nghị dùng thường xuyên.
 
-<a href="https://lunatranslator.org/Resource/DownloadLuna/x64"> 64-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_64bit-blue"/> </a>
-
-<a href="https://lunatranslator.org/Resource/DownloadLuna/x86"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit-blue"/> </a>
-
-### Hệ thống Windows XP & Vista
-
-<a href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp"> 32-bit <img style="display:inline-block" src="https://img.shields.io/badge/download_32bit_XP-blue"/></a>
 
 ## Khởi chạy
 

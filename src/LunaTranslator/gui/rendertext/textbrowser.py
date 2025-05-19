@@ -12,6 +12,7 @@ from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
 from sometypes import WordSegResult
+from gui.rendertext.tooltipswidget import tooltipswidget
 
 reference: "list[QLabel]" = []
 
@@ -25,7 +26,14 @@ class WordSegResultX(WordSegResult):
     @staticmethod
     def fromW(w: WordSegResult):
         return WordSegResultX(
-            w.word, w.kana, w.isdeli, w.wordclass, w._prototype, hidekana=w.hidekana
+            w.word,
+            w.kana,
+            w.isdeli,
+            w.wordclass,
+            w._prototype,
+            hidekana=w.hidekana,
+            info=w.info,
+            isshit=w.isshit,
         )
 
     def copy(self):
@@ -53,7 +61,7 @@ class Qlabel_c(QLabel_w):
         return super().mousePressEvent(ev)
 
     def mouseMoveEvent(self, ev):
-        pass
+        tooltipswidget.tracetooltipwindow(self.word, self.mapToGlobal(ev.pos()))
         # return super().mouseMoveEvent(ev)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
@@ -97,6 +105,7 @@ class Qlabel_c(QLabel_w):
             reference.remove(self.ref)
         except:
             pass
+        tooltipswidget.hidetooltipwindow()
         return super().leaveEvent(a0)
 
 
@@ -186,8 +195,13 @@ class QTextBrowser_1(QTextEdit):
             rect1 = rect1.united(rect3)
         return rect1.contains(ev.pos())
 
+    def focusOutEvent(self, e):
+        tooltipswidget.hidetooltipwindow()
+        return super().focusOutEvent(e)
+
     def mouseMoveEvent(self, ev: QMouseEvent):
         if globalconfig["selectable"] and globalconfig["selectableEx"]:
+            tooltipswidget.hidetooltipwindow()
             return super().mouseMoveEvent(ev)
         for label in self.p.searchmasklabels:
             if label.geometry().contains(ev.pos()):
@@ -204,6 +218,9 @@ class QTextBrowser_1(QTextEdit):
         targetlabel = self.getcurrlabel(ev.pos())
         if targetlabel and targetlabel.isVisible():
             try:
+                tooltipswidget.tracetooltipwindow(
+                    targetlabel.refmask.word, self.mapToGlobal(ev.pos())
+                )
                 targetlabel.refmask.setStyleSheet(
                     "background-color: " + globalconfig["hovercolor"]
                 )
@@ -214,6 +231,8 @@ class QTextBrowser_1(QTextEdit):
                 reference.append(targetlabel.company.refmask)
             except:
                 pass
+        else:
+            tooltipswidget.hidetooltipwindow()
         if not self.ismousehastext(ev):
             self.viewport().setCursor(Qt.CursorShape.ArrowCursor)
         else:
@@ -297,7 +316,7 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(copy)
         action = menu.exec(QCursor.pos())
         if action == search:
-            gobject.baseobject.searchwordW.search_word.emit(curr, False)
+            gobject.baseobject.searchwordW.search_word.emit(curr, None, False)
         elif action == copy:
             NativeUtils.ClipBoard.text = curr
         elif action == tts:
@@ -423,23 +442,6 @@ class TextBrowser(QWidget, dataget):
     def seteditable(self, _):
         pass
 
-    def _createqfont(self, texttype: TextType, klass):
-        fm, fs, bold = self._getfontinfo(texttype)
-        if klass:
-            data = globalconfig["fanyi"][klass].get("privatefont", {})
-            if (not data.get("fontfamily_df", True)) and ("fontfamily" in data):
-                fm = data["fontfamily"]
-            if (not data.get("fontsize_df", True)) and ("fontsize" in data):
-                fs = data["fontsize"]
-            if (not data.get("showbold_df", True)) and ("showbold" in data):
-                bold = data["showbold"]
-
-        font = QFont()
-        font.setFamily(fm)
-        font.setPointSizeF(fs)
-        font.setBold(bold)
-        return font
-
     def _setnextfont(self, font, cleared):
         if cleared:
             self.textbrowser.setFont(font)
@@ -474,10 +476,19 @@ class TextBrowser(QWidget, dataget):
     def showhideorigin(self, show):
         self.parent().refreshcontent()
 
+    def settooltipsstyle(self, *_):
+        pass
+
     def showhideerror(self, show):
         self.parent().refreshcontent()
 
+    def setwordhoveruse(self, _):
+        pass
+
     def verticalhorizontal(self, v):
+        pass
+
+    def set_word_hover_show_word_info(self, _):
         pass
 
     def setfontstyle(self):
@@ -960,13 +971,13 @@ class TextBrowser(QWidget, dataget):
         self.showhideclick_i(labeli)
 
     def showhideclick(self, _=None):
-        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        show = self._clickhovershow
         for i in range(self.searchmasklabels_clicked_num):
             self.searchmasklabels_clicked[i].setVisible(show)
             self.searchmasklabels_clicked2[i].setVisible(show)
 
     def showhideclick_i(self, i: int):
-        show = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        show = self._clickhovershow
         self.searchmasklabels_clicked[i].setVisible(show)
         self.searchmasklabels_clicked2[i].setVisible(show)
         self.searchmasklabels[i].setVisible(True)
@@ -989,7 +1000,7 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setPosition(pos)
             self.textbrowser.setTextCursor(self.textcursor)
 
-            if word.isdeli:
+            if word.isdeli or word.isshit:
                 continue
             tl2 = self.textbrowser.cursorRect(self.textcursor).bottomRight()
             color = FenciColor(word)

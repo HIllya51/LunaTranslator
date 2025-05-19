@@ -478,13 +478,6 @@ bool InsertStuffScript2Hook()
 }
 void StuffScript3Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
-
-  if (text[0] == '\x81' && text[1] == '\x40')
-  { // removes space at the beginning of the sentence
-    buffer->size -= 2;
-    ::memmove(text, text + 2, buffer->size);
-  }
 
   StringFilterBetween(buffer, TEXTANDLEN("/\x81\x79"), TEXTANDLEN("\x81\x7A")); // remove hidden name
   StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));                // garbage
@@ -493,8 +486,8 @@ void StuffScript3Filter(TextBuffer *buffer, HookParam *)
   CharFilter(buffer, '<');
   StringFilterBetween(buffer, TEXTANDLEN(","), TEXTANDLEN(">"));
 
-  StringCharReplacer(buffer, TEXTANDLEN("_r\x81\x40"), ' ');
-  StringCharReplacer(buffer, TEXTANDLEN("_r"), ' ');
+  StringFilter(buffer, TEXTANDLEN("_r\x81\x40"));
+  StringFilter(buffer, TEXTANDLEN("_r"));
 }
 bool InsertStuffScript3Hook()
 {
@@ -523,12 +516,47 @@ bool InsertStuffScript3Hook()
   hp.offset = regoffset(ecx);
   hp.type = USING_STRING | NO_CONTEXT;
   hp.filter_fun = StuffScript3Filter;
-  NewHook(hp, "StuffScript3");
-  return true;
+  return NewHook(hp, "StuffScript3");
+}
+namespace
+{
+  bool hook1()
+  {
+    // https://vndb.org/v445
+    // Bullet Butlers
+
+    char sss[] = "%s%s%s";
+    auto aSSS = MemDbg::findBytes(sss, sizeof(sss), processStartAddress, processStopAddress);
+    if (!aSSS)
+      return false;
+    auto pushasss = MemDbg::find_leaorpush_addr_all(aSSS, processStartAddress, processStopAddress);
+    if (pushasss.size() != 3)
+      return false;
+    if (pushasss[1] - pushasss[0] > 0x40)
+      return false;
+    const BYTE bytes[] = {
+        0x8a, 0x11,
+        0x88, 0x14, 0x08,
+        0x41,
+        0x84, 0xd2,
+        0x75, 0xf6};
+    ULONG addr = reverseFindBytes(bytes, sizeof(bytes), pushasss[0] - 0x400, pushasss[0]);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr, 0x180);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(2);
+    hp.type = USING_STRING; // 主界面可以内嵌，但开启内嵌后，打开history会直接闪退，放弃。
+    hp.filter_fun = StuffScript3Filter;
+    return NewHook(hp, "StuffScript4");
+  }
 }
 bool StuffScript_attach_function()
 {
-  auto _ = InsertStuffScriptHook();
+  auto _ = hook1() || InsertStuffScriptHook();
   _ |= InsertStuffScript2Hook();
   _ |= InsertStuffScript3Hook();
   return _;

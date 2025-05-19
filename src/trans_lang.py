@@ -2,7 +2,8 @@ import sys, os
 
 os.chdir(os.path.dirname(__file__))
 sys.path.insert(0, "./LunaTranslator")
-from translator.youdaodict import TS
+from translator.google import TS
+from language import Languages
 
 
 class TS1(TS):
@@ -12,11 +13,11 @@ class TS1(TS):
         return "zh"
 
     @property
-    def tgtlang(self):
+    def tgtlang_1(self):
         return self.xxxxx
 
-    @tgtlang.setter
-    def tgtlang(self, _):
+    @tgtlang_1.setter
+    def tgtlang_1(self, _):
         self.xxxxx = _
 
 
@@ -28,10 +29,6 @@ if __name__ == "__main__":
     with open("./files/lang/" + f, "r", encoding="utf8") as ff:
         js = ff.read()
         js = json.loads(js)
-    xxx = {
-        # "en": "en",
-        # "cht": "cht",
-    }
     needpop = []
     for k in js:
         kk = False
@@ -47,8 +44,10 @@ if __name__ == "__main__":
         js.pop(k)
     with open(f"./files/lang/" + f, "w", encoding="utf8") as ff:
         ff.write(json.dumps(js, ensure_ascii=False, sort_keys=False, indent=4))
-    a = TS1("baiduapi")
+
     for kk in os.listdir("./files/lang"):
+        if kk == "zh.json":
+            continue
         with open(f"./files/lang/{kk}", "r", encoding="utf8") as ff:
 
             jsen = json.loads(ff.read())
@@ -62,17 +61,16 @@ if __name__ == "__main__":
             jsen.pop(k)
         with open(f"./files/lang/{kk}", "w", encoding="utf8") as ff:
             ff.write(json.dumps(jsen, ensure_ascii=False, sort_keys=False, indent=4))
-
+        a = TS1("google")
         for k in js:
 
             if k not in jsen or jsen[k] == "":
-                a.tgtlang = xxx.get(kk.split(".")[0])
-                if not a.tgtlang:
-                    jsen[k] = ""
-                else:
-                    jsen[k] = list(a.translate(k))[0]
-                    print(k, jsen[k])
+                a.tgtlang_1 = Languages.fromcode(kk.split(".")[0])
+                jsen[k] = a.translate(k)
+                print(k, jsen[k])
                 with open(f"./files/lang/{kk}", "w", encoding="utf8") as ff:
                     ff.write(
                         json.dumps(jsen, ensure_ascii=False, sort_keys=False, indent=4)
                     )
+
+    os._exit(0)

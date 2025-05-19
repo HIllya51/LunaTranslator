@@ -1,7 +1,7 @@
 import windows, os, NativeUtils, functools
 from qtsymbols import *
 from myutils.config import savehook_new_data, get_launchpath, globalconfig, _TR
-from gobject import is_xp
+from gobject import sys_le_xp
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
 from traceback import print_exc
 import xml.etree.ElementTree as ET
@@ -56,7 +56,7 @@ class le_internal(LEbase):
         if not (LEProc and os.path.exists(LEProc)):
             if show:
                 return _TR("内置")
-            LEProc = "files/plugins/Locale/Locale.Emulator/LEProc.exe"
+            LEProc = "files/Locale/Locale.Emulator/LEProc.exe"
         return os.path.abspath(LEProc)
 
     def profiles(self, config):
@@ -172,7 +172,7 @@ class NTLEAS64(LEbase):
         if not (LEProc and os.path.exists(LEProc)):
             if show:
                 return _TR("内置")
-            LEProc = "files/plugins/Locale/ntleas046_x64/Placeholder"
+            LEProc = "files/Locale/ntleas046_x64/Placeholder"
         return os.path.abspath(LEProc)
 
     def runX(self, exe, usearg, dirpath, config):
@@ -270,7 +270,7 @@ class lr_internal(LEbase):
         if not (LEProc and os.path.exists(LEProc)):
             if show:
                 return _TR("内置")
-            LEProc = "files/plugins/Locale/Locale_Remulator/LRProc.exe"
+            LEProc = "files/Locale/Locale_Remulator/LRProc.exe"
         return os.path.abspath(LEProc)
 
     def runX(self, exe, usearg, dirpath, config):
@@ -367,7 +367,7 @@ x86tools: "list[LEbase]" = [
 ]
 x64tools = [lr_internal, NTLEAS64, CommandLine, Direct]
 
-if is_xp:
+if sys_le_xp:
     x86tools.remove(NTLEAS32)
     x86tools.insert(0, NTLEAS32)
 

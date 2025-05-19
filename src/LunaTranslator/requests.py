@@ -1,5 +1,5 @@
 import json, base64, re, string, random, codecs
-from urllib.parse import urlencode, urlsplit
+from urllib.parse import urlencode, urlsplit, quote, parse_qsl
 from functools import partial
 from myutils.config import globalconfig
 from network.structures import CaseInsensitiveDict
@@ -172,10 +172,13 @@ class Requester_common:
             return data
 
     def _parseurl(self, url: str, param):
-        url = url.strip()
+        url = url.lstrip()
         scheme, server, path, query, _ = urlsplit(url)
+        path = quote(path)
         if scheme not in ["https", "http"]:
-            raise RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
+            raise RequestException(
+                "unknown scheme {} for invalid url {}".format(scheme, url)
+            )
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -188,9 +191,11 @@ class Requester_common:
                 port = 80
         else:
             raise RequestException("invalid url " + url)
+        query = urlencode(parse_qsl(query), doseq=True)
         if param:
             param = self._encode_params(param)
-            query += ("&" if len(query) else "") + param
+            query += ("&" if query else "") + param
+
         if len(query):
             path += "?" + query
         url = scheme + "://" + server + path
@@ -402,9 +407,9 @@ class Session:
         if self._libidx == idx:
             return self._requester
         if idx == 1:
-            from network.libcurl.requester import Requester
+            from network.client.libcurl.requester import Requester
         elif idx == 0:
-            from network.winhttp.requester import Requester
+            from network.client.winhttp.requester import Requester
         self._requester = Requester()
         self._libidx = idx
         self.headers.update({"User-Agent": self._requester.default_UA})

@@ -35,7 +35,7 @@ class TS(basetrans):
                 path2 = os.path.join(path, "TransCOMEC.dll")
 
             self.engine = NativeUtils.AutoKillProcess(
-                'files/plugins/shareddllproxy32.exe dreye "{}" "{}" {} {} {}'.format(
+                'files/shareddllproxy32.exe dreye "{}" "{}" {} {} {}'.format(
                     path, path2, str(mp[pairs]), pipename, waitsignal
                 ),
             )

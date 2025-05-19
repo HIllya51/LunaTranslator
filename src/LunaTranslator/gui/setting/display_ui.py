@@ -4,6 +4,7 @@ from traceback import print_exc
 import gobject
 from myutils.config import globalconfig, static_data
 from myutils.utils import nowisdark
+from gui.flowsearchword import createsomecontrols
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -162,7 +163,67 @@ def checkthemesettingvisandapply(self, _):
     gobject.baseobject.setcommonstylesheet()
 
 
+def __rs():
+    spin, lay = createsomecontrols(
+        gobject.baseobject.translation_ui.set_color_transparency,
+        gobject.baseobject.translation_ui.seteffect,
+        "yuanjiao_r",
+        "yuanjiao_sys",
+        False,
+        "WindowEffect",
+        "WindowEffect_shadow",
+        True,
+    )
+    return getboxlayout(
+        [
+            "窗口特效",
+            lay,
+            "",
+            "圆角",
+            spin,
+            "",
+            getsmalllabel("任务栏中显示"),
+            D_getsimpleswitch(
+                globalconfig,
+                "showintab",
+                callback=lambda _: gobject.baseobject.setshowintab(),
+            ),
+        ]
+    )
+
+
 def uisetting(self):
+    windoweffects = [
+        getsmalllabel("窗口特效"),
+        D_getsimplecombobox(
+            [
+                "Solid",
+                "Acrylic",
+                "Mica",
+                "MicaAlt",
+            ],
+            globalconfig,
+            "WindowBackdrop",
+            callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+            static=True,
+        ),
+        "",
+        getsmalllabel("强制直角"),
+        D_getsimpleswitch(
+            globalconfig,
+            "force_rect",
+            callback=lambda _: gobject.baseobject.cornerornot(),
+        ),
+        "",
+        getsmalllabel("任务栏中显示"),
+        D_getsimpleswitch(
+            globalconfig,
+            "showintab_sub",
+            callback=lambda _: gobject.baseobject.setshowintab(),
+        ),
+    ]
+    if not gobject.sys_ge_win_11:
+        list(windoweffects.append(("", windoweffects.pop(3))[0]) for _ in range(3))
     __ = [
         [
             dict(
@@ -172,28 +233,7 @@ def uisetting(self):
                     [
                         dict(
                             type="grid",
-                            grid=(
-                                [
-                                    getsmalllabel("窗口特效"),
-                                    functools.partial(createxxx, self),
-                                    "",
-                                    getsmalllabel("圆角_半径"),
-                                    D_getspinbox(
-                                        0,
-                                        100,
-                                        globalconfig,
-                                        "yuanjiao_r",
-                                        callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
-                                    ),
-                                    "",
-                                    getsmalllabel("任务栏中显示"),
-                                    D_getsimpleswitch(
-                                        globalconfig,
-                                        "showintab",
-                                        callback=lambda _: gobject.baseobject.setshowintab(),
-                                    ),
-                                ],
-                            ),
+                            grid=([__rs],),
                         )
                     ],
                     [
@@ -210,8 +250,9 @@ def uisetting(self):
                                     "自动隐藏",
                                     D_getsimpleswitch(globalconfig, "autodisappear"),
                                     lambda: createdynamicswitch(self),
-                                    lambda: createdynamicdelay(self),
-                                    "(s)",
+                                    getboxlayout(
+                                        [lambda: createdynamicdelay(self), "(s)"]
+                                    ),
                                 ],
                                 [
                                     "游戏失去焦点时取消置顶",
@@ -224,6 +265,15 @@ def uisetting(self):
                                     D_getsimpleswitch(globalconfig, "adaptive_height"),
                                     D_getsimplecombobox(
                                         ["向上", "向下"], globalconfig, "top_align"
+                                    ),
+                                    getboxlayout(
+                                        [
+                                            "最小高度",
+                                            D_getspinbox(
+                                                0, 9999, globalconfig, "min_auto_height"
+                                            ),
+                                            "px",
+                                        ]
                                     ),
                                 ],
                             ),
@@ -269,37 +319,7 @@ def uisetting(self):
                     [
                         dict(
                             type="grid",
-                            grid=[
-                                [
-                                    getsmalllabel("窗口特效"),
-                                    D_getsimplecombobox(
-                                        [
-                                            "Solid",
-                                            "Acrylic",
-                                            "Mica",
-                                            "MicaAlt",
-                                        ],
-                                        globalconfig,
-                                        "WindowBackdrop",
-                                        callback=lambda _: gobject.baseobject.setcommonstylesheet(),
-                                        static=True,
-                                    ),
-                                    "",
-                                    getsmalllabel("强制直角"),
-                                    D_getsimpleswitch(
-                                        globalconfig,
-                                        "force_rect",
-                                        callback=lambda _: gobject.baseobject.cornerornot(),
-                                    ),
-                                    "",
-                                    getsmalllabel("任务栏中显示"),
-                                    D_getsimpleswitch(
-                                        globalconfig,
-                                        "showintab_sub",
-                                        callback=lambda _: gobject.baseobject.setshowintab(),
-                                    ),
-                                ]
-                            ],
+                            grid=[windoweffects],
                         )
                     ],
                     [
@@ -388,7 +408,7 @@ def mainuisetting(self):
                             self,
                             globalconfig,
                             "backcolor",
-                            callback=gobject.baseobject.translation_ui.set_color_transparency,
+                            callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
                         ),
                         "",
                         "不透明度",
@@ -408,7 +428,7 @@ def mainuisetting(self):
                             self,
                             globalconfig,
                             "backcolor_tool",
-                            callback=toolcolorchange,
+                            callback=lambda _: toolcolorchange(),
                         ),
                         "",
                         "不透明度",
@@ -422,38 +442,3 @@ def mainuisetting(self):
 
 def themelist():
     return [_["name"] for _ in static_data["themes"]]
-
-
-def createxxx(self):
-    self.__shadowxx = QLabel("阴影")
-    self.__shadowxx.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    self.__shadowxx2 = getsimpleswitch(
-        globalconfig,
-        "WindowEffect_shadow",
-        callback=lambda _: [
-            gobject.baseobject.translation_ui.set_color_transparency(),
-            gobject.baseobject.translation_ui.seteffect(),
-        ],
-    )
-    if globalconfig["WindowEffect"] == 0:
-        self.__shadowxx.hide()
-        self.__shadowxx2.hide()
-    return getboxlayout(
-        [
-            D_getsimplecombobox(
-                ["Disable", "Acrylic", "Aero"],
-                globalconfig,
-                "WindowEffect",
-                callback=lambda _: [
-                    gobject.baseobject.translation_ui.set_color_transparency(),
-                    gobject.baseobject.translation_ui.seteffect(),
-                    self.__shadowxx.setVisible(_ != 0),
-                    self.__shadowxx2.setVisible(_ != 0),
-                    gobject.baseobject.translation_ui.changeextendstated(),
-                ],
-                static=True,
-            ),
-            self.__shadowxx,
-            self.__shadowxx2,
-        ],
-    )

@@ -1,17 +1,24 @@
-from urllib.parse import quote, unquote
+from urllib.parse import unquote
 from cishu.cishubase import cishubase
 from myutils.utils import simplehtmlparser_all, simplehtmlparser, localcachehelper
 import re, threading
 
 
 class weblio(cishubase):
-
+    backgroundparser='''
+            document.querySelectorAll('.lunawebliocsswrapper').forEach((ele) => {
+                ele.style.backgroundColor = {color}
+                ele.querySelectorAll('#base').forEach((ele) => {
+                    ele.style.backgroundColor = {color}
+                })
+            });
+'''
     def init(self):
         self.cache = localcachehelper("cishucss/weblio")
         self.klass = "lunawebliocsswrapper"
 
     def search(self, word):
-        url = "https://www.weblio.jp/content/" + quote(word)
+        url = "https://www.weblio.jp/content/{}".format(word)
         html = self.proxysession.get(url).text
         head = simplehtmlparser_all(html, "div", '<div class="pbarT">')
         content = simplehtmlparser_all(html, "div", '<div class="kijiWrp">')

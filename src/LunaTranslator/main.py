@@ -52,11 +52,18 @@ def overridepathexists():
 
 def prepareqtenv():
     import windows
-    from gobject import is_xp
+    from gobject import runtime_for_xp
+
+    # 对于使用的动态链接的x64_win10版本，由于vc++在14.38->14.40之间破坏了兼容性，
+    # 因此，必须在加载QT之前加载NativeUtils，使其抢先加载系统的更高版本的msvcp140，否则会加载Qt自带的14.26版本导致崩溃
+    # 实测编译时链接了高版本msvcp的程序，加载低版本的msvcp会崩溃，但链接了低版本msvcp的程序，可以加载高版本的msvcp
+    # 打包的时候，应该打包高级的msvcp140和vcruntime140而非Qt的低版本
+    # 其实这个只在开发时有用，发布时的exe已经加载了msvcp了，但写上这个也没坏处。
+    import NativeUtils
 
     # win7 no vcredist2015
     windows.addenvpath("files/runtime/")
-    if not is_xp:
+    if not runtime_for_xp:
         windows.LoadLibrary("files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
         windows.LoadLibrary("files/runtime/PyQt6/Qt6/bin/Qt6Core.dll")
     else:
@@ -69,17 +76,17 @@ def prepareqtenv():
 
     if isqt5:
         # 中文字符下不能自动加载
-        if not is_xp:
+        if not runtime_for_xp:
             plgs = "files/runtime/PyQt5/Qt5/plugins"
         else:
             plgs = "files/runtime/Lib/site-packages/PyQt5/plugins"
 
         if os.path.exists(plgs):
             QApplication.addLibraryPath(plgs)
-        if not is_xp:
+        if not runtime_for_xp:
             QApplication.setAttribute(Qt.ApplicationAttribute.AA_EnableHighDpiScaling)
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseHighDpiPixmaps)
-    if not is_xp:
+    if not runtime_for_xp:
         QApplication.setHighDpiScaleFactorRoundingPolicy(
             Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
         )
@@ -117,13 +124,13 @@ def checklang():
 def checkintegrity():
     from myutils.config import _TR
     from qtsymbols import QMessageBox
-    from gobject import is_xp
+    from gobject import runtime_for_xp, runtime_for_win10
     import platform, gobject
 
     dll3264 = [
         "NativeUtils.dll",
-        "OrtWrapper.dll",
-        "onnxruntime.dll" if not is_xp else None,
+        "onnxruntime.dll" if not runtime_for_xp else None,
+        "DirectML.dll" if runtime_for_win10 else None,
         "CVUtils.dll",
         "bass.dll",
         "bass_spx.dll",
@@ -142,13 +149,13 @@ def checkintegrity():
         "LunaHook/" + ("LunaHost32.dll", "LunaHost64.dll")[isbit64],
         "shareddllproxy32.exe",
         "shareddllproxy64.exe",
-        "Magpie/Magpie.Core.exe" if not is_xp else None,
+        "Magpie/Magpie.Core.exe" if not runtime_for_xp else None,
         "LunaHook/LunaHook32.dll",
         "LunaHook/LunaHook64.dll",
     ]
     for f in dllshared:
         if f:
-            flist.append("files/plugins/" + f)
+            flist.append("files/" + f)
     collect = []
     for f in flist:
         if not os.path.exists(f):

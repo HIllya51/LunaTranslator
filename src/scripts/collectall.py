@@ -43,6 +43,11 @@ def copycheck(src, tgt):
     shutil.copy(src, tgt)
 
 
+if target == "win10":
+    copycheck(r"c:\windows\system32\vcruntime140.dll", targetdir)
+    copycheck(r"c:\windows\system32\vcruntime140_1.dll", targetdir)
+    copycheck(r"c:\windows\system32\msvcp140.dll", targetdir)
+    copycheck(r"c:\windows\system32\msvcp140_1.dll", targetdir)
 copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
 copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
 with open(os.path.join(targetdir, "LunaTranslator_debug.bat"), "w") as ff:
@@ -56,7 +61,7 @@ copycheck("./LunaTranslator", targetdir)
 copycheck(r".\files", targetdir)
 copycheck(pyrt, targetdir + "/files")
 try:
-    shutil.rmtree(rf"{targetdir}\files\plugins\{baddll}")
+    shutil.rmtree(rf"{targetdir}\files\{baddll}")
 except:
     pass
 shutil.copy(r"..\LICENSE", targetdir)

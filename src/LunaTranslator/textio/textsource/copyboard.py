@@ -1,4 +1,4 @@
-from textsource.textsourcebase import basetext
+from textio.textsource.textsourcebase import basetext
 from myutils.config import globalconfig
 import NativeUtils, gobject
 

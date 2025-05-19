@@ -1,3 +1,11 @@
+---
+prev: false
+next: false
+editLink: false
+lastUpdated: false
+__giscus__: false
+---
+
 # 作者を支援する
 
-もしあなたがこのソフトウェアがあなたに役立つと思ったら、私の[スポンサー](https://patreon.com/HIllya51)になることを歓迎します
+ソフトウェアのメンテナンスは簡単ではありません。このソフトウェアが役に立つと感じたら、ぜひ私の[スポンサー](https://patreon.com/HIllya51)になってください。ありがとうございます～

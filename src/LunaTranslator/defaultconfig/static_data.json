@@ -299,111 +299,111 @@
                 "name": "VoiceRoid2",
                 "links": [
                     {
-                        "name": "SFE_結月ゆかり/结月缘",
+                        "name": "整合包_[[SFE 結月ゆかり]]",
                         "link": "/Resource/voice/Yukari2.zip"
                     },
                     {
-                        "name": "結月ゆかり/结月缘",
+                        "name": "整合包_[[結月ゆかり]]",
                         "link": "/Resource/voice/VOICEROID2_Yuzuki_Yukari.zip"
                     },
                     {
-                        "name": "紲星あかり/绁星灯",
+                        "name": "整合包_[[紲星あかり]]",
                         "link": "/Resource/voice/VOICEROID2_Kizuna_Akari.zip"
                     },
                     {
-                        "name": "琴葉 茜・葵",
+                        "name": "整合包_[[琴葉 茜・葵]]",
                         "link": "/Resource/voice/VOICEROID2_Kotonoha_Akane_Aoi.zip"
                     },
                     {
-                        "name": "伊織弓鶴",
+                        "name": "整合包_[[伊織弓鶴]]",
                         "link": "/Resource/voice/VOICEROID2_Iori_Yuzuru.zip"
                     },
                     {
-                        "name": "ついなちゃん",
+                        "name": "整合包_[[ついなちゃん]]",
                         "link": "/Resource/voice/VOICEROID2_tsuina-chan_dl_e.zip"
                     },
                     {
-                        "name": "東北イタコ/东北伊达子",
+                        "name": "整合包_[[東北イタコ]]",
                         "link": "/Resource/voice/VOICEROID2_Tohoku_Itako.zip"
                     },
                     {
-                        "name": "附加音源_結月ゆかり",
+                        "name": "附加音源_[[結月ゆかり]]",
                         "link": "/Resource/voice/yukari_emo_44.zip"
                     },
                     {
-                        "name": "附加音源_紲星あかり",
+                        "name": "附加音源_[[紲星あかり]]",
                         "link": "/Resource/voice/akari_44.zip"
                     },
                     {
-                        "name": "附加音源_東北きりたん",
+                        "name": "附加音源_[[東北きりたん]]",
                         "link": "/Resource/voice/kiritan_44.zip"
                     },
                     {
-                        "name": "附加音源_東北イタコ",
+                        "name": "附加音源_[[東北イタコ]]",
                         "link": "/Resource/voice/itako_emo_44.zip"
                     },
                     {
-                        "name": "附加音源_東北ずん子",
+                        "name": "附加音源_[[東北ずん子]]",
                         "link": "/Resource/voice/zunko_44.zip"
                     },
                     {
-                        "name": "附加音源_伊織弓鶴",
+                        "name": "附加音源_[[伊織弓鶴]]",
                         "link": "/Resource/voice/yuzuru_emo_44.zip"
                     },
                     {
-                        "name": "附加音源_ついなちゃん",
+                        "name": "附加音源_[[ついなちゃん]]",
                         "link": "/Resource/voice/tsuina_44.zip"
                     },
                     {
-                        "name": "附加音源_ついなちゃん（関西弁）",
+                        "name": "附加音源_[[ついなちゃん（関西弁）]]",
                         "link": "/Resource/voice/tsuina_west_44.zip"
                     },
                     {
-                        "name": "附加音源_琴葉茜",
+                        "name": "附加音源_[[琴葉茜]]",
                         "link": "/Resource/voice/akane_west_emo_44.zip"
                     },
                     {
-                        "name": "附加音源_琴葉葵",
+                        "name": "附加音源_[[琴葉葵]]",
                         "link": "/Resource/voice/aoi_emo_44.zip"
                     },
                     {
-                        "name": "附加音源_水奈瀬コウ",
+                        "name": "附加音源_[[水奈瀬コウ]]",
                         "link": "/Resource/voice/kou_44.zip"
                     },
                     {
-                        "name": "附加音源_桜乃そら",
+                        "name": "附加音源_[[桜乃そら]]",
                         "link": "/Resource/voice/sora_44.zip"
                     },
                     {
-                        "name": "附加音源_民安ともえ",
+                        "name": "附加音源_[[民安ともえ]]",
                         "link": "/Resource/voice/tamiyasu_44.zip"
                     },
                     {
-                        "name": "附加音源_月読アイ",
+                        "name": "附加音源_[[月読アイ]]",
                         "link": "/Resource/voice/ai_44.zip"
                     },
                     {
-                        "name": "附加音源_月読ショウタ",
+                        "name": "附加音源_[[月読ショウタ]]",
                         "link": "/Resource/voice/shouta_44.zip"
                     },
                     {
-                        "name": "附加音源_京町セイカ",
+                        "name": "附加音源_[[京町セイカ]]",
                         "link": "/Resource/voice/seika_44.zip"
                     },
                     {
-                        "name": "附加音源_音街ウナ",
+                        "name": "附加音源_[[音街ウナ]]",
                         "link": "/Resource/voice/una_44.zip"
                     },
                     {
-                        "name": "附加音源_鷹の爪吉田",
+                        "name": "附加音源_[[鷹の爪吉田]]",
                         "link": "/Resource/voice/yoshidakun_44.zip"
                     },
                     {
-                        "name": "附加音源_ギャラ子",
+                        "name": "附加音源_[[ギャラ子]]",
                         "link": "/Resource/voice/galaco_44.zip"
                     },
                     {
-                        "name": "VoiceRoid+_東北ずん子/东北俊子",
+                        "name": "整合包_[[VoiceRoid+ 東北ずん子]]",
                         "link": "/Resource/voice/VOICEROID+zunko.7z"
                     }
                 ]

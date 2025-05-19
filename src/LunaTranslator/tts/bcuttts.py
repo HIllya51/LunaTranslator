@@ -26,7 +26,7 @@ class TTS(TTSbase):
         for l in response.json()["data"]["list"]:
             for c in l["children"]:
                 inter.append(c["voice"])
-                vis.append(l["name"] + "_" + c["name"])
+                vis.append(l["name"] + " " + c["name"])
         return inter, vis
 
     def speak(self, content, voice, param: SpeechParam):

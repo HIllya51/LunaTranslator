@@ -8,6 +8,7 @@ from translator.gptcommon import list_models
 
 class TS(basetrans):
     _compatible_flag_is_sakura_less_than_5_52_3 = False
+    needzhconv = True
 
     @property
     def using_gpt_dict(self):

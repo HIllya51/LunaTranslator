@@ -86,7 +86,7 @@ typedef BOOL(WINAPI *pfnSetWindowCompositionAttribute)(HWND, WINDOWCOMPOSITIONAT
 	if (!setWindowCompositionAttribute)                                                                                    \
 		return;
 
-DECLARE_API void setAcrylicEffect(HWND hwnd, bool isEnableShadow)
+DECLARE_API void setAcrylicEffect(HWND hwnd, bool isEnableShadow, DWORD gradientColor)
 {
 	if (GetOSVersion().IsleWinVista())
 		return;
@@ -102,7 +102,7 @@ DECLARE_API void setAcrylicEffect(HWND hwnd, bool isEnableShadow)
 	}
 	else
 	{
-		DWORD gradientColor = 0x00FfFfFf; // ABGR
+		// DWORD gradientColor = 0x00FfFfFf; // ABGR
 		common;
 		accentPolicy.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
 		accentPolicy.GradientColor = gradientColor;
@@ -148,46 +148,6 @@ DECLARE_API void clearEffect(HWND hwnd)
 	{
 		common;
 		accentPolicy.AccentState = ACCENT_DISABLED;
-		setWindowCompositionAttribute(hwnd, &winCompAttrData);
-	}
-}
-#ifdef WINXP
-#define DWMWCP_DEFAULT 0
-#define DWMWCP_ROUND 2
-#define DWMWA_WINDOW_CORNER_PREFERENCE 33
-#endif
-DECLARE_API void SetWindowBackdrop(HWND hwnd, bool good, bool dark)
-{
-	if (GetOSVersion().IsleWin8())
-		return;
-
-	DWORD corner_ = good ? DWMWCP_ROUND : DWMWCP_DEFAULT;
-	DwmSetWindowAttribute(hwnd, DWMWA_WINDOW_CORNER_PREFERENCE, &corner_, sizeof(corner_));
-
-	common;
-	if (!good)
-	{
-		accentPolicy.AccentState = ACCENT_DISABLED;
-		setWindowCompositionAttribute(hwnd, &winCompAttrData);
-		return;
-	}
-	accentPolicy.AccentState = ACCENT_ENABLE_ACRYLICBLURBEHIND;
-
-	CRegKey key;
-	if (ERROR_SUCCESS != key.Open(HKEY_CURRENT_USER, LR"(SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent)"))
-		return;
-	DWORD accent_int;
-	if (ERROR_SUCCESS != key.QueryDWORDValue(L"AccentColorMenu", accent_int))
-		return;
-	if (dark)
-		accentPolicy.GradientColor = 0x40212121;
-	else
-		accentPolicy.GradientColor = 0x40f7f7fa;
-	setWindowCompositionAttribute(hwnd, &winCompAttrData);
-
-	if (dark)
-	{
-		winCompAttrData.Attrib = WCA_USEDARKMODECOLORS;
 		setWindowCompositionAttribute(hwnd, &winCompAttrData);
 	}
 }

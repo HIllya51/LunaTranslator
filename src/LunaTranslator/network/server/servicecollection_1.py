@@ -1,4 +1,4 @@
-from services.tcpservice import WSHandler
+from network.server.tcpservice import WSHandler
 from typing import List
 from myutils.wrapper import threader
 from traceback import print_exc

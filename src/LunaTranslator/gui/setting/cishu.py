@@ -12,17 +12,20 @@ from gui.usefulwidget import (
     listediter,
     D_getIconButton,
     D_getspinbox,
-    D_getcolorbutton,
     getsmalllabel,
+    D_getcolorbutton,
     getsimpleswitch,
     D_getsimplecombobox,
     getspinbox,
     ClickableLabel,
     getcolorbutton,
+    KeySequenceEdit,
     check_grid_append,
 )
+import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
 from gui.setting.about import offlinelinks
+from gui.rendertext.tooltipswidget import tooltipssetting
 
 
 @Singleton
@@ -30,6 +33,7 @@ class multicolorset(LDialog):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle("颜色设置")
+        self.setWindowIcon(qtawesome.icon("fa.paint-brush"))
         self.resize(QSize(300, 10))
         formLayout = LFormLayout(self)  # 配置layout
         _hori = QHBoxLayout()
@@ -253,6 +257,18 @@ def setTabcishu_l(self):
             type="grid",
             grid=[
                 [
+                    getsmalllabel("查词"),
+                    D_getIconButton(
+                        lambda: gobject.baseobject.searchwordW.showsignal.emit(),
+                        icon="fa.search",
+                        tips="查词",
+                    ),
+                    getsmalllabel(""),
+                    getsmalllabel("辞书显示顺序"),
+                    D_getIconButton(functools.partial(vistranslate_rank, self)),
+                    "",
+                ],
+                [
                     dict(
                         title="离线",
                         type="grid",
@@ -269,6 +285,38 @@ def setTabcishu_l(self):
             ],
         )
     ]
+
+    def _getkeys(key):
+        dia = QDialog(self)
+        dia.setWindowIcon(qtawesome.icon("fa.keyboard-o"))
+        dia.setWindowFlags(
+            dia.windowFlags() & ~Qt.WindowType.WindowContextHelpButtonHint
+        )
+        l = QVBoxLayout(dia)
+        edit = KeySequenceEdit(callonlymod=True)
+        edit.setString(globalconfig["wordclickkbtrigger"].get(key, ""))
+        l.addWidget(edit)
+        dia.setWindowTitle(_TR("需要的键"))
+        button = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        button.accepted.connect(dia.accept)
+        button.rejected.connect(dia.reject)
+        l.addWidget(button)
+        dia.resize(800, 10)
+        ok = dia.exec()
+        if ok:
+            globalconfig["wordclickkbtrigger"][key] = edit.string()
+
+    def _getlink():
+        listediter(
+            self,
+            "外部链接",
+            globalconfig["useopenlinklink1"],
+            exec=True,
+            icon="fa.link",
+        )
+
     grids = [
         [(functools.partial(offlinelinks, "dict"), 0)],
         grids_1,
@@ -289,13 +337,12 @@ def setTabcishu_l(self):
                             "isshowhira",
                             callback=gobject.baseobject.translation_ui.translate_text.showhidert,
                         ),
-                        getsmalllabel(""),
-                        getsmalllabel("颜色"),
                         D_getcolorbutton(
                             self,
                             globalconfig,
                             "jiamingcolor",
                             callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                            tips="注音颜色",
                         ),
                         "",
                         "字体缩放",
@@ -326,61 +373,208 @@ def setTabcishu_l(self):
                         D_getsimpleswitch(
                             globalconfig,
                             "show_fenci",
-                            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                            callback=lambda _: (
+                                gobject.baseobject.translation_ui.translate_text.setcolorstyle(),
+                                gobject.baseobject.translation_ui.translate_text.showhideclick(
+                                    _
+                                ),
+                            ),
                         ),
-                        getsmalllabel(""),
-                        getsmalllabel("颜色"),
-                        D_getIconButton(callback=lambda: multicolorset(self)),
+                        D_getIconButton(
+                            icon="fa.paint-brush",
+                            callback=lambda: multicolorset(self),
+                            tips="语法加亮_颜色设置",
+                        ),
+                    ],
+                    [
+                        dict(
+                            title="鼠标悬停时",
+                            type="grid",
+                            grid=[
+                                [
+                                    "颜色",
+                                    D_getcolorbutton(
+                                        self,
+                                        globalconfig,
+                                        "hovercolor",
+                                        callback=gobject.baseobject.translation_ui.translate_text.sethovercolor,
+                                        alpha=True,
+                                    ),
+                                    "",
+                                    "显示详细信息",
+                                    D_getsimpleswitch(
+                                        globalconfig,
+                                        "word_hover_show_word_info",
+                                        callback=lambda _: (
+                                            gobject.baseobject.translation_ui.translate_text.set_word_hover_show_word_info(
+                                                _
+                                            ),
+                                            gobject.baseobject.translation_ui.translate_text.showhideclick(
+                                                _
+                                            ),
+                                        ),
+                                    ),
+                                    D_getIconButton(
+                                        callback=lambda: tooltipssetting(self),
+                                        tips="样式",
+                                    ),
+                                    "",
+                                    "",
+                                ],
+                            ],
+                        )
+                    ],
+                    [
+                        dict(
+                            title="点击单词时",
+                            type="grid",
+                            grid=[
+                                [
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    ("需要键盘按下", 3),
+                                    "",
+                                    "使用单词原型",
+                                ],
+                                [
+                                    "查词",
+                                    D_getsimpleswitch(
+                                        globalconfig,
+                                        "usesearchword",
+                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                    ),
+                                    "",
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["wordclickkbtriggerneed"],
+                                        "searchword",
+                                        default=False,
+                                    ),
+                                    D_getIconButton(
+                                        icon="fa.keyboard-o",
+                                        callback=functools.partial(
+                                            _getkeys, "searchword"
+                                        ),
+                                        tips="需要的键",
+                                    ),
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["usewordoriginfor"],
+                                        "searchword",
+                                        default=globalconfig.get(
+                                            "usewordorigin", False
+                                        ),
+                                    ),
+                                ],
+                                [
+                                    "查词_在小窗口中",
+                                    D_getsimpleswitch(
+                                        globalconfig,
+                                        "usesearchword_S",
+                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                    ),
+                                    "",
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["wordclickkbtriggerneed"],
+                                        "searchword_S",
+                                        default=False,
+                                    ),
+                                    D_getIconButton(
+                                        icon="fa.keyboard-o",
+                                        callback=functools.partial(
+                                            _getkeys, "searchword_S"
+                                        ),
+                                        tips="需要的键",
+                                    ),
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["usewordoriginfor"],
+                                        "searchword_S",
+                                        default=globalconfig.get(
+                                            "usewordorigin", False
+                                        ),
+                                    ),
+                                ],
+                                [
+                                    "复制到剪贴板",
+                                    D_getsimpleswitch(
+                                        globalconfig,
+                                        "usecopyword",
+                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                    ),
+                                    "",
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["wordclickkbtriggerneed"],
+                                        "copyword",
+                                        default=False,
+                                    ),
+                                    D_getIconButton(
+                                        icon="fa.keyboard-o",
+                                        callback=functools.partial(
+                                            _getkeys, "copyword"
+                                        ),
+                                        tips="需要的键",
+                                    ),
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["usewordoriginfor"],
+                                        "copyword",
+                                        default=globalconfig.get(
+                                            "usewordorigin", False
+                                        ),
+                                    ),
+                                ],
+                                [
+                                    "打开外部链接",
+                                    D_getsimpleswitch(
+                                        globalconfig,
+                                        "useopenlink",
+                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                    ),
+                                    D_getIconButton(
+                                        icon="fa.link",
+                                        callback=_getlink,
+                                        tips="外部链接",
+                                    ),
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["wordclickkbtriggerneed"],
+                                        "openlink",
+                                        default=False,
+                                    ),
+                                    D_getIconButton(
+                                        icon="fa.keyboard-o",
+                                        callback=functools.partial(
+                                            _getkeys, "openlink"
+                                        ),
+                                        tips="需要的键",
+                                    ),
+                                    "",
+                                    "",
+                                    D_getsimpleswitch(
+                                        globalconfig["usewordoriginfor"],
+                                        "openlink",
+                                        default=globalconfig.get(
+                                            "usewordorigin", False
+                                        ),
+                                    ),
+                                ],
+                            ],
+                        )
                     ],
                 ),
-            ),
-        ],
-        [
-            dict(
-                title="查词",
-                type="grid",
-                grid=[
-                    [
-                        "查词",
-                        D_getIconButton(
-                            lambda: gobject.baseobject.searchwordW.showsignal.emit(),
-                            icon="fa.search",
-                        ),
-                        "",
-                        "",
-                        "辞书显示顺序",
-                        D_getIconButton(functools.partial(vistranslate_rank, self)),
-                        "",
-                    ],
-                    [
-                        "点击单词查词",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "usesearchword",
-                            callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
-                        ),
-                        getcolorbutton(
-                            self,
-                            globalconfig,
-                            "hovercolor",
-                            callback=lambda: gobject.baseobject.translation_ui.translate_text.sethovercolor(
-                                globalconfig["hovercolor"]
-                            ),
-                            alpha=True,
-                        ),
-                        "",
-                        "点击单词复制",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "usecopyword",
-                            callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
-                        ),
-                        "",
-                        "",
-                        "使用原型查询",
-                        D_getsimpleswitch(globalconfig, "usewordorigin"),
-                    ],
-                ],
             ),
         ],
     ]

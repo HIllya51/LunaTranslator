@@ -1,4 +1,4 @@
-from services.tcpservice import (
+from network.server.tcpservice import (
     WSHandler,
     HTTPHandler,
     FileResponse,
@@ -8,12 +8,12 @@ from services.tcpservice import (
     ResponseWithHeader,
 )
 from sometypes import TranslateResult, TranslateError, WordSegResult
-from urllib.parse import quote
+from urllib.parse import urlencode
 import json, gobject, base64
 from myutils.ocrutil import ocr_run
 from gui.rendertext.webview import TextBrowser, somecommon as somecommon_1
 from gui.transhist import somecommon as somecommon_2, wvtranshist
-from services.servicecollection_1 import (
+from network.server.servicecollection_1 import (
     mainuiwsoutputsave,
     transhistwsoutputsave,
     wsoutputsave,
@@ -84,15 +84,24 @@ class PageSearchWord(HTTPHandler):
     path = "/page/dictionary"
 
     def parse(self, _: RequestInfo):
-        page = r"files\html\service\dictionary.html"
+        page = r"LunaTranslator\htmlcode\service\dictionary.html"
         if not _.query.get("word"):
             return FileResponse(page)
-        seg = WordSegResult.from_dict(_.query)
-        if not seg._prototype:
+        word = WordSegResult.from_dict(_.query)
+        if not word._prototype:
             return FileResponse(page)
-        word = (seg.word, seg.prototype)[globalconfig["usewordorigin"]]
+        wordwhich = lambda key: (word.word, word.prototype)[
+            globalconfig["usewordoriginfor"].get(
+                key, globalconfig.get("usewordorigin", False)
+            )
+        ]
+        word = wordwhich("searchword")
         if word:
-            return RedirectResponse(r"/page/dictionary?word=" + quote(word))
+            __ = _.query.copy()
+            __.update(word=word)
+            if "prototype" in __:
+                __.pop("prototype")
+            return RedirectResponse(r"/page/dictionary?" + urlencode(__))
         else:
             return FileResponse(page)
 
@@ -101,7 +110,7 @@ class Pagetranslate(HTTPHandler):
     path = "/page/translate"
 
     def parse(self, _: RequestInfo):
-        page = r"files\html\service\translate.html"
+        page = r"LunaTranslator\htmlcode\service\translate.html"
         return FileResponse(page)
 
 
@@ -229,7 +238,7 @@ class APISearchWord(HTTPHandler):
         sema = threading.Semaphore(0)
         for k, cishu in gobject.baseobject.cishus.items():
             cnt += 1
-            cishu.safesearch(word, functools.partial(self.__notify, k, sema, ret))
+            cishu.safesearch(functools.partial(self.__notify, k, sema, ret), word)
         for _ in range(cnt):
             sema.acquire()
             k, result = ret[_]
@@ -250,7 +259,7 @@ class APISearchWord(HTTPHandler):
             return {}
         ret = []
         sema = threading.Semaphore(0)
-        cishu.safesearch(word, functools.partial(self.__notify, dictid, sema, ret))
+        cishu.safesearch(functools.partial(self.__notify, dictid, sema, ret), word)
         sema.acquire()
         k, result = ret[0]
         if not result:
@@ -273,7 +282,7 @@ class Pageocr(HTTPHandler):
     path = "/page/ocr"
 
     def parse(self, _):
-        page = r"files\html\service\ocr.html"
+        page = r"LunaTranslator\htmlcode\service\ocr.html"
         return FileResponse(page)
 
 
@@ -295,7 +304,7 @@ class BasePage(HTTPHandler):
     path = "/"
 
     def parse(self, _):
-        return FileResponse(r"files\html\service\basepage.html")
+        return FileResponse(r"LunaTranslator\htmlcode\service\basepage.html")
 
 
 def registerall(service: TCPService):

@@ -31,7 +31,6 @@ def checkdir(dd, skips=None):
 
 
 checkdir("LunaTranslator")
-checkdir(r"files\html")
 checkdir(
     "cpp",
     (

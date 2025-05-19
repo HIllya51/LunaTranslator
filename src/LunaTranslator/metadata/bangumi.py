@@ -363,5 +363,5 @@ class searcher(common):
             "images": [response["images"]["large"]],
             "webtags": vndbtags,
             "developers": developers,
-            "description": response["summary"].replace("\n", "<br>"),
+            "description": response["summary"],
         }

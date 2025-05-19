@@ -14,22 +14,13 @@ class resourcewidget(QWidget):
     installsucc = pyqtSignal(bool, str)
 
     def _installsucc(self, succ, failreason):
+        self.formLayout.setRowVisible(2, False)
+        self.btninstall.setVisible(not succ)
+        self.btninstall.setEnabled(True)
         if succ:
-            self.progresssetval.emit(_TR("添加成功"), 10000)
             QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
-            self.formLayout.setRowVisible(2, False)
-            self.btninstall.setVisible(False)
         else:
-            self.progresssetval.emit(_TR("添加失败"), 0)
-            res = QMessageBox.question(
-                self,
-                _TR("错误"),
-                failreason + "\n\n" + _TR("自动添加失败，是否手动添加？"),
-            )
-            if res == QMessageBox.StandardButton.Yes:
-                os.startfile(self.oldlink)
-            self.formLayout.setRowVisible(2, False)
-            self.btninstall.setEnabled(True)
+            QMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
 
     @property
     def oldlink(self):
@@ -141,22 +132,13 @@ class resourcewidget2(QWidget):
     installsucc = pyqtSignal(bool, str)
 
     def _installsucc(self, succ, failreason):
+        self.formLayout.setRowVisible(3, False)
+        self.btninstall.setVisible(not succ)
+        self.btninstall.setEnabled(True)
         if succ:
-            self.progresssetval.emit(_TR("添加成功"), 10000)
             QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
-            self.formLayout.setRowVisible(3, False)
-            self.btninstall.setVisible(False)
         else:
-            self.progresssetval.emit(_TR("添加失败"), 0)
-            res = QMessageBox.question(
-                self,
-                _TR("错误"),
-                failreason + "\n\n" + _TR("自动添加失败，是否手动添加？"),
-            )
-            if res == QMessageBox.StandardButton.Yes:
-                os.startfile(self.oldlink)
-            self.formLayout.setRowVisible(3, False)
-            self.btninstall.setEnabled(True)
+            QMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
 
     @property
     def oldlink(self):

@@ -56,7 +56,7 @@ def tryreadconfig_1(path, default=None, pathold=None):
 
 
 def tryreadconfig2(path):
-    path = os.path.join("files/defaultconfig", path)
+    path = os.path.join("LunaTranslator/defaultconfig", path)
     with open(path, "r", encoding="utf-8") as ff:
         x = json.load(ff)
     return x
@@ -204,7 +204,6 @@ def getdefaultsavehook(title=None):
         "usertags": [],
         "developers": [],
         "webtags": [],  # 标签
-        # "description": "",  # 简介
     }
     if title and len(title):
         default["title"] = title  # metadata
@@ -390,6 +389,8 @@ def __partagA(match: re.Match):
 def _TR(k: str) -> str:
     if not k:
         return ""
+    if k == "√":
+        return k
     if "[[" in k and "]]" in k:
         return re.sub(r"(.*)\[\[(.*?)\]\](.*)", __parsenottr, k)
     if k.startswith("(") and k.endswith(")"):
@@ -414,15 +415,6 @@ def _TRL(kk):
     for k in kk:
         x.append(_TR(k))
     return x
-
-
-def getlang_inner2show(langcode: "str | Languages"):
-    return dict(
-        zip(
-            [_.code for _ in TransLanguages],
-            [_.zhsname for _ in TransLanguages],
-        )
-    ).get(langcode, "??")
 
 
 def unsafesave(fname: str, js, beatiful=True):

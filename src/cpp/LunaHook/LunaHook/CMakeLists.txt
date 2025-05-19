@@ -10,7 +10,7 @@ else()
 	set(enginessrc 
 		e_Erekiteru AbogadoPowers DAC BunBun antique T2U Moonstone Aromarie Winters Cage AGE_System 
 		AksysGames RPGMaker Stronger TACTICS Onscripter Sceplay DISCOVERY Erogos godot A98SYS
-		GuruGuruSMF4 TeethingRing Fizz CoffeeMaker VALKYRIA mirage CisLugI tamasoft FrontWing solfasys
+		TeethingRing Fizz CoffeeMaker VALKYRIA mirage CisLugI tamasoft FrontWing solfasys
 		Diskdream splushwave ransel akatombo GASTRO GSX Aksys ScrPlayer SYSD KISS LucaSystem Jellyfish 
 		BKEngine Overflow SRPGStudio Suika2 FVP LCScript Ohgetsu RPGMakerRGSS3 ONScripterru OVERDRIVE
 		HXP Palette Purple Ruf RUNE Tarte Tomato Sakuradog Troy VitaminSoft UnknownEngine TSSystem

@@ -5,7 +5,7 @@ def GetDllpath(_, base=None):
     isbit64 = platform.architecture()[0] == "64bit"
 
     if base is None:
-        base = os.path.abspath("files/plugins/DLL" + ("32", "64")[isbit64])
+        base = os.path.abspath("files/DLL" + ("32", "64")[isbit64])
     if isinstance(_, str):
         return os.path.join(base, _)
     elif isinstance(_, (list, tuple)):
@@ -67,5 +67,12 @@ class Consts:
     toolscale = 1.5
 
 
-is_xp = tuple(sys.version_info)[:2] == (3, 4)
-is_bit_64 = platform.architecture()[0] == "64bit"
+runtime_bit_64 = platform.architecture()[0] == "64bit"
+runtime_for_xp = tuple(sys.version_info)[:2] == (3, 4)
+runtime_for_win10 = tuple(sys.version_info)[:2] >= (3, 9)
+
+sys_le_xp = int(platform.version().split(".")[0]) <= 5
+sys_ge_win_11 = sys.getwindowsversion().build >= 22000  # 21h2
+sys_ge_win8 = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
+sys_le_win7 = tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1)
+sys_le_win81 = int(platform.version().split(".")[0]) <= 6

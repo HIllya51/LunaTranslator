@@ -1,4 +1,12 @@
 {
+    "local": {
+        "args": {
+            "thread": 4,
+            "gpu": false,
+            "device": 0,
+            "accfirst": true
+        }
+    },
     "youdaodictocr": {
         "args": {
             "Translate": false
@@ -179,15 +187,32 @@
             "top_p": 0.3,
             "frequency_penalty": 0,
             "frequency_penalty_use": false,
+            "reasoning_effort": "medium",
+            "reasoning_effort_use": false,
             "modellistcache": [],
             "s": "",
             "customparams": []
         },
         "argstype": {
+            "reasoning_effort": {
+                "type": "combo",
+                "refswitch": "reasoning_effort_use",
+                "internal": [
+                    "low",
+                    "medium",
+                    "high"
+                ],
+                "list": [
+                    "low",
+                    "medium",
+                    "high"
+                ]
+            },
             "customparams": {
                 "name": "其他参数",
                 "type": "custom",
-                "function": "customparams"
+                "function": "customparams",
+                "rank": -1
             },
             "SECRET_KEY": {
                 "rank": 0.5,

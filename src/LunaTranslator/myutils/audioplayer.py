@@ -186,7 +186,6 @@ def bass_code_cast(bs, fr="mp3"):
         _ = BASS_ChannelGetData(stream, buff, 0x10000)
     BASS_Encode_Stop(stream)
     BASS_StreamFree(stream)
-    print(len(bs), len(b"".join(ret)))
     return b"".join(ret), ext
 
 

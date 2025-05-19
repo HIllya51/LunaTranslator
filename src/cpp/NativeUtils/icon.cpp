@@ -21,7 +21,7 @@ struct AutoHICON
         return hi;
     }
 };
-std::mutex lockshfunction;
+static std::mutex lockshfunction;
 HICON GetExeIcon(LPCWSTR pszPath)
 {
     std::unique_lock _(lockshfunction);

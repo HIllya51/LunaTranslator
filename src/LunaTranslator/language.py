@@ -76,7 +76,7 @@ class Languages(_LanguageInfo):
             if isinstance(v, _LanguageInfo):
                 if v.code == code:
                     return v
-        raise Exception("unknown")
+        raise Exception("unknown code: " + code)
 
     @staticmethod
     def create_langmap(langmap=None):

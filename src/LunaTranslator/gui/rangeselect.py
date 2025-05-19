@@ -65,7 +65,7 @@ class Mainw(QMainWindow):
     def __init__(self, x):
         QMainWindow.__init__(self, x)
 
-        self.setWindowFlags(Qt.WindowType.FramelessWindowHint)
+        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
 
         self.sideGrips = [
             SideGrip(self, Qt.Edge.LeftEdge),
@@ -78,7 +78,7 @@ class Mainw(QMainWindow):
         # alternatively, widget.raise_() can be used
         self.cornerGrips = [QSizeGrip(self) for i in range(4)]
         for s in self.cornerGrips:
-            s.setStyleSheet(""" background-color: transparent;  """)
+            s.setStyleSheet("background-color: transparent;")
 
     @property
     def gripSize(self):

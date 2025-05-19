@@ -3,6 +3,12 @@ namespace
 {
     std::set<WebView2 *> save_ptrs;
 }
+DECLARE_API void webview2_set_transparent(WebView2 *web, bool backgroundtransparent)
+{
+    if (!web)
+        return;
+    web->set_transparent(backgroundtransparent);
+}
 DECLARE_API HRESULT webview2_create(WebView2 **web, HWND parent, bool backgroundtransparent, bool loadextension)
 {
     *web = nullptr;

@@ -1,7 +1,7 @@
 import NativeUtils
 import windows, re, os
 from myutils.hwnd import subprochiderun
-from myutils.config import _TR, getlang_inner2show
+from myutils.config import _TR
 from myutils.utils import dynamiclink
 from ocrengines.baseocrclass import baseocr, OCRResult
 from qtsymbols import *
@@ -133,7 +133,7 @@ class OCR(baseocr):
                     _TR(
                         "系统未安装“{currlang}”的OCR模型\n当前支持的语言：{langs}"
                     ).format(
-                        currlang=_TR(getlang_inner2show(self.srclang_1)),
+                        currlang=_TR(self.srclang_1.zhsname),
                         langs=", ".join(
                             [
                                 _[1]

@@ -1,18 +1,18 @@
-from urllib.parse import quote
 from cishu.cishubase import cishubase
 from myutils.utils import simplehtmlparser, localcachehelper
 import re
 
 
 class jpdb(cishubase):
+    backgroundparser = "document.querySelectorAll('.lunajpdbcsswrapper').forEach((ele) => { ele.style.backgroundColor = {color} });"
 
     def init(self):
         self.style = localcachehelper("cishucss/jpdb")
         self.klass = "lunajpdbcsswrapper"
 
     def search(self, word: str):
-        url = "https://jpdb.io/search?q={}&lang=english".format(quote(word))
-        text = self.proxysession.get(url).text
+        url = "https://jpdb.io/search"
+        text = self.proxysession.get(url, params={"q": word, "lang": "english"}).text
 
         res = simplehtmlparser(text, "div", '<div class="results search">')
         if not res:
@@ -41,5 +41,6 @@ class jpdb(cishubase):
                 self.style[link] = css
 
             cssall += self.style[link]
+
         cssall = "<style>{}</style>".format(cssall)
         return res + cssall

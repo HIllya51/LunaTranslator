@@ -37,7 +37,7 @@ class TS(basetrans):
             pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
             waitsignal = str(uuid.uuid4())
             self.engine = NativeUtils.AutoKillProcess(
-                'files/plugins/shareddllproxy32.exe kingsoft "{}" "{}" {} {}'.format(
+                'files/shareddllproxy32.exe kingsoft "{}" "{}" {} {}'.format(
                     self.path, self.path2, pipename, waitsignal
                 ),
             )

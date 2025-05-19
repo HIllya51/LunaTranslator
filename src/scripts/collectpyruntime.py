@@ -88,6 +88,8 @@ for _d, _, _fs in os.walk("./LunaTranslator"):
         print(base, f)
         got = get_dependencies(os.path.join(_d, f))
         all_dependencies = all_dependencies.union(set(got))
+got = get_dependencies('keeprefs.py')
+all_dependencies = all_dependencies.union(set(got))
 
 for dependency in all_dependencies:
     if dependency.startswith("./"):
@@ -133,13 +135,14 @@ targetpyqtbindir = os.path.join(targetpyqtdir, f"{qtver}/bin")
 targetpyqtplgdir = os.path.join(targetpyqtdir, f"{qtver}/plugins")
 
 
-if target != "win10":
+if target == "win7":
     copycheck(rf"{downlevel}\ucrtbase.dll", runtime)
 
     copycheck(os.path.join(pyqtbindir, f"vcruntime140.dll"), runtime)
     copycheck(os.path.join(pyqtbindir, f"vcruntime140_1.dll"), runtime)
     copycheck(os.path.join(pyqtbindir, f"msvcp140.dll"), runtime)
     copycheck(os.path.join(pyqtbindir, f"msvcp140_1.dll"), runtime)
+
 for _ in os.listdir(pyqtdir):
     if _.startswith("sip"):
         copycheck(os.path.join(pyqtdir, _), targetpyqtdir)

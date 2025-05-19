@@ -183,6 +183,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
 
 
 class otherdisplaysetting(PopupWidget):
+
     def __init__(self, parent):
         super().__init__(parent)
         form = LFormLayout(self)
@@ -204,6 +205,14 @@ class otherdisplaysetting(PopupWidget):
                 callback=gobject.baseobject.translation_ui.verticalhorizontal,
             ),
         )
+        form.addRow(
+            "显示单词信息_在WebView2内显示",
+            getsimpleswitch(
+                globalconfig,
+                "word_hover_action_usewb2",
+                callback=gobject.baseobject.translation_ui.translate_text.setwordhoveruse,
+            ),
+        )
         self.display()
 
 
@@ -217,7 +226,7 @@ def resetgroudswitchcallback(self, group):
                 extrahtml,
                 self,
                 "extrahtml.html",
-                r"files\html\uiwebview\extrahtml\mainui.html",
+                r"LunaTranslator\htmlcode\uiwebview\extrahtml\mainui.html",
                 gobject.baseobject.translation_ui.translate_text.textbrowser,
             ),
             icon="fa.edit",
@@ -313,11 +322,11 @@ def GetFormForLineHeight(parent, dic, callback):
     form = LFormLayout(parent)
     form.addRow(
         "上边距",
-        getspinbox(-100, 100, dic, "marginTop", callback=callback, default=0),
+        getspinbox(-9999, 9999, dic, "marginTop", callback=callback, default=0),
     )
     form.addRow(
         "下边距",
-        getspinbox(-100, 100, dic, "marginBottom", callback=callback, default=0),
+        getspinbox(-9999, 9999, dic, "marginBottom", callback=callback, default=0),
     )
     value = getboxwidget(
         [

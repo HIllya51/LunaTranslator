@@ -3,7 +3,6 @@ import codecs, hashlib, shutil
 import socket, gobject, uuid, functools
 import importlib, json, requests
 from qtsymbols import *
-from string import Formatter
 from traceback import print_exc
 from myutils.config import (
     _TR,
@@ -15,6 +14,7 @@ from myutils.config import (
     findgameuidofpath,
     getdefaultsavehook,
     gamepath2uid_index,
+    defaultglobalconfig,
 )
 from myutils.keycode import vkcode_map, mod_map
 from language import Languages
@@ -93,20 +93,28 @@ def __internal__getlang(k1: str, k2: str) -> str:
     return globalconfig[k2]
 
 
-def translate_exits(fanyi, which=False):
+def __translate_exits(fanyi):
     _fs = [
         "Lunatranslator/translator/{}.py".format(fanyi),
         "userconfig/copyed/{}.py".format(fanyi),
     ]
-    if not which:
-        if all([not os.path.exists(_) for _ in _fs]):
-            return False
-        return True
+    for i, _ in enumerate(_fs):
+        if os.path.exists(_):
+            return i
+    return None
+
+
+def translate_exits(fanyi, which=False):
+    # 不再加载废弃接口，以免煞笔问煞笔问题。
+    _ = __translate_exits(fanyi)
+
+    isdeprecated = (0 == _) and (fanyi not in defaultglobalconfig["fanyi"])
+    if which:
+        if isdeprecated:
+            return None
+        return _
     else:
-        for i, _ in enumerate(_fs):
-            if os.path.exists(_):
-                return i
-        return None
+        return bool(_)
 
 
 def getlangsrc() -> Languages:
@@ -247,15 +255,9 @@ def dispatchsearchfordata(gameuid, target, vid):
 
 
 def trysearchforid_1(gameuid, searchargs: list, target=None):
-    infoid = None
     if target is None:
-        primitivtemetaorigin = globalconfig["primitivtemetaorigin"]
         __ = []
-        if primitivtemetaorigin:
-            __.append(primitivtemetaorigin)
         for k in targetmod:
-            if k == primitivtemetaorigin:
-                continue
             if not globalconfig["metadata"][k]["auto"]:
                 continue
             __.append(k)
@@ -280,10 +282,6 @@ def trysearchforid_1(gameuid, searchargs: list, target=None):
         gobject.baseobject.translation_ui.displayglobaltooltip.emit(
             "{}: found {}".format(key, vid)
         )
-        if infoid is None or key == primitivtemetaorigin:
-            infoid = key, vid
-    if infoid:
-        key, vid = infoid
         dispatchsearchfordata(gameuid, key, vid)
 
 
@@ -399,21 +397,16 @@ def splittranslatortypes():
         def __init__(self):
             self.pre, self.offline, self.free, self.api = [], [], [], []
             self.other = []
-            self.external = []
 
     ls = __()
     for k in globalconfig["fanyi"]:
-        try:
-            {
-                "pre": ls.pre,
-                "offline": ls.offline,
-                "free": ls.free,
-                "api": ls.api,
-                "other": ls.other,
-                "external": ls.external,
-            }[globalconfig["fanyi"][k].get("type", "free")].append(k)
-        except:
-            pass
+        {
+            "pre": ls.pre,
+            "offline": ls.offline,
+            "free": ls.free,
+            "api": ls.api,
+            "other": ls.other,
+        }.get(globalconfig["fanyi"][k].get("type", "free"), ls.free).append(k)
 
     return ls
 
@@ -622,7 +615,8 @@ class unsupportkey(Exception):
     pass
 
 
-def parsekeystringtomodvkcode(keystring: str, modes=False):
+def parsekeystringtomodvkcode(keystring: str, modes=False, canonlymod=False):
+    keystring = keystring.upper()
     keys = []
     mode = 0
     _modes = []
@@ -632,15 +626,21 @@ def parsekeystringtomodvkcode(keystring: str, modes=False):
     ksl = keystring.split("+")
     ksl = ksl + keys
     unsupports = []
-    if ksl[-1].upper() in vkcode_map:
-        vkcode = vkcode_map[ksl[-1].upper()]
+    lastkey = ksl[-1]
+    modkeys = ksl[:-1]
+    if lastkey in vkcode_map:
+        vkcode = vkcode_map[lastkey]
     else:
-        unsupports.append(ksl[-1])
+        if canonlymod and lastkey in mod_map:
+            vkcode = None
+            modkeys.append(lastkey)
+        else:
+            unsupports.append(lastkey)
 
-    for k in ksl[:-1]:
-        if k.upper() in mod_map:
-            mode = mode | mod_map[k.upper()]
-            _modes.append(mod_map[k.upper()])
+    for k in modkeys:
+        if k in mod_map:
+            mode = mode | mod_map[k]
+            _modes.append(mod_map[k])
         else:
             unsupports.append(k)
     if len(unsupports):
@@ -792,26 +792,6 @@ def copytree(src, dst, copy_function=shutil.copy2):
             pass
 
 
-class SafeFormatter(Formatter):
-    def format(self, format_string, must_exists=None, *args, **kwargs):
-        format_string_1 = format_string
-        if must_exists:
-            check = "{" + must_exists + "}"
-            if check not in format_string:
-                format_string += check
-        try:
-            return super().format(format_string, *args, **kwargs)
-        except Exception as e:
-            raise Exception("Invalid text: " + format_string_1 + "\n" + str(e))
-
-    def get_value(self, key, args, kwargs):
-        if key in kwargs:
-            return super().get_value(key, args, kwargs)
-        else:
-            print("{} is missing".format(key))
-            return "{" + key + "}"
-
-
 def checkv1(api_url: str):
     # 傻逼豆包大模型是非要v3，不是v1
     # 智谱AI v4
@@ -931,25 +911,130 @@ def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/comple
         raise Exception(resp)
 
 
+def common_create_gpt_data(config: dict, message, extrabody):
+    temperature = config["Temperature"]
+
+    data = dict(
+        model=config["model"],
+        messages=message,
+        # optional
+        max_tokens=config["max_tokens"],
+        # n=1,
+        # stop=None,
+        top_p=config["top_p"],
+        temperature=temperature,
+    )
+    if config.get("流式输出", False):
+        data.update(stream=True)
+    if config.get("frequency_penalty_use", False):
+        data.update(frequency_penalty=config["frequency_penalty"])
+    if config.get("reasoning_effort_use", False):
+        data.update(reasoning_effort=config["reasoning_effort"])
+    if extrabody:
+        data.update(extrabody)
+    return data
+
+
+def common_create_gemini_request(
+    proxysession: requests.Session,
+    config: dict,
+    key,
+    sysprompt,
+    contents,
+    extraheader,
+    extrabody,
+):
+    gen_config = {
+        "stopSequences": [" \n"],
+        "temperature": config["Temperature"],
+        "maxOutputTokens": config["max_tokens"],
+        "topP": config["top_p"],
+    }
+    if config.get("frequency_penalty_use", False):
+        gen_config.update(frequencyPenalty=config["frequency_penalty"])
+    if config.get("reasoning_effort_use", False):
+        gen_config.update(
+            thinkingConfig=dict(
+                thinkingBudget={"low": 0, "medium": 1024, "high": 24576}[
+                    config["reasoning_effort"]
+                ]
+            )
+        )
+    model = config["model"]
+    safety = [
+        {
+            "category": "HARM_CATEGORY_HARASSMENT",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_HATE_SPEECH",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_CIVIC_INTEGRITY",
+            "threshold": "BLOCK_NONE",
+        },
+        {
+            "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
+            "threshold": "BLOCK_NONE",
+        },
+    ]
+    # https://discuss.ai.google.dev/t/gemma-3-missing-features-despite-announcement/71692/13
+    sys_message = (
+        {"systemInstruction": {"parts": {"text": sysprompt}}} if sysprompt else {}
+    )
+    usingstream = config.get("流式输出", False)
+    payload = {}
+    payload.update(contents=contents)
+    payload.update(safety_settings=safety)
+    payload.update(sys_message)
+    payload.update(generationConfig=gen_config)
+    payload.update(extrabody)
+    res = proxysession.post(
+        "https://generativelanguage.googleapis.com/v1beta/models/{}:{}".format(
+            model, ["generateContent", "streamGenerateContent"][usingstream]
+        ),
+        headers=extraheader,
+        params={"key": key},
+        json=payload,
+        stream=usingstream,
+    )
+    return res
+
+
 def common_parse_normal_response_1(response: requests.Response, apiurl: str):
     try:
+        js = response.json()
         if apiurl.startswith("https://api.anthropic.com/v1/messages"):
-            return response.json()["content"][0]["text"]
+            return js["content"][0]["text"], None
         elif apiurl.startswith("https://generativelanguage.googleapis.com"):
-            return response.json()["candidates"][0]["content"]["parts"][0]["text"]
+            return js["candidates"][0]["content"]["parts"][0]["text"], None
         else:
-            return response.json()["choices"][0]["message"]["content"]
+            message: dict = js["choices"][0]["message"]
+            return message["content"], message.get("reasoning")
     except:
         raise Exception(response)
 
 
 def common_parse_normal_response(
-    response: requests.Response, apiurl: str, hidethinking=False
+    response: requests.Response, apiurl: str, hidethinking=False, splitthink=False
 ):
-    resp = common_parse_normal_response_1(response, apiurl)
+    resp, reasoning = common_parse_normal_response_1(response, apiurl)
     if hidethinking:
         # 有时，会没有<think>只有</think>比如使用prefill的时候。移除第一个</think>之前的内容
         resp = re.sub(r"([\s\S]*)</think>\n*", "", resp)
+    elif splitthink:
+        if reasoning:
+            return reasoning, resp
+        resp = re.split(r"<think>([\s\S]*)</think>", resp)
+        if len(resp) == 1:
+            return None, resp[0]
+        _, think, resp = resp
+        return think, resp
     return resp
 
 

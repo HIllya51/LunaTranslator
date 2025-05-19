@@ -238,6 +238,8 @@ class MyQListWidget(QListWidget):
                         if image.isNull():
                             item.setHidden(True)
                         else:
+                            if self.item(self.currentRow()).isHidden():
+                                self.setCurrentRow(row)
                             item.setIcon(QIcon(image))
         except:
             print_exc()
@@ -277,8 +279,8 @@ class previewimages(QWidget):
         first = (self.list.currentRow() + dx) % self.list.count()
         test = first
         while True:
-            self.list.setCurrentRow(test)
             if not self.list.item(test).isHidden():
+                self.list.setCurrentRow(test)
                 break
             test = (test + dx) % self.list.count()
             if test == first:
@@ -304,7 +306,7 @@ class previewimages(QWidget):
                 self.list.addItem(item)
         self.list.blockSignals(False)
 
-    def setpixmaps(self, paths, currentpath):
+    def setpixmaps(self, paths: list, currentpath):
         self.list.setCurrentRow(-1)
         self.additems(paths)
         pixmapi = 0

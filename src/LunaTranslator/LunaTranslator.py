@@ -14,12 +14,14 @@ from myutils.config import (
     _TR,
     isascii,
 )
-from gobject import is_xp
+from myutils.keycode import mod_map_r
+from gobject import sys_le_xp
 from myutils.mecab import mecab, latin
 from myutils.utils import (
     parsemayberegexreplace,
     dynamiclink,
     find_or_create_uid,
+    parsekeystringtomodvkcode,
     checkisusingwine,
     checkpostusing,
     stringfyerror,
@@ -31,11 +33,11 @@ from language import Languages
 from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
 from myutils.hwnd import getpidexe, getExeIcon, getcurrexe
-from textsource.copyboard import copyboard
-from textsource.texthook import texthook
-from textsource.ocrtext import ocrtext
-from textsource.textsourcebase import basetext
-from textsource.filetrans import filetrans
+from textio.textsource.copyboard import copyboard
+from textio.textsource.texthook import texthook
+from textio.textsource.ocrtext import ocrtext
+from textio.textsource.textsourcebase import basetext
+from textio.textsource.filetrans import filetrans
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
 import functools, gobject
@@ -56,12 +58,12 @@ from gui.setting.setting import Setting
 from gui.setting.textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
 from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
-from services.servicecollection import registerall
-from services.tcpservice import TCPService
+from network.server.servicecollection import registerall
+from network.server.tcpservice import TCPService
 from tts.basettsclass import TTSbase
 from cishu.cishubase import cishubase
 from translator.basetranslator import basetrans
-from textoutput.outputerbase import Base as outputerbase
+from textio.textoutput.outputerbase import Base as outputerbase
 
 
 class MAINUI:
@@ -134,10 +136,10 @@ class MAINUI:
     def maybesetocrresult(self, pair):
         if self.showocrimage:
             try:
-                self.showocrimage.setresult.emit([pair])
+                self.showocrimage.setresult.emit(pair)
             except:
                 print_exc()
-        self.showocrimage_cached2 = [pair]
+        self.showocrimage_cached2 = pair
 
     def createshowocrimage(self):
         try:
@@ -707,7 +709,7 @@ class MAINUI:
 
         for item in dic:
             range_ = item.get("range", 0)
-            if ((range_ == 1) and (not isorigin)) or ((range_ == 1) and isorigin):
+            if range_ and ((range_ == 1) ^ isorigin):
                 continue
             if item["regex"]:
                 retext = safe_escape(item["key"])
@@ -892,9 +894,9 @@ class MAINUI:
     @threader
     def startoutputer(self):
         for classname in globalconfig["textoutputer"]:
-            if not os.path.exists("LunaTranslator/textoutput/" + classname + ".py"):
+            if not os.path.exists("textio/LunaTranslator/textoutput/" + classname + ".py"):
                 continue
-            aclass = importlib.import_module("textoutput." + classname).Outputer
+            aclass = importlib.import_module("textio.textoutput." + classname).Outputer
             self.outputers[classname] = aclass(classname)
 
     def dispatchoutputer(self, text, isorigin):
@@ -1016,15 +1018,28 @@ class MAINUI:
         )
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
-        NativeUtils.SetTheme(
-            int(widget.winId()),
-            dark,
-            globalconfig["WindowBackdrop"],
-            globalconfig["force_rect"],
-        )
+        NativeUtils.SetTheme(int(widget.winId()), dark, globalconfig["WindowBackdrop"])
         if ismenulist:
             name = globalconfig["theme3"]
-            NativeUtils.SetWindowBackdrop(int(widget.winId()), name == "QTWin11", dark)
+            NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
+            if name == "QTWin11":
+                NativeUtils.setAcrylicEffect(int(widget.winId()), True, [0x40f7f7fa, 0x40212121][dark])
+            else:
+                NativeUtils.clearEffect(int(widget.winId()))
+
+    def checkkeypresssatisfy(self, key):
+        if not globalconfig["wordclickkbtriggerneed"].get(key, False):
+            return -1
+        keystring = globalconfig["wordclickkbtrigger"].get(key, "")
+        try:
+            modes, vkcode = parsekeystringtomodvkcode(
+                keystring, modes=True, canonlymod=True
+            )
+        except:
+            print_exc()
+            return -1
+        allvk = [mod_map_r[mod] for mod in modes] + ([vkcode] if vkcode else [])
+        return all(windows.GetKeyState(vk) < 0 for vk in allvk)
 
     @threader
     def clickwordcallback(self, wordd: dict, append=False):
@@ -1032,13 +1047,40 @@ class MAINUI:
             word = wordd
         elif isinstance(wordd, dict):
             word = WordSegResult.from_dict(wordd)
-        word = (word.word, word.prototype)[globalconfig["usewordorigin"]]
-        if globalconfig["usecopyword"]:
-            NativeUtils.ClipBoard.text = (
-                (NativeUtils.ClipBoard.text + word) if append else word
+        wordwhich = lambda key: (word.word, word.prototype)[
+            globalconfig["usewordoriginfor"].get(
+                key, globalconfig.get("usewordorigin", False)
             )
-        if globalconfig["usesearchword"]:
-            self.searchwordW.search_word.emit(word, append)
+        ]
+
+        def __openlink(word1):
+            for link in globalconfig["useopenlinklink1"]:
+                os.startfile(link.replace("{word}", word1))
+
+        funcs = {
+            "copyword": lambda word1: NativeUtils.ClipBoard.setText(
+                (NativeUtils.ClipBoard.text + word1) if append else word1
+            ),
+            "searchword": lambda word1: self.searchwordW.search_word.emit(
+                word1, self.currenttext, append
+            ),
+            "openlink": __openlink,
+            "searchword_S": lambda word1: self.settin_ui.search_word.emit(
+                word1, self.currenttext, append
+            ),
+        }
+        noneedkeys = []
+        keytriggered = []
+        for k in funcs:
+            if not globalconfig["use" + k]:
+                continue
+            result = self.checkkeypresssatisfy(k)
+            if result == -1:
+                noneedkeys.append(k)
+            elif result:
+                keytriggered.append(k)
+        for k in keytriggered if keytriggered else noneedkeys:
+            funcs[k](wordwhich(k))
 
     def __dontshowintaborsetbackdrop(self, widget: QWidget):
         window_flags = widget.windowFlags()
@@ -1144,9 +1186,20 @@ class MAINUI:
         for widget in QApplication.topLevelWidgets():
             self.setshowintab_checked(widget)
 
-    def cornerornot(self):
-        for widget in QApplication.topLevelWidgets():
-            self.setdarkandbackdrop(widget, self.currentisdark)
+    def ismenulistframeless(self, widget: QWidget):
+        ismenulist = isinstance(widget, (QMenu, PopupWidget)) or (
+            type(widget) == QFrame
+        )
+        return ismenulist or self.__dontshowintaborsetbackdrop(widget)
+
+    def cornerornot(self, w=None):
+        __ = [w] if w else QApplication.topLevelWidgets()
+        for widget in __:
+            if self.ismenulistframeless(widget):
+                continue
+            NativeUtils.SetCornerNotRound(
+                int(widget.winId()), globalconfig["force_rect"], False
+            )
 
     def setcommonstylesheet(self):
 
@@ -1212,7 +1265,7 @@ class MAINUI:
         if isinstance(static_data[t][l], list):
             fontlist = static_data[t][l]
         elif isinstance(static_data[t][l], dict):
-            fontlist = static_data[t][l].get(("normal", "xp")[is_xp], [])
+            fontlist = static_data[t][l].get(("normal", "xp")[sys_le_xp], [])
         else:
             fontlist = []
         is_font_installed = lambda font: QFont(font).exactMatch()
@@ -1377,12 +1430,9 @@ class MAINUI:
         hwnd = obj.winId()
         if not hwnd:  # window create/destroy,when destroy winId is None
             return
-        windows.SetProp(
-            int(obj.winId()),
-            "Magpie.ToolWindow",
-            windows.HANDLE(1),
-        )
+        windows.SetProp(int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1))
         NativeUtils.SetWindowExtendFrame(int(hwnd))
+        self.cornerornot(obj)
         if self.currentisdark is not None:
             self.setdarkandbackdrop(obj, self.currentisdark)
         self.setshowintab_checked(obj)

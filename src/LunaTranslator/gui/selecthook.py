@@ -7,7 +7,7 @@ from myutils.config import savehook_new_data, globalconfig, _TR, isascii, static
 from myutils.utils import get_time_stamp, dynamiclink, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
 from typing import List
-from textsource.texthook import texthook
+from textio.textsource.texthook import texthook
 from gui.usefulwidget import (
     closeashidewindow,
     getsimplecombobox,

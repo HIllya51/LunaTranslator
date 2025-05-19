@@ -87,8 +87,8 @@ class MagpieBuiltin:
     def init(self):
         self.jspath = gobject.gettempdir("magpie.config.json")
         self.engine = NativeUtils.AutoKillProcess(
-            'files/plugins/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
-            "files/plugins/Magpie",
+            'files/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
+            "files/Magpie",
         )
         waitsignal = "Magpie_notify_prepared_ok_" + str(self.engine.pid)
         windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))

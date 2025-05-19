@@ -34,7 +34,7 @@ from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.gamemanager.setting import calculate_centered_rect
 from gui.gamemanager.common import startgame
-from gui.dynalang import LDialog, LLabel
+from gui.dynalang import LDialog, LLabel, LAction
 
 
 class IconLabelX(LLabel):
@@ -64,7 +64,6 @@ class IconLabelX(LLabel):
         self.belong = None
         self._icon = QIcon()
         self._size = QSize()
-        self.setMouseTracking(True)
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
 
     def showinlayout(self, layout: QBoxLayout):
@@ -179,8 +178,8 @@ class ButtonBar(QFrame):
         self.threelayout.addStretch()
         self._right = __(self.threelayout)
         self.cntbtn = 0
-        self.buttons = {}
-        self.stylebuttons = {}
+        self.buttons: "dict[str, IconLabelX]" = {}
+        self.stylebuttons: "dict[str, list]" = {}
         self.iconstate = {}
         self.colorstate = {}
 
@@ -265,6 +264,8 @@ class ButtonBar(QFrame):
         self.stylebuttons[_type].append(button)
         if clicked:
             button.setObjectName("IconLabelX{}".format(_type))
+        else:
+            button.setMouseTracking(True)
         button.reflayout = None
         button.belong = belong
         self.buttons[name] = button
@@ -308,11 +309,11 @@ class ButtonBar(QFrame):
         p: QWidget = self.parent()
         if self.v:
             w = self.cntbtn * IconLabelX.h()
-            p.setMinimumHeight(int(w))
+            p.setMinimumHeight(max(int(w), 200))
             p.setMinimumWidth(self.width() * 2)
         else:
             w = self.cntbtn * IconLabelX.w()
-            p.setMinimumWidth(int(w))
+            p.setMinimumWidth(max(int(w), 200))
             p.setMinimumHeight(self.height() * 2)
 
     def setbuttonsize(self):
@@ -467,7 +468,12 @@ class TranslatorWindow(resizableframeless):
         text = self.cleartext(text)
         isshowhira = globalconfig["isshowhira"]
         isshow_fenci = globalconfig["show_fenci"]
-        isfenciclick = globalconfig["usesearchword"] or globalconfig["usecopyword"]
+        isfenciclick = (
+            globalconfig["usesearchword"]
+            or globalconfig["usecopyword"]
+            or globalconfig["useopenlink"]
+            or globalconfig["usesearchword_S"]
+        )
         needhira = isshow_fenci or isshowhira or isfenciclick
         if needhira:
             hira = gobject.baseobject.parsehira(text)
@@ -886,7 +892,7 @@ class TranslatorWindow(resizableframeless):
     def callopensearchwordwindow(self):
         curr = self.translate_text.GetSelectedText()
         if curr:
-            gobject.baseobject.searchwordW.search_word.emit(curr, False)
+            gobject.baseobject.searchwordW.search_word.emit(curr, None, False)
         else:
             gobject.baseobject.searchwordW.showsignal.emit()
 
@@ -988,10 +994,11 @@ class TranslatorWindow(resizableframeless):
             NativeUtils.clearEffect(self.winid)
         elif globalconfig["WindowEffect"] == 1:
             NativeUtils.setAcrylicEffect(
-                self.winid, globalconfig["WindowEffect_shadow"]
+                self.winid, globalconfig["WindowEffect_shadow"], 0x00FFFFFF
             )
         elif globalconfig["WindowEffect"] == 2:
             NativeUtils.setAeroEffect(self.winid, globalconfig["WindowEffect_shadow"])
+        self.changeextendstated()
 
     def initvalues(self):
         self.enter_sig = 0
@@ -1091,7 +1098,6 @@ class TranslatorWindow(resizableframeless):
         super(TranslatorWindow, self).__init__(
             None, flags=flags, poslist=globalconfig["transuigeo"]
         )
-
         self.fullscreenmanager = None
         self.magpiecallback.connect(
             lambda _: (
@@ -1110,10 +1116,10 @@ class TranslatorWindow(resizableframeless):
         self.initsignals()
         self.titlebar = ButtonBar(self)
         self.titlebar.move(0, 0)  # 多显示屏下，谜之错位
-        self.titlebar.setbuttonsize()
         self.titlebar.setObjectName("titlebar")
         self.titlebar.setMouseTracking(True)
-        self.addbuttons()
+        self.titlebar.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.titlebar.customContextMenuRequested.connect(self.showmenu)
         self.smooth_resizer = QVariantAnimation(self)
         self.smooth_resizer.setDuration(500)
         self.smooth_resizer.setEasingCurve(QEasingCurve.Type.InOutQuad)
@@ -1123,11 +1129,14 @@ class TranslatorWindow(resizableframeless):
         self.smooth_resizer2.valueChanged.connect(self.smooth_resizing2)
         self.left_bottom_corner = self.geometry().bottomLeft()
         self.translate_text = Textbrowser(self)
+        self.translate_text.loadinternal()
         self.translate_text.move(0, 0)
         self.translate_text.dropfilecallback.connect(self.dropfilecallback)
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
         self.translate_text.setselectable(globalconfig["selectable"])
         self.titlebar.raise_()
+        self.titlebar.setbuttonsize()
+        self.addbuttons()
         t = QTimer(self)
         t.setInterval(25)
         self._isentered = False
@@ -1135,6 +1144,20 @@ class TranslatorWindow(resizableframeless):
         t.start()
         self.adjustbuttons = self.titlebar.adjustbuttons
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
+
+    def showmenu(self, _):
+        if self.titlebar.childAt(_):
+            return
+        trayMenu = QMenu(gobject.baseobject.commonstylebase)
+        settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
+        quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
+        trayMenu.addAction(settingAction)
+        trayMenu.addAction(quitAction)
+        action = trayMenu.exec(QCursor.pos())
+        if action == settingAction:
+            gobject.baseobject.settin_ui.showsignal.emit()
+        elif action == quitAction:
+            self.close()
 
     def __parsedropexe(self, file):
         uid = find_or_create_uid(savehook_new_list, file)
@@ -1276,26 +1299,34 @@ class TranslatorWindow(resizableframeless):
         else:
             return "border-radius:%spx" % r
 
+    @property
+    def radiu_valid(self):
+        return globalconfig["WindowEffect"] == 0 and not (
+            gobject.sys_ge_win_11 and globalconfig["yuanjiao_sys"]
+        )
+
     def set_color_transparency(self):
-        rate = int(globalconfig["WindowEffect"] == 0)
-        use_r1 = min(
+
+        radiu_valid = self.radiu_valid
+
+        NativeUtils.SetCornerNotRound(self.winid, False, globalconfig["yuanjiao_sys"])
+        use_r1 = radiu_valid * min(
             self.translate_text.height() // 2,
             self.translate_text.width() // 2,
             globalconfig["yuanjiao_r"],
         )
-        use_r2 = min(
+        use_r2 = radiu_valid * min(
             self.titlebar.height() // 2,
             self.titlebar.width() // 2,
             globalconfig["yuanjiao_r"],
         )
         topr = self.createborderradiusstring(
-            rate * use_r1,
-            (globalconfig["WindowEffect"] == 0 or globalconfig["locktools"])
-            and self.titlebar.isVisible(),
+            use_r1,
+            (radiu_valid or globalconfig["locktools"]) and self.titlebar.isVisible(),
             False,
         )
         bottomr3 = self.createborderradiusstring(use_r2, False)
-        bottomr = self.createborderradiusstring(rate * use_r2, True, True)
+        bottomr = self.createborderradiusstring(radiu_valid * use_r2, True, True)
         self.translate_text.setStyleSheet(
             "Textbrowser{border-width: 0;%s;background-color: %s}"
             % (
@@ -1474,7 +1505,7 @@ class TranslatorWindow(resizableframeless):
 
     def dynamicextraheight(self):
 
-        if globalconfig["WindowEffect"] == 0:
+        if self.radiu_valid:
             if globalconfig["verticalhorizontal"]:
                 return int(IconLabelX.w())
             else:

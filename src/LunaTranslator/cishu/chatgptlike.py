@@ -1,13 +1,17 @@
 from myutils.utils import (
     createurl,
     common_list_models,
+    common_create_gemini_request,
     common_parse_normal_response,
+    common_create_gpt_data,
 )
 import NativeUtils
 from myutils.proxy import getproxy
 from cishu.cishubase import cishubase
 from translator.gptcommon import createheaders
 from gui.customparams import customparams, getcustombodyheaders
+from language import Languages
+import random
 
 
 def list_models(typename, regist):
@@ -19,44 +23,74 @@ def list_models(typename, regist):
 
 
 class chatgptlike(cishubase):
+    use_github_md_css = True
+    backgroundparser = 'document.querySelector("#luna_dict_internal_view > article").style.backgroundColor="rgba(0,0,0,0)"'
+
     def init(self):
         self.maybeuse = {}
+
+    def langmap(self):
+        return Languages.createenglishlangmap()
+
+    def result_cache_key(self, word, sentence=None):
+        __ = {}
+        __.update(self.rawconfig)
+        if "modellistcache" in __:
+            __.pop("modellistcache")
+        temperature = random.randint(0, int(20 * self.config["Temperature"]))
+        return (word, sentence, temperature, str(__))
 
     @property
     def apiurl(self):
         return self.config["API接口地址"].strip()
 
-    def createdata(self, message, extra):
-        temperature = self.config["Temperature"]
-        data = dict(
-            model=self.config["model"],
-            messages=message,
-            # optional
-            max_tokens=self.config["max_tokens"],
-            # n=1,
-            # stop=None,
-            top_p=self.config["top_p"],
-            temperature=temperature,
-        )
-        if self.config.get("frequency_penalty_use", False):
-            data.update(dict(frequency_penalty=self.config["frequency_penalty"]))
-        data.update(extra)
-        return data
-
     def search_1(self, sysprompt, query, extrabody, extraheader):
         message = [{"role": "system", "content": sysprompt}]
         message.append({"role": "user", "content": query})
-        response = self.proxysession.post(
-            self.createurl(),
-            headers=self.createheaders(extraheader),
-            json=self.createdata(message, extrabody),
+        headers = createheaders(
+            self.apiurl,
+            self.multiapikeycurrent["SECRET_KEY"],
+            self.maybeuse,
+            self.proxy,
+            extraheader,
         )
+        _json = common_create_gpt_data(self.config, message, extrabody)
+        response = self.proxysession.post(self.createurl(), headers=headers, json=_json)
         return response
 
-    def search(self, word):
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
+    def _gptlike_createsys(self, usekey, tempk):
+
+        if self.config[usekey]:
+            template = self.config[tempk]
+        else:
+            template = """You are a professional dictionary assistant whose task is to help users search for information such as the meaning, pronunciation, etymology, synonyms, antonyms, and example sentences of {srclang} words. 
+You should be able to handle queries in multiple languages and provide in-depth information or simple definitions according to user needs. You should reply in {tgtlang}.
+The user may provide the sentence in which the word is located. If the user provides the sentence in which the word is located, the semantics of the word in the sentence should also be analyzed."""
+
+        template = template.replace("{srclang}", self.srclang)
+        template = template.replace("{tgtlang}", self.tgtlang)
+        return template
+
+    def _gptlike_createquery(self, query, sentence, usekey, tempk):
+        user_prompt = (
+            self.config.get(tempk, "") if self.config.get(usekey, False) else ""
+        )
+        user_prompt = user_prompt.lstrip()
+        if "{word}" not in user_prompt:
+            user_prompt += "{word}"
+        user_prompt = user_prompt.replace("{word}", query)
+        if sentence:
+            if "{sentence}" not in user_prompt:
+                user_prompt = "sentence: {sentence}\n" + user_prompt
+            user_prompt = user_prompt.replace("{sentence}", sentence)
+        return user_prompt
+
+    def search(self, word, sentence=None):
+        extrabody, extraheader = getcustombodyheaders(
+            self.config.get("customparams"), **locals()
+        )
         query = self._gptlike_createquery(
-            word, "use_user_user_prompt", "user_user_prompt"
+            word, sentence, "use_user_user_prompt", "user_user_prompt_1"
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
         apiurl = self.config["API接口地址"]
@@ -66,14 +100,14 @@ class chatgptlike(cishubase):
             resp = self.query_cld(sysprompt, query, extrabody, extraheader)
         else:
             resp = self.search_1(sysprompt, query, extrabody, extraheader)
-        return NativeUtils.Markdown2Html(common_parse_normal_response(resp, apiurl))
-
-    def createheaders(self, extra):
-        h = createheaders(
-            self.apiurl, self.multiapikeycurrent, self.maybeuse, self.proxy
-        )
-        h.update(extra)
-        return h
+        think, resp = common_parse_normal_response(resp, apiurl, splitthink=True)
+        resp = NativeUtils.Markdown2Html(resp)
+        if think:
+            think = '<details style="border:2px solid"><summary style="text-align:center;background-color:pink;">Thinking</summary>{}</details>'.format(
+                NativeUtils.Markdown2Html(think)
+            )
+            resp = think + resp
+        return resp
 
     def createurl(self):
         return createurl(self.apiurl)
@@ -105,52 +139,12 @@ class chatgptlike(cishubase):
         return response
 
     def query_gemini(self, sysprompt, query, extrabody, extraheader):
-        safety = {
-            "safety_settings": [
-                {
-                    "category": "HARM_CATEGORY_HARASSMENT",
-                    "threshold": "BLOCK_NONE",
-                },
-                {
-                    "category": "HARM_CATEGORY_HATE_SPEECH",
-                    "threshold": "BLOCK_NONE",
-                },
-                {
-                    "category": "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                    "threshold": "BLOCK_NONE",
-                },
-                {
-                    "category": "HARM_CATEGORY_CIVIC_INTEGRITY",
-                    "threshold": "BLOCK_NONE",
-                },
-                {
-                    "category": "HARM_CATEGORY_DANGEROUS_CONTENT",
-                    "threshold": "BLOCK_NONE",
-                },
-            ]
-        }
-        gen_config = {
-            "generationConfig": {
-                "stopSequences": [" \n"],
-                "temperature": self.config["Temperature"],
-            }
-        }
-        sys_message = {"systemInstruction": {"parts": {"text": sysprompt}}}
-        contents = {"contents": [{"role": "user", "parts": [{"text": query}]}]}
-
-        payload = {}
-        payload.update(contents)
-        payload.update(safety)
-        payload.update(sys_message)
-        payload.update(gen_config)
-        payload.update(extrabody)
-        # Send the request
-        response = self.proxysession.post(
-            "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent".format(
-                self.config["model"]
-            ),
-            params={"key": self.multiapikeycurrent["SECRET_KEY"]},
-            headers=extraheader,
-            json=payload,
+        return common_create_gemini_request(
+            self.proxysession,
+            self.config,
+            self.multiapikeycurrent["SECRET_KEY"],
+            sysprompt,
+            [{"role": "user", "parts": [{"text": query}]}],
+            extraheader,
+            extrabody,
         )
-        return response

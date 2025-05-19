@@ -45,8 +45,15 @@ static bool InitApis() noexcept
 }
 
 #ifdef WINXP
-#define DWMWCP_DEFAULT 0
-#define DWMWCP_DONOTROUND 1
+
+typedef enum
+{
+    DWMWCP_DEFAULT = 0,
+    DWMWCP_DONOTROUND = 1,
+    DWMWCP_ROUND = 2,
+    DWMWCP_ROUNDSMALL = 3
+} DWM_WINDOW_CORNER_PREFERENCE;
+
 #define DWMWA_WINDOW_CORNER_PREFERENCE 33
 #define DWMWA_SYSTEMBACKDROP_TYPE 38
 #define DWMWA_USE_IMMERSIVE_DARK_MODE 20
@@ -91,18 +98,11 @@ DECLARE_API void SetWindowExtendFrame(HWND hwnd)
     DwmExtendFrameIntoClientArea(hwnd, &mar);
 }
 
-DECLARE_API void SetTheme(
-    HWND _hWnd,
-    bool dark,
-    int backdrop,
-    bool rect)
+DECLARE_API void SetTheme(HWND _hWnd, bool dark, int backdrop)
 {
-    // printf("%d %d\n",GetOSversion(),GetOSBuild());
     if (GetOSVersion().IsleWin8()) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
         return;
 
-    auto value1 = rect ? DWMWCP_DONOTROUND : DWMWCP_DEFAULT;
-    DwmSetWindowAttribute(_hWnd, DWMWA_WINDOW_CORNER_PREFERENCE, &value1, sizeof(value1));
     // auto _isBackgroundSolidColor = backdrop == WindowBackdrop::SolidColor;
     // if (Win32Helper::GetOSVersion().Isge22H2() &&
     //     _isBackgroundSolidColor != (backdrop == WindowBackdrop::SolidColor))
@@ -141,4 +141,11 @@ DECLARE_API bool IsDark()
     if (ERROR_SUCCESS != hKey.QueryDWORDValue(L"AppsUseLightTheme", value))
         return false;
     return 1 - value;
+}
+DECLARE_API void SetCornerNotRound(HWND _hWnd, bool rect, bool round)
+{
+    if (!GetOSVersion().IsWin11()) // win7 x32 DwmSetWindowAttribute会崩，直接禁了反正没用。不知道win8怎么样。
+        return;
+    auto value1 = rect ? DWMWCP_DONOTROUND : (round ? DWMWCP_ROUND : DWMWCP_DEFAULT);
+    DwmSetWindowAttribute(_hWnd, DWMWA_WINDOW_CORNER_PREFERENCE, &value1, sizeof(value1));
 }

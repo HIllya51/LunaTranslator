@@ -9,7 +9,7 @@ from ctypes import c_int32
 class TTS(TTSbase):
     def init(self):
         self.lock = threading.Lock()
-        exepath = os.path.join(os.getcwd(), "files/plugins/shareddllproxy32.exe")
+        exepath = os.path.join(os.getcwd(), "files/shareddllproxy32.exe")
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
@@ -26,7 +26,7 @@ class TTS(TTSbase):
 
     def getvoicelist(self):
         cachefname = gobject.gettempdir("{}.txt".format(uuid.uuid4()))
-        exe = os.path.abspath("files/plugins/shareddllproxy32.exe")
+        exe = os.path.abspath("files/shareddllproxy32.exe")
         subprocess.run('"{}"  neospeechlist "{}"'.format(exe, cachefname))
 
         with open(cachefname, "r", encoding="utf-16-le") as ff:

@@ -19,7 +19,7 @@ DECLARE_API MeCab::Tagger *mecab_init(char *utf8path)
     MeCab::Tagger *tagger = MeCab::Tagger::create(ARRAYSIZE(argv), argv);
     if (!tagger)
     {
-        return 0;
+        return nullptr;
     }
     return tagger;
 }
@@ -29,15 +29,20 @@ DECLARE_API void mecab_end(MeCab::Tagger *tagger)
         return;
     delete tagger;
 }
-
+static std::mutex parseToNodelock;
 DECLARE_API bool mecab_parse(MeCab::Tagger *tagger, char *utf8string, void (*callback)(const char *, const char *))
 {
     if (!tagger)
         return false;
 
     std::string cstr = utf8string;
-    auto node = tagger->parseToNode(cstr.c_str());
-
+    const MeCab::Node *node = nullptr;
+    {
+        std::scoped_lock _(parseToNodelock);
+        node = tagger->parseToNode(cstr.c_str());
+    }
+    if (!node)
+        return false;
     while (node->next)
     {
         node = node->next;

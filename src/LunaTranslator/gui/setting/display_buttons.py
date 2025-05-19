@@ -157,19 +157,19 @@ def createbuttonwidget(self, lay: QLayout):
                 self,
                 globalconfig,
                 "buttoncolor",
-                callback=lambda: (toolcolorchange(), refreshtoolicon()),
+                callback=lambda _: (toolcolorchange(), refreshtoolicon()),
             ),
             D_getcolorbutton(
                 self,
                 globalconfig,
                 "buttoncolor_1",
-                callback=lambda: (toolcolorchange(), refreshtoolicon()),
+                callback=lambda _: (toolcolorchange(), refreshtoolicon()),
             ),
             D_getcolorbutton(
                 self,
                 globalconfig,
                 "button_color_normal",
-                callback=lambda: (toolcolorchange(), refreshtoolicon()),
+                callback=lambda _: (toolcolorchange(), refreshtoolicon()),
             ),
             "",
         ]

@@ -18,6 +18,10 @@
     }
 </script>
 <style>
+    :root {
+        --tab-pane_1_internal-padding: 10px
+    }
+
     .centerdiv_1_internal {
         display: flex;
         justify-content: center;
@@ -42,7 +46,7 @@
 
     .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal {
         display: none;
-        padding: 10px;
+        padding: var(--tab-pane_1_internal-padding);
     }
 
     .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal.active {
@@ -169,7 +173,11 @@
         return scripts.length
     }
     const urlParams = new URLSearchParams(window.location.search);
-
+    if (urlParams.get('__internal')) {
+        document.body.style.margin = 0
+        document.querySelector('.search-container').style.display = 'none'
+        document.documentElement.style.setProperty('--tab-pane_1_internal-padding', '0')
+    }
     const word = urlParams.get('word');
     if (word) {
         document.getElementById('searchInput').value = word

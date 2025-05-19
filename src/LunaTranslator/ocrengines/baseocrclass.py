@@ -2,7 +2,7 @@ from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR, isascii
 from myutils.commonbase import commonbase
 from language import Languages
 from myutils.utils import qimage2binary
-import re, gobject, math
+import re, gobject, math, time
 from qtsymbols import *
 
 
@@ -268,6 +268,8 @@ class OCRResultParsed:
         to = self.textonly
         if to:
             info.update(text=to)
+        if self.timecost:
+            info.update(timecost=self.timecost)
         return info
 
     def errorstring(self):
@@ -318,7 +320,9 @@ class OCRResultParsed:
         error=None,
         engine=None,
         scale=1,
+        timecost=None,
     ):
+        self.timecost = timecost
         self.engine = engine
         self.error = error
         if not isinstance(result, OCRResult):
@@ -415,9 +419,14 @@ class baseocr(commonbase):
                 image = qimage2binary(qimage, required_image_format)
             if not image:
                 return OCRResultParsed()
+            t = time.time()
             result = self.multiapikeywrapper(self.ocr)(image)
             return OCRResultParsed(
-                result, srclang_1=self.srclang_1, engine=self.typename, scale=scale
+                result,
+                srclang_1=self.srclang_1,
+                engine=self.typename,
+                scale=scale,
+                timecost=time.time() - t,
             )
         except Exception as e:
             self.needinit = True

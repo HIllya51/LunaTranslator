@@ -31,7 +31,7 @@ public:
         std::array<int64_t, 4> inputShape{1, src.channels(), src.rows, src.cols};
         return OnnxSession::RunSession(inputShape, inputTensorValues);
     }
-    CommonOnnxModel(const std::wstring &path, const std::array<float, 3> &_meanValues, const std::array<float, 3> &_normValues, int numOfThread = 4) : meanValues(_meanValues), normValues(_normValues), OnnxSession(path, numOfThread)
+    CommonOnnxModel(const std::wstring &path, const std::array<float, 3> &_meanValues, const std::array<float, 3> &_normValues, int numOfThread, bool gpu, int device) : meanValues(_meanValues), normValues(_normValues), OnnxSession(path, numOfThread, gpu, device)
     {
     }
 };
@@ -59,7 +59,7 @@ struct ScaleParam
 class CrnnNet : public CommonOnnxModel
 {
 public:
-    CrnnNet(const std::wstring &pathStr, const std::wstring &keysPath, int numOfThread);
+    CrnnNet(const std::wstring &pathStr, const std::wstring &keysPath, int numOfThread, bool gpu, int device);
     std::vector<TextLine> getTextLines(const std::vector<cv::Mat> &partImg);
 
 private:
@@ -75,7 +75,7 @@ private:
 class DbNet : public CommonOnnxModel
 {
 public:
-    DbNet(const std::wstring &pathStr, int numOfThread) : CommonOnnxModel(pathStr, {0.485 * 255, 0.456 * 255, 0.406 * 255}, {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0}, numOfThread)
+    DbNet(const std::wstring &pathStr, int numOfThread, bool gpu, int device) : CommonOnnxModel(pathStr, {0.485 * 255, 0.456 * 255, 0.406 * 255}, {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0}, numOfThread, gpu, device)
     {
     }
     std::vector<TextBox> getTextBoxes(const cv::Mat &src, ScaleParam &s, float boxScoreThresh,
@@ -86,13 +86,14 @@ class OcrLite
 {
 public:
     OcrLite(const std::wstring &detPath,
-            const std::wstring &recPath, const std::wstring &keysPath, int numOfThread) : crnnNet(recPath, keysPath, numOfThread), dbNet(detPath, numOfThread)
+            const std::wstring &recPath, const std::wstring &keysPath, int numOfThread, bool gpu, int device) : crnnNet(recPath, keysPath, numOfThread, gpu, device), dbNet(detPath, numOfThread, gpu, device)
     {
     }
 
     std::vector<TextBlock> detect(const cv::Mat &src, // const void *binptr, size_t size,
-                                  int padding,
-                                  float boxScoreThresh, float boxThresh, float unClipRatio, Directional);
+                                  Directional mode = Directional::H,
+                                  int padding = 50,
+                                  float boxScoreThresh = 0.6f, float boxThresh = 0.3f, float unClipRatio = 1.5f);
 
 private:
     DbNet dbNet;
@@ -102,5 +103,5 @@ private:
 
     std::vector<TextBlock> detect_internal(const cv::Mat &src, const int &padding, ScaleParam &scale,
                                            float boxScoreThresh = 0.6f, float boxThresh = 0.3f,
-                                           float unClipRatio = 2.0f, Directional mode = Directional::H);
+                                           float unClipRatio = 1.5f, Directional mode = Directional::H);
 };

@@ -1,5 +1,5 @@
 import os, importlib
-from myutils.config import globalconfig
+from myutils.config import globalconfig, _TR
 from qtsymbols import *
 from myutils.commonbase import ArgsEmptyExc
 from myutils.hwnd import safepixmap
@@ -43,7 +43,7 @@ def __ocr_init():
             break
     _nowuseocrx = use
     if use is None:
-        raise Exception("no engine")
+        raise Exception(_TR("未选择OCR引擎"))
     if _nowuseocr == use:
         return
     _ocrengine = None
@@ -63,7 +63,7 @@ def ocr_run(qimage: QImage):
         ocr_init()
         thisocrtype: str = _ocrengine.typename
         res = _ocrengine._private_ocr(qimage)
-        gobject.baseobject.maybesetocrresult(res.result)
+        gobject.baseobject.maybesetocrresult(res)
         return res
     except Exception as e:
         if isinstance(e, ArgsEmptyExc):

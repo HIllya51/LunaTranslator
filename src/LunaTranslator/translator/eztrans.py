@@ -23,7 +23,7 @@ class TS(basetrans):
             waitsignal = str(uuid.uuid4())
 
             self.engine = NativeUtils.AutoKillProcess(
-                'files/plugins/shareddllproxy32.exe eztrans "{}" {} {}'.format(
+                'files/shareddllproxy32.exe eztrans "{}" {} {}'.format(
                     os.path.normpath(os.path.dirname(os.path.abspath(self.path))),
                     pipename,
                     waitsignal,

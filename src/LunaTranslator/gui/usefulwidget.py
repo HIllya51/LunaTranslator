@@ -1,7 +1,7 @@
 from qtsymbols import *
-import os, re, functools, hashlib, json, math, csv, io, pickle
+import os, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
-import windows, qtawesome, NativeUtils, gobject, platform, threading
+import windows, qtawesome, NativeUtils, gobject, threading
 from myutils.config import _TR, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader
 from myutils.utils import nowisdark, checkisusingwine
@@ -21,9 +21,14 @@ from gui.dynalang import (
 
 
 class FocusCombo(QComboBox):
-    def __init__(self, parent: QWidget = None) -> None:
+    def __init__(self, parent: QWidget = None, sizeX=False) -> None:
         super().__init__(parent)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        if sizeX:
+            self.setSizeAdjustPolicy(
+                QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
+            )
+            self.view().setTextElideMode(Qt.TextElideMode.ElideRight)
 
     def wheelEvent(self, e: QWheelEvent) -> None:
 
@@ -38,8 +43,8 @@ class SuperCombo(FocusCombo):
     Visoriginrole = Qt.ItemDataRole.UserRole + 1
     Internalrole = Visoriginrole + 1
 
-    def __init__(self, parent=None, static=False) -> None:
-        super().__init__(parent)
+    def __init__(self, parent=None, static=False, sizeX=False) -> None:
+        super().__init__(parent=parent, sizeX=sizeX)
         self.mo = QStandardItemModel()
         self.static = static
         self.setModel(self.mo)
@@ -545,9 +550,9 @@ def findnearestscreen(rect: QRect):
 class saveposwindow(LMainWindow):
     def __init__(self, parent, poslist=None, flags=None) -> None:
         if flags:
-            super().__init__(parent, flags=flags)
+            LMainWindow.__init__(self, parent, flags=flags)
         else:
-            super().__init__(parent)
+            LMainWindow.__init__(self, parent)
 
         self.poslist = poslist
         if self.poslist:
@@ -749,11 +754,14 @@ class resizableframeless(saveposwindow):
     cursorSet = pyqtSignal(Qt.CursorShape)
     isDragging = pyqtSignal(bool)
 
+    @property
+    def _padding(self):
+        return 8
+
     def __init__(self, parent, flags, poslist) -> None:
-        super().__init__(parent, poslist, flags)
+        saveposwindow.__init__(self, parent, poslist, flags)
         self.setMouseTracking(True)
         # WS_THICKFRAME可以让无边框窗口可resize，但不兼容透明窗口
-        self._padding = 5
         self.usesysmove = False
         self.resetflags()
 
@@ -873,12 +881,13 @@ class resizableframeless(saveposwindow):
         if self._right_drag:
             self.resize(pos.x(), self.height())
         elif self._corner_drag_youshang:
-            self.setGeometry(
+            _, y, w, h = self.calculatexywh(
                 self.x(),
                 (gpos - self.startxp).y(),
                 pos.x(),
                 self.starth - (gpos.y() - self.starty),
             )
+            self.setGeometry(self.x(), y, w, h)
         elif self._corner_drag_zuoshang:
             self.setgeokeepminsize(
                 (gpos - self.startxp).x(),
@@ -963,11 +972,12 @@ def getsimplecombobox(
     internal=None,
     static=False,
     default=None,
+    sizeX=False,
 ):
     if d is None:
         d = {}
     initvar = d.get(k, default)
-    s = SuperCombo(static=static)
+    s = SuperCombo(static=static, sizeX=sizeX)
     s.addItems(lst, internal)
 
     if internal:
@@ -1102,22 +1112,27 @@ def check_grid_append(grids):
     return notx
 
 
-def getcolorbutton(parent, d, key, callback=None, alpha=False):
+def getcolorbutton(
+    parent, d, key, callback=None, alpha=False, tips=None, cantzeroalpha=False
+):
     qicon = qtawesome.icon("fa.paint-brush", color=d[key])
-    b = IconButton(None, qicon=qicon)
-    cb = functools.partial(__selectcolor, parent, b, d, key, callback, alpha=alpha)
-    b.clicked.connect(cb)
-    return b
-
-
-def D_getcolorbutton(parent, d, key, callback, alpha=False):
-    return lambda: getcolorbutton(
+    b = IconButton(None, qicon=qicon, tips=tips)
+    cb = functools.partial(
+        __selectcolor,
         parent,
+        b,
         d,
         key,
         callback,
         alpha=alpha,
+        cantzeroalpha=cantzeroalpha,
     )
+    b.clicked.connect(cb)
+    return b
+
+
+def D_getcolorbutton(parent, d, key, callback, alpha=False, tips=None):
+    return lambda: getcolorbutton(parent, d, key, callback, alpha=alpha, tips=tips)
 
 
 def yuitsu_switch(parent, configdict, dictobjectn, key, callback, checked):
@@ -1174,9 +1189,10 @@ def D_getsimpleswitch(
 
 def getColor(color, parent, alpha=False):
 
-    color_dialog = QColorDialog(color, parent)
+    color_dialog = QColorDialog(parent)
     if alpha:
         color_dialog.setOption(QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
+    color_dialog.setCurrentColor(QColor(color))
     if alpha:
         layout = color_dialog.layout()
         clearlayout(layout.itemAt(0).layout().takeAt(0))
@@ -1207,18 +1223,20 @@ def __selectcolor(
     configkey,
     callback=None,
     alpha=False,
+    cantzeroalpha=False,
 ):
 
     color = getColor(QColor(configdict[configkey]), parent, alpha)
     if not color.isValid():
         return
-    button.setIcon(qtawesome.icon("fa.paint-brush", color=color.name()))
-    configdict[configkey] = (
-        color.name(QColor.NameFormat.HexArgb) if alpha else color.name()
-    )
+    if alpha and cantzeroalpha and (color.alpha() == 0):
+        color.setAlpha(1)
+    colorname = color.name(QColor.NameFormat.HexArgb) if alpha else color.name()
+    button.setIcon(qtawesome.icon("fa.paint-brush", color=colorname))
+    configdict[configkey] = colorname
     if callback:
         try:
-            callback()
+            callback(colorname)
         except:
             print_exc()
 
@@ -1295,6 +1313,9 @@ class abstractwebview(QWidget):
         getuse=None,
     ):
         return index + 1
+
+    def set_transparent(self, _):
+        pass
 
     #
     def parsehtml(self, html):
@@ -1720,7 +1741,7 @@ class WebviewWidget(abstractwebview):
                 "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。"
             ),
         )
-        if int(platform.version().split(".")[0]) <= 6:
+        if gobject.sys_le_win81:
             os.startfile(
                 "https://archive.org/download/microsoft-edge-web-view-2-runtime-installer-v109.0.1518.78"
             )
@@ -1814,7 +1835,7 @@ class WebviewWidget(abstractwebview):
             # 这个API似乎可以检测runtime是否是有效的，比自己查询版本更好
             if not version:
                 continue
-            if (version[0] > 109) and (int(platform.version().split(".")[0]) <= 6):
+            if (version[0] > 109) and gobject.sys_le_win81:
                 continue
             if version > maxversion:
                 maxversion = version
@@ -1879,6 +1900,9 @@ class WebviewWidget(abstractwebview):
         self.add_menu()
         self.add_menu_noselect()
         self.cachezoom = 1
+
+    def set_transparent(self, b):
+        NativeUtils.webview2_set_transparent(self.webview, b)
 
     def IconChangedF(self, ptr, size):
         pixmap = QPixmap()
@@ -1945,8 +1969,10 @@ class WebviewWidget_for_auto(WebviewWidget):
         globalconfig["webviewLoadExt_cishu"] = not globalconfig["webviewLoadExt_cishu"]
         auto_select_webview.switchtype()
 
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent, loadext=globalconfig["webviewLoadExt_cishu"])
+    def __init__(self, parent=None, transp=False) -> None:
+        super().__init__(
+            parent, loadext=globalconfig["webviewLoadExt_cishu"], transp=transp
+        )
         self.pluginsedit.connect(functools.partial(Exteditor, self))
         self.reloadx.connect(self.appendext)
 
@@ -2069,23 +2095,53 @@ class mshtmlWidget(abstractwebview):
         return index + 1
 
 
-class CustomKeySequenceEdit(QKeySequenceEdit):
+class KeySequenceEdit(QKeySequenceEdit):
     changeedvent = pyqtSignal(str)
 
-    def __init__(self, parent=None):
-        super(CustomKeySequenceEdit, self).__init__(parent)
+    def string(self):
+        value = self.keySequence().toString()
+        if value:
+            return value
+        le: QLineEdit = self.findChild(QLineEdit)
+        return le.text()
 
-    def keyPressEvent(self, QKeyEvent):
-        super(CustomKeySequenceEdit, self).keyPressEvent(QKeyEvent)
+    def setString(self, string: str):
+        seq = QKeySequence(string.replace("Win", "Meta"))
+        if seq.toString():
+            self.setKeySequence(seq)
+        else:
+            le: QLineEdit = self.findChild(QLineEdit)
+            le.setText(string)
+
+    def __init__(self, parent=None, callonlymod=False):
+        super(KeySequenceEdit, self).__init__(parent)
+        self.callonlymod = callonlymod
+
+    def keyPressEvent(self, ke: QKeyEvent):
+        super(KeySequenceEdit, self).keyPressEvent(ke)
         value = self.keySequence()
-        if len(value.toString()):
-            self.clearFocus()
-        self.changeedvent.emit(value.toString().replace("Meta", "Win"))
-        self.setKeySequence(QKeySequence(value))
+        if self.callonlymod and not value.toString():
+            text = []
+            mod = ke.modifiers()
+            if mod & Qt.KeyboardModifier.ControlModifier:
+                text.append("Ctrl")
+            if mod & Qt.KeyboardModifier.ShiftModifier:
+                text.append("Shift")
+            if mod & Qt.KeyboardModifier.AltModifier:
+                text.append("Alt")
+            if mod & Qt.KeyboardModifier.MetaModifier:
+                text.append("Win")
+            text = "+".join(text)
+            le: QLineEdit = self.findChild(QLineEdit)
+            le.setText(text)
+            self.changeedvent.emit(text)
+        else:
+            self.changeedvent.emit(value.toString().replace("Meta", "Win"))
+            self.setKeySequence(QKeySequence(value))
 
 
 def getsimplekeyseq(dic: "dict[str,str]", key, callback=None):
-    key1 = CustomKeySequenceEdit(QKeySequence(dic[key].replace("Win", "Meta")))
+    key1 = KeySequenceEdit(QKeySequence(dic[key].replace("Win", "Meta")))
 
     def __(_d, _k, cb, s):
         _d[_k] = s
@@ -2215,9 +2271,11 @@ class auto_select_webview(QWidget):
             self._createinternal(shoudong=shoudong)
             self.internal.setHtml(html)
 
-    def _createwebview(self, shoudong=False):
+    def _createwebview(self, shoudong=False, transp=False):
         try:
-            browser = (WebviewWidget, WebviewWidget_for_auto)[self.loadex]()
+            browser = (WebviewWidget, WebviewWidget_for_auto)[self.loadex](
+                transp=transp
+            )
         except Exception as e:
             print_exc()
             if shoudong:
@@ -2544,6 +2602,7 @@ class listediter(LDialog):
         namemapfunction=None,
         candidates=None,
         exec=False,
+        icon=None,
     ) -> None:
         super().__init__(parent)
         self.setWindowFlags(
@@ -2554,8 +2613,10 @@ class listediter(LDialog):
         self.closecallback = closecallback
         self.ispathsedit = ispathsedit
         self.isrankeditor = isrankeditor
+        if icon:
+            self.setWindowIcon(qtawesome.icon(icon))
+        self.setWindowTitle(title)
         try:
-            self.setWindowTitle(title)
             model = LStandardItemModel()
             self.hcmodel = model
             self.namemapfunction = namemapfunction
@@ -3272,112 +3333,6 @@ def createfoldgrid(
     return box
 
 
-class editswitchTextBrowser(QWidget):
-    textChanged = pyqtSignal(str)
-
-    def heightForWidth(self, w):
-        return self.browser.heightForWidth(w)
-
-    def resizeEvent(self, a0):
-        self.switch.move(self.width() - self.switch.width(), 0)
-        return super().resizeEvent(a0)
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        stack = QStackedWidget()
-        self.edit = QPlainTextEdit()
-        self.browser = QLabel()
-        self.browser.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.browser.setWordWrap(True)
-        self.browser.setTextInteractionFlags(
-            Qt.TextInteractionFlag.TextSelectableByMouse
-        )
-        self.edit.textChanged.connect(
-            lambda: (
-                self.browser.setText(
-                    "<html>"
-                    + re.sub(
-                        r'href="([^"]+)"',
-                        "",
-                        re.sub(r'src="([^"]+)"', "", self.edit.toPlainText()),
-                    )
-                    + "</html>"
-                ),
-                self.textChanged.emit(self.edit.toPlainText()),
-            )
-        )
-        stack.addWidget(self.browser)
-        stack.addWidget(self.edit)
-        l = QHBoxLayout(self)
-        l.setContentsMargins(0, 0, 0, 0)
-        l.addWidget(stack)
-        self.switch = IconButton(parent=self, icon="fa.edit", checkable=True)
-        self.switch.raise_()
-        self.switch.clicked.connect(stack.setCurrentIndex)
-
-    def settext(self, text):
-        self.edit.setPlainText(text)
-
-    def text(self):
-        return self.edit.toPlainText()
-
-
-class FlowWidget(QWidget):
-    def __init__(self, parent=None, groups=3):
-        super().__init__(parent)
-        self.margin = QMargins(5, 5, 5, 5)
-        self.spacing = 5
-        self._item_list = [[] for _ in range(groups)]
-
-    def insertWidget(self, group, index, w: QWidget):
-        w.setParent(self)
-        w.show()
-        self._item_list[group].insert(index, w)
-        self.doresize()
-
-    def addWidget(self, group, w: QWidget):
-        self.insertWidget(group, len(self._item_list[group]), w)
-
-    def removeWidget(self, w: QWidget):
-        for _ in self._item_list:
-            if w in _:
-                _.remove(w)
-                w.deleteLater()
-                self.doresize()
-                break
-
-    def doresize(self):
-        line_height = 0
-        spacing = self.spacing
-        y = self.margin.left()
-        for listi in self._item_list:
-            x = self.margin.top()
-            for i, item in enumerate(listi):
-
-                next_x = x + item.sizeHint().width() + spacing
-                if (
-                    next_x - spacing + self.margin.right() > self.width()
-                    and line_height > 0
-                ):
-                    x = self.margin.top()
-                    y = y + line_height + spacing
-                    next_x = x + item.sizeHint().width() + spacing
-
-                size = item.sizeHint()
-                if (i == len(listi) - 1) and isinstance(item, editswitchTextBrowser):
-                    w = self.width() - self.margin.right() - x
-                    size = QSize(w, max(size.height(), item.heightForWidth(w)))
-
-                item.setGeometry(QRect(QPoint(x, y), size))
-                line_height = max(line_height, size.height())
-                x = next_x
-            y = y + line_height + spacing
-        self.setFixedHeight(y + self.margin.bottom() - spacing)
-
-    def resizeEvent(self, a0):
-        self.doresize()
-
-
 class SClickableLabel(QLabel):
     def __init__(self, *argc, **kw):
         super().__init__(*argc, **kw)
@@ -3404,12 +3359,54 @@ class ClickableLabel(SClickableLabel, LLabel):
     pass
 
 
+def limitpos(pos: QPoint, w: QWidget, offset: QPoint):
+    x = pos.x()
+    y = pos.y()
+    screen_geometry = w.screen().geometry()
+    size = w.size()
+    right_space = screen_geometry.right() - pos.x()
+    bottom_space = screen_geometry.bottom() - pos.y()
+    left_space = pos.x() - screen_geometry.left()
+    top_space = pos.y() - screen_geometry.top()
+    # 水平方向调整
+    if right_space < size.width():
+        if left_space >= size.width():
+            x = pos.x() - size.width()
+        else:
+            # 如果两边空间都不够，选择空间较大的一侧
+            if right_space > left_space:
+                x = screen_geometry.right() - size.width()
+            else:
+                x = screen_geometry.left()
+
+    else:
+        x += offset.x()
+    # 垂直方向调整
+    if bottom_space < size.height():
+        if top_space >= size.height():
+            y = pos.y() - size.height()
+        else:
+            # 如果两边空间都不够，选择空间较大的一侧
+            if bottom_space > top_space:
+                y = screen_geometry.bottom() - size.height()
+            else:
+                y = screen_geometry.top()
+    else:
+        y += offset.y()
+    return QPoint(x, y)
+
+
 class PopupWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
         self.setWindowFlag(Qt.WindowType.Popup)
         self.dragging = False
         self.offset = None
+
+    def showEvent(self, a0):
+        pos = self.pos()
+        self.move(limitpos(pos, self, QPoint()))
+        return super().showEvent(a0)
 
     def display(self, pos=None):
         self.move(pos if pos else QCursor.pos())
@@ -3439,3 +3436,19 @@ class PopupWidget(QWidget):
     def closeEvent(self, a0):
         self.deleteLater()
         return super().closeEvent(a0)
+
+
+class __MDLabel(QLabel):
+    def __init__(self, md):
+        super().__init__()
+        self._md = md
+        self.setOpenExternalLinks(True)
+        self.setWordWrap(True)
+        self.updatelangtext()
+
+    def updatelangtext(self):
+        self.setText(NativeUtils.Markdown2Html(_TR(self._md)))
+
+
+def MDLabel(md):
+    return functools.partial(__MDLabel, md)

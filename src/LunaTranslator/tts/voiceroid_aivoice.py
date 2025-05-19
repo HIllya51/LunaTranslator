@@ -98,7 +98,7 @@ class TTS(TTSbase):
         is64 = NativeUtils.IsDLLBit64(dllpath)
         # AIVoice & AIVoice2 -> 64位
         exepath = os.path.abspath(
-            "files/plugins/shareddllproxy{}.exe".format([32, 64][is64])
+            "files/shareddllproxy{}.exe".format([32, 64][is64])
         )
         self.engine = NativeUtils.AutoKillProcess(
             '"{}" voiceroid2 "{}" "{}" {} {} {} {} {}'.format(

@@ -22,7 +22,10 @@ def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
     adapterinfos.sort(key=lambda _: _[0])
     infosx = list(_[:3] for _ in adapterinfos)
     visx = list(_[3] for _ in adapterinfos)
-    combo.addItems(["默认"] + visx, [(-1, 0, 0)] + infosx)
+    default = "默认"
+    if visx:
+        default += "_[[(" + visx[0] + ")]]"
+    combo.addItems([default] + visx, [(-1, 0, 0)] + infosx)
     combo.blockSignals(False)
     graphicsCardId: dict = magpie_config["profiles"][globalconfig["profiles_index"]][
         "graphicsCardId"

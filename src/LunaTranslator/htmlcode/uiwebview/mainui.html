@@ -38,6 +38,47 @@
         user-select: none;
     }
 </style>
+<style id="tooltipstyle">
+    .tooltip {
+        --tooltips-background: #333;
+        --tooltips-text: white;
+        --tooltips-padding: 8px;
+    }
+</style>
+<style>
+    .tooltip {
+        position: fixed;
+        /* 相对于视口定位 */
+        background: var(--tooltips-background);
+        /* #333;*/
+        color: var(--tooltips-text);
+        padding: var(--tooltips-padding);
+        border-radius: var(--tooltips-radius);
+        pointer-events: none;
+        /* 防止 Tooltip 遮挡鼠标事件 */
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity 0.2s;
+        /* transform: translate(0%, 10px); */
+        /* 轻微下移避免遮挡鼠标 */
+    }
+
+    .tooltip.show {
+        opacity: 1;
+    }
+</style>
+<script>
+    function settooltipsstyle(c1, c2, pd, r) {
+        document.getElementById('tooltipstyle').innerHTML = `
+        .tooltip {
+        --tooltips-background: ${c1};
+        --tooltips-text: ${c2};
+        --tooltips-padding: ${pd}px;
+        --tooltips-radius: ${r}px;
+    }
+        `
+    }
+</script>
 <style id="maybevertical">
 </style>
 <style id="colorcontroller"></style>
@@ -57,10 +98,40 @@
 
     });
 </script>
+
+<style>
+    #popupContainer {
+        position: absolute;
+        display: none;
+        z-index: 3000;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        padding: 10px;
+        width: 400px;
+        max-width: 90vw;
+    }
+
+    #popup-content {
+        position: relative;
+    }
+
+    #popupiframe {
+        width: 100%;
+        height: 400px;
+    }
+</style>
+<div id="popupContainer">
+    <div id="popup-content">
+        <iframe title="" frameborder="0" id="popupiframe"></iframe>
+    </div>
+</div>
 <script>
     //nativte api
     var sizeignore = false
     var cacheheight = 0
+    var isheightchangebytooltip = false
     function refreshcontent_before() {
         sizeignore = true
     }
@@ -69,25 +140,121 @@
         if (window.LUNAJSObject)
             LUNAJSObject.calllunaheightchange(cacheheight)
     }
+    let lastZoomLevel = window.devicePixelRatio;
+    window.addEventListener('resize', function () {
+        const currentZoomLevel = window.devicePixelRatio;
+        if (Math.abs(currentZoomLevel - lastZoomLevel) > 0.01) {
+            lastZoomLevel = currentZoomLevel;
+            safe_calllunaheightchange()
+        }
+    });
     function safe_calllunaheightchange() {
-        let h = document.getElementById('luna_root_div').offsetHeight
+        let root = document.getElementById('luna_root_div')
+        let h = root.offsetHeight + root.offsetTop
         const computedStyle = window.getComputedStyle(document.body);
-        h += parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom)
+        h += parseFloat(computedStyle.marginBottom)//+parseFloat(computedStyle.marginTop) 
         cacheheight = h
+        isheightchangebytooltip = false
         if (sizeignore) return
         if (window.LUNAJSObject)
             LUNAJSObject.calllunaheightchange(h)
     }
-    function safe_calllunaclickedword(word, app) {
+    document.body.addEventListener('click', (e) => {
+        popupContainer.style.display = 'none'
+    })
+    function limitPosition(pos, popup, offset) {
+        const x = pos.x;
+        const y = pos.y;
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+        const popupWidth = popup.offsetWidth;
+        const popupHeight = popup.offsetHeight;
+
+        let adjustedX = x;
+        let adjustedY = y;
+
+        // 计算各方向可用空间
+        const rightSpace = screenWidth - x;
+        const bottomSpace = screenHeight - y;
+        const leftSpace = x;
+        const topSpace = y;
+
+        // 水平方向调整
+        if (rightSpace < popupWidth) {
+            if (leftSpace >= popupWidth) {
+                adjustedX = x - popupWidth;
+            } else {
+                // 如果两边空间都不够，选择空间较大的一侧
+                if (rightSpace > leftSpace) {
+                    adjustedX = screenWidth - popupWidth;
+                } else {
+                    adjustedX = 0;
+                }
+            }
+        } else {
+            adjustedX += offset.x;
+        }
+
+        // 垂直方向调整
+        if (bottomSpace < popupHeight) {
+            if (topSpace >= popupHeight) {
+                adjustedY = y - popupHeight;
+            } else {
+                // 如果两边空间都不够，选择空间较大的一侧
+                if (bottomSpace > topSpace) {
+                    adjustedY = screenHeight - popupHeight;
+                } else {
+                    adjustedY = 0;
+                }
+            }
+        } else {
+            adjustedY += offset.y;
+        }
+
+        // 确保不会超出边界
+        adjustedX = Math.max(0, Math.min(adjustedX, screenWidth - popupWidth));
+        adjustedY = Math.max(0, Math.min(adjustedY, screenHeight - popupHeight));
+
+        return { x: adjustedX, y: adjustedY };
+    }
+
+    function showPopupAtPosition(e) {
+        const pos = { x: e.clientX, y: e.clientY };
+        const offset = { x: 0, y: 10 }; // 默认偏移量
+
+        // 先显示弹出窗口(隐藏状态)以获取其尺寸
+        popupContainer.style.display = 'block';
+        popupContainer.style.visibility = 'hidden';
+
+        const adjustedPos = limitPosition(pos, popupContainer, offset);
+
+        popupContainer.style.left = `${adjustedPos.x}px`;
+        popupContainer.style.top = `${adjustedPos.y}px`;
+        popupContainer.style.visibility = 'visible';
+    }
+    function flowclickdictionary(e, link) {
+        popupiframe.src = link;
+        showPopupAtPosition(e)
+        e.stopPropagation()
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    function safe_calllunaclickedword(e, word, app) {
         if (window.LUNAJSObject)
             LUNAJSObject.calllunaclickedword(word, app)
         else {
-            //wsinvoke('calllunaclickedword', [word, app])
-            //比起在luna里打开，用新的标签页打开似乎是更好的选择
-            const url = new URL('/page/searchword', window.location.origin);
+            const url = new URL('/page/dictionary', window.location.origin);
             url.searchParams.append('word', word['word'])
             url.searchParams.append('prototype', word['prototype'])
-            window.open(url.toString())
+            if (e.button == 0 && !urlParams.get('__internal', 0)) {
+                url.searchParams.append('__internal', 1)
+                flowclickdictionary(e, url.toString())
+            }
+            else {
+                //wsinvoke('calllunaclickedword', [word, app])
+                //比起在luna里打开，用新的标签页打开似乎是更好的选择
+                window.open(url.toString())
+            }
         }
     }
 </script>
@@ -247,11 +414,6 @@
 <script>
     var allowclickword = false
     function sethovercolor(color) {
-        color = decodeURIComponent(color)
-        const alpha = color.slice(1, 3); // aa
-        const rrggbb = color.slice(3);   // rrggbb
-
-        color = `#${rrggbb}${alpha}`;
         document.getElementById('clickwordhover').innerHTML = `:root{
         --clickwordhover:${color}
     }`
@@ -266,8 +428,8 @@
         document.getElementById('maybeshowrt').innerHTML = css;
         safe_calllunaheightchange()
     }
-    function showhideclick(show) {
-        allowclickword = show
+    function showhideclick(show, clickable) {
+        allowclickword = clickable
         let css = ['', `
     .lunatranslator_clickword {
         z-index: 2000;
@@ -384,6 +546,105 @@
 
         return result
     }
+    var word_hover_show_word_info = false
+    function set_word_hover_show_word_info(action) {
+        word_hover_show_word_info = action
+        if (!action)
+            document.querySelectorAll('.tooltip').forEach((ele) => {
+                ele.remove()
+            })
+    }
+    let word_hover_action_usewb2 = false
+    function setwordhoveruse(use) {
+        word_hover_action_usewb2 = use
+    }
+    function checktooltipheight(tooltip) {
+        targetheigth = 0
+
+        if (!tooltip) {
+            if (isheightchangebytooltip && !document.querySelectorAll('.tooltip').length)
+                targetheigth = cacheheight
+        }
+        else {
+            bottom = tooltip.offsetHeight + tooltip.offsetTop
+            if (bottom > cacheheight || isheightchangebytooltip)
+                targetheigth = bottom
+        }
+        if (!targetheigth || sizeignore) return
+        if (window.LUNAJSObject)
+            LUNAJSObject.calllunaheightchange(targetheigth)
+        isheightchangebytooltip = true
+
+    }
+    function createwordhoverlistener(eleori, word) {
+
+        let tooltipcontent = ''
+        if (word.prototype && word.word != word.prototype)
+            tooltipcontent += ' / ' + word.prototype
+        if (word.kana && word.kana != word.word)
+            tooltipcontent += ' / ' + word.kana
+        if (word.info) {
+            tooltipcontent += '\n' + word.info
+        }
+        if (!tooltipcontent) return
+
+        let tooltip = null;
+        eleori.addEventListener("mousemove", (e) => {
+            if (!word_hover_show_word_info) return
+            if (!word_hover_action_usewb2 && window.LUNAJSObject) {
+                LUNAJSObject.calllunaMouseHoverWord("mousemove", e.clientX, e.clientY, word)
+                return
+            }
+            if (tooltip) {
+                const computedStyle = window.getComputedStyle(tooltip);
+                tooltip.style.left = `${e.clientX - parseFloat(computedStyle.marginLeft)}px`;
+                tooltip.style.top = `${10 + e.clientY - parseFloat(computedStyle.marginTop)}px`;
+                checktooltipheight(tooltip)
+            }
+        });
+
+        // 鼠标进入时创建 Tooltip
+        eleori.addEventListener("mouseenter", (e) => {
+            if (!word_hover_show_word_info) return
+            if (!word_hover_action_usewb2 && window.LUNAJSObject) {
+                LUNAJSObject.calllunaMouseHoverWord("mouseenter", e.clientX, e.clientY, word)
+                return
+            }
+            if (!tooltip) {
+                tooltip = document.createElement("div");
+                tooltip.classList.add('tooltip')
+                tooltip.classList.add('klass_font_origin')
+                tooltip.innerText = word.word + tooltipcontent;
+                document.body.appendChild(tooltip); // 添加到 body 避免定位受限
+
+                // 初始位置设为鼠标当前位置
+                const computedStyle = window.getComputedStyle(tooltip);
+                tooltip.style.left = `${e.clientX - parseFloat(computedStyle.marginLeft)}px`;
+                tooltip.style.top = `${e.clientY - parseFloat(computedStyle.marginTop)}px`;
+
+                tooltip.classList.add("show");
+                checktooltipheight(tooltip)
+            }
+        });
+
+        // 鼠标离开时移除 Tooltip
+        eleori.addEventListener("mouseleave", () => {
+            if (!word_hover_show_word_info) return
+            if (!word_hover_action_usewb2 && window.LUNAJSObject) {
+                LUNAJSObject.calllunaMouseHoverWord("mouseleave", 0, 0, 0)
+                return
+            }
+            if (tooltip) {
+                tooltip.classList.remove("show");
+                // 动画结束后移除
+                tooltip.addEventListener("transitionend", () => {
+                    if (tooltip) tooltip.remove();
+                    tooltip = null;
+                    checktooltipheight(tooltip)
+                }, { once: true });
+            }
+        });
+    }
     function create_internal_rubytext(style, styleargsjson, _id, tagjson, argsjson) {
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
@@ -398,7 +659,7 @@
             }
             let eleori = dispatch_text_style(style, styleargs, '', word.word, { color: color })
             eleori = makeinlineblock(eleori)//使其他字体和描边字体的对齐一致
-            if (word.isdeli) {
+            if (word.isdeli || word.isshit) {
                 ele.appendChild(eleori)
                 return
             }
@@ -412,16 +673,18 @@
 
             eleori.setAttribute('word', JSON.stringify(word))
             eleori.addEventListener('click', function (e) {
-                safe_calllunaclickedword(JSON.parse(this.getAttribute('word')), false)
+                safe_calllunaclickedword(e, JSON.parse(this.getAttribute('word')), false)
             })
             eleori.oncontextmenu = function (e) {
                 if (!allowclickword) return
                 if (window.getSelection().toString()) { }
                 else {
                     event.preventDefault();
-                    safe_calllunaclickedword(JSON.parse(this.getAttribute('word')), true)
+                    safe_calllunaclickedword(e, JSON.parse(this.getAttribute('word')), true)
                 }
             }
+
+            createwordhoverlistener(eleori, word)
             eleori.classList.add('lunatranslator_clickword')
             eleori.appendChild(style1)
 

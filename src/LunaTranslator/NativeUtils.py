@@ -199,7 +199,8 @@ def GetLnkTargetPath(lnk):
 
 
 _ExtractExeIconData = utilsdll.ExtractExeIconData
-_ExtractExeIconData.argtypes = c_bool, c_wchar_p, c_void_p
+_ExtractExeIconDataCB = CFUNCTYPE(None, POINTER(c_char), c_size_t)
+_ExtractExeIconData.argtypes = c_bool, c_wchar_p, _ExtractExeIconDataCB
 _ExtractExeIconData.restype = c_bool
 
 
@@ -213,7 +214,7 @@ def ExtractExeIconData(file, large=False):
     def cb(ptr, size):
         ret.append(ptr[:size])
 
-    cb = CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb)
+    cb = _ExtractExeIconDataCB(cb)
     succ = _ExtractExeIconData(large, file, cb)
     if not succ:
         return None
@@ -257,8 +258,9 @@ SetWindowExtendFrame = utilsdll.SetWindowExtendFrame
 SetWindowExtendFrame.argtypes = (HWND,)
 
 SetTheme = utilsdll.SetTheme
-SetTheme.argtypes = HWND, c_bool, c_int, c_bool
-
+SetTheme.argtypes = HWND, c_bool, c_int
+SetCornerNotRound = utilsdll.SetCornerNotRound
+SetCornerNotRound.argtypes = HWND, c_bool, c_bool
 
 _ListProcesses = utilsdll.ListProcesses
 _ListProcesses.argtypes = (c_void_p,)
@@ -344,12 +346,10 @@ def GdiCropImage(x1, y1, x2, y2, hwnd=None):
 
 MaximumWindow = utilsdll.MaximumWindow
 MaximumWindow.argtypes = (HWND,)
-SetWindowBackdrop = utilsdll.SetWindowBackdrop
-SetWindowBackdrop.argtypes = HWND, c_bool, c_bool
 setAeroEffect = utilsdll.setAeroEffect
 setAeroEffect.argtypes = (HWND, c_bool)
 setAcrylicEffect = utilsdll.setAcrylicEffect
-setAcrylicEffect.argtypes = (HWND, c_bool)
+setAcrylicEffect.argtypes = (HWND, c_bool, DWORD)
 clearEffect = utilsdll.clearEffect
 clearEffect.argtypes = (HWND,)
 
@@ -429,6 +429,8 @@ webview2_add_menu.argtypes = (
     c_void_p,
     c_void_p,
 )
+webview2_set_transparent = utilsdll.webview2_set_transparent
+webview2_set_transparent.argtypes = WebView2PTR, c_bool
 webview2_evaljs = utilsdll.webview2_evaljs
 webview2_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)
 webview2_evaljs.argtypes = WebView2PTR, c_wchar_p, c_void_p

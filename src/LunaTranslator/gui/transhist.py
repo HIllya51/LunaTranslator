@@ -9,7 +9,7 @@ from urllib.parse import quote
 from myutils.wrapper import threader
 from traceback import print_exc
 from gui.setting.display_text import extrahtml
-from services.servicecollection_1 import WSForEach, transhistwsoutputsave
+from network.server.servicecollection_1 import WSForEach, transhistwsoutputsave
 
 
 class somecommon:
@@ -153,7 +153,7 @@ class wvtranshist(WebviewWidget, somecommon):
                 extrahtml,
                 self,
                 "extrahtml_transhist.html",
-                r"files\html\uiwebview\extrahtml\transhist.html",
+                r"LunaTranslator\htmlcode\uiwebview\extrahtml\transhist.html",
                 self,
             ),
         )
@@ -178,7 +178,7 @@ class wvtranshist(WebviewWidget, somecommon):
             lambda: _TR("查词"),
             threader(
                 lambda w: gobject.baseobject.searchwordW.search_word.emit(
-                    w.replace("\n", "").strip(), False
+                    w.replace("\n", "").strip(), None, False
                 )
             ),
         )
@@ -196,7 +196,7 @@ class wvtranshist(WebviewWidget, somecommon):
     def loadex_(extra=None):
         if not extra:
             extra = wvtranshist.loadextra()
-        basepath = r"files\html\uiwebview\transhist.html"
+        basepath = r"LunaTranslator\htmlcode\uiwebview\transhist.html"
         if not extra:
             return os.path.abspath(basepath)
         with open(basepath, "r", encoding="utf8") as ff:
@@ -210,7 +210,7 @@ class wvtranshist(WebviewWidget, somecommon):
     def loadextra():
         for _ in [
             "userconfig/extrahtml_transhist.html",
-            r"files\html\uiwebview\extrahtml\transhist.html",
+            r"LunaTranslator\htmlcode\uiwebview\extrahtml\transhist.html",
         ]:
             if not os.path.exists(_):
                 continue
@@ -336,7 +336,7 @@ class Qtranshist(QPlainTextEdit):
             self.parent().loadviewer(True)
         elif action == search:
             gobject.baseobject.searchwordW.search_word.emit(
-                self.textCursor().selectedText(), False
+                self.textCursor().selectedText(), None, False
             )
         elif action == translate:
             gobject.baseobject.textgetmethod(self.textCursor().selectedText(), False)

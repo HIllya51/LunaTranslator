@@ -372,9 +372,5 @@ class searcher(common):
             "images": [infos["img"]] + self.getreleasecvfromhtml(_vid) + infos["sc"],
             "webtags": infos["tags"],
             "developers": infos["dev"],
-            "description": (
-                infos["description"].replace("\n", "<br>")
-                if infos["description"]
-                else None
-            ),
+            "description": infos["description"]
         }

@@ -203,7 +203,7 @@ int PyStand::DetectScript()
 	_script.clear();
 
 	std::wstring test;
-	test = _home + L"\\LunaTranslator\\LunaTranslator_main.py";
+	test = _home + L"\\LunaTranslator\\main.py";
 	if (PathFileExistsW(test.c_str()))
 	{
 		_script = test;

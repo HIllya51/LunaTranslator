@@ -1,9 +1,10 @@
 from myutils.config import globalconfig
 from myutils.wrapper import threader
+from myutils.utils import LRUCache
 from traceback import print_exc
-from myutils.utils import SafeFormatter
 from myutils.commonbase import commonbase
 import uuid
+import inspect
 from tinycss2 import parse_stylesheet, serialize
 from tinycss2.ast import (
     WhitespaceToken,
@@ -20,6 +21,8 @@ class DictTree:
 
 
 class cishubase(commonbase):
+    backgroundparser = ""
+    use_github_md_css = False
 
     def init(self):
         pass
@@ -27,9 +30,21 @@ class cishubase(commonbase):
     def search(self, word):
         return word
 
+    def result_cache_key(self, word, sentence=None):
+        return word, sentence, str(self.rawconfig)
+
+    def search_XX(self, word, sentence):
+        sig = inspect.signature(self.search)
+        params = sig.parameters
+        if len(params) == 1:
+            return self.search(word)
+        elif len(params) == 2:
+            return self.search(word, sentence)
+
     def __init__(self, typename) -> None:
         super().__init__(typename)
         self.callback = print
+        self.__cache_results = LRUCache(32)
         self.needinit = True
         try:
             self.init()
@@ -41,40 +56,28 @@ class cishubase(commonbase):
     _setting_dict = globalconfig["cishu"]
 
     @threader
-    def safesearch(self, sentence, callback):
+    def safesearch(self, callback, word, sentence=None):
+        if self.needinit:
+            self.init()
+            self.needinit = False
+        key = self.result_cache_key(word, sentence)
+        if key:
+            cacheresult = self.__cache_results.get(key)
+            if cacheresult:
+                callback(cacheresult)
+                return
         try:
-            if self.needinit:
-                self.init()
-                self.needinit = False
-            try:
-                res = self.multiapikeywrapper(self.search)(sentence)
-            except:
-                print_exc()
-                self.needinit = True
-                res = None
-            if res and len(res):
-                callback(res)
-            else:
-                callback(None)
+            res = self.multiapikeywrapper(self.search_XX)(word, sentence)
         except:
-            pass
-
-    def _gptlike_createquery(self, query, usekey, tempk):
-        user_prompt = (
-            self.config.get(tempk, "") if self.config.get(usekey, False) else ""
-        )
-        fmt = SafeFormatter()
-        return fmt.format(user_prompt, must_exists="sentence", sentence=query)
-
-    def _gptlike_createsys(self, usekey, tempk):
-
-        fmt = SafeFormatter()
-        if self.config[usekey]:
-            template = self.config[tempk]
+            print_exc()
+            self.needinit = True
+            res = None
+        if res:
+            callback(res)
+            if key:
+                self.__cache_results.put(key, res)
         else:
-            template = "You are a professional dictionary assistant whose task is to help users search for information such as the meaning, pronunciation, etymology, synonyms, antonyms, and example sentences of {srclang} words. You should be able to handle queries in multiple languages and provide in-depth information or simple definitions according to user needs. You should reply in {tgtlang}."
-
-        return fmt.format(template, srclang=self.srclang, tgtlang=self.tgtlang)
+            callback(None)
 
     def __parseaqr(self, rule: QualifiedRule, divclass):
         start = True

@@ -93,6 +93,7 @@ public:
     WebView2(HWND parent, bool);
     HRESULT init(bool);
     void put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME);
+    void set_transparent(bool);
     void Resize(int, int);
     double get_ZoomFactor();
     void put_ZoomFactor(double);

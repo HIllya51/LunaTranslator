@@ -19,7 +19,7 @@
     "autodisappear_which": 0,
     "WindowBackdrop": 3,
     "WindowEffect": 0,
-    "WindowEffect_shadow": false,
+    "WindowEffect_shadow": true,
     "read_raw": true,
     "global_list_opened": true,
     "read_trans": false,
@@ -45,9 +45,9 @@
     },
     "usecustomankigen": false,
     "is_search_word_auto_tts": false,
+    "is_search_word_auto_tts_2": false,
     "network_websocket": 1,
     "imagewrapmode": 0,
-    "primitivtemetaorigin": "vid",
     "rendertext_using_internal": {
         "webview": "yinying",
         "textbrowser": "yinying"
@@ -321,6 +321,7 @@
     "maxBufferSize": 3000,
     "maxHistorySize": 1000000,
     "yuanjiao_r": 0,
+    "yuanjiao_sys": false,
     "extensionsetting": [
         500,
         500,
@@ -416,6 +417,9 @@
     "fonttype": "",
     "fonttype2": "",
     "hira_vis_type": 0,
+    "word_hover_show_word_info": false,
+    "word_hover_action_usewb2": false,
+    "min_auto_height": 0,
     "iskongxin": true,
     "isshowrawtext": true,
     "kanarate": 0.5,
@@ -1328,23 +1332,40 @@
                 "使用自定义promt": false,
                 "自定义promt": "",
                 "Temperature": 0.3,
-                "max_tokens": 1024,
+                "max_tokens": 4096,
                 "top_p": 0.3,
                 "frequency_penalty": 0,
                 "frequency_penalty_use": 0,
-                "user_user_prompt": "{sentence}",
+                "reasoning_effort": "medium",
+                "reasoning_effort_use": false,
+                "user_user_prompt_1": "{sentence}\nword:{word}",
                 "use_user_user_prompt": false,
                 "s": "",
                 "s2": "",
                 "customparams": []
             },
             "argstype": {
+                "reasoning_effort": {
+                    "type": "combo",
+                    "refswitch": "reasoning_effort_use",
+                    "internal": [
+                        "low",
+                        "medium",
+                        "high"
+                    ],
+                    "list": [
+                        "low",
+                        "medium",
+                        "high"
+                    ]
+                },
                 "customparams": {
                     "name": "其他参数",
                     "type": "custom",
-                    "function": "customparams"
+                    "function": "customparams",
+                    "rank": -1
                 },
-                "user_user_prompt": {
+                "user_user_prompt_1": {
                     "name": "自定义_user message",
                     "refswitch": "use_user_user_prompt",
                     "rank": 5.1
@@ -1454,9 +1475,17 @@
     "force_rect": true,
     "darklight2": 0,
     "theme3": "PyQtDarkTheme",
+    "useopenlink": false,
+    "useopenlinklink1": [
+        "https://jpdb.io/search?q={word}",
+        "https://www.weblio.jp/content/{word}"
+    ],
     "usesearchword": false,
+    "usesearchword_S": false,
     "usecopyword": false,
-    "usewordorigin": false,
+    "usewordoriginfor": {},
+    "wordclickkbtriggerneed": {},
+    "wordclickkbtrigger": {},
     "ttscommon": {
         "rate": 0,
         "pitch": 0,
@@ -1488,7 +1517,8 @@
         "local": {
             "use": true,
             "name": "本地OCR",
-            "type": "offline"
+            "type": "offline",
+            "argstype": "customwidget"
         },
         "SnippingTool": {
             "use": false,
@@ -1862,6 +1892,19 @@
     },
     "realtime_edit_target": "realtime_edit",
     "movefollow": true,
+    "WordViewTooltipColor": "#c0ffc0ff",
+    "WordViewTooltipDWM": 0,
+    "WordViewTooltipDWM_1": true,
+    "WordViewTooltipContentColor": "#c0ffffff",
+    "WordViewTooltipHideFocus": true,
+    "WordViewTooltipRadius": 4,
+    "WordViewTooltipBorder": 5,
+    "word_hover_DWM": 0,
+    "word_hover_DWM_1": true,
+    "word_hover_border_R": 4,
+    "word_hover_border": 8,
+    "word_hover_bg_color": "#333",
+    "word_hover_text_color": "white",
     "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,
