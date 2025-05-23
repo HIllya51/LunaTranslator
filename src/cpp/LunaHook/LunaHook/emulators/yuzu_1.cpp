@@ -632,7 +632,7 @@ namespace
 
     void F0100F7801B5DC000(TextBuffer *buffer, HookParam *hp)
     {
-        if (!all_ascii((wchar_t *)buffer->buff, buffer->size / 2))
+        if (!all_ascii(buffer->viewW()))
             return buffer->clear(); // chaos on first load.
         StringCharReplacer(buffer, TEXTANDLEN(L"<br>"), '\n');
     }
@@ -2415,7 +2415,7 @@ namespace
     }
     void F0100B1F0123B6000(TextBuffer *buffer, HookParam *hp)
     {
-        if (all_ascii((wchar_t *)buffer->buff))
+        if (all_ascii(buffer->viewW()))
             return buffer->clear();
         F010096000CA38000(buffer, hp);
     }
@@ -2476,7 +2476,6 @@ namespace
     }
     void F01000EA00D2EE000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, L"\\n+", L" ");
         s = re::sub(s, L"\\<PL_Namae\\>", L"???");
@@ -2494,6 +2493,19 @@ namespace
     {
         CharFilter(buffer, L'\n');
     }
+    void F0100E9801CAC2000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        if (all_ascii(s) && (s != L"@PlayerName@"))
+            return buffer->clear();
+        if (re::match(s, LR"(\w+/.*)"))
+            return buffer->clear();
+        s = re::sub(s, LR"(<color=#[\w\d]{6}>)");
+        s = strReplace(s, L"</color>");
+        s = strReplace(s, L"　");
+        s = strReplace(s, L"<br>", L"\n");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2501,6 +2513,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // OVER REQUIEMZ
+    {0x8208F5C0, {CODEC_UTF16, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.0"}},
     // Memories Off
     {0x8003eeac, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100978013276000ull, "1.0.0"}},
     {0x8003eebc, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100978013276000ull, "1.0.1"}},

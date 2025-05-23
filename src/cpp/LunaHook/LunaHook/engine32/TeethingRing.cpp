@@ -48,9 +48,9 @@ bool TeethingRing_attach_function()
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     // #F【琉星】#F
-    if (all_ascii((char *)buffer->buff, buffer->size))
-      return buffer->clear();
     auto str = buffer->strA();
+    if (all_ascii(str))
+      return buffer->clear();
     strReplace(str, "#F");
     buffer->from(str);
   };
@@ -100,9 +100,9 @@ bool TeethingRing_attach_function2()
   };
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    if (all_ascii((char *)buffer->buff, buffer->size))
-      return buffer->clear();
     auto str = buffer->strA();
+    if ((str))
+      return buffer->clear();
     strReplace(str, "#F");
     // 俺はこのアクシデントが、何か幸#<さい>先#<さき>のいいもののように思えて、鞄を抱え直してギルドへの階段を昇り始めた。
     str = re::sub(str, "#<(.*?)>");

@@ -22,7 +22,6 @@ if(WIN10ABOVE)
     target_link_libraries(onnxruntime INTERFACE ${onnxruntime_SOURCE_DIR}/runtimes/win-${platform}/native/onnxruntime.lib)
     set(onnxruntime_DLL ${onnxruntime_SOURCE_DIR}/runtimes/win-${platform}/native/onnxruntime.dll)
     message(${onnxruntime_DLL})
-    target_compile_definitions(onnxruntime INTERFACE -DWIN10ABOVE=1)
     function(extract_last_version_simple file_path output_var)
         file(READ "${file_path}" file_content)
         # 使用贪婪匹配直接找到最后一个版本号

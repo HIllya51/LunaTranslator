@@ -284,7 +284,7 @@ HFONT WINAPI Hijack::newCreateFontIndirectA(const LOGFONTA *lplf)
     customizeLogFontA(&lf.a);
     if (!fontFamily.empty())
     {
-      if (all_ascii(fontFamily.c_str(), fontFamily.size()))
+      if (all_ascii(fontFamily))
         ::strcpy(lf.a.lfFaceName, WideStringToString(fontFamily, CP_ACP).c_str());
       else
       {
@@ -341,7 +341,7 @@ HFONT WINAPI Hijack::newCreateFontA(int nHeight, int nWidth, int nEscapement, in
     std::wstring fontFamily = maybe_disabled_fontFamily();
     if (!fontFamily.empty())
     {
-      if (all_ascii(fontFamily.c_str(), fontFamily.size()))
+      if (all_ascii(fontFamily))
       {
         lpszFace = WideStringToString(fontFamily, CP_ACP).c_str();
         return oldCreateFontA(CREATE_FONT_ARGS);

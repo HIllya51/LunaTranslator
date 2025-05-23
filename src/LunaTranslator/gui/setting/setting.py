@@ -88,7 +88,7 @@ class Setting(closeashidewindow):
     progresssignal4 = pyqtSignal(str, int)
     progresssignal3 = pyqtSignal(int)
     showandsolvesig = pyqtSignal(str, str)
-    safeinvokefunction = pyqtSignal(list)
+    safeinvokefunction = pyqtSignal(object)
     thresholdsett2 = pyqtSignal(str)
     thresholdsett1 = pyqtSignal(str)
     portconflict = pyqtSignal(str)
@@ -107,7 +107,7 @@ class Setting(closeashidewindow):
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.portconflictcache = []
         self.portconflict.connect(self.portconflictcache.append)
-        self.safeinvokefunction.connect(lambda _: _[0]())
+        self.safeinvokefunction.connect(lambda _: _())
         self.progresssignal4.connect(self._progresssignal4)
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.voicelistsignal.connect(functools.partial(showvoicelist, self))

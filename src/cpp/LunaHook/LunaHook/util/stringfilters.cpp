@@ -121,7 +121,7 @@ void NewLineCharToSpaceFilterA(TextBuffer *buffer, HookParam *)
 }
 void all_ascii_Filter(TextBuffer *buffer, HookParam *)
 {
-  if (all_ascii((char *)buffer->buff, buffer->size))
+  if (all_ascii(buffer->viewA()))
     buffer->clear();
 }
 

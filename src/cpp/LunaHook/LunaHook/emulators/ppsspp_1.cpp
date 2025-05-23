@@ -813,7 +813,7 @@ namespace
     void ULJM05458(TextBuffer *buffer, HookParam *hp)
     {
         static int i = 0;
-        if ((i++ % 2) || all_ascii((char *)buffer->buff, buffer->size))
+        if ((i++ % 2) || all_ascii(buffer->viewA()))
             return buffer->clear();
         auto s = buffer->strA();
         s = re::sub(s, R"(\[(.*?)\*(.*?)\])", "$1");

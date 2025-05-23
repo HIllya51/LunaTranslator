@@ -25,6 +25,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100E9801CAC2000 | OVER REQUIEMZ |
 |  | 0100978013276000 | Memories Off |
 |  | 0100B4A01326E000 | Memories Off ～それから～ |
 |  | 0100D31013274000 | Memories Off 2nd |

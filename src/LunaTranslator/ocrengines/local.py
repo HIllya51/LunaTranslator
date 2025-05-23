@@ -49,7 +49,13 @@ class customwidget(LDialog):
 
 class localmodels:
     def __repr__(self):
-        return str(dict(path=self.path, languages=self.languages, scale=self.scale))
+        return str(
+            dict(
+                path=self.path,
+                languages=self.languages,
+                scale="?" if self.scaleunknown else self.scale,
+            )
+        )
 
     def __eq__(self, value: "localmodels"):
         if not isinstance(value, localmodels):
@@ -75,6 +81,7 @@ class localmodels:
                 js = json.load(ff)
         except:
             js = {}
+        self.scaleunknown = "scale" not in js
         self.scale = js.get("scale", 0)
         __ = js.get("languages", [os.path.basename(d)])
         self.languages = list(Languages.fromcode(_).code for _ in __)
@@ -102,29 +109,39 @@ class localmodels:
         return __
 
     @staticmethod
+    def _findmostaccmodel(ms: "list[localmodels]", accfirst):
+        # 先匹配有精度说明的，没有精度说明的即使设置为速度优先也放到后面。
+        mss = None
+        for m in ms:
+            if m.scaleunknown:
+                continue
+            if accfirst == (m.scale > (mss.scale if mss else -1)):
+                mss = m
+        if mss:
+            return mss
+        return ms[0] if ms else None
+
+    @staticmethod
     def findmodel(ms: "list[localmodels]", lang, accfirst):
         if not ms:
             return None
-        mss = None
         if lang == "auto":
-            if len(ms) == 1:
-                return ms[0]
+            # 先寻找语言支持最多的模型。
+            hasmostlangs: "list[localmodels]" = []
             for m in ms:
-                if not mss:
-                    mss = m
-                elif len(m.languages) > len(mss.languages):
-                    mss = m
-                elif len(m.languages) == len(mss.languages):
-                    if accfirst == (m.scale > mss.scale):
-                        mss = m
+                currhas = hasmostlangs[0].languages if hasmostlangs else -1
+                if len(m.languages) > currhas:
+                    hasmostlangs.clear()
+                    hasmostlangs.append(m)
+                elif len(m.languages) == currhas:
+                    hasmostlangs.append(m)
+            return localmodels._findmostaccmodel(hasmostlangs, accfirst)
         else:
+            langmatcheds: "list[localmodels]" = []
             for m in ms:
                 if lang in m.languages:
-                    if not mss:
-                        mss = m
-                    elif accfirst == (m.scale > mss.scale):
-                        mss = m
-        return mss
+                    langmatcheds.append(m)
+            return localmodels._findmostaccmodel(langmatcheds, accfirst)
 
     @staticmethod
     def collectlangs(ms: "list[localmodels]") -> "list[str]":
@@ -376,7 +393,7 @@ class OCR(baseocr):
                 )
         if self._models == findm:
             return
-        print(findm.path)
+        print(findm)
         try:
             self._ocr = LocalOCR(
                 findm.path + "/det.onnx",

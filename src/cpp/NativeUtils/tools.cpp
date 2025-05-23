@@ -100,3 +100,18 @@ DECLARE_API void Markdown2Html(const char *str, void (*cb)(const char *))
     md_html(str, strlen(str), process_output, &output, MD_DIALECT_GITHUB, 0);
     cb(output.c_str());
 }
+
+// 检查是否有窗口，有则重定向。
+// 这个freopen是vcrt内部的东西，每个vcrt运行时必须独立重定向。
+// 如果静态链接了exe，则exe内的freopen只会修改其内部的stdio，dll的vcrt无法受其影响。
+#ifdef WIN10ABOVE
+auto __ = []()
+{
+    if (GetConsoleWindow())
+    {
+        freopen("CONOUT$", "w", stdout);
+        freopen("CONOUT$", "w", stderr);
+    }
+    return 0;
+}();
+#endif

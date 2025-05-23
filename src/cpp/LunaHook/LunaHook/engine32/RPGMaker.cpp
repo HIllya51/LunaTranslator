@@ -31,7 +31,7 @@ bool RPGMaker::attach_function()
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
     std::string result = buffer->strA();
-    if (all_ascii(result.c_str(), result.size()))
+    if (all_ascii(result))
       return buffer->clear();
     buffer->from(re::sub(result, R"(@c\[\](.*?)@c\[\])", "$1"));
   };

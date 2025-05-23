@@ -76,10 +76,10 @@ namespace
     hp.offset = stackoffset(6);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
-      if (all_ascii((wchar_t *)buffer->buff, buffer->size / 2))
-        return buffer->clear();
       // 高架下に広がる[瀟洒]<しょうしゃ>な店内には、あたしたちのような学生の他に、
       auto str = buffer->strW();
+      if (all_ascii(str))
+        return buffer->clear();
       auto filterpath = {
           L".rpy", L".rpa", L".py", L".pyc", L".txt",
           L".png", L".jpg", L".bmp",

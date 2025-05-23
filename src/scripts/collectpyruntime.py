@@ -88,7 +88,7 @@ for _d, _, _fs in os.walk("./LunaTranslator"):
         print(base, f)
         got = get_dependencies(os.path.join(_d, f))
         all_dependencies = all_dependencies.union(set(got))
-got = get_dependencies('keeprefs.py')
+got = get_dependencies("keeprefs.py")
 all_dependencies = all_dependencies.union(set(got))
 
 for dependency in all_dependencies:
@@ -143,10 +143,13 @@ if target == "win7":
     copycheck(os.path.join(pyqtbindir, f"msvcp140.dll"), runtime)
     copycheck(os.path.join(pyqtbindir, f"msvcp140_1.dll"), runtime)
 elif target == "win10":
+    # 动态链接CVUtils需要concrt140，否则不用
+    # copycheck(r"c:\windows\system32\concrt140.dll", runtime)
     copycheck(r"c:\windows\system32\vcruntime140.dll", runtime)
     copycheck(r"c:\windows\system32\vcruntime140_1.dll", runtime)
     copycheck(r"c:\windows\system32\msvcp140.dll", runtime)
     copycheck(r"c:\windows\system32\msvcp140_1.dll", runtime)
+    copycheck(r"c:\windows\system32\msvcp140_2.dll", runtime)
 for _ in os.listdir(pyqtdir):
     if _.startswith("sip"):
         copycheck(os.path.join(pyqtdir, _), targetpyqtdir)

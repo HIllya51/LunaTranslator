@@ -540,10 +540,10 @@ namespace
     hp.type = USING_STRING;
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      if (all_ascii((char *)buffer->buff, buffer->size))
-        return buffer->clear();
       static std::string str;
       auto cur = buffer->viewA();
+      if (all_ascii(cur))
+        return buffer->clear();
       if (str == cur)
         return buffer->clear();
       str = cur;

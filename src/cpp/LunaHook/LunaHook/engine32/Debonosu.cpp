@@ -178,10 +178,9 @@ namespace
       hp.offset = regoffset(eax);
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        auto text = reinterpret_cast<LPSTR>(buffer->buff);
-        if (all_ascii(text, buffer->size))
-          return buffer->clear();
         std::string str = buffer->strA();
+        if (all_ascii(str))
+          return buffer->clear();
         std::string result1 = re::sub(str, "\\{(.*?)/(.*?)\\}", "$1");
         buffer->from(result1);
         Utf8TypeChecker(buffer, hp);

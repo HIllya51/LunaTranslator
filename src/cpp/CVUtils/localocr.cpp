@@ -74,7 +74,7 @@ static std::optional<version_t> QueryVersion(const std::optional<std::wstring> &
     WORD _1, _2, _3, _4;
     if (!QueryVersion(exe.value().c_str(), &_1, &_2, &_3, &_4))
         return {};
-    std::cout << _1 << "," << _2 << "," << _3 << "," << _4 << "\t" << WideStringToString(exe.value()) << "\n";
+    std::wcout << _1 << L"," << _2 << L"," << _3 << L"," << _4 << L"\t" << exe.value() << std::endl;
     return std::make_tuple(_1, _2, _3, _4);
 }
 static bool isvcrtlessthan1440()
@@ -95,16 +95,17 @@ static bool isvcrtlessthan1440()
 static std::optional<version_t> checkfileversion(const std::optional<std::wstring> &exe)
 {
     // 如果vcrt版本<14.40，那么最多只能加载onnxruntime到v1.20.1版本，v1.21.0开始会不兼容。
-    //  https://github.com/microsoft/onnxruntime/releases/tag/v1.21.0
-    //  All the prebuilt Windows packages now require VC++ Runtime version >= 14.40(instead of 14.38). If your VC++ runtime version is lower than that, you may see a crash when ONNX Runtime was initializing. See https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710 for more details.
-    //  不过实测在更古老py37(14.00)上是没问题的，但在py311(14.38)或pyqt(14.26)上确实会崩溃，保险起见不要加载。
+    // https://github.com/microsoft/onnxruntime/releases/tag/v1.21.0
+    // All the prebuilt Windows packages now require VC++ Runtime version >= 14.40(instead of 14.38). If your VC++ runtime version is lower than that, you may see a crash when ONNX Runtime was initializing. See https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710 for more details.
+    // 不过实测在更古老py37(14.00)上是没问题的，但在py311(14.38)或pyqt(14.26)上确实会崩溃，保险起见不要加载。
     auto vermy = QueryVersion(exe);
     if (!vermy)
         return {};
-    static bool _isvcrtlessthan1440 = isvcrtlessthan1440();
-    if (_isvcrtlessthan1440)
+    if (vermy >= std::make_tuple(1u, 21u, 0u, 0u))
     {
-        vermy = (vermy < std::make_tuple(1u, 21u, 0u, 0u)) ? vermy : std::nullopt;
+        static bool _isvcrtlessthan1440 = isvcrtlessthan1440();
+        if (_isvcrtlessthan1440)
+            return {};
     }
     return vermy;
 }
@@ -119,8 +120,8 @@ static bool __OcrLoadRuntime()
     auto currdir = std::filesystem::path(path).parent_path();
     auto myonnx = (currdir / "onnxruntime.dll").wstring();
     auto vermy = checkfileversion(myonnx);
-#ifndef WIN10ABOVE
-    // 尝试加载系统onnxruntime，版本更高，并可以支持DML
+
+    // 尝试加载系统onnxruntime，版本可能更高，并可以支持DML
     auto sysonnx = SearchDllPath(L"onnxruntime.dll");
     auto ver = checkfileversion(sysonnx);
     if (ver > vermy)
@@ -128,10 +129,10 @@ static bool __OcrLoadRuntime()
         myonnx = sysonnx.value();
         vermy = ver;
     }
-#endif
+
     if (!vermy)
         return false;
-    std::cout << WideStringToString(myonnx) << "\n";
+    std::wcout << myonnx << L"\n";
     if (!LoadLibrary(myonnx.c_str()))
         return false;
     _InitApi();
@@ -151,7 +152,7 @@ DECLARE_API bool OcrIsDMLAvailable()
 
     for (auto &&p : OrtGetAvailableProviders())
     {
-        std::cout << p << "\n";
+        std::cout << p << std::endl;
     }
     return isDMLAvailable();
 }

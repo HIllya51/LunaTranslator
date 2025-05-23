@@ -403,7 +403,7 @@ namespace
           return;
         auto vw = arg->view();
         auto text = vw.data();
-        if (all_ascii(text))
+        if (all_ascii(vw))
           return;
         int size = vw.size(),
             trimmedSize = size;

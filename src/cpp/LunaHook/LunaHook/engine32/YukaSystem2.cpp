@@ -124,10 +124,10 @@ bool InsertYukaSystem2Hook()
     // セミラミスの天秤
     // セミラミスの天秤 Fated Dolls
 
-    if (all_ascii(reinterpret_cast<char *>(buffer->buff), buffer->size))
-      return buffer->clear();
     auto str = buffer->strA();
 
+    if (all_ascii(str))
+      return buffer->clear();
     str = re::sub(str, R"(@r\((.*?),(.*?)\))", "$1");
 
     auto wstr = StringToWideString(str);

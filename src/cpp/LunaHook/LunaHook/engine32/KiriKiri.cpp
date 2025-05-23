@@ -1333,9 +1333,9 @@ namespace
     if (!text || !*text)
       return;
 
-    if (all_ascii(text, wcslen(text)))
-      return;
     std::wstring wstext = text;
+    if (all_ascii(wstext))
+      return;
     //[「]ぱ、ぱんつなんてどうしてそんなに気になるの。ゆきちゃんだってはいてるでしょ[」][plc]     ->对话
     //[x]彼女は言葉通りに、お風呂上がりにパンツを穿き忘れてそのまま一日過ごしかけたりすることがあった。ボクはそれをまじめに心配していたのだ（開き直り）。[plc]    ->旁白
     /*
@@ -1546,7 +1546,7 @@ dl 16
           auto s = buffer->strA();
           if (s.size() > 2000)
             return buffer->clear();
-          if (all_ascii(s.c_str(), s.size()))
+          if (all_ascii(s))
             return buffer->clear();
           auto chatflags = {u8"（", u8"）", u8"。", u8"「", u8"」", u8"『", u8"』", u8"？", u8"！", u8"、", u8"―"};
           bool ok = false;
@@ -1615,7 +1615,7 @@ namespace
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
       auto t = buffer->strW();
-      if (all_ascii(t.c_str(), t.size()))
+      if (all_ascii(t))
         return buffer->clear();
       if (t.find(L".ks") != t.npos || t.find(L".tjs") != t.npos || t.find(L".xp3") != t.npos || t.find(L"/") != t.npos || t.find(L"\\") != t.npos || t[0] == L'@')
         return buffer->clear(); // 脚本路径或文件路径

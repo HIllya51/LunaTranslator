@@ -152,7 +152,7 @@ namespace
       return false;
     };
     bool check2 = hashsuffix();
-    bool check3 = all_ascii(str.data(), str.size());
+    bool check3 = all_ascii(str);
     if (check1 && (check2 || check3))
       return buffer->clear();
   }

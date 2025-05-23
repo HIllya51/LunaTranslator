@@ -69,6 +69,10 @@ namespace re
     return parts;
   }
 }
+bool all_ascii(const std::wstring&);
+bool all_ascii(const std::wstring_view&);
+bool all_ascii(const std::string&);
+bool all_ascii(const std::string_view&);
 bool all_ascii(const char *s, int maxsize = VNR_TEXT_CAPACITY);
 bool all_ascii(const wchar_t *s, int maxsize = VNR_TEXT_CAPACITY);
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr = "");

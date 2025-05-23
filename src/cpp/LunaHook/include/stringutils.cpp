@@ -11,6 +11,16 @@ inline bool all_ascii_impl(const CharT *s, int maxsize)
 }
 
 template <class StringT>
+inline bool all_ascii_impl(const StringT &s)
+{
+  for (auto c : s)
+  {
+    if ((unsigned)c > 127)
+      return false;
+  }
+  return true;
+}
+template <class StringT>
 inline StringT &strReplace_impl(StringT &str, const StringT &oldStr, const StringT &newStr)
 {
   size_t pos = 0;
@@ -64,6 +74,10 @@ inline bool startWith_impl(const StringT &s, const StringT &s2)
 bool all_ascii(const char *s, int maxsize) { return all_ascii_impl<char>(s, maxsize); }
 bool all_ascii(const wchar_t *s, int maxsize) { return all_ascii_impl<wchar_t>(s, maxsize); }
 
+bool all_ascii(const std::wstring &s) { return all_ascii_impl(s); }
+bool all_ascii(const std::wstring_view &s) { return all_ascii_impl(s); }
+bool all_ascii(const std::string &s) { return all_ascii_impl(s); }
+bool all_ascii(const std::string_view &s) { return all_ascii_impl(s); }
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr) { return strReplace_impl<std::string>(str, oldStr, newStr); }
 std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr) { return strReplace_impl<std::wstring>(str, oldStr, newStr); }
 std::u32string &strReplace(std::u32string &str, const std::u32string &oldStr, const std::u32string &newStr) { return strReplace_impl<std::u32string>(str, oldStr, newStr); }

@@ -123,7 +123,7 @@ namespace
     hp.split = regoffset(rsi); // rcx
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      if (all_ascii((wchar_t *)buffer->buff, buffer->size / 2))
+      if (all_ascii(buffer->viewW()))
         return buffer->clear();
     };
     return NewHook(hp, "UnrealEngine");

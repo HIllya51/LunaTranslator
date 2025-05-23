@@ -54,10 +54,10 @@ def prepareqtenv():
     import windows
     from gobject import runtime_for_xp
 
-    # 对于使用的动态链接的x64_win10版本，由于vc++在14.38->14.40之间破坏了兼容性，
-    # 因此，必须在加载QT之前加载NativeUtils，使其抢先加载系统的更高版本的msvcp140，否则会加载Qt自带的14.26版本导致崩溃
-    # 实测编译时链接了高版本msvcp的程序，加载低版本的msvcp会崩溃，但链接了低版本msvcp的程序，可以加载高版本的msvcp
-    # 打包的时候，应该打包高级的msvcp140和vcruntime140而非Qt的低版本
+    # 对于如果使用的动态链接的x64_win10版本，由于vc++在14.38->14.40之间破坏了兼容性，
+    # 虽然打包版已经正确处理了依赖，不过在测试时，如果先加载Qt则会导致加载Qt自带的14.26vcrt导致NativeUtils内部无法正确初始化
+    # 因此如果编译为动态的，测试时必须先加载14.40+vcrt来避免Qt捣乱，这里采用的方法即是预先加载它使其加载系统的vcrt
+    # 虽然这个仅是对测试时的问题，不过没有负面影响，因此没问题。
     import NativeUtils
 
     # pyqt5.15依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
