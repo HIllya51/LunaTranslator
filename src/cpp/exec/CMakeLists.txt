@@ -11,10 +11,7 @@ set(sources PyStand.cpp luna.rc ${versioninfo})
 add_executable(LunaTranslator WIN32 ${sources})
 if(NOT WINXP)
 add_executable(LunaTranslator_admin WIN32 ${sources})
-target_precompile_headers(LunaTranslator_admin REUSE_FROM pch) 
 endif()
-target_precompile_headers(LunaTranslator REUSE_FROM pch)
-#target_precompile_headers(LunaTranslator_debug REUSE_FROM pch) 
 
 set_target_properties(LunaTranslator PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
