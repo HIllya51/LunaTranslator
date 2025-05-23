@@ -26,7 +26,7 @@ jobs:
             target: win10  
             runson: windows-latest
           - arch: x86
-            target: xp
+            target: winxp
             runson: windows-2019
     permissions:
       id-token: write
@@ -42,7 +42,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: hook_${{matrix.arch}}_${{matrix.target}}
-          path: src/cpp/LunaHook/builds/Release${{matrix.target=='xp' &&'_winxp'||''}}
+          path: src/cpp/LunaHook/builds/Release${{matrix.target=='winxp' &&'_winxp'||''}}
   build_cpp:
     runs-on: ${{matrix.runson}}
     strategy:
@@ -61,7 +61,7 @@ jobs:
             target: win10  
             runson: windows-latest
           - arch: x86
-            target: xp
+            target: winxp
             runson: windows-2019
     steps:
       - uses: actions/checkout@v4
@@ -116,15 +116,15 @@ jobs:
         include:
           - arch: x86
             target: win7 
-            savename: LunaTranslator_x86
+            savename: LunaTranslator_x86_win7
           - arch: x64
             target: win7 
-            savename: LunaTranslator_x64
+            savename: LunaTranslator_x64_win7
           - arch: x64
             target: win10 
             savename: LunaTranslator_x64_win10 
           - arch: x86
-            target: xp
+            target: winxp
             savename: LunaTranslator_x86_winxp 
     steps:
       - uses: actions/checkout@v4
@@ -165,8 +165,8 @@ jobs:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
             build/LunaTranslator_x86_winxp/LunaTranslator_x86_winxp.zip
-            build/LunaTranslator_x86/LunaTranslator_x86.zip
-            build/LunaTranslator_x64/LunaTranslator_x64.zip
+            build/LunaTranslator_x86_win7/LunaTranslator_x86_win7.zip
+            build/LunaTranslator_x64_win7/LunaTranslator_x64_win7.zip
             build/LunaTranslator_x64_win10/LunaTranslator_x64_win10.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

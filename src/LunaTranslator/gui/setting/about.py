@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools
 import NativeUtils, queue, hashlib, threading
 from myutils.config import globalconfig, static_data, _TR
-from gobject import runtime_for_xp, runtime_bit_64
+from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
@@ -84,8 +84,10 @@ def trygetupdate():
     bit = ("x86", "x64")[runtime_bit_64]
     if runtime_for_xp:
         bit += "_winxp"
-    if not isqt5:
+    elif runtime_for_win10:
         bit += "_win10"
+    else:
+        bit += "_win7"
     return version, links[bit], links.get("sha256", {}).get(bit, None)
 
 
