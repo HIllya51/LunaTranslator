@@ -131,7 +131,7 @@ static bool __OcrLoadRuntime()
 #endif
     if (!vermy)
         return false;
-    std::cout << WideStringToString(myonnx) << L"\n";
+    std::cout << WideStringToString(myonnx) << "\n";
     if (!LoadLibrary(myonnx.c_str()))
         return false;
     _InitApi();
