@@ -58,7 +58,6 @@ def prepareqtenv():
     # 因此，必须在加载QT之前加载NativeUtils，使其抢先加载系统的更高版本的msvcp140，否则会加载Qt自带的14.26版本导致崩溃
     # 实测编译时链接了高版本msvcp的程序，加载低版本的msvcp会崩溃，但链接了低版本msvcp的程序，可以加载高版本的msvcp
     # 打包的时候，应该打包高级的msvcp140和vcruntime140而非Qt的低版本
-    # 其实这个只在开发时有用，发布时的exe已经加载了msvcp了，但写上这个也没坏处。
     import NativeUtils
 
     if not runtime_for_xp:
