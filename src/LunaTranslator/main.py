@@ -60,6 +60,7 @@ def prepareqtenv():
     # 打包的时候，应该打包高级的msvcp140和vcruntime140而非Qt的低版本
     import NativeUtils
 
+    # pyqt依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
     if not runtime_for_xp:
         windows.LoadLibrary("files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
         windows.LoadLibrary("files/runtime/PyQt6/Qt6/bin/Qt6Core.dll")
