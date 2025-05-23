@@ -114,7 +114,7 @@ def translate_exits(fanyi, which=False):
             return None
         return _
     else:
-        return bool(_)
+        return _ is not None
 
 
 def getlangsrc() -> Languages:

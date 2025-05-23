@@ -174,7 +174,7 @@ class Requester_common:
     def _parseurl(self, url: str, param):
         url = url.lstrip()
         scheme, server, path, query, _ = urlsplit(url)
-        path = quote(path)
+        path = quote(path, safe="./")
         if scheme not in ["https", "http"]:
             raise RequestException(
                 "unknown scheme {} for invalid url {}".format(scheme, url)
