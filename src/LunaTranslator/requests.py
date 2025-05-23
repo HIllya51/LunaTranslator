@@ -1,5 +1,5 @@
 import json, base64, re, string, random, codecs
-from urllib.parse import urlencode, urlsplit, quote, parse_qsl
+from urllib.parse import urlencode, urlsplit, quote, parse_qsl, urlunsplit
 from functools import partial
 from myutils.config import globalconfig
 from network.structures import CaseInsensitiveDict
@@ -173,7 +173,7 @@ class Requester_common:
 
     def _parseurl(self, url: str, param):
         url = url.lstrip()
-        scheme, server, path, query, _ = urlsplit(url)
+        scheme, server, path, query, frag = urlsplit(url)
         path = quote(path, safe=":/")
         if scheme not in ["https", "http"]:
             raise RequestException(
@@ -196,8 +196,10 @@ class Requester_common:
             param = self._encode_params(param)
             query += ("&" if query else "") + param
 
-        if len(query):
+        if query:
             path += "?" + query
+        if frag:
+            path += "#" + frag
         url = scheme + "://" + server + path
         return scheme, server, port, path, url
 
