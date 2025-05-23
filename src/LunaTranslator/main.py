@@ -60,16 +60,13 @@ def prepareqtenv():
     # 打包的时候，应该打包高级的msvcp140和vcruntime140而非Qt的低版本
     import NativeUtils
 
-    # pyqt依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
+    # pyqt5.15依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
     qtdlls=("Qt5Core.dll","Qt5Gui.dll","Qt5Widgets.dll","Qt5Svg.dll")
     if not runtime_for_xp:
         qtdir = "files/runtime/PyQt5/Qt5/bin"
-    else:
-        windows.addenvpath("files/runtime/Lib/site-packages/PyQt5")
-        qtdir = "files/runtime/Lib/site-packages/PyQt5"
-    if os.path.isdir(qtdir):
-        for _ in qtdlls:
-            windows.LoadLibrary(os.path.join(qtdir,_))
+        if os.path.isdir(qtdir):
+            for _ in qtdlls:
+                windows.LoadLibrary(os.path.join(qtdir,_))
 
     from qtsymbols import QApplication, isqt5, Qt, QFont, QLocale
 

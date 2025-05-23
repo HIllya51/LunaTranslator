@@ -139,6 +139,12 @@ bool PyStand::LoadPython()
 	#ifndef WINXP
 		// win7版优先使用系统自带的，系统没有再用自带的
 		SetDllDirectoryW(runtime.c_str());
+	#else
+		// xp版把这些路径都加进去
+		WCHAR env[65535];
+		GetEnvironmentVariableW(L"PATH", env, 65535);
+		auto newenv= std::wstring(env) + L";" + runtime + L";" + runtime +L"Lib/site-packages/PyQt5";
+		SetEnvironmentVariableW(L"PATH", newenv.c_str());
 	#endif
 #endif
 
