@@ -91,7 +91,7 @@ for f in collect:
         for _dll, offset in imports:
             low = _dll.lower()
             if low in (
-                "api-ms-win-core-synch-l1-2-0.dll",
+                # "api-ms-win-core-synch-l1-2-0.dll",
                 "api-ms-win-core-winrt-string-l1-1-0.dll",
                 "api-ms-win-core-winrt-l1-1-0.dll",
                 "api-ms-win-core-path-l1-1-0.dll",
