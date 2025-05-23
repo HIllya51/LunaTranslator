@@ -119,6 +119,14 @@ bool PyStand::LoadPython()
 	SetCurrentDirectoryW(runtime.c_str());
 	// LoadLibrary
 
+	// 将runtime路径加入到DLL搜索路径中
+	// 这样之后，搜索顺序为：exe所在路径->system32等系统路径->runtime
+	// 这样，对于只需将主exe静态编译，其他的动态编译即可
+	WCHAR env[65535];
+    GetEnvironmentVariableW(L"PATH", env, 65535);
+	auto newenv= std::wstring(env) + L";" + runtime;
+    SetEnvironmentVariableW(L"PATH", newenv.c_str());
+
 	std::wstring pydll = runtime + L"\\" + PYDLL;
 	_hDLL = (HINSTANCE)LoadLibraryW(pydll.c_str());
 	if (_hDLL)

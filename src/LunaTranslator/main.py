@@ -61,8 +61,6 @@ def prepareqtenv():
     # 其实这个只在开发时有用，发布时的exe已经加载了msvcp了，但写上这个也没坏处。
     import NativeUtils
 
-    # win7 no vcredist2015
-    windows.addenvpath("files/runtime/")
     if not runtime_for_xp:
         windows.LoadLibrary("files/runtime/PyQt5/Qt5/bin/Qt5Core.dll")
         windows.LoadLibrary("files/runtime/PyQt6/Qt6/bin/Qt6Core.dll")

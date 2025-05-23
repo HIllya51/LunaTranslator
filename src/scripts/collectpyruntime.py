@@ -142,7 +142,11 @@ if target == "win7":
     copycheck(os.path.join(pyqtbindir, f"vcruntime140_1.dll"), runtime)
     copycheck(os.path.join(pyqtbindir, f"msvcp140.dll"), runtime)
     copycheck(os.path.join(pyqtbindir, f"msvcp140_1.dll"), runtime)
-
+elif target == "win10":
+    copycheck(r"c:\windows\system32\vcruntime140.dll", runtime)
+    copycheck(r"c:\windows\system32\vcruntime140_1.dll", runtime)
+    copycheck(r"c:\windows\system32\msvcp140.dll", runtime)
+    copycheck(r"c:\windows\system32\msvcp140_1.dll", runtime)
 for _ in os.listdir(pyqtdir):
     if _.startswith("sip"):
         copycheck(os.path.join(pyqtdir, _), targetpyqtdir)
