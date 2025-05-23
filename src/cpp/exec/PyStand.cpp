@@ -83,7 +83,6 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
-#ifndef WINXP
 	// check python3.dll
 	if (!PathFileExistsW((_runtime + L"\\python3.dll").c_str()))
 	{
@@ -91,14 +90,6 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
-#else
-	if (!PathFileExistsW((_runtime + L"\\python34.dll").c_str()))
-	{
-		std::wstring msg = L"Missing python34.dll in:\r\n" + _runtime;
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
-		return false;
-	}
-#endif
 	// setup environment
 	SetEnvironmentVariableW(L"PYSTAND", _pystand.c_str());
 	SetEnvironmentVariableW(L"PYSTAND_HOME", _home.c_str());
@@ -190,7 +181,7 @@ int PyStand::RunString(const wchar_t *script)
 
 #ifdef WINXP
 	auto Py_SetPath = (void (*)(const wchar_t *))GetProcAddress(_hDLL, "Py_SetPath");
-	Py_SetPath(L"./files/runtime/Lib;./files/runtime/DLLs;./files/runtime/Lib/site-packages");
+	Py_SetPath(L"./files/runtime");
 #endif
 	hr = _Py_Main((int)_py_args.size(), &_py_args[0]);
 	return hr;
