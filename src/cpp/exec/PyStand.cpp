@@ -7,7 +7,7 @@
 #include <ctime>
 #include<filesystem>
 #include<shlwapi.h>
-#include<atlbase>
+#include<atlbase.h>
 
 inline SECURITY_ATTRIBUTES allAccess = std::invoke([] // allows non-admin processes to access kernel objects made by admin processes
                                                    {
