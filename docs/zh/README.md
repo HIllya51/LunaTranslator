@@ -4,10 +4,10 @@
 
 | 版本 | 操作系统 | 32位 | 64位 | 说明 |
 | - | - | - | - | - |
-| 尝鲜版 | Windows 10 & 11 新版本 |  | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10"></a> | 该版本只支持较新的Windows 10版本，以获取更高性能，并支持一些新的特性。<br>如果系统是Windows 10的早期版本，可能也是无法运行的，请改用稳定版。
 | 稳定版 | Windows 7 及以上 | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x86"></a> | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64"></a> |
 | 怀旧版 | Windows XP & Vista | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp"></a> | | 该版本仅用于支持提取仅能在XP虚拟机内运行的很老游戏的文本，功能残缺、不稳定、运行缓慢，一般不要使用。
 
+<!-- | 尝鲜版 | Windows 10 & 11 新版本 |  | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10"></a> | 该版本只支持较新的Windows 10版本，以获取更高性能，并支持一些新的特性。<br>如果系统是Windows 10的早期版本，可能也是无法运行的，请改用稳定版。 -->
 
 ## 启动
 
