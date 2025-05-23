@@ -304,6 +304,9 @@ if __name__ == "__main__":
                 f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
             exit()
+        for _d, _, fs in os.walk('cpp'):
+            for _ in fs:
+                print(_d, _)
         shutil.copytree(
             f"../build/hook_x64_{target}", "files/LunaHook", dirs_exist_ok=True
         )
