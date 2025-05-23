@@ -7,6 +7,7 @@
 #include <ctime>
 #include <filesystem>
 #include <shlwapi.h>
+#include <atlbase.h>
 #include "../common.hpp"
 
 //---------------------------------------------------------------------
