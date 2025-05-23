@@ -128,10 +128,18 @@ bool PyStand::LoadPython()
 	SetCurrentDirectoryW(runtime.c_str());
 	// LoadLibrary
 
-#ifndef WINXP
-	// 将runtime路径设为DLL搜索路径
+#ifdef WIN10ABOVE
+	//win10版将runtime路径设为DLL搜索路径，优先使用自带的高级vcrt
 	// 这样，对于只需将主exe静态编译，其他的动态编译即可
-	SetDllDirectoryW(runtime.c_str());
+	WCHAR env[65535];
+    GetEnvironmentVariableW(L"PATH", env, 65535);
+	auto newenv= std::wstring(env) + L";" + runtime;
+    SetEnvironmentVariableW(L"PATH", newenv.c_str());
+#else
+	#ifndef WINXP
+		// win7版优先使用系统自带的，系统没有再用自带的
+		SetDllDirectoryW(runtime.c_str());
+	#endif
 #endif
 
 	std::wstring pydll = runtime + L"\\" + PYDLL;
