@@ -10,12 +10,6 @@ if target == "xp":
     os.system("python scripts/generate_xp_code.py")
     os.system("git clone --depth 1 https://github.com/HIllya51/py3.4_pyqt5.5.1")
     os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
-    shutil.copytree('runtime/Dlls', 'runtime',dirs_exist_ok=True)
-    shutil.copytree('runtime/Lib', 'runtime',dirs_exist_ok=True)
-    shutil.copytree('runtime/Lib/site-packages', 'runtime',dirs_exist_ok=True)
-    shutil.rmtree('runtime/Dlls')
-    shutil.rmtree('runtime/Lib')
-    shutil.rmtree('runtime/site-packages')
     pyrt = "runtime"
 else:
     pyrt = f"../build/pyrt_{arch}_{target}/runtime"
