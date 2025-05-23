@@ -131,21 +131,19 @@ bool PyStand::LoadPython()
 #ifdef WIN10ABOVE
 	//win10版将runtime路径设为DLL搜索路径，优先使用自带的高级vcrt
 	// 这样，对于只需将主exe静态编译，其他的动态编译即可
-	WCHAR env[65535];
-    GetEnvironmentVariableW(L"PATH", env, 65535);
-	auto newenv= std::wstring(env) + L";" + runtime;
-    SetEnvironmentVariableW(L"PATH", newenv.c_str());
+	SetDllDirectoryW(runtime.c_str());
 #else
+	WCHAR env[65535];
+	GetEnvironmentVariableW(L"PATH", env, 65535);
+	auto newenv = std::wstring(env) + L";" + runtime;
 	#ifndef WINXP
 		// win7版优先使用系统自带的，系统没有再用自带的
-		SetDllDirectoryW(runtime.c_str());
+		;
 	#else
 		// xp版把这些路径都加进去
-		WCHAR env[65535];
-		GetEnvironmentVariableW(L"PATH", env, 65535);
-		auto newenv= std::wstring(env) + L";" + runtime + L";" + runtime +L"Lib/site-packages/PyQt5";
-		SetEnvironmentVariableW(L"PATH", newenv.c_str());
+		newenv += L";" + runtime +L"Lib/site-packages/PyQt5";
 	#endif
+	SetEnvironmentVariableW(L"PATH", newenv.c_str());
 #endif
 
 	std::wstring pydll = runtime + L"\\" + PYDLL;
