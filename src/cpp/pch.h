@@ -76,5 +76,6 @@
 #include <dxgi.h>
 
 #include "common.hpp"
+#include "common2.hpp"
 
 #define DECLARE_API extern "C" __declspec(dllexport)
