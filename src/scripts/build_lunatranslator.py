@@ -301,9 +301,9 @@ if __name__ == "__main__":
             for _d, _, fs in os.walk('cpp/builds'):
                 for _ in fs:
                     print(_d, _)
-            shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files")
+            shutil.copy("cpp/builds/_x86_xp/shareddllproxy32.exe", "files")
             shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files")
-            os.system(f"robocopy cpp/builds/_x86 files/DLL32 *.dll")
+            os.system(f"robocopy cpp/builds/_x86_xp files/DLL32 *.dll")
             os.system(
                 f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
@@ -321,11 +321,11 @@ if __name__ == "__main__":
         shutil.copytree(f"../build/cpp_x86_{target}", "cpp/builds", dirs_exist_ok=True)
 
         os.makedirs("files/DLL32", exist_ok=True)
-        shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files")
-        os.system(f"robocopy cpp/builds/_x86 files/DLL32 *.dll")
+        shutil.copy(f"cpp/builds/_x86{'_10' if target=='win10' else ''}/shareddllproxy32.exe", "files")
+        os.system(f"robocopy cpp/builds/_x86{'_10' if target=='win10' else ''} files/DLL32 *.dll")
         os.makedirs("files/DLL64", exist_ok=True)
-        shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files")
-        os.system(f"robocopy cpp/builds/_x64 files/DLL64 *.dll")
+        shutil.copy(f"cpp/builds/_x64{'_10' if target=='win10' else ''}/shareddllproxy64.exe", "files")
+        os.system(f"robocopy cpp/builds/_x64{'_10' if target=='win10' else ''} files/DLL64 *.dll")
 
         if arch == "x86":
             os.remove(f"files/LunaHook/LunaHost64.dll")
