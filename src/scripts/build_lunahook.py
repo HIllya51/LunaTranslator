@@ -58,12 +58,12 @@ elif sys.argv[1] == "build":
     target = sys.argv[4]
 
     archA = ("win32", "x64")[arch == "x64"]
-    vsver = "Visual Studio 16 2019" if target == "xp" else "Visual Studio 17 2022"
-    Tool = "v141_xp" if target == "xp" else f"host={arch}"
+    vsver = "Visual Studio 16 2019" if target == "winxp" else "Visual Studio 17 2022"
+    Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     config = (
         "-DWIN10ABOVE=ON"
         if target == "win10"
-        else (" -DWINXP=ON " if target == "xp" else "")
+        else (" -DWINXP=ON " if target == "winxp" else "")
     )
     config += " -DBUILD_PLUGIN=OFF "
     if not core:
