@@ -62,7 +62,7 @@ def prepareqtenv():
 
     # pyqt5.15依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
     qtdlls = ("Qt5Core.dll", "Qt5Gui.dll", "Qt5Widgets.dll", "Qt5Svg.dll")
-    if isqt5 and not runtime_for_xp:
+    if not runtime_for_xp:
         qtdir = "files/runtime/PyQt5/Qt5/bin"
         if os.path.isdir(qtdir):
             for _ in qtdlls:
