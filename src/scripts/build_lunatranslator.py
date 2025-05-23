@@ -315,13 +315,13 @@ if __name__ == "__main__":
         )
         shutil.copytree(f"../build/cpp_x64_{target}", "cpp/builds", dirs_exist_ok=True)
         shutil.copytree(f"../build/cpp_x86_{target}", "cpp/builds", dirs_exist_ok=True)
-
+        app='_win10' if target=='win10' else ''
         os.makedirs("files/DLL32", exist_ok=True)
-        shutil.copy(f"cpp/builds/_x86{'_10' if target=='win10' else ''}/shareddllproxy32.exe", "files")
-        os.system(f"robocopy cpp/builds/_x86{'_10' if target=='win10' else ''} files/DLL32 *.dll")
+        shutil.copy(f"cpp/builds/_x86{app}/shareddllproxy32.exe", "files")
+        os.system(f"robocopy cpp/builds/_x86{app} files/DLL32 *.dll")
         os.makedirs("files/DLL64", exist_ok=True)
-        shutil.copy(f"cpp/builds/_x64{'_10' if target=='win10' else ''}/shareddllproxy64.exe", "files")
-        os.system(f"robocopy cpp/builds/_x64{'_10' if target=='win10' else ''} files/DLL64 *.dll")
+        shutil.copy(f"cpp/builds/_x64{app}/shareddllproxy64.exe", "files")
+        os.system(f"robocopy cpp/builds/_x64{app} files/DLL64 *.dll")
 
         if arch == "x86":
             os.remove(f"files/LunaHook/LunaHost64.dll")
