@@ -362,8 +362,6 @@ class OCR(baseocr):
         findm = localmodels.findmodel(
             self.models, self.srclang, self.config["accfirst"]
         )
-        if self._models == findm:
-            return
         if not findm:
             if self.is_src_auto:
                 raise Exception(_TR("无可用模型"))
@@ -376,6 +374,8 @@ class OCR(baseocr):
                         ),
                     )
                 )
+        if self._models == findm:
+            return
         print(findm.path)
         try:
             self._ocr = LocalOCR(
