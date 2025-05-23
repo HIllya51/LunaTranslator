@@ -19,11 +19,11 @@ target_precompile_headers(LunaTranslator REUSE_FROM pch)
 set_target_properties(LunaTranslator PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
-
-set_target_properties(LunaTranslator_debug PROPERTIES
+if(NOT WINXP)
+set_target_properties(LunaTranslator_admin PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
-
+endif()
 if(MSVC)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set_target_properties(LunaTranslator PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")
