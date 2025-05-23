@@ -11,11 +11,21 @@ set(sources PyStand.cpp luna.rc ${versioninfo})
 add_executable(LunaTranslator WIN32 ${sources})
 if(NOT WINXP)
 add_executable(LunaTranslator_admin WIN32 ${sources})
-target_precompile_headers(LunaTranslator_admin REUSE_FROM pch) 
 endif()
-target_precompile_headers(LunaTranslator REUSE_FROM pch)
-#target_precompile_headers(LunaTranslator_debug REUSE_FROM pch) 
-
+if(WIN10ABOVE)
+target_compile_definitions(LunaTranslator INTERFACE -DWIN10ABOVE=1)
+endif()
+set_target_properties(LunaTranslator PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
+if(NOT WINXP)
+set_target_properties(LunaTranslator_admin PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
+if(WIN10ABOVE)
+target_compile_definitions(LunaTranslator_admin INTERFACE -DWIN10ABOVE=1)
+endif()
+endif()
 if(MSVC)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set_target_properties(LunaTranslator PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")

@@ -5,7 +5,16 @@
 #include <sstream>
 #include <chrono>
 #include <ctime>
+#include<filesystem>
+#include<shlwapi.h>
+#include<atlbase.h>
 
+inline SECURITY_ATTRIBUTES allAccess = std::invoke([] // allows non-admin processes to access kernel objects made by admin processes
+                                                   {
+	static SECURITY_DESCRIPTOR sd = {};
+	InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
+	SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
+	return SECURITY_ATTRIBUTES{ sizeof(SECURITY_ATTRIBUTES), &sd, FALSE }; });
 //---------------------------------------------------------------------
 // dtor
 //---------------------------------------------------------------------
@@ -118,6 +127,24 @@ bool PyStand::LoadPython()
 	// python dll must be load under "runtime"
 	SetCurrentDirectoryW(runtime.c_str());
 	// LoadLibrary
+
+#ifdef WIN10ABOVE
+	//win10版将runtime路径设为DLL搜索路径，优先使用自带的高级vcrt
+	// 这样，对于只需将主exe静态编译，其他的动态编译即可
+	SetDllDirectoryW(runtime.c_str());
+#else
+	WCHAR env[65535];
+	GetEnvironmentVariableW(L"PATH", env, 65535);
+	auto newenv = std::wstring(env) + L";" + runtime;
+	#ifndef WINXP
+		// win7版优先使用系统自带的，系统没有再用自带的
+		;
+	#else
+		// xp版把这些路径都加进去
+		newenv += L";" + runtime +L"Lib/site-packages/PyQt5";
+	#endif
+	SetEnvironmentVariableW(L"PATH", newenv.c_str());
+#endif
 
 	std::wstring pydll = runtime + L"\\" + PYDLL;
 	_hDLL = (HINSTANCE)LoadLibraryW(pydll.c_str());

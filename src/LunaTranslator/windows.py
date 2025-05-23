@@ -701,19 +701,6 @@ SetProp.argtypes = HWND, LPCWSTR, HANDLE
 SetProp.restype = BOOL
 
 
-_GetEnvironmentVariableW = _kernel32.GetEnvironmentVariableW
-_GetEnvironmentVariableW.argtypes = c_wchar_p, c_wchar_p, DWORD
-_SetEnvironmentVariableW = _kernel32.SetEnvironmentVariableW
-_SetEnvironmentVariableW.argtypes = LPCWSTR, LPCWSTR
-
-
-def addenvpath(path):
-    path = os.path.abspath(path)
-    env = create_unicode_buffer(65535)
-    _GetEnvironmentVariableW("PATH", env, 65535)
-    _SetEnvironmentVariableW("PATH", env.value + ";" + path)
-
-
 GetModuleHandle = _kernel32.GetModuleHandleW
 GetModuleHandle.argtypes = (LPCWSTR,)
 GetModuleHandle.restype = HMODULE

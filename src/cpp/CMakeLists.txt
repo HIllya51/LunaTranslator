@@ -7,7 +7,7 @@ option(WIN10ABOVE "WIN10ABOVE" OFF)
 if(NOT WIN10ABOVE)
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 else()
-    set(WIN10ABOVEAPP "_10")
+    set(WIN10ABOVEAPP "_win10")
 endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 

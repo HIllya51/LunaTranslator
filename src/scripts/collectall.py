@@ -10,11 +10,12 @@ if target == "xp":
     os.system("python scripts/generate_xp_code.py")
     os.system("git clone --depth 1 https://github.com/HIllya51/py3.4_pyqt5.5.1")
     os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
-
     pyrt = "runtime"
 else:
     pyrt = f"../build/pyrt_{arch}_{target}/runtime"
 launch = f"../src/cpp/builds/_{arch}"
+if target!='win7':
+     launch+=  f"_{target}"
 targetdir = rf"build\LunaTranslator_{arch}"
 if target == "win10":
     targetdir += "_win10"
@@ -25,6 +26,7 @@ if arch == "x86":
 else:
     baddll = "DLL32"
 
+os.makedirs(targetdir, exist_ok=True)
 
 def copycheck(src, tgt):
     print(src, tgt, os.path.exists(src))
@@ -43,11 +45,6 @@ def copycheck(src, tgt):
     shutil.copy(src, tgt)
 
 
-if target == "win10":
-    copycheck(r"c:\windows\system32\vcruntime140.dll", targetdir)
-    copycheck(r"c:\windows\system32\vcruntime140_1.dll", targetdir)
-    copycheck(r"c:\windows\system32\msvcp140.dll", targetdir)
-    copycheck(r"c:\windows\system32\msvcp140_1.dll", targetdir)
 copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
 copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
 with open(os.path.join(targetdir, "LunaTranslator_debug.bat"), "w") as ff:
@@ -88,7 +85,7 @@ for f in collect:
         for _dll, offset in imports:
             low = _dll.lower()
             if low in (
-                "api-ms-win-core-synch-l1-2-0.dll",
+                # "api-ms-win-core-synch-l1-2-0.dll",
                 "api-ms-win-core-winrt-string-l1-1-0.dll",
                 "api-ms-win-core-winrt-l1-1-0.dll",
                 "api-ms-win-core-path-l1-1-0.dll",

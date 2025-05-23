@@ -174,6 +174,9 @@ def downloadOCRModel():
         os.mkdir("ocrmodel/")
     link = "https://lunatranslator.org/r2/luna/ocr_models_v5/jazhchten.zip"
     os.chdir("ocrmodel")
+    __=hashlib.md5(link.encode()).hexdigest()
+    os.makedirs(__, exist_ok=True)
+    os.chdir(__)
     subprocess.run(f"curl -C - -LO {link}")
     subprocess.run(f"7z x -y jazhchten.zip")
     os.remove(f"jazhchten.zip")
@@ -297,9 +300,9 @@ if __name__ == "__main__":
             )
             os.remove("files/LunaHook/LunaHost64.dll")
             os.makedirs("files/DLL32", exist_ok=True)
-            shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files")
+            shutil.copy("cpp/builds/_x86_xp/shareddllproxy32.exe", "files")
             shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files")
-            os.system(f"robocopy cpp/builds/_x86 files/DLL32 *.dll")
+            os.system(f"robocopy cpp/builds/_x86_xp files/DLL32 *.dll")
             os.system(
                 f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
@@ -312,13 +315,13 @@ if __name__ == "__main__":
         )
         shutil.copytree(f"../build/cpp_x64_{target}", "cpp/builds", dirs_exist_ok=True)
         shutil.copytree(f"../build/cpp_x86_{target}", "cpp/builds", dirs_exist_ok=True)
-
+        app='_win10' if target=='win10' else ''
         os.makedirs("files/DLL32", exist_ok=True)
-        shutil.copy("cpp/builds/_x86/shareddllproxy32.exe", "files")
-        os.system(f"robocopy cpp/builds/_x86 files/DLL32 *.dll")
+        shutil.copy(f"cpp/builds/_x86{app}/shareddllproxy32.exe", "files")
+        os.system(f"robocopy cpp/builds/_x86{app} files/DLL32 *.dll")
         os.makedirs("files/DLL64", exist_ok=True)
-        shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files")
-        os.system(f"robocopy cpp/builds/_x64 files/DLL64 *.dll")
+        shutil.copy(f"cpp/builds/_x64{app}/shareddllproxy64.exe", "files")
+        os.system(f"robocopy cpp/builds/_x64{app} files/DLL64 *.dll")
 
         if arch == "x86":
             os.remove(f"files/LunaHook/LunaHost64.dll")
