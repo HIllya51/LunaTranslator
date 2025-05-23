@@ -1283,7 +1283,7 @@ class WordViewer(QWidget):
                 return super().resizeEvent(a0)
 
             def _createwebview(_, *argc, **kw):
-                web = super()._createwebview(*argc, **kw, transp=transp)
+                web = super()._createwebview(transp=transp, *argc, **kw)
                 if isinstance(web, WebviewWidget):
                     web.html_limit = 1
                 return web
