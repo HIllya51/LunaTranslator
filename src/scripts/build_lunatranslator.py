@@ -174,6 +174,9 @@ def downloadOCRModel():
         os.mkdir("ocrmodel/")
     link = "https://lunatranslator.org/r2/luna/ocr_models_v5/jazhchten.zip"
     os.chdir("ocrmodel")
+    __=hashlib.md5(link.encode()).hexdigest()
+    os.makedirs(__, exist_ok=True)
+    os.chdir(__)
     subprocess.run(f"curl -C - -LO {link}")
     subprocess.run(f"7z x -y jazhchten.zip")
     os.remove(f"jazhchten.zip")
