@@ -25,6 +25,7 @@ if arch == "x86":
 else:
     baddll = "DLL32"
 
+os.makedirs(targetdir, exist_ok=True)
 
 def copycheck(src, tgt):
     print(src, tgt, os.path.exists(src))

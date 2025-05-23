@@ -297,10 +297,6 @@ if __name__ == "__main__":
             )
             os.remove("files/LunaHook/LunaHost64.dll")
             os.makedirs("files/DLL32", exist_ok=True)
-                
-            for _d, _, fs in os.walk('cpp/builds'):
-                for _ in fs:
-                    print(_d, _)
             shutil.copy("cpp/builds/_x86_xp/shareddllproxy32.exe", "files")
             shutil.copy("cpp/builds/_x64/shareddllproxy64.exe", "files")
             os.system(f"robocopy cpp/builds/_x86_xp files/DLL32 *.dll")
@@ -308,9 +304,6 @@ if __name__ == "__main__":
                 f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
             exit()
-        for _d, _, fs in os.walk('cpp/builds'):
-            for _ in fs:
-                print(_d, _)
         shutil.copytree(
             f"../build/hook_x64_{target}", "files/LunaHook", dirs_exist_ok=True
         )
