@@ -14,7 +14,9 @@ if target == "xp":
     pyrt = "runtime"
 else:
     pyrt = f"../build/pyrt_{arch}_{target}/runtime"
-launch = f"../src/cpp/builds/_{arch}_{target}"
+launch = f"../src/cpp/builds/_{arch}"
+if target!='win7':
+     launch+=  f"_{target}"
 targetdir = rf"build\LunaTranslator_{arch}"
 if target == "win10":
     targetdir += "_win10"
