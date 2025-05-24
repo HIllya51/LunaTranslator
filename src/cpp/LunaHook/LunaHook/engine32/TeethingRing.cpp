@@ -101,7 +101,7 @@ bool TeethingRing_attach_function2()
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
     auto str = buffer->strA();
-    if ((str))
+    if (all_ascii(str))
       return buffer->clear();
     strReplace(str, "#F");
     // 俺はこのアクシデントが、何か幸#<さい>先#<さき>のいいもののように思えて、鞄を抱え直してギルドへの階段を昇り始めた。
