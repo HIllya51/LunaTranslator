@@ -463,18 +463,8 @@ class TranslatorWindow(resizableframeless):
         color = SpecialColor.RawTextColor
         clear = True
         hira = []
-        isshowhira = isshow_fenci = isfenciclick = False
-
         text = self.cleartext(text)
-        isshowhira = globalconfig["isshowhira"]
-        isshow_fenci = globalconfig["show_fenci"]
-        isfenciclick = (
-            globalconfig["usesearchword"]
-            or globalconfig["usecopyword"]
-            or globalconfig["useopenlink"]
-            or globalconfig["usesearchword_S"]
-        )
-        needhira = isshow_fenci or isshowhira or isfenciclick
+        needhira = self.translate_text.textbrowser._clickable
         if needhira:
             hira = gobject.baseobject.parsehira(text)
 

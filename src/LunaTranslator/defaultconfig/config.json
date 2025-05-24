@@ -1484,6 +1484,7 @@
     ],
     "usesearchword": true,
     "usesearchword_S": false,
+    "usesearchword_S_hover": false,
     "usecopyword": false,
     "wordclickkbtriggerneed": {},
     "wordclickkbtrigger": {},

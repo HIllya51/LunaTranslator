@@ -190,14 +190,14 @@ class tooltipswidget(QMainWindow, dataget):
     @staticmethod
     def tracetooltipwindow(word: WordSegResult, pos):
         skip = False
-        if globalconfig["usesearchword_S"]:
+        if globalconfig["usesearchword_S_hover"]:
             result = gobject.baseobject.checkkeypresssatisfy(
                 "searchword_S_hover", False
             )
             result = result == -1 or result == True
             skip = result
             gobject.baseobject.settin_ui.hover_search_word.emit(
-                word.word, gobject.baseobject.currenttext, False, True, result
+                word.prototype, gobject.baseobject.currenttext, False, True, result
             )
         if skip:
             return

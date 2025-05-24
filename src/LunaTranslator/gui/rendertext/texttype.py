@@ -131,7 +131,7 @@ class dataget:
             self._clickable
             or globalconfig["word_hover_show_word_info"]
             or globalconfig["show_fenci"]
-            or globalconfig["usesearchword_S"]
+            or globalconfig["usesearchword_S_hover"]
         )
 
     def _getfontinfo(self, texttype: TextType):

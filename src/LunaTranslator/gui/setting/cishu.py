@@ -431,7 +431,7 @@ def setTabcishu_l(self):
                                     "查词_在小窗口中",
                                     D_getsimpleswitch(
                                         globalconfig,
-                                        "usesearchword_S",
+                                        "usesearchword_S_hover",
                                         callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
                                     ),
                                     D_getIconButton(
