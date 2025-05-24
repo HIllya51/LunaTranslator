@@ -2,7 +2,7 @@ import sys, os
 
 os.chdir(os.path.dirname(__file__))
 sys.path.insert(0, "./LunaTranslator")
-from translator.google import TS
+from translator.microsoft import TS
 from language import Languages
 
 

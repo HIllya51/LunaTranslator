@@ -387,6 +387,9 @@ def setTabcishu_l(self):
                             callback=lambda: multicolorset(self),
                             tips="语法加亮_颜色设置",
                         ),
+                        "",
+                        "使用原型查词",
+                        D_getsimpleswitch(globalconfig, "usewordorigin"),
                     ],
                     [
                         dict(

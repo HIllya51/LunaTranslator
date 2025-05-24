@@ -801,5 +801,6 @@
     "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "ソフトウェアを維持するのは簡単ではありません。ソフトウェアがあなたに役立つと感じたら、私の[スポンサー](https://patreon.com/hillya51)になってください。 ありがとう〜",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[lunatranslator](https://github.com/hillya51/lunatranslator)は、[gplv3](https://github.com/hillya51/lunatranslator/blob/main/license)ライセンスを使用します。",
     "翻译接口": "翻訳インターフェイス",
-    "不使用的辞书": "使用されていない辞書"
+    "不使用的辞书": "使用されていない辞書",
+    "使用原型查词": "アーキタイプを使用して単語を検索する"
 }

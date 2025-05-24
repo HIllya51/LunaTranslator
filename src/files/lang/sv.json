@@ -801,5 +801,6 @@
     "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "Programvaran är inte lätt att underhålla. Om du känner att programvaran är till hjälp för dig, var min [sponsor](https://patreon.com/hillya51). Tack ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) använder [GPLV3](https://github.com/hillya51/lunatranslator/blob/main/license) licens.",
     "翻译接口": "Översättningsgränssnitt",
-    "不使用的辞书": "Icke-använt ordbok"
+    "不使用的辞书": "Icke-använt ordbok",
+    "使用原型查词": "Använd arketyper för att slå upp ord"
 }

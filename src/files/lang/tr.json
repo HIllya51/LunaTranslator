@@ -801,5 +801,6 @@
     "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "Yazılımın bakımı kolay değildir. Yazılımın size yardımcı olduğunu düşünüyorsanız, lütfen benim [sponsor](https://patreon.com/hillya51). Teşekkürler ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) [gplv3](https://github.com/hillya51/lunatranslator/blob/main/license) lisansını kullanır.",
     "翻译接口": "Çeviri arayüzü",
-    "不使用的辞书": "Kullanılmamış sözlük"
+    "不使用的辞书": "Kullanılmamış sözlük",
+    "使用原型查词": "Kelimeleri aramak için arketipleri kullanın"
 }

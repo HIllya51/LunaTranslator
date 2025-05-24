@@ -801,5 +801,6 @@
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[LunaTranslator](https://github.com/hillya51/LunaTranslator) uses the [GPLv3](https://github.com/hillya51/LunaTranslator/blob/main/LICENSE) license.",
     "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "The software is not easy to maintain. If you feel that the software is helpful to you, please scan the QR code on WeChat to sponsor it. Thank you ~",
     "翻译接口": "Translation interface",
-    "不使用的辞书": "Non-used dictionary"
+    "不使用的辞书": "Non-used dictionary",
+    "使用原型查词": "Use archetypes to look up words"
 }
