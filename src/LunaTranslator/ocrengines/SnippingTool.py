@@ -276,7 +276,7 @@ class OCR(baseocr):
                 _unk=0,
                 step=qimage.bytesPerLine(),
             )
-            memmove(self.mem, int(qimage.bits()), qimage.byteCount())
+            memmove(self.mem, int(qimage.bits()), qimage.sizeInBytes())
             windows.WriteFile(self.hPipe, bytes(img_struct))
             cnt = c_longlong.from_buffer_copy(windows.ReadFile(self.hPipe, 8)).value
 
