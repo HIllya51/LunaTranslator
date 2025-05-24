@@ -1068,7 +1068,7 @@ class MAINUI:
             word = wordd
         elif isinstance(wordd, dict):
             word = WordSegResult.from_dict(wordd)
-        word = (word.prototype, word.word)[append]
+        word = (word.word, word.prototype)[globalconfig.get("usewordorigin", False)]
 
         def __openlink(word1):
             for link in globalconfig["useopenlinklink1"]:

@@ -294,7 +294,6 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             None,
         )
         self.lastword = None
-        self.lastisappend = False
         self.setMouseTracking(True)
 
         self.setMinimumHeight(300)
@@ -405,9 +404,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         if globalconfig["is_search_word_auto_tts_2"]:
             gobject.baseobject.read_text(word)
         if append:
-            if self.lastisappend == append:
-                word = self.view.currWord + word
-        self.lastisappend = append
+            word = self.view.currWord + word
         unuse = globalconfig[("ignoredict_S_click", "ignoredict_S_hover")[fromhover]]
         self.view.searchword(word, sentence, unuse=unuse)
 

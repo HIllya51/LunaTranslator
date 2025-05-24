@@ -1488,6 +1488,7 @@
     "usecopyword": false,
     "wordclickkbtriggerneed": {},
     "wordclickkbtrigger": {},
+    "usewordorigin": false,
     "ttscommon": {
         "rate": 0,
         "pitch": 0,
