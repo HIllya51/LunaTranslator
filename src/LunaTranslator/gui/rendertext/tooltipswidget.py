@@ -194,7 +194,7 @@ class tooltipswidget(QMainWindow, dataget):
     def tracetooltipwindow(word: WordSegResult, pos):
         skip = False
         if globalconfig["usesearchword_S"]:
-            result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", True)
+            result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", False)
             result = result == -1 or result == True
             skip = result
             if tooltipswidget.lastword != word.word:

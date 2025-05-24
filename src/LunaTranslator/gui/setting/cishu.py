@@ -453,7 +453,7 @@ def setTabcishu_l(self):
                                     D_getsimpleswitch(
                                         globalconfig["wordclickkbtriggerneed"],
                                         "searchword_S_hover",
-                                        default=True,
+                                        default=False,
                                     ),
                                     D_getIconButton(
                                         icon="fa.keyboard-o",

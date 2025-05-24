@@ -379,7 +379,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         if not globalconfig["usesearchword_S"]:
             self.__f.stop()
             return
-        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", True)
+        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", False)
         result = result == -1 or result == True
         if result:
             self.__f.stop()
@@ -400,7 +400,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             if self.lastisappend == append:
                 word = self.view.currWord + word
         self.lastisappend = append
-        unuse=globalconfig[("ignoredict_S_click","ignoredict_S_hover")[fromhover]]
+        unuse = globalconfig[("ignoredict_S_click", "ignoredict_S_hover")[fromhover]]
         self.view.searchword(word, sentence, unuse=unuse)
 
     def showresult(self):
@@ -418,7 +418,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
     def moveresult_1(self):
         if not self.isVisible():
             return
-        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", True)
-        result = result == -1 or result == True
-        if result:
+        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", False)
+        # 仅按着键盘时，才追踪，否则不要动。
+        if result == True:
             self.move(limitpos(QCursor.pos(), self, QPoint(1, 10)))

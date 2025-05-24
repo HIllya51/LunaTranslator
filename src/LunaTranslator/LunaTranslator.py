@@ -1051,7 +1051,6 @@ class MAINUI:
             return -1
         keystring = globalconfig["wordclickkbtrigger"].get(key)
         if not keystring:
-            print(keystring,key,globalconfig["wordclickkbtrigger"])
             return -1
         try:
             modes, vkcode = parsekeystringtomodvkcode(

@@ -419,7 +419,7 @@
     "fonttype": "",
     "fonttype2": "",
     "hira_vis_type": 0,
-    "word_hover_show_word_info": false,
+    "word_hover_show_word_info": true,
     "word_hover_action_usewb2": false,
     "min_auto_height": 0,
     "iskongxin": true,
@@ -1482,7 +1482,7 @@
         "https://jpdb.io/search?q={word}",
         "https://www.weblio.jp/content/{word}"
     ],
-    "usesearchword": false,
+    "usesearchword": true,
     "usesearchword_S": false,
     "usecopyword": false,
     "wordclickkbtriggerneed": {},
