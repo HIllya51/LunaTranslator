@@ -15,7 +15,7 @@ from gui.usefulwidget import (
     getIconButton,
     D_getsimpleswitch,
     getcenterX,
-    getboxwidget,
+    getboxlayout,
     makescrollgrid,
     makesubtab_lazy,
 )
@@ -184,14 +184,15 @@ def setTab7_lazy(self, basel: QLayout):
             config,
             "",
             getcenterX(
-                getboxwidget(
+                getboxlayout(
                     [
                         "",
                         button_up,
                         button_down,
                         "",
                     ]
-                )
+                ),
+                widget=True,
             ),
         ]
         grids.append(l)

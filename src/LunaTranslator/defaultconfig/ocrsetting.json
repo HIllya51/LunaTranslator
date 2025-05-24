@@ -248,7 +248,7 @@
                 "type": "spin",
                 "min": 0,
                 "max": 2,
-                "step": 0.05
+                "step": 0.01
             },
             "max_tokens": {
                 "type": "intspin",
@@ -269,7 +269,7 @@
                 "type": "spin",
                 "min": 0,
                 "max": 1,
-                "step": 0.1
+                "step": 0.01
             }
         }
     },

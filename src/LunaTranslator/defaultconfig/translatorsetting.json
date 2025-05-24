@@ -486,7 +486,7 @@
 				"refswitch": "frequency_penalty_use",
 				"min": -2,
 				"max": 2,
-				"step": 0.05
+				"step": 0.01
 			},
 			"reasoning_effort": {
 				"type": "combo",
@@ -529,7 +529,7 @@
 				"type": "spin",
 				"min": 0,
 				"max": 2,
-				"step": 0.1
+				"step": 0.01
 			}
 		}
 	},
@@ -722,7 +722,7 @@
 				"type": "spin",
 				"min": 0,
 				"max": 2,
-				"step": 0.1
+				"step": 0.01
 			},
 			"top_p": {
 				"type": "spin",
@@ -758,7 +758,7 @@
 				"type": "spin",
 				"min": -2,
 				"max": 2,
-				"step": 0.05
+				"step": 0.01
 			}
 		}
 	}

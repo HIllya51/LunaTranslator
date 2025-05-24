@@ -1179,7 +1179,7 @@ def getsmalllabel(text=""):
     return lambda: __getsmalllabel(text)
 
 
-def __getcenterX(w):
+def __getcenterX(w, widget=False):
     if isinstance(w, str):
         w = LLabel(w)
         w.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1197,11 +1197,15 @@ def __getcenterX(w):
             _ = QHBoxLayout()
             _.addWidget(__)
     _.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    if widget:
+        __ = QWidget()
+        __.setLayout(_)
+        _ = __
     return _
 
 
-def getcenterX(w):
-    return lambda: __getcenterX(w)
+def getcenterX(w, widget=False):
+    return lambda: __getcenterX(w, widget=widget)
 
 
 def D_getsimpleswitch(
