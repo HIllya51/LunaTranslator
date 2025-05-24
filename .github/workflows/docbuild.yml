@@ -27,7 +27,7 @@ jobs:
           cd docs
       - uses: actions/setup-node@master
         with:
-          node-version: 20
+          node-version: 22
       - uses: actions/configure-pages@v4
       - run: |
           cd docs
