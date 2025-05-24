@@ -215,19 +215,19 @@ class rangeadjust(Mainw):
             % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"], 1 / 255)
         )
 
-    def mouseMoveEvent(self, e):
+    def mouseMoveEvent(self, e: QMouseEvent):
         if self._isTracking:
             self._endPos = e.pos() - self._startPos
             _geo = self.geometry()
             _geo.translate(self._endPos)
             self.setGeometry(*_geo.getRect())
 
-    def mousePressEvent(self, e):
+    def mousePressEvent(self, e: QMouseEvent):
         if e.button() == Qt.MouseButton.LeftButton:
             self._isTracking = True
-            self._startPos = QPoint(e.x(), e.y())
+            self._startPos = QPoint(e.pos().x(), e.pos().y())
 
-    def mouseReleaseEvent(self, e):
+    def mouseReleaseEvent(self, e: QMouseEvent):
         if e.button() == Qt.MouseButton.LeftButton:
             self._isTracking = False
             self._startPos = None
