@@ -34,7 +34,7 @@ class HtmlPlainTextEdit(QTextEdit):
         custom_action.triggered.connect(self.handle_custom_action)
         menu.addAction(custom_action)
 
-        menu.exec_(event.globalPos())
+        menu.exec(event.globalPos())
 
     def handle_custom_action(self):
         self.insertPlainText(NativeUtils.ClipBoard.text)

@@ -1236,7 +1236,7 @@ def getColor(color, parent, alpha=False):
         if not alpha:
             layout.takeAt(layout.count() - 1).widget().hide()
             layout.takeAt(layout.count() - 1).widget().hide()
-    if color_dialog.exec_() != QColorDialog.DialogCode.Accepted:
+    if color_dialog.exec() != QColorDialog.DialogCode.Accepted:
         return QColor()
     return color_dialog.selectedColor()
 

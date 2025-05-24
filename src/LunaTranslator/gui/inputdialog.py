@@ -783,7 +783,7 @@ class autoinitdialog(LDialog):
                 cachecombo[comboname].currentIndex()
             )
         if exec_:
-            self.exec_()
+            self.exec()
         else:
             self.show()
 
