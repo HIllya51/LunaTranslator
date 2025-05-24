@@ -182,11 +182,8 @@ class tooltipswidget(QMainWindow, dataget):
         self.move(pos)
         self.show()
 
-    lastword = None
-
     @staticmethod
     def hidetooltipwindow():
-        tooltipswidget.lastword = None
         if tooltipswidget.tooltipwindow:
             tooltipswidget.tooltipwindow.hide()
 
@@ -194,16 +191,14 @@ class tooltipswidget(QMainWindow, dataget):
     def tracetooltipwindow(word: WordSegResult, pos):
         skip = False
         if globalconfig["usesearchword_S"]:
-            result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", False)
+            result = gobject.baseobject.checkkeypresssatisfy(
+                "searchword_S_hover", False
+            )
             result = result == -1 or result == True
             skip = result
-            if tooltipswidget.lastword != word.word:
-                tooltipswidget.lastword = word.word
-                gobject.baseobject.settin_ui.hover_search_word.emit(
-                    word.word, gobject.baseobject.currenttext, False, True, result
-                )
-            else:
-                gobject.baseobject.settin_ui.hover_search_word_checkpos.emit()
+            gobject.baseobject.settin_ui.hover_search_word.emit(
+                word.word, gobject.baseobject.currenttext, False, True, result
+            )
         if skip:
             return
         if gobject.baseobject.settin_ui._WordViewer.isVisible():

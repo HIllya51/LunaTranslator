@@ -1148,7 +1148,7 @@ class WordViewer(QWidget):
         self.__curr_word = word
         self.save_sentence = sentence
         current = uuid.uuid4()
-        self.reset(current)
+        self.reset(current, unuse=unuse)
         searchkeys = list(gobject.baseobject.cishus.keys())
         if readydata:
             readydata, cache_results_highlighted, savemdictfoldstate = readydata
@@ -1225,19 +1225,23 @@ class WordViewer(QWidget):
             res.insert(idx, {"dict": k, "content": v})
         return res
 
-    def reset(self, current):
+    def reset(self, current, unuse=None):
         self.current = current
         pxx = 999
+        use = 0
         for k in globalconfig["cishuvisrank"]:
             self.thisps[k] = pxx
             pxx -= 1
+            if unuse and k in unuse:
+                continue
+            use += 1
 
         self.hasclicked = False
         for _ in range(self.tab.count()):
             self.tab.removeTab(0)
         self.tabks.clear()
-        if self.tabonehide and len(globalconfig["cishuvisrank"]) <= 1:
-            self.tab.hide()
+        if self.tabonehide:
+            self.tab.setVisible(use > 1)
         self.textOutput.clear()
         # 状态
         self.cache_results.clear()

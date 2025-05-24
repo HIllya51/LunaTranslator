@@ -120,7 +120,6 @@ class Setting(closeashidewindow):
         registrhotkeys(self)
         self._WordViewer = WordViewTooltip(self)
         self.hover_search_word.connect(self._WordViewer.searchword)
-        self.hover_search_word_checkpos.connect(self._WordViewer.moveresult_1)
 
     def showEvent(self, e: QShowEvent):
         if self.isfirst:

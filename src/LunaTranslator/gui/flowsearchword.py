@@ -293,6 +293,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint,
             None,
         )
+        self.lastword = None
         self.lastisappend = False
         self.setMouseTracking(True)
 
@@ -385,12 +386,19 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             self.__f.stop()
             self.searchword(*self.__savestatus)
 
+    def closeEvent(self, event):
+        self.lastword = None
+        return super().closeEvent(event)
+
     def searchword(
-        self, word: str, sentence=None, append=False, fromhover=False, show=False
+        self, word: str, sentence=None, append=False, fromhover=False, show=False, force=False
     ):
-        if fromhover:
+        if fromhover and not force:
+            if word == self.lastword:
+                return self.moveresult_1()
+            self.lastword = word
             if not show:
-                self.__savestatus = word, sentence, append
+                self.__savestatus = word, sentence, append, fromhover, True, True
                 self.__f.start()
                 return
         self.savepos = QCursor.pos()
