@@ -93,8 +93,7 @@ export const vi = defineConfig({
                       text: 'Cài đặt giao diện dịch thuật', link: '/vi/useapis/tsapi',
                       collapsed: true,
                       items: [
-                          { text: 'Dịch mô hình lớn trực tuyến', link: '/vi/guochandamoxing' },
-                          { text: 'Dịch mô hình lớn ngoại tuyến', link: '/vi/offlinellm' },
+                          { text: 'Giao diện dịch mô hình lớn', link: '/vi/guochandamoxing' },
                           { text: 'Giao diện dịch thuật trực tuyến truyền thống', link: '/vi/useapis/tsapi' },
                       ]
                   },

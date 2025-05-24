@@ -111,8 +111,7 @@ export const zh = defineConfig({
                         text: '翻译接口设置', link: '/zh/useapis/tsapi',
                         collapsed: true,
                         items: [
-                            { text: '大模型在线翻译', link: '/zh/guochandamoxing' },
-                            { text: '大模型离线翻译', link: '/zh/offlinellm' },
+                            { text: '大模型翻译接口', link: '/zh/guochandamoxing' },
                             { text: '传统在线翻译接口', link: '/zh/useapis/tsapi' },
                         ]
                     },

@@ -236,9 +236,19 @@ def versionlabelmaybesettext(self, x):
 
 
 def delayloadlinks(key):
-    sources = static_data["aboutsource"][key]
+    sources: "list[dict]" = static_data["aboutsource"][key]
     grid = []
     for source in sources:
+        link = source.get("link")
+        if link:
+            grid.append(
+                [
+                    source.get("name", ""),
+                    (makehtml(link, source.get("vis", None)), 2),
+                    source.get("about", ""),
+                ]
+            )
+            continue
         __grid = []
         function = source.get("function")
         if function:
@@ -259,6 +269,7 @@ def delayloadlinks(key):
                     ]
                     + ([link.get("about")] if link.get("about") else [])
                 )
+
         grid.append([dict(title=source.get("name", None), type="grid", grid=__grid)])
     return grid
 

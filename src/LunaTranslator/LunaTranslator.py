@@ -10,6 +10,7 @@ from myutils.config import (
     magpie_config,
     savehook_new_data,
     static_data,
+    translatorsetting,
     getlanguse,
     _TR,
     isascii,
@@ -894,7 +895,9 @@ class MAINUI:
     @threader
     def startoutputer(self):
         for classname in globalconfig["textoutputer"]:
-            if not os.path.exists("textio/LunaTranslator/textoutput/" + classname + ".py"):
+            if not os.path.exists(
+                "textio/LunaTranslator/textoutput/" + classname + ".py"
+            ):
                 continue
             aclass = importlib.import_module("textio.textoutput." + classname).Outputer
             self.outputers[classname] = aclass(classname)
@@ -923,13 +926,27 @@ class MAINUI:
             raise e
 
     @threader
-    def prepare(self, now=None, _=None):
-        self.commonloader("fanyi", self.translators, self.fanyiinitmethod, now)
+    def prepare(self, now=None, remove=False, _=None):
+        self.commonloader("fanyi", self.translators, self.fanyiinitmethod, now, remove)
 
-    def commonloader(self, fanyiorcishu, dictobject, initmethod, _type=None):
+    def commonloader(
+        self, fanyiorcishu, dictobject, initmethod, _type=None, remove=False
+    ):
         if _type:
             self.commonloader_warp(fanyiorcishu, dictobject, initmethod, _type)
         else:
+            if remove:
+                __ = []
+                for key in globalconfig[fanyiorcishu]:
+                    if translate_exits(key):
+                        continue
+                    __.append(key)
+                for key in __:
+                    try:
+                        globalconfig[fanyiorcishu].pop(key)
+                        translatorsetting.pop(key)
+                    except:
+                        pass
             for key in globalconfig[fanyiorcishu]:
                 self.commonloader_warp(fanyiorcishu, dictobject, initmethod, key)
 
@@ -964,9 +981,9 @@ class MAINUI:
             if item:
                 dictobject[_type] = item
         except:
+            print_exc()
             if _type in globalconfig[rankkey]:
                 globalconfig[rankkey].remove(_type)
-            print_exc()
 
     @threader
     def startxiaoxueguan(self, type_=None, _=None):
@@ -1023,14 +1040,19 @@ class MAINUI:
             name = globalconfig["theme3"]
             NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
             if name == "QTWin11":
-                NativeUtils.setAcrylicEffect(int(widget.winId()), True, [0x40f7f7fa, 0x40212121][dark])
+                NativeUtils.setAcrylicEffect(
+                    int(widget.winId()), True, [0x40F7F7FA, 0x40212121][dark]
+                )
             else:
                 NativeUtils.clearEffect(int(widget.winId()))
 
-    def checkkeypresssatisfy(self, key):
-        if not globalconfig["wordclickkbtriggerneed"].get(key, False):
+    def checkkeypresssatisfy(self, key, df=False):
+        if not globalconfig["wordclickkbtriggerneed"].get(key, df):
             return -1
-        keystring = globalconfig["wordclickkbtrigger"].get(key, "")
+        keystring = globalconfig["wordclickkbtrigger"].get(key)
+        if not keystring:
+            print(keystring,key,globalconfig["wordclickkbtrigger"])
+            return -1
         try:
             modes, vkcode = parsekeystringtomodvkcode(
                 keystring, modes=True, canonlymod=True
@@ -1047,11 +1069,7 @@ class MAINUI:
             word = wordd
         elif isinstance(wordd, dict):
             word = WordSegResult.from_dict(wordd)
-        wordwhich = lambda key: (word.word, word.prototype)[
-            globalconfig["usewordoriginfor"].get(
-                key, globalconfig.get("usewordorigin", False)
-            )
-        ]
+        word = (word.prototype, word.word)[append]
 
         def __openlink(word1):
             for link in globalconfig["useopenlinklink1"]:
@@ -1065,8 +1083,8 @@ class MAINUI:
                 word1, self.currenttext, append
             ),
             "openlink": __openlink,
-            "searchword_S": lambda word1: self.settin_ui.search_word.emit(
-                word1, self.currenttext, append
+            "searchword_S": lambda word1: self.settin_ui.hover_search_word.emit(
+                word1, self.currenttext, append, False, False
             ),
         }
         noneedkeys = []
@@ -1080,7 +1098,7 @@ class MAINUI:
             elif result:
                 keytriggered.append(k)
         for k in keytriggered if keytriggered else noneedkeys:
-            funcs[k](wordwhich(k))
+            funcs[k](word)
 
     def __dontshowintaborsetbackdrop(self, widget: QWidget):
         window_flags = widget.windowFlags()
@@ -1325,7 +1343,7 @@ class MAINUI:
         )
         NativeUtils.StartMonitorVolume(self.MonitorPidVolume_callback)
         self.safeloadprocessmodels()
-        self.prepare()
+        self.prepare(remove=True)
         self.startxiaoxueguan()
         self.startmecab()
         self.startoutputer()

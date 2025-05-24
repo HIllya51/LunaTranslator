@@ -81,7 +81,8 @@ class TabWidget(QWidget):
 
 
 class Setting(closeashidewindow):
-    search_word = pyqtSignal(str, str, bool)
+    hover_search_word = pyqtSignal(str, str, bool, bool, bool)
+    hover_search_word_checkpos = pyqtSignal()
     voicelistsignal = pyqtSignal(object)
     versiontextsignal = pyqtSignal(str)
     progresssignal2 = pyqtSignal(str, int)
@@ -117,8 +118,9 @@ class Setting(closeashidewindow):
         self.isfirst = True
         versioncheckthread(self)
         registrhotkeys(self)
-        self.__WordViewer = WordViewTooltip(self)
-        self.search_word.connect(self.__WordViewer.searchword)
+        self._WordViewer = WordViewTooltip(self)
+        self.hover_search_word.connect(self._WordViewer.searchword)
+        self.hover_search_word_checkpos.connect(self._WordViewer.moveresult_1)
 
     def showEvent(self, e: QShowEvent):
         if self.isfirst:

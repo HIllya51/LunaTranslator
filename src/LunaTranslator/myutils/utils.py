@@ -108,7 +108,9 @@ def translate_exits(fanyi, which=False):
     # 不再加载废弃接口，以免煞笔问煞笔问题。
     _ = __translate_exits(fanyi)
 
-    isdeprecated = (0 == _) and (fanyi not in defaultglobalconfig["fanyi"])
+    isdeprecated = (0 == _) and (
+        (fanyi not in defaultglobalconfig["fanyi"]) and fanyi != "chatgpt-offline"
+    )
     if which:
         if isdeprecated:
             return None

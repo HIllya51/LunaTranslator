@@ -1,7 +1,6 @@
 from qtsymbols import *
 import os, functools, re
 from myutils.config import globalconfig
-from gui.setting.translate import splitapillm
 from myutils.utils import (
     splittranslatortypes,
     translate_exits,
@@ -103,6 +102,18 @@ def makegridW(grid, lay):
     return wid
 
 
+def splitapillm(l):
+    not_is_gpt_like = []
+    is_gpt_likes = []
+    for fanyi in l:
+        is_gpt_like = globalconfig["fanyi"][fanyi].get("is_gpt_like", False)
+        if is_gpt_like:
+            is_gpt_likes.append(fanyi)
+        else:
+            not_is_gpt_like.append(fanyi)
+    return is_gpt_likes, not_is_gpt_like
+
+
 def makeproxytab():
 
     res = splittranslatortypes()
@@ -168,7 +179,7 @@ def makeproxytab():
         getname=dynamiccishuname,
     )
     titles = [
-        "在线翻译",
+        "翻译",
         "OCR",
         "语音合成",
         "辞书",

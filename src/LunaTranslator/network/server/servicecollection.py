@@ -90,12 +90,7 @@ class PageSearchWord(HTTPHandler):
         word = WordSegResult.from_dict(_.query)
         if not word._prototype:
             return FileResponse(page)
-        wordwhich = lambda key: (word.word, word.prototype)[
-            globalconfig["usewordoriginfor"].get(
-                key, globalconfig.get("usewordorigin", False)
-            )
-        ]
-        word = wordwhich("searchword")
+        word = word.prototype
         if word:
             __ = _.query.copy()
             __.update(word=word)

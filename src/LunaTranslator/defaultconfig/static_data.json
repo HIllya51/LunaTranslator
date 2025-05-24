@@ -157,54 +157,39 @@
     "aboutsource": {
         "translate": [
             {
-                "name": "大模型",
-                "links": [
-                    {
-                        "name": "Sakura大模型",
-                        "link": "https://github.com/SakuraLLM/SakuraLLM",
-                        "about": "日语_->_简体中文"
-                    }
-                ]
+                "name": "J北京7",
+                "link": "/Resource/translate/JBeijing7.zip",
+                "about": "日语_->_简体中文"
             },
             {
-                "name": "过时的",
-                "links": [
-                    {
-                        "name": "J北京7",
-                        "link": "/Resource/translate/JBeijing7.zip",
-                        "about": "日语_->_简体中文"
-                    },
-                    {
-                        "name": "金山快译",
-                        "link": "/Resource/translate/FastAIT09_Setup.25269.4101.zip",
-                        "about": "日语_->_简体中文"
-                    },
-                    {
-                        "name": "快译通",
-                        "link": "/Resource/translate/DR.eye.zip",
-                        "about": "日语_->_简体中文"
-                    },
-                    {
-                        "name": "Sugoi",
-                        "link": "/Resource/translate/Sugoi_V12.1_683043.7z",
-                        "about": "日语_->_英语"
-                    },
-                    {
-                        "name": "LEC",
-                        "link": "/Resource/translate/LEC",
-                        "about": "日语_->_英语"
-                    },
-                    {
-                        "name": "Atlas",
-                        "link": "/Resource/translate/Atlas",
-                        "about": "日语_->_英语"
-                    },
-                    {
-                        "name": "ezTrans",
-                        "link": "/Resource/translate/ezTrans",
-                        "about": "日语_->_韩语"
-                    }
-                ]
+                "name": "金山快译",
+                "link": "/Resource/translate/FastAIT09_Setup.25269.4101.zip",
+                "about": "日语_->_简体中文"
+            },
+            {
+                "name": "快译通",
+                "link": "/Resource/translate/DR.eye.zip",
+                "about": "日语_->_简体中文"
+            },
+            {
+                "name": "Sugoi",
+                "link": "/Resource/translate/Sugoi_V12.1_683043.7z",
+                "about": "日语_->_英语"
+            },
+            {
+                "name": "LEC",
+                "link": "/Resource/translate/LEC",
+                "about": "日语_->_英语"
+            },
+            {
+                "name": "Atlas",
+                "link": "/Resource/translate/Atlas",
+                "about": "日语_->_英语"
+            },
+            {
+                "name": "ezTrans",
+                "link": "/Resource/translate/ezTrans",
+                "about": "日语_->_韩语"
             }
         ],
         "ocr": [
@@ -590,6 +575,11 @@
             "vis": "x.ai",
             "value": "https://api.x.ai/",
             "icon": "files/static/llm_icons/xai.svg"
+        },
+        {
+            "vis": "Ollama",
+            "value": "http://127.0.0.1:11434",
+            "icon": "files/static/llm_icons/ollama.svg"
         },
         {
             "vis": "月之暗面",

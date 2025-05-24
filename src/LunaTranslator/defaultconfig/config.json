@@ -306,6 +306,8 @@
     "fix_translate_rank_rank": [],
     "cishuvisrank": [],
     "ignoredict": [],
+    "ignoredict_S_hover": [],
+    "ignoredict_S_click": [],
     "transoptimi": {
         "noundict": false,
         "transerrorfix": false,
@@ -1483,7 +1485,6 @@
     "usesearchword": false,
     "usesearchword_S": false,
     "usecopyword": false,
-    "usewordoriginfor": {},
     "wordclickkbtriggerneed": {},
     "wordclickkbtrigger": {},
     "ttscommon": {
@@ -1872,14 +1873,6 @@
             "type": "offline",
             "color": "blue",
             "name": "Sakura大模型",
-            "is_gpt_like": true,
-            "useproxy": false
-        },
-        "chatgpt-offline": {
-            "use": false,
-            "type": "offline",
-            "color": "blue",
-            "name": "大模型通用接口",
             "is_gpt_like": true,
             "useproxy": false
         },

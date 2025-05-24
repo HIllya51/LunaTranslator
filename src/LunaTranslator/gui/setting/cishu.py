@@ -13,7 +13,9 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getspinbox,
     getsmalllabel,
+    getcenterX,
     D_getcolorbutton,
+    getboxlayout,
     getsimpleswitch,
     D_getsimplecombobox,
     getspinbox,
@@ -390,17 +392,15 @@ def setTabcishu_l(self):
                         dict(
                             title="鼠标悬停时",
                             type="grid",
+                            button=D_getcolorbutton(
+                                self,
+                                globalconfig,
+                                "hovercolor",
+                                callback=gobject.baseobject.translation_ui.translate_text.sethovercolor,
+                                alpha=True,
+                            ),
                             grid=[
                                 [
-                                    "颜色",
-                                    D_getcolorbutton(
-                                        self,
-                                        globalconfig,
-                                        "hovercolor",
-                                        callback=gobject.baseobject.translation_ui.translate_text.sethovercolor,
-                                        alpha=True,
-                                    ),
-                                    "",
                                     "显示详细信息",
                                     D_getsimpleswitch(
                                         globalconfig,
@@ -420,6 +420,48 @@ def setTabcishu_l(self):
                                     ),
                                     "",
                                     "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                    "",
+                                ],
+                                [
+                                    "查词_在小窗口中",
+                                    D_getsimpleswitch(
+                                        globalconfig,
+                                        "usesearchword_S",
+                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                    ),
+                                    D_getIconButton(
+                                        callback=functools.partial(
+                                            listediter,
+                                            self,
+                                            "不使用的辞书",
+                                            globalconfig["ignoredict_S_hover"],
+                                            candidates=list(
+                                                globalconfig["cishu"].keys()
+                                            ),
+                                            namemapfunction=dynamiccishuname,
+                                            exec=True,
+                                        ),
+                                        tips="不使用的辞书",
+                                    ),
+                                    "",
+                                    "需要键盘按下",
+                                    D_getsimpleswitch(
+                                        globalconfig["wordclickkbtriggerneed"],
+                                        "searchword_S_hover",
+                                        default=True,
+                                    ),
+                                    D_getIconButton(
+                                        icon="fa.keyboard-o",
+                                        callback=functools.partial(
+                                            _getkeys, "searchword_S_hover"
+                                        ),
+                                        tips="需要的键",
+                                    ),
                                 ],
                             ],
                         )
@@ -434,10 +476,11 @@ def setTabcishu_l(self):
                                     "",
                                     "",
                                     "",
+                                    getcenterX("需要键盘按下"),
                                     "",
-                                    ("需要键盘按下", 3),
                                     "",
-                                    "使用单词原型",
+                                    "",
+                                    "",
                                 ],
                                 [
                                     "查词",
@@ -448,27 +491,21 @@ def setTabcishu_l(self):
                                     ),
                                     "",
                                     "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["wordclickkbtriggerneed"],
-                                        "searchword",
-                                        default=False,
-                                    ),
-                                    D_getIconButton(
-                                        icon="fa.keyboard-o",
-                                        callback=functools.partial(
-                                            _getkeys, "searchword"
-                                        ),
-                                        tips="需要的键",
-                                    ),
-                                    "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["usewordoriginfor"],
-                                        "searchword",
-                                        default=globalconfig.get(
-                                            "usewordorigin", False
-                                        ),
+                                    getboxlayout(
+                                        [
+                                            D_getsimpleswitch(
+                                                globalconfig["wordclickkbtriggerneed"],
+                                                "searchword",
+                                                default=False,
+                                            ),
+                                            D_getIconButton(
+                                                icon="fa.keyboard-o",
+                                                callback=functools.partial(
+                                                    _getkeys, "searchword"
+                                                ),
+                                                tips="需要的键",
+                                            ),
+                                        ]
                                     ),
                                 ],
                                 [
@@ -478,29 +515,36 @@ def setTabcishu_l(self):
                                         "usesearchword_S",
                                         callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
                                     ),
-                                    "",
-                                    "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["wordclickkbtriggerneed"],
-                                        "searchword_S",
-                                        default=False,
-                                    ),
                                     D_getIconButton(
-                                        icon="fa.keyboard-o",
                                         callback=functools.partial(
-                                            _getkeys, "searchword_S"
+                                            listediter,
+                                            self,
+                                            "不使用的辞书",
+                                            globalconfig["ignoredict_S_click"],
+                                            candidates=list(
+                                                globalconfig["cishu"].keys()
+                                            ),
+                                            namemapfunction=dynamiccishuname,
+                                            exec=True,
                                         ),
-                                        tips="需要的键",
+                                        tips="不使用的辞书",
                                     ),
                                     "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["usewordoriginfor"],
-                                        "searchword_S",
-                                        default=globalconfig.get(
-                                            "usewordorigin", False
-                                        ),
+                                    getboxlayout(
+                                        [
+                                            D_getsimpleswitch(
+                                                globalconfig["wordclickkbtriggerneed"],
+                                                "searchword_S",
+                                                default=False,
+                                            ),
+                                            D_getIconButton(
+                                                icon="fa.keyboard-o",
+                                                callback=functools.partial(
+                                                    _getkeys, "searchword_S"
+                                                ),
+                                                tips="需要的键",
+                                            ),
+                                        ]
                                     ),
                                 ],
                                 [
@@ -512,27 +556,21 @@ def setTabcishu_l(self):
                                     ),
                                     "",
                                     "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["wordclickkbtriggerneed"],
-                                        "copyword",
-                                        default=False,
-                                    ),
-                                    D_getIconButton(
-                                        icon="fa.keyboard-o",
-                                        callback=functools.partial(
-                                            _getkeys, "copyword"
-                                        ),
-                                        tips="需要的键",
-                                    ),
-                                    "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["usewordoriginfor"],
-                                        "copyword",
-                                        default=globalconfig.get(
-                                            "usewordorigin", False
-                                        ),
+                                    getboxlayout(
+                                        [
+                                            D_getsimpleswitch(
+                                                globalconfig["wordclickkbtriggerneed"],
+                                                "copyword",
+                                                default=False,
+                                            ),
+                                            D_getIconButton(
+                                                icon="fa.keyboard-o",
+                                                callback=functools.partial(
+                                                    _getkeys, "copyword"
+                                                ),
+                                                tips="需要的键",
+                                            ),
+                                        ]
                                     ),
                                 ],
                                 [
@@ -548,27 +586,21 @@ def setTabcishu_l(self):
                                         tips="外部链接",
                                     ),
                                     "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["wordclickkbtriggerneed"],
-                                        "openlink",
-                                        default=False,
-                                    ),
-                                    D_getIconButton(
-                                        icon="fa.keyboard-o",
-                                        callback=functools.partial(
-                                            _getkeys, "openlink"
-                                        ),
-                                        tips="需要的键",
-                                    ),
-                                    "",
-                                    "",
-                                    D_getsimpleswitch(
-                                        globalconfig["usewordoriginfor"],
-                                        "openlink",
-                                        default=globalconfig.get(
-                                            "usewordorigin", False
-                                        ),
+                                    getboxlayout(
+                                        [
+                                            D_getsimpleswitch(
+                                                globalconfig["wordclickkbtriggerneed"],
+                                                "openlink",
+                                                default=False,
+                                            ),
+                                            D_getIconButton(
+                                                icon="fa.keyboard-o",
+                                                callback=functools.partial(
+                                                    _getkeys, "openlink"
+                                                ),
+                                                tips="需要的键",
+                                            ),
+                                        ]
                                     ),
                                 ],
                             ],

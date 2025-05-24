@@ -1,4 +1,6 @@
-# 大規模モデルオンライン翻訳
+# 大規模モデル翻訳インターフェース
+
+## 大規模モデルオンライン翻訳
 
 ::: details 複数の大規模モデルインターフェースを同時に使用するには？
 異なる複数のキーをローテーションしたいだけなら、`|`で区切るだけでOKです。
@@ -149,3 +151,11 @@
 **API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
 
 :::
+
+## 大規模モデルオフライン翻訳
+
+### 大規模モデルの汎用インターフェース
+
+[llama.cpp](https://github.com/ggerganov/llama.cpp)、[ollama](https://github.com/ollama/ollama)、[one-api](https://github.com/songquanpeng/one-api)などのツールを使用してモデルをデプロイし、アドレスとモデルを入力することができます。
+
+Kaggleなどのプラットフォームを使用してモデルをクラウドにデプロイすることもできます。この場合、SECRET_KEYを使用する必要があるかもしれません。そうでなければ、SECRET_KEYパラメータを無視することができます。

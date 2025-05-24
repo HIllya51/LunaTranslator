@@ -439,7 +439,7 @@ class AnkiWindow(QWidget):
             "不添加辞书",
             globalconfig["ignoredict"],
             candidates=list(globalconfig["cishu"].keys()),
-            namemapfunction=lambda k: dynamiccishuname(k),
+            namemapfunction=dynamiccishuname,
             exec=True,
         )
 
@@ -782,11 +782,17 @@ class AnkiWindow(QWidget):
             with open("userconfig/anki_2/style.css", "r", encoding="utf8") as ff:
                 model_css = ff.read()
         except:
-            with open(r"LunaTranslator\htmlcode/anki/back.html", "r", encoding="utf8") as ff:
+            with open(
+                r"LunaTranslator\htmlcode/anki/back.html", "r", encoding="utf8"
+            ) as ff:
                 model_htmlback = ff.read()
-            with open(r"LunaTranslator\htmlcode/anki/front.html", "r", encoding="utf8") as ff:
+            with open(
+                r"LunaTranslator\htmlcode/anki/front.html", "r", encoding="utf8"
+            ) as ff:
                 model_htmlfront = ff.read()
-            with open(r"LunaTranslator\htmlcode/anki/style.css", "r", encoding="utf8") as ff:
+            with open(
+                r"LunaTranslator\htmlcode/anki/style.css", "r", encoding="utf8"
+            ) as ff:
                 model_css = ff.read()
         return model_htmlfront, model_htmlback, model_css
 
@@ -1117,8 +1123,8 @@ class showdiction(QWidget):
 
 
 class WordViewer(QWidget):
-    search_word = pyqtSignal(str, bool)
-    search_word_in_new_window = pyqtSignal(str)
+    from_webview_search_word = pyqtSignal(str)
+    from_webview_search_word_in_new_window = pyqtSignal(str)
     __show_dict_result = pyqtSignal(object, str, str)
     first_result_shown = pyqtSignal()
     use_bg_color_parser = False
@@ -1136,11 +1142,9 @@ class WordViewer(QWidget):
         return self.__curr_word
 
     def searchword(
-        self, word: str, sentence: str = None, append=False, readydata: dict = None
+        self, word: str, sentence: str = None, readydata: dict = None, unuse=None
     ):
         word = word.strip()
-        if append:
-            word = self.__curr_word + word
         self.__curr_word = word
         self.save_sentence = sentence
         current = uuid.uuid4()
@@ -1159,6 +1163,9 @@ class WordViewer(QWidget):
                 self.hasclicked = True
 
         for k in searchkeys:
+            if unuse:
+                if k in unuse:
+                    continue
             gobject.baseobject.cishus[k].safesearch(
                 functools.partial(self.__show_dict_result.emit, current, k),
                 word,
@@ -1290,12 +1297,12 @@ class WordViewer(QWidget):
 
         self.textOutput = showwordfastwebview(self, True)
         nexti = self.textOutput.add_menu(
-            0, lambda: _TR("查词"), lambda w: self.search_word.emit(w, False)
+            0, lambda: _TR("查词"), self.from_webview_search_word.emit
         )
         nexti = self.textOutput.add_menu(
             nexti,
             lambda: _TR("在新窗口中查词"),
-            threader(self.search_word_in_new_window.emit),
+            threader(self.from_webview_search_word_in_new_window.emit),
         )
         nexti = self.textOutput.add_menu(
             nexti, lambda: _TR("翻译"), gobject.baseobject.textgetmethod
@@ -1331,9 +1338,7 @@ class WordViewer(QWidget):
         self.textOutput.bind(
             "luna_recheck_current_html", self.luna_recheck_current_html
         )
-        self.textOutput.bind(
-            "luna_search_word", lambda word: self.search_word.emit(word, False)
-        )
+        self.textOutput.bind("luna_search_word", self.from_webview_search_word.emit)
         self.textOutput.bind(
             "luna_audio_play_b64",
             lambda b64: gobject.baseobject.audioplayer.play(
@@ -1378,7 +1383,9 @@ class WordViewer(QWidget):
             use_github_md_css = gobject.baseobject.cishus[k].use_github_md_css
         except:
             return
-        with open(r"LunaTranslator\htmlcode\uiwebview\dictionary.html", "r", encoding="utf8") as ff:
+        with open(
+            r"LunaTranslator\htmlcode\uiwebview\dictionary.html", "r", encoding="utf8"
+        ) as ff:
             frame = ff.read()
         if use_github_md_css:
             with open(
@@ -1454,16 +1461,19 @@ class searchwordW(closeashidewindow):
         self.activateWindow()
         self.searchtext.setFocus()
 
+    cachenewwindow: "list[searchwordW]" = []
+
     def searchwinnewwindow(self, word):
-
-        class searchwordWx(searchwordW):
-            def closeEvent(self1, event: QCloseEvent):
-                self1.deleteLater()
-                super(saveposwindow, self1).closeEvent(event)
-
-        _ = searchwordWx(self.parent())
+        # 不应销毁，否则容易崩溃
+        X = None
+        for _ in self.cachenewwindow + [gobject.baseobject.searchwordW]:
+            if not _.isVisible():
+                X = _
+                break
+        if not X:
+            _ = searchwordW(gobject.baseobject.searchwordW.parent())
+            self.cachenewwindow.append(_)
         _.move(_.pos() + QPoint(20, 20))
-        _.show()
         _.search_word.emit(word, None, False)
 
     def _createnewwindowsearch(self, _):
@@ -1543,10 +1553,10 @@ class searchwordW(closeashidewindow):
         self.spliter = QSplitter()
 
         self.wordviewer = WordViewer()
-        self.wordviewer.search_word.connect(
-            lambda _1, _2: self.search_word.emit(_1, None, _2)
+        self.wordviewer.from_webview_search_word.connect(
+            lambda _1: self.search_word.emit(_1, None, False)
         )
-        self.wordviewer.search_word_in_new_window.connect(
+        self.wordviewer.from_webview_search_word_in_new_window.connect(
             self.search_word_in_new_window
         )
         self.vboxlayout.addWidget(self.spliter)

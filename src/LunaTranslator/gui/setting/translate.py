@@ -43,6 +43,15 @@ from gui.dynalang import LPushButton, LAction, LFormLayout, LDialog
 from gui.setting.about import offlinelinks
 
 
+def getallllms(l):
+    _ = []
+    for fanyi in l:
+        is_gpt_like = globalconfig["fanyi"][fanyi].get("is_gpt_like", False)
+        if is_gpt_like:
+            _.append(fanyi)
+    return _
+
+
 def splitapillm(l):
     not_is_gpt_like = []
     is_gpt_likes = []
@@ -55,16 +64,10 @@ def splitapillm(l):
     return is_gpt_likes, not_is_gpt_like
 
 
-def loadvisinternal(btnplus, copy):
+def loadvisinternal(copy):
     __vis = []
     __uid = []
-    res = splittranslatortypes()
-    if btnplus == "api":
-        is_gpt_likes, not_is_gpt_like = splitapillm(res.api)
-    elif btnplus == "offline":
-        is_gpt_likes, not_is_gpt_like = splitapillm(res.offline)
-
-    for _ in is_gpt_likes:
+    for _ in getallllms(globalconfig["fanyi"]):
         if copy:
             which = translate_exits(_, which=True)
             if which != 1:
@@ -77,9 +80,11 @@ def loadvisinternal(btnplus, copy):
     return __vis, __uid
 
 
-def getalistname(parent, copy, btnplus, callback):
+def getalistname(parent, copy, callback):
     __d = {"k": 0, "n": ""}
-    __vis, __uid = loadvisinternal(btnplus, copy)
+    __vis, __uid = loadvisinternal(copy)
+    if not __vis:
+        return
 
     def __wrap(callback, __d, __uid):
         if len(__uid) == 0:
@@ -188,7 +193,7 @@ class SpecialFont(PopupWidget):
         gobject.baseobject.translation_ui.translate_text.setfontextra(self.apiuid)
 
 
-def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
+def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
     menu = QMenu(qlabel)
     editname = LAction("重命名", menu)
     specialfont = LAction("字体设置", menu)
@@ -214,7 +219,7 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
     pos = QCursor.pos()
     action = menu.exec(pos)
     if action == delete:
-        selectllmcallback_2(self, countnum, btnplus, apiuid, None)
+        selectllmcallback_2(self, countnum, apiuid, None)
     elif action == astoppest:
         globalconfig["toppest_translator"] = apiuid if action.isChecked() else None
         if action.isChecked():
@@ -258,12 +263,12 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, btnplus, _=None):
     elif action == specialfont:
         SpecialFont(apiuid, self).display(pos)
     elif action == copy:
-        selectllmcallback(self, countnum, btnplus, apiuid, None)
+        selectllmcallback(self, countnum, apiuid, None)
 
 
-def getrenameablellabel(uid, self, countnum, btnplus):
+def getrenameablellabel(uid, self, countnum):
     name = ClickableLabel(dynamicapiname(uid))
-    fn = functools.partial(renameapi, name, uid, self, countnum, btnplus)
+    fn = functools.partial(renameapi, name, uid, self, countnum)
     name.clicked.connect(fn)
     return name
 
@@ -288,7 +293,7 @@ def loadbutton(self, fanyi):
     )
 
 
-def selectllmcallback(self, countnum: list, btnplus, fanyi, name):
+def selectllmcallback(self, countnum: list, fanyi, name):
     uid = str(uuid.uuid4())
     _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
     _f12 = "userconfig/copyed/{}.py".format(fanyi)
@@ -305,15 +310,15 @@ def selectllmcallback(self, countnum: list, btnplus, fanyi, name):
     if not name:
         name = globalconfig["fanyi"][fanyi]["name"] + "_copy"
     globalconfig["fanyi"][uid]["name"] = name
-    globalconfig["fanyi"][uid]["type"] = btnplus
+    globalconfig["fanyi"][uid]["type"] = globalconfig["fanyi"][fanyi]["type"]
     if fanyi in translatorsetting:
         translatorsetting[uid] = copy.deepcopy(translatorsetting[fanyi])
 
-    layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
+    layout: QGridLayout = getattr(self, "damoxinggridinternal")
 
     last = getIconButton(callback=functools.partial(loadbutton, self, uid))
 
-    name = getrenameablellabel(uid, self, countnum, btnplus)
+    name = getrenameablellabel(uid, self, countnum)
     swc = getsimpleswitch(
         globalconfig["fanyi"][uid],
         "use",
@@ -327,30 +332,25 @@ def selectllmcallback(self, countnum: list, btnplus, fanyi, name):
     )
 
     offset = 5 * (len(countnum) % 3)
-    layout.addWidget(name, layout.rowCount() - 1, offset + 0)
+    layout.addWidget(name, layout.rowCount() - 1 + (len(countnum) % 3 == 0), offset + 0)
     layout.addWidget(swc, layout.rowCount() - 1, offset + 1)
     layout.addWidget(color, layout.rowCount() - 1, offset + 2)
     layout.addWidget(last, layout.rowCount() - 1, offset + 3)
     if len(countnum) % 3 != 2:
         layout.addWidget(QLabel(), layout.rowCount() - 1, offset + 4)
-
-    else:
-        layout.addWidget(
-            getattr(self, "btnmany" + btnplus), layout.rowCount(), 5 * 2, 1, 4
-        )
     countnum.append(uid)
+    self.__del_btn.show()
 
 
-def btnpluscallback(self, countnum, btnplus):
+def btnpluscallback(self, countnum):
     getalistname(
         self,
         False,
-        btnplus,
-        functools.partial(selectllmcallback, self, countnum, btnplus),
+        functools.partial(selectllmcallback, self, countnum),
     )
 
 
-def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
+def selectllmcallback_2(self, countnum: list, fanyi, name):
     _f2 = "userconfig/copyed/{}.py".format(fanyi)
     try:
         os.remove(_f2)
@@ -361,7 +361,7 @@ def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
         gobject.baseobject.translators.pop(fanyi)
     except:
         pass
-    layout: QGridLayout = getattr(self, "damoxinggridinternal" + btnplus)
+    layout: QGridLayout = getattr(self, "damoxinggridinternal")
     if not layout:
         return
     idx = countnum.index(fanyi)
@@ -382,13 +382,15 @@ def selectllmcallback_2(self, countnum, btnplus, fanyi, name):
         w.setEnabled(False)
         do += 1
 
+    if not loadvisinternal(True)[0]:
+        self.__del_btn.hide()
 
-def btndeccallback(self, countnum, btnplus):
+
+def btndeccallback(self, countnum):
     getalistname(
         self,
         True,
-        btnplus,
-        functools.partial(selectllmcallback_2, self, countnum, btnplus),
+        functools.partial(selectllmcallback_2, self, countnum),
     )
 
 
@@ -405,12 +407,12 @@ def createmanybtn(self, countnum, btnplus):
         return w
 
     btn = IconButton("fa.plus", fix=False, tips="复制")
-    btn.clicked.connect(functools.partial(btnpluscallback, self, countnum, btnplus))
+    btn.clicked.connect(functools.partial(btnpluscallback, self, countnum))
 
     hbox.addWidget(btn)
 
     btn = IconButton("fa.minus", fix=False, tips="删除")
-    btn.clicked.connect(functools.partial(btndeccallback, self, countnum, btnplus))
+    btn.clicked.connect(functools.partial(btndeccallback, self, countnum))
 
     hbox.addWidget(btn)
 
@@ -419,26 +421,22 @@ def createmanybtn(self, countnum, btnplus):
         fix=False,
         tips="使用说明",
     )
-    if btnplus == "offline":
-        btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("/offlinellm.html", docs=True))
-        )
-    elif btnplus == "api":
+    if btnplus == "api":
         btn.clicked.connect(
             lambda: os.startfile(dynamiclink("/guochandamoxing.html", docs=True))
         )
     hbox.addWidget(btn)
-    setattr(self, "btnmany" + btnplus, w)
+    setattr(self, "btnmanyXXXX", w)
     return w
 
 
-def initsome11(self, l, label=None, btnplus=False, savecountnum=False):
-    grids = []
-    if label:
-        grids.append([(label, 8)])
+def initsome11(self, l, save=False):
+    grids: "list[list]" = []
     i = 0
     line = []
     countnum = []
+    if save:
+        self.__countnum = countnum
     for fanyi in l:
         which = translate_exits(fanyi, which=True)
         if which is None:
@@ -455,7 +453,7 @@ def initsome11(self, l, label=None, btnplus=False, savecountnum=False):
         else:
             last = ""
         line += [
-            functools.partial(getrenameablellabel, fanyi, self, countnum, btnplus),
+            functools.partial(getrenameablellabel, fanyi, self, countnum),
             D_getsimpleswitch(
                 globalconfig["fanyi"][fanyi],
                 "use",
@@ -478,37 +476,15 @@ def initsome11(self, l, label=None, btnplus=False, savecountnum=False):
     if len(line):
         grids.append(line)
     check_grid_append(grids)
-    if btnplus:
-
-        if i % 3 == 0:
-            grids.append([])
-        if i % 3 != 2:
-            grids[-1].append(("", 5 * (2 - i % 3)))
-        grids[-1].append((functools.partial(createmanybtn, self, countnum, btnplus), 4))
-    elif len(grids) == 1:
+    if len(grids) == 1:
         if i % 3 != 0:
             grids[-1].append(("", 5 * (3 - i % 3)))
-    if savecountnum:
-        return grids, countnum
     return grids
 
 
-def initsome21(self, l, label=None, btnplus=None):
-    is_gpt_likes, not_is_gpt_like = splitapillm(l)
-    not_is_gpt_like = initsome11(self, not_is_gpt_like, label)
-    is_gpt_likes = initsome11(self, is_gpt_likes, label, btnplus=btnplus)
+def initsome21(self, not_is_gpt_like):
+    not_is_gpt_like = initsome11(self, not_is_gpt_like)
     grids = [
-        [
-            functools.partial(
-                createfoldgrid,
-                is_gpt_likes,
-                "大模型",
-                globalconfig["foldstatus"]["ts"],
-                "gptoffline",
-                ("damoxinggridinternal" + btnplus) if btnplus else None,
-                self,
-            )
-        ],
         [
             functools.partial(
                 createfoldgrid,
@@ -522,12 +498,34 @@ def initsome21(self, l, label=None, btnplus=None):
     return grids
 
 
-def initsome2(self, mianfei, l, label=None, btnplus=None):
+def leftwidget(self):
+
+    btn = IconButton("fa.plus", fix=False, tips="复制")
+    btn.clicked.connect(functools.partial(btnpluscallback, self, self.__countnum))
+
+    btn2 = IconButton("fa.minus", fix=False, tips="删除")
+    btn2.clicked.connect(functools.partial(btndeccallback, self, self.__countnum))
+    self.__del_btn = btn2
+    if not loadvisinternal(True)[0]:
+        btn2.hide()
+
+    btn3 = IconButton(
+        "fa.question",
+        fix=False,
+        tips="使用说明",
+    )
+    btn3.clicked.connect(
+        lambda: os.startfile(dynamiclink("/guochandamoxing.html", docs=True))
+    )
+
+    return [btn, btn2, btn3]
+
+
+def initsome2(self, mianfei, api):
 
     onlinegrid = initsome11(self, mianfei)
-    is_gpt_likes, not_is_gpt_like = splitapillm(l)
-    not_is_gpt_like = initsome11(self, not_is_gpt_like, label, btnplus="api1")
-    is_gpt_likes = initsome11(self, is_gpt_likes, label, btnplus=btnplus)
+    api = initsome11(self, api)
+    is_gpt_likes = initsome11(self, getallllms(globalconfig["fanyi"]), save=True)
     grids = [
         [
             functools.partial(
@@ -536,8 +534,9 @@ def initsome2(self, mianfei, l, label=None, btnplus=None):
                 "大模型",
                 globalconfig["foldstatus"]["ts"],
                 "gpt",
-                "damoxinggridinternal" + btnplus,
+                "damoxinggridinternal",
                 self,
+                leftwidget=functools.partial(leftwidget, self),
             )
         ],
         [
@@ -552,10 +551,18 @@ def initsome2(self, mianfei, l, label=None, btnplus=None):
         [
             functools.partial(
                 createfoldgrid,
-                not_is_gpt_like,
+                api,
                 "传统_API",
                 globalconfig["foldstatus"]["ts"],
                 "api",
+                leftwidget=D_getIconButton(
+                    fix=False,
+                    icon="fa.question",
+                    callback=lambda: os.startfile(
+                        dynamiclink("/useapis/tsapi.html", docs=True)
+                    ),
+                    tips="使用说明",
+                ),
             )
         ],
     ]
@@ -677,9 +684,10 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
 
     res = splittranslatortypes()
 
-    offlinegrid = initsome21(self, res.offline, btnplus="offline")
+    _, not_is_gpt_like = splitapillm(res.offline)
+    offlinegrid = initsome21(self, not_is_gpt_like)
     offlinegrid += [[functools.partial(offlinelinks, "translate")]]
-    online_reg_grid = initsome2(self, res.free, res.api, btnplus="api")
+    online_reg_grid = initsome2(self, res.free, res.api)
     pretransgrid = [
         [
             dict(
@@ -730,12 +738,12 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
         ],
         [dict(type="grid", title="其他", grid=initsome11(self, res.other))],
     ]
+    pretransgrid += offlinegrid
     savelay = []
     tab, dotab = makesubtab_lazy(
-        ["在线翻译", "离线翻译", "其他"],
+        ["翻译接口", "其他"],
         [
             functools.partial(makescrollgrid, online_reg_grid, savelay=savelay),
-            functools.partial(makescrollgrid, offlinegrid),
             functools.partial(makescrollgrid, pretransgrid),
         ],
         delay=True,

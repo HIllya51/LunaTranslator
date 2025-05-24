@@ -1,4 +1,6 @@
-# Dịch Thuật Trực Tuyến Mô Hình Lớn
+# Giao diện dịch mô hình lớn
+
+## Dịch Thuật Trực Tuyến Mô Hình Lớn
 
 ::: details Sử Dụng Nhiều Giao Diện Mô Hình Lớn Đồng Thời?
 Nếu bạn chỉ có nhiều khóa khác nhau và muốn luân phiên sử dụng chúng, chỉ cần tách chúng bằng `|`.
@@ -148,3 +150,11 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 **API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
 
 :::
+
+## Dịch Ngoại Tuyến Mô Hình Lớn
+
+### Giao Diện Chung Cho Mô Hình Lớn
+
+Bạn cũng có thể sử dụng các công cụ như [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) để triển khai các mô hình, sau đó điền địa chỉ và mô hình.
+
+Bạn cũng có thể sử dụng các nền tảng như Kaggle để triển khai mô hình lên đám mây, trong trường hợp này bạn có thể cần sử dụng SECRET_KEY; nếu không, bạn có thể bỏ qua tham số SECRET_KEY.

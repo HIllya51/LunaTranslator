@@ -182,30 +182,47 @@ class tooltipswidget(QMainWindow, dataget):
         self.move(pos)
         self.show()
 
+    lastword = None
+
     @staticmethod
     def hidetooltipwindow():
-
+        tooltipswidget.lastword = None
         if tooltipswidget.tooltipwindow:
             tooltipswidget.tooltipwindow.hide()
 
     @staticmethod
     def tracetooltipwindow(word: WordSegResult, pos):
-        if not globalconfig["word_hover_show_word_info"]:
-            return
-
-        try:
-            if not tooltipswidget.tooltipwindow:
-                tooltipswidget.tooltipwindow = tooltipswidget(
-                    gobject.baseobject.translation_ui.translate_text
-                )
-            tips = tooltipswidget.createtipstext(word)
-            if tips:
-                tooltipswidget.tooltipwindow.showtext(
-                    tips,
-                    pos,
-                    gobject.baseobject.translation_ui.translate_text.width(),
+        skip = False
+        if globalconfig["usesearchword_S"]:
+            result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", True)
+            result = result == -1 or result == True
+            skip = result
+            if tooltipswidget.lastword != word.word:
+                tooltipswidget.lastword = word.word
+                gobject.baseobject.settin_ui.hover_search_word.emit(
+                    word.word, gobject.baseobject.currenttext, False, True, result
                 )
             else:
-                tooltipswidget.tooltipwindow.hide()
-        except:
-            print_exc()
+                gobject.baseobject.settin_ui.hover_search_word_checkpos.emit()
+        if skip:
+            return
+        if gobject.baseobject.settin_ui._WordViewer.isVisible():
+            return
+        if globalconfig["word_hover_show_word_info"]:
+
+            try:
+                if not tooltipswidget.tooltipwindow:
+                    tooltipswidget.tooltipwindow = tooltipswidget(
+                        gobject.baseobject.translation_ui.translate_text
+                    )
+                tips = tooltipswidget.createtipstext(word)
+                if tips:
+                    tooltipswidget.tooltipwindow.showtext(
+                        tips,
+                        pos,
+                        gobject.baseobject.translation_ui.translate_text.width(),
+                    )
+                else:
+                    tooltipswidget.tooltipwindow.hide()
+            except:
+                print_exc()

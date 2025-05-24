@@ -293,6 +293,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint,
             None,
         )
+        self.lastisappend = False
         self.setMouseTracking(True)
 
         self.setMinimumHeight(300)
@@ -360,8 +361,8 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.view.use_bg_color_parser = True
         self.setCentralWidget(w)
         self.view.first_result_shown.connect(self.showresult)
-        self.view.search_word.connect(self.view.searchword)
-        self.view.search_word_in_new_window.connect(
+        self.view.from_webview_search_word.connect(self.view.searchword)
+        self.view.from_webview_search_word_in_new_window.connect(
             lambda w: gobject.baseobject.searchwordW.searchwinnewwindow(w)
         )
         self.view.setStyleSheet("background:transparent")
@@ -369,12 +370,38 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.view.internalmoved.connect(
             lambda pos: self.w2.move(self.view.mapToParent(pos))
         )
+        self.__f = QTimer(self)
+        self.__f.setInterval(50)
+        self.__f.timeout.connect(self.__detectkey)
+        self.__savestatus = None
 
-    def searchword(self, word: str, sentence=None, append=False):
+    def __detectkey(self):
+        if not globalconfig["usesearchword_S"]:
+            self.__f.stop()
+            return
+        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", True)
+        result = result == -1 or result == True
+        if result:
+            self.__f.stop()
+            self.searchword(*self.__savestatus)
+
+    def searchword(
+        self, word: str, sentence=None, append=False, fromhover=False, show=False
+    ):
+        if fromhover:
+            if not show:
+                self.__savestatus = word, sentence, append
+                self.__f.start()
+                return
         self.savepos = QCursor.pos()
         if globalconfig["is_search_word_auto_tts_2"]:
             gobject.baseobject.read_text(word)
-        self.view.searchword(word, sentence, append)
+        if append:
+            if self.lastisappend == append:
+                word = self.view.currWord + word
+        self.lastisappend = append
+        unuse=globalconfig[("ignoredict_S_click","ignoredict_S_hover")[fromhover]]
+        self.view.searchword(word, sentence, unuse=unuse)
 
     def showresult(self):
         size = globalconfig.get("WordViewTooltip2")
@@ -384,3 +411,14 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.move(limitpos(self.savepos, self, QPoint(1, 10)))
         self.show()
         self.setFocus()
+        from gui.rendertext.tooltipswidget import tooltipswidget
+
+        tooltipswidget.hidetooltipwindow()
+
+    def moveresult_1(self):
+        if not self.isVisible():
+            return
+        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", True)
+        result = result == -1 or result == True
+        if result:
+            self.move(limitpos(QCursor.pos(), self, QPoint(1, 10)))

@@ -46,6 +46,7 @@ from gui.usefulwidget import (
     getboxlayout,
     NQGroupBox,
     clearlayout,
+    getcenterX,
     getsimplecombobox,
     D_getIconButton,
     D_getsimpleswitch,
@@ -733,7 +734,7 @@ class dialog_setting_game_internal(QWidget):
         automakegrid(
             formLayout2,
             [
-                ["", "", "", "", "继承默认", ""],
+                ["", "", "", "", getcenterX("继承默认"), ""],
                 [
                     getsmalllabel("语音指定"),
                     D_getsimpleswitch(
@@ -743,8 +744,10 @@ class dialog_setting_game_internal(QWidget):
                     ),
                     D_getIconButton(callback=__delay1),
                     "",
-                    D_getsimpleswitch(
-                        savehook_new_data[gameuid], "tts_skip_merge", default=False
+                    getcenterX(
+                        D_getsimpleswitch(
+                            savehook_new_data[gameuid], "tts_skip_merge", default=False
+                        ),
                     ),
                 ],
                 [
@@ -756,8 +759,12 @@ class dialog_setting_game_internal(QWidget):
                     ),
                     D_getIconButton(callback=__delay2),
                     "",
-                    D_getsimpleswitch(
-                        savehook_new_data[gameuid], "tts_repair_merge", default=False
+                    getcenterX(
+                        D_getsimpleswitch(
+                            savehook_new_data[gameuid],
+                            "tts_repair_merge",
+                            default=False,
+                        )
                     ),
                 ],
             ],
@@ -803,7 +810,7 @@ class dialog_setting_game_internal(QWidget):
             formLayout,
             klass=QGridLayout,
         )
-        vbox.addWidget(LLabel("继承默认"), 0, 4)
+        vbox.addLayout(getcenterX("继承默认")(), 0, 4)
         vbox.addWidget(QLabel(), 0, 5)
 
         for i, item in enumerate(static_data["transoptimi"]):
@@ -835,12 +842,12 @@ class dialog_setting_game_internal(QWidget):
                     2,
                 )
                 vbox.addWidget(QLabel(), i + 1, 3)
-                vbox.addWidget(
-                    getsimpleswitch(
+                vbox.addLayout(
+                    getcenterX(getsimpleswitch(
                         savehook_new_data[gameuid],
                         name + "_merge",
                         default=False,
-                    ),
+                    ))(),
                     i + 1,
                     4,
                 )

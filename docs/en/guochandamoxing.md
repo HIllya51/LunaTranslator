@@ -1,4 +1,6 @@
-# Large Model Online Translation
+# Large Model Translation Interface
+
+## Large Model Online Translation
 
 ::: details Using Multiple Large Model Interfaces Simultaneously?
 If you only have multiple different keys and want to poll them, simply separate them with `|`.
@@ -143,3 +145,12 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 **API Key** https://platform.minimaxi.com/document/Fast%20access?key=66701cf51d57f38758d581b2
 
 :::
+
+## Large Model Offline Translation
+
+### General Large Model Interface
+
+
+You can also use tools like [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) to deploy models, and then fill in the address and model.
+
+You can also use platforms like Kaggle to deploy models to the cloud, in which case you may need to use SECRET_KEY; otherwise, you can ignore the SECRET_KEY parameter.

@@ -800,5 +800,7 @@
     "当前软件或操作系统版本不支持使用GPU": "Bieżąca wersja oprogramowania lub systemu operacyjnego nie obsługuje korzystania z procesorów graficznych",
     "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "Oprogramowanie nie jest łatwe w utrzymaniu. Jeśli uważasz, że oprogramowanie jest dla ciebie pomocne, bądź moim [sponsorem](https://patreon.com/hillya51). Dziękuję ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) używa licencji [GPLV3](https://github.com/hillya51/lunatranslator/blob/main/license).",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Oprogramowanie nie jest łatwe w utrzymaniu. Jeśli uważasz, że oprogramowanie jest dla Ciebie pomocne, skanuj kod QR na WeChat, aby go sponsorować. Dziękuję ~"
+    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Oprogramowanie nie jest łatwe w utrzymaniu. Jeśli uważasz, że oprogramowanie jest dla Ciebie pomocne, skanuj kod QR na WeChat, aby go sponsorować. Dziękuję ~",
+    "翻译接口": "Interfejs tłumaczenia",
+    "不使用的辞书": "Słownik nie używany"
 }

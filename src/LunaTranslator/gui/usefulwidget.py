@@ -1179,6 +1179,31 @@ def getsmalllabel(text=""):
     return lambda: __getsmalllabel(text)
 
 
+def __getcenterX(w):
+    if isinstance(w, str):
+        w = LLabel(w)
+        w.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+    if isinstance(w, QLayout):
+        _ = w
+    elif isinstance(w, QWidget):
+        _ = QHBoxLayout()
+        _.addWidget(w)
+    else:
+        __ = w()
+        if isinstance(__, QLayout):
+            _ = __
+        elif isinstance(__, QWidget):
+            _ = QHBoxLayout()
+            _.addWidget(__)
+    _.setAlignment(Qt.AlignmentFlag.AlignCenter)
+    return _
+
+
+def getcenterX(w):
+    return lambda: __getcenterX(w)
+
+
 def D_getsimpleswitch(
     d, key, enable=True, callback=None, name=None, pair=None, parent=None, default=False
 ):
@@ -2368,8 +2393,29 @@ class NQGroupBox(QGroupBox):
         self.setObjectName("notitle")
 
 
+class BGroupBox(LGroupBox):
+    def __init__(self, *a, **k):
+        super().__init__(*a, **k)
+
+        self.button: QPushButton = None
+
+    def resizeEvent(self, event):
+        opt = QStyleOptionGroupBox()
+        self.initStyleOption(opt)
+        text_rect = self.style().subControlRect(
+            QStyle.ComplexControl.CC_GroupBox,
+            opt,
+            QStyle.SubControl.SC_GroupBoxLabel,
+            self,
+        )
+        if self.button:
+            self.button.move(text_rect.right() + 5, text_rect.top())
+        super().resizeEvent(event)
+
+
 def makegroupingrid(args: dict):
     lis = args.get("grid")
+    button = args.get("button")
     title = args.get("title", None)
     _type = args.get("type", "form")
     parent = args.get("parent", None)
@@ -2377,7 +2423,12 @@ def makegroupingrid(args: dict):
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
 
-    if title:
+    if button:
+        group = BGroupBox()
+        group.setTitle(title)
+        group.button = button()
+        group.button.setParent(group)
+    elif title:
         group = LGroupBox()
         group.setTitle(title)
     else:
@@ -3294,9 +3345,20 @@ class CollapsibleBoxWithButton(QWidget):
         lay = QVBoxLayout(self)
         lay.setSpacing(0)
         lay.setContentsMargins(0, 0, 0, 0)
-        lay.addWidget(self.toggle_button)
+        _ = QWidget()
+        self.lay1 = QHBoxLayout(_)
+        self.lay1.setContentsMargins(0, 0, 0, 0)
+        self.lay1.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.lay1.addWidget(self.toggle_button)
+        lay.addWidget(_)
         lay.addWidget(self.content_area)
         self.__toggled(toggled)
+
+    def addLeftWidget(self, ws):
+        if not isinstance(ws, (tuple, list)):
+            ws = [ws]
+        for w in ws:
+            self.lay1.addWidget(w)
 
     def __toggled(self, checked):
         self.toggle_button.setChecked(checked)
@@ -3313,6 +3375,7 @@ def createfoldgrid(
     k=None,
     internallayoutname=None,
     parent=None,
+    leftwidget=None,
 ):
 
     def __(grid, internallayoutname, parent, lay: QLayout):
@@ -3328,6 +3391,8 @@ def createfoldgrid(
         title,
         toggled=toggled,
     )
+    if leftwidget:
+        box.addLeftWidget(leftwidget())
     if d:
         box.toggled.connect(functools.partial(d.__setitem__, k))
     return box
@@ -3452,3 +3517,9 @@ class __MDLabel(QLabel):
 
 def MDLabel(md):
     return functools.partial(__MDLabel, md)
+
+
+class HBoxCenter(QHBoxLayout):
+    def __init__(self, *a):
+        super().__init__(*a)
+        self.setAlignment(Qt.AlignmentFlag.AlignHCenter)

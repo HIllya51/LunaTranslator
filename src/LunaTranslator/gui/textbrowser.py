@@ -184,7 +184,7 @@ class Textbrowser(QFrame):
             lambda _1: _1.showhidert(_),
         )
 
-    def showhideclick(self, _):
+    def showhideclick(self, _=None):
         self.textbrowser.showhideclick(_)
         WSForEach(
             mainuiwsoutputsave,
