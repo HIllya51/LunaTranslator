@@ -5,7 +5,7 @@
 | バージョン | OS | 32ビット | 64ビット | 説明 |
 | - | - | - | - | - |
 | ベータ版 | Windows 10 & 11（新しいバージョン） |  | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10"></a> | このバージョンはパフォーマンス向上と新機能のため、新しいWindows 10ビルドのみ対応しています。<br>旧バージョンのWindows 10では動作しない可能性があるため、安定版をご利用ください。 |
-| 安定版 | Windows 7 以降 | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x86"></a> | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64"></a> | |
+| 安定版 | Windows 7 以降 | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7"></a> | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7"></a> | |
 | レガシー版 | Windows XP & Vista | <a class="downloadlink" href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp"></a> | | このバージョンはXP仮想環境でしか動作しない古いゲームのテキスト抽出専用です。機能制限あり、不安定で動作が遅いため、通常使用
 
 

@@ -1,0 +1,16 @@
+/* 在 DownloadLink.vue 的 <style scoped> 或 .vitepress/theme/custom.css 中 */
+:root.dark .download-modal {
+  background-color: #333; /* 暗黑模式下的背景色 */
+  color: #eee; /* 暗黑模式下的文本颜色 */
+}
+
+:root.dark .download-modal h3,
+:root.dark .download-modal p {
+  color: #ddd;
+}
+
+:root.dark .progress-bar-container {
+  background-color: #555;
+}
+
+/* ... 其他暗黑模式调整 */

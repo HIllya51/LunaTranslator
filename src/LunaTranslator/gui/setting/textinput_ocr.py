@@ -346,11 +346,13 @@ class showocrimage(saveposwindow):
         self.layout1 = QVBoxLayout(qw)
         self.setAcceptDrops(True)
         self.setCentralWidget(qw)
-        icon = getIconButton(callback=self.openff, icon="fa.folder-open")
+        icon = getIconButton(callback=self.openff, icon="fa.file-image-o")
         button = getIconButton(callback=self.retest, icon="fa.rotate-right")
+        button2 = getIconButton(callback=self.retest2, icon="fa.rotate-right")
         hb = QHBoxLayout()
         hb.addWidget(icon)
         hb.addWidget(button)
+        hb.addWidget(button2)
         self.dial = QSpinBox(self)
         self.dial.setRange(0, 359)
         self.dial.setWrapping(True)
@@ -379,13 +381,16 @@ class showocrimage(saveposwindow):
         rotated_image = self.originimage.transformed(transform)
         self.originlabel.showpixmap(QPixmap.fromImage(rotated_image))
 
+    def retest2(self):
+        gobject.baseobject.textgetmethod(self.retest(), is_auto_run=False)
+
     def retest(self):
         if self.originimage is None:
             return
         transform = QTransform()
         transform.rotate(self.dial.value())
         result = ocr_run(self.originimage.transformed(transform))
-        result = result.maybeerror()
+        return result.maybeerror()
 
     def setimagefunction(self, originimage):
         self.originimage = originimage

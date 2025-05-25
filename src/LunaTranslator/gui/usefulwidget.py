@@ -2127,6 +2127,17 @@ class mshtmlWidget(abstractwebview):
 class KeySequenceEdit(QKeySequenceEdit):
     changeedvent = pyqtSignal(str)
 
+    def focusOutEvent(self, _):
+        # Qt6 focusOut和timeout会把内容清空
+        if self.callonlymod and not isqt5:
+            return
+        super().focusOutEvent(_)
+
+    def timerEvent(self, _):
+        if self.callonlymod and not isqt5:
+            return
+        super().timerEvent(_)
+
     def string(self):
         value = self.keySequence().toString()
         if value:

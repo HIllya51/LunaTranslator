@@ -780,13 +780,19 @@ class TextBrowser(QWidget, dataget):
             tf.setTopMargin(_fha + globalconfig["lineheights"]["marginTop"])
             tf.setLineHeight(
                 self.getlhfordict(globalconfig["lineheights"]),
-                LineHeightTypes.ProportionalHeight,
+                self.ProportionalHeight,
             )
             tf.setBottomMargin(globalconfig["lineheights"]["marginBottom"])
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
-
+    @property
+    def ProportionalHeight(self):
+        _= QTextBlockFormat.LineHeightTypes.ProportionalHeight
+        if not isqt5:
+            _= _.value
+        return _
+        
     def _setlineheight(self, b1, b2, texttype: TextType, klass: str):
         if texttype == TextType.Origin:
             fh = globalconfig["lineheights"]
@@ -800,7 +806,7 @@ class TextBrowser(QWidget, dataget):
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
             tf.setTopMargin(fh.get("marginTop", 0))
-            tf.setLineHeight(self.getlhfordict(fh), LineHeightTypes.ProportionalHeight)
+            tf.setLineHeight(self.getlhfordict(fh), self.ProportionalHeight)
             tf.setBottomMargin(fh.get("marginBottom", 0))
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)

@@ -129,7 +129,7 @@ class AttachProcessDialog(saveposwindow):
         self.buttonBox.rejected.connect(self.close)
         self.processList.clicked.connect(self.selectedfunc)
         self.processIdEdit.textEdited.connect(self.editpid)
-        self.processIdEdit.setValidator(QRegExpValidator(QRegExp("([0-9]+,)*")))
+        self.processIdEdit.setValidator(QRegularExpressionValidator(QRegularExpression("([0-9]+,)*")))
         # self.processEdit.setReadOnly(True)
         self.processEdit.textEdited.connect(self.filterproc)
 

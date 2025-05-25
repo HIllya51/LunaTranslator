@@ -2,9 +2,11 @@ import DefaultTheme from 'vitepress/theme';
 import { useRouter } from 'vitepress'
 import { watch, h, onMounted } from "vue"
 import './style.css';
+import './components/download.css'
 import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import giscus from './giscus.vue'
 import notfound from './notfound.vue';
+import DownloadLink from './components/DownloadLink.vue' // 路径根据你的结构调整
 export default {
     ...DefaultTheme,
     Layout() {
@@ -15,9 +17,12 @@ export default {
     },
     enhanceApp({ app }) {
         enhanceAppWithTabs(app)
+        app.component('DownloadLink', DownloadLink)
     },
     setup() {
         const handleRouteChange = () => {
+            if (window.localStorage.currentlang == 'zh')
+                return
             document.querySelectorAll('.downloadlink').forEach((e) => {
                 e.target = '_blank'
                 e.addEventListener('click', function (e) {
@@ -26,13 +31,11 @@ export default {
             })
             let timeout = 0;
             if (window.location.href.endsWith('support.html')) {
-                if (window.localStorage.currentlang != 'zh') {
-                    timeout = setTimeout(
-                        () => {
-                            window.location.href = 'https://www.patreon.com/hillya51'
-                        }, 5000
-                    )
-                }
+                timeout = setTimeout(
+                    () => {
+                        window.location.href = 'https://www.patreon.com/hillya51'
+                    }, 5000
+                )
             }
             else {
                 if (timeout) {
