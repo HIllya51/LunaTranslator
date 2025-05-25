@@ -464,7 +464,11 @@ class TranslatorWindow(resizableframeless):
         clear = True
         hira = []
         text = self.cleartext(text)
-        needhira = self.translate_text.textbrowser._clickable
+        needhira = (
+            globalconfig["isshowhira"]
+            or globalconfig["show_fenci"]
+            or self.translate_text.textbrowser._clickhovershow
+        )
         if needhira:
             hira = gobject.baseobject.parsehira(text)
 

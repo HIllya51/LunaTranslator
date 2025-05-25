@@ -130,7 +130,6 @@ class dataget:
         return (
             self._clickable
             or globalconfig["word_hover_show_word_info"]
-            or globalconfig["show_fenci"]
             or globalconfig["usesearchword_S_hover"]
         )
 
