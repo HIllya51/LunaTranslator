@@ -4,12 +4,26 @@
 
     <div v-if="showModal" class="download-overlay" @click="closeModal"></div>
     <div v-if="showModal" class="download-modal">
-      <div v-if="!error" class="progress-bar-container">
+      <div v-if="!error && !loading" class="progress-bar-container">
         <div class="progress-bar" :style="{ width: progress.toFixed(0) + '%' }"></div>
       </div>
-      <p v-if="!error">{{ getprogresstext() }}</p>
+      <div v-if="loading && !error">
+        <svg width="100%" height="2em" viewBox="0 0 30 10">
+          <circle cx="5" cy="5" r="3" fill="#000">
+            <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" begin="0.1" />
+          </circle>
+          <circle cx="15" cy="5" r="3" fill="#000">
+            <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" begin="0.2" />
+          </circle>
+          <circle cx="25" cy="5" r="3" fill="#000">
+            <animate attributeName="opacity" values="0;1;0" dur="1s" repeatCount="indefinite" begin="0.3" />
+          </circle>
+        </svg>
+      </div>
+      <p v-if="!loading && !error" style="display: flex; justify-content: space-between;"><span>{{ getprogresstext1()
+          }}</span> <span>{{ getprogresstext2() }}</span></p>
       <p v-if="error" class="error-message">{{ error }}</p>
-      <h3 v-if="showlink"><a :href=href>{{ getFilename() }}</a></h3>
+      <h3 v-if="error"><a :href=href>{{ getFilename() }}</a></h3>
     </div>
   </span>
 </template>
@@ -23,8 +37,7 @@ const props = defineProps({
     required: true,
   },
 });
-
-const showlink = ref(false)
+const loading = ref(false)
 const showModal = ref(false);
 const progress = ref(0);
 const error = ref(null);
@@ -33,10 +46,12 @@ const contentLength = ref(0);
 const receivedLength = ref(0);
 let objectUrl = null; // Store object URL to revoke later
 
-const getprogresstext = () => {
-  if (!contentLength.value) return '正在下载'
-  if (progress.value === 100) return '下载完毕'
-  return '正在下载' + ': ' + progress.value.toFixed(0) + '%' + "  " + (receivedLength.value / 1024 / 1024).toFixed(1) + ' MB / ' + (contentLength.value / 1024 / 1024).toFixed(1) + ' MB'
+const getprogresstext1 = () => {
+  return progress.value.toFixed(0) + '%'
+}
+
+const getprogresstext2 = () => {
+  return (receivedLength.value / 1024 / 1024).toFixed(1) + ' MB / ' + (contentLength.value / 1024 / 1024).toFixed(1) + ' MB'
 }
 
 const getFilename = () => {
@@ -47,22 +62,24 @@ const getFilename = () => {
 
 const startDownload = async () => {
   window.__ishowing = true
-  if (downloading.value) return; // 防止重复点击
-  showlink.value = false
+  if (downloading.value) return; // 防止重复点击 
   showModal.value = true;
   progress.value = 0;
   error.value = null;
   downloading.value = true;
+  contentLength.value = 0;
   receivedLength.value = 0;
+
+  loading.value = true;
   //document.getElementById('downloadoriginlink').href=props.href
   try {
     const response = await fetch(props.href);
 
     if (!response.ok) {
-      showlink.value = true
-      throw new Error('下载失败' + `: ${response.status} ${response.statusText}`);
+      throw new Error(`${response.status} ${response.statusText} ${await response.text()}`);
     }
 
+    loading.value = false;
     const _contentLength = +response.headers.get('Content-Length');
     const reader = response.body.getReader();
 
@@ -100,8 +117,8 @@ const startDownload = async () => {
     progress.value = 100; // 标记完成
 
   } catch (err) {
-    console.error('下载错误:', err);
-    error.value = err.message || '下载过程中发生错误。';
+    console.error(err);
+    error.value = err.message;
     progress.value = 0; // 重置进度
   } finally {
     downloading.value = false;
