@@ -427,8 +427,11 @@ namespace
 {
   bool elf4()
   {
-    // WORDS WORTH【Windows10対応】
-    // elf3只能拿到人名，跳过
+    // https://vndb.org/v315
+    //  WORDS WORTH【Windows10対応】
+    //  elf3只能拿到人名，跳过
+    // https://vndb.org/v2307
+    // 愛のチカラ
     uint8_t bytes[] = {
         0x72, 0x02,
         0x8b, 0x36,
