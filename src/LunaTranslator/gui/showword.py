@@ -40,7 +40,6 @@ from gui.usefulwidget import (
     getsimpleswitch,
     makesubtab_lazy,
     getIconButton,
-    saveposwindow,
     tabadd_lazy,
     threeswitch,
     VisLFormLayout,
@@ -48,6 +47,14 @@ from gui.usefulwidget import (
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
 from myutils.audioplayer import bass_code_cast
 from tts.basettsclass import TTSResult
+
+
+def cishusX():
+    __ = []
+    for K in globalconfig["cishu"]:
+        if os.path.isfile("LunaTranslator/cishu/{}.py".format(K)):
+            __.append(K)
+    return __
 
 
 class AnkiWindow(QWidget):
@@ -438,7 +445,7 @@ class AnkiWindow(QWidget):
             self,
             "不添加辞书",
             globalconfig["ignoredict"],
-            candidates=list(globalconfig["cishu"].keys()),
+            candidates=cishusX(),
             namemapfunction=dynamiccishuname,
             exec=True,
         )

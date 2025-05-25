@@ -1068,7 +1068,9 @@ class MAINUI:
             word = wordd
         elif isinstance(wordd, dict):
             word = WordSegResult.from_dict(wordd)
-        word = (word.word, word.prototype)[globalconfig.get("usewordorigin", False)]
+        wordwhich = lambda k: (word.word, word.prototype)[
+            globalconfig["usewordoriginfor"].get(k, False)
+        ]
 
         def __openlink(word1):
             for link in globalconfig["useopenlinklink1"]:
@@ -1097,7 +1099,7 @@ class MAINUI:
             elif result:
                 keytriggered.append(k)
         for k in keytriggered if keytriggered else noneedkeys:
-            funcs[k](word)
+            funcs[k](wordwhich(k))
 
     def __dontshowintaborsetbackdrop(self, widget: QWidget):
         window_flags = widget.windowFlags()

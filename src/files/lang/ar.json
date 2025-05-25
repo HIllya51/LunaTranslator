@@ -802,5 +802,5 @@
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) يستخدم [gplv3](https://github.com/hillya51/lunatranslator/blob/main/license).",
     "翻译接口": "واجهة الترجمة",
     "不使用的辞书": "القاموس غير المستخدم",
-    "使用原型查词": "استخدام النماذج الأصلية للبحث عن الكلمات"
+    "使用单词原型": "استخدام النماذج الأصلية للكلمات"
 }

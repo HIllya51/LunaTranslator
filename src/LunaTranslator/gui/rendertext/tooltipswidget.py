@@ -196,9 +196,15 @@ class tooltipswidget(QMainWindow, dataget):
             )
             result = result == -1 or result == True
             skip = result
-            word = (word.word, word.prototype)[globalconfig.get("usewordorigin", False)]
+            wordwhich = lambda k: (word.word, word.prototype)[
+                globalconfig["usewordoriginfor"].get(k, False)
+            ]
             gobject.baseobject.settin_ui.hover_search_word.emit(
-                word, gobject.baseobject.currenttext, False, True, result
+                wordwhich("searchword_S_hover"),
+                gobject.baseobject.currenttext,
+                False,
+                True,
+                result,
             )
         if skip:
             return

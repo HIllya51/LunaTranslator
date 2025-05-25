@@ -28,6 +28,7 @@ import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
 from gui.setting.about import offlinelinks
 from gui.rendertext.tooltipswidget import tooltipssetting
+from gui.showword import cishusX
 
 
 @Singleton
@@ -387,9 +388,6 @@ def setTabcishu_l(self):
                             callback=lambda: multicolorset(self),
                             tips="语法加亮_颜色设置",
                         ),
-                        "",
-                        "使用原型查词",
-                        D_getsimpleswitch(globalconfig, "usewordorigin"),
                     ],
                     [
                         dict(
@@ -421,14 +419,6 @@ def setTabcishu_l(self):
                                         callback=lambda: tooltipssetting(self),
                                         tips="样式",
                                     ),
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
-                                    "",
                                 ],
                                 [
                                     "查词_在小窗口中",
@@ -443,9 +433,7 @@ def setTabcishu_l(self):
                                             self,
                                             "不使用的辞书",
                                             globalconfig["ignoredict_S_hover"],
-                                            candidates=list(
-                                                globalconfig["cishu"].keys()
-                                            ),
+                                            candidates=cishusX(),
                                             namemapfunction=dynamiccishuname,
                                             exec=True,
                                         ),
@@ -465,6 +453,13 @@ def setTabcishu_l(self):
                                         ),
                                         tips="需要的键",
                                     ),
+                                    "",
+                                    "使用单词原型",
+                                    D_getsimpleswitch(
+                                        globalconfig["usewordoriginfor"],
+                                        "searchword_S_hover",
+                                        default=False,
+                                    ),
                                 ],
                             ],
                         )
@@ -481,9 +476,7 @@ def setTabcishu_l(self):
                                     "",
                                     getcenterX("需要键盘按下"),
                                     "",
-                                    "",
-                                    "",
-                                    "",
+                                    getcenterX("使用单词原型"),
                                 ],
                                 [
                                     "查词",
@@ -510,6 +503,14 @@ def setTabcishu_l(self):
                                             ),
                                         ]
                                     ),
+                                    "",
+                                    getcenterX(
+                                        D_getsimpleswitch(
+                                            globalconfig["usewordoriginfor"],
+                                            "searchword",
+                                            default=False,
+                                        )
+                                    ),
                                 ],
                                 [
                                     "查词_在小窗口中",
@@ -524,9 +525,7 @@ def setTabcishu_l(self):
                                             self,
                                             "不使用的辞书",
                                             globalconfig["ignoredict_S_click"],
-                                            candidates=list(
-                                                globalconfig["cishu"].keys()
-                                            ),
+                                            candidates=cishusX(),
                                             namemapfunction=dynamiccishuname,
                                             exec=True,
                                         ),
@@ -548,6 +547,14 @@ def setTabcishu_l(self):
                                                 tips="需要的键",
                                             ),
                                         ]
+                                    ),
+                                    "",
+                                    getcenterX(
+                                        D_getsimpleswitch(
+                                            globalconfig["usewordoriginfor"],
+                                            "searchword_S",
+                                            default=False,
+                                        )
                                     ),
                                 ],
                                 [
@@ -574,6 +581,14 @@ def setTabcishu_l(self):
                                                 tips="需要的键",
                                             ),
                                         ]
+                                    ),
+                                    "",
+                                    getcenterX(
+                                        D_getsimpleswitch(
+                                            globalconfig["usewordoriginfor"],
+                                            "copyword",
+                                            default=False,
+                                        )
                                     ),
                                 ],
                                 [
@@ -604,6 +619,14 @@ def setTabcishu_l(self):
                                                 tips="需要的键",
                                             ),
                                         ]
+                                    ),
+                                    "",
+                                    getcenterX(
+                                        D_getsimpleswitch(
+                                            globalconfig["usewordoriginfor"],
+                                            "openlink",
+                                            default=False,
+                                        )
                                     ),
                                 ],
                             ],

@@ -317,7 +317,7 @@ DECLARE_API void MouseMoveWindow(HWND hwnd)
     SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, NULL);
 }
 
-DECLARE_API bool NeedUseSysMove()
+DECLARE_API bool IsMultiDifferentDPI()
 {
     int numMonitors = GetSystemMetrics(SM_CMONITORS);
     if (numMonitors <= 1)

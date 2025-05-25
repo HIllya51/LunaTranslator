@@ -846,7 +846,7 @@ class resizableframeless(saveposwindow):
             # 用系统拖放有时会有问题。有时会和游戏竞争鼠标，导致窗口位置抖动。
             # 那么尽量不使用系统拖放，以避免触发这个问题，暂时没办法解决。
             # 检查DPI，仅当多屏幕且DPI不一致时才使用系统移动。
-            self.usesysmove = NativeUtils.NeedUseSysMove()
+            self.usesysmove = NativeUtils.IsMultiDifferentDPI()
             if self.usesysmove:
                 NativeUtils.MouseMoveWindow(int(self.winId()))
             self._move_drag = True
