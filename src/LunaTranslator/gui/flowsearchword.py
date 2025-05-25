@@ -210,6 +210,10 @@ class dialog_syssetting(LDialog):
 
 class WordViewTooltip(resizableframeless, DraggableQWidget):
 
+    def close(self):
+        self.hide()
+        self.lastword = None
+
     @property
     def gripSize(self):
         return globalconfig["WordViewTooltipBorder"]
@@ -390,7 +394,13 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         return super().closeEvent(event)
 
     def searchword(
-        self, word: str, sentence=None, append=False, fromhover=False, show=False, force=False
+        self,
+        word: str,
+        sentence=None,
+        append=False,
+        fromhover=False,
+        show=False,
+        force=False,
     ):
         if fromhover and not force:
             if word == self.lastword:
