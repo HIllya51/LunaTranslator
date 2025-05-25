@@ -34,7 +34,7 @@ export default {
                 timeout = setTimeout(
                     () => {
                         window.location.href = 'https://www.patreon.com/hillya51'
-                    }, 5000
+                    }, 3000
                 )
             }
             else {

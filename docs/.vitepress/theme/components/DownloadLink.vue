@@ -114,6 +114,7 @@ const closeModal = () => {
     objectUrl = null;
     let curlink = window.location.href
     setTimeout(() => {
+      if (downloading.value) return;
       if (curlink == window.location.href) {
         window.location.href = `/${window.localStorage.currentlang}/support.html`
       }
