@@ -896,7 +896,7 @@ class MAINUI:
     def startoutputer(self):
         for classname in globalconfig["textoutputer"]:
             if not os.path.exists(
-                "textio/LunaTranslator/textoutput/" + classname + ".py"
+                "LunaTranslator/textio/textoutput/" + classname + ".py"
             ):
                 continue
             aclass = importlib.import_module("textio.textoutput." + classname).Outputer
