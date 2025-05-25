@@ -292,6 +292,7 @@ class dialog_memory(saveposwindow):
             | Qt.WindowType.WindowMinMaxButtonsHint,
             poslist=globalconfig["memorydialoggeo"],
         )
+        self.show()
         self.setWindowTitle(
             "备忘录"
             + (
@@ -349,7 +350,6 @@ class dialog_memory(saveposwindow):
         self.tab.setCornerWidget(self.btnplus, Qt.Corner.TopLeftCorner)
         self.setCentralWidget(self.tab)
         self._add_trace(0)
-        self.show()
 
     def startorendrecord(self, btn: QPushButton, idx):
         if idx:
