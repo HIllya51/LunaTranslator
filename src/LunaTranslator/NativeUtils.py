@@ -564,7 +564,7 @@ CreateAutoKillProcess.restype = AutoHandle
 
 class _AutoKillProcess:
     def __init__(self, handle, pid):
-        self.handle = handle
+        self._refkep = handle
         self.pid = pid
 
 

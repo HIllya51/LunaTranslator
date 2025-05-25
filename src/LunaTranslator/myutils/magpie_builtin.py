@@ -90,8 +90,17 @@ class MagpieBuiltin:
             'files/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
             "files/Magpie",
         )
+        self.__reload()
         waitsignal = "Magpie_notify_prepared_ok_" + str(self.engine.pid)
         windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
+
+    @threader
+    def __reload(self):
+        windows.WaitForSingleObject(
+            windows.OpenProcess(windows.SYNCHRONIZE, False, self.engine.pid)
+        )
+        self.setuistatus(False)
+        self.init()
 
     def end(self):
         windows.SendMessage(
