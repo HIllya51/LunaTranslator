@@ -60,6 +60,17 @@ const getFilename = () => {
 };
 
 
+let lasttime = 0
+function _redirect() {
+  let curlink = window.location.href
+  if (lasttime) clearTimeout(lasttime)
+  lasttime = setTimeout(() => {
+    if (window.__ishowing) return;
+    if (curlink == window.location.href) {
+      window.location.href = `/${window.localStorage.currentlang}/support.html`
+    }
+  }, 1000)
+}
 const startDownload = async () => {
   window.__ishowing = true
   if (downloading.value) return; // 防止重复点击 
@@ -115,7 +126,8 @@ const startDownload = async () => {
     document.body.removeChild(link);
 
     progress.value = 100; // 标记完成
-
+    window.__ishowing = false
+    _redirect()
   } catch (err) {
     console.error(err);
     error.value = err.message;
@@ -125,21 +137,13 @@ const startDownload = async () => {
     // objectUrl 将在 closeModal 时或下次下载前被 revoke
   }
 };
-let lasttime = 0
 const closeModal = () => {
   window.__ishowing = false
   showModal.value = false;
   if (objectUrl) {
     URL.revokeObjectURL(objectUrl); // 释放内存
     objectUrl = null;
-    let curlink = window.location.href
-    if (lasttime) clearTimeout(lasttime)
-    lasttime = setTimeout(() => {
-      if (window.__ishowing) return;
-      if (curlink == window.location.href) {
-        window.location.href = `/${window.localStorage.currentlang}/support.html`
-      }
-    }, 1000)
+    _redirect()
   }
   // 如果下载未完成或出错，重置状态
   if (progress.value < 100 || error.value) {

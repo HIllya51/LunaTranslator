@@ -7,12 +7,12 @@
 
 但有时想要同时使用多个不同的api接口地址/prompt/model/参数等来对比翻译效果。方法是：
 
-点击右下方的“+”按钮
-![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-弹出一个窗口，选择大模型通用接口，并为之取个名字。这样会复制一份当前大模型通用接口的设置和api。
-![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
-激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
-![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
+1. 点击上方的“+”按钮
+    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
+1. 弹出一个窗口，选择大模型通用接口，并为之取个名字。这样会复制一份当前大模型通用接口的设置和api。
+    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
+1. 激活复制的接口，并可以进行单独设置。复制的接口可以和原接口一起运行，从而使用多个不同的设置来运行。
+    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::
 
 ::: info
