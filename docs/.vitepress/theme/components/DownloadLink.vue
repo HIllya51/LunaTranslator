@@ -4,13 +4,12 @@
 
     <div v-if="showModal" class="download-overlay" @click="closeModal"></div>
     <div v-if="showModal" class="download-modal">
-      <h3>正在下载: <a :href=href>{{ getFilename() }}</a></h3>
-      <div class="progress-bar-container">
+      <div v-if="!error" class="progress-bar-container">
         <div class="progress-bar" :style="{ width: progress.toFixed(0) + '%' }"></div>
       </div>
-      <p>{{ getprogresstext() }}</p>
+      <p v-if="!error">{{ getprogresstext() }}</p>
       <p v-if="error" class="error-message">{{ error }}</p>
-      <button v-if="error || progress === 100" @click="closeModal" class="close-button">关闭</button>
+      <h3 v-if="showlink"><a :href=href>{{ getFilename() }}</a></h3>
     </div>
   </span>
 </template>
@@ -25,7 +24,7 @@ const props = defineProps({
   },
 });
 
-
+const showlink = ref(false)
 const showModal = ref(false);
 const progress = ref(0);
 const error = ref(null);
@@ -35,8 +34,9 @@ const receivedLength = ref(0);
 let objectUrl = null; // Store object URL to revoke later
 
 const getprogresstext = () => {
-  if (!contentLength.value) return ''
-  return progress.value.toFixed(0) + '%' + "  " + (receivedLength.value / 1024 / 1024).toFixed(1) + ' MB / ' + (contentLength.value / 1024 / 1024).toFixed(1) + ' MB'
+  if (!contentLength.value) return '正在下载'
+  if (progress.value === 100) return '下载完毕'
+  return '正在下载' + ': ' + progress.value.toFixed(0) + '%' + "  " + (receivedLength.value / 1024 / 1024).toFixed(1) + ' MB / ' + (contentLength.value / 1024 / 1024).toFixed(1) + ' MB'
 }
 
 const getFilename = () => {
@@ -46,8 +46,9 @@ const getFilename = () => {
 
 
 const startDownload = async () => {
+  window.__ishowing = true
   if (downloading.value) return; // 防止重复点击
-
+  showlink.value = false
   showModal.value = true;
   progress.value = 0;
   error.value = null;
@@ -58,7 +59,8 @@ const startDownload = async () => {
     const response = await fetch(props.href);
 
     if (!response.ok) {
-      throw new Error(`下载失败: ${response.status} ${response.statusText}`);
+      showlink.value = true
+      throw new Error('下载失败' + `: ${response.status} ${response.statusText}`);
     }
 
     const _contentLength = +response.headers.get('Content-Length');
@@ -67,7 +69,7 @@ const startDownload = async () => {
     const chunks = [];
 
     // eslint-disable-next-line no-constant-condition
-    while (true) {
+    while (downloading.value) {
       const { done, value } = await reader.read();
       if (done) {
         break;
@@ -84,7 +86,7 @@ const startDownload = async () => {
         progress.value = 50; // Or some visual cue
       }
     }
-
+    if (!downloading.value) return
     const blob = new Blob(chunks);
     objectUrl = URL.createObjectURL(blob);
 
@@ -106,15 +108,17 @@ const startDownload = async () => {
     // objectUrl 将在 closeModal 时或下次下载前被 revoke
   }
 };
-
+let lasttime = 0
 const closeModal = () => {
+  window.__ishowing = false
   showModal.value = false;
   if (objectUrl) {
     URL.revokeObjectURL(objectUrl); // 释放内存
     objectUrl = null;
     let curlink = window.location.href
-    setTimeout(() => {
-      if (downloading.value) return;
+    if (lasttime) clearTimeout(lasttime)
+    lasttime = setTimeout(() => {
+      if (window.__ishowing) return;
       if (curlink == window.location.href) {
         window.location.href = `/${window.localStorage.currentlang}/support.html`
       }
@@ -170,7 +174,6 @@ a {
 
 .download-modal h3 {
   margin-top: 0;
-  margin-bottom: 20px;
   font-size: 1.2em;
   color: #333;
 }
@@ -193,12 +196,13 @@ a {
 }
 
 .download-modal p {
-  margin-bottom: 15px;
+  margin-bottom: 0px;
   font-size: 0.9em;
   color: #555;
 }
 
 .error-message {
+  margin-top: 0px;
   color: red;
   font-weight: bold;
 }

@@ -23,12 +23,6 @@ export default {
         const handleRouteChange = () => {
             if (window.localStorage.currentlang == 'zh')
                 return
-            document.querySelectorAll('.downloadlink').forEach((e) => {
-                e.target = '_blank'
-                e.addEventListener('click', function (e) {
-                    window.location.href = `/${window.localStorage.currentlang}/support.html`
-                });
-            })
             let timeout = 0;
             if (window.location.href.endsWith('support.html')) {
                 timeout = setTimeout(
