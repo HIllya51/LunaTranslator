@@ -1,9 +1,8 @@
 ﻿// Magpie\AdaptersService.cpp
 #ifndef WINXP
 #include <dxgi1_6.h>
-#include <d3d11_4.h>
 #else
-#include "xp_dxgi.h"
+#include "../xpundef/xp_dxgi.h"
 #endif
 struct AdapterInfo
 {

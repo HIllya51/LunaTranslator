@@ -266,3 +266,7 @@ public:
         /* [annotation][in] */
         _In_ DWORD dwCookie) = 0;
 };
+
+extern "C"
+HRESULT WINAPI CreateDXGIFactory2(UINT Flags, REFIID riid, _COM_Outptr_ void **ppFactory);
+#define DXGI_ADAPTER_FLAG_SOFTWARE 2

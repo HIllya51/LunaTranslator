@@ -1,4 +1,4 @@
-#include "ortwrapper.hpp"
+﻿#include "ortwrapper.hpp"
 // https://github.com/microsoft/onnxruntime/issues/3172#issuecomment-682193911
 #define ORT_API_MANUAL_INIT
 #include <onnxruntime_cxx_api.h>
@@ -75,7 +75,16 @@ public:
     pOnnxSession(const std::wstring &path, int numOfThread, bool gpu, int device)
     {
         if (gpu && isDMLAvailable())
-            Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, device));
+        {
+            try
+            {
+                Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, device));
+                // 失败返回err=66，但没有errmsg，会回退到cpu，不要报错。
+            }
+            catch (...)
+            {
+            }
+        }
         sessionOptions.SetIntraOpNumThreads(numOfThread);
         sessionOptions.SetInterOpNumThreads(numOfThread); // 需要SetExecutionMode(ExecutionMode::ORT_PARALLEL)(默认即是)。这个好像对当前这个ocr模型没啥卵用
         sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);

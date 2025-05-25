@@ -6,7 +6,7 @@
 #include <windows.globalization.h>
 #include <windows.media.ocr.h>
 #else
-#include "xp.hpp"
+#include "../../xpundef/xp_winrt.hpp"
 #endif
 #include "hstring.hpp"
 

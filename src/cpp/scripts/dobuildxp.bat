@@ -57,5 +57,5 @@ goto :main
         set target_arch=%host_arch%
     )
     call :activate_msvc "%target_arch%" || goto :eof
-    msbuild ..\build\x86_xp\LunaPlugins.sln -p:Configuration=Release
+    msbuild ..\build\x86_winxp\LunaPlugins.sln -p:Configuration=Release
     goto :eof

@@ -20,12 +20,12 @@ def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
     combo.blockSignals(True)
     combo.clear()
     adapterinfos.sort(key=lambda _: _[0])
-    infosx = list(_[:3] for _ in adapterinfos)
+    infosx = list(list(_[:3]) for _ in adapterinfos)
     visx = list(_[3] for _ in adapterinfos)
     default = "默认"
     if visx:
         default += "_[[(" + visx[0] + ")]]"
-    combo.addItems([default] + visx, [(-1, 0, 0)] + infosx)
+    combo.addItems([default] + visx, [[-1, 0, 0]] + infosx)
     combo.blockSignals(False)
     graphicsCardId: dict = magpie_config["profiles"][globalconfig["profiles_index"]][
         "graphicsCardId"
@@ -35,10 +35,7 @@ def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
         graphicsCardId["vendorId"],
         graphicsCardId["deviceId"],
     )
-    if curr not in infosx:
-        combo.setCurrentIndex(0)
-    else:
-        combo.setCurrentIndex(infosx.index(curr) + 1)
+    combo.setCurrentData(list(curr))
 
 
 def __changed(combo: SuperCombo, idx):
@@ -56,7 +53,7 @@ def createadaptercombo():
     combo = SuperCombo__1()
     combo.signal.connect(functools.partial(adapterchangedcallback, combo))
     combo.currentIndexChanged.connect(functools.partial(__changed, combo))
-    AdapterService().init(combo.signal.emit)
+    AdapterService.init(combo.signal.emit)
     return combo
 
 

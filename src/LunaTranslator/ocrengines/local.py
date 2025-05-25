@@ -3,13 +3,21 @@ from myutils.utils import dynamiclink, stringfyerror
 from myutils.config import _TR, globalconfig
 from language import Languages
 from ocrengines.baseocrclass import baseocr, OCRResult
-from CVUtils import LocalOCR, SysNotSupport, ModelLoadFailed, OcrIsDMLAvailable
+from CVUtils import LocalOCR, SysNotSupport, ModelLoadFailed, GetDeviceInfoD3D12
 import gobject, requests, json, shutil, hashlib
 from traceback import print_exc
 from qtsymbols import *
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
-from gui.usefulwidget import SuperCombo, getboxwidget, getspinbox, getsimpleswitch
+from gui.usefulwidget import (
+    SuperCombo,
+    getboxwidget,
+    getboxlayout,
+    getspinbox,
+    getsimpleswitch,
+    getsimplecombobox,
+)
+import functools
 from gui.dynalang import LPushButton, LLabel
 from gui.usefulwidget import VisLFormLayout
 from myutils.wrapper import Singleton
@@ -18,6 +26,36 @@ from gui.dynalang import LDialog, LFormLayout
 
 @Singleton
 class customwidget(LDialog):
+    delayload = pyqtSignal(list)
+
+    def __delayload(self, config__, lform: LFormLayout, devices):
+        if devices:
+            print(devices)
+            d = getsimplecombobox(
+                [_[3] for _ in devices],
+                config__,
+                "device",
+                static=True,
+                internal=[list(_[:3]) for _ in devices],
+            )
+            d.setEnabled(config__["gpu"])
+            lform.insertRow(
+                lform.rowCount() - 1,
+                "使用GPU",
+                getboxlayout(
+                    [getsimpleswitch(config__, "gpu", callback=d.setEnabled), d]
+                ),
+            )
+        else:
+            lform.insertRow(
+                lform.rowCount() - 1, "当前软件或操作系统版本不支持使用GPU", None
+            )
+
+    @threader
+    def __load(self):
+        devices = GetDeviceInfoD3D12()
+        self.delayload.emit(devices)
+
     def __init__(self, parent, config: dict, title) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         config__ = config.copy()
@@ -26,15 +64,8 @@ class customwidget(LDialog):
         lform = LFormLayout(self)
         lform.addRow("优先使用更高精度的模型", getsimpleswitch(config__, "accfirst"))
         lform.addRow("线程数", getspinbox(1, 16, config__, "thread"))
-        if OcrIsDMLAvailable():
-            d = getspinbox(0, 16, config__, "device")
-            d.setEnabled(config__["gpu"])
-            lform.addRow(
-                "使用GPU", getsimpleswitch(config__, "gpu", callback=d.setEnabled)
-            )
-            lform.addRow("GPU序号", d)
-        else:
-            lform.addRow("当前软件或操作系统版本不支持使用GPU", None)
+        self.delayload.connect(functools.partial(self.__delayload, config__, lform))
+
         lineW = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
@@ -44,6 +75,7 @@ class customwidget(LDialog):
         lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
         lineW.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
         lform.addRow(lineW)
+        self.__load()
         self.show()
 
 

@@ -1,9 +1,61 @@
 ﻿
 #include "dbcrnn.hpp"
+#ifndef WINXP
+#include <dxgi.h>
+#include <dxgi1_6.h>
+#include <d3d12.h>
+#else
+#include "../xpundef/xp_dxgi.h"
+#include "../xpundef/xp_d3d12.h"
+#endif
+static std::vector<DXGI_ADAPTER_DESC1> get_descs(std::function<bool(int, IDXGIAdapter1 *, const DXGI_ADAPTER_DESC1 &)> check)
+{
+    std::vector<DXGI_ADAPTER_DESC1> decs;
+    [&]()
+    {
+        CComPtr<IDXGIFactory4> factory;
+        CHECK_FAILURE_NORET(CreateDXGIFactory2(0, IID_PPV_ARGS(&factory)));
 
-DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, int device, void (*cb2)(const char *))
+        CComPtr<IDXGIAdapter1> adapter;
+        for (UINT i = 0; factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+        {
+            DXGI_ADAPTER_DESC1 desc;
+            CHECK_FAILURE_CONTINUE(adapter->GetDesc1(&desc));
+            if (!check(i, adapter, desc))
+                continue;
+            decs.push_back(desc);
+        }
+    }();
+
+    return decs;
+}
+static int findDeviceId(int device, UINT VendorId, UINT DeviceId)
+{
+    if (VendorId == 0 && DeviceId == 0)
+        return 0;
+    auto descs = get_descs([](auto, auto *, auto &)
+                           { return true; });
+    // 有可能存在两个device有相同的vendorid和deviceid
+    for (auto i = 0; i < descs.size(); i++)
+    {
+        if (i == device && VendorId == descs[i].VendorId && DeviceId == descs[i].DeviceId)
+            return i;
+    }
+    for (auto i = 0; i < descs.size(); i++)
+    {
+        if (VendorId == descs[i].VendorId && DeviceId == descs[i].DeviceId)
+            return i;
+    }
+    return 0;
+}
+DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, int device, UINT VendorId, UINT DeviceId, void (*cb2)(const char *))
 {
     OcrLite *pOcrObj = nullptr;
+    if (gpu)
+    {
+        device = findDeviceId(device, VendorId, DeviceId);
+        std::cout << device << " " << VendorId << " " << DeviceId << std::endl;
+    }
     try
     {
         pOcrObj = new OcrLite(szDetModel, szRecModel, szKeyPath, nThreads, gpu, device);
@@ -155,4 +207,37 @@ DECLARE_API bool OcrIsDMLAvailable()
         std::cout << p << std::endl;
     }
     return isDMLAvailable();
+}
+
+#ifndef _GAMING_XBOX
+#define IID_GRAPHICS_PPV_ARGS IID_PPV_ARGS
+#endif
+DECLARE_API void GetDeviceInfoD3D12(void (*cb)(int, UINT, UINT, LPCWSTR))
+{
+    // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L308
+    // std::unordered_map<uint64_t, DeviceInfo> GetDeviceInfoD3D12()
+    // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/providers/dml/dml_provider_factory.cc#L468
+    // Microsoft::WRL::ComPtr<ID3D12Device> DMLProviderFactoryCreator::CreateD3D12Device(int device_id, bool skip_software_device_check)
+
+    auto checker = [&](int i, IDXGIAdapter1 *adapter, const DXGI_ADAPTER_DESC1 &desc)
+    {
+        std::wcout << i << L"\t" << desc.Description << std::endl;
+        // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/providers/dml/dml_provider_factory.cc#L491
+        // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L324
+        if ((desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0 ||
+            (desc.Flags & DXGI_ADAPTER_FLAG_REMOTE) != 0)
+        {
+            // software or remote. skip
+            return false;
+        }
+
+        // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/providers/dml/dml_provider_factory.cc#L494C4-L495C145
+        CComPtr<ID3D12Device> d3d12_device;
+        if (FAILED(D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, IID_GRAPHICS_PPV_ARGS(&d3d12_device))))
+            return false;
+
+        cb(i, desc.VendorId, desc.DeviceId, desc.Description);
+        return false;
+    };
+    get_descs(checker);
 }

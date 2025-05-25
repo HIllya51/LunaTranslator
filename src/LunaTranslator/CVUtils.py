@@ -10,8 +10,10 @@ from ctypes import (
     c_wchar_p,
     CFUNCTYPE,
 )
+from ctypes.wintypes import UINT
 from qtsymbols import *
 import gobject
+import functools
 
 
 class InvalidImage(Exception):
@@ -90,16 +92,31 @@ _OcrDetectCallback = CFUNCTYPE(
 _error = CFUNCTYPE(None, c_char_p)
 
 
-def OcrIsDMLAvailable():
+def GetDeviceInfoD3D12():
     _CVUtils = _DelayLoadCVUtils()
     OcrIsDMLAvailable = _CVUtils.OcrIsDMLAvailable
     OcrIsDMLAvailable.restype = c_bool
-    return OcrIsDMLAvailable()
+    GetDeviceInfoD3D12 = _CVUtils.GetDeviceInfoD3D12
+    GetDeviceInfoD3D12_CB = CFUNCTYPE(None, c_int, UINT, UINT, c_wchar_p)
+    GetDeviceInfoD3D12.argtypes = (GetDeviceInfoD3D12_CB,)
+
+    if not OcrIsDMLAvailable():
+        return
+
+    ret = []
+
+    def __cb(ret: list, i, VendorId, DeviceId, name):
+        ret.append((i, VendorId, DeviceId, name))
+
+    GetDeviceInfoD3D12(GetDeviceInfoD3D12_CB(functools.partial(__cb, ret)))
+    return ret
 
 
 class LocalOCR:
 
-    def __init__(self, det, rec, key, thread: int, gpu: bool, device: int) -> None:
+    def __init__(
+        self, det, rec, key, thread: int, gpu: bool, device: "tuple[int, int, int]"
+    ) -> None:
 
         _CVUtils = _DelayLoadCVUtils()
         OcrLoadRuntime = _CVUtils.OcrLoadRuntime
@@ -109,7 +126,15 @@ class LocalOCR:
 
         self._OcrInit = _CVUtils.OcrInit
         self._OcrInit.restype = c_void_p
-        self._OcrInit.argtypes = c_wchar_p, c_wchar_p, c_wchar_p, c_int32, c_bool, c_int
+        self._OcrInit.argtypes = (
+            c_wchar_p,
+            c_wchar_p,
+            c_wchar_p,
+            c_int32,
+            c_bool,
+            UINT,
+            UINT,
+        )
 
         self._OcrDetect = _CVUtils.OcrDetect
         self._OcrDetect.argtypes = (
@@ -124,8 +149,23 @@ class LocalOCR:
         OcrDestroy.argtypes = (c_void_p,)
 
         error: "list[bytes]" = []
+
+        if isinstance(device, int) or len(device) != 3:
+            device = VendorId = DeviceId = 0
+        else:
+            device, VendorId, DeviceId = device
         self.pOcrObj = _unique_ptr(
-            self._OcrInit(det, rec, key, thread, gpu, device, _error(error.append)),
+            self._OcrInit(
+                det,
+                rec,
+                key,
+                thread,
+                gpu,
+                device,
+                VendorId,
+                DeviceId,
+                _error(error.append),
+            ),
             OcrDestroy,
         )
         if error:

@@ -7,7 +7,7 @@
 #include <windows.graphics.directx.direct3d11.h>
 #include <windows.graphics.directx.direct3d11.h>
 #else
-#include "xp.hpp"
+#include "../../xpundef/xp_winrt.hpp"
 #endif
 
 #include "hstring.hpp"

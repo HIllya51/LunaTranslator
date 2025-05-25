@@ -8,7 +8,7 @@
 #ifndef WINXP
 #include <audioclientactivationparams.h>
 #else
-#include "xpdef.hpp"
+#include "../../xpundef/xp_waspi.hpp"
 #endif
 
 #include "Common.h"

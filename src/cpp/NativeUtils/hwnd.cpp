@@ -1,6 +1,17 @@
 ﻿#include <dbghelp.h>
 #include <uiautomation.h>
 #include "osversion.hpp"
+#ifndef WINXP
+#include <shellscalingapi.h>
+#else
+#include "../xpundef/xp_shellscalingapi.h"
+#endif
+
+#ifndef WINXP
+#define FUCKPRIVI PROCESS_QUERY_LIMITED_INFORMATION
+#else
+#define FUCKPRIVI (GetOSVersion().IsleWinXP() ? PROCESS_QUERY_INFORMATION : PROCESS_QUERY_LIMITED_INFORMATION)
+#endif
 
 DECLARE_API void SetWindowInTaskbar(HWND hwnd, bool show, bool tool)
 {
@@ -23,11 +34,6 @@ DECLARE_API void SetWindowInTaskbar(HWND hwnd, bool show, bool tool)
     }
     SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
 }
-#ifndef WINXP
-#define FUCKPRIVI PROCESS_QUERY_LIMITED_INFORMATION
-#else
-#define FUCKPRIVI (GetOSVersion().IsleWinXP() ? PROCESS_QUERY_INFORMATION : PROCESS_QUERY_LIMITED_INFORMATION)
-#endif
 DECLARE_API bool IsProcessRunning(DWORD pid)
 {
     CHandle hprocess{OpenProcess(FUCKPRIVI, FALSE, pid)};
@@ -311,22 +317,6 @@ DECLARE_API void MouseMoveWindow(HWND hwnd)
     SendMessage(hwnd, WM_SYSCOMMAND, SC_MOVE | HTCAPTION, NULL);
 }
 
-#ifndef WINXP
-#include <shellscalingapi.h>
-#else
-typedef enum MONITOR_DPI_TYPE
-{
-    MDT_EFFECTIVE_DPI = 0,
-    MDT_ANGULAR_DPI = 1,
-    MDT_RAW_DPI = 2,
-    MDT_DEFAULT = MDT_EFFECTIVE_DPI
-} MONITOR_DPI_TYPE;
-STDAPI GetDpiForMonitor(
-    _In_ HMONITOR hmonitor,
-    _In_ MONITOR_DPI_TYPE dpiType,
-    _Out_ UINT *dpiX,
-    _Out_ UINT *dpiY);
-#endif
 DECLARE_API bool NeedUseSysMove()
 {
     int numMonitors = GetSystemMetrics(SM_CMONITORS);
