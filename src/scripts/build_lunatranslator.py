@@ -178,7 +178,7 @@ def downloadOCRModel():
 
 
 def buildhook(arch, target):
-    
+
     os.chdir("cpp/LunaHook")
     archA = ("win32", "x64")[arch == "x64"]
     vsver = "Visual Studio 16 2019" if target == "winxp" else "Visual Studio 17 2022"
@@ -203,7 +203,7 @@ def buildhook(arch, target):
     subprocess.run(
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
     )
-    release = os.listdir("builds")[0]
+    release = os.path.join("builds", os.listdir("builds")[0])
     for f in os.listdir(release):
         shutil.move(os.path.join(release, f), "builds")
     shutil.rmtree(release)
