@@ -190,18 +190,18 @@ def buildhook(arch, target):
     elif target == "winxp":
         config = "-DWINXP=ON"
     subprocess.run(
-        f'cmake {config} -DBUILD_HOST=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
+        f'cmake {config} -DBUILD_HOST=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_2'
     )
     subprocess.run(
-        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
+        f"cmake --build ./build/{arch}_{target}_2 --config Release --target ALL_BUILD -j 14"
     )
     if target != "win10":
         config += " -DUSE_VC_LTL=ON "
     subprocess.run(
-        f'cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
+        f'cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_1'
     )
     subprocess.run(
-        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
+        f"cmake --build ./build/{arch}_{target}_1 --config Release --target ALL_BUILD -j 14"
     )
     release = os.path.join("builds", os.listdir("builds")[0])
     os.makedirs("builds/Release", exist_ok=True)
