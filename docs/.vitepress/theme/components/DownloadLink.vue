@@ -56,7 +56,7 @@ const getprogresstext2 = () => {
 
 const getFilename = () => {
   let spls = props.href.split('/')
-  return 'LunaTranslator_' + spls[spls.length - 1] + '.zip'
+  return 'LunaTranslator_' + spls[spls.length - 1].split('?')[0] + '.zip'
 };
 
 
