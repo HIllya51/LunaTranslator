@@ -25,6 +25,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01001A4021670000 | あやかしごはん ～おおもりっ！～ for S |
 |  | 0100E9801CAC2000 | OVER REQUIEMZ |
 |  | 0100978013276000 | Memories Off |
 |  | 0100B4A01326E000 | Memories Off ～それから～ |

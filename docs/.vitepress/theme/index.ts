@@ -21,6 +21,16 @@ export default {
     },
     setup() {
         const handleRouteChange = () => {
+            document.querySelectorAll('.downloadlink').forEach((e) => {
+                e.target = '_blank'
+                e.addEventListener('click', async function (_) {
+                    const response = await fetch(e.href);
+                    if (!response.ok) {
+                        return
+                    }
+                    window.location.href = `/${window.localStorage.currentlang}/support.html`
+                });
+            })
             if (window.localStorage.currentlang == 'zh')
                 return
             let timeout = 0;
@@ -28,7 +38,7 @@ export default {
                 timeout = setTimeout(
                     () => {
                         window.location.href = 'https://www.patreon.com/hillya51'
-                    }, 3000
+                    }, 6000
                 )
             }
             else {

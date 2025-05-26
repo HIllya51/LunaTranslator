@@ -2514,8 +2514,13 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // あやかしごはん ～おおもりっ！～ for S
+    {0x83470EA0, {CODEC_UTF16, 1, 0x14, 0, F010042300C4F6000_1, 0x01001A4021670000ull, "1.0.0"}},
+    {0x83470ED0, {CODEC_UTF16, 1, 0x14, 0, F010042300C4F6000_1, 0x01001A4021670000ull, "1.0.2"}},
     // OVER REQUIEMZ
     {0x8208F5C0, {CODEC_UTF16, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.0"}},
+    {0x8299E69C, {CODEC_UTF16, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.1"}},
+    {0x8299F9B0, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.1"}},
     // Memories Off
     {0x8003eeac, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100978013276000ull, "1.0.0"}},
     {0x8003eebc, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100978013276000ull, "1.0.1"}},

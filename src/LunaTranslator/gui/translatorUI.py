@@ -1140,7 +1140,8 @@ class TranslatorWindow(resizableframeless):
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
 
     def showmenu(self, _):
-        if self.titlebar.childAt(_):
+        child = self.titlebar.childAt(_)
+        if child and child.objectName():
             return
         trayMenu = QMenu(gobject.baseobject.commonstylebase)
         settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
