@@ -126,7 +126,7 @@ bool InsertPPSSPPHLEHooks()
         {"sceFontGetShadowInfo", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowInfo("},
         {"sceFontGetCharImageRect", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharImageRect("},
         {"sceFontGetShadowImageRect", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowImageRect("},
-        {"sceFontGetCharGlyphImage", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharGlyphImage("},
+        //{"sceFontGetCharGlyphImage", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharGlyphImage("},
         //{"sceFontGetCharGlyphImage_Clip", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetCharGlyphImage_Clip("},
         {"sceFontGetShadowGlyphImage", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowGlyphImage("},
         //{"sceFontGetShadowGlyphImage_Clip", GETARG(2), CODEC_UTF16, GETARG(1), "sceFontGetShadowGlyphImage_Clip("},

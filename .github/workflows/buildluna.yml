@@ -37,12 +37,12 @@ jobs:
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 26100
-      - run: python src/scripts/build_lunahook.py build ${{matrix.arch}} 1 ${{matrix.target}}
+      - run: python src/scripts/build_lunatranslator.py hook ${{matrix.arch}} ${{matrix.target}}
 
       - uses: actions/upload-artifact@v4
         with:
           name: hook_${{matrix.arch}}_${{matrix.target}}
-          path: src/cpp/LunaHook/builds/Release${{matrix.target=='winxp' &&'_winxp'||''}}
+          path: src/cpp/LunaHook/builds/Release
   build_cpp:
     runs-on: ${{matrix.runson}}
     strategy:

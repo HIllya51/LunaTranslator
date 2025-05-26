@@ -62,7 +62,8 @@ void TextThread::Push(BYTE *data, int length)
 		if (auto converted = commonparsestring(data, length, &hp, Host::defaultCodepage))
 		{
 			buffer.append(converted.value());
-			if (hp.type & FULL_STRING && converted.value().size() > 1)
+			isMultiCharString = isMultiCharString || (converted.value().size() > 1);
+			if (hp.type & FULL_STRING && isMultiCharString)
 				buffer.push_back(L'\n');
 		}
 		else

@@ -81,8 +81,9 @@ public:
                 Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, device));
                 // 失败返回err=66，但没有errmsg，会回退到cpu，不要报错。
             }
-            catch (...)
+            catch (std::exception &e)
             {
+                std::cout << e.what() << std::endl;
             }
         }
         sessionOptions.SetIntraOpNumThreads(numOfThread);

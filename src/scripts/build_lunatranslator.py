@@ -86,9 +86,7 @@ def downloadlr():
         "LRProc.exe",
         "LRSubMenus.dll",
     ]:
-        fuckmove(
-            os.path.join("scripts/temp", fn, f), "files/Locale/Locale_Remulator"
-        )
+        fuckmove(os.path.join("scripts/temp", fn, f), "files/Locale/Locale_Remulator")
 
 
 def downloadLocaleEmulator():
@@ -150,9 +148,7 @@ def downloadCurl(target):
         subprocess.run(f"7z x -y {curlFile32xp.split('/')[-1]}")
         os.chdir(rootDir)
         outputDirName32 = curlFile32xp.split("/")[-1].replace(".zip", "")
-        fuckmove(
-            f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32"
-        )
+        fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32")
         return
     os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {curlFile32}")
@@ -163,9 +159,7 @@ def downloadCurl(target):
     outputDirName32 = curlFile32.split("/")[-1].replace(".zip", "")
     fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32")
     outputDirName64 = curlFile64.split("/")[-1].replace(".zip", "")
-    fuckmove(
-        f"scripts/temp/{outputDirName64}/bin/libcurl-x64.dll", "files/DLL64"
-    )
+    fuckmove(f"scripts/temp/{outputDirName64}/bin/libcurl-x64.dll", "files/DLL64")
 
 
 def downloadOCRModel():
@@ -174,13 +168,44 @@ def downloadOCRModel():
         os.mkdir("ocrmodel/")
     link = "https://lunatranslator.org/r2/luna/ocr_models_v5/jazhchten.zip"
     os.chdir("ocrmodel")
-    __=hashlib.md5(link.encode()).hexdigest()
+    __ = hashlib.md5(link.encode()).hexdigest()
     os.makedirs(__, exist_ok=True)
     os.chdir(__)
     subprocess.run(f"curl -C - -LO {link}")
     subprocess.run(f"7z x -y jazhchten.zip")
     os.remove(f"jazhchten.zip")
     os.chdir(rootDir)
+
+
+def buildhook(arch, target):
+
+    archA = ("win32", "x64")[arch == "x64"]
+    vsver = "Visual Studio 16 2019" if target == "winxp" else "Visual Studio 17 2022"
+    Tool = "v141_xp" if target == "winxp" else f"host={arch}"
+    if target == "win10":
+        config = "-DWIN10ABOVE=ON"
+    elif target == "win7":
+        config = ""
+    elif target == "winxp":
+        config = "-DWINXP=ON"
+    subprocess.run(
+        f'cmake {config} -DBUILD_HOST=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
+    )
+    subprocess.run(
+        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
+    )
+    if target != "win10":
+        config += " -DUSE_VC_LTL=ON "
+    subprocess.run(
+        f'cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
+    )
+    subprocess.run(
+        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
+    )
+    release = os.listdir("builds")[0]
+    for f in os.listdir(release):
+        shutil.move(os.path.join(release, f), "builds")
+    shutil.rmtree(release)
 
 
 def buildPlugins(arch, target):
@@ -262,6 +287,8 @@ if __name__ == "__main__":
             exit()
     elif sys.argv[1] == "cpp":
         buildPlugins(sys.argv[2], sys.argv[3])
+    elif sys.argv[1] == "hook":
+        buildhook(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "pyrt":
         arch = sys.argv[2]
         pythonversion = sys.argv[3]

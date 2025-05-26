@@ -9,6 +9,10 @@ void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans,
   { // renpy
     buff->from(trans);
   }
+  else if (hp.type & CODEC_UTF32)
+  {
+    buff->from(utf16_to_utf32(trans));
+  }
   else
   {
     std::string astr;

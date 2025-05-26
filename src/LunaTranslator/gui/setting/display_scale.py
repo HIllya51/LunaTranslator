@@ -19,12 +19,14 @@ class SuperCombo__1(SuperCombo):
 def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
     combo.blockSignals(True)
     combo.clear()
-    adapterinfos.sort(key=lambda _: _[0])
-    infosx = list(list(_[:3]) for _ in adapterinfos)
+    print(adapterinfos)
+    infosx = list(_[:3] for _ in adapterinfos)
     visx = list(_[3] for _ in adapterinfos)
     default = "默认"
     if visx:
-        default += "_[[(" + visx[0] + ")]]"
+        default = "默认_[[({})]]".format(visx[0])
+    for i in range(len(visx)):
+        visx[i] = "[[{}]]".format(visx[i])
     combo.addItems([default] + visx, [[-1, 0, 0]] + infosx)
     combo.blockSignals(False)
     graphicsCardId: dict = magpie_config["profiles"][globalconfig["profiles_index"]][

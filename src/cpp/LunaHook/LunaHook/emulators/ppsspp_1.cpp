@@ -541,6 +541,15 @@ namespace
         StringFilter(buffer, TEXTANDLEN("\x81\x40"));
         ULJM05943F(buffer, hp);
     }
+    void ULJM05995(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::wstring last;
+        auto ws = buffer->strW();
+        if (last == ws)
+            return buffer->clear();
+        last = ws;
+        buffer->from(strReplace(ws, L"[br]"));
+    }
     void ULJM06167(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1601,6 +1610,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8855AE4, {0, 1, 0, 0, 0, "ULJM06295"}},
     // ハートの国のアリス～Wonderful Twin World～
     {0x8881CAC, {0, 1, 0, 0, 0, "NPJH50872"}},
+    // おもちゃ箱の国のアリス～Wonderful Wonder World～
+    {0x8884A0C, {CODEC_UTF16, 5, 0, 0, ULJM05995, "ULJM05995"}},
     // 新装版 ハートの国のアリス～Wonderful Wonder World～
     {0x886B610, {0, 1, 0, 0, 0, "ULJM06332"}},
     // 新装版クローバーの国のアリス～Wonderful Wonder World～

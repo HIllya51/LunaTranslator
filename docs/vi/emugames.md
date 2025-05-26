@@ -345,6 +345,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | 0100AC600EB4C000 | 幻想牢獄のカレイドスコープ |
 |  | 0100451020714000 | 幻想牢獄のカレイドスコープ２ |
 |  | 01002080191CE000 | 戦場の円舞曲 for Nintendo Switch |
+|  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
 
 == PSP
 
@@ -428,6 +429,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | ULJM06216 | ダイヤの国のアリス～Wonderful Wonder World～ |
 |  | ULJM06295 | ダイヤの国のアリス～ Wonderful Mirror World ～ |
 |  | NPJH50872 | ハートの国のアリス～Wonderful Twin World～ |
+|  | ULJM05995 | おもちゃ箱の国のアリス～Wonderful Wonder World～ |
 |  | ULJM06332 | 新装版 ハートの国のアリス～Wonderful Wonder World～ |
 |  | NPJH50894 | 新装版クローバーの国のアリス～Wonderful Wonder World～ |
 |  | ULJM06196 | Glass Heart Princess |

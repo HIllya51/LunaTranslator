@@ -637,6 +637,10 @@ namespace
         StringCharReplacer(buffer, TEXTANDLEN(L"<br>"), '\n');
     }
 
+    void F010076902126E000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("<br>"));
+    }
     void F01006CC015ECA000(TextBuffer *buffer, HookParam *hp)
     {
         StringCharReplacer(buffer, TEXTANDLEN(L"#<br>"), L'\n');
@@ -2314,10 +2318,7 @@ namespace
     }
     void F010043901E972000(TextBuffer *buffer, HookParam *hp)
     {
-
-        auto s = buffer->strW();
-        strReplace(s, L"<br>", L"\n");
-        buffer->from(s);
+        StringCharReplacer(buffer, TEXTANDLEN(L"<br>"), L'\n');
     }
     void wF0100A9B01D4AE000(TextBuffer *buffer, HookParam *hp)
     {
@@ -3848,6 +3849,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x800C4C1C, {CODEC_UTF8, 0, 0, 0, f0100451020714000, 0x0100451020714000ull, "1.0.0"}},
     // 戦場の円舞曲 for Nintendo Switch
     {0x80040010, {0, 0, 0, 0, F01005AF00E9DC000, 0x01002080191CE000ull, "1.0.0"}},
+    // DYNAMIC CHORD feat.[rēve parfait]
+    {0x81a48614, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
+    {0x81a5d890, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
 
 };
 

@@ -256,6 +256,7 @@ class dialog_setting_game_internal(QWidget):
                 if (self.keepindexobject is not None)
                 else None
             ),
+            fast=True,
         )
         vbox.addLayout(formLayout)
         vbox.addWidget(methodtab)
@@ -296,6 +297,7 @@ class dialog_setting_game_internal(QWidget):
                 if (self.keepindexobject is not None)
                 else None
             ),
+            fast=True,
         )
         vbox.addWidget(methodtab)
         do()
@@ -320,6 +322,7 @@ class dialog_setting_game_internal(QWidget):
                 if (self.keepindexobject is not None)
                 else None
             ),
+            fast=True,
         )
 
         self.methodtab = methodtab
@@ -843,11 +846,13 @@ class dialog_setting_game_internal(QWidget):
                 )
                 vbox.addWidget(QLabel(), i + 1, 3)
                 vbox.addLayout(
-                    getcenterX(getsimpleswitch(
-                        savehook_new_data[gameuid],
-                        name + "_merge",
-                        default=False,
-                    ))(),
+                    getcenterX(
+                        getsimpleswitch(
+                            savehook_new_data[gameuid],
+                            name + "_merge",
+                            default=False,
+                        )
+                    )(),
                     i + 1,
                     4,
                 )
@@ -1375,8 +1380,9 @@ class dialog_setting_game(QDialog):
         self.setWindowTitle(savehook_new_data[gameuid]["title"])
 
         self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
-        _ = dialog_setting_game_internal(self, gameuid)
-        _.methodtab.setCurrentIndex(setindexhook)
+        _ = dialog_setting_game_internal(
+            self, gameuid, keepindexobject={"gamesetting": setindexhook}
+        )
         _.setMinimumWidth(600)
         l = QHBoxLayout(self)
         l.addWidget(_)

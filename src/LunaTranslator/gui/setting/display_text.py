@@ -205,14 +205,14 @@ class otherdisplaysetting(PopupWidget):
                 callback=gobject.baseobject.translation_ui.verticalhorizontal,
             ),
         )
-        form.addRow(
-            "显示单词信息_在WebView2内显示",
-            getsimpleswitch(
-                globalconfig,
-                "word_hover_action_usewb2",
-                callback=gobject.baseobject.translation_ui.translate_text.setwordhoveruse,
-            ),
-        )
+        # form.addRow(
+        #     "显示单词信息_在WebView2内显示",
+        #     getsimpleswitch(
+        #         globalconfig,
+        #         "word_hover_action_usewb2",
+        #         callback=gobject.baseobject.translation_ui.translate_text.setwordhoveruse,
+        #     ),
+        # )
         self.display()
 
 

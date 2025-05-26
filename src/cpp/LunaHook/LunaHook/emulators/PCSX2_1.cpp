@@ -388,6 +388,21 @@ namespace
         }
         last1 = collect;
     }
+    void SLPM66892(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        std::string s = (char *)PCSX2_REG(t0) + 0x15010;
+        s += (char *)PCSX2_REG(t0);
+        strReplace(s, "%n");
+        buffer->from(s);
+    }
+    void SLPM66892_1(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto s = (char *)PCSX2_REG(t0);
+        while (*s)
+            s -= 1;
+        s += 1;
+        buffer->from(s);
+    }
     void SLPS25150(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static std::string last;
@@ -546,7 +561,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // スキップ・ビート
     {0x1CF70F0, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-55170"}},
     // Myself;Yourself
-    {0x1CC6A18, {DIRECT_READ, 0, 0, 0, 0, std::vector<const char *>{"SLPM-66891", "SLPM-66892"}}}, // [通常版] && [初回限定版]
+    {0x1443e8, {0, 0, 0, SLPM66892, 0, std::vector<const char *>{"SLPM-66891", "SLPM-66892"}}},   // [通常版] && [初回限定版]
+    {0x13F1F8, {0, 0, 0, SLPM66892_1, 0, std::vector<const char *>{"SLPM-66891", "SLPM-66892"}}}, // [通常版] && [初回限定版]
     // Myself; Yourself それぞれのfinale
     {0x1C785A8, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55163"}},
     // ARIA The ORIGINATION ～蒼い惑星のエルシエロ～

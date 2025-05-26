@@ -17,7 +17,7 @@ class AdapterService:
         ret = []
 
         def __(idx, vendorId, deviceId, description):
-            ret.append((idx, vendorId, deviceId, description))
+            ret.append([idx, vendorId, deviceId, description])
 
         NativeUtils.AdaptersServiceAdapterInfos(
             NativeUtils.AdaptersServiceAdapterInfos_Callback(__)

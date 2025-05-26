@@ -16,7 +16,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     makescrollgrid,
     createfoldgrid,
-    D_getsimplecombobox,
+    SuperCombo,
     D_getIconButton,
     getsmalllabel,
     getboxlayout,
@@ -440,9 +440,28 @@ def makelink(repo):
     ]
 
 
+class __delayloadlangs(SuperCombo):
+    def __init__(self):
+        super().__init__(static=True)
+        self.addItem(Languages.fromcode(globalconfig["languageuse2"]).nativename)
+        # Qt6的脑残fontmerging机制导致变得很慢。
+        QTimer.singleShot(0, self.delayload)
+
+    def delayload(self):
+        self.clear()
+        inner, vis = [_.code for _ in UILanguages], [_.nativename for _ in UILanguages]
+        self.addItems(vis, inner)
+        self.setCurrentData(globalconfig["languageuse2"])
+        self.currentIndexChanged.connect(
+            lambda _: (
+                globalconfig.__setitem__("languageuse2", self.getCurrentData()),
+                changeUIlanguage(0),
+            )
+        )
+
+
 def setTab_about(self, basel):
 
-    inner, vis = [_.code for _ in UILanguages], [_.nativename for _ in UILanguages]
     makescrollgrid(
         [
             [functools.partial(updatexx, self)],
@@ -452,14 +471,7 @@ def setTab_about(self, basel):
                     grid=[
                         [
                             getsmalllabel("软件显示语言"),
-                            D_getsimplecombobox(
-                                vis,
-                                globalconfig,
-                                "languageuse2",
-                                callback=changeUIlanguage,
-                                static=True,
-                                internal=inner,
-                            ),
+                            __delayloadlangs,
                             D_getIconButton(
                                 callback=lambda: os.startfile(
                                     os.path.abspath(

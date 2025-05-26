@@ -313,7 +313,7 @@ class rangeselect(QMainWindow):
         self.reset()
 
     def reset(self):
-        if NativeUtils.IsMultiDifferentDPI():
+        if len(QApplication.screens()) != 1:
             NativeUtils.MaximumWindow(int(self.winId()))
         else:
             self.setGeometry(QRect(QPoint(0, 0), QApplication.screens()[0].size()))
@@ -333,7 +333,7 @@ class rangeselect(QMainWindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
-        if NativeUtils.IsMultiDifferentDPI():
+        if len(QApplication.screens()) != 1:
             NativeUtils.MaximumWindow(int(self.backlabel.winId()))
         self.backlabel.resize(e.size())
 
@@ -360,10 +360,7 @@ class rangeselect(QMainWindow):
             self.rectlabel.setGeometry(QRect(_sp, _ep))
 
     def mousePressEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.RightButton:
-            self.once = False
-            self.close()
-        elif event.button() == Qt.MouseButton.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.end_point = self.start_point = event.pos()
             self.is_drawing = True
             self.__start = self.__end = windows.GetCursorPos()
@@ -409,6 +406,14 @@ class rangeselect(QMainWindow):
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
             self.callbackfunction(event)
+        elif event.button() == Qt.MouseButton.RightButton:
+            self.once = False
+            self.close()
+
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_Escape:
+            self.close()
+        return super().keyPressEvent(event)
 
 
 class rangeselect_1(QMainWindow):
@@ -487,10 +492,7 @@ class rangeselect_1(QMainWindow):
             self.rectlabel.setGeometry(QRect(_sp, _ep))
 
     def mousePressEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.RightButton:
-            self.once = False
-            self.close()
-        elif event.button() == Qt.MouseButton.LeftButton:
+        if event.button() == Qt.MouseButton.LeftButton:
             self.end_point = self.start_point = event.pos()
             self.is_drawing = True
 
@@ -535,6 +537,9 @@ class rangeselect_1(QMainWindow):
     def mouseReleaseEvent(self, event: QMouseEvent):
         if event.button() == Qt.MouseButton.LeftButton:
             self.callbackfunction(event)
+        elif event.button() == Qt.MouseButton.RightButton:
+            self.once = False
+            self.close()
 
     def closeEvent(self, a0):
         global screen_shot_ui
@@ -543,12 +548,17 @@ class rangeselect_1(QMainWindow):
         windows.SetForegroundWindow(self.originhwnd)
         return super().closeEvent(a0)
 
+    def keyPressEvent(self, event: QKeyEvent):
+        if event.key() == Qt.Key.Key_Escape:
+            self.close()
+        return super().keyPressEvent(event)
+
 
 def rangeselct_function(callback, x=True):
     global screen_shot_ui
     if screen_shot_ui:
         screen_shot_ui.close()
-    if (not NativeUtils.IsMultiDifferentDPI()) or globalconfig[
+    if (len(QApplication.screens()) == 1) or globalconfig[
         "range_select_multi_dpi_capture_force"
     ]:
         screen_shot_ui = rangeselect_1(gobject.baseobject.translation_ui, x)
@@ -560,3 +570,4 @@ def rangeselct_function(callback, x=True):
     screen_shot_ui.reset()
     screen_shot_ui.callback = callback
     windows.SetFocus(int(screen_shot_ui.winId()))
+    windows.SetForegroundWindow(int(screen_shot_ui.winId()))

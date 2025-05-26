@@ -45,11 +45,15 @@ class SuperCombo(FocusCombo):
 
     def __init__(self, parent=None, static=False, sizeX=False) -> None:
         super().__init__(parent=parent, sizeX=sizeX)
-        self.mo = QStandardItemModel()
         self.static = static
-        self.setModel(self.mo)
-        self.vu = QListView()
-        self.setView(self.vu)
+
+    @property
+    def mo(self) -> QStandardItemModel:
+        return self.model()
+
+    @property
+    def vu(self) -> QListView:
+        return self.view()
 
     def addItem(self, item, internal=None, icon=None):
         text = _TR(item) if not self.static else item
@@ -981,11 +985,7 @@ def getsimplecombobox(
     s.addItems(lst, internal)
 
     if internal:
-        if len(internal):
-            if (k not in d) or (initvar not in internal):
-                initvar = internal[0]
-
-            s.setCurrentIndex(internal.index(initvar))
+        s.setCurrentData(initvar)
         s.currentIndexChanged.connect(
             functools.partial(comboboxcallbackwrap, s, d, k, callback)
         )
@@ -1002,9 +1002,11 @@ def getsimplecombobox(
 
 
 def D_getsimplecombobox(
-    lst, d, k, callback=None, fixedsize=False, internal=None, static=False
+    lst, d, k, callback=None, fixedsize=False, internal=None, static=False, sizeX=False
 ):
-    return lambda: getsimplecombobox(lst, d, k, callback, fixedsize, internal, static)
+    return lambda: getsimplecombobox(
+        lst, d, k, callback, fixedsize, internal, static, sizeX=sizeX
+    )
 
 
 def getlineedit(d, key, callback=None, readonly=False):
@@ -2576,22 +2578,32 @@ def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None):
 
 
 def makesubtab_lazy(
-    titles=None, functions=None, klass=None, callback=None, delay=False, initial=None
+    titles=None,
+    functions=None,
+    klass=None,
+    callback=None,
+    delay=False,
+    initial=None,
+    fast=False,
 ):
     if klass:
         tab: LTabWidget = klass()
     else:
         tab = LTabWidget()
 
-    def __(t: LTabWidget, initial, i):
+    def __(fast, t: LTabWidget, initial, i):
         if initial:
             object, key = initial
             object[key] = i
         try:
             w = t.currentWidget()
             if "lazyfunction" in dir(w):
-                w.lazyfunction()
+                __ = w.lazyfunction
                 delattr(w, "lazyfunction")
+                if fast:
+                    QTimer.singleShot(0, __)
+                else:
+                    __()
         except:
             print_exc()
         if callback:
@@ -2599,7 +2611,7 @@ def makesubtab_lazy(
 
     can = initial and (initial[1] in initial[0])
     if not can:
-        tab.currentChanged.connect(functools.partial(__, tab, initial))
+        tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
 
     def __do(tab: LTabWidget, titles, functions, initial):
         if titles and functions:
@@ -2607,7 +2619,7 @@ def makesubtab_lazy(
                 tabadd_lazy(tab, titles[i], func)
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
-            tab.currentChanged.connect(functools.partial(__, tab, initial))
+            tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
             tab.currentChanged.emit(initial[0][initial[1]])
 
     ___do = functools.partial(__do, tab, titles, functions, initial)

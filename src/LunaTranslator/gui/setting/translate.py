@@ -574,7 +574,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     try:
         sql = autosql(sqlitefile, check_same_thread=False)
         ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
-        js_format2 = {}
+        js_format2: "dict[str, dict|str]" = {}
         collect = []
         for _aret in ret:
             if len(_aret) == 4:
@@ -590,8 +590,8 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
             except:
                 mtjs = mt
             js_format2[source] = mtjs
-
-            collect.extend(list(mtjs.keys()))
+            if isinstance(mtjs, dict):
+                collect.extend(list(mtjs.keys()))
     except:
         print_exc()
         QMessageBox.critical(self, _TR("错误"), _TR("所选文件格式错误！"))
@@ -636,9 +636,9 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     button.rejected.connect(dialog.close)
 
     def __savefunction(target, existsmerge):
-        if len(_collect) > 0:
-            transkirokuuse = combo.getIndexData(combo.currentIndex())
-            for k in js_format2:
+        transkirokuuse = combo.getIndexData(combo.currentIndex())
+        for k in js_format2:
+            if isinstance(js_format2[k], dict):
                 js_format2[k] = js_format2[k].get(transkirokuuse, "")
 
         if target is None:

@@ -2,8 +2,8 @@
     "local": {
         "args": {
             "thread": 4,
-            "gpu": false,
-            "device": 0,
+            "gpu": true,
+            "luid": 0,
             "accfirst": true
         }
     },

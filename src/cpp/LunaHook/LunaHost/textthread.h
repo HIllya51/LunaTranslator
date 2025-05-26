@@ -31,7 +31,7 @@ private:
 	inline static int threadCounter = 0;
 
 	void Flush();
-
+	bool isMultiCharString = false;
 	std::wstring buffer;
 	BYTE leadByte = 0;
 	std::unordered_set<wchar_t> repeatingChars;

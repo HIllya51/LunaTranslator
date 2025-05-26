@@ -31,12 +31,16 @@ class customwidget(LDialog):
     def __delayload(self, config__, lform: LFormLayout, devices):
         if devices:
             print(devices)
+            for i, _ in enumerate(devices):
+                if i == 0:
+                    _[-1] = "默认_[[({})]]".format(_[-1])
+                else:
+                    _[-1] = "[[{}]]".format(_[-1])
             d = getsimplecombobox(
-                [_[3] for _ in devices],
+                [_[1] for _ in devices],
                 config__,
-                "device",
-                static=True,
-                internal=[list(_[:3]) for _ in devices],
+                "luid",
+                internal=[_[0] for _ in devices],
             )
             d.setEnabled(config__["gpu"])
             lform.insertRow(
@@ -161,7 +165,7 @@ class localmodels:
             # 先寻找语言支持最多的模型。
             hasmostlangs: "list[localmodels]" = []
             for m in ms:
-                currhas = hasmostlangs[0].languages if hasmostlangs else -1
+                currhas = len(hasmostlangs[0].languages) if hasmostlangs else -1
                 if len(m.languages) > currhas:
                     hasmostlangs.clear()
                     hasmostlangs.append(m)
@@ -398,7 +402,7 @@ class OCR(baseocr):
 
     def checkchange(self):
         tgi = self.config["thread"], (
-            self.config["device"] if self.config["gpu"] else None
+            self.config["luid"] if self.config["gpu"] else None
         )
         if self.tgi != tgi:
             self.tgi = tgi
@@ -433,7 +437,7 @@ class OCR(baseocr):
                 findm.path + "/dict.txt",
                 self.config["thread"],
                 self.config["gpu"],
-                self.config["device"],
+                self.config["luid"],
             )
         except SysNotSupport:
             raise Exception(_TR("系统不支持"))

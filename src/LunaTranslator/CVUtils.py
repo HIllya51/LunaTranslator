@@ -9,11 +9,12 @@ from ctypes import (
     c_bool,
     c_wchar_p,
     CFUNCTYPE,
+    c_uint64,
 )
-from ctypes.wintypes import UINT
 from qtsymbols import *
 import gobject
 import functools
+import locale
 
 
 class InvalidImage(Exception):
@@ -97,7 +98,7 @@ def GetDeviceInfoD3D12():
     OcrIsDMLAvailable = _CVUtils.OcrIsDMLAvailable
     OcrIsDMLAvailable.restype = c_bool
     GetDeviceInfoD3D12 = _CVUtils.GetDeviceInfoD3D12
-    GetDeviceInfoD3D12_CB = CFUNCTYPE(None, c_int, UINT, UINT, c_wchar_p)
+    GetDeviceInfoD3D12_CB = CFUNCTYPE(None, c_uint64, c_wchar_p)
     GetDeviceInfoD3D12.argtypes = (GetDeviceInfoD3D12_CB,)
 
     if not OcrIsDMLAvailable():
@@ -105,8 +106,8 @@ def GetDeviceInfoD3D12():
 
     ret = []
 
-    def __cb(ret: list, i, VendorId, DeviceId, name):
-        ret.append((i, VendorId, DeviceId, name))
+    def __cb(ret: list, luid, name):
+        ret.append([luid, name])
 
     GetDeviceInfoD3D12(GetDeviceInfoD3D12_CB(functools.partial(__cb, ret)))
     return ret
@@ -114,9 +115,7 @@ def GetDeviceInfoD3D12():
 
 class LocalOCR:
 
-    def __init__(
-        self, det, rec, key, thread: int, gpu: bool, device: "tuple[int, int, int]"
-    ) -> None:
+    def __init__(self, det, rec, key, thread: int, gpu: bool, luid) -> None:
 
         _CVUtils = _DelayLoadCVUtils()
         OcrLoadRuntime = _CVUtils.OcrLoadRuntime
@@ -132,8 +131,8 @@ class LocalOCR:
             c_wchar_p,
             c_int32,
             c_bool,
-            UINT,
-            UINT,
+            c_uint64,
+            _error,
         )
 
         self._OcrDetect = _CVUtils.OcrDetect
@@ -150,10 +149,6 @@ class LocalOCR:
 
         error: "list[bytes]" = []
 
-        if isinstance(device, int) or len(device) != 3:
-            device = VendorId = DeviceId = 0
-        else:
-            device, VendorId, DeviceId = device
         self.pOcrObj = _unique_ptr(
             self._OcrInit(
                 det,
@@ -161,15 +156,13 @@ class LocalOCR:
                 key,
                 thread,
                 gpu,
-                device,
-                VendorId,
-                DeviceId,
+                luid,
                 _error(error.append),
             ),
             OcrDestroy,
         )
         if error:
-            raise Exception(error[0].decode(errors="ignore"))
+            raise Exception(error[0].decode(locale.getpreferredencoding(), errors="ignore"))
         if not self.pOcrObj:
             raise ModelLoadFailed()
 
@@ -188,5 +181,5 @@ class LocalOCR:
             self.pOcrObj, mat, mode, _OcrDetectCallback(cb), _error(error.append)
         )
         if error:
-            raise Exception(error[0].decode(errors="ignore"))
+            raise Exception(error[0].decode(locale.getpreferredencoding(), errors="ignore"))
         return pss, texts

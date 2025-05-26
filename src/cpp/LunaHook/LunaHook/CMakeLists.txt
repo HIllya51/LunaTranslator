@@ -3,7 +3,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	set(enginessrc 
 		BGI MKXPZ livecaptions Kincaid TYPEMOON UnrealEngine AGES7
 		Godot 5pb lucasystem LightVN V8 Artemis KiriKiri YOX CMVS Suika2 GameMaker
-		Chunsoft)
+		Chunsoft sakanagl)
 	set(enginepath "engine64")
 	set(collector "enginecollection64.cpp")
 else()

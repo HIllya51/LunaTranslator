@@ -41,7 +41,7 @@
 	},
 	"deepl_1": {
 		"args": {
-			"usewhich": 0,
+			"usewhich": 1,
 			"github": "https://github.com/OwO-Network/DeepLX/releases",
 			"api": "http://127.0.0.1:1188/translate",
 			"chromepath": "",

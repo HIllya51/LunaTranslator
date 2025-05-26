@@ -8,53 +8,83 @@
 #include "../xpundef/xp_dxgi.h"
 #include "../xpundef/xp_d3d12.h"
 #endif
-static std::vector<DXGI_ADAPTER_DESC1> get_descs(std::function<bool(int, IDXGIAdapter1 *, const DXGI_ADAPTER_DESC1 &)> check)
+
+inline uint64_t GetLuidKey(LUID luid)
 {
-    std::vector<DXGI_ADAPTER_DESC1> decs;
-    [&]()
+    return (uint64_t(luid.HighPart) << 32) | luid.LowPart;
+}
+static std::vector<std::pair<int, DXGI_ADAPTER_DESC1>> get_descs(std::function<bool(IDXGIAdapter1 *, const DXGI_ADAPTER_DESC1 &)> check)
+{
+    CComPtr<IDXGIFactory4> factory;
+    if (FAILED(CreateDXGIFactory2(0, IID_PPV_ARGS(&factory))))
+        return {};
+
+    std::vector<std::pair<int, DXGI_ADAPTER_DESC1>> decs;
+
+    CComPtr<IDXGIAdapter1> adapter;
+    for (UINT i = 0; factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i)
     {
-        CComPtr<IDXGIFactory4> factory;
-        CHECK_FAILURE_NORET(CreateDXGIFactory2(0, IID_PPV_ARGS(&factory)));
-
-        CComPtr<IDXGIAdapter1> adapter;
-        for (UINT i = 0; factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i)
-        {
-            DXGI_ADAPTER_DESC1 desc;
-            CHECK_FAILURE_CONTINUE(adapter->GetDesc1(&desc));
-            if (!check(i, adapter, desc))
-                continue;
-            decs.push_back(desc);
-        }
-    }();
-
+        DXGI_ADAPTER_DESC1 desc;
+        CHECK_FAILURE_CONTINUE(adapter->GetDesc1(&desc));
+        if (!check(adapter, desc))
+            continue;
+        std::wstringstream wss;
+        wss << i << L"\t" << desc.Description << L"\t" << std::hex << GetLuidKey(desc.AdapterLuid);
+        std::wcout << wss.str() << std::endl;
+        decs.push_back(std::make_pair(i, desc));
+    }
     return decs;
 }
-static int findDeviceId(int device, UINT VendorId, UINT DeviceId)
+static std::optional<DXGI_ADAPTER_DESC1> get_best_gpu()
 {
-    if (VendorId == 0 && DeviceId == 0)
-        return 0;
-    auto descs = get_descs([](auto, auto *, auto &)
-                           { return true; });
-    // 有可能存在两个device有相同的vendorid和deviceid
-    for (auto i = 0; i < descs.size(); i++)
+    // 获取最好gpu后，没必要去检查是否符合Flags和D3D_FEATURE_LEVEL_11_0，因为如果最好的设备都不行的话，拉闸算了。
+    CComPtr<IDXGIFactory6> factory;
+    if (FAILED(CreateDXGIFactory2(0, IID_PPV_ARGS(&factory))))
+        return {};
+    // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L344
+    CComPtr<IDXGIAdapter1> adapter;
+    for (UINT i = 0; factory->EnumAdapterByGpuPreference(
+                         i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
+                         IID_PPV_ARGS(&adapter)) != DXGI_ERROR_NOT_FOUND;
+         ++i)
     {
-        if (i == device && VendorId == descs[i].VendorId && DeviceId == descs[i].DeviceId)
-            return i;
+        DXGI_ADAPTER_DESC1 desc;
+        CHECK_FAILURE_CONTINUE(adapter->GetDesc1(&desc));
+        std::wstringstream wss;
+        wss << desc.Description << L"\t" << std::hex << GetLuidKey(desc.AdapterLuid);
+        std::wcout << wss.str() << std::endl;
+        return desc;
     }
-    for (auto i = 0; i < descs.size(); i++)
+    return {};
+}
+static int findDeviceId(uint64_t &luid)
+{
+    if (luid == 0)
     {
-        if (VendorId == descs[i].VendorId && DeviceId == descs[i].DeviceId)
+        auto desc = get_best_gpu();
+        if (!desc)
+            return 0;
+        luid = GetLuidKey(desc.value().AdapterLuid);
+    }
+    auto descs = get_descs([](auto *, auto &)
+                           { return true; });
+    for (auto &&[i, desc] : descs)
+    {
+        if (luid == GetLuidKey(desc.AdapterLuid))
             return i;
     }
     return 0;
 }
-DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, int device, UINT VendorId, UINT DeviceId, void (*cb2)(const char *))
+DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, uint64_t luid, void (*cb2)(const char *))
 {
     OcrLite *pOcrObj = nullptr;
+    int device = 0;
     if (gpu)
     {
-        device = findDeviceId(device, VendorId, DeviceId);
-        std::cout << device << " " << VendorId << " " << DeviceId << std::endl;
+        device = findDeviceId(luid);
+        std::wstringstream wss;
+        wss << device << L"\t" << std::hex << luid;
+        std::wcout << wss.str() << std::endl;
     }
     try
     {
@@ -212,16 +242,15 @@ DECLARE_API bool OcrIsDMLAvailable()
 #ifndef _GAMING_XBOX
 #define IID_GRAPHICS_PPV_ARGS IID_PPV_ARGS
 #endif
-DECLARE_API void GetDeviceInfoD3D12(void (*cb)(int, UINT, UINT, LPCWSTR))
+DECLARE_API void GetDeviceInfoD3D12(void (*cb)(uint64_t, LPCWSTR))
 {
     // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L308
     // std::unordered_map<uint64_t, DeviceInfo> GetDeviceInfoD3D12()
     // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/providers/dml/dml_provider_factory.cc#L468
     // Microsoft::WRL::ComPtr<ID3D12Device> DMLProviderFactoryCreator::CreateD3D12Device(int device_id, bool skip_software_device_check)
 
-    auto checker = [&](int i, IDXGIAdapter1 *adapter, const DXGI_ADAPTER_DESC1 &desc)
+    auto checker = [](IDXGIAdapter1 *adapter, const DXGI_ADAPTER_DESC1 &desc)
     {
-        std::wcout << i << L"\t" << desc.Description << std::endl;
         // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/providers/dml/dml_provider_factory.cc#L491
         // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L324
         if ((desc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0 ||
@@ -236,8 +265,16 @@ DECLARE_API void GetDeviceInfoD3D12(void (*cb)(int, UINT, UINT, LPCWSTR))
         if (FAILED(D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_11_0, IID_GRAPHICS_PPV_ARGS(&d3d12_device))))
             return false;
 
-        cb(i, desc.VendorId, desc.DeviceId, desc.Description);
-        return false;
+        return true;
     };
-    get_descs(checker);
+    auto gpus = get_descs(checker);
+    if (gpus.size())
+    {
+        auto bestdesc = get_best_gpu().value_or(gpus[0].second);
+        cb(0, bestdesc.Description);
+        for (auto &&[_, desc] : gpus)
+        {
+            cb(GetLuidKey(desc.AdapterLuid), desc.Description);
+        }
+    }
 }

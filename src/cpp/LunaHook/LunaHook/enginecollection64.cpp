@@ -26,6 +26,7 @@
 #include "emulators/vita3k.h"
 #include "emulators/rpcs3.h"
 #include "emulators/PCSX2.h"
+#include "engine64/sakanagl.h"
 std::vector<ENGINE *> check_engines()
 {
     return {
@@ -56,6 +57,7 @@ std::vector<ENGINE *> check_engines()
         new MKXPZ,
         new BGI,
         new GameMaker,
-        new Chunsoft
+        new Chunsoft,
+        new sakanagl,
     };
 }
