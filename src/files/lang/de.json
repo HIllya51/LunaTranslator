@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "Priorisieren Sie die Verwendung von Modellen mit höherer Genauigkeit",
     "未选择OCR引擎": "Die OCR-Engine ist nicht ausgewählt",
     "当前软件或操作系统版本不支持使用GPU": "Die aktuelle Software- oder Betriebssystemversion unterstützt die Verwendung von GPUs nicht",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Die Software ist nicht einfach zu warten. Wenn Sie der Meinung sind, dass die Software für Sie hilfreich ist, scannen Sie den QR -Code auf WeChat, um sie zu sponsern. Danke ~",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "Die Software ist nicht einfach zu warten. Wenn Sie der Meinung sind, dass die Software für Sie hilfreich ist, seien Sie bitte mein [Sponsor](https://patreon.com/hillya51). Danke ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) verwendet die [gplv3](https://github.com/hillya51/lunatranslator/blob/main/license) Lizenz.",
     "翻译接口": "Übersetzungsschnittstelle",
     "不使用的辞书": "Nicht verwendetes Wörterbuch",
-    "使用单词原型": "Verwenden von Wortarchetypen"
+    "使用单词原型": "Verwenden von Wortarchetypen",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Die Software ist vollständig kostenlos und Open Source.\nDie Wartung der Software ist jedoch nicht einfach; Entwicklung und Wartung erfordern viel Zeit und Mühe.\n\nWenn Sie das Gefühl haben, dass diese Software für Sie hilfreich ist, können Sie gerne mein [Sponsor](https://patreon.com/HIllya51) werden. Ihre Unterstützung wird eine treibende Kraft für die langfristige Wartung der Software sein.\n\nWenn Sie bei der Verwendung auf Schwierigkeiten stoßen, können Sie diese Bedienungsanleitung konsultieren, nach Video-Tutorials suchen, die von begeisterten Nutzern erstellt wurden, oder gerne dem [Discord](https://discord.com/invite/ErtDwVeAbB) beitreten oder ein [Issue](https://github.com/HIllya51/LunaTranslator/issues) erstellen, um mit mir zu kommunizieren."
 }

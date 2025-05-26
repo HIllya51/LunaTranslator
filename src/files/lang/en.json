@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "Prioritize the use of higher-precision models",
     "未选择OCR引擎": "The OCR engine is not selected",
     "当前软件或操作系统版本不支持使用GPU": "The current software or operating system version does not support the use of GPUs",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "The software is not easy to maintain. If you feel that the software is helpful to you, please be my [sponsor](https://patreon.com/hillya51). Thank you ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[LunaTranslator](https://github.com/hillya51/LunaTranslator) uses the [GPLv3](https://github.com/hillya51/LunaTranslator/blob/main/LICENSE) license.",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "The software is not easy to maintain. If you feel that the software is helpful to you, please scan the QR code on WeChat to sponsor it. Thank you ~",
     "翻译接口": "Translation interface",
     "不使用的辞书": "Non-used dictionary",
-    "使用单词原型": "Use word archetypes"
+    "使用单词原型": "Use word archetypes",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "The software is completely free and open source.\nHowever, software maintenance is not easy; development and maintenance require a lot of time and effort.\n\nIf you feel this software is helpful to you, you are welcome to become my [sponsor](https://patreon.com/HIllya51). Your support will be a driving force for the long-term maintenance of the software.\n\nIf you encounter difficulties during use, you can consult this user manual, search for video tutorials made by enthusiastic people, and you are also welcome to join [Discord](https://discord.com/invite/ErtDwVeAbB) or raise an [issue](https://github.com/HIllya51/LunaTranslator/issues) to communicate with me."
 }

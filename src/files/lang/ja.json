@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "より高精度なモデルの使用を優先する",
     "未选择OCR引擎": "OCR エンジンが選択されていません",
     "当前软件或操作系统版本不支持使用GPU": "現在のソフトウェアまたはオペレーティング システムのバージョンでは、GPU の使用はサポートされていません",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "ソフトウェアを維持するのは簡単ではありません。ソフトウェアが役立つと感じている場合は、WeChatのQRコードをスキャンしてスポンサーにしてください。ありがとう〜",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "ソフトウェアを維持するのは簡単ではありません。ソフトウェアがあなたに役立つと感じたら、私の[スポンサー](https://patreon.com/hillya51)になってください。 ありがとう〜",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[lunatranslator](https://github.com/hillya51/lunatranslator)は、[gplv3](https://github.com/hillya51/lunatranslator/blob/main/license)ライセンスを使用します。",
     "翻译接口": "翻訳インターフェイス",
     "不使用的辞书": "使用されていない辞書",
-    "使用单词原型": "単語の原型を使用する"
+    "使用单词原型": "単語の原型を使用する",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "ソフトウェアは完全に無料でオープンソースです。\nしかし、ソフトウェアのメンテナンスは容易ではなく、開発と保守には多くの時間と労力が必要です。\n\nこのソフトウェアが役立つと感じた場合は、ぜひ私の[スポンサー](https://patreon.com/HIllya51)になってください。あなたのサポートは、ソフトウェアの長期的なメンテナンスを支える力となります。\n\n使用中に問題が発生した場合は、この使用説明書を参照したり、熱心な方々が作成したビデオチュートリアルを検索したり、[Discord](https://discord.com/invite/ErtDwVeAbB)に参加したり、[issue](https://github.com/HIllya51/LunaTranslator/issues)を起票して私と連絡を取ることも歓迎します。"
 }

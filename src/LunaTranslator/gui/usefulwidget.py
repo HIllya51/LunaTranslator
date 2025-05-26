@@ -3531,19 +3531,25 @@ class PopupWidget(QWidget):
 
 
 class __MDLabel(QLabel):
-    def __init__(self, md):
+    def __init__(self, md, static=False):
         super().__init__()
         self._md = md
+        self.static = static
+        self.once = True
         self.setOpenExternalLinks(True)
         self.setWordWrap(True)
         self.updatelangtext()
 
     def updatelangtext(self):
-        self.setText(NativeUtils.Markdown2Html(_TR(self._md)))
+        if self.once:
+            self.once = False
+        elif self.static:
+            return
+        self.setText(NativeUtils.Markdown2Html(self._md if self.static else _TR(self._md)))
 
 
-def MDLabel(md):
-    return functools.partial(__MDLabel, md)
+def MDLabel(md, static=False):
+    return functools.partial(__MDLabel, md, static=static)
 
 
 class HBoxCenter(QHBoxLayout):

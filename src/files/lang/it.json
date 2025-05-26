@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "Dare priorità all'uso di modelli di maggiore precisione",
     "未选择OCR引擎": "Il motore OCR non è selezionato",
     "当前软件或操作系统版本不支持使用GPU": "L'attuale versione del software o del sistema operativo non supporta l'uso di GPU",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Il software non è facile da mantenere. Se ritieni che il software ti sia utile, ti preghiamo di scansionare il codice QR su WeChat per sponsorizzarlo. Grazie ~",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "Il software non è facile da mantenere. Se ritieni che il software ti sia utile, si prega di essere il mio [sponsor](https://patreon.com/hillya51). Grazie ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[LunaTranslar](https://github.com/hillya51/lunatranslar) usa la licenza [GPLV3](https://github.com/hillya51/lunatranslar/Blob/Main/license).",
     "翻译接口": "Interfaccia di traduzione",
     "不使用的辞书": "Dizionario non utilizzato",
-    "使用单词原型": "Usa gli archetipi delle parole"
+    "使用单词原型": "Usa gli archetipi delle parole",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Il software è completamente gratuito e open source.\nTuttavia, la manutenzione del software non è facile; lo sviluppo e la manutenzione richiedono molto tempo e impegno.\n\nSe ritieni che questo software ti sia utile, sei invitato a diventare mio [sponsor](https://patreon.com/HIllya51). Il tuo supporto sarà una forza trainante per la manutenzione a lungo termine del software.\n\nSe incontri difficoltà durante l'uso, puoi consultare questo manuale utente, cercare video tutorial realizzati da persone entusiaste, e sei anche invitato a unirti a [Discord](https://discord.com/invite/ErtDwVeAbB) o a sollevare un [problema (issue)](https://github.com/HIllya51/LunaTranslator/issues) per comunicare con me."
 }

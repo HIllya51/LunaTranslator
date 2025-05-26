@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "Prioritera användningen av modeller med högre precision",
     "未选择OCR引擎": "OCR-motorn är inte vald",
     "当前软件或操作系统版本不支持使用GPU": "Den aktuella programvaru- eller operativsystemversionen stöder inte användning av GPU:er",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Programvaran är inte lätt att underhålla. Om du känner att programvaran är till hjälp för dig, vänligen skanna QR -koden på WeChat för att sponsra den. Tack ~",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "Programvaran är inte lätt att underhålla. Om du känner att programvaran är till hjälp för dig, var min [sponsor](https://patreon.com/hillya51). Tack ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) använder [GPLV3](https://github.com/hillya51/lunatranslator/blob/main/license) licens.",
     "翻译接口": "Översättningsgränssnitt",
     "不使用的辞书": "Icke-använt ordbok",
-    "使用单词原型": "Använd ordarketyper"
+    "使用单词原型": "Använd ordarketyper",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Programvaran är helt gratis och med öppen källkod.\nUnderhåll av programvara är dock inte lätt; utveckling och underhåll kräver mycket tid och ansträngning.\n\nOm du känner att denna programvara är till hjälp för dig är du välkommen att bli min [sponsor](https://patreon.com/HIllya51). Ditt stöd kommer att vara en drivkraft för långsiktigt underhåll av programvaran.\n\nOm du stöter på svårigheter under användning kan du konsultera denna användarmanual, söka efter videohandledningar gjorda av entusiastiska personer, och du är också välkommen att gå med i [Discord](https://discord.com/invite/ErtDwVeAbB) eller skapa ett [ärende (issue)](https://github.com/HIllya51/LunaTranslator/issues) för att kommunicera med mig."
 }

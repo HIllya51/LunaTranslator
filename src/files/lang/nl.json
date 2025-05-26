@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "Geef prioriteit aan het gebruik van modellen met een hogere precisie",
     "未选择OCR引擎": "De OCR-engine is niet geselecteerd",
     "当前软件或操作系统版本不支持使用GPU": "De huidige software- of besturingssysteemversie biedt geen ondersteuning voor het gebruik van GPU's",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "De software is niet eenvoudig te onderhouden. Als u denkt dat de software nuttig voor u is, scant dan de QR -code op WeChat om deze te sponsoren. Dank je ~",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "De software is niet eenvoudig te onderhouden. Als u denkt dat de software nuttig voor u is, wees dan mijn [sponsor](https://patreon.com/hillya51). Dank je ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) gebruikt de licentie [gplv3](https://github.com/hillya51/lunatranslator/Blob/Main/License).",
     "翻译接口": "Vertaalinterface",
     "不使用的辞书": "Niet-gebruikte woordenboek",
-    "使用单词原型": "Gebruik woordarchetypen"
+    "使用单词原型": "Gebruik woordarchetypen",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "De software is volledig gratis en open source.\nSoftwareonderhoud is echter niet eenvoudig; ontwikkeling en onderhoud vergen veel tijd en moeite.\n\nAls u vindt dat deze software nuttig voor u is, bent u van harte welkom om mijn [sponsor](https://patreon.com/HIllya51) te worden. Uw steun zal een drijvende kracht zijn voor het langdurige onderhoud van de software.\n\nAls u problemen ondervindt tijdens het gebruik, kunt u deze gebruikershandleiding raadplegen, zoeken naar videohandleidingen gemaakt door enthousiaste mensen, en u bent ook welkom om deel te nemen aan [Discord](https://discord.com/invite/ErtDwVeAbB) of een [issue](https://github.com/HIllya51/LunaTranslator/issues) aan te maken om met mij te communiceren."
 }

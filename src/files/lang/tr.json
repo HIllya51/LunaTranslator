@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "Daha yüksek hassasiyetli modellerin kullanımına öncelik verin",
     "未选择OCR引擎": "OCR motoru seçili değil",
     "当前软件或操作系统版本不支持使用GPU": "Mevcut yazılım veya işletim sistemi sürümü GPU kullanımını desteklemiyor",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "Yazılımın bakımı kolay değildir. Yazılımın size yardımcı olduğunu düşünüyorsanız, lütfen sponsor olmak için WeChat'teki QR kodunu tarayın. Teşekkürler ~",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "Yazılımın bakımı kolay değildir. Yazılımın size yardımcı olduğunu düşünüyorsanız, lütfen benim [sponsor](https://patreon.com/hillya51). Teşekkürler ~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) [gplv3](https://github.com/hillya51/lunatranslator/blob/main/license) lisansını kullanır.",
     "翻译接口": "Çeviri arayüzü",
     "不使用的辞书": "Kullanılmamış sözlük",
-    "使用单词原型": "Kelime arketiplerini kullanın"
+    "使用单词原型": "Kelime arketiplerini kullanın",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Yazılım tamamen ücretsiz ve açık kaynaklıdır.\nAncak yazılım bakımı kolay değildir; geliştirme ve bakım çok fazla zaman ve çaba gerektirir.\n\nBu yazılımın size yardımcı olduğunu düşünüyorsanız, [sponsorum](https://patreon.com/HIllya51) olabilirsiniz. Desteğiniz, yazılımın uzun vadeli bakımı için itici bir güç olacaktır.\n\nKullanım sırasında zorluklarla karşılaşırsanız, bu kullanım kılavuzuna başvurabilir, meraklı kişiler tarafından hazırlanan video eğitimlerini arayabilir ve ayrıca benimle iletişim kurmak için [Discord](https://discord.com/invite/ErtDwVeAbB)'a katılabilir veya bir [sorun (issue)](https://github.com/HIllya51/LunaTranslator/issues) açabilirsiniz."
 }

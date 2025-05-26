@@ -797,10 +797,9 @@
     "优先使用更高精度的模型": "優先使用更高精度的模型",
     "未选择OCR引擎": "未選擇OCR引擎",
     "当前软件或操作系统版本不支持使用GPU": "當前軟體或操作系統版本不支援使用GPU",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~": "軟件維護不易，如果你感覺該軟件對你有幫助，歡迎微信掃碼贊助，謝謝~",
-    "软件维护不易，如果你感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)。谢谢~": "軟件維護不易，如果你感覺該軟件對你有幫助，歡迎成為我的[sponsor](https://patreon.com/HIllya51)。 謝謝~",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)許可證。",
     "翻译接口": "翻譯接口",
     "不使用的辞书": "不使用的辭書",
-    "使用单词原型": "使用單詞原型"
+    "使用单词原型": "使用單詞原型",
+    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "軟體完全免費且開源。\n但軟體維護不易，開發和維護需要大量時間和精力。\n\n如果您感覺該軟體對您有幫助，歡迎成為我的[贊助者](https://patreon.com/HIllya51)，您的支持將成為支持軟體長期維護的助力。\n\n如果使用中遇到困難，可以查閱本使用說明、或搜尋一些熱心人士製作的影片教學，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、發起[issue](https://github.com/HIllya51/LunaTranslator/issues)來與我交流。"
 }
