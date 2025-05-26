@@ -120,7 +120,14 @@ export const ja = defineConfig({
                             { text: 'さまざまな翻訳最適化の役割', link: '/ja/transoptimi' }
                         ]
                     },
-                    { text: '音声合成', link: '/ja/ttsofname' },
+                    {
+                        text: '音声合成', link: '/ja/ttsengines',
+                        collapsed: true,
+                        items: [
+                            { text: '音声合成エンジン', link: '/ja/ttsengines' },
+                            { text: 'キャラクターごとに異なる声を使用した', link: '/ja/ttsofname' }
+                        ]
+                    },
                     {
                         text: '形態素解析＆辞書&Anki', link: '/ja/qa1',
                         collapsed: true,

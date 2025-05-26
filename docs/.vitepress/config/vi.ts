@@ -105,7 +105,14 @@ export const vi = defineConfig({
                           { text: 'Chức năng của các tối ưu hóa dịch thuật', link: '/vi/transoptimi' }
                       ]
                   },
-                  { text: 'Tổng hợp giọng nói', link: '/vi/ttsofname' },
+                    {
+                        text: '语音合成', link: '/vi/ttsengines',
+                        collapsed: true,
+                        items: [
+                            { text: '语音合成引擎', link: '/vi/ttsengines' },
+                            { text: 'Sử dụng giọng nói khác nhau cho từng nhân vật', link: '/vi/ttsofname' }
+                        ]
+                    },
                   {
                       text: 'Phân đoạn & Từ điển & Anki', link: '/vi/qa1',
                       collapsed: true,

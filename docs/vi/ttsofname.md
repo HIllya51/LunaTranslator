@@ -1,6 +1,4 @@
-# Tổng hợp giọng nói
-
-## Chuyển văn bản thành giọng nói với các giọng khác nhau cho từng nhân vật
+# Chuyển văn bản thành giọng nói với các giọng khác nhau cho từng nhân vật
 
 Đầu tiên, nếu văn bản hiện tại không chứa tên hoặc thông tin nhận dạng khác, bạn có thể chọn thêm văn bản tên trong bộ chọn văn bản. Văn bản hiển thị sẽ được sắp xếp theo thứ tự lựa chọn.
 

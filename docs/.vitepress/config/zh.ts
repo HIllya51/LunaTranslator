@@ -123,7 +123,14 @@ export const zh = defineConfig({
                             { text: '各种翻译优化的作用', link: '/zh/transoptimi' }
                         ]
                     },
-                    { text: '语音合成', link: '/zh/ttsofname' },
+                    {
+                        text: '语音合成', link: '/zh/ttsengines',
+                        collapsed: true,
+                        items: [
+                            { text: '语音合成引擎', link: '/zh/ttsengines' },
+                            { text: '根据不同的人物使用不同的声音', link: '/zh/ttsofname' }
+                        ]
+                    },
                     {
                         text: '分词&辞书&Anki', link: '/zh/qa1',
                         collapsed: true,

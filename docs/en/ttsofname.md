@@ -1,6 +1,4 @@
-# Speech Synthesis
-
-## Text-to-Speech Using Different Voices for Different Characters
+# Using Different Voices for Different Characters
 
 First, if the current text does not contain names or other identifying information, you can additionally select the name text in the text selector. The displayed text will be arranged in the order of selection.
 

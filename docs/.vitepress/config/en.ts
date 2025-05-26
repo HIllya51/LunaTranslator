@@ -62,7 +62,14 @@ export const en = defineConfig({
                             { text: 'Functions of Various Translation Optimizations', link: '/en/transoptimi' }
                         ]
                     },
-                    { text: 'Speech Synthesis', link: '/en/ttsofname' },
+                    {
+                        text: 'Tổng hợp giọng nói', link: '/en/ttsengines',
+                        collapsed: true,
+                        items: [
+                            { text: 'Công cụ Tổng hợp Giọng nói', link: '/en/ttsengines' },
+                            { text: 'Using Different Voices for Different Characters', link: '/en/ttsofname' }
+                        ]
+                    },
                     {
                         text: 'Tokenization & Dictionary & Anki', link: '/en/qa1',
                         collapsed: true,
