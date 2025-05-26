@@ -4,7 +4,7 @@
 
 | Version | OS | 32-bit | 64-bit | Description |
 | - | - | - | - | - |
-| Beta | Windows 10 & 11 (newer versions) |  | <DownloadLink href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | This version only supports newer Windows 10 builds for better performance and new features.<br>If you're using an early version of Windows 10, it may not work - please use the Stable version instead. |
+| Beta | Windows 10 & 11 (newer versions) |  | <DownloadLink href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | This version only supports newer Windows 10 versions to achieve higher performance, updated system features, and a lower virus false positive rate.<br>If you're using an early version of Windows 10, it may not work - please use the Stable version instead. |
 | Stable | Windows 7 or later | <DownloadLink href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <DownloadLink href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> | |
 | Legacy | Windows XP & Vista | <DownloadLink href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | This version only supports text extraction from very old games that can only run in XP VMs. It has limited functionality, is unstable, and runs slowly. Not recommended for regular use.
 
