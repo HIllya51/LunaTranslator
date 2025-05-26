@@ -10,6 +10,7 @@ from gui.setting.tts import setTab5, showvoicelist
 from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
 from gui.setting.proxy import setTab_proxy
+from traceback import print_exc
 from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
 from gui.setting.about import setTab_about, versionlabelmaybesettext, versioncheckthread
 from gui.dynalang import LListWidgetItem, LListWidget
@@ -103,12 +104,18 @@ class Setting(closeashidewindow):
         except:
             self.downloadprogress_cache = text, val
 
+    def __safeinvoke(self, fobj):
+        try:
+            fobj()
+        except:
+            print_exc()
+
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.portconflictcache = []
         self.portconflict.connect(self.portconflictcache.append)
-        self.safeinvokefunction.connect(lambda _: _())
+        self.safeinvokefunction.connect(self.__safeinvoke)
         self.progresssignal4.connect(self._progresssignal4)
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.voicelistsignal.connect(functools.partial(showvoicelist, self))

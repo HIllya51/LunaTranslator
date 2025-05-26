@@ -1060,7 +1060,7 @@ class MAINUI:
             print_exc()
             return -1
         allvk = [mod_map_r[mod] for mod in modes] + ([vkcode] if vkcode else [])
-        return all(windows.GetKeyState(vk) < 0 for vk in allvk)
+        return all(windows.GetAsyncKeyState(vk) & 0x8000 for vk in allvk)
 
     @threader
     def clickwordcallback(self, wordd: dict, append=False):

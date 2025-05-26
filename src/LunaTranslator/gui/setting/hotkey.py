@@ -69,7 +69,7 @@ def createreloadablewrapper(self, name):
         "userconfig/myhotkeys/{}.py".format(name), "myhotkeys." + name
     )
     try:
-        self.safeinvokefunction.emit([lambda: module.OnHotKeyClicked()])
+        self.safeinvokefunction.emit(module.OnHotKeyClicked)
     except:
         print_exc()
 
@@ -120,7 +120,9 @@ def registrhotkeys(self):
         "36": lambda: gobject.baseobject.textgetmethod(
             NativeUtils.ClipBoard.text, False
         ),
-        "37": lambda: gobject.baseobject.searchwordW.search_word.emit(safeGet(), None, False),
+        "37": lambda: gobject.baseobject.searchwordW.search_word.emit(
+            safeGet(), None, False
+        ),
         "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit(),
         "38": lambda: gobject.baseobject.textgetmethod(safeGet(), False),
         "40": lambda: gobject.baseobject.searchwordW.search_word_in_new_window.emit(
