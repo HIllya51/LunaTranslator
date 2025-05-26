@@ -204,8 +204,9 @@ def buildhook(arch, target):
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
     )
     release = os.path.join("builds", os.listdir("builds")[0])
+    os.makedirs("builds/Release", exist_ok=True)
     for f in os.listdir(release):
-        shutil.move(os.path.join(release, f), "builds")
+        shutil.move(os.path.join(release, f), "builds/Release")
     shutil.rmtree(release)
 
 
