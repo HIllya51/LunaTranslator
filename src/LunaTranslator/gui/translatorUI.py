@@ -1239,10 +1239,21 @@ class TranslatorWindow(resizableframeless):
                     print_exc()
                 break
 
+    def cleanupdater(self):
+        try:
+            os.remove("cache/Updater.exe")
+        except:
+            pass
+        try:
+            shutil.rmtree("files_old")
+        except:
+            pass
+
     def showEvent(self, e):
         if not self.firstshow:
             self.enterfunction()
             return
+        self.cleanupdater()
         self.firstshow = False
         self.mousetransparent_check()
         self.adjustbuttons()
@@ -1700,10 +1711,6 @@ class TranslatorWindow(resizableframeless):
                     shutil.rmtree(tmpbase)
                 except:
                     pass
-            try:
-                os.remove("cache/Updater.exe")
-            except:
-                pass
         except:
             pass
 
