@@ -12,7 +12,7 @@ export default {
     Layout() {
         return h(DefaultTheme.Layout, null, {
             'not-found': () => h(notfound),
-            'doc-after': () => h(giscus)
+            // 'doc-after': () => h(giscus)
         })
     },
     enhanceApp({ app }) {
