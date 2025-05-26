@@ -1,20 +1,22 @@
 from qtsymbols import *
 import functools, importlib
 from traceback import print_exc
-import os, gobject, requests, sys
+import os, gobject, requests, sys, uuid
 from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR, static_data
-from myutils.utils import makehtml
+from myutils.utils import makehtml, selectdebugfile
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     MySwitch,
     getsimpleswitch,
     manybuttonlayout,
     listediterline,
+    getsmalllabel,
     TableViewW,
     getsimplepatheditor,
     SuperCombo,
     getsimplecombobox,
+    getboxlayout,
     getspinbox,
     SplitLine,
     getIconButton,
@@ -47,13 +49,28 @@ class noundictconfigdialog1(LDialog):
             self.model.index(row, 1), item.get("escape", item.get("regex", False))
         )
 
-    def __init__(self, parent, reflist, title, label) -> None:
+    def __init__(self, parent, reflist, title, label, extraX: dict = None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(title)
         # self.setWindowModality(Qt.ApplicationModal)
         self.reflist = reflist
         formLayout = QVBoxLayout(self)  # 配置layout
-
+        if extraX:
+            ttsprocess = extraX.get("ttsprocess_path")
+            if not ttsprocess:
+                ttsprocess = str(uuid.uuid4())
+                extraX["ttsprocess_path"] = ttsprocess
+            last = getIconButton(
+                callback=lambda: selectdebugfile(ttsprocess, istts=True),
+                icon="fa.edit",
+                enable=extraX.get("ttsprocess_use", False),
+            )
+            switch = getsimpleswitch(
+                extraX, "ttsprocess_use", callback=last.setEnabled, default=False
+            )
+            formLayout.addLayout(
+                getboxlayout([getsmalllabel("自定义python处理"), switch, last, ""])
+            )
         self.model = LStandardItemModel()
         self.model.setHorizontalHeaderLabels(label)
         table = TableViewW(self, copypaste=True, updown=True)

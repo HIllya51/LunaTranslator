@@ -300,8 +300,11 @@ def setTab5lz(self):
                                             ],
                                             "语音修正",
                                             ["正则", "转义", "原文", "替换"],
+                                            extraX=globalconfig["ttscommon"],
                                         )
                                     ),
+                                    "",
+                                    "",
                                     "",
                                 ],
                             ],

@@ -732,6 +732,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["tts_repair_regex"],
                 "语音修正",
                 ["正则", "转义", "原文", "替换"],
+                extraX=savehook_new_data[gameuid],
             )
 
         automakegrid(

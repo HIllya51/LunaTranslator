@@ -25,6 +25,7 @@ from myutils.utils import (
     parsekeystringtomodvkcode,
     checkisusingwine,
     checkpostusing,
+    checkmd5reloadmodule,
     stringfyerror,
     targetmod,
     translate_exits,
@@ -701,8 +702,19 @@ class MAINUI:
             pass
         return globalconfig["ttscommon"]
 
-    def ttsrepair(self, text, usedict):
+    def ttsprocess(self, path, text):
+        path1 = "userconfig/posts/{}.py".format(path)
+        if not os.path.exists(path1):
+            return text
+        return checkmd5reloadmodule(path1, "posts." + path)[1].POSTSOLVE(text)
+
+    def ttsrepair(self, text, usedict: dict):
         if usedict.get("tts_repair", False):
+            if usedict.get("ttsprocess_use", False):
+                try:
+                    text = self.ttsprocess(usedict.get("ttsprocess_path"), text)
+                except:
+                    print_exc()
             text = parsemayberegexreplace(usedict.get("tts_repair_regex", []), text)
         return text
 

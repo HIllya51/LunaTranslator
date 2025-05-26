@@ -426,10 +426,9 @@ def splitocrtypes(dic):
     return offline, online
 
 
-def selectdebugfile(path: str, ismypost=False, ishotkey=False):
-    if ismypost:
+def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
+    if ismypost or istts:
         path = "userconfig/posts/{}.py".format(path)
-
     p = os.path.abspath((path))
     os.makedirs(os.path.dirname(p), exist_ok=True)
     print(path)
@@ -440,6 +439,8 @@ def selectdebugfile(path: str, ismypost=False, ishotkey=False):
             "userconfig/myprocess.py": "myprocess.py",
             "userconfig/myanki_v2.py": "myanki_v2.py",
         }.get(path)
+        if istts:
+            tgt = "mypost_tts.py"
         if ismypost:
             tgt = "mypost.py"
         if ishotkey:
