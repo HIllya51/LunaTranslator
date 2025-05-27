@@ -91,7 +91,7 @@
     The actual meaning is that regardless of the current default text input source, it reads text once from the clipboard and passes it to the subsequent translation/TTS/... process.
 
 1. #### Copy to Clipboard
-    Copies the currently extracted text to the clipboard once. If you want to automatically extract to the clipboard, you should activate `Text Input` -> `Text Output` -> `Clipboard` -> `Auto Output`.
+    Copies the currently extracted text to the clipboard once. If you want to automatically extract to the clipboard, enable `Text Input` → `Clipboard` → `Auto Output` → `Auto Output Text`.
 
 1. #### Copy Translation to Clipboard
     Copies the translation instead of the original text to the clipboard.

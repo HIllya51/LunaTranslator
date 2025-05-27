@@ -90,7 +90,7 @@
     Ý nghĩa thực tế là bất kể nguồn đầu vào văn bản mặc định hiện tại là gì, nó đọc văn bản một lần từ clipboard và chuyển nó đến quá trình dịch/TTS/... tiếp theo.
 
 1. #### Sao Chép Vào Clipboard
-    Sao chép văn bản hiện được trích xuất vào clipboard một lần. Nếu bạn muốn tự động trích xuất vào clipboard, bạn nên kích hoạt `Đầu Vào Văn Bản` -> `Đầu Ra Văn Bản` -> `Clipboard` -> `Tự Động Đầu Ra`.
+    Sao chép văn bản hiện được trích xuất vào clipboard một lần. Nếu muốn tự động trích xuất vào clipboard, bật `Nhập văn bản` → `Clipboard` → `Tự động xuất` → `Tự động xuất văn bản`.
 
 1. #### Sao Chép Dịch Thuật Vào Clipboard
     Sao chép bản dịch thay vì văn bản gốc vào clipboard.
