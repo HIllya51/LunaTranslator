@@ -1482,7 +1482,7 @@
         "https://jpdb.io/search?q={word}",
         "https://www.weblio.jp/content/{word}"
     ],
-    "usesearchword": true,
+    "usesearchword": false,
     "usesearchword_S": false,
     "usesearchword_S_hover": false,
     "usecopyword": false,
