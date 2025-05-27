@@ -249,7 +249,7 @@ The language and location is abbreviated, so "en-US" would be "English-United St
 The following commands install the OCR pack for "en-US":
 
 ```powershell
-$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }
 $Capability | Add-WindowsCapability -Online
 ```
 

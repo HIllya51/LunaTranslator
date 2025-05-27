@@ -248,7 +248,7 @@ Ngôn ngữ và vị trí được viết tắt, vì vậy "en-US" sẽ là "Ti�
 Các lệnh sau đây cài đặt gói OCR cho "en-US":
 
 ```powershell
-$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }`
+$Capability = Get-WindowsCapability -Online | Where-Object { $_.Name -Like 'Language.OCR*en-US*' }
 $Capability | Add-WindowsCapability -Online
 ```
 
