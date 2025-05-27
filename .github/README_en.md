@@ -1,14 +1,10 @@
-# LunaTranslator
+# LunaTranslator [Software Download](https://docs.lunatranslator.org/README.html)
 
 > **A Visual Novel translation tool**
 
 ### [简体中文](README.md) | English | [Other Language](otherlang.md) 
 
-### [User Manual](https://docs.lunatranslator.org/) | [Software Download](https://docs.lunatranslator.org/README.html) | [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB)
-
-## Sponsorship
- 
-Software maintenance is not easy. If you find this software helpful, please consider becoming my [sponsor](https://patreon.com/HIllya51). Thank you~
+### If you encounter any issues, please check the [User Manual](https://docs.lunatranslator.org/) or search for video tutorials created by community contributors. You're also welcome to join my [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB) or submit an [issue](https://github.com/HIllya51/LunaTranslator/issues) on GitHub to discuss with me.
 
 ## Feature Support
 
@@ -43,6 +39,12 @@ Supports almost all conceivable translation engines, including:
 - **Anki** Supports one-click addition of words to Anki
 
 - **Load Browser Extensions** Browser extensions like Yomitan can be loaded within the software to assist in implementing additional features.
+
+## Sponsorship
+
+This software is completely free and open-source. However, maintaining software is not easy—development and upkeep require significant time and effort.
+
+If you find this software helpful, we'd be honored if you could become a [sponsor](https://patreon.com/HIllya51). Your support will be the driving force behind the software's long-term maintenance.
 
 ## Open Source License
 

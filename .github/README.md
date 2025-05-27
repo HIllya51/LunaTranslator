@@ -1,10 +1,10 @@
-# LunaTranslator
+# LunaTranslator [软件下载](https://docs.lunatranslator.org/README.html)
 
 > **一款galgame翻译器**
  
 ### 简体中文  | [English](README_en.md) | [Other Language](otherlang.md)
 
-### [使用说明](https://docs.lunatranslator.org/) | [视频教程](https://space.bilibili.com/592120404/video) | [软件下载](https://docs.lunatranslator.org/README.html) | [![](https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge)](https://qm.qq.com/q/I5rr3uEpi2) [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB)
+### 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org/)、观看[视频教程](https://space.bilibili.com/592120404/video)，也欢迎加入[![](https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge)](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。
 
 ## 功能支持
 
@@ -42,7 +42,10 @@
 
 ## 支持作者
 
-软件维护不易，如果你感觉该软件对你有帮助，欢迎微信扫码赞助，谢谢~
+软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。
+
+如果您感觉该软件对你有帮助，欢迎微信扫码赞助，您的支持将成为软件长期维护的助力。
+
 <img src='../src/files/static/zan.jpg' style="height: 400px !important;">
 
 ## 开源许可
