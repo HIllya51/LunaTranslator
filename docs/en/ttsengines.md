@@ -4,9 +4,9 @@
 
 == Windows TTS
 
-On Windows 11, you can add narrator natural voice libraries in the system settings.
+For Windows 7 and above, you can add the text-to-speech package for a language in the system's language settings to use it.
 
-However, currently, natural voice libraries cannot be recognized by SAPI, so they cannot be used directly in LunaTranslator. But, you can install [NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter), which can convert natural voice libraries to a SAPI interface, allowing them to be used in LunaTranslator.
+For Windows 11, in addition to the language's text-to-speech package, you can also add Narrator Natural Voices within system settings. However, Natural Voices are currently not recognized by SAPI, and therefore cannot be directly used in LunaTranslator. But, you can install [NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter). This program can convert Natural Voices to a SAPI interface, allowing them to be used in LunaTranslator.
 
 == VoiceRoid2
 

@@ -4,9 +4,9 @@
 
 == Windows TTS
 
-Windows 11では、システム設定内でナレーターの自然な音声ライブラリを追加できます。
+Windows 7以降では、システムの言語設定で、言語の音声合成パッケージを追加すれば使用できます。
 
-ただし、現在、自然な音声ライブラリはSAPIに認識されないため、LunaTranslatorで直接使用することはできません。しかし、[NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter)をインストールすると、このプログラムは自然な音声ライブラリをSAPIインターフェースに変換し、LunaTranslatorで使用できるようになります。
+Windows 11では、言語の音声合成パッケージに加えて、システム設定内でナレーター自然音声ライブラリを追加することもできます。ただし、現在、自然音声ライブラリはSAPIに認識されないため、LunaTranslatorで直接使用することはできません。しかし、[NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter)をインストールすることができます。このプログラムは自然音声ライブラリをSAPIインターフェースに変換し、LunaTranslatorで使用できるようにします。
 
 == VoiceRoid2
 

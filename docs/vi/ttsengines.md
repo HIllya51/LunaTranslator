@@ -4,9 +4,9 @@
 
 == Windows TTS
 
-Trên Windows 11, bạn có thể thêm thư viện giọng nói tự nhiên của Người tường thuật (Narrator) trong cài đặt hệ thống.
+Đối với Windows 7 trở lên, bạn có thể thêm gói tổng hợp giọng nói của ngôn ngữ trong cài đặt ngôn ngữ của hệ thống để sử dụng.
 
-Tuy nhiên, hiện tại thư viện giọng nói tự nhiên không thể được SAPI nhận dạng, do đó không thể sử dụng trực tiếp trong LunaTranslator. Nhưng, bạn có thể cài đặt [NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter), chương trình này có thể chuyển đổi thư viện giọng nói tự nhiên sang giao diện SAPI, nhờ đó có thể sử dụng trong LunaTranslator.
+Đối với Windows 11, ngoài gói tổng hợp giọng nói của ngôn ngữ, bạn cũng có thể thêm thư viện giọng nói tự nhiên của Trình tường thuật (Narrator) trong cài đặt hệ thống. Tuy nhiên, hiện tại thư viện giọng nói tự nhiên không thể được SAPI nhận dạng, do đó không thể sử dụng trực tiếp trong LunaTranslator. Nhưng, bạn có thể cài đặt [NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter). Chương trình này có thể chuyển đổi thư viện giọng nói tự nhiên sang giao diện SAPI, nhờ đó cho phép sử dụng chúng trong LunaTranslator.
 
 == VoiceRoid2
 

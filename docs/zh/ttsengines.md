@@ -4,9 +4,9 @@
 
 == Windows TTS
 
-在Windows 11上，可以在系统设置内添加讲述人自然语音库。
+对于Windows 7及以上，可以在系统的语言设置中，添加语言的语音合成包，即可使用。
 
-但目前自然语音库无法被SAPI识别，因此无法直接在LunaTranslator中使用。但是，你可以安装[NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter)，该程序可以将自然语音库转换为SAPI接口，从而在LunaTranslator中使用。
+对于Windows 11，除了语言的语音合成包以外，还可以在系统设置内添加讲述人自然语音库。但目前自然语音库无法被SAPI识别，因此无法直接在LunaTranslator中使用。但是，你可以安装[NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter)，该程序可以将自然语音库转换为SAPI接口，从而在LunaTranslator中使用。
 
 == VoiceRoid2
 
