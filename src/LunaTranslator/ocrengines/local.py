@@ -238,9 +238,11 @@ class question(QWidget):
         req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
         size = int(req.headers["Content-Length"])
         target = gobject.gettempdir("ocrmodel/" + hashlib.md5(url.encode()).hexdigest())
+        md5 = hashlib.md5()
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
+                md5.update(_)
                 file_size += len(_)
                 prg = int(10000 * file_size / size)
                 prg100 = prg / 100
@@ -250,11 +252,10 @@ class question(QWidget):
                     prg,
                 )
         self.progresssetval.emit(_TR("正在解压"), 10000)
-        self.writeinfos(data, target)
+        self.writeinfos(data, target, md5.hexdigest())
 
-    def writeinfos(self, data, target, encodeby=None):
-        url: str = encodeby if encodeby else data["link"]
-        tgt = "cache/ocrmodel/" + hashlib.md5(url.encode()).hexdigest()
+    def writeinfos(self, data, target, hd):
+        tgt = "cache/ocrmodel/" + hd
         with zipfile.ZipFile(target) as zipf:
             zipf.extractall(tgt)
         try:

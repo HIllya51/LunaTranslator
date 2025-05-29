@@ -173,8 +173,11 @@ def downloadOCRModel():
     os.chdir(__)
     subprocess.run(f"curl -C - -LO {link}")
     subprocess.run(f"7z x -y jazhchten.zip")
+    with open("jazhchten.zip", "rb") as ff:
+        md5 = hashlib.md5(ff.read()).hexdigest()
     os.remove(f"jazhchten.zip")
     os.chdir(rootDir)
+    os.rename(__, md5)
 
 
 def buildhook(arch, target):
