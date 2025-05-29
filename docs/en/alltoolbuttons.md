@@ -136,7 +136,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
   
     This reading will ignore `Skip` (if in `Voice Settings`, the current text target is matched as `Skip`, then using the button for reading will ignore the skip and force the reading).
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> Copy to Clipboard
-    Copy the currently extracted text to the clipboard once. If you want to automatically extract to the clipboard, enable `Text Input` → `Clipboard` → `Auto Output` → `Auto Output Text`.
+    Copy the currently extracted text to the clipboard once. If you want to automatically extract to the clipboard, enable `Core Settings` → `Clipboard` → `Output` → `Auto Output Text` and underneath it `Content` → `Original Text`.
 1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> Show/Hide History Text  
     Open or close the history text window.
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> Game Management
