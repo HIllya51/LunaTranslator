@@ -176,8 +176,9 @@ def downloadOCRModel():
     with open("jazhchten.zip", "rb") as ff:
         md5 = hashlib.md5(ff.read()).hexdigest()
     os.remove(f"jazhchten.zip")
-    os.chdir(rootDir)
+    os.chdir("..")
     os.rename(__, md5)
+    os.chdir(rootDir)
 
 
 def buildhook(arch, target):
