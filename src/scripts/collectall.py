@@ -14,7 +14,7 @@ if target == "winxp":
 else:
     pyrt = f"../build/pyrt_{arch}_{target}/runtime"
 launch = f"../src/cpp/builds/_{arch}"
-launch+=  f"_{target}"
+launch += f"_{target}"
 targetdir = rf"build\LunaTranslator_{arch}_{target}"
 
 if arch == "x86":
@@ -23,6 +23,7 @@ else:
     baddll = "DLL32"
 
 os.makedirs(targetdir, exist_ok=True)
+
 
 def copycheck(src, tgt):
     print(src, tgt, os.path.exists(src))
@@ -53,6 +54,15 @@ pause"""
 copycheck("./LunaTranslator", targetdir)
 copycheck(r".\files", targetdir)
 copycheck(pyrt, targetdir + "/files")
+if target == "win10":
+    runtimedir = "runtime31264"
+elif target == "winxp":
+    runtimedir = "runtime3432"
+elif arch == "x64":
+    runtimedir = "runtime3764"
+else:
+    runtimedir = "runtime3732"
+os.rename(targetdir + "/files/runtime", targetdir + "/files/" + runtimedir)
 try:
     shutil.rmtree(rf"{targetdir}\files\{baddll}")
 except:

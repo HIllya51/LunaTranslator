@@ -1,8 +1,9 @@
 import uuid
 import os
 import windows, NativeUtils, threading
+from xml.sax.saxutils import escape
 from tts.basettsclass import TTSbase, SpeechParam
-import ctypes, subprocess, gobject
+import subprocess, gobject
 from ctypes import c_int32
 
 
@@ -36,18 +37,17 @@ class TTS(TTSbase):
         datas = (readf.split("\n"))[:-1]
         internal = []
         vis = []
-        for i in range(len(datas) // 3):
-            internal.append((datas[i * 3 + 1], datas[i * 3 + 2]))
-            vis.append(datas[i * 3])
+        for i in range(len(datas) // 2):
+            internal.append((datas[i * 2]))
+            vis.append(datas[i * 2 + 1])
         return internal, vis
 
-    def speak(self, content: str, voice, param: SpeechParam):
-        hkey, idx = voice
+    def speak(self, content: str, voice: str, param: SpeechParam):
         with self.lock:
-            windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(param.speed)))
-            windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
-            windows.WriteFile(self.hPipe, hkey.encode("utf-16-le"))
-            windows.WriteFile(self.hPipe, bytes(ctypes.c_uint(int(idx))))
+            windows.WriteFile(self.hPipe, bytes(c_int32(int(param.speed))))
+            windows.WriteFile(self.hPipe, bytes(c_int32(int(param.pitch))))
+            windows.WriteFile(self.hPipe, escape(content).encode("utf-16-le"))
+            windows.WriteFile(self.hPipe, voice.encode("utf-16-le"))
             size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
 
             return self.mem[:size]

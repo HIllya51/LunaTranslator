@@ -70,6 +70,8 @@ class pOnnxSession
             vec.push_back(std::move(inputName));
         }
     }
+    bool is_using_gpu = false;
+    std::mutex gpu_run_lock;
 
 public:
     pOnnxSession(const std::wstring &path, int numOfThread, bool gpu, int device)
@@ -80,6 +82,7 @@ public:
             {
                 Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, device));
                 // 失败返回err=66，但没有errmsg，会回退到cpu，不要报错。
+                is_using_gpu = true;
             }
             catch (std::exception &e)
             {
@@ -104,8 +107,15 @@ public:
         assert(inputTensor.IsTensor());
         std::vector<const char *> inputNames = GetVector(inputNamesPtr);
         std::vector<const char *> outputNames = GetVector(outputNamesPtr);
-        auto outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
-                                         inputNames.size(), outputNames.data(), outputNames.size());
+        std::vector<Ort::Value> outputTensor;
+        {
+            // 使用dml运行时，这个东西似乎线程不安全。
+            std::unique_lock lock(gpu_run_lock, std::defer_lock);
+            if (is_using_gpu)
+                lock.lock();
+            outputTensor = session->Run(Ort::RunOptions{nullptr}, inputNames.data(), &inputTensor,
+                                        inputNames.size(), outputNames.data(), outputNames.size());
+        }
         assert(outputTensor.size() == 1 && outputTensor.front().IsTensor());
         std::vector<int64_t> outputShape = outputTensor[0].GetTensorTypeAndShapeInfo().GetShape();
         auto outputCount = outputTensor.front().GetTensorTypeAndShapeInfo().GetElementCount();

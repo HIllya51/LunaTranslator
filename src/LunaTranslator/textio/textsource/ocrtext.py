@@ -108,12 +108,14 @@ class rangemanger:
 class ocrtext(basetext):
 
     def init(self):
+        self.stop = True
         self.startsql(gobject.gettranslationrecorddir("0_ocr.sqlite"))
         threading.Thread(target=ocr_init).start()
         self.ranges: "list[rangemanger]" = []
         self.gettextthread()
 
     def clearrange(self):
+        self.stop = True
         self.ranges.clear()
         globalconfig["ocrregions"].clear()
 
@@ -158,6 +160,9 @@ class ocrtext(basetext):
         laststate = tuple((0 for _ in range(len(globalconfig["ocr_trigger_events"]))))
         lastevents = copy.deepcopy(globalconfig["ocr_trigger_events"])
         while not self.ending:
+            if self.stop:
+                time.sleep(0.1)
+                continue
             if not self.isautorunning:
                 time.sleep(0.1)
                 continue

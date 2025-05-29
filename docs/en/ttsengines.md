@@ -6,7 +6,7 @@
 
 For Windows 7 and above, you can add the text-to-speech package for a language in the system's language settings to use it.
 
-For Windows 11, in addition to the language's text-to-speech package, you can also add Narrator Natural Voices within system settings. However, Natural Voices are currently not recognized by SAPI, and therefore cannot be directly used in LunaTranslator. But, you can install [NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter). This program can convert Natural Voices to a SAPI interface, allowing them to be used in LunaTranslator.
+On Windows 11, in addition to the language's speech synthesis package, you can also add higher-quality natural voices via `Accessibility` -> `Narrator` -> `Add natural voices`.
 
 == VoiceRoid2
 

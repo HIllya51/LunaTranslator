@@ -359,6 +359,9 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | ULJM06210 | Starry☆Sky～After Winter～Portable |
 |  | ULJM06104 | アラビアンズ・ロスト |
 |  | ULJM05334 | MEMORIES OFF |
+|  | ULJS00216 | 雨格子の館 PORTABLE 一柳和、最初の受難 |
+|  | ULJS00230 | 奈落の城 PORTABLE 一柳和、2度目の受難 |
+|  | NPJH50186 | 氷の墓標　一柳和、３度目の受難 |
 |  | ULJM06192 | 黄昏のシンセミア portable |
 |  | NPJH50836 | 俺の彼女のウラオモテ ～Pure Sweet Heart～ |
 |  | NPJH50867 | 越えざるは紅い花　大河は未来を紡ぐ |

@@ -2,6 +2,7 @@ import hmac
 import pytz
 import uuid
 import xml.etree.ElementTree as ET
+from xml.sax.saxutils import escape
 import hashlib
 import configparser
 from wsgiref.handlers import format_date_time

@@ -1,6 +1,7 @@
 from myutils.config import globalconfig
 import functools
 from myutils.wrapper import threader
+from xml.sax.saxutils import escape
 from traceback import print_exc
 from myutils.utils import LRUCache, stringfyerror
 from myutils.commonbase import commonbase
@@ -70,9 +71,8 @@ class TTSbase(commonbase):
         return None  # fname ,若为None则是不需要文件直接朗读
 
     ####################
-    @property
-    def arg_not_sup(self):
-        return globalconfig["reader"][self.typename].get("arg_not_sup", [])
+    arg_support_pitch = True
+    arg_support_speed = True
 
     @property
     def volume(self):
@@ -159,3 +159,16 @@ class TTSbase(commonbase):
 
     def ttscachekey(self, content, voice, param):
         return content, voice, param
+
+    def createSSML(self, content, voice, param: SpeechParam):
+        # https://learn.microsoft.com/en-us/azure/ai-services/speech-service/speech-synthesis-markup-voice
+        # 按照微软文档，pitch应当取值-50%~50%，rate应该取值-50%~100%。虽然实测可以超出范围，但还是按他说的来吧。
+        pitch = int(param.pitch * 5)
+        rate = int(param.speed * 10) if param.speed > 0 else int(param.speed * 5)
+        ssml = (
+            "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>"
+            "<voice name='{}'><prosody pitch='{}%' rate='{}%'>{}</prosody></voice></speak>".format(
+                escape(voice), pitch, rate, escape(content)
+            )
+        )
+        return ssml

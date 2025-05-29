@@ -344,7 +344,23 @@ int main()
 			return 0;
 	}
 	CHandle __handle{CreateMutexA(&allAccess, FALSE, "LUNA_UPDATER_BLOCK")};
-	PyStand ps(L"files\\runtime");
+
+#ifdef WIN10ABOVE
+#define RUNTIME L"runtime31264"
+#else
+#ifdef WINXP
+#define RUNTIME L"runtime3432"
+#else
+#ifdef _WIN64
+#define RUNTIME L"runtime3764"
+#else
+#define RUNTIME L"runtime3732"
+#endif
+#endif
+#endif
+#define FILES L"files\\"
+#define FILESRUNTIME FILES RUNTIME
+	PyStand ps(FILESRUNTIME);
 	if (ps.DetectScript() != 0)
 	{
 		return 3;

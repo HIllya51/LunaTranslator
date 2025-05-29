@@ -1598,7 +1598,12 @@ class TranslatorWindow(resizableframeless):
         if globalconfig["showrangeafterrangeselect"] == False:
             self.showhideocrrange()
 
-        self.startTranslater()
+        def __():
+            # 选取范围后立即直接一次，期间不要让自动之前去瞎跑以免浪费一次。
+            gobject.baseobject.textsource.runonce()
+            gobject.baseobject.textsource.stop = False
+
+        threader(__)()
         if not globalconfig["keepontop"]:
             windows.SetForegroundWindow(self.winid)
 

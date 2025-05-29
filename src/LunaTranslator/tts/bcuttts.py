@@ -2,6 +2,9 @@ from tts.basettsclass import TTSbase, SpeechParam
 
 
 class TTS(TTSbase):
+    arg_support_pitch = False
+    arg_support_speed = False
+
     def getvoicelist(self):
         headers = {
             "Connection": "Keep-Alive",

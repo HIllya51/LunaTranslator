@@ -362,3 +362,5 @@ class TTS(TTSbase):
 
     def ttscachekey(self, *argc):
         return self.srclang, super().ttscachekey(*argc)
+
+    arg_support_pitch = False

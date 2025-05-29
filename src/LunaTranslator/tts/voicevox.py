@@ -15,7 +15,7 @@ class TTS(TTSbase):
             styles = speaker["styles"]
             for style in styles:
                 idxs.append(style["id"])
-                vis.append(name + " " + style["name"])
+                vis.append(name + " (" + style["name"] + ")")
 
         return idxs, vis
 

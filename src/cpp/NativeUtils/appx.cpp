@@ -1,9 +1,16 @@
 ﻿
 #ifndef WINXP
 #include <appmodel.h>
+#include <roapi.h>
+#include <Windows.Management.Deployment.h>
+#include <Windows.Foundation.Collections.h>
 #else
+#include "../xpundef/xp_winrt.hpp"
 #include "../xpundef/xp_appmodel.h"
 #endif
+
+#include "winrt/hstring.hpp"
+
 std::optional<std::wstring> FindPackage(const wchar_t *packageFamilyName)
 {
     UINT32 count = 0;
@@ -84,4 +91,40 @@ DECLARE_API void GetPackagePathByPackageFamily(const wchar_t *packageFamilyName,
     if (!fn)
         return;
     cb(fn.value().c_str());
+}
+
+DECLARE_API void FindPackages(void (*cb)(LPCWSTR, LPCWSTR), LPCWSTR checkid)
+{
+    CComPtr<ABI::Windows::Management::Deployment::IPackageManager> packageManager;
+    CHECK_FAILURE_NORET(RoActivateInstance(AutoHString(RuntimeClass_Windows_Management_Deployment_PackageManager), reinterpret_cast<IInspectable **>(&packageManager)));
+
+    CComPtr<ABI::Windows::Foundation::Collections::IIterable<ABI::Windows::ApplicationModel::Package *>> packagesFoundRaw;
+    CHECK_FAILURE_NORET(packageManager->FindPackagesByUserSecurityId(AutoHString(L""), &packagesFoundRaw));
+
+    CComPtr<ABI::Windows::Foundation::Collections::IIterator<ABI::Windows::ApplicationModel::Package *>> packagesFoundRaw_itor;
+    CHECK_FAILURE_NORET(packagesFoundRaw->First(&packagesFoundRaw_itor));
+
+    boolean fHasCurrent;
+    CHECK_FAILURE_NORET(packagesFoundRaw_itor->get_HasCurrent(&fHasCurrent));
+    while (fHasCurrent)
+    {
+        CComPtr<ABI::Windows::ApplicationModel::IPackage> package;
+        CHECK_FAILURE_NORET(packagesFoundRaw_itor->get_Current(&package));
+        CComPtr<ABI::Windows::ApplicationModel::IPackageId> packageid;
+        CHECK_FAILURE_NORET(package->get_Id(&packageid));
+        AutoHString strname;
+        CHECK_FAILURE_NORET(packageid->get_Name(&strname));
+        PCWSTR _name = strname;
+        if (wcsstr(_name, checkid) == _name)
+        {
+            CComPtr<ABI::Windows::Storage::IStorageFolder> installpath;
+            CHECK_FAILURE_NORET(package->get_InstalledLocation(&installpath));
+            CComPtr<ABI::Windows::Storage::IStorageItem> item;
+            CHECK_FAILURE_NORET(installpath.QueryInterface(&item));
+            AutoHString str;
+            item->get_Path(&str);
+            cb(_name, str);
+        }
+        CHECK_FAILURE_NORET(packagesFoundRaw_itor->MoveNext(&fHasCurrent));
+    }
 }

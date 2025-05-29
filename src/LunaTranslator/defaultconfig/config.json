@@ -1054,35 +1054,21 @@
         "windowstts": {
             "use": true,
             "name": "WindowsTTS",
-            "type": "offline",
-            "arg_not_sup": [
-                "pitch"
-            ]
+            "type": "offline"
         },
         "huoshantts": {
             "use": false,
             "name": "火山TTS",
-            "useproxy": false,
-            "arg_not_sup": [
-                "pitch",
-                "rate"
-            ]
+            "useproxy": false
         },
         "bcuttts": {
             "use": false,
             "name": "BCUT TTS",
-            "useproxy": false,
-            "arg_not_sup": [
-                "pitch",
-                "rate"
-            ]
+            "useproxy": false
         },
         "chatgpttts": {
             "use": false,
             "name": "大模型通用接口",
-            "arg_not_sup": [
-                "pitch"
-            ],
             "args": {
                 "model": "gpt-4o-mini",
                 "modellistcache": [],
@@ -1138,10 +1124,7 @@
         "NeoSpeech": {
             "use": false,
             "name": "NeoSpeech",
-            "type": "offline",
-            "arg_not_sup": [
-                "pitch"
-            ]
+            "type": "offline"
         },
         "voiceroid2": {
             "use": false,
@@ -1218,10 +1201,7 @@
                     "type": "custom",
                     "function": "customparams"
                 }
-            },
-            "arg_not_sup": [
-                "pitch"
-            ]
+            }
         },
         "vitsSimpleAPI": {
             "use": false,
@@ -1258,17 +1238,11 @@
                     "type": "custom",
                     "function": "vitsparams"
                 }
-            },
-            "arg_not_sup": [
-                "pitch"
-            ]
+            }
         },
         "gtts": {
             "use": false,
-            "name": "GoogleTTS",
-            "arg_not_sup": [
-                "pitch"
-            ]
+            "name": "GoogleTTS"
         }
     },
     "hirasetting": {

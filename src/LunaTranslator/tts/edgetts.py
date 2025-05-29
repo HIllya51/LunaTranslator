@@ -111,7 +111,7 @@ class TTS(TTSbase):
         return [_["ShortName"] for _ in alllist], [_["FriendlyName"] for _ in alllist]
 
     def speak(self, content, voice, param: SpeechParam):
-        return transferMsTTSData(content, voice, self.proxy, param)
+        return transferMsTTSData(self.createSSML(content, voice, param), self.proxy)
 
 
 # Fix the time to match Americanisms
@@ -184,23 +184,6 @@ def ssml_headers_plus_data(request_id: str, timestamp: str, ssml: str) -> str:
     )
 
 
-def mkssml(text, voice: str, rate: str, pitch: str) -> str:
-    """
-    Creates a SSML string from the given parameters.
-
-    Returns:
-        str: The SSML string.
-    """
-    if isinstance(text, bytes):
-        text = text.decode("utf-8")
-    ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>" "<voice name='{}'><prosody pitch='{}Hz' rate='{}'>".format(
-        voice, pitch, rate
-    ) + "{}</prosody></voice></speak>".format(
-        text
-    )
-    return ssml
-
-
 def connect_id() -> str:
     """
     Returns a UUID without dashes.
@@ -211,9 +194,9 @@ def connect_id() -> str:
     return str(uuid.uuid4()).replace("-", "")
 
 
-def transferMsTTSData(content, voice, proxy, param: SpeechParam):
+def transferMsTTSData(ssml, proxy_: "dict[str, str]"):
 
-    proxy = proxy["https"]
+    proxy = proxy_["https"]
     if proxy:
         ip, port = proxy.split(":")
     else:
@@ -238,29 +221,15 @@ def transferMsTTSData(content, voice, proxy, param: SpeechParam):
         '"outputFormat":"audio-24khz-48kbitrate-mono-mp3"'
         "}}}}\r\n"
     )
-    pc = str(int(param.pitch * 10))
-    if param.pitch >= 0:
-        pc = "+" + pc
-    else:
-        pc = pc
-    ws.send(
-        ssml_headers_plus_data(
-            connect_id(),
-            date,
-            mkssml(
-                content,
-                voice,
-                str(int((param.speed) / 10 * 100)) + "%",
-                pc,
-            ),
-        )
-    )
+
+    ws.send(ssml_headers_plus_data(connect_id(), date, ssml))
 
     end_resp_pat = re.compile("Path:turn.end")
     audio_stream = b""
     while True:
         response = ws.recv()
-        # print(response)
+        if response[:2] == b"\x03\xef":
+            raise Exception(response[2:].decode())
         # print(type(response),"++++++++++++")
         # Make sure the message isn't telling us to stop
         if re.search(end_resp_pat, str(response)) == None:

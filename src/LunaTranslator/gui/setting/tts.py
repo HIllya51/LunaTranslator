@@ -43,13 +43,13 @@ def showvoicelist(self, obj: TTSbase):
     vl = obj.voiceshowlist
     idx = obj.voicelist.index(obj.voice)
     try:
-        self.pitch____.setEnabled("pitch" not in obj.arg_not_sup)
+        self.pitch____.setEnabled(obj.arg_support_pitch)
     except:
-        self.pitch____c = "pitch" not in obj.arg_not_sup
+        self.pitch____c = obj.arg_support_pitch
     try:
-        self.rate____.setEnabled("rate" not in obj.arg_not_sup)
+        self.rate____.setEnabled(obj.arg_support_speed)
     except:
-        self.rate____c = "rate" not in obj.arg_not_sup
+        self.rate____c = obj.arg_support_speed
     try:
 
         self.voicecombo.clear()

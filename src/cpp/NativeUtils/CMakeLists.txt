@@ -32,7 +32,7 @@ set(loopback_src applicationloopbackaudio/runer.cpp applicationloopbackaudio/Loo
 
 
 add_library(NativeUtils SHARED 
-    globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp ../implsapi.cpp hwnd.cpp theme.cpp version.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp appx.cpp
+    globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp version.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp appx.cpp
     ${loopback_src} ${winrt_src} ${mshtml_src} ${webview2_src} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)

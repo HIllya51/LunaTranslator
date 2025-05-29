@@ -90,11 +90,11 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     const auto size = SizeInt32{rect.right - rect.left, rect.bottom - rect.top};
 
     CComPtr<IDirect3D11CaptureFramePoolStatics> framepoolstatics;
-    CHECK_FAILURE_NORET(GetActivationFactory(AutoHStringRefX(RuntimeClass_Windows_Graphics_Capture_Direct3D11CaptureFramePool), &framepoolstatics));
+    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Graphics_Capture_Direct3D11CaptureFramePool), &framepoolstatics));
     CComPtr<IDirect3D11CaptureFramePool> m_frame_pool;
     CHECK_FAILURE_NORET(framepoolstatics->Create(device, DirectXPixelFormat::DirectXPixelFormat_B8G8R8A8UIntNormalized, 2, size, &m_frame_pool));
     CComPtr<IGraphicsCaptureItemInterop> interop_factory;
-    CHECK_FAILURE_NORET(GetActivationFactory(AutoHStringRefX(RuntimeClass_Windows_Graphics_Capture_GraphicsCaptureItem), &interop_factory));
+    CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Graphics_Capture_GraphicsCaptureItem), &interop_factory));
     CComPtr<IGraphicsCaptureItem> capture_item = {nullptr};
     CHECK_FAILURE_NORET(interop_factory->CreateForWindow(window_handle, IID_PPV_ARGS(&capture_item)));
 

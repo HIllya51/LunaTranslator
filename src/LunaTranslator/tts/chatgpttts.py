@@ -14,6 +14,8 @@ def list_models(typename, regist):
 
 
 class TTS(TTSbase):
+    arg_support_pitch = False
+
     def getvoicelist(self):
         voice = self.config["voice_list"]
         return voice, voice
@@ -50,7 +52,9 @@ class TTS(TTSbase):
             "speed": speed,  # 0.25 to 4.0. 1.0 is the default.
         }
 
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
+        extrabody, extraheader = getcustombodyheaders(
+            self.config.get("customparams"), **locals()
+        )
         headers.update(extraheader)
         json_data.update(extrabody)
         response = self.proxysession.post(

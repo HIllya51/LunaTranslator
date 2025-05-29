@@ -1432,6 +1432,23 @@ namespace
         else
             buffer->clear();
     }
+    std::string ULJS00216Text;
+    void ULJS00216(TextBuffer *buffer, HookParam *hp)
+    {
+        ULJS00216Text = buffer->strA();
+    }
+    void ULJS00216_1(TextBuffer *buffer, HookParam *hp)
+    {
+        if (startWith(ULJS00216Text, buffer->strA()))
+            return buffer->clear();
+    }
+    void NPJH50186(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strAW();
+        ws = remapkatakana(ws);
+        ws = re::sub(ws, L"\\{(.*)/(.*?)\\}", L"$1");
+        buffer->fromWA(ws);
+    }
 }
 struct emfuncinfoX
 {
@@ -1447,6 +1464,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // アラビアンズ・ロスト //ULJM06104
     // MEMORIES OFF //ULJM05334
 
+    // 雨格子の館 PORTABLE 一柳和、最初の受難
+    {0x8861058, {0, 4, 0, 0, ULJS00216, "ULJS00216"}},
+    {0x8861044, {0, 4, 0, 0, ULJS00216_1, "ULJS00216"}},
+    // 奈落の城 PORTABLE 一柳和、2度目の受難
+    {0x8869404, {0, 4, 0, 0, 0, "ULJS00230"}},
+    // 氷の墓標　一柳和、３度目の受難
+    {0x8826668, {0, 0, 0, 0, NPJH50186, "NPJH50186"}},
     // 黄昏のシンセミア portable
     {0x8852D04, {CODEC_UTF16, 2, 0, 0, ULJM06192, "ULJM06192"}},
     // 俺の彼女のウラオモテ ～Pure Sweet Heart～

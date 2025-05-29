@@ -28,25 +28,9 @@ export default {
                     if (!response.ok) {
                         return
                     }
-                    window.location.href = `/${window.localStorage.currentlang}/support.html`
+                    window.open(`/${window.localStorage.currentlang}/support.html`, '_blank')
                 });
             })
-            if (window.localStorage.currentlang == 'zh')
-                return
-            let timeout = 0;
-            if (window.location.href.endsWith('support.html')) {
-                timeout = setTimeout(
-                    () => {
-                        window.location.href = 'https://www.patreon.com/hillya51'
-                    }, 6000
-                )
-            }
-            else {
-                if (timeout) {
-                    timeout = 0
-                    clearTimeout(timeout)
-                }
-            }
             if (!window.location.hostname.startsWith('docs')) return;
             ['', 'image.'].forEach(
                 (pre) => {

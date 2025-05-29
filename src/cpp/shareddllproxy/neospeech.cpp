@@ -1,23 +1,17 @@
-﻿std::optional<std::vector<byte>> _Speak(std::wstring &Content, const wchar_t *token, int voiceid, int rate, int volume);
-std::vector<std::wstring> _List(const wchar_t *token);
-extern wchar_t SPCAT_VOICES_7[];
-extern wchar_t SPCAT_VOICES_10[];
+﻿#include "../implsapi.hpp"
 int neospeechlist(int argc, wchar_t *argv[])
 {
     FILE *f = _wfopen(argv[1], L"wb");
-    for (auto key : {SPCAT_VOICES_7, SPCAT_VOICES_10})
+    for (auto key : {10, 7})
     {
-        auto speechs = _List(key);
+        auto speechs = SAPI::List(key);
         for (int i = 0; i < speechs.size(); i++)
         {
-            if (speechs[i].substr(0, 2) == L"VW")
+            if (speechs[i].second.substr(0, 2) == L"VW")
             {
-                fwrite(speechs[i].c_str(), 1, speechs[i].size() * 2, f);
+                fwrite(speechs[i].first.c_str(), 1, speechs[i].first.size() * 2, f);
                 fwrite(L"\n", 1, 2, f);
-                fwrite(key, 1, wcslen(key) * 2, f);
-                fwrite(L"\n", 1, 2, f);
-                auto idx = std::to_wstring(i);
-                fwrite(idx.c_str(), 1, idx.size() * 2, f);
+                fwrite(speechs[i].second.c_str(), 1, speechs[i].second.size() * 2, f);
                 fwrite(L"\n", 1, 2, f);
             }
         }
@@ -46,6 +40,9 @@ int neospeech(int argc, wchar_t *argv[])
         int speed;
         if (!ReadFile(hPipe, (unsigned char *)&speed, 4, &_, NULL))
             break;
+        int pitch;
+        if (!ReadFile(hPipe, (unsigned char *)&pitch, 4, &_, NULL))
+            break;
         if (!ReadFile(hPipe, (unsigned char *)text, 10000 * 2, &_, NULL))
             break;
         std::wstring content = text;
@@ -54,11 +51,8 @@ int neospeech(int argc, wchar_t *argv[])
         if (!ReadFile(hPipe, (unsigned char *)text, 10000 * 2, &_, NULL))
             break;
         std::wstring hkey = text;
-        int idx;
-        if (!ReadFile(hPipe, &idx, 4, &_, NULL))
-            break;
         ZeroMemory(text, sizeof(text));
-        auto data = std::move(_Speak(content, hkey.c_str(), idx, speed, 100));
+        auto data = std::move(SAPI::Speak(content, hkey.c_str(), speed, pitch));
         if (data)
         {
             memcpy(mapview, data.value().data(), data.value().size());

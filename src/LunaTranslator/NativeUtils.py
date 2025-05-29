@@ -31,6 +31,7 @@ from ctypes.wintypes import (
     MAX_PATH,
 )
 from windows import AutoHandle
+from xml.sax.saxutils import escape
 import gobject
 import platform, windows, functools, os, re, csv
 
@@ -51,7 +52,7 @@ _SAPI_List = utilsdll.SAPI_List
 _SAPI_List.argtypes = (c_uint, c_void_p)
 
 _SAPI_Speak = utilsdll.SAPI_Speak
-_SAPI_Speak.argtypes = (c_wchar_p, c_uint, c_uint, c_uint, c_uint, c_void_p)
+_SAPI_Speak.argtypes = (c_wchar_p, c_wchar_p, c_int, c_int, c_int, c_void_p)
 _SAPI_Speak.restype = c_bool
 
 
@@ -59,18 +60,22 @@ class SAPI:
     @staticmethod
     def List(v):
         ret = []
-        _SAPI_List(v, CFUNCTYPE(None, c_wchar_p)(ret.append))
+
+        def __(ret: list, _id, name):
+            ret.append((_id, name))
+
+        _SAPI_List(v, CFUNCTYPE(None, c_wchar_p, c_wchar_p)(functools.partial(__, ret)))
         return ret
 
     @staticmethod
-    def Speak(content, v, voiceid, rate, volume):
+    def Speak(content, voiceid, rate, pitch, volume=100):
         ret = []
 
         def _cb(ptr, size):
             ret.append(ptr[:size])
 
         fp = CFUNCTYPE(None, POINTER(c_char), c_size_t)(_cb)
-        succ = _SAPI_Speak(content, v, voiceid, int(rate), int(volume), fp)
+        succ = _SAPI_Speak(escape(content), voiceid, int(rate), int(volume), int(pitch), fp)
         if not succ:
             return None
         return ret[0]
@@ -712,6 +717,21 @@ def GetPackagePathByPackageFamily(packagename: str):
     if ret:
         return ret[0]
     return None
+
+
+_FindPackages = utilsdll.FindPackages
+_FindPackages_CB = CFUNCTYPE(None, LPCWSTR, LPCWSTR)
+_FindPackages.argtypes = (_FindPackages_CB, LPCWSTR)
+
+
+def FindPackages(checkid):
+    ret = []
+
+    def __cb(ret: list, name, path):
+        ret.append((name, path))
+
+    _FindPackages(_FindPackages_CB(functools.partial(__cb, ret)), checkid)
+    return ret
 
 
 _Markdown2Html = utilsdll.Markdown2Html

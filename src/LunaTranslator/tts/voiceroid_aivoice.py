@@ -7,6 +7,69 @@ import xml.etree.ElementTree as ET
 import hashlib, zlib, threading
 from traceback import print_exc
 
+try:
+    # 煞笔python3.12把pbkdf2_hmac放到openssl里去了，导致无法import
+    from hashlib import pbkdf2_hmac
+except Exception:
+    _trans_5C = bytes((x ^ 0x5C) for x in range(256))
+    _trans_36 = bytes((x ^ 0x36) for x in range(256))
+
+    def pbkdf2_hmac(hash_name, password, salt, iterations, dklen=None):
+        """Password based key derivation function 2 (PKCS #5 v2.0)
+
+        This Python implementations based on the hmac module about as fast
+        as OpenSSL's PKCS5_PBKDF2_HMAC for short passwords and much faster
+        for long passwords.
+        """
+        if not isinstance(hash_name, str):
+            raise TypeError(hash_name)
+
+        if not isinstance(password, (bytes, bytearray)):
+            password = bytes(memoryview(password))
+        if not isinstance(salt, (bytes, bytearray)):
+            salt = bytes(memoryview(salt))
+        # Fast inline HMAC implementation
+        inner = hashlib.sha1()
+        outer = hashlib.sha1()
+        blocksize = getattr(inner, "block_size", 64)
+        if len(password) > blocksize:
+            password = hashlib.sha1(hash_name, password).digest()
+        password = password + b"\x00" * (blocksize - len(password))
+        inner.update(password.translate(_trans_36))
+        outer.update(password.translate(_trans_5C))
+
+        def prf(msg, inner=inner, outer=outer):
+            # PBKDF2_HMAC uses the password as key. We can re-use the same
+            # digest objects and just update copies to skip initialization.
+            icpy = inner.copy()
+            ocpy = outer.copy()
+            icpy.update(msg)
+            ocpy.update(icpy.digest())
+            return ocpy.digest()
+
+        if iterations < 1:
+            raise ValueError(iterations)
+        if dklen is None:
+            dklen = outer.digest_size
+        if dklen < 1:
+            raise ValueError(dklen)
+
+        dkey = b""
+        loop = 1
+        from_bytes = int.from_bytes
+        while len(dkey) < dklen:
+            prev = prf(salt + loop.to_bytes(4, "big"))
+            # endianness doesn't matter here as long to / from use the same
+            rkey = int.from_bytes(prev, "big")
+            for i in range(iterations - 1):
+                prev = prf(prev)
+                # rkey = rkey ^ prev
+                rkey ^= from_bytes(prev, "big")
+            loop += 1
+            dkey += rkey.to_bytes(inner.digest_size, "big")
+
+        return dkey[:dklen]
+
 
 class TTS(TTSbase):
     def getvoicelist(self):
@@ -34,7 +97,7 @@ class TTS(TTSbase):
         d = 16
         salt = stream.read(d)
         iv = stream.read(d)
-        key = hashlib.pbkdf2_hmac("sha1", a, salt, 1000, d)
+        key = pbkdf2_hmac("sha1", a, salt, 1000, d)
         bs: bytes = stream.read()
 
         def inflate(data):
@@ -97,9 +160,7 @@ class TTS(TTSbase):
         mapname = str(uuid.uuid4())
         is64 = NativeUtils.IsDLLBit64(dllpath)
         # AIVoice & AIVoice2 -> 64位
-        exepath = os.path.abspath(
-            "files/shareddllproxy{}.exe".format([32, 64][is64])
-        )
+        exepath = os.path.abspath("files/shareddllproxy{}.exe".format([32, 64][is64]))
         self.engine = NativeUtils.AutoKillProcess(
             '"{}" voiceroid2 "{}" "{}" {} {} {} {} {}'.format(
                 exepath,

@@ -7,6 +7,8 @@ vitsparams = functools.partial(customparams, stringonly=True)
 
 
 class TTS(TTSbase):
+    arg_support_pitch = False
+
     def getvoicelist(self):
         extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
         headers = {"ngrok-skip-browser-warning": "true"}

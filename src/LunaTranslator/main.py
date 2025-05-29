@@ -52,7 +52,7 @@ def overridepathexists():
 
 def prepareqtenv():
     import windows
-    from gobject import runtime_for_xp
+    from gobject import runtime_for_xp, runtime_for_win10, runtime_bit_64
 
     # 对于如果使用的动态链接的x64_win10版本，由于vc++在14.38->14.40之间破坏了兼容性，
     # 虽然打包版已经正确处理了依赖，不过在测试时，如果先加载Qt则会导致加载Qt自带的14.26vcrt导致NativeUtils内部无法正确初始化
@@ -62,8 +62,16 @@ def prepareqtenv():
 
     # pyqt5.15依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
     qtdlls = ("Qt5Core.dll", "Qt5Gui.dll", "Qt5Widgets.dll", "Qt5Svg.dll")
+    if runtime_for_win10:
+        runtimedir = "runtime31264"
+    elif runtime_for_xp:
+        runtimedir = "runtime3432"
+    elif runtime_bit_64:
+        runtimedir = "runtime3764"
+    else:
+        runtimedir = "runtime3732"
     if not runtime_for_xp:
-        qtdir = "files/runtime/PyQt5/Qt5/bin"
+        qtdir = "files/{}/PyQt5/Qt5/bin".format(runtimedir)
         if os.path.isdir(qtdir):
             for _ in qtdlls:
                 windows.LoadLibrary(os.path.join(qtdir, _))
@@ -75,9 +83,9 @@ def prepareqtenv():
     if isqt5:
         # 中文字符下不能自动加载
         if not runtime_for_xp:
-            plgs = "files/runtime/PyQt5/Qt5/plugins"
+            plgs = "files/{}/PyQt5/Qt5/plugins".format(runtimedir)
         else:
-            plgs = "files/runtime/Lib/site-packages/PyQt5/plugins"
+            plgs = "files/{}/Lib/site-packages/PyQt5/plugins".format(runtimedir)
 
         if os.path.exists(plgs):
             QApplication.addLibraryPath(plgs)

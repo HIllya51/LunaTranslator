@@ -4,6 +4,8 @@ from gui.customparams import customparams, getcustombodyheaders
 
 
 class TTS(TTSbase):
+    arg_support_pitch = False
+
     def getvoicelist(self):
         return [""], [""]
 

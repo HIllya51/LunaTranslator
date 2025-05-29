@@ -22,7 +22,7 @@ static std::vector<std::pair<int, DXGI_ADAPTER_DESC1>> get_descs(std::function<b
     std::vector<std::pair<int, DXGI_ADAPTER_DESC1>> decs;
 
     CComPtr<IDXGIAdapter1> adapter;
-    for (UINT i = 0; factory->EnumAdapters1(i, &adapter) != DXGI_ERROR_NOT_FOUND; ++i)
+    for (UINT i = 0; SUCCEEDED(factory->EnumAdapters1(i, &adapter)); ++i)
     {
         DXGI_ADAPTER_DESC1 desc;
         CHECK_FAILURE_CONTINUE(adapter->GetDesc1(&desc));
@@ -43,9 +43,9 @@ static std::optional<DXGI_ADAPTER_DESC1> get_best_gpu()
         return {};
     // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L344
     CComPtr<IDXGIAdapter1> adapter;
-    for (UINT i = 0; factory->EnumAdapterByGpuPreference(
+    for (UINT i = 0; SUCCEEDED(factory->EnumAdapterByGpuPreference(
                          i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
-                         IID_PPV_ARGS(&adapter)) != DXGI_ERROR_NOT_FOUND;
+                         IID_PPV_ARGS(&adapter)));
          ++i)
     {
         DXGI_ADAPTER_DESC1 desc;

@@ -1,3 +1,7 @@
+#include "xp_hstring.hpp"
+#define MIDL_CONST_ID const __declspec(selectany)
+typedef GUID IID;
+typedef IID *LPIID;
 #define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
 
 typedef struct EventRegistrationToken
@@ -57,27 +61,6 @@ typedef enum
     BSOS_DEFAULT = 0,            // when creating a byte seeker over a stream, base randomaccessstream behavior on the STGM mode from IStream::Stat.
     BSOS_PREFERDESTINATIONSTREAM // in addition, utilize IDestinationStreamFactory::GetDestinationStream.
 } BSOS_OPTIONS;
-typedef struct HSTRING__
-{
-    int unused;
-} HSTRING__;
-
-// Declare the HSTRING handle for C/C++
-typedef __RPC_unique_pointer HSTRING__ *HSTRING;
-
-// Declare the HSTRING_HEADER
-typedef struct HSTRING_HEADER
-{
-    union
-    {
-        PVOID Reserved1;
-#if defined(_WIN64)
-        char Reserved2[24];
-#else
-        char Reserved2[20];
-#endif
-    } Reserved;
-} HSTRING_HEADER;
 
 typedef /* [v1_enum] */
     enum TrustLevel
@@ -172,6 +155,13 @@ namespace ABI
 extern const __declspec(selectany) _Null_terminated_ WCHAR RuntimeClass_Windows_Media_Ocr_OcrEngine[] = L"Windows.Media.Ocr.OcrEngine";
 
 extern const __declspec(selectany) _Null_terminated_ WCHAR RuntimeClass_Windows_Graphics_Imaging_BitmapDecoder[] = L"Windows.Graphics.Imaging.BitmapDecoder";
+
+extern "C" _Check_return_
+    HRESULT
+        WINAPI
+        RoActivateInstance(
+            _In_ HSTRING activatableClassId,
+            _COM_Outptr_ IInspectable **instance);
 
 extern "C" _Check_return_
     HRESULT
@@ -308,26 +298,6 @@ namespace ABI
     } // namespace Windows::Foundation::Internal
 } // ABI
 
-STDAPI
-WindowsCreateString(
-    _In_reads_opt_(length) PCNZWCH sourceString,
-    UINT32 length,
-    _Outptr_result_maybenull_ _Result_nullonfailure_ HSTRING *string);
-STDAPI
-WindowsCreateStringReference(
-    _In_reads_opt_(length + 1) PCWSTR sourceString,
-    UINT32 length,
-    _Out_ HSTRING_HEADER *hstringHeader,
-    _Outptr_result_maybenull_ _Result_nullonfailure_ HSTRING *string);
-STDAPI
-WindowsDeleteString(
-    _In_opt_ HSTRING string);
-
-STDAPI_(PCWSTR)
-WindowsGetStringRawBuffer(
-    _In_opt_ HSTRING string,
-    _Out_opt_ UINT32 *length);
-
 namespace ABI
 {
     namespace Windows
@@ -408,6 +378,26 @@ namespace ABI
                     {
                         value = is_pointer<_abi_type>::value || is_foundation_struct<_abi_type>::value || !__is_class(_abi_type)
                     };
+                };
+
+                template <class T, bool isStruct = supports_cleanup<T>::value>
+                struct IIterator_impl;
+
+                template <class T>
+                struct IIterable_impl;
+
+                template <class T>
+                struct IIterator
+                    : IIterator_impl<T>,
+                      detail::not_yet_specialized<IIterator<T>>
+                {
+                };
+
+                template <class T>
+                struct IIterable
+                    : IIterable_impl<T>,
+                      detail::not_yet_specialized<IIterable<T>>
+                {
                 };
 
                 template <class T, bool isStruct = supports_cleanup<T>::value>
@@ -529,6 +519,41 @@ namespace ABI
                         }
                         return hr;
                     }
+
+                    template <class U, class T>
+                    HRESULT _IteratorGetMany(_In_ U *pThis, _In_ unsigned capacity, _Out_writes_to_(capacity, *actual) T *value, _Out_ unsigned *actual)
+                    {
+                        HRESULT hr = S_OK;
+                        ::boolean fHasCurrent = false;
+                        unsigned count = 0;
+                        ZeroMemory(value, sizeof(*value) * capacity);
+                        *actual = 0;
+
+                        hr = pThis->get_HasCurrent(&fHasCurrent);
+                        while (SUCCEEDED(hr) && (fHasCurrent) && (count < capacity))
+                        {
+                            hr = pThis->get_Current(&value[count]);
+                            if (SUCCEEDED(hr))
+                            {
+                                count++;
+                                hr = pThis->MoveNext(&fHasCurrent);
+                            }
+                        }
+
+                        if (SUCCEEDED(hr))
+                        {
+                            *actual = count;
+                        }
+                        else
+                        {
+                            // cleanup output paremeters on failure
+                            // no need to zero out *actual as it is still
+                            // initialized to zero.
+                            Detail::_Cleanup(value, *actual);
+                        }
+                        return hr;
+                    }
+
                 }
                 template <class T, bool isStruct>
                 struct IVectorView_impl : IInspectable /* requires IIterable<T> */
@@ -563,6 +588,72 @@ namespace ABI
                     virtual /* propget */ HRESULT STDMETHODCALLTYPE get_Size(_Out_ unsigned *size) = 0;
                     virtual HRESULT STDMETHODCALLTYPE IndexOf(_In_opt_ T_abi value, _Out_ unsigned *index, _Out_ boolean *found) = 0;
                     virtual HRESULT STDMETHODCALLTYPE GetMany(_In_ unsigned startIndex, _In_ unsigned capacity, _Out_writes_to_(capacity, *actual) T_abi *value, _Out_ unsigned *actual) = 0;
+                };
+
+                template <class T>
+                struct IIterable_impl : IInspectable
+                {
+                private:
+                    typedef typename Windows::Foundation::Internal::GetAbiType<T>::type T_abi;
+                    typedef typename Windows::Foundation::Internal::GetLogicalType<T>::type T_logical;
+
+                public:
+                    // For all types which are neither InterfaceGroups nor RuntimeClasses, the
+                    // following three typedefs are synonyms for a single C++ type.  But for
+                    // InterfaceGroups and RuntimeClasses, they are different types:
+                    //   T_logical: The C++ Type for the InterfaceGroup or RuntimeClass, when
+                    //              used as a template parameter.  Eg "RCFoo*"
+                    //   T_abi:     The C++ type for the default interface used to represent the
+                    //              InterfaceGroup or RuntimeClass when passed as a method parameter.
+                    //              Eg "IFoo*"
+                    //   T_complex: An instantiation of the Internal "AggregateType" template that
+                    //              combines T_logical with T_abi. Eg "AggregateType<RCFoo*,IFoo*>"
+                    // See the declaration above of Windows::Foundation::Internal::AggregateType
+                    // for more details.
+                    typedef T T_complex;
+
+                    virtual HRESULT STDMETHODCALLTYPE First(_Outptr_result_maybenull_ IIterator<T_logical> **first) = 0;
+                };
+
+                // Note: There are two versions of this template.  The second will compile where T is a struct and the
+                // first will compile in all other cases.  This approach is used to ensure that if T is a struct that
+                // GetMany will be pure virtual (and must be overloaded), but in the other cases GetMany will
+                // be handed by the default implementation.
+                // Important Note!:  Both of these templates must have the same vtable!!!  Change one and you
+                // must change the other
+                template <class T, bool isStruct>
+                struct IIterator_impl : IInspectable
+                {
+                private:
+                    typedef typename Windows::Foundation::Internal::GetAbiType<T>::type T_abi;
+                    typedef typename Windows::Foundation::Internal::GetLogicalType<T>::type T_logical;
+
+                public:
+                    typedef T T_complex;
+
+                    virtual /* propget */ HRESULT STDMETHODCALLTYPE get_Current(_Out_ T_abi *current) = 0;
+                    virtual /* propget */ HRESULT STDMETHODCALLTYPE get_HasCurrent(_Out_ boolean *hasCurrent) = 0;
+                    virtual HRESULT STDMETHODCALLTYPE MoveNext(_Out_ boolean *hasCurrent) = 0;
+                    virtual HRESULT STDMETHODCALLTYPE GetMany(_In_ unsigned capacity, _Out_writes_to_(capacity, *actual) T_abi *value, _Out_ unsigned *actual)
+                    {
+                        return Detail::_IteratorGetMany(this, capacity, value, actual);
+                    }
+                };
+
+                template <class T>
+                struct IIterator_impl<T, false> : IInspectable
+                {
+                private:
+                    typedef typename Windows::Foundation::Internal::GetAbiType<T>::type T_abi;
+                    typedef typename Windows::Foundation::Internal::GetLogicalType<T>::type T_logical;
+
+                public:
+                    typedef T T_complex;
+
+                    virtual /* propget */ HRESULT STDMETHODCALLTYPE get_Current(_Out_ T_abi *current) = 0;
+                    virtual /* propget */ HRESULT STDMETHODCALLTYPE get_HasCurrent(_Out_ boolean *hasCurrent) = 0;
+                    virtual HRESULT STDMETHODCALLTYPE MoveNext(_Out_ boolean *hasCurrent) = 0;
+                    virtual HRESULT STDMETHODCALLTYPE GetMany(_In_ unsigned capacity, _Out_writes_to_(capacity, *actual) T_abi *value, _Out_ unsigned *actual) = 0;
                 };
 
             }
@@ -871,7 +962,7 @@ namespace ABI
             typedef IAsyncOperationCompletedHandler<ABI::Windows::Media::Ocr::OcrResult *> __FIAsyncOperationCompletedHandler_1_Windows__CMedia__COcr__COcrResult_t;
 #define __FIAsyncOperationCompletedHandler_1_Windows__CMedia__COcr__COcrResult ABI::Windows::Foundation::__FIAsyncOperationCompletedHandler_1_Windows__CMedia__COcr__COcrResult_t
 /* Foundation */ } /* Windows */
-    }              /* ABI */
+    } /* ABI */
 }
 namespace ABI
 {
@@ -936,7 +1027,7 @@ namespace ABI
             typedef IAsyncOperationCompletedHandler<ABI::Windows::Graphics::Imaging::SoftwareBitmap *> __FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CSoftwareBitmap_t;
 #define __FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CSoftwareBitmap ABI::Windows::Foundation::__FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CSoftwareBitmap_t
 /* Foundation */ } /* Windows */
-    }              /* ABI */
+    } /* ABI */
 }
 namespace ABI
 {
@@ -1537,3 +1628,211 @@ STDAPI CreateDirect3D11DeviceFromDXGIDevice(
     _In_ IDXGIDevice *dxgiDevice,
     _COM_Outptr_ IInspectable **graphicsDevice);
 //////////////////////////////////Capture
+
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace Storage
+        {
+            MIDL_INTERFACE("4207a996-ca2f-42f7-bde8-8b10457a7f30")
+            IStorageItem : public IInspectable
+            {
+            public:
+                virtual HRESULT STDMETHODCALLTYPE RenameAsyncOverloadDefaultOptions() = 0;
+                virtual HRESULT STDMETHODCALLTYPE RenameAsync() = 0;
+                virtual HRESULT STDMETHODCALLTYPE DeleteAsyncOverloadDefaultOptions() = 0;
+                virtual HRESULT STDMETHODCALLTYPE DeleteAsync() = 0;
+                virtual HRESULT STDMETHODCALLTYPE GetBasicPropertiesAsync() = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_Name(
+                    HSTRING * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_Path(
+                    HSTRING * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_Attributes() = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_DateCreated() = 0;
+                virtual HRESULT STDMETHODCALLTYPE IsOfType() = 0;
+            };
+
+            //  MIDL_CONST_ID IID &IID_IStorageItem = __uuidof(IStorageItem);
+        } /* Storage */
+    } /* Windows */
+} /* ABI */
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace Storage
+        {
+            MIDL_INTERFACE("72d1cb78-b3ef-4f75-a80b-6fd9dae2944b")
+            IStorageFolder : public IInspectable{};
+
+            MIDL_CONST_ID IID &IID_IStorageFolder = __uuidof(IStorageFolder);
+        } /* Storage */
+    } /* Windows */
+} /* ABI */
+
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace ApplicationModel
+        {
+            typedef struct PackageVersion PackageVersion;
+        } /* ApplicationModel */
+    } /* Windows */
+} /* ABI */
+
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace System
+        {
+            typedef enum ProcessorArchitecture : int ProcessorArchitecture;
+        } /* System */
+    } /* Windows */
+} /* ABI */
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace ApplicationModel
+        {
+            MIDL_INTERFACE("1adb665e-37c7-4790-9980-dd7ae74e8bb2")
+            IPackageId : public IInspectable
+            {
+            public:
+                virtual HRESULT STDMETHODCALLTYPE get_Name(
+                    HSTRING * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_Version(
+                    ABI::Windows::ApplicationModel::PackageVersion * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_Architecture(
+                    ABI::Windows::System::ProcessorArchitecture * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_ResourceId(
+                    HSTRING * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_Publisher(
+                    HSTRING * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_PublisherId(
+                    HSTRING * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_FullName(
+                    HSTRING * value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_FamilyName(
+                    HSTRING * value) = 0;
+            };
+
+            //  MIDL_CONST_ID IID &IID_IPackageId = __uuidof(IPackageId);
+        } /* ApplicationModel */
+    } /* Windows */
+} /* ABI */
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace ApplicationModel
+        {
+            class Package;
+        } /* ApplicationModel */
+    } /* Windows */
+} /* ABI */
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace ApplicationModel
+        {
+            MIDL_INTERFACE("163c792f-bd75-413c-bf23-b1fe7b95d825")
+            IPackage : public IInspectable
+            {
+            public:
+                virtual HRESULT STDMETHODCALLTYPE get_Id(
+                    ABI::Windows::ApplicationModel::IPackageId * *value) = 0;
+                virtual HRESULT STDMETHODCALLTYPE get_InstalledLocation(
+                    ABI::Windows::Storage::IStorageFolder * *value) = 0;
+            };
+
+            MIDL_CONST_ID IID &IID_IPackage = __uuidof(IPackage);
+        } /* ApplicationModel */
+    } /* Windows */
+} /* ABI */
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace Foundation
+        {
+            namespace Collections
+            {
+                template <>
+                struct __declspec(uuid("69ad6aa7-0c49-5f27-a5eb-ef4d59467b6d"))
+                IIterable<ABI::Windows::ApplicationModel::Package *> : IIterable_impl<ABI::Windows::Foundation::Internal::AggregateType<ABI::Windows::ApplicationModel::Package *, ABI::Windows::ApplicationModel::IPackage *>>
+                {
+                    static const wchar_t *z_get_rc_name_impl()
+                    {
+                        return L"Windows.Foundation.Collections.IIterable`1<Windows.ApplicationModel.Package>";
+                    }
+                };
+                // Define a typedef for the parameterized interface specialization's mangled name.
+                // This allows code which uses the mangled name for the parameterized interface to access the
+                // correct parameterized interface specialization.
+                typedef IIterable<ABI::Windows::ApplicationModel::Package *> __FIIterable_1_Windows__CApplicationModel__CPackage_t;
+#define __FIIterable_1_Windows__CApplicationModel__CPackage ABI::Windows::Foundation::Collections::__FIIterable_1_Windows__CApplicationModel__CPackage_t
+/* Collections */ } /* Foundation */
+        } /* Windows */
+    } /* ABI */
+}
+
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace Management
+        {
+            namespace Deployment
+            {
+                MIDL_INTERFACE("9a7d4b65-5e8f-4fc7-a2e5-7f6925cb8b53")
+                IPackageManager : public IInspectable
+                {
+                public:
+                    virtual HRESULT STDMETHODCALLTYPE AddPackageAsync() = 0;
+                    virtual HRESULT STDMETHODCALLTYPE UpdatePackageAsync() = 0;
+                    virtual HRESULT STDMETHODCALLTYPE RemovePackageAsync() = 0;
+                    virtual HRESULT STDMETHODCALLTYPE StagePackageAsync() = 0;
+                    virtual HRESULT STDMETHODCALLTYPE RegisterPackageAsync() = 0;
+                    virtual HRESULT STDMETHODCALLTYPE FindPackages() = 0;
+                    virtual HRESULT STDMETHODCALLTYPE FindPackagesByUserSecurityId(
+                        HSTRING userSecurityId,
+                        __FIIterable_1_Windows__CApplicationModel__CPackage * *packageCollection) = 0;
+                };
+
+                MIDL_CONST_ID IID &IID_IPackageManager = __uuidof(IPackageManager);
+            } /* Deployment */
+        } /* Management */
+    } /* Windows */
+} /* ABI */
+extern const __declspec(selectany) _Null_terminated_ WCHAR RuntimeClass_Windows_Management_Deployment_PackageManager[] = L"Windows.Management.Deployment.PackageManager";
+namespace ABI
+{
+    namespace Windows
+    {
+        namespace Foundation
+        {
+            namespace Collections
+            {
+                template <>
+                struct __declspec(uuid("0217f069-025c-5ee6-a87f-e782e3b623ae"))
+                IIterator<ABI::Windows::ApplicationModel::Package *> : IIterator_impl<ABI::Windows::Foundation::Internal::AggregateType<ABI::Windows::ApplicationModel::Package *, ABI::Windows::ApplicationModel::IPackage *>>
+                {
+                    static const wchar_t *z_get_rc_name_impl()
+                    {
+                        return L"Windows.Foundation.Collections.IIterator`1<Windows.ApplicationModel.Package>";
+                    }
+                };
+                // Define a typedef for the parameterized interface specialization's mangled name.
+                // This allows code which uses the mangled name for the parameterized interface to access the
+                // correct parameterized interface specialization.
+                typedef IIterator<ABI::Windows::ApplicationModel::Package *> __FIIterator_1_Windows__CApplicationModel__CPackage_t;
+#define __FIIterator_1_Windows__CApplicationModel__CPackage ABI::Windows::Foundation::Collections::__FIIterator_1_Windows__CApplicationModel__CPackage_t
+/* Collections */ } /* Foundation */
+        } /* Windows */
+    } /* ABI */
+}
