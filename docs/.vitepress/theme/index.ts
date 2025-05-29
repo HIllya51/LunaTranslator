@@ -49,9 +49,12 @@ export default {
                 }
             )
         }
+        const supportlangs = ['zh', 'en', 'ja', 'vi']
         onMounted(
             () => {
-                window.localStorage.currentlang = window.location.pathname.split('/')[1]
+                let _ = window.location.pathname.split('/')[1]
+                if (supportlangs.includes(_))
+                    window.localStorage.currentlang = _
                 handleRouteChange()
             }
         )
@@ -59,7 +62,9 @@ export default {
         watch(
             () => router.route.path,
             (path) => {
-                window.localStorage.currentlang = path.split('/')[1]
+                let _ = path.split('/')[1]
+                if (supportlangs.includes(_))
+                    window.localStorage.currentlang = _
             }
         )
         router.onAfterRouteChange = () => {
