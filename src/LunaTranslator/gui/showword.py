@@ -390,7 +390,11 @@ class AnkiWindow(QWidget):
         layout.addRow(
             "截图保存格式",
             getsimplecombobox(
-                getimageformatlist(), globalconfig, "imageformat", static=True
+                getimageformatlist(),
+                globalconfig,
+                "imageformat2",
+                static=True,
+                internal=getimageformatlist(),
             ),
         )
         layout.addRow(

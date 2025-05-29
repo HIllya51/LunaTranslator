@@ -1114,15 +1114,36 @@ def get_element_by(attr, attrv, html):
     return res
 
 
-def getimageformatlist():
-    _ = [_.data().decode() for _ in QImageWriter.supportedImageFormats()]
-    if globalconfig["imageformat"] == -1 or globalconfig["imageformat"] >= len(_):
-        globalconfig["imageformat"] = _.index("png")
+def __getimageformatlist():
+    _ = sorted([_.data().decode() for _ in QImageWriter.supportedImageFormats()])
+    if "png" in _:
+        _.remove("png")
+        _.insert(0, "png")
+    if "jpeg" in _:
+        _.remove("jpeg")
+        _.insert(0, "jpeg")
+    if "jpg" in _:
+        _.remove("jpg")
+        _.insert(0, "jpg")
+    if "webp" in _:
+        _.remove("webp")
+        _.insert(0, "webp")
     return _
 
 
+__imageformatlist = __getimageformatlist()
+
+
+def getimageformatlist():
+    return __imageformatlist
+
+
 def getimageformat():
-    return getimageformatlist()[globalconfig["imageformat"]]
+    fmt = globalconfig["imageformat2"]
+    __ = getimageformatlist()
+    if fmt not in __:
+        return __[0]
+    return fmt
 
 
 def getimagefilefilter():
