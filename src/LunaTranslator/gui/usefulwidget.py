@@ -173,16 +173,21 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
     __switchwidget = __delayloadfunction + 1
     ValRole = __switchwidget + 1
 
+    def __switchcallback(self, item: QStandardItem, _):
+        self.setIndexData(item.index(), _)
+
     def createIndexWidget(self, index: QModelIndex):
         wf = index.data(self.__delayloadfunction)
         if not wf:
             return
         val = index.data(self.ValRole)
         if isinstance(val, bool):
+            model: QStandardItemModel = self.model()
+            item = model.itemFromIndex(index)
             w = getsimpleswitch(
                 {None: val},
                 None,
-                callback=functools.partial(self.setIndexData, index),
+                callback=functools.partial(self.__switchcallback, item),
             )
         else:
             w = wf()
@@ -3545,7 +3550,9 @@ class __MDLabel(QLabel):
             self.once = False
         elif self.static:
             return
-        self.setText(NativeUtils.Markdown2Html(self._md if self.static else _TR(self._md)))
+        self.setText(
+            NativeUtils.Markdown2Html(self._md if self.static else _TR(self._md))
+        )
 
 
 def MDLabel(md, static=False):

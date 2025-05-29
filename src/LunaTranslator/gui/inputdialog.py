@@ -120,7 +120,7 @@ class noundictconfigdialog1(LDialog):
             [
                 ("添加行", functools.partial(table.insertplainrow, 0)),
                 ("删除行", self.table.removeselectedrows),
-                ("上移", functools.partial(table.moverank, 1)),
+                ("上移", functools.partial(table.moverank, -1)),
                 ("下移", functools.partial(table.moverank, 1)),
                 ("立即应用", self.apply),
             ]
