@@ -268,7 +268,7 @@ class basetrans(commonbase):
         return user_prompt
 
     def _gpt_common_parse_context(
-        self, messages: list, context: list[dict], num: int, query=None, cachecontext=False
+        self, messages: list, context: "list[dict]", num: int, query=None, cachecontext=False
     ):
         offset = 0
         _i = 0
