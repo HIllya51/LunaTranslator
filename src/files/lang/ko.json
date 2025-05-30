@@ -801,5 +801,7 @@
     "翻译接口": "번역 인터페이스",
     "不使用的辞书": "사용하지 않는 사전",
     "使用单词原型": "단어 원형을 사용합니다",
-    "软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。\n\n如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。\n\n如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "소프트웨어는 완전히 무료이며 오픈 소스입니다.\n하지만 소프트웨어 유지 관리는 쉽지 않으며, 개발과 유지 관리에는 많은 시간과 노력이 필요합니다.\n\n이 소프트웨어가 도움이 된다고 생각하시면, 저의 [스폰서](https://patreon.com/HIllya51)가 되어주세요. 여러분의 지원은 소프트웨어의 장기적인 유지 관리를 위한 원동력이 될 것입니다.\n\n사용 중 어려움이 있으시면, 이 사용 설명서를 참조하거나 열정적인 분들이 만든 비디오 튜토리얼을 검색해 보시고, [Discord](https://discord.com/invite/ErtDwVeAbB)에 참여하거나 [issue](https://github.com/HIllya51/LunaTranslator/issues)를 제기하여 저와 소통하실 수도 있습니다."
+    "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "이 소프트웨어가 도움이 된다고 생각하시면, 저의 [스폰서](https://patreon.com/HIllya51)가 되어주세요. 여러분의 지원은 소프트웨어의 장기적인 유지 관리를 위한 원동력이 될 것입니다.",
+    "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "이 소프트웨어는 완전 무료이며 [오픈 소스](https://github.com/HIllya51/LunaTranslator)입니다. 그러나 소프트웨어 유지 관리는 쉽지 않으며 개발 및 유지 관리하는 데 많은 시간과 노력이 필요합니다.",
+    "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "사용에 어려움이 있는 경우 [지침](/)을 확인하거나 열정적인 사람들이 만든 비디오 자습서를 검색하거나 [디스코드](https://discord.com/invite/ErtDwVeAbB)에 가입하고 [발행](https://github.com/HIllya51/LunaTranslator/issues)을 시작하여 저와 소통할 수 있습니다."
 }

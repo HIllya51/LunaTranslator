@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools
+import functools, re
 import NativeUtils, queue, hashlib, threading
 from myutils.config import globalconfig, static_data, _TR
 from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10
@@ -340,6 +340,22 @@ def updatexx(self):
     return w
 
 
+class MDLabel1(MDLabel):
+    def __init__(self, md, static=False):
+        super().__init__(md, static)
+        self.setOpenExternalLinks(False)
+        self.linkActivated.connect(self._linkActivated)
+
+    def setText(self, t):
+        t = re.sub("<a(.*?)>", '<a\\1 style="color: #E91E63;">', t)
+        super().setText(t)
+
+    def _linkActivated(self, link: str):
+        if link == "/":
+            link = dynamiclink("/", docs=True)
+        os.startfile(link)
+
+
 class aboutwidget(NQGroupBox):
     def __init__(self, *a):
         super().__init__(*a)
@@ -368,51 +384,22 @@ class aboutwidget(NQGroupBox):
             return
         self.lastlan = getlanguse()
         clearlayout(self.grid)
-        commonlink = [
-            getsmalllabel(makehtml("/Github/LunaTranslator", show="Github")),
-            getsmalllabel(makehtml("/", show="项目网站")),
-            getsmalllabel(makehtml("", show="使用说明", docs=True)),
-        ]
-        qqqun = [
-            getsmalllabel(makehtml("/Resource/Bilibili", show="Bilibili")),
-            getsmalllabel(makehtml("/Resource/QQGroup", show="QQ群_963119821")),
-        ]
-        discord = [getsmalllabel(makehtml("/Resource/DiscordGroup", show="Discord"))]
+        t1 = "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。"
+        t2 = "如果您感觉该软件对你有帮助，欢迎微信扫码赞助，您的支持将成为软件长期维护的助力。"
+        t3 = "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
+        t4 = "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。"
+        t5 = "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)/[QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
+        t6 = "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
         if getlanguse() == Languages.Chinese:
-            commonlink += qqqun + [""]
             shuominggrid = [
-                [getboxlayout(commonlink)],
-                [],
-                [
-                    MDLabel(
-                        """软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。
-
-如果您感觉该软件对你有帮助，欢迎微信扫码赞助，您的支持将成为软件长期维护的助力。
-
-如果使用中遇到困难，可以查阅使用说明、观看[视频教程](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。""",
-                        static=True,
-                    )
-                ],
+                [MDLabel1("\n\n".join([t1, t2, t3]), static=True)],
                 [self.createimageview],
             ]
 
+        elif getlanguse() == Languages.TradChinese:
+            shuominggrid = [[MDLabel1("\n\n".join([t1, t4, t5]))]]
         else:
-            if getlanguse() == Languages.TradChinese:
-                discord = qqqun + discord
-            commonlink += discord + [""]
-            shuominggrid = [
-                [getboxlayout(commonlink)],
-                [],
-                [
-                    MDLabel(
-                        """软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。
-
-如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。
-
-如果使用中遇到困难，可以查阅本使用说明、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"""
-                    )
-                ],
-            ]
+            shuominggrid = [[MDLabel1("\n\n".join([t1, t4, t6]))]]
 
         makeforms(self.grid, shuominggrid)
 

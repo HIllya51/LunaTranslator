@@ -55,6 +55,8 @@ if __name__ == "__main__":
         needpop = []
         for k in jsen:
             if k not in js:
+                if k.startswith("如果使用"):
+                    continue
                 needpop.append(k)
         print(kk, needpop)
         for k in needpop:

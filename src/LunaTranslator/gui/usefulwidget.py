@@ -2,7 +2,7 @@ from qtsymbols import *
 import os, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, NativeUtils, gobject, threading
-from myutils.config import _TR, globalconfig, mayberelpath
+from myutils.config import _TR, _TRL, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader
 from myutils.utils import nowisdark, checkisusingwine
 from ocrengines.baseocrclass import OCRResult
@@ -3535,8 +3535,8 @@ class PopupWidget(QWidget):
         return super().closeEvent(a0)
 
 
-class __MDLabel(QLabel):
-    def __init__(self, md, static=False):
+class MDLabel(QLabel):
+    def __init__(self, md: str, static=False):
         super().__init__()
         self._md = md
         self.static = static
@@ -3551,12 +3551,10 @@ class __MDLabel(QLabel):
         elif self.static:
             return
         self.setText(
-            NativeUtils.Markdown2Html(self._md if self.static else _TR(self._md))
+            NativeUtils.Markdown2Html(
+                self._md if self.static else "\n".join(_TRL(self._md.split("\n")))
+            )
         )
-
-
-def MDLabel(md, static=False):
-    return functools.partial(__MDLabel, md, static=static)
 
 
 class HBoxCenter(QHBoxLayout):
