@@ -36,7 +36,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
-          sdk-version: 26100
+          # sdk-version: 26100 2019上安装这个版本慢的离谱。
+          sdk-version: 22621
       - run: python src/scripts/build_lunatranslator.py hook ${{matrix.arch}} ${{matrix.target}}
 
       - uses: actions/upload-artifact@v4
