@@ -117,7 +117,7 @@ class customparams(QWidget):
         lay.addWidget(btn, lay.rowCount(), 0, 1, 5 - self.stringonly)
         self.createline(lay, lay.rowCount() - 2, {})
 
-    def __init__(self, value, stringonly=False, needheader=True):
+    def __init__(self, dd: dict, stringonly=False, needheader=True):
         super().__init__()
         self.needheader = needheader
         self.stringonly = stringonly
@@ -126,13 +126,14 @@ class customparams(QWidget):
         lay = VisGridLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         self.lay = lay
+        value: list = dd["customparams"]
         for i, d in enumerate(value):
             self.createline(lay, i, d)
         icon = getIconButton(icon="fa.plus", fix=False)
         lay.addWidget(icon, len(value), 0, 1, 5 - self.stringonly)
         icon.clicked.connect(functools.partial(self.addline, lay, icon))
 
-    def value(self):
+    def updateValues(self):
         collect = []
         for i in range(len(self.ks)):
             if not self.lay.rowVisible(i):
@@ -143,7 +144,7 @@ class customparams(QWidget):
             if not k:
                 continue
             collect.append(dict(key=k, value=v, type=t))
-        return collect
+        return dict(customparams=collect)
 
 
 def getcustombodyheaders(customparams: "list[dict]", **kw):

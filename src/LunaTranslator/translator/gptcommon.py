@@ -228,6 +228,9 @@ class gptcommon(basetrans):
 
     def __init__(self, typename):
         self.context = []
+        self.context_for_cache = []
+        self.context_for_cache_skipinter = 0
+        self.context_for_cache_skipinter_shouldmove = False
         self.maybeuse = {}
         super().__init__(typename)
 
@@ -236,7 +239,7 @@ class gptcommon(basetrans):
             self.config.get("customparams"), **locals()
         )
         usingstream = self.config["流式输出"]
-        messages = self.commoncreatemessages(query_1)
+        messages, query = self.commoncreatemessages(query_1)
         if self.apiurl.startswith("https://generativelanguage.googleapis.com"):
             response = self.request_gemini(messages, extrabody, extraheader)
         elif self.apiurl.startswith("https://api.anthropic.com/v1/messages"):
@@ -270,7 +273,9 @@ class gptcommon(basetrans):
         if not (query_1.strip() and respmessage.strip()):
             return
         self.context.append({"role": "user", "content": query_1})
+        self.context_for_cache.append({"role": "user", "content": query})
         self.context.append({"role": "assistant", "content": respmessage})
+        self.context_for_cache.append({"role": "assistant", "content": respmessage})
 
     def createurl(self):
         return createurl(self.apiurl)
@@ -281,14 +286,35 @@ class gptcommon(basetrans):
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
         message = [{"role": "system", "content": sysprompt}]
-        self._gpt_common_parse_context(
-            message, self.context, self.config["附带上下文个数"], query=query_1
-        )
+        checknum = self.config["附带上下文个数"]
+        __message = []
+        if self.config.get("cachecontext", False):
+            if self.context_for_cache_skipinter_shouldmove:
+                self.context_for_cache_skipinter = (
+                    len(self.context_for_cache) - (checknum // 2) * 2
+                )
+                self.context_for_cache_skipinter_shouldmove = False
+            if len(self.context_for_cache) < checknum:
+                self.context_for_cache_skipinter = 0
+            self._gpt_common_parse_context(
+                __message,
+                self.context_for_cache[self.context_for_cache_skipinter :],
+                checknum,
+                query=query_1,
+                cachecontext=True,
+            )
+        else:
+            self._gpt_common_parse_context(
+                __message, self.context, checknum, query=query_1
+            )
+        self.context_for_cache_skipinter_shouldmove = len(__message) == checknum * 2
+
+        message.extend(__message)
         message.append({"role": "user", "content": query})
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")
         if prefill:
             message.append({"role": "assistant", "content": prefill})
-        return message
+        return message, query
 
     def request_gemini(self, messages: list, extrabody, extraheader):
 

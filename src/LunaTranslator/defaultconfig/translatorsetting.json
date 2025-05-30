@@ -398,6 +398,7 @@
 			"model": "gpt-4o-mini",
 			"modellistcache": [],
 			"附带上下文个数": 0,
+			"cachecontext": false,
 			"API接口地址": "https://api.openai.com",
 			"SECRET_KEY": "",
 			"使用自定义promt": false,
@@ -421,6 +422,10 @@
 			"customparams": []
 		},
 		"argstype": {
+			"cachecontext": {
+				"name": "优化缓存命中",
+				"type": "switch"
+			},
 			"customparams": {
 				"name": "其他参数",
 				"type": "custom",
@@ -519,6 +524,9 @@
 				"rank": 5
 			},
 			"附带上下文个数": {
+				"appends": [
+					"cachecontext"
+				],
 				"type": "intspin",
 				"min": 0,
 				"max": 99999,

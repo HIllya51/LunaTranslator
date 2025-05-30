@@ -499,13 +499,203 @@ class SuperComboX(SuperCombo):
 
 @Singleton
 class autoinitdialog(LDialog):
+
+    def __refresh(self, line, combo: SuperCombo):
+        try:
+            func = getattr(
+                importlib.import_module(self.modelfile), line["list_function"]
+            )
+            items = func(self.maybehasextrainfo, self.regist)
+            curr = combo.currentText()
+            combo.clear()
+            combo.addItems(items)
+            if curr in items:
+                combo.setCurrentIndex(items.index(curr))
+
+            self.dd[self.refname2line[line["list_cache"]]["k"]] = items
+        except Exception as e:
+            print_exc()
+            if e.args and isinstance(e.args[0], requests.Response):
+                resp = e.args[0]
+                title = "{} {}: {}".format(resp.status_code, resp.reason, resp.url)
+                text = str(maybejson(resp))
+                if len(e.args) >= 2:
+                    if text:
+                        text += "\n"
+                    text += e.args[1]
+                QMessageBox.information(self, title, text)
+            else:
+                QMessageBox.information(self, str(type(e))[8:-2], str(e))
+
+    def createobject(self, line: "dict", dd: "dict[dict,str|dict]", sub=False):
+        if "k" in line:
+            key = line["k"]
+        if line["type"] == "label":
+
+            if "islink" in line and line["islink"]:
+                lineW = QLabel(makehtml(dd[key]))
+                lineW.setOpenExternalLinks(True)
+            else:
+                lineW = LLabel(dd[key])
+        elif line["type"] == "textlist":
+            directedit = isinstance(dd[key], str)
+            if directedit:
+                __list = dd[key].split("|")
+            else:
+                __list = dd[key].copy()
+            lineW = listediterline(line["name"], __list, directedit=directedit)
+
+            def __getv(l, directedit):
+                if directedit:
+                    return "|".join(l)
+                return l
+
+            self.regist[key] = functools.partial(__getv, __list, directedit)
+        elif line["type"] == "custom":
+            try:
+                lineWF = getattr(
+                    importlib.import_module(self.modelfile), line["function"]
+                )
+                lineW = lineWF(self._dict)
+                self.updater[key] = lineW.updateValues
+            except:
+                print_exc()
+        elif line["type"] == "combo":
+            lineW = SuperCombo()
+            items = line["list"]
+            lineW.addItems(items, line.get("internal"))
+
+            if "internal" in line:
+                lineW.setCurrentData(dd.get(key))
+                self.regist[key] = lineW.getCurrentData
+            else:
+                lineW.setCurrentIndex(dd.get(key, 0))
+                self.regist[key] = lineW.currentIndex
+            self.cachecombo[key] = lineW
+        elif line["type"] == "listedit_with_name":
+            line1 = QLineEdit()
+            lineW = QHBoxLayout()
+            combo = SuperComboX()
+            combo.setLineEdit(line1)
+            vis = [
+                _["vis"] + "_({})".format(_["value"])
+                for _ in static_data["API_URL_PRESETS"]
+            ]
+            value = [_["value"] for _ in static_data["API_URL_PRESETS"]]
+            icons = [QIcon(_["icon"]) for _ in static_data["API_URL_PRESETS"]]
+
+            def __(combo: SuperCombo, index):
+                combo.setCurrentText(combo.getIndexData(index))
+
+            combo.activated.connect(functools.partial(__, combo))
+            combo.addItems(vis, value, icons)
+            if dd[key] in value:
+                combo.setCurrentIndex(value.index(dd[key]))
+            combo.setCurrentText(dd[key])
+            self.regist[key] = combo.currentText
+            lineW.addWidget(combo)
+        elif line["type"] == "lineedit_or_combo":
+            line1 = QLineEdit()
+            lineW = QHBoxLayout()
+            combo = SuperCombo(static=True)
+            combo.setLineEdit(line1)
+
+            if "list_function" in line:
+                items = dd[self.refname2line[line["list_cache"]]["k"]]
+            else:
+                items = line["list"]
+            combo.addItems(items)
+            if dd[key] in items:
+                combo.setCurrentIndex(items.index(dd[key]))
+            else:
+                combo.setCurrentText(dd[key])
+            self.regist[key] = combo.currentText
+            if "list_function" in line:
+                lineW.addWidget(
+                    getIconButton(
+                        callback=functools.partial(self.__refresh, line, combo),
+                        icon="fa.refresh",
+                    )
+                )
+            lineW.addWidget(combo)
+        elif line["type"] == "okcancel":
+            lineW = QDialogButtonBox(
+                QDialogButtonBox.StandardButton.Ok
+                | QDialogButtonBox.StandardButton.Cancel
+            )
+            lineW.rejected.connect(self.close)
+            lineW.accepted.connect(
+                functools.partial(self.save, line.get("callback", None))
+            )
+
+            lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
+            lineW.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
+        elif line["type"] == "lineedit":
+            if not isinstance(dd[key], str):
+                return
+            lineW = QLineEdit(dd[key])
+            self.regist[key] = lineW.text
+        elif line["type"] == "multiline":
+            lineW = QPlainTextEdit(dd[key])
+            self.regist[key] = lineW.toPlainText
+        elif line["type"] == "file":
+            __temp = {"k": dd[key]}
+            lineW = getsimplepatheditor(
+                dd[key],
+                line.get("multi", False),
+                line.get("dir", False),
+                line.get("filter", None),
+                callback=functools.partial(__temp.__setitem__, "k"),
+                reflist=__temp["k"],
+                name=line.get("name", ""),
+                dirorfile=line.get("dirorfile", False),
+            )
+
+            self.regist[key] = functools.partial(__temp.__getitem__, "k")
+        elif line["type"] == "switch":
+            lineW = MySwitch(sign=dd[key])
+            self.regist[key] = lineW.isChecked
+            if not sub:
+                _ = QHBoxLayout()
+                _.addStretch()
+                _.addWidget(lineW)
+                _.addStretch()
+                lineW = _
+        elif line["type"] in ["spin", "intspin"]:
+
+            __temp = {"k": dd[key]}
+            lineW = getspinbox(
+                line.get("min", 0),
+                line.get("max", 100),
+                __temp,
+                "k",
+                line["type"] == "spin",
+                line.get("step", 0.1),
+            )
+            self.regist[key] = lineW.value
+        elif line["type"] == "split":
+            lineW = SplitLine()
+        return lineW
+
+    def save(self, callback=None):
+        for k in self.regist:
+            self.dd[k] = self.regist[k]()
+        for k in self.updater:
+            self.dd.update(self.updater[k]())
+        self.close()
+        if callback:
+            try:
+                callback()
+            except:
+                print_exc()
+
     def __init__(
         self,
         parent,
-        dd,
+        dd: "dict",
         title,
         width,
-        lines,
+        lines: "list[dict]",
         modelfile=None,
         maybehasextrainfo=None,
         exec_=False,
@@ -514,17 +704,12 @@ class autoinitdialog(LDialog):
         self.setWindowTitle(title)
         self.resize(QSize(width, 10))
         formLayout = VisLFormLayout(self)
-        regist = {}
-
-        def save(callback=None):
-            for k in regist:
-                dd[k] = regist[k]()
-            self.close()
-            if callback:
-                try:
-                    callback()
-                except:
-                    print_exc()
+        self.regist = {}
+        self.dd = dd
+        self.updater = {}
+        self._dict = dd.copy()
+        self.modelfile = modelfile
+        self.maybehasextrainfo = maybehasextrainfo
 
         hasrank = []
         negarank = []
@@ -542,216 +727,60 @@ class autoinitdialog(LDialog):
         negarank.sort(key=lambda line: line.get("rank", None))
         lines = hasrank + hasnorank + negarank
 
-        refname2line = {}
+        self.refname2line = {}
+        self.appendtoS: "dict[object,dict]" = {}
         for line in lines:
             refswitch = line.get("refswitch", None)
             if refswitch:
-                refname2line[refswitch] = None
+                self.refname2line[refswitch] = None
+            appends = line.get("appends", None)
+            if appends:
+                for _ in appends:
+                    self.appendtoS[_] = None
 
             list_cache = line.get("list_cache", None)
             if list_cache:
-                refname2line[list_cache] = None
+                self.refname2line[list_cache] = None
         oklines = []
 
         for line in lines:
             k = line.get("k", None)
-            if k in refname2line:
-                refname2line[k] = line
+            if k in self.refname2line:
+                self.refname2line[k] = line
+                continue
+            if k in self.appendtoS:
+                self.appendtoS[k] = line
                 continue
             oklines.append(line)
         lines = oklines
-        cachecombo = {}
-        cachehasref = {}
+        self.cachecombo = {}
+        self.cachehasref = {}
         for line in lines:
             if line.get("hide"):
                 continue
-            if "k" in line:
-                key = line["k"]
-            if line["type"] == "label":
-
-                if "islink" in line and line["islink"]:
-                    lineW = QLabel(makehtml(dd[key]))
-                    lineW.setOpenExternalLinks(True)
-                else:
-                    lineW = LLabel(dd[key])
-            elif line["type"] == "textlist":
-                directedit = isinstance(dd[key], str)
-                if directedit:
-                    __list = dd[key].split("|")
-                else:
-                    __list = dd[key].copy()
-                lineW = listediterline(line["name"], __list, directedit=directedit)
-
-                def __getv(l, directedit):
-                    if directedit:
-                        return "|".join(l)
-                    return l
-
-                regist[key] = functools.partial(__getv, __list, directedit)
-            elif line["type"] == "custom":
-                try:
-                    lineWF = getattr(
-                        importlib.import_module(modelfile), line["function"]
-                    )
-                    lineW = lineWF(dd[key])
-                    regist[key] = lineW.value
-                except:
-                    print_exc()
-            elif line["type"] == "combo":
-                lineW = SuperCombo()
-                items = line["list"]
-                lineW.addItems(items, line.get("internal"))
-
-                if "internal" in line:
-                    lineW.setCurrentData(dd.get(key))
-                    regist[key] = lineW.getCurrentData
-                else:
-                    lineW.setCurrentIndex(dd.get(key, 0))
-                    regist[key] = lineW.currentIndex
-                cachecombo[key] = lineW
-            elif line["type"] == "listedit_with_name":
-                line1 = QLineEdit()
-                lineW = QHBoxLayout()
-                combo = SuperComboX()
-                combo.setLineEdit(line1)
-                vis = [
-                    _["vis"] + "_({})".format(_["value"])
-                    for _ in static_data["API_URL_PRESETS"]
-                ]
-                value = [_["value"] for _ in static_data["API_URL_PRESETS"]]
-                icons = [QIcon(_["icon"]) for _ in static_data["API_URL_PRESETS"]]
-
-                def __(combo: SuperCombo, index):
-                    combo.setCurrentText(combo.getIndexData(index))
-
-                combo.activated.connect(functools.partial(__, combo))
-                combo.addItems(vis, value, icons)
-                if dd[key] in value:
-                    combo.setCurrentIndex(value.index(dd[key]))
-                combo.setCurrentText(dd[key])
-                regist[key] = combo.currentText
-                lineW.addWidget(combo)
-            elif line["type"] == "lineedit_or_combo":
-                line1 = QLineEdit()
-                lineW = QHBoxLayout()
-                combo = SuperCombo(static=True)
-                combo.setLineEdit(line1)
-
-                def __refresh(regist, line, combo: SuperCombo):
-                    try:
-                        func = getattr(
-                            importlib.import_module(modelfile), line["list_function"]
-                        )
-                        items = func(maybehasextrainfo, regist)
-                        curr = combo.currentText()
-                        combo.clear()
-                        combo.addItems(items)
-                        if curr in items:
-                            combo.setCurrentIndex(items.index(curr))
-
-                        dd[refname2line[line["list_cache"]]["k"]] = items
-                    except Exception as e:
-                        print_exc()
-                        if e.args and isinstance(e.args[0], requests.Response):
-                            resp = e.args[0]
-                            title = "{} {}: {}".format(
-                                resp.status_code, resp.reason, resp.url
-                            )
-                            text = str(maybejson(resp))
-                            if len(e.args) >= 2:
-                                if text:
-                                    text += "\n"
-                                text += e.args[1]
-                            QMessageBox.information(self, title, text)
-                        else:
-                            QMessageBox.information(self, str(type(e))[8:-2], str(e))
-
-                if "list_function" in line:
-                    items = dd[refname2line[line["list_cache"]]["k"]]
-                else:
-                    items = line["list"]
-                combo.addItems(items)
-                if dd[key] in items:
-                    combo.setCurrentIndex(items.index(dd[key]))
-                else:
-                    combo.setCurrentText(dd[key])
-                regist[key] = combo.currentText
-                if "list_function" in line:
-                    lineW.addWidget(
-                        getIconButton(
-                            callback=functools.partial(__refresh, regist, line, combo),
-                            icon="fa.refresh",
-                        )
-                    )
-                lineW.addWidget(combo)
-            elif line["type"] == "okcancel":
-                lineW = QDialogButtonBox(
-                    QDialogButtonBox.StandardButton.Ok
-                    | QDialogButtonBox.StandardButton.Cancel
-                )
-                lineW.rejected.connect(self.close)
-                lineW.accepted.connect(
-                    functools.partial(save, line.get("callback", None))
-                )
-
-                lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
-                lineW.button(QDialogButtonBox.StandardButton.Cancel).setText(
-                    _TR("取消")
-                )
-            elif line["type"] == "lineedit":
-                if not isinstance(dd[key], str):
-                    continue
-                lineW = QLineEdit(dd[key])
-                regist[key] = lineW.text
-            elif line["type"] == "multiline":
-                lineW = QPlainTextEdit(dd[key])
-                regist[key] = lineW.toPlainText
-            elif line["type"] == "file":
-                __temp = {"k": dd[key]}
-                lineW = getsimplepatheditor(
-                    dd[key],
-                    line.get("multi", False),
-                    line.get("dir", False),
-                    line.get("filter", None),
-                    callback=functools.partial(__temp.__setitem__, "k"),
-                    reflist=__temp["k"],
-                    name=line.get("name", ""),
-                    dirorfile=line.get("dirorfile", False),
-                )
-
-                regist[key] = functools.partial(__temp.__getitem__, "k")
-            elif line["type"] == "switch":
-                lineW = MySwitch(sign=dd[key])
-                regist[key] = lineW.isChecked
-                _ = QHBoxLayout()
-                _.addStretch()
-                _.addWidget(lineW)
-                _.addStretch()
-                lineW = _
-            elif line["type"] in ["spin", "intspin"]:
-
-                __temp = {"k": dd[key]}
-                lineW = getspinbox(
-                    line.get("min", 0),
-                    line.get("max", 100),
-                    __temp,
-                    "k",
-                    line["type"] == "spin",
-                    line.get("step", 0.1),
-                )
-                regist[key] = lineW.value
-            elif line["type"] == "split":
-                lineW = SplitLine()
-
+            lineW = self.createobject(line, dd)
+            if not lineW:
+                continue
+            appends = line.get("appends", None)
+            if appends:
+                hbox = QHBoxLayout()
+                hbox.addWidget(lineW)
+                for _ in appends:
+                    line_ref = self.appendtoS.get(_, None)
+                    if line_ref:
+                        object = self.createobject(line_ref, dd, sub=True)
+                        hbox.addWidget(getsmalllabel(line_ref.get("name", ""))())
+                        hbox.addWidget(object)
+                lineW = hbox
             refswitch = line.get("refswitch", None)
             if refswitch:
                 hbox = QHBoxLayout()
-                line_ref = refname2line.get(refswitch, None)
+                line_ref = self.refname2line.get(refswitch, None)
                 if line_ref:
                     if "k" in line_ref:
                         key = line_ref["k"]
                     switch = MySwitch(sign=dd[key])
-                    regist[key] = switch.isChecked
+                    self.regist[key] = switch.isChecked
                     switch.clicked.connect(lineW.setEnabled)
                     lineW.setEnabled(dd[key])
                     hbox.addWidget(switch)
@@ -766,13 +795,13 @@ class autoinitdialog(LDialog):
 
             refcombo = line.get("refcombo")
             if refcombo:
-                if refcombo not in cachehasref:
-                    cachehasref[refcombo] = []
-                cachehasref[refcombo].append((line, formLayout.rowCount() - 1))
+                if refcombo not in self.cachehasref:
+                    self.cachehasref[refcombo] = []
+                self.cachehasref[refcombo].append((line, formLayout.rowCount() - 1))
         for (
             comboname,
             refitems,
-        ) in cachehasref.items():
+        ) in self.cachehasref.items():
 
             def refcombofunction(refitems, _i):
                 viss = []
@@ -793,11 +822,11 @@ class autoinitdialog(LDialog):
                 QApplication.processEvents()
                 self.resize(self.width(), 1)
 
-            cachecombo[comboname].currentIndexChanged.connect(
+            self.cachecombo[comboname].currentIndexChanged.connect(
                 functools.partial(refcombofunction, refitems)
             )
-            cachecombo[comboname].currentIndexChanged.emit(
-                cachecombo[comboname].currentIndex()
+            self.cachecombo[comboname].currentIndexChanged.emit(
+                self.cachecombo[comboname].currentIndex()
             )
         if exec_:
             self.exec()

@@ -268,7 +268,7 @@ class basetrans(commonbase):
         return user_prompt
 
     def _gpt_common_parse_context(
-        self, messages: list, context: list, num: int, query=None
+        self, messages: list, context: list[dict], num: int, query=None, cachecontext=False
     ):
         offset = 0
         _i = 0
@@ -280,7 +280,7 @@ class basetrans(commonbase):
                 c_q: str = context[i * 2].get("content")
             else:
                 c_q: str = context[i * 2]
-            if c_q and isinstance(c_q, str) and c_q in dedump:
+            if (not cachecontext) and c_q and isinstance(c_q, str) and c_q in dedump:
                 offset += 1
                 continue
             dedump.add(c_q)
