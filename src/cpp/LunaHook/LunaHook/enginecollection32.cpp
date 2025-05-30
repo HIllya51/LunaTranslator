@@ -44,6 +44,7 @@
 #include "engine32/Bishop.h"
 #include "engine32/HXP.h"
 #include "engine32/morning.h"
+#include "engine32/NUGSystem.h"
 #include "engine32/LucaSystem.h"
 #include "engine32/TSSystem.h"
 #include "engine32/ScrPlayer.h"
@@ -453,5 +454,6 @@ std::vector<ENGINE *> check_engines()
         new GJ,
         new Pinpai,
         new ADVSystem,
+        new NUGSystem,
     };
 }

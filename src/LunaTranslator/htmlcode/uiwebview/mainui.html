@@ -34,6 +34,10 @@
         display: none;
     }
 
+    ruby {
+        ruby-align: center;
+    }
+
     rt {
         user-select: none;
     }
@@ -324,31 +328,12 @@
             c2 = `var(--miaobianfillcolor)`
             c1 = `var(--${color})`
         }
-        let innerHTML = `
-         #${_id}{
-    display: grid;
-    }
-        #${_id} span{ 
-  margin: 0;
-  grid-column: 1;
-  grid-row: 1;
-        }
-  #${_id} .nostroken {
-    color: ${c2};
-    z-index: 2;
-  }`
-        for (let i = 0; i < Math.round(1 + styleargs.trace * 10); i++) {
-            innerHTML += `#${_id} .stroken${i}{
-    color: ${c1};
-    -webkit-text-stroke: calc(${styleargs.width_rate}em + ${styleargs.width}px) ${c1};
-    position: relative;
-  z-index: 1;
-  left: ${(i + 1) / 10}px;
-  top: ${(i + 1) / 10}px;
-  user-select: none;
-  }`
-        }
-        return innerHTML
+        //paint-order: stroke; 需要123,不再支持低版本webview2
+        return `#${_id} span{ 
+        color: ${c2};
+        -webkit-text-stroke: calc(${styleargs.width_rate}em + ${styleargs.width}px) ${c1};
+        paint-order: stroke; 
+        }`
     }
     function miaobian12_common(styleargs, name, text, args) {
         let ele = document.createElement('span')
@@ -361,20 +346,8 @@
         style.classList.add('miaobiaostyleklass')
         ele.appendChild(style)
         let p = createnameandtext(name, text, args)
-        p.classList.add('nostroken')
         ele.appendChild(p)
-        ele.classList.add('miaobiaostyleele')
-        ele.setAttribute('__save_args', JSON.stringify(args))
-        ele.setAttribute('__save_text', text)
-        ele.setAttribute('__save_name', name)
-        ele.setAttribute('__save_n', Math.round(1 + styleargs.trace * 10))
-
-        for (let i = 0; i < Math.round(1 + styleargs.trace * 10); i++) {
-            let p = createnameandtext(name, text, args)
-            p.classList.add(`stroken${i}`)
-            ele.appendChild(p)
-        }
-        return makeinlineblock(ele)
+        return ele
 
     }
     regist_style_imp = {
@@ -384,12 +357,6 @@
     }
     function dispatch_text_style(style, styleargs, name, text, args) {
         return regist_style_imp[style](styleargs, name, text, args)
-    }
-    function makeinlineblock(ele) {
-        let div = document.createElement('div')
-        div.style.display = 'inline-block'
-        div.appendChild(ele)
-        return div
     }
 </script>
 <style id="maybeshowerror">
@@ -645,6 +612,12 @@
             }
         });
     }
+    function makeinlineblock(ele) {
+        let div = document.createElement('div')
+        div.style.display = 'inline-block'
+        div.appendChild(ele)
+        return div
+    }
     function create_internal_rubytext(style, styleargsjson, _id, tagjson, argsjson) {
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
@@ -658,11 +631,11 @@
                 return
             }
             let eleori = dispatch_text_style(style, styleargs, '', word.word, { color: color })
-            eleori = makeinlineblock(eleori)//使其他字体和描边字体的对齐一致
             if (word.isdeli || word.isshit) {
                 ele.appendChild(eleori)
                 return
             }
+            eleori = makeinlineblock(eleori)//还是得用这个，没辙，不然：无法ruby-overhang:none，而且注音和文字有overlap。至于如果一个被注音文字很长，导致换行不正常的问题，暂时没办法了。
             let uid = _simpleuid()
             let mark = document.createElement('mark')
             mark.appendChild(eleori)
@@ -830,32 +803,6 @@
                 let __color = ele.getAttribute('__color')
                 let __id = ele.getAttribute('__id')
                 ele.innerHTML = createmiaobianstyle(styleargs, __id, __color)
-            }
-        )
-        document.querySelectorAll('.miaobiaostyleele').forEach(
-            (ele) => {
-                let targetlen = Math.round(1 + styleargs.trace * 10)
-                let __save_n = parseInt(ele.getAttribute('__save_n'))
-                ele.setAttribute('__save_n', targetlen)
-                if (__save_n > targetlen) {
-                    for (let i = targetlen; i < __save_n; i++) {
-                        ele.querySelectorAll(`.stroken${i}`).forEach(
-                            (e) => {
-                                ele.removeChild(e)
-                            }
-                        )
-                    }
-                }
-                else {
-                    let __save_args = JSON.parse(ele.getAttribute('__save_args'))
-                    let __save_text = ele.getAttribute('__save_text')
-                    let __save_name = ele.getAttribute('__save_name')
-                    for (let i = __save_n; i < targetlen; i++) {
-                        let p = createnameandtext(__save_name, __save_text, __save_args)
-                        p.classList.add(`stroken${i}`)
-                        ele.appendChild(p)
-                    }
-                }
             }
         )
         return `--miaobianfillcolor:${styleargs.fillcolor};`

@@ -697,7 +697,7 @@ class TextBrowser(QWidget, dataget):
                     taglines[0].word_X = taglines[0].word
                     newtag.append(taglines[0])
                     taglines = taglines[1:]
-                if len(__) != len(textlines[-1]):
+                if newtag and (len(__) != len(textlines[-1])):
                     orig = newtag[-1].word
                     l1 = len(orig) - (len(__) - len(textlines[-1]))
                     sub = orig[:l1]
