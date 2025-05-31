@@ -3,7 +3,13 @@ from myutils.utils import dynamiclink, stringfyerror
 from myutils.config import _TR, globalconfig
 from language import Languages
 from ocrengines.baseocrclass import baseocr, OCRResult
-from CVUtils import LocalOCR, SysNotSupport, ModelLoadFailed, GetDeviceInfoD3D12
+from CVUtils import (
+    LocalOCR,
+    SysNotSupport,
+    ModelLoadFailed,
+    GetDeviceInfoD3D12,
+    OcrIsDMLAvailable,
+)
 import gobject, requests, json, shutil, hashlib
 from traceback import print_exc
 from qtsymbols import *
@@ -29,6 +35,7 @@ class customwidget(LDialog):
     delayload = pyqtSignal(list)
 
     def __delayload(self, config__, lform: LFormLayout, devices):
+        lform.removeRow(lform.rowCount() - 2)
         if devices:
             print(devices)
             for i, _ in enumerate(devices):
@@ -69,7 +76,6 @@ class customwidget(LDialog):
         lform.addRow("优先使用更高精度的模型", getsimpleswitch(config__, "accfirst"))
         lform.addRow("线程数", getspinbox(1, 16, config__, "thread"))
         self.delayload.connect(functools.partial(self.__delayload, config__, lform))
-
         lineW = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
@@ -79,7 +85,14 @@ class customwidget(LDialog):
         lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
         lineW.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
         lform.addRow(lineW)
-        self.__load()
+        if OcrIsDMLAvailable():
+            lform.insertRow(lform.rowCount() - 1, "正在加载可用GPU", None)
+            self.__load()
+        else:
+            lform.insertRow(
+                lform.rowCount() - 1, "当前软件或操作系统版本不支持使用GPU", None
+            )
+
         self.show()
 
 

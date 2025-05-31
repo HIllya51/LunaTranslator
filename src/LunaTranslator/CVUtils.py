@@ -93,16 +93,19 @@ _OcrDetectCallback = CFUNCTYPE(
 _error = CFUNCTYPE(None, c_char_p)
 
 
-def GetDeviceInfoD3D12():
+def OcrIsDMLAvailable():
     _CVUtils = _DelayLoadCVUtils()
     OcrIsDMLAvailable = _CVUtils.OcrIsDMLAvailable
     OcrIsDMLAvailable.restype = c_bool
+
+    return OcrIsDMLAvailable()
+
+
+def GetDeviceInfoD3D12():
+    _CVUtils = _DelayLoadCVUtils()
     GetDeviceInfoD3D12 = _CVUtils.GetDeviceInfoD3D12
     GetDeviceInfoD3D12_CB = CFUNCTYPE(None, c_uint64, c_wchar_p)
     GetDeviceInfoD3D12.argtypes = (GetDeviceInfoD3D12_CB,)
-
-    if not OcrIsDMLAvailable():
-        return
 
     ret = []
 
@@ -162,7 +165,9 @@ class LocalOCR:
             OcrDestroy,
         )
         if error:
-            raise Exception(error[0].decode(locale.getpreferredencoding(), errors="ignore"))
+            raise Exception(
+                error[0].decode(locale.getpreferredencoding(), errors="ignore")
+            )
         if not self.pOcrObj:
             raise ModelLoadFailed()
 
@@ -181,5 +186,7 @@ class LocalOCR:
             self.pOcrObj, mat, mode, _OcrDetectCallback(cb), _error(error.append)
         )
         if error:
-            raise Exception(error[0].decode(locale.getpreferredencoding(), errors="ignore"))
+            raise Exception(
+                error[0].decode(locale.getpreferredencoding(), errors="ignore")
+            )
         return pss, texts

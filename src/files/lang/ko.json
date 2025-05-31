@@ -804,5 +804,6 @@
     "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "이 소프트웨어가 도움이 된다고 생각하시면, 저의 [스폰서](https://patreon.com/HIllya51)가 되어주세요. 여러분의 지원은 소프트웨어의 장기적인 유지 관리를 위한 원동력이 될 것입니다.",
     "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "이 소프트웨어는 완전 무료이며 [오픈 소스](https://github.com/HIllya51/LunaTranslator)입니다. 그러나 소프트웨어 유지 관리는 쉽지 않으며 개발 및 유지 관리하는 데 많은 시간과 노력이 필요합니다.",
     "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "사용에 어려움이 있는 경우 [지침](/)을 확인하거나 열정적인 사람들이 만든 비디오 자습서를 검색하거나 [디스코드](https://discord.com/invite/ErtDwVeAbB)에 가입하고 [발행](https://github.com/HIllya51/LunaTranslator/issues)을 시작하여 저와 소통할 수 있습니다.",
-    "优化缓存命中": "캐시 적중 횟수 최적화"
+    "优化缓存命中": "캐시 적중 횟수 최적화",
+    "正在加载可用GPU": "사용 가능한 GPU 로드"
 }

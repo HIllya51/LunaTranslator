@@ -804,5 +804,6 @@
     "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "Nếu bạn cảm thấy phần mềm này hữu ích cho mình, chào mừng bạn trở thành [người bảo trợ](https://patreon.com/HIllya51) của tôi. Sự hỗ trợ của bạn sẽ là động lực để duy trì phần mềm lâu dài.",
     "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "Phần mềm hoàn toàn miễn phí và [mã nguồn mở](https://github.com/HIllya51/LunaTranslator). Nhưng việc bảo trì phần mềm không hề dễ dàng, và phải mất rất nhiều thời gian và công sức để phát triển và bảo trì.",
     "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Nếu gặp khó khăn trong quá trình sử dụng, bạn có thể kiểm tra [Hướng dẫn](/), hoặc tìm kiếm một số video hướng dẫn do những người nhiệt tình thực hiện, hoặc chào mừng bạn tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) và bắt đầu [vấn đề](https://github.com/HIllya51/LunaTranslator/issues) để giao tiếp với tôi.",
-    "优化缓存命中": "Tối ưu hóa lượt truy cập bộ nhớ cache"
+    "优化缓存命中": "Tối ưu hóa lượt truy cập bộ nhớ cache",
+    "正在加载可用GPU": "Tải GPU có sẵn"
 }

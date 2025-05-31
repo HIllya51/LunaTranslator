@@ -804,5 +804,6 @@
     "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "Jeśli uważasz, że to oprogramowanie jest dla Ciebie pomocne, zapraszam do zostania moim [sponsorem](https://patreon.com/HIllya51). Twoje wsparcie będzie siłą napędową długoterminowego utrzymania oprogramowania.",
     "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "Oprogramowanie jest całkowicie darmowe i [open source](https://github.com/HIllya51/LunaTranslator). Jednak utrzymanie oprogramowania nie jest łatwe, a jego opracowanie i utrzymanie zajmuje dużo czasu i wysiłku.",
     "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Jeśli napotkasz trudności w użyciu, możesz sprawdzić [Instrukcje](/) lub poszukać filmów instruktażowych przygotowanych przez entuzjastycznych ludzi, lub powitać dołączenie do [Discord](https://discord.com/invite/ErtDwVeAbB) i zainicjować [problem](https://github.com/HIllya51/LunaTranslator/issues), aby się ze mną skomunikować.",
-    "优化缓存命中": "Zoptymalizuj trafienia w pamięci podręcznej"
+    "优化缓存命中": "Zoptymalizuj trafienia w pamięci podręcznej",
+    "正在加载可用GPU": "Wczytywanie dostępnych procesorów graficznych"
 }
