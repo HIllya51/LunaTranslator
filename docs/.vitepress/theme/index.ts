@@ -7,6 +7,7 @@ import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import giscus from './giscus.vue'
 import notfound from './notfound.vue';
 import DownloadLink from './components/DownloadLink.vue' // 路径根据你的结构调整
+import downloadbtn from './downloadbtn.vue' // 路径根据你的结构调整
 export default {
     ...DefaultTheme,
     Layout() {
@@ -18,6 +19,7 @@ export default {
     enhanceApp({ app }) {
         enhanceAppWithTabs(app)
         app.component('DownloadLink', DownloadLink)
+        app.component('downloadbtn', downloadbtn)
     },
     setup() {
         const handleRouteChange = () => {

@@ -53,11 +53,3 @@ summary,
 summary {
     margin-bottom: 0;
 }
-
-.downloadlink {
-  background-image: url("/download.svg");
-  background-repeat: no-repeat;
-  background-size: contain;
-  width: 48px;
-  height: 48px;
-}
