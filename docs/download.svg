@@ -6,11 +6,6 @@
     path  {
       fill: black;
     }
-    @media (prefers-color-scheme: dark) {
-      path {
-        fill: white;
-      }
-    }
   </style>
 <g>
 	<path d="M25.462,19.105v6.848H4.515v-6.848H0.489v8.861c0,1.111,0.9,2.012,2.016,2.012h24.967c1.115,0,2.016-0.9,2.016-2.012
