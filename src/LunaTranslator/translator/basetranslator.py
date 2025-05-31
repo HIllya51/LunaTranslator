@@ -268,7 +268,12 @@ class basetrans(commonbase):
         return user_prompt
 
     def _gpt_common_parse_context(
-        self, messages: list, context: "list[dict]", num: int, query=None, cachecontext=False
+        self,
+        messages: list,
+        context: "list[dict]",
+        num: int,
+        query=None,
+        cachecontext=False,
     ):
         offset = 0
         _i = 0
@@ -330,7 +335,7 @@ class basetrans(commonbase):
             for _res in res:
                 if _res == "\0":
                     collectiterres = ""
-                else:
+                elif _res:  # 可能为None
                     collectiterres += _res
                 callback(collectiterres, 1)
             callback(collectiterres, 2)
