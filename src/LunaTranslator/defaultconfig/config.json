@@ -1466,6 +1466,7 @@
     "allowmulti": true,
     "sourcestatus2": {
         "mssr": {
+            "realtimerefresh": false,
             "path": "",
             "source": "loopback",
             "use": false
