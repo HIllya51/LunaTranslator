@@ -1,4 +1,6 @@
 import platform, os, sys
+from ctypes import windll, Structure, POINTER, pointer
+from ctypes.wintypes import DWORD, WCHAR
 
 
 def GetDllpath(_, base=None):
@@ -72,7 +74,24 @@ runtime_for_xp = tuple(sys.version_info)[:2] == (3, 4)
 runtime_for_win10 = tuple(sys.version_info)[:2] >= (3, 9)
 
 sys_le_xp = int(platform.version().split(".")[0]) <= 5
-sys_ge_win_11 = sys.getwindowsversion().build >= 22000  # 21h2
+
+
+class RTL_OSVERSIONINFOW(Structure):
+    _fields_ = [
+        ("_1", DWORD),
+        ("_2", DWORD),
+        ("_3", DWORD),
+        ("dwBuildNumber", DWORD),
+        ("_4", DWORD),
+        ("_5", WCHAR * 128),
+    ]
+
+
+RtlGetVersion = windll.ntdll.RtlGetVersion
+RtlGetVersion.argtypes = (POINTER(RTL_OSVERSIONINFOW),)
+__version = RTL_OSVERSIONINFOW()
+RtlGetVersion(pointer(__version))
+sys_ge_win_11 = __version.dwBuildNumber >= 22000  # 21h2
 sys_ge_win8 = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
 sys_le_win7 = tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1)
 sys_le_win81 = int(platform.version().split(".")[0]) <= 6
