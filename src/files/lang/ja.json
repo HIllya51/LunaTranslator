@@ -811,5 +811,6 @@
     "麦克风": "マイク",
     "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "使用中に問題が発生した場合は、[使用説明](/)、[Discord](https://discord.com/invite/ErtDwVeAbB)への参加、または[Github](https://github.com/HIllya51/LunaTranslator)で[issue](https://github.com/HIllya51/LunaTranslator/issues)を開いてご連絡ください。",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "ソフトウェアのメンテナンスは容易ではありません。もしこのソフトウェアが役に立ったと感じたら、ぜひ私の[スポンサー](https://patreon.com/HIllya51)になってください。あなたのサポートがソフトウェアの長期的なメンテナンスの力になります。ありがとうございます～",
-    "刷新间隔": "更新間隔"
+    "刷新间隔": "更新間隔",
+    "找不到运行时": "ランタイムが見つかりません"
 }

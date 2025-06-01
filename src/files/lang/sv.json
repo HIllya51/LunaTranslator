@@ -811,5 +811,6 @@
     "麦克风": "Mikrofon",
     "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Om du stöter på svårigheter under användningen kan du konsultera [användarmanualen](/). Du är också välkommen att gå med i [Discord](https://discord.com/invite/ErtDwVeAbB) eller skapa ett [issue](https://github.com/HIllya51/LunaTranslator/issues) på [Github](https://github.com/HIllya51/LunaTranslator) för att diskutera med mig.",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "Programunderhåll är inte enkelt. Om du känner att denna programvara är till hjälp för dig, välkommen att bli min [sponsor](https://patreon.com/HIllya51). Ditt stöd kommer att hjälpa till med långsiktig underhåll av programvaran. Tack!",
-    "刷新间隔": "uppdateringsintervall"
+    "刷新间隔": "uppdateringsintervall",
+    "找不到运行时": "Kan inte hitta körningsmiljön"
 }
