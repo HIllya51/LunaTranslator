@@ -23,9 +23,7 @@ class mssr(basetext):
                 path = NativeUtils.FindPackages("MicrosoftWindows.Speech.")[0][1]
                 globalconfig["sourcestatus2"]["mssr"]["path"] = path
         except:
-            gobject.baseobject.translation_ui.displaymessagebox.emit(
-                "错误", "无可用语言"
-            )
+            gobject.baseobject.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
 
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
