@@ -1,6 +1,6 @@
 from textio.textsource.textsourcebase import basetext
 from myutils.wrapper import threader
-import NativeUtils, windows, uuid, os, gobject
+import NativeUtils, windows, uuid, os, gobject, time
 from ctypes import c_int
 from myutils.config import globalconfig, _TR
 from myutils.mecab import punctuations
@@ -86,6 +86,7 @@ class mssr(basetext):
     @threader
     def listen(self):
         last = ""
+        lastt = 0
         while not self.ending:
             iserr = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
             if iserr:
@@ -109,12 +110,17 @@ class mssr(basetext):
                     increased = text[len(last) :] if text.startswith(last) else ""
                     #  print(increased, any(_ in punctuations for _ in increased))
                     last = text
+                    thist = time.time()
                     if (
                         ok
-                        or globalconfig["sourcestatus2"]["mssr"]["realtimerefresh"]
+                        or (
+                            thist - lastt
+                            > globalconfig["sourcestatus2"]["mssr"]["refreshinterval"]
+                        )
                         or any(_ in punctuations for _ in increased)
                     ):
                         self.dispatchtext(text)
+                        lastt = thist
                 elif t == 4:
                     gobject.baseobject.displayinfomessage(
                         _TR("正在加载语音识别模型"), "<msg_info_refresh>"
@@ -127,9 +133,8 @@ class mssr(basetext):
                     # 继续
                     pass
                 elif t == 3:
-                    gobject.baseobject.displayinfomessage(
-                        _TR("已暂停"), "<msg_info_refresh>"
-                    )
+                    # 暂停
+                    pass
 
     def gettextonce(self):
         return self.curr

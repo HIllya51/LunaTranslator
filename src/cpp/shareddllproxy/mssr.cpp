@@ -122,7 +122,7 @@ int mssr(int argc, wchar_t *argv[])
     try
     {
         std::shared_ptr<AudioConfig> audioConfig;
-
+        CComPtr<CLoopbackCapture> capture;
         // Creates a push stream
         std::shared_ptr<PushAudioInputStream> pushStream;
         if (wcscmp(argv[5], L"in") == 0)
@@ -135,12 +135,10 @@ int mssr(int argc, wchar_t *argv[])
         }
         else if (wcscmp(argv[5], L"loopback") == 0)
         {
-            CComPtr<CLoopbackCapture> capture = new CLoopbackCapture{16000, 16, 1};
+            capture = new CLoopbackCapture{16000, 16, 1};
             if (!capture)
                 throw std::runtime_error("Not Support");
             pushStream = AudioInputStream::CreatePushStream();
-            if (FAILED(capture->StartCaptureAsync(GetCurrentProcessId(), false)))
-                throw std::runtime_error("Not Support");
             capture->OnDataCallback = [&](std::string &&data)
             {
                 pushStream->Write((uint8_t *)data.data(), data.size());
@@ -159,8 +157,13 @@ int mssr(int argc, wchar_t *argv[])
             recognitionEnd.Reset();
             WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
             recognizer->StartContinuousRecognitionAsync().wait();
+            if (capture)
+                if (FAILED(capture->StartCaptureAsync(GetCurrentProcessId(), false)))
+                    throw std::runtime_error("Not Support");
             WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
             // Stops recognition.
+            if (capture)
+                capture->StopCaptureAsync();
             recognizer->StopContinuousRecognitionAsync().get();
             WaitForSingleObject(recognitionEnd, INFINITE);
         } while (true);

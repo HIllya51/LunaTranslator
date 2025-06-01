@@ -324,6 +324,16 @@ def __srcofig(grids: list, self):
                 callback=lambda _: gobject.baseobject.textsource.init(),
             ),
             "",
+            getsmalllabel("刷新间隔"),
+            D_getspinbox(
+                0,
+                10,
+                globalconfig["sourcestatus2"]["mssr"],
+                "refreshinterval",
+                True,
+                0.1,
+            ),
+            "",
             getsmalllabel("音源"),
             D_getsimplecombobox(
                 ["麦克风", "环回录音"],
