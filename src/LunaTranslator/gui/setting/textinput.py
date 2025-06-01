@@ -303,6 +303,22 @@ def __srcofig(grids: list, self):
         except:
             continue
         paths.append(p)
+    if not paths:
+        dll = None
+        for _dir, _, __fs in os.walk("."):
+            for _f in __fs:
+                if _f == "Microsoft.CognitiveServices.Speech.core.dll":
+                    dll = _dir
+            base = os.path.basename(_dir)
+            if base.startswith("MicrosoftWindows.Speech."):
+                try:
+                    __vis.append(base.split(".")[2])
+                except:
+                    continue
+                paths.append(_dir)
+        paths = paths if dll else None
+    if not paths:
+        return
     __w = getboxwidget(
         [
             getsmalllabel("语言"),
@@ -438,8 +454,7 @@ def filetranslate(self):
             ),
         ],
     ]
-    if gobject.sys_ge_win_11:
-        __srcofig(grids, self)
+    __srcofig(grids, self)
     return grids
 
 

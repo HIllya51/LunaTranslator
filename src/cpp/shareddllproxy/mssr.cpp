@@ -27,7 +27,7 @@ int mssr(int argc, wchar_t *argv[])
 
     WCHAR env[65535];
     GetEnvironmentVariableW(L"PATH", env, 65535);
-    auto newenv = std::wstring(env) + L";" + syspath1 + L";" + syspath2;
+    auto newenv = std::wstring(env) + L";" + syspath1 + L";" + syspath2 + L";" + argv[6];
     SetEnvironmentVariableW(L"PATH", newenv.c_str());
 
     auto config = EmbeddedSpeechConfig::FromPath(WideStringToString(argv[4], CP_ACP));

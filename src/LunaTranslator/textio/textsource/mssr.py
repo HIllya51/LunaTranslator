@@ -23,20 +23,29 @@ class mssr(basetext):
                 path = NativeUtils.FindPackages("MicrosoftWindows.Speech.")[0][1]
                 globalconfig["sourcestatus2"]["mssr"]["path"] = path
         except:
-            gobject.baseobject.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
+            gobject.baseobject.displayinfomessage(
+                _TR("无可用语言"), "<msg_error_Origin>"
+            )
             return
-
+        dll = r"C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy"
+        if path.startswith(r"."):
+            for _dir, _, __fs in os.walk("."):
+                for _f in __fs:
+                    if _f == "Microsoft.CognitiveServices.Speech.core.dll":
+                        dll = os.path.abspath(_dir)
+                        break
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         notify = str(uuid.uuid4())
         self.notify = NativeUtils.SimpleCreateEvent(notify)
         self.engine = NativeUtils.AutoKillProcess(
-            'files/shareddllproxy64.exe mssr {} {} {} "{}" {}'.format(
+            'files/shareddllproxy64.exe mssr {} {} {} "{}" {} "{}"'.format(
                 pipename,
                 waitsignal,
                 notify,
                 path,
                 globalconfig["sourcestatus2"]["mssr"]["source"],
+                dll,
             )
         )
         windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
