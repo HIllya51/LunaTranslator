@@ -4,7 +4,7 @@
  
 ### 简体中文  | [English](README_en.md) | [Other Language](otherlang.md)
 
-### 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[![](https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge)](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。
+### 如果使用中遇到困难，可以查阅使用说明、观看[视频教程](https://space.bilibili.com/592120404/video)，也欢迎加入[![](https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge)](https://qm.qq.com/q/I5rr3uEpi2)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。
 
 ## 功能支持
 
@@ -15,6 +15,8 @@
 - **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
 
 - **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
+
+- **其他** 还支持**语音识别**和**文件翻译**
 
 #### 翻译器
 
@@ -42,9 +44,7 @@
 
 ## 支持作者
 
-软件完全免费且开源。但软件维护不易，开发和维护需要大量时间和精力。
-
-如果您感觉该软件对你有帮助，欢迎微信扫码赞助，您的支持将成为软件长期维护的助力。
+软件维护不易，如果您感觉该软件对你有帮助，欢迎微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
 
 <img src='../src/files/static/zan.jpg' style="height: 400px !important;">
 

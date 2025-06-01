@@ -4,7 +4,7 @@
 
 ### [简体中文](README.md) | English | [Other Language](otherlang.md) 
 
-### If you encounter any issues, please check the [User Manual](https://docs.lunatranslator.org/) or search for video tutorials created by community contributors. You're also welcome to join my [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB) or submit an [issue](https://github.com/HIllya51/LunaTranslator/issues) on GitHub to discuss with me.
+### If you encounter any difficulties while using the software, you can check the [User Guide](/), join our [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB), or open an [issue](https://github.com/HIllya51/LunaTranslator/issues) on [GitHub](https://github.com/HIllya51/LunaTranslator) to contact me.
 
 ## Feature Support
 
@@ -15,6 +15,8 @@
 - **OCR** supports **[offline OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** and **[online OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
 
 - **Clipboard** Supports retrieving text from the clipboard for translation and can also output extracted text to the clipboard.
+
+- **Other** also supports **speech recognition** and **file translation**
 
 #### Translator
 
@@ -42,9 +44,7 @@ Supports almost all conceivable translation engines, including:
 
 ## Sponsorship
 
-This software is completely free and open-source. However, maintaining software is not easy—development and upkeep require significant time and effort.
-
-If you find this software helpful, we'd be honored if you could become a [sponsor](https://patreon.com/HIllya51). Your support will be the driving force behind the software's long-term maintenance.
+Software maintenance is not easy. If you find this software helpful, please consider becoming my [sponsor](https://patreon.com/HIllya51). Your support will be a driving force for the long-term maintenance of the software. Thank you~  
 
 ## Open Source License
 
