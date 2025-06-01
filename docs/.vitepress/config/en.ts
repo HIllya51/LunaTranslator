@@ -81,6 +81,8 @@ export const en = defineConfig({
                     { text: 'Tool Buttons', link: '/en/alltoolbuttons' },
                     { text: 'Shortcut Keys', link: '/en/fastkeys' },
                     { text: 'Network Service', link: '/en/apiservice' },
+                    { text: 'Speech Recognition', link: '/en/sr' },
+
                 ]
             }
         ]

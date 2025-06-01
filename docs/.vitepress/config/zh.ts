@@ -142,6 +142,7 @@ export const zh = defineConfig({
                     { text: '工具按钮', link: '/zh/alltoolbuttons' },
                     { text: '快捷按键', link: '/zh/fastkeys' },
                     { text: '网络服务', link: '/zh/apiservice' },
+                    { text: '语音识别', link: '/zh/sr' },
                 ]
             }
         ]

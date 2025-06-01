@@ -124,6 +124,8 @@ export const vi = defineConfig({
                   { text: 'Nút công cụ', link: '/vi/alltoolbuttons' },
                   { text: 'Phím tắt', link: '/vi/fastkeys' },
                   { text: 'Dịch vụ mạng', link: '/vi/apiservice' },
+                  { text: 'Nhận dạng giọng nói', link: '/vi/sr' },
+
               ]
           }
       ]
