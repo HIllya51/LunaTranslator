@@ -16,6 +16,7 @@ int atlaswmain(int argc, wchar_t *argv[]);
 #else
 int SnippingTool(int argc, wchar_t *argv[]);
 int msnaturalvoice(int argc, wchar_t *argv[]);
+int mssr(int argc, wchar_t *argv[]);
 #endif // !_WIN64
 
 void listprocessmodule_1(std::ofstream &of, DWORD processPID)
@@ -72,6 +73,7 @@ int wmain(int argc, wchar_t *argv[])
         {L"eztrans", eztrans},
         {L"atlaswmain", atlaswmain},
 #else
+        {L"mssr", mssr},
         {L"msnaturalvoice", msnaturalvoice},
         {L"SnippingTool", SnippingTool},
 #endif // !_WIN64

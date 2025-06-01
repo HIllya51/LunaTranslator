@@ -26,13 +26,25 @@ export default {
             document.querySelectorAll('.downloadlink').forEach((e) => {
                 e.target = '_blank'
                 e.addEventListener('click', async function (_) {
-                    const response = await fetch(e.href);
-                    if (!response.ok) {
-                        return
-                    }
-                    window.open(`/${window.localStorage.currentlang}/support.html`, '_blank')
+                    window.location.href = `/${window.localStorage.currentlang}/support.html`
                 });
             })
+            let timeout = 0;
+            if (window.location.href.endsWith('support.html')) {
+                if (window.localStorage.currentlang != 'zh') {
+                    timeout = setTimeout(
+                        () => {
+                            window.location.href = 'https://www.patreon.com/hillya51'
+                        }, 8000
+                    )
+                }
+            }
+            else {
+                if (timeout) {
+                    timeout = 0
+                    clearTimeout(timeout)
+                }
+            }
             if (!window.location.hostname.startsWith('docs')) return;
             ['', 'image.'].forEach(
                 (pre) => {

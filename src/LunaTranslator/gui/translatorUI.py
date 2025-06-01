@@ -1498,6 +1498,8 @@ class TranslatorWindow(resizableframeless):
     def changeTranslateMode(self):
         globalconfig["autorun"] = not globalconfig["autorun"]
         self.refreshtoolicon()
+        if gobject.baseobject.textsource:
+            gobject.baseobject.textsource.runornot(globalconfig["autorun"])
 
     def changetoolslockstateEx(self):
         globalconfig["locktoolsEx"] = True

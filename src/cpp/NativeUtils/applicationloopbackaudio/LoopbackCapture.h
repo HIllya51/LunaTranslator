@@ -19,6 +19,8 @@
 class CLoopbackCapture : public ComImpl<IActivateAudioInterfaceCompletionHandler, IAgileObject>
 {
 public:
+    CLoopbackCapture();
+    CLoopbackCapture(int nSamplesPerSec, int wBitsPerSample, int nChannels);
     ~CLoopbackCapture() override;
     HRESULT StartCaptureAsync(DWORD processId, bool includeProcessTree);
     HRESULT StopCaptureAsync();
@@ -33,6 +35,8 @@ public:
     (IActivateAudioInterfaceAsyncOperation *operation);
 
     std::string buffer;
+    std::function<void(std::string &&)> OnDataCallback;
+    WAVEFORMATEX m_CaptureFormat{};
 
 private:
     // NB: All states >= Initialized will allow some methods
@@ -64,7 +68,6 @@ private:
     HRESULT SetDeviceStateErrorIfFailed(HRESULT hr);
 
     CComPtr<IAudioClient> m_AudioClient;
-    WAVEFORMATEX m_CaptureFormat{};
     UINT32 m_BufferFrames = 0;
     CComPtr<IAudioCaptureClient> m_AudioCaptureClient;
     CComPtr<IMFAsyncResult> m_SampleReadyAsyncResult;

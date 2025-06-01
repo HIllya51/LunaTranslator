@@ -1,8 +1,7 @@
 from language import Languages
 import json
 from translator.cdp_helper import cdp_helper
-import re, html, time
-from urllib.parse import quote
+import re, html
 from translator.basetranslator import basetrans
 
 

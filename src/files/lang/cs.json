@@ -801,9 +801,15 @@
     "翻译接口": "Překladové rozhraní",
     "不使用的辞书": "Neusející slovník",
     "使用单词原型": "Použití archetypů slov",
-    "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "Pokud máte pocit, že je pro vás tento software užitečný, uvítáme, když se stanete mým [sponzorem](https://patreon.com/HIllya51). Vaše podpora bude hnací silou pro dlouhodobou údržbu softwaru.",
-    "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "Software je zcela zdarma a [open source](https://github.com/HIllya51/LunaTranslator). Údržba softwaru však není snadná a její vývoj a údržba vyžaduje spoustu času a úsilí.",
-    "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Pokud narazíte na potíže s používáním, můžete se podívat na [Pokyny](/), nebo vyhledat nějaké video tutoriály vytvořené nadšenými lidmi, nebo vítejte, abyste se připojili k [Discord](https://discord.com/invite/ErtDwVeAbB) a iniciovali [problém](https://github.com/HIllya51/LunaTranslator/issues) a komunikovali se mnou.",
     "优化缓存命中": "Optimalizace přístupů do mezipaměti",
-    "正在加载可用GPU": "Načítání dostupných GPU"
+    "正在加载可用GPU": "Načítání dostupných GPU",
+    "正在加载语音识别模型": "Načtení modelu rozpoznávání řeči",
+    "加载完毕": "Naložený",
+    "语音识别": "Rozpoznávání řeči",
+    "音源": "Zdroj zvuku",
+    "环回录音": "Záznam ve zpětné smyčce",
+    "已暂停": "Pozastaveno",
+    "麦克风": "Mikrofon",
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Pokud narazíte na potíže při používání, můžete nahlédnout do [návodu k použití](/), nebo se připojit na [Discord](https://discord.com/invite/ErtDwVeAbB) a vytvořit [issue](https://github.com/HIllya51/LunaTranslator/issues) na [Githubu](https://github.com/HIllya51/LunaTranslator), kde se mnou můžete komunikovat.",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "Údržba softwaru není snadná. Pokud vám tento software pomáhá, budu rád, když se stanete mým [sponzorem](https://patreon.com/HIllya51). Vaše podpora pomůže udržovat software dlouhodobě. Děkuji!"
 }

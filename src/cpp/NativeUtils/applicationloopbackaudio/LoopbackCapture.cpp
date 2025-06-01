@@ -72,6 +72,29 @@ HRESULT CLoopbackCapture::ActivateAudioInterface(DWORD processId, bool includePr
 //  Callback implementation of ActivateAudioInterfaceAsync function.  This will be called on MTA thread
 //  when results of the activation are available.
 //
+
+CLoopbackCapture::CLoopbackCapture()
+{
+    // The app can also call m_AudioClient->GetMixFormat instead to get the capture format.
+    // 16 - bit PCM format.
+    m_CaptureFormat.wFormatTag = WAVE_FORMAT_PCM;
+    m_CaptureFormat.nChannels = 2;
+    m_CaptureFormat.nSamplesPerSec = 44100;
+    m_CaptureFormat.wBitsPerSample = 16;
+    m_CaptureFormat.nBlockAlign = m_CaptureFormat.nChannels * m_CaptureFormat.wBitsPerSample / BITS_PER_BYTE;
+    m_CaptureFormat.nAvgBytesPerSec = m_CaptureFormat.nSamplesPerSec * m_CaptureFormat.nBlockAlign;
+}
+CLoopbackCapture::CLoopbackCapture(int nSamplesPerSec, int wBitsPerSample, int nChannels)
+{
+    // The app can also call m_AudioClient->GetMixFormat instead to get the capture format.
+    // 16 - bit PCM format.
+    m_CaptureFormat.wFormatTag = WAVE_FORMAT_PCM;
+    m_CaptureFormat.nChannels = nChannels;
+    m_CaptureFormat.nSamplesPerSec = nSamplesPerSec;
+    m_CaptureFormat.wBitsPerSample = wBitsPerSample;
+    m_CaptureFormat.nBlockAlign = m_CaptureFormat.nChannels * m_CaptureFormat.wBitsPerSample / BITS_PER_BYTE;
+    m_CaptureFormat.nAvgBytesPerSec = m_CaptureFormat.nSamplesPerSec * m_CaptureFormat.nBlockAlign;
+}
 HRESULT CLoopbackCapture::ActivateCompleted(IActivateAudioInterfaceAsyncOperation *operation)
 {
     auto hr = [&]() -> HRESULT
@@ -84,15 +107,6 @@ HRESULT CLoopbackCapture::ActivateCompleted(IActivateAudioInterfaceAsyncOperatio
 
         // Get the pointer for the Audio Client
         CHECK_FAILURE(punkAudioInterface.QueryInterface(&m_AudioClient));
-
-        // The app can also call m_AudioClient->GetMixFormat instead to get the capture format.
-        // 16 - bit PCM format.
-        m_CaptureFormat.wFormatTag = WAVE_FORMAT_PCM;
-        m_CaptureFormat.nChannels = 2;
-        m_CaptureFormat.nSamplesPerSec = 44100;
-        m_CaptureFormat.wBitsPerSample = 16;
-        m_CaptureFormat.nBlockAlign = m_CaptureFormat.nChannels * m_CaptureFormat.wBitsPerSample / BITS_PER_BYTE;
-        m_CaptureFormat.nAvgBytesPerSec = m_CaptureFormat.nSamplesPerSec * m_CaptureFormat.nBlockAlign;
 
         // Initialize the AudioClient in Shared Mode with the user specified buffer
         CHECK_FAILURE(m_AudioClient->Initialize(AUDCLNT_SHAREMODE_SHARED,
@@ -115,7 +129,8 @@ HRESULT CLoopbackCapture::ActivateCompleted(IActivateAudioInterfaceAsyncOperatio
         CHECK_FAILURE(m_AudioClient->SetEventHandle(m_SampleReadyEvent));
 
         // Creates the WAV file.
-        CHECK_FAILURE(CreateWAVFile());
+        if (!OnDataCallback)
+            CHECK_FAILURE(CreateWAVFile());
 
         // Everything is ready.
         m_DeviceState = DeviceState::Initialized;
@@ -287,7 +302,7 @@ HRESULT CLoopbackCapture::FinishCaptureAsync()
 HRESULT CLoopbackCapture::OnFinishCapture(IMFAsyncResult *pResult)
 {
     // FixWAVHeader will set the DeviceStateStopped when all async tasks are complete
-    HRESULT hr = FixWAVHeader();
+    HRESULT hr = OnDataCallback ? S_OK : FixWAVHeader();
 
     m_DeviceState = DeviceState::Stopped;
 
@@ -382,7 +397,13 @@ HRESULT CLoopbackCapture::OnAudioSampleRequested()
         if (m_DeviceState != DeviceState::Stopping)
         {
             std::lock_guard _(bufferlock);
-            buffer += std::string((char *)Data, cbBytesToCapture);
+            auto _data = std::string((char *)Data, cbBytesToCapture);
+            if (!OnDataCallback)
+                buffer += _data;
+            else
+            {
+                OnDataCallback(std::move(_data));
+            }
         }
 
         // Release buffer back

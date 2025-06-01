@@ -40,6 +40,7 @@ from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext
 from textio.textsource.textsourcebase import basetext
 from textio.textsource.filetrans import filetrans
+from textio.textsource.mssr import mssr
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
 import functools, gobject
@@ -879,6 +880,7 @@ class MAINUI:
                 "copy": copyboard,
                 "texthook": texthook,
                 "filetrans": filetrans,
+                "mssr":mssr,
             }
             if use is None:
                 use = list(

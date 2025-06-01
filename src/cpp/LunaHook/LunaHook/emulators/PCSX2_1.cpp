@@ -492,6 +492,12 @@ namespace
         s = re::sub(s, LR"(\[(.*?)\*(.*?)\])", L"$1");
         buffer->fromWA(s);
     }
+    void SLPM66298(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "%[A-Z]+[0-9]*");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -499,6 +505,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // セパレイトハーツ (Separate Hearts)
+    {0x1F63320, {DIRECT_READ, 0, 0, 0, SLPM66298, "SLPM-66298"}},
     // アカイイト
     {0x136800, {0, PCSX2_REG_OFFSET(t0), 0, 0, FSLPM66136, "SLPM-65732"}},
     // Nana

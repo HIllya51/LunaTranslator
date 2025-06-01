@@ -801,9 +801,15 @@
     "翻译接口": "Çeviri arayüzü",
     "不使用的辞书": "Kullanılmamış sözlük",
     "使用单词原型": "Kelime arketiplerini kullanın",
-    "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "Bu yazılımın size yardımcı olduğunu düşünüyorsanız, [sponsorum](https://patreon.com/HIllya51) olabilirsiniz. Desteğiniz, yazılımın uzun vadeli bakımı için itici bir güç olacaktır.",
-    "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "Yazılım tamamen ücretsizdir ve [açık kaynak](https://github.com/HIllya51/LunaTranslator). Ancak yazılım bakımı kolay değildir ve geliştirilmesi ve bakımı çok zaman ve çaba gerektirir.",
-    "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Kullanımda zorluklarla karşılaşırsanız, [Talimatlar](/) kontrol edebilir veya hevesli insanlar tarafından hazırlanan bazı video eğitimlerini arayabilir veya benimle iletişim kurmak için [Discord](https://discord.com/invite/ErtDwVeAbB) katılmaya ve [sorun](https://github.com/HIllya51/LunaTranslator/issues) başlatmaya hoş geldiniz.",
     "优化缓存命中": "Önbellek isabetlerini optimize edin",
-    "正在加载可用GPU": "Mevcut GPU'ları yükleme"
+    "正在加载可用GPU": "Mevcut GPU'ları yükleme",
+    "正在加载语音识别模型": "Konuşma tanıma modeli yükleniyor",
+    "加载完毕": "Yüklü",
+    "语音识别": "Konuşma tanıma",
+    "音源": "Ses kaynağı",
+    "环回录音": "Geri döngü kaydı",
+    "已暂停": "Duraklatıldı",
+    "麦克风": "Mikrofon",
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Kullanım sırasında herhangi bir zorlukla karşılaşırsanız, [kullanım kılavuzuna](/), [Discord](https://discord.com/invite/ErtDwVeAbB) topluluğumuza katılmaya veya [Github](https://github.com/HIllya51/LunaTranslator) üzerinden bir [sorun oluşturarak](https://github.com/HIllya51/LunaTranslator/issues) benimle iletişime geçmeye davetlisiniz.",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "Yazılım bakımı kolay değil, eğer bu yazılımın size yardımcı olduğunu düşünüyorsanız, lütfen benim [sponsorum](https://patreon.com/HIllya51) olun. Desteğiniz, yazılımın uzun vadeli bakımına katkı sağlayacaktır. Teşekkürler~"
 }

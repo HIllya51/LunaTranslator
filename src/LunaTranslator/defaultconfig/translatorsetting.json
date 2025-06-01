@@ -42,19 +42,11 @@
 	"deepl_1": {
 		"args": {
 			"usewhich": 1,
-			"github": "https://github.com/OwO-Network/DeepLX/releases",
 			"api": "http://127.0.0.1:1188/translate",
 			"chromepath": "",
 			"debugport": 9222
 		},
 		"argstype": {
-			"github": {
-				"name": "DeepLX Github",
-				"type": "label",
-				"islink": true,
-				"refcombo": "usewhich",
-				"refcombo_i": 0
-			},
 			"api": {
 				"name": "DeepLX api",
 				"refcombo": "usewhich",

@@ -162,9 +162,6 @@ class filetrans(basetext):
 
         gobject.baseobject.settin_ui.progresssignal2.emit("", 0)
 
-    def __init__(self) -> None:
-        super(filetrans, self).__init__()
-
     def __query(self, origin):
         try:
             get = self.sqlwrite2.execute(

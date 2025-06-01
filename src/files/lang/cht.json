@@ -801,10 +801,15 @@
     "翻译接口": "翻譯接口",
     "不使用的辞书": "不使用的辭書",
     "使用单词原型": "使用單詞原型",
-    "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "如果您感覺該軟體對您有幫助，歡迎成為我的[贊助者](https://patreon.com/HIllya51)，您的支持將成為支持軟體長期維護的助力。",
-    "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "軟體完全免費且[開源](https://github.com/HIllya51/LunaTranslator)。 但軟體維護不易，開發和維護需要大量時間和精力。",
     "优化缓存命中": "優化緩存命中",
-    "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)/[QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "如果使用中遇到困難，可以查閱[使用說明](/)、觀看[我的B站視頻](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)/[QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2)、發起[issue](https://github.com/HIllya51/LunaTranslator/issues)來與我交流。",
-    "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "如果使用中遇到困難，可以查閱[使用說明]（/）、或搜索一些熱心人製作的視頻教程，也歡迎加入[Discord]（https://discord.com/invite/ErtDwVeAbB）、發起[issue]（https://github.com/HIllya51/LunaTranslator/issues）來與我交流。",
-    "正在加载可用GPU": "正在載入可用GPU"
+    "正在加载可用GPU": "正在載入可用GPU",
+    "正在加载语音识别模型": "正在載入語音辨識模型",
+    "加载完毕": "載入完畢",
+    "语音识别": "語音辨識",
+    "音源": "音源",
+    "环回录音": "環回錄音",
+    "已暂停": "已暫停",
+    "麦克风": "麥克風",
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "若使用時遇到困難，可查閱[使用說明](/)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、於[Github](https://github.com/HIllya51/LunaTranslator)發起[issue](https://github.com/HIllya51/LunaTranslator/issues)與我交流。",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "軟體維護不易，若您覺得此軟體對您有所幫助，歡迎成為我的[贊助者](https://patreon.com/HIllya51)，您的支持將成為軟體長期維護的動力，謝謝～"
 }

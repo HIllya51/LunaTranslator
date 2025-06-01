@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools
+import functools, NativeUtils
 import gobject, os
 from myutils.config import globalconfig, static_data
 from myutils.utils import dynamiclink
@@ -17,6 +17,7 @@ from gui.usefulwidget import (
     listediter,
     yuitsu_switch,
     D_getsimpleswitch,
+    getboxwidget,
     makesubtab_lazy,
     makescrollgrid,
     FocusFontCombo,
@@ -292,10 +293,76 @@ def createdownloadprogress(self):
     return downloadprogress
 
 
+def __srcofig(grids: list, self):
+    Speech = NativeUtils.FindPackages("MicrosoftWindows.Speech.")
+    __vis = []
+    paths = []
+    for _, p in Speech:
+        try:
+            __vis.append(_.split(".")[2])
+        except:
+            continue
+        paths.append(p)
+    __w = getboxwidget(
+        [
+            getsmalllabel("语言"),
+            D_getsimplecombobox(
+                __vis,
+                globalconfig["sourcestatus2"]["mssr"],
+                "path",
+                internal=paths,
+                callback=lambda _: gobject.baseobject.textsource.init(),
+            ),
+            "",
+            getsmalllabel("音源"),
+            D_getsimplecombobox(
+                ["麦克风", "环回录音"],
+                globalconfig["sourcestatus2"]["mssr"],
+                "source",
+                internal=["default", "loopback"],
+                callback=lambda _: gobject.baseobject.textsource.init(),
+            ),
+        ]
+    )
+    __w.setEnabled(globalconfig["sourcestatus2"]["mssr"]["use"])
+
+    __ = dict(
+        type="grid",
+        title="Windows_语音识别",
+        grid=[
+            [
+                getsmalllabel("使用"),
+                D_getsimpleswitch(
+                    globalconfig["sourcestatus2"]["mssr"],
+                    "use",
+                    name="mssr",
+                    parent=self,
+                    callback=functools.partial(
+                        yuitsu_switch,
+                        self,
+                        globalconfig["sourcestatus2"],
+                        "sourceswitchs",
+                        "mssr",
+                        lambda _, _2: (
+                            gobject.baseobject.starttextsource(_, _2),
+                            __w.setEnabled(_2),
+                        ),
+                    ),
+                    pair="sourceswitchs",
+                ),
+                __w,
+            ],
+        ],
+    )
+    grids.insert(0, [__])
+
+
 def filetranslate(self):
+
     grids = [
         [
             dict(
+                type="grid",
                 title="文件翻译",
                 grid=[
                     [
@@ -304,8 +371,9 @@ def filetranslate(self):
                             functools.partial(selectfile, self),
                             icon="fa.folder-open",
                         ),
+                        "",
+                        functools.partial(createdownloadprogress, self),
                     ],
-                    [functools.partial(createdownloadprogress, self)],
                 ],
             ),
         ],
@@ -370,6 +438,8 @@ def filetranslate(self):
             ),
         ],
     ]
+    if gobject.sys_ge_win_11:
+        __srcofig(grids, self)
     return grids
 
 

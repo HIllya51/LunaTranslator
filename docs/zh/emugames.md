@@ -833,6 +833,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66298 | セパレイトハーツ (Separate Hearts) |
 |  | SLPM-65732 | アカイイト |
 |  | SLPM-65914 | Nana |
 |  | SLPM-66045 | My Merry May with be |

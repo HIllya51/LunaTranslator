@@ -2,7 +2,8 @@ import sys, os
 
 os.chdir(os.path.dirname(__file__))
 sys.path.insert(0, "./LunaTranslator")
-from translator.microsoft import TS
+import importlib
+TS=importlib.import_module('translator.chatgpt-3rd-party').TS
 from language import Languages
 
 
@@ -55,20 +56,19 @@ if __name__ == "__main__":
         needpop = []
         for k in jsen:
             if k not in js:
-                if k.startswith("如果使用"):
-                    continue
                 needpop.append(k)
         print(kk, needpop)
         for k in needpop:
             jsen.pop(k)
         with open(f"./files/lang/{kk}", "w", encoding="utf8") as ff:
             ff.write(json.dumps(jsen, ensure_ascii=False, sort_keys=False, indent=4))
-        a = TS1("google")
+        a = TS1("chatgpt-3rd-party")
         for k in js:
 
             if k not in jsen or jsen[k] == "":
                 a.tgtlang_1 = Languages.fromcode(kk.split(".")[0])
-                jsen[k] = a.translate(k)
+                print(list(a.translate(k)))
+                jsen[k] = list(a.translate(k))[0]
                 print(k, jsen[k])
                 with open(f"./files/lang/{kk}", "w", encoding="utf8") as ff:
                     ff.write(

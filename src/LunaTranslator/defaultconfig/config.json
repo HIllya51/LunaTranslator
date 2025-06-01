@@ -1465,6 +1465,11 @@
     },
     "allowmulti": true,
     "sourcestatus2": {
+        "mssr": {
+            "path": "",
+            "source": "loopback",
+            "use": false
+        },
         "texthook": {
             "use": true
         },

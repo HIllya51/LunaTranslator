@@ -75,7 +75,9 @@ class SAPI:
             ret.append(ptr[:size])
 
         fp = CFUNCTYPE(None, POINTER(c_char), c_size_t)(_cb)
-        succ = _SAPI_Speak(escape(content), voiceid, int(rate), int(volume), int(pitch), fp)
+        succ = _SAPI_Speak(
+            escape(content), voiceid, int(rate), int(volume), int(pitch), fp
+        )
         if not succ:
             return None
         return ret[0]
@@ -725,7 +727,7 @@ _FindPackages.argtypes = (_FindPackages_CB, LPCWSTR)
 
 
 def FindPackages(checkid):
-    ret = []
+    ret: "list[tuple[str, str]]" = []
 
     def __cb(ret: list, name, path):
         ret.append((name, path))

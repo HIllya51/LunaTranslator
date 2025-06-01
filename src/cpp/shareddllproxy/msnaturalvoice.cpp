@@ -70,8 +70,7 @@ int msnaturalvoice(int argc, wchar_t *argv[])
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestSentenceBoundary, "true");
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestPunctuationBoundary, "false");
     config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), MS_TTS_KEY);
-    std::shared_ptr<Microsoft::CognitiveServices::Speech::SpeechSynthesizer> synthesizer;
-    synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
+    auto synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
 
     wchar_t text[10000];
     DWORD _;

@@ -801,9 +801,15 @@
     "翻译接口": "翻訳インターフェイス",
     "不使用的辞书": "使用されていない辞書",
     "使用单词原型": "単語の原型を使用する",
-    "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "このソフトウェアが役立つと感じた場合は、ぜひ私の[スポンサー](https://patreon.com/HIllya51)になってください。あなたのサポートは、ソフトウェアの長期的なメンテナンスを支える力となります。",
-    "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "ソフトウェアは完全に無料で、[オープンソース](https://github.com/HIllya51/LunaTranslator)です。 しかし、ソフトウェアのメンテナンスは簡単ではなく、開発やメンテナンスには多くの時間と労力がかかります。",
-    "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "使用に問題がある場合は、[手順](/)を確認するか、熱心な人々が作成したビデオチュートリアルを検索するか、[Discord](https://discord.com/invite/ErtDwVeAbB)に参加して[問題](https://github.com/HIllya51/LunaTranslator/issues)を開始して私とコミュニケーションをとることができます。",
     "优化缓存命中": "キャッシュヒットの最適化",
-    "正在加载可用GPU": "使用可能な GPU の読み込み"
+    "正在加载可用GPU": "使用可能な GPU の読み込み",
+    "正在加载语音识别模型": "音声認識モデルの読み込み",
+    "加载完毕": "ロード",
+    "语音识别": "音声認識",
+    "音源": "音源",
+    "环回录音": "ループバック録音",
+    "已暂停": "一時 停止",
+    "麦克风": "マイク",
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "使用中に問題が発生した場合は、[使用説明](/)、[Discord](https://discord.com/invite/ErtDwVeAbB)への参加、または[Github](https://github.com/HIllya51/LunaTranslator)で[issue](https://github.com/HIllya51/LunaTranslator/issues)を開いてご連絡ください。",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "ソフトウェアのメンテナンスは容易ではありません。もしこのソフトウェアが役に立ったと感じたら、ぜひ私の[スポンサー](https://patreon.com/HIllya51)になってください。あなたのサポートがソフトウェアの長期的なメンテナンスの力になります。ありがとうございます～"
 }

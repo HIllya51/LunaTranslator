@@ -49,7 +49,7 @@ class TS(basetrans):
         return gpt_dict_raw_text
 
     def _gpt_common_parse_context_2(
-        self, messages, context, contextnum, query, ja=False
+        self, messages, context, contextnum, query, ja=False, native=False
     ):
         msgs = []
         self._gpt_common_parse_context(msgs, context, contextnum, query)
@@ -61,7 +61,8 @@ class TS(basetrans):
                 messages.append(
                     {
                         "role": "user",
-                        "content": "将下面的日文文本翻译成中文：" + "\n".join(__ja),
+                        "content": ("" if native else "将下面的日文文本翻译成中文：")
+                        + "\n".join(__ja),
                     }
                 )
             messages.append({"role": "assistant", "content": "\n".join(__zh)})
@@ -131,16 +132,17 @@ class TS(basetrans):
             if __gptdict:
                 __gptdict += "\n"
             __msg = []
-            self._gpt_common_parse_context_2(__msg, self.context, contextnum, query)
+            self._gpt_common_parse_context_2(
+                __msg, self.context, contextnum, query, True, True
+            )
             content = (
-                (("历史翻译：" + __msg[0]["content"] + "\n") if __msg else "")
+                (("历史翻译：" + __msg[1]["content"] + "\n") if __msg else "")
                 + "参考以下术语表（可为空，格式为src->dst #备注）\n"
                 + __gptdict
                 + "根据以上术语表的对应关系和备注，结合历史剧情和上下文，将下面的文本从日文翻译成简体中文：\n"
                 + query
             )
             messages.append({"role": "user", "content": content})
-            print(json.dumps(messages, ensure_ascii=False, indent=4))
         return messages
 
     def send_request(self, messages, is_test=False, **kwargs):

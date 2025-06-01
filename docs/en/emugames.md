@@ -833,6 +833,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66298 | セパレイトハーツ (Separate Hearts) |
 |  | SLPM-65732 | アカイイト |
 |  | SLPM-65914 | Nana |
 |  | SLPM-66045 | My Merry May with be |

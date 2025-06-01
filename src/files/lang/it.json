@@ -801,9 +801,15 @@
     "翻译接口": "Interfaccia di traduzione",
     "不使用的辞书": "Dizionario non utilizzato",
     "使用单词原型": "Usa gli archetipi delle parole",
-    "如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为支持软件长期维护的助力。": "Se ritieni che questo software ti sia utile, sei invitato a diventare mio [sponsor](https://patreon.com/HIllya51). Il tuo supporto sarà una forza trainante per la manutenzione a lungo termine del software.",
-    "软件完全免费且[开源](https://github.com/HIllya51/LunaTranslator)。但软件维护不易，开发和维护需要大量时间和精力。": "Il software è completamente gratuito e [open source](https://github.com/HIllya51/LunaTranslator). Ma la manutenzione del software non è facile e richiede molto tempo e impegno per lo sviluppo e la manutenzione.",
-    "如果使用中遇到困难，可以查阅[使用说明](/)、或搜索一些热心人制作的视频教程，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Se incontri difficoltà nell'uso, puoi controllare le [Istruzioni](/), o cercare alcuni video tutorial realizzati da persone entusiaste, o benvenuto a unirti a [Discord](https://discord.com/invite/ErtDwVeAbB) e avviare [problema](https://github.com/HIllya51/LunaTranslator/issues) per comunicare con me.",
     "优化缓存命中": "Ottimizzare i riscontri nella cache",
-    "正在加载可用GPU": "Caricamento delle GPU disponibili"
+    "正在加载可用GPU": "Caricamento delle GPU disponibili",
+    "正在加载语音识别模型": "Caricamento del modello di riconoscimento vocale",
+    "加载完毕": "Caricato",
+    "语音识别": "Riconoscimento vocale",
+    "音源": "Sorgente sonora",
+    "环回录音": "Registrazione loopback",
+    "已暂停": "Pausa",
+    "麦克风": "Microfono",
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Se incontri difficoltà durante l'uso, puoi consultare le [istruzioni](/), unirti al [Discord](https://discord.com/invite/ErtDwVeAbB) o aprire un [issue](https://github.com/HIllya51/LunaTranslator/issues) su [Github](https://github.com/HIllya51/LunaTranslator) per comunicare con me.",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "La manutenzione del software non è semplice. Se ritieni che questo software ti sia utile, sei il benvenuto a diventare mio [sponsor](https://patreon.com/HIllya51). Il tuo sostegno sarà una spinta per il mantenimento a lungo termine del software. Grazie~"
 }

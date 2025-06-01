@@ -833,6 +833,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66298 | セパレイトハーツ (Separate Hearts) |
 |  | SLPM-65732 | アカイイト |
 |  | SLPM-65914 | Nana |
 |  | SLPM-66045 | My Merry May with be |
