@@ -1469,7 +1469,7 @@
             "path": "",
             "source": "loopback",
             "use": false,
-            "refreshinterval": 3
+            "refreshinterval": 1.5
         },
         "texthook": {
             "use": true
@@ -1879,7 +1879,7 @@
     "tgtlang4": "zh",
     "showatcenter": true,
     "ocr_auto_method_v2": "period",
-    "ocr_interval": 1,
+    "ocr_interval": 1.5,
     "ocr_trigger_delay": 0,
     "ocr_trigger_events": [
         {
