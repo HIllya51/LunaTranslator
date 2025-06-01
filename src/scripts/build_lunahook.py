@@ -67,7 +67,7 @@ elif sys.argv[1] == "build":
     )
     config += " -DBUILD_PLUGIN=OFF "
     if not core:
-        config += " -DBUILD_GUI=OFF "
+        config += " -DBUILD_GUI=ON "
 
     subprocess.run(
         f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
