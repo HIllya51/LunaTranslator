@@ -1878,8 +1878,8 @@
     "srclang4": "auto",
     "tgtlang4": "zh",
     "showatcenter": true,
-    "ocr_auto_method_v2": "analysis",
-    "ocr_interval": 5,
+    "ocr_auto_method_v2": "period",
+    "ocr_interval": 3,
     "ocr_trigger_delay": 0,
     "ocr_trigger_events": [
         {
