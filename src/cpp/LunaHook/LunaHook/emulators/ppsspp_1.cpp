@@ -897,6 +897,11 @@ namespace
         strReplace(s, "#n");
         buffer->from(s);
     }
+    void ULJM06286(TextBuffer *buffer, HookParam *hp)
+    {
+        ULJM06129(buffer, hp);
+        StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    }
     void FNPJH50247(TextBuffer *buffer, HookParam *hp)
     {
         static lru_cache<std::string> cache(3);
@@ -1464,6 +1469,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // アラビアンズ・ロスト //ULJM06104
     // MEMORIES OFF //ULJM05334
 
+    // 恋花デイズ
+    {0x883EA4C, {0, 0, 0, 0, ULJM06286, "ULJM06286"}},
     // 雨格子の館 PORTABLE 一柳和、最初の受難
     {0x8861058, {0, 4, 0, 0, ULJS00216, "ULJS00216"}},
     {0x8861044, {0, 4, 0, 0, ULJS00216_1, "ULJS00216"}},

@@ -25,18 +25,34 @@ class TTS(TTSbase):
             vals.append((0, token))
         return vals, names
 
+    def finddlldirectory(self):
+        dll = "Microsoft.CognitiveServices.Speech.extension.embedded.tts.dll"
+        checkdir = lambda d: d and os.path.isfile(os.path.join(d, dll))
+        dllp = r"C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizer"
+        if checkdir(dllp):
+            return dllp
+        dllp = "C:\\Windows\\SystemApps\\LKG\\MicrosoftWindows.LKG.SpeechRuntime_cw5n1h2txyewy"
+        if checkdir(dllp):
+            return dllp
+        for _dir, _, __fs in os.walk(r"C:\Windows\SystemApps"):
+            for _f in __fs:
+                if _f == dll:
+                    return os.path.abspath(_dir)
+
     def checkifnatural(self, voice):
         t, path = voice
         if t != 1:
             return
         if self.lastvoice == path:
             return
+        dllp = self.finddlldirectory()
+        print(dllp, path)
         exepath = os.path.join(os.getcwd(), "files/shareddllproxy64.exe")
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
-        cmd = '"{}" msnaturalvoice {} {} {} "{}"'.format(
-            exepath, pipename, waitsignal, mapname, path
+        cmd = '"{}" msnaturalvoice {} {} {} "{}" "{}"'.format(
+            exepath, pipename, waitsignal, mapname, path, dllp
         )
         self.engine = NativeUtils.AutoKillProcess(cmd)
 

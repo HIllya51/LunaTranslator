@@ -15,7 +15,7 @@ class mssr(basetext):
         windows.SetEvent(self.notify)
 
     def finddlldirectory(self):
-        dll = "Microsoft.CognitiveServices.Speech.core.dll"
+        dll = "Microsoft.CognitiveServices.Speech.extension.embedded.sr.dll"
         checkdir = lambda d: d and os.path.isfile(os.path.join(d, dll))
         dllp = r"C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\LiveCaptions"
         if checkdir(dllp):

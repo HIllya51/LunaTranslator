@@ -25,8 +25,10 @@ export default {
         const handleRouteChange = () => {
             document.querySelectorAll('.downloadlink').forEach((e) => {
                 e.target = '_blank'
-                e.addEventListener('click', async function (_) {
-                    window.location.href = `/${window.localStorage.currentlang}/support.html`
+                e.addEventListener('click', () => {
+                    setTimeout(() => {
+                        window.location.href = `/${window.localStorage.currentlang}/support.html`;
+                    }, 50);
                 });
             })
             let timeout = 0;

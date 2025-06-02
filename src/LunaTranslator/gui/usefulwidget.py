@@ -1145,9 +1145,10 @@ def D_getcolorbutton(parent, d, key, callback, alpha=False, tips=None):
 def yuitsu_switch(parent, configdict, dictobjectn, key, callback, checked):
     dictobject = getattr(parent, dictobjectn)
     if checked:
-        for k in dictobject:
+        for k in configdict:
             configdict[k]["use"] = k == key
-            dictobject[k].setChecked(k == key)
+            if k in dictobject:
+                dictobject[k].setChecked(k == key)
     if callback:
         callback(key, checked)
 

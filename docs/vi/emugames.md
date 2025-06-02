@@ -359,6 +359,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | ULJM06210 | Starry☆Sky～After Winter～Portable |
 |  | ULJM06104 | アラビアンズ・ロスト |
 |  | ULJM05334 | MEMORIES OFF |
+|  | ULJM06286 | 恋花デイズ |
 |  | ULJS00216 | 雨格子の館 PORTABLE 一柳和、最初の受難 |
 |  | ULJS00230 | 奈落の城 PORTABLE 一柳和、2度目の受難 |
 |  | NPJH50186 | 氷の墓標　一柳和、３度目の受難 |

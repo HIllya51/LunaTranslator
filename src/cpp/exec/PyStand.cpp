@@ -142,6 +142,7 @@ bool PyStand::LoadPython()
 #ifdef WIN10ABOVE
 	// win10版将runtime路径设为DLL搜索路径，优先使用自带的高级vcrt
 	//  这样，即使将主exe静态编译，也能加载runtime中的vcrt
+	SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
 	SetDllDirectoryW(runtime.c_str());
 #else
 	WCHAR env[65535];
