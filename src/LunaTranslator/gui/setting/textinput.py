@@ -333,15 +333,15 @@ def __srcofig(grids: list, self):
                 True,
                 0.1,
             ),
-            # "",
-            # getsmalllabel("音源"),
-            # D_getsimplecombobox(
-            #     ["环回录制", "麦克风"],
-            #     globalconfig["sourcestatus2"]["mssr"],
-            #     "source",
-            #     internal=["loopback", "in"],
-            #     callback=lambda _: gobject.baseobject.textsource.init(),
-            # ),
+            "",
+            getsmalllabel("音源"),
+            D_getsimplecombobox(
+                ["环回录制", "麦克风"],
+                globalconfig["sourcestatus2"]["mssr"],
+                "source",
+                internal=["loopback", "in"],
+                callback=lambda _: gobject.baseobject.textsource.init(),
+            ),
         ]
     )
     __w.setEnabled(globalconfig["sourcestatus2"]["mssr"]["use"])
