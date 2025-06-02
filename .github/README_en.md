@@ -16,7 +16,7 @@
 
 - **Clipboard** Supports retrieving text from the clipboard for translation and can also output extracted text to the clipboard.
 
-- **Other** also supports **speech recognition** and **file translation**
+- **Other** also supports **[speech recognition](https://docs.lunatranslator.org/sr.html)** and **file translation**
 
 #### Translator
 
