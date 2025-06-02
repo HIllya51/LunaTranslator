@@ -150,6 +150,14 @@ int mssr(int argc, wchar_t *argv[])
             // Creates a speech recognizer from stream input;
             audioConfig = AudioConfig::FromStreamInput(pushStream);
         }
+        else if (wcsstr(argv[5], L"in") == argv[5])
+        {
+            audioConfig = AudioConfig::FromMicrophoneInput(WideStringToString(argv[5] + 2));
+        }
+        else if (wcsstr(argv[5], L"out") == argv[5])
+        {
+            audioConfig = AudioConfig::FromSpeakerOutput(WideStringToString(argv[5] + 3));
+        }
         callback(true, 4);
         auto recognizer = create_recognizer(audioConfig, callback);
         callback(true, 1);
