@@ -1579,7 +1579,7 @@
             "is_gpt_like": true
         },
         "microsoft": {
-            "use": false,
+            "use": true,
             "color": "gray",
             "useproxy": false,
             "name": "microsoft"
@@ -1591,7 +1591,7 @@
             "name": "Azure"
         },
         "baidu": {
-            "use": true,
+            "use": false,
             "color": "#ff65db",
             "useproxy": false,
             "name": "百度"

@@ -194,6 +194,11 @@ class searchhookparam(LDialog):
             self.parent().findhookchecked()
         self.close()
 
+    def closeEvent(self, a0: QCloseEvent):
+        self.hide()
+        a0.ignore()
+        # return super().closeEvent(a0)
+
     def hex2str(self, h):
         byte_data = h
         hex_str = binascii.hexlify(byte_data).decode()
