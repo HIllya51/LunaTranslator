@@ -807,10 +807,10 @@
     "加载完毕": "Cargado",
     "语音识别": "Reconocimiento de voz",
     "音源": "Fuente de sonido",
-    "环回录音": "Grabación en bucle invertido",
     "麦克风": "Micrófono",
     "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Si encuentras dificultades al usarlo, puedes consultar el [manual de uso](/). También puedes unirte a nuestro [Discord](https://discord.com/invite/ErtDwVeAbB) o crear un [issue](https://github.com/HIllya51/LunaTranslator/issues) en [Github](https://github.com/HIllya51/LunaTranslator) para comunicarte conmigo.",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "El mantenimiento del software no es fácil. Si sientes que este software te ha sido útil, te invito a convertirte en mi [patrocinador](https://patreon.com/HIllya51). Tu apoyo será un impulso para el mantenimiento a largo plazo del software. ¡Gracias!",
     "刷新间隔": "intervalo de actualización",
-    "找不到运行时": "No se encuentra el tiempo de ejecución."
+    "找不到运行时": "No se encuentra el tiempo de ejecución.",
+    "环回录制": "Grabación de bucle"
 }

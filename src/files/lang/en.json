@@ -807,10 +807,10 @@
     "加载完毕": "Loaded",
     "语音识别": "Speech recognition",
     "音源": "Sound source",
-    "环回录音": "Loopback recording",
     "麦克风": "Microphone",
     "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "If you encounter any difficulties while using it, you can refer to the [User Guide](/). You're also welcome to join our [Discord](https://discord.com/invite/ErtDwVeAbB) or open an [issue](https://github.com/HIllya51/LunaTranslator/issues) on [Github](https://github.com/HIllya51/LunaTranslator) to discuss with me.",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "Software maintenance is not easy. If you find this software helpful, feel free to become my [sponsor](https://patreon.com/HIllya51). Your support will contribute to the long-term maintenance of the software. Thank you~",
     "刷新间隔": "Refresh Interval",
-    "找不到运行时": "Runtime not found"
+    "找不到运行时": "Runtime not found",
+    "环回录制": "Loopback Recording"
 }

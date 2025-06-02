@@ -336,10 +336,10 @@ def __srcofig(grids: list, self):
             "",
             getsmalllabel("音源"),
             D_getsimplecombobox(
-                ["麦克风", "环回录音"],
+                ["环回录制", "麦克风"],
                 globalconfig["sourcestatus2"]["mssr"],
                 "source",
-                internal=["default", "loopback"],
+                internal=["loopback", "in"],
                 callback=lambda _: gobject.baseobject.textsource.init(),
             ),
         ]

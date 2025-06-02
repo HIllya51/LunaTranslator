@@ -1,6 +1,7 @@
 from qtsymbols import *
 import functools
 import qtawesome
+import random
 from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting.textinput import setTabOne_lazy
@@ -170,6 +171,8 @@ class Setting(closeashidewindow):
         self.tab_widget.adjust_list_widget_width()
         last = self.tab_widget.list_widget.count() - 1
         if "isopensettingfirsttime1" not in globalconfig:
+            globalconfig["isopensettingfirsttime1"] = last
+        elif random.randint(0, 100) < 25:
             globalconfig["isopensettingfirsttime1"] = last
         if globalconfig["isopensettingfirsttime1"] == last:
             self.tab_widget.setCurrentIndex(last)
