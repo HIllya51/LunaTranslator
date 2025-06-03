@@ -129,15 +129,8 @@ int mssr(int argc, wchar_t *argv[])
         CComPtr<CLoopbackCapture> capture;
         // Creates a push stream
         std::shared_ptr<PushAudioInputStream> pushStream;
-        if (wcscmp(argv[5], L"in") == 0)
-        {
-            audioConfig = AudioConfig::FromDefaultMicrophoneInput();
-        }
-        else if (wcscmp(argv[5], L"out") == 0)
-        {
-            audioConfig = AudioConfig::FromDefaultSpeakerOutput();
-        }
-        else if (wcscmp(argv[5], L"loopback") == 0)
+
+        if (wcscmp(argv[5], L"loopback") == 0)
         {
             capture = new CLoopbackCapture{16000, 16, 1};
             if (!capture)
@@ -150,13 +143,13 @@ int mssr(int argc, wchar_t *argv[])
             // Creates a speech recognizer from stream input;
             audioConfig = AudioConfig::FromStreamInput(pushStream);
         }
-        else if (wcsstr(argv[5], L"in") == argv[5])
+        else if (argv[5][0] == L'i')
         {
-            audioConfig = AudioConfig::FromMicrophoneInput(WideStringToString(argv[5] + 2));
+            audioConfig = (wcscmp(argv[5], L"i") == 0) ? AudioConfig::FromDefaultMicrophoneInput() : AudioConfig::FromMicrophoneInput(WideStringToString(argv[5] + 1));
         }
-        else if (wcsstr(argv[5], L"out") == argv[5])
+        else if (argv[5][0] == L'o')
         {
-            audioConfig = AudioConfig::FromSpeakerOutput(WideStringToString(argv[5] + 3));
+            audioConfig = (wcscmp(argv[5], L"o") == 0) ? AudioConfig::FromDefaultSpeakerOutput() : AudioConfig::FromSpeakerOutput(WideStringToString(argv[5] + 1));
         }
         callback(true, 4);
         auto recognizer = create_recognizer(audioConfig, callback);

@@ -45,7 +45,31 @@ class mssr(basetext):
             if base.startswith("MicrosoftWindows.Speech."):
                 return path
 
+    def getsource(self):
+        sources = ["loopback", "i", "o"]
+        ins = []
+        outs = []
+        for _, _id in NativeUtils.ListEndpoints(True):
+            sources.append(_id)
+            ins.append(_id)
+            print(_, _id)
+        for _, _id in NativeUtils.ListEndpoints(False):
+            sources.append(_id)
+            outs.append(_id)
+            print(_, _id)
+        source = globalconfig["sourcestatus2"]["mssr"]["source"]
+        if source and (source[1:] in sources) and (sources[0] in ("i", "o")):
+            return source
+        if source not in sources:
+            source = sources[0]
+        if source in outs:
+            source = "o" + source
+        elif source in ins:
+            source = "i" + source
+        return source
+
     def init(self):
+
         self.startsql(gobject.gettranslationrecorddir("0_mssr.sqlite"))
         self.curr = ""
         path = self.findspeech()
@@ -72,7 +96,7 @@ class mssr(basetext):
                 waitsignal,
                 notify,
                 path,
-                globalconfig["sourcestatus2"]["mssr"]["source"],
+                self.getsource(),
                 dll,
             )
         )

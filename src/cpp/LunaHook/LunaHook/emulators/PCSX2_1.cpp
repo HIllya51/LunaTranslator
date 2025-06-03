@@ -128,6 +128,30 @@ namespace
         }
         last = s;
     }
+    void SLPS25276(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        strReplace(s, "\\k");
+        strReplace(s, "\\P");
+        auto __ = [](std::string ss)
+        {
+            if (startWith(ss, " "))
+                ss = ss.substr(1);
+            if (endWith(ss, "\n"))
+                ss = ss.substr(0, ss.size() - 1);
+            return ss;
+        };
+        if (startWith(s, last))
+        {
+            buffer->from(__(s.substr(last.size())));
+        }
+        else
+        {
+            buffer->from(__(s));
+        }
+        last = s;
+    }
     void SLPS25662(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -498,6 +522,27 @@ namespace
         s = re::sub(s, "%[A-Z]+[0-9]*");
         buffer->from(s);
     }
+    void SLPM65684(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L".");
+        strReplace(s, L"T0");
+        buffer->fromWA(s);
+    }
+    void SLPM66247(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        strReplace(s, "\x81\x40");
+        strReplace(s, "\n");
+        std::string name = (char *)emu_addr(0x19EB073);
+        if (name.size())
+        {
+            strReplace(name, "#r");
+            s = name + s;
+        }
+
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -505,6 +550,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 夏夢夜話
+    {0x7689BC, {DIRECT_READ, 0, 0, 0, SLPS25276, "SLPS-25276"}},
+    // マイネリーベ 優美なる記憶
+    {0x19BF230, {DIRECT_READ, 0, 0, 0, SLPM65684, "SLPM-65684"}},
+    // マイネリーベⅡ ～誇りと正義と愛～
+    {0x1FFD0DC, {DIRECT_READ, 0, 0, 0, SLPM66247, "SLPM-66247"}},
     // セパレイトハーツ (Separate Hearts)
     {0x1F63320, {DIRECT_READ, 0, 0, 0, SLPM66298, "SLPM-66298"}},
     // アカイイト

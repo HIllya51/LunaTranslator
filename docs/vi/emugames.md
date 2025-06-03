@@ -834,6 +834,9 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25276 | 夏夢夜話 |
+|  | SLPM-65684 | マイネリーベ 優美なる記憶 |
+|  | SLPM-66247 | マイネリーベⅡ ～誇りと正義と愛～ |
 |  | SLPM-66298 | セパレイトハーツ (Separate Hearts) |
 |  | SLPM-65732 | アカイイト |
 |  | SLPM-65914 | Nana |

@@ -747,3 +747,18 @@ def Markdown2Html(md: str):
     if ret:
         return ret[0].decode("utf8")
     return md
+
+
+_ListEndpoints = utilsdll.ListEndpoints
+_ListEndpoints_CB = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
+_ListEndpoints.argtypes = (c_bool, _ListEndpoints_CB)
+
+
+def ListEndpoints(isinput: bool):
+    ret = []
+
+    def __(name, _id):
+        ret.append((name, _id))
+
+    _ListEndpoints(isinput, _ListEndpoints_CB(__))
+    return ret

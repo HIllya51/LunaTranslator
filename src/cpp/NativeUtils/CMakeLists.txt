@@ -31,7 +31,8 @@ set(webview2_src webview2/webview2.cpp webview2/webview2_impl.cpp)
 set(loopback_src applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp)
 
 
-add_library(NativeUtils SHARED 
+add_library(NativeUtils SHARED
+    audiodevice.cpp
     globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp version.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp appx.cpp
     ${loopback_src} ${winrt_src} ${mshtml_src} ${webview2_src} ${versioninfo}
 )

@@ -12,6 +12,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getIconButton,
+    SuperCombo,
     getIconButton,
     makegrid,
     listediter,
@@ -293,6 +294,32 @@ def createdownloadprogress(self):
     return downloadprogress
 
 
+def loadmssrsource(self):
+    curr = globalconfig["sourcestatus2"]["mssr"]["source"]
+    sources = ["loopback"]
+    vis = ["环回录制"]
+    if 1:
+        sources.append("i")
+        vis.append("麦克风")
+    else:
+        sources.append("i")
+        vis.append("DefaultMicrophoneInput")
+        for _, _id in NativeUtils.ListEndpoints(True):
+            sources.append(_id)
+            vis.append("[[" + _ + "]]")
+        sources.append("o")
+        vis.append("DefaultSpeakerOutput")
+        for _, _id in NativeUtils.ListEndpoints(False):
+            sources.append(_id)
+            vis.append("[[" + _ + "]]")
+    mssrsource: SuperCombo = self.mssrsource
+    mssrsource.blockSignals(True)
+    mssrsource.clear()
+    mssrsource.addItems(vis, internals=sources)
+    mssrsource.setCurrentData(curr)
+    mssrsource.blockSignals(False)
+
+
 def __srcofig(grids: list, self):
     Speech = NativeUtils.FindPackages("MicrosoftWindows.Speech.")
     __vis = []
@@ -313,6 +340,15 @@ def __srcofig(grids: list, self):
             paths.append(_dir)
     if not paths:
         return
+
+    self.mssrsource = D_getsimplecombobox(
+        [""],
+        globalconfig["sourcestatus2"]["mssr"],
+        "source",
+        internal=[0],
+        callback=lambda _: gobject.baseobject.textsource.init(),
+    )()
+    loadmssrsource(self)
     __w = getboxwidget(
         [
             getsmalllabel("语言"),
@@ -335,13 +371,7 @@ def __srcofig(grids: list, self):
             ),
             "",
             getsmalllabel("音源"),
-            D_getsimplecombobox(
-                ["环回录制", "麦克风"],
-                globalconfig["sourcestatus2"]["mssr"],
-                "source",
-                internal=["loopback", "in"],
-                callback=lambda _: gobject.baseobject.textsource.init(),
-            ),
+            self.mssrsource,
         ]
     )
     __w.setEnabled(globalconfig["sourcestatus2"]["mssr"]["use"])
@@ -364,6 +394,7 @@ def __srcofig(grids: list, self):
                         "sourceswitchs",
                         "mssr",
                         lambda _, _2: (
+                            loadmssrsource(self),
                             gobject.baseobject.starttextsource(_, _2),
                             __w.setEnabled(_2),
                         ),
