@@ -288,6 +288,65 @@ def changeUIlanguage(_):
         pass
 
 
+def validator(createproxyedit_check: QLabel, text):
+    regExp = re.compile(r"^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3}):(\d{1,5})$")
+    mch = regExp.match(text)
+    for _ in (1,):
+
+        if not mch:
+            break
+        _1, _2, _3, _4, _p = [int(_) for _ in mch.groups()]
+        if _p > 65535:
+            break
+        if any([_ > 255 for _ in [_1, _2, _3, _4]]):
+            break
+        globalconfig["proxy"] = text
+        createproxyedit_check.hide()
+        return
+    if not createproxyedit_check.isVisible():
+        createproxyedit_check.show()
+    createproxyedit_check.setText("Invalid")
+
+
+def proxyusage(self):
+    w = NQGroupBox(self)
+    l = QHBoxLayout(w)
+    w1 = QWidget()
+    hbox = QHBoxLayout(w1)
+    hbox.setContentsMargins(0, 0, 0, 0)
+    l.addWidget(LLabel("使用代理"))
+    l.addWidget(w1)
+    w2 = QWidget()
+    w2.setEnabled(globalconfig["useproxy"])
+    switch1 = D_getsimpleswitch(globalconfig, "useproxy", callback=w2.setEnabled)()
+    hbox.addWidget(switch1)
+    hbox.addWidget(w2)
+    hbox2 = QHBoxLayout(w2)
+    hbox2.setContentsMargins(0, 0, 0, 0)
+    hbox2.addWidget(QLabel())
+    hbox2.addWidget(LLabel("自动获取系统代理") )
+
+    w3 = QWidget()
+    hbox3 = QHBoxLayout(w3)
+    hbox3.setContentsMargins(0, 0, 0, 0)
+    w3.setEnabled(not globalconfig["usesysproxy"])
+
+    switch2 = D_getsimpleswitch(
+        globalconfig, "usesysproxy", callback=lambda _: w3.setEnabled(not _)
+    )()
+    hbox2.addWidget(switch2)
+    hbox2.addWidget(w3)
+    hbox3.addWidget(QLabel())
+    hbox3.addWidget(LLabel("手动设置代理") )
+    proxy = QLineEdit(globalconfig["proxy"])
+    check = QLabel()
+    validator(check, globalconfig["proxy"])
+    proxy.textChanged.connect(functools.partial(validator, check))
+    hbox3.addWidget(proxy)
+    hbox3.addWidget(check)
+    return w
+
+
 def updatexx(self):
     version = NativeUtils.QueryVersion(getcurrexe())
     if version is None:
@@ -468,7 +527,6 @@ def setTab_about(self, basel):
 
     makescrollgrid(
         [
-            [functools.partial(updatexx, self)],
             [
                 dict(
                     type="grid",
@@ -487,6 +545,8 @@ def setTab_about(self, basel):
                     ],
                 ),
             ],
+            [functools.partial(updatexx, self)],
+            [functools.partial(proxyusage, self)],
             [aboutwidget],
             [
                 functools.partial(

@@ -3310,12 +3310,14 @@ class VisLFormLayout(VisGridLayout):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setAlignment(Qt.AlignmentFlag.AlignTop)
+        self.setColumnStretch(0, 0)
+        self.setColumnStretch(1, 1)
 
     def addRow(self, label_or_field, field=None):
         row_index = self.rowCount()
         if isinstance(label_or_field, (QWidget, str)) or not label_or_field:
             if isinstance(label_or_field, str):
-                lb = getsmalllabel(label_or_field)()
+                lb = LLabel(label_or_field)
                 super().addWidget(lb, row_index, 0, 1, 1)
             elif isinstance(label_or_field, QWidget):
                 super().addWidget(label_or_field, row_index, 0, 1, 1 if field else 2)
@@ -3432,8 +3434,14 @@ def createfoldgrid(
 
 
 class SClickableLabel(QLabel):
+    beforeEnter = pyqtSignal()
+
     def __init__(self, *argc, **kw):
         super().__init__(*argc, **kw)
+        self.setClickable(True)
+
+    def setClickable(self, b: bool):
+        self._Clickable = b
         self.setStyleSheet(
             r"""QLabel{
                 background:transparent
@@ -3442,13 +3450,24 @@ class SClickableLabel(QLabel):
                 background-color: rgba(128,128,128,0.3)
             }"""
             ""
+            if b
+            else """QLabel{
+                background:transparent
+            }"""
         )
 
+    def enterEvent(self, event):
+        self.beforeEnter.emit()
+        return super().enterEvent(event)
+
     def mouseReleaseEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton and self.rect().contains(
-            event.pos()
+        if (
+            self._Clickable
+            and event.button() == Qt.MouseButton.LeftButton
+            and self.rect().contains(event.pos())
         ):
             self.clicked.emit()
+        super().mouseReleaseEvent(event)
 
     clicked = pyqtSignal()
 

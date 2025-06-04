@@ -158,6 +158,12 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
     menu = QMenu(qlabel)
     editname = LAction("重命名", menu)
     menu.addAction(editname)
+    useproxy = LAction("使用代理", menu)
+    useproxy.setCheckable(True)
+    if globalconfig["useproxy"] and globalconfig["cishu"][apiuid].get("type") not in ("offline",):
+        menu.addSeparator()
+        menu.addAction(useproxy)
+        useproxy.setChecked(globalconfig["cishu"][apiuid].get("useproxy", True))
     action = menu.exec(QCursor.pos())
 
     if action == editname:
@@ -188,6 +194,9 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
             ],
             exec_=True,
         )
+
+    elif action == useproxy:
+        globalconfig["cishu"][apiuid]["useproxy"] = useproxy.isChecked()
 
 
 def getrenameablellabel(uid, self):

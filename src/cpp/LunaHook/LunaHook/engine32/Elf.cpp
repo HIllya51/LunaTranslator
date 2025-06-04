@@ -129,10 +129,7 @@ bool InsertElfHook()
   // reladdr = 0x2f9b0; // 愛姉妹4
   // reladdr = 0x2f0f0; // SEXヂ�ーチャー剛史 trial
   if (!addr)
-  {
-    ConsoleOutput("Elf: pattern not found");
     return false;
-  }
 
   enum : BYTE
   {

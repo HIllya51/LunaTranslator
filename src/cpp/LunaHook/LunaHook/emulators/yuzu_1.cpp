@@ -2514,6 +2514,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // LoveR Kiss
+    {0x80184F60, {CODEC_UTF8, 0, 0, 0, 0, 0x01007250089F8000ull, "1.0.0"}},
     // あやかしごはん ～おおもりっ！～ for S
     {0x83470EA0, {CODEC_UTF16, 1, 0x14, 0, F010042300C4F6000_1, 0x01001A4021670000ull, "1.0.0"}},
     {0x83470ED0, {CODEC_UTF16, 1, 0x14, 0, F010042300C4F6000_1, 0x01001A4021670000ull, "1.0.2"}},

@@ -12,6 +12,7 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getsimpleswitch,
     clearlayout,
+    ClickableLabel,
     getboxlayout,
     TableViewW,
     saveposwindow,
@@ -28,7 +29,7 @@ from gui.usefulwidget import (
 from traceback import print_exc
 from myutils.keycode import vkcode_map
 import gobject, qtawesome, importlib
-from gui.dynalang import LFormLayout, LDialog, LAction
+from gui.dynalang import LFormLayout, LDialog, LAction, LLabel
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton
 from gui.setting.about import offlinelinks
@@ -145,6 +146,34 @@ def safeloadfunction(p, args, file, func, name):
         print_exc()
 
 
+def checkclickable(name: ClickableLabel):
+    name.setClickable(globalconfig["useproxy"])
+
+
+def renameapi(qlabel: QLabel, apiuid):
+    menu = QMenu(qlabel)
+    useproxy = LAction("使用代理", menu)
+    useproxy.setCheckable(True)
+
+    menu.addAction(useproxy)
+    useproxy.setChecked(globalconfig["ocr"][apiuid].get("useproxy", True))
+    pos = QCursor.pos()
+    action = menu.exec(pos)
+
+    if action == useproxy:
+        globalconfig["ocr"][apiuid]["useproxy"] = useproxy.isChecked()
+
+
+def getrenameablellabel(uid):
+    if globalconfig["ocr"][uid].get("type") in ("offline",):
+        return LLabel(globalconfig["ocr"][uid]["name"])
+    name = ClickableLabel(globalconfig["ocr"][uid]["name"])
+    fn = functools.partial(renameapi, name, uid)
+    name.clicked.connect(fn)
+    name.beforeEnter.connect(functools.partial(checkclickable, name))
+    return name
+
+
 def initgridsources(self, names):
     line = []
     i = 0
@@ -182,7 +211,7 @@ def initgridsources(self, names):
             _3 = ""
 
         line += [
-            globalconfig["ocr"][name]["name"],
+            functools.partial(getrenameablellabel, name),
             D_getsimpleswitch(
                 globalconfig["ocr"][name],
                 "use",

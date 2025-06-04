@@ -9,6 +9,7 @@ from gui.inputdialog import (
     autoinitdialog,
     yuyinzhidingsetting,
 )
+from gui.dynalang import LAction, LLabel
 from tts.basettsclass import TTSbase
 from gui.setting.about import offlinelinks
 from gui.usefulwidget import (
@@ -20,6 +21,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     getboxlayout,
     getboxwidget,
+    ClickableLabel,
     check_grid_append,
 )
 
@@ -127,6 +129,34 @@ def setTab5(self, l):
     makescrollgrid(setTab5lz(self), l)
 
 
+def renameapi(qlabel: QLabel, apiuid):
+    menu = QMenu(qlabel)
+    useproxy = LAction("使用代理", menu)
+    useproxy.setCheckable(True)
+
+    menu.addAction(useproxy)
+    useproxy.setChecked(globalconfig["reader"][apiuid].get("useproxy", True))
+    pos = QCursor.pos()
+    action = menu.exec(pos)
+
+    if action == useproxy:
+        globalconfig["reader"][apiuid]["useproxy"] = useproxy.isChecked()
+
+
+def checkclickable(name: ClickableLabel):
+    name.setClickable(globalconfig["useproxy"])
+
+
+def getrenameablellabel(uid):
+    if globalconfig["reader"][uid].get("type") in ("offline",):
+        return LLabel(globalconfig["reader"][uid]["name"])
+    name = ClickableLabel(globalconfig["reader"][uid]["name"])
+    fn = functools.partial(renameapi, name, uid)
+    name.beforeEnter.connect(functools.partial(checkclickable, name))
+    name.clicked.connect(fn)
+    return name
+
+
 def getttsgrid(self, names):
 
     grids = []
@@ -160,7 +190,7 @@ def getttsgrid(self, names):
             _3 = ""
 
         line += [
-            globalconfig["reader"][name]["name"],
+            functools.partial(getrenameablellabel, name),
             D_getsimpleswitch(
                 globalconfig["reader"][name],
                 "use",

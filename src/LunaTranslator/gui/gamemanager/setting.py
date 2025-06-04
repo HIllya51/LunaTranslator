@@ -51,6 +51,7 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getsimpleswitch,
     getspinbox,
+    ClickableLabel,
     getIconButton,
     makesubtab_lazy,
     getsimpleswitch,
@@ -60,7 +61,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     listediterline,
     FocusCombo,
-    VisLFormLayout,
+    VisGridLayout,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -336,8 +337,10 @@ class dialog_setting_game_internal(QWidget):
             print_exc()
 
     def metadataorigin(self, formLayout: LFormLayout, gameuid):
-        vislf = VisLFormLayout()
+        vislf = VisGridLayout()
         formLayout.addRow(vislf)
+        vislf.setColumnStretch(0, 0)
+        vislf.setColumnStretch(1, 1)
 
         linei = 0
         notvislineis = []
@@ -382,7 +385,7 @@ class dialog_setting_game_internal(QWidget):
                     functools.partial(__settting, gameuid), self, margin0=False
                 )
 
-                def _revert(c, li):
+                def _revert(c: CollapsibleBox, li):
                     vis = c.isVisible()
                     vislf.setRowVisible(li, not vis)
                     c.toggle(not vis)
@@ -391,17 +394,43 @@ class dialog_setting_game_internal(QWidget):
                     2,
                     getIconButton(functools.partial(_revert, coll, linei + 1)),
                 )
-                vislf.addRow(name, getboxlayout(_vbox_internal))
-                vislf.addRow(coll)
+                vislf.addWidget(self.getrenameablellabel(key, name), linei, 0)
+                vislf.addLayout(getboxlayout(_vbox_internal), linei, 1)
+                vislf.addWidget(coll, linei + 1, 0, 1, 2)
                 notvislineis.append(linei + 1)
                 linei += 2
             except:
-                vislf.addRow(name, getboxlayout(_vbox_internal))
+                vislf.addWidget(self.getrenameablellabel(key, name), linei, 0)
+                vislf.addLayout(getboxlayout(_vbox_internal), linei, 1)
                 linei += 1
         for _ in notvislineis:
             vislf.setRowVisible(_, False)
 
-    def doaddtab(self, wfunct, exe, layout):
+    def renameapi(self, qlabel: QLabel, apiuid):
+        menu = QMenu(qlabel)
+        useproxy = LAction("使用代理", menu)
+        useproxy.setCheckable(True)
+
+        menu.addAction(useproxy)
+        useproxy.setChecked(globalconfig["metadata"][apiuid].get("useproxy", True))
+        pos = QCursor.pos()
+        action = menu.exec(pos)
+
+        if action == useproxy:
+            globalconfig["metadata"][apiuid]["useproxy"] = useproxy.isChecked()
+
+    def getrenameablellabel(self, key, name):
+
+        def checkclickable(name: ClickableLabel):
+            name.setClickable(globalconfig["useproxy"])
+
+        name = ClickableLabel(name)
+        fn = functools.partial(self.renameapi, name, key)
+        name.clicked.connect(fn)
+        name.beforeEnter.connect(functools.partial(checkclickable, name))
+        return name
+
+    def doaddtab(self, wfunct, exe, layout: QLayout):
         w, do = wfunct(exe)
         layout.addWidget(w)
         do()
@@ -1317,7 +1346,7 @@ class embeddisabler(LDialog):
         name,
         lst,
         closecallback=None,
-        **useless,
+        **_,
     ) -> None:
         super().__init__(parent)
         self.setWindowFlags(

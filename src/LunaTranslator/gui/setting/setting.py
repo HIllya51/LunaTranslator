@@ -10,7 +10,6 @@ from gui.setting.display import setTabThree_lazy
 from gui.setting.tts import setTab5, showvoicelist
 from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
-from gui.setting.proxy import setTab_proxy
 from traceback import print_exc
 from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
 from gui.setting.about import setTab_about, versionlabelmaybesettext, versioncheckthread
@@ -149,7 +148,6 @@ class Setting(closeashidewindow):
                 "辞书设置",
                 "语音合成",
                 "快捷按键",
-                "网络设置",
                 "关于软件",
             ],
             [
@@ -160,7 +158,6 @@ class Setting(closeashidewindow):
                 functools.partial(setTabcishu, self),
                 functools.partial(setTab5, self),
                 functools.partial(setTab_quick, self),
-                functools.partial(setTab_proxy, self),
                 functools.partial(setTab_about, self),
             ],
             klass=TabWidget,

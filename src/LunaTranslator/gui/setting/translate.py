@@ -203,6 +203,8 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
     astoppest.setCheckable(True)
     usecache = LAction("使用翻译缓存", menu)
     usecache.setCheckable(True)
+    useproxy = LAction("使用代理", menu)
+    useproxy.setCheckable(True)
     astoppest.setChecked(globalconfig["toppest_translator"] == apiuid)
     menu.addAction(editname)
     menu.addAction(specialfont)
@@ -214,12 +216,19 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
         menu.addAction(usecache)
         usecache.setChecked(globalconfig["fanyi"][apiuid].get("use_trans_cache", True))
         menu.addAction(copy)
+
     if which == 1:
         menu.addAction(delete)
+    if globalconfig["useproxy"] and globalconfig["fanyi"][apiuid].get("type") not in ("offline", "other", "pre"):
+        menu.addSeparator()
+        menu.addAction(useproxy)
+        useproxy.setChecked(globalconfig["fanyi"][apiuid].get("useproxy", True))
     pos = QCursor.pos()
     action = menu.exec(pos)
     if action == delete:
         selectllmcallback_2(self, countnum, apiuid, None)
+    elif action == useproxy:
+        globalconfig["fanyi"][apiuid]["useproxy"] = useproxy.isChecked()
     elif action == astoppest:
         globalconfig["toppest_translator"] = apiuid if action.isChecked() else None
         if action.isChecked():
