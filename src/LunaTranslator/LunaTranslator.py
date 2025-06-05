@@ -15,6 +15,7 @@ from myutils.config import (
     _TR,
     isascii,
 )
+from ctypes import cast, c_void_p, c_wchar_p, c_bool
 from myutils.keycode import mod_map_r
 from gobject import sys_le_xp
 from myutils.mecab import mecab, latin
@@ -1408,25 +1409,28 @@ class MAINUI:
             return
         return os.startfile(file)
 
-    def WindowMessageCallback(self, msg: int, boolvalue: bool, strvalue: str):
+    def WindowMessageCallback(self, msg: int, value1: c_void_p, value2: c_void_p):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
                 self.commonstylebase.setstylesheetsignal.emit()
         elif msg == 1:
-            if boolvalue:
+            running = not(value1 == None and value2 == None)
+            if running:
                 self.translation_ui.settop()
             else:
                 if not globalconfig["keepontop"]:
                     self.translation_ui.canceltop()
-            self.translation_ui.magpiecallback.emit(boolvalue)
+            self.translation_ui.magpiecallback.emit(running)
         elif msg == 2:
             self.translation_ui.closesignal.emit()
         elif msg == 3:
-            self.translation_ui.clipboardcallback.emit(boolvalue, strvalue)
+            self.translation_ui.clipboardcallback.emit(
+                cast(value2, c_bool).value, cast(value2, c_wchar_p).value
+            )
         elif msg == 4:
-            self.showtraymessage("Magpie", strvalue, lambda: 1)
+            self.showtraymessage("Magpie", cast(value2, c_wchar_p).value, lambda: 1)
         elif msg == 5:
-            magpie_config.update(json.loads(strvalue))
+            magpie_config.update(json.loads(cast(value2, c_wchar_p).value))
 
     def _dowhenwndcreate(self, obj):
         if not isinstance(obj, QWidget):

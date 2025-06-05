@@ -8,7 +8,7 @@ bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
     return lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL;
 }
-typedef void (*WindowMessageCallback_t)(int, bool, const wchar_t *);
+typedef void (*WindowMessageCallback_t)(int, void*, void*);
 static int unique_id = 1;
 typedef void (*hotkeycallback_t)();
 static std::map<int, hotkeycallback_t> keybinds;
@@ -41,7 +41,7 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
         }
         else if (message == WM_MAGPIE_SCALINGCHANGED)
         {
-            callback(1, (bool)wParam, NULL);
+            callback(1, (void*)wParam, (void*)lParam);
         }
         else if (message == LUNA_UPDATE_PREPARED_OK)
         {
@@ -51,7 +51,7 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
         {
             auto data = clipboard_get_internal();
             if (data)
-                callback(3, iscurrentowndclipboard(), data.value().c_str());
+                callback(3, (void*)iscurrentowndclipboard(), (void*)data.value().c_str());
         }
         else if (WM_HOTKEY == message)
         {

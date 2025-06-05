@@ -252,7 +252,7 @@ def QueryVersion(exe):
 
 ClipBoardListenerStart = utilsdll.ClipBoardListenerStart
 ClipBoardListenerStop = utilsdll.ClipBoardListenerStop
-WindowMessageCallback_t = CFUNCTYPE(None, c_int, c_bool, c_wchar_p)
+WindowMessageCallback_t = CFUNCTYPE(None, c_int, c_void_p, c_void_p)
 WinEventHookCALLBACK_t = CFUNCTYPE(None, DWORD, HWND, LONG)
 globalmessagelistener = utilsdll.globalmessagelistener
 globalmessagelistener.argtypes = (
