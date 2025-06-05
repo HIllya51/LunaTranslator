@@ -417,25 +417,16 @@ namespace
         {
             return buffer->clear();
         }
-        s = re::sub(s, L"\n+", L" ");
+        s = re::sub(s, L"\n\n+", L"\n");
 
         s = re::sub(s, L"\\$\\{FirstName\\}", L"ナーヤ");
-
+        s = re::sub(s, LR"(#C\(TR,\w+\))");
+        s = re::sub(s, L"#P\\(\\d+,\\d+\\)");
         if (startWith(s, L"#T"))
         {
             s = re::sub(s, L"#T2[^#]+");
             s = re::sub(s, L"#T\\d");
         }
-        buffer->from(utf16_to_utf32(s));
-    }
-    void F0100F5A01EA12000(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = utf32_to_utf16(buffer->viewU());
-        if (s == L"　　")
-        {
-            return buffer->clear();
-        }
-        s = re::sub(s, L"#P\\(\\d+,\\d+\\)");
         buffer->from(utf16_to_utf32(s));
     }
     void F010093800DB1C000(TextBuffer *buffer, HookParam *hp)
@@ -2601,8 +2592,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8017ad54, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100EA001A626000ull, "1.0.0"}}, // text
     {0x80174d4c, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100EA001A626000ull, "1.0.0"}}, // name
     // 茉莉花之炯 天命胤異傳
-    {0x80176A00, {CODEC_UTF32, 1, 0, 0, F0100F5A01EA12000, 0x0100F5A01EA12000ull, "1.0.0"}}, // text
-    {0x801769CC, {CODEC_UTF32, 0, 0, 0, F0100F5A01EA12000, 0x0100F5A01EA12000ull, "1.0.0"}},                 // name
+    {0x80138DFC, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100F5A01EA12000ull, "1.0.0"}}, // text
+    {0x801769CC, {CODEC_UTF32, 0, 0, 0, F0100EA001A626000, 0x0100F5A01EA12000ull, "1.0.0"}}, // name
     // キューピット・パラサイト
     {0x80057910, {CODEC_UTF32, 2, 0, 0, F0100F7E00DFC8000, 0x0100F7E00DFC8000ull, "1.0.1"}}, // name + text
     {0x80169df0, {CODEC_UTF32, 0, 0, 0, F0100F7E00DFC8000, 0x0100F7E00DFC8000ull, "1.0.1"}}, // choice
