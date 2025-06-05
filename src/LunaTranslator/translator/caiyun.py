@@ -15,7 +15,7 @@ def crypt(if_de=True):
     return {v: k for k, v in zip(cipher_key, normal_key)}
 
 
-def encrypt(plain_text):
+def encrypt(plain_text: str):
     encrypt_dictionary = crypt(if_de=False)
     _cipher_text = base64.b64encode(plain_text.encode()).decode()
     return "".join(list(map(lambda k: encrypt_dictionary[k], _cipher_text)))
@@ -66,11 +66,15 @@ class TS(basetrans):
             headers=headers,
             json=json_data,
         )
-        self.jwt = self.proxysession.post(
+        response = self.proxysession.post(
             "https://api.interpreter.caiyunai.com/v1/user/jwt/generate",
             headers=headers,
             json=json_data,
-        ).json()["jwt"]
+        )
+        try:
+            self.jwt = response.json()["jwt"]
+        except:
+            raise Exception(response)
 
         headers = {
             "authority": "api.interpreter.caiyunai.com",
