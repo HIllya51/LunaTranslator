@@ -595,6 +595,14 @@ class pixwrapper(QWidget):
 
 
 class dialog_savedgame_v3(QWidget):
+    def deleteLater(self):
+
+        if not isqt5:
+            try:
+                self.fuckqt6.fuckcombo.setEditable(False)
+            except:
+                pass
+        super().deleteLater()
 
     def viewitem(self, k):
         try:
@@ -603,15 +611,15 @@ class dialog_savedgame_v3(QWidget):
             currvis = self.righttop.currentIndex()
             if self.righttop.count() > 1:
                 self.righttop.removeTab(1)
-            tabadd_lazy(
-                self.righttop,
-                "设置",
-                lambda v: v.addWidget(
-                    dialog_setting_game_internal(
-                        self, k, keepindexobject=self.keepindexobject
-                    )
-                ),
-            )
+
+            def __(v: QLayout):
+                _ = dialog_setting_game_internal(
+                    self, k, keepindexobject=self.keepindexobject
+                )
+                self.fuckqt6 = _
+                v.addWidget(_)
+
+            tabadd_lazy(self.righttop, "设置", __)
             self.righttop.setCurrentIndex(currvis)
         except:
             print_exc()

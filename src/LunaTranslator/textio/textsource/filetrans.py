@@ -160,7 +160,7 @@ class filetrans(basetext):
 
     def end(self):
 
-        gobject.baseobject.settin_ui.progresssignal2.emit("", 0)
+        gobject.signals.progresssignal2.emit("", 0)
 
     def __query(self, origin):
         try:
@@ -181,7 +181,7 @@ class filetrans(basetext):
         return (list(ts.values()) + [None])[0]
 
     @threader
-    def starttranslatefile(self, file):
+    def starttranslatefile(self, file: str):
         self.startsql(file + ".sqlite")
         if file.lower().endswith(".txt"):
             file = parsetxt(file)
@@ -193,8 +193,8 @@ class filetrans(basetext):
             file = parsesrt(file)
         elif file.lower().endswith(".vtt"):
             file = parsevtt(file)
-        gobject.baseobject.settin_ui.progresssignal3.emit(len(file))
-        gobject.baseobject.settin_ui.progresssignal2.emit("", 0)
+        gobject.signals.progresssignal3.emit(len(file))
+        gobject.signals.progresssignal2.emit("", 0)
 
         for index, line in enumerate(file.load()):
             if self.ending:
@@ -208,7 +208,7 @@ class filetrans(basetext):
 
             class __p:
                 def __del__(self):
-                    gobject.baseobject.settin_ui.progresssignal2.emit(
+                    gobject.signals.progresssignal2.emit(
                         "{}/{} {:0.2f}% ".format(
                             index + 1, lenfile, 100 * (index + 1) / lenfile
                         ),

@@ -62,8 +62,6 @@ bool InsertCircusHook2() // jichi 10/2/2013: Change return type to bool
       }
       break;
     }
-  // ConsoleOutput("Unknown CIRCUS engine.");
-  ConsoleOutput("CIRCUS: failed");
   return false;
 }
 namespace
@@ -92,7 +90,7 @@ namespace
       // hp.embed_hook_font=F_GetGlyphOutlineA;
       // it will split a long to many lines
       hp.filter_fun = filter;
-      NewHook(hp, "Circus2");
+      NewHook(hp, "Circus2_3");
     }
     if (funcaddr2)
     {
@@ -103,7 +101,7 @@ namespace
       // hp.embed_hook_font=F_GetGlyphOutlineA;
       // it will split a long to many lines
       hp.filter_fun = filter;
-      NewHook(hp, "Circus2");
+      NewHook(hp, "Circus2_2");
     }
     return funcaddr || funcaddr2;
   }
@@ -218,15 +216,20 @@ namespace
     }
     if (!addr)
       return false;
+    BYTE _check1[] = {
+        0x81, 0XEC, 0X08, 0X01, 0X00, 0X00};
+    auto nearstartcheck = reverseFindBytes(_check1, sizeof(_check1), addr - 0x40, addr, 0, true);
     addr = MemDbg::findEnclosingAlignedFunction(addr);
     if (!addr)
       return false;
+    if (nearstartcheck && nearstartcheck > addr)
+      addr = nearstartcheck;
     HookParam hp;
     hp.address = addr;
     hp.offset = stackoffset(1);
     hp.type = USING_STRING; //|EMBED_ABLE|EMBED_AFTER_NEW|EMBED_DYNA_SJIS;
     hp.filter_fun = filter;
-    return NewHook(hp, "Circus2");
+    return NewHook(hp, "Circus2_1");
   }
 }
 

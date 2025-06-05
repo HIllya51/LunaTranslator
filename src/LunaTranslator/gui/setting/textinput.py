@@ -285,12 +285,16 @@ def createdownloadprogress(self):
         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
 
-    def __set(_d, text, i):
+    def __set(_d: QProgressBar, text, i):
         _d.setValue(i)
         _d.setFormat(text)
 
-    self.progresssignal2.connect(functools.partial(__set, downloadprogress))
-    self.progresssignal3.connect(lambda x: downloadprogress.setRange(0, x))
+    gobject.signals.connectsignal(
+        gobject.signals.progresssignal2, functools.partial(__set, downloadprogress)
+    )
+    gobject.signals.connectsignal(
+        gobject.signals.progresssignal3, lambda x: downloadprogress.setRange(0, x)
+    )
     return downloadprogress
 
 
@@ -516,12 +520,8 @@ def createlabellink(url):
 
 
 def __portconflict(self):
-
     _ = LLabel()
-    if self.portconflictcache:
-        _.setText(self.portconflictcache[-1])
-    self._ = _
-    self.portconflict.connect(_.setText)
+    gobject.signals.connectsignal(gobject.signals.portconflict, _.setText)
     return _
 
 

@@ -108,7 +108,9 @@ def prepareqtenv():
 def loadmainui(startwithgameuid):
     import gobject
     from LunaTranslator import MAINUI
+    from SignalDispatcher import SignalDispatcher
 
+    gobject.signals = SignalDispatcher()
     gobject.baseobject = MAINUI()
     gobject.baseobject.loadui(startwithgameuid)
     # gobject.baseobject.urlprotocol()

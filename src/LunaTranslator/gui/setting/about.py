@@ -150,7 +150,7 @@ def updatemethod(urls, self):
             prg = int(10000 * file_size / size)
             prg100 = prg / 100
             sz = int(1000 * (int(size / 1024) / 1024)) / 1000
-            self.progresssignal4.emit(
+            gobject.signals.progresssignal4.emit(
                 _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
                 prg,
             )
@@ -162,7 +162,7 @@ def updatemethod(urls, self):
 
 
 def uncompress(self, savep):
-    self.progresssignal4.emit(_TR("正在解压"), 10000)
+    gobject.signals.progresssignal4.emit(_TR("正在解压"), 10000)
     shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
     with zipfile.ZipFile(savep) as zipf:
         zipf.extractall(gobject.getcachedir("update"))
@@ -174,17 +174,17 @@ def versioncheckthread(self):
     while True:
         x = versionchecktask.get()
         gobject.baseobject.update_avalable = False
-        self.progresssignal4.emit("", 0)
+        gobject.signals.progresssignal4.emit("", 0)
         if not x:
             continue
-        self.versiontextsignal.emit("获取中")  # ,'',url,url))
+        gobject.signals.versiontextsignal.emit("获取中")  # ,'',url,url))
         _version = trygetupdate()
 
         if _version is None:
             sversion = "获取失败"
         else:
             sversion = _version[0]
-        self.versiontextsignal.emit(sversion)
+        gobject.signals.versiontextsignal.emit(sversion)
         if getcurrexe().endswith("python.exe"):
             continue
         version = NativeUtils.QueryVersion(getcurrexe())
@@ -195,15 +195,15 @@ def versioncheckthread(self):
         )
         if not (need and globalconfig["autoupdate"]):
             continue
-        self.progresssignal4.emit("……", 0)
+        gobject.signals.progresssignal4.emit("……", 0)
         savep = updatemethod(_version[1:], self)
         if not savep:
-            self.progresssignal4.emit(_TR("自动更新失败，请手动更新"), 0)
+            gobject.signals.progresssignal4.emit(_TR("自动更新失败，请手动更新"), 0)
             continue
 
         uncompress(self, savep)
         gobject.baseobject.update_avalable = True
-        self.progresssignal4.emit(_TR("准备完毕，等待更新"), 10000)
+        gobject.signals.progresssignal4.emit(_TR("准备完毕，等待更新"), 10000)
         gobject.baseobject.showtraymessage(
             sversion,
             _TR("准备完毕，等待更新") + "\n" + _TR("点击消息后退出并开始更新"),
@@ -219,20 +219,17 @@ def createversionlabel(self):
         lambda _: os.startfile(dynamiclink("/ChangeLog"))
     )
     versionlabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse)
-    try:
-        versionlabel.setText(self.versionlabel_cache)
-    except:
-        pass
-    self.versionlabel = versionlabel
-    return self.versionlabel
+
+    gobject.signals.connectsignal(
+        gobject.signals.versiontextsignal,
+        functools.partial(versionlabelmaybesettext, versionlabel),
+    )
+    return versionlabel
 
 
-def versionlabelmaybesettext(self, x):
+def versionlabelmaybesettext(versionlabel: QLabel, x):
     x = '<a href="fuck">{}</a>'.format(x)
-    try:
-        self.versionlabel.setText(x)
-    except:
-        self.versionlabel_cache = x
+    versionlabel.setText(x)
 
 
 def delayloadlinks(key):
@@ -324,7 +321,7 @@ def proxyusage(self):
     hbox2 = QHBoxLayout(w2)
     hbox2.setContentsMargins(0, 0, 0, 0)
     hbox2.addWidget(QLabel())
-    hbox2.addWidget(LLabel("自动获取系统代理") )
+    hbox2.addWidget(LLabel("自动获取系统代理"))
 
     w3 = QWidget()
     hbox3 = QHBoxLayout(w3)
@@ -337,7 +334,7 @@ def proxyusage(self):
     hbox2.addWidget(switch2)
     hbox2.addWidget(w3)
     hbox3.addWidget(QLabel())
-    hbox3.addWidget(LLabel("手动设置代理") )
+    hbox3.addWidget(LLabel("手动设置代理"))
     proxy = QLineEdit(globalconfig["proxy"])
     check = QLabel()
     validator(check, globalconfig["proxy"])
@@ -359,7 +356,6 @@ def updatexx(self):
 
     w = NQGroupBox(self)
     l = VisLFormLayout(w)
-    self.updatelayout = l
     l.addRow(
         getboxlayout(
             [
@@ -380,23 +376,28 @@ def updatexx(self):
     )
 
     downloadprogress = QProgressBar(self)
-    self.downloadprogress = downloadprogress
     downloadprogress.setRange(0, 10000)
     downloadprogress.setAlignment(
         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
 
-    try:
-        text, val = self.downloadprogress_cache
-        downloadprogress.setValue(val)
-        downloadprogress.setFormat(text)
-    except:
-        text = ""
-        val = 0
     l.addRow(downloadprogress)
 
-    l.setRowVisible(1, val or text)
+    l.setRowVisible(1, False)
+    gobject.signals.connectsignal(
+        gobject.signals.progresssignal4,
+        functools.partial(_progresssignal4, l, downloadprogress),
+    )
     return w
+
+
+def _progresssignal4(
+    updatelayout: VisLFormLayout, downloadprogress: QProgressBar, text, val
+):
+    downloadprogress.setValue(val)
+    downloadprogress.setFormat(text)
+    if val or text:
+        updatelayout.setRowVisible(1, True)
 
 
 class MDLabel1(MDLabel):

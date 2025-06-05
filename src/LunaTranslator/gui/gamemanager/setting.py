@@ -661,6 +661,18 @@ class dialog_setting_game_internal(QWidget):
         typecombo = getsimplecombobox(self.tagtypes_zh, default=2)
         combo = FocusCombo()
         combo.setEditable(True)
+        self.fuckcombo = combo
+
+        def closeEventFucker(origin, e):
+            try:
+                combo.setEditable(False)
+            except:
+                pass
+            return origin(e)
+
+        origin = self.window().closeEvent
+        if not isqt5:
+            self.window().closeEvent = functools.partial(closeEventFucker, origin)
 
         def __(idx):
             t = combo.currentText()

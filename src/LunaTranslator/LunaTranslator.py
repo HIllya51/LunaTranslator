@@ -97,9 +97,6 @@ class MAINUI:
         self.reader_uid = None
         self.__hwnd = None
         self.gameuid = 0
-        self.showocrimage = None
-        self.showocrimage_cached = None
-        self.showocrimage_cached2 = None
         self.autoswitchgameuid = True
         self.istriggertoupdate = False
         self.thishastranslated = True
@@ -108,13 +105,13 @@ class MAINUI:
 
     @threader
     def serviceinit(self):
-        self.settin_ui.portconflict.emit("")
+        gobject.signals.portconflict.emit("")
         self.service.stop()
         if globalconfig["networktcpenable"]:
             try:
                 self.service.init(globalconfig["networktcpport"])
             except OSError:
-                self.settin_ui.portconflict.emit("端口冲突")
+                gobject.signals.portconflict.emit("端口冲突")
 
     @threader
     def ttsautoforward(self):
@@ -128,32 +125,6 @@ class MAINUI:
         time.sleep(0.001)
         windows.keybd_event(windows.VK_RETURN, 0, windows.KEYEVENTF_KEYUP, 0)
 
-    def maybesetimage(self, pair):
-        if self.showocrimage:
-            try:
-                self.showocrimage.setimage.emit(pair)
-            except:
-                print_exc()
-        self.showocrimage_cached = pair
-
-    def maybesetocrresult(self, pair):
-        if self.showocrimage:
-            try:
-                self.showocrimage.setresult.emit(pair)
-            except:
-                print_exc()
-        self.showocrimage_cached2 = pair
-
-    def createshowocrimage(self):
-        try:
-            self.showocrimage = showocrimage(
-                self.settin_ui, self.showocrimage_cached, self.showocrimage_cached2
-            )
-            if self.showocrimage:
-                self.showocrimage.show()
-        except:
-            print_exc()
-
     @property
     def reader(self) -> TTSbase:
         return self._internal_reader
@@ -163,12 +134,12 @@ class MAINUI:
         if _ is None:
             self._internal_reader = None
             self.reader_uid = None
-            self.settin_ui.voicelistsignal.emit(None)
+            gobject.signals.voicelistsignal.emit(None)
         else:
             if self.reader_uid != _.uid:
                 return
             self._internal_reader = _
-            self.settin_ui.voicelistsignal.emit(_)
+            gobject.signals.voicelistsignal.emit(_)
 
     @property
     def textsource(self) -> basetext:
@@ -880,7 +851,7 @@ class MAINUI:
                 "copy": copyboard,
                 "texthook": texthook,
                 "filetrans": filetrans,
-                "mssr":mssr,
+                "mssr": mssr,
             }
             if use is None:
                 use = list(

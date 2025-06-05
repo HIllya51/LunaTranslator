@@ -29,36 +29,18 @@ from gui.usefulwidget import (
 def showvoicelist(self, obj: TTSbase):
 
     if obj is None:
-        try:
-            self.voicecombo.clear()
-        except:
-            pass
-        try:
-            self.pitch____.setEnabled(False)
-        except:
-            pass
-        try:
-            self.rate____.setEnabled(False)
-        except:
-            pass
+        self.voicecombo.clear()
+        self.pitch____.setEnabled(False)
+        self.rate____.setEnabled(False)
         return
     vl = obj.voiceshowlist
     idx = obj.voicelist.index(obj.voice)
-    try:
-        self.pitch____.setEnabled(obj.arg_support_pitch)
-    except:
-        self.pitch____c = obj.arg_support_pitch
-    try:
-        self.rate____.setEnabled(obj.arg_support_speed)
-    except:
-        self.rate____c = obj.arg_support_speed
-    try:
+    self.pitch____.setEnabled(obj.arg_support_pitch)
+    self.rate____.setEnabled(obj.arg_support_speed)
 
-        self.voicecombo.clear()
-        self.voicecombo.addItems(vl)
-        self.voicecombo.setCurrentIndex(idx)
-    except:
-        self.voicecombo_cache = vl, idx
+    self.voicecombo.clear()
+    self.voicecombo.addItems(vl)
+    self.voicecombo.setCurrentIndex(idx)
 
 
 def changevoice(self, _):
@@ -83,10 +65,6 @@ def createrate(self):
             ),
         ],
     )
-    try:
-        self.rate____.setEnabled(self.rate____c)
-    except:
-        self.rate____.setEnabled(False)
     return self.rate____
 
 
@@ -104,10 +82,6 @@ def createpitch(self):
             ),
         ],
     )
-    try:
-        self.pitch____.setEnabled(self.pitch____c)
-    except:
-        self.pitch____.setEnabled(False)
     return self.pitch____
 
 
@@ -115,18 +89,16 @@ def createvoicecombo(self):
 
     self.voicecombo = FocusCombo(sizeX=True)
     self.voicecombo.currentTextChanged.connect(lambda x: changevoice(self, x))
-    try:
-        vl, idx = self.voicecombo_cache
-        self.voicecombo.addItems(vl)
-        if idx >= 0:
-            self.voicecombo.setCurrentIndex(idx)
-    except:
-        pass
+
     return self.voicecombo
 
 
 def setTab5(self, l):
     makescrollgrid(setTab5lz(self), l)
+
+    gobject.signals.connectsignal(
+        gobject.signals.voicelistsignal, functools.partial(showvoicelist, self)
+    )
 
 
 def renameapi(qlabel: QLabel, apiuid):

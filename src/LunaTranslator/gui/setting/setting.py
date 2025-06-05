@@ -7,12 +7,11 @@ from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting.textinput import setTabOne_lazy
 from gui.setting.translate import setTabTwo_lazy
 from gui.setting.display import setTabThree_lazy
-from gui.setting.tts import setTab5, showvoicelist
+from gui.setting.tts import setTab5
 from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
-from traceback import print_exc
 from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
-from gui.setting.about import setTab_about, versionlabelmaybesettext, versioncheckthread
+from gui.setting.about import setTab_about, versioncheckthread
 from gui.dynalang import LListWidgetItem, LListWidget
 from gui.flowsearchword import WordViewTooltip
 
@@ -84,44 +83,12 @@ class TabWidget(QWidget):
 class Setting(closeashidewindow):
     hover_search_word = pyqtSignal(str, str, bool, bool, bool)
     hover_search_word_checkpos = pyqtSignal()
-    voicelistsignal = pyqtSignal(object)
-    versiontextsignal = pyqtSignal(str)
-    progresssignal2 = pyqtSignal(str, int)
-    progresssignal4 = pyqtSignal(str, int)
-    progresssignal3 = pyqtSignal(int)
     showandsolvesig = pyqtSignal(str, str)
-    safeinvokefunction = pyqtSignal(object)
-    thresholdsett2 = pyqtSignal(str)
-    thresholdsett1 = pyqtSignal(str)
-    portconflict = pyqtSignal(str)
-
-    def _progresssignal4(self, text, val):
-        try:
-            self.downloadprogress.setValue(val)
-            self.downloadprogress.setFormat(text)
-            if val or text:
-                self.updatelayout.setRowVisible(1, True)
-        except:
-            self.downloadprogress_cache = text, val
-
-    def __safeinvoke(self, fobj):
-        try:
-            fobj()
-        except:
-            print_exc()
 
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
-        self.portconflictcache = []
-        self.portconflict.connect(self.portconflictcache.append)
-        self.safeinvokefunction.connect(self.__safeinvoke)
-        self.progresssignal4.connect(self._progresssignal4)
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
-        self.voicelistsignal.connect(functools.partial(showvoicelist, self))
-        self.versiontextsignal.connect(
-            functools.partial(versionlabelmaybesettext, self)
-        )
         self.isfirst = True
         versioncheckthread(self)
         registrhotkeys(self)

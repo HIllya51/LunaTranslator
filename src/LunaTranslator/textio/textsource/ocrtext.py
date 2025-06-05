@@ -50,20 +50,14 @@ class rangemanger:
 
             image_score = imgr1.MSSIM(self.savelastimg)
 
-            try:
-                gobject.baseobject.settin_ui.thresholdsett1.emit(str(image_score))
-            except:
-                pass
+            gobject.signals.thresholdsett1.emit(str(image_score))
             self.savelastimg = imgr1
 
             if image_score > globalconfig["ocr_stable_sim_v2"]:
 
                 image_score2 = imgr1.MSSIM(self.savelastrecimg)
 
-                try:
-                    gobject.baseobject.settin_ui.thresholdsett2.emit(str(image_score2))
-                except:
-                    pass
+                gobject.signals.thresholdsett2.emit(str(image_score2))
                 if image_score2 > globalconfig["ocr_diff_sim_v2"]:
                     ok = False
                 else:
@@ -97,10 +91,7 @@ class rangemanger:
         imgr1 = cvMat.fromQImage(imgr)
         image_score = imgr1.MSSIM(self.savelastimg)
 
-        try:
-            gobject.baseobject.settin_ui.thresholdsett1.emit(str(float(image_score)))
-        except:
-            pass
+        gobject.signals.thresholdsett1.emit(str(float(image_score)))
         self.savelastimg = imgr1
         return image_score > globalconfig["ocr_stable_sim2_v2"]
 

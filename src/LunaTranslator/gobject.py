@@ -54,7 +54,9 @@ except:
     pass
 if TYPE_CHECKING:
     from LunaTranslator import MAINUI
+    from SignalDispatcher import SignalDispatcher
 baseobject: "MAINUI" = None
+signals: "SignalDispatcher" = None
 global_dialog_savedgame_new = None
 global_dialog_setting_game = None
 serverindex = 0

@@ -38,13 +38,17 @@ from ocrengines.baseocrclass import OCRResultParsed
 
 def __label1(self):
     threshold1label = QLabel()
-    self.thresholdsett1.connect(threshold1label.setText)
+    gobject.signals.connectsignal(
+        gobject.signals.thresholdsett1, threshold1label.setText
+    )
     return threshold1label
 
 
 def __label2(self):
     threshold2label = QLabel()
-    self.thresholdsett2.connect(threshold2label.setText)
+    gobject.signals.connectsignal(
+        gobject.signals.thresholdsett2, threshold2label.setText
+    )
     return threshold2label
 
 
@@ -328,15 +332,11 @@ def _ocrparam(self):
     _ocrparam_create(self, globalconfig["ocr_auto_method_v2"])
     return self._ocrparam
 
-
 @Singleton
 class showocrimage(saveposwindow):
-    setimage = pyqtSignal(QImage)
-    setresult = pyqtSignal(object)
-
     def closeEvent(self, e):
-        gobject.baseobject.showocrimage = None
         super().closeEvent(e)
+        self.deleteLater()
 
     def openff(self):
         f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
@@ -365,7 +365,7 @@ class showocrimage(saveposwindow):
         if len(files):
             self.ocrfile(files[0])
 
-    def __init__(self, parent, cached, cached2):
+    def __init__(self, parent):
         self.originimage = None
         super().__init__(parent, poslist=globalconfig["showocrgeo"])
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
@@ -395,12 +395,8 @@ class showocrimage(saveposwindow):
         )
         self.layout1.addWidget(self.timecost)
         self.layout1.addWidget(self.originlabel)
-        self.setimage.connect(self.setimagefunction)
-        self.setresult.connect(self.setocr)
-        if cached:
-            self.setimagefunction(cached)
-        if cached2:
-            self.setocr(cached2)
+        gobject.signals.connectsignal(gobject.signals.setimage, self.setimagefunction)
+        gobject.signals.connectsignal(gobject.signals.setresult, self.setocr)
 
     def onValueChanged(self, value):
         if not self.originimage:
@@ -439,7 +435,7 @@ def internal(self):
     engines = [
         [
             D_getIconButton(
-                callback=gobject.baseobject.createshowocrimage,
+                callback=lambda: showocrimage(self).show(),
                 icon="fa.picture-o",
                 tips="查看",
             ),

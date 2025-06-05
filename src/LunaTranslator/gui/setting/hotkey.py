@@ -69,7 +69,7 @@ def createreloadablewrapper(self, name):
         "userconfig/myhotkeys/{}.py".format(name), "myhotkeys." + name
     )
     try:
-        self.safeinvokefunction.emit(module.OnHotKeyClicked)
+        gobject.signals.safeinvokefunction.emit(module.OnHotKeyClicked)
     except:
         print_exc()
 
