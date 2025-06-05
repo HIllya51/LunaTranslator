@@ -2359,15 +2359,26 @@ def makelabel(s: str):
     return wid
 
 
-def makeforms(lay: LFormLayout, lis):
-    for line in lis:
+def makeforms(lay: LFormLayout, lis, hiderows=None):
+    for i, line in enumerate(lis):
         if len(line) == 0:
             lay.addRow(QLabel())
             continue
         elif len(line) == 1:
             name, wid = None, line[0]
         else:
-            name, wid = line
+            name, wid = line[0], line[1:]
+            l = QHBoxLayout()
+            for _ in wid:
+                if callable(_):
+                    _ = _()
+                if isinstance(_, str):
+                    l.addWidget(makelabel(_))
+                elif isinstance(_, QWidget):
+                    l.addWidget(_)
+                elif isinstance(_, QLayout):
+                    l.addLayout(_)
+            wid = l
         if isinstance(wid, (tuple, list)):
             hb = QHBoxLayout()
             hb.setContentsMargins(0, 0, 0, 0)
@@ -2408,6 +2419,8 @@ def makeforms(lay: LFormLayout, lis):
             lay.addRow(name, wid)
         else:
             lay.addRow(wid)
+        if i in hiderows if hiderows else []:
+            lay.setRowVisible(i, False)
 
 
 class NQGroupBox(QGroupBox):
@@ -2445,7 +2458,7 @@ def makegroupingrid(args: dict):
     groupname = args.get("name", None)
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
-
+    hiderows=args.get("hiderows",[])
     if button:
         group = BGroupBox()
         group.setTitle(title)
@@ -2460,7 +2473,6 @@ def makegroupingrid(args: dict):
         group.setEnabled(False)
     if groupname and parent:
         setattr(parent, groupname, group)
-
     if _type == "grid":
         grid = QGridLayout(group)
         automakegrid(grid, lis)
@@ -2468,7 +2480,7 @@ def makegroupingrid(args: dict):
             setattr(parent, internallayoutname, grid)
     elif _type == "form":
         lay = LFormLayout(group)
-        makeforms(lay, lis)
+        makeforms(lay, lis, hiderows)
         if internallayoutname:
             setattr(parent, internallayoutname, lay)
     return group

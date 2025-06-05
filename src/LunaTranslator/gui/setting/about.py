@@ -185,11 +185,10 @@ def versioncheckthread(self):
         else:
             sversion = _version[0]
         gobject.signals.versiontextsignal.emit(sversion)
-        if getcurrexe().endswith("python.exe"):
-            continue
         version = NativeUtils.QueryVersion(getcurrexe())
         need = (
-            version
+            (not getcurrexe().endswith("python.exe"))
+            and version
             and _version
             and version < tuple(int(_) for _ in _version[0][1:].split("."))
         )
@@ -213,7 +212,7 @@ def versioncheckthread(self):
 
 def createversionlabel(self):
 
-    versionlabel = LLabel()
+    versionlabel = getsmalllabel()()
     versionlabel.setOpenExternalLinks(False)
     versionlabel.linkActivated.connect(
         lambda _: os.startfile(dynamiclink("/ChangeLog"))
@@ -306,13 +305,8 @@ def validator(createproxyedit_check: QLabel, text):
 
 
 def proxyusage(self):
-    w = NQGroupBox(self)
-    l = QHBoxLayout(w)
-    w1 = QWidget()
-    hbox = QHBoxLayout(w1)
+    hbox = QHBoxLayout()
     hbox.setContentsMargins(0, 0, 0, 0)
-    l.addWidget(LLabel("使用代理"))
-    l.addWidget(w1)
     w2 = QWidget()
     w2.setEnabled(globalconfig["useproxy"])
     switch1 = D_getsimpleswitch(globalconfig, "useproxy", callback=w2.setEnabled)()
@@ -341,7 +335,7 @@ def proxyusage(self):
     proxy.textChanged.connect(functools.partial(validator, check))
     hbox3.addWidget(proxy)
     hbox3.addWidget(check)
-    return w
+    return hbox
 
 
 def updatexx(self):
@@ -353,27 +347,37 @@ def updatexx(self):
         if vs.endswith(".0"):
             vs = vs[:-2]
         versionstring = ("v{}").format(vs)
-
-    w = NQGroupBox(self)
-    l = VisLFormLayout(w)
-    l.addRow(
-        getboxlayout(
-            [
-                "自动更新",
-                D_getsimpleswitch(
-                    globalconfig,
-                    "autoupdate",
-                    callback=versionchecktask.put,
-                ),
-                "",
-                "当前版本",
-                versionstring,
-                "",
-                "最新版本",
-                functools.partial(createversionlabel, self),
-            ]
+        versionstring += (
+            " " + [["Win7", "WinXP"][runtime_for_xp], "Win10"][runtime_for_win10]
         )
+        versionstring += " " + ["32bit", "64bit"][runtime_bit_64]
+
+    return getboxlayout(
+        [
+            D_getsimpleswitch(
+                globalconfig,
+                "autoupdate",
+                callback=lambda _: (
+                    versionchecktask.put(_),
+                    (
+                        self.aboutlayout.layout().setRowVisible(3, False)
+                        if not _
+                        else ""
+                    ),
+                ),
+            ),
+            getsmalllabel(""),
+            getsmalllabel("最新版本"),
+            functools.partial(createversionlabel, self),
+            getsmalllabel(""),
+            getsmalllabel("当前版本"),
+            getsmalllabel(versionstring),
+            "",
+        ]
     )
+
+
+def progress___(self):
 
     downloadprogress = QProgressBar(self)
     downloadprogress.setRange(0, 10000)
@@ -381,14 +385,13 @@ def updatexx(self):
         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
 
-    l.addRow(downloadprogress)
-
-    l.setRowVisible(1, False)
     gobject.signals.connectsignal(
         gobject.signals.progresssignal4,
-        functools.partial(_progresssignal4, l, downloadprogress),
+        functools.partial(
+            _progresssignal4, self.aboutlayout.layout(), downloadprogress
+        ),
     )
-    return w
+    return downloadprogress
 
 
 def _progresssignal4(
@@ -396,8 +399,8 @@ def _progresssignal4(
 ):
     downloadprogress.setValue(val)
     downloadprogress.setFormat(text)
-    if val or text:
-        updatelayout.setRowVisible(1, True)
+    if (val or text) and globalconfig["autoupdate"]:
+        updatelayout.setRowVisible(3, True)
 
 
 class MDLabel1(MDLabel):
@@ -530,10 +533,12 @@ def setTab_about(self, basel):
         [
             [
                 dict(
-                    type="grid",
+                    name="aboutlayout",
+                    parent=self,
+                    hiderows=[3],
                     grid=[
                         [
-                            getsmalllabel("软件显示语言"),
+                            "软件显示语言",
                             __delayloadlangs,
                             D_getIconButton(
                                 callback=lambda: os.startfile(
@@ -543,11 +548,12 @@ def setTab_about(self, basel):
                                 ),
                             ),
                         ],
+                        ["使用代理", functools.partial(proxyusage, self)],
+                        ["自动更新", functools.partial(updatexx, self)],
+                        [functools.partial(progress___, self)],
                     ],
                 ),
             ],
-            [functools.partial(updatexx, self)],
-            [functools.partial(proxyusage, self)],
             [aboutwidget],
             [
                 functools.partial(
