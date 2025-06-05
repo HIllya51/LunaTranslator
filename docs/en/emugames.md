@@ -836,6 +836,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25081 | 最終電車 |
 |  | SLPS-25276 | 夏夢夜話 |
 |  | SLPM-65684 | マイネリーベ 優美なる記憶 |
 |  | SLPM-66247 | マイネリーベⅡ ～誇りと正義と愛～ |

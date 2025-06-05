@@ -1425,7 +1425,7 @@ class MAINUI:
             self.translation_ui.closesignal.emit()
         elif msg == 3:
             self.translation_ui.clipboardcallback.emit(
-                cast(value2, c_bool).value, cast(value2, c_wchar_p).value
+                bool(value1), cast(value2, c_wchar_p).value
             )
         elif msg == 4:
             self.showtraymessage("Magpie", cast(value2, c_wchar_p).value, lambda: 1)

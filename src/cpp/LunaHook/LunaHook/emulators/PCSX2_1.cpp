@@ -543,6 +543,12 @@ namespace
 
         buffer->from(s);
     }
+    void SLPS25081(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        const uintptr_t val = PCSX2_REG(a0);
+        const uintptr_t val2 = val & 0xFFFF;
+        buffer->from_t(val2);
+    }
 }
 struct emfuncinfoX
 {
@@ -550,6 +556,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 最終電車
+    {0x1264EC, {0, 0, 0, SLPS25081, 0, "SLPS-25081"}},
     // 夏夢夜話
     {0x7689BC, {DIRECT_READ, 0, 0, 0, SLPS25276, "SLPS-25276"}},
     // マイネリーベ 優美なる記憶
