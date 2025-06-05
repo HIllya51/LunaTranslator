@@ -27,6 +27,10 @@
 
     OCR interface
 
+1. #### /page/tts
+
+    TTS interface
+    
 ## API Services
 
 ### HTTP Service

@@ -26,6 +26,10 @@
 
     Giao diện OCR.
 
+1. #### /page/tts
+
+    Giao diện TTS.
+
 ## Dịch vụ API
 
 ### Dịch vụ HTTP

@@ -280,6 +280,13 @@ class Pageocr(HTTPHandler):
         page = r"LunaTranslator\htmlcode\service\ocr.html"
         return FileResponse(page)
 
+class Pagetts(HTTPHandler):
+    path = "/page/tts"
+
+    def parse(self, _):
+        page = r"LunaTranslator\htmlcode\service\tts.html"
+        return FileResponse(page)
+
 
 class TextOutputOrigin(WSHandler):
     path = "/api/ws/text/origin"
@@ -314,6 +321,7 @@ def registerall(service: TCPService):
     service.register(PageSearchWord)
     service.register(Pagetranslate)
     service.register(Pageocr)
+    service.register(Pagetts)
     service.register(PageMainui)
     service.register(internalservicemainuiws)
     service.register(Pagetranshist)

@@ -489,6 +489,9 @@ def filetranslate(self):
                     [
                         functools.partial(createlabellink, "/page/ocr"),
                     ],
+                    [
+                        functools.partial(createlabellink, "/page/tts"),
+                    ],
                 ],
             ),
         ],
