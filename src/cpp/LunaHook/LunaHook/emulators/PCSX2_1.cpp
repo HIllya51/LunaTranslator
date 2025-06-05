@@ -565,7 +565,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // My Merry May with be
     {0x1DB7DC, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM66045, "SLPM-66045"}},
     // CLANNAD - ゲオオンラインストア
-    {0x1DB7DC, {0, PCSX2_REG_OFFSET(s4), 0, 0, FSLPM66302, "SLPM-66302"}},
+    {0x14AC38, {0, PCSX2_REG_OFFSET(s4), 0, 0, FSLPM66302, "SLPM-66302"}},
     // 苺ましまろ
     {0x1439F4, {0, PCSX2_REG_OFFSET(s1), 0, 0, FSLPS25547, "SLPS-25547"}},
     // ブラッドプラス ワン ナイト キス
