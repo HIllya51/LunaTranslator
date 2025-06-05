@@ -270,7 +270,7 @@ class gptcommon(basetrans):
                 yield "LUNASHOWHTML" + NativeUtils.Markdown2Html(respmessage)
             else:
                 yield respmessage
-        if not (query_1.strip() and respmessage.strip()):
+        if not (respmessage and query_1.strip() and respmessage.strip()):
             return
         self.context.append({"role": "user", "content": query_1})
         self.context_for_cache.append({"role": "user", "content": query})
