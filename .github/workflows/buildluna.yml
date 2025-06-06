@@ -9,31 +9,28 @@ on:
         required: false 
 jobs:
   hook:
-    runs-on: ${{matrix.runson}}
+    runs-on: windows-latest
     strategy:
       matrix:
         include:
           - arch: x86
             target: win7  
-            runson: windows-latest
           - arch: x64
             target: win7  
-            runson: windows-latest
           - arch: x64
             target: win10  
-            runson: windows-latest
           - arch: x86
             target: win10  
-            runson: windows-latest
-          # - arch: x86
-          #   target: winxp
-          #   runson: windows-2019
+          - arch: x86
+            target: winxp
     permissions:
       id-token: write
       attestations: write
       contents: write
     steps:
       - uses: actions/checkout@v4
+      - if: matrix.target == 'winxp'
+        run: src\scripts\install_msvc.bat v141_xp
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           # sdk-version: 26100 2019上安装这个版本慢的离谱。
@@ -45,27 +42,24 @@ jobs:
           name: hook_${{matrix.arch}}_${{matrix.target}}
           path: src/cpp/LunaHook/builds/Release
   build_cpp:
-    runs-on: ${{matrix.runson}}
+    runs-on: windows-latest
     strategy:
       matrix: 
         include:
           - arch: x86
             target: win7  
-            runson: windows-latest
           - arch: x64
             target: win7  
-            runson: windows-latest
           - arch: x64
             target: win10  
-            runson: windows-latest
           - arch: x86
             target: win10  
-            runson: windows-latest
-          # - arch: x86
-          #   target: winxp
-          #   runson: windows-2019
+          - arch: x86
+            target: winxp
     steps:
       - uses: actions/checkout@v4
+      - if: matrix.target == 'winxp'
+        run: src\scripts\install_msvc.bat v141_xp
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
           sdk-version: 22621
@@ -124,9 +118,9 @@ jobs:
           - arch: x64
             target: win10 
             savename: LunaTranslator_x64_win10 
-          # - arch: x86
-          #   target: winxp
-          #   savename: LunaTranslator_x86_winxp 
+          - arch: x86
+            target: winxp
+            savename: LunaTranslator_x86_winxp 
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
@@ -165,6 +159,7 @@ jobs:
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
+            build/LunaTranslator_x86_winxp/LunaTranslator_x86_winxp.zip
             build/LunaTranslator_x86_win7/LunaTranslator_x86_win7.zip
             build/LunaTranslator_x64_win7/LunaTranslator_x64_win7.zip
             build/LunaTranslator_x64_win10/LunaTranslator_x64_win10.zip

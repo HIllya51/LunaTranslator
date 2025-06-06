@@ -185,7 +185,7 @@ def buildhook(arch, target):
 
     os.chdir("cpp/LunaHook")
     archA = ("win32", "x64")[arch == "x64"]
-    vsver = "Visual Studio 16 2019" if target == "winxp" else "Visual Studio 17 2022"
+    vsver = "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     if target == "win10":
         config = "-DWIN10ABOVE=ON"
@@ -224,7 +224,7 @@ def buildPlugins(arch, target):
         else (" -DWINXP=ON " if target == "winxp" else "")
     )
     sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 " if target != "winxp" else ""
-    vsver = "Visual Studio 16 2019" if target == "winxp" else "Visual Studio 17 2022"
+    vsver = "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     subprocess.run(
         f'cmake {flag} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
