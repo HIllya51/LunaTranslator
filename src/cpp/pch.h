@@ -3,6 +3,11 @@
 #define NOMINMAX
 #define _CRT_STDIO_ARBITRARY_WIDE_SPECIFIERS 1
 #include <windows.h>
+
+#ifndef E_BOUNDS
+#define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
+#endif
+
 #include <Shobjidl.h>
 #include <malloc.h>
 #include <initguid.h>

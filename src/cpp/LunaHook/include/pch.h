@@ -3,6 +3,11 @@
 #define _WINSOCKAPI_
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+
+#ifndef E_BOUNDS
+#define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
+#endif
+
 #include <windowsx.h>
 #include <concrt.h>
 #include <string>

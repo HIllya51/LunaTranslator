@@ -58,7 +58,7 @@ elif sys.argv[1] == "build":
     target = sys.argv[4]
 
     archA = ("win32", "x64")[arch == "x64"]
-    vsver = "Visual Studio 16 2019" if target == "winxp" else "Visual Studio 17 2022"
+    vsver = "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     config = (
         "-DWIN10ABOVE=ON"
@@ -69,9 +69,8 @@ elif sys.argv[1] == "build":
     if not core:
         config += " -DBUILD_GUI=ON "
 
-    sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 "
     subprocess.run(
-        f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
+        f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
     )
     subprocess.run(
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"

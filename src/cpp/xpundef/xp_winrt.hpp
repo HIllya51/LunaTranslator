@@ -2,7 +2,6 @@
 #define MIDL_CONST_ID const __declspec(selectany)
 typedef GUID IID;
 typedef IID *LPIID;
-#define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
 
 typedef struct EventRegistrationToken
 {
