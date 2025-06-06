@@ -15,7 +15,7 @@ from myutils.config import (
     _TR,
     isascii,
 )
-from ctypes import cast, c_void_p, c_wchar_p, c_bool
+from ctypes import cast, c_void_p, c_wchar_p
 from myutils.keycode import mod_map_r
 from gobject import sys_le_xp
 from myutils.mecab import mecab, latin
@@ -47,6 +47,7 @@ from gui.translatorUI import TranslatorWindow
 import functools, gobject
 from gui.transhist import transhist
 from gui.edittext import edittext
+from gui.flowsearchword import WordViewTooltip
 import importlib, qtawesome
 from functools import partial
 from gui.attachprocessdialog import AttachProcessDialog
@@ -68,6 +69,7 @@ from cishu.cishubase import cishubase
 from translator.basetranslator import basetrans
 from textio.textoutput.outputerbase import Base as outputerbase
 from myutils.updater import versioncheckthread
+
 
 class MAINUI:
     def __init__(self) -> None:
@@ -1069,7 +1071,7 @@ class MAINUI:
                 word1, self.currenttext, append
             ),
             "openlink": __openlink,
-            "searchword_S": lambda word1: self.settin_ui.hover_search_word.emit(
+            "searchword_S": lambda word1: gobject.signals.hover_search_word.emit(
                 word1, self.currenttext, append, False, False
             ),
         }
@@ -1348,13 +1350,13 @@ class MAINUI:
         self.startreader()
         self.searchwordW = searchwordW(self.commonstylebase)
         self.hookselectdialog = hookselect(self.commonstylebase)
+        self.WordViewTooltip = WordViewTooltip(self.commonstylebase)
         self.starttextsource()
         self.inittray()
         self.playtimemanager = playtimemanager()
         self.urlprotocol()
         self.serviceinit()
         versioncheckthread()
-        
 
     def WinEventHookCALLBACK(self, event, hwnd, idObject):
         try:
@@ -1415,7 +1417,7 @@ class MAINUI:
             if globalconfig["darklight2"] == 0:
                 self.commonstylebase.setstylesheetsignal.emit()
         elif msg == 1:
-            running = not(value1 == None and value2 == None)
+            running = not (value1 == None and value2 == None)
             if running:
                 self.translation_ui.settop()
             else:

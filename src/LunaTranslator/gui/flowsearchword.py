@@ -246,8 +246,10 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         )
 
     def resizeEvent(self, a0: QResizeEvent):
-        self.doResize()
-        globalconfig["WordViewTooltip2"] = a0.size().width(), a0.size().height()
+        if self.__state != 0:
+            # Qt模式下，谜之resize
+            self.doResize()
+            globalconfig["WordViewTooltip2"] = a0.size().width(), a0.size().height()
         return super().resizeEvent(a0)
 
     def setbgcolor(self):
@@ -305,6 +307,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             None,
         )
         self.__state = 0
+        gobject.signals.hover_search_word.connect(self.searchword)
 
     def setupUi(self):
         self.lastword = None

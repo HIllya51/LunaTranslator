@@ -17,6 +17,7 @@ class SignalDispatcher(QObject):
     progresssignal4 = pyqtSignal(str, int)
     versiontextsignal = pyqtSignal(str)
     clipboardcallback = pyqtSignal(bool, str)
+    hover_search_word = pyqtSignal(str, str, bool, bool, bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)

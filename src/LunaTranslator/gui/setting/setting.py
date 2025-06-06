@@ -13,7 +13,6 @@ from gui.setting.hotkey import setTab_quick, registrhotkeys
 from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
 from gui.setting.about import setTab_about
 from gui.dynalang import LListWidgetItem, LListWidget
-from gui.flowsearchword import WordViewTooltip
 
 
 class TabWidget(QWidget):
@@ -81,7 +80,6 @@ class TabWidget(QWidget):
 
 
 class Setting(closeashidewindow):
-    hover_search_word = pyqtSignal(str, str, bool, bool, bool)
     hover_search_word_checkpos = pyqtSignal()
     showandsolvesig = pyqtSignal(str, str)
 
@@ -91,8 +89,6 @@ class Setting(closeashidewindow):
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.isfirst = True
         registrhotkeys(self)
-        self._WordViewer = WordViewTooltip(self)
-        self.hover_search_word.connect(self._WordViewer.searchword)
 
     def showEvent(self, e: QShowEvent):
         if self.isfirst:

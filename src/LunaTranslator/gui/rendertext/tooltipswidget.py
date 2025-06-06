@@ -199,7 +199,7 @@ class tooltipswidget(QMainWindow, dataget):
             wordwhich = lambda k: (word.word, word.prototype)[
                 globalconfig["usewordoriginfor"].get(k, False)
             ]
-            gobject.baseobject.settin_ui.hover_search_word.emit(
+            gobject.signals.hover_search_word.emit(
                 wordwhich("searchword_S_hover"),
                 gobject.baseobject.currenttext,
                 False,
@@ -208,7 +208,7 @@ class tooltipswidget(QMainWindow, dataget):
             )
         if skip:
             return
-        if gobject.baseobject.settin_ui._WordViewer.isVisible():
+        if gobject.baseobject.WordViewTooltip.isVisible():
             return
         if globalconfig["word_hover_show_word_info"]:
 
