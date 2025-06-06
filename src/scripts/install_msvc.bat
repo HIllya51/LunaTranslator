@@ -15,5 +15,5 @@ IF /I "%~1" == "arm" (
 
 IF /I "%~1" == "v141_xp" (
 	SHIFT
-	"%VSINSTALLER%" modify --installPath "%VSPATH%" --add Microsoft.VisualStudio.Component.WinXP --norestart --nocache
+	"%VSINSTALLER%" modify --installPath "%VSPATH%" --add Microsoft.VisualStudio.Component.WinXP --quiet --norestart --nocache
 )
