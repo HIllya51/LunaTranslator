@@ -29,7 +29,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - if: ${{ matrix.target == "winxp" }}:
+      - if: ${{ matrix.target == "winxp" }}
         run: CALL "src\scripts\install_msvc.bat" v141_xp
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
@@ -58,7 +58,7 @@ jobs:
             target: winxp
     steps:
       - uses: actions/checkout@v4
-      - if: ${{ matrix.target == "winxp" }}:
+      - if: ${{ matrix.target == "winxp" }}
         run: CALL "src\scripts\install_msvc.bat" v141_xp
       - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
         with:
