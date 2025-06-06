@@ -173,7 +173,7 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebVie
         ref->m_webViewController->add_ZoomFactorChanged(this, &token);
         [&]()
         {
-            if (!ref->backgroundtransparent)
+            if (!ref->__init_backgroundtransparent)
                 return;
             ref->set_transparent(true);
         }();
@@ -231,10 +231,28 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
 // ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler
 HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebView2Environment *env)
 {
-    auto hr = [=]()
+    auto hr = [&]()
     {
         CHECK_FAILURE(result);
-        CHECK_FAILURE(env->CreateCoreWebView2Controller(ref->parent, this));
+        auto _withoption = [&]() -> HRESULT
+        {
+            if (!ref->__init_backgroundtransparent)
+                return E_ABORT;
+            CComPtr<ICoreWebView2Environment10> env10;
+            CHECK_FAILURE(env->QueryInterface(&env10));
+            CComPtr<ICoreWebView2ControllerOptions> options;
+            CHECK_FAILURE(env10->CreateCoreWebView2ControllerOptions(&options));
+            CComPtr<ICoreWebView2ControllerOptions3> options3;
+            CHECK_FAILURE(options->QueryInterface(&options3));
+            COREWEBVIEW2_COLOR color;
+            ZeroMemory(&color, sizeof(color));
+            CHECK_FAILURE(options3->put_DefaultBackgroundColor(color));
+            CHECK_FAILURE(env10->CreateCoreWebView2ControllerWithOptions(ref->parent, options3, this));
+            ref->__init_backgroundtransparent = false;
+            return S_OK;
+        };
+        if (FAILED(_withoption()))
+            CHECK_FAILURE(env->CreateCoreWebView2Controller(ref->parent, this));
         ref->m_env = env;
         return S_OK;
     }();
@@ -422,7 +440,7 @@ HRESULT WebView2::init(bool loadextension_)
     CHECK_FAILURE(CreateCoreWebView2ControllerError);
     return (m_env && m_webView && m_webViewController) ? S_OK : E_FAIL;
 }
-WebView2::WebView2(HWND parent, bool backgroundtransparent) : parent(parent), backgroundtransparent(backgroundtransparent)
+WebView2::WebView2(HWND parent, bool backgroundtransparent) : parent(parent), __init_backgroundtransparent(backgroundtransparent)
 {
 }
 std::wstring WebView2::GetUserDataFolder()

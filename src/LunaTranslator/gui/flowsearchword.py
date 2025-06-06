@@ -289,6 +289,13 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
                 int(self.winId()), globalconfig["WordViewTooltipDWM_1"]
             )
 
+    def __load(self):
+        if self.__state != 0:
+            return
+        self.__state = 1
+        self.setupUi()
+        self.__state = 2
+
     def __init__(self, parent):
         DraggableQWidget.__init__(self)
         resizableframeless.__init__(
@@ -297,6 +304,9 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint,
             None,
         )
+        self.__state = 0
+
+    def setupUi(self):
         self.lastword = None
         self.setMouseTracking(True)
 
@@ -402,6 +412,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         show=False,
         force=False,
     ):
+        self.__load()
         if fromhover and not force:
             if word == self.lastword:
                 return self.moveresult_1()

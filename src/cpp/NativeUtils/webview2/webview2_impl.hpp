@@ -26,7 +26,7 @@ public:
     // ICoreWebView2GetFaviconCompletedHandler
     HRESULT STDMETHODCALLTYPE Invoke(HRESULT errorCode, IStream *faviconStream);
 };
-class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler,  ICoreWebView2DocumentTitleChangedEventHandler>
+class WebView2ComHandler : public ComImpl<ICoreWebView2NavigationStartingEventHandler, ICoreWebView2ZoomFactorChangedEventHandler, ICoreWebView2ContextMenuRequestedEventHandler, ICoreWebView2WebMessageReceivedEventHandler, ICoreWebView2PermissionRequestedEventHandler, ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler, ICoreWebView2CreateCoreWebView2ControllerCompletedHandler, ICoreWebView2NewWindowRequestedEventHandler, ICoreWebView2DocumentTitleChangedEventHandler>
 {
     WebView2 *ref;
     COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND targetKind;
@@ -68,7 +68,7 @@ class WebView2
 {
     friend class WebView2ComHandler;
     HWND parent;
-    bool backgroundtransparent;
+    bool __init_backgroundtransparent = false;
     std::atomic_flag waitforloadflag = ATOMIC_FLAG_INIT;
     CComPtr<ICoreWebView2Controller> m_webViewController;
     CComPtr<ICoreWebView2> m_webView;
