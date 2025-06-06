@@ -13,17 +13,16 @@ if(NOT EXISTS "${mecabsrc}/writeonceflag")
 
     file(READ "${mecabsrc}/dictionary.cpp" dictionary)
     set(std_binary_function [=[
-namespace std
-{
+
   template <class Argv1, class Argv2, class Result>
-  struct binary_function
+  struct std_binary_function_FUCK
   {
     typedef Argv1 first_argument_type;
     typedef Argv2 second_argument_type;
     typedef Result result_type;
   };
-}
 ]=])
+    string(REPLACE "std::binary_function" "std_binary_function_FUCK" dictionary "${dictionary}")
     file(WRITE "${mecabsrc}/dictionary.cpp" "${std_binary_function}${dictionary}")
 
     file(READ "${mecabsrc}/mecab.h" mecabh)
