@@ -11,9 +11,8 @@ set(mecabsrc "${mecab_SOURCE_DIR}/mecab/src")
 
 if(NOT EXISTS "${mecabsrc}/writeonceflag")
 
-    if(NOT WINXP)
-        file(READ "${mecabsrc}/dictionary.cpp" dictionary)
-        set(std_binary_function [=[
+    file(READ "${mecabsrc}/dictionary.cpp" dictionary)
+    set(std_binary_function [=[
 namespace std
 {
   template <class Argv1, class Argv2, class Result>
@@ -25,10 +24,7 @@ namespace std
   };
 }
 ]=])
-        file(WRITE "${mecabsrc}/dictionary.cpp" "${std_binary_function}${dictionary}")
-    else()
-
-    endif()
+    file(WRITE "${mecabsrc}/dictionary.cpp" "${std_binary_function}${dictionary}")
 
     file(READ "${mecabsrc}/mecab.h" mecabh)
     string(REPLACE "__declspec(dllexport)" "" mecabh "${mecabh}")
