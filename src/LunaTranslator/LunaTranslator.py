@@ -1022,7 +1022,6 @@ class MAINUI:
         )
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
-        NativeUtils.SetTheme(int(widget.winId()), dark, globalconfig["WindowBackdrop"])
         if ismenulist:
             name = globalconfig["theme3"]
             NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
@@ -1032,6 +1031,8 @@ class MAINUI:
                 )
             else:
                 NativeUtils.clearEffect(int(widget.winId()))
+        else:
+            NativeUtils.SetTheme(int(widget.winId()), dark, globalconfig["WindowBackdrop"])
 
     def checkkeypresssatisfy(self, key, df=False):
         if not globalconfig["wordclickkbtriggerneed"].get(key, df):
