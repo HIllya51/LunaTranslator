@@ -11,7 +11,7 @@ from gui.setting.tts import setTab5
 from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
 from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
-from gui.setting.about import setTab_about, versioncheckthread
+from gui.setting.about import setTab_about
 from gui.dynalang import LListWidgetItem, LListWidget
 from gui.flowsearchword import WordViewTooltip
 
@@ -90,7 +90,6 @@ class Setting(closeashidewindow):
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.isfirst = True
-        versioncheckthread(self)
         registrhotkeys(self)
         self._WordViewer = WordViewTooltip(self)
         self.hover_search_word.connect(self._WordViewer.searchword)

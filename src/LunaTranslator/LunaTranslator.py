@@ -59,7 +59,6 @@ from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction
 from gui.setting.setting import Setting
-from gui.setting.textinput_ocr import showocrimage
 from gui.usefulwidget import PopupWidget
 from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
 from network.server.servicecollection import registerall
@@ -68,7 +67,7 @@ from tts.basettsclass import TTSbase
 from cishu.cishubase import cishubase
 from translator.basetranslator import basetrans
 from textio.textoutput.outputerbase import Base as outputerbase
-
+from myutils.updater import versioncheckthread
 
 class MAINUI:
     def __init__(self) -> None:
@@ -1354,6 +1353,8 @@ class MAINUI:
         self.playtimemanager = playtimemanager()
         self.urlprotocol()
         self.serviceinit()
+        versioncheckthread()
+        
 
     def WinEventHookCALLBACK(self, event, hwnd, idObject):
         try:

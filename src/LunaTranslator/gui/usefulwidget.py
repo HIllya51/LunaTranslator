@@ -3362,9 +3362,14 @@ class __VisLFormLayout(VisGridLayout):
 
 
 if isqt5:
-    VisLFormLayout = __VisLFormLayout
+
+    class VisLFormLayout(__VisLFormLayout):
+        pass
+
 else:
-    VisLFormLayout = LFormLayout
+
+    class VisLFormLayout(LFormLayout):
+        pass
 
 
 class CollapsibleBox(NQGroupBox):

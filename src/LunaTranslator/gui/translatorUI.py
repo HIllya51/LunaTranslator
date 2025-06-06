@@ -24,7 +24,7 @@ from myutils.utils import (
     find_or_create_uid,
 )
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
-from gui.setting.about import doupdate
+from myutils.updater import doupdate
 from gui.dialog_memory import dialog_memory
 from gui.rendertext.texttype import TextType, SpecialColor
 from gui.textbrowser import Textbrowser
