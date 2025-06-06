@@ -217,9 +217,13 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
         usecache.setChecked(globalconfig["fanyi"][apiuid].get("use_trans_cache", True))
         menu.addAction(copy)
 
-    if which == 1:
+    if which == 1 or "chatgpt-offline" == apiuid:
         menu.addAction(delete)
-    if globalconfig["useproxy"] and globalconfig["fanyi"][apiuid].get("type") not in ("offline", "other", "pre"):
+    if globalconfig["useproxy"] and globalconfig["fanyi"][apiuid].get("type") not in (
+        "offline",
+        "other",
+        "pre",
+    ):
         menu.addSeparator()
         menu.addAction(useproxy)
         useproxy.setChecked(globalconfig["fanyi"][apiuid].get("useproxy", True))

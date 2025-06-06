@@ -1,26 +1,26 @@
 
-
-DECLARE_API bool QueryVersion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4)
+using version_t = std::tuple<DWORD, DWORD, DWORD, DWORD>;
+std::optional<version_t> QueryVersion(const std::wstring& exe)
 {
 
     DWORD dwHandle;
-    DWORD dwSize = GetFileVersionInfoSizeW(exe, &dwHandle);
+    DWORD dwSize = GetFileVersionInfoSizeW(exe.c_str(), &dwHandle);
     if (dwSize == 0)
     {
-        return false;
+        return {};
     }
 
     std::vector<char> versionInfoBuffer(dwSize);
-    if (!GetFileVersionInfoW(exe, dwHandle, dwSize, versionInfoBuffer.data()))
+    if (!GetFileVersionInfoW(exe.c_str(), dwHandle, dwSize, versionInfoBuffer.data()))
     {
-        return false;
+        return {};
     }
 
     VS_FIXEDFILEINFO *pFileInfo;
     UINT fileInfoSize;
     if (!VerQueryValueW(versionInfoBuffer.data(), L"\\", reinterpret_cast<LPVOID *>(&pFileInfo), &fileInfoSize))
     {
-        return false;
+        return {};
     }
 
     DWORD ms = pFileInfo->dwFileVersionMS;
@@ -30,9 +30,5 @@ DECLARE_API bool QueryVersion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, 
     WORD minorVersion = LOWORD(ms);
     WORD buildNumber = HIWORD(ls);
     WORD revisionNumber = LOWORD(ls);
-    *_1 = majorVersion;
-    *_2 = minorVersion;
-    *_3 = buildNumber;
-    *_4 = revisionNumber;
-    return true;
+    return std::make_tuple(majorVersion, minorVersion, buildNumber, revisionNumber);
 }

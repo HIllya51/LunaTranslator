@@ -144,7 +144,7 @@ if target == "win7":
     copycheck(os.path.join(pyqtbindir, f"msvcp140_1.dll"), runtime)
 elif target == "win10":
     # 动态链接CVUtils需要concrt140，否则不用
-    # copycheck(r"c:\windows\system32\concrt140.dll", runtime)
+    copycheck(r"c:\windows\system32\concrt140.dll", runtime)
     copycheck(r"c:\windows\system32\vcruntime140.dll", runtime)
     copycheck(r"c:\windows\system32\vcruntime140_1.dll", runtime)
     copycheck(r"c:\windows\system32\msvcp140.dll", runtime)

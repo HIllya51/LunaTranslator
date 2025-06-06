@@ -2,6 +2,18 @@
 #include <mecab.h>
 #include <rapidfuzz/distance.hpp>
 #include <aes.hpp>
+#include "../fileversion.hpp"
+
+DECLARE_API bool QueryVersion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4)
+{
+    auto version = QueryVersion(exe);
+    if (!version)
+        return false;
+
+    std::tie(*_1, *_2, *_3, *_4) = version.value();
+    return true;
+}
+
 DECLARE_API size_t levenshtein_distance(size_t len1, const wchar_t *string1,
                                         size_t len2, const wchar_t *string2)
 {

@@ -637,7 +637,10 @@ namespace
             return buffer->clear(); // chaos on first load.
         StringCharReplacer(buffer, TEXTANDLEN(L"<br>"), '\n');
     }
-
+    void F0100DC1021662000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN(L"\\n"));
+    }
     void F010076902126E000(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("<br>"));
@@ -3863,6 +3866,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // DYNAMIC CHORD feat.[rēve parfait]
     {0x81a48614, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
     {0x81a5d890, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
+    // 夏目友人帳 ～葉月の記～
+    {0x8187D0CC, {CODEC_UTF16, 0, 0X14, 0, F0100DC1021662000, 0x0100DC1021662000ull, "1.0.0"}},
+    {0x8188DA38, {CODEC_UTF16, 0, 0X14, 0, F0100DC1021662000, 0x0100DC1021662000ull, "1.0.1"}},
 
 };
 

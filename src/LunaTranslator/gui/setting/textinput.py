@@ -19,7 +19,6 @@ from gui.usefulwidget import (
     yuitsu_switch,
     D_getsimpleswitch,
     getboxwidget,
-    MDLabel,
     makesubtab_lazy,
     makescrollgrid,
     FocusFontCombo,

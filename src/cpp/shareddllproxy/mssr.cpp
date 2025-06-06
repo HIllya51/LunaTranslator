@@ -10,10 +10,17 @@
 using namespace Microsoft::CognitiveServices::Speech;
 using namespace Microsoft::CognitiveServices::Speech::Audio;
 
-constexpr inline const char MS_SR_KEY[] = "Key:XUw7C0rcZAIQvG837YP4F1KHz2RqYuQgtyXrcbFhsWFNGjG08HJElmPGesxNMbib0s8y39NEti3q3RwPNRbuDv75ejZbTa9yLcTAUixC";
 const WCHAR syspath1[] = LR"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\LiveCaptions)";
 const WCHAR syspath2[] = LR"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy)";
-
+std::string parsekey(std::string key);
+std::string searchkey(const char *ff);
+static std::string getkey()
+{
+    auto _ = searchkey(R"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechRecognizer.dll)");
+    if (_.size())
+        return _;
+    return "\x4b\x65\x79\x3a\x58\x55\x77\x37\x43\x30\x72\x63\x5a\x41\x49\x51\x76\x47\x38\x33\x37\x59\x50\x34\x46\x31\x4b\x48\x7a\x32\x52\x71\x59\x75\x51\x67\x74\x79\x58\x72\x63\x62\x46\x68\x73\x57\x46\x4e\x47\x6a\x47\x30\x38\x48\x4a\x45\x6c\x6d\x50\x47\x65\x73\x78\x4e\x4d\x62\x69\x62\x30\x73\x38\x79\x33\x39\x4e\x45\x74\x69\x33\x71\x33\x52\x77\x50\x4e\x52\x62\x75\x44\x76\x37\x35\x65\x6a\x5a\x62\x54\x61\x39\x79\x4c\x63\x54\x41\x55\x69\x78\x43";
+}
 int mssr(int argc, wchar_t *argv[])
 {
 
@@ -38,7 +45,7 @@ int mssr(int argc, wchar_t *argv[])
 
     for (auto &m : config->GetSpeechRecognitionModels())
     {
-        config->SetSpeechRecognitionModel(m->Name, MS_SR_KEY);
+        config->SetSpeechRecognitionModel(m->Name, parsekey(getkey()));
     }
     config->SetProfanity(ProfanityOption::Raw);
     CEvent recognitionEnd{FALSE, FALSE};

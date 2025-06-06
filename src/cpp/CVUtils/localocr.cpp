@@ -1,4 +1,4 @@
-﻿
+﻿#include "../fileversion.hpp"
 #include "dbcrnn.hpp"
 #ifndef WINXP
 #include <dxgi.h>
@@ -147,18 +147,6 @@ static std::optional<std::wstring> SearchDllPath(const std::wstring &dll)
         return {};
     return std::move(buff);
 }
-extern "C" bool QueryVersion(const wchar_t *exe, WORD *_1, WORD *_2, WORD *_3, WORD *_4);
-using version_t = std::tuple<DWORD, DWORD, DWORD, DWORD>;
-static std::optional<version_t> QueryVersion(const std::optional<std::wstring> &exe)
-{
-    if (!exe)
-        return {};
-    WORD _1, _2, _3, _4;
-    if (!QueryVersion(exe.value().c_str(), &_1, &_2, &_3, &_4))
-        return {};
-    std::wcout << _1 << L"," << _2 << L"," << _3 << L"," << _4 << L"\t" << exe.value() << std::endl;
-    return std::make_tuple(_1, _2, _3, _4);
-}
 static bool isvcrtlessthan1440()
 {
     // 实测之和msvcp140有关，低版本的vcruntime140.dll不影响。
@@ -180,7 +168,9 @@ static std::optional<version_t> checkfileversion(const std::optional<std::wstrin
     // https://github.com/microsoft/onnxruntime/releases/tag/v1.21.0
     // All the prebuilt Windows packages now require VC++ Runtime version >= 14.40(instead of 14.38). If your VC++ runtime version is lower than that, you may see a crash when ONNX Runtime was initializing. See https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710 for more details.
     // 不过实测在更古老py37(14.00)上是没问题的，但在py311(14.38)或pyqt(14.26)上确实会崩溃，保险起见不要加载。
-    auto vermy = QueryVersion(exe);
+    if(!exe)
+        return {};
+    auto vermy = QueryVersion(exe.value());
     if (!vermy)
         return {};
     if (vermy >= std::make_tuple(1u, 21u, 0u, 0u))

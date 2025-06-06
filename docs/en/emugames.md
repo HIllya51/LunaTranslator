@@ -349,6 +349,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | 0100451020714000 | 幻想牢獄のカレイドスコープ２ |
 |  | 01002080191CE000 | 戦場の円舞曲 for Nintendo Switch |
 |  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
+|  | 0100DC1021662000 | 夏目友人帳 ～葉月の記～ |
 
 == PSP
 
@@ -836,6 +837,9 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55006 | あかね色に染まる坂 ぱられる |
+|  | SLPS-25581 | SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム |
+|  | SLPS-20196 | 赤川次郎ミステリー月の光　 ～沈める鐘の殺人～ |
 |  | SLPS-25081 | 最終電車 |
 |  | SLPS-25276 | 夏夢夜話 |
 |  | SLPM-65684 | マイネリーベ 優美なる記憶 |

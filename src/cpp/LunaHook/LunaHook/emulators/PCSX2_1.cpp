@@ -549,6 +549,43 @@ namespace
         const uintptr_t val2 = val & 0xFFFF;
         buffer->from_t(val2);
     }
+    void SLPM55006(TextBuffer *buffer, HookParam *hp)
+    {
+        auto __ = buffer->strA();
+        if (__.size() % 2)
+            return buffer->clear();
+        for (int i = 0; i < __.size() / 2; i++)
+        {
+            if (!IsShiftjisWord(*(WORD *)(__.data() + 2 * i)))
+                return buffer->clear();
+        }
+        static std::string last;
+        if (last == __)
+            return buffer->clear();
+        last = __;
+    }
+    void SLPS20196(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        const uintptr_t val = PCSX2_REG(a0);
+        const uintptr_t val2 = val & 0xFFFF;
+        const uintptr_t val3 = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
+        buffer->from_t(val3);
+    }
+    void SLPS25581(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        const uintptr_t p1 = PCSX2_REG(s1);
+        const uintptr_t p2 = p1 & 0x0FFFFFFF;
+        uint8_t *ptr = (uint8_t *)emu_addr(p2);
+        if (!ptr || ptr == nullptr)
+        {
+            return;
+        }
+        uint8_t b0 = ptr[0];
+        uint8_t b1 = ptr[1];
+        const uintptr_t sjis = ((uintptr_t)b1 << 8) | b0;
+        buffer->from_t(sjis);
+    }
+
 }
 struct emfuncinfoX
 {
@@ -556,6 +593,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // あかね色に染まる坂 ぱられる
+    {0x126660, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55006, "SLPM-55006"}},
+    // SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム
+    {0x128D58, {0, 0, 0, SLPS25581, 0, "SLPS-25581"}},
+    // 赤川次郎ミステリー月の光　 ～沈める鐘の殺人～
+    {0x118150, {0, 0, 0, SLPS20196, 0, "SLPS-20196"}},
     // 最終電車
     {0x1264EC, {0, 0, 0, SLPS25081, 0, "SLPS-25081"}},
     // 夏夢夜話

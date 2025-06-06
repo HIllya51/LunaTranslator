@@ -3,13 +3,12 @@
 #else
 #include "../xpundef/xp_winrt.hpp"
 #endif
-
+#include "../fileversion.hpp"
 #include <speechapi_cxx.h>
 
 using namespace Microsoft::CognitiveServices::Speech;
 using namespace Microsoft::CognitiveServices::Speech::Audio;
 
-constexpr inline const char MS_TTS_KEY[] = "Key:ZCjZ7nHDSLvf4gpELteM4AnzaWUjTpn7UkV7D@vvksl0w1SNgon6d1905WANbktDc9S39oaA4r29HJNayXvTq8fJsq";
 const WCHAR syspath1[] = LR"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizer)";
 const WCHAR syspath2[] = LR"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy)";
 
@@ -43,6 +42,41 @@ void writewavheader(char *pBuffer, int sSize)
     memcpy(pBuffer + ptr, &sSize, 4);
     ptr += 4;
 }
+std::string searchkey(const char *ff)
+{
+    FILE *f;
+    fopen_s(&f, ff, "rb");
+    if (!f)
+        return "";
+    fseek(f, 0, SEEK_END);
+    auto len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    std::string s;
+    s.resize(len);
+    fread(s.data(), 1, len, f);
+    auto p = s.find("Key:");
+    if (p == s.npos)
+        return "";
+    return s.data() + p;
+}
+static std::string getkey()
+{
+    auto _ = searchkey(R"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizerExtension.dll)");
+    if (_.size())
+        return _;
+    return "\x4b\x65\x79\x3a\x5a\x43\x6a\x5a\x37\x6e\x48\x44\x53\x4c\x76\x66\x34\x67\x70\x45\x4c\x74\x65\x4d\x34\x41\x6e\x7a\x61\x57\x55\x6a\x54\x70\x6e\x37\x55\x6b\x56\x37\x44\x40\x76\x76\x6b\x73\x6c\x30\x77\x31\x53\x4e\x67\x6f\x6e\x36\x64\x31\x39\x30\x35\x57\x41\x4e\x62\x6b\x74\x44\x63\x39\x53\x33\x39\x6f\x61\x41\x34\x72\x32\x39\x48\x4a\x4e\x61\x79\x58\x76\x54\x71\x38\x66\x4a\x73\x71";
+}
+
+std::string parsekey(std::string key)
+{
+    HMODULE hmodule = GetModuleHandle(L"Microsoft.CognitiveServices.Speech.core.dll");
+    WCHAR path[MAX_PATH];
+    GetModuleFileNameW(hmodule, path, MAX_PATH);
+    auto vermy = QueryVersion(path);
+    if (vermy <= std::make_tuple(1u, 41u, 1u, 0u))
+        return key.substr(4);
+    return key;
+}
 int msnaturalvoice(int argc, wchar_t *argv[])
 {
 
@@ -73,7 +107,7 @@ int msnaturalvoice(int argc, wchar_t *argv[])
     config->SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat::Riff24Khz16BitMonoPcm);
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestSentenceBoundary, "true");
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestPunctuationBoundary, "false");
-    config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), MS_TTS_KEY);
+    config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), parsekey(getkey()));
     auto synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
 
     wchar_t text[10000];
