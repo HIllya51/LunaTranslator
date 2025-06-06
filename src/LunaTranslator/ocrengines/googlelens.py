@@ -395,7 +395,9 @@ class Enum(int, enum.Enum):
         try:
             return cls.__members__[name]
         except KeyError as e:
-            raise ValueError(f"Unknown value {name} for enum {cls.__name__}") from e
+            raise ValueError(
+                "Unknown value {} for enum {}".format(name, cls.__name__)
+            ) from e
 
 
 def _pack_fmt(proto_type: str) -> str:

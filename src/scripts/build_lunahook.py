@@ -69,8 +69,9 @@ elif sys.argv[1] == "build":
     if not core:
         config += " -DBUILD_GUI=ON "
 
+    sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 "
     subprocess.run(
-        f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
+        f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
     )
     subprocess.run(
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
