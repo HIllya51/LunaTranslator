@@ -186,6 +186,7 @@ class tooltipswidget(QMainWindow, dataget):
     def hidetooltipwindow():
         if tooltipswidget.tooltipwindow:
             tooltipswidget.tooltipwindow.hide()
+        gobject.baseobject.WordViewTooltip.Leave()
 
     @staticmethod
     def tracetooltipwindow(word: WordSegResult, pos):

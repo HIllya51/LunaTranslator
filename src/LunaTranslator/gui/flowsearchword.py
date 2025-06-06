@@ -308,6 +308,14 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         )
         self.__state = 0
         gobject.signals.hover_search_word.connect(self.searchword)
+        self.__f = QTimer(self)
+        self.__f.setInterval(50)
+        self.__f.timeout.connect(self.__detectkey)
+        self.__savestatus = None
+
+    def Leave(self):
+        self.__f.stop()
+        self.lastword = None
 
     def setupUi(self):
         self.lastword = None
@@ -387,10 +395,6 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.view.internalmoved.connect(
             lambda pos: self.w2.move(self.view.mapToParent(pos))
         )
-        self.__f = QTimer(self)
-        self.__f.setInterval(50)
-        self.__f.timeout.connect(self.__detectkey)
-        self.__savestatus = None
 
     def __detectkey(self):
         if not globalconfig["usesearchword_S_hover"]:

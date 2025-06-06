@@ -111,16 +111,12 @@ jobs:
         include:
           - arch: x86
             target: win7 
-            savename: LunaTranslator_x86_win7
           - arch: x64
             target: win7 
-            savename: LunaTranslator_x64_win7
           - arch: x64
             target: win10 
-            savename: LunaTranslator_x64_win10 
           - arch: x86
             target: winxp
-            savename: LunaTranslator_x86_winxp 
     steps:
       - uses: actions/checkout@v4
       - run: git submodule init src/files/LunaTranslator_qss
@@ -131,11 +127,11 @@ jobs:
       - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{matrix.target}}
       - uses: actions/attest-build-provenance@v2.2.0
         with:
-            subject-path: src/build/${{ matrix.savename }}.zip
+            subject-path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}.zip
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.savename }}
-          path: src/build/${{ matrix.savename }}.zip
+          name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
+          path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}.zip
 
   loadversion:
     if: ${{inputs.createrelease}}
