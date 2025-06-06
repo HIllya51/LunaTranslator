@@ -2458,7 +2458,7 @@ def makegroupingrid(args: dict):
     groupname = args.get("name", None)
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
-    hiderows=args.get("hiderows",[])
+    hiderows = args.get("hiderows", [])
     if button:
         group = BGroupBox()
         group.setTitle(title)
@@ -2479,7 +2479,7 @@ def makegroupingrid(args: dict):
         if internallayoutname:
             setattr(parent, internallayoutname, grid)
     elif _type == "form":
-        lay = LFormLayout(group)
+        lay = VisLFormLayout(group)
         makeforms(lay, lis, hiderows)
         if internallayoutname:
             setattr(parent, internallayoutname, lay)
@@ -3318,7 +3318,7 @@ class VisGridLayout(QGridLayout):
                 super().addWidget(w, r, c, rs, cs)
 
 
-class VisLFormLayout(VisGridLayout):
+class __VisLFormLayout(VisGridLayout):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setAlignment(Qt.AlignmentFlag.AlignTop)
@@ -3359,6 +3359,12 @@ class VisLFormLayout(VisGridLayout):
 
     def addWidget(self, w):
         self.addRow(None, w)
+
+
+if isqt5:
+    VisLFormLayout = __VisLFormLayout
+else:
+    VisLFormLayout = LFormLayout
 
 
 class CollapsibleBox(NQGroupBox):
