@@ -1032,7 +1032,9 @@ class MAINUI:
             else:
                 NativeUtils.clearEffect(int(widget.winId()))
         else:
-            NativeUtils.SetTheme(int(widget.winId()), dark, globalconfig["WindowBackdrop"])
+            NativeUtils.SetTheme(
+                int(widget.winId()), dark, globalconfig["WindowBackdrop"]
+            )
 
     def checkkeypresssatisfy(self, key, df=False):
         if not globalconfig["wordclickkbtriggerneed"].get(key, df):
@@ -1072,8 +1074,14 @@ class MAINUI:
                 word1, self.currenttext, append
             ),
             "openlink": __openlink,
-            "searchword_S": lambda word1: gobject.signals.hover_search_word.emit(
-                word1, self.currenttext, append, False, False
+            "searchword_S": lambda word1: threader(
+                gobject.signals.hover_search_word.emit
+            )(
+                word1,
+                self.currenttext,
+                append,
+                False,
+                False,
             ),
         }
         noneedkeys = []

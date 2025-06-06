@@ -416,6 +416,8 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         force=False,
     ):
         self.__load()
+        if self.__state != 2:
+            return
         if fromhover and not force:
             if word == self.lastword:
                 return self.moveresult_1()

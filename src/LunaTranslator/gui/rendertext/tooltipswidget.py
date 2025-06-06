@@ -7,7 +7,7 @@ from sometypes import WordSegResult
 import windows
 from myutils.config import globalconfig
 from gui.usefulwidget import getcolorbutton, getspinbox, limitpos
-from myutils.wrapper import Singleton
+from myutils.wrapper import Singleton, threader
 from gui.dynalang import LDialog, LFormLayout
 from gui.flowsearchword import createsomecontrols
 import NativeUtils
@@ -199,7 +199,7 @@ class tooltipswidget(QMainWindow, dataget):
             wordwhich = lambda k: (word.word, word.prototype)[
                 globalconfig["usewordoriginfor"].get(k, False)
             ]
-            gobject.signals.hover_search_word.emit(
+            threader(gobject.signals.hover_search_word.emit)(
                 wordwhich("searchword_S_hover"),
                 gobject.baseobject.currenttext,
                 False,
