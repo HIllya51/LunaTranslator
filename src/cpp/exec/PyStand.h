@@ -9,6 +9,12 @@
 #ifndef _PYSTAND_H_
 #define _PYSTAND_H_
 #include <windows.h>
+
+
+#ifndef E_BOUNDS
+#define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
+#endif
+
 #include <string>
 #include <vector>
 //---------------------------------------------------------------------
