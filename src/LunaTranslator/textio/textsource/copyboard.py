@@ -7,7 +7,7 @@ class copyboard(basetext):
 
     def end(self):
         NativeUtils.ClipBoardListenerStop()
-        gobject.baseobject.translation_ui.clipboardcallback.disconnect()
+        # 不需要disconnect。而且Qt6在结束时closeEvent里disconnect会谜之卡住最后的退出
 
     def __callback(self, ismy, string):
         if globalconfig["excule_from_self"] and ismy:
@@ -16,7 +16,7 @@ class copyboard(basetext):
 
     def init(self) -> None:
         self.startsql(gobject.gettranslationrecorddir("0_copy.sqlite"))
-        gobject.baseobject.translation_ui.clipboardcallback.connect(self.__callback)
+        gobject.signals.clipboardcallback.connect(self.__callback)
         NativeUtils.ClipBoardListenerStart()
 
     def gettextonce(self):

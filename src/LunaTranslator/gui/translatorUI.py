@@ -353,7 +353,6 @@ class TranslatorWindow(resizableframeless):
     changeshowhiderawsig = pyqtSignal()
     changeshowhidetranssig = pyqtSignal()
     magpiecallback = pyqtSignal(bool)
-    clipboardcallback = pyqtSignal(bool, str)
     internaltexthide = pyqtSignal(bool)
 
     def setbuttonsizeX(self):

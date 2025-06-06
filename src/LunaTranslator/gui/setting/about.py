@@ -455,17 +455,17 @@ class aboutwidget(NQGroupBox):
         t6 = "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
         if getlanguse() == Languages.Chinese:
             shuominggrid = [
-                [MDLabel1("\n\n".join([t3, t2]), static=True)],
+                [functools.partial(MDLabel1, "\n\n".join([t3, t2]), static=True)],
                 [self.createimageview],
             ]
 
         elif getlanguse() == Languages.TradChinese:
             shuominggrid = [
-                [MDLabel1("\n\n".join([t5, t7]), static=True)],
+                [functools.partial(MDLabel1, "\n\n".join([t5, t7]), static=True)],
                 [self.createimageview],
             ]
         else:
-            shuominggrid = [[MDLabel1("\n\n".join([t6, t4]))]]
+            shuominggrid = [[functools.partial(MDLabel1, "\n\n".join([t6, t4]))]]
 
         makeforms(self.grid, shuominggrid)
 
@@ -564,8 +564,9 @@ def setTab_about(self, basel):
                                 delayloadsvg,
                                 "HIllya51/LunaTranslator",
                             ),
-                            MDLabel(
-                                "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。"
+                            functools.partial(
+                                MDLabel,
+                                "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。",
                             ),
                         ],
                         [("引用的项目", -1)],

@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     yuitsu_switch,
     D_getsimpleswitch,
     getboxwidget,
+    MDLabel,
     makesubtab_lazy,
     makescrollgrid,
     FocusFontCombo,
@@ -412,8 +413,21 @@ def __srcofig(grids: list, self):
     grids.insert(0, [__])
 
 
-def filetranslate(self):
+class MDLabel2(QLabel):
+    def __init__(self, md):
+        super().__init__()
+        self.setText(md)
+        self.setOpenExternalLinks(False)
+        self.setWordWrap(True)
+        self.linkActivated.connect(self._linkActivated)
 
+    def _linkActivated(self, url: str):
+        link = "http://127.0.0.1:{}{}".format(globalconfig["networktcpport"], url)
+        os.startfile(link)
+
+
+def filetranslate(self):
+    fuckyou = lambda _: '<a href="{}">{}</a>'.format(_, _)
     grids = [
         [
             dict(
@@ -473,24 +487,22 @@ def filetranslate(self):
                         ),
                     ],
                     [],
-                    [functools.partial(createlabellink, "/")],
                     [
-                        functools.partial(createlabellink, "/page/mainui"),
-                    ],
-                    [
-                        functools.partial(createlabellink, "/page/transhist"),
-                    ],
-                    [
-                        functools.partial(createlabellink, "/page/dictionary"),
-                    ],
-                    [
-                        functools.partial(createlabellink, "/page/translate"),
-                    ],
-                    [
-                        functools.partial(createlabellink, "/page/ocr"),
-                    ],
-                    [
-                        functools.partial(createlabellink, "/page/tts"),
+                        functools.partial(
+                            MDLabel2,
+                            ("&nbsp;" * 4).join(
+                                fuckyou(_)
+                                for _ in (
+                                    "/",
+                                    "/page/mainui",
+                                    "/page/transhist",
+                                    "/page/dictionary",
+                                    "/page/translate",
+                                    "/page/ocr",
+                                    "/page/tts",
+                                )
+                            ),
+                        )
                     ],
                 ],
             ),
@@ -509,17 +521,6 @@ def getpath():
         if os.path.exists(syspath) and os.path.isfile(syspath):
             return syspath
     return None
-
-
-def open___(url):
-    link = "http://127.0.0.1:{}{}".format(globalconfig["networktcpport"], url)
-    os.startfile(link)
-
-
-def createlabellink(url):
-    l = QLabel('<a href="{}">{}</a>'.format(url, url))
-    l.linkActivated.connect(open___)
-    return l
 
 
 def __portconflict(self):

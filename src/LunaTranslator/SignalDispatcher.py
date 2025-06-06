@@ -16,6 +16,7 @@ class SignalDispatcher(QObject):
     progresssignal3 = pyqtSignal(int)
     progresssignal4 = pyqtSignal(str, int)
     versiontextsignal = pyqtSignal(str)
+    clipboardcallback = pyqtSignal(bool, str)
 
     def __init__(self, parent=None):
         super().__init__(parent)
