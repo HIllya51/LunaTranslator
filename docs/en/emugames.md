@@ -26,6 +26,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
 |  | 0100D4601FD60000 | 蒼黒の楔 ～緋色の欠片 玉依姫奇譚～ |
+|  | 0100EC001DE7E000 | 緋色の欠片 玉依姫奇譚 ～おもいいろの記憶～ |
 |  | 0100C30020F70000 | BYAKKO ～四神部隊炎恋記～ |
 |  | 01007250089F8000 | LoveR Kiss |
 |  | 01001A4021670000 | あやかしごはん ～おおもりっ！～ for S |
@@ -226,7 +227,6 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | 010095E01581C000 | even if TEMPEST 宵闇にかく語りき魔女 |
 |  | 010096000CA38000 | 大正×対称アリス all in one |
 |  | 0100B1F0123B6000 | 大正×対称アリス HEADS&TAILS |
-|  | 0100EC001DE7E000 | 緋色の欠片 玉依姫奇譚 ～おもいいろの記憶～ |
 |  | 010037500DF38000 | 幻想マネージュ |
 |  | 010079200C26E000 | 幻奏喫茶アンシャンテ |
 |  | 01002C00177AE000 | 天獄ストラグル -strayside- |
