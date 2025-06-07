@@ -548,6 +548,7 @@ class saveposwindow(LMainWindow):
             self.__screenChanged(self.screen())
         return super().showEvent(a0)
 
+    @tryprint
     def _changed(self, _id: str, geo: QRect):
         try:
             if _id != self.screen().serialNumber():
@@ -557,6 +558,7 @@ class saveposwindow(LMainWindow):
         self.adjust_window_to_screen_bounds(geo)
         self.screengeochanged.emit()
 
+    @tryprint
     def __screenChanged(self, screen: QScreen):
         screen.geometryChanged.connect(
             functools.partial(self._changed, screen.serialNumber())
