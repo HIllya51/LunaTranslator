@@ -3,7 +3,7 @@ import os, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, NativeUtils, gobject, threading
 from myutils.config import _TR, _TRL, globalconfig, mayberelpath
-from myutils.wrapper import Singleton, threader
+from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark, checkisusingwine
 from ocrengines.baseocrclass import OCRResult
 from gui.dynalang import (
@@ -527,7 +527,8 @@ class TableViewW(DelayLoadTableView):
 
 
 class saveposwindow(LMainWindow):
-    screengeochanged=pyqtSignal()
+    screengeochanged = pyqtSignal()
+
     def __init__(self, parent, poslist=None, flags=None) -> None:
         if flags:
             LMainWindow.__init__(self, parent, flags=flags)
@@ -561,6 +562,7 @@ class saveposwindow(LMainWindow):
             functools.partial(self._changed, screen.serialNumber())
         )
 
+    @tryprint
     def adjust_window_to_screen_bounds(self, screen_rect: QRect):
         window_rect = self.geometry()
         new_x = window_rect.x()

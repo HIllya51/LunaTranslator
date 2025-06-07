@@ -1,5 +1,5 @@
 import threading, gobject, queue
-import sqlite3, json
+import json
 from traceback import print_exc
 from myutils.config import globalconfig, savehook_new_data
 from myutils.utils import autosql

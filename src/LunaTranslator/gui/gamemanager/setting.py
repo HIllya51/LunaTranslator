@@ -15,6 +15,8 @@ from myutils.config import (
     globalconfig,
     static_data,
 )
+from myutils.wrapper import tryprint
+from myutils.utils import autosql
 from gui.dialog_memory import dialog_memory
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
@@ -485,6 +487,22 @@ class dialog_setting_game_internal(QWidget):
 
         __launch_method.currentIndexChanged.emit(__launch_method.currentIndex())
 
+    @tryprint
+    def __refresh(self):
+        _filename, _ = os.path.splitext(os.path.basename(uid2gamepath[self.gameuid]))
+        sqlitef = gobject.gettranslationrecorddir(
+            "{}_{}.sqlite".format(_filename, self.gameuid)
+        )
+        if not os.path.exists(sqlitef):
+            return
+        sql = autosql(sqlitef, check_same_thread=False, isolation_level=None)
+        cnt = 0
+        for (_,) in sql.execute("SELECT source FROM artificialtrans").fetchall():
+            cnt += len(_)
+        savehook_new_data[self.gameuid]["statistic_wordcount"] = max(
+            cnt, savehook_new_data[self.gameuid]["statistic_wordcount"]
+        )
+
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
         chart = chartwidget()
         chart.xtext = lambda x: (
@@ -501,7 +519,16 @@ class dialog_setting_game_internal(QWidget):
         self._timelabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
-        formLayout.addLayout(getboxlayout(["文字计数", self._wordlabel]))
+        formLayout.addLayout(
+            getboxlayout(
+                [
+                    "文字计数",
+                    getboxlayout(
+                        [self._wordlabel, getIconButton(self.__refresh, "fa.refresh")]
+                    ),
+                ]
+            )
+        )
 
         t = QTimer(self)
         formLayout.addLayout(
