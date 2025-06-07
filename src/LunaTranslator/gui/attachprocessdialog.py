@@ -46,7 +46,11 @@ class AttachProcessDialog(saveposwindow):
         super().closeEvent(e)
 
     def __init__(self, parent, callback, hookselectdialog=None):
-        super().__init__(parent, poslist=globalconfig["attachprocessgeo"])
+        super().__init__(
+            parent,
+            poslist=globalconfig["attachprocessgeo"],
+            flags=Qt.WindowType.WindowStaysOnTopHint,
+        )
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
 
         self.iconcache = {}
@@ -129,7 +133,9 @@ class AttachProcessDialog(saveposwindow):
         self.buttonBox.rejected.connect(self.close)
         self.processList.clicked.connect(self.selectedfunc)
         self.processIdEdit.textEdited.connect(self.editpid)
-        self.processIdEdit.setValidator(QRegularExpressionValidator(QRegularExpression("([0-9]+,)*")))
+        self.processIdEdit.setValidator(
+            QRegularExpressionValidator(QRegularExpression("([0-9]+,)*"))
+        )
         # self.processEdit.setReadOnly(True)
         self.processEdit.textEdited.connect(self.filterproc)
 
@@ -183,6 +189,7 @@ class AttachProcessDialog(saveposwindow):
         if self.hookselectdialog:
             self.hookselectdialog.realshowhide.emit(False)
         self.refreshfunction()
+        return super().showEvent(e)
 
     def safesplit(self, process):
         try:

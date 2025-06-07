@@ -224,15 +224,9 @@ class searchhookparam(LDialog):
         return super().showEvent(a0)
 
     def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        windows.SetWindowPos(
-            int(int(self.winId())),
-            windows.HWND_TOPMOST,
-            0,
-            0,
-            0,
-            0,
-            windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
+        super().__init__(
+            parent,
+            Qt.WindowType.WindowCloseButtonHint | Qt.WindowType.WindowStaysOnTopHint,
         )
         self.setWindowTitle("搜索设置")
         mainlayout = QVBoxLayout(self)
@@ -446,7 +440,11 @@ class hookselect(closeashidewindow):
         return gobject.baseobject.textsource
 
     def __init__(self, parent):
-        super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
+        super(hookselect, self).__init__(
+            parent,
+            globalconfig["selecthookgeo"]
+        )
+        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
         self.setupUi()
         self.hidesearchhookbuttons()
         self.firsttimex = True

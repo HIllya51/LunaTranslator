@@ -526,37 +526,8 @@ class TableViewW(DelayLoadTableView):
             self.setindexdata(current, string)
 
 
-def findnearestscreen(rect: QRect):
-    # QScreen ,distance
-    # -1时，是有交集
-    # -2时，是被包围
-    # >=0时，是不在任何屏幕内
-    mindis = 9999999999
-    usescreen = QApplication.primaryScreen()
-    for screen in QApplication.screens():
-        rect1, rect2 = screen.geometry(), rect
-        if rect1.contains(rect2):
-            return screen, -2
-        if rect1.intersects(rect2):
-            r = rect1.intersected(rect2)
-            area = r.width() * r.width()
-            dis = -area
-        else:
-            distances = []
-            distances.append(abs(rect1.right() - rect2.left()))
-            distances.append(abs(rect1.left() - rect2.right()))
-            distances.append(abs(rect1.bottom() - rect2.top()))
-            distances.append(abs(rect1.top() - rect2.bottom()))
-            dis = min(distances)
-        if dis < mindis:
-            mindis = dis
-            usescreen = screen
-    if mindis < 0:
-        mindis = -1
-    return usescreen, mindis
-
-
 class saveposwindow(LMainWindow):
+    screengeochanged=pyqtSignal()
     def __init__(self, parent, poslist=None, flags=None) -> None:
         if flags:
             LMainWindow.__init__(self, parent, flags=flags)
@@ -565,17 +536,54 @@ class saveposwindow(LMainWindow):
 
         self.poslist = poslist
         if self.poslist:
-            usescreen, mindis = findnearestscreen(QRect(poslist[0], poslist[1], 1, 1))
-            poslist[2] = max(0, min(poslist[2], usescreen.size().width()))
-            poslist[3] = max(0, min(poslist[3], usescreen.size().height()))
-            if mindis != -2:
-                poslist[0] = min(
-                    max(poslist[0], 0), usescreen.size().width() - poslist[2]
-                )
-                poslist[1] = min(
-                    max(poslist[1], 0), usescreen.size().height() - poslist[3]
-                )
-            self.setGeometry(*poslist)
+            self.setGeometry(QRect(poslist[0], poslist[1], poslist[2], poslist[3]))
+        self.adjust_window_to_screen_bounds(self.screen().geometry())
+        self.___firstshow = True
+
+    def showEvent(self, a0):
+        if self.___firstshow:
+            self.___firstshow = False
+            self.windowHandle().screenChanged.connect(self.__screenChanged)
+            self.__screenChanged(self.screen())
+        return super().showEvent(a0)
+
+    def _changed(self, _id: str, geo: QRect):
+        try:
+            if _id != self.screen().serialNumber():
+                return
+        except:
+            pass
+        self.adjust_window_to_screen_bounds(geo)
+        self.screengeochanged.emit()
+
+    def __screenChanged(self, screen: QScreen):
+        screen.geometryChanged.connect(
+            functools.partial(self._changed, screen.serialNumber())
+        )
+
+    def adjust_window_to_screen_bounds(self, screen_rect: QRect):
+        window_rect = self.geometry()
+        new_x = window_rect.x()
+        new_y = window_rect.y()
+        new_width = window_rect.width()
+        new_height = window_rect.height()
+
+        if new_width > screen_rect.width():
+            new_width = screen_rect.width()
+        if new_height > screen_rect.height():
+            new_height = screen_rect.height()
+        if new_x + new_width > screen_rect.right() + 1:
+            new_x = screen_rect.right() + 1 - new_width
+        if new_y + new_height > screen_rect.bottom() + 1:
+            new_y = screen_rect.bottom() + 1 - new_height
+        if new_x < screen_rect.left():
+            new_x = screen_rect.left()
+        if new_y < screen_rect.top():
+            new_y = screen_rect.top()
+
+        new_window_rect = QRect(new_x, new_y, new_width, new_height)
+        if new_window_rect != window_rect:
+            self.setGeometry(new_window_rect)
 
     def __checked_savepos(self):
         if not self.poslist:

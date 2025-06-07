@@ -29,7 +29,7 @@ from gui.dialog_memory import dialog_memory
 from gui.rendertext.texttype import TextType, SpecialColor
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, findnearestscreen
+from gui.usefulwidget import resizableframeless
 from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.gamemanager.setting import calculate_centered_rect
@@ -919,12 +919,6 @@ class TranslatorWindow(resizableframeless):
             windows.SetForegroundWindow(self.winid)
         gobject.baseobject.commonstylebase.hide()
 
-        # 若窗口飞了，则将窗口拉回来
-        usescreen, mindis = findnearestscreen(self.geometry())
-        if mindis < 0:
-            return
-        self.setGeometry(calculate_centered_rect(usescreen.geometry(), self.size()))
-
     def aftershowdosomething(self):
 
         windows.SetForegroundWindow(self.winid)
@@ -962,13 +956,11 @@ class TranslatorWindow(resizableframeless):
 
     @threader
     def setontopthread(self):
-
         with self.setontopthread_lock:
             if not globalconfig["keepontop"]:
                 return self.canceltop()
             self.settop()
             while globalconfig["keepontop"]:
-
                 try:
                     hwnd = windows.GetForegroundWindow()
                     pid = windows.GetWindowThreadProcessId(hwnd)
@@ -1137,6 +1129,9 @@ class TranslatorWindow(resizableframeless):
         t.start()
         self.adjustbuttons = self.titlebar.adjustbuttons
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
+        self.screengeochanged.connect(
+            lambda: self.settop() if globalconfig["keepontop"] else ""
+        )
 
     def showmenu(self, _):
         child = self.titlebar.childAt(_)
@@ -1252,7 +1247,7 @@ class TranslatorWindow(resizableframeless):
     def showEvent(self, e):
         if not self.firstshow:
             self.enterfunction()
-            return
+            return super().showEvent(e)
         self.cleanupdater()
         self.firstshow = False
         self.mousetransparent_check()
@@ -1261,6 +1256,7 @@ class TranslatorWindow(resizableframeless):
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
         self.autohidedelaythread()
         self.tracewindowposthread()
+        return super().showEvent(e)
 
     def setselectableEx(self):
         globalconfig["selectableEx"] = True
