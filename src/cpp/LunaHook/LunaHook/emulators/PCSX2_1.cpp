@@ -585,6 +585,16 @@ namespace
         const uintptr_t sjis = ((uintptr_t)b1 << 8) | b0;
         buffer->from_t(sjis);
     }
+    void SLPM62207(TextBuffer *buffer, HookParam *hp)
+    {
+        SLPM55006(buffer, hp);
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s)){
+            return buffer->clear();
+        }
+        last = s;
+    }
 
 }
 struct emfuncinfoX
@@ -593,6 +603,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // SIMPLE2000シリーズ Vol.9 THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～
+    {0x16C798, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM62207, "SLPM-62207"}},
     // あかね色に染まる坂 ぱられる
     {0x126660, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55006, "SLPM-55006"}},
     // SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム
