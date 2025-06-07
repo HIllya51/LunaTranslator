@@ -109,6 +109,11 @@ namespace
             BYTE sig3[] = {0x55, 0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54}; // v1.7.4473
             recRecompile = reverseFindBytes(sig3, sizeof(sig3), fmtstrptr - 0x300, fmtstrptr, 0, true);
         }
+        if (!recRecompile)
+        {
+            // 2.3.407
+            recRecompile = (decltype(recRecompile))reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x2200, fmtstrptr, 0, true);
+        }
         return recRecompile;
     }
     bool findAddBreakPoint()
