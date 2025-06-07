@@ -46,7 +46,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
         target_link_options(shareddllproxy PRIVATE "/DELAYLOAD:MFPlat.dll")
     endif()
 else()
-	target_link_libraries(shareddllproxy ${YY_Thunks} voiceroid2)
+	target_link_libraries(shareddllproxy PRIVATE ${YY_Thunks} voiceroid2)
 	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy32")
 endif()
 
