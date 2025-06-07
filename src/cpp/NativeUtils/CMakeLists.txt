@@ -54,5 +54,5 @@ else()
 endif()
 
 if(WIN10ABOVE)
-	target_link_libraries(shareddllproxy PRIVATE windowsapp)
+	target_link_libraries(NativeUtils PRIVATE windowsapp)
 endif()
