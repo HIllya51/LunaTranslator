@@ -2494,6 +2494,21 @@ namespace
         StringFilter(buffer, TEXTANDLEN(L"\n　"));
         CharFilter(buffer, L'\n');
     }
+    std::wstring F0100D4601FD60000S;
+    void F0100D4601FD60000_1(TextBuffer *buffer, HookParam *)
+    {
+        if (buffer->strW() == F0100D4601FD60000S)
+            return buffer->clear();
+    }
+    void F0100D4601FD60000(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strW();
+        F0100D4601FD60000S = s;
+        s = re::sub(s, L"<color=.*?>(.*?)<\\/color>", L"$1");
+        buffer->from(s);
+        StringFilter(buffer, TEXTANDLEN(L"\n　"));
+        CharFilter(buffer, L'\n');
+    }
     void NewLineCharFilterW(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, L'\n');
@@ -2518,6 +2533,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 蒼黒の楔 ～緋色の欠片 玉依姫奇譚～
+    {0x832C63F8, {CODEC_UTF16, 1, 0x14, 0, F0100D4601FD60000, 0x0100D4601FD60000ull, "1.0.0"}},
+    {0x832763B0, {CODEC_UTF16, 1, 0x14, 0, F0100D4601FD60000_1, 0x0100D4601FD60000ull, "1.0.0"}}, // 过场独白
+    // BYAKKO ～四神部隊炎恋記～
+    {0x801051CC, {CODEC_UTF8, 1, 0, 0, F010099901461A000, 0x0100C30020F70000ull, "1.0.0"}},
+    {0x80034D08, {CODEC_UTF8, 0, 0, 0, 0, 0x0100C30020F70000ull, "1.0.0"}},
     // LoveR Kiss
     {0x80184F60, {CODEC_UTF8, 0, 0, 0, 0, 0x01007250089F8000ull, "1.0.0"}},
     // あやかしごはん ～おおもりっ！～ for S
