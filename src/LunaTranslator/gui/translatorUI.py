@@ -1061,12 +1061,9 @@ class TranslatorWindow(resizableframeless):
         if pos.y() < 0:
             return
         if len(QApplication.screens()) == 1:
-            if pos.x() + self.width() > QApplication.primaryScreen().geometry().width():
+            if pos.x() + self.width() > self.screen().geometry().width():
                 return
-            if (
-                pos.y() + self.height()
-                > QApplication.primaryScreen().geometry().height()
-            ):
+            if pos.y() + self.height() > self.screen().geometry().height():
                 return
 
         self.move(pos)
