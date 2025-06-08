@@ -585,6 +585,20 @@ namespace
         const uintptr_t sjis = ((uintptr_t)b1 << 8) | b0;
         buffer->from_t(sjis);
     }
+    void SLPS25941(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (last == s)
+        {
+            return buffer->clear();
+        }
+        last = s;
+        strReplace(s, "$n");
+        strReplace(s, "$k");
+        s = re::sub(s, R"(\$s\d+)");
+        buffer->from(s);
+    }
     void SLPM62207(TextBuffer *buffer, HookParam *hp)
     {
         SLPM55006(buffer, hp);
@@ -595,6 +609,20 @@ namespace
             return buffer->clear();
         }
         last = s;
+    }
+    void SLPS25941_2(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+        {
+            return buffer->clear();
+        }
+        last = s;
+        SLPS25941(buffer, hp);
+        auto s1 = buffer->strA();
+        s1 = re::sub(s1, R"(^\d+)");
+        buffer->from(s1);
     }
     WORD SLPM66163ReadChar()
     {
@@ -829,6 +857,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // SDガンダム - G GENERATION WARS
+    {0x4BF474, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25941, "SLPS-25941"}},
+    {0x51B59C, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPS25941_2, "SLPS-25941"}},
     // 風雨来記2
     {0x2AC77C, {0, 0, 0, SLPM66163, 0, "SLPM-66163"}}, //@mills
     // SIMPLE2000シリーズ Vol.9 THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～

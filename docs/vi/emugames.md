@@ -839,6 +839,8 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25941 | SDガンダム - G GENERATION WARS |
+|  | SLPM-66163 | 風雨来記2 |
 |  | SLPM-62207 | SIMPLE2000シリーズ Vol.9 THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～ |
 |  | SLPM-55006 | あかね色に染まる坂 ぱられる |
 |  | SLPS-25581 | SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム |
