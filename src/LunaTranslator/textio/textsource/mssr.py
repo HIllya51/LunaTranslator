@@ -116,6 +116,7 @@ class mssr(basetext):
             if iserr:
                 sz = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
                 text = windows.ReadFile(self.hPipe, sz).decode()
+                gobject.baseobject.displayinfomessage(text, "<msg_error_Origin>")
                 raise Exception(text)
             else:
                 t = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
