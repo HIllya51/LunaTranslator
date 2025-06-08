@@ -85,7 +85,12 @@ namespace
     {
         if ((WORD)YUZU::emu_arg(context)[0x6] == 0)
             return;
-        buffer->from((char *)YUZU::emu_arg(context)[0x3]);
+        auto a2 = YUZU::emu_arg(context)[0x3];
+        auto a0 = YUZU::emu_arg(context)[0];
+        static lru_cache<uintptr_t> ptrs(100);
+        if (ptrs.touch(a0 + *(WORD *)a2))
+            return;
+        buffer->from((char *)a2);
     }
     void Fliuxingzhishen(TextBuffer *buffer, HookParam *)
     {
@@ -3765,10 +3770,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 流行り神２
     {0x8004BD58, {0, 3, 0, 0, F0100B4D019EBE000, 0x0100B4D019EBE000ull, "1.0.0"}}, // 单字符刷新一次，不可以快进，被快进的字符无法捕获
     // 流行り神 ３
-    {0x800D8AA0, {0, 3, 0, T001005BB019EC0000, Fliuxingzhishen, 0x01005BB019EC0000ull, "1.0.0"}}, // 单字符疯狂刷新，没办法了
+    {0x800D8AA0, {0, 3, 0, T001005BB019EC0000, Fliuxingzhishen, 0x01005BB019EC0000ull, "1.0.0"}}, // 会有少量字符缺失
     // 流行り神 １・２・３パック
     {0x800A8294, {0, 0, 0, T01000A7019EBC000, 0, 0x010095B01AF94000ull, "1.0.0"}}, // 1
-    {0x801CC3D0, {0, 2, 0, 0, Fliuxingzhishen, 0x010095B01AF94000ull, "1.0.0"}},   // 2  单字符疯狂刷新
+    {0x801CC3D0, {0, 2, 0, 0, Fliuxingzhishen, 0x010095B01AF94000ull, "1.0.0"}},   // 1&2  单字符疯狂刷新
     {0x801BB5A0, {0, 0, 0, 0, Fliuxingzhishen, 0x010095B01AF94000ull, "1.0.0"}},   // 3  单字符疯狂刷新
     // 真 流行り神１・２パック
     {0x80072720, {CODEC_UTF8, 1, 0, 0, F010005F00E036000, 0x010005F00E036000ull, "1.0.0"}},

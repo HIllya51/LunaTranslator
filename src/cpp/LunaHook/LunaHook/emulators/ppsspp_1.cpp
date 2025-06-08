@@ -85,6 +85,39 @@ namespace
         strReplace(collect, "\x01<");
         buffer->from(collect);
     }
+    void ULJS00035(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto a2 = PPSSPP::emu_arg(context)[hp->offset];
+        static lru_cache<uintptr_t> ptrs(100);
+        if (ptrs.touch(a2 + *(WORD *)a2))
+            return;
+        buffer->from((char *)a2);
+    }
+    void ULJS00149(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto a2 = PPSSPP::emu_arg(context)[hp->offset];
+        auto a0 = PPSSPP::emu_arg(context)[1];
+        static lru_cache<uintptr_t> ptrs(100);
+        if (ptrs.touch(a2 + *(WORD *)a2 + *(WORD *)a0))
+            return;
+        buffer->from((char *)a2);
+    }
+    void ULJS00204(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto a2 = PPSSPP::emu_arg(context)[hp->offset];
+        auto a0 = PPSSPP::emu_arg(context)[0];
+        static lru_cache<uintptr_t> ptrs(100);
+        if (ptrs.touch(a0 + *(WORD *)a2))
+            return;
+        buffer->from((char *)a2);
+    }
+    void FULJS00204(TextBuffer *buffer, HookParam *hp)
+    {
+        StringReplacer(buffer, TEXTANDLEN("\x87\x85"), TEXTANDLEN("\x81\x5c"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x86"), TEXTANDLEN("\x81\x5c"));
+        StringReplacer(buffer, TEXTANDLEN("\x87\x87"), TEXTANDLEN("\x81\x5c"));
+        StringFilter(buffer, TEXTANDLEN("\x87\x6e"));
+    }
     void ULJS00339(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto a2 = PPSSPP::emu_arg(context)[0];
@@ -1504,11 +1537,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // DEARDROPS DISTORTION
     {0x8814110, {USING_CHAR | DATA_INDIRECT, 4, 0, 0, 0, "ULJM05819"}},
     // 流行り神ＰＯＲＴＡＢＬＥ
-    {0x88081cc, {0, 7, 0, 0, 0, "ULJS00035"}}, // 这三作都是单字符不断刷新，需要用比较复杂的处理
+    {0x88081cc, {0, 7, 0, ULJS00035, FULJS00204, "ULJS00035"}}, // 1&3会有少量字符缺失
     // 流行り神２ＰＯＲＴＡＢＬＥ
-    {0x883EAD0, {0, 0, 0, 0, 0, "ULJS00149"}},
+    {0x883EAD0, {0, 0, 0, ULJS00149, FULJS00204, "ULJS00149"}},
     // 流行り神３
-    {0x885CB50, {0, 3, 0, 0, 0, "ULJS00204"}},
+    {0x885CB50, {0, 3, 0, ULJS00204, FULJS00204, "ULJS00204"}},
     // 死神と少女
     {0x883bf34, {0, 1, 0, 0, ULJS00403, "ULJS00403"}},
     // アマガミ
