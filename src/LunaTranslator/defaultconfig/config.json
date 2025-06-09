@@ -1863,6 +1863,7 @@
     "WordViewTooltipDWM_1": true,
     "WordViewTooltipContentColor": "#c0ffffff",
     "WordViewTooltipHideFocus": true,
+    "WordViewTooltipHideLeave": false,
     "WordViewTooltipRadius": 4,
     "WordViewTooltipBorder": 5,
     "word_hover_DWM": 0,

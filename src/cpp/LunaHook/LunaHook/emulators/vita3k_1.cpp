@@ -951,6 +951,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // シルヴァリオ トリニティ -Beyond the Horizon-
+    {0x800B7702, {0, 3, 0, 0, 0, "PCSG01259"}},
     // 追放選挙
     {0x8002e176, {0, 0, 0, 0, FPCSG01023, "PCSG01023"}}, // dialogue+name,sjis
     // 死神と少女

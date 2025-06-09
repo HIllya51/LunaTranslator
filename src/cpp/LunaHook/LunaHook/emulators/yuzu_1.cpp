@@ -2182,9 +2182,17 @@ namespace
     {
         auto s = buffer->strA();
         s = re::sub(s, "@r(.*?)@(.*?)@", "$1");
-        s = re::sub(s, "@n");
-        s = re::sub(s, "@v");
+        s = strReplace(s, "@n");
+        s = strReplace(s, "@v");
         s = re::sub(s, "TKY[0-9]{6}_[A-Z][0-9]{2}");
+        buffer->from(s);
+    }
+    void F01003080177CA000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "@r(.*?)@(.*?)@", "$1");
+        s = strReplace(s, "@n");
+        s = re::sub(s, R"(@v\w+)");
         buffer->from(s);
     }
     void F01000AE01954A000(TextBuffer *buffer, HookParam *hp)
@@ -2536,6 +2544,13 @@ namespace
         StringFilter(buffer, TEXTANDLEN(u8"\\　"));
         CharFilter(buffer, '\\');
     }
+    void F0100E920175B0000(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"<.*?>(.*?)</.*?>", L"$1");
+        strReplace(s, L"\n");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2543,6 +2558,11 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 冥契のルペルカリア
+    {0x803CB66C, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x01003080177CA000ull, "1.0.0"}},
+    // ――ｯ違う!!!+
+    {0x816B68EC, {CODEC_UTF16, 0, 0x14, 0, F0100E920175B0000, 0x0100E920175B0000ull, "1.00"}},
+    {0x8172E6DC, {CODEC_UTF16, 0, 0x14, 0, F0100E920175B0000, 0x0100E920175B0000ull, "1.02"}},
     // 数乱digit
     {0x23992C, {CODEC_UTF8, 7, 0, 0, F01009A60205DE000, 0x01009A60205DE000ull, "1.0.0"}},
     {0x238420, {CODEC_UTF8, 7, 0, 0, F01009A60205DE000, 0x01009A60205DE000ull, "1.0.0"}},
@@ -3236,9 +3256,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8019957c, {CODEC_UTF8, 0, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Conversation
     {0x802c0600, {CODEC_UTF8, 2, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Info
     {0x801135fc, {CODEC_UTF8, 0, 0, 0, F01002C0008E52000, 0x01002C0008E52000ull, "1.0.2"}}, // Post Battle Text
-    // Nil Adminari no Tenbin Irodori Nadeshiko
-    {0x8005fd5c, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01002BB00A662000ull, "1.0.0"}},  // name
-    {0x800db0d8, {CODEC_UTF8, 0, 20, 0, F0100BDD01AAE4000, 0x01002BB00A662000ull, "1.0.0"}}, // name
     // 華ヤカ哉、我ガ一族 モダンノスタルジィ
     {0x2509ac, {CODEC_UTF8, 0, 0, T0100B5500CA0C000, F0100B5500CA0C000, 0x01008DE00C022000ull, "1.0.0"}},
     // 華ヤカ哉、我ガ一族 幻燈ノスタルジィ
@@ -3635,9 +3652,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x2206bc, {0, 0, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
     {0x220cfc, {0, 0, 0, 0, F0100E5200D1A2000<true>, 0x0100E5200D1A2000ull, "1.0.0"}},
     {0x2372b0, {0, 1, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
-    // カエル畑DEつかまえて・夏 千木良参戦!
+    // カエル畑ＤＥつかまえて・夏　千木良参戦！
     {0x2210d0, {0, 0, 0, 0, F0100EFE0159C6000<false>, 0x0100EFE0159C6000ull, "1.0.0"}},
-    {0x221768, {0, 0, 0, 0, F0100EFE0159C6000<false>, 0x0100EFE0159C6000ull, "1.0.0"}},
+    {0x221768, {0, 0, 0, 0, F0100EFE0159C6000<true>, 0x0100EFE0159C6000ull, "1.0.0"}},
     // 片恋いコントラスト ―collection of branch―
     {0x8004ba20, {CODEC_UTF32, 0, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
     {0x800c6eb0, {CODEC_UTF32, 1, 0, 0, F01007FD00DB20000, 0x01007FD00DB20000ull, "1.0.0"}},
@@ -3682,9 +3699,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ニル・アドミラリの天秤 色ドリ撫子 //二合一，其一
     {0x8000BDD0, {0, 8, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // text
     {0x80019260, {0, 0, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // name+text
-    // 其二
-    {0x8006BCC0, {0, 8, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // text
-    {0x8007C1D4, {0, 0, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // name+text 这个两作都能提到。实际上只留这一个也行，但它显示完才有，速度慢。
+    {0x8006BCC0, {0, 8, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // 其二 // text
+    {0x8007C1D4, {0, 0, 0, 0, F01002BB00A662000, 0x01002BB00A662000ull, "1.0.0"}}, // 其二 // name+text 这个两作都能提到。实际上只留这一个也行，但它显示完才有，速度慢。
+    // ニル・アドミラリの天秤 クロユリ炎陽譚
+    {0x8005fd5c, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01002BB00A662000ull, "1.0.0"}},  // name
+    {0x800db0d8, {CODEC_UTF8, 0, 20, 0, F0100BDD01AAE4000, 0x01002BB00A662000ull, "1.0.0"}}, // name
     // 八剱伝
     {0x819ade74, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F01007A901E728000, 0x01007A901E728000ull, "1.0.1"}},
     // 大正メビウスライン大全 //三合一

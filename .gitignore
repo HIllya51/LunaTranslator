@@ -25,8 +25,7 @@ builds/
 
 .vscode/settings.json
 src/.cache
-src/userconfig
-src/userconfig1
+src/userconfig*
 src/cache
 src/chrome_cache
 src/files/ocrmodel

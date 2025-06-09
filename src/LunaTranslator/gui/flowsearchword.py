@@ -155,14 +155,34 @@ class dialog_syssetting(LDialog):
             "自动朗读",
             getsimpleswitch(globalconfig, "is_search_word_auto_tts_2"),
         )
-        formLayout.addRow(
-            "失去焦点时关闭",
-            getsimpleswitch(
-                globalconfig,
-                "WordViewTooltipHideFocus",
-                callback=lambda x: parent.closebutton.setVisible(not x),
+        focus = getsimpleswitch(
+            globalconfig,
+            "WordViewTooltipHideFocus",
+            callback=lambda x: parent.closebutton.setVisible(
+                not (
+                    globalconfig["WordViewTooltipHideFocus"]
+                    or globalconfig["WordViewTooltipHideLeave"]
+                )
             ),
         )
+        focus.setEnabled(not globalconfig["WordViewTooltipHideLeave"])
+        formLayout.addRow(
+            "鼠标离开时关闭",
+            getsimpleswitch(
+                globalconfig,
+                "WordViewTooltipHideLeave",
+                callback=lambda x: (
+                    focus.setEnabled(not x),
+                    parent.closebutton.setVisible(
+                        not (
+                            globalconfig["WordViewTooltipHideFocus"]
+                            or globalconfig["WordViewTooltipHideLeave"]
+                        )
+                    ),
+                ),
+            ),
+        )
+        formLayout.addRow("失去焦点时关闭", focus)
         formLayout.addRow(SplitLine())
         spin = getspinbox(
             0,
@@ -217,6 +237,12 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
     @property
     def gripSize(self):
         return globalconfig["WordViewTooltipBorder"]
+
+    def leaveEvent(self, a0: QEvent):
+        if globalconfig["WordViewTooltipHideLeave"]:
+            if not self.geometry().contains(QCursor.pos()):
+                self.close()
+        return super().leaveEvent(a0)
 
     def focusOutEvent(self, a0):
         if globalconfig["WordViewTooltipHideFocus"]:
@@ -340,7 +366,10 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.closebutton = getIconButton(
             icon="fa.times", callback=self.close, tips="关闭"
         )
-        if globalconfig["WordViewTooltipHideFocus"]:
+        if (
+            globalconfig["WordViewTooltipHideFocus"]
+            or globalconfig["WordViewTooltipHideLeave"]
+        ):
             self.closebutton.hide()
         buttons.addWidget(self.closebutton)
         buttons.addWidget(

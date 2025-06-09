@@ -15,7 +15,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     createfoldgrid,
     SuperCombo,
-    D_getIconButton,
+    getIconButton,
     getsmalllabel,
     getboxlayout,
     MDLabel,
@@ -319,22 +319,33 @@ def makelink(repo):
     ]
 
 
-class __delayloadlangs(SuperCombo):
+class __delayloadlangs(QHBoxLayout):
     def __init__(self):
-        super().__init__(static=True)
-        self.addItem(Languages.fromcode(globalconfig["languageuse2"]).nativename)
+        super().__init__()
+        self.como = SuperCombo(static=True)
+        self.como.addItem(Languages.fromcode(globalconfig["languageuse2"]).nativename)
         # Qt6的脑残fontmerging机制导致变得很慢。
         QTimer.singleShot(0, self.delayload)
+        self.addWidget(self.como)
+        self.btn = getIconButton(
+            callback=lambda: os.startfile(
+                os.path.abspath("files/lang/{}.json".format(getlanguse()))
+            ),
+        )
+        self.addWidget(self.btn)
+        if globalconfig["languageuse2"] == "zh":
+            self.btn.hide()
 
     def delayload(self):
-        self.clear()
+        self.como.clear()
         inner, vis = [_.code for _ in UILanguages], [_.nativename for _ in UILanguages]
-        self.addItems(vis, inner)
-        self.setCurrentData(globalconfig["languageuse2"])
-        self.currentIndexChanged.connect(
+        self.como.addItems(vis, inner)
+        self.como.setCurrentData(globalconfig["languageuse2"])
+        self.como.currentIndexChanged.connect(
             lambda _: (
-                globalconfig.__setitem__("languageuse2", self.getCurrentData()),
+                globalconfig.__setitem__("languageuse2", self.como.getCurrentData()),
                 changeUIlanguage(0),
+                self.btn.setVisible(self.como.getCurrentData() != "zh"),
             )
         )
 
@@ -349,17 +360,7 @@ def setTab_about(self, basel):
                     parent=self,
                     hiderows=[3],
                     grid=[
-                        [
-                            "软件显示语言",
-                            __delayloadlangs,
-                            D_getIconButton(
-                                callback=lambda: os.startfile(
-                                    os.path.abspath(
-                                        "files/lang/{}.json".format(getlanguse())
-                                    )
-                                ),
-                            ),
-                        ],
+                        ["软件显示语言", __delayloadlangs],
                         ["使用代理", functools.partial(proxyusage, self)],
                         ["自动更新", functools.partial(updatexx, self)],
                         [functools.partial(progress___, self)],
