@@ -62,15 +62,13 @@ class TTS(TTSbase):
         dllp = "C:\\Windows\\SystemApps\\LKG\\MicrosoftWindows.LKG.SpeechRuntime_cw5n1h2txyewy"
         if checkdir(dllp):
             return dllp
-        for _dir, _, __fs in os.walk("."):
-            for _f in __fs:
-                if _f == dll:
-                    return os.path.abspath(_dir)
+        for _dir, _, __ in os.walk("."):
+            if checkdir(_dir):
+                return os.path.abspath(_dir)
 
-        for _dir, _, __fs in os.walk(r"C:\Windows\SystemApps"):
-            for _f in __fs:
-                if _f == dll:
-                    return os.path.abspath(_dir)
+        for _dir, _, __ in os.walk(r"C:\Windows\SystemApps"):
+            if checkdir(_dir):
+                return os.path.abspath(_dir)
 
     def checkifnatural(self, voice):
         t, path = voice

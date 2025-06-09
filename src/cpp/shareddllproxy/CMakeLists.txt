@@ -6,7 +6,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	# 使用<=1.41.1版本，否则和系统的可能不兼容。
 	include(FetchContent)
 	FetchContent_Declare(CognitiveServices 
-		URL https://www.nuget.org/api/v2/package/Microsoft.CognitiveServices.Speech/1.33.0
+		URL https://www.nuget.org/api/v2/package/Microsoft.CognitiveServices.Speech/1.41.1
 		DOWNLOAD_EXTRACT_TIMESTAMP true
 	)
 	FetchContent_MakeAvailable(CognitiveServices)
