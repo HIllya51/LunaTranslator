@@ -2543,7 +2543,7 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
-    // 数乱digit for Nintendo Switch
+    // 数乱digit
     {0x23992C, {CODEC_UTF8, 7, 0, 0, F01009A60205DE000, 0x01009A60205DE000ull, "1.0.0"}},
     {0x238420, {CODEC_UTF8, 7, 0, 0, F01009A60205DE000, 0x01009A60205DE000ull, "1.0.0"}},
     // 蒼黒の楔 ～緋色の欠片 玉依姫奇譚～
@@ -2729,10 +2729,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8004c3f4, {CODEC_UTF8, 1, 0, 0, F0100925014864000, 0x0100D57014692000ull, "1.0.0"}},
     {0x8005389c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100D57014692000ull, "1.0.0"}},
     {0x80059b68, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100D57014692000ull, "1.0.0"}},
-    // 薄桜鬼SSL ～sweet school life～ for Nintendo Switch
+    // 薄桜鬼SSL ～sweet school life～
     {0x8004E71C, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, 0x01004EB01A328000ull, "1.0.0"}},
     {0x8004EAEC, {CODEC_UTF8, 1, 0, 0, F01004EB01A328000, 0x01004EB01A328000ull, "1.0.1"}},
-    // 薄桜鬼 真改 遊戯録　隊士達の大宴会 for Nintendo Switch //三合一
+    // 薄桜鬼 真改 遊戯録　隊士達の大宴会 //三合一
     {0x80016730, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其一
     {0x8013AAA0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其二
     {0x8009C8A0, {CODEC_UTF8, 0, 0, 0, F01002BB00A662000, 0x010046601C024000ull, "1.0.0"}}, // name+text 其三
@@ -2815,16 +2815,16 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Fire Emblem Engage
     {0x8248c550, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, 0, 0x0100A6301214E000ull, "1.3.0"}}, // App.Talk3D.TalkLog$$AddLog
     {0x820C6530, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, 0, 0x0100A6301214E000ull, "2.0.0"}}, // App.Talk3D.TalkLog$$AddLog
-    // AMNESIA LATER×CROWD for Nintendo Switch
+    // AMNESIA LATER×CROWD
     {0x800ebc34, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // waterfall
     {0x8014dc64, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // name
     {0x80149b10, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // dialogue
     {0x803add50, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // choice
-    // AMNESIA for Nintendo Switch
+    // AMNESIA
     {0x805bba5c, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // dialogue
     {0x805e9930, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // choice
     {0x805e7fd8, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // name
-    // AMNESIA World for Nintendo Switch
+    // AMNESIA World
     {0x80113520, {CODEC_UTF8, 3, 0, 0, F010099901461A000, 0x010099901461A000ull, "1.0.0"}}, // text
     // Natsumon! 20th Century Summer Vacation
     {0x80db5d34, {CODEC_UTF16, 0, 0, 0, F0100A8401A0A8000, 0x0100A8401A0A8000ull, "1.1.0"}}, // tutorial
@@ -2981,11 +2981,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // うたの☆プリンスさまっ♪ Repeat LOVE
     {0x800374a0, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Main Text + Name,sjis
     {0x8002ea08, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Choices,sjis
-    // ワンド オブ フォーチュン Ｒ～ for Nintendo Switch
+    // ワンド オブ フォーチュン Ｒ～
     {0x81ed0580, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // dialogue
     {0x81f96bac, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // name
     {0x8250ac28, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // choice
-    // ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～ for Nintendo Switch
+    // ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～
     {0x821540c4, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // dialogue
     {0x8353e674, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // choice
     {0x835015e8, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // name
@@ -3186,7 +3186,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x820A8760, {CODEC_UTF16, 1, 0x14, 0, 0, 0x010079201BD88000ull, "1.0.0"}},                             // text
     {0x820C31F0, {CODEC_UTF16, 1, 0x14, 0, 0, 0x010079201BD88000ull, "1.0.3"}},                             // 极少量会遗漏，缺少某些标点
     {0x82208BE4, {CODEC_UTF16, 1, 0x14, 0, F0100B0100E26C000_1, 0x010079201BD88000ull, "1.0.3"}},           // 缺少自动人名替换。
-    // ときめきメモリアル Girl's Side 3rd Story for Nintendo Switch
+    // ときめきメモリアル Girl's Side 3rd Story
     {0x822D9AB8, {CODEC_UTF16, 1, 0x14, 0, 0, 0x010091C01BD8A000ull, "1.0.0"}},                   // 极少量会遗漏，缺少某些标点
     {0x8227CCA4, {CODEC_UTF16, 1, 0x14, 0, F0100B0100E26C000_1, 0x010091C01BD8A000ull, "1.0.0"}}, // 缺少自动人名替换。
     {0x822DB300, {CODEC_UTF16, 0, 0x14, 0, 0, 0x010091C01BD8A000ull, "1.0.3"}},                   // 极少量会遗漏，缺少某些标点
@@ -3226,7 +3226,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // スペードの国のアリス ～Wonderful Black World～
     {0x819dbdc8, {CODEC_UTF16, 0, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0.0"}},
     {0x81f8e564, {CODEC_UTF16, 1, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0.0"}},
-    // 十三支演義 偃月三国伝1・2 for Nintendo Switch
+    // 十三支演義 偃月三国伝1・2
     {0x82031f20, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // name
     {0x82ef9550, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // dialogue
     {0x83252e0c, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // choice
@@ -3391,7 +3391,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8034EB44, {CODEC_UTF16, 8, 0, 0, F01000A400AF2A000, 0x01000A400AF2A000ull, "1.0.0"}}, // text
     // 神様のような君へ
     {0x80487CD0, {CODEC_UTF8, 0, 0, 0, F01006B5014E2E000, 0x01006B5014E2E000ull, "1.0.0"}}, // text
-    // 猛獣使いと王子様 ～Flower ＆ Snow～ for Nintendo Switch
+    // 猛獣使いと王子様 ～Flower ＆ Snow～
     {0x800a1a10, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 1
     {0x80058f80, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 2
     // Detective Pikachu Returns
@@ -3549,7 +3549,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8004e950, {CODEC_UTF8, 1, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
     {0x8002e6c4, {CODEC_UTF8, 0, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
     {0x8005f6ec, {CODEC_UTF8, 0, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
-    // NORN9 ~ノルン+ノネット~ LOFN for Nintendo Switch
+    // NORN9 ~ノルン+ノネット~ LOFN
     {0x8002b200, {CODEC_UTF8, 1, 0x18, 0, F010061300DF48000, 0x01001A500AD6A000ull, "1.0.0"}},
     {0x8003d83c, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, 0x01001A500AD6A000ull, "1.0.0"}},
     {0x80047850, {CODEC_UTF8, 0, 0, 0, F010061300DF48000, 0x01001A500AD6A000ull, "1.0.0"}},
@@ -3611,7 +3611,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 夏空のモノローグ ～Another Memory～
     {0x8006007c, {0, 0, 0, 0, F0100FC2019346000, 0x01000E701DAE8000ull, "1.0.0"}},
     {0x800578c4, {0, 1, 0, 0, F0100FC2019346000, 0x01000E701DAE8000ull, "1.0.0"}},
-    // 真紅の焔 真田忍法帳 for Nintendo Switch
+    // 真紅の焔 真田忍法帳
     {0x800170a0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
     {0x800220a0, {CODEC_UTF8, 2, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
     {0x8004bbd0, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, 0x01008A001C79A000ull, "1.0.0"}},
@@ -3620,7 +3620,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 神さまと恋ゴコロ
     {0x20D838, {0, 7, 0, 0, 0, 0x0100612019F12000ull, "1.0.0"}}, // name+text
     {0x20D030, {0, 1, 0, 0, 0, 0x0100612019F12000ull, "1.0.0"}},
-    // KLAP!! for Nintendo Switch
+    // KLAP!!
     {0x8004a2d0, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
     {0x8004970c, {CODEC_UTF8, 1, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
     {0x800da5e0, {CODEC_UTF8, 0, 0, 0, F0100FC2019346000, 0x0100E8E016D82000ull, "1.0.0"}},
@@ -3690,7 +3690,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 大正メビウスライン大全 //三合一
     {0x800C43D4, {0, 0, 0, 0, F0100509013040000, 0x0100509013040000ull, "1.0.0"}}, // text
     {0x800C4468, {0, 0, 0, 0, F0100509013040000, 0x0100509013040000ull, "1.0.1"}}, // text
-    // 猛獣たちとお姫様 for Nintendo Switch //二合一
+    // 猛獣たちとお姫様 //二合一
     {0x80115C70, {CODEC_UTF8, 0, 0, 0, F010001D015260000, 0x010035001D1B2000ull, "1.0.0"}}, // text
     {0x80115F20, {CODEC_UTF8, 0, 0, 0, F010001D015260000, 0x010035001D1B2000ull, "1.0.1"}}, // text
     // BEAST Darling! ～けもみみ男子と秘密の寮～
@@ -3735,7 +3735,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // OZMAFIA!! VIVACE
     {0x80058544, {0, 1, 0, 0, F0100509013040000, 0x01002BE0118AE000ull, nullptr}}, // 1.0.0 && 1.0.1
     {0x8005b1f4, {0, 0, 0, 0, F01005090130400002, 0x01002BE0118AE000ull, nullptr}},
-    // ときめきメモリアル Girl's Side 3rd Story for Nintendo Switch
+    // ときめきメモリアル Girl's Side 3rd Story
     {0x82270d80, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
     {0x82270c60, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
     {0x81b6d300, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
@@ -3895,7 +3895,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x800C4BC8, {0, 0, 0, 0, f0100AC600EB4C000, 0x0100AC600EB4C000ull, "1.0.2"}},
     // 幻想牢獄のカレイドスコープ２
     {0x800C4C1C, {CODEC_UTF8, 0, 0, 0, f0100451020714000, 0x0100451020714000ull, "1.0.0"}},
-    // 戦場の円舞曲 for Nintendo Switch
+    // 戦場の円舞曲
     {0x80040010, {0, 0, 0, 0, F01005AF00E9DC000, 0x01002080191CE000ull, "1.0.0"}},
     // DYNAMIC CHORD feat.[rēve parfait]
     {0x81a48614, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},

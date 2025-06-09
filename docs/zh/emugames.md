@@ -25,7 +25,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
-|  | 01009A60205DE000 | 数乱digit for Nintendo Switch |
+|  | 01009A60205DE000 | 数乱digit |
 |  | 0100D4601FD60000 | 蒼黒の楔 ～緋色の欠片 玉依姫奇譚～ |
 |  | 0100EC001DE7E000 | 緋色の欠片 玉依姫奇譚 ～おもいいろの記憶～ |
 |  | 0100C30020F70000 | BYAKKO ～四神部隊炎恋記～ |
@@ -79,8 +79,8 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 0100C49010598000 | 薄桜鬼 真改 銀星ノ抄 |
 |  | 0100E1E00E2AE000 | 薄桜鬼 真改 月影ノ抄 |
 |  | 0100D57014692000 | 薄桜鬼　黎明録 |
-|  | 01004EB01A328000 | 薄桜鬼SSL ～sweet school life～ for Nintendo Switch |
-|  | 010046601C024000 | 薄桜鬼 真改 遊戯録　隊士達の大宴会 for Nintendo Switch |
+|  | 01004EB01A328000 | 薄桜鬼SSL ～sweet school life～ |
+|  | 010046601C024000 | 薄桜鬼 真改 遊戯録　隊士達の大宴会 |
 |  | 0100AC20128AC000 | Chrono Cross: The Radical Dreamers Edition |
 |  | 0100ADC014DA0000 | AIR |
 |  | 0100AFA01750C000 | 死神と少女 |
@@ -103,9 +103,9 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 0100B0C016164000 | Etrian Odyssey II HD |
 |  | 0100D32015A52000 | Etrian Odyssey III HD |
 |  | 0100A6301214E000 | Fire Emblem Engage |
-|  | 0100B5700CDFC000 | AMNESIA LATER×CROWD for Nintendo Switch |
-|  | 0100A1E00BFEA000 | AMNESIA for Nintendo Switch |
-|  | 010099901461A000 | AMNESIA World for Nintendo Switch |
+|  | 0100B5700CDFC000 | AMNESIA LATER×CROWD |
+|  | 0100A1E00BFEA000 | AMNESIA |
+|  | 010099901461A000 | AMNESIA World |
 |  | 0100A8401A0A8000 | Natsumon! 20th Century Summer Vacation |
 |  | 0100BC0018138000 | Super Mario RPG |
 |  | 0100D7800E9E0000 | Trials of Mana |
@@ -138,8 +138,8 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 0100874017BE2000 | BUSTAFELLOWS シーズン2 |
 |  | 010094601D910000 | 5分後に意外な結末　モノクロームの図書館 |
 |  | 010024200E00A000 | うたの☆プリンスさまっ♪ Repeat LOVE |
-|  | 01000C7019E1C000 | ワンド オブ フォーチュン Ｒ～ for Nintendo Switch |
-|  | 010088A01A774000 | ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～ for Nintendo Switch |
+|  | 01000C7019E1C000 | ワンド オブ フォーチュン Ｒ～ |
+|  | 010088A01A774000 | ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～ |
 |  | 010086C00AF7C000 | Yo-kai Watch 4++ |
 |  | 010079C017B98000 | キューピット・パラサイト -Sweet & Spicy Darling.- |
 |  | 010061A01C1CE000 | DesperaDrops |
@@ -174,7 +174,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 0100E390145C8000 | 殺し屋とストロベリー |
 |  | 0100D9A01BD86000 | ときめきメモリアル Girl's Side |
 |  | 010079201BD88000 | ときめきメモリアル Girl’s Side 2nd Kiss |
-|  | 010091C01BD8A000 | ときめきメモリアル Girl's Side 3rd Story for Nintendo Switch |
+|  | 010091C01BD8A000 | ときめきメモリアル Girl's Side 3rd Story |
 |  | 0100B0100E26C000 | ときめきメモリアル Girl's Side 4th Heart |
 |  | 0100CC80140F8000 | Triangle Strategy |
 |  | 010074F013262000 | Xenoblade Chronicles 3 |
@@ -183,7 +183,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 01004D601B0AA000 | 終遠のヴィルシュ -EpiC:lycoris- |
 |  | 01003FE00E2F8000 | スペードの国のアリス ～Wonderful White World～ |
 |  | 0100AB100E2FA000 | スペードの国のアリス ～Wonderful Black World～ |
-|  | 01003D2017FEA000 | 十三支演義 偃月三国伝1・2 for Nintendo Switch |
+|  | 01003D2017FEA000 | 十三支演義 偃月三国伝1・2 |
 |  | 01002C0008E52000 | Tales of Vesperia: Definitive Edition |
 |  | 01002BB00A662000 | Nil Adminari no Tenbin Irodori Nadeshiko |
 |  | 01008DE00C022000 | 華ヤカ哉、我ガ一族 モダンノスタルジィ |
@@ -206,7 +206,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 01002AE00F442000 | FLOWERS 四季 |
 |  | 01000A400AF2A000 | 最悪なる災厄人間に捧ぐ |
 |  | 01006B5014E2E000 | 神様のような君へ |
-|  | 01001B900C0E2000 | 猛獣使いと王子様 ～Flower ＆ Snow～ for Nintendo Switch |
+|  | 01001B900C0E2000 | 猛獣使いと王子様 ～Flower ＆ Snow～ |
 |  | 010007500F27C000 | Detective Pikachu Returns |
 |  | 0100217014266000 | Dragon Quest Treasures |
 |  | 010027100C79A000 | Rune Factory 4 Special |
@@ -243,7 +243,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 01005AF00E9DC000 | 時計仕掛けのアポカリプス |
 |  | 010088B01A8FC000 | ラディアンテイル ～ファンファーレ！～ |
 |  | 010032300C562000 | Lover Pretend |
-|  | 01001A500AD6A000 | NORN9 ~ノルン+ノネット~ LOFN for Nintendo Switch |
+|  | 01001A500AD6A000 | NORN9 ~ノルン+ノネット~ LOFN |
 |  | 010027300A660000 | 私立ベルばら学園 ～ベルサイユのばらRe*imagination～ |
 |  | 0100E4000F616000 | ひめひび Another Princess Days – White or Black – |
 |  | 0100F8D0129F4000 | ひめひび -Princess Days- |
@@ -261,9 +261,9 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 01006530151F0000 | 神々の悪戯 Unite Edition |
 |  | 01005A401D766000 | 新宿羅生門 ―Rashomon of Shinjuku― |
 |  | 01000E701DAE8000 | 夏空のモノローグ ～Another Memory～ |
-|  | 01008A001C79A000 | 真紅の焔 真田忍法帳 for Nintendo Switch |
+|  | 01008A001C79A000 | 真紅の焔 真田忍法帳 |
 |  | 0100612019F12000 | 神さまと恋ゴコロ |
-|  | 0100E8E016D82000 | KLAP!! for Nintendo Switch |
+|  | 0100E8E016D82000 | KLAP!! |
 |  | 0100A0001B9F0000 | PSYCHIC ECLIPSE-サイキックイクリプス- reload |
 |  | 01006CC015ECA000 | アイ★チュウ |
 |  | 0100E5200D1A2000 | カエル畑DEつかまえて☆彡 |
@@ -284,7 +284,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 01002BB00A662000 | 其二 |
 |  | 01007A901E728000 | 八剱伝 |
 |  | 0100509013040000 | 大正メビウスライン大全 |
-|  | 010035001D1B2000 | 猛獣たちとお姫様 for Nintendo Switch |
+|  | 010035001D1B2000 | 猛獣たちとお姫様 |
 |  | 010045F00BF64000 | BEAST Darling! ～けもみみ男子と秘密の寮～ |
 |  | 010052300F612000 | 恋の花咲く百花園 |
 |  | 0100CF90151E0000 | 東京24区 -祈- |
@@ -300,7 +300,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 01001BB01E8E2000 | FANTASIAN Neo Dimension |
 |  | 0100FD4016528000 | アイキス3cute |
 |  | 01002BE0118AE000 | OZMAFIA!! VIVACE |
-|  | 010091C01BD8A000 | ときめきメモリアル Girl's Side 3rd Story for Nintendo Switch |
+|  | 010091C01BD8A000 | ときめきメモリアル Girl's Side 3rd Story |
 |  | 0100AAF020664000 | アパシー 男子校であった怖い話 |
 |  | 0100BBA00B23E000 | 吉原彼岸花 |
 |  | 0100813014B3A000 | ラッキードッグ１ |
@@ -350,7 +350,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 0100EE5021C9E000 | たねつみの歌 (Seedsow Lullaby) |
 |  | 0100AC600EB4C000 | 幻想牢獄のカレイドスコープ |
 |  | 0100451020714000 | 幻想牢獄のカレイドスコープ２ |
-|  | 01002080191CE000 | 戦場の円舞曲 for Nintendo Switch |
+|  | 01002080191CE000 | 戦場の円舞曲 |
 |  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
 |  | 0100DC1021662000 | 夏目友人帳 ～葉月の記～ |
 
