@@ -41,5 +41,6 @@ features:
     link: ./qa1
   - title: 音声合成  
     details: 多数のオンライン＆オフライン音声合成エンジンをサポートします。  
+    link: ./ttsengines
   - title: 高度なカスタマイズ  
     details: 豊富な設定オプションを提供し、翻訳体験を個人のニーズに合わせてカスタマイズできます。  

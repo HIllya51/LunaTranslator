@@ -8,7 +8,7 @@ Windows 7以降では、システムの言語設定で、言語の音声合成�
 
 ~~Windows 11では、言語の音声合成パッケージの他に、`アクセシビリティ` -> `ナレーター` -> `自然な音声の追加` から、より高品質な自然な音声を追加することもできます。~~ マイクロソフトが自然音声パッケージの暗号化方法を変更し、サイレントアップデートをプッシュしたため、システムにインストールされた自然音声パッケージを直接使用できなくなりました。以下の方法でご利用ください。
 
-Windows 10 & 11では、言語の音声合成パッケージに加えて、[NVDA 自然音声アドオンパッケージ](https://nvda.groups.io/g/nvda/topic/question_about_nvda_2025_and/112554082)をダウンロードし、ソフトウェアディレクトリに解凍することで自然音声が利用可能です。
+Windows 11では、[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)から`Microsoft Natural Voice（自然音声）`をダウンロードし、ソフトウェアディレクトリに解凍することで自然音声を使用できます。Windows 10では、音声パックのダウンロードに加えて、[自然音声ランタイム](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)を追加でダウンロードし、ソフトウェアディレクトリに解凍する必要があります。
 
 == VoiceRoid2
 

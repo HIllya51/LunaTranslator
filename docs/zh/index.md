@@ -41,6 +41,7 @@ features:
     link: ./qa1
   - title: 语音合成
     details: 支持大量在线&离线语音合成引擎
+    link: ./ttsengines
   - title: 高度可配置
     details: 提供丰富的配置选项，让你根据个人需求定制翻译体验
 

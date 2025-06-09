@@ -8,7 +8,7 @@
 
 ~~Trên Windows 11, ngoài gói tổng hợp giọng nói của ngôn ngữ, bạn cũng có thể thêm các giọng nói tự nhiên chất lượng cao hơn tại `Trợ năng` -> `Trình tường thuật` -> `Thêm giọng nói tự nhiên`.~~ Do Microsoft đã thay đổi phương pháp mã hóa của gói giọng nói tự nhiên và âm thầm cập nhật, hiện không thể sử dụng trực tiếp các gói giọng nói tự nhiên đã cài đặt trong hệ thống. Vui lòng sử dụng phương pháp sau.
 
-Trên Windows 10 & 11, ngoài các gói tổng hợp giọng nói ngôn ngữ, bạn có thể tải xuống [Gói tiện ích giọng nói tự nhiên NVDA](https://nvda.groups.io/g/nvda/topic/question_about_nvda_2025_and/112554082) và giải nén vào thư mục phần mềm để sử dụng giọng nói tự nhiên.
+Trên Windows 11, bạn có thể tải `Microsoft Natural Voice (Giọng nói tự nhiên)` từ [Trang NVDA tiếng Trung](https://www.nvdacn.com/index.php/tts.html) và giải nén vào thư mục phần mềm để sử dụng giọng nói tự nhiên. Trên Windows 10, ngoài việc tải gói giọng nói, bạn cần tải thêm [Runtime Giọng nói tự nhiên](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) và giải nén vào thư mục phần mềm.
 
 == VoiceRoid2
 

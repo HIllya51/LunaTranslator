@@ -4,7 +4,7 @@ On Windows 10 and Windows 11, you can use Windows Speech Recognition.
 
 On Windows 11, the system can directly detect installed languages and their speech recognition models. In `Core Settings` -> `Others` -> `Speech Recognition`, select the language you want to recognize and activate the feature to start using it. If the desired language does not appear in the options, install the corresponding language in the system or find the recognition model for that language and extract it into the software directory.
 
-On Windows 10, the necessary runtime and recognition models are missing in the system. Please first download my packaged [runtime and Chinese-Japanese-English language recognition models](https://1drv.ms/u/c/e598ac1f7a133b29/EaAWXcYACl9KnKHtuzMg2csB0XBGhR2d3-136PhM8B7B8Q?e=zE1dwj), extract them to the software directory, and the software will recognize the packaged runtime and recognition models, enabling this feature.
+On Windows 10, the necessary runtime and recognition models are missing in the system. Please first download my packaged [runtime and Chinese-Japanese-English language recognition models](https://lunatranslator.org/Resource/DirectLiveCaptions.zip), extract them to the software directory, and the software will recognize the packaged runtime and recognition models, enabling this feature.
 
 :::warning
 If you are using Windows 10, do not place the software and the `runtime and Chinese-Japanese-English language recognition models` in a non-English path, as this will prevent recognition.

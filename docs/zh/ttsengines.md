@@ -8,7 +8,7 @@
 
 ~~在Windows 11上，除了语言的语音合成包以外，还可以在`辅助功能`->`讲述人`->`添加自然语音`处添加更高质量的语音包。~~ 由于微软更改了自然语音包的加密方法，并静默推送升级，现已无法直接使用系统中安装的自然语音包，请使用以下方法来使用。
 
-在Windows 10 & 11上，除了语言的语音合成包以外，可以下载[NVDA自然语音插件包](https://nvda.groups.io/g/nvda/topic/question_about_nvda_2025_and/112554082)，然后将其解压到软件目录中，即可使用自然语音。
+在Windows 11上，可以从[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)下载`Microsoft Natural Voice（自然语音）`，然后将其解压到软件目录中，即可使用自然语音。在Windows 10上，除了需要下载语音包外，还需补充下载[自然语音运行时](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)并解压到软件目录中。
 
 == VoiceRoid2
 
