@@ -1,7 +1,7 @@
 from tts.basettsclass import TTSbase, SpeechParam
 from myutils.utils import createurl, common_list_models
 from myutils.proxy import getproxy
-import base64
+import base64, ctypes
 from gui.customparams import getcustombodyheaders, customparams
 
 
@@ -97,9 +97,13 @@ class TTS(TTSbase):
                 "inlineData"
             ]["data"]
             # https://ai.google.dev/gemini-api/docs/speech-generation
-            wavheader = base64.b64decode(
-                b"UklGRtTpAQBXQVZFZm10IBAAAAABAAEAwF0AAIC7AAACABAATElTVBoAAABJTkZPSVNGVA0AAABMYXZmNjAuNS4xMDAAAGRhdGGO6QEA"
+            voicebs = base64.b64decode(b64.encode())
+            wavheader = (
+                b"RIFF"
+                + bytes(ctypes.c_int(len(voicebs) + 70))
+                + b"WAVEfmt \x10\x00\x00\x00\x01\x00\x01\x00\xc0]\x00\x00\x80\xbb\x00\x00\x02\x00\x10\x00LIST\x1a\x00\x00\x00INFOISFT\r\x00\x00\x00Lavf60.5.100\x00\x00data"
+                + bytes(ctypes.c_int(len(voicebs)))
             )
-            return wavheader + base64.b64decode(b64.encode())
+            return wavheader + voicebs
         except:
             raise Exception(response)

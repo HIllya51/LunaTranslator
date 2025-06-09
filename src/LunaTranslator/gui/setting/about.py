@@ -169,7 +169,6 @@ def updatexx(self):
         versionstring += (
             " " + [["Win7", "WinXP"][runtime_for_xp], "Win10"][runtime_for_win10]
         )
-        versionstring += " " + ["32bit", "64bit"][runtime_bit_64]
 
     return getboxlayout(
         [

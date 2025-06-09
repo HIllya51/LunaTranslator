@@ -66,7 +66,7 @@ class MarkdownHighlighter(QSyntaxHighlighter):
         self.MARKDOWN_KWS_FORMAT = {}
 
         pal = self.parent.palette()
-        pal.setColor(QPalette.ColorRole.Base, QColor(theme['background-color']))
+        # pal.setColor(QPalette.ColorRole.Base, QColor(theme['background-color']))
         self.parent.setPalette(pal)
         self.parent.setTextColor(QColor(theme['color']))
 
