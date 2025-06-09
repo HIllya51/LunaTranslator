@@ -2531,6 +2531,11 @@ namespace
         s = strReplace(s, L"<br>", L"\n");
         buffer->from(s);
     }
+    void F01009A60205DE000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN(u8"\\　"));
+        CharFilter(buffer, '\\');
+    }
 }
 struct emfuncinfoX
 {
@@ -2538,6 +2543,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 数乱digit for Nintendo Switch
+    {0x23992C, {CODEC_UTF8, 7, 0, 0, F01009A60205DE000, 0x01009A60205DE000ull, "1.0.0"}},
+    {0x238420, {CODEC_UTF8, 7, 0, 0, F01009A60205DE000, 0x01009A60205DE000ull, "1.0.0"}},
     // 蒼黒の楔 ～緋色の欠片 玉依姫奇譚～
     {0x832C63F8, {CODEC_UTF16, 1, 0x14, 0, F0100D4601FD60000, 0x0100D4601FD60000ull, "1.0.0"}},
     {0x832763B0, {CODEC_UTF16, 1, 0x14, 0, F0100D4601FD60000_1, 0x0100D4601FD60000ull, "1.0.0"}}, // 过场独白

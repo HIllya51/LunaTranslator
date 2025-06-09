@@ -25,6 +25,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01009A60205DE000 | 数乱digit for Nintendo Switch |
 |  | 0100D4601FD60000 | 蒼黒の楔 ～緋色の欠片 玉依姫奇譚～ |
 |  | 0100EC001DE7E000 | 緋色の欠片 玉依姫奇譚 ～おもいいろの記憶～ |
 |  | 0100C30020F70000 | BYAKKO ～四神部隊炎恋記～ |
