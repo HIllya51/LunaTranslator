@@ -842,7 +842,12 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55200 | 桃華月憚 ～光風の陵王～ |
+|  | SLPS-25026 | 夏色の砂時計 |
+|  | SLPM-65786 | なついろ ～星屑のメモリー～ |
+|  | SLPM-65355 | 夏色小町【一日千夏】 |
 |  | SLPS-25941 | SDガンダム - G GENERATION WARS |
+|  | SLPM-66458 | 風雨来記 |
 |  | SLPM-66163 | 風雨来記2 |
 |  | SLPM-62207 | SIMPLE2000シリーズ Vol.9 THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～ |
 |  | SLPM-55006 | あかね色に染まる坂 ぱられる |
@@ -869,7 +874,6 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | SLPS-20352 | 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02 |
 |  | SLPS-20394 | 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03 |
 |  | SLPS-25871 | ドラスティックキラー |
-|  | SLPM-66458 | 風雨来記 |
 |  | SLPS-25679 | うたわれるもの 散りゆく者への子守唄 |
 |  | SLPS-25150 | Only you リベルクルス ドラマCD付き |
 |  | SLPM-66905 | D.C. ～ダ・カーポ～ the Origin |

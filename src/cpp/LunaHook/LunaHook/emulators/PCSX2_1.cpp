@@ -585,6 +585,36 @@ namespace
         const uintptr_t sjis = ((uintptr_t)b1 << 8) | b0;
         buffer->from_t(sjis);
     }
+    void SLPM65355(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string lastoutput;
+        static std::string last;
+        auto s = buffer->strA();
+        if (last == s)
+            return buffer->clear();
+        if (last.empty())
+            last = s;
+        if (last.size() == s.size())
+        {
+            bool good = false;
+            for (int i = last.size() - 1; i >= 0; i--)
+            {
+                if (s[i] != last[i])
+                {
+                    good = true;
+                    buffer->from(s.substr(0, i + 1));
+                    break;
+                }
+            }
+            if (!good)
+                buffer->clear();
+        }
+        last = s;
+        auto sw = buffer->strAW();
+        strReplace(sw, L"@");
+        sw = re::sub(sw, L"#\\d+");
+        buffer->fromWA(sw);
+    }
     void SLPS25941(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -850,6 +880,14 @@ namespace
             collect.clear();
         }
     }
+    void SLPM65786(TextBuffer *buffer, HookParam *hp)
+    {
+        auto w = *(WORD *)buffer->buff;
+        if (w == 0x4081 || !(IsShiftjisWord(w)))
+        {
+            buffer->clear();
+        }
+    }
 }
 struct emfuncinfoX
 {
@@ -857,9 +895,19 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 桃華月憚 ～光風の陵王～
+    {0x29AB3C, {0, 0, 0, 0, 0, "SLPM-55200"}},
+    // 夏色の砂時計
+    {0x205554, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(v1), 0, 0, 0, "SLPS-25026"}},
+    // なついろ ～星屑のメモリー～
+    {0x16D230, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s0), 0, 0, SLPM65786, "SLPM-65786"}},
+    // 夏色小町【一日千夏】
+    {0x2AB318, {DIRECT_READ, 0, 0, 0, SLPM65355, "SLPM-65355"}},
     // SDガンダム - G GENERATION WARS
     {0x4BF474, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25941, "SLPS-25941"}},
     {0x51B59C, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPS25941_2, "SLPS-25941"}},
+    // 風雨来記
+    {0x1FFACA0, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPM-66458"}},
     // 風雨来記2
     {0x2AC77C, {0, 0, 0, SLPM66163, 0, "SLPM-66163"}}, //@mills
     // SIMPLE2000シリーズ Vol.9 THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～
@@ -915,8 +963,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ドラスティックキラー
     {0x1AC5D40, {DIRECT_READ, 0, 0, 0, SLPL25871, "SLPS-25871"}},
     {0x1AC6970, {DIRECT_READ, 0, 0, 0, SLPL25871, "SLPS-25871"}},
-    // 風雨来記
-    {0x1FFACA0, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPM-66458"}},
     // うたわれるもの 散りゆく者への子守唄
     {0x50574C, {DIRECT_READ, 0, 0, 0, SLPS25679, "SLPS-25679"}},
     // Only you リベルクルス ドラマCD付き

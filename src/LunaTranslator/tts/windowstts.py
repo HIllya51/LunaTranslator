@@ -20,11 +20,11 @@ class TTS(TTSbase):
     def get_paths(self):
         paths = []
         names = []
-        for _, path in NativeUtils.FindPackages("MicrosoftWindows.Voice."):
-            name = self.getname(path)
-            if name:
-                names.append(name)
-                paths.append(path)
+        # for _, path in NativeUtils.FindPackages("MicrosoftWindows.Voice."):
+        #     name = self.getname(path)
+        #     if name:
+        #         names.append(name)
+        #         paths.append(path)
         for path, _, __ in os.walk("."):
             base = os.path.basename(path)
             if base.startswith("MicrosoftWindows.Voice."):
