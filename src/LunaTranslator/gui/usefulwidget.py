@@ -530,10 +530,9 @@ class saveposwindow(LMainWindow):
     screengeochanged = pyqtSignal()
 
     def __init__(self, parent, poslist=None, flags=None) -> None:
+        LMainWindow.__init__(self, parent)
         if flags:
-            LMainWindow.__init__(self, parent, flags=flags)
-        else:
-            LMainWindow.__init__(self, parent)
+            self.setWindowFlags(self.windowFlags() | flags)
 
         self.poslist = poslist
         if self.poslist:

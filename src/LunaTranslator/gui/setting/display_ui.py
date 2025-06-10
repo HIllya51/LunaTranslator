@@ -62,6 +62,14 @@ def createhorizontal_slider(self):
     )
 
     hb.addWidget(sw)
+
+    gobject.signals.backtransparentstatus.connect(
+        lambda x: (
+            self.horizontal_slider.setEnabled(x),
+            self.horizontal_slider_label.setEnabled(x),
+        )
+    )
+
     self.horizontal_slider.setEnabled(not globalconfig["backtransparent"])
     self.horizontal_slider_label.setEnabled(not globalconfig["backtransparent"])
     return w

@@ -197,10 +197,12 @@ def urlprotocol():
     parser = argparse.ArgumentParser()
     parser.add_argument("--URLProtocol", required=False)
     parser.add_argument("--Exec", required=False)
+    parser.add_argument("--test", required=False, action="store_true")
     try:
         args = parser.parse_args()
         URLProtocol: str = args.URLProtocol
         Exec: str = args.Exec
+        gobject.istest = args.test
         if URLProtocol:
             print(URLProtocol)
             result = urlsplit(URLProtocol)

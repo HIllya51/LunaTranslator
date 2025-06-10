@@ -61,6 +61,7 @@ global_dialog_savedgame_new = None
 global_dialog_setting_game = None
 serverindex = 0
 edittrans = None
+istest = False
 
 
 class Consts:

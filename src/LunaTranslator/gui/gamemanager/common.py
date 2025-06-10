@@ -108,6 +108,8 @@ def opendirforgameuid(gameuid):
 
 def startgame(gameuid):
     try:
+        if not gameuid:
+            return
         game = get_launchpath(gameuid)
         if os.path.exists(game):
             mode = savehook_new_data[gameuid].get("onloadautochangemode2", 0)
@@ -118,12 +120,7 @@ def startgame(gameuid):
 
                     for k in globalconfig["sourcestatus2"]:
                         globalconfig["sourcestatus2"][k]["use"] = k == _[mode]
-                        try:
-                            getattr(gobject.baseobject.settin_ui, "sourceswitchs")[
-                                k
-                            ].setChecked(k == _[mode])
-                        except:
-                            pass
+                        gobject.signals.sourceswitchs.emit(k, k == _[mode])
 
                     gobject.baseobject.starttextsource(use=_[mode], checked=True)
 

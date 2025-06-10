@@ -28,21 +28,23 @@ from gui.usefulwidget import (
 
 
 def __create(self):
-    self.selectbutton = getIconButton(
+    selectbutton = getIconButton(
         gobject.baseobject.createattachprocess,
         icon=globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
-    return self.selectbutton
+    gobject.signals.selecthookbuttonstatus.connect(selectbutton.setEnabled)
+    return selectbutton
 
 
 def __create2(self):
-    self.selecthookbutton = getIconButton(
+    selecthookbutton = getIconButton(
         lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
         icon=globalconfig["toolbutton"]["buttons"]["selecttext"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
-    return self.selecthookbutton
+    gobject.signals.selecthookbuttonstatus.connect(selecthookbutton.setEnabled)
+    return selecthookbutton
 
 
 def gethookgrid_em(self):
@@ -641,3 +643,11 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     basel.setSpacing(0)
     do()
     dotab()
+
+    def __(k, x):
+        btn: QPushButton = self.sourceswitchs.get(k)
+        if not btn:
+            return
+        btn.setChecked(x)
+
+    gobject.signals.sourceswitchs.connect(__)

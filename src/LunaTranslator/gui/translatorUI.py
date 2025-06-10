@@ -639,7 +639,7 @@ class TranslatorWindow(resizableframeless):
                     colorstate=lambda: globalconfig["autorun"],
                 ),
             ),
-            ("setting", lambda: gobject.baseobject.settin_ui.showsignal.emit()),
+            ("setting", lambda: gobject.signals.settin_ui_showsignal.emit()),
             (
                 "copy",
                 lambda: NativeUtils.ClipBoard.setText(gobject.baseobject.currenttext),
@@ -1139,7 +1139,7 @@ class TranslatorWindow(resizableframeless):
         trayMenu.addAction(quitAction)
         action = trayMenu.exec(QCursor.pos())
         if action == settingAction:
-            gobject.baseobject.settin_ui.showsignal.emit()
+            gobject.signals.settin_ui_showsignal.emit()
         elif action == quitAction:
             self.close()
 
@@ -1433,15 +1433,9 @@ class TranslatorWindow(resizableframeless):
         elif idx == 1:
             globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
-            try:
-                gobject.baseobject.settin_ui.horizontal_slider.setEnabled(
-                    not globalconfig["backtransparent"]
-                )
-                gobject.baseobject.settin_ui.horizontal_slider_label.setEnabled(
-                    not globalconfig["backtransparent"]
-                )
-            except:
-                pass
+            gobject.signals.backtransparentstatus.emit(
+                not globalconfig["backtransparent"]
+            )
         self.refreshtoolicon()
 
     def showhideocrrange(self):
@@ -1464,26 +1458,18 @@ class TranslatorWindow(resizableframeless):
         gobject.baseobject.hwnd = hwnd if pid != _pid else None
 
     def changeshowhideraw(self):
-        try:
-            gobject.baseobject.settin_ui.show_original_switch.clicksignal.emit()
-        except:
-            globalconfig["isshowrawtext"] = not globalconfig["isshowrawtext"]
-            self.refreshtoolicon()
-            self.translate_text.showhideorigin(globalconfig["isshowrawtext"])
-            try:
-                gobject.baseobject.settin_ui.fenyinsettings.setEnabled(
-                    globalconfig["isshowrawtext"]
-                )
-            except:
-                pass
+        isshowrawtext = not globalconfig["isshowrawtext"]
+        globalconfig["isshowrawtext"] = isshowrawtext
+        gobject.signals.show_original_switch.emit(isshowrawtext)
+        self.refreshtoolicon()
+        self.translate_text.showhideorigin(isshowrawtext)
+        gobject.signals.fenyinsettings.emit(isshowrawtext)
 
     def changeshowhidetrans(self):
-        try:
-            gobject.baseobject.settin_ui.show_fany_switch.clicksignal.emit()
-        except:
-            globalconfig["showfanyi"] = not globalconfig["showfanyi"]
-            self.refreshtoolicon()
-            gobject.baseobject.maybeneedtranslateshowhidetranslate()
+        globalconfig["showfanyi"] = not globalconfig["showfanyi"]
+        gobject.signals.show_fany_switch.emit(globalconfig["showfanyi"])
+        self.refreshtoolicon()
+        gobject.baseobject.maybeneedtranslateshowhidetranslate()
 
     def changeTranslateMode(self):
         globalconfig["autorun"] = not globalconfig["autorun"]

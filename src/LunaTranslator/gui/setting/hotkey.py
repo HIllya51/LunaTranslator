@@ -81,7 +81,7 @@ def registrhotkeys(self):
     self.bindfunctions = {
         "_1": gobject.baseobject.translation_ui.startTranslater,
         "_2": gobject.baseobject.translation_ui.changeTranslateMode,
-        "_3": self.showsignal.emit,
+        "_3": gobject.signals.settin_ui_showsignal.emit,
         "_4": lambda: NativeUtils.ClipBoard.setText(gobject.baseobject.currenttext),
         "_5": gobject.baseobject.translation_ui.changeshowhiderawsig.emit,
         "_51": gobject.baseobject.translation_ui.changeshowhidetranssig.emit,

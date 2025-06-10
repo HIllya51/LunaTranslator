@@ -343,7 +343,7 @@ class MAINUI:
         currentsignature = uuid.uuid4()
         try:
             text = POSTSOLVE(text, isEx=waitforresultcallback)
-            self.settin_ui.showandsolvesig.emit(origin, text)
+            gobject.signals.showandsolvesig.emit(origin, text)
             if not text:
                 return
         except Exception as e:
@@ -837,15 +837,9 @@ class MAINUI:
 
         self.translation_ui.set_color_transparency()
         self.translation_ui.adjustbuttons()
-        try:
-            self.settin_ui.selectbutton.setEnabled(
-                globalconfig["sourcestatus2"]["texthook"]["use"]
-            )
-            self.settin_ui.selecthookbutton.setEnabled(
-                globalconfig["sourcestatus2"]["texthook"]["use"]
-            )
-        except:
-            pass
+        gobject.signals.selecthookbuttonstatus.emit(
+            globalconfig["sourcestatus2"]["texthook"]["use"]
+        )
         self.textsource = None
         if checked:
             classes = {
@@ -1131,14 +1125,40 @@ class MAINUI:
             int(widget.winId()), globalconfig["showintab_sub"], False
         )
 
-    def inittray(self):
-        self.tray = QSystemTrayIcon()
-        self.tray.setIcon(getExeIcon(getcurrexe()))
+    def createmenuela(self):
+        from elawidgettools import ElaMenu, ElaIcon, ElaIconType
+
+        trayMenu = ElaMenu()
+        showAction = LAction("显示", trayMenu)
+        showAction.triggered.connect(self.translation_ui.show_)
+        settingAction = LAction(
+            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Gear),
+            "设置",
+            trayMenu,
+        )
+        settingAction.triggered.connect(gobject.signals.settin_ui_showsignal)
+        quitAction = LAction(
+            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Xmark),
+            "退出",
+            trayMenu,
+        )
+        quitAction.triggered.connect(self.translation_ui.close)
+        trayMenu.addAction(showAction)
+        trayMenu.addAction(settingAction)
+        trayMenu.addSeparator()
+        trayMenu.addAction(quitAction)
+        trayMenu.addAction(showAction)
+        trayMenu.addAction(settingAction)
+        trayMenu.addSeparator()
+        trayMenu.addAction(quitAction)
+        return trayMenu
+
+    def createmenu1(self):
         trayMenu = QMenu(self.commonstylebase)
         showAction = LAction("显示", trayMenu)
         showAction.triggered.connect(self.translation_ui.show_)
         settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
-        settingAction.triggered.connect(self.settin_ui.showsignal)
+        settingAction.triggered.connect(gobject.signals.settin_ui_showsignal)
         quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
         quitAction.triggered.connect(self.translation_ui.close)
         trayMenu.addAction(showAction)
@@ -1149,7 +1169,14 @@ class MAINUI:
         trayMenu.addAction(settingAction)
         trayMenu.addSeparator()
         trayMenu.addAction(quitAction)
-        self.tray.setContextMenu(trayMenu)
+        return trayMenu
+
+    def inittray(self):
+        self.tray = QSystemTrayIcon()
+        self.tray.setIcon(getExeIcon(getcurrexe()))
+        self.tray.setContextMenu(
+            self.createmenuela() if gobject.istest else self.createmenu1()
+        )
         self.tray.activated.connect(self.leftclicktray)
         self.tray.messageClicked.connect(self.__trayclicked)
         self.trayclicked = print
@@ -1322,8 +1349,7 @@ class MAINUI:
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()
         self.mainuiloadafter()
-        if startwithgameuid:
-            startgame(startwithgameuid)
+        startgame(startwithgameuid)
 
     def mainuiloadafter(self):
         self.WindowMessageCallback_ptr = NativeUtils.WindowMessageCallback_t(
@@ -1354,7 +1380,14 @@ class MAINUI:
 
         self.commonstylebase = commonstylebase(self.translation_ui)
         self.setcommonstylesheet()
-        self.settin_ui = Setting(self.commonstylebase)
+        if gobject.istest:
+            from elawidgettools import eApp
+            from gui.ui2.setting import Setting2
+
+            eApp.init()
+            self.settin_ui = Setting2(self.translation_ui)
+        else:
+            self.settin_ui = Setting(self.commonstylebase)
         self.transhis = transhist(self.commonstylebase)
         self.startreader()
         self.searchwordW = searchwordW(self.commonstylebase)
@@ -1451,11 +1484,13 @@ class MAINUI:
         if not hwnd:  # window create/destroy,when destroy winId is None
             return
         windows.SetProp(int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1))
-        NativeUtils.SetWindowExtendFrame(int(hwnd))
+        if gobject.istest:
+            return
         self.cornerornot(obj)
+        self.setshowintab_checked(obj)
+        NativeUtils.SetWindowExtendFrame(int(hwnd))
         if self.currentisdark is not None:
             self.setdarkandbackdrop(obj, self.currentisdark)
-        self.setshowintab_checked(obj)
 
     def installeventfillter(self):
         class WindowEventFilter(QObject):

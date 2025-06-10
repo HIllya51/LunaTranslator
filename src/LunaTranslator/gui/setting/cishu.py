@@ -86,6 +86,7 @@ class multicolorset(LDialog):
 
 def setTabcishu(self, basel):
     makescrollgrid(setTabcishu_l(self), basel)
+    gobject.signals.fenyinsettings.connect(self.fenyinsettings.setEnabled)
 
 
 def gethiragrid(self):

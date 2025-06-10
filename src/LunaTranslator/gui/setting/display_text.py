@@ -401,6 +401,26 @@ def __changeuibuttonstate2(self, x):
     gobject.baseobject.maybeneedtranslateshowhidetranslate()
 
 
+def _showhidefy(self):
+    btn = getsimpleswitch(
+        globalconfig,
+        "showfanyi",
+        callback=functools.partial(__changeuibuttonstate2, self),
+    )
+    gobject.signals.show_fany_switch.connect(btn.setChecked)
+    return btn
+
+
+def __xianshi(self):
+    btn = getsimpleswitch(
+        globalconfig,
+        "isshowrawtext",
+        callback=functools.partial(__changeuibuttonstate, self),
+    )
+    gobject.signals.show_original_switch.connect(btn.setChecked)
+    return btn
+
+
 def xianshigrid_style(self):
     textgrid = [
         [
@@ -431,13 +451,7 @@ def xianshigrid_style(self):
                         ),
                         "",
                         "显示",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "isshowrawtext",
-                            callback=lambda x: __changeuibuttonstate(self, x),
-                            name="show_original_switch",
-                            parent=self,
-                        ),
+                        functools.partial(__xianshi, self),
                     ],
                     [
                         "大小",
@@ -480,13 +494,7 @@ def xianshigrid_style(self):
                         (functools.partial(createtextfontcom, "fonttype2"), 0),
                         "",
                         "显示",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "showfanyi",
-                            callback=lambda x: __changeuibuttonstate2(self, x),
-                            name="show_fany_switch",
-                            parent=self,
-                        ),
+                        functools.partial(_showhidefy, self),
                     ],
                     [
                         "大小",

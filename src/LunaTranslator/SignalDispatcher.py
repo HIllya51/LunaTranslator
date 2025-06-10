@@ -18,6 +18,14 @@ class SignalDispatcher(QObject):
     versiontextsignal = pyqtSignal(str)
     clipboardcallback = pyqtSignal(bool, str)
     hover_search_word = pyqtSignal(str, str, bool, bool, bool)
+    settin_ui_showsignal = pyqtSignal()
+    showandsolvesig = pyqtSignal(str, str)
+    selecthookbuttonstatus = pyqtSignal(bool)
+    backtransparentstatus = pyqtSignal(bool)
+    show_fany_switch = pyqtSignal(bool)
+    show_original_switch = pyqtSignal(bool)
+    sourceswitchs = pyqtSignal(str, bool)
+    fenyinsettings = pyqtSignal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -33,6 +41,7 @@ class SignalDispatcher(QObject):
         self.__connect_internal(self.progresssignal3)
         self.__connect_internal(self.progresssignal4)
         self.__connect_internal(self.versiontextsignal)
+        self.__connect_internal(self.showandsolvesig)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:

@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, os
+import functools, os, gobject
 from myutils.post import POSTSOLVE
 from myutils.utils import (
     selectdebugfile,
@@ -27,15 +27,6 @@ from gui.inputdialog import (
 )
 
 
-def delaysetcomparetext(self, s, x):
-    try:
-        self.__fromtext.setPlainText(s)
-        self.__totext.setPlainText(x)
-    except:
-        self.__fromtext_cache = s
-        self.__totext_cache = x
-
-
 def getcomparelayout(self):
 
     w = QWidget()
@@ -50,13 +41,11 @@ def getcomparelayout(self):
     layout.addWidget(fromtext)
     layout.addWidget(solvebutton)
     layout.addWidget(totext)
-    self.__fromtext = fromtext
-    self.__totext = totext
-    try:
-        fromtext.setPlainText(self.__fromtext_cache)
-        totext.setPlainText(self.__totext_cache)
-    except:
-        pass
+    gobject.signals.connectsignal(
+        gobject.signals.showandsolvesig,
+        lambda s, x: (fromtext.setPlainText(s), totext.setPlainText(x)),
+    )
+
     return w
 
 

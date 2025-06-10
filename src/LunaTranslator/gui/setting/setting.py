@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import qtawesome
-import random
+import random, gobject
 from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting.textinput import setTabOne_lazy
@@ -10,7 +10,7 @@ from gui.setting.display import setTabThree_lazy
 from gui.setting.tts import setTab5
 from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
-from gui.setting.transopti import setTab7_lazy, delaysetcomparetext
+from gui.setting.transopti import setTab7_lazy
 from gui.setting.about import setTab_about
 from gui.dynalang import LListWidgetItem, LListWidget
 
@@ -80,15 +80,13 @@ class TabWidget(QWidget):
 
 
 class Setting(closeashidewindow):
-    hover_search_word_checkpos = pyqtSignal()
-    showandsolvesig = pyqtSignal(str, str)
 
     def __init__(self, parent):
         super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
         self.setWindowIcon(qtawesome.icon("fa.gear"))
-        self.showandsolvesig.connect(functools.partial(delaysetcomparetext, self))
         self.isfirst = True
         registrhotkeys(self)
+        gobject.signals.settin_ui_showsignal.connect(self.showsignal)
 
     def showEvent(self, e: QShowEvent):
         if self.isfirst:
