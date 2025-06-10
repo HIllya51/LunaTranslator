@@ -150,16 +150,23 @@ namespace
         buffer->from(s);
     }
 
+    void F010045C0109F2000_0(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "#Color\\[[\\d]+\\]");
+        strReplace(s, "#n");
+        strReplace(s, u8"　");
+        buffer->from(s);
+    }
     void F010045C0109F2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         s = re::sub(s, R"(#[^\]]*\])");
         s = re::sub(s, R"(#[^n]*n)");
-        s = re::sub(s, u8"　");
         s = re::sub(s, u8R"(Save[\s\S]*データ)");
+        strReplace(s, u8"　");
         buffer->from(s);
     }
-
     void F0100A1E00BFEA000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -2202,6 +2209,7 @@ namespace
         s = re::sub(s, "@r(.*?)@(.*?)@", "$1");
         s = strReplace(s, "@n");
         s = strReplace(s, "@d");
+        s = strReplace(s, "@p");
         s = re::sub(s, R"(@v\w+)");
         buffer->from(s);
     }
@@ -2568,6 +2576,16 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // VARIABLE BARRICADE
+    {0x8004FEA0, {CODEC_UTF8, 2, 0, 0, F010045C0109F2000_0, 0x010045C0109F2000ull, "1.0.0"}},
+    {0x80042DF4, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000_0, 0x010045C0109F2000ull, "1.0.0"}},
+    {0x800e3424, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, //"System Messages + Choices"), //Also includes the names of characters,
+    {0x800fb080, {CODEC_UTF8, 3, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, // Main Text
+    // 月の彼方で逢いましょう
+    {0x80452B6C, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x010060A0161EC000ull, "1.0.0"}},
+    {0x804A94C4, {CODEC_UTF8, 1, 0, 0, F01003080177CA000, 0x010060A0161EC000ull, "1.0.0"}},
+    {0x804A441C, {CODEC_UTF8, 9, 0, 0, F01003080177CA000, 0x010060A0161EC000ull, "1.0.1"}},
+    {0x804BAD94, {CODEC_UTF8, 1, 0, 0, F01003080177CA000, 0x010060A0161EC000ull, "1.0.1"}},
     // メルキス
     {0x804EC7E8, {CODEC_UTF8, 0XA, 0, 0, F010081E0161B2000, 0x0100C800169E6000ull, "1.0.0"}},
     // エヴァーメイデン ～堕落の園の乙女たち～ //01008DC019F7A000
@@ -2651,9 +2669,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // CLANNAD
     {0x80072d00, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, 0x0100A3A00CC7E000ull, "1.0.0"}},
     {0x80072d30, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, 0x0100A3A00CC7E000ull, "1.0.7"}},
-    // VARIABLE BARRICADE NS
-    {0x800e3424, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, //"System Messages + Choices"), //Also includes the names of characters,
-    {0x800fb080, {CODEC_UTF8, 3, 0, 0, F010045C0109F2000, 0x010045C0109F2000ull, "1.0.1"}}, // Main Text
     // 蝶の毒 華の鎖～大正艶恋異聞～
     {0x800968BC, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, 0x0100A1200CA3C000ull, "1.0.0"}},
     {0x80095010, {CODEC_UTF16, 1, 0, 0, F0100A1200CA3C000, 0x0100A1200CA3C000ull, nullptr}}, // 2.0.1 & 2.0.4  // Main Text + Names

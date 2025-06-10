@@ -151,7 +151,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
             path: build
-      - uses: softprops/action-gh-release@v2
+      - uses: softprops/action-gh-release@v2.2.2
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
