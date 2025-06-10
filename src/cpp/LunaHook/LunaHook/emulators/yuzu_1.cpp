@@ -583,11 +583,11 @@ namespace
     void F010081E0161B2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, R"(@v\w+_\w+_\w+)");
+        s = re::sub(s, R"(@v\w+)");
         s = re::sub(s, R"(@s\d{4})");
         s = re::sub(s, "@r(.*?)@(.*?)@", "$1");
         s = re::sub(s, R"(@t\w{4})");
-        s = re::sub(s, R"(@h\w+_\d+)");
+        s = re::sub(s, R"(@h\w+)");
         strReplace(s, "@n");
         strReplace(s, "@d");
         strReplace(s, "@k");
@@ -2201,6 +2201,7 @@ namespace
         auto s = buffer->strA();
         s = re::sub(s, "@r(.*?)@(.*?)@", "$1");
         s = strReplace(s, "@n");
+        s = strReplace(s, "@d");
         s = re::sub(s, R"(@v\w+)");
         buffer->from(s);
     }
@@ -2567,8 +2568,11 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
-    // エヴァーメイデン
-    {0x8047C95C, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x01008DC019F7A000ull, nullptr}}, // 1.0.0 & 1.0.2
+    // メルキス
+    {0x804EC7E8, {CODEC_UTF8, 0XA, 0, 0, F010081E0161B2000, 0x0100C800169E6000ull, "1.0.0"}},
+    // エヴァーメイデン ～堕落の園の乙女たち～ //01008DC019F7A000
+    // ふゆから、くるる。 //01002AF019F88000
+    {0x8047C95C, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, std::vector<uint64_t>{0x01008DC019F7A000ull, 0x01002AF019F88000ull}, nullptr}}, // 1.0.0 & 1.0.2
     // 添いカノ ～ぎゅっと抱きしめて～
     {0x80081548, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x0100D4800C476000ull, "1.0.0"}},
     // 軍靴をはいた猫
@@ -2676,6 +2680,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8002fb18, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100925014864000ull, "1.0.0"}}, // name
     {0x8002fd7c, {CODEC_UTF8, 0, 0, 0, F0100925014864000, 0x0100925014864000ull, "1.0.0"}}, // text
     {0x8004cf28, {CODEC_UTF8, 1, 0, 0, F0100925014864000, 0x0100925014864000ull, "1.0.0"}}, // text
+    // ラディアンテイル ～ファンファーレ！～
+    {0x8003a880, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
+    {0x8004eb08, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
+    {0x8005bff4, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
+    {0x8005f0d4, {CODEC_UTF8, 3, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
     // MUSICUS
     {0x80462DD4, {CODEC_UTF8, 0, 1, 0, F01006590155AC000, 0x01000130150FA000ull, "1.0.0"}}, // name
     {0x80462DEC, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01000130150FA000ull, "1.0.0"}}, // dialogue 1
@@ -3571,11 +3580,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8004ca84, {CODEC_UTF8, 1, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
     {0x8005b304, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
     {0x8005b310, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
-    // ラディアンテイル ～ファンファーレ！～
-    {0x8003a880, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
-    {0x8004eb08, {CODEC_UTF8, 1, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
-    {0x8005bff4, {CODEC_UTF8, 0, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
-    {0x8005f0d4, {CODEC_UTF8, 3, 0, 0, F010088B01A8FC000, 0x010088B01A8FC000ull, "1.0.1"}},
     // Lover Pretend
     {0x80034ad0, {CODEC_UTF8, 0, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
     {0x8004e950, {CODEC_UTF8, 1, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
