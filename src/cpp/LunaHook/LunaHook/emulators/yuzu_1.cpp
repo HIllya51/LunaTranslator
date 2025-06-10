@@ -514,6 +514,15 @@ namespace
         s = re::sub(s, R"(#Color\[\d+?\])");
         buffer->from(s);
     }
+    void F0100D4800C476000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strAW(CP_UTF8);
+        ws = remapkatakana(ws);
+        strReplace(ws, L"@r");
+        strReplace(ws, L"@y");
+        strReplace(ws, L"@|");
+        buffer->fromWA(ws, CP_UTF8);
+    }
     void f0100AC600EB4C000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = buffer->strAW();
@@ -2558,6 +2567,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // エヴァーメイデン
+    {0x8047C95C, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x01008DC019F7A000ull, nullptr}}, // 1.0.0 & 1.0.2
+    // 添いカノ ～ぎゅっと抱きしめて～
+    {0x80081548, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x0100D4800C476000ull, "1.0.0"}},
+    // 軍靴をはいた猫
+    {0x80095FDC, {CODEC_UTF16, 1, 0, 0, F010048101D49E000, 0x01003FF010312000ull, "1.0.0"}},
     // 冥契のルペルカリア
     {0x803CB66C, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x01003080177CA000ull, "1.0.0"}},
     // ――ｯ違う!!!+
