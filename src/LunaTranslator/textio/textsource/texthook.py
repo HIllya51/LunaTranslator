@@ -13,7 +13,7 @@ from myutils.config import (
 from textio.textsource.textsourcebase import basetext
 from myutils.utils import getlangtgt, safe_escape, stringfyerror
 from myutils.kanjitrans import kanjitrans
-from myutils.hwnd import test_injectable, ListProcess, getpidexe
+from myutils.hwnd import test_injectable, ListProcess
 from myutils.wrapper import threader
 from traceback import print_exc
 import subprocess, NativeUtils
@@ -135,7 +135,7 @@ class texthook(basetext):
         self.multiselectedcollectorlock = threading.Lock()
         self.lastflushtime = 0
         self.runonce_line = ""
-        gobject.baseobject.autoswitchgameuid = False
+        gobject.base.autoswitchgameuid = False
         self.initdll()
         self.delaycollectallselectedoutput()
         self.autohookmonitorthread()
@@ -227,7 +227,7 @@ class texthook(basetext):
             ThreadEvent_maybeEmbed(self.onnewhook),
             ThreadEvent(self.onremovehook),
             OutputCallback(self.handle_output),
-            HostInfoHandler(gobject.baseobject.hookselectdialog.sysmessagesignal.emit),
+            HostInfoHandler(gobject.base.hookselectdialog.sysmessagesignal.emit),
             HookInsertHandler(self.newhookinsert),
             EmbedCallback(self.getembedtext),
         ]
@@ -270,14 +270,14 @@ class texthook(basetext):
 
     def connecthwnd(self, hwnd):
         if (
-            gobject.baseobject.AttachProcessDialog
-            and gobject.baseobject.AttachProcessDialog.isVisible()
+            gobject.base.AttachProcessDialog
+            and gobject.base.AttachProcessDialog.isVisible()
         ):
             return
         pid = windows.GetWindowThreadProcessId(hwnd)
         if pid == os.getpid():
             return
-        name_ = getpidexe(pid)
+        name_ = windows.GetProcessFileName(pid)
         if not name_:
             return
         uid, reflist = findgameuidofpath(name_)
@@ -308,16 +308,16 @@ class texthook(basetext):
 
     @property
     def gameuid(self):
-        return gobject.baseobject.gameuid
+        return gobject.base.gameuid
 
     @gameuid.setter
     def gameuid(self, gameuid):
-        gobject.baseobject.gameuid = gameuid
+        gobject.base.gameuid = gameuid
 
     def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
         for pid in pids:
             self.waitend(pid)
-        gobject.baseobject.hwnd = hwnd
+        gobject.base.hwnd = hwnd
         self.gameuid = gameuid
         self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
@@ -346,7 +346,7 @@ class texthook(basetext):
             and len(self.hconfig.get("embedablehook", [])) == 0
             and globalconfig["autoopenselecttext"]
         ):
-            gobject.baseobject.hookselectdialog.realshowhide.emit(True)
+            gobject.base.hookselectdialog.realshowhide.emit(True)
         self.injectproc(injecttimeout, pids)
 
     def QueryThreadHistory(self, tp, _latest=False):
@@ -411,7 +411,7 @@ class texthook(basetext):
             self.start_unsafe(pids)
         except Exception as e:
             print_exc()
-            gobject.baseobject.translation_ui.displaymessagebox.emit(
+            gobject.base.translation_ui.displaymessagebox.emit(
                 "错误", stringfyerror(e)
             )
 
@@ -440,7 +440,7 @@ class texthook(basetext):
         if self.hconfig.get("insertpchooks_string", False):
             self.Luna_InsertPCHooks(pid, 0)
             self.Luna_InsertPCHooks(pid, 1)
-        gobject.baseobject.displayinfomessage(
+        gobject.base.displayinfomessage(
             self.hconfig["title"], "<msg_info_refresh>"
         )
         self.flashembedsettings(pid)
@@ -536,7 +536,7 @@ class texthook(basetext):
 
     def onremovehook(self, hc, hn: bytes, tp):
         key = (hc, hn.decode("utf8"), tp)
-        gobject.baseobject.hookselectdialog.removehooksignal.emit(key)
+        gobject.base.hookselectdialog.removehooksignal.emit(key)
 
     def match_compatibility(self, key, key2):
         hc, hn, tp = key
@@ -575,7 +575,7 @@ class texthook(basetext):
                 else:
                     insertindex = j + 1
             self.edit_selectedhook_insert(key, insertindex)
-        gobject.baseobject.hookselectdialog.addnewhooksignal.emit(
+        gobject.base.hookselectdialog.addnewhooksignal.emit(
             key, select, isembedable
         )
 
@@ -639,7 +639,7 @@ class texthook(basetext):
             time.sleep(2)
             if lastsize == len(cntref) and lastsize != 0:
                 break
-        gobject.baseobject.hookselectdialog.getfoundhooksignal.emit(savefound)
+        gobject.base.hookselectdialog.getfoundhooksignal.emit(savefound)
 
     def inserthook(self, hookcode):
         succ = True
@@ -647,7 +647,7 @@ class texthook(basetext):
             succ = self.Luna_InsertHookCode(pid, hookcode) and succ
         if succ == False:
             QMessageBox.critical(
-                gobject.baseobject.hookselectdialog, _TR("错误"), _TR("特殊码无效")
+                gobject.base.hookselectdialog, _TR("错误"), _TR("特殊码无效")
             )
 
     @threader
@@ -686,9 +686,9 @@ class texthook(basetext):
             else:
                 self.dispatchtext_multiline_delayed(key, output)
         if key == self.selectinghook:
-            gobject.baseobject.hookselectdialog.getnewsentencesignal.emit(output)
+            gobject.base.hookselectdialog.getnewsentencesignal.emit(output)
 
-        gobject.baseobject.hookselectdialog.update_item_new_line.emit(key, output)
+        gobject.base.hookselectdialog.update_item_new_line.emit(key, output)
 
     def serialkey(self, key):
         hc, hn, tp = key

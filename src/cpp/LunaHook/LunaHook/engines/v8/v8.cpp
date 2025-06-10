@@ -318,12 +318,12 @@ namespace
 		hp.text_fun =
 			[](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
-			auto length = ((size_t(THISCALL *)(void *))Utf8Length)((void *)context->THISCALLTHIS);
+			auto length = ((size_t(THISCALL *)(void *))Utf8Length)((void *)context->argof_thiscall(0));
 			if (!length)
 				return;
 			auto u8str = new char[length + 1];
 			int writen;
-			((size_t(THISCALL *)(void *, char *, int, int *, int))WriteUtf8)((void *)context->THISCALLTHIS, u8str, length, &writen, 0);
+			((size_t(THISCALL *)(void *, char *, int, int *, int))WriteUtf8)((void *)context->argof_thiscall(0), u8str, length, &writen, 0);
 			buffer->from(u8str, length);
 		};
 		hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)

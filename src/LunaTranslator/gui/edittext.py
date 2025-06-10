@@ -2,7 +2,7 @@ from qtsymbols import *
 import threading, windows
 import gobject, qtawesome, os, json
 from myutils.config import globalconfig, savehook_new_data, translatorsetting
-from myutils.wrapper import Singleton
+from myutils.wrapper import Singleton, threader
 from gui.usefulwidget import (
     saveposwindow,
     getsimplecombobox,
@@ -38,7 +38,7 @@ class edittext(saveposwindow):
     getnewsentencesignal = pyqtSignal(str)
 
     def closeEvent(self, e):
-        gobject.baseobject.edittextui = None
+        gobject.base.edittextui = None
         super().closeEvent(e)
 
     def __init__(self, parent, cached):
@@ -76,10 +76,7 @@ class edittext(saveposwindow):
         qv.addWidget(self.textOutput)
 
     def run(self):
-        threading.Thread(
-            target=gobject.baseobject.textgetmethod,
-            args=(self.textOutput.toPlainText(), False),
-        ).start()
+        threader(gobject.base.textgetmethod)(self.textOutput.toPlainText(), False)
 
     def getnewsentence(self, sentence):
         if self.bt2.isChecked():
@@ -105,10 +102,9 @@ class ctrlenter(QPlainTextEdit):
 
 @Singleton
 class edittrans(LMainWindow):
-    dispatch = pyqtSignal(str, str)
 
     def __init__(self, parent):
-        self.followhwnd = gobject.baseobject.hwnd
+        self.followhwnd = gobject.base.hwnd
         rect = windows.GetWindowRect(self.followhwnd)
         if rect is None:
             super().__init__(parent)
@@ -119,9 +115,8 @@ class edittrans(LMainWindow):
         if rect is None:
             return self.show()
         self.idx = 0
-        self.dispatch.connect(self.dispatchF)
         self.trykeeppos()
-        gobject.edittrans = self
+        gobject.base.connectsignal(gobject.base.dispatch_translate, self.dispatchF)
 
     def dispatchF(self, klass, ts):
         if globalconfig["realtime_edit_target"] != klass:
@@ -172,9 +167,9 @@ class edittrans(LMainWindow):
         if len(text) == 0:
             return
         try:
-            gobject.baseobject.textsource.sqlqueueput(
+            gobject.base.textsource.sqlqueueput(
                 (
-                    gobject.baseobject.currenttext,
+                    gobject.base.currenttext,
                     globalconfig["realtime_edit_target"],
                     text,
                 )
@@ -186,11 +181,11 @@ class edittrans(LMainWindow):
                 res=text,
                 iter_context=(1, "realtime_edit_directvis_fakeclass"),
             )
-            gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
+            gobject.base.translation_ui.displayres.emit(displayreskwargs)
             displayreskwargs.update(
                 dict(iter_context=(2, "realtime_edit_directvis_fakeclass"))
             )
-            gobject.baseobject.translation_ui.displayres.emit(displayreskwargs)
+            gobject.base.translation_ui.displayres.emit(displayreskwargs)
             self.textOutput.clear()
             if globalconfig["realtime_edit_target"] == "rengong":
                 # 当json文件唯一时，才记录，否则不管。
@@ -206,7 +201,7 @@ class edittrans(LMainWindow):
                 if __:
                     with open(__, "r", encoding="utf8") as f:
                         __j = json.load(f)
-                        __j[gobject.baseobject.currenttext] = text
+                        __j[gobject.base.currenttext] = text
                     with open(__, "w", encoding="utf8") as f:
                         json.dump(__j, f, ensure_ascii=False, indent=4)
 
@@ -215,7 +210,7 @@ class edittrans(LMainWindow):
 
     def unsafegetcurrentgameconfig(self):
         try:
-            gameuid = gobject.baseobject.gameuid
+            gameuid = gobject.base.gameuid
             _path = savehook_new_data[gameuid]["gamejsonfile"]
             if isinstance(_path, str):
                 _path = [_path]

@@ -888,6 +888,30 @@ namespace
             buffer->clear();
         }
     }
+    void SLPS25135(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        const uintptr_t val1 = PCSX2_REG(a1);
+        const uintptr_t val2 = (val1 & 0x0000FFFF);
+        const uintptr_t sjis = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
+        buffer->from_t(sjis);
+    }
+    void SLPS25759(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        const uintptr_t val_v0 = PCSX2_REG(v0);
+        const uintptr_t val_a0 = PCSX2_REG(a0);
+        const uintptr_t p1 = val_v0 & 0x0FFFFFFF;
+        uint8_t *storageptr = (uint8_t *)emu_addr(p1);
+        if (storageptr == nullptr || !storageptr)
+        {
+            return;
+        }
+        const uint8_t b0 = *(storageptr - 1);
+        const uint8_t b1 = (uint8_t)(val_a0 & 0x000000FF);
+
+        const uintptr_t sjis = ((uintptr_t)b1 << 8) | b0;
+
+        buffer->from_t(sjis);
+    }
 }
 struct emfuncinfoX
 {
@@ -895,6 +919,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 四八 （仮）
+    {0x17529C, {0, 0, 0, SLPS25759, 0, "SLPS-25759"}}, //@mills
+    // かまいたちの夜2 ～監獄島のわらべ唄～ [通常版]
+    {0x111C78, {0, 0, 0, SLPS25135, 0, "SLPS-25135"}}, //@mills
     // 桃華月憚 ～光風の陵王～
     {0x29AB3C, {0, 0, 0, 0, 0, "SLPM-55200"}},
     // 夏色の砂時計

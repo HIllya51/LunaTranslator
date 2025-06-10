@@ -5,7 +5,6 @@ from NativeUtils import GetProcessFirstWindow
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton
 from myutils.hwnd import (
-    getpidexe,
     ListProcess,
     mouseselectwindow,
     getExeIcon,
@@ -25,7 +24,7 @@ class AttachProcessDialog(saveposwindow):
             return mouseselectwindow(self.setcurrentpidpnamesignal.emit)
         self.setEnabled(True)
         self.button.setText("点击此按钮后点击游戏窗口"),
-        name = getpidexe(pid)
+        name = windows.GetProcessFileName(pid)
         if not name:
             QMessageBox.critical(
                 self, _TR("错误"), _TR("权限不足，请以管理员权限运行！")
@@ -42,7 +41,7 @@ class AttachProcessDialog(saveposwindow):
         self.testifneedadmin()
 
     def closeEvent(self, e):
-        gobject.baseobject.AttachProcessDialog = None
+        gobject.base.AttachProcessDialog = None
         super().closeEvent(e)
 
     def __init__(self, parent, callback, hookselectdialog=None):
@@ -203,7 +202,7 @@ class AttachProcessDialog(saveposwindow):
             self.windowtext.clear()
             self.processEdit.clear()
             return
-        self.selectedp = (pids, getpidexe(pids[0]), self.guesshwnd(pids))
+        self.selectedp = (pids, windows.GetProcessFileName(pids[0]), self.guesshwnd(pids))
         self.testifneedadmin()
         self.windowtext.setText(windows.GetWindowText(self.selectedp[-1]))
         self.processEdit.setText(self.selectedp[1])

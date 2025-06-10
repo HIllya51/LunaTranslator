@@ -1,8 +1,9 @@
-import threading, gobject, queue
+import gobject, queue
 import json
 from traceback import print_exc
 from myutils.config import globalconfig, savehook_new_data
 from myutils.utils import autosql
+from myutils.wrapper import threader
 from sometypes import TranslateResult
 
 
@@ -17,7 +18,7 @@ class basetext:
     def __init__(self):
         #
 
-        self.textgetmethod = gobject.baseobject.textgetmethod
+        self.textgetmethod = gobject.base.textgetmethod
 
         self.ending = False
         self.sqlqueue = None
@@ -44,7 +45,7 @@ class basetext:
                 pass
         except:
             print_exc()
-        threading.Thread(target=self.sqlitethread).start()
+        threader(self.sqlitethread)()
 
     def dispatchtext(self, *arg, **kwarg):
         if self.ending or not self.isautorunning:
@@ -93,12 +94,12 @@ class basetext:
                     try:
                         if (
                             "statistic_wordcount"
-                            not in savehook_new_data[gobject.baseobject.gameuid]
+                            not in savehook_new_data[gobject.base.gameuid]
                         ):
-                            savehook_new_data[gobject.baseobject.gameuid][
+                            savehook_new_data[gobject.base.gameuid][
                                 "statistic_wordcount"
                             ] = 0
-                        savehook_new_data[gobject.baseobject.gameuid][
+                        savehook_new_data[gobject.base.gameuid][
                             "statistic_wordcount"
                         ] += lensrc
                     except:
@@ -117,12 +118,12 @@ class basetext:
                         try:
                             if (
                                 "statistic_wordcount_nodump"
-                                not in savehook_new_data[gobject.baseobject.gameuid]
+                                not in savehook_new_data[gobject.base.gameuid]
                             ):
-                                savehook_new_data[gobject.baseobject.gameuid][
+                                savehook_new_data[gobject.base.gameuid][
                                     "statistic_wordcount_nodump"
                                 ] = 0
-                            savehook_new_data[gobject.baseobject.gameuid][
+                            savehook_new_data[gobject.base.gameuid][
                                 "statistic_wordcount_nodump"
                             ] += lensrc
                         except:

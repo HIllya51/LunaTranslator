@@ -3,12 +3,13 @@ import windows, re, os
 from myutils.hwnd import subprochiderun
 from myutils.config import _TR
 from myutils.utils import dynamiclink
+from myutils.wrapper import threader
 from ocrengines.baseocrclass import baseocr, OCRResult
 from qtsymbols import *
 from gui.dynalang import LPushButton, LLabel
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 from gui.usefulwidget import SuperCombo, getboxlayout, IconButton
-import threading, subprocess
+import subprocess
 from language import Languages
 
 
@@ -35,11 +36,13 @@ class _SuperCombo(SuperCombo):
         super().addItems(items, internals)
 
 
+@threader
 def loadlist(combo: _SuperCombo):
     lang, inter = getallsupports()
     combo.setlist.emit(lang, inter)
 
 
+@threader
 def installx(combo: _SuperCombo, btninstall, supportlang):
     if combo.currentIndex() == -1:
         return
@@ -81,28 +84,20 @@ def question():
         lst.append(nopri)
         btndownload = LPushButton("添加语言包")
         btndownload.clicked.connect(
-            lambda: os.startfile(
-                dynamiclink("/useapis/ocrapi.html#离线ocr", docs=True)
-            )
+            lambda: os.startfile(dynamiclink("/useapis/ocrapi.html#离线ocr", docs=True))
         )
         lst.append(btndownload)
     else:
         combo = _SuperCombo()
         combo.setlist.connect(combo.addItems)
         btninstall = LPushButton("添加")
-        btninstall.clicked.connect(
-            lambda: threading.Thread(
-                target=installx, args=(combo, btninstall, supportlang)
-            ).start()
-        )
+        btninstall.clicked.connect(lambda: installx(combo, btninstall, supportlang))
         lst.append(combo)
         lst.append(btninstall)
-        threading.Thread(target=loadlist, args=(combo,)).start()
+        loadlist(combo)
         btndownload = IconButton("fa.question")
         btndownload.clicked.connect(
-            lambda: os.startfile(
-                dynamiclink("/useapis/ocrapi.html#离线ocr", docs=True)
-            )
+            lambda: os.startfile(dynamiclink("/useapis/ocrapi.html#离线ocr", docs=True))
         )
         lst.append(btndownload)
     formLayout.addRow("添加语言包", getboxlayout(lst))

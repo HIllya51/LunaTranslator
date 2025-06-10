@@ -1,6 +1,6 @@
 from myutils.config import globalconfig
-from threading import Thread
 from queue import Queue
+from myutils.wrapper import threader
 
 
 class Base:
@@ -12,7 +12,7 @@ class Base:
     def using(self):
         return self.config["use"]
 
-    def dispatch(self, text:str, isorigin:bool):
+    def dispatch(self, text: str, isorigin: bool):
         pass
 
     def init(self):
@@ -22,8 +22,9 @@ class Base:
         self.classname = classname
         self.queue = Queue()
         self.init()
-        Thread(target=self.dothread).start()
+        self.dothread()
 
+    @threader
     def dothread(self):
         while True:
             text, isorigin = self.queue.get()

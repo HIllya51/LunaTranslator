@@ -41,8 +41,8 @@ def getcomparelayout(self):
     layout.addWidget(fromtext)
     layout.addWidget(solvebutton)
     layout.addWidget(totext)
-    gobject.signals.connectsignal(
-        gobject.signals.showandsolvesig,
+    gobject.base.connectsignal(
+        gobject.base.showandsolvesig,
         lambda s, x: (fromtext.setPlainText(s), totext.setPlainText(x)),
     )
 

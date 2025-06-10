@@ -1,12 +1,11 @@
 import os, hashlib, queue, gobject, json
 from myutils.proxy import getproxy
-from threading import Thread
 from myutils.commonbase import proxysession
 from myutils.config import globalconfig, savehook_new_data, extradatas
 from myutils.utils import getlangtgt
 from traceback import print_exc
 from requests import RequestException
-from myutils.wrapper import tryprint
+from myutils.wrapper import tryprint, threader
 
 
 class common:
@@ -53,8 +52,8 @@ class common:
             self.__tasks_downloadimg.put(internal)
         for internal in globalconfig["metadata"][self.typename]["searchfordatatasks"]:
             self.__tasks_searchfordata.put(internal)
-        Thread(target=self.__tasks_downloadimg_thread).start()
-        Thread(target=self.__tasks_searchfordata_thread).start()
+        threader(self.__tasks_downloadimg_thread)()
+        threader(self.__tasks_searchfordata_thread)()
 
     def __safe_remove_task(self, name, pair):
         try:
@@ -98,7 +97,7 @@ class common:
                     self.__tasks_searchfordata.put((gameuid, vid, retrytime - 1))
                 else:
                     self.__safe_remove_task("searchfordatatasks", pair[:2])
-            gobject.baseobject.translation_ui.displayglobaltooltip.emit(vis)
+            gobject.base.translation_ui.displayglobaltooltip.emit(vis)
 
     def __tasks_downloadimg_thread(self):
         while True:

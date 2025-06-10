@@ -736,10 +736,55 @@ namespace
     hp.offset = regoffset(eax);
     return NewHook(hp, "Elf");
   }
+  bool deja()
+  {
+    // https://archive.org/details/deja-multipack
+    BYTE sig[] = {
+        // 0x66,0x8b,0x4d,0x24,0x0c
+        // 0x66,0x8b,0xc1
+        0x66, 0xc1, 0xe8, 0x08,
+        0x3c, 0x81,
+        XX,      // 0x57
+        XX, XX4, // 0xc6,0x44,0x24,0x11,0x00
+        XX, XX4, // 0xc6,0x44,0x24,0x12,0x00
+        0x72, 0x04,
+        0x3c, 0x9f,
+        0x76, 0x16,
+        0x3c, 0xe0,
+        0x72, 0x04,
+        0x3c, 0xef,
+        0x76, 0x0e,
+        0x3c, 0xfa,
+        0x72, 0x04,
+        0x3c, 0xfc,
+        0x76, 0x06};
+    ULONG addr2 = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr2)
+      return false;
+    ULONG addr = reverseFindBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    if (addr2 == addr)
+    {
+      return false;
+    }
+    addr = MemDbg::findEnclosingAlignedFunction(addr, 0x18);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = CODEC_ANSI_BE | USING_CHAR;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      *split = context->stack[2] > 8;
+      buffer->from_t((WORD)context->stack[3]);
+    };
+    return NewHook(hp, "deja");
+  }
 }
 bool Elf2::attach_function()
 {
-  return elf2() || Elf2attach_function() || all() || el();
+  return elf2() || Elf2attach_function() || all() || el() || deja();
 }
 
 bool ElfFunClubFinal::attach_function()

@@ -86,58 +86,23 @@ namespace
         }
     }
 }
-std::string ull2hex(uint64_t u)
+namespace
 {
-    std::stringstream num;
-    num << std::uppercase
-        << std::hex
-        << std::setw(16)
-        << std::setfill('0')
-        << u;
-    return num.str();
-}
-bool Hook_Network_RoomMember_SendGameInfo()
-{
-    // void RoomMember::SendGameInfo(const GameInfo& game_info) {
-    //     room_member_impl->current_game_info = game_info;
-    //     if (!IsConnected())
-    //         return;
-
-    //     Packet packet;
-    //     packet.Write(static_cast<u8>(IdSetGameInfo));
-    //     packet.Write(game_info.name);
-    //     packet.Write(game_info.id);
-    //     packet.Write(game_info.version);
-    //     room_member_impl->Send(std::move(packet));
-    // }
-    BYTE pattern[] = {
-        0x49, 0x8B, XX,
-        0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-        0x90,
-        0x3C, 0x02,
-        0x74, 0x1C,
-        0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-        0x90,
-        0x3C, 0x03,
-        0x74, 0x10,
-        0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-        0x90,
-        0x3C, 0x04,
-        0x0F, 0x85, XX4};
-    for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
+    std::string ull2hex(uint64_t u)
     {
-        // Citron-Windows-Canary-Refresh_0.6.1为0x20，其他为0x28
-        if (!(((((BYTE *)addr)[3 + 3] == 0x20) &&
-               (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 3] == 0x20) &&
-               (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 7 + 1 + 2 + 2 + 3] == 0x20)) ||
-              ((((BYTE *)addr)[3 + 3] == 0x28) &&
-               (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 3] == 0x28) &&
-               (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 7 + 1 + 2 + 2 + 3] == 0x28))))
-            continue;
-        addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
-        // 有两个，但另一个离起始很远
-        if (!addr)
-            continue;
+        std::stringstream num;
+        num << std::uppercase
+            << std::hex
+            << std::setw(16)
+            << std::setfill('0')
+            << u;
+        return num.str();
+    }
+}
+namespace
+{
+    bool Hook_Network_RoomMember_SendGameInfo_at(uintptr_t addr)
+    {
         HookParam hp;
         hp.address = addr;
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -154,7 +119,92 @@ bool Hook_Network_RoomMember_SendGameInfo()
         };
         return NewHook(hp, "yuzuGameInfo");
     }
-    return false;
+    bool Hook_Network_RoomMember_SendGameInfo_1()
+    {
+        // void RoomMember::SendGameInfo(const GameInfo& game_info) {
+        //     room_member_impl->current_game_info = game_info;
+        //     if (!IsConnected())
+        //         return;
+
+        //     Packet packet;
+        //     packet.Write(static_cast<u8>(IdSetGameInfo));
+        //     packet.Write(game_info.name);
+        //     packet.Write(game_info.id);
+        //     packet.Write(game_info.version);
+        //     room_member_impl->Send(std::move(packet));
+        // }
+        BYTE pattern[] = {
+            0x49, 0x8B, XX,
+            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x02,
+            0x74, 0x1C,
+            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x03,
+            0x74, 0x10,
+            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x04,
+            0x0F, 0x85, XX4};
+        for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
+        {
+            // Citron-Windows-Canary-Refresh_0.6.1为0x20，其他为0x28
+            if (!(((((BYTE *)addr)[3 + 3] == 0x20) &&
+                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 3] == 0x20) &&
+                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 7 + 1 + 2 + 2 + 3] == 0x20)) ||
+                  ((((BYTE *)addr)[3 + 3] == 0x28) &&
+                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 3] == 0x28) &&
+                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 7 + 1 + 2 + 2 + 3] == 0x28))))
+                continue;
+            addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
+            // 有两个，但另一个离起始很远
+            if (!addr)
+                continue;
+            return Hook_Network_RoomMember_SendGameInfo_at(addr);
+        }
+        return false;
+    }
+    bool Hook_Network_RoomMember_SendGameInfo()
+    {
+        if (Hook_Network_RoomMember_SendGameInfo_1())
+            return true;
+        // sumi-gen-signed-0.9.4-win-x64
+        BYTE pattern[] = {
+            0x48, 0x89, XX, 0x24, 0x08,
+            0x48, 0x89, XX, 0x24, 0x10,
+            0x48, 0x89, XX, 0x24, 0x18,
+            0x57,
+            0x48, 0x83, XX, XX,
+            0x48, 0x8b, XX,
+            0x48, 0x8b, XX,
+            0x48, 0x8b, XX,
+            0x48, XX, XX, XX4,
+            0xe8, XX4,
+            0x3e, 0x48, XX, XX, XX,
+            0x48, 0x89, XX, XX4,
+            0x48, 0x8d, XX, XX4,
+            0x48, 0x8d, XX, XX,
+            0xe8, XX4,
+            0x48, 0x8b, 0x0e,
+            0x0f, 0xb6, 0x81, XX4,
+            0x90,
+            0x3C, 0x02,
+            0x74, 0x20,
+            XX4,
+            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x03,
+            0x74, 0x10,
+            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x04,
+            0x0F, 0x85, XX4};
+        auto addr = MemDbg::findBytes(pattern, sizeof(pattern), processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+        return Hook_Network_RoomMember_SendGameInfo_at(addr);
+    }
 }
 namespace
 {

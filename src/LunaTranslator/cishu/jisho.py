@@ -152,7 +152,7 @@ function onclickbtn_xxxxxx_internal(_id) {
         ts = []
         saver = {}
         for key in ("word", "search"):
-            ts.append(threading.Thread(target=self.paradown, args=(word, key, saver)))
+            ts.append(threading.Thread(target=self.paradown, args=(word, key, saver), daemon=True))
             ts[-1].start()
         for t in ts:
             t.join()

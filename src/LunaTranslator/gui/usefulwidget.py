@@ -144,21 +144,17 @@ class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
     pass
 
 
-class DelayLoadScrollAreaEventFilter(QObject):
-    def eventFilter(_, obj: "DelayLoadScrollArea", event: QEvent):
+class DelayLoadScrollArea(QAbstractScrollArea):
+    def eventFilter(self, obj, event: QEvent):
         if event.type() == QEvent.Type.Resize:
-            obj._updateVisibleArea_1()
+            self._updateVisibleArea_1()
 
         return False
-
-
-class DelayLoadScrollArea(QAbstractScrollArea):
 
     def __init__(self, *a, **k):
         QAbstractScrollArea.__init__(self, *a, **k)
         self.verticalScrollBar().valueChanged.connect(self._updateVisibleArea_1)
-        self.__f = DelayLoadScrollAreaEventFilter(self)
-        self.installEventFilter(self.__f)
+        self.installEventFilter(self)
 
     def _updateVisibleArea_1(self):
         viewport_rect = self.viewport().rect()
@@ -1521,7 +1517,7 @@ def ExtensionSetting(name, settingurl, icon):
     global SingleExtensionSetting
     if not SingleExtensionSetting:
         SingleExtensionSetting = SingleExtensionSetting_(
-            gobject.baseobject.commonstylebase
+            gobject.base.commonstylebase
         )
     SingleExtensionSetting.createpage(name, settingurl, icon)
 
@@ -1781,7 +1777,7 @@ class WebviewWidget(abstractwebview):
     @staticmethod
     def showError(e: Exception):
         QMessageBox.critical(
-            gobject.baseobject.settin_ui,
+            gobject.base.settin_ui,
             _TR("错误"),
             str(e)
             + "\n\n"
@@ -1960,7 +1956,7 @@ class WebviewWidget(abstractwebview):
 
     def __on_load(self, url: str, loadinnew: bool):
         if loadinnew:
-            threading.Thread(target=self.loadextensionwindow.emit, args=(url,)).start()
+            threader(self.loadextensionwindow.emit)(url)
         else:
             self.on_load.emit(url)
             self.url = url

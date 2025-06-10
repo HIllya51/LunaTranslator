@@ -38,16 +38,16 @@ from ocrengines.baseocrclass import OCRResultParsed
 
 def __label1(self):
     threshold1label = QLabel()
-    gobject.signals.connectsignal(
-        gobject.signals.thresholdsett1, threshold1label.setText
+    gobject.base.connectsignal(
+        gobject.base.thresholdsett1, threshold1label.setText
     )
     return threshold1label
 
 
 def __label2(self):
     threshold2label = QLabel()
-    gobject.signals.connectsignal(
-        gobject.signals.thresholdsett2, threshold2label.setText
+    gobject.base.connectsignal(
+        gobject.base.thresholdsett2, threshold2label.setText
     )
     return threshold2label
 
@@ -395,8 +395,8 @@ class showocrimage(saveposwindow):
         )
         self.layout1.addWidget(self.timecost)
         self.layout1.addWidget(self.originlabel)
-        gobject.signals.connectsignal(gobject.signals.setimage, self.setimagefunction)
-        gobject.signals.connectsignal(gobject.signals.setresult, self.setocr)
+        gobject.base.connectsignal(gobject.base.setimage, self.setimagefunction)
+        gobject.base.connectsignal(gobject.base.setresult, self.setocr)
 
     def onValueChanged(self, value):
         if not self.originimage:
@@ -407,7 +407,7 @@ class showocrimage(saveposwindow):
         self.originlabel.showpixmap(QPixmap.fromImage(rotated_image))
 
     def retest2(self):
-        gobject.baseobject.textgetmethod(self.retest(), is_auto_run=False)
+        gobject.base.textgetmethod(self.retest(), is_auto_run=False)
 
     def retest(self):
         if self.originimage is None:
@@ -501,7 +501,7 @@ def internal(self):
             D_getsimpleswitch(
                 globalconfig,
                 "multiregion",
-                callback=lambda _: gobject.baseobject.textsource.leaveone(),
+                callback=lambda _: gobject.base.textsource.leaveone(),
             ),
             "",
             "易错内容修正",
@@ -525,7 +525,7 @@ def internal(self):
                 self,
                 globalconfig,
                 "ocrrangecolor",
-                callback=lambda _: gobject.baseobject.textsource.setstyle(),
+                callback=lambda _: gobject.base.textsource.setstyle(),
             ),
             "",
             "范围框宽度",
@@ -534,7 +534,7 @@ def internal(self):
                 100,
                 globalconfig,
                 "ocrrangewidth",
-                callback=lambda _: gobject.baseobject.textsource.setstyle(),
+                callback=lambda _: gobject.base.textsource.setstyle(),
             ),
             "",
             "",

@@ -853,6 +853,8 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25759 | 四八 （仮） |
+|  | SLPS-25135 | かまいたちの夜2 ～監獄島のわらべ唄～ [通常版] |
 |  | SLPM-55200 | 桃華月憚 ～光風の陵王～ |
 |  | SLPS-25026 | 夏色の砂時計 |
 |  | SLPM-65786 | なついろ ～星屑のメモリー～ |

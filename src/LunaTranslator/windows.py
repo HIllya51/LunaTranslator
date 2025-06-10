@@ -448,12 +448,28 @@ def _GetProcessFileName(hHandle):
     return check_maybe_unc_file(v)
 
 
-def GetProcessFileName(hHandle):
+def ___GetProcessFileName(hHandle):
     p = _GetProcessFileName(hHandle)
     if p:
         # GetModuleFileNameExW有可能莫名其妙得到短路径，导致部分路径无法匹配
         p = GetLongPathName(p)
     return p
+
+
+def GetProcessFileName(pid):
+    for _ in (
+        PROCESS_ALL_ACCESS,  # 如果能这个，那最好，因为一些特殊路径在这个权限下可以不需要处理
+        PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,  # GetModuleFileNameExW
+        PROCESS_QUERY_INFORMATION,  # XP
+        PROCESS_QUERY_LIMITED_INFORMATION,
+    ):
+        hproc = OpenProcess(_, False, pid)
+        if not hproc:
+            continue
+        name_ = ___GetProcessFileName(hproc)
+        if name_:
+            return name_
+    return None
 
 
 _CreateProcessW = _kernel32.CreateProcessW

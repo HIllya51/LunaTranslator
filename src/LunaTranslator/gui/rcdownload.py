@@ -52,7 +52,7 @@ class resourcewidget(QWidget):
             ff.extractall(gobject.getcachedir())
         tgt = gobject.getcachedir(self.checkdirname)
         globalconfig["hirasetting"]["mecab"]["args"]["path"] = mayberelpath(tgt)
-        gobject.baseobject.startmecab()
+        gobject.base.startmecab()
 
     @threader
     def downloadxSafe(self, url):
@@ -168,7 +168,7 @@ class resourcewidget2(QWidget):
             with zipfile.ZipFile(target) as ff:
                 ff.extractall(gobject.getcachedir("mdict"))
         globalconfig["cishu"]["mdict"]["args"]["paths"].append(mayberelpath(tgt))
-        gobject.baseobject.startxiaoxueguan("mdict")
+        gobject.base.startxiaoxueguan("mdict")
 
     @threader
     def downloadxSafe(self, url):

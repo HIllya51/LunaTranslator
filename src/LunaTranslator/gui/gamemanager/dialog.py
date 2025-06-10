@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools, uuid
 from traceback import print_exc
-import gobject, qtawesome
+import qtawesome
 from gui.inputdialog import autoinitdialog
 from gui.dynalang import LAction
 from gui.gamemanager.v3 import dialog_savedgame_v3
@@ -657,11 +657,13 @@ class dialog_savedgame_new(QWidget):
         )
         self.setStyleSheet(style)
 
+    reference = None
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self._parent = parent
         self.setstyle()
-        gobject.global_dialog_savedgame_new = self
+        dialog_savedgame_new.reference = self
         formLayout = QVBoxLayout(self)
         layout = QHBoxLayout()
         self.setAcceptDrops(True)
@@ -694,18 +696,15 @@ class dialog_savedgame_new(QWidget):
             self.tagswidget.addTag(_TR("存在"), tagitem.TYPE_EXISTS)
         else:
             self.tagschanged(tuple())
+        self.installEventFilter(self)
 
-        class WindowEventFilter(QObject):
-            def eventFilter(__, obj, event):
-                try:
-                    if obj == self:
-                        gobject.global_dialog_setting_game.raise_()
-                except:
-                    pass
-                return False
-
-        self.__filter = WindowEventFilter()  # keep ref
-        self.installEventFilter(self.__filter)
+    def eventFilter(self, obj, _):
+        try:
+            if obj == self:
+                dialog_setting_game.reference.raise_()
+        except:
+            pass
+        return False
 
     def addtolist(self):
         getalistname(

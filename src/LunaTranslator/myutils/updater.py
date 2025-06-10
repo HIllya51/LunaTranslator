@@ -73,7 +73,7 @@ def trygetupdate():
 
 
 def doupdate():
-    if not gobject.baseobject.update_avalable:
+    if not gobject.base.update_avalable:
         return
     shutil.copy(
         r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
@@ -86,7 +86,7 @@ def doupdate():
                 found = _dir
     subprocess.Popen(
         r".\cache\Updater.exe update {} {} {}".format(
-            int(gobject.baseobject.istriggertoupdate), found, os.getpid()
+            int(gobject.base.istriggertoupdate), found, os.getpid()
         )
     )
 
@@ -131,7 +131,7 @@ def updatemethod(urls: "tuple[str, str]"):
             prg = int(10000 * file_size / size)
             prg100 = prg / 100
             sz = int(1000 * (int(size / 1024) / 1024)) / 1000
-            gobject.signals.progresssignal4.emit(
+            gobject.base.progresssignal4.emit(
                 _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
                 prg,
             )
@@ -143,7 +143,7 @@ def updatemethod(urls: "tuple[str, str]"):
 
 
 def uncompress(savep):
-    gobject.signals.progresssignal4.emit(_TR("正在解压"), 10000)
+    gobject.base.progresssignal4.emit(_TR("正在解压"), 10000)
     shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
     with zipfile.ZipFile(savep) as zipf:
         zipf.extractall(gobject.getcachedir("update"))
@@ -154,18 +154,18 @@ def versioncheckthread():
     versionchecktask.put(True)
     while True:
         x = versionchecktask.get()
-        gobject.baseobject.update_avalable = False
-        gobject.signals.progresssignal4.emit("", 0)
+        gobject.base.update_avalable = False
+        gobject.base.progresssignal4.emit("", 0)
         if not x:
             continue
-        gobject.signals.versiontextsignal.emit("获取中")  # ,'',url,url))
+        gobject.base.versiontextsignal.emit("获取中")  # ,'',url,url))
         _version = trygetupdate()
 
         if _version is None:
             sversion = "获取失败"
         else:
             sversion = _version[0]
-        gobject.signals.versiontextsignal.emit(sversion)
+        gobject.base.versiontextsignal.emit(sversion)
         version = NativeUtils.QueryVersion(getcurrexe())
         need = (
             (not getcurrexe().endswith("python.exe"))
@@ -175,17 +175,17 @@ def versioncheckthread():
         )
         if not (need and globalconfig["autoupdate"]):
             continue
-        gobject.signals.progresssignal4.emit("……", 0)
+        gobject.base.progresssignal4.emit("……", 0)
         savep = updatemethod(_version[1:])
         if not savep:
-            gobject.signals.progresssignal4.emit(_TR("自动更新失败，请手动更新"), 0)
+            gobject.base.progresssignal4.emit(_TR("自动更新失败，请手动更新"), 0)
             continue
 
         uncompress(savep)
-        gobject.baseobject.update_avalable = True
-        gobject.signals.progresssignal4.emit(_TR("准备完毕，等待更新"), 10000)
-        gobject.baseobject.showtraymessage(
+        gobject.base.update_avalable = True
+        gobject.base.progresssignal4.emit(_TR("准备完毕，等待更新"), 10000)
+        gobject.base.showtraymessage(
             sversion,
             _TR("准备完毕，等待更新") + "\n" + _TR("点击消息后退出并开始更新"),
-            gobject.baseobject.triggertoupdate,
+            gobject.base.triggertoupdate,
         )

@@ -16,7 +16,7 @@ class copyboard(basetext):
 
     def init(self) -> None:
         self.startsql(gobject.gettranslationrecorddir("0_copy.sqlite"))
-        gobject.signals.clipboardcallback.connect(self.__callback)
+        gobject.base.clipboardcallback.connect(self.__callback)
         NativeUtils.ClipBoardListenerStart()
 
     def gettextonce(self):

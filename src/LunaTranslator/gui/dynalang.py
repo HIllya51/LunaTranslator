@@ -178,7 +178,7 @@ class LDialog(QDialog):
 
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
-        if self.parent() == gobject.baseobject.commonstylebase:
+        if self.parent() == gobject.base.commonstylebase:
             if traceonepostion.get(self.parent(), None):
                 self.move(traceonepostion.get(self.parent(), None))
         self._title = None

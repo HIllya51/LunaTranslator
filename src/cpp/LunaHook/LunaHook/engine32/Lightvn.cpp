@@ -201,7 +201,7 @@ namespace
 		hp.address = addr;
 		hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 		{
-			if (context->stack[1] != context->THISCALLTHIS)
+			if (context->stack[1] != context->argof_thiscall(0))
 			{
 				buffer->from(((TextUnionW *)context->stack[1])->view());
 			}

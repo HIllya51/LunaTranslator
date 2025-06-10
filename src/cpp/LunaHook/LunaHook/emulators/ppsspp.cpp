@@ -494,7 +494,7 @@ namespace ppsspp
             }
         }
     }
-    bool Load_PSP_ISO_StringFromFormat()
+    bool Load_PSP_ISO_StringFromFormat_1()
     {
         /*
         bool Load_PSP_ISO(FileLoader *fileLoader, std::string *error_string) {
@@ -682,6 +682,49 @@ namespace ppsspp
         };
         return NewHook(hp, "PPSSPPGameInfo");
     }
+    bool Load_PSP_ISO_StringFromFormat()
+    {
+        if (Load_PSP_ISO_StringFromFormat_1())
+            return true;
+        // v1.19.1
+        /*
+bool Config::loadGameConfig(const std::string &pGameId, const std::string &title) {
+    bool exists;
+    Path iniFileNameFull = getGameConfigFile(pGameId, &exists);
+    if (!exists) {
+        DEBUG_LOG(Log::Loader, "No game-specific settings found in %s. Using global defaults.", iniFileNameFull.c_str());
+        return false;
+    }
+        */
+        char aNoGameSpecific[] = "No game-specific settings found in %s. Using global defaults.";
+        auto addr = MemDbg::findBytes(aNoGameSpecific, sizeof(aNoGameSpecific), processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+        addr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+#ifdef _WIN64
+        BYTE sig[] = {0x48, 0x8b, 0xc4,
+                      0x48, 0x89, XX, 0x08,
+                      0x48, 0x89, XX, 0x10,
+                      0x48, 0x89, XX, 0x18};
+        addr = reverseFindBytes(sig, sizeof(sig), addr - 0x100, addr, 0, true);
+#else
+        addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100);
+#endif
+        if (!addr)
+            return false;
+        HookParam hp;
+        hp.address = addr;
+        hp.text_fun = [](hook_context *context, HookParam *hp, auto *buff, auto *split)
+        {
+            game_info.DISC_ID = ((TextUnionA *)context->argof_thiscall(1))->view();
+            game_info.TITLE = ((TextUnionA *)context->argof_thiscall(2))->view();
+            HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            jitaddrclear();
+        };
+        return NewHook(hp, "PPSSPPGameInfo");
+    }
     struct GameInfoC
     {
         GameInfo info;
@@ -734,7 +777,7 @@ namespace ppsspp
         hp.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
         {
             static auto once1 = oncegetJitBlockCache(context);
-            auto em_address = context->THISCALLARG1;
+            auto em_address = context->argof_thiscall(1);
 
             *(uintptr_t *)(hp->user_value) = em_address;
 
@@ -748,7 +791,7 @@ namespace ppsspp
                     return;
                 [&]()
                 {
-                    auto ret = context->LASTRETVAL;
+                    auto ret = context->last_ret_val();
                     if (breakpoints.count(ret))
                         return;
                     breakpoints.insert(ret);

@@ -72,16 +72,12 @@ class mssr(basetext):
         self.curr = ""
         path = self.findspeech()
         if not path:
-            gobject.baseobject.displayinfomessage(
-                _TR("无可用语言"), "<msg_error_Origin>"
-            )
+            gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
 
         dll = self.finddlldirectory()
         if not dll:
-            gobject.baseobject.displayinfomessage(
-                _TR("找不到运行时"), "<msg_error_Origin>"
-            )
+            gobject.base.displayinfomessage(_TR("找不到运行时"), "<msg_error_Origin>")
             return
         print(path, dll)
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
@@ -107,6 +103,7 @@ class mssr(basetext):
 
     @threader
     def listen(self):
+        punctuationswithoutspace = punctuations.copy().remove(" ")
         last = ""
         lastt = 0
         while not self.ending:
@@ -114,7 +111,7 @@ class mssr(basetext):
             if iserr:
                 sz = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
                 text = windows.ReadFile(self.hPipe, sz).decode()
-                gobject.baseobject.displayinfomessage(text, "<msg_error_Origin>")
+                gobject.base.displayinfomessage(text, "<msg_error_Origin>")
                 raise Exception(text)
             else:
                 t = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
@@ -140,16 +137,16 @@ class mssr(basetext):
                             thist - lastt
                             > globalconfig["sourcestatus2"]["mssr"]["refreshinterval"]
                         )
-                        or any(_ in punctuations for _ in increased)
+                        or any(_ in punctuationswithoutspace for _ in increased)
                     ):
                         self.dispatchtext(text)
                         lastt = thist
                 elif t == 4:
-                    gobject.baseobject.displayinfomessage(
+                    gobject.base.displayinfomessage(
                         _TR("正在加载语音识别模型"), "<msg_info_refresh>"
                     )
                 elif t == 1:
-                    gobject.baseobject.displayinfomessage(
+                    gobject.base.displayinfomessage(
                         _TR("加载完毕"), "<msg_info_refresh>"
                     )
                 elif t == 2:

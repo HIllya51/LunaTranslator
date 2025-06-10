@@ -58,7 +58,7 @@ def safeGet():
         t = NativeUtils.ClipBoard.text
     if 0:
         QToolTip.showText(
-            QCursor.pos(), _TR("取词失败"), gobject.baseobject.commonstylebase
+            QCursor.pos(), _TR("取词失败"), gobject.base.commonstylebase
         )
         t = ""
     return t
@@ -69,7 +69,7 @@ def createreloadablewrapper(self, name):
         "userconfig/myhotkeys/{}.py".format(name), "myhotkeys." + name
     )
     try:
-        gobject.signals.safeinvokefunction.emit(module.OnHotKeyClicked)
+        gobject.base.safeinvokefunction.emit(module.OnHotKeyClicked)
     except:
         print_exc()
 
@@ -79,53 +79,53 @@ def registrhotkeys(self):
     self.referlabels_data = {}
     self.registok = {}
     self.bindfunctions = {
-        "_1": gobject.baseobject.translation_ui.startTranslater,
-        "_2": gobject.baseobject.translation_ui.changeTranslateMode,
-        "_3": gobject.signals.settin_ui_showsignal.emit,
-        "_4": lambda: NativeUtils.ClipBoard.setText(gobject.baseobject.currenttext),
-        "_5": gobject.baseobject.translation_ui.changeshowhiderawsig.emit,
-        "_51": gobject.baseobject.translation_ui.changeshowhidetranssig.emit,
-        "_6": lambda: gobject.baseobject.transhis.showsignal.emit(),
-        "_7": lambda: gobject.baseobject.readcurrent(force=True),
-        "_7_1": lambda: gobject.baseobject.audioplayer.stop(),
-        "_8": lambda: gobject.baseobject.translation_ui.changemousetransparentstate(0),
-        "_9": gobject.baseobject.translation_ui.changetoolslockstate,
-        "_10": gobject.baseobject.translation_ui.showsavegame_signal.emit,
-        "_11": gobject.baseobject.translation_ui.hotkeyuse_selectprocsignal.emit,
-        "_12": lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
-        "_13": lambda: gobject.baseobject.translation_ui.clickRange_signal.emit(),
-        "_14": gobject.baseobject.translation_ui.showhide_signal.emit,
-        "_14_1": gobject.baseobject.translation_ui.clear_signal_1.emit,
-        "_15": gobject.baseobject.translation_ui.bindcropwindow_signal.emit,
-        "_16": gobject.baseobject.translation_ui.showhideuisignal.emit,
-        "_17": gobject.baseobject.translation_ui.quitf_signal.emit,
+        "_1": gobject.base.translation_ui.startTranslater,
+        "_2": gobject.base.translation_ui.changeTranslateMode,
+        "_3": gobject.base.settin_ui_showsignal.emit,
+        "_4": lambda: NativeUtils.ClipBoard.setText(gobject.base.currenttext),
+        "_5": gobject.base.translation_ui.changeshowhiderawsig.emit,
+        "_51": gobject.base.translation_ui.changeshowhidetranssig.emit,
+        "_6": lambda: gobject.base.transhis.showsignal.emit(),
+        "_7": lambda: gobject.base.readcurrent(force=True),
+        "_7_1": lambda: gobject.base.audioplayer.stop(),
+        "_8": lambda: gobject.base.translation_ui.changemousetransparentstate(0),
+        "_9": gobject.base.translation_ui.changetoolslockstate,
+        "_10": gobject.base.translation_ui.showsavegame_signal.emit,
+        "_11": gobject.base.translation_ui.hotkeyuse_selectprocsignal.emit,
+        "_12": lambda: gobject.base.hookselectdialog.showsignal.emit(),
+        "_13": lambda: gobject.base.translation_ui.clickRange_signal.emit(),
+        "_14": gobject.base.translation_ui.showhide_signal.emit,
+        "_14_1": gobject.base.translation_ui.clear_signal_1.emit,
+        "_15": gobject.base.translation_ui.bindcropwindow_signal.emit,
+        "_16": gobject.base.translation_ui.showhideuisignal.emit,
+        "_17": gobject.base.translation_ui.quitf_signal.emit,
         "_21": grabwindow,
-        "_22": gobject.baseobject.translation_ui.muteprocessignal.emit,
-        "41": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(False),
-        "42": lambda: gobject.baseobject.translation_ui.fullsgame_signal.emit(True),
-        "_26": gobject.baseobject.translation_ui.ocr_once_signal.emit,
-        "_26_1": lambda: gobject.baseobject.translation_ui.ocr_do_function(
-            gobject.baseobject.translation_ui.ocr_once_follow_rect
+        "_22": gobject.base.translation_ui.muteprocessignal.emit,
+        "41": lambda: gobject.base.translation_ui.fullsgame_signal.emit(False),
+        "42": lambda: gobject.base.translation_ui.fullsgame_signal.emit(True),
+        "_26": gobject.base.translation_ui.ocr_once_signal.emit,
+        "_26_1": lambda: gobject.base.translation_ui.ocr_do_function(
+            gobject.base.translation_ui.ocr_once_follow_rect
         ),
         "_28": lambda: NativeUtils.ClipBoard.setText(
-            gobject.baseobject.currenttranslate
+            gobject.base.currenttranslate
         ),
-        "_29": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn1.click(),
-        "_30": lambda: gobject.baseobject.searchwordW.ankiwindow.recordbtn2.click(),
+        "_29": lambda: gobject.base.searchwordW.ankiwindow.recordbtn1.click(),
+        "_30": lambda: gobject.base.searchwordW.ankiwindow.recordbtn2.click(),
         "_32": functools.partial(autoreadswitch, self),
-        "_33": lambda: gobject.baseobject.searchwordW.soundbutton.click(),
-        "_35": lambda: gobject.baseobject.searchwordW.ankiconnect.customContextMenuRequested.emit(
+        "_33": lambda: gobject.base.searchwordW.soundbutton.click(),
+        "_35": lambda: gobject.base.searchwordW.ankiconnect.customContextMenuRequested.emit(
             QPoint()
         ),
-        "36": lambda: gobject.baseobject.textgetmethod(
+        "36": lambda: gobject.base.textgetmethod(
             NativeUtils.ClipBoard.text, False
         ),
-        "37": lambda: gobject.baseobject.searchwordW.search_word.emit(
+        "37": lambda: gobject.base.searchwordW.search_word.emit(
             safeGet(), None, False
         ),
-        "39": lambda: gobject.baseobject.searchwordW.ocr_once_signal.emit(),
-        "38": lambda: gobject.baseobject.textgetmethod(safeGet(), False),
-        "40": lambda: gobject.baseobject.searchwordW.search_word_in_new_window.emit(
+        "39": lambda: gobject.base.searchwordW.ocr_once_signal.emit(),
+        "38": lambda: gobject.base.textgetmethod(safeGet(), False),
+        "40": lambda: gobject.base.searchwordW.search_word_in_new_window.emit(
             safeGet()
         ),
     }

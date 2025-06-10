@@ -333,7 +333,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             None,
         )
         self.__state = 0
-        gobject.signals.hover_search_word.connect(self.searchword)
+        gobject.base.hover_search_word.connect(self.searchword)
         self.__f = QTimer(self)
         self.__f.setInterval(50)
         self.__f.timeout.connect(self.__detectkey)
@@ -375,20 +375,20 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         buttons.addWidget(
             getIconButton(
                 icon="fa.music",
-                callback=lambda: gobject.baseobject.read_text(self.view.currWord),
+                callback=lambda: gobject.base.read_text(self.view.currWord),
                 tips="语音合成",
             )
         )
         buttons.addStretch(1)
         searchword = lambda anki: (
             self.close(),
-            gobject.baseobject.searchwordW.move(self.pos()),
-            gobject.baseobject.searchwordW._click_word_search_function(
+            gobject.base.searchwordW.move(self.pos()),
+            gobject.base.searchwordW._click_word_search_function(
                 self.view.currWord, self.view.save_sentence, False, self.view.readyData
             ),
             (
-                gobject.baseobject.searchwordW.ankiconnect.click()
-                if ((anki ^ gobject.baseobject.searchwordW.ankiconnect.isChecked()))
+                gobject.base.searchwordW.ankiconnect.click()
+                if ((anki ^ gobject.base.searchwordW.ankiconnect.isChecked()))
                 else ""
             ),
         )
@@ -417,7 +417,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.view.first_result_shown.connect(self.showresult)
         self.view.from_webview_search_word.connect(self.view.searchword)
         self.view.from_webview_search_word_in_new_window.connect(
-            lambda w: gobject.baseobject.searchwordW.searchwinnewwindow(w)
+            lambda w: gobject.base.searchwordW.searchwinnewwindow(w)
         )
         self.view.setStyleSheet("background:transparent")
         self.view.internalsizechanged.connect(self.w2.resize)
@@ -429,7 +429,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         if not globalconfig["usesearchword_S_hover"]:
             self.__f.stop()
             return
-        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", False)
+        result = gobject.base.checkkeypresssatisfy("searchword_S_hover", False)
         result = result == -1 or result == True
         if result:
             self.__f.stop()
@@ -461,7 +461,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
                 return
         self.savepos = QCursor.pos()
         if globalconfig["is_search_word_auto_tts_2"]:
-            gobject.baseobject.read_text(word)
+            gobject.base.read_text(word)
         if append:
             word = self.view.currWord + word
         unuse = globalconfig[("ignoredict_S_click", "ignoredict_S_hover")[fromhover]]
@@ -482,7 +482,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
     def moveresult_1(self):
         if not self.isVisible():
             return
-        result = gobject.baseobject.checkkeypresssatisfy("searchword_S_hover", False)
+        result = gobject.base.checkkeypresssatisfy("searchword_S_hover", False)
         # 仅按着键盘时，才追踪，否则不要动。
         if result == True:
             self.move(limitpos(QCursor.pos(), self, QPoint(1, 10)))

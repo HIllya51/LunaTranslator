@@ -29,21 +29,21 @@ from gui.usefulwidget import (
 
 def __create(self):
     selectbutton = getIconButton(
-        gobject.baseobject.createattachprocess,
+        gobject.base.createattachprocess,
         icon=globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
-    gobject.signals.selecthookbuttonstatus.connect(selectbutton.setEnabled)
+    gobject.base.selecthookbuttonstatus.connect(selectbutton.setEnabled)
     return selectbutton
 
 
 def __create2(self):
     selecthookbutton = getIconButton(
-        lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
+        lambda: gobject.base.hookselectdialog.showsignal.emit(),
         icon=globalconfig["toolbutton"]["buttons"]["selecttext"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
     )
-    gobject.signals.selecthookbuttonstatus.connect(selecthookbutton.setEnabled)
+    gobject.base.selecthookbuttonstatus.connect(selecthookbutton.setEnabled)
     return selecthookbutton
 
 
@@ -54,7 +54,7 @@ def gethookgrid_em(self):
             D_getsimpleswitch(
                 globalconfig["embedded"],
                 "clearText",
-                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.flashembedsettings(),
             ),
             "",
             "",
@@ -67,7 +67,7 @@ def gethookgrid_em(self):
                 ["翻译", "原文_翻译", "翻译_原文"],
                 globalconfig["embedded"],
                 "displaymode",
-                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.flashembedsettings(),
             ),
         ],
         [
@@ -80,7 +80,7 @@ def gethookgrid_em(self):
                 "timeout_translate",
                 double=True,
                 step=0.1,
-                callback=lambda x: gobject.baseobject.textsource.flashembedsettings(),
+                callback=lambda x: gobject.base.textsource.flashembedsettings(),
             ),
         ],
         [
@@ -102,7 +102,7 @@ def gethookgrid_em(self):
             D_getsimpleswitch(
                 globalconfig["embedded"],
                 "changefont",
-                callback=lambda _: gobject.baseobject.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.flashembedsettings(),
             ),
             creategamefont_comboBox,
         ],
@@ -131,7 +131,7 @@ def gethookgrid(self):
                     static_data["codepage_display"],
                     globalconfig,
                     "codepage_value",
-                    lambda x: gobject.baseobject.textsource.setsettings(),
+                    lambda x: gobject.base.textsource.setsettings(),
                     internal=static_data["codepage_real"],
                 ),
                 2,
@@ -147,7 +147,7 @@ def gethookgrid(self):
                     10000,
                     globalconfig,
                     "textthreaddelay",
-                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                    callback=lambda x: gobject.base.textsource.setsettings(),
                 ),
                 2,
             ),
@@ -160,7 +160,7 @@ def gethookgrid(self):
                     1000000,
                     globalconfig,
                     "maxBufferSize",
-                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                    callback=lambda x: gobject.base.textsource.setsettings(),
                 ),
                 2,
             ),
@@ -173,7 +173,7 @@ def gethookgrid(self):
                     1000000000,
                     globalconfig,
                     "maxHistorySize",
-                    callback=lambda x: gobject.baseobject.textsource.setsettings(),
+                    callback=lambda x: gobject.base.textsource.setsettings(),
                 ),
                 2,
             ),
@@ -190,7 +190,7 @@ def creategamefont_comboBox():
     def callback(x):
         globalconfig["embedded"].__setitem__("changefont_font", x)
         try:
-            gobject.baseobject.textsource.flashembedsettings()
+            gobject.base.textsource.flashembedsettings()
         except:
             pass
 
@@ -267,12 +267,12 @@ def selectfile(self):
         globalconfig["sourcestatus2"],
         "sourceswitchs",
         "filetrans",
-        gobject.baseobject.starttextsource,
+        gobject.base.starttextsource,
     )
 
     try:
         callback(True)
-        gobject.baseobject.textsource.starttranslatefile(res)
+        gobject.base.textsource.starttranslatefile(res)
     except:
         print_exc()
 
@@ -291,11 +291,11 @@ def createdownloadprogress(self):
         _d.setValue(i)
         _d.setFormat(text)
 
-    gobject.signals.connectsignal(
-        gobject.signals.progresssignal2, functools.partial(__set, downloadprogress)
+    gobject.base.connectsignal(
+        gobject.base.progresssignal2, functools.partial(__set, downloadprogress)
     )
-    gobject.signals.connectsignal(
-        gobject.signals.progresssignal3, lambda x: downloadprogress.setRange(0, x)
+    gobject.base.connectsignal(
+        gobject.base.progresssignal3, lambda x: downloadprogress.setRange(0, x)
     )
     return downloadprogress
 
@@ -352,7 +352,7 @@ def __srcofig(grids: list, self):
         globalconfig["sourcestatus2"]["mssr"],
         "source",
         internal=[0],
-        callback=lambda _: gobject.baseobject.textsource.init(),
+        callback=lambda _: gobject.base.textsource.init(),
     )()
     loadmssrsource(self)
     __w = getboxwidget(
@@ -363,7 +363,7 @@ def __srcofig(grids: list, self):
                 globalconfig["sourcestatus2"]["mssr"],
                 "path",
                 internal=paths,
-                callback=lambda _: gobject.baseobject.textsource.init(),
+                callback=lambda _: gobject.base.textsource.init(),
             ),
             "",
             getsmalllabel("刷新间隔"),
@@ -401,7 +401,7 @@ def __srcofig(grids: list, self):
                         "mssr",
                         lambda _, _2: (
                             loadmssrsource(self),
-                            gobject.baseobject.starttextsource(_, _2),
+                            gobject.base.starttextsource(_, _2),
                             __w.setEnabled(_2),
                         ),
                     ),
@@ -459,7 +459,7 @@ def filetranslate(self):
                                 D_getsimpleswitch(
                                     globalconfig,
                                     "networktcpenable",
-                                    callback=lambda _: gobject.baseobject.serviceinit(),
+                                    callback=lambda _: gobject.base.serviceinit(),
                                 ),
                                 D_getIconButton(
                                     lambda: os.startfile(
@@ -481,7 +481,7 @@ def filetranslate(self):
                                     65535,
                                     globalconfig,
                                     "networktcpport",
-                                    callback=lambda _: gobject.baseobject.serviceinit(),
+                                    callback=lambda _: gobject.base.serviceinit(),
                                 ),
                                 functools.partial(__portconflict, self),
                             ]
@@ -526,7 +526,7 @@ def getpath():
 
 def __portconflict(self):
     _ = LLabel()
-    gobject.signals.connectsignal(gobject.signals.portconflict, _.setText)
+    gobject.base.connectsignal(gobject.base.portconflict, _.setText)
     return _
 
 
@@ -614,7 +614,7 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
                     globalconfig["sourcestatus2"],
                     "sourceswitchs",
                     key,
-                    gobject.baseobject.starttextsource,
+                    gobject.base.starttextsource,
                 ),
                 pair="sourceswitchs",
             )
@@ -650,4 +650,4 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
             return
         btn.setChecked(x)
 
-    gobject.signals.sourceswitchs.connect(__)
+    gobject.base.sourceswitchs.connect(__)

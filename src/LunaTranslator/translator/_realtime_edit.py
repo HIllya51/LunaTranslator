@@ -6,7 +6,7 @@ class TS(basetrans):
 
     def translate(self, content):
         try:
-            sql = gobject.baseobject.textsource.sqlwrite2
+            sql = gobject.base.textsource.sqlwrite2
 
         except:
             return None

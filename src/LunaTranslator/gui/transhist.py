@@ -38,7 +38,7 @@ class somecommon:
     def refresh(self):
         self.debugeval(
             'fastinit("{}");'.format(
-                quote(json.dumps(gobject.baseobject.transhis.trace))
+                quote(json.dumps(gobject.base.transhis.trace))
             )
         )
 
@@ -177,15 +177,15 @@ class wvtranshist(WebviewWidget, somecommon):
             0,
             lambda: _TR("查词"),
             threader(
-                lambda w: gobject.baseobject.searchwordW.search_word.emit(
+                lambda w: gobject.base.searchwordW.search_word.emit(
                     w.replace("\n", "").strip(), None, False
                 )
             ),
         )
         nexti = self.add_menu(
-            nexti, lambda: _TR("翻译"), gobject.baseobject.textgetmethod
+            nexti, lambda: _TR("翻译"), gobject.base.textgetmethod
         )
-        nexti = self.add_menu(nexti, lambda: _TR("朗读"), gobject.baseobject.read_text)
+        nexti = self.add_menu(nexti, lambda: _TR("朗读"), gobject.base.read_text)
         nexti = self.add_menu(nexti)
         self.loadex()
 
@@ -335,13 +335,13 @@ class Qtranshist(QPlainTextEdit):
             globalconfig["history"]["usewebview2"] = webview2qt.isChecked()
             self.parent().loadviewer(True)
         elif action == search:
-            gobject.baseobject.searchwordW.search_word.emit(
+            gobject.base.searchwordW.search_word.emit(
                 self.textCursor().selectedText(), None, False
             )
         elif action == translate:
-            gobject.baseobject.textgetmethod(self.textCursor().selectedText(), False)
+            gobject.base.textgetmethod(self.textCursor().selectedText(), False)
         elif action == tts:
-            gobject.baseobject.read_text(self.textCursor().selectedText())
+            gobject.base.read_text(self.textCursor().selectedText())
         elif action == copy:
             NativeUtils.ClipBoard.text = self.textCursor().selectedText()
         elif action == baocun:

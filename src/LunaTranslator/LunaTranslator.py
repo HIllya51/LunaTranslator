@@ -35,7 +35,7 @@ from myutils.utils import (
 from language import Languages
 from myutils.wrapper import threader, tryprint
 from gui.showword import searchwordW
-from myutils.hwnd import getpidexe, getExeIcon, getcurrexe
+from myutils.hwnd import getExeIcon, getcurrexe
 from textio.textsource.copyboard import copyboard
 from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext
@@ -71,9 +71,70 @@ from textio.textoutput.outputerbase import Base as outputerbase
 from myutils.updater import versioncheckthread
 
 
-class MAINUI:
+class BASEOBJECT(QObject):
+    setstylesheetsignal = pyqtSignal()
+    safeinvokefunction = pyqtSignal(object)
+    setimage = pyqtSignal(QImage)
+    setresult = pyqtSignal(object)
+    voicelistsignal = pyqtSignal(object)
+    portconflict = pyqtSignal(str)
+    thresholdsett2 = pyqtSignal(str)
+    thresholdsett1 = pyqtSignal(str)
+    progresssignal2 = pyqtSignal(str, int)
+    progresssignal3 = pyqtSignal(int)
+    progresssignal4 = pyqtSignal(str, int)
+    versiontextsignal = pyqtSignal(str)
+    clipboardcallback = pyqtSignal(bool, str)
+    hover_search_word = pyqtSignal(str, str, bool, bool, bool)
+    settin_ui_showsignal = pyqtSignal()
+    showandsolvesig = pyqtSignal(str, str)
+    selecthookbuttonstatus = pyqtSignal(bool)
+    backtransparentstatus = pyqtSignal(bool)
+    show_fany_switch = pyqtSignal(bool)
+    show_original_switch = pyqtSignal(bool)
+    sourceswitchs = pyqtSignal(str, bool)
+    fenyinsettings = pyqtSignal(bool)
+    dispatch_translate = pyqtSignal(str, str)
+
+    def connectsignal(self, signal: pyqtBoundSignal, callback):
+        if signal in self.__cachesignal:
+            signal.disconnect()
+            callback(*self.__cachesignal[signal])
+        signal.connect(callback)
+
+    def __connect_internal(self, signal: pyqtBoundSignal):
+        signal.connect(functools.partial(self.__connect_internal_1, signal))
+
+    def __connect_internal_1(self, signal, *arg):
+        self.__cachesignal[signal] = arg
+
+    def __safeinvoke(self, fobj):
+        try:
+            fobj()
+        except:
+            print_exc()
+
+    def initsignals(self):
+        self.__cachesignal: "dict[pyqtBoundSignal, tuple]" = {}
+        self.__connect_internal(self.dispatch_translate)
+        self.__connect_internal(self.portconflict)
+        self.__connect_internal(self.thresholdsett1)
+        self.__connect_internal(self.thresholdsett2)
+        self.__connect_internal(self.voicelistsignal)
+        self.__connect_internal(self.setresult)
+        self.__connect_internal(self.setimage)
+        self.safeinvokefunction.connect(self.__safeinvoke)
+        self.setstylesheetsignal.connect(self.setcommonstylesheet)
+        self.__connect_internal(self.progresssignal2)
+        self.__connect_internal(self.progresssignal3)
+        self.__connect_internal(self.progresssignal4)
+        self.__connect_internal(self.versiontextsignal)
+        self.__connect_internal(self.showandsolvesig)
+
     def __init__(self) -> None:
         super().__init__()
+        self.initsignals()
+        self.currentisdark = None
         self.update_avalable = False
         self.translators: "dict[str, basetrans]" = {}
         self.cishus: "dict[str, cishubase]" = {}
@@ -107,13 +168,13 @@ class MAINUI:
 
     @threader
     def serviceinit(self):
-        gobject.signals.portconflict.emit("")
+        gobject.base.portconflict.emit("")
         self.service.stop()
         if globalconfig["networktcpenable"]:
             try:
                 self.service.init(globalconfig["networktcpport"])
             except OSError:
-                gobject.signals.portconflict.emit("端口冲突")
+                gobject.base.portconflict.emit("端口冲突")
 
     @threader
     def ttsautoforward(self):
@@ -136,12 +197,12 @@ class MAINUI:
         if _ is None:
             self._internal_reader = None
             self.reader_uid = None
-            gobject.signals.voicelistsignal.emit(None)
+            gobject.base.voicelistsignal.emit(None)
         else:
             if self.reader_uid != _.uid:
                 return
             self._internal_reader = _
-            gobject.signals.voicelistsignal.emit(_)
+            gobject.base.voicelistsignal.emit(_)
 
     @property
     def textsource(self) -> basetext:
@@ -158,7 +219,6 @@ class MAINUI:
             self.translation_ui.processismuteed = False
             self.translation_ui.isbindedwindow = False
             self.translation_ui.refreshtooliconsignal.emit()
-            self.translation_ui.thistimenotsetop = False
             if self.autoswitchgameuid:
                 self.gameuid = 0
         else:
@@ -169,7 +229,7 @@ class MAINUI:
                 self.translation_ui.refreshtooliconsignal.emit()
                 try:
                     if self.autoswitchgameuid:
-                        gameuid, _ = findgameuidofpath(getpidexe(_pid))
+                        gameuid, _ = findgameuidofpath(windows.GetProcessFileName(_pid))
                         if gameuid:
                             self.gameuid = gameuid
                 except:
@@ -299,16 +359,18 @@ class MAINUI:
         waitforresultcallbackengine_force=False,
         erroroutput=None,
         donttrans=False,
+        update=False,
     ):
         with self.solvegottextlock:
             succ = self.textgetmethod_1(
                 text,
-                is_auto_run,
-                waitforresultcallback,
-                waitforresultcallbackengine,
-                waitforresultcallbackengine_force,
-                erroroutput,
-                donttrans,
+                is_auto_run=is_auto_run,
+                waitforresultcallback=waitforresultcallback,
+                waitforresultcallbackengine=waitforresultcallbackengine,
+                waitforresultcallbackengine_force=waitforresultcallbackengine_force,
+                erroroutput=erroroutput,
+                donttrans=donttrans,
+                update=update,
             )
             if waitforresultcallback and not succ:
                 waitforresultcallback(TranslateResult())
@@ -331,6 +393,7 @@ class MAINUI:
         waitforresultcallbackengine_force=False,
         erroroutput=None,
         donttrans=False,
+        update=False,
     ):
         if not text:
             return
@@ -343,7 +406,7 @@ class MAINUI:
         currentsignature = uuid.uuid4()
         try:
             text = POSTSOLVE(text, isEx=waitforresultcallback)
-            gobject.signals.showandsolvesig.emit(origin, text)
+            gobject.base.showandsolvesig.emit(origin, text)
             if not text:
                 return
         except Exception as e:
@@ -361,7 +424,7 @@ class MAINUI:
             if len(text) > globalconfig["maxlength"]:
                 text = text[: globalconfig["maxlength"]] + "……"
 
-            self.translation_ui.displayraw1.emit(text)
+            self.translation_ui.displayraw1.emit(text, update)
             self.transhis.getnewsentencesignal.emit(text)
             self.maybesetedittext(text)
             return
@@ -383,7 +446,7 @@ class MAINUI:
             self.dispatchoutputer(text, True)
 
             _showrawfunction_unsafe = functools.partial(
-                self.translation_ui.displayraw1.emit, text
+                self.translation_ui.displayraw1.emit, text, update
             )
             self.thishastranslated = globalconfig["showfanyi"]
         _showrawfunction = lambda: (
@@ -639,10 +702,7 @@ class MAINUI:
                     self.textsource.sqlqueueput((contentraw, classname, res))
                 except:
                     pass
-                try:
-                    gobject.edittrans.dispatch.emit(classname, res)
-                except:
-                    pass
+                gobject.base.dispatch_translate.emit(classname, res)
                 if len(self.currenttranslate):
                     self.currenttranslate += "\n"
                 self.currenttranslate += res
@@ -837,7 +897,7 @@ class MAINUI:
 
         self.translation_ui.set_color_transparency()
         self.translation_ui.adjustbuttons()
-        gobject.signals.selecthookbuttonstatus.emit(
+        gobject.base.selecthookbuttonstatus.emit(
             globalconfig["sourcestatus2"]["texthook"]["use"]
         )
         self.textsource = None
@@ -1068,9 +1128,7 @@ class MAINUI:
                 word1, self.currenttext, append
             ),
             "openlink": __openlink,
-            "searchword_S": lambda word1: threader(
-                gobject.signals.hover_search_word.emit
-            )(
+            "searchword_S": lambda word1: threader(gobject.base.hover_search_word.emit)(
                 word1,
                 self.currenttext,
                 append,
@@ -1125,40 +1183,12 @@ class MAINUI:
             int(widget.winId()), globalconfig["showintab_sub"], False
         )
 
-    def createmenuela(self):
-        from elawidgettools import ElaMenu, ElaIcon, ElaIconType
-
-        trayMenu = ElaMenu()
-        showAction = LAction("显示", trayMenu)
-        showAction.triggered.connect(self.translation_ui.show_)
-        settingAction = LAction(
-            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Gear),
-            "设置",
-            trayMenu,
-        )
-        settingAction.triggered.connect(gobject.signals.settin_ui_showsignal)
-        quitAction = LAction(
-            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Xmark),
-            "退出",
-            trayMenu,
-        )
-        quitAction.triggered.connect(self.translation_ui.close)
-        trayMenu.addAction(showAction)
-        trayMenu.addAction(settingAction)
-        trayMenu.addSeparator()
-        trayMenu.addAction(quitAction)
-        trayMenu.addAction(showAction)
-        trayMenu.addAction(settingAction)
-        trayMenu.addSeparator()
-        trayMenu.addAction(quitAction)
-        return trayMenu
-
     def createmenu1(self):
         trayMenu = QMenu(self.commonstylebase)
         showAction = LAction("显示", trayMenu)
         showAction.triggered.connect(self.translation_ui.show_)
         settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
-        settingAction.triggered.connect(gobject.signals.settin_ui_showsignal)
+        settingAction.triggered.connect(gobject.base.settin_ui_showsignal)
         quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
         quitAction.triggered.connect(self.translation_ui.close)
         trayMenu.addAction(showAction)
@@ -1174,9 +1204,7 @@ class MAINUI:
     def inittray(self):
         self.tray = QSystemTrayIcon()
         self.tray.setIcon(getExeIcon(getcurrexe()))
-        self.tray.setContextMenu(
-            self.createmenuela() if gobject.istest else self.createmenu1()
-        )
+        self.tray.setContextMenu(self.createmenu1())
         self.tray.activated.connect(self.leftclicktray)
         self.tray.messageClicked.connect(self.__trayclicked)
         self.trayclicked = print
@@ -1338,7 +1366,7 @@ class MAINUI:
                 # ).family()
 
     def loadui(self, startwithgameuid):
-        self.installeventfillter()
+        QApplication.instance().installEventFilter(self)
         self.parsedefaultfont()
         self.loadmetadatas()
 
@@ -1372,22 +1400,11 @@ class MAINUI:
         self.startoutputer()
 
         class commonstylebase(QWidget):
-            setstylesheetsignal = pyqtSignal()
-
-            def __init__(__, _=None) -> None:
-                super().__init__(_)
-                __.setstylesheetsignal.connect(self.setcommonstylesheet)
+            pass
 
         self.commonstylebase = commonstylebase(self.translation_ui)
         self.setcommonstylesheet()
-        if gobject.istest:
-            from elawidgettools import eApp
-            from gui.ui2.setting import Setting2
-
-            eApp.init()
-            self.settin_ui = Setting2(self.translation_ui)
-        else:
-            self.settin_ui = Setting(self.commonstylebase)
+        self.settin_ui = Setting(self.commonstylebase)
         self.transhis = transhist(self.commonstylebase)
         self.startreader()
         self.searchwordW = searchwordW(self.commonstylebase)
@@ -1402,6 +1419,8 @@ class MAINUI:
 
     def WinEventHookCALLBACK(self, event, hwnd, idObject):
         try:
+            if event == windows.EVENT_SYSTEM_FOREGROUND:
+                self.translation_ui.checksettop()
             myhwnd = self.hwnd
             if not myhwnd:
                 return
@@ -1411,36 +1430,6 @@ class MAINUI:
             ):
                 if hwnd == myhwnd:
                     self.hwnd = None
-                    return
-            p_pids = windows.GetWindowThreadProcessId(myhwnd)
-            if not p_pids:
-                # 有时候谜之没有EVENT_OBJECT_DESTROY/僵尸进程
-                self.hwnd = None
-                return
-            _focusp = windows.GetWindowThreadProcessId(hwnd)
-            if event != windows.EVENT_SYSTEM_FOREGROUND:
-                return
-            if not (globalconfig["keepontop"] and globalconfig["focusnotop"]):
-                return
-            if _focusp == os.getpid():
-                return
-            magwindow = windows.FindWindow(
-                "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
-            )
-            if magwindow:
-                if windows.FindWindowEx(
-                    magwindow, None, "Magpie_ScalingSwapChain", None
-                ):
-                    pass
-                else:
-                    return
-            if _focusp == p_pids:
-                self.translation_ui.thistimenotsetop = False
-                self.translation_ui.settop()
-            else:
-                self.translation_ui.thistimenotsetop = True
-                self.translation_ui.canceltop()
-
         except:
             print_exc()
 
@@ -1457,19 +1446,15 @@ class MAINUI:
     def WindowMessageCallback(self, msg: int, value1: c_void_p, value2: c_void_p):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
-                self.commonstylebase.setstylesheetsignal.emit()
+                self.setstylesheetsignal.emit()
         elif msg == 1:
             running = not (value1 == None and value2 == None)
-            if running:
-                self.translation_ui.settop()
-            else:
-                if not globalconfig["keepontop"]:
-                    self.translation_ui.canceltop()
+            self.translation_ui.checksettop()
             self.translation_ui.magpiecallback.emit(running)
         elif msg == 2:
             self.translation_ui.closesignal.emit()
         elif msg == 3:
-            gobject.signals.clipboardcallback.emit(
+            gobject.base.clipboardcallback.emit(
                 bool(value1), cast(value2, c_wchar_p).value
             )
         elif msg == 4:
@@ -1492,20 +1477,14 @@ class MAINUI:
         if self.currentisdark is not None:
             self.setdarkandbackdrop(obj, self.currentisdark)
 
-    def installeventfillter(self):
-        class WindowEventFilter(QObject):
-            def eventFilter(_, obj: QObject, event: QEvent):
-                if event.type() == QEvent.Type.LanguageChange:
-                    if "updatelangtext" in dir(obj):
-                        obj.updatelangtext()
-                elif event.type() == QEvent.Type.WinIdChange:
-                    self._dowhenwndcreate(obj)
+    def eventFilter(self, obj: QObject, event: QEvent):
+        if event.type() == QEvent.Type.LanguageChange:
+            if "updatelangtext" in dir(obj):
+                obj.updatelangtext()
+        elif event.type() == QEvent.Type.WinIdChange:
+            self._dowhenwndcreate(obj)
 
-                return False
-
-        self.currentisdark = None
-        self.__filter = WindowEventFilter()  # keep ref
-        QApplication.instance().installEventFilter(self.__filter)
+        return False
 
     def loadmetadatas(self):
 

@@ -190,7 +190,7 @@ class SpecialFont(PopupWidget):
         self.resetfont()
 
     def resetfont(self, _=None):
-        gobject.baseobject.translation_ui.translate_text.setfontextra(self.apiuid)
+        gobject.base.translation_ui.translate_text.setfontextra(self.apiuid)
 
 
 def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
@@ -334,13 +334,13 @@ def selectllmcallback(self, countnum: list, fanyi, *_):
     swc = getsimpleswitch(
         globalconfig["fanyi"][uid],
         "use",
-        callback=functools.partial(gobject.baseobject.prepare, uid),
+        callback=functools.partial(gobject.base.prepare, uid),
     )
     color = getcolorbutton(
         self,
         globalconfig["fanyi"][uid],
         "color",
-        callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+        callback=gobject.base.translation_ui.translate_text.setcolorstyle,
     )
 
     offset = 5 * (len(countnum) % 3)
@@ -370,7 +370,7 @@ def selectllmcallback_2(self, countnum: list, fanyi, name):
         pass
     globalconfig["fanyi"][fanyi]["use"] = False
     try:
-        gobject.baseobject.translators.pop(fanyi)
+        gobject.base.translators.pop(fanyi)
     except:
         pass
     layout: QGridLayout = getattr(self, "damoxinggridinternal")
@@ -469,13 +469,13 @@ def initsome11(self, l, save=False):
             D_getsimpleswitch(
                 globalconfig["fanyi"][fanyi],
                 "use",
-                callback=functools.partial(gobject.baseobject.prepare, fanyi),
+                callback=functools.partial(gobject.base.prepare, fanyi),
             ),
             D_getcolorbutton(
                 self,
                 globalconfig["fanyi"][fanyi],
                 "color",
-                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             ),
             last,
         ]

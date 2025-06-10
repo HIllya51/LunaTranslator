@@ -33,8 +33,8 @@ from gui.dynalang import LPushButton, LFormLayout
 
 
 def __changeuibuttonstate(self, x):
-    gobject.baseobject.translation_ui.refreshtoolicon()
-    gobject.baseobject.translation_ui.translate_text.showhideorigin(x)
+    gobject.base.translation_ui.refreshtoolicon()
+    gobject.base.translation_ui.translate_text.showhideorigin(x)
     try:
         self.fenyinsettings.setEnabled(x)
     except:
@@ -42,11 +42,11 @@ def __changeuibuttonstate(self, x):
 
 
 def changeshowerrorstate(self, x):
-    gobject.baseobject.translation_ui.translate_text.showhideerror(x)
+    gobject.base.translation_ui.translate_text.showhideerror(x)
 
 
 def mayberealtimesetfont(_=None):
-    gobject.baseobject.translation_ui.translate_text.setfontstyle()
+    gobject.base.translation_ui.translate_text.setfontstyle()
 
 
 def createtextfontcom(key):
@@ -105,7 +105,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
     need = globalconfig["rendertext_using_internal"][group] != _type
     globalconfig["rendertext_using_internal"][group] = _type
     if need:
-        gobject.baseobject.translation_ui.translate_text.resetstyle()
+        gobject.base.translation_ui.translate_text.resetstyle()
     __internal = globalconfig["rendertext"][group][_type]
     dd = __internal.get("args", {})
 
@@ -134,7 +134,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                                 keyx,
                                 True,
                                 widthline.get("step", 0.1),
-                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
                             ),
                             __,
                             getspinbox(
@@ -144,7 +144,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                                 key,
                                 True,
                                 line.get("step", 0.1),
-                                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
                             ),
                         ]
                     ),
@@ -157,7 +157,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 self,
                 dd,
                 key,
-                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             )
         elif _type in ["spin", "intspin"]:
             lineW = getspinbox(
@@ -167,13 +167,13 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 key,
                 _type == "spin",
                 line.get("step", 0.1),
-                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             )
         elif _type == "switch":
             lineW = getsimpleswitch(
                 d=dd,
                 key=key,
-                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             )
 
         forml.addRow(
@@ -193,7 +193,7 @@ class otherdisplaysetting(PopupWidget):
                 ["原文_翻译", "翻译_原文"],
                 globalconfig,
                 "displayrank",
-                callback=gobject.baseobject.translation_ui.translate_text.setdisplayrank,
+                callback=gobject.base.translation_ui.translate_text.setdisplayrank,
             ),
         )
         form.addRow(
@@ -202,7 +202,7 @@ class otherdisplaysetting(PopupWidget):
                 ["横向", "竖向"],
                 globalconfig,
                 "verticalhorizontal",
-                callback=gobject.baseobject.translation_ui.verticalhorizontal,
+                callback=gobject.base.translation_ui.verticalhorizontal,
             ),
         )
         # form.addRow(
@@ -210,7 +210,7 @@ class otherdisplaysetting(PopupWidget):
         #     getsimpleswitch(
         #         globalconfig,
         #         "word_hover_action_usewb2",
-        #         callback=gobject.baseobject.translation_ui.translate_text.setwordhoveruse,
+        #         callback=gobject.base.translation_ui.translate_text.setwordhoveruse,
         #     ),
         # )
         self.display()
@@ -227,14 +227,14 @@ def resetgroudswitchcallback(self, group):
                 self,
                 "extrahtml.html",
                 r"LunaTranslator\htmlcode\uiwebview\extrahtml\mainui.html",
-                gobject.baseobject.translation_ui.translate_text.textbrowser,
+                gobject.base.translation_ui.translate_text.textbrowser,
             ),
             icon="fa.edit",
         )
         switch = getsimpleswitch(
             globalconfig,
             "useextrahtml",
-            callback=lambda x: gobject.baseobject.translation_ui.translate_text.textbrowser.loadex(),
+            callback=lambda x: gobject.base.translation_ui.translate_text.textbrowser.loadex(),
         )
         _btn2 = getIconButton(
             callback=functools.partial(Exteditor, self),
@@ -244,7 +244,7 @@ def resetgroudswitchcallback(self, group):
             globalconfig,
             "webviewLoadExt",
             callback=lambda x: (
-                gobject.baseobject.translation_ui.translate_text.loadinternal(
+                gobject.base.translation_ui.translate_text.loadinternal(
                     True, True
                 ),
                 _btn2.setEnabled(x),
@@ -290,7 +290,7 @@ def resetgroudswitchcallback(self, group):
             globalconfig["rendertext_using_internal"][group]
         )
     )
-    gobject.baseobject.translation_ui.translate_text.loadinternal(shoudong=True)
+    gobject.base.translation_ui.translate_text.loadinternal(shoudong=True)
     visengine_internal = ["textbrowser", "webview"]
     self.seletengeinecombo.setCurrentIndex(
         visengine_internal.index(globalconfig["rendertext_using"])
@@ -397,8 +397,8 @@ def vistranslate_rank(self):
 
 
 def __changeuibuttonstate2(self, x):
-    gobject.baseobject.translation_ui.refreshtoolicon()
-    gobject.baseobject.maybeneedtranslateshowhidetranslate()
+    gobject.base.translation_ui.refreshtoolicon()
+    gobject.base.maybeneedtranslateshowhidetranslate()
 
 
 def _showhidefy(self):
@@ -407,7 +407,7 @@ def _showhidefy(self):
         "showfanyi",
         callback=functools.partial(__changeuibuttonstate2, self),
     )
-    gobject.signals.show_fany_switch.connect(btn.setChecked)
+    gobject.base.show_fany_switch.connect(btn.setChecked)
     return btn
 
 
@@ -417,7 +417,7 @@ def __xianshi(self):
         "isshowrawtext",
         callback=functools.partial(__changeuibuttonstate, self),
     )
-    gobject.signals.show_original_switch.connect(btn.setChecked)
+    gobject.base.show_original_switch.connect(btn.setChecked)
     return btn
 
 
@@ -443,7 +443,7 @@ def xianshigrid_style(self):
                                         self,
                                         globalconfig,
                                         "rawtextcolor",
-                                        callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                                        callback=gobject.base.translation_ui.translate_text.setcolorstyle,
                                     ),
                                 ]
                             ),
@@ -532,7 +532,7 @@ def xianshigrid_style(self):
                         D_getsimpleswitch(
                             globalconfig,
                             "showatcenter",
-                            callback=gobject.baseobject.translation_ui.translate_text.showatcenter,
+                            callback=gobject.base.translation_ui.translate_text.showatcenter,
                         ),
                         "",
                         "显示错误信息",
@@ -551,7 +551,7 @@ def xianshigrid_style(self):
                         D_getsimpleswitch(
                             globalconfig,
                             "showfanyisource",
-                            callback=gobject.baseobject.translation_ui.translate_text.showhidename,
+                            callback=gobject.base.translation_ui.translate_text.showhidename,
                         ),
                         "",
                         "固定翻译显示顺序",

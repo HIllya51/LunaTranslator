@@ -79,16 +79,16 @@ class AnkiWindow(QWidget):
 
     def langdu(self):
         self.audiopath.sig = uuid.uuid4()
-        if gobject.baseobject.reader:
-            gobject.baseobject.reader.ttscallback(
+        if gobject.base.reader:
+            gobject.base.reader.ttscallback(
                 self.currentword,
                 functools.partial(self.callbacktts, self.audiopath, self.audiopath.sig),
             )
 
     def langdu2(self):
         self.audiopath_sentence.sig = uuid.uuid4()
-        if gobject.baseobject.reader:
-            gobject.baseobject.reader.ttscallback(
+        if gobject.base.reader:
+            gobject.base.reader.ttscallback(
                 self.example.toPlainText(),
                 functools.partial(
                     self.callbacktts,
@@ -102,12 +102,12 @@ class AnkiWindow(QWidget):
         self.__ocrsettext.emit(ocr_run(img).textonly)
 
     def crophide(self, s=False):
-        currpos = gobject.baseobject.translation_ui.pos()
+        currpos = gobject.base.translation_ui.pos()
         currpos2 = self.window().pos()
         # hide会有隐藏动画残影
         if s:
             self.window().move(-9999, -9999)
-            gobject.baseobject.translation_ui.move(-9999, -9999)
+            gobject.base.translation_ui.move(-9999, -9999)
 
         def ocroncefunction(rect, img=None):
             if not img:
@@ -123,7 +123,7 @@ class AnkiWindow(QWidget):
         def __ocroncefunction(rect, img=None):
             ocroncefunction(rect, img=img)
             if s:
-                gobject.baseobject.translation_ui.move(currpos)
+                gobject.base.translation_ui.move(currpos)
                 self.window().move(currpos2)
 
         rangeselct_function(__ocroncefunction)
@@ -271,7 +271,7 @@ class AnkiWindow(QWidget):
         example = self.example.toPlainText()
         if globalconfig["ankiconnect"]["boldword"]:
             if self.example_hiras is None:
-                _hs = gobject.baseobject.parsehira(example)
+                _hs = gobject.base.parsehira(example)
                 self.example_hiras = mecab.parseastarget(_hs)
             collect = []
             for hira in self.example_hiras:
@@ -463,7 +463,7 @@ class AnkiWindow(QWidget):
         if not keystring:
             return
         try:
-            windows.SetForegroundWindow(gobject.baseobject.hwnd)
+            windows.SetForegroundWindow(gobject.base.hwnd)
             time.sleep(0.1)
         except:
             pass
@@ -743,14 +743,14 @@ class AnkiWindow(QWidget):
     def wordedit_t(self, text):
         self.currentword = text
         if text and len(text):
-            _hs = gobject.baseobject.parsehira(text)
+            _hs = gobject.base.parsehira(text)
             self.zhuyinedit.setPlainText(mecab.makerubyhtml(_hs))
         else:
             self.zhuyinedit.clear()
 
     def maybereset(self, text):
         self.wordedit.setText(text)
-        if gobject.baseobject.currenttext != self.example.toPlainText():
+        if gobject.base.currenttext != self.example.toPlainText():
             self.editpath.clear()
             self.audiopath.clear()
             self.audiopath_sentence.clear()
@@ -978,7 +978,7 @@ class DynamicTreeModel(QStandardItemModel):
     def onDoubleClicked(self, index: QModelIndex):
         if not self.data(index, isWordNode):
             return
-        gobject.baseobject.searchwordW.search_word.emit(
+        gobject.base.searchwordW.search_word.emit(
             self.itemFromIndex(index).text(), None, False
         )
 
@@ -1105,7 +1105,7 @@ class showdiction(QWidget):
 
         cishus: list[mdict] = []
         for k in globalconfig["cishuvisrank"]:
-            cishu = gobject.baseobject.cishus.get(k)
+            cishu = gobject.base.cishus.get(k)
             if not hasattr(cishu, "tree"):
                 continue
             cishus.append(cishu)
@@ -1160,7 +1160,7 @@ class WordViewer(QWidget):
         self.save_sentence = sentence
         current = uuid.uuid4()
         self.reset(current, unuse=unuse)
-        searchkeys = list(gobject.baseobject.cishus.keys())
+        searchkeys = list(gobject.base.cishus.keys())
         if readydata:
             readydata, cache_results_highlighted, savemdictfoldstate = readydata
             for k, data in readydata.items():
@@ -1177,7 +1177,7 @@ class WordViewer(QWidget):
             if unuse:
                 if k in unuse:
                     continue
-            gobject.baseobject.cishus[k].safesearch(
+            gobject.base.cishus[k].safesearch(
                 functools.partial(self.__show_dict_result.emit, current, k),
                 word,
                 sentence,
@@ -1320,10 +1320,10 @@ class WordViewer(QWidget):
             threader(self.from_webview_search_word_in_new_window.emit),
         )
         nexti = self.textOutput.add_menu(
-            nexti, lambda: _TR("翻译"), gobject.baseobject.textgetmethod
+            nexti, lambda: _TR("翻译"), gobject.base.textgetmethod
         )
         nexti = self.textOutput.add_menu(
-            nexti, lambda: _TR("朗读"), gobject.baseobject.read_text
+            nexti, lambda: _TR("朗读"), gobject.base.read_text
         )
         nexti = self.textOutput.add_menu(
             nexti,
@@ -1356,7 +1356,7 @@ class WordViewer(QWidget):
         self.textOutput.bind("luna_search_word", self.from_webview_search_word.emit)
         self.textOutput.bind(
             "luna_audio_play_b64",
-            lambda b64: gobject.baseobject.audioplayer.play(
+            lambda b64: gobject.base.audioplayer.play(
                 base64.b64decode(b64.encode()), force=True
             ),
         )
@@ -1394,8 +1394,8 @@ class WordViewer(QWidget):
         try:
             k = self.tabks[idx]
             html = self.cache_results_highlighted.get(k, self.cache_results[k])
-            backgroundparser = gobject.baseobject.cishus[k].backgroundparser
-            use_github_md_css = gobject.baseobject.cishus[k].use_github_md_css
+            backgroundparser = gobject.base.cishus[k].backgroundparser
+            use_github_md_css = gobject.base.cishus[k].use_github_md_css
         except:
             return
         with open(
@@ -1481,12 +1481,12 @@ class searchwordW(closeashidewindow):
     def searchwinnewwindow(self, word):
         # 不应销毁，否则容易崩溃
         X = None
-        for _ in self.cachenewwindow + [gobject.baseobject.searchwordW]:
+        for _ in self.cachenewwindow + [gobject.base.searchwordW]:
             if not _.isVisible():
                 X = _
                 break
         if not X:
-            _ = searchwordW(gobject.baseobject.searchwordW.parent())
+            _ = searchwordW(gobject.base.searchwordW.parent())
             self.cachenewwindow.append(_)
         _.move(_.pos() + QPoint(20, 20))
         _.search_word.emit(word, None, False)
@@ -1549,7 +1549,7 @@ class searchwordW(closeashidewindow):
 
         self.soundbutton = getIconButton(
             icon="fa.music",
-            callback=lambda: gobject.baseobject.read_text(self.searchtext.text()),
+            callback=lambda: gobject.base.read_text(self.searchtext.text()),
             callback2=self.showmenu_auto_sound,
         )
         self.searchlayout.addWidget(self.soundbutton)
@@ -1634,12 +1634,12 @@ class searchwordW(closeashidewindow):
         self.searchtext.setText(word)
         self.activate()
         self.search(word, sentence, append, readydata)
-        self.ankiwindow.example.setPlainText(gobject.baseobject.currenttext)
+        self.ankiwindow.example.setPlainText(gobject.base.currenttext)
         if globalconfig["ankiconnect"]["autoruntts"]:
             self.ankiwindow.langdu()
         if globalconfig["ankiconnect"]["autoruntts2"]:
             self.ankiwindow.langdu2()
-        self.ankiwindow.remarks.setPlainText(gobject.baseobject.currenttranslate)
+        self.ankiwindow.remarks.setPlainText(gobject.base.currenttranslate)
         if globalconfig["ankiconnect"]["autocrop"]:
             grabwindow(
                 getimageformat(),
@@ -1662,6 +1662,6 @@ class searchwordW(closeashidewindow):
             return
         self.__parsehistory(word, append)
         if globalconfig["is_search_word_auto_tts"]:
-            gobject.baseobject.read_text(self.searchtext.text())
+            gobject.base.read_text(self.searchtext.text())
         self.ankiwindow.maybereset(word)
         self.wordviewer.searchword(word, sentence, readydata=readydata)

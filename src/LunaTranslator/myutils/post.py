@@ -346,7 +346,7 @@ def POSTSOLVE(line, isEx=False):
     usemodule = "mypost"
     try:
 
-        gameuid = gobject.baseobject.gameuid
+        gameuid = gobject.base.gameuid
         if gameuid and not savehook_new_data[gameuid].get(
             "textproc_follow_default", True
         ):

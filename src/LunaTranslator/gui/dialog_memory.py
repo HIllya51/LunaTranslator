@@ -281,7 +281,7 @@ class dialog_memory(saveposwindow):
     def gameuid(self):
         if self._gameuid:
             return self._gameuid
-        return 0 if self.xx else gobject.baseobject.gameuid
+        return 0 if self.xx else gobject.base.gameuid
 
     def __init__(self, parent, x=False, gameuid=None) -> None:
         self.xx = x
@@ -437,11 +437,11 @@ class dialog_memory(saveposwindow):
             self.cropcallback(res)
 
     def crophide(self, s=False):
-        currpos = gobject.baseobject.translation_ui.pos()
+        currpos = gobject.base.translation_ui.pos()
         currpos2 = self.window().pos()
         if s:
             self.window().move(-9999, -9999)
-            gobject.baseobject.translation_ui.move(-9999, -9999)
+            gobject.base.translation_ui.move(-9999, -9999)
 
         def ocroncefunction(rect, img=None):
             if not img:
@@ -455,7 +455,7 @@ class dialog_memory(saveposwindow):
         def __ocroncefunction(rect, img=None):
             ocroncefunction(rect, img=img)
             if s:
-                gobject.baseobject.translation_ui.move(currpos)
+                gobject.base.translation_ui.move(currpos)
                 self.window().move(currpos2)
 
         rangeselct_function(__ocroncefunction)
@@ -478,13 +478,13 @@ class dialog_memory(saveposwindow):
         menu.addAction(origin_hira)
         action = menu.exec(QCursor.pos())
         if action == origin:
-            self.__wrap(gobject.baseobject.currenttext)
+            self.__wrap(gobject.base.currenttext)
         elif action == ts:
-            self.__wrap(gobject.baseobject.currenttranslate)
+            self.__wrap(gobject.base.currenttranslate)
         elif action == origin_hira:
             self.__wrap(
                 mecab.makerubyhtml(
-                    gobject.baseobject.parsehira(gobject.baseobject.currenttext)
+                    gobject.base.parsehira(gobject.base.currenttext)
                 )
             )
 

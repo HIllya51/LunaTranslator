@@ -26,12 +26,12 @@ def changeHorizontal(self):
     except:
         pass
     #
-    gobject.baseobject.translation_ui.set_color_transparency()
+    gobject.base.translation_ui.set_color_transparency()
 
 
 def __exswitch(self, ex):
     self.horizontal_slider.setMinimum(1 - ex)
-    gobject.baseobject.translation_ui.set_color_transparency()
+    gobject.base.translation_ui.set_color_transparency()
 
 
 def createhorizontal_slider(self):
@@ -63,7 +63,7 @@ def createhorizontal_slider(self):
 
     hb.addWidget(sw)
 
-    gobject.signals.backtransparentstatus.connect(
+    gobject.base.backtransparentstatus.connect(
         lambda x: (
             self.horizontal_slider.setEnabled(x),
             self.horizontal_slider_label.setEnabled(x),
@@ -85,15 +85,15 @@ def changeHorizontal_tool(self):
     except:
         pass
     #
-    gobject.baseobject.translation_ui.enterfunction()
-    gobject.baseobject.translation_ui.set_color_transparency()
+    gobject.base.translation_ui.enterfunction()
+    gobject.base.translation_ui.set_color_transparency()
 
 
 def toolcolorchange():
-    gobject.baseobject.translation_ui.refreshtooliconsignal.emit()
-    gobject.baseobject.translation_ui.enterfunction()
-    gobject.baseobject.translation_ui.setbuttonsizeX()
-    gobject.baseobject.translation_ui.set_color_transparency()
+    gobject.base.translation_ui.refreshtooliconsignal.emit()
+    gobject.base.translation_ui.enterfunction()
+    gobject.base.translation_ui.setbuttonsizeX()
+    gobject.base.translation_ui.set_color_transparency()
 
 
 def createhorizontal_slider_tool(self):
@@ -123,7 +123,7 @@ def createfontcombo():
 
     def callback(x):
         globalconfig.__setitem__("settingfonttype", x)
-        gobject.baseobject.setcommonstylesheet()
+        gobject.base.setcommonstylesheet()
 
     sfont_comboBox.setCurrentFont(QFont(globalconfig["settingfonttype"]))
     sfont_comboBox.currentTextChanged.connect(callback)
@@ -155,7 +155,7 @@ def getget_setting_window():
 def opensettingwindow(self):
     get_setting_window = getget_setting_window()
     try:
-        get_setting_window(self, gobject.baseobject.setcommonstylesheet, nowisdark())
+        get_setting_window(self, gobject.base.setcommonstylesheet, nowisdark())
     except:
         print_exc()
 
@@ -168,13 +168,13 @@ def createbtnthemelight(self):
 def checkthemesettingvisandapply(self, _):
     lightsetting = getget_setting_window()
     self.btnthemelight.setVisible(bool(lightsetting))
-    gobject.baseobject.setcommonstylesheet()
+    gobject.base.setcommonstylesheet()
 
 
 def __rs():
     spin, lay = createsomecontrols(
-        gobject.baseobject.translation_ui.set_color_transparency,
-        gobject.baseobject.translation_ui.seteffect,
+        gobject.base.translation_ui.set_color_transparency,
+        gobject.base.translation_ui.seteffect,
         "yuanjiao_r",
         "yuanjiao_sys",
         False,
@@ -194,7 +194,7 @@ def __rs():
             D_getsimpleswitch(
                 globalconfig,
                 "showintab",
-                callback=lambda _: gobject.baseobject.setshowintab(),
+                callback=lambda _: gobject.base.setshowintab(),
             ),
         ]
     )
@@ -212,7 +212,7 @@ def uisetting(self):
             ],
             globalconfig,
             "WindowBackdrop",
-            callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+            callback=lambda _: gobject.base.setcommonstylesheet(),
             static=True,
         ),
         "",
@@ -220,14 +220,14 @@ def uisetting(self):
         D_getsimpleswitch(
             globalconfig,
             "force_rect",
-            callback=lambda _: gobject.baseobject.cornerornot(),
+            callback=lambda _: gobject.base.cornerornot(),
         ),
         "",
         getsmalllabel("任务栏中显示"),
         D_getsimpleswitch(
             globalconfig,
             "showintab_sub",
-            callback=lambda _: gobject.baseobject.setshowintab(),
+            callback=lambda _: gobject.base.setshowintab(),
         ),
     ]
     if not gobject.sys_ge_win_11:
@@ -311,14 +311,14 @@ def uisetting(self):
                                         "settingfontsize",
                                         double=True,
                                         step=0.1,
-                                        callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                                        callback=lambda _: gobject.base.setcommonstylesheet(),
                                     ),
                                     "",
                                     getsmalllabel("加粗"),
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "settingfontbold",
-                                        callback=lambda _: gobject.baseobject.setcommonstylesheet(),
+                                        callback=lambda _: gobject.base.setcommonstylesheet(),
                                     ),
                                 ]
                             ],
@@ -340,7 +340,7 @@ def uisetting(self):
                                         globalconfig,
                                         "darklight2",
                                         lambda _: (
-                                            gobject.baseobject.setcommonstylesheet(),
+                                            gobject.base.setcommonstylesheet(),
                                             switch_webview2_darklight(),
                                         ),
                                     ),
@@ -416,7 +416,7 @@ def mainuisetting(self):
                             self,
                             globalconfig,
                             "backcolor",
-                            callback=lambda _: gobject.baseobject.translation_ui.set_color_transparency(),
+                            callback=lambda _: gobject.base.translation_ui.set_color_transparency(),
                         ),
                         "",
                         "不透明度",

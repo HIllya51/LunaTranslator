@@ -74,7 +74,7 @@ function safe_weblio_search_word(word){
                 links.append(_)
         ts = []
         for _ in links:
-            ts.append(threading.Thread(target=self.makelink, args=(_,)))
+            ts.append(threading.Thread(target=self.makelink, args=(_,), daemon=True))
             ts[-1].start()
         for t in ts:
             t.join()

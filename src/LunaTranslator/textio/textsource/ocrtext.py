@@ -1,4 +1,4 @@
-import time, copy, threading
+import time, copy
 from myutils.config import globalconfig
 import NativeUtils, windows
 from gui.rangeselect import rangeadjust
@@ -14,7 +14,7 @@ from CVUtils import cvMat
 
 class rangemanger:
     def __init__(self):
-        self.range_ui = rangeadjust(gobject.baseobject.settin_ui)
+        self.range_ui = rangeadjust(gobject.base.settin_ui)
         self.savelastimg: cvMat = None
         self.savelastrecimg: cvMat = None
         self.lastocrtime: float = 0
@@ -28,7 +28,7 @@ class rangemanger:
         if rect is None:
             return
         imgr = imageCut(
-            gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+            gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
         )
         result = ocr_run(imgr)
         self.savelastimg = cvMat.fromQImage(imgr)
@@ -42,7 +42,7 @@ class rangemanger:
         if rect is None:
             return
         imgr = imageCut(
-            gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+            gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
         )
         ok = True
         if globalconfig["ocr_auto_method_v2"] == "analysis":
@@ -50,14 +50,14 @@ class rangemanger:
 
             image_score = imgr1.MSSIM(self.savelastimg)
 
-            gobject.signals.thresholdsett1.emit(str(image_score))
+            gobject.base.thresholdsett1.emit(str(image_score))
             self.savelastimg = imgr1
 
             if image_score > globalconfig["ocr_stable_sim_v2"]:
 
                 image_score2 = imgr1.MSSIM(self.savelastrecimg)
 
-                gobject.signals.thresholdsett2.emit(str(image_score2))
+                gobject.base.thresholdsett2.emit(str(image_score2))
                 if image_score2 > globalconfig["ocr_diff_sim_v2"]:
                     ok = False
                 else:
@@ -86,12 +86,12 @@ class rangemanger:
         if rect is None:
             return False
         imgr = imageCut(
-            gobject.baseobject.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
+            gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
         )
         imgr1 = cvMat.fromQImage(imgr)
         image_score = imgr1.MSSIM(self.savelastimg)
 
-        gobject.signals.thresholdsett1.emit(str(float(image_score)))
+        gobject.base.thresholdsett1.emit(str(float(image_score)))
         self.savelastimg = imgr1
         return image_score > globalconfig["ocr_stable_sim2_v2"]
 
@@ -101,7 +101,7 @@ class ocrtext(basetext):
     def init(self):
         self.stop = True
         self.startsql(gobject.gettranslationrecorddir("0_ocr.sqlite"))
-        threading.Thread(target=ocr_init).start()
+        threader(ocr_init)()
         self.ranges: "list[rangemanger]" = []
         self.gettextthread()
 
@@ -180,11 +180,11 @@ class ocrtext(basetext):
                         break
                 laststate = this
                 if triggered:
-                    if gobject.baseobject.hwnd:
+                    if gobject.base.hwnd:
                         for _ in range(2):
                             # 切换前台窗口
                             p1 = windows.GetWindowThreadProcessId(
-                                gobject.baseobject.hwnd
+                                gobject.base.hwnd
                             )
                             p2 = windows.GetWindowThreadProcessId(
                                 windows.GetForegroundWindow()
@@ -246,7 +246,7 @@ class ocrtext(basetext):
             return
         text = "\n".join(_.textonly for _ in __text)
         if __text[0].result.isocrtranslate:
-            gobject.baseobject.displayinfomessage(text, "<notrans>")
+            gobject.base.displayinfomessage(text, "<notrans>")
         else:
             return text
 

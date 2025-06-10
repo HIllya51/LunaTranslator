@@ -160,7 +160,7 @@ class filetrans(basetext):
 
     def end(self):
 
-        gobject.signals.progresssignal2.emit("", 0)
+        gobject.base.progresssignal2.emit("", 0)
 
     def __query(self, origin):
         try:
@@ -193,8 +193,8 @@ class filetrans(basetext):
             file = parsesrt(file)
         elif file.lower().endswith(".vtt"):
             file = parsevtt(file)
-        gobject.signals.progresssignal3.emit(len(file))
-        gobject.signals.progresssignal2.emit("", 0)
+        gobject.base.progresssignal3.emit(len(file))
+        gobject.base.progresssignal2.emit("", 0)
 
         for index, line in enumerate(file.load()):
             if self.ending:
@@ -208,7 +208,7 @@ class filetrans(basetext):
 
             class __p:
                 def __del__(self):
-                    gobject.signals.progresssignal2.emit(
+                    gobject.base.progresssignal2.emit(
                         "{}/{} {:0.2f}% ".format(
                             index + 1, lenfile, 100 * (index + 1) / lenfile
                         ),

@@ -249,7 +249,7 @@ class voiceselect(LDialog):
         self.datas["vis"] = self.datas["visx"]
         self.datas["voice"] = None
         try:
-            self.object = gobject.baseobject.loadreader(internal, init=False)
+            self.object = gobject.base.loadreader(internal, init=False)
             self.voicelistsignal.emit(self.object)
         except:
 

@@ -107,13 +107,11 @@ def prepareqtenv():
 
 def loadmainui(startwithgameuid):
     import gobject
-    from LunaTranslator import MAINUI
-    from SignalDispatcher import SignalDispatcher
+    from LunaTranslator import BASEOBJECT
 
-    gobject.signals = SignalDispatcher()
-    gobject.baseobject = MAINUI()
-    gobject.baseobject.loadui(startwithgameuid)
-    # gobject.baseobject.urlprotocol()
+    gobject.base = BASEOBJECT()
+    gobject.base.loadui(startwithgameuid)
+    # gobject.base.urlprotocol()
 
 
 def checklang():
@@ -228,7 +226,7 @@ if __name__ == "__main__":
     from qtsymbols import QApplication
 
     app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(False)
+    # app.setQuitOnLastWindowClosed(False)
     checklang()
     checkintegrity()
     loadmainui(urlprotocol())

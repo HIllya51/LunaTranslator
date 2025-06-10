@@ -278,13 +278,13 @@ class OCRResultParsed:
         ) + self.error
 
     def displayerror(self):
-        gobject.baseobject.displayinfomessage(self.errorstring(), "<msg_error_Origin>")
+        gobject.base.displayinfomessage(self.errorstring(), "<msg_error_Origin>")
 
     def maybeerror(self):
         if self.result.isocrtranslate:
-            gobject.baseobject.displayinfomessage(self.textonly, "<notrans>")
+            gobject.base.displayinfomessage(self.textonly, "<notrans>")
         elif self.error:
-            gobject.baseobject.displayinfomessage(
+            gobject.base.displayinfomessage(
                 self.errorstring(), "<msg_error_Origin>"
             )
         else:

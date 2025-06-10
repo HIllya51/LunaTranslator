@@ -120,9 +120,9 @@ def startgame(gameuid):
 
                     for k in globalconfig["sourcestatus2"]:
                         globalconfig["sourcestatus2"][k]["use"] = k == _[mode]
-                        gobject.signals.sourceswitchs.emit(k, k == _[mode])
+                        gobject.base.sourceswitchs.emit(k, k == _[mode])
 
-                    gobject.baseobject.starttextsource(use=_[mode], checked=True)
+                    gobject.base.starttextsource(use=_[mode], checked=True)
 
             threader(localeswitchedrun)(gameuid)
     except:

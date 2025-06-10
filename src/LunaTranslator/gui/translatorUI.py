@@ -331,7 +331,7 @@ class TranslatorWindow(resizableframeless):
     displaylink = pyqtSignal(str)
     displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
-    displayraw1 = pyqtSignal(str)
+    displayraw1 = pyqtSignal(str, bool)
     displaystatus = pyqtSignal(str, int)
     showhideuisignal = pyqtSignal()
     toolbarhidedelaysignal = pyqtSignal()
@@ -343,16 +343,13 @@ class TranslatorWindow(resizableframeless):
     fullsgame_signal = pyqtSignal(bool)
     quitf_signal = pyqtSignal()
     refreshtooliconsignal = pyqtSignal()
-    hidesignal = pyqtSignal()
     muteprocessignal = pyqtSignal()
     ocr_once_signal = pyqtSignal()
-    move_signal = pyqtSignal(QPoint)
     closesignal = pyqtSignal()
     hotkeyuse_selectprocsignal = pyqtSignal()
     changeshowhiderawsig = pyqtSignal()
     changeshowhidetranssig = pyqtSignal()
     magpiecallback = pyqtSignal(bool)
-    internaltexthide = pyqtSignal(bool)
 
     def setbuttonsizeX(self):
         self.changeextendstated()
@@ -376,38 +373,37 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.adjustminwidth()
         self.enterfunction()
 
-    @threader
     def tracewindowposthread(self):
-        lastpos = None
-        tracepos = None
-        tracehwnd = None
+        self.__lastpos: QRect = None
+        self.__tracepos = None
+        self.__tracehwnd = None
 
-        while True:
-            time.sleep(0.01)
+        def __():
+
             if self._move_drag:
-                lastpos = None
-                continue
+                self.__lastpos = None
+                return
             if not globalconfig["movefollow"]:
-                lastpos = None
-                continue
+                self.__lastpos = None
+                return
             if self.isdoingsomething():
-                lastpos = None
-                continue
+                self.__lastpos = None
+                return
 
-            hwnd = gobject.baseobject.hwnd
+            hwnd = gobject.base.hwnd
             if not hwnd:
-                continue
-            if hwnd != tracehwnd:
-                tracehwnd = hwnd
-                lastpos = None
-                continue
+                return
+            if hwnd != self.__tracehwnd:
+                self.__tracehwnd = hwnd
+                self.__lastpos = None
+                return
             rect = windows.GetWindowRect(hwnd)
             if not rect:
-                lastpos = None
-                continue
+                self.__lastpos = None
+                return
             if not NativeUtils.IsWindowViewable(hwnd):
-                lastpos = None
-                continue
+                self.__lastpos = None
+                return
             rate = self.devicePixelRatioF()
             rect = QRect(
                 int(rect[0] / rate),
@@ -415,26 +411,36 @@ class TranslatorWindow(resizableframeless):
                 int((rect[2] - rect[0]) / rate),
                 int((rect[3] - rect[1]) / rate),
             )
-            if not lastpos:
-                lastpos = rect
-                tracepos = self.pos()
+            if not self.__lastpos:
+                self.__lastpos = rect
+                self.__tracepos = self.pos()
                 try:
-                    gobject.baseobject.textsource.starttrace(rect.topLeft())
+                    gobject.base.textsource.starttrace(rect.topLeft())
                 except:
                     pass
-                continue
-            if (rect.topLeft() == QPoint(0, 0)) or (rect.size() != lastpos.size()):
-                lastpos = rect
-                continue
+                return
+            if (rect.topLeft() == QPoint(0, 0)) or (
+                rect.size() != self.__lastpos.size()
+            ):
+                self.__lastpos = rect
+                return
             try:
-                gobject.baseobject.textsource.traceoffset(rect.topLeft())
+                gobject.base.textsource.traceoffset(rect.topLeft())
             except:
                 pass
             if windows.MonitorFromWindow(hwnd) != windows.MonitorFromWindow(self.winid):
-                lastpos = None
+                self.__lastpos = None
                 return
             if globalconfig["top_align"] == 0:
-                self.move_signal.emit(tracepos - lastpos.topLeft() + rect.topLeft())
+                self.safemove(
+                    self.__tracepos - self.__lastpos.topLeft() + rect.topLeft()
+                )
+
+        t = QTimer(self)
+        t.setInterval(10)
+        t.timeout.connect(__)
+        t.timeout.emit()
+        t.start()
 
     def showres(self, kwargs):
         try:
@@ -457,7 +463,7 @@ class TranslatorWindow(resizableframeless):
         except:
             print_exc()
 
-    def showraw(self, text):
+    def showraw(self, text, update=False):
         color = SpecialColor.RawTextColor
         clear = True
         hira = []
@@ -468,7 +474,7 @@ class TranslatorWindow(resizableframeless):
             or self.translate_text.textbrowser._clickhovershow
         )
         if needhira:
-            hira = gobject.baseobject.parsehira(text)
+            hira = gobject.base.parsehira(text)
 
         self.showline(
             clear=clear,
@@ -544,25 +550,27 @@ class TranslatorWindow(resizableframeless):
             == os.getpid()
         )
 
-    @threader
     def autohidedelaythread(self):
-        while True:
-            time.sleep(0.5)
-            # 当鼠标悬停，或前景窗口为当前进程的其他窗口时，禁止自动隐藏
+        def __():
             if self.isMouseHover:
                 self.lastrefreshtime = time.time()
-                continue
+                return
             if globalconfig["autodisappear"]:
                 if self.autohidestart and (
                     time.time() - self.lastrefreshtime
                     >= globalconfig["disappear_delay"]
                 ):
                     if globalconfig["autodisappear_which"] == 0:
-
-                        self.hidesignal.emit()
+                        self.hide_()
                     elif globalconfig["autodisappear_which"] == 1:
-                        self.internaltexthide.emit(False)
+                        self.translate_text.textbrowser.hide()
                     self.autohidestart = False
+
+        t = QTimer(self)
+        t.setInterval(500)
+        t.timeout.connect(__)
+        t.timeout.emit()
+        t.start()
 
     def showhideui(self):
         if self._move_drag:
@@ -594,7 +602,7 @@ class TranslatorWindow(resizableframeless):
         result = ocr_run(img)
         result = result.maybeerror()
         if result:
-            gobject.baseobject.textgetmethod(result, False)
+            gobject.base.textgetmethod(result, False)
 
     def ocr_once_function(self):
         def ocroncefunction(rect, img=None):
@@ -605,9 +613,9 @@ class TranslatorWindow(resizableframeless):
 
     @threader
     def simulate_key_enter(self):
-        windows.SetForegroundWindow(gobject.baseobject.hwnd)
+        windows.SetForegroundWindow(gobject.base.hwnd)
         time.sleep(0.1)
-        while windows.GetForegroundWindow() == gobject.baseobject.hwnd:
+        while windows.GetForegroundWindow() == gobject.base.hwnd:
             time.sleep(0.001)
             windows.keybd_event(windows.VK_RETURN, 0, 0, 0)
         windows.keybd_event(windows.VK_RETURN, 0, windows.KEYEVENTF_KEYUP, 0)
@@ -616,14 +624,14 @@ class TranslatorWindow(resizableframeless):
         globalconfig["keepontop"] = not globalconfig["keepontop"]
 
         self.refreshtoolicon()
-        self.setontopthread()
+        self.checksettop()
 
     def addbuttons(self):
         def simulate_key_ctrl():
-            windows.SetForegroundWindow(gobject.baseobject.hwnd)
+            windows.SetForegroundWindow(gobject.base.hwnd)
             time.sleep(0.1)
             windows.keybd_event(windows.VK_CONTROL, 0, 0, 0)
-            while windows.GetForegroundWindow() == gobject.baseobject.hwnd:
+            while windows.GetForegroundWindow() == gobject.base.hwnd:
                 time.sleep(0.001)
             windows.keybd_event(windows.VK_CONTROL, 0, windows.KEYEVENTF_KEYUP, 0)
 
@@ -638,13 +646,13 @@ class TranslatorWindow(resizableframeless):
                     colorstate=lambda: globalconfig["autorun"],
                 ),
             ),
-            ("setting", lambda: gobject.signals.settin_ui_showsignal.emit()),
+            ("setting", lambda: gobject.base.settin_ui_showsignal.emit()),
             (
                 "copy",
-                lambda: NativeUtils.ClipBoard.setText(gobject.baseobject.currenttext),
+                lambda: NativeUtils.ClipBoard.setText(gobject.base.currenttext),
             ),
-            ("edit", gobject.baseobject.createedittextui),
-            ("edittrans", lambda: edittrans(gobject.baseobject.commonstylebase)),
+            ("edit", gobject.base.createedittextui),
+            ("edittrans", lambda: edittrans(gobject.base.commonstylebase)),
             (
                 "showraw",
                 buttonfunctions(
@@ -661,15 +669,15 @@ class TranslatorWindow(resizableframeless):
                     colorstate=lambda: globalconfig["showfanyi"],
                 ),
             ),
-            ("history", lambda: gobject.baseobject.transhis.showsignal.emit()),
+            ("history", lambda: gobject.base.transhis.showsignal.emit()),
             (
                 "noundict",
                 buttonfunctions(
                     clicked=lambda: loadpostsettingwindowmethod_maybe(
-                        "noundict", gobject.baseobject.commonstylebase
+                        "noundict", gobject.base.commonstylebase
                     ),
                     rightclick=lambda: loadpostsettingwindowmethod("noundict")(
-                        gobject.baseobject.commonstylebase,
+                        gobject.base.commonstylebase,
                     ),
                 ),
             ),
@@ -677,10 +685,10 @@ class TranslatorWindow(resizableframeless):
                 "noundict_direct",
                 buttonfunctions(
                     clicked=lambda: loadpostsettingwindowmethod_maybe(
-                        "vndbnamemap", gobject.baseobject.commonstylebase
+                        "vndbnamemap", gobject.base.commonstylebase
                     ),
                     rightclick=lambda: loadpostsettingwindowmethod("vndbnamemap")(
-                        gobject.baseobject.commonstylebase
+                        gobject.base.commonstylebase
                     ),
                 ),
             ),
@@ -688,18 +696,18 @@ class TranslatorWindow(resizableframeless):
                 "fix",
                 buttonfunctions(
                     clicked=lambda: loadpostsettingwindowmethod_maybe(
-                        "transerrorfix", gobject.baseobject.commonstylebase
+                        "transerrorfix", gobject.base.commonstylebase
                     ),
                     rightclick=lambda: loadpostsettingwindowmethod("transerrorfix")(
-                        gobject.baseobject.commonstylebase
+                        gobject.base.commonstylebase
                     ),
                 ),
             ),
             (
                 "langdu",
                 buttonfunctions(
-                    clicked=lambda: gobject.baseobject.readcurrent(force=True),
-                    rightclick=lambda: gobject.baseobject.audioplayer.stop(),
+                    clicked=lambda: gobject.base.readcurrent(force=True),
+                    rightclick=lambda: gobject.base.audioplayer.stop(),
                 ),
             ),
             (
@@ -727,15 +735,15 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "gamepad_new",
-                lambda: dialog_savedgame_integrated(gobject.baseobject.commonstylebase),
+                lambda: dialog_savedgame_integrated(gobject.base.commonstylebase),
             ),
             (
                 "selectgame",
-                lambda: gobject.baseobject.createattachprocess(),
+                lambda: gobject.base.createattachprocess(),
             ),
             (
                 "selecttext",
-                lambda: gobject.baseobject.hookselectdialog.showsignal.emit(),
+                lambda: gobject.base.hookselectdialog.showsignal.emit(),
             ),
             (
                 "selectocrrange",
@@ -784,9 +792,9 @@ class TranslatorWindow(resizableframeless):
             (
                 "memory",
                 buttonfunctions(
-                    clicked=lambda: dialog_memory(gobject.baseobject.commonstylebase),
+                    clicked=lambda: dialog_memory(gobject.base.commonstylebase),
                     rightclick=lambda: dialog_memory(
-                        gobject.baseobject.commonstylebase, True
+                        gobject.base.commonstylebase, True
                     ),
                 ),
             ),
@@ -799,7 +807,7 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "simulate_key_ctrl",
-                lambda: threading.Thread(target=simulate_key_ctrl).start(),
+                lambda: threader(simulate_key_ctrl)(),
             ),
             (
                 "simulate_key_enter",
@@ -808,12 +816,12 @@ class TranslatorWindow(resizableframeless):
             (
                 "copy_once",
                 buttonfunctions(
-                    clicked=lambda: gobject.baseobject.textgetmethod(
+                    clicked=lambda: gobject.base.textgetmethod(
                         NativeUtils.ClipBoard.text, False
                     ),
-                    rightclick=lambda: gobject.baseobject.textgetmethod(
-                        gobject.baseobject.currenttext
-                        + (getlangsrc().space if gobject.baseobject.currenttext else "")
+                    rightclick=lambda: gobject.base.textgetmethod(
+                        gobject.base.currenttext
+                        + (getlangsrc().space if gobject.base.currenttext else "")
                         + NativeUtils.ClipBoard.text,
                         False,
                     ),
@@ -822,7 +830,7 @@ class TranslatorWindow(resizableframeless):
             (
                 "open_game_setting",
                 lambda: dialog_setting_game(
-                    gobject.baseobject.commonstylebase, gobject.baseobject.gameuid, 1
+                    gobject.base.commonstylebase, gobject.base.gameuid, 1
                 ),
             ),
             ("ocr_once", self.ocr_once_signal.emit),
@@ -884,9 +892,9 @@ class TranslatorWindow(resizableframeless):
     def callopensearchwordwindow(self):
         curr = self.translate_text.GetSelectedText()
         if curr:
-            gobject.baseobject.searchwordW.search_word.emit(curr, None, False)
+            gobject.base.searchwordW.search_word.emit(curr, None, False)
         else:
-            gobject.baseobject.searchwordW.showsignal.emit()
+            gobject.base.searchwordW.showsignal.emit()
 
     @property
     def winid(self):
@@ -916,13 +924,13 @@ class TranslatorWindow(resizableframeless):
         else:
             self.show()
             windows.SetForegroundWindow(self.winid)
-        gobject.baseobject.commonstylebase.hide()
+        gobject.base.commonstylebase.hide()
 
     def aftershowdosomething(self):
 
         windows.SetForegroundWindow(self.winid)
         self.refreshtoolicon()
-        self.setontopthread()
+        self.checksettop()
 
     def canceltop(self):
         if self.istopmost():
@@ -953,25 +961,32 @@ class TranslatorWindow(resizableframeless):
             windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
         )
 
-    @threader
-    def setontopthread(self):
+    def checksettop(self):
+        def __magpid():
+            magwindow = windows.FindWindow(
+                "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
+            )
+            if magwindow:
+                magwindow = windows.FindWindowEx(
+                    magwindow, None, "Magpie_ScalingSwapChain", None
+                )
+            if magwindow:
+                return windows.GetWindowThreadProcessId(magwindow)
+
         with self.setontopthread_lock:
             if not globalconfig["keepontop"]:
                 return self.canceltop()
-            self.settop()
-            while globalconfig["keepontop"]:
+            hwnd = windows.GetForegroundWindow()
+            _focusp = windows.GetWindowThreadProcessId(hwnd)
+            if globalconfig["focusnotop"]:
                 try:
-                    hwnd = windows.GetForegroundWindow()
-                    pid = windows.GetWindowThreadProcessId(hwnd)
-                    if pid == os.getpid():
-                        pass
-                    elif globalconfig["focusnotop"] and self.thistimenotsetop:
-                        pass
-                    else:
-                        self.settop()
+                    p_pids = windows.GetWindowThreadProcessId(gobject.base.hwnd)
+                    if p_pids and _focusp not in (p_pids, os.getpid(), __magpid()):
+                        return self.canceltop()
                 except:
-                    print_exc()
-                time.sleep(0.5)
+                    pass
+            if not (_focusp == os.getpid() and self.istopmost()):
+                self.settop()
 
     def seteffect(self):
         if globalconfig["WindowEffect"] == 0:
@@ -992,7 +1007,6 @@ class TranslatorWindow(resizableframeless):
         self.showhidestate = False
         self.autohidestart = False
         self.processismuteed = False
-        self.thistimenotsetop = False
         self.isbindedwindow = False
         self.setontopthread_lock = threading.Lock()
         self.ocr_once_follow_rect = None
@@ -1017,8 +1031,7 @@ class TranslatorWindow(resizableframeless):
         linkviewer(link)
 
     def initsignals(self):
-        self.hotkeyuse_selectprocsignal.connect(gobject.baseobject.createattachprocess)
-        self.hidesignal.connect(self.hide_)
+        self.hotkeyuse_selectprocsignal.connect(gobject.base.createattachprocess)
         self.displaylink.connect(self.displaylink_f)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
         self.displaymessagebox.connect(self.displaymessagebox_f)
@@ -1029,13 +1042,13 @@ class TranslatorWindow(resizableframeless):
         self.displayraw1.connect(self.showraw)
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(
-            lambda: dialog_savedgame_integrated(gobject.baseobject.commonstylebase)
+            lambda: dialog_savedgame_integrated(gobject.base.commonstylebase)
         )
         self.clickRange_signal.connect(self.clickRange)
         self.showhide_signal.connect(self.showhideocrrange)
 
         def __():
-            self.clearstate() or gobject.baseobject.textsource.clearrange()
+            self.clearstate() or gobject.base.textsource.clearrange()
 
         self.clear_signal_1.connect(tryprint(__))
         self.bindcropwindow_signal.connect(
@@ -1046,13 +1059,9 @@ class TranslatorWindow(resizableframeless):
 
         self.muteprocessignal.connect(self.muteprocessfuntion)
         self.toolbarhidedelaysignal.connect(self.toolbarhidedelay)
-        self.move_signal.connect(self.safemove)
         self.closesignal.connect(self.close)
         self.changeshowhiderawsig.connect(self.changeshowhideraw)
         self.changeshowhidetranssig.connect(self.changeshowhidetrans)
-        self.internaltexthide.connect(
-            lambda _: self.translate_text.textbrowser.setVisible(_)
-        )
 
     def safemove(self, pos: QPoint):
         screengeo = self.screen().geometry()
@@ -1123,41 +1132,20 @@ class TranslatorWindow(resizableframeless):
         t.start()
         self.adjustbuttons = self.titlebar.adjustbuttons
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
-        self.screengeochanged.connect(
-            lambda: self.settop() if globalconfig["keepontop"] else ""
-        )
-
-    def showmenu2(self, _):
-        from elawidgettools import ElaMenu, ElaIcon, ElaIconType
-
-        trayMenu = ElaMenu(self)
-        settingAction = LAction(
-            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Gear),
-            "设置",
-            trayMenu,
-        )
-        quitAction = LAction(
-            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Xmark),
-            "退出",
-            trayMenu,
-        )
-        return trayMenu, settingAction, quitAction
+        self.screengeochanged.connect(self.checksettop)
 
     def showmenu(self, _):
         child = self.titlebar.childAt(_)
         if child and child.objectName():
             return
-        if gobject.istest:
-            trayMenu, settingAction, quitAction = self.showmenu2(_)
-        else:
-            trayMenu = QMenu(gobject.baseobject.commonstylebase)
-            settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
-            quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
+        trayMenu = QMenu(gobject.base.commonstylebase)
+        settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
+        quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
         trayMenu.addAction(settingAction)
         trayMenu.addAction(quitAction)
         action = trayMenu.exec(QCursor.pos())
         if action == settingAction:
-            gobject.signals.settin_ui_showsignal.emit()
+            gobject.base.settin_ui_showsignal.emit()
         elif action == quitAction:
             self.close()
 
@@ -1180,7 +1168,7 @@ class TranslatorWindow(resizableframeless):
         globalconfig["hirasetting"]["mecab"]["args"]["path"] = filer
         self.displaystatus.emit(_TR("成功设置_Mecab_路径_ " + filer), TextType.Info)
         if changed:
-            gobject.baseobject.startmecab()
+            gobject.base.startmecab()
 
     def __parsedropmdx(self, file: str):
         isfile = os.path.isfile(file)
@@ -1193,11 +1181,11 @@ class TranslatorWindow(resizableframeless):
             globalconfig["cishu"]["mdict"]["args"]["paths"].append(filer)
         self.displaystatus.emit(_TR("成功添加_MDict_ " + filer), TextType.Info)
         if changed:
-            gobject.baseobject.startxiaoxueguan("mdict")
+            gobject.base.startxiaoxueguan("mdict")
 
     def __parsedropjson(self, file):
         try:
-            gameuid = gobject.baseobject.gameuid
+            gameuid = gobject.base.gameuid
             _path = savehook_new_data[gameuid].get("gamejsonfile", [])
             if isinstance(_path, str):
                 _path = [_path]
@@ -1371,8 +1359,8 @@ class TranslatorWindow(resizableframeless):
     def _fullsgame(self, windowmode):
         with self.fullscreenmanager_busy:
             try:
-                if gobject.baseobject.hwnd:
-                    _hwnd = gobject.baseobject.hwnd
+                if gobject.base.hwnd:
+                    _hwnd = gobject.base.hwnd
                 else:
                     _hwnd = windows.GetForegroundWindow()
                     _pid = windows.GetWindowThreadProcessId(_hwnd)
@@ -1451,16 +1439,14 @@ class TranslatorWindow(resizableframeless):
         elif idx == 1:
             globalconfig["backtransparent"] = not globalconfig["backtransparent"]
             self.set_color_transparency()
-            gobject.signals.backtransparentstatus.emit(
-                not globalconfig["backtransparent"]
-            )
+            gobject.base.backtransparentstatus.emit(not globalconfig["backtransparent"])
         self.refreshtoolicon()
 
     def showhideocrrange(self):
         try:
             self.showhidestate = not self.showhidestate
             self.refreshtoolicon()
-            gobject.baseobject.textsource.showhiderangeui(self.showhidestate)
+            gobject.base.textsource.showhiderangeui(self.showhidestate)
         except:
             pass
 
@@ -1473,27 +1459,27 @@ class TranslatorWindow(resizableframeless):
 
     def bindcropwindowcallback(self, pid, hwnd):
         _pid = os.getpid()
-        gobject.baseobject.hwnd = hwnd if pid != _pid else None
+        gobject.base.hwnd = hwnd if pid != _pid else None
 
     def changeshowhideraw(self):
         isshowrawtext = not globalconfig["isshowrawtext"]
         globalconfig["isshowrawtext"] = isshowrawtext
-        gobject.signals.show_original_switch.emit(isshowrawtext)
+        gobject.base.show_original_switch.emit(isshowrawtext)
         self.refreshtoolicon()
         self.translate_text.showhideorigin(isshowrawtext)
-        gobject.signals.fenyinsettings.emit(isshowrawtext)
+        gobject.base.fenyinsettings.emit(isshowrawtext)
 
     def changeshowhidetrans(self):
         globalconfig["showfanyi"] = not globalconfig["showfanyi"]
-        gobject.signals.show_fany_switch.emit(globalconfig["showfanyi"])
+        gobject.base.show_fany_switch.emit(globalconfig["showfanyi"])
         self.refreshtoolicon()
-        gobject.baseobject.maybeneedtranslateshowhidetranslate()
+        gobject.base.maybeneedtranslateshowhidetranslate()
 
     def changeTranslateMode(self):
         globalconfig["autorun"] = not globalconfig["autorun"]
         self.refreshtoolicon()
-        if gobject.baseobject.textsource:
-            gobject.baseobject.textsource.runornot(globalconfig["autorun"])
+        if gobject.base.textsource:
+            gobject.base.textsource.runornot(globalconfig["autorun"])
 
     def changetoolslockstateEx(self):
         globalconfig["locktoolsEx"] = True
@@ -1587,25 +1573,25 @@ class TranslatorWindow(resizableframeless):
         if x1 == x2 or y1 == y2:
             return
         if clear or not globalconfig["multiregion"]:
-            gobject.baseobject.textsource.clearrange()
-        gobject.baseobject.textsource.newrangeadjustor()
-        gobject.baseobject.textsource.setrect(rect)
+            gobject.base.textsource.clearrange()
+        gobject.base.textsource.newrangeadjustor()
+        gobject.base.textsource.setrect(rect)
         self.showhideocrrange()
         if globalconfig["showrangeafterrangeselect"] == False:
             self.showhideocrrange()
 
         def __():
             # 选取范围后立即直接一次，期间不要让自动之前去瞎跑以免浪费一次。
-            gobject.baseobject.textsource.runonce()
-            gobject.baseobject.textsource.stop = False
+            gobject.base.textsource.runonce()
+            gobject.base.textsource.stop = False
 
         threader(__)()
         if not globalconfig["keepontop"]:
             windows.SetForegroundWindow(self.winid)
 
     def startTranslater(self):
-        if gobject.baseobject.textsource:
-            threading.Thread(target=gobject.baseobject.textsource.runonce).start()
+        if gobject.base.textsource:
+            threader(gobject.base.textsource.runonce)()
 
     def toolbarhidedelay(self):
 
@@ -1721,24 +1707,24 @@ class TranslatorWindow(resizableframeless):
             if self.fullscreenmanager:
                 self.fullscreenmanager.endX()
             AdapterService.uninit()
-            gobject.baseobject.isrunning = False
+            gobject.base.isrunning = False
             self.hide()
 
-            gobject.baseobject.textsource = None
-            gobject.baseobject.destroytray()
+            gobject.base.textsource = None
+            gobject.base.destroytray()
             _ = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
             if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
                 errors = saveallconfig()
                 if errors:
                     errors = [f + "\n\t" + stringfyerror(e) for e, f in errors]
                     QMessageBox.critical(
-                        gobject.baseobject.commonstylebase,
+                        gobject.base.commonstylebase,
                         _TR("错误"),
                         "\n\n".join(errors),
                     )
                 self.tryremoveuseless()
                 doupdate()
-            os._exit(0)
-
         except:
             print_exc()
+
+        super().closeEvent(a0)

@@ -107,7 +107,7 @@ class MagpieBuiltin:
             windows.FindWindow("WNDCLS_Magpie_Core_CLI_Message", None),
             windows.RegisterWindowMessage("Magpie_Core_CLI_Message_Exit"),
         )
-        # gobject.baseobject.translation_ui.magpiecallback.disconnect()
+        # gobject.base.translation_ui.magpiecallback.disconnect()
 
     def changestatus(self, hwnd, full, windowmode):
         if full:

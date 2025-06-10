@@ -52,7 +52,7 @@ class dialog_selecticon(LDialog):
         print(_)
         self.dict[self.key] = _
         self.close()
-        gobject.baseobject.translation_ui.refreshtoolicon()
+        gobject.base.translation_ui.refreshtoolicon()
 
         color = (
             globalconfig["buttoncolor_1"]
@@ -64,8 +64,8 @@ class dialog_selecticon(LDialog):
 
 
 def doadjust(_):
-    gobject.baseobject.translation_ui.adjustbuttons()
-    gobject.baseobject.translation_ui.enterfunction()
+    gobject.base.translation_ui.adjustbuttons()
+    gobject.base.translation_ui.enterfunction()
 
 
 def changerank(item, up, tomax, sortlist: list, savelist, savelay, savescroll):

@@ -101,7 +101,7 @@ def retryer(**kw):
 
 def threader(func):
     def _wrapper(*args, **kwargs):
-        t = threading.Thread(target=func, args=args, kwargs=kwargs)
+        t = threading.Thread(target=func, args=args, kwargs=kwargs, daemon=True)
         t.start()
 
     return _wrapper

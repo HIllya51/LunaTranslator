@@ -1,5 +1,4 @@
 import windows
-import threading
 from qtsymbols import *
 import gobject
 import os, subprocess, functools
@@ -35,13 +34,13 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
         uid = None
     else:
 
-        hwndx = gobject.baseobject.hwnd
+        hwndx = gobject.base.hwnd
         if not hwndx:
             hwndx = windows.GetForegroundWindow()
         hwndx = windows.GetAncestor(hwndx)
-        gamepath = getpidexe(windows.GetWindowThreadProcessId(hwndx))
+        gamepath = windows.GetProcessFileName(windows.GetWindowThreadProcessId(hwndx))
         exename = os.path.splitext(os.path.basename(gamepath))[0]
-        uid = gobject.baseobject.gameuid
+        uid = gobject.base.gameuid
         screenshot_savepath: str = globalconfig.get("screenshot_savepath", "")
 
         try:
@@ -71,7 +70,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
 
     callback = functools.partial(callback_1, callback_origin, uid, tocliponly)
 
-    hwnd = gobject.baseobject.hwnd
+    hwnd = gobject.base.hwnd
     if not hwnd:
         return
     hwnd = windows.GetAncestor(hwnd)
@@ -89,7 +88,7 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
         _()
 
     if usewgc or isshit:
-        gobject.baseobject.displayinfomessage("saved to " + fname, "<msg_info_refresh>")
+        gobject.base.displayinfomessage("saved to " + fname, "<msg_info_refresh>")
 
         hwnd = windows.FindWindow(
             "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
@@ -103,31 +102,12 @@ def grabwindow(app="PNG", callback_origin=None, tocliponly=False, usewgc=False):
 
             _()
     elif tocliponly:
-        gobject.baseobject.displayinfomessage(
-            "saved to clipboard", "<msg_info_refresh>"
-        )
-
-
-def getpidexe(pid):
-    for _ in (
-        windows.PROCESS_ALL_ACCESS,  # 如果能这个，那最好，因为一些特殊路径在这个权限下可以不需要处理
-        windows.PROCESS_QUERY_INFORMATION
-        | windows.PROCESS_VM_READ,  # GetModuleFileNameExW
-        windows.PROCESS_QUERY_INFORMATION,  # XP
-        windows.PROCESS_QUERY_LIMITED_INFORMATION,
-    ):
-        hproc = windows.OpenProcess(_, False, pid)
-        if not hproc:
-            continue
-        name_ = windows.GetProcessFileName(hproc)
-        if name_:
-            return name_
-    return None
+        gobject.base.displayinfomessage("saved to clipboard", "<msg_info_refresh>")
 
 
 def getcurrexe():
     # getpidexe(os.getpid())谜之有人获取到的结果是None，无法理解，那就先回档吧。
-    return os.environ.get("LUNA_EXE_NAME", getpidexe(os.getpid()))
+    return os.environ.get("LUNA_EXE_NAME", windows.GetProcessFileName(os.getpid()))
 
 
 def test_injectable(pids):
@@ -146,7 +126,7 @@ def ListProcess(exe=None):
             if exe is not None:
                 if exebase.lower() != os.path.basename(exe).lower():
                     continue
-            name_ = getpidexe(pid)
+            name_ = windows.GetProcessFileName(pid)
             if name_ is None:
                 continue
             name = name_.lower()
@@ -203,7 +183,7 @@ def getExeIcon(name: str, icon=True, cache=False, large=False):
 
 
 def mouseselectwindow(callback):
-
+    @threader
     def _loop():
         while True:
             keystate = windows.GetKeyState(windows.VK_LBUTTON)
@@ -219,7 +199,7 @@ def mouseselectwindow(callback):
         except:
             pass
 
-    threading.Thread(target=_loop).start()
+    _loop()
 
 
 def safepixmap(bs):

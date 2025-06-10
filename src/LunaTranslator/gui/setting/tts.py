@@ -44,9 +44,9 @@ def showvoicelist(self, obj: TTSbase):
 
 
 def changevoice(self, _):
-    if gobject.baseobject.reader is None:
+    if gobject.base.reader is None:
         return
-    gobject.baseobject.reader.voice = gobject.baseobject.reader.voicelist[
+    gobject.base.reader.voice = gobject.base.reader.voicelist[
         self.voicecombo.currentIndex()
     ]
 
@@ -96,8 +96,8 @@ def createvoicecombo(self):
 def setTab5(self, l):
     makescrollgrid(setTab5lz(self), l)
 
-    gobject.signals.connectsignal(
-        gobject.signals.voicelistsignal, functools.partial(showvoicelist, self)
+    gobject.base.connectsignal(
+        gobject.base.voicelistsignal, functools.partial(showvoicelist, self)
     )
 
 
@@ -143,7 +143,7 @@ def getttsgrid(self, names):
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])
             items[-1]["callback"] = functools.partial(
-                gobject.baseobject.startreader, name, True, True
+                gobject.base.startreader, name, True, True
             )
             _3 = D_getIconButton(
                 callback=functools.partial(
@@ -174,7 +174,7 @@ def getttsgrid(self, names):
                     globalconfig["reader"],
                     "ttswitchs",
                     name,
-                    gobject.baseobject.startreader,
+                    gobject.base.startreader,
                 ),
                 pair="ttswitchs",
             ),

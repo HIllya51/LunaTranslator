@@ -64,14 +64,14 @@ class internalservicemainuiws(WSHandler, somecommon_1):
         args = message.get("args", tuple())
         dict(
             calllunaloadready=self.calllunaloadready,
-            calllunaclickedword=gobject.baseobject.clickwordcallback,
+            calllunaclickedword=gobject.base.clickwordcallback,
         )[function](*args)
 
     def debugeval(self, js: str):
         self.send_text(js)
 
     def refreshcontent(self):
-        traces = gobject.baseobject.translation_ui.translate_text.trace.copy()
+        traces = gobject.base.translation_ui.translate_text.trace.copy()
         self.clear()
         for t, trace in traces:
             if t == 0:
@@ -116,7 +116,7 @@ class APImecab(HTTPHandler):
         text = _.query.get("text")
         if not text:
             raise Exception()
-        return tuple(_.as_dict() for _ in gobject.baseobject.parsehira(text))
+        return tuple(_.as_dict() for _ in gobject.base.parsehira(text))
 
 
 class APItts(HTTPHandler):
@@ -128,7 +128,7 @@ class APItts(HTTPHandler):
             raise Exception()
         ret: "list[TTSResult]" = []
         sema = threading.Semaphore(0)
-        gobject.baseobject.reader.ttscallback(
+        gobject.base.reader.ttscallback(
             text,
             functools.partial(self.callbacktts, sema, ret),
         )
@@ -167,7 +167,7 @@ class APITranslators(HTTPHandler):
     def parse(self, _: RequestInfo):
         res = []
         for engine in globalconfig["fix_translate_rank_rank"]:
-            if engine not in gobject.baseobject.translators:
+            if engine not in gobject.base.translators:
                 continue
             res.append(dict(id=engine, name=_TR(dynamicapiname(engine))))
         return res
@@ -179,7 +179,7 @@ class APIdicts(HTTPHandler):
     def parse(self, _: RequestInfo):
         res = []
         for engine in globalconfig["cishuvisrank"]:
-            if engine not in gobject.baseobject.cishus:
+            if engine not in gobject.base.cishus:
                 continue
             res.append(dict(id=engine, name=_TR(dynamiccishuname(engine))))
         return res
@@ -197,7 +197,7 @@ class APITranslate(HTTPHandler):
         ret = []
         error = []
         sema = threading.Semaphore(0)
-        gobject.baseobject.textgetmethod(
+        gobject.base.textgetmethod(
             text,
             False,
             waitforresultcallback=functools.partial(self.__notify, sema, ret),
@@ -231,7 +231,7 @@ class APISearchWord(HTTPHandler):
         cnt = 0
         ret = []
         sema = threading.Semaphore(0)
-        for k, cishu in gobject.baseobject.cishus.items():
+        for k, cishu in gobject.base.cishus.items():
             cnt += 1
             cishu.safesearch(functools.partial(self.__notify, k, sema, ret), word)
         for _ in range(cnt):
@@ -249,7 +249,7 @@ class APISearchWord(HTTPHandler):
         if not dictid:
             return self.iterhelper(word)
 
-        cishu = gobject.baseobject.cishus.get(dictid)
+        cishu = gobject.base.cishus.get(dictid)
         if not cishu:
             return {}
         ret = []

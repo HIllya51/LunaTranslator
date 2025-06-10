@@ -39,10 +39,10 @@ class Process:
         if which == 1:
             return globalconfig["noundictconfig_ex"]
         elif which == 2:
-            gameuid = gobject.baseobject.gameuid
+            gameuid = gobject.base.gameuid
             return savehook_new_data[gameuid].get("noundictconfig_ex", [])
         elif which == 3:
-            gameuid = gobject.baseobject.gameuid
+            gameuid = gobject.base.gameuid
             return (
                 savehook_new_data[gameuid].get("noundictconfig_ex", [])
                 + globalconfig["noundictconfig_ex"]

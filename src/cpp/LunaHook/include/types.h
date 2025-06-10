@@ -139,7 +139,6 @@ struct hook_context
 	constexpr uintptr_t &argof(int idx)
 	{
 #ifdef _WIN64
-		auto offset = 0;
 		switch (idx)
 		{
 		case 1:
@@ -157,20 +156,31 @@ struct hook_context
 		return stack[idx];
 #endif
 	}
+	constexpr uintptr_t &argof_thiscall(int idx)
+	{
+#ifdef _WIN64
+		return argof(idx + 1);
+#else
+		if (idx == 0)
+		{
+			return ecx;
+		}
+		return argof(idx);
+#endif
+	}
+	constexpr uintptr_t &last_ret_val()
+	{
+#ifdef _WIN64
+		return rax;
+#else
+		return eax;
+#endif
+	}
 };
 #define ___baseoffset (int)offsetof(hook_context, base)
 #define regoffset(reg) ((int)offsetof(hook_context, reg) - ___baseoffset)
 #define stackoffset(idx) ((int)offsetof(hook_context, stack[idx]) - ___baseoffset)
 #define GETARG(i) (((int)(size_t)&reinterpret_cast<char const volatile &>((((hook_context *)0)->argof(i)))) - ___baseoffset)
-#ifndef _WIN64
-#define THISCALLARG1 stack[1]
-#define LASTRETVAL eax
-#define THISCALLTHIS ecx
-#else
-#define THISCALLARG1 rdx
-#define LASTRETVAL rax
-#define THISCALLTHIS rcx
-#endif
 
 // jichi 3/7/2014: Add guessed comment
 

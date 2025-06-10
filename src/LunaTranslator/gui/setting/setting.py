@@ -86,7 +86,7 @@ class Setting(closeashidewindow):
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.isfirst = True
         registrhotkeys(self)
-        gobject.signals.settin_ui_showsignal.connect(self.showsignal)
+        gobject.base.settin_ui_showsignal.connect(self.showsignal)
 
     def showEvent(self, e: QShowEvent):
         if self.isfirst:

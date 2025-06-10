@@ -1,6 +1,7 @@
 import time
 from traceback import print_exc
 from myutils.config import globalconfig
+from myutils.wrapper import threader
 import threading, functools
 import gobject
 from ctypes.wintypes import BOOL, DWORD, HWND
@@ -199,7 +200,7 @@ class series_audioplayer:
         self.lock.acquire()
         self.timestamp = None
         self.lastcontext = None
-        threading.Thread(target=self.__dotasks).start()
+        self.__dotasks()
 
     def stop(self):
         self.timestamp = None
@@ -218,7 +219,8 @@ class series_audioplayer:
             self.lock.release()
         except:
             pass
-
+    
+    @threader
     def __dotasks(self):
         try:
             while True:

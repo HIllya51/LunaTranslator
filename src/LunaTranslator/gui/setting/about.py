@@ -38,8 +38,8 @@ def createversionlabel(self):
     )
     versionlabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse)
 
-    gobject.signals.connectsignal(
-        gobject.signals.versiontextsignal,
+    gobject.base.connectsignal(
+        gobject.base.versiontextsignal,
         functools.partial(versionlabelmaybesettext, versionlabel),
     )
     return versionlabel
@@ -98,7 +98,7 @@ def changeUIlanguage(_):
     languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
     QApplication.sendEvent(QApplication.instance(), languageChangeEvent)
     try:
-        gobject.baseobject.textsource.setlang()
+        gobject.base.textsource.setlang()
     except:
         pass
 
@@ -418,8 +418,8 @@ def setTab_about(self, basel):
         basel,
     )
 
-    gobject.signals.connectsignal(
-        gobject.signals.progresssignal4,
+    gobject.base.connectsignal(
+        gobject.base.progresssignal4,
         functools.partial(
             _progresssignal4, self.aboutlayout.layout(), self.downloadprogress
         ),

@@ -47,7 +47,7 @@ class multicolorset(LDialog):
             100,
             d=globalconfig,
             key="showcixing_touming",
-            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+            callback=gobject.base.translation_ui.translate_text.setcolorstyle,
         )
         _hori.addWidget(_s)
         formLayout.addRow(_hori)
@@ -68,14 +68,14 @@ class multicolorset(LDialog):
             b = getsimpleswitch(
                 d=globalconfig["cixingcolorshow"],
                 key=k,
-                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             )
 
             p = getcolorbutton(
                 self,
                 globalconfig["cixingcolor"],
                 k,
-                callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             )
             hori.addWidget(b)
             hori.addWidget(p)
@@ -86,7 +86,7 @@ class multicolorset(LDialog):
 
 def setTabcishu(self, basel):
     makescrollgrid(setTabcishu_l(self), basel)
-    gobject.signals.fenyinsettings.connect(self.fenyinsettings.setEnabled)
+    gobject.base.fenyinsettings.connect(self.fenyinsettings.setEnabled)
 
 
 def gethiragrid(self):
@@ -98,7 +98,7 @@ def gethiragrid(self):
     for name in ("mecab",):
         if "args" in globalconfig["hirasetting"][name]:
             items = autoinitdialog_items(globalconfig["hirasetting"][name])
-            items[-1]["callback"] = gobject.baseobject.startmecab
+            items[-1]["callback"] = gobject.base.startmecab
             _3 = D_getIconButton(
                 callback=functools.partial(
                     autoinitdialog,
@@ -126,7 +126,7 @@ def gethiragrid(self):
                     globalconfig["hirasetting"],
                     "hiraswitchs",
                     name,
-                    gobject.baseobject.startmecab,
+                    gobject.base.startmecab,
                 ),
                 pair="hiraswitchs",
             ),
@@ -221,14 +221,14 @@ def initinternal(self, names):
             D_getsimpleswitch(
                 globalconfig["cishu"][cishu],
                 "use",
-                callback=functools.partial(gobject.baseobject.startxiaoxueguan, cishu),
+                callback=functools.partial(gobject.base.startxiaoxueguan, cishu),
             ),
         ]
         if "args" in globalconfig["cishu"][cishu]:
 
             items = autoinitdialog_items(globalconfig["cishu"][cishu])
             items[-1]["callback"] = functools.partial(
-                gobject.baseobject.startxiaoxueguan, cishu
+                gobject.base.startxiaoxueguan, cishu
             )
 
             def __(cishu):
@@ -272,7 +272,7 @@ def setTabcishu_l(self):
                 [
                     getsmalllabel("查词"),
                     D_getIconButton(
-                        lambda: gobject.baseobject.searchwordW.showsignal.emit(),
+                        lambda: gobject.base.searchwordW.showsignal.emit(),
                         icon="fa.search",
                         tips="查词",
                     ),
@@ -348,13 +348,13 @@ def setTabcishu_l(self):
                         D_getsimpleswitch(
                             globalconfig,
                             "isshowhira",
-                            callback=gobject.baseobject.translation_ui.translate_text.showhidert,
+                            callback=gobject.base.translation_ui.translate_text.showhidert,
                         ),
                         D_getcolorbutton(
                             self,
                             globalconfig,
                             "jiamingcolor",
-                            callback=gobject.baseobject.translation_ui.translate_text.setcolorstyle,
+                            callback=gobject.base.translation_ui.translate_text.setcolorstyle,
                             tips="注音颜色",
                         ),
                         "",
@@ -366,7 +366,7 @@ def setTabcishu_l(self):
                             "kanarate",
                             double=True,
                             step=0.05,
-                            callback=gobject.baseobject.translation_ui.translate_text.setfontstyle,
+                            callback=gobject.base.translation_ui.translate_text.setfontstyle,
                         ),
                         "",
                         "日语注音方案",
@@ -378,7 +378,7 @@ def setTabcishu_l(self):
                             ],
                             globalconfig,
                             "hira_vis_type",
-                            callback=lambda _: gobject.baseobject.translation_ui.translate_text.refreshcontent(),
+                            callback=lambda _: gobject.base.translation_ui.translate_text.refreshcontent(),
                         ),
                     ],
                     [
@@ -387,8 +387,8 @@ def setTabcishu_l(self):
                             globalconfig,
                             "show_fenci",
                             callback=lambda _: (
-                                gobject.baseobject.translation_ui.translate_text.setcolorstyle(),
-                                gobject.baseobject.translation_ui.translate_text.showhideclick(
+                                gobject.base.translation_ui.translate_text.setcolorstyle(),
+                                gobject.base.translation_ui.translate_text.showhideclick(
                                     _
                                 ),
                             ),
@@ -407,7 +407,7 @@ def setTabcishu_l(self):
                                 self,
                                 globalconfig,
                                 "hovercolor",
-                                callback=gobject.baseobject.translation_ui.translate_text.sethovercolor,
+                                callback=gobject.base.translation_ui.translate_text.sethovercolor,
                                 alpha=True,
                             ),
                             grid=[
@@ -417,10 +417,10 @@ def setTabcishu_l(self):
                                         globalconfig,
                                         "word_hover_show_word_info",
                                         callback=lambda _: (
-                                            gobject.baseobject.translation_ui.translate_text.set_word_hover_show_word_info(
+                                            gobject.base.translation_ui.translate_text.set_word_hover_show_word_info(
                                                 _
                                             ),
-                                            gobject.baseobject.translation_ui.translate_text.showhideclick(
+                                            gobject.base.translation_ui.translate_text.showhideclick(
                                                 _
                                             ),
                                         ),
@@ -435,7 +435,7 @@ def setTabcishu_l(self):
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "usesearchword_S_hover",
-                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                        callback=gobject.base.translation_ui.translate_text.showhideclick,
                                     ),
                                     D_getIconButton(
                                         callback=functools.partial(
@@ -493,7 +493,7 @@ def setTabcishu_l(self):
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "usesearchword",
-                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                        callback=gobject.base.translation_ui.translate_text.showhideclick,
                                     ),
                                     "",
                                     "",
@@ -527,7 +527,7 @@ def setTabcishu_l(self):
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "usesearchword_S",
-                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                        callback=gobject.base.translation_ui.translate_text.showhideclick,
                                     ),
                                     D_getIconButton(
                                         callback=functools.partial(
@@ -572,7 +572,7 @@ def setTabcishu_l(self):
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "usecopyword",
-                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                        callback=gobject.base.translation_ui.translate_text.showhideclick,
                                     ),
                                     "",
                                     "",
@@ -606,7 +606,7 @@ def setTabcishu_l(self):
                                     D_getsimpleswitch(
                                         globalconfig,
                                         "useopenlink",
-                                        callback=gobject.baseobject.translation_ui.translate_text.showhideclick,
+                                        callback=gobject.base.translation_ui.translate_text.showhideclick,
                                     ),
                                     D_getIconButton(
                                         icon="fa.link",

@@ -20,7 +20,7 @@ from myutils.keycode import vkcode_map, mod_map
 from language import Languages
 import threading, winreg
 import re, heapq, NativeUtils
-from myutils.wrapper import tryprint
+from myutils.wrapper import tryprint, threader
 from html.parser import HTMLParser
 from myutils.audioplayer import bass_code_cast
 
@@ -81,7 +81,7 @@ def checkisusingwine() -> bool:
 def __internal__getlang(k1: str, k2: str) -> str:
     try:
         for _ in (0,):
-            gameuid = gobject.baseobject.gameuid
+            gameuid = gobject.base.gameuid
             if not gameuid:
                 break
             if savehook_new_data[gameuid].get("lang_follow_default", True):
@@ -256,6 +256,7 @@ def dispatchsearchfordata(gameuid, target, vid):
     targetmod[target].dispatchsearchfordata(gameuid, vid)
 
 
+@threader
 def trysearchforid_1(gameuid, searchargs: list, target=None):
     if target is None:
         __ = []
@@ -281,14 +282,14 @@ def trysearchforid_1(gameuid, searchargs: list, target=None):
             continue
         idname = targetmod[key].idname
         savehook_new_data[gameuid][idname] = vid
-        gobject.baseobject.translation_ui.displayglobaltooltip.emit(
+        gobject.base.translation_ui.displayglobaltooltip.emit(
             "{}: found {}".format(key, vid)
         )
         dispatchsearchfordata(gameuid, key, vid)
 
 
 def trysearchforid(*argc):
-    threading.Thread(target=trysearchforid_1, args=argc).start()
+    trysearchforid_1(*argc)
 
 
 def gamdidchangedtask(key, idname, gameuid):
@@ -558,7 +559,7 @@ def postusewhich(name1):
     merge = name1 + "_merge"
     for _ in (0,):
         try:
-            gameuid = gobject.baseobject.gameuid
+            gameuid = gobject.base.gameuid
             if not gameuid:
                 break
             if savehook_new_data[gameuid].get("transoptimi_followdefault", True):
@@ -604,7 +605,7 @@ loadpostsettingwindowmethod_private = functools.partial(
 def loadpostsettingwindowmethod_maybe(name, parent):
     for _ in (0,):
         try:
-            gameuid = gobject.baseobject.gameuid
+            gameuid = gobject.base.gameuid
             if not gameuid:
                 break
             return loadpostsettingwindowmethod_private(name)(parent, gameuid)

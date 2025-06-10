@@ -302,7 +302,7 @@ class TextBrowser(WebviewWidget, somecommon):
         return super().event(a0)
 
     def __starttrans0checker(self):
-        if gobject.baseobject.translation_ui.transparent_value_actually == 0:
+        if gobject.base.translation_ui.transparent_value_actually == 0:
             self.trans0checker.start()
         else:
             self.trans0checker.stop()
@@ -353,7 +353,7 @@ class TextBrowser(WebviewWidget, somecommon):
         rb = windows.GetKeyState(windows.VK_RBUTTON) < 0
         if lb or rb:
             return
-        gobject.baseobject.clickwordcallback(word, rb1)
+        gobject.base.clickwordcallback(word, rb1)
 
     def __init__(self, parent) -> None:
         super().__init__(parent, transp=True, loadext=globalconfig["webviewLoadExt"])
@@ -363,7 +363,7 @@ class TextBrowser(WebviewWidget, somecommon):
             0,
             lambda: _TR("查词"),
             threader(
-                lambda w: gobject.baseobject.searchwordW.search_word.emit(
+                lambda w: gobject.base.searchwordW.search_word.emit(
                     w.replace("\n", "").strip(), None, False
                 )
             ),
@@ -371,15 +371,15 @@ class TextBrowser(WebviewWidget, somecommon):
         nexti = self.add_menu(
             nexti,
             lambda: _TR("翻译"),
-            lambda w: gobject.baseobject.textgetmethod(w.replace("\n", "").strip()),
+            lambda w: gobject.base.textgetmethod(w.replace("\n", "").strip()),
         )
         nexti = self.add_menu(
             nexti,
             lambda: _TR("朗读"),
-            lambda w: gobject.baseobject.read_text(w.replace("\n", "").strip()),
+            lambda w: gobject.base.read_text(w.replace("\n", "").strip()),
         )
         self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
-        self.bind("calllunaclickedword", gobject.baseobject.clickwordcallback)
+        self.bind("calllunaclickedword", gobject.base.clickwordcallback)
         self.bind("calllunaMouseMove", self.calllunaMouseMove)
         self.bind("calllunaMousePress", self.calllunaMousePress)
         self.bind("calllunaMouseRelease", self.calllunaMouseRelease)
@@ -407,10 +407,10 @@ class TextBrowser(WebviewWidget, somecommon):
 
     def ___cleartext(self):
         self.parent().clear()
-        gobject.baseobject.currenttext = ""
+        gobject.base.currenttext = ""
 
     def refreshcontent(self):
-        gobject.baseobject.translation_ui.translate_text.refreshcontent()
+        gobject.base.translation_ui.translate_text.refreshcontent()
 
     def refreshcontent_before(self):
         self.debugeval("refreshcontent_before()")

@@ -1948,7 +1948,7 @@ class LensOverlayInteractionRequestMetadataQueryMetadata(Message):
 @dataclass(eq=False, repr=False)
 class TranslateStickinessSignals(Message):
     """
-    Signals specific to queries coming from translate stickiness extension.
+    base specific to queries coming from translate stickiness extension.
     """
 
     translate_suppress_echo_for_sticky: bool = bool_field(1)
@@ -1964,13 +1964,13 @@ class FunctionCall(Message):
     argument: List["Argument"] = message_field(2)
     """A list of arguments of this function call."""
 
-    signals: "FunctionCallSignals" = message_field(4)
-    """Signals at the function call level"""
+    base: "FunctionCallSignals" = message_field(4)
+    """base at the function call level"""
 
 
 @dataclass(eq=False, repr=False)
 class FunctionCallSignals(Message):
-    """Signals at the function call level"""
+    """base at the function call level"""
 
     translate_stickiness_signals: "TranslateStickinessSignals" = message_field(
         311378150
@@ -2248,7 +2248,7 @@ class Payload(Message):
 
     partial_pdf_document: "LensOverlayDocument" = message_field(7)
     """
-    The partially parsed PDF document. Used to get early suggest signals. This
+    The partially parsed PDF document. Used to get early suggest base. This
      is only set for REQUEST_TYPE_EARLY_PARTIAL_PDF.
      TODO(crbug.com/399173540): Deprecate this field in favor of content.
     """
