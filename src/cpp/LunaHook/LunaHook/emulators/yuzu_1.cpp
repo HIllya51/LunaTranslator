@@ -2544,6 +2544,10 @@ namespace
     {
         CharFilter(buffer, L'\n');
     }
+    void NewLineCharFilter(TextBuffer *buffer, HookParam *)
+    {
+        CharFilter(buffer, '\n');
+    }
     void F0100E9801CAC2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -2569,6 +2573,13 @@ namespace
         strReplace(s, L"\n");
         buffer->from(s);
     }
+    void F010050E012CB6000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "%R(.*?)R1", "$1");
+        strReplace(s, "%N");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2576,6 +2587,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Paradigm Paradox
+    {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010050E012CB6000, 0x010050E012CB6000ull, "1.0.0"}}, // 人名+文本
+    {0x800DE554, {CODEC_UTF8, 0, 0, 0, F010050E012CB6000, 0x010050E012CB6000ull, "1.0.0"}}, // prolog+文本
+    // 放課後シンデレラ２
+    {0x800B1948, {CODEC_UTF8, 0, 0, 0, NewLineCharFilter, 0x0100AA301A99E000ull, "1.0.0"}},
+    {0x800B1950, {CODEC_UTF8, 0, 0, 0, NewLineCharFilter, 0x0100AA301A99E000ull, "1.0.2"}},
+    // はつゆきさくら
+    {0x800209CC, {0, 0, 0, 0, 0, 0x01009D3019684000ull, "1.0.0"}},
     // VARIABLE BARRICADE
     {0x8004FEA0, {CODEC_UTF8, 2, 0, 0, F010045C0109F2000_0, 0x010045C0109F2000ull, "1.0.0"}},
     {0x80042DF4, {CODEC_UTF8, 0, 0, 0, F010045C0109F2000_0, 0x010045C0109F2000ull, "1.0.0"}},
@@ -2586,8 +2605,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x804A94C4, {CODEC_UTF8, 1, 0, 0, F01003080177CA000, 0x010060A0161EC000ull, "1.0.0"}},
     {0x804A441C, {CODEC_UTF8, 9, 0, 0, F01003080177CA000, 0x010060A0161EC000ull, "1.0.1"}},
     {0x804BAD94, {CODEC_UTF8, 1, 0, 0, F01003080177CA000, 0x010060A0161EC000ull, "1.0.1"}},
-    // メルキス
-    {0x804EC7E8, {CODEC_UTF8, 0XA, 0, 0, F010081E0161B2000, 0x0100C800169E6000ull, "1.0.0"}},
     // エヴァーメイデン ～堕落の園の乙女たち～ //01008DC019F7A000
     // ふゆから、くるる。 //01002AF019F88000
     {0x8047C95C, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, std::vector<uint64_t>{0x01008DC019F7A000ull, 0x01002AF019F88000ull}, nullptr}}, // 1.0.0 & 1.0.2
@@ -3783,6 +3800,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80020958, {0, 0, 0, 0, F0100D8B019FC0000<false>, 0x0100D8B019FC0000ull, "1.0.0"}},
     // FANTASIAN Neo Dimension
     {0x81719ea0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F01001BB01E8E2000, 0x01001BB01E8E2000ull, "1.0.0"}},
+    // ハルキス
+    {0x80402DAC, {CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x0100EC6017FA6000ull, "1.0.0"}},
+    // メルキス //0100C800169E6000
+    // アイキス //01005A4015E66000
+    {0x804EC7E8, {CODEC_UTF8, 0XA, 0, 0, F010081E0161B2000, std::vector<uint64_t>{0x0100C800169E6000ull, 0x01005A4015E66000ull}, "1.0.0"}},
     // アイキス3cute
     {0x804C18C4, {CODEC_UTF8, 1, 0, 0, F0100FD4016528000, 0x0100FD4016528000ull, nullptr}}, // 1.0.0 && 1.0.2
     // OZMAFIA!! VIVACE
