@@ -304,8 +304,8 @@ if __name__ == "__main__":
         )
         os.chdir(rootDir)
         subprocess.run(f"{py37Path} -m pip install --upgrade pip")
-        if target == "win7":
-            subprocess.run(f"{py37Path} -m pip install -r requirements.txt")
+        if 1:  # target == "win7":
+            subprocess.run(f"{py37Path} -m pip install tinycss2 PyQt5")
         else:
             subprocess.run(f"{py37Path} -m pip install tinycss2 pyqt6")
 

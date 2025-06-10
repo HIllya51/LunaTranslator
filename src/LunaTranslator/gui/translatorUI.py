@@ -32,7 +32,6 @@ from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import resizableframeless
 from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
-from gui.gamemanager.setting import calculate_centered_rect
 from gui.gamemanager.common import startgame
 from gui.dynalang import LDialog, LLabel, LAction
 

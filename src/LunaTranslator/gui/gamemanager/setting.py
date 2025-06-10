@@ -1431,14 +1431,6 @@ class embeddisabler(LDialog):
         self.closecallback(self.changed)
 
 
-def calculate_centered_rect(original_rect: QRect, size: QSize) -> QRect:
-    original_center = original_rect.center()
-    new_left = original_center.x() - size.width() // 2
-    new_top = original_center.y() - size.height() // 2
-    new_rect = QRect(new_left, new_top, size.width(), size.height())
-    return new_rect
-
-
 @Singleton
 class dialog_setting_game(QDialog):
 

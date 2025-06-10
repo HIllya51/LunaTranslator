@@ -1,6 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
-import importlib, copy, os, platform
+import importlib, copy, os
 from traceback import print_exc
 from gui.usefulwidget import WebviewWidget
 from myutils.mecab import mecab
