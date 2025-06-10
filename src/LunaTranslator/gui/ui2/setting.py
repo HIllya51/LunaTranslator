@@ -1,5 +1,4 @@
 from qtsymbols import *
-import qtawesome
 import gobject
 from myutils.config import globalconfig
 from gui.ui2.usefulwidget import closeashidewindow
@@ -11,7 +10,7 @@ class Setting2(closeashidewindow):
 
     def __init__(self, parent):
         super().__init__(parent, globalconfig["setting_geo_2"])
-        self.setWindowIcon(qtawesome.icon("fa.gear"))
+        self.setWindowIcon(ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Gear))
         self.setWindowTitle("设置")
         self.setMinimumSize(100, 100)
         self.isfirst = True

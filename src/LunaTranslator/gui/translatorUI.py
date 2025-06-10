@@ -1128,13 +1128,32 @@ class TranslatorWindow(resizableframeless):
             lambda: self.settop() if globalconfig["keepontop"] else ""
         )
 
+    def showmenu2(self, _):
+        from elawidgettools import ElaMenu, ElaIcon, ElaIconType
+
+        trayMenu = ElaMenu(self)
+        settingAction = LAction(
+            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Gear),
+            "设置",
+            trayMenu,
+        )
+        quitAction = LAction(
+            ElaIcon.getInstance().getElaIcon(ElaIconType.IconName.Xmark),
+            "退出",
+            trayMenu,
+        )
+        return trayMenu, settingAction, quitAction
+
     def showmenu(self, _):
         child = self.titlebar.childAt(_)
         if child and child.objectName():
             return
-        trayMenu = QMenu(gobject.baseobject.commonstylebase)
-        settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
-        quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
+        if gobject.istest:
+            trayMenu, settingAction, quitAction = self.showmenu2(_)
+        else:
+            trayMenu = QMenu(gobject.baseobject.commonstylebase)
+            settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
+            quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
         trayMenu.addAction(settingAction)
         trayMenu.addAction(quitAction)
         action = trayMenu.exec(QCursor.pos())
