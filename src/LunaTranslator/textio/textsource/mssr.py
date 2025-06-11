@@ -103,7 +103,8 @@ class mssr(basetext):
 
     @threader
     def listen(self):
-        punctuationswithoutspace = punctuations.copy().remove(" ")
+        punctuationswithoutspace = punctuations.copy()
+        punctuationswithoutspace.remove(" ")
         last = ""
         lastt = 0
         while not self.ending:
