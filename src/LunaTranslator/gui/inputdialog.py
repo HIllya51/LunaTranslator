@@ -528,6 +528,7 @@ class autoinitdialog(LDialog):
                     if text:
                         text += "\n"
                     text += e.args[1]
+                print(title, text)
                 QMessageBox.information(self, title, text)
             else:
                 QMessageBox.information(self, str(type(e))[8:-2], str(e))
