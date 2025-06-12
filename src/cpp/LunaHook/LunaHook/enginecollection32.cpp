@@ -423,7 +423,6 @@ std::vector<ENGINE *> check_engines()
         new Onscripter,
         new TACTICS,
         new RealliveX,
-        new TextXtra_x32,
         new Stronger,
         new RPGMaker,
         new Aisystem6,

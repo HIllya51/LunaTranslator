@@ -41,15 +41,10 @@ class TabWidget(QWidget):
 
     def __currentChanged(self, idx):
         self.tab_widget.setCurrentIndex(idx)
-        if self.__first:
-            self.__first = False
-            return
-        globalconfig["isopensettingfirsttime1"] = idx
 
     def __init__(self, parent=None):
         super(TabWidget, self).__init__(parent)
         layout = QHBoxLayout(self)
-        self.__first = True
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.list_widget = LListWidget(self)
@@ -62,7 +57,6 @@ class TabWidget(QWidget):
         layout.addWidget(self.tab_widget)
         self.currentChanged.connect(self.__currentChanged)
         self.list_widget.currentRowChanged.connect(self.currentChanged)
-        self.idx = 0
         self.titles = []
 
     def addTab(self, widget, title):
@@ -71,9 +65,6 @@ class TabWidget(QWidget):
         item = LListWidgetItem(title)
         item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.list_widget.addItem(item)
-        if self.idx == 0:
-            self.list_widget.setCurrentRow(0)
-        self.idx += 1
 
     def currentWidget(self):
         return self.tab_widget.currentWidget()
@@ -127,9 +118,4 @@ class Setting(closeashidewindow):
         do()
         self.tab_widget.adjust_list_widget_width()
         last = self.tab_widget.list_widget.count() - 1
-        if "isopensettingfirsttime1" not in globalconfig:
-            globalconfig["isopensettingfirsttime1"] = last
-        elif random.randint(0, 100) < 25:
-            globalconfig["isopensettingfirsttime1"] = last
-        if globalconfig["isopensettingfirsttime1"] == last:
-            self.tab_widget.setCurrentIndex(last)
+        self.tab_widget.setCurrentIndex(last)

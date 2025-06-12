@@ -67,33 +67,6 @@ namespace
     return NewHook(hp, "Flash Asset");
   }
 
-  bool _h2()
-  {
-    auto TextXtra = GetModuleHandleW(L"TextXtra.x32");
-    if (TextXtra == 0)
-      return false;
-    auto [s, e] = Util::QueryModuleLimits(TextXtra);
-    const BYTE bytes[] = {
-        0xff, 0x75, 0x18,
-        0x8d, 0x88, 0xb8, 0x00, 0x00, 0x00,
-        0xff, 0x75, 0x14,
-        0xff, 0x75, 0x10,
-        0xff, 0x75, 0x0c,
-        0xe8, XX4,
-        0x66, 0x85, 0xc0,
-        0x74};
-    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), s, e);
-    if (!addr)
-      return false;
-    addr = findfuncstart(addr, 0x100);
-    if (!addr)
-      return false;
-    HookParam hp;
-    hp.address = addr;
-    hp.offset = stackoffset(2);
-    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW;
-    return NewHook(hp, "TextXtra");
-  }
 }
 namespace
 {
@@ -142,21 +115,36 @@ namespace
     return NewHook(hp, "dirapi");
   }
 }
-bool Sprite::attach_function()
-{
-  return (Sprite_attach_function() | _h1() | _h2()) || h5();
-}
 namespace
 {
-  bool h3()
+
+  bool _h2(DWORD s, DWORD e)
+  {
+    const BYTE bytes[] = {
+        0xff, 0x75, 0x18,
+        0x8d, 0x88, 0xb8, 0x00, 0x00, 0x00,
+        0xff, 0x75, 0x14,
+        0xff, 0x75, 0x10,
+        0xff, 0x75, 0x0c,
+        0xe8, XX4,
+        0x66, 0x85, 0xc0,
+        0x74};
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), s, e);
+    if (!addr)
+      return false;
+    addr = findfuncstart(addr, 0x100);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(2);
+    hp.type = USING_STRING | CODEC_UTF8 | EMBED_ABLE | EMBED_AFTER_NEW;
+    return NewHook(hp, "TextXtra");
+  }
+  bool h3(DWORD s, DWORD e)
   {
     // https://vndb.org/v5864
     // in white
-
-    auto TextXtra = GetModuleHandleW(L"TextXtra.x32");
-    if (TextXtra == 0)
-      return false;
-    auto [s, e] = Util::QueryModuleLimits(TextXtra);
     // Text Asset.x32->this function
     const BYTE bytes[] = {
         0x55, 0x8b, 0xec,
@@ -184,7 +172,14 @@ namespace
     return NewHook(hp, "TextXtra2");
   }
 }
-bool TextXtra_x32::attach_function()
+
+bool Sprite::attach_function()
 {
-  return _h2() || h3();
+  auto succ = (Sprite_attach_function() | _h1()) || h5();
+  if (TextXtra)
+  {
+    auto [s, e] = Util::QueryModuleLimits(TextXtra);
+    succ |= _h2(s, e) || h3(s, e);
+  }
+  return succ;
 }
