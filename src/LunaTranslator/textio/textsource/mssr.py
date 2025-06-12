@@ -140,8 +140,10 @@ class mssr(basetext):
                         )
                         or any(_ in punctuationswithoutspace for _ in increased)
                     ):
-                        self.dispatchtext(text)
+                        self.dispatchtext(text, updateTranslate=True)
                         lastt = thist
+                    else:
+                        self.updaterawtext(text)
                 elif t == 4:
                     gobject.base.displayinfomessage(
                         _TR("正在加载语音识别模型"), "<msg_info_refresh>"

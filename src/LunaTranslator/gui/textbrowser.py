@@ -91,6 +91,8 @@ class Textbrowser(QFrame):
                 self.append(*trace)
             elif t == 1:
                 self.iter_append(*trace)
+            elif t == 2:
+                self.updatetext(*trace)
         self.textbrowser.refreshcontent_after()
 
     def __init__(self, parent):
@@ -103,6 +105,7 @@ class Textbrowser(QFrame):
 
     def iter_append(
         self,
+        clear,
         iter_context_class,
         texttype: TextType,
         name,
@@ -110,23 +113,34 @@ class Textbrowser(QFrame):
         color: ColorControl,
         klass,
     ):
-        self.trace.append((1, (iter_context_class, texttype, name, text, color, klass)))
+        self.trace.append((1, (clear, iter_context_class, texttype, name, text, color, klass)))
         self.cleared = False
         self.textbrowser.iter_append(
-            iter_context_class, texttype, name, text, color, klass
+            clear, iter_context_class, texttype, name, text, color, klass
         )
         WSForEach(
             mainuiwsoutputsave,
             lambda _1: _1.iter_append(
-                iter_context_class, texttype, name, text, color, klass
+                clear, iter_context_class, texttype, name, text, color, klass
             ),
         )
 
-    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
+    def updatetext(self, texttype: TextType, text, hira, color: ColorControl):
+        self.textbrowser.updatetext(texttype, text, mecab.parseastarget(hira), color)
+        WSForEach(
+            mainuiwsoutputsave,
+            lambda _1: _1.updatetext(texttype, text, mecab.parseastarget(hira), color),
+        )
+
+    def append(self, updateTranslate, clear, texttype: TextType, name, text, tag, color: ColorControl, klass):
+        if clear:
+            self.trace.clear()
         self.trace.append(
             (
                 0,
                 (
+                    updateTranslate,
+                    clear,
                     texttype,
                     name,
                     text,
@@ -138,12 +152,12 @@ class Textbrowser(QFrame):
         )
         self.cleared = False
         self.textbrowser.append(
-            texttype, name, text, mecab.parseastarget(tag), color, klass
+            updateTranslate, clear, texttype, name, text, mecab.parseastarget(tag), color, klass
         )
         WSForEach(
             mainuiwsoutputsave,
             lambda _1: _1.append(
-                texttype, name, text, mecab.parseastarget(tag), color, klass
+                updateTranslate, clear, texttype, name, text, mecab.parseastarget(tag), color, klass
             ),
         )
 

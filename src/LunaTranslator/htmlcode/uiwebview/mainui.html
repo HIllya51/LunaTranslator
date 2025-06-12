@@ -433,6 +433,7 @@
         return 'div' + _id
     }
     function create_div_line_id(_id, argsjson) {
+        if (document.getElementById(_id)) return
         let args = JSON.parse(decodeURIComponent(argsjson))
         let texttype = args.texttype
         let div = document.createElement("div");
@@ -478,9 +479,11 @@
         const rtlRegex = /[\u0590-\u05FF\u0600-\u06FF\u0750-\u077F\uFB50-\uFDFF\uFE70-\uFEFF]/;
         return rtlRegex.test(text);
     }
-    function create_internal_text(style, styleargsjson, _id, nameu, textu, argsjson) {
+    function create_internal_text(clear, style, styleargsjson, _id, nameu, textu, argsjson) {
         //由于name的存在，dir auto会失效。
         let ele = document.getElementById(_id)
+        if (clear)
+            clearparent(ele)
         ele.innerHTML = ''
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
@@ -618,13 +621,34 @@
         div.appendChild(ele)
         return div
     }
-    function create_internal_rubytext(style, styleargsjson, _id, tagjson, argsjson) {
+    function clearparent(ele) {
+        ele.parentNode.parentNode.childNodes.forEach((e) => {
+            if (e.id != ele.parentNode.id) {
+                e.remove()
+            }
+        })
+        ele.parentNode.parentNode.parentNode.childNodes.forEach((e) => {
+            if (e.id && (e.id != ele.parentNode.parentNode.id)) {
+                e.querySelectorAll('.lunatranslator_text').forEach((ee) => {
+                    ee.innerHTML = ""
+                })
+            }
+        })
+    }
+    function cleartranslate(_id){
+        let ele = document.getElementById(_id)
+        clearparent(ele)
+    }
+    function create_internal_rubytext(clear, style, styleargsjson, _id, tagjson, argsjson) {
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let tags = JSON.parse(decodeURIComponent(tagjson))
         let color = args.color
         let kanacolor = args.kanacolor
         let ele = document.getElementById(_id)
+        if (clear)
+            clearparent(ele)
+        ele.innerHTML = ''
         tags.forEach(word => {
             if (word.word == '\n') {
                 ele.appendChild(document.createElement('br'))

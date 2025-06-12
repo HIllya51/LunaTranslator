@@ -47,6 +47,11 @@ class basetext:
             print_exc()
         threader(self.sqlitethread)()
 
+    def updaterawtext(self, text):
+        if self.ending:
+            return
+        gobject.base.updaterawtext(text)
+
     def dispatchtext(self, *arg, **kwarg):
         if self.ending or not self.isautorunning:
             return

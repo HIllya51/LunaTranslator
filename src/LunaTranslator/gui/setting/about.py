@@ -410,6 +410,7 @@ def setTab_about(self, basel):
                         makelink("swigger/wechat-ocr"),
                         makelink("rupeshk/MarkdownHighlighter"),
                         makelink("sindresorhus/github-markdown-css"),
+                        makelink("gexgd0419/NaturalVoiceSAPIAdapter"),
                     ],
                     "LICENSE",
                 )

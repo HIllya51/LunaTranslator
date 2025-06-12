@@ -350,6 +350,10 @@ class BASEOBJECT(QObject):
         else:
             self.translation_ui.translate_text.showhidetranslate(False)
 
+    def updaterawtext(self, text):
+        self.currentread = text
+        self.translation_ui.displayraw2.emit(text)
+
     def textgetmethod(
         self,
         text,
@@ -359,7 +363,7 @@ class BASEOBJECT(QObject):
         waitforresultcallbackengine_force=False,
         erroroutput=None,
         donttrans=False,
-        update=False,
+        updateTranslate=False,
     ):
         with self.solvegottextlock:
             succ = self.textgetmethod_1(
@@ -370,7 +374,7 @@ class BASEOBJECT(QObject):
                 waitforresultcallbackengine_force=waitforresultcallbackengine_force,
                 erroroutput=erroroutput,
                 donttrans=donttrans,
-                update=update,
+                updateTranslate=updateTranslate,
             )
             if waitforresultcallback and not succ:
                 waitforresultcallback(TranslateResult())
@@ -393,7 +397,7 @@ class BASEOBJECT(QObject):
         waitforresultcallbackengine_force=False,
         erroroutput=None,
         donttrans=False,
-        update=False,
+        updateTranslate=False,
     ):
         if not text:
             return
@@ -424,7 +428,7 @@ class BASEOBJECT(QObject):
             if len(text) > globalconfig["maxlength"]:
                 text = text[: globalconfig["maxlength"]] + "……"
 
-            self.translation_ui.displayraw1.emit(text, update)
+            self.translation_ui.displayraw1.emit(text, updateTranslate)
             self.transhis.getnewsentencesignal.emit(text)
             self.maybesetedittext(text)
             return
@@ -446,13 +450,12 @@ class BASEOBJECT(QObject):
             self.dispatchoutputer(text, True)
 
             _showrawfunction_unsafe = functools.partial(
-                self.translation_ui.displayraw1.emit, text, update
+                self.translation_ui.displayraw1.emit, text, updateTranslate
             )
             self.thishastranslated = globalconfig["showfanyi"]
         _showrawfunction = lambda: (
             _showrawfunction_unsafe() if _showrawfunction_unsafe else None
         )
-
         self.transhis.getnewsentencesignal.emit(text)
         self.maybesetedittext(text)
 
@@ -519,7 +522,7 @@ class BASEOBJECT(QObject):
             _showrawfunction = functools.partial(
                 self._delaypreparefixrank, _showrawfunction, real_fix_rank
             )
-        if not globalconfig["refresh_on_get_trans"]:
+        if not (updateTranslate or globalconfig["refresh_on_get_trans"]):
             _showrawfunction()
             _showrawfunction = None
         read_trans_once_check = []

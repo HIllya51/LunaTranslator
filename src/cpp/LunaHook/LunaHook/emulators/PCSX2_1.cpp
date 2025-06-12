@@ -912,6 +912,58 @@ namespace
 
         buffer->from_t(sjis);
     }
+    void SLPS25051(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        static bool send = false;
+        static uint8_t store = 0x00;
+        const uintptr_t val1 = PCSX2_REG(v0);
+        const uintptr_t val2 = (val1 & 0x000000FF);
+        const uint8_t byteval = (uint8_t)val2;
+
+        if (byteval == 0x00)
+        {
+            return;
+        }
+
+        if (!send)
+        {
+            store = byteval;
+        }
+        else
+        {
+            uint8_t b0 = store;
+            uint8_t b1 = byteval;
+
+            // game uses ・ (81 45) at newlines and sentence ends
+            // i'm replacing these with ASCII space ' ' (00 20)
+            // probably should be fixed in a filter func instead, but whatever
+            if (b0 == 0x81 && b1 == 0x45)
+            {
+                b0 = 0x00;
+                b1 = 0x20;
+            }
+
+            const uintptr_t sjis = ((uintptr_t)b1 << 8) | b0;
+
+            buffer->from_t(sjis);
+            store = 0x00;
+        }
+
+        send = !send;
+    }
+    void SLPM66452(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        const uintptr_t val1 = PCSX2_REG(v0);
+        const uintptr_t val2 = (val1 & 0x0000FFFF);
+
+        if (!val2)
+        {
+            return;
+        }
+
+        const uintptr_t sjis = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
+        buffer->from_t(sjis);
+    }
 }
 struct emfuncinfoX
 {
@@ -919,10 +971,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Missing Blue [通常版]
+    {0x12A80C, {0, 0, 0, SLPS25051, 0, "SLPS-25051"}}, //@mills
     // 四八 （仮）
     {0x17529C, {0, 0, 0, SLPS25759, 0, "SLPS-25759"}}, //@mills
     // かまいたちの夜2 ～監獄島のわらべ唄～ [通常版]
     {0x111C78, {0, 0, 0, SLPS25135, 0, "SLPS-25135"}}, //@mills
+    // かまいたちの夜x3 三日月島事件の真相
+    {0x112830, {0, 0, 0, SLPM66452, 0, "SLPM-66452"}}, //@mills
     // 桃華月憚 ～光風の陵王～
     {0x29AB3C, {0, 0, 0, 0, 0, "SLPM-55200"}},
     // 夏色の砂時計

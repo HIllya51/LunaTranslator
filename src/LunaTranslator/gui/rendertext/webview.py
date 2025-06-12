@@ -7,6 +7,7 @@ from gui.rendertext.texttype import (
     FenciColor,
 )
 import gobject, windows, json, os, functools, time
+import hashlib
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
@@ -168,31 +169,35 @@ class somecommon(dataget):
     def clear_all(self):
         self.debugeval("clear_all()")
 
-    def create_internal_text(self, style, styleargs, _id, name, text, args):
+    def create_internal_text(self, clear, style, styleargs, _id, name, text, args):
         name = quote(name)
         text = quote(text)
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
-            'create_internal_text("{}","{}","{}","{}","{}","{}");'.format(
-                style, styleargs, _id, name, text, args
+            'create_internal_text({},"{}","{}","{}","{}","{}","{}");'.format(
+                int(clear), style, styleargs, _id, name, text, args
             )
         )
 
     def create_internal_rubytext(
-        self, style, styleargs, _id, tag: "list[wordwithcolor]", args
+        self, clear, style, styleargs, _id, tag: "list[wordwithcolor]", args
     ):
         tag = quote(json.dumps(tuple(_.as_dict() for _ in tag)))
         args = quote(json.dumps(args))
         styleargs = quote(json.dumps(styleargs))
         self.debugeval(
-            'create_internal_rubytext("{}","{}","{}","{}","{}");'.format(
-                style, styleargs, _id, tag, args
+            'create_internal_rubytext({},"{}","{}","{}","{}","{}");'.format(
+                int(clear), style, styleargs, _id, tag, args
             )
         )
 
+    def updatetext(self, texttype: TextType, text, hira, color: ColorControl):
+        self.append(False, False, texttype, "", text, hira, color, None)
+
     def iter_append(
         self,
+        clear,
         iter_context_class,
         texttype: TextType,
         name,
@@ -206,17 +211,33 @@ class somecommon(dataget):
             self.saveiterclasspointer[iter_context_class] = _id
 
         _id = self.saveiterclasspointer[iter_context_class]
-        self._webview_append(_id, name, text, [], color)
+        self._webview_append(clear, _id, name, text, [], color)
 
     def createtextlineid(self, texttype: TextType, klass: str):
         self.setfontextra(klass)
-        _id = "luna_{}".format(uuid.uuid4())
+        _id = "luna_{}".format(
+            hashlib.md5((str(texttype) + str(klass)).encode()).hexdigest()
+        )
         self.create_div_line_id(_id, texttype, klass)
         return _id
 
-    def append(self, texttype: TextType, name, text, tag, color: ColorControl, klass):
+    def append(
+        self,
+        updateTranslate,
+        clear,
+        texttype: TextType,
+        name,
+        text,
+        tag,
+        color: ColorControl,
+        klass,
+    ):
         _id = self.createtextlineid(texttype, klass)
-        self._webview_append(_id, name, text, tag, color)
+        if updateTranslate:
+            if clear:
+                self.debugeval('cleartranslate("{}")'.format(_id))
+            return
+        self._webview_append(clear, _id, name, text, tag, color)
 
     def _getstylevalid(self):
         currenttype = globalconfig["rendertext_using_internal"]["webview"]
@@ -228,7 +249,13 @@ class somecommon(dataget):
         return currenttype
 
     def _webview_append(
-        self, _id, name, text: str, tag: "list[WordSegResult]", color: ColorControl
+        self,
+        clear,
+        _id,
+        name,
+        text: str,
+        tag: "list[WordSegResult]",
+        color: ColorControl,
     ):
         self._setcolors(color)
         style = self._getstylevalid()
@@ -245,16 +272,14 @@ class somecommon(dataget):
                 color=color.asklass(),
                 kanacolor=SpecialColor.KanaColor.asklass(),
             )
-            self.create_internal_rubytext(style, styleargs, _id, tagx, args)
+            self.create_internal_rubytext(clear, style, styleargs, _id, tagx, args)
         else:
             sig = "LUNASHOWHTML"
             userawhtml = text.startswith(sig)
             if userawhtml:
                 text = text[len(sig) :]
-
             args = dict(color=color.asklass(), userawhtml=userawhtml)
-
-            self.create_internal_text(style, styleargs, _id, name, text, args)
+            self.create_internal_text(clear, style, styleargs, _id, name, text, args)
 
     def clear(self):
 

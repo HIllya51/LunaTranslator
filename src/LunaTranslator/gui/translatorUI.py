@@ -332,6 +332,7 @@ class TranslatorWindow(resizableframeless):
     displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(str, bool)
+    displayraw2 = pyqtSignal(str)
     displaystatus = pyqtSignal(str, int)
     showhideuisignal = pyqtSignal()
     toolbarhidedelaysignal = pyqtSignal()
@@ -463,7 +464,21 @@ class TranslatorWindow(resizableframeless):
         except:
             print_exc()
 
-    def showraw(self, text, update=False):
+    def updateraw(self, text):
+        color = SpecialColor.RawTextColor
+        hira = []
+        text = self.cleartext(text)
+        needhira = (
+            globalconfig["isshowhira"]
+            or globalconfig["show_fenci"]
+            or self.translate_text.textbrowser._clickhovershow
+        )
+        if needhira:
+            hira = gobject.base.parsehira(text)
+
+        self.translate_text.updatetext(TextType.Origin, text, hira, color)
+
+    def showraw(self, text, updateTranslate):
         color = SpecialColor.RawTextColor
         clear = True
         hira = []
@@ -481,6 +496,7 @@ class TranslatorWindow(resizableframeless):
             text=text,
             color=color,
             hira=hira,
+            updateTranslate=updateTranslate,
         )
 
     def showstatus(self, res, t: TextType):
@@ -501,6 +517,24 @@ class TranslatorWindow(resizableframeless):
         newlines = [line for line in lines if line.strip()]
         return "\n".join(newlines)
 
+    def autodisappear(self):
+        if not globalconfig["autodisappear"]:
+            return
+        self.lastrefreshtime = time.time()
+        self.autohidestart = True
+        if globalconfig["autodisappear_which"] == 0:
+            flag = (globalconfig["showintab"] and self.isMinimized()) or (
+                not globalconfig["showintab"] and self.isHidden()
+            )
+            if flag:
+                self.show_()
+        elif globalconfig["autodisappear_which"] == 1:
+            if globalconfig["disappear_delay"] == 0:
+                if self.isMouseHover:
+                    self.translate_text.textbrowser.setVisible(True)
+            else:
+                self.translate_text.textbrowser.setVisible(True)
+
     def showline(self, **kwargs):  # clear,res,color ,type_=1,origin=True):
         name = kwargs.get("name", "")
         clear = kwargs.get("clear", True)
@@ -510,9 +544,10 @@ class TranslatorWindow(resizableframeless):
         iter_context = kwargs.get("iter_context", None)
         hira = kwargs.get("hira", [])
         klass = kwargs.get("klass", None)
-        if clear:
-            self.translate_text.clear()
+        updateTranslate = kwargs.get("updateTranslate", False)
         if text is None:
+            if clear:
+                self.translate_text.clear()
             return
         text = self.cleartext(text)
         if iter_context:
@@ -521,25 +556,11 @@ class TranslatorWindow(resizableframeless):
             iter_res_status = 0
         if iter_res_status:
             self.translate_text.iter_append(
-                iter_context_class, texttype, name, text, color, klass
+                clear, iter_context_class, texttype, name, text, color, klass
             )
         else:
-            self.translate_text.append(texttype, name, text, hira, color, klass)
-        if globalconfig["autodisappear"]:
-            self.lastrefreshtime = time.time()
-            self.autohidestart = True
-            if globalconfig["autodisappear_which"] == 0:
-                flag = (globalconfig["showintab"] and self.isMinimized()) or (
-                    not globalconfig["showintab"] and self.isHidden()
-                )
-                if flag:
-                    self.show_()
-            elif globalconfig["autodisappear_which"] == 1:
-                if globalconfig["disappear_delay"] == 0:
-                    if self.isMouseHover:
-                        self.translate_text.textbrowser.setVisible(True)
-                else:
-                    self.translate_text.textbrowser.setVisible(True)
+            self.translate_text.append(updateTranslate, clear, texttype, name, text, hira, color, klass)
+        self.autodisappear()
 
     @property
     def isMouseHover(self):
@@ -1040,6 +1061,7 @@ class TranslatorWindow(resizableframeless):
         self.showhideuisignal.connect(self.showhideui)
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)
+        self.displayraw2.connect(self.updateraw)
         self.refreshtooliconsignal.connect(self.refreshtoolicon)
         self.showsavegame_signal.connect(
             lambda: dialog_savedgame_integrated(gobject.base.commonstylebase)

@@ -537,8 +537,12 @@ class TextBrowser(QWidget, dataget):
             text = name + " " + text
         return text
 
+    def updatetext(self, *_):
+        pass
+
     def iter_append(
         self,
+        clear,
         iter_context_class,
         texttype: TextType,
         name,
@@ -546,6 +550,8 @@ class TextBrowser(QWidget, dataget):
         color: ColorControl,
         klass,
     ):
+        if clear:
+            self.clear()
         if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
@@ -600,6 +606,8 @@ class TextBrowser(QWidget, dataget):
 
     def append(
         self,
+        updateTranslate,
+        clear,
         texttype: TextType,
         name,
         text,
@@ -607,6 +615,9 @@ class TextBrowser(QWidget, dataget):
         color: ColorControl,
         klass,
     ):
+        updateTranslate  # unuse
+        if clear:
+            self.clear()
         if self.checkskip(texttype):
             return
         text = self.checkaddname(name, text)
@@ -786,13 +797,14 @@ class TextBrowser(QWidget, dataget):
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
+
     @property
     def ProportionalHeight(self):
-        _= QTextBlockFormat.LineHeightTypes.ProportionalHeight
+        _ = QTextBlockFormat.LineHeightTypes.ProportionalHeight
         if not isqt5:
-            _= _.value
+            _ = _.value
         return _
-        
+
     def _setlineheight(self, b1, b2, texttype: TextType, klass: str):
         if texttype == TextType.Origin:
             fh = globalconfig["lineheights"]
