@@ -3588,7 +3588,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80140cac, {CODEC_UTF32, 1, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
     {0x800e08dc, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
     // 明治活劇 ハイカラ流星組 －成敗しませう、世直し稼業－
-    {0x802ab2fc, {CODEC_UTF8, 6, 0, 0, F0100EA100DF92000, 0x0100EA100DF92000ull, "1.0.0"}},
+    {0x802ab2fc, {CODEC_UTF8, 6, 0, 0, F0100EA100DF92000, 0x0100EA100DF92000ull, nullptr}}, // 1.0.0 & 1.0.1
     // 7'scarlet
     {0x8177ec00, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, 0x0100FA001E160000ull, "1.0.0"}},
     {0x817754ac, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, 0x0100FA001E160000ull, "1.0.0"}},

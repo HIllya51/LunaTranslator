@@ -869,13 +869,6 @@ class TranslatorWindow(resizableframeless):
                     rightclick=self.setselectableEx,
                 ),
             ),
-            (
-                "editable",
-                buttonfunctions(
-                    clicked=self.seteditable,
-                    colorstate=lambda: globalconfig["editable"],
-                ),
-            ),
         )
 
         _type = {"quit": 2}
@@ -1291,11 +1284,6 @@ class TranslatorWindow(resizableframeless):
         globalconfig["selectableEx"] = False
         globalconfig["selectable"] = not globalconfig["selectable"]
         self.translate_text.setselectable(globalconfig["selectable"])
-        self.refreshtoolicon()
-
-    def seteditable(self):
-        globalconfig["editable"] = not globalconfig["editable"]
-        self.translate_text.seteditable(globalconfig["editable"])
         self.refreshtoolicon()
 
     def createborderradiusstring(self, r, merge, top=False):

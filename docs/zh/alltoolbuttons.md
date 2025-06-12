@@ -174,9 +174,6 @@
 
     如果激活时点击的是鼠标右键，则会禁止拖拽非文本区域以移动窗口。
 
-1. #### <i class="fa fa-italic"></i> <i class="btnstatus2 fa fa-italic"></i> 可编辑的
-    仅Webview2显示时有效。使窗口内文本变得可编辑。
-
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 查词
     如果当前有文本被选取，则会查询选取的文本并打开查词窗口。否则只是打开或关闭查词窗口。
   

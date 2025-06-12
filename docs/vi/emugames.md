@@ -858,6 +858,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65682 | Monochrome (モノクローム) |
 |  | SLPS-25051 | Missing Blue [通常版] |
 |  | SLPS-25759 | 四八 （仮） |
 |  | SLPS-25135 | かまいたちの夜2 ～監獄島のわらべ唄～ [通常版] |

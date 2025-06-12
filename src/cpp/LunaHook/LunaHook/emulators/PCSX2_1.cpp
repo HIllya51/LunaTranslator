@@ -971,6 +971,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Monochrome (モノクローム)
+    {0x4B7A60, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-65682"}},
     // Missing Blue [通常版]
     {0x12A80C, {0, 0, 0, SLPS25051, 0, "SLPS-25051"}}, //@mills
     // 四八 （仮）

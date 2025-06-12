@@ -32,7 +32,6 @@ class somecommon(dataget):
     def __init__(self):
         self.colorset = set()
         self.ts_klass = {}
-        self.saveiterclasspointer = {}
 
     def debugeval(self, js: str): ...
     def refreshcontent(self): ...
@@ -40,7 +39,6 @@ class somecommon(dataget):
         self.colorset.clear()
         self.ts_klass.clear()
         self.setselectable(globalconfig["selectable"])
-        self.seteditable(globalconfig["editable"])
         self.showhideerror(globalconfig["showtranexception"])
         self.showhideorigin(globalconfig["isshowrawtext"])
         self.showhidetranslate(globalconfig["showfanyi"])
@@ -68,9 +66,6 @@ class somecommon(dataget):
 
     def setdisplayrank(self, rank):
         self.debugeval("setdisplayrank({})".format(int(rank)))
-
-    def seteditable(self, b):
-        self.debugeval("seteditable({})".format(int(b)))
 
     def setselectable(self, b):
         self.debugeval("setselectable({})".format(int(b)))
@@ -205,12 +200,7 @@ class somecommon(dataget):
         color: ColorControl,
         klass,
     ):
-
-        if iter_context_class not in self.saveiterclasspointer:
-            _id = self.createtextlineid(texttype, klass)
-            self.saveiterclasspointer[iter_context_class] = _id
-
-        _id = self.saveiterclasspointer[iter_context_class]
+        _id = self.createtextlineid(texttype, klass)
         self._webview_append(clear, _id, name, text, [], color)
 
     def createtextlineid(self, texttype: TextType, klass: str):
@@ -284,7 +274,6 @@ class somecommon(dataget):
     def clear(self):
 
         self.clear_all()
-        self.saveiterclasspointer.clear()
 
     def _setcolors(self, color: ColorControl = None):
         if color in self.colorset:

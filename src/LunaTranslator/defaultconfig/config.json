@@ -782,12 +782,6 @@
                 "icon": "fa.i-cursor",
                 "align": 0
             },
-            "editable": {
-                "use": false,
-                "tip": "可编辑的",
-                "icon": "fa.italic",
-                "align": 0
-            },
             "searchwordW": {
                 "use": false,
                 "tip": "查词",
@@ -1905,7 +1899,6 @@
         }
     ],
     "selectable": true,
-    "editable": false,
     "selectableEx": false,
     "autoupdate": true,
     "proxies": null,

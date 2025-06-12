@@ -858,6 +858,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65682 | Monochrome (モノクローム) |
 |  | SLPS-25051 | Missing Blue [通常版] |
 |  | SLPS-25759 | 四八 （仮） |
 |  | SLPS-25135 | かまいたちの夜2 ～監獄島のわらべ唄～ [通常版] |

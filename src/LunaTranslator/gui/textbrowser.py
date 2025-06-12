@@ -226,9 +226,6 @@ class Textbrowser(QFrame):
             lambda _1: _1.showhidetranslate(_),
         )
 
-    def seteditable(self, _):
-        self.textbrowser.seteditable(_)
-
     def setselectable(self, _):
         self.textbrowser.setselectable(_)
 

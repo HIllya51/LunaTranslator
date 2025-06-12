@@ -481,10 +481,6 @@
     }
     function create_internal_text(clear, style, styleargsjson, _id, nameu, textu, argsjson) {
         //由于name的存在，dir auto会失效。
-        let ele = document.getElementById(_id)
-        if (clear)
-            clearparent(ele)
-        ele.innerHTML = ''
         let args = JSON.parse(decodeURIComponent(argsjson))
         let styleargs = JSON.parse(decodeURIComponent(styleargsjson))
         let name = decodeURIComponent(nameu)
@@ -492,6 +488,10 @@
         let div = document.getElementById(get_out_div(_id))
         div.dir = isRTL(text) ? 'rtl' : 'auto'
         let innerele = dispatch_text_style(style, styleargs, name, text, args);
+        let ele = document.getElementById(_id)
+        if (clear)
+            clearparent(ele)
+        ele.innerHTML = ''
         ele.appendChild(innerele)
         safe_calllunaheightchange()
     }
@@ -629,13 +629,11 @@
         })
         ele.parentNode.parentNode.parentNode.childNodes.forEach((e) => {
             if (e.id && (e.id != ele.parentNode.parentNode.id)) {
-                e.querySelectorAll('.lunatranslator_text').forEach((ee) => {
-                    ee.innerHTML = ""
-                })
+                e.innerHTML = ""
             }
         })
     }
-    function cleartranslate(_id){
+    function cleartranslate(_id) {
         let ele = document.getElementById(_id)
         clearparent(ele)
     }
@@ -709,9 +707,6 @@
     function setselectable(b) {
         document.getElementById('luna_root_div').style.userSelect = b ? 'text' : 'none';
         document.getElementById('luna_overlay_div').style.display = b ? 'none' : 'block';
-    }
-    function seteditable(b) {
-        document.body.contentEditable = Boolean(b);
     }
     function isPointOverText(x, y) {
         //https://stackoverflow.com/questions/10389459/is-there-a-way-to-detect-if-im-hovering-over-text
