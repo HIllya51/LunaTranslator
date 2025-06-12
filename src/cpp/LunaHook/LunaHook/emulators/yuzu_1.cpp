@@ -525,9 +525,12 @@ namespace
     {
         auto ws = buffer->strAW(CP_UTF8);
         ws = remapkatakana(ws);
+        ws = re::sub(ws, LR"(@v\w+\.)");
+        ws = re::sub(ws, LR"(@x\w+\.)");
         strReplace(ws, L"@r");
         strReplace(ws, L"@y");
         strReplace(ws, L"@|");
+        strReplace(ws, L"\uf8f0");
         buffer->fromWA(ws, CP_UTF8);
     }
     void f0100AC600EB4C000(TextBuffer *buffer, HookParam *hp)
@@ -535,7 +538,8 @@ namespace
         auto ws = buffer->strAW();
         ws = remapkatakana(ws);
         strReplace(ws, L"\uF8F0");
-        strReplace(ws, L"@r", L"\n");
+        strReplace(ws, L"@r");
+        strReplace(ws, L"@y");
         ws = re::sub(ws, LR"(@v\w+\.)");
         ws = re::sub(ws, LR"(@z\d+\.)");
         ws = re::sub(ws, LR"(@b(.*?)\.@<(.*?)@>)", L"$2");
@@ -1976,23 +1980,20 @@ namespace
         F010060301588A000(buffer, hp);
         StringFilter(buffer, TEXTANDLEN(u8"　"));
     }
-    template <bool name>
     void F0100D8B019FC0000(TextBuffer *buffer, HookParam *hp)
     {
-        const char *start;
-        if constexpr (name)
+        auto s = buffer->strA();
+        if (startWith(s, "<name"))
         {
-            auto v = buffer->viewA();
-            if (!startWith(v, "<name"))
-                return buffer->clear();
-            buffer->from(v.substr(6, v.size() - 6 - 1));
+            buffer->from(re::sub(s.substr(6, s.size() - 6 - 1), "\x81\x79(.*?)/(.*?)\x81\x7a", "\x81\x79$2\x81\x7a"));
+        }
+        else if (startWith(s, "<text"))
+        {
+            buffer->from(re::sub(s.substr(6, s.size() - 6 - 1), "/ruby:(.*?)&(.*?)/", "$1"));
         }
         else
         {
-            if (!startWith(buffer->viewA(), "<text"))
-                return buffer->clear();
-            auto s = buffer->strA();
-            buffer->from(re::sub(s.substr(6, s.size() - 6 - 1), "/ruby:(.*?)&(.*?)/", "$1"));
+            buffer->clear();
         }
     }
     void F0100B4D019EBE000(TextBuffer *buffer, HookParam *hp)
@@ -2540,6 +2541,11 @@ namespace
         StringFilter(buffer, TEXTANDLEN(L"\n　"));
         CharFilter(buffer, L'\n');
     }
+    void F01008D20101DE000(TextBuffer *buffer, HookParam *)
+    {
+        CharFilter(buffer, L'\n');
+        StringCharReplacer(buffer, TEXTANDLEN(L"<sprite=\"Emoji\" name=\"heart\">"), L'♥');
+    }
     void NewLineCharFilterW(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, L'\n');
@@ -2587,6 +2593,18 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 花咲ワークスプリング！
+    {0x8001DFB4, {0, 0, 0, 0, F01005AF00E9DC000, 0x0100E7701A40C000ull, "1.0.0"}},
+    // ボク姫PROJECT
+    {0x810D7930, {CODEC_UTF16, 0, 0X14, 0, F01008D20101DE000, 0x01008D20101DE000ull, "1.0.0"}},
+    {0x810D5260, {CODEC_UTF16, 0, 0X14, 0, F01008D20101DE000, 0x01008D20101DE000ull, "1.0.1"}},
+    // リプキス
+    {0x80080938, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x010022E00C9D8000ull, "1.0.0"}},
+    {0x80080918, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x010022E00C9D8000ull, "1.0.1"}},
+    // 甘えかたは彼女なりに。
+    {0x800A9D74, {0, 0, 0, 0, f0100AC600EB4C000, 0x01003B900C9DC000ull, "1.0.0"}},
+    // かけぬけ★青春スパーキング！
+    {0x80005050, {0, 0, 0, 0, F0100D8B019FC0000, 0x0100D1A014A4A000ull, "1.0.0"}},
     // Paradigm Paradox
     {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010050E012CB6000, 0x010050E012CB6000ull, "1.0.0"}}, // 人名+文本
     {0x800DE554, {CODEC_UTF8, 0, 0, 0, F010050E012CB6000, 0x010050E012CB6000ull, "1.0.0"}}, // prolog+文本
@@ -3796,8 +3814,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x801A04F4, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<1>, 0x010053F0128DC000ull, "1.0.1"}},
     {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010053F0128DC000<2>, 0x010053F0128DC000ull, "1.0.1"}},
     // フローラル・フローラブ
-    {0x80020974, {0, 0, 0, 0, F0100D8B019FC0000<true>, 0x0100D8B019FC0000ull, "1.0.0"}},
-    {0x80020958, {0, 0, 0, 0, F0100D8B019FC0000<false>, 0x0100D8B019FC0000ull, "1.0.0"}},
+    {0x80020974, {0, 0, 0, 0, F0100D8B019FC0000, 0x0100D8B019FC0000ull, "1.0.0"}},
     // FANTASIAN Neo Dimension
     {0x81719ea0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F01001BB01E8E2000, 0x01001BB01E8E2000ull, "1.0.0"}},
     // ハルキス
