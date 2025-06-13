@@ -809,7 +809,6 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
 bool PPSSPPWindows::attach_function1()
 {
     auto minver = std::make_tuple(1u, 15u, 0u, 0u);
-    auto version = queryversion();
     if (version && version < minver)
         return false;
     auto succ = ppsspp::hookPPSSPPDoJit();

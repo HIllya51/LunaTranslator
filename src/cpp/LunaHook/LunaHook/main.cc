@@ -452,7 +452,7 @@ static bool _queryversion(WORD *_1, WORD *_2, WORD *_3, WORD *_4)
 	*_4 = revisionNumber;
 	return true;
 }
-std::optional<std::tuple<DWORD, DWORD, DWORD, DWORD>> queryversion()
+std::optional<version_t> queryversion()
 {
 	WORD _1, _2, _3, _4;
 	if (!_queryversion(&_1, &_2, &_3, &_4))

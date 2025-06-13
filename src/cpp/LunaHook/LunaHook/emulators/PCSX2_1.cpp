@@ -221,6 +221,10 @@ namespace
         }
         last = s;
     }
+    void SLPM55240(TextBuffer *buffer, HookParam *hp)
+    {
+        StringReplacer(buffer, TEXTANDLEN("%x02―%x01"), TEXTANDLEN("――"));
+    }
     void FSLPM55195(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
@@ -964,6 +968,10 @@ namespace
         const uintptr_t sjis = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
         buffer->from_t(sjis);
     }
+    void SLPM55225(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        buffer->from_t(*(char *)PCSX2_REG(a0));
+    }
 }
 struct emfuncinfoX
 {
@@ -971,6 +979,28 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // お掃除戦隊くりーんきーぱー H [通常版]
+    {0x14658A4, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55220"}},
+    // 顔のない月 Select story
+    {0xB3FCDC, {DIRECT_READ, 0, 0, 0, 0, "SLPM-62784"}},
+    // ef - A Fairy Tale of the Two. [初回限定特別同梱版]
+    {0xA10588, {DIRECT_READ, 0, 0, 0, SLPM55240, "SLPM-55240"}},
+    // スズノネセブン！～Rebirth Knot～
+    {0x1FF9A70, {DIRECT_READ, 0, 0, 0, FSLPM55195, "SLPM-55243"}},
+    // 萌え萌え2次大戦(略)2[chu～♪] [通常版]
+    {0x1A2690, {0, PCSX2_REG_OFFSET(t4), 0, 0, SLPM65396, "SLPS-25956"}},
+    // ストライクウィッチーズ あなたとできること [通常版]
+    {0x10A948, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55174"}},
+    // 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版]
+    {0xBC9740, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55288"}},
+    // 神曲奏界ポリフォニカ アフタースクール
+    {0x32A3F0, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55270"}},
+    // 戦極姫 ～戦乱に舞う乙女達～
+    {0x13C16C, {0, 0, 0, SLPM55225, 0, "SLPM-55225"}},
+    // 戦極姫2・炎 ～百華、戦乱辰風の如く～
+    {0x1C5D7C, {0, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-55278"}},
+    // 花と乙女に祝福を ～春風の贈り物～
+    {0x109C5C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65786, "SLPM-55263"}},
     // Monochrome (モノクローム)
     {0x4B7A60, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-65682"}},
     // Missing Blue [通常版]

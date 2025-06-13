@@ -25,6 +25,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010056401B548000 | シロガネｘスピリッツ！ |
 |  | 0100E7701A40C000 | 花咲ワークスプリング！ |
 |  | 01008D20101DE000 | ボク姫PROJECT |
 |  | 010022E00C9D8000 | リプキス |
@@ -858,6 +859,17 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55220 | お掃除戦隊くりーんきーぱー H [通常版] |
+|  | SLPM-62784 | 顔のない月 Select story |
+|  | SLPM-55240 | ef - A Fairy Tale of the Two. [初回限定特別同梱版] |
+|  | SLPM-55243 | スズノネセブン！～Rebirth Knot～ |
+|  | SLPS-25956 | 萌え萌え2次大戦(略)2[chu～♪] [通常版] |
+|  | SLPM-55174 | ストライクウィッチーズ あなたとできること [通常版] |
+|  | SLPM-55288 | 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版] |
+|  | SLPM-55270 | 神曲奏界ポリフォニカ アフタースクール |
+|  | SLPM-55225 | 戦極姫 ～戦乱に舞う乙女達～ |
+|  | SLPM-55278 | 戦極姫2・炎 ～百華、戦乱辰風の如く～ |
+|  | SLPM-55263 | 花と乙女に祝福を ～春風の贈り物～ |
 |  | SLPM-65682 | Monochrome (モノクローム) |
 |  | SLPS-25051 | Missing Blue [通常版] |
 |  | SLPS-25759 | 四八 （仮） |

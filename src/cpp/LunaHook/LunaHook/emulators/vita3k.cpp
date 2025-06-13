@@ -147,7 +147,6 @@ namespace
 bool vita3k::attach_function1()
 {
     auto minver = std::make_tuple(0u, 1u, 9u, 3339u);
-    auto version = queryversion();
     if (version && version < minver)
         return false;
     auto DoJitPtr = getDoJitAddress();

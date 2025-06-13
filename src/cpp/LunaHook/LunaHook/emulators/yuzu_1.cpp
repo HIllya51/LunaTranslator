@@ -526,10 +526,18 @@ namespace
         auto ws = buffer->strAW(CP_UTF8);
         ws = remapkatakana(ws);
         ws = re::sub(ws, LR"(@v\w+\.)");
+        ws = re::sub(ws, LR"(@v\d+)");
         ws = re::sub(ws, LR"(@x\w+\.)");
+        ws = re::sub(ws, LR"(@s\d{4})");
+        ws = re::sub(ws, L"@r(.*?)@(.*?)@", L"$1");
+        ws = re::sub(ws, LR"(@t\d+)");
         strReplace(ws, L"@r");
         strReplace(ws, L"@y");
+        strReplace(ws, L"@g");
+        strReplace(ws, L"@n");
+        strReplace(ws, L"@k");
         strReplace(ws, L"@|");
+        strReplace(ws, L"$");
         strReplace(ws, L"\uf8f0");
         buffer->fromWA(ws, CP_UTF8);
     }
@@ -1315,6 +1323,7 @@ namespace
         last = s;
         s = re::sub(s, R"([~^$(,)R])");
         s = re::sub(s, R"(\\n)");
+        strReplace(s, "\\");
         buffer->from(s);
     }
     template <int i>
@@ -2593,6 +2602,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // シロガネｘスピリッツ！
+    {0x80497710, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x010056401B548000ull, "1.0.0"}},
     // 花咲ワークスプリング！
     {0x8001DFB4, {0, 0, 0, 0, F01005AF00E9DC000, 0x0100E7701A40C000ull, "1.0.0"}},
     // ボク姫PROJECT
@@ -3588,7 +3599,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80140cac, {CODEC_UTF32, 1, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
     {0x800e08dc, {CODEC_UTF32, 0, 0, 0, F01002C00177AE000, 0x01002C00177AE000ull, "1.0.0"}},
     // 明治活劇 ハイカラ流星組 －成敗しませう、世直し稼業－
-    {0x802ab2fc, {CODEC_UTF8, 6, 0, 0, F0100EA100DF92000, 0x0100EA100DF92000ull, nullptr}}, // 1.0.0 & 1.0.1
+    {0x2ab2fc, {CODEC_UTF8, 6, 0, 0, F0100EA100DF92000, 0x0100EA100DF92000ull, nullptr}}, // 1.0.0 & 1.0.1
     // 7'scarlet
     {0x8177ec00, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, 0x0100FA001E160000ull, "1.0.0"}},
     {0x817754ac, {CODEC_UTF16, 0, 0x14, 0, F0100FA001E160000, 0x0100FA001E160000ull, "1.0.0"}},
