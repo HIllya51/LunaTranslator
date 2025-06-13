@@ -381,9 +381,6 @@ class TranslatorWindow(resizableframeless):
 
         def __():
 
-            if self._move_drag:
-                self.__lastpos = None
-                return
             if not globalconfig["movefollow"]:
                 self.__lastpos = None
                 return
