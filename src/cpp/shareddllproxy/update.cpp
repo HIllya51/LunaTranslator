@@ -15,7 +15,7 @@ int updatewmain(int argc, wchar_t *argv[])
     {
         WaitForSingleObject(hProcess, INFINITE);
     }
-    while (true)
+    for (int i = 0; i < 2; i++)
     {
         CHandle semaphore{CreateMutex(NULL, FALSE, L"LUNA_UPDATER_BLOCK")};
         if (GetLastError() != ERROR_ALREADY_EXISTS)

@@ -273,6 +273,8 @@ namespace
   };
   bool InsertWillPlusAHook()
   {
+    if (findiatcallormov((ULONG)GetGlyphOutlineW, processStartAddress, processStartAddress, processStopAddress))
+      return false;
     // by iov
     const BYTE bytes2[] = {0x8B, 0x00, 0xFF, 0x76, 0xFC, 0x8B, 0xCF, 0x50};
     ULONG range2 = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
@@ -499,8 +501,15 @@ bool InsertWillPlus4Hook()
       0xc7, 0x45, 0xfc, 0x00, 0x00, 0x00, 0x00,
       0x33, 0xc9,
       0xc7, 0x47, 0x78, 0x00, 0x00, 0x00, 0x00};
+  // 宿りし乙女の誓いと魔法 -TRIAL EDITION-
+  const BYTE bytes2[] = {
+      0xc7, 0x45, 0xfc, 0x00, 0x00, 0x00, 0x00,
+      0X0F, 0X57, 0XC0,
+      0xc7, 0x47, 0x78, 0x00, 0x00, 0x00, 0x00};
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 
+  if (!addr)
+    addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
   if (!addr)
     return false;
 
@@ -1471,6 +1480,8 @@ namespace
      */
     bool attach(ULONG startAddress, ULONG stopAddress)
     {
+      if (findiatcallormov((ULONG)GetGlyphOutlineW, processStartAddress, processStartAddress, processStopAddress))
+        return false;
       const uint8_t bytes[] = {
           0x81, 0xec, 0x14, 0x08, 0x00, 0x00 // 0042B5E0   81EC 14080000    SUB ESP,0x814	; jichi: text in eax, name in eax - 1024, able to copy
       };
@@ -1642,7 +1653,44 @@ namespace
         XX,                               // push edx
         XX, 0xad, 0x8a, 0x00, 0x00        // mov edi,0x8aad
     };
+    /*
+    //宿りし乙女の誓いと魔法 -TRIAL EDITION-
+    if ( v26 - 58942 <= 0x119 )
+  {
+    LOWORD(v46) = -232;
+    if ( !v43 || (v27 = (struct _GLYPHMETRICS *)sub_429850((wchar_t *)(a5 + 28), *(_WORD *)a7, 65304, a14)) == 0 )
+    {
+      sub_42AF40(a3, 0xFF18u, &v47);
+      v27 = &v47;
+    }
+    gmCellIncX = v27->gmCellIncX;
+    v29 = a10 + 1;
+    if ( gmCellIncX )
+    {
+      *a10 = gmCellIncX;
+      v30 = *(_DWORD *)(a4 + 100);
+LABEL_45:
+      *v29 = v30;
+      goto LABEL_46;
+    }
+    goto LABEL_44;
+  }
+  if ( v26 != 32 && v26 != 12288 )
+  {
+    */
+    const BYTE bytes2[] = {
+        0x8d, XX, 0xc2, 0x19, 0xff, 0xff, // lea ecx, [edi-0xe63e]
+        0x3d, 0x19, 0x01, 0x00, 0x00,     // cmp ecx,0x119
+        0x77, XX,                         // ja xx
+        0x8b, 0x55, 0xb8,
+        0xc7, 0x45, 0xbc, 0x18, 0xff, 0x00, 0x00,
+        0x85, 0xd2,
+        0x74, XX};
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+    {
+      addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
+    }
     if (!addr)
       return false;
     int offset = 0;
