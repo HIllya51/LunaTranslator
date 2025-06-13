@@ -87,6 +87,16 @@ namespace
         StringFilter(buffer, TEXTANDLEN("%P"));
         StringFilter(buffer, TEXTANDLEN("%K"));
     }
+    void SLPM55159(TextBuffer *buffer, HookParam *hp)
+    {
+        SLPM55170(buffer, hp);
+        StringReplacer(buffer, TEXTANDLEN("\x81\xe1\x81\x5c\x81\x5c\x81\xe2"), TEXTANDLEN("\x81\x5c\x81\x5c\x81\x5c\x81\x5c"));
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+    }
     void SLPM62343(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -229,6 +239,43 @@ namespace
     {
         StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
         StringFilter(buffer, TEXTANDLEN("%n"));
+    }
+    void SLPM55154(TextBuffer *buffer, HookParam *hp)
+    {
+        static lru_cache<std::string> cache(4);
+        static std::string last;
+        static std::string last2;
+        auto s = buffer->strA();
+        strReplace(s, "\n");
+        strReplace(s, "\r");
+        if (startWith(s, "cdrom0"))
+            return buffer->clear();
+        if (endWith(last, s))
+        {
+            return buffer->clear();
+        }
+        if (s.size())
+        {
+            last = s;
+            if (cache.touch(s))
+            {
+                return buffer->clear();
+            }
+            if (last2 == s)
+            {
+                return buffer->clear();
+            }
+            last2 = s;
+        }
+    }
+    void SLPM55185(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%n"));
+        static std::string last;
+        auto s = buffer->strA();
+        if (last == s)
+            return buffer->clear();
+        last = s;
     }
     void FSLPM66293(TextBuffer *buffer, HookParam *hp)
     {
@@ -884,6 +931,10 @@ namespace
             collect.clear();
         }
     }
+    void SLPM55184(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\x81\xa1"));
+    }
     void SLPM65786(TextBuffer *buffer, HookParam *hp)
     {
         auto w = *(WORD *)buffer->buff;
@@ -891,6 +942,38 @@ namespace
         {
             buffer->clear();
         }
+    }
+    void SLPM55156(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        strReplace(s, "\n");
+        buffer->from(s);
+    }
+    void SLPM55052(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = s.substr(0, s.find("\\\r"));
+        static std::string last;
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        s = re::sub(s, "<[A-Z].*?[\\dA-Z]>");
+        strReplace(s, "\n");
+        strReplace(s, "\r");
+        buffer->from(s);
+    }
+    void SLPM55197(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        buffer->from(strReplace(strReplace(s, "%P"), "%K"));
     }
     void SLPS25135(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -979,6 +1062,18 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ヒャッコ よろずや事件簿！
+    {0x17B6D4, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55159, "SLPM-55159"}},
+    // トリガーハート エグゼリカ エンハンスド
+    {0x324694, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM55052, "SLPM-55052"}},
+    // Memories Off 6 Next Relation
+    {0x17F334, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55197, "SLPM-55197"}},
+    // メルティブラッド アクトレスアゲイン [通常版]
+    {0x853710, {DIRECT_READ, 0, 0, 0, SLPM55184, "SLPM-55184"}},
+    // つよきす2学期 ～Swift Love～ [通常版]
+    {0x19E41C, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55154, "SLPM-55154"}},
+    // Sweet Honey Coming [DXパック]
+    {0x1DDB4D0, {DIRECT_READ, 0, 0, 0, SLPM55185, "SLPM-55185"}},
     // お掃除戦隊くりーんきーぱー H [通常版]
     {0x14658A4, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55220"}},
     // 顔のない月 Select story
@@ -1085,6 +1180,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x461F38, {DIRECT_READ, 0, 0, SLPS25150, 0, "SLPS-25150"}},
     // D.C. ～ダ・カーポ～ the Origin
     {0x517688, {DIRECT_READ, 0, 0, 0, SLPM66905, "SLPM-66905"}},
+    // D.C.I.F. ～ダ・カーポ～イノセント・フィナーレ～ [通常版]
+    {0x114068, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM55156, "SLPM-55156"}},
     // Soul Link EXTENSION
     {0x1E14A3C, {DIRECT_READ, 0, 0, 0, SLPM66437, "SLPM-66437"}},
     // デ・ジ・キャラット ファンタジー エクセレント

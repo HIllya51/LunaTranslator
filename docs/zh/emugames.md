@@ -859,6 +859,12 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55159 | ヒャッコ よろずや事件簿！ |
+|  | SLPM-55052 | トリガーハート エグゼリカ エンハンスド |
+|  | SLPM-55197 | Memories Off 6 Next Relation |
+|  | SLPM-55184 | メルティブラッド アクトレスアゲイン [通常版] |
+|  | SLPM-55154 | つよきす2学期 ～Swift Love～ [通常版] |
+|  | SLPM-55185 | Sweet Honey Coming [DXパック] |
 |  | SLPM-55220 | お掃除戦隊くりーんきーぱー H [通常版] |
 |  | SLPM-62784 | 顔のない月 Select story |
 |  | SLPM-55240 | ef - A Fairy Tale of the Two. [初回限定特別同梱版] |
@@ -910,6 +916,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | SLPS-25679 | うたわれるもの 散りゆく者への子守唄 |
 |  | SLPS-25150 | Only you リベルクルス ドラマCD付き |
 |  | SLPM-66905 | D.C. ～ダ・カーポ～ the Origin |
+|  | SLPM-55156 | D.C.I.F. ～ダ・カーポ～イノセント・フィナーレ～ [通常版] |
 |  | SLPM-66437 | Soul Link EXTENSION |
 |  | SLPM-65396 | デ・ジ・キャラット ファンタジー エクセレント |
 |  | SLPM-66272 | I/O |

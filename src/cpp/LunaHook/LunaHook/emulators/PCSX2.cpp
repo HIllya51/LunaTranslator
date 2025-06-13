@@ -357,11 +357,6 @@ bool PCSX2::attach_function1()
         //{(void *)psxDynarecCheckBreakpoint, +[]() {}},
     };
     patch_fun_ptrs_patch_once();
-    for (auto &&[addr, op] : emfunctionhooks)
-    {
-        if (!(op.type & DIRECT_READ))
-            SafeAddBreakPoint(addr);
-    }
     return true;
 }
 
