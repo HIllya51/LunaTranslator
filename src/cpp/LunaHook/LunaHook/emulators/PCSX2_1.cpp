@@ -975,6 +975,14 @@ namespace
         last = s;
         buffer->from(strReplace(strReplace(s, "%P"), "%K"));
     }
+    void SLPM55102(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L",");
+        strReplace(s, L"^");
+        strReplace(s, L"\ue09c", L"?");
+        buffer->fromWA(s);
+    }
     void SLPS25135(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         const uintptr_t val1 = PCSX2_REG(a1);
@@ -1062,6 +1070,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Piaキャロットへようこそ！！G.P. ～学園プリンセス～
+    {0x23AF40, {DIRECT_READ, 0, 0, 0, SLPM55102, "SLPM-55102"}},
+    // Clear ～新しい風の吹く丘で～
+    {0x1D0C580, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55136"}},
     // ヒャッコ よろずや事件簿！
     {0x17B6D4, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55159, "SLPM-55159"}},
     // トリガーハート エグゼリカ エンハンスド
@@ -1088,6 +1100,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x10A948, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55174"}},
     // 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版]
     {0xBC9740, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55288"}},
+    // 神曲奏界ポリフォニカ THE BLACK -EPSODE 1 & 2 BOX EDITION-
+    {0x309570, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55095"}},
     // 神曲奏界ポリフォニカ アフタースクール
     {0x32A3F0, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55270"}},
     // 戦極姫 ～戦乱に舞う乙女達～

@@ -2567,6 +2567,11 @@ namespace
     {
         CharFilter(buffer, L'\n');
     }
+    void F010096E021CF2000(TextBuffer *buffer, HookParam *)
+    {
+        StringFilter(buffer, TEXTANDLEN(L"\n　"));
+        CharFilter(buffer, L'\n');
+    }
     void NewLineCharFilter(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, '\n');
@@ -2610,6 +2615,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // VIRTUAL GIRL @ WORLD'S END
+    {0x817E1CC8, {CODEC_UTF16, 0, 0X14, 0, NewLineCharFilterW, 0x010096E021CF2000ull, "1.0.0"}},
     // レッドベルの慟哭 (The Red Bells Lament)
     {0x81FE7C1C, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.0"}},
     {0x81FF40FC, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.2"}},
