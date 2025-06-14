@@ -48,5 +48,6 @@ bool NNNConfig::attach_function()
 		auto len = everythreadlast[context->retaddr].size();
 		buffer->from(data, len);
 	};
+	PcHooks::hookGDIFunctions(TextOutA);
 	return NewHook(hp, "NNNhook");
 }
