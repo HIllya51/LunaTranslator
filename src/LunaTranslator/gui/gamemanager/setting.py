@@ -90,6 +90,7 @@ def maybehavebutton(self, gameuid, post):
                 save_text_process_info["mypost"],
                 ismypost=True,
             ),
+            fix=False,
         )
     else:
         if post not in postprocessconfig:

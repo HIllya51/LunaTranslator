@@ -138,7 +138,7 @@ class dialog_savedgame_legacy(QWidget):
         icon = getExeIcon(get_launchpath(k), cache=True)
         if icon.isNull():
             return
-        return getIconButton(functools.partial(opendirforgameuid, k), qicon=icon)
+        return getIconButton(functools.partial(opendirforgameuid, k), qicon=icon, fix=False)
 
     def callback_leuse(self, k, use):
         if use:
@@ -170,7 +170,10 @@ class dialog_savedgame_legacy(QWidget):
 
         self.table.setIndexWidget(
             self.model.index(row, 2),
-            D_getIconButton(functools.partial(self.showsettingdialog, k)),
+            D_getIconButton(
+                functools.partial(self.showsettingdialog, k),
+                fix=False,
+            ),
         )
 
     def on_data_changed(self, idx, *_):

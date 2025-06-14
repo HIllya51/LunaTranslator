@@ -932,6 +932,14 @@ namespace
         s = re::sub(s, L"<color=.*?>(.*?)<\\/color>", L"$1");
         buffer->from(s);
     }
+    void F01006660233C6000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        if (s == L"\x12")
+            return buffer->clear();
+        s = re::sub(s, L"<color=.*?>(.*?)<\\/color>", L"$1");
+        buffer->from(s);
+    }
     void F0100AE90109A2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -2602,6 +2610,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // レッドベルの慟哭 (The Red Bells Lament)
+    {0x81FE7C1C, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.0"}},
+    {0x81FF40FC, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.2"}},
     // シロガネｘスピリッツ！
     {0x80497710, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x010056401B548000ull, "1.0.0"}},
     // 花咲ワークスプリング！

@@ -165,7 +165,7 @@ class DelayLoadScrollArea(QAbstractScrollArea):
 
 
 class DelayLoadTableView(QTableView, DelayLoadScrollArea):
-    __delayloadfunction = Qt.ItemDataRole.UserRole + 10
+    __delayloadfunction = Qt.ItemDataRole.UserRole + 100
     __switchwidget = __delayloadfunction + 1
     ValRole = __switchwidget + 1
 
@@ -1643,6 +1643,7 @@ class Exteditor(LDialog):
                 getIconButton(
                     callback=functools.partial(self.tryMessage, self.removex, _id),
                     icon="fa.times",
+                    fix=False,
                 ),
             )
             t = QTimer(self)
@@ -1677,6 +1678,7 @@ class Exteditor(LDialog):
                         ExtensionSetting, name, setting, info.get("icon")
                     ),
                     enable=self.table.indexWidgetX(i3).isChecked(),
+                    fix=False,
                 ),
             )
         icon = info.get("icon")
@@ -1687,6 +1689,7 @@ class Exteditor(LDialog):
                     qicon=QIcon(icon),
                     callback=functools.partial(os.startfile, info["path"]),
                     enable=self.table.indexWidgetX(i3).isChecked(),
+                    fix=False,
                 ),
             )
         t.stop()
