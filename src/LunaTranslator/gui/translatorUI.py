@@ -1078,7 +1078,7 @@ class TranslatorWindow(resizableframeless):
         self.changeshowhidetranssig.connect(self.changeshowhidetrans)
 
     def safemove(self, pos: QPoint):
-        screengeo = self.screen__.geometry()
+        screengeo = self.screen().geometry()
         if pos.x() < screengeo.left():
             pos.setX(screengeo.left())
         if pos.y() < screengeo.top():
@@ -1540,7 +1540,7 @@ class TranslatorWindow(resizableframeless):
             return
         if globalconfig["verticalhorizontal"]:
             return
-        limit = min(size.height(), self.screen__.geometry().height())
+        limit = min(size.height(), self.screen().geometry().height())
         newHeight = limit + self.dynamicextraheight()
         size = QSize(self.width(), newHeight)
         self.smooth_resizer.stop()

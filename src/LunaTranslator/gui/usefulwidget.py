@@ -526,12 +526,6 @@ class TableViewW(DelayLoadTableView):
 class saveposwindow(LMainWindow):
     screengeochanged = pyqtSignal()
 
-    @property
-    def screen__(self):
-        if runtime_for_xp:
-            return QApplication.primaryScreen()
-        return self.screen()
-
     def __init__(self, parent, poslist=None, flags=None) -> None:
         LMainWindow.__init__(self, parent)
         if flags:
@@ -540,20 +534,20 @@ class saveposwindow(LMainWindow):
         self.poslist = poslist
         if self.poslist:
             self.setGeometry(QRect(poslist[0], poslist[1], poslist[2], poslist[3]))
-        self.adjust_window_to_screen_bounds(self.screen__.geometry())
+        self.adjust_window_to_screen_bounds(self.screen().geometry())
         self.___firstshow = True
 
     def showEvent(self, a0):
         if self.___firstshow:
             self.___firstshow = False
             self.windowHandle().screenChanged.connect(self.__screenChanged)
-            self.__screenChanged(self.screen__)
+            self.__screenChanged(self.screen())
         return super().showEvent(a0)
 
     @tryprint
     def _changed(self, _id: str, geo: QRect):
         try:
-            if _id != self.screen__.serialNumber():
+            if _id != self.screen().serialNumber():
                 return
         except:
             pass

@@ -921,14 +921,8 @@ class TextBrowser(QWidget, dataget):
                 collecti += 1
 
     @property
-    def screen__(self):
-        if gobject.runtime_for_xp:
-            return QApplication.primaryScreen()
-        return self.screen()
-
-    @property
     def maxvisheight(self):
-        return self.screen__.virtualGeometry().height() * 2
+        return self.screen().virtualGeometry().height() * 2
 
     def _showyinyingtext(self, b1, b2, color: ColorControl, font: QFont):
         linei = self.yinyingposline
