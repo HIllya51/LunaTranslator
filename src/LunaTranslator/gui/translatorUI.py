@@ -1208,7 +1208,7 @@ class TranslatorWindow(resizableframeless):
                 _path.append(filer)
                 savehook_new_data[gameuid]["gamejsonfile"] = _path
                 self.displaystatus.emit(
-                    _TR("成功添加_Mecab_路径_ " + filer), TextType.Info
+                    _TR("成功添加_json翻译文件_ " + filer), TextType.Info
                 )
         except:
             print_exc()

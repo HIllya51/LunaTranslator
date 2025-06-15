@@ -78,6 +78,7 @@ class basetrans(commonbase):
             globalconfig["fanyi"][self.typename]["useproxy"] = False
         self.queue = PriorityQueue()
         self.sqlqueue = None
+        self.sqlwrite2 = None
         try:
             self._private_init()
         except Exception as e:
@@ -180,6 +181,8 @@ class basetrans(commonbase):
         self.queue.put(content, priority)
 
     def longtermcacheget(self, src):
+        if not self.sqlwrite2:
+            return
         try:
             ret = self.sqlwrite2.execute(
                 "SELECT trans FROM cache WHERE (( (srclang=? and tgtlang=?) or  (srclang=? and tgtlang=?)) and source=?)",
@@ -199,7 +202,8 @@ class basetrans(commonbase):
             return None
 
     def longtermcacheset(self, src, tgt):
-        self.sqlqueue.put((src, tgt))
+        if self.sqlqueue:
+            self.sqlqueue.put((src, tgt))
 
     def shorttermcacheget(self, src):
         langkey = (self.srclang_1, self.tgtlang_1)

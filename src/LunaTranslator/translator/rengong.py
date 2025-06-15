@@ -136,5 +136,5 @@ class TS(basetrans):
         if not res:
             res = self.tryfindtranslate_single(content)
         if not res:
-            raise Exception("can't find: " + content)
+            return
         return "\n".join(res)
