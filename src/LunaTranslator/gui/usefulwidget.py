@@ -1517,9 +1517,7 @@ class SingleExtensionSetting_(saveposwindow):
 def ExtensionSetting(name, settingurl, icon):
     global SingleExtensionSetting
     if not SingleExtensionSetting:
-        SingleExtensionSetting = SingleExtensionSetting_(
-            gobject.base.commonstylebase
-        )
+        SingleExtensionSetting = SingleExtensionSetting_(gobject.base.commonstylebase)
     SingleExtensionSetting.createpage(name, settingurl, icon)
 
 
@@ -3182,7 +3180,9 @@ class IconButton(LPushButton):
 
     def resizedirect(self):
         h = QFontMetricsF(self.font()).height()
-        sz = (QSizeF(h, h) * gobject.Consts.btnscale).toSize()
+        sz = (
+            QSizeF(int(h * gobject.Consts.IconSizeHW), h) * gobject.Consts.btnscale
+        ).toSize()
         if self.fix:
             self.setFixedSize(sz)
         else:

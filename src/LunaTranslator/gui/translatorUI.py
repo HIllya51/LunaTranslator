@@ -81,7 +81,7 @@ class IconLabelX(LLabel):
 
     def resizeEvent(self, e: QResizeEvent):
         h = int(e.size().height() / gobject.Consts.toolscale)
-        self.setIconSize(QSize(h, h))
+        self.setIconSize(QSize(int(h * gobject.Consts.IconSizeHW), h))
 
     def setIcon(self, icon: QIcon):
         self._icon = icon

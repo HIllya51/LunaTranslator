@@ -65,6 +65,7 @@ class Consts:
     btnscale = 1.2
     toolwdivh = 4 / 3
     toolscale = 1.5
+    IconSizeHW = 1.1
 
 
 runtime_bit_64 = platform.architecture()[0] == "64bit"
