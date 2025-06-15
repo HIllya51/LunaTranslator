@@ -444,7 +444,7 @@ class hookselect(closeashidewindow):
             parent,
             globalconfig["selecthookgeo"]
         )
-        self.setWindowFlag(Qt.WindowType.WindowStaysOnTopHint)
+        self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | self.windowFlags())
         self.setupUi()
         self.hidesearchhookbuttons()
         self.firsttimex = True

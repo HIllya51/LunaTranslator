@@ -3556,7 +3556,7 @@ def limitpos(pos: QPoint, w: QWidget, offset: QPoint):
 class PopupWidget(QWidget):
     def __init__(self, parent):
         super().__init__(parent)
-        self.setWindowFlag(Qt.WindowType.Popup)
+        self.setWindowFlags(Qt.WindowType.Popup | self.windowFlags())
         self.dragging = False
         self.offset = None
 

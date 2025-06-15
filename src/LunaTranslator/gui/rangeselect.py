@@ -65,7 +65,7 @@ class Mainw(QMainWindow):
     def __init__(self, x):
         QMainWindow.__init__(self, x)
 
-        self.setWindowFlag(Qt.WindowType.FramelessWindowHint)
+        self.setWindowFlags(Qt.WindowType.FramelessWindowHint | self.windowFlags())
 
         self.sideGrips = [
             SideGrip(self, Qt.Edge.LeftEdge),
