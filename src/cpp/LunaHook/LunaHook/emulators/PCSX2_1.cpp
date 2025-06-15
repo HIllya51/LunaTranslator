@@ -240,6 +240,14 @@ namespace
         StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
         StringFilter(buffer, TEXTANDLEN("%n"));
     }
+    void SLPM55079(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
+        StringFilter(buffer, TEXTANDLEN("%n"));
+        auto s = buffer->strAW();
+        s = re::sub(s, L"@(.*?)@", L"$1");
+        buffer->fromWA(s);
+    }
     void SLPM55154(TextBuffer *buffer, HookParam *hp)
     {
         static lru_cache<std::string> cache(4);
@@ -691,6 +699,18 @@ namespace
         }
         last = s;
     }
+    void SLPM55098(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+        {
+            return buffer->clear();
+        }
+        last = s;
+        StringFilter(buffer, TEXTANDLEN("cr"));
+        StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    }
     void SLPS25941_2(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -1059,9 +1079,25 @@ namespace
         const uintptr_t sjis = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
         buffer->from_t(sjis);
     }
+    void SLPS25896(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        buffer->from_t(*(char *)PCSX2_REG(a0));
+    }
     void SLPM55225(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         buffer->from_t(*(char *)PCSX2_REG(a0));
+    }
+    void SLPM66441(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        std::string s = (char *)PCSX2_REG(a3);
+        static std::unordered_map<uintptr_t, std::string> last;
+        auto found = last.find(PCSX2_REG(a3));
+        if (found != last.end() && found->second == s)
+            return;
+        if (!IsShiftjisWord(*(WORD *)s.data()))
+            return;
+        last[PCSX2_REG(a3)] = s;
+        buffer->from(s);
     }
 }
 struct emfuncinfoX
@@ -1070,6 +1106,16 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // レッスルエンジェルス サバイバー2
+    {0xEAC080, {DIRECT_READ, 0, 0, 0, SLPM65396, "SLPM-55058"}},
+    // 夢見白書 ～Second Dream～ [通常版]
+    {0x1B3EC4, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55071"}},
+    // Scarlett ～日常の境界線～ [通常版]
+    {0x4906D9, {DIRECT_READ, 0, 0, 0, SLPM55079, "SLPM-55079"}},
+    // 恋する乙女と守護の楯 [通常版]
+    {0x13294C, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55098, "SLPM-55098"}},
+    // 大奥記
+    {0x1BF050, {0, 0, 0, SLPM66441, 0, "SLPM-66441"}},
     // Piaキャロットへようこそ！！G.P. ～学園プリンセス～
     {0x23AF40, {DIRECT_READ, 0, 0, 0, SLPM55102, "SLPM-55102"}},
     // Clear ～新しい風の吹く丘で～
@@ -1098,6 +1144,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1A2690, {0, PCSX2_REG_OFFSET(t4), 0, 0, SLPM65396, "SLPS-25956"}},
     // ストライクウィッチーズ あなたとできること [通常版]
     {0x10A948, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55174"}},
+    // 恋姫†夢想 ～ドキッ☆乙女だらけの三国志演義～ [通常版]
+    {0x66C5C0, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55068"}},
     // 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版]
     {0xBC9740, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55288"}},
     // 神曲奏界ポリフォニカ THE BLACK -EPSODE 1 & 2 BOX EDITION-

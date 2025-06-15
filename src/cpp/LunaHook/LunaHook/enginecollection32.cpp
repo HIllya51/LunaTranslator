@@ -169,6 +169,7 @@
 #include "engine32/ShinyDaysGame.h"
 #include "engine32/MarineHeart.h"
 #include "engine32/ShinaRio.h"
+#include "engine32/LizardFactory.h"
 #include "engine32/CaramelBox.h"
 #include "engine32/Escude.h"
 #include "engine32/Ryokucha.h"
@@ -454,5 +455,6 @@ std::vector<ENGINE *> check_engines()
         new Pinpai,
         new ADVSystem,
         new NUGSystem,
+        new LizardFactory,
     };
 }

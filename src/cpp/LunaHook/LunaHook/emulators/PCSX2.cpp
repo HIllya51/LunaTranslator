@@ -295,11 +295,14 @@ bool PCSX2::attach_function1()
             HostInfo(HOSTINFO::EmuGameName, "%s %s", entry->serial.c_str(), entry->title.c_str());
             for (auto &&[addr, op] : emfunctionhooks)
             {
-                if (!(op.type & DIRECT_READ))
-                    continue;
                 auto useid = MatchGameId(op._id);
                 if (!useid)
                     continue;
+                if (!(op.type & DIRECT_READ))
+                {
+                    PCSX2_UserHook_delayinsert(addr);
+                    continue;
+                }
                 HookParam hpinternal;
                 hpinternal.address = emu_addr(addr);
                 hpinternal.emu_addr = addr;
