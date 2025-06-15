@@ -23,7 +23,7 @@
 
 **LunaTranslator_debug.bat** 会显示命令行窗口
 
-## 无法启动软件
+## 常见错误
 
 ### 找不到重要组件
 
@@ -42,8 +42,14 @@
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
+### Error/FileNotFoundError
+
+如果没有预先添加好信任，有可能在软件运行一段时间后，部分必要组件才被杀毒软件删除。然后等到HOOK模式选取进程之后，报出这个错误。解决方法同上。
+
+<img src="https://image.lunatranslator.org/zh/notfound.png" width=400>
+
 ### Error/PermissionError
 
 如果软件被放到`C:\Program Files`等特殊文件夹，可能会无法正常运行。
 
-<img src="https://image.lunatranslator.org/zh/cantstart/6.png"  width=400>
+<img src="https://image.lunatranslator.org/zh/cantstart/6.png" width=400>

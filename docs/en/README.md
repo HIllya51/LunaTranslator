@@ -24,7 +24,7 @@ But please do not put the software in special paths such as **C:\Program Files**
 - **LunaTranslator_debug.bat** will display a command-line window.
 
 
-## Unable to Start the Software
+## Common Errors
 
 ::: danger
 Sometimes it may be flagged by antivirus software. Please add it to the trust list and re-download and extract.
@@ -42,6 +42,12 @@ Note: To achieve HOOK extraction of game text, it is necessary to inject Dll int
 ![img](https://image.lunatranslator.org/zh/cantstart/4.png) 
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
+
+### Error/FileNotFoundError
+
+If trust isn't pre-established, some essential components might get deleted by antivirus software after the program has been running for a while. Then when selecting a process in HOOK mode, this error occurs. The solution is the same as above.
+
+<img src="https://image.lunatranslator.org/zh/notfound.png" width=400>
 
 ### Error/PermissionError
 

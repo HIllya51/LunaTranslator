@@ -22,7 +22,7 @@ Nhưng vui lòng không đặt phần mềm vào các đường dẫn đặc bi�
 
 - **LunaTranslator_debug.bat** sẽ hiển thị cửa sổ dòng lệnh.
 
-## Không thể khởi động phần mềm
+## Lỗi Thường Gặp
 
 ::: danger
 Đôi khi phần mềm có thể bị gắn cờ bởi phần mềm diệt virus. Vui lòng thêm vào danh sách tin cậy và tải xuống, giải nén lại.
@@ -41,7 +41,13 @@ Lưu ý: Để thực hiện việc HOOK trích xuất văn bản trò chơi, c�
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
-### Lỗi/PermissionError
+### Error/FileNotFoundError
+
+Nếu không thêm vào danh sách tin cậy trước, có thể sau một thời gian phần mềm chạy, một số thành phần quan trọng sẽ bị phần mềm diệt virus xóa. Sau đó khi chọn tiến trình trong chế độ HOOK, lỗi này sẽ xuất hiện. Cách khắc phục giống như trên.
+
+<img src="https://image.lunatranslator.org/zh/notfound.png" width=400>
+
+### Error/PermissionError
 
 Nếu phần mềm được đặt trong các thư mục đặc biệt như `C:\Program Files`, có thể không hoạt động đúng cách.
 

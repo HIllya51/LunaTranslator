@@ -23,7 +23,7 @@
 
 - **LunaTranslator_debug.bat** はコマンドラインウィンドウを表示します。
 
-## ソフトウェアが起動しない
+## よくあるエラー
 
 ### 重要なコンポーネントが見つからない
 
@@ -42,7 +42,13 @@
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
-### エラー/PermissionError
+### Error/FileNotFoundError
+
+事前に信頼リストに追加していない場合、ソフトウェアがしばらく動作した後で必要なコンポーネントがウイルス対策ソフトに削除される可能性があります。その後、HOOKモードでプロセスを選択した際にこのエラーが発生します。解決方法は上記と同じです。
+
+<img src="https://image.lunatranslator.org/zh/notfound.png" width=400>
+
+### Error/PermissionError
 
 ソフトウェアが`C:\Program Files`などの特殊なフォルダーに配置されている場合、正常に動作しない可能性があります。
 
