@@ -477,7 +477,7 @@ namespace
         if (startWith(s, "@v"))
         {
           // S001_L1_0001
-          s = re::sub(s, "@v[a-zA-Z0-9]{4}_[a-zA-Z0-9]{2}_[a-zA-Z0-9]{4}");
+          s = re::sub(s, "@([_v][a-zA-Z0-9]+)+");
           buffer->from(s);
         }
         else
@@ -517,8 +517,9 @@ namespace
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       auto s = buffer->strA();
-      s = re::sub(s, R"(@v[_\w\d]{8})");
+      s = re::sub(s, "@([_v][a-zA-Z0-9]+)+");
       s = re::sub(s, R"(@t\d{4})");
+      s = re::sub(s, R"(@w\d{4})");
       s = re::sub(s, R"(@s\d{4})");
       s = re::sub(s, R"(@m\d{2})");
       s = re::sub(s, R"(@f\d{2})");
@@ -530,7 +531,7 @@ namespace
       strReplace(s, "@p");
       buffer->from(s);
     };
-    return NewHook(hp, "NeXAS4");
+    return NewHook(hp, "NeXAS5");
   }
 }
 bool NeXAS::attach_function()
