@@ -199,7 +199,7 @@ def buildhook(arch, target):
     subprocess.run(
         f"cmake --build ./build/{arch}_{target}_2 --config Release --target ALL_BUILD -j 14"
     )
-    if target != "win10":
+    if target == "win7":
         config += " -DUSE_VC_LTL=ON "
     subprocess.run(
         f'cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_1'
@@ -223,6 +223,8 @@ def buildPlugins(arch, target):
         if target == "win10"
         else (" -DWINXP=ON " if target == "winxp" else "")
     )
+    if target == "win7":
+        flag += " -DUSE_VC_LTL=ON "
     sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 "
     vsver = "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
