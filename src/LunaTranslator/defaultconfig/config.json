@@ -1786,7 +1786,7 @@
         },
         "rengong": {
             "type": "pre",
-            "use": false,
+            "use": true,
             "color": "blue",
             "name": "json翻译文件"
         },
