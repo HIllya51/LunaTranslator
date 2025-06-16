@@ -862,6 +862,14 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66285 | プリンセスコンチェルト [通常版] |
+|  | SLPM-66826 | 妖鬼姫伝 ～あやかし幻灯話～ [限定版] |
+|  | SLPM-66879 | StarTRain -your past makes your future- [初回限定版] |
+|  | SLPM-66805 | カラフルアクアリウム～My Little Mermaid～ [通常版] |
+|  | SLPM-66861 | 熱帯低気圧少女 [通常版] |
+|  | SLPM-66890 | ぷりサガ～プリンセスをさがせ～ |
+|  | SLPM-66809 | 最終試験くじら−Alive− |
+|  | SLPM-66787 | 水夏A.S+ Eternal Name [通常版] |
 |  | SLPM-66918 | プリンセスメーカー5 |
 |  | SLPM-67015 | School Days L×H |
 |  | SLPM-66908 | IZUMO2 学園狂想曲 ダブルタクト |
@@ -905,6 +913,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-55288 | 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版] |
 |  | SLPM-66977 | 神曲奏界ポリフォニカ 0～4話フルパック |
 |  | SLPM-55095 | 神曲奏界ポリフォニカ THE BLACK -EPSODE 1 & 2 BOX EDITION- |
+|  | SLPM-66909 | 神曲奏界ポリフォニカ ３&４話完結編 |
 |  | SLPM-55270 | 神曲奏界ポリフォニカ アフタースクール |
 |  | SLPM-55225 | 戦極姫 ～戦乱に舞う乙女達～ |
 |  | SLPM-55278 | 戦極姫2・炎 ～百華、戦乱辰風の如く～ |
@@ -957,6 +966,8 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 |  | SLPM-55269 | PANDORA ～君の名前を僕は知る～ |
 |  | SLPM-66293 | 学園アリス ～きらきら★メモリーキッス～ |
 |  | SLPM-65481 | After...～忘れえぬ絆～ |
+|  | SLPM-66858 | いつか、届く、あの空に。 ～陽の道と緋の昏と～ [通常版] |
+|  | SLPS-25830 | ゼロの使い魔 夢魔が紡ぐ夜風の幻想曲 [限定版] |
 |  | SLPS-25897 | ゼロの使い魔 迷子の終止符と幾千の交響曲 |
 |  | SLPM-55170 | スキップ・ビート |
 |  | SLPM-66891 & SLPM-66892 | Myself;Yourself |

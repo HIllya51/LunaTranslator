@@ -208,22 +208,6 @@ namespace
 }
 namespace
 {
-    void trygetgameinwindowtitle()
-    {
-        auto wininfos = get_proc_windows();
-        for (auto &&info : wininfos)
-        {
-            auto spls = strSplit(info.title, L"|");
-            if (spls.size() == 4 || spls.size() == 5)
-            {
-                // yuzu 4->1
-                // citronv 5->2
-                auto game = spls[(spls.size() == 4) ? 1 : 2];
-                Trim(strReplace(game, L"(64-bit)"));
-                return HostInfo(HOSTINFO::EmuGameName, game.c_str());
-            }
-        }
-    }
     void NS_CheckEmAddrHOOKable(uint64_t em_address, uintptr_t entrypoint)
     {
         auto found = emfunctionhooks.find(em_address);
@@ -281,10 +265,6 @@ struct NSGameInfoC
         if (game_info.id)
         {
             HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
-        }
-        else
-        {
-            trygetgameinwindowtitle();
         }
         return true;
     }

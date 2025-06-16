@@ -31,6 +31,20 @@ namespace
         {
             if (startWith(s, "<WINDOW NAME"))
                 return buffer->from(re::sub(s.substr(0, s.find("\n") - 1), "<WINDOW NAME=\"(.*?)\".*", "\x81\x79$1\x81\x7a"));
+            else if (startWith(s, "<SELECT TEXT"))
+            {
+                std::string collect;
+                for (auto &&ss : strSplit(s, "\n"))
+                {
+                    if (startWith(ss, "<SELECT TEXT"))
+                    {
+                        if (collect.size())
+                            collect += '\n';
+                        collect += re::sub(ss, "<SELECT TEXT=\"(.*?)\".*", "$1");
+                    }
+                }
+                return buffer->from(collect);
+            }
             else
                 return buffer->clear();
         }
@@ -105,6 +119,10 @@ namespace
     void SLPM65396(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
+    }
+    void SLPM66861(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("||"));
     }
     void SLPS25604(TextBuffer *buffer, HookParam *hp)
     {
@@ -183,6 +201,20 @@ namespace
         auto s = buffer->strAW();
         s = re::sub(s, L"\\[(.*?)\\]");
         buffer->fromWA(s);
+    }
+    void SLPM66858(TextBuffer *buffer, HookParam *hp)
+    {
+        if (strcmp(hp->name, "SLPM-66858") == 0)
+        {
+            auto s = buffer->strAW();
+            s = re::sub(s, L"\\[(.*?)\\]");
+            s = re::sub(s, L"\n(\u3000)+");
+            buffer->fromWA(s);
+        }
+        else if (strcmp(hp->name, "SLPS-25830") == 0)
+        {
+        }
+        SLPS25897<6>(buffer, hp);
     }
     void SLPS25276(TextBuffer *buffer, HookParam *hp)
     {
@@ -1160,6 +1192,21 @@ namespace
         last[PCSX2_REG(a3)] = s;
         buffer->from(s);
     }
+    void SLPM66285(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        static char *last = nullptr;
+        auto ptr = (char *)PCSX2_REG(a0);
+        while (strstr(ptr, "\r\n\r\n") != ptr)
+            ptr -= 1;
+        ptr += 4;
+        if (last == ptr)
+            return;
+        last = ptr;
+        std::string s = ptr;
+        if (startWith(s, "<") || startWith(s, "//") || startWith(s, "["))
+            return;
+        buffer->from(strReplace(re::sub(s.substr(0, s.find("\r\n\r\n")), "<v \\w+>"), "\r\n"));
+    }
 }
 struct emfuncinfoX
 {
@@ -1167,6 +1214,21 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // プリンセスコンチェルト [通常版]
+    {0x389920, {0, 0, 0, SLPM66285, 0, "SLPM-66285"}},
+    // 妖鬼姫伝 ～あやかし幻灯話～ [限定版]
+    {0xD103A2, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66826"}},
+    // StarTRain -your past makes your future- [初回限定版]
+    {0x18E980, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66879"}},
+    // カラフルアクアリウム～My Little Mermaid～ [通常版]
+    {0x9D9804, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66805"}},
+    // 熱帯低気圧少女 [通常版]
+    {0x1B4044, {DIRECT_READ, 0, 0, 0, SLPM66861, "SLPM-66861"}},
+    // ぷりサガ～プリンセスをさがせ～
+    {0x114128, {0, PCSX2_REG_OFFSET(s2), 0, 0, SLPM55016, "SLPM-66890"}},
+    // 最終試験くじら−Alive− //SLPM-66809
+    // 水夏A.S+ Eternal Name [通常版] //SLPM-66787
+    {0x1FFE8C0, {DIRECT_READ, 0, 0, 0, SLPM65396, std::vector<const char *>{"SLPM-66809", "SLPM-66787"}}},
     // プリンセスメーカー5
     {0x19B5D4, {0, PCSX2_REG_OFFSET(v0), 0, 0, SLPM66918, "SLPM-66918"}},
     // School Days L×H
@@ -1253,6 +1315,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x3B56F0, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66977"}},
     // 神曲奏界ポリフォニカ THE BLACK -EPSODE 1 & 2 BOX EDITION-
     {0x309570, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55095"}},
+    // 神曲奏界ポリフォニカ ３&４話完結編
+    {0x38A8B0, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66909"}},
     // 神曲奏界ポリフォニカ アフタースクール
     {0x32A3F0, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55270"}},
     // 戦極姫 ～戦乱に舞う乙女達～
@@ -1361,6 +1425,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x711FC0, {DIRECT_READ, 0, 0, 0, FSLPM66293, "SLPM-66293"}},
     // After...～忘れえぬ絆～
     {0x15DA4c, {DIRECT_READ, 0, 0, 0, SLPS25897<1>, "SLPM-65481"}},
+    // いつか、届く、あの空に。 ～陽の道と緋の昏と～ [通常版] //SLPM-66858
+    // ゼロの使い魔 夢魔が紡ぐ夜風の幻想曲 [限定版] //SLPS-25830
+    {0x1FFD900, {DIRECT_READ, 0, 0, 0, SLPM66858, std::vector<const char *>{"SLPM-66858", "SLPS-25830"}}},
     // ゼロの使い魔 迷子の終止符と幾千の交響曲
     {0x1FFD934, {DIRECT_READ, 0, 0, 0, SLPS25897_1, "SLPS-25897"}},
     // スキップ・ビート
