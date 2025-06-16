@@ -6,10 +6,6 @@ FetchContent_Declare(md4c
     GIT_REPOSITORY https://github.com/mity/md4c
     GIT_TAG release-0.5.2
 )
-FetchContent_Declare(maddy
-    URL https://github.com/progsource/maddy/releases/download/1.5.0/maddy-src.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-)
 FetchContent_Declare(tiny-aes 
     GIT_REPOSITORY https://github.com/kokke/tiny-AES-c
     GIT_TAG 23856752fbd139da0b8ca6e471a13d5bcc99a08d

@@ -10,7 +10,7 @@ include(FetchContent)
 
 FetchContent_Declare(clipper2 
     GIT_REPOSITORY https://github.com/AngusJohnson/Clipper2
-    GIT_TAG Clipper2_1.5.3
+    GIT_TAG Clipper2_1.5.4
 )
 
 if(WIN10ABOVE)
