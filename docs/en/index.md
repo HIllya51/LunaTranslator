@@ -28,7 +28,7 @@ features:
     details: Some games also support directly embedding translations into the game for an immersive experience.
     link: ./embedtranslate
   - title: HOOK Emulator  
-    details: Supports HOOK emulators to directly extract text from most games on NS/PSP/PSV/PS3.
+    details: Supports HOOK emulators to directly extract text from most games on NS/PSP/PSV/PS2.
     link: ./emugames
   - title: OCR  
     details: Built-in high-precision OCR model, supporting many other online & offline OCR engines for flexible text extraction.  

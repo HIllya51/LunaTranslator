@@ -28,7 +28,7 @@ features:
     details: 一部のゲームでは、翻訳を直接ゲームに組み込むことができ、没入感のある体験を提供します。
     link: ./embedtranslate
   - title: HOOKエミュレータ  
-    details: NS/PSP/PSV/PS3のほとんどのゲームでHOOKエミュレータをサポートし、直接ゲームテキストを読み取ります。
+    details: NS/PSP/PSV/PS2のほとんどのゲームでHOOKエミュレータをサポートし、直接ゲームテキストを読み取ります。
     link: ./emugames
   - title: OCR  
     details: 高精度のOCRモデルを内蔵し、多くの他のオンライン＆オフラインOCRエンジンをサポートし、柔軟にテキストを読み取ります。  

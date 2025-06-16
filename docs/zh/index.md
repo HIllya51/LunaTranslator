@@ -28,7 +28,7 @@ features:
     details: 部分游戏还可以直接内嵌翻译到游戏中，以获取沉浸式体验
     link: ./embedtranslate
   - title: HOOK模拟器
-    details: 对NS/PSP/PSV/PS3上的大部分游戏，支持HOOK模拟器直接读取游戏文本
+    details: 对NS/PSP/PSV/PS2上的大部分游戏，支持HOOK模拟器直接读取游戏文本
     link: ./emugames
   - title: OCR
     details: 内置较高精度的OCR模型，并支持许多其他在线&离线OCR引擎，以便灵活的读取任意文本

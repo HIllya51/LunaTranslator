@@ -28,7 +28,7 @@ features:
     details: Một số trò chơi cũng hỗ trợ nhúng trực tiếp bản dịch vào trò chơi để có trải nghiệm nhập vai.  
     link: ./embedtranslate
   - title: Trình giả lập HOOK  
-    details: Hỗ trợ trình giả lập HOOK để trích xuất văn bản trực tiếp từ hầu hết các trò chơi trên NS/PSP/PSV/PS3.  
+    details: Hỗ trợ trình giả lập HOOK để trích xuất văn bản trực tiếp từ hầu hết các trò chơi trên NS/PSP/PSV/PS2.  
     link: ./emugames
   - title: OCR  
     details: Mô hình OCR tích hợp có độ chính xác cao, hỗ trợ nhiều công cụ OCR trực tuyến & ngoại tuyến khác để trích xuất văn bản linh hoạt.  
