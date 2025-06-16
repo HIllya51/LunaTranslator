@@ -8,7 +8,7 @@ on:
         default: false
         required: false 
 jobs:
-  hook:
+  cpps:
     runs-on: windows-latest
     strategy:
       matrix:
@@ -36,35 +36,11 @@ jobs:
           # sdk-version: 26100 2019上安装这个版本慢的离谱。
           sdk-version: 22621
       - run: python src/scripts/build_lunatranslator.py hook ${{matrix.arch}} ${{matrix.target}}
-
+      - run: python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{matrix.target}}
       - uses: actions/upload-artifact@v4
         with:
           name: hook_${{matrix.arch}}_${{matrix.target}}
           path: src/cpp/LunaHook/builds/Release
-  build_cpp:
-    runs-on: windows-latest
-    strategy:
-      matrix: 
-        include:
-          - arch: x86
-            target: win7  
-          - arch: x64
-            target: win7  
-          - arch: x64
-            target: win10  
-          - arch: x86
-            target: win10  
-          - arch: x86
-            target: winxp
-    steps:
-      - uses: actions/checkout@v4
-      - if: matrix.target == 'winxp'
-        run: src\scripts\install_msvc.bat v141_xp
-      - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
-        with:
-          sdk-version: 22621
-      
-      - run:  python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{matrix.target}}
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_${{matrix.arch}}_${{matrix.target}}
@@ -101,7 +77,7 @@ jobs:
   
   merge:
     runs-on: windows-latest
-    needs: [pyrt,build_cpp,hook]
+    needs: [pyrt,cpps]
     permissions:
       id-token: write
       attestations: write
