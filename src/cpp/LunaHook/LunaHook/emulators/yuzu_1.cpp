@@ -3112,6 +3112,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x821540c4, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // dialogue
     {0x8353e674, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // choice
     {0x835015e8, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100DA201E0DA000, 0x010088A01A774000ull, "1.0.0"}}, // name
+    // ワンド オブ フォーチュン Ｒ２ ＦＤ ～君に捧げるエピローグ～
+    {0x82E85A48, {CODEC_UTF16, 0, 0x14, 0, F0100DA201E0DA000, 0x010051701A7BE000ull, "1.0.0"}}, // name
     // Yo-kai Watch 4++
     {0x80a88080, {CODEC_UTF8, 1, 0, 0, F010086C00AF7C000, 0x010086C00AF7C000ull, "2.2.0"}}, // All Text
     // キューピット・パラサイト -Sweet & Spicy Darling.-

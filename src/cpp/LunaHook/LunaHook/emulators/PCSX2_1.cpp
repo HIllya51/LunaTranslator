@@ -11,6 +11,41 @@ namespace
         s = re::sub(s, R"(@w|\\c)");
         buffer->from(s);
     }
+    void SLPM66919(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L"^");
+        buffer->fromWA(s);
+    }
+    void SLPM66958(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        strReplace(s, "#cr0");
+        s = re::sub(s, R"(#c\d{2})");
+        buffer->from(s);
+    }
+    void SLPM55016(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (startWith(s, "<"))
+        {
+            if (startWith(s, "<WINDOW NAME"))
+                return buffer->from(re::sub(s.substr(0, s.find("\n") - 1), "<WINDOW NAME=\"(.*?)\".*", "\x81\x79$1\x81\x7a"));
+            else
+                return buffer->clear();
+        }
+        if (!IsShiftjisWord(*(WORD *)s.data()))
+            return buffer->clear();
+        buffer->from(s.substr(0, 2));
+    }
+    void SLPM55047(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "#v\\w+#");
+        strReplace(s, "#r\x81\x40");
+        strReplace(s, "#r");
+        buffer->from(s);
+    }
     void FSLPM65914(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
@@ -97,6 +132,10 @@ namespace
             return buffer->clear();
         last = s;
     }
+    void SLPM66935(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
+    }
     void SLPM62343(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -137,6 +176,13 @@ namespace
             buffer->from(s.substr(last.size()));
         }
         last = s;
+    }
+    void SLPM66997(TextBuffer *buffer, HookParam *hp)
+    {
+        SLPS25897<4>(buffer, hp);
+        auto s = buffer->strAW();
+        s = re::sub(s, L"\\[(.*?)\\]");
+        buffer->fromWA(s);
     }
     void SLPS25276(TextBuffer *buffer, HookParam *hp)
     {
@@ -242,11 +288,17 @@ namespace
     }
     void SLPM55079(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, TEXTANDLEN("%n\x81\x40"));
-        StringFilter(buffer, TEXTANDLEN("%n"));
+        FSLPM55195(buffer, hp);
         auto s = buffer->strAW();
         s = re::sub(s, L"@(.*?)@", L"$1");
         buffer->fromWA(s);
+    }
+    void SLPM55009(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        s = re::sub(s, LR"(\{(.*?)\}\[(.*?)\])", L"$1");
+        buffer->fromWA(s);
+        SLPM55170(buffer, hp);
     }
     void SLPM55154(TextBuffer *buffer, HookParam *hp)
     {
@@ -382,9 +434,10 @@ namespace
         }
         last1 = collect;
     }
+    template <int a, int b, int c>
     void SLPM66344(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
-        auto addrs = {0x1FFE9D8, 0x1FFE9F4, 0x1FFEA10};
+        auto addrs = {a, b, c};
         std::string collect;
         for (auto str : addrs)
         {
@@ -973,6 +1026,14 @@ namespace
         strReplace(s, "\n");
         buffer->from(s);
     }
+    void SLPM66918(TextBuffer *buffer, HookParam *hp)
+    {
+        SLPM55156(buffer, hp);
+        auto s = buffer->strA();
+        static lru_cache<std::string> last(5);
+        if (last.touch(s))
+            return buffer->clear();
+    }
     void SLPM55052(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -993,7 +1054,7 @@ namespace
         if (endWith(last, s))
             return buffer->clear();
         last = s;
-        buffer->from(strReplace(strReplace(s, "%P"), "%K"));
+        buffer->from(strReplace(strReplace(strReplace(s, "\x81\xe8"), "%P"), "%K"));
     }
     void SLPM55102(TextBuffer *buffer, HookParam *hp)
     {
@@ -1106,6 +1167,44 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // プリンセスメーカー5
+    {0x19B5D4, {0, PCSX2_REG_OFFSET(v0), 0, 0, SLPM66918, "SLPM-66918"}},
+    // School Days L×H
+    {0x1421AC, {0, PCSX2_REG_OFFSET(v1), 0, 0, 0, "SLPM-67015"}},
+    // IZUMO2 学園狂想曲 ダブルタクト
+    {0xDDC80E, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66908"}},
+    // 君が主で執事が俺で～お仕え日記～ [初回限定版]
+    {0x1EF66E0, {DIRECT_READ, 0, 0, 0, FSLPM55195, "SLPM-66933"}},
+    // Φなる・あぷろーち 2 ～1st priority～ [初回限定版]
+    {0x1B64F4, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66942"}},
+    // 12RIVEN - the Ψcliminal of integral -
+    {0x1D3DDB0, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-66901"}},
+    // 吸血奇譚 ムーンタイズ
+    {0x2B1780, {DIRECT_READ, 0, 0, 0, SLPM66919, "SLPM-66919"}},
+    // true tears～トゥルーティアーズ～
+    {0x564568, {DIRECT_READ, 0, 0, 0, SLPM66935, "SLPM-66935"}},
+    // プリズム・アーク -AWAKE-
+    {0x173F94, {0, PCSX2_REG_OFFSET(s1), 0, 0, 0, "SLPM-66846"}},
+    // 終末少女幻想アリスマチック Apocalypse [通常版]
+    {0x1BCA7D0, {DIRECT_READ, 0, 0, 0, SLPM66997, "SLPM-66997"}},
+    // ほしがりエンプーサ
+    {0x3649D0, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-66969"}},
+    // ほしフル～星の降る街～
+    {0x6F0B28, {DIRECT_READ, 0, 0, SLPM66344<0x6F0B28, 0x6F0B5D, 0x6F0B92>, 0, "SLPM-66920"}},
+    // H2Oプラス
+    {0xD88890, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66921"}},
+    // Lの季節2 ～Invisible Memories～ [通常版]
+    {0x1D43970, {DIRECT_READ, 0, 0, 0, SLPM55009, "SLPM-55009"}},
+    // アオイシロ [初回限定版]
+    {0xB2F560, {DIRECT_READ, 0, 0, 0, SLPM66958, "SLPM-66958"}},
+    // よつのは ～a journey of sincerity～ [通常版]
+    {0x114218, {0, PCSX2_REG_OFFSET(s2), 0, 0, SLPM55016, "SLPM-55016"}},
+    // 白銀のソレイユ Contract to the future 未来への契約 [通常版]
+    {0x1FFD934, {DIRECT_READ, 0, 0, 0, SLPS25897<3>, "SLPM-55026"}},
+    // Sugar+Spice！ ～あの子のステキな何もかも～
+    {0x64508E, {DIRECT_READ, 0, 0, 0, SLPM55047, "SLPM-55047"}},
+    // シークレットゲーム -KILLER QUEEN-
+    {0x1BC90C0, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55028"}},
     // レッスルエンジェルス サバイバー2
     {0xEAC080, {DIRECT_READ, 0, 0, 0, SLPM65396, "SLPM-55058"}},
     // 夢見白書 ～Second Dream～ [通常版]
@@ -1124,6 +1223,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x17B6D4, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55159, "SLPM-55159"}},
     // トリガーハート エグゼリカ エンハンスド
     {0x324694, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM55052, "SLPM-55052"}},
+    // Memories Off 6 ～T-Wave～ [通常版]
+    {0x1A1528, {0, PCSX2_REG_OFFSET(s3), 0, 0, SLPM55197, "SLPM-66988"}},
     // Memories Off 6 Next Relation
     {0x17F334, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55197, "SLPM-55197"}},
     // メルティブラッド アクトレスアゲイン [通常版]
@@ -1148,6 +1249,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x66C5C0, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55068"}},
     // 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版]
     {0xBC9740, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55288"}},
+    // 神曲奏界ポリフォニカ 0～4話フルパック
+    {0x3B56F0, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66977"}},
     // 神曲奏界ポリフォニカ THE BLACK -EPSODE 1 & 2 BOX EDITION-
     {0x309570, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55095"}},
     // 神曲奏界ポリフォニカ アフタースクール
@@ -1312,7 +1415,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 今日からマ王！ 眞マ国の休日
     {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
     // 遙かなる時空の中で3 運命の迷宮 [Triple Pack]
-    {0x1FFE9D8, {DIRECT_READ, 0, 0, SLPM66344, 0, "SLPM-66344"}},
+    {0x1FFE9D8, {DIRECT_READ, 0, 0, SLPM66344<0x1FFE9D8, 0x1FFE9F4, 0x1FFEA10>, 0, "SLPM-66344"}},
     // Angel's Feather
     {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
     // 空色の風琴 ～Remix～

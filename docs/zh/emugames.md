@@ -159,6 +159,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 010024200E00A000 | うたの☆プリンスさまっ♪ Repeat LOVE |
 |  | 01000C7019E1C000 | ワンド オブ フォーチュン Ｒ～ |
 |  | 010088A01A774000 | ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～ |
+|  | 010051701A7BE000 | ワンド オブ フォーチュン Ｒ２ ＦＤ ～君に捧げるエピローグ～ |
 |  | 010086C00AF7C000 | Yo-kai Watch 4++ |
 |  | 010079C017B98000 | キューピット・パラサイト -Sweet & Spicy Darling.- |
 |  | 010061A01C1CE000 | DesperaDrops |
@@ -861,6 +862,25 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66918 | プリンセスメーカー5 |
+|  | SLPM-67015 | School Days L×H |
+|  | SLPM-66908 | IZUMO2 学園狂想曲 ダブルタクト |
+|  | SLPM-66933 | 君が主で執事が俺で～お仕え日記～ [初回限定版] |
+|  | SLPM-66942 | Φなる・あぷろーち 2 ～1st priority～ [初回限定版] |
+|  | SLPM-66901 | 12RIVEN - the Ψcliminal of integral - |
+|  | SLPM-66919 | 吸血奇譚 ムーンタイズ |
+|  | SLPM-66935 | true tears～トゥルーティアーズ～ |
+|  | SLPM-66846 | プリズム・アーク -AWAKE- |
+|  | SLPM-66997 | 終末少女幻想アリスマチック Apocalypse [通常版] |
+|  | SLPM-66969 | ほしがりエンプーサ |
+|  | SLPM-66920 | ほしフル～星の降る街～ |
+|  | SLPM-66921 | H2Oプラス |
+|  | SLPM-55009 | Lの季節2 ～Invisible Memories～ [通常版] |
+|  | SLPM-66958 | アオイシロ [初回限定版] |
+|  | SLPM-55016 | よつのは ～a journey of sincerity～ [通常版] |
+|  | SLPM-55026 | 白銀のソレイユ Contract to the future 未来への契約 [通常版] |
+|  | SLPM-55047 | Sugar+Spice！ ～あの子のステキな何もかも～ |
+|  | SLPM-55028 | シークレットゲーム -KILLER QUEEN- |
 |  | SLPM-55058 | レッスルエンジェルス サバイバー2 |
 |  | SLPM-55071 | 夢見白書 ～Second Dream～ [通常版] |
 |  | SLPM-55079 | Scarlett ～日常の境界線～ [通常版] |
@@ -870,6 +890,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | SLPM-55136 | Clear ～新しい風の吹く丘で～ |
 |  | SLPM-55159 | ヒャッコ よろずや事件簿！ |
 |  | SLPM-55052 | トリガーハート エグゼリカ エンハンスド |
+|  | SLPM-66988 | Memories Off 6 ～T-Wave～ [通常版] |
 |  | SLPM-55197 | Memories Off 6 Next Relation |
 |  | SLPM-55184 | メルティブラッド アクトレスアゲイン [通常版] |
 |  | SLPM-55154 | つよきす2学期 ～Swift Love～ [通常版] |
@@ -882,6 +903,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | SLPM-55174 | ストライクウィッチーズ あなたとできること [通常版] |
 |  | SLPM-55068 | 恋姫†夢想 ～ドキッ☆乙女だらけの三国志演義～ [通常版] |
 |  | SLPM-55288 | 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版] |
+|  | SLPM-66977 | 神曲奏界ポリフォニカ 0～4話フルパック |
 |  | SLPM-55095 | 神曲奏界ポリフォニカ THE BLACK -EPSODE 1 & 2 BOX EDITION- |
 |  | SLPM-55270 | 神曲奏界ポリフォニカ アフタースクール |
 |  | SLPM-55225 | 戦極姫 ～戦乱に舞う乙女達～ |

@@ -986,21 +986,10 @@ namespace
     }
     void FULJM05889(TextBuffer *buffer, HookParam *)
     {
-        auto text = reinterpret_cast<LPSTR>(buffer->buff);
-        for (size_t i = 0; i < buffer->size;)
-        {
-            if (IsShiftjisLeadByte(text[i]))
-            {
-                i += 2;
-                continue;
-            }
-            if (text[i] == '^')
-                text[i] = '\n';
-
-            i += 1;
-        }
+        auto s = buffer->strAW();
+        strReplace(s, L"^");
+        buffer->fromWA(s);
     }
-
     void NPJH50619F(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
