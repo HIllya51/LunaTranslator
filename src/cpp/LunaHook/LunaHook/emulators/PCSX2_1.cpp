@@ -25,6 +25,13 @@ namespace
         strReplace(s, L"\n");
         buffer->fromWA(s);
     }
+    void SLPM66491(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L"^");
+        s = re::sub(s, L"<(.*?),(.*?)>", L"$1");
+        buffer->fromWA(s);
+    }
     void SLPM66919(TextBuffer *buffer, HookParam *)
     {
         auto s = buffer->strAW();
@@ -146,6 +153,15 @@ namespace
         if (idx++ % 3)
             return buffer->clear();
         StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    }
+    void SLPM66239(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\r');
+    }
+    void SLPS25612(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, L'\r');
+        CharFilter(buffer, L'\n');
     }
     void SLPM65396(TextBuffer *buffer, HookParam *hp)
     {
@@ -394,6 +410,15 @@ namespace
         auto s = buffer->strA();
         if (endWith(s, "p"))
             buffer->from(s.substr(0, s.size() - 1));
+    }
+    void SLPM66398(TextBuffer *buffer, HookParam *hp)
+    {
+        SLPM66620(buffer, hp);
+        auto s = buffer->strAW();
+        strReplace(s, L".");
+        strReplace(s, L"r");
+        s = re::sub(s, L"v\\d+");
+        buffer->fromWA(s);
     }
     void SLPM55009(TextBuffer *buffer, HookParam *hp)
     {
@@ -870,6 +895,35 @@ namespace
         s = re::sub(s, R"(\$s\d+)");
         buffer->from(s);
     }
+    void SLPM66460(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+        {
+            return buffer->clear();
+        }
+        last = s;
+        s = re::sub(s, R"(@r\(\d,(.*?)\))");
+        buffer->from(s);
+    }
+    void SLPS25668(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+        {
+            return buffer->clear();
+        }
+        last = s;
+        if (s.size() == 1)
+            return buffer->clear();
+        for (int i = 0; i < s.size() / 2; i++)
+        {
+            if (!IsShiftjisWord(*(WORD *)(s.data() + 2 * i)))
+                return buffer->clear();
+        }
+    }
     void SLPM66605(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -1203,6 +1257,21 @@ namespace
         strReplace(s, "\r");
         buffer->from(s);
     }
+    void SLPM66406(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        s = s.substr(1);
+        if (!IsShiftjisWord(*(WORD *)s.data()))
+        {
+            last.clear();
+            return buffer->clear();
+        }
+        buffer->from(s);
+    }
     void SLPM55197(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -1361,6 +1430,28 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 桜華 ～心輝かせる桜～
+    {0x16AABC, {0, PCSX2_REG_OFFSET(s1), 0, 0, SLPM66406, "SLPM-66406"}},
+    // ギャラクシーエンジェルⅡ ～絶対領域の扉～ [通常版]
+    {0x1529DC3, {DIRECT_READ, 0, 0, 0, SLPM65396, "SLPM-66243"}},
+    // 魂響 ～御霊送りの詩～ [通常版]
+    {0x1D344D0, {DIRECT_READ, 0, 0, 0, SLPM66757, "SLPM-66433"}},
+    // あそびにいくヨ！ ～ちきゅうぴんちのこんやくせんげん～
+    {0x1A80F42, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66457"}},
+    // スクールランブル二学期 恐怖の(?)夏合宿！ 洋館に幽霊現る！？ お宝を巡って真っ向勝負!!!の巻 [初回限定版]
+    {0x19C8D4, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25669"}},
+    // あやかしびと -幻妖異聞録- [通常版]
+    {0x23F138, {DIRECT_READ, 0, 0, 0, SLPM66491, "SLPM-66491"}},
+    // Strawberry Panic！ [通常版]
+    {0x1E53908, {DIRECT_READ | CODEC_UTF16, 0, 0, 0, SLPS25612, "SLPS-25612"}},
+    // パルフェ Chocolat Second Style
+    {0x1E0C7Fb, {DIRECT_READ, 0, 0, 0, SLPM66398, "SLPM-66398"}},
+    // レッスルエンジェルス SURVIVOR
+    {0x7EA530, {DIRECT_READ, 0, 0, 0, SLPM66239, "SLPM-66239"}},
+    // _summer##
+    {0x15EDDC, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM66460, "SLPM-66460"}},
+    // 鳥篭の向こうがわ
+    {0x12B96C, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25668, "SLPS-25668"}},
     // 龍刻 Ryu-Koku [限定版]
     {0x1E15280, {DIRECT_READ, 0, 0, 0, FSLPM66045, "SLPM-66534"}},
     // 夢見師 [初回限定版]
