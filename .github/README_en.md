@@ -1,4 +1,4 @@
-# LunaTranslator [Software Download](https://docs.lunatranslator.org/README.html)
+# LunaTranslator
 
 > **A Visual Novel translation tool**
 

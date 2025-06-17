@@ -862,6 +862,34 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66534 | 龍刻 Ryu-Koku [限定版] |
+|  | SLPM-66618 | 夢見師 [初回限定版] |
+|  | SLPM-66507 | 乙女の事情 [初回限定版] |
+|  | SLPM-66499 | 神様家族 応援願望 |
+|  | SLPM-66530 | Gift -prism- [通常版] |
+|  | SLPM-66495 | 女子高生 GAME'S-HIGH！ |
+|  | SLPM-66544 | 世界ノ全テ ～two of us～ |
+|  | SLPM-66607 | ホワイトブレス～絆～ [通常版] |
+|  | SLPM-66440 | 保健室へようこそ [通常版] |
+|  | SLPM-66570 | I”s Pure |
+|  | SLPM-66565 | REC☆ドキドキ声優パラダイス☆ [通常版] |
+|  | SLPM-66641 | すくぅ～る らぶっ！～恋と希望のメトロノーム～ |
+|  | SLPM-66470 | 「ラブ★コン ～パンチDEコント～」[通常版] |
+|  | SLPS-25749 | 蒼い空のネオスフィア ～ナノカ・フランカ発明工房記2～ [通常版] |
+|  | SLPM-66611 | 智代アフター ～It's a Wonderful Life～ CS Edition |
+|  | SLPS-25719 | はぴねす！でらっくす [初回限定版] |
+|  | SLPM-66620 | ひぐらしのなく頃に祭 |
+|  | SLPM-66734 | きると ～貴方と紡ぐ夢と恋のドレス～ [初回限定版] |
+|  | SLPS-25689 | シムーン 異薔薇戦争 封印のリ・マージョン [通常版] |
+|  | SLPM-66726 | お嬢様組曲 -Sweet Concert- [通常版] |
+|  | SLPS-25775 | まじしゃんず・あかでみい |
+|  | SLPM-66732 | 許嫁 [初回限定版] |
+|  | SLPM-66755 | 魔女っ娘ア・ラ・モードⅡ ～魔法と剣のストラグル～ [通常版] |
+|  | SLPM-66757 | Que ～エンシェントリーフの妖精～ [通常版] |
+|  | SLPM-66764 | IZUMO零 ～横濱あやかし絵巻～ |
+|  | SLPM-66598 | 夜刀姫斬鬼行 -剣の巻- |
+|  | SLPM-66605 | キャッスルファンタジア アリハト戦記 |
+|  | SLPM-66754 | 月面兎兵器ミーナ -ふたつのPROJECT M- [通常版] |
 |  | SLPM-66285 | プリンセスコンチェルト [通常版] |
 |  | SLPM-66826 | 妖鬼姫伝 ～あやかし幻灯話～ [限定版] |
 |  | SLPM-66879 | StarTRain -your past makes your future- [初回限定版] |
@@ -898,6 +926,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | SLPM-55136 | Clear ～新しい風の吹く丘で～ |
 |  | SLPM-55159 | ヒャッコ よろずや事件簿！ |
 |  | SLPM-55052 | トリガーハート エグゼリカ エンハンスド |
+|  | SLPM-66791 | Memories Off #5 encore [通常版] |
 |  | SLPM-66988 | Memories Off 6 ～T-Wave～ [通常版] |
 |  | SLPM-55197 | Memories Off 6 Next Relation |
 |  | SLPM-55184 | メルティブラッド アクトレスアゲイン [通常版] |
@@ -907,10 +936,12 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | SLPM-62784 | 顔のない月 Select story |
 |  | SLPM-55240 | ef - A Fairy Tale of the Two. [初回限定特別同梱版] |
 |  | SLPM-55243 | スズノネセブン！～Rebirth Knot～ |
+|  | SLPS-25896 | 萌え萌え2次大戦（略）☆デラックス |
 |  | SLPS-25956 | 萌え萌え2次大戦(略)2[chu～♪] [通常版] |
 |  | SLPM-55174 | ストライクウィッチーズ あなたとできること [通常版] |
 |  | SLPM-55068 | 恋姫†夢想 ～ドキッ☆乙女だらけの三国志演義～ [通常版] |
 |  | SLPM-55288 | 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版] |
+|  | SLPM-66743 | 神曲奏界ポリフォニカ |
 |  | SLPM-66977 | 神曲奏界ポリフォニカ 0～4話フルパック |
 |  | SLPM-55095 | 神曲奏界ポリフォニカ THE BLACK -EPSODE 1 & 2 BOX EDITION- |
 |  | SLPM-66909 | 神曲奏界ポリフォニカ ３&４話完結編 |
@@ -955,7 +986,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | SLPS-20352 | 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02 |
 |  | SLPS-20394 | 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03 |
 |  | SLPS-25871 | ドラスティックキラー |
-|  | SLPS-25679 | うたわれるもの 散りゆく者への子守唄 |
+|  | SLPS-25678 & SLPS-25679 | うたわれるもの 散りゆく者への子守唄 |
 |  | SLPS-25150 | Only you リベルクルス ドラマCD付き |
 |  | SLPM-66905 | D.C. ～ダ・カーポ～ the Origin |
 |  | SLPM-55156 | D.C.I.F. ～ダ・カーポ～イノセント・フィナーレ～ [通常版] |
@@ -969,6 +1000,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | SLPM-66858 | いつか、届く、あの空に。 ～陽の道と緋の昏と～ [通常版] |
 |  | SLPS-25830 | ゼロの使い魔 夢魔が紡ぐ夜風の幻想曲 [限定版] |
 |  | SLPS-25897 | ゼロの使い魔 迷子の終止符と幾千の交響曲 |
+|  | SLPS-25709 | ゼロの使い魔 小悪魔と春風の協奏曲 [通常版] |
 |  | SLPM-55170 | スキップ・ビート |
 |  | SLPM-66891 & SLPM-66892 | Myself;Yourself |
 |  | SLPM-55163 | Myself; Yourself それぞれのfinale |
