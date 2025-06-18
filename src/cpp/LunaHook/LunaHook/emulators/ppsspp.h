@@ -15,10 +15,13 @@ public:
             ss << enginename << " " << a << "." << b << "." << c << "." << d;
             enginename = ss.str();
         }
-        check_by = CHECK_BY::FILE;
+        check_by = CHECK_BY::CUSTOM;
         is_engine_certain = false;
-        check_by_target = L"PPSSPP*.exe";
         jittype = JITTYPE::PPSSPP;
+        check_by_target = []()
+        {
+            return Util::CheckFile(L"PPSSPP*.exe") || Util::SearchResourceString(L"PPSSPP PSP emulator");
+        };
     };
     bool attach_function();
     bool attach_function1();

@@ -17,9 +17,12 @@ public:
             enginename = ss.str();
         }
         jittype = JITTYPE::VITA3K;
-        check_by = CHECK_BY::FILE;
+        check_by = CHECK_BY::CUSTOM;
         is_engine_certain = false;
-        check_by_target = L"Vita3K.exe";
+        check_by_target = []()
+        {
+            return Util::CheckFile(L"Vita3K.exe") || Util::SearchResourceString(L"Vita3K PSVita Emulator");
+        };
     };
     bool attach_function();
     bool attach_function1();
