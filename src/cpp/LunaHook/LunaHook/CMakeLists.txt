@@ -25,7 +25,7 @@ else()
 		ShinyDaysGame MarineHeart ShinaRio CaramelBox UnisonShift Escude Ryokucha Alice Footy2
 		utawarerumono System4x Abalone Abel 5pb HorkEye XUSE Leaf Nekopack AXL AGS AdobeFlash10
 		FocasLens Tamamo Ages3ResT H_do_C RScript TYPEMOON TAKUYO MixwillSoft MerRouge GROOVER
-		SmartAdv Hug GJ Pinpai ADVSystem NUGSystem LizardFactory)
+		SmartAdv Hug GJ Pinpai ADVSystem NUGSystem LizardFactory Nekotaro)
 	set(enginepath "engine32")
 	set(collector "enginecollection32.cpp")
 endif()
