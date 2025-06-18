@@ -122,3 +122,7 @@ DECLARE_API void MaximumWindow(HWND hwnd)
     GetVirtualDesktopRect(rect);
     MoveWindow(hwnd, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top, TRUE);
 }
+DECLARE_API float GetDevicePixelRatioF(HWND hwnd)
+{
+    return 1.0f * GetDpiForWindow(hwnd) / USER_DEFAULT_SCREEN_DPI;
+}

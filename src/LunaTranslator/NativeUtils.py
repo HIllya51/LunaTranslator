@@ -762,3 +762,8 @@ def ListEndpoints(isinput: bool):
 
     _ListEndpoints(isinput, _ListEndpoints_CB(__))
     return ret
+
+
+GetDevicePixelRatioF = utilsdll.GetDevicePixelRatioF
+GetDevicePixelRatioF.argtypes = (HWND,)
+GetDevicePixelRatioF.restype = c_float

@@ -7,7 +7,7 @@ from gui.rendertext.texttype import (
     FenciColor,
 )
 import gobject, windows, json, os, functools, time
-import hashlib
+import hashlib, NativeUtils
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
@@ -491,12 +491,13 @@ class TextBrowser(WebviewWidget, somecommon):
         self.eval(js)
 
     def calllunaheightchange(self, h):
-        self.contentsChanged.emit(
-            QSize(
-                self.width(),
-                int(h * self.get_zoom()),
-            )
+        sz = QSizeF(
+            self.width(),
+            h * self.get_zoom(),
         )
+        if gobject.runtime_for_xp:
+            sz *= NativeUtils.GetDevicePixelRatioF(int(self.winId()))
+        self.contentsChanged.emit(sz.toSize())
 
     def parsemousebutton(self, i):
         btn_map = {
