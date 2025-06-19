@@ -946,16 +946,17 @@ class TranslatorWindow(resizableframeless):
         self.checksettop()
 
     def canceltop(self):
-        if self.istopmost():
-            windows.SetWindowPos(
-                self.winid,
-                windows.HWND_NOTOPMOST,
-                0,
-                0,
-                0,
-                0,
-                windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
-            )
+        if not self.istopmost():
+            return
+        windows.SetWindowPos(
+            self.winid,
+            windows.HWND_NOTOPMOST,
+            0,
+            0,
+            0,
+            0,
+            windows.SWP_NOACTIVATE | windows.SWP_NOSIZE | windows.SWP_NOMOVE,
+        )
 
     def istopmost(self):
         return bool(
@@ -1139,10 +1140,14 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.raise_()
         self.titlebar.setbuttonsize()
         self.addbuttons()
+        self._isentered = False
         t = QTimer(self)
         t.setInterval(25)
-        self._isentered = False
         t.timeout.connect(self.__betterenterevent)
+        t.start()
+        t = QTimer(self)
+        t.setInterval(1000)
+        t.timeout.connect(self.checksettop)
         t.start()
         self.adjustbuttons = self.titlebar.adjustbuttons
         self.verticalhorizontal(globalconfig["verticalhorizontal"])
@@ -1591,16 +1596,24 @@ class TranslatorWindow(resizableframeless):
 
         def __():
             # 选取范围后立即直接一次，期间不要让自动之前去瞎跑以免浪费一次。
-            gobject.base.textsource.runonce()
+            t = gobject.base.textsource.gettextonce()
+            if t:
+                gobject.base.textgetmethod(t, False)
+
             gobject.base.textsource.stop = False
 
         threader(__)()
         if not globalconfig["keepontop"]:
             windows.SetForegroundWindow(self.winid)
 
+    @threader
     def startTranslater(self):
+        t = None
         if gobject.base.textsource:
-            threader(gobject.base.textsource.runonce)()
+            t = gobject.base.textsource.gettextonce()
+        if not t:
+            t = gobject.base.currenttext
+        gobject.base.textgetmethod(t, False)
 
     def toolbarhidedelay(self):
 

@@ -862,6 +862,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25508 | 舞-HiME 運命の系統樹 |
 |  | SLPM-66406 | 桜華 ～心輝かせる桜～ |
 |  | SLPM-66243 | ギャラクシーエンジェルⅡ ～絶対領域の扉～ [通常版] |
 |  | SLPM-66433 | 魂響 ～御霊送りの詩～ [通常版] |

@@ -148,8 +148,3 @@ class basetext:
                     )
             except:
                 print_exc()
-
-    def runonce(self):
-        t = self.gettextonce()
-        if t:
-            self.textgetmethod(t, False)

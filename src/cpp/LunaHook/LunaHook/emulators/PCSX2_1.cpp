@@ -1430,6 +1430,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 舞-HiME 運命の系統樹
+    {0x4AEE40, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25508"}}, //@mills
     // 桜華 ～心輝かせる桜～
     {0x16AABC, {0, PCSX2_REG_OFFSET(s1), 0, 0, SLPM66406, "SLPM-66406"}},
     // ギャラクシーエンジェルⅡ ～絶対領域の扉～ [通常版]
