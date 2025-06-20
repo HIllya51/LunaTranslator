@@ -4,7 +4,7 @@
  
 ### 简体中文  | [English](README_en.md) | [Other Language](otherlang.md)
 
-### 如果使用中遇到困难，可以查阅使用说明、观看[视频教程](https://space.bilibili.com/592120404/video)，也欢迎加入[![](https://img.shields.io/badge/QQ群-963119821-FF007C?style=for-the-badge)](https://qm.qq.com/q/I5rr3uEpi2)、或发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。
+### 如果使用中遇到困难，可以查阅使用说明、观看[视频教程](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群 963119821](https://qm.qq.com/q/I5rr3uEpi2)、或发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。
 
 ## 功能支持
 

@@ -4,8 +4,6 @@
 
 ### [简体中文](README.md) | English | [Other Language](otherlang.md) 
 
-### If you encounter any difficulties while using the software, you can check the [User Guide](/), join our [![](https://img.shields.io/discord/1262692128031772733?label=Discord&logo=discord&color=FF007C&style=for-the-badge)](https://discord.com/invite/ErtDwVeAbB), or open an [issue](https://github.com/HIllya51/LunaTranslator/issues) to contact me.
-
 ## Feature Support
 
 #### Text Input
