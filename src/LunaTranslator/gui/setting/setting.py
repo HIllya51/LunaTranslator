@@ -88,7 +88,7 @@ class Setting(closeashidewindow):
     def firstshow(self):
 
         self.setMinimumSize(100, 100)
-        self.setWindowTitle("设置")
+        self.setWindowTitleWithVersion("设置")
 
         self.tab_widget, do = makesubtab_lazy(
             [

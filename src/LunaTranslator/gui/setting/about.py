@@ -4,7 +4,6 @@ import NativeUtils
 from myutils.config import globalconfig, static_data
 from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10
 from myutils.wrapper import threader
-from myutils.hwnd import getcurrexe
 from myutils.utils import makehtml, getlanguse, dynamiclink
 import requests, importlib
 import gobject
@@ -158,18 +157,6 @@ def proxyusage(self):
 
 
 def updatexx(self):
-    version = NativeUtils.QueryVersion(getcurrexe())
-    if version is None:
-        versionstring = "unknown"
-    else:
-        vs = ".".join(str(_) for _ in version)
-        if vs.endswith(".0"):
-            vs = vs[:-2]
-        versionstring = ("v{}").format(vs)
-        versionstring += (
-            " " + [["Win7", "WinXP"][runtime_for_xp], "Win10"][runtime_for_win10]
-        )
-
     return getboxlayout(
         [
             D_getsimpleswitch(
@@ -187,9 +174,6 @@ def updatexx(self):
             getsmalllabel(""),
             getsmalllabel("最新版本"),
             functools.partial(createversionlabel, self),
-            getsmalllabel(""),
-            getsmalllabel("当前版本"),
-            getsmalllabel(versionstring),
             "",
         ]
     )
@@ -358,7 +342,7 @@ def setTab_about(self, basel):
                 dict(
                     name="aboutlayout",
                     parent=self,
-                    hiderows=[3],
+                    hiderows=[2, 3],
                     grid=[
                         ["软件显示语言", __delayloadlangs],
                         ["使用代理", functools.partial(proxyusage, self)],
@@ -424,4 +408,8 @@ def setTab_about(self, basel):
         functools.partial(
             _progresssignal4, self.aboutlayout.layout(), self.downloadprogress
         ),
+    )
+    gobject.base.connectsignal(
+        gobject.base.showupdatebtn,
+        lambda: self.aboutlayout.layout().setRowVisible(2, True),
     )

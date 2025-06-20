@@ -6,6 +6,7 @@ from gobject import runtime_for_xp
 from myutils.config import _TR, _TRL, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark, checkisusingwine
+from myutils.hwnd import getcurrexe
 from ocrengines.baseocrclass import OCRResult
 from gui.dynalang import (
     LLabel,
@@ -525,6 +526,16 @@ class TableViewW(DelayLoadTableView):
 
 class saveposwindow(LMainWindow):
     screengeochanged = pyqtSignal()
+
+    def setWindowTitleWithVersion(self, t):
+        version = NativeUtils.QueryVersion(getcurrexe())
+        if version:
+            vs = ".".join(str(_) for _ in version)
+            if vs.endswith(".0"):
+                vs = vs[:-2]
+            versionstring = ("v{}").format(vs)
+            t += "{}当前版本_[[{}]]".format("_" * 16, versionstring)
+        return super().setWindowTitle(t)
 
     def __init__(self, parent, poslist=None, flags=None) -> None:
         LMainWindow.__init__(self, parent)

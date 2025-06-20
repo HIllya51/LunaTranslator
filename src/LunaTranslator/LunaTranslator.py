@@ -95,6 +95,7 @@ class BASEOBJECT(QObject):
     sourceswitchs = pyqtSignal(str, bool)
     fenyinsettings = pyqtSignal(bool)
     dispatch_translate = pyqtSignal(str, str)
+    showupdatebtn = pyqtSignal()
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -130,6 +131,7 @@ class BASEOBJECT(QObject):
         self.__connect_internal(self.progresssignal4)
         self.__connect_internal(self.versiontextsignal)
         self.__connect_internal(self.showandsolvesig)
+        self.__connect_internal(self.showupdatebtn)
 
     def __init__(self) -> None:
         super().__init__()

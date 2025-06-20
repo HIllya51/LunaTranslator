@@ -240,9 +240,9 @@ class searchhookparam(LDialog):
         ):
             cp = globalconfig["codepage_value"]
         else:
-            cp = savehook_new_data[gobject.base.gameuid][
-                "hooksetting_private"
-            ].get("codepage_value", globalconfig["codepage_value"])
+            cp = savehook_new_data[gobject.base.gameuid]["hooksetting_private"].get(
+                "codepage_value", globalconfig["codepage_value"]
+            )
         self.codepagesave = {"spcp": cp}
         layout1.addWidget(
             getsimplecombobox(
@@ -440,10 +440,7 @@ class hookselect(closeashidewindow):
         return gobject.base.textsource
 
     def __init__(self, parent):
-        super(hookselect, self).__init__(
-            parent,
-            globalconfig["selecthookgeo"]
-        )
+        super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
         self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | self.windowFlags())
         self.setupUi()
         self.hidesearchhookbuttons()
@@ -455,7 +452,7 @@ class hookselect(closeashidewindow):
         self.sysmessagesignal.connect(self.sysmessage)
         self.update_item_new_line.connect(self.update_item_new_line_function)
         self.getfoundhooksignal.connect(self.getfoundhook)
-        self.setWindowTitle("选择文本")
+        self.setWindowTitleWithVersion("选择文本")
         self.changeprocessclear()
 
     def querykeyofrow(self, row):
@@ -890,9 +887,9 @@ class hookselect(closeashidewindow):
                 self.textsource.edit_selectedhook_insert(key)
 
                 if hn[:8] == "UserHook":
-                    needinserthookcode = savehook_new_data[
-                        gobject.base.gameuid
-                    ].get("needinserthookcode", [])
+                    needinserthookcode = savehook_new_data[gobject.base.gameuid].get(
+                        "needinserthookcode", []
+                    )
                     needinserthookcode = list(set(needinserthookcode + [hc]))
                     savehook_new_data[gobject.base.gameuid].update(
                         {"needinserthookcode": needinserthookcode}
