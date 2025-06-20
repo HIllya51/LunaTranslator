@@ -534,7 +534,7 @@ class saveposwindow(LMainWindow):
             if vs.endswith(".0"):
                 vs = vs[:-2]
             versionstring = ("v{}").format(vs)
-            t += "{}当前版本_[[{}]]".format("_" * 16, versionstring)
+            t += "{}[[{}]]".format("_" * 16, versionstring)
         return super().setWindowTitle(t)
 
     def __init__(self, parent, poslist=None, flags=None) -> None:
