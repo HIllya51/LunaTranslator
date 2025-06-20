@@ -3395,8 +3395,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x802f7df4, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Quest Description
     {0x8031af0c, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Aproach Text
     // SWEET CLOWN ~午前三時のオカシな道化師~
-    {0x20dbfc, {0, 0, 0x28, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}}, // dialog, sjis
-    {0x214978, {0, 2, 0xC, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}},  // choices
     {0x218B40, {0, 1, 0, 0, F010028D0148E6000_2, 0x010028D0148E6000ull, nullptr}},  // TEXT // 1.0.1 & 1.0.3
     {0x20D420, {0, 0, 0, 0, F010028D0148E6000_2, 0x010028D0148E6000ull, nullptr}},  // NAME+TEXT
     // アナザーコード リコレクション：２つの記憶 / 記憶の扉
