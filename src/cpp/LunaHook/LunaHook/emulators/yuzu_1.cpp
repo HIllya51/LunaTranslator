@@ -2100,6 +2100,9 @@ namespace
     }
     void F010028D0148E6000_2(TextBuffer *buffer, HookParam *hp)
     {
+        StringFilter(buffer, TEXTANDLEN("\\c"));
+        StringFilter(buffer, TEXTANDLEN("\\n"));
+        StringFilter(buffer, TEXTANDLEN("\n"));
         StringFilter(buffer, TEXTANDLEN("@w"));
     }
     DECLARE_FUNCTION(F010047E01E22A000_collect, EXPAND_BRACKETS(const wchar_t *_, int split));
@@ -3392,10 +3395,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x802f7df4, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Quest Description
     {0x8031af0c, {CODEC_UTF8, 0, 0, 0, F010055D009F78000, 0x010055D009F78000ull, "1.2.0"}}, // Aproach Text
     // SWEET CLOWN ~午前三時のオカシな道化師~
-    {0x20dbfc, {0, 0, 0x28, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}},          // dialog, sjis
-    {0x214978, {0, 2, 0xC, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}},           // choices
-    {0x218B40, {FULL_STRING, 1, 0, 0, F010028D0148E6000_2, 0x010028D0148E6000ull, "1.0.1"}}, // TEXT
-    {0x20D420, {0, 0, 0, 0, 0, 0x010028D0148E6000ull, "1.0.1"}},                             // NAME+TEXT
+    {0x20dbfc, {0, 0, 0x28, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}}, // dialog, sjis
+    {0x214978, {0, 2, 0xC, 0, F010028D0148E6000, 0x010028D0148E6000ull, "1.2.0"}},  // choices
+    {0x218B40, {0, 1, 0, 0, F010028D0148E6000_2, 0x010028D0148E6000ull, nullptr}},  // TEXT // 1.0.1 & 1.0.3
+    {0x20D420, {0, 0, 0, 0, F010028D0148E6000_2, 0x010028D0148E6000ull, nullptr}},  // NAME+TEXT
     // アナザーコード リコレクション：２つの記憶 / 記憶の扉
     {0x82dcad30, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Main Text
     {0x82f2cfb0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F0100CB9018F5A000, 0x0100CB9018F5A000ull, "1.0.0"}}, // Item Description
