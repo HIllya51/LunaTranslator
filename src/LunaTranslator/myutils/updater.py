@@ -173,7 +173,7 @@ def versioncheckthread():
             and _version
             and version < tuple(int(_) for _ in _version[0][1:].split("."))
         )
-        if need:
+        if need or not globalconfig["autoupdate"]:
             gobject.base.showupdatebtn.emit()
         if not (need and globalconfig["autoupdate"]):
             continue

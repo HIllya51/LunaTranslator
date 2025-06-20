@@ -162,6 +162,8 @@ def opensettingwindow(self):
 
 def createbtnthemelight(self):
     self.btnthemelight = getIconButton(functools.partial(opensettingwindow, self))
+    lightsetting = getget_setting_window()
+    self.btnthemelight.setVisible(bool(lightsetting))
     return self.btnthemelight
 
 
