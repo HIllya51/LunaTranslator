@@ -1423,6 +1423,20 @@ namespace
             return;
         buffer->from(strReplace(re::sub(s.substr(0, s.find("\r\n\r\n")), "<v \\w+>"), "\r\n"));
     }
+    void SLPM25257(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->viewA();
+        if (s.size() < 2)
+        {
+            return;
+        }
+        // prevent junk strings during game boot
+        if (!IsShiftjisWord(*(WORD *)s.data()))
+        {
+            buffer->clear();
+            return;
+        }
+    }
 }
 struct emfuncinfoX
 {
@@ -1430,6 +1444,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 想いのかけら ～Close to ～
+    {0xC28066, {DIRECT_READ, 0, 0, 0, SLPM25257, "SLPS-25257"}}, //@mills
     // 舞-HiME 運命の系統樹
     {0x4AEE40, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25508"}}, //@mills
     // 桜華 ～心輝かせる桜～
