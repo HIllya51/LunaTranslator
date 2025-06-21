@@ -69,10 +69,7 @@ bool InsertArtemis1Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   // GROWL_DWORD3(reladdr, processStartAddress, range);
   if (!addr)
-  {
-    ConsoleOutput("Artemis1: pattern not exist");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr;
@@ -80,12 +77,6 @@ bool InsertArtemis1Hook()
   hp.split = stackoffset(5);
   hp.type = NO_CONTEXT | DATA_INDIRECT | USING_SPLIT; // 0x418
 
-  // hp.address = 0x650a2f;
-  // GROWL_DWORD(hp.address);
-
-  ConsoleOutput("INSERT Artemis1");
-
-  // ConsoleOutput("Artemis1");
   return NewHook(hp, "Artemis1");
 }
 
@@ -123,27 +114,20 @@ bool InsertArtemis2Hook()
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
-  {
-    ConsoleOutput("Artemis2: pattern not found");
     return false;
-  }
   addr += addr_offset;
   enum
   {
     push_ebp = 0x55
   }; // beginning of the function
   if (*(BYTE *)addr != push_ebp)
-  {
-    ConsoleOutput("Artemis2: beginning of the function not found");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(1);
   hp.type = USING_STRING | NO_CONTEXT;
 
-  ConsoleOutput("INSERT Artemis2");
   bool succ = NewHook(hp, "Artemis2");
 
   // Artikash 1/1/2019: Recent games seem to use utf8 encoding instead, other than that the hook is identical.
@@ -190,20 +174,14 @@ bool InsertArtemis3Hook()
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
-  {
-    ConsoleOutput("Artemis3: pattern not found");
     return false;
-  }
   addr += addr_offset;
   enum
   {
     push_ebp = 0x55
   }; // beginning of the function
   if (*(BYTE *)addr != push_ebp)
-  {
-    ConsoleOutput("Artemis3: beginning of the function not found");
     return false;
-  }
 
   HookParam hp;
   hp.address = addr;
@@ -383,8 +361,121 @@ namespace
     return false;
   }
 }
+namespace
+{
+  /*
+float *__fastcall sub_5FEDD0(_DWORD *a1, int a2, int *a3, void *a4, void *a5, int a6)
+{
+  v137 = (float *)a1;
+  v138 = (unsigned int)a1;
+  v7 = a3;
+  a1[1] = &unk_7E4D38;
+  Src = a4;
+  v135 = a5;
+  a1[48] = &artemis::IDisplayObject::`vftable';
+  v136 = 1;
+  sub_5190E0(0);
+  v146 = 1;
+  v8 = a1[1];
+  *a1 = &artemis::CTextLayer::COneLine::COneBlock::`vftable';
+  *(_DWORD *)((char *)a1 + *(_DWORD *)(v8 + 4) + 4) = &off_7E4C80;
+  *(_DWORD *)((char *)a1 + *(_DWORD *)(a1[1] + 4)) = *(_DWORD *)(a1[1] + 4) - 188;
+  a1[29] = 0;
+  a1[30] = 0;
+  a1[31] = 0;
+  a1[32] = 0;
+  a1[33] = 0;
+  v131 = a1 + 34;
+  a1[34] = 0;
+  a1[35] = 0;
+  a1[36] = 0;
+  LODWORD(v9) = a1 + 37;
+  a1[37] = 0;
+  LODWORD(v139) = a1 + 37;
+  a1[38] = 0;
+  a1[39] = 0;
+  a1[40] = a3[159];
+  a1[41] = a3[160];
+  a1[42] = a3[161];
+  a1[43] = a3[162];
+  a1[44] = a3[196];
+  a1[45] = 0;
+  a1[46] = 0;
+  LOBYTE(v146) = 4;
+  v10 = Src;
+  v11 = strlen((const char *)Src);
+  v12 = *(_BYTE *)Src;
+  v13 = 0;
+  v142 = *(_BYTE *)Src;
+  if ( a3[198] )
+  {
+    if ( a3[198] == 1 )
+    {
+      if ( (unsigned __int8)v12 >= 0xA1u && (unsigned __int8)v12 <= 0xF4u || v12 == -114 )
+        v13 = 1;
+    }
+    else if ( a3[198] == 2 && v12 < 0 )
+    {
+      v13 = -1;
+      LODWORD(v141) = v142;
+      v10 = Src;
+      v14 = 128;
+      if ( v142 < 0 )
+      {
+        do
+        {
+          v14 >>= 1;
+          ++v13;
+        }
+        while ( (v14 & LODWORD(v141)) != 0 );
+        v9 = v139;
+      }
+    }
+  }
+  else
+  {
+    v13 = ((unsigned __int8)v12 ^ 0x20u) - 161 < 0x3C;
+  }
+  */
+  bool charx()
+  {
+    // 此hook能捕获到被注音的文字，其他不行，但这个是单字符刷新。
+    const BYTE BYTES[] = {
+        0X0F, 0XB6, 0XC0,
+        0X83, 0XF0, 0X20,
+        0X2D, 0XA1, 0X00, 0X00, 0X00,
+        0X83, 0XF8, 0X3C,
+        0X73, XX,
+        0XBF, 0X01, 0X00, 0X00, 0X00,
+        0XEB, XX,
+        0X83, XX, XX4, 0X01,
+        0X75, XX,
+        0X3C, 0XA1,
+        0X72, 0X04,
+        0X3C, 0XF4,
+        0X76, 0X04,
+        0X3C, 0X8E,
+        0X75, XX};
+    ULONG addr = MemDbg::findBytes(BYTES, sizeof(BYTES), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    auto faddr = MemDbg::findEnclosingAlignedFunction(addr, 0x200);
+    if (!faddr)
+      return false;
+    const BYTE CHECK[] = {0XC7, 0X07, XX4};
+    ULONG addr2 = MemDbg::findBytes(CHECK, sizeof(CHECK), addr, faddr);
+    if (!addr2)
+      return false;
+    if (!IsBadReadPtr(*(char **)(addr2 + 2), 4))
+      return false;
+    HookParam hp;
+    hp.address = faddr;
+    hp.type = USING_STRING | CODEC_UTF8;
+    hp.offset = stackoffset(2);
+    return NewHook(hp, "artemis::CTextLayer::COneLine::COneBlock");
+  }
+}
 bool Artemis::attach_function()
 {
-
-  return artemis() | (InsertArtemis1Hook() || InsertArtemis2Hook() || InsertArtemis3Hook() || a4());
+  return (charx() || artemis()) | (InsertArtemis1Hook() || InsertArtemis2Hook() || InsertArtemis3Hook() || a4());
 }
