@@ -815,27 +815,6 @@ namespace
             return buffer->clear();
         last.emplace(s);
     }
-    void SLPS20196(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
-    {
-        const uintptr_t val = PCSX2_REG(a0);
-        const uintptr_t val2 = val & 0xFFFF;
-        const uintptr_t val3 = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
-        buffer->from_t(val3);
-    }
-    void SLPS25581(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
-    {
-        const uintptr_t p1 = PCSX2_REG(s1);
-        const uintptr_t p2 = p1 & 0x0FFFFFFF;
-        uint8_t *ptr = (uint8_t *)emu_addr(p2);
-        if (!ptr || ptr == nullptr)
-        {
-            return;
-        }
-        uint8_t b0 = ptr[0];
-        uint8_t b1 = ptr[1];
-        const uintptr_t sjis = ((uintptr_t)b1 << 8) | b0;
-        buffer->from_t(sjis);
-    }
     void SLPM65355(TextBuffer *buffer, HookParam *hp)
     {
         static std::string lastoutput;
@@ -1295,13 +1274,6 @@ namespace
         strReplace(s, L"\ue09c", L"?");
         buffer->fromWA(s);
     }
-    void SLPS25135(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
-    {
-        const uintptr_t val1 = PCSX2_REG(a1);
-        const uintptr_t val2 = (val1 & 0x0000FFFF);
-        const uintptr_t sjis = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
-        buffer->from_t(sjis);
-    }
     void SLPS25759(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         const uintptr_t val_v0 = PCSX2_REG(v0);
@@ -1357,19 +1329,6 @@ namespace
         }
 
         send = !send;
-    }
-    void SLPM66452(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
-    {
-        const uintptr_t val1 = PCSX2_REG(v0);
-        const uintptr_t val2 = (val1 & 0x0000FFFF);
-
-        if (!val2)
-        {
-            return;
-        }
-
-        const uintptr_t sjis = ((val2 & 0xFF) << 8) | ((val2 >> 8) & 0xFF);
-        buffer->from_t(sjis);
     }
     void SLPM55225(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -1444,6 +1403,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // F～ファナティック～ [初回限定版]
+    {0x102748, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(t2), 0, 0, 0, std::vector<const char *>{"SLPM-65296", "SLPM-65297"}}}, //@mills
     // 想いのかけら ～Close to ～
     {0xC28066, {DIRECT_READ, 0, 0, 0, SLPM25257, "SLPS-25257"}}, //@mills
     // 舞-HiME 運命の系統樹
@@ -1650,9 +1611,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 四八 （仮）
     {0x17529C, {0, 0, 0, SLPS25759, 0, "SLPS-25759"}}, //@mills
     // かまいたちの夜2 ～監獄島のわらべ唄～ [通常版]
-    {0x111C78, {0, 0, 0, SLPS25135, 0, "SLPS-25135"}}, //@mills
+    {0x111C78, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(a1), 0, 0, 0, "SLPS-25135"}}, //@mills
     // かまいたちの夜x3 三日月島事件の真相
-    {0x112830, {0, 0, 0, SLPM66452, 0, "SLPM-66452"}}, //@mills
+    {0x112830, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-66452"}}, //@mills
     // 桃華月憚 ～光風の陵王～
     {0x29AB3C, {0, 0, 0, 0, 0, "SLPM-55200"}},
     // 夏色の砂時計
@@ -1673,9 +1634,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // あかね色に染まる坂 ぱられる
     {0x126660, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55006, "SLPM-55006"}},
     // SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム
-    {0x128D58, {0, 0, 0, SLPS25581, 0, "SLPS-25581"}}, //@mills
+    {0x128D58, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, 0, "SLPS-25581"}}, //@mills
     // 赤川次郎ミステリー月の光　 ～沈める鐘の殺人～
-    {0x118150, {0, 0, 0, SLPS20196, 0, "SLPS-20196"}}, //@mills
+    {0x118150, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPS-20196"}}, //@mills
     // 最終電車
     {0x1264EC, {0, 0, 0, SLPS25081, 0, "SLPS-25081"}}, //@mills
     // 夏夢夜話

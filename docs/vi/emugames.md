@@ -862,6 +862,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65296 & SLPM-65297 | F～ファナティック～ [初回限定版] |
 |  | SLPS-25257 | 想いのかけら ～Close to ～ |
 |  | SLPS-25508 | 舞-HiME 運命の系統樹 |
 |  | SLPM-66406 | 桜華 ～心輝かせる桜～ |

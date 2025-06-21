@@ -342,10 +342,10 @@ void TextHook::Send(hook_context *context)
 			{ // CHAR_LITTEL_ENDIAN,CODEC_ANSI_BE,CODEC_UTF16
 				lpDataIn &= 0xffff;
 				if ((hp.type & CODEC_ANSI_BE) && (lpDataIn >> 8))
-					lpDataIn = _byteswap_ushort(lpDataIn & 0xffff);
+					lpDataIn = _byteswap_ushort(lpDataIn);
 				if (buff.size == 1)
 					lpDataIn &= 0xff;
-				*(WORD *)buff.buff = lpDataIn & 0xffff;
+				*(WORD *)buff.buff = lpDataIn;
 			}
 		}
 		else if ((!text_fun) && (!(hp.type & CSHARP_STRING)))
@@ -363,6 +363,10 @@ void TextHook::Send(hook_context *context)
 			if (buff.size <= 0)
 				__leave;
 		}
+
+		static BYTE ZeroCheckBuffer[TEXT_BUFFER_SIZE] = {0};
+		if (memcmp(ZeroCheckBuffer, buff.buff, buff.size) == 0)
+			__leave;
 
 		if (hp.type & (NO_CONTEXT | FIXING_SPLIT))
 			lpRetn = 0;
