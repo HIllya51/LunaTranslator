@@ -317,7 +317,7 @@ class TextBrowser(WebviewWidget, somecommon):
 
     def __starttrans0checker(self):
         if gobject.base.translation_ui.transparent_value_actually == 0:
-            self.trans0checker.start()
+            self.trans0checker.start(50)
         else:
             self.trans0checker.stop()
 
