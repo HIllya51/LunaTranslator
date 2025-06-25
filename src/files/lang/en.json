@@ -809,5 +809,7 @@
     "刷新间隔": "Refresh Interval",
     "找不到运行时": "Runtime not found",
     "环回录制": "Loopback Recording",
-    "鼠标离开时关闭": "Close when mouse leaves"
+    "鼠标离开时关闭": "Close when mouse leaves",
+    "确认删除": "Confirm deletion",
+    "本次运行期间不再询问": "Do not ask again during this session."
 }

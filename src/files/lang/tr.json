@@ -809,5 +809,7 @@
     "刷新间隔": "yenileme aralığı",
     "找不到运行时": "Çalışma zamanı bulunamadı.",
     "环回录制": "döngü kaydı",
-    "鼠标离开时关闭": "Fare ayrıldığında kapat"
+    "鼠标离开时关闭": "Fare ayrıldığında kapat",
+    "确认删除": "Silme işlemini onayla",
+    "本次运行期间不再询问": "Bu çalıştırma sırasında bir daha sorma"
 }

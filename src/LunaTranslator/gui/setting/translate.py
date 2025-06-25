@@ -26,6 +26,7 @@ from gui.usefulwidget import (
     getsimpleswitch,
     D_getIconButton,
     D_getsimpleswitch,
+    request_delete_ok,
     createfoldgrid,
     makesubtab_lazy,
     getspinbox,
@@ -230,7 +231,8 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
     pos = QCursor.pos()
     action = menu.exec(pos)
     if action == delete:
-        selectllmcallback_2(self, countnum, apiuid, None)
+        if request_delete_ok(self, "99e3f96f-8659-457f-9e0b-52643f552889"):
+            selectllmcallback_2(self, countnum, apiuid, None)
     elif action == useproxy:
         globalconfig["fanyi"][apiuid]["useproxy"] = useproxy.isChecked()
     elif action == astoppest:

@@ -6,6 +6,7 @@ from gui.usefulwidget import (
     TableViewW,
     D_getsimpleswitch,
     D_getIconButton,
+    request_delete_ok,
     getIconButton,
     manybuttonlayout,
     IconButton,
@@ -105,6 +106,8 @@ class dialog_savedgame_legacy(QWidget):
         dialog_setting_game(self, k)
 
     def clicked2(self):
+        if not request_delete_ok(self, "bf4aa76a-41a5-4b07-a095-0c34c616ed2d"):
+            return
         try:
 
             idx = self.table.currentIndex().row()

@@ -2018,6 +2018,32 @@ class WebviewWidget(abstractwebview):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
 
 
+_request_delete_ok_cache = set()
+
+
+def request_delete_ok(parent: QWidget = None, cache=None):
+    if cache and cache in _request_delete_ok_cache:
+        return True
+    msg_box = QMessageBox(parent)
+    msg_box.setIcon(QMessageBox.Icon.Warning)
+    msg_box.setWindowTitle(_TR("确认删除"))
+    msg_box.setText(_TR("确认删除"))
+    msg_box.setStandardButtons(
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+    )
+
+    if cache:
+        dont_ask_checkbox = QCheckBox(_TR("本次运行期间不再询问"), msg_box)
+        msg_box.setCheckBox(dont_ask_checkbox)
+
+    reply = msg_box.exec_()
+    if reply == QMessageBox.StandardButton.Yes:
+        if cache and dont_ask_checkbox.isChecked():
+            _request_delete_ok_cache.add(cache)
+        return True
+    return False
+
+
 class WebviewWidget_for_auto(WebviewWidget):
     pluginsedit = pyqtSignal()
     reloadx = pyqtSignal()

@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     D_getIconButton,
     makesubtab_lazy,
+    request_delete_ok,
     makegrid,
     getboxlayout,
     VisLFormLayout,
@@ -57,9 +58,7 @@ def safeGet():
     if (t is None) and (globalconfig["getWordFallbackClipboard"]):
         t = NativeUtils.ClipBoard.text
     if 0:
-        QToolTip.showText(
-            QCursor.pos(), _TR("取词失败"), gobject.base.commonstylebase
-        )
+        QToolTip.showText(QCursor.pos(), _TR("取词失败"), gobject.base.commonstylebase)
         t = ""
     return t
 
@@ -107,9 +106,7 @@ def registrhotkeys(self):
         "_26_1": lambda: gobject.base.translation_ui.ocr_do_function(
             gobject.base.translation_ui.ocr_once_follow_rect
         ),
-        "_28": lambda: NativeUtils.ClipBoard.setText(
-            gobject.base.currenttranslate
-        ),
+        "_28": lambda: NativeUtils.ClipBoard.setText(gobject.base.currenttranslate),
         "_29": lambda: gobject.base.searchwordW.ankiwindow.recordbtn1.click(),
         "_30": lambda: gobject.base.searchwordW.ankiwindow.recordbtn2.click(),
         "_32": functools.partial(autoreadswitch, self),
@@ -117,12 +114,8 @@ def registrhotkeys(self):
         "_35": lambda: gobject.base.searchwordW.ankiconnect.customContextMenuRequested.emit(
             QPoint()
         ),
-        "36": lambda: gobject.base.textgetmethod(
-            NativeUtils.ClipBoard.text, False
-        ),
-        "37": lambda: gobject.base.searchwordW.search_word.emit(
-            safeGet(), None, False
-        ),
+        "36": lambda: gobject.base.textgetmethod(NativeUtils.ClipBoard.text, False),
+        "37": lambda: gobject.base.searchwordW.search_word.emit(safeGet(), None, False),
         "39": lambda: gobject.base.searchwordW.ocr_once_signal.emit(),
         "38": lambda: gobject.base.textgetmethod(safeGet(), False),
         "40": lambda: gobject.base.searchwordW.search_word_in_new_window.emit(
@@ -153,17 +146,18 @@ hotkeys = [
 
 
 def renameapi(qlabel: QLabel, name, self, form: VisLFormLayout, cnt, _=None):
-    menu = QMenu(qlabel)
+    menu = QMenu(self)
     editname = LAction("重命名", menu)
     delete = LAction("删除", menu)
     menu.addAction(editname)
     menu.addAction(delete)
     action = menu.exec(QCursor.pos())
     if action == delete:
-        form.setRowVisible(cnt, False)
-        globalconfig["myquickkeys"].remove(name)
-        globalconfig["quick_setting"]["all"][name]["use"] = False
-        regist_or_not_key(self, name)
+        if request_delete_ok(self, "1ac8bc89-7049-4e1c-9d36-b30698ad104a"):
+            form.setRowVisible(cnt, False)
+            globalconfig["myquickkeys"].remove(name)
+            globalconfig["quick_setting"]["all"][name]["use"] = False
+            regist_or_not_key(self, name)
     elif action == editname:
         before = globalconfig["quick_setting"]["all"][name]["name"]
         __d = {"k": before}

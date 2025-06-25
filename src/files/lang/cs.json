@@ -809,5 +809,7 @@
     "刷新间隔": "Interval obnovení",
     "找不到运行时": "Nelze najít běhové prostředí.",
     "环回录制": "Smyčkový záznam",
-    "鼠标离开时关闭": "Zavřít při opuštění myši"
+    "鼠标离开时关闭": "Zavřít při opuštění myši",
+    "确认删除": "Potvrdit smazání",
+    "本次运行期间不再询问": "Nepožadovat znovu během této relace"
 }

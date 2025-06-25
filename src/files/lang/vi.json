@@ -809,5 +809,7 @@
     "刷新间隔": "khoảng thời gian làm mới",
     "找不到运行时": "Không tìm thấy thời gian chạy",
     "环回录制": "ghi âm vòng lặp",
-    "鼠标离开时关闭": "đóng khi chuột rời khỏi"
+    "鼠标离开时关闭": "đóng khi chuột rời khỏi",
+    "确认删除": "Xác nhận xóa",
+    "本次运行期间不再询问": "Không hỏi lại trong lần chạy này"
 }

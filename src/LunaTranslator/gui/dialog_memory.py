@@ -12,6 +12,7 @@ from myutils.hwnd import grabwindow, getExeIcon
 from gui.usefulwidget import (
     saveposwindow,
     makesubtab_lazy,
+    request_delete_ok,
     mayberelpath,
     IconButton,
     auto_select_webview,
@@ -483,9 +484,7 @@ class dialog_memory(saveposwindow):
             self.__wrap(gobject.base.currenttranslate)
         elif action == origin_hira:
             self.__wrap(
-                mecab.makerubyhtml(
-                    gobject.base.parsehira(gobject.base.currenttext)
-                )
+                mecab.makerubyhtml(gobject.base.parsehira(gobject.base.currenttext))
             )
 
     def __wrap(self, t: str):
@@ -550,9 +549,10 @@ class dialog_memory(saveposwindow):
         menu.addAction(rm)
         action = menu.exec(QCursor.pos())
         if action == rm:
-            self.config.pop(index)
-            self.tab.removeTab(index)
-            self.saveconfig()
+            if request_delete_ok(self, "6c747420-4d9a-4f0b-a428-13872da35597"):
+                self.config.pop(index)
+                self.tab.removeTab(index)
+                self.saveconfig()
 
         elif action == openfile:
             os.startfile(file)

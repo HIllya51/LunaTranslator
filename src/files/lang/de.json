@@ -809,5 +809,7 @@
     "刷新间隔": "Aktualisierungsintervall",
     "找不到运行时": "Laufzeit nicht gefunden",
     "环回录制": "Loop-Aufnahme",
-    "鼠标离开时关闭": "Schließen bei Mausverlassen"
+    "鼠标离开时关闭": "Schließen bei Mausverlassen",
+    "确认删除": "Löschen bestätigen",
+    "本次运行期间不再询问": "Während dieses Laufs nicht mehr nachfragen"
 }

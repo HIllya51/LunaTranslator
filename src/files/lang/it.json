@@ -809,5 +809,7 @@
     "刷新间隔": "intervallo di aggiornamento",
     "找不到运行时": "Impossibile trovare il runtime",
     "环回录制": "Registrazione loopback",
-    "鼠标离开时关闭": "Chiudi quando il mouse esce"
+    "鼠标离开时关闭": "Chiudi quando il mouse esce",
+    "确认删除": "Conferma eliminazione",
+    "本次运行期间不再询问": "Non chiedere più durante questa esecuzione."
 }

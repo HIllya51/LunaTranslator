@@ -809,5 +809,7 @@
     "刷新间隔": "intervalo de atualização",
     "找不到运行时": "Não foi possível encontrar o tempo de execução.",
     "环回录制": "Gravação em loop",
-    "鼠标离开时关闭": "fechar quando o mouse sair"
+    "鼠标离开时关闭": "fechar quando o mouse sair",
+    "确认删除": "Confirmar exclusão",
+    "本次运行期间不再询问": "Não perguntar novamente durante esta execução."
 }

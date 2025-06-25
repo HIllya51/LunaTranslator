@@ -13,7 +13,7 @@ from myutils.hwnd import clipboard_set_image
 from myutils.utils import get_time_stamp, getimageformatlist, targetmod
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
-from gui.usefulwidget import pixmapviewer, makesubtab_lazy, tabadd_lazy
+from gui.usefulwidget import pixmapviewer, makesubtab_lazy, tabadd_lazy, request_delete_ok
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
     getalistname,
@@ -1009,7 +1009,8 @@ class dialog_savedgame_v3(QWidget):
     def shanchuyouxi(self):
         if not self.currentfocusuid:
             return
-
+        if not request_delete_ok(self, "bf4aa76a-41a5-4b07-a095-0c34c616ed2d"):
+            return
         try:
             uid = self.currentfocusuid
             idx2 = getreflist(self.reftagid).index(uid)

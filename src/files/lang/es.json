@@ -809,5 +809,7 @@
     "刷新间隔": "intervalo de actualización",
     "找不到运行时": "No se encuentra el tiempo de ejecución.",
     "环回录制": "Grabación de bucle",
-    "鼠标离开时关闭": "Cerrar cuando el ratón se aleje"
+    "鼠标离开时关闭": "Cerrar cuando el ratón se aleje",
+    "确认删除": "Confirmar eliminación",
+    "本次运行期间不再询问": "No preguntar durante esta ejecución."
 }

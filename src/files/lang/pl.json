@@ -809,5 +809,7 @@
     "刷新间隔": "Interwał odświeżania",
     "找不到运行时": "Nie można znaleźć środowiska wykonawczego",
     "环回录制": "Nagrywanie pętli zwrotnej",
-    "鼠标离开时关闭": "Zamknij po opuszczeniu kursora"
+    "鼠标离开时关闭": "Zamknij po opuszczeniu kursora",
+    "确认删除": "Potwierdź usunięcie",
+    "本次运行期间不再询问": "Nie pytaj ponownie podczas tego uruchomienia."
 }

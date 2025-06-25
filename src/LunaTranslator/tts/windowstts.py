@@ -59,9 +59,6 @@ class TTS(TTSbase):
         dllp = r"C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizer"
         if checkdir(dllp):
             return dllp
-        dllp = "C:\\Windows\\SystemApps\\LKG\\MicrosoftWindows.LKG.SpeechRuntime_cw5n1h2txyewy"
-        if checkdir(dllp):
-            return dllp
         for _dir, _, __ in os.walk("."):
             if checkdir(_dir):
                 return os.path.abspath(_dir)

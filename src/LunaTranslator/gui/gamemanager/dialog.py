@@ -23,6 +23,7 @@ from gui.usefulwidget import (
     IconButton,
     threeswitch,
     getsimplecombobox,
+    request_delete_ok,
     FQLineEdit,
     FocusCombo,
 )
@@ -384,6 +385,8 @@ class dialog_savedgame_new(QWidget):
         addgamebatch_x(self.addgame, self.reflist, files)
 
     def clicked2(self):
+        if not request_delete_ok(self, "bf4aa76a-41a5-4b07-a095-0c34c616ed2d"):
+            return
         try:
             game = self.currentfocusuid
             idx2 = self.reflist.index(game)
@@ -582,13 +585,14 @@ class dialog_savedgame_new(QWidget):
                 exec_=True,
             )
         elif action == dellist:
-            i = calculatetagidx(self.reftagid)
-            savegametaged.pop(i)
-            self.loadcombo(False)
-            self.reftagid = self.vislistcombo.getIndexData(
-                self.vislistcombo.currentIndex()
-            )
-            self.reflist = getreflist(self.reftagid)
+            if request_delete_ok(self, "90063a5b-1e96-4688-ac1c-ee3c1ba5d275"):
+                i = calculatetagidx(self.reftagid)
+                savegametaged.pop(i)
+                self.loadcombo(False)
+                self.reftagid = self.vislistcombo.getIndexData(
+                    self.vislistcombo.currentIndex()
+                )
+                self.reflist = getreflist(self.reftagid)
 
     def directshow(self):
         self.flow.directshow()
