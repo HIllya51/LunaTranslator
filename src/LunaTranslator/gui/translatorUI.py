@@ -1256,10 +1256,6 @@ class TranslatorWindow(resizableframeless):
 
     def cleanupdater(self):
         try:
-            os.remove("cache/Updater.exe")
-        except:
-            pass
-        try:
             shutil.rmtree("files_old")
         except:
             pass

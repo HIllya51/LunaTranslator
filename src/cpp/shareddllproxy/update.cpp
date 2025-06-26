@@ -62,6 +62,7 @@ int updatewmain(int argc, wchar_t *argv[])
 
     *(wcsrchr(path, '\\')) = 0;
     *(wcsrchr(path, '\\')) = 0;
+    *(wcsrchr(path, '\\')) = 0;
 
     SetCurrentDirectory(path);
     int needreload = std::stoi(argv[1]);

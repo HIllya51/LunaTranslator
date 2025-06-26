@@ -75,15 +75,17 @@ def trygetupdate():
 def doupdate():
     if not gobject.base.update_avalable:
         return
+    exe1 = gobject.getcachedir("update/Updater.exe")
+    exe = os.path.abspath(exe1)
     shutil.copy(
         r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
-        gobject.getcachedir("Updater.exe"),
+        exe,
     )
     for dll in os.listdir(runtimedir):
         if not (dll.lower().startswith("vcruntime") or dll.lower().startswith("msvcp")):
             continue
         _ = os.path.join(runtimedir, dll)
-        shutil.copy(_, gobject.getcachedir(dll))
+        shutil.copy(_, gobject.getcachedir("update/" + dll))
 
     for _dir, _, _fs in os.walk(r".\cache\update"):
         for _f in _fs:
@@ -97,15 +99,12 @@ def doupdate():
         _TR("更新成功"),
         _TR("部分文件或目录被以下进程占用，是否终止以下进程？"),
     ]
-    with open(r".\cache\Updater.exe.txt", "w", encoding="utf-16-le") as ff:
+    with open(exe + ".txt", "w", encoding="utf-16-le") as ff:
         for text in texts:
             ff.write(text + "\n")
     subprocess.Popen(
-        r".\cache\Updater.exe update {} {} {} {}".format(
-            int(gobject.base.istriggertoupdate),
-            found,
-            os.getpid(),
-            os.path.abspath(r".\cache\Updater.exe.txt"),
+        r"{} update {} {} {} {}".format(
+            exe1, int(gobject.base.istriggertoupdate), found, os.getpid(), exe + ".txt"
         )
     )
 

@@ -223,3 +223,4 @@ if __name__ == "__main__":
     checkintegrity()
     loadmainui(urlprotocol())
     app.exit(app.exec())
+    os._exit(0)
