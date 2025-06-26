@@ -355,7 +355,11 @@ std::vector<NtdllExtensions::ProcessInfo> NtdllExtensions::processes() noexcept
         info_ptr = reinterpret_cast<decltype(info_ptr)>(reinterpret_cast<LPBYTE>(info_ptr) + info_ptr->NextEntryOffset);
 
         ProcessInfo item;
+#ifdef WINXP
+        item.name = unicode_to_str(*(UNICODE_STRING*)((BYTE)info_ptr + 56));
+#else
         item.name = unicode_to_str(info_ptr->ImageName);
+#endif
         item.pid = static_cast<DWORD>(reinterpret_cast<uintptr_t>(info_ptr->UniqueProcessId));
         item.modules = process_modules(item.pid);
       //  item.user = pid_to_user(item.pid);
