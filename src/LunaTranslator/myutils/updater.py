@@ -1,10 +1,10 @@
 import NativeUtils, queue, hashlib, threading
 from myutils.config import globalconfig, static_data, _TR
-from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10
+from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10, runtimedir
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
-import requests, uuid
-import shutil, gobject, ctypes
+import requests
+import shutil, gobject
 from myutils.proxy import getproxy
 import zipfile, os
 import subprocess
@@ -79,13 +79,20 @@ def doupdate():
         r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
         gobject.getcachedir("Updater.exe"),
     )
+    for dll in ["vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll"]:
+        _ = os.path.join(runtimedir, dll)
+        if not os.path.exists():
+            continue
+        shutil.copy(
+            _,
+            gobject.getcachedir(dll),
+        )
 
     for _dir, _, _fs in os.walk(r".\cache\update"):
         for _f in _fs:
             if _f.lower() == "lunatranslator.exe":
                 found = _dir
-    mappname = uuid.uuid4()
-    mem = NativeUtils.SimpleCreateSharedMem(str(mappname), 5 * 1024)
+
     texts = [
         _TR("错误"),
         _TR("成功"),
@@ -93,15 +100,15 @@ def doupdate():
         _TR("更新成功"),
         _TR("部分文件或目录被以下进程占用，是否终止以下进程？"),
     ]
-    ctypes.memset(mem, 0, 5 * 1024)
-    for i, text in enumerate(texts):
-        ctypes.memmove(mem + i * 1024, text, len(text))
+    with open(r".\cache\Updater.exe.txt", "w") as ff:
+        for text in texts:
+            ff.write(text + "\n")
     subprocess.Popen(
         r".\cache\Updater.exe update {} {} {} {}".format(
             int(gobject.base.istriggertoupdate),
             found,
             os.getpid(),
-            mappname,
+            os.path.abspath(r".\cache\Updater.exe.txt"),
         )
     )
 

@@ -22,6 +22,7 @@ from ctypes import (
 import os
 from ctypes.wintypes import (
     MAX_PATH,
+    LPVOID,
     RECT,
     POINT,
     HWND,
@@ -743,7 +744,7 @@ def OpenFileMapping(name, acc=FILE_MAP_READ | FILE_MAP_WRITE, inher=False):
 
 _MapViewOfFile = _kernel32.MapViewOfFile
 _MapViewOfFile.argtypes = HANDLE, DWORD, DWORD, DWORD, c_size_t
-_MapViewOfFile.restype = POINTER(c_char)
+_MapViewOfFile.restype = LPVOID
 
 
 def MapViewOfFile(
@@ -846,11 +847,6 @@ def GetLocale():
     GetLocaleInfoW(lcid, LOCALE_SISO3166CTRYNAME, buff2, 10)
     return buff.value, buff2.value
 
-
-CreateFileMappingW = _kernel32.CreateFileMappingW
-CreateFileMappingW.argtypes = HANDLE, LPCVOID, DWORD, DWORD, DWORD, LPCWSTR
-CreateFileMappingW.restype = AutoHandle
-PAGE_EXECUTE_READWRITE = 0x40
 
 CreateEventW = _kernel32.CreateEventW
 CreateEventW.argtypes = LPCVOID, BOOL, BOOL, LPCWSTR

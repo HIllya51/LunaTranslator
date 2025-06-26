@@ -411,9 +411,7 @@ class texthook(basetext):
             self.start_unsafe(pids)
         except Exception as e:
             print_exc()
-            gobject.base.translation_ui.displaymessagebox.emit(
-                "错误", stringfyerror(e)
-            )
+            gobject.base.translation_ui.displaymessagebox.emit("错误", stringfyerror(e))
 
     @threader
     def waitend(self, pid):
@@ -440,9 +438,7 @@ class texthook(basetext):
         if self.hconfig.get("insertpchooks_string", False):
             self.Luna_InsertPCHooks(pid, 0)
             self.Luna_InsertPCHooks(pid, 1)
-        gobject.base.displayinfomessage(
-            self.hconfig["title"], "<msg_info_refresh>"
-        )
+        gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
         self.flashembedsettings(pid)
         self.setsettings()
 
@@ -575,9 +571,7 @@ class texthook(basetext):
                 else:
                     insertindex = j + 1
             self.edit_selectedhook_insert(key, insertindex)
-        gobject.base.hookselectdialog.addnewhooksignal.emit(
-            key, select, isembedable
-        )
+        gobject.base.hookselectdialog.addnewhooksignal.emit(key, select, isembedable)
 
     def setlang(self):
         self.Luna_SetLanguage(getlanguse().encode())

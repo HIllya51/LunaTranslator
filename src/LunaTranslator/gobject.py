@@ -72,6 +72,15 @@ runtime_bit_64 = platform.architecture()[0] == "64bit"
 runtime_for_xp = tuple(sys.version_info)[:2] == (3, 4)
 runtime_for_win10 = tuple(sys.version_info)[:2] >= (3, 9)
 
+if runtime_for_win10:
+    runtimedir = "runtime31264"
+elif runtime_for_xp:
+    runtimedir = "runtime3432"
+elif runtime_bit_64:
+    runtimedir = "runtime3764"
+else:
+    runtimedir = "runtime3732"
+runtimedir = "files/" + runtimedir
 sys_le_xp = int(platform.version().split(".")[0]) <= 5
 
 

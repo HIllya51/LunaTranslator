@@ -561,20 +561,6 @@ GetSecurityAttributes = utilsdll.GetSecurityAttributes
 GetSecurityAttributes.restype = c_void_p
 
 
-def SimpleCreateSharedMem(name, size):
-    handle = windows.CreateFileMappingW(
-        windows.INVALID_HANDLE_VALUE,
-        GetSecurityAttributes(),
-        windows.PAGE_EXECUTE_READWRITE,
-        0,
-        size,
-        name,
-    )
-    handle.detach()
-    mapview = windows.MapViewOfFile(handle, size)
-    return mapview
-
-
 def SimpleCreateEvent(name):
     return windows.CreateEventW(GetSecurityAttributes(), False, False, name)
 
