@@ -558,12 +558,15 @@ def rangeselct_function(callback, x=True):
     global screen_shot_ui
     if screen_shot_ui:
         screen_shot_ui.close()
+    p = gobject.base.translation_ui
+    if not p.isVisible():
+        p = None
     if (len(QApplication.screens()) == 1) or globalconfig[
         "range_select_multi_dpi_capture_force"
     ]:
-        screen_shot_ui = rangeselect_1(gobject.base.translation_ui, x)
+        screen_shot_ui = rangeselect_1(p, x)
     else:
-        screen_shot_ui = rangeselect(gobject.base.translation_ui)
+        screen_shot_ui = rangeselect(p)
     screen_shot_ui.originhwnd = windows.GetForegroundWindow()
     screen_shot_ui.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
     screen_shot_ui.show()
