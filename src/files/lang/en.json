@@ -811,5 +811,8 @@
     "环回录制": "Loopback Recording",
     "鼠标离开时关闭": "Close when mouse leaves",
     "确认删除": "Confirm deletion",
-    "本次运行期间不再询问": "Do not ask again during this session."
+    "本次运行期间不再询问": "Do not ask again during this session.",
+    "更新失败": "Update failed",
+    "更新成功": "Update successful",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Some files or directories are being used by the following processes. Do you want to terminate these processes?"
 }

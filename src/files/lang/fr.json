@@ -811,5 +811,8 @@
     "环回录制": "Enregistrement en boucle",
     "鼠标离开时关闭": "fermer lorsque la souris quitte",
     "确认删除": "Confirmer la suppression",
-    "本次运行期间不再询问": "Ne plus demander pendant cette session"
+    "本次运行期间不再询问": "Ne plus demander pendant cette session",
+    "更新失败": "Échec de la mise à jour",
+    "更新成功": "Mise à jour réussie",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Certains fichiers ou répertoires sont utilisés par les processus suivants. Voulez-vous les arrêter ?"
 }

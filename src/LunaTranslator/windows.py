@@ -185,6 +185,8 @@ CloseHandle.restype = BOOL
 
 
 class AutoHandle(HANDLE):
+    def detach(self):
+        self.value = None
 
     def __del__(self):
         if self:
@@ -746,10 +748,10 @@ _MapViewOfFile.restype = POINTER(c_char)
 
 def MapViewOfFile(
     hfmap,
+    size=1024 * 1024 * 16,
     acc=FILE_MAP_READ | FILE_MAP_WRITE,
     high=0,
     low=0,
-    size=1024 * 1024 * 16,
 ):
     return _MapViewOfFile(hfmap, acc, high, low, size)
 
@@ -843,3 +845,17 @@ def GetLocale():
     GetLocaleInfoW(lcid, LOCALE_SISO639LANGNAME, buff, 10)
     GetLocaleInfoW(lcid, LOCALE_SISO3166CTRYNAME, buff2, 10)
     return buff.value, buff2.value
+
+
+CreateFileMappingW = _kernel32.CreateFileMappingW
+CreateFileMappingW.argtypes = HANDLE, LPCVOID, DWORD, DWORD, DWORD, LPCWSTR
+CreateFileMappingW.restype = AutoHandle
+PAGE_EXECUTE_READWRITE = 0x40
+
+CreateEventW = _kernel32.CreateEventW
+CreateEventW.argtypes = LPCVOID, BOOL, BOOL, LPCWSTR
+CreateEventW.restype = AutoHandle
+
+CreateMutexW = _kernel32.CreateMutexW
+CreateMutexW.argtypes = LPCVOID, BOOL, LPCWSTR
+CreateMutexW.restype = AutoHandle

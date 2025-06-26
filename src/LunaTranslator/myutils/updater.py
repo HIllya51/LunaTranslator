@@ -3,8 +3,8 @@ from myutils.config import globalconfig, static_data, _TR
 from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
-import requests
-import shutil, gobject
+import requests, uuid
+import shutil, gobject, ctypes
 from myutils.proxy import getproxy
 import zipfile, os
 import subprocess
@@ -84,9 +84,24 @@ def doupdate():
         for _f in _fs:
             if _f.lower() == "lunatranslator.exe":
                 found = _dir
+    mappname = uuid.uuid4()
+    mem = NativeUtils.SimpleCreateSharedMem(str(mappname), 5 * 1024)
+    texts = [
+        _TR("错误"),
+        _TR("成功"),
+        _TR("更新失败"),
+        _TR("更新成功"),
+        _TR("部分文件或目录被以下进程占用，是否终止以下进程？"),
+    ]
+    ctypes.memset(mem, 0, 5 * 1024)
+    for i, text in enumerate(texts):
+        ctypes.memmove(mem + i * 1024, text, len(text))
     subprocess.Popen(
-        r".\cache\Updater.exe update {} {} {}".format(
-            int(gobject.base.istriggertoupdate), found, os.getpid()
+        r".\cache\Updater.exe update {} {} {} {}".format(
+            int(gobject.base.istriggertoupdate),
+            found,
+            os.getpid(),
+            mappname,
         )
     )
 

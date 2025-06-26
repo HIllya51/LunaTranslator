@@ -811,5 +811,8 @@
     "环回录制": "döngü kaydı",
     "鼠标离开时关闭": "Fare ayrıldığında kapat",
     "确认删除": "Silme işlemini onayla",
-    "本次运行期间不再询问": "Bu çalıştırma sırasında bir daha sorma"
+    "本次运行期间不再询问": "Bu çalıştırma sırasında bir daha sorma",
+    "更新失败": "Güncelleme başarısız oldu.",
+    "更新成功": "Güncelleme başarılı.",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Bazı dosyalar veya dizinler aşağıdaki işlemler tarafından kullanılıyor. Bu işlemleri sonlandırmak istiyor musunuz?"
 }

@@ -1,4 +1,5 @@
-#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
+// https://github.com/microsoft/PowerToys/tree/main/src/modules/FileLocksmith/FileLocksmithLibInterop
+#include "FileLocksmithLibInterop/FileLocksmith.h"
 
 int updatewmain(int argc, wchar_t *argv[])
 {
@@ -30,6 +31,44 @@ int updatewmain(int argc, wchar_t *argv[])
 
     SetCurrentDirectory(path);
     int needreload = std::stoi(argv[1]);
+    auto processes = find_processes_recursive({L".\\files"});
+    auto mapname = argv[4];
+    CHandle fm{OpenFileMappingW(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, mapname)};
+    auto ptr = (BYTE)MapViewOfFile(fm, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, 5 * 1024);
+    auto text_error = (LPCWSTR)ptr;
+    ptr += 1024;
+    auto text_succ = (LPCWSTR)ptr;
+    ptr += 1024;
+    auto text_update_failed = (LPCWSTR)ptr;
+    ptr += 1024;
+    auto text_update_succ = (LPCWSTR)ptr;
+    ptr += 1024;
+    std::wstring text_failed_occupied = (LPCWSTR)ptr;
+
+    if (processes.size())
+    {
+        std::wstring result;
+        for (auto &&proc : processes)
+        {
+            result += proc.name + L"\t" + std::to_wstring(proc.pid) + L"\n";
+            for (auto &&f : proc.files)
+            {
+                result += L"\t\t" + f + L"\n";
+            }
+            result += L"\n";
+        }
+        result = text_failed_occupied + L"\n\n" + result;
+        auto checked = MessageBoxW(GetForegroundWindow(), result.c_str(), text_error, MB_YESNO | MB_ICONQUESTION);
+        if (checked != IDYES)
+            return 0;
+        for (auto &&proc : processes)
+        {
+            CHandle hProcess{OpenProcess(PROCESS_TERMINATE, FALSE, proc.pid)};
+            if (!hProcess)
+                continue;
+            TerminateProcess(hProcess, 0);
+        }
+    }
     try
     {
         std::filesystem::remove_all(L".\\files_old");
@@ -52,7 +91,7 @@ int updatewmain(int argc, wchar_t *argv[])
         catch (...)
         {
         }
-        MessageBoxA(GetForegroundWindow(), (std::string("Update failed!\r\n") + e.what()).c_str(), "Error", 0);
+        MessageBoxW(GetForegroundWindow(), (std::wstring(text_update_failed) + L"\n\n" + StringToWideString(e.what(), CP_ACP)).c_str(), text_error, 0);
         return 0;
     }
     try
@@ -62,7 +101,7 @@ int updatewmain(int argc, wchar_t *argv[])
     catch (std::exception &e)
     {
     }
-    MessageBoxW(GetForegroundWindow(), L"Update success", L"Success", 0);
+    MessageBoxW(GetForegroundWindow(), text_update_succ, text_succ, 0);
     if (needreload)
     {
         ShellExecute(0, L"open", L".\\LunaTranslator.exe", NULL, NULL, SW_SHOWNORMAL);

@@ -811,5 +811,8 @@
     "环回录制": "Smyčkový záznam",
     "鼠标离开时关闭": "Zavřít při opuštění myši",
     "确认删除": "Potvrdit smazání",
-    "本次运行期间不再询问": "Nepožadovat znovu během této relace"
+    "本次运行期间不再询问": "Nepožadovat znovu během této relace",
+    "更新失败": "Aktualizace se nezdařila.",
+    "更新成功": "Aktualizace proběhla úspěšně.",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Některé soubory nebo adresáře jsou používány následujícími procesy. Chcete tyto procesy ukončit?"
 }

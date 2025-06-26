@@ -811,5 +811,8 @@
     "环回录制": "Loopinspelning",
     "鼠标离开时关闭": "stäng när musen lämnar",
     "确认删除": "Bekräfta borttagning",
-    "本次运行期间不再询问": "Fråga inte igen under denna körning."
+    "本次运行期间不再询问": "Fråga inte igen under denna körning.",
+    "更新失败": "Uppdateringen misslyckades",
+    "更新成功": "Uppdateringen lyckades",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Vissa filer eller kataloger används av följande processer. Vill du avsluta dessa processer?"
 }

@@ -53,3 +53,10 @@ endif()
 if(WIN10ABOVE)
 	target_link_libraries(shareddllproxy PRIVATE windowsapp)
 endif()
+
+add_library(FileLocksmith 	FileLocksmithLibInterop/FileLocksmith.cpp
+							FileLocksmithLibInterop/NtdllBase.cpp
+							FileLocksmithLibInterop/NtdllExtensions.cpp)
+target_precompile_headers(FileLocksmith REUSE_FROM pch) 
+
+target_link_libraries(shareddllproxy PRIVATE FileLocksmith)

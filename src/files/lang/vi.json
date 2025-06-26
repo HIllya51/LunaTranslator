@@ -811,5 +811,8 @@
     "环回录制": "ghi âm vòng lặp",
     "鼠标离开时关闭": "đóng khi chuột rời khỏi",
     "确认删除": "Xác nhận xóa",
-    "本次运行期间不再询问": "Không hỏi lại trong lần chạy này"
+    "本次运行期间不再询问": "Không hỏi lại trong lần chạy này",
+    "更新失败": "Cập nhật thất bại",
+    "更新成功": "Cập nhật thành công",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Một số tệp hoặc thư mục đang được sử dụng bởi các tiến trình sau, bạn có muốn kết thúc các tiến trình này không?"
 }

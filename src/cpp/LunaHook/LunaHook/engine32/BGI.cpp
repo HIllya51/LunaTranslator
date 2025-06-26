@@ -1141,14 +1141,36 @@ namespace
     hp.address = addr;
     hp.offset = stackoffset(Private::textIndex_);
     // jichi 5/12/2014: Using split could distinguish name and choices. But the signature might become unstable
-    hp.type = USING_STRING | USING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_NEW | NO_CONTEXT;
+    hp.type = USING_STRING | USING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
 
     hp.text_fun = Private::hookBefore;
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    {
+      std::string sorigin = (char *)context->stack[Private::textIndex_];
+      std::string s = buffer.strA();
+      if (endWith(sorigin, "\n"))
+      {
+        s += '\n';
+      }
+      if (startWith(sorigin, "\x04"))
+      {
+        s = '\x04' + s;
+      }
+      context->stack[Private::textIndex_] = (DWORD)allocateString(s);
+    };
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       // It could be either <R..> or <r..>
       std::string result = buffer->strA();
       result = re::sub(result, "<r.+?>(.+?)</r>", "$1", std::regex_constants::icase);
+      if (endWith(result, "\n"))
+      {
+        result = result.substr(0, result.size() - 1);
+      }
+      if (startWith(result, "\x04"))
+      {
+        result = result.substr(1);
+      }
       buffer->from(result);
     };
 

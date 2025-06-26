@@ -8,6 +8,7 @@
 #define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
 #endif
 
+#include <winternl.h>
 #include <Shobjidl.h>
 #include <malloc.h>
 #include <initguid.h>

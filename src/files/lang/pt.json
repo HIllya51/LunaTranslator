@@ -811,5 +811,8 @@
     "环回录制": "Gravação em loop",
     "鼠标离开时关闭": "fechar quando o mouse sair",
     "确认删除": "Confirmar exclusão",
-    "本次运行期间不再询问": "Não perguntar novamente durante esta execução."
+    "本次运行期间不再询问": "Não perguntar novamente durante esta execução.",
+    "更新失败": "Atualização falhou",
+    "更新成功": "Atualização bem-sucedida",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Alguns arquivos ou diretórios estão sendo usados pelos seguintes processos. Deseja encerrar esses processos?"
 }

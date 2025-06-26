@@ -811,5 +811,8 @@
     "环回录制": "Loopback-opname",
     "鼠标离开时关闭": "Sluiten wanneer de muis weg beweegt",
     "确认删除": "Bevestig verwijderen",
-    "本次运行期间不再询问": "Niet meer vragen tijdens deze sessie"
+    "本次运行期间不再询问": "Niet meer vragen tijdens deze sessie",
+    "更新失败": "Update mislukt",
+    "更新成功": "Update geslaagd",
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Sommige bestanden of mappen worden gebruikt door de volgende processen. Wilt u deze processen beëindigen?"
 }

@@ -187,13 +187,9 @@ DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
     }
     return succ;
 }
-DECLARE_API HANDLE SimpleCreateEvent(LPCWSTR N)
+DECLARE_API LPSECURITY_ATTRIBUTES GetSecurityAttributes()
 {
-    return CreateEventW(&allAccess, FALSE, FALSE, N);
-}
-DECLARE_API HANDLE SimpleCreateMutex(LPCWSTR N)
-{
-    return CreateMutexW(&allAccess, FALSE, N);
+    return &allAccess;
 }
 DECLARE_API HANDLE CreateAutoKillProcess(LPCWSTR command, LPCWSTR path, DWORD *pid)
 {
@@ -271,7 +267,7 @@ typedef struct
     DWORD BasePriority;
     ULONG UniqueProcessId;
     ULONG InheritedFromUniqueProcessId;
-} PROCESS_BASIC_INFORMATION;
+} __PROCESS_BASIC_INFORMATION;
 
 #define ProcessBasicInformation 0
 typedef LONG(__stdcall *PROCNTQSIP)(HANDLE, UINT, PVOID, ULONG, PULONG);
@@ -280,7 +276,7 @@ DECLARE_API DWORD GetParentProcessID(DWORD dwProcessId)
 {
     LONG status;
     DWORD dwParentPID = (DWORD)-1;
-    PROCESS_BASIC_INFORMATION pbi;
+    __PROCESS_BASIC_INFORMATION pbi;
 
     PROCNTQSIP NtQueryInformationProcess = (PROCNTQSIP)GetProcAddress(
         GetModuleHandle(L"ntdll"), "NtQueryInformationProcess");
@@ -300,7 +296,7 @@ DECLARE_API DWORD GetParentProcessID(DWORD dwProcessId)
     status = NtQueryInformationProcess(hProcess,
                                        ProcessBasicInformation,
                                        (PVOID)&pbi,
-                                       sizeof(PROCESS_BASIC_INFORMATION),
+                                       sizeof(__PROCESS_BASIC_INFORMATION),
                                        NULL);
 
     // Copy parent Id on success
