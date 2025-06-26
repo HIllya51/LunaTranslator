@@ -79,14 +79,11 @@ def doupdate():
         r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
         gobject.getcachedir("Updater.exe"),
     )
-    for dll in ["vcruntime140.dll", "vcruntime140_1.dll", "msvcp140.dll"]:
-        _ = os.path.join(runtimedir, dll)
-        if not os.path.exists():
+    for dll in os.listdir(runtimedir):
+        if not (dll.lower().startswith("vcruntime") or dll.lower().startswith("msvcp")):
             continue
-        shutil.copy(
-            _,
-            gobject.getcachedir(dll),
-        )
+        _ = os.path.join(runtimedir, dll)
+        shutil.copy(_, gobject.getcachedir(dll))
 
     for _dir, _, _fs in os.walk(r".\cache\update"):
         for _f in _fs:
