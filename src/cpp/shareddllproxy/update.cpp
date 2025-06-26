@@ -1,6 +1,40 @@
 // https://github.com/microsoft/PowerToys/tree/main/src/modules/FileLocksmith/FileLocksmithLibInterop
 #include "FileLocksmithLibInterop/FileLocksmith.h"
 
+std::wstring readfile(const wchar_t *fname)
+{
+    FILE *f;
+    _wfopen_s(&f, fname, L"rb");
+    if (f == 0)
+        return {};
+    fseek(f, 0, SEEK_END);
+    auto len = ftell(f);
+    fseek(f, 0, SEEK_SET);
+    std::wstring buff;
+    buff.resize(len / 2);
+    fread(buff.data(), 1, len, f);
+    fclose(f);
+    return buff;
+}
+template <class StringT>
+inline std::vector<StringT> strSplit_impl(const StringT &s, const StringT &delim)
+{
+    StringT item;
+    std::vector<StringT> tokens;
+
+    StringT str = s;
+
+    size_t pos = 0;
+    while ((pos = str.find(delim)) != StringT::npos)
+    {
+        item = str.substr(0, pos);
+        tokens.push_back(item);
+        str.erase(0, pos + delim.length());
+    }
+    tokens.push_back(str);
+    return tokens;
+}
+
 int updatewmain(int argc, wchar_t *argv[])
 {
     if (argc <= 1)
@@ -32,9 +66,9 @@ int updatewmain(int argc, wchar_t *argv[])
     SetCurrentDirectory(path);
     int needreload = std::stoi(argv[1]);
     auto processes = find_processes_recursive({L".\\files"});
-    std::wifstream file(argv[4]);
-    std::wstring text_error, text_succ, text_update_failed, text_update_succ, text_failed_occupied;
-    file >> text_error >> text_succ >> text_update_failed >> text_update_succ >> text_failed_occupied;
+    auto file = readfile(argv[4]);
+    auto ss = strSplit_impl<std::wstring>(file, L"\n");
+    std::wstring text_error = ss[0], text_succ = ss[1], text_update_failed = ss[2], text_update_succ = ss[3], text_failed_occupied = ss[4];
     if (processes.size())
     {
         std::wstring result;
