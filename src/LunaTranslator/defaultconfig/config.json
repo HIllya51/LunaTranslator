@@ -1232,7 +1232,6 @@
     },
     "hirasetting": {
         "mecab": {
-            "use": true,
             "name": "MeCab",
             "args": {
                 "path": ""
@@ -1243,8 +1242,7 @@
                     "name": "unidic_路径",
                     "dir": true
                 }
-            },
-            "type": "offline"
+            }
         }
     },
     "cishu": {

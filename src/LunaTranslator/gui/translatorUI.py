@@ -463,30 +463,16 @@ class TranslatorWindow(resizableframeless):
 
     def updateraw(self, text):
         color = SpecialColor.RawTextColor
-        hira = []
         text = self.cleartext(text)
-        needhira = (
-            globalconfig["isshowhira"]
-            or globalconfig["show_fenci"]
-            or self.translate_text.textbrowser._clickhovershow
-        )
-        if needhira:
-            hira = gobject.base.parsehira(text)
+        hira = gobject.base.parsehira(text)
 
         self.translate_text.updatetext(TextType.Origin, text, hira, color)
 
     def showraw(self, text, updateTranslate):
         color = SpecialColor.RawTextColor
         clear = True
-        hira = []
         text = self.cleartext(text)
-        needhira = (
-            globalconfig["isshowhira"]
-            or globalconfig["show_fenci"]
-            or self.translate_text.textbrowser._clickhovershow
-        )
-        if needhira:
-            hira = gobject.base.parsehira(text)
+        hira = gobject.base.parsehira(text)
 
         self.showline(
             clear=clear,

@@ -113,25 +113,7 @@ def gethiragrid(self):
         else:
             _3 = ""
 
-        line += [
-            globalconfig["hirasetting"][name]["name"],
-            D_getsimpleswitch(
-                globalconfig["hirasetting"][name],
-                "use",
-                name=name,
-                parent=self,
-                callback=functools.partial(
-                    yuitsu_switch,
-                    self,
-                    globalconfig["hirasetting"],
-                    "hiraswitchs",
-                    name,
-                    gobject.base.startmecab,
-                ),
-                pair="hiraswitchs",
-            ),
-            _3,
-        ]
+        line += [globalconfig["hirasetting"][name]["name"], _3]
         if i % 3 == 2:
             grids.append(line)
             line = []
@@ -161,7 +143,9 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
     menu.addAction(editname)
     useproxy = LAction("使用代理", menu)
     useproxy.setCheckable(True)
-    if globalconfig["useproxy"] and globalconfig["cishu"][apiuid].get("type") not in ("offline",):
+    if globalconfig["useproxy"] and globalconfig["cishu"][apiuid].get("type") not in (
+        "offline",
+    ):
         menu.addSeparator()
         menu.addAction(useproxy)
         useproxy.setChecked(globalconfig["cishu"][apiuid].get("useproxy", True))

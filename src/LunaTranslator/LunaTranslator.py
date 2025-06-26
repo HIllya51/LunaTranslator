@@ -311,6 +311,13 @@ class BASEOBJECT(QObject):
         return res
 
     def parsehira(self, text):
+        need = (
+            globalconfig["isshowhira"]
+            or globalconfig["show_fenci"]
+            or self.translation_ui.translate_text.textbrowser._clickhovershow
+        )
+        if not need:
+            return []
         try:
             if self.mecab_:
                 return self.mecab_.safeparse(text)
@@ -928,15 +935,12 @@ class BASEOBJECT(QObject):
                 self.textsource = classes[use]()
 
     @threader
-    def startmecab(self, _=None, checked=True):
+    def startmecab(self):
         self.mecab_ = None
-        if checked:
-            use = globalconfig["hirasetting"]["mecab"]["use"]
-            if use:
-                try:
-                    self.mecab_ = mecab()
-                except:
-                    print_exc()
+        try:
+            self.mecab_ = mecab()
+        except:
+            print_exc()
 
     @threader
     def startoutputer(self):
