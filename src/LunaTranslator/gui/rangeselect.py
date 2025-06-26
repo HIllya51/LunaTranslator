@@ -203,9 +203,18 @@ class rangeadjust(Mainw):
     def showmenu(self, _):
         menu = QMenu(self)
         close = LAction("关闭", menu)
+        mousetransp = LAction("鼠标穿透窗口", menu)
+        menu.addAction(mousetransp)
         menu.addAction(close)
         action = menu.exec(QCursor.pos())
-        if action == close:
+        if action == mousetransp:
+            windows.SetWindowLong(
+                int(self.winId()),
+                windows.GWL_EXSTYLE,
+                windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
+                | windows.WS_EX_TRANSPARENT,
+            )
+        elif action == close:
             self._rect = None
             self.close()
 
