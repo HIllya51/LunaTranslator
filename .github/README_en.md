@@ -79,4 +79,5 @@ LunaTranslator uses [GPLv3](../LICENSE) license.
 * ![img](https://img.shields.io/github/license/rupeshk/MarkdownHighlighter) [rupeshk/MarkdownHighlighter](https://github.com/rupeshk/MarkdownHighlighter)
 * ![img](https://img.shields.io/github/license/sindresorhus/github-markdown-css) [sindresorhus/github-markdown-css](https://github.com/sindresorhus/github-markdown-css)
 * ![img](https://img.shields.io/github/license/gexgd0419/NaturalVoiceSAPIAdapter) [gexgd0419/NaturalVoiceSAPIAdapter](https://github.com/gexgd0419/NaturalVoiceSAPIAdapter)
+* ![img](https://img.shields.io/github/license/microsoft/PowerToys) [microsoft/PowerToys](https://github.com/microsoft/PowerToys)
 </details>
