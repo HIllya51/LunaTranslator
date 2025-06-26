@@ -97,7 +97,7 @@ def doupdate():
         _TR("更新成功"),
         _TR("部分文件或目录被以下进程占用，是否终止以下进程？"),
     ]
-    with open(r".\cache\Updater.exe.txt", "w") as ff:
+    with open(r".\cache\Updater.exe.txt", "w", encoding="utf-16-le") as ff:
         for text in texts:
             ff.write(text + "\n")
     subprocess.Popen(
