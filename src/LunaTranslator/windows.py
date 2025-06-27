@@ -744,7 +744,7 @@ def OpenFileMapping(name, acc=FILE_MAP_READ | FILE_MAP_WRITE, inher=False):
 
 _MapViewOfFile = _kernel32.MapViewOfFile
 _MapViewOfFile.argtypes = HANDLE, DWORD, DWORD, DWORD, c_size_t
-_MapViewOfFile.restype = LPVOID
+_MapViewOfFile.restype = POINTER(c_char)
 
 
 def MapViewOfFile(
