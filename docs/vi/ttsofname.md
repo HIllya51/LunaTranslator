@@ -8,8 +8,6 @@ Sau đó, vào `Cài đặt trò chơi` -> `Giọng nói` (hoặc `Cài đặt g
 
 Tuy nhiên, vì văn bản tên được chọn thêm, nội dung hiển thị và dịch bao gồm cả tên, và giọng nói cũng sẽ đọc tên. Để giải quyết vấn đề này, bật `Chỉnh sửa giọng nói`, nơi bạn có thể sử dụng biểu thức chính quy để lọc tên và các ký hiệu của nó.  
 
-![img](https://image.lunatranslator.org/zh/tts/3.png)   
-
 ## Giải thích chi tiết về gán giọng nói
 
 Khi văn bản hiện tại đáp ứng điều kiện, hành động được chỉ định trong `Gán cho` sẽ được thực thi.

@@ -8,8 +8,6 @@ Then, in `Game Settings` -> `Voice` (or `Voice Settings` in the settings interfa
 
 However, since the name text is additionally selected, the displayed and translated content includes the name, and the voice will also read the name. To solve this problem, activate `Voice Correction`, where you can use regular expressions to filter out the name and its symbols.
 
-![img](https://image.lunatranslator.org/zh/tts/3.png)   
-
 ## Detailed Explanation of Voice Assignment
 
 When the current text meets the condition, the action specified in `Assign To` is executed.
