@@ -3,7 +3,7 @@
 public:
     bool attach_function()
     {
-        ConsoleOutput("IGNORE %s", getenginename());
+        ConsoleOutput("IGNORE %s", getenginename().c_str());
         return false;
     }
 };

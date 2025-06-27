@@ -2,18 +2,18 @@
 
 class vita3k : public ENGINE
 {
-    std::string enginename = "vita3k";
     std::optional<version_t> version;
 
 public:
     vita3k()
     {
+        enginename = "vita3k";
         version = queryversion();
         if (version)
         {
             auto [a, b, c, d] = version.value();
             std::stringstream ss;
-            ss << enginename << " " << a << "." << b << "." << c << "." << d;
+            ss << enginename.value() << " " << a << "." << b << "." << c << "." << d;
             enginename = ss.str();
         }
         jittype = JITTYPE::VITA3K;
@@ -26,8 +26,4 @@ public:
     };
     bool attach_function();
     bool attach_function1();
-    const char *getenginename() override
-    {
-        return enginename.c_str();
-    }
 };

@@ -34,6 +34,7 @@ class SmartAdv : public ENGINE
 public:
     SmartAdv()
     {
+        enginename = "Scenario Script Engine";
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {

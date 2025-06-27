@@ -7,6 +7,7 @@ public:
     {
         // https://vndb.org/v1053
         // そらうた
+        enginename = "NUG System";
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {

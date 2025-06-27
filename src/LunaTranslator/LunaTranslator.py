@@ -422,6 +422,8 @@ class BASEOBJECT(QObject):
             gobject.base.showandsolvesig.emit(origin, text)
             if not text:
                 return
+            if not text.strip():
+                return
         except Exception as e:
             __erroroutput(stringfyerror(e), TextType.Error_origin)
             return

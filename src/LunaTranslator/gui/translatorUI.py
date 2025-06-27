@@ -1072,9 +1072,9 @@ class TranslatorWindow(resizableframeless):
             pos.setY(screengeo.top())
         if len(QApplication.screens()) == 1:
             if pos.x() + self.width() > screengeo.right():
-                pos.setX(screengeo.right() - self.width())
+                pos.setX(max(pos.x(), screengeo.right() - self.width()))
             if pos.y() + self.height() > screengeo.bottom():
-                pos.setY(screengeo.bottom() - self.height())
+                pos.setY(max(pos.y(), screengeo.bottom() - self.height()))
 
         self.move(pos)
 

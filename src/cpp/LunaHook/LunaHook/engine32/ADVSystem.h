@@ -5,6 +5,7 @@ class ADVSystem : public ENGINE
 public:
     ADVSystem()
     {
+        enginename = "ADV System";
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {

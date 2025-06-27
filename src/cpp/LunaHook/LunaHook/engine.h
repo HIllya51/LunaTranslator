@@ -8,7 +8,7 @@ extern uintptr_t processStartAddress, processStopAddress;
 class ENGINE
 {
 public:
-    const char *enginename;
+    std::optional<std::string> enginename = {};
     bool is_engine_certain; // stop when match a engine ,even if not attached
     JITTYPE jittype;
     enum class CHECK_BY
@@ -30,13 +30,13 @@ public:
     std::variant<check_by_single, check_by_list, check_by_custom_function> check_by_target;
     // virtual bool check_by_target(){return false;};
     virtual bool attach_function() = 0;
-    virtual const char *getenginename()
+    virtual std::string getenginename()
     {
         if (enginename)
-            return enginename;
+            return enginename.value();
         return typeid(*this).name() + 6;
     }
-    ENGINE() : enginename(nullptr), is_engine_certain(true), check_by(CHECK_BY::ALL_TRUE), jittype(JITTYPE::PC) {};
+    ENGINE() : is_engine_certain(true), check_by(CHECK_BY::ALL_TRUE), jittype(JITTYPE::PC) {};
     bool check_function();
 };
 
