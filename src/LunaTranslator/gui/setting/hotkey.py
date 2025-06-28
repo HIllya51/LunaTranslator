@@ -335,14 +335,11 @@ def regist_or_not_key(self, name, _=None):
 
     if name in self.registok:
         NativeUtils.UnRegisterHotKey(self.registok[name])
-
-    keystring = globalconfig["quick_setting"]["all"][name]["keystring"]
-    if keystring == "" or (
-        not (
-            globalconfig["quick_setting"]["all"][name]["use"]
-            and globalconfig["quick_setting"]["use"]
-        )
-    ):
+    __ = globalconfig["quick_setting"]["all"].get(name)
+    if not __:
+        return
+    keystring = __["keystring"]
+    if keystring == "" or (not (__["use"] and globalconfig["quick_setting"]["use"])):
         return
 
     try:
