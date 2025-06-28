@@ -129,6 +129,7 @@ class mssr(basetext):
                     #  print(increased, any(_ in punctuations for _ in increased))
                     last = text
                     thist = time.time()
+                    self.updaterawtext(text)
                     if (
                         ok
                         or (
@@ -139,8 +140,6 @@ class mssr(basetext):
                     ):
                         self.dispatchtext(text, updateTranslate=True)
                         lastt = thist
-                    else:
-                        self.updaterawtext(text)
                 elif t == 4:
                     gobject.base.displayinfomessage(
                         _TR("正在加载语音识别模型"), "<msg_info_refresh>"
