@@ -149,10 +149,10 @@ def proxyusage(self):
     hbox3.addWidget(LLabel("手动设置代理"))
     proxy = QLineEdit(globalconfig["proxy"])
     check = QLabel()
-    validator(check, globalconfig["proxy"])
-    proxy.textChanged.connect(functools.partial(validator, check))
     hbox3.addWidget(proxy)
     hbox3.addWidget(check)
+    validator(check, globalconfig["proxy"])
+    proxy.textChanged.connect(functools.partial(validator, check))
     return hbox
 
 
