@@ -137,6 +137,9 @@ class ocrtext(basetext):
                 if region:
                     self.newrangeadjustor()
                     self.setrect(region)
+
+            self.stop = False
+
             return
         for _ in self.ranges:
             if b:
@@ -183,9 +186,7 @@ class ocrtext(basetext):
                     if gobject.base.hwnd:
                         for _ in range(2):
                             # 切换前台窗口
-                            p1 = windows.GetWindowThreadProcessId(
-                                gobject.base.hwnd
-                            )
+                            p1 = windows.GetWindowThreadProcessId(gobject.base.hwnd)
                             p2 = windows.GetWindowThreadProcessId(
                                 windows.GetForegroundWindow()
                             )
