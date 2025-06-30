@@ -1126,25 +1126,24 @@ class BASEOBJECT(QObject):
         wordwhich = lambda k: (word.word, word.prototype)[
             globalconfig["usewordoriginfor"].get(k, False)
         ]
+        sentence = self.currenttext
 
         def __openlink(word1):
             for link in globalconfig["useopenlinklink1"]:
-                os.startfile(link.replace("{word}", word1))
+                os.startfile(
+                    link.replace("{word}", word1).replace("{sentence}", sentence)
+                )
 
         funcs = {
             "copyword": lambda word1: NativeUtils.ClipBoard.setText(
                 (NativeUtils.ClipBoard.text + word1) if append else word1
             ),
             "searchword": lambda word1: self.searchwordW.search_word.emit(
-                word1, self.currenttext, append
+                word1, sentence, append
             ),
             "openlink": __openlink,
             "searchword_S": lambda word1: threader(gobject.base.hover_search_word.emit)(
-                word1,
-                self.currenttext,
-                append,
-                False,
-                False,
+                word1, sentence, append, False, False
             ),
         }
         noneedkeys = []

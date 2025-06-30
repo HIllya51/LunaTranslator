@@ -369,28 +369,29 @@ class TextBrowser(WebviewWidget, somecommon):
             return
         gobject.base.clickwordcallback(word, rb1)
 
+    @threader
+    def menusearchword(self, w: str):
+        sentence = gobject.base.currenttext
+        if w not in sentence:
+            sentence = None
+        gobject.base.searchwordW.search_word.emit(
+            w.replace("\n", "").strip(), sentence, False
+        )
+
     def __init__(self, parent) -> None:
         super().__init__(parent, transp=True, loadext=globalconfig["webviewLoadExt"])
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
         self.setMouseTracking(True)
-        nexti = self.add_menu(
-            0,
-            lambda: _TR("查词"),
-            threader(
-                lambda w: gobject.base.searchwordW.search_word.emit(
-                    w.replace("\n", "").strip(), None, False
-                )
-            ),
-        )
+        nexti = self.add_menu(0, lambda: _TR("查词"), self.menusearchword)
         nexti = self.add_menu(
             nexti,
             lambda: _TR("翻译"),
-            lambda w: gobject.base.textgetmethod(w.replace("\n", "").strip()),
+            lambda w: gobject.base.textgetmethod(w.strip()),
         )
         nexti = self.add_menu(
             nexti,
             lambda: _TR("朗读"),
-            lambda w: gobject.base.read_text(w.replace("\n", "").strip()),
+            lambda w: gobject.base.read_text(w.strip()),
         )
         self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
         self.bind("calllunaclickedword", gobject.base.clickwordcallback)

@@ -316,13 +316,18 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(copy)
         action = menu.exec(QCursor.pos())
         if action == search:
-            gobject.base.searchwordW.search_word.emit(curr, None, False)
+            sentence = gobject.base.currenttext
+            if curr not in sentence:
+                sentence = None
+            gobject.base.searchwordW.search_word.emit(
+                curr.replace("\n", "").strip(), sentence, False
+            )
         elif action == copy:
             NativeUtils.ClipBoard.text = curr
         elif action == tts:
-            gobject.base.read_text(curr)
+            gobject.base.read_text(curr.strip())
         elif action == translate:
-            gobject.base.textgetmethod(curr, False)
+            gobject.base.textgetmethod(curr.strip(), False)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)

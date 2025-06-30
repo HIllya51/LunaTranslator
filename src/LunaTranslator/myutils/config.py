@@ -72,7 +72,7 @@ ocrdfsetting = tryreadconfig2("ocrsetting.json")
 ocrerrorfixdefault = tryreadconfig2("ocrerrorfix.json")
 
 ocrerrorfix = tryreadconfig("ocrerrorfix.json")
-globalconfig = tryreadconfig("config.json")
+globalconfig: "dict[str, dict[str, str] | list[str] | str]" = tryreadconfig("config.json")
 magpie_config = tryreadconfig_1("Magpie/config.json", pathold="magpie_config.json")
 postprocessconfig = tryreadconfig("postprocessconfig.json")
 
