@@ -359,6 +359,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | 010081E0161B2000 | D.C.4 Fortunate Departures ～ダ・カーポ4～ フォーチュネイトデパーチャーズ |
 |  | 010048101D49E000 | Re;quartz零度 |
 |  | 0100B6501FE4C000 | 喧嘩番長 乙女 ダブルパック |
+|  | 01004CA01D51E000 | 喧嘩番長 乙女 2nd Rumble !! |
 |  | 010008401AB4A000 | 深淵のユカラ (Yukar From The Abyss) |
 |  | 010047E01E22A000 | 純愛聲放送 - Voice Love on Air (Voice Love on Air) |
 |  | 010033401FE40000 | 罪ノ光ランデヴー |
@@ -380,6 +381,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | ULJM05962 | 花と乙女に祝福を　～春風の贈り物～　portable |
 |  | ULJM06207 | Starry☆Sky～After Spring～Portable |
 |  | ULJM06208 | Starry☆Sky～After Summer～Portable |
 |  | ULJM06209 | Starry☆Sky～After Autumn～Portable |

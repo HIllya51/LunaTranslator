@@ -1483,6 +1483,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 花と乙女に祝福を　～春風の贈り物～　portable
+    {0x8814B08, {0, 0, 0, 0, ULJM05954, "ULJM05962"}},
+
     /* sceFontGetCharInfo 还有很多无法用JIThook的游戏可以用这个函数，包括有JIThook地址的，但之前没有进行记录，现在进行以下记录，仅用于避免未来重复劳动。*/
     // Starry☆Sky～After Spring～Portable //ULJM06207
     // Starry☆Sky～After Summer～Portable //ULJM06208

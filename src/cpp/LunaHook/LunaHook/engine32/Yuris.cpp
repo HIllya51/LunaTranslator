@@ -216,8 +216,6 @@ bool Yuris::InsertYuris4Hook()
     ConsoleOutput("INSERT YU-RIS 4");
     found |= NewHook(hp, "YU-RIS4");
   }
-  if (!found)
-    ConsoleOutput("YU-RIS 4: pattern not found");
   return found;
 }
 
@@ -274,15 +272,15 @@ static void Yuris6Filter(TextBuffer *buffer, HookParam *hp)
 
     // ruby ＜手水舎／ちょうずや＞
     if (cpp_strnstr(text, "\x81\x83", buffer->size))
-    {                                                            // \x81\x83 -> '＜'
+    {                                                                              // \x81\x83 -> '＜'
       StringFilterBetween(buffer, TEXTANDLEN("\x81\x5E"), TEXTANDLEN("\x81\x84")); // \x81\x5E -> '／' , \x81\x84 -> '＞'
-      StringFilter(buffer, TEXTANDLEN("\x81\x83"));                       // \x81\x83 -> '＜'
+      StringFilter(buffer, TEXTANDLEN("\x81\x83"));                                // \x81\x83 -> '＜'
     }
     // ruby ≪美桜／姉さん≫
     else if (cpp_strnstr(text, "\x81\xE1", buffer->size))
-    {                                                            // \x81\xE1 -> '≪'
+    {                                                                              // \x81\xE1 -> '≪'
       StringFilterBetween(buffer, TEXTANDLEN("\x81\x5E"), TEXTANDLEN("\x81\xE2")); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
-      StringFilter(buffer, TEXTANDLEN("\x81\xE1"));                       // \x81\xE1 -> '≪'
+      StringFilter(buffer, TEXTANDLEN("\x81\xE1"));                                // \x81\xE1 -> '≪'
     }
 
     CharReplacer(buffer, '=', '-');
