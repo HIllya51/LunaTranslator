@@ -2,9 +2,14 @@ import NativeUtils, os, threading, uuid, windows
 from tts.basettsclass import TTSbase, SpeechParam
 import xml.etree.ElementTree as ET
 from ctypes import c_int32
+from myutils.config import globalconfig
 
 
 class TTS(TTSbase):
+    @property
+    def extralicense(self):
+        return globalconfig.get("MicrosoftWindows.Voice.License", "")
+
     def getname(self, path):
 
         try:
@@ -20,11 +25,15 @@ class TTS(TTSbase):
     def get_paths(self):
         paths = []
         names = []
-        # for _, path in NativeUtils.FindPackages("MicrosoftWindows.Voice."):
-        #     name = self.getname(path)
-        #     if name:
-        #         names.append(name)
-        #         paths.append(path)
+        for _, path in (
+            NativeUtils.FindPackages("MicrosoftWindows.Voice.")
+            if self.extralicense
+            else []
+        ):
+            name = self.getname(path)
+            if name:
+                names.append(name)
+                paths.append(path)
         for path, _, __ in os.walk("."):
             base = os.path.basename(path)
             if base.startswith("MicrosoftWindows.Voice."):
@@ -79,8 +88,14 @@ class TTS(TTSbase):
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
-        cmd = '"{}" msnaturalvoice {} {} {} "{}" "{}"'.format(
-            exepath, pipename, waitsignal, mapname, path, dllp
+        cmd = '"{}" msnaturalvoice {} {} {} "{}" "{}" "{}"'.format(
+            exepath,
+            pipename,
+            waitsignal,
+            mapname,
+            path,
+            dllp,
+            self.extralicense,
         )
         self.engine = NativeUtils.AutoKillProcess(cmd)
 

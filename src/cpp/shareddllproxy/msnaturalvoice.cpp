@@ -12,7 +12,7 @@ using namespace Microsoft::CognitiveServices::Speech::Audio;
 const WCHAR syspath1[] = LR"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizer)";
 const WCHAR syspath2[] = LR"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy)";
 
-std::optional<std::string> CheckSynthesisResult(const std::shared_ptr<SpeechSynthesisResult> &result)
+std::shared_ptr<SpeechSynthesisCancellationDetails> CheckSynthesisResult(const std::shared_ptr<SpeechSynthesisResult> &result)
 {
     if (result->Reason != ResultReason::Canceled)
         return {};
@@ -21,7 +21,7 @@ std::optional<std::string> CheckSynthesisResult(const std::shared_ptr<SpeechSynt
     if (details->Reason != CancellationReason::Error)
         return {};
 
-    return details->ErrorDetails;
+    return details;
 }
 void writewavheader(char *pBuffer, int sSize)
 {
@@ -42,28 +42,8 @@ void writewavheader(char *pBuffer, int sSize)
     memcpy(pBuffer + ptr, &sSize, 4);
     ptr += 4;
 }
-std::string searchkey(const char *ff)
-{
-    FILE *f;
-    fopen_s(&f, ff, "rb");
-    if (!f)
-        return "";
-    fseek(f, 0, SEEK_END);
-    auto len = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    std::string s;
-    s.resize(len);
-    fread(s.data(), 1, len, f);
-    auto p = s.find("Key:");
-    if (p == s.npos)
-        return "";
-    return s.data() + p;
-}
 static std::string getkey()
 {
-    auto _ = searchkey(R"(C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizerExtension.dll)");
-    if (_.size())
-        return _;
     return "\x4b\x65\x79\x3a\x5a\x43\x6a\x5a\x37\x6e\x48\x44\x53\x4c\x76\x66\x34\x67\x70\x45\x4c\x74\x65\x4d\x34\x41\x6e\x7a\x61\x57\x55\x6a\x54\x70\x6e\x37\x55\x6b\x56\x37\x44\x40\x76\x76\x6b\x73\x6c\x30\x77\x31\x53\x4e\x67\x6f\x6e\x36\x64\x31\x39\x30\x35\x57\x41\x4e\x62\x6b\x74\x44\x63\x39\x53\x33\x39\x6f\x61\x41\x34\x72\x32\x39\x48\x4a\x4e\x61\x79\x58\x76\x54\x71\x38\x66\x4a\x73\x71";
 }
 
@@ -76,6 +56,25 @@ std::string parsekey(std::string key)
     if (vermy <= std::make_tuple(1u, 41u, 1u, 0u))
         return key.substr(4);
     return key;
+}
+static std::shared_ptr<SpeechSynthesisResult> GetResult(std::shared_ptr<SpeechSynthesizer> &synthesizer, std::shared_ptr<EmbeddedSpeechConfig> &config, wchar_t *text, const std::string &extra)
+{
+    static int once = 0;
+    auto result = synthesizer->SpeakSsml(text);
+    if ((!once) && (!extra.empty()))
+    {
+        once += 1;
+        auto failed = CheckSynthesisResult(result);
+        if (failed &&
+            (failed->ErrorCode == CancellationErrorCode::AuthenticationFailure))
+        {
+            config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), extra);
+            synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
+            return GetResult(synthesizer, config, text, extra);
+        }
+    }
+
+    return result;
 }
 int msnaturalvoice(int argc, wchar_t *argv[])
 {
@@ -103,13 +102,12 @@ int msnaturalvoice(int argc, wchar_t *argv[])
     AddDllDirectory(syspath2);
 
     auto config = EmbeddedSpeechConfig::FromPath(WideStringToString(argv[4], CP_ACP));
-
+    std::string extra = WideStringToString(argv[6]);
     config->SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat::Riff24Khz16BitMonoPcm);
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestSentenceBoundary, "true");
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestPunctuationBoundary, "false");
     config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), parsekey(getkey()));
     auto synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
-
     wchar_t text[10000];
     DWORD _;
     while (true)
@@ -117,12 +115,12 @@ int msnaturalvoice(int argc, wchar_t *argv[])
         ZeroMemory(text, sizeof(text));
         if (!ReadFile(hPipe, (unsigned char *)text, 10000 * 2, &_, NULL))
             break;
-        auto result = synthesizer->SpeakSsml(text);
+        auto result = GetResult(synthesizer, config, text, extra);
         uint32_t len = 0;
         if (auto failed = CheckSynthesisResult(result))
         {
-            len = -failed.value().size();
-            memcpy(mapview, failed.value().c_str(), failed.value().size());
+            len = -failed->ErrorDetails.size();
+            memcpy(mapview, failed->ErrorDetails.c_str(), failed->ErrorDetails.size());
             WriteFile(hPipe, &len, 4, &_, NULL);
             continue;
         }
