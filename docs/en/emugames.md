@@ -706,6 +706,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00299 | 俺たちに翼はない |
 |  | PCSG01259 | シルヴァリオ トリニティ -Beyond the Horizon- |
 |  | PCSG01023 | 追放選挙 |
 |  | PCSG01282 | 死神と少女 |

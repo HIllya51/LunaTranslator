@@ -951,6 +951,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 俺たちに翼はない
+    {0x8003EC88, {0, 7, 0, 0, 0, "PCSG00299"}},
     // シルヴァリオ トリニティ -Beyond the Horizon-
     {0x800B7702, {0, 3, 0, 0, 0, "PCSG01259"}},
     // 追放選挙

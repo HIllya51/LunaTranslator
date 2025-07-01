@@ -706,6 +706,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00299 | 俺たちに翼はない |
 |  | PCSG01259 | シルヴァリオ トリニティ -Beyond the Horizon- |
 |  | PCSG01023 | 追放選挙 |
 |  | PCSG01282 | 死神と少女 |
