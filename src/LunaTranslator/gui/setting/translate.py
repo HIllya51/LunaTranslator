@@ -457,7 +457,7 @@ def initsome11(self, l, save=False):
             continue
         i += 1
         countnum.append(fanyi)
-        if fanyi in translatorsetting:
+        if translatorsetting.get(fanyi):
             last = D_getIconButton(callback=functools.partial(loadbutton, self, fanyi))
         elif fanyi == "selfbuild":
             last = D_getIconButton(
