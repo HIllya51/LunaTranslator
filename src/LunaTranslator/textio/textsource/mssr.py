@@ -107,7 +107,8 @@ class mssr(basetext):
 
         self.startsql(gobject.gettranslationrecorddir("0_mssr.sqlite"))
         self.curr = ""
-        path = findallmodel(check=globalconfig["sourcestatus2"]["mssr"]["path"])
+        path = globalconfig["sourcestatus2"]["mssr"]["path"]
+        path = findallmodel(check=path) if path else None
         if not path:
             gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
