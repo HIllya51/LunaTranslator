@@ -22,7 +22,7 @@ def getlocaleandlv(path):
     return locale, lv
 
 
-def findallmodel(check=None):
+def findallmodel(checkX=False, check=None):
     __vis = []
     paths = []
     extra = globalconfig.get("MicrosoftWindows.Speech.License", "")
@@ -34,7 +34,7 @@ def findallmodel(check=None):
             __vis.append(lc)
         except:
             continue
-        if check:
+        if checkX:
             return p
         paths.append(p)
     for _dir, _, __ in os.walk("."):
@@ -46,10 +46,10 @@ def findallmodel(check=None):
                 __vis.append(lc)
             except:
                 continue
-            if check:
+            if checkX:
                 return _dir
             paths.append(_dir)
-    if check:
+    if checkX:
         return None
     return __vis, paths
 
@@ -108,7 +108,7 @@ class mssr(basetext):
         self.startsql(gobject.gettranslationrecorddir("0_mssr.sqlite"))
         self.curr = ""
         path = globalconfig["sourcestatus2"]["mssr"]["path"]
-        path = findallmodel(check=path) if path else None
+        path = findallmodel(checkX=True, check=path)
         if not path:
             gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
