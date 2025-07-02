@@ -33,6 +33,7 @@ from ctypes.wintypes import (
     LONG,
     HMONITOR,
     LPCVOID,
+    INT,
     LPWSTR,
     LPCWSTR,
     HANDLE,
@@ -179,6 +180,7 @@ _shell32 = windll.Shell32
 _kernel32 = windll.Kernel32
 _psapi = windll.Psapi
 _Advapi32 = windll.Advapi32
+_Shlwapi = windll.Shlwapi
 
 CloseHandle = _kernel32.CloseHandle
 CloseHandle.argtypes = (HANDLE,)
@@ -855,3 +857,8 @@ CreateEventW.restype = AutoHandle
 CreateMutexW = _kernel32.CreateMutexW
 CreateMutexW.argtypes = LPCVOID, BOOL, LPCWSTR
 CreateMutexW.restype = AutoHandle
+
+
+StrCmpLogicalW = _Shlwapi.StrCmpLogicalW
+StrCmpLogicalW.argtypes = (LPCWSTR, LPCWSTR)
+StrCmpLogicalW.restype = INT

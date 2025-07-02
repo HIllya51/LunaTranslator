@@ -814,5 +814,8 @@
     "本次运行期间不再询问": "Não perguntar novamente durante esta execução.",
     "更新失败": "Atualização falhou",
     "更新成功": "Atualização bem-sucedida",
-    "部分文件或目录被以下进程占用，是否终止以下进程？": "Alguns arquivos ou diretórios estão sendo usados pelos seguintes processos. Deseja encerrar esses processos?"
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Alguns arquivos ou diretórios estão sendo usados pelos seguintes processos. Deseja encerrar esses processos?",
+    "按名称排序": "Ordenar por nome",
+    "按添加时间排序": "Ordenar por data de adição",
+    "降序": "ordem decrescente"
 }

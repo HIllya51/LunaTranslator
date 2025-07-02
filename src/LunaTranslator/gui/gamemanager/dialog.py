@@ -10,6 +10,8 @@ from gui.gamemanager.setting import dialog_setting_game, userlabelset
 from myutils.utils import targetmod
 from myutils.wrapper import Singleton, tryprint
 from gui.specialwidget import lazyscrollflow
+from functools import cmp_to_key
+import windows
 from myutils.config import (
     savehook_new_data,
     savegametaged,
@@ -25,6 +27,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
     request_delete_ok,
     FQLineEdit,
+    getIconButton,
     FocusCombo,
 )
 from gui.gamemanager.common import (
@@ -663,6 +666,45 @@ class dialog_savedgame_new(QWidget):
 
     reference = None
 
+    def sortgamecallback(self):
+        menu = QMenu(self)
+        sortbytime = LAction("按添加时间排序", menu)
+        sortbytime.setIcon(qtawesome.icon("fa.sort-numeric-asc"))
+        menu.addAction(sortbytime)
+        sortbytimede = LAction("按添加时间排序_降序", menu)
+        sortbytimede.setIcon(qtawesome.icon("fa.sort-numeric-desc"))
+        menu.addAction(sortbytimede)
+        sortbyname = LAction("按名称排序", menu)
+        sortbyname.setIcon(qtawesome.icon("fa.sort-alpha-asc"))
+        menu.addAction(sortbyname)
+        sortbynamedesc = LAction("按名称排序_降序", menu)
+        sortbynamedesc.setIcon(qtawesome.icon("fa.sort-alpha-desc"))
+        menu.addAction(sortbynamedesc)
+        action = menu.exec(QCursor.pos())
+
+        def unsafetrygettime(uid: str):
+            __ = savehook_new_data[uid]
+            t = __.get("createtime")
+            if not t:
+                try:
+                    t = float(uid.split("_")[0])
+                except:
+                    t = 0
+            return t
+
+        if action in (sortbytime, sortbytimede):
+            self.reflist.sort(key=unsafetrygettime, reverse=action != sortbytimede)
+            self.tagschanged(self.currtags)
+        elif action in (sortbyname, sortbynamedesc):
+            paircmp = lambda a, b: windows.StrCmpLogicalW(
+                savehook_new_data[a]["title"], savehook_new_data[b]["title"]
+            )
+            self.reflist.sort(
+                key=cmp_to_key(paircmp),
+                reverse=action == sortbynamedesc,
+            )
+            self.tagschanged(self.currtags)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self._parent = parent
@@ -684,6 +726,9 @@ class dialog_savedgame_new(QWidget):
         self.___ = threeswitch(self, [None, None, None, None])
         self.___.setStyleSheet("background:transparent")
         layout.addWidget(self.tagswidget)
+        layout.addWidget(
+            getIconButton(icon="fa.sort-amount-asc", callback=self.sortgamecallback)
+        )
         layout.addWidget(self.___)
         formLayout.addLayout(layout)
         self.flow = QWidget()

@@ -72,7 +72,9 @@ ocrdfsetting = tryreadconfig2("ocrsetting.json")
 ocrerrorfixdefault = tryreadconfig2("ocrerrorfix.json")
 
 ocrerrorfix = tryreadconfig("ocrerrorfix.json")
-globalconfig: "dict[str, dict[str, str] | list[str] | str]" = tryreadconfig("config.json")
+globalconfig: "dict[str, dict[str, str] | list[str] | str]" = tryreadconfig(
+    "config.json"
+)
 magpie_config = tryreadconfig_1("Magpie/config.json", pathold="magpie_config.json")
 postprocessconfig = tryreadconfig("postprocessconfig.json")
 
@@ -84,8 +86,8 @@ if _savehook:
     # savehook_new_data:{uid:dict,...}
     # savegametaged:[ None, {'games':[uid,...],'title':str,'opened':bool,'uid':str},...]
     # gamepath2uid:{gamepath:uid}
-    savehook_new_list = _savehook[0]
-    savehook_new_data = _savehook[1]
+    savehook_new_list: list = _savehook[0]
+    savehook_new_data: "dict[str, dict]" = _savehook[1]
     savegametaged = _savehook[2]
     # gamepath2uid = _savehook[3] 不再使用，允许重复的path
 
@@ -204,6 +206,7 @@ def getdefaultsavehook(title=None):
         "usertags": [],
         "developers": [],
         "webtags": [],  # 标签
+        # "createtime":xx  添加时间
     }
     if title and len(title):
         default["title"] = title  # metadata

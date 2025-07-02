@@ -328,14 +328,18 @@ class gamepath2uid_index_helper(dict):
 
 
 def initanewitem(title):
-    uid = "{}_{}".format(time.time(), uuid.uuid4())
+    t = time.time()
+    uid = "{}_{}".format(t, uuid.uuid4())
     savehook_new_data[uid] = gamepath2uid_index_helper(getdefaultsavehook(title), uid)
+    savehook_new_data[uid]["createtime"] = t
     return uid
 
 
 def duplicateconfig(uidold):
-    uid = "{}_{}".format(time.time(), uuid.uuid4())
+    t = time.time()
+    uid = "{}_{}".format(t, uuid.uuid4())
     savehook_new_data[uid] = json.loads(json.dumps(savehook_new_data[uidold]))
+    savehook_new_data[uid]["createtime"] = t
     return uid
 
 

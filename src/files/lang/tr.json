@@ -814,5 +814,8 @@
     "本次运行期间不再询问": "Bu çalıştırma sırasında bir daha sorma",
     "更新失败": "Güncelleme başarısız oldu.",
     "更新成功": "Güncelleme başarılı.",
-    "部分文件或目录被以下进程占用，是否终止以下进程？": "Bazı dosyalar veya dizinler aşağıdaki işlemler tarafından kullanılıyor. Bu işlemleri sonlandırmak istiyor musunuz?"
+    "部分文件或目录被以下进程占用，是否终止以下进程？": "Bazı dosyalar veya dizinler aşağıdaki işlemler tarafından kullanılıyor. Bu işlemleri sonlandırmak istiyor musunuz?",
+    "按名称排序": "Ada göre sırala",
+    "按添加时间排序": "Eklenme zamanına göre sırala",
+    "降序": "Azalan sıra"
 }
