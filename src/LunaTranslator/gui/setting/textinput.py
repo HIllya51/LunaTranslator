@@ -8,6 +8,7 @@ from language import TransLanguages
 from gui.setting.textinput_ocr import getocrgrid_table
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.dynalang import LLabel
+from textio.textsource.mssr import getlocaleandlv, findallmodel
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -327,23 +328,7 @@ def loadmssrsource(self):
 
 
 def __srcofig(grids: list, self):
-    Speech = NativeUtils.FindPackages("MicrosoftWindows.Speech.")
-    __vis = []
-    paths = []
-    for _, p in Speech:
-        try:
-            __vis.append(_.split(".")[2])
-        except:
-            continue
-        paths.append(p)
-    for _dir, _, __ in os.walk("."):
-        base = os.path.basename(_dir)
-        if base.startswith("MicrosoftWindows.Speech."):
-            try:
-                __vis.append(base.split(".")[2])
-            except:
-                continue
-            paths.append(_dir)
+    __vis, paths = findallmodel()
     if not paths:
         return
 

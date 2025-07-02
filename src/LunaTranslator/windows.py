@@ -825,7 +825,7 @@ GetClassNameW.argtypes = HWND, LPWSTR, c_int
 GetClassNameW.restype = c_int
 
 
-def GetClassName(hwnd):
+def GetClassName(hwnd: int) -> "str|None":
     buff = create_unicode_buffer(256)
     ret = GetClassNameW(hwnd, buff, 256)
     if not ret:
@@ -841,7 +841,7 @@ LOCALE_SISO639LANGNAME = 0x59
 LOCALE_SISO3166CTRYNAME = 0x5A
 
 
-def GetLocale():
+def GetLocale() -> "tuple[str, str]":
     lcid = GetUserDefaultLCID()
     buff = create_unicode_buffer(10)
     buff2 = create_unicode_buffer(10)
@@ -862,3 +862,16 @@ CreateMutexW.restype = AutoHandle
 StrCmpLogicalW = _Shlwapi.StrCmpLogicalW
 StrCmpLogicalW.argtypes = (LPCWSTR, LPCWSTR)
 StrCmpLogicalW.restype = INT
+
+LOCALE_NAME_MAX_LENGTH = 85
+
+
+def LCIDToLocaleName(lcid: int) -> str:
+    _LCIDToLocaleName = _kernel32.LCIDToLocaleName
+    _LCIDToLocaleName.argtypes = LCID, LPWSTR, c_int, DWORD
+    _LCIDToLocaleName.restype = c_int
+
+    buff = create_unicode_buffer(LOCALE_NAME_MAX_LENGTH)
+    if not _LCIDToLocaleName(lcid, buff, LOCALE_NAME_MAX_LENGTH, 0):
+        raise Exception(GetLastError())
+    return buff.value

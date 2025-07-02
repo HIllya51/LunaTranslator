@@ -36,12 +36,12 @@ int mssr(int argc, wchar_t *argv[])
     AddDllDirectory(argv[6]);
     AddDllDirectory(syspath1);
     AddDllDirectory(syspath2);
-
+    std::string extra = WideStringToString(argv[7]);
     auto config = EmbeddedSpeechConfig::FromPath(WideStringToString(argv[4], CP_ACP));
 
     for (auto &m : config->GetSpeechRecognitionModels())
     {
-        config->SetSpeechRecognitionModel(m->Name, parsekey(getkey()));
+        config->SetSpeechRecognitionModel(m->Name, extra.empty() ? parsekey(getkey()) : extra);
     }
     config->SetProfanity(ProfanityOption::Raw);
     CEvent recognitionEnd{FALSE, FALSE};

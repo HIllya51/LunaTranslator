@@ -11,42 +11,52 @@ class TTS(TTSbase):
         return globalconfig.get("MicrosoftWindows.Voice.License", "")
 
     def getname(self, path):
-
+        Name = None
+        LicenseVersion = "0"
         try:
             with open(os.path.join(path, "Tokens.xml"), "r", encoding="utf8") as ff:
                 root = ET.fromstring(ff.read())
-            target_attributes = root.findall(".//Attribute[@name='Name']")
-            if not target_attributes:
-                return
-            return target_attributes[0].get("value")
+            try:
+                Name = root.findall(".//Attribute[@name='Name']")[0].get("value")
+            except:
+                pass
+            try:
+                LicenseVersion = root.findall(".//Attribute[@name='LicenseVersion']")[
+                    0
+                ].get("value")
+            except:
+                pass
         except:
             pass
+        if LicenseVersion != "0" and not self.extralicense:
+            Name = None
+        return Name, LicenseVersion
 
     def get_paths(self):
         paths = []
         names = []
-        for _, path in (
-            NativeUtils.FindPackages("MicrosoftWindows.Voice.")
-            if self.extralicense
-            else []
-        ):
-            name = self.getname(path)
-            if name:
-                names.append(name)
-                paths.append(path)
+        for _, path in NativeUtils.FindPackages("MicrosoftWindows.Voice."):
+            name = self.getname(path)[0]
+            if not name:
+                continue
+            names.append(name)
+            paths.append(path)
         for path, _, __ in os.walk("."):
             base = os.path.basename(path)
-            if base.startswith("MicrosoftWindows.Voice."):
-                name = self.getname(path)
-                ok = False
-                for i in range(len(names)):
-                    if names[i] == name:
-                        paths[i] = path
-                        ok = True
-                        break
-                if not ok:
-                    paths.append(path)
-                    names.append(name)
+            if not base.startswith("MicrosoftWindows.Voice."):
+                continue
+            name = self.getname(path)[0]
+            if not name:
+                continue
+            ok = False
+            for i in range(len(names)):
+                if names[i] == name:
+                    paths[i] = path
+                    ok = True
+                    break
+            if not ok:
+                paths.append(path)
+                names.append(name)
         return zip(names, paths)
 
     def getvoicelist(self):
@@ -88,6 +98,7 @@ class TTS(TTSbase):
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
+        lv = self.getname(path)[1]
         cmd = '"{}" msnaturalvoice {} {} {} "{}" "{}" "{}"'.format(
             exepath,
             pipename,
@@ -95,7 +106,7 @@ class TTS(TTSbase):
             mapname,
             path,
             dllp,
-            self.extralicense,
+            self.extralicense if (lv != "0") else "",
         )
         self.engine = NativeUtils.AutoKillProcess(cmd)
 

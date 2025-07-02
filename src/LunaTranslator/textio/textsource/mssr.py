@@ -6,6 +6,54 @@ from myutils.config import globalconfig, _TR
 from myutils.mecab import punctuations
 
 
+def getlocaleandlv(path):
+    with open(os.path.join(path, "sr.ini"), "r", encoding="utf8") as ff:
+        lines = ff.read()
+    lines = lines.splitlines()
+    kv = {}
+    for l in lines:
+        ls = l.split("=")
+        if len(ls) != 2:
+            continue
+        kv[ls[0]] = ls[1]
+    locale_id = kv["locale-id"]
+    locale = windows.LCIDToLocaleName(int(locale_id))
+    lv = kv.get("license-version", "0")
+    return locale, lv
+
+
+def findallmodel(check=None):
+    __vis = []
+    paths = []
+    extra = globalconfig.get("MicrosoftWindows.Speech.License", "")
+    for _, p in [(None, check)] + NativeUtils.FindPackages("MicrosoftWindows.Speech."):
+        try:
+            lc, lv = getlocaleandlv(p)
+            if lv != "0" and not extra:
+                continue
+            __vis.append(lc)
+        except:
+            continue
+        if check:
+            return p
+        paths.append(p)
+    for _dir, _, __ in os.walk("."):
+        if os.path.basename(_dir).startswith("MicrosoftWindows.Speech."):
+            try:
+                lc, lv = getlocaleandlv(_dir)
+                if lv != "0" and not extra:
+                    continue
+                __vis.append(lc)
+            except:
+                continue
+            if check:
+                return _dir
+            paths.append(_dir)
+    if check:
+        return None
+    return __vis, paths
+
+
 class mssr(basetext):
     def end(self):
         # listen里循环引用
@@ -27,18 +75,6 @@ class mssr(basetext):
         for _dir, _, __ in os.walk(r"C:\Windows\SystemApps"):
             if checkdir(_dir):
                 return os.path.abspath(_dir)
-
-    def findspeech(self):
-        path = globalconfig["sourcestatus2"]["mssr"]["path"]
-        if path and os.path.exists(path):
-            return path
-        _ = NativeUtils.FindPackages("MicrosoftWindows.Speech.")
-        if _:
-            return NativeUtils.FindPackages("MicrosoftWindows.Speech.")[0][1]
-        for _dir, _, __ in os.walk("."):
-            base = os.path.basename(_dir)
-            if base.startswith("MicrosoftWindows.Speech."):
-                return path
 
     def getsource(self):
         sources = ["loopback", "i", "o"]
@@ -63,11 +99,15 @@ class mssr(basetext):
             source = "i" + source
         return source
 
+    @property
+    def extralicense(self):
+        return globalconfig.get("MicrosoftWindows.Speech.License", "")
+
     def init(self):
 
         self.startsql(gobject.gettranslationrecorddir("0_mssr.sqlite"))
         self.curr = ""
-        path = self.findspeech()
+        path = findallmodel(check=globalconfig["sourcestatus2"]["mssr"]["path"])
         if not path:
             gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
@@ -82,13 +122,14 @@ class mssr(basetext):
         notify = str(uuid.uuid4())
         self.notify = NativeUtils.SimpleCreateEvent(notify)
         self.engine = NativeUtils.AutoKillProcess(
-            'files/shareddllproxy64.exe mssr {} {} {} "{}" {} "{}"'.format(
+            'files/shareddllproxy64.exe mssr {} {} {} "{}" {} "{}" "{}"'.format(
                 pipename,
                 waitsignal,
                 notify,
                 path,
                 self.getsource(),
                 dll,
+                self.extralicense if (getlocaleandlv(path)[1] != "0") else "",
             )
         )
         windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))

@@ -64,6 +64,18 @@ namespace
         }
         buffer->from(strReplace(s, "\n"));
     }
+    void SLPM66157(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = s.substr(0, s.find("\n\n"));
+        if (startWith(s, "<") || startWith(s, ";"))
+        {
+            if (startWith(s, "<WINDOW NAME"))
+                return buffer->from(re::sub(s.substr(0, s.find("\n") - 1), "<WINDOW NAME=\"(.*?)\".*", "$1"));
+            return buffer->clear();
+        }
+        buffer->from(strReplace(s, "\n"));
+    }
     void SLPM55016(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1470,6 +1482,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ルーンプリンセス 初回限定版
+    {0x11AA2C, {0, PCSX2_REG_OFFSET(t5), 0, 0, SLPM66157, "SLPM-66157"}},
+    // 式神の城 七夜月幻想曲
+    {0x1722E8, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM65396, "SLPM-66069"}},
     // ふぁいなりすと [通常版]
     {0x167428, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s2), 0, 0, SLPM66254, "SLPM-66254"}},
     // メタルウルフREV [初回限定版]

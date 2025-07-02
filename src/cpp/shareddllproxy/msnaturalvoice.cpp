@@ -57,25 +57,7 @@ std::string parsekey(std::string key)
         return key.substr(4);
     return key;
 }
-static std::shared_ptr<SpeechSynthesisResult> GetResult(std::shared_ptr<SpeechSynthesizer> &synthesizer, std::shared_ptr<EmbeddedSpeechConfig> &config, wchar_t *text, const std::string &extra)
-{
-    static int once = 0;
-    auto result = synthesizer->SpeakSsml(text);
-    if ((!once) && (!extra.empty()))
-    {
-        once += 1;
-        auto failed = CheckSynthesisResult(result);
-        if (failed &&
-            (failed->ErrorCode == CancellationErrorCode::AuthenticationFailure))
-        {
-            config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), extra);
-            synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
-            return GetResult(synthesizer, config, text, extra);
-        }
-    }
 
-    return result;
-}
 int msnaturalvoice(int argc, wchar_t *argv[])
 {
 
@@ -106,7 +88,7 @@ int msnaturalvoice(int argc, wchar_t *argv[])
     config->SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat::Riff24Khz16BitMonoPcm);
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestSentenceBoundary, "true");
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestPunctuationBoundary, "false");
-    config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), parsekey(getkey()));
+    config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), extra.empty() ? parsekey(getkey()) : extra);
     auto synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
     wchar_t text[10000];
     DWORD _;
@@ -115,7 +97,7 @@ int msnaturalvoice(int argc, wchar_t *argv[])
         ZeroMemory(text, sizeof(text));
         if (!ReadFile(hPipe, (unsigned char *)text, 10000 * 2, &_, NULL))
             break;
-        auto result = GetResult(synthesizer, config, text, extra);
+        auto result = synthesizer->SpeakSsml(text);
         uint32_t len = 0;
         if (auto failed = CheckSynthesisResult(result))
         {
