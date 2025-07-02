@@ -865,6 +865,12 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66150 | しろがねの鳥籠 [通常版] |
+|  | SLPM-66225 | D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック |
+|  | SLPM-65937 | 星界の戦旗 |
+|  | SLPM-66112 | ふしぎの海のナディア [通常版] |
+|  | SLPM-66157 | ルーンプリンセス 初回限定版 |
+|  | SLPM-66069 | 式神の城 七夜月幻想曲 |
 |  | SLPM-66254 | ふぁいなりすと [通常版] |
 |  | SLPM-65552 | メタルウルフREV [初回限定版] |
 |  | SLPM-66245 | ジュエルスオーシャン Star of Sierra Leone |
@@ -953,6 +959,7 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | SLPM-55159 | ヒャッコ よろずや事件簿！ |
 |  | SLPM-55052 | トリガーハート エグゼリカ エンハンスド |
 |  | SLPM-66352 | Memories Off ～それから again～ [限定版] |
+|  | SLPM-66146 & SLPM-66147 | Memories Off #5 とぎれたフィルム |
 |  | SLPM-66791 | Memories Off #5 encore [通常版] |
 |  | SLPM-66988 | Memories Off 6 ～T-Wave～ [通常版] |
 |  | SLPM-55197 | Memories Off 6 Next Relation |
