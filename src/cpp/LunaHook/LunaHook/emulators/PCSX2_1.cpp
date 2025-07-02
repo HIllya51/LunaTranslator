@@ -237,6 +237,32 @@ namespace
     {
         StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
     }
+    void SLPM65937(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+            last = s;
+            return;
+        }
+        last = s;
+        std::string name = (char *)emu_addr(0x601C54);
+        if (name.size() && name != "\x81\x40")
+            name = "\x81\x79" + name + "\x81\x7a";
+        else
+            name = "";
+        buffer->from(name + buffer->strA());
+    }
+    void SLPM66112(TextBuffer *buffer, HookParam *hp)
+    {
+        std::string name = (char *)emu_addr(0x330D92);
+        if (name.size())
+            name = "\x81\x79" + name + "\x81\x7a";
+        buffer->from(name + buffer->strA());
+        SLPM66935(buffer, hp);
+    }
     void SLPM62343(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -513,6 +539,30 @@ namespace
         strReplace(s, "\x81\x40");
         buffer->from(s);
     }
+    void SLPM66150(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (startWith(s, last))
+        {
+            buffer->from(strReplace(s.substr(last.size()), "\x01"));
+            last = s;
+            return;
+        }
+        last = s;
+        buffer->from(strReplace(s, "\x01"));
+    }
+    void SLPM66225(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+        {
+            buffer->clear();
+        }
+        last = s;
+        SLPM66905(buffer, hp);
+    }
     void SLPS25414(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static std::string last;
@@ -596,10 +646,6 @@ namespace
             }
             collect += __;
         }
-        static std::string last;
-        if (last == collect)
-            return;
-        last = collect;
         buffer->from(collect);
     }
     void SLPM66817(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
@@ -1449,6 +1495,15 @@ namespace
         s = re::sub(s, L"%[a-zA-Z0-9]+");
         buffer->fromWA(s);
     }
+    void SLPM66146(TextBuffer *buffer, HookParam *hp)
+    {
+        SLPM66352(buffer, hp);
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+    }
     void SLPM65552(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
@@ -1475,6 +1530,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // しろがねの鳥籠 [通常版]
+    {0x424710, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPM66150, "SLPM-66150"}},
+    // D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック
+    {0x112A98, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM66225, "SLPM-66225"}},
+    // 星界の戦旗
+    {0x60300C, {DIRECT_READ, 0, 0, SLPM66344<0x60300C, 0x6030EC, 0x6031CC>, SLPM65937, "SLPM-65937"}},
+    // ふしぎの海のナディア [通常版]
+    {0x330D08, {DIRECT_READ, 0, 0, SLPM66344<0x330D08, 0x330D36, 0x330D64>, SLPM66112, "SLPM-66112"}},
     // ルーンプリンセス 初回限定版
     {0x11AA2C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t5), 0, 0, SLPM66157, "SLPM-66157"}},
     // 式神の城 七夜月幻想曲
@@ -1654,6 +1717,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x324694, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM55052, "SLPM-55052"}},
     // Memories Off ～それから again～ [限定版]
     {0x1E03CF0, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66352"}},
+    // Memories Off #5 とぎれたフィルム
+    {0x1F34FE0, {DIRECT_READ, 0, 0, 0, SLPM66146, std::vector<const char *>{"SLPM-66146", "SLPM-66147"}}},
     // Memories Off #5 encore [通常版]
     {0x1D4E270, {DIRECT_READ, 0, 0, 0, SLPM66791, "SLPM-66791"}},
     // Memories Off 6 ～T-Wave～ [通常版]

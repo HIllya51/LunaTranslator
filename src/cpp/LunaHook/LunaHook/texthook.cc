@@ -499,40 +499,45 @@ void TextHook::Read()
 {
 	// BYTE(*buffer)[PIPE_BUFFER_SIZE] = &::buffer, *pbData = *buffer + sizeof(ThreadParam);
 	auto buffer = (TextOutput_T *)local_buffer;
-	auto pbData = buffer->data;
 	buffer->type = hp.type;
-	TextBuffer buff{pbData, 1};
+	TextBuffer buff{buffer->data, 1};
+
+	auto savelast = new BYTE[PIPE_BUFFER_SIZE];
+	int lastlen = 0;
 	__try
 	{
-		if (hp.text_fun)
+		while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
 		{
-			auto buffer = (TextOutput_T *)local_buffer;
-			while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
+			if (!location)
+				continue;
+			buff.size = 0;
+			if (hp.text_fun)
 			{
 				uintptr_t split = 0;
-				buff.size = 0;
 				hp.text_fun(0, &hp, &buff, &split);
-				TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
-			}
-		}
-		else
-		{
-
-			while (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT)
-			{
-				if (!location)
+				if (!buff.size)
 					continue;
+				if ((buff.size == lastlen) && (memcmp(buff.buff, savelast, lastlen) == 0))
+					continue;
+			}
+			else
+			{
 				int currentLen = HookStrlen((BYTE *)location);
 				if (!currentLen)
 					continue;
-				if ((currentLen == buff.size) && (memcmp(pbData, location, buff.size) == 0))
+				if ((currentLen == lastlen) && (memcmp(buff.buff, location, lastlen) == 0))
 					continue;
 				buff.from(location, currentLen);
-				if (hp.filter_fun && (!SafeFilterFun(hp, buff)))
-					continue;
-				TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
-				if (hp.filter_fun)
-					buff.from(location, currentLen);
+			}
+			lastlen = buff.size;
+			if (savelast)
+				memcpy(savelast, buff.buff, buff.size);
+			if (hp.filter_fun && (!SafeFilterFun(hp, buff)))
+				continue;
+			TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
+			if (hp.filter_fun)
+			{
+				buff.from(savelast ? savelast : location, lastlen);
 			}
 		}
 	}
