@@ -1520,7 +1520,6 @@ class TranslatorWindow(resizableframeless):
         self.setGeometry(new_pos.x(), new_pos.y(), new_size.width(), new_size.height())
 
     def textAreaChanged(self, size: QSize):
-
         if self.translate_text.cleared:
             return
         if not globalconfig["adaptive_height"]:

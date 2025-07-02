@@ -161,8 +161,8 @@ class Textbrowser(QFrame):
             ),
         )
 
-    def clear(self):
-        self.cleared = True
+    def clear(self, isauto=True):
+        self.cleared = isauto
         self.trace.clear()
         self.textbrowser.clear()
         WSForEach(

@@ -421,7 +421,7 @@ class TextBrowser(WebviewWidget, somecommon):
         self.trans0checker.timeout.connect(self.__checkmousestate)
 
     def ___cleartext(self):
-        self.parent().clear()
+        self.parent().clear(False)
         gobject.base.currenttext = ""
 
     def refreshcontent(self):
