@@ -1,7 +1,7 @@
 from language import Languages
 import json
 from translator.cdp_helper import cdp_helper
-import re, html
+from html import unescape
 from translator.basetranslator import basetrans
 
 
@@ -63,6 +63,6 @@ class TS(basetrans):
             data=json.dumps([[[content], self.srclang, self.tgtlang], "wt_lib"]),
         )
         try:
-            return response.json()[0][0]
+            return unescape(response.json()[0][0])
         except:
             raise Exception(response)
