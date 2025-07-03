@@ -219,7 +219,6 @@
     "过滤乱码文本": "Filtro testo distorto",
     "选择": "scelta",
     "显示": "display",
-    "自动获取系统代理": "Ottieni automaticamente agenti di sistema",
     "游戏设置": "Impostazioni gioco",
     "显示错误信息": "Mostra messaggi di errore",
     "附带上下文个数": "Numero di contesti di accompagnamento",
@@ -457,7 +456,6 @@
     "范围框宽度": "Larghezza casella intervallo",
     "按钮颜色": "Colore pulsante",
     "按钮大小": "Dimensione pulsante",
-    "软件显示语言": "Linguaggio di visualizzazione del software",
     "填充颜色": "colore di riempimento",
     "阴影强度": "Intensità ombra",
     "阴影半径": "Raggio ombra",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Alcuni file o directory sono occupati dai seguenti processi. Terminare i processi indicati?",
     "按名称排序": "Ordinare per nome",
     "按添加时间排序": "Ordina per data di aggiunta",
-    "降序": "Decrescente"
+    "降序": "Decrescente",
+    "UI语言": "Lingua dell'interfaccia utente",
+    "使用系统代理": "utilizzare il proxy di sistema"
 }

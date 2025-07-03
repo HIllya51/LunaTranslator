@@ -219,7 +219,6 @@
     "过滤文本中的非日语字符集字符": "Filter Non-Japanese Characters in Text",
     "过滤乱码文本": "Filter Garbled Text",
     "选择": "Select",
-    "自动获取系统代理": "Auto-detect System Proxy",
     "游戏设置": "Game Settings",
     "显示错误信息": "Show Error Message",
     "附带上下文个数": "Number of Context Lines to Include",
@@ -456,7 +455,6 @@
     "范围框宽度": "Region Border Width",
     "按钮颜色": "Button Color",
     "按钮大小": "Button Size",
-    "软件显示语言": "Software Display Language",
     "填充颜色": "Fill Color",
     "阴影强度": "Shadow Intensity",
     "阴影半径": "Shadow Radius",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Some files or directories are being used by the following processes. Do you want to terminate these processes?",
     "按名称排序": "Sort by name",
     "按添加时间排序": "Sort by addition time",
-    "降序": "Descending"
+    "降序": "Descending",
+    "UI语言": "UI Language",
+    "使用系统代理": "Use system proxy"
 }

@@ -43,7 +43,6 @@
     "取消": "zrušit",
     "附加音源": "Další zdroj zvuku",
     "窗口截图": "Snímek obrazovky okna",
-    "自动获取系统代理": "Automaticky získat systémový proxy",
     "最小化到托盘": "Minimalizovat do zásobníku",
     "打开目录": "Otevřít adresář",
     "字体样式": "Styl písma",
@@ -459,7 +458,6 @@
     "范围框宽度": "Šířka rámečku rozsahu",
     "按钮颜色": "Barva tlačítka",
     "按钮大小": "Velikost tlačítka",
-    "软件显示语言": "Zobrazovací jazyk softwaru",
     "填充颜色": "barva výplně",
     "阴影强度": "Intenzita stínu",
     "阴影半径": "Poloměr stínu",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Některé soubory nebo adresáře jsou používány následujícími procesy. Chcete tyto procesy ukončit?",
     "按名称排序": "Seřadit podle názvu",
     "按添加时间排序": "Seřadit podle data přidání",
-    "降序": "Sestupně"
+    "降序": "Sestupně",
+    "UI语言": "Jazyk uživatelského rozhraní",
+    "使用系统代理": "Použít systémový proxy"
 }

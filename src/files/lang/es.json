@@ -219,7 +219,6 @@
     "过滤文本中的非日语字符集字符": "Filtrar los caracteres del conjunto de caracteres no japoneses en el texto",
     "过滤乱码文本": "Filtrar texto desordenado",
     "选择": "Selección",
-    "自动获取系统代理": "Agente del sistema de adquisición automática",
     "游戏设置": "Configuración del juego",
     "显示错误信息": "Mostrar mensaje de error",
     "附带上下文个数": "Número de contextos adjuntos",
@@ -457,7 +456,6 @@
     "范围框宽度": "Ancho del marco de alcance",
     "按钮颜色": "Color del botón",
     "按钮大小": "Tamaño del botón",
-    "软件显示语言": "Lenguaje de visualización de software",
     "填充颜色": "Color de relleno",
     "阴影强度": "Intensidad de la sombra",
     "阴影半径": "Radio de sombra",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "¿Algunos archivos o directorios están siendo utilizados por los siguientes procesos? ¿Desea terminar estos procesos?",
     "按名称排序": "Ordenar por nombre",
     "按添加时间排序": "Ordenar por fecha de adición",
-    "降序": "orden descendente"
+    "降序": "orden descendente",
+    "UI语言": "Idioma de la interfaz de usuario",
+    "使用系统代理": "usar el proxy del sistema"
 }

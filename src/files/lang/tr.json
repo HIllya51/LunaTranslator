@@ -219,7 +219,6 @@
     "过滤文本中的非日语字符集字符": "Japon olmayan karakter seti karakterleri metinde sil",
     "过滤乱码文本": "Süzgülenmiş metin",
     "选择": "seçim",
-    "自动获取系统代理": "Sistem ajanı otomatik olarak tutun",
     "游戏设置": "Oyun ayarları",
     "显示错误信息": "Hata mesajını göster",
     "附带上下文个数": "Yapılan anlaşmalar sayısı",
@@ -457,7 +456,6 @@
     "范围框宽度": "Aralık kutusu genişliği",
     "按钮颜色": "Düğme rengi",
     "按钮大小": "Düğme ölçüsi",
-    "软件显示语言": "Yazılım Gösterim Dili",
     "填充颜色": "doldurum rengi",
     "阴影强度": "Gölge şiddeti",
     "阴影半径": "Gölge Yardımcısı",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Bazı dosyalar veya dizinler aşağıdaki işlemler tarafından kullanılıyor. Bu işlemleri sonlandırmak istiyor musunuz?",
     "按名称排序": "Ada göre sırala",
     "按添加时间排序": "Eklenme zamanına göre sırala",
-    "降序": "Azalan sıra"
+    "降序": "Azalan sıra",
+    "UI语言": "UI Dili",
+    "使用系统代理": "Sistem vekil sunucusu kullan"
 }

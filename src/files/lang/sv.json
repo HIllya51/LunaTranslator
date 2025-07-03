@@ -43,7 +43,6 @@
     "取消": "avbryt",
     "附加音源": "Ytterligare ljudkälla",
     "窗口截图": "Fönsterskärmdump",
-    "自动获取系统代理": "Hämta automatiskt systemproxy",
     "最小化到托盘": "Minimera till bricka",
     "打开目录": "Öppna katalog",
     "字体样式": "Teckensnittsstil",
@@ -459,7 +458,6 @@
     "范围框宽度": "Områdesrådans bredd",
     "按钮颜色": "Knappfärg",
     "按钮大小": "Knappstorlek",
-    "软件显示语言": "Programvaruvisningsspråk",
     "填充颜色": "fyllningsfärg",
     "阴影强度": "Skuggintensitet",
     "阴影半径": "Skuggradie",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Vissa filer eller kataloger används av följande processer. Vill du avsluta dessa processer?",
     "按名称排序": "Sortera efter namn",
     "按添加时间排序": "Sortera efter tilläggningstid",
-    "降序": "fallande ordning"
+    "降序": "fallande ordning",
+    "UI语言": "UI-språk",
+    "使用系统代理": "använda systemproxy"
 }

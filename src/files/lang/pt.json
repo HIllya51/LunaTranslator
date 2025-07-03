@@ -43,7 +43,6 @@
     "取消": "cancelar",
     "附加音源": "Fonte de áudio adicional",
     "窗口截图": "Imagem da janela",
-    "自动获取系统代理": "Obter automaticamente o 'proxy' do sistema",
     "最小化到托盘": "Minimizar para a bandeja",
     "打开目录": "Abrir a pasta",
     "字体样式": "Estilo do Tipo de Letra",
@@ -459,7 +458,6 @@
     "范围框宽度": "Largura da caixa de intervalo",
     "按钮颜色": "Cor do botão",
     "按钮大小": "Tamanho do botão",
-    "软件显示语言": "Linguagem de visualização do software",
     "填充颜色": "cor do preenchimento",
     "阴影强度": "Intensidade da sombra",
     "阴影半径": "Raio da sombra",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Alguns arquivos ou diretórios estão sendo usados pelos seguintes processos. Deseja encerrar esses processos?",
     "按名称排序": "Ordenar por nome",
     "按添加时间排序": "Ordenar por data de adição",
-    "降序": "ordem decrescente"
+    "降序": "ordem decrescente",
+    "UI语言": "Idioma da interface do usuário",
+    "使用系统代理": "usar proxy do sistema"
 }

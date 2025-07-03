@@ -133,18 +133,25 @@ def proxyusage(self):
     hbox2 = QHBoxLayout(w2)
     hbox2.setContentsMargins(0, 0, 0, 0)
     hbox2.addWidget(QLabel())
-    hbox2.addWidget(LLabel("自动获取系统代理"))
+    hbox2.addWidget(LLabel("使用系统代理"))
 
     w3 = QWidget()
     hbox3 = QHBoxLayout(w3)
     hbox3.setContentsMargins(0, 0, 0, 0)
-    w3.setEnabled(not globalconfig["usesysproxy"])
 
-    switch2 = D_getsimpleswitch(
-        globalconfig, "usesysproxy", callback=lambda _: w3.setEnabled(not _)
-    )()
+    def __(x):
+        x = not x
+        w3.setVisible(x)
+        if x:
+            if hbox2.count() > 4:
+                hbox2.takeAt(hbox2.count() - 1)
+        else:
+            hbox2.addStretch(0)
+
+    switch2 = D_getsimpleswitch(globalconfig, "usesysproxy", callback=__)()
     hbox2.addWidget(switch2)
     hbox2.addWidget(w3)
+    __(globalconfig["usesysproxy"])
     hbox3.addWidget(QLabel())
     hbox3.addWidget(LLabel("手动设置代理"))
     proxy = QLineEdit(globalconfig["proxy"])
@@ -311,14 +318,6 @@ class __delayloadlangs(QHBoxLayout):
         # Qt6的脑残fontmerging机制导致变得很慢。
         QTimer.singleShot(0, self.delayload)
         self.addWidget(self.como)
-        self.btn = getIconButton(
-            callback=lambda: os.startfile(
-                os.path.abspath("files/lang/{}.json".format(getlanguse()))
-            ),
-        )
-        self.addWidget(self.btn)
-        if globalconfig["languageuse2"] == "zh":
-            self.btn.hide()
 
     def delayload(self):
         self.como.clear()
@@ -329,7 +328,6 @@ class __delayloadlangs(QHBoxLayout):
             lambda _: (
                 globalconfig.__setitem__("languageuse2", self.como.getCurrentData()),
                 changeUIlanguage(0),
-                self.btn.setVisible(self.como.getCurrentData() != "zh"),
             )
         )
 
@@ -344,7 +342,7 @@ def setTab_about(self, basel):
                     parent=self,
                     hiderows=[2, 3],
                     grid=[
-                        ["软件显示语言", __delayloadlangs],
+                        ["UI语言", __delayloadlangs],
                         ["使用代理", functools.partial(proxyusage, self)],
                         ["自动更新", functools.partial(updatexx, self)],
                         [functools.partial(progress___, self)],

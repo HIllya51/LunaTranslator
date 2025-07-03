@@ -219,7 +219,6 @@
     "过滤文本中的非日语字符集字符": "Bộ lọc ký tự bộ ký tự không phải tiếng Nhật trong văn bản",
     "过滤乱码文本": "Lọc văn bản lộn xộn",
     "选择": "Chọn",
-    "自动获取系统代理": "Tự động nhận proxy hệ thống",
     "游戏设置": "Cài đặt trò chơi",
     "显示错误信息": "Hiện thông tin lỗi",
     "附带上下文个数": "Số context",
@@ -457,7 +456,6 @@
     "范围框宽度": "Chiều rộng hộp phạm vi",
     "按钮颜色": "Màu nút",
     "按钮大小": "Kích thước nút",
-    "软件显示语言": "Ngôn ngữ hiển thị phần mềm",
     "填充颜色": "Màu tô",
     "阴影强度": "Cường độ bóng",
     "阴影半径": "Bán kính bóng",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Một số tệp hoặc thư mục đang được sử dụng bởi các tiến trình sau, bạn có muốn kết thúc các tiến trình này không?",
     "按名称排序": "Sắp xếp theo tên",
     "按添加时间排序": "Sắp xếp theo thời gian thêm vào",
-    "降序": "giảm dần"
+    "降序": "giảm dần",
+    "UI语言": "Ngôn ngữ giao diện người dùng",
+    "使用系统代理": "sử dụng proxy hệ thống"
 }

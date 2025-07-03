@@ -219,7 +219,6 @@
     "过滤乱码文本": "Filtruj zniekształcony tekst",
     "选择": "wybór",
     "显示": "wyświetlacz",
-    "自动获取系统代理": "Automatyczne pozyskiwanie agentów systemowych",
     "游戏设置": "Ustawienia gry",
     "显示错误信息": "Wyświetlanie komunikatów o błędach",
     "附带上下文个数": "Liczba kontekstów towarzyszących",
@@ -457,7 +456,6 @@
     "范围框宽度": "Szerokość pola zakresu",
     "按钮颜色": "Kolor przycisku",
     "按钮大小": "Rozmiar przycisku",
-    "软件显示语言": "Język wyświetlania oprogramowania",
     "填充颜色": "kolor wypełnienia",
     "阴影强度": "Intensywność cienia",
     "阴影半径": "Promień cienia",
@@ -817,5 +815,7 @@
     "部分文件或目录被以下进程占用，是否终止以下进程？": "Część plików lub katalogów jest używana przez następujące procesy. Czy chcesz zakończyć te procesy?",
     "按名称排序": "Sortuj według nazwy",
     "按添加时间排序": "Sortuj według czasu dodania",
-    "降序": "malejąco"
+    "降序": "malejąco",
+    "UI语言": "Język interfejsu użytkownika",
+    "使用系统代理": "Użyj systemowego serwera proxy"
 }
