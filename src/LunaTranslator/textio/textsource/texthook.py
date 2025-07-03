@@ -328,7 +328,7 @@ class texthook(basetext):
         if autostart:
             autostarthookcode = self.hconfig.get("hook", [])
             needinserthookcode = self.hconfig.get("needinserthookcode", [])
-            injecttimeout = self.hconfig.get("inserthooktimeout", 500) / 1000
+            injecttimeout = self.hconfig.get("inserthooktimeout", 250) / 1000
         else:
             injecttimeout = 0
             autostarthookcode = []

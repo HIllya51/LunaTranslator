@@ -1340,7 +1340,7 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "延迟注入_(ms)",
             getspinbox(
-                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=500
+                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=250
             ),
         )
         if savehook_new_data[gameuid].get("removeforeverhook"):

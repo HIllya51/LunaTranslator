@@ -822,12 +822,6 @@ namespace
         s = re::sub(s, LR"(\[(.*?)\*(.*?)\])", L"$1");
         buffer->fromWA(s);
     }
-    void SLPM66298(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        s = re::sub(s, "%[A-Z]+[0-9]*");
-        buffer->from(s);
-    }
     void SLPM65684(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
@@ -1523,6 +1517,23 @@ namespace
         if (buffer->size == 1)
             return buffer->clear();
     }
+    void SLPM66052(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        if (!startWith(s, L"ﾕ"))
+            return buffer->clear();
+        buffer->fromWA(s.substr(1));
+    }
+    void SLPS25540(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (buffer->buff[0] <= 0x7f)
+            return buffer->clear();
+        static lru_cache<std::string> cache(50);
+        if (cache.touch(s))
+            return buffer->clear();
+        buffer->from(strReplace(strReplace(strReplace(s, "\x84\x71\x84\x72", "\x81\x5b\x81\x5b"), "\n"), "\n\x81\x40"));
+    }
 }
 struct emfuncinfoX
 {
@@ -1530,6 +1541,18 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // スクールランブル ねる娘は育つ。
+    {0x18C0A0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25540, "SLPS-25540"}},
+    // 巫女舞 ～永遠の想い～
+    {0x165E38, {0, PCSX2_REG_OFFSET(s2), 0, 0, SLPM66052, "SLPM-66052"}},
+    // 雪語り リニューアル版
+    {0x4152C0, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPS-25482"}},
+    // ラムネ ～ガラスびんに映る海～ 初回限定版
+    {0x256070, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPM-66083"}},
+    // 双恋島 恋と水着のサバイバル！
+    {0x15C5E8, {0, PCSX2_REG_OFFSET(s4), 0, 0, 0, "SLPS-25543"}},
+    // 極上生徒会
+    {0x1DB1A60, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66086"}},
     // しろがねの鳥籠 [通常版]
     {0x424710, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPM66150, "SLPM-66150"}},
     // D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック
@@ -1807,7 +1830,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // マイネリーベⅡ ～誇りと正義と愛～
     {0x1FFD0DC, {DIRECT_READ, 0, 0, 0, SLPM66247, "SLPM-66247"}},
     // セパレイトハーツ (Separate Hearts)
-    {0x1F63320, {DIRECT_READ, 0, 0, 0, SLPM66298, "SLPM-66298"}}, //@mills
+    {0x1F63320, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66298"}}, //@mills
     // アカイイト
     {0x136800, {0, PCSX2_REG_OFFSET(t0), 0, 0, FSLPM66136, "SLPM-65732"}},
     // Nana
