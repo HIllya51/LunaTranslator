@@ -145,7 +145,7 @@ static std::optional<std::wstring> SearchDllPath(const std::wstring &dll)
     len = SearchPathW(NULL, dll.c_str(), NULL, len, buff.data(), NULL);
     if (!len)
         return {};
-    return std::move(buff);
+    return buff;
 }
 static bool isvcrtlessthan1440()
 {

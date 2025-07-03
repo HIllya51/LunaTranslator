@@ -90,7 +90,7 @@ namespace ebyroid
             settings.language_dir,
             settings.voice_dir);
 
-    return std::move(settings);
+    return settings;
   }
 
 } // namespace ebyroid
