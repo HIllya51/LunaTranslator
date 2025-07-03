@@ -865,6 +865,21 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25468 | 永遠のアセリア −この大地の果てで− |
+|  | SLPM-65832 | IZUMO コンプリート |
+|  | SLPM-65867 | 新世紀エヴァンゲリオン 鋼鉄のガールフレンド2nd |
+|  | SLPM-65866 | 何処へ行くの、あの日 ～光る明日へ…～ |
+|  | SLPM-65895 | 月は切り裂く ～探偵 相楽恭一郎～ [限定版] |
+|  | SLPS-25483 | すい～とし～ずん |
+|  | SLPM-65771 | ナチュラル2 -DUO- 桜色の季節 DXパック |
+|  | SLPM-65941 | マビノ×スタイル |
+|  | SLPM-65918 | Dear My Friend ～Love like powdery snow～ |
+|  | SLPM-66026 | 初恋-first kiss- 初回限定版 |
+|  | SLPS-25506 | for Symphony ～with all one's heart～ |
+|  | SLPM-65962 | ホームメイド ～終の館～ [初回限定版] |
+|  | SLPM-65964 | まじかる☆ている ～ちっちゃな魔法使い～ [初回限定版] |
+|  | SLPM-65887 | Like Life an hour [通常版] |
+|  | SLPM-65968 | らぶドル ～Lovely Idol～ [初回限定版] |
 |  | SLPS-25540 | スクールランブル ねる娘は育つ。 |
 |  | SLPM-66052 | 巫女舞 ～永遠の想い～ |
 |  | SLPS-25482 | 雪語り リニューアル版 |
@@ -965,6 +980,8 @@ Vui lòng để trình dịch HOOK trình giả lập trước khi tải trò ch
 |  | SLPM-55159 | ヒャッコ よろずや事件簿！ |
 |  | SLPM-55052 | トリガーハート エグゼリカ エンハンスド |
 |  | SLPM-66352 | Memories Off ～それから again～ [限定版] |
+|  | SLPM-65857 | Memories Off AfterRain vol.1 折鶴 [SPECIAL EDITION] |
+|  | SLPM-65903 | Memories Off AfterRain Vol.2 想演 |
 |  | SLPM-66146 & SLPM-66147 | Memories Off #5 とぎれたフィルム |
 |  | SLPM-66791 | Memories Off #5 encore [通常版] |
 |  | SLPM-66988 | Memories Off 6 ～T-Wave～ [通常版] |

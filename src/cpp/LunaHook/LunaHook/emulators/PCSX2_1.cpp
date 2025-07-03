@@ -38,6 +38,12 @@ namespace
         strReplace(s, L"^");
         buffer->fromWA(s);
     }
+    void SLPS25468(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L"#");
+        buffer->fromWA(s);
+    }
     void SLPM66958(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -186,9 +192,25 @@ namespace
     {
         CharFilter(buffer, '\n');
     }
+    void SLPS25483(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("@y"));
+        StringFilter(buffer, TEXTANDLEN("@w"));
+    }
     void SLPM66861(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("||"));
+    }
+    void SLPM65964(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("||"));
+        auto s = buffer->strA();
+        if (endWith(s, "\xab"))
+        {
+            s = s.substr(0, s.size() - 1);
+        }
+        strReplace(s, "\x81\x40");
+        buffer->from(s);
     }
     void SLPS25604(TextBuffer *buffer, HookParam *hp)
     {
@@ -196,6 +218,10 @@ namespace
     }
     void SLPM55170(TextBuffer *buffer, HookParam *hp)
     {
+        auto s = buffer->strAW();
+        s = re::sub(s, LR"(\{(.*?)\}\[(.*?)\])", L"$1");
+        s = re::sub(s, L"%CG(.*?)%CE");
+        buffer->fromWA(s);
         StringFilter(buffer, TEXTANDLEN("%P"));
         StringFilter(buffer, TEXTANDLEN("%K"));
         StringFilter(buffer, TEXTANDLEN("%V"));
@@ -466,13 +492,6 @@ namespace
         strReplace(s, L"r");
         s = re::sub(s, L"v\\d+");
         buffer->fromWA(s);
-    }
-    void SLPM55009(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strAW();
-        s = re::sub(s, LR"(\{(.*?)\}\[(.*?)\])", L"$1");
-        buffer->fromWA(s);
-        SLPM55170(buffer, hp);
     }
     void SLPM55154(TextBuffer *buffer, HookParam *hp)
     {
@@ -913,6 +932,16 @@ namespace
         if (endWith(s, ","))
             s = s.substr(0, s.size() - 1);
         buffer->from(s);
+    }
+    void SLPM65887(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+        }
+        last = s;
     }
     void SLPM66757(TextBuffer *buffer, HookParam *hp)
     {
@@ -1520,6 +1549,10 @@ namespace
     void SLPM66052(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
+        if (s[2] == '"')
+        {
+            return buffer->fromWA(L"【" + re::search(s, L"\"(.*?)\"").value()[1].str() + L"】");
+        }
         if (!startWith(s, L"ﾕ"))
             return buffer->clear();
         buffer->fromWA(s.substr(1));
@@ -1529,10 +1562,77 @@ namespace
         auto s = buffer->strA();
         if (buffer->buff[0] <= 0x7f)
             return buffer->clear();
-        static lru_cache<std::string> cache(50);
+        static std::set<std::string> cache;
+        if (cache.find(s) != cache.end())
+            return buffer->clear();
+        cache.insert(s);
+        buffer->from(strReplace(strReplace(strReplace(s, "\x84\x71\x84\x72", "\x81\x5b\x81\x5b"), "\n"), "\n\x81\x40"));
+    }
+    void SLPM66026(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->size <= 8)
+            return buffer->clear();
+        buffer->size -= 7;
+        auto s = buffer->strAW();
+        buffer->fromWA(strReplace(strReplace(s, L"@　"), L"@"));
+    }
+    void SLPM65867(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (!startWith(s, "print"))
+            return buffer->clear();
+        s = re::sub(s, R"(@\[(.*?)@\])", "\x81\x79$1\x81\x7a");
+        strReplace(s, "@n");
+        strReplace(s, "@c");
+        buffer->from(s.substr(6, s.size() - 7));
+    }
+    void SLPM65771(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        static lru_cache<std::string> cache(3);
         if (cache.touch(s))
             return buffer->clear();
-        buffer->from(strReplace(strReplace(strReplace(s, "\x84\x71\x84\x72", "\x81\x5b\x81\x5b"), "\n"), "\n\x81\x40"));
+        buffer->from(s.substr(2));
+    }
+    void SLPM65832(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        auto sw = buffer->strAW();
+        std::wstring ss;
+        for (auto c : sw)
+        {
+            if (c <= 0x7f)
+                continue;
+            ss += c;
+        }
+        buffer->fromWA(ss);
+    }
+    void SLPM65866(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        static std::set<std::string> cache;
+        if (cache.find(s) != cache.end())
+            return buffer->clear();
+        cache.insert(s);
+        auto sw = buffer->strAW();
+        strReplace(sw, L"@");
+        strReplace(sw, L"&");
+        strReplace(sw, L"\n");
+        strReplace(sw, L"　");
+        strReplace(sw, L"\xff");
+        buffer->fromWA(sw);
     }
 }
 struct emfuncinfoX
@@ -1541,6 +1641,37 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 永遠のアセリア −この大地の果てで−
+    {0x141A80, {0, PCSX2_REG_OFFSET(t7), 0, 0, SLPS25468, "SLPS-25468"}},
+    // IZUMO コンプリート
+    {0x12DD1C, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM65832, "SLPM-65832"}},
+    // 新世紀エヴァンゲリオン 鋼鉄のガールフレンド2nd
+    {0x126BC4, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65867, "SLPM-65867"}},
+    // 何処へ行くの、あの日 ～光る明日へ…～
+    {0x219A2C, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65866, "SLPM-65866"}},
+    // 月は切り裂く ～探偵 相楽恭一郎～ [限定版]
+    {0x19722F5, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-65895"}},
+    // すい～とし～ずん
+    {0x20B810, {DIRECT_READ, 0, 0, 0, SLPS25483, "SLPS-25483"}},
+    // ナチュラル2 -DUO- 桜色の季節 DXパック
+    {0x132150, {0, PCSX2_REG_OFFSET(s3), 0, 0, SLPM65771, "SLPM-65771"}},
+    // マビノ×スタイル
+    {0x4DC238, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-65941"}},
+    // Dear My Friend ～Love like powdery snow～
+    {0x16EA9C, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM66052, "SLPM-65918"}},
+    // 初恋-first kiss- 初回限定版
+    {0x2133F8, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM66026, "SLPM-66026"}},
+    // for Symphony ～with all one's heart～
+    {0x2AFEF0, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPS-25506"}},
+    // ホームメイド ～終の館～ [初回限定版]
+    {0x16CBB4, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM66052, "SLPM-65962"}},
+    // まじかる☆ている ～ちっちゃな魔法使い～ [初回限定版]
+    {0x17F3A8, {DIRECT_READ, 0, 0, 0, SLPM66861, "SLPM-65964"}},
+    {0x110DA0, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM65964, "SLPM-65964"}},
+    // Like Life an hour [通常版]
+    {0x1AE51C, {0, PCSX2_REG_OFFSET(t0), 0, 0, SLPM65887, "SLPM-65887"}},
+    // らぶドル ～Lovely Idol～ [初回限定版]
+    {0x190888, {DIRECT_READ, 0, 0, 0, 0, "SLPM-65968"}},
     // スクールランブル ねる娘は育つ。
     {0x18C0A0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25540, "SLPS-25540"}},
     // 巫女舞 ～永遠の想い～
@@ -1709,7 +1840,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // H2Oプラス
     {0xD88890, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66921"}},
     // Lの季節2 ～Invisible Memories～ [通常版]
-    {0x1D43970, {DIRECT_READ, 0, 0, 0, SLPM55009, "SLPM-55009"}},
+    {0x1D43970, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-55009"}},
     // アオイシロ [初回限定版]
     {0xB2F560, {DIRECT_READ, 0, 0, 0, SLPM66958, "SLPM-66958"}},
     // よつのは ～a journey of sincerity～ [通常版]
@@ -1740,6 +1871,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x324694, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM55052, "SLPM-55052"}},
     // Memories Off ～それから again～ [限定版]
     {0x1E03CF0, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66352"}},
+    // Memories Off AfterRain vol.1 折鶴 [SPECIAL EDITION]
+    {0xC49B80, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-65857"}},
+    // Memories Off AfterRain Vol.2 想演
+    {0xC49D00, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-65903"}},
     // Memories Off #5 とぎれたフィルム
     {0x1F34FE0, {DIRECT_READ, 0, 0, 0, SLPM66146, std::vector<const char *>{"SLPM-66146", "SLPM-66147"}}},
     // Memories Off #5 encore [通常版]
