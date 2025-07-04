@@ -28,6 +28,10 @@ https://cloud.tencent.com/document/product/866/33526
 
 https://cloud.tencent.com/document/product/551/17232
 
+== 有道辞書
+
+https://www.patreon.com/posts/high-precision-133319068
+
 == 有道
 
 ### ステップ1：開発者になる
