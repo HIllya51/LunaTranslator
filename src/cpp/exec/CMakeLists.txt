@@ -4,7 +4,16 @@ project(LUNA)
 option(PYSTAND_CONSOLE "Build PyStand as a console application." OFF)
 
 
-set(sources PyStand.cpp luna.rc ${versioninfo})
+include(FetchContent)
+
+file(DOWNLOAD
+    https://image.lunatranslator.org/luna.ico
+    ${CMAKE_BINARY_DIR}/luna.ico
+)
+
+file(WRITE ${CMAKE_BINARY_DIR}/luna.rc "IDI_ICON1 ICON DISCARDABLE \"luna.ico\"")
+
+set(sources PyStand.cpp ${CMAKE_BINARY_DIR}/luna.rc ${versioninfo})
 
 #add_executable(LunaTranslator_debug ${sources})
 #target_compile_definitions(LunaTranslator_debug PRIVATE PYSTAND_CONSOLE)
