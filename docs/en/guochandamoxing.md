@@ -1,6 +1,6 @@
 # Large Model Translation Interface
 
-## Large Model Online Translation
+## General Large Model Interface
 
 ::: details Using Multiple Large Model Interfaces Simultaneously?
 If you only have multiple different keys and want to poll them, simply separate them with `|`.
@@ -146,9 +146,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 :::
 
-## Large Model Offline Translation
-
-### General Large Model Interface
+## General Large Model Interface - Offline Translation
 
 
 You can also use tools like [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) to deploy models, and then fill in the address and model.
