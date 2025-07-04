@@ -500,10 +500,10 @@ class AnkiWindow(QWidget):
         self.recorders: "dict[int, loopbackrecorder]" = {}
         wid = QWidget()
         layout = QVBoxLayout(wid)
-        soundbutton = IconButton("fa.music")
+        soundbutton = IconButton("fa.music", tips="语音合成")
         soundbutton.clicked.connect(self.langdu)
 
-        soundbutton2 = IconButton("fa.music")
+        soundbutton2 = IconButton("fa.music", tips="语音合成")
         soundbutton2.clicked.connect(self.langdu2)
         cropbutton = getIconButton(
             icon="fa.crop",
@@ -534,7 +534,7 @@ class AnkiWindow(QWidget):
         )
 
         def createtbn(target: QLineEdit):
-            clearbtn = IconButton("fa.times")
+            clearbtn = IconButton("fa.times", tips="清除")
             clearbtn.clicked.connect(lambda: target.clear())
             return clearbtn
 
@@ -580,11 +580,11 @@ class AnkiWindow(QWidget):
 
         self.example.textChanged.connect(__)
         self.remarks = ctrlbedit()
-        recordbtn1 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
+        recordbtn1 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音")
         recordbtn1.clicked.connect(
             functools.partial(self.startorendrecord, recordbtn1, 1, self.audiopath)
         )
-        recordbtn2 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True)
+        recordbtn2 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音")
         recordbtn2.clicked.connect(
             functools.partial(
                 self.startorendrecord, recordbtn2, 2, self.audiopath_sentence
@@ -609,13 +609,13 @@ class AnkiWindow(QWidget):
 
         lb = QLabel("Deck")
         lb.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-        folder_open = IconButton("fa.folder-open")
+        folder_open = IconButton("fa.folder-open", tips="打开文件")
         folder_open.clicked.connect(functools.partial(self.selecfile, self.audiopath))
-        folder_open2 = IconButton("fa.folder-open")
+        folder_open2 = IconButton("fa.folder-open", tips="打开文件")
         folder_open2.clicked.connect(
             functools.partial(self.selecfile, self.audiopath_sentence)
         )
-        folder_open3 = IconButton("fa.folder-open")
+        folder_open3 = IconButton("fa.folder-open", tips="打开文件")
         folder_open3.clicked.connect(functools.partial(self.selecfile2, self.editpath))
 
         def createadd():
@@ -1529,7 +1529,7 @@ class searchwordW(closeashidewindow):
         self.searchtext = FQLineEdit()
         self.searchtext.textChanged.connect(self.ankiwindow.maybereset)
 
-        self.dictbutton = IconButton(icon="fa.book", checkable=True)
+        self.dictbutton = IconButton(icon="fa.book", checkable=True, tips="MDict")
         self.historys = []
         self.history_btn = IconButton(icon="fa.history")
         self.history_btn.setEnabled(False)
@@ -1542,6 +1542,7 @@ class searchwordW(closeashidewindow):
             icon="fa.search",
             callback=lambda: self.search(self.searchtext.text()),
             callback2=self._createnewwindowsearch,
+            tips="查词",
         )
         self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
 
@@ -1551,10 +1552,11 @@ class searchwordW(closeashidewindow):
             icon="fa.music",
             callback=lambda: gobject.base.read_text(self.searchtext.text()),
             callback2=self.showmenu_auto_sound,
+            tips="语音合成",
         )
         self.searchlayout.addWidget(self.soundbutton)
 
-        ankiconnect = IconButton(icon="fa.adn", checkable=True)
+        ankiconnect = IconButton(icon="fa.adn", checkable=True, tips="Anki")
         ankiconnect.clicked.connect(self.onceaddankiwindow)
         ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         ankiconnect.customContextMenuRequested.connect(

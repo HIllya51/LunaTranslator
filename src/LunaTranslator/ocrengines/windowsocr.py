@@ -8,7 +8,7 @@ from ocrengines.baseocrclass import baseocr, OCRResult
 from qtsymbols import *
 from gui.dynalang import LPushButton, LLabel
 from gui.dynalang import LPushButton, LFormLayout, LLabel
-from gui.usefulwidget import SuperCombo, getboxlayout, IconButton
+from gui.usefulwidget import SuperCombo, getboxlayout, IconButton, D_getdoclink
 import subprocess
 from language import Languages
 
@@ -95,10 +95,7 @@ def question():
         lst.append(combo)
         lst.append(btninstall)
         loadlist(combo)
-        btndownload = IconButton("fa.question")
-        btndownload.clicked.connect(
-            lambda: os.startfile(dynamiclink("/useapis/ocrapi.html#离线ocr", docs=True))
-        )
+        btndownload = D_getdoclink("/useapis/ocrapi.html#离线ocr")()
         lst.append(btndownload)
     formLayout.addRow("添加语言包", getboxlayout(lst))
     return dialog

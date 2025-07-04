@@ -5,7 +5,7 @@ import windows, qtawesome, NativeUtils, gobject
 from gobject import runtime_for_xp
 from myutils.config import _TR, _TRL, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader, tryprint
-from myutils.utils import nowisdark, checkisusingwine
+from myutils.utils import nowisdark, checkisusingwine, dynamiclink
 from myutils.hwnd import getcurrexe
 from ocrengines.baseocrclass import OCRResult
 from gui.dynalang import (
@@ -1083,6 +1083,14 @@ def getIconButton(
         b.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         b.customContextMenuRequested.connect(callback2)
     return b
+
+
+def D_getdoclink(link):
+    return D_getIconButton(
+        callback=lambda: os.startfile(dynamiclink(link, docs=True)),
+        tips="使用说明",
+        icon="fa.question",
+    )
 
 
 def D_getIconButton(

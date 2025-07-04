@@ -11,11 +11,11 @@ from gui.usefulwidget import (
     closeashidewindow,
     getsimplecombobox,
     MySwitch,
+    D_getdoclink,
     getsimpleswitch,
     getsimplepatheditor,
     FocusSpin,
     FocusCombo,
-    IconButton,
     TableViewW,
 )
 from gui.dynalang import (
@@ -652,17 +652,11 @@ class hookselect(closeashidewindow):
 
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
-        self.userhookinsert = LPushButton("插入特殊码")
-        self.userhookinsert.clicked.connect(self.inserthook)
-        self.searchtextlayout.addWidget(self.userhookinsert)
+        userhookinsert = LPushButton("插入特殊码")
+        userhookinsert.clicked.connect(self.inserthook)
+        self.searchtextlayout.addWidget(userhookinsert)
 
-        self.userhookinsert = IconButton("fa.question")
-        self.userhookinsert.clicked.connect(
-            lambda: os.startfile(
-                dynamiclink("/zh/hooksettings.html#特殊码格式", docs=True)
-            )
-        )
-        self.searchtextlayout.addWidget(self.userhookinsert)
+        self.searchtextlayout.addWidget(D_getdoclink("/zh/hooksettings.html#特殊码格式")())
 
         self.userhookfind = LPushButton("搜索特殊码")
         self.userhookfind.clicked.connect(self.findhook)

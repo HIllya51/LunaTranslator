@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     getIconButton,
     D_getsimpleswitch,
     getcenterX,
+    D_getdoclink,
     getboxlayout,
     makescrollgrid,
     makesubtab_lazy,
@@ -52,11 +53,7 @@ def getcomparelayout(self):
 def setTab7_lazy(self, basel: QLayout):
     grids = [
         [
-            D_getIconButton(
-                lambda: os.startfile(dynamiclink("/textprocess.html", docs=True)),
-                "fa.question",
-                tips="使用说明",
-            ),
+            D_getdoclink("/textprocess.html"),
             ("预处理方法", 5),
             "",
             "",
@@ -185,15 +182,7 @@ def setTab7_lazy(self, basel: QLayout):
             ),
         ]
         grids.append(l)
-    grids2 = [
-        [
-            D_getIconButton(
-                lambda: os.startfile(dynamiclink("/transoptimi.html", docs=True)),
-                "fa.question",
-                tips="使用说明",
-            )
-        ]
-    ]
+    grids2 = [[D_getdoclink("/transoptimi.html")]]
     for item in static_data["transoptimi"]:
         name = item["name"]
         visname = item["visname"]

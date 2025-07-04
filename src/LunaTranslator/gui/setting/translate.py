@@ -408,42 +408,6 @@ def btndeccallback(self, countnum):
     )
 
 
-def createmanybtn(self, countnum, btnplus):
-    w = NQGroupBox()
-    hbox = QHBoxLayout(w)
-    hbox.setContentsMargins(0, 0, 0, 0)
-    if btnplus == "api1":
-        btn = IconButton("fa.question", fix=False, tips="使用说明")
-        hbox.addWidget(btn)
-        btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("/useapis/tsapi.html", docs=True))
-        )
-        return w
-
-    btn = IconButton("fa.plus", fix=False, tips="复制")
-    btn.clicked.connect(functools.partial(btnpluscallback, self, countnum))
-
-    hbox.addWidget(btn)
-
-    btn = IconButton("fa.minus", fix=False, tips="删除")
-    btn.clicked.connect(functools.partial(btndeccallback, self, countnum))
-
-    hbox.addWidget(btn)
-
-    btn = IconButton(
-        "fa.question",
-        fix=False,
-        tips="使用说明",
-    )
-    if btnplus == "api":
-        btn.clicked.connect(
-            lambda: os.startfile(dynamiclink("/guochandamoxing.html", docs=True))
-        )
-    hbox.addWidget(btn)
-    setattr(self, "btnmanyXXXX", w)
-    return w
-
-
 def initsome11(self, l, save=False):
     grids: "list[list]" = []
     i = 0
@@ -532,7 +496,7 @@ def leftwidget(self):
         lambda: os.startfile(dynamiclink("/guochandamoxing.html", docs=True))
     )
 
-    return [btn, btn2, btn3]
+    return [btn3, btn, btn2]
 
 
 def initsome2(self, mianfei, api):

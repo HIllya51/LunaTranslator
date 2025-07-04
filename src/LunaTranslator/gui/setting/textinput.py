@@ -8,11 +8,12 @@ from language import TransLanguages
 from gui.setting.textinput_ocr import getocrgrid_table
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.dynalang import LLabel
-from textio.textsource.mssr import getlocaleandlv, findallmodel
+from textio.textsource.mssr import findallmodel
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getIconButton,
+    D_getdoclink,
     SuperCombo,
     getIconButton,
     makegrid,
@@ -329,7 +330,7 @@ def loadmssrsource(self):
 
 def __srcofig(grids: list, self):
     __vis, paths = findallmodel()
-    if not paths:
+    if not paths and not gobject.sys_ge_win_10:
         return
 
     self.mssrsource = D_getsimplecombobox(
@@ -369,7 +370,8 @@ def __srcofig(grids: list, self):
 
     __ = dict(
         type="grid",
-        title="Windows_语音识别",
+        title="语音识别",
+        button=D_getdoclink("/sr.html"),
         grid=[
             [
                 getsmalllabel("使用"),
@@ -436,6 +438,7 @@ def filetranslate(self):
         [
             dict(
                 title="网络服务",
+                button=D_getdoclink("/apiservice.html"),
                 grid=[
                     [
                         "开启",
@@ -445,13 +448,6 @@ def filetranslate(self):
                                     globalconfig,
                                     "networktcpenable",
                                     callback=lambda _: gobject.base.serviceinit(),
-                                ),
-                                D_getIconButton(
-                                    lambda: os.startfile(
-                                        dynamiclink("/apiservice.html", docs=True)
-                                    ),
-                                    "fa.question",
-                                    tips="使用说明",
                                 ),
                                 "",
                             ]

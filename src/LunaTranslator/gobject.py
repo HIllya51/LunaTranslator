@@ -100,6 +100,7 @@ RtlGetVersion.argtypes = (POINTER(RTL_OSVERSIONINFOW),)
 __version = RTL_OSVERSIONINFOW()
 RtlGetVersion(pointer(__version))
 sys_ge_win_11 = __version.dwBuildNumber >= 22000  # 21h2
+sys_ge_win_10 = int(platform.version().split(".")[0]) >= 10
 sys_ge_win8 = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
 sys_le_win7 = tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1)
 sys_le_win81 = int(platform.version().split(".")[0]) <= 6
