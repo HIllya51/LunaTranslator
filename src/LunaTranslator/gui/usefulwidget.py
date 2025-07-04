@@ -3,7 +3,7 @@ import os, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, NativeUtils, gobject
 from gobject import runtime_for_xp
-from myutils.config import _TR, _TRL, globalconfig, mayberelpath
+from myutils.config import _TR, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark, checkisusingwine, dynamiclink
 from myutils.hwnd import getcurrexe
@@ -1314,6 +1314,8 @@ def __getboxlayout(widgets, lc=QHBoxLayout, makewidget=False, delay=False):
 
     def __do(cp_layout: QBoxLayout, widgets):
         for w in widgets:
+            if isinstance(w, int):
+                cp_layout.addStretch(w)
             if callable(w):
                 w = w()
             elif isinstance(w, str):
@@ -3632,28 +3634,6 @@ class PopupWidget(QWidget):
     def closeEvent(self, a0):
         self.deleteLater()
         return super().closeEvent(a0)
-
-
-class MDLabel(QLabel):
-    def __init__(self, md: str, static=False):
-        super().__init__()
-        self._md = md
-        self.static = static
-        self.once = True
-        self.setOpenExternalLinks(True)
-        self.setWordWrap(True)
-        self.updatelangtext()
-
-    def updatelangtext(self):
-        if self.once:
-            self.once = False
-        elif self.static:
-            return
-        self.setText(
-            NativeUtils.Markdown2Html(
-                self._md if self.static else "\n".join(_TRL(self._md.split("\n")))
-            )
-        )
 
 
 class HBoxCenter(QHBoxLayout):

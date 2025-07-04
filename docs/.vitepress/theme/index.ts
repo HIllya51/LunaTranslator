@@ -32,19 +32,28 @@ export default {
                 });
             })
             let timeout = 0;
-            if (window.location.href.endsWith('support.html')) {
-                if (window.localStorage.currentlang != 'zh') {
-                    timeout = setTimeout(
-                        () => {
-                            window.location.href = 'https://www.patreon.com/hillya51'
-                        }, 3000
-                    )
+            document.addEventListener('click', (event) => {
+                if (event.target && (event.target.closest('a'))) {
+                    if (timeout) {
+                        clearTimeout(timeout)
+                        timeout = 0
+                    }
                 }
+            })
+            if (window.location.href.endsWith('support.html')) {
+
+                timeout = setTimeout(
+                    () => {
+                        if (!document.hasFocus()) return
+                        if (window.localStorage.currentlang != 'zh' && window.localStorage.currentlang != 'cht')
+                            window.open('https://www.patreon.com/hillya51', '_blank')
+                    }, 3500
+                )
             }
             else {
                 if (timeout) {
-                    timeout = 0
                     clearTimeout(timeout)
+                    timeout = 0
                 }
             }
             if (!window.location.hostname.startsWith('docs')) return;
@@ -65,7 +74,7 @@ export default {
                 }
             )
         }
-        const supportlangs = ['zh', 'en', 'ja', 'vi']
+        const supportlangs = ['zh', 'en', 'ja', 'vi', 'cht']
         onMounted(
             () => {
                 let _ = window.location.pathname.split('/')[1]

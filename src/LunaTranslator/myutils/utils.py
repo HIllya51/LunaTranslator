@@ -459,7 +459,7 @@ def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
 
 
 def dynamiclink(text: str = "", docs=False) -> str:
-    return static_data[("main_server", "docs_server")[docs]][gobject.serverindex] + text
+    return static_data[("main_server", "docs_server")[docs]][[gobject.serverindex, gobject.serverindex2][docs]] + text
 
 
 def makehtml(text: str, show=None, docs=False) -> str:

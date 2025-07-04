@@ -298,7 +298,8 @@ HRESULT MWebBrowser::Navigate2(const WCHAR *url, DWORD dwFlags)
     VariantInit(&varEmpty);
 
     V_VT(&var1) = VT_BSTR;
-    V_BSTR(&var1) = SysAllocString(url);
+    CComBSTR BSurl = url;
+    V_BSTR(&var1) = BSurl;
 
     V_VT(&var2) = VT_I4;
     V_I4(&var2) = dwFlags;

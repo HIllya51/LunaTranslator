@@ -19,10 +19,7 @@
 
 在Windows 10上，或不想在系统中添加，可以从[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)下载`Microsoft Natural Voice（自然语音）`，然后将其解压到软件目录中，即可使用自然语音。
 
-在Windows 10上，除了需要下载语音包外，还需补充下载[自然语音运行时](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)并解压到软件目录中。
-
->[!WARNING]
->请不要把软件和`运行时`和`语言包`放到非英文路径中，否则会无法识别。
+在Windows 10上，系统内缺少必要的运行时和识别模型；或者Windows 11的版本过低，系统自带的运行时版本过低。除了需要下载语音包外，还需补充下载[自然语音运行时](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)并解压到软件目录中。
 
 == VoiceRoid2
 

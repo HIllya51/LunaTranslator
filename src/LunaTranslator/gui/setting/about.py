@@ -1,30 +1,23 @@
 from qtsymbols import *
 import functools, re
-import NativeUtils
-from myutils.config import globalconfig, static_data
-from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10
+from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
 from myutils.utils import makehtml, getlanguse, dynamiclink
 import requests, importlib
 import gobject
-import os
+import os, NativeUtils
 from traceback import print_exc
 from gui.usefulwidget import (
     D_getsimpleswitch,
     makescrollgrid,
     createfoldgrid,
     SuperCombo,
-    getIconButton,
     getsmalllabel,
     getboxlayout,
-    MDLabel,
     NQGroupBox,
     VisLFormLayout,
-    clearlayout,
-    makeforms,
 )
 from language import UILanguages, Languages
-from gui.dynalang import LLabel
 from myutils.updater import versionchecktask
 
 
@@ -129,35 +122,28 @@ def proxyusage(self):
     w2.setEnabled(globalconfig["useproxy"])
     switch1 = D_getsimpleswitch(globalconfig, "useproxy", callback=w2.setEnabled)()
     hbox.addWidget(switch1)
+    hbox.addWidget(QLabel())
     hbox.addWidget(w2)
-    hbox2 = QHBoxLayout(w2)
-    hbox2.setContentsMargins(0, 0, 0, 0)
-    hbox2.addWidget(QLabel())
-    hbox2.addWidget(LLabel("使用系统代理"))
-
-    w3 = QWidget()
-    hbox3 = QHBoxLayout(w3)
-    hbox3.setContentsMargins(0, 0, 0, 0)
+    hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+    vbox = VisLFormLayout(w2)
+    vbox.setContentsMargins(0, 0, 0, 0)
 
     def __(x):
-        x = not x
-        w3.setVisible(x)
-        if x:
-            if hbox2.count() > 4:
-                hbox2.takeAt(hbox2.count() - 1)
-        else:
-            hbox2.addStretch(0)
+        vbox.setRowVisible(1, not x)
 
-    switch2 = D_getsimpleswitch(globalconfig, "usesysproxy", callback=__)()
-    hbox2.addWidget(switch2)
-    hbox2.addWidget(w3)
-    __(globalconfig["usesysproxy"])
-    hbox3.addWidget(QLabel())
-    hbox3.addWidget(LLabel("手动设置代理"))
-    proxy = QLineEdit(globalconfig["proxy"])
+    vbox.addRow(
+        getboxlayout(
+            [
+                "使用系统代理",
+                D_getsimpleswitch(globalconfig, "usesysproxy", callback=__)(),
+                0,
+            ]
+        ),
+    )
     check = QLabel()
-    hbox3.addWidget(proxy)
-    hbox3.addWidget(check)
+    proxy = QLineEdit(globalconfig["proxy"])
+    vbox.addRow(getboxlayout(["手动设置代理", proxy, check]))
+    __(globalconfig["usesysproxy"])
     validator(check, globalconfig["proxy"])
     proxy.textChanged.connect(functools.partial(validator, check))
     return hbox
@@ -206,71 +192,65 @@ def _progresssignal4(
         updatelayout.setRowVisible(3, True)
 
 
+class MDLabel(QLabel):
+    def setMD(self, md, static=True):
+        self._md = md
+        self.static = static
+        self.updatelangtext()
+
+    def __init__(self, md: str, static=False):
+        super().__init__()
+        self._md = md
+        self.static = static
+        self.setOpenExternalLinks(True)
+        self.setWordWrap(True)
+        self.updatelangtext()
+
+    def updatelangtext(self):
+        self.setText(
+            NativeUtils.Markdown2Html(self._md if self.static else _TR(self._md))
+        )
+
+
 class MDLabel1(MDLabel):
-    def __init__(self, md, static=False):
-        super().__init__(md, static)
+    def __init__(self, md):
+        super().__init__(md, True)
         self.setOpenExternalLinks(False)
-        self.linkActivated.connect(self._linkActivated)
+        self.linkActivated.connect(
+            lambda link: gobject.base.aboutlinkclicked(link, self.window())
+        )
 
     def setText(self, t):
         t = re.sub("<a(.*?)>", '<a\\1 style="color: #E91E63;">', t)
         super().setText(t)
 
-    def _linkActivated(self, link: str):
-        if link == "/":
-            link = dynamiclink("/", docs=True)
-        os.startfile(link)
+
+def get_about_info():
+    lang = getlanguse()
+    t3 = "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。"
+    t2 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或[微信扫码](WEIXIN)赞助，您的支持将成为软件长期维护的助力，谢谢~"
+    t5 = "如果使用中遇到困難，可以查閱[使用說明](/)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbhtB)/[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。"
+    t7 = "軟體維護不易，如果您感覺該軟體對你有幫助，歡迎通過[愛發電](https://afdian.com/a/HIllya51)贊助，或成為我的[sponsor](https://patreon.com/HIllya51)，您的支持將成為軟體長期維護的助力，謝謝~"
+    t6 = "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)。"
+    t4 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~"
+    if lang == Languages.Chinese:
+        return "\n\n".join([t3, t2])
+
+    elif lang == Languages.TradChinese:
+        return "\n\n".join([t5, t7])
+    else:
+        return _TR("\n\n".join([t6, t4]))
 
 
 class aboutwidget(NQGroupBox):
     def __init__(self, *a):
         super().__init__(*a)
         self.grid = QFormLayout(self)
-        self.lastlang = None
-        self.lastlangcomp = {Languages.Chinese: 1, Languages.TradChinese: 2, None: -1}
-        self.updatelangtext()
-
-    def createimageview(self):
-        lb = QLabel()
-        img = QPixmap.fromImage(QImage("files/static/zan.jpg"))
-        img.setDevicePixelRatio(self.devicePixelRatioF())
-        img = img.scaled(
-            500,
-            500,
-            Qt.AspectRatioMode.KeepAspectRatio,
-            Qt.TransformationMode.SmoothTransformation,
-        )
-        lb.setPixmap(img)
-        return lb
+        self.mdlabel = MDLabel1(get_about_info())
+        self.grid.addRow(self.mdlabel)
 
     def updatelangtext(self):
-        if self.lastlangcomp.get(self.lastlang, 0) == self.lastlangcomp.get(
-            getlanguse(), 0
-        ):
-            return
-        self.lastlan = getlanguse()
-        clearlayout(self.grid)
-        t2 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~"
-        t3 = "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
-        t4 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~"
-        t7 = "軟體維護不易，如果您感覺該軟體對你有幫助，歡迎微信掃碼贊助，或成為我的[sponsor](https://patreon.com/HIllya51)，您的支持將成為軟體長期維護的助力，謝謝~"
-        t5 = "如果使用中遇到困難，可以查閱[使用說明](/)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbhtB)/[QQ群96311982](https://qm.qq.com/q/I5rr3uEpi2)、發起[issue](https://github.com/HIllya51/LunaTranslator/issues)來與我交流。"
-        t6 = "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
-        if getlanguse() == Languages.Chinese:
-            shuominggrid = [
-                [functools.partial(MDLabel1, "\n\n".join([t3, t2]), static=True)],
-                [self.createimageview],
-            ]
-
-        elif getlanguse() == Languages.TradChinese:
-            shuominggrid = [
-                [functools.partial(MDLabel1, "\n\n".join([t5, t7]), static=True)],
-                [self.createimageview],
-            ]
-        else:
-            shuominggrid = [[functools.partial(MDLabel1, "\n\n".join([t6, t4]))]]
-
-        makeforms(self.grid, shuominggrid)
+        self.mdlabel.setMD(get_about_info())
 
 
 class delayloadsvg(QSvgWidget):
@@ -327,6 +307,7 @@ class __delayloadlangs(QHBoxLayout):
         self.como.currentIndexChanged.connect(
             lambda _: (
                 globalconfig.__setitem__("languageuse2", self.como.getCurrentData()),
+                gobject.base.translation_ui.showabout(),
                 changeUIlanguage(0),
             )
         )

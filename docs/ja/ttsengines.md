@@ -19,10 +19,7 @@ Windows 11では、言語の音声合成パッケージの他に、`アクセシ
 
 Windows 10上で、またはシステムに追加したくない場合、[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)から`Microsoft Natural Voice（自然音声）`をダウンロードし、ソフトウェアディレクトリに解凍することで自然音声を使用できます。
 
-Windows 10では、音声パックのダウンロードに加えて、[自然音声ランタイム](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)を追加でダウンロードし、ソフトウェアディレクトリに解凍する必要があります。
-
->[!WARNING]
->ソフトウェアと`「ランタイム」`および`「言語パック」`を英語以外のパスに保存しないでください。認識できなくなります。
+Windows 10では、システムに必要なランタイムおよび認識モデルが不足しています。または、Windows 11のバージョンが低すぎるため、システムに組み込まれているランタイムのバージョンが低くなっています。音声パックのダウンロードに加えて、[自然音声ランタイム](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)を追加でダウンロードし、ソフトウェアディレクトリに解凍する必要があります。
 
 == VoiceRoid2
 

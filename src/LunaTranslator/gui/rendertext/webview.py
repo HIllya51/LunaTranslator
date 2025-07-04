@@ -293,7 +293,10 @@ class somecommon(dataget):
     def setfontextra(self, klass: str):
         if not klass:
             return
-        curr = copy.deepcopy(globalconfig["fanyi"][klass].get("privatefont", {}))
+        setting: dict = globalconfig["fanyi"].get(klass)
+        if not setting:
+            return
+        curr = copy.deepcopy(setting.get("privatefont", {}))
         if curr == self.ts_klass.get(klass, None):
             return
         self.ts_klass[klass] = curr

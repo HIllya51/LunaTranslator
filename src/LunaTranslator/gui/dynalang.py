@@ -1,5 +1,5 @@
 import gobject
-from myutils.config import _TR, _TRL
+from myutils.config import _TR
 from qtsymbols import *
 
 
@@ -238,11 +238,11 @@ class LStandardItemModel(QStandardItemModel):
 
     def setHorizontalHeaderLabels(self, ls: list):
         self.__ls = ls.copy()
-        super().setHorizontalHeaderLabels(_TRL(ls))
+        super().setHorizontalHeaderLabels(_TR(ls))
 
     def updatelangtext(self):
         if self.__ls:
-            super().setHorizontalHeaderLabels(_TRL(self.__ls))
+            super().setHorizontalHeaderLabels(_TR(self.__ls))
 
     def insertColumn(self, column: int, items):
         self.__ls.insert(column, "")

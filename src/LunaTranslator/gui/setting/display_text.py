@@ -256,11 +256,11 @@ def resetgroudswitchcallback(self, group):
                     "附加HTML",
                     switch,
                     _btn,
-                    "",
+                    0,
                     "附加浏览器插件",
                     switch2,
                     _btn2,
-                    "",
+                    0,
                     "其他",
                     D_getIconButton(functools.partial(otherdisplaysetting, self)),
                 ]

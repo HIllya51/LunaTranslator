@@ -2,7 +2,7 @@ import NativeUtils, os, threading, uuid, windows
 from tts.basettsclass import TTSbase, SpeechParam
 import xml.etree.ElementTree as ET
 from ctypes import c_int32
-from myutils.config import globalconfig
+from myutils.config import globalconfig, isascii, _TR
 
 
 class TTS(TTSbase):
@@ -30,6 +30,8 @@ class TTS(TTSbase):
             pass
         if LicenseVersion != "0" and not self.extralicense:
             Name = None
+        if not isascii(Name):
+            Name = _TR("请勿使用非英文路径")
         return Name, LicenseVersion
 
     def get_paths(self):
@@ -72,9 +74,9 @@ class TTS(TTSbase):
             vals.append((0, token))
         return vals, names
 
+    cogdll = "Microsoft.CognitiveServices.Speech.extension.embedded.tts.dll"
     def finddlldirectory(self):
-        dll = "Microsoft.CognitiveServices.Speech.extension.embedded.tts.dll"
-        checkdir = lambda d: d and os.path.isfile(os.path.join(d, dll))
+        checkdir = lambda d: d and os.path.isfile(os.path.join(d, self.cogdll))
         dllp = r"C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizer"
         if checkdir(dllp):
             return dllp
@@ -93,7 +95,7 @@ class TTS(TTSbase):
         if self.lastvoice == path:
             return
         dllp = self.finddlldirectory()
-        print(dllp, path)
+        print(path, dllp, NativeUtils.QueryVersion(os.path.join(dllp, self.cogdll)))
         exepath = os.path.join(os.getcwd(), "files/shareddllproxy64.exe")
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())

@@ -19,10 +19,7 @@ Trên Windows 11, ngoài gói tổng hợp giọng nói của ngôn ngữ, bạn
 
 Trên Windows 10, hoặc nếu bạn không muốn thêm vào hệ thống, bạn có thể tải `Microsoft Natural Voice (Giọng nói tự nhiên)` từ [Trang NVDA tiếng Trung](https://www.nvdacn.com/index.php/tts.html) và giải nén vào thư mục phần mềm để sử dụng giọng nói tự nhiên. 
 
-Trên Windows 10, ngoài việc tải gói giọng nói, bạn cần tải thêm [Runtime Giọng nói tự nhiên](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) và giải nén vào thư mục phần mềm. 
-
->[!WARNING]
->Không đặt phần mềm, `runtime` và `gói ngôn ngữ` vào đường dẫn có ký tự không phải tiếng Anh, nếu không hệ thống sẽ không nhận diện được.
+Trên Windows 10, hệ thống thiếu các runtime và mô hình nhận dạng cần thiết; hoặc phiên bản Windows 11 quá thấp, phiên bản runtime tích hợp sẵn trong hệ thống quá cũ. Ngoài việc tải gói giọng nói, bạn cần tải thêm [Runtime Giọng nói tự nhiên](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) và giải nén vào thư mục phần mềm. 
 
 == VoiceRoid2
 

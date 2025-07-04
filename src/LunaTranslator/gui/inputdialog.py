@@ -69,7 +69,7 @@ class noundictconfigdialog1(LDialog):
                 extraX, "ttsprocess_use", callback=last.setEnabled, default=False
             )
             formLayout.addLayout(
-                getboxlayout([getsmalllabel("自定义python处理"), switch, last, ""])
+                getboxlayout([getsmalllabel("自定义python处理"), switch, last, 0])
             )
         self.model = LStandardItemModel()
         self.model.setHorizontalHeaderLabels(label)

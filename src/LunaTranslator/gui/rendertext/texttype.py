@@ -15,9 +15,9 @@ class ColorControl:
     RAW_TEXT_COLOR = 0
     TS_COLOR = 1
     ERROR_COLOR = 2
-    COLOR_DEFAULT = 2
-    KANA_COLOR = 3
-    FENCI_COLOR = 4
+    COLOR_DEFAULT = 3
+    KANA_COLOR = 4
+    FENCI_COLOR = 5
 
     def __init__(self, T, klass=None):
         self.type = T
@@ -76,9 +76,14 @@ class FenciColor(ColorControl):
         self.isdeli = word.isdeli
         self.cixing = word.wordclass
         self.donthighlight = word.donthighlight
-        super().__init__(ColorControl.FENCI_COLOR, (self.isdeli, self.cixing))
+        self.specialinfo = bool(word.specialinfo)
+        super().__init__(
+            ColorControl.FENCI_COLOR, (self.isdeli, self.cixing, self.specialinfo)
+        )
 
     def _randomcolor_1(self):
+        if self.specialinfo:
+            return (255, 170, 255, 1)
         if self.donthighlight:
             return None
         if self.isdeli:

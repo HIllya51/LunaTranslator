@@ -390,8 +390,8 @@
     "ocr_diff_sim_v2": 0.95,
     "ocr_text_diff": 3,
     "autorun": true,
-    "fontsize": 17.0,
-    "fontsizeori": 17.0,
+    "fontsize": 16.0,
+    "fontsizeori": 16.0,
     "localeswitchmethod": 0,
     "hide_not_exists": false,
     "startgamenototop": true,
@@ -1460,7 +1460,11 @@
             "path": "",
             "source": "loopback",
             "use": false,
-            "refreshinterval": 1.5
+            "refreshinterval": 1.5,
+            "refreshinterval2": 1.5,
+            "mode": "direct",
+            "hidewindow": false,
+            "autokill": false
         },
         "texthook": {
             "use": true

@@ -127,7 +127,83 @@ DECLARE_API bool IsWindowViewable(HWND hwnd)
     RECT _;
     return IntersectRect(&_, &windowRect, &monitorInfo.rcWork);
 }
+#define preparelc(pid)                                                                                                          \
+    CO_INIT co;                                                                                                                 \
+    if (FAILED(co))                                                                                                             \
+        return;                                                                                                                 \
+    CComPtr<IUIAutomation> automation;                                                                                          \
+    if (FAILED(CoCreateInstance(CLSID_CUIAutomation, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&automation))) || !automation) \
+        return;                                                                                                                 \
+    VARIANT var_pid;                                                                                                            \
+    VariantInit(&var_pid);                                                                                                      \
+    V_VT(&var_pid) = VT_I4;                                                                                                     \
+    V_I4(&var_pid) = pid;                                                                                                       \
+    CComPtr<IUIAutomationCondition> condition_pid;                                                                              \
+    if (FAILED(automation->CreatePropertyCondition(UIA_ProcessIdPropertyId, var_pid, &condition_pid)) || !condition_pid)        \
+        return;                                                                                                                 \
+    VariantClear(&var_pid);                                                                                                     \
+    CComPtr<IUIAutomationElement> pRoot;                                                                                        \
+    if (FAILED(automation->GetRootElement(&pRoot)) || !pRoot)                                                                   \
+        return;                                                                                                                 \
+    CComPtr<IUIAutomationElement> element;                                                                                      \
+    if (FAILED(pRoot->FindFirst(TreeScope_Children, condition_pid, &element)) || !element)                                      \
+        return;                                                                                                                 \
+    CComBSTR className;                                                                                                         \
+    if (FAILED(element->get_CurrentClassName(&className)))                                                                      \
+        return;                                                                                                                 \
+    if (className != L"LiveCaptionsDesktopWindow")                                                                              \
+        return;
+DECLARE_API void ShowLiveCaptionsWindow(DWORD pid, bool show)
+{
+    preparelc(pid);
 
+    UIA_HWND hwnd;
+    if (FAILED(element->get_CurrentNativeWindowHandle(&hwnd)))
+        return;
+    if (show)
+    {
+        SetWindowLong((HWND)hwnd, GWL_EXSTYLE, GetWindowLong((HWND)hwnd, GWL_EXSTYLE) & ~WS_EX_TOOLWINDOW);
+        ShowWindow((HWND)hwnd, SW_RESTORE);
+    }
+    else
+    {
+        ShowWindow((HWND)hwnd, SW_MINIMIZE);
+        SetWindowLong((HWND)hwnd, GWL_EXSTYLE, GetWindowLong((HWND)hwnd, GWL_EXSTYLE) | WS_EX_TOOLWINDOW);
+    }
+}
+DECLARE_API void GetLiveCaptionsText(DWORD pid, void (*cb)(const wchar_t *))
+{
+    preparelc(pid);
+
+    VARIANT CaptionsTextBlock;
+    VariantInit(&CaptionsTextBlock);
+    V_VT(&CaptionsTextBlock) = VT_BSTR;
+    CComBSTR BSCaptionsTextBlock = L"CaptionsTextBlock";
+    V_BSTR(&CaptionsTextBlock) = BSCaptionsTextBlock;
+    CComPtr<IUIAutomationCondition> condition;
+    if (FAILED(automation->CreatePropertyCondition(UIA_AutomationIdPropertyId, CaptionsTextBlock, &condition)) || !condition)
+        return;
+    VariantClear(&CaptionsTextBlock);
+
+    CComPtr<IUIAutomationElementArray> elements;
+    if (FAILED(element->FindAll(TreeScope_Descendants, condition, &elements)) || !elements)
+        return;
+    int length;
+    if (FAILED(elements->get_Length(&length)))
+        return;
+    std::wstring result;
+    for (int i = 0; i < length; i++)
+    {
+        CComPtr<IUIAutomationElement> subele;
+        if (FAILED(elements->GetElement(i, &subele)) || !subele)
+            continue;
+        CComBSTR subres;
+        if (FAILED(subele->get_CurrentName(&subres)))
+            continue;
+        result += subres;
+    }
+    cb(result.c_str());
+}
 DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
 {
     bool succ = true;
@@ -181,9 +257,8 @@ DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
         }
         cb(text);
     }
-    catch (std::exception &e)
+    catch (...)
     {
-        printf(e.what());
     }
     return succ;
 }
@@ -191,32 +266,50 @@ DECLARE_API LPSECURITY_ATTRIBUTES GetSecurityAttributes()
 {
     return &allAccess;
 }
-DECLARE_API HANDLE CreateAutoKillProcess(LPCWSTR command, LPCWSTR path, DWORD *pid)
+DECLARE_API void SetJobAutoKill(HANDLE hJob, bool kill)
+{
+    if (!hJob)
+        return;
+    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = {0};
+    jeli.BasicLimitInformation.LimitFlags = kill ? JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE : 0;
+    SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli));
+}
+static HANDLE CreateJobAndAssignProcess(HANDLE hp, bool kill)
+{
+    if (!hp)
+        return NULL;
+    HANDLE hJob = CreateJobObject(NULL, NULL);
+    if (!hJob)
+        return NULL;
+    if (!AssignProcessToJobObject(hJob, hp))
+        return NULL;
+    // 设置Job Object选项，使父进程退出时子进程自动终止
+    SetJobAutoKill(hJob, kill);
+    // closehandle会关闭子进程
+    return hJob;
+}
+DECLARE_API HANDLE CreateJobForProcess(DWORD pid, bool kill)
+{
+    CHandle hp{OpenProcess(PROCESS_SET_QUOTA | PROCESS_TERMINATE, FALSE, pid)};
+    return CreateJobAndAssignProcess(hp, kill);
+}
+DECLARE_API HANDLE CreateProcessWithJob(LPCWSTR command, LPCWSTR path, DWORD *pid, bool hide, bool kill)
 {
     // 防止进程意外退出时，子进程僵死
     std::wstring _ = command;
     STARTUPINFO si = {sizeof(si)};
-    si.dwFlags |= STARTF_USESHOWWINDOW;
-    si.wShowWindow = SW_HIDE;
+    if (hide)
+    {
+        si.dwFlags |= STARTF_USESHOWWINDOW;
+        si.wShowWindow = SW_HIDE;
+    }
     PROCESS_INFORMATION pi;
-    HANDLE hJob = CreateJobObject(NULL, NULL);
-    if (!hJob)
-        return NULL;
     if (!CreateProcessW(NULL, _.data(), NULL, NULL, FALSE, 0, NULL, path, &si, &pi))
         return NULL;
     CHandle _1{pi.hProcess}, _2{pi.hThread};
     *pid = pi.dwProcessId;
-    if (!AssignProcessToJobObject(hJob, pi.hProcess))
-        return NULL;
-    // 设置Job Object选项，使父进程退出时子进程自动终止
-    JOBOBJECT_EXTENDED_LIMIT_INFORMATION jeli = {0};
-    jeli.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
-    if (!SetInformationJobObject(hJob, JobObjectExtendedLimitInformation, &jeli, sizeof(jeli)))
-        return NULL;
-    // closehandle会关闭子进程
-    return hJob;
+    return CreateJobAndAssignProcess(pi.hProcess, kill);
 }
-
 DECLARE_API void OpenFileEx(LPCWSTR file)
 {
     OPENASINFO INFO;

@@ -99,6 +99,8 @@ bool checkengine()
                 spDefault.isjithook = true;
                 spDefault.minAddress = 0;
                 spDefault.maxAddress = -1;
+                if (jittypedefault != JITTYPE::UNITY)
+                    HostInfo(HOSTINFO::IsEmuNotify, enginename.c_str());
             }
         }
         if (m->is_engine_certain)

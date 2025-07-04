@@ -15,6 +15,8 @@ public:
                                { return wcscmp(processName_lower, e) == 0; }) &&
                    (GetModuleHandleW(L"Qt6Core.dll") || GetModuleHandleW(L"Qt5Core.dll"));
         };
+        auto _enginename = wcasta(processName);
+        enginename = _enginename.substr(0, _enginename.size() - 4);
     };
     bool attach_function();
     bool attach_function1();

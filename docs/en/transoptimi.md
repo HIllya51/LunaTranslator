@@ -1,6 +1,6 @@
 # Functions of Various Translation Optimizations
 
-1. ## Proper Noun Translation - Replace before translation
+1. ## Proper Noun Translation - Replace before translation {#anchor-vndbnamemap}
 
     This method directly replaces the original text with the translated text before translation. It supports using `Regex` and `Escape` for more complex replacements.
 
@@ -10,7 +10,7 @@
     ![img](https://image.lunatranslator.org/zh/transoptimi/1.png)
     :::
 
-1. ## Proper Noun Translation
+1. ## Proper Noun Translation {#anchor-noundict}
 
     If using the `sakura large model` and setting the prompt format to support the gpt dictionary prompt, it will be converted into the gpt dictionary format. Otherwise, it will refer to the VNR approach, replacing the original text with the placeholder `ZX?Z` (ps: I don't know what this means), and after the source translation, the placeholder is generally not destroyed. Then, after the translation, the placeholder will be replaced with the translation.
 
@@ -25,9 +25,13 @@
       ![img](https://image.lunatranslator.org/zh/transoptimi/3.png)
     :::
 
-1. ## Translation Result Correction
+1. ## Translation Result Correction {#anchor-transerrorfix}
 
     This method allows for certain corrections to the translation result after translation and can use the entire expression for complex corrections.
+
+1. ## Custom Optimization {#anchor-myprocess}
+
+    Write a Python script to perform more complex processing
 
 ## Game-specific Translation Optimization
 

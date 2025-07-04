@@ -6,6 +6,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     IconButton,
     getIconButton,
+    D_getdoclink,
     D_getIconButton_mousefollow,
     makescrollgrid,
     D_getsimpleswitch,
@@ -192,7 +193,7 @@ def createbuttonwidget(self, lay: QLayout):
             "",
             (getcenterX("图标"), 2),
             "",
-            "说明",
+            ("说明", 2),
         ]
     ]
     for i, k in enumerate(sortlist):
@@ -244,6 +245,7 @@ def createbuttonwidget(self, lay: QLayout):
             t += "_(仅_{})".format(
                 " ".join(globalconfig["toolbutton"]["buttons"][k]["belong"])
             )
+        l.append(D_getdoclink("/alltoolbuttons.html#anchor-" + k))
         l.append(t)
         grids.append(l)
     makescrollgrid(grids, lay, savelist, savelay)

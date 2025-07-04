@@ -206,26 +206,6 @@
                     "ocrengines.SnippingTool",
                     "question"
                 ]
-            },
-            {
-                "name": "WindowsOCR",
-                "function": [
-                    "ocrengines.windowsocr",
-                    "question"
-                ]
-            },
-            {
-                "name": "manga-ocr",
-                "links": [
-                    {
-                        "name": "整合包_CPU",
-                        "link": "/Resource/IntegrationPack/manga_ocr/cpu"
-                    },
-                    {
-                        "name": "整合包_GPU",
-                        "link": "/Resource/IntegrationPack/manga_ocr/gpu"
-                    }
-                ]
             }
         ],
         "tts": [
@@ -484,7 +464,8 @@
     ],
     "docs_server": [
         "https://docs.lunatranslator.org",
-        "https://docs.lunatranslator.star.is"
+        "https://docs.lunatranslator.star.is",
+        "http://localhost:5173"
     ],
     "bangumi_oauth": {
         "client_id": "bgm31536662bc84ee9a9",

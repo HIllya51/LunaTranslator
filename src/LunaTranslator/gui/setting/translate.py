@@ -290,6 +290,22 @@ def getrenameablellabel(uid, self, countnum):
 
 def loadbutton(self, fanyi):
     which = translate_exits(fanyi, which=True)
+    copyfrom = getcopyfrom(fanyi)
+    if (copyfrom != fanyi) and (copyfrom in translatorsetting):
+        if "args" in translatorsetting[copyfrom]:
+            for k in translatorsetting[copyfrom]["args"]:
+                if k not in translatorsetting[fanyi]:
+                    translatorsetting[fanyi]["args"][k] = translatorsetting[copyfrom][
+                        "args"
+                    ][k]
+
+            for k in list(translatorsetting[fanyi]["args"].keys()):
+                if k not in translatorsetting[copyfrom]["args"]:
+                    translatorsetting[fanyi]["args"].pop(k)
+        if "argstype" in translatorsetting[copyfrom]:
+            translatorsetting[fanyi]["argstype"] = translatorsetting[copyfrom][
+                "argstype"
+            ]
     items = autoinitdialog_items(translatorsetting[fanyi])
     if which == 0:
         aclass = "translator." + fanyi
@@ -308,6 +324,15 @@ def loadbutton(self, fanyi):
     )
 
 
+def getcopyfrom(uid):
+    xx = uid
+    while True:
+        cp = globalconfig["fanyi"][xx].get("copyfrom")
+        if not cp:
+            return xx
+        xx = cp
+
+
 def selectllmcallback(self, countnum: list, fanyi, *_):
     uid = str(uuid.uuid4())
     _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
@@ -318,7 +343,8 @@ def selectllmcallback(self, countnum: list, fanyi, *_):
         shutil.copy(_f11, _f2)
     except:
         shutil.copy(_f12, _f2)
-
+    copyfrom = getcopyfrom(fanyi)
+    globalconfig["fanyi"][uid]["copyfrom"] = copyfrom
     globalconfig["fanyi"][uid] = copy.deepcopy(globalconfig["fanyi"][fanyi])
     globalconfig["fanyi"][uid]["use"] = False
     globalconfig["fanyi"][uid]["name"] = dynamicapiname(fanyi) + "_copy"

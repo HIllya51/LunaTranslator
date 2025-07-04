@@ -389,7 +389,9 @@ def __partagA(match: re.Match):
     return "{}{}{}".format(match.group(1), _TR(match.group(2)), match.group(3))
 
 
-def _TR(k: str) -> str:
+def ___TR(k: str) -> str:
+    if "\n" in k:
+        return "\n".join(_TR(k.split("\n")))
     if not k:
         return ""
     if k == "√":
@@ -397,12 +399,12 @@ def _TR(k: str) -> str:
     if "[[" in k and "]]" in k:
         return re.sub(r"(.*)\[\[(.*?)\]\](.*)", __parsenottr, k)
     if k.startswith("(") and k.endswith(")"):
-        return "(" + _TR(k[1:-1]) + ")"
+        return "(" + ___TR(k[1:-1]) + ")"
     if k.startswith("<a") and k.endswith("</a>"):
         return re.sub("(<a.*?>)(.*?)(</a>)", __partagA, k)
     if "_" in k:
         fnd = k.find("_")
-        return _TR(k[:fnd]) + " " + _TR(k[fnd + 1 :])
+        return ___TR(k[:fnd]) + " " + ___TR(k[fnd + 1 :])
     if isascii(k):
         return k
     loadlanguage()
@@ -413,11 +415,10 @@ def _TR(k: str) -> str:
     return k
 
 
-def _TRL(kk):
-    x = []
-    for k in kk:
-        x.append(_TR(k))
-    return x
+def _TR(k: str | list[str]) -> str | list[str]:
+    if isinstance(k, str):
+        return ___TR(k)
+    return [___TR(_) for _ in k]
 
 
 def unsafesave(fname: str, js, beatiful=True):

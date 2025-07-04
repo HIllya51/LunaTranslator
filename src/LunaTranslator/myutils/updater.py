@@ -13,6 +13,25 @@ from traceback import print_exc
 versionchecktask = queue.Queue()
 
 
+@threader
+def testdocconnect():
+    wait = threading.Semaphore(0)
+    results = []
+    proxy = getproxy()
+    for i, main_server in enumerate(static_data["docs_server"]):
+
+        @threader
+        def __(i, main_server, proxy):
+            res = requests.get(main_server, verify=False, proxies=proxy)
+            if res.status_code == 200:
+                results.append((i, res))
+                wait.release()
+
+        __(i, main_server, proxy)
+    wait.acquire()
+    gobject.serverindex2 = results[0][0]
+
+
 def tryqueryfromhost():
     wait = threading.Semaphore(0)
     results = []
@@ -40,28 +59,12 @@ def tryqueryfromhost():
     return results[0][1]["version"], results[0][1]
 
 
-def tryqueryfromgithub():
-
-    res = requests.get(
-        "https://api.github.com/repos/HIllya51/LunaTranslator/releases/latest",
-        verify=False,
-    )
-    link = {
-        "64": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator.zip",
-        "32": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86.zip",
-    }
-    return res.json()["tag_name"], link
-
-
 def trygetupdate():
     try:
         version, links = tryqueryfromhost()
     except:
         print_exc()
-        try:
-            version, links = tryqueryfromgithub()
-        except:
-            return None
+        return None
     bit = ("x86", "x64")[runtime_bit_64]
     if runtime_for_xp:
         bit += "_winxp"
@@ -169,6 +172,7 @@ def uncompress(savep):
 
 @threader
 def versioncheckthread():
+    testdocconnect()
     versionchecktask.put(True)
     while True:
         x = versionchecktask.get()

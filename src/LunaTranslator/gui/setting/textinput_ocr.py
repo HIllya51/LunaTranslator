@@ -395,6 +395,7 @@ class showocrimage(saveposwindow):
         self.layout1.addWidget(self.originlabel)
         gobject.base.connectsignal(gobject.base.setimage, self.setimagefunction)
         gobject.base.connectsignal(gobject.base.setresult, self.setocr)
+        self.show()
 
     def onValueChanged(self, value):
         if not self.originimage:
@@ -432,16 +433,27 @@ def internal(self):
     ]
     engines = [
         [
-            D_getdoclink("/useapis/ocrapi.html"),
+            dict(
+                title="离线",
+                type="grid",
+                grid=offgrids,
+                button=D_getdoclink("/useapis/ocrapi.html#anchor-offline"),
+            )
+        ],
+        [
+            dict(
+                title="在线",
+                type="grid",
+                grid=initgridsources(self, online),
+                button=D_getdoclink("/useapis/ocrapi.html#anchor-online"),
+            )
+        ],
+        [
             D_getIconButton(
-                callback=lambda: showocrimage(self).show(),
-                icon="fa.picture-o",
-                tips="查看",
+                callback=lambda: showocrimage(self), icon="fa.picture-o", tips="查看"
             ),
             "",
         ],
-        [dict(title="离线", type="grid", grid=offgrids)],
-        [dict(title="在线", type="grid", grid=initgridsources(self, online))],
     ]
     autorun = [
         [

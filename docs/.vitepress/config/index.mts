@@ -3,6 +3,7 @@ import { en } from './en'
 import { zh, zhSearch } from './zh'
 import { ja, jaSearch } from './ja'
 import { vi, viSearch } from './vi'
+import { cht, chtSearch } from './cht'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 
 // https://vitepress.dev/reference/site-config
@@ -29,7 +30,8 @@ export default defineConfig({
         locales: {
           ...zhSearch,
           ...jaSearch,
-          ...viSearch
+          ...viSearch,
+          ...chtSearch,
         }
       }
     },
@@ -38,6 +40,7 @@ export default defineConfig({
 
   locales: {
     zh: { label: '简体中文', ...zh },
+    cht: { label: '繁體中文', ...cht },
     en: { label: 'English', ...en },
     ja: { label: '日本語', ...ja },
     vi: { label: 'Tiếng Việt', ...vi }
@@ -46,6 +49,14 @@ export default defineConfig({
   markdown: {
     config(md) {
       md.use(tabsMarkdownPlugin)
+    },
+    anchor: {
+      slugify: (str) => {
+        if (str.startsWith('anchor-')) {
+          return str // 固定 anchor 不处理
+        }
+        return encodeURIComponent(str) // 正常标题处理
+      }
     }
   }
 })

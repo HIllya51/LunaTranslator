@@ -34,6 +34,7 @@ class WordSegResultX(WordSegResult):
             hidekana=w.hidekana,
             info=w.info,
             isshit=w.isshit,
+            specialinfo=w.specialinfo,
         )
 
     def copy(self):
@@ -49,7 +50,7 @@ class WordSegResultX(WordSegResult):
 class QLabel_w(QLabel):
     def __init__(self, *argc):
         super().__init__(*argc)
-        self.word: str = None
+        self.word: WordSegResultX = None
         self.refmask: QLabel_w = None
         self.ref: QLabel_w = None
         self.company: QLabel_w = None
@@ -967,7 +968,9 @@ class TextBrowser(QWidget, dataget):
                 linei += 1
         self.yinyingposline = linei
 
-    def _add_searchlabel(self, labeli: int, pos1, word, color: ColorControl):
+    def _add_searchlabel(
+        self, labeli: int, pos1, word: WordSegResultX, color: ColorControl
+    ):
         if labeli >= len(self.searchmasklabels_clicked):
             ql = FenciQLabel(self.atback_color)
             ql.setMouseTracking(True)
@@ -993,13 +996,21 @@ class TextBrowser(QWidget, dataget):
     def showhideclick(self, _=None):
         show = self._clickhovershow
         for i in range(self.searchmasklabels_clicked_num):
-            self.searchmasklabels_clicked[i].setVisible(show)
-            self.searchmasklabels_clicked2[i].setVisible(show)
+            self.searchmasklabels_clicked[i].setVisible(
+                show or bool(self.searchmasklabels_clicked[i].word.specialinfo)
+            )
+            self.searchmasklabels_clicked2[i].setVisible(
+                show or bool(self.searchmasklabels_clicked2[i].word.specialinfo)
+            )
 
     def showhideclick_i(self, i: int):
         show = self._clickhovershow
-        self.searchmasklabels_clicked[i].setVisible(show)
-        self.searchmasklabels_clicked2[i].setVisible(show)
+        self.searchmasklabels_clicked[i].setVisible(
+            show or bool(self.searchmasklabels_clicked[i].word.specialinfo)
+        )
+        self.searchmasklabels_clicked2[i].setVisible(
+            show or bool(self.searchmasklabels_clicked2[i].word.specialinfo)
+        )
         self.searchmasklabels[i].setVisible(True)
 
     def addsearchwordmask(self, x: "list[WordSegResultX]"):

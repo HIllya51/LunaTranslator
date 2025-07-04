@@ -20,6 +20,8 @@ class cdp_deepl(cdp_helper):
     def tgtlang(self):
         if self.ref.tgtlang_1 == Languages.TradChinese:
             return "zh-hant"
+        if self.ref.tgtlang_1 == Languages.Chinese:
+            return "zh-hans"
         return self.ref.tgtlang_1
 
     def __init__(self, ref):

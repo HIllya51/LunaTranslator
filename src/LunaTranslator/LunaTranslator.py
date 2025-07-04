@@ -58,7 +58,8 @@ from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark, dynamicapiname
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
-from gui.dynalang import LAction
+from gui.dynalang import LAction, LDialog
+from gui.usefulwidget import pixmapviewer
 from gui.setting.setting import Setting
 from gui.usefulwidget import PopupWidget
 from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
@@ -96,6 +97,7 @@ class BASEOBJECT(QObject):
     fenyinsettings = pyqtSignal(bool)
     dispatch_translate = pyqtSignal(str, str)
     showupdatebtn = pyqtSignal()
+    createimageviewsig = pyqtSignal(QWidget)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -132,6 +134,7 @@ class BASEOBJECT(QObject):
         self.__connect_internal(self.versiontextsignal)
         self.__connect_internal(self.showandsolvesig)
         self.__connect_internal(self.showupdatebtn)
+        self.createimageviewsig.connect(self.createimageview)
 
     def __init__(self) -> None:
         super().__init__()
@@ -167,6 +170,17 @@ class BASEOBJECT(QObject):
         self.thishastranslated = True
         self.service = TCPService()
         registerall(self.service)
+
+    def createimageview(self, parent):
+        m = LDialog(parent, Qt.WindowType.WindowCloseButtonHint)
+        m.setWindowTitle("微信赞赏码")
+        lb = pixmapviewer()
+        l = QHBoxLayout(m)
+        l.addWidget(lb)
+        img = QPixmap.fromImage(QImage("files/static/zan.jpg"))
+        lb.showpixmap(img)
+        m.resize(500, 500)
+        m.exec()
 
     @threader
     def serviceinit(self):
@@ -333,6 +347,7 @@ class BASEOBJECT(QObject):
                     color=SpecialColor.RawTextColor,
                     res=text,
                     clear=True,
+                    klass=str(uuid.uuid4()),
                 )
             )
             self.currenttext = text
@@ -340,6 +355,10 @@ class BASEOBJECT(QObject):
             self.currentread = text
             self.currentread_from_origin = False
             return
+        elif infotype == "<msg_info_append>":
+            self.translation_ui.displayres.emit(
+                dict(color=SpecialColor.RawTextColor, res=text, klass=str(uuid.uuid4()))
+            )
         else:
             msgs = [
                 ("<msg_info_refresh>", TextType.Info),
@@ -942,7 +961,7 @@ class BASEOBJECT(QObject):
         try:
             self.mecab_ = mecab()
         except:
-            print_exc()
+            pass
 
     @threader
     def startoutputer(self):
@@ -1117,12 +1136,23 @@ class BASEOBJECT(QObject):
         allvk = [mod_map_r[mod] for mod in modes] + ([vkcode] if vkcode else [])
         return all(windows.GetAsyncKeyState(vk) & 0x8000 for vk in allvk)
 
+    def aboutlinkclicked(self, link, parent):
+
+        if link == "WEIXIN":
+            return self.createimageviewsig.emit(parent)
+        if link == "/":
+            link = dynamiclink("/", docs=True)
+        os.startfile(link)
+
     @threader
     def clickwordcallback(self, wordd: dict, append=False):
         if isinstance(wordd, WordSegResult):
             word = wordd
         elif isinstance(wordd, dict):
             word = WordSegResult.from_dict(wordd)
+        if word.specialinfo:
+            self.aboutlinkclicked(word.specialinfo, self.translation_ui)
+            return
         wordwhich = lambda k: (word.word, word.prototype)[
             globalconfig["usewordoriginfor"].get(k, False)
         ]

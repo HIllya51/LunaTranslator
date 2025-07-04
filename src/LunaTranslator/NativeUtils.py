@@ -274,7 +274,7 @@ _ListProcesses.argtypes = (c_void_p,)
 
 
 def ListProcesses():
-    ret = []
+    ret: "list[tuple[int, str]]" = []
     _ListProcesses(
         CFUNCTYPE(None, DWORD, c_wchar_p)(lambda pid, exe: ret.append((pid, exe)))
     )
@@ -569,22 +569,30 @@ def SimpleCreateMutex(name):
     return windows.CreateMutexW(GetSecurityAttributes(), False, name)
 
 
-CreateAutoKillProcess = utilsdll.CreateAutoKillProcess
-CreateAutoKillProcess.argtypes = c_wchar_p, c_wchar_p, POINTER(DWORD)
-CreateAutoKillProcess.restype = AutoHandle
+CreateProcessWithJob = utilsdll.CreateProcessWithJob
+CreateProcessWithJob.argtypes = c_wchar_p, c_wchar_p, POINTER(DWORD), c_bool, c_bool
+CreateProcessWithJob.restype = AutoHandle
+SetJobAutoKill = utilsdll.SetJobAutoKill
+SetJobAutoKill.argtypes = HANDLE, c_bool
+CreateJobForProcess = utilsdll.CreateJobForProcess
+CreateJobForProcess.argtypes = DWORD, c_bool
+CreateJobForProcess.restype = AutoHandle
 
 
-class _AutoKillProcess:
-    def __init__(self, handle, pid):
-        self._refkep = handle
-        self.pid = pid
+class AutoKillProcess:
+    def setkill(self, kill):
+        SetJobAutoKill(self._refkep, kill)
 
-
-def AutoKillProcess(command, path=None):
-    pid = DWORD()
-    return _AutoKillProcess(
-        CreateAutoKillProcess(command, path, pointer(pid)), pid.value
-    )
+    def __init__(self, commandorpid: "str|int", path=None, hide=True, kill=True):
+        if isinstance(commandorpid, int):
+            self.pid = commandorpid
+            self._refkep = CreateJobForProcess(commandorpid, kill)
+        else:
+            pid = DWORD()
+            self._refkep = CreateProcessWithJob(
+                commandorpid, path, pointer(pid), hide, kill
+            )
+            self.pid = pid.value
 
 
 _SysRegisterHotKey = utilsdll.SysRegisterHotKey
@@ -772,3 +780,18 @@ def ListEndpoints(isinput: bool):
 GetDevicePixelRatioF = utilsdll.GetDevicePixelRatioF
 GetDevicePixelRatioF.argtypes = (HWND,)
 GetDevicePixelRatioF.restype = c_float
+
+ShowLiveCaptionsWindow = utilsdll.ShowLiveCaptionsWindow
+ShowLiveCaptionsWindow.argtypes = DWORD, c_bool
+_GetLiveCaptionsText = utilsdll.GetLiveCaptionsText
+_GetLiveCaptionsText_CB = CFUNCTYPE(None, c_wchar_p)
+_GetLiveCaptionsText.argtypes = DWORD, _GetLiveCaptionsText_CB
+
+
+def GetLiveCaptionsText(pid):
+    ret: "list[str]" = []
+    cb = _GetLiveCaptionsText_CB(ret.append)
+    _GetLiveCaptionsText(pid, cb)
+    if ret:
+        return ret[0]
+    return None

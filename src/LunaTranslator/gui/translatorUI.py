@@ -1,5 +1,5 @@
 from qtsymbols import *
-import time, functools, threading, os, shutil, uuid
+import time, functools, threading, os, shutil, uuid, re
 from traceback import print_exc
 import windows, qtawesome, gobject, NativeUtils
 from myutils.wrapper import threader, tryprint
@@ -12,9 +12,11 @@ from myutils.config import (
     savehook_new_list,
     translatorsetting,
 )
+from gui.setting.about import get_about_info
 from myutils.magpie_builtin import MagpieBuiltin, AdapterService
 from gui.gamemanager.dialog import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
+from myutils.mecab import WordSegResult
 from myutils.utils import (
     stringfyerror,
     loadpostsettingwindowmethod,
@@ -527,12 +529,14 @@ class TranslatorWindow(resizableframeless):
         iter_context = kwargs.get("iter_context", None)
         hira = kwargs.get("hira", [])
         klass = kwargs.get("klass", None)
+        raw = kwargs.get("raw", False)
         updateTranslate = kwargs.get("updateTranslate", False)
         if text is None:
             if clear:
                 self.translate_text.clear()
             return
-        text = self.cleartext(text)
+        if not raw:
+            text = self.cleartext(text)
         if iter_context:
             iter_res_status, iter_context_class = iter_context
         else:
@@ -1246,12 +1250,53 @@ class TranslatorWindow(resizableframeless):
         except:
             pass
 
+    def showabout(self):
+
+        def makeMDlinkclick(text: str) -> "list[WordSegResult]":
+            if "\n" in text:
+                __ = []
+                for i, _ in enumerate(makeMDlinkclick(_) for _ in text.split("\n")):
+                    if i:
+                        __.append(WordSegResult("\n"))
+                    __ += _
+                return __
+            result = []
+            while text:
+                if text[0] == "[":
+                    _right = text.find("]")
+                    _r2 = text.find(")")
+                    result.append(
+                        WordSegResult(
+                            text[1:_right], specialinfo=text[_right + 2 : _r2]
+                        )
+                    )
+                    text = text[_r2 + 1 :]
+                else:
+                    if "[" in text:
+                        left = text.find("[")
+                        result.append(WordSegResult(text[:left], isshit=True))
+                        text = text[left:]
+                    else:
+                        result.append(WordSegResult(text, isshit=True))
+                        text = None
+            return result
+
+        segs = makeMDlinkclick(
+            "\n" + _TR("欢迎使用LunaTranslator") + "\n\n" + get_about_info() + "\n"
+        )
+        text = "".join(_.word for _ in segs)
+        self.showline(text=text, texttype=TextType.Info, hira=segs, raw=True)
+
     def showEvent(self, e):
         if not self.firstshow:
             self.enterfunction()
             return super().showEvent(e)
         self.cleanupdater()
         self.firstshow = False
+
+        if time.time() - globalconfig.get("lasttime", 0) > 3600:
+            globalconfig["lasttime"] = time.time()
+            self.showabout()
         self.mousetransparent_check()
         self.adjustbuttons()
         # 有个莫名其妙的加载时间

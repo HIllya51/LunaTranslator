@@ -70,6 +70,15 @@
     .tooltip.show {
         opacity: 1;
     }
+
+    .lunatranslator_clickword_force {
+        z-index: 2000;
+        position: relative;
+    }
+
+    .lunatranslator_clickword_force:hover {
+        background-color: var(--clickwordhover);
+    }
 </style>
 <script>
     function settooltipsstyle(c1, c2, pd, r) {
@@ -680,6 +689,8 @@
             }
 
             createwordhoverlistener(eleori, word)
+            if (word.specialinfo)
+                eleori.classList.add('lunatranslator_clickword_force')
             eleori.classList.add('lunatranslator_clickword')
             eleori.appendChild(style1)
 
@@ -696,6 +707,9 @@
             }
             ele.appendChild(eleori)
         })
+        if (tags[tags.length - 1].word == '\n') {
+            ele.appendChild(document.createElement('br'))
+        }
         safe_calllunaheightchange()
 
     }

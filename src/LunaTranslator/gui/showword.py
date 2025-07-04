@@ -366,7 +366,7 @@ class AnkiWindow(QWidget):
                         ),
                         icon="fa.edit",
                     ),
-                    "",
+                    0,
                 ]
             ),
         )

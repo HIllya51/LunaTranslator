@@ -56,6 +56,7 @@ if TYPE_CHECKING:
     from LunaTranslator import BASEOBJECT
 base: "BASEOBJECT" = None
 serverindex = 0
+serverindex2 = 0
 istest = False
 
 

@@ -37,7 +37,6 @@ class Bing:
             )
             if res.status_code != 302:
                 raise Exception("Unknown error!")
-
             redirect_url: str = res.headers.get("Location")
             if not redirect_url:
                 raise Exception("Error getting redirect URL!")

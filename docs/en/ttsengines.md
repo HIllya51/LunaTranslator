@@ -19,10 +19,7 @@ On Windows 11, in addition to the language's speech synthesis package, you can a
 
 On Windows 10, or if you don't want to add it to the system, you can download `Microsoft Natural Voice` from [NVDA Chinese Website](https://www.nvdacn.com/index.php/tts.html) and extract it to the software directory to use natural voices. 
 
-On Windows 10, in addition to downloading the voice package, you also need to download the [Natural Voice Runtime](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) and extract it to the software directory. 
-
->[!WARNING]
->Do not place the software, `runtime`, and `language pack` in non-English paths, otherwise they will not be recognized.
+On Windows 10, the necessary runtime and recognition models are missing in the system; or the Windows 11 version is too low, and the built-in runtime version is outdated. In addition to downloading the voice package, you also need to download the [Natural Voice Runtime](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) and extract it to the software directory. 
 
 == VoiceRoid2
 
