@@ -817,5 +817,6 @@
     "降序": "Sestupně",
     "UI语言": "Jazyk uživatelského rozhraní",
     "使用系统代理": "Použít systémový proxy",
-    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Pokud narazíte na potíže při používání, můžete nahlédnout do [návodu k použití](/), nebo se připojit na [Discord](https://discord.com/invite/ErtDwVeAbB) či vytvořit [issue](https://github.com/HIllya51/LunaTranslator/issues) a spojit se tak se mnou."
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Pokud narazíte na potíže při používání, můžete nahlédnout do [návodu k použití](/), nebo se připojit na [Discord](https://discord.com/invite/ErtDwVeAbB) či vytvořit [issue](https://github.com/HIllya51/LunaTranslator/issues) a spojit se tak se mnou.",
+    "系统不支持环回录制": "Systém nepodporuje zpětnou smyčku nahrávání."
 }

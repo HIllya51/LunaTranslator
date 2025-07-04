@@ -817,5 +817,6 @@
     "降序": "giảm dần",
     "UI语言": "Ngôn ngữ giao diện người dùng",
     "使用系统代理": "sử dụng proxy hệ thống",
-    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Nếu gặp khó khăn khi sử dụng, bạn có thể tham khảo [Hướng dẫn sử dụng](/), cũng như tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) hoặc tạo [issue](https://github.com/HIllya51/LunaTranslator/issues) để trao đổi với tôi."
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Nếu gặp khó khăn khi sử dụng, bạn có thể tham khảo [Hướng dẫn sử dụng](/), cũng như tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) hoặc tạo [issue](https://github.com/HIllya51/LunaTranslator/issues) để trao đổi với tôi.",
+    "系统不支持环回录制": "Hệ thống không hỗ trợ ghi âm vòng lặp."
 }

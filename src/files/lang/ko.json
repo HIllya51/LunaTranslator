@@ -817,5 +817,6 @@
     "降序": "내림차순",
     "UI语言": "UI 언어",
     "使用系统代理": "시스템 프록시 사용",
-    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "사용 중 어려움이 있으면 [사용 설명서](/)를 참조하거나 [Discord](https://discord.com/invite/ErtDwVeAbB)에 가입하거나 [issue](https://github.com/HIllya51/LunaTranslator/issues)를 열어 저와 소통해 주세요."
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "사용 중 어려움이 있으면 [사용 설명서](/)를 참조하거나 [Discord](https://discord.com/invite/ErtDwVeAbB)에 가입하거나 [issue](https://github.com/HIllya51/LunaTranslator/issues)를 열어 저와 소통해 주세요.",
+    "系统不支持环回录制": "시스템이 루프백 녹화를 지원하지 않습니다."
 }

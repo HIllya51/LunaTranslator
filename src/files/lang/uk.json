@@ -817,5 +817,6 @@
     "降序": "спадання",
     "UI语言": "Мова інтерфейсу",
     "使用系统代理": "Використовувати системний проксі",
-    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Якщо у вас виникли труднощі під час використання, ви можете переглянути [Інструкцію](/), а також приєднатися до [Discord](https://discord.com/invite/ErtDwVeAbB) або створити [issue](https://github.com/HIllya51/LunaTranslator/issues), щоб зв'язатися зі мною."
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Якщо у вас виникли труднощі під час використання, ви можете переглянути [Інструкцію](/), а також приєднатися до [Discord](https://discord.com/invite/ErtDwVeAbB) або створити [issue](https://github.com/HIllya51/LunaTranslator/issues), щоб зв'язатися зі мною.",
+    "系统不支持环回录制": "Система не підтримує запис із петлі зворотного зв'язку."
 }

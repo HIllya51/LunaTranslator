@@ -817,5 +817,6 @@
     "降序": "เรียงลำดับจากมากไปน้อย",
     "UI语言": "ภาษาของอินเทอร์เฟซผู้ใช้",
     "使用系统代理": "ใช้พร็อกซีของระบบ",
-    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "หากคุณพบปัญหาขณะใช้งาน สามารถดู[คู่มือการใช้งาน](/), หรือเข้าร่วม[Discord](https://discord.com/invite/ErtDwVeAbB) และเปิด[issue](https://github.com/HIllya51/LunaTranslator/issues) เพื่อพูดคุยกับฉันได้"
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "หากคุณพบปัญหาขณะใช้งาน สามารถดู[คู่มือการใช้งาน](/), หรือเข้าร่วม[Discord](https://discord.com/invite/ErtDwVeAbB) และเปิด[issue](https://github.com/HIllya51/LunaTranslator/issues) เพื่อพูดคุยกับฉันได้",
+    "系统不支持环回录制": "ระบบไม่รองรับการบันทึกแบบวนลูป"
 }

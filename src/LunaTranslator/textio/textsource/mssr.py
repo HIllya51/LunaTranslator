@@ -1,7 +1,7 @@
 from textio.textsource.textsourcebase import basetext
 from myutils.wrapper import threader
 import NativeUtils, windows, uuid, os, gobject, time
-from ctypes import c_int
+from ctypes import c_int, c_long
 from myutils.config import globalconfig, _TR
 from myutils.mecab import punctuations
 
@@ -151,6 +151,12 @@ class mssr(basetext):
             if iserr:
                 sz = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
                 text = windows.ReadFile(self.hPipe, sz).decode()
+                if text.startswith("??"):
+                    err = text[2:]
+                    text = _TR("系统不支持环回录制")
+                    if err:
+                        hr = int(err)
+                        text += ": {} {}".format(hex(hr)[2:], windows.FormatMessage(hr))
                 gobject.base.displayinfomessage(text, "<msg_error_Origin>")
                 raise Exception(text)
             else:

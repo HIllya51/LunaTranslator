@@ -137,7 +137,7 @@ int mssr(int argc, wchar_t *argv[])
         {
             capture = new CLoopbackCapture{16000, 16, 1};
             if (!capture)
-                throw std::runtime_error("Not Support");
+                throw std::runtime_error("??");
             pushStream = AudioInputStream::CreatePushStream();
             capture->OnDataCallback = [&](std::string &&data)
             {
@@ -166,8 +166,11 @@ int mssr(int argc, wchar_t *argv[])
             WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
             recognizer->StartContinuousRecognitionAsync().wait();
             if (capture)
-                if (FAILED(capture->StartCaptureAsync(GetCurrentProcessId(), false)))
-                    throw std::runtime_error("Not Support");
+            {
+                auto hr = capture->StartCaptureAsync(GetCurrentProcessId(), false);
+                if (FAILED(hr))
+                    throw std::runtime_error(std::string("??") + std::to_string((DWORD)hr));
+            }
             WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
             // Stops recognition.
             if (capture)

@@ -141,14 +141,14 @@ DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
         if (FAILED(CoCreateInstance(CLSID_CUIAutomation, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&automation))) || !automation)
         {
             succ = false;
-            throw std::runtime_error("无法初始化 UI Automation.");
+            throw std::runtime_error("");
         }
 
         // 获取焦点元素
         CComPtr<IUIAutomationElement> focusedElement;
         if (FAILED(automation->GetFocusedElement(&focusedElement)) || !focusedElement)
         {
-            throw std::runtime_error("无法获取当前焦点元素.");
+            throw std::runtime_error("");
         }
 
         // 检查是否支持 TextPattern
@@ -156,28 +156,28 @@ DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
         if (FAILED(focusedElement->GetCurrentPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern))) || !textPattern)
         {
             succ = false;
-            throw std::runtime_error("当前元素不支持 TextPattern.");
+            throw std::runtime_error("");
         }
 
         // 获取选定的文本范围
         CComPtr<IUIAutomationTextRangeArray> selection;
         if (FAILED(textPattern->GetSelection(&selection)) || !selection)
         {
-            throw std::runtime_error("无法获取选定的文本范围.");
+            throw std::runtime_error("");
         }
 
         // 获取第一个选定范围
         CComPtr<IUIAutomationTextRange> range;
         if (FAILED(selection->GetElement(0, &range)) || !range)
         {
-            throw std::runtime_error("没有选定文本.");
+            throw std::runtime_error("");
         }
 
         // 提取文本
         CComBSTR text;
         if (FAILED(range->GetText(-1, &text)) || !text)
         {
-            throw std::runtime_error("无法提取选定的文本.");
+            throw std::runtime_error("");
         }
         cb(text);
     }

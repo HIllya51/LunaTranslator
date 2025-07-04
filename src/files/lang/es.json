@@ -817,5 +817,6 @@
     "降序": "orden descendente",
     "UI语言": "Idioma de la interfaz de usuario",
     "使用系统代理": "usar el proxy del sistema",
-    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Si encuentras dificultades al usarlo, puedes consultar las [instrucciones de uso](/). También puedes unirte a nuestro [Discord](https://discord.com/invite/ErtDwVeAbB) o abrir un [issue](https://github.com/HIllya51/LunaTranslator/issues) para comunicarte conmigo."
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Si encuentras dificultades al usarlo, puedes consultar las [instrucciones de uso](/). También puedes unirte a nuestro [Discord](https://discord.com/invite/ErtDwVeAbB) o abrir un [issue](https://github.com/HIllya51/LunaTranslator/issues) para comunicarte conmigo.",
+    "系统不支持环回录制": "El sistema no admite la grabación en bucle."
 }
