@@ -5,12 +5,16 @@ from myutils.utils import splitocrtypes, dynamiccishuname
 from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton
 from gui.inputdialog import autoinitdialog_items, autoinitdialog
+from gui.rcdownload import resourcewidget, resourcewidget2
 from gui.usefulwidget import (
-    yuitsu_switch,
+    LGroupBox,
+    VisLFormLayout,
+    MySwitch,
     makescrollgrid,
     D_getsimpleswitch,
     listediter,
     D_getIconButton,
+    LPushButton,
     D_getspinbox,
     getsmalllabel,
     getcenterX,
@@ -26,7 +30,6 @@ from gui.usefulwidget import (
 )
 import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
-from gui.setting.about import offlinelinks
 from gui.rendertext.tooltipswidget import tooltipssetting
 from gui.showword import cishusX
 
@@ -87,43 +90,6 @@ class multicolorset(LDialog):
 def setTabcishu(self, basel):
     makescrollgrid(setTabcishu_l(self), basel)
     gobject.base.fenyinsettings.connect(self.fenyinsettings.setEnabled)
-
-
-def gethiragrid(self):
-
-    grids = []
-    i = 0
-    self.hiraswitchs = {}
-    line = []
-    for name in ("mecab",):
-        if "args" in globalconfig["hirasetting"][name]:
-            items = autoinitdialog_items(globalconfig["hirasetting"][name])
-            items[-1]["callback"] = gobject.base.startmecab
-            _3 = D_getIconButton(
-                callback=functools.partial(
-                    autoinitdialog,
-                    self,
-                    globalconfig["hirasetting"][name]["args"],
-                    globalconfig["hirasetting"][name]["name"],
-                    800,
-                    items,
-                ),
-            )
-
-        else:
-            _3 = ""
-
-        line += [globalconfig["hirasetting"][name]["name"], _3]
-        if i % 3 == 2:
-            grids.append(line)
-            line = []
-        else:
-            line += [""]
-        i += 1
-    if len(line):
-        grids.append(line)
-    grids[-1] += [""] * (4 + 4 + 3 - len(grids[-1]))
-    return grids
 
 
 def vistranslate_rank(self):
@@ -199,21 +165,15 @@ def initinternal(self, names):
         _f = "LunaTranslator/cishu/{}.py".format(cishu)
         if os.path.exists(_f) == False:
             continue
-
+        reloadcb = functools.partial(gobject.base.startxiaoxueguan, cishu)
         line += [
             functools.partial(getrenameablellabel, cishu, self),
-            D_getsimpleswitch(
-                globalconfig["cishu"][cishu],
-                "use",
-                callback=functools.partial(gobject.base.startxiaoxueguan, cishu),
-            ),
+            D_getsimpleswitch(globalconfig["cishu"][cishu], "use", callback=reloadcb),
         ]
         if "args" in globalconfig["cishu"][cishu]:
 
             items = autoinitdialog_items(globalconfig["cishu"][cishu])
-            items[-1]["callback"] = functools.partial(
-                gobject.base.startxiaoxueguan, cishu
-            )
+            items[-1]["callback"] = reloadcb
 
             def __(cishu):
                 autoinitdialog(
@@ -244,10 +204,96 @@ def initinternal(self, names):
     return cishugrid
 
 
+def clickcallback2(l: list, lay: VisLFormLayout, checked):
+    if not l:
+        l.append(0)
+        lay.addRow(resourcewidget2())
+        return
+
+    lay.setRowVisible(1, checked)
+
+def clickcallback(l: list, lay: VisLFormLayout, checked):
+    if not l:
+        l.append(0)
+        lay.addRow(resourcewidget())
+        return
+
+    lay.setRowVisible(1, checked)
+
+
+def fenciqisettings(self):
+    box = LGroupBox(self)
+    box.setTitle("分词器")
+    lay = VisLFormLayout(box)
+    l1 = QHBoxLayout()
+
+    lay.addRow(l1)
+    l1.addWidget(QLabel("Mecab"))
+    items = autoinitdialog_items(globalconfig["hirasetting"]["mecab"])
+    items[-1]["callback"] = gobject.base.startmecab
+    _3 = D_getIconButton(
+        callback=functools.partial(
+            autoinitdialog,
+            self,
+            globalconfig["hirasetting"]["mecab"]["args"],
+            "Mecab",
+            800,
+            items,
+        ),
+    )
+    l1.addWidget(_3())
+    b = MySwitch(isplaceholder=True)
+    b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+    l1.addWidget(b)
+    l1.addStretch(1)
+    btn = LPushButton("资源下载")
+    btn.setCheckable(True)
+    reflist = []
+    btn.clicked.connect(functools.partial(clickcallback, reflist, lay))
+    l1.addWidget(btn)
+    l1.addStretch(8)
+    return box
+
+
+def mdictsettings(self):
+    box = LGroupBox(self)
+    box.setTitle("离线")
+    lay = VisLFormLayout(box)
+    l1 = QHBoxLayout()
+
+    lay.addRow(l1)
+    l1.addWidget(getrenameablellabel("mdict", self))
+    reloadcb = functools.partial(gobject.base.startxiaoxueguan, "mdict")
+    l1.addWidget(
+        getsimpleswitch(globalconfig["cishu"]["mdict"], "use", callback=reloadcb)
+    )
+    items = autoinitdialog_items(globalconfig["cishu"]["mdict"])
+    items[-1]["callback"] = reloadcb
+    _3 = D_getIconButton(
+        callback=functools.partial(
+            autoinitdialog,
+            self,
+            globalconfig["cishu"]["mdict"]["args"],
+            dynamiccishuname("mdict"),
+            800,
+            items,
+        ),
+    )
+    l1.addWidget(_3())
+    l1.addStretch(1)
+    btn = LPushButton("资源下载")
+    btn.setCheckable(True)
+    reflist = []
+    btn.clicked.connect(functools.partial(clickcallback2, reflist, lay))
+    l1.addWidget(btn)
+    l1.addStretch(8)
+    return box
+
+
 def setTabcishu_l(self):
 
-    grids_1 = [dict(title="分词器", type="grid", grid=gethiragrid(self))]
-    offline, online = splitocrtypes(globalconfig["cishu"])
+    grids_1 = [functools.partial(fenciqisettings, self)]
+    _, online = splitocrtypes(globalconfig["cishu"])
     grids2 = [
         dict(
             title="辞书",
@@ -265,13 +311,7 @@ def setTabcishu_l(self):
                     D_getIconButton(functools.partial(vistranslate_rank, self)),
                     "",
                 ],
-                [
-                    dict(
-                        title="离线",
-                        type="grid",
-                        grid=initinternal(self, offline),
-                    )
-                ],
+                [(functools.partial(mdictsettings, self), 0)],
                 [
                     dict(
                         title="在线",
@@ -315,7 +355,6 @@ def setTabcishu_l(self):
         )
 
     grids = [
-        [(functools.partial(offlinelinks, "dict"), 0)],
         grids_1,
         grids2,
         [],

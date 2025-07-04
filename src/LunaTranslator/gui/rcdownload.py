@@ -1,7 +1,7 @@
 import os
 from myutils.config import globalconfig
 import requests, zipfile, gobject
-from gui.usefulwidget import VisLFormLayout, getsmalllabel, getboxlayout
+from gui.usefulwidget import VisLFormLayout, getsmalllabel, getboxlayout, NQGroupBox
 from myutils.utils import makehtml, stringfyerror, dynamiclink
 from myutils.config import _TR, mayberelpath
 from myutils.wrapper import threader
@@ -10,7 +10,7 @@ from qtsymbols import *
 from gui.dynalang import LPushButton
 
 
-class resourcewidget(QWidget):
+class resourcewidget(NQGroupBox):
     installsucc = pyqtSignal(bool, str)
 
     def _installsucc(self, succ, failreason):
@@ -97,7 +97,6 @@ class resourcewidget(QWidget):
         super().__init__(*argc, **kw)
         self.installsucc.connect(self._installsucc)
         formLayout = VisLFormLayout(self)
-        formLayout.setContentsMargins(0, 0, 0, 0)
         formLayout.addRow(
             "unidic", getsmalllabel(makehtml("https://clrd.ninjal.ac.jp/unidic/"))()
         )
@@ -128,7 +127,7 @@ class resourcewidget(QWidget):
         formLayout.setRowVisible(2, False)
 
 
-class resourcewidget2(QWidget):
+class resourcewidget2(NQGroupBox):
     installsucc = pyqtSignal(bool, str)
 
     def _installsucc(self, succ, failreason):
@@ -210,7 +209,6 @@ class resourcewidget2(QWidget):
         super().__init__(*argc, **kw)
         self.installsucc.connect(self._installsucc)
         formLayout = VisLFormLayout(self)
-        formLayout.setContentsMargins(0, 0, 0, 0)
         self.formLayout = formLayout
         formLayout.addRow(
             "论坛", getsmalllabel(makehtml("https://forum.freemdict.com/"))()

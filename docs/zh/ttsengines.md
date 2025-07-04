@@ -4,11 +4,27 @@
 
 == Windows TTS
 
-对于Windows 7及以上，可以在系统的语言设置中，添加语言的语音合成包，即可使用。
+1. SAPI
 
-~~在Windows 11上，除了语言的语音合成包以外，还可以在`辅助功能`->`讲述人`->`添加自然语音`处添加更高质量的语音包。~~ 由于微软更改了自然语音包的加密方法，并静默推送升级，现已无法直接使用系统中安装的自然语音包，请使用以下方法，或参阅[此文章](https://www.bilibili.com/read/cv42198812/)。
+    对于Windows 7及以上，可以在系统的语言设置中，添加语言的语音合成包，即可使用。
 
-在Windows 11上，可以从[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)下载`Microsoft Natural Voice（自然语音）`，然后将其解压到软件目录中，即可使用自然语音。在Windows 10上，除了需要下载语音包外，还需补充下载[自然语音运行时](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)并解压到软件目录中。
+1. 自然语音
+
+    在Windows 10和Windows 11上，可以使用Windows自然语音。
+
+    ::: warning
+    由于微软更改了较新版本语言包的加密方法，系统中安装的语言包和下载的较新版本语言包无法直接使用，欲使用请参阅[此文章](https://www.bilibili.com/read/cv42198812/)。
+    :::
+
+    在Windows 11上，除了语言的语音合成包以外，还可以在`辅助功能`->`讲述人`->`添加自然语音`处添加更高质量的语音包。
+
+    在Windows 10上，或不想在系统中添加，可以从[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)下载`Microsoft Natural Voice（自然语音）`，然后将其解压到软件目录中，即可使用自然语音。
+
+    在Windows 10上，除了需要下载语音包外，还需补充下载[自然语音运行时](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)并解压到软件目录中。
+
+    ::: warning
+    请不要把软件和`运行时`和`语言包`放到非英文路径中，否则会无法识别。
+    ::: 
 
 == VoiceRoid2
 

@@ -228,22 +228,6 @@
                 ]
             }
         ],
-        "dict": [
-            {
-                "name": "MeCab",
-                "function": [
-                    "gui.rcdownload",
-                    "resourcewidget"
-                ]
-            },
-            {
-                "name": "MDict",
-                "function": [
-                    "gui.rcdownload",
-                    "resourcewidget2"
-                ]
-            }
-        ],
         "tts": [
             {
                 "name": "NeoSpeech",

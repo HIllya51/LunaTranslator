@@ -1,6 +1,6 @@
 # Giao diện dịch thuật trực tuyến truyền thống
 
-## Đăng ký dịch thuật trực tuyến
+## API truyền thống
 
 ::: tabs
 
@@ -159,15 +159,11 @@ https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
 
 :::
 
-## Dịch thuật trực tuyến không cần đăng ký
+## truyền thống
 
 ::: tabs
 
-== DeepL/DeepLX
-
-Có hai loại: `DeepL` và `DeepLX`.
-
-`DeepL` là giao diện ngược tích hợp sẵn có thể được sử dụng trực tiếp, nhưng dễ gặp phải kiểm soát rủi ro.
+== DeepL
 
 `DeepLX` yêu cầu tải xuống và triển khai [DeepLX](https://github.com/OwO-Network/DeepLX) của riêng bạn, và nhập `DeepLX api` để sử dụng.
 

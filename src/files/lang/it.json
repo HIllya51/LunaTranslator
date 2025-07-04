@@ -802,7 +802,6 @@
     "语音识别": "Riconoscimento vocale",
     "音源": "Sorgente sonora",
     "麦克风": "Microfono",
-    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Se incontri difficoltà durante l'uso, puoi consultare le [istruzioni](/), unirti al [Discord](https://discord.com/invite/ErtDwVeAbB) o aprire un [issue](https://github.com/HIllya51/LunaTranslator/issues) su [Github](https://github.com/HIllya51/LunaTranslator) per comunicare con me.",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "La manutenzione del software non è semplice. Se ritieni che questo software ti sia utile, sei il benvenuto a diventare mio [sponsor](https://patreon.com/HIllya51). Il tuo sostegno sarà una spinta per il mantenimento a lungo termine del software. Grazie~",
     "刷新间隔": "intervallo di aggiornamento",
     "找不到运行时": "Impossibile trovare il runtime",
@@ -817,5 +816,6 @@
     "按添加时间排序": "Ordina per data di aggiunta",
     "降序": "Decrescente",
     "UI语言": "Lingua dell'interfaccia utente",
-    "使用系统代理": "utilizzare il proxy di sistema"
+    "使用系统代理": "utilizzare il proxy di sistema",
+    "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。": "Se incontri difficoltà durante l'utilizzo, puoi consultare le [istruzioni](/), unirti al nostro [Discord](https://discord.com/invite/ErtDwVeAbB) o aprire un [issue](https://github.com/HIllya51/LunaTranslator/issues) per contattarmi."
 }

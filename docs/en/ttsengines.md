@@ -4,12 +4,28 @@
 
 == Windows TTS
 
-For Windows 7 and above, you can add the text-to-speech package for a language in the system's language settings to use it.
+1. SAPI
 
-~~On Windows 11, in addition to the language's speech synthesis package, you can also add higher-quality natural voices via `Accessibility` -> `Narrator` -> `Add natural voices`.~~ Due to Microsoft's changes to the encryption method of natural voice packages and their silent push updates, it is no longer possible to directly use the natural voice packages installed in the system. Please use the following methods, or refer to [this article](https://www.patreon.com/posts/fixing-use-of-on-133196054).
+    For Windows 7 and above, you can add the text-to-speech package for a language in the system's language settings to use it.
 
-On Windows 11, you can download `Microsoft Natural Voice` from [NVDA Chinese Website](https://www.nvdacn.com/index.php/tts.html) and extract it to the software directory to use natural voices. On Windows 10, in addition to downloading the voice package, you also need to download the [Natural Voice Runtime](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) and extract it to the software directory.
+1. Natural Voice
 
+    On Windows 10 and Windows 11, you can use Windows Natural Voice.
+
+    ::: warning
+    Due to Microsoft's changes in the encryption method for newer version language packs, the language packs installed in the system and the downloaded newer version language packs cannot be used directly. Please refer to [this article](https://www.patreon.com/posts/fixing-use-of-on-133196054) for usage instructions.
+    :::
+
+    On Windows 11, in addition to the language's speech synthesis package, you can also add higher-quality natural voices via `Accessibility` -> `Narrator` -> `Add natural voices`.
+
+    On Windows 10, or if you don't want to add it to the system, you can download `Microsoft Natural Voice` from [NVDA Chinese Website](https://www.nvdacn.com/index.php/tts.html) and extract it to the software directory to use natural voices. 
+
+    On Windows 10, in addition to downloading the voice package, you also need to download the [Natural Voice Runtime](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) and extract it to the software directory. 
+
+    ::: warning
+    Do not place the software, `runtime`, and `language pack` in non-English paths, otherwise they will not be recognized.
+    :::
+    
 == VoiceRoid2
 
 In resource downloads, you can download related resources, then select the extraction path.

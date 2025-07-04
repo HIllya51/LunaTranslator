@@ -4,11 +4,28 @@
 
 == Windows TTS
 
-Đối với Windows 7 trở lên, bạn có thể thêm gói tổng hợp giọng nói của ngôn ngữ trong cài đặt ngôn ngữ của hệ thống để sử dụng.
+1. SAPI
 
-~~Trên Windows 11, ngoài gói tổng hợp giọng nói của ngôn ngữ, bạn cũng có thể thêm các giọng nói tự nhiên chất lượng cao hơn tại `Trợ năng` -> `Trình tường thuật` -> `Thêm giọng nói tự nhiên`.~~ Do Microsoft đã thay đổi phương pháp mã hóa của gói giọng nói tự nhiên và âm thầm cập nhật, hiện không thể sử dụng trực tiếp các gói giọng nói tự nhiên đã cài đặt trong hệ thống. Vui lòng sử dụng các phương pháp sau hoặc tham khảo [bài viết này](https://www.patreon.com/posts/fixing-use-of-on-133196054).
+    Đối với Windows 7 trở lên, bạn có thể thêm gói tổng hợp giọng nói của ngôn ngữ trong cài đặt ngôn ngữ của hệ thống để sử dụng.
 
-Trên Windows 11, bạn có thể tải `Microsoft Natural Voice (Giọng nói tự nhiên)` từ [Trang NVDA tiếng Trung](https://www.nvdacn.com/index.php/tts.html) và giải nén vào thư mục phần mềm để sử dụng giọng nói tự nhiên. Trên Windows 10, ngoài việc tải gói giọng nói, bạn cần tải thêm [Runtime Giọng nói tự nhiên](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) và giải nén vào thư mục phần mềm.
+1. Giọng nói tự nhiên
+
+    Trên Windows 10 và Windows 11, bạn có thể sử dụng Giọng nói Tự nhiên Windows.
+
+    ::: warning
+    Do Microsoft đã thay đổi phương pháp mã hóa đối với các gói ngôn ngữ phiên bản mới, các gói ngôn ngữ đã cài đặt trong hệ thống và các gói ngôn ngữ phiên bản mới tải về không thể sử dụng trực tiếp. Vui lòng tham khảo [bài viết này](https://www.patreon.com/posts/fixing-use-of-on-133196054) để biết cách sử dụng.
+    :::
+
+    Trên Windows 11, ngoài gói tổng hợp giọng nói của ngôn ngữ, bạn cũng có thể thêm các giọng nói tự nhiên chất lượng cao hơn tại `Trợ năng` -> `Trình tường thuật` -> `Thêm giọng nói tự nhiên`.
+
+    Trên Windows 10, hoặc nếu bạn không muốn thêm vào hệ thống, bạn có thể tải `Microsoft Natural Voice (Giọng nói tự nhiên)` từ [Trang NVDA tiếng Trung](https://www.nvdacn.com/index.php/tts.html) và giải nén vào thư mục phần mềm để sử dụng giọng nói tự nhiên. 
+
+    Trên Windows 10, ngoài việc tải gói giọng nói, bạn cần tải thêm [Runtime Giọng nói tự nhiên](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) và giải nén vào thư mục phần mềm. 
+
+    ::: warning
+    Không đặt phần mềm, `runtime` và `gói ngôn ngữ` vào đường dẫn có ký tự không phải tiếng Anh, nếu không hệ thống sẽ không nhận diện được.
+    :::
+
 
 == VoiceRoid2
 

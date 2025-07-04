@@ -675,11 +675,12 @@ class MySwitch(QAbstractButton):
         sz = QSizeF(1.62 * h * gobject.Consts.btnscale, h * gobject.Consts.btnscale)
         self.setFixedSize(sz.toSize())
 
-    def __init__(self, parent=None, sign=True, enable=True):
+    def __init__(self, parent=None, sign=True, enable=True, isplaceholder=False):
         super().__init__(parent)
+        self.isplaceholder = isplaceholder
         self.setCheckable(True)
         super().setChecked(sign)
-        super().setEnabled(enable)
+        super().setEnabled(enable and not isplaceholder)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.clicksignal.connect(self.click)
         self.__currv = 0
@@ -756,6 +757,8 @@ class MySwitch(QAbstractButton):
         )
 
     def paintEvent(self, _):
+        if self.isplaceholder:
+            return
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setPen(Qt.PenStyle.NoPen)
@@ -3373,43 +3376,40 @@ class __VisLFormLayout(VisGridLayout):
         self.setColumnStretch(0, 0)
         self.setColumnStretch(1, 1)
 
+    def __makelayoutwidget(self, LayorWidget: "QLayout | QWidget"):
+        if isinstance(LayorWidget, QWidget):
+            return LayorWidget
+        w = QWidget()
+        w.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+        w.setLayout(LayorWidget)
+        LayorWidget.setContentsMargins(0, 0, 0, 0)
+        return w
+
     def addRow(self, label_or_field, field=None):
         row_index = self.rowCount()
-        if isinstance(label_or_field, (QWidget, str)) or not label_or_field:
-            if isinstance(label_or_field, str):
-                lb = LLabel(label_or_field)
-                super().addWidget(lb, row_index, 0, 1, 1)
-            elif isinstance(label_or_field, QWidget):
-                super().addWidget(label_or_field, row_index, 0, 1, 1 if field else 2)
-
-            if field:
-                if isinstance(field, QWidget):
-                    super().addWidget(field, row_index, 1, 1, 1)
-                elif isinstance(field, QLayout):
-                    w = QWidget()
-                    w.setLayout(field)
-                    w.setSizePolicy(
-                        QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred
-                    )
-                    field.setContentsMargins(0, 0, 0, 0)
-                    super().addWidget(w, row_index, 1, 1, 1)
-                else:
-                    print(field)
-        elif isinstance(label_or_field, QLayout):
-            if field:
-                print(field)
-            w = QWidget()
-            w.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
-            w.setLayout(label_or_field)
-            label_or_field.setContentsMargins(0, 0, 0, 0)
-            super().addWidget(w, row_index, 0, 1, 2)
+        colspan = 1 if (field) else 2
+        if isinstance(label_or_field, str):
+            label_or_field = LLabel(label_or_field)
+            colspan = 1
+        if label_or_field is not None:
+            super().addWidget(
+                self.__makelayoutwidget(label_or_field), row_index, 0, 1, colspan
+            )
+        if field:
+            super().addWidget(self.__makelayoutwidget(field), row_index, 1, 1, 1)
         return row_index
 
     def addWidget(self, w):
         self.addRow(None, w)
 
 
-if isqt5:
+try:
+    TYPE_CHECKING = False
+    from typing import TYPE_CHECKING
+except:
+    pass
+
+if TYPE_CHECKING or isqt5:
 
     class VisLFormLayout(__VisLFormLayout):
         pass

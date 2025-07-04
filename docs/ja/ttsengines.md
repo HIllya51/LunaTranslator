@@ -4,11 +4,27 @@
 
 == Windows TTS
 
-Windows 7以降では、システムの言語設定で、言語の音声合成パッケージを追加すれば使用できます。
+1. SAPI
 
-~~Windows 11では、言語の音声合成パッケージの他に、`アクセシビリティ` -> `ナレーター` -> `自然な音声の追加` から、より高品質な自然な音声を追加することもできます。~~ マイクロソフトが自然音声パッケージの暗号化方法を変更し、サイレントアップデートをプッシュしたため、システムにインストールされた自然音声パッケージを直接使用できなくなりました。以下の方法を使用するか、[この記事](https://www.patreon.com/posts/fixing-use-of-on-133196054)を参照してください。
+    Windows 7以降では、システムの言語設定で、言語の音声合成パッケージを追加すれば使用できます。
 
-Windows 11では、[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)から`Microsoft Natural Voice（自然音声）`をダウンロードし、ソフトウェアディレクトリに解凍することで自然音声を使用できます。Windows 10では、音声パックのダウンロードに加えて、[自然音声ランタイム](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)を追加でダウンロードし、ソフトウェアディレクトリに解凍する必要があります。
+1. 自然音声
+
+    Windows 10およびWindows 11では、Windowsナチュラルボイスをご利用いただけます。
+
+    ::: warning
+    Microsoftが新しいバージョンの言語パックの暗号化方式を変更したため、システムにインストールされている言語パックとダウンロードした新しいバージョンの言語パックは直接使用できません。使用するには[この記事](https://www.patreon.com/posts/fixing-use-of-on-133196054)をご参照ください。
+    :::
+
+    Windows 11では、言語の音声合成パッケージの他に、`アクセシビリティ` -> `ナレーター` -> `自然な音声の追加` から、より高品質な自然な音声を追加することもできます。
+
+    Windows 10上で、またはシステムに追加したくない場合、[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)から`Microsoft Natural Voice（自然音声）`をダウンロードし、ソフトウェアディレクトリに解凍することで自然音声を使用できます。
+
+    Windows 10では、音声パックのダウンロードに加えて、[自然音声ランタイム](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)を追加でダウンロードし、ソフトウェアディレクトリに解凍する必要があります。
+
+    ::: warning
+    ソフトウェアと`「ランタイム」`および`「言語パック」`を英語以外のパスに保存しないでください。認識できなくなります。
+    :::
 
 == VoiceRoid2
 

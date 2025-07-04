@@ -1,6 +1,6 @@
 # 传统在线翻译接口
 
-## 注册在线翻译
+## 传统API
 
 ::: tabs
 
@@ -160,15 +160,11 @@ https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
 :::
 
 
-## 免注册在线翻译
+## 传统
 
 ::: tabs
 
-== DeepL/DeepLX
-
-有`DeepL`和`DeepLX`两种类型
-
-其中`DeepL`是内置的逆向接口，可以直接使用，但容易被风控
+== DeepL
 
 `DeepLX`需要在[DeepLX](https://github.com/OwO-Network/DeepLX)下载后自行部署，并填入`DeepLX api`以使用。
 

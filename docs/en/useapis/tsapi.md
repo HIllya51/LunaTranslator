@@ -1,6 +1,6 @@
 # Traditional online translation interface
 
-## Register for Online Translation
+## Traditional API
 
 ::: tabs
 
@@ -159,15 +159,11 @@ https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
 
 :::
 
-## No-Registration Online Translation
+## Traditional
 
 ::: tabs
 
-== DeepL/DeepLX
-
-There are two types: `DeepL` and `DeepLX`.
-
-`DeepL` is a built-in reverse interface that can be used directly, but it is prone to risk control.
+== DeepL
 
 `DeepLX` requires downloading and deploying [DeepLX](https://github.com/OwO-Network/DeepLX) yourself, and entering the `DeepLX api` to use.
 

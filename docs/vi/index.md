@@ -42,5 +42,6 @@ features:
   - title: Chuyển văn bản thành giọng nói  
     details: Hỗ trợ nhiều công cụ chuyển văn bản thành giọng nói trực tuyến & ngoại tuyến.  
     link: ./ttsengines
-  - title: Tùy chỉnh cao  
-    details: Cung cấp nhiều tùy chọn cấu hình để điều chỉnh trải nghiệm dịch theo nhu cầu của bạn.  
+  - title: Nhận dạng giọng nói
+    details: Trên Windows 10 và Windows 11, bạn có thể sử dụng tính năng Nhận dạng giọng nói của Windows.
+    link: ./sr

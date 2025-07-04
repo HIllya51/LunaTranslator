@@ -42,5 +42,6 @@ features:
   - title: Text-to-Speech  
     details: Supports a wide range of online & offline text-to-speech engines.  
     link: ./ttsengines
-  - title: Highly Configurable  
-    details: Offers extensive configuration options to tailor the translation experience to your needs.  
+  - title: Speech Recognition
+    details: On Windows 10 and Windows 11, you can use Windows Speech Recognition.
+    link: ./sr

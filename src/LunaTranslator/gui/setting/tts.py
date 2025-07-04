@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools
 import gobject
-from myutils.utils import splitocrtypes
+from myutils.utils import splitocrtypes, dynamiclink
 from myutils.config import globalconfig
 from gui.inputdialog import (
     autoinitdialog_items,
@@ -203,6 +203,12 @@ def setTab5lz(self):
         [
             dict(
                 title="引擎",
+                button=D_getIconButton(
+                    icon="fa.question",
+                    callback=lambda: os.startfile(
+                        dynamiclink("/ttsengines.html", docs=True)
+                    ),
+                ),
                 grid=[
                     [dict(title="离线", type="grid", grid=offilesgrid)],
                     [dict(title="在线", type="grid", grid=getttsgrid(self, online))],

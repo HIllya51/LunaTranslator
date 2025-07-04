@@ -251,11 +251,11 @@ class aboutwidget(NQGroupBox):
         self.lastlan = getlanguse()
         clearlayout(self.grid)
         t2 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~"
-        t3 = "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
+        t3 = "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群963119821](https://qm.qq.com/q/I5rr3uEpi2)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
         t4 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~"
         t7 = "軟體維護不易，如果您感覺該軟體對你有幫助，歡迎微信掃碼贊助，或成為我的[sponsor](https://patreon.com/HIllya51)，您的支持將成為軟體長期維護的助力，謝謝~"
-        t5 = "如果使用中遇到困難，可以查閱[使用說明](/)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbhtB)/[QQ群96311982](https://qm.qq.com/q/I5rr3uEpi2)、在[Github](https://github.com/HIllya51/LunaTranslator)上發起[issue](https://github.com/HIllya51/LunaTranslator/issues)來與我交流。"
-        t6 = "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、在[Github](https://github.com/HIllya51/LunaTranslator)上发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
+        t5 = "如果使用中遇到困難，可以查閱[使用說明](/)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbhtB)/[QQ群96311982](https://qm.qq.com/q/I5rr3uEpi2)、發起[issue](https://github.com/HIllya51/LunaTranslator/issues)來與我交流。"
+        t6 = "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)、发起[issue](https://github.com/HIllya51/LunaTranslator/issues)来与我交流。"
         if getlanguse() == Languages.Chinese:
             shuominggrid = [
                 [functools.partial(MDLabel1, "\n\n".join([t3, t2]), static=True)],

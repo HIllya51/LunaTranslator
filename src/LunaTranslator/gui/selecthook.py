@@ -2,11 +2,10 @@ from qtsymbols import *
 import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
-import qtawesome, windows, NativeUtils, gobject, os
+import qtawesome, NativeUtils, gobject, os
 from myutils.config import savehook_new_data, globalconfig, _TR, isascii, static_data
 from myutils.utils import get_time_stamp, dynamiclink, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
-from typing import List
 from textio.textsource.texthook import texthook
 from gui.usefulwidget import (
     closeashidewindow,
@@ -61,7 +60,7 @@ class QButtonGroup_switch_widegt(QWidget):
         self.selectlayout.setContentsMargins(0, 0, 0, 0)
         self.mainlayout.addLayout(self.selectlayout)
         self.selectGroup = QButtonGroup()
-        self.wlist: List[QWidget] = []
+        self.wlist: "list[QWidget]" = []
         self.selectGroup.buttonClicked.connect(self.selectmodelf)
 
     def idx(self):

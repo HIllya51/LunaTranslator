@@ -1232,7 +1232,6 @@
     },
     "hirasetting": {
         "mecab": {
-            "name": "MeCab",
             "args": {
                 "path": ""
             },

@@ -42,5 +42,6 @@ features:
   - title: 音声合成  
     details: 多数のオンライン＆オフライン音声合成エンジンをサポートします。  
     link: ./ttsengines
-  - title: 高度なカスタマイズ  
-    details: 豊富な設定オプションを提供し、翻訳体験を個人のニーズに合わせてカスタマイズできます。  
+  - title: 音声認識
+    details: Windows 10とWindows 11では、Windows音声認識を使用できます。
+    link: ./sr

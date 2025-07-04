@@ -1,6 +1,6 @@
 # 従来のオンライン翻訳インターフェース
 
-## オンライン翻訳APIの登録
+## 従来のAPI
 
 ::: tabs
 
@@ -160,15 +160,11 @@ https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
 :::
 
 
-## 登録不要のオンライン翻訳
+## 従来
 
 ::: tabs
 
-== DeepL/DeepLX
-
-`DeepL`と`DeepLX`の2種類があります。
-
-`DeepL`は内蔵の逆向きインターフェースで、直接使用できますが、風控にかかりやすいです。
+== DeepL
 
 `DeepLX`は[DeepLX](https://github.com/OwO-Network/DeepLX)からダウンロードして自己ホストし、`DeepLX api`を入力して使用します。
 
