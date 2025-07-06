@@ -672,10 +672,14 @@ class dialog_savedgame_v3(QWidget):
             menu.addAction(addlist)
         else:
             exists = os.path.exists(get_launchpath(self.currentfocusuid))
+            lc = get_launchpath(self.currentfocusuid)
+            exists = os.path.exists(lc)
             if exists:
                 menu.addAction(startgame)
                 menu.addAction(opendir)
                 menu.addAction(createlnk)
+            elif os.path.exists(os.path.dirname(lc)):
+                menu.addAction(opendir)
 
             menu.addAction(delgame)
             menu.addSeparator()

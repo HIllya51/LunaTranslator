@@ -505,11 +505,14 @@ class dialog_savedgame_new(QWidget):
         batchadd = LAction("批量添加", menu)
 
         if self.currentfocusuid:
-            exists = os.path.exists(get_launchpath(self.currentfocusuid))
+            lc = get_launchpath(self.currentfocusuid)
+            exists = os.path.exists(lc)
             if exists:
                 menu.addAction(startgame)
                 menu.addAction(opendir)
                 menu.addAction(createlnk)
+            elif os.path.exists(os.path.dirname(lc)):
+                menu.addAction(opendir)
             menu.addAction(gamesetting)
             menu.addAction(delgame)
             menu.addSeparator()
