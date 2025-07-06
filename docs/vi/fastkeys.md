@@ -3,158 +3,154 @@
  Để sử dụng phím tắt, trước tiên bạn cần kích hoạt `Sử dụng phím tắt`, sau đó kích hoạt phím tắt cụ thể mà bạn muốn sử dụng và thiết lập tổ hợp phím của nó.
 :::
 
-::: tabs
+## Chung
 
-== Chung
-
-1. #### Dịch Thủ Công
+1. #### Dịch Thủ Công {#anchor-_1}
     Đọc đầu vào một lần từ nguồn đầu vào văn bản hiện tại và thực hiện dịch.
     Ví dụ: nếu chế độ hiện tại là OCR, nó sẽ thực hiện OCR lại.
 
-1. #### Dịch Tự Động
+1. #### Dịch Tự Động {#anchor-_2}
     Tạm dừng/tiếp tục đọc văn bản tự động từ nguồn đầu vào văn bản hiện tại.
     Ví dụ: nếu chế độ hiện tại là HOOK, nó sẽ tạm dừng đọc văn bản trò chơi; nếu chế độ hiện tại là OCR, nó sẽ tạm dừng nhận diện hình ảnh tự động; nếu chế độ hiện tại là clipboard, nó sẽ tạm dừng đọc tự động từ clipboard.
 
-1. #### Mở Cài Đặt
+1. #### Mở Cài Đặt {#anchor-_3}
     Không áp dụng.
 
-1. #### Hiện/Ẩn Văn Bản Gốc
+1. #### Hiện/Ẩn Văn Bản Gốc {#anchor-_5}
     Chuyển đổi việc hiển thị văn bản gốc, có hiệu lực ngay lập tức.
 
-1. #### Hiện/Ẩn Dịch Thuật
+1. #### Hiện/Ẩn Dịch Thuật {#anchor-_51}
     Chuyển đổi việc sử dụng dịch thuật, đây là công tắc chính cho dịch thuật. Tắt nó sẽ dừng mọi dịch thuật.
     Nếu dịch thuật đã được thực hiện, tắt nó sẽ ẩn kết quả dịch, và bật lại sẽ hiển thị lại kết quả dịch hiện tại.
     Nếu chưa có dịch thuật nào được thực hiện và nó được chuyển từ ẩn sang hiển thị, nó sẽ kích hoạt dịch thuật cho câu hiện tại.
 
-1. #### Hiện/Ẩn Văn Bản Lịch Sử  
+1. #### Hiện/Ẩn Văn Bản Lịch Sử {#anchor-_6}
     Mở hoặc đóng cửa sổ văn bản lịch sử.  
 
-1. #### Cửa Sổ Xuyên Chuột
+1. #### Cửa Sổ Xuyên Chuột {#anchor-_8}
     Chuyển đổi trạng thái cửa sổ xuyên chuột.
     Tính năng này phải được sử dụng cùng với nút công cụ cửa sổ xuyên chuột để hoạt động chính xác.
 
-1. #### Khóa Thanh Công Cụ
+1. #### Khóa Thanh Công Cụ {#anchor-_9}
     Khi thanh công cụ không bị khóa, nó sẽ tự động ẩn khi chuột di chuyển ra ngoài; kích hoạt tính năng này sẽ giữ thanh công cụ luôn hiển thị.
     Khi thanh công cụ không bị khóa và `Cửa Sổ Xuyên Chuột` được kích hoạt, thanh công cụ sẽ chỉ hiển thị khi chuột di chuyển đến **nút Cửa Sổ Xuyên Chuột và khu vực bên trái và phải của nó**; nếu không, nó sẽ hiển thị ngay khi chuột vào cửa sổ dịch thuật.
     Nếu sử dụng hiệu ứng cửa sổ (Aero/Acrylic) và thanh công cụ không bị khóa, thanh công cụ sẽ nằm trong khu vực trục z phía trên khu vực văn bản, không phải trên trục y phía trên khu vực văn bản. Điều này là do, với Windows, khi sử dụng hiệu ứng cửa sổ, nếu thanh công cụ chỉ bị ẩn thay vì thu nhỏ để giảm chiều cao cửa sổ, thanh công cụ bị ẩn vẫn sẽ được hiển thị với nền Acrylic/Aero, gây ra một khu vực trống nơi thanh công cụ nằm.
 
-1. #### Dịch Văn Bản Được Chọn
+1. #### Dịch Văn Bản Được Chọn {#anchor-38}
     Dịch văn bản hiện được chọn bởi chuột.
 
     Ưu tiên sử dụng UIAutomation để trích xuất văn bản. Nếu điều khiển tiêu điểm của cửa sổ hiện tại không hỗ trợ UIAutomationTextPattern, dẫn đến thất bại trong việc trích xuất văn bản, thì sẽ đọc từ clipboard.
-1. #### Hiện/Ẩn Cửa Sổ Dịch Thuật
+1. #### Hiện/Ẩn Cửa Sổ Dịch Thuật {#anchor-_16}
     Không áp dụng.
 
-1. #### Thoát
+1. #### Thoát {#anchor-_17}
     Không áp dụng.
 
-== HOOK
+## HOOK
 
 >[!WARNING]
 >Chỉ khả dụng trong chế độ HOOK
 
-1. #### Chọn Trò Chơi
+1. #### Chọn Trò Chơi {#anchor-_11}
     Hiển thị cửa sổ chọn tiến trình trò chơi để chọn tiến trình trò chơi cần HOOK.
 
-1. #### Chọn Văn Bản
+1. #### Chọn Văn Bản {#anchor-_12}
     Hiển thị cửa sổ chọn văn bản trò chơi để chọn văn bản nào được HOOK để dịch.
     Tuy nhiên, cửa sổ chọn văn bản sẽ tự động hiển thị sau khi chọn tiến trình, và thực sự được sử dụng để thay đổi văn bản đã chọn hoặc sửa đổi một số cài đặt.
 
-== OCR
+## OCR
 
-1. #### Chọn Phạm Vi OCR
+1. #### Chọn Phạm Vi OCR {#anchor-_13}
     **Chỉ khả dụng trong chế độ OCR**
     
     Trong chế độ OCR, chọn khu vực OCR, hoặc thay đổi khu vực OCR, hoặc khi `Cài Đặt OCR` -> `Khác` -> `Chế Độ Nhiều Khu Vực` được kích hoạt, thêm một khu vực OCR mới.
 
-1. #### Hiện/Ẩn Hộp Phạm Vi
+1. #### Hiện/Ẩn Hộp Phạm Vi {#anchor-_14}
     **Chỉ khả dụng trong chế độ OCR**
     
     Khi không có phạm vi OCR nào được chọn, sử dụng phím tắt này sẽ hiển thị phạm vi OCR và tự động đặt phạm vi OCR thành phạm vi OCR được chọn lần cuối.
 
-1. #### Xóa Phạm Vi OCR
+1. #### Xóa Phạm Vi OCR {#anchor-_14_1}
     **Chỉ khả dụng trong chế độ OCR**
     
     Xóa tất cả các phạm vi đã chọn.
 
-1. #### Thực Hiện OCR Một Lần
+1. #### Thực Hiện OCR Một Lần {#anchor-_26}
     Tương tự như `Đọc Clipboard`, bất kể nguồn đầu vào văn bản mặc định hiện tại là gì, nó sẽ đầu tiên chọn phạm vi OCR, sau đó thực hiện OCR một lần, và sau đó tiếp tục với quá trình dịch thuật.
     Thường được sử dụng trong chế độ HOOK, tạm thời sử dụng OCR để dịch các nhánh lựa chọn khi gặp phải, hoặc trong chế độ OCR, tạm thời nhận diện.
 
-1. #### Thực Hiện OCR Lại
+1. #### Thực Hiện OCR Lại {#anchor-_26_1}
     Sau khi sử dụng `Thực Hiện OCR Một Lần`, sử dụng phím tắt này sẽ thực hiện OCR lại tại vị trí ban đầu mà không cần chọn lại khu vực nhận diện.
 
-== Clipboard
+## Clipboard
 
-1. #### Đọc Clipboard
+1. #### Đọc Clipboard {#anchor-36}
     Ý nghĩa thực tế là bất kể nguồn đầu vào văn bản mặc định hiện tại là gì, nó đọc văn bản một lần từ clipboard và chuyển nó đến quá trình dịch/TTS/... tiếp theo.
 
-1. #### Sao Chép Vào Clipboard
+1. #### Sao Chép Vào Clipboard {#anchor-_4}
     Sao chép văn bản hiện được trích xuất vào clipboard một lần. Nếu muốn tự động trích xuất vào clipboard, bật `Nhập văn bản` → `Clipboard` → `Tự động xuất` → `Tự động xuất văn bản`.
 
-1. #### Sao Chép Dịch Thuật Vào Clipboard
+1. #### Sao Chép Dịch Thuật Vào Clipboard {#anchor-_28}
     Sao chép bản dịch thay vì văn bản gốc vào clipboard.
 
-== TTS
+## TTS
 
-1. #### Đọc Tự Động
+1. #### Đọc Tự Động {#anchor-_32}
     Chuyển đổi việc đọc to tự động.
 
-1. #### Đọc
+1. #### Đọc {#anchor-_7}
     Thực hiện chuyển văn bản thành giọng nói trên văn bản hiện tại.
     Việc đọc này sẽ bỏ qua `Bỏ Qua` (nếu mục tiêu văn bản hiện tại được khớp là `Bỏ Qua` trong `Gán Giọng Nói`, sử dụng phím tắt để đọc sẽ bỏ qua bỏ qua và buộc đọc).
 
-1. #### Ngắt Đọc
+1. #### Ngắt Đọc {#anchor-_7_1}
     Ngắt việc đọc.
 
-== Game
+## Game
 
-1. #### Gắn Cửa Sổ (Nhấn Để Hủy)
+1. #### Gắn Cửa Sổ (Nhấn Để Hủy) {#anchor-_15}
     Sau khi gắn cửa sổ trò chơi, các tính năng như `Tỷ Lệ Cửa Sổ`, `Chụp Màn Hình Cửa Sổ`, `Tắt Âm Trò Chơi`, `Theo Dõi Cửa Sổ Trò Chơi` -> `Hủy Luôn Trên Cùng Khi Trò Chơi Mất Tiêu Điểm` và `Di Chuyển Đồng Bộ Khi Cửa Sổ Trò Chơi Di Chuyển`, cũng như ghi lại thời gian chơi trò chơi, sẽ khả dụng.
     Phím tắt này khả dụng bất kể chế độ HOOK/OCR/clipboard.
     Trong chế độ HOOK, nó sẽ tự động gắn cửa sổ trò chơi theo trò chơi đã kết nối, nhưng bạn cũng có thể sử dụng phím tắt này để chọn lại một cửa sổ khác.
     Trong chế độ OCR, sau khi gắn cửa sổ, nó cho phép khu vực OCR và hộp phạm vi di chuyển đồng bộ khi cửa sổ trò chơi di chuyển.
     Trong chế độ OCR/clipboard, sau khi gắn cửa sổ, nó cũng có thể được liên kết với cài đặt trò chơi hiện tại trong chế độ HOOK, do đó sử dụng từ điển tối ưu hóa dịch thuật riêng của trò chơi, v.v.
 
-1. #### Chụp Màn Hình Cửa Sổ
+1. #### Chụp Màn Hình Cửa Sổ {#anchor-_21}
     Có thể chụp màn hình cửa sổ đã gắn (mặc định chụp hai ảnh, GDI và Winrt, cả hai đều có thể thất bại). Điểm tốt nhất là nếu Magpie hiện đang được sử dụng để tỷ lệ, nó cũng sẽ chụp màn hình cửa sổ đã tỷ lệ.
 
-1. #### Tắt Âm Trò Chơi
+1. #### Tắt Âm Trò Chơi {#anchor-_22}
     Sau khi gắn cửa sổ trò chơi (không chỉ trong chế độ HOOK, mà còn trong chế độ OCR hoặc clipboard, miễn là cửa sổ trò chơi được gắn), bạn có thể tắt âm trò chơi chỉ với một lần nhấn, tiết kiệm công việc tắt âm trò chơi trong bộ trộn âm lượng hệ thống.
 
-1. #### Tỷ Lệ Magpie
+1. #### Tỷ Lệ Magpie {#anchor-41}
     Cho phép tỷ lệ toàn màn hình cửa sổ trò chơi chỉ với một lần nhấn bằng cách sử dụng Magpie tích hợp.
 
-1. #### Tỷ Lệ Cửa Sổ Magpie
+1. #### Tỷ Lệ Cửa Sổ Magpie {#anchor-42}
     Cho phép tỷ lệ cửa sổ trò chơi chỉ với một lần nhấn bằng cách sử dụng Magpie tích hợp.
 
-== Tra Từ Điển
+## Tra Từ Điển
 
-1. #### Truy Xuất và Tra Từ
+1. #### Truy Xuất và Tra Từ {#anchor-37}
     Tra từ trong văn bản hiện được chọn bởi chuột.
 
     Ưu tiên sử dụng UIAutomation để trích xuất văn bản. Nếu điều khiển tiêu điểm của cửa sổ hiện tại không hỗ trợ UIAutomationTextPattern, dẫn đến thất bại trong việc trích xuất văn bản, thì sẽ đọc từ clipboard.
-1. #### Tra Từ Trong Cửa Sổ Mới  
+1. #### Tra Từ Trong Cửa Sổ Mới {#anchor-40}
     Tra từ trong văn bản hiện được chọn bởi chuột trong một cửa sổ tìm kiếm mới để tránh ghi đè tìm kiếm đang diễn ra.
 
     Ưu tiên sử dụng UIAutomation để trích xuất văn bản. Nếu điều khiển tiêu điểm của cửa sổ hiện tại không hỗ trợ UIAutomationTextPattern, dẫn đến thất bại trong việc trích xuất văn bản, thì sẽ đọc từ clipboard.
-1. #### Tra Từ OCR
+1. #### Tra Từ OCR {#anchor-39}
     Chọn phạm vi OCR để thực hiện OCR một lần và sau đó tra từ.
 
-1. #### Ghi Âm Anki
+1. #### Ghi Âm Anki {#anchor-_29}
     Phím tắt cho chức năng ghi âm trong giao diện thêm Anki trong cửa sổ tra từ điển.
 
-1. #### Ghi Âm Câu Ví Dụ Anki
+1. #### Ghi Âm Câu Ví Dụ Anki {#anchor-_30}
     Phím tắt cho chức năng ghi âm trong giao diện thêm Anki trong cửa sổ tra từ điển, nhưng phím tắt này đặt âm thanh ghi âm vào trường câu ví dụ.
 
-1. #### Thêm Vào Anki
+1. #### Thêm Vào Anki {#anchor-_35}
     Thêm từ vào Anki.
 
-1. #### Đọc Từ
+1. #### Đọc Từ {#anchor-_33}
     Đọc từ trong cửa sổ tra từ điển hiện tại.
 
-== Tùy Chỉnh
+## Tùy Chỉnh
 
 Bạn có thể thêm nhiều phím tắt tùy ý bằng cách tự triển khai hàm `OnHotKeyClicked`, hàm này sẽ được gọi khi phím tắt được kích hoạt.
-
-:::

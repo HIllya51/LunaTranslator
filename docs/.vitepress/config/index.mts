@@ -49,14 +49,6 @@ export default defineConfig({
   markdown: {
     config(md) {
       md.use(tabsMarkdownPlugin)
-    },
-    anchor: {
-      slugify: (str) => {
-        if (str.startsWith('anchor-')) {
-          return str // 固定 anchor 不处理
-        }
-        return encodeURIComponent(str) // 正常标题处理
-      }
     }
   }
 })

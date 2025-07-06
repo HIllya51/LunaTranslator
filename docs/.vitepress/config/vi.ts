@@ -106,10 +106,10 @@ export const vi = defineConfig({
                       ]
                   },
                     {
-                        text: '语音合成', link: '/vi/ttsengines',
+                        text: 'Tổng hợp Giọng nói', link: '/vi/ttsengines',
                         collapsed: true,
                         items: [
-                            { text: '语音合成引擎', link: '/vi/ttsengines' },
+                            { text: 'Công cụ Tổng hợp Giọng nói', link: '/vi/ttsengines' },
                             { text: 'Sử dụng giọng nói khác nhau cho từng nhân vật', link: '/vi/ttsofname' }
                         ]
                     },

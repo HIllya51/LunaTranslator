@@ -13,6 +13,7 @@ from myutils.utils import (
 from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplekeyseq,
+    D_getdoclink,
     makescrollgrid,
     D_getIconButton,
     makesubtab_lazy,
@@ -305,6 +306,7 @@ def setTab_quick_lazy(self, ls):
 
         grids.append(
             [
+                D_getdoclink("/fastkeys.html#anchor-" + name),
                 globalconfig["quick_setting"]["all"][name]["name"],
                 D_getsimpleswitch(
                     globalconfig["quick_setting"]["all"][name],

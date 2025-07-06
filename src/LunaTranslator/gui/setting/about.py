@@ -232,7 +232,7 @@ def get_about_info():
     t3 = "如果使用中遇到困难，可以查阅[使用说明](/)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。"
     t2 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或[微信扫码](WEIXIN)赞助，您的支持将成为软件长期维护的助力，谢谢~"
     t5 = "如果使用中遇到困難，可以查閱[使用說明](/)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbhtB)/[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。"
-    t7 = "軟體維護不易，如果您感覺該軟體對你有幫助，歡迎通過[愛發電](https://afdian.com/a/HIllya51)贊助，或成為我的[sponsor](https://patreon.com/HIllya51)，您的支持將成為軟體長期維護的助力，謝謝~"
+    t7 = "軟體維護不易，如果您感覺該軟體對你有幫助，歡迎通過[愛發電](https://afdian.com/a/HIllya51)或[patreon](https://patreon.com/HIllya51)贊助，您的支持將成為軟體長期維護的助力，謝謝~"
     t6 = "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)。"
     t4 = "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~"
     if lang == Languages.Chinese:
@@ -316,13 +316,13 @@ class aboutwidget(NQGroupBox):
                 "https://afdian.com/a/HIllya51",
             )
             self.createlabel(
-                "files/static/become_a_patron_4x1_coral_logo_black_text_on_white.svg",
+                "files/static/become_a_patron_4x1_black_logo_white_text_on_coral.svg",
                 200,
                 "https://patreon.com/HIllya51",
             )
         else:
             self.createlabel(
-                "files/static/become_a_patron_4x1_coral_logo_black_text_on_white.svg",
+                "files/static/become_a_patron_4x1_black_logo_white_text_on_coral.svg",
                 200,
                 "https://patreon.com/HIllya51",
             )

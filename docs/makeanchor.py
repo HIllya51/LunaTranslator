@@ -9,6 +9,7 @@ with open(
 ) as ff:
     js = json.load(ff)
     buttons = js["toolbutton"]["buttons"]
+    fastkeys = js["quick_setting"]["all"]
 
 with open(
     r"..\src\LunaTranslator\defaultconfig\postprocessconfig.json", "r", encoding="utf8"
@@ -47,6 +48,7 @@ def parsewhich(md, getk, starter="1. ####"):
     for lang in os.listdir("."):
         if not os.path.exists(lang + "/" + md):
             continue
+        print(lang + "/" + md)
         newlines.clear()
         with open(lang + "/" + md, "r", encoding="utf8") as ff:
             ls = ff.read().splitlines()
@@ -61,7 +63,8 @@ def parsewhich(md, getk, starter="1. ####"):
             l += " {#anchor-" + saveinfo[i] + "}"
             i += 1
             newlines.append(l)
-
+        if i != len(saveinfo):
+            raise Exception(lang + "/" + md)
         with open(lang + "/" + md, "w", encoding="utf8") as ff:
             ff.write("\n".join(newlines))
 
@@ -101,6 +104,18 @@ def gettransoptimik(name):
     return usek
 
 
+def getfk(name):
+    mindis = 999
+    usek = None
+    for k in fastkeys:
+        dis = rapidfuzz.distance.Levenshtein.distance(fastkeys[k]["name"], name)
+        if dis < mindis:
+            mindis = dis
+            usek = k
+    return usek
+
+
 parsewhich("alltoolbuttons.md", getkbuttons)
 parsewhich("textprocess.md", getktextprocess)
+parsewhich("fastkeys.md", getfk)
 parsewhich("transoptimi.md", gettransoptimik, "1. ##")
