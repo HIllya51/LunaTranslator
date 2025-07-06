@@ -12,6 +12,6 @@ lastUpdated: false
 
 软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
 
-<a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
+<a href="https://afdian.com/a/HIllya51" target='_blank'><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
 
 <img src='https://image.lunatranslator.org/zh/zan.jpg' style="height: 350px !important;">
