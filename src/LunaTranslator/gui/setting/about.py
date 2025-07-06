@@ -244,6 +244,35 @@ def get_about_info():
         return _TR("\n\n".join([t6, t4]))
 
 
+def load_scaled_pixmap(
+    file_path: str,
+    target_width: int,
+    device_pixel_ratio: float = 1.0,
+) -> QPixmap:
+
+    if file_path.endswith(".svg"):
+        renderer = QSvgRenderer(file_path)
+        physical_width = int(target_width * device_pixel_ratio)
+        size = renderer.defaultSize()
+        size.scale(physical_width, int(1e6), Qt.AspectRatioMode.KeepAspectRatio)
+        pixmap = QPixmap(size)
+        pixmap.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(pixmap)
+        renderer.render(painter, QRectF(0, 0, size.width(), size.height()))
+        painter.end()
+
+        pixmap.setDevicePixelRatio(device_pixel_ratio)
+        return pixmap
+    else:
+        img = QPixmap.fromImage(QImage(file_path))
+        img.setDevicePixelRatio(device_pixel_ratio)
+        img = img.scaledToWidth(
+            int(target_width * device_pixel_ratio),
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        return img
+
+
 class aboutwidget(NQGroupBox):
     def __init__(self, *a):
         super().__init__(*a)
@@ -262,12 +291,7 @@ class aboutwidget(NQGroupBox):
         sp = lb.sizePolicy()
         sp.setHorizontalPolicy(QSizePolicy.Policy.Fixed)
         lb.setSizePolicy(sp)
-        img = QPixmap.fromImage(QImage(img))
-        img.setDevicePixelRatio(self.devicePixelRatioF())
-        img = img.scaledToWidth(
-            int(w * self.devicePixelRatioF()),
-            Qt.TransformationMode.SmoothTransformation,
-        )
+        img = load_scaled_pixmap(img, w, self.devicePixelRatioF())
         lb.setPixmap(img)
         self.labels.append(lb)
         self.grid.addRow(lb)
