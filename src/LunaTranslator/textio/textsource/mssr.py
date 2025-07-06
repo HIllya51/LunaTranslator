@@ -75,7 +75,7 @@ class mssr(basetext):
     def runornot(self, _):
         windows.SetEvent(self.notify)
 
-    cogdll = "Microsoft.CognitiveServices.Speech.extension.embedded.tts.dll"
+    cogdll = "Microsoft.CognitiveServices.Speech.extension.embedded.sr.dll"
 
     def finddlldirectory(self):
         checkdir = lambda d: d and os.path.isfile(os.path.join(d, self.cogdll))
