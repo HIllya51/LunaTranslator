@@ -12,4 +12,4 @@ lastUpdated: false
 
 ソフトウェアのメンテナンスは容易ではありません。もしこのソフトウェアが役に立ったと感じたら、ぜひ私の[スポンサー](https://patreon.com/HIllya51)になってください。あなたのサポートはソフトウェアの長期的なメンテナンスの力になります。ありがとうございます。  
 
-<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_coral_logo_black_text_on_white.svg"></a>
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
