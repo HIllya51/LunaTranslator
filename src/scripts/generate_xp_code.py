@@ -1,5 +1,7 @@
 import os, re
-import ast
+import ast, sys
+
+arch = sys.argv[1]
 
 
 class TypeHintRemover_1(ast.NodeTransformer):
@@ -33,18 +35,19 @@ def typeHintRemover(source):
     return ast.unparse(transformed)
 
 
-def parsecode(code: str):
+def parsecode(code: str, arch):
     code = re.sub("from typing import .*", "", code)
-    # PyQt
-    code = code.replace("self.screen()", "QApplication.primaryScreen()")
-    code = code.replace("self.parent().devicePixelRatioF()", "1")
-    code = code.replace("self.devicePixelRatioF()", "1")
-    code = re.sub(
-        r"(Q[a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+)([ \)\n,:\]])",
-        r"\1.\2\3",
-        code,
-    )
     code = typeHintRemover(code)
+    if arch == "winxp":
+        # PyQt
+        code = code.replace("self.screen()", "QApplication.primaryScreen()")
+        code = code.replace("self.parent().devicePixelRatioF()", "1")
+        code = code.replace("self.devicePixelRatioF()", "1")
+        code = re.sub(
+            r"(Q[a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+)([ \)\n,:\]])",
+            r"\1.\2\3",
+            code,
+        )
     return code
 
 
@@ -58,4 +61,4 @@ for _dir, _, _fs in os.walk("./LunaTranslator"):
         with open(path, "r", encoding="utf8") as ff:
             code = ff.read()
         with open(path, "w", encoding="utf8") as ff:
-            ff.write(parsecode(code))
+            ff.write(parsecode(code, arch))
