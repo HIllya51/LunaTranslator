@@ -405,7 +405,7 @@ def hhforindirect():
 def modesW(__vis, paths):
     w = QWidget()
     layout = VisLFormLayout(w)
-
+    layout.setContentsMargins(0, 0, 0, 0)
     setvisrow = lambda _: (
         layout.setRowVisible(1, _ == "direct"),
         layout.setRowVisible(2, _ == "indirect"),
