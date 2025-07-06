@@ -1,12 +1,46 @@
 ﻿#include "Nitroplus.h"
 
+bool InsertNitroplusHook__mbsinc()
+{
+	//[ADV] [ニトロプラス] スマガスペシャル 初回版
+	// 会一次性吐好几句出来。
+	const BYTE bytes[] = {
+		0x8b, 0x0b,
+		0x51,
+		0xe8, XX4,
+		0x83, 0xc4, 0x04,
+		0x89, 0x03,
+		0x80, 0x38, 0x00,
+		0x75, XX,
+		0x80, 0xbc, XX2, XX4,
+		0x74, XX,
+		0x8b, 0x44, 0x24, XX,
+		0x33, 0xf6,
+		0x3b, 0xc6,
+		0x74, XX,
+		0x68, 0x00, 0x02, 0x00, 0x00,
+		0x8d, 0x94, 0x24, XX4,
+		0x56,
+		0x52,
+		0x89, 0x03,
+		0xe8, XX4, // memset
+	};
+	DWORD addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+	if (!addr)
+		return false;
+	HookParam hp;
+	hp.address = addr + 2;
+	hp.type = USING_CHAR | DATA_INDIRECT | NO_CONTEXT;
+	hp.offset = regoffset(ecx);
+	return NewHook(hp, "Nitroplus");
+}
 bool InsertNitroplusHook()
 {
+	// 多行只有第一行。
 	const BYTE bytes[] = {0xb0, 0x74, 0x53};
 	DWORD addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 	if (!addr)
 	{
-		ConsoleOutput("Nitroplus: pattern not exist");
 		return false;
 	}
 	enum : WORD
@@ -20,9 +54,10 @@ bool InsertNitroplusHook()
 	hp.address = addr;
 	hp.offset = -0x14 + (b << 2);
 	hp.type = CODEC_ANSI_BE;
-	ConsoleOutput("INSERT Nitroplus");
-	return NewHook(hp, "Nitroplus");
-	// RegisterEngineType(ENGINE_Nitroplus);
+	auto succ = NewHook(hp, "Nitroplus");
+	if (succ)
+		InsertNitroplusHook__mbsinc();
+	return succ;
 }
 bool InsertNitroplus2Hook()
 {
@@ -45,7 +80,6 @@ bool InsertNitroplus2Hook()
 	ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
 	if (!addr)
 	{
-		ConsoleOutput("Nitroplus2: pattern not found");
 		return false;
 	}
 	HookParam hp;

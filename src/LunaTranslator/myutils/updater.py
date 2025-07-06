@@ -20,8 +20,8 @@ def testdocconnect():
     proxy = getproxy()
     for i, main_server in enumerate(static_data["docs_server"]):
 
+        @threader
         @trypass
-        @threader 
         def __(i, main_server, proxy):
             res = requests.get(main_server, verify=False, proxies=proxy)
             if res.status_code == 200:
