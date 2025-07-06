@@ -5,9 +5,9 @@ from importanalysis import importanalysis
 
 arch = sys.argv[1]
 target = sys.argv[2]
-
-if target == "winxp":
+if target != "win10":
     os.system("python scripts/generate_xp_code.py")
+if target == "winxp":
     os.system("git clone --depth 1 https://github.com/HIllya51/py3.4_pyqt5.5.1")
     os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
     pyrt = "runtime"

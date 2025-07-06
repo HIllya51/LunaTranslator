@@ -3452,6 +3452,7 @@ class CollapsibleBoxWithButton(QWidget):
     def __init__(self, delayloadfunction=None, title="", parent=None, toggled=False):
         super(CollapsibleBoxWithButton, self).__init__(parent)
         self.toggle_button = LToolButton(text=title, checkable=True, checked=False)
+        self.toggle_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.toggle_button.setToolButtonStyle(
             Qt.ToolButtonStyle.ToolButtonTextBesideIcon
         )
@@ -3536,6 +3537,7 @@ class SClickableLabel(QLabel):
                 background:transparent
             }"""
         )
+        self.setCursor(Qt.CursorShape.PointingHandCursor if b else Qt.CursorShape.ArrowCursor)
 
     def enterEvent(self, event):
         self.beforeEnter.emit()

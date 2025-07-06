@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     getboxlayout,
     NQGroupBox,
+    SClickableLabel,
     VisLFormLayout,
 )
 from language import UILanguages, Languages
@@ -222,6 +223,7 @@ class MDLabel1(MDLabel):
 
     def setText(self, t):
         t = re.sub("<a(.*?)>", '<a\\1 style="color: #E91E63;">', t)
+        t = re.sub('<a href="WEIXIN".*?>(.*?)</a>', "\\1", t)
         super().setText(t)
 
 
@@ -246,11 +248,60 @@ class aboutwidget(NQGroupBox):
     def __init__(self, *a):
         super().__init__(*a)
         self.grid = QFormLayout(self)
-        self.mdlabel = MDLabel1(get_about_info())
+        self.labels: "list[QWidget]" = []
+        self.mdlabel = MDLabel1("")
         self.grid.addRow(self.mdlabel)
+        self.updatelangtext()
+
+    def createlabel(self, img: str, w, link=None):
+        if link:
+            lb = SClickableLabel()
+            lb.clicked.connect(lambda: os.startfile(link))
+        else:
+            lb = QLabel()
+        sp = lb.sizePolicy()
+        sp.setHorizontalPolicy(QSizePolicy.Policy.Fixed)
+        lb.setSizePolicy(sp)
+        img = QPixmap.fromImage(QImage(img))
+        img.setDevicePixelRatio(self.devicePixelRatioF())
+        img = img.scaledToWidth(
+            int(w * self.devicePixelRatioF()),
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        lb.setPixmap(img)
+        self.labels.append(lb)
+        self.grid.addRow(lb)
 
     def updatelangtext(self):
         self.mdlabel.setMD(get_about_info())
+        lang = getlanguse()
+        for _ in self.labels:
+            _.deleteLater()
+        self.labels.clear()
+        if lang == Languages.Chinese:
+            self.createlabel(
+                "files/static/button-sponsorme.png",
+                200,
+                "https://afdian.com/a/HIllya51",
+            )
+            self.createlabel("files/static/zan.jpg", 350)
+        elif lang == Languages.TradChinese:
+            self.createlabel(
+                "files/static/button-sponsorme.png",
+                200,
+                "https://afdian.com/a/HIllya51",
+            )
+            self.createlabel(
+                "files/static/become_a_patron_4x1_coral_logo_black_text_on_white.svg",
+                200,
+                "https://patreon.com/HIllya51",
+            )
+        else:
+            self.createlabel(
+                "files/static/become_a_patron_4x1_coral_logo_black_text_on_white.svg",
+                200,
+                "https://patreon.com/HIllya51",
+            )
 
 
 class delayloadsvg(QSvgWidget):

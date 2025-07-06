@@ -12,6 +12,6 @@ lastUpdated: false
 
 軟體維護不易，如果您感覺該軟體對你有幫助，歡迎通過[愛發電](https://afdian.com/a/HIllya51)贊助，或成為我的[sponsor](https://patreon.com/HIllya51)，您的支持將成為軟體長期維護的助力，謝謝~
 
-<a href="https://afdian.com/a/HIllya51" target='_blank'><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
+<a href="https://afdian.com/a/HIllya51" target='_blank'><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png"></a>
 
-[![](https://image.lunatranslator.org/zh/httpsgithubcomhillya51-preview.png)](https://www.patreon.com/c/HIllya51)
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_coral_logo_black_text_on_white.svg"></a>

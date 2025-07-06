@@ -415,7 +415,7 @@ def ___TR(k: str) -> str:
     return k
 
 
-def _TR(k: str | list[str]) -> str | list[str]:
+def _TR(k: "str | list[str]") -> "str | list[str]":
     if isinstance(k, str):
         return ___TR(k)
     return [___TR(_) for _ in k]
