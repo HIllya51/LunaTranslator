@@ -22,6 +22,15 @@ Nhưng vui lòng không đặt phần mềm vào các đường dẫn đặc bi�
 
 - **LunaTranslator_debug.bat** sẽ hiển thị cửa sổ dòng lệnh.
 
+## Cập nhật
+
+Mặc định sẽ tự động cập nhật. Nếu tự động cập nhật thất bại, có thể cập nhật thủ công.
+
+Nếu muốn cập nhật thủ công, chỉ cần tải phiên bản mới và giải nén đè lên thư mục trước đó.
+
+Nếu muốn xóa và tải lại, chú ý không xóa thư mục userconfig, nếu không sẽ mất thiết lập trước đó!!!
+
+
 ## Lỗi Thường Gặp
 
 ::: danger
@@ -52,12 +61,3 @@ Nếu không thêm vào danh sách tin cậy trước, có thể sau một thờ
 Nếu phần mềm được đặt trong các thư mục đặc biệt như `C:\Program Files`, có thể không hoạt động đúng cách.
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png"  width=400>
-
-## Cập nhật
-
-Mặc định sẽ tự động cập nhật. Nếu tự động cập nhật thất bại, có thể cập nhật thủ công.
-
-Nếu muốn cập nhật thủ công, chỉ cần tải phiên bản mới và giải nén đè lên thư mục trước đó.
-
-Nếu muốn xóa và tải lại, chú ý không xóa thư mục userconfig, nếu không sẽ mất thiết lập trước đó!!!
-

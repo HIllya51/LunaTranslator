@@ -23,6 +23,16 @@ But please do not put the software in special paths such as **C:\Program Files**
 
 - **LunaTranslator_debug.bat** will display a command-line window.
 
+## Update
+
+Updates are performed automatically by default. If automatic update fails, you can update manually.
+
+To update manually, simply download the new version and extract it to overwrite the previous directory.
+
+If you want to delete and re-download, be careful not to delete the userconfig folder, otherwise you will lose your previous settings!!!
+
+
+
 
 ## Common Errors
 
@@ -54,13 +64,3 @@ If trust isn't pre-established, some essential components might get deleted by a
 If the software is placed in special folders such as `C:\Program Files`, it may not work properly.
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png"  width=400>
-
-## Update
-
-Updates are performed automatically by default. If automatic update fails, you can update manually.
-
-To update manually, simply download the new version and extract it to overwrite the previous directory.
-
-If you want to delete and re-download, be careful not to delete the userconfig folder, otherwise you will lose your previous settings!!!
-
-
