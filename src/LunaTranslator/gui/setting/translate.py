@@ -344,8 +344,8 @@ def selectllmcallback(self, countnum: list, fanyi, *_):
     except:
         shutil.copy(_f12, _f2)
     copyfrom = getcopyfrom(fanyi)
-    globalconfig["fanyi"][uid]["copyfrom"] = copyfrom
     globalconfig["fanyi"][uid] = copy.deepcopy(globalconfig["fanyi"][fanyi])
+    globalconfig["fanyi"][uid]["copyfrom"] = copyfrom
     globalconfig["fanyi"][uid]["use"] = False
     globalconfig["fanyi"][uid]["name"] = dynamicapiname(fanyi) + "_copy"
     if "name_self_set" in globalconfig["fanyi"][uid]:
