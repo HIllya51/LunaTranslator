@@ -11,7 +11,7 @@ hero:
   #   alt: LunaTranslator  
   actions:  
     - theme: brand  
-      text: Download and Start  
+      text: Download & Launch & Update
       link: ./README  
     - theme: alt  
       text: Basic Usage  

@@ -80,9 +80,8 @@ export const cht = defineConfig({
             {
                 text: '基本的',
                 items: [
-                    { text: '下載和啓動', link: '/cht/README' },
+                    { text: '下載&啟動&更新', link: '/cht/README' },
                     { text: '基本用法', link: '/cht/basicuse' },
-                    { text: '軟件更新', link: '/cht/update' },
                     { text: '支持作者', link: '/cht/support' }
                 ]
             },

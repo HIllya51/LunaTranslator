@@ -294,7 +294,7 @@ def loadbutton(self, fanyi):
     if (copyfrom != fanyi) and (copyfrom in translatorsetting):
         if "args" in translatorsetting[copyfrom]:
             for k in translatorsetting[copyfrom]["args"]:
-                if k not in translatorsetting[fanyi]:
+                if k not in translatorsetting[fanyi]["args"]:
                     translatorsetting[fanyi]["args"][k] = translatorsetting[copyfrom][
                         "args"
                     ][k]
@@ -333,7 +333,7 @@ def getcopyfrom(uid):
         xx = cp
 
 
-def selectllmcallback(self, countnum: list, fanyi, *_):
+def selectllmcallback(self, countnum: list, fanyi, newname=None):
     uid = str(uuid.uuid4())
     _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
     _f12 = "userconfig/copyed/{}.py".format(fanyi)
@@ -347,7 +347,9 @@ def selectllmcallback(self, countnum: list, fanyi, *_):
     globalconfig["fanyi"][uid] = copy.deepcopy(globalconfig["fanyi"][fanyi])
     globalconfig["fanyi"][uid]["copyfrom"] = copyfrom
     globalconfig["fanyi"][uid]["use"] = False
-    globalconfig["fanyi"][uid]["name"] = dynamicapiname(fanyi) + "_copy"
+    globalconfig["fanyi"][uid]["name"] = (
+        newname if newname else (dynamicapiname(fanyi) + "_copy")
+    )
     if "name_self_set" in globalconfig["fanyi"][uid]:
         globalconfig["fanyi"][uid].pop("name_self_set")
     globalconfig["fanyi"][uid]["type"] = globalconfig["fanyi"][fanyi]["type"]
