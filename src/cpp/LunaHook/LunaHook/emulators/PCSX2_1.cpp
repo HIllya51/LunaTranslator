@@ -192,6 +192,11 @@ namespace
     {
         CharFilter(buffer, '\n');
     }
+    void SLPM66543(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("fc"));
+        StringFilter(buffer, TEXTANDLEN("\\c(say)"));
+    }
     void SLPS25483(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("@y"));
@@ -540,7 +545,7 @@ namespace
     void FSLPM65997(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, R"(#\w+?\[\d\])");
+        s = re::sub(s, R"(#\w+?\[[\.\d]*\])");
         strReplace(s, "#n");
         buffer->from(s);
     }
@@ -1641,6 +1646,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ふしぎ遊戯 朱雀異聞
+    {0xF7294C, {DIRECT_READ, 0, 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66998", "SLPM-66999"}}},
+    // ふしぎ遊戯 玄武開伝 外伝 鏡の巫女
+    {0x17975E5, {DIRECT_READ, 0, 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66023", "SLPM-66024"}}}, // [限定版] && [通常版]
+    // きまぐれストロベリーカフェ
+    {0x2151f0, {DIRECT_READ, 0, 0, SLPM66344<0x2151f0, 0x215215, 0x21523a>, 0, "SLPM-65381"}},
+    // Yo-Jin-Bo ～運命のフロイデ～
+    {0x20ee28, {0, PCSX2_REG_OFFSET(t4), 0, 0, SLPM66543, "SLPM-66543"}},
     // 永遠のアセリア −この大地の果てで−
     {0x141A80, {0, PCSX2_REG_OFFSET(t7), 0, 0, SLPS25468, "SLPS-25468"}},
     // IZUMO コンプリート

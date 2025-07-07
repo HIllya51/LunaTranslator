@@ -143,7 +143,7 @@ PS2_GAME_LIST
 
 :::"""
 
-for lang in ["zh", "en", "ja", "vi"]:
+for lang in ["zh", "en", "ja", "vi", "cht"]:
     with open(
         f"../../../../../docs/{lang}/emugames_template.md", "r", encoding="utf8"
     ) as ff:

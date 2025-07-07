@@ -545,11 +545,40 @@ namespace
     return NewHook(hp, "elf5");
   }
 }
+static bool avking()
+{
+  //[060127][エルフ] AVキング (mdf+mds)
+  const uint8_t bytes[] = {
+      0x83, 0x3d, XX4, 0x01,
+      0x0f, 0x85, XX4,
+      0xa1, XX4,
+      0x8b, 0x0d, XX4,
+      0x8b, 0x04, 0x88,
+      0x85, 0xc0,
+      0x74, XX,
+      0x50,
+      0xe8, XX4};
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(1);
+  hp.type = NO_CONTEXT | USING_STRING;
+  return NewHook(hp, "elf6");
+}
 bool Elf::attach_function()
 {
-
-  auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || elf3();
-  return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
+  if (type == 1)
+  {
+    auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || elf3();
+    return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
+  }
+  else if (type == 2)
+  {
+    return avking();
+  }
+  return false;
 }
 
 void SpecialHookElf2(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)

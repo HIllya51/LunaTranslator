@@ -130,7 +130,10 @@ void TextThread::Flush()
 	{
 		sentence.erase(std::remove(sentence.begin(), sentence.end(), 0), sentence.end());
 		Output(*this, sentence);
-		storage->append(sentence + L"\n");
+		if (!storage->empty())
+			storage->append(L"\n");
+		storage->append(sentence);
+
 		latest->assign(sentence.c_str());
 	}
 

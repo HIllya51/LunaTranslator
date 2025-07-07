@@ -861,6 +861,10 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66998 & SLPM-66999 | ふしぎ遊戯 朱雀異聞 |
+|  | SLPM-66023 & SLPM-66024 | ふしぎ遊戯 玄武開伝 外伝 鏡の巫女 |
+|  | SLPM-65381 | きまぐれストロベリーカフェ |
+|  | SLPM-66543 | Yo-Jin-Bo ～運命のフロイデ～ |
 |  | SLPS-25468 | 永遠のアセリア −この大地の果てで− |
 |  | SLPM-65832 | IZUMO コンプリート |
 |  | SLPM-65867 | 新世紀エヴァンゲリオン 鋼鉄のガールフレンド2nd |

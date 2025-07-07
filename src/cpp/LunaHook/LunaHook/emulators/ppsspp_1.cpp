@@ -926,7 +926,7 @@ namespace
     void ULJM06129(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, R"(#\w+?\[\d\])");
+        s = re::sub(s, R"(#\w+?\[[\.\d]*\])");
         strReplace(s, "#n");
         buffer->from(s);
     }
