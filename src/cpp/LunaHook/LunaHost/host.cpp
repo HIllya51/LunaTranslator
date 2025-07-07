@@ -360,6 +360,8 @@ namespace Host
 		{
 			switch (type)
 			{
+			case HOSTINFO::IsEmuNotify:
+				return;
 			case HOSTINFO::Warning:
 				text = FormatString(L"[%s]", TR[T_WARNING]) + text;
 				break;
@@ -367,8 +369,7 @@ namespace Host
 				text = L"[Game] " + text;
 				break;
 			}
-			if (type != HOSTINFO::Console)
-				OnHostInfo(HOSTINFO::Console, std::move(text));
+			OnHostInfo(HOSTINFO::Console, std::move(text));
 		}
 	}
 	bool CheckIsUsingEmbed(ThreadParam tp)

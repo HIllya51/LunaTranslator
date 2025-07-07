@@ -12,7 +12,25 @@ namespace
     {
         return re::sub(s, LR"((?:\r\n|\n|^)\s*(?=\r\n|\n|$))");
     }
-
+    void F01001DC01486A000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(<(.*?)\|(.*?)>)", "$1");
+        strReplace(s, "^");
+        buffer->from(s);
+    }
+    void T01001DC01486A000(hook_context *context, HookParam *hpx, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = YUZU::emu_arg(context)[hpx->offset];
+        {
+            HookParam hp;
+            hp.address = address;
+            hp.filter_fun = F01001DC01486A000;
+            hp.type = CODEC_UTF8 | DIRECT_READ;
+            static auto _ = NewHook(hp, hpx->name);
+        }
+        buffer->from((char *)address);
+    }
     void T010012A017F18000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[2];
@@ -73,7 +91,7 @@ namespace
                     if (c == 0x0692c500)
                     {
                         for (int _ = 0; _ < count; _++)
-                            s += '-';
+                            s += u8"―";
                         address += 4;
                     }
                 }
@@ -2185,7 +2203,6 @@ namespace
         s = re::sub(s, "\\\\n", " ");
         buffer->from(s);
     }
-
     void F010065301A2E0000(TextBuffer *buffer, HookParam *hp)
     {
 
@@ -3506,7 +3523,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80086ba0, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x010012A017F18000ull, "1.0.0"}},
     {0x80086e70, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x010012A017F18000ull, "1.0.2"}},
     // 月姫 -A piece of blue glass moon-
-    {0x800ac290, {CODEC_UTF8, 0, 0, T010012A017F18000, 0, 0x01001DC01486A000ull, 0}}, // 1.0.1,1.0.2
+    {0x800ac290, {CODEC_UTF8, 0, 0, T010012A017F18000, F01001DC01486A000, 0x01001DC01486A000ull, nullptr}}, // 1.0.1,1.0.2
+    {0x80076034, {CODEC_UTF8, 0, 0, T01001DC01486A000, F01001DC01486A000, 0x01001DC01486A000ull, "1.0.0"}},
+    {0x80072564, {CODEC_UTF8, 0, 0, T01001DC01486A000, F01001DC01486A000, 0x01001DC01486A000ull, "1.0.2"}},
+    {0x80072D88, {CODEC_UTF8, 0, 0, T01001DC01486A000, F01001DC01486A000, 0x01001DC01486A000ull, "1.0.3"}},
     // 映画 五等分の花嫁　～君と過ごした五つの思い出～
     {0x80011688, {CODEC_UTF8, 1, 0, 0, F01005E9016BDE000, 0x01005E9016BDE000ull, "1.0.0"}}, // dialogue, menu, choice, name
     // FLOWERS 四季
