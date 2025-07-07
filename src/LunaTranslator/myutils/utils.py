@@ -459,7 +459,12 @@ def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
 
 
 def dynamiclink(text: str = "", docs=False) -> str:
-    return static_data[("main_server", "docs_server")[docs]][[gobject.serverindex, gobject.serverindex2][docs]] + text
+    return (
+        static_data[("main_server", "docs_server")[docs]][
+            [gobject.serverindex, gobject.serverindex2][docs]
+        ]
+        + text
+    )
 
 
 def makehtml(text: str, show=None, docs=False) -> str:
@@ -658,12 +663,14 @@ def parsekeystringtomodvkcode(keystring: str, modes=False, canonlymod=False):
     return mode, vkcode
 
 
-def get_time_stamp(ct=None, ms=True):
+def get_time_stamp(ct=None, ms=True, forfilename=False):
     if ct is None:
         ct = time.time()
     local_time = time.localtime(ct)
-    data_head = time.strftime("%Y-%m-%d %H:%M:%S", local_time)
-    if ms:
+    data_head = time.strftime(
+        "%Y-%m-%d %H-%M-%S" if forfilename else "%Y-%m-%d %H:%M:%S", local_time
+    )
+    if ms and not forfilename:
         data_secs = (ct - int(ct)) * 1000
         time_stamp = "%s.%03d" % (data_head, data_secs)
         return time_stamp

@@ -832,5 +832,7 @@
     "直接调用": "direct aanroepen",
     "间接读取": "indirect lezen",
     "隐藏窗口": "verberg venster",
-    "自动结束进程": "Proces automatisch beëindigen"
+    "自动结束进程": "Proces automatisch beëindigen",
+    "自动保存": "Automatisch opslaan",
+    "是否保留原文？": "Wil je de originele tekst behouden?"
 }

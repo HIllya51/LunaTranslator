@@ -4,7 +4,7 @@
 
 | 操作系统 | 32位 | 64位 | 说明 |
 | - | - | - | - |
-| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | 该版本只支持较新的Windows 10版本，以获取更高性能，更新的系统特性，及更低的病毒误报率。
+| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | 该版本只支持较新的操作系统版本，以获取更高性能，更新的系统特性，及更低的病毒误报率。
 | Windows 7 及以上 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
 | Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | 该版本仅用于支持提取仅能在XP虚拟机内运行的很老游戏的文本，功能残缺、不稳定、运行缓慢，一般不要使用。
 

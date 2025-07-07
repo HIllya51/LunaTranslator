@@ -1,9 +1,11 @@
 
 include(FetchContent)
 
+#https://github.com/ikegami-yukino/mecab clone太几把慢了
 FetchContent_Declare(mecab
-    GIT_REPOSITORY https://github.com/ikegami-yukino/mecab
-    GIT_TAG db005dc77e92290b8834121a18eaca0c6227f438
+    GIT_REPOSITORY https://github.com/HIllya51/mecab
+    GIT_TAG master
+    GIT_SHALLOW TRUE
 )
 FetchContent_Populate(mecab)
 

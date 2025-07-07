@@ -832,5 +832,7 @@
     "直接调用": "direkt anrop",
     "间接读取": "indirekt läsning",
     "隐藏窗口": "dölj fönster",
-    "自动结束进程": "automatisk avslutning av process"
+    "自动结束进程": "automatisk avslutning av process",
+    "自动保存": "Automatisk sparning",
+    "是否保留原文？": "Ska originalet behållas?"
 }

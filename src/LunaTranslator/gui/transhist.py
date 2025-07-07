@@ -10,6 +10,7 @@ from myutils.wrapper import threader
 from traceback import print_exc
 from gui.setting.display_text import extrahtml
 from network.server.servicecollection_1 import WSForEach, transhistwsoutputsave
+import time, threading, windows
 
 
 class somecommon:
@@ -37,9 +38,7 @@ class somecommon:
 
     def refresh(self):
         self.debugeval(
-            'fastinit("{}");'.format(
-                quote(json.dumps(gobject.base.transhis.trace))
-            )
+            'fastinit("{}");'.format(quote(json.dumps(gobject.base.transhis.trace)))
         )
 
     def setf(self):
@@ -59,14 +58,14 @@ class somecommon:
         self.addbr()
         sentence = sentence[1]
         self.debugeval(
-            'getnewsentence("{}","{}");'.format(quote(sentence[0]), quote(sentence[1]))
+            'getnewsentence({},"{}");'.format(sentence[0], quote(sentence[1]))
         )
 
     def getnewtrans(self, sentence):
         sentence = sentence[1]
         self.debugeval(
-            'getnewtrans("{}","{}","{}");'.format(
-                quote(sentence[0]), quote(sentence[1]), quote(sentence[2])
+            'getnewtrans({},"{}","{}");'.format(
+                sentence[0], quote(sentence[1]), quote(sentence[2])
             )
         )
 
@@ -93,12 +92,184 @@ class somecommon:
         )
 
 
+class sharedfunctions:
+    startuptime = time.time()
+    logfilename = "cache/history/{}.txt".format(get_time_stamp(forfilename=True))
+    writelogfilelock = threading.Lock()
+
+    @staticmethod
+    def autosavecheckifneedninit(trace):
+        with sharedfunctions.writelogfilelock:
+            text = sharedfunctions.createSaveContent(trace)
+            has = os.path.exists(sharedfunctions.logfilename)
+            if not text and not has:
+                return
+            try:
+                os.makedirs("cache/history", exist_ok=True)
+                with open(
+                    sharedfunctions.logfilename,
+                    "w",
+                    encoding="utf8",
+                ) as ff:
+                    ff.write(text)
+            except:
+                print_exc()
+
+    @staticmethod
+    def savesrt(self, trace):
+        ff = QFileDialog.getSaveFileName(self, directory="save.srt")
+        if ff[0] == "":
+            return
+        _ = sharedfunctions.createSaveContentSrt(trace)
+        with open(ff[0], "w", encoding="utf8") as ff:
+            ff.write(_)
+
+    @staticmethod
+    def savetxt(self, trace):
+        ff = QFileDialog.getSaveFileName(self, directory="save.txt")
+        if ff[0] == "":
+            return
+        _ = sharedfunctions.createSaveContent(trace)
+        with open(ff[0], "w", encoding="utf8") as ff:
+            ff.write(_)
+
+    @staticmethod
+    def createSaveContentSrt(hist):
+        blocks = []
+        block = []
+        for line in hist:
+            if line[0] == 0:
+                if block:
+                    blocks.append(block)
+                block = []
+            block.append(line)
+        if block:
+            blocks.append(block)
+        ii = 1
+        results = []
+
+        def formattime(t):
+            local_time = time.gmtime(t)
+            data_head = time.strftime("%H:%M:%S", local_time)
+            data_secs = (t - int(t)) * 1000
+            time_stamp = "%s.%03d" % (data_head, data_secs)
+            return time_stamp
+
+        blocks.append([(0, (time.time(), 0))])
+        for i in range(len(blocks) - 1):
+            result = sharedfunctions.visblocksrt(blocks[i])
+            if not result:
+                continue
+            start = formattime(blocks[i][0][1][0] - sharedfunctions.startuptime)
+            end = formattime(blocks[i + 1][0][1][0] - sharedfunctions.startuptime)
+            result = "{} --> {}\n{}".format(start, end, result)
+            results.append("{}\n{}".format(ii, result))
+            ii += 1
+        return "\n\n".join(results)
+
+    @staticmethod
+    def visblocksrt(block):
+        result = []
+        for line in block:
+            ii, line = line
+            if ii == 0:
+                tm, sentence = line
+                if not globalconfig["history"]["showorigin"]:
+                    continue
+                result.append(sentence)
+            elif ii == 1:
+                tm, api, sentence = line
+                if not globalconfig["history"]["showtrans"]:
+                    continue
+                if globalconfig["history"]["showtransname"]:
+                    sentence = api + " " + sentence
+                result.append(sentence)
+        if not result:
+            return
+        return "\n".join(result)
+
+    @staticmethod
+    def createSaveContent(hist):
+        collect = ""
+        seted = False
+        for line in hist:
+            if seted and (line[0] == 0):
+                collect += "\n"
+                seted = True
+            line = sharedfunctions.visline(line)
+            if line:
+                if seted:
+                    collect += "\n"
+                collect += line
+                seted = True
+        return collect
+
+    @staticmethod
+    def ifformatchangedrewriteautosave(trace):
+        if not globalconfig["history"]["autosave"]:
+            return
+        sharedfunctions.autosavecheckifneedninit(trace)
+
+    @staticmethod
+    def autosave(line):
+        if not globalconfig["history"]["autosave"]:
+            return
+        l = sharedfunctions.visline(line)
+        with sharedfunctions.writelogfilelock:
+            has = os.path.exists(sharedfunctions.logfilename)
+            out = ""
+            if line[0] == 0:
+                if has:
+                    out += "\n"
+            if l:
+                if has:
+                    out += "\n"
+                out += l
+            try:
+                if out:
+                    os.makedirs("cache/history", exist_ok=True)
+                    with open(
+                        sharedfunctions.logfilename,
+                        "a",
+                        encoding="utf8",
+                    ) as ff:
+                        ff.write(out)
+            except:
+                print_exc()
+
+    @staticmethod
+    def visline(line):
+        ii, line = line
+        if ii == 0:
+            tm, sentence = line
+            if not globalconfig["history"]["showorigin"]:
+                return
+            else:
+                if globalconfig["history"]["showtime"]:
+                    sentence = get_time_stamp(tm) + " " + sentence
+                return sentence
+        elif ii == 1:
+            tm, api, sentence = line
+            if not globalconfig["history"]["showtrans"]:
+                return
+            if globalconfig["history"]["showtransname"]:
+                sentence = api + " " + sentence
+            if globalconfig["history"]["showtime"]:
+                sentence = get_time_stamp(tm) + " " + sentence
+            return sentence
+
+
 class wvtranshist(WebviewWidget, somecommon):
     pluginsedit = pyqtSignal()
     reloadx = pyqtSignal()
 
     def scrollend(self):
         self.debugeval("scrollend()")
+
+    def autosavecb(self):
+        globalconfig["history"]["autosave"] = not globalconfig["history"]["autosave"]
+        if globalconfig["history"]["autosave"]:
+            sharedfunctions.autosavecheckifneedninit(self.p.trace)
 
     def __init__(self, p):
         super().__init__(p, loadext=globalconfig["history"]["webviewLoadExt"])
@@ -108,6 +279,25 @@ class wvtranshist(WebviewWidget, somecommon):
         nexti = self.add_menu_noselect(0, lambda: _TR("清空"), self.clear)
         nexti = self.add_menu_noselect(nexti, lambda: _TR("滚动到最后"), self.scrollend)
         nexti = self.add_menu_noselect(nexti, lambda: _TR("字体"), self.seletcfont)
+        nexti = self.add_menu_noselect(nexti)
+        nexti = self.add_menu_noselect(
+            nexti,
+            lambda: _TR("保存"),
+            lambda: sharedfunctions.savetxt(self, self.p.trace),
+        )
+        nexti = self.add_menu_noselect(
+            nexti,
+            lambda: _TR("保存_SRT"),
+            lambda: sharedfunctions.savesrt(self, self.p.trace),
+            getuse=lambda: windows.GetKeyState(windows.VK_CONTROL) < 0,
+        )
+        nexti = self.add_menu_noselect(
+            nexti,
+            lambda: _TR("自动保存"),
+            self.autosavecb,
+            checkable=True,
+            getchecked=lambda: globalconfig["history"]["autosave"],
+        )
         nexti = self.add_menu_noselect(nexti)
         nexti = self.add_menu_noselect(
             nexti,
@@ -182,9 +372,7 @@ class wvtranshist(WebviewWidget, somecommon):
                 )
             ),
         )
-        nexti = self.add_menu(
-            nexti, lambda: _TR("翻译"), gobject.base.textgetmethod
-        )
+        nexti = self.add_menu(nexti, lambda: _TR("翻译"), gobject.base.textgetmethod)
         nexti = self.add_menu(nexti, lambda: _TR("朗读"), gobject.base.read_text)
         nexti = self.add_menu(nexti)
         self.loadex()
@@ -227,23 +415,23 @@ class wvtranshist(WebviewWidget, somecommon):
             _s = font.toString()
             globalconfig["histfont"] = _s
             self.setf()
-            self.parent().setf()
+            self.p.setf()
 
     def appendext(self):
         globalconfig["history"]["webviewLoadExt"] = not globalconfig["history"][
             "webviewLoadExt"
         ]
-        self.parent().loadviewer()
+        self.p.loadviewer()
 
     def useweb(self):
         globalconfig["history"]["usewebview2"] = not globalconfig["history"][
             "usewebview2"
         ]
-        self.parent().loadviewer()
+        self.p.loadviewer()
 
     def clear(self, _=None):
         self.debugeval("clear()")
-        self.parent().trace.clear()
+        self.p.trace.clear()
 
     def debugeval(self, js):
         # print(js)
@@ -254,27 +442,35 @@ class wvtranshist(WebviewWidget, somecommon):
             "showorigin"
         ]
         self.showhideraw()
-        self.parent().showhideraw()
+        self.p.showhideraw()
 
     def showtrans_(self):
         globalconfig["history"]["showtrans"] = not globalconfig["history"]["showtrans"]
         self.showtrans()
-        self.parent().showtrans()
+        self.p.showtrans()
 
     def showtransname_(self):
         globalconfig["history"]["showtransname"] = not globalconfig["history"][
             "showtransname"
         ]
         self.showtransname()
-        self.parent().showtransname()
+        self.p.showtransname()
 
     def showhidetime_(self):
         globalconfig["history"]["showtime"] = not globalconfig["history"]["showtime"]
         self.showhidetime()
-        self.parent().showhidetime()
+        self.p.showhidetime()
+
+    @property
+    def p(self) -> "transhist":
+        return self.parent()
 
 
 class Qtranshist(QPlainTextEdit):
+    @property
+    def p(self) -> "transhist":
+        return self.parent()
+
     def __init__(self, p):
         super().__init__(p)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -288,6 +484,10 @@ class Qtranshist(QPlainTextEdit):
         menu = QMenu(self)
         qingkong = LAction("清空", menu)
         baocun = LAction("保存", menu)
+        baocunauto = LAction("自动保存", menu)
+        baocunauto.setCheckable(True)
+        baocunauto.setChecked(globalconfig["history"]["autosave"])
+        baocunfmt = LAction("保存_SRT", menu)
         tts = LAction("朗读", menu)
         copy = LAction("复制", menu)
         hideshowraw = LAction("显示原文", menu)
@@ -316,9 +516,13 @@ class Qtranshist(QPlainTextEdit):
             menu.addAction(tts)
         else:
             menu.addAction(qingkong)
-            menu.addAction(baocun)
             menu.addAction(scrolltoend)
             menu.addAction(font)
+            menu.addSeparator()
+            menu.addAction(baocun)
+            if windows.GetKeyState(windows.VK_CONTROL) < 0:
+                menu.addAction(baocunfmt)
+            menu.addAction(baocunauto)
             menu.addSeparator()
             menu.addAction(hideshowraw)
             menu.addAction(hideshowtrans)
@@ -330,10 +534,16 @@ class Qtranshist(QPlainTextEdit):
         action = menu.exec(QCursor.pos())
         if action == qingkong:
             self.clear()
-            self.parent().trace.clear()
+            self.p.trace.clear()
+        elif action == baocunfmt:
+            sharedfunctions.savesrt(self, self.p.trace)
         elif action == webview2qt:
             globalconfig["history"]["usewebview2"] = webview2qt.isChecked()
-            self.parent().loadviewer(True)
+            self.p.loadviewer(True)
+        elif action == baocunauto:
+            globalconfig["history"]["autosave"] = baocunauto.isCheckable()
+            if baocunauto.isCheckable():
+                sharedfunctions.autosavecheckifneedninit(self.p.trace)
         elif action == search:
             gobject.base.searchwordW.search_word.emit(
                 self.textCursor().selectedText(), None, False
@@ -345,11 +555,7 @@ class Qtranshist(QPlainTextEdit):
         elif action == copy:
             NativeUtils.ClipBoard.text = self.textCursor().selectedText()
         elif action == baocun:
-            ff = QFileDialog.getSaveFileName(self, directory="save.txt")
-            if ff[0] == "":
-                return
-            with open(ff[0], "w", encoding="utf8") as ff:
-                ff.write(self.toPlainText())
+            sharedfunctions.savetxt(self, self.p.trace)
         elif action == font:
             f = QFont()
             cur = globalconfig.get("histfont")
@@ -360,22 +566,22 @@ class Qtranshist(QPlainTextEdit):
                 _s = font.toString()
                 globalconfig["histfont"] = _s
                 self.setf()
-                self.parent().setf()
+                self.p.setf()
         elif action == hideshowtransname:
             globalconfig["history"]["showtransname"] = hideshowtransname.isChecked()
-            self.parent().showtransname()
+            self.p.showtransname()
             self.refresh()
         elif action == hideshowtrans:
             globalconfig["history"]["showtrans"] = hideshowtrans.isChecked()
-            self.parent().showtrans()
+            self.p.showtrans()
             self.refresh()
         elif action == hideshowraw:
             globalconfig["history"]["showorigin"] = hideshowraw.isChecked()
-            self.parent().showhideraw()
+            self.p.showhideraw()
             self.refresh()
         elif action == hidetime:
             globalconfig["history"]["showtime"] = hidetime.isChecked()
-            self.parent().showhidetime()
+            self.p.showhidetime()
             self.refresh()
         elif action == scrolltoend:
             scrollbar = self.verticalScrollBar()
@@ -392,18 +598,7 @@ class Qtranshist(QPlainTextEdit):
             self.setStyleSheet("QPlainTextEdit{" + _style + "}")
 
     def refresh(self):
-        collect = ""
-        seted = False
-        for i, line in enumerate(self.parent().trace):
-            if seted and (len(line[1]) == 2):
-                collect += "\n"
-                seted = True
-            line = self.visline(line)
-            if line:
-                if seted:
-                    collect += "\n"
-                collect += line
-                seted = True
+        collect = sharedfunctions.createSaveContent(self.p.trace)
         self.setPlainText(collect)
         self.move_cursor_to_end()
 
@@ -412,34 +607,14 @@ class Qtranshist(QPlainTextEdit):
         cursor.movePosition(QTextCursor.MoveOperation.End)
         self.setTextCursor(cursor)
 
-    def visline(self, line):
-        ii, line = line
-        if ii == 0:
-            tm, sentence = line
-            if not globalconfig["history"]["showorigin"]:
-                return
-            else:
-                if globalconfig["history"]["showtime"]:
-                    sentence = tm + " " + sentence
-                return sentence
-        elif ii == 1:
-            tm, api, sentence = line
-            if not globalconfig["history"]["showtrans"]:
-                return
-            if globalconfig["history"]["showtransname"]:
-                sentence = api + " " + sentence
-            if globalconfig["history"]["showtime"]:
-                sentence = tm + " " + sentence
-            return sentence
-
     def getnewsentence(self, sentence):
         self.appendPlainText("")
-        line = self.visline(sentence)
+        line = sharedfunctions.visline(sentence)
         if line:
             self.appendPlainText(line)
 
     def getnewtrans(self, sentence):
-        line = self.visline(sentence)
+        line = sharedfunctions.visline(sentence)
         if line:
             self.appendPlainText(line)
 
@@ -476,26 +651,34 @@ class transhist(closeashidewindow):
 
     def showtransname(self):
         WSForEach(transhistwsoutputsave, lambda _: _.showtransname())
+        sharedfunctions.ifformatchangedrewriteautosave(self.trace)
 
     def showhidetime(self):
         WSForEach(transhistwsoutputsave, lambda _: _.showhidetime())
+        sharedfunctions.ifformatchangedrewriteautosave(self.trace)
 
     def showtrans(self):
         WSForEach(transhistwsoutputsave, lambda _: _.showtrans())
+        sharedfunctions.ifformatchangedrewriteautosave(self.trace)
 
     def showhideraw(self):
         WSForEach(transhistwsoutputsave, lambda _: _.showhideraw())
+        sharedfunctions.ifformatchangedrewriteautosave(self.trace)
 
     def getnewsentence(self, sentence):
-        tm = get_time_stamp()
-        self.trace.append((0, (tm, sentence)))
+        tm = time.time()
+        line = (0, (tm, sentence))
+        self.trace.append(line)
+        sharedfunctions.autosave(line)
         if self.state == 2:
             self.textOutput.getnewsentence(self.trace[-1])
         WSForEach(transhistwsoutputsave, lambda _: _.getnewsentence(self.trace[-1]))
 
     def getnewtrans(self, api, sentence):
-        tm = get_time_stamp()
-        self.trace.append((1, (tm, api, sentence)))
+        tm = time.time()
+        line = (1, (tm, api, sentence))
+        self.trace.append(line)
+        sharedfunctions.autosave(line)
         if self.state == 2:
             self.textOutput.getnewtrans(self.trace[-1])
         WSForEach(transhistwsoutputsave, lambda _: _.getnewtrans(self.trace[-1]))

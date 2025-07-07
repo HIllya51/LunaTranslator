@@ -832,5 +832,7 @@
     "直接调用": "chamada direta",
     "间接读取": "leitura indireta",
     "隐藏窗口": "ocultar janela",
-    "自动结束进程": "encerrar processo automaticamente"
+    "自动结束进程": "encerrar processo automaticamente",
+    "自动保存": "Salvamento automático",
+    "是否保留原文？": "Manter o texto original?"
 }

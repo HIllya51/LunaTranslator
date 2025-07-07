@@ -832,5 +832,7 @@
     "直接调用": "gọi trực tiếp",
     "间接读取": "đọc gián tiếp",
     "隐藏窗口": "ẩn cửa sổ",
-    "自动结束进程": "tự động kết thúc tiến trình"
+    "自动结束进程": "tự động kết thúc tiến trình",
+    "自动保存": "Tự động lưu",
+    "是否保留原文？": "Có giữ nguyên văn bản gốc không?"
 }

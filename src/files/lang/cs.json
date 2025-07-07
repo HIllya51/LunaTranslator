@@ -832,5 +832,7 @@
     "直接调用": "přímé volání",
     "间接读取": "nepřímé čtení",
     "隐藏窗口": "skrýt okno",
-    "自动结束进程": "Automatické ukončení procesu"
+    "自动结束进程": "Automatické ukončení procesu",
+    "自动保存": "Automatické uložení",
+    "是否保留原文？": "Zachovat původní text?"
 }

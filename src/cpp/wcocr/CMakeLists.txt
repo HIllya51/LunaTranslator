@@ -3,7 +3,8 @@ include(FetchContent)
 
 FetchContent_Declare(wechat_ocr
     GIT_REPOSITORY https://github.com/swigger/wechat-ocr
-    GIT_TAG 81e6e75dda85e99754c90a8254f0fc16a52eb3b9
+    GIT_TAG master
+    GIT_SHALLOW TRUE
 )
 FetchContent_Populate(wechat_ocr)
 

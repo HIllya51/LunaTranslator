@@ -832,5 +832,7 @@
     "直接调用": "direct invocation",
     "间接读取": "indirect read",
     "隐藏窗口": "Hide window",
-    "自动结束进程": "Automatically terminate process"
+    "自动结束进程": "Automatically terminate process",
+    "自动保存": "Auto-save",
+    "是否保留原文？": "Keep the original text?"
 }

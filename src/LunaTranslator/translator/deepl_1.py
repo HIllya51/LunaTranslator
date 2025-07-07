@@ -42,7 +42,8 @@ class cdp_deepl(cdp_helper):
         self.checklang()
 
         # Simulate real mouse click on input field to force DeepL to activate it properly
-        self.Runtime_evaluate("""
+        self.Runtime_evaluate(
+            """
             (() => {
                 const el = document.querySelector('[contenteditable="true"]');
                 if (el) {
@@ -58,9 +59,13 @@ class cdp_deepl(cdp_helper):
                     });
                 }
             })()
-        """)
-        
+        """
+        )
+
         # Clear input field the same way as clearing output field below
+        self.Runtime_evaluate(
+            """document.querySelector("#translator-source-clear-button").click()"""
+        )
         self.Runtime_evaluate(
             """document.getElementsByTagName("d-textarea")[0].querySelectorAll('span').forEach(e=>{e.innerText=''})"""
         )

@@ -48,11 +48,30 @@
     function clear() {
         document.getElementById('rootele').innerHTML = ""
     }
+    function formatFloatTimestamp(timestamp) {
+        // 1. 分离整数秒和小数毫秒
+        const seconds = Math.floor(timestamp); // 整数部分（秒）
+        const milliseconds = Math.floor((timestamp - seconds) * 1000); // 小数部分 → 毫秒（0-999）
 
+        // 2. 创建 Date 对象（注意：JavaScript 需要毫秒，所以乘以 1000）
+        const date = new Date(seconds * 1000);
+
+        // 3. 手动格式化各字段
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const secondsStr = String(date.getSeconds()).padStart(2, '0');
+        const millisecondsStr = String(milliseconds).padStart(3, '0');
+
+        // 4. 组合结果
+        return `${year}-${month}-${day} ${hours}:${minutes}:${secondsStr}.${millisecondsStr}`;
+    }
     function getnewsentence(time, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
-        times.innerText = decodeURIComponent(time) + " "
+        times.innerText = formatFloatTimestamp(time) + " "
         times.classList.add('gettime')
         span.appendChild(times)
         let sent = document.createElement('span')
@@ -66,7 +85,7 @@
     function getnewtrans(time, api, sentence) {
         let span = document.createElement('div')
         let times = document.createElement('span')
-        times.innerText = decodeURIComponent(time) + " "
+        times.innerText = formatFloatTimestamp(time) + " "
         times.classList.add('gettime')
         span.appendChild(times)
         let apis = document.createElement('span')
@@ -95,11 +114,11 @@
                 if (innerhtml.length) {
                     innerhtml += '<br>'
                 }
-                innerhtml += `<div class="origin"><span class="gettime">${escapeHtml(line[1][0])} </span><span>${escapeHtml(line[1][1])}</span></div>`
+                innerhtml += `<div class="origin"><span class="gettime">${escapeHtml(formatFloatTimestamp(line[1][0]))} </span><span>${escapeHtml(line[1][1])}</span></div>`
             }
             else if (line[0] == 1) {
                 let ts = line[1][2].startsWith(content_is_html_sig) ? line[1][2].substr(content_is_html_sig.length) : escapeHtml(line[1][2])
-                innerhtml += `<div class="trans"><span class="gettime">${escapeHtml(line[1][0])} </span><span class="apiname">${escapeHtml(line[1][1])} </span><span>${ts}</span></div>`
+                innerhtml += `<div class="trans"><span class="gettime">${escapeHtml(formatFloatTimestamp(line[1][0]))} </span><span class="apiname">${escapeHtml(line[1][1])} </span><span>${ts}</span></div>`
             }
         });
         document.getElementById('rootele').innerHTML = innerhtml
@@ -115,7 +134,7 @@
 
 <script>
 
-function __internalservice() {
+    function __internalservice() {
         if (window.LUNAJSObject)
             return;
         const scheme = window.location.protocol;

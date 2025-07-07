@@ -1,7 +1,8 @@
 from textio.textsource.textsourcebase import basetext
 from myutils.wrapper import threader
-import json, time, os, gobject, NativeUtils
+import json, time, os, gobject, NativeUtils, uuid
 from myutils.config import globalconfig
+from gui.usefulwidget import request_for_something
 
 
 class parsejson:
@@ -77,8 +78,9 @@ class parsesrt:
         ) as ff:
             ff.write("\n\n".join(self.blocks))
 
-    def __init__(self, file):
+    def __init__(self, file, saveorigin):
         self.file = file
+        self.saveorigin = saveorigin
         with open(file, "r", encoding="utf8") as ff:
             text = ff.read()
             if text.endswith("\n"):
@@ -89,7 +91,14 @@ class parsesrt:
         return len(self.blocks)
 
     def save(self, index, k, ts):
-        self.blocks[index] = "\n".join(self.blocks[index].split("\n")[:2]) + "\n" + ts
+        if self.saveorigin:
+            self.blocks[index] = (
+                "\n".join(self.blocks[index].split("\n")[:2]) + "\n" + ts + "\n" + k
+            )
+        else:
+            self.blocks[index] = (
+                "\n".join(self.blocks[index].split("\n")[:2]) + "\n" + ts
+            )
 
     def load(self):
         for k in self.blocks:
@@ -180,7 +189,8 @@ class filetrans(basetext):
             return ts.get(toppest, None)
         return (list(ts.values()) + [None])[0]
 
-    @threader
+    srtsaveoriginuuid = uuid.uuid4()
+
     def starttranslatefile(self, file: str):
         self.startsql(file + ".sqlite")
         if file.lower().endswith(".txt"):
@@ -190,9 +200,16 @@ class filetrans(basetext):
         elif file.lower().endswith(".lrc"):
             file = parselrc(file)
         elif file.lower().endswith(".srt"):
-            file = parsesrt(file)
+            saveorigin = request_for_something(
+                gobject.base.settin_ui, self.srtsaveoriginuuid, "是否保留原文？"
+            )
+            file = parsesrt(file, saveorigin)
         elif file.lower().endswith(".vtt"):
             file = parsevtt(file)
+        self.__starttranslatefile(file)
+
+    @threader
+    def __starttranslatefile(self, file: str):
         gobject.base.progresssignal3.emit(len(file))
         gobject.base.progresssignal2.emit("", 0)
 
@@ -218,6 +235,7 @@ class filetrans(basetext):
             _ref = __p()
             if not line:
                 continue
+            print(list(line))
             ts: str = self.query(line)
             if not ts:
                 ts = self.waitfortranslation(line)

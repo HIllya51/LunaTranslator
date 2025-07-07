@@ -4,7 +4,7 @@
 
 | Hệ điều hành | 32-bit | 64-bit | Mô tả |
 | - | - | - | - |
-| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | Phiên bản này chỉ hỗ trợ các phiên bản Windows 10 mới hơn để đạt hiệu suất cao hơn, tính năng hệ thống cập nhật và tỷ lệ dương tính giả vi-rút thấp hơn.
+| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | Phiên bản này chỉ hỗ trợ các phiên bản hệ điều hành mới hơn để đạt hiệu suất cao hơn, các tính năng hệ thống được cập nhật và tỷ lệ dương tính giả vi-rút thấp hơn.
 | Windows 7 trở lên | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> | |
 | Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | Phiên bản này chỉ dùng để trích xuất văn bản từ các game rất cũ chỉ chạy được trên máy ảo XP. Chức năng hạn chế, không ổn định và chạy chậm. Không khuyến nghị dùng thường xuyên.
 

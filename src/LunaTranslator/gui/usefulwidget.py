@@ -2031,16 +2031,16 @@ class WebviewWidget(abstractwebview):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
 
 
-_request_delete_ok_cache = set()
+_request_delete_ok_cache = {}
 
 
-def request_delete_ok(parent: QWidget = None, cache=None):
+def request_delete_ok(parent: QWidget = None, cache=None, title="确认删除"):
     if cache and cache in _request_delete_ok_cache:
         return True
     msg_box = QMessageBox(parent)
     msg_box.setIcon(QMessageBox.Icon.Warning)
-    msg_box.setWindowTitle(_TR("确认删除"))
-    msg_box.setText(_TR("确认删除"))
+    msg_box.setWindowTitle(_TR(title))
+    msg_box.setText(_TR(title))
     msg_box.setStandardButtons(
         QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
     )
@@ -2052,9 +2052,32 @@ def request_delete_ok(parent: QWidget = None, cache=None):
     reply = msg_box.exec_()
     if reply == QMessageBox.StandardButton.Yes:
         if cache and dont_ask_checkbox.isChecked():
-            _request_delete_ok_cache.add(cache)
+            _request_delete_ok_cache[cache] = 1
         return True
     return False
+
+
+def request_for_something(parent: QWidget = None, cache=None, title="确认删除"):
+    if cache and cache in _request_delete_ok_cache:
+        return _request_delete_ok_cache.get(cache)
+    msg_box = QMessageBox(parent)
+    msg_box.setIcon(QMessageBox.Icon.Warning)
+    msg_box.setWindowTitle(_TR(title))
+    msg_box.setText(_TR(title))
+    msg_box.setStandardButtons(
+        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+    )
+    msg_box.setDefaultButton(QMessageBox.StandardButton.No)
+
+    if cache:
+        dont_ask_checkbox = QCheckBox(_TR("本次运行期间不再询问"), msg_box)
+        dont_ask_checkbox.setChecked(True)
+        msg_box.setCheckBox(dont_ask_checkbox)
+
+    reply = msg_box.exec_()
+    if dont_ask_checkbox.isChecked():
+        _request_delete_ok_cache[cache] = reply == QMessageBox.StandardButton.Yes
+    return reply == QMessageBox.StandardButton.Yes
 
 
 class WebviewWidget_for_auto(WebviewWidget):
@@ -3537,7 +3560,9 @@ class SClickableLabel(QLabel):
                 background:transparent
             }"""
         )
-        self.setCursor(Qt.CursorShape.PointingHandCursor if b else Qt.CursorShape.ArrowCursor)
+        self.setCursor(
+            Qt.CursorShape.PointingHandCursor if b else Qt.CursorShape.ArrowCursor
+        )
 
     def enterEvent(self, event):
         self.beforeEnter.emit()
