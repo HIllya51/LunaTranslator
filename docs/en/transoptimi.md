@@ -1,6 +1,6 @@
 # Functions of Various Translation Optimizations
 
-1. ## Proper Noun Translation - Replace before translation {#anchor-vndbnamemap}
+1. ## Proper Noun Translation Pre-translation substitution {#anchor-vndbnamemap}
 
     This method directly replaces the original text with the translated text before translation. It supports using `Regex` and `Escape` for more complex replacements.
 

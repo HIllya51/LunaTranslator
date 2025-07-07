@@ -93,7 +93,7 @@
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次进行OCR {#anchor-ocr_once_follow}
     当使用过一次`进行一次OCR`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
     
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译_直接替换 {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译 翻译前替换 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 专有名词翻译 {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻译结果修正 {#anchor-fix}
     以上三个按钮，效果类似，是用来快捷打开翻译优化的设置窗口，增加新的指定词条的。
@@ -146,7 +146,7 @@
     打开编辑窗口，运行编辑当前提取到的文本。
 
     该窗口中，可以运行修改文本后，再去进行翻译；或者可以翻译任何自行输入的文本。
-1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 编辑_翻译记录 {#anchor-edittrans}
+1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 编辑 翻译记录 {#anchor-edittrans}
     打开当前游戏的翻译记录编辑窗口
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> 模拟按键Ctrl {#anchor-simulate_key_ctrl}
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> 模拟按键Enter {#anchor-simulate_key_enter}
@@ -155,7 +155,7 @@
     对于当前正在玩的游戏，打开备忘录窗口。
     
     点击左键时，打开当前游戏的备忘录。点击右键时，打开全局的备忘录。
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 绑定窗口（部分软件不支持）（点击自己取消） {#anchor-bindwindow}
+1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 绑定窗口 （点击自己取消） {#anchor-bindwindow}
     **该按钮非常重要，许多功能都依赖于该按钮先进行设置后才可用**
 
     在绑定了游戏窗口后，`窗口缩放` `窗口截图` `游戏静音`，`跟随游戏窗口`->`游戏失去焦点时取消置顶`和`游戏窗口移动时同步移动`，以及记录游戏时间等，才可用。

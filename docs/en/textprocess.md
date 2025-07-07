@@ -12,7 +12,7 @@ If there are very complex error forms, you can activate multiple processing meth
 Most processing methods do not take effect when embedding translations to reduce the possibility of game crashes. The methods that can be used include: `Filter Newline Characters`, `String Replacement`,  `Custom Python Processing`, `Filter Angle Brackets <>`, `Remove Curly Braces {}`
 :::
 
-1. #### Filter Non-Japanese Character Set Characters in Text {#anchor-_remove_non_shiftjis_char}
+1. #### Filter Non-Japanese Characters in Text {#anchor-_remove_non_shiftjis_char}
 
     Sometimes, garbled text is hooked. Since this problem usually occurs in Japanese games, this method is preset to filter out **characters that cannot be encoded using the shift-jis character set**, for example:
 
@@ -26,11 +26,11 @@ Most processing methods do not take effect when embedding translations to reduce
 
     This method will filter out ```!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~``` in the text.
 
-1. #### Filter Characters Outside「」 {#anchor-_remove_not_in_ja_bracket}
+1. #### Filter Characters Outside of 「」 {#anchor-_remove_not_in_ja_bracket}
 
     For example: `こなみ「ひとめぼれってやつだよね……」` will be processed into `「ひとめぼれってやつだよね……」`
 
-1. #### Remove Curly Braces {} {#anchor-_1}
+1. #### Filter Curly Braces {} {#anchor-_1}
 
     Many game scripts use {} and some other characters to add furigana to kanji, for example: `{kanji/furigana}` and `{kanji:furigana}`, such as `「{恵麻/えま}さん、まだ{起き/おき}てる？」` or `「{恵麻:えま}さん、まだ{起き:おき}てる？」` will be processed into `「恵麻さん、まだ起きてる？」`. It will first attempt to remove the furigana according to these patterns, and then remove all curly braces and their contents.
 
@@ -40,7 +40,7 @@ Most processing methods do not take effect when embedding translations to reduce
 
     If **Extract from End** is activated, it will extract the specified number of lines from the end of the text.
 
-1. #### Remove Duplicate Characters _AAAABBBBCCCC->ABC {#anchor-_2}
+1. #### HOOK Remove Duplicate Characters AAAABBBBCCCC->ABC {#anchor-_2}
 
     ::: info  
     This filter only applies to text read in HOOK mode  
@@ -49,28 +49,28 @@ Most processing methods do not take effect when embedding translations to reduce
 
     Due to the way games sometimes draw text (e.g., drawing text, then shadow, then outline), HOOK mode may extract the same characters multiple times. For example, `恵恵恵麻麻麻さささんんんははは再再再びびび液液液タタタブブブへへへ視視視線線線ををを落落落とととすすす。。。` will be processed into `恵麻さんは再び液タブへ視線を落とす。`. The default repetition count is `1`, which automatically analyzes the number of repeated characters, but there may be inaccuracies, so it is recommended to specify a definite repetition count.
 
-1. #### Remove Duplicate Lines _ABCDABCDABCD->ABCD {#anchor-_3}
+1. #### HOOK Filter Duplicate Lines ABCDABCDABCD->ABCD {#anchor-_3}
 
     ::: info  
     This filter only applies to text read in HOOK mode  
     :::
     This is also common, similar to the above, but generally does not refresh repeatedly, but quickly refreshes multiple times. The effect is `恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。` will become `恵麻さんは再び液タブへ視線を落とす。`. Similarly, the default repetition count is `1`, which automatically analyzes the number of repeated characters, but there may be inaccuracies, so it is recommended to specify a definite repetition count.
 
-1. #### Remove Duplicate Lines _S1S1S1S2S2S2->S1S2 {#anchor-_3_2}
+1. #### HOOK Filter Duplicate Lines S1S1S1S2S2S2->S1S2 {#anchor-_3_2}
 
     ::: info  
     This filter only applies to text read in HOOK mode  
     :::
     This is relatively complex; sometimes, the refresh count of each sentence is not exactly the same, so the program must analyze how to deduplicate. For example, `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。私は恵麻さんの目元を優しくハンカチで拭う。` where `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。` repeats 3 times, `なんてニヤニヤしていると、恵麻さんが振り返った。` does not repeat, and `私は恵麻さんの目元を優しくハンカチで拭う。` repeats 2 times, the final analysis will get `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。`, where due to the complexity, there may be a few analysis errors, which is unavoidable, but generally, it can get the correct result.
 
-1. #### Remove Duplicate Lines _ABCDBCDCDD->ABCD {#anchor-_10}
+1. #### HOOK Filter Duplicate Lines ABCDBCDCDD->ABCD {#anchor-_10}
 
     ::: info  
     This filter only applies to text read in HOOK mode  
     :::
     This is also common. The reason for this is that sometimes the function HOOKed to display text has the displayed text as a parameter, which is called every time a character is displayed, and each time the parameter string points to the next character, resulting in the fact that the first call has already obtained the complete text, and subsequent calls output the remaining substring until the length decreases to 0. For example, `恵麻さんは再び液タブへ視線を落とす。麻さんは再び液タブへ視線を落とす。さんは再び液タブへ視線を落とす。んは再び液タブへ視線を落とす。は再び液タブへ視線を落とす。再び液タブへ視線を落とす。び液タブへ視線を落とす。液タブへ視線を落とす。タブへ視線を落とす。ブへ視線を落とす。へ視線を落とす。視線を落とす。線を落とす。を落とす。落とす。とす。す。。` will be analyzed to determine that the real text should be `恵麻さんは再び液タブへ視線を落とす。`
 
-1. #### Remove Duplicate Lines _AABABCABCD->ABCD {#anchor-_13EX}
+1. #### HOOK Filter Duplicate Lines AABABCABCD->ABCD {#anchor-_13EX}
 
     ::: info  
     This filter only applies to text read in HOOK mode  
@@ -83,7 +83,7 @@ Most processing methods do not take effect when embedding translations to reduce
 
     This is actually filtering HTML tags, but the name is written this way to avoid confusion for beginners. For example, `<div>`, `</div>`, and `<div id="dsds">` will be filtered. This is mainly used in TyranoScript games where the HOOK extracts the text as innerHTML, usually containing many such tags.
 
-1. #### Filter Newline Characters {#anchor-_6EX}
+1. #### Filter Line Breaks {#anchor-_6EX}
 
     Originally named **Filter Newline Characters Language Adaptive**, the old **Filter Newline Characters** has been deprecated.
 

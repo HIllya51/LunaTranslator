@@ -6,7 +6,7 @@
 
 ## General
 
-1. #### Manual Translation {#anchor-_1}
+1. #### Retranslate {#anchor-_1}
     Reads input once from the current text input source and performs translation.
     For example, if the current mode is OCR, it will perform OCR again.
 
@@ -28,7 +28,7 @@
 1. #### Show/Hide History Text {#anchor-_6}
     Open or close the history text window.  
 
-1. #### Mouse Pass-through Window {#anchor-_8}
+1. #### Mouse Click-through {#anchor-_8}
     Toggles the mouse pass-through window state.
     This feature must be used in conjunction with the mouse pass-through window tool button to function correctly.
 
@@ -37,7 +37,7 @@
     When the toolbar is not locked and `Mouse Pass-through Window` is activated, the toolbar will only be displayed when the mouse moves to the **Mouse Pass-through Window button and the area to its left and right**; otherwise, it will be displayed as soon as the mouse enters the translation window.
     If window effects (Aero/Arylic) are used and the toolbar is not locked, the toolbar will be in the z-axis area above the text area, not on the y-axis above the text area. This is because, due to Windows, when window effects are used, if the toolbar is only hidden rather than shrunk to reduce its window height, the hidden toolbar will still be rendered with the Acrylic/Aero background, causing a blank area where the toolbar is located.
 
-1. #### Word selection translation {#anchor-38}
+1. #### Word Selection Translation {#anchor-38}
     Translate the text currently selected by the mouse
 
     Prioritize the use of UIAutomation for text extraction. If the focus control of the current window does not support UIAutomationTextPattern, resulting in a failure to extract text, then read from the clipboard.
@@ -61,22 +61,22 @@
 
 ## OCR
 
-1. #### Select OCR Range {#anchor-_13}
+1. #### Select OCR Region {#anchor-_13}
     **Available only in OCR mode**
     
     In OCR mode, selects the OCR area, or changes the OCR area, or when `OCR Settings` -> `Other` -> `Multi-region Mode` is activated, adds a new OCR area.
 
-1. #### Show/Hide Range Box {#anchor-_14}
+1. #### Show/Hide Region Border {#anchor-_14}
     **Available only in OCR mode**
     
     When no OCR range is selected, using this shortcut key will display the OCR range and automatically set the OCR range to the last selected OCR.
 
-1. #### Clear OCR range {#anchor-_14_1}
+1. #### Clear OCR Region {#anchor-_14_1}
     **Only available in OCR mode**
     
     Clear all selected ranges
 
-1. #### Perform OCR Once {#anchor-_26}
+1. #### Perform OCR {#anchor-_26}
     Similar to `Read Clipboard`, regardless of the current default text input source, it will first select the OCR range, then perform OCR once, and then proceed with the translation process.
     Generally used for, in HOOK mode, temporarily using OCR to translate selection branches when encountering them, or in OCR mode, temporarily recognizing a new occasional position.
 
@@ -91,24 +91,24 @@
 1. #### Copy to Clipboard {#anchor-_4}
     Copies the currently extracted text to the clipboard once. If you want to automatically extract to the clipboard, enable `Core Settings` → `Clipboard` → `Output` → `Auto Output Text` and underneath it `Content` → `Original Text`.
 
-1. #### Copy Translation to Clipboard {#anchor-_28}
+1. #### Copy to Clipboard Translation {#anchor-_28}
     Copies the translation instead of the original text to the clipboard.
 
 ## TTS
 
-1. #### Auto Read {#anchor-_32}
+1. #### Auto Read Aloud {#anchor-_32}
     Toggles whether to automatically read aloud.
 
-1. #### Read {#anchor-_7}
+1. #### Read Aloud {#anchor-_7}
     Performs text-to-speech on the current text.
     This reading will ignore `Skip` (if the current text target is matched as `Skip` in `Voice Assignment`, using the shortcut key to read will ignore the skip and force reading).
 
-1. #### Read Interrupt {#anchor-_7_1}
+1. #### Read Aloud Interrupt {#anchor-_7_1}
     Interrupts the reading.
 
 ## Game
 
-1. #### Bind Window (Click to Cancel) {#anchor-_15}
+1. #### Bind to Window (Click to Cancel) {#anchor-_15}
     After binding the game window, `Window Scaling`, `Window Screenshot`, `Game Mute`, `Follow Game Window` -> `Cancel Topmost When Game Loses Focus` and `Move Synchronously When Game Window Moves`, as well as recording game time, become available.
     This shortcut key is available regardless of HOOK/OCR/clipboard mode.
     In HOOK mode, it will automatically bind the game window according to the connected game, but you can also use this shortcut key to reselect another window.
@@ -118,10 +118,10 @@
 1. #### Window Screenshot {#anchor-_21}
     Can take a screenshot of the bound window (default takes two screenshots, GDI and Winrt, both of which may fail). The best part is that if Magpie is currently being used for scaling, it will also take a screenshot of the scaled window.
 
-1. #### Game Mute {#anchor-_22}
+1. #### Mute Game {#anchor-_22}
     After binding the game window (not just in HOOK mode, but also in OCR or clipboard mode, as long as the game window is bound), you can mute the game with one click, saving the trouble of muting the game in the system volume mixer.
 
-1. #### Magpie Scaling {#anchor-41}
+1. #### Magpie Scale {#anchor-41}
     Allows one-click full-screen scaling of the game window using the built-in Magpie.
 
 1. #### Magpie Windowed Scaling {#anchor-42}
@@ -129,15 +129,15 @@
 
 ## Dictionary Lookup
 
-1. #### Retrieve and search for words {#anchor-37}
+1. #### Word Selection Lookup {#anchor-37}
     Search for words in the text currently selected by the mouse
 
     Prioritize the use of UIAutomation for text extraction. If the focus control of the current window does not support UIAutomationTextPattern, resulting in a failure to extract text, then read from the clipboard.
-1. #### Word Lookup in a New Window {#anchor-40}
+1. #### Word Selection Lookup In New Window {#anchor-40}
     Look up the currently selected text by the mouse in a new search window to avoid overwriting the ongoing search.
 
     Prioritize the use of UIAutomation for text extraction. If the focus control of the current window does not support UIAutomationTextPattern, resulting in a failure to extract text, then read from the clipboard.
-1. #### OCR word search {#anchor-39}
+1. #### OCR Look Up Word {#anchor-39}
     Select the OCR range for one OCR and then search for words
 
 1. #### Anki Recording {#anchor-_29}
@@ -149,7 +149,7 @@
 1. #### Anki Add {#anchor-_35}
     Adds the word to Anki.
 
-1. #### Read Word {#anchor-_33}
+1. #### Read Aloud Word {#anchor-_33}
     Reads the word in the current dictionary lookup window.
 
 ## Customize

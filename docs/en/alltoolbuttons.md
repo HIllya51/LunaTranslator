@@ -25,7 +25,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 }
 </style>
 
-1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Manual Translation {#anchor-retrans}
+1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Retranslate {#anchor-retrans}
     The actual meaning is to read the input once from the current text input source and perform translation.
     
     For example, if the current mode is OCR, it will perform OCR again.
@@ -43,7 +43,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     Right clicking the button will append the read text to the current text.
 1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> Game Settings {#anchor-open_game_setting}
     When using HOOK mode to connect to a game, or using OCR mode to bind a game window, you can directly open the current game's settings window through this button
-1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> Mouse Through Window {#anchor-mousetransbutton}
+1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> Mouse Click-through {#anchor-mousetransbutton}
     After activating this button, the translation window will not respond to mouse clicks, but will pass the click event to the underlying window.
 
     When placing the translation window above the game window's text box and activating this button, you can directly click the game's text box instead of the translation window.
@@ -71,19 +71,19 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     Clicking the button pops up the select game text window to select which text to translate that is HOOKed.
 
     However, the select text window will automatically pop up after selecting the process, and this button is actually used to replace the selected text or modify some settings.
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Select OCR Range {#anchor-selectocrrange}
+1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Select OCR Region {#anchor-selectocrrange}
     **This button is only available in OCR mode**
 
     In OCR mode, select the OCR area, or change the OCR area, or when activating `OCR Settings` -> `Other` -> `Multiple Area Mode`, add a new OCR area
 
     When the right button is pressed, all selected ranges will be cleared before adding new areas.
-1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> Show/Hide Range Box {#anchor-hideocrrange}
+1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> Show/Hide Region Border {#anchor-hideocrrange}
     **This button is only available in OCR mode**
 
     When no OCR range is selected, use this button to display the OCR range, which will automatically set the OCR range to the last selected OCR.
 
     When the right button is pressed, all selected ranges will be cleared
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR Once {#anchor-ocr_once}
+1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR {#anchor-ocr_once}
     This button is similar to `Read Clipboard`, regardless of the current default text input source, it will first select the OCR range, then perform OCR once, and then proceed with the translation process.
 
     This button is generally used in HOOK mode, when encountering choices, to temporarily use OCR for translation of choices. Or in OCR mode, to temporarily recognize a new position that occasionally appears.
@@ -91,7 +91,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR Again {#anchor-ocr_once_follow}
     After using `Perform OCR Once`, use this button to perform OCR again at the original location without having to re-select the recognition area.
     
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation_Direct Replacement {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation Pre-translation substitution {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> Translation Result Correction {#anchor-fix}
     The above three buttons have similar effects and are used to quickly open the translation optimization settings window to add new specified terms.
@@ -107,7 +107,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     Drag the translation window.
 
     In fact, when there is no button on the button bar, there is additional blank area, you can drag it at will. This button is just for reserving a drag position.
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Window Scaling {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Window Zoom {#anchor-fullscreen}
     You can scale the game window with one click using the built-in Magpie.
 
     Left-click for windowed scaling, and right-click for full-screen scaling.
@@ -117,7 +117,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     When left clicked, the screenshot will be saved to a file, and when right clicked, the screenshot will be saved to the clipboard. The middle key opens the in-game overlay.
 
-1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> Game Mute {#anchor-muteprocess}
+1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> Mute Game {#anchor-muteprocess}
     After binding the game window (not just in HOOK mode, OCR or clipboard mode can also, as long as the game window is bound), you can mute the game with one click, saving the trouble of muting the game in the system volume mixer.
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> Show/Hide Original Text {#anchor-showraw}
     Toggle whether to display the original text, which will take effect immediately.
@@ -129,7 +129,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     If no translation has been performed and it is switched from hidden to display, it will trigger the translation of the current sentence.
 
-1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> Read Out Loud {#anchor-langdu}
+1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> Read Aloud {#anchor-langdu}
     Left-clicking the button will perform text-to-speech on the current text.
 
     Right-clicking the button will interrupt the reading.
@@ -145,16 +145,16 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     Open the edit window to edit the currently extracted text.
 
     In this window, you can modify the text and then perform translation; or you can translate any text you enter yourself.
-1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> Edit_Translation History {#anchor-edittrans}
+1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> Edit Translation Record {#anchor-edittrans}
     Open the translation history edit window for the current game.
-1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> Simulate Key Press Ctrl {#anchor-simulate_key_ctrl}
-1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> Simulate Key Press Enter {#anchor-simulate_key_enter}
+1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> Simulate Ctrl Key {#anchor-simulate_key_ctrl}
+1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> Simulate Enter Key {#anchor-simulate_key_enter}
     As above, it is used to send a simulated key press to the game window. It has some effect when using streaming/tablet.
 1. #### <i class="fa fa-list-ul"></i> <i class="fa fa-icon fa-rotate-right"></i> Memo {#anchor-memory}
     Open the memo window for the game you are currently playing. 
     
     When you click the left button, the memo for the current game is opened. When you click the right button, the global memo is opened.
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> Bind Window (Some software does not support) (Click to cancel) {#anchor-bindwindow}
+1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> Bind to Window (Click to Cancel) {#anchor-bindwindow}
     **This button is very important, many features depend on this button to be set first before they can be used**
 
     After binding the game window, `Window Scaling` `Window Screenshot` `Game Mute`, `Follow Game Window` -> `Unpin when Game Loses Focus` and `Synchronize with Game Window Movement`, as well as recording game time, etc., are available.
@@ -165,7 +165,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     In OCR mode, after binding the window, it also allows the OCR area and range box to move automatically in sync with the movement of the game window.
     In OCR/Clipboard model, after binding the window, you can also link to the current game's game settings like in HOOK mode, to use the current game's dedicated translation optimization dictionary, etc.
 
-1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> Always on Top {#anchor-keepontop}
+1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> Window Always On Top {#anchor-keepontop}
     Cancel/Always on Top translation window
 
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> Selectable {#anchor-selectable}
@@ -173,5 +173,5 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     If the right mouse button is clicked during activation, dragging non-text areas to move the window will be prohibited.
 
-1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Look Up {#anchor-searchwordW}
+1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Look Up Word {#anchor-searchwordW}
     If there is currently text selected, the selected text will be queried and a word search window will be opened. Otherwise, it will only open or close the keyword search window.

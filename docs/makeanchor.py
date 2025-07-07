@@ -2,6 +2,11 @@ import sys, os, json
 import rapidfuzz
 
 os.chdir(os.path.dirname(__file__))
+root = os.getcwd()
+
+os.chdir(r"..\src")
+sys.path.append("LunaTranslator")
+from myutils.config import _TR, globalconfig
 
 
 with open(
@@ -26,10 +31,12 @@ with open(
 def parsewhich(md, getk, starter="1. ####"):
 
     newlines = []
-    with open(r"zh/" + md, "r", encoding="utf8") as ff:
+    with open(root + "/" + r"zh/" + md, "r", encoding="utf8") as ff:
         ls = ff.read().splitlines()
 
     saveinfo = []
+    savename = []
+    savel = []
 
     for l in ls:
         if not l.startswith(starter.strip() + " "):
@@ -37,35 +44,40 @@ def parsewhich(md, getk, starter="1. ####"):
             continue
         l = l.split("{#")[0].strip()
         name = l.split("</i>")[-1].strip()
-        usek = getk(name)
+        name = name.split("#")[-1].strip()
+        usek, usename = getk(name)
+        l = l.split(name)[0]
+        savel.append(l)
+        l += _TR(usename)
         l += " {#anchor-" + usek + "}"
         saveinfo.append(usek)
         newlines.append(l)
+        savename.append(usename)
 
-    with open(r"zh/" + md, "w", encoding="utf8") as ff:
+    with open(root + "/" + r"zh/" + md, "w", encoding="utf8") as ff:
         ff.write("\n".join(newlines))
 
-    for lang in os.listdir("."):
-        if not os.path.exists(lang + "/" + md):
+    for lang in os.listdir(root):
+        if not os.path.exists(root + "/" + lang + "/" + md):
             continue
         print(lang + "/" + md)
         newlines.clear()
-        with open(lang + "/" + md, "r", encoding="utf8") as ff:
+        with open(root + "/" + lang + "/" + md, "r", encoding="utf8") as ff:
             ls = ff.read().splitlines()
-
+        globalconfig["languageuse2"] = lang
         i = 0
         for l in ls:
             if not l.startswith(starter.strip() + " "):
                 newlines.append(l)
                 continue
-            l = l.split("{#")[0].strip()
-
+            l = savel[i]
+            l += _TR(savename[i])
             l += " {#anchor-" + saveinfo[i] + "}"
             i += 1
             newlines.append(l)
         if i != len(saveinfo):
             raise Exception(lang + "/" + md)
-        with open(lang + "/" + md, "w", encoding="utf8") as ff:
+        with open(root + "/" + lang + "/" + md, "w", encoding="utf8") as ff:
             ff.write("\n".join(newlines))
 
 
@@ -77,7 +89,8 @@ def getkbuttons(name):
         if dis < mindis:
             mindis = dis
             usek = k
-    return usek
+            usename = buttons[k]["tip"]
+    return usek, usename
 
 
 def getktextprocess(name):
@@ -90,7 +103,8 @@ def getktextprocess(name):
         if dis < mindis:
             mindis = dis
             usek = k
-    return usek
+            usename = postprocessconfig[k]["name"]
+    return usek, usename
 
 
 def gettransoptimik(name):
@@ -101,7 +115,8 @@ def gettransoptimik(name):
         if dis < mindis:
             mindis = dis
             usek = d["name"]
-    return usek
+            usename = d["visname"]
+    return usek, usename
 
 
 def getfk(name):
@@ -112,7 +127,8 @@ def getfk(name):
         if dis < mindis:
             mindis = dis
             usek = k
-    return usek
+            usename = fastkeys[k]["name"]
+    return usek, usename
 
 
 parsewhich("alltoolbuttons.md", getkbuttons)

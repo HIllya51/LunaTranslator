@@ -51,7 +51,7 @@
     },
     "_2": {
         "use": true,
-        "name": "去除重复字符_AAAABBBBCCCC->ABC",
+        "name": "HOOK_去除重复字符_AAAABBBBCCCC->ABC",
         "args": {
             "重复次数(若为1则自动分析去重)": 1,
             "保持非重复字符": true
@@ -71,7 +71,7 @@
     },
     "_3": {
         "use": true,
-        "name": "去除重复行_ABCDABCDABCD->ABCD",
+        "name": "HOOK_去除重复行_ABCDABCDABCD->ABCD",
         "args": {
             "重复次数(若为1则自动分析去重)": 1
         },
@@ -87,7 +87,7 @@
     },
     "_3_2": {
         "use": false,
-        "name": "去除重复行_S1S1S1S2S2S2->S1S2",
+        "name": "HOOK_去除重复行_S1S1S1S2S2S2->S1S2",
         "isHookOnly": true
     },
     "_4": {
@@ -110,12 +110,12 @@
     },
     "_10": {
         "use": false,
-        "name": "去除重复行_ABCDBCDCDD->ABCD",
+        "name": "HOOK_去除重复行_ABCDBCDCDD->ABCD",
         "isHookOnly": true
     },
     "_13EX": {
         "use": false,
-        "name": "去除重复行_AABABCABCD->ABCD",
+        "name": "HOOK_去除重复行_AABABCABCD->ABCD",
         "isHookOnly": true
     },
     "_11": {
