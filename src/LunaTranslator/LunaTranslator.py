@@ -1460,6 +1460,11 @@ class BASEOBJECT(QObject):
         self.serviceinit()
         versioncheckthread()
 
+    @property
+    def focusWindow(self):
+        _ = QApplication.activeWindow()
+        return _ if _ else self.commonstylebase
+
     def WinEventHookCALLBACK(self, event, hwnd, idObject):
         try:
             if event == windows.EVENT_SYSTEM_FOREGROUND:

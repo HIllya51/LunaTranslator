@@ -201,7 +201,7 @@ class filetrans(basetext):
             file = parselrc(file)
         elif file.lower().endswith(".srt"):
             saveorigin = request_for_something(
-                gobject.base.settin_ui, self.srtsaveoriginuuid, "是否保留原文？"
+                gobject.base.focusWindow, self.srtsaveoriginuuid, "是否保留原文？"
             )
             file = parsesrt(file, saveorigin)
         elif file.lower().endswith(".vtt"):

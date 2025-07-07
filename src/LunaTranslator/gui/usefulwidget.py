@@ -1803,7 +1803,7 @@ class WebviewWidget(abstractwebview):
     @staticmethod
     def showError(e: Exception):
         QMessageBox.critical(
-            gobject.base.settin_ui,
+            gobject.base.focusWindow,
             _TR("错误"),
             str(e)
             + "\n\n"
