@@ -42,17 +42,43 @@ Hầu hết các phương pháp xử lý không có hiệu lực khi nhúng bả
 
 1. #### Xóa Ký tự Trùng lặp _AAAABBBBCCCC->ABC {#anchor-_2}
 
+    ::: info  
+    Bộ lọc này chỉ có hiệu lực với văn bản đọc được ở chế độ HOOK  
+    :::
     Đây là bộ lọc được sử dụng phổ biến nhất.
 
     Do cách trò chơi đôi khi vẽ văn bản (ví dụ: vẽ văn bản, sau đó là bóng, sau đó là viền), chế độ HOOK có thể trích xuất cùng một ký tự nhiều lần. Ví dụ, `恵恵恵麻麻麻さささんんんははは再再再びびび液液液タタタブブブへへへ視視視線線線ををを落落落とととすすす。。。` sẽ được xử lý thành `恵麻さんは再び液タブへ視線を落とす。`. Số lần lặp mặc định là `1`, tự động phân tích số ký tự lặp lại, nhưng có thể không chính xác, vì vậy nên chỉ định số lần lặp cụ thể.
 
 1. #### Xóa Dòng Trùng lặp _ABCDABCDABCD->ABCD {#anchor-_3}
 
+    ::: info  
+    Bộ lọc này chỉ có hiệu lực với văn bản đọc được ở chế độ HOOK  
+    :::
     Điều này cũng phổ biến, tương tự như trên, nhưng thường không làm mới lặp lại mà làm mới nhanh nhiều lần. Kết quả là `恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。恵麻さんは再び液タブへ視線を落とす。` sẽ trở thành `恵麻さんは再び液タブへ視線を落とす。`. Tương tự, số lần lặp mặc định là `1`, tự động phân tích số ký tự lặp lại, nhưng có thể không chính xác, vì vậy nên chỉ định số lần lặp cụ thể.
 
 1. #### Xóa Dòng Trùng lặp _S1S1S1S2S2S2->S1S2 {#anchor-_3_2}
 
+    ::: info  
+    Bộ lọc này chỉ có hiệu lực với văn bản đọc được ở chế độ HOOK  
+    :::
     Điều này tương đối phức tạp; đôi khi, số lần làm mới của mỗi câu không hoàn toàn giống nhau, vì vậy chương trình phải phân tích cách loại bỏ trùng lặp. Ví dụ, `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。私は恵麻さんの目元を優しくハンカチで拭う。` nơi `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。` lặp lại 3 lần, `なんてニヤニヤしていると、恵麻さんが振り返った。` không lặp lại, và `私は恵麻さんの目元を優しくハンカチで拭う。` lặp lại 2 lần, phân tích cuối cùng sẽ nhận được `恵麻さん……ううん、恵麻ははにかむように私の名前を呼ぶ。なんてニヤしていると、恵麻さんが振り返った。私は恵麻さんの目元を優しくハンカチで拭う。`, nơi do sự phức tạp, có thể có một số lỗi phân tích, điều này không thể tránh khỏi, nhưng nhìn chung, nó có thể nhận được kết quả chính xác.
+
+1. #### Xóa Dòng Trùng lặp _ABCDBCDCDD->ABCD {#anchor-_10}
+
+    ::: info  
+    Bộ lọc này chỉ có hiệu lực với văn bản đọc được ở chế độ HOOK  
+    :::
+
+    Điều này cũng phổ biến. Lý do là đôi khi chức năng HOOK để hiển thị văn bản có văn bản hiển thị làm tham số, được gọi mỗi khi một ký tự được hiển thị, và mỗi lần chuỗi tham số trỏ đến ký tự tiếp theo, dẫn đến việc lần gọi đầu tiên đã nhận được văn bản đầy đủ, và các lần gọi sau đó xuất ra chuỗi con còn lại cho đến khi độ dài giảm xuống 0. Ví dụ, `恵麻さんは再び液タブへ視線を落とす。麻さんは再び液タブへ視線を落とす。さんは再び液タブへ視線を落とす。んは再び液タブへ視線を落とす。は再び液タブへ視線を落とす。再び液タブへ視線を落とす。び液タブへ視線を落とす。液タブへ視線を落とす。タブへ視線を落とす。ブへ視線を落とす。へ視線を落とす。視線を落とす。線を落とす。を落とす。落とす。とす。す。。` sẽ được phân tích để xác định rằng văn bản thực sự nên là `恵麻さんは再び液タブへ視線を落とす。`
+
+1. #### Xóa Dòng Trùng lặp _AABABCABCD->ABCD {#anchor-_13EX}
+
+    ::: info  
+    Bộ lọc này chỉ có hiệu lực với văn bản đọc được ở chế độ HOOK  
+    :::
+    Điều này cũng phổ biến. Lý do là mỗi khi một ký tự được vẽ, các ký tự trước đó được vẽ lại khi ký tự tiếp theo được vẽ. Ví dụ, `恵麻恵麻さ恵麻さん恵麻さんは恵麻さんは再恵麻さんは再び恵麻さんは再び液恵麻さんは再び液タ恵麻さんは再び液タブ恵麻さんは再び液タブへ恵麻さんは再び液タブへ視恵麻さんは再び液タブへ視線恵麻さんは再び液タブへ視線を恵麻さんは再び液タブへ視線を落恵麻さんは再び液タブへ視線を落と恵麻さんは再び液タブへ視線を落とす恵麻さんは再び液タブへ視線を落とす。` sẽ được phân tích để xác định rằng văn bản thực sự nên là `恵麻さんは再び液タブへ視線を落とす。`
+
+    Khi có nhiều dòng văn bản, mỗi dòng được xử lý riêng theo logic trên, điều này mang lại nhiều phức tạp hơn. Do sự phức tạp, xử lý này thường không thể xử lý chính xác. Nếu gặp phải, nên viết một script Python tùy chỉnh để giải quyết.
 
 1. #### Lọc Dấu ngoặc nhọn <> {#anchor-_4}
 
@@ -71,16 +97,6 @@ Hầu hết các phương pháp xử lý không có hiệu lực khi nhúng bả
 1. #### Lọc Chữ cái Tiếng Anh {#anchor-_92}
 
     Không áp dụng.
-
-1. #### Xóa Dòng Trùng lặp _ABCDBCDCDD->ABCD {#anchor-_10}
-
-    Điều này cũng phổ biến. Lý do là đôi khi chức năng HOOK để hiển thị văn bản có văn bản hiển thị làm tham số, được gọi mỗi khi một ký tự được hiển thị, và mỗi lần chuỗi tham số trỏ đến ký tự tiếp theo, dẫn đến việc lần gọi đầu tiên đã nhận được văn bản đầy đủ, và các lần gọi sau đó xuất ra chuỗi con còn lại cho đến khi độ dài giảm xuống 0. Ví dụ, `恵麻さんは再び液タブへ視線を落とす。麻さんは再び液タブへ視線を落とす。さんは再び液タブへ視線を落とす。んは再び液タブへ視線を落とす。は再び液タブへ視線を落とす。再び液タブへ視線を落とす。び液タブへ視線を落とす。液タブへ視線を落とす。タブへ視線を落とす。ブへ視線を落とす。へ視線を落とす。視線を落とす。線を落とす。を落とす。落とす。とす。す。。` sẽ được phân tích để xác định rằng văn bản thực sự nên là `恵麻さんは再び液タブへ視線を落とす。`
-
-1. #### Xóa Dòng Trùng lặp _AABABCABCD->ABCD {#anchor-_13EX}
-
-    Điều này cũng phổ biến. Lý do là mỗi khi một ký tự được vẽ, các ký tự trước đó được vẽ lại khi ký tự tiếp theo được vẽ. Ví dụ, `恵麻恵麻さ恵麻さん恵麻さんは恵麻さんは再恵麻さんは再び恵麻さんは再び液恵麻さんは再び液タ恵麻さんは再び液タブ恵麻さんは再び液タブへ恵麻さんは再び液タブへ視恵麻さんは再び液タブへ視線恵麻さんは再び液タブへ視線を恵麻さんは再び液タブへ視線を落恵麻さんは再び液タブへ視線を落と恵麻さんは再び液タブへ視線を落とす恵麻さんは再び液タブへ視線を落とす。` sẽ được phân tích để xác định rằng văn bản thực sự nên là `恵麻さんは再び液タブへ視線を落とす。`
-
-    Khi có nhiều dòng văn bản, mỗi dòng được xử lý riêng theo logic trên, điều này mang lại nhiều phức tạp hơn. Do sự phức tạp, xử lý này thường không thể xử lý chính xác. Nếu gặp phải, nên viết một script Python tùy chỉnh để giải quyết.
 
 1. #### Xử lý Python Tùy chỉnh {#anchor-_11}
 

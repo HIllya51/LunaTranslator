@@ -392,6 +392,7 @@ class BASEOBJECT(QObject):
         erroroutput=None,
         donttrans=False,
         updateTranslate=False,
+        isFromHook=False,
     ):
         with self.solvegottextlock:
             succ = self.textgetmethod_1(
@@ -403,6 +404,7 @@ class BASEOBJECT(QObject):
                 erroroutput=erroroutput,
                 donttrans=donttrans,
                 updateTranslate=updateTranslate,
+                isFromHook=isFromHook,
             )
             if waitforresultcallback and not succ:
                 waitforresultcallback(TranslateResult())
@@ -426,6 +428,7 @@ class BASEOBJECT(QObject):
         erroroutput=None,
         donttrans=False,
         updateTranslate=False,
+        isFromHook=False,
     ):
         if not text:
             return
@@ -437,7 +440,7 @@ class BASEOBJECT(QObject):
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
         currentsignature = uuid.uuid4()
         try:
-            text = POSTSOLVE(text, isEx=waitforresultcallback)
+            text = POSTSOLVE(text, isEx=waitforresultcallback, isFromHook=isFromHook)
             gobject.base.showandsolvesig.emit(origin, text)
             if not text:
                 return

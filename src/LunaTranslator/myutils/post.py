@@ -337,7 +337,7 @@ processfunctions = {
 }
 
 
-def POSTSOLVE(line, isEx=False):
+def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
     if line == "":
         return ""
     useranklist = globalconfig["postprocess_rank"]
@@ -370,8 +370,13 @@ def POSTSOLVE(line, isEx=False):
         if postitem not in usedpostprocessconfig:
             continue
         if usedpostprocessconfig[postitem]["use"]:
-            if isEx and not (usedpostprocessconfig[postitem].get("isExUse", False)):
-                continue
+            if not useAll:
+                if isEx and not (usedpostprocessconfig[postitem].get("isExUse", False)):
+                    continue
+                if (not isFromHook) and (
+                    usedpostprocessconfig[postitem].get("isHookOnly", False)
+                ):
+                    continue
             try:
                 _f = processfunctions[postitem]
                 if postitem == "_11":

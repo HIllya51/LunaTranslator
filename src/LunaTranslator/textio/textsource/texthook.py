@@ -705,7 +705,7 @@ class texthook(basetext):
         donttrans = (windows.GetKeyState(windows.VK_CONTROL) < 0) or (
             windows.GetKeyState(windows.VK_SHIFT) < 0
         )
-        return super().dispatchtext(text, donttrans=donttrans)
+        return super().dispatchtext(text, donttrans=donttrans, isFromHook=True)
 
     def gettextonce(self):
         return self.runonce_line

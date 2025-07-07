@@ -66,7 +66,8 @@
                 "max": 10000,
                 "step": 1
             }
-        }
+        },
+        "isHookOnly": true
     },
     "_3": {
         "use": true,
@@ -81,11 +82,13 @@
                 "max": 10000,
                 "step": 1
             }
-        }
+        },
+        "isHookOnly": true
     },
     "_3_2": {
         "use": false,
-        "name": "去除重复行_S1S1S1S2S2S2->S1S2"
+        "name": "去除重复行_S1S1S1S2S2S2->S1S2",
+        "isHookOnly": true
     },
     "_4": {
         "use": false,
@@ -107,11 +110,13 @@
     },
     "_10": {
         "use": false,
-        "name": "去除重复行_ABCDBCDCDD->ABCD"
+        "name": "去除重复行_ABCDBCDCDD->ABCD",
+        "isHookOnly": true
     },
     "_13EX": {
         "use": false,
-        "name": "去除重复行_AABABCABCD->ABCD"
+        "name": "去除重复行_AABABCABCD->ABCD",
+        "isHookOnly": true
     },
     "_11": {
         "use": false,

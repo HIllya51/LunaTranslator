@@ -35,7 +35,7 @@ def getcomparelayout(self):
     fromtext = QPlainTextEdit()
     totext = QPlainTextEdit()
     solvebutton = getIconButton(
-        callback=lambda: totext.setPlainText(POSTSOLVE(fromtext.toPlainText())),
+        callback=lambda: totext.setPlainText(POSTSOLVE(fromtext.toPlainText(), useAll=True)),
         icon="fa.chevron-right",
     )
 
