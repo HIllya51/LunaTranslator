@@ -44,7 +44,7 @@ def parsecode(code: str, arch):
         code = code.replace("self.parent().devicePixelRatioF()", "1")
         code = code.replace("self.devicePixelRatioF()", "1")
         code = re.sub(
-            r"(Q[a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+)([ \)\n,:\]])",
+            r"(Q[a-zA-Z0-9_]+)\.[a-zA-Z0-9_]+\.([a-zA-Z0-9_]+)([ \)\n,:\]\}])",
             r"\1.\2\3",
             code,
         )
