@@ -29,6 +29,8 @@ set_target_properties(LunaTranslator_admin PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
 endif()
+target_link_directories(LunaTranslator PRIVATE VC_LTL)
+target_link_directories(LunaTranslator_admin PRIVATE VC_LTL)
 if(MSVC)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set_target_properties(LunaTranslator PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")
