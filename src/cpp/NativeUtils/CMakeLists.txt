@@ -4,15 +4,18 @@ include(FetchContent)
 
 FetchContent_Declare(md4c
     GIT_REPOSITORY https://github.com/mity/md4c
-    GIT_TAG release-0.5.2
+    GIT_TAG master
+    GIT_SHALLOW TRUE
 )
 FetchContent_Declare(tiny-aes 
     GIT_REPOSITORY https://github.com/kokke/tiny-AES-c
-    GIT_TAG 23856752fbd139da0b8ca6e471a13d5bcc99a08d
+    GIT_TAG master
+    GIT_SHALLOW TRUE
 )
 FetchContent_Declare(rapidfuzz 
     GIT_REPOSITORY https://github.com/rapidfuzz/rapidfuzz-cpp 
-    GIT_TAG 5d078a96d7b5e0c4c39b0295efd9d9280fa11a66
+    GIT_TAG main
+    GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(tiny-aes rapidfuzz md4c)
 

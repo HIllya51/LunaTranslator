@@ -52,7 +52,8 @@ include_directories(.)
 
 FetchContent_Declare(minhook 
   GIT_REPOSITORY https://github.com/TsudaKageyu/minhook
-  GIT_TAG 2b003bb063d66f016cc1aef7d63951350ce60f35
+    GIT_TAG master
+    GIT_SHALLOW TRUE
 )
 FetchContent_MakeAvailable(minhook)
 
