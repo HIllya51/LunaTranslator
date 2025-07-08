@@ -291,11 +291,8 @@ HRESULT MWebBrowser::Navigate2(const WCHAR *url, DWORD dwFlags)
     {
         return hr;
     }
-    VARIANT var1, var2, varEmpty;
+    AutoVariant var1, var2, varEmpty;
 
-    VariantInit(&var1);
-    VariantInit(&var2);
-    VariantInit(&varEmpty);
 
     V_VT(&var1) = VT_BSTR;
     CComBSTR BSurl = url;
@@ -307,10 +304,6 @@ HRESULT MWebBrowser::Navigate2(const WCHAR *url, DWORD dwFlags)
     V_VT(&varEmpty) = VT_EMPTY;
 
     hr = m_web_browser2->Navigate2(&var1, &var2, &varEmpty, &varEmpty, &varEmpty);
-
-    VariantClear(&var1);
-    VariantClear(&var2);
-    VariantClear(&varEmpty);
 
     return hr;
 }
@@ -478,8 +471,7 @@ HRESULT MWebBrowser::Zoom100()
 
 HRESULT MWebBrowser::ZoomPercents(LONG percents)
 {
-    VARIANT zoom;
-    VariantInit(&zoom);
+    AutoVariant zoom;
     V_VT(&zoom) = VT_I4;
     V_I4(&zoom) = percents;
 

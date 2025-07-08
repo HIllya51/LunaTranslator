@@ -125,3 +125,28 @@ struct AutoFreeString
         return ptr;
     }
 };
+
+struct AutoVariant
+{
+    VARIANT var;
+    operator VARIANT()
+    {
+        return var;
+    }
+    VARIANT *operator&()
+    {
+        return &var;
+    }
+    VARIANT *operator->()
+    {
+        return &var;
+    }
+    AutoVariant()
+    {
+        VariantInit(&var);
+    }
+    ~AutoVariant()
+    {
+        VariantClear(&var);
+    }
+};

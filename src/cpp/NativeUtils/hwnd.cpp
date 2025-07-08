@@ -134,14 +134,12 @@ DECLARE_API bool IsWindowViewable(HWND hwnd)
     CComPtr<IUIAutomation> automation;                                                                                          \
     if (FAILED(CoCreateInstance(CLSID_CUIAutomation, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&automation))) || !automation) \
         return;                                                                                                                 \
-    VARIANT var_pid;                                                                                                            \
-    VariantInit(&var_pid);                                                                                                      \
+    AutoVariant var_pid;                                                                                                        \
     V_VT(&var_pid) = VT_I4;                                                                                                     \
     V_I4(&var_pid) = pid;                                                                                                       \
     CComPtr<IUIAutomationCondition> condition_pid;                                                                              \
     if (FAILED(automation->CreatePropertyCondition(UIA_ProcessIdPropertyId, var_pid, &condition_pid)) || !condition_pid)        \
         return;                                                                                                                 \
-    VariantClear(&var_pid);                                                                                                     \
     CComPtr<IUIAutomationElement> pRoot;                                                                                        \
     if (FAILED(automation->GetRootElement(&pRoot)) || !pRoot)                                                                   \
         return;                                                                                                                 \
@@ -175,15 +173,13 @@ DECLARE_API void GetLiveCaptionsText(DWORD pid, void (*cb)(const wchar_t *))
 {
     preparelc(pid);
 
-    VARIANT CaptionsTextBlock;
-    VariantInit(&CaptionsTextBlock);
+    AutoVariant CaptionsTextBlock;
     V_VT(&CaptionsTextBlock) = VT_BSTR;
     CComBSTR BSCaptionsTextBlock = L"CaptionsTextBlock";
     V_BSTR(&CaptionsTextBlock) = BSCaptionsTextBlock;
     CComPtr<IUIAutomationCondition> condition;
     if (FAILED(automation->CreatePropertyCondition(UIA_AutomationIdPropertyId, CaptionsTextBlock, &condition)) || !condition)
         return;
-    VariantClear(&CaptionsTextBlock);
 
     CComPtr<IUIAutomationElementArray> elements;
     if (FAILED(element->FindAll(TreeScope_Descendants, condition, &elements)) || !elements)

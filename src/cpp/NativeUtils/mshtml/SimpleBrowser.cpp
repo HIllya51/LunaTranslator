@@ -327,21 +327,21 @@ DECLARE_API void html_eval(MWebBrowserEx *ww, const wchar_t *js)
                                                       LOCALE_SYSTEM_DEFAULT, &dispid) != S_OK);
 
     DISPPARAMS params;
-    VARIANT arg;
-    VARIANT result;
+    AutoVariant arg;
+    AutoVariant result;
     EXCEPINFO excepInfo;
     UINT nArgErr = (UINT)-1;
     params.cArgs = 1;
     params.cNamedArgs = 0;
     params.rgvarg = &arg;
-    arg.vt = VT_BSTR;
+    arg->vt = VT_BSTR;
     static const wchar_t *prologue = L"(function(){";
     static const wchar_t *epilogue = L";})();";
     int n = wcslen(prologue) + wcslen(epilogue) + wcslen(js) + 1;
     auto eval = std::make_unique<wchar_t[]>(n);
     _snwprintf(eval.get(), n, L"%s%s%s", prologue, js, epilogue);
     CComBSTR bstrVal = eval.get();
-    arg.bstrVal = bstrVal;
+    arg->bstrVal = bstrVal;
     scriptDispatch->Invoke(
         dispid, IID_NULL, 0, DISPATCH_METHOD,
         &params, &result, &excepInfo, &nArgErr);
