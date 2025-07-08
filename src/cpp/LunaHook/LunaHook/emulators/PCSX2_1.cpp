@@ -1646,6 +1646,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ラブルートゼロ KissKiss☆ラビリンス [通常版]
+    {0x2E8368, {DIRECT_READ, 0, 0, 0, SLPS25604, "SLPM-55149"}},
     // ふしぎ遊戯 朱雀異聞
     {0xF7294C, {DIRECT_READ, 0, 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66998", "SLPM-66999"}}},
     // ふしぎ遊戯 玄武開伝 外伝 鏡の巫女

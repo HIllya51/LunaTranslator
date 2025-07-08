@@ -862,6 +862,7 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55149 | ラブルートゼロ KissKiss☆ラビリンス [通常版] |
 |  | SLPM-66998 & SLPM-66999 | ふしぎ遊戯 朱雀異聞 |
 |  | SLPM-66023 & SLPM-66024 | ふしぎ遊戯 玄武開伝 外伝 鏡の巫女 |
 |  | SLPM-65381 | きまぐれストロベリーカフェ |
