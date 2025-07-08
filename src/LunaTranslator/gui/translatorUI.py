@@ -1282,7 +1282,7 @@ class TranslatorWindow(resizableframeless):
             return result
 
         segs = makeMDlinkclick(
-            "\n" + _TR("欢迎使用LunaTranslator") + "\n\n" + get_about_info() + "\n"
+            "\n" + get_about_info() + "\n"
         )
         text = "".join(_.word for _ in segs)
         self.showline(text=text, texttype=TextType.Info, hira=segs, raw=True)
@@ -1294,7 +1294,7 @@ class TranslatorWindow(resizableframeless):
         self.cleanupdater()
         self.firstshow = False
 
-        if time.time() - globalconfig.get("lasttime", 0) > 1800:
+        if time.time() - globalconfig.get("lasttime", 0) > 3600:
             globalconfig["lasttime"] = time.time()
             self.showabout()
         self.mousetransparent_check()

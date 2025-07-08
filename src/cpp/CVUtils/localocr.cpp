@@ -44,8 +44,8 @@ static std::optional<DXGI_ADAPTER_DESC1> get_best_gpu()
     // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L344
     CComPtr<IDXGIAdapter1> adapter;
     for (UINT i = 0; SUCCEEDED(factory->EnumAdapterByGpuPreference(
-                         i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
-                         IID_PPV_ARGS(&adapter)));
+             i, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE,
+             IID_PPV_ARGS(&adapter)));
          ++i)
     {
         DXGI_ADAPTER_DESC1 desc;
@@ -147,6 +147,16 @@ static std::optional<std::wstring> SearchDllPath(const std::wstring &dll)
         return {};
     return buff;
 }
+static std::optional<version_t> __QueryVersion(const std::wstring &exe)
+{
+    auto _ = QueryVersion(exe);
+    if (_)
+    {
+        auto &&[_1, _2, _3, _4] = _.value();
+        std::wcout << _1 << L"," << _2 << L"," << _3 << L"," << _4 << L"\t" << exe << L"\n";
+    }
+    return _;
+}
 static bool isvcrtlessthan1440()
 {
     // 实测之和msvcp140有关，低版本的vcruntime140.dll不影响。
@@ -158,7 +168,7 @@ static bool isvcrtlessthan1440()
             return false;
         WCHAR path[MAX_PATH];
         GetModuleFileNameW(hdll, path, MAX_PATH);
-        return QueryVersion(path) < std::make_tuple(14u, 40u, 0u, 0u);
+        return __QueryVersion(path) < std::make_tuple(14u, 40u, 0u, 0u);
     };
     return checkversion(L"msvcp140.dll") || checkversion(L"vcruntime140.dll");
 }
@@ -168,9 +178,9 @@ static std::optional<version_t> checkfileversion(const std::optional<std::wstrin
     // https://github.com/microsoft/onnxruntime/releases/tag/v1.21.0
     // All the prebuilt Windows packages now require VC++ Runtime version >= 14.40(instead of 14.38). If your VC++ runtime version is lower than that, you may see a crash when ONNX Runtime was initializing. See https://github.com/microsoft/STL/wiki/Changelog#vs-2022-1710 for more details.
     // 不过实测在更古老py37(14.00)上是没问题的，但在py311(14.38)或pyqt(14.26)上确实会崩溃，保险起见不要加载。
-    if(!exe)
+    if (!exe)
         return {};
-    auto vermy = QueryVersion(exe.value());
+    auto vermy = __QueryVersion(exe.value());
     if (!vermy)
         return {};
     if (vermy >= std::make_tuple(1u, 21u, 0u, 0u))

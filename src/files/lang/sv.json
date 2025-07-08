@@ -824,7 +824,6 @@
     "请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "Installera Webview2Runtime eller ladda ner den fasta versionen och extrahera den till programmets katalog.",
     "API接口地址填写错误，或者当前平台不支持自动获取模型列表。": "API-gränssnittets adress är felaktigt ifylld, eller den aktuella plattformen stöder inte automatisk hämtning av modellistan.",
     "请检查API接口地址，或手动填写模型名。": "Kontrollera API-gränssnittets adress eller fyll i modellnamnet manuellt.",
-    "欢迎使用LunaTranslator": "Välkommen till LunaTranslator",
     "请勿使用非英文路径": "Använd inte icke-engelska sökvägar",
     "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)。": "Om du stöter på svårigheter under användningen kan du konsultera [användarmanualen](/). Du är också välkommen att gå med i vår [Discord](https://discord.com/invite/ErtDwVeAbB).",
     "模式": "Läge",

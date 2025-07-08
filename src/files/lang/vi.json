@@ -824,7 +824,6 @@
     "请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "Vui lòng cài đặt Webview2Runtime hoặc tải xuống phiên bản cố định và giải nén vào thư mục phần mềm.",
     "API接口地址填写错误，或者当前平台不支持自动获取模型列表。": "Địa chỉ API nhập sai, hoặc nền tảng hiện tại không hỗ trợ tự động lấy danh sách mô hình.",
     "请检查API接口地址，或手动填写模型名。": "Vui lòng kiểm tra địa chỉ API hoặc nhập thủ công tên mô hình.",
-    "欢迎使用LunaTranslator": "Chào mừng bạn đến với LunaTranslator",
     "请勿使用非英文路径": "Vui lòng không sử dụng đường dẫn không phải tiếng Anh.",
     "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)。": "Nếu gặp khó khăn khi sử dụng, bạn có thể tham khảo [Hướng dẫn sử dụng](/), hoặc tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) để được hỗ trợ.",
     "模式": "chế độ",

@@ -824,7 +824,6 @@
     "请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "Si prega di installare Webview2Runtime oppure scaricare la versione fissa e decomprimerla nella directory del software.",
     "API接口地址填写错误，或者当前平台不支持自动获取模型列表。": "L'indirizzo dell'interfaccia API è errato o la piattaforma corrente non supporta il recupero automatico dell'elenco dei modelli.",
     "请检查API接口地址，或手动填写模型名。": "Si prega di verificare l'indirizzo dell'interfaccia API o di inserire manualmente il nome del modello.",
-    "欢迎使用LunaTranslator": "Benvenuto su LunaTranslator",
     "请勿使用非英文路径": "Non utilizzare percorsi non in inglese.",
     "如果使用中遇到困难，可以查阅[使用说明](/)，也欢迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)。": "Se incontri difficoltà durante l'utilizzo, puoi consultare le [istruzioni per l'uso](/), e sei il benvenuto a unirti al nostro [Discord](https://discord.com/invite/ErtDwVeAbB).",
     "模式": "modalità",
