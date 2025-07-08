@@ -1,6 +1,6 @@
 # LunaTranslator [软件下载](https://docs.lunatranslator.org/README.html)
 
-> **一款galgame翻译器**
+> **一款视觉小说翻译器**
  
 ### 简体中文  | [English](README_en.md) | [Other Language](otherlang.md)
 

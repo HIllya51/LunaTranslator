@@ -862,6 +862,10 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25395 | センチメンタルプレリュード |
+|  | SLPM-65736 | 蒼のままで・・・・・・ |
+|  | SLPM-65762 | 片神名 ～喪われた因果律～ |
+|  | SLPS-25409 | 双恋—フタコイ— [初回限定版] |
 |  | SLPM-55149 | ラブルートゼロ KissKiss☆ラビリンス [通常版] |
 |  | SLPM-66998 & SLPM-66999 | ふしぎ遊戯 朱雀異聞 |
 |  | SLPM-66023 & SLPM-66024 | ふしぎ遊戯 玄武開伝 外伝 鏡の巫女 |
@@ -1020,7 +1024,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 |  | SLPS-25941 | SDガンダム - G GENERATION WARS |
 |  | SLPM-66458 | 風雨来記 |
 |  | SLPM-66163 | 風雨来記2 |
-|  | SLPM-62207 | SIMPLE2000シリーズ Vol.9 THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～ |
+|  | SLPM-62207 | THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～ |
 |  | SLPM-55006 | あかね色に染まる坂 ぱられる |
 |  | SLPS-25581 | SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム |
 |  | SLPS-20196 | 赤川次郎ミステリー月の光　 ～沈める鐘の殺人～ |

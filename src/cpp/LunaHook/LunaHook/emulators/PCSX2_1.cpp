@@ -1639,6 +1639,33 @@ namespace
         strReplace(sw, L"\xff");
         buffer->fromWA(sw);
     }
+    void SLPS25409(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        WORD _ = PCSX2_REG(v0) | (PCSX2_REG(a0) << 8);
+        buffer->from_t(_);
+    }
+    void SLPM65762(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        if (endWith(s, L"p"))
+            s = s.substr(0, s.size() - 1);
+        strReplace(s, L"kn", L"\n");
+        buffer->fromWA(s);
+    }
+    void SLPM65736(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("#n\x81\x40"));
+        FSLPM65997(buffer, hp);
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+    }
+    void SLPS25395(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\\n\x81\x40"));
+    }
 }
 struct emfuncinfoX
 {
@@ -1646,6 +1673,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // センチメンタルプレリュード
+    {0x1653680, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPS-25395"}},
+    // 蒼のままで・・・・・・
+    {0x2DB2B0, {DIRECT_READ, 0, 0, 0, SLPM65736, "SLPM-65736"}},
+    // 片神名 ～喪われた因果律～
+    {0x1CF65c, {DIRECT_READ, 0, 0, 0, SLPM65762, "SLPM-65762"}},
+    // 双恋—フタコイ— [初回限定版]
+    {0x18A4F8, {USING_CHAR, 0, 0, SLPS25409, 0, "SLPS-25409"}},
     // ラブルートゼロ KissKiss☆ラビリンス [通常版]
     {0x2E8368, {DIRECT_READ, 0, 0, 0, SLPS25604, "SLPM-55149"}},
     // ふしぎ遊戯 朱雀異聞
@@ -1963,7 +1998,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1FFACA0, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPM-66458"}},
     // 風雨来記2
     {0x2AC77C, {0, 0, 0, SLPM66163, 0, "SLPM-66163"}}, //@mills
-    // SIMPLE2000シリーズ Vol.9 THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～
+    // THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～
     {0x16C798, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM62207, "SLPM-62207"}},
     // あかね色に染まる坂 ぱられる
     {0x126660, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55006, "SLPM-55006"}},
