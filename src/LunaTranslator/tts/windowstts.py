@@ -28,10 +28,11 @@ class TTS(TTSbase):
                 pass
         except:
             pass
-        if LicenseVersion != "0" and not self.extralicense:
-            Name = None
-        if not isascii(Name):
-            Name = _TR("请勿使用非英文路径")
+        if Name:
+            if not isascii(Name):
+                Name = "[{}]{}".format(_TR("请勿使用非英文路径"), Name)
+            if LicenseVersion != "0" and not self.extralicense:
+                Name = "[{}]{}".format(_TR("不可用"), Name)
         return Name, LicenseVersion
 
     def get_paths(self):
@@ -75,6 +76,7 @@ class TTS(TTSbase):
         return vals, names
 
     cogdll = "Microsoft.CognitiveServices.Speech.extension.embedded.tts.dll"
+
     def finddlldirectory(self):
         checkdir = lambda d: d and os.path.isfile(os.path.join(d, self.cogdll))
         dllp = r"C:\Windows\SystemApps\MicrosoftWindows.Client.Core_cw5n1h2txyewy\SpeechSynthesizer"

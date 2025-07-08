@@ -3,7 +3,6 @@ from myutils.wrapper import threader
 import NativeUtils, windows, uuid, os, gobject, time
 from ctypes import c_int
 from myutils.config import globalconfig, _TR, isascii
-import subprocess
 
 
 def getlocaleandlv(path):
@@ -25,12 +24,9 @@ def getlocaleandlv(path):
 def findallmodel(checkX=False, check=None):
     __vis = []
     paths = []
-    extra = globalconfig.get("MicrosoftWindows.Speech.License", "")
     for _, p in [(None, check)] + NativeUtils.FindPackages("MicrosoftWindows.Speech."):
         try:
             lc, lv = getlocaleandlv(p)
-            if lv != "0" and not extra:
-                continue
             __vis.append(lc)
         except:
             continue
@@ -41,8 +37,6 @@ def findallmodel(checkX=False, check=None):
         if os.path.basename(_dir).startswith("MicrosoftWindows.Speech."):
             try:
                 lc, lv = getlocaleandlv(_dir)
-                if lv != "0" and not extra:
-                    continue
                 __vis.append(lc)
             except:
                 continue
@@ -190,7 +184,7 @@ class mssr(basetext):
         if not path:
             gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
-        if not isascii(path):
+        if path and not isascii(path):
             gobject.base.displayinfomessage(
                 _TR("请勿使用非英文路径"), "<msg_error_Origin>"
             )
