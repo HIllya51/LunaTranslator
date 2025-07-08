@@ -37,9 +37,8 @@ target_precompile_headers(voiceroid2 REUSE_FROM pch)
 
 target_precompile_headers(shareddllproxy REUSE_FROM pch) 
 
-target_link_libraries(shareddllproxy PRIVATE ${YY_Thunks} voiceroid2 VC_LTL)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	target_link_libraries(shareddllproxy PRIVATE mfuuid CognitiveServices version)
+	target_link_libraries(shareddllproxy PRIVATE mfuuid CognitiveServices voiceroid2 version ${YY_Thunks})
 	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy64")
 	if(NOT WINXP)
         target_link_libraries(shareddllproxy PRIVATE Mmdevapi)
@@ -47,6 +46,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
         target_link_options(shareddllproxy PRIVATE "/DELAYLOAD:MFPlat.dll")
     endif()
 else()
+	target_link_libraries(shareddllproxy PRIVATE ${YY_Thunks} voiceroid2)
 	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy32")
 endif()
 

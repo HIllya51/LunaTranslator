@@ -18,10 +18,8 @@ set(sources PyStand.cpp ${CMAKE_BINARY_DIR}/luna.rc ${versioninfo})
 #add_executable(LunaTranslator_debug ${sources})
 #target_compile_definitions(LunaTranslator_debug PRIVATE PYSTAND_CONSOLE)
 add_executable(LunaTranslator WIN32 ${sources})
-target_link_directories(LunaTranslator PRIVATE VC_LTL)
 if(NOT WINXP)
 add_executable(LunaTranslator_admin WIN32 ${sources})
-target_link_directories(LunaTranslator_admin PRIVATE VC_LTL)
 endif()
 set_target_properties(LunaTranslator PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"

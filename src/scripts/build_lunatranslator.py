@@ -199,6 +199,8 @@ def buildhook(arch, target):
     subprocess.run(
         f"cmake --build ./build/{arch}_{target}_2 --config Release --target ALL_BUILD -j 14"
     )
+    if target != "win10":
+        config += " -DUSE_VC_LTL=ON "
     subprocess.run(
         f'cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_1'
     )
