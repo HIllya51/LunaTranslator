@@ -21,6 +21,7 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01003D9020854000 | ToHeart |
 |  | 010096E021CF2000 | VIRTUAL GIRL @ WORLD'S END |
 |  | 01006660233C6000 | レッドベルの慟哭 (The Red Bells Lament) |
 |  | 010056401B548000 | シロガネｘスピリッツ！ |
