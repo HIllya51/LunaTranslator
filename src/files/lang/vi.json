@@ -797,7 +797,6 @@
     "语音识别": "Nhận dạng giọng nói",
     "音源": "Nguồn âm thanh",
     "麦克风": "Micrô",
-    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "Bảo trì phần mềm không dễ dàng, nếu bạn cảm thấy phần mềm này hữu ích, hãy trở thành [nhà tài trợ](https://patreon.com/HIllya51) của tôi. Sự hỗ trợ của bạn sẽ là động lực để duy trì phần mềm lâu dài, cảm ơn~",
     "刷新间隔": "khoảng thời gian làm mới",
     "找不到运行时": "Không tìm thấy thời gian chạy",
     "环回录制": "ghi âm vòng lặp",
@@ -834,5 +833,6 @@
     "隐藏窗口": "ẩn cửa sổ",
     "自动结束进程": "tự động kết thúc tiến trình",
     "自动保存": "Tự động lưu",
-    "是否保留原文？": "Có giữ nguyên văn bản gốc không?"
+    "是否保留原文？": "Có giữ nguyên văn bản gốc không?",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "Bảo trì phần mềm không dễ dàng, nếu bạn cảm thấy phần mềm này hữu ích, vui lòng hỗ trợ tôi qua [patreon](https://patreon.com/HIllya51). Sự hỗ trợ của bạn sẽ là động lực để duy trì phần mềm lâu dài, cảm ơn~"
 }

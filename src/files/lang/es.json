@@ -797,7 +797,6 @@
     "语音识别": "Reconocimiento de voz",
     "音源": "Fuente de sonido",
     "麦克风": "Micrófono",
-    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "El mantenimiento del software no es fácil. Si sientes que este software te ha sido útil, te invito a convertirte en mi [patrocinador](https://patreon.com/HIllya51). Tu apoyo será un impulso para el mantenimiento a largo plazo del software. ¡Gracias!",
     "刷新间隔": "intervalo de actualización",
     "找不到运行时": "No se encuentra el tiempo de ejecución.",
     "环回录制": "Grabación de bucle",
@@ -834,5 +833,6 @@
     "隐藏窗口": "ocultar ventana",
     "自动结束进程": "Terminar proceso automáticamente",
     "自动保存": "Guardado automático",
-    "是否保留原文？": "¿Conservar el texto original?"
+    "是否保留原文？": "¿Conservar el texto original?",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "El mantenimiento del software no es fácil. Si sientes que este software te ha sido útil, te invito a apoyarme a través de [Patreon](https://patreon.com/HIllya51). Tu apoyo será un impulso para el mantenimiento a largo plazo del software. ¡Gracias!"
 }

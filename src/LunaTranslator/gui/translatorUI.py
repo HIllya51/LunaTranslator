@@ -1294,7 +1294,7 @@ class TranslatorWindow(resizableframeless):
         self.cleanupdater()
         self.firstshow = False
 
-        if time.time() - globalconfig.get("lasttime", 0) > 3600:
+        if time.time() - globalconfig.get("lasttime", 0) > 1800:
             globalconfig["lasttime"] = time.time()
             self.showabout()
         self.mousetransparent_check()

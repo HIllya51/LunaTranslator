@@ -797,7 +797,6 @@
     "语音识别": "Speech recognition",
     "音源": "Sound source",
     "麦克风": "Microphone",
-    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "Software maintenance is not easy. If you find this software helpful, feel free to become my [sponsor](https://patreon.com/HIllya51). Your support will contribute to the long-term maintenance of the software. Thank you~",
     "刷新间隔": "Refresh Interval",
     "找不到运行时": "Runtime not found",
     "环回录制": "Loopback Recording",
@@ -834,5 +833,6 @@
     "隐藏窗口": "Hide window",
     "自动结束进程": "Automatically terminate process",
     "自动保存": "Auto-save",
-    "是否保留原文？": "Keep the original text?"
+    "是否保留原文？": "Keep the original text?",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "Software maintenance is not easy. If you find this software helpful, feel free to support me via [Patreon](https://patreon.com/HIllya51). Your support will contribute to the long-term maintenance of the software. Thank you~"
 }

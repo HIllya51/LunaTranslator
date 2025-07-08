@@ -797,7 +797,6 @@
     "语音识别": "Spraakherkenning",
     "音源": "Geluidsbron",
     "麦克风": "Microfoon",
-    "软件维护不易，如果您感觉该软件对你有帮助，欢迎成为我的[sponsor](https://patreon.com/HIllya51)，您的支持将成为软件长期维护的助力，谢谢~": "Softwareonderhoud is niet eenvoudig. Als je dit programma nuttig vindt, word dan mijn [sponsor](https://patreon.com/HIllya51). Jouw steun helpt om de software op lange termijn te onderhouden. Bedankt!~",
     "刷新间隔": "Verversingsinterval",
     "找不到运行时": "Kan runtime niet vinden",
     "环回录制": "Loopback-opname",
@@ -834,5 +833,6 @@
     "隐藏窗口": "verberg venster",
     "自动结束进程": "Proces automatisch beëindigen",
     "自动保存": "Automatisch opslaan",
-    "是否保留原文？": "Wil je de originele tekst behouden?"
+    "是否保留原文？": "Wil je de originele tekst behouden?",
+    "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "Softwareonderhoud is niet eenvoudig. Als je dit programma nuttig vindt, steun me dan graag via [Patreon](https://patreon.com/HIllya51). Jouw steun helpt om het programma op de lange termijn te onderhouden. Bedankt!"
 }
