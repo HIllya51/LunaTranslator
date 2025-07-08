@@ -515,7 +515,7 @@ def case_insensitive_replace(text: str, old: str, new: str) -> str:
 
 
 @tryprint
-def parsemayberegexreplace(lst: list, line: str) -> str:
+def parsemayberegexreplace(lst: "list[dict]", line: str) -> str:
     for fil in lst:
         regex = fil.get("regex", False)
         escape = fil.get("escape", regex)

@@ -104,14 +104,19 @@ class TTSbase(commonbase):
     _setting_dict = globalconfig["reader"]
 
     def __init__(
-        self, typename, playaudiofunction, privateconfig=None, init=True, uid=None
+        self,
+        typename,
+        playaudiofunction,
+        privateconfig: dict = None,
+        init=True,
+        uid=None,
     ) -> None:
         super().__init__(typename)
         self.playaudiofunction = playaudiofunction
         self.uid = uid
         self.LRUCache = LRUCache(32)
         if privateconfig is None:
-            self.privateconfig = globalconfig["reader"][self.typename]
+            self.privateconfig: dict = globalconfig["reader"][self.typename]
         else:
             self.privateconfig = privateconfig
         self.voicelist, self.voiceshowlist = self.getvoicelist()

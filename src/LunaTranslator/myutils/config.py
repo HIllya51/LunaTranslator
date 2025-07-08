@@ -62,7 +62,7 @@ def tryreadconfig2(path):
     return x
 
 
-static_data = tryreadconfig2("static_data.json")
+static_data: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = tryreadconfig2("static_data.json")
 defaultpost = tryreadconfig2("postprocessconfig.json")
 defaultglobalconfig = tryreadconfig2("config.json")
 defaulterrorfix = tryreadconfig2("transerrorfixdictconfig.json")
@@ -72,7 +72,7 @@ ocrdfsetting = tryreadconfig2("ocrsetting.json")
 ocrerrorfixdefault = tryreadconfig2("ocrerrorfix.json")
 
 ocrerrorfix = tryreadconfig("ocrerrorfix.json")
-globalconfig: "dict[str, dict[str, str] | list[str] | str]" = tryreadconfig(
+globalconfig: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = tryreadconfig(
     "config.json"
 )
 magpie_config = tryreadconfig_1("Magpie/config.json", pathold="magpie_config.json")
