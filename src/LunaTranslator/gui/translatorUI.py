@@ -1281,11 +1281,15 @@ class TranslatorWindow(resizableframeless):
                         text = None
             return result
 
-        segs = makeMDlinkclick(
-            "\n" + get_about_info() + "\n"
-        )
+        segs = makeMDlinkclick("\n" + get_about_info() + "\n")
         text = "".join(_.word for _ in segs)
-        self.showline(text=text, texttype=TextType.Info, hira=segs, raw=True)
+        self.showline(
+            text=text,
+            texttype=TextType.Info,
+            hira=segs,
+            raw=True,
+            color=SpecialColor.RawTextColor,
+        )
 
     def showEvent(self, e):
         if not self.firstshow:

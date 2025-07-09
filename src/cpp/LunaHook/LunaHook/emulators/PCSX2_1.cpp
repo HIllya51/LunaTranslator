@@ -46,10 +46,15 @@ namespace
     }
     void SLPM66958(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        strReplace(s, "#cr0");
-        s = re::sub(s, R"(#c\d{2})");
-        buffer->from(s);
+        auto s = buffer->strAW();
+        s = re::sub(s, L"#[a-zA-Z0-9]+");
+        buffer->fromWA(s);
+    }
+    void SLPM65589(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->size <= 1)
+            return buffer->clear();
+        SLPM66958(buffer, hp);
     }
     void SLPM66408(TextBuffer *buffer, HookParam *hp)
     {
@@ -1639,6 +1644,11 @@ namespace
         strReplace(sw, L"\xff");
         buffer->fromWA(sw);
     }
+    void SLPM65785(TextBuffer *buffer, HookParam *hp)
+    {
+        if (*(WORD *)buffer->buff < 0x100)
+            buffer->clear();
+    }
     void SLPS25409(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         WORD _ = PCSX2_REG(v0) | (PCSX2_REG(a0) << 8);
@@ -1673,6 +1683,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // カラフルBOX ～to LOVE～ [通常版]
+    {0xD1A970, {DIRECT_READ, 0, 0, 0, SLPM65589, "SLPM-65589"}},
+    // PIZZICATO POLKA ～縁鎖現夜～
+    {0x4DD7C6, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-65611"}},
+    // なついろ ～星屑のメモリー～ [初回限定版]
+    {0x16D22C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s0), 0, 0, SLPM65785, "SLPM-65785"}},
+    // こころの扉 初回限定版 [コレクターズエディション]
+    {0x12A508, {0, PCSX2_REG_OFFSET(a1), 0, 0, 0, "SLPS-25348"}},
     // センチメンタルプレリュード
     {0x1653680, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPS-25395"}},
     // 蒼のままで・・・・・・
