@@ -31,31 +31,6 @@ export default {
                     }, 50);
                 });
             })
-            let timeout = 0;
-            document.addEventListener('click', (event) => {
-                if (event.target && (event.target.closest('a'))) {
-                    if (timeout) {
-                        clearTimeout(timeout)
-                        timeout = 0
-                    }
-                }
-            })
-            if (window.location.href.endsWith('support.html')) {
-
-                timeout = setTimeout(
-                    () => {
-                        if (!document.hasFocus()) return
-                        if (window.localStorage.currentlang != 'zh' && window.localStorage.currentlang != 'cht')
-                            window.open('https://www.patreon.com/hillya51', '_blank')
-                    }, 3500
-                )
-            }
-            else {
-                if (timeout) {
-                    clearTimeout(timeout)
-                    timeout = 0
-                }
-            }
             if (!window.location.hostname.startsWith('docs')) return;
             ['', 'image.'].forEach(
                 (pre) => {
