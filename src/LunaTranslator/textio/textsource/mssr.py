@@ -55,6 +55,7 @@ class atendrestorwindow(NativeUtils.AutoKillProcess):
 
     def __init__(self, pidorexe, kill: bool):
         super().__init__(pidorexe, kill=kill, hide=False)
+        self.b = True
 
     def show(self, b):
         self.b = b
@@ -111,7 +112,9 @@ class mssr(basetext):
     def extralicense(self):
         return globalconfig.get("MicrosoftWindows.Speech.License", "")
 
-    lcexe = r"C:\Windows\System32\LiveCaptions.exe"
+    lcexe = r"C:\Windows\{}\LiveCaptions.exe".format(
+        ("Sysnative", "System32")[gobject.runtime_bit_64]
+    )
 
     def findlcpid(self):
         for pid, exebase in NativeUtils.ListProcesses():

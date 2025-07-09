@@ -2,16 +2,17 @@ import platform, os, sys
 from ctypes import windll, Structure, POINTER, pointer
 from ctypes.wintypes import DWORD, WCHAR
 
+runtime_bit_64 = platform.architecture()[0] == "64bit"
+
 
 def GetDllpath(_, base=None):
-    isbit64 = platform.architecture()[0] == "64bit"
 
     if base is None:
-        base = os.path.abspath("files/DLL" + ("32", "64")[isbit64])
+        base = os.path.abspath("files/DLL" + ("32", "64")[runtime_bit_64])
     if isinstance(_, str):
         return os.path.join(base, _)
     elif isinstance(_, (list, tuple)):
-        return os.path.join(base, _[isbit64])
+        return os.path.join(base, _[runtime_bit_64])
 
 
 def __getdir(name="", basedir="cache"):
@@ -69,7 +70,6 @@ class Consts:
     IconSizeHW = 1.1
 
 
-runtime_bit_64 = platform.architecture()[0] == "64bit"
 runtime_for_xp = tuple(sys.version_info)[:2] == (3, 4)
 runtime_for_win10 = tuple(sys.version_info)[:2] >= (3, 9)
 

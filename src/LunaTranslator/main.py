@@ -122,7 +122,7 @@ def checklang():
 def checkintegrity():
     from myutils.config import _TR
     from qtsymbols import QMessageBox
-    from gobject import runtime_for_xp, runtime_for_win10
+    from gobject import runtime_for_xp, runtime_for_win10, runtime_bit_64
     import platform, gobject
 
     dll3264 = [
@@ -135,8 +135,7 @@ def checkintegrity():
         "bass_aac.dll",
     ]
 
-    isbit64 = platform.architecture()[0] == "64bit"
-    dll3264.append(("libcurl.dll", "libcurl-x64.dll")[isbit64])
+    dll3264.append(("libcurl.dll", "libcurl-x64.dll")[runtime_bit_64])
 
     flist = []
     for f in dll3264:
@@ -144,7 +143,7 @@ def checkintegrity():
             flist.append(gobject.GetDllpath(f))
 
     dllshared = [
-        "LunaHook/" + ("LunaHost32.dll", "LunaHost64.dll")[isbit64],
+        "LunaHook/" + ("LunaHost32.dll", "LunaHost64.dll")[runtime_bit_64],
         "shareddllproxy32.exe",
         "shareddllproxy64.exe",
         "Magpie/Magpie.Core.exe" if not runtime_for_xp else None,

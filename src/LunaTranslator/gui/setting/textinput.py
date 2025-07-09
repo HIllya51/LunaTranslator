@@ -7,7 +7,7 @@ from language import TransLanguages
 from gui.setting.textinput_ocr import getocrgrid_table
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.dynalang import LLabel
-from textio.textsource.mssr import findallmodel
+from textio.textsource.mssr import findallmodel, mssr
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -431,7 +431,7 @@ def __srcofig(grids: list, self):
     if not paths and not gobject.sys_ge_win_10:
         return
 
-    if os.path.exists(r"C:\Windows\System32\LiveCaptions.exe"):
+    if os.path.exists(mssr.lcexe):
         __w = modesW(__vis, paths)
     else:
         __w = hhfordirect(__vis, paths)
