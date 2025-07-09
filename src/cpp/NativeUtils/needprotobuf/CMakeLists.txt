@@ -6,17 +6,11 @@ FetchContent_Declare(wechat_ocr
     GIT_TAG master
     GIT_SHALLOW TRUE
 )
-FetchContent_Declare(glensproto
-    GIT_REPOSITORY https://github.com/test123456654321/glensproto
-    GIT_TAG main
-    GIT_SHALLOW TRUE
-)
 FetchContent_Declare(protobuf
     URL https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.21.12.zip
     DOWNLOAD_EXTRACT_TIMESTAMP true
 )
 FetchContent_Populate(wechat_ocr)
-FetchContent_Populate(glensproto)
 
 set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(protobuf_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
@@ -61,9 +55,40 @@ target_precompile_headers(wcocr_1 REUSE_FROM wcocrpch)
 
 target_link_libraries(wcocr_1 PRIVATE libprotobuf-lite)
 
-file(GLOB glensprotocpp ${glensproto_SOURCE_DIR}/*.cc)
+file(GLOB glensproto proto/*.proto)
+
+
+function(PROTOBUF_GENERATE_CPP SRCS HDRS)
+    cmake_parse_arguments(protobuf_generate_cpp "" "EXPORT_MACRO;DESCRIPTORS" "" ${ARGN})
+    
+    set(${SRCS})
+    set(${HDRS})
+    
+    foreach(FIL ${protobuf_generate_cpp_UNPARSED_ARGUMENTS}) 
+        get_filename_component(FIL_WE ${FIL} NAME_WE)
+        
+        list(APPEND ${SRCS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc")
+        list(APPEND ${HDRS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h")
+        
+        add_custom_command(
+            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc"
+                   "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h"
+            COMMAND ${wechat_ocr_SOURCE_DIR}/spt/protoc.exe
+            ARGS --cpp_out ${CMAKE_CURRENT_BINARY_DIR} --proto_path ${CMAKE_CURRENT_LIST_DIR}/proto ${FIL} 
+            COMMENT "Running C++ protocol buffer compiler on ${FIL}"
+            VERBATIM
+        )
+    endforeach()
+    
+    set_source_files_properties(${${SRCS}} ${${HDRS}} PROPERTIES GENERATED TRUE)
+    set(${SRCS} ${${SRCS}} PARENT_SCOPE)
+    set(${HDRS} ${${HDRS}} PARENT_SCOPE)
+endfunction()
+
+PROTOBUF_GENERATE_CPP(glensprotocpp glensprotoh "${glensproto}")
+
 add_library(glensproto glens_1.cpp "${glensprotocpp}")
-target_include_directories(glensproto PRIVATE ${glensproto_SOURCE_DIR})
+target_include_directories(glensproto PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_include_directories(glensproto PRIVATE ${wechat_ocr_SOURCE_DIR}/spt)
 target_link_libraries(glensproto PRIVATE libprotobuf-lite)
 

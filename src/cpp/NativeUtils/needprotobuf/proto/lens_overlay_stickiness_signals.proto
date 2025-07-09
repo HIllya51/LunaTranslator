@@ -1,0 +1,31 @@
+// Copyright 2024 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+syntax = 'proto2';
+
+option optimize_for = LITE_RUNTIME;
+
+package lens;
+
+import "lens_overlay_math_solver_query.proto";
+import "lens_overlay_message_set.proto";
+
+message StickinessSignals {
+  enum Namespace {
+    UNKNOWN = 0;
+
+    TRANSLATE_LITE = 56;
+
+    EDUCATION_INPUT = 79;
+  }
+  optional Namespace id_namespace = 1;
+
+  optional MessageSet interpretation = 28;
+
+  optional EducationInputExtension education_input_extension = 121;
+}
+
+message EducationInputExtension {
+  optional MathSolverQuery math_solver_query = 1;
+}

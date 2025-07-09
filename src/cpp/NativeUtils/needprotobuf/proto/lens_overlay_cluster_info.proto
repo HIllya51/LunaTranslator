@@ -1,0 +1,23 @@
+// Copyright 2024 The Chromium Authors
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+syntax = 'proto3';
+
+option optimize_for = LITE_RUNTIME;
+
+package lens;
+
+import "lens_overlay_routing_info.proto";
+
+// The cluster info for a Lens Overlay session.
+message LensOverlayClusterInfo {
+  // ID for subsequent server requests.
+  string server_session_id = 1;
+
+  // ID for subsequent search requests.
+  string search_session_id = 2;
+
+  // Info used for routing subsequent requests.
+  LensOverlayRoutingInfo routing_info = 6;
+}
