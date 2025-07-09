@@ -456,7 +456,7 @@ namespace
     }
     void SLPM55240(TextBuffer *buffer, HookParam *hp)
     {
-        StringReplacer(buffer, TEXTANDLEN("%x02―%x01"), TEXTANDLEN("――"));
+        StringReplacer(buffer, TEXTANDLEN("%x02―%x01"), TEXTANDLEN("\x81\x5c\x81\x5c")); //"――"
     }
     void FSLPM55195(TextBuffer *buffer, HookParam *hp)
     {
