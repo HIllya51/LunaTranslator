@@ -52,3 +52,4 @@ else()
   target_link_libraries(wcocr_1 PRIVATE libprotobuf-lite)
 endif()
 
+target_sources(wcocr_1 INTERFACE wcocr.cpp)
