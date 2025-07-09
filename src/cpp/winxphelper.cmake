@@ -14,6 +14,9 @@ FetchContent_Declare(vc_ltl
 )
 
 if(USE_VC_LTL)
+    if(WINXP)
+        set(WindowsTargetPlatformMinVersion "5.1.2600.0")
+    endif()
     FetchContent_MakeAvailable(vc_ltl)
     include("${vc_ltl_SOURCE_DIR}/VC-LTL helper for cmake.cmake")
 endif()
