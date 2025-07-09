@@ -62,10 +62,10 @@ export const en = defineConfig({
                         ]
                     },
                     {
-                        text: 'Tổng hợp giọng nói', link: '/en/ttsengines',
+                        text: 'Speech Synthesis', link: '/en/ttsengines',
                         collapsed: true,
                         items: [
-                            { text: 'Công cụ Tổng hợp Giọng nói', link: '/en/ttsengines' },
+                            { text: 'Speech Synthesis Engine', link: '/en/ttsengines' },
                             { text: 'Using Different Voices for Different Characters', link: '/en/ttsofname' }
                         ]
                     },
