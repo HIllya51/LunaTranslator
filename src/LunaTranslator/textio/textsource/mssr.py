@@ -140,6 +140,9 @@ class mssr(basetext):
         first = True
         uid = self.uuid
         while (uid == self.uuid) and (not self.ending):
+            if not self.isautorunning:
+                time.sleep(0.1)
+                continue
             interval = globalconfig["sourcestatus2"]["mssr"]["refreshinterval2"]
             this = NativeUtils.GetLiveCaptionsText(pid)
             if first and this is not None:
