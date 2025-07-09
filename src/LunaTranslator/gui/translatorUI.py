@@ -1281,9 +1281,7 @@ class TranslatorWindow(resizableframeless):
                         text = None
             return result
 
-        _t = "\n" + get_about_info() + "\n"
-        if not globalconfig["adaptive_height"]:
-            _t = _t.replace("\n\n", "\n").strip()
+        _t = get_about_info().replace("\n\n", "\n")
         segs = makeMDlinkclick(_t)
         text = "".join(_.word for _ in segs)
         self.showline(
@@ -1301,9 +1299,10 @@ class TranslatorWindow(resizableframeless):
         self.cleanupdater()
         self.firstshow = False
 
-        if time.time() - globalconfig.get("lasttime", 0) > 3600:
+        if time.time() - globalconfig.get("lasttime", 0) > 3600 * 6:
+            if globalconfig.get("lasttime", 0):
+                self.showabout()
             globalconfig["lasttime"] = time.time()
-            self.showabout()
         self.mousetransparent_check()
         self.adjustbuttons()
         # 有个莫名其妙的加载时间

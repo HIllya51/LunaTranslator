@@ -6,7 +6,31 @@ FetchContent_Declare(wechat_ocr
     GIT_TAG master
     GIT_SHALLOW TRUE
 )
+FetchContent_Declare(glensproto
+    GIT_REPOSITORY https://github.com/test123456654321/glensproto
+    GIT_TAG main
+    GIT_SHALLOW TRUE
+)
+FetchContent_Declare(protobuf
+    URL https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.21.12.zip
+    DOWNLOAD_EXTRACT_TIMESTAMP true
+)
 FetchContent_Populate(wechat_ocr)
+FetchContent_Populate(glensproto)
+
+set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(protobuf_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(protobuf_BUILD_PROTOC_BINARIES OFF CACHE BOOL "" FORCE)
+set(protobuf_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(protobuf_INSTALL OFF CACHE BOOL "" FORCE)
+set(protobuf_WITH_ZLIB OFF CACHE BOOL "" FORCE)
+set(ABSL_PROPAGATE_CXX_STD ON)
+
+if(WIN10ABOVE)
+  option(protobuf_MSVC_STATIC_RUNTIME "protobuf_MSVC_STATIC_RUNTIME" OFF)
+endif()
+FetchContent_MakeAvailable(protobuf)
+
 
 function(FIX_CPP17 FILE_PATH)
 
@@ -34,22 +58,18 @@ add_library(wcocr_1 wcocr_1.cpp ${wcocr_src})
 target_include_directories(wcocr_1 PRIVATE ${wechat_ocr_SOURCE_DIR}/vs.proj PRIVATE ${wechat_ocr_SOURCE_DIR}/src PRIVATE ${wechat_ocr_SOURCE_DIR}/spt)
 target_precompile_headers(wcocr_1 REUSE_FROM wcocrpch)
 
-if(WIN10ABOVE)
-  target_link_libraries(wcocr_1 PRIVATE ${wechat_ocr_SOURCE_DIR}/spt/${platform}/libprotobuf-lite.lib)
-else()
-  FetchContent_Declare(protobuf
-      URL https://github.com/protocolbuffers/protobuf/archive/refs/tags/v3.21.12.zip
-      DOWNLOAD_EXTRACT_TIMESTAMP true
-  )
-  set(protobuf_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-  set(protobuf_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-  set(protobuf_BUILD_PROTOC_BINARIES OFF CACHE BOOL "" FORCE)
-  set(protobuf_BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-  set(protobuf_INSTALL OFF CACHE BOOL "" FORCE)
-  set(protobuf_WITH_ZLIB OFF CACHE BOOL "" FORCE)
-  set(ABSL_PROPAGATE_CXX_STD ON)
-  FetchContent_MakeAvailable(protobuf)
-  target_link_libraries(wcocr_1 PRIVATE libprotobuf-lite)
-endif()
 
-target_sources(wcocr_1 INTERFACE wcocr.cpp)
+target_link_libraries(wcocr_1 PRIVATE libprotobuf-lite)
+
+file(GLOB glensprotocpp ${glensproto_SOURCE_DIR}/*.cc)
+add_library(glensproto glens_1.cpp "${glensprotocpp}")
+target_include_directories(glensproto PRIVATE ${glensproto_SOURCE_DIR})
+target_include_directories(glensproto PRIVATE ${wechat_ocr_SOURCE_DIR}/spt)
+target_link_libraries(glensproto PRIVATE libprotobuf-lite)
+
+
+add_library(needprotobuf INTERFACE)
+target_sources(needprotobuf INTERFACE wcocr.cpp)
+target_sources(needprotobuf INTERFACE glens.cpp)
+target_link_libraries(needprotobuf INTERFACE wcocr_1)
+target_link_libraries(needprotobuf INTERFACE glensproto)

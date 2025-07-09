@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16)
 
 project(LunaHook)
 
+set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
+
 option(BUILD_HOST "BUILD_HOST" ON)
 option(BUILD_HOOK "BUILD_HOOK" ON)
 option(WIN10ABOVE "WIN10ABOVE" OFF)

@@ -56,6 +56,5 @@ if(WIN10ABOVE)
 	target_link_libraries(NativeUtils PRIVATE windowsapp)
 endif()
 
-add_subdirectory(wcocr)
-
-target_link_libraries(NativeUtils PRIVATE wcocr_1)
+add_subdirectory(needprotobuf)
+target_link_libraries(NativeUtils PRIVATE needprotobuf)
