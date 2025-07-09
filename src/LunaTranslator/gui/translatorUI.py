@@ -1299,7 +1299,7 @@ class TranslatorWindow(resizableframeless):
         self.cleanupdater()
         self.firstshow = False
 
-        if time.time() - globalconfig.get("lasttime", 0) > 3600 * 6:
+        if time.time() - globalconfig.get("lasttime", 0) > 3600:
             if globalconfig.get("lasttime", 0):
                 self.showabout()
             globalconfig["lasttime"] = time.time()

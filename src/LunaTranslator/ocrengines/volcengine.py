@@ -1,4 +1,3 @@
-import json
 from collections import OrderedDict
 from urllib.parse import urlencode
 from functools import reduce
@@ -6,7 +5,7 @@ import hmac, base64
 import datetime
 import pytz
 import hashlib
-import sys, threading
+import sys
 from urllib.parse import quote
 
 VERSION = "v1.0.75"
@@ -215,68 +214,6 @@ class SignerV4(object):
         return
 
     @staticmethod
-    def sign_url(request, credentials):
-        format_date = SignerV4.get_current_format_date()
-        date = format_date[:8]
-
-        md = MetaData()
-        md.set_date(date)
-        md.set_service(credentials.service)
-        md.set_region(credentials.region)
-        md.set_signed_headers("")
-        md.set_algorithm("HMAC-SHA256")
-        md.set_credential_scope("/".join([md.date, md.region, md.service, "request"]))
-
-        query = request.query
-        query["X-Date"] = format_date
-        query["X-NotSignBody"] = ""
-        query["X-Credential"] = credentials.ak + "/" + md.credential_scope
-        query["X-Algorithm"] = md.algorithm
-        query["X-SignedHeaders"] = md.signed_headers
-        query["X-SignedQueries"] = ""
-        query["X-SignedQueries"] = ";".join(sorted(query.keys()))
-        if credentials.session_token != "":
-            query["X-Security-Token"] = credentials.session_token
-
-        hashed_canon_req = SignerV4.hashed_simple_canonical_request_v4(request, md)
-        signing_str = "\n".join(
-            [md.algorithm, format_date, md.credential_scope, hashed_canon_req]
-        )
-        signing_key = SignerV4.get_signing_secret_key_v4(
-            credentials.sk, md.date, md.region, md.service
-        )
-        sign = SignerV4.signature_v4(signing_key, signing_str)
-
-        query["X-Signature"] = sign
-        return urlencode(query)
-
-    @staticmethod
-    def hashed_simple_canonical_request_v4(request, meta):
-        body = bytes()
-        # if sys.version_info[0] == 3:
-        #     body_hash = Util.sha256(body.decode('utf-8'))
-        # else:
-        body_hash = Util.sha256(body)
-
-        if request.path == "":
-            request.path = "/"
-
-        canoncial_request = "\n".join(
-            [
-                request.method,
-                Util.norm_uri(request.path),
-                Util.norm_query(request.query),
-                "\n",
-                meta.signed_headers,
-                body_hash,
-            ]
-        )
-        # if sys.version_info[0] == 3:
-        #     return Util.sha256(canoncial_request.decode('utf-8'))
-        # else:
-        return Util.sha256(canoncial_request)
-
-    @staticmethod
     def hashed_canonical_request_v4(request, meta):
         # if sys.version_info[0] == 3:
         #     body_hash = Util.sha256(request.body.decode('utf-8'))
@@ -395,23 +332,6 @@ class Service(object):
     def set_host(self, host):
         self.service_info.host = host
 
-    def set_scheme(self, scheme):
-        self.service_info.scheme = scheme
-
-    def get_sign_url(self, api, params):
-        if not (api in self.api_info):
-            raise Exception("no such api")
-        api_info = self.api_info[api]
-
-        mquery = self.merge(api_info.query, params)
-        r = Request()
-        r.set_shema(self.service_info.scheme)
-        r.set_method(api_info.method)
-        r.set_path(api_info.path)
-        r.set_query(mquery)
-
-        return SignerV4.sign_url(r, self.service_info.credentials)
-
     def post(self, api, params, form, session):
         if not (api in self.api_info):
             raise Exception("no such api")
@@ -429,10 +349,7 @@ class Service(object):
             headers=r.headers,
             data=r.form,
         )
-        if resp.status_code == 200:
-            return resp.text
-        else:
-            raise Exception(resp)
+        return resp
 
     def prepare_request(self, api_info, params, doseq=0):
         for key in params:
@@ -483,14 +400,6 @@ class Service(object):
 
 
 class VisualService(Service):
-    _instance_lock = threading.Lock()
-
-    def __new__(cls, *args, **kwargs):
-        if not hasattr(VisualService, "_instance"):
-            with VisualService._instance_lock:
-                if not hasattr(VisualService, "_instance"):
-                    VisualService._instance = object.__new__(cls)
-        return VisualService._instance
 
     def __init__(self):
         self.service_info = VisualService.get_service_info()
@@ -508,26 +417,12 @@ class VisualService(Service):
         )
         return service_info
 
-    def common_handler(self, api, form, session):
-        params = dict()
-        try:
-            res = self.post(api, params, form, session)
-            res_json = json.loads(res)
-            return res_json
-        except Exception as e:
-            res = str(e)
-            try:
-                res_json = json.loads(res)
-                return res_json
-            except:
-                raise Exception(str(e))
-
     def ocr_api(self, action, form, session):
         try:
-            res_json = self.common_handler(action, form, session)
-            return res_json
+            resp = self.post(action, {}, form, session)
+            return resp.json()
         except Exception as e:
-            raise Exception(str(e))
+            raise Exception(resp)
 
     def set_api_info(self, action, version):
         self.api_info[action] = ApiInfo(
