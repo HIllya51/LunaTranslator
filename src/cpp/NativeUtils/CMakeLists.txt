@@ -31,7 +31,7 @@ set(loopback_src applicationloopbackaudio/runer.cpp applicationloopbackaudio/Loo
 
 
 add_library(NativeUtils SHARED
-    audiodevice.cpp
+    audiodevice.cpp wcocr.cpp 
     globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp appx.cpp
     ${loopback_src} ${winrt_src} ${mshtml_src} ${webview2_src} ${versioninfo}
 )
@@ -55,3 +55,7 @@ endif()
 if(WIN10ABOVE)
 	target_link_libraries(NativeUtils PRIVATE windowsapp)
 endif()
+
+include(wcocr.cmake)
+
+target_link_libraries(NativeUtils PRIVATE wcocr_1)

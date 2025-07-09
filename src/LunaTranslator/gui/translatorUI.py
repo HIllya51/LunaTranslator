@@ -1281,7 +1281,10 @@ class TranslatorWindow(resizableframeless):
                         text = None
             return result
 
-        segs = makeMDlinkclick("\n" + get_about_info() + "\n")
+        _t = "\n" + get_about_info() + "\n"
+        if not globalconfig["adaptive_height"]:
+            _t = _t.replace("\n\n", "\n").strip()
+        segs = makeMDlinkclick(_t)
         text = "".join(_.word for _ in segs)
         self.showline(
             text=text,
@@ -1572,6 +1575,7 @@ class TranslatorWindow(resizableframeless):
         if self.translate_text.cleared:
             return
         if not globalconfig["adaptive_height"]:
+            self.translate_text.scrolltoend()
             return
         if globalconfig["verticalhorizontal"]:
             return

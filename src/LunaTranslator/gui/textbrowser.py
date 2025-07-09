@@ -113,7 +113,9 @@ class Textbrowser(QFrame):
         color: ColorControl,
         klass,
     ):
-        self.trace.append((1, (clear, iter_context_class, texttype, name, text, color, klass)))
+        self.trace.append(
+            (1, (clear, iter_context_class, texttype, name, text, color, klass))
+        )
         self.cleared = False
         self.textbrowser.iter_append(
             clear, iter_context_class, texttype, name, text, color, klass
@@ -125,14 +127,28 @@ class Textbrowser(QFrame):
             ),
         )
 
+    def scrolltoend(self):
+        self.textbrowser.scrolltoend()
+
     def updatetext(self, texttype: TextType, text, hira, color: ColorControl):
+        self.cleared = False
         self.textbrowser.updatetext(texttype, text, mecab.parseastarget(hira), color)
         WSForEach(
             mainuiwsoutputsave,
             lambda _1: _1.updatetext(texttype, text, mecab.parseastarget(hira), color),
         )
 
-    def append(self, updateTranslate, clear, texttype: TextType, name, text, tag, color: ColorControl, klass):
+    def append(
+        self,
+        updateTranslate,
+        clear,
+        texttype: TextType,
+        name,
+        text,
+        tag,
+        color: ColorControl,
+        klass,
+    ):
         if clear:
             self.trace.clear()
         self.trace.append(
@@ -152,12 +168,26 @@ class Textbrowser(QFrame):
         )
         self.cleared = False
         self.textbrowser.append(
-            updateTranslate, clear, texttype, name, text, mecab.parseastarget(tag), color, klass
+            updateTranslate,
+            clear,
+            texttype,
+            name,
+            text,
+            mecab.parseastarget(tag),
+            color,
+            klass,
         )
         WSForEach(
             mainuiwsoutputsave,
             lambda _1: _1.append(
-                updateTranslate, clear, texttype, name, text, mecab.parseastarget(tag), color, klass
+                updateTranslate,
+                clear,
+                texttype,
+                name,
+                text,
+                mecab.parseastarget(tag),
+                color,
+                klass,
             ),
         )
 

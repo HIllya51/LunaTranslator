@@ -33,9 +33,8 @@ from ctypes.wintypes import (
 from windows import AutoHandle
 from xml.sax.saxutils import escape
 import gobject
-import platform, windows, functools, os, re, csv
+import windows, functools, re, csv
 
-isbit64 = platform.architecture()[0] == "64bit"
 utilsdll = CDLL(gobject.GetDllpath("NativeUtils.dll"))
 
 OpenFileEx = utilsdll.OpenFileEx

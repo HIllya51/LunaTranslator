@@ -503,6 +503,7 @@
         ele.innerHTML = ''
         ele.appendChild(innerele)
         safe_calllunaheightchange()
+        // scrollend()
     }
     function _splittags(tag) {
         let result = [];
@@ -711,7 +712,13 @@
             ele.appendChild(document.createElement('br'))
         }
         safe_calllunaheightchange()
-
+        //scrollend()
+    }
+    function scrollend() {
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'instant'
+        });
     }
     function clear_all() {
         document.getElementById('luna_root_div_origin').innerHTML = "";

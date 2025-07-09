@@ -8,7 +8,7 @@ from traceback import print_exc
 
 class wcocr:
     def __init__(self):
-        self.wcocr = CDLL(gobject.GetDllpath("wcocr.dll"))
+        self.wcocr = CDLL(gobject.GetDllpath("NativeUtils.dll"))
         wcocr_init = self.wcocr.wcocr_init
         wcocr_init.argtypes = (
             c_wchar_p,

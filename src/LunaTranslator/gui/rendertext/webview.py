@@ -161,6 +161,9 @@ class somecommon(dataget):
         args = quote(json.dumps(dict(klass=klass, texttype=texttype)))
         self.debugeval('create_div_line_id("{}","{}")'.format(_id, args))
 
+    def scrolltoend(self):
+        self.debugeval("scrollend()")
+
     def clear_all(self):
         self.debugeval("clear_all()")
 

@@ -540,6 +540,9 @@ class TextBrowser(QWidget, dataget):
             text = name + " " + text
         return text
 
+    def scrolltoend(self):
+        pass
+
     def updatetext(self, *_):
         pass
 
