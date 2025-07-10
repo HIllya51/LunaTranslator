@@ -25,7 +25,7 @@ Most **API interface addresses** can be selected from the dropdown list, but som
 If the platform does not support fetching models via an API and the default list does not include the model you need, please refer to the official documentation of the interface to manually fill in the model.
 :::
 
-### Large-scale model interfaces in Europe and America
+### Large-scale model platforms in Europe and America  
 
 ::: tabs
 
@@ -83,7 +83,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 :::
 
-### Large-scale model interfaces in China
+### Large-scale model platforms in China  
 
 ::: tabs
 
