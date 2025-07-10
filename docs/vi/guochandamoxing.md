@@ -25,7 +25,7 @@ Hầu hết các **địa chỉ giao diện API** có thể được chọn từ
 Nếu nền tảng không hỗ trợ lấy mô hình qua API và danh sách mặc định không bao gồm mô hình bạn cần, vui lòng tham khảo tài liệu chính thức của giao diện để điền thủ công mô hình.
 :::
 
-### Giao Diện Mô Hình Lớn Nước Ngoài
+### Giao diện mô hình lớn ở Âu Mỹ
 
 ::: tabs
 
@@ -84,7 +84,7 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 
 :::
 
-### Giao Diện Mô Hình Lớn Trong Nước
+### Giao diện mô hình lớn ở Trung Quốc
 
 ::: tabs
 
