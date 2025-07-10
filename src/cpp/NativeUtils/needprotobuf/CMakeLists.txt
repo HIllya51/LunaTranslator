@@ -59,34 +59,35 @@ target_link_libraries(wcocr_1 PRIVATE libprotobuf-lite)
 file(GLOB glensproto proto/*.proto)
 
 
-function(PROTOBUF_GENERATE_CPP SRCS HDRS)
+function(PROTOBUF_GENERATE_CPP SRCS target_dir protoc)
     cmake_parse_arguments(protobuf_generate_cpp "" "EXPORT_MACRO;DESCRIPTORS" "" ${ARGN})
-    
+    message("target_dir ${target_dir}")
+    message("protoc ${protoc}")
     set(${SRCS})
-    set(${HDRS})
+    set(HDRS)
     
     foreach(FIL ${protobuf_generate_cpp_UNPARSED_ARGUMENTS}) 
         get_filename_component(FIL_WE ${FIL} NAME_WE)
         
-        list(APPEND ${SRCS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc")
-        list(APPEND ${HDRS} "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h")
+        list(APPEND ${SRCS} "${target_dir}/${FIL_WE}.pb.cc")
+        list(APPEND ${HDRS} "${target_dir}/${FIL_WE}.pb.h")
         
         add_custom_command(
-            OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.cc"
-                   "${CMAKE_CURRENT_BINARY_DIR}/${FIL_WE}.pb.h"
-            COMMAND ${wechat_ocr_SOURCE_DIR}/spt/protoc.exe
-            ARGS --cpp_out ${CMAKE_CURRENT_BINARY_DIR} --proto_path ${CMAKE_CURRENT_LIST_DIR}/proto ${FIL} 
+            OUTPUT "${target_dir}/${FIL_WE}.pb.cc"
+                   "${target_dir}/${FIL_WE}.pb.h"
+            COMMAND ${protoc}
+            ARGS --cpp_out ${target_dir} --proto_path ${CMAKE_CURRENT_LIST_DIR}/proto ${FIL} 
             COMMENT "Running C++ protocol buffer compiler on ${FIL}"
             VERBATIM
         )
     endforeach()
     
-    set_source_files_properties(${${SRCS}} ${${HDRS}} PROPERTIES GENERATED TRUE)
+    set_source_files_properties(${${SRCS}} ${HDRS} PROPERTIES GENERATED TRUE)
     set(${SRCS} ${${SRCS}} PARENT_SCOPE)
-    set(${HDRS} ${${HDRS}} PARENT_SCOPE)
+    set(${HDRS} ${HDRS} PARENT_SCOPE)
 endfunction()
 
-PROTOBUF_GENERATE_CPP(glensprotocpp glensprotoh "${glensproto}")
+PROTOBUF_GENERATE_CPP(glensprotocpp ${CMAKE_CURRENT_BINARY_DIR} ${wechat_ocr_SOURCE_DIR}/spt/protoc.exe "${glensproto}")
 
 add_library(glensproto glens_1.cpp "${glensprotocpp}")
 target_include_directories(glensproto PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
