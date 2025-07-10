@@ -4,7 +4,42 @@
 			"host": "translate.plausibility.cloud"
 		}
 	},
-	"google": {},
+	"google": {
+		"args": {
+			"usewhich": 3,
+			"chromepath": "",
+			"debugport": 9222
+		},
+		"argstype": {
+			"chromepath": {
+				"name": "Chromium_路径",
+				"refcombo": "usewhich",
+				"refcombo_i": 2,
+				"type": "file",
+				"dir": false
+			},
+			"debugport": {
+				"name": "端口号",
+				"refcombo": "usewhich",
+				"refcombo_i": 2,
+				"type": "intspin",
+				"min": 0,
+				"max": 1000000,
+				"step": 1
+			},
+			"usewhich": {
+				"name": "类型",
+				"rank": 0,
+				"type": "combo",
+				"list": [
+					"Web",
+					"mobile",
+					"CDP",
+					"Plugin"
+				]
+			}
+		}
+	},
 	"deepl_1": {
 		"args": {
 			"usewhich": 1,
