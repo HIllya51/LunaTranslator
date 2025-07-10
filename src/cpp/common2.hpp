@@ -126,27 +126,30 @@ struct AutoFreeString
     }
 };
 
-struct AutoVariant
+template <typename T, auto initor, auto clearer>
+struct AutoVariantBase
 {
-    VARIANT var;
-    operator VARIANT()
+    T var;
+    operator T()
     {
         return var;
     }
-    VARIANT *operator&()
+    T *operator&()
     {
         return &var;
     }
-    VARIANT *operator->()
+    T *operator->()
     {
         return &var;
     }
-    AutoVariant()
+    AutoVariantBase()
     {
-        VariantInit(&var);
+        initor(&var);
     }
-    ~AutoVariant()
+    ~AutoVariantBase()
     {
-        VariantClear(&var);
+        clearer(&var);
     }
 };
+using AutoVariant = AutoVariantBase<VARIANT, VariantInit, VariantClear>;
+using AutoPropVariant = AutoVariantBase<PROPVARIANT, PropVariantInit, PropVariantClear>;

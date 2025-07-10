@@ -31,7 +31,6 @@ DECLARE_API void ListEndpoints(bool input, void (*cb)(LPCWSTR, LPCWSTR))
     UINT count;
     CHECK_FAILURE_NORET(pCollection->GetCount(&count));
     // Each iteration prints the name of an endpoint device.
-    PROPVARIANT varName;
     for (ULONG i = 0; i < count; i++)
     {
         // Get the pointer to endpoint number i.
@@ -44,20 +43,11 @@ DECLARE_API void ListEndpoints(bool input, void (*cb)(LPCWSTR, LPCWSTR))
             STGM_READ, &pProps));
 
         // Initialize the container for property value.
-        PropVariantInit(&varName);
-        struct __onexits
-        {
-            PROPVARIANT varName;
-            ~__onexits()
-            {
-                PropVariantClear(&varName);
-            }
-        };
-        __onexits __{varName};
+        AutoPropVariant varName;
         // Get the endpoint's friendly-name property.
         CHECK_FAILURE_NORET(pProps->GetValue(PKEY_Device_FriendlyName, &varName));
 
         // Print the endpoint friendly name and endpoint ID.
-        cb(varName.pwszVal, pwszID);
+        cb(varName->pwszVal, pwszID);
     }
 }
