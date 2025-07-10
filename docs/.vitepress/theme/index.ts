@@ -49,7 +49,7 @@ export default {
                 }
             )
         }
-        const supportlangs = ['zh', 'en', 'ja', 'vi', 'cht', 'ko']
+        const supportlangs = ['zh', 'en', 'ja', 'vi', 'cht', 'ko', 'ru']
         onMounted(
             () => {
                 let _ = window.location.pathname.split('/')[1]

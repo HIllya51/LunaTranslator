@@ -1,6 +1,6 @@
 <script setup>
 
-const supportlangs = ['zh', 'en', 'ja', 'vi', 'cht', 'ko']
+const supportlangs = ['zh', 'en', 'ja', 'vi', 'cht', 'ko', 'ru']
 
 function browserlang() {
     let l = navigator.language

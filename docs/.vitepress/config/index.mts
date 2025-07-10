@@ -5,6 +5,7 @@ import { ja, jaSearch } from './ja'
 import { vi, viSearch } from './vi'
 import { cht, chtSearch } from './cht'
 import { ko, koSearch } from './ko'
+import { ru, ruSearch } from './ru'
 import { tabsMarkdownPlugin } from 'vitepress-plugin-tabs'
 
 // https://vitepress.dev/reference/site-config
@@ -34,6 +35,7 @@ export default defineConfig({
           ...viSearch,
           ...chtSearch,
           ...koSearch,
+          ...ruSearch,
         }
       }
     },
@@ -47,6 +49,7 @@ export default defineConfig({
     ja: { label: '日本語', ...ja },
     vi: { label: 'Tiếng Việt', ...vi },
     ko: { label: '한국어', ...ko },
+    ru: { label: 'Русский язык', ...ru },
   },
   ignoreDeadLinks: true,
   markdown: {
