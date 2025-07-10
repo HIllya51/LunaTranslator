@@ -41,33 +41,8 @@ class cdp_deepl(cdp_helper):
     def translate(self, content):
         self.checklang()
 
-        # Simulate real mouse click on input field to force DeepL to activate it properly
-        self.Runtime_evaluate(
-            """
-            (() => {
-                const el = document.querySelector('[contenteditable="true"]');
-                if (el) {
-                    const rect = el.getBoundingClientRect();
-                    const x = rect.left + rect.width / 2;
-                    const y = rect.top + rect.height / 2;
-                    ['mousedown', 'mouseup', 'click'].forEach(type => {
-                        el.dispatchEvent(new MouseEvent(type, {
-                            bubbles: true,
-                            clientX: x,
-                            clientY: y
-                        }));
-                    });
-                }
-            })()
-        """
-        )
-
-        # Clear input field the same way as clearing output field below
         self.Runtime_evaluate(
             """document.querySelector("#translator-source-clear-button").click()"""
-        )
-        self.Runtime_evaluate(
-            """document.getElementsByTagName("d-textarea")[0].querySelectorAll('span').forEach(e=>{e.innerText=''})"""
         )
         self.Runtime_evaluate(
             """document.getElementsByTagName("d-textarea")[1].querySelectorAll('span').forEach(e=>{e.innerText=''})"""
