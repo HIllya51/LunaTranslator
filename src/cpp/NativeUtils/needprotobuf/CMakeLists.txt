@@ -34,7 +34,7 @@ set(wcocr_src ${wechat_ocr_SOURCE_DIR}/src/mojocall.cpp ${wechat_ocr_SOURCE_DIR}
 add_library(wcocrpch ${wechat_ocr_SOURCE_DIR}/vs.proj/stdafx.cpp)
 target_precompile_headers(wcocrpch PUBLIC ${wechat_ocr_SOURCE_DIR}/vs.proj/stdafx.h)
 add_library(wcocr_1 wcocr_1.cpp ${wcocr_src})
-target_include_directories(wcocr_1 PRIVATE ${wechat_ocr_SOURCE_DIR}/vs.proj PRIVATE ${wechat_ocr_SOURCE_DIR}/src PRIVATE ${wechat_ocr_SOURCE_DIR}/spt)
+target_include_directories(wcocr_1 PRIVATE ${wechat_ocr_SOURCE_DIR}/vs.proj PRIVATE ${wechat_ocr_SOURCE_DIR}/src)
 target_precompile_headers(wcocr_1 REUSE_FROM wcocrpch)
 
 
@@ -46,7 +46,6 @@ PROTOBUF_GENERATE_CPP(glensprotocpp ${CMAKE_CURRENT_BINARY_DIR} ${wechat_ocr_SOU
 
 add_library(glensproto glens_1.cpp "${glensprotocpp}")
 target_include_directories(glensproto PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_include_directories(glensproto PRIVATE ${wechat_ocr_SOURCE_DIR}/spt)
 target_link_libraries(glensproto PRIVATE libprotobuf-lite)
 
 
