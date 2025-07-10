@@ -2,7 +2,7 @@
 
 > **一款视觉小说翻译器**
  
-### 简体中文  | [English](README_en.md) | [Other Language](otherlang.md)
+### 简体中文  | [English](README_en.md)
 
 ### 如果使用中遇到困难，可以查阅使用说明、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
 
