@@ -4,27 +4,27 @@
 
 > **A Visual Novel translation tool**
 
-### If you encounter any difficulties while using the software, you can check the [User Guide](https://docs.lunatranslator.org), or join our [Discord](https://discord.com/invite/ErtDwVeAbB).
+### If you encounter any difficulties while using the software, you can check the [User Guide](https://docs.lunatranslator.org/en), or join our [Discord](https://discord.com/invite/ErtDwVeAbB).
 
 ## Feature Support
 
 #### Text Input
 
-- **HOOK** Supports obtaining text using HOOK methods. For some engines, it also supports [embedded translation](https://docs.lunatranslator.org/embedtranslate.html). And Extracting text from games running on some [Emulators](https://docs.lunatranslator.org/emugames.html) is also supported. For games that are not supported or not well supported, please [submit feedback](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
+- **HOOK** Supports obtaining text using HOOK methods. For some engines, it also supports [embedded translation](https://docs.lunatranslator.org/en/embedtranslate.html). And Extracting text from games running on some [Emulators](https://docs.lunatranslator.org/en/emugames.html) is also supported. For games that are not supported or not well supported, please [submit feedback](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 
 
-- **OCR** supports **[offline OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** and **[online OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
+- **OCR** supports **[offline OCR](https://docs.lunatranslator.org/en/useapis/ocrapi.html)** and **[online OCR](https://docs.lunatranslator.org/en/useapis/ocrapi.html)**
 
 - **Clipboard** Supports retrieving text from the clipboard for translation and can also output extracted text to the clipboard.
 
-- **Other** also supports **[speech recognition](https://docs.lunatranslator.org/sr.html)** and **file translation**
+- **Other** also supports **[speech recognition](https://docs.lunatranslator.org/en/sr.html)** and **file translation**
 
 #### Translator
 
 Supports almost all conceivable translation engines, including:
 
-- **Online Translation** Supports many online translation interfaces that can be used without registration, and also supports **[traditional translation](https://docs.lunatranslator.org/useapis/tsapi.html)** and **[large model translation](https://docs.lunatranslator.org/guochandamoxing.html)** using user-registered APIs
+- **Online Translation** Supports many online translation interfaces that can be used without registration, and also supports **[traditional translation](https://docs.lunatranslator.org/en/useapis/tsapi.html)** and **[large model translation](https://docs.lunatranslator.org/en/guochandamoxing.html)** using user-registered APIs
 
-- **Offline translation** Supports common **traditional translation** engines and **[large model translation](https://docs.lunatranslator.org/offlinellm.html)** for offline deployment
+- **Offline translation** Supports common **traditional translation** engines and **[large model translation](https://docs.lunatranslator.org/en/offlinellm.html)** for offline deployment
 
 - **Pre-translation** Supports reading pre-translated files, supports translation caching
 

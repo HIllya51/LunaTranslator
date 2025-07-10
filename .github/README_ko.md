@@ -4,27 +4,27 @@
 
 > **비주얼 노벨 번역기**
  
-### 사용 중 어려움이 있으면 [사용 설명서](https://docs.lunatranslator.org)를 참고하거나 [Discord](https://discord.com/invite/ErtDwVeAbB)에 가입해 주세요.
+### 사용 중 어려움이 있으면 [사용 설명서](https://docs.lunatranslator.org/ko)를 참고하거나 [Discord](https://discord.com/invite/ErtDwVeAbB)에 가입해 주세요.
 
 ## 기능 지원
 
 #### 텍스트 입력
 
-- **HOOK** HOOK 방식을 사용하여 텍스트를 추출할 수 있습니다. 일부 게임 엔진의 경우 [내장 번역](https://docs.lunatranslator.org/embedtranslate.html)도 지원합니다. 또한 일부 [에뮬레이터](https://docs.lunatranslator.org/emugames.html)에서 실행되는 게임의 텍스트 추출도 지원합니다. 지원되지 않거나 지원이 미흡한 게임은 [피드백 제출](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 부탁드립니다.
+- **HOOK** HOOK 방식을 사용하여 텍스트를 추출할 수 있습니다. 일부 게임 엔진의 경우 [내장 번역](https://docs.lunatranslator.org/ko/embedtranslate.html)도 지원합니다. 또한 일부 [에뮬레이터](https://docs.lunatranslator.org/ko/emugames.html)에서 실행되는 게임의 텍스트 추출도 지원합니다. 지원되지 않거나 지원이 미흡한 게임은 [피드백 제출](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 부탁드립니다.
 
-- **OCR** **[오프라인 OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 및 **[온라인 OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 지원
+- **OCR** **[오프라인 OCR](https://docs.lunatranslator.org/ko/useapis/ocrapi.html)** 및 **[온라인 OCR](https://docs.lunatranslator.org/ko/useapis/ocrapi.html)** 지원
 
 - **클립보드** 클립보드에서 텍스트를 가져와 번역할 수 있으며, 추출한 텍스트를 클립보드로 출력할 수도 있습니다.
 
-- **기타** **[음성 인식](https://docs.lunatranslator.org/sr.html)** 및 **파일 번역**도 지원합니다.
+- **기타** **[음성 인식](https://docs.lunatranslator.org/ko/sr.html)** 및 **파일 번역**도 지원합니다.
 
 #### 번역기
 
 생각할 수 있는 거의 모든 번역 엔진을 지원합니다:
 
-- **온라인 번역** 많은 즉시 사용 가능한 온라인 번역 인터페이스를 지원하며, 사용자가 등록한 API를 사용하는 **[전통 번역](https://docs.lunatranslator.org/useapis/tsapi.html)** 및 **[대형 모델 번역](https://docs.lunatranslator.org/guochandamoxing.html)**도 지원합니다.
+- **온라인 번역** 많은 즉시 사용 가능한 온라인 번역 인터페이스를 지원하며, 사용자가 등록한 API를 사용하는 **[전통 번역](https://docs.lunatranslator.org/ko/useapis/tsapi.html)** 및 **[대형 모델 번역](https://docs.lunatranslator.org/ko/guochandamoxing.html)**도 지원합니다.
 
-- **오프라인 번역** 일반적인 **전통 번역** 엔진과 오프라인 배포된 **[대형 모델 번역](https://docs.lunatranslator.org/offlinellm.html)**을 지원합니다.
+- **오프라인 번역** 일반적인 **전통 번역** 엔진과 오프라인 배포된 **[대형 모델 번역](https://docs.lunatranslator.org/ko/offlinellm.html)**을 지원합니다.
 
 - **사전 번역** 사전 번역 파일 읽기를 지원하며, 번역 캐시도 지원합니다.
 

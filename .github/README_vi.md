@@ -4,27 +4,27 @@
 
 > **Công cụ dịch Visual Novel**
 
-### Nếu bạn gặp khó khăn khi sử dụng phần mềm, có thể tham khảo [Hướng dẫn sử dụng](https://docs.lunatranslator.org) hoặc tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) của chúng tôi.
+### Nếu bạn gặp khó khăn khi sử dụng phần mềm, có thể tham khảo [Hướng dẫn sử dụng](https://docs.lunatranslator.org/vi) hoặc tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) của chúng tôi.
 
 ## Tính năng hỗ trợ
 
 #### Nhập văn bản
 
-- **HOOK** Hỗ trợ lấy văn bản bằng phương pháp HOOK. Với một số engine, còn hỗ trợ [dịch nhúng](https://docs.lunatranslator.org/embedtranslate.html). Đồng thời hỗ trợ trích xuất văn bản từ game chạy trên các [Trình giả lập](https://docs.lunatranslator.org/emugames.html). Với các game chưa được hỗ trợ hoặc hỗ trợ chưa tốt, vui lòng [gửi phản hồi](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
+- **HOOK** Hỗ trợ lấy văn bản bằng phương pháp HOOK. Với một số engine, còn hỗ trợ [dịch nhúng](https://docs.lunatranslator.org/vi/embedtranslate.html). Đồng thời hỗ trợ trích xuất văn bản từ game chạy trên các [Trình giả lập](https://docs.lunatranslator.org/vi/emugames.html). Với các game chưa được hỗ trợ hoặc hỗ trợ chưa tốt, vui lòng [gửi phản hồi](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
-- **OCR** hỗ trợ **[OCR offline](https://docs.lunatranslator.org/useapis/ocrapi.html)** và **[OCR online](https://docs.lunatranslator.org/useapis/ocrapi.html)**
+- **OCR** hỗ trợ **[OCR offline](https://docs.lunatranslator.org/vi/useapis/ocrapi.html)** và **[OCR online](https://docs.lunatranslator.org/vi/useapis/ocrapi.html)**
 
 - **Clipboard** Hỗ trợ lấy văn bản từ clipboard để dịch và cũng có thể xuất văn bản trích xuất ra clipboard.
 
-- **Khác** cũng hỗ trợ **[nhận dạng giọng nói](https://docs.lunatranslator.org/sr.html)** và **dịch file**
+- **Khác** cũng hỗ trợ **[nhận dạng giọng nói](https://docs.lunatranslator.org/vi/sr.html)** và **dịch file**
 
 #### Dịch thuật
 
 Hỗ trợ hầu hết các engine dịch có thể nghĩ đến, bao gồm:
 
-- **Dịch online** Hỗ trợ nhiều giao diện dịch online có thể sử dụng không cần đăng ký, đồng thời hỗ trợ **[dịch truyền thống](https://docs.lunatranslator.org/useapis/tsapi.html)** và **[dịch bằng mô hình lớn](https://docs.lunatranslator.org/guochandamoxing.html)** sử dụng API do người dùng đăng ký
+- **Dịch online** Hỗ trợ nhiều giao diện dịch online có thể sử dụng không cần đăng ký, đồng thời hỗ trợ **[dịch truyền thống](https://docs.lunatranslator.org/vi/useapis/tsapi.html)** và **[dịch bằng mô hình lớn](https://docs.lunatranslator.org/vi/guochandamoxing.html)** sử dụng API do người dùng đăng ký
 
-- **Dịch offline** Hỗ trợ các engine **dịch truyền thống** thông dụng và **[dịch bằng mô hình lớn](https://docs.lunatranslator.org/offlinellm.html)** để triển khai offline
+- **Dịch offline** Hỗ trợ các engine **dịch truyền thống** thông dụng và **[dịch bằng mô hình lớn](https://docs.lunatranslator.org/vi/offlinellm.html)** để triển khai offline
 
 - **Dịch trước** Hỗ trợ đọc file dịch trước, hỗ trợ lưu cache bản dịch
 
