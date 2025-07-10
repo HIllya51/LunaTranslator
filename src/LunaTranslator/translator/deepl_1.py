@@ -29,51 +29,26 @@ class cdp_deepl(cdp_helper):
         self.langs = None
 
     def checklang(self):
-        if (self.srclang, self.tgtlang) == self.langs:
-            return
+        if self.srclang != Languages.Auto:
+            return self.srclang
         self.langs = (self.srclang, self.tgtlang)
+        href = self.wait_for_result("window.location.href")
+        try:
+            return href.split("/translator#")[1].split("/")[0]
+        except:
+            return Languages.Japanese
+
+    def translate(self, content):
+
+        self.Runtime_evaluate(
+            """document.getElementsByTagName("d-textarea")[1].children[0].innerHTML = ''"""
+        )
         self.Page_navigate(
-            "https://www.deepl.com/en/translator#{}/{}".format(
-                self.srclang, self.tgtlang
+            "https://www.deepl.com/en/translator#{}/{}/{}".format(
+                self.checklang(), self.tgtlang, content
             )
         )
 
-    def translate(self, content):
-        self.checklang()
-
-        # Simulate real mouse click on input field to force DeepL to activate it properly
-        self.Runtime_evaluate(
-            """
-            (() => {
-                const el = document.querySelector('[contenteditable="true"]');
-                if (el) {
-                    const rect = el.getBoundingClientRect();
-                    const x = rect.left + rect.width / 2;
-                    const y = rect.top + rect.height / 2;
-                    ['mousedown', 'mouseup', 'click'].forEach(type => {
-                        el.dispatchEvent(new MouseEvent(type, {
-                            bubbles: true,
-                            clientX: x,
-                            clientY: y
-                        }));
-                    });
-                }
-            })()
-        """
-        )
-
-        # Clear input field the same way as clearing output field below
-        self.Runtime_evaluate(
-            """document.querySelector("#translator-source-clear-button").click()"""
-        )
-        self.Runtime_evaluate(
-            """document.getElementsByTagName("d-textarea")[0].querySelectorAll('span').forEach(e=>{e.innerText=''})"""
-        )
-        self.Runtime_evaluate(
-            """document.getElementsByTagName("d-textarea")[1].querySelectorAll('span').forEach(e=>{e.innerText=''})"""
-        )
-        self.Runtime_evaluate("document.getElementsByTagName('d-textarea')[0].focus()")
-        self.send_keys(content)
         return self.wait_for_result(
             'document.getElementsByTagName("d-textarea")[1].textContent'
         )
