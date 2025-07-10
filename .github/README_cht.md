@@ -1,6 +1,6 @@
 ### [简体中文](README.md) | [English](README_en.md) | 繁體中文 | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md) | [Русский язык](README_ru.md)
 
-# LunaTranslator
+# LunaTranslator [軟體下載](https://docs.lunatranslator.org/cht/README.html)  
 
 > **一款視覺小說翻譯器**
 

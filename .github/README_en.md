@@ -1,6 +1,6 @@
 ### [简体中文](README.md) | English | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md) | [Русский язык](README_ru.md)
 
-# LunaTranslator
+# LunaTranslator [Software Download](https://docs.lunatranslator.org/en/README.html)  
 
 > **A Visual Novel translation tool**
 

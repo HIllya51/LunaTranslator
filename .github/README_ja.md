@@ -1,6 +1,6 @@
 ### [简体中文](README.md) | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | 日本語 | [Tiếng Việt](README_vi.md) | [Русский язык](README_ru.md)
 
-# LunaTranslator
+# LunaTranslator [ソフトウェアのダウンロード](https://docs.lunatranslator.org/ja/README.html)  
 
 > **ビジュアルノベル翻訳ツール**
 
