@@ -118,7 +118,7 @@ class question(QWidget):
     installsucc = pyqtSignal(bool, str)
 
     def downloadauto(self):
-        self.downloadxSafe(dynamiclink("/Resource/SnippingTool"))
+        self.downloadxSafe(dynamiclink("Resource/SnippingTool"))
         self.formLayout.setRowVisible(1, False)
         self.formLayout.setRowVisible(2, True)
 
@@ -183,7 +183,7 @@ class question(QWidget):
     def __init__(self, *argc, **kw):
         super().__init__(*argc, **kw)
         self.installsucc.connect(self._installsucc)
-        self.failedlink = lambda: dynamiclink("/Resource/SnippingTool")
+        self.failedlink = lambda: dynamiclink("Resource/SnippingTool")
         self.skiplink2 = False
         formLayout = VisLFormLayout(self)
         formLayout.setContentsMargins(0, 0, 0, 0)

@@ -459,12 +459,13 @@ def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
 
 
 def dynamiclink(text: str = "", docs=False) -> str:
-    return (
-        static_data[("main_server", "docs_server")[docs]][
-            [gobject.serverindex, gobject.serverindex2][docs]
-        ]
-        + text
-    )
+    base = static_data[("main_server", "docs_server")[docs]][
+        [gobject.serverindex, gobject.serverindex2][docs]
+    ]
+    _ = [base, text]
+    if docs:
+        _.insert(1, str(getlanguse()))
+    return urlpathjoin(*_)
 
 
 def makehtml(text: str, show=None, docs=False) -> str:
@@ -821,7 +822,7 @@ def checkv1(api_url: str):
         return api_url + "/v1"
 
 
-def urlpathjoin(*argc):
+def urlpathjoin(*argc: str):
     urlx = []
     for i, u in enumerate(argc):
         if u.startswith("/") and i != 0:

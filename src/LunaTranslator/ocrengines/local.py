@@ -360,7 +360,7 @@ class question(QWidget):
     def __loadlangs(self):
         try:
             result = requests.get(
-                dynamiclink("/Resource/ocr_models_list"),
+                dynamiclink("Resource/ocr_models_list"),
                 verify=False,
                 proxies=getproxy(),
             ).json()

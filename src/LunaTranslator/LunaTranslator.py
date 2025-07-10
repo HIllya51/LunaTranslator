@@ -1144,7 +1144,7 @@ class BASEOBJECT(QObject):
         if link == "WEIXIN":
             return self.createimageviewsig.emit(parent)
         if link == "/":
-            link = dynamiclink("/", docs=True)
+            link = dynamiclink("", docs=True)
         os.startfile(link)
 
     @threader
@@ -1267,7 +1267,7 @@ class BASEOBJECT(QObject):
             self.showtraymessage(
                 "v" + vs,
                 _TR("更新记录"),
-                lambda: os.startfile(dynamiclink("/ChangeLog")),
+                lambda: os.startfile(dynamiclink("ChangeLog")),
             )
 
         globalconfig["load_doc_or_log"] = version

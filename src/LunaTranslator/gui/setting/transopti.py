@@ -1,10 +1,9 @@
 from qtsymbols import *
-import functools, os, gobject
+import functools, gobject
 from myutils.post import POSTSOLVE
 from myutils.utils import (
     selectdebugfile,
     checkpostlangmatch,
-    dynamiclink,
     loadpostsettingwindowmethod,
 )
 from myutils.post import processfunctions

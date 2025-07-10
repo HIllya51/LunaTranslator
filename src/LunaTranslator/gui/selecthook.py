@@ -649,7 +649,7 @@ class hookselect(closeashidewindow):
         self.searchtextlayout = QHBoxLayout()
         self.vboxlayout.addLayout(self.searchtextlayout)
         __ = LPushButton("游戏适配")
-        __.clicked.connect(lambda: os.startfile(dynamiclink("/Resource/game_support")))
+        __.clicked.connect(lambda: os.startfile(dynamiclink("Resource/game_support")))
 
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
@@ -658,7 +658,7 @@ class hookselect(closeashidewindow):
         self.searchtextlayout.addWidget(userhookinsert)
 
         self.searchtextlayout.addWidget(
-            D_getdoclink("/zh/hooksettings.html#特殊码格式")()
+            D_getdoclink("hooksettings.html#特殊码格式")()
         )
 
         self.userhookfind = LPushButton("搜索特殊码")

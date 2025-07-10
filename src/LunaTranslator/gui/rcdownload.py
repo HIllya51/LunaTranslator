@@ -24,7 +24,7 @@ class resourcewidget(NQGroupBox):
 
     @property
     def oldlink(self):
-        return dynamiclink("/Resource/dictionary/unidic-mecab-2.1.2_bin.zip")
+        return dynamiclink("Resource/dictionary/unidic-mecab-2.1.2_bin.zip")
 
     checkdirname = "unidic-mecab-2.1.2_bin"
     oldlinkfnname = "unidic-mecab-2.1.2_bin.zip"
@@ -141,7 +141,7 @@ class resourcewidget2(NQGroupBox):
 
     @property
     def oldlink(self):
-        return dynamiclink("/Resource/dictionary/jitendex-mdict.zip")
+        return dynamiclink("Resource/dictionary/jitendex-mdict.zip")
 
     def downloadofficial(self):
         tgt = gobject.getcachedir("mdict/jitendex/jitendex.mdx")

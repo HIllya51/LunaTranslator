@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, os
 from myutils.config import globalconfig, ocrsetting, ocrerrorfix
-from myutils.utils import splitocrtypes, dynamiclink, getimagefilefilter
+from myutils.utils import splitocrtypes, getimagefilefilter
 from gui.inputdialog import postconfigdialog, autoinitdialog_items, autoinitdialog
 from gui.usefulwidget import (
     D_getsimplecombobox,

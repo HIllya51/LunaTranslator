@@ -27,7 +27,7 @@ def createversionlabel(self):
     versionlabel = getsmalllabel()()
     versionlabel.setOpenExternalLinks(False)
     versionlabel.linkActivated.connect(
-        lambda _: os.startfile(dynamiclink("/ChangeLog"))
+        lambda _: os.startfile(dynamiclink("ChangeLog"))
     )
     versionlabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse)
 

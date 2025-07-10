@@ -521,7 +521,7 @@ def leftwidget(self):
         tips="使用说明",
     )
     btn3.clicked.connect(
-        lambda: os.startfile(dynamiclink("/guochandamoxing.html", docs=True))
+        lambda: os.startfile(dynamiclink("guochandamoxing.html", docs=True))
     )
 
     return [btn3, btn, btn2]
@@ -565,7 +565,7 @@ def initsome2(self, mianfei, api):
                     fix=False,
                     icon="fa.question",
                     callback=lambda: os.startfile(
-                        dynamiclink("/useapis/tsapi.html", docs=True)
+                        dynamiclink("useapis/tsapi.html", docs=True)
                     ),
                     tips="使用说明",
                 ),
