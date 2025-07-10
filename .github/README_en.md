@@ -2,9 +2,9 @@
 
 > **A Visual Novel translation tool**
 
-### [简体中文](README.md) | English
+### [简体中文](README.md) | English | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md)
 
-### If you encounter any difficulties while using the software, you can check the [User Guide](/), or join our [Discord](https://discord.com/invite/ErtDwVeAbB).
+### If you encounter any difficulties while using the software, you can check the [User Guide](https://docs.lunatranslator.org), or join our [Discord](https://discord.com/invite/ErtDwVeAbB).
 
 ## Feature Support
 

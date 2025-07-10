@@ -1,61 +1,59 @@
-# LunaTranslator [软件下载](https://docs.lunatranslator.org/README.html)
+# LunaTranslator
 
-> **一款视觉小说翻译器**
- 
-### 简体中文  | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md)
+> **一款視覺小說翻譯器**
 
-### 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
+### [简体中文](README.md) | [English](README_en.md) | 繁體中文 | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md)
 
-## 功能支持
+### 若使用中遇到困難，可以查閱[使用說明](https://docs.lunatranslator.org)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)。
 
-#### 文本输入
+## 功能支援
 
-- **HOOK** 支持使用HOOK方式获取文本。对于部分游戏引擎，还支持[内嵌翻译](https://docs.lunatranslator.org/embedtranslate.html)。还支持提取部分[模拟器](https://docs.lunatranslator.org/emugames.html)上运行的游戏的文本。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
+#### 文字輸入
 
-- **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
+- **HOOK** 支援使用HOOK方式獲取文字。對於部分遊戲引擎，還支援[內嵌翻譯](https://docs.lunatranslator.org/embedtranslate.html)。還支援提取部分[模擬器](https://docs.lunatranslator.org/emugames.html)上運行的遊戲的文字。對於不支援或支援不佳的遊戲，請[提交反饋](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
-- **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
+- **OCR** 支援 **[離線OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 和 **[線上OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**
 
-- **其他** 还支持 **[语音识别](https://docs.lunatranslator.org/sr.html)** 和**文件翻译**
+- **剪貼簿** 支援從剪貼簿中獲取文字進行翻譯，也可以將提取的文字輸出到剪貼簿
 
-#### 翻译器
+- **其他** 還支援 **[語音識別](https://docs.lunatranslator.org/sr.html)** 和**檔案翻譯**
 
-支持几乎所有能想得到的翻译引擎，包括： 
+#### 翻譯器
 
-- **在线翻译** 支持大量免注册开箱即用的在线翻译接口，也支持使用用户注册的API的 **[传统翻译](https://docs.lunatranslator.org/useapis/tsapi.html)** 和 **[大模型翻译](https://docs.lunatranslator.org/guochandamoxing.html)** 
+支援幾乎所有能想到的翻譯引擎，包括：
 
-- **离线翻译** 支持常见 **传统翻译** 引擎和离线部署的 **[大模型翻译](https://docs.lunatranslator.org/offlinellm.html)**
+- **線上翻譯** 支援大量免註冊開箱即用的線上翻譯接口，也支援使用用戶註冊的API的 **[傳統翻譯](https://docs.lunatranslator.org/useapis/tsapi.html)** 和 **[大模型翻譯](https://docs.lunatranslator.org/guochandamoxing.html)**
 
-- **预翻译** 支持读取预翻译文件，支持翻译缓存
+- **離線翻譯** 支援常見 **傳統翻譯** 引擎和離線部署的 **[大模型翻譯](https://docs.lunatranslator.org/offlinellm.html)**
 
-- **支持自定义翻译扩展** 支持使用python语言扩展其他翻译接口
+- **預翻譯** 支援讀取預翻譯檔案，支援翻譯緩存
+
+- **支援自訂翻譯擴展** 支援使用python語言擴展其他翻譯接口
 
 #### 其他功能
 
-- **语音合成** 支持 **离线TTS** 和 **在线TTS**
+- **語音合成** 支援 **離線TTS** 和 **線上TTS**
 
-- **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
+- **日語分詞及假名顯示** 支援使用 Mecab 等分詞和顯示假名
 
-- **查词** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** 进行单词查询
+- **查詞** 支援使用 **離線辭書** ( MDICT ) 和 **線上辭書** 進行單詞查詢
 
-- **Anki** 支持使用一键添加单词到anki中
+- **Anki** 支援一鍵添加單詞到anki中
 
-- **加载浏览器插件** 可以在软件内加载Yomitan等浏览器插件以辅助实现一些其他功能
+- **載入瀏覽器插件** 可以在軟體內載入Yomitan等瀏覽器插件以輔助實現一些其他功能
 
-## 支持作者
+## 支援作者
 
-软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
+軟體維護不易，若您覺得此軟體對您有所幫助，歡迎透過[patreon](https://patreon.com/HIllya51)支持我，您的支持將成為軟體長期維護的動力，謝謝～
 
-<a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="../docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
 
-<img src='../src/files/static/zan.jpg' style="height: 350px !important;">
+## 開源許可
 
-## 开源许可
-
-LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
+LunaTranslator使用 [GPLv3](../LICENSE) 許可證。
 
 <details>
-<summary>引用的项目</summary>
+<summary>引用的項目</summary>
 
 * ![img](https://img.shields.io/github/license/opencv/opencv) [opencv/opencv](https://github.com/opencv/opencv)
 * ![img](https://img.shields.io/github/license/microsoft/onnxruntime) [microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)

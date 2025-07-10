@@ -1,61 +1,59 @@
-# LunaTranslator [软件下载](https://docs.lunatranslator.org/README.html)
+# LunaTranslator
 
-> **一款视觉小说翻译器**
- 
-### 简体中文  | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md)
+> **Công cụ dịch Visual Novel**
 
-### 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
+### [简体中文](README.md) | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | Tiếng Việt
 
-## 功能支持
+### Nếu bạn gặp khó khăn khi sử dụng phần mềm, có thể tham khảo [Hướng dẫn sử dụng](https://docs.lunatranslator.org) hoặc tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) của chúng tôi.
 
-#### 文本输入
+## Tính năng hỗ trợ
 
-- **HOOK** 支持使用HOOK方式获取文本。对于部分游戏引擎，还支持[内嵌翻译](https://docs.lunatranslator.org/embedtranslate.html)。还支持提取部分[模拟器](https://docs.lunatranslator.org/emugames.html)上运行的游戏的文本。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
+#### Nhập văn bản
 
-- **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
+- **HOOK** Hỗ trợ lấy văn bản bằng phương pháp HOOK. Với một số engine, còn hỗ trợ [dịch nhúng](https://docs.lunatranslator.org/embedtranslate.html). Đồng thời hỗ trợ trích xuất văn bản từ game chạy trên các [Trình giả lập](https://docs.lunatranslator.org/emugames.html). Với các game chưa được hỗ trợ hoặc hỗ trợ chưa tốt, vui lòng [gửi phản hồi](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
 
-- **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
+- **OCR** hỗ trợ **[OCR offline](https://docs.lunatranslator.org/useapis/ocrapi.html)** và **[OCR online](https://docs.lunatranslator.org/useapis/ocrapi.html)**
 
-- **其他** 还支持 **[语音识别](https://docs.lunatranslator.org/sr.html)** 和**文件翻译**
+- **Clipboard** Hỗ trợ lấy văn bản từ clipboard để dịch và cũng có thể xuất văn bản trích xuất ra clipboard.
 
-#### 翻译器
+- **Khác** cũng hỗ trợ **[nhận dạng giọng nói](https://docs.lunatranslator.org/sr.html)** và **dịch file**
 
-支持几乎所有能想得到的翻译引擎，包括： 
+#### Dịch thuật
 
-- **在线翻译** 支持大量免注册开箱即用的在线翻译接口，也支持使用用户注册的API的 **[传统翻译](https://docs.lunatranslator.org/useapis/tsapi.html)** 和 **[大模型翻译](https://docs.lunatranslator.org/guochandamoxing.html)** 
+Hỗ trợ hầu hết các engine dịch có thể nghĩ đến, bao gồm:
 
-- **离线翻译** 支持常见 **传统翻译** 引擎和离线部署的 **[大模型翻译](https://docs.lunatranslator.org/offlinellm.html)**
+- **Dịch online** Hỗ trợ nhiều giao diện dịch online có thể sử dụng không cần đăng ký, đồng thời hỗ trợ **[dịch truyền thống](https://docs.lunatranslator.org/useapis/tsapi.html)** và **[dịch bằng mô hình lớn](https://docs.lunatranslator.org/guochandamoxing.html)** sử dụng API do người dùng đăng ký
 
-- **预翻译** 支持读取预翻译文件，支持翻译缓存
+- **Dịch offline** Hỗ trợ các engine **dịch truyền thống** thông dụng và **[dịch bằng mô hình lớn](https://docs.lunatranslator.org/offlinellm.html)** để triển khai offline
 
-- **支持自定义翻译扩展** 支持使用python语言扩展其他翻译接口
+- **Dịch trước** Hỗ trợ đọc file dịch trước, hỗ trợ lưu cache bản dịch
 
-#### 其他功能
+- **Hỗ trợ mở rộng dịch tùy chỉnh** Hỗ trợ mở rộng các giao diện dịch khác bằng ngôn ngữ Python
 
-- **语音合成** 支持 **离线TTS** 和 **在线TTS**
+#### Chức năng khác
 
-- **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
+- **Chuyển văn bản thành giọng nói** hỗ trợ **TTS offline** và **TTS online**
 
-- **查词** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** 进行单词查询
+- **Phân tách từ tiếng Nhật và hiển thị kana** Hỗ trợ phân tách từ và hiển thị kana bằng Mecab, v.v.
 
-- **Anki** 支持使用一键添加单词到anki中
+- **Tra từ điển** Hỗ trợ **từ điển offline** (MDICT) và **từ điển online** để tra từ
 
-- **加载浏览器插件** 可以在软件内加载Yomitan等浏览器插件以辅助实现一些其他功能
+- **Anki** Hỗ trợ thêm từ vào Anki bằng một cú nhấp chuột
 
-## 支持作者
+- **Tải tiện ích mở rộng trình duyệt** Các tiện ích mở rộng trình duyệt như Yomitan có thể được tải trong phần mềm để hỗ trợ triển khai các tính năng bổ sung.
 
-软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
+## Tài trợ
 
-<a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
+Việc bảo trì phần mềm không dễ dàng. Nếu bạn thấy phần mềm này hữu ích, hãy ủng hộ tôi qua [Patreon](https://patreon.com/HIllya51). Sự ủng hộ của bạn sẽ góp phần duy trì phần mềm lâu dài. Cảm ơn~
 
-<img src='../src/files/static/zan.jpg' style="height: 350px !important;">
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="../docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
 
-## 开源许可
+## Giấy phép mã nguồn mở
 
-LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
+LunaTranslator sử dụng giấy phép [GPLv3](../LICENSE).
 
 <details>
-<summary>引用的项目</summary>
+<summary>Các dự án tham khảo</summary>
 
 * ![img](https://img.shields.io/github/license/opencv/opencv) [opencv/opencv](https://github.com/opencv/opencv)
 * ![img](https://img.shields.io/github/license/microsoft/onnxruntime) [microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)

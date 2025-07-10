@@ -1,61 +1,59 @@
-# LunaTranslator [软件下载](https://docs.lunatranslator.org/README.html)
+# LunaTranslator
 
-> **一款视觉小说翻译器**
- 
-### 简体中文  | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md)
+> **ビジュアルノベル翻訳ツール**
 
-### 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
+### [简体中文](README.md) | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | 日本語 | [Tiếng Việt](README_vi.md)
 
-## 功能支持
+### ソフトウェア使用中に問題が発生した場合、[ユーザーガイド](https://docs.lunatranslator.org)を参照するか、[Discord](https://discord.com/invite/ErtDwVeAbB)に参加してください。
 
-#### 文本输入
+## 機能サポート
 
-- **HOOK** 支持使用HOOK方式获取文本。对于部分游戏引擎，还支持[内嵌翻译](https://docs.lunatranslator.org/embedtranslate.html)。还支持提取部分[模拟器](https://docs.lunatranslator.org/emugames.html)上运行的游戏的文本。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
+#### テキスト入力
 
-- **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
+- **HOOK** HOOKメソッドを使用したテキスト取得をサポート。一部のエンジンでは[埋め込み翻訳](https://docs.lunatranslator.org/embedtranslate.html)にも対応。[エミュレータ](https://docs.lunatranslator.org/emugames.html)上で動作するゲームからのテキスト抽出も可能。未対応または不完全対応のゲームについては[フィードバックを提出](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)してください。
 
-- **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
+- **OCR** **[オフラインOCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**と**[オンラインOCR](https://docs.lunatranslator.org/useapis/ocrapi.html)**をサポート
 
-- **其他** 还支持 **[语音识别](https://docs.lunatranslator.org/sr.html)** 和**文件翻译**
+- **クリップボード** クリップボードから翻訳用テキストを取得可能。抽出したテキストをクリップボードに出力することも可能。
 
-#### 翻译器
+- **その他** **[音声認識](https://docs.lunatranslator.org/sr.html)**と**ファイル翻訳**にも対応
 
-支持几乎所有能想得到的翻译引擎，包括： 
+#### 翻訳機能
 
-- **在线翻译** 支持大量免注册开箱即用的在线翻译接口，也支持使用用户注册的API的 **[传统翻译](https://docs.lunatranslator.org/useapis/tsapi.html)** 和 **[大模型翻译](https://docs.lunatranslator.org/guochandamoxing.html)** 
+考え得るほぼ全ての翻訳エンジンをサポート：
 
-- **离线翻译** 支持常见 **传统翻译** 引擎和离线部署的 **[大模型翻译](https://docs.lunatranslator.org/offlinellm.html)**
+- **オンライン翻訳** 登録不要で使用可能な多数のオンライン翻訳インターフェースをサポート。ユーザー登録APIを使用した**[従来型翻訳](https://docs.lunatranslator.org/useapis/tsapi.html)**と**[大規模モデル翻訳](https://docs.lunatranslator.org/guochandamoxing.html)**にも対応
 
-- **预翻译** 支持读取预翻译文件，支持翻译缓存
+- **オフライン翻訳** 一般的な**従来型翻訳**エンジンとオフライン展開可能な**[大規模モデル翻訳](https://docs.lunatranslator.org/offlinellm.html)**をサポート
 
-- **支持自定义翻译扩展** 支持使用python语言扩展其他翻译接口
+- **事前翻訳** 事前翻訳ファイルの読み込みをサポート、翻訳キャッシュに対応
 
-#### 其他功能
+- **カスタム翻訳拡張サポート** Python言語を使用した他の翻訳インターフェースの拡張が可能
 
-- **语音合成** 支持 **离线TTS** 和 **在线TTS**
+#### その他の機能
 
-- **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
+- **テキスト読み上げ** **オフラインTTS**と**オンラインTTS**をサポート
 
-- **查词** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** 进行单词查询
+- **日本語分かち書きと仮名表示** Mecab等を使用した単語分割と仮名表示をサポート
 
-- **Anki** 支持使用一键添加单词到anki中
+- **単語検索** **オフライン辞書**(MDICT)と**オンライン辞書**による単語検索をサポート
 
-- **加载浏览器插件** 可以在软件内加载Yomitan等浏览器插件以辅助实现一些其他功能
+- **Anki** ワンクリックでAnkiに単語を追加可能
 
-## 支持作者
+- **ブラウザ拡張機能の読み込み** Yomitanなどのブラウザ拡張機能をソフトウェア内で読み込み、追加機能の実装を補助可能。
 
-软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
+## スポンサーシップ
 
-<a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
+ソフトウェアのメンテナンスは容易ではありません。本ソフトウェアが役立つと感じた方は、[Patreon](https://patreon.com/HIllya51)を通じてサポートをお願いします。皆様の支援がソフトウェアの長期的な維持に貢献します。ありがとうございます～
 
-<img src='../src/files/static/zan.jpg' style="height: 350px !important;">
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="../docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
 
-## 开源许可
+## オープンソースライセンス
 
-LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
+LunaTranslatorは[GPLv3](../LICENSE)ライセンスを使用しています。
 
 <details>
-<summary>引用的项目</summary>
+<summary>参照プロジェクト</summary>
 
 * ![img](https://img.shields.io/github/license/opencv/opencv) [opencv/opencv](https://github.com/opencv/opencv)
 * ![img](https://img.shields.io/github/license/microsoft/onnxruntime) [microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)

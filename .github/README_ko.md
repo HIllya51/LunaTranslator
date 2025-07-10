@@ -1,61 +1,59 @@
-# LunaTranslator [软件下载](https://docs.lunatranslator.org/README.html)
+# LunaTranslator
 
-> **一款视觉小说翻译器**
+> **비주얼 노벨 번역기**
  
-### 简体中文  | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md)
+### [简体中文](README.md) | [English](README_en.md) | [繁體中文](README_cht.md) | 한국어 | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md)
 
-### 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
+### 사용 중 어려움이 있으면 [사용 설명서](https://docs.lunatranslator.org)를 참고하거나 [Discord](https://discord.com/invite/ErtDwVeAbB)에 가입해 주세요.
 
-## 功能支持
+## 기능 지원
 
-#### 文本输入
+#### 텍스트 입력
 
-- **HOOK** 支持使用HOOK方式获取文本。对于部分游戏引擎，还支持[内嵌翻译](https://docs.lunatranslator.org/embedtranslate.html)。还支持提取部分[模拟器](https://docs.lunatranslator.org/emugames.html)上运行的游戏的文本。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
+- **HOOK** HOOK 방식을 사용하여 텍스트를 추출할 수 있습니다. 일부 게임 엔진의 경우 [내장 번역](https://docs.lunatranslator.org/embedtranslate.html)도 지원합니다. 또한 일부 [에뮬레이터](https://docs.lunatranslator.org/emugames.html)에서 실행되는 게임의 텍스트 추출도 지원합니다. 지원되지 않거나 지원이 미흡한 게임은 [피드백 제출](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml) 부탁드립니다.
 
-- **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 和 **[在线OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 
+- **OCR** **[오프라인 OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 및 **[온라인 OCR](https://docs.lunatranslator.org/useapis/ocrapi.html)** 지원
 
-- **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
+- **클립보드** 클립보드에서 텍스트를 가져와 번역할 수 있으며, 추출한 텍스트를 클립보드로 출력할 수도 있습니다.
 
-- **其他** 还支持 **[语音识别](https://docs.lunatranslator.org/sr.html)** 和**文件翻译**
+- **기타** **[음성 인식](https://docs.lunatranslator.org/sr.html)** 및 **파일 번역**도 지원합니다.
 
-#### 翻译器
+#### 번역기
 
-支持几乎所有能想得到的翻译引擎，包括： 
+생각할 수 있는 거의 모든 번역 엔진을 지원합니다:
 
-- **在线翻译** 支持大量免注册开箱即用的在线翻译接口，也支持使用用户注册的API的 **[传统翻译](https://docs.lunatranslator.org/useapis/tsapi.html)** 和 **[大模型翻译](https://docs.lunatranslator.org/guochandamoxing.html)** 
+- **온라인 번역** 많은 즉시 사용 가능한 온라인 번역 인터페이스를 지원하며, 사용자가 등록한 API를 사용하는 **[전통 번역](https://docs.lunatranslator.org/useapis/tsapi.html)** 및 **[대형 모델 번역](https://docs.lunatranslator.org/guochandamoxing.html)**도 지원합니다.
 
-- **离线翻译** 支持常见 **传统翻译** 引擎和离线部署的 **[大模型翻译](https://docs.lunatranslator.org/offlinellm.html)**
+- **오프라인 번역** 일반적인 **전통 번역** 엔진과 오프라인 배포된 **[대형 모델 번역](https://docs.lunatranslator.org/offlinellm.html)**을 지원합니다.
 
-- **预翻译** 支持读取预翻译文件，支持翻译缓存
+- **사전 번역** 사전 번역 파일 읽기를 지원하며, 번역 캐시도 지원합니다.
 
-- **支持自定义翻译扩展** 支持使用python语言扩展其他翻译接口
+- **사용자 정의 번역 확장** Python 언어를 사용하여 다른 번역 인터페이스를 확장할 수 있습니다.
 
-#### 其他功能
+#### 기타 기능
 
-- **语音合成** 支持 **离线TTS** 和 **在线TTS**
+- **음성 합성** **오프라인 TTS** 및 **온라인 TTS** 지원
 
-- **日语分词及假名显示** 支持使用 Mecab 等分词和显示假名
+- **일본어 단어 분할 및 가나 표시** Mecab 등을 사용한 단어 분할 및 가나 표시 지원
 
-- **查词** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** 进行单词查询
+- **단어 검색** **오프라인 사전** (MDICT) 및 **온라인 사전**을 사용한 단어 검색 지원
 
-- **Anki** 支持使用一键添加单词到anki中
+- **Anki** Anki에 단어를 한 번에 추가하는 기능 지원
 
-- **加载浏览器插件** 可以在软件内加载Yomitan等浏览器插件以辅助实现一些其他功能
+- **브라우저 확장 프로그램 로드** 소프트웨어 내에서 Yomitan 등의 브라우저 확장 프로그램을 로드하여 다른 기능을 보조할 수 있습니다.
 
-## 支持作者
+## 저자 지원
 
-软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[爱发电](https://afdian.com/a/HIllya51)，或微信扫码赞助，您的支持将成为软件长期维护的助力，谢谢~
+소프트웨어 유지보수는 쉽지 않습니다. 만약 이 소프트웨어가 도움이 되셨다면, [patreon](https://patreon.com/HIllya51)을 통해 저를 후원해 주세요. 여러분의 후원은 소프트웨어의 장기적인 유지보수에 큰 힘이 될 것입니다. 감사합니다~
 
-<a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="../docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
 
-<img src='../src/files/static/zan.jpg' style="height: 350px !important;">
+## 오픈 소스 라이선스
 
-## 开源许可
-
-LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
+LunaTranslator는 [GPLv3](../LICENSE) 라이선스를 사용합니다.
 
 <details>
-<summary>引用的项目</summary>
+<summary>참조 프로젝트</summary>
 
 * ![img](https://img.shields.io/github/license/opencv/opencv) [opencv/opencv](https://github.com/opencv/opencv)
 * ![img](https://img.shields.io/github/license/microsoft/onnxruntime) [microsoft/onnxruntime](https://github.com/microsoft/onnxruntime)
