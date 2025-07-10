@@ -143,7 +143,9 @@ PS2_GAME_LIST
 
 :::"""
 
-for lang in ["zh", "en", "ja", "vi", "cht"]:
+for lang in os.listdir("../../../../../docs"):
+    if not os.path.exists(f"../../../../../docs/{lang}/emugames_template.md"):
+        continue
     with open(
         f"../../../../../docs/{lang}/emugames_template.md", "r", encoding="utf8"
     ) as ff:
