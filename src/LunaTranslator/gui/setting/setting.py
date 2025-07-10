@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import qtawesome
-import random, gobject
+import time, gobject
 from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting.textinput import setTabOne_lazy
@@ -117,4 +117,10 @@ class Setting(closeashidewindow):
         self.setCentralWidget(self.tab_widget)
         do()
         self.tab_widget.adjust_list_widget_width()
-        self.tab_widget.setCurrentIndex(0)
+        index = 0
+        if time.time() - globalconfig.get("lasttime", 0) > 3600:
+            if globalconfig.get("lasttime", 0):
+                index = self.tab_widget.tab_widget.count() - 1
+            globalconfig["lasttime"] = time.time()
+        globalconfig["lasttime"] = min(time.time(), globalconfig["lasttime"])
+        self.tab_widget.setCurrentIndex(index)

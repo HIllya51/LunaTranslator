@@ -376,7 +376,6 @@ class __delayloadlangs(QHBoxLayout):
         self.como.currentIndexChanged.connect(
             lambda _: (
                 globalconfig.__setitem__("languageuse2", self.como.getCurrentData()),
-                gobject.base.translation_ui.showabout(),
                 changeUIlanguage(0),
             )
         )
