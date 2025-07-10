@@ -17,6 +17,7 @@ FetchContent_Declare(rapidfuzz
     GIT_TAG main
     GIT_SHALLOW TRUE
 )
+option(BUILD_MD2HTML_EXECUTABLE "Whether to compile the md2html executable" OFF)
 FetchContent_MakeAvailable(tiny-aes rapidfuzz md4c)
 
 add_library(md4c-all INTERFACE)
