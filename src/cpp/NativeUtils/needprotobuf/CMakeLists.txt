@@ -33,6 +33,7 @@ function(FIX_CPP17 FILE_PATH)
     string(REPLACE "std::span" "std::basic_string_view" FILE_CONTENT "${FILE_CONTENT}")
     string(REPLACE "requires" "//requires" FILE_CONTENT "${FILE_CONTENT}")
     string(REPLACE "#include <span>" "//#include <span>" FILE_CONTENT "${FILE_CONTENT}")
+    string(REPLACE "__declspec(dllexport)" "" FILE_CONTENT "${FILE_CONTENT}")
 
     file(WRITE ${FILE_PATH} "${FILE_CONTENT}")
 endfunction()
