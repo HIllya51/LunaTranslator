@@ -862,6 +862,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25870 | Drastic Killer (Excellent Box) |
 |  | SLPM-65589 | カラフルBOX ～to LOVE～ [通常版] |
 |  | SLPM-65611 | PIZZICATO POLKA ～縁鎖現夜～ |
 |  | SLPM-65785 | なついろ ～星屑のメモリー～ [初回限定版] |

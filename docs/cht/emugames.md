@@ -862,6 +862,7 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25870 | Drastic Killer (Excellent Box) |
 |  | SLPM-65589 | カラフルBOX ～to LOVE～ [通常版] |
 |  | SLPM-65611 | PIZZICATO POLKA ～縁鎖現夜～ |
 |  | SLPM-65785 | なついろ ～星屑のメモリー～ [初回限定版] |

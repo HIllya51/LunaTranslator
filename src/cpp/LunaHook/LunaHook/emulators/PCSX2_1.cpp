@@ -269,6 +269,11 @@ namespace
             return buffer->clear();
         last = s;
     }
+    void SLPS25870(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
+        StringFilter(buffer, TEXTANDLEN("\n"));
+    }
     void SLPM66935(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
@@ -1683,6 +1688,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Drastic Killer (Excellent Box)
+    {0x1AC6040, {DIRECT_READ, 0, 0, 0, SLPS25870, "SLPS-25870"}},
     // カラフルBOX ～to LOVE～ [通常版]
     {0xD1A970, {DIRECT_READ, 0, 0, 0, SLPM65589, "SLPM-65589"}},
     // PIZZICATO POLKA ～縁鎖現夜～
