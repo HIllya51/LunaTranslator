@@ -1,11 +1,11 @@
-# 에뮬레이터 게임 지원
+# Поддержка игр эмуляторов
 
-LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 지원합니다.
+LunaTranslator поддерживает множество игр на эмуляторах HOOK NS/PSP/PSV/PS2.
 
-지원되지 않는 게임의 경우 [issue](https://lunatranslator.org/Resource/game_support) 로 보내주십시오.
+Для игр, которые не поддерживаются, пожалуйста, отправьте мне [issue](https://lunatranslator.org/Resource/game_support).
 
-::: details 지원되는 에뮬레이터
-| 플랫폼 | 에뮬레이터 |
+::: details Поддерживаемые эмуляторы
+| Платформа | Эмулятор |
 
 | - | - |
 | NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/Citron/Citron), [Eden](https://git.eden-emu.dev/eden-emu/eden) |

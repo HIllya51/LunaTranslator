@@ -157,10 +157,11 @@
 
 也可以使用Kaggle之類的平臺來把模型部署到雲端，這時可能會需要用到SECRET_KEY，其他時候可以無視SECRET_KEY參數。
 
+
 ## Sakura大模型
 
 ::: tip
-推薦使用，配置簡單，效果好，也可以純cpu運行輕量模型 
+推薦使用，配寘簡單，效果好，也可以純cpu運行輕量模型
 :::
 
-部署方法可參考 https://github.com/SakuraLLM/SakuraLLM/wiki
+部署方法可參攷 https://github.com/SakuraLLM/SakuraLLM/wiki

@@ -156,11 +156,3 @@
 [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) 등의 도구를 사용하여 모델 배포 후 주소와 모델을 입력할 수도 있습니다.
 
 也可以使用Kaggle之类的平台来把模型部署到云端，这时可能会需要用到SECRET_KEY，其他时候可以无视SECRET_KEY参数。
-
-## 사쿠라 대형 모델
-
-::: tip
-추천 사용, 구성 간단, 효과 좋음, 순수 CPU로 경량 모델 실행도 가능 
-:::
-
-배포 방법 참고 https://github.com/SakuraLLM/SakuraLLM/wiki
