@@ -28,8 +28,8 @@ struct PermissivePointer
 	operator T *() { return (T *)p; }
 	void *p;
 };
-
-template <typename HandleCloser = Functor<CloseHandle>>
+// 仿函数会多一层jump，毫无必要。
+template <auto HandleCloser = CloseHandle> // Functor<CloseHandle>
 class AutoHandle
 {
 public:
@@ -49,7 +49,7 @@ private:
 		void operator()(void *h)
 		{
 			if (h != INVALID_HANDLE_VALUE)
-				HandleCloser()(PermissivePointer{h});
+				HandleCloser(PermissivePointer{h});
 		}
 	};
 	std::unique_ptr<void, HandleCleaner> h;
