@@ -862,6 +862,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25727 | Routes PE |
 |  | SLPS-25870 | Drastic Killer (Excellent Box) |
 |  | SLPM-65589 | カラフルBOX ～to LOVE～ [通常版] |
 |  | SLPM-65611 | PIZZICATO POLKA ～縁鎖現夜～ |
