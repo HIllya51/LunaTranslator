@@ -1,5 +1,5 @@
 #include <winhttp.h>
-using InternetHandle = AutoHandle<WinHttpCloseHandle>;
+using InternetHandle = AutoHandle<Functor<WinHttpCloseHandle>>;
 
 struct HttpRequest
 {
