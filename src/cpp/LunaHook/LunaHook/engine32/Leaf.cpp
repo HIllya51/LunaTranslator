@@ -428,7 +428,6 @@ bool InsertLeafHook()
   // GROWL_DWORD(addr);
   if (!addr)
   {
-    ConsoleOutput("Leaf: pattern not found");
     return false;
   }
 
@@ -775,7 +774,60 @@ namespace
     return NewHook(hp, "wa2special");
   }
 }
+namespace
+{
+  bool toheartpse()
+  {
+    /*
+  int __cdecl sub_414C00(int a1, int a2, int a3, int a4, int a5, int a6, int a7)
+{
+  int result; // eax
+
+  result = 0;
+  if ( !a2 && dword_45B310 && (a5 == 33116 || a5 == 33951) && dword_44D3D8 + dword_45A2F4 == a3 && dword_44D3DC == a4 )
+  {
+    sub_414770(a1, 0, a3 - 1, a4 - 1, a5, -1, a7);
+    sub_414770(a1, 0, a3 - 2, a4 - 1, a5, a6, -1);
+    result = 1;
+  }
+  dword_45B310 = 0;
+  if ( a5 == 33116 || a5 == 33951 )
+  {
+    dword_45B310 = 1;
+    dword_44D3D8 = a3;
+    dword_44D3DC = a4;
+  }
+  if ( !result )
+    return sub_414770(a1, a2, a3 - 1, a4 - 1, a5, a6, a7);
+  return result;
+}
+    */
+
+    BYTE sig[] = {
+        0x8b, 0x7c, 0x24, 0x24,
+        0x85, 0xc9,
+        0x75, XX,
+        0x8b, 0x0d, XX4,
+        0x85, 0xc9,
+        0x74, XX,
+        0x81, 0xff, 0x5c, 0x81, 0x00, 0x00,
+        0x74, XX,
+        0x81, 0xff, 0x9f, 0x84, 0x00, 0x00,
+        0x75, XX};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(5);
+    hp.type = USING_CHAR | CODEC_ANSI_BE;
+    return NewHook(hp, "toheartpse");
+  }
+}
 bool Leaf::attach_function()
 {
-  return InsertLeafHook() || activehook() || InsertAquaplusHooks() || kizuato() || wa2special();
+  return InsertLeafHook() || activehook() || InsertAquaplusHooks() || kizuato() || wa2special() || toheartpse();
 }
