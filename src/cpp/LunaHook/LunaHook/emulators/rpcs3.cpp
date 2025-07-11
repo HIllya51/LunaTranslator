@@ -1,119 +1,8 @@
 ﻿#include "rpcs3.h"
+#include "rpcs3_1.h"
+#include "JIT_Keeper.hpp"
 namespace
 {
-#if 0 // only support0.0.20-0.0.27
-    int emoffset;
-    int jitoffset;
-    uintptr_t getDoJitAddress_() {
-        auto installFunctionPatt1 = "0F8? ???????? 488D?? ?00?0000 E8 ???????? 4?83C? 68"; // MSVC
-        auto DoJitMatch = find_pattern(installFunctionPatt1,processStartAddress,processStopAddress); 
-        if(DoJitMatch)return DoJitMatch;
-        
-        auto installFunctionPatt2 = "660F 1F440000 488D?? ?00?0000 E8 ???????? 4?83C? 68"; // patched
-        DoJitMatch = find_pattern(installFunctionPatt2,processStartAddress,processStopAddress); 
-        if(DoJitMatch)return DoJitMatch;
-        return 0;
-    }
-    uintptr_t getDoJitAddress() {
-        auto DoJitPtr=getDoJitAddress_();
-        if(!DoJitPtr)return 0;
-        //<--DoJitPtr
-        //0f85 1b050000 // jbe 0x00 ; long jump
-        //48 8d 8d 40020000 // lea r?x, ss:[rbp+0x1?0]
-        //e8 cc39acff //call
-        //48 83 c3 68 // add r?x, 0x68
-        auto checkaddr=DoJitPtr+0x6+7+5;
-        switch (*(BYTE*)checkaddr)
-        {
-            case 0x48:{
-                switch(*(BYTE*)(checkaddr+2)){
-                    case 0xc0:emoffset=regoffset(rax);break;
-                    case 0xc3:emoffset=regoffset(rbx);break;
-                    case 0xc1:emoffset=regoffset(rcx);break;
-                    case 0xc2:emoffset=regoffset(rdx);break;
-                    case 0xc4:emoffset=regoffset(rsp);break;
-                    case 0xc5:emoffset=regoffset(rbp);break;
-                    case 0xc6:emoffset=regoffset(rsi);break;
-                    case 0xc7:emoffset=regoffset(rdi);break;
-                    default:emoffset=0;
-                }  
-            }
-            break;
-            case 0x49:{
-                switch(*(BYTE*)(checkaddr+2)){
-                    case 0xc0:emoffset=regoffset(r8);break;
-                    case 0xc1:emoffset=regoffset(r9);break;
-                    case 0xc2:emoffset=regoffset(r10);break;
-                    case 0xc3:emoffset=regoffset(r11);break;
-                    case 0xc4:emoffset=regoffset(r12);break;
-                    case 0xc5:emoffset=regoffset(r13);break;
-                    case 0xc6:emoffset=regoffset(r14);break;
-                    case 0xc7:emoffset=regoffset(r15);break;
-                    default:emoffset=0;
-                }
-            }
-            break;
-            default:emoffset=0;
-        }
-        ConsoleOutput("emoffset %d",emoffset);
-        if(emoffset==0)return 0;
-
-        auto isPPUDebugIfPtr = find_pattern("84C0 ???? 8B",DoJitPtr-0x40,DoJitPtr); // je
-        //84 c0 //test al,al
-        //74 21 //je
-        //8b 0b //mov ecx[rbx]
-        //48 8b 05 XX4 // mov rax[]
-        //4c 8d 34 48 //lea r14,[rax+rcx*2]
-        if(isPPUDebugIfPtr==0)return 0;
-         
-        checkaddr= isPPUDebugIfPtr+2+2+2+7;
-        switch (*(BYTE*)checkaddr)
-        {
-            case 0x48:{
-                switch(*(BYTE*)(checkaddr+2)){
-                    case 0x14:jitoffset=regoffset(rdx);break;
-                    case 0x04:jitoffset=regoffset(rax);break;
-                    case 0x1c:jitoffset=regoffset(rbx);break;
-                    case 0x0c:jitoffset=regoffset(rcx);break;
-                    case 0x24:jitoffset=regoffset(rsp);break;
-                    case 0x2c:jitoffset=regoffset(rbp);break;
-                    case 0x34:jitoffset=regoffset(rsi);break;
-                    case 0x3c:jitoffset=regoffset(rdi);break;
-                    default:jitoffset=0;
-                }  
-            }
-            break;
-            case 0x4c:{
-                switch(*(BYTE*)(checkaddr+2)){
-                    case 0x04:jitoffset=regoffset(r8);break;
-                    case 0x0c:jitoffset=regoffset(r9);break;
-                    case 0x14:jitoffset=regoffset(r10);break;
-                    case 0x1c:jitoffset=regoffset(r11);break;
-                    case 0x24:jitoffset=regoffset(r12);break;
-                    case 0x2c:jitoffset=regoffset(r13);break;
-                    case 0x34:jitoffset=regoffset(r14);break;
-                    case 0x3c:jitoffset=regoffset(r15);break;
-                    default:jitoffset=0;
-                }
-            }
-            break;
-            default:jitoffset=0;
-        }
-        ConsoleOutput("jitoffset %d",jitoffset);
-        if(jitoffset==0)return 0;
-        
-        DWORD _;
-        BYTE bs1[]={0x66, 0x0F, 0x1F, 0x44, 0x00, 0x00};
-        VirtualProtect((void*)DoJitPtr,sizeof(bs1),PAGE_EXECUTE_READWRITE,&_);
-        memcpy((void*)DoJitPtr,bs1,sizeof(bs1));
-        BYTE bs2[]={0x66, 0x90};
-        VirtualProtect((void*)(isPPUDebugIfPtr+2),sizeof(bs2),PAGE_EXECUTE_READWRITE,&_);
-        memcpy((void*)(isPPUDebugIfPtr+2),bs2,sizeof(bs2));
-        
-        return DoJitPtr+6;
-    }
-#endif
-
     uintptr_t getDoJitAddress()
     {
         // rpcs3/Emu/Cell/PPUThread.cpp
@@ -153,38 +42,48 @@ namespace
         ConsoleOutput("%p", addr);
         return addr;
     }
-    struct emfuncinfo
-    {
-        uint64_t type;
-        int offset;
-        int padding;
-        decltype(HookParam::text_fun) hookfunc;
-        decltype(HookParam::filter_fun) filterfun;
-        const char *_id;
-    };
-    std::unordered_map<uintptr_t, emfuncinfo> emfunctionhooks;
+    std::unordered_map<DWORD, emfuncinfo> emfunctionhooks;
 
-    bool checkiscurrentgame(const emfuncinfo &em)
+    struct GameInfo
     {
-        auto wininfos = get_proc_windows();
-        for (auto &&info : wininfos)
-        {
-            if (info.title.find(acastw(em._id)) != info.title.npos)
-                return true;
-        }
-        return false;
-    }
+        std::string GameID;
+        std::wstring game;
+        std::wstring lastcheck;
+    } game_info;
 
     static std::set<std::pair<uintptr_t, uintptr_t>> timeoutbreaks;
 
-    void dohookemaddr(uintptr_t em_address, uintptr_t ret)
+    auto MatchGameId = [](const auto &idsv) -> const char *
     {
-        jitaddraddr(em_address, ret, JITTYPE::RPCS3);
+        if (const auto *id = std::get_if<const char *>(&idsv))
+        {
+            if (game_info.GameID == *id)
+                return *id;
+            return nullptr;
+        }
+        else if (const auto *ids = std::get_if<std::vector<const char *>>(&idsv))
+        {
+            if (!game_info.GameID.size())
+                return nullptr;
+            for (auto &&id : *ids)
+            {
+                if (game_info.GameID == id)
+                {
+                    return id;
+                }
+            }
+            return nullptr;
+        }
+        return nullptr;
+    };
+    void dohookemaddr_1(uintptr_t em_address, uintptr_t ret)
+    {
         auto found = emfunctionhooks.find(em_address);
         if (found == emfunctionhooks.end())
             return;
         auto op = found->second;
-        if (!(checkiscurrentgame(op)))
+        auto getmatched = MatchGameId(op._id);
+        if (!getmatched)
             return;
         timeoutbreaks.insert(std::make_pair(em_address, ret));
         HookParam hpinternal;
@@ -197,7 +96,13 @@ namespace
         hpinternal.offset = op.offset;
         hpinternal.padding = op.padding;
         hpinternal.jittype = JITTYPE::RPCS3;
-        NewHook(hpinternal, op._id);
+        NewHook(hpinternal, getmatched);
+    }
+
+    void dohookemaddr(uintptr_t em_address, uintptr_t ret)
+    {
+        jitaddraddr(em_address, ret, JITTYPE::RPCS3);
+        dohookemaddr_1(em_address, ret);
     }
 
     bool unsafeinithooks()
@@ -235,11 +140,47 @@ namespace
         return NewHook(hp, "g_exec_addr");
     }
 }
-bool rpcs3::attach_function()
+
+namespace
+{
+    void initgameid()
+    {
+        auto wininfos = get_proc_windows();
+        for (auto &&info : wininfos)
+        {
+            auto match = re::match(info.title, LR"((.*?)\|(.*?)\|(.*?)\|(.*) \[(.*?)\])");
+            if (!match)
+                return;
+            auto curr = match.value()[5].str() + match.value()[4].str();
+            if (game_info.lastcheck == curr)
+                return;
+            game_info.lastcheck = curr;
+            game_info.game = curr;
+            game_info.GameID = wcasta(match.value()[5].str());
+            return HostInfo(HOSTINFO::EmuGameName, curr.c_str());
+        }
+    }
+    void trygetgameinwindowtitle()
+    {
+        initgameid();
+        HookParam hp;
+        hp.address = 0x4000;
+        hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+        {
+            initgameid();
+        };
+        hp.type = DIRECT_READ;
+        NewHook(hp, "GameInfo");
+    }
+}
+
+bool attach_function1()
 {
     auto DoJitPtr = getDoJitAddress();
-    if (DoJitPtr == 0)
+    if (!DoJitPtr)
         return false;
+    rpcs3_load_functions(emfunctionhooks);
+    trygetgameinwindowtitle();
     unsafeinithooks();
     HookParam hp;
     hp.address = DoJitPtr;
@@ -255,27 +196,9 @@ bool rpcs3::attach_function()
     return NewHook(hp, "rpcs3jit");
 }
 
-namespace
+bool rpcs3::attach_function()
 {
-
-    void FBLJM61131(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        s = re::sub(s, R"(\[[^\]]+.)");
-        s = re::sub(s, R"(\\k|\\x|%C|%B)");
-        s = re::sub(s, R"(\%\d+\#[0-9a-fA-F]*\;)");
-        s = re::sub(s, R"(\n+)");
-        buffer->from(s);
-    }
-    auto _ = []()
-    {
-        emfunctionhooks = {
-            // ‘＆’ - 空の向こうで咲きますように -
-            {0x46328, {CODEC_UTF8, 1, 0, 0, FBLJM61131, "BLJM61131"}},
-            // Dunamis15
-            {0x42c90, {CODEC_UTF8, 1, 0, 0, FBLJM61131, "BLJM60347"}},
-
-        };
-        return 1;
-    }();
+    if (!attach_function1())
+        HostInfo(HOSTINFO::Warning, TR[EMUVERSIONTOOOLD]);
+    return true;
 }
