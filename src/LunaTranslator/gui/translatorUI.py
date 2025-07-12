@@ -1295,11 +1295,11 @@ class TranslatorWindow(resizableframeless):
         )
 
     def showEvent(self, e):
+        super().showEvent(e)
         if not self.firstshow:
-            self.enterfunction()
-            return super().showEvent(e)
-        self.cleanupdater()
+            return self.enterfunction()
         self.firstshow = False
+        self.cleanupdater()
 
         self.mousetransparent_check()
         self.adjustbuttons()
@@ -1307,9 +1307,8 @@ class TranslatorWindow(resizableframeless):
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
         self.autohidedelaythread()
         self.tracewindowposthread()
-        super().showEvent(e)
-    
-        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 3:
+
+        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 2:
             if globalconfig.get("lasttime2", 0):
                 self.showabout()
             globalconfig["lasttime2"] = time.time()
