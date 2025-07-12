@@ -1,29 +1,29 @@
-# 安装Yomitan浏览器插件
+# Install Yomitan Browser Extension
 
-1. 确保显示引擎为Webview2
-    
-    使用浏览器插件必须使用Webview2。除非系统不支持Webview2，否则默认的显示引擎就是Webview2。
+1. Ensure the display engine is Webview2
+  
+   Using the browser extension requires Webview2. Unless the system does not support Webview2, the default display engine is Webview2.
 
-    ![img](https://image.lunatranslator.org/zh/yomitan.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan.png)
 
-1. 激活**使用浏览器插件**，并添加yomitan插件。
+1. Enable **Use Browser Extension** and add the Yomitan extension.
 
-    ![img](https://image.lunatranslator.org/zh/yomitan3.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan3.png)
 
-    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
-1. 等待完成初始化后，对yomitan进行配置。
+1. Wait for the initialization to complete, then configure Yomitan.
 
-    ![img](https://image.lunatranslator.org/zh/yomitan4.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan4.png)
 
-1. 最终效果
+1. Final Result
 
-    ![img](https://image.lunatranslator.org/zh/yomitan5.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 
-1. 除了主界面外，历史文本窗口也可以使用浏览器插件，但为了节省资源默认不会启用
+1. In addition to the main interface, the history text window can also use the browser extension, but it is not enabled by default to save resources.
 
-    ![img](https://image.lunatranslator.org/zh/yomitan7.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan7.png)
 
-    ![img](https://image.lunatranslator.org/zh/yomitan6.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan6.png)
 
-    ![img](https://image.lunatranslator.org/zh/yomitan8.png)
+   ![img](https://image.lunatranslator.org/zh/yomitan8.png)
