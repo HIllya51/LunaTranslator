@@ -869,6 +869,7 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66973 | プリンセスナイトメア |
 |  | SLPS-25727 | Routes PE |
 |  | SLPS-25870 | Drastic Killer (Excellent Box) |
 |  | SLPM-65589 | カラフルBOX ～to LOVE～ [通常版] |

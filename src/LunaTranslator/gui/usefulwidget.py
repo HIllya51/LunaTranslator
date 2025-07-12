@@ -215,7 +215,21 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
 
         if not w:
             return
-        __w = QWidget()
+        if index.row() == 0:
+            # 浏览器插件设置的第一行的switch谜之显示错位
+            class __(QWidget):
+                def __init__(self1):
+                    super().__init__()
+                    self1.once = True
+
+                def showEvent(self1, _):
+                    if self1.once:
+                        self1.once = False
+                        self1.layout().invalidate()
+
+        else:
+            __ = QWidget
+        __w = __()
         __l = QHBoxLayout(__w)
         __l.setContentsMargins(0, 0, 0, 0)
         __l.addWidget(w)
@@ -1547,6 +1561,7 @@ def ExtensionSetting(name, settingurl, icon):
 
 @Singleton
 class Exteditor(LDialog):
+    # 记一下谜之bug：打开后关闭，然后切换UI语言，然后会崩溃。和TableViewW的delayload有关
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle("浏览器插件")
@@ -1614,8 +1629,6 @@ class Exteditor(LDialog):
         if not res:
             return
         res = self.checkplgdirvalid(res)
-        if not res:
-            return
         WebviewWidget.Extensions_Add(res)
         self.listexts()
 

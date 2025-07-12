@@ -869,6 +869,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66973 | プリンセスナイトメア |
 |  | SLPS-25727 | Routes PE |
 |  | SLPS-25870 | Drastic Killer (Excellent Box) |
 |  | SLPM-65589 | カラフルBOX ～to LOVE～ [通常版] |

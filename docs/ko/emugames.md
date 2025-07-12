@@ -870,6 +870,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66973 | プリンセスナイトメア |
 |  | SLPS-25727 | Routes PE |
 |  | SLPS-25870 | Drastic Killer (Excellent Box) |
 |  | SLPM-65589 | カラフルBOX ～to LOVE～ [通常版] |
