@@ -1301,17 +1301,18 @@ class TranslatorWindow(resizableframeless):
         self.cleanupdater()
         self.firstshow = False
 
-        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 3:
-            if globalconfig.get("lasttime2", 0):
-                self.showabout()
-            globalconfig["lasttime2"] = time.time()
         self.mousetransparent_check()
         self.adjustbuttons()
         # 有个莫名其妙的加载时间
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
         self.autohidedelaythread()
         self.tracewindowposthread()
-        return super().showEvent(e)
+        super().showEvent(e)
+    
+        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 3:
+            if globalconfig.get("lasttime2", 0):
+                self.showabout()
+            globalconfig["lasttime2"] = time.time()
 
     def setselectableEx(self):
         globalconfig["selectableEx"] = True
