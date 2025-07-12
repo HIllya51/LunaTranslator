@@ -135,6 +135,7 @@ export const zh = defineConfig({
                         collapsed: true,
                         items: [
                             { text: '日语分词及假名注音', link: '/zh/qa1' },
+                            { text: '使用内置查词工具', link: '/zh/internaldict' },
                             { text: '安装Yomitan浏览器插件', link: '/zh/yomitan' },
                             { text: 'Anki集成', link: '/zh/qa2' },
                         ]

@@ -74,6 +74,7 @@ export const en = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'Japanese Word Segmentation and Kana Pronunciation', link: '/en/qa1' },
+                            { text: 'Using the Built-in Dictionary Tool', link: '/en/internaldict' },
                             { text: 'Install the Yomitan Browser Extension', link: '/en/yomitan' },
                             { text: 'Anki Integration', link: '/en/qa2' }
                         ]

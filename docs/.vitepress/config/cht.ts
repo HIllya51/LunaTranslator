@@ -136,6 +136,7 @@ export const cht = defineConfig({
                         collapsed: true,
                         items: [
                             { text: '日語分詞及假名注音', link: '/cht/qa1' },
+                            { text: '使用內建查詞工具', link: '/cht/internaldict' },
                             { text: '安裝Yomitan瀏覽器插件', link: '/cht/yomitan' },
                             { text: 'Anki集成', link: '/cht/qa2' },
                         ]

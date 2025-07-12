@@ -135,6 +135,7 @@ export const ko = defineConfig({
                         collapsed: true,
                         items: [
                             { text: '일본어 단어 분할 및 가나 발음 표기', link: '/ko/qa1' },
+                            { text: '내장 사전 도구 사용 방법', link: '/ko/internaldict' },
                             { text: 'Yomitan 브라우저 확장 프로그램 설치', link: '/ko/yomitan' },
                             { text: 'Anki 통합', link: '/ko/qa2' },
                         ]
