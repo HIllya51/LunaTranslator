@@ -4,17 +4,17 @@
   
    브라우저 확장 프로그램을 사용하려면 Webview2가 필요합니다. 시스템이 Webview2를 지원하지 않는 경우를 제외하면 기본 표시 엔진은 Webview2입니다.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan.png)
+   ![img](https://image.lunatranslator.org/en/yomitan.png)
 
 1. **브라우저 확장 프로그램 사용**을 활성화하고 yomitan 확장 프로그램을 추가합니다.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan3.png)
+   ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
 1. 초기화가 완료될 때까지 기다린 후 yomitan을 설정합니다.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan4.png)
+   ![img](https://image.lunatranslator.org/en/yomitan4.png)
 
 1. 최종 결과
 

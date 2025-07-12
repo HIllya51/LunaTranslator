@@ -4,17 +4,17 @@
   
    Sử dụng tiện ích trình duyệt yêu cầu Webview2. Trừ khi hệ thống không hỗ trợ Webview2, công cụ hiển thị mặc định sẽ là Webview2.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan.png)
+   ![img](https://image.lunatranslator.org/en/yomitan.png)
 
 1. Kích hoạt **Sử dụng Tiện ích Trình duyệt** và thêm tiện ích Yomitan.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan3.png)
+   ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
 1. Chờ quá trình khởi tạo hoàn tất, sau đó cấu hình Yomitan.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan4.png)
+   ![img](https://image.lunatranslator.org/en/yomitan4.png)
 
 1. Kết quả cuối cùng
 

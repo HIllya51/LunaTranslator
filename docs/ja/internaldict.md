@@ -4,7 +4,7 @@
 
 1. 辞書設定で、好きな辞書を任意の数アクティブにします。オフライン辞書MDictの場合、リソースダウンロードにも簡単なダウンロードボタンが用意されています。
     
-    ![img](https://image.lunatranslator.org/zh/internaldict3.png)
+    ![img](https://image.lunatranslator.org/en/internaldict3.png)
 
 1. 下部で任意の単語検索のトリガー方法を選択します。
 
@@ -12,7 +12,7 @@
 
     両方のトリガー方法には**キーボード押下が必要**という設定も可能で、上記のマウス動作を検出した際に、同時に指定されたキーが押されている場合のみ検索がトリガーされます。
 
-    ![img](https://image.lunatranslator.org/zh/internaldict2.png)
+    ![img](https://image.lunatranslator.org/en/internaldict2.png)
     
     **小ウィンドウ内**では検索結果が小さなポップアップウィンドウで表示され、それ以外の場合は大きなフルウィンドウで検索結果が表示されます。
 
