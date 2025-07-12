@@ -2,6 +2,7 @@ import sys, os
 
 os.chdir(os.path.dirname(__file__))
 sys.path.insert(0, "./LunaTranslator")
+import NativeUtils
 import importlib
 TS=importlib.import_module('translator.chatgpt-3rd-party').TS
 from language import Languages

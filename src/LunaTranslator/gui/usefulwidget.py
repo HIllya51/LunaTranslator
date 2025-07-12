@@ -1613,9 +1613,20 @@ class Exteditor(LDialog):
         )
         if not res:
             return
-
+        res = self.checkplgdirvalid(res)
+        if not res:
+            return
         WebviewWidget.Extensions_Add(res)
         self.listexts()
+
+    def checkplgdirvalid(self, res):
+        check = lambda d: os.path.isfile(os.path.join(d, "manifest.json"))
+        if check(res):
+            return res
+        for _dir, _, __fs in os.walk(res):
+            if check(_dir):
+                return _dir
+        return res
 
     def __menu(self, _):
         curr = self.table.currentIndex()
