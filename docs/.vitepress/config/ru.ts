@@ -135,6 +135,7 @@ export const ru = defineConfig({
                         collapsed: true,
                         items: [
                             { text: 'Японская сегментация слов и произношение каной', link: '/ru/qa1' },
+                            { text: 'Установите расширение для браузера Yomitan', link: '/ru/yomitan' },
                             { text: 'Интеграция с Anki', link: '/ru/qa2' },
                         ]
                     },

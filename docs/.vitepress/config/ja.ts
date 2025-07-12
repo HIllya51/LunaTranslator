@@ -132,6 +132,7 @@ export const ja = defineConfig({
                         collapsed: true,
                         items: [
                             { text: '日本語の分かち書きと仮名振り', link: '/ja/qa1' },
+                            { text: 'Yomitanブラウザ拡張機能をインストールする', link: '/ja/yomitan' },
                             { text: 'Anki統合', link: '/ja/qa2' }
                         ]
                     },
