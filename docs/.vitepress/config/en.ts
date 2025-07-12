@@ -70,7 +70,7 @@ export const en = defineConfig({
                         ]
                     },
                     {
-                        text: 'Tokenization & Dictionary & Anki', link: '/en/qa1',
+                        text: 'Language Learning', link: '/en/qa1',
                         collapsed: true,
                         items: [
                             { text: 'Japanese Word Segmentation and Kana Pronunciation', link: '/en/qa1' },

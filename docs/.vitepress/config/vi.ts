@@ -113,7 +113,7 @@ export const vi = defineConfig({
                         ]
                     },
                   {
-                      text: 'Phân đoạn & Từ điển & Anki', link: '/vi/qa1',
+                      text: 'Học ngôn ngữ', link: '/vi/qa1',
                       collapsed: true,
                       items: [
                           { text: 'Phân đoạn từ tiếng Nhật và phiên âm kana', link: '/vi/qa1' },

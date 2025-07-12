@@ -132,7 +132,7 @@ export const cht = defineConfig({
                         ]
                     },
                     {
-                        text: '分詞&辭書&Anki', link: '/cht/qa1',
+                        text: '語言學習', link: '/cht/qa1',
                         collapsed: true,
                         items: [
                             { text: '日語分詞及假名注音', link: '/cht/qa1' },

@@ -131,7 +131,7 @@ export const ko = defineConfig({
                         ]
                     },
                     {
-                        text: '분석&사전&Anki', link: '/ko/qa1',
+                        text: '언어 학습', link: '/ko/qa1',
                         collapsed: true,
                         items: [
                             { text: '일본어 단어 분할 및 가나 발음 표기', link: '/ko/qa1' },

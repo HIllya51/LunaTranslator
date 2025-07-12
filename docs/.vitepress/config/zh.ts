@@ -131,7 +131,7 @@ export const zh = defineConfig({
                         ]
                     },
                     {
-                        text: '分词&辞书&Anki', link: '/zh/qa1',
+                        text: '语言学习', link: '/zh/qa1',
                         collapsed: true,
                         items: [
                             { text: '日语分词及假名注音', link: '/zh/qa1' },

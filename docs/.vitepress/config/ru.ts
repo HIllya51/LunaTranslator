@@ -131,7 +131,7 @@ export const ru = defineConfig({
                         ]
                     },
                     {
-                        text: 'Токенизация, словари и Anki', link: '/ru/qa1',
+                        text: 'Изучение языков', link: '/ru/qa1',
                         collapsed: true,
                         items: [
                             { text: 'Японская сегментация слов и произношение каной', link: '/ru/qa1' },

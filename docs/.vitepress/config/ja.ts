@@ -128,7 +128,7 @@ export const ja = defineConfig({
                         ]
                     },
                     {
-                        text: '形態素解析＆辞書&Anki', link: '/ja/qa1',
+                        text: '言語学習', link: '/ja/qa1',
                         collapsed: true,
                         items: [
                             { text: '日本語の分かち書きと仮名振り', link: '/ja/qa1' },
