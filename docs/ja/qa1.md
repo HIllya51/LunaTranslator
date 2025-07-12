@@ -1,4 +1,4 @@
-# MeCabによる分かち書き & 品詞色分け表示
+# 日本語の分かち書きと仮名振り
 
 1. ## MeCab用UniDic辞書のダウンロード
     
@@ -18,4 +18,8 @@
 
 1. ## **ルビ表示**（デフォルトで有効）と**文法ハイライト**の有効化
 
-![img](https://image.lunatranslator.org/zh/fenci.png)
+    ![img](https://image.lunatranslator.org/zh/fenci.png)
+
+1. ## 最終効果
+
+    ![img](https://image.lunatranslator.org/zh/mecabresult.png)

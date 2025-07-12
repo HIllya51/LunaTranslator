@@ -34,7 +34,7 @@ Hỗ trợ hầu hết các engine dịch có thể nghĩ đến, bao gồm:
 
 - **Chuyển văn bản thành giọng nói** hỗ trợ **TTS offline** và **TTS online**
 
-- **Phân tách từ tiếng Nhật và hiển thị kana** Hỗ trợ phân tách từ và hiển thị kana bằng Mecab, v.v.
+- **Phân đoạn từ tiếng Nhật và phiên âm kana** Hỗ trợ phân tách từ và hiển thị kana bằng Mecab, v.v.
 
 - **Tra từ điển** Hỗ trợ **từ điển offline** (MDICT) và **từ điển online** để tra từ
 

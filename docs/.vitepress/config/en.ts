@@ -73,7 +73,7 @@ export const en = defineConfig({
                         text: 'Tokenization & Dictionary & Anki', link: '/en/qa1',
                         collapsed: true,
                         items: [
-                            { text: 'Using Mecab for Tokenization & Part-of-Speech Color Annotation', link: '/en/qa1' },
+                            { text: 'Japanese Word Segmentation and Kana Pronunciation', link: '/en/qa1' },
                             { text: 'Anki Integration', link: '/en/qa2' }
                         ]
                     },

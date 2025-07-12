@@ -1,4 +1,4 @@
-# Mecab 형태소 분석기 사용 & 품사 색상 표시
+# 일본어 단어 분할 및 가나 발음 표기
 
 1. ## mecab의 unidic 사전 다운로드
 
@@ -18,5 +18,8 @@
 
 1. ## **후리가나 표시** 활성화(기본적으로 활성화됨) 및 **문법 강조**
 
-![img](https://image.lunatranslator.org/zh/fenci.png)
+    ![img](https://image.lunatranslator.org/zh/fenci.png)
 
+1. ## 최종 효과
+
+    ![img](https://image.lunatranslator.org/zh/mecabresult.png)

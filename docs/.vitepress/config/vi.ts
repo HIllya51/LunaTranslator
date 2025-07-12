@@ -116,7 +116,7 @@ export const vi = defineConfig({
                       text: 'Phân đoạn & Từ điển & Anki', link: '/vi/qa1',
                       collapsed: true,
                       items: [
-                          { text: 'Sử dụng Mecab để phân đoạn & tô màu theo loại từ', link: '/vi/qa1' },
+                          { text: 'Phân đoạn từ tiếng Nhật và phiên âm kana', link: '/vi/qa1' },
                           { text: 'Tích hợp Anki', link: '/vi/qa2' }
                       ]
                   },

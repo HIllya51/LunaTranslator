@@ -34,7 +34,7 @@ Supports almost all conceivable translation engines, including:
 
 - **Text-to-Speech** supports **Offline TTS** and **Online TTS**
 
-- **Japanese Word Segmentation and Kana Display** Supports word segmentation and kana display using Mecab, etc.
+- **Japanese Word Segmentation and Kana Pronunciation** Supports word segmentation and kana display using Mecab, etc.
 
 - **Vocabulary Lookup** Supports **offline dictionaries** (MDICT) and **online dictionaries** for word lookup
 

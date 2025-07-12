@@ -1,4 +1,4 @@
-# Using MeCab for Word Segmentation & Part-of-Speech Color Highlighting
+# Japanese Word Segmentation and Kana Pronunciation
 
 1. ## Downloading MeCab's UniDic Dictionary
     
@@ -18,4 +18,8 @@
 
 1. ## Activate **Furigana Display** (enabled by default) and **Syntax Highlighting**
 
-![img](https://image.lunatranslator.org/zh/fenci.png)
+    ![img](https://image.lunatranslator.org/zh/fenci.png)
+
+1. ## Final Effect
+
+    ![img](https://image.lunatranslator.org/zh/mecabresult.png)

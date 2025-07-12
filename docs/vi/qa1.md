@@ -1,4 +1,4 @@
-# Sử dụng MeCab để Phân đoạn Từ & Tô màu Phần loại Từ
+# Phân đoạn từ tiếng Nhật và phiên âm kana
 
 1. ## Tải xuống Từ điển UniDic của MeCab
     
@@ -18,4 +18,8 @@
 
 1. ## Kích hoạt **Hiển thị Furigana** (được bật mặc định) và **Tô sáng Cú pháp**
 
-![img](https://image.lunatranslator.org/zh/fenci.png)
+    ![img](https://image.lunatranslator.org/zh/fenci.png)
+
+1. ## Hiệu quả cuối cùng
+
+    ![img](https://image.lunatranslator.org/zh/mecabresult.png)

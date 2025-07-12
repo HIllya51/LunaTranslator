@@ -134,7 +134,7 @@ export const ru = defineConfig({
                         text: 'Токенизация, словари и Anki', link: '/ru/qa1',
                         collapsed: true,
                         items: [
-                            { text: 'Использование Mecab для токенизации и цветовой разметки частей речи', link: '/ru/qa1' },
+                            { text: 'Японская сегментация слов и произношение каной', link: '/ru/qa1' },
                             { text: 'Интеграция с Anki', link: '/ru/qa2' },
                         ]
                     },

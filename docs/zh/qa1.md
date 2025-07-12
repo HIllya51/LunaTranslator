@@ -1,4 +1,4 @@
-# 使用Mecab分词&词性颜色标注
+# 日语分词及假名注音
 
 1. ## 下载mecab的unidic词典
     
@@ -18,5 +18,8 @@
 
 1. ## 激活**显示注音**(默认已激活)和**语法加亮**
 
-![img](https://image.lunatranslator.org/zh/fenci.png)
+    ![img](https://image.lunatranslator.org/zh/fenci.png)
 
+1. ## 最终效果
+
+    ![img](https://image.lunatranslator.org/zh/mecabresult.png)

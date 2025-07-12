@@ -131,7 +131,7 @@ export const ja = defineConfig({
                         text: '形態素解析＆辞書&Anki', link: '/ja/qa1',
                         collapsed: true,
                         items: [
-                            { text: 'Mecabを使用した形態素解析＆品詞カラー表示', link: '/ja/qa1' },
+                            { text: '日本語の分かち書きと仮名振り', link: '/ja/qa1' },
                             { text: 'Anki統合', link: '/ja/qa2' }
                         ]
                     },

@@ -1,4 +1,4 @@
-# Использование Mecab для разбиения на слова & цветовая маркировка частей речи
+# Японская сегментация слов и произношение каной
 
 1. ## Скачивание словаря unidic для mecab
 
@@ -18,5 +18,8 @@
 
 1. ## Активация **отображения фуриганы** (включено по умолчанию) и **подсветки грамматики**
 
-![img](https://image.lunatranslator.org/zh/fenci.png)
+    ![img](https://image.lunatranslator.org/zh/fenci.png)
 
+1. ## Конечный результат
+
+    ![img](https://image.lunatranslator.org/zh/mecabresult.png)
