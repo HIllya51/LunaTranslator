@@ -6,7 +6,7 @@
 
         В **Настройках словаря** разверните **Загрузка ресурсов**, если словарь unidic ещё не загружен, отобразится кнопка **Скачать**, нажатие на которую автоматически загрузит и настроит пути.
 
-        ![img](https://image.lunatranslator.org/zh/unidic.png)
+        ![img](https://image.lunatranslator.org/en/unidic.png)
 
     1. ### Способ 2, ручное скачивание
 
@@ -14,11 +14,11 @@
 
         Например, скачайте [последнюю официальную версию](https://clrd.ninjal.ac.jp/unidic/), распакуйте в директорию программы - после перезапуска пути определятся автоматически. Или распакуйте в любое место и укажите путь к распакованным файлам.
 
-        ![img](https://image.lunatranslator.org/zh/mecab.png)
+        ![img](https://image.lunatranslator.org/en/mecab.png)
 
 1. ## Активация **отображения фуриганы** (включено по умолчанию) и **подсветки грамматики**
 
-    ![img](https://image.lunatranslator.org/zh/fenci.png)
+    ![img](https://image.lunatranslator.org/en/fenci.png)
 
 1. ## Конечный результат
 
