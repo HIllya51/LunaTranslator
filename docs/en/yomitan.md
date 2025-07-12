@@ -4,17 +4,17 @@
   
    Using the browser extension requires Webview2. Unless the system does not support Webview2, the default display engine is Webview2.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan.png)
+   ![img](https://image.lunatranslator.org/en/yomitan.png)
 
 1. Enable **Use Browser Extension** and add the Yomitan extension.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan3.png)
+   ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
 1. Wait for the initialization to complete, then configure Yomitan.
 
-   ![img](https://image.lunatranslator.org/zh/yomitan4.png)
+   ![img](https://image.lunatranslator.org/en/yomitan4.png)
 
 1. Final Result
 
