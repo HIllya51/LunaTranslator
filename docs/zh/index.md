@@ -36,8 +36,8 @@ features:
   - title: 丰富的翻译接口
     details: 支持几乎所有翻译引擎，包括大语言模型翻译、离线翻译等
     link: ./useapis/tsapi
-  - title: 词典与Anki集成
-    details: 支持Mecab，支持MDict及在线词典，支持AnkiConnect
+  - title: 语言学习
+    details: 支持日语分词及假名注音，支持AnkiConnect，支持Yomitan插件
     link: ./qa1
   - title: 语音合成
     details: 支持大量在线&离线语音合成引擎

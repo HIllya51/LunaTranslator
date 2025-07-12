@@ -36,8 +36,8 @@ features:
   - title: 豊富な翻訳API  
     details: ほとんどすべての翻訳エンジンをサポートし、大規模言語モデル翻訳、オフライン翻訳などを含みます。
     link: ./useapis/tsapi
-  - title: 辞書とAnki連携  
-    details: Mecab、MDict、オンライン辞書、AnkiConnectをサポートしています。 
+  - title: 言語学習
+    details: 日本語の分かち書きと仮名振りをサポート、AnkiConnectに対応、Yomitanプラグインをサポート
     link: ./qa1
   - title: 音声合成  
     details: 多数のオンライン＆オフライン音声合成エンジンをサポートします。  

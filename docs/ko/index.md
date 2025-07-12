@@ -36,8 +36,7 @@ features:
   - title: 풍부한 번역 인터페이스
     details: 대언어모델 번역, 오프라인 번역 등 거의 모든 번역 엔진 지원
     link: ./useapis/tsapi
-  - title: 사전 및 Anki 연동
-    details: Mecab 지원, MDict 및 온라인 사전 지원, AnkiConnect 지원
+  - title: 일본어 단어 분할 및 가나 주석 지원, AnkiConnect 지원, Yomitan 플러그인 지원
     link: ./qa1
   - title: 음성 합성
     details: 다양한 온라인&오프라인 음성 합성 엔진 지원

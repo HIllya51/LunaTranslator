@@ -36,8 +36,8 @@ features:
   - title: Rich Translation APIs  
     details: Supports almost all translation engines, including large language model translation, offline translation, and more.
     link: ./useapis/tsapi
-  - title: Dictionary & Anki Integration  
-    details: Supports Mecab, MDict, online dictionaries, and AnkiConnect.
+  - title: Language Learning
+    details: Supports Japanese word segmentation and kana annotation, supports AnkiConnect, supports Yomitan plugin
     link: ./qa1
   - title: Text-to-Speech  
     details: Supports a wide range of online & offline text-to-speech engines.  
