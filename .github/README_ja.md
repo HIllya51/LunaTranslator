@@ -32,15 +32,15 @@
 
 #### その他の機能
 
-- **テキスト読み上げ** **オフラインTTS**と**オンラインTTS**をサポート
+- **[テキスト読み上げ](https://docs.lunatranslator.org/ja/ttsengines.html)** **オフラインTTS**と**オンラインTTS**をサポート
 
-- **日本語の分かち書きと仮名振り** Mecab等を使用した単語分割と仮名表示をサポート
+- **[日本語の分かち書きと仮名振り](https://docs.lunatranslator.org/ja/qa1.html)** Mecab等を使用した単語分割と仮名表示をサポート
 
-- **単語検索** **オフライン辞書**(MDICT)と**オンライン辞書**による単語検索をサポート
+- **[単語検索](https://docs.lunatranslator.org/ja/internaldict.html)** **オフライン辞書**(MDICT)と**オンライン辞書**による単語検索をサポート
 
-- **Anki** ワンクリックでAnkiに単語を追加可能
+- **[Anki](https://docs.lunatranslator.org/ja/qa2.html)** ワンクリックでAnkiに単語を追加可能
 
-- **ブラウザ拡張機能の読み込み** Yomitanなどのブラウザ拡張機能をソフトウェア内で読み込み、追加機能の実装を補助可能。
+- **[ブラウザ拡張機能の読み込み](https://docs.lunatranslator.org/ja/yomitan.html)** Yomitanなどのブラウザ拡張機能をソフトウェア内で読み込み、追加機能の実装を補助可能。
 
 ## スポンサーシップ
 

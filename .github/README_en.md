@@ -32,15 +32,15 @@ Supports almost all conceivable translation engines, including:
 
 #### Other Functions
 
-- **Text-to-Speech** supports **Offline TTS** and **Online TTS**
+- **[Text-to-Speech](https://docs.lunatranslator.org/en/ttsengines.html)** supports **Offline TTS** and **Online TTS**
 
-- **Japanese Word Segmentation and Kana Pronunciation** Supports word segmentation and kana display using Mecab, etc.
+- **[Japanese Word Segmentation and Kana Pronunciation](https://docs.lunatranslator.org/en/qa1.html)** Supports word segmentation and kana display using Mecab, etc.
 
-- **Vocabulary Lookup** Supports **offline dictionaries** (MDICT) and **online dictionaries** for word lookup
+- **[Vocabulary Lookup](https://docs.lunatranslator.org/en/internaldict.html)** Supports **offline dictionaries** (MDICT) and **online dictionaries** for word lookup
 
-- **Anki** Supports one-click addition of words to Anki
+- **[Anki](https://docs.lunatranslator.org/en/qa2.html)** Supports one-click addition of words to Anki
 
-- **Load Browser Extensions** Browser extensions like Yomitan can be loaded within the software to assist in implementing additional features.
+- **[Load Browser Extensions](https://docs.lunatranslator.org/en/yomitan.html)** Browser extensions like Yomitan can be loaded within the software to assist in implementing additional features.
 
 ## Sponsorship
 

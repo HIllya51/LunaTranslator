@@ -32,15 +32,15 @@
 
 #### 기타 기능
 
-- **음성 합성** **오프라인 TTS** 및 **온라인 TTS** 지원
+- **[음성 합성](https://docs.lunatranslator.org/ko/ttsengines.html)** **오프라인 TTS** 및 **온라인 TTS** 지원
 
-- **일본어 단어 분할 및 가나 발음 표기** Mecab 등을 사용한 단어 분할 및 가나 표시 지원
+- **[일본어 단어 분할 및 가나 발음 표기](https://docs.lunatranslator.org/ko/qa1.html)** Mecab 등을 사용한 단어 분할 및 가나 표시 지원
 
-- **단어 검색** **오프라인 사전** (MDICT) 및 **온라인 사전**을 사용한 단어 검색 지원
+- **[단어 검색](https://docs.lunatranslator.org/ko/internaldict.html)** **오프라인 사전** (MDICT) 및 **온라인 사전**을 사용한 단어 검색 지원
 
-- **Anki** Anki에 단어를 한 번에 추가하는 기능 지원
+- **[Anki](https://docs.lunatranslator.org/ko/qa2.html)** Anki에 단어를 한 번에 추가하는 기능 지원
 
-- **브라우저 확장 프로그램 로드** 소프트웨어 내에서 Yomitan 등의 브라우저 확장 프로그램을 로드하여 다른 기능을 보조할 수 있습니다.
+- **[브라우저 확장 프로그램 로드](https://docs.lunatranslator.org/ko/yomitan.html)** 소프트웨어 내에서 Yomitan 등의 브라우저 확장 프로그램을 로드하여 다른 기능을 보조할 수 있습니다.
 
 ## 저자 지원
 

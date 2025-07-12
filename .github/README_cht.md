@@ -32,15 +32,15 @@
 
 #### 其他功能
 
-- **語音合成** 支援 **離線TTS** 和 **線上TTS**
+- **[語音合成](https://docs.lunatranslator.org/cht/ttsengines.html)** 支援 **離線TTS** 和 **線上TTS**
 
-- **日語分詞及假名注音** 支援使用 Mecab 等分詞和顯示假名
+- **[日語分詞及假名注音](https://docs.lunatranslator.org/cht/qa1.html)** 支援使用 Mecab 等分詞和顯示假名
 
-- **查詞** 支援使用 **離線辭書** ( MDICT ) 和 **線上辭書** 進行單詞查詢
+- **[查詞](https://docs.lunatranslator.org/cht/internaldict.html)** 支援使用 **離線辭書** ( MDICT ) 和 **線上辭書** 進行單詞查詢
 
-- **Anki** 支援一鍵添加單詞到anki中
+- **[Anki](https://docs.lunatranslator.org/cht/qa2.html)** 支援一鍵添加單詞到anki中
 
-- **載入瀏覽器插件** 可以在軟體內載入Yomitan等瀏覽器插件以輔助實現一些其他功能
+- **[載入瀏覽器插件](https://docs.lunatranslator.org/cht/yomitan.html)** 可以在軟體內載入Yomitan等瀏覽器插件以輔助實現一些其他功能
 
 ## 支援作者
 

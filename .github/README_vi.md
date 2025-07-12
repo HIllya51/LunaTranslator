@@ -32,15 +32,15 @@ Hỗ trợ hầu hết các engine dịch có thể nghĩ đến, bao gồm:
 
 #### Chức năng khác
 
-- **Chuyển văn bản thành giọng nói** hỗ trợ **TTS offline** và **TTS online**
+- **[Chuyển văn bản thành giọng nói](https://docs.lunatranslator.org/vi/ttsengines.html)** hỗ trợ **TTS offline** và **TTS online**
 
-- **Phân đoạn từ tiếng Nhật và phiên âm kana** Hỗ trợ phân tách từ và hiển thị kana bằng Mecab, v.v.
+- **[Phân đoạn từ tiếng Nhật và phiên âm kana](https://docs.lunatranslator.org/vi/qa1.html)** Hỗ trợ phân tách từ và hiển thị kana bằng Mecab, v.v.
 
-- **Tra từ điển** Hỗ trợ **từ điển offline** (MDICT) và **từ điển online** để tra từ
+- **[Tra từ điển** Hỗ trợ **từ điển offline](https://docs.lunatranslator.org/vi/internaldict.html)** (MDICT) và **từ điển online** để tra từ
 
-- **Anki** Hỗ trợ thêm từ vào Anki bằng một cú nhấp chuột
+- **[Anki](https://docs.lunatranslator.org/vi/qa2.html)** Hỗ trợ thêm từ vào Anki bằng một cú nhấp chuột
 
-- **Tải tiện ích mở rộng trình duyệt** Các tiện ích mở rộng trình duyệt như Yomitan có thể được tải trong phần mềm để hỗ trợ triển khai các tính năng bổ sung.
+- **[Tải tiện ích mở rộng trình duyệt](https://docs.lunatranslator.org/vi/yomitan.html)** Các tiện ích mở rộng trình duyệt như Yomitan có thể được tải trong phần mềm để hỗ trợ triển khai các tính năng bổ sung.
 
 ## Tài trợ
 
