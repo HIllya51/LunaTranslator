@@ -28,5 +28,3 @@ luna 측에서 단어 조회 후 클릭.
 ![img](https://image.lunatranslator.org/zh/anki/336451442-7887d600-8c44-4256-9020-1d85e0f6184a.png)
 
 ---
-
-# [Anki 로컬 동기화 서버](/zh/ankisync)

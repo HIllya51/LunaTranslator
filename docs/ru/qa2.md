@@ -28,5 +28,3 @@
 ![img](https://image.lunatranslator.org/zh/anki/336451442-7887d600-8c44-4256-9020-1d85e0f6184a.png)
 
 ---
-
-# [Локальный сервер синхронизации Anki](/zh/ankisync)
