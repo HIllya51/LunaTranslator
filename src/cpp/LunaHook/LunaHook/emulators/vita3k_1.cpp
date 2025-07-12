@@ -962,6 +962,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // CLOCK ZERO ～終焉の一秒～ ExTime
+    {0x8002BA9C, {CODEC_UTF8, 0, 0, 0, FPCSG00815, "PCSG00469"}},
     // Collar×Malice
     {0x80030250, {CODEC_UTF8, 0, 0, 0, 0, "PCSG00866"}},
     // Side Kicks!

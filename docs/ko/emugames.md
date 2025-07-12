@@ -704,6 +704,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00469 | CLOCK ZERO ～終焉の一秒～ ExTime |
 |  | PCSG00866 | Collar×Malice |
 |  | PCSG01001 | Side Kicks! |
 |  | PCSG00299 | 俺たちに翼はない |
@@ -753,6 +754,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 |  | PCSG00910 | DIABOLIK LOVERS LOST EDEN |
 |  | PCSG00826 | DIABOLIK LOVERS LUNATIC PARADE |
 |  | PCSG00272 | DIABOLIK LOVERS LIMITED V EDITION |
+|  | PCSG00476 | DIABOLIK LOVERS MORE,BLOOD LIMITED V EDITION |
 |  | PCSG00833 | Norn9 ~Norn + Nonette~ Act Tune |
 |  | PCSG00431 | NORN9 VAR COMMONS |
 |  | PCSG01011 | 空蝉の廻 |
