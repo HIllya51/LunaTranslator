@@ -25,17 +25,7 @@ class WordSegResultX(WordSegResult):
 
     @staticmethod
     def fromW(w: WordSegResult):
-        return WordSegResultX(
-            w.word,
-            w.kana,
-            w.isdeli,
-            w.wordclass,
-            w._prototype,
-            hidekana=w.hidekana,
-            info=w.info,
-            isshit=w.isshit,
-            specialinfo=w.specialinfo,
-        )
+        return WordSegResultX(**w.as_dict())
 
     def copy(self):
         _ = WordSegResultX.fromW(self)

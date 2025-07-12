@@ -60,6 +60,7 @@ class WordSegResult:
             info=self.info,
             isshit=self.isshit,
             specialinfo=self.specialinfo,
+            donthighlight=self.donthighlight,
         )
 
     def __str__(self):
@@ -79,4 +80,5 @@ class WordSegResult:
             info=d.get("info"),
             isshit=d.get("isshit", False),
             specialinfo=d.get("specialinfo"),
+            donthighlight=d.get("donthighlight"),
         )
