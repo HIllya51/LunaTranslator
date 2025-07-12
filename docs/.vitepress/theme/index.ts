@@ -27,7 +27,12 @@ export default {
                 e.target = '_blank'
                 e.addEventListener('click', () => {
                     setTimeout(() => {
-                        window.location.href = `/${window.localStorage.currentlang}/support.html`;
+                        if ((window.localStorage.currentlang == 'zh') || (Math.random() < 0.5)) {
+                            window.location.href = `/${window.localStorage.currentlang}/support.html`;
+                        }
+                        else {
+                            window.location.href = `https://www.patreon.com/hillya51`;
+                        }
                     }, 50);
                 });
             })

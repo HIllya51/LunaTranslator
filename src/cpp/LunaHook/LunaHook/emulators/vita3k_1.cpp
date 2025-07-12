@@ -1107,6 +1107,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // DIABOLIK LOVERS LIMITED V EDITION
     {0x8105A176, {0, 5, 0, 0, PCSG00472, "PCSG00272"}}, // prologue+text
     {0x8103416C, {0, 0, 0, 0, PCSG00272, "PCSG00272"}}, // name+text
+    // DIABOLIK LOVERS MORE,BLOOD LIMITED V EDITION
+    {0x800285BE, {0, 8, 0, 0, PCSG00472, "PCSG00476"}},
+    {0x80033F0E, {0, 0, 0, 0, PCSG00272, "PCSG00476"}},
     // Norn9 ~Norn + Nonette~ Act Tune
     {0x8001E288, {CODEC_UTF8, 0, 0, 0, PCSG00833, "PCSG00833"}},
     // NORN9 VAR COMMONS
