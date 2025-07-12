@@ -703,6 +703,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00755 | BROTHERS CONFLICT　Precious Baby |
 |  | PCSG00469 | CLOCK ZERO ～終焉の一秒～ ExTime |
 |  | PCSG00866 | Collar×Malice |
 |  | PCSG01001 | Side Kicks! |

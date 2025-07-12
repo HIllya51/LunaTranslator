@@ -703,6 +703,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00755 | BROTHERS CONFLICT　Precious Baby |
 |  | PCSG00469 | CLOCK ZERO ～終焉の一秒～ ExTime |
 |  | PCSG00866 | Collar×Malice |
 |  | PCSG01001 | Side Kicks! |

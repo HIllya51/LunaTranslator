@@ -962,6 +962,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // BROTHERS CONFLICT　Precious Baby
+    {0x800B2C66, {0, 5, 0, 0, PCSG00402, "PCSG00755"}},
+    {0x800B4548, {0, 1, 0, 0, PCSG00402, "PCSG00755"}},
     // CLOCK ZERO ～終焉の一秒～ ExTime
     {0x8002BA9C, {CODEC_UTF8, 0, 0, 0, FPCSG00815, "PCSG00469"}},
     // Collar×Malice
