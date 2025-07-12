@@ -126,6 +126,10 @@ namespace
     {
         StringFilter(buffer, TEXTANDLEN(L"＿"));
     }
+    void PCSG01001(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("@@"));
+    }
     void PCSG01247(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("\\n"));
@@ -643,6 +647,13 @@ namespace
         strReplace(s, "#n");
         buffer->from(s);
     }
+    void PCSG00402(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"((\x81\x40)*(#n)*(\x81\x40)*)");
+        s = re::sub(s, R"(#\w+(\[.+?\])?)");
+        buffer->from(s);
+    }
     void FPCSG00815(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -951,6 +962,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Collar×Malice
+    {0x80030250, {CODEC_UTF8, 0, 0, 0, 0, "PCSG00866"}},
+    // Side Kicks!
+    {0x80020C78, {CODEC_UTF8, 0, 8, 0, PCSG01001, "PCSG01001"}},
     // 俺たちに翼はない
     {0x8003EC88, {0, 7, 0, 0, 0, "PCSG00299"}},
     // シルヴァリオ トリニティ -Beyond the Horizon-
@@ -1059,6 +1074,12 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // サイキックエモーション ムー
     {0x80035948, {CODEC_UTF8, 9, 0, 0, FPCSG00815, "PCSG00815"}},
     {0x80034580, {CODEC_UTF8, 6, 0, 0, FPCSG00815, "PCSG00815"}},
+    // Code：Realize ～創世の姫君～
+    {0x800879DE, {0, 0, 0, 0, PCSG00402, "PCSG00402"}},
+    {0x8001A39A, {0, 0, 0x1c, 0, PCSG00402, "PCSG00402"}},
+    // Code：Realize ～祝福の未来～
+    {0x8008E566, {CODEC_UTF8, 1, 0, 0, FPCSG00815, "PCSG00805"}},
+    {0x80024DE0, {CODEC_UTF8, 0xb, 0x1c, 0, FPCSG00815, "PCSG00805"}},
     // Code:Realize ～白銀の奇跡～
     {0x80015bcc, {CODEC_UTF8, 0, 0x1c, 0, F010088B01A8FC000, "PCSG01110"}},
     {0x80038e76, {CODEC_UTF8, 8, 0, 0, F010088B01A8FC000, "PCSG01110"}},

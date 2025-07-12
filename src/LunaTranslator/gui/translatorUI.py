@@ -1301,6 +1301,10 @@ class TranslatorWindow(resizableframeless):
         self.cleanupdater()
         self.firstshow = False
 
+        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24:
+            if globalconfig.get("lasttime2", 0):
+                self.showabout()
+            globalconfig["lasttime2"] = time.time()
         self.mousetransparent_check()
         self.adjustbuttons()
         # 有个莫名其妙的加载时间

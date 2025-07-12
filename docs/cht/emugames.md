@@ -703,6 +703,8 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00866 | Collar×Malice |
+|  | PCSG01001 | Side Kicks! |
 |  | PCSG00299 | 俺たちに翼はない |
 |  | PCSG01259 | シルヴァリオ トリニティ -Beyond the Horizon- |
 |  | PCSG01023 | 追放選挙 |
@@ -737,6 +739,8 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 |  | PCSG00477 | 百華夜光 |
 |  | PCSG00855 | 花朧 ～戦国伝乱奇～ |
 |  | PCSG00815 | サイキックエモーション ムー |
+|  | PCSG00402 | Code：Realize ～創世の姫君～ |
+|  | PCSG00805 | Code：Realize ～祝福の未来～ |
 |  | PCSG01110 | Code:Realize ～白銀の奇跡～ |
 |  | PCSG00789 | オメルタ CODE:TYCOON 戒 |
 |  | PCSG01221 | 紅色天井艶妖綺譚 二藍 |
