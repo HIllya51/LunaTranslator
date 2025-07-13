@@ -704,6 +704,9 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG01063 | イケメン戦国◆時をかける恋　新たなる出逢い |
+|  | PCSG00766 | ニル・アドミラリの天秤 帝都幻惑綺譚 |
+|  | PCSG01014 | ニル・アドミラリの天秤 クロユリ炎陽譚 |
 |  | PCSG00755 | BROTHERS CONFLICT　Precious Baby |
 |  | PCSG00469 | CLOCK ZERO ～終焉の一秒～ ExTime |
 |  | PCSG00866 | Collar×Malice |

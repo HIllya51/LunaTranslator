@@ -1146,7 +1146,8 @@ namespace
     {
         auto s = buffer->strA();
         static std::string last;
-        s = re::sub(s, R"((#Ruby\[)([^,]+),(#\w+\[.\])?(.+?\]))", "$2");
+        s = re::sub(s, R"(#\w+\[\d+\])");
+        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
         s = re::sub(s, R"(#\w+(\[.+?\])?)");
         s = re::sub(s, u8"　");
         if (last == s)
@@ -1217,7 +1218,8 @@ namespace
     void F01005A401D766000_2(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, R"((#Ruby\[)([^,]+).([^\]]+).)", "$2");
+        s = re::sub(s, R"(#\w+\[\d+\])");
+        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
         s = re::sub(s, R"((\\n)+)");
         s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)");
         s = re::sub(s, R"(<color=.*>(.*)<\/color>)", "$1");
@@ -1595,7 +1597,8 @@ namespace
     void F0100BDD01AAE4000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, "(#Ruby\\[)([^,]+).([^\\]]+).", "$2");
+        s = re::sub(s, R"(#\w+\[\d+\])");
+        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
         s = re::sub(s, "(#n)+", " ");
         s = re::sub(s, "(#[A-Za-z]+[(\\d*[.])?\\d+])+");
         buffer->from(s);
@@ -1603,7 +1606,8 @@ namespace
     void F0100C310110B4000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, "(#Ruby\\[)([^,]+).([^\\]]+).", "$2");
+        s = re::sub(s, R"(#\w+\[\d+\])");
+        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
         s = re::sub(s, "#Color\\[[\\d]+\\]");
         s = re::sub(s, u8"(　#n)+", "#n");
         s = re::sub(s, "#n+", " ");

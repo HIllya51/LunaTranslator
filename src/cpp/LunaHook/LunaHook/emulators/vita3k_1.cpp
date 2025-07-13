@@ -109,13 +109,25 @@ namespace
         s = re::sub(s, "#Ruby\\[[-\\d]+,(.*?)\\]");
         buffer->from(s);
     }
-    void FPCSG01008(TextBuffer *buffer, HookParam *hp)
+    void PCSG00766(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, "#Ruby\\[([^,]+)\\.([^\\]]+)\\].", "$1");
-        s = re::sub(s, "(#n)+", " ");
-        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.])?\\d+\\]");
+        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
+        s = re::sub(s, R"((\x81\x40)*(#n)*(\x81\x40)*)");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
+    }
+    void PCSG00935(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        auto _ = re::search(s, R"(#n#Pos[[\d\-,\.]*\](.*))");
+        if (_)
+        {
+            s = strReplace(s, _.value()[0].str());
+            s = u8"【" + _.value()[1].str() + u8"】" + s;
+        }
+        buffer->from(s);
+        PCSG00766(buffer, hp);
     }
     void TPCSG00903(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -821,6 +833,11 @@ namespace
         StringFilter(buffer, TEXTANDLEN("\x81\x84"));
         CharFilter(buffer, '\n');
     }
+    void PCSG01063(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN(u8"\n　"));
+        CharFilter(buffer, '\n');
+    }
     void PCSG01289(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = buffer->strAW();
@@ -962,6 +979,13 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // イケメン戦国◆時をかける恋　新たなる出逢い
+    {0x8009B496, {CODEC_UTF8, 8, 0, 0, PCSG01063, "PCSG01063"}},
+    // ニル・アドミラリの天秤 帝都幻惑綺譚
+    {0x80073862, {0, 0, 0, 0, PCSG00766, "PCSG00766"}},
+    // ニル・アドミラリの天秤 クロユリ炎陽譚
+    {0x80030CC8, {0, 5, 0, 0, PCSG00766, "PCSG01014"}},
+    {0x80074F2A, {0, 0, 0, 0, PCSG00766, "PCSG01014"}},
     // BROTHERS CONFLICT　Precious Baby
     {0x800B2C66, {0, 5, 0, 0, PCSG00402, "PCSG00755"}},
     {0x800B4548, {0, 1, 0, 0, PCSG00402, "PCSG00755"}},
@@ -989,11 +1013,12 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 参千世界遊戯 ~MultiUniverse Myself~
     {0x8005ae24, {0, 0, 0, 0, 0, "PCSG01194"}}, // dialouge+name,sjis,need remap jis char,to complex
     // Marginal #4 Road to Galaxy
-    {0x8002ff90, {CODEC_UTF8, 0, 0, 0, FPCSG01008, "PCSG01008"}}, // text
+    {0x8002ff90, {CODEC_UTF8, 0, 0, 0, PCSG00766, "PCSG01008"}}, // text
     // MARGINAL#4 IDOL OF SUPERNOVA
     {0x800718f8, {0, 0, 0, 0, FPCSG00448, "PCSG00448"}}, // dialogue,sjis
     // BLACK WOLVES SAGA  -Weiβ und Schwarz-
-    {0x800581a2, {CODEC_UTF8, 0, 0, 0, FPCSG01008, "PCSG00935"}}, // text
+    {0x800581a2, {CODEC_UTF8, 0, 0, 0, PCSG00766, "PCSG00935"}}, // text
+    {0x800644F6, {CODEC_UTF8, 8, 0, 0, PCSG00935, "PCSG00935"}},
     // New Game! The Challenge Stage!
     {0x8012674c, {CODEC_UTF8, 0, 0, TPCSG00903, FPCSG00903, "PCSG00903"}},
     // 喧嘩番長 乙女

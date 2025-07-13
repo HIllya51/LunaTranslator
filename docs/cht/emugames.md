@@ -703,6 +703,9 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG01063 | イケメン戦国◆時をかける恋　新たなる出逢い |
+|  | PCSG00766 | ニル・アドミラリの天秤 帝都幻惑綺譚 |
+|  | PCSG01014 | ニル・アドミラリの天秤 クロユリ炎陽譚 |
 |  | PCSG00755 | BROTHERS CONFLICT　Precious Baby |
 |  | PCSG00469 | CLOCK ZERO ～終焉の一秒～ ExTime |
 |  | PCSG00866 | Collar×Malice |
