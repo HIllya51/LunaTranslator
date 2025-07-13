@@ -776,7 +776,6 @@ namespace
 
     void F0100AB100E2FA000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, LR"(\n)");
         s = re::sub(s, LR"(\u3000)");
@@ -3375,10 +3374,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8002bf6c, {CODEC_UTF8, 0, 0x1c, 0, FF010061300DF48000_2, 0x01004D601B0AA000ull, "1.0.1"}},
     {0x8004e720, {CODEC_UTF8, 1, 0, 0, FF010061300DF48000_2, 0x01004D601B0AA000ull, "1.0.1"}},
     // スペードの国のアリス ～Wonderful White World～
-    {0x8135d018, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F01008C0016544000, 0x01003FE00E2F8000ull, "1.0.0"}}, // Text + Name
+    {0x8135d018, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F01008C0016544000, 0x01003FE00E2F8000ull, "1.0"}}, // Text + Name
     // スペードの国のアリス ～Wonderful Black World～
-    {0x819dbdc8, {CODEC_UTF16, 0, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0.0"}},
-    {0x81f8e564, {CODEC_UTF16, 1, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0.0"}},
+    {0x819dbdc8, {CODEC_UTF16, 0, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0"}},
+    {0x81f8e564, {CODEC_UTF16, 1, 0x14, 0, F0100AB100E2FA000, 0x0100AB100E2FA000ull, "1.0"}},
     // 十三支演義 偃月三国伝1・2
     {0x82031f20, {CODEC_UTF16, 2, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // name
     {0x82ef9550, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F0100DA201E0DA000, 0x01003D2017FEA000ull, "1.0.0"}}, // dialogue
