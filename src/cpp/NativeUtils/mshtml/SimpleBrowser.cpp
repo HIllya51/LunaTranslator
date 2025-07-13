@@ -83,7 +83,7 @@ BOOL DoSetBrowserEmulation(DWORD dwValue)
         return TRUE;
     }
 }
-typedef LPWSTR  (*contextmenu_gettext)();
+typedef LPWSTR (*contextmenu_gettext)();
 class MWebBrowserEx : public MWebBrowser
 {
     HWND hwndParent;
@@ -95,7 +95,9 @@ class MWebBrowserEx : public MWebBrowser
         auto text_ = gettext();
         if (!text_)
             return {};
-        return text_;
+        std::wstring _ = text_;
+        delete text_;
+        return _;
     };
 
 public:

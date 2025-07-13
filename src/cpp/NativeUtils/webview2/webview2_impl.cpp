@@ -382,7 +382,9 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
             auto text_ = context.gettext();
             if (!text_)
                 return {};
-            return text_;
+            std::wstring _ = text_;
+            delete text_;
+            return _;
         };
 
         if (auto text = _text())
