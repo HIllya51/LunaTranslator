@@ -202,61 +202,51 @@ DECLARE_API void GetLiveCaptionsText(DWORD pid, void (*cb)(const wchar_t *))
 }
 DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
 {
-    bool succ = true;
-    try
+    CO_INIT co;
+    if (FAILED(co))
+        return false;
+    // 初始化 COM
+    CComPtr<IUIAutomation> automation;
+    if (FAILED(CoCreateInstance(CLSID_CUIAutomation, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&automation))) || !automation)
     {
-        CO_INIT co;
-        if (FAILED(co))
-            throw std::runtime_error("");
-        // 初始化 COM
-        CComPtr<IUIAutomation> automation;
-        if (FAILED(CoCreateInstance(CLSID_CUIAutomation, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&automation))) || !automation)
-        {
-            succ = false;
-            throw std::runtime_error("");
-        }
-
-        // 获取焦点元素
-        CComPtr<IUIAutomationElement> focusedElement;
-        if (FAILED(automation->GetFocusedElement(&focusedElement)) || !focusedElement)
-        {
-            throw std::runtime_error("");
-        }
-
-        // 检查是否支持 TextPattern
-        CComPtr<IUIAutomationTextPattern> textPattern;
-        if (FAILED(focusedElement->GetCurrentPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern))) || !textPattern)
-        {
-            succ = false;
-            throw std::runtime_error("");
-        }
-
-        // 获取选定的文本范围
-        CComPtr<IUIAutomationTextRangeArray> selection;
-        if (FAILED(textPattern->GetSelection(&selection)) || !selection)
-        {
-            throw std::runtime_error("");
-        }
-
-        // 获取第一个选定范围
-        CComPtr<IUIAutomationTextRange> range;
-        if (FAILED(selection->GetElement(0, &range)) || !range)
-        {
-            throw std::runtime_error("");
-        }
-
-        // 提取文本
-        CComBSTR text;
-        if (FAILED(range->GetText(-1, &text)) || !text)
-        {
-            throw std::runtime_error("");
-        }
-        cb(text);
+        return false;
     }
-    catch (...)
+
+    // 获取焦点元素
+    CComPtr<IUIAutomationElement> focusedElement;
+    if (FAILED(automation->GetFocusedElement(&focusedElement)) || !focusedElement)
     {
+        return true;
     }
-    return succ;
+
+    // 检查是否支持 TextPattern
+    CComPtr<IUIAutomationTextPattern> textPattern;
+    if (FAILED(focusedElement->GetCurrentPatternAs(UIA_TextPatternId, IID_PPV_ARGS(&textPattern))) || !textPattern)
+    {
+        return false;
+    }
+
+    // 获取选定的文本范围
+    CComPtr<IUIAutomationTextRangeArray> selection;
+    if (FAILED(textPattern->GetSelection(&selection)) || !selection)
+    {
+        return true;
+    }
+
+    // 获取第一个选定范围
+    CComPtr<IUIAutomationTextRange> range;
+    if (FAILED(selection->GetElement(0, &range)) || !range)
+    {
+        return true;
+    }
+
+    // 提取文本
+    CComBSTR text;
+    if (FAILED(range->GetText(-1, &text)) || !text)
+    {
+        return true;
+    }
+    cb(text);
 }
 DECLARE_API LPSECURITY_ATTRIBUTES GetSecurityAttributes()
 {

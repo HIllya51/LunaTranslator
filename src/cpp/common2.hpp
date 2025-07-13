@@ -110,22 +110,6 @@ struct CoAsyncTaskWaiter
     }
 };
 
-struct AutoFreeString
-{
-    LPWSTR ptr;
-    AutoFreeString(LPWSTR ptr) : ptr(ptr)
-    {
-    }
-    ~AutoFreeString()
-    {
-        delete[] ptr;
-    }
-    operator LPWSTR()
-    {
-        return ptr;
-    }
-};
-
 template <typename T, auto initor, auto clearer>
 struct AutoVariantBase
 {

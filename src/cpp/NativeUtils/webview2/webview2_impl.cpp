@@ -375,10 +375,20 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
         if (context.getuse && !context.getuse())
             continue;
         CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
-        if (context.gettext && AutoFreeString(context.gettext()) && wcslen(AutoFreeString(context.gettext())))
+        auto _text = [&]() -> std::optional<std::wstring>
+        {
+            if (!context.gettext)
+                return {};
+            auto text_ = context.gettext();
+            if (!text_)
+                return {};
+            return text_;
+        };
+
+        if (auto text = _text())
         {
             CComPtr<ContextMenuCallback> callbackhandler = new ContextMenuCallback(targetKind, CurrSelectText, context.callback);
-            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(AutoFreeString(context.gettext()), nullptr, context.checkable ? COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX : COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(text.value().c_str(), nullptr, context.checkable ? COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX : COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
             newMenuItem->add_CustomItemSelected(callbackhandler, &token);
             if (context.checkable && context.getchecked)
                 newMenuItem->put_IsChecked(context.getchecked());
