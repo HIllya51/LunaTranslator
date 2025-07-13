@@ -703,6 +703,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00020 | 極限脱出ＡＤＶ 善人シボウデス |
 |  | PCSG01063 | イケメン戦国◆時をかける恋　新たなる出逢い |
 |  | PCSG00766 | ニル・アドミラリの天秤 帝都幻惑綺譚 |
 |  | PCSG01014 | ニル・アドミラリの天秤 クロユリ炎陽譚 |

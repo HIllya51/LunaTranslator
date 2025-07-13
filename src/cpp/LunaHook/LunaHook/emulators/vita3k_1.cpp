@@ -971,6 +971,12 @@ namespace
         s = re::sub(s, LR"(<CLT \d+>(.*?)<CLT>)", L"$1");
         buffer->from(s);
     }
+    void PCSG00020(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(<\w+?>)");
+        buffer->from(s);
+    }
 }
 
 struct emfuncinfoX
@@ -979,6 +985,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 極限脱出ＡＤＶ 善人シボウデス
+    {0x810DE344, {CODEC_UTF8, 6, 0, 0, PCSG00020, "PCSG00020"}},
     // イケメン戦国◆時をかける恋　新たなる出逢い
     {0x8009B496, {CODEC_UTF8, 8, 0, 0, PCSG01063, "PCSG01063"}},
     // ニル・アドミラリの天秤 帝都幻惑綺譚
