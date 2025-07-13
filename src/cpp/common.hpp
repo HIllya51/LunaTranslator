@@ -19,13 +19,3 @@ inline std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF
     WideCharToMultiByte(cp, 0, text.c_str(), -1, buffer.data(), buffer.size(), nullptr, nullptr);
     return buffer.data();
 }
-
-#define CHECK_FAILURE(x) \
-    if (FAILED((x)))     \
-        return (HRESULT)x;
-#define CHECK_FAILURE_NORET(x) \
-    if (FAILED((x)))           \
-        return;
-#define CHECK_FAILURE_CONTINUE(x) \
-    if (FAILED((x)))              \
-        continue;

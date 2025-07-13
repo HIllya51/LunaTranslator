@@ -247,6 +247,7 @@ DECLARE_API bool GetSelectedText(void (*cb)(const wchar_t *))
         return true;
     }
     cb(text);
+    return true;
 }
 DECLARE_API LPSECURITY_ATTRIBUTES GetSecurityAttributes()
 {
