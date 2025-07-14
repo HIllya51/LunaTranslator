@@ -2,7 +2,7 @@ from qtsymbols import *
 import os, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, NativeUtils, gobject
-from gobject import runtime_for_xp
+import re
 from myutils.config import _TR, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark, checkisusingwine, dynamiclink
@@ -1223,7 +1223,6 @@ def getsimpleswitch(
 def __getsmalllabel(text):
     __ = LLabel(text)
     __.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
-    __.setOpenExternalLinks(True)
     return __
 
 
@@ -2459,9 +2458,10 @@ def tabadd_lazy(tab, title, getrealwidgetfunction):
 
 def makelabel(s: str):
     islink = ("<a" in s) and ("</a>" in s)
-    wid = LLabel(s)
     if islink:
-        wid.setOpenExternalLinks(True)
+        wid = LinkLabel(s)
+    else:
+        wid = LLabel(s)
     return wid
 
 
@@ -3691,3 +3691,42 @@ class HBoxCenter(QHBoxLayout):
     def __init__(self, *a):
         super().__init__(*a)
         self.setAlignment(Qt.AlignmentFlag.AlignHCenter)
+
+
+class LinkLabel(QLabel):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.color2 = "#E91E63"
+        self.color1 = "blue"
+        self.setOpenExternalLinks(True)
+        self.linkHovered.connect(self.change_link_color)
+
+    def setOpenExternalLinks(self, _):
+        super().setOpenExternalLinks(_)
+        if not _:
+            self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+
+    def leaveEvent(self, a0):
+        self.setText(self.text())
+        return super().leaveEvent(a0)
+
+    def setText(self, t):
+        t = re.sub("<a(.*?)>", '<a\\1 style="color: {};">'.format(self.color1), t)
+        super().setText(t)
+
+    def change_link_color(self, link):
+        if link:
+            super().setText(
+                re.sub(
+                    """<a href="({})".*?>""".format(link),
+                    '<a href="\\1" style="color: {};">'.format(self.color2),
+                    self.text(),
+                )
+            )
+        else:
+            self.setText(self.text())
+
+        if link:
+            self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        else:
+            self.unsetCursor()

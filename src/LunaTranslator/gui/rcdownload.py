@@ -1,7 +1,7 @@
 import os
 from myutils.config import globalconfig
 import requests, zipfile, gobject
-from gui.usefulwidget import VisLFormLayout, getsmalllabel, getboxlayout, NQGroupBox
+from gui.usefulwidget import VisLFormLayout, getboxlayout, NQGroupBox, LinkLabel
 from myutils.utils import makehtml, stringfyerror, dynamiclink
 from myutils.config import _TR, mayberelpath
 from myutils.wrapper import threader
@@ -98,17 +98,20 @@ class resourcewidget(NQGroupBox):
         self.installsucc.connect(self._installsucc)
         formLayout = VisLFormLayout(self)
         formLayout.addRow(
-            "unidic", getsmalllabel(makehtml("https://clrd.ninjal.ac.jp/unidic/"))()
+            "unidic", LinkLabel(makehtml("https://clrd.ninjal.ac.jp/unidic/"))
         )
         self.formLayout = formLayout
         btninstall = LPushButton("下载")
+        btninstall.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         if self.__findithasinstalled():
             btninstall.setVisible(False)
         self.btninstall = btninstall
         btninstall.clicked.connect(self.downloadauto)
         __maybebtn = getboxlayout(
             [
-                getsmalllabel(makehtml(self.oldlink, self.oldlinkfnname)),
+                LinkLabel(makehtml(self.oldlink, self.oldlinkfnname)),
                 "",
                 btninstall,
             ]
@@ -210,20 +213,19 @@ class resourcewidget2(NQGroupBox):
         self.installsucc.connect(self._installsucc)
         formLayout = VisLFormLayout(self)
         self.formLayout = formLayout
+        formLayout.addRow("论坛", LinkLabel(makehtml("https://forum.freemdict.com/")))
         formLayout.addRow(
-            "论坛", getsmalllabel(makehtml("https://forum.freemdict.com/"))()
-        )
-        formLayout.addRow(
-            "freemdict", getsmalllabel(makehtml("https://search.freemdict.com/"))()
+            "freemdict", LinkLabel(makehtml("https://search.freemdict.com/"))
         )
         btninstall = LPushButton("下载")
+        btninstall.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         if self.__findithasinstalled():
             btninstall.setVisible(False)
         self.btninstall = btninstall
         btninstall.clicked.connect(self.downloadauto)
-        __maybebtn = getboxlayout(
-            [getsmalllabel(makehtml(self.oldlink)), "", btninstall]
-        )
+        __maybebtn = getboxlayout([LinkLabel(makehtml(self.oldlink)), "", btninstall])
         formLayout.addRow("Jitendex", __maybebtn)
 
         downloadprogress = QProgressBar()

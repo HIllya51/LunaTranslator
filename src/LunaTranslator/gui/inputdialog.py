@@ -537,12 +537,7 @@ class autoinitdialog(LDialog):
         if "k" in line:
             key = line["k"]
         if line["type"] == "label":
-
-            if "islink" in line and line["islink"]:
-                lineW = QLabel(makehtml(dd[key]))
-                lineW.setOpenExternalLinks(True)
-            else:
-                lineW = LLabel(dd[key])
+            lineW = LLabel(dd[key])
         elif line["type"] == "textlist":
             directedit = isinstance(dd[key], str)
             if directedit:

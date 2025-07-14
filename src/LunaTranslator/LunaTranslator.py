@@ -1487,12 +1487,6 @@ class BASEOBJECT(QObject):
         self.translation_ui.processismuteed = mute
         self.translation_ui.refreshtooliconsignal.emit()
 
-    def openlink(self, file: str):
-        if file.startswith("http") and checkisusingwine():
-            self.translation_ui.displaylink.emit(file)
-            return
-        return os.startfile(file)
-
     def WindowMessageCallback(self, msg: int, value1: c_void_p, value2: c_void_p):
         if msg == 0:
             if globalconfig["darklight2"] == 0:

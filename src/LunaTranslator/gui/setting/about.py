@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     getboxlayout,
     NQGroupBox,
+    LinkLabel,
     SClickableLabel,
     VisLFormLayout,
 )
@@ -22,14 +23,11 @@ from language import UILanguages, Languages
 from myutils.updater import versionchecktask
 
 
-def createversionlabel(self):
+def createversionlabel():
 
-    versionlabel = getsmalllabel()()
+    versionlabel = LinkLabel()
     versionlabel.setOpenExternalLinks(False)
-    versionlabel.linkActivated.connect(
-        lambda _: os.startfile(dynamiclink("ChangeLog"))
-    )
-    versionlabel.setTextInteractionFlags(Qt.TextInteractionFlag.LinksAccessibleByMouse)
+    versionlabel.linkActivated.connect(lambda _: os.startfile(dynamiclink("ChangeLog")))
 
     gobject.base.connectsignal(
         gobject.base.versiontextsignal,
@@ -167,7 +165,7 @@ def updatexx(self):
             ),
             getsmalllabel(""),
             getsmalllabel("最新版本"),
-            functools.partial(createversionlabel, self),
+            createversionlabel,
             "",
         ]
     )
@@ -193,7 +191,7 @@ def _progresssignal4(
         updatelayout.setRowVisible(3, True)
 
 
-class MDLabel(QLabel):
+class MDLabel(LinkLabel):
     def setMD(self, md, static=True):
         self._md = md
         self.static = static
@@ -203,7 +201,6 @@ class MDLabel(QLabel):
         super().__init__()
         self._md = md
         self.static = static
-        self.setOpenExternalLinks(True)
         self.setWordWrap(True)
         self.updatelangtext()
 
@@ -222,7 +219,6 @@ class MDLabel1(MDLabel):
         )
 
     def setText(self, t):
-        t = re.sub("<a(.*?)>", '<a\\1 style="color: #E91E63;">', t)
         t = re.sub('<a href="WEIXIN".*?>(.*?)</a>', "\\1", t)
         super().setText(t)
 
@@ -355,7 +351,10 @@ class delayloadsvg(QSvgWidget):
 def makelink(repo):
     return [
         functools.partial(delayloadsvg, repo),
-        '<a href="https://github.com/{repo}">{repo}</a>'.format(repo=repo),
+        functools.partial(
+            LinkLabel,
+            '<a href="https://github.com/{repo}">{repo}</a>'.format(repo=repo),
+        ),
     ]
 
 

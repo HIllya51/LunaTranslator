@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     SuperCombo,
     VisLFormLayout,
     getIconButton,
+    LinkLabel,
     makegrid,
     listediter,
     getsimplecombobox,
@@ -469,7 +470,7 @@ def __srcofig(grids: list, self):
     grids.insert(0, [__])
 
 
-class MDLabel2(QLabel):
+class MDLabel2(LinkLabel):
     def __init__(self, md):
         super().__init__()
         self.setText(md)

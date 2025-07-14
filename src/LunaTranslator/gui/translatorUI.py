@@ -1,5 +1,5 @@
 from qtsymbols import *
-import time, functools, threading, os, shutil, uuid, re
+import time, functools, threading, os, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, NativeUtils
 from myutils.wrapper import threader, tryprint
@@ -20,7 +20,6 @@ from myutils.mecab import WordSegResult
 from myutils.utils import (
     stringfyerror,
     loadpostsettingwindowmethod,
-    makehtml,
     getlangsrc,
     loadpostsettingwindowmethod_maybe,
     find_or_create_uid,
@@ -35,7 +34,7 @@ from gui.usefulwidget import resizableframeless
 from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.gamemanager.common import startgame
-from gui.dynalang import LDialog, LLabel, LAction
+from gui.dynalang import LLabel, LAction
 
 
 class IconLabelX(LLabel):
@@ -330,7 +329,6 @@ class ButtonBar(QFrame):
 
 class TranslatorWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
-    displaylink = pyqtSignal(str)
     displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(str, bool)
@@ -1021,22 +1019,8 @@ class TranslatorWindow(resizableframeless):
     def displaymessagebox_f(self, string1, string2):
         QMessageBox.information(self, _TR(string1), _TR(string2))
 
-    def displaylink_f(self, link):
-        class linkviewer(LDialog):
-            def __init__(_self, _link) -> None:
-                super().__init__(self)
-                _self.setWindowTitle("打开链接")
-                l = QLabel(makehtml(_link, show=_link))
-                l.setOpenExternalLinks(True)
-                la = QHBoxLayout(_self)
-                la.addWidget(l)
-                _self.exec()
-
-        linkviewer(link)
-
     def initsignals(self):
         self.hotkeyuse_selectprocsignal.connect(gobject.base.createattachprocess)
-        self.displaylink.connect(self.displaylink_f)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
         self.displaymessagebox.connect(self.displaymessagebox_f)
         self.ocr_once_signal.connect(self.ocr_once_function)
