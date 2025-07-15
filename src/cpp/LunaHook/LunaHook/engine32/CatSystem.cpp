@@ -189,17 +189,40 @@ bool InsertCatSystemHook()
                     0x0f, 0x84, XX4,
                     0xb8, 0x40, 0x81, 0x00, 0x00, // 0x8140
                     0x66, 0x3b, 0xf8};
+    BYTE check2[] = {
+        0X6A, 0XFF,
+        0X68, XX4,
+        0X64, 0XA1, 0, 0, 0, 0,
+        0X50,
+        0X81, 0XEC, XX4,
+        0XA1, XX4,
+        0X33, 0XC4,
+        0X89, 0X84, 0X24, XX4,
+        XX, XX, XX,
+        0XA1, XX4,
+        0X33, 0XC4,
+        XX,
+        0X8D, 0X84, 0X24, XX4,
+        0X64, 0XA3, 0, 0, 0, 0,
+        0X8B, 0XF9};
+    hp.type = CODEC_ANSI_BE | USING_SPLIT;
     if (MemDbg::findBytes(check, sizeof(check), addr, addr + 0x100))
     {
       hp.split = stackoffset(1);
       hp.offset = regoffset(edx);
     }
+    else if (MatchPattern(hp.address, check2, sizeof(check2)))
+    {
+      // 結い橋R
+      // https://vndb.org/v5588
+      hp.offset = regoffset(ecx);
+      // hp.split = stackoffset(1);
+      hp.type &= ~USING_SPLIT;
+    }
     else
     {
       hp.split = regoffset(edx);
     }
-    hp.type = CODEC_ANSI_BE | USING_SPLIT;
-    ConsoleOutput("INSERT CatSystem2");
     return NewHook(hp, "CatSystem2");
   }
 }
