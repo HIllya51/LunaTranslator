@@ -1313,7 +1313,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x800BE808, {CODEC_UTF8, 3, 0, 0, PCSG00787, "PCSG00841"}},
     // DYNAMIC CHORD feat.apple-polisher V edition
     {0x80033F6C, {0, 0, 0, 0, FPCSG00912, "PCSG00915"}},
-    {0x8003C61E, {0, 0, 0, 0, FPCSG00912, "PCSG00915"}},
+    {0x8003C61E, {0, 0, 0, 0, FPCSG00912, "PCSG00915"}}, // prolog1
+    {0x80035924, {0, 6, 0, 0, FPCSG00912, "PCSG00915"}}, // prolog2+name2
+    {0x8003548C, {0, 3, 0, 0, FPCSG00912, "PCSG00915"}}, // prolog2
     // フローラル・フローラブ
     {0x80022C9C, {0, 7, 0, 0, PCSG01202, "PCSG01202"}},
     // EVE rebirth terror
