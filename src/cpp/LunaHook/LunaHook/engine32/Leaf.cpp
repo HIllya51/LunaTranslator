@@ -618,41 +618,36 @@ namespace
         0x0f, 0x82, XX4,
         0x80, 0xf9, 0xe0,
         0x0f, 0x83};
-    ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
-      addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStartAddress + range);
+      addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
     if (!addr)
       return false;
-    ConsoleOutput("%x", addr);
     BYTE subespbegin[] = {0x81, 0xEC, XX, 0x01, 0x00, 0x00};
     addr = reverseFindBytes(subespbegin, sizeof(subespbegin), addr - 0x500, addr);
-    ConsoleOutput("%x", addr);
     if (!addr)
       return false;
     HookParam hp;
     hp.address = addr;
-    hp.offset = 0x34;
-    hp.type = USING_STRING;
+    hp.type = USING_STRING | NO_CONTEXT;
 
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      static std::unordered_map<uintptr_t, std::string> last;
-      auto ret = context->stack[0];
-      if (!last.count(ret))
-        last[ret] = "";
-      auto current = std::string((char *)context->stack[13]);
-      if (last[ret] == current)
+      if (context->stack[16] == -1)
         return;
-      last[ret] = current;
-      strReplace(current, "\\k\\n", "\n");
+      auto current = std::string((char *)context->stack[13]);
+      auto spls = re::split(current, R"((\\k|\\s))");
+      current = spls[context->stack[16]];
+      static std::string last;
+      if (last == current)
+        return;
+      last = current;
+
       strReplace(current, "\\n");
       strReplace(current, "\\k");
       strReplace(current, "\\s");
-      current = re::sub(current, R"(\|(.*?)>)", "$1");
-      strReplace(current, "<F60");
-      strReplace(current, "<R");
-      strReplace(current, ">");
+      current = re::sub(current, R"(<R(.*?)\|(.*?)>)", "$1");
+      current = re::sub(current, R"(<[A-Za-z]\d*(.*?)>)", "$1");
       buffer->from(current);
     };
     return NewHook(hp, "kizuato");
