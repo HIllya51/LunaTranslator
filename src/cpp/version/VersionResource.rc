@@ -32,7 +32,7 @@ VS_VERSION_INFO VERSIONINFO
 BEGIN
     BLOCK "StringFileInfo"
     BEGIN
-        BLOCK "000904b0"
+        BLOCK "080404b0"
         BEGIN
             VALUE "Comments", PRODUCT_COMMENTS
             VALUE "CompanyName", PRODUCT_COMPANY_NAME
@@ -47,6 +47,6 @@ BEGIN
     END
     BLOCK "VarFileInfo"
     BEGIN
-        VALUE "Translation", 0x9, 1200
+        VALUE "Translation", 0x0804, 1200
     END
 END
