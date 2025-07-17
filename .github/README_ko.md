@@ -1,6 +1,6 @@
 ### [简体中文](README.md) | [English](README_en.md) | [繁體中文](README_cht.md) | 한국어 | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md) | [Русский язык](README_ru.md)
 
-# LunaTranslator [소프트웨어 다운로드](https://docs.lunatranslator.org/ko/README.html)  
+# LunaTranslator [다운로드 & 실행 & 업데이트](https://docs.lunatranslator.org/ko/README.html)  
 
 > **비주얼 노벨 번역기**
  

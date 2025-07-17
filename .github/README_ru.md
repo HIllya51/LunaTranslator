@@ -1,6 +1,6 @@
 ### [简体中文](README.md) | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md) | Русский язык
 
-# LunaTranslator [Скачать](https://docs.lunatranslator.org/ru/README.html)
+# LunaTranslator [Скачать & Запустить & Обновить](https://docs.lunatranslator.org/ru/README.html)
 
 > **Переводчик визуальных новелл**
 

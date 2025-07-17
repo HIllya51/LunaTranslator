@@ -1,6 +1,6 @@
 ### [简体中文](README.md) | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | Tiếng Việt | [Русский язык](README_ru.md)
 
-# LunaTranslator [Tải phần mềm](https://docs.lunatranslator.org/vi/README.html)  
+# LunaTranslator [Tải xuống & Khởi chạy & Cập nhật](https://docs.lunatranslator.org/vi/README.html)  
 
 > **Công cụ dịch Visual Novel**
 

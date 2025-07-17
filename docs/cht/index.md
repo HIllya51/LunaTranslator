@@ -11,7 +11,7 @@ hero:
   #   alt: LunaTranslator
   actions:
     - theme: brand
-      text: 下載&啟動&更新
+      text: 下載 & 啟動 & 更新
       link: ./README
     - theme: alt
       text: 基本用法
