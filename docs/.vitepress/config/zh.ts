@@ -80,7 +80,7 @@ export const zh = defineConfig({
             {
                 text: '基本的',
                 items: [
-                    { text: '下载&启动&更新', link: '/zh/README' },
+                    { text: '下载 & 启动 & 更新', link: '/zh/README' },
                     { text: '基本用法', link: '/zh/basicuse' },
                     { text: '支持作者', link: '/zh/support' }
                 ]

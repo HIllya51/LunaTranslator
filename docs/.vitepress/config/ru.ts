@@ -80,7 +80,7 @@ export const ru = defineConfig({
             {
                 text: 'Основное',
                 items: [
-                    { text: 'Загрузка, запуск и обновление', link: '/ru/README' },
+                    { text: 'Скачать & Запуск & Обновление', link: '/ru/README' },
                     { text: 'Основное использование', link: '/ru/basicuse' },
                     { text: 'Поддержать автора', link: '/ru/support' }
                 ]
