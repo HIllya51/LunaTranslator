@@ -217,7 +217,7 @@ void PcHooks::hookD3DXFunctions(HMODULE d3dxModule, void *ptr)
 
       HookParam hp;
       hp.address = (*font.vtable)[14];
-      hp.offset = 3;
+      hp.offset = stackoffset(3);
       hp.length_offset = 4;
       hp.type = USING_STRING;
       auto suc = NewHook(hp, "ID3DXFont::DrawTextA");

@@ -77,7 +77,7 @@ jobs:
             pythonversion: '3.7.9' 
           - arch: x64
             target: win10
-            pythonversion: '3.12.10'  
+            pythonversion: '3.12.11'  
     steps:
       - uses: actions/checkout@v4
 
