@@ -44,6 +44,8 @@ class _unique_ptr(c_void_p):
 class cvMat(c_void_p):
     @staticmethod
     def fromQImage(image: QImage):
+        if image.isNull():
+            raise InvalidImage()
         _CVUtils = _DelayLoadCVUtils()
         cvMatFromRGB888 = _CVUtils.cvMatFromRGB888
         cvMatFromRGB888.argtypes = c_void_p, c_int, c_int, c_int

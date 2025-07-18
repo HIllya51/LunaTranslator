@@ -1681,6 +1681,22 @@ namespace
     {
         StringFilter(buffer, TEXTANDLEN("\\n\x81\x40"));
     }
+    void SLPM65555(TextBuffer *buffer, HookParam *hp)
+    {
+        static lru_cache<std::string> last(4);
+        auto s = buffer->strA();
+        auto spls = strSplit(s, "\n");
+        s.clear();
+        for (auto &&_ : spls)
+        {
+            if (last.touch(_))
+                continue;
+            if (!s.empty())
+                s += '\n';
+            s += _;
+        }
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -1688,6 +1704,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ドラゴンクエストⅤ 天空の花嫁
+    {0x745A7C, {DIRECT_READ, 0, 0, 0, SLPM65555, "SLPM-65555"}},
     // プリンセスナイトメア
     {0x3E1960, {DIRECT_READ, 0, 0, 0, SLPM65396, "SLPM-66973"}},
     // Routes PE

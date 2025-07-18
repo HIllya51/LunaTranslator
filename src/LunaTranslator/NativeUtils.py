@@ -326,7 +326,7 @@ def GdiGrabWindow(hwnd):
         ret.append(ptr[:size])
 
     _GdiGrabWindow(hwnd, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb))
-    if len(ret) == 0:
+    if not ret:
         return None
     return ret[0]
 

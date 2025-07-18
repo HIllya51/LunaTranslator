@@ -873,6 +873,7 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65555 | ドラゴンクエストⅤ 天空の花嫁 |
 |  | SLPM-66973 | プリンセスナイトメア |
 |  | SLPS-25727 | Routes PE |
 |  | SLPS-25870 | Drastic Killer (Excellent Box) |

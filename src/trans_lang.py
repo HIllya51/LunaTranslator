@@ -4,7 +4,8 @@ os.chdir(os.path.dirname(__file__))
 sys.path.insert(0, "./LunaTranslator")
 import NativeUtils
 import importlib
-TS=importlib.import_module('translator.chatgpt-3rd-party').TS
+
+TS = importlib.import_module("translator.chatgpt-3rd-party").TS
 from language import Languages
 
 
@@ -69,7 +70,7 @@ if __name__ == "__main__":
             if k not in jsen or jsen[k] == "":
                 a.tgtlang_1 = Languages.fromcode(kk.split(".")[0])
                 print(list(a.translate(k)))
-                jsen[k] = list(a.translate(k))[0]
+                jsen[k] = "".join(list(a.translate(k)))
                 print(k, jsen[k])
                 with open(f"./files/lang/{kk}", "w", encoding="utf8") as ff:
                     ff.write(

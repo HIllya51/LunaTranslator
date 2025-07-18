@@ -49,8 +49,11 @@ std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
 {
     if (checkempty(hwnd, rect))
         return {};
+    bool needcheck = hwnd;
     if (!hwnd)
+    {
         hwnd = GetDesktopWindow();
+    }
     else
     {
         auto dpi = GetDpiForWindow(hwnd); // 链接到yythunks里的实现也是一样的
@@ -68,8 +71,20 @@ std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
     auto bmp = CreateBMP(bm, false);
     if (!bmp)
         return {};
-    if (std::all_of(bmp.value().pixels, bmp.value().pixels + bmp.value().pixelsize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0)))
-        return {};
+    if (needcheck)
+    {
+        bool checkempty = false;
+        if (bmp.value().bitCount == 32)
+        {
+            checkempty = std::all_of((uint32_t *)bmp.value().pixels, (uint32_t *)bmp.value().pixels + bmp.value().pixelsize / 4, std::bind(std::equal_to<uint32_t>(), std::placeholders::_1, *(uint32_t *)bmp.value().pixels));
+        }
+        else
+        {
+            checkempty = std::all_of(bmp.value().pixels, bmp.value().pixels + bmp.value().pixelsize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0));
+        }
+        if (checkempty)
+            return {};
+    }
     return bmp;
 }
 DECLARE_API void GdiGrabWindow(HWND hwnd, void (*cb)(byte *, size_t))
