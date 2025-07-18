@@ -67,6 +67,7 @@ class Languages(_LanguageInfo):
     Dutch = _LanguageInfo("nl", "荷兰语", "Dutch", "Nederlands")
     Czech = _LanguageInfo("cs", "捷克语", "Czech", "Čeština")
     Portuguese = _LanguageInfo("pt", "葡萄牙语", "Portuguese", "Português")
+    BrazilianPortuguese = _LanguageInfo("pt-br", "Português Brasileiro", "Brazilian Portuguese", "Português Brasileiro")
     Hungarian = _LanguageInfo("hu", "匈牙利语", "Hungarian", "Magyar")
     Latin = _LanguageInfo("la", "拉丁语", "Latin language", "Lingua Latīna")
 
@@ -147,6 +148,7 @@ TransLanguages = [
     Languages.Dutch,
     Languages.Czech,
     Languages.Portuguese,
+    Languages.BrazilianPortuguese,
     Languages.Hungarian,
     Languages.Latin,
 ]
