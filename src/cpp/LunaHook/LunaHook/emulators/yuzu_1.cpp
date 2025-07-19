@@ -2586,6 +2586,10 @@ namespace
         CharFilter(buffer, L'\n');
         StringCharReplacer(buffer, TEXTANDLEN(L"<sprite=\"Emoji\" name=\"heart\">"), L'♥');
     }
+    void NewLineCharToSpaceW(TextBuffer *buffer, HookParam *)
+    {
+        CharReplacer(buffer, L'\n', L' ');
+    }
     void NewLineCharFilterW(TextBuffer *buffer, HookParam *)
     {
         CharFilter(buffer, L'\n');
@@ -2638,6 +2642,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Romance MD: Always On Call
+    {0x817BC894, {CODEC_UTF16, 0, 0X14, 0, 0, 0x0100C9C01E960000ull, "1.0.0"}},
     // ToHeart
     {0x8013AF1C, {CODEC_UTF8, 1, 0, 0, 0, 0x01003D9020854000ull, "1.0.0"}},
     {0x8000B92C, {CODEC_UTF8, 1, 0, 0, 0, 0x01003D9020854000ull, "1.0.1"}},
@@ -3150,6 +3156,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8199c95c, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // text1
     {0x81d5c900, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // text2
     {0x820d6324, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // choice
+    // Despera Drops
+    {0x81F7607C, {CODEC_UTF16, 1, 0X14, 0, NewLineCharToSpaceW, 0x010008F020CD8000ull, "1.0.0"}},
     // Dragon Ball Z: Kakarot
     {0x812a8e28, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Main Text
     {0x812a8c90, {CODEC_UTF16, 0, 0, 0, F01008C0016544000, 0x0100EF00134F4000ull, "1.50"}}, // Name

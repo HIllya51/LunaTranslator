@@ -106,10 +106,11 @@ class dialog_savedgame_legacy(QWidget):
         dialog_setting_game(self, k)
 
     def clicked2(self):
+        if not self.table.currentIndex().isValid():
+            return
         if not request_delete_ok(self, "bf4aa76a-41a5-4b07-a095-0c34c616ed2d"):
             return
         try:
-
             idx = self.table.currentIndex().row()
             savehook_new_list.pop(idx)
             self.savelist.pop(idx)
@@ -141,7 +142,9 @@ class dialog_savedgame_legacy(QWidget):
         icon = getExeIcon(get_launchpath(k), cache=True)
         if icon.isNull():
             return
-        return getIconButton(functools.partial(opendirforgameuid, k), qicon=icon, fix=False)
+        return getIconButton(
+            functools.partial(opendirforgameuid, k), qicon=icon, fix=False
+        )
 
     def callback_leuse(self, k, use):
         if use:
@@ -150,7 +153,28 @@ class dialog_savedgame_legacy(QWidget):
             savehook_new_data[k]["launch_method"] = "direct"
 
     KRole = Qt.ItemDataRole.UserRole + 1
+    def fuckswitch(self, k):
+        class __(QWidget):
+                def __init__(self1):
+                    super().__init__()
+                    self1.once = True
 
+                def showEvent(self1, _):
+                    if self1.once:
+                        self1.once = False
+                        self1.layout().invalidate()
+        
+        __w = __()
+        __w.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
+        __l = QHBoxLayout(__w)
+        __l.setContentsMargins(0, 0, 0, 0)
+        __l.addWidget(D_getsimpleswitch(
+                {"1": savehook_new_data[k].get("launch_method") != "direct"},
+                "1",
+                callback=functools.partial(self.callback_leuse, k),
+            )())
+        return __w
+        
     def newline(self, row, k):
         title = QStandardItem(savehook_new_data[k]["title"])
         title.setData(k, self.KRole)
@@ -160,11 +184,7 @@ class dialog_savedgame_legacy(QWidget):
         )
         self.table.setIndexWidget(
             self.model.index(row, 0),
-            D_getsimpleswitch(
-                {"1": savehook_new_data[k].get("launch_method") != "direct"},
-                "1",
-                callback=functools.partial(self.callback_leuse, k),
-            ),
+            functools.partial(self.fuckswitch, k),
         )
         self.table.setIndexWidget(
             self.model.index(row, 1),
@@ -212,6 +232,8 @@ class dialog_savedgame_legacy(QWidget):
 
         showcountgame(self.parent_, len(self.savelist))
         self.table.starttraceir()
+        if savehook_new_list:
+            table.setCurrentIndex(model.index(0, 0))
         bottom = manybuttonlayout(
             (
                 ("开始游戏", self.clicked),

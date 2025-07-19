@@ -21,6 +21,7 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100C9C01E960000 | Romance MD: Always On Call |
 |  | 01003D9020854000 | ToHeart |
 |  | 010096E021CF2000 | VIRTUAL GIRL @ WORLD'S END |
 |  | 01006660233C6000 | レッドベルの慟哭 (The Red Bells Lament) |
@@ -160,6 +161,7 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 |  | 010086C00AF7C000 | Yo-kai Watch 4++ |
 |  | 010079C017B98000 | キューピット・パラサイト -Sweet & Spicy Darling.- |
 |  | 010061A01C1CE000 | DesperaDrops |
+|  | 010008F020CD8000 | Despera Drops |
 |  | 0100EF00134F4000 | Dragon Ball Z: Kakarot |
 |  | 0100EDD018032000 | Harvestella |
 |  | 0100F8A017BAA000 | 千の刃濤、桃花染の皇姫 |
@@ -873,6 +875,10 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65717 | 月は東に日は西に -Operation Sanctuary- |
+|  | SLPM-65641 | うたう♪タンブリング・ダイス ～私たち3人、あ・げ・る～ |
+|  | SLPM-65546 | CROSS+CHANNEL ～To all people～ [限定版] |
+|  | SLPM-62375 | THE 娘育成シミュレーション |
 |  | SLPM-65555 | ドラゴンクエストⅤ 天空の花嫁 |
 |  | SLPM-66973 | プリンセスナイトメア |
 |  | SLPS-25727 | Routes PE |

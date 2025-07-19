@@ -231,10 +231,8 @@ namespace
         auto s = buffer->strAW();
         s = re::sub(s, LR"(\{(.*?)\}\[(.*?)\])", L"$1");
         s = re::sub(s, L"%CG(.*?)%CE");
+        s = re::sub(s, L"%[A-Z]+");
         buffer->fromWA(s);
-        StringFilter(buffer, TEXTANDLEN("%P"));
-        StringFilter(buffer, TEXTANDLEN("%K"));
-        StringFilter(buffer, TEXTANDLEN("%V"));
         StringFilter(buffer, TEXTANDLEN("\x81\xe8"));
         StringReplacer(buffer, TEXTANDLEN("\x84\xa5\x84\xa7"), TEXTANDLEN("\x81\x5c\x81\x5c"));
         StringReplacer(buffer, TEXTANDLEN("\x81\xe1\x81\x5c\x81\x5c\x81\xe2"), TEXTANDLEN("\x81\x5c\x81\x5c\x81\x5c\x81\x5c"));
@@ -1654,6 +1652,10 @@ namespace
         if (*(WORD *)buffer->buff < 0x100)
             buffer->clear();
     }
+    void SLPM62375(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        buffer->from((char *)PCSX2_REG(v1), 1);
+    }
     void SLPS25409(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         WORD _ = PCSX2_REG(v0) | (PCSX2_REG(a0) << 8);
@@ -1676,6 +1678,29 @@ namespace
         if (last == s)
             return buffer->clear();
         last = s;
+    }
+    void SLPM65717(TextBuffer *buffer, HookParam *hp)
+    {
+        static int idx = 0;
+        if ((idx++) % 2 == 0)
+            return buffer->clear();
+        auto s = buffer->strAW();
+        strReplace(s, L"s");
+        strReplace(s, L"n");
+        buffer->fromWA(s);
+    }
+    void SLPM65641(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (all_ascii(s.substr(0, 3)))
+            return buffer->clear();
+        if (s.size() == 3)
+            return buffer->clear();
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        StringFilter(buffer, TEXTANDLEN("\x81\xa1"));
     }
     void SLPS25395(TextBuffer *buffer, HookParam *hp)
     {
@@ -1704,6 +1729,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 月は東に日は西に -Operation Sanctuary-
+    {0x131890, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65717, "SLPM-65717"}},
+    // うたう♪タンブリング・ダイス ～私たち3人、あ・げ・る～
+    {0x122A60, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65641, "SLPM-65641"}},
+    // CROSS+CHANNEL ～To all people～ [限定版]
+    {0x198500, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55170, "SLPM-65546"}},
+    // THE 娘育成シミュレーション
+    {0x132234, {0, 0, 0, SLPM62375, 0, "SLPM-62375"}},
     // ドラゴンクエストⅤ 天空の花嫁
     {0x745A7C, {DIRECT_READ, 0, 0, 0, SLPM65555, "SLPM-65555"}},
     // プリンセスナイトメア
