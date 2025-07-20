@@ -2,7 +2,7 @@
     "local": {
         "args": {
             "thread": 4,
-            "gpu": true,
+            "gpu": false,
             "luid": 0,
             "accfirst": true
         }
