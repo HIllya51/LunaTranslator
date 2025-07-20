@@ -174,7 +174,7 @@ namespace
 		return ret->methodPointer;
 	}
 }
-il2cpploopinfo il2cppfunctions::loop_all_methods(bool show)
+il2cpploopinfo il2cppfunctions::loop_all_methods(std::optional<std::function<void(std::string &)>> show)
 {
 	auto thread = AutoThread();
 	if (!thread.thread)
@@ -187,13 +187,13 @@ il2cpploopinfo il2cppfunctions::loop_all_methods(bool show)
 		if (!s)
 			continue;
 		if (show)
-			ConsoleOutput(s.value().c_str());
+			show.value()(s.value());
 
 		void *iter = nullptr;
 		while (auto method = SafeFptr(il2cpp_class_get_methods)(klass, &iter))
 		{
 			if (show)
-				ConsoleOutput(getmethodinfo(method).c_str());
+				show.value()(getmethodinfo(method));
 			else
 			{
 				if (method->methodPointer)

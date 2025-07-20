@@ -1702,6 +1702,14 @@ namespace
         last = s;
         StringFilter(buffer, TEXTANDLEN("\x81\xa1"));
     }
+    void SLPM67009(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        s = re::sub(s, L"<.*?>");
+        strReplace(s, L"//　");
+        strReplace(s, L"//");
+        buffer->fromWA(s);
+    }
     void SLPS25395(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("\\n\x81\x40"));
@@ -1729,6 +1737,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // サクラ大戦Ⅴ ～さらば愛しき人よ～
+    {0x1F6E550, {DIRECT_READ, 0, 0, 0, SLPM67009, "SLPM-67009"}},
     // 月は東に日は西に -Operation Sanctuary-
     {0x131890, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65717, "SLPM-65717"}},
     // うたう♪タンブリング・ダイス ～私たち3人、あ・げ・る～

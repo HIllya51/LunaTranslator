@@ -423,5 +423,5 @@ namespace monofunctions
 
 	std::optional<std::wstring_view> get_string(void *);
 	void *create_string(std::wstring_view ws);
-	monoloopinfo loop_all_methods(bool show);
+	monoloopinfo loop_all_methods(std::optional<std::function<void(std::string &)>>);
 }

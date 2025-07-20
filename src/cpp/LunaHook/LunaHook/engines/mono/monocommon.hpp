@@ -42,7 +42,18 @@ namespace
     }
 
 }
-
+namespace
+{
+#ifdef _WIN64
+    void Naninovel_UI_RevealableText_SetTextValue_Filter(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        strReplace(s, L"<br>");
+        s = re::sub(s, L"<ruby.*?>(.*?)</ruby>", L"$1");
+        buffer->from(s);
+    }
+#endif
+}
 namespace monocommon
 {
 
@@ -77,6 +88,7 @@ namespace monocommon
         bool Embed = false;
         bool isstring = true;
         const wchar_t *lineSeparator = nullptr;
+        decltype(HookParam::filter_fun) filter_fun = nullptr;
         std::string hookname()
         {
             char tmp[1024];
@@ -97,7 +109,8 @@ namespace monocommon
         hp.address = addr;
         hp.offset = hook.offset;
         hp.lineSeparator = hook.lineSeparator;
-        hp.text_fun = (decltype(hp.text_fun))hook.text_fun;
+        hp.text_fun = hook.text_fun;
+        hp.filter_fun = hook.filter_fun;
         if (hook.isstring)
         {
             hp.type = USING_STRING | CODEC_UTF16 | FULL_STRING;
@@ -152,6 +165,8 @@ namespace monocommon
 #ifdef _WIN64
         // 神託の使徒×終焉の女神
         {"Assembly-CSharp", "", "TextManager", "SetText", 1, 2, nullptr, true, true, LR"(\n)"},
+        // 魔法少女ノ魔女裁判
+        {"Elringus.Naninovel.Runtime", "Naninovel.UI", "RevealableText", "SetTextValue", 1, 2, nullptr, true, true, nullptr, Naninovel_UI_RevealableText_SetTextValue_Filter},
 #endif
     };
     bool hook_mono_il2cpp()

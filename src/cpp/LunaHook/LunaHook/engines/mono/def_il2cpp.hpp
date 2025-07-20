@@ -599,5 +599,5 @@ namespace il2cppfunctions
 								 const char *klassName, const char *name, int argsCount, bool strict);
 	std::optional<std::wstring_view> get_string(void *);
 	void *create_string(std::wstring_view ws);
-	il2cpploopinfo loop_all_methods(bool show);
+	il2cpploopinfo loop_all_methods(std::optional<std::function<void(std::string &)>>);
 }

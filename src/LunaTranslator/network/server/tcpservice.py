@@ -283,7 +283,7 @@ class WSHandler(HandlerBase):
         # 读取WebSocket帧
         opcode, payload = self.receive_frame(self.sock)
 
-        if opcode is None:
+        if not opcode:
             return
 
         if opcode == 0x1:  # 文本帧
@@ -297,6 +297,10 @@ class WSHandler(HandlerBase):
                 else None
             )
             self.send_close_frame(self.sock, status_code, reason)
+
+        elif opcode == 0x9:  # Ping 帧
+            pong_frame = self.build_frame(0xA, payload)
+            self.sock.send(pong_frame)
 
     def send_close_frame(
         self, client_socket: socket.socket, status_code=1000, reason=""

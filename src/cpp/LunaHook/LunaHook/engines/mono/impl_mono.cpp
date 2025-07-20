@@ -202,7 +202,7 @@ namespace
     }
 
 }
-monoloopinfo monofunctions::loop_all_methods(bool show)
+monoloopinfo monofunctions::loop_all_methods(std::optional<std::function<void(std::string &)>> show)
 {
     auto thread = AutoThread();
     if (!thread.thread)

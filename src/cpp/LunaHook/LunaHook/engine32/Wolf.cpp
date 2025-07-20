@@ -979,6 +979,76 @@ namespace GuruGuruSMF4
     return NewHook(hp, "GuruGuruSMF4_2");
   }
 }
+namespace
+{
+  bool wolf8()
+  {
+    BYTE sig[] = {
+        0X8B, 0X54, 0x24, 0x0c,
+        0x8b, 0xc2,
+        0x56,
+        0x57,
+        0x8b, 0xf1,
+        0x8d, 0x78, 0x01,
+        0x0f, 0x1f, 0x00,
+        0x8a, 0x08,
+        0x40,
+        0x84, 0xc9,
+        0x75, 0xf9,
+        0x2b, 0xc7,
+        0x8b, 0xce,
+        0x50,
+        0x52,
+        0xff, 0x74, 0x24, 0x18,
+        0xff, 0x74, 0x24, 0x18,
+        0xe8, XX4,
+        0x5f,
+        0x5e,
+        0xc2, 0x0c, 0x00};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = CODEC_UTF8 | USING_STRING;
+    hp.offset = stackoffset(3);
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      auto s = buffer->strA();
+      s = re::sub(s, R"(\d)");
+      strReplace(s, "G");
+      strReplace(s, "@");
+      strReplace(s, "\"");
+      strReplace(s, " ");
+      strReplace(s, "<");
+      strReplace(s, "-");
+      strReplace(s, "\n");
+      strReplace(s, u8"　");
+      s = re::sub(s, R"([\x01-\x20])");
+      s = re::sub(s, R"(,.*?\])");
+      if (s.empty())
+        return buffer->clear();
+      static std::string last;
+      if (s == last)
+      {
+        return buffer->clear();
+      }
+      if (endWith(last, s))
+      {
+        last = s;
+        return buffer->clear();
+      }
+      if (startWith(s, last))
+      {
+        s = s.substr(last.size());
+      }
+      last = s;
+
+      buffer->from(s);
+    };
+    return NewHook(hp, "wolf8");
+  }
+}
 bool Wolf::attach_function()
 {
   bool succ = false;
@@ -987,6 +1057,7 @@ bool Wolf::attach_function()
   succ |= InsertWolfHook() || wolf_hook56() || _ || wolf7();
 
   succ |= GuruGuruSMF4::h1();
+  succ = succ || wolf8();
   PcHooks::hookGDIFunctions();
   // 奈落の森の花
   trigger_fun = [](LPVOID addr1, hook_context *context)

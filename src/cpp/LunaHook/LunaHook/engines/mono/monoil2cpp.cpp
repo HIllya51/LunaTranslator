@@ -56,7 +56,7 @@ uintptr_t tryfindmonoil2cpp(const char *_dll, const char *_namespace, const char
         return addr;
     return monofunctions::get_method_pointer(_dll, _namespace, _class, _method, paramCoun, strict);
 }
-std::variant<monoloopinfo, il2cpploopinfo> loop_all_methods(bool show)
+std::variant<monoloopinfo, il2cpploopinfo> loop_all_methods(std::optional<std::function<void(std::string &)>> show)
 {
     auto ms = il2cppfunctions::loop_all_methods(show);
     if (ms.size())

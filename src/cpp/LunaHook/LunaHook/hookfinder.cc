@@ -582,27 +582,43 @@ void _SearchForHooks(SearchParam spUser)
 	}
 	else if (jittypedefault == JITTYPE::UNITY)
 	{
-		auto methods = loop_all_methods(false);
-		try
+		if (sp.searchTime == 0 || sp.maxAddress == 0)
 		{
-			*(void **)(trampoline + send_offset) = SendCSharpString<JITTYPE::PC>;
-			std::vector<uintptr_t> addrs;
-			for (auto [_, addr] : std::get<il2cpploopinfo>(methods))
-				addrs.push_back(addr);
-			inlinehookpipeline(addrs);
-		}
-		catch (std::bad_variant_access const &ex)
-		{
-
-			*(void **)(trampoline + send_offset) = SendCSharpString<JITTYPE::UNITY>;
-			auto functions = std::get<monoloopinfo>(methods);
-			std::vector<uintptr_t> addrs;
-			for (auto [addr, func] : functions)
+			std::stringstream cache;
+			auto callback = [&](std::string &s)
 			{
-				addrs.push_back(addr);
-				remapunityjit[addr] = func;
+				cache << s << "\n";
+			};
+			loop_all_methods(callback);
+			auto f = fopen("JIT_ADDR_MAP_DUMP.txt", "w");
+			fprintf(f, cache.str().c_str());
+			fclose(f);
+			return;
+		}
+		else
+		{
+			auto methods = loop_all_methods({});
+			try
+			{
+				*(void **)(trampoline + send_offset) = SendCSharpString<JITTYPE::PC>;
+				std::vector<uintptr_t> addrs;
+				for (auto [_, addr] : std::get<il2cpploopinfo>(methods))
+					addrs.push_back(addr);
+				inlinehookpipeline(addrs);
 			}
-			inlinehookpipeline(addrs);
+			catch (std::bad_variant_access const &ex)
+			{
+
+				*(void **)(trampoline + send_offset) = SendCSharpString<JITTYPE::UNITY>;
+				auto functions = std::get<monoloopinfo>(methods);
+				std::vector<uintptr_t> addrs;
+				for (auto [addr, func] : functions)
+				{
+					addrs.push_back(addr);
+					remapunityjit[addr] = func;
+				}
+				inlinehookpipeline(addrs);
+			}
 		}
 	}
 	else

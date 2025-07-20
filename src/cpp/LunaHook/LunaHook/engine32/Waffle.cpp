@@ -55,7 +55,6 @@ bool waffleoldhook()
       hp.index = 4;
       hp.split = 0x1e8;
       hp.type = DATA_INDIRECT | USING_SPLIT;
-      ConsoleOutput("INSERT WAFFLE");
       found |= NewHook(hp, "WAFFLE");
     }
   return found;
@@ -82,7 +81,6 @@ bool InsertWaffleHook()
     hp.address = addr;
     hp.offset = regoffset(eax);
     hp.type = DATA_INDIRECT;
-    ConsoleOutput("INSERT WAFFLE2");
     return NewHook(hp, "WAFFLE2");
   }
   return false;
@@ -653,6 +651,41 @@ namespace
     return NewHook(hp, "waffle5");
   }
 }
+namespace
+{
+  bool waffle6()
+  {
+    // ヒミツの合宿-スク水ヒップに溺れたい-体験版
+    const uint8_t bytes[] = {
+        0XC5, 0XF9, 0XEF, 0XC0,
+        0XC5, 0XF9, 0X6E, 0XC9,
+        0XC4, 0XE2, 0X71, 0X00, 0XC0,
+        0XC4, 0XE3, 0X7D, 0X18, 0XD0, 0X01,
+        0X03, 0XD0,
+        0X66, 0X90};
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    const uint8_t START[] = {
+        0X55, 0x8b, 0xec,
+        0x51,
+        0x8b, 0x45, 0x08};
+    addr = reverseFindBytes(START, sizeof(START), addr - 0x40, addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(1);
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      CharFilter(buffer, '\n');
+      CharFilter(buffer, '\r');
+      StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    };
+    hp.type = USING_STRING;
+    return NewHook(hp, "waffle6");
+  }
+}
 bool Waffle::attach_function()
 {
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
@@ -660,7 +693,7 @@ bool Waffle::attach_function()
   bool b2 = InsertWaffleHookx();
   bool b3 = hh();
   b3 |= waffle3();
-  auto succ = b1 || b2 || embed || b3 || fantacyfhd();
+  auto succ = b1 || b2 || embed || b3 || fantacyfhd() || waffle6();
   if (!succ)
   {
     succ = waffleoldhook();

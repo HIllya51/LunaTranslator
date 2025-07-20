@@ -875,6 +875,7 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-67009 | サクラ大戦Ⅴ ～さらば愛しき人よ～ |
 |  | SLPM-65717 | 月は東に日は西に -Operation Sanctuary- |
 |  | SLPM-65641 | うたう♪タンブリング・ダイス ～私たち3人、あ・げ・る～ |
 |  | SLPM-65546 | CROSS+CHANNEL ～To all people～ [限定版] |
