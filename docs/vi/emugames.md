@@ -21,6 +21,7 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010087201EEA6000 | Side Kicks! beyond |
 |  | 0100C9C01E960000 | Romance MD: Always On Call |
 |  | 01003D9020854000 | ToHeart |
 |  | 010096E021CF2000 | VIRTUAL GIRL @ WORLD'S END |

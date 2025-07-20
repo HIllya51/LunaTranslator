@@ -2642,6 +2642,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Side Kicks! beyond
+    {0x81A16000, {CODEC_UTF16, 0, 0X14, 0, NewLineCharFilterW, 0x010087201EEA6000ull, nullptr}}, // 1.0.0 & 1.0.2
     // Romance MD: Always On Call
     {0x817BC894, {CODEC_UTF16, 0, 0X14, 0, 0, 0x0100C9C01E960000ull, "1.0.0"}},
     // ToHeart

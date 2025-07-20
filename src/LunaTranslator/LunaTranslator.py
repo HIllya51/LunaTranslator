@@ -788,7 +788,7 @@ class BASEOBJECT(QObject):
             text = parsemayberegexreplace(usedict.get("tts_repair_regex", []), text)
         return text
 
-    def matchwhich(self, dic: dict, res: str, isorigin: bool):
+    def matchwhich(self, dic: "dict[dict]", res: str, isorigin: bool):
 
         for item in dic:
             range_ = item.get("range", 0)
@@ -800,7 +800,7 @@ class BASEOBJECT(QObject):
                     if re.search(retext, res):
                         return item
                 elif item["condition"] == 0:
-                    if re.match(retext, res) or re.search(retext + "$", res):
+                    if re.match(retext, res) or re.search(retext + "[\n\r]*$", res):
                         # 用^xxx|xxx$有可能有点危险
                         return item
             else:
@@ -818,7 +818,9 @@ class BASEOBJECT(QObject):
                         if item["key"] in res:
                             return item
                 elif item["condition"] == 0:
-                    if res.startswith(item["key"]) or res.endswith(item["key"]):
+                    if res.startswith(item["key"]) or res.rstrip("\n\r").endswith(
+                        item["key"]
+                    ):
                         return item
         return None
 
