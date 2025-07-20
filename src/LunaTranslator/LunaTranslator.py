@@ -1260,7 +1260,6 @@ class BASEOBJECT(QObject):
                 lambda: os.startfile(dynamiclink(docs=True)),
             )
             self.settin_ui.show()
-            self.translation_ui.showabout()
         elif version != tuple(globalconfig["load_doc_or_log"]):
             vs = ".".join(str(_) for _ in version)
             if vs.endswith(".0"):
@@ -1270,7 +1269,6 @@ class BASEOBJECT(QObject):
                 _TR("更新记录"),
                 lambda: os.startfile(dynamiclink("ChangeLog")),
             )
-            self.translation_ui.showabout()
 
         globalconfig["load_doc_or_log"] = version
 

@@ -1294,8 +1294,7 @@ class TranslatorWindow(resizableframeless):
         self.tracewindowposthread()
 
         if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 3:
-            if globalconfig.get("lasttime2", 0):
-                self.showabout()
+            self.showabout()
             globalconfig["lasttime2"] = time.time()
 
     def setselectableEx(self):
