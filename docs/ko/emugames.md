@@ -271,6 +271,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 |  | 010031C01F410000 | planetarian～雪圏球～ |
 |  | 0100F0A01F112000 | planetarian～ちいさなほしのゆめ＆雪圏球～ パッケージ版 英文版 |
 |  | 0100C9001E10C000 | 贄の町 |
+|  | 0100D01021376000 | The Town of Nie Iromusubi |
 |  | 0100FB301E70A000 | Honey Vibes |
 |  | 01008A30083E2000 | ワールドエンド・シンドローム |
 |  | 0100A9B01D4AE000 | 果つることなき未来ヨリ |

@@ -3738,6 +3738,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8012441C, {CODEC_UTF16, 8, 0, 0, F0100F0A01F112000, 0x0100F0A01F112000ull, nullptr}}, // 1.0.0 && 1.0.1 // 日文
     // 贄の町
     {0x818B6078, {CODEC_UTF16, 1, 0, 0, F0100C9001E10C000, 0x0100C9001E10C000ull, "1.0.0"}},
+    // The Town of Nie Iromusubi
+    {0x81897CD0, {CODEC_UTF16 | FULL_STRING, 3, 0, 0, F0100C9001E10C000, 0x0100D01021376000ull, "1.0.0"}},
     // Honey Vibes
     {0x81845F80, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100FB301E70A000, 0x0100FB301E70A000ull, "1.0.0"}},
     // ワールドエンド・シンドローム
