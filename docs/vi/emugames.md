@@ -383,6 +383,10 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
 |  | ULJM05962 | 花と乙女に祝福を　～春風の贈り物～　portable |
+|  | ULJM05683 | Starry☆Sky ～in Spring～ Portable |
+|  | ULJM05740 | Starry☆Sky～in Summer～Portable |
+|  | ULJM05809 | Starry☆Sky～in Autumn～Portable |
+|  | ULJM05861 | Starry☆Sky～in Winter～Portable |
 |  | ULJM06207 | Starry☆Sky～After Spring～Portable |
 |  | ULJM06208 | Starry☆Sky～After Summer～Portable |
 |  | ULJM06209 | Starry☆Sky～After Autumn～Portable |
@@ -665,7 +669,6 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 |  | ULJM05969 | うみねこのなく頃に Portable 2 |
 |  | ULJM06259 | 死神稼業～怪談ロマンス～ |
 |  | ULJM06224 | Stellar☆Theater Portable |
-|  | ULJM05683 | Starry☆Sky ～in Spring～ Portable |
 |  | ULJS00563 | 英国探偵ミステリア |
 |  | ULJM06305 | 変態王子と笑わない猫。 |
 |  | ULJM05848 | Are you Alice? |
