@@ -835,5 +835,7 @@
     "是否保留原文？": "Souhaitez-vous conserver le texte original ?",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "La maintenance du logiciel n'est pas facile. Si vous trouvez ce logiciel utile, n'hésitez pas à me soutenir via [Patreon](https://patreon.com/HIllya51). Votre soutien contribuera à la maintenance à long terme du logiciel. Merci ~",
     "不可用": "Non disponible",
-    "巴西": "Brésil"
+    "巴西": "Brésil",
+    "窗口模式缩放": "Mode fenêtré avec zoom",
+    "初始缩放倍数": "Facteur de zoom initial"
 }

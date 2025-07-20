@@ -2,8 +2,8 @@
     "language": "zh-hans",
     "theme": 0,
     "windowPos": {
-        "centerX": 1741.0,
-        "centerY": 876.0,
+        "centerX": 749.0,
+        "centerY": 923.0,
         "width": 998.6666870117188,
         "height": 806.6666870117188,
         "maximized": false
@@ -129,6 +129,8 @@
             "scalingMode": 4,
             "captureMethod": 0,
             "multiMonitorUsage": 0,
+            "initialWindowedScaleFactor": 0,
+            "customInitialWindowedScaleFactor": 1.25,
             "graphicsCardId": {
                 "idx": -1,
                 "vendorId": 0,

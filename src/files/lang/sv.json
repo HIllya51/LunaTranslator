@@ -835,5 +835,7 @@
     "是否保留原文？": "Ska originalet behållas?",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "Programunderhåll är inte enkelt. Om du känner att denna programvara är till hjälp för dig, välkommen att stödja mig via [Patreon](https://patreon.com/HIllya51). Ditt stöd kommer att vara en drivkraft för programmets långsiktiga underhåll. Tack!",
     "不可用": "Ej användbar",
-    "巴西": "Brasilien"
+    "巴西": "Brasilien",
+    "窗口模式缩放": "Fönsterläges skalning",
+    "初始缩放倍数": "initial zoomnivå"
 }

@@ -145,6 +145,34 @@ def makescalew():
         ],
         [
             dict(
+                title="窗口模式缩放",
+                type="grid",
+                grid=(
+                    [
+                        [
+                            "初始缩放倍数",
+                            D_getsimplecombobox(
+                                [
+                                    "自动",
+                                    "1.25x",
+                                    "1.5x",
+                                    "1.75x",
+                                    "2x",
+                                    "3x",
+                                    "自定义",
+                                ],
+                                magpie_config["profiles"][
+                                    globalconfig["profiles_index"]
+                                ],
+                                "initialWindowedScaleFactor",
+                            ),
+                        ],
+                    ]
+                ),
+            ),
+        ],
+        [
+            dict(
                 title="性能",
                 type="grid",
                 grid=(
