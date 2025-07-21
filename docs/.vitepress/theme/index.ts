@@ -26,6 +26,12 @@ export default {
             document.querySelectorAll('.downloadlink').forEach((e) => {
                 e.target = '_blank'
                 e.addEventListener('click', () => {
+
+                    function checkIfMobile() {
+                        const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+                        return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
+                    }
+                    if (checkIfMobile()) return;
                     setTimeout(() => {
                         window.location.href = `/${window.localStorage.currentlang}/support.html`;
                     }, 50);

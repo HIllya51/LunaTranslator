@@ -304,10 +304,10 @@ namespace
     void ULJM06119_filter(TextBuffer *buffer, HookParam *hp)
     {
         std::string s = buffer->strA();
-        s = re::sub(s, R"(/\[[^\]]+./g)");
-        s = re::sub(s, R"(/\\k|\\x|%C|%B)");
-        s = re::sub(s, R"(/\%\d+\#[0-9a-fA-F]*\;)");
-        s = re::sub(s, R"(/\n+)", " ");
+        s = re::sub(s, R"(\[[^\]]+.)");
+        s = re::sub(s, R"(\\k|\\x|%C|%B)");
+        s = re::sub(s, R"(\%\d+\#[0-9a-fA-F]*\;)");
+        s = re::sub(s, R"(\n+)");
         buffer->from(s);
     }
     void ULJM06036_filter(TextBuffer *buffer, HookParam *hp)
