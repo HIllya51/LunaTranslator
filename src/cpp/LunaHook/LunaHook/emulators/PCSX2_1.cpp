@@ -270,7 +270,7 @@ namespace
     void SLPS25870(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
-        StringFilter(buffer, TEXTANDLEN("\n"));
+        CharFilter(buffer, '\n');
     }
     void SLPM66935(TextBuffer *buffer, HookParam *hp)
     {

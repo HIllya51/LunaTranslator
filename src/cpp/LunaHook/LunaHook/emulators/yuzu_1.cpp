@@ -1896,9 +1896,10 @@ namespace
     void F0100D7E01E998000(TextBuffer *buffer, HookParam *hp)
     {
         StringFilterBetween(buffer, TEXTANDLEN(L"<"), TEXTANDLEN(L">"));
-        StringFilter(buffer, TEXTANDLEN(L"　\n"));
-        StringFilter(buffer, TEXTANDLEN(L"\n　"));
-        CharFilter(buffer, L'\n');
+        auto s = buffer->strW();
+        s = re::sub(s, L"<(.*?)>");
+        s = re::sub(s, L"　*\n　*");
+        buffer->from(s);
     }
     void F01007A901E728000(TextBuffer *buffer, HookParam *hp)
     {
@@ -2563,8 +2564,9 @@ namespace
 
     void F010042300C4F6000_1(TextBuffer *buffer, HookParam *)
     {
-        StringFilter(buffer, TEXTANDLEN(L"\n　"));
-        CharFilter(buffer, L'\n');
+        auto s = buffer->strW();
+        s = re::sub(s, L"　*\n　*");
+        buffer->from(s);
     }
     std::wstring F0100D4601FD60000S;
     void F0100D4601FD60000_1(TextBuffer *buffer, HookParam *)
@@ -2577,9 +2579,8 @@ namespace
         auto s = buffer->strW();
         F0100D4601FD60000S = s;
         s = re::sub(s, L"<color=.*?>(.*?)<\\/color>", L"$1");
+        s = re::sub(s, L"　*\n　*");
         buffer->from(s);
-        StringFilter(buffer, TEXTANDLEN(L"\n　"));
-        CharFilter(buffer, L'\n');
     }
     void F01008D20101DE000(TextBuffer *buffer, HookParam *)
     {
@@ -2592,11 +2593,6 @@ namespace
     }
     void NewLineCharFilterW(TextBuffer *buffer, HookParam *)
     {
-        CharFilter(buffer, L'\n');
-    }
-    void F010096E021CF2000(TextBuffer *buffer, HookParam *)
-    {
-        StringFilter(buffer, TEXTANDLEN(L"\n　"));
         CharFilter(buffer, L'\n');
     }
     void NewLineCharFilter(TextBuffer *buffer, HookParam *)
@@ -4042,6 +4038,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x804CC780, {CODEC_UTF8, 0, 0, 0, F010081E0161B2000, 0x010033401FE40000ull, "1.0.0"}},
     // 結合男子
     {0x81C49080, {CODEC_UTF16, 1, 0x14, 0, F0100D7E01E998000, 0x0100DA2019044000ull, "1.0.0"}},
+    {0x81EB2470, {CODEC_UTF16, 0, 0x14, 0, F0100D7E01E998000, 0x0100DA2019044000ull, "1.0.3"}},
+    {0x81EFB590, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100D7E01E998000, 0x0100DA2019044000ull, "1.0.3"}},
     // 古書店街の橋姫 Hashihime of the Old Book Town append
     {0x800670F0, {CODEC_UTF8, 0, 0, 0, F0100EA9015126000, 0x0100EA9015126000ull, "1.0.0"}},
     {0x800B22A4, {CODEC_UTF8, 1, 0, 0, F0100EA9015126000_1, 0x0100EA9015126000ull, "1.0.0"}},
