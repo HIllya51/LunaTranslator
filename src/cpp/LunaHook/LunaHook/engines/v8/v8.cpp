@@ -1,11 +1,15 @@
-#include "v8.h"
+﻿#include "v8.h"
 #include "osversion.hpp"
 int makehttpgetserverinternal();
 const wchar_t *LUNA_CONTENTBYPASS(const wchar_t *_);
+#define MAGIC_SEND "\x01LUNAFROMJS\x01"
+#define MAGIC_RECV "\x01LUNAFROMHOST\x01"
 namespace
 {
-	constexpr auto magicsend = L"\x01LUNAFROMJS\x01";
-	constexpr auto magicrecv = L"\x01LUNAFROMHOST\x01";
+	constexpr auto magicsend = WIDEN(MAGIC_SEND);
+	constexpr auto magicrecv = WIDEN(MAGIC_RECV);
+	constexpr auto magicsend_A = MAGIC_SEND;
+	constexpr auto magicrecv_A = MAGIC_RECV;
 }
 namespace
 {
@@ -328,12 +332,18 @@ namespace
 		};
 		hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
 		{
-			if (strstr((char *)buffer->buff, R"(http://)") != 0)
+			auto checks = {
+				magicsend_A, // 防止煞笔选择这条内容
+				magicrecv_A,
+				R"(http://)",
+				R"(https://)",
+				R"(\\?\)", // 路径
+			};
+			if (std::any_of(checks.begin(), checks.end(), [&](auto str)
+							{ return strstr((char *)buffer->buff, str) != 0; }))
+			{
 				return buffer->clear();
-			if (strstr((char *)buffer->buff, R"(https://)") != 0)
-				return buffer->clear();
-			if (strstr((char *)buffer->buff, R"(\\?\)") != 0)
-				return buffer->clear(); // 过滤路径
+			}
 		};
 		bool succ = false;
 
