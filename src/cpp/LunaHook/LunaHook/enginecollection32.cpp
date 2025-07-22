@@ -91,7 +91,8 @@
 #include "engine32/LunaSoft.h"
 #include "engine32/Unicorn.h"
 #include "engine32/Rejet.h"
-#include "engine32/tamasoft.h"
+#include "engine32/TamaokaSoft.h"
+#include "engine32/TamaSoft.h"
 #include "engine32/AdobeAir.h"
 #include "engine32/DISCOVERY.h"
 #include "engine32/Retouch.h"
@@ -363,7 +364,7 @@ std::vector<ENGINE *> check_engines()
         new Diskdream,
         new solfasys,
         new FrontWing,
-        new tamasoft,
+        new TamaokaSoft,
         new CisLugI,
         new mirage,
         new VALKYRIA,
@@ -460,5 +461,6 @@ std::vector<ENGINE *> check_engines()
         new LizardFactory,
         new Nekotaro,
         new PixelGameMakerMVplayer,
+        new TamaSoft,
     };
 }

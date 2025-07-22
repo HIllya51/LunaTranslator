@@ -46,7 +46,6 @@ bool InsertTanukiHook2()
       XX, 0x9F, 0x88, 0x00, 0x00,
       0x66};
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("Tanuki %p", addr);
   if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr, 0x1000);

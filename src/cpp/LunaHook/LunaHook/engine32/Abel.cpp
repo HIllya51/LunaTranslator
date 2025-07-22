@@ -412,12 +412,10 @@ bool InsertAbelHook()
         return NewHook(hp, "Abel");
       }
   }
-  ConsoleOutput("Abel: failed");
   return false;
 }
 
 bool Abel::attach_function()
 {
-
   return InsertAbelHook();
 }

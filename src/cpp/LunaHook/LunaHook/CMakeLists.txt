@@ -10,7 +10,7 @@ else()
 	set(enginessrc 
 		e_Erekiteru AbogadoPowers DAC BunBun antique T2U Moonstone Aromarie Winters Cage AGE_System 
 		AksysGames RPGMaker Stronger TACTICS Onscripter Sceplay DISCOVERY Erogos godot A98SYS
-		TeethingRing Fizz CoffeeMaker VALKYRIA mirage CisLugI tamasoft FrontWing solfasys
+		TeethingRing Fizz CoffeeMaker VALKYRIA mirage CisLugI TamaokaSoft FrontWing solfasys
 		Diskdream splushwave ransel akatombo GASTRO GSX Aksys ScrPlayer SYSD KISS LucaSystem Jellyfish 
 		BKEngine Overflow SRPGStudio Suika2 FVP LCScript Ohgetsu RPGMakerRGSS3 ONScripterru OVERDRIVE
 		HXP Palette Purple Ruf RUNE Tarte Tomato Sakuradog Troy VitaminSoft UnknownEngine TSSystem
@@ -25,7 +25,8 @@ else()
 		ShinyDaysGame MarineHeart ShinaRio CaramelBox UnisonShift Escude Ryokucha Alice Footy2
 		utawarerumono System4x Abalone Abel 5pb HorkEye XUSE Leaf Nekopack AXL AGS AdobeFlash10
 		FocasLens Tamamo Ages3ResT H_do_C RScript TYPEMOON TAKUYO MixwillSoft MerRouge GROOVER
-		SmartAdv Hug GJ Pinpai ADVSystem NUGSystem LizardFactory Nekotaro PixelGameMakerMVplayer)
+		SmartAdv Hug GJ Pinpai ADVSystem NUGSystem LizardFactory Nekotaro PixelGameMakerMVplayer
+		TamaSoft)
 	set(enginepath "engine32")
 	set(collector "enginecollection32.cpp")
 endif()
