@@ -71,7 +71,7 @@ export const cht = defineConfig({
             }
         },
         nav: [
-            { text: "官方網站", link: "https://lunatranslator.org/" },
+            // { text: "官方網站", link: "https://lunatranslator.org/" },
             { text: "視頻教程", link: "https://space.bilibili.com/592120404/video" },
             { text: "QQ羣", link: "https://qm.qq.com/q/I5rr3uEpi2" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },

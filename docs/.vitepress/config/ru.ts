@@ -72,7 +72,7 @@ export const ru = defineConfig({
             }
         },
         nav: [
-            { text: "Официальный сайт", link: "https://lunatranslator.org/" },
+            // { text: "Официальный сайт", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
             { text: "Поддержать автора", link: "/ru/support" },
         ],

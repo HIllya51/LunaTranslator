@@ -69,7 +69,7 @@ export const ja = defineConfig({
             }
         },
         nav: [
-            { text: "公式サイト", link: "https://lunatranslator.org/" },
+            // { text: "公式サイト", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
             { text: "作者を支援する", link: "/ja/support" },
         ],

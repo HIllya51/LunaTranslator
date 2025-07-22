@@ -7,7 +7,7 @@ export const en = defineConfig({
             copyright: `Released under the <a href="https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE">GPLv3</a> license`
         },
         nav: [
-            { text: "HomePage", link: "https://lunatranslator.org/" },
+            // { text: "HomePage", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
             { text: "Sponsorship", link: "/en/support" },
         ],

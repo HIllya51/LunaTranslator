@@ -72,7 +72,7 @@ export const ko = defineConfig({
             }
         },
         nav: [
-            { text: "공식 웹사이트", link: "https://lunatranslator.org/" },
+            // { text: "공식 웹사이트", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
             { text: "작가 지원", link: "/ko/support" },
         ],
