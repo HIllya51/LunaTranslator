@@ -124,6 +124,7 @@ UILanguages = [
     Languages.Dutch,
     Languages.Czech,
     Languages.Portuguese,
+    Languages.BrazilianPortuguese,
 ]
 
 TransLanguages = [
