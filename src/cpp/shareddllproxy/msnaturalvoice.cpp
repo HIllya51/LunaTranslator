@@ -3,6 +3,7 @@
 #else
 #include "../xpundef/xp_winrt.hpp"
 #endif
+#define SHAREFUNCTION
 #include "../fileversion.hpp"
 #include <speechapi_cxx.h>
 

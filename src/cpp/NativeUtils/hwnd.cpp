@@ -307,12 +307,12 @@ DECLARE_API void OpenFileEx(LPCWSTR file)
         ShellExecuteW(NULL, L"open", file, NULL, NULL, SW_SHOWNORMAL);
     }
 }
-DECLARE_API bool IsDLLBit64(LPCWSTR file)
+__declspec(dllexport) std::optional<WORD> MyGetBinaryType(LPCWSTR file)
 {
     CHandle hFile{CreateFileW(file, GENERIC_READ, FILE_SHARE_READ, 0,
                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0)};
     if (!hFile)
-        return false;
+        return {};
     CHandle hMap{CreateFileMappingW(
         hFile,
         NULL,          // security attrs
@@ -321,7 +321,7 @@ DECLARE_API bool IsDLLBit64(LPCWSTR file)
         0,             // max size - low DWORD
         NULL)};        // mapping name - not used
     if (!hMap)
-        return false;
+        return {};
 
     // next, map the file to our address space
     void *mapAddr = MapViewOfFileEx(
@@ -332,11 +332,19 @@ DECLARE_API bool IsDLLBit64(LPCWSTR file)
         0,             // #bytes to map - 0=all
         NULL);         // suggested map addr
     if (!mapAddr)
-        return false;
+        return {};
     auto peHdr = ImageNtHeader(mapAddr);
-    auto is64 = peHdr->FileHeader.Machine == IMAGE_FILE_MACHINE_AMD64;
+    auto type = peHdr->FileHeader.Machine;
     UnmapViewOfFile(mapAddr);
-    return is64;
+    return type;
+}
+
+DECLARE_API bool IsDLLBit64(LPCWSTR file)
+{
+    auto type = MyGetBinaryType(file);
+    if (!type)
+        return false;
+    return type.value() == IMAGE_FILE_MACHINE_AMD64;
 }
 
 typedef struct

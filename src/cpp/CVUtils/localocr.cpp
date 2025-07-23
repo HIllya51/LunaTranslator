@@ -1,5 +1,4 @@
-﻿#include "../fileversion.hpp"
-#include "dbcrnn.hpp"
+﻿#include "dbcrnn.hpp"
 #ifndef WINXP
 #include <dxgi.h>
 #include <dxgi1_6.h>
@@ -8,6 +7,7 @@
 #include "../xpundef/xp_dxgi.h"
 #include "../xpundef/xp_d3d12.h"
 #endif
+#include "shared.hpp"
 
 inline uint64_t GetLuidKey(LUID luid)
 {
@@ -134,7 +134,6 @@ DECLARE_API void OcrDestroy(OcrLite *pOcrObj)
     if (pOcrObj)
         delete pOcrObj;
 }
-
 static std::optional<std::wstring> SearchDllPath(const std::wstring &dll)
 {
     auto len = SearchPathW(NULL, dll.c_str(), NULL, 0, NULL, NULL);
@@ -144,6 +143,11 @@ static std::optional<std::wstring> SearchDllPath(const std::wstring &dll)
     buff.resize(len);
     len = SearchPathW(NULL, dll.c_str(), NULL, len, buff.data(), NULL);
     if (!len)
+        return {};
+    auto type = MyGetBinaryType(buff.c_str());
+    if (!type)
+        return {};
+    if (type.value() == IMAGE_FILE_MACHINE_ARM64)
         return {};
     return buff;
 }

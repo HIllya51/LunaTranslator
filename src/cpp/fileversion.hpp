@@ -1,6 +1,8 @@
-
+#ifndef SHAREFUNCTION
+    #define SHAREFUNCTION __declspec(dllexport)
+#endif
 using version_t = std::tuple<WORD, WORD, WORD, WORD>;
-std::optional<version_t> QueryVersion(const std::wstring& exe)
+SHAREFUNCTION std::optional<version_t> QueryVersion(const std::wstring& exe)
 {
 
     DWORD dwHandle;
