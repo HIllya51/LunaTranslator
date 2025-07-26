@@ -156,7 +156,7 @@ struct hook_context
 		return stack[idx];
 #endif
 	}
-	constexpr uintptr_t &argof_thiscall(int idx)
+	constexpr uintptr_t &argof_thiscall(int idx = 0)
 	{
 #ifdef _WIN64
 		return argof(idx + 1);

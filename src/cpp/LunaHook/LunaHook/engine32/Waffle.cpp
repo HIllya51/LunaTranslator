@@ -686,6 +686,46 @@ namespace
     return NewHook(hp, "waffle6");
   }
 }
+namespace
+{
+  bool silklip()
+  {
+    // 魔法の少女シルキーリップ～三人の女王候補～
+    const uint8_t bytes[] = {
+        0xc7, 0x45, 0xfc, 0x06, 0x00, 0x00, 0x00,
+        0xe8, XX4, //->std::string::assign
+        0x6a, 0xff,
+        XX,
+        0x8d, XX, XX4,
+        XX,
+        0x8d, 0x4d, XX,
+        0xe8, XX4, //->std::string::assign
+        0x6a, 0xff,
+        XX,
+        0x8d, XX, XX4,
+        XX,
+        0x8d, 0x4d, XX,
+        0xe8, XX4 //->std::string::assign
+    };
+    auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.offset = regoffset(edx);
+    hp.type = USING_STRING | NO_CONTEXT;
+    hp.address = addr + 7 + 5;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      CharFilter(buffer, '\n');
+      CharFilter(buffer, '\r');
+      StringFilter(buffer, TEXTANDLEN("\x81\x40"));
+    };
+    auto succ = NewHook(hp, "waffle7");
+    hp.address = addr + 7 + 5 + 2 + 1 + 6 + 1 + 3 + 5;
+    succ &= NewHook(hp, "waffle7");
+    return succ;
+  }
+}
 bool Waffle::attach_function()
 {
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
@@ -693,7 +733,7 @@ bool Waffle::attach_function()
   bool b2 = InsertWaffleHookx();
   bool b3 = hh();
   b3 |= waffle3();
-  auto succ = b1 || b2 || embed || b3 || fantacyfhd() || waffle6();
+  auto succ = b1 || b2 || embed || b3 || fantacyfhd() || waffle6() || silklip();
   if (!succ)
   {
     succ = waffleoldhook();

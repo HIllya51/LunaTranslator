@@ -226,6 +226,8 @@ class WSHandler(HandlerBase):
             msg = self.__readstr()
             if not msg:
                 break
+            if isinstance(msg, bool):
+                continue
             self.onmessage(msg)
         self.sock.close()
 
@@ -301,6 +303,7 @@ class WSHandler(HandlerBase):
         elif opcode == 0x9:  # Ping 帧
             pong_frame = self.build_frame(0xA, payload)
             self.sock.send(pong_frame)
+            return True
 
     def send_close_frame(
         self, client_socket: socket.socket, status_code=1000, reason=""

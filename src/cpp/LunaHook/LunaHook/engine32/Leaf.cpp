@@ -822,7 +822,41 @@ namespace
     return NewHook(hp, "toheartpse");
   }
 }
+namespace
+{
+  //[000128][Leaf] Filsnown ～光と刻～ Windows版（猪名川でいこう!!付属）
+  bool filsnown()
+  {
+    BYTE sig[] = {
+        0x8b, 0x45, 0x14,
+        0x3d, 0x40, 0x81, 0x00, 0x00,
+        0x0f, 0x84, XX4,
+        0x83, 0xf8, 0x20,
+        0x0f, 0x86, XX4,
+        0x3d, 0xd0, 0x00, 0x00, 0x00,
+        0x73, XX,
+        0xC7, 0x45, XX, 0x01, 0x00, 0x00, 0x00,
+        0x8b, 0x04, 0x85, XX4,
+        0x89, 0x45, XX,
+        0xeb, XX,
+        0x3d, 0x40, 0x81, 0x00, 0x00,
+        0x72, XX,
+        0x3d, 0xa0, 0x83, 0x00, 0x00,
+        0x73, XX};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(4);
+    hp.type = USING_CHAR | CODEC_ANSI_BE;
+    return NewHook(hp, "filsnown");
+  }
+}
 bool Leaf::attach_function()
 {
-  return InsertLeafHook() || activehook() || InsertAquaplusHooks() || kizuato() || wa2special() || toheartpse();
+  return InsertLeafHook() || activehook() || InsertAquaplusHooks() || kizuato() || wa2special() || toheartpse() || filsnown();
 }

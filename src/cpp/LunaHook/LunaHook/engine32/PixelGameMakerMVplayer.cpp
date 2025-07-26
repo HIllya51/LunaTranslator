@@ -80,7 +80,7 @@ namespace cocos2d
       hp.text_fun = [](hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
       {
         char *result; // eax
-        auto _this = s->argof_thiscall(0);
+        auto _this = s->argof_thiscall();
         result = (char *)_this + 28;
         if (*((DWORD *)_this + 12) >= 0x10u)
           return buffer->from(*(char **)result);

@@ -27,7 +27,7 @@ bool TeethingRing_attach_function()
   hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto _this = (void *)context->argof_thiscall(0);
+    auto _this = (void *)context->argof_thiscall();
     auto a2 = (DWORD *)context->argof(1);
 
     auto v2 = *a2;
@@ -86,7 +86,7 @@ bool TeethingRing_attach_function2()
   hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    auto _this = (DWORD *)context->argof_thiscall(0);
+    auto _this = (DWORD *)context->argof_thiscall();
     auto v13 = _this[6];
     auto v14 = _this + 1;
     DWORD *v16;
