@@ -3607,6 +3607,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x816b61c0, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F010027401A2A2000<false>, 0x010027401A2A2000ull, "1.0.0"}}, // dictionary
     {0x815fe594, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F010027401A2A2000<true>, 0x010027401A2A2000ull, "1.0.0"}},  // choices
     {0x81836E0C, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x010027401A2A2000ull, "1.0.1"}},
+    // 泡沫のユークロニア trail
+    {0x81A661D8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}},
+    {0x81A66EC8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}}, // prolog
     // リトルバスターズ！Converted Edition
     {0x800A97C8, {CODEC_UTF8, 9, 0, 0, F0100943010310000, 0x0100943010310000ull, "1.0.0"}},
     // GrimGrimoire OnceMore
