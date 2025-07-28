@@ -101,9 +101,9 @@ class OCR(baseocr):
         return response
 
     def _gptlike_createsys(self, usekey, tempk):
-
+        default = "Recognize the {srclang} text in the picture."
         template = self.config[tempk] if self.config[usekey] else None
-        template = template if template else self.argstype[tempk]["placeholder"]
+        template = template if template else default
         template = template.replace("{srclang}", self.srclang)
         isocrtranslate = "{tgtlang}" in template
         template = template.replace("{tgtlang}", self.tgtlang)

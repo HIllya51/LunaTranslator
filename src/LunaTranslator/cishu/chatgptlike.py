@@ -59,9 +59,9 @@ class chatgptlike(cishubase):
         return response
 
     def _gptlike_createsys(self, usekey, tempk):
-
+        default = "You are a professional dictionary assistant whose task is to help users search for information such as the meaning, pronunciation, etymology, synonyms, antonyms, and example sentences of {srclang} words. \nYou should be able to handle queries in multiple languages and provide in-depth information or simple definitions according to user needs. You should reply in {tgtlang}.\nThe user may provide the sentence in which the word is located. If the user provides the sentence in which the word is located, the semantics of the word in the sentence should also be analyzed."
         template = self.config[tempk] if self.config[usekey] else None
-        template = template if template else self.argstype[tempk]["placeholder"]
+        template = template if template else default
         template = template.replace("{srclang}", self.srclang)
         template = template.replace("{tgtlang}", self.tgtlang)
         return template
