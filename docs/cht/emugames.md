@@ -21,6 +21,7 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010008702297A000 | アルカナ・ファミリア Rinato (Arcana Famiglia Rinato) |
 |  | 010087201EEA6000 | Side Kicks! beyond |
 |  | 0100C9C01E960000 | Romance MD: Always On Call |
 |  | 01003D9020854000 | ToHeart |

@@ -49,9 +49,9 @@ class TS(basetrans):
         return gpt_dict_raw_text
 
     def _gpt_common_parse_context_2(
-        self, messages, context, contextnum, query, ja=False, native=False
+        self, messages: list, context, contextnum, query, ja=False, native=False
     ):
-        msgs = []
+        msgs: "list[str]" = []
         self._gpt_common_parse_context(msgs, context, contextnum, query)
         __ja, __zh = [], []
         for i, _ in enumerate(msgs):
@@ -173,7 +173,7 @@ class TS(basetrans):
             )
 
         except requests.RequestException as e:
-            raise ValueError("连接到Sakura API超时：" + self.api_url)
+            raise ValueError("无法连接Sakura API，可能未正确部署Sakura模型")
         try:
             yield output.json()
         except:
@@ -208,7 +208,7 @@ class TS(basetrans):
                 stream=True,
             )
         except requests.RequestException:
-            raise ValueError("连接到Sakura API超时：" + self.api_url)
+            raise ValueError("无法连接Sakura API，可能未正确部署Sakura模型")
 
         if (not output.headers["Content-Type"].startswith("text/event-stream")) and (
             output.status_code != 200

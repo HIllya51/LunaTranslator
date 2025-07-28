@@ -2638,6 +2638,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // アルカナ・ファミリア Rinato (Arcana Famiglia Rinato)
+    {0x8189483C, {CODEC_UTF16, 0, 0X14, 0, F010043901E972000, 0x010008702297A000ull, "1.0.0"}},
     // Side Kicks! beyond
     {0x81A16000, {CODEC_UTF16, 0, 0X14, 0, NewLineCharFilterW, 0x010087201EEA6000ull, nullptr}}, // 1.0.0 & 1.0.2
     // Romance MD: Always On Call

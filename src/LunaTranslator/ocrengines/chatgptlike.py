@@ -1,4 +1,4 @@
-from ocrengines.baseocrclass import baseocr
+from ocrengines.baseocrclass import baseocr, OCRResult
 import base64
 from language import Languages
 from myutils.utils import (
@@ -100,15 +100,22 @@ class OCR(baseocr):
         )
         return response
 
+    def _gptlike_createsys(self, usekey, tempk):
+
+        template = self.config[tempk] if self.config[usekey] else None
+        template = template if template else self.argstype[tempk]["placeholder"]
+        template = template.replace("{srclang}", self.srclang)
+        isocrtranslate = "{tgtlang}" in template
+        template = template.replace("{tgtlang}", self.tgtlang)
+        return template, isocrtranslate
+
     def ocr(self, imagebinary):
         extrabody, extraheader = getcustombodyheaders(
             self.config.get("customparams"), **locals()
         )
-        if self.config["use_custom_prompt"]:
-            prompt = self.config["custom_prompt"]
-        else:
-            prompt = "Recognize the {} text in the picture.".format(self.srclang)
-
+        prompt, isocrtranslate = self._gptlike_createsys(
+            "use_custom_prompt", "custom_prompt"
+        )
         base64_image = base64.b64encode(imagebinary).decode("utf-8")
 
         if self.config["apiurl"].startswith(
@@ -119,4 +126,7 @@ class OCR(baseocr):
             return self.ocr_mistral(prompt, base64_image, extrabody, extraheader)
         else:
             response = self.ocr_normal(prompt, base64_image, extrabody, extraheader)
-        return common_parse_normal_response(response, self.config["apiurl"])
+        return OCRResult(
+            texts=common_parse_normal_response(response, self.config["apiurl"]),
+            isocrtranslate=isocrtranslate,
+        )

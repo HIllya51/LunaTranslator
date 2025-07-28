@@ -1,33 +1,52 @@
 from myutils.config import savehook_new_data, globalconfig
-import gobject
+import gobject, json
 from qtsymbols import *
 from myutils.utils import postusewhich, case_insensitive_replace
 from myutils.config import get_launchpath
 from myutils.hwnd import getExeIcon
-from gui.inputdialog import postconfigdialog_
+from gui.inputdialog import postconfigdialog_1
+
+
+class postconfigdialog_2(postconfigdialog_1):
+    def __init__(self, parent, configdict, title):
+        super().__init__(
+            parent,
+            configdict,
+            title,
+            ["原文", "翻译", "注释"],
+            dictkeys=["src", "dst", "info"],
+        )
+        self._parseclptext = self.table.parsepastetext
+        self.table.parsepastetext = self.parsepastetext
+
+    def parsepastetext(self, text):
+        try:
+            ls = json.loads(text)
+            __ = []
+            for _ in ls:
+                __.append(list(_[__1] for __1 in ("src", "dst", "info")))
+            return __
+        except:
+            return self._parseclptext(text)
 
 
 class Process:
     @staticmethod
     def get_setting_window(parent_window):
-        return postconfigdialog_(
+        return postconfigdialog_2(
             parent_window,
             globalconfig["noundictconfig_ex"],
             "专有名词翻译",
-            ["原文", "翻译", "注释"],
-            dictkeys=["src", "dst", "info"],
         )
 
     @staticmethod
     def get_setting_window_gameprivate(parent_window, gameuid):
         if "noundictconfig_ex" not in savehook_new_data[gameuid]:
             savehook_new_data[gameuid]["noundictconfig_ex"] = []
-        postconfigdialog_(
+        postconfigdialog_2(
             parent_window,
             savehook_new_data[gameuid]["noundictconfig_ex"],
             "专有名词翻译_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
-            ["原文", "翻译", "注释"],
-            dictkeys=["src", "dst", "info"],
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
     @property

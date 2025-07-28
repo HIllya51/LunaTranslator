@@ -175,6 +175,13 @@ class commonbase(multikeyhelper):
             return {}
 
     @property
+    def argstype(self):
+        try:
+            return self._setting_dict[self.typename]["argstype"]
+        except:
+            return {}
+
+    @property
     def rawconfig(self):
         try:
             return self._setting_dict[self.typename]["args"]

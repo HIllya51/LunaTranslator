@@ -634,9 +634,11 @@ class autoinitdialog(LDialog):
             if not isinstance(dd[key], str):
                 return
             lineW = QLineEdit(dd[key])
+            lineW.setPlaceholderText(line.get("placeholder", ""))
             self.regist[key] = lineW.text
         elif line["type"] == "multiline":
             lineW = QPlainTextEdit(dd[key])
+            lineW.setPlaceholderText(line.get("placeholder", ""))
             self.regist[key] = lineW.toPlainText
         elif line["type"] == "file":
             __temp = {"k": dd[key]}
@@ -834,8 +836,7 @@ class autoinitdialog(LDialog):
             self.show()
 
 
-@Singleton
-class postconfigdialog_(LDialog):
+class postconfigdialog_1(LDialog):
     def closeEvent(self, a0: QCloseEvent) -> None:
         self.setFocus()
         self.apply()
@@ -926,6 +927,11 @@ class postconfigdialog_(LDialog):
         formLayout.addLayout(button)
         self.resize(QSize(600, 400))
         self.show()
+
+
+@Singleton
+class postconfigdialog_(postconfigdialog_1):
+    pass
 
 
 def postconfigdialog(parent, configdict, title, header):

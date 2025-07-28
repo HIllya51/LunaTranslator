@@ -259,7 +259,8 @@
             "custom_prompt": {
                 "name": "自定义_prompt",
                 "type": "multiline",
-                "refswitch": "use_custom_prompt"
+                "refswitch": "use_custom_prompt",
+                "placeholder": "Recognize the {srclang} text in the picture."
             },
             "use_custom_prompt": {
                 "type": "switch_ref",

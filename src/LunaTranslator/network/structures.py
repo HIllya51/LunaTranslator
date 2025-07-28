@@ -48,7 +48,7 @@ class CaseInsensitiveDict(MutableMapping):
         # key alongside the value.
         self._store[key.lower()] = (key, value)
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: str) -> str:
         return self._store[key.lower()][1]
 
     def __delitem__(self, key):

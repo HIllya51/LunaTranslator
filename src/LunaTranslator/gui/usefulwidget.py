@@ -511,16 +511,20 @@ class TableViewW(DelayLoadTableView):
         output.close()
         NativeUtils.ClipBoard.text = csv_str
 
+    def parsepastetext(self, string) -> list:
+        csv_file = io.StringIO(string)
+        csv_reader = csv.reader(csv_file, delimiter="\t")
+        my_list = list(csv_reader)
+        csv_file.close()
+        return my_list
+
     def pastetable(self):
         current = self.currentIndex()
         if not current.isValid():
             return
         string = NativeUtils.ClipBoard.text
         try:
-            csv_file = io.StringIO(string)
-            csv_reader = csv.reader(csv_file, delimiter="\t")
-            my_list = list(csv_reader)
-            csv_file.close()
+            my_list = self.parsepastetext(string)
             if len(my_list) == 1 and len(my_list[0]) == 1:
                 self.setindexdata(current, my_list[0][0])
                 return

@@ -1298,7 +1298,7 @@
                 "frequency_penalty_use": 0,
                 "reasoning_effort": "medium",
                 "reasoning_effort_use": false,
-                "user_user_prompt_1": "{sentence}\nword:{word}",
+                "user_user_prompt_1": "",
                 "use_user_user_prompt": false,
                 "s": "",
                 "s2": "",
@@ -1326,6 +1326,8 @@
                     "rank": -1
                 },
                 "user_user_prompt_1": {
+                    "placeholder": "{sentence}\nword:{word}",
+                    "type": "multiline",
                     "name": "自定义_user message",
                     "refswitch": "use_user_user_prompt",
                     "rank": 5.1
@@ -1379,7 +1381,8 @@
                     "type": "multiline",
                     "refswitch": "使用自定义promt",
                     "name": "自定义_system prompt",
-                    "rank": 5
+                    "rank": 5,
+                    "placeholder": "You are a professional dictionary assistant whose task is to help users search for information such as the meaning, pronunciation, etymology, synonyms, antonyms, and example sentences of {srclang} words. \nYou should be able to handle queries in multiple languages and provide in-depth information or simple definitions according to user needs. You should reply in {tgtlang}.\nThe user may provide the sentence in which the word is located. If the user provides the sentence in which the word is located, the semantics of the word in the sentence should also be analyzed."
                 },
                 "Temperature": {
                     "type": "spin",

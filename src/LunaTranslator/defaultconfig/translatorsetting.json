@@ -369,7 +369,7 @@
 			"frequency_penalty_use": false,
 			"reasoning_effort": "medium",
 			"reasoning_effort_use": false,
-			"user_user_prompt": "{sentence}",
+			"user_user_prompt": "",
 			"use_user_user_prompt": false,
 			"s": "",
 			"s2": "",
@@ -410,7 +410,8 @@
 			"user_user_prompt": {
 				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
-				"rank": 5.1
+				"rank": 5.1,
+				"placeholder": "{sentence}"
 			},
 			"s": {
 				"type": "split",
@@ -479,7 +480,8 @@
 				"type": "multiline",
 				"refswitch": "使用自定义promt",
 				"name": "自定义_system prompt",
-				"rank": 5
+				"rank": 5,
+				"placeholder": "You are a translator. Please help me translate the following {srclang} text into {tgtlang}. You should only tell me the translation result without any additional explanations."
 			},
 			"附带上下文个数": {
 				"appends": [
