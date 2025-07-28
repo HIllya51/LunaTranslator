@@ -24,7 +24,6 @@ from myutils.utils import (
     dynamiclink,
     find_or_create_uid,
     parsekeystringtomodvkcode,
-    checkisusingwine,
     checkpostusing,
     checkmd5reloadmodule,
     stringfyerror,
@@ -1262,7 +1261,7 @@ class BASEOBJECT(QObject):
                 lambda: os.startfile(dynamiclink(docs=True)),
             )
             self.settin_ui.show()
-        elif version != tuple(globalconfig["load_doc_or_log"]):
+        elif 0:  # version != tuple(globalconfig["load_doc_or_log"]):
             vs = ".".join(str(_) for _ in version)
             if vs.endswith(".0"):
                 vs = vs[:-2]

@@ -632,11 +632,13 @@
         return div
     }
     function clearparent(ele) {
+        needremoves = []
         ele.parentNode.parentNode.childNodes.forEach((e) => {
             if (e.id != ele.parentNode.id) {
-                e.remove()
+                needremoves.push(e)
             }
         })
+        needremoves.forEach((e) => { e.remove() })
         ele.parentNode.parentNode.parentNode.childNodes.forEach((e) => {
             if (e.id && (e.id != ele.parentNode.parentNode.id)) {
                 e.innerHTML = ""

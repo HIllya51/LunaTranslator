@@ -156,7 +156,7 @@ class dataget:
     def _createqfont(self, texttype: TextType, klass=None):
         fm, fs, bold = self._getfontinfo(texttype)
         if klass:
-            data: dict = globalconfig["fanyi"][klass].get("privatefont", {})
+            data: dict = globalconfig["fanyi"].get(klass, {}).get("privatefont", {})
             if (not data.get("fontfamily_df", True)) and ("fontfamily" in data):
                 fm = data["fontfamily"]
             if (not data.get("fontsize_df", True)) and ("fontsize" in data):

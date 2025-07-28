@@ -807,7 +807,7 @@ class TextBrowser(QWidget, dataget):
         else:
             fh = globalconfig["lineheightstrans"]
             if klass:
-                data = globalconfig["fanyi"][klass].get("privatefont", {})
+                data = globalconfig["fanyi"].get(klass, {}).get("privatefont", {})
                 if not data.get("lineheight_df", True):
                     fh = data
         for i in range(b1, b2):
