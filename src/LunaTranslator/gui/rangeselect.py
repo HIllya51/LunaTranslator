@@ -366,28 +366,27 @@ class rangeselect(QMainWindow):
         if event.button() == Qt.MouseButton.LeftButton:
             self.end_point = self.start_point = event.pos()
             self.is_drawing = True
-            # <<< MODIFIED: 使用 event.globalPosition() 获取绝对屏幕坐标 >>>
-            self.__start = self.__end = event.globalPosition().toPoint()
+            self.__start = self.__end = windows.GetCursorPos()
 
     def mouseMoveEvent(self, event: QMouseEvent):
 
         if not self.is_drawing:
             self.is_drawing = True
             self.end_point = self.start_point = event.pos()
-            self.__start = self.__end = event.globalPosition().toPoint()
+            self.__start = self.__end = windows.GetCursorPos()
         else:
             self.end_point = event.pos()
-            self.__end = event.globalPosition().toPoint()
+            self.__end = windows.GetCursorPos()
             self.update()
 
     def getRange(self):
         if self.__start is None:
             self.__start = self.__end
         x1, y1, x2, y2 = (
-            self.__start.x(),
-            self.__start.y(),
-            self.__end.x(),
-            self.__end.y(),
+            self.__start.x,
+            self.__start.y,
+            self.__end.x,
+            self.__end.y,
         )
 
         x1, x2 = min(x1, x2), max(x1, x2)
@@ -400,8 +399,7 @@ class rangeselect(QMainWindow):
             return
         self.once = False
         self.end_point = event.pos()
-        # <<< MODIFIED: 使用 event.globalPosition() 确保坐标正确 >>>
-        self.__end = event.globalPosition().toPoint()
+        self.__end = windows.GetCursorPos()
         self.close()
         try:
             self.callback(self.getRange())
