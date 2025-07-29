@@ -76,7 +76,7 @@ bool InsertAtelierKaguya2Hook()
   hp.offset = regoffset(eax);
   hp.type = USING_STRING | EMBED_AFTER_OVERWRITE | EMBED_ABLE | EMBED_DYNA_SJIS;
   hp.embed_hook_font = F_TextOutA;
-  hp.filter_fun = NewLineCharToSpaceFilterA;
+  hp.filter_fun = NewLineCharToSpaceA;
   ConsoleOutput("INSERT Atelier KAGUYA2");
 
   return NewHook(hp, "Atelier KAGUYA2");
@@ -112,7 +112,7 @@ bool InsertAtelierKaguya3Hook()
   hp.address = addr;
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
-  hp.filter_fun = NewLineCharToSpaceFilterA;
+  hp.filter_fun = NewLineCharToSpaceA;
   ConsoleOutput("INSERT Atelier KAGUYA3");
 
   return NewHook(hp, "Atelier KAGUYA3");
@@ -152,7 +152,7 @@ bool InsertAtelierKaguya4Hook()
   hp.address = addr + addr_offset;
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
-  hp.filter_fun = NewLineCharToSpaceFilterA;
+  hp.filter_fun = NewLineCharToSpaceA;
   ConsoleOutput("INSERT Atelier KAGUYA4");
 
   return NewHook(hp, "Atelier KAGUYA4");
@@ -187,7 +187,7 @@ bool InsertAtelierKaguya5Hook()
   hp.address = addr + 3;
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
-  hp.filter_fun = NewLineCharToSpaceFilterA;
+  hp.filter_fun = NewLineCharToSpaceA;
   ConsoleOutput("INSERT Atelier KAGUYA5");
 
   return NewHook(hp, "Atelier KAGUYA5");

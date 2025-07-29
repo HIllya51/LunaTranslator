@@ -362,7 +362,7 @@ namespace
     hp.address = addr;
     hp.type = USING_STRING | NO_CONTEXT;
     hp.text_fun = SpecialHook5pb3;
-    hp.filter_fun = NewLineCharToSpaceFilterA; // replace '\n' by ' '
+    hp.filter_fun = NewLineCharToSpaceA; // replace '\n' by ' '
     ConsoleOutput("INSERT 5pb3");
 
     // GDI functions are not used by 5pb games anyway.

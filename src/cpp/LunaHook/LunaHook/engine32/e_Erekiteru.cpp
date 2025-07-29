@@ -52,7 +52,7 @@ bool e_Erekiteru::attach_function()
                  thislength - lastlength);
     lastlength = thislength;
   };
-  hp.filter_fun = NewLineCharToSpaceFilterA;
+  hp.filter_fun = NewLineCharToSpaceA;
   hp.type = USING_STRING;
   return NewHook(hp, "e_Erekiteru");
 }

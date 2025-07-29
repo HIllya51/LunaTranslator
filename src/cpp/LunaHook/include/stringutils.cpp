@@ -54,21 +54,13 @@ inline std::vector<StringT> strSplit_impl(const StringT &s, const StringT &delim
 template <class StringT>
 inline bool endWith_impl(const StringT &s, const StringT &s2)
 {
-  if ((s.size() >= s2.size()) && (s.substr(s.size() - s2.size(), s2.size()) == s2))
-  {
-    return true;
-  }
-  return false;
+  return (s.size() >= s2.size()) && (s.substr(s.size() - s2.size(), s2.size()) == s2);
 }
 
 template <class StringT>
 inline bool startWith_impl(const StringT &s, const StringT &s2)
 {
-  if ((s.size() >= s2.size()) && (s.substr(0, s2.size()) == s2))
-  {
-    return true;
-  }
-  return false;
+  return (s.size() >= s2.size()) && (s.substr(0, s2.size()) == s2);
 }
 
 bool all_ascii(const char *s, int maxsize) { return all_ascii_impl<char>(s, maxsize); }

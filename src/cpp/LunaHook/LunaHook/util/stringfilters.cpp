@@ -115,10 +115,11 @@ inline void StringReplacer_impl(CharT *str, size_t *size, const CharT *src, size
   *size = len * sizeof(CharT);
 }
 
-void NewLineCharToSpaceFilterA(TextBuffer *buffer, HookParam *)
-{
-  CharReplacer(buffer, '\n', ' ');
-}
+void NewLineCharFilterA(TextBuffer *buffer, HookParam *) { CharFilter(buffer, '\n'); }
+void NewLineCharFilterW(TextBuffer *buffer, HookParam *) { CharFilter(buffer, L'\n'); }
+void NewLineCharToSpaceA(TextBuffer *buffer, HookParam *) { CharReplacer(buffer, '\n', ' '); }
+void NewLineCharToSpaceW(TextBuffer *buffer, HookParam *) { CharReplacer(buffer, L'\n', L' '); }
+
 void all_ascii_Filter(TextBuffer *buffer, HookParam *)
 {
   if (all_ascii(buffer->viewA()))

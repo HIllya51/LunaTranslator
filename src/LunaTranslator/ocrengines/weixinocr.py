@@ -1,6 +1,5 @@
 import gobject, os, uuid
 from ocrengines.baseocrclass import baseocr, OCRResult
-from ctypes import CDLL, c_void_p, c_wchar_p, c_char_p, CFUNCTYPE, c_bool, c_float
 import NativeUtils, threading
 import winreg
 from traceback import print_exc
@@ -8,13 +7,6 @@ from traceback import print_exc
 
 class wcocr:
     def __init__(self):
-        self.wcocr = CDLL(gobject.GetDllpath("NativeUtils.dll"))
-        wcocr_init = self.wcocr.wcocr_init
-        wcocr_init.argtypes = (
-            c_wchar_p,
-            c_wchar_p,
-        )
-        wcocr_init.restype = c_void_p
         self.pobj = None
         for function in [self.findwechat, self.findqqnt]:
             try:
@@ -24,7 +16,7 @@ class wcocr:
                 wechatocr_path, wechat_path = _
                 if any([not os.path.exists(_) for _ in (wechatocr_path, wechat_path)]):
                     continue
-                self.pobj = wcocr_init(wechatocr_path, wechat_path)
+                self.pobj = NativeUtils.wcocr_init(wechatocr_path, wechat_path)
                 if self.pobj:
                     break
             except:
@@ -86,26 +78,20 @@ class wcocr:
         return wechatocr_path, wechat_path
 
     def __del__(self):
-
-        wcocr_destroy = self.wcocr.wcocr_destroy
-        wcocr_destroy.argtypes = (c_void_p,)
-        wcocr_destroy(self.pobj)
+        NativeUtils.wcocr_destroy(self.pobj)
 
     def ocr(self, imagebinary):
         fname = gobject.gettempdir(str(uuid.uuid4()) + ".png")
         with open(fname, "wb") as ff:
             ff.write(imagebinary)
         imgfile = os.path.abspath(fname)
-        wcocr_ocr = self.wcocr.wcocr_ocr
-        wcocr_ocr.argtypes = c_void_p, c_char_p, c_void_p
-        wcocr_ocr.restype = c_bool
         ret = []
 
         def cb(x1, y1, x2, y2, text: bytes):
             ret.append((x1, y1, x2, y2, text.decode("utf8")))
 
-        fp = CFUNCTYPE(None, c_float, c_float, c_float, c_float, c_char_p)(cb)
-        succ = wcocr_ocr(self.pobj, imgfile.encode("utf8"), fp)
+        fp = NativeUtils.wcocr_ocr_CB(cb)
+        succ = NativeUtils.wcocr_ocr(self.pobj, imgfile.encode("utf8"), fp)
         os.remove(imgfile)
         if not succ:
             return

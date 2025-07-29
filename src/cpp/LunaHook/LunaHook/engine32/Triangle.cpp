@@ -99,7 +99,7 @@ bool InsertTrianglePixHook()
   hp.offset = regoffset(eax);
   hp.index = 0;
   hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
-  hp.filter_fun = NewLineCharToSpaceFilterA;
+  hp.filter_fun = NewLineCharToSpaceA;
   return NewHook(hp, "TrianglePix");
 }
 bool Triangle2_attach_function()

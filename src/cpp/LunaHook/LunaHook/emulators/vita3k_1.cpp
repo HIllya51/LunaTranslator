@@ -241,10 +241,6 @@ namespace
             return buffer->clear();
         buffer->from(s.substr(0, s.find(u8"】") + strlen(u8"】")));
     }
-    void PCSG00787(TextBuffer *buffer, HookParam *)
-    {
-        CharFilter(buffer, '\n');
-    }
     void PCSG01034(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, L'\n');
@@ -255,10 +251,6 @@ namespace
             buffer->clear();
         }
         last = s;
-    }
-    void PCSG00502(TextBuffer *buffer, HookParam *)
-    {
-        CharFilter(buffer, L'\n');
     }
     void PCSG01284(TextBuffer *buffer, HookParam *)
     {
@@ -985,6 +977,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // フォトカノ Kiss
+    {0x81161B0E, {0, 0, 0, 0, NewLineCharFilterA, "PCSG00139"}},
+    // POSSESSION MAGENTA
+    {0x80016C76, {0, 0, 0, 0, FPCSG00852, "PCSG00509"}},
     // 極限脱出ＡＤＶ 善人シボウデス
     {0x810DE344, {CODEC_UTF8, 6, 0, 0, PCSG00020, "PCSG00020"}},
     // イケメン戦国◆時をかける恋　新たなる出逢い
@@ -1128,10 +1124,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 絶対迷宮 秘密のおやゆび姫
     {0x8003F554, {0, 5, 0, 0, 0, "PCSG00611"}},
     // 鏡界の白雪
-    {0x810286C8, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}}, // VPK版手动复制安装
-    {0x8002BB78, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00787"}}, // zip安装版
-    {0x80025f0e, {CODEC_UTF8, 5, 0, 0, PCSG00787, "PCSG00787"}},
-    {0x80141978, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00787"}},
+    {0x810286C8, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG00787"}}, // VPK版手动复制安装
+    {0x8002BB78, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG00787"}}, // zip安装版
+    {0x80025f0e, {CODEC_UTF8, 5, 0, 0, NewLineCharFilterA, "PCSG00787"}},
+    {0x80141978, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00787"}},
     // ニセコイ　ヨメイリ！？
     {0x8189e60c, {CODEC_UTF8, 4, 0, 0, 0, "PCSG00397"}},
     // DIABOLIK LOVERS DARK FATE
@@ -1207,20 +1203,20 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80024C08, {CODEC_UTF8, 5, 0, 0, PCSG00592, "PCSG00855"}},
     {0x8000D544, {CODEC_UTF8, 0, 0, 0, PCSG00855, "PCSG00855"}},
     // ロミオVSジュリエット 全巻パック
-    {0x80017F50, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00618"}},
+    {0x80017F50, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00618"}},
     // １２時の鐘とシンデレラ～シンデレラシリーズ　トリプル全巻パック～
-    {0x8001701C, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00561"}},
+    {0x8001701C, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00561"}},
     // ハートの国のアリス～Wonderful Wonder World～
-    {0x8100F0CA, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00614"}}, // 手动解压
-    {0x800173F4, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00614"}},
+    {0x8100F0CA, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}}, // 手动解压
+    {0x800173F4, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}},
     // 新装版魔法使いとご主人様～Wizard and The Master～
-    {0x8001733C, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00580"}},
+    {0x8001733C, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00580"}},
     // 円環のメモーリア -カケラ灯し-
     {0x80029AB2, {0, 0, 0, 0, PCSG01167, "PCSG01167"}},
     // ネオ アンジェリーク 天使の涙
     {0x8005426C, {CODEC_UTF8, 0, 0, 0, PCSG01068, "PCSG01068"}},
     // スカーレッドライダーゼクス Rev.
-    {0x800BEE38, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG00745"}},
+    {0x800BEE38, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG00745"}},
     // 緋色の欠片 ～おもいいろの記憶～
     {0x8007838c, {CODEC_UTF8, 5, 0, 0, PCSG01036, "PCSG01036"}},
     {0x8001154c, {CODEC_UTF8, 8, 0, 0, PCSG01036, "PCSG01036"}},
@@ -1261,7 +1257,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 神咒神威神楽
     {0x810a2486, {0, 0, 0, 0, PCSG00172, "PCSG00172"}},
     // ツキトモ。 TSUKIUTA. １２memories
-    {0x8004D078, {CODEC_UTF8, 0, 0, 0, PCSG00787, "PCSG01025"}},
+    {0x8004D078, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG01025"}},
     // アイドリッシュセブン　Twelve Fantasia!
     {0x8011E570, {CODEC_UTF8, 4, 0, 0, 0, "PCSG01094"}}, // 或0x8011e580。映射地址会发生切换，导致用特殊码搜索搜不到，且有好几个杂乱线程，但我也不想改框架了，很烦
     // VARIABLE BARRICADE
@@ -1310,7 +1306,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ダンジョンに出会いを求めるのは間違っているだろうか インフィニト・コンバーテ
     {0x8232D5C0, {CODEC_UTF16 | FULL_STRING, 2, 0, 0, PCSG01002, "PCSG01002"}},
     // ダンジョントラベラーズ２－２ 闇堕ちの乙女とはじまりの書
-    {0x800BE808, {CODEC_UTF8, 3, 0, 0, PCSG00787, "PCSG00841"}},
+    {0x800BE808, {CODEC_UTF8, 3, 0, 0, NewLineCharFilterA, "PCSG00841"}},
     // DYNAMIC CHORD feat.apple-polisher V edition
     {0x80033F6C, {0, 0, 0, 0, FPCSG00912, "PCSG00915"}},
     {0x8003C61E, {0, 0, 0, 0, FPCSG00912, "PCSG00915"}}, // prolog1
@@ -1348,9 +1344,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 夢現Re:Master
     {0x8000CD76, {CODEC_UTF8, 2, 0, 0, 0, "PCSG01266"}},
     // 結城友奈は勇者である　樹海の記憶
-    {0x800E954E, {CODEC_UTF16, 0, 0, 0, PCSG00502, "PCSG00502"}},
+    {0x800E954E, {CODEC_UTF16, 0, 0, 0, NewLineCharFilterW, "PCSG00502"}},
     // 終わりのセラフ　運命の始まり
-    {0x8028394A, {CODEC_UTF8, 4, 0, 0, PCSG00787, "PCSG00728"}},
+    {0x8028394A, {CODEC_UTF8, 4, 0, 0, NewLineCharFilterA, "PCSG00728"}},
     // Dance with Devils My Carol
     {0x82303AB0, {CODEC_UTF16, 0, 0, 0, PCSG01152, "PCSG01152"}}, // 会超前读取
     // ひめひび　-Princess Days-
@@ -1393,7 +1389,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 戦極姫７～戦雲つらぬく紅蓮の遺志～
     {0x8276B2CE, {CODEC_UTF16, 0x9, 0, 0, PCSG01034, "PCSG01034"}},
     // 新装版クリムゾン・エンパイア
-    {0x800125AE, {CODEC_UTF8, 1, 0, 0, PCSG00787, "PCSG00481"}},
+    {0x800125AE, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00481"}},
     // うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
     {0x80052B34, {0, 0, 0x24, PCSG00595, 0, "PCSG01081"}},
     // スカーレッドライダーゼクス

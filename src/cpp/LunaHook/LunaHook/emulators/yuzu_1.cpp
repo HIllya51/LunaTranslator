@@ -110,6 +110,12 @@ namespace
             return;
         buffer->from((char *)a2);
     }
+    void F010073A020C00000(TextBuffer *buffer, HookParam *)
+    {
+        CharReplacer(buffer, L'③', L'—');
+        CharReplacer(buffer, L'④', L'—');
+        CharReplacer(buffer, L'⑤', L'—');
+    }
     void Fliuxingzhishen(TextBuffer *buffer, HookParam *)
     {
         StringReplacer(buffer, TEXTANDLEN("\x87\x85"), TEXTANDLEN("\x81\x5c"));
@@ -2587,18 +2593,6 @@ namespace
         CharFilter(buffer, L'\n');
         StringCharReplacer(buffer, TEXTANDLEN(L"<sprite=\"Emoji\" name=\"heart\">"), L'♥');
     }
-    void NewLineCharToSpaceW(TextBuffer *buffer, HookParam *)
-    {
-        CharReplacer(buffer, L'\n', L' ');
-    }
-    void NewLineCharFilterW(TextBuffer *buffer, HookParam *)
-    {
-        CharFilter(buffer, L'\n');
-    }
-    void NewLineCharFilter(TextBuffer *buffer, HookParam *)
-    {
-        CharFilter(buffer, '\n');
-    }
     void F0100E9801CAC2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -2671,8 +2665,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x801A0590, {CODEC_UTF8, 1, 0, 0, F010050E012CB6000, 0x010050E012CB6000ull, "1.0.0"}}, // 人名+文本
     {0x800DE554, {CODEC_UTF8, 0, 0, 0, F010050E012CB6000, 0x010050E012CB6000ull, "1.0.0"}}, // prolog+文本
     // 放課後シンデレラ２
-    {0x800B1948, {CODEC_UTF8, 0, 0, 0, NewLineCharFilter, 0x0100AA301A99E000ull, "1.0.0"}},
-    {0x800B1950, {CODEC_UTF8, 0, 0, 0, NewLineCharFilter, 0x0100AA301A99E000ull, "1.0.2"}},
+    {0x800B1948, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, 0x0100AA301A99E000ull, "1.0.0"}},
+    {0x800B1950, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, 0x0100AA301A99E000ull, "1.0.2"}},
     // はつゆきさくら
     {0x800209CC, {0, 0, 0, 0, 0, 0x01009D3019684000ull, "1.0.0"}},
     // VARIABLE BARRICADE
@@ -2723,12 +2717,16 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Memories Off ～それから～
     {0x8003fb7c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B4A01326E000ull, "1.0.0"}},
     {0x8003fb8c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B4A01326E000ull, "1.0.1"}},
+    // メモリーズオフ それからagain
+    {0x800295BC, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x01004B3020BFE000ull, "1.0.0"}},
     // Memories Off 2nd
     {0x8003ee0c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100D31013274000ull, "1.0.0"}},
     {0x8003ee1c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100D31013274000ull, "1.0.1"}},
     // Memories Off #5 とぎれたフィルム
     {0x8003f6ac, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010073901326C000ull, "1.0.0"}},
     {0x8003f5fc, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010073901326C000ull, "1.0.1"}},
+    // メモリーズオフ #5 encore
+    {0x80051710, {CODEC_UTF16, 0, 0, mages_readstring, F010073A020C00000, 0x010073A020C00000ull, "1.0.0"}},
     // メモリーズオフ ゆびきりの記憶
     {0x800440ec, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x010079C012896000ull, "1.0.0"}},
     // メモリーズオフ6 ～T-wave～

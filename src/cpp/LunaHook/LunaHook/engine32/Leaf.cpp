@@ -594,7 +594,7 @@ bool InsertAquaplus3Hook()
   hp.address = addr + 1;
   hp.offset = regoffset(eax);
   hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
-  hp.filter_fun = NewLineCharToSpaceFilterA;
+  hp.filter_fun = NewLineCharToSpaceA;
   return NewHook(hp, "Aquaplus3");
 }
 bool InsertAquaplusHooks()

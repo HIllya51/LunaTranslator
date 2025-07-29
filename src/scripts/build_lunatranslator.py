@@ -190,9 +190,9 @@ def buildhook(arch, target):
     if target == "win10":
         config = "-DWIN10ABOVE=ON"
     elif target == "win7":
-        config = ""
+        config = "-DWIN10ABOVE=OFF"
     elif target == "winxp":
-        config = "-DWINXP=ON"
+        config = "-DWINXP=ON -DWIN10ABOVE=OFF"
     subprocess.run(
         f'cmake {config} -DBUILD_HOST=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_2'
     )
@@ -217,17 +217,17 @@ def buildhook(arch, target):
 def buildPlugins(arch, target):
     os.chdir(rootDir + "/cpp")
     archA = ("win32", "x64")[arch == "x64"]
-
-    flag = (
-        "-DWIN10ABOVE=ON"
-        if target == "win10"
-        else (" -DWINXP=ON " if target == "winxp" else "")
-    )
+    if target == "win10":
+        config = "-DWIN10ABOVE=ON"
+    elif target == "win7":
+        config = "-DWIN10ABOVE=OFF"
+    elif target == "winxp":
+        config = "-DWINXP=ON -DWIN10ABOVE=OFF"
     sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 "
     vsver = "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     subprocess.run(
-        f'cmake {flag} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
+        f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
     )
     subprocess.run(
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"

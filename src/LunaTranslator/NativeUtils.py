@@ -15,7 +15,8 @@ from ctypes import (
     c_float,
     c_double,
     c_char,
-    c_ushort,
+    c_uint64,
+    c_int32,
     CFUNCTYPE,
 )
 from ctypes.wintypes import (
@@ -794,3 +795,38 @@ def GetLiveCaptionsText(pid):
     if ret:
         return ret[0]
     return None
+
+
+### OTHERS
+
+glens_create_request = utilsdll.glens_create_request
+glens_create_request_CB = CFUNCTYPE(None, POINTER(c_char), c_size_t)
+glens_create_request.argtypes = (
+    c_uint64,
+    c_char_p,
+    c_size_t,
+    c_char_p,
+    c_size_t,
+    c_int32,
+    c_int32,
+    glens_create_request_CB,
+)
+glens_parse_response = utilsdll.glens_parse_response
+glens_parse_response_CB = CFUNCTYPE(None, c_char_p, c_float, c_float, c_float, c_float)
+glens_parse_response.argtypes = c_char_p, c_size_t, glens_parse_response_CB
+
+
+wcocr_init = utilsdll.wcocr_init
+wcocr_init.argtypes = (
+    c_wchar_p,
+    c_wchar_p,
+)
+wcocr_init.restype = c_void_p
+
+wcocr_destroy = utilsdll.wcocr_destroy
+wcocr_destroy.argtypes = (c_void_p,)
+
+wcocr_ocr = utilsdll.wcocr_ocr
+wcocr_ocr.argtypes = c_void_p, c_char_p, c_void_p
+wcocr_ocr.restype = c_bool
+wcocr_ocr_CB = CFUNCTYPE(None, c_float, c_float, c_float, c_float, c_char_p)

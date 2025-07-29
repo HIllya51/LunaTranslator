@@ -433,7 +433,6 @@ def setTab_about(self, basel):
                         makelink("TsudaKageyu/minhook"),
                         makelink("lobehub/lobe-icons"),
                         makelink("kokke/tiny-AES-c"),
-                        makelink("TPN-Team/OCR"),
                         makelink("AuroraWright/owocr"),
                         makelink("b1tg/win11-oneocr"),
                         makelink("mity/md4c"),
