@@ -545,15 +545,22 @@ namespace
         s = re::sub(s, R"(#Color\[\d+?\])");
         buffer->from(s);
     }
+    template <int t = 0>
     void F0100D4800C476000(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = buffer->strAW(CP_UTF8);
         ws = remapkatakana(ws);
+        if (t == 1)
+        {
+            ws = re::sub(ws, LR"(@v[/\d]+\.)");
+            ws = re::sub(ws, LR"(@b(.*?)\.@<(.*?)@>)", L"$2");
+        }
         ws = re::sub(ws, LR"(@v\w+\.)");
         ws = re::sub(ws, LR"(@v\d+)");
         ws = re::sub(ws, LR"(@x\w+\.)");
         ws = re::sub(ws, LR"(@s\d{4})");
-        ws = re::sub(ws, L"@r(.*?)@(.*?)@", L"$1");
+        if (t == 0)
+            ws = re::sub(ws, L"@r(.*?)@(.*?)@", L"$1");
         ws = re::sub(ws, LR"(@t\d+)");
         strReplace(ws, L"@r");
         strReplace(ws, L"@y");
@@ -3305,10 +3312,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x800bd6c8, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, "1.0.0"}}, // sjis
     {0x800c2d20, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, nullptr}}, //  1.2.0 && 2.0.2
     // うみねこのなく頃に咲 ～猫箱と夢想の交響曲～
-    {0x800b4560, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 name + text (bottom, center) - whole line. filter is to complex, quit.
-    {0x801049c0, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 prompt, bottomLeft
-    {0x80026378, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 Yes|No
-    {0x801049a8, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 topLeft (double: ♪ + text)
+    {0x800b4560, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000<1>, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 name + text
+    {0x801049c0, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}},                    // x0 prompt, bottomLeft
+    {0x80026378, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}},                    // x0 Yes|No
+    {0x801049a8, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}},                    // x0 topLeft (double: ♪ + text)
+    {0x800B44C0, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000<1>, 0x01006A300BA2C000ull, "1.0.3"}}, // name + text
     // 殺し屋とストロベリー
     {0x81322cec, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
     {0x819b1a78, {CODEC_UTF16, 2, 0, ReadTextAndLenW, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
