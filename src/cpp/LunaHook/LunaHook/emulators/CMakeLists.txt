@@ -1,10 +1,9 @@
 
-add_library(emulators)
-
-target_include_directories(emulators PRIVATE .)
+add_library(emulators INTERFACE)
+#target_include_directories(emulators INTERFACE .)
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8) 
-    target_sources(emulators PRIVATE 
+    target_sources(emulators INTERFACE 
                             PCSX2.cpp PCSX2_1.cpp
                             rpcs3_1.cpp
                             rpcs3.cpp Ryujinx.cpp
@@ -12,6 +11,6 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
                             yuzu.cpp yuzu_1.cpp
                             ppsspp.cpp ppsspp_1.cpp)
 else()
-    target_sources(emulators PRIVATE ppsspp.cpp ppsspp_1.cpp)
+    target_sources(emulators INTERFACE ppsspp.cpp ppsspp_1.cpp)
 endif()
-target_precompile_headers(emulators REUSE_FROM pchhook)
+

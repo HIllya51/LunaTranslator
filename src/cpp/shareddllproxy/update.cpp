@@ -1,5 +1,6 @@
 // https://github.com/microsoft/PowerToys/tree/main/src/modules/FileLocksmith/FileLocksmithLibInterop
-#include "FileLocksmithLibInterop/FileLocksmith.h"
+#include <FileLocksmith.h>
+#include <base64.h>
 
 std::wstring readfile(const wchar_t *fname)
 {
@@ -67,7 +68,7 @@ int updatewmain(int argc, wchar_t *argv[])
     SetCurrentDirectory(path);
     int needreload = std::stoi(argv[1]);
     auto processes = find_processes_recursive({L".\\files"});
-    auto file = readfile(argv[4]);
+    auto file = StringToWideString(base64_decode(WideStringToString(argv[4])));
     auto ss = strSplit_impl<std::wstring>(file, L"\n");
     std::wstring text_error = ss[0], text_succ = ss[1], text_update_failed = ss[2], text_update_succ = ss[3], text_failed_occupied = ss[4];
     if (processes.size())

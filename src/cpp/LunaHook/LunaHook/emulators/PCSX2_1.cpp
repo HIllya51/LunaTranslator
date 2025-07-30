@@ -1726,6 +1726,10 @@ namespace
         }
         buffer->from(s);
     }
+    void SLPS25433(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, "%", 2);
+    }
 }
 struct emfuncinfoX
 {
@@ -1733,6 +1737,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 帝国千戦記 [初回限定版]
+    {0x1DB228, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25433, "SLPS-25433"}},
     // サクラ大戦Ⅴ ～さらば愛しき人よ～
     {0x1F6E550, {DIRECT_READ, 0, 0, 0, SLPM67009, "SLPM-67009"}},
     // 月は東に日は西に -Operation Sanctuary-

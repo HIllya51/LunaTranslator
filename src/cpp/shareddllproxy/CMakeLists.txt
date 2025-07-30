@@ -1,6 +1,16 @@
 
 project(shareddllproxy)
 
+include(FetchContent)
+FetchContent_Declare(cpp_base64
+    GIT_REPOSITORY https://github.com/ReneNyffenegger/cpp-base64
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(cpp_base64)
+add_library(base64 INTERFACE)
+target_include_directories(base64 INTERFACE ${cpp_base64_SOURCE_DIR})
+target_sources(base64 INTERFACE ${cpp_base64_SOURCE_DIR}/base64.cpp)
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	# 使用<=1.41.1版本，否则和系统的可能不兼容。
@@ -33,7 +43,7 @@ else()
 	add_executable(shareddllproxy ${shareddllproxy_common} lec.cpp Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp)
 endif()
 add_subdirectory(voiceroid2)
-target_precompile_headers(voiceroid2 REUSE_FROM pch) 
+add_subdirectory(FileLocksmithLibInterop)
 
 target_precompile_headers(shareddllproxy REUSE_FROM pch) 
 
@@ -54,9 +64,4 @@ if(WIN10ABOVE)
 	target_link_libraries(shareddllproxy PRIVATE windowsapp)
 endif()
 
-add_library(FileLocksmith 	FileLocksmithLibInterop/FileLocksmith.cpp
-							FileLocksmithLibInterop/NtdllBase.cpp
-							FileLocksmithLibInterop/NtdllExtensions.cpp)
-target_precompile_headers(FileLocksmith REUSE_FROM pch) 
-
-target_link_libraries(shareddllproxy PRIVATE FileLocksmith)
+target_link_libraries(shareddllproxy PRIVATE FileLocksmith base64)

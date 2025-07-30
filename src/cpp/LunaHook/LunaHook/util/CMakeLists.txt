@@ -8,11 +8,8 @@ ithsys/ithsys.cc
   stringfilters.cpp
   util.cc
 )
-if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-  add_library(utils ${utils_src_common}   )
-else()
-  add_library(utils ${utils_src_common} disasm/disasm.cc)
+add_library(utils INTERFACE)
+target_sources(utils INTERFACE ${utils_src_common})
+if(NOT (${CMAKE_SIZEOF_VOID_P} EQUAL 8))
+  target_sources(utils INTERFACE disasm/disasm.cc)
 endif()
-
-target_precompile_headers(utils REUSE_FROM pchhook)
-

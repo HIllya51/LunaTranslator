@@ -3,7 +3,7 @@ from myutils.config import globalconfig, static_data, _TR
 from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10, runtimedir
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
-import requests
+import requests, base64
 import shutil, gobject
 from myutils.proxy import getproxy
 import zipfile, os
@@ -96,19 +96,18 @@ def doupdate():
             if _f.lower() == "lunatranslator.exe":
                 found = _dir
 
-    texts = [
+    texts: "list[str]" = [
         _TR("错误"),
         _TR("成功"),
         _TR("更新失败"),
         _TR("更新成功"),
         _TR("部分文件或目录被以下进程占用，是否终止以下进程？"),
     ]
-    with open(exe + ".txt", "w", encoding="utf-16-le") as ff:
-        for text in texts:
-            ff.write(text + "\n")
+    text = "\n".join(texts).encode("utf8")
+    b64 = base64.b64encode(text).decode()
     subprocess.Popen(
         r"{} update {} {} {} {}".format(
-            exe1, int(gobject.base.istriggertoupdate), found, os.getpid(), exe + ".txt"
+            exe1, int(gobject.base.istriggertoupdate), found, os.getpid(), b64
         )
     )
 

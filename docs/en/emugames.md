@@ -886,6 +886,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25433 | 帝国千戦記 [初回限定版] |
 |  | SLPM-67009 | サクラ大戦Ⅴ ～さらば愛しき人よ～ |
 |  | SLPM-65717 | 月は東に日は西に -Operation Sanctuary- |
 |  | SLPM-65641 | うたう♪タンブリング・ダイス ～私たち3人、あ・げ・る～ |

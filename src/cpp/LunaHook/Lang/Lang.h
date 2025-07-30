@@ -1,4 +1,5 @@
-
+#ifndef LANG_H
+#define LANG_H
 
 enum LANG_STRINGS_UI
 {
@@ -102,3 +103,5 @@ struct langhelper
 
 extern langhelper TR;
 extern SUPPORT_LANG curr_lang;
+
+#endif
