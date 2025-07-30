@@ -3057,11 +3057,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80039340, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
     // Pokémon Let’s Go, Pikachu!
     {0x8067d9fc, {CODEC_UTF16, 0, 0, 0, F010003F003A34000, 0x010003F003A34000ull, "1.0.2"}}, // Text
-    // イケメン戦国◆時をかける恋 新たなる出逢い
-    {0x813e4fb4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Main Text
-    {0x813e4c60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Name
-    {0x813b5360, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Choices
-    {0x81bab9ac, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.0"}}, // Info
+    // イケメン戦国◆時をかける恋　新たなる出逢い
+    {0x813e4fb4, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010042300C4F6000_1, 0x01008BE016CE2000ull, "1.0.0"}}, // Main Text
+    {0x813e4c60, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.0"}},                   // Name
+    {0x813b5360, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.0"}},                   // Choices
+    {0x81bab9ac, {CODEC_UTF16, 1, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.0"}},                   // Info
+    {0x812E9A44, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010042300C4F6000_1, 0x01008BE016CE2000ull, "1.0.1"}}, // Main Text
+    {0x812E96F0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, 0, 0x01008BE016CE2000ull, "1.0.1"}},                   // Name
     // Shin Megami Tensei V
     {0x80ce01a4, {CODEC_UTF16, 0, 0, 0, 0, 0x01006BD0095F4000ull, "1.0.2"}}, // Text
     // The Legend of Zelda: Link's Awakening

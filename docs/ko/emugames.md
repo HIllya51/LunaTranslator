@@ -142,7 +142,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 |  | 01005F700DC56000 | ピオフィオーレの晩鐘 -Ricordo- |
 |  | 01009E30120F4000 | ピオフィオーレの晩鐘 -Episodio1926- |
 |  | 010003F003A34000 | Pokémon Let’s Go, Pikachu! |
-|  | 01008BE016CE2000 | イケメン戦国◆時をかける恋 新たなる出逢い |
+|  | 01008BE016CE2000 | イケメン戦国◆時をかける恋　新たなる出逢い |
 |  | 01006BD0095F4000 | Shin Megami Tensei V |
 |  | 01006BB00C6F0000 | The Legend of Zelda: Link's Awakening |
 |  | 01006B000A666000 | Cendrillon palikA |

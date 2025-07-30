@@ -146,7 +146,6 @@ namespace
     // GROWL_DWORD3(addr+addr_offset, processStartAddress,processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("5pb1: pattern not found");
       return false;
     }
 
@@ -154,11 +153,6 @@ namespace
     hp.address = addr + addr_offset;
     hp.offset = regoffset(edx);
     hp.type = USING_STRING;
-    ConsoleOutput("INSERT 5pb1");
-
-    // GDI functions are not used by 5pb games anyway.
-    // ConsoleOutput("5pb: disable GDI hooks");
-    //
     return NewHook(hp, "5pb1");
   }
 
@@ -196,7 +190,6 @@ namespace
     // GROWL_DWORD3(addr, processStartAddress,processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("5pb2: pattern not found");
       return false;
     }
 
@@ -204,11 +197,6 @@ namespace
     hp.address = addr;
     hp.type = USING_STRING;
     hp.text_fun = SpecialHook5pb2;
-    ConsoleOutput("INSERT 5pb2");
-
-    // GDI functions are not used by 5pb games anyway.
-    // ConsoleOutput("5pb: disable GDI hooks");
-    //
     return NewHook(hp, "5pb2");
   }
 
@@ -354,7 +342,6 @@ namespace
     // GROWL_DWORD3(addr, processStartAddress,processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("5pb2: pattern not found");
       return false;
     }
 
@@ -363,21 +350,85 @@ namespace
     hp.type = USING_STRING | NO_CONTEXT;
     hp.text_fun = SpecialHook5pb3;
     hp.filter_fun = NewLineCharToSpaceA; // replace '\n' by ' '
-    ConsoleOutput("INSERT 5pb3");
-
-    // GDI functions are not used by 5pb games anyway.
-    // ConsoleOutput("5pb: disable GDI hooks");
-    //
     return NewHook(hp, "5pb3");
   }
 } // unnamed namespace
-
+namespace
+{
+  // https://store.steampowered.com/app/589530/Hakuoki_Kyoto_Winds/
+  bool hook4name()
+  {
+    const BYTE bytes[] = {
+        0x55, 0x8b, 0xec,
+        0x51,
+        0x53,
+        0x8b, 0x5d, 0x08,
+        0x85, 0xdb,
+        0x0f, 0x84, XX4,
+        0x8b, 0x4d, 0x0c,
+        0x8d, 0x53, XX,
+        0x56,
+        0x57,
+        0x83, 0xcf, 0xff,
+        0x33, 0xf6,
+        0x8d, 0x49, 0x00,
+        0x3b, 0x4a, 0xf8,
+        0x74, XX,
+        0x85, 0xff,
+        0x79, XX};
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_STRING | CODEC_UTF8;
+    hp.offset = stackoffset(3);
+    return NewHook(hp, "5pb4");
+  }
+  bool hook4text()
+  {
+    const BYTE bytes[] = {
+        0x55, 0x8b, 0xec,
+        0xb8, 0x14, 0x10, 0x00, 0x00,
+        0xe8, XX4,
+        0xa1, XX4,
+        0x33, 0xc5,
+        0x89, 0x45, 0xfc,
+        0x56,
+        0x8b, 0x75, 0x08,
+        0x8d, 0x85, XX4,
+        0x57,
+        0x68, 0xff, 0x0f, 0x00, 0x00,
+        0x6a, 0x00,
+        0x50,
+        0x8b, 0xf9,
+        0xc6, 0x85, XX4, 0x00,
+        0xe8, XX4};
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_STRING | CODEC_UTF8;
+    hp.offset = stackoffset(1);
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+    {
+      StringCharReplacer(buffer, TEXTANDLEN("#n"), ' ');
+      StringFilter(buffer, TEXTANDLEN("#I"));
+    };
+    return NewHook(hp, "5pb4");
+  }
+  bool hook4()
+  {
+    return hook4name() && hook4text();
+  }
+}
 bool Insert5pbHook()
 {
   bool ok = Insert5pbHook1();
   ok = Insert5pbHook2() || ok;
   ok = Insert5pbHook3() || ok;
-  return ok;
+  return ok || hook4();
 }
 bool Insert5pbHookex()
 {
@@ -413,7 +464,6 @@ bool InsertStuffScriptHook()
   hp.offset = stackoffset(2); // arg2 lpString
   hp.split = regoffset(esp);
   hp.type = USING_STRING | USING_SPLIT;
-  ConsoleOutput("INSERT StuffScriptEngine");
   return NewHook(hp, "StuffScriptEngine");
   // RegisterEngine(ENGINE_STUFFSCRIPT);
 }
@@ -473,7 +523,6 @@ bool InsertStuffScript2Hook()
   hp.index = 0;
   hp.type = USING_STRING | NO_CONTEXT;
   hp.filter_fun = StuffScript2Filter;
-  ConsoleOutput("INSERT StuffScript2");
   return NewHook(hp, "StuffScript2");
 }
 void StuffScript3Filter(TextBuffer *buffer, HookParam *)
