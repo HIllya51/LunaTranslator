@@ -122,7 +122,7 @@ class fadeoutlabel(QLabel):
         self.setGraphicsEffect(effect)
         self.effect = effect
 
-        self.setStyleSheet("""background-color: rgba(255,255,255, 0);""")
+        self.setStyleSheet("""QLabel{background-color: rgba(255,255,255, 0);}""")
         self.animation = QPropertyAnimation(effect, b"opacity")
         self.animation.setDuration(2000)
         self.animation.setStartValue(1.0)
