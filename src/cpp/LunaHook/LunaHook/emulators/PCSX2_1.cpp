@@ -139,7 +139,7 @@ namespace
     void FSLPM66302(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
-        s = strSplit(s, L"\");")[0];
+        s = strSplit(s, L");")[0];
         s = re::sub(s, LR"((\\n)+)", L" ");
         s = re::sub(s, LR"(\\d$|^\@[a-z]+|#.*?#|\$)");
         s = re::sub(s, LR"(@w|\\c)");

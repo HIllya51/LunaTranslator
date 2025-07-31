@@ -47,7 +47,7 @@ class TS(basetrans):
     def langmap(self):
         return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
-    def translate(self, content):
+    def translate_1(self, content):
         response = self.proxysession.post(
             "https://translate-pa.googleapis.com/v1/translateHtml",
             headers={
@@ -66,3 +66,6 @@ class TS(basetrans):
             return unescape(response.json()[0][0])
         except:
             raise Exception(response)
+
+    def translate(self, content: str):
+        return "\n".join((self.translate_1(_) for _ in content.splitlines()))

@@ -171,18 +171,24 @@ namespace
 				thread->second.hp.type = data->type;
 				thread->second.Push(data->data, length);
 
-				auto &thp = thread->second.hp;
-				if (thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp))
+				[&]()
 				{
-					if (auto t = commonparsestring(data->data, length, &thp, Host::defaultCodepage))
-					{
-						auto text = t.value();
-						if (text.size())
-						{
-							embedcallback(text, tp);
-						}
-					}
-				}
+					auto &thp = thread->second.hp;
+					if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
+						return;
+					auto sm = Host::GetCommonSharedMem(tp.processId);
+					if (!sm)
+						return;
+					if (sm->clearText)
+						return;
+					auto t = commonparsestring(data->data, length, &thp, Host::defaultCodepage);
+					if (!t)
+						return;
+					auto text = t.value();
+					if (text.empty())
+						return;
+					embedcallback(text, tp);
+				}();
 			}
 			break;
 			}
