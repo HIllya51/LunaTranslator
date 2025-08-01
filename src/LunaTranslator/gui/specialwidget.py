@@ -2,6 +2,7 @@ from qtsymbols import *
 import threading
 from traceback import print_exc
 from myutils.wrapper import trypass
+import qtawesome
 
 
 class chartwidget(QWidget):
@@ -464,6 +465,7 @@ class shownumQPushButton(QPushButton):
         self.num = 0
         self.setCheckable(True)
         self.clicked.connect(self.setChecked)
+        self.setStyleSheet("text-align: left; padding-left: 1.1em;")
 
     def setnum(self, num):
         self.num = num
@@ -479,19 +481,20 @@ class shownumQPushButton(QPushButton):
 
         textRect = self.fontMetrics().boundingRect(self.text())
         numberRect = rect.adjusted(textRect.width() + 10, 0, -10, 0)
-
         painter.drawText(
             numberRect,
             Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
             str(self.num),
         )
 
-        numberRect = rect.adjusted(10, 0, textRect.width() + -10, 0)
-        painter.drawText(
-            numberRect,
-            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter,
-            ("+", "-")[self.isChecked()],
+        icon = qtawesome.icon(("fa.chevron-right", "fa.chevron-up")[self.isChecked()])
+        rect = QRectF(
+            self.height() * 0.2,
+            self.height() * (0.25, 0.2)[self.isChecked()],
+            self.height() * 0.5,
+            self.height() * 0.5,
         )
+        icon.paint(painter, rect.toRect())
 
 
 class shrinkableitem(QWidget):

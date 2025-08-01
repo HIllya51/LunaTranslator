@@ -13,7 +13,12 @@ from myutils.hwnd import clipboard_set_image
 from myutils.utils import get_time_stamp, getimageformatlist, targetmod
 from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
-from gui.usefulwidget import pixmapviewer, makesubtab_lazy, tabadd_lazy, request_delete_ok
+from gui.usefulwidget import (
+    pixmapviewer,
+    makesubtab_lazy,
+    tabadd_lazy,
+    request_delete_ok,
+)
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
     getalistname,
@@ -113,15 +118,19 @@ class clickitem(QWidget):
 
 
 class fadeoutlabel(QLabel):
-    def __init__(self, p=None):
+
+    def wheelEvent(self, e: QWheelEvent) -> None:
+        self.wheelto.wheelEvent(e)
+
+    def __init__(self, p=None, wheelto: QWidget = None):
         super().__init__(p)
+        self.wheelto = wheelto
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
         effect = QGraphicsOpacityEffect(self)
         effect.setOpacity(0)
         self.setGraphicsEffect(effect)
         self.effect = effect
-
         self.setStyleSheet("""QLabel{background-color: rgba(255,255,255, 0);}""")
         self.animation = QPropertyAnimation(effect, b"opacity")
         self.animation.setDuration(2000)
@@ -386,7 +395,7 @@ class viewpixmap_x(QWidget):
         self.pixmapviewer.tolastnext.connect(self.tolastnext)
         self.bottombtn = hoverbtn("开始游戏", self)
         self.bottombtn.clicked.connect(self.startgame)
-        self.infoview = fadeoutlabel(self)
+        self.infoview = fadeoutlabel(self, self.pixmapviewer)
         self.infoview.setAlignment(Qt.AlignmentFlag.AlignRight)
         self.infoview.setScaledContents(True)
         self.currentimage = None
@@ -511,6 +520,7 @@ class pixwrapper(QWidget):
         self.pixview = viewpixmap_x(self)
         self.pixview.startgame.connect(self.startgame)
         self.spliter = QSplitter(self)
+        self.spliter.setHandleWidth(0)
         self.vlayout.addWidget(self.spliter)
         self.setrank(rank)
         self.sethor(hor)
@@ -646,7 +656,8 @@ class dialog_savedgame_v3(QWidget):
 
     def newline(self, res):
         self.reallist[self.reftagid].insert(0, res)
-        self.stack.w(calculatetagidx(self.reftagid)).insertw(
+        group = self.stack.w(calculatetagidx(self.reftagid))
+        group.insertw(
             0,
             functools.partial(
                 self.delayitemcreater,
@@ -656,6 +667,7 @@ class dialog_savedgame_v3(QWidget):
                 getreflist(self.reftagid),
             ),
         )
+        group.button().setnum(len(self.reallist[self.reftagid]))
         self.stack.directshow()
 
     def stack_showmenu(self, p):
@@ -780,8 +792,8 @@ class dialog_savedgame_v3(QWidget):
         super().__init__(parent)
         parent.setWindowTitle("游戏管理")
         self.currentfocusuid = None
-        self.reftagid = None
-        self.reallist = {}
+        self.reftagid: str = None
+        self.reallist: "dict[str,list]" = {}
         self.keepindexobject = {}
 
         class ___(stackedlist):
@@ -821,6 +833,7 @@ class dialog_savedgame_v3(QWidget):
         self.stack.bgclicked.connect(clickitem.clearfocus)
         self.setstyle()
         spl = QSplitter()
+        spl.setHandleWidth(0)
         _l = QHBoxLayout(self)
         _l.setContentsMargins(0, 0, 0, 0)
         _l.addWidget(spl)

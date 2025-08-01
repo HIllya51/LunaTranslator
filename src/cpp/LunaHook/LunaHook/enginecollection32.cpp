@@ -129,7 +129,7 @@
 #include "engine32/Onscripter.h"
 #include "engine32/Candy.h"
 #include "engine32/AIL.h"
-#include "engine32/ApricoT.h"
+#include "engine32/ApRicoT.h"
 #include "engine32/Triangle.h"
 #include "engine32/GASTRO.h"
 #include "engine32/akatombo.h"
@@ -274,7 +274,7 @@ std::vector<ENGINE *> check_engines()
         new Candy,
         new WillowSoft,
         new AIL,
-        new ApricoT,
+        new ApRicoT,
         new Triangle2,
         new Triangle,
         new AB2Try,
@@ -398,7 +398,7 @@ std::vector<ENGINE *> check_engines()
         new ScenarioPlayer_last,
         new HorkEye,
         new Nexton1,
-        new ApricoTlast,
+        new ApRicoTlast,
         new Leaf,
         new Nekopack,
         new AdobeFlash10,
@@ -452,7 +452,7 @@ std::vector<ENGINE *> check_engines()
         new MerRouge,
         new GROOVER,
         new SmartAdv,
-        new MapleColors,
+        new ApRicoTOld,
         new Hug,
         new GJ,
         new Pinpai,

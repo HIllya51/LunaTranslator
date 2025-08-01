@@ -1,4 +1,4 @@
-#include "ApricoT.h"
+﻿#include "ApRicoT.h"
 
 /********************************************************************************************
 Apricot hook:
@@ -11,7 +11,7 @@ Apricot hook:
 
 ********************************************************************************************/
 
-/** jichi 2/15/2015: ApricoT
+/** jichi 2/15/2015: ApRicoT
  *
  *  Sample game: イセカイ・ラヴァーズ�体験版
  *  Issue of the old game is that it uses esp as split, and hence has relative address
@@ -63,7 +63,7 @@ Apricot hook:
  *  001aec68   ffffffff
  *  001aec6c   00cb9f40  return to .00cb9f40 from .00cc8030 ; jichi: split here
  */
-static void SpecialHookApricoT(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+static void SpecialHookApRicoT(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
   DWORD reg_esi = context->esi;
   DWORD base = *(DWORD *)(reg_esi + 0x24);
@@ -127,7 +127,7 @@ static void SpecialHookApricoT(hook_context *context, HookParam *hp, TextBuffer 
   }
 }
 
-bool InsertApricoTHook()
+bool InsertApRicoTHook()
 {
   for (DWORD i = processStartAddress + 0x1000; i < processStopAddress - 4; i++)
     if ((*(DWORD *)i & 0xfff8fc) == 0x3cf880) // cmp reg,0x3c
@@ -136,9 +136,9 @@ bool InsertApricoTHook()
         { // retn 4
           HookParam hp;
           hp.address = j + 3;
-          hp.text_fun = SpecialHookApricoT;
+          hp.text_fun = SpecialHookApRicoT;
           hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16;
-          ConsoleOutput("INSERT ApricoT");
+          ConsoleOutput("INSERT ApRicoT");
           // GROWL_DWORD3(hp.address, processStartAddress, processStopAddress);
 
           // RegisterEngineType(ENGINE_APRICOT);
@@ -148,16 +148,16 @@ bool InsertApricoTHook()
           return NewHook(hp, "ApRicoT");
         }
 
-  ConsoleOutput("ApricoT: failed");
+  ConsoleOutput("ApRicoT: failed");
   return false;
 }
 
-bool ApricoT::attach_function()
+bool ApRicoT::attach_function()
 {
 
-  return InsertApricoTHook();
+  return InsertApRicoTHook();
 }
-bool MapleColors2()
+bool ApRicoTOld2()
 {
   // https://vndb.org/v1285
   const uint8_t bytes[] = {
@@ -225,9 +225,9 @@ bool MapleColors2()
       }
     }
   };
-  return NewHook(hp, "MapleColors2");
+  return NewHook(hp, "ApRicoTOld2");
 }
-bool MapleColorsH()
+bool ApRicoTOldH()
 {
   //[040130][APRICOT] Maple Colors H (bin+cue)
   const uint8_t bytes[] = {
@@ -284,9 +284,84 @@ bool MapleColorsH()
       last = str;
     }
   };
-  return NewHook(hp, "MapleColors");
+  return NewHook(hp, "ApRicoTOld");
 }
-bool MapleColors::attach_function()
+namespace
 {
-  return MapleColorsH() || MapleColors2();
+  bool ayakashi()
+  {
+    const uint8_t bytes[] = {
+        // ayakashi H
+        0x8d, 0x69, 0x04,
+        0xeb, 0x04,
+        //
+        0x8b, 0x4c, 0x24, 0x10,
+        //
+        0x8b, 0x51, 0x18,
+        0x83, 0xfa, 0x10,
+        0x72, 0x05,
+        0x8b, 0x45, 0x00,
+        0xeb, 0x02,
+        //
+        0x8b, 0xc5,
+        //
+        0x8a, XX, XX,
+        0x8a, XX,
+        0x80, XX, 0x20,
+        0x80, XX, 0x5f,
+        0x80, XX, 0x3b};
+    ULONG addrX = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    bool isH = true;
+    if (!addrX)
+    {
+      const uint8_t bytes2[] = {
+          // ayakashi
+          0xc7, 0x44, 0x24, XX, 0x01, 0x00, 0x00, 0x00,
+          0x0f, 0x84, XX4,
+          0x8b, 0x74, 0x24, 0x10,
+          0x53,
+          //
+          0x8a, XX, XX,
+          0x8a, XX,
+          0x80, XX, 0x20,
+          0x80, XX, 0x5f,
+          0x80, XX, 0x3b};
+      addrX = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
+      isH = false;
+    }
+    if (!addrX)
+      return false;
+    addrX = MemDbg::findEnclosingAlignedFunction(addrX, 0x80);
+    if (!addrX)
+      return false;
+    HookParam hp;
+    hp.address = addrX;
+    hp.type = NO_CONTEXT | USING_STRING;
+    hp.user_value = type;
+    if (isH)
+    {
+      hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
+        buffer->from(((TextUnionA *)(context->stack[2] + 4))->view());
+      };
+    }
+    else
+    {
+      hp.offset = stackoffset(2);
+      hp.type |= DATA_INDIRECT;
+    }
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      //{しらがみ 白神}{きくり 菊理}が顔を紅潮させて怒った。
+      auto s = buffer->strA();
+      s = re::sub(s, R"(\{(.*?) (.*?)\})", "$2");
+      s = re::sub(s, "[\r\n]+(\x81\x40)*");
+      buffer->from(s);
+    };
+    return NewHook(hp, "AYAKASHI");
+  }
+}
+bool ApRicoTOld::attach_function()
+{
+  return ApRicoTOldH() || ApRicoTOld2() || ayakashi();
 }

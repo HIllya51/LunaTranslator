@@ -35,7 +35,7 @@ class IconicFont(QObject):
 
         super().__init__()
         self.charmap = {}
-        self.icon_cache = {}
+        self.icon_cache: "dict[str, QIcon]" = {}
         self.load_font(ttf_filename, charmap_filename)
 
     def load_font(self, ttf_filename, charmap_filename):
@@ -56,7 +56,6 @@ class IconicFont(QObject):
             cache_key = "{}{}".format(name, color.name())
         else:
             cache_key = "{}{}".format(name, color)
-
 
         if cache_key not in self.icon_cache:
 
@@ -89,5 +88,14 @@ def _instance():
     return _resource["iconic"]
 
 
-def icon(name, color="#000000"):
+isdark = False
+
+
+def defaultcolor():
+    return ("#000000", "#ffffff")[isdark]
+
+
+def icon(name, color=None):
+    if not color:
+        color = defaultcolor()
     return _instance().icon(name, color)

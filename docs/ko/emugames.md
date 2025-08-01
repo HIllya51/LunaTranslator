@@ -158,6 +158,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 |  | 010050000705E000 | Dragon Quest Builders 2 |
 |  | 010060800B7A8000 | BUSTAFELLOWS |
 |  | 0100874017BE2000 | BUSTAFELLOWS シーズン2 |
+|  | 0100F6F0207CC000 | BUSTAFELLOWS season2 |
 |  | 010094601D910000 | 5分後に意外な結末　モノクロームの図書館 |
 |  | 010024200E00A000 | うたの☆プリンスさまっ♪ Repeat LOVE |
 |  | 01000C7019E1C000 | ワンド オブ フォーチュン Ｒ～ |

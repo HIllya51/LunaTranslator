@@ -19,7 +19,7 @@ else()
 		Bootup morning shyakunage Regista NNNConfig Eushully Majiro littlecheese Elf Silkys CMVS Wolf
 		Circus1 Circus2 Cotopha Artemis CatSystem Atelier Tenco QLIE Pal AIL NeXAS LunaSoft Unicorn
 		Rejet Interlude AdobeAir Retouch Malie Live Nexton Lucifen Waffle TinkerBell SystemAoi Yuris
-		Nitroplus2 Bruns EME RRE Candy Speed ApricoT Triangle AB2Try MBLMED GameMaker DxLib CodeX
+		Nitroplus2 Bruns EME RRE Candy Speed ApRicoT Triangle AB2Try MBLMED GameMaker DxLib CodeX
 		Minori Sprite RpgmXP Eagls Debonosu C4 WillPlus Tanuki GXP AOS Mink YukaSystem2 sakusesu Exp
 		Syuntada Pensil Anim hibiki Nitroplus Reallive Siglus Taskforce2 RUGP IronGameSystem Anex86
 		ShinyDaysGame MarineHeart ShinaRio CaramelBox UnisonShift Escude Ryokucha Alice Footy2

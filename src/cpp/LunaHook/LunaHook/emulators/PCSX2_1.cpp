@@ -251,7 +251,7 @@ namespace
         if (last == s)
             return buffer->clear();
         last = s;
-        s = re::sub(s, "\r\n(\x81\x40)*");
+        s = re::sub(s, "[\r\n]+(\x81\x40)*");
         buffer->from(s);
     }
     void SLPM55159(TextBuffer *buffer, HookParam *hp)

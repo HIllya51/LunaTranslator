@@ -3335,7 +3335,7 @@ class IconButton(LPushButton):
                 else:
                     icons = self._icon
                 icon = icons[self.isChecked()]
-                colors = ["", gobject.Consts.buttoncolor]
+                colors = [qtawesome.defaultcolor(), gobject.Consts.buttoncolor]
                 color = QColor(colors[self.isChecked()])
             else:
                 color = QColor(gobject.Consts.buttoncolor)

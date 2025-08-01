@@ -442,12 +442,58 @@ class mdict(cishubase):
                 allres.append(content)
         return allres
 
+    def expand_repetition_marks(self, text):
+        """
+        展开日语中的叠字符号（々、ゝ、ヽ、〱等）为完整重复形式。
+
+        Args:
+            text (str): 输入的日语文本，可能包含叠字符号。
+
+        Returns:
+            str: 展开叠字符号后的文本。
+        """
+        # 正则表达式匹配叠字符号及其前一个字符
+        pattern = re.compile(
+            r"([\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ff])(々|ゝ|ヽ|〱)"
+        )
+
+        def replace_match(match):
+            char, repetition_mark = match.group(1), match.group(2)
+            # 根据不同的叠字符号处理
+            if repetition_mark == "々":
+                # 々：重复前一个汉字
+                return char * 2
+            elif repetition_mark == "ゝ":
+                # ゝ：重复前一个平假名
+                return char * 2
+            elif repetition_mark == "ヽ":
+                # ヽ：重复前一个片假名
+                return char * 2
+            elif repetition_mark == "〱":
+                # 〱：重复前一个字符（通用）
+                return char * 2
+            else:
+                return char + repetition_mark
+
+        # 使用正则替换
+        expanded_text = pattern.sub(replace_match, text)
+        return expanded_text
+
     def searchthread(self, allres, i, word, audiob64vals, hrefsrcvals):
         f, index = self.builders[i]
         results = []
         __safe = []
         try:
             keys = self.querycomplex(word, self.getdistance(f), index)
+            if not keys:
+                # 只有正常查不到时，才尝试展开
+                word1 = self.expand_repetition_marks(word)
+                if word1 != word:
+                    keys2 = self.querycomplex(word1, self.getdistance(f), index)
+                    for _ in keys2:
+                        if _ in keys:
+                            continue
+                        keys.append(_)
             for k in keys:
                 for content in sorted(
                     set(self.searchthread_internal(index, k, __safe))

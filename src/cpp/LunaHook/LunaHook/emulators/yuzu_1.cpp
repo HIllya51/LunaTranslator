@@ -1590,6 +1590,7 @@ namespace
         auto s = buffer->strA();
         s = re::sub(s, u8"《.*?》");
         s = re::sub(s, "<[^>]*>");
+        s = re::sub(s, u8"^　");
         buffer->from(s);
     }
     template <int idx>
@@ -3033,6 +3034,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 探偵撲滅
     {0x8011c340, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, 0x0100CBA014014000ull, "1.0.0"}}, // Text
     {0x80064f20, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, 0x0100CBA014014000ull, "1.0.0"}}, // Choices
+    {0x8011B9C0, {CODEC_UTF8, 1, 0, 0, F0100CBA014014000, 0x0100CBA014014000ull, "1.0.2"}}, // Text
     // Ys X: Nordics
     {0x80817758, {CODEC_UTF8, 1, 0, 0, F0100CC401A16C000<0>, 0x0100CC401A16C000ull, "1.0.4"}}, // Main Text
     {0x80981e3c, {CODEC_UTF8, 0, 0, 0, F0100CC401A16C000<1>, 0x0100CC401A16C000ull, "1.0.4"}}, // Secondary Text
@@ -3135,6 +3137,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81e99d64, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.0"}}, // choice
     {0x8186f81c, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.0"}}, // archives
     {0x819ED7C8, {CODEC_UTF16, 1, 0, ReadTextAndLenW, F0100874017BE2000, 0x0100874017BE2000ull, "1.0.2"}},
+    // BUSTAFELLOWS season2
+    {0x81931BB0, {CODEC_UTF16, 0, 0x14, 0, NewLineCharToSpaceW, 0x0100F6F0207CC000ull, "1.0.0"}},
     // 5分後に意外な結末　モノクロームの図書館
     {0x81fa4890, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // book text
     {0x81fa5250, {CODEC_UTF16, 1, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // book text
@@ -3478,7 +3482,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80ac651c, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, 0x0100C4E013E5E000ull, "1.0.0"}}, // Main Text
     {0x80335ea0, {CODEC_UTF8, 0, 0, 0, F0100C4E013E5E000, 0x0100C4E013E5E000ull, "1.0.0"}}, // Name
     // 遙かなる時空の中で６ DX
-    {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, 0x0100F7700CB82000ull, "1.0.0"}}, // 1.0.0 & 1.0.1
+    {0x80193FAC, {0, 0, 0, 0, F0100F7700CB82000, 0x0100F7700CB82000ull, nullptr}}, // 1.0.0 & 1.0.1
     // 遙かなる時空の中で7
     {0x800102bc, {0, 0, 0, 0, 0, 0x0100CF400F7CE000ull, "1.0.0"}},                                 // name
     {0x80051f90, {0, 1, 0, T0100CF400F7CE000, F0100B5801D7CE000, 0x0100CF400F7CE000ull, "1.0.0"}}, // text

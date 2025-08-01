@@ -1321,7 +1321,7 @@ class BASEOBJECT(QObject):
         darklight = ["light", "dark"][dark]
 
         self.currentisdark = dark
-
+        qtawesome.isdark = dark
         for widget in QApplication.topLevelWidgets():
             self.setdarkandbackdrop(widget, dark)
         style = ""
