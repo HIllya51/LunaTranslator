@@ -459,13 +459,21 @@ class delayloadvbox(QWidget):
         return len(self.internal_widgets)
 
 
-class shownumQPushButton(QPushButton):
-    def __init__(self, *arg, **kw):
-        super().__init__(*arg, **kw)
+class shownumQPushButton(QToolButton):
+    def __init__(self, T):
+        super().__init__()
+        self.setText(T)
         self.num = 0
         self.setCheckable(True)
-        self.clicked.connect(self.setChecked)
-        self.setStyleSheet("text-align: left; padding-left: 1.1em;")
+        self.toggled.connect(self.__toggled)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
+        self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
+
+    def __toggled(self, checked):
+        self.setIcon(
+            qtawesome.icon("fa.chevron-down" if checked else "fa.chevron-right")
+        )
 
     def setnum(self, num):
         self.num = num
@@ -486,15 +494,6 @@ class shownumQPushButton(QPushButton):
             Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter,
             str(self.num),
         )
-
-        icon = qtawesome.icon(("fa.chevron-right", "fa.chevron-down")[self.isChecked()])
-        rect = QRectF(
-            self.height() * 0.2,
-            self.height() * (0.25, 0.2)[self.isChecked()],
-            self.height() * 0.5,
-            self.height() * 0.5,
-        )
-        icon.paint(painter, rect.toRect())
 
 
 class shrinkableitem(QWidget):
