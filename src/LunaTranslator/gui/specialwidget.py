@@ -465,15 +465,16 @@ class shownumQPushButton(QToolButton):
         self.setText(T)
         self.num = 0
         self.setCheckable(True)
-        self.toggled.connect(self.__toggled)
+        self.toggled.connect(self.setChecked)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextBesideIcon)
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
-    def __toggled(self, checked):
+    def setChecked(self, checked):
         self.setIcon(
             qtawesome.icon("fa.chevron-down" if checked else "fa.chevron-right")
         )
+        super().setChecked(checked)
 
     def setnum(self, num):
         self.num = num

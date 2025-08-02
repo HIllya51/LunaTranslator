@@ -664,20 +664,6 @@ class closeashidewindow(saveposwindow):
         super().closeEvent(event)
 
 
-def disablecolor(__: QColor):
-    if __.rgb() == 0xFF000000:
-        return Qt.GlobalColor.gray
-    __ = QColor(
-        max(0, (__.red() - 64)),
-        max(
-            0,
-            (__.green() - 64),
-        ),
-        max(0, (__.blue() - 64)),
-    )
-    return __
-
-
 class MySwitch(QAbstractButton):
     clicksignal = pyqtSignal()
 
@@ -743,7 +729,7 @@ class MySwitch(QAbstractButton):
             ]
         )
         if not self.isEnabled():
-            __ = disablecolor(__)
+            __ = qtawesome.disablecolor(__)
         return __
 
     def paintanime(self, painter: QPainter):
@@ -3335,13 +3321,10 @@ class IconButton(LPushButton):
                 else:
                     icons = self._icon
                 icon = icons[self.isChecked()]
-                colors = [qtawesome.defaultcolor(), gobject.Consts.buttoncolor]
-                color = QColor(colors[self.isChecked()])
+                color = (None, gobject.Consts.buttoncolor)[self.isChecked()]
             else:
-                color = QColor(gobject.Consts.buttoncolor)
+                color = gobject.Consts.buttoncolor
                 icon = self._icon
-            if not self.isEnabled():
-                color = disablecolor(color)
             icon = qtawesome.icon(icon, color=color)
         self.setIcon(icon)
 
