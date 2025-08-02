@@ -487,7 +487,7 @@ class shownumQPushButton(QPushButton):
             str(self.num),
         )
 
-        icon = qtawesome.icon(("fa.chevron-right", "fa.chevron-up")[self.isChecked()])
+        icon = qtawesome.icon(("fa.chevron-right", "fa.chevron-down")[self.isChecked()])
         rect = QRectF(
             self.height() * 0.2,
             self.height() * (0.25, 0.2)[self.isChecked()],
