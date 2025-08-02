@@ -337,7 +337,6 @@ namespace
     HookParam hp;
     hp.address = addrX;
     hp.type = NO_CONTEXT | USING_STRING;
-    hp.user_value = type;
     if (isH)
     {
       hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
