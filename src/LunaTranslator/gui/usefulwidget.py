@@ -583,11 +583,12 @@ class saveposwindow(LMainWindow):
         self.adjust_window_to_screen_bounds(geo)
         self.screengeochanged.emit()
 
-    @tryprint
     def __screenChanged(self, screen: QScreen):
-        screen.geometryChanged.connect(
-            functools.partial(self._changed, screen.serialNumber())
-        )
+        try:
+            _id = screen.serialNumber()
+        except:
+            return
+        screen.geometryChanged.connect(functools.partial(self._changed, _id))
 
     @tryprint
     def adjust_window_to_screen_bounds(self, screen_rect: QRect):

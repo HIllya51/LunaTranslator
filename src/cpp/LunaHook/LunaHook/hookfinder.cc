@@ -2,6 +2,7 @@
 #include "MinHook.h"
 #include "veh_hook.h"
 #define HOOK_SEARCH_UNSAFE 0
+#define HOOK_SEARCH_CHAR 0
 namespace
 {
 	SearchParam sp;
@@ -15,6 +16,7 @@ namespace
 		int offset = 0;
 		JITTYPE jittype;
 		char text[MAX_STRING_SIZE] = {};
+		int textlen = 0;
 		bool csstring;
 	};
 	std::unique_ptr<HookRecord[]> records;
@@ -148,14 +150,25 @@ namespace
 void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jittype = JITTYPE::PC, uint64_t em_addr = 0, bool csstring = false)
 {
 	str += padding;
+#if HOOK_SEARCH_CHAR
+	if (!IsShiftjisWord((WORD)str))
+#else
 	if (IsBadReadPtr(str) || IsBadReadPtr(str + MAX_STRING_SIZE))
+#endif
 		return;
 	__try
 	{
+#if HOOK_SEARCH_CHAR
+		int length = 2;
+		WORD temp = (WORD)str;
+		str = (char *)&temp;
+#else
 		int length = 0, sum = 0;
 		for (; *(uint16_t *)(str + length) && length < MAX_STRING_SIZE; length += sizeof(uint16_t))
 			sum += *(uint16_t *)(str + length);
-#if HOOK_SEARCH_UNSAFE
+#endif
+
+#if HOOK_SEARCH_CHAR || HOOK_SEARCH_UNSAFE
 		if (((length > STRING) || maybeIsJa(str)) && length < MAX_STRING_SIZE - 1)
 #else
 		if (length > STRING && length < MAX_STRING_SIZE - 1)
@@ -163,17 +176,23 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 		{
 			// many duplicate results with same address, offset, and third/fourth character will be found: filter them out
 			uint64_t signature = ((uint64_t)i << 56) | ((uint64_t)(str[2] + str[3]) << 48) | address;
-#if HOOK_SEARCH_UNSAFE
-#else
+#if !HOOK_SEARCH_CHAR && !HOOK_SEARCH_UNSAFE
 			if (signatureCache[signature % CACHE_SIZE] == signature)
 				return;
 			signatureCache[signature % CACHE_SIZE] = signature;
 #endif
 			// if there are huge amount of strings that are the same, it's probably garbage: filter them out
 			// can't store all the strings, so use sum as heuristic instead
+
+#if !HOOK_SEARCH_CHAR
 			if (_InterlockedIncrement(sumCache + (sum % CACHE_SIZE)) > 25)
 				return;
+#endif
 			long n = sp.maxRecords - _InterlockedDecrement(&recordsAvailable);
+
+#if HOOK_SEARCH_CHAR
+			n = (address + em_addr + i) * (i + 1) % sp.maxRecords;
+#endif
 			if (n < sp.maxRecords)
 			{
 				records[n].jittype = jittype;
@@ -196,8 +215,11 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 				}
 
 				for (int j = 0; j < length; ++j)
-					records[n].text[j] = str[j];
-				records[n].text[length] = 0;
+					records[n].text[records[n].textlen + j] = str[j];
+				records[n].text[records[n].textlen + length] = 0;
+#if HOOK_SEARCH_CHAR
+				records[n].textlen += length;
+#endif
 			}
 			if (n == sp.maxRecords)
 			{
@@ -285,12 +307,18 @@ bool SendJitVeh(PCONTEXT pcontext, uintptr_t address, uint64_t em_addr, JITTYPE 
 {
 	if (safeleave)
 		return false;
-	if (!addresscalledtime.count(address))
-		addresscalledtime[address] = 0;
-	auto tm = GetTickCount64();
-	if (tm - addresscalledtime[address] < 100)
+	auto iter = addresscalledtime.find(address);
+	uint64_t &ref = (iter == addresscalledtime.end()) ? (addresscalledtime.insert({address, 0}).first->second) : iter->second;
+#if HOOK_SEARCH_CHAR
+	if (ref > 100)
 		return false;
-	addresscalledtime[address] = tm;
+	ref += 1;
+#else
+	auto tm = GetTickCount64();
+	if (tm - ref < 100)
+		return false;
+	ref = tm;
+#endif
 	hook_context context = hook_context::fromPCONTEXT(pcontext);
 	SafeSendJitVeh(&context, address, em_addr, jittype, padding);
 	return true;

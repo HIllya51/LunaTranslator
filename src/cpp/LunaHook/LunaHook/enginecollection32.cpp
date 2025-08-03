@@ -143,6 +143,7 @@
 #include "engine32/SRPGStudio.h"
 #include "engine32/RpgmXP.h"
 #include "engine32/littlecheese.h"
+#include "engine32/Arcturus.h"
 #include "engine32/Eagls.h"
 #include "engine32/Debonosu.h"
 #include "engine32/C4.h"
@@ -235,6 +236,7 @@ std::vector<ENGINE *> check_engines()
         new SilkysOld,
         new CMVS,
         new Wolf,
+        new Arcturus,
         new Circus1,
         new Circus2,
         new Circus_old,

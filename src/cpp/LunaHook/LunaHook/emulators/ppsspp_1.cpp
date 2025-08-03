@@ -118,6 +118,12 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\x87\x87"), TEXTANDLEN("\x81\x5c"));
         StringFilter(buffer, TEXTANDLEN("\x87\x6e"));
     }
+    void NPJH50269(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\x87\x6e"));
+        if (buffer->size == 1)
+            buffer->clear();
+    }
     void ULJS00339(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto a2 = PPSSPP::emu_arg(context)[0];
@@ -204,6 +210,12 @@ namespace
         s = re::sub(s, R"(\x81o(.*?)\x81p)", "$1"); // ｛龍の宝玉｝
         strReplace(s, "\n");
         strReplace(s, "\x81\x40");
+        buffer->from(s);
+    }
+    void ULJM06344(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "\n(\x81\x40)*");
         buffer->from(s);
     }
     void ULJS00293(TextBuffer *buffer, HookParam *hp)
@@ -455,35 +467,6 @@ namespace
     {
         std::string s = (char *)PPSSPP::emu_arg(context)[1];
         buffer->from(ULJM06143Code(s));
-    }
-    void NPJH50902(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-    {
-        auto cs = (char *)PPSSPP::emu_arg(context)[3];
-        while (*(WORD *)(cs - 1))
-            cs -= 1;
-        cs += 1;
-        std::string ws;
-        while (*(char *)cs)
-        {
-            std::string s = cs;
-            for (int i = 0; i < s.size();)
-            {
-                if ((BYTE)s[i] == 0x87)
-                {
-                    if (((BYTE)s[i + 1] == 0x86) || (BYTE)s[i + 1] == 0x85)
-                        ws += "\x81\x5b";
-                    i += 2;
-                }
-                else
-                {
-                    ws += s[i];
-                    i += 1;
-                }
-            }
-            cs += s.size() + 1;
-        }
-        strReplace(ws, "\n");
-        buffer->from(ws);
     }
     void NPJH50809F(TextBuffer *buffer, HookParam *hp)
     {
@@ -1509,6 +1492,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88208F8, {0, 0, 0, 0, NPJH50836_2, "NPJH50836"}},
     // 越えざるは紅い花　大河は未来を紡ぐ
     {0x8871340, {0, 5, 0, 0, 0, "NPJH50867"}}, // 需要自行将自定义人名占位符替换成自定义人名
+    // 下天の華
+    {0x8915BB0, {0, 0, 0, ULJM05428, 0, "ULJM06234"}},
     // 下天の華 夢灯り
     {0x8841B70, {0, 0, 0, ULJM05428, 0, "NPJH50864"}},
     // 忍び、恋うつつ
@@ -1816,6 +1801,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x89081f4, {0, 0, 0, ULJM05441, 0, "ULJM05547"}},
     // 遙かなる時空の中で４ 愛蔵版
     {0x8955CE0, {0, 0, 0, ULJM05810, 0, "ULJM05810"}},
+    // 遙かなる時空の中で５
+    {0x8A13278, {0, 0, 0, ULJM05428, NewLineCharFilterA, "ULJM05843"}},
     // 遙かなる時空の中で５ 風花記
     {0x8B0449C, {0, 1, 0, 0, NewLineCharFilterA, "ULJM06025"}},
     // 遙かなる時空の中で６
@@ -1992,18 +1979,30 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x887B4A4, {0, 1, 0, 0, NewLineCharFilterA, "ULJM06318"}},
     // ロミオ＆ジュリエット
     {0x88696AC, {0, 1, 0, 0, NewLineCharFilterA, "NPJH50862"}},
-    // うたの☆プリンスさまっ♪All Star After Secret
-    {0x885F3C0, {0, 3, 0, NPJH50902, 0, "NPJH50902"}},
+    // うたの☆プリンスさまっ♪
+    {0x8854F28, {USING_CHAR, 0, 0, 0, NPJH50269, "NPJH50269"}},
     // うたの☆プリンスさまっ♪Repeat
-    {0x8853a34, {USING_CHAR, 0, 0, 0, 0, "NPJH50446"}},
+    {0x8853a34, {USING_CHAR, 0, 0, 0, NPJH50269, "NPJH50446"}},
+    // うたの☆プリンスさまっ♪All Star
+    {0x88789BC, {USING_CHAR, 2, 0, 0, NPJH50269, "NPJH50734"}},
+    // うたの☆プリンスさまっ♪All Star After Secret
+    {0x885DF08, {USING_CHAR, 0, 0, 0, NPJH50269, "NPJH50902"}},
+    // うたの☆プリンスさまっ♪-Amazing Aria-
+    {0x88545C4, {USING_CHAR, 0, 0, 0, NPJH50269, "NPJH50381"}},
+    // うたの☆プリンスさまっ♪Debut
+    {0x8851D20, {USING_CHAR, 0, 0, 0, NPJH50269, "NPJH50500"}},
+    // うたの☆プリンスさまっ♪-Sweet Serenade-
+    {0x8854694, {USING_CHAR, 0, 0, 0, NPJH50269, "NPJH50393"}},
     // スカーレッドライダーゼクス
     {0x8863104, {0, 1, 0, 0, ULJM06006, "ULJM06006"}},
     // スカーレッドライダーゼクス　スターダストラバーズ
     {0x8862D80, {0, 1, 0, 0, ULJM06006, "ULJM06007"}},
     // エルクローネのアトリエ ～Dear for Otomate～
     {0x8893418, {0, 0, 0, 0, ULJM05943F, "ULJM06046"}},
+    // 放課後colorful＊step～うんどうぶ！～
+    {0x882BDAC, {0, 1, 0, 0, ULJM06344, "ULJM06344"}},
     // 放課後colorful＊step～ぶんかぶ！～
-    {0x8817AD0, {0, 1, 0, 0, NewLineCharFilterA, "ULJM06363"}},
+    {0x8817AD0, {0, 1, 0, 0, ULJM06344, "ULJM06363"}},
     // お菓子な島のピーターパン～Sweet Never Land～
     {0x8883EE0, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, "ULJM05949"}},
     // NORN9 ノルン＋ノネット

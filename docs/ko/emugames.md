@@ -406,6 +406,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 |  | ULJM06192 | 黄昏のシンセミア portable |
 |  | NPJH50836 | 俺の彼女のウラオモテ ～Pure Sweet Heart～ |
 |  | NPJH50867 | 越えざるは紅い花　大河は未来を紡ぐ |
+|  | ULJM06234 | 下天の華 |
 |  | NPJH50864 | 下天の華 夢灯り |
 |  | ULJM06353 | 忍び、恋うつつ |
 |  | ULJM05387 | 蘭島物語 レアランドストーリー 少女の約定 |
@@ -547,6 +548,7 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 |  | ULJM05441 | 遙かなる時空の中で３ with 十六夜記 愛蔵版 |
 |  | ULJM05547 | 遙かなる時空の中で３ 運命の迷宮 愛蔵版 |
 |  | ULJM05810 | 遙かなる時空の中で４ 愛蔵版 |
+|  | ULJM05843 | 遙かなる時空の中で５ |
 |  | ULJM06025 | 遙かなる時空の中で５ 風花記 |
 |  | NPJH50901 | 遙かなる時空の中で６ |
 |  | ULJM06328 | SNOW BOUND LAND |
@@ -622,11 +624,17 @@ LunaTranslator는 에뮬레이터 HOOK NS/PSP/PSV/PS2에서 다양한 게임을 
 |  | NPJH50866 | 黒雪姫～スノウ・ブラック～ |
 |  | ULJM06318 | ロミオVSジュリエット |
 |  | NPJH50862 | ロミオ＆ジュリエット |
-|  | NPJH50902 | うたの☆プリンスさまっ♪All Star After Secret |
+|  | NPJH50269 | うたの☆プリンスさまっ♪ |
 |  | NPJH50446 | うたの☆プリンスさまっ♪Repeat |
+|  | NPJH50734 | うたの☆プリンスさまっ♪All Star |
+|  | NPJH50902 | うたの☆プリンスさまっ♪All Star After Secret |
+|  | NPJH50381 | うたの☆プリンスさまっ♪-Amazing Aria- |
+|  | NPJH50500 | うたの☆プリンスさまっ♪Debut |
+|  | NPJH50393 | うたの☆プリンスさまっ♪-Sweet Serenade- |
 |  | ULJM06006 | スカーレッドライダーゼクス |
 |  | ULJM06007 | スカーレッドライダーゼクス　スターダストラバーズ |
 |  | ULJM06046 | エルクローネのアトリエ ～Dear for Otomate～ |
+|  | ULJM06344 | 放課後colorful＊step～うんどうぶ！～ |
 |  | ULJM06363 | 放課後colorful＊step～ぶんかぶ！～ |
 |  | ULJM05949 | お菓子な島のピーターパン～Sweet Never Land～ |
 |  | ULJM06276 | NORN9 ノルン＋ノネット |
