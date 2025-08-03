@@ -529,7 +529,6 @@
     "翻译记录": "Registro de Tradução",
     "实时编辑": "Edição ao Vivo",
     "葡萄牙语": "Português",
-    "巴西葡萄牙语": "Português Brasileiro",
     "正在解压": "Descompactando",
     "自动更新失败，请手动更新": "Atualização automática falhou, atualize manualmente",
     "准备完毕，等待更新": "Pronto, aguardando atualizações",
@@ -819,9 +818,6 @@
     "找不到重要组件：": "Componente importante não encontrado:",
     "请重新下载并关闭杀毒软件后重试": "Baixe novamente e tente após fechar seu antivírus.",
     "找不到Webview2Runtime！": "Não é possível encontrar o WebView2 Runtime!",
-    "未添加“{currlang}”的OCR模型\n当前支持的语言：{langs}": "Modelo OCR para “{currlang}” não adicionado\nLinguais atuais suportadas: {langs}",
-    "系统未安装“{currlang}”的OCR模型\n当前支持的语言：{langs}": "Modelo OCR para “{currlang}” não está instalado\nLinguais atuais suportadas: {langs}",
-    "找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试": "Componentes importantes não encontrados:\n{modules}\nPor favor re-download e tente novamente após desabilitar o software de antivirus",
     "请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。": "Instale o WebView2 Runtime ou baixe a versão fixa e extraia para o diretório do software.",
     "API接口地址填写错误，或者当前平台不支持自动获取模型列表。": "O endereço da interface API está incorreto ou a plataforma atual não suporta recuperação automática da lista de modelos.",
     "请检查API接口地址，或手动填写模型名。": "Verifique o endereço da interface API ou insira manualmente o nome do modelo.",
@@ -836,6 +832,10 @@
     "是否保留原文？": "Manter o texto original?",
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "A manutenção do software não é fácil. Se você acha que este software é útil, sinta-se à vontade para me apoiar via [Patreon](https://patreon.com/HIllya51). Seu apoio contribuirá para a manutenção de longo prazo do software. Obrigado~",
     "不可用": "Não disponível",
-    "有道TTS": "Youdao TTS",
-    "巴西": "Brazil"
+    "巴西": "Brazil",
+    "未添加“{currlang}”的OCR模型": "Modelo OCR para \"{currlang}\" não adicionado",
+    "当前支持的语言：{langs}": "Idiomas atualmente suportados: {langs}",
+    "系统未安装“{currlang}”的OCR模型": "O sistema não possui o modelo OCR instalado para \"{currlang}\"",
+    "窗口模式缩放": "Modo janela com zoom",
+    "初始缩放倍数": "fator de zoom inicial"
 }

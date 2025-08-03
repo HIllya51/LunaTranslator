@@ -6,12 +6,12 @@ cnt = defaultdict(int)
 basepath = os.getcwd()
 
 
-def countfls(f):
+def countfls(f: str):
     _, ext = os.path.splitext(f)
     with open(f, "r", encoding="utf8", errors="ignore") as fp:
         ll = len(fp.readlines())
         # print(ff, ll)
-        cnt[ext] += ll
+        cnt[ext.split(".")[-1]] += ll
 
 
 def checkskip(f):
@@ -42,5 +42,12 @@ checkdir(
         r"LunaHook\builds",
     ),
 )
-print(cnt)
+# print(cnt)
+cntx = defaultdict(int)
+for k in cnt:
+    if k in ("cpp", "cc", "h", "hpp", "cmake"):
+        cntx["cpp"] += cnt[k]
+    else:
+        cntx[k] = cnt[k]
+print(cntx)
 print(sum(cnt.values()))
