@@ -4,7 +4,7 @@
 
 > **一款視覺小說翻譯器**
 
-### 若使用中遇到困難，可以查閱[使用說明](https://docs.lunatranslator.org/cht)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)。
+### 若使用中遇到困難，可以查閱[使用說明](https://docs.lunatranslator.org/cht)、觀看[我的B站影片](https://space.bilibili.com/592120404/video)，也歡迎加入[Discord](https://discord.com/invite/ErtDwVeAbB)/[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
 
 ## 功能支援
 
