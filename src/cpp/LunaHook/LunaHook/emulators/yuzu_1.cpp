@@ -1270,21 +1270,12 @@ namespace
         s = re::sub(s, "@(.*?)@", u8"【$1】");
         buffer->from(s);
     }
-    template <bool choice>
-    void F010027401A2A2000(TextBuffer *buffer, HookParam *hp)
+    void f0100D2A02101C000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = re::sub(s, L"\\[dic.*?text=");
-        s = re::sub(s, L"\\[|'.*?\\]");
-        s = re::sub(s, L"\\]");
-        if (choice)
-        {
-            s = re::sub(s, LR"([ \t\r\f\v]|　)");
-        }
-        else
-        {
-            s = re::sub(s, L"\\s|　");
-        }
+        s = re::sub(s, LR"(\[dic.*?text=(.*?)\])", L"$1");
+        s = re::sub(s, LR"(\[(.*?)'(.*?)\])", L"$1");
+        s = re::sub(s, L"　*\n　*");
         buffer->from(s);
     }
     void F010027401A2A2000_2(TextBuffer *buffer, HookParam *hp)
@@ -1296,7 +1287,7 @@ namespace
         last = s;
         if (x)
             return buffer->clear();
-        F010027401A2A2000<false>(buffer, hp);
+        f0100D2A02101C000(buffer, hp);
     }
 
     void F0100BD4014D8C000(TextBuffer *buffer, HookParam *hp)
@@ -3617,13 +3608,14 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // プリズンプリンセス
     {0x800eba00, {CODEC_UTF16, 2, 0x14, 0, 0, 0x0100F4800F872000ull, "1.0.0"}},
     // 泡沫のユークロニア
-    {0x8180de40, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F010027401A2A2000<false>, 0x010027401A2A2000ull, "1.0.0"}}, // text box
-    {0x816b61c0, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F010027401A2A2000<false>, 0x010027401A2A2000ull, "1.0.0"}}, // dictionary
-    {0x815fe594, {CODEC_UTF16, 0, 0, ReadTextAndLenW, F010027401A2A2000<true>, 0x010027401A2A2000ull, "1.0.0"}},  // choices
+    {0x8180de40, {CODEC_UTF16, 0, 0, ReadTextAndLenW, f0100D2A02101C000, 0x010027401A2A2000ull, "1.0.0"}}, // text box
+    {0x816b61c0, {CODEC_UTF16, 0, 0, ReadTextAndLenW, f0100D2A02101C000, 0x010027401A2A2000ull, "1.0.0"}}, // dictionary
+    {0x815fe594, {CODEC_UTF16, 0, 0, ReadTextAndLenW, f0100D2A02101C000, 0x010027401A2A2000ull, "1.0.0"}}, // choices
     {0x81836E0C, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x010027401A2A2000ull, "1.0.1"}},
     // 泡沫のユークロニア trail
     {0x81A661D8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}},
     {0x81A66EC8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}}, // prolog
+    {0x818438B0, {CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100D2A02101C000ull, nullptr}}, // 1.0.0 & 1.0.1
     // リトルバスターズ！Converted Edition
     {0x800A97C8, {CODEC_UTF8, 9, 0, 0, F0100943010310000, 0x0100943010310000ull, "1.0.0"}},
     // GrimGrimoire OnceMore

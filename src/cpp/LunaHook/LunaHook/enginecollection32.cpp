@@ -14,6 +14,7 @@
 #include "engine32/ADVSystem.h"
 #include "engine32/Pinpai.h"
 #include "engine32/AbogadoPowers.h"
+#include "engine32/Broccoli.h"
 #include "engine32/Winters.h"
 #include "engine32/CoffeeMaker.h"
 #include "engine32/TACTICS.h"
@@ -462,5 +463,6 @@ std::vector<ENGINE *> check_engines()
         new Nekotaro,
         new PixelGameMakerMVplayer,
         new TamaSoft,
+        new Broccoli,
     };
 }
