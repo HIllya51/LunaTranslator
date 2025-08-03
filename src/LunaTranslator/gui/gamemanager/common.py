@@ -167,12 +167,11 @@ def getcachedimage(src, small) -> QPixmap:
 
 
 def getpixfunction(kk, small=False, iconfirst=False) -> QPixmap:
-    checks = []
     key = ["currentmainimage", "currenticon"][iconfirst]
-    if savehook_new_data[kk].get(key) in savehook_new_data[kk].get("imagepath_all", []):
-        checks = [savehook_new_data[kk].get(key)]
-    elif not iconfirst:
-        checks = savehook_new_data[kk].get("imagepath_all", [])
+    checks = [savehook_new_data[kk].get(key)]
+    _all = savehook_new_data[kk].get("imagepath_all", [])
+    if (savehook_new_data[kk].get(key) not in _all) and (not iconfirst):
+        checks += _all
     for _ in checks:
         pix = getcachedimage(_, small)
         if not pix.isNull():
