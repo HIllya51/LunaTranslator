@@ -21,6 +21,7 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100AAD0210B6000 | 勿ノ怪契リ |
 |  | 010008702297A000 | アルカナ・ファミリア Rinato (Arcana Famiglia Rinato) |
 |  | 010087201EEA6000 | Side Kicks! beyond |
 |  | 0100C9C01E960000 | Romance MD: Always On Call |
@@ -387,6 +388,7 @@ LunaTranslator hỗ trợ nhiều trò chơi trên NS/PSP/PSV/PS2 thông qua tr�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | ULJM05491 | サイファーPORTABLE |
 |  | ULJM05962 | 花と乙女に祝福を　～春風の贈り物～　portable |
 |  | ULJM05683 | Starry☆Sky ～in Spring～ Portable |
 |  | ULJM05740 | Starry☆Sky～in Summer～Portable |

@@ -5,18 +5,6 @@ from gui.dynalang import LAction
 from traceback import print_exc
 
 
-# <<< 新增辅助函数：计算虚拟桌面的总几何区域 >>>
-def get_virtual_desktop_geometry():
-    """
-    计算并返回包含所有显示器的虚拟桌面的总 QRect。
-    这对于在多显示器环境中正确定位和缩放窗口至关重要。
-    """
-    desktop_rect = QRect()
-    for screen in QApplication.screens():
-        desktop_rect = desktop_rect.united(screen.geometry())
-    return desktop_rect
-
-
 class SideGrip(QWidget):
     def __init__(self, parent, edge):
         QWidget.__init__(self, parent)
@@ -85,6 +73,9 @@ class Mainw(QMainWindow):
             SideGrip(self, Qt.Edge.RightEdge),
             SideGrip(self, Qt.Edge.BottomEdge),
         ]
+        # corner grips should be "on top" of everything, otherwise the side grips
+        # will take precedence on mouse events, so we are adding them *after*;
+        # alternatively, widget.raise_() can be used
         self.cornerGrips = [QSizeGrip(self) for i in range(4)]
         for s in self.cornerGrips:
             s.setStyleSheet("background-color: transparent;")
@@ -103,26 +94,35 @@ class Mainw(QMainWindow):
         self.setContentsMargins(*[self.gripSize] * 4)
 
         outRect = self.rect()
+        # an "inner" rect used for reference to set the geometries of size grips
         inRect = outRect.adjusted(
             self.gripSize, self.gripSize, -self.gripSize, -self.gripSize
         )
 
+        # top left
         self.cornerGrips[0].setGeometry(QRect(outRect.topLeft(), inRect.topLeft()))
+        # top right
         self.cornerGrips[1].setGeometry(
             QRect(outRect.topRight(), inRect.topRight()).normalized()
         )
+        # bottom right
         self.cornerGrips[2].setGeometry(
             QRect(inRect.bottomRight(), outRect.bottomRight())
         )
+        # bottom left
         self.cornerGrips[3].setGeometry(
             QRect(outRect.bottomLeft(), inRect.bottomLeft()).normalized()
         )
 
+        # left edge
         self.sideGrips[0].setGeometry(0, inRect.top(), self.gripSize, inRect.height())
+        # top edge
         self.sideGrips[1].setGeometry(inRect.left(), 0, inRect.width(), self.gripSize)
+        # right edge
         self.sideGrips[2].setGeometry(
             inRect.left() + inRect.width(), inRect.top(), self.gripSize, inRect.height()
         )
+        # bottom edge
         self.sideGrips[3].setGeometry(
             self.gripSize, inRect.top() + inRect.height(), inRect.width(), self.gripSize
         )
@@ -288,6 +288,7 @@ class rangeadjust(Mainw):
                 y2 - y1 + int(2 * globalconfig["ocrrangewidth"] * r),
             )
         self._rect = rect
+        # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
 screen_shot_ui = None
@@ -315,13 +316,16 @@ class rangeselect(QMainWindow):
         self.backlabel = QLabel(self)
         self.rectlabel = QLabel(self)
         self.backlabel.move(0, 0)
+        # self.setWindowOpacity(0.5)
         self.setMouseTracking(True)
         self.setCursor(Qt.CursorShape.CrossCursor)
         self.reset()
 
     def reset(self):
-        # <<< MODIFIED: 使用辅助函数来正确设置全屏几何 >>>
-        self.setGeometry(get_virtual_desktop_geometry())
+        if len(QApplication.screens()) != 1:
+            NativeUtils.MaximumWindow(int(self.winId()))
+        else:
+            self.setGeometry(QRect(QPoint(0, 0), QApplication.screens()[0].size()))
         self.once = True
         self.is_drawing = False
         self.start_point = QPoint()
@@ -338,6 +342,8 @@ class rangeselect(QMainWindow):
         )
 
     def resizeEvent(self, e: QResizeEvent):
+        if len(QApplication.screens()) != 1:
+            NativeUtils.MaximumWindow(int(self.backlabel.winId()))
         self.backlabel.resize(e.size())
 
     def paintEvent(self, _):
@@ -436,23 +442,22 @@ class rangeselect_1(QMainWindow):
         self.backlabel2 = QLabel(self)
         self.backlabel2.move(0, 0)
         self.rectlabel = QLabel(self)
+        # self.setWindowOpacity(0.5)
         self.setMouseTracking(True)
         self.setCursor(Qt.CursorShape.CrossCursor)
 
     def reset(self):
-        # <<< MODIFIED: 使用辅助函数来正确设置全屏几何 >>>
-        total_geometry = get_virtual_desktop_geometry()
-        self.setGeometry(total_geometry)
+        screen = QApplication.primaryScreen()
+        self.setGeometry(QRect(QPoint(0, 0), screen.size()))
 
-        # <<< MODIFIED: 从整个虚拟桌面截图，而非仅主屏幕 >>>
+        screen_geometry = screen.geometry()
         if self.xx:
-            # grabWindow(0, ...)中的0代表整个桌面
-            screenshot = QApplication.primaryScreen().grabWindow(
+            screenshot = screen.grabWindow(
                 0,
-                total_geometry.x(),
-                total_geometry.y(),
-                total_geometry.width(),
-                total_geometry.height(),
+                screen_geometry.x(),
+                screen_geometry.y(),
+                screen_geometry.width(),
+                screen_geometry.height(),
             )
             self.screenshot = screenshot
             self.backlabel.setPixmap(screenshot)
@@ -510,20 +515,11 @@ class rangeselect_1(QMainWindow):
             self.update()
 
     def getRange(self):
-        # <<< MODIFIED: 坐标转换需要考虑窗口的左上角位置 >>>
-        window_origin = self.geometry().topLeft()
-
-        # 鼠标位置是相对于窗口的，需要加上窗口的原点坐标得到屏幕绝对坐标
-        start_abs = self.start_point + window_origin
-        end_abs = self.end_point + window_origin
-
-        # 应用设备像素比
-        dpr = self.devicePixelRatioF()
         x1, y1, x2, y2 = (
-            start_abs.x() * dpr,
-            start_abs.y() * dpr,
-            end_abs.x() * dpr,
-            end_abs.y() * dpr,
+            self.start_point.x() * self.devicePixelRatioF(),
+            self.start_point.y() * self.devicePixelRatioF(),
+            self.end_point.x() * self.devicePixelRatioF(),
+            self.end_point.y() * self.devicePixelRatioF(),
         )
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)

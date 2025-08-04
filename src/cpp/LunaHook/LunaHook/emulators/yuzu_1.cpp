@@ -2624,6 +2624,27 @@ namespace
         strReplace(s, "%N");
         buffer->from(s);
     }
+    void f0100AAD0210B6000(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(\\　*)");
+        s = re::sub(s, LR"(#(.*?)#\[.*?\])", L"$1"); // 注音
+        strReplace(s, L"$");                         // 颜色 $text$
+        strReplace(s, L"+", L" ");
+        buffer->from(s);
+    }
+    void f0100AAD0210B6000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        std::wstring collect;
+        while (auto result = re::search(s, LR"(\"(.*?)\")"))
+        {
+            collect += result.value()[1].str();
+            s = result.value().suffix();
+        }
+        buffer->from(collect);
+        f0100AAD0210B6000(buffer, hp);
+    }
 }
 struct emfuncinfoX
 {
@@ -2631,6 +2652,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 勿ノ怪契リ
+    {0x818F9200, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000_1, 0x0100AAD0210B6000ull, "1.0.0"}},
+    {0x818F970C, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000, 0x0100AAD0210B6000ull, "1.0.0"}},
     // アルカナ・ファミリア Rinato (Arcana Famiglia Rinato)
     {0x8189483C, {CODEC_UTF16, 0, 0X14, 0, F010043901E972000, 0x010008702297A000ull, "1.0.0"}},
     // Side Kicks! beyond
@@ -3614,7 +3638,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81836E0C, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x010027401A2A2000ull, "1.0.1"}},
     // 泡沫のユークロニア trail
     {0x81A661D8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}},
-    {0x81A66EC8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}}, // prolog
+    {0x81A66EC8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}},  // prolog
     {0x818438B0, {CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100D2A02101C000ull, nullptr}}, // 1.0.0 & 1.0.1
     // リトルバスターズ！Converted Edition
     {0x800A97C8, {CODEC_UTF8, 9, 0, 0, F0100943010310000, 0x0100943010310000ull, "1.0.0"}},

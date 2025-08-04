@@ -1451,6 +1451,20 @@ namespace
         ws = re::sub(ws, L"\\{(.*)/(.*?)\\}", L"$1");
         buffer->fromWA(ws);
     }
+    void ULJM05491(TextBuffer *buffer, HookParam *hp)
+    {
+        static int lastlen = 0;
+        static std::string firstshit;
+        auto s = buffer->strA();
+        lastlen = buffer->size;
+        if (lastlen == 2)
+        {
+            return buffer->clear();
+        }
+        static lru_cache<std::string> cache(5);
+        if (cache.touch(s))
+            return buffer->clear();
+    }
 }
 struct emfuncinfoX
 {
@@ -1458,6 +1472,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // サイファーPORTABLE
+    {0x880FF80, {0, 3, 0, 0, ULJM05491, "ULJM05491"}}, // 不可以快进
     // 花と乙女に祝福を　～春風の贈り物～　portable
     {0x8814B08, {0, 0, 0, 0, ULJM05954, "ULJM05962"}},
     // Starry☆Sky ～in Spring～ Portable
