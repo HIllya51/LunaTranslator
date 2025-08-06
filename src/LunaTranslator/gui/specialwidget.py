@@ -3,6 +3,7 @@ import threading
 from traceback import print_exc
 from myutils.wrapper import trypass
 import qtawesome
+from gui.dynalang import IconToolButton
 
 
 class chartwidget(QWidget):
@@ -459,7 +460,7 @@ class delayloadvbox(QWidget):
         return len(self.internal_widgets)
 
 
-class shownumQPushButton(QToolButton):
+class shownumQPushButton(IconToolButton):
     def __init__(self, T):
         super().__init__()
         self.setText(T)

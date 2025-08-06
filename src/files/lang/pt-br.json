@@ -837,5 +837,6 @@
     "当前支持的语言：{langs}": "Idiomas atualmente suportados: {langs}",
     "系统未安装“{currlang}”的OCR模型": "O sistema não possui o modelo OCR instalado para \"{currlang}\"",
     "窗口模式缩放": "Modo janela com zoom",
-    "初始缩放倍数": "fator de zoom inicial"
+    "初始缩放倍数": "fator de zoom inicial",
+    "添加图片": "Adicionar imagem"
 }

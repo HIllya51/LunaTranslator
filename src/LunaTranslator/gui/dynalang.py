@@ -253,7 +253,23 @@ class LStandardItemModel(QStandardItemModel):
         super().removeColumn(col)
 
 
-class LToolButton(QToolButton):
+class IconToolButton(QToolButton):
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self.__resizedirect()
+
+    def event(self, e):
+        if e.type() == QEvent.Type.FontChange:
+            self.__resizedirect()
+        return super().event(e)
+
+    def __resizedirect(self):
+        h = QFontMetricsF(self.font()).ascent()
+        sz = QSizeF(h, h).toSize()
+        self.setIconSize(sz)
+
+
+class LToolButton(IconToolButton):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
         self._text = self.text()
