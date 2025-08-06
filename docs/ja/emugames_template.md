@@ -4,5 +4,4 @@ LunaTranslatorは、シミュレーターHOOKを通じてNS/PSP/PSV/PS2上の多
 
 サポートされていないゲームについては、[issue](https://lunatranslator.org/Resource/game_support)を送信してください。
 
-::: details サポートされているエミュレータ
-| プラットフォーム |エミュレータ |
+| プラットフォーム |サポートされているエミュレータ |

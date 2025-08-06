@@ -4,15 +4,13 @@ LunaTranslator支持通過模擬器HOOK NS/PSP/PSV/PS2上的大量遊戲。
 
 對於未支持的遊戲，請向我發[issue](https://lunatranslator.org/Resource/game_support)。
 
-::: details 支持的模擬器
-| 平臺 | 模擬器 |
+| 平臺 | 支持的模擬器 |
 | - | - |
 | NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
 | PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
 <!-- | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |-->
-:::
 
 ::: tabs
 
