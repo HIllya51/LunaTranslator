@@ -871,6 +871,13 @@ namespace
 
         buffer->from(s);
     }
+    void SLPM65607(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        const int val = PCSX2_REG(v1);
+        if (val != 0x80000000)
+            return;
+        buffer->from((char *)PCSX2_REG(t0));
+    }
     void SLPS25081(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         const uintptr_t val = PCSX2_REG(a0);
@@ -1737,6 +1744,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 3LDK ～幸せになろうよ～ [初回限定版]
+    {0x15562C, {0, 0, 0, SLPM65607, SLPM66861, "SLPM-65607"}},
     // 帝国千戦記 [初回限定版]
     {0x1DB228, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25433, "SLPS-25433"}},
     // サクラ大戦Ⅴ ～さらば愛しき人よ～

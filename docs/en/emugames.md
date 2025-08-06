@@ -1,8 +1,6 @@
 # Emulator Game Support
 
-LunaTranslator supports a wide range of games on NS/PSP/PSV/PS2 through HOOK emulator. 
-
-For games that are not supported, please send an [issue](https://lunatranslator.org/Resource/game_support)
+LunaTranslator supports a large number of games through emulators. For games that are not supported, please send an [issue](https://lunatranslator.org/Resource/game_support)
 
 | Platform | Supported emulators |
 | - | - |
@@ -895,6 +893,7 @@ For games that are not supported, please send an [issue](https://lunatranslator.
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65607 | 3LDK ～幸せになろうよ～ [初回限定版] |
 |  | SLPS-25433 | 帝国千戦記 [初回限定版] |
 |  | SLPM-67009 | サクラ大戦Ⅴ ～さらば愛しき人よ～ |
 |  | SLPM-65717 | 月は東に日は西に -Operation Sanctuary- |

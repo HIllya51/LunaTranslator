@@ -1,8 +1,6 @@
 # 模拟器游戏支持
 
-LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
-
-对于未支持的游戏，请向我发[issue](https://lunatranslator.org/Resource/game_support)。
+LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请向我发[issue](https://lunatranslator.org/Resource/game_support)。
 
 | 平台 | 支持的模拟器 |
 | - | - |
@@ -895,6 +893,7 @@ LunaTranslator支持通过模拟器HOOK NS/PSP/PSV/PS2上的大量游戏。
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65607 | 3LDK ～幸せになろうよ～ [初回限定版] |
 |  | SLPS-25433 | 帝国千戦記 [初回限定版] |
 |  | SLPM-67009 | サクラ大戦Ⅴ ～さらば愛しき人よ～ |
 |  | SLPM-65717 | 月は東に日は西に -Operation Sanctuary- |
