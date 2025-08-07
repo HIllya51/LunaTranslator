@@ -2,16 +2,16 @@
     "language": "zh-hans",
     "theme": 0,
     "windowPos": {
-        "centerX": 749.0,
-        "centerY": 923.0,
+        "centerX": 804.0,
+        "centerY": 801.5,
         "width": 998.6666870117188,
-        "height": 806.6666870117188,
-        "maximized": false
+        "height": 620.6666870117188,
+        "maximized": true
     },
     "shortcuts": {
         "scale": 593,
-        "windowedModeScale": 583,
-        "toolbar": 584
+        "windowedModeScale": 3153,
+        "toolbar": 2372
     },
     "countdownSeconds": 3,
     "developerMode": false,
@@ -33,6 +33,7 @@
     "enableStatisticsForDynamicDetection": false,
     "minFrameRate": 10.0,
     "disableFP16": false,
+    "keepOnTop": false,
     "scalingModes": [
         {
             "name": "Lanczos",
@@ -155,15 +156,9 @@
         }
     ],
     "overlay": {
-        "initialToolbarState": 2,
+        "fullscreenInitialToolbarState": 2,
+        "windowedInitialToolbarState": 2,
         "screenshotsDir": "",
-        "windows": {
-            "profiler": {
-                "hArea": 2,
-                "vArea": 1,
-                "hPos": 60.0,
-                "vPos": 0.5
-            }
-        }
+        "windows": {}
     }
 }

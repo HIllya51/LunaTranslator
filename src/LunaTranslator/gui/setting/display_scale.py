@@ -6,6 +6,7 @@ from gui.usefulwidget import (
     createfoldgrid,
     D_getsimpleswitch,
     getsimplepatheditor,
+    getboxlayout,
     SuperCombo,
 )
 from myutils.magpie_builtin import AdapterService
@@ -122,10 +123,30 @@ def makescalew():
                 grid=[
                     [
                         "工具栏初始状态",
-                        D_getsimplecombobox(
-                            ["关闭", "始终显示", "自动隐藏"],
-                            magpie_config["overlay"],
-                            "initialToolbarState",
+                        getboxlayout(
+                            [
+                                getboxlayout(
+                                    [
+                                        "全屏模式缩放",
+                                        D_getsimplecombobox(
+                                            ["关闭", "始终显示", "自动隐藏"],
+                                            magpie_config["overlay"],
+                                            "fullscreenInitialToolbarState",
+                                        ),
+                                    ]
+                                ),
+                                getboxlayout(
+                                    [
+                                        "窗口模式缩放",
+                                        D_getsimplecombobox(
+                                            ["关闭", "始终显示", "自动隐藏"],
+                                            magpie_config["overlay"],
+                                            "windowedInitialToolbarState",
+                                        ),
+                                    ]
+                                ),
+                            ],
+                            lc=QVBoxLayout,
                         ),
                     ],
                     [
