@@ -33,6 +33,10 @@
 
     Văn bản lịch sử nhận được sẽ được lưu trữ. Khi xem nội dung của một mục văn bản trong cửa sổ chọn văn bản, văn bản lịch sử được lưu trữ sẽ được truy vấn. Nếu có quá nhiều mục văn bản hoặc văn bản làm mới liên tục, nó sẽ gây ra quá nhiều văn bản được lưu trữ, làm cho việc xem văn bản trở nên chậm chạp hơn (đôi khi ngay cả khi không xem). Thực tế, hầu hết văn bản được lưu trữ ở đây là vô ích; văn bản lịch sử hữu ích có thể được xem trong cửa sổ văn bản lịch sử. Bạn có thể giảm giá trị này tùy ý (mặc định là 1000000, nhưng có thể giảm xuống 1000).
 
+1. #### Độ dài văn bản đầu ra tối đa cho phép  
+
+   Khi bỏ qua hoặc xem lại văn bản lịch sử trong trò chơi, rất nhiều văn bản có thể được xuất ra cùng một lúc, nhưng bạn có thể không thực sự quan tâm đến chúng. Điều chỉnh giá trị này đến mức phù hợp có thể lọc bỏ các văn bản đầu ra đột ngột.  
+
 ## Cài Đặt Dành Riêng Cho Trò Chơi
 
 1. #### Hook Bổ Sung

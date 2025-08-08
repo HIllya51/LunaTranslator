@@ -191,6 +191,7 @@
             "reasoning_effort_use": false,
             "modellistcache": [],
             "s": "",
+            "use_max_completion_tokens": false,
             "customparams": []
         },
         "argstype": {
@@ -250,11 +251,18 @@
                 "max": 2,
                 "step": 0.01
             },
+            "use_max_completion_tokens": {
+                "name": "使用_max_completion_tokens",
+                "type": "switch"
+            },
             "max_tokens": {
                 "type": "intspin",
                 "min": 1,
                 "max": 1000000,
-                "step": 1
+                "step": 1,
+                "appends": [
+                    "use_max_completion_tokens"
+                ]
             },
             "custom_prompt": {
                 "name": "自定义_prompt",

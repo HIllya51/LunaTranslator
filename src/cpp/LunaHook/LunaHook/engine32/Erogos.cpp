@@ -2,6 +2,7 @@
 static bool h1()
 {
   // らぶフェチ～手コキ編～
+  // TextOutA需要调整文字速度为最快才能正确提取，这个不需要，比较完美。
   const BYTE bytes[] = {
       /*
        v4 = v1;

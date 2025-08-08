@@ -429,7 +429,7 @@
     "删除图片": "Delete Image",
     "跟随默认": "Follow Default",
     "删除行": "Delete Row",
-    "使用": "Apply",
+    "使用": "Use",
     "最小字数": "Minimum Number of Characters",
     "最大字数": "Maximum Number of Characters",
     "最小行数": "Minimum Number of Lines",
@@ -839,5 +839,6 @@
     "窗口模式缩放": "Windowed mode scaling",
     "初始缩放倍数": "Initial zoom level",
     "添加图片": "Add image",
-    "全屏模式缩放": "Full-screen mode zoom"
+    "全屏模式缩放": "Full-screen mode zoom",
+    "最大允许输出文本长度": "Maximum allowed output text length"
 }

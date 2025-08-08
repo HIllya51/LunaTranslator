@@ -357,6 +357,7 @@
 			"modellistcache": [],
 			"附带上下文个数": 0,
 			"cachecontext": false,
+			"use_max_completion_tokens": false,
 			"API接口地址": "https://api.openai.com",
 			"SECRET_KEY": "",
 			"使用自定义promt": false,
@@ -466,11 +467,18 @@
 					"high"
 				]
 			},
+			"use_max_completion_tokens": {
+				"name": "使用_max_completion_tokens",
+				"type": "switch"
+			},
 			"max_tokens": {
 				"type": "intspin",
 				"min": 1,
 				"max": 1000000,
-				"step": 1
+				"step": 1,
+				"appends": [
+					"use_max_completion_tokens"
+				]
 			},
 			"流式输出": {
 				"type": "switch",

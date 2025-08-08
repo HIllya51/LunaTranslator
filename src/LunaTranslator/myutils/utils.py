@@ -935,13 +935,14 @@ def common_create_gpt_data(config: dict, message, extrabody):
     data = dict(
         model=config["model"],
         messages=message,
-        # optional
-        max_tokens=config["max_tokens"],
         # n=1,
         # stop=None,
         top_p=config["top_p"],
         temperature=temperature,
     )
+    use_max_completion_tokens = config.get("use_max_completion_tokens", False)
+    key_tokens = ("max_tokens", "max_completion_tokens")[use_max_completion_tokens]
+    data.update({key_tokens: config["max_tokens"]})
     if config.get("流式输出", False):
         data.update(stream=True)
     if config.get("frequency_penalty_use", False):

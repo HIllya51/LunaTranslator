@@ -184,6 +184,19 @@ def gethookgrid(self):
                 2,
             ),
         ],
+        [
+            "最大允许输出文本长度",
+            (
+                D_getspinbox(
+                    0,
+                    1000000000,
+                    globalconfig,
+                    "maxOutputSize",
+                    default=10000,
+                ),
+                2,
+            ),
+        ],
     ]
 
     return grids

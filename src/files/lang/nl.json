@@ -839,5 +839,6 @@
     "窗口模式缩放": "Venstermodus schalen",
     "初始缩放倍数": "initiële zoomfactor",
     "添加图片": "Afbeelding toevoegen",
-    "全屏模式缩放": "Volledig schermmodus zoomen"
+    "全屏模式缩放": "Volledig schermmodus zoomen",
+    "最大允许输出文本长度": "Maximaal toegestane uitvoertekstlengte"
 }

@@ -839,5 +839,6 @@
     "窗口模式缩放": "Modalità finestra ridimensionabile",
     "初始缩放倍数": "Fattore di zoom iniziale",
     "添加图片": "Aggiungi immagine",
-    "全屏模式缩放": "Modalità a schermo intero zoom"
+    "全屏模式缩放": "Modalità a schermo intero zoom",
+    "最大允许输出文本长度": "Lunghezza massima consentita del testo in uscita"
 }

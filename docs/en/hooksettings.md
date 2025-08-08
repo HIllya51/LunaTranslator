@@ -33,6 +33,11 @@
 
     Received historical text is cached. When viewing the content of a text item in the text selection window, the historical cached text is queried. If there are too many text items or the text refreshes repeatedly, it will cause too much cached text, making it more sluggish to view text (sometimes even when not viewing). In fact, most of the cached text here is useless; useful historical text can be viewed in historical text window. You can arbitrarily lower this value (default is 1000000, but it can be lowered to 1000).
 
+1. #### Maximum Allowed Output Text Length  
+
+   When skipping or viewing historical text in the game, a large amount of text may be output at once, but you may not actually be interested in this text. Adjusting this value to an appropriate level can filter out sudden bursts of text output.  
+
+
 ## Dedicated Game Settings
 
 1. #### Additional Hooks

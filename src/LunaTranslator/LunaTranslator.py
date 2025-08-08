@@ -389,7 +389,6 @@ class BASEOBJECT(QObject):
         waitforresultcallbackengine=None,
         waitforresultcallbackengine_force=False,
         erroroutput=None,
-        donttrans=False,
         updateTranslate=False,
         isFromHook=False,
     ):
@@ -401,7 +400,6 @@ class BASEOBJECT(QObject):
                 waitforresultcallbackengine=waitforresultcallbackengine,
                 waitforresultcallbackengine_force=waitforresultcallbackengine_force,
                 erroroutput=erroroutput,
-                donttrans=donttrans,
                 updateTranslate=updateTranslate,
                 isFromHook=isFromHook,
             )
@@ -425,7 +423,6 @@ class BASEOBJECT(QObject):
         waitforresultcallbackengine=None,
         waitforresultcallbackengine_force=False,
         erroroutput=None,
-        donttrans=False,
         updateTranslate=False,
         isFromHook=False,
     ):
@@ -469,8 +466,6 @@ class BASEOBJECT(QObject):
             self.textsource.sqlqueueput((text, origin))
         except:
             pass
-        if donttrans:
-            return
         _showrawfunction_unsafe = None
         if not waitforresultcallback:
             self.currenttext = text

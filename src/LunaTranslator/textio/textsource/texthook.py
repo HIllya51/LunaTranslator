@@ -701,11 +701,9 @@ class texthook(basetext):
 
     def dispatchtext(self, text):
         self.runonce_line = text
-
-        donttrans = (windows.GetKeyState(windows.VK_CONTROL) < 0) or (
-            windows.GetKeyState(windows.VK_SHIFT) < 0
-        )
-        return super().dispatchtext(text, donttrans=donttrans, isFromHook=True)
+        if len(text) > globalconfig.get("maxOutputSize", 10000):
+            return
+        return super().dispatchtext(text, isFromHook=True)
 
     def gettextonce(self):
         return self.runonce_line

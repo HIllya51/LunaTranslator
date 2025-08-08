@@ -839,5 +839,6 @@
     "窗口模式缩放": "Fönsterläges skalning",
     "初始缩放倍数": "initial zoomnivå",
     "添加图片": "Lägg till bild",
-    "全屏模式缩放": "Helskärmsläge zoom"
+    "全屏模式缩放": "Helskärmsläge zoom",
+    "最大允许输出文本长度": "Maximal tillåten utdatatextlängd"
 }
