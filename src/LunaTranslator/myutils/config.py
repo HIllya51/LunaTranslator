@@ -62,7 +62,9 @@ def tryreadconfig2(path):
     return x
 
 
-static_data: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = tryreadconfig2("static_data.json")
+static_data: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = (
+    tryreadconfig2("static_data.json")
+)
 defaultpost = tryreadconfig2("postprocessconfig.json")
 defaultglobalconfig = tryreadconfig2("config.json")
 defaulterrorfix = tryreadconfig2("transerrorfixdictconfig.json")
@@ -72,8 +74,8 @@ ocrdfsetting = tryreadconfig2("ocrsetting.json")
 ocrerrorfixdefault = tryreadconfig2("ocrerrorfix.json")
 
 ocrerrorfix = tryreadconfig("ocrerrorfix.json")
-globalconfig: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = tryreadconfig(
-    "config.json"
+globalconfig: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = (
+    tryreadconfig("config.json")
 )
 magpie_config = tryreadconfig_1("Magpie/config.json", pathold="magpie_config.json")
 postprocessconfig = tryreadconfig("postprocessconfig.json")
@@ -441,7 +443,15 @@ def safesave(errorcollect: list, *argc, **kw):
         print_exc()
 
 
+_is_config_saving = False
+
+
 def saveallconfig(test=False):
+    # 保存过程中直接忽略其他保存请求
+    global _is_config_saving
+    if _is_config_saving:
+        return
+    _is_config_saving = True
     errorcollect = []
     safesave(errorcollect, "userconfig/config.json", globalconfig)
     safesave(errorcollect, "userconfig/postprocessconfig.json", postprocessconfig)
@@ -460,4 +470,5 @@ def saveallconfig(test=False):
     safesave(errorcollect, "userconfig/Magpie/config.json", magpie_config)
     if not test:
         safesave(errorcollect, "files/lang/{}.json".format(getlanguse()), languageshow)
+    _is_config_saving = False
     return errorcollect

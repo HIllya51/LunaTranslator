@@ -14,6 +14,7 @@ from myutils.config import (
     getlanguse,
     _TR,
     isascii,
+    saveallconfig,
 )
 from ctypes import cast, c_void_p, c_wchar_p
 from myutils.keycode import mod_map_r
@@ -1499,6 +1500,8 @@ class BASEOBJECT(QObject):
             self.showtraymessage("Magpie", cast(value2, c_wchar_p).value, lambda: 1)
         elif msg == 5:
             magpie_config.update(json.loads(cast(value2, c_wchar_p).value))
+        elif msg == -1:
+            saveallconfig()
 
     def _dowhenwndcreate(self, obj):
         if not isinstance(obj, QWidget):
