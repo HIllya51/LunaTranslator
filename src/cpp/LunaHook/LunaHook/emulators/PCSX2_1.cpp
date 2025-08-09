@@ -539,6 +539,10 @@ namespace
             return buffer->clear();
         last = s;
     }
+    void SLPM65634(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("#cr0"));
+    }
     void FSLPM66293(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("#cr0"));
@@ -1744,6 +1748,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 夏少女 Promised Summer
+    {0xBBBA70, {DIRECT_READ, 0, 0, 0, SLPM65634, "SLPM-65634"}},
+    // 十六夜れんか ～かみふるさと～
+    {0x112F2C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(v1), 0, 0, 0, "SLPM-65545"}},
+    // オレンジポケット -リュート- [初回限定版]
+    {0x12AF28, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-65524"}},
     // 3LDK ～幸せになろうよ～ [初回限定版]
     {0x15562C, {0, 0, 0, SLPM65607, SLPM66861, "SLPM-65607"}},
     // 帝国千戦記 [初回限定版]
