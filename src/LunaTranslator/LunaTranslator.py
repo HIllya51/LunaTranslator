@@ -136,6 +136,18 @@ class BASEOBJECT(QObject):
         self.__connect_internal(self.showupdatebtn)
         self.createimageviewsig.connect(self.createimageview)
 
+    @property
+    def currentread(self):
+        context = (globalconfig["read_raw"], globalconfig["read_trans"])
+        if context == (False, False):
+            return None
+        elif context == (True, False):
+            return self.currenttext
+        elif context == (False, True):
+            return self.currenttranslate_1
+        elif context == (True, True):
+            return (self.currenttranslate_1, self.currenttext)[self.latest_is_origin]
+
     def __init__(self) -> None:
         super().__init__()
         self.initsignals()
@@ -147,8 +159,8 @@ class BASEOBJECT(QObject):
         self.textsource_p: basetext = None
         self.currenttext = ""
         self.currenttranslate = ""
-        self.currentread = ""
-        self.currentread_from_origin = None
+        self.currenttranslate_1 = ""
+        self.latest_is_origin = True
         self.refresh_on_get_trans_signature = 0
         self.currentsignature = None
         self.isrunning = True
@@ -352,8 +364,7 @@ class BASEOBJECT(QObject):
             )
             self.currenttext = text
             self.currenttranslate = text
-            self.currentread = text
-            self.currentread_from_origin = False
+            self.latest_is_origin = False
             return
         elif infotype == "<msg_info_append>":
             self.translation_ui.displayres.emit(
@@ -379,7 +390,8 @@ class BASEOBJECT(QObject):
             self.translation_ui.translate_text.showhidetranslate(False)
 
     def updaterawtext(self, text):
-        self.currentread = text
+        self.currenttext = text
+        self.latest_is_origin = True
         self.translation_ui.displayraw2.emit(text)
 
     def textgetmethod(
@@ -471,9 +483,9 @@ class BASEOBJECT(QObject):
         if not waitforresultcallback:
             self.currenttext = text
             self.currenttranslate = ""
+            self.currenttranslate_1 = ""
+            self.latest_is_origin = True
             if globalconfig["read_raw"]:
-                self.currentread = text
-                self.currentread_from_origin = True
                 self.readcurrent()
             self.dispatchoutputer(text, True)
 
@@ -714,6 +726,17 @@ class BASEOBJECT(QObject):
                 self.transhis.getnewtranssignal.emit(
                     _TR(dynamicapiname(classname)), res
                 )
+                try:
+                    self.textsource.sqlqueueput((contentraw, classname, res))
+                except:
+                    pass
+                gobject.base.dispatch_translate.emit(classname, res)
+                if len(self.currenttranslate):
+                    self.currenttranslate += "\n"
+                self.currenttranslate += res
+                self.currenttranslate_1 = res
+                safe_callback(res)
+                self.latest_is_origin = False
                 if not waitforresultcallback:
                     if (
                         globalconfig["read_trans"]
@@ -723,21 +746,10 @@ class BASEOBJECT(QObject):
                             or ((not globalconfig["toppest_translator"]))
                         )
                     ):
-                        self.currentread = res
-                        self.currentread_from_origin = False
                         self.readcurrent()
                         read_trans_once_check.append(classname)
 
                     self.dispatchoutputer(res, False)
-                try:
-                    self.textsource.sqlqueueput((contentraw, classname, res))
-                except:
-                    pass
-                gobject.base.dispatch_translate.emit(classname, res)
-                if len(self.currenttranslate):
-                    self.currenttranslate += "\n"
-                self.currenttranslate += res
-                safe_callback(res)
 
     def __usewhich(self):
 
@@ -829,7 +841,9 @@ class BASEOBJECT(QObject):
         if (not force) and (not globalconfig["autoread"]):
             return
         text1 = self.currentread
-        matchitme = self.ttsskip(text1, self.__usewhich(), self.currentread_from_origin)
+        if not text1:
+            return
+        matchitme = self.ttsskip(text1, self.__usewhich(), self.latest_is_origin)
         reader = None
         if matchitme is None:
             reader = self.reader
