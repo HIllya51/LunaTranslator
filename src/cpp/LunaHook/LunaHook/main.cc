@@ -23,6 +23,31 @@ namespace
 	TextHook (*hooks)[MAX_HOOK];
 	int currentHook = 0;
 }
+void Send_I18N_Keys()
+{
+	for (auto &[_en, data] : TR.get_hook())
+	{
+		HostInfoI18NReq resp(_en, data.raw());
+		WriteFile(hookPipe, &resp, sizeof(resp), DUMMY, nullptr);
+	}
+}
+void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe)
+{
+	// 1. hook->host
+	// WORD[4] version
+	DWORD count;
+	WriteFile(hookPipe, LUNA_VERSION, sizeof(LUNA_VERSION), &count, nullptr);
+	// 2. hook->host && host->hook
+	// i18n key & result
+	for (auto &[_en, data] : TR.get_hook())
+	{
+		HostInfoI18NReq req(_en, data.raw());
+		WriteFile(hookPipe, &req, sizeof(req), DUMMY, nullptr);
+		I18NResponse resp;
+		ReadFile(hostPipe, &resp, sizeof(resp), &count, nullptr);
+		data.set(resp.result);
+	}
+}
 DWORD WINAPI Pipe(LPVOID)
 {
 	for (bool running = true; running; hookPipe = INVALID_HANDLE_VALUE)
@@ -42,52 +67,52 @@ DWORD WINAPI Pipe(LPVOID)
 		DWORD mode = PIPE_READMODE_MESSAGE;
 		SetNamedPipeHandleState(hostPipe, &mode, NULL, NULL);
 
-		*(DWORD *)buffer = GetCurrentProcessId();
-		WriteFile(hookPipe, buffer, sizeof(DWORD), &count, nullptr);
-		WriteFile(hookPipe, LUNA_VERSION, sizeof(LUNA_VERSION), &count, nullptr);
-
-		ReadFile(hostPipe, &curr_lang, sizeof(SUPPORT_LANG), &count, nullptr);
-		ConsoleOutput(TR[PIPE_CONNECTED]);
+		CommunicationInitialize(hostPipe, hookPipe);
 		HIJACK();
 		host_connected = true;
 		while (running && ReadFile(hostPipe, buffer, PIPE_BUFFER_SIZE, &count, nullptr))
 			switch (*(HostCommandType *)buffer)
 			{
+			case HOST_COMMAND_I18N_RESPONSE:
+			{
+				auto info = (I18NResponse *)buffer;
+				TR.get_hook()[info->enum_].set(info->result);
+			}
+			break;
 			case HOST_COMMAND_NEW_HOOK:
 			{
-				auto info = *(InsertHookCmd *)buffer;
+				auto info = (InsertHookCmd *)buffer;
 				static int userHooks = 0;
-				NewHook(info.hp, ("UserHook" + std::to_string(userHooks += 1)).c_str());
+				NewHook(info->hp, ("UserHook" + std::to_string(userHooks += 1)).c_str());
 			}
 			break;
 			case HOST_COMMAND_INSERT_PC_HOOKS:
 			{
-				auto info = *(InsertPCHooksCmd *)buffer;
-				if (info.which == 0)
+				auto info = (InsertPCHooksCmd *)buffer;
+				if (info->which == 0)
 					PcHooks::hookGdiGdiplusD3dxFunctions();
-				else if (info.which == 1)
+				else if (info->which == 1)
 					PcHooks::hookOtherPcFunctions();
 			}
 			break;
-			case HOST_COMMAND_SET_LANGUAGE:
+			case HOST_COMMAND_I18N_QUERY:
 			{
-				auto info = *(SetLanguageCmd *)buffer;
-				curr_lang = info.lang;
+				Send_I18N_Keys();
 			}
 			break;
 			case HOST_COMMAND_REMOVE_HOOK:
 			{
-				auto info = *(RemoveHookCmd *)buffer;
-				RemoveHook(info.address, 0);
+				auto info = (RemoveHookCmd *)buffer;
+				RemoveHook(info->address, 0);
 			}
 			break;
 			case HOST_COMMAND_FIND_HOOK:
 			{
-				auto info = *(FindHookCmd *)buffer;
-				if (*info.sp.text)
-					SearchForText(info.sp.text, info.sp.codepage);
+				auto info = (FindHookCmd *)buffer;
+				if (*info->sp.text)
+					SearchForText(info->sp.text, info->sp.codepage);
 				else
-					SearchForHooks(info.sp);
+					SearchForHooks(info->sp);
 			}
 			break;
 			case HOST_COMMAND_DETACH:

@@ -1377,32 +1377,26 @@ class BASEOBJECT(QObject):
         QApplication.instance().setFont(font)
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:
-        # global font_default_used
-        # if lang in font_default_used.keys():
-        #     return font_default_used[lang]
 
         t = "setting_font_type_default" if issetting else "font_type_default"
         l = lang if lang in static_data[t].keys() else "default"
 
-        font_default = ""
-
+        font_default = None
+        fontlist = []
         if isinstance(static_data[t][l], list):
             fontlist = static_data[t][l]
         elif isinstance(static_data[t][l], dict):
             fontlist = static_data[t][l].get(("normal", "xp")[sys_le_xp], [])
-        else:
-            fontlist = []
         is_font_installed = lambda font: QFont(font).exactMatch()
         for font in fontlist:
             if is_font_installed(font):
                 font_default = font
                 break
-        if font_default == "":
+        if not font_default:
             font_default = QFontDatabase.systemFont(
                 QFontDatabase.SystemFont.GeneralFont
             ).family()
 
-        # font_default_used["lang"] = font_default
         return font_default
 
     def set_font_default(self, lang: Languages, fonttype: str) -> None:

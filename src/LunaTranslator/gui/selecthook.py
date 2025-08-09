@@ -35,7 +35,7 @@ class HOSTINFO:
     Console = 0
     Warning = 1
     EmuGameName = 2
-    IsEmuNotify = 3
+    Notification = 3
 
 
 def getformlayoutw(w=None, cls=LFormLayout, hide=False):
@@ -942,15 +942,8 @@ class hookselect(closeashidewindow):
             QMessageBox.warning(self, _TR("警告"), sentence)
         elif info == HOSTINFO.EmuGameName:
             gobject.base.displayinfomessage(sentence, "<msg_info_refresh>")
-        elif info == HOSTINFO.IsEmuNotify:
-            t = _TR("检测到模拟器")
-            t += ": "
-            t += sentence
-            t += "\n"
-            t += _TR(
-                "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏"
-            )
-            gobject.base.displayinfomessage(t, "<msg_info_append>")
+        elif info == HOSTINFO.Notification:
+            gobject.base.displayinfomessage(sentence, "<msg_info_append>")
 
     def getnewsentence(self, sentence):
         if self.at1 == 2:

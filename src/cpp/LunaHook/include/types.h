@@ -266,6 +266,7 @@ struct SearchParam
 	ALIGNPTR(uint64_t __4, size_t sharememsize = 0);
 };
 enum SUPPORT_LANG;
+enum LANG_STRINGS_HOOK;
 
 #define DECLARE_SIMPLE_CMD(structname, type, var, CMD) \
 	struct structname                                  \
@@ -276,15 +277,37 @@ enum SUPPORT_LANG;
 	};
 
 // host->hook
-DECLARE_SIMPLE_CMD(SetLanguageCmd, SUPPORT_LANG, lang, HOST_COMMAND_SET_LANGUAGE)
 DECLARE_SIMPLE_CMD(InsertPCHooksCmd, int, which, HOST_COMMAND_INSERT_PC_HOOKS)
 DECLARE_SIMPLE_CMD(InsertHookCmd, HookParam, hp, HOST_COMMAND_NEW_HOOK)
 DECLARE_SIMPLE_CMD(RemoveHookCmd, uint64_t, address, HOST_COMMAND_REMOVE_HOOK)
 DECLARE_SIMPLE_CMD(FindHookCmd, SearchParam, sp, HOST_COMMAND_FIND_HOOK)
 
+struct ResetLanguageCmd
+{
+	HostCommandType command = HOST_COMMAND_I18N_QUERY;
+};
+struct I18NResponse
+{
+	I18NResponse() {};
+	I18NResponse(LANG_STRINGS_HOOK enum__, const char *result_) : enum_(enum__)
+	{
+		if (result_)
+			strncpy_s(result, result_, MESSAGE_SIZE - 1);
+	}
+	HostCommandType command = HOST_COMMAND_I18N_RESPONSE;
+	LANG_STRINGS_HOOK enum_;
+	char result[MESSAGE_SIZE] = {};
+};
 // hook->host
 DECLARE_SIMPLE_CMD(HookRemovedNotif, uint64_t, address, HOST_NOTIFICATION_RMVHOOK)
 
+struct HostInfoI18NReq
+{
+	HostInfoI18NReq(LANG_STRINGS_HOOK enum__, const char *key_) : enum_(enum__) { strncpy_s(key, key_, MESSAGE_SIZE - 1); }
+	HostNotificationType command = HOST_NOTIFICATION_I18N_RESP;
+	LANG_STRINGS_HOOK enum_;
+	char key[MESSAGE_SIZE] = {};
+};
 struct HostInfoNotif
 {
 	HostInfoNotif(std::string message = "") { strncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1); }

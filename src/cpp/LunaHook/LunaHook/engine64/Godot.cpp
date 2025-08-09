@@ -23,11 +23,9 @@ bool InsertGodotHook_X64()
 		};
 		char nameForUser[HOOK_NAME_SIZE] = "RichTextLabel_add_text";
 
-		ConsoleOutput("Insert: Godot_add_text_X64 Hook ");
 		return NewHook(myhp, nameForUser);
 	}
 
-	ConsoleOutput("Godot_x64: pattern not found");
 	return false;
 }
 bool InsertGodotHook2_X64()
@@ -54,11 +52,9 @@ bool InsertGodotHook2_X64()
 		hp.address = addr;
 		hp.offset = regoffset(rcx);
 		hp.type = USING_STRING | CODEC_UTF16;
-		ConsoleOutput("INSERT Godot2_x64 Hook ");
 		return NewHook(hp, "Godot2_x64");
 	}
 
-	ConsoleOutput("Godot2_x64: pattern not found");
 	return false;
 }
 bool Godot::attach_function()

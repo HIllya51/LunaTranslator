@@ -1741,6 +1741,34 @@ namespace
     {
         StringFilter(buffer, "%", 2);
     }
+    void SLPM65639(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            return buffer->clear();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        StringFilter(buffer, TEXTANDLEN("\\n"));
+    }
+    void SLPM65559(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        static unsigned char last;
+        unsigned char c = PCSX2_REG(a0);
+        if (last)
+        {
+            WORD x = c << 8 | last;
+            if (x != 0x4081)
+                buffer->from_t(x);
+            last = 0;
+        }
+        else
+        {
+            if (IsShiftjisLeadByte(c))
+                last = c;
+        }
+    }
 }
 struct emfuncinfoX
 {
@@ -1748,6 +1776,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // セイント・ビースト ～螺旋の章～ [限定版]
+    {0x1056DC, {0, PCSX2_REG_OFFSET(s0), 0, 0, 0, "SLPS-25807"}},
+    // てのひらをたいように ～永久の絆～ [初回限定版]
+    {0x211590, {0, 0, 0, SLPM65559, 0, "SLPM-65559"}},
+    // パティシエなにゃんこ ～初恋はいちご味～ [限定版]
+    {0x147A70, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65639, "SLPM-65639"}},
+    // 水月 ～迷心～
+    {0x1e6a20, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55170, "SLPM-65751"}},
     // 夏少女 Promised Summer
     {0xBBBA70, {DIRECT_READ, 0, 0, 0, SLPM65634, "SLPM-65634"}},
     // 十六夜れんか ～かみふるさと～

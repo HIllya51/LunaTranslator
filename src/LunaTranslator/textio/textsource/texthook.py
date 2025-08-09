@@ -7,7 +7,6 @@ from myutils.config import (
     globalconfig,
     savehook_new_data,
     findgameuidofpath,
-    getlanguse,
     _TR,
 )
 from textio.textsource.textsourcebase import basetext
@@ -33,6 +32,8 @@ from ctypes import (
     c_uint8,
     c_uint,
     c_char,
+    c_size_t,
+    cast,
 )
 from ctypes.wintypes import DWORD, LPCWSTR
 
@@ -86,6 +87,7 @@ HostInfoHandler = CFUNCTYPE(None, c_int, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, DWORD, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
+I18NQueryCallback = CFUNCTYPE(c_void_p, c_void_p, c_bool)
 
 
 class texthook(basetext):
@@ -178,7 +180,11 @@ class texthook(basetext):
             HostInfoHandler,
             HookInsertHandler,
             EmbedCallback,
+            I18NQueryCallback,
         )
+        self.Luna_Alloc = LunaHost.Luna_Alloc
+        self.Luna_Alloc.argtypes = (c_void_p, c_size_t)
+        self.Luna_Alloc.restype = c_void_p
         self.Luna_ConnectProcess = LunaHost.Luna_ConnectProcess
         self.Luna_ConnectProcess.argtypes = (DWORD,)
         self.Luna_CheckIfNeedInject = LunaHost.Luna_CheckIfNeedInject
@@ -191,8 +197,7 @@ class texthook(basetext):
         self.Luna_RemoveHook.argtypes = DWORD, c_uint64
         self.Luna_DetachProcess = LunaHost.Luna_DetachProcess
         self.Luna_DetachProcess.argtypes = (DWORD,)
-        self.Luna_SetLanguage = LunaHost.Luna_SetLanguage
-        self.Luna_SetLanguage.argtypes = (c_char_p,)
+        self.Luna_ResetLang = LunaHost.Luna_ResetLang
         self.Luna_FindHooks = LunaHost.Luna_FindHooks
         self.Luna_FindHooks.argtypes = (
             DWORD,
@@ -230,11 +235,21 @@ class texthook(basetext):
             HostInfoHandler(gobject.base.hookselectdialog.sysmessagesignal.emit),
             HookInsertHandler(self.newhookinsert),
             EmbedCallback(self.getembedtext),
+            I18NQueryCallback(self.i18nQueryCallback),
         ]
         self.keepref += procs
         self.Luna_Start(*procs)
         self.setsettings()
         self.setlang()
+
+    def i18nQueryCallback(self, querytext, isutf16):
+        if isutf16:
+            querytext = cast(querytext, c_wchar_p).value
+            ret = _TR(querytext).encode("utf-16-le")
+        else:
+            querytext = cast(querytext, c_char_p).value.decode()
+            ret = _TR(querytext).encode("utf8")
+        return self.Luna_Alloc(ret, len(ret))
 
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
@@ -574,7 +589,7 @@ class texthook(basetext):
         gobject.base.hookselectdialog.addnewhooksignal.emit(key, select, isembedable)
 
     def setlang(self):
-        self.Luna_SetLanguage(getlanguse().encode())
+        self.Luna_ResetLang()
 
     def setsettings(self):
         self.Luna_Settings(

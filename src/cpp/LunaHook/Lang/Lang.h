@@ -59,7 +59,6 @@ enum LANG_STRINGS_HOST
 };
 enum LANG_STRINGS_HOOK
 {
-    PIPE_CONNECTED,
     INSERTING_HOOK,
     REMOVING_HOOK,
     TOO_MANY_HOOKS,
@@ -90,18 +89,48 @@ enum LANG_STRINGS_HOOK
     WarningDummy,
     RYUJINXUNSUPPORT,
     EMUVERSIONTOOOLD,
+    IsEmuNotify,
 };
 enum SUPPORT_LANG;
-SUPPORT_LANG map_to_support_lang(const char *);
-const char *map_from_support_lang(SUPPORT_LANG);
+
+template <typename CharT>
+class i18nString
+{
+    std::basic_string<CharT> i18n;
+    const CharT *defaults;
+
+public:
+    void set(CharT *s)
+    {
+        if (s && *s)
+        {
+            i18n = s;
+        }
+    }
+    const CharT *get()
+    {
+        if (i18n.empty())
+            return defaults;
+        return i18n.c_str();
+    }
+    const CharT *raw()
+    {
+        return defaults;
+    }
+    i18nString() {}
+    i18nString(const CharT *d) : defaults(d) {}
+};
+
 struct langhelper
 {
     const char *operator[](LANG_STRINGS_HOOK);
     const wchar_t *operator[](LANG_STRINGS_HOST);
     const wchar_t *operator[](LANG_STRINGS_UI);
+    std::unordered_map<LANG_STRINGS_HOOK, i18nString<char>> &get_hook();
+    std::unordered_map<LANG_STRINGS_HOST, i18nString<wchar_t>> &get_host();
+    std::unordered_map<LANG_STRINGS_UI, i18nString<wchar_t>> &get_ui();
 };
 
 extern langhelper TR;
-extern SUPPORT_LANG curr_lang;
 
 #endif

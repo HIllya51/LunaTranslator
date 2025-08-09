@@ -22,6 +22,7 @@ typedef void (*OutputCallback)(const wchar_t *hookcode, const char *hookname, Th
 typedef void (*HostInfoHandler)(HOSTINFO type, const wchar_t *log);
 typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t *hookcode);
 typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
+typedef void *(*I18NQueryCallback)(const void *text, bool);
 typedef void (*findhookcallback_t)(wchar_t *hookcode, const wchar_t *text);
 template <typename T>
 std::optional<T> checkoption(bool check, T &&t)
@@ -31,7 +32,7 @@ std::optional<T> checkoption(bool check, T &&t)
     return {};
 }
 
-C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed)
+C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed, I18NQueryCallback i18nQueryCallback)
 {
     Host::Start(
         checkoption(Connect, std::function<void(DWORD)>(Connect)),
@@ -47,7 +48,8 @@ C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, Thread
         checkoption(hookinsert, [=](DWORD pid, uint64_t addr, const std::wstring &hookcode)
                     { hookinsert(pid, addr, hookcode.c_str()); }),
         checkoption(embed, [=](const std::wstring &output, const ThreadParam &tp)
-                    { embed(output.c_str(), tp); }));
+                    { embed(output.c_str(), tp); }),
+        i18nQueryCallback);
 }
 #if 0
 C_LUNA_API void Luna_ConnectAndInjectProcess(DWORD pid)
@@ -67,7 +69,16 @@ C_LUNA_API void Luna_DetachProcess(DWORD pid)
 {
     Host::DetachProcess(pid);
 }
-
+C_LUNA_API void *Luna_Alloc(void *ptr, size_t size)
+{
+    if (!ptr || !size)
+        return nullptr;
+    auto _ = new char[size + 2];
+    memcpy(_, ptr, size);
+    _[size] = 0;
+    _[size + 1] = 0;
+    return _;
+}
 C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int defaultCodepage, int maxBufferSize, int maxHistorySize)
 {
     TextThread::flushDelay = flushDelay;
@@ -76,9 +87,9 @@ C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int default
     TextThread::maxBufferSize = maxBufferSize;
     TextThread::maxHistorySize = maxHistorySize;
 }
-C_LUNA_API void Luna_SetLanguage(const char *lang)
+C_LUNA_API void Luna_ResetLang()
 {
-    Host::SetLanguage(lang);
+    Host::ResetLanguage();
 }
 C_LUNA_API void Luna_InsertPCHooks(DWORD pid, int which)
 {

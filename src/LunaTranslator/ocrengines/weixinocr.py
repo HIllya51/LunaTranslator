@@ -29,21 +29,27 @@ class wcocr:
         version = NativeUtils.QueryVersion(os.path.join(default, "QQ.exe"))
         if not version:
             return
-        mojo = os.path.join(
-            default,
-            r"resources\app\versions",
-            "{}.{}.{}-{}".format(version[0], version[1], version[2], version[3]),
-        )
+        vstr = "{}.{}.{}-{}".format(version[0], version[1], version[2], version[3])
+        mojo = os.path.join(default, r"resources\app\versions", vstr)
         ocr = os.path.join(mojo, r"QQScreenShot\Bin\TencentOCR.exe")
         return ocr, mojo
 
     def findwechat(self):
-        k = winreg.OpenKeyEx(
-            winreg.HKEY_CURRENT_USER,
-            r"SOFTWARE\Tencent\WeChat",
-            0,
-            winreg.KEY_QUERY_VALUE,
-        )
+        try:
+            # 4.x
+            k = winreg.OpenKeyEx(
+                winreg.HKEY_CURRENT_USER,
+                r"SOFTWARE\Tencent\Weixin",
+                0,
+                winreg.KEY_QUERY_VALUE,
+            )
+        except:
+            k = winreg.OpenKeyEx(
+                winreg.HKEY_CURRENT_USER,
+                r"SOFTWARE\Tencent\WeChat",
+                0,
+                winreg.KEY_QUERY_VALUE,
+            )
         base = winreg.QueryValueEx(k, "InstallPath")[0]
         winreg.CloseKey(k)
         WeChatexe = os.path.join(base, "WeChat.exe")
