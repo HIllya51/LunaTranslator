@@ -972,9 +972,10 @@ def common_create_gemini_request(
     if config.get("frequency_penalty_use", False):
         gen_config.update(frequencyPenalty=config["frequency_penalty"])
     if config.get("reasoning_effort_use", False):
+        # https://ai.google.dev/gemini-api/docs/thinking?hl=zh-cn#set-budget
         gen_config.update(
             thinkingConfig=dict(
-                thinkingBudget={"low": 0, "medium": 1024, "high": 24576}[
+                thinkingBudget={"low": 512, "medium": -1, "high": 24576, "minimal": 0}[
                     config["reasoning_effort"]
                 ]
             )

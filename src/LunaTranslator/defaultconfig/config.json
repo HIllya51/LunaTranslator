@@ -1310,11 +1310,13 @@
                     "type": "combo",
                     "refswitch": "reasoning_effort_use",
                     "internal": [
+                        "minimal",
                         "low",
                         "medium",
                         "high"
                     ],
                     "list": [
+                        "minimal",
                         "low",
                         "medium",
                         "high"
