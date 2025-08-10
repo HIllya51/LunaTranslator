@@ -83,8 +83,8 @@ namespace
 
 		VersionMatchCheck(hookPipe);
 
-		OnConnect(processId);
 		processRecordsByIds->try_emplace(processId, processId, hostPipe);
+		OnConnect(processId);
 		Host::AddConsoleOutput(FormatString(TR[PROC_CONN], processId));
 		BYTE buffer[PIPE_BUFFER_SIZE] = {};
 		DWORD bytesRead;

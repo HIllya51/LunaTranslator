@@ -78,7 +78,7 @@ export const ja = defineConfig({
                 text: '基本的な',
                 items: [
                     { text: 'ダウンロード ＆ 起動 ＆ 更新', link: '/ja/README' },
-                    { text: '基本的な使用方法', link: '/ja/basicuse' },
+                    { text: '基本の使い方', link: '/ja/basicuse' },
                     { text: '作者を支援する', link: '/ja/support' }
                 ]
             },

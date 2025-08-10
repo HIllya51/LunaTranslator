@@ -14,7 +14,7 @@ hero:
       text: ダウンロード ＆ 起動 ＆ 更新
       link: ./README  
     - theme: alt  
-      text: 基本的な使い方  
+      text: 基本の使い方  
       link: ./basicuse  
     - theme: alt  
       text: Github  

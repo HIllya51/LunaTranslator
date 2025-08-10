@@ -14,7 +14,7 @@ hero:
       text: Tải xuống & Khởi chạy & Cập nhật
       link: ./README  
     - theme: alt  
-      text: Hướng dẫn cơ bản  
+      text: Cách sử dụng cơ bản
       link: ./basicuse  
     - theme: alt  
       text: Github  

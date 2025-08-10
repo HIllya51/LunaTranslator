@@ -448,7 +448,6 @@ class texthook(basetext):
             self.Luna_InsertPCHooks(pid, 1)
         gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
         self.flashembedsettings(pid)
-        self.setsettings()
 
     def InsertPCHooks(self, which):
         for pid in self.pids:
