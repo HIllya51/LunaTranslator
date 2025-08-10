@@ -15,15 +15,55 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::
 
-::: info
-Hầu hết các **địa chỉ giao diện API** có thể được chọn từ danh sách thả xuống, nhưng một số có thể bị thiếu. Đối với các giao diện khác không có trong danh sách, vui lòng tham khảo tài liệu của chúng để điền thông tin chi tiết.
-:::
+### Giải thích tham số
 
-::: tip
-**model** có thể được chọn từ danh sách thả xuống, và một số giao diện có thể tự động lấy danh sách mô hình dựa trên **địa chỉ giao diện API** và **API Key**. Sau khi điền hai trường này, nhấp vào nút làm mới bên cạnh **model** để lấy danh sách mô hình khả dụng.
+1. #### Địa chỉ API
 
-Nếu nền tảng không hỗ trợ lấy mô hình qua API và danh sách mặc định không bao gồm mô hình bạn cần, vui lòng tham khảo tài liệu chính thức của giao diện để điền thủ công mô hình.
-:::
+    **Địa chỉ API** của hầu hết các nền tảng mô hình lớn phổ biến có thể được chọn trong danh sách thả xuống, nhưng có thể bị thiếu một số. Đối với các API không được liệt kê, vui lòng tự tham khảo tài liệu của nền tảng để điền.
+
+1. #### API Key
+
+    **API Key** có thể lấy được trên nền tảng. Đối với nhiều Key được thêm vào, hệ thống sẽ tự động luân phiên và điều chỉnh trọng số của Key dựa trên phản hồi lỗi.
+
+1. #### Model
+
+    Với hầu hết các nền tảng, sau khi điền **Địa chỉ API** và **API Key**, nhấp vào nút làm mới bên cạnh **model** để lấy danh sách model khả dụng.
+
+    Nếu nền tảng không hỗ trợ API lấy model và model bạn cần không có trong danh sách mặc định, vui lòng tham khảo tài liệu chính thức của API để điền model thủ công.
+
+1. #### Xuất luồng (Streaming output)
+
+    Khi bật, nội dung đầu ra của model sẽ được hiển thị theo luồng tăng dần. Nếu tắt, tất cả nội dung sẽ được hiển thị một lần sau khi model hoàn thành.
+
+1. #### Ẩn quá trình suy nghĩ
+
+    Khi bật, nội dung được bao bọc bởi thẻ \<think\> sẽ không được hiển thị. Nếu bật ẩn quá trình suy nghĩ, tiến độ suy nghĩ hiện tại sẽ được hiển thị.
+
+1. #### Số lượng ngữ cảnh đính kèm
+
+    Sẽ đính kèm một số lịch sử văn bản gốc và API dịch cho mô hình lớn để tối ưu hóa bản dịch. Đặt thành 0 sẽ tắt tối ưu hóa này.
+
+    - **Tối ưu tỷ lệ trúng cache** - Đối với các nền tảng như DeepSeek, nền tảng sẽ tính phí thấp hơn cho đầu vào trúng cache. Khi kích hoạt, hình thức đính kèm ngữ cảnh sẽ được tối ưu để tăng tỷ lệ trúng cache.
+
+1. #### Tùy chỉnh system prompt / Tùy chỉnh user message / Prefill
+
+    Một số cách khác nhau để kiểm soát nội dung đầu ra, có thể thiết lập theo sở thích hoặc sử dụng mặc định.
+
+1. #### Temperature / max tokens / top p / frequency penalty
+
+    (Giống nguyên bản).
+
+    - **Sử dụng max completion tokens** - Đối với nền tảng OpenAI, khi sử dụng model GPT-5, do API không còn chấp nhận tham số max tokens, cần kích hoạt **Sử dụng max completion tokens**.
+
+1. #### Reasoning effort
+
+    Đối với nền tảng Gemini, tùy chọn sẽ tự động ánh xạ thành thinkingBudget của Gemini, quy tắc ánh xạ: minimal->0 (tắt suy nghĩ, nhưng không áp dụng cho model Gemini-2.5-Pro), low->512, medium->-1 (kích hoạt suy nghĩ động), high->24576.
+
+1. #### Các tham số khác
+
+    Trên đây chỉ cung cấp một số tham số phổ biến. Nếu nền tảng bạn sử dụng cung cấp các tham số hữu ích khác chưa được liệt kê, có thể tự thêm cặp khóa-giá trị.
+
+## Các nền tảng mô hình lớn phổ biến
 
 ### Nền tảng mô hình lớn ở Âu Mỹ  
 
@@ -151,7 +191,7 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 
 :::
 
-## Giao Diện Chung Cho Mô Hình Lớn - Dịch ngoại tuyến
+### Mô hình lớn ngoại tuyến
 
 Bạn cũng có thể sử dụng các công cụ như [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) để triển khai các mô hình, sau đó điền địa chỉ và mô hình.
 

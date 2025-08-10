@@ -15,15 +15,57 @@ However, sometimes you may want to use multiple different API interface addresse
    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::
 
-::: info
-Most **API interface addresses** can be selected from the dropdown list, but some may be missing. For other interfaces not listed, please refer to their documentation to fill in the details.
-:::
+### Parameter Description  
 
-::: tip
-**model** can be selected from the dropdown list, and some interfaces can dynamically fetch the model list based on the **API interface address** and **API Key**. After filling in these two fields, click the refresh button next to **model** to get the available model list.
+1. #### API Endpoint  
 
-If the platform does not support fetching models via an API and the default list does not include the model you need, please refer to the official documentation of the interface to manually fill in the model.
-:::
+    The **API endpoint** for most common large model platforms can be selected from the dropdown list, but some may be missing. For other endpoints not listed, please refer to the platform's documentation and fill them in manually.  
+
+1. #### API Key  
+
+    The **API Key** can be obtained from the platform. For multiple added keys, they will be automatically rotated, and their weights will be adjusted based on error feedback.  
+
+1. #### Model  
+
+    For most platforms, after filling in the **API endpoint** and **API Key**, clicking the refresh button next to **Model** will fetch the list of available models.  
+
+    If the platform does not support pulling the model list, and the default list does not include the desired model, please manually enter the model name according to the official API documentation.  
+
+1. #### Streaming Output  
+
+    When enabled, the model's output will be displayed incrementally in a streaming manner. Otherwise, the entire output will be displayed at once after completion.  
+
+1. #### Hide Thought Process  
+
+    When enabled, content wrapped in `<think>` tags will not be displayed. If the thought process is hidden, the current thinking progress will still be shown.  
+
+1. #### Number of Contextual Messages  
+
+    A specified number of historical original and translated messages will be provided to the large model to improve translation. Setting this to 0 will disable this optimization.  
+
+    - **Optimize Cache Hits** – For platforms like DeepSeek, the platform charges a lower price for cache-hit inputs. Enabling this will optimize the format of contextual messages to increase cache hit rates.  
+
+1. #### Custom System Prompt / Custom User Message / Prefill  
+
+    Different methods to control output content. You can configure them as preferred or use the defaults.  
+
+1. #### Temperature / Max Tokens / Top P / Frequency Penalty  
+
+    (Omitted.)  
+
+    - **Use Max Completion Tokens** – For the OpenAI platform, when using the GPT-5 model, since the API no longer accepts the `max_tokens` parameter, you need to enable **Use Max Completion Tokens**.  
+
+1. #### Reasoning Effort  
+
+    For the Gemini platform, this option will automatically map to Gemini's `thinkingBudget`. The mapping rules are as follows:  
+    
+    minimal -> 0 (disable thinking, but not applicable to the Gemini-2.5-Pro model), low -> 512, medium -> -1 (enable dynamic thinking), high -> 24576.
+
+1. #### Other Parameters  
+
+    Only some common parameters are provided above. If the platform you are using offers other useful parameters not listed here, you can manually add key-value pairs.  
+
+## Common Large Model Platforms
 
 ### Large-scale model platforms in Europe and America  
 
@@ -146,7 +188,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 :::
 
-## General Large Model Interface - Offline Translation
+### Offline Large Model
 
 
 You can also use tools like [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) to deploy models, and then fill in the address and model.
