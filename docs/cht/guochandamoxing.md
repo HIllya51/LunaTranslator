@@ -195,7 +195,7 @@
 
 ###  離線大模型
 
-也可以使用[llama.cpp](https://github.com/ggerganov/llama.cpp) 、[ollama](https://github.com/ollama/ollama)、[one-api](https://github.com/songquanpeng/one-api)之類的工具進行模型的部署，然後將地址和模型填入。
+也可以使用[llama.cpp](https://github.com/ggerganov/llama.cpp) 、[ollama](https://github.com/ollama/ollama)之類的工具進行模型的部署，然後將地址和模型填入。
 
 也可以使用Kaggle之類的平臺來把模型部署到雲端，這時可能會需要用到SECRET_KEY，其他時候可以無視SECRET_KEY參數。
 

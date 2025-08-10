@@ -195,6 +195,6 @@
 
 ### 오프라인 대형 모델 
 
-[llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [one-api](https://github.com/songquanpeng/one-api) 등의 도구를 사용하여 모델 배포 후 주소와 모델을 입력할 수도 있습니다.
+[llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) 등의 도구를 사용하여 모델 배포 후 주소와 모델을 입력할 수도 있습니다.
 
 也可以使用Kaggle之类的平台来把模型部署到云端，这时可能会需要用到SECRET_KEY，其他时候可以无视SECRET_KEY参数。
