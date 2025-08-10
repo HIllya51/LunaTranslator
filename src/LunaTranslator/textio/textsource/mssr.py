@@ -259,13 +259,13 @@ class mssr(basetext):
                     #  print(increased, any(_ in punctuations for _ in increased))
                     last = text
                     thist = time.time()
-                    self.updaterawtext(text)
                     if ok or (
                         thist - lastt
                         > globalconfig["sourcestatus2"]["mssr"]["refreshinterval"]
                     ):
                         self.dispatchtext(text, updateTranslate=True)
                         lastt = thist
+                    self.updaterawtext(text)
                 elif t == 4:
                     gobject.base.displayinfomessage(
                         _TR("正在加载语音识别模型"), "<msg_info_refresh>"
