@@ -32,7 +32,6 @@ from ctypes import (
     c_uint8,
     c_uint,
     c_char,
-    c_size_t,
     cast,
 )
 from ctypes.wintypes import DWORD, LPCWSTR
@@ -87,7 +86,7 @@ HostInfoHandler = CFUNCTYPE(None, c_int, c_wchar_p)
 HookInsertHandler = CFUNCTYPE(None, DWORD, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
-I18NQueryCallback = CFUNCTYPE(c_void_p, c_void_p, c_bool)
+I18NQueryCallback = CFUNCTYPE(c_void_p, c_wchar_p)
 
 
 class texthook(basetext):
@@ -182,9 +181,9 @@ class texthook(basetext):
             EmbedCallback,
             I18NQueryCallback,
         )
-        self.Luna_Alloc = LunaHost.Luna_Alloc
-        self.Luna_Alloc.argtypes = (c_void_p, c_size_t)
-        self.Luna_Alloc.restype = c_void_p
+        self.Luna_AllocString = LunaHost.Luna_AllocString
+        self.Luna_AllocString.argtypes = (c_wchar_p,)
+        self.Luna_AllocString.restype = c_void_p
         self.Luna_ConnectProcess = LunaHost.Luna_ConnectProcess
         self.Luna_ConnectProcess.argtypes = (DWORD,)
         self.Luna_CheckIfNeedInject = LunaHost.Luna_CheckIfNeedInject
@@ -242,14 +241,8 @@ class texthook(basetext):
         self.setsettings()
         self.setlang()
 
-    def i18nQueryCallback(self, querytext, isutf16):
-        if isutf16:
-            querytext = cast(querytext, c_wchar_p).value
-            ret = _TR(querytext).encode("utf-16-le")
-        else:
-            querytext = cast(querytext, c_char_p).value.decode()
-            ret = _TR(querytext).encode("utf8")
-        return self.Luna_Alloc(ret, len(ret))
+    def i18nQueryCallback(self, querytext: str):
+        return self.Luna_AllocString(_TR(querytext))
 
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))

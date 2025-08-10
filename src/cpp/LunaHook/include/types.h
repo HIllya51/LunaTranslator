@@ -289,11 +289,7 @@ struct ResetLanguageCmd
 struct I18NResponse
 {
 	I18NResponse() {};
-	I18NResponse(LANG_STRINGS_HOOK enum__, const char *result_) : enum_(enum__)
-	{
-		if (result_)
-			strncpy_s(result, result_, MESSAGE_SIZE - 1);
-	}
+	I18NResponse(LANG_STRINGS_HOOK enum__, const std::string &result_) : enum_(enum__) { strncpy_s(result, result_.c_str(), MESSAGE_SIZE - 1); }
 	HostCommandType command = HOST_COMMAND_I18N_RESPONSE;
 	LANG_STRINGS_HOOK enum_;
 	char result[MESSAGE_SIZE] = {};

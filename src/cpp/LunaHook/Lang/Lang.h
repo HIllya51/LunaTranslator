@@ -100,7 +100,14 @@ class i18nString
     const CharT *defaults;
 
 public:
-    void set(CharT *s)
+    void set(std::basic_string<CharT> && s)
+    {
+        if (!s.empty())
+        {
+            i18n = std::move(s);
+        }
+    }
+    void set(const CharT *s)
     {
         if (s && *s)
         {

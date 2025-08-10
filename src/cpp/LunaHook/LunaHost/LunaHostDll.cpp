@@ -22,7 +22,7 @@ typedef void (*OutputCallback)(const wchar_t *hookcode, const char *hookname, Th
 typedef void (*HostInfoHandler)(HOSTINFO type, const wchar_t *log);
 typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t *hookcode);
 typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
-typedef void *(*I18NQueryCallback)(const void *text, bool);
+typedef wchar_t *(*I18NQueryCallback)(const wchar_t *text);
 typedef void (*findhookcallback_t)(wchar_t *hookcode, const wchar_t *text);
 template <typename T>
 std::optional<T> checkoption(bool check, T &&t)
@@ -49,7 +49,16 @@ C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, Thread
                     { hookinsert(pid, addr, hookcode.c_str()); }),
         checkoption(embed, [=](const std::wstring &output, const ThreadParam &tp)
                     { embed(output.c_str(), tp); }),
-        i18nQueryCallback);
+        checkoption(i18nQueryCallback,
+                    [=](const std::wstring &str) -> std::optional<std::wstring>
+                    {
+                        auto s = i18nQueryCallback(str.c_str());
+                        if (!s)
+                            return std::nullopt;
+                        std::wstring ret = s;
+                        delete s;
+                        return ret;
+                    }));
 }
 #if 0
 C_LUNA_API void Luna_ConnectAndInjectProcess(DWORD pid)
@@ -69,14 +78,12 @@ C_LUNA_API void Luna_DetachProcess(DWORD pid)
 {
     Host::DetachProcess(pid);
 }
-C_LUNA_API void *Luna_Alloc(void *ptr, size_t size)
+C_LUNA_API void *Luna_AllocString(const wchar_t *str)
 {
-    if (!ptr || !size)
+    if (!str)
         return nullptr;
-    auto _ = new char[size + 2];
-    memcpy(_, ptr, size);
-    _[size] = 0;
-    _[size + 1] = 0;
+    auto _ = new WCHAR[wcslen(str) + 1];
+    wcscpy(_, str);
     return _;
 }
 C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int defaultCodepage, int maxBufferSize, int maxHistorySize)

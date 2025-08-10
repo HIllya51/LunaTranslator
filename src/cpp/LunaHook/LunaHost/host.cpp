@@ -80,7 +80,7 @@ namespace
 	{
 		ConnectNamedPipe(hookPipe, nullptr);
 		CloseHandle(pipeAvailableEvent);
-		
+
 		VersionMatchCheck(hookPipe);
 
 		OnConnect(processId);
@@ -94,10 +94,8 @@ namespace
 			case HOST_NOTIFICATION_I18N_RESP:
 			{
 				auto info = (HostInfoI18NReq *)buffer;
-				auto ret = (char *)i18nQueryCallback(info->key, false);
+				auto ret = WideStringToString(i18nQueryCallback(StringToWideString(info->key)).value_or(L""));
 				processRecordsByIds->at(processId).Send(I18NResponse(info->enum_, ret));
-				if (ret)
-					delete ret;
 			}
 			break;
 			case HOST_NOTIFICATION_FOUND_HOOK:
@@ -231,11 +229,10 @@ namespace Host
 
 		for (auto &[_, data] : TR.get_host())
 		{
-			auto ret = i18nQueryCallback(data.raw(), true);
+			auto ret = i18nQueryCallback(data.raw());
 			if (!ret)
 				continue;
-			data.set((wchar_t *)ret);
-			delete ret;
+			data.set(std::move(ret.value()));
 		}
 		for (auto &[pid, rcd] : processRecordsByIds.Acquire().contents)
 		{
@@ -274,8 +271,7 @@ namespace Host
 		{ IF_HASVAL_DISPATCH(threadmutex, hookinsert); };
 		embedcallback = [=](auto &&...args)
 		{ IF_HASVAL_DISPATCH(outputmutex, embed); };
-		i18nQueryCallback = _i18nQueryCallback.value_or([](auto, auto)
-														{ return nullptr; });
+		i18nQueryCallback = _i18nQueryCallback.value_or([](auto) { return std::nullopt; });
 	}
 	bool CheckIfNeedInject(DWORD processId)
 	{
