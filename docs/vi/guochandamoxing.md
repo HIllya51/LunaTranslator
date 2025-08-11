@@ -19,15 +19,15 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
 1. #### Địa chỉ API
 
-    **Địa chỉ API** của hầu hết các nền tảng mô hình lớn phổ biến có thể được chọn trong danh sách thả xuống, nhưng có thể bị thiếu một số. Đối với các API không được liệt kê, vui lòng tự tham khảo tài liệu của nền tảng để điền.
+    `Địa chỉ API` của hầu hết các nền tảng mô hình lớn phổ biến có thể được chọn trong danh sách thả xuống, nhưng có thể bị thiếu một số. Đối với các API không được liệt kê, vui lòng tự tham khảo tài liệu của nền tảng để điền.
 
 1. #### API Key
 
-    **API Key** có thể lấy được trên nền tảng. Đối với nhiều Key được thêm vào, hệ thống sẽ tự động luân phiên và điều chỉnh trọng số của Key dựa trên phản hồi lỗi.
+    `API Key` có thể lấy được trên nền tảng. Đối với nhiều Key được thêm vào, hệ thống sẽ tự động luân phiên và điều chỉnh trọng số của Key dựa trên phản hồi lỗi.
 
 1. #### Model
 
-    Với hầu hết các nền tảng, sau khi điền **Địa chỉ API** và **API Key**, nhấp vào nút làm mới bên cạnh **model** để lấy danh sách model khả dụng.
+    Với hầu hết các nền tảng, sau khi điền `Địa chỉ API` và `API Key`, nhấp vào nút làm mới bên cạnh `model` để lấy danh sách model khả dụng.
 
     Nếu nền tảng không hỗ trợ API lấy model và model bạn cần không có trong danh sách mặc định, vui lòng tham khảo tài liệu chính thức của API để điền model thủ công.
 
@@ -49,15 +49,20 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
     Một số cách khác nhau để kiểm soát nội dung đầu ra, có thể thiết lập theo sở thích hoặc sử dụng mặc định.
 
+    Trong prompt hệ thống tùy chỉnh và tin nhắn người dùng, bạn có thể sử dụng các trường để tham chiếu thông tin:
+    - `{sentence}`: Văn bản cần dịch
+    - `{srclang}` và `{tgtlang}`: Ngôn ngữ nguồn và ngôn ngữ đích
+    - `{contextOriginal[N]}` và `{contextTranslation[N]}` và `{contextTranslation[N]}`: N câu lịch sử văn bản gốc, bản dịch và cả hai. N không liên quan đến "số lượng ngữ cảnh đi kèm" và cần được thay thế bằng một số nguyên khi nhập vào.
+
 1. #### Temperature / max tokens / top p / frequency penalty
 
-    (Giống nguyên bản).
-
-    - **Sử dụng max completion tokens** - Đối với nền tảng OpenAI, khi sử dụng model GPT-5, do API không còn chấp nhận tham số max tokens, cần kích hoạt **Sử dụng max completion tokens**.
+    Đối với một số nền tảng và mô hình, các tham số như `top p` và `frequency penalty` có thể không được chấp nhận bởi giao diện, hoặc tham số `max tokens` đã bị loại bỏ và thay bằng `max completion tokens`. Việc kích hoạt hoặc hủy kích hoạt công tắc có thể giải quyết những vấn đề này.
 
 1. #### Reasoning effort
 
-    Đối với nền tảng Gemini, tùy chọn sẽ tự động ánh xạ thành thinkingBudget của Gemini, quy tắc ánh xạ: minimal->0 (tắt suy nghĩ, nhưng không áp dụng cho model Gemini-2.5-Pro), low->512, medium->-1 (kích hoạt suy nghĩ động), high->24576.
+    Đối với nền tảng Gemini, tùy chọn sẽ tự động ánh xạ thành `thinkingBudget` của Gemini, quy tắc ánh xạ: 
+    
+    minimal->0 (tắt suy nghĩ, nhưng không áp dụng cho model Gemini-2.5-Pro), low->512, medium->-1 (kích hoạt suy nghĩ động), high->24576.
 
 1. #### Các tham số khác
 

@@ -19,15 +19,15 @@ However, sometimes you may want to use multiple different API interface addresse
 
 1. #### API Endpoint  
 
-    The **API endpoint** for most common large model platforms can be selected from the dropdown list, but some may be missing. For other endpoints not listed, please refer to the platform's documentation and fill them in manually.  
+    The `API endpoint` for most common large model platforms can be selected from the dropdown list, but some may be missing. For other endpoints not listed, please refer to the platform's documentation and fill them in manually.  
 
 1. #### API Key  
 
-    The **API Key** can be obtained from the platform. For multiple added keys, they will be automatically rotated, and their weights will be adjusted based on error feedback.  
+    The `API Key` can be obtained from the platform. For multiple added keys, they will be automatically rotated, and their weights will be adjusted based on error feedback.  
 
 1. #### Model  
 
-    For most platforms, after filling in the **API endpoint** and **API Key**, clicking the refresh button next to **Model** will fetch the list of available models.  
+    For most platforms, after filling in the `API endpoint` and `API Key`, clicking the refresh button next to `Model` will fetch the list of available models.  
 
     If the platform does not support pulling the model list, and the default list does not include the desired model, please manually enter the model name according to the official API documentation.  
 
@@ -49,11 +49,15 @@ However, sometimes you may want to use multiple different API interface addresse
 
     Different methods to control output content. You can configure them as preferred or use the defaults.  
 
-1. #### Temperature / Max Tokens / Top P / Frequency Penalty  
+    Custom system prompts and user messages can use fields to reference some information:
+    - `{sentence}`: The text to be translated
+    - `{srclang}` and `{tgtlang}`: The source and target languages
+    - `{contextOriginal[N]}` and `{contextTranslation[N]}` and `{contextTranslation[N]}`: N pieces of historical original text, translations, and both. N is unrelated to the "number of accompanying contexts" and should be replaced with an integer when input.
 
-    (Omitted.)  
 
-    - **Use Max Completion Tokens** – For the OpenAI platform, when using the GPT-5 model, since the API no longer accepts the `max_tokens` parameter, you need to enable **Use Max Completion Tokens**.  
+1. #### Temperature / max tokens / top p / frequency penalty
+
+    For certain models on some platforms, parameters like `top p` and `frequency penalty` may not be accepted by the interface, or the `max tokens` parameter may have been deprecated and replaced with `max completion tokens`. Activating or deactivating the switch can resolve these issues.
 
 1. #### Reasoning Effort  
 

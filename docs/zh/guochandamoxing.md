@@ -19,15 +19,15 @@
 
 1. #### API接口地址
  
-    大部分常见大模型平台的**API接口地址**可以在下拉列表中选取，但可能会有遗漏。对于其他没有列举出来的接口，请自行查阅平台的文档来填写。
+    大部分常见大模型平台的`API接口地址`可以在下拉列表中选取，但可能会有遗漏。对于其他没有列举出来的接口，请自行查阅平台的文档来填写。
  
 1. #### API Key
 
-    **API Key**可以在平台获取。对于添加的多个Key，会自动进行轮询，并根据错误反馈调整Key的权重。
+    `API Key`可以在平台获取。对于添加的多个Key，会自动进行轮询，并根据错误反馈调整Key的权重。
 
 1. #### model
 
-    大部分平台填写好**API接口地址**和**API接口地址**后，点击**model**旁的刷新按钮即可获取可用的模型列表。
+    大部分平台填写好`API接口地址`和`API接口地址`后，点击`model`旁的刷新按钮即可获取可用的模型列表。
 
     如果平台不支持拉取模型的接口，且默认列表中没有要用的模型，那么请参照接口官方文档手动填写模型。
 
@@ -49,15 +49,18 @@
 
     几种不同的控制输出内容的手段，可以根据喜好设置，或者使用默认即可。
 
+    自定义system prompt和user message中可以使用字段来引用一些信息：
+    - `{sentence}`：当前欲翻译的文本
+    - `{srclang}`和`{tgtlang}`：源语言和目标语言
+    - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextTranslation[N]}`：N条历史原文、译文、两者。N与`附带上下文个数`无关，需要输入时替换成整数。
+
 1. #### Temperature / max tokens / top p / frequency penalty
 
-    略。
-
-    - **使用 max completion tokens** - 对于openai平台，当使用gpt-5模型时，由于接口不再接受max tokens参数，需要激活**使用 max completion tokens**。
+    对于部分平台的部分模型，可能`top p`和`frequency penalty`等参数不被接口接受，或者`max tokens`参数被弃用并改为了`max completion tokens`，激活或取消开关可以解决这些问题。
 
 1. #### reasoning effort
 
-    对于Gemini平台，会自动将选项映射为Gemini的thinkingBudget，映射规则为：
+    对于Gemini平台，会自动将选项映射为Gemini的`thinkingBudget`，映射规则为：
     
     minimal->0(停用思考，但对于Gemini-2.5-Pro模型不适用), low->512, medium->-1（开启动态思维）, high->24576。
 
