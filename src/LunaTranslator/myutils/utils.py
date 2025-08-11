@@ -937,7 +937,6 @@ def common_create_gpt_data(config: dict, message, extrabody):
         messages=message,
         # n=1,
         # stop=None,
-        top_p=config["top_p"],
         temperature=temperature,
     )
     use_max_completion_tokens = config.get("use_max_completion_tokens", False)
@@ -947,6 +946,8 @@ def common_create_gpt_data(config: dict, message, extrabody):
         data.update(stream=True)
     if config.get("frequency_penalty_use", False):
         data.update(frequency_penalty=config["frequency_penalty"])
+    if config.get("top_p_use", True):
+        data.update(top_p=config["top_p"])
     if config.get("reasoning_effort_use", False):
         data.update(reasoning_effort=config["reasoning_effort"])
     if extrabody:

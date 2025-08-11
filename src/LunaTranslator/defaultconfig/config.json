@@ -1295,8 +1295,9 @@
                 "max_tokens": 4096,
                 "use_max_completion_tokens": false,
                 "top_p": 0.3,
+                "top_p_use": true,
                 "frequency_penalty": 0,
-                "frequency_penalty_use": 0,
+                "frequency_penalty_use": false,
                 "reasoning_effort": "medium",
                 "reasoning_effort_use": false,
                 "user_user_prompt_1": "",
@@ -1362,6 +1363,7 @@
                     "type": "list_cache"
                 },
                 "top_p": {
+                    "refswitch": "top_p_use",
                     "type": "spin",
                     "min": 0,
                     "max": 1,

@@ -17,6 +17,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01006A60216CA000 | 悠久のティアブレイド |
 |  | 0100AAD0210B6000 | 勿ノ怪契リ |
 |  | 010008702297A000 | アルカナ・ファミリア Rinato (Arcana Famiglia Rinato) |
 |  | 010087201EEA6000 | Side Kicks! beyond |

@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans
-import json, requests, hmac, hashlib, NativeUtils
+import json, requests, hmac, hashlib, NativeUtils, re, functools
 from datetime import datetime, timezone
 from myutils.utils import (
     createurl,
@@ -280,11 +280,32 @@ class gptcommon(basetrans):
     def createurl(self):
         return createurl(self.apiurl)
 
+    def __replace_history(self, query_1, which, match: re.Match):
+        n = int(match.group(1))
+        __message: "list[dict]" = []
+        self._gpt_common_parse_context(__message, self.context, n, query=query_1)
+        check = lambda k: (which == 2) or (k == ("user", "assistant")[which])
+        __message = [_.get("content") for _ in __message if (check(_.get("role")))]
+        return "\n".join(__message)
+
+    def __parsecontextN(self, query, query_1):
+        for k, b in (
+            (r"\{contextOriginal\[(\d+)\]\}", 0),
+            (r"\{contextTranslation\[(\d+)\]\}", 1),
+            (r"\{contextBoth\[(\d+)\]\}", 2),
+        ):
+            query = re.sub(
+                k, functools.partial(self.__replace_history, query_1, b), query
+            )
+        return query
+
     def commoncreatemessages(self, query_1):
         query = self._gptlike_createquery(
             query_1, "use_user_user_prompt", "user_user_prompt"
         )
+        query = self.__parsecontextN(query, query_1)
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
+        sysprompt = self.__parsecontextN(sysprompt, query_1)
         message = [{"role": "system", "content": sysprompt}]
         checknum = self.config["附带上下文个数"]
         __message = []

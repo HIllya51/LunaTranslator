@@ -2652,6 +2652,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 悠久のティアブレイド
+    {0x80017890, {CODEC_UTF8, 0, 0, 0, F010027300A660000, 0x01006A60216CA000ull, "1.0.0"}},
     // 勿ノ怪契リ
     {0x818F9200, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000_1, 0x0100AAD0210B6000ull, "1.0.0"}},
     {0x818F970C, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000, 0x0100AAD0210B6000ull, "1.0.0"}},

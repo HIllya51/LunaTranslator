@@ -366,6 +366,7 @@
 			"Temperature": 0.3,
 			"max_tokens": 1024,
 			"top_p": 0.3,
+			"top_p_use": true,
 			"frequency_penalty": 0,
 			"frequency_penalty_use": false,
 			"reasoning_effort": "medium",
@@ -412,7 +413,8 @@
 				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1,
-				"placeholder": "{sentence}"
+				"placeholder": "{sentence}",
+				"type": "multiline"
 			},
 			"s": {
 				"type": "split",
@@ -441,6 +443,7 @@
 				"type": "list_cache"
 			},
 			"top_p": {
+				"refswitch": "top_p_use",
 				"type": "spin",
 				"min": 0,
 				"max": 1,
