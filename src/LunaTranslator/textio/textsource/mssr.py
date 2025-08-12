@@ -159,14 +159,15 @@ class mssr(basetext):
             lines = this.splitlines()
 
             this = lines[-1]
-            if this != last:
-                self.updaterawtext(this)
             thist = time.time()
+            need = this != last
             if thist - lastt > interval:
                 if lasttt != this:
                     self.dispatchtext(this, updateTranslate=True)
                 lastt = thist
                 lasttt = this
+            if need:
+                self.updaterawtext(this)
             last = this
 
             time.sleep(0.1)
