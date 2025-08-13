@@ -32,9 +32,11 @@ namespace
         continue;
       HookParam hp;
       hp.address = addr;
-      hp.offset = stackoffset(1);
+      // 真説 猟奇の檻
+      // mov     eax, [esp+arg_10]
+      hp.offset = (((*(DWORD *)addr) == 0x1424448b) ? stackoffset(3) : stackoffset(1));
       hp.type = USING_STRING;
-      ok |= NewHook(hp, "VitaminSoft");
+      ok |= NewHook(hp, "VitaminSoft2");
     }
     return ok;
   }
@@ -42,6 +44,7 @@ namespace
 
 bool VitaminSoft::attach_function()
 {
-
-  return _2() || _1();
+  auto succ = _2() || _1();
+  PcHooks::hookGDIFunctions((void *)TextOutA);
+  return succ;
 }
