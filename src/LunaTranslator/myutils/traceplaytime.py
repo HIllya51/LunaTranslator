@@ -163,4 +163,4 @@ class playtimemanager:
                 "trace_strict",
             )
             self.sqlsavegameinfo.commit()
-            time.sleep(1)
+            time.sleep(5)
