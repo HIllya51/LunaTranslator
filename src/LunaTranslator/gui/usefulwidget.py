@@ -45,9 +45,20 @@ class SuperCombo(FocusCombo):
     Visoriginrole = Qt.ItemDataRole.UserRole + 1
     Internalrole = Visoriginrole + 1
 
+    def event(self, e: QEvent):
+        if e.type() == QEvent.Type.FontChange:
+            self.__resizedirect()
+        return super().event(e)
+
+    def __resizedirect(self):
+        h = QFontMetricsF(self.font()).ascent()
+        sz = QSizeF(h, h).toSize()
+        self.setIconSize(sz)
+
     def __init__(self, parent=None, static=False, sizeX=False) -> None:
         super().__init__(parent=parent, sizeX=sizeX)
         self.static = static
+        self.__resizedirect()
 
     @property
     def mo(self) -> QStandardItemModel:
