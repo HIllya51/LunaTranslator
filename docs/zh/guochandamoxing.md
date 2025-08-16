@@ -51,7 +51,7 @@
 
     自定义system prompt和user message中可以使用字段来引用一些信息：
     - `{sentence}`：当前欲翻译的文本
-    - `{srclang}`和`{tgtlang}`：源语言和目标语言
+    - `{srclang}`和`{tgtlang}`：源语言和目标语言。如果prompt中仅使用英语，则会替换成语言名称的英语翻译，否则会替换成语言名称的当前UI语言翻译。
     - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextTranslation[N]}`：N条历史原文、译文、两者。N与`附带上下文个数`无关，需要输入时替换成整数。
 
 1. #### Temperature / max tokens / top p / frequency penalty

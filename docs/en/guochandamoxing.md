@@ -51,7 +51,7 @@ However, sometimes you may want to use multiple different API interface addresse
 
     Custom system prompts and user messages can use fields to reference some information:
     - `{sentence}`: The text to be translated
-    - `{srclang}` and `{tgtlang}`: The source and target languages
+    - `{srclang}` and `{tgtlang}`: Source language and target language. If only English is used in the prompt, they will be replaced with the English translation of the language names. Otherwise, they will be replaced with the translation of the language names in the current UI language.
     - `{contextOriginal[N]}` and `{contextTranslation[N]}` and `{contextTranslation[N]}`: N pieces of historical original text, translations, and both. N is unrelated to the "number of accompanying contexts" and should be replaced with an integer when input.
 
 

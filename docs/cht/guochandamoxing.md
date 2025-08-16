@@ -51,9 +51,8 @@
 
     自定義系統提示和用戶消息中可以使用字段來引用一些信息：
     - `{sentence}`：當前欲翻譯的文本
-    - `{srclang}`和`{tgtlang}`：源語言和目標語言
+    - `{srclang}`和`{tgtlang}`：源語言和目標語言。如果提示中僅使用英語，則會替換成語言名稱的英語翻譯，否則會替換成語言名稱的當前UI語言翻譯。
     - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextTranslation[N]}`：N條歷史原文、譯文、兩者。N與「附帶上下文個數」無關，需輸入時替換成整數。
-
 
 1. #### Temperature / max tokens / top p / frequency penalty
 

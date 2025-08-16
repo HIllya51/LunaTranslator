@@ -51,7 +51,7 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
     Trong prompt hệ thống tùy chỉnh và tin nhắn người dùng, bạn có thể sử dụng các trường để tham chiếu thông tin:
     - `{sentence}`: Văn bản cần dịch
-    - `{srclang}` và `{tgtlang}`: Ngôn ngữ nguồn và ngôn ngữ đích
+    - `{srclang}` và `{tgtlang}`: Ngôn ngữ nguồn và ngôn ngữ đích. Nếu chỉ sử dụng tiếng Anh trong prompt, chúng sẽ được thay thế bằng bản dịch tiếng Anh của tên ngôn ngữ. Ngược lại, chúng sẽ được thay thế bằng bản dịch tên ngôn ngữ trong ngôn ngữ UI hiện tại.
     - `{contextOriginal[N]}` và `{contextTranslation[N]}` và `{contextTranslation[N]}`: N câu lịch sử văn bản gốc, bản dịch và cả hai. N không liên quan đến "số lượng ngữ cảnh đi kèm" và cần được thay thế bằng một số nguyên khi nhập vào.
 
 1. #### Temperature / max tokens / top p / frequency penalty

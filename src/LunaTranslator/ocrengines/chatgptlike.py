@@ -104,9 +104,8 @@ class OCR(baseocr):
         default = "Recognize the {srclang} text in the picture."
         template = self.config[tempk] if self.config[usekey] else None
         template = template if template else default
-        template = template.replace("{srclang}", self.srclang)
         isocrtranslate = "{tgtlang}" in template
-        template = template.replace("{tgtlang}", self.tgtlang)
+        template = self.smartparselangprompt(template)
         return template, isocrtranslate
 
     def ocr(self, imagebinary):

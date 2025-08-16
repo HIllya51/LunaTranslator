@@ -51,7 +51,7 @@
 
     사용자 정의 시스템 프롬프트와 사용자 메시지에서 필드를 사용하여 일부 정보를 참조할 수 있습니다:
     - `{sentence}`: 현재 번역할 텍스트
-    - `{srclang}`과 `{tgtlang}`: 원본 언어와 대상 언어
+    - `{srclang}` 및 `{tgtlang}`: 소스 언어 및 대상 언어. 프롬프트에서 영어만 사용된 경우, 언어 이름의 영어 번역으로 대체됩니다. 그렇지 않은 경우 현재 UI 언어의 언어 이름 번역으로 대체됩니다.    
     - `{contextOriginal[N]}`과 `{contextTranslation[N]}`과 `{contextTranslation[N]}`: N개의 이전 원문, 번역문, 둘 다. N은 "동반 컨텍스트 수"와 관련이 없으며 입력 시 정수로 대체해야 합니다.
 
 1. #### Temperature / max tokens / top p / frequency penalty  

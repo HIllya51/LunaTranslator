@@ -51,7 +51,7 @@
 
     カスタムシステムプロンプトとユーザーメッセージ内では、いくつかの情報をフィールドを使って参照できます：
     - `{sentence}`：現在翻訳するテキスト
-    - `{srclang}` と `{tgtlang}`：元の言語と対象言語
+    - `{srclang}`と`{tgtlang}`：ソース言語とターゲット言語。プロンプトで英語のみが使用されている場合、これらは言語名の英語訳に置き換えられます。それ以外の場合は、現在のUI言語の言語名訳に置き換えられます。
     - `{contextOriginal[N]}` と `{contextTranslation[N]}` と `{contextTranslation[N]}`：N件の履歴原文、翻訳文、両方。Nは「付随するコンテキストの数」とは関係なく、入力時に整数に置き換えてください。
 
 1. #### Temperature / max tokens / top p / frequency penalty  
