@@ -94,4 +94,4 @@ class TS(basetrans):
         try:
             return response.json()["data"]
         except:
-            raise Exception(response)
+            raise Exception("https://github.com/OwO-Network/DeepLX/issues/179")
