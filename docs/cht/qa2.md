@@ -1,4 +1,4 @@
-# Anki集成
+# Anki 集成
 
 1. 安裝 anki, https://apps.ankiweb.net/ 去主頁下載安裝
 
@@ -6,7 +6,7 @@
 
 ![img](https://image.lunatranslator.org/zh/anki/336449205-4eb7ce93-a9e9-489b-be8a-da67cfdca6ea.png)
 
-會提供一個數字，當前是 2055492159.
+會提供一個數字，目前是 2055492159.
 
 3.
 
@@ -16,7 +16,7 @@
 
 ![img](https://image.lunatranslator.org/zh/anki/336450025-9bf64445-f62e-4bfe-86f7-da99a7100e92.png)
 
-填入數字，重啓 anki
+填入數字，重啟 anki
 
 ---
 

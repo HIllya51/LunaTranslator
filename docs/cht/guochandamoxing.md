@@ -1,35 +1,35 @@
-# 大模型翻譯接口
+# 大模型翻譯介面
 
-## 大模型通用接口
+## 大模型通用介面
 
-::: details 同時使用多個大模型接口？
-如果只是有多個不同的密鑰想要輪詢，只需用|分割就可以了。
+::: details 同時使用多個大模型介面？
+如果只是有多個不同的金鑰想要輪詢，只需用|分割就可以了。
 
-但有時想要同時使用多個不同的api接口地址/prompt/model/參數等來對比翻譯效果。方法是：
+但有時想要同時使用多個不同的 api 介面地址/prompt/model／參數等來對比翻譯效果。方法是：
 
-1. 點擊上方的“+”按鈕
+1. 點擊上方的「+」按鈕
     ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-1. 彈出一個窗口，選擇大模型通用接口，併爲之取個名字。這樣會複製一份當前大模型通用接口的設置和api。
+1. 彈出一個視窗，選擇大模型通用介面，併為之取個名字。這樣會複製一份目前大模型通用介面的設定和 api。
     ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
-1. 激活複製的接口，並可以進行單獨設置。複製的接口可以和原接口一起運行，從而使用多個不同的設置來運行。
+1. 啟用複製的介面，並可以進行單獨設定。複製的介面可以和原介面一起執行，從而使用多個不同的設定來執行。
     ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::
 
 ### 參數說明
 
-1. #### API接口地址
+1. #### API 介面地址
  
-    大部分常見大模型平台的`API接口地址`可以在下拉列表中選取，但可能會有遺漏。對於其他沒有列舉出來的接口，請自行查閱平台的文檔來填寫。
+    大部份常見大模型平台的`API 介面地址`可以在下拉列表中選取，但可能會有遺漏。對於其他沒有列舉出來的介面，請自行查閱平台的文檔來填寫。
  
 1. #### API Key
 
-    `API Key`可以在平台獲取。對於添加的多個Key，會自動進行輪詢，並根據錯誤反饋調整Key的權重。
+    `API Key`可以在平台獲取。對於新增的多個 Key，會自動進行輪詢，並根據錯誤回饋調整 Key 的權重。
 
 1. #### model
 
-    大部分平台填寫好`API接口地址`和`API接口地址`後，點擊`model`旁的刷新按鈕即可獲取可用的模型列表。
+    大部份平台填寫好`API 介面地址`和`API 介面地址`後，點擊`model`旁的重新整理按鈕即可獲取可用的模型列表。
 
-    如果平台不支持拉取模型的接口，且默認列表中沒有要用的模型，那麼請參照接口官方文檔手動填寫模型。
+    如果平台不支援拉取模型的介面，且預設列表中沒有要用的模型，那麼請參照介面官方文檔手動填寫模型。
 
 1. #### 流式輸出
 
@@ -37,40 +37,40 @@
 
 1. #### 隱藏思考過程
 
-    開啟後將不顯示\<think\>標籤包裹的內容。若開啟了隱藏思考過程，會顯示當前的思考進度。
+    開啟後將不顯示\<think\>標籤包裹的內容。若開啟了隱藏思考過程，會顯示目前的思考進度。
 
 1. #### 附帶上下文個數
 
-    會附帶若干條歷史的原文和翻譯接口提供給大模型，以優化翻譯。設置為0將禁用此優化。
+    會附帶若干條歷史的原文和翻譯介面提供給大模型，以優化翻譯。設定為 0 將停用此優化。
 
-    - **優化緩存命中** - 對於DeepSeek等平台，平台會對緩存命中的輸入以更低的價格計費。激活後會優化附帶上下文時的形式以增加緩存命中率。
+    - **優化快取命中** - 對於 DeepSeek 等平台，平台會對快取命中的輸入以更低的價格計費。啟用後會優化附帶上下文時的形式以增加快取命中率。
 
-1. #### 自定義 system prompt / 自定義 user message / prefill
+1. #### 自訂 system prompt / 自訂 user message / prefill
 
-    幾種不同的控制輸出內容的手段，可以根據喜好設置，或者使用默認即可。
+    幾種不同的控制輸出內容的手段，可以根據喜好設定，或者使用預設即可。
 
-    自定義系統提示和用戶消息中可以使用字段來引用一些信息：
-    - `{sentence}`：當前欲翻譯的文本
-    - `{srclang}`和`{tgtlang}`：源語言和目標語言。如果提示中僅使用英語，則會替換成語言名稱的英語翻譯，否則會替換成語言名稱的當前UI語言翻譯。
-    - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextTranslation[N]}`：N條歷史原文、譯文、兩者。N與「附帶上下文個數」無關，需輸入時替換成整數。
+    自訂系統提示和用戶消息中可以使用欄位來引用一些訊息：
+    - `{sentence}`：目前欲翻譯的文字
+    - `{srclang}`和`{tgtlang}`：源語言和目標語言。如果提示中僅使用英語，則會取代成語言名稱的英語翻譯，否則會取代成語言名稱的目前 UI 語言翻譯。
+    - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextTranslation[N]}`：N 條歷史原文、譯文、兩者。N 與「附帶上下文個數」無關，需輸入時取代成整數。
 
 1. #### Temperature / max tokens / top p / frequency penalty
 
-    對於部分平台的部分模型，可能 `top p` 和 `frequency penalty` 等參數不被介面接受，或者 `max tokens` 參數被廢棄並改為 `max completion tokens`。啟用或取消開關可以解決這些問題。
+    對於部份平台的部份模型，可能 `top p` 和 `frequency penalty` 等參數不被介面接受，或者 `max tokens` 參數被廢棄並改為 `max completion tokens`。啟用或取消開關可以解決這些問題。
 
 1. #### reasoning effort
 
-    對於Gemini平台，會自動將選項映射為Gemini的`thinkingBudget`，映射規則為：
+    對於 Gemini 平台，會自動將選項映射為 Gemini 的`thinkingBudget`，映射規則為：
     
-    minimal->0(停用思考，但對於Gemini-2.5-Pro模型不適用), low->512, medium->-1（開啟動態思維）, high->24576。
+    minimal->0（停用思考，但對於 Gemini-2.5-Pro 模型不適用）, low->512, medium->-1（開啟動態思維）, high->24576。
 
 1. #### 其他參數
 
-    以上只提供了一些常見的參數，如果使用的平台提供了其他未列出的有用的參數，可以自行添加鍵值。
+    以上只提供了一些常見的參數，如果使用的平台提供了其他未列出的有用的參數，可以自行新增鍵值。
 
 ## 常見的大模型平台
 
-### 歐美的大模型平臺
+### 歐美的大模型平台
 
 ::: tabs
 
@@ -111,9 +111,9 @@
 
 == Azure
 
-**API接口地址** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
+**API 介面地址** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
 
-其中，將`{endpoint}`和`{deployName}`替換成你的endpoint和deployName
+其中，將`{endpoint}`和`{deployName}`取代成你的 endpoint 和 deployName
 
 == deepinfra
 
@@ -129,7 +129,7 @@
 
 :::
 
-### 中國的大模型平臺
+### 中國的大模型平台
 
 ::: tabs
 
@@ -145,9 +145,9 @@
 
 == 字節跳動火山引擎
 
-**API Key** [創建API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)獲取
+**API Key** [建立 API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)獲取
 
-**model** [創建推理接入點](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)後，填入**接入點**而非**模型**
+**model** [建立推理接入點](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)後，填入**接入點**而非**模型**
 
 ![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
 
@@ -156,7 +156,7 @@
 
 **API Key** https://platform.moonshot.cn/console/api-keys
 
-== 智譜AI
+== 智譜 AI
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
@@ -188,7 +188,7 @@
 **model** https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Fm2vrveyu
 
 >[!WARNING]
->**API Key**請使用百度智能雲IAM的Access Key、Secret Key來生成接口的BearerToken後作爲**API Key**填入，或者按照`Access Key`:`Secret Key`的格式直接將兩者一起填入**API Key**中。注意，不是千帆ModelBuilder的舊版v1版本接口的API Key、Secret Key，兩者不能通用。
+>**API Key**請使用百度智能雲 IAM 的 Access Key、Secret Key 來生成介面的 BearerToken 後作為**API Key**填入，或者按照`Access Key`:`Secret Key`的格式直接將兩者一起填入**API Key**中。注意，不是千帆 ModelBuilder 的舊版 v1 版本介面的 API Key、Secret Key，兩者不能通用。
 
 == MiniMax
 
@@ -200,13 +200,13 @@
 
 也可以使用[llama.cpp](https://github.com/ggerganov/llama.cpp) 、[ollama](https://github.com/ollama/ollama)之類的工具進行模型的部署，然後將地址和模型填入。
 
-也可以使用Kaggle之類的平臺來把模型部署到雲端，這時可能會需要用到SECRET_KEY，其他時候可以無視SECRET_KEY參數。
+也可以使用 Kaggle 之類的平台來把模型部署到雲端，這時可能會需要用到 SECRET_KEY，其他時候可以無視 SECRET_KEY 參數。
 
 
-#### Sakura大模型
+#### Sakura 大模型
 
 ::: tip
-推薦使用，配寘簡單，效果好，也可以純cpu運行輕量模型
+推薦使用，配寘簡單，效果好，也可以純 cpu 執行輕量模型
 :::
 
 部署方法可參攷 https://github.com/SakuraLLM/SakuraLLM/wiki

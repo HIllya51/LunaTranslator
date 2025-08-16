@@ -1,8 +1,8 @@
-# 模擬器遊戲支持
+# 模擬器遊戲支援
 
-LunaTranslator 透過模擬器支援大量遊戲。對於未支持的遊戲，請向我發[issue](https://lunatranslator.org/Resource/game_support)。
+LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，請向我發[issue](https://lunatranslator.org/Resource/game_support)。
 
-| 平臺 | 支持的模擬器 |
+| 平台 | 支援的模擬器 |
 | - | - |
 | NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |

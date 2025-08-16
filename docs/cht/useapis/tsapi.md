@@ -1,12 +1,12 @@
-# 傳統在線翻譯接口
+# 傳統線上翻譯介面
 
-## 傳統API
+## 傳統 API
 
 ::: tabs
 
 == 百度
 
-#### 百度翻譯開放平臺
+#### 百度翻譯開放平台
 
 https://fanyi-api.baidu.com/product/11
 
@@ -26,7 +26,7 @@ https://ai.youdao.com/doc.s#guide
 
 **開通服務** https://www.aliyun.com/product/ai/alimt
 
-**創建密鑰** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
+**建立金鑰** https://help.aliyun.com/zh/ram/user-guide/create-an-accesskey-pair
 
 == 彩雲
 
@@ -36,7 +36,7 @@ https://docs.caiyunapp.com/lingocloud-api/#%E7%94%B3%E8%AF%B7%E8%AE%BF%E9%97%AE%
 
 https://www.volcengine.com/docs/4640/127684
 
-== 谷歌
+== Google
 
 https://cloud.google.com/translate/docs/basic/translating-text
 
@@ -56,11 +56,11 @@ https://learn.microsoft.com/en-us/azure/ai-services/translator/reference/v3-0-re
 
 https://niutrans.com/cloud/api/list
 
-== yandex
+== Yandex
 
 https://yandex.cloud/en/docs/translate/api-ref/authentication#service-account_1
 
-== 華爲雲
+== 華為雲
 
 https://www.huaweicloud.com/product/nlpmt.html
 
@@ -81,6 +81,6 @@ https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
 
 == lingva
 
-默認host爲`translate.plausibility.cloud`，也可以在[lingva-translate](https://github.com/thedaviddelta/lingva-translate)自行部署後填入自己的域名。
+預設 Host 為`translate.plausibility.cloud`，也可以在[lingva-translate](https://github.com/thedaviddelta/lingva-translate)自行部署後填入自己的域名。
 
 :::
