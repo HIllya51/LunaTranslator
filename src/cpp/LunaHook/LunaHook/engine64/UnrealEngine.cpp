@@ -1,38 +1,38 @@
 ﻿#include "UnrealEngine.h"
 
-void ENTERGRAMfilter(TextBuffer *buffer, HookParam *hp)
-{
-  std::wstring str = buffer->strW();
-  str = re::sub(str, L"\\|(.*?)\u300a(.*?)\u300b", L"$1");
-  str = re::sub(str, L"\u3000|\n");
-  buffer->from(str);
-};
-bool InsertENTERGRAM()
-{
-  // https://vndb.org/v40521
-  //[240125][1208048][エンターグラム] すだまリレイシヨン パッケージ版 (mdf+mds)
-
-  const BYTE BYTES[] = {
-      0x48, 0x8B, 0x43, 0x38,
-      0x48, 0x8D, 0x7C, 0x24, 0x30,
-      0x48, 0x8B, 0x74, 0x24, 0x20,
-      0x48, 0x85, 0xC0,
-      0x48, 0x8B, 0xCD,
-      0x48, 0x89, 0x6C, 0x24, 0x40,
-      0x48, 0x0F, 0x45, 0xF8};
-  auto addr = MemDbg::findBytes(BYTES, sizeof(BYTES), processStartAddress, processStopAddress);
-  if (!addr)
-    return false;
-  HookParam hp;
-  hp.address = addr + 14;
-  hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
-  hp.filter_fun = ENTERGRAMfilter;
-  hp.offset = regoffset(rsi);
-  hp.lineSeparator = L"\\n";
-  return NewHook(hp, "UnrealEngine");
-}
 namespace
 {
+  void ENTERGRAMfilter(TextBuffer *buffer, HookParam *hp)
+  {
+    std::wstring str = buffer->strW();
+    str = re::sub(str, L"\\|(.*?)\u300a(.*?)\u300b", L"$1");
+    str = re::sub(str, L"\u3000|\n");
+    buffer->from(str);
+  };
+  bool InsertENTERGRAM()
+  {
+    // https://vndb.org/v40521
+    //[240125][1208048][エンターグラム] すだまリレイシヨン パッケージ版 (mdf+mds)
+
+    const BYTE BYTES[] = {
+        0x48, 0x8B, 0x43, 0x38,
+        0x48, 0x8D, 0x7C, 0x24, 0x30,
+        0x48, 0x8B, 0x74, 0x24, 0x20,
+        0x48, 0x85, 0xC0,
+        0x48, 0x8B, 0xCD,
+        0x48, 0x89, 0x6C, 0x24, 0x40,
+        0x48, 0x0F, 0x45, 0xF8};
+    auto addr = MemDbg::findBytes(BYTES, sizeof(BYTES), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr + 14;
+    hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
+    hp.filter_fun = ENTERGRAMfilter;
+    hp.offset = regoffset(rsi);
+    hp.lineSeparator = L"\\n";
+    return NewHook(hp, "UnrealEngine");
+  }
   bool ue5()
   {
     // https://github.com/HIllya51/LunaTranslator/issues/1175
@@ -57,9 +57,6 @@ namespace
     };
     return NewHook(hp, "UnrealEngine5");
   }
-}
-namespace
-{
   bool xxx()
   {
     // 逸剑风云决
@@ -128,8 +125,103 @@ namespace
     };
     return NewHook(hp, "UnrealEngine");
   }
+  template <int _>
+  void uefilter(TextBuffer *buffer, HookParam *)
+  {
+    static int idx = 0;
+    if (idx++ % 2 == 0)
+      return buffer->clear();
+    static std::wstring last;
+    auto _this = buffer->strW();
+    if (startWith(_this, last))
+    {
+      buffer->from(_this.substr(last.size()));
+      last = std::move(_this);
+    }
+    else if (_this.size() == last.size() + 1)
+    {
+      buffer->clear();
+    }
+    else
+    {
+      last = std::move(_this);
+    }
+  }
+  bool ue42_1()
+  {
+    const BYTE BYTES[] = {
+        0x4a, 0x8d, 0x14, 0x65, 0x00, 0x00, 0x00, 0x00,
+        0x48, 0x8b, 0xc8,
+        0x4b, 0x8d, 0x1c, 0x36,
+        0x49, 0x03, 0xd5,
+        0x4c, 0x8b, 0xc3,
+        0x48, 0x8b, 0xf8,
+        0xe8, XX4,
+        0x33, 0xc0};
+    auto addr = MemDbg::findBytes(BYTES, sizeof(BYTES), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    BYTE start[] = {
+        0x40, 0x55,
+        0x41, 0x54,
+        0x41, 0x55,
+        0x41, 0x56,
+        0x41, 0x57};
+    auto func = reverseFindBytes(start, sizeof(start), addr - 0x100, addr, 0, true);
+    if (!func)
+      return false;
+    HookParam hp;
+    hp.address = func;
+    hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
+    hp.offset = regoffset(rdx);
+    hp.filter_fun = uefilter<0>;
+    return NewHook(hp, "UnrealEngine4");
+  }
+  bool ue42_2()
+  {
+    const BYTE BYTES[] = {
+        0x0f, 0xbe, 0x44, 0x24, 0x40,
+        0x85, 0xc0,
+        0x74, 0x34,
+        0x8b, 0x44, 0x24, 0x3c,
+        0x83, 0xe0, 0xfc,
+        0x3d, 0x0c, 0x20, 0x00, 0x00,
+        0x74, 0x1c,
+        0x8b, 0x44, 0x24, 0x3c,
+        0x2d, 0x2a, 0x20, 0x00, 0x00,
+        0x83, 0xf8, 0x05,
+        0x72, 0x0e,
+        0x8b, 0x44, 0x24, 0x3c,
+        0x2d, 0x66, 0x20, 0x00, 0x00,
+        0x83, 0xf8, 0x04,
+        0x73, 0x0a};
+    auto addr = MemDbg::findBytes(BYTES, sizeof(BYTES), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    BYTE start[] = {
+        0x48, 0x89, 0x4c, 0x24, 0x08,
+        0x48, 0x81, 0xec, XX4};
+    auto func = reverseFindBytes(start, sizeof(start), addr - 0x400, addr, 0, true);
+    if (!func)
+      return false;
+    HookParam hp;
+    hp.address = func;
+    hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      auto a1 = context->rcx;
+      buffer->from((PWSTR) * (uintptr_t *)(a1 + 16));
+    };
+    hp.filter_fun = uefilter<1>;
+    return NewHook(hp, "UnrealEngine4");
+  }
+  bool ue42()
+  {
+    // Mugen Endless Runner 1.0.1.0
+    return ue42_1() | ue42_2();
+  }
 }
 bool UnrealEngine::attach_function()
 {
-  return (InsertENTERGRAM() || ue5()) | xxx();
+  return ((InsertENTERGRAM() || ue5()) | xxx()) || ue42();
 }

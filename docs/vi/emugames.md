@@ -17,6 +17,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010061701DB38000 | 岩倉アリア |
 |  | 01006A60216CA000 | 悠久のティアブレイド |
 |  | 0100AAD0210B6000 | 勿ノ怪契リ |
 |  | 010008702297A000 | アルカナ・ファミリア Rinato (Arcana Famiglia Rinato) |

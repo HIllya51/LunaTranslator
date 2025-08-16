@@ -13,6 +13,7 @@ namespace mages
                                                L"",
                                                L"",
                                                L"compound_chars_SGHD",
+                                               L"",
                                            }[_idx],
                                            L"COMPOUND_CHARS");
         auto charsetA = LoadResData(std::vector<const wchar_t *>{
@@ -23,7 +24,9 @@ namespace mages
                                         L"charset_SINce_Memories",
                                         L"charset_SG_My_Darlings_Embrace",
                                         L"charset_SG_Linear_Bounded_Phenogram",
-                                        L"charset_SGHD"}[_idx],
+                                        L"charset_SGHD",
+                                        L"charset_IwakuraAria",
+                                    }[_idx],
                                     L"CHARSET");
 
         auto compound_chars = StringToWideString(compound_charsA);
@@ -125,7 +128,7 @@ namespace mages
                         }
                     }
                     if (bottom.size())
-                        s = s + bottom + L": ";
+                        s = s + L"【" + bottom + L"】";
                 }
                 else if (c == 2)
                 { // line
@@ -379,46 +382,202 @@ namespace hookmages
         return _;
 
 #else
-
-        auto dialogSigOffset = 2;
-        BYTE dialogSig1[] = {
-            0x85, XX, 0x74, XX, 0x41, 0x83, XX, 0x01, 0x74, XX, 0x41, 0x83, XX, 0x04, 0x74, XX, 0x41};
-        auto addr = MemDbg::findBytes(dialogSig1, sizeof(dialogSig1), processStartAddress, processStopAddress);
-        ConsoleOutput("%p", addr);
-        if (!addr)
-            return false;
-        auto pos = addr + dialogSigOffset;
-        auto jzoff = *(BYTE *)(pos + 1);
-        pos += jzoff + 2;
-        auto hookaddr = pos;
-        //
-        for (int i = 0; i < 0x200; i++)
+        auto ff2 = [&]()
         {
-            //.text:000000014004116B 0F B6 13                      movzx   edx, byte ptr [rbx]
-            //->rbx
-            if ((((*(DWORD *)(pos)) & 0xffffff) == 0x13b60f))
+            BYTE sig1[] = {
+                /*
+ *((_DWORD *)&qword_140B21E28 + v17) = (unsigned int)v18 / 0xBB80;
+    v19 = v12 / 0x3E8;
+.text:0000000140066EA4 B8 F1 19 76 05                                mov     eax, 57619F1h
+.text:0000000140066EA9 F7 E1                                         mul     ecx
+.text:0000000140066EAB C1 EA 0A                                      shr     edx, 0Ah
+.text:0000000140066EAE 43 89 94 82 28 1E B2 00                       mov     dword ptr rva qword_140B21E28[r10+r8*4], edx
+.text:0000000140066EB6 B8 D3 4D 62 10                                mov     eax, 10624DD3h
+.text:0000000140066EBB 41 F7 E7                                      mul     r15d
+.text:0000000140066EBE C1 EA 06                                      shr     edx, 6
+                */
+                0xb8, 0xf1, 0x19, 0x76, 0x05,
+                0xf7, XX,
+                0xc1, 0xea, 0x0a,
+                XX, 0x89, 0x94, 0x82, XX4,
+                0xb8, 0xd3, 0x4d, 0x62, 0x10,
+                0x41, 0xf7, XX,
+                0xc1, XX, 0x06};
+
+            BYTE sig1_2[] = {
+                // Never7
+                /*
+          dword_141140860[4 * dword_14113F418 + 2] = v30 * v20 / 0xBB80;
+          dword_141140860[4 * dword_14113F418 + 3] = (int)v30 / 1000;
+.text:00000001400AFBA6 B9 80 BB 00 00                                mov     ecx, 0BB80h
+.text:00000001400AFBAB F7 F1                                         div     ecx
+.text:00000001400AFBAD 8B 0D 65 F8 08 01                             mov     ecx, cs:dword_14113F418
+.text:00000001400AFBB3 8D 0C 8D 02 00 00 00                          lea     ecx, ds:2[rcx*4]
+.text:00000001400AFBBA 8B C9                                         mov     ecx, ecx
+.text:00000001400AFBBC 48 8D 15 9D 0C 09 01                          lea     rdx, dword_141140860
+.text:00000001400AFBC3 89 04 8A                                      mov     [rdx+rcx*4], eax
+.text:00000001400AFBC6 33 D2                                         xor     edx, edx
+.text:00000001400AFBC8 8B 44 24 38                                   mov     eax, [rsp+118h+var_E0]
+.text:00000001400AFBCC B9 E8 03 00 00                                mov     ecx, 3E8h
+.text:00000001400AFBD1 F7 F1                                         div     ecx
+                */
+                0xB9, 0x80, 0xBB, 0x00, 0x00,
+                0xF7, XX,
+                0x8B, 0x0D, XX4,
+                0x8D, 0x0C, 0x8D, 0x02, 0x00, 0x00, 0x00,
+                0x8B, 0xC9,
+                0x48, 0x8D, 0x15, XX4,
+                0x89, 0x04, 0x8A,
+                0x33, 0xD2,
+                0x8B, 0x44, 0x24, XX,
+                0xB9, 0xE8, 0x03, 0x00, 0x00,
+                0xF7, XX};
+            BYTE sig1_1[] = {
+                0xb8, 0xf1, 0x19, 0x76, 0x05,
+                0xf7, XX,
+                0xc1, 0xea, 0x0a,
+                0x41, 0x8d, 0x40, 0x02,
+                XX, 0x89, 0x94, 0x82, XX4,
+                0xb8, 0xd3, 0x4d, 0x62, 0x10,
+                0x41, 0xf7, XX,
+                0xc1, XX, 0x06};
+            BYTE sig2[] = {
+                /*
+              if ( i < 0 && (v32 = *v30 & 0x60, (*v30 & 0x60) != 0) )
+              {
+                switch ( v32 )
+                {
+                  case ' ':
+                    v30 += 3;
+                    break;
+                  case '@':
+                    v30 += 4;
+                    break;
+                  case '`':
+                    v30 += 6;
+                    break;
+                }
+              }
+.text:00000001400670DC 0F B6 03                                      movzx   eax, byte ptr [rbx]
+.text:00000001400670DF 83 E0 60                                      and     eax, 60h
+.text:00000001400670E2 74 21                                         jz      short loc_140067105
+.text:00000001400670E4 83 F8 20                                      cmp     eax, 20h ; ' '
+.text:00000001400670E7 74 16                                         jz      short loc_1400670FF
+.text:00000001400670E9 83 F8 40                                      cmp     eax, 40h ; '@'
+.text:00000001400670EC 74 0B                                         jz      short loc_1400670F9
+.text:00000001400670EE 83 F8 60                                      cmp     eax, 60h ; '`'
+.text:00000001400670F1 75 16                                         jnz     short loc_140067109
+.text:00000001400670F3 48 83 C3 06                                   add     rbx, 6
+                */
+                0x0f, 0xb6, XX,
+                0x83, 0xe0, 0x60,
+                0x74, XX,
+                0x83, 0xf8, 0x20,
+                0x74, XX,
+                0x83, 0xf8, 0x40,
+                0x74, XX,
+                0x83, 0xf8, 0x60,
+                0x75, XX,
+                0x48, 0x83, 0xc3, 0x06};
+            BYTE sig3[] = {
+                /*
+v60 = v26[1] + ((v28 & 0x7F) << 8);
+.text:00000001400676B5 41 83 E1 7F                                   and     r9d, 7Fh
+.text:00000001400676B9 41 C1 E1 08                                   shl     r9d, 8
+.text:00000001400676BD 0F B6 43 01                                   movzx   eax, byte ptr [rbx+1]
+.text:00000001400676C1 44 03 C8                                      add     r9d, eax
+                */
+                0x41, 0x83, 0xe1, 0x7f,
+                0x41, 0xc1, 0xe1, 0x08,
+                0x0f, 0xb6, 0x43, 0x01,
+                0x44, 0x03, 0xc8};
+            BYTE sig3_1[] = {
+                0x44, 0x0f, 0xb6, 0x5b, 0x01,
+                0x41, 0xc1, 0xe3, 0x08,
+                0x0f, 0xb6, 0x43, 0x02,
+                0x44, 0x03, 0xd8};
+            for (auto [_sig, sz, off] : {
+                     std::make_tuple(sig1, sizeof(sig1), 0x200),
+                     std::make_tuple(sig1_2, sizeof(sig1_2), 0x250),
+                     std::make_tuple(sig1_1, sizeof(sig1_1), 0x200),
+                     std::make_tuple(sig2, sizeof(sig2), 0x450),
+                     std::make_tuple(sig3, sizeof(sig3), 0xa00),
+                     std::make_tuple(sig3_1, sizeof(sig3_1), 0xa00),
+                 })
             {
-                offset = regoffset(rbx); // rbx
-                // ConsoleOutput("%p",pos-processStartAddress);
-                break;
+                auto addr1 = MemDbg::findBytes(_sig, sz, processStartAddress, processStopAddress);
+                if (!addr1)
+                    continue;
+                BYTE start[] = {
+                    XX, 0x89, XX, 0x24, XX,
+                    XX, 0x89, XX, 0x24, 0x18};
+                auto func = reverseFindBytes(start, sizeof(start), addr1 - off, addr1, 0, true);
+                if (!func)
+                    continue;
+                switch (func - processStartAddress)
+                {
+                case 0x66CE0: // 岩倉アリア
+                case 0xAF970: // Never 7 - The End of Infinity
+                case 0x6C180: // Ever17 -the out of infinity-
+                    gametype = 8;
+                    break;
+                default:
+                    gametype = 8;
+                }
+                HookParam hp;
+                hp.address = func;
+                hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+                {
+                    auto edx = **(uintptr_t **)context->rcx;
+                    auto s = mages::readString(edx, gametype);
+                    buffer->from(s);
+                };
+                hp.type = CODEC_UTF16 | USING_STRING;
+                return NewHook(hp, "MAGES");
             }
-            pos += 1;
-        }
-        if (offset == -1)
             return false;
-        switch (pos - processStartAddress)
+        };
+        auto ff = [&]()
         {
+            auto dialogSigOffset = 2;
+            BYTE dialogSig1[] = {
+                0x85, XX, 0x74, XX, 0x41, 0x83, XX, 0x01, 0x74, XX, 0x41, 0x83, XX, 0x04, 0x74, XX, 0x41};
+            auto addr = MemDbg::findBytes(dialogSig1, sizeof(dialogSig1), processStartAddress, processStopAddress);
+            if (!addr)
+                return false;
+            auto pos = addr + dialogSigOffset;
+            auto jzoff = *(BYTE *)(pos + 1);
+            pos += jzoff + 2;
+            auto hookaddr = pos;
+            //
+            for (int i = 0; i < 0x200; i++)
+            {
+                //.text:000000014004116B 0F B6 13                      movzx   edx, byte ptr [rbx]
+                //->rbx
+                if ((((*(DWORD *)(pos)) & 0xffffff) == 0x13b60f))
+                {
+                    offset = regoffset(rbx); // rbx
+                    // ConsoleOutput("%p",pos-processStartAddress);
+                    break;
+                }
+                pos += 1;
+            }
+            if (offset == -1)
+                return false;
+            switch (pos - processStartAddress)
+            {
 
-        default:
-            // CHAOS;HEAD_NOAH
-            gametype = 0;
-        }
-        HookParam hp;
-        hp.address = hookaddr;
-        hp.text_fun = SpecialHookMAGES<0>;
-        hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-        return NewHook(hp, "MAGES");
-
+            default:
+                // CHAOS;HEAD_NOAH
+                gametype = 0;
+            }
+            HookParam hp;
+            hp.address = hookaddr;
+            hp.text_fun = SpecialHookMAGES<0>;
+            hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
+            return NewHook(hp, "MAGES");
+        };
+        return ff2() | ff();
 #endif
     }
 

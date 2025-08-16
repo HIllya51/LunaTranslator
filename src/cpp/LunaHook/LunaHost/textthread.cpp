@@ -63,7 +63,7 @@ void TextThread::Push(BYTE *data, int length)
 		{
 			buffer.append(converted.value());
 			isMultiCharString = isMultiCharString || (converted.value().size() > 1);
-			if (hp.type & FULL_STRING && isMultiCharString)
+			if (hp.type & FULL_STRING && (flushDelay == 0 || isMultiCharString))
 				buffer.push_back(L'\n');
 		}
 		else
