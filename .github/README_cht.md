@@ -42,12 +42,12 @@
 
 - **[載入瀏覽器擴充功能](https://docs.lunatranslator.org/cht/yomitan.html)** 可以在軟體內載入 Yomitan 等瀏覽器擴充功能以輔助實現一些其他功能
 
-## 支援作者
+## 支持作者
 
-軟體維護不易，若您覺得此軟體對您有所幫助，歡迎透過 [Patreon](https://patreon.com/HIllya51) 支持我，您的支援將成為軟體長期維護的動力，謝謝～
+軟體維護不易，若您覺得此軟體對您有所幫助，歡迎透過 [Patreon](https://patreon.com/HIllya51) 支持我，您的支持將成為軟體長期維護的動力，謝謝～
 
 <a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="../docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
 
-## 開源許可
+## 開源授權
 
 LunaTranslator 使用 [GPLv3](../LICENSE) 授權條款。
