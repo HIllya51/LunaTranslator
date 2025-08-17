@@ -4,7 +4,7 @@
 
 | 作業系統 | 32 位元 | 64 位元 | 說明 |
 | - | - | - | - |
-| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | 該版本只支援較新的作業系統版本，以獲取更高效能、更新的系統特性，及更低的病毒誤報率。
+| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | 該版本只支援較新的作業系統版本，以獲得更高效能、更新的系統特性，及更低的病毒誤報率。
 | Windows 7 及以上 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
 | Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | 該版本僅用於支援擷取僅能在 XP 虛擬機內執行的很老遊戲的文字，功能殘缺、不穩定、執行緩慢，一般不要使用。
 
@@ -14,7 +14,7 @@
 下載後解壓縮到任意目錄
 
 ::: warning
-但請不要把軟體放到**C:\Program Files**等特殊路徑下，否則即使使用管理員權限，也可能無法儲存配置和快取檔案，甚至無法執行。
+但請不要把軟體放到 **C:\Program Files** 等特殊路徑下，否則即使使用管理員權限，也可能無法儲存配置和快取檔案，甚至無法執行。
 :::
 
 **LunaTranslator.exe** 會以普通模式啟動 
@@ -43,7 +43,7 @@
 
 解決方法：關閉防毒軟體，無法關閉（如 windows defender）則新增信任，然後重下。
 
-註：為了實現 HOOK 擷取遊戲文字，需要將 Dll 注入到遊戲，shareddllproxy32.exe/LunaHost32.dll 等幾個檔案中實現了這些內容，因此特別容易被認為是病毒。軟體目前由[Github Actions](https://github.com/HIllya51/LunaTranslator/actions)自動構建，除非 Github 服務器中毒了，否則不可能包含病毒，因此可以放心的新增信任。
+註：為了實現 HOOK 擷取遊戲文字，需要將 Dll 注入到遊戲，shareddllproxy32.exe/LunaHost32.dll 等幾個檔案中實現了這些內容，因此特別容易被認為是病毒。軟體目前由 [Github Actions](https://github.com/HIllya51/LunaTranslator/actions) 自動構建，除非 Github 服務器中毒了，否則不可能包含病毒，因此可以放心的新增信任。
 
 ::: details 對於 windows defender，方法為：「病毒和威脅防護」->「排除項」->「新增或刪除排除項」->「新增排除項」->「資料夾」，把 Luna 的資料夾新增進去
 ![img](https://image.lunatranslator.org/zh/cantstart/4.png) 

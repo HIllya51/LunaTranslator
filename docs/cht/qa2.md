@@ -1,8 +1,8 @@
 # Anki 集成
 
-1. 安裝 anki, https://apps.ankiweb.net/ 去主頁下載安裝
+1. 安裝 anki, https://apps.ankiweb.net/ 去首頁下載安裝
 
-2. 搜 anki connect 第一條
+2. 搜 anki connect 第一筆
 
 ![img](https://image.lunatranslator.org/zh/anki/336449205-4eb7ce93-a9e9-489b-be8a-da67cfdca6ea.png)
 

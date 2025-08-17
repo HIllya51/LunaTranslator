@@ -29,7 +29,7 @@
 
 == VOICEVOX
 
-需要下載[VOICEVOX](https://github.com/VOICEVOX/voicevox/releases)並執行。
+需要下載 [VOICEVOX](https://github.com/VOICEVOX/voicevox/releases) 並執行。
 
 預設的端口號和 VOICEVOX 的預設端口號相同。如果你不修改雙方的設定，執行並啟用即可使用。
 
