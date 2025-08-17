@@ -7,12 +7,6 @@
 #include "../xpundef/xp_shellscalingapi.h"
 #endif
 
-#ifndef WINXP
-#define FUCKPRIVI PROCESS_QUERY_LIMITED_INFORMATION
-#else
-#define FUCKPRIVI (GetOSVersion().IsleWinXP() ? PROCESS_QUERY_INFORMATION : PROCESS_QUERY_LIMITED_INFORMATION)
-#endif
-
 DECLARE_API void SetWindowInTaskbar(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
@@ -86,6 +80,8 @@ DECLARE_API bool Is64bit(DWORD pid)
     if (!Is64BitOS())
         return false;
     CHandle hprocess{OpenProcess(FUCKPRIVI, FALSE, pid)};
+    if (!hprocess)
+        return false;
     // 進程的控制碼。 控制碼必須具有PROCESS_QUERY_INFORMATION或PROCESS_QUERY_LIMITED_INFORMATION存取權限。 如需詳細資訊，請參閱 處理安全性和存取權限。
     // Windows Server 2003 和 Windows XP： 控制碼必須具有PROCESS_QUERY_INFORMATION存取權限。
     BOOL f64bitProc = false;
