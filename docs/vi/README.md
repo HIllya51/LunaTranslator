@@ -9,12 +9,12 @@
 ::: details Phiên bản tương thích hệ điều hành cũ  
 
 >[!WARNING]  
-Các phiên bản này hiệu suất kém hơn, thiếu một số tính năng và dễ bị phần mềm diệt virus nhầm lẫn. Không khuyến nghị sử dụng trừ khi có nhu cầu đặc biệt.  
+Các phiên bản này có hiệu suất kém hơn, chạy không ổn định, thiếu một số tính năng và chức năng, và dễ bị phần mềm diệt virus báo sai. Không khuyến nghị sử dụng trừ khi có nhu cầu đặc biệt.
 
-| Hệ điều hành | 32-bit | 64-bit | Mô tả |
-| - | - | - | - |
-| Windows 7 trở lên | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> | |
-| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | Phiên bản này chỉ dùng để trích xuất văn bản từ các game rất cũ chỉ chạy được trên máy ảo XP. Chức năng hạn chế, không ổn định và chạy chậm. Không khuyến nghị dùng thường xuyên.
+| Hệ điều hành | 32-bit | 64-bit |
+| - | - | - |
+| Windows 7 trở lên | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
+| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | |
 
 :::
 

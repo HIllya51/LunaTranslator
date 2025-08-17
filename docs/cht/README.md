@@ -9,12 +9,12 @@
 ::: details 舊版操作系統相容版  
 
 >[!WARNING]  
-這些版本效能較差，缺少一些特性和功能，更容易被防毒軟體誤報，如果沒有特殊需要不建議使用。  
+這些版本性能更差，運行更不穩定，而且缺少一些特性和功能，更容易被防毒軟體誤報。如果沒有特殊需要不建議使用。
 
-| 操作系統 | 32位 | 64位 | 說明 |
-| - | - | - | - |
+| 操作系統 | 32位 | 64位 |
+| - | - | - |
 | Windows 7 及以上 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
-| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | 該版本僅用於支持提取僅能在XP虛擬機內運行的很老遊戲的文本，功能殘缺、不穩定、運行緩慢，一般不要使用。
+| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | |
 
 :::
 

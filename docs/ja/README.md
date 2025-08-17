@@ -9,12 +9,12 @@
 ::: details 旧版OS互換版  
 
 >[!WARNING]  
-これらのバージョンはパフォーマンスが低く、一部の機能が欠けており、アンチウイルスソフトに誤検知されやすいです。特別な必要がない場合は使用を推奨しません。  
+これらのバージョンは性能が劣り、動作が不安定で、一部の機能や特徴が欠けており、ウイルス対策ソフトに誤検知されやすくなっています。特別な必要がない場合は使用しないことをお勧めします。
 
-| OS | 32ビット | 64ビット | 説明 |
-| - | - | - | - |
-| Windows 7 以降 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> | |
-| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | このバージョンはXP仮想環境でしか動作しない古いゲームのテキスト抽出専用です。機能制限あり、不安定で動作が遅いため、通常使用
+| OS | 32ビット | 64ビット |
+| - | - | - |
+| Windows 7 以降 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
+| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | |
 
 :::
 

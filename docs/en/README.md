@@ -9,12 +9,12 @@
 ::: details Legacy OS Compatibility Version  
 
 >[!WARNING]  
-These versions have poorer performance, lack some features, and are more prone to false positives by antivirus software. Not recommended unless specifically needed.  
+These versions have poorer performance, run less stably, lack some features and functions, and are more prone to false positives from antivirus software. They are not recommended for use unless there is a specific need.
 
-| OS | 32-bit | 64-bit | Description |
-| - | - | - | - |
-| Windows 7 or later | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> | |
-| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | This version only supports text extraction from very old games that can only run in XP VMs. It has limited functionality, is unstable, and runs slowly. Not recommended for regular use.
+| OS | 32-bit | 64-bit |
+| - | - | - |
+| Windows 7 or later | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
+| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | |
 
 :::
 
