@@ -1,7 +1,5 @@
 # Binding Game Window in OCR Mode
 
-By default, `Automatically bind window after selecting OCR range` is activated; when the four corners of the selection frame belong to a single window HWND, it will automatically bind to that window.
-
 Typically, one very frustrating aspect of using other OCR software is often having to pay attention to the position of the game window and the translation window. It can be annoying if the translation window intersects with the screenshot area or if the game window needs to be switched to the background.
 
 However, Luna's **Bind Window** setting perfectly resolves this annoyance.

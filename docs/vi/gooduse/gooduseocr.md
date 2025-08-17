@@ -1,7 +1,5 @@
 # Liên Kết Cửa Sổ Trò Chơi trong Chế Độ OCR
 
-Mặc định, tùy chọn `Tự động liên kết cửa sổ sau khi chọn phạm vi OCR` được kích hoạt; khi bốn góc của khung chọn thuộc về một cửa sổ HWND duy nhất, nó sẽ tự động liên kết với cửa sổ đó.
-
 Thông thường, một khía cạnh rất khó chịu khi sử dụng phần mềm OCR khác là phải chú ý đến vị trí của cửa sổ trò chơi và cửa sổ dịch thuật. Điều này có thể gây phiền toái nếu cửa sổ dịch thuật giao nhau với khu vực chụp màn hình hoặc nếu cần chuyển cửa sổ trò chơi ra nền.
 
 Tuy nhiên, cài đặt **Liên Kết Cửa Sổ** của Luna hoàn toàn giải quyết được sự phiền toái này.

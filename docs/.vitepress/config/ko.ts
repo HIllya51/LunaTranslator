@@ -103,7 +103,6 @@ export const ko = defineConfig({
                         items: [
                             { text: 'OCR 인터페이스 설정', link: '/ko/useapis/ocrapi' },
                             { text: 'OCR 자동 실행 방법', link: '/ko/ocrparam' },
-                            { text: 'OCR 모드로 게임 창 연결', link: '/ko/gooduseocr' }
                         ]
                     },
                     {
@@ -144,6 +143,15 @@ export const ko = defineConfig({
                     { text: '단축 키', link: '/ko/fastkeys' },
                     { text: '네트워크 서비스', link: '/ko/apiservice' },
                     { text: '음성 인식', link: '/ko/sr' },
+                    {
+                        text: '실용적인 팁', link: '/ko/gooduse/multiconfigs',
+                        collapsed: true,
+                        items: [
+                            { text: '여러 구성 파일 생성', link: '/ko/gooduse/multiconfigs' },
+                            { text: 'HOOK 모드에서 일시적으로 OCR 사용하기', link: '/ko/gooduse/useocrinhook' },
+                            { text: 'OCR 모드 게임 창 바인딩', link: '/ko/gooduse/gooduseocr' },
+                        ]
+                    },
                 ]
             }
         ]

@@ -103,7 +103,6 @@ export const zh = defineConfig({
                         items: [
                             { text: 'OCR接口设置', link: '/zh/useapis/ocrapi' },
                             { text: 'OCR自动化执行方法', link: '/zh/ocrparam' },
-                            { text: 'OCR模式绑定游戏窗口', link: '/zh/gooduseocr' }
                         ]
                     },
                     {
@@ -144,6 +143,16 @@ export const zh = defineConfig({
                     { text: '快捷按键', link: '/zh/fastkeys' },
                     { text: '网络服务', link: '/zh/apiservice' },
                     { text: '语音识别', link: '/zh/sr' },
+                    {
+                        text: '实用技巧', link: '/zh/gooduse/multiconfigs',
+                        collapsed: true,
+                        items: [
+                            { text: '创建多份配置文件', link: '/zh/gooduse/multiconfigs' },
+                            { text: '在HOOK模式下临时使用OCR', link: '/zh/gooduse/useocrinhook' },
+                            { text: 'OCR模式绑定游戏窗口', link: '/zh/gooduse/gooduseocr' },
+                        ]
+
+                    },
                 ]
             }
         ]

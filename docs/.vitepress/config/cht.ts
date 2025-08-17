@@ -104,7 +104,6 @@ export const cht = defineConfig({
                         items: [
                             { text: 'OCR接口設置', link: '/cht/useapis/ocrapi' },
                             { text: 'OCR自動化執行方法', link: '/cht/ocrparam' },
-                            { text: 'OCR模式綁定遊戲窗口', link: '/cht/gooduseocr' }
                         ]
                     },
                     {
@@ -145,6 +144,15 @@ export const cht = defineConfig({
                     { text: '快捷按鍵', link: '/cht/fastkeys' },
                     { text: '網絡服務', link: '/cht/apiservice' },
                     { text: '語音識別', link: '/cht/sr' },
+                    {
+                        text: '實用技巧', link: '/cht/gooduse/multiconfigs',
+                        collapsed: true,
+                        items: [
+                            { text: '創建多份配置檔案', link: '/cht/gooduse/multiconfigs' },
+                            { text: '在HOOK模式下臨時使用OCR', link: '/cht/gooduse/useocrinhook' },
+                            { text: 'OCR模式綁定遊戲窗口', link: '/cht/gooduse/gooduseocr' },
+                        ]
+                    }
                 ]
             }
         ]
