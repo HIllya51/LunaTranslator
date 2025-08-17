@@ -3,7 +3,7 @@
 ::: info
 所有按鈕可以在`顯示設定`->`工具按鈕`中，進行隱藏或顯示。
 
-所有按鈕均可以隨意調整位置。按鈕可以設定對齊分組`置左` `置中` `置右`，對相對位置的調整都會被限定在對齊分組中。
+所有按鈕均可以隨意調整位置。按鈕可以設定對齊分組`置左`／`置中`／`置右`，對相對位置的調整都會被限定在對齊分組中。
 
 按鈕顏色可以在`顯示設定`->`介面設定`->`工具列`->`按鈕顏色`中進行自訂。
 
@@ -37,13 +37,16 @@
     例如如果目前是 HOOK 模式，會暫停讀取遊戲文字；目前是 OCR 模式，暫停自動識別圖像；如果目前是剪貼簿模式，會暫停自動讀取剪貼簿。
 
 1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> 打開設定 {#anchor-setting}
-    略
-1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> 讀取剪貼簿 {#anchor-copy_once}
-    這個的實際意義是，不管目前的預設文字輸入來源是什麼，都從剪貼簿讀取一次文字，並傳給之後的`翻譯/tts/...`流程
+    打開或關閉程式的設定視窗。
 
-    右擊按鈕會追加讀取到的文字到目前文字之後。
+1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> 讀取剪貼簿 {#anchor-copy_once}
+    這個的實際意義是，不管目前的預設文字輸入來源是什麼，都從剪貼簿讀取一次文字，並傳給之後的`翻譯/tts/...`流程。
+
+    右鍵點擊按鈕會追加讀取到的文字到目前文字之後。
+
 1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> 遊戲設定 {#anchor-open_game_setting}
-    當使用 HOOK 模式連接到遊戲，或使用 OCR 模式綁定遊戲視窗後，則可以透過這個按鈕直接打開目前遊戲的設定視窗
+    當使用 HOOK 模式連接到遊戲，或使用 OCR 模式綁定遊戲視窗後，則可以透過這個按鈕直接打開目前遊戲的設定視窗。
+
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 滑鼠游標穿透視窗 {#anchor-mousetransbutton}
     啟用這個按鈕後，滑鼠游標點擊翻譯視窗時，翻譯視窗不會對滑鼠游標點擊做出反應，而是把點擊事件傳遞給下層視窗。
     
@@ -67,28 +70,32 @@
     **該按鈕僅在 HOOK 模式下可用**
     
     點擊按鈕會彈出選擇遊戲處理程序視窗，來選擇要 HOOK 的遊戲處理程序。
+
 1. #### <i class="fa fa-tasks"></i> <i class="fa fa-icon fa-rotate-right"></i> 選擇文字 {#anchor-selecttext}
     **該按鈕僅在 HOOK 模式下可用**
 
     點擊按鈕會彈出選擇遊戲文字視窗，來選擇要翻譯哪項 HOOK 到的文字。
 
     不過，選擇文字視窗在選擇處理程序後會自動彈出，這個按鈕實際上是用來更換選擇的文字，或修改一些設定用的。
+
 1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 選取 OCR 範圍 {#anchor-selectocrrange}
     **該按鈕僅在 OCR 模式下可用**
 
     OCR 模式下，選取 OCR 區域，或者更換 OCR 區域，或者當啟用`OCR 設定`->`其他`->`多重區域模式`時增加新的 OCR 區域
 
     當按下右鍵時，會先清除所有已選取範圍，再新增新的區域。
+
 1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏範圍框 {#anchor-hideocrrange}
     **該按鈕僅在 OCR 模式下可用**
 
     當未選擇任何 OCR 範圍時，使用該按鈕顯示 OCR 範圍，會自動設定 OCR 範圍為上一次選擇的 OCR。
 
-    當按下右鍵時，會清除所有已選取範圍
+    當按下右鍵時，會清除所有已選取範圍。
+
 1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 進行一次 OCR {#anchor-ocr_once}
     該按鈕和`讀取剪貼簿`類似，不管目前的預設文字輸入來源是什麼，都會先進行 OCR 範圍選擇，然後進行一次 OCR，然後進行翻譯流程。
 
-    該按鈕一般用於：在 HOOK 模式下，遊戲中遇到選項時，臨時使用一次 OCR 來翻譯選項文字；或者在 OCR 模式下，臨時去識別一次其他偶爾出現的新的位置。
+    該按鈕一般用於：在 HOOK 模式下，遊戲中遇到選項（選擇肢）時，臨時使用一次 OCR 來翻譯該選項的文字；或者在 OCR 模式下，臨時去識別一次其他偶爾出現的新的位置。
 
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次進行 OCR {#anchor-ocr_once_follow}
     當使用過一次`進行一次 OCR`後，使用這個按鈕，可以在原來的位置上再次進行一次 OCR 而無需重新選擇識別區域。
@@ -101,14 +108,18 @@
     滑鼠游標左鍵點擊時，當有綁定的遊戲（HOOK 連結遊戲／剪貼簿、OCR 綁定視窗）時，打開遊戲的專用詞典設定，否則則是打開全域的詞典設定。
 
     滑鼠游標右鍵點擊時，必然打開全域的詞典設定。
+
 1. #### <i class="fa fa-minus"></i> <i class="fa fa-icon fa-rotate-right"></i> 最小化到系統匣 {#anchor-minmize}
-    略
+    將程式最小化到系統匣。
+
 1. #### <i class="fa fa-times"></i> <i class="fa fa-icon fa-rotate-right"></i> 退出 {#anchor-quit}
-    略
+    結束程式。
+
 1. #### <i class="fa fa-hand-paper"></i> <i class="fa fa-icon fa-rotate-right"></i> 移動 {#anchor-move}
     拖動翻譯視窗。
 
     實際上當按鈕欄有或沒有按鈕存在的額外空白區域時，都可以隨意拖動。該按鈕僅用來預留一個拖動位置。
+
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 視窗縮放 {#anchor-fullscreen}
     可以一鍵對遊戲視窗使用內建的 Magpie 進行縮放。
 
@@ -118,8 +129,10 @@
     可以對綁定的視窗進行截圖，（預設會截兩張圖，GDI 和 WinRT，兩者均有一定機率會失敗）。最好的地方是，如果目前正在使用 Magpie 進行縮放，還會對放大的視窗進行截圖。
 
     左鍵點擊時會把截圖儲存到檔案，右鍵點擊時截圖會儲存到剪貼簿。
+
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 遊戲靜音 {#anchor-muteprocess}
-    當綁定遊戲視窗後（不只是 HOOK 模式，OCR 或剪貼簿模式都可以，只要綁定了遊戲視窗），可以一鍵對遊戲進行靜音，省去了在系統音量合成器進行遊戲靜音的麻煩。
+    當綁定遊戲視窗後（不只是 HOOK 模式，OCR 或剪貼簿模式都可以，只要綁定了遊戲視窗），可以一鍵對遊戲進行靜音，節省了在系統音量合成器進行遊戲靜音的麻煩。
+
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 顯示／隱藏原文 {#anchor-showraw}
     切換是否顯示原文，會立即生效。
 
@@ -133,33 +146,42 @@
 1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 朗讀 {#anchor-langdu}
     左擊按鈕會對目前文字進行語音合成。
 
-    右擊該按鈕會中斷朗讀。
+    右鍵點擊該按鈕會中斷朗讀。
 
-    該朗讀會無視`跳過`（如果在`語音指定`中，有將目前比對到的文字目標設為`跳過`，則使用按鈕進行朗讀時，會無視跳過，強制進行朗讀）
+    該朗讀會無視`跳過`（如果在`語音指定`中，有將目前比對到的文字目標設為`跳過`，則使用按鈕進行朗讀時，會無視跳過，強制進行朗讀）。
+
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 複製到剪貼簿 {#anchor-copy}
-    複製目前擷取到的文字到剪貼簿一次。如果想要自動擷取到剪貼簿，應當啟用`文字輸入`->`剪貼簿`->`自動輸出`->`自動輸出文字`。
+    複製目前擷取到的文字到剪貼簿一次。如果想要自動擷取到剪貼簿，應啟用`文字輸入`->`剪貼簿`->`自動輸出`->`自動輸出文字`。
+    
 1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏歷史文字 {#anchor-history}
     打開或關閉歷史文字的視窗。
+
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> 遊戲管理 {#anchor-gamepad_new}
     打開遊戲管理器介面。
+
 1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 編輯 {#anchor-edit}
     打開編輯視窗，以編輯目前擷取到的文字。
 
     該視窗中，可以在修改文字後，再去進行翻譯；或者可以翻譯任何自行輸入的文字。
+
 1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 編輯 翻譯紀錄 {#anchor-edittrans}
-    打開目前遊戲的翻譯紀錄編輯視窗
+    打開目前遊戲的翻譯紀錄編輯視窗。
+
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> 模擬按鍵 Ctrl {#anchor-simulate_key_ctrl}
     用於向遊戲視窗發送一次模擬按鍵 Ctrl。對於使用串流／平板時有些用處。
+
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> 模擬按鍵 Enter {#anchor-simulate_key_enter}
     同上，用於向遊戲視窗發送一次模擬按鍵 Enter。對於使用串流／平板時有些用處。
+
 1. #### <i class="fa fa-list-ul"></i> <i class="fa fa-icon fa-rotate-right"></i> 備忘錄 {#anchor-memory}
     對於目前正在玩的遊戲，打開備忘錄視窗。
     
     點擊左鍵時，打開目前遊戲的備忘錄。點擊右鍵時，打開全域的備忘錄。
+
 1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 綁定視窗 （點擊自己取消） {#anchor-bindwindow}
     **該按鈕非常重要，許多功能都依賴於該按鈕先進行設定後才可用**
 
-    在綁定了遊戲視窗後，`視窗縮放`、`視窗截圖`、`遊戲靜音`，`跟隨遊戲視窗`->`遊戲失去焦點時取消置頂`和`遊戲視窗移動時同步移動`，以及記錄遊戲時間等，才可用。
+    在綁定了遊戲視窗後，`視窗縮放`、`視窗截圖`、`遊戲靜音`，`跟隨遊戲視窗`->`遊戲失去焦點時取消置頂`和`遊戲視窗移動時同步移動`，以及記錄遊戲時間等功能，才可用。
     不論 HOOK／OCR／剪貼簿模式，該按鈕都可用。
 
     在 HOOK 模式下，會自動根據連接的遊戲，自動綁定遊戲視窗。但也可以再用該按鈕重新選擇其他視窗。
@@ -168,7 +190,7 @@
     在 OCR／剪貼簿模式下，綁定視窗後，也可以和 HOOK 模式下一樣，關聯到目前遊戲到遊戲設定，從而使用目前遊戲的專用翻譯優化詞典等。
 
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> 視窗置頂 {#anchor-keepontop}
-    取消／置頂翻譯視窗
+    取消／置頂翻譯視窗。
 
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 可選取的 {#anchor-selectable}
     使得翻譯視窗的文字區中的文字，是可以進行選擇的。
