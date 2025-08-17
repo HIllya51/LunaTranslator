@@ -2,12 +2,21 @@
 
 ## 다운로드
 
+| 운영 체제 | 64비트 |
+| - | - |
+| Windows 10 & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> |
+
+::: details 구형 운영체제 호환 버전  
+
+>[!WARNING]  
+이 버전은 성능이 더 낮고, 일부 기능이 부족하며, 바이러스 백신 소프트웨어에 의해 오탐지되기 쉽습니다. 특별한 필요가 없는 경우 사용을 권장하지 않습니다.  
+
 | 운영 체제 | 32비트 | 64비트 | 설명 |
 | - | - | - | - |
-| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10？doc=1"/> | 이 버전은 최신 운영 체제 버전만 지원하여 더 높은 성능, 최신 시스템 기능 및 낮은 바이러스 오탐률을 제공합니다.
-| Windows 7 이상 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7？doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7？doc=1"/> |
-| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp？doc=1"/> | | 이 버전은 XP 가상 머신에서만 실행되는 매우 오래된 게임의 텍스트 추출을 지원하기 위한 것으로, 기능이 불완전하고 불안정하며 느리게 실행됩니다. 일반적으로 사용하지 마십시오.
+| Windows 7 이상 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
+| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | 이 버전은 XP 가상 머신에서만 실행되는 매우 오래된 게임의 텍스트 추출을 지원하기 위한 것으로, 기능이 불완전하고 불안정하며 느리게 실행됩니다. 일반적으로 사용하지 마십시오.
 
+:::
 
 ## 실행
 
