@@ -14,14 +14,14 @@
 下載後解壓縮到任意目錄
 
 ::: warning
-但請不要把軟體放到 **C:\Program Files** 等特殊路徑下，否則即使使用管理員權限，也可能無法儲存配置和快取檔案，甚至無法執行。
+但請不要把軟體放到「**C:\Program Files**」等特殊路徑下，否則即使使用管理員身分，也可能無法儲存配置和快取檔案，甚至無法執行。
 :::
 
-**LunaTranslator.exe** 會以普通模式啟動 
+**LunaTranslator.exe**：會以普通模式啟動。
 
-**LunaTranslator_admin.exe** 會以管理員權限啟動，部份遊戲需要管理員權限才能 HOOK，僅這時需要使用這個，其他時候普通模式啟動即可。
+**LunaTranslator_admin.exe**：會以管理員身分啟動，部份遊戲需要管理員權限才能 HOOK，僅這時需要使用這個，其他時候普通模式啟動即可。
 
-**LunaTranslator_debug.bat** 會顯示命令提示字元的視窗
+**LunaTranslator_debug.bat**：會顯示命令提示字元的視窗。
 
 ## 更新
 
@@ -29,23 +29,23 @@
 
 如果想要手動更新，只需下載新版本後解壓縮覆蓋到之前的目錄即可。
 
-如果想要刪除重下，注意不要刪除 userconfig 資料夾，否則會失去之前的設定！！！
+如果想要刪除重下，注意不要刪除`userconfig`資料夾，否則會失去之前的設定！！！
 
 ## 常見錯誤
 
 ### 找不到重要元件
 
 ::: danger
-有時會被防毒軟體殺掉，請新增信任並重新下載解壓縮
+有時會被防毒軟體殺掉，請新增例外並重新下載解壓縮。
 :::
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 
 
-解決方法：關閉防毒軟體，無法關閉（如 windows defender）則新增信任，然後重下。
+解決方法：關閉防毒軟體，無法關閉（如 Windows Defender）則新增例外，然後重新下載。
 
-註：為了實現 HOOK 擷取遊戲文字，需要將 Dll 注入到遊戲，shareddllproxy32.exe/LunaHost32.dll 等幾個檔案中實現了這些內容，因此特別容易被認為是病毒。軟體目前由 [Github Actions](https://github.com/HIllya51/LunaTranslator/actions) 自動構建，除非 Github 服務器中毒了，否則不可能包含病毒，因此可以放心的新增信任。
+註：為了實現 HOOK 擷取遊戲文字，需要將 DLL 注入到遊戲，`shareddllproxy32.exe`／`LunaHost32.dll` 等幾個檔案中實現了這些內容，因此特別容易被認為是病毒。軟體目前由 [Github Actions](https://github.com/HIllya51/LunaTranslator/actions) 自動構建，除非 Github 伺服器中毒了，否則不可能包含病毒，因此可以放心的新增例外。
 
-::: details 對於 windows defender，方法為：「病毒和威脅防護」->「排除項」->「新增或刪除排除項」->「新增排除項」->「資料夾」，把 Luna 的資料夾新增進去
+::: details 對於 Windows Defender，方法為：「病毒與威脅防護」->「病毒與威脅防護設定」的「管理設定」->「排除項目」的「新增或移除排除項目」->「新增排除範圍」->「資料夾」，把 Luna 的資料夾新增進去。
 ![img](https://image.lunatranslator.org/zh/cantstart/4.png) 
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
