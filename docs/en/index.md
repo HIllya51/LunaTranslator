@@ -35,7 +35,7 @@ features:
     link: ./useapis/ocrapi
   - title: Rich Translation APIs  
     details: Supports almost all translation engines, including large language model translation, offline translation, and more.
-    link: ./useapis/guochandamoxing
+    link: ./guochandamoxing
   - title: Language Learning
     details: Supports Japanese word segmentation and kana annotation, supports AnkiConnect, supports Yomitan plugin
     link: ./qa1

@@ -35,7 +35,7 @@ features:
     link: ./useapis/ocrapi
   - title: Богатые интерфейсы перевода
     details: Поддержка практически всех движков перевода, включая LLM-перевод, оффлайн-перевод и другие
-    link: ./useapis/guochandamoxing
+    link: ./guochandamoxing
   - title: Изучение языков
     details: Поддерживает японскую сегментацию слов и аннотацию каной, поддерживает AnkiConnect, поддерживает плагин Yomitan
     link: ./qa1
