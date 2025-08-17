@@ -64,7 +64,7 @@ def createtextfontcom(key):
 class extrahtml(saveposwindow):
     def tryload(self):
 
-        use = gobject.getuserconfigdir(self.fn)
+        use = gobject.getconfig(self.fn)
         if os.path.exists(use) == False:
             use = self.fneg
         with open(use, "r", encoding="utf8") as ff:
@@ -75,7 +75,7 @@ class extrahtml(saveposwindow):
         self.tester.loadex(self.vistext.toPlainText())
 
     def savehtml(self):
-        with open(gobject.getuserconfigdir(self.fn), "w", encoding="utf8") as ff:
+        with open(gobject.getconfig(self.fn), "w", encoding="utf8") as ff:
             ff.write(self.vistext.toPlainText())
 
     def __init__(self, parent, fn, fneg, tester) -> None:

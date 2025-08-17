@@ -780,7 +780,7 @@ class BASEOBJECT(QObject):
         return globalconfig["ttscommon"]
 
     def ttsprocess(self, path, text):
-        path1 = "userconfig/posts/{}.py".format(path)
+        path1 = gobject.getconfig("posts/{}.py".format(path))
         if not os.path.exists(path1):
             return text
         return checkmd5reloadmodule(path1, "posts." + path)[1].POSTSOLVE(text)
@@ -999,7 +999,7 @@ class BASEOBJECT(QObject):
             if which == 0:
                 aclass = importlib.import_module("translator." + classname).TS
             elif which == 1:
-                aclass = importlib.import_module("userconfig.copyed." + classname).TS
+                aclass = importlib.import_module("copyed." + classname).TS
             return aclass(classname)
         except Exception as e:
             self.displayinfomessage(

@@ -2,6 +2,7 @@ import platform, os, sys
 from ctypes import windll, Structure, POINTER, pointer
 from ctypes.wintypes import DWORD, WCHAR
 
+thisuserconfig = "userconfig"
 runtime_bit_64 = platform.architecture()[0] == "64bit"
 
 
@@ -30,8 +31,8 @@ def getcachedir(name=""):
     return __getdir(name)
 
 
-def getuserconfigdir(name):
-    return __getdir(name, "userconfig")
+def getconfig(name):
+    return __getdir(name, thisuserconfig)
 
 
 def gettranslationrecorddir(name):

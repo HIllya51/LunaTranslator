@@ -310,7 +310,7 @@ def loadbutton(self, fanyi):
     if which == 0:
         aclass = "translator." + fanyi
     elif which == 1:
-        aclass = "userconfig.copyed." + fanyi
+        aclass = "copyed." + fanyi
     else:
         return
     return autoinitdialog(
@@ -336,9 +336,8 @@ def getcopyfrom(uid):
 def selectllmcallback(self, countnum: list, fanyi, newname=None):
     uid = str(uuid.uuid4())
     _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
-    _f12 = "userconfig/copyed/{}.py".format(fanyi)
-    _f2 = "userconfig/copyed/{}.py".format(uid)
-    os.makedirs("userconfig/copyed", exist_ok=True)
+    _f12 = gobject.getconfig("copyed/{}.py".format(fanyi))
+    _f2 = gobject.getconfig("copyed/{}.py".format(uid))
     try:
         shutil.copy(_f11, _f2)
     except:
@@ -393,7 +392,7 @@ def btnpluscallback(self, countnum):
 
 
 def selectllmcallback_2(self, countnum: list, fanyi, name):
-    _f2 = "userconfig/copyed/{}.py".format(fanyi)
+    _f2 = gobject.getconfig("copyed/{}.py".format(fanyi))
     try:
         os.remove(_f2)
     except:
@@ -453,7 +452,7 @@ def initsome11(self, l, save=False):
             last = D_getIconButton(callback=functools.partial(loadbutton, self, fanyi))
         elif fanyi == "selfbuild":
             last = D_getIconButton(
-                callback=lambda: selectdebugfile("userconfig/selfbuild.py"),
+                callback=lambda: selectdebugfile("selfbuild.py"),
                 icon="fa.edit",
             )
         else:

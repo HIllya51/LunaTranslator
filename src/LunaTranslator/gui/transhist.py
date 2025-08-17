@@ -397,7 +397,7 @@ class wvtranshist(WebviewWidget, somecommon):
     @staticmethod
     def loadextra():
         for _ in [
-            "userconfig/extrahtml_transhist.html",
+            gobject.getconfig("extrahtml_transhist.html"),
             r"LunaTranslator\htmlcode\uiwebview\extrahtml\transhist.html",
         ]:
             if not os.path.exists(_):

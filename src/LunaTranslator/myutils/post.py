@@ -342,7 +342,7 @@ def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
         return ""
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig
-    usemypostpath = "userconfig/mypost.py"
+    usemypostpath = "mypost.py"
     usemodule = "mypost"
     try:
 
@@ -359,7 +359,7 @@ def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
                     "posts."
                     + savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                 )
-                usemypostpath = "userconfig/posts/{}.py".format(
+                usemypostpath = "posts/{}.py".format(
                     savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                 )
     except:
@@ -380,7 +380,7 @@ def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
             try:
                 _f = processfunctions[postitem]
                 if postitem == "_11":
-                    line = processfunctions[postitem](line, usemypostpath, usemodule)
+                    line = processfunctions[postitem](line, gobject.getconfig(usemypostpath), usemodule)
                 else:
                     sig = inspect.signature(_f)
                     np = len(sig.parameters)

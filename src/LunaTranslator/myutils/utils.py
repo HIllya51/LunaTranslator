@@ -96,7 +96,7 @@ def __internal__getlang(k1: str, k2: str) -> str:
 def __translate_exits(fanyi):
     _fs = [
         "Lunatranslator/translator/{}.py".format(fanyi),
-        "userconfig/copyed/{}.py".format(fanyi),
+        gobject.getconfig("copyed/{}.py".format(fanyi)),
     ]
     for i, _ in enumerate(_fs):
         if os.path.exists(_):
@@ -433,23 +433,18 @@ def splitocrtypes(dic):
 
 def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
     if ismypost or istts:
-        path = "userconfig/posts/{}.py".format(path)
-    p = os.path.abspath((path))
-    os.makedirs(os.path.dirname(p), exist_ok=True)
-    print(path)
-    if os.path.exists(p) == False:
-        tgt = {
-            "userconfig/selfbuild.py": "selfbuild.py",
-            "userconfig/mypost.py": "mypost.py",
-            "userconfig/myprocess.py": "myprocess.py",
-            "userconfig/myanki_v2.py": "myanki_v2.py",
-        }.get(path)
+        p = gobject.getconfig("posts/{}.py".format(path))
+    else:
+        p = gobject.getconfig(path)
+    if not os.path.exists(p):
         if istts:
             tgt = "mypost_tts.py"
-        if ismypost:
+        elif ismypost:
             tgt = "mypost.py"
-        if ishotkey:
+        elif ishotkey:
             tgt = "hotkey.py"
+        else:
+            tgt = path
         shutil.copy(
             "LunaTranslator/myutils/template/" + tgt,
             p,

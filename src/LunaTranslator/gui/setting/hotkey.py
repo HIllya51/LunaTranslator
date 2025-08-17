@@ -66,7 +66,7 @@ def safeGet():
 
 def createreloadablewrapper(self, name):
     _, module = checkmd5reloadmodule(
-        "userconfig/myhotkeys/{}.py".format(name), "myhotkeys." + name
+        gobject.getconfig("myhotkeys/{}.py").format(name), "myhotkeys." + name
     )
     try:
         gobject.base.safeinvokefunction.emit(module.OnHotKeyClicked)
@@ -209,7 +209,7 @@ def createmykeyline(self, form: QFormLayout, name):
                 ),
                 D_getIconButton(
                     callback=lambda: selectdebugfile(
-                        "userconfig/myhotkeys/{}.py".format(name), ishotkey=True
+                        "myhotkeys/{}.py".format(name), ishotkey=True
                     ),
                     icon="fa.edit",
                 ),
@@ -233,10 +233,9 @@ def plusclicked(self, form):
         "name": name,
         "keystring": "",
     }
-    os.makedirs("userconfig/myhotkeys", exist_ok=True)
     shutil.copy(
         "LunaTranslator/myutils/template/hotkey.py",
-        "userconfig/myhotkeys/{}.py".format(name),
+        gobject.getconfig("myhotkeys/{}.py".format(name)),
     )
     createmykeyline(self, form, name)
 

@@ -323,17 +323,11 @@ class AnkiWindow(QWidget):
         model_htmlfront = self.fronttext.toPlainText()
         model_htmlback = self.backtext.toPlainText()
         model_css = self.csstext.toPlainText()
-        with open(
-            gobject.getuserconfigdir("anki_2/back.html"), "w", encoding="utf8"
-        ) as ff:
+        with open(gobject.getconfig("anki_2/back.html"), "w", encoding="utf8") as ff:
             ff.write(model_htmlback)
-        with open(
-            gobject.getuserconfigdir("anki_2/front.html"), "w", encoding="utf8"
-        ) as ff:
+        with open(gobject.getconfig("anki_2/front.html"), "w", encoding="utf8") as ff:
             ff.write(model_htmlfront)
-        with open(
-            gobject.getuserconfigdir("anki_2/style.css"), "w", encoding="utf8"
-        ) as ff:
+        with open(gobject.getconfig("anki_2/style.css"), "w", encoding="utf8") as ff:
             ff.write(model_css)
 
     def creatsetdtab(self, baselay: QVBoxLayout):
@@ -361,9 +355,7 @@ class AnkiWindow(QWidget):
                 [
                     getsimpleswitch(globalconfig, "usecustomankigen"),
                     getIconButton(
-                        callback=functools.partial(
-                            selectdebugfile, "userconfig/myanki_v2.py"
-                        ),
+                        callback=functools.partial(selectdebugfile, "myanki_v2.py"),
                         icon="fa.edit",
                     ),
                     0,
@@ -580,11 +572,15 @@ class AnkiWindow(QWidget):
 
         self.example.textChanged.connect(__)
         self.remarks = ctrlbedit()
-        recordbtn1 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音")
+        recordbtn1 = IconButton(
+            icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音"
+        )
         recordbtn1.clicked.connect(
             functools.partial(self.startorendrecord, recordbtn1, 1, self.audiopath)
         )
-        recordbtn2 = IconButton(icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音")
+        recordbtn2 = IconButton(
+            icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音"
+        )
         recordbtn2.clicked.connect(
             functools.partial(
                 self.startorendrecord, recordbtn2, 2, self.audiopath_sentence
@@ -786,11 +782,17 @@ class AnkiWindow(QWidget):
 
     def tryloadankitemplates(self):
         try:
-            with open("userconfig/anki_2/back.html", "r", encoding="utf8") as ff:
+            with open(
+                gobject.getconfig("anki_2/back.html"), "r", encoding="utf8"
+            ) as ff:
                 model_htmlback = ff.read()
-            with open("userconfig/anki_2/front.html", "r", encoding="utf8") as ff:
+            with open(
+                gobject.getconfig("anki_2/front.html"), "r", encoding="utf8"
+            ) as ff:
                 model_htmlfront = ff.read()
-            with open("userconfig/anki_2/style.css", "r", encoding="utf8") as ff:
+            with open(
+                gobject.getconfig("anki_2/style.css"), "r", encoding="utf8"
+            ) as ff:
                 model_css = ff.read()
         except:
             with open(
@@ -825,7 +827,9 @@ class AnkiWindow(QWidget):
         anki.Deck.create(DeckName)
         fields = static_data["model_fileds"]
         if globalconfig["usecustomankigen"]:
-            module = checkmd5reloadmodule("userconfig/myanki_v2.py", "myanki_v2")[1]
+            module = checkmd5reloadmodule(
+                gobject.getconfig("myanki_v2.py"), "myanki_v2"
+            )[1]
             if module:
                 try:
                     fields = module.AnkiFields(fields)
@@ -895,7 +899,9 @@ class AnkiWindow(QWidget):
 
     def custompass(self, text_fields: dict, audios: list, pictures: list):
         if globalconfig["usecustomankigen"]:
-            module = checkmd5reloadmodule("userconfig/myanki_v2.py", "myanki_v2")[1]
+            module = checkmd5reloadmodule(
+                gobject.getconfig("myanki_v2.py"), "myanki_v2"
+            )[1]
             if module:
                 try:
                     text_fields, audios, pictures = module.ParseFieldsData(
