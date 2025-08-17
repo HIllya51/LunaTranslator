@@ -489,6 +489,7 @@ def initsome11(self, l, save=False):
 
 def initsome21(self, not_is_gpt_like):
     not_is_gpt_like = initsome11(self, not_is_gpt_like)
+    not_is_gpt_like += [[(functools.partial(offlinelinks, "translate"), 0)]]
     grids = [
         [
             functools.partial(
@@ -691,7 +692,6 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
 
     _, not_is_gpt_like = splitapillm(res.offline)
     offlinegrid = initsome21(self, not_is_gpt_like)
-    offlinegrid += [[functools.partial(offlinelinks, "translate")]]
     _, not_is_gpt_like = splitapillm(res.api)
     online_reg_grid = initsome2(self, res.free, not_is_gpt_like)
     pretransgrid = [
