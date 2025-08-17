@@ -965,6 +965,11 @@
                 "name": "游戏静音",
                 "keystring": ""
             },
+            "43": {
+                "use": true,
+                "name": "游戏暂停",
+                "keystring": ""
+            },
             "41": {
                 "use": false,
                 "name": "Magpie_缩放",
