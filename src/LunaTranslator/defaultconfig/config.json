@@ -1864,7 +1864,11 @@
             "color": "blue",
             "name": "Sakura大模型",
             "is_gpt_like": true,
-            "useproxy": false
+            "useproxy": false,
+            "langs": [
+                "zh",
+                "cht"
+            ]
         },
         "realtime_edit": {
             "use": false,

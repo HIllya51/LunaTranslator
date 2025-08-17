@@ -3,6 +3,7 @@ import functools, os
 import gobject, uuid, shutil, copy
 from myutils.config import globalconfig, translatorsetting, _TR
 from myutils.utils import (
+    getlangtgt,
     selectdebugfile,
     splittranslatortypes,
     dynamiclink,
@@ -442,7 +443,11 @@ def initsome11(self, l, save=False):
     countnum = []
     if save:
         self.__countnum = countnum
+    lang = getlangtgt()
     for fanyi in l:
+        langs = globalconfig["fanyi"][fanyi].get("langs")
+        if langs and (lang not in langs):
+            continue
         which = translate_exits(fanyi, which=True)
         if which is None:
             continue
