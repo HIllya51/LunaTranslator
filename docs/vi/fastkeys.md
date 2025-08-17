@@ -115,16 +115,19 @@
     Trong chế độ OCR/clipboard, sau khi gắn cửa sổ, nó cũng có thể được liên kết với cài đặt trò chơi hiện tại trong chế độ HOOK, do đó sử dụng từ điển tối ưu hóa dịch thuật riêng của trò chơi, v.v.
 
 1. #### Ảnh chụp cửa sổ {#anchor-_21}
-    Có thể chụp màn hình cửa sổ đã gắn (mặc định chụp hai ảnh, GDI và Winrt, cả hai đều có thể thất bại). Điểm tốt nhất là nếu Magpie hiện đang được sử dụng để tỷ lệ, nó cũng sẽ chụp màn hình cửa sổ đã tỷ lệ.
+    Sau khi liên kết cửa sổ game, bạn có thể chụp ảnh cửa sổ đã liên kết (mặc định sẽ chụp hai ảnh: GDI và Winrt, cả hai đều có thể thất bại). Nếu đang sử dụng Magpie để phóng to, nó cũng sẽ chụp ảnh cửa sổ đã phóng to.
 
 1. #### Im lặng trò chơi {#anchor-_22}
-    Sau khi gắn cửa sổ trò chơi (không chỉ trong chế độ HOOK, mà còn trong chế độ OCR hoặc clipboard, miễn là cửa sổ trò chơi được gắn), bạn có thể tắt âm trò chơi chỉ với một lần nhấn, tiết kiệm công việc tắt âm trò chơi trong bộ trộn âm lượng hệ thống.
+    Sau khi liên kết cửa sổ game, bạn có thể tắt tiếng game bằng một cú nhấp chuột, tiết kiệm thời gian so với việc tắt tiếng trong bộ trộn âm lượng hệ thống.
+
+1. #### Quản lý trò chơi {#anchor-_10}
+    Sau khi liên kết cửa sổ game, bạn có thể tạm dừng hoặc tiếp tục quá trình game bằng một cú nhấp chuột.
 
 1. #### Magpie Phóng to {#anchor-41}
-    Cho phép tỷ lệ toàn màn hình cửa sổ trò chơi chỉ với một lần nhấn bằng cách sử dụng Magpie tích hợp.
+    Sau khi liên kết cửa sổ game, bạn có thể sử dụng Magpie tích hợp để phóng to cửa sổ game toàn màn hình bằng một cú nhấp chuột.
 
 1. #### Magpie Thu phóng cửa sổ {#anchor-42}
-    Cho phép tỷ lệ cửa sổ trò chơi chỉ với một lần nhấn bằng cách sử dụng Magpie tích hợp.
+    Sau khi liên kết cửa sổ game, bạn có thể sử dụng Magpie tích hợp để phóng to cửa sổ game dạng cửa sổ bằng một cú nhấp chuột.
 
 ## Tra Từ Điển
 

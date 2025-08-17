@@ -875,5 +875,6 @@
     "警告，注入的进程内存很小，可能是无用进程!": "Ostrzeżenie, wstrzyknięta pamięć procesu jest bardzo mała, może to być bezużyteczny proces!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Nie obsługuje Ryujinx, proszę użyć Yuzu/Sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "Wersja emulatora jest zbyt stara, proszę użyć nowej wersji emulatora.",
-    "检测到模拟器: %s": "Wykryto emulator: %s"
+    "检测到模拟器: %s": "Wykryto emulator: %s",
+    "游戏暂停": "Gra wstrzymana"
 }

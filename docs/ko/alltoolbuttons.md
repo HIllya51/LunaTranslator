@@ -44,7 +44,7 @@
     버튼을 우클릭하면 읽어온 텍스트를 현재 텍스트 뒤에 추가합니다.
 1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> 게임 설정 {#anchor-open_game_setting}
     HOOK 모드로 게임에 연결하거나 OCR 모드로 게임 창을 바인딩한 경우, 이 버튼을 통해 현재 게임의 설정 창을 직접 열 수 있습니다.
-1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 마우스 창 투과 {#anchor-mousetransbutton}
+1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 마우스 윈도우 투과 {#anchor-mousetransbutton}
     이 버튼을 활성화하면 번역 창을 클릭할 때 번역 창이 마우스 클릭에 반응하지 않고 클릭 이벤트를 하위 창으로 전달합니다.
 
     번역 창을 게임 창의 텍스트 상자 위에 위치시켰을 때, 이 버튼을 활성화하면 번역 창이 아닌 게임의 텍스트 상자를 직접 클릭할 수 있습니다.
@@ -54,7 +54,7 @@
 1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 배경 창 투명 {#anchor-backtransbutton}
     이 버튼은 번역 창의 불투명도를 0으로 전환하는 기능만 수행합니다. 이 전환은 원래의 불투명도 설정을 잊어버리게 하지 않습니다.
 
-1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 도구 모음 잠금 {#anchor-locktoolsbutton}
+1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 툴바 잠금 {#anchor-locktoolsbutton}
     활성화 시 도구 모음이 항상 표시됩니다.
 
     도구 모음이 잠금 해제된 상태에서 마우스가 창 밖으로 이동하면 도구 모음이 자동으로 숨겨지며, 창 안으로 마우스가 들어오면 도구 모음이 다시 표시됩니다. 만약 마우스 오른쪽 버튼으로 도구 모음 잠금을 해제한 경우, **잠금 버튼 및 그 좌우 한 개의 버튼 영역**으로 마우스가 들어올 때만 도구 모음이 다시 표시됩니다.
@@ -79,22 +79,22 @@
     OCR 모드에서 OCR 영역을 선택하거나 변경하거나, `OCR 설정`->`기타`->`다중 영역 모드`가 활성화된 경우 새로운 OCR 영역을 추가할 수 있습니다.
 
     오른쪽 버튼을 누르면 모든 선택된 범위가 먼저 지워진 후 새로운 영역이 추가됩니다.
-1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 범위 상자 표시/숨기기 {#anchor-hideocrrange}
+1. #### <i class="fa fa-square"></i> <i class="fa fa-icon fa-rotate-right"></i> 범위 프레임 표시/숨기기 {#anchor-hideocrrange}
     **이 버튼은 OCR 모드에서만 사용 가능**
 
     OCR 범위를 선택하지 않은 상태에서 이 버튼을 사용하면 OCR 범위가 표시되며, 자동으로 마지막으로 선택한 OCR 범위로 설정됩니다.
 
     오른쪽 버튼을 누르면 모든 선택된 범위가 지워집니다.
-1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 실행하기 {#anchor-ocr_once}
+1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 실행 {#anchor-ocr_once}
     이 버튼은 '클립보드 읽기'와 유사하며, 현재의 기본 텍스트 입력 소스와 관계없이 먼저 OCR 범위를 선택하고 OCR을 실행한 후 번역 프로세스를 진행합니다.
 
     이 버튼은 일반적으로 HOOK 모드에서 선택지가 나타났을 때 일시적으로 OCR을 사용해 선택지를 번역하거나, OCR 모드에서 가끔 나타나는 새로운 위치를 일시적으로 인식할 때 사용합니다.
 
-1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 다시 실행하기 {#anchor-ocr_once_follow}
+1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 다시 실행 {#anchor-ocr_once_follow}
     'OCR 실행하기'를 한 번 사용한 후, 이 버튼을 사용하면 인식 영역을 다시 선택하지 않고도 원래 위치에서 OCR을 다시 실행할 수 있습니다.
 
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 고유명사 번역 - 번역 전 치환 {#anchor-noundict_direct}
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 고유명사 번역 {#anchor-noundict}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 고유 명사 번역 번역 전 대체 {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 고유 명사 번역 {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 번역 결과 수정 {#anchor-fix}
     위의 세 버튼은 효과가 유사하며, 번역 최적화 설정 창을 빠르게 열어 새로운 지정 항목을 추가하는 데 사용됩니다.
 
@@ -109,17 +109,17 @@
     번역 창을 드래그합니다.
 
     실제로 버튼 바에 버튼이 없는 추가 빈 공간이 있을 경우, 자유롭게 드래그할 수 있습니다. 이 버튼은 드래그 위치를 예약하기 위한 용도입니다.
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 창 크기 조절 {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 창 확대/축소 {#anchor-fullscreen}
     게임 창에 내장된 Magpie를 사용하여 한 번의 클릭으로 크기 조절이 가능합니다.
 
     왼쪽 버튼은 창 모드 조절, 오른쪽 버튼은 전체 화면 조절입니다.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 창 스크린샷 {#anchor-grabwindow}
-    바인딩된 창의 스크린샷을 찍을 수 있습니다 (기본적으로 GDI와 Winrt 두 장의 스크린샷을 찍으며, 둘 다 실패할 가능성이 있습니다). 가장 좋은 점은 현재 Magpie를 사용하여 확대 중인 경우, 확대된 창의 스크린샷도 찍을 수 있다는 것입니다.
+    바인딩된 창의 스크린샷을 찍을 수 있습니다 (기본적으로 GDI와 Winrt 방식으로 각각 한 장씩 총 두 장을 찍으며, 둘 다 실패할 가능성이 있습니다). 가장 좋은 점은 현재 Magpie로 확대 중인 창일 경우, 확대된 창의 스크린샷도 찍을 수 있다는 것입니다.
 
     왼쪽 버튼 클릭 시 스크린샷을 파일로 저장하고, 오른쪽 버튼 클릭 시 스크린샷을 클립보드에 저장합니다.
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 게임 음소거 {#anchor-muteprocess}
-    게임 창을 바인딩한 후(hook 모드뿐만 아니라 OCR이나 클립보드 모드도 가능하며, 단순히 게임 창을 바인딩하기만 하면 됨), 게임 음소거를 한 번의 클릭으로 수행할 수 있어 시스템 볼륨 믹서에서 게임 음소거를 하는 번거로움을 덜 수 있습니다.
+    게임 창을 바인딩한 후, 게임 음소거를 한 번의 클릭으로 수행할 수 있어 시스템 볼륨 믹서에서 게임 음소거를 하는 번거로움을 덜 수 있습니다.
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 원문 표시/숨기기 {#anchor-showraw}
     원문 표시 여부를 전환하면 즉시 적용됩니다.
 
@@ -130,7 +130,7 @@
 
     번역이 수행되지 않은 상태에서 숨김에서 표시로 전환하면 현재 문장에 대한 번역이 트리거됩니다.
 
-1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 음성 재생 {#anchor-langdu}
+1. #### <i class="fa fa-music"></i> <i class="fa fa-icon fa-rotate-right"></i> 음성 읽기 {#anchor-langdu}
     왼쪽 클릭으로 현재 텍스트에 대한 음성 합성이 수행됩니다.
 
     오른쪽 클릭으로 재생이 중단됩니다.
@@ -146,7 +146,7 @@
     편집 창을 열어 현재 추출된 텍스트를 편집합니다.
 
     이 창에서 텍스트를 수정한 후 번역할 수 있으며, 직접 입력한 텍스트도 번역할 수 있습니다.
-1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 번역 기록 편집 {#anchor-edittrans}
+1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 편집 번역 기록 {#anchor-edittrans}
     현재 게임의 번역 기록 편집 창을 엽니다.
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> Ctrl 키 시뮬레이션 {#anchor-simulate_key_ctrl}
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> Enter 키 시뮬레이션 {#anchor-simulate_key_enter}
@@ -155,7 +155,7 @@
     현재 플레이 중인 게임에 대해 메모 창을 엽니다.
 
     왼쪽 클릭 시 현재 게임의 메모를 엽니다. 오른쪽 클릭 시 전역 메모를 엽니다.
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 창 바인딩 (자신을 클릭하면 취소) {#anchor-bindwindow}
+1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 창 바인딩 (클릭하여 취소) {#anchor-bindwindow}
     **이 버튼은 매우 중요하며, 많은 기능들이 이 버튼을 먼저 설정해야 사용 가능합니다**
 
     게임 창을 바인딩한 후에야 `창 크기 조절` `창 스크린샷` `게임 음소거`, `게임 창 따라가기`->`게임이 포커스를 잃을 때 항상 위 취소`와 `게임 창 이동 시 동기화 이동`, 그리고 게임 시간 기록 등이 사용 가능해집니다.
@@ -166,7 +166,7 @@
     OCR 모드에서는 창 바인딩 후, 게임 창이 이동할 때 OCR 영역과 범위 박스도 자동으로 동기화 이동이 추가로 허용됩니다.
     OCR/클립보드 모드에서도 창 바인딩 후 HOOK 모드와 마찬가지로 현재 게임을 게임 설정에 연동하여 해당 게임 전용 번역 최적화 사전 등을 사용할 수 있습니다.
 
-1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> 창 항상 위 {#anchor-keepontop}
+1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> 창 항상 위에 표시 {#anchor-keepontop}
     번역 창 항상 위 설정/해제
 
 1. #### <i class="fa fa-i-cursor"></i> <i class="btnstatus2 fa fa-i-cursor"></i> 선택 가능한 {#anchor-selectable}
@@ -176,4 +176,3 @@
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 단어 검색 {#anchor-searchwordW}
     현재 선택된 텍스트가 있으면 해당 텍스트를 검색하여 단어 검색 창을 엽니다. 그렇지 않으면 단어 검색 창을 열거나 닫기만 합니다.
-

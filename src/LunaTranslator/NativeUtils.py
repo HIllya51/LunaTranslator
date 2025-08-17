@@ -48,6 +48,9 @@ MonitorPidVolume_callback_t = CFUNCTYPE(None, BOOL)
 StartMonitorVolume = utilsdll.StartMonitorVolume
 StartMonitorVolume.argtypes = (MonitorPidVolume_callback_t,)
 
+SuspendResumeProcess = utilsdll.SuspendResumeProcess
+SuspendResumeProcess.argtypes = (DWORD,)
+
 _SAPI_List = utilsdll.SAPI_List
 _SAPI_List.argtypes = (c_uint, c_void_p)
 

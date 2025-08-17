@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools
-import gobject, NativeUtils, uuid, os, shutil
+import gobject, NativeUtils, uuid, windows, shutil
 from myutils.config import globalconfig, _TR
 from myutils.hwnd import grabwindow
 from traceback import print_exc
@@ -122,6 +122,9 @@ def registrhotkeys(self):
         "40": lambda: gobject.base.searchwordW.search_word_in_new_window.emit(
             safeGet()
         ),
+        "43": lambda: NativeUtils.SuspendResumeProcess(
+            windows.GetWindowThreadProcessId(gobject.base.hwnd)
+        ),
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -141,7 +144,7 @@ hotkeys = [
     ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
-    ["游戏", ["_15", "_21", "_22", "41", "42"]],
+    ["游戏", ["_15", "_21", "_22", "43", "41", "42"]],
     ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
 ]
 

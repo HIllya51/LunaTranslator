@@ -875,5 +875,6 @@
     "警告，注入的进程内存很小，可能是无用进程!": "Cảnh báo, bộ nhớ tiến trình được tiêm vào rất nhỏ, có thể là tiến trình vô dụng!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Không hỗ trợ Ryujinx, vui lòng sử dụng Yuzu/Sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "Phiên bản giả lập đã quá cũ, vui lòng sử dụng phiên bản giả lập mới.",
-    "检测到模拟器: %s": "Phát hiện trình giả lập: %s"
+    "检测到模拟器: %s": "Phát hiện trình giả lập: %s",
+    "游戏暂停": "Tạm dừng trò chơi"
 }

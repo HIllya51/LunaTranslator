@@ -93,7 +93,7 @@
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次進行 OCR {#anchor-ocr_once_follow}
     當使用過一次`進行一次OCR`後，使用這個按鈕，可以在原來的位置上再次進行一次OCR而無需重新選擇識別區域。
     
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 翻譯前替換 {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 翻譯前取代 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻譯結果修正 {#anchor-fix}
     以上三個按鈕，效果類似，是用來快捷打開翻譯優化的設置窗口，增加新的指定詞條的。
@@ -115,11 +115,11 @@
     左鍵爲窗口化縮放，右鍵爲全屏縮放。
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 視窗截圖 {#anchor-grabwindow}
-    可以對綁定的窗口進行截圖，（默認會截兩張圖，GDI和Winrt，兩者均有一定概率會失敗）。最好的地方是，如果當前正在使用Magpie進行縮放，還會對放大的窗口進行截圖。
+    當綁定遊戲窗口後，可以對綁定的窗口進行截圖（默認會截兩張圖，GDI和Winrt，兩者均有一定概率會失敗）。如果當前正在使用Magpie進行縮放，還會對放大的窗口進行截圖。
 
     左鍵點擊時會把截圖保存到文件，右鍵點擊時截圖會保存到剪貼板。
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 遊戲靜音 {#anchor-muteprocess}
-    當綁定遊戲窗口後（不只是hook模式，ocr或剪貼板模式都可以，只要綁定了遊戲窗口），可以一鍵對遊戲進行靜音，省去了在系統音量合成器進行遊戲靜音的麻煩。
+    當綁定遊戲窗口後，可以一鍵對遊戲進行靜音，省去了在系統音量合成器進行遊戲靜音的麻煩。
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 顯示／隱藏原文 {#anchor-showraw}
     切換是否顯示原文，會立即生效。
 

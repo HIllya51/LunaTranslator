@@ -875,5 +875,6 @@
     "警告，注入的进程内存很小，可能是无用进程!": "Uyarı, enjekte edilen işlem belleği çok küçük, bu işe yaramaz bir işlem olabilir!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Ryujinx desteklenmiyor, lütfen yuzu/sudachi/Citron/Eden kullanın.",
     "模拟器版本过旧，请使用新版模拟器": "Simülatör sürümü çok eski, lütfen yeni sürüm simülatör kullanın.",
-    "检测到模拟器: %s": "Simülatör algılandı: %s"
+    "检测到模拟器: %s": "Simülatör algılandı: %s",
+    "游戏暂停": "Oyun duraklatıldı"
 }

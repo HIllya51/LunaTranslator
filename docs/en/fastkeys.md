@@ -116,16 +116,19 @@
     In OCR/clipboard mode, after binding the window, it can also be associated with the current game settings in HOOK mode, thus using the game's proprietary translation optimization dictionary, etc.
 
 1. #### Window Screenshot {#anchor-_21}
-    Can take a screenshot of the bound window (default takes two screenshots, GDI and Winrt, both of which may fail). The best part is that if Magpie is currently being used for scaling, it will also take a screenshot of the scaled window.
+    After binding the game window, you can take screenshots of the bound window (by default, two screenshots will be taken: GDI and Winrt, both of which may fail). If Magpie scaling is currently in use, it will also capture the magnified window.
 
 1. #### Mute Game {#anchor-_22}
-    After binding the game window (not just in HOOK mode, but also in OCR or clipboard mode, as long as the game window is bound), you can mute the game with one click, saving the trouble of muting the game in the system volume mixer.
+    After binding the game window, you can mute the game with one click, eliminating the hassle of muting the game in the system volume mixer.
+
+1. #### Game Management {#anchor-_10}
+    After binding the game window, you can pause or resume the game process with one click.
 
 1. #### Magpie Scale {#anchor-41}
-    Allows one-click full-screen scaling of the game window using the built-in Magpie.
+    After binding the game window, you can use the built-in Magpie to perform full-screen scaling on the game window with one click.
 
 1. #### Magpie Windowed Scaling {#anchor-42}
-    Allows one-click windowed scaling of the game window using the built-in Magpie.
+    After binding the game window, you can use the built-in Magpie to perform windowed scaling on the game window with one click.
 
 ## Dictionary Lookup
 

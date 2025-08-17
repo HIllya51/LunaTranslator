@@ -113,12 +113,12 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Nhấp chuột trái để thay đổi tỷ lệ cửa sổ, và nhấp chuột phải để thay đổi tỷ lệ toàn màn hình.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> Ảnh chụp cửa sổ {#anchor-grabwindow}
-    Bạn có thể chụp ảnh màn hình của cửa sổ được liên kết (nó sẽ chụp hai ảnh màn hình theo mặc định, GDI và Winrt, cả hai đều có một xác suất nhất định để thất bại). Điều tuyệt vời nhất là nếu bạn đang sử dụng Magpie để thay đổi tỷ lệ, nó cũng sẽ chụp ảnh màn hình của cửa sổ đã được phóng to.
+    Có thể chụp màn hình cửa sổ đã gắn (mặc định chụp hai ảnh, GDI và Winrt, cả hai đều có thể thất bại). Điểm tốt nhất là nếu Magpie hiện đang được sử dụng để tỷ lệ, nó cũng sẽ chụp màn hình cửa sổ đã tỷ lệ.
 
     Khi nhấp chuột trái, ảnh chụp màn hình sẽ được lưu vào tệp, và khi nhấp chuột phải, ảnh chụp màn hình sẽ được lưu vào clipboard. Nút giữa mở lớp phủ trong trò chơi.
 
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> Im lặng trò chơi {#anchor-muteprocess}
-    Sau khi liên kết cửa sổ trò chơi (không chỉ trong chế độ HOOK, chế độ OCR hoặc clipboard cũng có thể, miễn là cửa sổ trò chơi được liên kết), bạn có thể tắt tiếng trò chơi chỉ với một lần nhấp, tiết kiệm rắc rối của việc tắt tiếng trò chơi trong bộ trộn âm lượng hệ thống.
+    Sau khi liên kết cửa sổ trò chơi, bạn có thể tắt tiếng trò chơi chỉ với một lần nhấp, tiết kiệm rắc rối của việc tắt tiếng trò chơi trong bộ trộn âm lượng hệ thống.
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> Hiển thị/ẩn văn bản gốc {#anchor-showraw}
     Chuyển đổi việc hiển thị văn bản gốc, sẽ có hiệu lực ngay lập tức.
 

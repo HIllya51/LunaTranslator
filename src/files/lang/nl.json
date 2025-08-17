@@ -875,5 +875,6 @@
     "警告，注入的进程内存很小，可能是无用进程!": "Waarschuwing, het geïnjecteerde proces heeft weinig geheugen, mogelijk een nutteloos proces!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Ryujinx wordt niet ondersteund, gebruik alstublieft yuzu/sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "Simulatorversie is verouderd, gebruik alstublieft de nieuwe versie van de simulator.",
-    "检测到模拟器: %s": "Simulator gedetecteerd: %s"
+    "检测到模拟器: %s": "Simulator gedetecteerd: %s",
+    "游戏暂停": "Spel gepauzeerd"
 }

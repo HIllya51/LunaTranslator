@@ -106,10 +106,10 @@ DECLARE_API void SetCurrProcessMute(bool mute)
         pSimpleAudioVolume->SetMute(mute, NULL);
     }
 }
-std::vector<DWORD> _getsamenamepids()
+std::vector<DWORD> _getsamenamepids(const std::optional<std::wstring> &proc)
 {
     std::vector<DWORD> ret;
-    if (!processname)
+    if (!proc)
         return ret;
     CHandle hSnapshot{CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)};
     if (hSnapshot == INVALID_HANDLE_VALUE)
@@ -124,7 +124,7 @@ std::vector<DWORD> _getsamenamepids()
             auto path = _getprocname(pe32.th32ProcessID);
             if (!path)
                 continue;
-            if (processname == path)
+            if (proc == path)
                 ret.push_back(pe32.th32ProcessID);
         } while (Process32Next(hSnapshot, &pe32));
     }
@@ -134,7 +134,7 @@ DECLARE_API void MonitorPidVolume(DWORD pid)
 {
     // 监控pid时，同时一起监控同exe的所有pids，和音量合成器合并所有pid那样
     processname = _getprocname(pid);
-    auto pids = _getsamenamepids();
+    auto pids = _getsamenamepids(processname);
     pids.push_back(pid);
     std::lock_guard _(sessionforpid_lock);
     sessionforpid.clear();
@@ -159,4 +159,37 @@ DECLARE_API void StartMonitorVolume(MonitorPidVolume_callback_t callback)
     CHECK_FAILURE_NORET(sessionManager->RegisterSessionNotification(notification));
     CComPtr<IAudioSessionEnumerator> pAudioSessionEnumerator;
     CHECK_FAILURE_NORET(sessionManager->GetSessionEnumerator(&pAudioSessionEnumerator)); // 必须的，否则不管用，不知道为何。
+}
+namespace
+{
+    typedef LONG(NTAPI *pNtSuspendProcess)(HANDLE ProcessHandle);
+    pNtSuspendProcess NtSuspendProcess;
+    typedef LONG(NTAPI *pNtResumeProcess)(HANDLE ProcessHandle);
+    pNtResumeProcess NtResumeProcess;
+}
+DECLARE_API void SuspendResumeProcess(DWORD pid)
+{
+    static bool flag = true;
+    static auto _ = []()
+    {
+        HMODULE ntdll = ::GetModuleHandleA("ntdll.dll");
+        if (!ntdll)
+            return 0;
+        NtSuspendProcess = (pNtSuspendProcess)::GetProcAddress(ntdll, "NtSuspendProcess");
+        NtResumeProcess = (pNtResumeProcess)::GetProcAddress(ntdll, "NtResumeProcess");
+        return 0;
+    }();
+    if (!NtSuspendProcess || !NtResumeProcess)
+        return;
+    auto proc = _getprocname(pid);
+    auto pids = _getsamenamepids(proc);
+    pids.push_back(pid);
+    for (auto pid : pids)
+    {
+        CHandle hprocess{OpenProcess(PROCESS_SUSPEND_RESUME, FALSE, pid)};
+        if (!hprocess)
+            continue;
+        flag ? NtSuspendProcess(hprocess) : NtResumeProcess(hprocess);
+    }
+    flag = !flag;
 }
