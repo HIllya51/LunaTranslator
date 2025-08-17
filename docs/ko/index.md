@@ -35,7 +35,7 @@ features:
     link: ./useapis/ocrapi
   - title: 풍부한 번역 인터페이스
     details: 대언어모델 번역, 오프라인 번역 등 거의 모든 번역 엔진 지원
-    link: ./useapis/tsapi
+    link: ./useapis/guochandamoxing
   - title: 일본어 단어 분할 및 가나 주석 지원, AnkiConnect 지원, Yomitan 플러그인 지원
     link: ./qa1
   - title: 음성 합성

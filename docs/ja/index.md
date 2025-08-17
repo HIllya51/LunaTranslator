@@ -35,7 +35,7 @@ features:
     link: ./useapis/ocrapi
   - title: 豊富な翻訳API  
     details: ほとんどすべての翻訳エンジンをサポートし、大規模言語モデル翻訳、オフライン翻訳などを含みます。
-    link: ./useapis/tsapi
+    link: ./useapis/guochandamoxing
   - title: 言語学習
     details: 日本語の分かち書きと仮名振りをサポート、AnkiConnectに対応、Yomitanプラグインをサポート
     link: ./qa1
