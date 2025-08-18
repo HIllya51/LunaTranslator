@@ -539,6 +539,11 @@ namespace
             return buffer->clear();
         last = s;
     }
+    void SLPM65535(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("#cr0\x81\x40"));
+        StringFilter(buffer, TEXTANDLEN("#cr0"));
+    }
     void SLPM65634(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("#cr0"));
@@ -1654,6 +1659,14 @@ namespace
         strReplace(sw, L"\xff");
         buffer->fromWA(sw);
     }
+    void SLPM65585(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto _ = *(WORD *)PCSX2_REG(a1);
+        if (_ <= 0xff || _ == 0x815b)
+            return;
+        buffer->from_t(_);
+        *split = PCSX2_REG(v0);
+    }
     void SLPM65785(TextBuffer *buffer, HookParam *hp)
     {
         if (*(WORD *)buffer->buff < 0x100)
@@ -1752,6 +1765,19 @@ namespace
         last = s;
         StringFilter(buffer, TEXTANDLEN("\\n"));
     }
+    void SLPM65764(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->size == 1)
+            return buffer->clear();
+    }
+    void SLPS25392(TextBuffer *buffer, HookParam *hp)
+    {
+        static INT IDX;
+        if (IDX++ % 2)
+            return buffer->clear();
+        StringReplacer(buffer, TEXTANDLEN("\xe9\x85"), TEXTANDLEN("\x81\x79"));
+        StringReplacer(buffer, TEXTANDLEN("\xe9\x86"), TEXTANDLEN("\x81\x7a"));
+    }
     void SLPM65559(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static unsigned char last;
@@ -1776,6 +1802,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Princess Holiday～転がるりんご亭千夜一夜～
+    {0x13c208, {0, PCSX2_REG_OFFSET(a1), 0, SLPM65585, 0, "SLPM-65585"}},
+    // おしえて！ ぽぽたん
+    {0xB116A4, {DIRECT_READ, 0, 0, 0, SLPM65535, "SLPM-65535"}},
+    // メンアットワーク！3 愛と青春のハンター学園 [初回限定版]
+    {0x16fd1c, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s0), 0, 0, SLPM65764, "SLPM-65764"}},
+    // DESIRE
+    {0x1072D0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25392, "SLPS-25392"}},
     // セイント・ビースト ～螺旋の章～ [限定版]
     {0x1056DC, {0, PCSX2_REG_OFFSET(s0), 0, 0, 0, "SLPS-25807"}},
     // てのひらをたいように ～永久の絆～ [初回限定版]
