@@ -829,7 +829,7 @@ class AnkiWindow(QWidget):
         if globalconfig["usecustomankigen"]:
             module = checkmd5reloadmodule(
                 gobject.getconfig("myanki_v2.py"), "myanki_v2"
-            )[1]
+            )
             if module:
                 try:
                     fields = module.AnkiFields(fields)
@@ -901,7 +901,7 @@ class AnkiWindow(QWidget):
         if globalconfig["usecustomankigen"]:
             module = checkmd5reloadmodule(
                 gobject.getconfig("myanki_v2.py"), "myanki_v2"
-            )[1]
+            )
             if module:
                 try:
                     text_fields, audios, pictures = module.ParseFieldsData(

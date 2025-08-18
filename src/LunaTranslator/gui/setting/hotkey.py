@@ -65,7 +65,7 @@ def safeGet():
 
 
 def createreloadablewrapper(self, name):
-    _, module = checkmd5reloadmodule(
+    module = checkmd5reloadmodule(
         gobject.getconfig("myhotkeys/{}.py").format(name), "myhotkeys." + name
     )
     try:

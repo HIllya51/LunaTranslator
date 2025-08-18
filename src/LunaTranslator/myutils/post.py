@@ -302,7 +302,7 @@ def lines_threshold(line: str, args: dict):
 
 def _mypostloader(line, file, module):
 
-    _ = checkmd5reloadmodule(file, module)[1]
+    _ = checkmd5reloadmodule(file, module)
     # 这个是单独函数的模块，不需要用isnew来判断是否需要重新初始化
     if not _:
         return line

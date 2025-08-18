@@ -1,5 +1,6 @@
 import time, copy
 from myutils.config import globalconfig
+from myutils.utils import checkmd5reloadmodule
 import NativeUtils, windows
 from gui.rangeselect import rangeadjust
 from myutils.wrapper import threader
@@ -10,6 +11,19 @@ from myutils.keycode import vkcode_map
 from textio.textsource.textsourcebase import basetext
 from ocrengines.baseocrclass import OCRResultParsed
 from CVUtils import cvMat
+from traceback import print_exc
+
+
+def imageCutEx(*a):
+    img = imageCut(*a)
+    if globalconfig["use_ocr_preprocess"]:
+        try:
+            img = checkmd5reloadmodule(
+                gobject.getconfig("ocr_preprocess.py"), "ocr_preprocess"
+            ).Process(img)
+        except:
+            print_exc()
+    return img
 
 
 class rangemanger:
@@ -27,7 +41,7 @@ class rangemanger:
         rect = self.range_ui.getrect()
         if rect is None:
             return
-        imgr = imageCut(
+        imgr = imageCutEx(
             gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
         )
         result = ocr_run(imgr)
@@ -41,7 +55,7 @@ class rangemanger:
         rect = self.range_ui.getrect()
         if rect is None:
             return
-        imgr = imageCut(
+        imgr = imageCutEx(
             gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
         )
         ok = True
@@ -85,7 +99,7 @@ class rangemanger:
         rect = self.range_ui.getrect()
         if rect is None:
             return False
-        imgr = imageCut(
+        imgr = imageCutEx(
             gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
         )
         imgr1 = cvMat.fromQImage(imgr)

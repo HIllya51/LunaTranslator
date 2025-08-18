@@ -22,11 +22,11 @@ class Process:
 
     def __init__(self) -> None:
         self.internal = None
+        self.__lastm = None
         self.mayreinit()
 
     def mayreinit(self):
-        isnew, module = checkmd5reloadmodule(gobject.getconfig("myprocess.py"), "myprocess")
-        if not isnew:
-            return
-        if module:
+        module = checkmd5reloadmodule(gobject.getconfig("myprocess.py"), "myprocess")
+        if module and (module != self.__lastm):
+            self.__lastm = module
             self.internal = module.Process()
