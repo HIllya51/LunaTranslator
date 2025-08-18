@@ -1606,12 +1606,6 @@
             "color": "pink",
             "name": "Azure"
         },
-        "baidu": {
-            "use": false,
-            "color": "#ff65db",
-            "useproxy": false,
-            "name": "百度"
-        },
         "bing": {
             "use": false,
             "color": "#000ff0",
