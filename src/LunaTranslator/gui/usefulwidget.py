@@ -1171,7 +1171,7 @@ def check_grid_append(grids):
 
 
 def getcolorbutton(
-    parent, d: dict, key, callback=None, alpha=False, tips=None, cantzeroalpha=False
+    parent, d: dict, key, callback=None, alpha=False, tips="颜色", cantzeroalpha=False
 ):
     qicon = qtawesome.icon("fa.paint-brush", color=d.get(key))
     b = IconButton(None, qicon=qicon, tips=tips)
@@ -1189,7 +1189,7 @@ def getcolorbutton(
     return b
 
 
-def D_getcolorbutton(parent, d, key, callback, alpha=False, tips=None):
+def D_getcolorbutton(parent, d, key, callback, alpha=False, tips="颜色"):
     return lambda: getcolorbutton(parent, d, key, callback, alpha=alpha, tips=tips)
 
 

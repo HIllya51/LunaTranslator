@@ -496,9 +496,12 @@ def xianshigrid_style(self):
                                         createtextfontcom,
                                         "fonttype2",
                                     ),
+                                    "",
+                                    "颜色",
                                     D_getIconButton(
                                         icon="fa.paint-brush",
                                         callback=gobject.base.switchtotspage.emit,
+                                        tips="颜色",
                                     ),
                                 ]
                             ),
