@@ -244,9 +244,7 @@ def resetgroudswitchcallback(self, group):
             globalconfig,
             "webviewLoadExt",
             callback=lambda x: (
-                gobject.base.translation_ui.translate_text.loadinternal(
-                    True, True
-                ),
+                gobject.base.translation_ui.translate_text.loadinternal(True, True),
                 _btn2.setEnabled(x),
             ),
         )
@@ -491,7 +489,21 @@ def xianshigrid_style(self):
                 grid=(
                     [
                         "字体",
-                        (functools.partial(createtextfontcom, "fonttype2"), 0),
+                        (
+                            getboxlayout(
+                                [
+                                    functools.partial(
+                                        createtextfontcom,
+                                        "fonttype2",
+                                    ),
+                                    D_getIconButton(
+                                        icon="fa.paint-brush",
+                                        callback=gobject.base.switchtotspage.emit,
+                                    ),
+                                ]
+                            ),
+                            0,
+                        ),
                         "",
                         "显示",
                         functools.partial(_showhidefy, self),

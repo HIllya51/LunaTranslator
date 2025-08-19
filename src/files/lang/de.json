@@ -876,5 +876,6 @@
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Ryujinx wird nicht unterstützt, bitte verwenden Sie yuzu/sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "Die Simulator-Version ist veraltet. Bitte verwenden Sie die neue Version des Simulators.",
     "检测到模拟器: %s": "Emulator erkannt: %s",
-    "游戏暂停": "Spielpause"
+    "游戏暂停": "Spielpause",
+    "跳过仅包含标点的句子": "Überspringe Sätze, die nur Interpunktion enthalten."
 }

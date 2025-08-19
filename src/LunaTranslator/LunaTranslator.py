@@ -98,6 +98,7 @@ class BASEOBJECT(QObject):
     dispatch_translate = pyqtSignal(str, str)
     showupdatebtn = pyqtSignal()
     createimageviewsig = pyqtSignal(QWidget)
+    switchtotspage = pyqtSignal()
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -318,7 +319,11 @@ class BASEOBJECT(QObject):
             try:
                 if method["object"].using:
                     if "process_before" in dir(method["object"]):
-                        content, context = method["object"].process_before(content)
+                        _ = method["object"].process_before(content)
+                        if isinstance(_, tuple):
+                            content, context = _
+                        else:
+                            content = _
             except:
                 print_exc()
             contexts.append(context)

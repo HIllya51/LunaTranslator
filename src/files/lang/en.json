@@ -876,5 +876,6 @@
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Not compatible with Ryujinx, please use Yuzu/Sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "The simulator version is outdated, please use the new version of the simulator.",
     "检测到模拟器: %s": "Detected emulator: %s",
-    "游戏暂停": "Game paused"
+    "游戏暂停": "Game paused",
+    "跳过仅包含标点的句子": "Skip sentences that contain only punctuation."
 }

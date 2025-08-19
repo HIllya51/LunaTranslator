@@ -391,6 +391,10 @@
             "name": "arabic_reshaper",
             "visname": "arabic reshaper",
             "languageuse": "ar"
+        },
+        {
+            "name": "skiponlypunctuations",
+            "visname": "跳过仅包含标点的句子"
         }
     ],
     "codepage_real": [

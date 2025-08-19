@@ -1770,6 +1770,23 @@ namespace
         if (buffer->size == 1)
             return buffer->clear();
     }
+    void SLPM62509(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        std::string name = (char *)emu_addr(0x22BE80);
+        if (name.size())
+        {
+            s = "\x81\x79" + name + "\x81\x7a" + s;
+        }
+        buffer->from(s);
+    }
+    void SLPM65671(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L"ｫ");
+        strReplace(s, L"ｩ");
+        buffer->fromWA(s);
+    }
     void SLPS25392(TextBuffer *buffer, HookParam *hp)
     {
         static INT IDX;
@@ -1802,6 +1819,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // W ～ウィッシュ～ [初回限定版]
+    {0x1107C0, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM65671, "SLPM-65671"}},
+    // SIMPLE2000シリーズ Vol.58 THE 外科医
+    {0x22BF40, {DIRECT_READ, 0, 0, SLPM66344<0x22BF40, 0x22BF6F, 0x22BF9E>, SLPM62509, "SLPM-62509"}},
+    // D→A:WHITE [通常版]
+    {0x1769bc, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPS-25438"}},
     // Princess Holiday～転がるりんご亭千夜一夜～
     {0x13c208, {0, PCSX2_REG_OFFSET(a1), 0, SLPM65585, 0, "SLPM-65585"}},
     // おしえて！ ぽぽたん

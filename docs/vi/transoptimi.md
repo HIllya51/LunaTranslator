@@ -33,6 +33,10 @@
 
     Viết một script Python để xử lý phức tạp hơn
 
+1. ## Bỏ qua các câu chỉ chứa dấu câu {#anchor-skiponlypunctuations}
+
+    Không áp dụng.
+
 ## Tối Ưu Hóa Dịch Thuật Cụ Thể cho Trò Chơi
 
 Trong `Cài Đặt Trò Chơi` -> `Tối Ưu Hóa Dịch Thuật`, nếu `Theo Mặc Định` bị tắt, các cài đặt tối ưu hóa dịch thuật cụ thể cho trò chơi sẽ được sử dụng.

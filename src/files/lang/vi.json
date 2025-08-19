@@ -876,5 +876,6 @@
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Không hỗ trợ Ryujinx, vui lòng sử dụng Yuzu/Sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "Phiên bản giả lập đã quá cũ, vui lòng sử dụng phiên bản giả lập mới.",
     "检测到模拟器: %s": "Phát hiện trình giả lập: %s",
-    "游戏暂停": "Tạm dừng trò chơi"
+    "游戏暂停": "Tạm dừng trò chơi",
+    "跳过仅包含标点的句子": "Bỏ qua các câu chỉ chứa dấu câu"
 }

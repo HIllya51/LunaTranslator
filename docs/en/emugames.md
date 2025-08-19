@@ -256,6 +256,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | 01002C00177AE000 | 天獄ストラグル -strayside- |
 |  | 0100EA100DF92000 | 明治活劇 ハイカラ流星組 －成敗しませう、世直し稼業－ |
 |  | 0100FA001E160000 | 7'scarlet |
+|  | 01004B1020AFE000 | 7'scarlet - US |
 |  | 0100FA10185B0000 | SympathyKiss |
 |  | 010021D01474E000 | 君は雪間に希う |
 |  | 010061300DF48000 | DAIROKU：AYAKASHIMORI |
@@ -895,6 +896,9 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65671 | W ～ウィッシュ～ [初回限定版] |
+|  | SLPM-62509 | SIMPLE2000シリーズ Vol.58 THE 外科医 |
+|  | SLPS-25438 | D→A:WHITE [通常版] |
 |  | SLPM-65585 | Princess Holiday～転がるりんご亭千夜一夜～ |
 |  | SLPM-65535 | おしえて！ ぽぽたん |
 |  | SLPM-65764 | メンアットワーク！3 愛と青春のハンター学園 [初回限定版] |

@@ -306,7 +306,8 @@
         "transerrorfix": false,
         "vndbnamemap": false,
         "myprocess": false,
-        "arabic_reshaper": false
+        "arabic_reshaper": false,
+        "skiponlypunctuations": true
     },
     "showintab": true,
     "showintab_sub": true,

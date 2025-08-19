@@ -444,7 +444,7 @@ def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
         elif ishotkey:
             tgt = "hotkey.py"
         else:
-            tgt = path
+            tgt = os.path.basename(path)
         shutil.copy(
             "LunaTranslator/myutils/template/" + tgt,
             p,

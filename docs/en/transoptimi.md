@@ -33,6 +33,10 @@
 
     Write a Python script to perform more complex processing
 
+1. ## Skip sentences that contain only punctuation. {#anchor-skiponlypunctuations}
+
+    N/A
+
 ## Game-specific Translation Optimization
 
 In `Game Settings` -> `Translation Optimization`, if `Follow Default` is deactivated, game-specific translation optimization settings will be used.
