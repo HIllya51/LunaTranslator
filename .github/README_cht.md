@@ -16,7 +16,7 @@
 
 - **剪貼簿** 支援從剪貼簿中取得文字進行翻譯，也可以將擷取的文字輸出到剪貼簿
 
-- **其他** 還支援 **[語音識別](https://docs.lunatranslator.org/cht/sr.html)** 和 **檔案翻譯**
+- **其他** 還支援 **[語音辨識](https://docs.lunatranslator.org/cht/sr.html)** 和 **檔案翻譯**
 
 #### 翻譯器
 

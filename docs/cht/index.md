@@ -42,7 +42,7 @@ features:
   - title: 語音合成
     details: 支援大量線上＆離線語音合成引擎
     link: ./ttsengines
-  - title: 語音識別
+  - title: 語音辨識
     details: 在 Windows 10 和 Windows 11 上，可以使用 Windows 語音辨識
     link: ./sr
 
