@@ -35,7 +35,7 @@
 ### HTTP 服務
 
 1. #### /api/translate
-    
+
     - 必須指定查詢參數`text`
     - 如果指定參數`id`（翻譯器的 ID），則會使用該翻譯器進行翻譯，否則會回傳最快的翻譯介面
     - 回傳`application/json`，包含翻譯器 ID`id`、名稱`name`和翻譯結果`result`
@@ -47,17 +47,17 @@
     - 否則會查詢所有詞典，回傳`event/text-stream`，每個 Event 為一個 JSON 物件，包含詞典 ID`id`、詞典名稱`name`和 HTML 內容`result`
 
 1. #### /api/mecab
-    
+
     - 必須指定查詢參數`text`
     - 回傳 Mecab 對`text`的解析結果
 
 1. #### /api/tts
-    
+
     - 必須指定查詢參數`text`
     - 回傳音訊的二進制資料
 
 1. #### /api/ocr
-    
+
     使用 POST 方法，發送 JSON 請求，包含`image`欄位，內容為 Base64 編碼的圖像。
 
 1. #### /api/list/dictionary

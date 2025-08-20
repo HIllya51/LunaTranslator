@@ -7,8 +7,8 @@
 :::
 
 ::: details 如果選擇文字中沒有內嵌這一行，就代表不支援內嵌。
-![img](https://image.lunatranslator.org/zh/embed/noembed.png) 
-![img](https://image.lunatranslator.org/zh/embed/someembed.png) 
+![img](https://image.lunatranslator.org/zh/embed/noembed.png)
+![img](https://image.lunatranslator.org/zh/embed/someembed.png)
 :::
 
 對於支援內嵌的遊戲，選擇支援內嵌的文字條目，啟用內嵌即可。
@@ -72,7 +72,7 @@
     對於 Renpy 等遊戲，擷取的文字經常會包括`{` `}` `[` `]`等語法元素的字元，如果翻譯來源沒有正確處理這些內容導致語法破壞的話，會導致遊戲崩潰。因此軟體預設會透過正則比對來**跳過翻譯**某些可能會導致遊戲崩潰的字元組合。如果不擔心遊戲崩潰，可以取消這一個設定，或者手動更換一些更高細粒度的正則比對來減少不必要的跳過。
 
     ![img](https://image.lunatranslator.org/zh/embed/safeskip.png)
-    
+
 1. #### 清除遊戲內顯示的文字
 
     啟用該選項後，遊戲內要顯示內嵌文字處的內容將被清空。
@@ -82,5 +82,5 @@
     1. 有時，內嵌翻譯有無法解決的字元編碼和字型無法顯示的問題。啟用該選項，然後將軟體視窗覆蓋到原本遊戲中顯示文字的地方，可以偽裝成內嵌翻譯的樣子。
 
     1. 有時，我們並不是想要進行內嵌翻譯，而是使用外掛翻譯時，有可能覺得將視窗放在文字區會和原文字重疊，放在其他地方會遮擋畫面。
-    
+
     1. 有時，我們僅想要用來學習日語，然後遊戲文字沒有對文字加讀音或雙語對照的功能。

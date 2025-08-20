@@ -4,11 +4,11 @@
 
 對於已經啟動的遊戲，使用 HOOK 模式，打開選擇遊戲處理程序的視窗，來選擇遊戲的處理程序。
 
-![img](https://image.lunatranslator.org/zh/basicuse/hook.png) 
+![img](https://image.lunatranslator.org/zh/basicuse/hook.png)
 
 點擊確認後，遊戲將會被新增到軟體中並注入遊戲，然後會彈出選擇文字視窗。選擇文字視窗也可以在工具列按鈕中打開。
 
-![img](https://image.lunatranslator.org/zh/basicuse/select.png) 
+![img](https://image.lunatranslator.org/zh/basicuse/select.png)
 
 讓遊戲執行一下，以顯示一些文字，這時選擇文字介面中將會出現若干候選文字列。選擇其中符合遊戲文字的文字列，即可開始翻譯。
 
@@ -30,7 +30,7 @@
 
 啟動軟體後，將遊戲程式用滑鼠游標拖曳到軟體的視窗中，然後鬆開滑鼠游標後，遊戲將會被自動新增到軟體中。遊戲會自動被轉區啟動，並自動 HOOK 遊戲。
 
-![img](https://image.lunatranslator.org/zh/basicuse/load.png) 
+![img](https://image.lunatranslator.org/zh/basicuse/load.png)
 
 然後會彈出選擇文字視窗，之後按照和 HOOK 模式相同的繼續操作即可。
 

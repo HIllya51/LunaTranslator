@@ -1,7 +1,7 @@
 # 安裝 Yomitan 瀏覽器擴充功能
 
 1. 確保顯示引擎為 WebView2
-  
+
    使用瀏覽器擴充功能必須使用 WebView2。除非系統不支援 WebView2，否則預設的顯示引擎就是 WebView2。
 
    ![img](https://image.lunatranslator.org/zh/yomitan.png)

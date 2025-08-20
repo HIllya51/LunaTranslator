@@ -28,7 +28,7 @@
 
 1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 手動翻譯 {#anchor-retrans}
     實際意義是，從目前的文字輸入來源，讀取一次輸入，並執行翻譯。
-    
+
     例如如果目前是 OCR 模式，會再執行一次 OCR。
 
 1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 自動翻譯 {#anchor-automodebutton}
@@ -49,17 +49,17 @@
 
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 滑鼠游標穿透視窗 {#anchor-mousetransbutton}
     啟用這個按鈕後，滑鼠游標點擊翻譯視窗時，翻譯視窗不會對滑鼠游標點擊做出反應，而是把點擊事件傳遞給下層視窗。
-    
+
     當把翻譯視窗置於遊戲視窗的文字框之上時，啟用這個按鈕可以直接點擊遊戲的文字框而不是點擊到翻譯視窗上。
-    
+
     當把滑鼠游標移動到**滑鼠游標穿透視窗按鈕及其左右一個按鈕的區域**時，會自動退出穿透以使用工具按鈕；移出區域時自動復原穿透。
 
 1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 背景視窗透明 {#anchor-backtransbutton}
     該按鈕作用僅是一鍵使得翻譯視窗的不透明度切換到 0。這個切換不會使得原版的不透明度設定被遺忘。
-    
+
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 鎖定工具列 {#anchor-locktoolsbutton}
     啟用後工具列將始終顯示。
-    
+
     未鎖定工具列時，當滑鼠游標移出時，工具列會自動隱藏，進入視窗後工具列復原顯示；如果是使用滑鼠游標右鍵取消的鎖定工具列，則僅當滑鼠游標進入到**鎖定工具列按鈕及其左右一個按鈕的區域**時，工具列才復原顯示。
 
     未鎖定工具列時，如果啟用了`滑鼠游標穿透視窗`，則僅當滑鼠游標移動到**滑鼠游標穿透視窗按鈕及其左右一個按鈕的區域**時，工具列才顯示；否則只要滑鼠游標進入到翻譯視窗，工具就會顯示。
@@ -68,7 +68,7 @@
 
 1. #### <i class="fa fa-link"></i> <i class="fa fa-icon fa-rotate-right"></i> 選擇遊戲 {#anchor-selectgame}
     **該按鈕僅在 HOOK 模式下可用**
-    
+
     點擊按鈕會彈出選擇遊戲處理程序視窗，來選擇要 HOOK 的遊戲處理程序。
 
 1. #### <i class="fa fa-tasks"></i> <i class="fa fa-icon fa-rotate-right"></i> 選擇文字 {#anchor-selecttext}
@@ -99,7 +99,7 @@
 
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次進行 OCR {#anchor-ocr_once_follow}
     當使用過一次`進行一次 OCR`後，使用這個按鈕，可以在原來的位置上再次進行一次 OCR 而無需重新選擇辨識區域。
-    
+
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 翻譯前取代 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻譯結果修正 {#anchor-fix}
@@ -152,7 +152,7 @@
 
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 複製到剪貼簿 {#anchor-copy}
     複製目前擷取到的文字到剪貼簿一次。如果想要自動擷取到剪貼簿，應啟用`文字輸入`->`剪貼簿`->`自動輸出`->`自動輸出文字`。
-    
+
 1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏歷史文字 {#anchor-history}
     打開或關閉歷史文字的視窗。
 
@@ -175,10 +175,10 @@
 
 1. #### <i class="fa fa-list-ul"></i> <i class="fa fa-icon fa-rotate-right"></i> 備忘錄 {#anchor-memory}
     對於目前正在玩的遊戲，打開備忘錄視窗。
-    
+
     點擊左鍵時，打開目前遊戲的備忘錄。點擊右鍵時，打開全域的備忘錄。
 
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 綁定視窗 （點擊自己取消） {#anchor-bindwindow}
+1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 綁定視窗（點擊自己取消） {#anchor-bindwindow}
     **該按鈕非常重要，許多功能都依賴於該按鈕先進行設定後才可用**
 
     在綁定了遊戲視窗後，`視窗縮放` `視窗截圖` `遊戲靜音`，`跟隨遊戲視窗`->`遊戲失去焦點時取消置頂`和`遊戲視窗移動時同步移動`，以及記錄遊戲時間等功能，才可用。
@@ -199,4 +199,3 @@
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 查詞 {#anchor-searchwordW}
     如果目前有文字被選取，則會查詢選取的文字並打開查詞視窗。否則只是打開或關閉查詞視窗。
-  
