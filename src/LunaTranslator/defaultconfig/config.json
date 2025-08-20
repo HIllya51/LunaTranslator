@@ -306,7 +306,8 @@
         "transerrorfix": false,
         "vndbnamemap": false,
         "myprocess": false,
-        "arabic_reshaper": false
+        "arabic_reshaper": false,
+        "skiponlypunctuations": true
     },
     "showintab": true,
     "showintab_sub": true,
@@ -504,7 +505,6 @@
     "gamemanageruseversion": 0,
     "gamemanager_integrated_internal_layout": 2,
     "profiles_index": 0,
-    "ocrautobindwindow": false,
     "toolbutton": {
         "rank2": [
             "move",
@@ -963,6 +963,11 @@
             "_22": {
                 "use": false,
                 "name": "游戏静音",
+                "keystring": ""
+            },
+            "43": {
+                "use": true,
+                "name": "游戏暂停",
                 "keystring": ""
             },
             "41": {
@@ -1602,12 +1607,6 @@
             "color": "pink",
             "name": "Azure"
         },
-        "baidu": {
-            "use": false,
-            "color": "#ff65db",
-            "useproxy": false,
-            "name": "百度"
-        },
         "bing": {
             "use": false,
             "color": "#000ff0",
@@ -1859,7 +1858,11 @@
             "color": "blue",
             "name": "Sakura大模型",
             "is_gpt_like": true,
-            "useproxy": false
+            "useproxy": false,
+            "langs": [
+                "zh",
+                "cht"
+            ]
         },
         "realtime_edit": {
             "use": false,
@@ -1926,5 +1929,6 @@
     "verticalhorizontal": false,
     "noundictconfig_ex": [],
     "toppest_translator": null,
-    "range_select_multi_dpi_capture_force": false
+    "range_select_multi_dpi_capture_force": false,
+    "use_ocr_preprocess": false
 }

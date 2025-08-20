@@ -126,12 +126,12 @@
     左鍵為視窗化縮放，右鍵為全螢幕縮放。
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 視窗截圖 {#anchor-grabwindow}
-    可以對綁定的視窗進行截圖，（預設會截兩張圖，GDI 和 WinRT，兩者均有一定機率會失敗）。最好的地方是，如果目前正在使用 Magpie 進行縮放，還會對放大的視窗進行截圖。
+    當綁定遊戲視窗後，可以對綁定的視窗進行截圖（預設會截兩張圖，GDI 和 WinRT，兩者均有一定機率會失敗）。如果目前正在使用 Magpie 進行縮放，還會對放大的視窗進行截圖。
 
     左鍵點擊時會把截圖儲存到檔案，右鍵點擊時截圖會儲存到剪貼簿。
 
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 遊戲靜音 {#anchor-muteprocess}
-    當綁定遊戲視窗後（不只是 HOOK 模式，OCR 或剪貼簿模式都可以，只要綁定了遊戲視窗），可以一鍵對遊戲進行靜音，節省了在系統音量合成器進行遊戲靜音的麻煩。
+    當綁定遊戲視窗後，可以一鍵對遊戲進行靜音，節省了還要在系統音量混音程式才能將遊戲靜音的麻煩。
 
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 顯示／隱藏原文 {#anchor-showraw}
     切換是否顯示原文，會立即生效。

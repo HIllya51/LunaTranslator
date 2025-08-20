@@ -96,7 +96,7 @@ def __internal__getlang(k1: str, k2: str) -> str:
 def __translate_exits(fanyi):
     _fs = [
         "Lunatranslator/translator/{}.py".format(fanyi),
-        "userconfig/copyed/{}.py".format(fanyi),
+        gobject.getconfig("copyed/{}.py".format(fanyi)),
     ]
     for i, _ in enumerate(_fs):
         if os.path.exists(_):
@@ -433,23 +433,18 @@ def splitocrtypes(dic):
 
 def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
     if ismypost or istts:
-        path = "userconfig/posts/{}.py".format(path)
-    p = os.path.abspath((path))
-    os.makedirs(os.path.dirname(p), exist_ok=True)
-    print(path)
-    if os.path.exists(p) == False:
-        tgt = {
-            "userconfig/selfbuild.py": "selfbuild.py",
-            "userconfig/mypost.py": "mypost.py",
-            "userconfig/myprocess.py": "myprocess.py",
-            "userconfig/myanki_v2.py": "myanki_v2.py",
-        }.get(path)
+        p = gobject.getconfig("posts/{}.py".format(path))
+    else:
+        p = gobject.getconfig(path)
+    if not os.path.exists(p):
         if istts:
             tgt = "mypost_tts.py"
-        if ismypost:
+        elif ismypost:
             tgt = "mypost.py"
-        if ishotkey:
+        elif ishotkey:
             tgt = "hotkey.py"
+        else:
+            tgt = os.path.basename(path)
         shutil.copy(
             "LunaTranslator/myutils/template/" + tgt,
             p,
@@ -747,7 +742,7 @@ def checkmd5reloadmodule(filename: str, module: str):
     # -> isnew, option<module>
     if not os.path.exists(filename):
         # reload重新加载不存在的文件时不会报错。
-        return True, None
+        return None
     key = (filename, module)
     md5 = getfilemd5(filename)
     cachedmd5 = globalcachedmodule.get(key, {}).get("md5", None)
@@ -757,17 +752,17 @@ def checkmd5reloadmodule(filename: str, module: str):
             _ = importlib.reload(_)
         except ModuleNotFoundError:
             print_exc()
-            return True, None
+            return None
         # 不要捕获其他错误，缺少模块时直接跳过，只报实现错误
         # except:
         #     print_exc()
         #     return True, None
         globalcachedmodule[key] = {"md5": md5, "module": _}
 
-        return True, _
+        return _
     else:
 
-        return False, globalcachedmodule.get(key, {}).get("module", None)
+        return globalcachedmodule.get(key, {}).get("module", None)
 
 
 class loopbackrecorder:

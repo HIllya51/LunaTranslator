@@ -103,7 +103,6 @@ export const ru = defineConfig({
                         items: [
                             { text: 'Настройки интерфейса OCR', link: '/ru/useapis/ocrapi' },
                             { text: 'Методы автоматизации OCR', link: '/ru/ocrparam' },
-                            { text: 'Привязка окна игры к режиму OCR', link: '/ru/gooduseocr' }
                         ]
                     },
                     {
@@ -144,6 +143,15 @@ export const ru = defineConfig({
                     { text: 'Горячие клавиши', link: '/ru/fastkeys' },
                     { text: 'Сетевые сервисы', link: '/ru/apiservice' },
                     { text: 'Распознавание речи', link: '/ru/sr' },
+                    {
+                        text: 'Практические советы', link: '/ru/gooduse/multiconfigs',
+                        collapsed: true,
+                        items: [
+                            { text: 'Создание нескольких конфигурационных файлов', link: '/ru/gooduse/multiconfigs' },
+                            { text: 'Временное использование OCR в режиме HOOK  ', link: '/ru/gooduse/useocrinhook' },
+                            { text: 'OCR Привязка к игровому окну', link: '/ru/gooduse/gooduseocr' },
+                        ]
+                    },
                 ]
             }
         ]

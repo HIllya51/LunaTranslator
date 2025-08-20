@@ -68,3 +68,9 @@ static OSVersion GetOSVersion()
         return version;
     }
 }
+
+#ifndef WINXP
+#define FUCKPRIVI PROCESS_QUERY_LIMITED_INFORMATION
+#else
+#define FUCKPRIVI (GetOSVersion().IsleWinXP() ? PROCESS_QUERY_INFORMATION : PROCESS_QUERY_LIMITED_INFORMATION)
+#endif

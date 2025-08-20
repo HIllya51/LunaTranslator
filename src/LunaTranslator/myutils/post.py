@@ -302,7 +302,7 @@ def lines_threshold(line: str, args: dict):
 
 def _mypostloader(line, file, module):
 
-    _ = checkmd5reloadmodule(file, module)[1]
+    _ = checkmd5reloadmodule(file, module)
     # 这个是单独函数的模块，不需要用isnew来判断是否需要重新初始化
     if not _:
         return line
@@ -342,7 +342,7 @@ def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
         return ""
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig
-    usemypostpath = "userconfig/mypost.py"
+    usemypostpath = "mypost.py"
     usemodule = "mypost"
     try:
 
@@ -359,7 +359,7 @@ def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
                     "posts."
                     + savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                 )
-                usemypostpath = "userconfig/posts/{}.py".format(
+                usemypostpath = "posts/{}.py".format(
                     savehook_new_data[gameuid]["save_text_process_info"]["mypost"]
                 )
     except:
@@ -380,7 +380,7 @@ def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
             try:
                 _f = processfunctions[postitem]
                 if postitem == "_11":
-                    line = processfunctions[postitem](line, usemypostpath, usemodule)
+                    line = processfunctions[postitem](line, gobject.getconfig(usemypostpath), usemodule)
                 else:
                     sig = inspect.signature(_f)
                     np = len(sig.parameters)

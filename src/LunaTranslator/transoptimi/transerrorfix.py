@@ -28,7 +28,7 @@ class Process:
             ["正则", "转义", "翻译", "替换"],
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
-    def process_after(self, res, mp1):
+    def process_after(self, res, _):
         res = parsemayberegexreplace(self.usewhich(), res)
         return res
 

@@ -100,7 +100,6 @@ export const ja = defineConfig({
                         items: [
                             { text: 'OCRインターフェース設定', link: '/ja/useapis/ocrapi' },
                             { text: 'OCR自動化実行方法', link: '/ja/ocrparam' },
-                            { text: 'OCRモードでゲームウィンドウをバインドする', link: '/ja/gooduseocr' }
                         ]
                     },
                     {
@@ -141,7 +140,15 @@ export const ja = defineConfig({
                     { text: 'ショートカットキー', link: '/ja/fastkeys' },
                     { text: 'ネットワークサービス', link: '/ja/apiservice' },
                     { text: '音声認識', link: '/ja/sr' },
-
+                    {
+                        text: '実用テクニック', link: '/ja/gooduse/multiconfigs',
+                        collapsed: true,
+                        items: [
+                            { text: '複数設定ファイルの作成', link: '/ja/gooduse/multiconfigs' },
+                            { text: 'HOOKモードで一時的にOCRを使用する', link: '/ja/gooduse/useocrinhook' },
+                            { text: 'OCRモードでゲームウィンドウをバインドする', link: '/ja/gooduse/gooduseocr' },
+                        ]
+                    },
                 ]
             }
         ]

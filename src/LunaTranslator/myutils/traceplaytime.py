@@ -24,7 +24,7 @@ class playtimemanager:
     def __init__(self):
 
         self.sqlsavegameinfo = sqlite3.connect(
-            gobject.getuserconfigdir("savegame.db"),
+            gobject.getconfig("savegame.db"),
             check_same_thread=False,
             isolation_level=None,
         )

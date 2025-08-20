@@ -35,7 +35,7 @@ features:
     link: ./useapis/ocrapi
   - title: 丰富的翻译接口
     details: 支持几乎所有翻译引擎，包括大语言模型翻译、离线翻译等
-    link: ./useapis/tsapi
+    link: ./guochandamoxing
   - title: 语言学习
     details: 支持日语分词及假名注音，支持AnkiConnect，支持Yomitan插件
     link: ./qa1

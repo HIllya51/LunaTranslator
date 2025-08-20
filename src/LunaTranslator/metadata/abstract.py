@@ -165,7 +165,7 @@ class common:
 
     @tryprint
     def __tryinserttomemory(self, description, gameuid):
-        rwpath = gobject.getuserconfigdir("memory/{}".format(gameuid))
+        rwpath = gobject.getconfig("memory/{}".format(gameuid))
         os.makedirs(rwpath, exist_ok=True)
 
         try:

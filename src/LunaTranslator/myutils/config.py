@@ -1,5 +1,5 @@
 import json
-import os, time, uuid, re
+import os, time, uuid, re, gobject
 from traceback import print_exc
 from language import TransLanguages, Languages
 
@@ -34,7 +34,7 @@ def isascii(s: str):
 
 
 def tryreadconfig(path, default=None):
-    path = os.path.join("userconfig", path)
+    path = gobject.getconfig(path)
     try:
         with open(path, "r", encoding="utf-8") as ff:
             return json.load(ff)
@@ -46,7 +46,7 @@ def tryreadconfig_1(path, default=None, pathold=None):
     try:
         if not pathold:
             raise Exception()
-        pathold = os.path.join("userconfig", pathold)
+        pathold = gobject.getconfig(pathold)
         with open(pathold, "r", encoding="utf-8") as ff:
             old = json.load(ff)
         os.remove(pathold)
@@ -425,7 +425,6 @@ def _TR(k: "str | list[str]") -> "str | list[str]":
 
 def unsafesave(fname: str, js, beatiful=True):
     # 有时保存时意外退出，会导致config文件被清空
-    os.makedirs(os.path.dirname(fname), exist_ok=True)
 
     js = json.dumps(
         js, ensure_ascii=False, sort_keys=False, indent=4 if beatiful else None
@@ -453,21 +452,27 @@ def saveallconfig(test=False):
         return
     _is_config_saving = True
     errorcollect = []
-    safesave(errorcollect, "userconfig/config.json", globalconfig)
-    safesave(errorcollect, "userconfig/postprocessconfig.json", postprocessconfig)
+    safesave(errorcollect, gobject.getconfig("config.json"), globalconfig)
     safesave(
-        errorcollect, "userconfig/transerrorfixdictconfig.json", transerrorfixdictconfig
+        errorcollect, gobject.getconfig("postprocessconfig.json"), postprocessconfig
     )
-    safesave(errorcollect, "userconfig/translatorsetting.json", translatorsetting)
-    safesave(errorcollect, "userconfig/ocrerrorfix.json", ocrerrorfix)
-    safesave(errorcollect, "userconfig/ocrsetting.json", ocrsetting)
     safesave(
         errorcollect,
-        "userconfig/savegamedata_5.3.1.json",
+        gobject.getconfig("transerrorfixdictconfig.json"),
+        transerrorfixdictconfig,
+    )
+    safesave(
+        errorcollect, gobject.getconfig("translatorsetting.json"), translatorsetting
+    )
+    safesave(errorcollect, gobject.getconfig("ocrerrorfix.json"), ocrerrorfix)
+    safesave(errorcollect, gobject.getconfig("ocrsetting.json"), ocrsetting)
+    safesave(
+        errorcollect,
+        gobject.getconfig("savegamedata_5.3.1.json"),
         [savehook_new_list, savehook_new_data, savegametaged, None, extradatas],
         beatiful=False,
     )
-    safesave(errorcollect, "userconfig/Magpie/config.json", magpie_config)
+    safesave(errorcollect, gobject.getconfig("Magpie/config.json"), magpie_config)
     if not test:
         safesave(errorcollect, "files/lang/{}.json".format(getlanguse()), languageshow)
     _is_config_saving = False

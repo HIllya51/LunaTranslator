@@ -124,3 +124,4 @@ class Setting(closeashidewindow):
             globalconfig["lasttime"] = time.time()
         globalconfig["lasttime"] = min(time.time(), globalconfig["lasttime"])
         self.tab_widget.setCurrentIndex(index)
+        gobject.base.switchtotspage.connect(lambda: self.tab_widget.setCurrentIndex(1))

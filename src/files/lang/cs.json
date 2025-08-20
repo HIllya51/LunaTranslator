@@ -875,5 +875,7 @@
     "警告，注入的进程内存很小，可能是无用进程!": "Varování, vstřikovaná paměť procesu je velmi malá, může se jednat o nepotřebný proces!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Nepodporuje Ryujinx, prosím použijte Yuzu/Sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "Verze emulátoru je zastaralá, použijte prosím novou verzi emulátoru.",
-    "检测到模拟器: %s": "Detekován emulátor: %s"
+    "检测到模拟器: %s": "Detekován emulátor: %s",
+    "游戏暂停": "Hra pozastavena",
+    "跳过仅包含标点的句子": "Přeskočit věty obsahující pouze interpunkci."
 }

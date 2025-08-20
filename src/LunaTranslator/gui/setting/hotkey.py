@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools
-import gobject, NativeUtils, uuid, os, shutil
+import gobject, NativeUtils, uuid, windows, shutil
 from myutils.config import globalconfig, _TR
 from myutils.hwnd import grabwindow
 from traceback import print_exc
@@ -65,8 +65,8 @@ def safeGet():
 
 
 def createreloadablewrapper(self, name):
-    _, module = checkmd5reloadmodule(
-        "userconfig/myhotkeys/{}.py".format(name), "myhotkeys." + name
+    module = checkmd5reloadmodule(
+        gobject.getconfig("myhotkeys/{}.py").format(name), "myhotkeys." + name
     )
     try:
         gobject.base.safeinvokefunction.emit(module.OnHotKeyClicked)
@@ -122,6 +122,9 @@ def registrhotkeys(self):
         "40": lambda: gobject.base.searchwordW.search_word_in_new_window.emit(
             safeGet()
         ),
+        "43": lambda: NativeUtils.SuspendResumeProcess(
+            windows.GetWindowThreadProcessId(gobject.base.hwnd)
+        ),
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -141,7 +144,7 @@ hotkeys = [
     ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
-    ["游戏", ["_15", "_21", "_22", "41", "42"]],
+    ["游戏", ["_15", "_21", "_22", "43", "41", "42"]],
     ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
 ]
 
@@ -209,7 +212,7 @@ def createmykeyline(self, form: QFormLayout, name):
                 ),
                 D_getIconButton(
                     callback=lambda: selectdebugfile(
-                        "userconfig/myhotkeys/{}.py".format(name), ishotkey=True
+                        "myhotkeys/{}.py".format(name), ishotkey=True
                     ),
                     icon="fa.edit",
                 ),
@@ -233,10 +236,9 @@ def plusclicked(self, form):
         "name": name,
         "keystring": "",
     }
-    os.makedirs("userconfig/myhotkeys", exist_ok=True)
     shutil.copy(
         "LunaTranslator/myutils/template/hotkey.py",
-        "userconfig/myhotkeys/{}.py".format(name),
+        gobject.getconfig("myhotkeys/{}.py".format(name)),
     )
     createmykeyline(self, form, name)
 

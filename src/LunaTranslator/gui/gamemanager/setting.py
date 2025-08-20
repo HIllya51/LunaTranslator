@@ -891,43 +891,43 @@ class dialog_setting_game_internal(QWidget):
         for i, item in enumerate(static_data["transoptimi"]):
             name = item["name"]
             visname = item["visname"]
-            if checkpostlangmatch(name):
-                setting = loadpostsettingwindowmethod_private(name)
-                if not setting:
-                    continue
+            if not checkpostlangmatch(name):
+                continue
 
-                def __(_f, _1, gameuid):
-                    return _f(_1, gameuid)
+            setting = loadpostsettingwindowmethod_private(name)
+            if not setting:
+                continue
 
-                vbox.addWidget(LLabel(visname), i + 1, 0)
-                vbox.addWidget(
+            def __(_f, _1, gameuid):
+                return _f(_1, gameuid)
+
+            vbox.addWidget(LLabel(visname), i + 1, 0)
+            vbox.addWidget(
+                getsimpleswitch(
+                    savehook_new_data[gameuid],
+                    name + "_use",
+                    default=False,
+                ),
+                i + 1,
+                1,
+            )
+            vbox.addWidget(
+                getIconButton(callback=functools.partial(__, setting, self, gameuid)),
+                i + 1,
+                2,
+            )
+            vbox.addWidget(QLabel(), i + 1, 3)
+            vbox.addLayout(
+                getcenterX(
                     getsimpleswitch(
                         savehook_new_data[gameuid],
-                        name + "_use",
+                        name + "_merge",
                         default=False,
-                    ),
-                    i + 1,
-                    1,
-                )
-                vbox.addWidget(
-                    getIconButton(
-                        callback=functools.partial(__, setting, self, gameuid)
-                    ),
-                    i + 1,
-                    2,
-                )
-                vbox.addWidget(QLabel(), i + 1, 3)
-                vbox.addLayout(
-                    getcenterX(
-                        getsimpleswitch(
-                            savehook_new_data[gameuid],
-                            name + "_merge",
-                            default=False,
-                        )
-                    )(),
-                    i + 1,
-                    4,
-                )
+                    )
+                )(),
+                i + 1,
+                4,
+            )
 
     def gettextproc(self, formLayout: LFormLayout, gameuid):
 

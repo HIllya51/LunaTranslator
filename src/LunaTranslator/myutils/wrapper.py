@@ -42,8 +42,7 @@ def Singleton_impl(cls, behavior="activate"):
         class __(cls):
             Singleton_flag = 1
 
-            def closeEvent(self, a0) -> None:
-                super().closeEvent(a0)
+            def ___close(self):
                 self.Singleton_flag = 0
                 if cls not in _instance:
                     pass  # __init__没做完的时候不能deletelator
@@ -57,6 +56,15 @@ def Singleton_impl(cls, behavior="activate"):
                     _lock.release()
                 except:
                     pass
+
+            def reject(self):
+                # QDialog 按esc关闭
+                super().reject()
+                self.___close()
+
+            def closeEvent(self, a0) -> None:
+                super().closeEvent(a0)
+                self.___close()
 
         try:
             _inst = __(*args, **kwagrs)

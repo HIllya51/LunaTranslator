@@ -485,7 +485,7 @@ class TextBrowser(WebviewWidget, somecommon):
         if not globalconfig["useextrahtml"]:
             return
         for _ in [
-            "userconfig/extrahtml.html",
+            gobject.getconfig("extrahtml.html"),
             r"LunaTranslator\htmlcode\uiwebview\extrahtml\mainui.html",
         ]:
             if not os.path.exists(_):

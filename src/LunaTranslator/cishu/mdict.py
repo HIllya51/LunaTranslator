@@ -273,14 +273,16 @@ class mdict(cishubase):
 
     def init(self):
         try:
-            with open("userconfig/mdict_config.json", "r", encoding="utf8") as ff:
+            with open(
+                gobject.getconfig("mdict_config.json"), "r", encoding="utf8"
+            ) as ff:
                 self.extraconf = json.loads(ff.read())
         except:
             self.extraconf = {}
         self.checkpath()
         try:
             with open(
-                gobject.getuserconfigdir("mdict_config.json"), "w", encoding="utf8"
+                gobject.getconfig("mdict_config.json"), "w", encoding="utf8"
             ) as ff:
                 ff.write(json.dumps(self.extraconf, ensure_ascii=False, indent=4))
         except:

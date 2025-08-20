@@ -172,13 +172,12 @@ def switchdir():
     dirname = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     os.chdir(dirname)
     sys.path.insert(1, ".")
-    sys.path.insert(1, "userconfig")
     # 0 是当前目录
     # 后面的是系统库或runtime
     # 由于自动更新不会删除，runtime下可能有历史遗留的同名文件被优先导入
 
 
-def urlprotocol():
+def _parseargs():
     import argparse, gobject
     from urllib.parse import urlsplit
     from traceback import print_exc
@@ -187,11 +186,14 @@ def urlprotocol():
     parser.add_argument("--URLProtocol", required=False)
     parser.add_argument("--Exec", required=False)
     parser.add_argument("--test", required=False, action="store_true")
+    parser.add_argument("--userconfig", required=False)
     try:
         args = parser.parse_args()
         URLProtocol: str = args.URLProtocol
         Exec: str = args.Exec
         gobject.istest = args.test
+        userconfig = args.userconfig
+        gobject.thisuserconfig = userconfig if userconfig else gobject.thisuserconfig
         if URLProtocol:
             print(URLProtocol)
             result = urlsplit(URLProtocol)
@@ -211,8 +213,17 @@ def urlprotocol():
         print_exc()
 
 
+def parseargs():
+    import gobject
+
+    _ = _parseargs()
+    sys.path.insert(1, gobject.thisuserconfig)
+    return _
+
+
 if __name__ == "__main__":
     switchdir()
+    startwithgameuid = parseargs()
     prepareqtenv()
     from qtsymbols import QApplication
 
@@ -220,6 +231,6 @@ if __name__ == "__main__":
     # app.setQuitOnLastWindowClosed(False)
     checklang()
     checkintegrity()
-    loadmainui(urlprotocol())
+    loadmainui(startwithgameuid)
     app.exit(app.exec())
     os._exit(0)

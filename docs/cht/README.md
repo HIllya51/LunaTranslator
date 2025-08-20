@@ -2,12 +2,21 @@
 
 ## 下載
 
-| 作業系統 | 32 位元 | 64 位元 | 說明 |
-| - | - | - | - |
-| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | 該版本只支援較新的作業系統版本，以獲得更高效能、更新的系統特性，及更低的病毒誤報率。
-| Windows 7 及以上 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
-| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | | 該版本僅用於支援擷取僅能在 XP 虛擬機內執行的很老遊戲的文字，功能殘缺、不穩定、執行緩慢，一般不要使用。
+| 作業系統 | 64 位元 |
+| - | - |
+| Windows 10 & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> |
 
+::: details 舊版操作系統相容版  
+
+>[!WARNING]  
+這些版本性能更差，運行更不穩定，而且缺少一些特性和功能，更容易被防毒軟體誤報。如果沒有特殊需求不建議使用。
+
+| 作業系統 | 32 位元 | 64 位元 |
+| - | - | - |
+| Windows 7 及以上 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
+| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | |
+
+:::
 
 ## 啟動
 

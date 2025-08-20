@@ -2,12 +2,21 @@
 
 ## Скачать
 
-| Операционная система | 32-bit | 64-bit | Примечания |
-| - | - | - | - |
-| Windows 10 & 11 |  | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10？doc=1"/> | Эта версия поддерживает только новые версии ОС для получения более высокой производительности, новых системных функций и меньшего количества ложных срабатываний антивируса.
-| Windows 7 и выше | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7？doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7？doc=1"/> |
-| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp？doc=1"/> | | Эта версия предназначена только для извлечения текста из очень старых игр, которые могут работать только в виртуальной машине XP. Функционал ограничен, нестабилен и работает медленно - не рекомендуется для обычного использования.
+| Операционная система | 64-bit |
+| - | - |
+| Windows 10 & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> |
 
+::: details Версия для совместимости со старыми ОС  
+
+>[!WARNING]  
+Эти версии обладают более низкой производительностью, работают менее стабильно, в них отсутствуют некоторые функции и возможности, а также они чаще подвергаются ложным срабатываниям антивирусного ПО. Не рекомендуется использовать, если нет особой необходимости.
+
+| Операционная система | 32-bit | 64-bit |
+| - | - | - |
+| Windows 7 и выше | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_win7?doc=1"/> | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win7?doc=1"/> |
+| Windows XP & Vista | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x86_winxp?doc=1"/> | |
+
+:::
 
 ## Запуск
 

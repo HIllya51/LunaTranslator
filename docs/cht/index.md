@@ -35,7 +35,7 @@ features:
     link: ./useapis/ocrapi
   - title: 豐富的翻譯介面
     details: 支援幾乎所有翻譯引擎，包括大語言模型翻譯、離線翻譯等
-    link: ./useapis/tsapi
+    link: ./guochandamoxing
   - title: 語言學習
     details: 支援日語分詞及假名讀音標註，支援 AnkiConnect，支援 Yomitan 擴充功能
     link: ./qa1

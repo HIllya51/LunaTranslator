@@ -241,7 +241,7 @@ class dialog_memory(saveposwindow):
     # _sigleton=False
 
     def prepare(self):
-        self.rwpath = gobject.getuserconfigdir("memory/{}".format(self.gameuid))
+        self.rwpath = gobject.getconfig("memory/{}".format(self.gameuid))
         try:
             with open(
                 os.path.join(self.rwpath, "config.json"), "r", encoding="utf8"
@@ -250,7 +250,7 @@ class dialog_memory(saveposwindow):
         except:
             self.config = []
         os.makedirs(self.rwpath, exist_ok=True)
-        rwpath = gobject.getuserconfigdir("memory/{}.html".format(self.gameuid))
+        rwpath = gobject.getconfig("memory/{}.html".format(self.gameuid))
         if os.path.isfile(rwpath):
             try:
                 os.rename(rwpath, os.path.join(self.rwpath, "0.html"))

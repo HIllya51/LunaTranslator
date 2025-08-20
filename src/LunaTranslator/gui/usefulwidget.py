@@ -553,7 +553,7 @@ class TableViewW(DelayLoadTableView):
             self.setindexdata(current, string)
 
 
-class saveposwindow(LMainWindow):
+class saveposwindow_1(LMainWindow):
     screengeochanged = pyqtSignal()
 
     def setWindowTitleWithVersion(self, t):
@@ -646,6 +646,11 @@ class saveposwindow(LMainWindow):
     def closeEvent(self, event: QCloseEvent):
         self.__checked_savepos()
 
+class saveposwindow(saveposwindow_1):
+    def keyPressEvent(self, a0: QKeyEvent):
+        if a0.key() == Qt.Key.Key_Escape:
+            self.close()
+        return super().keyPressEvent(a0)
 
 class closeashidewindow(saveposwindow):
     showsignal = pyqtSignal()
@@ -797,7 +802,7 @@ class MySwitch(QAbstractButton):
         pass
 
 
-class resizableframeless(saveposwindow):
+class resizableframeless(saveposwindow_1):
     cursorSet = pyqtSignal(Qt.CursorShape)
     isDragging = pyqtSignal(bool)
 
@@ -806,7 +811,7 @@ class resizableframeless(saveposwindow):
         return 8
 
     def __init__(self, parent, flags, poslist) -> None:
-        saveposwindow.__init__(self, parent, poslist, flags)
+        saveposwindow_1.__init__(self, parent, poslist, flags)
         self.setMouseTracking(True)
         # WS_THICKFRAME可以让无边框窗口可resize，但不兼容透明窗口
         self.usesysmove = False
@@ -1166,9 +1171,9 @@ def check_grid_append(grids):
 
 
 def getcolorbutton(
-    parent, d, key, callback=None, alpha=False, tips=None, cantzeroalpha=False
+    parent, d: dict, key, callback=None, alpha=False, tips="颜色", cantzeroalpha=False
 ):
-    qicon = qtawesome.icon("fa.paint-brush", color=d[key])
+    qicon = qtawesome.icon("fa.paint-brush", color=d.get(key))
     b = IconButton(None, qicon=qicon, tips=tips)
     cb = functools.partial(
         __selectcolor,
@@ -1184,7 +1189,7 @@ def getcolorbutton(
     return b
 
 
-def D_getcolorbutton(parent, d, key, callback, alpha=False, tips=None):
+def D_getcolorbutton(parent, d, key, callback, alpha=False, tips="颜色"):
     return lambda: getcolorbutton(parent, d, key, callback, alpha=alpha, tips=tips)
 
 

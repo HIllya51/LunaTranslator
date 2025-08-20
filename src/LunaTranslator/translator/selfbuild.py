@@ -1,17 +1,18 @@
 from translator.basetranslator import basetrans
 from myutils.utils import checkmd5reloadmodule
+import gobject
 
 
 class TS(basetrans):
     def mayreinit(self):
-        isnew, module = checkmd5reloadmodule("userconfig/selfbuild.py", "selfbuild")
-        if (not isnew) and self.internal:
-            return
-        if module:
+        module = checkmd5reloadmodule(gobject.getconfig("selfbuild.py"), "selfbuild")
+        if module and (module != self.__lastm):
+            self.__lastm = module
             self.internal = module.TS("selfbuild")
 
     def init(self):
         self.internal = None
+        self.__lastm = None
         self.mayreinit()
 
     def langmap(self):

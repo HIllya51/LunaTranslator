@@ -3,6 +3,7 @@ import functools, os
 import gobject, uuid, shutil, copy
 from myutils.config import globalconfig, translatorsetting, _TR
 from myutils.utils import (
+    getlangtgt,
     selectdebugfile,
     splittranslatortypes,
     dynamiclink,
@@ -310,7 +311,7 @@ def loadbutton(self, fanyi):
     if which == 0:
         aclass = "translator." + fanyi
     elif which == 1:
-        aclass = "userconfig.copyed." + fanyi
+        aclass = "copyed." + fanyi
     else:
         return
     return autoinitdialog(
@@ -336,9 +337,8 @@ def getcopyfrom(uid):
 def selectllmcallback(self, countnum: list, fanyi, newname=None):
     uid = str(uuid.uuid4())
     _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
-    _f12 = "userconfig/copyed/{}.py".format(fanyi)
-    _f2 = "userconfig/copyed/{}.py".format(uid)
-    os.makedirs("userconfig/copyed", exist_ok=True)
+    _f12 = gobject.getconfig("copyed/{}.py".format(fanyi))
+    _f2 = gobject.getconfig("copyed/{}.py".format(uid))
     try:
         shutil.copy(_f11, _f2)
     except:
@@ -393,7 +393,7 @@ def btnpluscallback(self, countnum):
 
 
 def selectllmcallback_2(self, countnum: list, fanyi, name):
-    _f2 = "userconfig/copyed/{}.py".format(fanyi)
+    _f2 = gobject.getconfig("copyed/{}.py".format(fanyi))
     try:
         os.remove(_f2)
     except:
@@ -443,7 +443,11 @@ def initsome11(self, l, save=False):
     countnum = []
     if save:
         self.__countnum = countnum
+    lang = getlangtgt()
     for fanyi in l:
+        langs = globalconfig["fanyi"][fanyi].get("langs")
+        if langs and (lang not in langs):
+            continue
         which = translate_exits(fanyi, which=True)
         if which is None:
             continue
@@ -453,7 +457,7 @@ def initsome11(self, l, save=False):
             last = D_getIconButton(callback=functools.partial(loadbutton, self, fanyi))
         elif fanyi == "selfbuild":
             last = D_getIconButton(
-                callback=lambda: selectdebugfile("userconfig/selfbuild.py"),
+                callback=lambda: selectdebugfile("selfbuild.py"),
                 icon="fa.edit",
             )
         else:
@@ -490,6 +494,7 @@ def initsome11(self, l, save=False):
 
 def initsome21(self, not_is_gpt_like):
     not_is_gpt_like = initsome11(self, not_is_gpt_like)
+    not_is_gpt_like += [[(functools.partial(offlinelinks, "translate"), 0)]]
     grids = [
         [
             functools.partial(
@@ -692,7 +697,6 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
 
     _, not_is_gpt_like = splitapillm(res.offline)
     offlinegrid = initsome21(self, not_is_gpt_like)
-    offlinegrid += [[functools.partial(offlinelinks, "translate")]]
     _, not_is_gpt_like = splitapillm(res.api)
     online_reg_grid = initsome2(self, res.free, not_is_gpt_like)
     pretransgrid = [
