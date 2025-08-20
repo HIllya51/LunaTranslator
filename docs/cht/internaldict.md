@@ -2,7 +2,7 @@
 
 1. 首先需要安裝好 MeCab 分詞工具。
 
-1. 在辭書設定中，啟用任意個喜歡的辭書。對於離線辭書 MDict，資源下載中也提供了快速下載按鈕。
+1. 在辭書設定中，啟用任意個喜歡的辭書。對於離線辭書 MDict，資源下載中也提供了自動下載按鈕。
 
     ![img](https://image.lunatranslator.org/zh/internaldict3.png)
 
