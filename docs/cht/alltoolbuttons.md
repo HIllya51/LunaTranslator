@@ -36,8 +36,8 @@
 
     例如如果目前是 HOOK 模式，會暫停讀取遊戲文字；目前是 OCR 模式，暫停自動辨識圖像；如果目前是剪貼簿模式，會暫停自動讀取剪貼簿。
 
-1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> 打開設定 {#anchor-setting}
-    打開或關閉程式的設定視窗。
+1. #### <i class="fa fa-gear"></i> <i class="fa fa-icon fa-rotate-right"></i> 開啟設定 {#anchor-setting}
+    開啟或關閉程式的設定視窗。
 
 1. #### <i class="fa fa-file"></i> <i class="fa fa-icon fa-rotate-right"></i> 讀取剪貼簿 {#anchor-copy_once}
     這個的實際意義是，不管目前的預設文字輸入來源是什麼，都從剪貼簿讀取一次文字，並傳給之後的`翻譯/tts/...`流程。
@@ -45,7 +45,7 @@
     右鍵點擊按鈕會追加讀取到的文字到目前文字之後。
 
 1. #### <i class="fa fa-futbol"></i> <i class="fa fa-icon fa-rotate-right"></i> 遊戲設定 {#anchor-open_game_setting}
-    當使用 HOOK 模式連接到遊戲，或使用 OCR 模式綁定遊戲視窗後，則可以透過這個按鈕直接打開目前遊戲的設定視窗。
+    當使用 HOOK 模式連接到遊戲，或使用 OCR 模式綁定遊戲視窗後，則可以透過這個按鈕直接開啟目前遊戲的設定視窗。
 
 1. #### <i class="fa fa-mouse-pointer"></i> <i class="btnstatus2 fa fa-mouse-pointer"></i> 滑鼠游標穿透視窗 {#anchor-mousetransbutton}
     啟用這個按鈕後，滑鼠點擊翻譯視窗時，翻譯視窗不會對滑鼠點擊做出反應，而是把點擊事件傳遞給下層視窗。
@@ -103,11 +103,11 @@
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 翻譯前取代 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 專有名詞翻譯 {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻譯結果修正 {#anchor-fix}
-    以上三個按鈕效果類似，是用來快速打開翻譯優化的設定視窗，增加新的指定詞條的。
+    以上三個按鈕效果類似，是用來快速開啟翻譯優化的設定視窗，增加新的指定詞條的。
 
-    滑鼠左鍵點擊時，當有綁定的遊戲（HOOK 連結遊戲／剪貼簿、OCR 綁定視窗）時，打開遊戲的專用詞典設定，否則則是打開全域的詞典設定。
+    滑鼠左鍵點擊時，當有綁定的遊戲（HOOK 連結遊戲／剪貼簿、OCR 綁定視窗）時，開啟遊戲的專用詞典設定，否則則是開啟全域的詞典設定。
 
-    滑鼠右鍵點擊時，必然打開全域的詞典設定。
+    滑鼠右鍵點擊時，必然開啟全域的詞典設定。
 
 1. #### <i class="fa fa-minus"></i> <i class="fa fa-icon fa-rotate-right"></i> 最小化到系統匣 {#anchor-minmize}
     將程式最小化到系統匣。
@@ -139,7 +139,7 @@
 1. #### <i class="fa fa-toggle-on"></i> <i class="btnstatus2 fa fa-toggle-off"></i> 顯示／隱藏翻譯 {#anchor-showtrans}
     切換是否使用翻譯，為翻譯的總開關，關閉後將不會進行任何翻譯。
 
-    如果已經進行過了翻譯，則關閉後將會隱藏翻譯結果，並在重新打開時重新顯示本次的翻譯結果。
+    如果已經進行過了翻譯，則關閉後將會隱藏翻譯結果，並在重新開啟時重新顯示本次的翻譯結果。
 
     如果未進行過翻譯，並從隱藏切換到顯示，則會觸發對目前句子的翻譯。
 
@@ -154,18 +154,18 @@
     複製目前擷取到的文字到剪貼簿一次。如果想要自動擷取到剪貼簿，應啟用`文字輸入`->`剪貼簿`->`自動輸出`->`自動輸出文字`。
 
 1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏歷史文字 {#anchor-history}
-    打開或關閉歷史文字的視窗。
+    開啟或關閉歷史文字的視窗。
 
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> 遊戲管理 {#anchor-gamepad_new}
-    打開遊戲管理器介面。
+    開啟遊戲管理器介面。
 
 1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 編輯 {#anchor-edit}
-    打開編輯視窗，以編輯目前擷取到的文字。
+    開啟編輯視窗，以編輯目前擷取到的文字。
 
     該視窗中，可以在修改文字後，再去進行翻譯；或者可以翻譯任何自行輸入的文字。
 
 1. #### <i class="fa fa-edit"></i> <i class="fa fa-icon fa-rotate-right"></i> 編輯 翻譯紀錄 {#anchor-edittrans}
-    打開目前遊戲的翻譯紀錄編輯視窗。
+    開啟目前遊戲的翻譯紀錄編輯視窗。
 
 1. #### <i class="fa fa-download"></i> <i class="fa fa-icon fa-rotate-right"></i> 模擬按鍵 Ctrl {#anchor-simulate_key_ctrl}
     用於向遊戲視窗發送一次模擬按鍵 Ctrl。對於使用串流／平板時有些用處。
@@ -174,9 +174,9 @@
     同上，用於向遊戲視窗發送一次模擬按鍵 Enter。對於使用串流／平板時有些用處。
 
 1. #### <i class="fa fa-list-ul"></i> <i class="fa fa-icon fa-rotate-right"></i> 備忘錄 {#anchor-memory}
-    對於目前正在玩的遊戲，打開備忘錄視窗。
+    對於目前正在玩的遊戲，開啟備忘錄視窗。
 
-    點擊左鍵時，打開目前遊戲的備忘錄。點擊右鍵時，打開全域的備忘錄。
+    點擊左鍵時，開啟目前遊戲的備忘錄。點擊右鍵時，開啟全域的備忘錄。
 
 1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 綁定視窗（點擊自己取消） {#anchor-bindwindow}
     **該按鈕非常重要，許多功能都依賴於該按鈕先進行設定後才可用**
@@ -198,4 +198,4 @@
     如果啟用時點擊的是滑鼠右鍵，則會禁止拖曳非文字區域以移動視窗。
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 查詞 {#anchor-searchwordW}
-    如果目前有文字被選取，則會查詢選取的文字並打開查詞視窗。否則只是打開或關閉查詞視窗。
+    如果目前有文字被選取，則會查詢選取的文字並開啟查詞視窗。否則只是開啟或關閉查詞視窗。

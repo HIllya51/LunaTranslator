@@ -2,11 +2,11 @@
 
 ## HOOK 模式
 
-對於已經啟動的遊戲，使用 HOOK 模式，打開選擇遊戲處理程序的視窗，來選擇遊戲的處理程序。
+對於已經啟動的遊戲，使用 HOOK 模式，開啟選擇遊戲處理程序的視窗，來選擇遊戲的處理程序。
 
 ![img](https://image.lunatranslator.org/zh/basicuse/hook.png)
 
-點擊確認後，遊戲將會被新增到軟體中並注入遊戲，然後會彈出選擇文字視窗。選擇文字視窗也可以在工具列按鈕中打開。
+點擊確認後，遊戲將會被新增到軟體中並注入遊戲，然後會彈出選擇文字視窗。選擇文字視窗也可以在工具列按鈕中開啟。
 
 ![img](https://image.lunatranslator.org/zh/basicuse/select.png)
 
