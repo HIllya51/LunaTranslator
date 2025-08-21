@@ -1,6 +1,6 @@
 # Anki 集成
 
-1. 安裝 Anki, https://apps.ankiweb.net/ 去首頁下載安裝
+1. 安裝 Anki：https://apps.ankiweb.net/ 去網站首頁下載安裝
 
 2. 搜 AnkiConnect 第一筆
 
