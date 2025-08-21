@@ -1167,7 +1167,7 @@ class TranslatorWindow(resizableframeless):
         isfile = os.path.isfile(file)
         flow = os.path.basename(file).lower()
         if isfile and flow == "dicrc":
-            file = os.path.dirname(file)
+            file = os.path.dirname(file) 
         filer = mayberelpath(file)
         changed = filer not in globalconfig["cishu"]["mdict"]["args"]["paths"]
         if changed:
@@ -1176,13 +1176,28 @@ class TranslatorWindow(resizableframeless):
         if changed:
             gobject.base.startxiaoxueguan("mdict")
 
+    def __parsedropsqlite(self, file):
+        filer=mayberelpath(file)
+        try:
+            gameuid = gobject.base.gameuid
+            savehook_new_data[gameuid]["gamesqlitefile"] = filer
+            self.displaystatus.emit(
+                _TR("成功添加_sqlite翻译记录_ " + filer), TextType.Info
+            )
+        except:
+            print_exc()
+            translatorsetting["premt"]["args"]["sqlitefile"] = filer
+            self.displaystatus.emit(
+                _TR("成功添加_sqlite翻译记录_ " + filer), TextType.Info
+            )
+
     def __parsedropjson(self, file):
+        filer = mayberelpath(file)
         try:
             gameuid = gobject.base.gameuid
             _path = savehook_new_data[gameuid].get("gamejsonfile", [])
             if isinstance(_path, str):
                 _path = [_path]
-            filer = mayberelpath(file)
             if filer not in _path:
                 _path.append(filer)
                 savehook_new_data[gameuid]["gamejsonfile"] = _path
@@ -1193,7 +1208,6 @@ class TranslatorWindow(resizableframeless):
             print_exc()
 
             _path: list = translatorsetting["rengong"]["args"]["jsonfile"]
-            filer = mayberelpath(file)
             if filer not in _path:
                 _path.append(filer)
                 translatorsetting["rengong"]["args"]["jsonfile"] = _path
@@ -1215,6 +1229,7 @@ class TranslatorWindow(resizableframeless):
                 self.__parsedropmdx,
             ),
             (lambda: isfile and flow.endswith(".json"), self.__parsedropjson),
+            (lambda: isfile and flow.endswith(".sqlite"), self.__parsedropsqlite),
             (
                 lambda: isfile and (flow.endswith(".exe") or flow.endswith(".lnk")),
                 self.__parsedropexe,
