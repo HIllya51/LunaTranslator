@@ -73,7 +73,7 @@
 
     `H`是 Inline Hook，`B`是 VEH Hook
 
-    單字元：`A`／`B` 是小端序／大端序的 MBCS，`C`是 UTF-8，`W`是 UTF-16，`I`是 UTF-32。
+    單字元：`A`／`B`是小端序／大端序的 MBCS，`C`是 UTF-8，`W`是 UTF-16，`I`是 UTF-32。
 
     字串：`S`是預設 ASCII 字串，`Q`是 UTF-16，`U`是 UTF-32，`V`是 UTF-8。
 
@@ -93,7 +93,7 @@
 
     `UNITY`的`info`為：`[元件]:[命名空間]:[類別名稱]:[函式名稱]:[參數量]`。
 
-    `YUZU`／`PPSSPP`／`VITA3K`／`RPCS3`的`info`為被模擬位址。
+    `YUZU`、`PPSSPP`、`VITA3K`、`RPCS3`的`info`為被模擬位址。
 
 1. #### 內嵌
 

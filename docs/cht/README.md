@@ -52,7 +52,7 @@
 
 解決方法：關閉防毒軟體，若無法關閉（如 Windows Defender）則新增例外，然後重新下載。
 
-註：為了實現 HOOK 擷取遊戲文字，需要將 DLL 注入到遊戲，`shareddllproxy32.exe`／`LunaHost32.dll` 等幾個檔案中實現了這些內容，因此特別容易被認為是病毒。軟體目前由 [Github Actions](https://github.com/HIllya51/LunaTranslator/actions) 自動建構，除非 Github 伺服器中毒了，否則不可能包含病毒，因此可以放心的新增例外。
+註：為了實現 HOOK 擷取遊戲文字，需要將 DLL 注入到遊戲，`shareddllproxy32.exe`、`LunaHost32.dll`等幾個檔案中實現了這些內容，因此特別容易被認為是病毒。軟體目前由 [Github Actions](https://github.com/HIllya51/LunaTranslator/actions) 自動建構，除非 Github 伺服器中毒了，否則不可能包含病毒，因此可以放心的新增例外。
 
 ::: details 對於 Windows Defender，方法為：`病毒與威脅防護`->`病毒與威脅防護設定`的`管理設定`->`排除項目`的`新增或移除排除項目`->`新增排除範圍`->`資料夾`，把 Luna 的資料夾新增進去。
 ![img](https://image.lunatranslator.org/zh/cantstart/4.png)
