@@ -544,8 +544,8 @@ using namespace httpv1;
 
 int makehttpgetserverinternal()
 {
-    // 尝试1000次
-    for (int i = 0; i < 1000; i++)
+    // 尝试1024次
+    for (int i = 0; i < 1024; i++)
     {
         auto port = GetRandomAvailablePort();
         auto [succ, hReqQueue, session] = createservice(port);

@@ -29,10 +29,15 @@ function cppjsio(name, s_raw, lpsplit, embedable) {
     if (internal_http_port) {
         var xhr = new XMLHttpRequest();
         var url = 'http://127.0.0.1:' + internal_http_port + '/sakurakouji'
-        xhr.open('POST', url, false);
-        xhr.send(s);
-        if (xhr.status === 200) {
-            transwithfont = xhr.responseText;
+        try {
+            xhr.open('POST', url, false);
+            xhr.send(s);
+            if (xhr.status === 200) {
+                transwithfont = xhr.responseText;
+            }
+        }
+        catch (err) {
+            internal_http_port = false
         }
     }
     else if (is_useclipboard) {
