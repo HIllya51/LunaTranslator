@@ -6,7 +6,7 @@
 | - | - |
 | Windows 10 & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> |
 
-::: details 舊版操作系統相容版
+::: details 舊版作業系統相容版
 
 >[!WARNING]
 這些版本性能更差，運行更不穩定，而且缺少一些特性和功能，更容易被防毒軟體誤報。如果沒有特殊需求不建議使用。
@@ -23,7 +23,7 @@
 下載後解壓縮到任意目錄
 
 ::: warning
-但請不要把軟體放到「**C:\Program Files**」等特殊路徑下，否則即使使用管理員身分，也可能無法儲存配置和快取檔案，甚至無法執行。
+但請不要把軟體放到 **C:\Program Files** 等特殊路徑下，否則即使使用管理員身分，也可能無法儲存配置和快取檔案，甚至無法執行。
 :::
 
 **LunaTranslator.exe**：會以普通模式啟動。
