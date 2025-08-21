@@ -285,7 +285,8 @@ bool yuzu::attach_function1()
         return false;
     yuzu_load_functions(emfunctionhooks);
     JIT_Keeper<NSGameInfoC>::CreateStatic(NS_CheckEmAddrHOOKable);
-    Hook_Network_RoomMember_SendGameInfo();
+    if (!Hook_Network_RoomMember_SendGameInfo())
+        return false;
     HookParam hp;
     hp.address = DoJitPtr;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
