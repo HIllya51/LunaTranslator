@@ -1,13 +1,13 @@
-# 模擬器遊戲支持
+# 模擬器遊戲支援
 
-LunaTranslator 透過模擬器支援大量遊戲。對於未支持的遊戲，請向我發[issue](https://lunatranslator.org/Resource/game_support)。
+LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，請向我發 [Issue](https://lunatranslator.org/Resource/game_support)。
 
-| 平臺 | 支持的模擬器 |
+| 平台 | 支援的模擬器 |
 | - | - |
-| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
-| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
-| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
-| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
+| NS | Yuzu (&ge; 1616), [Sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
+| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge; v1.15.0 |
+| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge; v0.1.9.3339 |
+| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge; v1.7.4473 |
 <!-- | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |-->
 
 ::: tabs
