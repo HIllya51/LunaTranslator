@@ -2645,6 +2645,14 @@ namespace
         buffer->from(collect);
         f0100AAD0210B6000(buffer, hp);
     }
+    void F010065402030A000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "\n(\x81\x40)*");
+        s = re::sub(s, "^(\x81\x40)+"); // 其二
+        buffer->from(s);
+        F0100FC2019346000(buffer, hp);
+    }
 }
 struct emfuncinfoX
 {
@@ -2652,6 +2660,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 十鬼の絆
+    {0x8007AA98, {0, 1, 0, 0, F010065402030A000, 0x010065402030A000ull, "1.0.0"}}, // 其一
+    {0x80285258, {0, 1, 0, 0, F010065402030A000, 0x010065402030A000ull, "1.0.0"}}, // 其二
     // 岩倉アリア
     {0x80026EDC, {CODEC_UTF16, 0, 8, mages_readstring, 0, 0x010061701DB38000ull, "1.0.1"}},
     // 悠久のティアブレイド

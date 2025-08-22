@@ -4,10 +4,10 @@ LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，�
 
 | 平台 | 支援的模擬器 |
 | - | - |
-| NS | Yuzu (&ge; 1616), [Sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
-| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge; v1.15.0 |
-| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge; v0.1.9.3339 |
-| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge; v1.7.4473 |
+| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
+| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
+| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
+| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
 <!-- | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |-->
 
 ::: tabs
@@ -17,6 +17,7 @@ LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010065402030A000 | 十鬼の絆 |
 |  | 010061701DB38000 | 岩倉アリア |
 |  | 01006A60216CA000 | 悠久のティアブレイド |
 |  | 0100AAD0210B6000 | 勿ノ怪契リ |
