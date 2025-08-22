@@ -88,7 +88,7 @@
 1. #### <i class="fa fa-crop"></i> <i class="fa fa-icon fa-rotate-right"></i> 进行一次OCR {#anchor-ocr_once}
     该按钮和`读取剪贴板`类似，不管当前的默认文本输入源是什么，都会先进行OCR范围选择，然后进行一次OCR，然后进行翻译流程。
 
-    该按钮一般用于，在HOOK模式下，遇到选择支时，临时使用一次OCR进行翻译选择支。或者在OCR模式下，临时去识别一次其他偶尔出现的新的位置。
+    该按钮一般用于，在HOOK模式下，遇到选择肢时，临时使用一次OCR进行翻译选择肢。或者在OCR模式下，临时去识别一次其他偶尔出现的新的位置。
 
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> 再次进行OCR {#anchor-ocr_once_follow}
     当使用过一次`进行一次OCR`后，使用这个按钮，可以在原来的位置上再次进行一次OCR而无需重新选择识别区域。
