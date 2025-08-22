@@ -119,7 +119,7 @@
 
     左键点击时会把截图保存到文件，右键点击时截图会保存到剪贴板。
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 游戏静音 {#anchor-muteprocess}
-    当绑定游戏窗口后（不只是hook模式，ocr或剪贴板模式都可以，只要绑定了游戏窗口），可以一键对游戏进行静音，省去了在系统音量合成器进行游戏静音的麻烦。
+    当绑定游戏窗口后，可以一键对游戏进行静音，省去了在系统音量合成器进行游戏静音的麻烦。
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏原文 {#anchor-showraw}
     切换是否显示原文，会立即生效。
 
