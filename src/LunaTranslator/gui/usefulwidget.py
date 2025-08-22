@@ -556,7 +556,7 @@ class TableViewW(DelayLoadTableView):
 class saveposwindow_1(LMainWindow):
     screengeochanged = pyqtSignal()
 
-    def setWindowTitleWithVersion(self, t):
+    def __gettitlewithversion(self, t):
         version = NativeUtils.QueryVersion(getcurrexe())
         if version:
             vs = ".".join(str(_) for _ in version)
@@ -564,6 +564,15 @@ class saveposwindow_1(LMainWindow):
                 vs = vs[:-2]
             versionstring = ("v{}").format(vs)
             t += "{}[[{}]]".format("_", versionstring)
+        return t
+
+    def setWindowTitleWithVersion(self, t):
+        return super().setWindowTitle(self.__gettitlewithversion(t))
+
+    def setWindowTitleWithVersionWithUserconfig(self, t):
+        t = self.__gettitlewithversion(t)
+        if gobject.thisuserconfig != "userconfig":
+            t += "{}[[{}]]".format("_-_", gobject.thisuserconfig)
         return super().setWindowTitle(t)
 
     def __init__(self, parent, poslist=None, flags=None) -> None:
@@ -646,11 +655,13 @@ class saveposwindow_1(LMainWindow):
     def closeEvent(self, event: QCloseEvent):
         self.__checked_savepos()
 
+
 class saveposwindow(saveposwindow_1):
     def keyPressEvent(self, a0: QKeyEvent):
         if a0.key() == Qt.Key.Key_Escape:
             self.close()
         return super().keyPressEvent(a0)
+
 
 class closeashidewindow(saveposwindow):
     showsignal = pyqtSignal()
