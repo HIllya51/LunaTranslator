@@ -246,7 +246,7 @@ class TS(basetrans):
             completion_tokens = 0
             output_text = ""
             for o in output:
-                if o["choices"][0]["finish_reason"] == None:
+                if (not o["choices"]) or (not o["choices"][0]["finish_reason"]):
                     text_partial = o["choices"][0]["delta"].get("content")
                     if not text_partial:
                         continue
