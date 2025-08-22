@@ -1167,7 +1167,7 @@ class TranslatorWindow(resizableframeless):
         isfile = os.path.isfile(file)
         flow = os.path.basename(file).lower()
         if isfile and flow == "dicrc":
-            file = os.path.dirname(file) 
+            file = os.path.dirname(file)
         filer = mayberelpath(file)
         changed = filer not in globalconfig["cishu"]["mdict"]["args"]["paths"]
         if changed:
@@ -1177,7 +1177,7 @@ class TranslatorWindow(resizableframeless):
             gobject.base.startxiaoxueguan("mdict")
 
     def __parsedropsqlite(self, file):
-        filer=mayberelpath(file)
+        filer = mayberelpath(file)
         try:
             gameuid = gobject.base.gameuid
             savehook_new_data[gameuid]["gamesqlitefile"] = filer
@@ -1422,6 +1422,12 @@ class TranslatorWindow(resizableframeless):
 
     @property
     def mousetranscheckrect(self):
+        if (
+            globalconfig["locktoolsEx"]
+            and (not self.titlebar.isVisible())
+            and (not gobject.base.settin_ui.isVisible())
+        ):
+            return QRect()
         btn: QWidget = self.titlebar.buttons["mousetransbutton"]
         usegeo = btn.geometry()
         usegeo = QRect(
