@@ -4,7 +4,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 
 | 平台 | 支持的模拟器 |
 | - | - |
-| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://git.eden-emu.dev/eden-emu/eden) |
+| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://github.com/eden-emulator/Releases/releases) |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
 | PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
