@@ -17,7 +17,7 @@ else()
 		Xbangbang Anisetta Nijyuei Interheart LovaGame Giga Jisatu101 EntisGLS Ciel ACTGS TerraLunar
 		jukujojidai VanillawareGC cef V8 PONScripter Bishop sakanagl Lightvn KiriKiri SideB BGI
 		Bootup morning shyakunage Regista NNNConfig Eushully Majiro littlecheese Elf Silkys CMVS Wolf
-		Circus1 Circus2 Cotopha Artemis CatSystem Atelier Tenco QLIE Pal AIL NeXAS LunaSoft Unicorn
+		Circus Cotopha Artemis CatSystem Atelier Tenco QLIE Pal AIL NeXAS LunaSoft Unicorn
 		Rejet Interlude AdobeAir Retouch Malie Live Nexton Lucifen Waffle TinkerBell SystemAoi Yuris
 		Nitroplus2 Bruns EME RRE Candy Speed ApRicoT Triangle AB2Try MBLMED GameMaker DxLib CodeX
 		Minori Sprite RpgmXP Eagls Debonosu C4 WillPlus Tanuki GXP AOS Mink YukaSystem2 sakusesu Exp

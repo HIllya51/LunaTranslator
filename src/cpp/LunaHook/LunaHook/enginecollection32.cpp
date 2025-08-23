@@ -68,8 +68,7 @@
 #include "engine32/Interlude.h"
 #include "engine32/CMVS.h"
 #include "engine32/Wolf.h"
-#include "engine32/Circus1.h"
-#include "engine32/Circus2.h"
+#include "engine32/Circus.h"
 #include "engine32/Cotopha.h"
 #include "engine32/Xbangbang.h"
 #include "engine32/TeethingRing.h"
@@ -237,9 +236,7 @@ std::vector<ENGINE *> check_engines()
         new CMVS,
         new Wolf,
         new Arcturus,
-        new Circus1,
-        new Circus2,
-        new Circus_old,
+        new Circus,
         new Cotopha,
         new Artemis,
         new CatSystem,
