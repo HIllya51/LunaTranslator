@@ -1541,6 +1541,7 @@ namespace
     {
         auto s = buffer->strAW();
         s = re::sub(s, L"%[a-zA-Z0-9]+");
+        strReplace(s, L"⑳", L"　");
         buffer->fromWA(s);
     }
     void SLPM66146(TextBuffer *buffer, HookParam *hp)
@@ -1812,6 +1813,21 @@ namespace
                 last = c;
         }
     }
+    void SLPM65676(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (s == "\xff" || s == "\x03" || s == "\x01" || s == "&" || s == "@")
+            return buffer->clear();
+    }
+    void SLPS25294(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            return buffer->clear();
+        if (startWith(s, "["))
+            return buffer->clear();
+        NewLineCharFilterA(buffer, hp);
+    }
 }
 struct emfuncinfoX
 {
@@ -1819,10 +1835,20 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // てんたま2wins [限定版]
+    {0x4A3A60, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-65520"}},
+    // Remember11 ～the age of infinity～ [通常版]
+    {0xAFCF80, {DIRECT_READ, 0, 0, 0, 0, "SLPM-65550"}},
+    // 宇宙のステルヴィア
+    {0x4CDE54, {0, PCSX2_REG_OFFSET(s1), 0, 0, SLPS25294, "SLPS-25294"}},
+    // ステディ×スタディ [限定版]
+    {0x194EA40, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-65557"}},
+    // ロスト・アヤ・ソフィア
+    {0x1992960, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-65592"}},
+    // ふぁいなる・アプローチ [通常版]
+    {0x21298C, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65676, "SLPM-65676"}},
     // W ～ウィッシュ～ [初回限定版]
     {0x1107C0, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM65671, "SLPM-65671"}},
-    // SIMPLE2000シリーズ Vol.58 THE 外科医
-    {0x22BF40, {DIRECT_READ, 0, 0, SLPM66344<0x22BF40, 0x22BF6F, 0x22BF9E>, SLPM62509, "SLPM-62509"}},
     // D→A:WHITE [通常版]
     {0x1769bc, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPS-25438"}},
     // Princess Holiday～転がるりんご亭千夜一夜～
@@ -1859,8 +1885,16 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x122A60, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65641, "SLPM-65641"}},
     // CROSS+CHANNEL ～To all people～ [限定版]
     {0x198500, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55170, "SLPM-65546"}},
+    // THE 恋愛ホラーアドベンチャー～漂流少女～
+    {0x1A1640, {DIRECT_READ, 0, 0, 0, SLPM62343, "SLPM-62343"}},
+    // THE 外科医
+    {0x22BF40, {DIRECT_READ, 0, 0, SLPM66344<0x22BF40, 0x22BF6F, 0x22BF9E>, SLPM62509, "SLPM-62509"}},
     // THE 娘育成シミュレーション
     {0x132234, {0, 0, 0, SLPM62375, 0, "SLPM-62375"}},
+    // THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～
+    {0x16C798, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM62207, "SLPM-62207"}},
+    // THE 呪いのゲーム
+    {0x128D58, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, 0, "SLPS-25581"}}, //@mills
     // ドラゴンクエストⅤ 天空の花嫁
     {0x745A7C, {DIRECT_READ, 0, 0, 0, SLPM65555, "SLPM-65555"}},
     // プリンセスナイトメア
@@ -2123,6 +2157,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x17B6D4, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55159, "SLPM-55159"}},
     // トリガーハート エグゼリカ エンハンスド
     {0x324694, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM55052, "SLPM-55052"}},
+    // Memories Off ～それから～ [通常版]
+    {0xB9B400, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-65610"}},
     // Memories Off ～それから again～ [限定版]
     {0x1E03CF0, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66352"}},
     // Memories Off AfterRain vol.1 折鶴 [SPECIAL EDITION]
@@ -2202,12 +2238,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1FFACA0, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPM-66458"}},
     // 風雨来記2
     {0x2AC77C, {0, 0, 0, SLPM66163, 0, "SLPM-66163"}}, //@mills
-    // THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～
-    {0x16C798, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM62207, "SLPM-62207"}},
     // あかね色に染まる坂 ぱられる
     {0x126660, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55006, "SLPM-55006"}},
-    // SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム
-    {0x128D58, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, 0, "SLPS-25581"}}, //@mills
     // 赤川次郎ミステリー月の光　 ～沈める鐘の殺人～
     {0x118150, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPS-20196"}}, //@mills
     // 最終電車
@@ -2245,8 +2277,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x53FA10, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, FSLPM66332, "SLPM-66332"}},
     // 銀魂 銀さんと一緒！ボクのかぶき町日記
     {0x8DA13A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25809"}},
-    // THE 恋愛ホラーアドベンチャー～漂流少女～
-    {0x1A1640, {DIRECT_READ, 0, 0, 0, SLPM62343, "SLPM-62343"}},
     // 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02
     {0x268CE9, {DIRECT_READ, 0, 0, SLPS20394<0x268CE9, 0x268D2A, 0x268D6B, 0x268DAC>, 0, "SLPS-20352"}}, //[ディスク 1]
     {0x2690EA, {DIRECT_READ, 0, 0, SLPS20394<0x2690EA, 0x26912A, 0x26916B, 0x2691AC>, 0, "SLPS-20353"}}, //[ディスク 2]

@@ -897,8 +897,13 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65520 | てんたま2wins [限定版] |
+|  | SLPM-65550 | Remember11 ～the age of infinity～ [通常版] |
+|  | SLPS-25294 | 宇宙のステルヴィア |
+|  | SLPM-65557 | ステディ×スタディ [限定版] |
+|  | SLPM-65592 | ロスト・アヤ・ソフィア |
+|  | SLPM-65676 | ふぁいなる・アプローチ [通常版] |
 |  | SLPM-65671 | W ～ウィッシュ～ [初回限定版] |
-|  | SLPM-62509 | SIMPLE2000シリーズ Vol.58 THE 外科医 |
 |  | SLPS-25438 | D→A:WHITE [通常版] |
 |  | SLPM-65585 | Princess Holiday～転がるりんご亭千夜一夜～ |
 |  | SLPM-65535 | おしえて！ ぽぽたん |
@@ -917,7 +922,11 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 |  | SLPM-65717 | 月は東に日は西に -Operation Sanctuary- |
 |  | SLPM-65641 | うたう♪タンブリング・ダイス ～私たち3人、あ・げ・る～ |
 |  | SLPM-65546 | CROSS+CHANNEL ～To all people～ [限定版] |
+|  | SLPM-62343 | THE 恋愛ホラーアドベンチャー～漂流少女～ |
+|  | SLPM-62509 | THE 外科医 |
 |  | SLPM-62375 | THE 娘育成シミュレーション |
+|  | SLPM-62207 | THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～ |
+|  | SLPS-25581 | THE 呪いのゲーム |
 |  | SLPM-65555 | ドラゴンクエストⅤ 天空の花嫁 |
 |  | SLPM-66973 | プリンセスナイトメア |
 |  | SLPS-25727 | Routes PE |
@@ -1049,6 +1058,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 |  | SLPM-55136 | Clear ～新しい風の吹く丘で～ |
 |  | SLPM-55159 | ヒャッコ よろずや事件簿！ |
 |  | SLPM-55052 | トリガーハート エグゼリカ エンハンスド |
+|  | SLPM-65610 | Memories Off ～それから～ [通常版] |
 |  | SLPM-66352 | Memories Off ～それから again～ [限定版] |
 |  | SLPM-65857 | Memories Off AfterRain vol.1 折鶴 [SPECIAL EDITION] |
 |  | SLPM-65903 | Memories Off AfterRain Vol.2 想演 |
@@ -1088,9 +1098,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 |  | SLPS-25941 | SDガンダム - G GENERATION WARS |
 |  | SLPM-66458 | 風雨来記 |
 |  | SLPM-66163 | 風雨来記2 |
-|  | SLPM-62207 | THE 恋愛アドベンチャー ～BITTERSWEET FOOLS～ |
 |  | SLPM-55006 | あかね色に染まる坂 ぱられる |
-|  | SLPS-25581 | SIMPLE 2000シリーズ Vol.92 THE 呪いのゲーム |
 |  | SLPS-20196 | 赤川次郎ミステリー月の光　 ～沈める鐘の殺人～ |
 |  | SLPS-25081 | 最終電車 |
 |  | SLPS-25276 | 夏夢夜話 |
@@ -1109,7 +1117,6 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 |  | SLPM-66399 | SAMURAI 7 |
 |  | SLPM-66332 | 高円寺女子サッカー |
 |  | SLPS-25809 | 銀魂 銀さんと一緒！ボクのかぶき町日記 |
-|  | SLPM-62343 | THE 恋愛ホラーアドベンチャー～漂流少女～ |
 |  | SLPS-20352 | 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02 |
 |  | SLPS-20394 | 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03 |
 |  | SLPS-25871 | ドラスティックキラー |
