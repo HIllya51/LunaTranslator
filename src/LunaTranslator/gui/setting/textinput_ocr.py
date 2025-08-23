@@ -541,16 +541,6 @@ def internal(self):
         [
             "选取OCR范围后显示范围框",
             D_getsimpleswitch(globalconfig, "showrangeafterrangeselect"),
-            "",
-            "选取OCR范围时不透明度",
-            D_getspinbox(
-                0,
-                1,
-                globalconfig,
-                "ocrselectalpha",
-                double=True,
-                step=0.01,
-            ),
         ],
     ]
     allothers = [
