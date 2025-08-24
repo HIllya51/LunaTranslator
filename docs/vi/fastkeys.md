@@ -46,6 +46,9 @@
 1. #### Thoát {#anchor-_17}
     Không áp dụng.
 
+1. #### Trình nhấp chuột tự động {#anchor-44}
+    Không áp dụng.
+
 ## HOOK
 
 >[!WARNING]
@@ -107,6 +110,9 @@
 
 ## Game
 
+1. #### Quản lý trò chơi {#anchor-_10}
+    Không áp dụng.
+
 1. #### Cửa sổ bị ràng buộc (Click vào tự hủy) {#anchor-_15}
     Sau khi gắn cửa sổ trò chơi, các tính năng như `Tỷ Lệ Cửa Sổ`, `Chụp Màn Hình Cửa Sổ`, `Tắt Âm Trò Chơi`, `Theo Dõi Cửa Sổ Trò Chơi` -> `Hủy Luôn Trên Cùng Khi Trò Chơi Mất Tiêu Điểm` và `Di Chuyển Đồng Bộ Khi Cửa Sổ Trò Chơi Di Chuyển`, cũng như ghi lại thời gian chơi trò chơi, sẽ khả dụng.
     Phím tắt này khả dụng bất kể chế độ HOOK/OCR/clipboard.
@@ -120,7 +126,7 @@
 1. #### Im lặng trò chơi {#anchor-_22}
     Sau khi liên kết cửa sổ game, bạn có thể tắt tiếng game bằng một cú nhấp chuột, tiết kiệm thời gian so với việc tắt tiếng trong bộ trộn âm lượng hệ thống.
 
-1. #### Quản lý trò chơi {#anchor-_10}
+1. #### Tạm dừng trò chơi {#anchor-43}
     Sau khi liên kết cửa sổ game, bạn có thể tạm dừng hoặc tiếp tục quá trình game bằng một cú nhấp chuột.
 
 1. #### Magpie Phóng to {#anchor-41}

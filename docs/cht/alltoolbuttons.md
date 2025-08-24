@@ -178,7 +178,7 @@
 
     點擊左鍵時，開啟目前遊戲的備忘錄。點擊右鍵時，開啟全域的備忘錄。
 
-1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 綁定視窗（點擊自己取消） {#anchor-bindwindow}
+1. #### <i class="fab fa-windows"></i> <i class="btnstatus2 fab fa-windows"></i> 綁定視窗 （點擊自己取消） {#anchor-bindwindow}
     **該按鈕非常重要，許多功能都依賴於該按鈕先進行設定後才可用**
 
     在綁定了遊戲視窗後，`視窗縮放` `視窗截圖` `遊戲靜音`，`跟隨遊戲視窗`->`遊戲失去焦點時取消置頂`和`遊戲視窗移動時同步移動`，以及記錄遊戲時間等功能，才可用。

@@ -860,5 +860,7 @@
     "模拟器版本过旧，请使用新版模拟器": "Verze emulátoru je zastaralá, použijte prosím novou verzi emulátoru.",
     "检测到模拟器: %s": "Detekován emulátor: %s",
     "游戏暂停": "Hra pozastavena",
-    "跳过仅包含标点的句子": "Přeskočit věty obsahující pouze interpunkci."
+    "跳过仅包含标点的句子": "Přeskočit věty obsahující pouze interpunkci.",
+    "连点器": "Automatické klikání",
+    "点击间隔": "Interval mezi kliknutími"
 }

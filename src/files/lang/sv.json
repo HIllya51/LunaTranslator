@@ -860,5 +860,7 @@
     "模拟器版本过旧，请使用新版模拟器": "Simulatorversionen är för gammal, vänligen använd den nya versionen av simulatorn.",
     "检测到模拟器: %s": "Simulator upptäckt: %s",
     "游戏暂停": "Spelpaus",
-    "跳过仅包含标点的句子": "Hoppa över meningar som endast består av skiljetecken."
+    "跳过仅包含标点的句子": "Hoppa över meningar som endast består av skiljetecken.",
+    "连点器": "Klickautomat",
+    "点击间隔": "Klickintervall"
 }

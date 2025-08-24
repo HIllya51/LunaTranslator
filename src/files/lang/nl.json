@@ -860,5 +860,7 @@
     "模拟器版本过旧，请使用新版模拟器": "Simulatorversie is verouderd, gebruik alstublieft de nieuwe versie van de simulator.",
     "检测到模拟器: %s": "Simulator gedetecteerd: %s",
     "游戏暂停": "Spel gepauzeerd",
-    "跳过仅包含标点的句子": "Sla zinnen over die alleen leestekens bevatten."
+    "跳过仅包含标点的句子": "Sla zinnen over die alleen leestekens bevatten.",
+    "连点器": "Klikautomaat",
+    "点击间隔": "Klikinterval"
 }

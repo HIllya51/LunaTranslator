@@ -1,9 +1,10 @@
 from qtsymbols import *
-import functools
-import gobject, NativeUtils, uuid, windows, shutil
+import functools, gobject, NativeUtils, uuid, windows, shutil, time
 from myutils.config import globalconfig, _TR
 from myutils.hwnd import grabwindow
 from traceback import print_exc
+from myutils.wrapper import threader
+from myutils.keycode import vkcode_map
 from myutils.utils import (
     parsekeystringtomodvkcode,
     unsupportkey,
@@ -16,7 +17,9 @@ from gui.usefulwidget import (
     D_getdoclink,
     makescrollgrid,
     D_getIconButton,
+    SuperCombo,
     makesubtab_lazy,
+    getspinbox,
     request_delete_ok,
     makegrid,
     getboxlayout,
@@ -24,9 +27,10 @@ from gui.usefulwidget import (
     IconButton,
     makescroll,
     SClickableLabel,
+    getsimplecombobox,
 )
 from gui.inputdialog import autoinitdialog
-from gui.dynalang import LLabel, LAction
+from gui.dynalang import LLabel, LAction, LDialog, LFormLayout
 
 
 def delaycreatereferlabels(self, name):
@@ -72,6 +76,45 @@ def createreloadablewrapper(self, name):
         gobject.base.safeinvokefunction.emit(module.OnHotKeyClicked)
     except:
         print_exc()
+
+
+liandianqi_stoped = True
+
+
+def invoke_liandianqi_or_stop():
+    global liandianqi_stoped
+    key = globalconfig.get("liandianqi_vkey")
+    print(key)
+    if not key:
+        return
+    interval = globalconfig.get("liandianqi_interval", 1)
+    if liandianqi_stoped:
+        liandianqi_stoped = False
+
+        @threader
+        def __():
+            while not liandianqi_stoped:
+                if key in (1, 2, 4):
+                    flags = {
+                        1: (windows.MOUSEEVENTF_LEFTDOWN, windows.MOUSEEVENTF_LEFTUP),
+                        2: (windows.MOUSEEVENTF_RIGHTDOWN, windows.MOUSEEVENTF_RIGHTUP),
+                        4: (
+                            windows.MOUSEEVENTF_MIDDLEDOWN,
+                            windows.MOUSEEVENTF_MIDDLEUP,
+                        ),
+                    }
+                    windows.mouse_event(flags[key][0], 0, 0, 0)
+                    time.sleep(0.1)
+                    windows.mouse_event(flags[key][1], 0, 0, 0)
+                else:
+                    windows.keybd_event(key, 0, 0, 0)
+                    time.sleep(0.1)
+                    windows.keybd_event(key, 0, windows.KEYEVENTF_KEYUP, 0)
+                time.sleep(interval)
+
+        __()
+    else:
+        liandianqi_stoped = True
 
 
 def registrhotkeys(self):
@@ -125,6 +168,7 @@ def registrhotkeys(self):
         "43": lambda: NativeUtils.SuspendResumeProcess(
             windows.GetWindowThreadProcessId(gobject.base.hwnd)
         ),
+        "44": invoke_liandianqi_or_stop,
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -138,15 +182,40 @@ def registrhotkeys(self):
 hotkeys = [
     [
         "通用",
-        ["_1", "_2", "_3", "_5", "_51", "_6", "_8", "_9", "_10", "38", "_16", "_17"],
+        ["_1", "_2", "_3", "_5", "_51", "_6", "_8", "_9", "38", "_16", "_17", "44"],
     ],
     ["HOOK", ["_11", "_12"]],
     ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
-    ["游戏", ["_15", "_21", "_22", "43", "41", "42"]],
+    ["游戏", ["_10", "_15", "_21", "_22", "43", "41", "42"]],
     ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
 ]
+
+
+class liandianqi(LDialog):
+    def __init__(self, parent):
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle("设置")
+        formLayout = LFormLayout(self)
+        formLayout.addRow(
+            "点击间隔_(s)",
+            getspinbox(
+                0.1, 10000, globalconfig, "liandianqi_interval", True, 0.1, default=1
+            ),
+        )
+        combo = getsimplecombobox(
+            list(vkcode_map.keys()),
+            globalconfig,
+            "liandianqi_vkey",
+            default=0,
+            internal=list(vkcode_map.values()),
+        )
+        formLayout.addRow("按键", combo)
+        self.exec()
+
+
+hotkeysettings = {"44": liandianqi}
 
 
 def renameapi(qlabel: QLabel, name, self, form: VisLFormLayout, cnt, _=None):
@@ -305,24 +374,31 @@ def setTab_quick(self, l: QVBoxLayout):
 def setTab_quick_lazy(self, ls):
     grids = []
     for name in ls:
-
-        grids.append(
-            [
-                D_getdoclink("/fastkeys.html#anchor-" + name),
-                globalconfig["quick_setting"]["all"][name]["name"],
-                D_getsimpleswitch(
-                    globalconfig["quick_setting"]["all"][name],
-                    "use",
-                    callback=functools.partial(regist_or_not_key, self, name),
+        l = [
+            D_getdoclink("/fastkeys.html#anchor-" + name),
+            (globalconfig["quick_setting"]["all"][name]["name"], 2),
+            D_getsimpleswitch(
+                globalconfig["quick_setting"]["all"][name],
+                "use",
+                callback=functools.partial(regist_or_not_key, self, name),
+            ),
+            D_getsimplekeyseq(
+                globalconfig["quick_setting"]["all"][name],
+                "keystring",
+                functools.partial(regist_or_not_key, self, name),
+            ),
+            (functools.partial(delaycreatereferlabels, self, name), -1),
+        ]
+        if name in hotkeysettings:
+            l[1] = (l[1][0], 1)
+            l.insert(
+                2,
+                D_getIconButton(
+                    callback=functools.partial(hotkeysettings[name], self),
+                    tips="设置",
                 ),
-                D_getsimplekeyseq(
-                    globalconfig["quick_setting"]["all"][name],
-                    "keystring",
-                    functools.partial(regist_or_not_key, self, name),
-                ),
-                (functools.partial(delaycreatereferlabels, self, name), -1),
-            ]
-        )
+            )
+        grids.append(l)
     grids.append([("", 40)])
     return grids
 

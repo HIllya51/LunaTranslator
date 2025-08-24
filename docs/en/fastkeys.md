@@ -47,6 +47,9 @@
 1. #### Exit {#anchor-_17}
     N/A
 
+1. #### Auto Clicker {#anchor-44}
+    N/A
+
 ## HOOK
 
 >[!WARNING]
@@ -108,6 +111,9 @@
 
 ## Game
 
+1. #### Game Management {#anchor-_10}
+    N/A
+
 1. #### Bind to Window (Click to Cancel) {#anchor-_15}
     After binding the game window, `Window Scaling`, `Window Screenshot`, `Game Mute`, `Follow Game Window` -> `Cancel Topmost When Game Loses Focus` and `Move Synchronously When Game Window Moves`, as well as recording game time, become available.
     This shortcut key is available regardless of HOOK/OCR/clipboard mode.
@@ -121,7 +127,7 @@
 1. #### Mute Game {#anchor-_22}
     After binding the game window, you can mute the game with one click, eliminating the hassle of muting the game in the system volume mixer.
 
-1. #### Game Management {#anchor-_10}
+1. #### Game paused {#anchor-43}
     After binding the game window, you can pause or resume the game process with one click.
 
 1. #### Magpie Scale {#anchor-41}

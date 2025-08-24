@@ -860,5 +860,7 @@
     "模拟器版本过旧，请使用新版模拟器": "La versione dell'emulatore è troppo vecchia, utilizza la nuova versione dell'emulatore.",
     "检测到模拟器: %s": "Rilevato emulatore: %s",
     "游戏暂停": "Gioco in pausa",
-    "跳过仅包含标点的句子": "Salta le frasi che contengono solo punteggiatura."
+    "跳过仅包含标点的句子": "Salta le frasi che contengono solo punteggiatura.",
+    "连点器": "Cliccatore automatico",
+    "点击间隔": "Intervallo di clic"
 }

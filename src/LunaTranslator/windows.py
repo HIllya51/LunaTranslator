@@ -262,6 +262,8 @@ _SendMessage = _user32.SendMessageW
 _SendMessage.argtypes = HWND, UINT, c_void_p, c_void_p
 _keybd_event = _user32.keybd_event
 _keybd_event.argtypes = c_byte, c_byte, c_uint, c_void_p
+_mouse_event = _user32.mouse_event
+_mouse_event.argtypes = DWORD, DWORD, DWORD, DWORD, c_void_p
 RegisterWindowMessage = _user32.RegisterWindowMessageW
 RegisterWindowMessage.argtypes = (LPCWSTR,)
 RegisterWindowMessage.restype = UINT
@@ -574,6 +576,17 @@ def SendMessage(hwnd, message, wp=None, lp=None):
 def keybd_event(bVk, bScan, dwFlags, _):
     _keybd_event(bVk, bScan, dwFlags, _)
 
+
+def mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo=None):
+    _mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo)
+
+
+MOUSEEVENTF_LEFTDOWN = 2
+MOUSEEVENTF_LEFTUP = 4
+MOUSEEVENTF_MIDDLEDOWN = 0x20
+MOUSEEVENTF_MIDDLEUP = 0x40
+MOUSEEVENTF_RIGHTDOWN = 8
+MOUSEEVENTF_RIGHTUP = 0x10
 
 _WaitForSingleObject = _kernel32.WaitForSingleObject
 _WaitForSingleObject.argtypes = HANDLE, DWORD

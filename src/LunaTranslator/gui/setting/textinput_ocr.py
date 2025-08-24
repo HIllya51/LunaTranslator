@@ -101,11 +101,8 @@ class triggereditor(LDialog):
         for row, k in enumerate(self.list):  # 2
             self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem()])
             combo = SuperCombo()
-            combo.addItems(self.vkeys)
-            try:
-                combo.setCurrentIndex(self.vkeys.index(k["vkey"]))
-            except:
-                pass
+            combo.addItems(self.vkeys, internals=self.vkeys)
+            combo.setCurrentData(k.get("vkey"))
             self.hctable.setIndexWidget(self.hcmodel.index(row, 0), combo)
             combo = SuperCombo()
             combo.addItems(["按下", "松开"])

@@ -940,6 +940,11 @@
                 "name": "清除OCR范围",
                 "keystring": ""
             },
+            "44": {
+                "use": false,
+                "name": "连点器",
+                "keystring": ""
+            },
             "_15": {
                 "use": false,
                 "name": "绑定窗口_（点击自己取消）",
