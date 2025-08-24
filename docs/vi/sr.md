@@ -6,8 +6,8 @@ Trên Windows 10 và Windows 11, bạn có thể sử dụng tính năng Nhận 
 
 Chế độ này có thể gọi trực tiếp mô hình nhận dạng giọng nói của Windows, hiệu năng tốt hơn và có thể sử dụng trên Windows 10.
 
-::: warning
-Do Microsoft đã thay đổi phương pháp mã hóa đối với các gói ngôn ngữ phiên bản mới, các gói ngôn ngữ đã cài đặt trong hệ thống và các gói ngôn ngữ phiên bản mới tải về không thể sử dụng trực tiếp. Vui lòng tham khảo [bài viết này](https://www.patreon.com/posts/fixing-use-of-on-133196054) để biết cách sử dụng.
+::: danger
+**Do Microsoft đã thay đổi phương pháp mã hóa đối với các gói ngôn ngữ phiên bản mới, các gói ngôn ngữ đã cài đặt trong hệ thống và các gói ngôn ngữ phiên bản mới tải về không thể sử dụng trực tiếp. Vui lòng tham khảo [bài viết này](https://www.patreon.com/posts/fixing-use-of-on-133196054) để biết cách sử dụng.**
 :::
 
 Trên Windows 11, hệ thống có thể tự động phát hiện ngôn ngữ đã cài đặt và mô hình nhận dạng giọng nói tương ứng. Trong `Cài đặt cốt lõi` -> `Khác` -> `Nhận dạng giọng nói`, chọn ngôn ngữ bạn muốn nhận dạng và kích hoạt tính năng để bắt đầu sử dụng. Nếu ngôn ngữ bạn cần không xuất hiện trong tùy chọn, hãy cài đặt ngôn ngữ tương ứng trong hệ thống hoặc tìm mô hình nhận dạng cho ngôn ngữ đó và giải nén vào thư mục phần mềm.
