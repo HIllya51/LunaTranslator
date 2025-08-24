@@ -105,6 +105,7 @@ class AttachProcessDialog(saveposwindow):
         self.layout2.addWidget(LLabel(("标题")))
         self.layout2.addWidget(self.windowtext)
         self.processList = QListView()
+        self.processList.currentChanged = self.__change
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setStandardButtons(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -130,7 +131,6 @@ class AttachProcessDialog(saveposwindow):
 
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.close)
-        self.processList.clicked.connect(self.selectedfunc)
         self.processIdEdit.textEdited.connect(self.editpid)
         self.processIdEdit.setValidator(
             QRegularExpressionValidator(QRegularExpression("([0-9]+,)*"))
@@ -202,14 +202,21 @@ class AttachProcessDialog(saveposwindow):
             self.windowtext.clear()
             self.processEdit.clear()
             return
-        self.selectedp = (pids, windows.GetProcessFileName(pids[0]), self.guesshwnd(pids))
+        self.selectedp = (
+            pids,
+            windows.GetProcessFileName(pids[0]),
+            self.guesshwnd(pids),
+        )
         self.testifneedadmin()
         self.windowtext.setText(windows.GetWindowText(self.selectedp[-1]))
         self.processEdit.setText(self.selectedp[1])
         self.windowtext.setCursorPosition(0)
         self.processEdit.setCursorPosition(0)
 
-    def selectedfunc(self, index: QModelIndex):
+    def __change(self, index: QModelIndex, __):
+        if not (index and index.isValid()):
+            return
+        self.processList.scrollTo(index)
         pexe = self.model.itemFromIndex(index).text()
         pids = self.processlist.get(pexe, [])
         self.processEdit.setText(pexe)
