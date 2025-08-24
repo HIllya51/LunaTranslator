@@ -86,8 +86,6 @@ Hầu hết các phương pháp xử lý không có hiệu lực khi nhúng bả
 
 1. #### Lọc ngắt dòng {#anchor-_6EX}
 
-    Ban đầu được gọi là **Lọc Ký tự Xuống dòng Thích nghi Ngôn ngữ**, phiên bản cũ **Lọc Ký tự Xuống dòng** đã bị ngừng sử dụng.
-
     Nếu ngôn ngữ nguồn không phải là tiếng Nhật, khi lọc ký tự xuống dòng, chúng sẽ được thay thế bằng khoảng trắng thay vì bị lọc ra để tránh các từ bị nối liền nhau.
 
 1. #### Lọc số {#anchor-_91}

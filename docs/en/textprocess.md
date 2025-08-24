@@ -85,8 +85,6 @@ Most processing methods do not take effect when embedding translations to reduce
 
 1. #### Filter Line Breaks {#anchor-_6EX}
 
-    Originally named **Filter Newline Characters Language Adaptive**, the old **Filter Newline Characters** has been deprecated.
-
     If the source language is not Japanese, when filtering newline characters, they will be replaced with spaces instead of being filtered out to avoid multiple words being connected together.
 
 1. #### Filter Numbers {#anchor-_91}
