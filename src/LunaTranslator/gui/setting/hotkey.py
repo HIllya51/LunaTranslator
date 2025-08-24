@@ -17,7 +17,6 @@ from gui.usefulwidget import (
     D_getdoclink,
     makescrollgrid,
     D_getIconButton,
-    SuperCombo,
     makesubtab_lazy,
     getspinbox,
     request_delete_ok,
@@ -84,7 +83,6 @@ liandianqi_stoped = True
 def invoke_liandianqi_or_stop():
     global liandianqi_stoped
     key = globalconfig.get("liandianqi_vkey")
-    print(key)
     if not key:
         return
     interval = globalconfig.get("liandianqi_interval", 1)
@@ -208,7 +206,7 @@ class liandianqi(LDialog):
             list(vkcode_map.keys()),
             globalconfig,
             "liandianqi_vkey",
-            default=0,
+            default=1,
             internal=list(vkcode_map.values()),
         )
         formLayout.addRow("按键", combo)
