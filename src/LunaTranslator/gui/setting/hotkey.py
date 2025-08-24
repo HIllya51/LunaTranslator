@@ -91,7 +91,8 @@ def invoke_liandianqi_or_stop():
 
         @threader
         def __():
-            while not liandianqi_stoped:
+            d = globalconfig["quick_setting"]["all"]["44"]
+            while d["use"] and not liandianqi_stoped:
                 if key in (1, 2, 4):
                     flags = {
                         1: (windows.MOUSEEVENTF_LEFTDOWN, windows.MOUSEEVENTF_LEFTUP),
@@ -371,17 +372,19 @@ def setTab_quick(self, l: QVBoxLayout):
 
 def setTab_quick_lazy(self, ls):
     grids = []
+
     for name in ls:
+        d = globalconfig["quick_setting"]["all"][name]
         l = [
             D_getdoclink("/fastkeys.html#anchor-" + name),
-            (globalconfig["quick_setting"]["all"][name]["name"], 2),
+            (d["name"], 2),
             D_getsimpleswitch(
-                globalconfig["quick_setting"]["all"][name],
+                d,
                 "use",
                 callback=functools.partial(regist_or_not_key, self, name),
             ),
             D_getsimplekeyseq(
-                globalconfig["quick_setting"]["all"][name],
+                d,
                 "keystring",
                 functools.partial(regist_or_not_key, self, name),
             ),
