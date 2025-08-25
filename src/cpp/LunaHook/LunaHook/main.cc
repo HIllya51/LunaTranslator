@@ -414,12 +414,10 @@ bool NewHookRetry(HookParam hp, LPCSTR name)
 {
 	if (NewHook(hp, name))
 		return true;
-	if (!(hp.type & BREAK_POINT))
-	{
-		hp.type |= BREAK_POINT;
-		return NewHook(hp, name);
-	}
-	return true;
+	if (hp.type & BREAK_POINT)
+		return false;
+	hp.type |= BREAK_POINT;
+	return NewHook(hp, name);
 }
 void RemoveHook(uint64_t addr, int maxOffset)
 {
