@@ -1002,15 +1002,9 @@ namespace
     hp.split = hp.offset; // the same logic but diff value as KiriKiri1, use [ecx] as split
     hp.index = 0x14;      // the same as KiriKiri1
     hp.type = CODEC_UTF16 | DATA_INDIRECT | USING_SPLIT | SPLIT_INDIRECT;
-    auto __ = NewHook(hp, "KiriKiriZ");
-    if (!__)
-    {
-      // https://vndb.org/r67025
-      // drm保护导致inlinehook失效
-      hp.type |= BREAK_POINT;
-      __ |= NewHook(hp, "KiriKiriZ");
-    }
-    return __;
+    // https://vndb.org/r67025
+    // drm保护导致inlinehook失效
+    return NewHookRetry(hp, "KiriKiriZ");
   }
 
   bool InsertKiriKiriZHook1()

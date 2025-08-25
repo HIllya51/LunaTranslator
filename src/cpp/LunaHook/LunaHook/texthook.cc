@@ -252,7 +252,6 @@ void TextHook::Send(hook_context *context)
 	_InterlockedIncrement((long *)&useCount);
 	__try
 	{
-
 		if (auto current_trigger_fun = trigger_fun.exchange(nullptr))
 			if (!current_trigger_fun(location, context))
 				trigger_fun = current_trigger_fun;
@@ -280,7 +279,13 @@ void TextHook::Send(hook_context *context)
 				  lpRetn = context->retaddr,
 				  *plpdatain = (uintptr_t *)(context->base + hp.offset),
 				  lpDataIn = *plpdatain;
-
+#ifndef _WIN64
+		if ((hp.type & BREAK_POINT) && (hp.offset > 0))
+		{
+			plpdatain = (uintptr_t *)(context->esp + hp.offset);
+			lpDataIn = *plpdatain;
+		}
+#endif
 		if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
 		{
 			lpDataIn = jitgetaddr(context, &hp, true);

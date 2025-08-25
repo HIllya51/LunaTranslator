@@ -125,16 +125,12 @@ namespace monocommon
         }
         hp.jittype = JITTYPE::UNITY;
         strcpy(hp.function, hook.info().c_str());
-        auto succ = NewHook(hp, hook.hookname().c_str());
 #ifdef _WIN64
-        if (!succ)
-        {
-            hp.type |= BREAK_POINT;
-            succ |= NewHook(hp, hook.hookname().c_str());
-        }
+        return NewHookRetry(hp, hook.hookname().c_str());
+#else
+        return NewHook(hp, hook.hookname().c_str());
 #endif
-        return succ;
-    }
+        }
     std::vector<functioninfo> commonhooks{
         {"mscorlib", "System", "String", "ToCharArray", 0, 1},
         {"mscorlib", "System", "String", "Replace", 2, 1},

@@ -33,7 +33,6 @@ bool InsertNekopackHook()
   // GROWL(reladdr);
   if (!addr)
   {
-    ConsoleOutput("NekoPack: pattern not found");
     return false;
   }
   addr += addr_offset;
@@ -44,7 +43,6 @@ bool InsertNekopackHook()
   }; // beginning of the function
   if (*(BYTE *)addr != push_ebp)
   {
-    ConsoleOutput("NekoPack: beginning of the function not found");
     return false;
   }
 
@@ -53,7 +51,6 @@ bool InsertNekopackHook()
   hp.offset = stackoffset(2);
   hp.type = USING_STRING;
 
-  ConsoleOutput("INSERT NekoPack");
   return NewHook(hp, "NekoPack");
 
   // Disable GDIHook(um.. ?), which is cached and hence missing characters.

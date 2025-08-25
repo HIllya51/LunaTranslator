@@ -11,7 +11,7 @@ void HostInfo(HOSTINFO type, LPCWSTR text, ...);
 void NotifyHookFound(HookParam hp, wchar_t *text);
 void NotifyHookRemove(uint64_t addr, LPCSTR name);
 bool NewHook(HookParam hp, LPCSTR name);
-bool NewHookJit(HookParam hp, LPCSTR name);
+bool NewHookRetry(HookParam hp, LPCSTR name);
 
 void RemoveHook(uint64_t addr, int maxOffset = 9);
 std::string LoadResData(LPCWSTR pszResID, LPCWSTR _type);

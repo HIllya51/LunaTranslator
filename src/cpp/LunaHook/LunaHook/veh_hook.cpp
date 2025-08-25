@@ -27,7 +27,7 @@ static std::map<void *, veh_node> list;
 
 static veh_node *get_veh_node(void *origFunc)
 {
-    auto&& found=list.find(origFunc);
+    auto &&found = list.find(origFunc);
     if (found == list.end())
         return nullptr;
     return &found->second;
@@ -61,6 +61,8 @@ static bool __add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
 
 bool add_veh_hook(void *origFunc, newFuncType newFunc, DWORD hook_type)
 {
+    if (!origFunc)
+        return false;
     std::lock_guard _(vehlistlock);
     return __add_veh_hook(origFunc, newFunc, hook_type);
 }

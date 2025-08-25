@@ -109,10 +109,7 @@ bool InsertAdobeAirHook()
   // hp.type = USING_SPLIT|MODULE_OFFSET|CODEC_UTF16|DATA_INDIRECT; // 0x5a;
   hp.type = USING_SPLIT | CODEC_UTF16 | DATA_INDIRECT;
 
-  if (NewHook(hp, "Adobe AIR"))
-    return true;
-  hp.type |= BREAK_POINT;
-  return NewHook(hp, "Adobe AIR");
+  return NewHookRetry(hp, "Adobe AIR");
 }
 
 bool AdobeAIRhook2()

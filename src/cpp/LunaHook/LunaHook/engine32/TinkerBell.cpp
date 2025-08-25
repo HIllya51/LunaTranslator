@@ -29,12 +29,7 @@ bool InsertTinkerBellHook()
       }
       if (hp.address)
       {
-        auto succ = NewHook(hp, "TinkerBell");
-        if (!succ)
-        {
-          hp.type |= BREAK_POINT;
-          succ = NewHook(hp, "TinkerBell");
-        }
+        auto succ = NewHookRetry(hp, "TinkerBell");
         count += succ;
         hp.address = 0;
       }
@@ -242,12 +237,12 @@ namespace
       hp.address = addr;
       hp.offset = stackoffset(2);
       hp.type = CODEC_UTF16 | USING_CHAR | NO_CONTEXT;
-      struct savecontext
+      static struct
       {
         int cnt = 0;
         int cntx = 0;
-      };
-      hp.user_value = (uintptr_t)new savecontext;
+        int cnt_valid = 0;
+      } savecontext;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
         // ff ff 4 305f 305f 304b 304b 306a 306a 3057 3057 3 5c0f 5c0f 9ce5 9ce5 904a 904a
@@ -259,33 +254,45 @@ namespace
               case L'\xfe':
                 return false; // 换行
               case L'\xff':
-                ((savecontext *)hp->user_value)->cnt += 1;
+                savecontext.cnt += 1;
                 return false;
               default:
-                if (((savecontext *)hp->user_value)->cntx == 0 && ((savecontext *)hp->user_value)->cnt)
+                if (savecontext.cntx == 0 && savecontext.cnt)
                 {
-                  ((savecontext *)hp->user_value)->cntx = wc * 2;
-                  ((savecontext *)hp->user_value)->cnt -= 1;
+                  savecontext.cntx = wc * 2;
+                  savecontext.cnt -= 1;
                   return false;
                 }
-                if (((savecontext *)hp->user_value)->cntx && ((savecontext *)hp->user_value)->cnt == 1)
+                if (savecontext.cntx && savecontext.cnt == 1)
                 {
-                  ((savecontext *)hp->user_value)->cntx -= 1;
+                  savecontext.cntx -= 1;
                   return false;
                 }
-                if (((savecontext *)hp->user_value)->cntx && ((savecontext *)hp->user_value)->cnt == 0)
+                if (savecontext.cntx && savecontext.cnt == 0)
                 {
-                  ((savecontext *)hp->user_value)->cntx -= 1;
-                  if (((savecontext *)hp->user_value)->cntx % 2)
+                  savecontext.cntx -= 1;
+                  if (savecontext.cntx % 2)
                     return true;
                   return false;
                 }
                 return true;
               }
             }())
+        {
           buffer->clear();
+          savecontext.cnt_valid = 0;
+        }
+        else if (savecontext.cnt_valid + 1 == *(wchar_t *)buffer->buff)
+        {
+          buffer->clear();
+          savecontext.cnt_valid = 0;
+        }
+        else
+        {
+          savecontext.cnt_valid += 1;
+        }
       };
-      succ |= NewHook(hp, "TinkerBell2");
+      succ |= NewHookRetry(hp, "TinkerBell2");
     }
     if (succ)
     {
