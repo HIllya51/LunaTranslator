@@ -930,7 +930,7 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 |  | SLPM-65555 | ドラゴンクエストⅤ 天空の花嫁 |
 |  | SLPM-66973 | プリンセスナイトメア |
 |  | SLPS-25727 | Routes PE |
-|  | SLPS-25870 | Drastic Killer (Excellent Box) |
+|  | SLPS-25870 & SLPS-25871 | Drastic Killer (Excellent Box) |
 |  | SLPM-65589 | カラフルBOX ～to LOVE～ [通常版] |
 |  | SLPM-65611 | PIZZICATO POLKA ～縁鎖現夜～ |
 |  | SLPM-65785 | なついろ ～星屑のメモリー～ [初回限定版] |

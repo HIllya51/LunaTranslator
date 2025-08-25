@@ -471,7 +471,7 @@
     "settingfontbold": false,
     "buttoncolor": "#2e2eff",
     "buttoncolor_1": "#ff03f2",
-    "premtsimi2": 90,
+    "premtsimi2":75,
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
     "useproxy": true,

@@ -181,7 +181,11 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
     __delayloadfunction = Qt.ItemDataRole.UserRole + 100
     __switchwidget = __delayloadfunction + 1
     ValRole = __switchwidget + 1
+    keyPressed = pyqtSignal(QKeyEvent)
 
+    def keyPressEvent(self, e: QKeyEvent):
+        self.keyPressed.emit(e)
+        return super().keyPressEvent(e)
     def __switchcallback(self, item: QStandardItem, _):
         self.setIndexData(item.index(), _)
 

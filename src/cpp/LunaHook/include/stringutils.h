@@ -106,7 +106,7 @@ char32_t *u32strcpy(char32_t *s, const char32_t *r);
 template <class CharT>
 size_t strlenEx(const CharT *s)
 {
-  return std::basic_string_view<CharT>(s).size();
+  return std::char_traits<CharT>::length(s);
 }
 template <class CharT>
 size_t strnlenEx(const CharT *s, size_t sz)

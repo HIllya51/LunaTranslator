@@ -1902,7 +1902,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Routes PE
     {0x175D48, {USING_CHAR, PCSX2_REG_OFFSET(a1), 0, 0, 0, "SLPS-25727"}},
     // Drastic Killer (Excellent Box)
-    {0x1AC6040, {DIRECT_READ, 0, 0, 0, SLPS25870, "SLPS-25870"}},
+    {0x1AC6040, {DIRECT_READ, 0, 0, 0, SLPS25870, std::vector<const char *>{"SLPS-25870", "SLPS-25871"}}},
     // カラフルBOX ～to LOVE～ [通常版]
     {0xD1A970, {DIRECT_READ, 0, 0, 0, SLPM65589, "SLPM-65589"}},
     // PIZZICATO POLKA ～縁鎖現夜～

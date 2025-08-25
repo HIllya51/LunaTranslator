@@ -597,6 +597,14 @@ class hookselect(closeashidewindow):
             for _ in save:
                 savehook_new_data[gobject.base.gameuid]["embedablehook"].remove(_)
 
+    def keyPressEvent__(self, e: QKeyEvent):
+        if e.key() in (Qt.Key.Key_Down, Qt.Key.Key_Up):
+            curr = self.tttable.currentIndex()
+            self.tttable.setCurrentIndex(curr)
+            self.ViewThread(curr)
+        elif e.key() == Qt.Key.Key_Return:
+            self.table1doubleclicked(self.tttable.currentIndex())
+
     def setupUi(self):
         self.widget = QWidget()
 
@@ -621,6 +629,7 @@ class hookselect(closeashidewindow):
 
         self.tttable.doubleClicked.connect(self.table1doubleclicked)
         self.tttable.clicked.connect(self.ViewThread)
+        self.tttable.keyPressed.connect(self.keyPressEvent__)
         # self.tttable.setFont(font)
         self.vboxlayout.addWidget(self.tttable)
         # table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -657,9 +666,7 @@ class hookselect(closeashidewindow):
         userhookinsert.clicked.connect(self.inserthook)
         self.searchtextlayout.addWidget(userhookinsert)
 
-        self.searchtextlayout.addWidget(
-            D_getdoclink("hooksettings.html#特殊码格式")()
-        )
+        self.searchtextlayout.addWidget(D_getdoclink("hooksettings.html#特殊码格式")())
 
         self.userhookfind = LPushButton("搜索特殊码")
         self.userhookfind.clicked.connect(self.findhook)
@@ -965,9 +972,9 @@ class hookselect(closeashidewindow):
             self.textsource.selectinghook = _, _, tp = self.querykeyofrow(index)
             self.textOutput.setPlainText(self.textsource.QueryThreadHistory(tp))
             self.textOutput.moveCursor(QTextCursor.MoveOperation.End)
-
         except:
             print_exc()
 
     def table1doubleclicked(self, index: QModelIndex):
-        self.tttable.indexWidgetX(index.row(), 0).click()
+        if index.isValid():
+            self.tttable.indexWidgetX(index.row(), 0).click()
