@@ -897,6 +897,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25283 | INTERLUDE |
 |  | SLPM-65520 | てんたま2wins [限定版] |
 |  | SLPM-65550 | Remember11 ～the age of infinity～ [通常版] |
 |  | SLPS-25294 | 宇宙のステルヴィア |

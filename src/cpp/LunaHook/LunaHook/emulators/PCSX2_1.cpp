@@ -193,6 +193,10 @@ namespace
         CharFilter(buffer, L'\r');
         CharFilter(buffer, L'\n');
     }
+    void SLPS25283(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("\\n"));
+    }
     void SLPM66543(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("fc"));
@@ -1835,6 +1839,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // INTERLUDE
+    {0x572040, {DIRECT_READ, 0, 0, 0, SLPS25283, "SLPS-25283"}},
     // てんたま2wins [限定版]
     {0x4A3A60, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-65520"}},
     // Remember11 ～the age of infinity～ [通常版]
