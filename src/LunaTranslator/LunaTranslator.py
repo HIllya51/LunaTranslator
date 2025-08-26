@@ -520,6 +520,7 @@ class BASEOBJECT(QObject):
             contentraw = self.analyzecontent(text_solved, optimization_params)
             try:
                 res = self.translators["rengong"].translate(contentraw)
+                res = self.solveaftertrans(res, optimization_params)
             except:
                 print_exc()
                 res = None
@@ -540,6 +541,8 @@ class BASEOBJECT(QObject):
             contentraw = self.analyzecontent(text_solved, optimization_params)
             try:
                 maybehaspremt = self.translators["premt"].translate(contentraw)
+                for k in maybehaspremt:
+                    maybehaspremt[k] = self.solveaftertrans(maybehaspremt[k], optimization_params)
             except:
                 print_exc()
             other = list(set(maybehaspremt.keys()) - set(fix_rank))
