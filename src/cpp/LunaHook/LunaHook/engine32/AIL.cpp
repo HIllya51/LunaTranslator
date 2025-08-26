@@ -1,12 +1,6 @@
 ﻿#include "AIL.h"
 bool InsertAIL2Hook()
 {
-  auto findalign = [](uintptr_t addr1)
-  {
-    const BYTE pattern[] = {0x90, 0x90, 0x83, 0xec};
-    return reverseFindBytes(pattern, sizeof(pattern), processStartAddress, addr1) + 2;
-  };
-  bool succ = false;
   BYTE bytes1[] = {
       //				.text:0042E5DF 3C 66                         cmp     al, 66h; 'f'
       //.text:0042E5E1 74 57                         jz      short loc_42E63A
@@ -25,37 +19,46 @@ bool InsertAIL2Hook()
   auto addr1 = MemDbg::findBytes(bytes1, sizeof(bytes1), processStartAddress, processStopAddress);
   if (!addr1)
     return false;
-  addr1 = findalign(addr1);
+  const BYTE pattern[] = {0x90, 0x90, 0x83, 0xec};
+  addr1 = reverseFindBytes(pattern, sizeof(pattern), processStartAddress, addr1, 2);
   if (!addr1)
     return false;
-  ConsoleOutput("AIL1 %p", addr1);
+  HookParam hp;
+  hp.address = addr1;
+  hp.codepage = 932;
+  hp.offset = stackoffset(3);
+  hp.type = USING_STRING;
+  return NewHook(hp, "AIL1");
+}
+bool h2()
+{
+  BYTE bytes[] = {                                   // if ( v12 != 32 && v12 != 33088 )
+                  0x3d, 0x40, 0x81, 0x00, 0x00, XX}; // 00 or 0f
+  auto addr1 = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr1)
+    return false;
+  auto addr2 = MemDbg::findEnclosingAlignedFunction(addr1);
+  if (!addr2)
+    addr2 = findfuncstart(addr1, 0xA0);
+  if (addr2)
   {
     HookParam hp;
-    hp.address = addr1;
-    hp.codepage = 932;
-    hp.offset = stackoffset(3);
-    hp.type = USING_STRING;
-    succ |= NewHook(hp, "AIL1");
-  }
-  BYTE bytes[] = {// if ( v12 != 32 && v12 != 33088 )
-                  0x3d, 0x40, 0x81, 0x00, 0x00, 0x0f};
-
-  addr1 = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  if (!addr1)
-    return succ;
-  addr1 = MemDbg::findEnclosingAlignedFunction(addr1);
-  if (!addr1)
-    return succ;
-  {
-    HookParam hp;
-    hp.address = addr1;
+    hp.address = addr2;
     hp.codepage = 932;
     hp.offset = stackoffset(4);
-    hp.type = USING_STRING | USING_SPLIT;
+    hp.type = USING_STRING | USING_SPLIT; // 注音
     hp.split_index = 0;
-    succ |= NewHook(hp, "AIL2");
+    return NewHook(hp, "AIL2");
   }
-  return succ;
+  else
+  {
+    HookParam hp;
+    hp.address = addr1;
+    hp.codepage = 932;
+    hp.offset = regoffset(eax);
+    hp.type = USING_CHAR | CODEC_ANSI_BE;
+    return NewHook(hp, "AIL2");
+  }
 }
 bool AILold()
 {
@@ -101,6 +104,5 @@ bool AILold()
 
 bool AIL::attach_function()
 {
-
-  return InsertAIL2Hook() || AILold();
+  return InsertAIL2Hook() | h2() | AILold();
 }

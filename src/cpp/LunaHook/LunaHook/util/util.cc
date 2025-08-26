@@ -434,6 +434,8 @@ std::vector<DWORD> findrelativecall(const BYTE *pattern, int length, DWORD calla
 }
 uintptr_t findfuncstart(uintptr_t start, uintptr_t range, bool checkalign)
 {
+  if (!start)
+    return 0;
   const BYTE funcstart[] = {
       0x55, 0x8b, 0xec};
   if (checkalign)
