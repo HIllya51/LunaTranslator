@@ -550,11 +550,9 @@ void _SearchForHooks(SearchParam spUser)
 				{
 					auto off = *(DWORD *)(addr + 1);
 					auto funcaddr = addr + 5 + off;
-					if (sp.minAddress < funcaddr && sp.maxAddress > funcaddr)
-					{
-						auto it = std::find(addresses1.begin(), addresses1.end(), funcaddr);
+					auto it = std::find(addresses1.begin(), addresses1.end(), funcaddr);
+					if (it != addresses1.end())
 						addresses1.push_back(funcaddr);
-					}
 				}
 			}
 		}
@@ -602,8 +600,12 @@ void _SearchForHooks(SearchParam spUser)
 		mergevector(addresses, addresses1);
 
 		auto limits = Util::QueryModuleLimits(GetModuleHandleW(LUNA_HOOK_DLL));
-		addresses.erase(std::remove_if(addresses.begin(), addresses.end(), [&](auto addr)
-									   { return addr > limits.first && addr < limits.second; }),
+		addresses.erase(std::remove_if(addresses.begin(), addresses.end(),
+									   [&](auto addr)
+									   {
+										   return (addr > limits.first && addr < limits.second) ||
+												  (sp.minAddress > addr || sp.maxAddress < addr);
+									   }),
 						addresses.end());
 
 		inlinehookpipeline(addresses);

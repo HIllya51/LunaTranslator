@@ -105,6 +105,7 @@ class AttachProcessDialog(saveposwindow):
         self.layout2.addWidget(LLabel(("标题")))
         self.layout2.addWidget(self.windowtext)
         self.processList = QListView()
+        self.currentChanged_Ori = self.processList.currentChanged
         self.processList.currentChanged = self.__change
         self.buttonBox = QDialogButtonBox()
         self.buttonBox.setStandardButtons(
@@ -215,7 +216,7 @@ class AttachProcessDialog(saveposwindow):
 
     def __change(self, index: QModelIndex, __):
         if not (index and index.isValid()):
-            return
+            return self.currentChanged_Ori(index, __)
         self.processList.scrollTo(index)
         pexe = self.model.itemFromIndex(index).text()
         pids = self.processlist.get(pexe, [])
@@ -227,6 +228,7 @@ class AttachProcessDialog(saveposwindow):
         self.processEdit.setCursorPosition(0)
         self.processIdEdit.setCursorPosition(0)
         self.windowtext.setCursorPosition(0)
+        return self.currentChanged_Ori(index, __)
 
     def guesshwnd(self, pids):
         for pid in pids:

@@ -562,6 +562,7 @@ namespace
     hp.split = stackoffset(1); // name 80000000 各种所有text 0
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
+      StringReplacer(buffer, TEXTANDLEN("\xf0\x41\xf0\x43"), TEXTANDLEN("\x81\x5c\x81\x5c"));
       StringFilter(buffer, TEXTANDLEN("\xf0\x40"));
       CharFilter(buffer, '\n');
     };

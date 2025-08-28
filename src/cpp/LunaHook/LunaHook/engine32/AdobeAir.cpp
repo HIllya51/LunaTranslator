@@ -129,12 +129,10 @@ bool AdobeAIRhook2()
       0x77, XX,
       0x81, 0xC7, 0xE0, 0xFF, 0x00, 0x00};
   auto addr = MemDbg::findBytes(bs, sizeof(bs), minAddress, maxAddress);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   const BYTE start[] = {0xC2, 0x10, 0x00}; // retn    10h，+3
   addr = reverseFindBytes(start, 3, addr - 0x1000, addr);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   HookParam hp;
@@ -228,12 +226,69 @@ bool adobelair3()
   };
   return NewHook(hp, "AIRNovel");
 }
+namespace
+{
+  bool h4()
+  {
+    // プリンセスナイトメア
+    BYTE bytes1[] = {
+        0x8a, 0x01,
+        0x8a, 0xd0,
+        0x3a, 0x06,
+        0x75, XX,
+        0x84, 0xd2,
+        0x74, XX,
+        0x8a, 0x41, 0x01,
+        0x8a, 0xd0,
+        0x3a, 0x46, 0x01,
+        0x75, XX,
+        0x83, 0xc1, 0x02,
+        0x83, 0xc6, 0x02,
+        0x84, 0xd2,
+        0x75, XX};
+    auto addr1 = MemDbg::findBytes(bytes1, sizeof(bytes1), processStartAddress, processStopAddress);
+    if (!addr1)
+      return false;
+    addr1 = MemDbg::findEnclosingAlignedFunction(addr1, 0x80);
+    if (!addr1)
+      return false;
+    HookParam hp;
+    hp.address = addr1;
+    hp.type = CODEC_UTF8 | USING_STRING;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      if (context->stack[2] == 1)
+        buffer->from((char *)context->stack[1]);
+    };
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      auto s = buffer->strA();
+      if (startWith(s, "<") && endWith(s, ">"))
+        return buffer->clear();
+      static std::string last;
+      if (last == s)
+        return buffer->clear();
+      auto ws = buffer->strAW(CP_UTF8);
+      if (startWith(s, last))
+      {
+
+        buffer->from(s.substr(last.size()));
+      }
+      else if (ws.size() > 2)
+      {
+        buffer->from(u8"【" + s + u8"】");
+      }
+      last = s;
+    };
+    return NewHook(hp, "Adobe4");
+  }
+} // namespace name
+
 bool AdobeAir::attach_function()
 {
-
   bool b1 = InsertAdobeAirHook();
   b1 |= AdobeAIRhook2();
   b1 |= adobelair3();
   b1 = b1 || InsertAIRNovelHook(); // 乱码太多了这个
-  return b1;
+  return b1 || h4();
 }
