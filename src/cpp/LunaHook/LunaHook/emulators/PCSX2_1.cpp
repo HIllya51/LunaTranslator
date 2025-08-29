@@ -2231,7 +2231,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x112830, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-66452"}}, //@mills
     // 桃華月憚 ～光風の陵王～
     {0x29AB3C, {0, 0, 0, 0, 0, "SLPM-55200"}},
-    // 夏色の砂時計
+    // DOA2 HARD・CORE （夏色の砂時計）
     {0x205554, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(v1), 0, 0, 0, "SLPS-25026"}},
     // なついろ ～星屑のメモリー～
     {0x16D230, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s0), 0, 0, SLPM65786, "SLPM-65786"}},
