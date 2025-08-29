@@ -1732,6 +1732,8 @@ LABEL_45:
   bool h8()
   {
     // DYNAMIC CHORD feat.apple-polisher
+    // Blackish House ←sideZ
+    // Blackish House sideA→
     const BYTE bytes[] = {
         /*
         int __fastcall sub_4B7040(
