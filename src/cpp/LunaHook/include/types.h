@@ -297,6 +297,10 @@ struct I18NResponse
 // hook->host
 DECLARE_SIMPLE_CMD(HookRemovedNotif, uint64_t, address, HOST_NOTIFICATION_RMVHOOK)
 
+inline struct
+{
+	HostNotificationType command = HOST_NOTIFICATION_PREPARED_OK;
+} HostInfoPreparedOK;
 struct HostInfoI18NReq
 {
 	HostInfoI18NReq(LANG_STRINGS_HOOK enum__, const char *key_) : enum_(enum__) { strncpy_s(key, key_, MESSAGE_SIZE - 1); }

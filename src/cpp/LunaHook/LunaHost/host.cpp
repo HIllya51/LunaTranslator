@@ -8,7 +8,8 @@ namespace
 	public:
 		ProcessRecord(DWORD processId, HANDLE pipe) : pipe(pipe),
 													  mappedFile2(OpenFileMappingW(FILE_MAP_READ | FILE_MAP_WRITE, FALSE, (EMBED_SHARED_MEM + std::to_wstring(processId)).c_str())),
-													  viewMutex(ITH_HOOKMAN_MUTEX_ + std::to_wstring(processId))
+													  viewMutex(ITH_HOOKMAN_MUTEX_ + std::to_wstring(processId)),
+													  prepareWaiter(CreateEvent(NULL, TRUE, FALSE, NULL))
 
 		{
 			commonsharedmem = (CommonSharedMem *)MapViewOfFile(mappedFile2, FILE_MAP_READ | FILE_MAP_WRITE, 0, 0, sizeof(CommonSharedMem));
@@ -21,17 +22,29 @@ namespace
 		}
 
 		template <typename T>
-		void Send(T data)
+		void Send_no_wait(T data)
 		{
 			static_assert(sizeof(data) < PIPE_BUFFER_SIZE);
 			std::thread([=]
 						{ WriteFile(pipe, &data, sizeof(data), DUMMY, nullptr); })
 				.detach();
 		}
+		template <typename T>
+		void Send(T data)
+		{
+			std::thread(
+				[&, data]()
+				{
+					WaitForSingleObject(prepareWaiter, INFINITE);
+					Send_no_wait<T>(data);
+				})
+				.detach();
+		}
 
 		Host::HookEventHandler OnHookFound = [](auto, auto) {};
 
 		CommonSharedMem *commonsharedmem;
+		AutoHandle<> prepareWaiter;
 
 	private:
 		HANDLE pipe;
@@ -91,11 +104,16 @@ namespace
 		while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
 			switch (*(HostNotificationType *)buffer)
 			{
+			case HOST_NOTIFICATION_PREPARED_OK:
+			{
+				SetEvent(processRecordsByIds->at(processId).prepareWaiter);
+			}
+			break;
 			case HOST_NOTIFICATION_I18N_RESP:
 			{
 				auto info = (HostInfoI18NReq *)buffer;
 				auto ret = WideStringToString(i18nQueryCallback(StringToWideString(info->key)).value_or(L""));
-				processRecordsByIds->at(processId).Send(I18NResponse(info->enum_, ret));
+				processRecordsByIds->at(processId).Send_no_wait(I18NResponse(info->enum_, ret));
 			}
 			break;
 			case HOST_NOTIFICATION_FOUND_HOOK:
@@ -271,7 +289,8 @@ namespace Host
 		{ IF_HASVAL_DISPATCH(threadmutex, hookinsert); };
 		embedcallback = [=](auto &&...args)
 		{ IF_HASVAL_DISPATCH(outputmutex, embed); };
-		i18nQueryCallback = _i18nQueryCallback.value_or([](auto) { return std::nullopt; });
+		i18nQueryCallback = _i18nQueryCallback.value_or([](auto)
+														{ return std::nullopt; });
 	}
 	bool CheckIfNeedInject(DWORD processId)
 	{

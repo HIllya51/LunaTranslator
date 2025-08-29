@@ -31,6 +31,65 @@ void Send_I18N_Keys()
 		WriteFile(hookPipe, &resp, sizeof(resp), DUMMY, nullptr);
 	}
 }
+static bool running = true;
+static bool ParseCommand(HANDLE hostPipe)
+{
+	DWORD count = 0;
+	static BYTE buffer[PIPE_BUFFER_SIZE] = {};
+	if (!(running && ReadFile(hostPipe, buffer, PIPE_BUFFER_SIZE, &count, nullptr)))
+		return false;
+	switch (*(HostCommandType *)buffer)
+	{
+	case HOST_COMMAND_I18N_RESPONSE:
+	{
+		auto info = (I18NResponse *)buffer;
+		TR.get_hook()[info->enum_].set(info->result);
+	}
+	break;
+	case HOST_COMMAND_NEW_HOOK:
+	{
+		auto info = (InsertHookCmd *)buffer;
+		static int userHooks = 0;
+		NewHook(info->hp, ("UserHook" + std::to_string(userHooks += 1)).c_str());
+	}
+	break;
+	case HOST_COMMAND_INSERT_PC_HOOKS:
+	{
+		auto info = (InsertPCHooksCmd *)buffer;
+		if (info->which == 0)
+			PcHooks::hookGdiGdiplusD3dxFunctions();
+		else if (info->which == 1)
+			PcHooks::hookOtherPcFunctions();
+	}
+	break;
+	case HOST_COMMAND_I18N_QUERY:
+	{
+		Send_I18N_Keys();
+	}
+	break;
+	case HOST_COMMAND_REMOVE_HOOK:
+	{
+		auto info = (RemoveHookCmd *)buffer;
+		RemoveHook(info->address, 0);
+	}
+	break;
+	case HOST_COMMAND_FIND_HOOK:
+	{
+		auto info = (FindHookCmd *)buffer;
+		if (*info->sp.text)
+			SearchForText(info->sp.text, info->sp.codepage);
+		else
+			SearchForHooks(info->sp);
+	}
+	break;
+	case HOST_COMMAND_DETACH:
+	{
+		running = false;
+	}
+	break;
+	}
+	return true;
+}
 void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe)
 {
 	// 1. hook->host
@@ -43,17 +102,15 @@ void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe)
 	{
 		HostInfoI18NReq req(_en, data.raw());
 		WriteFile(hookPipe, &req, sizeof(req), DUMMY, nullptr);
-		I18NResponse resp;
-		ReadFile(hostPipe, &resp, sizeof(resp), &count, nullptr);
-		data.set(resp.result);
+		if (!ParseCommand(hostPipe))
+			return;
 	}
+	WriteFile(hookPipe, &HostInfoPreparedOK, sizeof(HostInfoPreparedOK), DUMMY, nullptr);
 }
 DWORD WINAPI Pipe(LPVOID)
 {
-	for (bool running = true; running; hookPipe = INVALID_HANDLE_VALUE)
+	for (; running; hookPipe = INVALID_HANDLE_VALUE)
 	{
-		DWORD count = 0;
-		BYTE buffer[PIPE_BUFFER_SIZE] = {};
 		AutoHandle<> hostPipe = INVALID_HANDLE_VALUE;
 
 		while (!hostPipe || !hookPipe)
@@ -70,57 +127,8 @@ DWORD WINAPI Pipe(LPVOID)
 		CommunicationInitialize(hostPipe, hookPipe);
 		HIJACK();
 		host_connected = true;
-		while (running && ReadFile(hostPipe, buffer, PIPE_BUFFER_SIZE, &count, nullptr))
-			switch (*(HostCommandType *)buffer)
-			{
-			case HOST_COMMAND_I18N_RESPONSE:
-			{
-				auto info = (I18NResponse *)buffer;
-				TR.get_hook()[info->enum_].set(info->result);
-			}
-			break;
-			case HOST_COMMAND_NEW_HOOK:
-			{
-				auto info = (InsertHookCmd *)buffer;
-				static int userHooks = 0;
-				NewHook(info->hp, ("UserHook" + std::to_string(userHooks += 1)).c_str());
-			}
-			break;
-			case HOST_COMMAND_INSERT_PC_HOOKS:
-			{
-				auto info = (InsertPCHooksCmd *)buffer;
-				if (info->which == 0)
-					PcHooks::hookGdiGdiplusD3dxFunctions();
-				else if (info->which == 1)
-					PcHooks::hookOtherPcFunctions();
-			}
-			break;
-			case HOST_COMMAND_I18N_QUERY:
-			{
-				Send_I18N_Keys();
-			}
-			break;
-			case HOST_COMMAND_REMOVE_HOOK:
-			{
-				auto info = (RemoveHookCmd *)buffer;
-				RemoveHook(info->address, 0);
-			}
-			break;
-			case HOST_COMMAND_FIND_HOOK:
-			{
-				auto info = (FindHookCmd *)buffer;
-				if (*info->sp.text)
-					SearchForText(info->sp.text, info->sp.codepage);
-				else
-					SearchForHooks(info->sp);
-			}
-			break;
-			case HOST_COMMAND_DETACH:
-			{
-				running = false;
-			}
-			break;
-			}
+		while (ParseCommand(hostPipe))
+			;
 	}
 
 	if (dont_detach)
