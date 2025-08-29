@@ -265,7 +265,7 @@ namespace
   {
     StringFilter(buffer, L"%XS", 5); // remove %XS followed by 2 chars
     std::wstring str = buffer->strW();
-    strReplace(str, L"\\n", L"\n");
+    str = re::sub(str, LR"(\\n　*)");
     std::wstring result1 = re::sub(str, L"\\{(.*?):(.*?)\\}", L"$1");
     result1 = re::sub(result1, L"\\{(.*?);(.*?)\\}", L"$1");
     result1 = re::sub(result1, L"%[A-Z]+", L"");
@@ -434,12 +434,17 @@ bool InsertWillPlusHook()
   ok = InsertWillPlusWHook() || InsertNewWillPlusHook() || InsertWillPlusAHook() || ok;
   return ok;
 }
+namespace
+{
+  std::wstring prefixappendfix(const std::wstring &origin, const std::wstring &newstr)
+  {
+    std::wstring pre = re::match(origin, LR"(((%[A-Z]{1,2})*)(.*?))").value()[1];
+    std::wstring app = re::match(origin, LR"((.*?)((%[A-Z]{1,2})*))").value()[2];
+    return pre + newstr + app;
+  }
+}
 namespace will3
 {
-
-  int kp = 0;
-  int lf = 0;
-  int lc = 0;
   int offset = 0;
   void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
@@ -451,47 +456,13 @@ namespace will3
     {
       *split = s->stack[1];
     }
-    std::wstring str = text;
-    kp = 0;
-    lf = 0;
-    lc = 0;
-    if (endWith(str, L"%K%P"))
-    {
-      kp = 1;
-
-      str = str.substr(0, str.size() - 4);
-    }
-    if (startWith(str, L"%LF"))
-    {
-      lf = 1;
-      str = str.substr(3);
-    }
-    if (startWith(str, L"%LC"))
-    {
-      lc = 1;
-      str = str.substr(3);
-    }
-    str = re::sub(str, L"\\{(.*?):(.*?)\\}", L"$1");
-    str = re::sub(str, L"\\{(.*?);(.*?)\\}", L"$1");
-
-    buffer->from(str);
+    buffer->from(text);
   }
   void hookafter(hook_context *s, TextBuffer buffer)
   {
     auto data_ = buffer.strW(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
-    if (kp)
-    {
-      data_.append(L"%K%P");
-    }
-    if (lf)
-    {
-      data_ = L"%LF" + data_;
-    }
-    if (lc)
-    {
-      data_ = L"%LC" + data_;
-    }
-    s->stack[offset] = (DWORD)allocateString(data_);
+    std::wstring origin = (wchar_t *)s->stack[offset];
+    s->stack[offset] = (DWORD)allocateString(prefixappendfix(origin, data_));
   }
 }
 bool InsertWillPlus4Hook()
@@ -523,7 +494,6 @@ bool InsertWillPlus4Hook()
   // hp.filter_fun = WillPlus_extra_filter;
   hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE;
   hp.text_fun = will3::hookBefore;
-  hp.lineSeparator = L"\\n";
   hp.embed_fun = will3::hookafter;
   hp.embed_hook_font = F_GetGlyphOutlineW;
   return NewHook(hp, "EmbedWillplus3");
@@ -1752,12 +1722,63 @@ LABEL_45:
       return false;
     HookParam hp;
     hp.address = addr; // 0x4A1C50;
-    hp.offset = 3;
     hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE;
+    hp.filter_fun = WillPlus_extra_filter;
     hp.text_fun = will3::hookBefore;
     hp.embed_fun = will3::hookafter;
     hp.embed_hook_font = F_GetGlyphOutlineW;
     return NewHook(hp, "WillPlus_1.9.9.15");
+  }
+  bool h8()
+  {
+    // DYNAMIC CHORD feat.apple-polisher
+    const BYTE bytes[] = {
+        /*
+        int __fastcall sub_4B7040(
+            void *Source,<--ecx
+            int a2,
+            int a3,
+            const CHAR *a4,
+            int a5,
+            _DWORD *a6,
+            int a7,
+            int a8,
+            _DWORD *a9,
+            int a10,
+            int a11,
+            int a12)*/
+        0x8d, 0x78, 0x01,
+        0x8d, 0xa4, 0x24, 0x00, 0x00, 0x00, 0x00,
+        0x8a, 0x10,
+        0x40,
+        0x84, 0xd2,
+        0x75, 0xf9,
+        0x2b, 0xc7,
+        0x50,
+        0x51,
+        0x8d, 0x4c, 0x24, XX,
+        0xe8, XX4
+
+    };
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = regoffset(edx);
+    hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | NO_CONTEXT;
+    hp.embed_hook_font = F_GetGlyphOutlineW;
+    hp.filter_fun = WillPlus_extra_filter;
+    hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+    {
+      auto data_ = buffer.strW();
+      std::wstring origin = (wchar_t *)s->edx;
+      s->edx = (DWORD)allocateString(prefixappendfix(origin, data_));
+    };
+    return NewHook(hp, "WillPlus.1.6.1.0");
   }
 }
 bool WillPlus::attach_function()
@@ -1769,7 +1790,7 @@ bool WillPlus::attach_function()
   succ |= insertwillplus6();
   succ |= willX();
   succ |= InsertWillPlus5();
-  return succ || h7();
+  return succ || h8() || h7();
 }
 
 bool Willold::attach_function()

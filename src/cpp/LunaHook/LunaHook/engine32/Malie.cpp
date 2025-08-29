@@ -19,7 +19,6 @@ namespace
     DWORD i = SearchPattern(processStartAddress, processStopAddress - processStartAddress, &sig1, sig1_size);
     if (!i)
     {
-      ConsoleOutput("MalieHook1: pattern i not exist");
       return false;
     }
 
@@ -33,7 +32,6 @@ namespace
     // if (!j)
     if (!i)
     { // jichi 8/19/2013: Change the condition fro J to I
-      ConsoleOutput("MalieHook1: pattern j not exist");
       return false;
     }
     HookParam hp;
@@ -43,7 +41,6 @@ namespace
     hp.split = regoffset(ebx);
     hp.split_index = 0x10;
     hp.type = CODEC_UTF16 | USING_SPLIT | DATA_INDIRECT | SPLIT_INDIRECT;
-    ConsoleOutput("INSERT MalieHook1");
     return NewHook(hp, "Malie");
     // RegisterEngineType(ENGINE_MALIE);
   }
@@ -75,7 +72,6 @@ namespace
     DWORD start = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!start)
     {
-      ConsoleOutput("MalieHook2: pattern not exist");
       return false;
     }
     BYTE *ptr = (BYTE *)start;
@@ -103,7 +99,6 @@ namespace
     hp.offset = regoffset(eax);
     hp.text_fun = SpecialHookMalie;
     hp.type = USING_SPLIT | CODEC_UTF16 | NO_CONTEXT | USING_CHAR;
-    ConsoleOutput("INSERT MalieHook2");
     return NewHook(hp, "Malie");
     // RegisterEngineType(ENGINE_MALIE);
   }
@@ -176,7 +171,6 @@ namespace
     {
       // ITH_MSG(0, "Wrong1", "t", 0);
       // ConsoleOutput("Not malie2 engine");
-      ConsoleOutput("Malie2Hook: pattern p not exist");
       return false;
     }
 
@@ -191,7 +185,6 @@ namespace
     if (!addr)
     {
       // ConsoleOutput("Not malie2 engine");
-      ConsoleOutput("Malie2Hook: pattern q not exist");
       return false;
     }
 
@@ -205,7 +198,6 @@ namespace
     //  Though the hook parameter is quit similar to Malie, the original extern function does not work
     hp.type = USING_SPLIT | NO_CONTEXT | CODEC_UTF16 | USING_CHAR;
     hp.text_fun = SpecialHookMalie2;
-    ConsoleOutput("INSERT Malie2");
     return NewHook(hp, "Malie2");
 
     // GROWL_DWORD2(hp.address, reladdr);
@@ -436,7 +428,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("Malie3: pattern not found");
       return false;
     }
     HookParam hp;
@@ -450,7 +441,6 @@ namespace
     hp.text_fun = SpecialHookMalie3;
     hp.type = USING_SPLIT | NO_CONTEXT | CODEC_UTF16;
     // hp.filter_fun = Malie3Filter;
-    ConsoleOutput("INSERT Malie3");
     return NewHook(hp, "Malie3");
   }
 
@@ -475,7 +465,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("Malie4: pattern not found");
       return false;
     }
 
@@ -488,7 +477,6 @@ namespace
     //  Though the hook parameter is quit similar to Malie, the original extern function does not work
     hp.split = regoffset(edx); // jichi 12/17/2013: This could split the furigana, but will mess up the text
     hp.type = USING_SPLIT | NO_CONTEXT | CODEC_UTF16;
-    ConsoleOutput("INSERT Malie4");
     return NewHook(hp, "Malie4");
 
     // GROWL_DWORD2(hp.address, reladdr);
@@ -506,7 +494,6 @@ namespace
 
     if (DWORD addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress))
     {
-      ConsoleOutput("INSERT Malie5");
       HookParam hp;
       hp.address = addr + 5;
       hp.offset = regoffset(ecx);
@@ -514,7 +501,6 @@ namespace
       return NewHook(hp, "Malie5");
     }
 
-    ConsoleOutput("Malie5 pattern not found");
     return false;
   }
 
