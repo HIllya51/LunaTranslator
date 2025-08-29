@@ -226,6 +226,7 @@ namespace
 					  { return tp.processId == processId; });
 		OnDisconnect(processId);
 		Host::AddConsoleOutput(FormatString(TR[PROC_DISCONN], processId));
+		SetEvent(processRecordsByIds->at(processId).prepareWaiter);
 		processRecordsByIds->erase(processId);
 	}
 }
