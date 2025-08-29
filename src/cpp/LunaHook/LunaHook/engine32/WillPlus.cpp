@@ -268,7 +268,7 @@ namespace
     str = re::sub(str, LR"(\\n　*)");
     std::wstring result1 = re::sub(str, L"\\{(.*?):(.*?)\\}", L"$1");
     result1 = re::sub(result1, L"\\{(.*?);(.*?)\\}", L"$1");
-    result1 = re::sub(result1, L"%[A-Z]+", L"");
+    result1 = re::sub(result1, L"%[A-Z]+");
     buffer->from(result1);
   };
   bool InsertWillPlusAHook()
@@ -438,8 +438,8 @@ namespace
 {
   std::wstring prefixappendfix(const std::wstring &origin, const std::wstring &newstr)
   {
-    std::wstring pre = re::match(origin, LR"(((%[A-Z]{1,2})*)(.*?))").value()[1];
-    std::wstring app = re::match(origin, LR"((.*?)((%[A-Z]{1,2})*))").value()[2];
+    std::wstring pre = re::match(origin, LR"(((%[A-Z]+)*)(.*?))").value()[1];
+    std::wstring app = re::match(origin, LR"((.*?)((%[A-Z]+)*))").value()[2];
     return pre + newstr + app;
   }
 }
