@@ -195,7 +195,7 @@ namespace
 
     HookParam hp;
     hp.address = addr;
-    hp.type = USING_STRING;
+    hp.type = USING_STRING | NO_CONTEXT;
     hp.text_fun = SpecialHook5pb2;
     return NewHook(hp, "5pb2");
   }
