@@ -41,14 +41,14 @@ if sys.argv[1] == "plugin":
             ff.write(
                 rf"""
 cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ./CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ./build/plugin32
-cmake --build ./build/plugin32 --config Release --target ALL_BUILD -j 14
+cmake --build ./build/plugin32 --config Release --target ALL_BUILD -j {os.cpu_count()}
 """
             )
         else:
             ff.write(
                 rf"""
 cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ./CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ./build/plugin64
-cmake --build ./build/plugin64 --config Release --target ALL_BUILD -j 14
+cmake --build ./build/plugin64 --config Release --target ALL_BUILD -j {os.cpu_count()}
 """
             )
     os.system(f"cmd /c buildplugin.bat")
@@ -73,5 +73,5 @@ elif sys.argv[1] == "build":
         f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}'
     )
     subprocess.run(
-        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
+        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )

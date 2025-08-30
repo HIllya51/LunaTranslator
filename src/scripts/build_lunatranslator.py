@@ -197,7 +197,7 @@ def buildhook(arch, target):
         f'cmake {config} -DBUILD_HOST=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_2'
     )
     subprocess.run(
-        f"cmake --build ./build/{arch}_{target}_2 --config Release --target ALL_BUILD -j 14"
+        f"cmake --build ./build/{arch}_{target}_2 --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
     if target != "win10":
         config += " -DUSE_VC_LTL=ON "
@@ -205,7 +205,7 @@ def buildhook(arch, target):
         f'cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_1'
     )
     subprocess.run(
-        f"cmake --build ./build/{arch}_{target}_1 --config Release --target ALL_BUILD -j 14"
+        f"cmake --build ./build/{arch}_{target}_1 --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
     release = os.path.join("builds", os.listdir("builds")[0])
     os.makedirs("builds/Release", exist_ok=True)
@@ -230,7 +230,7 @@ def buildPlugins(arch, target):
         f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
     )
     subprocess.run(
-        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j 14"
+        f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
     for _dir, _, _fs in os.walk("builds"):
         print(_dir, _fs)
