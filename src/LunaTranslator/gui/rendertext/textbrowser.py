@@ -770,7 +770,7 @@ class TextBrowser(QWidget, dataget):
 
     def _setlineheight_x(self, b1, b2, linetags: "list[list[WordSegResultX]]"):
         fha, _ = self._getfh(True)
-
+        self.movesycn(globalconfig["lineheights"]["marginTop"])
         for i in range(b1, b2):
             _fha = 0
             for word in linetags[i - b1]:
@@ -780,16 +780,16 @@ class TextBrowser(QWidget, dataget):
                 _fha = fha
                 break
             if i == 0 and _fha:
-                self.textbrowser.move(0, int(fha))
-                self.atback_color.move(0, int(fha))
+                self.movesycn(int(fha) + globalconfig["lineheights"]["marginTop"])
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
-            tf.setTopMargin(_fha + globalconfig["lineheights"]["marginTop"])
+            tf.setTopMargin(_fha)
             tf.setLineHeight(
                 self.getlhfordict(globalconfig["lineheights"]),
                 self.ProportionalHeight,
             )
-            tf.setBottomMargin(globalconfig["lineheights"]["marginBottom"])
+            if i == b2 - 1:
+                tf.setBottomMargin(globalconfig["lineheights"]["marginBottom"])
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
@@ -813,9 +813,11 @@ class TextBrowser(QWidget, dataget):
         for i in range(b1, b2):
             b = self.textbrowser.document().findBlockByNumber(i)
             tf = b.blockFormat()
-            tf.setTopMargin(fh.get("marginTop", 0))
+            if i == b1:
+                tf.setTopMargin(fh.get("marginTop", 0))
             tf.setLineHeight(self.getlhfordict(fh), self.ProportionalHeight)
-            tf.setBottomMargin(fh.get("marginBottom", 0))
+            if i == b2 - 1:
+                tf.setBottomMargin(fh.get("marginBottom", 0))
             self.textcursor.setPosition(b.position())
             self.textcursor.setBlockFormat(tf)
             self.textbrowser.setTextCursor(self.textcursor)
@@ -1154,14 +1156,17 @@ class TextBrowser(QWidget, dataget):
         _.show()
         return _
 
+    def movesycn(self, y):
+        self.textbrowser.move(0, y)
+        self.atback_color.move(0, y)
+
     def clear(self):
         self.resets()
         self.yinyingposline = 0
         self.textbrowser.clear()
         self.cleared = True
         self.saveiterclasspointer.clear()
-        self.textbrowser.move(0, 0)
-        self.atback_color.move(0, 0)
+        self.movesycn(0)
 
     def sethovercolor(self, color):
         for _ in reference:
