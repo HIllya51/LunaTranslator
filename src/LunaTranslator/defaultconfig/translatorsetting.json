@@ -413,7 +413,7 @@
 				"name": "自定义_user message",
 				"refswitch": "use_user_user_prompt",
 				"rank": 5.1,
-				"placeholder": "{sentence}",
+				"placeholder": "{DictWithPrompt[When translating, please ensure to translate the specified nouns into the translations I have designated: ]}\n{sentence}",
 				"type": "multiline"
 			},
 			"s": {

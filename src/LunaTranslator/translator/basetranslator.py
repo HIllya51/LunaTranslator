@@ -30,7 +30,7 @@ class GptDictItem:
 
 class GptDict:
     def __bool__(self):
-        return self.__
+        return bool(self.__)
 
     def __iter__(self):
         for _ in self.L:
@@ -41,17 +41,17 @@ class GptDict:
         self.__ = d
 
     def __str__(self):
-        return self.__
+        return json.dumps(self.__)
 
 
 class GptTextWithDict:
-    def __init__(self, parsedtext=None, dictionary=None, rawtext=None):
+    def __init__(self, parsedtext: str = None, dictionary=None, rawtext: str = None):
         self.parsedtext = parsedtext
         self.dictionary = GptDict(dictionary)
         self.rawtext = rawtext
 
     def __str__(self):
-        return json.dump(
+        return json.dumps(
             {
                 "text": self.parsedtext,
                 "gpt_dict": str(self.dictionary),
@@ -296,12 +296,17 @@ class basetrans(commonbase):
         return self.multiapikeywrapper(self.translate)(content)
 
     def _gptlike_createquery(self, query, usekey, tempk):
+        return self._gptlike_get_user_prompt(usekey, tempk).replace("{sentence}", query)
+
+    def _gptlike_get_user_prompt(self, usekey, tempk):
         user_prompt = (
             self.config.get(tempk, "") if self.config.get(usekey, False) else ""
         )
+        default = "{DictWithPrompt[When translating, please ensure to translate the specified nouns into the translations I have designated: ]}\n{sentence}"
+        user_prompt = user_prompt if user_prompt else default
         if "{sentence}" not in user_prompt:
             user_prompt += "{sentence}"
-        return user_prompt.replace("{sentence}", query)
+        return user_prompt
 
     def _gptlike_createsys(self, usekey, tempk):
 
@@ -322,23 +327,20 @@ class basetrans(commonbase):
         messages: list,
         context: "list[dict]",
         num: int,
-        query=None,
         cachecontext=False,
     ):
         offset = 0
         _i = 0
         msgs = []
-        dedump = set([query])
         while (_i + offset < (len(context) // 2)) and (_i < num):
             i = len(context) // 2 - _i - offset - 1
             if isinstance(context[i * 2], dict):
                 c_q: str = context[i * 2].get("content")
             else:
                 c_q: str = context[i * 2]
-            if (not cachecontext) and c_q and isinstance(c_q, str) and c_q in dedump:
+            if (not cachecontext) and c_q and isinstance(c_q, str):
                 offset += 1
                 continue
-            dedump.add(c_q)
             msgs.append(context[i * 2 + 1])
             msgs.append(context[i * 2])
             _i += 1

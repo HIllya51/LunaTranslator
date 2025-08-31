@@ -48,10 +48,10 @@ class TS(basetrans):
         return gpt_dict_raw_text
 
     def _gpt_common_parse_context_2(
-        self, messages: list, context, contextnum, query, ja=False, native=False
+        self, messages: list, context, contextnum, ja=False, native=False
     ):
         msgs: "list[str]" = []
-        self._gpt_common_parse_context(msgs, context, contextnum, query)
+        self._gpt_common_parse_context(msgs, context, contextnum)
         __ja, __zh = [], []
         for i, _ in enumerate(msgs):
             [__zh, __ja][i % 2 == 0].append(_.strip())
@@ -78,7 +78,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum, query)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum)
             messages.append(
                 {"role": "user", "content": "将下面的日文文本翻译成中文：" + query}
             )
@@ -89,7 +89,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地使用给定的术语表以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，注意不要混淆使役态和被动态的主语和宾语，不要擅自添加原文中没有的代词，也不要擅自增加或减少换行。",
                 }
             ]
-            self._gpt_common_parse_context_2(messages, self.context, contextnum, query)
+            self._gpt_common_parse_context_2(messages, self.context, contextnum)
             gpt_dict_raw_text = self.make_gpt_dict_text(gpt_dict)
             content = (
                 "根据以下术语表（可以为空）：\n"
@@ -106,9 +106,7 @@ class TS(basetrans):
                     "content": "你是一个轻小说翻译模型，可以流畅通顺地以日本轻小说的风格将日文翻译成简体中文，并联系上下文正确使用人称代词，不擅自添加原文中没有的代词。",
                 }
             ]
-            self._gpt_common_parse_context_2(
-                messages, self.context, contextnum, query, True
-            )
+            self._gpt_common_parse_context_2(messages, self.context, contextnum, True)
             if gpt_dict:
                 content = (
                     "根据以下术语表（可以为空）：\n"
@@ -132,7 +130,7 @@ class TS(basetrans):
                 __gptdict += "\n"
             __msg = []
             self._gpt_common_parse_context_2(
-                __msg, self.context, contextnum, query, True, True
+                __msg, self.context, contextnum, True, True
             )
             content = (
                 (("历史翻译：" + __msg[1]["content"] + "\n") if __msg else "")
