@@ -140,7 +140,6 @@ class TS(basetrans):
                 + query
             )
             messages.append({"role": "user", "content": content})
-        print(messages)
         return messages
 
     def send_request(self, messages, is_test=False, **kwargs):
