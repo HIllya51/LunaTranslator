@@ -121,7 +121,6 @@ def checklang():
 
 def checkintegrity():
     from myutils.config import _TR
-    from qtsymbols import QMessageBox
     from gobject import runtime_for_xp, runtime_for_win10, runtime_bit_64, GetDllpath
     from gui.usefulwidget import RichMessageBox
     from myutils.utils import dynamiclink

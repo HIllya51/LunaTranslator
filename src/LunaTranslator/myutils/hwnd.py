@@ -6,7 +6,6 @@ import time, NativeUtils, hashlib
 from myutils.config import savehook_new_data, globalconfig, mayberelpath
 from myutils.wrapper import threader
 from myutils.utils import qimage2binary
-from CVUtils import cvMat
 
 
 def clipboard_set_image(p: QImage):
