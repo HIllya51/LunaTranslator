@@ -330,6 +330,8 @@ class BASEOBJECT(QObject):
         return content, contexts
 
     def solveaftertrans(self, res, mp):
+        if not res:
+            return res
         for i, method in enumerate(self.processmethods):
 
             context = mp[i]
@@ -542,7 +544,9 @@ class BASEOBJECT(QObject):
             try:
                 maybehaspremt = self.translators["premt"].translate(contentraw)
                 for k in maybehaspremt:
-                    maybehaspremt[k] = self.solveaftertrans(maybehaspremt[k], optimization_params)
+                    maybehaspremt[k] = self.solveaftertrans(
+                        maybehaspremt[k], optimization_params
+                    )
             except:
                 print_exc()
             other = list(set(maybehaspremt.keys()) - set(fix_rank))

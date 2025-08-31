@@ -281,6 +281,13 @@ class basetrans(commonbase):
             return res
         return None
 
+    def __cap_trans(self, t):
+        if isinstance(t, GptTextWithDict) and (
+            "_compatible_flag_is_sakura_less_than_5_52_3" in dir(self)
+        ):
+            t = str(t)
+        return self.translate(t)
+
     def intervaledtranslate(self, content):
         interval = globalconfig["requestinterval"]
         current = time.time()
@@ -293,7 +300,7 @@ class basetrans(commonbase):
         if (current != self.current) or (self.using == False):
             raise Exception()
 
-        return self.multiapikeywrapper(self.translate)(content)
+        return self.multiapikeywrapper(self.__cap_trans)(content)
 
     def _gptlike_createquery(self, query, usekey, tempk):
         return self._gptlike_get_user_prompt(usekey, tempk).replace("{sentence}", query)
