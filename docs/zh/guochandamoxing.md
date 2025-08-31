@@ -53,9 +53,7 @@
     - `{sentence}`：当前欲翻译的文本
     - `{srclang}`和`{tgtlang}`：源语言和目标语言。如果prompt中仅使用英语，则会替换成语言名称的英语翻译，否则会替换成语言名称的当前UI语言翻译。
     - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextTranslation[N]}`：N条历史原文、译文、两者。N与`附带上下文个数`无关，需要输入时替换成整数。
-
-    在自定义user message中，可以通过以下字段引用`专有名词翻译`中的词条，**且当没有匹配到的词条时，以下字段会被清除以避免破坏翻译内容**
-    - `{DictWithPrompt[XXXXX]}`，其中，`XXXXX`是一段引导LLM使用给定的词条来优化翻译的prompt，可以自行定义，或禁用自定义user message以使用默认的引导prompt。
+    - `{DictWithPrompt[XXXXX]}`：此字段可以引用`专有名词翻译`中的词条，**且当没有匹配到的词条时，该字段会被清除以避免破坏翻译内容**。其中，`XXXXX`是一段引导LLM使用给定的词条来优化翻译的prompt，可以自行定义，或禁用自定义user message以使用默认的引导prompt。
 
 1. #### Temperature / max tokens / top p / frequency penalty
 

@@ -297,13 +297,9 @@ class gptcommon(basetrans):
             query = re.sub(k, functools.partial(self.__replace_history, b), query)
         return query
 
-    def __gpt_create_query_maybe_with_dict(self, query_2: GptTextWithDict):
-
-        user_prompt = self._gptlike_get_user_prompt(
-            "use_user_user_prompt", "user_user_prompt"
-        )
-        if re.search(r"\{DictWithPrompt\[(.*?)\]\}", user_prompt):
-            query_1 = query_2.rawtext
+    def __if_has_dwp(self, query_2: GptTextWithDict, prompt):
+        _has = re.search(r"\{DictWithPrompt\[(.*?)\]\}", prompt)
+        if _has:
 
             def __rep(m: re.Match):
                 nextc = m.groups()[1]
@@ -323,19 +319,25 @@ class gptcommon(basetrans):
                     pro += "\n"
                 return pro + "\n".join(__) + nextc
 
-            user_prompt = re.sub(
-                r"\{DictWithPrompt\[(.*?)\]\}([\s\S]?)", __rep, user_prompt
-            )
-        else:
-            query_1 = query_2.parsedtext
+            prompt = re.sub(r"\{DictWithPrompt\[(.*?)\]\}([\s\S]?)", __rep, prompt)
+        return prompt, bool(_has)
+
+    def __gpt_create_query_maybe_with_dict(self, query_2: GptTextWithDict, _has_1):
+
+        user_prompt = self._gptlike_get_user_prompt(
+            "use_user_user_prompt", "user_user_prompt"
+        )
+        user_prompt, _has = self.__if_has_dwp(query_2, user_prompt)
+        _has = _has or _has_1
+        query_1 = (query_2.parsedtext, query_2.rawtext)[_has]
         query = user_prompt.replace("{sentence}", query_1)
         query = self.__parsecontextN(query)
-        print(query)
         return query, query_1
 
     def commoncreatemessages(self, query_2: GptTextWithDict):
-        query, query_1 = self.__gpt_create_query_maybe_with_dict(query_2)
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
+        sysprompt, _has = self.__if_has_dwp(query_2, sysprompt)
+        query, query_1 = self.__gpt_create_query_maybe_with_dict(query_2, _has)
         sysprompt = self.__parsecontextN(sysprompt)
         message = [{"role": "system", "content": sysprompt}]
         checknum = self.config["附带上下文个数"]
@@ -357,7 +359,6 @@ class gptcommon(basetrans):
         else:
             self._gpt_common_parse_context(__message, self.context, checknum)
         self.context_for_cache_skipinter_shouldmove = len(__message) == checknum * 2
-
         message.extend(__message)
         message.append({"role": "user", "content": query})
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")

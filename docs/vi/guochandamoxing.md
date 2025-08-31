@@ -53,9 +53,7 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
     - `{sentence}`: Văn bản cần dịch
     - `{srclang}` và `{tgtlang}`: Ngôn ngữ nguồn và ngôn ngữ đích. Nếu chỉ sử dụng tiếng Anh trong prompt, chúng sẽ được thay thế bằng bản dịch tiếng Anh của tên ngôn ngữ. Ngược lại, chúng sẽ được thay thế bằng bản dịch tên ngôn ngữ trong ngôn ngữ UI hiện tại.
     - `{contextOriginal[N]}` và `{contextTranslation[N]}` và `{contextTranslation[N]}`: N câu lịch sử văn bản gốc, bản dịch và cả hai. N không liên quan đến "số lượng ngữ cảnh đi kèm" và cần được thay thế bằng một số nguyên khi nhập vào.
-
-    Trong tin nhắn người dùng tùy chỉnh, bạn có thể tham chiếu các mục từ `Bản dịch danh từ riêng` bằng cách sử dụng các trường sau. **Nếu không tìm thấy mục phù hợp, các trường này sẽ bị xóa để tránh làm hỏng nội dung dịch**.  
-    - `{DictWithPrompt[XXXXX]}`, trong đó `XXXXX` là một prompt hướng dẫn LLM sử dụng các mục đã cho để tối ưu hóa bản dịch. Bạn có thể tự định nghĩa hoặc vô hiệu hóa tin nhắn người dùng tùy chỉnh để sử dụng prompt hướng dẫn mặc định.
+    - `{DictWithPrompt[XXXXX]}`: Trường này có thể tham chiếu các mục trong "Danh sách Dịch Thuật Ngữ Riêng". **Nếu không tìm thấy mục phù hợp, trường này sẽ bị xóa để tránh làm hỏng nội dung dịch**. Ở đây, `XXXXX` là một đoạn hướng dẫn LLM sử dụng các mục đã cho để tối ưu hóa bản dịch. Nó có thể được tùy chỉnh hoặc vô hiệu hóa tin nhắn tùy chỉnh của người dùng để sử dụng lời nhắc mặc định.
 
 1. #### Temperature / max tokens / top p / frequency penalty
 
