@@ -793,7 +793,7 @@ class BASEOBJECT(QObject):
         path1 = gobject.getconfig("posts/{}.py".format(path))
         if not os.path.exists(path1):
             return text
-        return checkmd5reloadmodule(path1, "posts." + path)[1].POSTSOLVE(text)
+        return checkmd5reloadmodule(path1, "posts." + path).POSTSOLVE(text)
 
     def ttsrepair(self, text, usedict: dict):
         if usedict.get("tts_repair", False):
