@@ -54,6 +54,9 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
     - `{srclang}` và `{tgtlang}`: Ngôn ngữ nguồn và ngôn ngữ đích. Nếu chỉ sử dụng tiếng Anh trong prompt, chúng sẽ được thay thế bằng bản dịch tiếng Anh của tên ngôn ngữ. Ngược lại, chúng sẽ được thay thế bằng bản dịch tên ngôn ngữ trong ngôn ngữ UI hiện tại.
     - `{contextOriginal[N]}` và `{contextTranslation[N]}` và `{contextTranslation[N]}`: N câu lịch sử văn bản gốc, bản dịch và cả hai. N không liên quan đến "số lượng ngữ cảnh đi kèm" và cần được thay thế bằng một số nguyên khi nhập vào.
 
+    Trong tin nhắn người dùng tùy chỉnh, bạn có thể tham chiếu các mục từ `Bản dịch danh từ riêng` bằng cách sử dụng các trường sau. **Nếu không tìm thấy mục phù hợp, các trường này sẽ bị xóa để tránh làm hỏng nội dung dịch**.  
+    - `{DictWithPrompt[XXXXX]}`, trong đó `XXXXX` là một prompt hướng dẫn LLM sử dụng các mục đã cho để tối ưu hóa bản dịch. Bạn có thể tự định nghĩa hoặc vô hiệu hóa tin nhắn người dùng tùy chỉnh để sử dụng prompt hướng dẫn mặc định.
+
 1. #### Temperature / max tokens / top p / frequency penalty
 
     Đối với một số nền tảng và mô hình, các tham số như `top p` và `frequency penalty` có thể không được chấp nhận bởi giao diện, hoặc tham số `max tokens` đã bị loại bỏ và thay bằng `max completion tokens`. Việc kích hoạt hoặc hủy kích hoạt công tắc có thể giải quyết những vấn đề này.
