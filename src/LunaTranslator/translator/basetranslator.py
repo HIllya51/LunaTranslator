@@ -41,7 +41,7 @@ class GptDict:
         self.__ = d
 
     def __str__(self):
-        return json.dumps(self.__)
+        return json.dumps(self.__, ensure_ascii=False)
 
 
 class GptTextWithDict:
@@ -56,7 +56,8 @@ class GptTextWithDict:
                 "text": self.parsedtext,
                 "gpt_dict": str(self.dictionary),
                 "contentraw": self.rawtext,
-            }
+            },
+            ensure_ascii=False,
         )
 
 
@@ -375,7 +376,9 @@ class basetrans(commonbase):
         self, tgtlang_1, contentsolved: "GptTextWithDict|str", is_auto_run, callback
     ):
         if isinstance(contentsolved, GptTextWithDict):
-            cache_use = str(contentsolved)
+            cache_use = contentsolved.rawtext
+            if contentsolved.dictionary:
+                cache_use = str(tuple(contentsolved, contentsolved.dictionary))
             TS_use = contentsolved
         else:
             cache_use = TS_use = contentsolved
