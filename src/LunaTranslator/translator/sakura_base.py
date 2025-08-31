@@ -33,7 +33,7 @@ class TS(basetrans):
     def make_gpt_dict_text(self, gpt_dict: GptDict):
         gpt_dict_text_list = []
         for gpt in gpt_dict:
-            src = gpt["src"]
+            src = gpt.src
 
             dst = self.checklangzhconv(self.srclang, gpt.dst)
             info = self.checklangzhconv(self.srclang, gpt.info)
@@ -140,6 +140,7 @@ class TS(basetrans):
                 + query
             )
             messages.append({"role": "user", "content": content})
+        print(messages)
         return messages
 
     def send_request(self, messages, is_test=False, **kwargs):
