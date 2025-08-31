@@ -1,4 +1,4 @@
-from translator.basetranslator import basetrans
+from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
 import json, zhconv
 from myutils.utils import urlpathjoin
@@ -7,11 +7,10 @@ from translator.gptcommon import list_models
 
 
 class TS(basetrans):
-    _compatible_flag_is_sakura_less_than_5_52_3 = False
     needzhconv = True
 
     @property
-    def using_gpt_dict(self):
+    def is_version_new(self):
         return self.config["prompt_version"] in [1, 2, 3]
 
     def __init__(self, typename):
@@ -31,13 +30,13 @@ class TS(basetrans):
         # OpenAI
         # self.client = OpenAI(api_key="114514", base_url=api_url)
 
-    def make_gpt_dict_text(self, gpt_dict: "list[dict]"):
+    def make_gpt_dict_text(self, gpt_dict: GptDict):
         gpt_dict_text_list = []
         for gpt in gpt_dict:
             src = gpt["src"]
 
-            dst = self.checklangzhconv(self.srclang, gpt["dst"])
-            info = self.checklangzhconv(self.srclang, gpt.get("info"))
+            dst = self.checklangzhconv(self.srclang, gpt.dst)
+            info = self.checklangzhconv(self.srclang, gpt.info)
 
             if info:
                 single = "{}->{} #{}".format(src, dst, info)
@@ -67,7 +66,7 @@ class TS(basetrans):
                 )
             messages.append({"role": "assistant", "content": "\n".join(__zh)})
 
-    def make_messages(self, query, gpt_dict=None):
+    def make_messages(self, query, gpt_dict: GptDict = None):
         contextnum = (
             self.config["append_context_num"] if self.config["use_context"] else 0
         )
@@ -230,12 +229,11 @@ class TS(basetrans):
 
             yield res
 
-    def translate(self, query):
-        if isinstance(query, dict):
-            gpt_dict = query["gpt_dict"]
-            query: str = query["contentraw"]
-        else:
-            gpt_dict = None
+    def translate(self, query: GptTextWithDict):
+
+        gpt_dict = query.dictionary
+        query: str = query.rawtext if self.is_version_new else query.parsedtext
+
         self.checkempty(["API接口地址"])
         self.get_client(self.config["API接口地址"])
         frequency_penalty = float(self.config["frequency_penalty"])

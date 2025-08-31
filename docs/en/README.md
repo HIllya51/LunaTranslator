@@ -43,7 +43,7 @@ If you want to delete and re-download, be careful not to delete the userconfig f
 
 
 
-## Common Errors
+## Common Errors {#anchor-commonerros}
 
 ::: danger
 Sometimes it may be flagged by antivirus software. Please add it to the trust list and re-download and extract.

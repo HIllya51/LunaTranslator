@@ -20,6 +20,46 @@ class Interrupted(Exception):
     pass
 
 
+class GptDictItem:
+    def __init__(self, d: dict = None):
+        d = d if d else {}
+        self.src = d.get("src")
+        self.dst = d.get("dst")
+        self.info = d.get("info")
+
+
+class GptDict:
+    def __bool__(self):
+        return self.__
+
+    def __iter__(self):
+        for _ in self.L:
+            yield _
+
+    def __init__(self, d: "list[dict[str, str]]" = None):
+        self.L = [GptDictItem(_) for _ in d] if d else []
+        self.__ = d
+
+    def __str__(self):
+        return self.__
+
+
+class GptTextWithDict:
+    def __init__(self, parsedtext=None, dictionary=None, rawtext=None):
+        self.parsedtext = parsedtext
+        self.dictionary = GptDict(dictionary)
+        self.rawtext = rawtext
+
+    def __str__(self):
+        return json.dump(
+            {
+                "text": self.parsedtext,
+                "gpt_dict": str(self.dictionary),
+                "contentraw": self.rawtext,
+            }
+        )
+
+
 class Threadwithresult(Thread):
     def __init__(self, func):
         super(Threadwithresult, self).__init__(daemon=True)
@@ -63,19 +103,21 @@ class basetrans(commonbase):
     def init(self):
         pass
 
-    def translate(self, content):
+    def translate(self, content: "str|GptTextWithDict"):
         return ""
 
     ############################################################
     _globalconfig_key = "fanyi"
     _setting_dict = translatorsetting
-    using_gpt_dict = False
-    _compatible_flag_is_sakura_less_than_5_52_3 = True
+
+    @property
+    def __gconfig(self) -> dict:
+        return globalconfig["fanyi"].get(self.typename, {})
 
     def __init__(self, typename):
         super().__init__(typename)
         if (self.transtype == "offline") and (not self.is_gpt_like):
-            globalconfig["fanyi"][self.typename]["useproxy"] = False
+            self.__gconfig["useproxy"] = False
         self.queue = PriorityQueue()
         self.sqlqueue = None
         self.sqlwrite2 = None
@@ -146,21 +188,26 @@ class basetrans(commonbase):
                 print_exc()
 
     @property
+    def using_gpt_dict(self):
+        # 决定translator接口传入GptTextWithDict还是str
+        return self.__gconfig.get("is_gpt_like", False)
+
+    @property
     def use_trans_cache(self):
-        return globalconfig["fanyi"][self.typename].get("use_trans_cache", True)
+        return self.__gconfig.get("use_trans_cache", True)
 
     @property
     def is_gpt_like(self):
-        return globalconfig["fanyi"][self.typename].get("is_gpt_like", False)
+        return self.__gconfig.get("is_gpt_like", False)
 
     @property
     def onlymanual(self):
         # Only used during manual translation, not used during automatic translation
-        return globalconfig["fanyi"][self.typename].get("manual", False)
+        return self.__gconfig.get("manual", False)
 
     @property
     def using(self):
-        return globalconfig["fanyi"][self.typename]["use"]
+        return self.__gconfig["use"]
 
     @property
     def transtype(self):
@@ -168,7 +215,7 @@ class basetrans(commonbase):
         # dev/offline 无视请求间隔
         # pre全都有额外的处理，不走该pipeline，不使用翻译缓存
         # offline不被新的请求打断
-        return globalconfig["fanyi"][self.typename].get("type", "free")
+        return self.__gconfig.get("type", "free")
 
     def gettask(self, content):
         # fmt: off
@@ -315,20 +362,18 @@ class basetrans(commonbase):
 
         return functools.partial(__maybeshow, callback, tgtlang_1)
 
-    def translate_and_collect(self, tgtlang_1, contentsolved, is_auto_run, callback):
-        if isinstance(contentsolved, dict):
-            if self._compatible_flag_is_sakura_less_than_5_52_3:
-                query_use = json.dumps(contentsolved)
-                cache_use = contentsolved["text"]
-            else:
-                query_use = contentsolved
-                cache_use = contentsolved["contentraw"]
+    def translate_and_collect(
+        self, tgtlang_1, contentsolved: "GptTextWithDict|str", is_auto_run, callback
+    ):
+        if isinstance(contentsolved, GptTextWithDict):
+            cache_use = str(contentsolved)
+            TS_use = contentsolved
         else:
-            cache_use = query_use = contentsolved
+            cache_use = TS_use = contentsolved
 
         res = self.shortorlongcacheget(cache_use, is_auto_run)
         if not res:
-            res = self.intervaledtranslate(query_use)
+            res = self.intervaledtranslate(TS_use)
         # 不能因为被打断而放弃后面的操作，发出的请求不会因为不再处理而无效，所以与其浪费不如存下来
         # gettranslationcallback里已经有了是否为当前请求的校验，这里无脑输出就行了
 
@@ -369,11 +414,7 @@ class basetrans(commonbase):
                 contentraw = _.get("gpt_dict_origin")
                 break
 
-        return {
-            "text": contentsolved,
-            "gpt_dict": gpt_dict,
-            "contentraw": contentraw,
-        }
+        return GptTextWithDict(contentsolved, gpt_dict, contentraw)
 
     def _fythread(self):
         self.needreinit = False

@@ -11,6 +11,7 @@ from myutils.utils import (
     loopbackrecorder,
     selectdebugfile,
     parsekeystringtomodvkcode,
+    dynamiclink,
     getimageformatlist,
     getimagefilefilter,
     checkmd5reloadmodule,
@@ -23,6 +24,7 @@ from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
 from gui.usefulwidget import (
+    RichMessageBox,
     closeashidewindow,
     auto_select_webview,
     WebviewWidget,
@@ -774,7 +776,10 @@ class AnkiWindow(QWidget):
                 self.window().close()
             QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
         except requests.RequestException:
-            QMessageBox.critical(self, _TR("错误"), _TR("无法连接到anki"))
+            t = _TR("无法连接到anki") + '\n<a href="{}">{}</a>'.format(
+                dynamiclink("qa2.html", docs=True), _TR("使用说明")
+            )
+            RichMessageBox(self, _TR("错误"), t)
         except anki.AnkiException as e:
             QMessageBox.critical(self, _TR("错误"), str(e))
         except:

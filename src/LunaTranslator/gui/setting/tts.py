@@ -204,7 +204,7 @@ def setTab5lz(self):
         [
             dict(
                 title="引擎",
-                button=D_getdoclink("/ttsengines.html"),
+                button=D_getdoclink("ttsengines.html"),
                 grid=[
                     [dict(title="离线", type="grid", grid=offilesgrid)],
                     [dict(title="在线", type="grid", grid=getttsgrid(self, online))],

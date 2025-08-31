@@ -7,7 +7,6 @@ import gobject
 
 
 class TS(basetrans):
-    _compatible_flag_is_sakura_less_than_5_52_3 = False
 
     def checkfilechanged(self, p1, p):
         if self.paths == (p1, p):

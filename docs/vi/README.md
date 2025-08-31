@@ -41,7 +41,7 @@ Nếu muốn cập nhật thủ công, chỉ cần tải phiên bản mới và 
 Nếu muốn xóa và tải lại, chú ý không xóa thư mục userconfig, nếu không sẽ mất thiết lập trước đó!!!
 
 
-## Lỗi Thường Gặp
+## Lỗi Thường Gặp {#anchor-commonerros}
 
 ::: danger
 Đôi khi phần mềm có thể bị gắn cờ bởi phần mềm diệt virus. Vui lòng thêm vào danh sách tin cậy và tải xuống, giải nén lại.

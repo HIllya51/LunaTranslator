@@ -53,7 +53,7 @@ def __create2(self):
 
 def gethookgrid_em(self):
     grids = [
-        [D_getdoclink("/embedtranslate.html")],
+        [D_getdoclink("embedtranslate.html")],
         [
             "清除游戏内显示的文字",
             D_getsimpleswitch(
@@ -129,7 +129,7 @@ def gethookgrid_em(self):
 
 def gethookgrid(self):
     grids = [
-        [D_getdoclink("/hooksettings.html")],
+        [D_getdoclink("hooksettings.html")],
         [
             "代码页",
             (
@@ -454,7 +454,7 @@ def __srcofig(grids: list, self):
     __ = dict(
         type="grid",
         title="语音识别",
-        button=D_getdoclink("/sr.html"),
+        button=D_getdoclink("sr.html"),
         grid=[
             [
                 getsmalllabel("使用"),
@@ -520,7 +520,7 @@ def filetranslate(self):
         [
             dict(
                 title="网络服务",
-                button=D_getdoclink("/apiservice.html"),
+                button=D_getdoclink("apiservice.html"),
                 grid=[
                     [
                         "开启",

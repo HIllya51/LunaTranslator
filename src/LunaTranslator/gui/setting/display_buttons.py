@@ -245,7 +245,7 @@ def createbuttonwidget(self, lay: QLayout):
             t += "_(仅_{})".format(
                 " ".join(globalconfig["toolbutton"]["buttons"][k]["belong"])
             )
-        l.append(D_getdoclink("/alltoolbuttons.html#anchor-" + k))
+        l.append(D_getdoclink("alltoolbuttons.html#anchor-" + k))
         l.append(t)
         grids.append(l)
     makescrollgrid(grids, lay, savelist, savelay)

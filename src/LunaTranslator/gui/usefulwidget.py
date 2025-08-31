@@ -22,6 +22,15 @@ from gui.dynalang import (
 )
 
 
+def RichMessageBox(parent, title, text: str, icon=QMessageBox.Icon.Critical):
+    b = QMessageBox(parent)
+    b.setIcon(icon)
+    b.setWindowTitle(title)
+    b.setText(text.replace("\n", "<br>"))
+    b.setTextFormat(Qt.TextFormat.RichText)
+    return b.exec()
+
+
 class FocusCombo(QComboBox):
     def __init__(self, parent: QWidget = None, sizeX=False) -> None:
         super().__init__(parent)
@@ -186,6 +195,7 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
     def keyPressEvent(self, e: QKeyEvent):
         self.keyPressed.emit(e)
         return super().keyPressEvent(e)
+
     def __switchcallback(self, item: QStandardItem, _):
         self.setIndexData(item.index(), _)
 
@@ -1847,21 +1857,22 @@ class WebviewWidget(abstractwebview):
 
     @staticmethod
     def showError(e: Exception):
-        QMessageBox.critical(
+        RichMessageBox(
             gobject.base.focusWindow,
             _TR("错误"),
             str(e)
             + "\n\n"
             + _TR(
                 "找不到Webview2Runtime！\n请安装Webview2Runtime，或者下载固定版本后解压到软件目录中。"
+            )
+            + '\n<a href="{}">{}</a>'.format(
+                (
+                    "https://developer.microsoft.com/microsoft-edge/webview2",
+                    "https://archive.org/download/microsoft-edge-web-view-2-runtime-installer-v109.0.1518.78",
+                )[gobject.sys_le_win81],
+                _TR("下载链接"),
             ),
         )
-        if gobject.sys_le_win81:
-            os.startfile(
-                "https://archive.org/download/microsoft-edge-web-view-2-runtime-installer-v109.0.1518.78"
-            )
-        else:
-            os.startfile("https://developer.microsoft.com/microsoft-edge/webview2")
 
     @staticmethod
     def __getuserdir():

@@ -122,8 +122,9 @@ def checklang():
 def checkintegrity():
     from myutils.config import _TR
     from qtsymbols import QMessageBox
-    from gobject import runtime_for_xp, runtime_for_win10, runtime_bit_64
-    import platform, gobject
+    from gobject import runtime_for_xp, runtime_for_win10, runtime_bit_64, GetDllpath
+    from gui.usefulwidget import RichMessageBox
+    from myutils.utils import dynamiclink
 
     dll3264 = [
         "NativeUtils.dll",
@@ -140,7 +141,7 @@ def checkintegrity():
     flist = []
     for f in dll3264:
         if f:
-            flist.append(gobject.GetDllpath(f))
+            flist.append(GetDllpath(f))
 
     dllshared = [
         "LunaHook/" + ("LunaHost32.dll", "LunaHost64.dll")[runtime_bit_64],
@@ -158,11 +159,14 @@ def checkintegrity():
         if not os.path.exists(f):
             collect.append(os.path.normpath(os.path.abspath(f)))
     if len(collect):
-        QMessageBox.critical(
+        RichMessageBox(
             None,
             _TR("错误"),
             _TR("找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试").format(
                 modules="\n".join(collect)
+            )
+            + '\n<a href="{}">{}</a>'.format(
+                dynamiclink("README.html#anchor-commonerros", docs=True), _TR("说明")
             ),
         )
         os._exit(0)
