@@ -14,6 +14,9 @@
 
 1. 초기화가 완료될 때까지 기다린 후 yomitan을 설정합니다.
 
+   >[!WARNING]
+   >플러그인을 추가한 후 인식되지 않을 수 있습니다. 소프트웨어를 닫았다가 다시 열어야 인식됩니다.
+
    ![img](https://image.lunatranslator.org/en/yomitan4.png)
 
 1. 최종 결과

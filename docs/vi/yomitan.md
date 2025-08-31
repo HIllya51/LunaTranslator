@@ -13,6 +13,9 @@
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)
 
 1. Chờ quá trình khởi tạo hoàn tất, sau đó cấu hình Yomitan.
+   
+   >[!WARNING]
+   >Đôi khi sau khi thêm plugin, nó có thể không được nhận diện. Bạn cần đóng phần mềm và mở lại để nhận diện.
 
    ![img](https://image.lunatranslator.org/en/yomitan4.png)
 

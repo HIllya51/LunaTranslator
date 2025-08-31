@@ -14,6 +14,9 @@
 
 1. 等待初始化完成後，對 Yomitan 進行設定。
 
+   >[!WARNING]
+   >有時添加插件後可能無法被識別，需要關閉軟體後重新打開才能識別。
+
    ![img](https://image.lunatranslator.org/zh/yomitan4.png)
 
 1. 最終效果。

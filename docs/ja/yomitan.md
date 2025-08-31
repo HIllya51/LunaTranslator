@@ -14,6 +14,9 @@
 
 1. 初期化が完了するのを待ち、yomitanを設定します。
 
+   >[!WARNING]
+   >プラグインを追加しても認識されない場合があります。ソフトウェアを一旦閉じて再度開くと認識されることがあります。
+   
    ![img](https://image.lunatranslator.org/en/yomitan4.png)
 
 1. 最終的な効果

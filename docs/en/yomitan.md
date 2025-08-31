@@ -14,6 +14,9 @@
 
 1. Wait for the initialization to complete, then configure Yomitan.
 
+   >[!WARNING]
+   >Sometimes after adding a plugin, it may not be recognized. You need to close the software and reopen it for it to be recognized.
+
    ![img](https://image.lunatranslator.org/en/yomitan4.png)
 
 1. Final Result
