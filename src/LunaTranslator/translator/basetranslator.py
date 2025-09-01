@@ -378,7 +378,7 @@ class basetrans(commonbase):
         if isinstance(contentsolved, GptTextWithDict):
             cache_use = contentsolved.rawtext
             if contentsolved.dictionary:
-                cache_use = str(tuple(contentsolved, contentsolved.dictionary))
+                cache_use = str((contentsolved, contentsolved.dictionary))
             TS_use = contentsolved
         else:
             cache_use = TS_use = contentsolved
