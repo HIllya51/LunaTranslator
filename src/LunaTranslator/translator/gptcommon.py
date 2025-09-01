@@ -354,7 +354,6 @@ class gptcommon(basetrans):
                 __message,
                 self.context_for_cache[self.context_for_cache_skipinter :],
                 checknum,
-                cachecontext=True,
             )
         else:
             self._gpt_common_parse_context(__message, self.context, checknum)

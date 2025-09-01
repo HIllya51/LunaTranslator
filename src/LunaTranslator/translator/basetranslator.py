@@ -334,21 +334,13 @@ class basetrans(commonbase):
         self,
         messages: list,
         context: "list[dict]",
-        num: int,
-        cachecontext=False,
+        num: int
     ):
         offset = 0
         _i = 0
         msgs = []
         while (_i + offset < (len(context) // 2)) and (_i < num):
             i = len(context) // 2 - _i - offset - 1
-            if isinstance(context[i * 2], dict):
-                c_q: str = context[i * 2].get("content")
-            else:
-                c_q: str = context[i * 2]
-            if (not cachecontext) and c_q and isinstance(c_q, str):
-                offset += 1
-                continue
             msgs.append(context[i * 2 + 1])
             msgs.append(context[i * 2])
             _i += 1
