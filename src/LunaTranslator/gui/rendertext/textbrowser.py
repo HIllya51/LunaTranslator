@@ -881,7 +881,7 @@ class TextBrowser(QWidget, dataget):
         self.textcursor.setPosition(pos)
         self.textbrowser.setTextCursor(self.textcursor)
         tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-        thisy0 = tl1.y()
+        thisy0 = tl1.y() + self.textbrowser.y()
         for label in self.yinyinglabels:
             if label.isVisible() == False:
                 continue
