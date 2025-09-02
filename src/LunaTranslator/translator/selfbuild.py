@@ -6,8 +6,8 @@ import gobject
 class TS(basetrans):
     def mayreinit(self):
         module = checkmd5reloadmodule(gobject.getconfig("selfbuild.py"), "selfbuild")
-        if module and (module != self.__lastm):
-            self.__lastm = module
+        if module and (module.TS != self.__lastm):
+            self.__lastm = module.TS
             self.internal = module.TS("selfbuild")
 
     def init(self):

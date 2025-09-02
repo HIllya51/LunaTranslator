@@ -17,6 +17,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010081D016E4E000 | DIG-ROCK -Documentary of Youthful Sounds- |
 |  | 010065402030A000 | 十鬼の絆 |
 |  | 010061701DB38000 | 岩倉アリア |
 |  | 01006A60216CA000 | 悠久のティアブレイド |

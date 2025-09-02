@@ -1237,6 +1237,13 @@ namespace
         s = re::sub(s, R"(<color=.*>(.*)<\/color>)", "$1");
         buffer->from(s);
     }
+    void F010081D016E4E000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, u8R"(#n(　)*)");
+        s = re::sub(s, u8R"(#Ruby\[(.*?),(.*?)\])", "$1");
+        buffer->from(s);
+    }
     void F010027300A660000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2660,6 +2667,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // DIG-ROCK -Documentary of Youthful Sounds-
+    {0x80054004, {CODEC_UTF8, 2, 0, 0, F010081D016E4E000, 0x010081D016E4E000ull, "1.0.0"}},
     // 十鬼の絆
     {0x8007AA98, {0, 1, 0, 0, F010065402030A000, 0x010065402030A000ull, "1.0.0"}}, // 其一
     {0x80285258, {0, 1, 0, 0, F010065402030A000, 0x010065402030A000ull, "1.0.0"}}, // 其二
@@ -2685,6 +2694,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81FE7C1C, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.0"}},
     {0x81FF40FC, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.2"}},
     {0x81FF61A4, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.3"}},
+    {0x81FF65B4, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.0.4"}},
     {0x81FFC1AC, {CODEC_UTF16, 0XC, 0X14, 0, F01006660233C6000, 0x01006660233C6000ull, "1.1.0"}},
     // シロガネｘスピリッツ！
     {0x80497710, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x010056401B548000ull, "1.0.0"}},

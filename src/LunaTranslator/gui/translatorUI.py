@@ -1310,7 +1310,7 @@ class TranslatorWindow(resizableframeless):
 
         if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 3:
             self.showabout()
-            globalconfig["lasttime2"] = time.time()
+        globalconfig["lasttime2"] = time.time()
 
     def setselectableEx(self):
         globalconfig["selectableEx"] = True

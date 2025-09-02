@@ -27,6 +27,6 @@ class Process:
 
     def mayreinit(self):
         module = checkmd5reloadmodule(gobject.getconfig("myprocess.py"), "myprocess")
-        if module and (module != self.__lastm):
-            self.__lastm = module
+        if module and (module.Process != self.__lastm):
+            self.__lastm = module.Process
             self.internal = module.Process()
