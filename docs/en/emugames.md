@@ -898,6 +898,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66847 | アラビアンズ・ロスト ～The engagement on desert～ |
 |  | SLPS-25283 | INTERLUDE |
 |  | SLPM-65520 | てんたま2wins [限定版] |
 |  | SLPM-65550 | Remember11 ～the age of infinity～ [通常版] |

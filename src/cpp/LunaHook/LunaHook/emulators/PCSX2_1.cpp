@@ -1817,6 +1817,11 @@ namespace
                 last = c;
         }
     }
+    void SLPM66847(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        buffer->from(re::sub(s, "\\$\\w"));
+    }
     void SLPM65676(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1839,6 +1844,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // アラビアンズ・ロスト ～The engagement on desert～
+    {0x3A2F70, {DIRECT_READ, 0, 0, 0, SLPM66847, "SLPM-66847"}},
     // INTERLUDE
     {0x572040, {DIRECT_READ, 0, 0, 0, SLPS25283, "SLPS-25283"}},
     // てんたま2wins [限定版]
