@@ -33,7 +33,10 @@ class TTS(TTSbase):
         with open(cachefname, "r", encoding="utf-16-le") as ff:
             readf = ff.read()
         print(readf)
-        os.remove(cachefname)
+        try:
+            os.remove(cachefname)
+        except:
+            pass
         datas = (readf.split("\n"))[:-1]
         internal = []
         vis = []

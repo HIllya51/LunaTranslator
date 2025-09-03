@@ -159,6 +159,7 @@ class BASEOBJECT(QObject):
         self.specialreaders: "dict[object, TTSbase]" = {}
         self.textsource_p: basetext = None
         self.currenttext = ""
+        self.statusok = True
         self.currenttranslate = ""
         self.currenttranslate_1 = ""
         self.latest_is_origin = True
@@ -370,6 +371,7 @@ class BASEOBJECT(QObject):
                 )
             )
             self.currenttext = text
+            self.statusok = True
             self.currenttranslate = text
             self.latest_is_origin = False
             return
@@ -398,6 +400,7 @@ class BASEOBJECT(QObject):
 
     def updaterawtext(self, text):
         self.currenttext = text
+        self.statusok = False
         self.latest_is_origin = True
         self.translation_ui.displayraw2.emit(text)
 
@@ -411,6 +414,7 @@ class BASEOBJECT(QObject):
         erroroutput=None,
         updateTranslate=False,
         isFromHook=False,
+        statusok=True,
     ):
         with self.solvegottextlock:
             succ = self.textgetmethod_1(
@@ -422,6 +426,7 @@ class BASEOBJECT(QObject):
                 erroroutput=erroroutput,
                 updateTranslate=updateTranslate,
                 isFromHook=isFromHook,
+                statusok=statusok,
             )
             if waitforresultcallback and not succ:
                 waitforresultcallback(TranslateResult())
@@ -445,12 +450,13 @@ class BASEOBJECT(QObject):
         erroroutput=None,
         updateTranslate=False,
         isFromHook=False,
+        statusok=True,
     ):
         if not text:
             return
         if not text.strip():
             return
-        if is_auto_run and text == self.currenttext:
+        if is_auto_run and text == self.currenttext and statusok == self.statusok:
             return
         origin = text
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
@@ -466,7 +472,7 @@ class BASEOBJECT(QObject):
             __erroroutput(stringfyerror(e), TextType.Error_origin)
             return
 
-        if is_auto_run and text == self.currenttext:
+        if is_auto_run and text == self.currenttext and statusok == self.statusok:
             return
         self.currentsignature = currentsignature
         if is_auto_run and (
@@ -478,17 +484,15 @@ class BASEOBJECT(QObject):
                 text = text[: globalconfig["maxlength"]] + "……"
 
             self.translation_ui.displayraw1.emit(text, updateTranslate)
-            self.transhis.getnewsentencesignal.emit(text)
+            if statusok:
+                self.transhis.getnewsentencesignal.emit(text)
             self.maybesetedittext(text)
             return
 
-        try:
-            self.textsource.sqlqueueput((text, origin))
-        except:
-            pass
         _showrawfunction_unsafe = None
         if not waitforresultcallback:
             self.currenttext = text
+            self.statusok = statusok
             self.currenttranslate = ""
             self.currenttranslate_1 = ""
             self.latest_is_origin = True
@@ -503,7 +507,12 @@ class BASEOBJECT(QObject):
         _showrawfunction = lambda: (
             _showrawfunction_unsafe() if _showrawfunction_unsafe else None
         )
-        self.transhis.getnewsentencesignal.emit(text)
+        if statusok:
+            self.transhis.getnewsentencesignal.emit(text)
+            try:
+                self.textsource.sqlqueueput((text, origin))
+            except:
+                pass
         self.maybesetedittext(text)
 
         if not waitforresultcallback and not globalconfig["showfanyi"]:
@@ -598,6 +607,7 @@ class BASEOBJECT(QObject):
                 result=maybehaspremt.get(engine),
                 read_trans_once_check=read_trans_once_check,
                 erroroutput=erroroutput,
+                statusok=statusok,
             )
         return True
 
@@ -638,6 +648,7 @@ class BASEOBJECT(QObject):
         result,
         read_trans_once_check: list,
         erroroutput,
+        statusok=True,
     ):
         callback = partial(
             self.GetTranslationCallback,
@@ -650,6 +661,7 @@ class BASEOBJECT(QObject):
             text,
             read_trans_once_check,
             erroroutput,
+            statusok=statusok,
         )
         task = (
             callback,
@@ -693,6 +705,7 @@ class BASEOBJECT(QObject):
         res: str,
         iter_res_status,
         iserror=False,
+        statusok=True,
     ):
         with self.gettranslatelock:
             if classname in usefultranslators:
@@ -737,13 +750,14 @@ class BASEOBJECT(QObject):
                 self.translation_ui.displayres.emit(displayreskwargs)
             if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止
 
-                self.transhis.getnewtranssignal.emit(
-                    _TR(dynamicapiname(classname)), res
-                )
-                try:
-                    self.textsource.sqlqueueput((contentraw, classname, res))
-                except:
-                    pass
+                if statusok:
+                    self.transhis.getnewtranssignal.emit(
+                        _TR(dynamicapiname(classname)), res
+                    )
+                    try:
+                        self.textsource.sqlqueueput((contentraw, classname, res))
+                    except:
+                        pass
                 gobject.base.dispatch_translate.emit(classname, res)
                 if len(self.currenttranslate):
                     self.currenttranslate += "\n"

@@ -863,5 +863,6 @@
     "跳过仅包含标点的句子": "Überspringe Sätze, die nur Interpunktion enthalten.",
     "连点器": "Autoklicker",
     "点击间隔": "Klickintervall",
-    "下载链接": "Download-Link"
+    "下载链接": "Download-Link",
+    "连接失败": "Verbindung fehlgeschlagen"
 }

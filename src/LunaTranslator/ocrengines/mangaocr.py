@@ -18,7 +18,10 @@ class OCR(baseocr):
         response = self.proxysession.get(
             "http://127.0.0.1:{}/image".format(self.port), params=params
         )
-        os.remove(absolute_img_path)
+        try:
+            os.remove(absolute_img_path)
+        except:
+            pass
         try:
             return response.json()["text"]
         except Exception as e:

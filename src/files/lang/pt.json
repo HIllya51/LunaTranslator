@@ -863,5 +863,6 @@
     "跳过仅包含标点的句子": "Ignorar frases que contenham apenas pontuação.",
     "连点器": "Clicador automático",
     "点击间隔": "Intervalo de cliques",
-    "下载链接": "Link de download"
+    "下载链接": "Link de download",
+    "连接失败": "Falha na conexão"
 }

@@ -43,11 +43,13 @@ class cdp_deepl(cdp_helper):
         self.Runtime_evaluate(
             """document.getElementsByTagName("d-textarea")[1].children[0].innerHTML = ''"""
         )
-        self.Page_navigate(
-            "https://www.deepl.com/en/translator#{}/{}/{}".format(
-                self.checklang(), self.tgtlang, content
-            )
+        self.Runtime_evaluate(
+            """document.querySelector("#translator-source-clear-button").click()"""
         )
+        self.Runtime_evaluate(
+            """document.getElementsByTagName("d-textarea")[0].focus()"""
+        )
+        self.send_keys(content)
 
         return self.wait_for_result(
             'document.getElementsByTagName("d-textarea")[1].textContent'

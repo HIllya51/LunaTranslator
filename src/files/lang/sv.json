@@ -863,5 +863,6 @@
     "跳过仅包含标点的句子": "Hoppa över meningar som endast består av skiljetecken.",
     "连点器": "Klickautomat",
     "点击间隔": "Klickintervall",
-    "下载链接": "Nedladdningslänk"
+    "下载链接": "Nedladdningslänk",
+    "连接失败": "Anslutningen misslyckades"
 }

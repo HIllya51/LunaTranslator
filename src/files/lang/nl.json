@@ -863,5 +863,6 @@
     "跳过仅包含标点的句子": "Sla zinnen over die alleen leestekens bevatten.",
     "连点器": "Klikautomaat",
     "点击间隔": "Klikinterval",
-    "下载链接": "Downloadlink"
+    "下载链接": "Downloadlink",
+    "连接失败": "Verbinding mislukt"
 }

@@ -863,5 +863,6 @@
     "跳过仅包含标点的句子": "Pomiń zdania zawierające wyłącznie znaki interpunkcyjne.",
     "连点器": "Klikacz",
     "点击间隔": "Interwał kliknięć",
-    "下载链接": "Link do pobrania"
+    "下载链接": "Link do pobrania",
+    "连接失败": "Połączenie nie powiodło się"
 }

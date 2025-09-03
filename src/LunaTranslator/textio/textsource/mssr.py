@@ -264,7 +264,7 @@ class mssr(basetext):
                         thist - lastt
                         > globalconfig["sourcestatus2"]["mssr"]["refreshinterval"]
                     ):
-                        self.dispatchtext(text, updateTranslate=True)
+                        self.dispatchtext(text, updateTranslate=True, statusok=ok)
                         lastt = thist
                     self.updaterawtext(text)
                 elif t == 4:

@@ -1308,7 +1308,7 @@ class TranslatorWindow(resizableframeless):
         self.autohidedelaythread()
         self.tracewindowposthread()
 
-        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 3:
+        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 1:
             self.showabout()
         globalconfig["lasttime2"] = time.time()
 

@@ -45,7 +45,9 @@ class GptDict:
 
 
 class GptTextWithDict:
-    def __init__(self, parsedtext: str = None, dictionary=None, rawtext: str = None):
+    def __init__(self, rawtext: str = None, parsedtext: str = None, dictionary=None):
+        if rawtext and not parsedtext:
+            parsedtext = rawtext
         self.parsedtext = parsedtext
         self.dictionary = GptDict(dictionary)
         self.rawtext = rawtext
@@ -331,10 +333,7 @@ class basetrans(commonbase):
         return user_prompt
 
     def _gpt_common_parse_context(
-        self,
-        messages: list,
-        context: "list[dict]",
-        num: int
+        self, messages: list, context: "list[dict]", num: int
     ):
         offset = 0
         _i = 0
@@ -418,7 +417,9 @@ class basetrans(commonbase):
                 contentraw = _.get("gpt_dict_origin")
                 break
 
-        return GptTextWithDict(contentsolved, gpt_dict, contentraw)
+        return GptTextWithDict(
+            parsedtext=contentsolved, dictionary=gpt_dict, rawtext=contentraw
+        )
 
     def _fythread(self):
         self.needreinit = False

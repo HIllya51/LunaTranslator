@@ -235,6 +235,8 @@ class gptcommon(basetrans):
         super().__init__(typename)
 
     def translate(self, query_2: GptTextWithDict):
+        if isinstance(query_2, str):
+            query_2 = GptTextWithDict(query_2)
         extrabody, extraheader = getcustombodyheaders(
             self.config.get("customparams"), **locals()
         )

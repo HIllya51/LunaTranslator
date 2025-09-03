@@ -98,7 +98,10 @@ class wcocr:
 
         fp = NativeUtils.wcocr_ocr_CB(cb)
         succ = NativeUtils.wcocr_ocr(self.pobj, imgfile.encode("utf8"), fp)
-        os.remove(imgfile)
+        try:
+            os.remove(imgfile)
+        except:
+            pass
         if not succ:
             return
         boxs = []

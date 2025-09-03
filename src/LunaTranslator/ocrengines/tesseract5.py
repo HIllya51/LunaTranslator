@@ -98,7 +98,10 @@ class OCR(baseocr):
         _ = subprochiderun(
             '"{}" "{}" - -l {} --psm {}'.format(self.path, imgfile, lang, psm)
         )
-        os.remove(imgfile)
+        try:
+            os.remove(imgfile)
+        except:
+            pass
         res = _.stdout
         err = _.stderr
         if len(err):
