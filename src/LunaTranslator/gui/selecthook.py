@@ -428,7 +428,6 @@ class searchhookparam(LDialog):
 
 class hookselect(closeashidewindow):
     addnewhooksignal = pyqtSignal(tuple, bool, bool)
-    getnewsentencesignal = pyqtSignal(str)
     sysmessagesignal = pyqtSignal(int, str)
     removehooksignal = pyqtSignal(tuple)
     getfoundhooksignal = pyqtSignal(dict)
@@ -448,7 +447,6 @@ class hookselect(closeashidewindow):
         self.searchhookparam = None
         self.removehooksignal.connect(self.removehook)
         self.addnewhooksignal.connect(self.addnewhook)
-        self.getnewsentencesignal.connect(self.getnewsentence)
         self.sysmessagesignal.connect(self.sysmessage)
         self.update_item_new_line.connect(self.update_item_new_line_function)
         self.getfoundhooksignal.connect(self.getfoundhook)
@@ -472,6 +470,8 @@ class hookselect(closeashidewindow):
         row = self.querykeyindex(key)
         if row == -1:
             return
+        if row == self.tttable.currentIndex().row():
+            self.getnewsentence(output)
         output = output[:200].replace("\n", " ")
         colidx = 2 + int(bool(self.embedablenum))
         self.ttCombomodelmodel.item(row, colidx).setText(output)
@@ -512,7 +512,6 @@ class hookselect(closeashidewindow):
     def changeprocessclear(self):
         # self.ttCombo.clear()
         self.ttCombomodelmodel.clear()
-        self.at1 = 1
         self.textOutput.clear()
         self.allres = OrderedDict()
         self.hidesearchhookbuttons()
@@ -560,6 +559,8 @@ class hookselect(closeashidewindow):
                 self.ttCombomodelmodel.index(rown, 1),
                 checkbtn,
             )
+        if select and self.tttable.currentIndex() == -1:
+            self.tttable.setCurrentIndex(rown)
 
     def _check_tp_using(self, key):
         hc, hn, tp = key
@@ -717,6 +718,7 @@ class hookselect(closeashidewindow):
         self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
         self.tabwidget.addTab(self.textOutput, ("文本"))
         self.tabwidget.addTab(self.sysOutput, ("日志"))
+        self.tabwidget.setCurrentIndex(1)
 
     def showmenu(self, p: QPoint):
         index = self.tttable.currentIndex()
@@ -953,23 +955,18 @@ class hookselect(closeashidewindow):
             gobject.base.displayinfomessage(sentence, "<msg_info_append>")
 
     def getnewsentence(self, sentence):
-        if self.at1 == 2:
-            return
-
         self.textbrowappendandmovetoend(self.textOutput, sentence)
 
     def ViewThread2(self, index: QModelIndex):
         self.tabwidget.setCurrentIndex(0)
-        self.at1 = 2
         key = list(self.allres.keys())[index.row()]
         self.userhook.setText(key)
         self.textOutput.setPlainText("\n".join(self.allres[key]))
 
     def ViewThread(self, index: QModelIndex):
         self.tabwidget.setCurrentIndex(0)
-        self.at1 = 1
         try:
-            self.textsource.selectinghook = _, _, tp = self.querykeyofrow(index)
+            _, _, tp = self.querykeyofrow(index)
             self.textOutput.setPlainText(self.textsource.QueryThreadHistory(tp))
             self.textOutput.moveCursor(QTextCursor.MoveOperation.End)
         except:

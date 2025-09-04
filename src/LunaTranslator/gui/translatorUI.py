@@ -329,7 +329,6 @@ class ButtonBar(QFrame):
 
 class TranslatorWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
-    displaymessagebox = pyqtSignal(str, str)
     displayres = pyqtSignal(dict)
     displayraw1 = pyqtSignal(str, bool)
     displayraw2 = pyqtSignal(str)
@@ -1016,13 +1015,9 @@ class TranslatorWindow(resizableframeless):
     def displayglobaltooltip_f(self, string):
         QToolTip.showText(QCursor.pos(), string, self)
 
-    def displaymessagebox_f(self, string1, string2):
-        QMessageBox.information(self, _TR(string1), _TR(string2))
-
     def initsignals(self):
         self.hotkeyuse_selectprocsignal.connect(gobject.base.createattachprocess)
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
-        self.displaymessagebox.connect(self.displaymessagebox_f)
         self.ocr_once_signal.connect(self.ocr_once_function)
         self.displaystatus.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)

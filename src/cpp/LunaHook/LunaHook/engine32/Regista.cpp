@@ -24,6 +24,7 @@ namespace
 	}
 	bool _2()
 	{
+		bool succ = false;
 		const BYTE bytes[] = {
 			// old不是很好，old是strcmp，有很多乱七八糟的，这个是脚本的一些控制字符判断和shiftjis范围判断。
 			0x80, 0xF9, 0x81,
@@ -33,20 +34,33 @@ namespace
 			0x80, 0xF9, 0xE0,
 			XX2,
 			0x80, 0xF9, 0xFC};
-		auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-		ConsoleOutput("%p", addr);
-		if (!addr)
-			return false;
-		const BYTE start[] = {
-			0xCC, 0xCC, 0xCC, 0xCC};
-		addr = reverseFindBytes(start, sizeof(start), addr - 0x40, addr);
-		if (!addr)
-			return false;
-		HookParam hp;
-		hp.address = addr + 4;
-		hp.offset = regoffset(edx);
-		hp.type = USING_STRING;
-		return NewHook(hp, "Regista");
+		for (auto addr : Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE, processStartAddress, processStopAddress))
+		{
+			const BYTE start[] = {
+				0xCC, 0xCC, 0xCC, 0xCC};
+			addr = reverseFindBytes(start, sizeof(start), addr - 0x40, addr, 4);
+			if (!addr)
+				continue;
+			const BYTE check[] = {
+				0x8b, 0x15, XX4, // mov     edx, dword_3EA6904
+				0x8a, 0x0a,		 // mov     cl, [edx]
+			};
+			if (MatchPattern(addr, check, sizeof(check)))
+				addr += 6;
+			HookParam hp;
+			hp.address = addr;
+			hp.offset = regoffset(edx);
+			hp.type = USING_STRING;
+			hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+			{
+				// ……黒く、冷たい銃口と、%Nもっと冷たい、黒い瞳が……
+				auto s = buffer->strA();
+				s = re::sub(s, "%[Nn]");
+				buffer->from(s);
+			};
+			succ |= NewHook(hp, "Regista2");
+		}
+		return succ;
 	}
 }
 

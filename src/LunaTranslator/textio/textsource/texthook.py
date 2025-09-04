@@ -9,6 +9,7 @@ from myutils.config import (
     findgameuidofpath,
     _TR,
 )
+from main import checkintegrity
 from textio.textsource.textsourcebase import basetext
 from myutils.utils import getlangtgt, safe_escape, stringfyerror
 from myutils.kanjitrans import kanjitrans
@@ -129,7 +130,6 @@ class texthook(basetext):
         self.maybepids = []
         self.maybepidslock = threading.Lock()
         self.keepref = []
-        self.selectinghook = None
         self.selectedhook = []
         self.usermanualaccepthooks = []
         self.multiselectedcollector = []
@@ -369,6 +369,10 @@ class texthook(basetext):
             self.autohookmonitorthread()
 
     def start_unsafe(self, pids):
+        _ = checkintegrity()
+        if _:
+            gobject.base.RichMessageBox.emit(_)
+            return
         injectpids = []
         for pid in pids:
             self.Luna_ConnectProcess(pid)
@@ -419,7 +423,7 @@ class texthook(basetext):
             self.start_unsafe(pids)
         except Exception as e:
             print_exc()
-            gobject.base.translation_ui.displaymessagebox.emit("错误", stringfyerror(e))
+            gobject.base.RichMessageBox.emit((_TR("错误"), stringfyerror(e)))
 
     @threader
     def waitend(self, pid):
@@ -565,7 +569,6 @@ class texthook(basetext):
         autoindex = self.matchkeyindex(key)
         select = autoindex != -1
         if select:
-            self.selectinghook = key
             insertindex = len(self.selectedhook) - 1
             for j in range(len(self.selectedhook)):
                 if self.selectedhook[j] in self.usermanualaccepthooks:
@@ -686,9 +689,6 @@ class texthook(basetext):
                 self.dispatchtext(output)
             else:
                 self.dispatchtext_multiline_delayed(key, output)
-        if key == self.selectinghook:
-            gobject.base.hookselectdialog.getnewsentencesignal.emit(output)
-
         gobject.base.hookselectdialog.update_item_new_line.emit(key, output)
 
     def serialkey(self, key):

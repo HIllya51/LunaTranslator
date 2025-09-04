@@ -122,7 +122,6 @@ def checklang():
 def checkintegrity():
     from myutils.config import _TR
     from gobject import runtime_for_xp, runtime_for_win10, runtime_bit_64, GetDllpath
-    from gui.usefulwidget import RichMessageBox
     from myutils.utils import dynamiclink
 
     dll3264 = [
@@ -158,8 +157,7 @@ def checkintegrity():
         if not os.path.exists(f):
             collect.append(os.path.normpath(os.path.abspath(f)))
     if len(collect):
-        RichMessageBox(
-            None,
+        return (
             _TR("错误"),
             _TR("找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试").format(
                 modules="\n".join(collect)
@@ -168,6 +166,15 @@ def checkintegrity():
                 dynamiclink("README.html#anchor-commonerros", docs=True), _TR("说明")
             ),
         )
+    return None
+
+
+def __checkintegrity():
+    from gui.usefulwidget import RichMessageBox
+
+    args = checkintegrity()
+    if args:
+        RichMessageBox(None, *args)
         os._exit(0)
 
 
@@ -233,7 +240,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     # app.setQuitOnLastWindowClosed(False)
     checklang()
-    checkintegrity()
+    __checkintegrity()
     loadmainui(startwithgameuid)
     app.exit(app.exec())
     os._exit(0)

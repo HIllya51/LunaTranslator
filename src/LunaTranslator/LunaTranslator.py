@@ -59,9 +59,8 @@ from myutils.utils import nowisdark, dynamicapiname
 from myutils.traceplaytime import playtimemanager
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LDialog
-from gui.usefulwidget import pixmapviewer
 from gui.setting.setting import Setting
-from gui.usefulwidget import PopupWidget
+from gui.usefulwidget import PopupWidget, RichMessageBox, pixmapviewer
 from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
 from network.server.servicecollection import registerall
 from network.server.tcpservice import TCPService
@@ -99,6 +98,7 @@ class BASEOBJECT(QObject):
     showupdatebtn = pyqtSignal()
     createimageviewsig = pyqtSignal(QWidget)
     switchtotspage = pyqtSignal()
+    RichMessageBox = pyqtSignal(object)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -136,6 +136,9 @@ class BASEOBJECT(QObject):
         self.__connect_internal(self.showandsolvesig)
         self.__connect_internal(self.showupdatebtn)
         self.createimageviewsig.connect(self.createimageview)
+        self.RichMessageBox.connect(
+            lambda _: RichMessageBox(gobject.base.focusWindow, *_)
+        )
 
     @property
     def currentread(self):
