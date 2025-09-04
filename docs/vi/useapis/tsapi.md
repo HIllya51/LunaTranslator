@@ -64,10 +64,6 @@ https://yandex.cloud/en/docs/translate/api-ref/authentication#service-account_1
 
 https://www.huaweicloud.com/product/nlpmt.html
 
-== IBM
-
-https://github.com/IBM/watson-translator-101/blob/master/translation-document.md
-
 :::
 
 ## truyền thống
