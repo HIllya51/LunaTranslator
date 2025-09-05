@@ -855,6 +855,7 @@ class TranslatorWindow(resizableframeless):
                     rightclick=self.setselectableEx,
                 ),
             ),
+            ("reset_TS_status", buttonfunctions(clicked=gobject.base.prepare)),
         )
 
         _type = {"quit": 2}

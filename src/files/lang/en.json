@@ -861,5 +861,6 @@
     "连点器": "Auto Clicker",
     "点击间隔": "Click interval",
     "下载链接": "Download link",
-    "连接失败": "Connection failed"
+    "连接失败": "Connection failed",
+    "重置翻译状态": "Reset translation state"
 }

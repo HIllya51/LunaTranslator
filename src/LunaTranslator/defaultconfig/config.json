@@ -531,7 +531,8 @@
             "ocr_once_follow",
             "selectable",
             "minmize",
-            "quit"
+            "quit",
+            "reset_TS_status"
         ],
         "buttons": {
             "retrans": {
@@ -630,6 +631,12 @@
                 "use": false,
                 "tip": "再次进行OCR",
                 "icon": "fa.spinner",
+                "align": 2
+            },
+            "reset_TS_status": {
+                "use": false,
+                "tip": "重置翻译状态",
+                "icon": "fa.refresh",
                 "align": 2
             },
             "noundict_direct": {

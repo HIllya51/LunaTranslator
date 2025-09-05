@@ -176,3 +176,6 @@
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 단어 검색 {#anchor-searchwordW}
     현재 선택된 텍스트가 있으면 해당 텍스트를 검색하여 단어 검색 창을 엽니다. 그렇지 않으면 단어 검색 창을 열거나 닫기만 합니다.
+
+1. #### <i class="fa fa-refresh"></i> 번역 상태 재설정 {#anchor-reset_TS_status}
+    번역 상태를 재설정하며, 주로 증가하는 대규모 모델 번역需求에 대응하여 저장된 컨텍스트 및 기타 정보를 삭제할 수 있습니다.

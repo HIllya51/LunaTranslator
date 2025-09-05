@@ -175,3 +175,6 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Look Up Word {#anchor-searchwordW}
     If there is currently text selected, the selected text will be queried and a word search window will be opened. Otherwise, it will only open or close the keyword search window.
+
+1. #### <i class="fa fa-refresh"></i> Reset translation state {#anchor-reset_TS_status}
+    Resets the translation status, primarily addressing the growing demand for large model translations, and clears saved context and other information.

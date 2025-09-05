@@ -861,5 +861,6 @@
     "连点器": "Clic automatique",
     "点击间隔": "Intervalle de clics",
     "下载链接": "Lien de téléchargement",
-    "连接失败": "Échec de la connexion"
+    "连接失败": "Échec de la connexion",
+    "重置翻译状态": "Réinitialiser l'état de la traduction"
 }

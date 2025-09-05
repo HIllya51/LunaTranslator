@@ -861,5 +861,6 @@
     "连点器": "Klickautomat",
     "点击间隔": "Klickintervall",
     "下载链接": "Nedladdningslänk",
-    "连接失败": "Anslutningen misslyckades"
+    "连接失败": "Anslutningen misslyckades",
+    "重置翻译状态": "Återställ översättningsstatus."
 }

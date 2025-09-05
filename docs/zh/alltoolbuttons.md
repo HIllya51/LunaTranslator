@@ -177,3 +177,6 @@
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> 查词 {#anchor-searchwordW}
     如果当前有文本被选取，则会查询选取的文本并打开查词窗口。否则只是打开或关闭查词窗口。
   
+1. #### <i class="fa fa-refresh"></i> 重置翻译状态 {#anchor-reset_TS_status}
+    重置翻译状态，主要针对用于现在日益增长的大模型翻译需求，可以清除保存的上下文和其他信息。
+  
