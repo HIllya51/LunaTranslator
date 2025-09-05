@@ -233,10 +233,12 @@ class OcrLineBoundingBox(Structure):
         ("y4", c_float),
     ]
 
-
+#   if ( (unsigned int)(a2[1] - 50) > 0x26DE || (unsigned int)(a2[2] - 50) > 0x26DE )
+#     return 3i64;
 class OCR(baseocr):
     required_image_format = QImage
     required_mini_height = 50
+    required_mini_width = 50
 
     def init(self):
 
