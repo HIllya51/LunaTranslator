@@ -33,16 +33,14 @@
         "proxy": {
             "gpt": true,
             "api": false,
-            "free": true,
-            "external": true
+            "free": true
         },
         "ts": {
-            "gptoffline": true,
             "outdate": false,
             "gpt": true,
             "api": false,
             "free": true,
-            "external": true
+            "special": false
         }
     },
     "usecustomankigen": false,
@@ -76,8 +74,7 @@
                         "name": "阴影强度",
                         "type": "intspin",
                         "min": 1,
-                        "max": 100,
-                        "step": 1
+                        "max": 100
                     },
                     "shadowR": {
                         "name": "阴影半径",
@@ -90,8 +87,7 @@
                         "name": "阴影半径",
                         "type": "spin",
                         "min": 0,
-                        "max": 100,
-                        "step": 0.1
+                        "max": 100
                     }
                 }
             },
@@ -116,8 +112,7 @@
                         "name": "描边宽度",
                         "type": "spin",
                         "min": 0,
-                        "max": 100,
-                        "step": 0.1
+                        "max": 100
                     },
                     "width_rate": {
                         "name": "描边宽度",
@@ -155,8 +150,7 @@
                         "name": "描边宽度",
                         "type": "spin",
                         "min": 0,
-                        "max": 100,
-                        "step": 0.1
+                        "max": 100
                     },
                     "width_rate": {
                         "name": "描边宽度",
@@ -169,8 +163,7 @@
                         "name": "投影距离",
                         "type": "spin",
                         "min": 0,
-                        "max": 100,
-                        "step": 0.1
+                        "max": 100
                     }
                 }
             },
@@ -191,8 +184,7 @@
                         "name": "阴影强度",
                         "type": "intspin",
                         "min": 1,
-                        "max": 100,
-                        "step": 1
+                        "max": 100
                     },
                     "shadowR": {
                         "name": "阴影半径",
@@ -205,8 +197,7 @@
                         "name": "阴影半径",
                         "type": "spin",
                         "min": 0,
-                        "max": 100,
-                        "step": 0.1
+                        "max": 100
                     }
                 }
             }
@@ -289,7 +280,7 @@
         "limittextlength_length": 40,
         "clearText": false
     },
-    "requestinterval": 0.5,
+    "requestinterval": 0,
     "keepontop": true,
     "buttonsize": 20,
     "buttonsize2": 18,
@@ -471,7 +462,6 @@
     "settingfontbold": false,
     "buttoncolor": "#2e2eff",
     "buttoncolor_1": "#ff03f2",
-    "premtsimi2":75,
     "ocrrangecolor": "#000000",
     "ocrrangewidth": 2,
     "useproxy": true,
@@ -1150,7 +1140,6 @@
                     "type": "intspin",
                     "min": 1,
                     "max": 65535,
-                    "step": 1,
                     "name": "端口号"
                 }
             }
@@ -1394,7 +1383,6 @@
                     "type": "intspin",
                     "min": 1,
                     "max": 1000000,
-                    "step": 1,
                     "appends": [
                         "use_max_completion_tokens"
                     ]
@@ -1435,15 +1423,13 @@
                     "type": "intspin",
                     "name": "模糊匹配_编辑距离",
                     "min": 0,
-                    "max": 100,
-                    "step": 1
+                    "max": 100
                 },
                 "max_num": {
                     "type": "intspin",
                     "name": "最大结果条数",
                     "min": 1,
-                    "max": 9999,
-                    "step": 1
+                    "max": 9999
                 },
                 "stylehv": {
                     "type": "combo",

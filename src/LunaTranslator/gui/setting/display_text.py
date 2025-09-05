@@ -166,7 +166,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
                 dd,
                 key,
                 _type == "spin",
-                line.get("step", 0.1),
+                line.get("step", (1, 0.1)[_type == "spin"]),
                 callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             )
         elif _type == "switch":

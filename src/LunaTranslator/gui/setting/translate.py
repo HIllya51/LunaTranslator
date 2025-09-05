@@ -699,65 +699,24 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
     offlinegrid = initsome21(self, not_is_gpt_like)
     _, not_is_gpt_like = splitapillm(res.api)
     online_reg_grid = initsome2(self, res.free, not_is_gpt_like)
+    prets = initsome11(self, res.pre)
+    prets[-1] += ["", functools.partial(createbtnexport, self)]
     pretransgrid = [
-        [
-            dict(
-                type="grid",
-                title="其他设置",
-                grid=[
-                    [
-                        "最短翻译字数",
-                        D_getspinbox(0, 9999, globalconfig, "minlength"),
-                        "",
-                        "最长翻译字数",
-                        D_getspinbox(0, 9999, globalconfig, "maxlength"),
-                        "",
-                        "翻译请求间隔_(s)",
-                        D_getspinbox(
-                            0,
-                            9999,
-                            globalconfig,
-                            "requestinterval",
-                            step=0.1,
-                            double=True,
-                        ),
-                    ],
-                ],
-            ),
-        ],
-        [],
-        [
-            dict(
-                title="预翻译",
-                grid=[
-                    [
-                        dict(
-                            type="grid",
-                            grid=[
-                                [
-                                    "模糊匹配_相似度_%",
-                                    D_getspinbox(0, 100, globalconfig, "premtsimi2"),
-                                    "",
-                                    functools.partial(createbtnexport, self),
-                                ],
-                            ],
-                        ),
-                    ],
-                    [dict(type="grid", grid=initsome11(self, res.pre))],
-                ],
-            ),
-        ],
+        [dict(type="grid", title="预翻译", grid=prets)],
         [dict(type="grid", title="其他", grid=initsome11(self, res.other))],
     ]
     pretransgrid += offlinegrid
-    savelay = []
-    tab, dotab = makesubtab_lazy(
-        ["翻译接口", "其他"],
+    pretransgrid = [
         [
-            functools.partial(makescrollgrid, online_reg_grid, savelay=savelay),
-            functools.partial(makescrollgrid, pretransgrid),
+            functools.partial(
+                createfoldgrid,
+                pretransgrid,
+                "其他",
+                globalconfig["foldstatus"]["ts"],
+                "special",
+            )
         ],
-        delay=True,
-    )
-    basel.addWidget(tab)
-    dotab()
+    ]
+    online_reg_grid += pretransgrid
+    savelay = []
+    makescrollgrid(online_reg_grid, basel, savelay=savelay)

@@ -672,7 +672,7 @@ class autoinitdialog(LDialog):
                 __temp,
                 "k",
                 line["type"] == "spin",
-                line.get("step", 0.1),
+                line.get("step", (1, 0.1)[line["type"] == "spin"]),
             )
             self.regist[key] = lineW.value
         elif line["type"] == "split":

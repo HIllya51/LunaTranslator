@@ -40,8 +40,7 @@
                 "name": "截取行数",
                 "type": "intspin",
                 "min": -99999999,
-                "max": 99999999,
-                "step": 1
+                "max": 99999999
             },
             "cut_reverse": {
                 "name": "截取末尾",
@@ -63,8 +62,7 @@
             "重复次数(若为1则自动分析去重)": {
                 "type": "intspin",
                 "min": 1,
-                "max": 10000,
-                "step": 1
+                "max": 10000
             }
         },
         "isHookOnly": true
@@ -79,8 +77,7 @@
             "重复次数(若为1则自动分析去重)": {
                 "type": "intspin",
                 "min": 1,
-                "max": 10000,
-                "step": 1
+                "max": 10000
             }
         },
         "isHookOnly": true

@@ -46,7 +46,7 @@ class TS(basetrans):
                 return {}
         else:
             sql = self.sql
-        if globalconfig["premtsimi2"] < 100:
+        if self.config["premtsimi2"] < 100:
             maxsim = 0
             savet = "{}"
             ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
@@ -58,7 +58,7 @@ class TS(basetrans):
                 dis = NativeUtils.similarity(content, text)
                 if dis > maxsim:
                     maxsim = dis
-                    if maxsim * 100 >= globalconfig["premtsimi2"]:
+                    if maxsim * 100 >= self.config["premtsimi2"]:
                         savet = trans
             try:
                 ret = json.loads(savet)
