@@ -395,7 +395,6 @@ class AnkiWindow(QWidget):
             "例句中加粗单词",
             getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
         )
-        layout.addRow("不添加辞书", getIconButton(self.vistranslate_rank))
         layout.addRow(
             "成功添加后关闭窗口",
             getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
@@ -437,16 +436,6 @@ class AnkiWindow(QWidget):
             getspinbox(6, 256, globalconfig, "opusbitrate"),
         )
         __(globalconfig["audioformat"])
-
-    def vistranslate_rank(self):
-        listediter(
-            self,
-            "不添加辞书",
-            globalconfig["ignoredict"],
-            candidates=cishusX(),
-            namemapfunction=dynamiccishuname,
-            exec=True,
-        )
 
     @threader
     def simulate_key(self, i):
@@ -1284,6 +1273,20 @@ class WordViewer(QWidget):
     internalsizechanged = pyqtSignal(QSize)
     internalmoved = pyqtSignal(QPoint)
 
+    def tabmenu(self, idx):
+        menu = QMenu(self)
+        isinsert = LAction("不添加到Anki", menu)
+        isinsert.setCheckable(True)
+        caninsert = self.tabks[idx] in globalconfig["ignoredict"]
+        isinsert.setChecked(caninsert)
+        menu.addAction(isinsert)
+        action = menu.exec(QCursor.pos())
+        if action == isinsert:
+            if isinsert.isChecked():
+                globalconfig["ignoredict"].append(self.tabks[idx])
+            else:
+                globalconfig["ignoredict"].remove(self.tabks[idx])
+
     def __init__(self, parent=None, tabonehide=False, transp=False):
         super().__init__(parent)
         self.tabonehide = tabonehide
@@ -1301,6 +1304,7 @@ class WordViewer(QWidget):
         self.tab = CustomTabBar()
         self.__show_dict_result.connect(self.__show_dict_result_function)
         self.tab.tabBarClicked.connect(self.tabclicked)
+
         self.tabcurrentindex = -1
 
         self.tab.currentChanged.connect(self.__tabcurrentChanged)
@@ -1400,6 +1404,11 @@ class WordViewer(QWidget):
             self.cache_results_highlighted.pop(k)
 
     def tabclicked(self, idx):
+        buttons = QApplication.mouseButtons()
+
+        if buttons == Qt.MouseButton.RightButton:
+            return self.tabmenu(idx)
+
         self.tab.setCurrentIndex(idx)
         self.hasclicked = True
         try:

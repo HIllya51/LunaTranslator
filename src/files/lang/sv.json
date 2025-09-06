@@ -525,7 +525,6 @@
     "删除图片文件": "Ta bort bildfiler",
     "启动方式": "Startmetod",
     "直接启动": "Starta direkt",
-    "不添加辞书": "Lägg inte till en ordlista",
     "识别方向": "Identifiera riktning",
     "横向": "tvärgående",
     "竖向": "vertikal",
@@ -862,5 +861,6 @@
     "点击间隔": "Klickintervall",
     "下载链接": "Nedladdningslänk",
     "连接失败": "Anslutningen misslyckades",
-    "重置翻译状态": "Återställ översättningsstatus."
+    "重置翻译状态": "Återställ översättningsstatus.",
+    "不添加到Anki": "Lägg inte till i Anki"
 }

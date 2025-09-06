@@ -525,7 +525,6 @@
     "删除图片文件": "Delete Image Files",
     "启动方式": "Startup Method",
     "直接启动": "Launch Directly",
-    "不添加辞书": "Without Dictionary",
     "识别方向": "Recognition Direction",
     "横向": "Horizontal",
     "竖向": "Vertical",
@@ -862,5 +861,6 @@
     "点击间隔": "Click interval",
     "下载链接": "Download link",
     "连接失败": "Connection failed",
-    "重置翻译状态": "Reset translation state"
+    "重置翻译状态": "Reset translation state",
+    "不添加到Anki": "Do not add to Anki."
 }

@@ -525,7 +525,6 @@
     "删除图片文件": "Smazat obrázkové soubory",
     "启动方式": "Metoda spuštění",
     "直接启动": "Přímo spustit",
-    "不添加辞书": "Nepřidávat slovník",
     "识别方向": "Určit směr",
     "横向": "příčná",
     "竖向": "vertikální",
@@ -862,5 +861,6 @@
     "点击间隔": "Interval mezi kliknutími",
     "下载链接": "Odkaz ke stažení",
     "连接失败": "Připojení selhalo.",
-    "重置翻译状态": "Resetovat stav překladu"
+    "重置翻译状态": "Resetovat stav překladu",
+    "不添加到Anki": "Nepřidávat do Anki"
 }

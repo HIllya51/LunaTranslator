@@ -525,7 +525,6 @@
     "删除图片文件": "Apagar os ficheiros de imagem",
     "启动方式": "Método de arranque",
     "直接启动": "Iniciar directamente",
-    "不添加辞书": "Não adicionar um dicionário",
     "识别方向": "Identificar a direcção",
     "横向": "transversal",
     "竖向": "vertical",
@@ -862,5 +861,6 @@
     "点击间隔": "Intervalo de cliques",
     "下载链接": "Link de download",
     "连接失败": "Falha na conexão",
-    "重置翻译状态": "Redefinir o estado de tradução."
+    "重置翻译状态": "Redefinir o estado de tradução.",
+    "不添加到Anki": "Não adicionar ao Anki"
 }

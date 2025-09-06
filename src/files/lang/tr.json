@@ -525,7 +525,6 @@
     "删除图片文件": "Resim dosyalarını sil",
     "启动方式": "Başlangıç yöntemi",
     "直接启动": "Direkten başla",
-    "不添加辞书": "Sözlük eklemeyin",
     "识别方向": "Doğru belirle",
     "横向": "transverse",
     "竖向": "dikey",
@@ -862,5 +861,6 @@
     "点击间隔": "Tıklama aralığı",
     "下载链接": "İndirme bağlantısı",
     "连接失败": "Bağlantı başarısız",
-    "重置翻译状态": "Çeviri durumu sıfırlandı."
+    "重置翻译状态": "Çeviri durumu sıfırlandı.",
+    "不添加到Anki": "Anki'ye ekleme"
 }

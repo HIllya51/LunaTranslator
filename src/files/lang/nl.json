@@ -525,7 +525,6 @@
     "删除图片文件": "Afbeeldingsbestanden verwijderen",
     "启动方式": "Opstartmethode",
     "直接启动": "Direct starten",
-    "不添加辞书": "Geen woordenboek toevoegen",
     "识别方向": "Identificeer richting",
     "横向": "dwars",
     "竖向": "verticaal",
@@ -862,5 +861,6 @@
     "点击间隔": "Klikinterval",
     "下载链接": "Downloadlink",
     "连接失败": "Verbinding mislukt",
-    "重置翻译状态": "Reset vertaalstatus."
+    "重置翻译状态": "Reset vertaalstatus.",
+    "不添加到Anki": "Niet toevoegen aan Anki."
 }

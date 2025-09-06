@@ -525,7 +525,6 @@
     "删除图片文件": "Usuń pliki obrazów",
     "启动方式": "Metoda uruchomienia",
     "直接启动": "Bezpośredni start",
-    "不添加辞书": "Nie dodawaj słownika",
     "识别方向": "Określić kierunek",
     "横向": "poprzeczne",
     "竖向": "pionowy",
@@ -862,5 +861,6 @@
     "点击间隔": "Interwał kliknięć",
     "下载链接": "Link do pobrania",
     "连接失败": "Połączenie nie powiodło się",
-    "重置翻译状态": "Zresetuj stan tłumaczenia."
+    "重置翻译状态": "Zresetuj stan tłumaczenia.",
+    "不添加到Anki": "Nie dodawać do Anki."
 }

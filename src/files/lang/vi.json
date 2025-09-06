@@ -525,7 +525,6 @@
     "删除图片文件": "Xoá tập tin ảnh",
     "启动方式": "Cách bắt đầu",
     "直接启动": "Khởi động trực tiếp",
-    "不添加辞书": "Không thêm từ điển",
     "识别方向": "Xác định hướng",
     "横向": "Phong cảnh",
     "竖向": "Dọc",
@@ -862,5 +861,6 @@
     "点击间隔": "Khoảng cách nhấp chuột",
     "下载链接": "Liên kết tải xuống",
     "连接失败": "Kết nối thất bại",
-    "重置翻译状态": "Thiết lập lại trạng thái dịch thuật."
+    "重置翻译状态": "Thiết lập lại trạng thái dịch thuật.",
+    "不添加到Anki": "Không thêm vào Anki"
 }

@@ -525,7 +525,6 @@
     "删除图片文件": "Bilddateien löschen",
     "启动方式": "Startmethode",
     "直接启动": "Direkt starten",
-    "不添加辞书": "Kein Wörterbuch hinzufügen",
     "识别方向": "Richtung bestimmen",
     "横向": "quer",
     "竖向": "vertikal",
@@ -862,5 +861,6 @@
     "点击间隔": "Klickintervall",
     "下载链接": "Download-Link",
     "连接失败": "Verbindung fehlgeschlagen",
-    "重置翻译状态": "Übersetzungsstatus zurücksetzen"
+    "重置翻译状态": "Übersetzungsstatus zurücksetzen",
+    "不添加到Anki": "Nicht zu Anki hinzufügen."
 }
