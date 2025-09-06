@@ -5,6 +5,29 @@
 		}
 	},
 	"google": {},
+	"chromeai": {
+		"args": {
+			"chromepath": "",
+			"debugport": 9222
+		},
+		"argstype": {
+			"chromepath": {
+				"name": "Chromium_路径",
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"type": "file",
+				"dir": false
+			},
+			"debugport": {
+				"name": "端口号",
+				"refcombo": "usewhich",
+				"refcombo_i": 1,
+				"type": "intspin",
+				"min": 0,
+				"max": 1000000
+			}
+		}
+	},
 	"deepl_1": {
 		"args": {
 			"usewhich": 1,

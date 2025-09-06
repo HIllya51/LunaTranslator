@@ -127,21 +127,21 @@ class APItts(HTTPHandler):
         if not text:
             raise Exception()
         ret: "list[TTSResult]" = []
-        sema = threading.Semaphore(0)
+        sema = threading.Event()
         gobject.base.reader.ttscallback(
             text,
             functools.partial(self.callbacktts, sema, ret),
         )
-        sema.acquire()
+        sema.wait()
         if ret[0].error:
             return {"error": ret[0].error}
         return ResponseWithHeader(
             data=ret[0].data, headers={"content-type": ret[0].mime}
         )
 
-    def callbacktts(self, sema: threading.Semaphore, ret: list, result: TTSResult):
+    def callbacktts(self, sema: threading.Event, ret: list, result: TTSResult):
         ret.append(result)
-        sema.release()
+        sema.set()
 
 
 class APIocr(HTTPHandler):
@@ -196,7 +196,7 @@ class APITranslate(HTTPHandler):
 
         ret = []
         error = []
-        sema = threading.Semaphore(0)
+        sema = threading.Event()
         gobject.base.textgetmethod(
             text,
             False,
@@ -205,7 +205,7 @@ class APITranslate(HTTPHandler):
             waitforresultcallbackengine_force=True,
             erroroutput=error.append,
         )
-        sema.acquire()
+        sema.wait()
         if error:
             error: TranslateError = error[0]
             err = dict(error=error.message)
@@ -219,9 +219,9 @@ class APITranslate(HTTPHandler):
             name=_TR(dynamicapiname(result.id)), result=result.result, id=result.id
         )
 
-    def __notify(self, sema: threading.Semaphore, ret: list, result):
+    def __notify(self, sema: threading.Event, ret: list, result):
         ret.append(result)
-        sema.release()
+        sema.set()
 
 
 class APISearchWord(HTTPHandler):
@@ -253,17 +253,17 @@ class APISearchWord(HTTPHandler):
         if not cishu:
             return {}
         ret = []
-        sema = threading.Semaphore(0)
+        sema = threading.Event()
         cishu.safesearch(functools.partial(self.__notify, dictid, sema, ret), word)
-        sema.acquire()
+        sema.wait()
         k, result = ret[0]
         if not result:
             return {}
         return dict(name=_TR(dynamiccishuname(k)), result=result, id=k)
 
-    def __notify(self, k, sema: threading.Semaphore, ret: list, result):
+    def __notify(self, k, sema: threading.Event, ret: list, result):
         ret.append((k, result))
-        sema.release()
+        sema.set()
 
 
 class PageMainui(HTTPHandler):

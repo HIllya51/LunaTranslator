@@ -2,6 +2,7 @@ from qtsymbols import *
 import os, functools, hashlib, json, math, csv, io, pickle
 from traceback import print_exc
 import windows, qtawesome, NativeUtils, gobject
+from NativeUtils import WebView2
 import re
 from myutils.config import _TR, globalconfig, mayberelpath
 from myutils.wrapper import Singleton, threader, tryprint
@@ -1404,16 +1405,6 @@ class abstractwebview(QWidget):
     def navigate(self, url):
         pass
 
-    def wrapgetlabel(self, getlabel):
-        if not getlabel:
-            return
-
-        def __(f):
-            _ = f()
-            return NativeUtils.str_alloc(_)
-
-        return functools.partial(__, getlabel)
-
     def add_menu(self, index=0, getlabel=None, callback=None):
         return index + 1
 
@@ -1660,7 +1651,7 @@ class Exteditor(LDialog):
         if not res:
             return
         res = self.checkplgdirvalid(res)
-        WebviewWidget.Extensions_Add(res)
+        WebView2.Extensions.Add(res)
         self.listexts()
 
     def checkplgdirvalid(self, res):
@@ -1691,7 +1682,7 @@ class Exteditor(LDialog):
 
     def listexts(self):
         self.model.removeRows(0, self.model.rowCount())
-        for _i, (_id, name, able) in enumerate(WebviewWidget.Extensions_List()):
+        for _i, (_id, name, able) in enumerate(WebView2.Extensions.List()):
 
             _i = self.model.rowCount()
             item = QStandardItem(name)
@@ -1744,7 +1735,7 @@ class Exteditor(LDialog):
     ):
         if not (i1.isValid() and i4.isValid()):
             return t.stop()
-        info = WebviewWidget.Extensions_Manifest_Info(_id)
+        info = WebView2.Extensions.Manifest_Info(_id)
         if info is None:
             return
         setting = info.get("url")
@@ -1773,11 +1764,11 @@ class Exteditor(LDialog):
         t.stop()
 
     def enablex(self, _id, able, _):
-        WebviewWidget.Extensions_Enable(_id, able)
+        WebView2.Extensions.Enable(_id, able)
         self.listexts()
 
     def removex(self, _id):
-        WebviewWidget.Extensions_Remove(_id)
+        WebView2.Extensions.Remove(_id)
         self.listexts()
 
     def tryMessage(self, func, *args):
@@ -1808,21 +1799,13 @@ class WebviewWidget(abstractwebview):
         return json.loads(_[0])
 
     def bind(self, fname, func):
-        self.binds[fname] = func
-        NativeUtils.webview2_bind(self.webview, fname)
+        self.webview.bind(fname, func)
 
     def eval(self, js, callback=None):
-        cb = NativeUtils.webview2_evaljs_CALLBACK(callback) if callback else None
-        NativeUtils.webview2_evaljs(self.webview, js, cb)
+        self.webview.eval(js, callback)
 
     def add_menu(self, index=0, getlabel=None, callback=None):
-        __ = NativeUtils.webview2_add_menu_CALLBACK(callback) if callback else None
-        self.callbacks.append(__)
-        getlabel = self.wrapgetlabel(getlabel)
-        __3 = NativeUtils.webview2_contextmenu_gettext(getlabel) if getlabel else None
-        self.callbacks.append(__3)
-        NativeUtils.webview2_add_menu(self.webview, index, __3, __)
-        return index + 1
+        return self.webview.add_menu(index=index, getlabel=getlabel, callback=callback)
 
     def add_menu_noselect(
         self,
@@ -1833,27 +1816,14 @@ class WebviewWidget(abstractwebview):
         getchecked=None,
         getuse=None,
     ):
-        __ = (
-            NativeUtils.webview2_add_menu_noselect_CALLBACK(callback)
-            if callback
-            else None
+        return self.webview.add_menu_noselect(
+            index=index,
+            getlabel=getlabel,
+            callback=callback,
+            checkable=checkable,
+            getchecked=getchecked,
+            getuse=getuse,
         )
-        self.callbacks.append(__)
-        __1 = (
-            NativeUtils.webview2_add_menu_noselect_getchecked(getchecked)
-            if getchecked
-            else None
-        )
-        self.callbacks.append(__1)
-        __2 = NativeUtils.webview2_add_menu_noselect_getuse(getuse) if getuse else None
-        self.callbacks.append(__2)
-        getlabel = self.wrapgetlabel(getlabel)
-        __3 = NativeUtils.webview2_contextmenu_gettext(getlabel) if getlabel else None
-        self.callbacks.append(__3)
-        NativeUtils.webview2_add_menu_noselect(
-            self.webview, index, __3, __, checkable, __1, __2
-        )
-        return index + 1
 
     @staticmethod
     def showError(e: Exception):
@@ -1874,161 +1844,33 @@ class WebviewWidget(abstractwebview):
             ),
         )
 
-    @staticmethod
-    def __getuserdir():
-        _ = []
-        __ = NativeUtils.webview2_get_userdir_callback(_.append)
-        NativeUtils.webview2_get_userdir(__)
-        if _:
-            return _[0]
-
-    @staticmethod
-    def __ExtensionDir(extid: str):
-        path = WebviewWidget.__getuserdir()
-        if not path:
-            return
-        path = os.path.join(path, "EBWebView/Default/Secure Preferences")
-        try:
-            with open(path, "r", encoding="utf8") as ff:
-                js = json.load(ff)
-            path = js["extensions"]["settings"][extid]["path"]
-            return path
-        except:
-            pass
-
-    @staticmethod
-    def Extensions_Manifest_Info(extid: str):
-        path = WebviewWidget.__ExtensionDir(extid)
-        if not path:
-            return
-        path1 = os.path.join(path, "manifest.json")
-        try:
-            with open(path1, "r", encoding="utf8") as ff:
-                manifest = json.load(ff)
-            data = {}
-            data["path"] = path
-            try:
-                icons = manifest["icons"]
-                icon = icons[str(max((int(_) for _ in icons)))]
-                data["icon"] = os.path.join(path, icon)
-            except:
-                pass
-            try:
-                path = manifest["options_ui"]["page"]
-                url = "chrome-extension://{}/{}".format(extid, path)
-                data["url"] = url
-            except:
-                pass
-            return data
-        except:
-            return
-
-    @staticmethod
-    def Extensions_List():
-        collect = []
-
-        def __(_, _1, _2):
-            collect.append((_, _1, _2))
-
-        _ = NativeUtils.webview2_list_ext_CALLBACK_T(__)
-        windows.CHECK_FAILURE(NativeUtils.webview2_ext_list(_))
-        return collect
-
-    @staticmethod
-    def Extensions_Enable(_id, enable):
-        windows.CHECK_FAILURE(NativeUtils.webview2_ext_enable(_id, enable))
-
-    @staticmethod
-    def Extensions_Remove(_id):
-        windows.CHECK_FAILURE(NativeUtils.webview2_ext_rm(_id))
-
-    @staticmethod
-    def Extensions_Add(path):
-        windows.CHECK_FAILURE(NativeUtils.webview2_ext_add(path))
-
-    @staticmethod
-    def findFixedRuntime():
-        hasset = os.environ.get("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER")
-        if hasset:
-            # 已设置的环境变量会影响检测。直接返回就行了
-            return hasset
-        maxversion = (0, 0, 0, 0)
-        maxvf = None
-
-        for f in os.listdir("."):
-            f = os.path.abspath(f)
-            version = NativeUtils.detect_webview2_version(f)
-            # 这个API似乎可以检测runtime是否是有效的，比自己查询版本更好
-            if not version:
-                continue
-            if (version[0] > 109) and gobject.sys_le_win81:
-                continue
-            if version > maxversion:
-                maxversion = version
-                maxvf = f
-                print(maxversion, f)
-        return maxvf
-
-    @staticmethod
-    def onDestroy(ptr):
-        NativeUtils.webview2_destroy(ptr)
-
     def event(self, a0: QEvent):
         if a0.type() == QEvent.Type.User + 1:
-            NativeUtils.webview2_put_PreferredColorScheme(
-                self.webview, globalconfig["darklight2"]
-            )
+            self.webview.put_PreferredColorScheme(globalconfig["darklight2"])
         return super().event(a0)
 
     def __init__(self, parent=None, transp=False, loadext=False) -> None:
         super().__init__(parent)
-        self.webview = None
-        self.binds = {}
-        self.callbacks = []
         self.url = ""
-        FixedRuntime = WebviewWidget.findFixedRuntime()
-        if FixedRuntime:
-            os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
-            # 在共享路径上无法运行
-            os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
-        self.webview = NativeUtils.WebView2PTR()
-        windows.CHECK_FAILURE(
-            NativeUtils.webview2_create(
-                windows.pointer(self.webview), int(self.winId()), transp, loadext
-            )
-        )
-        NativeUtils.webview2_put_PreferredColorScheme(
-            self.webview, globalconfig["darklight2"]
+        self.webview = WebView2(
+            int(self.winId()), transp, loadext, globalconfig["darklight2"]
         )
         self.loadextensionwindow.connect(self.__loadextensionwindow)
-        self.destroyed.connect(functools.partial(WebviewWidget.onDestroy, self.webview))
-        self.monitorptrs = []
-        self.monitorptrs.append(
-            NativeUtils.webview2_zoomchange_callback_t(self.zoomchange)
+        self.destroyed.connect(self.webview.destroy)
+        self.webview.set_observe_ptrs(
+            self.zoomchange,
+            self.__on_load,
+            self.dropfilecallback.emit,
+            self.titlechanged.emit,
+            self.IconChangedF,
         )
-        self.monitorptrs.append(
-            NativeUtils.webview2_navigating_callback_t(self.__on_load)
-        )
-        self.monitorptrs.append(
-            NativeUtils.webview2_webmessage_callback_t(self.webmessage_callback_f)
-        )
-        self.monitorptrs.append(
-            NativeUtils.webview2_FilesDropped_callback_t(self.dropfilecallback.emit)
-        )
-        self.monitorptrs.append(
-            NativeUtils.webview2_titlechange_callback_t(self.titlechanged.emit)
-        )
-        self.monitorptrs.append(
-            NativeUtils.webview2_IconChanged_callback_t(self.IconChangedF)
-        )
-        NativeUtils.webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
 
         self.add_menu()
         self.add_menu_noselect()
         self.cachezoom = 1
 
     def set_transparent(self, b):
-        NativeUtils.webview2_set_transparent(self.webview, b)
+        self.webview.set_transparent(b)
 
     def IconChangedF(self, ptr, size):
         pixmap = QPixmap()
@@ -2046,42 +1888,28 @@ class WebviewWidget(abstractwebview):
     def __loadextensionwindow(self, url: str):
         ExtensionSetting(None, url, None)
 
-    def webmessage_callback_f(self, js: str):
-        # 其实不应该在这里处理回调，否则例如如果在这里用getHTML，会卡死。
-        # 应该用PostMessageW(m_message_window, WM_APP, 0, (LPARAM) func)传出去再处理才对。
-        # 但是暂时没问题，就先这样吧。
-        try:
-            js = json.loads(js)
-            method = js.get("method")
-            args = js.get("args")
-            self.binds[method](*args)
-        except:
-            print_exc()
-
     def zoomchange(self, zoom):
         self.cachezoom = zoom
         self.on_ZoomFactorChanged.emit(zoom)
         self.set_zoom(zoom)  # 置为默认值，档navi/sethtml时才能保持
 
     def set_zoom(self, zoom):
-        NativeUtils.webview2_put_ZoomFactor(self.webview, zoom)
-        self.cachezoom = NativeUtils.webview2_get_ZoomFactor(self.webview)
+        self.webview.set_zoom(zoom)
+        self.cachezoom = self.webview.get_zoom()
 
     def get_zoom(self):
         # NativeUtils.get_ZoomFactor(self.get_controller()) 性能略差
         return self.cachezoom
 
     def navigate(self, url):
-        NativeUtils.webview2_navigate(self.webview, url)
+        self.webview.navigate(url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
         r = self.devicePixelRatioF()
-        NativeUtils.webview2_resize(
-            self.webview, int(r * a0.size().width()), int(r * a0.size().height())
-        )
+        self.webview.resize(r * a0.size().width(), int(r * a0.size().height()))
 
     def setHtml(self, html):
-        NativeUtils.webview2_sethtml(self.webview, html)
+        self.webview.setHtml(html)
 
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
@@ -2246,7 +2074,7 @@ class mshtmlWidget(abstractwebview):
     def add_menu(self, index=0, getlabel=None, callback=None):
         cb = NativeUtils.html_add_menu_cb(callback) if callback else None
         self.callbacks.append(cb)
-        getlabel = self.wrapgetlabel(getlabel)
+        getlabel = NativeUtils.wrapgetlabel(getlabel)
         cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
         self.callbacks.append(cb2)
         NativeUtils.html_add_menu(self.browser, index, cb2, cb)
@@ -2263,7 +2091,7 @@ class mshtmlWidget(abstractwebview):
     ):
         cb = NativeUtils.html_add_menu_cb2(callback) if callback else None
         self.callbacks.append(cb)
-        getlabel = self.wrapgetlabel(getlabel)
+        getlabel = NativeUtils.wrapgetlabel(getlabel)
         cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
         self.callbacks.append(cb2)
         NativeUtils.html_add_menu_noselect(self.browser, index, cb2, cb)
@@ -2830,7 +2658,7 @@ class listediter(LDialog):
         self,
         parent,
         title,
-        lst,
+        lst: list,
         closecallback=None,
         ispathsedit=None,
         isrankeditor=False,
@@ -3034,7 +2862,7 @@ class listediterline(QHBoxLayout):
     def __init__(
         self,
         name,
-        reflist,
+        reflist: list,
         ispathsedit=None,
         directedit=False,
         specialklass=None,
@@ -3060,7 +2888,7 @@ class listediterline(QHBoxLayout):
         self.directedit = directedit
         if directedit:
 
-            def __(t):
+            def __(t: str):
                 self.reflist.clear()
                 self.reflist.extend(t.split("|"))
 
@@ -3082,7 +2910,9 @@ class listediterline(QHBoxLayout):
             self.edit.setReadOnly(False)
 
 
-def openfiledirectory(directory, multi, edit, isdir, filter1="*.*", callback=None):
+def openfiledirectory(
+    directory, multi, edit: QTextEdit, isdir, filter1="*.*", callback=None
+):
     if isdir:
         res = QFileDialog.getExistingDirectory(directory=directory)
     else:

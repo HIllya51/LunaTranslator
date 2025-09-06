@@ -19,9 +19,7 @@ from ctypes import (
     byref,
     cast,
 )
-import os
 from ctypes.wintypes import (
-    MAX_PATH,
     LPVOID,
     RECT,
     POINT,
@@ -181,6 +179,7 @@ _kernel32 = windll.Kernel32
 _psapi = windll.Psapi
 _Advapi32 = windll.Advapi32
 _Shlwapi = windll.Shlwapi
+_Ole32 = windll.Ole32
 
 CloseHandle = _kernel32.CloseHandle
 CloseHandle.argtypes = (HANDLE,)
@@ -828,8 +827,18 @@ class HRESULT_ERROR(Exception):
     pass
 
 
+def FAILED(hr):
+    hr = HRESULT(hr).value
+    return hr < 0
+
+
+def SUCCEEDDED(hr):
+    hr = HRESULT(hr).value
+    return hr >= 0
+
+
 def CHECK_FAILURE(hr, module=None):
-    if hr < 0:
+    if FAILED(hr):
         raise HRESULT_ERROR(FormatMessage(hr, module))
 
 
@@ -888,3 +897,27 @@ def LCIDToLocaleName(lcid: int) -> str:
     if not _LCIDToLocaleName(lcid, buff, LOCALE_NAME_MAX_LENGTH, 0):
         raise Exception(GetLastError())
     return buff.value
+
+
+CoInitialize = _Ole32.CoInitialize
+CoInitialize.argtypes = (LPVOID,)
+CoInitialize.restype = HRESULT
+
+
+CoUninitialize = _Ole32.CoUninitialize
+
+
+class CO_INIT:
+    def __init__(self):
+        self.hr = CoInitialize(None)
+
+    def __del__(self):
+        if SUCCEEDDED(self.hr):
+            CoUninitialize()
+
+
+WM_APP = 0x8000
+WM_DESTROY = 0x2
+
+DestroyWindow = _user32.DestroyWindow
+DestroyWindow.argtypes = (HWND,)

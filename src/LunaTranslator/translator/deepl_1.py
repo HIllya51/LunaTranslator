@@ -28,16 +28,6 @@ class cdp_deepl(cdp_helper):
         super().__init__(ref)
         self.langs = None
 
-    def checklang(self):
-        if self.srclang != Languages.Auto:
-            return self.srclang
-        self.langs = (self.srclang, self.tgtlang)
-        href = self.wait_for_result("window.location.href")
-        try:
-            return href.split("/translator#")[1].split("/")[0]
-        except:
-            return Languages.Japanese
-
     def translate(self, content):
 
         self.Runtime_evaluate(

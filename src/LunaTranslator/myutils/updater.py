@@ -15,7 +15,7 @@ versionchecktask = queue.Queue()
 
 @threader
 def testdocconnect():
-    wait = threading.Semaphore(0)
+    wait = threading.Event()
     results = []
     proxy = getproxy()
     for i, main_server in enumerate(static_data["docs_server"]):
@@ -26,15 +26,15 @@ def testdocconnect():
             res = requests.get(main_server, verify=False, proxies=proxy)
             if res.status_code == 200:
                 results.append((i, res))
-                wait.release()
+                wait.set()
 
         __(i, main_server, proxy)
-    wait.acquire()
+    wait.wait()
     gobject.serverindex2 = results[0][0]
 
 
 def tryqueryfromhost():
-    wait = threading.Semaphore(0)
+    wait = threading.Event()
     results = []
     proxy = getproxy()
     for i, main_server in enumerate(static_data["main_server"]):
@@ -50,12 +50,12 @@ def tryqueryfromhost():
             )
             res = res.json()
             results.append((i, res))
-            wait.release()
+            wait.set()
 
         __(i, main_server, proxy)
         if proxy.get("https"):
             __(i, main_server, None)
-    wait.acquire()
+    wait.wait()
     gobject.serverindex = results[0][0]
     return results[0][1]["version"], results[0][1]
 

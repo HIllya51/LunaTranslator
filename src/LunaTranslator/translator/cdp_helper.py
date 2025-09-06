@@ -79,20 +79,25 @@ class cdp_helper:
         self._SendRequest("Page.navigate", {"url": url})
         self._wait_document_ready()
 
-    def Runtime_evaluate(self, expression):
-        return self._SendRequest("Runtime.evaluate", {"expression": expression})
+    def Runtime_evaluate(self, expression, awaitPromise=False) -> "dict[str, dict]":
+        _ = {"expression": expression}
+        if awaitPromise:
+            _.update(awaitPromise=True)
+        return self._SendRequest("Runtime.evaluate", _)
 
-    def wait_for_result(self, expression):
+    def wait_for_result(self, expression, awaitPromise=False, ignoreException=True):
         for i in range(10000):
             if self.using == False:
                 return
-            state = self.Runtime_evaluate(expression)
-            try:
-                value = state["result"]["value"]
+            state = self.Runtime_evaluate(expression, awaitPromise=awaitPromise)
+            if state.get("exceptionDetails"):
+                if not ignoreException:
+                    print(state)
+                    raise Exception(state.get("result", {}).get("description"))
+            else:
+                value = state.get("result", {}).get("value")
                 if value:
                     return value
-            except:
-                pass
             time.sleep(0.1)
 
     #########################################

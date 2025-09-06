@@ -24,6 +24,8 @@ from ctypes.wintypes import (
     HWND,
     DWORD,
     RECT,
+    WPARAM,
+    LPARAM,
     HANDLE,
     UINT,
     BOOL,
@@ -33,8 +35,9 @@ from ctypes.wintypes import (
 )
 from windows import AutoHandle
 from xml.sax.saxutils import escape
-import gobject
+import gobject, os, json
 import windows, functools, re, csv
+from traceback import print_exc
 
 utilsdll = CDLL(gobject.GetDllpath("NativeUtils.dll"))
 
@@ -255,7 +258,7 @@ def QueryVersion(exe):
 
 ClipBoardListenerStart = utilsdll.ClipBoardListenerStart
 ClipBoardListenerStop = utilsdll.ClipBoardListenerStop
-WindowMessageCallback_t = CFUNCTYPE(None, c_int, c_void_p, c_void_p)
+WindowMessageCallback_t = CFUNCTYPE(None, UINT, WPARAM, LPARAM)
 WinEventHookCALLBACK_t = CFUNCTYPE(None, DWORD, HWND, LONG)
 globalmessagelistener = utilsdll.globalmessagelistener
 globalmessagelistener.argtypes = (
@@ -478,23 +481,6 @@ _webview2_detect_version = utilsdll.webview2_detect_version
 _webview2_detect_version.argtypes = c_wchar_p, c_void_p
 
 
-def safe_int(s):
-    match = re.search(r"\d+", s)
-    if match:
-        return int(match.group())
-    else:
-        return 0
-
-
-def detect_webview2_version(directory=None):
-    _ = []
-    _f = CFUNCTYPE(c_void_p, c_wchar_p)(_.append)
-    _webview2_detect_version(directory, _f)
-    if _:
-        # X.X.X.X beta
-        return tuple(safe_int(_) for _ in _[0].split("."))
-
-
 webview2_ext_add = utilsdll.webview2_ext_add
 webview2_ext_add.argtypes = (c_wchar_p,)
 webview2_ext_add.restype = LONG
@@ -511,6 +497,249 @@ webview2_ext_rm.restype = LONG
 webview2_get_userdir = utilsdll.webview2_get_userdir
 webview2_get_userdir_callback = CFUNCTYPE(None, c_wchar_p)
 webview2_get_userdir.argtypes = (webview2_get_userdir_callback,)
+
+
+def wrapgetlabel(getlabel):
+    if not getlabel:
+        return
+
+    def __(f):
+        _ = f()
+        return str_alloc(_)
+
+    return functools.partial(__, getlabel)
+
+
+class WebView2:
+    @staticmethod
+    def DetectVersion(directory=None):
+
+        def safe_int(s):
+            match = re.search(r"\d+", s)
+            if match:
+                return int(match.group())
+            else:
+                return 0
+
+        _ = []
+        _f = CFUNCTYPE(c_void_p, c_wchar_p)(_.append)
+        _webview2_detect_version(directory, _f)
+        if _:
+            # X.X.X.X beta
+            return tuple(safe_int(_) for _ in _[0].split("."))
+
+    @staticmethod
+    def FindFixedRuntime():
+        hasset = os.environ.get("WEBVIEW2_BROWSER_EXECUTABLE_FOLDER")
+        if hasset:
+            # 已设置的环境变量会影响检测。直接返回就行了
+            return hasset
+        maxversion = (0, 0, 0, 0)
+        maxvf = None
+
+        for f in os.listdir("."):
+            f = os.path.abspath(f)
+            version = WebView2.DetectVersion(f)
+            # 这个API似乎可以检测runtime是否是有效的，比自己查询版本更好
+            if not version:
+                continue
+            if (version[0] > 109) and gobject.sys_le_win81:
+                continue
+            if version > maxversion:
+                maxversion = version
+                maxvf = f
+                print(maxversion, f)
+        return maxvf
+
+    def __del__(self):
+        self.destroy()
+
+    def destroy(self):
+        _ = self.webview
+        self.webview = None
+        webview2_destroy(_)
+
+    def __init__(self, parent: HWND = None, transp=False, loadext=False, darklight=0):
+        self.binds = {}
+        self.callbacks = []
+        self.monitorptrs = []
+        FixedRuntime = self.FindFixedRuntime()
+        if FixedRuntime:
+            os.environ["WEBVIEW2_BROWSER_EXECUTABLE_FOLDER"] = FixedRuntime
+            # 在共享路径上无法运行
+            os.environ["WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS"] = "--no-sandbox"
+        self.webview = WebView2PTR()
+        _ = windows.CO_INIT()
+        windows.CHECK_FAILURE(
+            webview2_create(windows.pointer(self.webview), parent, transp, loadext)
+        )
+        webview2_put_PreferredColorScheme(self.webview, darklight)
+
+    def eval(self, js, callback=None):
+        cb = webview2_evaljs_CALLBACK(callback) if callback else None
+        webview2_evaljs(self.webview, js, cb)
+
+    def bind(self, fname, func):
+        self.binds[fname] = func
+        webview2_bind(self.webview, fname)
+
+    def put_PreferredColorScheme(self, darklight):
+        webview2_put_PreferredColorScheme(self.webview, darklight)
+
+    def set_transparent(self, b):
+        webview2_set_transparent(self.webview, b)
+
+    def get_zoom(self):
+        return webview2_get_ZoomFactor(self.webview)
+
+    def set_zoom(self, zoom):
+        webview2_put_ZoomFactor(self.webview, zoom)
+        self.cachezoom = webview2_get_ZoomFactor(self.webview)
+
+    def navigate(self, url):
+        webview2_navigate(self.webview, url)
+
+    def resize(self, w, h):
+        webview2_resize(self.webview, int(w), int(h))
+
+    def setHtml(self, html):
+        webview2_sethtml(self.webview, html)
+
+    def add_menu(self, index=0, getlabel=None, callback=None):
+        __ = webview2_add_menu_CALLBACK(callback) if callback else None
+        self.callbacks.append(__)
+        getlabel = wrapgetlabel(getlabel)
+        __3 = webview2_contextmenu_gettext(getlabel) if getlabel else None
+        self.callbacks.append(__3)
+        webview2_add_menu(self.webview, index, __3, __)
+        return index + 1
+
+    def add_menu_noselect(
+        self,
+        index=0,
+        getlabel=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
+    ):
+        __ = webview2_add_menu_noselect_CALLBACK(callback) if callback else None
+        self.callbacks.append(__)
+        __1 = webview2_add_menu_noselect_getchecked(getchecked) if getchecked else None
+        self.callbacks.append(__1)
+        __2 = webview2_add_menu_noselect_getuse(getuse) if getuse else None
+        self.callbacks.append(__2)
+        getlabel = wrapgetlabel(getlabel)
+        __3 = webview2_contextmenu_gettext(getlabel) if getlabel else None
+        self.callbacks.append(__3)
+        webview2_add_menu_noselect(self.webview, index, __3, __, checkable, __1, __2)
+        return index + 1
+
+    def __webmessage_callback_f(self, js: str):
+        # 其实不应该在这里处理回调，否则例如如果在这里用getHTML，会卡死。
+        # 应该用PostMessageW(m_message_window, WM_APP, 0, (LPARAM) func)传出去再处理才对。
+        # 但是暂时没问题，就先这样吧。
+        try:
+            js: dict = json.loads(js)
+            method = js.get("method")
+            args = js.get("args")
+            self.binds[method](*args)
+        except:
+            print_exc()
+
+    def set_observe_ptrs(
+        self,
+        zoomchange_callback,
+        navigating_callback,
+        FilesDropped_callback,
+        titlechange_callback,
+        IconChanged_callback,
+    ):
+        self.monitorptrs.append(webview2_zoomchange_callback_t(zoomchange_callback))
+        self.monitorptrs.append(webview2_navigating_callback_t(navigating_callback))
+        self.monitorptrs.append(
+            webview2_webmessage_callback_t(self.__webmessage_callback_f)
+        )
+        self.monitorptrs.append(webview2_FilesDropped_callback_t(FilesDropped_callback))
+        self.monitorptrs.append(webview2_titlechange_callback_t(titlechange_callback))
+        self.monitorptrs.append(webview2_IconChanged_callback_t(IconChanged_callback))
+        webview2_set_observe_ptrs(self.webview, *self.monitorptrs)
+
+    class Extensions:
+
+        @staticmethod
+        def List():
+            collect = []
+
+            def __(_, _1, _2):
+                collect.append((_, _1, _2))
+
+            _ = webview2_list_ext_CALLBACK_T(__)
+            windows.CHECK_FAILURE(webview2_ext_list(_))
+            return collect
+
+        @staticmethod
+        def Enable(_id, enable):
+            windows.CHECK_FAILURE(webview2_ext_enable(_id, enable))
+
+        @staticmethod
+        def Remove(_id):
+            windows.CHECK_FAILURE(webview2_ext_rm(_id))
+
+        @staticmethod
+        def Add(path):
+            windows.CHECK_FAILURE(webview2_ext_add(path))
+
+        @staticmethod
+        def Manifest_Info(extid: str):
+
+            def __ExtensionDir(extid: str):
+
+                def __getuserdir():
+                    _ = []
+                    __ = webview2_get_userdir_callback(_.append)
+                    webview2_get_userdir(__)
+                    if _:
+                        return _[0]
+
+                path = __getuserdir()
+                if not path:
+                    return
+                path = os.path.join(path, "EBWebView/Default/Secure Preferences")
+                try:
+                    with open(path, "r", encoding="utf8") as ff:
+                        js = json.load(ff)
+                    path = js["extensions"]["settings"][extid]["path"]
+                    return path
+                except:
+                    pass
+
+            path = __ExtensionDir(extid)
+            if not path:
+                return
+            path1 = os.path.join(path, "manifest.json")
+            try:
+                with open(path1, "r", encoding="utf8") as ff:
+                    manifest = json.load(ff)
+                data = {}
+                data["path"] = path
+                try:
+                    icons = manifest["icons"]
+                    icon = icons[str(max((int(_) for _ in icons)))]
+                    data["icon"] = os.path.join(path, icon)
+                except:
+                    pass
+                try:
+                    path = manifest["options_ui"]["page"]
+                    url = "chrome-extension://{}/{}".format(extid, path)
+                    data["url"] = url
+                except:
+                    pass
+                return data
+            except:
+                return
+
+
 # WebView2
 
 # LoopBack
@@ -833,3 +1062,9 @@ wcocr_ocr = utilsdll.wcocr_ocr
 wcocr_ocr.argtypes = c_void_p, c_char_p, c_void_p
 wcocr_ocr.restype = c_bool
 wcocr_ocr_CB = CFUNCTYPE(None, c_float, c_float, c_float, c_float, c_char_p)
+
+
+RunMessageLoop = utilsdll.RunMessageLoop
+CreateMessageWindow = utilsdll.CreateMessageWindow
+CreateMessageWindow.argtypes = (WindowMessageCallback_t,)
+CreateMessageWindow.restype = HWND

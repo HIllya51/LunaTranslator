@@ -8,7 +8,7 @@ bool IsColorSchemeChangeMessage(LPARAM lParam)
 {
     return lParam && CompareStringOrdinal(reinterpret_cast<LPCWCH>(lParam), -1, L"ImmersiveColorSet", -1, TRUE) == CSTR_EQUAL;
 }
-typedef void (*WindowMessageCallback_t)(int, void *, void *);
+typedef void (*WindowMessageCallback_t)(UINT, WPARAM, LPARAM);
 static int unique_id = 1;
 typedef void (*hotkeycallback_t)();
 static std::map<int, hotkeycallback_t> keybinds;
@@ -36,7 +36,7 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     {
         auto data = clipboard_get_internal();
         if (data)
-            callback(3, (void *)iscurrentowndclipboard(), (void *)data.value().c_str());
+            callback(3, (WPARAM)iscurrentowndclipboard(), (LPARAM)data.value().c_str());
     }
     break;
     case WM_HOTKEY:
@@ -61,12 +61,12 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
         if (GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer)))
         {
             GlobalDeleteAtom(atom);
-            callback(message == Magpie_Core_CLI_ToastMessage ? 4 : 5, false, buffer);
+            callback(message == Magpie_Core_CLI_ToastMessage ? 4 : 5, false, (LPARAM)buffer);
         }
     }
     else if (message == WM_MAGPIE_SCALINGCHANGED)
     {
-        callback(1, (void *)wParam, (void *)lParam);
+        callback(1, wParam, lParam);
     }
     else if (message == LUNA_UPDATE_PREPARED_OK)
     {
@@ -119,15 +119,28 @@ static VOID CALLBACK WinEventHookPROC(
     if (WinEventHookCALLBACK)
         WinEventHookCALLBACK(event, hwnd, idObject);
 }
-DECLARE_API void globalmessagelistener(WinEventHookCALLBACK_t callback1, WindowMessageCallback_t callback)
+static std::wstring get_unique_classname()
 {
-    const wchar_t CLASS_NAME[] = L"globalmessagelistener";
+    const wchar_t CLASS_NAME[] = L"luna_unique_classname_";
+    static int idx = 0;
+    std::wstringstream wss;
+    wss << CLASS_NAME << idx++;
+    return wss.str();
+}
+static std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1)
+{
+    auto CLASS_NAME = get_unique_classname();
     WNDCLASS wc = {};
     wc.lpfnWndProc = WNDPROC_1;
-    wc.lpszClassName = CLASS_NAME;
+    wc.lpszClassName = CLASS_NAME.c_str();
     GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
     RegisterClass(&wc);
-    HWND hWnd = CreateWindowEx(0, CLASS_NAME, NULL, 0, 0, 0, 0, 0, 0, nullptr, wc.hInstance, nullptr); // HWND_MESSAGE会收不到。
+    HWND hWnd = CreateWindowEx(0, CLASS_NAME.c_str(), NULL, 0, 0, 0, 0, 0, 0, nullptr, wc.hInstance, nullptr); // HWND_MESSAGE会收不到。
+    return std::make_pair(hWnd, wc);
+}
+DECLARE_API void globalmessagelistener(WinEventHookCALLBACK_t callback1, WindowMessageCallback_t callback)
+{
+    auto &&[hWnd, wc] = CreateWindowForWndProc(WNDPROC_1);
     globalmessagehwnd = hWnd;
     SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
     ChangeWindowMessageFilterEx(hWnd, LUNA_UPDATE_PREPARED_OK, MSGFLT_ALLOW, nullptr);
@@ -151,4 +164,28 @@ DECLARE_API int SysRegisterHotKey(UINT fsModifiers, UINT vk, hotkeycallback_t ca
 DECLARE_API void SysUnRegisterHotKey(int _id)
 {
     SendMessage(globalmessagehwnd, WM_SYS_HOTKEY, 0, (LPARAM)_id);
+}
+
+DECLARE_API void RunMessageLoop()
+{
+    MSG msg = {};
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+}
+static LRESULT CALLBACK WNDPROC_2(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    auto callback = (WindowMessageCallback_t)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
+    if (!callback)
+        return DefWindowProc(hWnd, message, wParam, lParam);
+    callback(message, wParam, lParam);
+    return DefWindowProc(hWnd, message, wParam, lParam);
+}
+DECLARE_API HWND CreateMessageWindow(WindowMessageCallback_t callback)
+{
+    auto &&[hWnd, wc] = CreateWindowForWndProc(WNDPROC_2);
+    SetWindowLongPtrW(hWnd, GWLP_USERDATA, (LONG_PTR)callback);
+    return hWnd;
 }

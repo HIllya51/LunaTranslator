@@ -16,7 +16,8 @@ from myutils.config import (
     isascii,
     saveallconfig,
 )
-from ctypes import cast, c_void_p, c_wchar_p
+from ctypes import cast, c_wchar_p
+from ctypes.wintypes import UINT, WPARAM, LPARAM
 from myutils.keycode import mod_map_r
 from gobject import sys_le_xp
 from myutils.mecab import mecab, latin
@@ -1521,12 +1522,12 @@ class BASEOBJECT(QObject):
         self.translation_ui.processismuteed = mute
         self.translation_ui.refreshtooliconsignal.emit()
 
-    def WindowMessageCallback(self, msg: int, value1: c_void_p, value2: c_void_p):
+    def WindowMessageCallback(self, msg: UINT, value1: WPARAM, value2: LPARAM):
         if msg == 0:
             if globalconfig["darklight2"] == 0:
                 self.setstylesheetsignal.emit()
         elif msg == 1:
-            running = not (value1 == None and value2 == None)
+            running = value1 or value2
             self.translation_ui.checksettop()
             self.translation_ui.magpiecallback.emit(running)
         elif msg == 2:
