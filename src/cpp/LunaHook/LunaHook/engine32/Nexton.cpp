@@ -999,10 +999,10 @@ bool InsertNexton1Hook()
       0x50,                   // 0041976b   50               push eax
       0x56,                   // 0041976c   56               push esi
       0x83, 0xc1, 0x04        // 0041976d   83c1 04          add ecx,0x4
-      // 0xe8, XX4,           // 00419770   e8 eb85feff      call inrakutr.00401d60
-      // 0x5f,                // 00419775   5f               pop edi
-      // 0x5e,                // 00419776   5e               pop esi
-      // 0xc2, 0x04,0x00      // 00419777   c2 0400          retn 0x4
+                              // 0xe8, XX4,           // 00419770   e8 eb85feff      call inrakutr.00401d60
+                              // 0x5f,                // 00419775   5f               pop edi
+                              // 0x5e,                // 00419776   5e               pop esi
+                              // 0xc2, 0x04,0x00      // 00419777   c2 0400          retn 0x4
   };
   enum
   {
@@ -1012,7 +1012,6 @@ bool InsertNexton1Hook()
   // GROWL_DWORD(addr); // supposed to be 0x4010e0
   if (!addr)
   {
-    ConsoleOutput("NEXTON1: pattern not found");
     return false;
   }
   // GROWL_DWORD(addr);
@@ -1022,12 +1021,48 @@ bool InsertNexton1Hook()
   // hp.length_offset = 1;
   hp.offset = stackoffset(1); // [esp+4] == arg0
   hp.type = USING_STRING;
-  ConsoleOutput("INSERT NEXTON1");
   return NewHook(hp, "NEXTON1");
+}
+namespace
+{
+  // 真・恋姫†無双～乙女繚乱☆三国志演義～
+  bool h2()
+  {
+    const BYTE bytes[] = {
+        0x8b, 0xf8,
+        0x0f, 0xb6, 0x3f,
+        0x03, 0xfb,
+        0x0f, 0x84, XX4,
+        0x83, 0xff, 0x0a,
+        0x0f, 0x84, XX4,
+        0x83, 0xff, 0x20,
+        0xd9, 0x44, 0x24, XX,
+        0x0f, 0x84, XX4,
+        0x81, 0xff, 0x40, 0x81, 0x00, 0x00};
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = MemDbg::findEnclosingAlignedFunction(addr, 0xd0);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(1);
+    hp.split = stackoffset(4);
+    hp.type = USING_STRING | EMBED_ABLE | USING_SPLIT | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+    hp.embed_hook_font = F_GetGlyphOutlineA; // 中文显示不正常，不过英文可以。
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      auto s = buffer->strA();
+      s = re::sub(s, R"(\n(?!\x81\x40))");
+      buffer->from(s);
+    };
+    return NewHook(hp, "NEXTON2");
+  }
 }
 
 bool Nexton1::attach_function()
 {
 
-  return InsertNexton1Hook();
+  return h2() | InsertNexton1Hook();
 }
