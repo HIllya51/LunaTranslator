@@ -2868,15 +2868,15 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81DD6010, {CODEC_UTF16, 1, -32, 0, 0, 0x01009A401C1B0000ull, "1.02"}}, // english ver, only long string, short string can't find.
     // あかやあかしやあやかしの 綴
     {0x8176D78C, {CODEC_UTF16, 3, 0, 0, 0, 0x0100F7801B5DC000ull, "1.0.0"}},
-    // 13 Sentinels: Aegis Rim
-    {0x80057d18, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // cutscene text
-    {0x8026fec0, {CODEC_UTF8, 1, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // prompt
-    {0x8014eab4, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // name (combat)
-    {0x801528ec, {CODEC_UTF8, 3, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // dialogue (combat)
-    {0x80055acc, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // dialogue 2 (speech bubble)
-    {0x802679c8, {CODEC_UTF8, 1, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // notification
-    {0x8025e210, {CODEC_UTF8, 2, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // scene context example: 数日前 咲良高校 １年Ｂ組 教室 １９８５年５月"
-    {0x8005c518, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.0.0"}}, // game help
+    // 十三機兵防衛圏
+    {0x80057d18, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // cutscene text
+    {0x8026fec0, {CODEC_UTF8, 1, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // prompt
+    {0x8014eab4, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // name (combat)
+    {0x801528ec, {CODEC_UTF8, 3, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // dialogue (combat)
+    {0x80055acc, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // dialogue 2 (speech bubble)
+    {0x802679c8, {CODEC_UTF8, 1, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // notification
+    {0x8025e210, {CODEC_UTF8, 2, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // scene context example: 数日前 咲良高校 １年Ｂ組 教室 １９８５年５月"
+    {0x8005c518, {CODEC_UTF8, 0, 0, 0, F010045C014650000, 0x010045C014650000ull, "1.00"}}, // game help
     // Sea of Stars
     {0x83e93ca0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F01008C0016544000, 0x01008C0016544000ull, "1.0.45861"}}, // Main text
     {0x820c3fa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F01008C0016544000, 0x01008C0016544000ull, "1.0.47140"}}, // Main text

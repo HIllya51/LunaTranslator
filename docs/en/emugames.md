@@ -86,7 +86,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | 010054B01BE90000 | Death end re;Quest Code Z |
 |  | 01009A401C1B0000 | ――ッ違う!!! |
 |  | 0100F7801B5DC000 | あかやあかしやあやかしの 綴 |
-|  | 010045C014650000 | 13 Sentinels: Aegis Rim |
+|  | 010045C014650000 | 十三機兵防衛圏 |
 |  | 01008C0016544000 | Sea of Stars |
 |  | 01000EA014150000 | Final Fantasy I |
 |  | 01006B7014156000 | Final Fantasy II |
