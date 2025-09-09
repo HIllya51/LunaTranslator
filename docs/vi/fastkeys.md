@@ -49,6 +49,9 @@
 1. #### Trình nhấp chuột tự động {#anchor-44}
     Không áp dụng.
 
+1. #### Thiết lập lại trạng thái dịch thuật. {#anchor-45}
+    Đặt lại trạng thái dịch, chủ yếu nhằm đáp ứng nhu cầu dịch bằng mô hình lớn ngày càng tăng, có thể xóa ngữ cảnh đã lưu và các thông tin khác.
+    
 ## HOOK
 
 >[!WARNING]

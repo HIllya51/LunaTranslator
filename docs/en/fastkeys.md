@@ -50,6 +50,9 @@
 1. #### Auto Clicker {#anchor-44}
     N/A
 
+1. #### Reset translation state {#anchor-45}
+    Resets the translation status, primarily addressing the growing demand for large model translations, and clears saved context and other information.
+
 ## HOOK
 
 >[!WARNING]

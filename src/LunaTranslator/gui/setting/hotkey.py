@@ -168,6 +168,7 @@ def registrhotkeys(self):
             windows.GetWindowThreadProcessId(gobject.base.hwnd)
         ),
         "44": invoke_liandianqi_or_stop,
+        "45": gobject.base.prepare,
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -181,7 +182,21 @@ def registrhotkeys(self):
 hotkeys = [
     [
         "通用",
-        ["_1", "_2", "_3", "_5", "_51", "_6", "_8", "_9", "38", "_16", "_17", "44"],
+        [
+            "_1",
+            "_2",
+            "_3",
+            "_5",
+            "_51",
+            "_6",
+            "_8",
+            "_9",
+            "38",
+            "_16",
+            "_17",
+            "44",
+            "45",
+        ],
     ],
     ["HOOK", ["_11", "_12"]],
     ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],

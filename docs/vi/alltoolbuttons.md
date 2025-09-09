@@ -176,5 +176,5 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 1. #### <i class="fa fa-search"></i> <i class="fa fa-icon fa-rotate-right"></i> Tra từ {#anchor-searchwordW}
     Nếu hiện tại có văn bản được chọn, văn bản đã chọn sẽ được truy vấn và một cửa sổ tìm kiếm từ khóa sẽ được mở. Nếu không, nó sẽ chỉ mở hoặc đóng cửa sổ tìm kiếm từ khóa.
 
-1. #### <i class="fa fa-refresh"></i> 重置翻译状态 {#anchor-reset_TS_status}
+1. #### <i class="fa fa-refresh"></i> Thiết lập lại trạng thái dịch thuật. {#anchor-reset_TS_status}
     Đặt lại trạng thái dịch, chủ yếu nhằm đáp ứng nhu cầu dịch bằng mô hình lớn ngày càng tăng, có thể xóa ngữ cảnh đã lưu và các thông tin khác.
