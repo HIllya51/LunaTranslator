@@ -255,8 +255,6 @@ bool Yuris::InsertYuris5Hook()
 
 static void Yuris6Filter(TextBuffer *buffer, HookParam *hp)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
-
   static std::string last;
   if (last == buffer->viewA())
     return buffer->clear();
@@ -269,19 +267,8 @@ static void Yuris6Filter(TextBuffer *buffer, HookParam *hp)
   }
   else
   {
-
-    // ruby ＜手水舎／ちょうずや＞
-    if (cpp_strnstr(text, "\x81\x83", buffer->size))
-    {                                                                              // \x81\x83 -> '＜'
-      StringFilterBetween(buffer, TEXTANDLEN("\x81\x5E"), TEXTANDLEN("\x81\x84")); // \x81\x5E -> '／' , \x81\x84 -> '＞'
-      StringFilter(buffer, TEXTANDLEN("\x81\x83"));                                // \x81\x83 -> '＜'
-    }
-    // ruby ≪美桜／姉さん≫
-    else if (cpp_strnstr(text, "\x81\xE1", buffer->size))
-    {                                                                              // \x81\xE1 -> '≪'
-      StringFilterBetween(buffer, TEXTANDLEN("\x81\x5E"), TEXTANDLEN("\x81\xE2")); // \x81\x5E -> '／' , \x81\xE2 -> '≫'
-      StringFilter(buffer, TEXTANDLEN("\x81\xE1"));                                // \x81\xE1 -> '≪'
-    }
+    buffer->from(re::sub(buffer->strA(), R"(\x81\x83(.*?)\x81\x5E(.*?)\x81\x84)", "$1"));
+    buffer->from(re::sub(buffer->strA(), R"(\x81\xE1(.*?)\x81\x5E(.*?)\x81\xE2)", "$1"));
 
     CharReplacer(buffer, '=', '-');
     StringFilter(buffer, TEXTANDLEN("\xEF\xF0"));
@@ -319,11 +306,22 @@ bool Yuris::InsertYuris6Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
     return false;
-
+  BYTE checkbefore[] = {
+      0x8b, 0x78, XX,
+      0x8a, 0x17,
+      0x47,
+      0x88, 0x16,
+      0x46,
+      0x84, 0xd2,
+      0x75, 0xf6};
   HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(eax);
   hp.index = 0x38;
+  if (MatchPattern(addr - sizeof(checkbefore), checkbefore, sizeof(checkbefore)))
+  {
+    hp.index = *(BYTE *)(addr - sizeof(checkbefore) + 2);
+  }
   hp.filter_fun = Yuris6Filter;
   hp.type = USING_STRING | NO_CONTEXT | DATA_INDIRECT;
   hp.codepage = codepage;
