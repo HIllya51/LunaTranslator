@@ -63,12 +63,13 @@ class SpeechParam:
 
 class TTSbase(commonbase):
     def init(self): ...
-    def getvoicelist(self):
-        # 分别返回内部标识名,显示
-        return [], []
+    def getvoicelist(self) -> "tuple[list[str], list[str]]":
+        # 分别返回内部标识名,显示名
+        ...
 
-    def speak(self, content, voice, param: SpeechParam):
-        return None  # fname ,若为None则是不需要文件直接朗读
+    def speak(
+        self, content, voice, param: SpeechParam
+    ) -> "bytes|Response|TTSResult|types.GeneratorType": ...
 
     ####################
     arg_support_pitch = True
@@ -119,7 +120,10 @@ class TTSbase(commonbase):
             self.privateconfig: dict = globalconfig["reader"][self.typename]
         else:
             self.privateconfig = privateconfig
-        self.voicelist, self.voiceshowlist = self.getvoicelist()
+        _ = self.getvoicelist()
+        if not _:
+            _ = [""], ["Default"]
+        self.voicelist, self.voiceshowlist = _
         if len(self.voicelist) != len(self.voiceshowlist):
             raise Exception()
         if len(self.voicelist) == 0:

@@ -3403,6 +3403,8 @@ def createfoldgrid(
 ):
 
     def __(grid, internallayoutname, parent, lay: QLayout):
+        if callable(grid):
+            grid = grid()
         w, do = makegrid(grid, delay=True)
         lay.addWidget(w)
         if internallayoutname:

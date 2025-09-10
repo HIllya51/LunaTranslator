@@ -352,9 +352,6 @@ class TTS(TTSbase):
                         # no audio stream in response
                         raise Exception(r)
 
-    def getvoicelist(self):
-        return [""], [""]
-
     def speak(self, content, _, speed: SpeechParam):
         return TTSResult(
             b"".join(self.stream(content, speed.speed < 0)), type="audio/mpeg"

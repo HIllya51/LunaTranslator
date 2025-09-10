@@ -30,7 +30,7 @@ class parsejson:
 
     def load(self):
         for k in self.data:
-            if not (isinstance(k, str) and (self.data[k], str)):
+            if not (isinstance(k, str) and isinstance(self.data[k], str)):
                 yield None
                 continue
             if self.data[k] and NativeUtils.similarity(self.data[k], k) < 0.2:

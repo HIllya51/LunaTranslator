@@ -19,7 +19,6 @@ from collections import Counter
 from myutils.wrapper import tryprint
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
-    D_getspinbox,
     getIconButton,
     D_getcolorbutton,
     getcolorbutton,
@@ -29,7 +28,6 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     request_delete_ok,
     createfoldgrid,
-    makesubtab_lazy,
     getspinbox,
     ClickableLabel,
     automakegrid,

@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     D_getdoclink,
     SuperCombo,
     VisLFormLayout,
+    createfoldgrid,
     getIconButton,
     LinkLabel,
     makegrid,
@@ -440,10 +441,10 @@ def modesW(__vis, paths):
     return w
 
 
-def __srcofig(grids: list, self):
+def getsrgrid(self):
     __vis, paths = findallmodel()
     if not paths and not gobject.sys_ge_win_10:
-        return
+        return [["系统不支持"]]
 
     if os.path.exists(mssr.lcexe):
         __w = modesW(__vis, paths)
@@ -451,36 +452,30 @@ def __srcofig(grids: list, self):
         __w = hhfordirect(__vis, paths)
     __w.setEnabled(globalconfig["sourcestatus2"]["mssr"]["use"])
 
-    __ = dict(
-        type="grid",
-        title="语音识别",
-        button=D_getdoclink("sr.html"),
-        grid=[
-            [
-                getsmalllabel("使用"),
-                D_getsimpleswitch(
-                    globalconfig["sourcestatus2"]["mssr"],
-                    "use",
-                    name="mssr",
-                    parent=self,
-                    callback=functools.partial(
-                        yuitsu_switch,
-                        self,
-                        globalconfig["sourcestatus2"],
-                        "sourceswitchs",
-                        "mssr",
-                        lambda _, _2: (
-                            gobject.base.starttextsource(_, _2),
-                            __w.setEnabled(_2),
-                        ),
+    return [
+        [
+            getsmalllabel("使用"),
+            D_getsimpleswitch(
+                globalconfig["sourcestatus2"]["mssr"],
+                "use",
+                name="mssr",
+                parent=self,
+                callback=functools.partial(
+                    yuitsu_switch,
+                    self,
+                    globalconfig["sourcestatus2"],
+                    "sourceswitchs",
+                    "mssr",
+                    lambda _, _2: (
+                        gobject.base.starttextsource(_, _2),
+                        __w.setEnabled(_2),
                     ),
-                    pair="sourceswitchs",
                 ),
-                __w,
-            ],
+                pair="sourceswitchs",
+            ),
+            __w,
         ],
-    )
-    grids.insert(0, [__])
+    ]
 
 
 class MDLabel2(LinkLabel):
@@ -496,95 +491,107 @@ class MDLabel2(LinkLabel):
         os.startfile(link)
 
 
-def filetranslate(self):
-    fuckyou = lambda _: '<a href="{}">{}</a>'.format(_, _)
-    grids = [
+def getftsgrid(self):
+    return [
         [
-            dict(
-                type="grid",
-                title="文件翻译",
-                grid=[
-                    [
-                        "文件",
-                        D_getIconButton(
-                            functools.partial(selectfile, self),
-                            icon="fa.folder-open",
-                        ),
-                        "",
-                        functools.partial(createdownloadprogress, self),
-                    ],
-                ],
+            "文件",
+            D_getIconButton(
+                functools.partial(selectfile, self),
+                icon="fa.folder-open",
             ),
-        ],
-        [],
-        [
-            dict(
-                title="网络服务",
-                button=D_getdoclink("apiservice.html"),
-                grid=[
-                    [
-                        "开启",
-                        getboxlayout(
-                            [
-                                D_getsimpleswitch(
-                                    globalconfig,
-                                    "networktcpenable",
-                                    callback=lambda _: gobject.base.serviceinit(),
-                                ),
-                                0,
-                            ]
-                        ),
-                    ],
-                    [
-                        "端口号",
-                        getboxlayout(
-                            [
-                                D_getspinbox(
-                                    0,
-                                    65535,
-                                    globalconfig,
-                                    "networktcpport",
-                                    callback=lambda _: gobject.base.serviceinit(),
-                                ),
-                                functools.partial(__portconflict, self),
-                            ]
-                        ),
-                    ],
-                    [],
-                    [
-                        functools.partial(
-                            MDLabel2,
-                            ("&nbsp;" * 4).join(
-                                fuckyou(_)
-                                for _ in (
-                                    "/",
-                                    "/page/mainui",
-                                    "/page/transhist",
-                                    "/page/dictionary",
-                                    "/page/translate",
-                                    "/page/ocr",
-                                    "/page/tts",
-                                )
-                            ),
-                        )
-                    ],
-                ],
-            ),
+            "",
+            functools.partial(createdownloadprogress, self),
         ],
     ]
-    __srcofig(grids, self)
+
+
+def getnetgrid(self):
+    fuckyou = lambda _: '<a href="{}">{}</a>'.format(_, _)
+    return [
+        [
+            "开启",
+            getboxlayout(
+                [
+                    D_getsimpleswitch(
+                        globalconfig,
+                        "networktcpenable",
+                        callback=lambda _: gobject.base.serviceinit(),
+                    ),
+                    0,
+                ]
+            ),
+        ],
+        [
+            "端口号",
+            getboxlayout(
+                [
+                    D_getspinbox(
+                        0,
+                        65535,
+                        globalconfig,
+                        "networktcpport",
+                        callback=lambda _: gobject.base.serviceinit(),
+                    ),
+                    functools.partial(__portconflict, self),
+                ]
+            ),
+        ],
+        [
+            (
+                functools.partial(
+                    MDLabel2,
+                    ("&nbsp;" * 4).join(
+                        fuckyou(_)
+                        for _ in (
+                            "/",
+                            "/page/mainui",
+                            "/page/transhist",
+                            "/page/dictionary",
+                            "/page/translate",
+                            "/page/ocr",
+                            "/page/tts",
+                        )
+                    ),
+                ),
+                0,
+            )
+        ],
+    ]
+
+
+def filetranslate(self):
+    grids = [
+        [
+            functools.partial(
+                createfoldgrid,
+                functools.partial(getsrgrid, self),
+                "语音识别",
+                globalconfig["foldstatus"]["others"],
+                "sr",
+                leftwidget=D_getdoclink("sr.html"),
+            )
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
+                functools.partial(getftsgrid, self),
+                "文件翻译",
+                globalconfig["foldstatus"]["others"],
+                "fts",
+            )
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
+                functools.partial(getnetgrid, self),
+                "网络服务",
+                globalconfig["foldstatus"]["others"],
+                "netservice",
+                leftwidget=D_getdoclink("apiservice.html"),
+            )
+        ],
+    ]
     return grids
-
-
-def getpath():
-    for syspath in [
-        globalconfig["chromepath"],
-        r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-    ]:
-        if os.path.exists(syspath) and os.path.isfile(syspath):
-            return syspath
-    return None
 
 
 def __portconflict(self):

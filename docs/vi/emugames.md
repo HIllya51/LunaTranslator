@@ -4,7 +4,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 | Nền tảng | chi tiết Các trình giả lập được hỗ trợ |
 | - | - |
-| NS | yuzu(&ge;1616), [sudachi](https://github.com/emuplace/sudachi.emuplace.app), [Citron](https://git.citron-emu.org/citron/emu), [Eden](https://github.com/eden-emulator/Releases/releases) |
+| NS | ~~yuzu(&ge;1616)~~, ~~[sudachi](https://github.com/emuplace/sudachi.emuplace.app)~~, [Citron](https://citron-emu.org/), [Eden](https://eden-emu.dev/) |
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
 | PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |

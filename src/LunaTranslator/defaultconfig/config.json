@@ -30,6 +30,11 @@
     "useextrahtml": false,
     "ocrselectalpha": 0.3,
     "foldstatus": {
+        "others": {
+            "fts": true,
+            "netservice": true,
+            "sr": true
+        },
         "proxy": {
             "gpt": true,
             "api": false,
