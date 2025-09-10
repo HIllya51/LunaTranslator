@@ -811,9 +811,39 @@ namespace
     return NewHook(hp, "deja");
   }
 }
+static bool koihime()
+{
+  // https://vndb.org/r53362
+  // 恋姫 - Windows 10 Edition
+  BYTE sig[] = {
+      0x55, 0x8b, 0xec,
+      0x83, 0xec, 0x08,
+      0x89, 0x4d, 0xf8,
+      0x66, 0x8b, 0x45, 0x08,
+      0xd0, 0xe4,
+      0x2c, 0x1f,
+      0x78, 0x04,
+      0x3c, 0x61,
+      0x14, 0xde,
+      0x66, 0x05, 0xa1, 0x1f,
+      0x66, 0x25, 0x7f, 0x7f,
+      0x66, 0x89, 0x45, 0xfc,
+      0x66, 0x8b, 0x45, 0xfc,
+      0x8b, 0xe5,
+      0x5d,
+      0xc2, 0x04, 0x00};
+  ULONG addr2 = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+  if (!addr2)
+    return false;
+  HookParam hp;
+  hp.address = addr2;
+  hp.type = CODEC_ANSI_BE | USING_CHAR;
+  hp.offset = stackoffset(1);
+  return NewHook(hp, "koihime");
+}
 bool Elf2::attach_function()
 {
-  return elf2() || Elf2attach_function() || all() || el() || deja();
+  return elf2() || Elf2attach_function() || all() || el() || deja() || koihime();
 }
 
 bool ElfFunClubFinal::attach_function()
