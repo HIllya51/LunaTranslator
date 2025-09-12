@@ -77,6 +77,7 @@ bool embedbishop()
   {
     context->stack[2] = (DWORD)allocateString(flag + buffer.strW());
   };
+  hp.lineSeparator = L"\\n";
   return NewHook(hp, "bishop");
 }
 bool Bishop2attach_function()
