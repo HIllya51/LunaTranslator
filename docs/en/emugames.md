@@ -17,6 +17,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01007FD0211DA000 | 連呪 |
 |  | 010081D016E4E000 | DIG-ROCK -Documentary of Youthful Sounds- |
 |  | 010065402030A000 | 十鬼の絆 |
 |  | 010061701DB38000 | 岩倉アリア |

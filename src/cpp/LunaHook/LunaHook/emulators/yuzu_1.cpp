@@ -2660,6 +2660,17 @@ namespace
         buffer->from(s);
         F0100FC2019346000(buffer, hp);
     }
+    void F01007FD0211DA000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(<(.*?)>)");
+        buffer->from(s);
+
+        static std::wstring last;
+        if (s == last)
+            return buffer->clear();
+        last = s;
+    }
 }
 struct emfuncinfoX
 {
@@ -2667,6 +2678,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 連呪
+    {0x83700E60, {CODEC_UTF16, 0, 0X14, 0, F01007FD0211DA000, 0x01007FD0211DA000ull, "1.0.0"}},
     // DIG-ROCK -Documentary of Youthful Sounds-
     {0x80054004, {CODEC_UTF8, 2, 0, 0, F010081D016E4E000, 0x010081D016E4E000ull, "1.0.0"}},
     // 十鬼の絆
