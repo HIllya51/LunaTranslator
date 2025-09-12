@@ -69,12 +69,14 @@ bool embedbishop()
     {
       flag.clear();
     }
+    auto s = buffer->strW();
+    s = re::sub(s, LR"(\\n(　)*)");
+    buffer->from(s);
   };
   hp.embed_fun = [](hook_context *context, TextBuffer buffer)
   {
     context->stack[2] = (DWORD)allocateString(flag + buffer.strW());
   };
-  hp.lineSeparator = L"\\n";
   return NewHook(hp, "bishop");
 }
 bool Bishop2attach_function()
