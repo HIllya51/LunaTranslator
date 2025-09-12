@@ -143,7 +143,7 @@
 <script>
     //nativte api
     var sizeignore = false
-    var cacheheight = 0
+    var cacheSize = [0, 0]
     var isheightchangebytooltip = false
     function refreshcontent_before() {
         sizeignore = true
@@ -151,7 +151,7 @@
     function refreshcontent_after() {
         sizeignore = false
         if (window.LUNAJSObject)
-            LUNAJSObject.calllunaheightchange(cacheheight)
+            LUNAJSObject.calllunaSizeChanged(cacheSize[0], cacheSize[1])
     }
     let lastZoomLevel = window.devicePixelRatio;
     window.addEventListener('resize', function () {
@@ -163,14 +163,16 @@
     });
     function safe_calllunaheightchange() {
         let root = document.getElementById('luna_root_div')
-        let h = root.offsetHeight + root.offsetTop
         const computedStyle = window.getComputedStyle(document.body);
+        let h = root.offsetHeight + root.offsetTop;
         h += parseFloat(computedStyle.marginBottom)//+parseFloat(computedStyle.marginTop) 
-        cacheheight = h
+        let w = root.offsetWidth;
+        w += parseFloat(computedStyle.marginRight) + parseFloat(computedStyle.marginLeft);
+        cacheSize = [h, w]
         isheightchangebytooltip = false
         if (sizeignore) return
         if (window.LUNAJSObject)
-            LUNAJSObject.calllunaheightchange(h)
+            LUNAJSObject.calllunaSizeChanged(cacheSize[0], cacheSize[1])
     }
     document.body.addEventListener('click', (e) => {
         popupContainer.style.display = 'none'
@@ -543,7 +545,7 @@
 
         if (!tooltip) {
             if (isheightchangebytooltip && !document.querySelectorAll('.tooltip').length)
-                targetheigth = cacheheight
+                targetheigth = cacheSize[0]
         }
         else {
             bottom = tooltip.offsetHeight + tooltip.offsetTop
@@ -552,7 +554,7 @@
         }
         if (!targetheigth || sizeignore) return
         if (window.LUNAJSObject)
-            LUNAJSObject.calllunaheightchange(targetheigth)
+            LUNAJSObject.calllunaSizeChanged(targetheigth, cacheSize[1])
         isheightchangebytooltip = true
 
     }

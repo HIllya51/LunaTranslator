@@ -404,7 +404,7 @@ class TextBrowser(WebviewWidget, somecommon):
         self.bind("calllunaMouseMove", self.calllunaMouseMove)
         self.bind("calllunaMousePress", self.calllunaMousePress)
         self.bind("calllunaMouseRelease", self.calllunaMouseRelease)
-        self.bind("calllunaheightchange", self.calllunaheightchange)
+        self.bind("calllunaSizeChanged", self.calllunaSizeChanged)
         self.bind("calllunaEnter", self.calllunaEnter)
         self.bind("calllunaLeave", self.calllunaLeave)
         self.bind("calllunaloadready", self.calllunaloadready)
@@ -497,11 +497,9 @@ class TextBrowser(WebviewWidget, somecommon):
         # print(js)
         self.eval(js)
 
-    def calllunaheightchange(self, h):
-        sz = QSizeF(
-            self.width(),
-            h * self.get_zoom(),
-        )
+    def calllunaSizeChanged(self, h, w):
+        r = self.get_zoom()
+        sz = QSizeF(w, h) * r
         if gobject.runtime_for_xp:
             sz *= NativeUtils.GetDevicePixelRatioF(int(self.winId()))
         self.contentsChanged.emit(sz.toSize())
