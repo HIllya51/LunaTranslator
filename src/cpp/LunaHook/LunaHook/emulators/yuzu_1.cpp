@@ -839,6 +839,10 @@ namespace
             buffer->from(ws);
         }
     }
+    void f0100D4300EBF8000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%N"));
+    }
     void F0100068019996000(TextBuffer *buffer, HookParam *hp)
     {
         StringReplacer(buffer, TEXTANDLEN("%N"), TEXTANDLEN(u8"\n"));
@@ -2678,6 +2682,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 十うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
+    {0x80038B34, {0, 0, 0, 0, f0100D4300EBF8000, 0x0100D4300EBF8000ull, "1.0.0"}},
     // 連呪
     {0x83700E60, {CODEC_UTF16, 0, 0X14, 0, F01007FD0211DA000, 0x01007FD0211DA000ull, "1.0.0"}},
     // DIG-ROCK -Documentary of Youthful Sounds-

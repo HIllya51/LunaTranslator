@@ -1049,6 +1049,46 @@ namespace
     return NewHook(hp, "wolf8");
   }
 }
+namespace
+{
+  bool w9()
+  {
+    // ドラゴンブラッド～竜の呪いと精液で神に復讐を誓
+    BYTE sig[] = {
+        0X81, 0XFB, 0XFF, 0XFF, 0XFF, 0X7F,
+        0X0F, 0X87, 0XA3, 0X00, 0X00, 0X00,
+        0X8B, 0XFB,
+        0X83, 0XCF, 0X0F,
+        0X81, 0XFF, 0XFF, 0XFF, 0XFF, 0X7F,
+        0X76, 0X12,
+        0XB8, 0X00, 0X00, 0X00, 0X80,
+        0XBF, 0XFF, 0XFF, 0XFF, 0X7F,
+        0X50,
+        0XE8, XX4,
+        0XEB, XX,
+        0X8B, 0XCD,
+        0XB8, 0XFF, 0XFF, 0XFF, 0X7F,
+        0XD1, 0XE9};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    BYTE sig2[] = {0x53, 0x8b, 0x5c, 0x24, 0x0c,
+                   0x55, 0x56, 0x8b, 0xf1};
+    addr = reverseFindBytes(sig2, sizeof(sig2), addr - 0x50, addr, 0, true);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = CODEC_UTF8 | USING_STRING;
+    hp.offset = stackoffset(1);
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      if (all_ascii(buffer->viewA()))
+        buffer->clear();
+    };
+    return NewHook(hp, "wolf9");
+  }
+}
 bool Wolf::attach_function()
 {
   bool succ = false;
@@ -1057,7 +1097,7 @@ bool Wolf::attach_function()
   succ |= InsertWolfHook() || wolf_hook56() || _ || wolf7();
 
   succ |= GuruGuruSMF4::h1();
-  succ = succ || wolf8();
+  succ = succ || w9() || wolf8();
   PcHooks::hookGDIFunctions();
   // 奈落の森の花
   trigger_fun = [](LPVOID addr1, hook_context *context)
