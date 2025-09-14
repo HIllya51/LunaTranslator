@@ -900,6 +900,8 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65301 | とらかぷっ！だーっしゅ！！でらっくすぱっく |
+|  | SLPM-65295 | カフェ・リトルウィッシュ ～魔法のレシピ～ |
 |  | SLPS-25235 | ゆめりあ |
 |  | SLPM-65275 | 最終兵器彼女 |
 |  | SLPS-25292 | D→A:BLACK [通常版] |
@@ -982,7 +984,6 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 |  | SLPS-25543 | 双恋島 恋と水着のサバイバル！ |
 |  | SLPM-66086 | 極上生徒会 |
 |  | SLPM-66150 | しろがねの鳥籠 [通常版] |
-|  | SLPM-66225 | D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック |
 |  | SLPM-65937 | 星界の戦旗 |
 |  | SLPM-66112 | ふしぎの海のナディア [通常版] |
 |  | SLPM-66157 | ルーンプリンセス 初回限定版 |
@@ -1139,8 +1140,10 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 |  | SLPS-25871 | ドラスティックキラー |
 |  | SLPS-25678 & SLPS-25679 | うたわれるもの 散りゆく者への子守唄 |
 |  | SLPS-25150 | Only you リベルクルス ドラマCD付き |
+|  | SLPM-65400 | D.C.P.S. ～ダ・カーポ～ プラスシチュエーション |
 |  | SLPM-66905 | D.C. ～ダ・カーポ～ the Origin |
 |  | SLPM-55156 | D.C.I.F. ～ダ・カーポ～イノセント・フィナーレ～ [通常版] |
+|  | SLPM-66225 | D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック |
 |  | SLPM-66437 | Soul Link EXTENSION |
 |  | SLPM-65396 | デ・ジ・キャラット ファンタジー エクセレント |
 |  | SLPM-66272 | I/O |

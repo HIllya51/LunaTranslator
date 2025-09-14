@@ -1909,6 +1909,42 @@ namespace
         strReplace(s, L"@");
         buffer->fromWA(s);
     }
+    void SLPM65400(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"([\n\r]+(\x81\x40)*)");
+        s = re::sub(s, R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)", "$2");
+        buffer->from(s);
+    }
+    void SLPM65301(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(#cr0(\x81\x40)*)");
+        buffer->from(s);
+    }
+    void SLPS25026(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            buffer->clear();
+        buffer->from(s);
+    }
+    void SLPM65295(TextBuffer *buffer, HookParam *hp)
+    {
+        static bool last = false;
+        if (IsShiftjisLeadByte(*(BYTE *)buffer->buff))
+        {
+            last = true;
+        }
+        else
+        {
+            if (!last)
+            {
+                buffer->clear();
+            }
+            last = false;
+        }
+    }
 }
 struct emfuncinfoX
 {
@@ -1916,6 +1952,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // とらかぷっ！だーっしゅ！！でらっくすぱっく
+    {0xA5E964, {DIRECT_READ, 0, 0, 0, SLPM65301, "SLPM-65301"}},
+    // カフェ・リトルウィッシュ ～魔法のレシピ～
+    {0x11a9b8, {0, PCSX2_REG_OFFSET(v0), 0, 0, SLPM65295, "SLPM-65295"}},
     // ゆめりあ
     {0x227374, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25235, "SLPS-25235"}},
     // 最終兵器彼女
@@ -2081,8 +2121,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1DB1A60, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66086"}},
     // しろがねの鳥籠 [通常版]
     {0x424710, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPM66150, "SLPM-66150"}},
-    // D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック
-    {0x112A98, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM66225, "SLPM-66225"}},
     // 星界の戦旗
     {0x60300C, {DIRECT_READ, 0, 0, SLPM66344<0x60300C, 0x6030EC, 0x6031CC>, SLPM65937, "SLPM-65937"}},
     // ふしぎの海のナディア [通常版]
@@ -2398,10 +2436,14 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x50574C, {DIRECT_READ, 0, 0, 0, SLPS25679, std::vector<const char *>{"SLPS-25678", "SLPS-25679"}}},
     // Only you リベルクルス ドラマCD付き
     {0x461F38, {DIRECT_READ, 0, 0, SLPS25150, 0, "SLPS-25150"}},
+    // D.C.P.S. ～ダ・カーポ～ プラスシチュエーション
+    {0x114384, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65400, "SLPM-65400"}},
     // D.C. ～ダ・カーポ～ the Origin
     {0x517688, {DIRECT_READ, 0, 0, 0, SLPM66905, "SLPM-66905"}},
     // D.C.I.F. ～ダ・カーポ～イノセント・フィナーレ～ [通常版]
     {0x114068, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM55156, "SLPM-55156"}},
+    // D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック
+    {0x112A98, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM66225, "SLPM-66225"}},
     // Soul Link EXTENSION
     {0x1E14A3C, {DIRECT_READ, 0, 0, 0, SLPM66437, "SLPM-66437"}},
     // デ・ジ・キャラット ファンタジー エクセレント
