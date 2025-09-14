@@ -1887,6 +1887,28 @@ namespace
         s = re::sub(s, LR"(%?[ A-Z]+\d+)");
         buffer->fromWA(s);
     }
+    void SLPM65255(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        s = re::sub(s, LR"([・\u0001-\u007f])");
+        buffer->fromWA(s);
+    }
+    void SLPM65275(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\n(\x81\x40)*)");
+        if ((s[0] == 'B' && s[s.size() - 1] == 'B') || (s[0] == 'W' && s[s.size() - 1] == 'W'))
+        {
+            s = s.substr(1, s.size() - 2);
+        }
+        buffer->from(s);
+    }
+    void SLPS25235(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L"@");
+        buffer->fromWA(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -1894,6 +1916,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ゆめりあ
+    {0x227374, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25235, "SLPS-25235"}},
+    // 最終兵器彼女
+    {0xAF4351, {DIRECT_READ, 0, 0, 0, SLPM65275, "SLPM-65275"}},
+    // D→A:BLACK [通常版]
+    {0x177298, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPS-25292"}},
+    // ビストロ・きゅーぴっと2 特別版
+    {0x14A3FC, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM65255, "SLPM-65255"}},
     // ファンタスティックフォーチュン2 ☆☆☆
     {0x36DA10, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPS-25396"}},
     // ビストロ・きゅーぴっと2 特別版
@@ -2309,7 +2339,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // なついろ ～星屑のメモリー～
     {0x16D230, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s0), 0, 0, SLPM65786, "SLPM-65786"}},
     // 夏色小町【一日千夏】
-    {0x2AB318, {DIRECT_READ, 0, 0, 0, SLPM65355, "SLPM-65355"}},
+    {0x2AB318, {DIRECT_READ, 0, 0, 0, SLPM65355, std::vector<const char *>{"SLPM-65355", "SLPM-65356"}}},
     // SDガンダム - G GENERATION WARS
     {0x4BF474, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25941, "SLPS-25941"}},
     {0x51B59C, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPS25941_2, "SLPS-25941"}},
