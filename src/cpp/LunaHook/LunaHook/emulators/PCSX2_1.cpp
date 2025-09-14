@@ -1370,6 +1370,13 @@ namespace
         }
         buffer->from(s);
     }
+    void SLPS25278(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(%[A-Z]+\d*)");
+        s = re::sub(s, R"((\x81\x40)*\x87\x53)");
+        buffer->from(s);
+    }
     void SLPM55197(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -1770,6 +1777,14 @@ namespace
         last = s;
         StringFilter(buffer, TEXTANDLEN("\\n"));
     }
+    void SLPM65448(TextBuffer *buffer, HookParam *hp)
+    {
+        static lru_cache<std::string> cache(4);
+        auto s = buffer->strA();
+        if (cache.touch(s))
+            return buffer->clear();
+        CharFilter(buffer, '\n');
+    }
     void SLPM65764(TextBuffer *buffer, HookParam *hp)
     {
         if (buffer->size == 1)
@@ -1837,6 +1852,21 @@ namespace
             return buffer->clear();
         NewLineCharFilterA(buffer, hp);
     }
+    void SLPM65282(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        auto ss = strSplit(s, "#cr0");
+        if (ss.size() > 1 && ss[0].size() < 10)
+        {
+            ss[0] = "\x81\x79" + ss[0] + "\x81\x7a";
+        }
+        s.clear();
+        for (auto &&_ : ss)
+        {
+            s += _;
+        }
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -1844,6 +1874,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // グリーングリーン ～鐘の音ロマンティック～
+    {0x94B318, {DIRECT_READ, 0, 0, 0, SLPM65282, "SLPM-65282"}},
+    // カンブリアンQTS ～化石になっても～
+    {0x159e10, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65448, "SLPM-65448"}},
     // アラビアンズ・ロスト ～The engagement on desert～
     {0x3A2F70, {DIRECT_READ, 0, 0, 0, SLPM66847, "SLPM-66847"}},
     // INTERLUDE
@@ -2186,6 +2220,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1A1528, {0, PCSX2_REG_OFFSET(s3), 0, 0, SLPM55197, "SLPM-66988"}},
     // Memories Off 6 Next Relation
     {0x17F334, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM55197, "SLPM-55197"}},
+    // メモオフみっくす
+    {0x1943860, {DIRECT_READ, 0, 0, 0, SLPS25278, "SLPS-25278"}},
     // メルティブラッド アクトレスアゲイン [通常版]
     {0x853710, {DIRECT_READ, 0, 0, 0, SLPM55184, "SLPM-55184"}},
     // つよきす2学期 ～Swift Love～ [通常版]

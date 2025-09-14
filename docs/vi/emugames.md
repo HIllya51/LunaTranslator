@@ -900,6 +900,8 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65282 | グリーングリーン ～鐘の音ロマンティック～ |
+|  | SLPM-65448 | カンブリアンQTS ～化石になっても～ |
 |  | SLPM-66847 | アラビアンズ・ロスト ～The engagement on desert～ |
 |  | SLPS-25283 | INTERLUDE |
 |  | SLPM-65520 | てんたま2wins [限定版] |
@@ -1071,6 +1073,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 |  | SLPM-66791 | Memories Off #5 encore [通常版] |
 |  | SLPM-66988 | Memories Off 6 ～T-Wave～ [通常版] |
 |  | SLPM-55197 | Memories Off 6 Next Relation |
+|  | SLPS-25278 | メモオフみっくす |
 |  | SLPM-55184 | メルティブラッド アクトレスアゲイン [通常版] |
 |  | SLPM-55154 | つよきす2学期 ～Swift Love～ [通常版] |
 |  | SLPM-55185 | Sweet Honey Coming [DXパック] |
