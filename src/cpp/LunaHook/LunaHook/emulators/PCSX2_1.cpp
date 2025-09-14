@@ -1867,6 +1867,26 @@ namespace
         }
         buffer->from(s);
     }
+    void SLPS25248(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (all_ascii(s) || s == "\x81\x40")
+            buffer->clear();
+    }
+    void SLPM65306(TextBuffer *buffer, HookParam *hp)
+    {
+        buffer->size -= 7;
+        auto s = buffer->strAW();
+        strReplace(s, L"@");
+        buffer->fromWA(s);
+    }
+    void SLPS25245(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, L"／");
+        s = re::sub(s, LR"(%?[ A-Z]+\d+)");
+        buffer->fromWA(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -1874,6 +1894,16 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ファンタスティックフォーチュン2 ☆☆☆
+    {0x36DA10, {DIRECT_READ, 0, 0, 0, SLPM66458, "SLPS-25396"}},
+    // ビストロ・きゅーぴっと2 特別版
+    {0xF61D20, {DIRECT_READ, 0, 0, 0, SLPM65535, "SLPM-65347"}},
+    // トゥルーラブストーリー サマーデイズ アンド イエット...
+    {0x168B1C, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25245, "SLPS-25245"}},
+    // SAKURA～雪月華～ [初回限定版]
+    {0x25B5C0, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65306, "SLPM-65306"}},
+    // キノの旅 -the Beautiful World-
+    {0x12920c, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, SLPS25248, "SLPS-25248"}},
     // グリーングリーン ～鐘の音ロマンティック～
     {0x94B318, {DIRECT_READ, 0, 0, 0, SLPM65282, "SLPM-65282"}},
     // カンブリアンQTS ～化石になっても～
