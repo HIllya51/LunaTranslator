@@ -1322,6 +1322,7 @@ def getColor(color, parent, alpha=False):
         layout.takeAt(layout.count() - 1).widget().hide()
         layout.takeAt(layout.count() - 1).widget().hide()
     color_dialog.layout().insertItem(0, colorpicker)
+    color_dialog.layout().itemAt(color_dialog.layout().count()-1).widget().setFocus()
 
     if color_dialog.exec() != QColorDialog.DialogCode.Accepted:
         return QColor()
