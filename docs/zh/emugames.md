@@ -17,7 +17,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
-|  | 0100D4300EBF8000 | 十うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
+|  | 0100D4300EBF8000 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 |  | 01007FD0211DA000 | 連呪 |
 |  | 010081D016E4E000 | DIG-ROCK -Documentary of Youthful Sounds- |
 |  | 010065402030A000 | 十鬼の絆 |
