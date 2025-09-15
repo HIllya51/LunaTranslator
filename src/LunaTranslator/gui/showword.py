@@ -731,7 +731,11 @@ class AnkiWindow(QWidget):
         self.currentword = text
         if text and len(text):
             _hs = gobject.base.parsehira(text)
-            self.zhuyinedit.setPlainText(mecab.makerubyhtml(_hs))
+            if len(_hs) == 1:
+                # 分成多个词的，不要填入，错误率太高了容易误导人
+                self.zhuyinedit.setPlainText(mecab.makerubyhtml(_hs))
+            else:
+                self.zhuyinedit.clear()
         else:
             self.zhuyinedit.clear()
 

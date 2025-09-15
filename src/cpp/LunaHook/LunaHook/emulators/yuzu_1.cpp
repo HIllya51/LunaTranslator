@@ -530,6 +530,7 @@ namespace
     {
         auto s = buffer->strW();
         s = re::sub(s, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
+        s = re::sub(s, LR"(\$\[\$b\$(.*?)\$\])", L"$1");
         s = re::sub(s, LR"(@(.*?)@)", L"$1");
         if (hp->offset == 9)
         {
@@ -4101,7 +4102,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8043D69C, {CODEC_UTF8, 0, 0, 0, F010081E0161B2000, 0x010081E0161B2000ull, "1.0.0"}},
     // Re;quartz零度
     {0x8017F0CC, {CODEC_UTF16, 8, 0, 0, F010048101D49E000, 0x010048101D49E000ull, "1.0.0"}},
-    {0x800ef69c, {CODEC_UTF16, 1, 0, 0, F010048101D49E000, 0x010048101D49E000ull, "1.0.1"}},
+    {0x8017F17C, {CODEC_UTF16, 8, 0, 0, F010048101D49E000, 0x010048101D49E000ull, "1.0.1"}},
     {0x8011aea4, {CODEC_UTF16, 9, 0, 0, F010048101D49E000, 0x010048101D49E000ull, "1.0.1"}},
     // 喧嘩番長 乙女 ダブルパック
     {0x81801c7c, {CODEC_UTF16, 0, 0x14, 0, F0100B6501FE4C000, 0x0100B6501FE4C000ull, "1.1.0"}},

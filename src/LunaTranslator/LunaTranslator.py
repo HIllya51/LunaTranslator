@@ -197,7 +197,7 @@ class BASEOBJECT(QObject):
         l.addWidget(lb)
         img = QPixmap.fromImage(QImage("files/static/zan.jpg"))
         lb.showpixmap(img)
-        m.resize(500, 500)
+        m.resize(400, 400)
         m.exec()
 
     @threader
