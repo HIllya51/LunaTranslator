@@ -9,7 +9,7 @@ import windows
 import gobject
 
 
-class playtimemanager:
+class somedatabase:
     def all(self):
         res = self.sqlsavegameinfo.execute(
             "SELECT gameinternalid_v2.gameuid, trace_strict.timestart, trace_strict.timestop FROM gameinternalid_v2 JOIN trace_strict ON gameinternalid_v2.gameinternalid = trace_strict.gameinternalid "
@@ -21,6 +21,23 @@ class playtimemanager:
             mp[uid].append((s, e))
         return mp
 
+    def append_word(self, word, sentence=None):
+        sentence = sentence if sentence else ""
+        self.sqlsavegameinfo.execute(
+            "INSERT INTO search_word_history VALUES(NULL,?,?,?,?)".format(),
+            (word, sentence, time.time(), 0),
+        )
+
+    def removewhich(self, _id):
+        self.sqlsavegameinfo.execute(
+            "DELETE FROM search_word_history WHERE id=?", (_id,)
+        )
+
+    def allwords(self):
+        return self.sqlsavegameinfo.execute(
+            "SELECT * FROM search_word_history ORDER BY id DESC"
+        ).fetchall()
+
     def __init__(self):
 
         self.sqlsavegameinfo = sqlite3.connect(
@@ -28,6 +45,12 @@ class playtimemanager:
             check_same_thread=False,
             isolation_level=None,
         )
+        try:
+            self.sqlsavegameinfo.execute(
+                "CREATE TABLE search_word_history(id INTEGER PRIMARY KEY AUTOINCREMENT,WORD TEXT, SENTENCE TEXT ,timestamp BIGINT, status INT);"
+            )
+        except:
+            pass
         try:
             self.sqlsavegameinfo.execute(
                 "CREATE TABLE traceplaytime_v4(id INTEGER PRIMARY KEY AUTOINCREMENT,gameinternalid INT,timestart BIGINT,timestop BIGINT);"

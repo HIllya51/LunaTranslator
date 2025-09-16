@@ -9,10 +9,9 @@ from myutils.utils import (
     dynamiclink,
     translate_exits,
     dynamicapiname,
-    autosql,
     getannotatedapiname,
 )
-import json
+import json, sqlite3
 from traceback import print_exc
 from gui.usefulwidget import SuperCombo
 from collections import Counter
@@ -581,26 +580,26 @@ def initsome2(self, mianfei, api):
 @tryprint
 def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
     try:
-        sql = autosql(sqlitefile, check_same_thread=False)
-        ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
-        js_format2: "dict[str, dict|str]" = {}
-        collect = []
-        for _aret in ret:
-            if len(_aret) == 4:
-                _id, source, mt, source_origin = _aret
-                if targetjson:
-                    source = source_origin
-                js_format2[source] = mt
-            elif len(_aret) == 3:
-                _id, source, mt = _aret
-                js_format2[source] = mt
-            try:
-                mtjs = json.loads(mt)
-            except:
-                mtjs = mt
-            js_format2[source] = mtjs
-            if isinstance(mtjs, dict):
-                collect.extend(list(mtjs.keys()))
+        with sqlite3.connect(sqlitefile, check_same_thread=False) as sql:
+            ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
+            js_format2: "dict[str, dict|str]" = {}
+            collect = []
+            for _aret in ret:
+                if len(_aret) == 4:
+                    _id, source, mt, source_origin = _aret
+                    if targetjson:
+                        source = source_origin
+                    js_format2[source] = mt
+                elif len(_aret) == 3:
+                    _id, source, mt = _aret
+                    js_format2[source] = mt
+                try:
+                    mtjs = json.loads(mt)
+                except:
+                    mtjs = mt
+                js_format2[source] = mtjs
+                if isinstance(mtjs, dict):
+                    collect.extend(list(mtjs.keys()))
     except:
         print_exc()
         QMessageBox.critical(self, _TR("错误"), _TR("所选文件格式错误！"))

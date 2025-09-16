@@ -57,7 +57,7 @@ import NativeUtils
 from gui.gamemanager.common import startgame
 from myutils.post import POSTSOLVE
 from myutils.utils import nowisdark, dynamicapiname
-from myutils.traceplaytime import playtimemanager
+from myutils.somedatabase import somedatabase
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LDialog
 from gui.setting.setting import Setting
@@ -1492,7 +1492,7 @@ class BASEOBJECT(QObject):
         self.WordViewTooltip = WordViewTooltip(self.commonstylebase)
         self.starttextsource()
         self.inittray()
-        self.playtimemanager = playtimemanager()
+        self.somedatabase = somedatabase()
         self.urlprotocol()
         self.serviceinit()
         versioncheckthread()

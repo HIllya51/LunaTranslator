@@ -189,7 +189,7 @@ def getallgamelabels(yearinfos):
 
 
 def yearsummary(self, basel: QHBoxLayout):
-    allinfos = gobject.base.playtimemanager.all()  # {uid:[[s,e]]}
+    allinfos = gobject.base.somedatabase.all()  # {uid:[[s,e]]}
     yearinfos = getthisyearinfo(allinfos)  # {uid:[[s,e]]}
     alleverytimes = calc_uid_times(allinfos)  # {uid:time}
     everytimes = calc_uid_times(yearinfos)  # {uid:time}

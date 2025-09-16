@@ -16,7 +16,7 @@ from myutils.config import (
     static_data,
 )
 from myutils.wrapper import tryprint
-from myutils.utils import autosql
+import sqlite3
 from gui.dialog_memory import dialog_memory
 from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
@@ -496,13 +496,15 @@ class dialog_setting_game_internal(QWidget):
         )
         if not os.path.exists(sqlitef):
             return
-        sql = autosql(sqlitef, check_same_thread=False, isolation_level=None)
-        cnt = 0
-        for (_,) in sql.execute("SELECT source FROM artificialtrans").fetchall():
-            cnt += len(_)
-        savehook_new_data[self.gameuid]["statistic_wordcount"] = max(
-            cnt, savehook_new_data[self.gameuid]["statistic_wordcount"]
-        )
+        with sqlite3.connect(
+            sqlitef, check_same_thread=False, isolation_level=None
+        ) as sql:
+            cnt = 0
+            for (_,) in sql.execute("SELECT source FROM artificialtrans").fetchall():
+                cnt += len(_)
+            savehook_new_data[self.gameuid]["statistic_wordcount"] = max(
+                cnt, savehook_new_data[self.gameuid]["statistic_wordcount"]
+            )
 
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
         chart = chartwidget()
@@ -590,7 +592,7 @@ class dialog_setting_game_internal(QWidget):
         return lists
 
     def refresh(self):
-        __ = gobject.base.playtimemanager.querytraceplaytime(self.gameuid)
+        __ = gobject.base.somedatabase.querytraceplaytime(self.gameuid)
         _cnt = sum([_[1] - _[0] for _ in __])
         self._timelabel.setText(self.formattime(_cnt))
         self._wordlabel.setText(
