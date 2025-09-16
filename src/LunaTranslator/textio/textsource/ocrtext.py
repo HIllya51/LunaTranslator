@@ -27,8 +27,8 @@ def imageCutEx(*a):
 
 
 class rangemanger:
-    def __init__(self):
-        self.range_ui = rangeadjust(gobject.base.settin_ui)
+    def __init__(self, ranges: "list[rangemanger]"):
+        self.range_ui = rangeadjust(gobject.base.settin_ui, ranges)
         self.savelastimg: cvMat = None
         self.savelastrecimg: cvMat = None
         self.lastocrtime: float = 0
@@ -126,10 +126,12 @@ class ocrtext(basetext):
 
     def leaveone(self):
         self.ranges = self.ranges[-1:]
+        if self.ranges:
+            self.ranges[0].range_ui.isfocus = False
 
     def newrangeadjustor(self):
         if len(self.ranges) == 0 or globalconfig["multiregion"]:
-            self.ranges.append(rangemanger())
+            self.ranges.append(rangemanger(self.ranges))
 
     def starttrace(self, pos):
         for _r in self.ranges:
@@ -238,14 +240,20 @@ class ocrtext(basetext):
                 time.sleep(0.1)
 
     def waitforstablex(self):
-        for range_ui in self.ranges:
+        for range_ui in self.getuseranges():
             if not range_ui.waitforstable():
                 return False
         return True
 
+    def getuseranges(self):
+        for r in self.ranges:
+            if r.range_ui.isfocus:
+                return [r]
+        return self.ranges
+
     def getallres(self, auto):
         __text: "list[OCRResultParsed]" = []
-        for r in self.ranges:
+        for r in self.getuseranges():
 
             if auto:
                 _ = r.getresauto()

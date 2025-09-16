@@ -136,6 +136,36 @@ class rangeadjust(Mainw):
     closesignal = pyqtSignal()
     traceoffsetsignal = pyqtSignal(QPoint)
 
+    @property
+    def isfocus(self):
+        return self.__isfocus
+
+    @isfocus.setter
+    def isfocus(self, f):
+        def cleanother():
+            for r in self.ranges:
+                range_ui: "rangeadjust" = r.range_ui
+                if range_ui != self:
+                    if range_ui.__isfocus:
+                        range_ui.__isfocus = False
+                        range_ui.setstyle()
+
+        if sum(not (r.range_ui._rect is None) for r in self.ranges) > 1:
+            if f:
+                cleanother()
+                self.__isfocus = True
+            else:
+                self.__isfocus = False
+        else:
+            cleanother()
+            self.__isfocus = False
+        self.setstyle()
+
+    def mouseDoubleClickEvent(self, a0):
+        self.isfocus = not self.isfocus
+        gobject.base.translation_ui.startTranslater()
+        return super().mouseDoubleClickEvent(a0)
+
     def starttrace(self, pos):
         self.tracepos = self.geometry().topLeft()
         self.traceposstart = pos
@@ -178,8 +208,10 @@ class rangeadjust(Mainw):
             geo.height() / self.devicePixelRatioF(),
         ).toRect()
 
-    def __init__(self, parent):
-        super(rangeadjust, self).__init__(parent)
+    def __init__(self, parent, ranges):
+        super().__init__(parent)
+        self.__isfocus = False
+        self.ranges: list = ranges
         self.traceoffsetsignal.connect(self.traceoffset)
         self.label = QLabel(self)
         self.setstyle()
@@ -216,12 +248,17 @@ class rangeadjust(Mainw):
             )
         elif action == close:
             self._rect = None
+            self.isfocus = False
             self.close()
 
     def setstyle(self):
         self.label.setStyleSheet(
             " border:%spx solid %s; background-color: rgba(0,0,0, %s); border-radius:0;"
-            % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"], 1 / 255)
+            % (
+                globalconfig["ocrrangewidth"],
+                "red" if self.isfocus else globalconfig["ocrrangecolor"],
+                1 / 255,
+            )
         )
 
     def mouseMoveEvent(self, e: QMouseEvent):
@@ -270,7 +307,7 @@ class rangeadjust(Mainw):
         self.label.setGeometry(0, 0, self.width(), self.height())
         if self._rect:
             self._rect = self.rectoffset(self.geometry())
-        super(rangeadjust, self).resizeEvent(a0)
+        super().resizeEvent(a0)
 
     def getrect(self):
         return self._rect
