@@ -1,4 +1,4 @@
-### 简体中文  | [English](README_en.md) | [繁體中文](README_cht.md) | [한국어](README_ko.md) | [日本語](README_ja.md) | [Tiếng Việt](README_vi.md) | [Русский язык](README_ru.md)
+### 简体中文  | [English](https://docs.lunatranslator.org/en/) | [繁體中文](https://docs.lunatranslator.org/cht/) | [한국어](https://docs.lunatranslator.org/ko/) | [日本語](https://docs.lunatranslator.org/ja/) | [Tiếng Việt](https://docs.lunatranslator.org/vi/) | [Русский язык](https://docs.lunatranslator.org/ru/)
 
 # LunaTranslator [下载 & 启动 & 更新](https://docs.lunatranslator.org/zh/README.html)
 

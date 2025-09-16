@@ -1945,6 +1945,16 @@ namespace
             last = false;
         }
     }
+    void SLPS25238(TextBuffer *buffer, HookParam *hp)
+    {
+        static int i = 0;
+        i++;
+        if (i % 2 == 1)
+            return buffer->clear();
+        auto s = buffer->strA();
+        s = re::sub(s, R"(%[A-Z])");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -1952,6 +1962,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // My Merry Maybe
+    {0x1598b0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25238, "SLPS-25238"}},
     // とらかぷっ！だーっしゅ！！でらっくすぱっく
     {0xA5E964, {DIRECT_READ, 0, 0, 0, SLPM65301, "SLPM-65301"}},
     // カフェ・リトルウィッシュ ～魔法のレシピ～

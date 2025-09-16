@@ -900,6 +900,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25238 | My Merry Maybe |
 |  | SLPM-65301 | とらかぷっ！だーっしゅ！！でらっくすぱっく |
 |  | SLPM-65295 | カフェ・リトルウィッシュ ～魔法のレシピ～ |
 |  | SLPS-25235 | ゆめりあ |

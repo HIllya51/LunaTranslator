@@ -900,6 +900,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25238 | My Merry Maybe |
 |  | SLPM-65301 | とらかぷっ！だーっしゅ！！でらっくすぱっく |
 |  | SLPM-65295 | カフェ・リトルウィッシュ ～魔法のレシピ～ |
 |  | SLPS-25235 | ゆめりあ |
