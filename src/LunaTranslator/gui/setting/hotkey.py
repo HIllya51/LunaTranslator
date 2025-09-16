@@ -397,7 +397,8 @@ def plusclicked(self, form):
 
 def selfdefkeys(self, lay: QLayout):
     wid = QWidget()
-    wid.setStyleSheet("background:transparent")
+    wid.setObjectName("FUCKYOU")
+    wid.setStyleSheet("QWidget#FUCKYOU{background:transparent}")
     form = VisLFormLayout(wid)
     swid = makescroll()
     lay.addWidget(swid)
