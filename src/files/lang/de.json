@@ -862,5 +862,9 @@
     "下载链接": "Download-Link",
     "连接失败": "Verbindung fehlgeschlagen",
     "重置翻译状态": "Übersetzungsstatus zurücksetzen",
-    "不添加到Anki": "Nicht zu Anki hinzufügen."
+    "不添加到Anki": "Nicht zu Anki hinzufügen.",
+    "切换到前一个区域": "Wechsle zum vorherigen Bereich",
+    "切换到下一个区域": "Wechsle zum nächsten Bereich",
+    "切换到鼠标临近区域": "Wechsle zum Bereich in der Nähe der Maus",
+    "取消区域聚焦": "Bereichsfokus deaktivieren"
 }

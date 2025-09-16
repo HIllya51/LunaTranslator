@@ -1,9 +1,9 @@
 from qtsymbols import *
-import functools, gobject, NativeUtils, uuid, windows, shutil, time
+import functools, gobject, NativeUtils, uuid, windows, shutil, time, math
 from myutils.config import globalconfig, _TR
 from myutils.hwnd import grabwindow
 from traceback import print_exc
-from myutils.wrapper import threader
+from myutils.wrapper import threader, tryprint
 from myutils.keycode import vkcode_map
 from myutils.utils import (
     parsekeystringtomodvkcode,
@@ -116,6 +116,71 @@ def invoke_liandianqi_or_stop():
         liandianqi_stoped = True
 
 
+@tryprint
+def _ocr_focus_switch(to):
+    curr = 0
+    for i, r in enumerate(gobject.base.textsource.ranges):
+        if r.range_ui.isfocus:
+            curr = i
+            break
+    __l = len(gobject.base.textsource.ranges)
+    for i in range(__l):
+        curri = (__l + curr + i + to) % __l
+        r = gobject.base.textsource.ranges[curri]
+        if r.range_ui.getrect():
+            r.range_ui.isfocus = True
+            gobject.base.translation_ui.startTranslater()
+            break
+
+
+def _calc_dis_and_centerdis(rect, point):
+
+    (x1, y1), (x2, y2) = rect
+    px, py = point.x, point.y
+
+    x1, x2 = sorted([x1, x2])
+    y1, y2 = sorted([y1, y2])
+
+    if x1 <= px <= x2 and y1 <= py <= y2:
+        edge_dist = 0
+    else:
+        dx = max(x1 - px, 0, px - x2)
+        dy = max(y1 - py, 0, py - y2)
+        edge_dist = math.hypot(dx, dy)
+
+    cx, cy = (x1 + x2) / 2, (y1 + y2) / 2
+    center_dist = math.hypot(px - cx, py - cy)
+
+    return edge_dist, center_dist
+
+
+@tryprint
+def _ocr_focus_No():
+    for r in gobject.base.textsource.ranges:
+        if r.range_ui.isfocus:
+            r.range_ui.isfocus = False
+
+
+@tryprint
+def _ocr_focus_switch_near():
+    nearestr = None
+    dist = math.inf, math.inf
+    curr = windows.GetCursorPos()
+    for rr in gobject.base.textsource.ranges:
+        r = rr.range_ui.getrect()
+        d, cd = _calc_dis_and_centerdis(r, curr)
+        if d < dist[0]:
+            nearestr = rr
+            dist = d, cd
+        elif d == dist[0] and cd < dist[1]:
+            nearestr = rr
+            dist = d, cd
+    if not nearestr:
+        return
+    nearestr.range_ui.isfocus = True
+    gobject.base.translation_ui.startTranslater()
+
+
 def registrhotkeys(self):
     self.referlabels = {}
     self.referlabels_data = {}
@@ -169,6 +234,10 @@ def registrhotkeys(self):
         ),
         "44": invoke_liandianqi_or_stop,
         "45": gobject.base.prepare,
+        "46": lambda: _ocr_focus_switch(-1),
+        "47": lambda: _ocr_focus_switch(1),
+        "48": lambda: _ocr_focus_switch_near(),
+        "49": lambda: _ocr_focus_No(),
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -199,7 +268,7 @@ hotkeys = [
         ],
     ],
     ["HOOK", ["_11", "_12"]],
-    ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1"]],
+    ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1", "46", "47", "48", "49"]],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
     ["游戏", ["_10", "_15", "_21", "_22", "43", "41", "42"]],

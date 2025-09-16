@@ -862,5 +862,9 @@
     "下载链接": "Nedladdningslänk",
     "连接失败": "Anslutningen misslyckades",
     "重置翻译状态": "Återställ översättningsstatus.",
-    "不添加到Anki": "Lägg inte till i Anki"
+    "不添加到Anki": "Lägg inte till i Anki",
+    "切换到前一个区域": "Växla till föregående område",
+    "切换到下一个区域": "Växla till nästa område",
+    "切换到鼠标临近区域": "Växla till området nära musen",
+    "取消区域聚焦": "Avbryt områdesfokusering"
 }

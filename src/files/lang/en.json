@@ -862,5 +862,9 @@
     "下载链接": "Download link",
     "连接失败": "Connection failed",
     "重置翻译状态": "Reset translation state",
-    "不添加到Anki": "Do not add to Anki."
+    "不添加到Anki": "Do not add to Anki.",
+    "切换到前一个区域": "Switch to the previous area.",
+    "切换到下一个区域": "Switch to the next area.",
+    "切换到鼠标临近区域": "Switch to the area adjacent to the mouse.",
+    "取消区域聚焦": "Cancel regional focus"
 }

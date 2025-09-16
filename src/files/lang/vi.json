@@ -862,5 +862,9 @@
     "下载链接": "Liên kết tải xuống",
     "连接失败": "Kết nối thất bại",
     "重置翻译状态": "Thiết lập lại trạng thái dịch thuật.",
-    "不添加到Anki": "Không thêm vào Anki"
+    "不添加到Anki": "Không thêm vào Anki",
+    "切换到前一个区域": "Chuyển sang khu vực trước đó",
+    "切换到下一个区域": "Chuyển sang khu vực tiếp theo",
+    "切换到鼠标临近区域": "Chuyển sang khu vực gần chuột",
+    "取消区域聚焦": "Hủy tập trung khu vực"
 }

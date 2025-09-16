@@ -862,5 +862,9 @@
     "下载链接": "Odkaz ke stažení",
     "连接失败": "Připojení selhalo.",
     "重置翻译状态": "Resetovat stav překladu",
-    "不添加到Anki": "Nepřidávat do Anki"
+    "不添加到Anki": "Nepřidávat do Anki",
+    "切换到前一个区域": "Přepnout na předchozí oblast",
+    "切换到下一个区域": "Přepnout na další oblast",
+    "切换到鼠标临近区域": "Přepnout na oblast blízko kurzoru",
+    "取消区域聚焦": "Zrušit regionální zaměření"
 }

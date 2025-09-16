@@ -952,6 +952,26 @@
                 "name": "重置翻译状态",
                 "keystring": ""
             },
+            "46": {
+                "use": false,
+                "name": "多重区域模式_切换到前一个区域",
+                "keystring": ""
+            },
+            "47": {
+                "use": false,
+                "name": "多重区域模式_切换到下一个区域",
+                "keystring": ""
+            },
+            "48": {
+                "use": false,
+                "name": "多重区域模式_切换到鼠标临近区域",
+                "keystring": ""
+            },
+            "49": {
+                "use": false,
+                "name": "多重区域模式_取消区域聚焦",
+                "keystring": ""
+            },
             "_15": {
                 "use": false,
                 "name": "绑定窗口_（点击自己取消）",

@@ -88,6 +88,26 @@
 1. #### OCR lần nữa {#anchor-_26_1}
     Sau khi sử dụng `Thực Hiện OCR Một Lần`, sử dụng phím tắt này sẽ thực hiện OCR lại tại vị trí ban đầu mà không cần chọn lại khu vực nhận diện.
 
+1. #### Chế độ đa vùng Chuyển sang khu vực trước đó {#anchor-46}
+    **Chỉ khả dụng trong chế độ OCR**
+
+    Sau khi kích hoạt chế độ đa vùng, bạn có thể sử dụng phím tắt này để chuyển vùng đang được tập trung sang vùng trước đó và ngay lập tức thực hiện lại OCR.
+
+1. #### Chế độ đa vùng Chuyển sang khu vực tiếp theo {#anchor-47}
+    **Chỉ khả dụng trong chế độ OCR**
+
+    Sau khi kích hoạt chế độ đa vùng, bạn có thể sử dụng phím tắt này để chuyển vùng đang được tập trung sang vùng tiếp theo và ngay lập tức thực hiện lại OCR.
+
+1. #### Chế độ đa vùng Chuyển sang khu vực gần chuột {#anchor-48}
+    **Chỉ khả dụng trong chế độ OCR**
+
+    Sau khi kích hoạt chế độ đa vùng, bạn có thể sử dụng phím tắt này để chuyển vùng đang được tập trung sang vùng gần con trỏ chuột và ngay lập tức thực hiện lại OCR.
+
+1. #### Chế độ đa vùng Hủy tập trung khu vực {#anchor-49}
+    **Chỉ khả dụng trong chế độ OCR**
+
+    Sau khi kích hoạt chế độ đa vùng, bạn có thể sử dụng phím tắt này để hủy tập trung vùng.
+
 ## Clipboard
 
 1. #### Đọc bảng nháp {#anchor-36}

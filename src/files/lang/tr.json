@@ -862,5 +862,9 @@
     "下载链接": "İndirme bağlantısı",
     "连接失败": "Bağlantı başarısız",
     "重置翻译状态": "Çeviri durumu sıfırlandı.",
-    "不添加到Anki": "Anki'ye ekleme"
+    "不添加到Anki": "Anki'ye ekleme",
+    "切换到前一个区域": "Önceki bölgeye geç",
+    "切换到下一个区域": "Sonraki bölgeye geç",
+    "切换到鼠标临近区域": "Fare yakınındaki bölgeye geç",
+    "取消区域聚焦": "Bölgesel odaklanma iptal edildi."
 }

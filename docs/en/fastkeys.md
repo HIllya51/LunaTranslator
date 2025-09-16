@@ -89,6 +89,26 @@
 1. #### Perform OCR Again {#anchor-_26_1}
     After using `Perform OCR Once`, using this shortcut key will perform OCR again in the original position without reselecting the recognition area.
 
+1. #### Multi-Region Mode Switch to the previous area. {#anchor-46}
+    **Only available in OCR mode**
+
+    After activating Multi-zone mode, you can use this shortcut to switch the focused zone to the previous one and immediately re-perform OCR.
+
+1. #### Multi-Region Mode Switch to the next area. {#anchor-47}
+    **Only available in OCR mode**
+
+    After activating Multi-zone mode, you can use this shortcut to switch the focused zone to the next one and immediately re-perform OCR.
+
+1. #### Multi-Region Mode Switch to the area adjacent to the mouse. {#anchor-48}
+    **Only available in OCR mode**
+
+    After activating Multi-zone mode, you can use this shortcut to switch the focused zone to the one near the mouse cursor and immediately re-perform OCR.
+
+1. #### Multi-Region Mode Cancel regional focus {#anchor-49}
+    **Only available in OCR mode**
+
+    After activating multi-zone mode, you can use this shortcut key to cancel zone focus.
+
 ## Clipboard
 
 1. #### Read Clipboard {#anchor-36}
