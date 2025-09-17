@@ -168,6 +168,8 @@ def _ocr_focus_switch_near():
     curr = windows.GetCursorPos()
     for rr in gobject.base.textsource.ranges:
         r = rr.range_ui.getrect()
+        if not r:
+            continue
         d, cd = _calc_dis_and_centerdis(r, curr)
         if d < dist[0]:
             nearestr = rr
