@@ -226,19 +226,12 @@ bool checklengthembedable(const HookParam &hp, size_t size)
 void commonfilter(TextBuffer *buffer, HookParam *hp)
 {
 
-	if (hp->type & CODEC_UTF16)
-		;
-	else if (hp->type & CODEC_UTF32)
-		;
-	else if (hp->type & CODEC_UTF8)
-		;
-	else
+	if (hp.type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8)) 
+		return;
+	if (buffer->size == 2)
 	{
-		if (buffer->size == 2)
-		{
-			StringFilter(buffer, TEXTANDLEN("\x81\xa4"));
-			StringFilter(buffer, TEXTANDLEN("\x81\xa5"));
-		}
+		StringFilter(buffer, TEXTANDLEN("\x81\xa4"));
+		StringFilter(buffer, TEXTANDLEN("\x81\xa5"));
 	}
 }
 void TextHook::Send(uintptr_t lpDataBase)
