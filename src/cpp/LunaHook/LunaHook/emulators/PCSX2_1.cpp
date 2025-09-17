@@ -1766,6 +1766,21 @@ namespace
     {
         StringFilter(buffer, "%", 2);
     }
+    void SLPM67003(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        if (s.size() == 1)
+            return buffer->clear();
+        if (all_ascii(s))
+            return buffer->clear();
+        if (s[0] == L'"')
+            return buffer->clear();
+        static std::wstring last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        buffer->fromWA(strReplace(s, L"//"));
+    }
     void SLPM65639(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1890,7 +1905,7 @@ namespace
     void SLPM65255(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
-        s = re::sub(s, LR"([・\u0001-\u007f])");
+        s = re::sub(s, LR"([・\u0001-\u007f\uf8f3])");
         buffer->fromWA(s);
     }
     void SLPM65275(TextBuffer *buffer, HookParam *hp)
@@ -1962,6 +1977,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // トライアングルアゲイン2
+    {0x16598c, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65255, "SLPM-65273"}},
+    // EVE burst error PLUS
+    {0x49B590, {DIRECT_READ, 0, 0, 0, 0, "SLPM-65320"}},
+    // あいかぎ ～ぬくもりとひだまりの中で～
+    {0x4F263C, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25274"}},
     // My Merry Maybe
     {0x1598b0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25238, "SLPS-25238"}},
     // とらかぷっ！だーっしゅ！！でらっくすぱっく
@@ -2036,6 +2057,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x15562C, {0, 0, 0, SLPM65607, SLPM66861, "SLPM-65607"}},
     // 帝国千戦記 [初回限定版]
     {0x1DB228, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25433, "SLPS-25433"}},
+    // サクラ大戦 ～熱き血潮に～
+    {0x1f1420, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM67003, "SLPM-67003"}},
     // サクラ大戦Ⅴ ～さらば愛しき人よ～
     {0x1F6E550, {DIRECT_READ, 0, 0, 0, SLPM67009, "SLPM-67009"}},
     // 月は東に日は西に -Operation Sanctuary-
