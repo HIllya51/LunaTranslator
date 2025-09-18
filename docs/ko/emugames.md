@@ -728,6 +728,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00611 | 絶対迷宮　秘密のおやゆび姫 |
 |  | PCSG00139 | フォトカノ Kiss |
 |  | PCSG00509 | POSSESSION MAGENTA |
 |  | PCSG00020 | 極限脱出ＡＤＶ 善人シボウデス |
@@ -900,6 +901,11 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65239 | エンジェリック・コンサート |
+|  | SLPS-25223 | Canvas～セピア色のモチーフ～ |
+|  | SLPS-25256 | Never7 ～the end of infinity～ |
+|  | SLPS-25219 | カナリア～この想いを歌に乗せて～ |
+|  | SLPM-65450 | 探偵学園Q ～奇翁館の殺意～ |
 |  | SLPM-65273 | トライアングルアゲイン2 |
 |  | SLPM-65320 | EVE burst error PLUS |
 |  | SLPS-25274 | あいかぎ ～ぬくもりとひだまりの中で～ |
@@ -919,6 +925,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 |  | SLPM-65448 | カンブリアンQTS ～化石になっても～ |
 |  | SLPM-66847 | アラビアンズ・ロスト ～The engagement on desert～ |
 |  | SLPS-25283 | INTERLUDE |
+|  | SLPS-25298 | てんたま -1st Sunny Side- |
 |  | SLPM-65520 | てんたま2wins [限定版] |
 |  | SLPM-65550 | Remember11 ～the age of infinity～ [通常版] |
 |  | SLPS-25294 | 宇宙のステルヴィア |

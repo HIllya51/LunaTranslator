@@ -4,7 +4,7 @@ from traceback import print_exc
 import os, gobject, requests, sys, uuid
 from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR, static_data
-from myutils.utils import makehtml, selectdebugfile
+from myutils.utils import selectdebugfile
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     MySwitch,

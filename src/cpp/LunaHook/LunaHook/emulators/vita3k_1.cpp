@@ -977,6 +977,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 絶対迷宮　秘密のおやゆび姫
+    {0x800B9DEA, {0, 3, 0, 0, 0, "PCSG00611"}},
     // フォトカノ Kiss
     {0x81161B0E, {0, 0, 0, 0, NewLineCharFilterA, "PCSG00139"}},
     // POSSESSION MAGENTA

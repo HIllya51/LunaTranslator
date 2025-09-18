@@ -1830,6 +1830,12 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\xe9\x85"), TEXTANDLEN("\x81\x79"));
         StringReplacer(buffer, TEXTANDLEN("\xe9\x86"), TEXTANDLEN("\x81\x7a"));
     }
+    void SLPS25219(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto s = (char *)PCSX2_REG(a0);
+        if ((WORD)PCSX2_REG(v1) == 0x91fc || (WORD)PCSX2_REG(v1) == 0x8f10)
+            buffer->from(s);
+    }
     void SLPM65559(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         static unsigned char last;
@@ -1937,13 +1943,6 @@ namespace
         s = re::sub(s, R"(#cr0(\x81\x40)*)");
         buffer->from(s);
     }
-    void SLPS25026(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        if (all_ascii(s))
-            buffer->clear();
-        buffer->from(s);
-    }
     void SLPM65295(TextBuffer *buffer, HookParam *hp)
     {
         static bool last = false;
@@ -1970,6 +1969,31 @@ namespace
         s = re::sub(s, R"(%[A-Z])");
         buffer->from(s);
     }
+    void SLPS25256(TextBuffer *buffer, HookParam *hp)
+    {
+        static int i = 0;
+        i++;
+        if (i % 2 == 1)
+            return buffer->clear();
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\\[a-z])");
+        buffer->from(s);
+    }
+    void SLPS25223(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("$n"));
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            buffer->clear();
+    }
+    void SLPM65239(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "^(.*?)#cr0", "\x81\x79$1\x81\x7a");
+        strReplace(s, "#cr0");
+        strReplace(s, "\x81\x79\x81\x40\x81\x40\x81\x40\x81\x40\x81\x7a");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -1977,6 +2001,16 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // エンジェリック・コンサート
+    {0xA2B038, {DIRECT_READ, 0, 0, 0, SLPM65239, "SLPM-65239"}},
+    // Canvas～セピア色のモチーフ～
+    {0x1940c8, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25223, "SLPS-25223"}},
+    // Never7 ～the end of infinity～
+    {0x1a0dd0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25256, "SLPS-25256"}},
+    // カナリア～この想いを歌に乗せて～
+    {0x1c6be4, {0, PCSX2_REG_OFFSET(a0), 0, SLPS25219, 0, "SLPS-25219"}},
+    // 探偵学園Q ～奇翁館の殺意～
+    {0x158040, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM67003, "SLPM-65450"}},
     // トライアングルアゲイン2
     {0x16598c, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65255, "SLPM-65273"}},
     // EVE burst error PLUS
@@ -2015,6 +2049,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x3A2F70, {DIRECT_READ, 0, 0, 0, SLPM66847, "SLPM-66847"}},
     // INTERLUDE
     {0x572040, {DIRECT_READ, 0, 0, 0, SLPS25283, "SLPS-25283"}},
+    // てんたま -1st Sunny Side-
+    {0x1DFD630, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPS-25298"}},
     // てんたま2wins [限定版]
     {0x4A3A60, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-65520"}},
     // Remember11 ～the age of infinity～ [通常版]

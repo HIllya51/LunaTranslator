@@ -225,8 +225,7 @@ bool checklengthembedable(const HookParam &hp, size_t size)
 }
 void commonfilter(TextBuffer *buffer, HookParam *hp)
 {
-
-	if (hp.type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8)) 
+	if (hp->type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8)) 
 		return;
 	if (buffer->size == 2)
 	{

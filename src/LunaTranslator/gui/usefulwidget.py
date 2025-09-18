@@ -345,6 +345,17 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
         )
 
 
+class NoTextDelegate(QStyledItemDelegate):
+    def paint(self, painter, option: QStyleOptionViewItem, index):
+        try:
+            # 避免编辑时若qlineedit背景透明导致重影
+            if option.widget and option.widget.indexWidget(index):
+                return
+        except:
+            print_exc()
+        super().paint(painter, option, index)
+
+
 class TableViewW(DelayLoadTableView):
     def __init__(self, *argc, updown=False, copypaste=False) -> None:
         super().__init__(*argc)
@@ -354,8 +365,10 @@ class TableViewW(DelayLoadTableView):
         if updown or copypaste:
             self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
             self.customContextMenuRequested.connect(self.showmenu)
+        self.__ref = NoTextDelegate(self)
+        self.setItemDelegate(self.__ref)
 
-    def showmenu(self, pos):
+    def showmenu(self, _):
         if not self.currentIndex().isValid():
             return
         menu = QMenu(self)
@@ -1322,7 +1335,7 @@ def getColor(color, parent, alpha=False):
         layout.takeAt(layout.count() - 1).widget().hide()
         layout.takeAt(layout.count() - 1).widget().hide()
     color_dialog.layout().insertItem(0, colorpicker)
-    color_dialog.layout().itemAt(color_dialog.layout().count()-1).widget().setFocus()
+    color_dialog.layout().itemAt(color_dialog.layout().count() - 1).widget().setFocus()
 
     if color_dialog.exec() != QColorDialog.DialogCode.Accepted:
         return QColor()
