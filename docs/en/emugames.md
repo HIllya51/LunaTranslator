@@ -901,6 +901,8 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-62122 | ヘルミーナとクルス |
+|  | SLPM-65154 | 君が望む永遠 ～Rumbling hearts～ |
 |  | SLPM-65239 | エンジェリック・コンサート |
 |  | SLPS-25223 | Canvas～セピア色のモチーフ～ |
 |  | SLPS-25256 | Never7 ～the end of infinity～ |
@@ -921,7 +923,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | SLPS-25245 | トゥルーラブストーリー サマーデイズ アンド イエット... |
 |  | SLPM-65306 | SAKURA～雪月華～ [初回限定版] |
 |  | SLPS-25248 | キノの旅 -the Beautiful World- |
-|  | SLPM-65282 | グリーングリーン ～鐘の音ロマンティック～ |
+|  | SLPM-65281 & SLPM-65282 | グリーングリーン ～鐘の音ロマンティック～ |
 |  | SLPM-65448 | カンブリアンQTS ～化石になっても～ |
 |  | SLPM-66847 | アラビアンズ・ロスト ～The engagement on desert～ |
 |  | SLPS-25283 | INTERLUDE |
@@ -976,6 +978,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | SLPM-66543 | Yo-Jin-Bo ～運命のフロイデ～ |
 |  | SLPS-25468 | 永遠のアセリア −この大地の果てで− |
 |  | SLPM-65832 | IZUMO コンプリート |
+|  | SLPM-65334 | 新世紀エヴァンゲリオン 綾波育成計画 with アスカ補完計画 |
 |  | SLPM-65867 | 新世紀エヴァンゲリオン 鋼鉄のガールフレンド2nd |
 |  | SLPM-65866 | 何処へ行くの、あの日 ～光る明日へ…～ |
 |  | SLPM-65895 | 月は切り裂く ～探偵 相楽恭一郎～ [限定版] |
@@ -1084,9 +1087,11 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | SLPM-55098 | 恋する乙女と守護の楯 [通常版] |
 |  | SLPM-66441 | 大奥記 |
 |  | SLPM-55102 | Piaキャロットへようこそ！！G.P. ～学園プリンセス～ |
+|  | SLPS-25221 | Piaキャロットへようこそ！！3 ～round summer～ |
 |  | SLPM-55136 | Clear ～新しい風の吹く丘で～ |
 |  | SLPM-55159 | ヒャッコ よろずや事件簿！ |
 |  | SLPM-55052 | トリガーハート エグゼリカ エンハンスド |
+|  | SLPS-25226 | Memories Off Duet ～1st & 2nd Stories～ |
 |  | SLPM-65610 | Memories Off ～それから～ [通常版] |
 |  | SLPM-66352 | Memories Off ～それから again～ [限定版] |
 |  | SLPM-65857 | Memories Off AfterRain vol.1 折鶴 [SPECIAL EDITION] |
@@ -1117,7 +1122,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | SLPM-55278 | 戦極姫2・炎 ～百華、戦乱辰風の如く～ |
 |  | SLPM-55263 | 花と乙女に祝福を ～春風の贈り物～ |
 |  | SLPM-65682 | Monochrome (モノクローム) |
-|  | SLPS-25051 | Missing Blue [通常版] |
+|  | SLPS-25039 & SLPS-25051 | Missing Blue |
 |  | SLPS-25759 | 四八 （仮） |
 |  | SLPS-25135 | かまいたちの夜2 ～監獄島のわらべ唄～ [通常版] |
 |  | SLPM-66452 | かまいたちの夜x3 三日月島事件の真相 |

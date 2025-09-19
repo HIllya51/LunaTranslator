@@ -1781,6 +1781,15 @@ namespace
         last = s;
         buffer->fromWA(strReplace(s, L"//"));
     }
+    void SLPM62122(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        buffer->from(strReplace(s, "CR"));
+    }
     void SLPM65639(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1829,6 +1838,19 @@ namespace
             return buffer->clear();
         StringReplacer(buffer, TEXTANDLEN("\xe9\x85"), TEXTANDLEN("\x81\x79"));
         StringReplacer(buffer, TEXTANDLEN("\xe9\x86"), TEXTANDLEN("\x81\x7a"));
+    }
+    void SLPS025221(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        if ((DWORD)PCSX2_REG(at) != 0x50210000)
+            return;
+        std::string s = (char *)PCSX2_REG(a1);
+        if (all_ascii(s))
+            return;
+        static std::string last;
+        if (s == last)
+            return;
+        last = s;
+        buffer->from(strReplace(s, "\x81\x40") + "\n");
     }
     void SLPS25219(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -1969,15 +1991,19 @@ namespace
         s = re::sub(s, R"(%[A-Z])");
         buffer->from(s);
     }
+    void SLPM65154(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\\[a-z])");
+        buffer->from(s);
+    }
     void SLPS25256(TextBuffer *buffer, HookParam *hp)
     {
         static int i = 0;
         i++;
         if (i % 2 == 1)
             return buffer->clear();
-        auto s = buffer->strA();
-        s = re::sub(s, R"(\\[a-z])");
-        buffer->from(s);
+        SLPM65154(buffer, hp);
     }
     void SLPS25223(TextBuffer *buffer, HookParam *hp)
     {
@@ -2001,6 +2027,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ヘルミーナとクルス
+    {0x12E374, {0, PCSX2_REG_OFFSET(s1), 0, 0, SLPM62122, "SLPM-62122"}},
+    // 君が望む永遠 ～Rumbling hearts～
+    {0x230d00, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65154, "SLPM-65154"}},
     // エンジェリック・コンサート
     {0xA2B038, {DIRECT_READ, 0, 0, 0, SLPM65239, "SLPM-65239"}},
     // Canvas～セピア色のモチーフ～
@@ -2042,7 +2072,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // キノの旅 -the Beautiful World-
     {0x12920c, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, SLPS25248, "SLPS-25248"}},
     // グリーングリーン ～鐘の音ロマンティック～
-    {0x94B318, {DIRECT_READ, 0, 0, 0, SLPM65282, "SLPM-65282"}},
+    {0x94B318, {DIRECT_READ, 0, 0, 0, SLPM65282, std::vector<const char *>{"SLPM-65281", "SLPM-65282"}}},
     // カンブリアンQTS ～化石になっても～
     {0x159e10, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65448, "SLPM-65448"}},
     // アラビアンズ・ロスト ～The engagement on desert～
@@ -2151,6 +2181,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x141A80, {0, PCSX2_REG_OFFSET(t7), 0, 0, SLPS25468, "SLPS-25468"}},
     // IZUMO コンプリート
     {0x12DD1C, {0, PCSX2_REG_OFFSET(v1), 0, 0, SLPM65832, "SLPM-65832"}},
+    // 新世紀エヴァンゲリオン 綾波育成計画 with アスカ補完計画
+    {0xF2AA20, {DIRECT_READ, 0, 0, 0, 0, "SLPM-65334"}},
     // 新世紀エヴァンゲリオン 鋼鉄のガールフレンド2nd
     {0x126BC4, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65867, "SLPM-65867"}},
     // 何処へ行くの、あの日 ～光る明日へ…～
@@ -2367,12 +2399,16 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1BF050, {0, 0, 0, SLPM66441, 0, "SLPM-66441"}},
     // Piaキャロットへようこそ！！G.P. ～学園プリンセス～
     {0x23AF40, {DIRECT_READ, 0, 0, 0, SLPM55102, "SLPM-55102"}},
+    // Piaキャロットへようこそ！！3 ～round summer～
+    {0x11f960, {0, 0, 0, SLPS025221, 0, "SLPS-25221"}},
     // Clear ～新しい風の吹く丘で～
     {0x1D0C580, {DIRECT_READ, 0, 0, 0, 0, "SLPM-55136"}},
     // ヒャッコ よろずや事件簿！
     {0x17B6D4, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55159, "SLPM-55159"}},
     // トリガーハート エグゼリカ エンハンスド
     {0x324694, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM55052, "SLPM-55052"}},
+    // Memories Off Duet ～1st & 2nd Stories～
+    {0xA929BC, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPS-25226"}},
     // Memories Off ～それから～ [通常版]
     {0xB9B400, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-65610"}},
     // Memories Off ～それから again～ [限定版]
@@ -2433,8 +2469,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x109C5C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65786, "SLPM-55263"}},
     // Monochrome (モノクローム)
     {0x4B7A60, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-65682"}},
-    // Missing Blue [通常版]
-    {0x12A80C, {0, 0, 0, SLPS25051, 0, "SLPS-25051"}}, //@mills
+    // Missing Blue
+    {0x12A80C, {0, 0, 0, SLPS25051, 0, std::vector<const char *>{"SLPS-25039", "SLPS-25051"}}}, //@mills
     // 四八 （仮）
     {0x17529C, {0, 0, 0, SLPS25759, 0, "SLPS-25759"}}, //@mills
     // かまいたちの夜2 ～監獄島のわらべ唄～ [通常版]
