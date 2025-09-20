@@ -641,11 +641,12 @@ void CotophaFilter(TextBuffer *buffer, HookParam *)
 }
 bool InsertCotophaHook1()
 {
-  enum : DWORD
-  {
-    ins = 0xec8b55
-  }; // mov ebp,esp, sub esp,*  ; jichi 7/12/2014
-  ULONG addr = MemDbg::findCallerAddress((ULONG)::GetTextMetricsA, ins, processStartAddress, processStopAddress);
+  DWORD funcs[] =
+      {
+          0xec8b55,
+          0xdc8b53 // バカップル・サプリメント体験版
+      };
+  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetTextMetricsA, funcs, sizeof(funcs) / sizeof(*funcs), processStartAddress, processStopAddress);
   if (!addr)
     return false;
   HookParam hp;
@@ -654,7 +655,6 @@ bool InsertCotophaHook1()
   hp.split = regoffset(ebp);
   hp.type = CODEC_UTF16 | USING_SPLIT | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT;
   hp.text_fun = ScenarioHook::Private::hookBefore;
-  ConsoleOutput("INSERT Cotopha");
 
   // RegisterEngineType(ENGINE_COTOPHA);
   return NewHook(hp, "Cotopha");
