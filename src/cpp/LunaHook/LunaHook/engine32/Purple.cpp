@@ -8,11 +8,7 @@ bool Purple::attach_function()
       0xCCCCCCCC,
       0xec8b55,
   };
-  enum
-  {
-    FunctionCount = sizeof(funcs) / sizeof(*funcs)
-  };
-  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetGlyphOutlineA, funcs, FunctionCount, processStartAddress, processStopAddress);
+  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetGlyphOutlineA, funcs, ARRAYSIZE(funcs), processStartAddress, processStopAddress);
 
   if (!addr)
     return false;

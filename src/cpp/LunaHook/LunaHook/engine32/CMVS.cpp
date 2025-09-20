@@ -16,11 +16,7 @@ namespace
         0xec83, // caller pattern: sub esp = 0x83,0xec
         0xec8b55,
     };
-    enum
-    {
-      FunctionCount = sizeof(funcs) / sizeof(*funcs)
-    };
-    ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetGlyphOutlineA, funcs, FunctionCount, processStartAddress, processStopAddress);
+    ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetGlyphOutlineA, funcs, ARRAYSIZE(funcs), processStartAddress, processStopAddress);
     // 初恋サクラメント
     // 夏に奏でる僕らの詩
     if (!addr)

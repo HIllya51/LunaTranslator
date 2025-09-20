@@ -202,11 +202,7 @@ bool InsertMajiroHook()
       // https://vndb.org/v1568
 
   };
-  enum
-  {
-    FunctionCount = sizeof(funcs) / sizeof(*funcs)
-  };
-  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::TextOutA, funcs, FunctionCount, processStartAddress, processStopAddress);
+  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::TextOutA, funcs, ARRAYSIZE(funcs), processStartAddress, processStopAddress);
   // ULONG addr = MemDbg::findCallerAddress((ULONG)::TextOutA, 0x83ec8b55, processStartAddress, processStopAddress);
   if (!addr)
     return false;

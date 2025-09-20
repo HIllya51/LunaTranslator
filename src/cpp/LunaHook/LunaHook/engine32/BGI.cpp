@@ -1025,12 +1025,8 @@ namespace
         ,
         0x00a64260 - 0x00a64318 // For newer BGI2 game since コドモノアソビ (2015/11)
     };
-    enum
-    {
-      hook_offset_count = sizeof(hook_offsets) / sizeof(*hook_offsets)
-    };
 
-    for (size_t i = 0; i < hook_offset_count; i++)
+    for (size_t i = 0; i < ARRAYSIZE(hook_offsets); i++)
     {
       int hook_offset = hook_offsets[i];
 

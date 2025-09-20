@@ -976,7 +976,7 @@ namespace
             ,
             "\x82\xcd\x82\xa2" /* はい */
         };
-        for (int i = 0; i < sizeof(s) / sizeof(*s); i++)
+        for (int i = 0; i < ARRAYSIZE(s); i++)
           if (::strcmp(text, s[i]) == 0)
             return true;
         return false;

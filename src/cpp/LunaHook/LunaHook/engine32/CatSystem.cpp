@@ -576,7 +576,7 @@ namespace
             ,
             "\x81\x68" /* ” */
         };
-        for (size_t i = 0; i < sizeof(puncts) / sizeof(*puncts); i++)
+        for (size_t i = 0; i < ARRAYSIZE(puncts); i++)
           if (::strstr(text, puncts[i]))
             return true;
 

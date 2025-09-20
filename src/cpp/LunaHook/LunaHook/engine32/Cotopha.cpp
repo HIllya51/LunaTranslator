@@ -646,7 +646,7 @@ bool InsertCotophaHook1()
           0xec8b55,
           0xdc8b53 // バカップル・サプリメント体験版
       };
-  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetTextMetricsA, funcs, sizeof(funcs) / sizeof(*funcs), processStartAddress, processStopAddress);
+  ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetTextMetricsA, funcs, ARRAYSIZE(funcs), processStartAddress, processStopAddress);
   if (!addr)
     return false;
   HookParam hp;
