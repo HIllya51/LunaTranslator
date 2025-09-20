@@ -261,9 +261,14 @@ class APISearchWord(HTTPHandler):
             return {}
         return dict(name=_TR(dynamiccishuname(k)), result=result, id=k)
 
-    def __notify(self, k, sema: threading.Event, ret: list, result):
+    def __notify(
+        self, k, sema: "threading.Event | threading.Semaphore", ret: list, result
+    ):
         ret.append((k, result))
-        sema.set()
+        if isinstance(sema, threading.Event):
+            sema.set()
+        elif isinstance(sema, threading.Semaphore):
+            sema.release()
 
 
 class PageMainui(HTTPHandler):
@@ -279,6 +284,7 @@ class Pageocr(HTTPHandler):
     def parse(self, _):
         page = r"LunaTranslator\htmlcode\service\ocr.html"
         return FileResponse(page)
+
 
 class Pagetts(HTTPHandler):
     path = "/page/tts"
@@ -310,7 +316,6 @@ class BasePage(HTTPHandler):
 
 
 def registerall(service: TCPService):
-    service.register(BasePage)
     service.register(APISearchWord)
     service.register(APImecab)
     service.register(APITranslators)
@@ -318,13 +323,14 @@ def registerall(service: TCPService):
     service.register(APItts)
     service.register(APIocr)
     service.register(APITranslate)
+    service.register(BasePage)
     service.register(PageSearchWord)
     service.register(Pagetranslate)
     service.register(Pageocr)
     service.register(Pagetts)
     service.register(PageMainui)
-    service.register(internalservicemainuiws)
     service.register(Pagetranshist)
+    service.register(internalservicemainuiws)
     service.register(internalservicetranshistws)
     service.register(TextOutputOrigin)
     service.register(TextOutputTrans)

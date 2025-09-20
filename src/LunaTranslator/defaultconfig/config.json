@@ -259,6 +259,7 @@
     },
     "networktcpport": 2333,
     "networktcpenable": false,
+    "network_service_disabled_paths": [],
     "textoutputer": {
         "clipboard": {
             "use": false,
