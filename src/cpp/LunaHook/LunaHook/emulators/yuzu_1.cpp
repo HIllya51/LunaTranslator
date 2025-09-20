@@ -2642,6 +2642,7 @@ namespace
         s = re::sub(s, LR"(\\　*)");
         s = re::sub(s, LR"(#(.*?)#\[.*?\])", L"$1"); // 注音
         strReplace(s, L"$");                         // 颜色 $text$
+        strReplace(s, L"%+&", L"渕田 結茉");
         strReplace(s, L"+", L" ");
         buffer->from(s);
     }
@@ -2699,6 +2700,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 勿ノ怪契リ
     {0x818F9200, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000_1, 0x0100AAD0210B6000ull, "1.0.0"}},
     {0x818F970C, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000, 0x0100AAD0210B6000ull, "1.0.0"}},
+    {0x818EC3E0, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000_1, 0x0100AAD0210B6000ull, "1.0.1"}},
+    {0x818EC5C8, {CODEC_UTF16, 1, 0X14, 0, f0100AAD0210B6000, 0x0100AAD0210B6000ull, "1.0.1"}},
     // アルカナ・ファミリア Rinato (Arcana Famiglia Rinato)
     {0x8189483C, {CODEC_UTF16, 0, 0X14, 0, F010043901E972000, 0x010008702297A000ull, "1.0.0"}},
     // Side Kicks! beyond

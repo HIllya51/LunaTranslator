@@ -702,7 +702,11 @@ class autoinitdialog(LDialog):
         maybehasextrainfo=None,
         exec_=False,
     ) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        super().__init__(
+            parent,
+            Qt.WindowType.WindowCloseButtonHint
+            | Qt.WindowType.WindowMaximizeButtonHint,
+        )
         self.setWindowTitle(title)
         self.resize(QSize(width, 10))
         formLayout = VisLFormLayout(self)
