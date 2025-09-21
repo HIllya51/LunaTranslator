@@ -191,25 +191,25 @@ class filetrans(basetext):
 
     srtsaveoriginuuid = uuid.uuid4()
 
-    def starttranslatefile(self, file: str):
-        self.startsql(file + ".sqlite")
-        if file.lower().endswith(".txt"):
-            file = parsetxt(file)
-        elif file.lower().endswith(".json"):
-            file = parsejson(file)
-        elif file.lower().endswith(".lrc"):
-            file = parselrc(file)
-        elif file.lower().endswith(".srt"):
-            saveorigin = request_for_something(
-                gobject.base.focusWindow, self.srtsaveoriginuuid, "是否保留原文？"
-            )
-            file = parsesrt(file, saveorigin)
-        elif file.lower().endswith(".vtt"):
-            file = parsevtt(file)
-        self.__starttranslatefile(file)
+    def starttranslatefiles(self, files: "list[str]"):
+        for i, file in enumerate(files):
+            self.startsql(file + ".sqlite")
+            if file.lower().endswith(".txt"):
+                file = parsetxt(file)
+            elif file.lower().endswith(".json"):
+                file = parsejson(file)
+            elif file.lower().endswith(".lrc"):
+                file = parselrc(file)
+            elif file.lower().endswith(".srt"):
+                saveorigin = request_for_something(
+                    gobject.base.focusWindow, self.srtsaveoriginuuid, "是否保留原文？"
+                )
+                file = parsesrt(file, saveorigin)
+            elif file.lower().endswith(".vtt"):
+                file = parsevtt(file)
+            self.__starttranslatefile(file, i, len(files))
 
-    @threader
-    def __starttranslatefile(self, file: str):
+    def __starttranslatefile(self, file: parsetxt, i, n):
         gobject.base.progresssignal3.emit(len(file))
         gobject.base.progresssignal2.emit("", 0)
 
@@ -226,8 +226,12 @@ class filetrans(basetext):
             class __p:
                 def __del__(self):
                     gobject.base.progresssignal2.emit(
-                        "{}/{} {:0.2f}% ".format(
-                            index + 1, lenfile, 100 * (index + 1) / lenfile
+                        "{}{}/{}{}{:0.2f}% ".format(
+                            "{}/{}{}".format(i + 1, n, " " * 8) if (n > 1) else "",
+                            index + 1,
+                            lenfile,
+                            " " * 8,
+                            100 * (index + 1) / lenfile,
                         ),
                         (index + 1),
                     )
@@ -235,7 +239,6 @@ class filetrans(basetext):
             _ref = __p()
             if not line:
                 continue
-            print(list(line))
             ts: str = self.query(line)
             if not ts:
                 ts = self.waitfortranslation(line)

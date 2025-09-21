@@ -100,6 +100,7 @@ class BASEOBJECT(QObject):
     createimageviewsig = pyqtSignal(QWidget)
     switchtotspage = pyqtSignal()
     RichMessageBox = pyqtSignal(object)
+    starttranslatefiles = pyqtSignal(list)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:

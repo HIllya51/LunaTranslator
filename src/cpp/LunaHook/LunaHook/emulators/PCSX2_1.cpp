@@ -2027,6 +2027,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 紫の焔
+    {0xD68412, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55053"}},
     // ヘルミーナとクルス
     {0x12E374, {0, PCSX2_REG_OFFSET(s1), 0, 0, SLPM62122, "SLPM-62122"}},
     // 君が望む永遠 ～Rumbling hearts～

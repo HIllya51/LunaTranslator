@@ -95,10 +95,8 @@ bool InsertCaramelBoxHook()
 
           if (hp.offset == 0)
           {
-            ConsoleOutput("CaramelBox: failed, zero off");
             return false;
           }
-          ConsoleOutput("INSERT CaramelBox");
 
           // RegisterEngineType(ENGINE_CARAMEL);
           return NewHook(hp, "CaramelBox");

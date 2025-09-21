@@ -273,13 +273,13 @@ def getTabclip():
 
 
 def selectfile(self):
-    f = QFileDialog.getOpenFileName(
+    f = QFileDialog.getOpenFileNames(
         options=QFileDialog.Option.DontResolveSymlinks,
         filter="text file (*.json *.txt *.lrc *.srt *.vtt)",
     )
 
     res = f[0]
-    if res == "":
+    if not res:
         return
     callback = functools.partial(
         yuitsu_switch,
@@ -292,7 +292,7 @@ def selectfile(self):
 
     try:
         callback(True)
-        gobject.base.textsource.starttranslatefile(res)
+        gobject.base.starttranslatefiles.emit(res)
     except:
         print_exc()
 
@@ -492,6 +492,7 @@ class MDLabel2(LinkLabel):
 
 
 def getftsgrid(self):
+    gobject.base.starttranslatefiles.connect(lambda res: gobject.base.textsource.starttranslatefiles(res))
     return [
         [
             "文件",

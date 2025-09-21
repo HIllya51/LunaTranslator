@@ -976,7 +976,7 @@ def common_create_gemini_request(
                 ]
             )
         )
-    model = config["model"]
+    model: str = config["model"]
     safety = [
         {
             "category": "HARM_CATEGORY_HARASSMENT",
@@ -1007,7 +1007,8 @@ def common_create_gemini_request(
     payload = {}
     payload.update(contents=contents)
     payload.update(safety_settings=safety)
-    payload.update(sys_message)
+    if not model.startswith("gemma-3"):
+        payload.update(sys_message)
     payload.update(generationConfig=gen_config)
     payload.update(extrabody)
     res = proxysession.post(
