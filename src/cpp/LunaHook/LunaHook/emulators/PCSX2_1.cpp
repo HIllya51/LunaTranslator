@@ -2631,6 +2631,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
     // 空色の風琴 ～Remix～
     {0x1A9238, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-65848"}},
+    {0x10c324, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65843, "SLPM-65848"}},
 };
 
 extern void pcsx2_load_functions(std::unordered_map<DWORD, emfuncinfo> &m)
