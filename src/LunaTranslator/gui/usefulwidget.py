@@ -1865,6 +1865,7 @@ class WebviewWidget(abstractwebview):
     def __init__(self, parent=None, transp=False, loadext=False) -> None:
         super().__init__(parent)
         self.url = ""
+        self.webview = None
         self.webview = WebView2(
             int(self.winId()), transp, loadext, globalconfig["darklight2"]
         )
@@ -1918,6 +1919,8 @@ class WebviewWidget(abstractwebview):
         self.webview.navigate(url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
+        if not self.webview:
+            return
         r = self.devicePixelRatioF()
         self.webview.resize(r * a0.size().width(), int(r * a0.size().height()))
 
