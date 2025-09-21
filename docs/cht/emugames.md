@@ -728,6 +728,7 @@ LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00591 | アブナイ☆恋の捜査室 ～Eternal Happiness～ |
 |  | PCSG00611 | 絶対迷宮　秘密のおやゆび姫 |
 |  | PCSG00139 | フォトカノ Kiss |
 |  | PCSG00509 | POSSESSION MAGENTA |

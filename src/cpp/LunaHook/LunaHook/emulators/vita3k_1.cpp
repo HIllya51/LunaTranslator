@@ -977,6 +977,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // アブナイ☆恋の捜査室 ～Eternal Happiness～
+    {0x800151A4, {CODEC_UTF16, 4, 0, 0, 0, "PCSG00591"}},
     // 絶対迷宮　秘密のおやゆび姫
     {0x800B9DEA, {0, 3, 0, 0, 0, "PCSG00611"}},
     // フォトカノ Kiss
