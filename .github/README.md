@@ -4,43 +4,25 @@
 
 > **一款视觉小说翻译器**
 
-### 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org/zh)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
-
 ## 功能支持
 
-#### 文本输入
+> 如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org/zh)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/I5rr3uEpi2)。
 
-- **HOOK** 支持使用HOOK方式获取文本。对于部分游戏引擎，还支持[内嵌翻译](https://docs.lunatranslator.org/zh/embedtranslate.html)。还支持提取部分[模拟器](https://docs.lunatranslator.org/zh/emugames.html)上运行的游戏的文本。对于不支持或支持不好的游戏，请[提交反馈](https://github.com/HIllya51/LunaTranslator/issues/new?assignees=&labels=enhancement&projects=&template=01_game_request.yaml)
+- **[HOOK](https://docs.lunatranslator.org/zh/hooksettings.html)** 主要使用HOOK提取游戏文本，几乎适配了所有的常见和冷门的视觉小说
 
-- **OCR** 支持 **[离线OCR](https://docs.lunatranslator.org/zh/useapis/ocrapi.html)** 和 **[在线OCR](https://docs.lunatranslator.org/zh/useapis/ocrapi.html)** 
+- **[内嵌翻译](https://docs.lunatranslator.org/zh/embedtranslate.html)** 部分游戏还可以直接内嵌翻译到游戏中，以获取沉浸式体验
 
-- **剪贴板** 支持从剪贴板中获取文本进行翻译，也可以将提取的文本输出到剪贴板
+- **[HOOK模拟器](https://docs.lunatranslator.org/zh/emugames.html)** 对NS/PSP/PSV/PS2上的大部分游戏，支持HOOK模拟器直接读取游戏文本
 
-- **其他** 还支持 **[语音识别](https://docs.lunatranslator.org/zh/sr.html)** 和**文件翻译**
+- **[OCR](https://docs.lunatranslator.org/zh/useapis/ocrapi.html)** 内置较高精度的OCR模型，并支持许多其他在线&离线OCR引擎，以便灵活的读取任意文本
 
-#### 翻译器
+- **[丰富的翻译接口](https://docs.lunatranslator.org/zh/guochandamoxing.html)** 支持几乎所有翻译引擎，包括大语言模型翻译、离线翻译等
 
-支持几乎所有能想得到的翻译引擎，包括： 
+- **[语言学习](https://docs.lunatranslator.org/zh/qa1.html)** 支持日语分词及假名注音，支持AnkiConnect，支持Yomitan插件
 
-- **在线翻译** 支持大量免注册开箱即用的在线翻译接口，也支持使用用户注册的API的 **[传统翻译](https://docs.lunatranslator.org/zh/useapis/tsapi.html)** 和 **[大模型翻译](https://docs.lunatranslator.org/zh/guochandamoxing.html)** 
+- **[语音合成](https://docs.lunatranslator.org/zh/ttsengines.html)** 支持大量在线&离线语音合成引擎
 
-- **离线翻译** 支持常见 **传统翻译** 引擎和离线部署的 **[大模型翻译](https://docs.lunatranslator.org/zh/offlinellm.html)**
-
-- **预翻译** 支持读取预翻译文件，支持翻译缓存
-
-- **支持自定义翻译扩展** 支持使用python语言扩展其他翻译接口
-
-#### 其他功能
-
-- **[语音合成](https://docs.lunatranslator.org/zh/ttsengines.html)** 支持 **离线TTS** 和 **在线TTS**
-
-- **[日语分词及假名注音](https://docs.lunatranslator.org/zh/qa1.html)** 支持使用 Mecab 等分词和显示假名
-
-- **[查词](https://docs.lunatranslator.org/zh/internaldict.html)** 支持使用 **离线辞书** ( MDICT ) 和 **在线辞书** 进行单词查询
-
-- **[Anki](https://docs.lunatranslator.org/zh/qa2.html)** 支持使用一键添加单词到anki中
-
-- **[加载浏览器插件](https://docs.lunatranslator.org/zh/yomitan.html)** 可以在软件内加载Yomitan等浏览器插件以辅助实现一些其他功能
+- **[语音识别](https://docs.lunatranslator.org/zh/sr.html)** 在Windows 10和Windows 11上，可以使用Windows语音识别。
 
 ## 支持作者
 

@@ -33,7 +33,8 @@
         "others": {
             "fts": true,
             "netservice": true,
-            "sr": true
+            "sr": true,
+            "proxy": false
         },
         "proxy": {
             "gpt": true,

@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, NativeUtils
-import gobject, os
+import gobject, os, re
 from myutils.config import globalconfig, static_data
 from traceback import print_exc
 from language import TransLanguages
@@ -32,7 +32,7 @@ from gui.usefulwidget import (
 )
 
 
-def __create(self):
+def __create():
     selectbutton = getIconButton(
         gobject.base.createattachprocess,
         icon=globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"],
@@ -42,7 +42,7 @@ def __create(self):
     return selectbutton
 
 
-def __create2(self):
+def __create2():
     selecthookbutton = getIconButton(
         lambda: gobject.base.hookselectdialog.showsignal.emit(),
         icon=globalconfig["toolbutton"]["buttons"]["selecttext"]["icon"],
@@ -128,7 +128,7 @@ def gethookgrid_em(self):
     return grids
 
 
-def gethookgrid(self):
+def gethookgrid():
     grids = [
         [D_getdoclink("hooksettings.html")],
         [
@@ -492,7 +492,9 @@ class MDLabel2(LinkLabel):
 
 
 def getftsgrid(self):
-    gobject.base.starttranslatefiles.connect(lambda res: gobject.base.textsource.starttranslatefiles(res))
+    gobject.base.starttranslatefiles.connect(
+        lambda res: gobject.base.textsource.starttranslatefiles(res)
+    )
     return [
         [
             "文件",
@@ -560,6 +562,60 @@ def getnetgrid(self):
     ]
 
 
+def validator(createproxyedit_check: QLabel, text):
+    regExp = re.compile(r"^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3}):(\d{1,5})$")
+    mch = regExp.match(text)
+    for _ in (1,):
+
+        if not mch:
+            break
+        _1, _2, _3, _4, _p = [int(_) for _ in mch.groups()]
+        if _p > 65535:
+            break
+        if any([_ > 255 for _ in [_1, _2, _3, _4]]):
+            break
+        globalconfig["proxy"] = text
+        createproxyedit_check.hide()
+        return
+    if not createproxyedit_check.isVisible():
+        createproxyedit_check.show()
+    createproxyedit_check.setText("Invalid")
+
+
+def proxyusage():
+    hbox = QHBoxLayout()
+    hbox.setContentsMargins(0, 0, 0, 0)
+    w2 = QWidget()
+    w2.setEnabled(globalconfig["useproxy"])
+    switch1 = D_getsimpleswitch(globalconfig, "useproxy", callback=w2.setEnabled)()
+    hbox.addWidget(switch1)
+    hbox.addWidget(QLabel())
+    hbox.addWidget(w2)
+    hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+    vbox = VisLFormLayout(w2)
+    vbox.setContentsMargins(0, 0, 0, 0)
+
+    def __(x):
+        vbox.setRowVisible(1, not x)
+
+    vbox.addRow(
+        getboxlayout(
+            [
+                "使用系统代理",
+                D_getsimpleswitch(globalconfig, "usesysproxy", callback=__)(),
+                0,
+            ]
+        ),
+    )
+    check = QLabel()
+    proxy = QLineEdit(globalconfig["proxy"])
+    vbox.addRow(getboxlayout(["手动设置代理", proxy, check]))
+    __(globalconfig["usesysproxy"])
+    validator(check, globalconfig["proxy"])
+    proxy.textChanged.connect(functools.partial(validator, check))
+    return hbox
+
+
 def filetranslate(self):
     grids = [
         [
@@ -589,6 +645,15 @@ def filetranslate(self):
                 globalconfig["foldstatus"]["others"],
                 "netservice",
                 leftwidget=D_getdoclink("apiservice.html"),
+            )
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
+                [["使用代理", proxyusage]],
+                "代理设置",
+                globalconfig["foldstatus"]["others"],
+                "proxy",
             )
         ],
     ]
@@ -633,10 +698,10 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
     grids = [
         [
             "选择游戏",
-            functools.partial(__create, self),
+            __create,
             "",
             "选择文本",
-            functools.partial(__create2, self),
+            __create2,
             "",
             "游戏管理",
             D_getIconButton(
@@ -650,7 +715,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
                 lambda: makesubtab_lazy(
                     ["默认设置", "内嵌翻译"],
                     [
-                        lambda l: makescrollgrid(gethookgrid(self), l),
+                        lambda l: makescrollgrid(gethookgrid(), l),
                         lambda l: makescrollgrid(gethookgrid_em(self), l),
                     ],
                     delay=True,

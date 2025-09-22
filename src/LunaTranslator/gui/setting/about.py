@@ -94,60 +94,6 @@ def changeUIlanguage(_):
         pass
 
 
-def validator(createproxyedit_check: QLabel, text):
-    regExp = re.compile(r"^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3}):(\d{1,5})$")
-    mch = regExp.match(text)
-    for _ in (1,):
-
-        if not mch:
-            break
-        _1, _2, _3, _4, _p = [int(_) for _ in mch.groups()]
-        if _p > 65535:
-            break
-        if any([_ > 255 for _ in [_1, _2, _3, _4]]):
-            break
-        globalconfig["proxy"] = text
-        createproxyedit_check.hide()
-        return
-    if not createproxyedit_check.isVisible():
-        createproxyedit_check.show()
-    createproxyedit_check.setText("Invalid")
-
-
-def proxyusage(self):
-    hbox = QHBoxLayout()
-    hbox.setContentsMargins(0, 0, 0, 0)
-    w2 = QWidget()
-    w2.setEnabled(globalconfig["useproxy"])
-    switch1 = D_getsimpleswitch(globalconfig, "useproxy", callback=w2.setEnabled)()
-    hbox.addWidget(switch1)
-    hbox.addWidget(QLabel())
-    hbox.addWidget(w2)
-    hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
-    vbox = VisLFormLayout(w2)
-    vbox.setContentsMargins(0, 0, 0, 0)
-
-    def __(x):
-        vbox.setRowVisible(1, not x)
-
-    vbox.addRow(
-        getboxlayout(
-            [
-                "使用系统代理",
-                D_getsimpleswitch(globalconfig, "usesysproxy", callback=__)(),
-                0,
-            ]
-        ),
-    )
-    check = QLabel()
-    proxy = QLineEdit(globalconfig["proxy"])
-    vbox.addRow(getboxlayout(["手动设置代理", proxy, check]))
-    __(globalconfig["usesysproxy"])
-    validator(check, globalconfig["proxy"])
-    proxy.textChanged.connect(functools.partial(validator, check))
-    return hbox
-
-
 def updatexx(self):
     return getboxlayout(
         [
@@ -157,7 +103,7 @@ def updatexx(self):
                 callback=lambda _: (
                     versionchecktask.put(_),
                     (
-                        self.aboutlayout.layout().setRowVisible(3, False)
+                        self.aboutlayout.layout().setRowVisible(2, False)
                         if not _
                         else ""
                     ),
@@ -188,7 +134,7 @@ def _progresssignal4(
     downloadprogress.setValue(val)
     downloadprogress.setFormat(text)
     if (val or text) and globalconfig["autoupdate"]:
-        updatelayout.setRowVisible(3, True)
+        updatelayout.setRowVisible(2, True)
 
 
 class MDLabel(LinkLabel):
@@ -388,10 +334,9 @@ def setTab_about(self, basel):
                 dict(
                     name="aboutlayout",
                     parent=self,
-                    hiderows=[2, 3],
+                    hiderows=[1, 2],
                     grid=[
                         ["UI语言", __delayloadlangs],
-                        ["使用代理", functools.partial(proxyusage, self)],
                         ["自动更新", functools.partial(updatexx, self)],
                         [functools.partial(progress___, self)],
                     ],
@@ -457,5 +402,5 @@ def setTab_about(self, basel):
     )
     gobject.base.connectsignal(
         gobject.base.showupdatebtn,
-        lambda: self.aboutlayout.layout().setRowVisible(2, True),
+        lambda: self.aboutlayout.layout().setRowVisible(1, True),
     )
