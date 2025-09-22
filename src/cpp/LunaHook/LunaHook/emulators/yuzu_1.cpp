@@ -3406,7 +3406,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x821d03b0, {CODEC_UTF16, 3, 0, ReadTextAndLenDW, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // news
     {0x82312008, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // luckyitem
     {0x82262BBC, {CODEC_UTF16, 1, 0x14, 0, 0, 0x0100D9A01BD86000ull, "1.0.0"}},                             // text
-    {0x8226323C, {CODEC_UTF16, 1, 0x14, 0, 0, 0x0100D9A01BD86000ull, "1.0.3"}},                             // text
+    {0x8226323C, {CODEC_UTF16, 1, 0x14, 0, 0, 0x0100D9A01BD86000ull, nullptr}},                             // text // 1.0.3 && 1.0.4
     // ときめきメモリアル Girl’s Side 2nd Kiss
     {0x82058848, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue1
     {0x82058aa0, {CODEC_UTF16, 0, 0, ReadTextAndLenDW, F010079201BD88000, 0x010079201BD88000ull, "1.0.1"}}, // dialogue2
@@ -3422,11 +3422,14 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x820A8760, {CODEC_UTF16, 1, 0x14, 0, 0, 0x010079201BD88000ull, "1.0.0"}},                             // text
     {0x820C31F0, {CODEC_UTF16, 1, 0x14, 0, 0, 0x010079201BD88000ull, "1.0.3"}},                             // 极少量会遗漏，缺少某些标点
     {0x82208BE4, {CODEC_UTF16, 1, 0x14, 0, F0100B0100E26C000_1, 0x010079201BD88000ull, "1.0.3"}},           // 缺少自动人名替换。
+    {0x82208BE0, {CODEC_UTF16, 1, 0x14, 0, F0100B0100E26C000_1, 0x010079201BD88000ull, "1.0.4"}},
     // ときめきメモリアル Girl's Side 3rd Story
     {0x822D9AB8, {CODEC_UTF16, 1, 0x14, 0, 0, 0x010091C01BD8A000ull, "1.0.0"}},                   // 极少量会遗漏，缺少某些标点
     {0x8227CCA4, {CODEC_UTF16, 1, 0x14, 0, F0100B0100E26C000_1, 0x010091C01BD8A000ull, "1.0.0"}}, // 缺少自动人名替换。
     {0x822DB300, {CODEC_UTF16, 0, 0x14, 0, 0, 0x010091C01BD8A000ull, "1.0.3"}},                   // 极少量会遗漏，缺少某些标点
     {0x8227E330, {CODEC_UTF16, 1, 0x14, 0, F0100B0100E26C000_1, 0x010091C01BD8A000ull, "1.0.3"}}, // 缺少自动人名替换。
+    {0x8227C944, {CODEC_UTF16, 0, 0x14, 0, F0100B0100E26C000_1, 0x010091C01BD8A000ull, "1.0.4"}},
+    {0x8227C914, {CODEC_UTF16, 1, 0x14, 0, F0100B0100E26C000_1, 0x010091C01BD8A000ull, "1.0.4"}},
     // ときめきメモリアル Girl's Side 4th Heart
     {0x817e7da8, {CODEC_UTF16, 2, 0, T0100B0100E26C000, F0100982015606000, 0x0100B0100E26C000ull, "1.0.0"}},   // name (x1) + dialogue (x2)
     {0x81429f54, {CODEC_UTF16, 0, 1, T0100B0100E26C000, F0100982015606000, 0x0100B0100E26C000ull, "1.0.0"}},   // choice (x0)

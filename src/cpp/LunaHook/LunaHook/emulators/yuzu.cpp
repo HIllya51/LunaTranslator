@@ -119,7 +119,7 @@ namespace
         };
         return NewHook(hp, "yuzuGameInfo");
     }
-    bool Hook_Network_RoomMember_SendGameInfo_1()
+    uintptr_t find_Network_RoomMember_SendGameInfo_1()
     {
         // void RoomMember::SendGameInfo(const GameInfo& game_info) {
         //     room_member_impl->current_game_info = game_info;
@@ -159,16 +159,44 @@ namespace
                 continue;
             addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
             // 有两个，但另一个离起始很远
-            if (!addr)
-                continue;
-            return Hook_Network_RoomMember_SendGameInfo_at(addr);
+            if (addr)
+                return addr;
         }
-        return false;
+        BYTE pattern2[] = {
+            // Citron v0.7.0
+            0xe8, XX4,
+            0x4c, 0x8B, 0x06,
+            0x41, 0x0F, 0xB6, 0x80, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x02,
+            0x74, 0x1e,
+            0x41, 0x0F, 0xB6, 0x80, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x03,
+            0x74, 0x11,
+            0x41, 0x0F, 0xB6, 0x80, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x04,
+            0x0F, 0x85, XX4};
+        for (auto addr : Util::SearchMemory(pattern2, sizeof(pattern2), PAGE_EXECUTE, processStartAddress, processStopAddress))
+        {
+
+            if (!(0 ||
+                  ((((BYTE *)addr)[5 + 3 + 4] == 0x28) &&
+                   (((BYTE *)addr)[5 + 3 + 8 + 1 + 2 + 2 + 4] == 0x28) &&
+                   (((BYTE *)addr)[5 + 3 + 8 + 1 + 2 + 2 + 8 + 1 + 2 + 2 + 4] == 0x28))))
+                continue;
+            addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
+            if (addr)
+                return addr;
+        }
+        return 0;
     }
-    bool Hook_Network_RoomMember_SendGameInfo()
+    uintptr_t find_Network_RoomMember_SendGameInfo()
     {
-        if (Hook_Network_RoomMember_SendGameInfo_1())
-            return true;
+        auto addr = find_Network_RoomMember_SendGameInfo_1();
+        if (addr)
+            return addr;
         // sumi-gen-signed-0.9.4-win-x64
         BYTE pattern[] = {
             0x48, 0x89, XX, 0x24, 0x08,
@@ -200,7 +228,14 @@ namespace
             0x90,
             0x3C, 0x04,
             0x0F, 0x85, XX4};
-        auto addr = MemDbg::findBytes(pattern, sizeof(pattern), processStartAddress, processStopAddress);
+        addr = MemDbg::findBytes(pattern, sizeof(pattern), processStartAddress, processStopAddress);
+        if (addr)
+            return addr;
+        return 0;
+    }
+    bool Hook_Network_RoomMember_SendGameInfo()
+    {
+        auto addr = find_Network_RoomMember_SendGameInfo_1();
         if (!addr)
             return false;
         return Hook_Network_RoomMember_SendGameInfo_at(addr);
