@@ -209,4 +209,4 @@
 推荐使用，配置简单，效果好，也可以纯cpu运行轻量模型 
 :::
 
-部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki，也可以部署到[Kaggle](https://kaggle.com/kernels/welcome?src=https://lunatranslator.org/nginxfile/llamacpp.ipynb)
+部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki， 也可以部署到[Kaggle](https://kaggle.com/kernels/welcome?src=https://lunatranslator.org/nginxfile/llamacpp.ipynb)
