@@ -201,7 +201,7 @@
 
 也可以使用[llama.cpp](https://github.com/ggerganov/llama.cpp) 、[ollama](https://github.com/ollama/ollama)、[new-api](https://github.com/QuantumNous/new-api)之类的工具进行模型的部署，然后将地址和模型填入。
 
-也可以使用Kaggle之类的平台来把模型部署到云端，这时可能会需要用到SECRET_KEY，其他时候可以无视SECRET_KEY参数。
+有时可能想将离线部署的模型分享到网络，这时可能会需要用到SECRET_KEY，其他时候可以无视SECRET_KEY参数。
 
 #### Sakura大模型
 
