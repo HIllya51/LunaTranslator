@@ -107,7 +107,7 @@ export const cht = defineConfig({
                         ]
                     },
                     {
-                        text: '翻譯介面設定', link: '/cht/useapis/tsapi',
+                        text: '翻譯介面設定', link: '/cht/guochandamoxing',
                         collapsed: true,
                         items: [
                             { text: '大模型翻譯介面', link: '/cht/guochandamoxing' },

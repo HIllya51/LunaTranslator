@@ -45,7 +45,7 @@ export const en = defineConfig({
                         ]
                     },
                     {
-                        text: 'Translation interface settings', link: '/en/useapis/tsapi',
+                        text: 'Translation interface settings', link: '/en/guochandamoxing',
                         collapsed: true,
                         items: [
                             { text: 'Large Model Translation Interface', link: '/en/guochandamoxing' },

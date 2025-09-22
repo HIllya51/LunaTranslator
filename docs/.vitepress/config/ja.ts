@@ -103,7 +103,7 @@ export const ja = defineConfig({
                         ]
                     },
                     {
-                        text: '翻訳インターフェース設定', link: '/ja/useapis/tsapi',
+                        text: '翻訳インターフェース設定', link: '/ja/guochandamoxing',
                         collapsed: true,
                         items: [
                             { text: '大規模モデル翻訳インターフェース', link: '/ja/guochandamoxing' },

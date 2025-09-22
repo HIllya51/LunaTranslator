@@ -106,7 +106,7 @@ export const ko = defineConfig({
                         ]
                     },
                     {
-                        text: '번역 인터페이스 설정', link: '/ko/useapis/tsapi',
+                        text: '번역 인터페이스 설정', link: '/ko/guochandamoxing',
                         collapsed: true,
                         items: [
                             { text: '대형 모델 번역 인터페이스', link: '/ko/guochandamoxing' },

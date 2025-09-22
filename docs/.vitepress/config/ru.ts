@@ -106,7 +106,7 @@ export const ru = defineConfig({
                         ]
                     },
                     {
-                        text: 'Настройки интерфейса перевода', link: '/ru/useapis/tsapi',
+                        text: 'Настройки интерфейса перевода', link: '/ru/guochandamoxing',
                         collapsed: true,
                         items: [
                             { text: 'Интерфейсы перевода на больших моделях', link: '/ru/guochandamoxing' },

@@ -88,7 +88,7 @@ export const vi = defineConfig({
             ]
           },
           {
-            text: 'Cài đặt giao diện dịch thuật', link: '/vi/useapis/tsapi',
+            text: 'Cài đặt giao diện dịch thuật', link: '/vi/guochandamoxing',
             collapsed: true,
             items: [
               { text: 'Giao diện dịch mô hình lớn', link: '/vi/guochandamoxing' },
