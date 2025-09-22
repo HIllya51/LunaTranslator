@@ -200,6 +200,6 @@
 
 ### Оффлайн большая модель
 
-Также можно использовать такие инструменты как [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) для развертывания модели, после чего ввести адрес и модель.
+Также можно использовать такие инструменты как [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [new-api](https://github.com/QuantumNous/new-api) для развертывания модели, после чего ввести адрес и модель.
 
-也可以使用Kaggle之类的平台来把模型部署到云端，这时可能会需要用到SECRET_KEY，其他时候可以无视SECRET_KEY参数。
+Иногда может потребоваться поделиться офлайн-развернутой моделью в сети, в этом случае может понадобиться SECRET_KEY. В остальное время можно игнорировать параметр SECRET_KEY.

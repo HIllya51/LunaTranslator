@@ -902,6 +902,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25766 | オレンジハニー 僕はキミに恋してる |
 |  | SLPM-55053 | 紫の焔 |
 |  | SLPM-62122 | ヘルミーナとクルス |
 |  | SLPM-65154 | 君が望む永遠 ～Rumbling hearts～ |

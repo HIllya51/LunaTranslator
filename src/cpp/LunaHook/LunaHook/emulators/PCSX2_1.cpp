@@ -309,6 +309,15 @@ namespace
         StringFilter(buffer, TEXTANDLEN("/L"));
         StringFilter(buffer, TEXTANDLEN("\x81\x40"));
     }
+    void SLPS25766(TextBuffer *buffer, HookParam *hp)
+    {
+        SLPM62343(buffer, hp);
+        static std::string last;
+        auto s = buffer->strA();
+        if (last == s)
+            return buffer->clear();
+        last = s;
+    }
     void SLPL25871(TextBuffer *buffer, HookParam *hp)
     {
         if (buffer->size <= 4)
@@ -2027,6 +2036,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // オレンジハニー 僕はキミに恋してる
+    {0x6FC7FA, {DIRECT_READ, 0, 0, 0, SLPS25766, "SLPS-25766"}},
     // 紫の焔
     {0xD68412, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55053"}},
     // ヘルミーナとクルス

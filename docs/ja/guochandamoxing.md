@@ -201,6 +201,6 @@
 
 ### オフライン大規模モデル
 
-[llama.cpp](https://github.com/ggerganov/llama.cpp)、[ollama](https://github.com/ollama/ollama)などのツールを使用してモデルをデプロイし、アドレスとモデルを入力することができます。
+[llama.cpp](https://github.com/ggerganov/llama.cpp)、[ollama](https://github.com/ollama/ollama)、[new-api](https://github.com/QuantumNous/new-api)などのツールを使用してモデルをデプロイし、アドレスとモデルを入力することができます。
 
-Kaggleなどのプラットフォームを使用してモデルをクラウドにデプロイすることもできます。この場合、SECRET_KEYを使用する必要があるかもしれません。そうでなければ、SECRET_KEYパラメータを無視することができます。
+時にはオフラインでデプロイされたモデルをネットワークに共有したい場合があり、その際にはSECRET_KEYが必要になることがあります。それ以外の場合はSECRET_KEYパラメータを無視して構いません。

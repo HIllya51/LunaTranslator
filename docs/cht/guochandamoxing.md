@@ -199,10 +199,9 @@
 
 ###  離線大模型
 
-可以使用 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[Ollama](https://github.com/ollama/ollama) 之類的工具進行模型的部署，然後將位址和模型填入。
+可以使用 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[Ollama](https://github.com/ollama/ollama)、[new-api](https://github.com/QuantumNous/new-api) 之類的工具進行模型的部署，然後將位址和模型填入。
 
-也可以使用 Kaggle 之類的平台來把模型部署到雲端，這時可能會需要用到`SECRET_KEY`，其他時候可以無視`SECRET_KEY`參數。
-
+有時可能想將離線部署的模型分享到網路，這時可能會需要用到SECRET_KEY，其他時候可以無視SECRET_KEY參數。
 
 #### Sakura 大模型
 
