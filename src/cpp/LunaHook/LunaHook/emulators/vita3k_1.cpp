@@ -969,6 +969,14 @@ namespace
         s = re::sub(s, R"(<\w+?>)");
         buffer->from(s);
     }
+    void PCSG00062(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        s = re::sub(s, LR"(\[(.*?)/(.*?)\])", L"$1");
+        s = re::sub(s, LR"(<[#A-Za-z0-9\."_/]*>)");
+        strReplace(s, LR"(\n)", L"\n");
+        buffer->fromWA(s);
+    }
 }
 
 struct emfuncinfoX
@@ -977,6 +985,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // TIME TRAVELERS
+    {0x8119ADDA, {0, 7, 0, 0, PCSG00062, "PCSG00062"}},
+    {0x811A6052, {0, 8, 0, 0, PCSG00062, "PCSG00062"}},
     // ヴァルプルガの詩
     {0x8003345A, {0, 1, 0, 0, 0, "PCSG00768"}},
     // アブナイ☆恋の捜査室 ～Eternal Happiness～
