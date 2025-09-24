@@ -108,8 +108,7 @@ bool InsertAdobeAirHook()
   hp.split = 0xd8;
   // hp.type = USING_SPLIT|MODULE_OFFSET|CODEC_UTF16|DATA_INDIRECT; // 0x5a;
   hp.type = USING_SPLIT | CODEC_UTF16 | DATA_INDIRECT;
-
-  return NewHookRetry(hp, "Adobe AIR");
+  return NewHook(hp, "Adobe AIR"); // 这个钩子对很多游戏不可以使用VEH，因为刷新频率太快了。但好像之前有个游戏必须要用这个的VEH来做来着，但没办法了。
 }
 
 bool AdobeAIRhook2()
@@ -139,8 +138,7 @@ bool AdobeAIRhook2()
   hp.address = addr + 3;
   hp.offset = stackoffset(1);
   hp.type = USING_STRING | CODEC_UTF16;
-
-  return NewHook(hp, "AdobeAIR");
+  return NewHookRetry(hp, "AdobeAIR");
 }
 
 /**
