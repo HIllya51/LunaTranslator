@@ -1673,13 +1673,13 @@
             "name": "阿里"
         },
         "youdaodict": {
-            "use": false,
+            "use": true,
             "useproxy": false,
             "color": "#95a5ff",
             "name": "有道"
         },
         "caiyun": {
-            "use": false,
+            "use": true,
             "useproxy": false,
             "color": "blue",
             "name": "彩云"
@@ -1799,7 +1799,7 @@
             "name": "yandex"
         },
         "qqimt": {
-            "use": false,
+            "use": true,
             "useproxy": false,
             "color": "blue",
             "name": "qqimt"
@@ -1812,7 +1812,7 @@
             "name": "小牛"
         },
         "huoshan": {
-            "use": false,
+            "use": true,
             "color": "blue",
             "useproxy": false,
             "name": "火山"
@@ -1832,7 +1832,7 @@
             "name": "火山"
         },
         "papago": {
-            "use": false,
+            "use": true,
             "useproxy": false,
             "color": "blue",
             "name": "papago"
