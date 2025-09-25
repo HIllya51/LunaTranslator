@@ -123,9 +123,10 @@ static std::wstring get_unique_classname()
 {
     const wchar_t CLASS_NAME[] = L"luna_unique_classname_";
     static int idx = 0;
-    std::wstringstream wss;
-    wss << CLASS_NAME << idx++;
-    return wss.str();
+    // std::wstringstream谜之内存访问错误在xp上
+    std::wstring wss = CLASS_NAME;
+    wss += std::to_wstring(idx++);
+    return wss;
 }
 static std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1)
 {
