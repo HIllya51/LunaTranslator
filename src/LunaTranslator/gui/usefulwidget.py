@@ -369,18 +369,18 @@ class TableViewW(DelayLoadTableView):
         self.setItemDelegate(self.__ref)
 
     def showmenu(self, _):
-        if not self.currentIndex().isValid():
-            return
+        valid = self.currentIndex().isValid()
         menu = QMenu(self)
         up = LAction("上移", menu)
         down = LAction("下移", menu)
         copy = LAction("复制", menu)
         paste = LAction("粘贴", menu)
-        if self.updown:
+        if valid and self.updown:
             menu.addAction(up)
             menu.addAction(down)
         if self.copypaste:
-            menu.addAction(copy)
+            if valid:
+                menu.addAction(copy)
             menu.addAction(paste)
         action = menu.exec(self.cursor().pos())
         if action == up:
@@ -559,20 +559,23 @@ class TableViewW(DelayLoadTableView):
 
     def pastetable(self):
         current = self.currentIndex()
-        if not current.isValid():
-            return
+        if current.isValid():
+            if self.model().rowCount() == 0:
+                self.insertplainrow(0)
         string = NativeUtils.ClipBoard.text
         try:
-            my_list = self.parsepastetext(string)
+            my_list: "list[list[str]]" = self.parsepastetext(string)
             if len(my_list) == 1 and len(my_list[0]) == 1:
                 self.setindexdata(current, my_list[0][0])
                 return
             self.model().insertRows(current.row() + 1, len(my_list))
             for j, line in enumerate(my_list):
-                for _ in range(max(0, self.model().columnCount() - len(line))):
-                    line.insert(0, "")
+                if len(line) + current.column() > self.model().columnCount():
+                    startj = 0
+                else:
+                    startj = current.column()
                 for i in range(0, self.model().columnCount()):
-                    data = line[i]
+                    data = line[i - startj] if (i - startj < len(line) and i >= startj) else ""3
                     self.setindexdata(
                         self.model().index(current.row() + 1 + j, i), data
                     )

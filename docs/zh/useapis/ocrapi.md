@@ -123,6 +123,9 @@ GPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 == WindowsOCR
 
 >[!WARNING]
+>效果太差，不推荐使用。
+
+>[!WARNING]
 仅支持win10-win11操作系统
 
 #### 查询 && 安装 && 移除 OCR 语言包

@@ -91,7 +91,6 @@ namespace
     if (!addr)
     {
       // ConsoleOutput("Unknown SiglusEngine");
-      ConsoleOutput("Siglus3: pattern not found");
       return false;
     }
 
@@ -107,7 +106,6 @@ namespace
     hp.type = CODEC_UTF16;
     // hp.text_fun = SpecialHookSiglus3;
 
-    ConsoleOutput("INSERT Siglus3");
     return NewHook(hp, "SiglusEngine3");
   }
 
@@ -237,7 +235,6 @@ namespace
     if (!addr)
     {
       // ConsoleOutput("Unknown SiglusEngine");
-      ConsoleOutput("Siglus4: pattern not found");
       return false;
     }
 
@@ -256,7 +253,6 @@ namespace
     // hp.type = CODEC_UTF16|DATA_INDIRECT|USING_SPLIT|NO_CONTEXT;
     // hp.type = CODEC_UTF16|USING_SPLIT|NO_CONTEXT;
 
-    ConsoleOutput("INSERT Siglus4");
     return NewHook(hp, "SiglusEngine4");
   }
 
@@ -1534,8 +1530,6 @@ bool InsertSiglus4Hook()
       };
       // enum { addr_offset = 0 };
       addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-      if (addr)
-        ConsoleOutput("Siglus2: type 1 pattern found");
     }
     if (!addr)
     {
@@ -1545,13 +1539,10 @@ bool InsertSiglus4Hook()
       };
       // enum { addr_offset = 0 };
       addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-      if (addr)
-        ConsoleOutput("Siglus2: type 2 pattern found");
     }
 
     if (!addr)
     {
-      ConsoleOutput("Siglus2: both type1 and type2 patterns not found");
       return false;
     }
 
@@ -1560,7 +1551,6 @@ bool InsertSiglus4Hook()
     hp.offset = regoffset(esi);
     hp.type = CODEC_UTF16 | FIXING_SPLIT; // jichi 6/1/2014: fixing the split value
 
-    ConsoleOutput("INSERT Siglus2");
     return NewHook(hp, "SiglusEngine2");
   }
   static void SpecialHookSiglus1(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -1579,7 +1569,6 @@ bool InsertSiglus4Hook()
     if (!addr)
     { // jichi 8/17/2013: Add "== 0" check to prevent breaking new games
       // ConsoleOutput("Unknown SiglusEngine");
-      ConsoleOutput("Siglus: pattern not found");
       return false;
     }
 
@@ -1592,12 +1581,10 @@ bool InsertSiglus4Hook()
         hp.address = addr;
         hp.text_fun = SpecialHookSiglus1;
         hp.type = CODEC_UTF16;
-        ConsoleOutput("INSERT Siglus");
         return NewHook(hp, "SiglusEngine");
       }
       addr--;
     }
-    ConsoleOutput("Siglus: failed");
     return false;
   }
 
@@ -1770,7 +1757,6 @@ namespace
     bool attach(ULONG startAddress, ULONG stopAddress) // attach scenario
     {
       ULONG addr = Private::search(startAddress, stopAddress, &Private::type_);
-      ConsoleOutput("%p", addr);
       if (!addr)
         return false;
       // return Private::oldHookFun = (Private::hook_fun_t)winhook::replace_fun(addr, (ULONG)Private::newHookFun);
@@ -1867,7 +1853,81 @@ namespace OtherHook
   }
 
 } // namespace OtherHook
-
+static bool h3_n()
+{
+  const uint8_t bytes[] = {
+      0x8b, 0x55, XX,
+      0x8b, 0x0d, XX4,
+      0x89, 0x4d, XX,
+      0x85, 0xd2,
+      0x0f, 0x84, XX4,
+      0x83, 0x7d, XX, 0x07,
+      0x8d, 0x45, XX,
+      0x52,
+      0x0f, 0x47, 0x45, XX,
+      0x83, 0xc1, 0x68,
+      0x50,
+      0xe8, XX4};
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  int offset = addr + 3 + 6 + 3 + 2 + 6 + 4 + 2;
+  static int ebpoff = 0x100 - *(BYTE *)(offset);
+  HookParam hp;
+  hp.address = addr;
+  hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE;
+  hp.text_fun = [](hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+  {
+    auto arg = (TextUnionW *)(s->ebp - ebpoff);
+    buffer->from(arg->view());
+  };
+  hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+  {
+    auto arg = (TextUnionW *)(s->ebp - ebpoff);
+    arg->setText(buffer.viewW());
+  };
+  hp.embed_hook_font = F_GetGlyphOutlineW;
+  return NewHook(hp, "EmbedSiglus2_1");
+}
+static bool h3_t()
+{
+  const uint8_t bytes[] = {
+      0x81, XX, XX, 0x00, 0x01, 0x00, 0x00,
+      0x7e, XX,
+      0x8b, 0x4e, 0x10,
+      0x81, 0xf9, 0x00, 0x01, 0x00, 0x00,
+      0x72, XX,
+      0xc7, 0x46, 0x10, 0x00, 0x01, 0x00, 0x00,
+      0x83, 0x7e, 0x14, 0x07,
+      0x76, 0x02,
+      0x8b, 0x36};
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE;
+  hp.text_fun = [](hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+  {
+    auto arg = (TextUnionW *)s->ecx;
+    buffer->from(arg->view());
+  };
+  hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+  {
+    auto arg = (TextUnionW *)s->ecx;
+    arg->setText(buffer.viewW());
+  };
+  hp.embed_hook_font = F_GetGlyphOutlineW;
+  return NewHook(hp, "EmbedSiglus2");
+}
+static bool h3()
+{
+  // LOOPERS PLUS 体験版
+  return h3_t() && h3_n();
+}
 bool Siglus::attach_function()
 {
 
@@ -1876,5 +1936,5 @@ bool Siglus::attach_function()
     OtherHook::attach(processStartAddress, processStopAddress);
   bool b1 = InsertSiglusHook();
   bool b2 = InsertSiglusHookZ();
-  return b1 || b2 || b3;
+  return b1 || b2 || b3 || h3();
 }

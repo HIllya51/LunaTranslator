@@ -443,6 +443,7 @@ class hookselect(closeashidewindow):
         self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | self.windowFlags())
         self.setupUi()
         self.hidesearchhookbuttons()
+        self.is_focus_normal = True
         self.firsttimex = True
         self.searchhookparam = None
         self.removehooksignal.connect(self.removehook)
@@ -470,7 +471,7 @@ class hookselect(closeashidewindow):
         row = self.querykeyindex(key)
         if row == -1:
             return
-        if row == self.tttable.currentIndex().row():
+        if self.is_focus_normal and row == self.tttable.currentIndex().row():
             self.getnewsentence(output)
         output = output[:200].replace("\n", " ")
         colidx = 2 + int(bool(self.embedablenum))
@@ -958,6 +959,7 @@ class hookselect(closeashidewindow):
         self.textbrowappendandmovetoend(self.textOutput, sentence)
 
     def ViewThread2(self, index: QModelIndex):
+        self.is_focus_normal = False
         self.tabwidget.setCurrentIndex(0)
         key = list(self.allres.keys())[index.row()]
         self.userhook.setText(key)
@@ -971,6 +973,7 @@ class hookselect(closeashidewindow):
             self.textOutput.moveCursor(QTextCursor.MoveOperation.End)
         except:
             print_exc()
+        self.is_focus_normal = True
 
     def table1doubleclicked(self, index: QModelIndex):
         if index.isValid():

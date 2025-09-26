@@ -93,6 +93,9 @@ Yêu cầu cài đặt WeChat hoặc phiên bản mới nhất của QQ
 == WindowsOCR
 
 >[!WARNING]
+>Hiệu suất kém, không khuyến nghị sử dụng.
+
+>[!WARNING]
 >Chỉ hỗ trợ hệ điều hành Windows 10 và Windows 11.
 
 #### Truy vấn && Cài đặt && Gỡ bỏ gói ngôn ngữ OCR  

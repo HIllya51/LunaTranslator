@@ -123,6 +123,9 @@ GPU сборка https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/g
 == WindowsOCR
 
 >[!WARNING]
+>Эффективность слишком низкая, использование не рекомендуется.
+
+>[!WARNING]
 Поддерживаются только операционные системы Win10-Win11
 
 #### Поиск && Установка && Удаление OCR языковых пакетов

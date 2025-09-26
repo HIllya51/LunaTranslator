@@ -123,6 +123,9 @@ start.bat을 처음 실행할 때 huggingface에서 모델을 다운로드하려
 == WindowsOCR
 
 >[!WARNING]
+>효과가 너무 나빠 사용을 권장하지 않습니다.
+
+>[!WARNING]
 win10-win11 운영체제만 지원합니다
 
 #### 조회 && 설치 && 제거 OCR 언어 패키지

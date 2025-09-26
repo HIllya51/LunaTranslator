@@ -94,6 +94,9 @@ Requires installation of WeChat or the latest version of QQ
 == WindowsOCR
 
 >[!WARNING]
+>Poor performance, not recommended for use.
+
+>[!WARNING]
 >Only supports Windows 10 and Windows 11 operating systems.
 
 #### Query && Install && Remove OCR Language Packs  

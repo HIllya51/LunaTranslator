@@ -904,6 +904,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66376 | きみスタ ～きみとスタディ～ |
 |  | SLPS-25766 | オレンジハニー 僕はキミに恋してる |
 |  | SLPM-55053 | 紫の焔 |
 |  | SLPM-62122 | ヘルミーナとクルス |

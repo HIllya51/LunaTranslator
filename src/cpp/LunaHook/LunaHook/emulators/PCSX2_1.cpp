@@ -2036,6 +2036,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // きみスタ ～きみとスタディ～
+    {0x1A37A4, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66376"}},
     // オレンジハニー 僕はキミに恋してる
     {0x6FC7FA, {DIRECT_READ, 0, 0, 0, SLPS25766, "SLPS-25766"}},
     // 紫の焔
