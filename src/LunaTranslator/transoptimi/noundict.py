@@ -104,6 +104,11 @@ class Process:
         for k, v in dic:
             if not k:
                 continue
+            if not v:
+                # 译文不可以为空
+                # 这是为了方便自动从VNDB中导入人名表，且避免破坏现有翻译
+                # 而且如果把译文置空，完全没必要使用这个优化。
+                continue
             xx = self.__createfake()
             content = content.replace(k, xx)
             mp1[xx] = v

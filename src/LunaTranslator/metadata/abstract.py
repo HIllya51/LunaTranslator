@@ -180,7 +180,12 @@ class common:
         if not filename:
             filename = self.typename + ".md"
             config.append(
-                {"file": filename, "title": self.name, "fromweb": self.typename, "edit": False}
+                {
+                    "file": filename,
+                    "title": self.name,
+                    "fromweb": self.typename,
+                    "edit": False,
+                }
             )
             with open(os.path.join(rwpath, "config.json"), "w", encoding="utf8") as ff:
                 json.dump(config, ff)
@@ -218,21 +223,33 @@ class common:
             dedump = set()
             for _ in savehook_new_data[gameuid].get("namemap2", []):
                 dedump.add(_.get("key", ""))
+            dedump2 = set()
+            for _ in savehook_new_data[gameuid].get("noundictconfig_ex", []):
+                dedump2.add(_.get("src", ""))
             namemap = self.namemapcast(namemap)
             usenamemap = getlangtgt() == "en"
             for name in namemap:
-                if name in dedump:
-                    continue
-                if "namemap2" not in savehook_new_data[gameuid]:
-                    savehook_new_data[gameuid]["namemap2"] = []
-                savehook_new_data[gameuid]["namemap2"].append(
-                    {
-                        "key": name,
-                        "value": namemap[name] if usenamemap else name,
-                        "regex": False,
-                        "escape": False,
-                    }
-                )
+                if not (name in dedump):
+                    if "namemap2" not in savehook_new_data[gameuid]:
+                        savehook_new_data[gameuid]["namemap2"] = []
+                    savehook_new_data[gameuid]["namemap2"].append(
+                        {
+                            "key": name,
+                            "value": namemap[name] if usenamemap else name,
+                            "regex": False,
+                            "escape": False,
+                        }
+                    )
+                if not (name in dedump2):
+                    if "noundictconfig_ex" not in savehook_new_data[gameuid]:
+                        savehook_new_data[gameuid]["noundictconfig_ex"] = []
+                    savehook_new_data[gameuid]["noundictconfig_ex"].append(
+                        {
+                            "src": name,
+                            "dst": namemap[name] if usenamemap else "",
+                            "info": "",
+                        }
+                    )
 
         for _ in webtags:
             if _ in savehook_new_data[gameuid]["webtags"]:

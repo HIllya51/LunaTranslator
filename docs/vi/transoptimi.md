@@ -4,7 +4,7 @@
 
     Phương pháp này thay thế trực tiếp văn bản gốc bằng văn bản đã dịch trước khi dịch. Nó hỗ trợ sử dụng `Regex` và `Escape` để thực hiện các thay thế phức tạp hơn.
 
-    Khi trò chơi tải siêu dữ liệu từ VNDB, nó truy vấn tên nhân vật của trò chơi như một từ điển cài sẵn. Tuy nhiên, các bản dịch là tiếng Anh do VNDB, và bạn có thể chỉnh sửa chúng thành tiếng Trung.
+    Khi tải siêu dữ liệu từ VNDB, trò chơi sẽ truy vấn thông tin tên nhân vật để thiết lập làm từ điển định sẵn. Đối với người dùng tiếng Anh, các tên tiếng Anh được trích xuất sẽ được điền vào làm bản dịch tương ứng với văn bản gốc. Trong trường hợp khác, bản dịch sẽ được điền cùng nội dung với bản gốc để tránh ảnh hưởng đến bản dịch khi người dùng không thực hiện thay đổi.
 
     ::: details Ví dụ
     ![img](https://image.lunatranslator.org/zh/transoptimi/1.png)
@@ -17,6 +17,8 @@
     Đối với các mục nhập cụ thể của trò chơi, không nên thêm chúng vào `Xử Lý Văn Bản` -> `Tối Ưu Hóa Dịch Thuật`. Trước đây, giá trị md5 của trò chơi được sử dụng để phân biệt các mục nhập cho nhiều trò chơi, nhưng cách triển khai này không tốt lắm và đã bị loại bỏ. Hiện tại, nên thêm các mục nhập cụ thể của trò chơi vào cài đặt `Cài Đặt Trò Chơi` -> `Tối Ưu Hóa Dịch Thuật` cho phương pháp này.
 
     Cột cuối cùng `Nhận Xét` chỉ được sử dụng cho `Mô Hình Lớn Sakura`; các bản dịch khác sẽ bỏ qua cột này.
+
+    Khi tải siêu dữ liệu từ VNDB, trò chơi sẽ truy vấn thông tin tên nhân vật để thiết lập làm từ điển cài sẵn. Đối với người dùng tiếng Anh, văn bản tiếng Anh được trích xuất sẽ được điền vào làm bản dịch tương ứng với văn bản gốc. Ngược lại, bản dịch sẽ để trống để tránh ảnh hưởng đến bản dịch khi người dùng không thực hiện thay đổi.
 
     ::: details Thiết Lập Các Mục Nhập Cụ Thể của Trò Chơi
       Nên sử dụng:

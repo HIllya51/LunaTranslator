@@ -1,4 +1,4 @@
-from translator.basetranslator import basetrans, GptTextWithDict
+from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import json, requests, hmac, hashlib, NativeUtils, re, functools
 from datetime import datetime, timezone
 from myutils.utils import (
@@ -299,18 +299,18 @@ class gptcommon(basetrans):
             query = re.sub(k, functools.partial(self.__replace_history, b), query)
         return query
 
-    def __if_has_dwp(self, query_2: GptTextWithDict, prompt):
+    def __if_has_dwp(self, dictionary: GptDict, prompt):
         _has = re.search(r"\{DictWithPrompt\[(.*?)\]\}", prompt)
         if _has:
 
             def __rep(m: re.Match):
                 nextc = m.groups()[1]
-                if not query_2.dictionary:
+                if not dictionary:
                     if nextc == "\n":
                         return ""
                     return nextc
                 __ = []
-                for _ in query_2.dictionary:
+                for _ in dictionary:
                     info = ("", " #{}", format(_.info))[bool(_.info)]
                     single = "\t{}->{}".format(_.src, _.dst) + info
                     __.append(single)
@@ -329,7 +329,7 @@ class gptcommon(basetrans):
         user_prompt = self._gptlike_get_user_prompt(
             "use_user_user_prompt", "user_user_prompt"
         )
-        user_prompt, _has = self.__if_has_dwp(query_2, user_prompt)
+        user_prompt, _has = self.__if_has_dwp(query_2.dictionary, user_prompt)
         _has = _has or _has_1
         query_1 = (query_2.parsedtext, query_2.rawtext)[_has]
         query = user_prompt.replace("{sentence}", query_1)
@@ -338,7 +338,7 @@ class gptcommon(basetrans):
 
     def commoncreatemessages(self, query_2: GptTextWithDict):
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
-        sysprompt, _has = self.__if_has_dwp(query_2, sysprompt)
+        sysprompt, _has = self.__if_has_dwp(query_2.dictionary, sysprompt)
         query, query_1 = self.__gpt_create_query_maybe_with_dict(query_2, _has)
         sysprompt = self.__parsecontextN(sysprompt)
         message = [{"role": "system", "content": sysprompt}]

@@ -4,7 +4,7 @@
 
     This method directly replaces the original text with the translated text before translation. It supports using `Regex` and `Escape` for more complex replacements.
 
-    When the game loads metadata from VNDB, it queries the game's character names as a preset dictionary. However, the translations are in English due to VNDB, and you can modify them to Chinese.
+    When loading metadata from VNDB, the game queries character name information to set as a preset dictionary. For English users, the extracted English names are populated as translations corresponding to the original text. Otherwise, the translation is filled with the same content as the original to avoid affecting translations when users make no modifications.
 
     ::: details Example
     ![img](https://image.lunatranslator.org/zh/transoptimi/1.png)
@@ -17,6 +17,8 @@
     For game-specific entries, it is recommended not to add them in `Text Processing` -> `Translation Optimization`. In the past, the game's md5 value was used to distinguish entries for multiple games, but this implementation was not very good and has been deprecated. Now, it is recommended to add game-specific entries in the `Game Settings` -> `Translation Optimization` settings for this method.
 
     The last column `Comment` is only used for the `Sakura Large Model`; other translations will ignore this column.
+
+    When loading metadata from VNDB, the game queries character name information to set as a preset dictionary. For English users, the extracted English text is populated as the translation corresponding to the original text. Otherwise, the translation is left empty to avoid affecting translations when users make no modifications.
 
     ::: details Setting Game-specific Entries
       It is recommended to use:
