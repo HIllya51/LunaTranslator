@@ -575,7 +575,7 @@ class TableViewW(DelayLoadTableView):
                 else:
                     startj = current.column()
                 for i in range(0, self.model().columnCount()):
-                    data = line[i - startj] if (i - startj < len(line) and i >= startj) else ""3
+                    data = line[i - startj] if (i - startj < len(line) and i >= startj) else ""
                     self.setindexdata(
                         self.model().index(current.row() + 1 + j, i), data
                     )
