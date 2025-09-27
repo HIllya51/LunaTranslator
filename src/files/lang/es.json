@@ -868,5 +868,6 @@
     "切换到鼠标临近区域": "Cambiar a la zona adyacente al cursor.",
     "取消区域聚焦": "Cancelar enfoque regional",
     "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "Es posible que el puerto de AnkiConnect esté ocupado; verifica y termina el proceso que está utilizando el puerto.",
-    "请打开anki，并安装AnkiConnect插件": "Por favor, abre Anki e instala el complemento AnkiConnect."
+    "请打开anki，并安装AnkiConnect插件": "Por favor, abre Anki e instala el complemento AnkiConnect.",
+    "请先关闭软件，然后再导入！": "¡Por favor, cierra el software primero y luego importa!"
 }

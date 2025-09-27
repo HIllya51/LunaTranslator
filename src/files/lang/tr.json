@@ -868,5 +868,6 @@
     "切换到鼠标临近区域": "Fare yakınındaki bölgeye geç",
     "取消区域聚焦": "Bölgesel odaklanma iptal edildi.",
     "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "AnkiConnect bağlantı noktası kullanımda olabilir, lütfen bağlantı noktasını kullanan işlemi kontrol edin ve sonlandırın.",
-    "请打开anki，并安装AnkiConnect插件": "Lütfen Anki'yi açın ve AnkiConnect eklentisini yükleyin."
+    "请打开anki，并安装AnkiConnect插件": "Lütfen Anki'yi açın ve AnkiConnect eklentisini yükleyin.",
+    "请先关闭软件，然后再导入！": "Lütfen önce yazılımı kapatın, ardından içe aktarın!"
 }
