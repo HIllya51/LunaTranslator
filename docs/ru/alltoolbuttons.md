@@ -93,7 +93,7 @@
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Повторить OCR {#anchor-ocr_once_follow}
     После использования функции «Выполнить OCR один раз» эта кнопка позволяет повторить распознавание в той же области без повторного выбора зоны OCR.
 
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Исправл. переводов сущ-ных Подстановка перед переводом {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Подстановка перед переводом {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Исправл. переводов сущ-ных {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> Результаты перевода исправлены {#anchor-fix}
     Эти три кнопки работают схожим образом: они служат для быстрого открытия окна оптимизации перевода и добавления новых заданных терминов.

@@ -91,7 +91,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> Perform OCR Again {#anchor-ocr_once_follow}
     After using `Perform OCR Once`, use this button to perform OCR again at the original location without having to re-select the recognition area.
     
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation Pre-translation substitution {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Pre-translation substitution {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Proper Noun Translation {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> Translation Result Correction {#anchor-fix}
     The above three buttons have similar effects and are used to quickly open the translation optimization settings window to add new specified terms.

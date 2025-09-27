@@ -97,9 +97,26 @@ def prepareqtenv():
     # 香港地区数字乱码
 
 
-def loadmainui(startwithgameuid):
-    import gobject
+def loadmainui(_):
+    import gobject, NativeUtils, windows
     from LunaTranslator import BASEOBJECT
+    from traceback import print_exc
+    from gui.usefulwidget import RichMessageBox
+    from myutils.config import _TR
+
+    gobject.isRunningMutex = NativeUtils.SimpleCreateMutex("LUNA_IS_RUNNING_MUTEX")
+    startwithgameuid = None
+    if _:
+        if _[0] == 1:
+            startwithgameuid = _[1]
+        elif _[0] == 2:
+            if windows.GetLastError() == windows.ERROR_ALREADY_EXISTS:
+                RichMessageBox(None, _TR("错误"), _TR("请先关闭软件，然后再导入！"))
+                os._exit(0)
+            try:
+                parsellmapi(_[1])
+            except:
+                print_exc()
 
     gobject.base = BASEOBJECT()
     gobject.base.loadui(startwithgameuid)
@@ -217,8 +234,10 @@ def _parseargs():
             elif netloc == "exec":
                 # lunatranslator://Exec?{gameuid}
                 return result.query
+            elif netloc == "llmapi":
+                return 2, result
         if Exec:
-            return Exec
+            return 1, Exec
     except Exception:
         print_exc()
 
@@ -231,9 +250,47 @@ def parseargs():
     return _
 
 
+def parsellmapi(result):
+    import json, uuid, base64
+    from urllib.parse import parse_qsl, SplitResult
+    from myutils.config import copyllmapi
+
+    # lunatranslator://llmapi/base64?data=……
+    # lunatranslator://llmapi/info?……
+    # name/id [可空]
+    # uid [可空]
+    # apiUrl/baseUrl 必选
+    # apiKey 必选
+    # model [可空]
+    # 其他参数 [随意]
+    result: SplitResult = result
+    query = dict(parse_qsl(result.query))
+    if result.path == "/base64":
+        _args: dict = json.loads(base64.b64decode(query.get("data").encode()).decode())
+    elif result.path == "/info":
+        _args = query
+    args = _args
+    args.update(
+        {
+            "name": _args.get("name", _args.get("id")),
+            "uid": _args.get("uid"),
+            "API接口地址": _args.get("apiUrl", _args.get("baseUrl")),
+            "SECRET_KEY": _args.get("apiKey"),
+            "model": _args.get("model", ""),
+        }
+    )
+    if not (args["API接口地址"] and args["SECRET_KEY"]):
+        raise Exception()
+    if not (args["uid"]):
+        args["uid"] = str(uuid.uuid4())
+    if not (args["name"]):
+        args["name"] = args["uid"]
+    copyllmapi("chatgpt-3rd-party", args["name"], args["uid"], args=args, use=True)
+
+
 if __name__ == "__main__":
     switchdir()
-    startwithgameuid = parseargs()
+    _ = parseargs()
     prepareqtenv()
     from qtsymbols import QApplication
 
@@ -241,6 +298,6 @@ if __name__ == "__main__":
     # app.setQuitOnLastWindowClosed(False)
     checklang()
     __checkintegrity()
-    loadmainui(startwithgameuid)
+    loadmainui(_)
     app.exit(app.exec())
     os._exit(0)

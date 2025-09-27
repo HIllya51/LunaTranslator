@@ -866,5 +866,7 @@
     "切换到前一个区域": "Schakel over naar het vorige gebied",
     "切换到下一个区域": "Schakel over naar het volgende gebied",
     "切换到鼠标临近区域": "Schakel over naar het gebied nabij de muis",
-    "取消区域聚焦": "Annuleer regionale focus."
+    "取消区域聚焦": "Annuleer regionale focus.",
+    "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "De AnkiConnect-poort is mogelijk bezet, controleer en beëindig het proces dat de poort gebruikt.",
+    "请打开anki，并安装AnkiConnect插件": "Open alstublieft Anki en installeer de AnkiConnect-plug-in."
 }

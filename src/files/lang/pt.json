@@ -866,5 +866,7 @@
     "切换到前一个区域": "Mudar para a área anterior",
     "切换到下一个区域": "Mudar para a próxima área",
     "切换到鼠标临近区域": "Mudar para a área próxima ao cursor do mouse",
-    "取消区域聚焦": "Cancelar foco regional"
+    "取消区域聚焦": "Cancelar foco regional",
+    "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "A porta do AnkiConnect pode estar ocupada; verifique e encerre o processo que está a utilizar a porta.",
+    "请打开anki，并安装AnkiConnect插件": "Por favor, abra o Anki e instale o plugin AnkiConnect."
 }

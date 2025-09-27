@@ -866,5 +866,7 @@
     "切换到前一个区域": "Přepnout na předchozí oblast",
     "切换到下一个区域": "Přepnout na další oblast",
     "切换到鼠标临近区域": "Přepnout na oblast blízko kurzoru",
-    "取消区域聚焦": "Zrušit regionální zaměření"
+    "取消区域聚焦": "Zrušit regionální zaměření",
+    "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "Port AnkiConnect může být obsazený, zkontrolujte a ukončete proces, který port využívá.",
+    "请打开anki，并安装AnkiConnect插件": "Otevřete prosím Anki a nainstalujte si zásuvný modul AnkiConnect."
 }

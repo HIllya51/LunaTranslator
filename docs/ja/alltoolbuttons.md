@@ -91,7 +91,7 @@
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCRを再実行 {#anchor-ocr_once_follow}
     `1回OCRを実行`を使用した後、このボタンを使用して、元の位置で再度OCRを実行し、認識エリアを再選択する必要はありません。
     
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 固有名詞翻訳 翻訳前の置換 {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻訳前の置換 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 固有名詞翻訳 {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 翻訳結果の修正 {#anchor-fix}
     上記の3つのボタンは、翻訳最適化設定ウィンドウを迅速に開いて新しい指定用語を追加するために使用されます。

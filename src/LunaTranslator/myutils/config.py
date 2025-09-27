@@ -1,7 +1,8 @@
 import json
 import os, time, uuid, re, gobject
 from traceback import print_exc
-from language import TransLanguages, Languages
+from language import Languages
+import shutil, copy
 
 
 def __mayberelpath(path):
@@ -477,3 +478,49 @@ def saveallconfig(test=False):
         safesave(errorcollect, "files/lang/{}.json".format(getlanguse()), languageshow)
     _is_config_saving = False
     return errorcollect
+
+
+def dynamicapiname(apiuid):
+    return globalconfig["fanyi"][apiuid].get(
+        "name_self_set", globalconfig["fanyi"][apiuid]["name"]
+    )
+
+
+def getcopyfrom(uid):
+    xx = uid
+    while True:
+        cp = globalconfig["fanyi"][xx].get("copyfrom")
+        if not cp:
+            return xx
+        xx = cp
+
+
+def copyllmapi(fanyi, newname=None, uid=None, args: dict = None, use=False):
+    if not uid:
+        uid = str(uuid.uuid4())
+    if not (uid in globalconfig["fanyi"]):
+        _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
+        _f12 = gobject.getconfig("copyed/{}.py".format(fanyi))
+        _f2 = gobject.getconfig("copyed/{}.py".format(uid))
+        try:
+            shutil.copy(_f11, _f2)
+        except:
+            shutil.copy(_f12, _f2)
+        copyfrom = getcopyfrom(fanyi)
+        globalconfig["fanyi"][uid] = copy.deepcopy(globalconfig["fanyi"][fanyi])
+        globalconfig["fanyi"][uid]["copyfrom"] = copyfrom
+        globalconfig["fanyi"][uid]["use"] = use
+        globalconfig["fanyi"][uid]["type"] = globalconfig["fanyi"][fanyi]["type"]
+        if fanyi in translatorsetting:
+            translatorsetting[uid] = copy.deepcopy(translatorsetting[fanyi])
+    globalconfig["fanyi"][uid]["name"] = (
+        newname if newname else (dynamicapiname(fanyi) + "_copy")
+    )
+    if "name_self_set" in globalconfig["fanyi"][uid]:
+        globalconfig["fanyi"][uid].pop("name_self_set")
+    if args:
+        for k in translatorsetting[uid]["args"]:
+            if not (k in args):
+                continue
+            translatorsetting[uid]["args"][k] = args[k]
+    return uid

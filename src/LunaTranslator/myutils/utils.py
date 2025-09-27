@@ -15,6 +15,7 @@ from myutils.config import (
     getdefaultsavehook,
     gamepath2uid_index,
     defaultglobalconfig,
+    dynamicapiname,
 )
 from myutils.keycode import vkcode_map, mod_map
 from language import Languages
@@ -615,6 +616,8 @@ def loadpostsettingwindowmethod_maybe(name, parent):
             gameuid = gobject.base.gameuid
             if not gameuid:
                 break
+            if savehook_new_data[gameuid].get("transoptimi_followdefault", True):
+                break
             return loadpostsettingwindowmethod_private(name)(parent, gameuid)
         except:
             print_exc()
@@ -1162,12 +1165,6 @@ def getimageformat():
 
 def getimagefilefilter():
     return " ".join(("*." + _ for _ in getimageformatlist()))
-
-
-def dynamicapiname(apiuid):
-    return globalconfig["fanyi"][apiuid].get(
-        "name_self_set", globalconfig["fanyi"][apiuid]["name"]
-    )
 
 
 def dynamiccishuname(apiuid):

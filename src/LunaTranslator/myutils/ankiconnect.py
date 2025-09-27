@@ -8,6 +8,10 @@ class AnkiException(Exception):
     pass
 
 
+class AnkiUnknownException(Exception):
+    pass
+
+
 class AnkiModelExists(AnkiException):
     pass
 
@@ -20,21 +24,27 @@ def invoke(action, **params):
     response = requests.get(
         "http://{}:{}".format(global_host, global_port),
         json={"action": action, "params": params, "version": 6},
-    ).json()
-    if len(response) != 2:
-        raise AnkiException("response has an unexpected number of fields")
-    if "error" not in response:
-        raise AnkiException("response is missing required error field")
-    if "result" not in response:
-        raise AnkiException("response is missing required result field")
-    if response["error"] is not None:
-        if response["error"] == "Model name already exists":
-            raise AnkiModelExists()
-        elif response["error"] == "cannot create note because it is a duplicate":
-            raise AnkiNoteDuplicate(response["error"])
-        else:
-            raise AnkiException(response["error"])
-    return response["result"]
+    )
+    try:
+        response = response.json()
+        if len(response) != 2:
+            raise AnkiException("response has an unexpected number of fields")
+        if "error" not in response:
+            raise AnkiException("response is missing required error field")
+        if "result" not in response:
+            raise AnkiException("response is missing required result field")
+        if response["error"] is not None:
+            if response["error"] == "Model name already exists":
+                raise AnkiModelExists()
+            elif response["error"] == "cannot create note because it is a duplicate":
+                raise AnkiNoteDuplicate(response["error"])
+            else:
+                raise AnkiException(response["error"])
+        return response["result"]
+    except AnkiException as e:
+        raise e
+    except Exception as e:
+        raise AnkiUnknownException(e)
 
 
 class Deck:

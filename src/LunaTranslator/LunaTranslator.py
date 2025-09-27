@@ -15,6 +15,7 @@ from myutils.config import (
     _TR,
     isascii,
     saveallconfig,
+    dynamicapiname,
 )
 from ctypes import cast, c_wchar_p
 from ctypes.wintypes import UINT, WPARAM, LPARAM
@@ -56,7 +57,7 @@ import windows
 import NativeUtils
 from gui.gamemanager.common import startgame
 from myutils.post import POSTSOLVE
-from myutils.utils import nowisdark, dynamicapiname
+from myutils.utils import nowisdark
 from myutils.somedatabase import somedatabase
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LDialog

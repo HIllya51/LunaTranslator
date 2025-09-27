@@ -13,7 +13,7 @@ class Process:
             noundictconfigdialog1(
                 parent_window,
                 globalconfig["global_namemap2"],
-                "专有名词翻译_翻译前替换",
+                "翻译前替换",
                 ["正则", "转义", "原文", "翻译"],
             ),
         )
@@ -26,7 +26,7 @@ class Process:
         noundictconfigdialog1(
             parent_window,
             savehook_new_data[gameuid]["namemap2"],
-            "专有名词翻译_翻译前替换_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
+            "翻译前替换_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
             ["正则", "转义", "原文", "翻译"],
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 

@@ -91,7 +91,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR lần nữa {#anchor-ocr_once_follow}
     Sau khi sử dụng `Thực hiện OCR một lần`, sử dụng nút này để thực hiện OCR lại tại vị trí ban đầu mà không cần phải chọn lại khu vực nhận diện.
     
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Bản dịch của proprietary noun Thay thế trước bản dịch {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Thay thế trước bản dịch {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> Bản dịch của proprietary noun {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> Sửa kết quả dịch {#anchor-fix}
     Ba nút trên có tác dụng tương tự và được sử dụng để nhanh chóng mở cửa sổ cài đặt tối ưu hóa dịch thuật để thêm các thuật ngữ mới được chỉ định.

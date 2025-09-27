@@ -1,14 +1,13 @@
 from qtsymbols import *
 import functools, os
-import gobject, uuid, shutil, copy
-from myutils.config import globalconfig, translatorsetting, _TR
+import gobject
+from myutils.config import globalconfig, translatorsetting, _TR, getcopyfrom, copyllmapi, dynamicapiname
 from myutils.utils import (
     getlangtgt,
     selectdebugfile,
     splittranslatortypes,
     dynamiclink,
     translate_exits,
-    dynamicapiname,
     getannotatedapiname,
 )
 import json, sqlite3
@@ -322,36 +321,8 @@ def loadbutton(self, fanyi):
     )
 
 
-def getcopyfrom(uid):
-    xx = uid
-    while True:
-        cp = globalconfig["fanyi"][xx].get("copyfrom")
-        if not cp:
-            return xx
-        xx = cp
-
-
 def selectllmcallback(self, countnum: list, fanyi, newname=None):
-    uid = str(uuid.uuid4())
-    _f11 = "Lunatranslator/translator/{}.py".format(fanyi)
-    _f12 = gobject.getconfig("copyed/{}.py".format(fanyi))
-    _f2 = gobject.getconfig("copyed/{}.py".format(uid))
-    try:
-        shutil.copy(_f11, _f2)
-    except:
-        shutil.copy(_f12, _f2)
-    copyfrom = getcopyfrom(fanyi)
-    globalconfig["fanyi"][uid] = copy.deepcopy(globalconfig["fanyi"][fanyi])
-    globalconfig["fanyi"][uid]["copyfrom"] = copyfrom
-    globalconfig["fanyi"][uid]["use"] = False
-    globalconfig["fanyi"][uid]["name"] = (
-        newname if newname else (dynamicapiname(fanyi) + "_copy")
-    )
-    if "name_self_set" in globalconfig["fanyi"][uid]:
-        globalconfig["fanyi"][uid].pop("name_self_set")
-    globalconfig["fanyi"][uid]["type"] = globalconfig["fanyi"][fanyi]["type"]
-    if fanyi in translatorsetting:
-        translatorsetting[uid] = copy.deepcopy(translatorsetting[fanyi])
+    uid = copyllmapi(fanyi, newname=newname)
 
     layout: QGridLayout = getattr(self, "damoxinggridinternal")
 

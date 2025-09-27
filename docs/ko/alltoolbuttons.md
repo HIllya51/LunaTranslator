@@ -93,7 +93,7 @@
 1. #### <i class="fa fa-spinner"></i> <i class="fa fa-icon fa-rotate-right"></i> OCR 다시 실행 {#anchor-ocr_once_follow}
     'OCR 실행하기'를 한 번 사용한 후, 이 버튼을 사용하면 인식 영역을 다시 선택하지 않고도 원래 위치에서 OCR을 다시 실행할 수 있습니다.
 
-1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 고유 명사 번역 번역 전 대체 {#anchor-noundict_direct}
+1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 번역 전 대체 {#anchor-noundict_direct}
 1. #### <i class="fa fa-book"></i> <i class="fa fa-icon fa-rotate-right"></i> 고유 명사 번역 {#anchor-noundict}
 1. #### <i class="fa fa-won"></i> <i class="fa fa-icon fa-rotate-right"></i> 번역 결과 수정 {#anchor-fix}
     위의 세 버튼은 효과가 유사하며, 번역 최적화 설정 창을 빠르게 열어 새로운 지정 항목을 추가하는 데 사용됩니다.

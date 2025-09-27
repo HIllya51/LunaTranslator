@@ -20,8 +20,8 @@ from network.server.servicecollection_1 import (
 )
 import threading, functools
 from qtsymbols import *
-from myutils.config import globalconfig, _TR
-from myutils.utils import dynamiccishuname, dynamicapiname
+from myutils.config import globalconfig, _TR, dynamicapiname
+from myutils.utils import dynamiccishuname
 from tts.basettsclass import TTSResult
 
 

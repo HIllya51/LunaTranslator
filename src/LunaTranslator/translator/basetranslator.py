@@ -6,13 +6,8 @@ import gobject
 import json
 import functools
 from myutils.wrapper import threader
-from myutils.config import globalconfig, translatorsetting
-from myutils.utils import (
-    stringfyerror,
-    autosql,
-    PriorityQueue,
-    dynamicapiname,
-)
+from myutils.config import globalconfig, translatorsetting, dynamicapiname
+from myutils.utils import stringfyerror, autosql, PriorityQueue
 from myutils.commonbase import ArgsEmptyExc, commonbase
 
 
