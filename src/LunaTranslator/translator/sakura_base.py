@@ -139,7 +139,7 @@ class TS(basetrans):
                 __msg = "历史翻译：" + __msg[1]["content"] + "\n"
                 _pro += "结合历史剧情和上下文，"
             content = (
-                __msg
+                (__msg if __msg else "")
                 + __gptdict
                 + _pro
                 + "将下面的文本从日文翻译成简体中文：\n"
