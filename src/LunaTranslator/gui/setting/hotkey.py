@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, gobject, NativeUtils, uuid, windows, shutil, time, math
-from myutils.config import globalconfig, _TR
+from myutils.config import globalconfig, _TR, saveallconfig
 from myutils.hwnd import grabwindow
 from traceback import print_exc
 from myutils.wrapper import threader, tryprint
@@ -183,6 +183,12 @@ def _ocr_focus_switch_near():
     gobject.base.translation_ui.startTranslater()
 
 
+def safesaveall():
+    _ = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
+    if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
+        print(saveallconfig())
+
+
 def registrhotkeys(self):
     self.referlabels = {}
     self.referlabels_data = {}
@@ -240,6 +246,7 @@ def registrhotkeys(self):
         "47": lambda: _ocr_focus_switch(1),
         "48": lambda: _ocr_focus_switch_near(),
         "49": lambda: _ocr_focus_No(),
+        "50": safesaveall,
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -267,6 +274,7 @@ hotkeys = [
             "_17",
             "44",
             "45",
+            "50",
         ],
     ],
     ["HOOK", ["_11", "_12"]],

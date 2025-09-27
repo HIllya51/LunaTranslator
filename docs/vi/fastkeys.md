@@ -52,6 +52,9 @@
 1. #### Thiết lập lại trạng thái dịch thuật. {#anchor-45}
     Đặt lại trạng thái dịch, chủ yếu nhằm đáp ứng nhu cầu dịch bằng mô hình lớn ngày càng tăng, có thể xóa ngữ cảnh đã lưu và các thông tin khác.
     
+1. #### Lưu cấu hình ngay lập tức {#anchor-50}
+    Lưu ngay cấu hình người dùng hiện tại thay vì đợi đến khi thoát.
+
 ## HOOK
 
 >[!WARNING]

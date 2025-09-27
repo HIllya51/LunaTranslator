@@ -869,5 +869,6 @@
     "取消区域聚焦": "Hủy tập trung khu vực",
     "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "Cổng AnkiConnect có thể đang bị chiếm dụng, vui lòng kiểm tra và kết thúc tiến trình đang sử dụng cổng này.",
     "请打开anki，并安装AnkiConnect插件": "Hãy mở Anki và cài đặt tiện ích AnkiConnect.",
-    "请先关闭软件，然后再导入！": "Vui lòng tắt phần mềm trước, sau đó mới tiến hành nhập dữ liệu!"
+    "请先关闭软件，然后再导入！": "Vui lòng tắt phần mềm trước, sau đó mới tiến hành nhập dữ liệu!",
+    "立即保存配置": "Lưu cấu hình ngay lập tức"
 }

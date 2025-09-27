@@ -869,5 +869,6 @@
     "取消区域聚焦": "Disattiva messa a fuoco regionale.",
     "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "La porta di AnkiConnect potrebbe essere occupata, controlla e termina il processo che la sta utilizzando.",
     "请打开anki，并安装AnkiConnect插件": "Per favore, apri Anki e installa il plugin AnkiConnect.",
-    "请先关闭软件，然后再导入！": "Chiudi prima il software, poi importa!"
+    "请先关闭软件，然后再导入！": "Chiudi prima il software, poi importa!",
+    "立即保存配置": "Salva immediatamente la configurazione"
 }

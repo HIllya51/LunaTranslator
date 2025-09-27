@@ -53,6 +53,9 @@
 1. #### Reset translation state {#anchor-45}
     Resets the translation status, primarily addressing the growing demand for large model translations, and clears saved context and other information.
 
+1. #### Save configuration immediately {#anchor-50}
+    Save the current user configuration immediately, rather than waiting until exit.
+
 ## HOOK
 
 >[!WARNING]
