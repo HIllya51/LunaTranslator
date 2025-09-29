@@ -17,6 +17,7 @@
 #include "engine32/Broccoli.h"
 #include "engine32/Winters.h"
 #include "engine32/CoffeeMaker.h"
+#include "engine32/Yatagarasu.h"
 #include "engine32/TACTICS.h"
 #include "engine32/splushwave.h"
 #include "engine32/GJ.h"
@@ -463,5 +464,6 @@ std::vector<ENGINE *> check_engines()
         new PixelGameMakerMVplayer,
         new TamaSoft,
         new Broccoli,
+        new Yatagarasu,
     };
 }
