@@ -1575,18 +1575,66 @@ class TranslatorWindow(resizableframeless):
         self.right_top_corner = self.geometry().topRight()
 
     def smooth_resizing(self, value):
-        self.resize(QSize(self.width(), value))
+        self.resizeFuck(QSize(self.width(), value))
 
     def smooth_resizing4(self, w):
-        self.resize(QSize(w, self.height()))
+        self.resizeFuck(QSize(w, self.height()))
 
     def smooth_resizing2(self, new_size: QSize):
         new_pos = self.left_bottom_corner - QPoint(0, new_size.height())
-        self.setGeometry(new_pos.x(), new_pos.y(), new_size.width(), new_size.height())
+        self.setGeometryFuck(
+            new_pos.x(), new_pos.y(), new_size.width(), new_size.height()
+        )
 
     def smooth_resizing3(self, new_size: QSize):
         new_pos = self.right_top_corner - QPoint(new_size.width(), 0)
-        self.setGeometry(new_pos.x(), new_pos.y(), new_size.width(), new_size.height())
+        self.setGeometryFuck(
+            new_pos.x(), new_pos.y(), new_size.width(), new_size.height()
+        )
+
+    # 不知道为什么，webview2模式，任务栏中显示，然后最小化，然后resize，就会触发使窗口弹出（但没有文字），并且无法操作。其中的逻辑太复杂了，直接干脆不要得了。
+    # void QWidget::resize(const QSize &s)
+    # {
+    #     Q_D(QWidget);
+    #     setAttribute(Qt::WA_Resized);
+    #     if (testAttribute(Qt::WA_WState_Created)) {
+    #         d->fixPosIncludesFrame();
+    #         d->setGeometry_sys(geometry().x(), geometry().y(), s.width(), s.height(), false);
+    #         d->setDirtyOpaqueRegion();
+    #     } else {
+    #         const auto oldRect = data->crect;
+    #         data->crect.setSize(s.boundedTo(maximumSize()).expandedTo(minimumSize()));
+    #         if (oldRect != data->crect)
+    #             setAttribute(Qt::WA_PendingResizeEvent);
+    #     }
+    # }
+    def setGeometryFuck(self, x, y, w, h):
+        if not self.isMinimized():
+            return self.setGeometry(x, y, w, h)
+        ms = self.minimumSize()
+        w = max(w, ms.width())
+        h = max(h, ms.height())
+        r = self.devicePixelRatioF()
+        windows.MoveWindow(
+            self.winid, int(x * r), int(y * r), int(w * r), int(h * r), False
+        )
+
+    def resizeFuck(self, size: QSize):
+        if not self.isMinimized():
+            return self.resize(size)
+        ms = self.minimumSize()
+        w = max(size.width(), ms.width())
+        h = max(size.height(), ms.height())
+        r = self.devicePixelRatioF()
+        windows.SetWindowPos(
+            self.winid,
+            None,
+            0,
+            0,
+            int(w * r),
+            int(h * r),
+            windows.SWP_NOMOVE | windows.SWP_NOZORDER | windows.SWP_NOACTIVATE,
+        )
 
     def textAreaChanged(self, size: QSize):
         # size只有一个维度是准确的，应当根据显示方向来使用其中有效的部分
@@ -1603,14 +1651,14 @@ class TranslatorWindow(resizableframeless):
             self.smooth_resizer2.stop()
             self.smooth_resizer4.stop()
             if self.isdoingsomething():
-                self.resize(size)
+                self.resizeFuck(size)
                 return
             if globalconfig["top_align"] == 0:
                 # 太抖了，不要动画了。
                 self.smooth_resizing3(size)
             else:
                 if newW > self.width():
-                    self.resize(size)
+                    self.resizeFuck(size)
                 else:
                     self.smooth_resizer4.setStartValue(self.width())
                     self.smooth_resizer4.setEndValue(newW)
@@ -1622,11 +1670,11 @@ class TranslatorWindow(resizableframeless):
             self.smooth_resizer.stop()
             self.smooth_resizer2.stop()
             if self.isdoingsomething():
-                self.resize(size)
+                self.resizeFuck(size)
                 return
             if globalconfig["top_align"] == 0:
                 if newHeight > self.height():
-                    self.resize(size)
+                    self.resizeFuck(size)
                 else:
                     self.smooth_resizer.setStartValue(self.height())
                     self.smooth_resizer.setEndValue(newHeight)
