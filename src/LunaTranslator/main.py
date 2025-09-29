@@ -172,8 +172,10 @@ def __checkintegrity(error=None):
     from gui.usefulwidget import RichMessageBox
 
     if error:
-        RichMessageBox(None, *error)
-        os._exit(0)
+        error, error_t = error
+        RichMessageBox(None, *error_t, iserror=error)
+        if error:
+            os._exit(0)
 
     args = checkintegrity()
     if args:
@@ -275,8 +277,8 @@ def parsellmapi(result):
 
 
 def ifhasllmapi(_):
-    import gobject, NativeUtils, windows
-    from traceback import print_exc
+    import gobject, NativeUtils, windows, io
+    from traceback import format_exc
     from myutils.config import _TR
 
     gobject.isRunningMutex = NativeUtils.SimpleCreateMutex("LUNA_IS_RUNNING_MUTEX")
@@ -287,12 +289,13 @@ def ifhasllmapi(_):
             startwithgameuid = _[1]
         elif _[0] == 2:
             if windows.GetLastError() == windows.ERROR_ALREADY_EXISTS:
-                error = (_TR("错误"), _TR("请先关闭软件，然后再导入！"))
+                error = 1, (_TR("错误"), _TR("请先关闭软件，然后再导入！"))
             else:
                 try:
                     parsellmapi(_[1])
+                    error = 0, (_TR("成功"), _TR("添加成功"))
                 except:
-                    print_exc()
+                    error = 1, (_TR("错误"), format_exc())
     return startwithgameuid, error
 
 

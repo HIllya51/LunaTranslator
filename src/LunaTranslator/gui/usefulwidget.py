@@ -23,9 +23,9 @@ from gui.dynalang import (
 )
 
 
-def RichMessageBox(parent, title, text: str, icon=QMessageBox.Icon.Critical):
+def RichMessageBox(parent, title, text: str, iserror=True):
     b = QMessageBox(parent)
-    b.setIcon(icon)
+    b.setIcon((QMessageBox.Icon.Information, QMessageBox.Icon.Critical)[iserror])
     b.setWindowTitle(title)
     b.setText(text.replace("\n", "<br>"))
     b.setTextFormat(Qt.TextFormat.RichText)
@@ -575,7 +575,11 @@ class TableViewW(DelayLoadTableView):
                 else:
                     startj = current.column()
                 for i in range(0, self.model().columnCount()):
-                    data = line[i - startj] if (i - startj < len(line) and i >= startj) else ""
+                    data = (
+                        line[i - startj]
+                        if (i - startj < len(line) and i >= startj)
+                        else ""
+                    )
                     self.setindexdata(
                         self.model().index(current.row() + 1 + j, i), data
                     )
