@@ -42,13 +42,15 @@
 
 ## 일반적인 오류 {#anchor-commonerros}
 
-### 중요 구성 요소를 찾을 수 없음
+### 중요 구성 요소를 찾을 수 없음 / Missing embedded Python3
 
 ::: danger
 때때로 바이러스 백신 프로그램에 의해 삭제될 수 있으니, 신뢰할 수 있는 항목으로 추가 후 다시 다운로드하여 압축 해제하십시오
 :::
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 
+
+![img](https://image.lunatranslator.org/zh/missingpython.png) 
 
 해결 방법: 바이러스 백신 프로그램을 종료하거나, 종료할 수 없는 경우(예: Windows Defender) 신뢰할 수 있는 항목에 추가한 후 다시 다운로드하십시오.
 

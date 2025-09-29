@@ -43,13 +43,15 @@ Nếu muốn xóa và tải lại, chú ý không xóa thư mục userconfig, n�
 
 ## Lỗi Thường Gặp {#anchor-commonerros}
 
+### Thiếu các thành phần quan trọng / Missing embedded Python3
+
 ::: danger
 Đôi khi phần mềm có thể bị gắn cờ bởi phần mềm diệt virus. Vui lòng thêm vào danh sách tin cậy và tải xuống, giải nén lại.
 :::
 
-### Thiếu các thành phần quan trọng
-
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 
+
+![img](https://image.lunatranslator.org/zh/missingpython.png) 
 
 Giải pháp: Tắt phần mềm diệt virus. Nếu không thể tắt (như Windows Defender), thêm vào danh sách tin cậy và sau đó tải xuống lại.
 

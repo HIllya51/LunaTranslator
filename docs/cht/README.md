@@ -42,13 +42,15 @@
 
 ## 常見錯誤 {#anchor-commonerros}
 
-### 找不到重要元件
+### 找不到重要元件 / Missing embedded Python3
 
 ::: danger
 有時會被防毒軟體殺掉，請新增例外並重新下載解壓縮。
 :::
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg)
+
+![img](https://image.lunatranslator.org/zh/missingpython.png) 
 
 解決方法：關閉防毒軟體，若無法關閉（如 Windows Defender）則新增例外，然後重新下載。
 

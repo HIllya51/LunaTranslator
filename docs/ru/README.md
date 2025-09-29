@@ -42,13 +42,15 @@
 
 ## Частые ошибки {#anchor-commonerros}
 
-### Не найден важный компонент
+### Не найден важный компонент / Missing embedded Python3
 
 ::: danger
 Иногда антивирус может удалять файлы, добавьте их в исключения и загрузите/распакуйте заново
 :::
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 
+
+![img](https://image.lunatranslator.org/zh/missingpython.png) 
 
 Решение: отключите антивирус, если отключение невозможно (например, Windows Defender) - добавьте в исключения, затем переустановите.
 

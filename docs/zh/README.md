@@ -42,13 +42,15 @@
 
 ## 常见错误 {#anchor-commonerros}
 
-### 找不到重要组件
+### 找不到重要组件 / Missing embedded Python3
 
 ::: danger
 有时会被杀毒软件杀掉，请添加信任并重新下载解压
 :::
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 
+
+![img](https://image.lunatranslator.org/zh/missingpython.png) 
 
 解决方法：关闭杀毒软件，无法关闭(如windows defender)则添加信任，然后重下。
 

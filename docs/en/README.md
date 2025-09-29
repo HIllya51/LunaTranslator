@@ -45,13 +45,15 @@ If you want to delete and re-download, be careful not to delete the userconfig f
 
 ## Common Errors {#anchor-commonerros}
 
+### Missing Important Components / Missing embedded Python3
+
 ::: danger
 Sometimes it may be flagged by antivirus software. Please add it to the trust list and re-download and extract.
 :::
 
-### Missing Important Components
-
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 
+
+![img](https://image.lunatranslator.org/zh/missingpython.png) 
 
 Solution: Close antivirus software. If it cannot be closed (such as Windows Defender), add it to the trust list and then re-download.
 

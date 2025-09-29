@@ -42,13 +42,15 @@
 
 ## よくあるエラー {#anchor-commonerros}
 
-### 重要なコンポーネントが見つからない
+### 重要なコンポーネントが見つからない / Missing embedded Python3
 
 ::: danger
 時々、ウイルス対策ソフトによってフラグが立てられることがあります。信頼リストに追加し、再度ダウンロードして解凍してください。
 :::
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg) 
+
+![img](https://image.lunatranslator.org/zh/missingpython.png) 
 
 解決方法：ウイルス対策ソフトを無効にする。無効にできない場合（例：Windows Defender）、信頼リストに追加してから再ダウンロードする。
 
