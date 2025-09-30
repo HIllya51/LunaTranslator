@@ -31,13 +31,17 @@ void Send_I18N_Keys()
 		WriteFile(hookPipe, &resp, sizeof(resp), DUMMY, nullptr);
 	}
 }
-static bool running = true;
-static bool ParseCommand(HANDLE hostPipe)
+static void ParseCommand(HANDLE hostPipe, bool &running)
 {
 	DWORD count = 0;
 	static BYTE buffer[PIPE_BUFFER_SIZE] = {};
-	if (!(running && ReadFile(hostPipe, buffer, PIPE_BUFFER_SIZE, &count, nullptr)))
-		return false;
+	if (!running)
+		return;
+	if (!ReadFile(hostPipe, buffer, PIPE_BUFFER_SIZE, &count, nullptr))
+	{
+		running = false;
+		return;
+	}
 	switch (*(HostCommandType *)buffer)
 	{
 	case HOST_COMMAND_I18N_RESPONSE:
@@ -88,9 +92,8 @@ static bool ParseCommand(HANDLE hostPipe)
 	}
 	break;
 	}
-	return true;
 }
-void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe)
+void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe, bool &running)
 {
 	// 1. hook->host
 	// WORD[4] version
@@ -102,14 +105,15 @@ void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe)
 	{
 		HostInfoI18NReq req(_en, data.raw());
 		WriteFile(hookPipe, &req, sizeof(req), DUMMY, nullptr);
-		if (!ParseCommand(hostPipe))
+		ParseCommand(hostPipe, running);
+		if (!running)
 			return;
 	}
 	WriteFile(hookPipe, &HostInfoPreparedOK, sizeof(HostInfoPreparedOK), DUMMY, nullptr);
 }
 DWORD WINAPI Pipe(LPVOID)
 {
-	for (; running; hookPipe = INVALID_HANDLE_VALUE)
+	for (bool running = true; running; hookPipe = INVALID_HANDLE_VALUE)
 	{
 		AutoHandle<> hostPipe = INVALID_HANDLE_VALUE;
 
@@ -124,11 +128,11 @@ DWORD WINAPI Pipe(LPVOID)
 		DWORD mode = PIPE_READMODE_MESSAGE;
 		SetNamedPipeHandleState(hostPipe, &mode, NULL, NULL);
 
-		CommunicationInitialize(hostPipe, hookPipe);
+		CommunicationInitialize(hostPipe, hookPipe, running);
 		HIJACK();
 		host_connected = true;
-		while (ParseCommand(hostPipe))
-			;
+		while (running)
+			ParseCommand(hostPipe, running);
 	}
 
 	if (dont_detach)

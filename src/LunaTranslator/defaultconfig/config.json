@@ -1763,12 +1763,6 @@
             "useproxy": false,
             "name": "TranslateCom"
         },
-        "chromeai": {
-            "use": false,
-            "color": "blue",
-            "type": "offline",
-            "name": "Chrome"
-        },
         "baiduapi": {
             "type": "api",
             "use": false,
