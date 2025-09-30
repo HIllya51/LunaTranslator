@@ -468,7 +468,9 @@ class BASEOBJECT(QObject):
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
         currentsignature = uuid.uuid4()
         try:
-            text = POSTSOLVE(text, isEx=waitforresultcallback, isFromHook=isFromHook)
+            text = POSTSOLVE(
+                text, isEx=waitforresultcallback, isFromHook=isFromHook
+            )
             gobject.base.showandsolvesig.emit(origin, text)
             if not text:
                 return

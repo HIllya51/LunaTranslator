@@ -337,8 +337,8 @@ processfunctions = {
 }
 
 
-def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
-    if line == "":
+def POSTSOLVE(line: str, isEx=False, isFromHook=False, useAll=False) -> str:
+    if not line:
         return ""
     useranklist = globalconfig["postprocess_rank"]
     usedpostprocessconfig = postprocessconfig
@@ -380,7 +380,9 @@ def POSTSOLVE(line, isEx=False, isFromHook=False, useAll=False):
             try:
                 _f = processfunctions[postitem]
                 if postitem == "_11":
-                    line = processfunctions[postitem](line, gobject.getconfig(usemypostpath), usemodule)
+                    line = processfunctions[postitem](
+                        line, gobject.getconfig(usemypostpath), usemodule
+                    )
                 else:
                     sig = inspect.signature(_f)
                     np = len(sig.parameters)
