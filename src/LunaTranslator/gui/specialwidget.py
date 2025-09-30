@@ -2,8 +2,75 @@ from qtsymbols import *
 import threading
 from traceback import print_exc
 from myutils.wrapper import trypass
-import qtawesome
+import qtawesome, math
 from gui.dynalang import IconToolButton
+
+
+def find_best_ticks(max_seconds):
+    IDEAL_TICK_COUNT = 5
+
+    nice_intervals = [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        10,
+        15,
+        20,
+        30,
+        60,  # 秒
+        2 * 60,
+        3 * 60,
+        4 * 60,
+        5 * 60,
+        6 * 60,
+        10 * 60,
+        15 * 60,
+        20 * 60,
+        30 * 60,  # 分钟
+        3600,
+        2 * 3600,
+        3 * 3600,
+        4 * 3600,
+        5 * 3600,
+        6 * 3600,
+        12 * 3600,  # 小时
+    ]
+
+    best_option = {"interval": None, "score": float("inf")}
+
+    for interval in nice_intervals:
+        num_ticks = max_seconds // interval + 1
+
+        count_penalty = abs(num_ticks - IDEAL_TICK_COUNT) ** 1.5
+
+        axis_end_time = num_ticks * interval
+        overshoot_ratio = (
+            (axis_end_time - max_seconds) / axis_end_time if axis_end_time > 0 else 0
+        )
+
+        total_score = count_penalty * 10 + overshoot_ratio
+
+        if total_score < best_option["score"]:
+            best_option = {
+                "interval": interval,
+                "num_ticks": num_ticks,
+                "score": total_score,
+            }
+
+    best_interval = best_option["interval"]
+    final_num_ticks = best_option["num_ticks"]
+
+    ticks = []
+    for i in range(final_num_ticks):
+        tick_seconds = i * best_interval
+        if tick_seconds > max_seconds:
+            continue
+        ticks.append(tick_seconds)
+
+    return ticks
 
 
 class chartwidget(QWidget):
@@ -48,7 +115,8 @@ class chartwidget(QWidget):
             xmargin = 0
 
             max_y = int(max(y for _, y in self.data))
-            y_labels = [self.ytext(i * max_y / 5) for i in range(6)]
+            yticks = find_best_ticks(max_y)
+            y_labels = [self.ytext(y) for y in yticks]
 
             x_labels = [self.xtext(x) for x, _ in self.data]
             for l in y_labels:
@@ -69,7 +137,7 @@ class chartwidget(QWidget):
 
             # 纵坐标
             for i, label in enumerate(y_labels):
-                y = ymargin + height - i * (height / 5)
+                y = ymargin + height - height * yticks[i] / max_y
                 painter.drawLine(
                     QPointF(xmargin - self.scalelinelen, y), QPointF(xmargin, y)
                 )
