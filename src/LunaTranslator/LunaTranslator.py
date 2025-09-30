@@ -526,7 +526,7 @@ class BASEOBJECT(QObject):
 
         text_solved, optimization_params = self.solvebeforetrans(text)
         if not text_solved:
-            return
+            return _showrawfunction()
 
         maybehaspremt = {}
         skip_other_on_success = False
