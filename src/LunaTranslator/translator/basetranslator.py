@@ -135,7 +135,7 @@ class basetrans(commonbase):
 
         self.newline = None
 
-        if self.transtype != "pre":
+        if not self.never_use_trans_cache:
             try:
 
                 self.sqlwrite2 = autosql(
@@ -191,8 +191,14 @@ class basetrans(commonbase):
         return self.__gconfig.get("is_gpt_like", False)
 
     @property
+    def never_use_trans_cache(self):
+        return self.transtype in ("pre", "other")
+
+    @property
     def use_trans_cache(self):
-        return self.__gconfig.get("use_trans_cache", True)
+        return (self.__gconfig.get("use_trans_cache", True)) and (
+            not self.never_use_trans_cache
+        )
 
     @property
     def is_gpt_like(self):
