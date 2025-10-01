@@ -24,7 +24,7 @@ export default {
     setup() {
         const handleRouteChange = () => {
             document.querySelectorAll('.downloadlink').forEach((e) => {
-                e.target = '_blank'
+                return;
                 e.addEventListener('click', () => {
                     if (!e.href.includes('x64_win10')) return;
                     function checkIfMobile() {
