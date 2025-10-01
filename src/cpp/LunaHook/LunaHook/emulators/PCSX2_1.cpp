@@ -333,6 +333,7 @@ namespace
     void SLPS25809(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("/K"));
+        StringFilter(buffer, TEXTANDLEN("\n\x81\x40"));
         CharFilter(buffer, '\n');
         auto s = buffer->strA();
         static std::string last;
@@ -431,16 +432,6 @@ namespace
                 name = u8"【" + name + u8"】";
             buffer->from(name + buffer->strA());
         }
-        last = s;
-    }
-    void SLPS25902(TextBuffer *buffer, HookParam *hp)
-    {
-        CharFilter(buffer, '\n');
-        StringFilter(buffer, TEXTANDLEN("/K"));
-        auto s = buffer->strA();
-        static std::string last;
-        if (last == s)
-            return buffer->clear();
         last = s;
     }
     void FSLPM66332(TextBuffer *buffer, HookParam *hp)
@@ -2036,6 +2027,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 裏切りは僕の名前を知っている ～黄昏に堕ちた祈り～
+    {0xB424B6, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPM-55274"}},
     // きみスタ ～きみとスタディ～
     {0x1A37A4, {DIRECT_READ, 0, 0, 0, 0, "SLPM-66376"}},
     // オレンジハニー 僕はキミに恋してる
@@ -2633,7 +2626,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // エリュシオン～永遠のサンクチュアリ～
     {0x312FDC, {DIRECT_READ, 0, 0, SLPS25220, 0, "SLPS-25220"}},
     // 純情ロマンチカ ～恋のドキドキ大作戦
-    {0x83907A, {DIRECT_READ, 0, 0, 0, SLPS25902, "SLPS-25902"}},
+    {0x83907A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25902"}},
     // 今日からマ王！はじマりの旅 [プレミアムBOX]
     {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
     // 今日からマ王！ 眞マ国の休日

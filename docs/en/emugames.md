@@ -904,6 +904,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55274 | 裏切りは僕の名前を知っている ～黄昏に堕ちた祈り～ |
 |  | SLPM-66376 | きみスタ ～きみとスタディ～ |
 |  | SLPS-25766 | オレンジハニー 僕はキミに恋してる |
 |  | SLPM-55053 | 紫の焔 |

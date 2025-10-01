@@ -33,7 +33,7 @@ export default {
                     }
                     if (checkIfMobile()) return;
                     setTimeout(() => {
-                        window.location.href = `/${window.localStorage.currentlang}/support.html`;
+                        window.open(`/${window.localStorage.currentlang}/support.html`, '_blank');
                     }, 50);
                 });
             })
