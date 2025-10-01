@@ -24,18 +24,17 @@ class OCR(baseocr):
                 self.raise_cant_be_auto_lang()
         else:
             if not NativeUtils.WinRT.OCR_check_language_valid(self.srclang):
+                langs = ", ".join(
+                    [
+                        _[1]
+                        for _ in NativeUtils.WinRT.OCR_get_AvailableRecognizerLanguages()
+                    ]
+                )
+                langs = langs or _TR("无")
                 raise Exception(
                     _TR(
                         "系统未安装“{currlang}”的OCR模型\n当前支持的语言：{langs}"
-                    ).format(
-                        currlang=_TR(self.srclang_1.zhsname),
-                        langs=", ".join(
-                            [
-                                _[1]
-                                for _ in NativeUtils.WinRT.OCR_get_AvailableRecognizerLanguages()
-                            ]
-                        ),
-                    )
+                    ).format(currlang=_TR(self.srclang_1.zhsname), langs=langs)
                 )
             uselang = self.srclang
         ret = NativeUtils.WinRT.OCR(imagebinary, uselang)

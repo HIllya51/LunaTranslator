@@ -22,6 +22,7 @@ from myutils.localetools import getgamecamptools, maycreatesettings
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton
 from myutils.utils import (
+    all_langs,
     gamdidchangedtask,
     checkpostlangmatch,
     loadpostsettingwindowmethod_private,
@@ -1121,20 +1122,20 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "源语言",
             getsimplecombobox(
-                ["自动"] + [_.zhsname for _ in TransLanguages],
+                all_langs()[0],
                 savehook_new_data[gameuid],
                 "private_srclang_2",
-                internal=["auto"] + [_.code for _ in TransLanguages],
+                internal=all_langs()[1],
                 default=globalconfig["srclang4"],
             ),
         )
         formLayout2.addRow(
             "目标语言",
             getsimplecombobox(
-                [_.zhsname for _ in TransLanguages],
+                all_langs(False)[0],
                 savehook_new_data[gameuid],
                 "private_tgtlang_2",
-                internal=[_.code for _ in TransLanguages],
+                internal=all_langs(False)[1],
                 default=globalconfig["tgtlang4"],
             ),
         )

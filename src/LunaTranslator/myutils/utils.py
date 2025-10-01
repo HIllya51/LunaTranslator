@@ -18,7 +18,7 @@ from myutils.config import (
     dynamicapiname,
 )
 from myutils.keycode import vkcode_map, mod_map
-from language import Languages
+from language import Languages, TransLanguages
 import threading, winreg
 import re, heapq, NativeUtils
 from myutils.wrapper import tryprint, threader
@@ -88,10 +88,10 @@ def __internal__getlang(k1: str, k2: str) -> str:
             if savehook_new_data[gameuid].get("lang_follow_default", True):
                 break
 
-            return savehook_new_data[gameuid][k1]
+            return savehook_new_data[gameuid][k1], globalconfig[k2]
     except:
         pass
-    return globalconfig[k2]
+    return globalconfig[k2], globalconfig[k2]
 
 
 def __translate_exits(fanyi):
@@ -120,13 +120,41 @@ def translate_exits(fanyi, which=False):
         return _ is not None
 
 
+def all_langs(src=True):
+    vis = (["自动"] if src else []) + [_.zhsname for _ in TransLanguages]
+    internal = (["auto"] if src else []) + [_.code for _ in TransLanguages]
+    for extra in globalconfig["extraLangs"]:
+        internal.append(extra["code"])
+        vis.append("[[" + extra["name"] + "]]")
+    return vis, internal
+
+
+def __fucklang(src, _) -> Languages:
+    code, code2 = _
+    _ = Languages.fromcode(code)
+    if not _:
+        name = None
+        for extra in globalconfig["extraLangs"]:
+            if code == extra["code"]:
+                name = extra["name"]
+                break
+        if not name:
+            if code2 != code:
+                return __fucklang(code2, code2)
+            else:
+                return Languages.Auto if src else Languages.Chinese
+        name = name or code
+        _ = Languages(code, name, name, name)
+    return _
+
+
 def getlangsrc() -> Languages:
-    return Languages.fromcode(__internal__getlang("private_srclang_2", "srclang4"))
+    return __fucklang(True, __internal__getlang("private_srclang_2", "srclang4"))
 
 
 def getlangtgt() -> Languages:
 
-    return Languages.fromcode(__internal__getlang("private_tgtlang_2", "tgtlang4"))
+    return __fucklang(False, __internal__getlang("private_tgtlang_2", "tgtlang4"))
 
 
 def findenclose(text: str, tag: str) -> str:

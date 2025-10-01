@@ -1294,7 +1294,6 @@ class TranslatorWindow(resizableframeless):
             raw=True,
             color=SpecialColor.RawTextColor,
         )
-        globalconfig["lasttime2"] = time.time()
 
     def showEvent(self, e):
         super().showEvent(e)
@@ -1309,8 +1308,10 @@ class TranslatorWindow(resizableframeless):
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
         self.autohidedelaythread()
         self.tracewindowposthread()
-
-        if time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 1:
+        if time.time() - globalconfig.get("lasttime3", 0) > 3600 * 24 * 7:
+            self.showabout()
+            globalconfig["lasttime3"] = time.time()
+        elif time.time() - globalconfig.get("lasttime2", 0) > 3600 * 24 * 1:
             self.showabout()
         globalconfig["lasttime2"] = time.time()
 

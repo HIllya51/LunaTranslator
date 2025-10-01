@@ -197,9 +197,8 @@ class localmodels:
         langs = []
         for _ in ms:
             for f in _.languages:
-                try:
-                    _ = Languages.fromcode(f)
-                except:
+                _ = Languages.fromcode(f)
+                if not _:
                     continue
                 if _.zhsname in langs:
                     continue
@@ -433,12 +432,14 @@ class OCR(baseocr):
             if self.is_src_auto:
                 raise Exception(_TR("无可用模型"))
             else:
+                langs = ", ".join(
+                    [_TR(f) for f in localmodels.collectlangs(self.models)]
+                )
+                langs = langs or _TR("无")
                 raise Exception(
                     _TR("未添加“{currlang}”的OCR模型\n当前支持的语言：{langs}").format(
                         currlang=_TR(self.srclang_1.zhsname),
-                        langs=", ".join(
-                            [_TR(f) for f in localmodels.collectlangs(self.models)]
-                        ),
+                        langs=langs,
                     )
                 )
         if self._models == findm:

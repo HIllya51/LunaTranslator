@@ -2,11 +2,13 @@ from qtsymbols import *
 import functools, NativeUtils
 import gobject, os, re
 from myutils.config import globalconfig, static_data
+from myutils.utils import all_langs
 from traceback import print_exc
-from language import TransLanguages
+from language import Languages
 from gui.setting.textinput_ocr import getocrgrid_table
 from gui.gamemanager.dialog import dialog_savedgame_integrated
-from gui.dynalang import LLabel
+from gui.dynalang import LLabel, LStandardItemModel
+from myutils.wrapper import Singleton
 from textio.textsource.mssr import findallmodel, mssr
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -15,8 +17,11 @@ from gui.usefulwidget import (
     D_getdoclink,
     SuperCombo,
     VisLFormLayout,
+    LDialog,
+    TableViewW,
     createfoldgrid,
     getIconButton,
+    manybuttonlayout,
     LinkLabel,
     makegrid,
     listediter,
@@ -535,7 +540,7 @@ def getnetgrid(self):
                         "networktcpport",
                         callback=lambda _: gobject.base.serviceinit(),
                     ),
-                    functools.partial(__portconflict, self),
+                    __portconflict,
                 ]
             ),
         ],
@@ -660,35 +665,116 @@ def filetranslate(self):
     return grids
 
 
-def __portconflict(self):
+def __portconflict():
     _ = LLabel()
     gobject.base.connectsignal(gobject.base.portconflict, _.setText)
     return _
 
 
-def setTablanglz():
+@Singleton
+class extralangs(LDialog):
+    def __init__(self, parent) -> None:
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle("其他语言")
+        self.model = LStandardItemModel()
+        self.model.setHorizontalHeaderLabels(["语言名称", "语言代码"])
+        table = TableViewW(self)
+        table.setModel(self.model)
+        table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        self.table = table
+
+        table.insertplainrow = lambda row: self.newline(row, {"name": "", "code": ""})
+        self.table = table
+        for row, item in enumerate(globalconfig["extraLangs"]):
+            self.newline(row, item)
+        table.startObserveInserted()
+        button = manybuttonlayout(
+            [
+                ("添加行", functools.partial(table.insertplainrow, 0)),
+                ("删除行", self.table.removeselectedrows),
+            ]
+        )
+
+        formLayout = QVBoxLayout(self)
+        formLayout.addWidget(table)
+        formLayout.addLayout(button)
+
+        self.resize(QSize(600, 400))
+        self.exec()
+
+    def newline(self, row, item: dict):
+        self.model.insertRow(
+            row,
+            [
+                QStandardItem(item["name"]),
+                QStandardItem(item["code"]),
+            ],
+        )
+
+    def apply(self):
+        self.table.dedumpmodel(0)
+        self.table.dedumpmodel(1)
+        globalconfig["extraLangs"].clear()
+        for row in range(self.model.rowCount()):
+            switch = self.table.getdata(row, 0)
+            es = self.table.getdata(row, 1)
+            if Languages.fromcode(es):
+                continue
+            globalconfig["extraLangs"].append(
+                {
+                    "name": switch,
+                    "code": es,
+                }
+            )
+
+    def closeEvent(self, a0: QCloseEvent) -> None:
+        self.setFocus()
+        self.apply()
+        srclangw: SuperCombo = self.parent().srclangw
+        tgtlangw: SuperCombo = self.parent().tgtlangw
+        srclangw.blockSignals(True)
+        tgtlangw.blockSignals(True)
+        srclangw.clear()
+        tgtlangw.clear()
+        srclangw.addItems(all_langs()[0], internals=all_langs()[1])
+        tgtlangw.addItems(all_langs(False)[0], internals=all_langs(False)[1])
+        srclangw.blockSignals(False)
+        tgtlangw.blockSignals(False)
+        srclangw.setCurrentData(globalconfig["srclang4"])
+        tgtlangw.setCurrentData(globalconfig["tgtlang4"])
+
+
+def __srclangw(self):
+    self.srclangw = getsimplecombobox(
+        all_langs()[0],
+        globalconfig,
+        "srclang4",
+        internal=all_langs()[1],
+    )
+    return self.srclangw
+
+
+def __tgtlangw(self):
+    self.tgtlangw = getsimplecombobox(
+        all_langs(False)[0],
+        globalconfig,
+        "tgtlang4",
+        internal=all_langs(False)[1],
+    )
+    return self.tgtlangw
+
+
+def setTablanglz(self):
     return [
         [
             "源语言",
-            (
-                D_getsimplecombobox(
-                    ["自动"] + [_.zhsname for _ in TransLanguages],
-                    globalconfig,
-                    "srclang4",
-                    internal=["auto"] + [_.code for _ in TransLanguages],
-                ),
-                5,
-            ),
+            (functools.partial(__srclangw, self), 5),
             "",
             "目标语言",
-            (
-                D_getsimplecombobox(
-                    [_.zhsname for _ in TransLanguages],
-                    globalconfig,
-                    "tgtlang4",
-                    internal=[_.code for _ in TransLanguages],
-                ),
-                5,
+            (functools.partial(__tgtlangw, self), 5),
+            D_getIconButton(
+                lambda: extralangs(self),
             ),
         ]
     ]
@@ -757,7 +843,7 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         )
         __.append("")
     tab1grids = [
-        [dict(title="语言设置", type="grid", grid=setTablanglz())],
+        [dict(title="语言设置", type="grid", grid=setTablanglz(self))],
         [dict(title="文本输入", type="grid", grid=[__])],
     ]
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
@@ -780,10 +866,10 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     do()
     dotab()
 
-    def __(k, x):
+    def ___(k, x):
         btn: QPushButton = self.sourceswitchs.get(k)
         if not btn:
             return
         btn.setChecked(x)
 
-    gobject.base.sourceswitchs.connect(__)
+    gobject.base.sourceswitchs.connect(___)
