@@ -116,6 +116,8 @@ class chartwidget(QWidget):
 
             max_y = int(max(y for _, y in self.data))
             yticks = find_best_ticks(max_y)
+            if self.data and self.data[0][1]:
+                yticks.insert(0, self.data[0][1])
             y_labels = [self.ytext(y) for y in yticks]
 
             x_labels = [self.xtext(x) for x, _ in self.data]
@@ -136,20 +138,22 @@ class chartwidget(QWidget):
             height = self.height() - 2 * ymargin
 
             # 纵坐标
+            rects: "list[QRectF]" = []
             for i, label in enumerate(y_labels):
                 y = ymargin + height - height * yticks[i] / max_y
                 painter.drawLine(
                     QPointF(xmargin - self.scalelinelen, y), QPointF(xmargin, y)
                 )
-                painter.drawText(
-                    QPointF(
-                        xmargin
-                        - self.scalelinelen
-                        - self.fmetrics.size(0, label).width(),
-                        y + 5,
-                    ),
-                    label,
+                p = QPointF(
+                    xmargin - self.scalelinelen - self.fmetrics.size(0, label).width(),
+                    y + 5,
                 )
+                newrect = QRectF(p, self.fmetrics.size(0, label))
+                if any(_.intersected(newrect) for _ in rects):
+                    continue
+                else:
+                    rects.append(newrect)
+                    painter.drawText(newrect.topLeft(), label)  # value
 
             painter.drawLine(
                 QPointF(xmargin, ymargin), QPointF(xmargin, ymargin + height)
