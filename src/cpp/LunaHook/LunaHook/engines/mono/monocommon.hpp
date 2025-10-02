@@ -60,6 +60,26 @@ namespace
         // 先存一下。不知道为什么，调用LoadAllAssets就会崩溃。
     }
 
+    void tmpfilter(TextBuffer *buffer, HookParam *)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(<line-height=[^>]*?>)");
+        s = re::sub(s, LR"(<sprite anim=[^>]*?>)");
+        buffer->from(s);
+    }
+    template <int offset>
+    void tmpembed(hook_context *context, TextBuffer buffer)
+    {
+        auto s = buffer.strW();
+        if (auto sw = commonsolvemonostring(context->argof(offset)))
+        {
+            auto origin = std::wstring(sw.value());
+            std::wstring pre = re::match(origin, LR"(((<line-height=[^>]*?>|<sprite anim=[^>]*?>)*)(.*?))").value()[1];
+            std::wstring app = re::match(origin, LR"((.*?)((<line-height=[^>]*?>|<sprite anim=[^>]*?>)*))").value()[2];
+            s = pre + s + app;
+        }
+        buffer.from(s);
+    }
 }
 namespace
 {
@@ -108,6 +128,7 @@ namespace monocommon
         bool isstring = true;
         const wchar_t *lineSeparator = nullptr;
         decltype(HookParam::filter_fun) filter_fun = nullptr;
+        decltype(HookParam::embed_fun) embed_fun = nullptr;
         std::string hookname()
         {
             char tmp[1024];
@@ -160,9 +181,9 @@ namespace monocommon
         {"mscorlib", "System", "String", "op_Inequality", 2, 1},
         {"mscorlib", "System", "String", "InternalSubString", 2, 1, mscorlib_system_string_InternalSubString_hook_fun},
 
-        {"Unity.TextMeshPro", "TMPro", "TMP_Text", "set_text", 1, 2, nullptr, true},
-        {"Unity.TextMeshPro", "TMPro", "TextMeshPro", "set_text", 1, 2, nullptr, true},
-        {"Unity.TextMeshPro", "TMPro", "TextMeshProUGUI", "SetText", 2, 2, nullptr, true},
+        {"Unity.TextMeshPro", "TMPro", "TMP_Text", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed<2>},
+        {"Unity.TextMeshPro", "TMPro", "TextMeshPro", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed<2>},
+        {"Unity.TextMeshPro", "TMPro", "TextMeshProUGUI", "SetText", 2, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed<2>},
         {"UnityEngine.UI", "UnityEngine.UI", "Text", "set_text", 1, 2, nullptr, true},
         {"UnityEngine.UIElementsModule", "UnityEngine.UIElements", "TextElement", "set_text", 1, 2, nullptr, true},
         {"UnityEngine.UIElementsModule", "UnityEngine.UIElements", "TextField", "set_value", 1, 2, nullptr, true},
