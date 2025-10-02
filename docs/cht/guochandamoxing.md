@@ -197,16 +197,19 @@
 
 :::
 
+### API聚合管理系統
+
+也可以使用[new-api](https://github.com/QuantumNous/new-api)等API中繼工具，更方便地聚合管理多種大模型平台模型和多個金鑰。
+
+使用方法可以參考[此文章](https://www.newapi.ai/apps/luna-translator/).
+
+
 ###  離線大模型
 
-可以使用 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[Ollama](https://github.com/ollama/ollama)、[new-api](https://github.com/QuantumNous/new-api) 之類的工具進行模型的部署，然後將位址和模型填入。
+可以使用 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[Ollama](https://github.com/ollama/ollama) 之類的工具進行模型的部署，然後將位址和模型填入。
 
 有時可能想將離線部署的模型分享到網路，這時可能會需要用到SECRET_KEY，其他時候可以無視SECRET_KEY參數。
 
 #### Sakura 大模型
-
-::: tip
-推薦使用，配置簡單，效果好，也可以純 CPU 執行輕量模型。
-:::
 
 部署方法可參考：https://github.com/SakuraLLM/SakuraLLM/wiki

@@ -199,8 +199,14 @@
 
 :::
 
+### API集約管理システム
+
+[new-api](https://github.com/QuantumNous/new-api)などのAPIリレーツールを使用して、複数の大規模モデルプラットフォームモデルと複数のキーをより便利に集約管理することもできます。
+
+使用方法については、[この記事](https://www.newapi.ai/apps/luna-translator/)を参照してください。
+
 ### オフライン大規模モデル
 
-[llama.cpp](https://github.com/ggerganov/llama.cpp)、[ollama](https://github.com/ollama/ollama)、[new-api](https://github.com/QuantumNous/new-api)などのツールを使用してモデルをデプロイし、アドレスとモデルを入力することができます。
+[llama.cpp](https://github.com/ggerganov/llama.cpp)、[ollama](https://github.com/ollama/ollama)などのツールを使用してモデルをデプロイし、アドレスとモデルを入力することができます。
 
 時にはオフラインでデプロイされたモデルをネットワークに共有したい場合があり、その際にはSECRET_KEYが必要になることがあります。それ以外の場合はSECRET_KEYパラメータを無視して構いません。

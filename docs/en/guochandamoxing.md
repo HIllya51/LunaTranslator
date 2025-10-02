@@ -193,9 +193,15 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 :::
 
+### API Aggregation Management System
+
+You can also use API relay tools such as [new-api](https://github.com/QuantumNous/new-api) to more conveniently aggregate and manage multiple large model platform models and multiple keys.
+
+For usage methods, you can refer to [this article](https://www.newapi.ai/apps/luna-translator/).
+
 ### Offline Large Model
 
 
-You can also use tools like [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [new-api](https://github.com/QuantumNous/new-api) to deploy models, and then fill in the address and model.
+You can also use tools like [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) to deploy models, and then fill in the address and model.
 
 Sometimes you may want to share an offline deployed model to the network, in which case you might need the SECRET_KEY. Other times, you can ignore the SECRET_KEY parameter.

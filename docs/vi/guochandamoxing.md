@@ -197,8 +197,15 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 
 :::
 
+### Hệ thống Quản lý Tổng hợp API
+
+Bạn cũng có thể sử dụng các công cụ chuyển tiếp API như [new-api](https://github.com/QuantumNous/new-api) để quản lý tổng hợp nhiều nền tảng mô hình lớn và nhiều khóa một cách thuận tiện hơn.
+
+Để biết phương pháp sử dụng, bạn có thể tham khảo [bài viết này](https://www.newapi.ai/apps/luna-translator/).
+
+
 ### Mô hình lớn ngoại tuyến
 
-Bạn cũng có thể sử dụng các công cụ như [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [new-api](https://github.com/QuantumNous/new-api) để triển khai các mô hình, sau đó điền địa chỉ và mô hình.
+Bạn cũng có thể sử dụng các công cụ như [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) để triển khai các mô hình, sau đó điền địa chỉ và mô hình.
 
 Đôi khi có thể muốn chia sẻ mô hình triển khai ngoại tuyến lên mạng, lúc này có thể cần dùng đến SECRET_KEY. Những lúc khác có thể bỏ qua tham số SECRET_KEY.

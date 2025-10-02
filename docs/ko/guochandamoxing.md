@@ -198,8 +198,15 @@
 
 :::
 
+### API 통합 관리 시스템
+
+[new-api](https://github.com/QuantumNous/new-api)와 같은 API 중계 도구를 사용하여 여러 대형 모델 플랫폼 모델과 여러 키를 보다 편리하게 집계 관리할 수도 있습니다.
+
+사용 방법은 [이 글](https://www.newapi.ai/apps/luna-translator/)을 참조하십시오.
+
+
 ### 오프라인 대형 모델 
 
-[llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama), [new-api](https://github.com/QuantumNous/new-api) 등의 도구를 사용하여 모델 배포 후 주소와 모델을 입력할 수도 있습니다.
+[llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) 등의 도구를 사용하여 모델 배포 후 주소와 모델을 입력할 수도 있습니다.
 
 때로는 오프라인으로 배포된 모델을 네트워크에 공유하고 싶을 수 있으며, 이때 SECRET_KEY가 필요할 수 있습니다. 다른 때에는 SECRET_KEY 매개변수를 무시해도 됩니다.
