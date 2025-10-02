@@ -197,14 +197,14 @@
 
 :::
 
-### API聚合管理系統
+### API 聚合管理器
 
 也可以使用[new-api](https://github.com/QuantumNous/new-api)等API中繼工具，更方便地聚合管理多種大模型平台模型和多個金鑰。
 
 使用方法可以參考[此文章](https://www.newapi.ai/apps/luna-translator/).
 
 
-###  離線大模型
+### 离线部署模型
 
 可以使用 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[Ollama](https://github.com/ollama/ollama) 之類的工具進行模型的部署，然後將位址和模型填入。
 
