@@ -209,4 +209,3 @@
 
 [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) 등의 도구를 사용하여 모델 배포 후 주소와 모델을 입력할 수도 있습니다.
 
-때로는 오프라인으로 배포된 모델을 네트워크에 공유하고 싶을 수 있으며, 이때 SECRET_KEY가 필요할 수 있습니다. 다른 때에는 SECRET_KEY 매개변수를 무시해도 됩니다.

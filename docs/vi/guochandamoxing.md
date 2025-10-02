@@ -208,4 +208,3 @@ Bạn cũng có thể sử dụng các công cụ chuyển tiếp API như [new-
 
 Bạn cũng có thể sử dụng các công cụ như [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) để triển khai các mô hình, sau đó điền địa chỉ và mô hình.
 
-Đôi khi có thể muốn chia sẻ mô hình triển khai ngoại tuyến lên mạng, lúc này có thể cần dùng đến SECRET_KEY. Những lúc khác có thể bỏ qua tham số SECRET_KEY.

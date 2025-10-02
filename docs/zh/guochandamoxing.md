@@ -207,8 +207,6 @@
 
 也可以使用[llama.cpp](https://github.com/ggerganov/llama.cpp) 、[ollama](https://github.com/ollama/ollama)之类的工具进行模型的部署，然后将地址和模型填入。
 
-有时可能想将离线部署的模型分享到网络，这时可能会需要用到SECRET_KEY，其他时候可以无视SECRET_KEY参数。
-
 #### Sakura大模型
 
 部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki ，也可以部署到[Kaggle](https://kaggle.com/kernels/welcome?src=https://lunatranslator.org/nginxfile/llamacpp.ipynb)

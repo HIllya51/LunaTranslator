@@ -209,4 +209,3 @@
 
 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[ollama](https://github.com/ollama/ollama)などのツールを使用してモデルをデプロイし、アドレスとモデルを入力することができます。
 
-時にはオフラインでデプロイされたモデルをネットワークに共有したい場合があり、その際にはSECRET_KEYが必要になることがあります。それ以外の場合はSECRET_KEYパラメータを無視して構いません。

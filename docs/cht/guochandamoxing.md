@@ -208,7 +208,6 @@
 
 可以使用 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[Ollama](https://github.com/ollama/ollama) 之類的工具進行模型的部署，然後將位址和模型填入。
 
-有時可能想將離線部署的模型分享到網路，這時可能會需要用到SECRET_KEY，其他時候可以無視SECRET_KEY參數。
 
 #### Sakura 大模型
 
