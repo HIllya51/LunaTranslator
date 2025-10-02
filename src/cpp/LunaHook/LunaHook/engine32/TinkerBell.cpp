@@ -138,7 +138,7 @@ namespace
       buffer->from(str);
     };
     hp.offset = regoffset(ebx);
-    return NewHook(hp, "tkbl");
+    return NewHookRetry(hp, "tkbl");
   }
 }
 
