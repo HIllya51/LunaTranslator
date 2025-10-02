@@ -613,9 +613,9 @@ class dialog_setting_game_internal(QWidget):
             string += str(h) + _TR("时")
         if m:
             string += str(m) + _TR("分")
-        if s:
+        if s and (not (not usingnotstart and h)):
             string += str(s) + _TR("秒")
-        if string == "":
+        if not string:
             if usingnotstart:
                 string = _TR("未开始")
             else:

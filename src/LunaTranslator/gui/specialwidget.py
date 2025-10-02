@@ -2,7 +2,7 @@ from qtsymbols import *
 import threading
 from traceback import print_exc
 from myutils.wrapper import trypass
-import qtawesome, math
+import qtawesome
 from gui.dynalang import IconToolButton
 
 
