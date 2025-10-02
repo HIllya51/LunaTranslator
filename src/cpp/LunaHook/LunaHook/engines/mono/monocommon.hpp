@@ -40,6 +40,25 @@ namespace
             *split = s;
 #endif
     }
+    std::atomic<bool> usefonthook = false;
+
+    void hook_GetTextElement()
+    {
+        // internal TMP_TextElement GetTextElement(uint unicode, TMP_FontAsset fontAsset, FontStyles fontStyle, FontWeight fontWeight, out bool isUsingAlternativeTypeface)
+        auto addr = tryfindmonoil2cpp("Unity.TextMeshPro", "TMPro", "TMP_Text", "GetTextElement", -1);
+        // public static AssetBundle LoadFromFile(string path)
+        static auto LoadFromFile = tryfindmonoil2cppMethod("UnityEngine.AssetBundleModule", "UnityEngine", "AssetBundle", "LoadFromFile", 1);
+        // public Object[] LoadAllAssets(Type type)
+        static auto LoadAllAssets = tryfindmonoil2cpp("UnityEngine.AssetBundleModule", "UnityEngine", "AssetBundle", "LoadAllAssets", 0);
+        static auto TMP_FontAsset = tryfindmonoil2cppClass("Unity.TextMeshPro", "TMPro", "TMP_FontAsset");
+
+        // auto thread = AutoThread();
+        static auto asset = LR"(.\arialuni_sdf_u2021)";
+        auto assetpath = create_string_csharp(asset);
+        static auto AssetBundle = mono_runtime_invoke((MonoMethod *)LoadFromFile, nullptr, &assetpath, nullptr);
+        static auto assets = mono_runtime_invoke((MonoMethod *)LoadAllAssets, AssetBundle, nullptr, nullptr);
+        // 先存一下。不知道为什么，调用LoadAllAssets就会崩溃。
+    }
 
 }
 namespace
@@ -104,7 +123,6 @@ namespace monocommon
     };
     bool NewHook_check(uintptr_t addr, functioninfo &hook)
     {
-
         HookParam hp;
         hp.address = addr;
         hp.offset = hook.offset;
@@ -130,7 +148,7 @@ namespace monocommon
 #else
         return NewHook(hp, hook.hookname().c_str());
 #endif
-        }
+    }
     std::vector<functioninfo> commonhooks{
         {"mscorlib", "System", "String", "ToCharArray", 0, 1},
         {"mscorlib", "System", "String", "Replace", 2, 1},
@@ -190,6 +208,14 @@ namespace monocommon
                 }
                 if (succ)
                 {
+                    if (0)
+                    {
+                        hook_GetTextElement();
+                        patch_fun = []()
+                        {
+                            usefonthook = true;
+                        };
+                    }
                     return true;
                 }
             }

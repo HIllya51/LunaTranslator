@@ -158,7 +158,7 @@ namespace
 			}
 		return info.str();
 	}
-	uintptr_t getmethodofklass(const Il2CppClass *klass, const char *name, int argsCount)
+	const MethodInfo *getmethodofklass_1(const Il2CppClass *klass, const char *name, int argsCount)
 	{
 		if (!klass)
 			return NULL;
@@ -171,7 +171,22 @@ namespace
 			ConsoleOutput(s.value().c_str());
 			ConsoleOutput(getmethodinfo(ret).c_str());
 		}
+		return ret;
+	}
+	uintptr_t getmethodofklass(const Il2CppClass *klass, const char *name, int argsCount)
+	{
+		auto ret = getmethodofklass_1(klass, name, argsCount);
+		if (!ret)
+			return NULL;
 		return ret->methodPointer;
+	}
+	const Il2CppType *gettypeofklass(const Il2CppClass *klass)
+	{
+		if (!klass)
+			return NULL;
+		auto ret = (SafeFptr(il2cpp_class_get_type))(const_cast<Il2CppClass *>(klass));
+
+		return ret;
 	}
 }
 il2cpploopinfo il2cppfunctions::loop_all_methods(std::optional<std::function<void(std::string &)>> show)
@@ -259,8 +274,9 @@ void il2cppfunctions::init(HMODULE game_module)
 	RESOLVE_IMPORT(il2cpp_method_get_return_type);
 	RESOLVE_IMPORT(il2cpp_domain_get_assemblies);
 }
-uintptr_t il2cppfunctions::get_method_pointer(const char *assemblyName, const char *namespaze,
-											  const char *klassName, const char *name, int argsCount, bool strict)
+template <typename T, typename F>
+T get_pointer_in_class(const char *assemblyName, const char *namespaze,
+					   const char *klassName, bool strict, F GetPointer)
 {
 	auto thread = AutoThread();
 	if (!thread.thread)
@@ -268,17 +284,44 @@ uintptr_t il2cppfunctions::get_method_pointer(const char *assemblyName, const ch
 
 	auto klass = get_il2cppclass1(assemblyName, namespaze, klassName, strict); // 正向查询，assemblyName可以为空
 	if (klass)
-		return getmethodofklass(klass, name, argsCount);
+		return GetPointer(klass);
 	if (strict)
 		return NULL;
 	auto klasses = get_il2cppclass2(namespaze, klassName); // 反向查询，namespace可以为空
 	for (auto klass : klasses)
 	{
-		auto method = getmethodofklass(klass, name, argsCount);
+		auto method = GetPointer(klass);
 		if (method)
 			return method;
 	}
 	return NULL;
+}
+const Il2CppType *il2cppfunctions::get_type_pointer(const char *assemblyName, const char *namespaze,
+													const char *klassName, bool strict)
+{
+	return get_pointer_in_class<const Il2CppType *>(assemblyName, namespaze,
+													klassName, strict, gettypeofklass);
+}
+const Il2CppClass *il2cppfunctions::get_class_pointer(const char *assemblyName, const char *namespaze,
+													  const char *klassName, bool strict)
+{
+	return get_pointer_in_class<const Il2CppClass *>(assemblyName, namespaze,
+													 klassName, strict, [](const Il2CppClass *klass)
+													 { return klass; });
+}
+uintptr_t il2cppfunctions::get_method_pointer(const char *assemblyName, const char *namespaze,
+											  const char *klassName, const char *name, int argsCount, bool strict)
+{
+	return get_pointer_in_class<uintptr_t>(assemblyName, namespaze,
+										   klassName, strict, [&](const Il2CppClass *klass)
+										   { return getmethodofklass(klass, name, argsCount); });
+}
+const MethodInfo *il2cppfunctions::get_method_internal(const char *assemblyName, const char *namespaze,
+												 const char *klassName, const char *name, int argsCount, bool strict)
+{
+	return get_pointer_in_class<const MethodInfo *>(assemblyName, namespaze,
+											  klassName, strict, [&](const Il2CppClass *klass)
+											  { return getmethodofklass_1(klass, name, argsCount); });
 }
 
 std::optional<std::wstring_view> il2cppfunctions::get_string(void *ptr)

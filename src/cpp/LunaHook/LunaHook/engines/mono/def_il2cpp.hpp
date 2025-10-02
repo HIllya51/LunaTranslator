@@ -597,7 +597,11 @@ namespace il2cppfunctions
 	void init(HMODULE dll);
 	uintptr_t get_method_pointer(const char *assemblyName, const char *namespaze,
 								 const char *klassName, const char *name, int argsCount, bool strict);
+	const MethodInfo *get_method_internal(const char *assemblyName, const char *namespaze,
+								   const char *klassName, const char *name, int argsCount, bool strict);
 	std::optional<std::wstring_view> get_string(void *);
 	void *create_string(std::wstring_view ws);
 	il2cpploopinfo loop_all_methods(std::optional<std::function<void(std::string &)>>);
+	const Il2CppType *get_type_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
+	const Il2CppClass *get_class_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
 }

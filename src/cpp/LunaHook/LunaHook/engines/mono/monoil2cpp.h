@@ -6,3 +6,8 @@ typedef std::vector<std::pair<int, uintptr_t>> il2cpploopinfo;
 typedef std::vector<std::pair<uintptr_t, std::string>> monoloopinfo;
 std::variant<monoloopinfo, il2cpploopinfo> loop_all_methods(std::optional<std::function<void(std::string &)>>);
 uintptr_t tryfindmonoil2cpp(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCoun, bool strict = false);
+void *tryfindmonoil2cppMethod(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCoun, bool strict = false);
+void* tryfindmonoil2cppType(const char *_dll, const char *_namespace, const char *_class, bool strict = false);
+void* tryfindmonoil2cppClass(const char *_dll, const char *_namespace, const char *_class, bool strict = false);
+
+void *create_string_csharp(std::wstring_view, void *origin = nullptr);

@@ -204,6 +204,7 @@ inline void (*mono_domain_unload)(MonoDomain *domain);
 inline MonoObject *(*mono_object_new)(MonoDomain *domain, MonoClass *klass);
 inline void (*mono_runtime_object_init)(MonoObject *this_obj);
 inline MonoObject *(*mono_runtime_invoke)(MonoMethod *method, void *obj, void **params, MonoObject **exc);
+inline MonoObject *(*mono_runtime_invoke_array)(MonoMethod *method, void *obj, MonoArray *params, MonoObject **exc);
 inline void (*mono_field_set_value)(MonoObject *obj, MonoClassField *field, void *value);
 inline void (*mono_field_get_value)(MonoObject *obj, MonoClassField *field, void *value);
 inline int (*mono_field_get_offset)(MonoClassField *field);
@@ -332,7 +333,6 @@ inline void *(*mono_class_get_userdata)(MonoClass *klass);
 inline void (*mono_class_set_userdata)(MonoClass *klass, void *userdata);
 inline void (*mono_set_signal_chaining)(gboolean chain_signals);
 inline void (*mono_unity_set_unhandled_exception_handler)(void *handler);
-inline MonoObject *(*mono_runtime_invoke_array)(MonoMethod *method, void *obj, MonoArray *params, MonoObject **exc);
 inline char *(*mono_array_addr_with_size)(MonoArray *array, int size, uintptr_t idx);
 inline gunichar2 *(*mono_string_to_utf16)(MonoString *string_obj);
 inline MonoClass *(*mono_field_get_parent)(MonoClassField *field);
@@ -420,8 +420,12 @@ namespace monofunctions
 	void init(HMODULE dll);
 	uintptr_t get_method_pointer(const char *assemblyName, const char *namespaze,
 								 const char *klassName, const char *name, int argsCount, bool strict);
+	MonoMethod *get_method_internal(const char *assemblyName, const char *namespaze,
+									const char *klassName, const char *name, int argsCount, bool strict);
 
 	std::optional<std::wstring_view> get_string(void *);
 	void *create_string(std::wstring_view ws);
 	monoloopinfo loop_all_methods(std::optional<std::function<void(std::string &)>>);
+	MonoType *get_type_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
+	MonoClass *get_class_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
 }

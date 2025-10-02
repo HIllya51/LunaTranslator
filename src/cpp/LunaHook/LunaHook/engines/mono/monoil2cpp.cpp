@@ -18,6 +18,8 @@ namespace
     void *createmonostring(std::wstring_view ws, MonoString *origin)
     {
         auto newstring = (MonoString *)malloc(sizeof(MonoString) + ws.size() + 2);
+        MonoString __;
+        origin = origin ? origin : &__;
         memcpy(newstring, origin, sizeof(MonoString));
         memcpy((wchar_t *)newstring->chars, ws.data(), ws.size() * 2);
         newstring->length = ws.size();
@@ -37,16 +39,19 @@ std::optional<std::wstring_view> commonsolvemonostring(uintptr_t arg)
         return {};
     return sw;
 }
-
-void unity_ui_string_embed_fun(uintptr_t &arg, TextBuffer buff)
+void *create_string_csharp(std::wstring_view view, void *origin)
 {
-    auto view = buff.viewW();
     auto newstring = il2cppfunctions::create_string(view);
     if (!newstring)
         newstring = monofunctions::create_string(view);
     if (!newstring)
-        newstring = createmonostring(view, (MonoString *)arg);
-    arg = (uintptr_t)newstring;
+        newstring = createmonostring(view, (MonoString *)origin);
+    return newstring;
+}
+void unity_ui_string_embed_fun(uintptr_t &arg, TextBuffer buff)
+{
+    auto view = buff.viewW();
+    arg = (uintptr_t)create_string_csharp(view, (void *)arg);
 }
 
 uintptr_t tryfindmonoil2cpp(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCoun, bool strict)
@@ -55,6 +60,27 @@ uintptr_t tryfindmonoil2cpp(const char *_dll, const char *_namespace, const char
     if (addr)
         return addr;
     return monofunctions::get_method_pointer(_dll, _namespace, _class, _method, paramCoun, strict);
+}
+void *tryfindmonoil2cppMethod(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCoun, bool strict)
+{
+    auto addr = il2cppfunctions::get_method_internal(_dll, _namespace, _class, _method, paramCoun, strict);
+    if (addr)
+        return (void *)addr;
+    return (void *)monofunctions::get_method_internal(_dll, _namespace, _class, _method, paramCoun, strict);
+}
+void *tryfindmonoil2cppType(const char *_dll, const char *_namespace, const char *_class, bool strict)
+{
+    auto addr = il2cppfunctions::get_type_pointer(_dll, _namespace, _class, strict);
+    if (addr)
+        return (void *)addr;
+    return (void *)monofunctions::get_type_pointer(_dll, _namespace, _class, strict);
+}
+void *tryfindmonoil2cppClass(const char *_dll, const char *_namespace, const char *_class, bool strict)
+{
+    auto addr = il2cppfunctions::get_class_pointer(_dll, _namespace, _class, strict);
+    if (addr)
+        return (void *)addr;
+    return (void *)monofunctions::get_class_pointer(_dll, _namespace, _class, strict);
 }
 std::variant<monoloopinfo, il2cpploopinfo> loop_all_methods(std::optional<std::function<void(std::string &)>> show)
 {

@@ -107,7 +107,7 @@ namespace
             return methodName;
         return "";
     }
-    uintptr_t getmethodofklass(MonoClass *klass, const char *name, int argsCount)
+    MonoMethod *getmethodofklass_1(MonoClass *klass, const char *name, int argsCount)
     {
         if (!klass)
             return NULL;
@@ -119,7 +119,21 @@ namespace
             ConsoleOutput(s.value().c_str());
             ConsoleOutput(getmethodinfo(MonoClassMethod).c_str());
         }
-        return (uintptr_t)(SafeFptr(mono_compile_method))(MonoClassMethod);
+        return MonoClassMethod;
+    }
+    uintptr_t getmethodofklass(MonoClass *klass, const char *name, int argsCount)
+    {
+        auto _ = getmethodofklass_1(klass, name, argsCount);
+        if (!_)
+            return NULL;
+        return (uintptr_t)(SafeFptr(mono_compile_method))(_);
+    }
+    MonoType *gettypeofklass(MonoClass *klass)
+    {
+        if (!klass)
+            return NULL;
+        auto type = (SafeFptr(mono_class_get_type))(klass);
+        return type;
     }
     struct AutoThread
     {
@@ -340,6 +354,7 @@ void monofunctions::init(HMODULE game_module)
     RESOLVE_IMPORT(mono_custom_attrs_from_method);
     RESOLVE_IMPORT(mono_custom_attrs_from_class);
     RESOLVE_IMPORT(mono_custom_attrs_free);
+    RESOLVE_IMPORT(mono_object_get_class);
     RESOLVE_IMPORT(g_free);
     RESOLVE_IMPORT(mono_runtime_is_shutting_down);
     RESOLVE_IMPORT(mono_object_get_virtual_method);
@@ -352,6 +367,7 @@ void monofunctions::init(HMODULE game_module)
     RESOLVE_IMPORT(mono_class_set_userdata);
     RESOLVE_IMPORT(mono_set_signal_chaining);
     RESOLVE_IMPORT(mono_unity_set_unhandled_exception_handler);
+    RESOLVE_IMPORT(mono_runtime_invoke);
     RESOLVE_IMPORT(mono_runtime_invoke_array);
     RESOLVE_IMPORT(mono_array_addr_with_size);
     RESOLVE_IMPORT(mono_string_to_utf16);
@@ -363,7 +379,9 @@ void monofunctions::init(HMODULE game_module)
     RESOLVE_IMPORT(mono_class_get);
     RESOLVE_IMPORT(mono_string_new_utf16);
 }
-uintptr_t monofunctions::get_method_pointer(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCount, bool strict)
+template <typename T, typename F>
+T get_pointer_in_class(const char *assemblyName, const char *namespaze,
+                       const char *klassName, bool strict, F GetPointer)
 {
     auto thread = AutoThread();
     if (!thread.thread)
@@ -371,19 +389,44 @@ uintptr_t monofunctions::get_method_pointer(const char *_dll, const char *_names
 
     auto images = mono_loop_images();
 
-    auto pClass = mono_findklassby_ass_namespace(images, _dll, _namespace, _class, strict); // dll可以为空
+    auto pClass = mono_findklassby_ass_namespace(images, assemblyName, namespaze, klassName, strict); // dll可以为空
     if (pClass)
-        return getmethodofklass(pClass, _method, paramCount);
+        return GetPointer(pClass);
     if (strict)
         return NULL;
-    auto klasses = mono_findklassby_class(images, _namespace, _class); // namespace可以为空
+    auto klasses = mono_findklassby_class(images, namespaze, klassName); // namespace可以为空
     for (auto klass : klasses)
     {
-        auto method = getmethodofklass(klass, _method, paramCount);
-        if (method)
-            return method;
+        auto t = GetPointer(pClass);
+        if (t)
+            return t;
     }
     return NULL;
+}
+MonoType *monofunctions::get_type_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict)
+{
+    return get_pointer_in_class<MonoType *>(_dll, _namespace,
+                                            _class, strict, gettypeofklass);
+}
+uintptr_t monofunctions::get_method_pointer(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCount, bool strict)
+{
+    return get_pointer_in_class<uintptr_t>(_dll, _namespace,
+                                           _class, strict, [&](MonoClass *klass)
+                                           { return getmethodofklass(klass, _method, paramCount); });
+}
+
+MonoMethod *monofunctions::get_method_internal(const char *_dll, const char *_namespace, const char *_class, const char *_method, int paramCount, bool strict)
+{
+    return get_pointer_in_class<MonoMethod *>(_dll, _namespace,
+                                              _class, strict, [&](MonoClass *klass)
+                                              { return getmethodofklass_1(klass, _method, paramCount); });
+}
+
+MonoClass *monofunctions::get_class_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict)
+{
+    return get_pointer_in_class<MonoClass *>(_dll, _namespace,
+                                             _class, strict, [&](MonoClass *klass)
+                                             { return klass; });
 }
 
 std::optional<std::wstring_view> monofunctions::get_string(void *ptr)

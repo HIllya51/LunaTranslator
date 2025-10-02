@@ -1,5 +1,5 @@
 ﻿#include "MinHook.h"
-std::atomic<bool> patch_fun_ptrs_patch_once_flag = true;
+static std::atomic<bool> patch_fun_ptrs_patch_once_flag = true;
 DynamicShiftJISCodec *dynamiccodec = new DynamicShiftJISCodec(932);
 
 void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans, bool normal)
