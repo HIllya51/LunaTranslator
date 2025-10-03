@@ -132,13 +132,19 @@ class TS(basetrans):
             )
             __msg = __msg[1]["content"] if __msg else ""
             content = (
-                "历史翻译："
-                + __msg
-                + "\n\n"
-                + "参考以下术语表（可为空，格式为src->dst #备注）\n"
-                + __gptdict
-                + "\n\n"
-                + "根据以上术语表的对应关系和备注，结合历史剧情和上下文，将下面的文本从日文翻译成简体中文：\n"
+                (("历史翻译：" + __msg + "\n\n") if __msg else "")
+                + (
+                    (
+                        "参考以下术语表（可为空，格式为src->dst #备注）\n"
+                        + __gptdict
+                        + "\n\n"
+                    )
+                    if __gptdict
+                    else ""
+                )
+                + ("根据以上术语表的对应关系和备注，" if __gptdict else "")
+                + ("结合历史剧情和上下文，" if __msg else "")
+                + "将下面的文本从日文翻译成简体中文：\n"
                 + query
             )
             messages.append({"role": "user", "content": content})

@@ -856,7 +856,59 @@ namespace
     return NewHook(hp, "filsnown");
   }
 }
+namespace
+{
+  bool veryveryold()
+  {
+    static bool iskizuato = wcscmp(processName_lower, L"kizuato.exe") == 0;
+    static bool issizuku = wcscmp(processName_lower, L"sizuku.exe") == 0;
+    if (!issizuku && !iskizuato)
+      return false;
+    if (0)
+    {
+      // https://github.com/catmirrors/xlvns
+      // 这里面有，不过不太对，需要校对。
+      HookParam hp;
+      hp.address = iskizuato ? 0x40B3AE : 0x4095BE;
+      hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
+        hp->text_fun = nullptr;
+        auto _ = (char *)context->esi;
+        ConsoleOutput("%p", _);
+        auto f = fopen("./1.bin", "wb");
+        fwrite(_, 1, 72 * 0x1000, f);
+        fclose(f);
+      };
+      return NewHook(hp, "kizuato");
+    }
+    BYTE sig[] = {
+        0xe8, XX4,
+        0xa3, XX4,
+        0x83, 0xc0, 0x28,
+        0x83, 0xc4, 0x08,
+        0x4f,
+        0xa3, XX4,
+        0x8d, 0x90, 0x00, 0x04, 0x00, 0x00,
+        0x0f, 0xbf, 0xc7};
+    auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    addr = findfuncstart(addr, 0x100, true);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_CHAR | CODEC_UTF16;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      WORD ch = context->stack[3];
+      static auto charset = StringToWideString(LoadResData(iskizuato ? L"kizfont" : L"sizfont", L"CHARSET"));
+      buffer->from_t(charset[ch]);
+    };
+    return NewHook(hp, iskizuato ? "kizuato" : "sizuku");
+  }
+}
 bool Leaf::attach_function()
 {
-  return InsertLeafHook() || activehook() || InsertAquaplusHooks() || kizuato() || wa2special() || toheartpse() || filsnown();
+  return InsertLeafHook() || activehook() || InsertAquaplusHooks() || kizuato() || wa2special() || toheartpse() || filsnown() || veryveryold();
 }

@@ -374,12 +374,12 @@
 	},
 	"chatgpt-3rd-party": {
 		"args": {
-			"model": "gpt-4o-mini",
+			"model": "",
 			"modellistcache": [],
 			"附带上下文个数": 0,
 			"cachecontext": false,
 			"use_max_completion_tokens": false,
-			"API接口地址": "https://api.openai.com",
+			"API接口地址": "",
 			"SECRET_KEY": "",
 			"使用自定义promt": false,
 			"自定义promt": "",

@@ -121,7 +121,7 @@ namespace monocommon
         const char *namespaze;
         const char *klassName;
         const char *name;
-        int argsCount;
+        std::variant<int, std::vector<int>> argsCount;
         int offset;
         decltype(HookParam::text_fun) text_fun = nullptr;
         bool Embed = false;
@@ -138,9 +138,30 @@ namespace monocommon
         std::string info()
         {
             char tmp[1024];
-            sprintf(tmp, "%s:%s:%s:%s:%d", assemblyName, namespaze, klassName, name, argsCount);
+            sprintf(tmp, "%s:%s:%s:%s:%d", assemblyName, namespaze, klassName, name, _p_argsCount);
             return tmp;
         }
+        uintptr_t getaddr(bool _ = false)
+        {
+            if (auto *_argsCount = std::get_if<int>(&argsCount))
+            {
+                _p_argsCount = *_argsCount;
+                return tryfindmonoil2cpp(assemblyName, namespaze, klassName, name, *_argsCount, _);
+            }
+            else if (auto *_argsCounts = std::get_if<std::vector<int>>(&argsCount))
+            {
+                for (auto _argsCount1 : *_argsCounts)
+                {
+                    auto _1 = tryfindmonoil2cpp(assemblyName, namespaze, klassName, name, _argsCount1, _);
+                    _p_argsCount = _argsCount1;
+                    if (_1)
+                        return _1;
+                }
+            }
+            return 0;
+        }
+
+        int _p_argsCount = -1;
     };
     bool NewHook_check(uintptr_t addr, functioninfo &hook)
     {
@@ -194,7 +215,8 @@ namespace monocommon
     std::vector<functioninfo> extrahooks{
         // https://vndb.org/r37234 && https://vndb.org/r37235
         // Higurashi When They Cry Hou - Ch.2 Watanagashi && Higurashi When They Cry Hou - Ch.3 Tatarigoroshi
-        {"Assembly-CSharp", "Assets.Scripts.Core.TextWindow", "TextController", "SetText", 4, 3, nullptr, true},
+        // Higurashi When They Cry Hou - Rei ひぐらしのなく頃に礼 // argscount=5
+        {"Assembly-CSharp", "Assets.Scripts.Core.TextWindow", "TextController", "SetText", std::vector<int>{4, 5}, 3, nullptr, true},
         // 逆転裁判123 成歩堂セレクション
         {"Assembly-CSharp", "", "MessageText", "Append", 1, 2, nullptr, false, false},
 #ifdef _WIN64
@@ -215,14 +237,14 @@ namespace monocommon
                 bool succ = false;
                 for (auto hook : commonhooks)
                 {
-                    auto addr = tryfindmonoil2cpp(hook.assemblyName, hook.namespaze, hook.klassName, hook.name, hook.argsCount);
+                    auto addr = hook.getaddr();
                     if (!addr)
                         continue;
                     succ |= NewHook_check(addr, hook);
                 }
                 for (auto hook : extrahooks)
                 {
-                    auto addr = tryfindmonoil2cpp(hook.assemblyName, hook.namespaze, hook.klassName, hook.name, hook.argsCount, true);
+                    auto addr = hook.getaddr(true);
                     if (!addr)
                         continue;
                     succ |= NewHook_check(addr, hook);
