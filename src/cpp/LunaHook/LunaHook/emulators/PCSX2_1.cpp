@@ -416,6 +416,11 @@ namespace
         }
         last = s;
     }
+    void FSLPM66127(TextBuffer *buffer, HookParam *hp)
+    {
+        StringReplacer(buffer, TEXTANDLEN("\x81\x91"), TEXTANDLEN("!!")); //"――"
+        StringReplacer(buffer, TEXTANDLEN("\x81\x90"), TEXTANDLEN("!?")); //"――"
+    }
     void SLPS25801(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -672,6 +677,9 @@ namespace
             buffer->from((char *)emu_addr(0xFA73EC) + collect);
         }
         last1 = collect;
+    }
+    void SLPM66127_1(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
     }
     void SLPM66127(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -2651,7 +2659,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1FFE60A, {DIRECT_READ, 0, 0, SLPM66127, 0, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}}, // 开场
     {0x1FFE0FA, {DIRECT_READ, 0, 0, SLPM66127, 0, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}},
     // 遙かなる時空の中で3 十六夜記 Harukanaru Toki no Naka de 3 - Izayoiki
-    {0x1FFE61E, {DIRECT_READ, 0, 0, SLPM66127, 0, "SLPM-66127"}},
+    {0x1FFE61E, {DIRECT_READ, 0, 0, SLPM66127, FSLPM66127, "SLPM-66127"}}, // 前半
+    {0x1FFE11E, {DIRECT_READ, 0, 0, SLPM66127, FSLPM66127, "SLPM-66127"}}, // 后半
     // 遙かなる時空の中で4
     {0x1FF69B4, {DIRECT_READ, 0, 0, SLPM66127, 0, "SLPM-66952"}},
     // Angel's Feather
