@@ -678,9 +678,6 @@ namespace
         }
         last1 = collect;
     }
-    void SLPM66127_1(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
-    {
-    }
     void SLPM66127(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         auto str = (char *)emu_addr(hp1->emu_addr);
