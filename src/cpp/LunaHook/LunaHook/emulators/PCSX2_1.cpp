@@ -678,9 +678,9 @@ namespace
         }
         last1 = collect;
     }
-    void SLPM66127(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    void SLPM66127X(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
-        auto str = (char *)emu_addr(hp1->emu_addr);
+        auto str = (char *)PCSX2_REG(a1);
         std::string collect;
         while (*str)
         {
@@ -2653,13 +2653,14 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 今日からマ王！ 眞マ国の休日
     {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
     // 遙かなる時空の中で3 運命の迷宮
-    {0x1FFE60A, {DIRECT_READ, 0, 0, SLPM66127, 0, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}}, // 开场
-    {0x1FFE0FA, {DIRECT_READ, 0, 0, SLPM66127, 0, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}},
+    {0x1FD73C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t7), 0, 0, FSLPM66127, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}}, // 开场
+    {0x1FD6A0, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}},
     // 遙かなる時空の中で3 十六夜記 Harukanaru Toki no Naka de 3 - Izayoiki
-    {0x1FFE61E, {DIRECT_READ, 0, 0, SLPM66127, FSLPM66127, "SLPM-66127"}}, // 前半
-    {0x1FFE11E, {DIRECT_READ, 0, 0, SLPM66127, FSLPM66127, "SLPM-66127"}}, // 后半
+    {0x25882C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t7), 0, 0, FSLPM66127, "SLPM-66127"}},
+    {0x258790, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, "SLPM-66127"}},
     // 遙かなる時空の中で4
-    {0x1FF69B4, {DIRECT_READ, 0, 0, SLPM66127, 0, "SLPM-66952"}},
+    {0x1B043C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, FSLPM66127, "SLPM-66952"}},
+    {0x1B0360, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, "SLPM-66952"}},
     // Angel's Feather
     {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
     // 空色の風琴 ～Remix～
