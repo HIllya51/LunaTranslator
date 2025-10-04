@@ -673,6 +673,22 @@ namespace
         }
         last1 = collect;
     }
+    void SLPM66127(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto str = (char *)emu_addr(hp1->emu_addr);
+        std::string collect;
+        while (*str)
+        {
+            std::string __ = str;
+            str += __.size() + 1;
+            if (startWith(__, "\x81\x40"))
+            {
+                __ = __.substr(2);
+            }
+            collect += __;
+        }
+        buffer->from(strReplace(collect, "\n"));
+    }
     template <int a, int b, int c>
     void SLPM66344(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -2631,8 +2647,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
     // 今日からマ王！ 眞マ国の休日
     {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
-    // 遙かなる時空の中で3 運命の迷宮 [Triple Pack]
-    {0x1FFE9D8, {DIRECT_READ, 0, 0, SLPM66344<0x1FFE9D8, 0x1FFE9F4, 0x1FFEA10>, 0, "SLPM-66344"}},
+    // 遙かなる時空の中で3 運命の迷宮
+    {0x1FFE60A, {DIRECT_READ, 0, 0, SLPM66127, 0, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}}, // 开场
+    {0x1FFE0FA, {DIRECT_READ, 0, 0, SLPM66127, 0, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}},
+    // 遙かなる時空の中で3 十六夜記 Harukanaru Toki no Naka de 3 - Izayoiki
+    {0x1FFE61E, {DIRECT_READ, 0, 0, SLPM66127, 0, "SLPM-66127"}},
+    // 遙かなる時空の中で4
+    {0x1FF69B4, {DIRECT_READ, 0, 0, SLPM66127, 0, "SLPM-66952"}},
     // Angel's Feather
     {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
     // 空色の風琴 ～Remix～
