@@ -728,6 +728,8 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00458 | ROOT∞REXX |
+|  | PCSG00663 | Rear pheles |
 |  | PCSG00062 | TIME TRAVELERS |
 |  | PCSG00768 | ヴァルプルガの詩 |
 |  | PCSG00591 | アブナイ☆恋の捜査室 ～Eternal Happiness～ |

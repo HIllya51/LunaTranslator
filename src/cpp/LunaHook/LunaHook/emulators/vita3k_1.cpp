@@ -985,6 +985,11 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ROOT∞REXX
+    {0x8009F048, {0, 1, 0, 0, FPCSG00477, "PCSG00458"}},
+    {0x8000F3E0, {0, 0XB, 0, 0, PCSG00826, "PCSG00458"}},
+    // Rear pheles
+    {0x80BB4F70, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 1, 0, 0, all_ascii_FilterW, "PCSG00663"}},
     // TIME TRAVELERS
     {0x8119ADDA, {0, 7, 0, 0, PCSG00062, "PCSG00062"}},
     {0x811A6052, {0, 8, 0, 0, PCSG00062, "PCSG00062"}},

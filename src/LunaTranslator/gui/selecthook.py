@@ -953,7 +953,7 @@ class hookselect(closeashidewindow):
         elif info == HOSTINFO.EmuGameName:
             gobject.base.displayinfomessage(sentence, "<msg_info_refresh>")
         elif info == HOSTINFO.Notification:
-            gobject.base.displayinfomessage(sentence, "<msg_info_append>")
+            gobject.base.displayinfomessage(sentence, "<msg_info_refresh>")
 
     def getnewsentence(self, sentence):
         self.textbrowappendandmovetoend(self.textOutput, sentence)

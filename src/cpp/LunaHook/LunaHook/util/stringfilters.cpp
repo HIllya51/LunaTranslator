@@ -125,6 +125,11 @@ void all_ascii_Filter(TextBuffer *buffer, HookParam *)
   if (all_ascii(buffer->viewA()))
     buffer->clear();
 }
+void all_ascii_FilterW(TextBuffer *buffer, HookParam *)
+{
+  if (all_ascii(buffer->viewW()))
+    buffer->clear();
+}
 
 void CharReplacer(TextBuffer *buffer, char fr, char to) { CharReplacer_impl((char *)buffer->buff, &buffer->size, fr, to); }
 void CharReplacer(TextBuffer *buffer, wchar_t fr, wchar_t to) { CharReplacer_impl((wchar_t *)buffer->buff, &buffer->size, fr, to); }

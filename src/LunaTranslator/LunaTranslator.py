@@ -381,10 +381,6 @@ class BASEOBJECT(QObject):
             self.currenttranslate = text
             self.latest_is_origin = False
             return
-        elif infotype == "<msg_info_append>":
-            self.translation_ui.displayres.emit(
-                dict(color=SpecialColor.RawTextColor, res=text, klass=str(uuid.uuid4()))
-            )
         else:
             msgs = [
                 ("<msg_info_refresh>", TextType.Info),
