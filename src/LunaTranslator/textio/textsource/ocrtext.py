@@ -16,7 +16,12 @@ from traceback import print_exc
 
 def imageCutEx(*a):
     img = imageCut(*a)
-    if not a[0]:
+    succ = True
+    if a[0]:
+        succ, img = img
+    else:
+        succ = False
+    if not succ:
         rectX = QRect(a[1], a[2], a[3] - a[1], a[4] - a[2])
         rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
         rect = QRect(rect2[0], rect2[1], rect2[2] - rect2[0], rect2[3] - rect2[1])

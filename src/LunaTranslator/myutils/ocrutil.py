@@ -10,7 +10,11 @@ from ocrengines.baseocrclass import baseocr, OCRResultParsed
 
 
 def imageCut(hwnd, x1, y1, x2, y2) -> QImage:
-    return safepixmap(NativeUtils.GdiCropImage(x1, y1, x2, y2, hwnd)).toImage()
+    succ, pix = NativeUtils.GdiCropImage(x1, y1, x2, y2, hwnd)
+    pix = safepixmap(pix).toImage()
+    if hwnd:
+        return succ, pix
+    return pix
 
 
 _nowuseocrx = None

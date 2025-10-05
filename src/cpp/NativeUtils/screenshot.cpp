@@ -94,7 +94,7 @@ DECLARE_API void GdiGrabWindow(HWND hwnd, void (*cb)(byte *, size_t))
     if (bf)
         cb(bf.value().data.get(), bf.value().size);
 }
-DECLARE_API void GdiCropImage(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
+DECLARE_API bool GdiCropImage(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
 {
     for (int i = 0; i < 2; i++)
     {
@@ -118,17 +118,24 @@ DECLARE_API void GdiCropImage(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
             RECT r2{p1.x, p1.y, p2.x, p2.y};
             auto bf = __gdi_screenshot(hwnd, r2);
             if (bf)
-                return cb(bf.value().data.get(), bf.value().size);
+            {
+                cb(bf.value().data.get(), bf.value().size);
+                return true;
+            }
         }
         break;
         case 1:
         {
             auto bf = __gdi_screenshot(NULL, rect);
             if (bf)
-                return cb(bf.value().data.get(), bf.value().size);
+            {
+                cb(bf.value().data.get(), bf.value().size);
+                return !hwnd;
+            }
         }
         }
     }
+    return false;
 }
 
 DECLARE_API void MaximumWindow(HWND hwnd)

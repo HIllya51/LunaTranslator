@@ -322,6 +322,7 @@ _GdiGrabWindow.argtypes = HWND, c_void_p
 
 _GdiCropImage = utilsdll.GdiCropImage
 _GdiCropImage.argtypes = HWND, RECT, c_void_p
+_GdiCropImage.restype = c_bool
 
 
 def GdiGrabWindow(hwnd):
@@ -351,10 +352,10 @@ def GdiCropImage(x1, y1, x2, y2, hwnd=None):
 
     if windows.GetClassName(hwnd) == "UnityWndClass":
         hwnd = None
-    _GdiCropImage(hwnd, rect, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb))
-    if len(ret) == 0:
-        return None
-    return ret[0]
+    succ = _GdiCropImage(hwnd, rect, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb))
+    if not ret:
+        return False, None
+    return succ, ret[0]
 
 
 MaximumWindow = utilsdll.MaximumWindow
