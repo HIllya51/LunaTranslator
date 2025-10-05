@@ -16,6 +16,17 @@ from traceback import print_exc
 
 def imageCutEx(*a):
     img = imageCut(*a)
+    rectX = QRect(a[1], a[2], a[3] - a[1], a[4] - a[2])
+    rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
+    rect = QRect(rect2[0], rect2[1], rect2[2] - rect2[0], rect2[3] - rect2[1])
+    if rectX.intersected(rect):
+        rect.translate(-a[1], -a[2])
+        painter = QPainter(img)
+        painter.setBrush(Qt.GlobalColor.white)
+        painter.setPen(Qt.PenStyle.NoPen)
+        painter.drawRect(rect)
+        painter.end()
+
     if globalconfig["use_ocr_preprocess"]:
         try:
             img = checkmd5reloadmodule(
