@@ -118,7 +118,7 @@ class Setting(closeashidewindow):
         do()
         self.tab_widget.adjust_list_widget_width()
         index = 0
-        if time.time() - globalconfig.get("lasttime", 0) > 3600:
+        if time.time() - globalconfig.get("lasttime", 0) > 3600 * 12 * 1:
             if globalconfig.get("lasttime", 0):
                 index = self.tab_widget.tab_widget.count() - 1
             globalconfig["lasttime"] = time.time()

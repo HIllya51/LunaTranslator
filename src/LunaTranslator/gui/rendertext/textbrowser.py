@@ -284,11 +284,23 @@ class TextBrowser(QWidget, dataget):
             return
         menu = QMenu(gobject.base.commonstylebase)
         search = LAction("清空", menu)
+        drag = LAction("可拖动的", menu)
+        drag.setCheckable(True)
+        drag.setChecked(globalconfig["dragable"])
         menu.addAction(search)
+        menu.addAction(drag)
         action = menu.exec(QCursor.pos())
         if action == search:
             self.parent().clear(False)
             gobject.base.currenttext = ""
+        elif action == drag:
+            globalconfig["dragable"] = drag.isChecked()
+
+    def mouseMoveEvent(self, a0: QMouseEvent):
+        if not globalconfig["dragable"]:
+            a0.accept()
+            return
+        return super().mouseMoveEvent(a0)
 
     def showmenu(self, p):
         curr = self.textbrowser.textCursor().selectedText()

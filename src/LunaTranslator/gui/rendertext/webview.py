@@ -387,7 +387,7 @@ class TextBrowser(WebviewWidget, somecommon):
     def __init__(self, parent) -> None:
         super().__init__(parent, transp=True, loadext=globalconfig["webviewLoadExt"])
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
-        self.setMouseTracking(True)
+        self.setMouseTracking(globalconfig["dragable"])
         nexti = self.add_menu(0, lambda: _TR("查词"), self.menusearchword)
         nexti = self.add_menu(
             nexti,
@@ -400,6 +400,18 @@ class TextBrowser(WebviewWidget, somecommon):
             lambda w: gobject.base.read_text(w.strip()),
         )
         self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
+
+        def __cb():
+            globalconfig["dragable"] = not globalconfig["dragable"]
+            self.setMouseTracking(globalconfig["dragable"])
+
+        self.add_menu_noselect(
+            1,
+            lambda: _TR("可拖动的"),
+            __cb,
+            checkable=True,
+            getchecked=lambda: globalconfig["dragable"],
+        )
         self.bind("calllunaclickedword", gobject.base.clickwordcallback)
         self.bind("calllunaMouseMove", self.calllunaMouseMove)
         self.bind("calllunaMousePress", self.calllunaMousePress)

@@ -1966,5 +1966,6 @@
     "toppest_translator": null,
     "range_select_multi_dpi_capture_force": false,
     "use_ocr_preprocess": false,
-    "extraLangs": []
+    "extraLangs": [],
+    "dragable": true
 }
