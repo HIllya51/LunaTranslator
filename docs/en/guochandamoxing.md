@@ -7,10 +7,10 @@ If you only have multiple different keys and want to poll them, simply separate 
 
 However, sometimes you may want to use multiple different API interface addresses, prompts, models, or parameters simultaneously to compare translation results. Here's how:
 
-1. Click the "+" button above.
-   ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-1. A window will pop up. Select the general large model interface and give it a name. This will duplicate the current settings and API of the general large model interface.
-   ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
+1. Click the "+" button above and select the General Large Model Interface
+   ![img](https://image.lunatranslator.org/zh/damoxing/plus.png)
+1. A window will pop up - give it a name. This will duplicate the current settings and API of the General Large Model Interface
+   ![img](https://image.lunatranslator.org/zh/damoxing/name.png)
 1. Activate the duplicated interface and configure it separately. The duplicated interface can run alongside the original one, allowing you to use multiple different settings simultaneously.
    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::

@@ -7,10 +7,10 @@
 
 하지만 때로는 여러 개의 다른 API 인터페이스 주소/prompt/model/매개변수 등을 동시에 사용하여 번역 결과를 비교하고 싶을 수 있습니다. 방법은 다음과 같습니다:
 
-1. 상단의 "+" 버튼을 클릭합니다
-    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-1. 팝업 창이 나타나면 대형 모델 일반 인터페이스를 선택하고 이름을 지정합니다. 이렇게 하면 현재 대형 모델 일반 인터페이스의 설정과 API가 복사됩니다.
-    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
+1. 상단의 "+" 버튼을 클릭하고 대형 모델 범용 인터페이스를 선택하십시오
+    ![img](https://image.lunatranslator.org/zh/damoxing/plus.png)
+1. 창이 팝업됩니다. 이름을 지정하십시오. 이렇게 하면 현재 대형 모델 범용 인터페이스의 설정과 API가 복제됩니다
+    ![img](https://image.lunatranslator.org/zh/damoxing/name.png)
 1. 복사된 인터페이스를 활성화하고 개별적으로 설정할 수 있습니다. 복사된 인터페이스는 원본 인터페이스와 함께 실행될 수 있어 서로 다른 여러 설정으로 실행할 수 있습니다.
     ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::

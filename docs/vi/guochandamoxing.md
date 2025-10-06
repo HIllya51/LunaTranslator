@@ -7,10 +7,10 @@ Nếu bạn chỉ có nhiều khóa khác nhau và muốn luân phiên sử dụ
 
 Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ giao diện API, lời nhắc, mô hình hoặc tham số khác nhau đồng thời để so sánh kết quả dịch thuật. Đây là cách thực hiện:
 
-1. Nhấp vào nút "+" ở phía trên
-   ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-1. Một cửa sổ sẽ xuất hiện. Chọn giao diện mô hình lớn chung và đặt tên cho nó. Điều này sẽ sao chép các cài đặt và API của giao diện mô hình lớn chung hiện tại.
-   ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
+1. Nhấp vào nút "+" phía trên và chọn giao diện mô hình lớn thông dụng
+   ![img](https://image.lunatranslator.org/zh/damoxing/plus.png)
+1. Một cửa sổ sẽ bật lên - hãy đặt tên cho nó. Thao tác này sẽ sao chép cài đặt và API hiện tại của giao diện mô hình lớn thông dụng
+   ![img](https://image.lunatranslator.org/zh/damoxing/name.png)
 1. Kích hoạt giao diện đã sao chép và cấu hình nó riêng biệt. Giao diện đã sao chép có thể chạy song song với giao diện gốc, cho phép bạn sử dụng nhiều cài đặt khác nhau đồng thời.
    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::

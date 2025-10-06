@@ -7,10 +7,10 @@
 
 但有時想要同時使用多個不同的 API 介面位址／Prompt／Model／參數等來對比翻譯效果。方法是：
 
-1. 點擊上方的「+」按鈕
-    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi1.png)
-1. 彈出一個視窗，選擇大模型通用介面，並為其取個名字，這樣就會複製一份目前大模型通用介面的設定和 API。
-    ![img](https://image.lunatranslator.org/zh/damoxing/extraapi2.png)
+1. 點擊上方的「+」按鈕，選擇大模型通用接口
+    ![img](https://image.lunatranslator.org/zh/damoxing/plus.png)
+1. 彈出一個視窗，為之取個名字。這樣會複製一份當前大模型通用接口的設定和API
+    ![img](https://image.lunatranslator.org/zh/damoxing/name.png)
 1. 啟用複製的介面，並可以進行單獨設定。複製的介面可以和原介面一起執行，從而使用多個不同的設定來執行。
     ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
 :::
