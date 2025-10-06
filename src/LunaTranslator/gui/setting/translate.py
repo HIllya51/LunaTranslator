@@ -315,6 +315,9 @@ def selectllmcallback_2(self, countnum: list, fanyi, _=None):
     layout: QGridLayout = getattr(self, "damoxinggridinternal")
     if not layout:
         return
+    if fanyi not in countnum:
+        print(fanyi)
+        return
     idx = countnum.index(fanyi)
     line = idx // 3
     off = line * 14 + (idx % 3) * 5
@@ -346,9 +349,10 @@ def addordelete(delete, self, countnum):
     lang = getlangtgt()
     actions = {}
     for i in range(len(__vis)):
-        langs = globalconfig["fanyi"][__uid[i]].get("langs")
-        if langs and (lang not in langs):
-            continue
+        if not delete:
+            langs = globalconfig["fanyi"][__uid[i]].get("langs")
+            if langs and (lang not in langs):
+                continue
         _ = QAction(__vis[i], menu)
         actions[_] = __uid[i]
         menu.addAction(_)
