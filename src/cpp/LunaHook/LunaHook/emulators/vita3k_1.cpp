@@ -985,6 +985,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 白と黒のアリス
+    {0x80039656, {CODEC_UTF8, 0, 0, 0, FPCSG01066, "PCSG00944"}},
+    {0x80012DFE, {CODEC_UTF8, 0, 0, 0, FPCSG01066, "PCSG00944"}},
+    // 白と黒のアリス -Twilight line-
+    {0x80013B9A, {CODEC_UTF8, 0, 0, 0, FPCSG01066, "PCSG01192"}},
+    {0x800381E6, {CODEC_UTF8, 0, 0, 0, FPCSG01066, "PCSG01192"}},
     // ROOT∞REXX
     {0x8009F048, {0, 1, 0, 0, FPCSG00477, "PCSG00458"}},
     {0x8000F3E0, {0, 0XB, 0, 0, PCSG00826, "PCSG00458"}},

@@ -728,6 +728,8 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00944 | 白と黒のアリス |
+|  | PCSG01192 | 白と黒のアリス -Twilight line- |
 |  | PCSG00458 | ROOT∞REXX |
 |  | PCSG00663 | Rear pheles |
 |  | PCSG00062 | TIME TRAVELERS |

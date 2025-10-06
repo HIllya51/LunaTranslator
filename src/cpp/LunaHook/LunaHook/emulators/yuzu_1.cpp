@@ -2658,6 +2658,12 @@ namespace
         buffer->from(collect);
         f0100AAD0210B6000(buffer, hp);
     }
+    void f0100A460141B8000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, u8R"(\n(　)*)");
+        buffer->from(s);
+    }
     void F010065402030A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2826,13 +2832,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80050374, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100957016B90000ull, "1.0.0"}}, // TIPS (red)
     {0x8004672c, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100957016B90000ull, "1.0.1"}},
     // 白と黒のアリス
-    {0x80013f20, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
-    {0x80013f94, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
-    {0x8001419c, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
+    {0x80013f20, {CODEC_UTF8, 0, 0, 0, f0100A460141B8000, 0x0100A460141B8000ull, "1.0.0"}},
+    {0x80013f94, {CODEC_UTF8, 0, 0, 0, f0100A460141B8000, 0x0100A460141B8000ull, "1.0.0"}},
+    {0x8001419c, {CODEC_UTF8, 0, 0, 0, f0100A460141B8000, 0x0100A460141B8000ull, "1.0.0"}},
     // 白と黒のアリス -Twilight line-
-    {0x80014260, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
-    {0x800142d4, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
-    {0x800144dc, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterW, 0x0100A460141B8000ull, "1.0.0"}},
+    {0x80014260, {CODEC_UTF8, 0, 0, 0, f0100A460141B8000, 0x0100A460141B8000ull, "1.0.0"}},
+    {0x800142d4, {CODEC_UTF8, 0, 0, 0, f0100A460141B8000, 0x0100A460141B8000ull, "1.0.0"}},
+    {0x800144dc, {CODEC_UTF8, 0, 0, 0, f0100A460141B8000, 0x0100A460141B8000ull, "1.0.0"}},
     // CLANNAD
     {0x80072d00, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, 0x0100A3A00CC7E000ull, "1.0.0"}},
     {0x80072d30, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100A3A00CC7E000, 0x0100A3A00CC7E000ull, "1.0.7"}},
