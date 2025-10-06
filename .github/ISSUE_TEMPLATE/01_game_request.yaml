@@ -26,9 +26,11 @@ body:
     description: >
       请使用onedrive或googledrive或其他不限速网盘给我游戏资源。<br>
       不接受任何需要安装客户端、需要登录下载的网盘，例如百度、pikpak、Terabox等。<br>
+      不再接受MEGA，我总是无法下载它的文件。<br>
       请确保链接符合要求，如果你不给我符合要求的链接，我将无法获取游戏进行测试，无法受理你的请求。<br>
       Give me the game resource via onedrive or googledrive or other unlimited speed network disk. <br>
       Not accept any network disk that requires installing clients or logging in to download, such as Baidu, Pikpak, Terabox, etc.<br>
+      No longer accepting MEGA, I always fail to download its files.<br>
       Please Confirm that the link meets the requirements. If you don't give me a link that meets the requirements, I won't be able to get the game to test it, so I won't be able to process your request.
   validations:
     required: true
