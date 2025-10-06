@@ -343,8 +343,12 @@ def addordelete(delete, self, countnum):
     __vis, __uid = loadvisinternal(delete)
     if not __vis:
         return
+    lang = getlangtgt()
     actions = {}
     for i in range(len(__vis)):
+        langs = globalconfig["fanyi"][__uid[i]].get("langs")
+        if langs and (lang not in langs):
+            continue
         _ = QAction(__vis[i], menu)
         actions[_] = __uid[i]
         menu.addAction(_)
