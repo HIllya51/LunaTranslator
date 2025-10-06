@@ -3615,3 +3615,15 @@ class LinkLabel(QLabel):
             self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         else:
             self.unsetCursor()
+
+
+def MyInputDialog(parent, title, label, default=None, w=500) -> str | None:
+    dia = QInputDialog(parent, Qt.WindowType.WindowCloseButtonHint)
+    dia.resize(w, dia.height())
+    dia.setWindowTitle(_TR(title))
+    dia.setLabelText(_TR(label))
+    if default:
+        dia.setTextValue(default)
+    if not dia.exec():
+        return
+    return dia.textValue()

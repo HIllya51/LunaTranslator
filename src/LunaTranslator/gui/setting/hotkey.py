@@ -20,6 +20,7 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     getspinbox,
     request_delete_ok,
+    MyInputDialog,
     makegrid,
     getboxlayout,
     VisLFormLayout,
@@ -28,7 +29,6 @@ from gui.usefulwidget import (
     SClickableLabel,
     getsimplecombobox,
 )
-from gui.inputdialog import autoinitdialog
 from gui.dynalang import LLabel, LAction, LDialog, LFormLayout
 
 
@@ -326,32 +326,13 @@ def renameapi(qlabel: QLabel, name, self, form: VisLFormLayout, cnt, _=None):
             regist_or_not_key(self, name)
     elif action == editname:
         before = globalconfig["quick_setting"]["all"][name]["name"]
-        __d = {"k": before}
-
-        def cb(__d):
-            title = __d["k"]
-            if title not in ("", before):
-                globalconfig["quick_setting"]["all"][name]["name"] = title
-                qlabel.setText(title)
-
-        autoinitdialog(
-            self,
-            __d,
-            "重命名",
-            600,
-            [
-                {
-                    "type": "lineedit",
-                    "name": "名称",
-                    "k": "k",
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(cb, __d),
-                },
-            ],
-            exec_=True,
-        )
+        title = MyInputDialog(self, "重命名", "名称", before)
+        if not title:
+            return
+        if title == before:
+            return
+        globalconfig["quick_setting"]["all"][name]["name"] = title
+        qlabel.setText(title)
 
 
 def getrenameablellabel(form: VisLFormLayout, cnt: int, uid: str, self):

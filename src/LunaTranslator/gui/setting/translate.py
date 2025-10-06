@@ -1,7 +1,14 @@
 from qtsymbols import *
 import functools, os
 import gobject
-from myutils.config import globalconfig, translatorsetting, _TR, getcopyfrom, copyllmapi, dynamicapiname
+from myutils.config import (
+    globalconfig,
+    translatorsetting,
+    _TR,
+    getcopyfrom,
+    copyllmapi,
+    dynamicapiname,
+)
 from myutils.utils import (
     getlangtgt,
     selectdebugfile,
@@ -23,6 +30,7 @@ from gui.usefulwidget import (
     check_grid_append,
     getsimpleswitch,
     D_getIconButton,
+    MyInputDialog,
     D_getsimpleswitch,
     request_delete_ok,
     createfoldgrid,
@@ -76,48 +84,6 @@ def loadvisinternal(copy):
         __vis.append(dynamicapiname(_))
         __uid.append(_)
     return __vis, __uid
-
-
-def getalistname(parent, copy, callback):
-    __d = {"k": 0, "n": ""}
-    __vis, __uid = loadvisinternal(copy)
-    if not __vis:
-        return
-
-    def __wrap(callback, __d, __uid):
-        if len(__uid) == 0:
-            return
-
-        uid = __uid[__d["k"]]
-        callback(uid, __d["n"])
-
-    __ = []
-    __.append(
-        {
-            "type": "combo",
-            "name": "复制自" if not copy else "删除",
-            "k": "k",
-            "list": __vis,
-        }
-    )
-    if not copy:
-        __.append(
-            {
-                "name": "命名为",
-                "type": "lineedit",
-                "k": "n",
-            }
-        )
-
-    __.append(
-        {
-            "type": "okcancel",
-            "callback": functools.partial(__wrap, callback, __d, __uid),
-        }
-    )
-    autoinitdialog(
-        parent, __d, ("删除" if copy else "复制") + "接口", 600, __, exec_=True
-    )
 
 
 class SpecialFont(PopupWidget):
@@ -228,8 +194,7 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
     pos = QCursor.pos()
     action = menu.exec(pos)
     if action == delete:
-        if request_delete_ok(self, "99e3f96f-8659-457f-9e0b-52643f552889"):
-            selectllmcallback_2(self, countnum, apiuid, None)
+        selectllmcallback_2(self, countnum, apiuid, None)
     elif action == useproxy:
         globalconfig["fanyi"][apiuid]["useproxy"] = useproxy.isChecked()
     elif action == astoppest:
@@ -246,32 +211,14 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
         globalconfig["fanyi"][apiuid]["use_trans_cache"] = usecache.isChecked()
     elif action == editname:
         before = dynamicapiname(apiuid)
-        __d = {"k": before}
+        newname = MyInputDialog(self, "重命名", "名称", before)
+        if not newname:
+            return
+        if newname == before:
+            return
+        globalconfig["fanyi"][apiuid]["name_self_set"] = newname
+        qlabel.setText(newname)
 
-        def cb(__d):
-            title = __d["k"]
-            if title not in ("", before):
-                globalconfig["fanyi"][apiuid]["name_self_set"] = title
-                qlabel.setText(title)
-
-        autoinitdialog(
-            self,
-            __d,
-            "重命名",
-            600,
-            [
-                {
-                    "type": "lineedit",
-                    "name": "名称",
-                    "k": "k",
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(cb, __d),
-                },
-            ],
-            exec_=True,
-        )
     elif action == specialfont:
         SpecialFont(apiuid, self).display(pos)
     elif action == copy:
@@ -352,15 +299,9 @@ def selectllmcallback(self, countnum: list, fanyi, newname=None):
     self.__del_btn.show()
 
 
-def btnpluscallback(self, countnum):
-    getalistname(
-        self,
-        False,
-        functools.partial(selectllmcallback, self, countnum),
-    )
-
-
-def selectllmcallback_2(self, countnum: list, fanyi, name):
+def selectllmcallback_2(self, countnum: list, fanyi, _=None):
+    if not request_delete_ok(self, "99e3f96f-8659-457f-9e0b-52643f552889"):
+        return
     _f2 = gobject.getconfig("copyed/{}.py".format(fanyi))
     try:
         os.remove(_f2)
@@ -396,12 +337,35 @@ def selectllmcallback_2(self, countnum: list, fanyi, name):
         self.__del_btn.hide()
 
 
+def addordelete(delete, self, countnum):
+    menu = QMenu(self)
+
+    __vis, __uid = loadvisinternal(delete)
+    if not __vis:
+        return
+    actions = {}
+    for i in range(len(__vis)):
+        _ = QAction(__vis[i], menu)
+        actions[_] = __uid[i]
+        menu.addAction(_)
+    action = menu.exec(QCursor.pos())
+    if action in actions:
+        name = None
+        if not delete:
+            name = MyInputDialog(self, "复制接口", "命名为", action.text() + "_copy")
+            if not name:
+                return
+        (selectllmcallback_2 if delete else selectllmcallback)(
+            self, countnum, actions[action], name
+        )
+
+
 def btndeccallback(self, countnum):
-    getalistname(
-        self,
-        True,
-        functools.partial(selectllmcallback_2, self, countnum),
-    )
+    addordelete(True, self, countnum)
+
+
+def btnpluscallback(self, countnum):
+    addordelete(False, self, countnum)
 
 
 def initsome11(self, l, save=False):

@@ -2,7 +2,6 @@ from qtsymbols import *
 import os, functools, uuid
 from traceback import print_exc
 import qtawesome
-from gui.inputdialog import autoinitdialog
 from gui.dynalang import LAction
 from gui.gamemanager.v3 import dialog_savedgame_v3
 from gui.gamemanager.legacy import dialog_savedgame_legacy
@@ -29,6 +28,7 @@ from gui.usefulwidget import (
     FQLineEdit,
     getIconButton,
     FocusCombo,
+    MyInputDialog,
 )
 from gui.gamemanager.common import (
     dialog_syssetting,
@@ -546,50 +546,39 @@ class dialog_savedgame_new(QWidget):
             self.clicked3_batch()
 
         elif action == editname or action == addlist:
-            __d = {
-                "k": (
-                    savegametaged[calculatetagidx(self.reftagid)]["title"]
-                    if action == editname
-                    else ""
-                )
-            }
 
-            def cb(__d):
-                title = __d["k"]
-                if title != "":
-                    i = calculatetagidx(self.reftagid)
-                    if action == addlist:
-                        tag = {
-                            "title": title,
-                            "games": [],
-                            "uid": str(uuid.uuid4()),
-                            "opened": True,
-                        }
-                        savegametaged.insert(i, tag)
-                        self.loadcombo(False)
-                    elif action == editname:
+            def cb(title):
+                if not title:
+                    return
+                i = calculatetagidx(self.reftagid)
+                if action == addlist:
+                    tag = {
+                        "title": title,
+                        "games": [],
+                        "uid": str(uuid.uuid4()),
+                        "opened": True,
+                    }
+                    savegametaged.insert(i, tag)
+                    self.loadcombo(False)
+                elif action == editname:
 
-                        savegametaged[i]["title"] = title
-                        self.loadcombo(False)
+                    savegametaged[i]["title"] = title
+                    self.loadcombo(False)
 
-            autoinitdialog(
-                self,
-                __d,
-                "修改列表名称" if action == editname else "创建列表",
-                600,
-                [
-                    {
-                        "type": "lineedit",
-                        "name": "名称",
-                        "k": "k",
-                    },
-                    {
-                        "type": "okcancel",
-                        "callback": functools.partial(cb, __d),
-                    },
-                ],
-                exec_=True,
+            __ = (
+                savegametaged[calculatetagidx(self.reftagid)]["title"]
+                if action == editname
+                else ""
             )
+            cb(
+                MyInputDialog(
+                    self,
+                    "修改列表名称" if action == editname else "创建列表",
+                    "名称",
+                    __,
+                )
+            )
+
         elif action == dellist:
             if request_delete_ok(self, "90063a5b-1e96-4688-ac1c-ee3c1ba5d275"):
                 i = calculatetagidx(self.reftagid)

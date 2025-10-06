@@ -7,13 +7,13 @@ from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, 
 from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
 from myutils.mecab import mecab
-from gui.inputdialog import autoinitdialog
 from myutils.hwnd import grabwindow, getExeIcon
 from gui.usefulwidget import (
     saveposwindow,
     makesubtab_lazy,
     request_delete_ok,
     mayberelpath,
+    MyInputDialog,
     IconButton,
     auto_select_webview,
 )
@@ -558,29 +558,11 @@ class dialog_memory(saveposwindow):
             os.startfile(file)
         elif action == rename:
             before = self.tab.tabText(index)
-            __d = {"k": before}
-
-            def cb(__d):
-                title = __d["k"]
-                self.tab.setTabText(index, title)
-                self.config[index]["title"] = title
-                self.saveconfig()
-
-            autoinitdialog(
-                self,
-                __d,
-                "重命名",
-                600,
-                [
-                    {
-                        "type": "lineedit",
-                        "name": "名称",
-                        "k": "k",
-                    },
-                    {
-                        "type": "okcancel",
-                        "callback": functools.partial(cb, __d),
-                    },
-                ],
-                exec_=True,
-            )
+            title = MyInputDialog(self, "重命名", "名称", before)
+            if not title:
+                return
+            if title == before:
+                return
+            self.tab.setTabText(index, title)
+            self.config[index]["title"] = title
+            self.saveconfig()

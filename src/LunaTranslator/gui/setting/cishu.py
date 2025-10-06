@@ -19,6 +19,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     getcenterX,
     D_getcolorbutton,
+    MyInputDialog,
     getboxlayout,
     getsimpleswitch,
     D_getsimplecombobox,
@@ -119,32 +120,13 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
 
     if action == editname:
         before = dynamiccishuname(apiuid)
-        __d = {"k": before}
-
-        def cb(__d):
-            title = __d["k"]
-            if title not in ("", before):
-                globalconfig["cishu"][apiuid]["name_self_set"] = title
-                qlabel.setText(title)
-
-        autoinitdialog(
-            self,
-            __d,
-            "重命名",
-            600,
-            [
-                {
-                    "type": "lineedit",
-                    "name": "名称",
-                    "k": "k",
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(cb, __d),
-                },
-            ],
-            exec_=True,
-        )
+        title = MyInputDialog(self, "重命名", "名称", before)
+        if not title:
+            return
+        if title == before:
+            return
+        globalconfig["cishu"][apiuid]["name_self_set"] = title
+        qlabel.setText(title)
 
     elif action == useproxy:
         globalconfig["cishu"][apiuid]["useproxy"] = useproxy.isChecked()
@@ -211,6 +193,7 @@ def clickcallback2(l: list, lay: VisLFormLayout, checked):
         return
 
     lay.setRowVisible(1, checked)
+
 
 def clickcallback(l: list, lay: VisLFormLayout, checked):
     if not l:

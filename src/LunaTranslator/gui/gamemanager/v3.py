@@ -16,12 +16,12 @@ from myutils.utils import (
     targetmod,
     getimagefilefilter,
 )
-from gui.inputdialog import autoinitdialog
 from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
 from gui.usefulwidget import (
     pixmapviewer,
     makesubtab_lazy,
     tabadd_lazy,
+    MyInputDialog,
     request_delete_ok,
     IconButton,
 )
@@ -38,7 +38,7 @@ from gui.gamemanager.common import (
     addgamesingle,
     addgamebatch,
 )
-from gui.dynalang import LAction, LLabel
+from gui.dynalang import LAction, LLabel, LMenu
 
 
 class clickitem(QWidget):
@@ -199,40 +199,6 @@ class fadeoutlabel(QWidget):
         action = menu.exec(QCursor.pos())
         if action == copy:
             NativeUtils.ClipBoard.text = self.text.text()
-
-
-def getselectpos(parent, callback):
-    __d = {"k": 0}
-    __vis, __uid = ["下", "右", "上", "左"], [0, 1, 2, 3]
-
-    def __wrap(callback, __d, __uid):
-        if len(__uid) == 0:
-            return
-
-        uid = __uid[__d["k"]]
-        callback(uid)
-
-    if len(__uid) > 1:
-        autoinitdialog(
-            parent,
-            __d,
-            "位置",
-            600,
-            [
-                {
-                    "type": "combo",
-                    "name": "位置",
-                    "k": "k",
-                    "list": __vis,
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(__wrap, callback, __d, __uid),
-                },
-            ],
-        )
-    else:
-        callback(__uid[0])
 
 
 PathRole = Qt.ItemDataRole.UserRole + 1
@@ -592,7 +558,6 @@ class pixwrapper(QWidget):
 
     def menu(self, _1, _):
         menu = QMenu(self)
-
         setimage = LAction("设为封面", menu)
         curr = savehook_new_data[self.k].get("currentvisimage")
         curricon = savehook_new_data[self.k].get("currenticon")
@@ -602,7 +567,12 @@ class pixwrapper(QWidget):
         deleteimage = LAction("删除图片", menu)
         copyimage = LAction("复制图片", menu)
         deleteimage_x = LAction("删除图片文件", menu)
-        pos = LAction("位置", menu)
+        sxzy = tuple(LAction(x) for x in "下右上左")
+        pos = LMenu("位置", menu)
+        pos.addActions(sxzy)
+        for i, _ in enumerate(sxzy):
+            _.setCheckable(True)
+            _.setChecked(i == globalconfig["viewlistpos"])
         if curr and os.path.exists(extradatas["localedpath"].get(curr, curr)):
             menu.addAction(setimage)
             menu.addAction(seticon)
@@ -611,7 +581,7 @@ class pixwrapper(QWidget):
             menu.addAction(deleteimage_x)
         if _1:
             menu.addSeparator()
-            menu.addAction(pos)
+            menu.addMenu(pos)
         action = menu.exec(QCursor.pos())
         if action == deleteimage:
             if not request_delete_ok(self, "9b524251-9639-478c-b3f9-2d254ef50084"):
@@ -623,8 +593,8 @@ class pixwrapper(QWidget):
             if not request_delete_ok(self, "d836ae43-b895-46e1-be0b-949dd5e2d4de"):
                 return
             self.removecurrent(True)
-        elif action == pos:
-            getselectpos(self, self.switchpos)
+        elif action in sxzy:
+            self.switchpos(sxzy.index(action))
 
         elif action == setimage:
             savehook_new_data[self.k]["currentmainimage"] = curr
@@ -998,10 +968,8 @@ class dialog_savedgame_v3(QWidget):
             self.reallist.pop(tagid)
 
     def createlist(self, create, tagid):
-        __d = {"k": ("" if create else savegametaged[calculatetagidx(tagid)]["title"])}
 
-        def cb(__d):
-            title = __d["k"]
+        def cb(title):
             if not title:
                 return
             i = calculatetagidx(tagid)
@@ -1019,23 +987,14 @@ class dialog_savedgame_v3(QWidget):
                 self.stack.w(i).settitle(title)
                 savegametaged[i]["title"] = title
 
-        autoinitdialog(
-            self,
-            __d,
-            "创建列表" if create else "修改列表名称",
-            600,
-            [
-                {
-                    "type": "lineedit",
-                    "name": "名称",
-                    "k": "k",
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(cb, __d),
-                },
-            ],
-            exec_=True,
+        __ = "" if create else savegametaged[calculatetagidx(tagid)]["title"]
+        cb(
+            MyInputDialog(
+                self,
+                "创建列表" if create else "修改列表名称",
+                "名称",
+                __,
+            )
         )
 
     def createtaglist(self, p, title, tagid, opened):

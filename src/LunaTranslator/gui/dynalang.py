@@ -64,6 +64,22 @@ class LPushButton(QPushButton):
         super().setToolTip(_TR(t))
 
 
+class LMenu(QMenu):
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.__title = self.title()
+        self.updatelangtext()
+
+    def addMenu(self, title: "str|QMenu"):
+        if isinstance(title, str):
+            title = LMenu(title)
+        return super().addMenu(title)
+
+    def updatelangtext(self):
+        if self.__title:
+            self.setTitle(_TR(self.__title))
+
+
 class LAction(QAction):
     def updatelangtext(self):
         if self._text:
