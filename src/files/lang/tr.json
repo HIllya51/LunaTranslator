@@ -3,7 +3,6 @@
     "小学馆": "İlkokul salonu",
     "灵格斯词典": "Linger Sözlük",
     "查词": "Kelime arama",
-    "自动翻译": "Otomatik çeviri",
     "打开设置": "Ayarları Aç",
     "复制到剪贴板": "clipboard'a kopyalayın",
     "显示/隐藏原文": "Orijinal metini göster/gizle",
@@ -421,7 +420,6 @@
     "删除行": "Satırları Sil",
     "使用": "uygulama",
     "兼容接口": "Kompatibil arayüz",
-    "手动翻译": "Elle çevirim",
     "显示引擎": "Gösterim Motoru",
     "阴影字体": "Gölge yazıtipi",
     "测试": "test",
@@ -874,5 +872,7 @@
     "其他语言": "Diğer diller",
     "语言名称": "Dil Adı",
     "语言代码": "Dil kodu",
-    "可拖动的": "Sürüklenebilir"
+    "可拖动的": "Sürüklenebilir",
+    "手动执行": "Manuel yürütme",
+    "自动模式": "Otomatik mod"
 }

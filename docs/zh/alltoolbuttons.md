@@ -26,12 +26,12 @@
 }
 </style>
 
-1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 手动翻译 {#anchor-retrans}
+1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 手动执行 {#anchor-retrans}
     实际意义是，从当前的文本输入源，读取一次输入，并执行翻译。
     
     例如如果当前是OCR模式，会再执行一次OCR。
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 自动翻译 {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 自动模式 {#anchor-automodebutton}
     实际意义是，暂停/继续自动从当前的文本输入源读取文本。
 
     例如如果当前是HOOK模式，会暂停读取游戏文本；当前是OCR模式，暂停自动识别图像；如果当前是剪贴板模式，会暂停自动读取剪贴板。

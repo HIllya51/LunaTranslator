@@ -3,7 +3,6 @@
     "小学馆": "École primaire",
     "灵格斯词典": "Dictionnaire linggs",
     "查词": "Recherche de mots",
-    "自动翻译": "Traduction automatique",
     "打开设置": "Ouvrir les paramètres",
     "复制到剪贴板": "Copier dans le presse - papiers",
     "显示/隐藏原文": "Afficher / masquer le texte original",
@@ -421,7 +420,6 @@
     "删除行": "Supprimer une ligne",
     "使用": "Utilisation",
     "兼容接口": "Interface compatible",
-    "手动翻译": "Traduction manuelle",
     "显示引擎": "Moteur d'affichage",
     "阴影字体": "Shadow font",
     "测试": "Test",
@@ -874,5 +872,7 @@
     "其他语言": "Autres langues",
     "语言名称": "Nom de la langue",
     "语言代码": "Code de langue",
-    "可拖动的": "Déplaçable"
+    "可拖动的": "Déplaçable",
+    "手动执行": "Exécution manuelle",
+    "自动模式": "Mode automatique"
 }

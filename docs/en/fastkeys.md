@@ -6,11 +6,11 @@
 
 ## General
 
-1. #### Retranslate {#anchor-_1}
+1. #### Manual execution {#anchor-_1}
     Reads input once from the current text input source and performs translation.
     For example, if the current mode is OCR, it will perform OCR again.
 
-1. #### Auto Translation {#anchor-_2}
+1. #### Auto mode {#anchor-_2}
     Pauses/resumes automatic text reading from the current text input source.
     For example, if the current mode is HOOK, it will pause reading game text; if the current mode is OCR, it will pause automatic image recognition; if the current mode is clipboard, it will pause automatic reading from the clipboard.
 

@@ -26,12 +26,12 @@
 }
 </style>
 
-1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 수동 번역 {#anchor-retrans}
+1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 수동 실행 {#anchor-retrans}
     실제 의미는 현재의 텍스트 입력 소스에서 입력을 한 번 읽고 번역을 실행하는 것입니다.
 
     예를 들어 현재 OCR 모드인 경우, OCR을 다시 한 번 실행합니다.
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 자동 번역 {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 자동 모드 {#anchor-automodebutton}
     실제 의미는 현재의 텍스트 입력 소스에서 자동으로 텍스트를 읽는 것을 일시 중지/재개하는 것입니다.
 
     예를 들어 현재 HOOK 모드인 경우 게임 텍스트 읽기를 일시 중지합니다; 현재 OCR 모드인 경우 이미지 자동 인식을 일시 중지합니다; 현재 클립보드 모드인 경우 클립보드 자동 읽기를 일시 중지합니다.

@@ -3,7 +3,6 @@
     "小学馆": "Pabellón de la escuela primaria",
     "灵格斯词典": "Diccionario Lingus",
     "查词": "Buscar palabras",
-    "自动翻译": "Traducción automática",
     "打开设置": "Abrir configuración",
     "复制到剪贴板": "Copiar al portapapeles",
     "显示/隐藏原文": "Mostrar / ocultar el texto original",
@@ -421,7 +420,6 @@
     "删除行": "Eliminar filas",
     "使用": "Uso",
     "兼容接口": "Interfaz compatible",
-    "手动翻译": "Traducción manual",
     "显示引擎": "Motor de visualización",
     "阴影字体": "Fuente de sombra",
     "测试": "Prueba",
@@ -874,5 +872,7 @@
     "其他语言": "Otros idiomas",
     "语言名称": "Nombre del idioma",
     "语言代码": "Código de idioma",
-    "可拖动的": "Arrastrable"
+    "可拖动的": "Arrastrable",
+    "手动执行": "Ejecución manual",
+    "自动模式": "Modo automático"
 }

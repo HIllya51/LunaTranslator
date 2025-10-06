@@ -25,12 +25,12 @@
 }
 </style>
 
-1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 手動翻訳 {#anchor-retrans}
+1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> 手動実行 {#anchor-retrans}
     実際の意味は、現在のテキスト入力ソースから1回入力を読み取り、翻訳を実行することです。
 
     たとえば、現在のモードがOCRの場合、再度OCRを実行します。
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> 自動翻訳 {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> オートモード {#anchor-automodebutton}
     実際の意味は、現在のテキスト入力ソースからの自動読み取りを一時停止/再開することです。
 
     たとえば、現在のモードがHOOKの場合、ゲームテキストの読み取りを一時停止します。現在のモードがOCRの場合、自動画像認識を一時停止します。現在のモードがクリップボードモードの場合、クリップボードの自動読み取りを一時停止します。

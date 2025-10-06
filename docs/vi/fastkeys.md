@@ -5,11 +5,11 @@
 
 ## Chung
 
-1. #### Dịch thủ công {#anchor-_1}
+1. #### Thực hiện thủ công {#anchor-_1}
     Đọc đầu vào một lần từ nguồn đầu vào văn bản hiện tại và thực hiện dịch.
     Ví dụ: nếu chế độ hiện tại là OCR, nó sẽ thực hiện OCR lại.
 
-1. #### Dịch tự động {#anchor-_2}
+1. #### Chế độ tự động {#anchor-_2}
     Tạm dừng/tiếp tục đọc văn bản tự động từ nguồn đầu vào văn bản hiện tại.
     Ví dụ: nếu chế độ hiện tại là HOOK, nó sẽ tạm dừng đọc văn bản trò chơi; nếu chế độ hiện tại là OCR, nó sẽ tạm dừng nhận diện hình ảnh tự động; nếu chế độ hiện tại là clipboard, nó sẽ tạm dừng đọc tự động từ clipboard.
 

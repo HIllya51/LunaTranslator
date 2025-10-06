@@ -3,7 +3,6 @@
     "小学馆": "Phòng nhỏ",
     "灵格斯词典": "Từ điển Lingus",
     "查词": "Tra từ",
-    "自动翻译": "Dịch tự động",
     "打开设置": "Mở Cài đặt",
     "复制到剪贴板": "Sao chép vào bảng nháp",
     "显示/隐藏原文": "Hiển thị/ẩn văn bản gốc",
@@ -421,7 +420,6 @@
     "删除行": "Xoá dòng",
     "使用": "Sử dụng",
     "兼容接口": "Giao diện tương thích",
-    "手动翻译": "Dịch thủ công",
     "显示引擎": "Công cụ hiển thị",
     "阴影字体": "Phông bóng",
     "测试": "Thử nghiệm",
@@ -874,5 +872,7 @@
     "其他语言": "Các ngôn ngữ khác",
     "语言名称": "Tên ngôn ngữ",
     "语言代码": "Mã ngôn ngữ",
-    "可拖动的": "Có thể kéo thả"
+    "可拖动的": "Có thể kéo thả",
+    "手动执行": "Thực hiện thủ công",
+    "自动模式": "Chế độ tự động"
 }

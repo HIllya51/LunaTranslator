@@ -25,12 +25,12 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 }
 </style>
 
-1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Dịch thủ công {#anchor-retrans}
+1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Thực hiện thủ công {#anchor-retrans}
     Ý nghĩa thực tế là đọc đầu vào một lần từ nguồn đầu vào văn bản hiện tại và thực hiện dịch thuật.
     
     Ví dụ, nếu chế độ hiện tại là OCR, nó sẽ thực hiện OCR lại.
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Dịch tự động {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Chế độ tự động {#anchor-automodebutton}
     Ý nghĩa thực tế là tạm dừng/tiếp tục tự động đọc văn bản từ nguồn đầu vào văn bản hiện tại.
 
     Ví dụ, nếu chế độ hiện tại là HOOK, nó sẽ tạm dừng đọc văn bản trò chơi; nếu chế độ hiện tại là OCR, nó sẽ tạm dừng nhận diện hình ảnh tự động; nếu chế độ hiện tại là chế độ clipboard, nó sẽ tạm dừng đọc tự động từ clipboard.

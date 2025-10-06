@@ -26,12 +26,12 @@
 }
 </style>
 
-1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Ручной перевод {#anchor-retrans}
+1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Ручное выполнение {#anchor-retrans}
     Фактически означает чтение ввода из текущего источника текста и выполнение перевода.
 
     Например, если включен режим OCR, будет выполнен повторный захват текста.
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Автоматический перевод {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Автоматический режим {#anchor-automodebutton}
     Фактически означает приостановку/возобновление автоматического чтения текста из текущего источника.
 
     Например, в режиме HOOK будет приостановлено чтение игрового текста; в режиме OCR - автоматическое распознавание изображений; в режиме буфера обмена - автоматическое чтение из него.

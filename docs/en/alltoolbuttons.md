@@ -25,12 +25,12 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 }
 </style>
 
-1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Retranslate {#anchor-retrans}
+1. #### <i class="fa fa-rotate-right"></i> <i class="fa fa-icon fa-rotate-right"></i> Manual execution {#anchor-retrans}
     The actual meaning is to read the input once from the current text input source and perform translation.
     
     For example, if the current mode is OCR, it will perform OCR again.
 
-1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Auto Translation {#anchor-automodebutton}
+1. #### <i class="fa fa-forward"></i> <i class="btnstatus2 fa fa-forward"></i> Auto mode {#anchor-automodebutton}
     The actual meaning is to pause/continue automatically reading text from the current text input source.
 
     For example, if the current mode is HOOK, it will pause reading game text; if the current mode is OCR, it will pause automatic image recognition; if the current mode is clipboard mode, it will pause automatic reading of the clipboard.

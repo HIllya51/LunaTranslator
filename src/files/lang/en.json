@@ -27,7 +27,6 @@
     "指示詞": "Demonstratives",
     "搜索": "Search",
     "動詞": "Verbs",
-    "自动翻译": "Auto Translation",
     "锁定工具栏": "Lock Toolbar",
     "辞书设置": "Dictionary Settings",
     "中文": "Chinese",
@@ -420,7 +419,6 @@
     "删除行": "Delete Row",
     "使用": "Use",
     "兼容接口": "Compatible Interface",
-    "手动翻译": "Retranslate",
     "显示引擎": "Rendering Engine",
     "阴影字体": "Shadow Font",
     "测试": "Test",
@@ -874,5 +872,7 @@
     "其他语言": "Other languages",
     "语言名称": "Language name",
     "语言代码": "Language code",
-    "可拖动的": "Draggable"
+    "可拖动的": "Draggable",
+    "手动执行": "Manual execution",
+    "自动模式": "Auto mode"
 }

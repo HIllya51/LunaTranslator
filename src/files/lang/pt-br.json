@@ -27,7 +27,6 @@
     "指示詞": "Demonstrativos",
     "搜索": "Buscar",
     "動詞": "Verbos",
-    "自动翻译": "Tradução Automática",
     "锁定工具栏": "Bloquear Barra de Ferramentas",
     "辞书设置": "Configurações do Dicionário",
     "中文": "Chinês",
@@ -420,7 +419,6 @@
     "删除行": "Excluir Linha",
     "使用": "Aplicar",
     "兼容接口": "Interface Compatível",
-    "手动翻译": "Retraduzir",
     "显示引擎": "Mecanismo de Renderização",
     "阴影字体": "Fonte com Sombra",
     "测试": "Testar",
@@ -874,5 +872,7 @@
     "其他语言": "Outros idiomas",
     "语言名称": "Nome do idioma",
     "语言代码": "Código de idioma",
-    "可拖动的": "Arrastável"
+    "可拖动的": "Arrastável",
+    "手动执行": "Execução manual",
+    "自动模式": "Modo automático"
 }

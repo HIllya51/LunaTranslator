@@ -544,13 +544,13 @@
         "buttons": {
             "retrans": {
                 "use": true,
-                "tip": "手动翻译",
+                "tip": "手动执行",
                 "icon": "fa.rotate-right",
                 "align": 2
             },
             "automodebutton": {
                 "use": false,
-                "tip": "自动翻译",
+                "tip": "自动模式",
                 "icon": "fa.forward",
                 "icon2": "fa.play",
                 "align": 2
@@ -861,12 +861,12 @@
             },
             "_1": {
                 "use": false,
-                "name": "手动翻译",
+                "name": "手动执行",
                 "keystring": ""
             },
             "_2": {
                 "use": false,
-                "name": "自动翻译",
+                "name": "自动模式",
                 "keystring": ""
             },
             "_3": {

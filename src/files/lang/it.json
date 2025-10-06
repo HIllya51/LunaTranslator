@@ -3,7 +3,6 @@
     "小学馆": "Sala della scuola elementare",
     "灵格斯词典": "Dizionario lingo",
     "查词": "Cerca parole",
-    "自动翻译": "Traduzione automatica",
     "打开设置": "Apri impostazioni",
     "复制到剪贴板": "copia negli appunti",
     "显示/隐藏原文": "Mostra/Nascondi testo originale",
@@ -421,7 +420,6 @@
     "删除行": "Elimina righe",
     "使用": "applicare",
     "兼容接口": "Interfaccia compatibile",
-    "手动翻译": "Traduzione manuale",
     "显示引擎": "Motore di visualizzazione",
     "阴影字体": "Carattere ombra",
     "测试": "prova",
@@ -874,5 +872,7 @@
     "其他语言": "Altre lingue",
     "语言名称": "Nome della lingua",
     "语言代码": "Codice lingua",
-    "可拖动的": "Trascinabile"
+    "可拖动的": "Trascinabile",
+    "手动执行": "Esecuzione manuale",
+    "自动模式": "Modalità automatica"
 }
