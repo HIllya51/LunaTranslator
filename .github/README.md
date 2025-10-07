@@ -2,7 +2,7 @@
 
 # LunaTranslator [下载 & 启动 & 更新](https://docs.lunatranslator.org/zh/README.html)
 
-> **一款视觉小说翻译器**
+> **视觉小说翻译器**
 
 ## 功能支持
 
@@ -34,4 +34,4 @@ LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 
 <a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
 
-<img src='../src/files/static/zan.jpg' style="height: 350px !important;">
+<img src='../src/files/static/zan.jpg' style="height: 300px !important;">
