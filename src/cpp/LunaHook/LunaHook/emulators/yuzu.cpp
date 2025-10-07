@@ -190,6 +190,34 @@ namespace
             if (addr)
                 return addr;
         }
+        BYTE pattern3[] = {
+            // Eden v0.3
+            0xe8, XX4,
+            0x48, 0x8B, 0x0e,
+            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x02,
+            0x74, 0x20,
+            0x3e, 0x3e, 0x3e, 0x3e, //
+            0x0f, 0xb6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3c, 0x03,
+            0x74, 0x10,
+            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
+            0x90,
+            0x3C, 0x04,
+            0x0F, 0x85, XX4};
+        for (auto addr : Util::SearchMemory(pattern3, sizeof(pattern3), PAGE_EXECUTE, processStartAddress, processStopAddress))
+        {
+            if (!(0 ||
+                  ((((BYTE *)addr)[5 + 3 + 3] == 0x20) &&
+                   (((BYTE *)addr)[5 + 3 + 7 + 1 + 2 + 2 + 4 + 3] == 0x20) &&
+                   (((BYTE *)addr)[5 + 3 + 7 + 1 + 2 + 2 + 4 + 7 + 1 + 2 + 2 + 3] == 0x20))))
+                continue;
+            addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
+            if (addr)
+                return addr;
+        }
         return 0;
     }
     uintptr_t find_Network_RoomMember_SendGameInfo()

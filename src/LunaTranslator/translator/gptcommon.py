@@ -51,7 +51,7 @@ def commonparseresponse_good(
         try:
             if len(json_data["choices"]) == 0:
                 continue
-            delta = json_data["choices"][0].get("delta", {})
+            delta: dict = json_data["choices"][0].get("delta", {})
             msg: str = delta.get("content", None)
             reasoning_content: str = delta.get("reasoning_content", None)
             if reasoning_content:

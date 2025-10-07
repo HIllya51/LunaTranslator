@@ -3,7 +3,7 @@
 namespace mages
 {
 
-    std::map<WORD, std::wstring> createTable(int _idx)
+    std::map<DWORD, std::wstring> createTable(int _idx)
     {
         auto compound_charsA = LoadResData(std::vector<const wchar_t *>{
                                                L"compound_chars_default",
@@ -13,6 +13,7 @@ namespace mages
                                                L"",
                                                L"",
                                                L"compound_chars_SGHD",
+                                               L"",
                                                L"",
                                            }[_idx],
                                            L"COMPOUND_CHARS");
@@ -26,6 +27,7 @@ namespace mages
                                         L"charset_SG_Linear_Bounded_Phenogram",
                                         L"charset_SGHD",
                                         L"charset_IwakuraAria",
+                                        L"charset_9",
                                     }[_idx],
                                     L"CHARSET");
 
@@ -33,7 +35,7 @@ namespace mages
         auto charset = StringToWideString(charsetA);
         strReplace(charset, L"\n");
         strReplace(charset, L"\r");
-        std::map<WORD, std::wstring> table = {};
+        std::map<DWORD, std::wstring> table = {};
 
         for (auto line : strSplit(compound_chars, L"\n"))
         {
@@ -50,23 +52,50 @@ namespace mages
             auto end = std::stoi(keys[1], &_, 16);
             for (auto i = start; i <= end; i++)
             {
-                auto charCode = ((i & 0xFF) << 8) | i >> 8; // swap endian
+                auto charCode = ((i & 0xFF) << 8) | i >> 8;
                 table[charCode] = val;
             }
         }
 
-        WORD charCode;
+        DWORD charCode;
         for (auto i = 0; i < charset.size(); i++)
         {
-            charCode = 0x8000 + i;
-            charCode = ((charCode & 0xFF) << 8) | charCode >> 8; // swap endian (0x8001 -> 0x0180)
-            table[charCode] = charset[i];
+            if (_idx == 9)
+            {
+                /*
+    while ( *v14 != 255 )
+    {
+      if ( (*v14 & 0x80) != 0 )
+      {
+        v55 = v14[3] + (v14[2] << 8) + (v14[1] << 16) + ((*v14 & 0x7F) << 24);
+                */
+                uint8_t *v14 = (uint8_t *)&i;
+                charCode = v14[3] + (v14[2] << 8) + (v14[1] << 16) + 0x80 + ((*v14) << 24);
+                table[charCode] = charset[i];
+            }
+            else
+            {
+                charCode = 0x8000 + i;
+                charCode = ((charCode & 0xFF) << 8) | charCode >> 8;
+                table[charCode] = charset[i];
+            }
         }
         return table;
     }
 
-    std::wstring mages_decode(WORD charCode, int _idx)
+    std::wstring mages_decode(int _idx, uintptr_t &addr)
     {
+        DWORD charCode;
+        if (_idx == 9)
+        {
+            charCode = *(DWORD *)addr;
+            addr += 4;
+        }
+        else
+        {
+            charCode = *(WORD *)addr;
+            addr += 2;
+        }
         static auto table = createTable(_idx);
         auto found = table.find(charCode);
         if (found == table.end())
@@ -96,9 +125,7 @@ namespace mages
             }
             if (c >= 0x80)
             { // readChar
-                auto charCode = *(WORD *)edx;
-                edx += 2;
-                s += mages_decode(charCode, _idx);
+                s += mages_decode(_idx, edx);
             }
             else
             { // readControl
@@ -122,9 +149,7 @@ namespace mages
                             edx += 1;
                         else
                         {
-                            auto charCode = *(WORD *)edx;
-                            edx += 2;
-                            bottom += mages_decode(charCode, _idx);
+                            bottom += mages_decode(_idx, edx);
                         }
                     }
                     if (bottom.size())
@@ -210,10 +235,7 @@ namespace mages
                                 }
                                 else
                                 { // rubi
-                                    auto charCode = *(WORD *)edx;
-                                    edx += 2;
-
-                                    rubi += mages_decode(charCode, _idx);
+                                    rubi += mages_decode(_idx, edx);
                                 }
                             } // end while
                         }
@@ -228,10 +250,7 @@ namespace mages
                         }
                         else
                         { // char (text)
-                            auto charCode = *(WORD *)edx;
-                            edx += 2;
-
-                            auto cc = mages_decode(charCode, _idx);
+                            auto cc = mages_decode(_idx, edx);
                             bottom += cc;
                             s += cc;
                         }
@@ -520,6 +539,9 @@ v60 = v26[1] + ((v28 & 0x7F) << 8);
                 case 0xAF970: // Never 7 - The End of Infinity
                 case 0x6C180: // Ever17 -the out of infinity-
                     gametype = 8;
+                    break;
+                case 0xC8D60: // メモリーズオフ 双想 ～Not always true～
+                    gametype = 9;
                     break;
                 default:
                     gametype = 8;
