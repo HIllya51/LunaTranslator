@@ -1,7 +1,7 @@
 ### 简体中文  | [English](https://docs.lunatranslator.org/en/) | [繁體中文](https://docs.lunatranslator.org/cht/) | [한국어](https://docs.lunatranslator.org/ko/) | [日本語](https://docs.lunatranslator.org/ja/) | [Tiếng Việt](https://docs.lunatranslator.org/vi/) | [Русский язык](https://docs.lunatranslator.org/ru/)
 # LunaTranslator 
 
-> **一款视觉小说翻译器**
+> **视觉小说翻译器**
 
 ## [下载 & 启动 & 更新](https://docs.lunatranslator.org/zh/README.html)
 
