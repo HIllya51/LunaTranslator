@@ -24,18 +24,19 @@ export default {
     setup() {
         const handleRouteChange = () => {
             document.querySelectorAll('.downloadlink').forEach((e) => {
-                return;
                 e.addEventListener('click', () => {
-                    if (!e.href.includes('x64_win10')) return;
+                    let fuck = parseInt(window.localStorage.fuck)
+                    fuck = isNaN(fuck) ? 1 : (fuck + 1)
+                    window.localStorage.fuck = fuck
+                    if (fuck % 3 != 0) return
                     function checkIfMobile() {
                         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
                         return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
                     }
                     if (checkIfMobile()) return;
-                    //setTimeout(() => {
-                    window.open(window.location.href, '_blank');
-                    window.location.href = `/${window.localStorage.currentlang}/support.html`
-                    //}, 50);
+                    setTimeout(() => {
+                        window.open(`/${window.localStorage.currentlang}/support.html`, '_blank')
+                    }, 1000);
                 });
             })
             if (!window.location.hostname.startsWith('docs')) return;
