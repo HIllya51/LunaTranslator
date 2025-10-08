@@ -1,4 +1,4 @@
-# Download & Launch & Update
+# Software Download & FAQ
 
 ## Download
 

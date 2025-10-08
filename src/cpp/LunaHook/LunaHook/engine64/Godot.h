@@ -6,8 +6,11 @@ public:
     Godot()
     {
 
-        check_by = CHECK_BY::FILE;
-        check_by_target = L"*.pck";
+        check_by = CHECK_BY::CUSTOM;
+        check_by_target = []()
+        {
+            return Util::CheckFile(L"*.pck") || Util::SearchResourceString(L"Godot Engine");
+        };
     };
     bool attach_function();
 };

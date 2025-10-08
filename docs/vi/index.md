@@ -11,7 +11,7 @@ hero:
   #   alt: LunaTranslator  
   actions:  
     - theme: brand  
-      text: Tải xuống & Khởi chạy & Cập nhật
+      text: Tải xuống phần mềm & Câu hỏi thường gặp
       link: ./README  
     - theme: alt  
       text: Cách sử dụng cơ bản

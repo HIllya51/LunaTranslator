@@ -2690,6 +2690,12 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // DYNAMIC CHORD feat.[rēve parfait]
+    {0x81a48614, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
+    {0x81a5d890, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
+    // DYNAMIC CHORD feat.Liar-S Remaster edition
+    {0x81B67904, {CODEC_UTF16, 0, 0x14, 0, 0, 0x0100447021272000ull, "1.0.0"}},
+    {0x81B6796C, {CODEC_UTF16, 0, 0x14, 0, NewLineCharFilterW, 0x0100447021272000ull, "1.0.0"}},
     // うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
     {0x80038B34, {0, 0, 0, 0, f0100D4300EBF8000, 0x0100D4300EBF8000ull, "1.0.0"}},
     // 連呪
@@ -4155,9 +4161,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x800C4C1C, {CODEC_UTF8, 0, 0, 0, f0100451020714000, 0x0100451020714000ull, "1.0.0"}},
     // 戦場の円舞曲
     {0x80040010, {0, 0, 0, 0, F01005AF00E9DC000, 0x01002080191CE000ull, "1.0.0"}},
-    // DYNAMIC CHORD feat.[rēve parfait]
-    {0x81a48614, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
-    {0x81a5d890, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
     // 夏目友人帳 ～葉月の記～
     {0x8187D0CC, {CODEC_UTF16, 0, 0X14, 0, F0100DC1021662000, 0x0100DC1021662000ull, "1.0.0"}},
     {0x8188DA38, {CODEC_UTF16, 0, 0X14, 0, F0100DC1021662000, 0x0100DC1021662000ull, "1.0.1"}},

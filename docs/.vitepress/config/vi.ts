@@ -62,7 +62,7 @@ export const vi = defineConfig({
       {
         text: 'Cơ bản',
         items: [
-          { text: 'Tải xuống & Khởi chạy & Cập nhật', link: '/vi/README' },
+          { text: 'Tải xuống phần mềm & Câu hỏi thường gặp', link: '/vi/README' },
           { text: 'Cách sử dụng cơ bản', link: '/vi/basicuse' },
           { text: 'Tài trợ', link: '/vi/support' }
         ]

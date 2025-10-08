@@ -1,4 +1,4 @@
-# Tải xuống & Khởi chạy & Cập nhật
+# Tải xuống phần mềm & Câu hỏi thường gặp
 
 ## Tải xuống
 

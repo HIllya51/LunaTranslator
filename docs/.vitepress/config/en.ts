@@ -19,7 +19,7 @@ export const en = defineConfig({
             {
                 text: 'Basic',
                 items: [
-                    { text: 'Download & Launch & Update', link: '/en/README' },
+                    { text: 'Software Download & FAQ', link: '/en/README' },
                     { text: 'Basic Usage', link: '/en/basicuse' },
                     { text: 'Sponsorship', link: '/en/support' }
                 ]

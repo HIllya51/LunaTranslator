@@ -80,7 +80,7 @@ export const ko = defineConfig({
             {
                 text: '기본',
                 items: [
-                    { text: '다운로드 & 시작 & 업데이트', link: '/ko/README' },
+                    { text: '소프트웨어 다운로드 & 자주 묻는 질문', link: '/ko/README' },
                     { text: '기본 사용법', link: '/ko/basicuse' },
                     { text: '작가 지원', link: '/ko/support' }
                 ]

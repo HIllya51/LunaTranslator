@@ -17,6 +17,8 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
+|  | 0100447021272000 | DYNAMIC CHORD feat.Liar-S Remaster edition |
 |  | 0100D4300EBF8000 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 |  | 01007FD0211DA000 | 連呪 |
 |  | 010081D016E4E000 | DIG-ROCK -Documentary of Youthful Sounds- |
@@ -383,7 +385,6 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 |  | 0100AC600EB4C000 | 幻想牢獄のカレイドスコープ |
 |  | 0100451020714000 | 幻想牢獄のカレイドスコープ２ |
 |  | 01002080191CE000 | 戦場の円舞曲 |
-|  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
 |  | 0100DC1021662000 | 夏目友人帳 ～葉月の記～ |
 
 == PSP
