@@ -1,4 +1,4 @@
-from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR, isascii
+from myutils.config import globalconfig, ocrsetting, ocrerrorfix, _TR
 from myutils.commonbase import commonbase
 from language import Languages
 from myutils.utils import qimage2binary
@@ -297,12 +297,12 @@ class OCRResultParsed:
     def _100_f(self, line):
         if ocrerrorfix["use"] == False:
             return line
-        filters = ocrerrorfix["args"]["替换内容"]
+        filters: "list[str]" = ocrerrorfix["args"]["替换内容"]
         for fil in filters:
             if fil == "":
                 continue
             else:
-                if isascii(fil):
+                if fil.isascii():
                     line = re.sub(r"\b{}\b".format(re.escape(fil)), fil, line)
                 else:
                     line = line.replace(fil, filters[fil])

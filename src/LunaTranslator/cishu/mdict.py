@@ -1,6 +1,5 @@
 import base64, uuid, gobject
 from cishu.cishubase import DictTree
-from myutils.config import isascii
 from traceback import print_exc
 from myutils.audioplayer import bass_code_cast
 import json, os, re
@@ -213,9 +212,9 @@ class mdict(cishubase):
             t: str = os.path.basename(f)[:-4]
             if index._mdict._title != "":
                 t1 = index._mdict._title
-                if (isascii(t1)) and (isascii(t)):
+                if t1.isascii() and t.isascii():
                     t = t1
-                elif not isascii(t1):
+                elif not t1.isascii():
                     t = t1
             title = t
         return title

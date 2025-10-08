@@ -13,7 +13,6 @@ from myutils.config import (
     translatorsetting,
     getlanguse,
     _TR,
-    isascii,
     saveallconfig,
     dynamicapiname,
 )
@@ -350,7 +349,7 @@ class BASEOBJECT(QObject):
                 print_exc()
         return res
 
-    def parsehira(self, text):
+    def parsehira(self, text: str):
         need = (
             globalconfig["isshowhira"]
             or globalconfig["show_fenci"]
@@ -359,6 +358,8 @@ class BASEOBJECT(QObject):
         if not need:
             return []
         try:
+            if text.isascii():
+                raise Exception()
             if self.mecab_:
                 return self.mecab_.safeparse(text)
             else:
@@ -464,9 +465,7 @@ class BASEOBJECT(QObject):
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
         currentsignature = uuid.uuid4()
         try:
-            text = POSTSOLVE(
-                text, isEx=waitforresultcallback, isFromHook=isFromHook
-            )
+            text = POSTSOLVE(text, isEx=waitforresultcallback, isFromHook=isFromHook)
             gobject.base.showandsolvesig.emit(origin, text)
             if not text:
                 return
@@ -827,7 +826,7 @@ class BASEOBJECT(QObject):
             text = parsemayberegexreplace(usedict.get("tts_repair_regex", []), text)
         return text
 
-    def matchwhich(self, dic: "dict[dict]", res: str, isorigin: bool):
+    def matchwhich(self, dic: "dict[str, dict[str, str]]", res: str, isorigin: bool):
 
         for item in dic:
             range_ = item.get("range", 0)
@@ -845,8 +844,8 @@ class BASEOBJECT(QObject):
             else:
                 if item["condition"] == 1:
                     if (
-                        isascii(res)
-                        and isascii(item["key"])
+                        res.isascii()
+                        and item["key"].isascii()
                         and (" " not in item["key"])
                     ):  # 目标可能有空格
                         resx = res.split(" ")

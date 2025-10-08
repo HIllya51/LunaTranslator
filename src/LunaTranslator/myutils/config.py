@@ -23,17 +23,6 @@ def mayberelpath(path):
     return path
 
 
-def isascii(s: str):
-    try:
-        return s.isascii()
-    except:
-        try:
-            s.encode("ascii")
-            return True
-        except:
-            return False
-
-
 def tryreadconfig(path, default=None):
     path = gobject.getconfig(path)
     try:
@@ -408,7 +397,7 @@ def ___TR(k: str) -> str:
     if "_" in k:
         fnd = k.find("_")
         return ___TR(k[:fnd]) + " " + ___TR(k[fnd + 1 :])
-    if isascii(k):
+    if k.isascii():
         return k
     loadlanguage()
     __ = languageshow.get(k)

@@ -2,7 +2,7 @@ import NativeUtils, os, threading, uuid, windows
 from tts.basettsclass import TTSbase, SpeechParam
 import xml.etree.ElementTree as ET
 from ctypes import c_int32
-from myutils.config import globalconfig, isascii, _TR
+from myutils.config import globalconfig, _TR
 
 
 class TTS(TTSbase):
@@ -29,7 +29,7 @@ class TTS(TTSbase):
         except:
             pass
         if Name:
-            if not isascii(Name):
+            if not Name.isascii():
                 Name = "[{}]{}".format(_TR("请勿使用非英文路径"), Name)
             if LicenseVersion != "0" and not self.extralicense:
                 Name = "[{}]{}".format(_TR("不可用"), Name)

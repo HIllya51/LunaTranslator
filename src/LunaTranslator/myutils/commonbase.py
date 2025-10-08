@@ -1,6 +1,6 @@
 from myutils.proxy import getproxy
 from myutils.utils import getlangtgt, getlangsrc, getlanguse, stringfyerror
-from myutils.config import _TR, isascii
+from myutils.config import _TR
 from myutils.wrapper import stripwrapper
 from language import Languages
 import requests, types
@@ -218,8 +218,7 @@ class commonbase(multikeyhelper):
         self.proxysession = proxysession(self._globalconfig_key, self.typename)
 
     def smartparselangprompt(self, template: str):
-        _isascii = isascii(template)
-        if _isascii:
+        if template.isascii():
             template = template.replace("{srclang}", self.srclang)
             template = template.replace("{tgtlang}", self.tgtlang)
         else:

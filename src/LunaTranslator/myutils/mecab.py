@@ -1,6 +1,6 @@
 import NativeUtils
 import os
-from myutils.config import isascii, globalconfig
+from myutils.config import globalconfig
 from traceback import print_exc
 from qtsymbols import *
 from sometypes import WordSegResult
@@ -97,7 +97,7 @@ class _base:
             if end:
                 __parsekonge.append(WordSegResult(end, isdeli=True))
         for _ in __parsekonge:
-            if isascii(_.word):
+            if _.word.isascii():
                 _.kana = None
         return __parsekonge
 
@@ -187,7 +187,7 @@ class mecab(_base):
     def maybeenglish(self, field: str):
         _ = field.split("-")
         if len(_) == 2:
-            if isascii(_[1]):
+            if _[1].isascii():
                 return _[1]
 
     def parse(self, text):
@@ -249,7 +249,7 @@ class mecab(_base):
         return result
 
 
-def splitstr(input_str: str, delimiters):
+def splitstr(input_str: str, delimiters: "list[str]") -> "list[str]":
     lst = []
     cl = ""
     while len(input_str):
@@ -280,6 +280,6 @@ class latin(_base):
 
     def parse(self, text: str):
         return (
-            WordSegResult(_, donthighlight=True, isshit=not isascii(_))
+            WordSegResult(_, donthighlight=True, isshit=not _.isascii())
             for _ in splitstr(text, punctuations)
         )

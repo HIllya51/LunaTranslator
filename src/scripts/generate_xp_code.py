@@ -48,6 +48,27 @@ def parsecode(code: str, arch):
             r"\1.\2\3",
             code,
         )
+        pattern = r"([^ ]*)\.isascii\(\)"
+        replacement = r"isascii(\1)"
+        code1 = re.sub(pattern, replacement, code)
+        if code1 != code:
+            code = code1
+            code = (
+                r"""
+
+def isascii(s: str):
+    try:
+        return s.isascii()
+    except:
+        try:
+            s.encode("ascii")
+            return True
+        except:
+            return False
+
+"""
+                + code
+            )
     return code
 
 
