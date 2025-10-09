@@ -932,7 +932,7 @@ namespace
     {
         auto s = buffer->strA();
         s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
-        s = re::sub(s, "#[A-Za-z]+\\[(\\d*\\.)?\\d+\\]+");
+        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)");
         strReplace(s, "#n");
         strReplace(s, "\x84\xbd", "!?");
         buffer->from(s);

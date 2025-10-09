@@ -1610,13 +1610,20 @@ namespace
         last = s;
         buffer->from(s);
     }
+    void f01001010232A2000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringCharReplacer(buffer, TEXTANDLEN("#n"), '\n');
+    }
     void F0100BDD01AAE4000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
         s = re::sub(s, R"(#\w+\[\d+\])");
         s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
-        s = re::sub(s, "(#n)+", " ");
-        s = re::sub(s, "(#[A-Za-z]+[(\\d*[.])?\\d+])+");
+        if (hp->type & CODEC_UTF8)
+            s = re::sub(s, u8R"(#n(　)*)");
+        else
+            s = re::sub(s, R"(#n(\x81\x40)*)");
+        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)");
         buffer->from(s);
     }
     void F0100C310110B4000(TextBuffer *buffer, HookParam *hp)
@@ -1769,7 +1776,7 @@ namespace
     {
         auto s = buffer->strA();
         s = re::sub(s, "\\s");
-        s = re::sub(s, "#[A-Za-z]+(\\[(\\d*\\.)?\\d+\\])+");
+        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)");
         s = re::sub(s, "#[a-z]");
         s = re::sub(s, "[a-z]");
         buffer->from(s);
@@ -2407,6 +2414,22 @@ namespace
             hp.type = CODEC_UTF16 | USING_STRING;
             static auto _ = NewHook(hp, hpx->name);
             F01006530151F0000_collect(s.c_str());
+            buffer->clear();
+        }
+    }
+    namespace
+    {
+        DECLARE_FUNCTION(F01001010232A2000_collect, const char *_);
+        void F01001010232A2000(TextBuffer *buffer, HookParam *hpx)
+        {
+            F0100BDD01AAE4000(buffer, hpx);
+            auto s = buffer->strA();
+            HookParam hp;
+            hp.address = (uintptr_t)F01001010232A2000_collect;
+            hp.offset = GETARG(1);
+            hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
+            static auto _ = NewHook(hp, hpx->name);
+            F01001010232A2000_collect(s.c_str());
             buffer->clear();
         }
     }
@@ -3120,6 +3143,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8005388c, {CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // choice
     {0x80065010, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // character description
     {0x8009c780, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100BDD01AAE4000ull, "1.0.0"}}, // prompt
+    // 9 R.I.P. sequel
+    {0x800250B0, {CODEC_UTF8, 2, 0, 0, F01001010232A2000, 0x01001010232A2000ull, "1.0.0"}},
+    {0x80018D60, {CODEC_UTF8, 0, 0, 0, F01001010232A2000, 0x01001010232A2000ull, "1.0.0"}},
+    {0x800242C0, {CODEC_UTF8, 0, 0, 0, f01001010232A2000, 0x01001010232A2000ull, "1.0.0"}},
     // キスベル
     {0x8049d958, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, 0x0100BD7015E6C000ull, "1.0.0"}}, // text
     // ピオフィオーレの晩鐘 -Ricordo-  CN
@@ -3703,7 +3730,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 泡沫のユークロニア trail
     {0x81A661D8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}},
     {0x81A66EC8, {CODEC_UTF16, 1, 0, 0, F010027401A2A2000_2, 0x0100D2A02101C000ull, "1.0.0"}},  // prolog
-    {0x818438B0, {CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100D2A02101C000ull, nullptr}}, // 1.0.0 & 1.0.1
+    {0x818438B0, {CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100D2A02101C000ull, nullptr}}, // 1.0.0 & 1.0.1 & 1.0.2
     // リトルバスターズ！Converted Edition
     {0x800A97C8, {CODEC_UTF8, 9, 0, 0, F0100943010310000, 0x0100943010310000ull, "1.0.0"}},
     // GrimGrimoire OnceMore

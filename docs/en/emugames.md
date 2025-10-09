@@ -141,6 +141,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | 0100CBA014014000 | 探偵撲滅 |
 |  | 0100CC401A16C000 | Ys X: Nordics |
 |  | 0100BDD01AAE4000 | 9 R.I.P |
+|  | 01001010232A2000 | 9 R.I.P. sequel |
 |  | 0100BD7015E6C000 | キスベル |
 |  | 0100C310110B4000 | ピオフィオーレの晩鐘 -Ricordo-  CN |
 |  | 01005F700DC56000 | ピオフィオーレの晩鐘 -Ricordo- |
