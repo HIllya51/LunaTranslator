@@ -491,7 +491,8 @@ bool InsertWillPlus4Hook()
   HookParam hp;
   hp.address = addr;
   hp.offset = 7;
-  // hp.filter_fun = WillPlus_extra_filter;
+  hp.filter_fun = WillPlus_extra_filter;
+  hp.lineSeparator = L"\\n";
   hp.type = USING_STRING | CODEC_UTF16 | EMBED_ABLE;
   hp.text_fun = will3::hookBefore;
   hp.embed_fun = will3::hookafter;
