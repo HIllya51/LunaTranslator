@@ -101,172 +101,65 @@ namespace
 }
 namespace
 {
-    bool Hook_Network_RoomMember_SendGameInfo_at(uintptr_t addr)
+    bool LOG_INFO()
     {
+        // 其中，部分版本的target是放在string_view里的，部分版本的target是个裸char*指针。
+        static const char target[] = "Booting game: {:016X} | {} | {}";
+        auto addr = MemDbg::findBytes(target, sizeof(target), processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+        addr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+        /*
+.text:0000000140B117B2 48 8D 05 67 EB 51 00                          lea     rax, aBootingGame016 ; "Booting game: {:016X} | {} | {}"
+.text:0000000140B117B9 48 89 44 24 28                                mov     qword ptr [rsp+420h+var_3F8], rax
+.text:0000000140B117BE 48 8D 05 DB EA 51 00                          lea     rax, aBootgame  ; "BootGame"
+.text:0000000140B117C5 48 89 44 24 20                                mov     [rsp+420h+Reserved], rax
+.text:0000000140B117CA 41 B9 5B 08 00 00                             mov     r9d, 85Bh
+.text:0000000140B117D0 4D 8B C2                                      mov     r8, r10
+.text:0000000140B117D3 B2 02                                         mov     dl, 2
+.text:0000000140B117D5 B1 52                                         mov     cl, 52h ; 'R'
+.text:0000000140B117D5                               ;   } // starts at 140B11600
+.text:0000000140B117D7                               ;   try {
+.text:0000000140B117D7 E8 44 55 73 FF                                call    sub_140246D20
+        */
+        BYTE sig[] = {
+            0xb2, XX,
+            0xb1, XX,
+            0xe8, XX4};
+        addr = MemDbg::findBytes(sig, sizeof(sig), addr, addr + 0x100);
+        if (!addr)
+            return false;
         HookParam hp;
-        hp.address = addr;
+        hp.address = addr + 9 + *(int *)(addr + 5);
+        hp.user_value = *(char *)(addr + 1) | ((*(char *)(addr + 3)) << 8);
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
-            // void __fastcall Network::RoomMember::SendGameInfo(
-            // Network::RoomMember *this,
-            // const AnnounceMultiplayerRoom::GameInfo *game_info)
-            game_info = *(GameInfo *)context->rdx;
+            if (((uint8_t)context->argof(2) | ((uint8_t)context->argof(1) << 8)) != hp->user_value)
+                return;
+            auto loadinfo = (char *)context->argof(5);
+            if (strcmp("BootGame", loadinfo))
+                return;
+            loadinfo = (char *)context->argof(6);
+            if (!IsBadReadPtr(*(char **)loadinfo, sizeof(target)))
+                loadinfo = *(char **)loadinfo;
+            if (strcmp(target, loadinfo))
+                return;
+            auto param = (uint64_t *)context->argof(7);
+            auto v134 = (uint64_t *)param[1];
+            auto title_id = v134[0];
+            auto title_name = std::string((char *)v134[2], v134[3]);
+            title_name = title_name.substr(0, title_name.size() - sizeof("(64-bit)")); // const auto instruction_set_suffix = is_64bit ? tr("(64-bit)") : tr("(32-bit)");
+            auto title_version = std::string((char *)v134[4], v134[5]);
+            game_info = GameInfo{title_name, title_id, title_version};
             if (game_info.id)
             {
                 HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
             }
             jitaddrclear();
         };
-        return NewHook(hp, "yuzuGameInfo");
-    }
-    uintptr_t find_Network_RoomMember_SendGameInfo_1()
-    {
-        // void RoomMember::SendGameInfo(const GameInfo& game_info) {
-        //     room_member_impl->current_game_info = game_info;
-        //     if (!IsConnected())
-        //         return;
-
-        //     Packet packet;
-        //     packet.Write(static_cast<u8>(IdSetGameInfo));
-        //     packet.Write(game_info.name);
-        //     packet.Write(game_info.id);
-        //     packet.Write(game_info.version);
-        //     room_member_impl->Send(std::move(packet));
-        // }
-        BYTE pattern[] = {
-            0x49, 0x8B, XX,
-            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x02,
-            0x74, 0x1C,
-            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x03,
-            0x74, 0x10,
-            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x04,
-            0x0F, 0x85, XX4};
-        for (auto addr : Util::SearchMemory(pattern, sizeof(pattern), PAGE_EXECUTE, processStartAddress, processStopAddress))
-        {
-            // Citron-Windows-Canary-Refresh_0.6.1为0x20，其他为0x28
-            if (!(((((BYTE *)addr)[3 + 3] == 0x20) &&
-                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 3] == 0x20) &&
-                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 7 + 1 + 2 + 2 + 3] == 0x20)) ||
-                  ((((BYTE *)addr)[3 + 3] == 0x28) &&
-                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 3] == 0x28) &&
-                   (((BYTE *)addr)[3 + 7 + 1 + 2 + 2 + 7 + 1 + 2 + 2 + 3] == 0x28))))
-                continue;
-            addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
-            // 有两个，但另一个离起始很远
-            if (addr)
-                return addr;
-        }
-        BYTE pattern2[] = {
-            // Citron v0.7.0
-            0xe8, XX4,
-            0x4c, 0x8B, 0x06,
-            0x41, 0x0F, 0xB6, 0x80, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x02,
-            0x74, 0x1e,
-            0x41, 0x0F, 0xB6, 0x80, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x03,
-            0x74, 0x11,
-            0x41, 0x0F, 0xB6, 0x80, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x04,
-            0x0F, 0x85, XX4};
-        for (auto addr : Util::SearchMemory(pattern2, sizeof(pattern2), PAGE_EXECUTE, processStartAddress, processStopAddress))
-        {
-
-            if (!(0 ||
-                  ((((BYTE *)addr)[5 + 3 + 4] == 0x28) &&
-                   (((BYTE *)addr)[5 + 3 + 8 + 1 + 2 + 2 + 4] == 0x28) &&
-                   (((BYTE *)addr)[5 + 3 + 8 + 1 + 2 + 2 + 8 + 1 + 2 + 2 + 4] == 0x28))))
-                continue;
-            addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
-            if (addr)
-                return addr;
-        }
-        BYTE pattern3[] = {
-            // Eden v0.3
-            0xe8, XX4,
-            0x48, 0x8B, 0x0e,
-            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x02,
-            0x74, 0x20,
-            0x3e, 0x3e, 0x3e, 0x3e, //
-            0x0f, 0xb6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3c, 0x03,
-            0x74, 0x10,
-            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x04,
-            0x0F, 0x85, XX4};
-        for (auto addr : Util::SearchMemory(pattern3, sizeof(pattern3), PAGE_EXECUTE, processStartAddress, processStopAddress))
-        {
-            if (!(0 ||
-                  ((((BYTE *)addr)[5 + 3 + 3] == 0x20) &&
-                   (((BYTE *)addr)[5 + 3 + 7 + 1 + 2 + 2 + 4 + 3] == 0x20) &&
-                   (((BYTE *)addr)[5 + 3 + 7 + 1 + 2 + 2 + 4 + 7 + 1 + 2 + 2 + 3] == 0x20))))
-                continue;
-            addr = MemDbg::findEnclosingAlignedFunction_strict(addr, 0x100);
-            if (addr)
-                return addr;
-        }
-        return 0;
-    }
-    uintptr_t find_Network_RoomMember_SendGameInfo()
-    {
-        auto addr = find_Network_RoomMember_SendGameInfo_1();
-        if (addr)
-            return addr;
-        // sumi-gen-signed-0.9.4-win-x64
-        BYTE pattern[] = {
-            0x48, 0x89, XX, 0x24, 0x08,
-            0x48, 0x89, XX, 0x24, 0x10,
-            0x48, 0x89, XX, 0x24, 0x18,
-            0x57,
-            0x48, 0x83, XX, XX,
-            0x48, 0x8b, XX,
-            0x48, 0x8b, XX,
-            0x48, 0x8b, XX,
-            0x48, XX, XX, XX4,
-            0xe8, XX4,
-            0x3e, 0x48, XX, XX, XX,
-            0x48, 0x89, XX, XX4,
-            0x48, 0x8d, XX, XX4,
-            0x48, 0x8d, XX, XX,
-            0xe8, XX4,
-            0x48, 0x8b, 0x0e,
-            0x0f, 0xb6, 0x81, XX4,
-            0x90,
-            0x3C, 0x02,
-            0x74, 0x20,
-            XX4,
-            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x03,
-            0x74, 0x10,
-            0x0F, 0xB6, 0x81, XX, 0x01, 0x00, 0x00,
-            0x90,
-            0x3C, 0x04,
-            0x0F, 0x85, XX4};
-        addr = MemDbg::findBytes(pattern, sizeof(pattern), processStartAddress, processStopAddress);
-        if (addr)
-            return addr;
-        return 0;
-    }
-    bool Hook_Network_RoomMember_SendGameInfo()
-    {
-        auto addr = find_Network_RoomMember_SendGameInfo_1();
-        if (!addr)
-            return false;
-        return Hook_Network_RoomMember_SendGameInfo_at(addr);
+        return NewHook(hp, "LOG_INFO");
     }
 }
 namespace
@@ -348,7 +241,7 @@ bool yuzu::attach_function1()
         return false;
     yuzu_load_functions(emfunctionhooks);
     JIT_Keeper<NSGameInfoC>::CreateStatic(NS_CheckEmAddrHOOKable);
-    if (!Hook_Network_RoomMember_SendGameInfo())
+    if (!LOG_INFO())
         return false;
     HookParam hp;
     hp.address = DoJitPtr;
@@ -368,6 +261,6 @@ bool yuzu::attach_function1()
 bool yuzu::attach_function()
 {
     if (!attach_function1())
-        HostInfo(HOSTINFO::Warning, TR[EMUVERSIONTOOOLD]);
+        HostInfo(HOSTINFO::EmuWarning, TR[EMUVERSIONTOOOLD]);
     return true;
 }

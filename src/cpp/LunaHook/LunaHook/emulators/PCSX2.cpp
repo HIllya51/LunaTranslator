@@ -379,6 +379,6 @@ bool PCSX2::attach_function1()
 bool PCSX2::attach_function()
 {
     if (!attach_function1())
-        HostInfo(HOSTINFO::Warning, TR[EMUVERSIONTOOOLD]);
+        HostInfo(HOSTINFO::EmuWarning, TR[EMUVERSIONTOOOLD]);
     return true;
 }

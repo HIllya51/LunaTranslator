@@ -4,7 +4,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 | Nền tảng | chi tiết Các trình giả lập được hỗ trợ |
 | - | - |
-| NS | ~~yuzu(&ge;1616)~~, ~~sudachi~~, [Citron](https://citron-emu.org/), [Eden](https://eden-emu.dev/) |
+| NS | ~~yuzu(&ge;1616)~~, ~~sudachi~~, [<s>Eden</s>](https://eden-emu.dev/), [Citron](https://citron-emu.org/)|
 | PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
 | PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
 | PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
@@ -17,6 +17,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100B9701BD4E000 | DistortedCode －生者の残り香－ |
 |  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
 |  | 0100447021272000 | DYNAMIC CHORD feat.Liar-S Remaster edition |
 |  | 0100D4300EBF8000 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |

@@ -255,8 +255,8 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID)
 	break;
 	case DLL_PROCESS_DETACH:
 	{
-		MH_Uninitialize();
 		detachall();
+		MH_Uninitialize();
 		delete[] hooks;
 		UnmapViewOfFile(commonsharedmem);
 	}

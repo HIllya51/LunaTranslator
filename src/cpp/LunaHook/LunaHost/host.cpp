@@ -87,7 +87,7 @@ namespace
 		DWORD bytesRead;
 		ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr);
 		if (memcmp(hookversion, LUNA_VERSION, sizeof(hookversion)) != 0)
-			Host::InfoOutput(HOSTINFO::Warning, TR[UNMATCHABLEVERSION]);
+			Host::InfoOutput(HOSTINFO::EmuWarning, TR[UNMATCHABLEVERSION]);
 	}
 	void __handlepipethread(DWORD processId, HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
 	{
@@ -407,7 +407,7 @@ namespace Host
 			{
 			case HOSTINFO::Notification:
 				return;
-			case HOSTINFO::Warning:
+			case HOSTINFO::EmuWarning:
 				text = FormatString(L"[%s]", TR[T_WARNING]) + text;
 				break;
 			case HOSTINFO::EmuGameName:

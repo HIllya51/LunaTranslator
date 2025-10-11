@@ -23,9 +23,14 @@ from gui.dynalang import (
 )
 
 
-def RichMessageBox(parent, title, text: str, iserror=True):
+def RichMessageBox(parent, title, text: str, iserror=True, iswarning=False):
     b = QMessageBox(parent)
-    b.setIcon((QMessageBox.Icon.Information, QMessageBox.Icon.Critical)[iserror])
+    icon = (
+        QMessageBox.Icon.Critical
+        if iserror
+        else (QMessageBox.Icon.Warning if iswarning else QMessageBox.Icon.Information)
+    )
+    b.setIcon(icon)
     b.setWindowTitle(title)
     b.setText(text.replace("\n", "<br>"))
     b.setTextFormat(Qt.TextFormat.RichText)

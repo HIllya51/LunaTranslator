@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     FocusSpin,
     FocusCombo,
+    RichMessageBox,
     TableViewW,
 )
 from gui.dynalang import (
@@ -33,7 +34,7 @@ from gui.dynalang import (
 
 class HOSTINFO:
     Console = 0
-    Warning = 1
+    EmuWarning = 1
     EmuGameName = 2
     Notification = 3
 
@@ -948,8 +949,17 @@ class hookselect(closeashidewindow):
             self.textbrowappendandmovetoend(
                 self.sysOutput, get_time_stamp() + " " + sentence
             )
-        elif info == HOSTINFO.Warning:
-            QMessageBox.warning(self, _TR("警告"), sentence)
+        elif info == HOSTINFO.EmuWarning:
+            RichMessageBox(
+                self,
+                _TR("警告"),
+                sentence
+                + '\n<a href="{}">{}</a>'.format(
+                    dynamiclink("emugames.html", docs=True), _TR("使用说明")
+                ),
+                iserror=False,
+                iswarning=True,
+            )
         elif info == HOSTINFO.EmuGameName:
             gobject.base.displayinfomessage(sentence, "<msg_info_refresh>")
         elif info == HOSTINFO.Notification:

@@ -67,7 +67,7 @@ struct passinfo
 };
 bool Ryujinx::attach_function()
 {
-  HostInfo(HOSTINFO::Warning, TR[RYUJINXUNSUPPORT]);
+  HostInfo(HOSTINFO::EmuWarning, TR[RYUJINXUNSUPPORT]);
   return true;
   /*
   UnsafeJitFunction

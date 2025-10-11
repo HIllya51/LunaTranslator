@@ -399,7 +399,7 @@ void LunaHost::on_info(HOSTINFO type, const std::wstring &warning)
 {
     switch (type)
     {
-    case HOSTINFO::Warning:
+    case HOSTINFO::EmuWarning:
         MessageBoxW(winId, warning.c_str(), TR[T_WARNING], 0);
         break;
     default:
