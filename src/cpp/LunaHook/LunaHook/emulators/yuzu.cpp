@@ -142,9 +142,9 @@ namespace
             if (strcmp("BootGame", loadinfo))
                 return;
             loadinfo = (char *)context->argof(6);
-            if (!IsBadReadPtr(*(char **)loadinfo, sizeof(target)))
-                loadinfo = *(char **)loadinfo;
-            if (strcmp(target, loadinfo))
+            if (!((strcmp(target, loadinfo) == 0) ||
+                  ((!IsBadReadPtr(*(char **)loadinfo, sizeof(target))) &&
+                   (strcmp(target, *(char **)loadinfo) == 0))))
                 return;
             auto param = (uint64_t *)context->argof(7);
             auto v134 = (uint64_t *)param[1];

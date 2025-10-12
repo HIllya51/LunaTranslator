@@ -769,12 +769,16 @@ class AnkiWindow(QWidget):
                 self.window().close()
             QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
         except requests.RequestException:
-            t = _TR("无法连接到anki\n请打开anki，并安装AnkiConnect插件") + '\n<a href="{}">{}</a>'.format(
+            t = _TR(
+                "无法连接到anki\n请打开anki，并安装AnkiConnect插件"
+            ) + '\n<a href="{}">{}</a>'.format(
                 dynamiclink("qa2.html", docs=True), _TR("使用说明")
             )
             RichMessageBox(self, _TR("错误"), t)
         except anki.AnkiUnknownException:
-            t = _TR("无法连接到anki\nAnkiConnect端口可能被占用，请检查并终止占用端口的进程")
+            t = _TR(
+                "无法连接到anki\nAnkiConnect端口可能被占用，请检查并终止占用端口的进程"
+            )
             RichMessageBox(self, _TR("错误"), t)
         except anki.AnkiException as e:
             QMessageBox.critical(self, _TR("错误"), str(e))
@@ -1039,7 +1043,9 @@ class HistoryViewer(QWidget):
             print(_, w, s, t)
             item = QStandardItem(w)
             t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
-            item.setToolTip(t + "\n" + s)
+            if s:
+                t = t + "\n" + s
+            item.setToolTip(t)
             item.setData(s, self.SentenceRole)
             item.setData(_, self.IndexRole)
             self.model.appendRow([item])

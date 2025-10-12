@@ -16,6 +16,9 @@ hero:
     - theme: alt  
       text: Cách sử dụng cơ bản
       link: ./basicuse  
+    - theme: alt
+      text: Tài trợ
+      link: ./support
     - theme: alt  
       text: Github  
       link: https://github.com/HIllya51/LunaTranslator  

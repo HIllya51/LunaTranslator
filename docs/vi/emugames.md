@@ -172,7 +172,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 |  | 010051701A7BE000 | ワンド オブ フォーチュン Ｒ２ ＦＤ ～君に捧げるエピローグ～ |
 |  | 010086C00AF7C000 | Yo-kai Watch 4++ |
 |  | 010079C017B98000 | キューピット・パラサイト -Sweet & Spicy Darling.- |
-|  | 010061A01C1CE000 | DesperaDrops |
+|  | 010061A01C1CE000 | DesperaDrops／デスペラドロップス |
 |  | 010008F020CD8000 | Despera Drops |
 |  | 0100EF00134F4000 | Dragon Ball Z: Kakarot |
 |  | 0100EDD018032000 | Harvestella |
@@ -326,7 +326,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 |  | 0100FB50156E6000 | フルキス |
 |  | 0100BEE0156D8000 | フルキスS |
 |  | 010019C0155D8000 | アーキタイプ・アーカディア |
-|  | 0100B5801D7CE000 | 神凪ノ杜 |
+|  | 0100B5801D7CE000 | 神凪ノ杜 五月雨綴り |
 |  | 010053F0128DC000 | シェルノサージュ ～失われた星へ捧ぐ詩～ DX |
 |  | 0100D8B019FC0000 | フローラル・フローラブ |
 |  | 01001BB01E8E2000 | FANTASIAN Neo Dimension |
