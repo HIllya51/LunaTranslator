@@ -2718,6 +2718,14 @@ namespace
     void F0100B9701BD4E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
+        static std::wstring last;
+        if (s.find(L"\\u") != s.npos)
+        {
+            last = s;
+            return buffer->clear();
+        }
+        s = last + s;
+        last.clear();
         s = re::sub(s, LR"(\\\w)");
         s = re::sub(s, LR"(#r(.*?)\|(.*?)#)", L"$1"); // #r日常|それ#
         buffer->fromWA(s);
@@ -2725,21 +2733,16 @@ namespace
     void F0100B9701BD4E0002(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
+        static int idx = 0;
+        idx += 1;
+        if (idx % 2 == 0)
+            return buffer->clear();
+        if (s.find(L"\\u") != s.npos)
+            return buffer->clear();
         s = re::sub(s, LR"(\\\w)");
         s = re::sub(s, LR"(#r(.*?)\|(.*?)#)", L"$1"); // #r日常|それ#
         s = re::sub(s, LR"(@\w)");
         s = re::sub(s, LR"(【[ 　]*(.*?)[ 　]*】)", L"【$1】");
-        static std::wstring last;
-        if (startWith(s, last))
-        {
-            auto s_ = s;
-            s = s.substr(last.size());
-            last = s_;
-        }
-        else
-        {
-            last = s;
-        }
         buffer->fromWA(s);
     }
 }
@@ -2751,7 +2754,7 @@ struct emfuncinfoX
 static const emfuncinfoX emfunctionhooks_1[] = {
     // DistortedCode －生者の残り香－
     {0x80011A48, {0, 0, 0, 0, F0100B9701BD4E000, 0x0100B9701BD4E000ull, "1.0.1"}},
-    {0x80012270, {0, 1, 0, 0, F0100B9701BD4E0002, 0x0100B9701BD4E000ull, "1.0.1"}},
+    {0x80020184, {0, 1, 0, 0, F0100B9701BD4E0002, 0x0100B9701BD4E000ull, "1.0.1"}},
     // DYNAMIC CHORD feat.[rēve parfait]
     {0x81a48614, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
     {0x81a5d890, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
