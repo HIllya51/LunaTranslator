@@ -6,9 +6,11 @@ set(FETCHCONTENT_UPDATES_DISCONNECTED ON)
 
 option(WINXP "WINXP" OFF)
 option(WIN10ABOVE "WIN10ABOVE" ON)
-
-if(NOT WIN10ABOVE)
+option(STATIC_FORCE "STATIC_FORCE" OFF)
+if(STATIC_FORCE OR (NOT WIN10ABOVE))
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+if(NOT WIN10ABOVE)
     if(WINXP)
         set(__APP "_winxp")
     else()

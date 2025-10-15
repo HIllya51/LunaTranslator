@@ -226,6 +226,10 @@ def buildPlugins(arch, target):
     sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 "
     vsver = "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
+
+    if arch == "x86" and target == "win10":
+        # 对于64位会使用自带的vcrt，win7/xp会静态编译，仅win10 shareddllproxy32这个文件可能会缺少vcrt，因此把它也静态编译以避免无法运行导致注入失败。
+        config += " -DSTATIC_FORCE=ON"
     subprocess.run(
         f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
     )
