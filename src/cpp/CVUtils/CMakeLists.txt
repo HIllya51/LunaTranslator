@@ -14,10 +14,10 @@ FetchContent_Declare(clipper2
     GIT_SHALLOW TRUE
 )
 
-if(WIN10ABOVE)
-    set(mtmd "md")
-else()
+if(IS_STATIC)
     set(mtmd "mt")
+else()
+    set(mtmd "md")
 endif()
 
 FetchContent_Declare(opencv 
