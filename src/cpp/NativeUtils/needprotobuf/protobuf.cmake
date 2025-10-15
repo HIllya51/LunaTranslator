@@ -43,7 +43,7 @@ set(protobuf_INSTALL OFF CACHE BOOL "" FORCE)
 set(protobuf_WITH_ZLIB OFF CACHE BOOL "" FORCE)
 set(ABSL_PROPAGATE_CXX_STD ON)
 
-if(WIN10ABOVE)
+if(IS_STATIC)
   option(protobuf_MSVC_STATIC_RUNTIME "protobuf_MSVC_STATIC_RUNTIME" OFF)
 endif()
 FetchContent_MakeAvailable(protobuf)
