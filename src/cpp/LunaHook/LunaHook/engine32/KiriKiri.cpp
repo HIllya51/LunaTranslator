@@ -1078,6 +1078,9 @@ namespace
     last = ws;
     ws = re::sub(ws, L"%p.*?;%f.*?;");
     ws = re::sub(ws, LR"(\[.*?\])");
+    // 何度目かのはじめまして
+    //$_censorship("〇","死");ぬ……。
+    ws = re::sub(ws, LR"FUCK(\$_censorship\("(.*?)","(.*?)"\);)FUCK", L"$2");
     buffer->from(ws);
   };
   DWORD findtextrender(DWORD minAddress, DWORD maxAddress)
@@ -1566,6 +1569,11 @@ dl 16
           s = re::sub(s, "#[0-9a-fA-F]*?;");
           s = re::sub(s, "%p.*?;%f.*?;");
           s = re::sub(s, R"(\[.*?\])");
+          // 何度目かのはじめまして
+          //$_censorship("〇","死");ぬ……。
+          //${_censorship("〇","死")}ぬ……。
+          s = re::sub(s, R"FUCK(\$_censorship\("(.*?)","(.*?)"\);)FUCK", "$2");
+          s = re::sub(s, R"FUCK(\$\{_censorship\("(.*?)","(.*?)"\)\})FUCK", "$2");
           buffer->from(s);
         };
         hp.lineSeparator = L"\\n";
