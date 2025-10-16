@@ -386,12 +386,13 @@ html_get_current_url.argtypes = (MSHTMLptr, c_void_p)
 html_set_html = utilsdll.html_set_html
 html_set_html.argtypes = (MSHTMLptr, c_wchar_p)
 html_add_menu_gettext = CFUNCTYPE(c_wchar_p)
+html_contextmenu_getuse = CFUNCTYPE(c_bool)
 html_add_menu = utilsdll.html_add_menu
 html_add_menu_cb = CFUNCTYPE(c_void_p, c_wchar_p)
-html_add_menu.argtypes = (MSHTMLptr, c_int, c_void_p, c_void_p)
+html_add_menu.argtypes = (MSHTMLptr, c_int, c_void_p, c_void_p, c_void_p)
 html_add_menu_noselect = utilsdll.html_add_menu_noselect
 html_add_menu_cb2 = CFUNCTYPE(c_void_p)
-html_add_menu_noselect.argtypes = (MSHTMLptr, c_int, c_void_p, c_void_p)
+html_add_menu_noselect.argtypes = (MSHTMLptr, c_int, c_void_p, c_void_p, c_void_p)
 html_get_select_text = utilsdll.html_get_select_text
 html_get_select_text_cb = CFUNCTYPE(None, c_wchar_p)
 html_get_select_text.argtypes = (MSHTMLptr, c_void_p)
@@ -421,12 +422,13 @@ webview2_destroy = utilsdll.webview2_destroy
 webview2_destroy.argtypes = (WebView2PTR,)
 webview2_resize = utilsdll.webview2_resize
 webview2_resize.argtypes = WebView2PTR, c_int, c_int
-webview2_add_menu_noselect = utilsdll.webview2_add_menu_noselect
+webview2_add_menu = utilsdll.webview2_add_menu
 webview2_add_menu_noselect_CALLBACK = CFUNCTYPE(None)
+webview2_add_menu_CALLBACK = CFUNCTYPE(None, c_wchar_p)
 webview2_add_menu_noselect_getchecked = CFUNCTYPE(c_bool)
 webview2_add_menu_noselect_getuse = CFUNCTYPE(c_bool)
 webview2_contextmenu_gettext = CFUNCTYPE(c_wchar_p)
-webview2_add_menu_noselect.argtypes = (
+webview2_add_menu.argtypes = (
     WebView2PTR,
     c_int,
     c_void_p,
@@ -434,14 +436,7 @@ webview2_add_menu_noselect.argtypes = (
     c_bool,
     c_void_p,
     c_void_p,
-)
-webview2_add_menu = utilsdll.webview2_add_menu
-webview2_add_menu_CALLBACK = CFUNCTYPE(None, c_wchar_p)
-webview2_add_menu.argtypes = (
-    WebView2PTR,
-    c_int,
-    c_void_p,
-    c_void_p,
+    c_bool,
 )
 webview2_set_transparent = utilsdll.webview2_set_transparent
 webview2_set_transparent.argtypes = WebView2PTR, c_bool
@@ -606,13 +601,25 @@ class WebView2:
     def setHtml(self, html):
         webview2_sethtml(self.webview, html)
 
-    def add_menu(self, index=0, getlabel=None, callback=None):
+    def add_menu(
+        self,
+        index=0,
+        getlabel=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
+    ):
         __ = webview2_add_menu_CALLBACK(callback) if callback else None
         self.callbacks.append(__)
+        __1 = webview2_add_menu_noselect_getchecked(getchecked) if getchecked else None
+        self.callbacks.append(__1)
+        __2 = webview2_add_menu_noselect_getuse(getuse) if getuse else None
+        self.callbacks.append(__2)
         getlabel = wrapgetlabel(getlabel)
         __3 = webview2_contextmenu_gettext(getlabel) if getlabel else None
         self.callbacks.append(__3)
-        webview2_add_menu(self.webview, index, __3, __)
+        webview2_add_menu(self.webview, index, __3, __, checkable, __1, __2, True)
         return index + 1
 
     def add_menu_noselect(
@@ -633,7 +640,7 @@ class WebView2:
         getlabel = wrapgetlabel(getlabel)
         __3 = webview2_contextmenu_gettext(getlabel) if getlabel else None
         self.callbacks.append(__3)
-        webview2_add_menu_noselect(self.webview, index, __3, __, checkable, __1, __2)
+        webview2_add_menu(self.webview, index, __3, __, checkable, __1, __2, False)
         return index + 1
 
     def __webmessage_callback_f(self, js: str):

@@ -1,6 +1,6 @@
 from myutils.proxy import getproxy
 from myutils.utils import getlangtgt, getlangsrc, getlanguse, stringfyerror
-from myutils.config import _TR
+from myutils.config import _TR, globalconfig
 from myutils.wrapper import stripwrapper
 from language import Languages
 import requests, types
@@ -166,6 +166,10 @@ class commonbase(multikeyhelper):
     @property
     def tgtlang(self):
         return self.__getlang(self.tgtlang_1)
+
+    @property
+    def gconfig(self) -> dict:
+        return globalconfig[self._globalconfig_key].get(self.typename, {})
 
     @property
     def config(self):

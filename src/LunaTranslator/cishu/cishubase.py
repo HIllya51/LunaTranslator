@@ -27,8 +27,9 @@ class cishubase(commonbase):
     def init(self):
         pass
 
-    def search(self, word):
-        return word
+    def search(self, word) -> str: ...
+
+    def getUrl(self, word) -> str: ...
 
     def result_cache_key(self, word, sentence=None):
         return word, sentence, str(self.rawconfig)
@@ -40,6 +41,10 @@ class cishubase(commonbase):
             return self.search(word)
         elif len(params) == 2:
             return self.search(word, sentence)
+
+    @property
+    def canGetUrl(self) -> bool:
+        return self.gconfig.get("canGetUrl", True)
 
     def __init__(self, typename) -> None:
         super().__init__(typename)

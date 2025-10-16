@@ -10,6 +10,9 @@ class jpdb(cishubase):
         self.style = localcachehelper("cishucss/jpdb")
         self.klass = "lunajpdbcsswrapper"
 
+    def getUrl(self, word):
+        return "https://jpdb.io/search?q={}&lang=english".format(word)
+
     def search(self, word: str):
         url = "https://jpdb.io/search"
         text = self.proxysession.get(url, params={"q": word, "lang": "english"}).text

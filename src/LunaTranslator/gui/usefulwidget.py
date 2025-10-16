@@ -1430,7 +1430,15 @@ class abstractwebview(QWidget):
     def navigate(self, url):
         pass
 
-    def add_menu(self, index=0, getlabel=None, callback=None):
+    def add_menu(
+        self,
+        index=0,
+        getlabel=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
+    ):
         return index + 1
 
     def add_menu_noselect(
@@ -1829,8 +1837,23 @@ class WebviewWidget(abstractwebview):
     def eval(self, js, callback=None):
         self.webview.eval(js, callback)
 
-    def add_menu(self, index=0, getlabel=None, callback=None):
-        return self.webview.add_menu(index=index, getlabel=getlabel, callback=callback)
+    def add_menu(
+        self,
+        index=0,
+        getlabel=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
+    ):
+        return self.webview.add_menu(
+            index=index,
+            getlabel=getlabel,
+            callback=callback,
+            checkable=checkable,
+            getchecked=getchecked,
+            getuse=getuse,
+        )
 
     def add_menu_noselect(
         self,
@@ -2099,13 +2122,23 @@ class mshtmlWidget(abstractwebview):
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
 
-    def add_menu(self, index=0, getlabel=None, callback=None):
+    def add_menu(
+        self,
+        index=0,
+        getlabel=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
+    ):
         cb = NativeUtils.html_add_menu_cb(callback) if callback else None
         self.callbacks.append(cb)
         getlabel = NativeUtils.wrapgetlabel(getlabel)
         cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
         self.callbacks.append(cb2)
-        NativeUtils.html_add_menu(self.browser, index, cb2, cb)
+        __2 = NativeUtils.html_contextmenu_getuse(getuse) if getuse else None
+        self.callbacks.append(__2)
+        NativeUtils.html_add_menu(self.browser, index, cb2, cb, __2)
         return index + 1
 
     def add_menu_noselect(
@@ -2122,7 +2155,9 @@ class mshtmlWidget(abstractwebview):
         getlabel = NativeUtils.wrapgetlabel(getlabel)
         cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
         self.callbacks.append(cb2)
-        NativeUtils.html_add_menu_noselect(self.browser, index, cb2, cb)
+        __2 = NativeUtils.html_contextmenu_getuse(getuse) if getuse else None
+        self.callbacks.append(__2)
+        NativeUtils.html_add_menu_noselect(self.browser, index, cb2, cb, __2)
         return index + 1
 
 
@@ -2215,9 +2250,21 @@ class auto_select_webview(QWidget):
         self.bindinfo.append((funcname, function))
         self.internal.bind(funcname, function)
 
-    def add_menu(self, index=0, getlabel=None, callback=None):
-        self.addmenuinfo.append((index, getlabel, callback))
-        return self.internal.add_menu(index, getlabel, callback)
+    def add_menu(
+        self,
+        index=0,
+        getlabel=None,
+        callback=None,
+        checkable=False,
+        getchecked=None,
+        getuse=None,
+    ):
+        self.addmenuinfo.append(
+            (index, getlabel, callback, checkable, getchecked, getuse)
+        )
+        return self.internal.add_menu(
+            index, getlabel, callback, checkable, getchecked, getuse
+        )
 
     def add_menu_noselect(
         self,
@@ -2315,6 +2362,7 @@ class auto_select_webview(QWidget):
 
     def _createwebview(self, shoudong=False, transp=False):
         try:
+            x
             browser = (WebviewWidget, WebviewWidget_for_auto)[self.loadex](
                 transp=transp
             )

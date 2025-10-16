@@ -1291,6 +1291,7 @@
     },
     "cishu": {
         "mojidict": {
+            "canGetUrl": false,
             "use": true,
             "name": "Moji辞书",
             "useproxy": false
@@ -1325,6 +1326,7 @@
             "name": "goo"
         },
         "chatgptlike": {
+            "canGetUrl": false,
             "use": false,
             "name": "大模型通用接口",
             "args": {
@@ -1447,6 +1449,7 @@
             }
         },
         "mdict": {
+            "canGetUrl": false,
             "use": true,
             "name": "MDict",
             "args": {

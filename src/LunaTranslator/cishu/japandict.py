@@ -37,3 +37,6 @@ class japandict(cishubase):
         return '<style>{}</style><div class="{}">{}</div>'.format(
             self.style[csslink], self.klass, res
         )
+
+    def getUrl(self, word):
+        return "https://www.japandict.com/?s={}&lang=eng&list=1".format(word)

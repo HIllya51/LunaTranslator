@@ -108,14 +108,10 @@ class basetrans(commonbase):
     _globalconfig_key = "fanyi"
     _setting_dict = translatorsetting
 
-    @property
-    def __gconfig(self) -> dict:
-        return globalconfig["fanyi"].get(self.typename, {})
-
     def __init__(self, typename):
         super().__init__(typename)
         if (self.transtype == "offline") and (not self.is_gpt_like):
-            self.__gconfig["useproxy"] = False
+            self.gconfig["useproxy"] = False
         self.queue = PriorityQueue()
         self.sqlqueue = None
         self.sqlwrite2 = None
@@ -188,7 +184,7 @@ class basetrans(commonbase):
     @property
     def using_gpt_dict(self):
         # 决定translator接口传入GptTextWithDict还是str
-        return self.__gconfig.get("is_gpt_like", False)
+        return self.gconfig.get("is_gpt_like", False)
 
     @property
     def never_use_trans_cache(self):
@@ -196,22 +192,22 @@ class basetrans(commonbase):
 
     @property
     def use_trans_cache(self):
-        return (self.__gconfig.get("use_trans_cache", True)) and (
+        return (self.gconfig.get("use_trans_cache", True)) and (
             not self.never_use_trans_cache
         )
 
     @property
     def is_gpt_like(self):
-        return self.__gconfig.get("is_gpt_like", False)
+        return self.gconfig.get("is_gpt_like", False)
 
     @property
     def onlymanual(self):
         # Only used during manual translation, not used during automatic translation
-        return self.__gconfig.get("manual", False)
+        return self.gconfig.get("manual", False)
 
     @property
     def using(self):
-        return self.__gconfig["use"]
+        return self.gconfig["use"]
 
     @property
     def transtype(self):
@@ -219,7 +215,7 @@ class basetrans(commonbase):
         # dev/offline 无视请求间隔
         # pre全都有额外的处理，不走该pipeline，不使用翻译缓存
         # offline不被新的请求打断
-        return self.__gconfig.get("type", "free")
+        return self.gconfig.get("type", "free")
 
     def gettask(self, content):
         # fmt: off

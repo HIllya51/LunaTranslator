@@ -5,20 +5,21 @@ import re, threading
 
 
 class weblio(cishubase):
-    backgroundparser='''
+    backgroundparser = """
             document.querySelectorAll('.lunawebliocsswrapper').forEach((ele) => {
                 ele.style.backgroundColor = {color}
                 ele.querySelectorAll('#base').forEach((ele) => {
                     ele.style.backgroundColor = {color}
                 })
             });
-'''
+"""
+
     def init(self):
         self.cache = localcachehelper("cishucss/weblio")
         self.klass = "lunawebliocsswrapper"
 
     def search(self, word):
-        url = "https://www.weblio.jp/content/{}".format(word)
+        url = self.getUrl(word)
         html = self.proxysession.get(url).text
         head = simplehtmlparser_all(html, "div", '<div class="pbarT">')
         content = simplehtmlparser_all(html, "div", '<div class="kijiWrp">')
@@ -89,3 +90,6 @@ function safe_weblio_search_word(word){
             req = self.proxysession.get(link)
             html = req.text if req.status_code == 200 else ""
             self.cache[link] = self.parse_stylesheet(html, self.klass)
+
+    def getUrl(self, word):
+        return "https://www.weblio.jp/content/{}".format(word)

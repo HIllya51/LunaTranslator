@@ -83,6 +83,7 @@ BOOL DoSetBrowserEmulation(DWORD dwValue)
         return TRUE;
     }
 }
+typedef bool (*contextmenu_getuse)();
 typedef LPWSTR (*contextmenu_gettext)();
 class MWebBrowserEx : public MWebBrowser
 {
@@ -101,8 +102,8 @@ class MWebBrowserEx : public MWebBrowser
     };
 
 public:
-    std::vector<std::tuple<contextmenu_gettext, int>> menuitems;
-    std::vector<std::tuple<contextmenu_gettext, int>> menuitems_noselect;
+    std::vector<std::tuple<contextmenu_gettext, int, contextmenu_getuse>> menuitems;
+    std::vector<std::tuple<contextmenu_gettext, int, contextmenu_getuse>> menuitems_noselect;
     std::map<int, void (*)(LPCWSTR)> menucallbacks;
     std::map<int, void (*)()> menucallbacks_noselect;
     UINT CommandBase = 10086;
@@ -182,33 +183,17 @@ STDMETHODIMP MWebBrowserEx::ShowContextMenu(
     switch (dwID)
     {
     case CONTEXT_MENU_DEFAULT:
-    {
-        if (!menuitems_noselect.size())
-            return S_FALSE;
-        HMENU hMenu = CreatePopupMenu();
-        int idx = 0;
-        for (auto &item : menuitems_noselect)
-        {
-            if (auto text = getstring(std::get<0>(item)))
-            {
-                AppendMenu(hMenu, MF_STRING, std::get<1>(item), text.value().c_str());
-            }
-            else if (idx)
-                AppendMenu(hMenu, MF_SEPARATOR, 0, nullptr);
-            idx += 1;
-        }
-        TrackPopupMenu(hMenu, TPM_LEFTALIGN | TPM_LEFTBUTTON, ppt->x, ppt->y, 0, hwndParent, nullptr);
-        DestroyMenu(hMenu);
-        return S_OK;
-    }
     case CONTEXT_MENU_TEXTSELECT:
     {
-        if (!menuitems.size())
+        auto usemenu = (dwID == CONTEXT_MENU_DEFAULT) ? menuitems_noselect : menuitems;
+        if (!usemenu.size())
             return S_FALSE;
         HMENU hMenu = CreatePopupMenu();
         int idx = 0;
-        for (auto &item : menuitems)
+        for (auto &item : usemenu)
         {
+            if (std::get<2>(item) && !std::get<2>(item)())
+                continue;
             if (auto text = getstring(std::get<0>(item)))
             {
                 AppendMenu(hMenu, MF_STRING, std::get<1>(item), text.value().c_str());
@@ -283,22 +268,22 @@ DECLARE_API void html_set_html(MWebBrowserEx *ww, wchar_t *html)
         return;
     ww->SetHtml(html);
 }
-DECLARE_API void html_add_menu(MWebBrowserEx *ww, int index, contextmenu_gettext getlabel, void (*callback)(const wchar_t *))
+DECLARE_API void html_add_menu(MWebBrowserEx *ww, int index, contextmenu_gettext getlabel, void (*callback)(const wchar_t *), contextmenu_getuse getuse)
 {
     if (!ww)
         return;
     auto ptr = ww->menuitems.begin() + index;
     auto command = ww->CommandBase++;
-    ww->menuitems.insert(ptr, {getlabel, command});
+    ww->menuitems.insert(ptr, {getlabel, command, getuse});
     ww->menucallbacks[command] = callback;
 }
-DECLARE_API void html_add_menu_noselect(MWebBrowserEx *ww, int index, contextmenu_gettext getlabel, void (*callback)())
+DECLARE_API void html_add_menu_noselect(MWebBrowserEx *ww, int index, contextmenu_gettext getlabel, void (*callback)(), contextmenu_getuse getuse)
 {
     if (!ww)
         return;
     auto ptr = ww->menuitems_noselect.begin() + index;
     auto command = ww->CommandBase++;
-    ww->menuitems_noselect.insert(ptr, {getlabel, command});
+    ww->menuitems_noselect.insert(ptr, {getlabel, command, getuse});
     ww->menucallbacks_noselect[command] = callback;
 }
 DECLARE_API void html_get_select_text(MWebBrowserEx *ww, void (*cb)(LPCWSTR))

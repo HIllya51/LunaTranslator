@@ -310,38 +310,8 @@ bool TinkerBellold::attach_function()
 {
   HookParam hp;
   hp.address = (DWORD)ExtTextOutA;
-  if (wcscmp(processName_lower, L"ozone.exe") == 0)
-  {
-    // 人工ozone
-    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-    {
-      static int idx = 0;
-      if (idx++ % 2)
-        return;
-      auto rect = (RECT *)context->stack[5];
-      auto str = (char *)context->stack[6];
-      *split = (uintptr_t)rect;
-      static std::map<uintptr_t, RECT> last;
-      if (!last.count((uintptr_t)rect))
-      {
-        last[(uintptr_t)rect] = RECT{};
-      }
-      auto &__ = last[(uintptr_t)rect];
-      if (rect->top == __.top && rect->left < __.left)
-      {
-        return;
-      }
-      __ = *rect;
-      __.left += 1;
-      buffer->from(str);
-    };
-    hp.type = USING_STRING | NO_CONTEXT;
-  }
-  else
-  {
-    hp.offset = stackoffset(6);
-    hp.type = USING_STRING | USING_SPLIT;
-    hp.split = stackoffset(5);
-  }
+  hp.offset = stackoffset(6);
+  hp.type = USING_STRING | USING_SPLIT;
+  hp.split = stackoffset(5);
   return NewHook(hp, "TinkerBellold");
 }

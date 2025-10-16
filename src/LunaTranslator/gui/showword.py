@@ -1333,10 +1333,14 @@ class WordViewer(QWidget):
 
     def tabmenu(self, idx):
         menu = QMenu(self)
+        openinbrowser = LAction("在浏览器中查词", menu)
         isinsert = LAction("不添加到Anki", menu)
         isinsert.setCheckable(True)
         caninsert = self.tabks[idx] in globalconfig["ignoredict"]
         isinsert.setChecked(caninsert)
+        cishu = gobject.base.cishus.get(self.tabks[idx])
+        if cishu and cishu.canGetUrl:
+            menu.addAction(openinbrowser)
         menu.addAction(isinsert)
         action = menu.exec(QCursor.pos())
         if action == isinsert:
@@ -1344,6 +1348,8 @@ class WordViewer(QWidget):
                 globalconfig["ignoredict"].append(self.tabks[idx])
             else:
                 globalconfig["ignoredict"].remove(self.tabks[idx])
+        elif action == openinbrowser:
+            os.startfile(cishu.getUrl(self.currWord))
 
     def __init__(self, parent=None, tabonehide=False, transp=False):
         super().__init__(parent)
@@ -1391,6 +1397,21 @@ class WordViewer(QWidget):
             nexti,
             lambda: _TR("在新窗口中查词"),
             threader(self.from_webview_search_word_in_new_window.emit),
+        )
+
+        def __():
+            _ = gobject.base.cishus.get(self.tabks[self.tab.currentIndex()])
+            return _ and _.canGetUrl
+
+        nexti = self.textOutput.add_menu(
+            nexti,
+            lambda: _TR("在浏览器中查词"),
+            lambda word: os.startfile(
+                gobject.base.cishus.get(self.tabks[self.tab.currentIndex()]).getUrl(
+                    word
+                )
+            ),
+            getuse=__,
         )
         nexti = self.textOutput.add_menu(
             nexti, lambda: _TR("翻译"), gobject.base.textgetmethod

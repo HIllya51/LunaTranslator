@@ -10,7 +10,7 @@ class goo(cishubase):
         self.klass = "lunagoocsswrapper"
 
     def search(self, word):
-        url = "https://dictionary.goo.ne.jp/srch/all/{}/m1u/".format(word)
+        url = self.getUrl(word)
         x = self.proxysession.get(url).text
         xx = re.findall("<section>([\\s\\S]*?)</section>", x)
         if not xx:
@@ -32,3 +32,6 @@ class goo(cishubase):
         return '<style>{}</style><div class="{}"><div id="NR-wrapper"><div id="NR-wrapper-in" class="cx">{}</div></div></div>'.format(
             self.cache[cssurl], self.klass, xx
         )
+
+    def getUrl(self, word):
+        return "https://dictionary.goo.ne.jp/srch/all/{}/m1u/".format(word)

@@ -34,3 +34,8 @@ class youdao(cishubase):
         text = text.replace("min-width: 960px", "")
         text = text.replace("min-width:960px", "")
         return text
+
+    def getUrl(self, word):
+        return "https://dict.youdao.com/result?word={}&lang={}".format(
+            word, self.srclang
+        )

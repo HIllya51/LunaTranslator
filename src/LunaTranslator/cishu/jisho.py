@@ -152,7 +152,11 @@ function onclickbtn_xxxxxx_internal(_id) {
         ts = []
         saver = {}
         for key in ("word", "search"):
-            ts.append(threading.Thread(target=self.paradown, args=(word, key, saver), daemon=True))
+            ts.append(
+                threading.Thread(
+                    target=self.paradown, args=(word, key, saver), daemon=True
+                )
+            )
             ts[-1].start()
         for t in ts:
             t.join()
@@ -168,3 +172,6 @@ function onclickbtn_xxxxxx_internal(_id) {
         return '<style>{}</style><div class="{}">{}</div>'.format(
             saver.get("style", ""), self.klass, self.generatehtml_tabswitch(res)
         )
+
+    def getUrl(self, word):
+        return "https://jisho.org/{}/{}".format("search", word)
