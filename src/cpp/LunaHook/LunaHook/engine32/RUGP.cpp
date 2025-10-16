@@ -1,4 +1,4 @@
-#include "RUGP.h"
+﻿#include "RUGP.h"
 
 namespace
 { // unnamed rUGP
@@ -41,7 +41,7 @@ namespace
       hp->text_fun = nullptr;
       // hp->type &= ~EXTERN_HOOK;
     }
-    }
+  }
 
   // jichi 10/1/2013: Change return type to bool
   bool InsertRUGP1Hook()
@@ -49,7 +49,6 @@ namespace
     DWORD low;
     if (!Util::CheckFile(L"rvmm.dll"))
     {
-      ConsoleOutput("rUGP: rvmm.dll does not exist");
       return false;
     }
     // WCHAR str[0x40];
@@ -83,11 +82,16 @@ namespace
             return NewHook(hp, "rUGP");
           }
         }
+        BYTE check[] = {
+            // 螺旋回廊 2000版
+            0x75, XX,
+            0x8b, 0x86};
+        if (MatchPattern(i, check, sizeof(check)))
+          return false;
         HookParam hp;
         hp.address = i;
         hp.text_fun = SpecialHookRUGP1;
         hp.type = CODEC_ANSI_BE | USING_CHAR;
-        ConsoleOutput("INSERT rUGP#1");
         return NewHook(hp, "rUGP");
       }
     }
@@ -96,7 +100,6 @@ namespace
       t = SearchPattern(low, range, &s, 4);
       if (!t)
       {
-        ConsoleOutput("rUGP: pattern not found");
         // ConsoleOutput("Can't find characteristic instruction.");
         return false;
       }
@@ -231,7 +234,6 @@ namespace
     // GROWL_DWORD(addr);
     if (!addr)
     {
-      ConsoleOutput("rUGP2: pattern not found");
       return false;
     }
 
@@ -239,7 +241,6 @@ namespace
     hp.address = addr + addr_offset;
     hp.offset = regoffset(eax);
     hp.type = NO_CONTEXT | CODEC_ANSI_BE;
-    ConsoleOutput("INSERT rUGP2");
     return NewHook(hp, "rUGP2");
   }
 
@@ -287,9 +288,24 @@ namespace
     return NewHook(hp, "rUGP3");
   }
 }
+static bool GetCachedFont()
+{
+  // 螺旋回廊 2000版
+  auto UnivUI = GetModuleHandleW(L"UnivUI.dll");
+  if (!UnivUI)
+    return false;
+  auto GetCachedFont = GetProcAddress(UnivUI, "?GetCachedFont@CFontAttr@@QAEPAUCS5RFontEntry@@I@Z");
+  if (!GetCachedFont)
+    return false;
+  HookParam hp;
+  hp.address = (DWORD)GetCachedFont;
+  hp.offset = stackoffset(1);
+  hp.type = CODEC_ANSI_BE;
+  return NewHook(hp, "UnivUI::GetCachedFont");
+}
 bool InsertRUGPHook()
 {
-  return InsertRUGP1Hook() || InsertRUGP2Hook();
+  return InsertRUGP1Hook() || InsertRUGP2Hook() || GetCachedFont();
 }
 
 bool RUGP::attach_function()
