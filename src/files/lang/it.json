@@ -876,5 +876,7 @@
     "自动模式": "Modalità automatica",
     "选择文件夹": "Seleziona cartella",
     "在浏览器中查词": "Cercare parole nel browser",
-    "确认是 %s 引擎": "Confermato che è il motore %s."
+    "确认是 %s 引擎": "Confermato che è il motore %s.",
+    "使用的网络代理可能无效，请进行检查！({})": "Il proxy di rete utilizzato potrebbe non essere valido, si prega di verificare! ({})",
+    "网络错误": "Errore di rete"
 }

@@ -147,7 +147,7 @@ class Requester(Requester_common):
         port,
         param,
         url,
-        _headers,
+        headers,
         cookies,
         databytes,
         proxy,
@@ -177,7 +177,7 @@ class Requester(Requester_common):
         self._set_proxy(hRequest, proxy)
         self._set_allow_redirects(hRequest, allow_redirects)
         autodec = self._set_auto_decompress(hRequest)
-        headers = self._parseheader(_headers, cookies)
+        headers = self._parseheader(headers, cookies)
         headers = "\r\n".join(headers)
         MaybeRaiseException0(
             WinHttpSendRequest(

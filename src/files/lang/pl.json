@@ -876,5 +876,7 @@
     "自动模式": "Tryb automatyczny",
     "选择文件夹": "Wybierz folder",
     "在浏览器中查词": "Wyszukiwanie słów w przeglądarce",
-    "确认是 %s 引擎": "Potwierdzenie silnika %s"
+    "确认是 %s 引擎": "Potwierdzenie silnika %s",
+    "使用的网络代理可能无效，请进行检查！({})": "Używany serwer proxy może być nieważny, proszę to sprawdzić! ({})",
+    "网络错误": "Błąd sieci"
 }

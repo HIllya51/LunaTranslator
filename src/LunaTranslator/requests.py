@@ -11,7 +11,9 @@ default_timeout = 10
 
 
 class RequestException(Exception):
-    pass
+    def __init__(self, *args):
+        super().__init__(*args)
+        self.proxy: str = None
 
 
 class Timeout(RequestException):
@@ -149,139 +151,23 @@ class Response:
 class Requester_common:
     default_UA = default_UA
 
-    @staticmethod
-    def _encode_params(data):
-        if isinstance(data, (str, bytes)):
-            return data
-        elif hasattr(data, "read"):
-            return data
-        elif hasattr(data, "__iter__"):
-            result = []
-            for k, vs in list(data.items()):
-                if isinstance(vs, (str, bytes)) or not hasattr(vs, "__iter__"):
-                    vs = [vs]
-                for v in vs:
-                    if v is not None:
-                        result.append(
-                            (
-                                k.encode("utf-8") if isinstance(k, str) else k,
-                                v.encode("utf-8") if isinstance(v, str) else v,
-                            )
-                        )
-            return urlencode(result, doseq=True)
-        else:
-            return data
-
-    def _parseurl(self, url: str, param):
-        url = url.lstrip()
-        scheme, server, path, query, frag = urlsplit(url)
-        path = quote(path, safe=":/=")
-        if scheme not in ["https", "http"]:
-            raise RequestException(
-                "unknown scheme {} for invalid url {}".format(scheme, url)
-            )
-        spl = server.split(":")
-        if len(spl) == 2:
-            server = spl[0]
-            port = int(spl[1])
-        elif len(spl) == 1:
-            spl[0]
-            if scheme == "https":
-                port = 443
-            else:
-                port = 80
-        else:
-            raise RequestException("invalid url " + url)
-        query = urlencode(parse_qsl(query), doseq=True)
-        if param:
-            param = self._encode_params(param)
-            query += ("&" if query else "") + param
-
-        if query:
-            path += "?" + query
-        if frag:
-            path += "#" + frag
-        url = scheme + "://" + server + path
-        return scheme, server, port, path, url
-
-    def request(
+    def request_impl(
         self,
         method,
+        scheme,
+        server,
+        port,
+        param,
         url,
-        params=None,
-        data=None,
-        headers=None,
-        proxies=None,
-        json=None,
-        cookies=None,
-        files=None,
-        auth=None,
-        timeout=default_timeout,
-        allow_redirects=True,
-        hooks=None,
-        stream=None,
-        verify=False,
-        cert=None,
-    ) -> Response:
-
-        if auth and isinstance(auth, tuple) and len(auth) == 2:
-            headers["Authorization"] = (
-                "Basic "
-                + (
-                    base64.b64encode(
-                        b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))
-                    ).strip()
-                ).decode()
-            )
-        scheme, server, port, param, url = self._parseurl(url, params)
-        if server == "127.0.0.1":
-            # libcurl在本地地址走代理时有时会谜之502
-            proxies = None
-        databytes = b""
-        contenttype = None
-        if files:
-            contenttype, databytes = self._parsefilesasmultipart(files, headers)
-        elif data:
-            contenttype, databytes = self._parsedata(data)
-        elif json:
-            contenttype, databytes = self._parsejson(json)
-        if len(databytes):
-            headers["Content-Length"] = str(len(databytes))
-        if contenttype and ("Content-Type" not in headers):
-            headers["Content-Type"] = contenttype
-        proxy = proxies.get(scheme, None) if proxies else None
-        proxy = None if proxy == "" else proxy
-        if timeout:
-            if isinstance(timeout, (float, int)):
-                timeout = (int(timeout * 1000), 0)  # convert to milliseconds
-            else:
-                try:
-                    timeout = [int(_ * 1000) for _ in timeout[:2]]
-                except:
-                    print("Error invalid timeout", timeout)
-                    timeout = [0, 0]
-                timeout.append(0)
-                timeout = timeout[:2]
-        else:
-            timeout = (0, 0)
-        return self.request_impl(
-            method,
-            scheme,
-            server,
-            port,
-            param,
-            url,
-            headers,
-            cookies,
-            databytes,
-            proxy,
-            stream,
-            verify,
-            timeout,
-            allow_redirects,
-        )
-
-    def request_impl(self, *argc) -> Response: ...
+        headers,
+        cookies,
+        databytes,
+        proxy,
+        stream,
+        verify,
+        timeout,
+        allow_redirects,
+    ) -> Response: ...
 
     def _parseheader(self, headers: CaseInsensitiveDict, cookies: dict):
         _x = []
@@ -324,14 +210,75 @@ class Requester_common:
                 header[line[:idx]] = line[idx + 2 :]
         return CaseInsensitiveDict(header), cookie, reason
 
-    def _parsejson(self, _json):
+
+class _Functions:
+
+    @staticmethod
+    def _encode_params(data: "str | bytes | dict"):
+        if isinstance(data, (str, bytes)):
+            return data
+        elif hasattr(data, "read"):
+            return data
+        elif hasattr(data, "__iter__"):
+            result = []
+            for k, vs in list(data.items()):
+                if isinstance(vs, (str, bytes)) or not hasattr(vs, "__iter__"):
+                    vs = [vs]
+                for v in vs:
+                    if v is not None:
+                        result.append(
+                            (
+                                k.encode("utf-8") if isinstance(k, str) else k,
+                                v.encode("utf-8") if isinstance(v, str) else v,
+                            )
+                        )
+            return urlencode(result, doseq=True)
+        else:
+            return data
+
+    @staticmethod
+    def _parseurl(url: str, param):
+        url = url.lstrip()
+        scheme, server, path, query, frag = urlsplit(url)
+        path = quote(path, safe=":/=")
+        if scheme not in ["https", "http"]:
+            raise RequestException(
+                "unknown scheme {} for invalid url {}".format(scheme, url)
+            )
+        spl = server.split(":")
+        if len(spl) == 2:
+            server = spl[0]
+            port = int(spl[1])
+        elif len(spl) == 1:
+            spl[0]
+            if scheme == "https":
+                port = 443
+            else:
+                port = 80
+        else:
+            raise RequestException("invalid url " + url)
+        query = urlencode(parse_qsl(query), doseq=True)
+        if param:
+            param = _Functions._encode_params(param)
+            query += ("&" if query else "") + param
+
+        if query:
+            path += "?" + query
+        if frag:
+            path += "#" + frag
+        url = scheme + "://" + server + path
+        return scheme, server, port, path, url
+
+    @staticmethod
+    def _parsejson(_json):
         databytes = json.dumps(_json).encode("utf8")
         contenttype = "application/json"
         return contenttype, databytes
 
-    def _parsedata(self, data):
+    @staticmethod
+    def _parsedata(data):
         contenttype = None
-        databytes = self._encode_params(data)
+        databytes = _Functions._encode_params(data)
         if isinstance(databytes, str):
             databytes = (databytes).encode("utf8")
         if isinstance(data, (str, bytes)):
@@ -340,7 +287,8 @@ class Requester_common:
             contenttype = "application/x-www-form-urlencoded; charset=utf-8"
         return contenttype, databytes
 
-    def _parsefilesasmultipart(self, files: dict, header: dict):
+    @staticmethod
+    def _parsefilesasmultipart(files: "dict[str, object]", header: "dict[str, str]"):
         def generate_random_string(length=16):
             characters = string.ascii_letters + string.digits
             return "".join(random.choices(characters, k=length))
@@ -364,10 +312,10 @@ class Requester_common:
                     filename, data, type_ = data
                 elif len(data) == 2:
                     filename, data = data
-                    type_ = None
+                    type_: str = None
             else:
-                filename = None
-                type_ = None
+                filename: str = None
+                type_: str = None
             if filename:
                 disposition += b'; filename="'
                 disposition += filename.encode("utf8")
@@ -432,12 +380,12 @@ class Session:
         url: str,
         params=None,
         data=None,
-        headers=None,
-        proxies=None,
+        headers: "dict[str, str]" = None,
+        proxies: "dict[str, str]" = None,
         json=None,
         cookies=None,
         files=None,
-        auth=None,
+        auth: "tuple[str, str]" = None,
         timeout=default_timeout,
         allow_redirects=True,
         hooks=None,
@@ -453,24 +401,70 @@ class Session:
             self.cookies.update(requester_._parsecookiestring(_h.get("cookie", "")))
         if cookies:
             self.cookies.update(cookies)
-        response = requester_.request(
-            method.upper(),
-            url,
-            params=params,
-            data=data,
-            headers=_h,
-            proxies=proxies,
-            json=json,
-            cookies=self.cookies,
-            files=files,
-            auth=auth,
-            timeout=timeout,
-            allow_redirects=allow_redirects,
-            hooks=hooks,
-            stream=stream,
-            verify=verify,
-            cert=cert,
-        )
+        headers = _h
+
+        if auth and isinstance(auth, tuple) and len(auth) == 2:
+            headers["Authorization"] = (
+                "Basic "
+                + (
+                    base64.b64encode(
+                        b":".join((auth[0].encode("latin1"), auth[1].encode("latin1")))
+                    ).strip()
+                ).decode()
+            )
+        scheme, server, port, param, url = _Functions._parseurl(url, params)
+
+        if server == "127.0.0.1":
+            # libcurl在本地地址走代理时有时会谜之502
+            proxies = None
+        databytes = b""
+        contenttype = None
+        if files:
+            contenttype, databytes = _Functions._parsefilesasmultipart(files, headers)
+        elif data:
+            contenttype, databytes = _Functions._parsedata(data)
+        elif json:
+            contenttype, databytes = _Functions._parsejson(json)
+        if len(databytes):
+            headers["Content-Length"] = str(len(databytes))
+        if contenttype and ("Content-Type" not in headers):
+            headers["Content-Type"] = contenttype
+        proxy = proxies.get(scheme, None) if proxies else None
+        proxy = None if proxy == "" else proxy
+        if timeout:
+            if isinstance(timeout, (float, int)):
+                timeout = (int(timeout * 1000), 0)  # convert to milliseconds
+            else:
+                try:
+                    timeout = [int(_ * 1000) for _ in timeout[:2]]
+                except:
+                    print("Error invalid timeout", timeout)
+                    timeout = [0, 0]
+                timeout.append(0)
+                timeout = timeout[:2]
+        else:
+            timeout = (0, 0)
+        try:
+            response = requester_.request_impl(
+                method.upper(),
+                scheme,
+                server,
+                port,
+                param,
+                url,
+                headers,
+                self.cookies,
+                databytes,
+                proxy,
+                stream,
+                verify,
+                timeout,
+                allow_redirects,
+            )
+        except RequestException as e:
+            e.proxy = proxy
+            raise e
+
         self.cookies.update(response.cookies)
         response.cookies.update(self.cookies)
         return response

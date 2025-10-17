@@ -24,6 +24,7 @@ import re, heapq, NativeUtils
 from myutils.wrapper import tryprint, threader
 from html.parser import HTMLParser
 from myutils.audioplayer import bass_code_cast
+from urllib.parse import urlparse
 
 
 class localcachehelper:
@@ -402,6 +403,18 @@ def find_or_create_uid(targetlist, gamepath: str, title=None):
         return intarget
 
 
+def is_port_listening(host, port):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(1)
+        result = sock.connect_ex((host, port))
+        sock.close()
+        return result == 0
+    except:
+        print_exc()
+        return False
+
+
 def stringfyerror(e: Exception):
     if e.args and isinstance(e.args[0], requests.Response):
         from myutils.commonbase import maybejson
@@ -414,6 +427,18 @@ def stringfyerror(e: Exception):
     error = str(type(e))[8:-2] + " " + str(e)
     if len(error.splitlines()) > 5:
         error = error.replace("\n", " ").replace("\r", "")
+
+    if isinstance(e, requests.RequestException):
+        error = _TR("网络错误") + ": " + error
+        if e.proxy:
+            try:
+                hostname, port = e.proxy.split(":")
+                if not is_port_listening(hostname, int(port)):
+                    error += "\n" + _TR(
+                        "使用的网络代理可能无效，请进行检查！({})"
+                    ).format(e.proxy)
+            except:
+                print_exc()
     return error
 
 

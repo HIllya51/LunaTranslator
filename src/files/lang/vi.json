@@ -876,5 +876,7 @@
     "自动模式": "Chế độ tự động",
     "选择文件夹": "Chọn thư mục",
     "在浏览器中查词": "Tra từ trong trình duyệt",
-    "确认是 %s 引擎": "Xác nhận là động cơ %s."
+    "确认是 %s 引擎": "Xác nhận là động cơ %s.",
+    "使用的网络代理可能无效，请进行检查！({})": "Proxy mạng có thể không hoạt động, vui lòng kiểm tra lại! ({})",
+    "网络错误": "Lỗi mạng"
 }
