@@ -158,7 +158,6 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 |  | 0100556015CCC000 | ANONYMOUS;CODE |
 |  | 0100325012B70000 | Sugar * Style |
 |  | 010042300C4F6000 | Nightshade／百花百狼 |
-|  | 010044800D2EC000 | 囚われのパルマ |
 |  | 010037400DAAE000 | Brothers Conflict: Precious Baby |
 |  | 010021300F69E000 | 絶対階級学園 ~Eden with roses and phantasm~ |
 |  | 010050000705E000 | Dragon Quest Builders 2 |
@@ -191,6 +190,7 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 |  | 01002B400E9DA000 | Collar x Malice |
 |  | 01003BD013E30000 | 神田アリスも推理スル。 |
 |  | 01001EF017BE6000 | Rune Factory 3 Special |
+|  | 010044800D2EC000 | 囚われのパルマ |
 |  | 01000EA00D2EE000 | 囚われのパルマ Refrain |
 |  | 01001CC017BB2000 | 穢翼のユースティア |
 |  | 010093800DB1C000 | 蛇香のライラ ～Allure of MUSK～ |
@@ -911,6 +911,7 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65910 | カフェ・リンドバーグ -summer season- |
 |  | SLPM-55274 | 裏切りは僕の名前を知っている ～黄昏に堕ちた祈り～ |
 |  | SLPM-66376 | きみスタ ～きみとスタディ～ |
 |  | SLPS-25766 | オレンジハニー 僕はキミに恋してる |

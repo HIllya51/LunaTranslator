@@ -151,7 +151,7 @@ namespace
     void ReadUnityString(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[hp->offset];
-        buffer->from(address + 0x14, (*(DWORD *)(address + 0x10)) * 2);
+        buffer->from(address + 0x14, (*(WORD *)(address + 0x10)) * 2);
     }
 
     void mages_readstring(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -1744,15 +1744,6 @@ namespace
         s = re::sub(s, L"^(.+?\")");
         buffer->from(s);
     }
-    void F010044800D2EC000(TextBuffer *buffer, HookParam *hp)
-    {
-
-        auto s = buffer->strW();
-        s = re::sub(s, L"\\n+", L" ");
-        s = re::sub(s, L"\\<PL_N\\>", L"???");
-        s = re::sub(s, L"<.+?>");
-        buffer->from(s);
-    }
     template <int i>
     void F010021300F69E000(TextBuffer *buffer, HookParam *hp)
     {
@@ -2598,9 +2589,9 @@ namespace
     void F01000EA00D2EE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = re::sub(s, L"\\n+", L" ");
-        s = re::sub(s, L"\\<PL_Namae\\>", L"???");
-        s = re::sub(s, L"\\<chiaki_washa\\>", L"chiaki_washa");
+        s = strReplace(s, L"<PL_N>", L"？？？");
+        s = re::sub(s, L"\n　*");
+        s = re::sub(s, L"/n　*");
         s = re::sub(s, L"<.+?>");
         buffer->from(s);
     }
@@ -3246,9 +3237,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8015b544, {CODEC_UTF16, 0, 0, ReadUnityString, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}},   // name
     {0x802a2fd4, {CODEC_UTF16, 1, 0, ReadUnityString, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}},   // choice1
     {0x802b7900, {CODEC_UTF16, 1, 0, ReadUnityString, F010042300C4F6000, 0x010042300C4F6000ull, "1.0.1"}},   // choice2
-    // 囚われのパルマ
-    {0x8015b7a8, {CODEC_UTF16, 0, 0, ReadUnityString, F010044800D2EC000, 0x010044800D2EC000ull, "1.0.0"}}, // text x0
-    {0x8015b46c, {CODEC_UTF16, 1, 0, ReadUnityString, F010044800D2EC000, 0x010044800D2EC000ull, "1.0.0"}}, // name x1
     // Brothers Conflict: Precious Baby
     {0x8016aecc, {CODEC_UTF16, 0, 0, ReadUnityString, F0100982015606000, 0x010037400DAAE000ull, "1.0.0"}}, // name
     {0x80126b9c, {CODEC_UTF16, 0, 0, ReadUnityString, F0100982015606000, 0x010037400DAAE000ull, "1.0.0"}}, // dialogue
@@ -3390,12 +3378,19 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x826ba1a0, {CODEC_UTF16, 1, 0, ReadUnityString, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Info
     {0x823f6200, {CODEC_UTF16, 0, 0, ReadUnityString, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // More Info
     {0x826c381c, {CODEC_UTF16, 1, 0, ReadUnityString, F01001EF017BE6000, 0x01001EF017BE6000ull, "1.0.4"}}, // Item Select Name
+    // 囚われのパルマ
+    {0x8015b7a8, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x010044800D2EC000ull, "1.0.0"}}, // text x0
+    {0x8015b46c, {CODEC_UTF16, 1, 0, ReadUnityString, F01000EA00D2EE000, 0x010044800D2EC000ull, "1.0.0"}}, // name x1
+    {0x80BEE5F4, {CODEC_UTF16, 0, 0x14, 0, F01000EA00D2EE000, 0x010044800D2EC000ull, "1.0.1"}},
+    {0x80C412C0, {CODEC_UTF16, 1, 0x14, 0, F01000EA00D2EE000, 0x010044800D2EC000ull, "1.0.1"}},
     // 囚われのパルマ Refrain
-    {0x80697300, {CODEC_UTF16, 1, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // text x1
-    {0x806f43c0, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // name x0
-    {0x80d2aca4, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // choice x0
-    {0x804b04c8, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // alert x0
-    {0x804b725c, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // prompt x0
+    {0x80697300, {CODEC_UTF16, 1, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}},               // text x1
+    {0x806f43c0, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}},               // name x0
+    {0x80d2aca4, {CODEC_UTF16 | FULL_STRING, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}}, // choice x0
+    {0x804b04c8, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}},               // alert x0
+    {0x804b725c, {CODEC_UTF16, 0, 0, ReadUnityString, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.0"}},               // prompt x0
+    {0x802DABD8, {CODEC_UTF16, 1, 0x14, 0, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.1"}},
+    {0x80B977A4, {CODEC_UTF16, 0, 0x14, 0, F01000EA00D2EE000, 0x01000EA00D2EE000ull, "1.0.1"}},
     // 穢翼のユースティア
     {0x804BEFD0, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01001CC017BB2000ull, "1.0.0"}}, // x0 - name
     {0x804BEFE8, {CODEC_UTF8, 0, 0, 0, F01006590155AC000, 0x01001CC017BB2000ull, "1.0.0"}}, // x0 - dialogue

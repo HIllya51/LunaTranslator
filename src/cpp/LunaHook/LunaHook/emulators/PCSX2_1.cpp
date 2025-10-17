@@ -2041,6 +2041,15 @@ namespace
         strReplace(s, "\x81\x79\x81\x40\x81\x40\x81\x40\x81\x40\x81\x7a");
         buffer->from(s);
     }
+    void SLPM65910(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->buff[0] == '&')
+            return buffer->clear();
+        auto s = buffer->strAW();
+        s = s.substr(0, s.rfind(L"fV"));
+        s = re::sub(s, L"@　*");
+        buffer->fromWA(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2048,6 +2057,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // カフェ・リンドバーグ -summer season-
+    {0x211e08, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65910, "SLPM-65910"}},
     // 裏切りは僕の名前を知っている ～黄昏に堕ちた祈り～
     {0xB424B6, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPM-55274"}},
     // きみスタ ～きみとスタディ～
