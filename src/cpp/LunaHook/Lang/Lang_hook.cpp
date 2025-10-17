@@ -25,7 +25,7 @@ std::unordered_map<LANG_STRINGS_HOOK, i18nString<char>> _internal_lang_strings_h
     {Match_Error, u8"匹配 %s 引擎时发生错误"},
     {Attach_Error, u8"连接到 %s 引擎时发生错误"},
     {MatchedEngine, u8"匹配到 %s 引擎"},
-    {ConfirmStop, u8"确认是 %s 引擎, 停止匹配"},
+    {ConfirmStop, u8"确认是 %s 引擎"},
     {Attach_Stop, u8"成功连接到 %s 引擎"},
     {ProcessRange, u8"获取到进程内存地址范围 0x%p 到 0x%p"},
     {WarningDummy, u8"警告，注入的进程内存很小，可能是无用进程!"},

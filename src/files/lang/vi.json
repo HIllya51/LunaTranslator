@@ -846,7 +846,6 @@
     "匹配 %s 引擎时发生错误": "Lỗi xảy ra khi khớp động cơ %s",
     "连接到 %s 引擎时发生错误": "Đã xảy ra lỗi khi kết nối đến động cơ %s",
     "匹配到 %s 引擎": "phù hợp với động cơ %s",
-    "确认是 %s 引擎, 停止匹配": "Xác nhận là động cơ %s, dừng khớp lệnh.",
     "成功连接到 %s 引擎": "Kết nối thành công đến động cơ %s",
     "获取到进程内存地址范围 0x%p 到 0x%p": "Đã lấy được phạm vi địa chỉ bộ nhớ tiến trình từ 0x%p đến 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Cảnh báo, bộ nhớ tiến trình được tiêm vào rất nhỏ, có thể là tiến trình vô dụng!",
@@ -876,5 +875,6 @@
     "手动执行": "Thực hiện thủ công",
     "自动模式": "Chế độ tự động",
     "选择文件夹": "Chọn thư mục",
-    "在浏览器中查词": "Tra từ trong trình duyệt"
+    "在浏览器中查词": "Tra từ trong trình duyệt",
+    "确认是 %s 引擎": "Xác nhận là động cơ %s."
 }

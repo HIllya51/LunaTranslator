@@ -846,7 +846,6 @@
     "匹配 %s 引擎时发生错误": "Fel uppstod vid matchning av %s-motor",
     "连接到 %s 引擎时发生错误": "Fel uppstod vid anslutning till %s-motorn",
     "匹配到 %s 引擎": "matchad till %s motor",
-    "确认是 %s 引擎, 停止匹配": "Bekräftar att det är %s-motorn, avbryter matchningen.",
     "成功连接到 %s 引擎": "Anslutning till %s-motorn lyckades",
     "获取到进程内存地址范围 0x%p 到 0x%p": "Hämtade minnesadressintervallet för processen från 0x%p till 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Varning, den injicerade processens minne är mycket litet, kan vara en meningslös process!",
@@ -876,5 +875,6 @@
     "手动执行": "Manuell utförande",
     "自动模式": "Automatiskt läge",
     "选择文件夹": "Välj mapp",
-    "在浏览器中查词": "Sök efter ord i webbläsaren"
+    "在浏览器中查词": "Sök efter ord i webbläsaren",
+    "确认是 %s 引擎": "Bekräftat som %s-motor"
 }

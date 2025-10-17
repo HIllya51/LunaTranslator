@@ -846,7 +846,6 @@
     "匹配 %s 引擎时发生错误": "Fout bij het matchen van %s engine",
     "连接到 %s 引擎时发生错误": "Fout bij het verbinden met %s-engine",
     "匹配到 %s 引擎": "Gekoppeld aan %s motor",
-    "确认是 %s 引擎, 停止匹配": "Bevestigd is %s motor, stop met matchen.",
     "成功连接到 %s 引擎": "Succesvol verbonden met %s-engine",
     "获取到进程内存地址范围 0x%p 到 0x%p": "Geheugenadresbereik van proces verkregen van 0x%p tot 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Waarschuwing, het geïnjecteerde proces heeft weinig geheugen, mogelijk een nutteloos proces!",
@@ -876,5 +875,6 @@
     "手动执行": "Handmatig uitvoeren",
     "自动模式": "Automatische modus",
     "选择文件夹": "Map selecteren",
-    "在浏览器中查词": "Zoek woorden op in de browser"
+    "在浏览器中查词": "Zoek woorden op in de browser",
+    "确认是 %s 引擎": "Bevestigd als %s motor"
 }

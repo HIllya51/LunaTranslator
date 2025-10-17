@@ -846,7 +846,6 @@
     "匹配 %s 引擎时发生错误": "Chyba při spárování motoru %s",
     "连接到 %s 引擎时发生错误": "Při připojování k motoru %s došlo k chybě.",
     "匹配到 %s 引擎": "párování s motorem %s",
-    "确认是 %s 引擎, 停止匹配": "Potvrzeno, že jde o motor %s, ukončuji porovnávání.",
     "成功连接到 %s 引擎": "Úspěšné připojení k motoru %s",
     "获取到进程内存地址范围 0x%p 到 0x%p": "Získán rozsah paměťových adres procesu od 0x%p do 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Varování, vstřikovaná paměť procesu je velmi malá, může se jednat o nepotřebný proces!",
@@ -876,5 +875,6 @@
     "手动执行": "Ruční provedení",
     "自动模式": "Automatický režim",
     "选择文件夹": "Vyberte složku",
-    "在浏览器中查词": "Vyhledat slovo v prohlížeči"
+    "在浏览器中查词": "Vyhledat slovo v prohlížeči",
+    "确认是 %s 引擎": "Potvrzeno jako motor %s."
 }

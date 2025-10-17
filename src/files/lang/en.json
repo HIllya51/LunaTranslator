@@ -846,7 +846,6 @@
     "匹配 %s 引擎时发生错误": "Error occurred while matching the %s engine",
     "连接到 %s 引擎时发生错误": "An error occurred while connecting to the %s engine.",
     "匹配到 %s 引擎": "Matched to %s engine",
-    "确认是 %s 引擎, 停止匹配": "Confirmed as %s engine, stopping matching.",
     "成功连接到 %s 引擎": "Successfully connected to the %s engine",
     "获取到进程内存地址范围 0x%p 到 0x%p": "Obtained process memory address range from 0x%p to 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Warning: The injected process has very little memory and may be a useless process!",
@@ -876,5 +875,6 @@
     "手动执行": "Manual execution",
     "自动模式": "Auto mode",
     "选择文件夹": "Select folder",
-    "在浏览器中查词": "Look up words in the browser"
+    "在浏览器中查词": "Look up words in the browser",
+    "确认是 %s 引擎": "Confirmed as %s engine"
 }
