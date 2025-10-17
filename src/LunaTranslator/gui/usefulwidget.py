@@ -2362,7 +2362,6 @@ class auto_select_webview(QWidget):
 
     def _createwebview(self, shoudong=False, transp=False):
         try:
-            x
             browser = (WebviewWidget, WebviewWidget_for_auto)[self.loadex](
                 transp=transp
             )
