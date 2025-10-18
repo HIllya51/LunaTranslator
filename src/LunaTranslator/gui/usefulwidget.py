@@ -1183,9 +1183,11 @@ def __mousefollowfunction(btn: "IconButton", functionorigin):
 
     functionorigin()
     QApplication.processEvents()
-    button_rect = btn.frameGeometry()
-    center_point = button_rect.center()
-    QCursor.setPos(btn.parentWidget().mapToGlobal(center_point))
+    rect = windows.GetWindowRect(int(btn.winId()))
+    center_point = QRect(
+        rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1]
+    ).center()
+    windows.SetCursorPos(center_point.x(), center_point.y())
 
 
 def D_getIconButton_mousefollow(

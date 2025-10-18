@@ -229,6 +229,10 @@ _GetCursorPos = _user32.GetCursorPos
 _GetCursorPos.argtypes = (POINTER(POINT),)
 
 
+SetCursorPos = _user32.SetCursorPos
+SetCursorPos.argtypes = (c_int, c_int)
+
+
 GetDeviceCaps = _gdi32.GetDeviceCaps
 GetDeviceCaps.argtypes = HDC, c_int
 GetDeviceCaps.restype = c_int
