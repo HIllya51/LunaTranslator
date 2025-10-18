@@ -358,8 +358,6 @@ def GdiCropImage(x1, y1, x2, y2, hwnd=None):
     return succ, ret[0]
 
 
-MaximumWindow = utilsdll.MaximumWindow
-MaximumWindow.argtypes = (HWND,)
 setAeroEffect = utilsdll.setAeroEffect
 setAeroEffect.argtypes = (HWND, c_bool)
 setAcrylicEffect = utilsdll.setAcrylicEffect
@@ -1076,3 +1074,17 @@ RunMessageLoop = utilsdll.RunMessageLoop
 CreateMessageWindow = utilsdll.CreateMessageWindow
 CreateMessageWindow.argtypes = (WindowMessageCallback_t,)
 CreateMessageWindow.restype = HWND
+
+CreateSelectRangeWindow = utilsdll.CreateSelectRangeWindow
+CreateSelectRangeWindow_CB = CFUNCTYPE(
+    None, c_int, c_int, c_int, c_int, c_int, c_int, POINTER(c_char), c_size_t
+)
+CreateSelectRangeWindow.argtypes = (
+    HWND,
+    c_float,
+    c_int,
+    c_int,
+    c_int,
+    c_float,
+    CreateSelectRangeWindow_CB,
+)

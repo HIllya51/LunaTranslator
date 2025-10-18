@@ -272,7 +272,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         )
 
     def resizeEvent(self, a0: QResizeEvent):
-        if self.__state != 0:
+        if self.__state == 2:
             # Qt模式下，谜之resize
             self.doResize()
             globalconfig["WordViewTooltip2"] = a0.size().width(), a0.size().height()

@@ -1,6 +1,7 @@
 from qtsymbols import *
 import windows, NativeUtils, gobject
 from myutils.config import globalconfig
+from myutils.hwnd import safepixmap
 from gui.dynalang import LAction
 from traceback import print_exc
 
@@ -328,295 +329,24 @@ class rangeadjust(Mainw):
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
-screen_shot_ui = None
-
-
-class rangeselect(QMainWindow):
-
-    def closeEvent(self, a0):
-        global screen_shot_ui
-        screen_shot_ui = None
-        self.deleteLater()
-        windows.SetForegroundWindow(self.originhwnd)
-        return super().closeEvent(a0)
-
-    def __init__(self, parent=None):
-
-        super(rangeselect, self).__init__(parent)
-        self.is_drawing = False
-        self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.WindowStaysOnTopHint
-            | Qt.WindowType.Tool
-        )
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.backlabel = QLabel(self)
-        self.rectlabel = QLabel(self)
-        self.backlabel.move(0, 0)
-        # self.setWindowOpacity(0.5)
-        self.setMouseTracking(True)
-        self.setCursor(Qt.CursorShape.CrossCursor)
-        self.reset()
-
-    def reset(self):
-        if len(QApplication.screens()) != 1:
-            NativeUtils.MaximumWindow(int(self.winId()))
-        else:
-            self.setGeometry(QRect(QPoint(0, 0), QApplication.screens()[0].size()))
-        self.once = True
-        self.is_drawing = False
-        self.start_point = QPoint()
-        self.end_point = QPoint()
-        self.__start = None
-        self.__end = None
-        self.rectlabel.resize(0, 0)
-        self.rectlabel.setStyleSheet(
-            " border:%spx solid %s; background-color: rgba(0,0,0, 0)"
-            % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
-        )
-        self.backlabel.setStyleSheet(
-            "background-color: rgba(255,255,255, %s)" % globalconfig["ocrselectalpha"]
-        )
-
-    def resizeEvent(self, e: QResizeEvent):
-        if len(QApplication.screens()) != 1:
-            NativeUtils.MaximumWindow(int(self.backlabel.winId()))
-        self.backlabel.resize(e.size())
-
-    def paintEvent(self, _):
-
-        if self.is_drawing:
-
-            pp = QPainter(self)
-            pen = QPen(QColor(globalconfig["ocrrangecolor"]))
-            pen.setWidth(globalconfig["ocrrangewidth"])
-            pp.setPen(pen)
-            _x1 = self.start_point.x()
-            _y1 = self.start_point.y()
-            _x2 = self.end_point.x()
-            _y2 = self.end_point.y()
-            _sp = QPoint(
-                min(_x1, _x2) - globalconfig["ocrrangewidth"],
-                min(_y1, _y2) - globalconfig["ocrrangewidth"],
-            )
-            _ep = QPoint(
-                max(_x1, _x2) + globalconfig["ocrrangewidth"],
-                max(_y1, _y2) + globalconfig["ocrrangewidth"],
-            )
-            self.rectlabel.setGeometry(QRect(_sp, _ep))
-
-    def mousePressEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.end_point = self.start_point = event.pos()
-            self.is_drawing = True
-            self.__start = self.__end = windows.GetCursorPos()
-
-    def mouseMoveEvent(self, event: QMouseEvent):
-
-        if not self.is_drawing:
-            self.is_drawing = True
-            self.end_point = self.start_point = event.pos()
-            self.__start = self.__end = windows.GetCursorPos()
-        else:
-            self.end_point = event.pos()
-            self.__end = windows.GetCursorPos()
-            self.update()
-
-    def getRange(self):
-        if self.__start is None:
-            self.__start = self.__end
-        x1, y1, x2, y2 = (
-            self.__start.x,
-            self.__start.y,
-            self.__end.x,
-            self.__end.y,
-        )
-
-        x1, x2 = min(x1, x2), max(x1, x2)
-        y1, y2 = min(y1, y2), max(y1, y2)
-
-        return ((x1, y1), (x2, y2))
-
-    def callbackfunction(self, event: QMouseEvent):
-        if not self.once:
-            return
-        self.once = False
-        self.end_point = event.pos()
-        self.__end = windows.GetCursorPos()
-        self.close()
-        try:
-            self.callback(self.getRange())
-        except:
-            print_exc()
-
-    def mouseReleaseEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.callbackfunction(event)
-        elif event.button() == Qt.MouseButton.RightButton:
-            self.once = False
-            self.close()
-
-    def keyPressEvent(self, event: QKeyEvent):
-        if event.key() == Qt.Key.Key_Escape:
-            self.close()
-        return super().keyPressEvent(event)
-
-
-class rangeselect_1(QMainWindow):
-    def __init__(self, p, xx):
-
-        self.is_drawing = False
-        super(rangeselect_1, self).__init__(p)
-        self.xx = xx
-        self.setWindowFlags(
-            Qt.WindowType.FramelessWindowHint
-            | Qt.WindowType.WindowStaysOnTopHint
-            | Qt.WindowType.Tool
-        )
-        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
-        self.backlabel = QLabel(self)
-        self.backlabel.move(0, 0)
-        self.backlabel2 = QLabel(self)
-        self.backlabel2.move(0, 0)
-        self.rectlabel = QLabel(self)
-        # self.setWindowOpacity(0.5)
-        self.setMouseTracking(True)
-        self.setCursor(Qt.CursorShape.CrossCursor)
-
-    def reset(self):
-        screen = QApplication.primaryScreen()
-        self.setGeometry(QRect(QPoint(0, 0), screen.size()))
-
-        screen_geometry = screen.geometry()
-        if self.xx:
-            screenshot = screen.grabWindow(
-                0,
-                screen_geometry.x(),
-                screen_geometry.y(),
-                screen_geometry.width(),
-                screen_geometry.height(),
-            )
-            self.screenshot = screenshot
-            self.backlabel.setPixmap(screenshot)
-        self.once = True
-        self.is_drawing = False
-        self.start_point = QPoint()
-        self.end_point = QPoint()
-        self.rectlabel.resize(0, 0)
-        self.rectlabel.setStyleSheet(
-            " border:%spx solid %s; background-color: rgba(0,0,0, 0)"
-            % (globalconfig["ocrrangewidth"], globalconfig["ocrrangecolor"])
-        )
-        self.backlabel2.setStyleSheet(
-            "background-color: rgba(255,255,255, %s)" % globalconfig["ocrselectalpha"]
-        )
-
-    def resizeEvent(self, e: QResizeEvent):
-        self.backlabel.resize(e.size())
-        self.backlabel2.resize(e.size())
-
-    def paintEvent(self, _):
-
-        if self.is_drawing:
-
-            pp = QPainter(self)
-            pen = QPen(QColor(globalconfig["ocrrangecolor"]))
-            pen.setWidth(globalconfig["ocrrangewidth"])
-            pp.setPen(pen)
-            _x1 = self.start_point.x()
-            _y1 = self.start_point.y()
-            _x2 = self.end_point.x()
-            _y2 = self.end_point.y()
-            _sp = QPoint(
-                min(_x1, _x2) - globalconfig["ocrrangewidth"],
-                min(_y1, _y2) - globalconfig["ocrrangewidth"],
-            )
-            _ep = QPoint(
-                max(_x1, _x2) + globalconfig["ocrrangewidth"],
-                max(_y1, _y2) + globalconfig["ocrrangewidth"],
-            )
-            self.rectlabel.setGeometry(QRect(_sp, _ep))
-
-    def mousePressEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.end_point = self.start_point = event.pos()
-            self.is_drawing = True
-
-    def mouseMoveEvent(self, event: QMouseEvent):
-
-        if not self.is_drawing:
-            self.is_drawing = True
-            self.end_point = self.start_point = event.pos()
-        else:
-            self.end_point = event.pos()
-            self.update()
-
-    def getRange(self):
-        x1, y1, x2, y2 = (
-            self.start_point.x() * self.devicePixelRatioF(),
-            self.start_point.y() * self.devicePixelRatioF(),
-            self.end_point.x() * self.devicePixelRatioF(),
-            self.end_point.y() * self.devicePixelRatioF(),
-        )
-        x1, x2 = min(x1, x2), max(x1, x2)
-        y1, y2 = min(y1, y2), max(y1, y2)
-
-        return ((int(x1), int(y1)), (int(x2), int(y2)))
-
-    def callbackfunction(self, event: QMouseEvent):
-        if not self.once:
-            return
-        self.once = False
-        self.end_point = event.pos()
-        self.close()
-        try:
-            (x1, y1), (x2, y2) = self.getRange()
-            img = None
-            if self.xx and (x1 != x2 and y1 != y2):
-                img = self.screenshot.copy(
-                    QRect(QPoint(x1, y1), QPoint(x2, y2))
-                ).toImage()
-            self.callback(self.getRange(), img)
-        except:
-            print_exc()
-
-    def mouseReleaseEvent(self, event: QMouseEvent):
-        if event.button() == Qt.MouseButton.LeftButton:
-            self.callbackfunction(event)
-        elif event.button() == Qt.MouseButton.RightButton:
-            self.once = False
-            self.close()
-
-    def closeEvent(self, a0):
-        global screen_shot_ui
-        screen_shot_ui = None
-        self.deleteLater()
-        windows.SetForegroundWindow(self.originhwnd)
-        return super().closeEvent(a0)
-
-    def keyPressEvent(self, event: QKeyEvent):
-        if event.key() == Qt.Key.Key_Escape:
-            self.close()
-        return super().keyPressEvent(event)
-
-
-def rangeselct_function(callback, x=True):
-    global screen_shot_ui
-    if screen_shot_ui:
-        screen_shot_ui.close()
+def rangeselct_function(callback):
     p = gobject.base.translation_ui
-    if not p.isVisible():
-        p = None
-    if (len(QApplication.screens()) == 1) or globalconfig[
-        "range_select_multi_dpi_capture_force"
-    ]:
-        screen_shot_ui = rangeselect_1(p, x)
-    else:
-        screen_shot_ui = rangeselect(p)
-    screen_shot_ui.originhwnd = windows.GetForegroundWindow()
-    screen_shot_ui.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
-    screen_shot_ui.show()
-    screen_shot_ui.reset()
-    screen_shot_ui.callback = callback
-    windows.SetFocus(int(screen_shot_ui.winId()))
-    windows.SetForegroundWindow(int(screen_shot_ui.winId()))
+    p = p.winid if p.isVisible() else None
+    color = QColor(globalconfig["ocrrangecolor"])
+
+    def __cb(x1, y1, x2, y2, xoff, yoff, ptr, size):
+        x1, x2 = min(x1, x2), max(x1, x2)
+        y1, y2 = min(y1, y2), max(y1, y2)
+        pix = safepixmap(ptr[:size]).copy(x1, y1, x2 - x1, y2 - y1).toImage()
+        callback(((x1 + xoff, y1 + yoff), (x2 + xoff, y2 + yoff)), pix)
+
+    cb = NativeUtils.CreateSelectRangeWindow_CB(__cb)
+    NativeUtils.CreateSelectRangeWindow(
+        p,
+        globalconfig["ocrselectalpha"],
+        color.red(),
+        color.green(),
+        color.blue(),
+        globalconfig["ocrrangewidth"],
+        cb,
+    )

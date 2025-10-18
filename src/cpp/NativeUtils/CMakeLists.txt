@@ -37,7 +37,7 @@ add_library(NativeUtils SHARED
     ${loopback_src} ${winrt_src} ${mshtml_src} ${webview2_src} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
-target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz webview2 mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI)
+target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz webview2 mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI Msimg32)
 
 if(MSVC)
     target_link_libraries(NativeUtils PRIVATE ${YY_Thunks})

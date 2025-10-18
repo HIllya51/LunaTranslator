@@ -1693,13 +1693,13 @@ class TranslatorWindow(resizableframeless):
             return
         self.showhidestate = False
 
-        rangeselct_function(functools.partial(self.afterrange, False), False)
+        rangeselct_function(functools.partial(self.afterrange, False))
 
     def clickRangeclear(self):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
             return
         self.showhidestate = False
-        rangeselct_function(functools.partial(self.afterrange, True), False)
+        rangeselct_function(functools.partial(self.afterrange, True))
 
     @tryprint
     def afterrange(self, clear, rect, img=None):
