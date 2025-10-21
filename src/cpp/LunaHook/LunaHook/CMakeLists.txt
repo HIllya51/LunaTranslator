@@ -26,7 +26,7 @@ else()
 		utawarerumono System4x Abalone Abel 5pb HorkEye XUSE Leaf Nekopack AXL AGS AdobeFlash10
 		FocasLens Tamamo Ages3ResT H_do_C RScript TYPEMOON TAKUYO MixwillSoft MerRouge GROOVER
 		SmartAdv Hug GJ Pinpai ADVSystem NUGSystem LizardFactory Nekotaro PixelGameMakerMVplayer
-		TamaSoft Broccoli Arcturus Yatagarasu R11)
+		TamaSoft Broccoli Arcturus Yatagarasu R11 For)
 	set(enginepath "engine32")
 	set(collector "enginecollection32.cpp")
 endif()

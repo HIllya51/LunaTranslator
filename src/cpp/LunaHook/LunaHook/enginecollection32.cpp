@@ -20,6 +20,7 @@
 #include "engine32/CoffeeMaker.h"
 #include "engine32/Yatagarasu.h"
 #include "engine32/TACTICS.h"
+#include "engine32/For.h"
 #include "engine32/splushwave.h"
 #include "engine32/GJ.h"
 #include "engine32/FrontWing.h"
@@ -467,5 +468,6 @@ std::vector<ENGINE *> check_engines()
         new Broccoli,
         new Yatagarasu,
         new R11,
+        new For,
     };
 }

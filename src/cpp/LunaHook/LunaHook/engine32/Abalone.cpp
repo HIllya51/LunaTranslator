@@ -7,7 +7,6 @@ bool AbaloneHook()
       0x80, 0x38, 0x00,
       0x74};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("AbaloneHook %p", addr);
   if (!addr)
     return false;
   HookParam hp;
