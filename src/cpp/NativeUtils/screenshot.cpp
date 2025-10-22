@@ -133,7 +133,7 @@ DECLARE_API float GetDevicePixelRatioF(HWND hwnd)
 {
     return 1.0f * GetDpiForWindow(hwnd) / USER_DEFAULT_SCREEN_DPI;
 }
-std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent, int x, int y, int, int h, HCURSOR cursor, DWORD style);
+std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent, int x, int y, int, int h, HCURSOR cursor, DWORD style, DWORD exstyle);
 namespace
 {
     HDC hMemDCBitmapmask;
@@ -211,7 +211,7 @@ DECLARE_API void CreateSelectRangeWindow(HWND parent, float _ocrselectalpha, int
     DeleteDC(hdcBlack);
 
     ReleaseDC(NULL, hScreenDC);
-    auto &&[hwnd, _] = CreateWindowForWndProc(WindowProc, parent, screenX, screenY, screenWidth, screenHeight, LoadCursor(NULL, IDC_CROSS), WS_POPUP);
+    auto &&[hwnd, _] = CreateWindowForWndProc(WindowProc, parent, screenX, screenY, screenWidth, screenHeight, LoadCursor(NULL, IDC_CROSS), WS_POPUP, WS_EX_TOPMOST);
 
     ShowWindow(hwnd, SW_SHOW);
     UpdateWindow(hwnd);

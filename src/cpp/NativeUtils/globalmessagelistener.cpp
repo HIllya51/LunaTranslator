@@ -128,7 +128,7 @@ static std::wstring get_unique_classname()
     wss += std::to_wstring(idx++);
     return wss;
 }
-std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent = NULL, int x = 0, int y = 0, int w = 0, int h = 0, HCURSOR cursor = NULL, DWORD style = 0)
+std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent = NULL, int x = 0, int y = 0, int w = 0, int h = 0, HCURSOR cursor = NULL, DWORD style = 0, DWORD exstyle = 0)
 {
     auto CLASS_NAME = get_unique_classname();
     WNDCLASS wc = {};
@@ -137,7 +137,7 @@ std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent 
     wc.hCursor = cursor;
     GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
     RegisterClass(&wc);
-    HWND hWnd = CreateWindowEx(0, CLASS_NAME.c_str(), NULL, style, x, y, w, h, parent, nullptr, wc.hInstance, nullptr); // HWND_MESSAGE会收不到。
+    HWND hWnd = CreateWindowEx(exstyle, CLASS_NAME.c_str(), NULL, style, x, y, w, h, parent, nullptr, wc.hInstance, nullptr); // HWND_MESSAGE会收不到。
     return std::make_pair(hWnd, wc);
 }
 DECLARE_API void globalmessagelistener(WinEventHookCALLBACK_t callback1, WindowMessageCallback_t callback)
