@@ -1429,7 +1429,6 @@ class WordViewer(QWidget):
             0,
             lambda: _TR("加亮模式"),
             lambda: self.textOutput.eval("switch_hightlightmode()"),
-            checkable=True,
             getchecked=lambda: self.callvalue(),
         )
         nexti = self.textOutput.add_menu_noselect(

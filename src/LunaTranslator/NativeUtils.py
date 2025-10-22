@@ -431,7 +431,6 @@ webview2_add_menu.argtypes = (
     c_int,
     c_void_p,
     c_void_p,
-    c_bool,
     c_void_p,
     c_void_p,
     c_bool,
@@ -600,13 +599,7 @@ class WebView2:
         webview2_sethtml(self.webview, html)
 
     def add_menu(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         __ = webview2_add_menu_CALLBACK(callback) if callback else None
         self.callbacks.append(__)
@@ -617,17 +610,11 @@ class WebView2:
         getlabel = wrapgetlabel(getlabel)
         __3 = webview2_contextmenu_gettext(getlabel) if getlabel else None
         self.callbacks.append(__3)
-        webview2_add_menu(self.webview, index, __3, __, checkable, __1, __2, True)
+        webview2_add_menu(self.webview, index, __3, __, __1, __2, True)
         return index + 1
 
     def add_menu_noselect(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         __ = webview2_add_menu_noselect_CALLBACK(callback) if callback else None
         self.callbacks.append(__)
@@ -638,7 +625,7 @@ class WebView2:
         getlabel = wrapgetlabel(getlabel)
         __3 = webview2_contextmenu_gettext(getlabel) if getlabel else None
         self.callbacks.append(__3)
-        webview2_add_menu(self.webview, index, __3, __, checkable, __1, __2, False)
+        webview2_add_menu(self.webview, index, __3, __, __1, __2, False)
         return index + 1
 
     def __webmessage_callback_f(self, js: str):

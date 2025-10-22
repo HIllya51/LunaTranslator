@@ -409,7 +409,6 @@ class TextBrowser(WebviewWidget, somecommon):
             1,
             lambda: _TR("可拖动的"),
             __cb,
-            checkable=True,
             getchecked=lambda: globalconfig["dragable"],
         )
         self.bind("calllunaclickedword", gobject.base.clickwordcallback)

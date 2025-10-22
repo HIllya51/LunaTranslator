@@ -295,7 +295,6 @@ class wvtranshist(WebviewWidget, somecommon):
             nexti,
             lambda: _TR("自动保存"),
             self.autosavecb,
-            checkable=True,
             getchecked=lambda: globalconfig["history"]["autosave"],
         )
         nexti = self.add_menu_noselect(nexti)
@@ -303,28 +302,24 @@ class wvtranshist(WebviewWidget, somecommon):
             nexti,
             lambda: _TR("显示原文"),
             self.showhideraw_,
-            checkable=True,
             getchecked=lambda: globalconfig["history"]["showorigin"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("显示翻译"),
             self.showtrans_,
-            checkable=True,
             getchecked=lambda: globalconfig["history"]["showtrans"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("显示翻译器名称"),
             self.showtransname_,
-            checkable=True,
             getchecked=lambda: globalconfig["history"]["showtransname"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("显示时间"),
             self.showhidetime_,
-            checkable=True,
             getchecked=lambda: globalconfig["history"]["showtime"],
         )
         nexti = self.add_menu_noselect(nexti)
@@ -333,7 +328,6 @@ class wvtranshist(WebviewWidget, somecommon):
             nexti,
             lambda: _TR("使用Webview2显示"),
             self.useweb,
-            True,
             getchecked=lambda: globalconfig["history"]["usewebview2"],
         )
         nexti = self.add_menu_noselect(
@@ -351,14 +345,12 @@ class wvtranshist(WebviewWidget, somecommon):
             nexti,
             lambda: _TR("附加浏览器插件"),
             threader(self.reloadx.emit),
-            True,
             getchecked=lambda: globalconfig["history"]["webviewLoadExt"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("浏览器插件"),
             threader(self.pluginsedit.emit),
-            False,
             getuse=lambda: globalconfig["history"]["webviewLoadExt"],
         )
         nexti = self.add_menu_noselect(nexti)

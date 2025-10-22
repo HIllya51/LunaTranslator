@@ -60,7 +60,6 @@ struct MenuContexts
 {
     contextmenu_gettext gettext;
     contextmenu_callback_t_ex callback;
-    bool checkable;
     contextmenu_getchecked getchecked;
     contextmenu_getuse getuse;
 };
@@ -89,7 +88,7 @@ public:
     titlechange_callback_t titlechange_callback = nullptr;
     IconChanged_callback_t IconChanged_callback = nullptr;
     void WaitForLoad();
-    void AddMenu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, bool checkable = false, contextmenu_getchecked getchecked = nullptr, contextmenu_getuse getuse = nullptr);
+    void AddMenu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked = nullptr, contextmenu_getuse getuse = nullptr);
     WebView2(HWND parent, bool);
     HRESULT init(bool);
     void put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME);

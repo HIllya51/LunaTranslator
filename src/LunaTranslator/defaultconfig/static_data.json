@@ -463,12 +463,10 @@
         ]
     },
     "main_server": [
-        "https://lunatranslator.org",
-        "https://lunatranslator.star.is"
+        "https://lunatranslator.org"
     ],
     "docs_server": [
         "https://docs.lunatranslator.org",
-        "https://docs.lunatranslator.star.is",
         "http://localhost:5173"
     ],
     "bangumi_oauth": {

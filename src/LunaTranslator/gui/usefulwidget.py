@@ -1433,24 +1433,12 @@ class abstractwebview(QWidget):
         pass
 
     def add_menu(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         return index + 1
 
     def add_menu_noselect(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         return index + 1
 
@@ -1840,37 +1828,23 @@ class WebviewWidget(abstractwebview):
         self.webview.eval(js, callback)
 
     def add_menu(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         return self.webview.add_menu(
             index=index,
             getlabel=getlabel,
             callback=callback,
-            checkable=checkable,
             getchecked=getchecked,
             getuse=getuse,
         )
 
     def add_menu_noselect(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         return self.webview.add_menu_noselect(
             index=index,
             getlabel=getlabel,
             callback=callback,
-            checkable=checkable,
             getchecked=getchecked,
             getuse=getuse,
         )
@@ -2037,14 +2011,12 @@ class WebviewWidget_for_auto(WebviewWidget):
             nexti,
             lambda: _TR("附加浏览器插件"),
             threader(self.reloadx.emit),
-            True,
             getchecked=lambda: globalconfig["webviewLoadExt_cishu"],
         )
         nexti = self.add_menu_noselect(
             nexti,
             lambda: _TR("浏览器插件"),
             threader(self.pluginsedit.emit),
-            False,
             getuse=lambda: globalconfig["webviewLoadExt_cishu"],
         )
         nexti = self.add_menu_noselect(nexti)
@@ -2125,13 +2097,7 @@ class mshtmlWidget(abstractwebview):
         return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
 
     def add_menu(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         cb = NativeUtils.html_add_menu_cb(callback) if callback else None
         self.callbacks.append(cb)
@@ -2144,13 +2110,7 @@ class mshtmlWidget(abstractwebview):
         return index + 1
 
     def add_menu_noselect(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         cb = NativeUtils.html_add_menu_cb2(callback) if callback else None
         self.callbacks.append(cb)
@@ -2253,35 +2213,19 @@ class auto_select_webview(QWidget):
         self.internal.bind(funcname, function)
 
     def add_menu(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
-        self.addmenuinfo.append(
-            (index, getlabel, callback, checkable, getchecked, getuse)
-        )
-        return self.internal.add_menu(
-            index, getlabel, callback, checkable, getchecked, getuse
-        )
+        self.addmenuinfo.append((index, getlabel, callback, getchecked, getuse))
+        return self.internal.add_menu(index, getlabel, callback, getchecked, getuse)
 
     def add_menu_noselect(
-        self,
-        index=0,
-        getlabel=None,
-        callback=None,
-        checkable=False,
-        getchecked=None,
-        getuse=None,
+        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
         self.addmenuinfo_noselect.append(
-            (index, getlabel, callback, checkable, getchecked, getuse)
+            (index, getlabel, callback, getchecked, getuse)
         )
         return self.internal.add_menu_noselect(
-            index, getlabel, callback, checkable, getchecked, getuse
+            index, getlabel, callback, getchecked, getuse
         )
 
     def clear(self):
