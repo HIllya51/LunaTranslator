@@ -17,6 +17,9 @@ LunaTranslator поддерживает большое количество иг
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010015301DB94000 | オンエア！ |
+|  | 01005CF02300A000 | Blackish House sideA→ -Retour- |
+|  | 0100BEE01FE42000 | その日の獣には、 |
 |  | 0100B9701BD4E000 | DistortedCode －生者の残り香－ |
 |  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
 |  | 0100447021272000 | DYNAMIC CHORD feat.Liar-S Remaster edition |
