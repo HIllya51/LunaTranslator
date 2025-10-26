@@ -5,7 +5,9 @@
 
 Tất cả các nút có thể được điều chỉnh vị trí tự do. Các nút có thể được đặt vào các nhóm căn chỉnh `Trái` `Giữa` `Phải`, và việc điều chỉnh vị trí tương đối sẽ bị giới hạn trong nhóm căn chỉnh.
 
-Màu sắc của các nút có thể được tùy chỉnh trong `Cài đặt hiển thị` -> `Cài đặt giao diện` -> `Thanh công cụ` -> `Màu nút`.
+Màu nút có thể tùy chỉnh bằng cách nhấp vào "Màu".
+
+Biểu tượng nút có thể tùy chỉnh bằng cách nhấp vào "Biểu tượng".
 
 Một số nút có hai biểu tượng để biểu thị hai trạng thái khác nhau. Một số nút chỉ có một biểu tượng, nhưng chúng sử dụng các màu khác nhau để biểu thị các trạng thái khác nhau.
 :::

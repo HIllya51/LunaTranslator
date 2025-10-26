@@ -5,7 +5,9 @@
 
 All buttons can be freely adjusted in position. Buttons can be set to alignment groups `Left` `Center` `Right`, and adjustments to relative positions will be limited within the alignment group.
 
-Button colors can be customized in `Display Settings` -> `Interface Settings` -> `Toolbar` -> `Button Colors`.
+Button color can be customized by clicking on "Color".
+
+Button icon can be customized by clicking on "Icon".
 
 Some buttons have two icons to indicate two different states. Some buttons only have one icon, but they use different colors to represent different states.
 :::

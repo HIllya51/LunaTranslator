@@ -1146,9 +1146,10 @@ def getIconButton(
     callback2=None,
     fix=True,
     tips=None,
+    color=None,
 ):
 
-    b = IconButton(icon, enable, qicon, fix=fix, tips=tips)
+    b = IconButton(icon, enable, qicon, fix=fix, tips=tips, color=color)
     if callback:
         b.clicked_1.connect(callback)
     if callback2:
@@ -3180,10 +3181,12 @@ class IconButton(LPushButton):
         checkable=False,
         fix=True,
         tips=None,
+        color=None,
     ):
         super().__init__(parent)
         if tips:
             self.setToolTip(tips)
+        self._color = color
         self._icon = icon
         self.clicked.connect(self.clicked_1)
         self.clicked.connect(self.__seticon)
@@ -3197,6 +3200,10 @@ class IconButton(LPushButton):
         self.setEnabled(enable and (bool(icon) or bool(qicon)))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.resizedirect()
+
+    def setColor(self, color):
+        self._color = color
+        self.__seticon()
 
     def setIconStr(self, icon: str):
         self._icon = icon
@@ -3215,9 +3222,13 @@ class IconButton(LPushButton):
                 else:
                     icons = self._icon
                 icon = icons[self.isChecked()]
-                color = (None, gobject.Consts.buttoncolor)[self.isChecked()]
+                color = (
+                    self._color
+                    if self._color
+                    else ((None, gobject.Consts.buttoncolor)[self.isChecked()])
+                )
             else:
-                color = gobject.Consts.buttoncolor
+                color = self._color if self._color else gobject.Consts.buttoncolor
                 icon = self._icon
             icon = qtawesome.icon(icon, color=color)
         self.setIcon(icon)

@@ -11,14 +11,13 @@ class Launcher:
     name = ...
     id = ...
 
-    def run(self, gameexe, config): ...
+    def run(self, gameexe, config: dict): ...
 
-    def setting(self, layout, config): ...
+    def setting(self, layout: QFormLayout, config): ...
 
 
 class LEbase(Launcher):
-
-    def runX(self, exe, usearg, dirpath, config): ...
+    def runX(self, exe, usearg, dirpath, config: dict): ...
     def run(self, game: str, config):
         dirpath = os.path.dirname(game)
         if not (game.lower().endswith(".exe") or game.lower().endswith(".lnk")):
@@ -59,7 +58,7 @@ class le_internal(LEbase):
             LEProc = "files/Locale/Locale.Emulator/LEProc.exe"
         return os.path.abspath(LEProc)
 
-    def profiles(self, config):
+    def profiles(self, config: dict):
         _Names = []
         _Guids = []
         _run_as_admins = []
@@ -118,7 +117,7 @@ class le_internal(LEbase):
             windows.SW_SHOWNORMAL,
         )
 
-    def reselect(self, config, Guids, path):
+    def reselect(self, config, Guids: list, path):
         globalconfig["le_extra_path"] = path
         Names, _Guids, _ = self.profiles(config)
         self.__profiles.clear()
@@ -291,7 +290,7 @@ class lr_internal(LEbase):
             windows.SW_SHOWNORMAL,
         )
 
-    def reselect(self, config, Guids, path):
+    def reselect(self, config, Guids: list, path):
         globalconfig["lr_extra_path"] = path
         Names, _Guids, _ = self.profiles(config)
         self.__profiles.clear()
@@ -410,5 +409,5 @@ def localeswitchedrun(gameuid):
 
 
 def maycreatesettings(layout, config, launcherid):
-    launcher = fundlauncher(launcherid)()
+    launcher: LEbase = fundlauncher(launcherid)()
     launcher.setting(layout, config)

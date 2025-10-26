@@ -22,7 +22,7 @@ from gui.setting.display_ui import toolcolorchange
 
 
 class dialog_selecticon(LDialog):
-    def __init__(self, parent, dict, name, key, btn: IconButton) -> None:
+    def __init__(self, parent, dict, name, key, btn: IconButton, color) -> None:
 
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.dict = dict
@@ -43,6 +43,7 @@ class dialog_selecticon(LDialog):
                 getIconButton(
                     functools.partial(self.selectcallback, "fa." + name),
                     icon="fa." + name,
+                    color=color,
                 ),
                 i // 30,
                 i % 30,
@@ -53,15 +54,7 @@ class dialog_selecticon(LDialog):
         print(_)
         self.dict[self.key] = _
         self.close()
-        gobject.base.translation_ui.refreshtoolicon()
-
-        color = (
-            globalconfig["buttoncolor_1"]
-            if "icon" == self.key
-            and globalconfig["toolbutton"]["buttons"][self.name].get("icon2")
-            else globalconfig["buttoncolor"]
-        )
-        self.btn.setIcon(qtawesome.icon(_, color=color))
+        self.btn.setIconStr(_)
 
 
 def doadjust(_):
@@ -102,7 +95,7 @@ def changerank(item, up, tomax, sortlist: list, savelist, savelay, savescroll):
     doadjust(None)
 
 
-savebtns = {}
+savebtns: "dict[tuple[str, str], IconButton]" = {}
 
 
 def refreshtoolicon():
@@ -114,19 +107,18 @@ def refreshtoolicon():
             and globalconfig["toolbutton"]["buttons"][name].get("icon2")
             else globalconfig["buttoncolor"]
         )
-        icon = globalconfig["toolbutton"]["buttons"][name][key]
-        btn.setIcon(qtawesome.icon(icon, color=color))
-        btn.setStyleSheet(
-            """IconButton{{border:transparent;padding: 0px;}} 
-            IconButton:hover{{ background-color: {color1}; }}""".format(
-                color1=globalconfig["button_color_normal"] if name != "quit" else "red",
-            )
-        )
+        btn.setColor(color)
 
 
 def createbtn(self, name, key):
+    color = (
+        globalconfig["buttoncolor_1"]
+        if "icon" == key and globalconfig["toolbutton"]["buttons"][name].get("icon2")
+        else globalconfig["buttoncolor"]
+    )
     btn = getIconButton(
         icon=globalconfig["toolbutton"]["buttons"][name][key],
+        color=color,
     )
     savebtns[(name, key)] = btn
     btn.clicked.connect(
@@ -137,6 +129,7 @@ def createbtn(self, name, key):
             name,
             key,
             btn,
+            color,
         )
     )
     return btn
@@ -250,4 +243,3 @@ def createbuttonwidget(self, lay: QLayout):
         grids.append(l)
     makescrollgrid(grids, lay, savelist, savelay)
     savescroll.append(lay.itemAt(lay.count() - 1).widget())
-    refreshtoolicon()
