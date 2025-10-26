@@ -914,6 +914,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66980 | 銀のエクリプス |
 |  | SLPM-65910 | カフェ・リンドバーグ -summer season- |
 |  | SLPM-55274 | 裏切りは僕の名前を知っている ～黄昏に堕ちた祈り～ |
 |  | SLPM-66376 | きみスタ ～きみとスタディ～ |
