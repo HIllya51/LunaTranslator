@@ -3320,6 +3320,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8199c95c, {CODEC_UTF16, 1, 0, ReadUnityString, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // text1
     {0x81d5c900, {CODEC_UTF16, 1, 0, ReadUnityString, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // text2
     {0x820d6324, {CODEC_UTF16, 1, 0, ReadUnityString, F010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.0"}}, // choice
+    {0x81F9F4D4, {CODEC_UTF16, 1, 0, ReadUnityString, f010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.2"}}, // text1
     {0x82124B94, {CODEC_UTF16, 1, 0, ReadUnityString, f010061A01C1CE000, 0x010061A01C1CE000ull, "1.0.3"}}, // text1
     // Despera Drops
     {0x81F7607C, {CODEC_UTF16, 1, 0X14, 0, NewLineCharToSpaceW, 0x010008F020CD8000ull, "1.0.0"}},
