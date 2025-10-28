@@ -17,7 +17,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
-|  | 0100EC30206AE000 | 白恋サクラ*グラム |
+|  | 0100EC30206AE000 | 白恋サクラ＊グラム |
 |  | 0100B38021590000 | もし、この世界に神様がいるとするならば |
 |  | 010015301DB94000 | オンエア！ |
 |  | 01005CF02300A000 | Blackish House sideA→ -Retour- |
