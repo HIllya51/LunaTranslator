@@ -2767,7 +2767,7 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
-    // DYNAMIC CHORD feat.[rēve parfait]
+    // 白恋サクラ*グラム
     {0x8048ECB4, {CODEC_UTF8 | FULL_STRING, 0, 0, T0100EC30206AE000, F01003080177CA000, 0x0100EC30206AE000ull, "1.0.0"}},
     // もし、この世界に神様がいるとするならば
     {0x8177502C, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100B38021590000, 0x0100B38021590000ull, "1.0.0"}},
