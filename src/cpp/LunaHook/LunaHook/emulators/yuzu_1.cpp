@@ -19,6 +19,12 @@ namespace
         strReplace(s, "^");
         buffer->from(s);
     }
+    void T0100EC30206AE000(hook_context *context, HookParam *hpx, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto s = (char *)YUZU::emu_arg(context)[1];
+        *split = *(int *)YUZU::emu_arg(context)[4] == 0x1000; // 1000人名，0旁白，其他对话
+        buffer->from(s);
+    }
     void T01001DC01486A000(hook_context *context, HookParam *hpx, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[hpx->offset];
@@ -2699,6 +2705,12 @@ namespace
         s = re::sub(s, LR"(\n(　)*)");
         buffer->from(s);
     }
+    void F0100B38021590000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"<br>(　)*");
+        buffer->from(s);
+    }
     void F010065402030A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2755,6 +2767,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // DYNAMIC CHORD feat.[rēve parfait]
+    {0x8048ECB4, {CODEC_UTF8 | FULL_STRING, 0, 0, T0100EC30206AE000, F01003080177CA000, 0x0100EC30206AE000ull, "1.0.0"}},
+    // もし、この世界に神様がいるとするならば
+    {0x8177502C, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100B38021590000, 0x0100B38021590000ull, "1.0.0"}},
     // オンエア！
     {0x83EF26A8, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, f010015301DB94000, 0x010015301DB94000ull, "4.0.4"}},
     {0x83EECAB8, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, f010015301DB94000, 0x010015301DB94000ull, "4.0.0"}},

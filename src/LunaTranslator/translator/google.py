@@ -48,6 +48,8 @@ class TS(basetrans):
         return {Languages.Chinese: "zh-CN", Languages.TradChinese: "zh-TW"}
 
     def translate_1(self, content):
+        if not content:
+            return ""
         response = self.proxysession.post(
             "https://translate-pa.googleapis.com/v1/translateHtml",
             headers={

@@ -17,6 +17,8 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100EC30206AE000 | DYNAMIC CHORD feat.[rēve parfait] |
+|  | 0100B38021590000 | もし、この世界に神様がいるとするならば |
 |  | 010015301DB94000 | オンエア！ |
 |  | 01005CF02300A000 | Blackish House sideA→ -Retour- |
 |  | 0100BEE01FE42000 | その日の獣には、 |
