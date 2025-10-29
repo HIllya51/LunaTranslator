@@ -246,6 +246,18 @@ namespace
         last = s;
         buffer->fromWA(strReplace(s, L"/"));
     }
+    void SLPM65943(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        s = re::sub(s, "\x02(.*?)\x03(.*?)\x04", "$2");
+        s = re::sub(s, "\x01");
+        s = re::sub(s, "\xff");
+        buffer->from(s);
+    }
     void SLPS25689(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2066,6 +2078,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Angel's Feather −黒の残影−
+    {0x12D940, {0, PCSX2_REG_OFFSET(t7), 0, 0, SLPM65943, "SLPM-65943"}},
     // 銀のエクリプス
     {0x112858, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM66980, "SLPM-66980"}},
     // カフェ・リンドバーグ -summer season-
