@@ -13,7 +13,7 @@ public:
                                                                    std::vector<float> &inputTensorValues);
 
 private:
-    std::shared_ptr<pOnnxSession> p_impl;
+    std::unique_ptr<pOnnxSession> p_impl;
 };
 std::vector<std::string> OrtGetAvailableProviders();
 bool isDMLAvailable();
