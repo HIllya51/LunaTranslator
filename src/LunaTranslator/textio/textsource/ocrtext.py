@@ -294,4 +294,5 @@ class ocrtext(basetext):
         return self.getallres(False)
 
     def end(self):
+        self.ranges.clear()
         globalconfig["ocrregions"] = [_.range_ui.getrect() for _ in self.ranges]

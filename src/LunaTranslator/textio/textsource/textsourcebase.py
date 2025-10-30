@@ -139,6 +139,8 @@ class basetext:
                         "SELECT machineTrans FROM artificialtrans WHERE source = ?",
                         (src,),
                     ).fetchone()
+                    if not ret:
+                        return
                     ret = json.loads((ret[0]))
                     ret[clsname] = trans
                     ret = json.dumps(ret, ensure_ascii=False)
