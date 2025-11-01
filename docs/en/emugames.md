@@ -933,7 +933,9 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | SLPM-65273 | トライアングルアゲイン2 |
 |  | SLPM-65320 | EVE burst error PLUS |
 |  | SLPS-25274 | あいかぎ ～ぬくもりとひだまりの中で～ |
+|  | SLPS-25192 & SLPS-25193 | My Merry May |
 |  | SLPS-25238 | My Merry Maybe |
+|  | SLPM-66045 | My Merry May with be |
 |  | SLPM-65301 | とらかぷっ！だーっしゅ！！でらっくすぱっく |
 |  | SLPM-65295 | カフェ・リトルウィッシュ ～魔法のレシピ～ |
 |  | SLPS-25235 | ゆめりあ |
@@ -1164,7 +1166,6 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | SLPM-66298 | セパレイトハーツ (Separate Hearts) |
 |  | SLPM-65732 | アカイイト |
 |  | SLPM-65914 | Nana |
-|  | SLPM-66045 | My Merry May with be |
 |  | SLPM-66302 | CLANNAD - ゲオオンラインストア |
 |  | SLPS-25547 | 苺ましまろ |
 |  | SLPS-25677 | ブラッドプラス ワン ナイト キス |

@@ -610,6 +610,20 @@ namespace
         last = s;
         buffer->from(strReplace(s, "\x01"));
     }
+    void SLPS25193(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+        {
+            buffer->clear();
+        }
+        else
+        {
+            buffer->from(re::sub(s, R"(\\[a-zA-Z0-9]+)"));
+        }
+        last = s;
+    }
     void SLPM66225(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2112,8 +2126,12 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x49B590, {DIRECT_READ, 0, 0, 0, 0, "SLPM-65320"}},
     // あいかぎ ～ぬくもりとひだまりの中で～
     {0x4F263C, {DIRECT_READ, 0, 0, 0, 0, "SLPS-25274"}},
+    // My Merry May
+    {0x1293C0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25193, std::vector<const char *>{"SLPS-25192", "SLPS-25193"}}},
     // My Merry Maybe
     {0x1598b0, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25238, "SLPS-25238"}},
+    // My Merry May with be
+    {0x1DB7DC, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM66045, "SLPM-66045"}},
     // とらかぷっ！だーっしゅ！！でらっくすぱっく
     {0xA5E964, {DIRECT_READ, 0, 0, 0, SLPM65301, "SLPM-65301"}},
     // カフェ・リトルウィッシュ ～魔法のレシピ～
@@ -2575,8 +2593,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x136800, {0, PCSX2_REG_OFFSET(t0), 0, 0, FSLPM66136, "SLPM-65732"}},
     // Nana
     {0x15036C, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM65914, "SLPM-65914"}},
-    // My Merry May with be
-    {0x1DB7DC, {0, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM66045, "SLPM-66045"}},
     // CLANNAD - ゲオオンラインストア
     {0x14AC38, {0, PCSX2_REG_OFFSET(s4), 0, 0, FSLPM66302, "SLPM-66302"}},
     // 苺ましまろ

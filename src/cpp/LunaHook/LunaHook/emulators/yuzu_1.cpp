@@ -1633,7 +1633,7 @@ namespace
             s = re::sub(s, u8R"(#n(　)*)");
         else
             s = re::sub(s, R"(#n(\x81\x40)*)");
-        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
     }
     void F0100C310110B4000(TextBuffer *buffer, HookParam *hp)
@@ -1772,16 +1772,6 @@ namespace
         s = re::sub(s, "<[^>]+>");
         buffer->from(s);
     }
-    void F01001B900C0E2000(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        s = re::sub(s, "\\s");
-        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)");
-        s = re::sub(s, "#[a-z]");
-        s = re::sub(s, "[a-z]");
-        buffer->from(s);
-    }
-
     void F0100217014266000(TextBuffer *buffer, HookParam *hp)
     {
 
@@ -2759,6 +2749,25 @@ namespace
         s = re::sub(s, LR"(@\w)");
         s = re::sub(s, LR"(【[ 　]*(.*?)[ 　]*】)", L"【$1】");
         buffer->fromWA(s);
+    }
+    DECLARE_FUNCTION(F01001B900C0E2000_split, EXPAND_BRACKETS(const char *_, int split));
+    void F01001B900C0E2000_1(TextBuffer *buffer, HookParam *hpx)
+    {
+        auto s = buffer->strA();
+        if (s.find("#n") == s.npos)
+        {
+            if ((s.size() <= 3) || (s.find("\xef\xbf\xbd") != s.npos))
+                return buffer->clear();
+        }
+        HookParam hp;
+        hp.address = (uintptr_t)F01001B900C0E2000_split;
+        hp.offset = GETARG(1);
+        hp.type = USING_STRING | CODEC_UTF8 | USING_SPLIT;
+        hp.split = GETARG(2);
+        hp.filter_fun = F0100BDD01AAE4000;
+        static auto _ = NewHook(hp, hpx->name);
+        F01001B900C0E2000_split(s.c_str(), s.find("#n") == s.npos);
+        buffer->clear();
     }
 }
 struct emfuncinfoX
@@ -3743,8 +3752,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 神様のような君へ
     {0x80487CD0, {CODEC_UTF8, 0, 0, 0, F01006B5014E2E000, 0x01006B5014E2E000ull, "1.0.0"}}, // text
     // 猛獣使いと王子様 ～Flower ＆ Snow～
-    {0x800a1a10, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 1
-    {0x80058f80, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000, 0x01001B900C0E2000ull, "1.0.0"}}, // Dialogue 2
+    {0x80119264, {CODEC_UTF8, 1, 0, 0, F01001B900C0E2000_1, 0x01001B900C0E2000ull, "1.0.0"}},
     // Detective Pikachu Returns
     {0x81585750, {CODEC_UTF16, 2, 0, ReadUnityString, F010007500F27C000, 0x010007500F27C000ull, "1.0.0"}}, // All Text
     // Dragon Quest Treasures
