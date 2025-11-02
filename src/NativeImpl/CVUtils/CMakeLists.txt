@@ -1,10 +1,4 @@
 
-#onnxruntime
-#版本：
-#1.13.1 最后一个原生支持win7的版本
-#1.9.0 最早的可运行paddleocr的版本
-#1.10.0 体积比1.9.0还要小一点
-#
 include(ExternalProject)
 include(FetchContent)
 
