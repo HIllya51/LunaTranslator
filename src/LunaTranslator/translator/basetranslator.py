@@ -433,7 +433,7 @@ class basetrans(commonbase):
             if self.onlymanual and is_auto_run:
                 continue
             if self.srclang_1 == self.tgtlang_1:
-                callback(contentsolved, 0)
+                callback(None, 0)
                 continue
             try:
                 checktutukufunction = (

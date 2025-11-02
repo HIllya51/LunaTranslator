@@ -358,16 +358,14 @@ class BASEOBJECT(QObject):
         )
         if not need:
             return []
-        try:
-            if text.isascii():
-                raise Exception()
-            if getlangsrc() in (Languages.Chinese, Languages.TradChinese):
-                return jiebapinyin().safeparse(text)
-            elif self.mecab_:
-                return self.mecab_.safeparse(text)
-            else:
-                raise Exception()
-        except:
+
+        if text.isascii():
+            return latin().safeparse(text)
+        if getlangsrc() in (Languages.Chinese, Languages.TradChinese):
+            return jiebapinyin().safeparse(text)
+        elif (getlangsrc() in (Languages.Auto, Languages.Japanese)) and self.mecab_:
+            return self.mecab_.safeparse(text)
+        else:
             return latin().safeparse(text)
 
     def displayinfomessage(self, text, infotype):

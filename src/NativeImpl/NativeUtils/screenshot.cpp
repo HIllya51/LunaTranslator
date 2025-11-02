@@ -51,7 +51,7 @@ std::optional<SimpleBMP> parseBMP(std::optional<SimpleBMP> &bmp, bool needcheck 
         if (checkempty)
             return {};
     }
-    return bmp;
+    return std::move(bmp);
 }
 std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
 {
@@ -326,7 +326,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
                 DestroyWindow(hwnd);
                 return 0;
             }
-            auto bmp = CreateBMP(g_hScreenBitmap, false).value_or({});
+            auto &&bmp = CreateBMP(g_hScreenBitmap, false).value_or({});
             RECT rect;
             GetWindowRect(hwnd, &rect);
             ReleaseCapture();

@@ -86,7 +86,7 @@ DECLARE_API bool ExtractExeIconData(bool large, const wchar_t *name, void (*cb)(
 {
     // if (UINT_MAX == ExtractIconExW(name, 0, &h1, &h2, 1))
     //     return false;
-    auto returner = [&](SimpleBMP &bf)
+    auto returner = [&](const SimpleBMP &bf)
     {
         cb(bf.data.get(), bf.size);
         return true;
@@ -102,7 +102,7 @@ DECLARE_API bool ExtractExeIconData(bool large, const wchar_t *name, void (*cb)(
         auto bmppo = getbmp(GetHighResolutionIcon(name));
         if (!bmppo)
             break;
-        auto bmpp = bmppo.value();
+        auto &&bmpp = bmppo.value();
         bool issmall = true;
         char zero[4] = {0, 0, 0, 0};
         uint32_t channels = bmpp.bitCount / 8;

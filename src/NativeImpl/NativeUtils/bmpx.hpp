@@ -13,7 +13,7 @@ struct BMPColorHeader
 #pragma pack(pop)
 struct SimpleBMP
 {
-    std::shared_ptr<byte[]> data;
+    std::unique_ptr<byte[]> data;
     size_t size;
     byte *pixels;
     size_t pixelsize;
@@ -43,7 +43,7 @@ inline SimpleBMP CreateBMP(int w, int h, int biBitCount = 32, bool alpha = true)
         bmfh.bfSize += sizeof(BMPColorHeader);
         bmfh.bfOffBits += sizeof(BMPColorHeader);
     }
-    std::shared_ptr<byte[]> data(new byte[bmfh.bfSize]());
+    auto data = std::make_unique<byte[]>(bmfh.bfSize);
     auto ptr = data.get();
     memcpy(ptr, &bmfh, sizeof(BITMAPFILEHEADER));
     ptr += sizeof(BITMAPFILEHEADER);
@@ -55,7 +55,7 @@ inline SimpleBMP CreateBMP(int w, int h, int biBitCount = 32, bool alpha = true)
         memcpy(ptr, (char *)&color, sizeof(BMPColorHeader));
         ptr += sizeof(BMPColorHeader);
     }
-    return SimpleBMP{data, bmfh.bfSize, ptr, l_bmp_info.bmiHeader.biSizeImage, w, h, biBitCount};
+    return SimpleBMP{std::move(data), bmfh.bfSize, ptr, l_bmp_info.bmiHeader.biSizeImage, w, h, biBitCount};
 }
 inline std::optional<SimpleBMP> CreateBMP(HBITMAP hBitmap, bool alpha = true)
 {
