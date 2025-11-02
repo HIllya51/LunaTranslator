@@ -137,6 +137,7 @@ export const ko = defineConfig({
                             { text: '내장 사전 도구 사용 방법', link: '/ko/internaldict' },
                             { text: 'Yomitan 브라우저 확장 프로그램 설치', link: '/ko/yomitan' },
                             { text: 'Anki 통합', link: '/ko/qa2' },
+                            { text: '중국어 분절 및 주음', link: '/ko/jiebapinyin' },
                         ]
                     },
                     { text: '도구 버튼', link: '/ko/alltoolbuttons' },

@@ -137,6 +137,7 @@ export const zh = defineConfig({
                             { text: '使用内置查词工具', link: '/zh/internaldict' },
                             { text: '安装Yomitan浏览器插件', link: '/zh/yomitan' },
                             { text: 'Anki集成', link: '/zh/qa2' },
+                            // { text: '中文分词及注音', link: '/zh/jiebapinyin' },
                         ]
                     },
                     { text: '工具按钮', link: '/zh/alltoolbuttons' },

@@ -133,7 +133,8 @@ export const ja = defineConfig({
                             { text: '日本語の分かち書きと仮名振り', link: '/ja/qa1' },
                             { text: '組み込み辞書ツールの使用方法', link: '/ja/internaldict' },
                             { text: 'Yomitanブラウザ拡張機能をインストールする', link: '/ja/yomitan' },
-                            { text: 'Anki統合', link: '/ja/qa2' }
+                            { text: 'Anki統合', link: '/ja/qa2' },
+                            { text: '中国語分かち書きと振り仮名', link: '/ja/jiebapinyin' },
                         ]
                     },
                     { text: 'ツールボタン', link: '/ja/alltoolbuttons' },

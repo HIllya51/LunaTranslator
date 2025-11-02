@@ -137,6 +137,7 @@ export const ru = defineConfig({
                             { text: 'Использование встроенного инструмента для поиска слов', link: '/ru/internaldict' },
                             { text: 'Установите расширение для браузера Yomitan', link: '/ru/yomitan' },
                             { text: 'Интеграция с Anki', link: '/ru/qa2' },
+                            { text: 'Китайская сегментация и транскрипция', link: '/ru/jiebapinyin' },
                         ]
                     },
                     { text: 'Инструментальные кнопки', link: '/ru/alltoolbuttons' },

@@ -118,7 +118,8 @@ export const vi = defineConfig({
               { text: 'Phân đoạn từ tiếng Nhật và phiên âm kana', link: '/vi/qa1' },
               { text: 'Cách sử dụng công cụ tra từ tích hợp', link: '/vi/internaldict' },
               { text: 'Cài đặt tiện ích mở rộng trình duyệt Yomitan', link: '/vi/yomitan' },
-              { text: 'Tích hợp Anki', link: '/vi/qa2' }
+              { text: 'Tích hợp Anki', link: '/vi/qa2' },
+              { text: 'Phân đoạn từ tiếng Trung và Chú âm', link: '/vi/jiebapinyin' },
             ]
           },
           { text: 'Nút công cụ', link: '/vi/alltoolbuttons' },
