@@ -30,15 +30,10 @@ class _base:
 
     def parse(self, text) -> "list[WordSegResult]": ...
 
-    def __init__(self, typename) -> None:
-        self.typename = typename
+    def __init__(self, *_) -> None:
         self.needinit = True
         self.init()
         self.needinit = False
-
-    @property
-    def config(self):
-        return globalconfig["hirasetting"][self.typename]["args"]
 
     def splitspace(self, word: str):
         start = ""
@@ -107,14 +102,15 @@ class _base:
             _ = len(hira) - 1 - _1
             if not hira[_].kana:
                 continue
-            if globalconfig["hira_vis_type"] in (0, 1):
+            hira_vis_type = globalconfig["hira_vis_type"]
+            if hira_vis_type in (0, 1):
                 if len(set(hira[_].word) - set(allkata + allhira)) == 0:
                     hira[_].hidekana = True
-            if globalconfig["hira_vis_type"] == 0:
+            if hira_vis_type == 0:
                 hira[_].kana = hira[_].kana.translate(castkata2hira)
-            elif globalconfig["hira_vis_type"] == 1:
+            elif hira_vis_type == 1:
                 hira[_].kana = hira[_].kana.translate(casthira2kata)
-            elif globalconfig["hira_vis_type"] == 2:
+            elif hira_vis_type == 2:
                 __kanas = [hira_s, kata_s]
                 target = roma_s
                 for _ka in __kanas:
@@ -166,8 +162,9 @@ class _base:
 
 
 class mecab(_base):
-    def __init__(self, typename="mecab") -> None:
-        super().__init__(typename)
+    @property
+    def config(self):
+        return globalconfig["hirasetting"]["mecab"]["args"]
 
     def init(self) -> None:
         for ___ in (
@@ -275,11 +272,42 @@ def splitstr(input_str: str, delimiters: "list[str]") -> "list[str]":
 
 class latin(_base):
 
-    def __init__(self, typename="latin") -> None:
-        super().__init__(typename)
-
     def parse(self, text: str):
         return (
             WordSegResult(_, donthighlight=True, isshit=not _.isascii())
             for _ in splitstr(text, punctuations)
         )
+
+
+class jiebapinyin(_base):
+
+    def parse(self, text: str):
+        import jieba
+        import pypinyin
+
+        py = pypinyin.pinyin(text)
+        py = [_[0] for _ in py]
+        jb = list(jieba.cut(text))
+
+        jbidx = 0
+        pyidx = 0
+        result: "list[tuple[str, str]]" = []
+
+        while pyidx < len(py) and jbidx < len(jb):
+            if py[pyidx].startswith(jb[jbidx]):
+                cnt = len(py[pyidx])
+                while cnt:
+                    cnt -= len(jb[jbidx])
+                    jbidx += 1
+                result.append((py[pyidx], ""))
+                pyidx += 1
+            else:
+                cnt = len(jb[jbidx])
+                pys = ""
+                while cnt:
+                    pys += py[pyidx]
+                    pyidx += 1
+                    cnt -= 1
+                result.append((jb[jbidx], pys))
+                jbidx += 1
+        return (WordSegResult(t, kana=py, isshit=not py) for t, py in result)

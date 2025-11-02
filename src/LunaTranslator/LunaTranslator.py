@@ -20,7 +20,7 @@ from ctypes import cast, c_wchar_p
 from ctypes.wintypes import UINT, WPARAM, LPARAM
 from myutils.keycode import mod_map_r
 from gobject import sys_le_xp
-from myutils.mecab import mecab, latin
+from myutils.mecab import mecab, latin, jiebapinyin
 from myutils.utils import (
     parsemayberegexreplace,
     dynamiclink,
@@ -32,6 +32,7 @@ from myutils.utils import (
     targetmod,
     translate_exits,
     safe_escape,
+    getlangsrc,
 )
 from language import Languages
 from myutils.wrapper import threader, tryprint
@@ -360,7 +361,9 @@ class BASEOBJECT(QObject):
         try:
             if text.isascii():
                 raise Exception()
-            if self.mecab_:
+            if getlangsrc() in (Languages.Chinese, Languages.TradChinese):
+                return jiebapinyin().safeparse(text)
+            elif self.mecab_:
                 return self.mecab_.safeparse(text)
             else:
                 raise Exception()
