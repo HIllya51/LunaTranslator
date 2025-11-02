@@ -13,7 +13,7 @@ if target == "winxp":
     pyrt = "runtime"
 else:
     pyrt = f"../build/pyrt_{arch}_{target}/runtime"
-launch = f"../src/cpp/builds/_{arch}"
+launch = f"../src/NativeImpl/builds/_{arch}"
 launch += f"_{target}"
 targetdir = rf"build\LunaTranslator_{arch}_{target}"
 

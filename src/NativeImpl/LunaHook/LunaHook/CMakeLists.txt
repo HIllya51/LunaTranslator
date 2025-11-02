@@ -52,7 +52,6 @@ set(texthook_src
 		hijackfuns.cc
 		veh_hook.cpp
 ) 
-
 add_subdirectory(util)
 add_subdirectory(engines)
 add_subdirectory(emulators)
@@ -60,12 +59,15 @@ add_subdirectory(emulators)
 
 
 add_library(LunaHook MODULE ${texthook_src} resource.rc ${versioninfo})
+add_library(trhelper ../include/InfoStrings.cpp)
+target_compile_definitions(trhelper PRIVATE -DBUILD_HOOK=1)
 
+target_precompile_headers(trhelper REUSE_FROM pchhook) 
 target_precompile_headers(LunaHook REUSE_FROM pchhook) 
 
 set_target_properties(LunaHook PROPERTIES OUTPUT_NAME "LunaHook${bitappendix}")
 
-target_link_libraries(LunaHook lang_hook VERSION_DEF Version httpapi ws2_32 Shlwapi pch minhook commonengine emulators utils ${YY_Thunks})
+target_link_libraries(LunaHook trhelper VERSION_DEF Version httpapi ws2_32 Shlwapi pch minhook commonengine emulators utils ${YY_Thunks})
 
 target_link_options(LunaHook PRIVATE "/DELAYLOAD:httpapi.dll")
 target_link_options(LunaHook PRIVATE "/DELAYLOAD:WS2_32.dll")

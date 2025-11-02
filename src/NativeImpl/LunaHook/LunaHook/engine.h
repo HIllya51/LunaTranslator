@@ -1,5 +1,5 @@
-#ifndef __LUNA_ENGINE_H
-#define __LUNA_ENGINE_H
+#ifndef __LUNA_ENGINE_H_705BA39B_5F8F_4A53_8AC9_CC83345B7153
+#define __LUNA_ENGINE_H_705BA39B_5F8F_4A53_8AC9_CC83345B7153
 
 extern WCHAR *processName, processPath[MAX_PATH], processName_lower[MAX_PATH]; // cached
 extern uintptr_t processStartAddress, processStopAddress;

@@ -3,8 +3,8 @@ veh_hook Vectored Exception Handler hooking library
 Version: 24-March-2008
 **/
 
-#ifndef LIST_T_H_INCLUDED
-#define LIST_T_H_INCLUDED
+#ifndef LIST_T_H_INCLUDED_E8409B65_27B8_4880_99F3_C9F0FF1787F1
+#define LIST_T_H_INCLUDED_E8409B65_27B8_4880_99F3_C9F0FF1787F1
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>

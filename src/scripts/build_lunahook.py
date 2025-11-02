@@ -4,7 +4,7 @@ import subprocess
 rootDir = os.path.dirname(__file__)
 if not rootDir:
     rootDir = os.path.abspath(".")
-rootDir = os.path.abspath(os.path.join(rootDir, "../cpp/LunaHook"))
+rootDir = os.path.abspath(os.path.join(rootDir, "../NativeImpl/LunaHook"))
 
 if len(sys.argv) and sys.argv[1] == "merge":
     os.chdir(rootDir)

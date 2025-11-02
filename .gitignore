@@ -37,9 +37,7 @@ src/files/Magpie
 src/files/Locale
 src/run37.bat
 src/run3732.bat
-src/cpp/.vscode/settings.json
-src/cpp/LunaHook/.vscode/settings.json
-src/LunaTranslator/.vscode/settings.json
+settings.json
 src/files/html/yearsummary/yearsummary.value.js
 docs/.vitepress/cache
 docs/node_modules

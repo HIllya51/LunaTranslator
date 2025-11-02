@@ -1,5 +1,35 @@
-﻿#include "Lang_private.h"
+﻿#include "InfoStrings.h"
+#include <unordered_map>
+#include <string>
 
+#define DEFINEFUNCTION(type, mp, ret, which)                         \
+    const ret *langhelper::operator[](type langstring)               \
+    {                                                                \
+        auto &&_ = mp[langstring];                                   \
+        return _.get();                                              \
+    }                                                                \
+    std::unordered_map<type, i18nString<ret>> &langhelper::##which() \
+    {                                                                \
+        return mp;                                                   \
+    }
+
+langhelper TR;
+
+#if defined(BUILD_HOST) && BUILD_HOST
+std::unordered_map<LANG_STRINGS_HOST, i18nString<wchar_t>>
+    _internal_lang_strings_host = {
+        {T_WARNING, L"警告"},
+        {ALREADY_INJECTED, L"已经注入"},
+        {INJECT_FAILED, L"注入失败"},
+        {INVALID_CODEPAGE, L"无法转换文本 (无效的代码页?)"},
+        {PROC_CONN, L"进程 %d 已连接"},
+        {PROC_DISCONN, L"进程 %d 已断开连接"},
+        {UNMATCHABLEVERSION, L"文件版本无法匹配，可能无法正常工作，请重新下载！"},
+};
+
+DEFINEFUNCTION(LANG_STRINGS_HOST, _internal_lang_strings_host, wchar_t, get_host)
+#endif
+#if defined(BUILD_HOOK) && BUILD_HOOK
 std::unordered_map<LANG_STRINGS_HOOK, i18nString<char>> _internal_lang_strings_hook = {
     {INSERTING_HOOK, u8"注入钩子: %s %p"},
     {REMOVING_HOOK, u8"移除钩子: %s"},
@@ -34,3 +64,4 @@ std::unordered_map<LANG_STRINGS_HOOK, i18nString<char>> _internal_lang_strings_h
     {IsEmuNotify, u8"检测到模拟器: %s\n请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏"}};
 
 DEFINEFUNCTION(LANG_STRINGS_HOOK, _internal_lang_strings_hook, char, get_hook)
+#endif

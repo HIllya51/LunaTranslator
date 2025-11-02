@@ -32,7 +32,7 @@ def checkdir(dd, skips=None):
 
 checkdir("LunaTranslator")
 checkdir(
-    "cpp",
+    "NativeImpl",
     (
         "libs\\",
         "build",

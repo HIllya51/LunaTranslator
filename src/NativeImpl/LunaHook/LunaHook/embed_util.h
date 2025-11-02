@@ -1,5 +1,5 @@
-#ifndef __LUNA_EMBED_ENGINE_H
-#define __LUNA_EMBED_ENGINE_H
+#ifndef __LUNA_EMBED_ENGINE_H_97D10217_04C3_42C6_9FCA_23DC5002B9EB
+#define __LUNA_EMBED_ENGINE_H_97D10217_04C3_42C6_9FCA_23DC5002B9EB
 
 extern CommonSharedMem *commonsharedmem;
 extern DynamicShiftJISCodec *dynamiccodec;

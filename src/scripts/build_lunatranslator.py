@@ -183,7 +183,7 @@ def downloadOCRModel():
 
 def buildhook(arch, target):
 
-    os.chdir("cpp/LunaHook")
+    os.chdir("NativeImpl/LunaHook")
     archA = ("win32", "x64")[arch == "x64"]
     vsver = "Visual Studio 17 2022"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
@@ -215,7 +215,7 @@ def buildhook(arch, target):
 
 
 def buildPlugins(arch, target):
-    os.chdir(rootDir + "/cpp")
+    os.chdir(rootDir + "/NativeImpl")
     archA = ("win32", "x64")[arch == "x64"]
     if target == "win10":
         config = "-DWIN10ABOVE=ON"
@@ -286,7 +286,7 @@ if __name__ == "__main__":
     if sys.argv[1] == "download":
         downloadalls(sys.argv[2] if len(sys.argv) >= 3 else "")
     elif sys.argv[1] == "loadversion":
-        with open("cpp/version.cmake", "r", encoding="utf8") as ff:
+        with open("NativeImpl/version.cmake", "r", encoding="utf8") as ff:
             pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)\nset\(VERSION_REVISION\s*(\d+)\s*\)"
             match = re.findall(pattern, ff.read())[0]
             version_major, version_minor, version_patch, version_revison = match
@@ -295,7 +295,7 @@ if __name__ == "__main__":
                 versionstring += f".{version_revison}"
             print("version=" + versionstring)
             exit()
-    elif sys.argv[1] == "cpp":
+    elif sys.argv[1] == "NativeImpl":
         buildPlugins(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "hook":
         buildhook(sys.argv[2], sys.argv[3])
@@ -327,8 +327,8 @@ if __name__ == "__main__":
 
         os.chdir(rootDir)
         if target == "winxp":
-            shutil.copytree("../build/cpp_x86_winxp", "cpp/builds", dirs_exist_ok=True)
-            shutil.copytree("../build/cpp_x64_win7", "cpp/builds", dirs_exist_ok=True)
+            shutil.copytree("../build/cpp_x86_winxp", "NativeImpl/builds", dirs_exist_ok=True)
+            shutil.copytree("../build/cpp_x64_win7", "NativeImpl/builds", dirs_exist_ok=True)
             shutil.copytree(
                 "../build/hook_x86_winxp", "files/LunaHook", dirs_exist_ok=True
             )
@@ -337,9 +337,9 @@ if __name__ == "__main__":
             )
             os.remove("files/LunaHook/LunaHost64.dll")
             os.makedirs("files/DLL32", exist_ok=True)
-            shutil.copy("cpp/builds/_x86_winxp/shareddllproxy32.exe", "files")
-            shutil.copy("cpp/builds/_x64_win7/shareddllproxy64.exe", "files")
-            os.system(f"robocopy cpp/builds/_x86_winxp files/DLL32 *.dll")
+            shutil.copy("NativeImpl/builds/_x86_winxp/shareddllproxy32.exe", "files")
+            shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
+            os.system(f"robocopy NativeImpl/builds/_x86_winxp files/DLL32 *.dll")
             os.system(
                 f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
@@ -350,14 +350,14 @@ if __name__ == "__main__":
         shutil.copytree(
             f"../build/hook_x86_{target}", "files/LunaHook", dirs_exist_ok=True
         )
-        shutil.copytree(f"../build/cpp_x64_{target}", "cpp/builds", dirs_exist_ok=True)
-        shutil.copytree(f"../build/cpp_x86_{target}", "cpp/builds", dirs_exist_ok=True)
+        shutil.copytree(f"../build/cpp_x64_{target}", "NativeImpl/builds", dirs_exist_ok=True)
+        shutil.copytree(f"../build/cpp_x86_{target}", "NativeImpl/builds", dirs_exist_ok=True)
         os.makedirs("files/DLL32", exist_ok=True)
-        shutil.copy(f"cpp/builds/_x86_{target}/shareddllproxy32.exe", "files")
-        os.system(f"robocopy cpp/builds/_x86_{target} files/DLL32 *.dll")
+        shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")
+        os.system(f"robocopy NativeImpl/builds/_x86_{target} files/DLL32 *.dll")
         os.makedirs("files/DLL64", exist_ok=True)
-        shutil.copy(f"cpp/builds/_x64_{target}/shareddllproxy64.exe", "files")
-        os.system(f"robocopy cpp/builds/_x64_{target} files/DLL64 *.dll")
+        shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
+        os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
         if arch == "x86":
             os.remove(f"files/LunaHook/LunaHost64.dll")

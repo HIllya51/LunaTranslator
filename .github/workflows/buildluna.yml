@@ -58,11 +58,11 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: hook_${{matrix.arch}}_${{matrix.target}}
-          path: src/cpp/LunaHook/builds/Release
+          path: src/NativeImpl/LunaHook/builds/Release
       - uses: actions/upload-artifact@v4
         with:
           name: cpp_${{matrix.arch}}_${{matrix.target}}
-          path: src/cpp/builds
+          path: src/NativeImpl/builds
           
   pyrt:
     runs-on: windows-latest
