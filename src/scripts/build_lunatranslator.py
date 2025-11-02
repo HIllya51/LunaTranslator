@@ -295,7 +295,7 @@ if __name__ == "__main__":
                 versionstring += f".{version_revison}"
             print("version=" + versionstring)
             exit()
-    elif sys.argv[1] == "NativeImpl":
+    elif sys.argv[1] == "cpp":
         buildPlugins(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "hook":
         buildhook(sys.argv[2], sys.argv[3])
