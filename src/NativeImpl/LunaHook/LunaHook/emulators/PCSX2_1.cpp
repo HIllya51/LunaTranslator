@@ -813,6 +813,12 @@ namespace
         strReplace(s, "%n");
         buffer->from(s);
     }
+    void SLPM65710(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        if ((WORD)PCSX2_REG(s4) != 0x2f3c)
+            return;
+        buffer->from((char *)PCSX2_REG(a0));
+    }
     void SLPM66892_1(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         auto s = (char *)PCSX2_REG(t0);
@@ -2092,6 +2098,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Apocripha/0
+    {0x1222c8, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, SLPM65710, 0, "SLPM-65710"}},
     // Angel's Feather −黒の残影−
     {0x12D940, {0, PCSX2_REG_OFFSET(t7), 0, 0, SLPM65943, "SLPM-65943"}},
     // 銀のエクリプス
