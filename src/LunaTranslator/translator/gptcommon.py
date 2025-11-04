@@ -245,7 +245,9 @@ class gptcommon(basetrans):
         if self.apiurl.startswith("https://generativelanguage.googleapis.com"):
             response = self.request_gemini(messages, extrabody, extraheader)
         elif self.apiurl.startswith("https://api.anthropic.com/v1/messages"):
-            response = self.req_claude(messages, extrabody, extraheader)
+            response = self.req_claude(
+                messages, extrabody, extraheader, self.config.get("cachecontext", False)
+            )
         else:
             headers = createheaders(
                 self.apiurl,
@@ -386,7 +388,7 @@ class gptcommon(basetrans):
             extrabody,
         )
 
-    def req_claude(self, messages: list, extrabody, extraheader):
+    def req_claude(self, messages: list, extrabody, extraheader, cache_control):
         temperature = self.config["Temperature"]
         sysprompt = messages[0]["content"]
         messages.pop(0)
@@ -395,7 +397,11 @@ class gptcommon(basetrans):
             "accept": "application/json",
             "X-Api-Key": self.multiapikeycurrent["SECRET_KEY"],
         }
-
+        if cache_control:
+            if len(messages) > 1:
+                messages[-2]["cache_control"] = {"type": "ephemeral"}
+            else:
+                sysprompt["cache_control"] = {"type": "ephemeral"}
         usingstream = self.config["流式输出"]
         data = dict(
             model=self.config["model"],

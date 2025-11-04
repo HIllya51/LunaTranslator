@@ -520,6 +520,8 @@ class hookselect(closeashidewindow):
         self.currentheader = ["显示", "HOOK", "文本"]
         self.saveifembedable = {}
         self.embedablenum = 0
+        self.embedselectall = {}
+        self.hookselectall = {}
 
     def addnewhook(self, key, select, isembedable):
         hc, hn, tp = key
@@ -539,6 +541,8 @@ class hookselect(closeashidewindow):
         selectbutton = getsimpleswitch(
             {1: select}, 1, callback=functools.partial(self.accept, key)
         )
+        if self.hookselectall.get(hc, False):
+            selectbutton.click()
         rown = 0 if isembedable else self.ttCombomodelmodel.rowCount()
 
         items = [
@@ -561,6 +565,9 @@ class hookselect(closeashidewindow):
                 self.ttCombomodelmodel.index(rown, 1),
                 checkbtn,
             )
+            if self.embedselectall.get(hc, False):
+                checkbtn.click()
+
         if select and self.tttable.currentIndex() == -1:
             self.tttable.setCurrentIndex(rown)
 
@@ -722,9 +729,41 @@ class hookselect(closeashidewindow):
         self.tabwidget.addTab(self.sysOutput, ("日志"))
         self.tabwidget.setCurrentIndex(1)
 
-    def showmenu(self, p: QPoint):
+    def parse_hook_menu(self, index: QModelIndex):
+        _ = self.querykeyofrow(index)
+        if not _:
+            return
+        mp = (self.embedselectall, self.hookselectall)[index.column() == 0]
+        hc, hn, tp = _
+        menu = QMenu(self.tttable)
+        selectall = LAction("选取同名全部", menu)
+        selectall.setCheckable(True)
+        selectall.setChecked(mp.get(hc, False))
+        menu.addAction(selectall)
+        action = menu.exec(self.tttable.cursor().pos())
+        if action == selectall:
+            mp[hc] = selectall.isChecked()
+            if not mp[hc]:
+                return
+            for _ in range(self.tttable.model().rowCount()):
+                w: MySwitch = self.tttable.indexWidgetX(_, index.column())
+                if not w:
+                    continue
+                _ = self.querykeyofrow(_)
+                if not _:
+                    continue
+                hc, hn, tp = _
+                if not mp.get(hc, False):
+                    continue
+                w.click()
+
+    def showmenu(self, _):
         index = self.tttable.currentIndex()
         if not index.isValid():
+            return
+        elif (self.embedablenum and index.column() == 1) or (index.column() == 0):
+            return self.parse_hook_menu(index)
+        elif self.tttable.indexWidget(index):
             return
         menu = QMenu(self.tttable)
         remove = LAction("移除", menu)

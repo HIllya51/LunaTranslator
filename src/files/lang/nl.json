@@ -878,5 +878,6 @@
     "在浏览器中查词": "Zoek woorden op in de browser",
     "确认是 %s 引擎": "Bevestigd als %s motor",
     "使用的网络代理可能无效，请进行检查！({})": "Het gebruikte netwerkproxy is mogelijk ongeldig, controleer deze! ({})",
-    "网络错误": "Netwerkfout"
+    "网络错误": "Netwerkfout",
+    "选取同名全部": "Selecteer alle met dezelfde naam"
 }

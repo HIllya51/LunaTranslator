@@ -878,5 +878,6 @@
     "在浏览器中查词": "Pesquisar palavras no navegador",
     "确认是 %s 引擎": "Confirmado como motor %s.",
     "使用的网络代理可能无效，请进行检查！({})": "O proxy de rede utilizado pode ser inválido, por favor verifique! ({})",
-    "网络错误": "Erro de rede"
+    "网络错误": "Erro de rede",
+    "选取同名全部": "Selecionar todos com o mesmo nome"
 }

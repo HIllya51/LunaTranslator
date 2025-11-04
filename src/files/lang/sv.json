@@ -878,5 +878,6 @@
     "在浏览器中查词": "Sök efter ord i webbläsaren",
     "确认是 %s 引擎": "Bekräftat som %s-motor",
     "使用的网络代理可能无效，请进行检查！({})": "Den använda nätverksproxyn kan vara ogiltig, vänligen kontrollera den! ({})",
-    "网络错误": "Nätverksfel"
+    "网络错误": "Nätverksfel",
+    "选取同名全部": "Välj alla med samma namn"
 }

@@ -878,5 +878,6 @@
     "在浏览器中查词": "Tarayıcıda kelime arama",
     "确认是 %s 引擎": "%s motoru olduğu doğrulandı",
     "使用的网络代理可能无效，请进行检查！({})": "Kullanılan ağ vekil sunucusu geçersiz olabilir, lütfen kontrol edin! ({})",
-    "网络错误": "Ağ hatası"
+    "网络错误": "Ağ hatası",
+    "选取同名全部": "Aynı isimdeki tümünü seç"
 }
