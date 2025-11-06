@@ -392,16 +392,21 @@ class gptcommon(basetrans):
         temperature = self.config["Temperature"]
         sysprompt = messages[0]["content"]
         messages.pop(0)
+
+        if cache_control and isinstance(sysprompt, str):
+            sysprompt = [
+                {
+                    "type": "text",
+                    "text": sysprompt,
+                    "cache_control": {"type": "ephemeral", "ttl": "1h"},
+                }
+            ]
         headers = {
             "anthropic-version": "2023-06-01",
             "accept": "application/json",
             "X-Api-Key": self.multiapikeycurrent["SECRET_KEY"],
         }
-        if cache_control:
-            if len(messages) > 1:
-                messages[-2]["cache_control"] = {"type": "ephemeral"}
-            else:
-                sysprompt["cache_control"] = {"type": "ephemeral"}
+
         usingstream = self.config["流式输出"]
         data = dict(
             model=self.config["model"],

@@ -84,7 +84,7 @@ class chartwidget(QWidget):
         fhall = fmetrics.height()
         self.font = font
         self.data = None
-        self.ymargin = int(fhall) + 10  # 20
+        self.ymargin = int(fhall)
         self.valuewidth = 10
         self.xtext = lambda x: str(x)
         self.ytext = lambda y: str(y)
@@ -144,16 +144,17 @@ class chartwidget(QWidget):
                 painter.drawLine(
                     QPointF(xmargin - self.scalelinelen, y), QPointF(xmargin, y)
                 )
+                fm = self.fmetrics.size(0, label)
                 p = QPointF(
-                    xmargin - self.scalelinelen - self.fmetrics.size(0, label).width(),
-                    y + 5,
+                    xmargin - self.scalelinelen - fm.width(),
+                    y - fm.height() / 2,
                 )
-                newrect = QRectF(p, self.fmetrics.size(0, label))
+                newrect = QRectF(p, fm)
                 if any(_.intersected(newrect) for _ in rects):
                     continue
                 else:
                     rects.append(newrect)
-                    painter.drawText(newrect.topLeft(), label)  # value
+                    painter.drawText(newrect, label)  # value
 
             painter.drawLine(
                 QPointF(xmargin, ymargin), QPointF(xmargin, ymargin + height)
@@ -184,24 +185,40 @@ class chartwidget(QWidget):
                 if self.data[i + 1][1]:  #!=0
                     text = self.ytext(self.data[i + 1][1])
                     W = self.fmetrics.size(0, text).width()
-                    newrect = QRectF(x2 - W // 2, y2 - 10, W, texth)
+                    next_ = points[i + 2][1] if ((i + 2) < len(points)) else y2
+
+                    if y1 <= y2 and y2 >= next_:  # 凹
+                        yy = y2
+                    elif y1 >= y2 and y2 <= next_:  # 凸
+                        yy = y2 - texth
+                    elif y1 <= y2 and y2 <= next_:
+                        yy = y2
+                    elif y1 >= y2 and y2 >= next_:
+                        yy = y2 - texth
+                    if (yy == y2) and (yy + texth > ymargin + height):
+                        continue
+                    newrect = QRectF(x2 - W // 2, yy, W, texth)
                     if any(_.intersected(newrect) for _ in rects):
                         continue
                     else:
                         rects.append(newrect)
-                        painter.drawText(QPointF(x2 - W / 2, y2 - 10), text)  # value
+                        painter.drawText(newrect, text)  # value
+
             lastx2 = -999
             for i, (x, y) in enumerate(points):
                 painter.drawLine(
                     QPointF(x, ymargin + height), QPointF(x, ymargin + height + 5)
                 )
-
-                thisw = self.fmetrics.size(0, x_labels[i]).width()
+                fm = self.fmetrics.size(0, x_labels[i])
+                thisw = fm.width()
                 thisx = x - thisw / 2
 
                 if thisx > lastx2:
 
-                    painter.drawText(QPointF(thisx, ymargin + height + 20), x_labels[i])
+                    painter.drawText(
+                        QRectF(thisx, ymargin + height + 5, thisw, fm.height()),
+                        x_labels[i],
+                    )
                     lastx2 = thisx + thisw
 
         except:
