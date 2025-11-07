@@ -42,6 +42,34 @@ namespace
                 return subs;
             }
         }
+
+        BYTE sig2[] = {
+            // Eden-Windows-v0.0.4-rc1-amd64-clang-standard
+            0xe8, XX4,
+            0x4C, 0x8B, XX, XX,
+            0x48, 0x89, 0xF9,
+            0x48, 0x89, 0xDA,
+            0x4D, 0x89, 0xF0,
+            0xE8, XX4,
+            0x4C, 0x89, 0x36,
+            0x4C, 0x89, 0x7E, 0x08,
+            0x48, 0x83, 0xC7, 0x18,
+            0x48, 0x8B, 0x03,
+            0x48, 0x89, XX, XX,
+            0x48, 0x8B, 0x06,
+            0x48, 0x89, XX, XX};
+        RegisterBlock = MemDbg::findBytes(sig2, sizeof(sig2), processStartAddress, processStopAddress);
+        if (RegisterBlock)
+        {
+            auto beginSubSig1 = "CC 55 41 57 41 56";
+            auto lookbackSize = 0x400;
+            auto address = RegisterBlock - lookbackSize;
+            auto subs = find_pattern(beginSubSig1, address, address + lookbackSize);
+            if (subs)
+            {
+                return subs + 1;
+            }
+        }
         return 0;
     }
 
@@ -128,12 +156,29 @@ namespace
             0xb2, XX,
             0xb1, XX,
             0xe8, XX4};
-        addr = MemDbg::findBytes(sig, sizeof(sig), addr, addr + 0x100);
+        BYTE sig2[] = {
+            // Eden-Windows-v0.0.4-rc1-amd64-clang-standard
+            0xb1, XX,
+            0xb2, XX,
+            0x41, 0xB9, XX4,
+            0xe8, XX4};
+        auto addr1 = MemDbg::findBytes(sig, sizeof(sig), addr, addr + 0x100);
+        auto addr2 = MemDbg::findBytes(sig2, sizeof(sig2), addr, addr + 0x100);
+        addr = (addr1 && addr2) ? max(addr1, addr2) : (addr1 ? addr1 : addr2);
+        bool isclang = addr == addr2;
         if (!addr)
             return false;
         HookParam hp;
-        hp.address = addr + 9 + *(int *)(addr + 5);
-        hp.user_value = *(char *)(addr + 1) | ((*(char *)(addr + 3)) << 8);
+        if (isclang)
+        {
+            hp.address = addr + 2 + 2 + 6 + 5 + *(int *)(addr + 2 + 2 + 6 + 1);
+            hp.user_value = *(char *)(addr + 3) | ((*(char *)(addr + 1)) << 8);
+        }
+        else
+        {
+            hp.address = addr + 9 + *(int *)(addr + 5);
+            hp.user_value = *(char *)(addr + 1) | ((*(char *)(addr + 3)) << 8);
+        }
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
             if (((uint8_t)context->argof(2) | ((uint8_t)context->argof(1) << 8)) != hp->user_value)
