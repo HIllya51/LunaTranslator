@@ -2776,6 +2776,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // The Ancient Magus' Bride Midsummer Pilgrimage
+    {0x8006F4E0, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, f010061A01C1CE000, 0x01008D101EC40000ull, "1.0.0"}},
     // 白恋サクラ＊グラム
     {0x8048ECB4, {CODEC_UTF8 | FULL_STRING, 0, 0, T0100EC30206AE000, F01003080177CA000, 0x0100EC30206AE000ull, "1.0.0"}},
     // もし、この世界に神様がいるとするならば
