@@ -1,4 +1,5 @@
-import sys, os
+import sys
+import os
 
 
 def dopathexists(file: str):
@@ -50,7 +51,7 @@ def overridepathexists():
     os.startfile = safestartfile
 
 
-def prepareqtenv():
+def prepareqtenv(error):
     import windows
     from gobject import runtime_for_xp, runtimedir
 
@@ -58,7 +59,8 @@ def prepareqtenv():
     # 虽然打包版已经正确处理了依赖，不过在测试时，如果先加载Qt则会导致加载Qt自带的14.26vcrt导致NativeUtils内部无法正确初始化
     # 因此如果编译为动态的，测试时必须先加载14.40+vcrt来避免Qt捣乱，这里采用的方法即是预先加载它使其加载系统的vcrt
     # 虽然这个仅是对测试时的问题，不过没有负面影响，因此没问题。
-    import NativeUtils
+    if not error:  # 可能缺少这个文件
+        import NativeUtils
 
     # pyqt5.15依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
     qtdlls = ("Qt5Core.dll", "Qt5Gui.dll", "Qt5Widgets.dll", "Qt5Svg.dll")
@@ -119,9 +121,8 @@ def checklang():
 
 
 def checkintegrity():
-    from myutils.config import _TR
+    from myutils.config import _TR, dynamiclink
     from gobject import runtime_for_xp, runtime_for_win10, runtime_bit_64, GetDllpath
-    from myutils.utils import dynamiclink
 
     dll3264 = [
         "NativeUtils.dll",
@@ -156,7 +157,7 @@ def checkintegrity():
         if not os.path.exists(f):
             collect.append(os.path.normpath(os.path.abspath(f)))
     if len(collect):
-        return (
+        return 1, (
             _TR("错误"),
             _TR("找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试").format(
                 modules="\n".join(collect)
@@ -168,19 +169,14 @@ def checkintegrity():
     return None
 
 
-def __checkintegrity(error=None):
-    from gui.usefulwidget import RichMessageBox
+def mayberror(error=None):
+    from gui.RichMessageBox import RichMessageBox
 
     if error:
         error, error_t = error
         RichMessageBox(None, *error_t, iserror=error)
         if error:
             os._exit(0)
-
-    args = checkintegrity()
-    if args:
-        RichMessageBox(None, *args)
-        os._exit(0)
 
 
 def switchdir():
@@ -193,7 +189,8 @@ def switchdir():
 
 
 def _parseargs():
-    import argparse, gobject
+    import argparse
+    import gobject
     from urllib.parse import urlsplit
     from traceback import print_exc
 
@@ -239,7 +236,9 @@ def parseargs():
 
 
 def parsellmapi(result):
-    import json, uuid, base64
+    import json
+    import uuid
+    import base64
     from urllib.parse import parse_qsl, SplitResult
     from myutils.config import copyllmapi
 
@@ -277,7 +276,9 @@ def parsellmapi(result):
 
 
 def ifhasllmapi(_):
-    import gobject, NativeUtils, windows, io
+    import gobject
+    import NativeUtils
+    import windows
     from traceback import format_exc
     from myutils.config import _TR
 
@@ -301,15 +302,16 @@ def ifhasllmapi(_):
 
 if __name__ == "__main__":
     switchdir()
-    _ = parseargs()
-    prepareqtenv()
-    startwithgameuid, error = ifhasllmapi(_)
+    checklang()
+    error = checkintegrity()
+    prepareqtenv(error)
     from qtsymbols import QApplication
 
     app = QApplication(sys.argv)
     # app.setQuitOnLastWindowClosed(False)
-    checklang()
-    __checkintegrity(error)
+    mayberror(error)
+    startwithgameuid, error = ifhasllmapi(parseargs())
+    mayberror(error)
     loadmainui(startwithgameuid)
     app.exit(app.exec())
     os._exit(0)

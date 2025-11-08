@@ -8,12 +8,12 @@ from myutils.config import (
     getcopyfrom,
     copyllmapi,
     dynamicapiname,
+    dynamiclink,
 )
 from myutils.utils import (
     getlangtgt,
     selectdebugfile,
     splittranslatortypes,
-    dynamiclink,
     translate_exits,
     getannotatedapiname,
 )

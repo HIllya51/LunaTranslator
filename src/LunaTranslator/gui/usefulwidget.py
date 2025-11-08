@@ -1,14 +1,25 @@
 from qtsymbols import *
-import os, functools, hashlib, json, math, csv, io, pickle
+import os
+import functools
+import hashlib
+import json
+import math
+import csv
+import io
+import pickle
 from traceback import print_exc
-import windows, qtawesome, NativeUtils, gobject
+import windows
+import qtawesome
+import NativeUtils
+import gobject
 from NativeUtils import WebView2
 import re
-from myutils.config import _TR, globalconfig, mayberelpath
+from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink
 from myutils.wrapper import Singleton, threader, tryprint
-from myutils.utils import nowisdark, checkisusingwine, dynamiclink
+from myutils.utils import nowisdark, checkisusingwine
 from myutils.hwnd import getcurrexe
 from ocrengines.baseocrclass import OCRResult
+from gui.RichMessageBox import RichMessageBox
 from gui.dynalang import (
     LLabel,
     LPushButton,
@@ -21,20 +32,6 @@ from gui.dynalang import (
     LMainWindow,
     LToolButton,
 )
-
-
-def RichMessageBox(parent, title, text: str, iserror=True, iswarning=False):
-    b = QMessageBox(parent)
-    icon = (
-        QMessageBox.Icon.Critical
-        if iserror
-        else (QMessageBox.Icon.Warning if iswarning else QMessageBox.Icon.Information)
-    )
-    b.setIcon(icon)
-    b.setWindowTitle(title)
-    b.setText(text.replace("\n", "<br>"))
-    b.setTextFormat(Qt.TextFormat.RichText)
-    return b.exec()
 
 
 class FocusCombo(QComboBox):
@@ -1679,7 +1676,9 @@ class Exteditor(LDialog):
         self.listexts()
 
     def checkplgdirvalid(self, res):
-        check = lambda d: os.path.isfile(os.path.join(d, "manifest.json"))
+        def check(d):
+            return os.path.isfile(os.path.join(d, "manifest.json"))
+
         if check(res):
             return res
         for _dir, _, __fs in os.walk(res):
@@ -3101,8 +3100,13 @@ class pixmapviewer(QWidget):
                     if self.boxtext:
                         try:
                             scale = pix.height() / self.pix.height() / rate
-                            parsex = lambda xx: (xx) * scale + x
-                            parsey = lambda yy: (yy) * scale + y
+
+                            def parsex(xx):
+                                return (xx) * scale + x
+
+                            def parsey(yy):
+                                return (yy) * scale + y
+
                             font = QFont()
                             font.setFamily(globalconfig["fonttype"])
                             font.setPointSizeF(globalconfig["fontsizeori"])

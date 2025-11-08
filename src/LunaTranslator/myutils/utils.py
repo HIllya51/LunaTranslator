@@ -6,6 +6,7 @@ from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
     _TR,
+    dynamiclink,
     globalconfig,
     static_data,
     getlanguse,
@@ -16,6 +17,7 @@ from myutils.config import (
     gamepath2uid_index,
     defaultglobalconfig,
     dynamicapiname,
+    urlpathjoin,
 )
 from myutils.keycode import vkcode_map, mod_map
 from language import Languages, TransLanguages
@@ -24,7 +26,6 @@ import re, heapq, NativeUtils
 from myutils.wrapper import tryprint, threader
 from html.parser import HTMLParser
 from myutils.audioplayer import bass_code_cast
-from urllib.parse import urlparse
 
 
 class localcachehelper:
@@ -507,16 +508,6 @@ def selectdebugfile(path: str, ismypost=False, ishotkey=False, istts=False):
     return p
 
 
-def dynamiclink(text: str = "", docs=False) -> str:
-    base = static_data[("main_server", "docs_server")[docs]][
-        [gobject.serverindex, gobject.serverindex2][docs]
-    ]
-    _ = [base, text]
-    if docs:
-        _.insert(1, str(getlanguse()))
-    return urlpathjoin(*_)
-
-
 def makehtml(text: str, show=None, docs=False) -> str:
 
     if (not text) or (text[0] == "/"):
@@ -873,17 +864,6 @@ def checkv1(api_url: str):
         return api_url + "v1"
     else:
         return api_url + "/v1"
-
-
-def urlpathjoin(*argc: str):
-    urlx = []
-    for i, u in enumerate(argc):
-        if u.startswith("/") and i != 0:
-            u = u[1:]
-        if u.endswith("/") and i != len(argc) - 1:
-            u = u[:-1]
-        urlx.append(u)
-    return "/".join(urlx)
 
 
 def createurl(url: str, checkend="/chat/completions"):

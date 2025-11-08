@@ -1,6 +1,6 @@
 import os, zipfile
-from myutils.utils import dynamiclink, stringfyerror
-from myutils.config import _TR, globalconfig
+from myutils.utils import stringfyerror
+from myutils.config import _TR, globalconfig, dynamiclink
 from language import Languages
 from ocrengines.baseocrclass import baseocr, OCRResult
 from CVUtils import (

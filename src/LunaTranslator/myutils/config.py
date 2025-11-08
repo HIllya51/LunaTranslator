@@ -1,8 +1,13 @@
 import json
-import os, time, uuid, re, gobject
+import os
+import time
+import uuid
+import re
+import gobject
 from traceback import print_exc
 from language import Languages
-import shutil, copy
+import shutil
+import copy
 
 
 def __mayberelpath(path):
@@ -513,3 +518,24 @@ def copyllmapi(fanyi, newname=None, uid=None, args: dict = None, use=False):
                 continue
             translatorsetting[uid]["args"][k] = args[k]
     return uid
+
+
+def urlpathjoin(*argc: str):
+    urlx = []
+    for i, u in enumerate(argc):
+        if u.startswith("/") and i != 0:
+            u = u[1:]
+        if u.endswith("/") and i != len(argc) - 1:
+            u = u[:-1]
+        urlx.append(u)
+    return "/".join(urlx)
+
+
+def dynamiclink(text: str = "", docs=False) -> str:
+    base = static_data[("main_server", "docs_server")[docs]][
+        [gobject.serverindex, gobject.serverindex2][docs]
+    ]
+    _ = [base, text]
+    if docs:
+        _.insert(1, str(getlanguse()))
+    return urlpathjoin(*_)

@@ -3,8 +3,8 @@ from qtsymbols import *
 from ctypes import Structure, memmove, c_longlong, c_int, c_float, c_int32, c_int64
 from ocrengines.baseocrclass import baseocr, OCRResult
 import os, zipfile, shutil
-from myutils.utils import dynamiclink, stringfyerror
-from myutils.config import _TR
+from myutils.utils import stringfyerror
+from myutils.config import _TR, dynamiclink
 import gobject, requests
 from traceback import print_exc
 from myutils.wrapper import threader

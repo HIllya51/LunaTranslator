@@ -1,8 +1,8 @@
 from qtsymbols import *
 import functools, re
-from myutils.config import globalconfig, static_data, _TR
+from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.wrapper import threader
-from myutils.utils import makehtml, getlanguse, dynamiclink
+from myutils.utils import makehtml, getlanguse
 import requests, importlib
 import gobject
 import os, NativeUtils

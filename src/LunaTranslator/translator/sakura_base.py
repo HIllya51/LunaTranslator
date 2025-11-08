@@ -1,7 +1,7 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
 import json
-from myutils.utils import urlpathjoin
+from myutils.config import urlpathjoin
 from language import Languages
 from translator.gptcommon import list_models
 

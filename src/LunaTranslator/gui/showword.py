@@ -1,17 +1,25 @@
 from qtsymbols import *
-import json, time, functools, os, base64, uuid
+import json
+import time
+import functools
+import os
+import base64
+import uuid
 from urllib.parse import quote
 from traceback import print_exc
-import qtawesome, requests, gobject, windows, NativeUtils
+import qtawesome
+import requests
+import gobject
+import windows
+import NativeUtils
 import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
-from myutils.config import globalconfig, static_data, _TR
+from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.utils import (
     dynamiccishuname,
     loopbackrecorder,
     selectdebugfile,
     parsekeystringtomodvkcode,
-    dynamiclink,
     getimageformatlist,
     getimagefilefilter,
     checkmd5reloadmodule,
@@ -23,8 +31,8 @@ from myutils.mecab import mecab
 from myutils.wrapper import threader, tryprint
 from myutils.ocrutil import imageCut, ocr_run
 from gui.rangeselect import rangeselct_function
+from gui.RichMessageBox import RichMessageBox
 from gui.usefulwidget import (
-    RichMessageBox,
     closeashidewindow,
     auto_select_webview,
     WebviewWidget,

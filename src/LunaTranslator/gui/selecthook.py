@@ -3,8 +3,8 @@ import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, NativeUtils, gobject, os
-from myutils.config import savehook_new_data, globalconfig, _TR, static_data
-from myutils.utils import get_time_stamp, dynamiclink, is_ascii_control
+from myutils.config import savehook_new_data, globalconfig, _TR, static_data, dynamiclink
+from myutils.utils import get_time_stamp, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
 from textio.textsource.texthook import texthook
 from gui.usefulwidget import (
@@ -16,9 +16,9 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     FocusSpin,
     FocusCombo,
-    RichMessageBox,
     TableViewW,
 )
+from gui.RichMessageBox import RichMessageBox
 from gui.dynalang import (
     LFormLayout,
     LRadioButton,

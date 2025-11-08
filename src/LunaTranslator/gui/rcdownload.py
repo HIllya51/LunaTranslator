@@ -2,8 +2,8 @@ import os
 from myutils.config import globalconfig
 import requests, zipfile, gobject
 from gui.usefulwidget import VisLFormLayout, getboxlayout, NQGroupBox, LinkLabel
-from myutils.utils import makehtml, stringfyerror, dynamiclink
-from myutils.config import _TR, mayberelpath
+from myutils.utils import makehtml, stringfyerror
+from myutils.config import _TR, mayberelpath, dynamiclink
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
 from qtsymbols import *

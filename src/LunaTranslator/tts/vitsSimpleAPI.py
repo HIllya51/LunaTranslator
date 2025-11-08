@@ -1,4 +1,4 @@
-from myutils.utils import urlpathjoin
+from myutils.config import urlpathjoin
 from tts.basettsclass import TTSbase, SpeechParam
 import functools
 from gui.customparams import customparams, getcustombodyheaders

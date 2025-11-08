@@ -15,6 +15,7 @@ from myutils.config import (
     _TR,
     saveallconfig,
     dynamicapiname,
+    dynamiclink,
 )
 from ctypes import cast, c_wchar_p
 from ctypes.wintypes import UINT, WPARAM, LPARAM
@@ -23,7 +24,6 @@ from gobject import sys_le_xp
 from myutils.mecab import mecab, latin, jiebapinyin
 from myutils.utils import (
     parsemayberegexreplace,
-    dynamiclink,
     find_or_create_uid,
     parsekeystringtomodvkcode,
     checkpostusing,
@@ -62,7 +62,8 @@ from myutils.somedatabase import somedatabase
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LDialog
 from gui.setting.setting import Setting
-from gui.usefulwidget import PopupWidget, RichMessageBox, pixmapviewer
+from gui.usefulwidget import PopupWidget, pixmapviewer
+from gui.RichMessageBox import RichMessageBox
 from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
 from network.server.servicecollection import registerall
 from network.server.tcpservice import TCPService
