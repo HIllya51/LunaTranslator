@@ -3,6 +3,7 @@ import functools, os
 import gobject
 from myutils.config import (
     globalconfig,
+    savehook_new_data,
     translatorsetting,
     _TR,
     getcopyfrom,
@@ -608,6 +609,35 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
             ff.write(
                 json.dumps(js_format2, ensure_ascii=False, sort_keys=False, indent=4)
             )
+        try:
+            gameuid = gobject.base.gameuid
+            _path = savehook_new_data[gameuid].get("gamejsonfile", [])
+        except:
+            _path: list = translatorsetting["rengong"]["args"]["jsonfile"]
+        ready = set()
+        for _ in _path:
+            if not os.path.isfile(_):
+                continue
+            try:
+                with open(_, "r", encoding="utf8") as ff:
+                    _js: dict = json.load(ff)
+            except:
+                continue
+            if not isinstance(_js, dict):
+                continue
+            ready = ready.union(_js.keys())
+        changed = False
+        for _ in ready:
+            if _ in js_format2:
+                js_format2.pop(_)
+                changed = True
+        if changed:
+            with open(target[:-5] + ".partial.json", "w", encoding="utf8") as ff:
+                ff.write(
+                    json.dumps(
+                        js_format2, ensure_ascii=False, sort_keys=False, indent=4
+                    )
+                )
         dialog.close()
 
     button.accepted.connect(functools.partial(__savefunction, targetjson, existsmerge))
