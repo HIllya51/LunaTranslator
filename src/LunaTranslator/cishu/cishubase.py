@@ -15,9 +15,23 @@ from tinycss2.ast import (
 )
 
 
+try:
+    TYPE_CHECKING = False
+    from typing import TYPE_CHECKING
+except:
+    pass
+if TYPE_CHECKING:
+    from qtsymbols import *
+
+
 class DictTree:
     def text(self) -> str: ...
     def childrens(self) -> list: ...
+
+
+class DictionaryRoot(DictTree):
+    def menus(self, menu: "QMenu"): ...
+    def tips(self) -> str: ...
 
 
 class cishubase(commonbase):

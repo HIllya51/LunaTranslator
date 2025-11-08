@@ -1,5 +1,5 @@
 import base64, uuid, gobject
-from cishu.cishubase import DictTree
+from cishu.cishubase import DictTree, DictionaryRoot
 from traceback import print_exc
 from myutils.audioplayer import bass_code_cast
 import json, os, re
@@ -7,6 +7,7 @@ from cishu.mdict_.readmdict import MDX, MDD, MDict
 import hashlib, sqlite3, functools
 import NativeUtils
 from myutils.mimehelper import query_mime
+from myutils.config import _TR
 
 
 class IndexBuilder(object):
@@ -279,6 +280,9 @@ class mdict(cishubase):
         except:
             self.extraconf = {}
         self.checkpath()
+        self.writeconfig()
+
+    def writeconfig(self):
         try:
             with open(
                 gobject.getconfig("mdict_config.json"), "w", encoding="utf8"
@@ -721,11 +725,21 @@ function safe_mdict_search_word(word){
         if len(self.builders) == 0:
             return
 
-        class everydict(DictTree):
+        class everydict(DictionaryRoot):
             def __init__(self, ref: "mdict", f, index: IndexBuilder) -> None:
                 self.f = f
                 self.index = index
                 self.ref = ref
+
+            def tips(self):
+                return (
+                    self.text()
+                    + "\n"
+                    + self.f
+                    + "\n"
+                    + _TR("优先级")
+                    + str(self.ref.getpriority(self.f))
+                )
 
             def text(self):
                 return self.ref.gettitle(self.f, self.index)
@@ -733,11 +747,50 @@ function safe_mdict_search_word(word){
             def childrens(self) -> list:
                 return sorted(list(set(self.index.get_mdx_keys("*"))))
 
+            def menus(self, menu):
+                from gui.dynalang import LAction
+
+                prio = LAction("调整优先级", menu)
+                prio.triggered.connect(functools.partial(self.__callback2, menu))
+                menu.addAction(prio)
+                if self.ref.config["stylehv"] == 1:
+                    FoldFlow = LAction("默认折叠", menu)
+                    FoldFlow.setCheckable(True)
+                    FoldFlow.setChecked(self.ref.getFoldFlow(self.f))
+                    FoldFlow.triggered.connect(
+                        functools.partial(self.__callback, FoldFlow)
+                    )
+                    menu.addAction(FoldFlow)
+
+            def __callback2(self, menu):
+                from gui.usefulwidget import MyInputDialog
+                from gui.RichMessageBox import RichMessageBox
+                from myutils.utils import stringfyerror
+
+                newp = MyInputDialog(
+                    menu, "调整优先级", "调整为", str(self.ref.getpriority(self.f))
+                )
+                if not newp:
+                    return
+                try:
+                    self.ref.extraconf[self.f]["priority"] = int(newp)
+                    self.ref.writeconfig()
+                except Exception as e:
+                    err = stringfyerror(e)
+                    RichMessageBox(menu, _TR("错误"), err)
+
+            def __callback(self, ac):
+                from gui.dynalang import LAction
+
+                ac: LAction = ac
+                self.ref.extraconf[self.f]["FoldFlow"] = ac.isChecked()
+                self.ref.writeconfig()
+
         class DictTreeRoot(DictTree):
             def __init__(self, ref: "mdict") -> None:
                 self.ref = ref
 
-            def childrens(self) -> "list[DictTree]":
+            def childrens(self) -> "list[everydict]":
                 saves = []
                 for f, index in self.ref.builders:
                     saves.append(

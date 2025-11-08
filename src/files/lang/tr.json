@@ -891,5 +891,9 @@
     "底部居中": "Alt kısım ortalanmış",
     "右下角": "Sağ alt köşe",
     "输出画面位置": "Görüntü çıkış konumu",
-    "禁用缩放窗口置顶": "Pencere ölçeklendirme ve üstte tutma devre dışı"
+    "禁用缩放窗口置顶": "Pencere ölçeklendirme ve üstte tutma devre dışı",
+    "默认折叠": "Varsayılan olarak daraltılmış",
+    "优先级": "Öncelik sırası",
+    "调整优先级": "Önceliği ayarla",
+    "调整为": "Ayarlamak"
 }

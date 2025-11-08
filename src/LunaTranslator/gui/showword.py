@@ -25,7 +25,7 @@ from myutils.utils import (
     checkmd5reloadmodule,
     getimageformat,
 )
-from cishu.cishubase import DictTree
+from cishu.cishubase import DictionaryRoot
 from sometypes import WordSegResult
 from myutils.mecab import mecab
 from myutils.wrapper import threader, tryprint
@@ -964,7 +964,7 @@ class DynamicTreeModel(QStandardItemModel):
             return
         if self.data(index, DeterminedhasChildren) is not None:
             return
-        node: DictTree = self.data(index, DictNodeRole)
+        node: DictionaryRoot = self.data(index, DictNodeRole)
         if not node:
             return
         childs = node.childrens()
@@ -1097,11 +1097,17 @@ class showdiction(QWidget):
         search = LAction("查词", menu)
         label = LAction("标记", menu)
         label.setCheckable(True)
+        FoldFlow = LAction("默认折叠", menu)
+        FoldFlow.setCheckable(True)
         menu.addAction(copy)
         if isw:
             menu.addAction(search)
             menu.addAction(label)
             label.setChecked(bool(idx.data(isLabeleddWord)))
+        else:
+            node: DictionaryRoot = idx.data(DictNodeRole)
+            if node:
+                node.menus(menu)
         action = menu.exec(QCursor.pos())
         if action == search:
             self.model.onDoubleClicked(idx)
@@ -1180,6 +1186,9 @@ class showdiction(QWidget):
                 for node in cishus[0].tree().childrens():
                     item = QStandardItem(node.text().replace("\n", ""))
                     item.setData(node, DictNodeRole)
+                    tips = node.tips()
+                    if tips:
+                        item.setToolTip(tips)
                     rows.append(item)
             except:
                 print_exc()

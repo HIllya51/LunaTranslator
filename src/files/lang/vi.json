@@ -891,5 +891,9 @@
     "底部居中": "Dưới cùng, căn giữa",
     "右下角": "Góc dưới bên phải",
     "输出画面位置": "Vị trí hiển thị màn hình",
-    "禁用缩放窗口置顶": "Vô hiệu hóa thu phóng cửa sổ luôn trên cùng"
+    "禁用缩放窗口置顶": "Vô hiệu hóa thu phóng cửa sổ luôn trên cùng",
+    "默认折叠": "Mặc định thu gọn",
+    "优先级": "Ưu tiên",
+    "调整优先级": "Điều chỉnh mức độ ưu tiên",
+    "调整为": "Điều chỉnh thành"
 }
