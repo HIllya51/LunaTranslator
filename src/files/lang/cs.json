@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Potvrzeno jako motor %s.",
     "使用的网络代理可能无效，请进行检查！({})": "Použitý síťový proxy může být neplatný, prosím zkontrolujte! ({})",
     "网络错误": "Síťová chyba",
-    "选取同名全部": "Vybrat všechny stejnojmenné"
+    "选取同名全部": "Vybrat všechny stejnojmenné",
+    "隐藏延迟（秒）": "Skryté zpoždění (sekundy)",
+    "光标静止时自动隐藏": "Kurzor se automaticky skryje, když je nečinný.",
+    "左上角": "Levý horní roh",
+    "顶部居中": "Nahoře uprostřed",
+    "右上角": "Pravý horní roh",
+    "左对齐": "Zarovnat doleva",
+    "右对齐": "Zarovnat vpravo",
+    "左下角": "Levý dolní roh",
+    "底部居中": "Dole uprostřed",
+    "右下角": "Pravý dolní roh",
+    "输出画面位置": "Výstupní pozice obrazovky",
+    "禁用缩放窗口置顶": "Zakázat přichycení okna při změně velikosti"
 }

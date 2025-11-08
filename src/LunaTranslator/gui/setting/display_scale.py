@@ -292,6 +292,27 @@ def makescalew():
                             ),
                         ],
                         [
+                            "光标静止时自动隐藏",
+                            D_getsimpleswitch(
+                                magpie_config["profiles"][
+                                    globalconfig["profiles_index"]
+                                ],
+                                "autoHideCursorEnabled",
+                            ),
+                            "",
+                            "隐藏延迟（秒）",
+                            D_getspinbox(
+                                0.1,
+                                5,
+                                magpie_config["profiles"][
+                                    globalconfig["profiles_index"]
+                                ],
+                                "autoHideCursorDelay",
+                                double=True,
+                                step=0.1,
+                            ),
+                        ],
+                        [
                             "缩放时调整光标速度",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
@@ -340,6 +361,26 @@ def makescalew():
                             ),
                         ],
                         [
+                            "输出画面位置",
+                            D_getsimplecombobox(
+                                [
+                                    "左上角",
+                                    "顶部居中",
+                                    "右上角",
+                                    "左对齐",
+                                    "居中",
+                                    "右对齐",
+                                    "左下角",
+                                    "底部居中",
+                                    "右下角",
+                                ],
+                                magpie_config["profiles"][
+                                    globalconfig["profiles_index"]
+                                ],
+                                "destAlignment",
+                            ),
+                        ],
+                        [
                             "禁用DirectFlip",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
@@ -368,6 +409,13 @@ def makescalew():
                         D_getsimpleswitch(
                             magpie_config,
                             "benchmarkMode",
+                        ),
+                    ],
+                    [
+                        "禁用缩放窗口置顶",
+                        D_getsimpleswitch(
+                            magpie_config,
+                            "disableTopmost",
                         ),
                     ],
                     [

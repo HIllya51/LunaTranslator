@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Potwierdzenie silnika %s",
     "使用的网络代理可能无效，请进行检查！({})": "Używany serwer proxy może być nieważny, proszę to sprawdzić! ({})",
     "网络错误": "Błąd sieci",
-    "选取同名全部": "Wybierz wszystkie o tej samej nazwie"
+    "选取同名全部": "Wybierz wszystkie o tej samej nazwie",
+    "隐藏延迟（秒）": "Ukryte opóźnienie (sekundy)",
+    "光标静止时自动隐藏": "Kursor automatycznie ukrywa się, gdy jest nieruchomy.",
+    "左上角": "Lewy górny róg",
+    "顶部居中": "Góra na środku",
+    "右上角": "Prawy górny róg",
+    "左对齐": "Wyrównaj do lewej",
+    "右对齐": "Wyrównaj do prawej",
+    "左下角": "Lewy dolny róg",
+    "底部居中": "Na dole, wyśrodkowane",
+    "右下角": "Prawy dolny róg",
+    "输出画面位置": "Pozycja wyjściowa ekranu",
+    "禁用缩放窗口置顶": "Wyłącz skalowanie okna na wierzchu"
 }

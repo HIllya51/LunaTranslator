@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Bekräftat som %s-motor",
     "使用的网络代理可能无效，请进行检查！({})": "Den använda nätverksproxyn kan vara ogiltig, vänligen kontrollera den! ({})",
     "网络错误": "Nätverksfel",
-    "选取同名全部": "Välj alla med samma namn"
+    "选取同名全部": "Välj alla med samma namn",
+    "隐藏延迟（秒）": "Dold fördröjning (sekunder)",
+    "光标静止时自动隐藏": "Markören döljs automatiskt när den är stilla.",
+    "左上角": "Övre vänstra hörnet",
+    "顶部居中": "Överst centrerad",
+    "右上角": "Övre högra hörnet",
+    "左对齐": "Vänsterjusterad",
+    "右对齐": "Högerjustera",
+    "左下角": "Nedre vänstra hörnet",
+    "底部居中": "Centrerad längst ner",
+    "右下角": "Nedre högra hörnet",
+    "输出画面位置": "Utmatningsskärmposition",
+    "禁用缩放窗口置顶": "Inaktivera skalning av fönster som alltid ska vara överst"
 }

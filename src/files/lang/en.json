@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Confirmed as %s engine",
     "使用的网络代理可能无效，请进行检查！({})": "The network proxy in use may be invalid, please check it! ({})",
     "网络错误": "Network error",
-    "选取同名全部": "Select all with the same name"
+    "选取同名全部": "Select all with the same name",
+    "隐藏延迟（秒）": "Hidden Delay (seconds)",
+    "光标静止时自动隐藏": "Cursor hides automatically when idle.",
+    "左上角": "Top left corner",
+    "顶部居中": "Top Center",
+    "右上角": "Top right corner",
+    "左对齐": "Left-aligned",
+    "右对齐": "Right-align",
+    "左下角": "Bottom left corner",
+    "底部居中": "Bottom center",
+    "右下角": "Bottom right corner",
+    "输出画面位置": "Output screen position",
+    "禁用缩放窗口置顶": "Disable scaling window topmost"
 }

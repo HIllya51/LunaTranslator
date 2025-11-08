@@ -17,6 +17,7 @@
     "developerMode": false,
     "debugMode": false,
     "benchmarkMode": false,
+    "disableTopmost": false,
     "disableEffectCache": false,
     "disableFontCache": false,
     "saveEffectSources": false,
@@ -33,7 +34,6 @@
     "enableStatisticsForDynamicDetection": false,
     "minFrameRate": 10.0,
     "disableFP16": false,
-    "keepOnTop": false,
     "scalingModes": [
         {
             "name": "Lanczos",
@@ -146,13 +146,16 @@
             "cursorScaling": 2,
             "customCursorScaling": 1.0,
             "cursorInterpolationMode": 0,
+            "autoHideCursorEnabled": false,
+            "autoHideCursorDelay": 3.0,
             "croppingEnabled": false,
             "cropping": {
                 "left": 0.0,
                 "top": 0.0,
                 "right": 0.0,
                 "bottom": 0.0
-            }
+            },
+            "destAlignment": 4
         }
     ],
     "overlay": {

@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Confirmado como motor %s.",
     "使用的网络代理可能无效，请进行检查！({})": "O proxy de rede utilizado pode estar inválido, por favor, verifique! ({})",
     "网络错误": "Erro de rede",
-    "选取同名全部": "Selecionar todos com o mesmo nome"
+    "选取同名全部": "Selecionar todos com o mesmo nome",
+    "隐藏延迟（秒）": "Latência oculta (segundos)",
+    "光标静止时自动隐藏": "Cursor oculto automaticamente quando parado",
+    "左上角": "Canto superior esquerdo",
+    "顶部居中": "Topo centralizado",
+    "右上角": "Canto superior direito",
+    "左对齐": "Alinhado à esquerda",
+    "右对齐": "Alinhar à direita",
+    "左下角": "Canto inferior esquerdo",
+    "底部居中": "Centro inferior",
+    "右下角": "Canto inferior direito",
+    "输出画面位置": "Posição da tela de saída",
+    "禁用缩放窗口置顶": "Desativar redimensionamento e fixação de janela no topo"
 }

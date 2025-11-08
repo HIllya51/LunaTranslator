@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Bevestigd als %s motor",
     "使用的网络代理可能无效，请进行检查！({})": "Het gebruikte netwerkproxy is mogelijk ongeldig, controleer deze! ({})",
     "网络错误": "Netwerkfout",
-    "选取同名全部": "Selecteer alle met dezelfde naam"
+    "选取同名全部": "Selecteer alle met dezelfde naam",
+    "隐藏延迟（秒）": "Verborgen vertraging (seconden)",
+    "光标静止时自动隐藏": "Cursor verbergt zich automatisch wanneer deze stilstaat.",
+    "左上角": "Linksboven",
+    "顶部居中": "Bovenaan gecentreerd",
+    "右上角": "Rechtsboven",
+    "左对齐": "Links uitlijnen.",
+    "右对齐": "Rechts uitlijnen",
+    "左下角": "Linksonder",
+    "底部居中": "Onderaan gecentreerd",
+    "右下角": "Rechtsonder",
+    "输出画面位置": "Uitvoerbeeldpositie",
+    "禁用缩放窗口置顶": "Schakel vensterschaal en bovenliggende vensters uit."
 }

@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "%s motoru olduğu doğrulandı",
     "使用的网络代理可能无效，请进行检查！({})": "Kullanılan ağ vekil sunucusu geçersiz olabilir, lütfen kontrol edin! ({})",
     "网络错误": "Ağ hatası",
-    "选取同名全部": "Aynı isimdeki tümünü seç"
+    "选取同名全部": "Aynı isimdeki tümünü seç",
+    "隐藏延迟（秒）": "Gizli Gecikme (saniye)",
+    "光标静止时自动隐藏": "İmleç hareketsizken otomatik olarak gizlenir",
+    "左上角": "Sol üst köşe",
+    "顶部居中": "Üst Orta",
+    "右上角": "Sağ üst köşe",
+    "左对齐": "Sola hizalı",
+    "右对齐": "Sağa hizalı",
+    "左下角": "Sol alt köşe",
+    "底部居中": "Alt kısım ortalanmış",
+    "右下角": "Sağ alt köşe",
+    "输出画面位置": "Görüntü çıkış konumu",
+    "禁用缩放窗口置顶": "Pencere ölçeklendirme ve üstte tutma devre dışı"
 }

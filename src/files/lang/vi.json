@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Xác nhận là động cơ %s.",
     "使用的网络代理可能无效，请进行检查！({})": "Proxy mạng có thể không hoạt động, vui lòng kiểm tra lại! ({})",
     "网络错误": "Lỗi mạng",
-    "选取同名全部": "Chọn tất cả các mục cùng tên"
+    "选取同名全部": "Chọn tất cả các mục cùng tên",
+    "隐藏延迟（秒）": "Độ trễ ẩn (giây)",
+    "光标静止时自动隐藏": "Con trỏ tự động ẩn khi không di chuyển.",
+    "左上角": "Góc trên bên trái",
+    "顶部居中": "Trên cùng, ở giữa",
+    "右上角": "Góc trên bên phải",
+    "左对齐": "Căn trái",
+    "右对齐": "Căn phải",
+    "左下角": "Góc dưới bên trái",
+    "底部居中": "Dưới cùng, căn giữa",
+    "右下角": "Góc dưới bên phải",
+    "输出画面位置": "Vị trí hiển thị màn hình",
+    "禁用缩放窗口置顶": "Vô hiệu hóa thu phóng cửa sổ luôn trên cùng"
 }

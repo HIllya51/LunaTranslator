@@ -879,5 +879,17 @@
     "确认是 %s 引擎": "Bestätigt als %s-Motor",
     "使用的网络代理可能无效，请进行检查！({})": "Der verwendete Netzwerk-Proxy könnte ungültig sein, bitte überprüfen Sie ihn! ({})",
     "网络错误": "Netzwerkfehler",
-    "选取同名全部": "Alle gleichnamigen auswählen."
+    "选取同名全部": "Alle gleichnamigen auswählen.",
+    "隐藏延迟（秒）": "Versteckte Verzögerung (Sekunden)",
+    "光标静止时自动隐藏": "Automatisches Ausblenden des Cursors bei Inaktivität",
+    "左上角": "Links oben",
+    "顶部居中": "Oben zentriert",
+    "右上角": "oben rechts",
+    "左对齐": "Linksbündig",
+    "右对齐": "Rechtsbündig",
+    "左下角": "Unten links",
+    "底部居中": "Unten zentriert",
+    "右下角": "Unten rechts",
+    "输出画面位置": "Ausgabebildposition",
+    "禁用缩放窗口置顶": "Deaktivieren Sie das Skalieren und das Immer-im-Vordergrund-Fenster"
 }
