@@ -234,7 +234,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | 0100C4E013E5E000 | Ni no Kuni II: Revenant Kingdom |
 |  | 0100F7700CB82000 | 遙かなる時空の中で６ DX |
 |  | 0100CF400F7CE000 | 遙かなる時空の中で7 |
-|  | 0100D11018A7E000 | アンジェリーク ルミナライズ |
+|  | 0100E190117D6000 | アンジェリーク ルミナライズ |
 |  | 010065301A2E0000 | Star Ocean The Second Story R |
 |  | 010012A017F18000 | 魔法使いの夜 通常版 |
 |  | 01001DC01486A000 | 月姫 -A piece of blue glass moon- |
