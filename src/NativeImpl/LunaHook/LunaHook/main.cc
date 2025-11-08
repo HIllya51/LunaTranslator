@@ -97,8 +97,10 @@ void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe, bool &running)
 {
 	// 1. hook->host
 	// WORD[4] version
+	// GUID
 	DWORD count;
 	WriteFile(hookPipe, LUNA_VERSION, sizeof(LUNA_VERSION), &count, nullptr);
+	WriteFile(hookPipe, &compatible_sig, sizeof(compatible_sig), &count, nullptr);
 	// 2. hook->host && host->hook
 	// i18n key & result
 	for (auto &[_en, data] : TR.get_hook())

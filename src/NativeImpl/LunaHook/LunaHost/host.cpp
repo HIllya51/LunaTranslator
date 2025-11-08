@@ -86,7 +86,9 @@ namespace
 		WORD hookversion[4];
 		DWORD bytesRead;
 		ReadFile(hookPipe, hookversion, sizeof(hookversion), &bytesRead, nullptr);
-		if (memcmp(hookversion, LUNA_VERSION, sizeof(hookversion)) != 0)
+		GUID get_guid;
+		ReadFile(hookPipe, &get_guid, sizeof(get_guid), &bytesRead, nullptr);
+		if (!IsEqualGUID(get_guid, compatible_sig))
 			Host::InfoOutput(HOSTINFO::EmuWarning, TR[UNMATCHABLEVERSION]);
 	}
 	void __handlepipethread(DWORD processId, HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
