@@ -51,7 +51,7 @@ def overridepathexists():
     os.startfile = safestartfile
 
 
-def prepareqtenv(error):
+def prepareqtenv(haserror):
     import windows
     from gobject import runtime_for_xp, runtimedir
 
@@ -59,7 +59,7 @@ def prepareqtenv(error):
     # 虽然打包版已经正确处理了依赖，不过在测试时，如果先加载Qt则会导致加载Qt自带的14.26vcrt导致NativeUtils内部无法正确初始化
     # 因此如果编译为动态的，测试时必须先加载14.40+vcrt来避免Qt捣乱，这里采用的方法即是预先加载它使其加载系统的vcrt
     # 虽然这个仅是对测试时的问题，不过没有负面影响，因此没问题。
-    if not error:  # 可能缺少这个文件
+    if not haserror:  # 可能缺少这个文件
         import NativeUtils
 
     # pyqt5.15依赖AddDllDirectory来加载Qt，在Win7早期版本上无法成功，导致缺失dll，手动加载Qt可解。
@@ -302,16 +302,17 @@ def ifhasllmapi(_):
 
 if __name__ == "__main__":
     switchdir()
+    args = parseargs()
     checklang()
-    error = checkintegrity()
-    prepareqtenv(error)
+    startwithgameuid, error = ifhasllmapi(args)
+    error2 = checkintegrity()
+    prepareqtenv(error or error2)
     from qtsymbols import QApplication
 
     app = QApplication(sys.argv)
     # app.setQuitOnLastWindowClosed(False)
     mayberror(error)
-    startwithgameuid, error = ifhasllmapi(parseargs())
-    mayberror(error)
+    mayberror(error2)
     loadmainui(startwithgameuid)
     app.exit(app.exec())
     os._exit(0)
