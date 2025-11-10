@@ -1,8 +1,9 @@
 ﻿#include "Lightvn.h"
 
 // https://vndb.org/r?f=fwLight_evn-
-#define PATTERN1 "\\[PARSETOKENS\\] line:[-\"\\.]+([\\s\\S]*?)\\(scenario:([\\s\\S]*?)"
-#define PATTERN2 "\\[PARSETOKENS\\] line:([\\s\\S]*?)backlogName = '([\\s\\S]*?)'([\\s\\S]*?)"
+#define PATTERN1 R"(\[PARSETOKENS\] line:[-"'\.]+(.*?)\(scenario:(.*?))"
+#define PATTERN2 R"(\[PARSETOKENS\] line:(.*?)backlogName = '(.*?)'(.*?))"
+#define PATTERN3 R"(\[Parser::ReadScriptBreak\] curline:[-"'\.]+(.*?)'(.*?))"
 
 void SpecialHookLightvnA(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
@@ -18,9 +19,6 @@ void SpecialHookLightvnA(hook_context *context, HookParam *hp, TextBuffer *buffe
 	if (auto match = re::match(s, PATTERN1))
 	{
 		s = match.value()[1];
-		s = re::sub(s, "\\[(.*?)\\]<(.*?)>", "$1");
-		strReplace(s, "\\c");
-		strReplace(s, "\\w");
 		*split = 1;
 	}
 	else if (auto match = re::match(s, PATTERN2))
@@ -28,18 +26,25 @@ void SpecialHookLightvnA(hook_context *context, HookParam *hp, TextBuffer *buffe
 		s = match.value()[2];
 		*split = 2;
 	}
+	else if (auto match = re::match(s, PATTERN3))
+	{
+		s = match.value()[1];
+		*split = 3;
+	}
+	s = re::sub(s, R"(\[(.*?)\]<(.*?)>)", "$1");
+	strReplace(s, "\\c");
+	strReplace(s, "\\w");
 	buffer->from(s);
 }
 
 void SpecialHookLightvnW(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
 	std::wstring s((wchar_t *)context->stack[1]);
+	strReplace(s, L"\n");
+	strReplace(s, L"\r");
 	if (auto match = re::match(s, WIDEN(PATTERN1)))
 	{
 		s = match.value()[1];
-		s = re::sub(s, L"\\[(.*?)\\]<(.*?)>", L"$1");
-		strReplace(s, L"\\c");
-		strReplace(s, L"\\w");
 		*split = 1;
 	}
 	else if (auto match = re::match(s, WIDEN(PATTERN2)))
@@ -47,6 +52,14 @@ void SpecialHookLightvnW(hook_context *context, HookParam *hp, TextBuffer *buffe
 		s = match.value()[2];
 		*split = 2;
 	}
+	else if (auto match = re::match(s, WIDEN(PATTERN3)))
+	{
+		s = match.value()[1];
+		*split = 3;
+	}
+	s = re::sub(s, LR"(\[(.*?)\]<(.*?)>)", L"$1");
+	strReplace(s, L"\\c");
+	strReplace(s, L"\\w");
 	buffer->from(s);
 }
 bool InsertLightvnHook()
