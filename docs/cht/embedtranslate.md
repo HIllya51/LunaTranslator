@@ -6,7 +6,7 @@
 首先，不是所有遊戲都支援內嵌。其次，內嵌有一定可能會導致遊戲崩潰。
 :::
 
-::: details 如果選擇文字中沒有內嵌這一行，就代表不支援內嵌。
+::: details 如果選擇文字中沒有內嵌這一欄，就代表不支援內嵌。
 ![img](https://image.lunatranslator.org/zh/embed/noembed.png)
 ![img](https://image.lunatranslator.org/zh/embed/someembed.png)
 :::

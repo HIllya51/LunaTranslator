@@ -17,7 +17,7 @@
 
 在 Windows 11 上，除了對應語言的語音合成包以外，還可以在 Windows 系統設定中的`協助工具`->`視覺`的`朗讀程式`->`朗讀程式的語音`的`新增自然語音`處新增更高品質的語音包。
 
-在 Windows 10 上，或不想在系統中新增，可以從[NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)下載`Microsoft Natural Voice（自然語音）`，然後將其解壓縮到軟體目錄中，即可使用自然語音。
+在 Windows 10 上，或不想在系統中新增，可以從 [NVDA 中文站](https://www.nvdacn.com/index.php/tts.html)下載`Microsoft Natural Voice（自然語音）`，然後將其解壓縮到軟體目錄中，即可使用自然語音。
 
 在 Windows 10 上，系統內缺少必要的執行環境和辨識模型；或者 Windows 11 的版本過低，系統內建的執行環境版本過低。除了需要下載語音包外，還需補充下載[自然語音執行環境](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)並解壓縮到軟體目錄中。
 

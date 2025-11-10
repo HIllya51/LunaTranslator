@@ -14,7 +14,7 @@
 
 ![img](https://image.lunatranslator.org/zh/basicuse/show.png)
 
-如果遊戲支援內嵌翻譯，那麼會有「內嵌」這一行按鈕，否則只會有「顯示」這一行按鈕。
+如果遊戲支援內嵌翻譯，那麼會有「內嵌」這一欄按鈕，否則只會有「顯示」這一欄按鈕。
 
 ![img](https://image.lunatranslator.org/zh/basicuse/embed.png)
 
