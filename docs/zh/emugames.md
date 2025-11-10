@@ -917,6 +917,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65971 | そして僕らは、・・・and he said |
 |  | SLPM-65710 | Apocripha/0 |
 |  | SLPM-65943 | Angel's Feather −黒の残影− |
 |  | SLPM-66980 | 銀のエクリプス |

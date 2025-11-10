@@ -917,6 +917,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65971 | そして僕らは、・・・and he said |
 |  | SLPM-65710 | Apocripha/0 |
 |  | SLPM-65943 | Angel's Feather −黒の残影− |
 |  | SLPM-66980 | 銀のエクリプス |

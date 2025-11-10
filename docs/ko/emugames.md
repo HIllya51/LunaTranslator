@@ -917,6 +917,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65971 | そして僕らは、・・・and he said |
 |  | SLPM-65710 | Apocripha/0 |
 |  | SLPM-65943 | Angel's Feather −黒の残影− |
 |  | SLPM-66980 | 銀のエクリプス |

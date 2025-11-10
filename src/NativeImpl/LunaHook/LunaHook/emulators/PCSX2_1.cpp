@@ -246,6 +246,16 @@ namespace
         last = s;
         buffer->fromWA(strReplace(s, L"/"));
     }
+    void FSLPM65971(TextBuffer *buffer, HookParam *hp)
+    {
+        static lru_cache<std::string> cache(4);
+        auto s = buffer->strA();
+        if (cache.touch(s))
+            return buffer->clear();
+        if (startWith(s, "\x81\x40"))
+            s = s.substr(2);
+        buffer->from(strReplace(s, "\r"));
+    }
     void SLPM65943(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -812,6 +822,12 @@ namespace
         s += (char *)PCSX2_REG(t0);
         strReplace(s, "%n");
         buffer->from(s);
+    }
+    void SLPM65971(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        if ((WORD)PCSX2_REG(v1) != 1)
+            return;
+        buffer->from((char *)PCSX2_REG(s0));
     }
     void SLPM65710(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -2098,6 +2114,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // そして僕らは、・・・and he said
+    {0x134A6C, {0, 0, 0, SLPM65971, FSLPM65971, "SLPM-65971"}},
     // Apocripha/0
     {0x1222c8, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, SLPM65710, 0, "SLPM-65710"}},
     // Angel's Feather −黒の残影−
