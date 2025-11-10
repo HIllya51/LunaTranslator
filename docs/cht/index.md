@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "LunaTranslator"
   # text: "Galgame 翻譯器，支援 HOOK、OCR、剪貼簿等"
-  # tagline: 💡 快速翻譯，輕鬆學習日語！
+  # tagline: 💡 快速翻譯，輕鬆學習日文！
   # image:
   #   src: /assets/bg.jpg
   #   alt: LunaTranslator
@@ -40,7 +40,7 @@ features:
     details: 支援幾乎所有翻譯引擎，包括大語言模型翻譯、離線翻譯等
     link: ./guochandamoxing
   - title: 語言學習
-    details: 支援日語分詞及假名讀音標註，支援 AnkiConnect，支援 Yomitan 擴充功能
+    details: 支援日文分詞及假名讀音標註，支援 AnkiConnect，支援 Yomitan 擴充功能
     link: ./qa1
   - title: 語音合成
     details: 支援大量線上＆離線語音合成引擎
