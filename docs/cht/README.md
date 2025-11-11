@@ -45,7 +45,7 @@
 ### 找不到重要元件 / Missing embedded Python3
 
 ::: danger
-有時會被防毒軟體殺掉，請新增例外並重新下載解壓縮。
+有時會被防毒軟體刪掉，請新增例外並重新下載解壓縮。
 :::
 
 ![img](https://image.lunatranslator.org/zh/cantstart/2.jpg)
@@ -63,7 +63,7 @@
 
 ### Error/FileNotFoundError
 
-如果沒有預先新增好信任，有可能在軟體執行一段時間後，部份必要元件才被防毒軟體刪除。然後等到 HOOK 模式選取處理程序之後，報出這個錯誤。解決方法同上。
+如果沒有預先新增好例外，有可能在軟體執行一段時間後，部份必要元件才被防毒軟體刪除。然後等到 HOOK 模式選取處理程序之後，才會報出這個錯誤。解決方法同上。
 
 <img src="https://image.lunatranslator.org/zh/notfound.png" width=400>
 
