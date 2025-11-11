@@ -1653,6 +1653,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x884DE44, {0, 0, 0, 0, NPJH50900, "NPJH50900"}}, // text
     // 青春はじめました！
     {0x880a744, {0, 0, 0, 0, ULJM05943F, std::vector<const char *>{"ULJM06302", "ULJM06303"}}},
+    {0x8804094, {FULL_STRING, 1, 0, 0, ULJM06344, std::vector<const char *>{"ULJM06302", "ULJM06303"}}},
     // アーメン・ノワール ポータブル
     {0x883b6a8, {0, 0, 0, 0, ULJM05943F, "ULJM06064"}},
     // デス・コネクション　ポータブル

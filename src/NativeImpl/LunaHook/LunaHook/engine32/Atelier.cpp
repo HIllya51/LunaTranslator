@@ -34,15 +34,10 @@ bool InsertAtelierHook()
         hp.offset = stackoffset(2);
         hp.split = regoffset(esp);
         hp.type = USING_SPLIT;
-        ConsoleOutput("INSERT Aterlier KAGUYA");
-
-        // RegisterEngineType(ENGINE_ATELIER);
         return NewHook(hp, "Atelier KAGUYA");
       }
 
-  ConsoleOutput("Aterlier: failed");
   return false;
-  // ConsoleOutput("Unknown Atelier KAGUYA engine.");
 }
 
 bool InsertAtelierKaguya2Hook()
@@ -166,14 +161,24 @@ bool InsertAtelierKaguya5Hook()
    * https://vndb.org/v11224
    */
   const BYTE bytes[] = {
-      0xC2, 0x04, 0x00,                   // ret 0004
-      0x55,                               // push ebp       << hook here
-      0x8B, 0xEC,                         // mov ebp,esp
-      0x6A, 0xFF,                         // push -01
-      0x68, XX4,                          // push Start.exe+DA680
-      0x64, 0xA1, 0x00, 0x00, 0x00, 0x00, // mov eax,fs:[00000000]
-      0x50,                               // push eax
-      0x51,                               // push ecx
+      0xC2,
+      0x04,
+      0x00, // ret 0004
+      0x55, // push ebp       << hook here
+      0x8B,
+      0xEC, // mov ebp,esp
+      0x6A,
+      0xFF, // push -01
+      0x68,
+      XX4, // push Start.exe+DA680
+      0x64,
+      0xA1,
+      0x00,
+      0x00,
+      0x00,
+      0x00, // mov eax,fs:[00000000]
+      0x50, // push eax
+      0x51, // push ecx
   };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
@@ -259,9 +264,44 @@ bool Atelier2attach_function2()
   hp.type = USING_STRING; // https://vndb.org/v13691  // 肉牝R30 ～肉欲に堕ちた牝たち～
   if (addr - faddr > 0x40)
     hp.type |= DATA_INDIRECT; // https://vndb.org/v7264  // 禁断の病棟 特殊精神科医 遊佐惣介の診察記録
-  return NewHook(hp, "Atelier KAGUYA");
+  return NewHook(hp, "Atelier KAGUYA2");
+}
+static bool h3()
+{
+  // 最終痴漢電車DVDエディション
+
+  const BYTE bytes[] = {
+      0xa1, XX4,
+      0x53,
+      0x8b, 0x5c, 0x24, 0x08,
+      0x56,
+      0x8b, 0xf1,
+      0x57,
+      0x85, 0xdb,
+      0x89, 0x06,
+      0x74, XX,
+      0x8b, 0xc3,
+      0xc1, 0xe8, 0x10,
+      0x66, 0x85, 0xc0,
+      0x75, XX,
+      0x0f, 0xb7, 0xc3,
+      0x50,
+      0xe8, XX4, // CString::LoadStringA
+      0xeb,XX,
+      0x53,
+      0xff,0x15,XX4,//lstrlenA
+  };
+
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.type = USING_STRING;
+  hp.offset = stackoffset(1);
+  return NewHook(hp, "Atelier2_1");
 }
 bool Atelier2::attach_function()
 {
-  return Atelier2attach_function() || Atelier2attach_function2();
+  return h3() || Atelier2attach_function() || Atelier2attach_function2();
 }
