@@ -1,6 +1,6 @@
 ﻿set(YY_Thunks_VERSION "v1.1.7")
 option(WINXP "WINXP" OFF)
-option(WIN10ABOVE "WIN10ABOVE" OFF)
+option(WIN10ABOVE "WIN10ABOVE" ON)
 option(USE_VC_LTL "USE_VC_LTL" OFF)
 
 include(FetchContent)
