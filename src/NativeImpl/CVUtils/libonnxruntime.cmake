@@ -11,9 +11,9 @@ option(WIN10ABOVE "WIN10ABOVE" OFF)
 if(WIN10ABOVE)
     # https://github.com/microsoft/onnxruntime/issues/15255
     # DML和ort的版本必须对应，因此必须附带而非加载系统的，否则无法使用gpu
-    set(ort_version 1.22.1) 
+    set(ort_version 1.23.0) 
     FetchContent_Declare(onnxruntime 
-        URL https://github.com/microsoft/onnxruntime/releases/download/v${ort_version}/Microsoft.ML.OnnxRuntime.DirectML.${ort_version}.nupkg
+        URL https://www.nuget.org/api/v2/package/Microsoft.ML.OnnxRuntime.DirectML/${ort_version}
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
     FetchContent_MakeAvailable(onnxruntime)

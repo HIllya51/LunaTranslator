@@ -426,7 +426,7 @@
     "isshowhira": true,
     "locktools": true,
     "locktoolsEx": false,
-    "showfanyisource": true,
+    "showfanyisource": false,
     "showfanyi": true,
     "autoread": false,
     "ttsnointerrupt": false,
