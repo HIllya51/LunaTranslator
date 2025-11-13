@@ -30,6 +30,9 @@
     "useextrahtml": false,
     "ocrselectalpha": 0.3,
     "foldstatus": {
+        "ocr": {
+            "other": false
+        },
         "others": {
             "fts": true,
             "netservice": true,

@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     D_getdoclink,
     ClickableLabel,
     getboxlayout,
+    createfoldgrid,
     TableViewW,
     saveposwindow,
     check_grid_append,
@@ -451,10 +452,12 @@ def internal(self):
             )
         ],
         [
-            dict(
-                title="其他",
-                type="grid",
-                grid=initgridsources(self, other),
+            functools.partial(
+                createfoldgrid,
+                initgridsources(self, other),
+                "其他",
+                d=globalconfig["foldstatus"]["ocr"],
+                k="other",
             )
         ],
         [
