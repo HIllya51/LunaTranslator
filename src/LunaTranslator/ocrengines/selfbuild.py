@@ -1,14 +1,16 @@
-from translator.basetranslator import basetrans
+from ocrengines.baseocrclass import baseocr
 from myutils.utils import checkmd5reloadmodule
 import gobject
 
 
-class TS(basetrans):
+class OCR(baseocr):
     def mayreinit(self):
-        module = checkmd5reloadmodule(gobject.getconfig("selfbuild.py"), "selfbuild")
-        if module and (module.TS != self.__lastm):
-            self.__lastm = module.TS
-            self.internal: basetrans = module.TS("selfbuild")
+        module = checkmd5reloadmodule(
+            gobject.getconfig("selfbuild_ocr.py"), "selfbuild_ocr"
+        )
+        if module and (module.OCR != self.__lastm):
+            self.__lastm = module.OCR
+            self.internal: baseocr = module.OCR("selfbuild")
             self.internal.init()
 
     def init(self):
@@ -22,8 +24,8 @@ class TS(basetrans):
             return {}
         return self.internal.langmap()
 
-    def translate(self, content):
+    def ocr(self, content):
         self.mayreinit()
         if not self.internal:
             return ""
-        return self.internal.translate(content)
+        return self.internal.ocr(content)

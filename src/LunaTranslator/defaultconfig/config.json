@@ -1543,6 +1543,11 @@
     "ocrmergelines": true,
     "ocrmergelines_distance": 0.4,
     "ocr": {
+        "selfbuild": {
+            "use": true,
+            "name": "自定义",
+            "type": "other"
+        },
         "local": {
             "use": true,
             "name": "本地OCR",

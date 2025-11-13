@@ -1,6 +1,5 @@
 import random
 import requests
-from ocrengines.baseocrclass import baseocr, OCRResult
 import NativeUtils
 from qtsymbols import *
 from ocrengines.baseocrclass import baseocr, OCRResult

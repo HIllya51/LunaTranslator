@@ -473,16 +473,17 @@ def splittranslatortypes():
     return ls
 
 
-def splitocrtypes(dic):
-    offline, online = [], []
+def splitocrtypes(dic, other=False):
+    offline, online, other = [], [], []
     for k in dic:
         try:
-            {"online": online, "offline": offline}[dic[k].get("type", "online")].append(
-                k
-            )
+            {"online": online, "offline": offline, "other": other}[
+                dic[k].get("type", "online")
+            ].append(k)
         except:
             pass
-
+    if other:
+        return offline, online, other
     return offline, online
 
 

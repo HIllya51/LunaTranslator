@@ -360,11 +360,12 @@ class baseocr(commonbase):
     def ocr(self, imagebinary) -> "str | list[str] | OCRResult":
         raise Exception()
 
-    ############################################################
-
     required_image_format = "PNG"
     required_mini_height = 0
     required_mini_width = 0
+
+    ############################################################
+
     _globalconfig_key = "ocr"
     _setting_dict = ocrsetting
 

@@ -1,11 +1,10 @@
 import requests
-from translator.basetranslator import basetrans
+from ocrengines.baseocrclass import baseocr, OCRResult
 
 
-class TS(basetrans):
-    def translate(self, content: str):
-        # 在这里编写
-        return content
+class OCR(baseocr):
+    def ocr(self, imagebinary) -> "str | list[str] | OCRResult":
+        raise Exception()
 
     def init(self):
         pass
