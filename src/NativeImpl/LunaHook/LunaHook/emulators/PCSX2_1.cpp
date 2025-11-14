@@ -193,9 +193,11 @@ namespace
         CharFilter(buffer, L'\r');
         CharFilter(buffer, L'\n');
     }
-    void SLPS25283(TextBuffer *buffer, HookParam *hp)
+    void SLPS25395(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, TEXTANDLEN("\\n"));
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\\n(\x81\x40)*)");
+        buffer->from(s);
     }
     void SLPM66543(TextBuffer *buffer, HookParam *hp)
     {
@@ -914,10 +916,6 @@ namespace
         StringFilter(buffer, TEXTANDLEN("\\n"));
         CharFilter(buffer, '\n');
         CharFilter(buffer, '\x01');
-    }
-    void SLPM65843(TextBuffer *buffer, HookParam *hp)
-    {
-        StringFilter(buffer, TEXTANDLEN("\\n"));
     }
     void SLPS25679(TextBuffer *buffer, HookParam *hp)
     {
@@ -1811,10 +1809,6 @@ namespace
         strReplace(s, L"//");
         buffer->fromWA(s);
     }
-    void SLPS25395(TextBuffer *buffer, HookParam *hp)
-    {
-        StringFilter(buffer, TEXTANDLEN("\\n\x81\x40"));
-    }
     void SLPM65555(TextBuffer *buffer, HookParam *hp)
     {
         static lru_cache<std::string> last(4);
@@ -2107,6 +2101,15 @@ namespace
         s = re::sub(s, L"@　*");
         buffer->fromWA(s);
     }
+    void SLPS25494(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->viewA();
+        if (all_ascii(s))
+            return buffer->clear();
+        if (s == "\x95\xb6\x8e\x9a\x94\xc5")
+            return buffer->clear();
+        SLPS25395(buffer, hp);
+    }
 }
 struct emfuncinfoX
 {
@@ -2114,6 +2117,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Fragrance Tale ～フレグランス テイル～
+    {0x128B78, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25494, "SLPS-25494"}},
+    {0x4A47A0, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPS-25494"}},
     // そして僕らは、・・・and he said
     {0x134A6C, {0, 0, 0, SLPM65971, FSLPM65971, "SLPM-65971"}},
     // Apocripha/0
@@ -2187,7 +2193,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // アラビアンズ・ロスト ～The engagement on desert～
     {0x3A2F70, {DIRECT_READ, 0, 0, 0, SLPM66847, "SLPM-66847"}},
     // INTERLUDE
-    {0x572040, {DIRECT_READ, 0, 0, 0, SLPS25283, "SLPS-25283"}},
+    {0x572040, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPS-25283"}},
     // てんたま -1st Sunny Side-
     {0x1DFD630, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPS-25298"}},
     // てんたま2wins [限定版]
@@ -2309,7 +2315,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 初恋-first kiss- 初回限定版
     {0x2133F8, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM66026, "SLPM-66026"}},
     // for Symphony ～with all one's heart～
-    {0x2AFEF0, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPS-25506"}},
+    {0x2AFEF0, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPS-25506"}},
     // ホームメイド ～終の館～ [初回限定版]
     {0x16CBB4, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM66052, "SLPM-65962"}},
     // まじかる☆ている ～ちっちゃな魔法使い～ [初回限定版]
@@ -2479,7 +2485,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 終末少女幻想アリスマチック Apocalypse [通常版]
     {0x1BCA7D0, {DIRECT_READ, 0, 0, 0, SLPM66997, "SLPM-66997"}},
     // ほしがりエンプーサ
-    {0x3649D0, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-66969"}},
+    {0x3649D0, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPM-66969"}},
     // ほしフル～星の降る街～
     {0x6F0B28, {DIRECT_READ, 0, 0, SLPM66344<0x6F0B28, 0x6F0B5D, 0x6F0B92>, 0, "SLPM-66920"}},
     // H2Oプラス
@@ -2557,9 +2563,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ストライクウィッチーズ あなたとできること [通常版]
     {0x10A948, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55174"}},
     // 恋姫†夢想 ～ドキッ☆乙女だらけの三国志演義～ [通常版]
-    {0x66C5C0, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55068"}},
+    {0x66C5C0, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPM-55068"}},
     // 真・恋姫†夢想 ～乙女繚乱☆三国志演義～ [通常版]
-    {0xBC9740, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-55288"}},
+    {0xBC9740, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPM-55288"}},
     // 神曲奏界ポリフォニカ
     {0x1239C8, {0, PCSX2_REG_OFFSET(s0), 0, 0, SLPM66743, "SLPM-66743"}},
     // 神曲奏界ポリフォニカ 0～4話フルパック
@@ -2693,7 +2699,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 猛獣使いと王子様
     {0x16681E0, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-55264"}},
     // 120円の春
-    {0x1CEAF56, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-65843"}},
+    {0x1CEAF56, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPM-65843"}},
     // ゲームになったよ！ドクロちゃん～健康診断大作戦～
     {0x1B9Bbec, {DIRECT_READ, 0, 0, 0, FSLPM65997, "SLPM-66186"}},
     // 地獄少女 澪縁
@@ -2742,8 +2748,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Angel's Feather
     {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
     // 空色の風琴 ～Remix～
-    {0x1A9238, {DIRECT_READ, 0, 0, 0, SLPM65843, "SLPM-65848"}},
-    {0x10c324, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65843, "SLPM-65848"}},
+    {0x1A9238, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPM-65848"}},
+    {0x10c324, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25395, "SLPM-65848"}},
 };
 
 extern void pcsx2_load_functions(std::unordered_map<DWORD, emfuncinfo> &m)

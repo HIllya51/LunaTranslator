@@ -917,6 +917,7 @@ LunaTranslator поддерживает большое количество иг
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25494 | Fragrance Tale ～フレグランス テイル～ |
 |  | SLPM-65971 | そして僕らは、・・・and he said |
 |  | SLPM-65710 | Apocripha/0 |
 |  | SLPM-65943 | Angel's Feather −黒の残影− |
