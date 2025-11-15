@@ -32,7 +32,8 @@
     }
 
     .tab-widget_1_internal .tab-button_1_internal {
-        padding: 7px 15px;
+        padding: 1em;
+        font-size: 2em;
         background-color: #cccccccc;
         border: none;
         cursor: pointer;
@@ -57,14 +58,19 @@
     .search-container {
         display: flex;
         width: 100%;
-        max-width: 500px;
+        max-width: 600px;
         margin: auto;
         margin-bottom: 10px;
     }
+    @media (max-width: 1200px) {
+        .search-container {
+            max-width: 70%;
+        }
+    }
 
     .search-input {
-        padding: 10px 15px;
-        font-size: 16px;
+        padding: 20px;
+        font-size: 2em;
         border: 1px solid #ddd;
         border-radius: 4px 0 0 4px;
         width: 100%;
@@ -72,12 +78,12 @@
     }
 
     .search-button {
-        padding: 10px 20px;
+        padding: 20px;
         background-color: #4285f4;
         color: white;
         border: none;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 2em;
     }
 
     .search-button:hover {
@@ -97,21 +103,47 @@
         console.log(url.toString())
         window.location = url.toString()
     }
+    async function pasteAndSearch() {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text && text.trim().length > 0) {
+                const input = document.getElementById('searchInput');
+                input.value = text.trim();
+
+                setTimeout(() => input.select(), 10);
+
+                performSearch();
+            } else {
+                alert("剪切板是空的！");
+            }
+        } catch (e) {
+            alert("无法读取剪切板，请确认授权。");
+            console.error(e);
+        }
+    }
 </script>
 <div class="search-container">
     <input type="text" class="search-input" id="searchInput">
-    <button class="search-button" onclick="performSearch()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+    <button class="search-button" onclick="performSearch()">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
             xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21L16.65 16.65" />
         </svg></button>
-    <button class="search-button" onclick="read()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
+    <button class="search-button" onclick="read()">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" 
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         </svg></button>
+    <button class="search-button" onclick="pasteAndSearch()">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" 
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+    </button>
 </div>
 <div class="tab-widget_1_internal">
     <div class="centerdiv_1_internal" id="btnsdiv">
@@ -209,4 +241,10 @@
             }
         });
     }
+
+    document.getElementById('searchInput').addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            performSearch();
+        }
+    });
 </script>
