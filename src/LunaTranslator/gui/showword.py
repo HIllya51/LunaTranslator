@@ -766,10 +766,14 @@ class AnkiWindow(QWidget):
             anki.global_host = globalconfig["ankiconnect"]["host"]
             if self.currentword == self.lastankiword:
                 response = QMessageBox.question(
-                    self, "?", _TR("检测到存在重复，是否覆盖？")
+                    self, _TR("警告"), _TR("检测到存在重复，是否覆盖？")
                 )
                 if response == QMessageBox.StandardButton.Yes:
                     anki.Note.delete([self.lastankid])
+                elif response == QMessageBox.StandardButton.No:
+                    pass
+                else:
+                    return
             self.addanki()
             if globalconfig["ankiconnect"]["addsuccautocloseEx"] and self.isVisible():
                 self.refsearchw.ankiconnect.click()
