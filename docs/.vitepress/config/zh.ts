@@ -73,7 +73,7 @@ export const zh = defineConfig({
         nav: [
             // { text: "官方网站", link: "https://lunatranslator.org/" },
             { text: "视频教程", link: "https://space.bilibili.com/592120404/video" },
-            { text: "QQ群", link: "https://qm.qq.com/q/I5rr3uEpi2" },
+            { text: "QQ群", link: "https://qm.qq.com/q/mPSu3sG5ri" },
             { text: "支持作者", link: "/zh/support" },
         ],
         sidebar: [
