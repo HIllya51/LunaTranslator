@@ -13,7 +13,7 @@ file(DOWNLOAD
 
 file(WRITE ${CMAKE_BINARY_DIR}/luna.rc "IDI_ICON1 ICON DISCARDABLE \"luna.ico\"")
 
-set(sources PyStand.cpp ${CMAKE_BINARY_DIR}/luna.rc ${versioninfo})
+set(sources PyStand.cpp ${CMAKE_BINARY_DIR}/luna.rc ${versioninfo} WjCryptLib_Sha512.c)
 
 #add_executable(LunaTranslator_debug ${sources})
 #target_compile_definitions(LunaTranslator_debug PRIVATE PYSTAND_CONSOLE)

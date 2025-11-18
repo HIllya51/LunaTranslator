@@ -386,6 +386,7 @@ def setTab_about(self, basel):
                         makelink("sindresorhus/github-markdown-css"),
                         makelink("gexgd0419/NaturalVoiceSAPIAdapter"),
                         makelink("microsoft/PowerToys"),
+                        makelink("WaterJuice/WjCryptLib"),
                     ],
                     "LICENSE",
                 )

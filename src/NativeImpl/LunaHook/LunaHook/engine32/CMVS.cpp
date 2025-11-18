@@ -49,8 +49,6 @@ namespace
     hp.split = regoffset(esp);
     hp.type = CODEC_ANSI_BE | USING_SPLIT;
 
-    ConsoleOutput("INSERT CMVS1");
-
     // RegisterEngineType(ENGINE_CMVS);
     return NewHook(hp, "CMVS");
   }
@@ -1227,7 +1225,6 @@ bool attachScenarioHook(ULONG startAddress, ULONG stopAddress)
       0xd1, 0xe9,
       0xc1, 0xea, 0x02,
       0x2b, 0xca};
-
   return attach(bytes, sizeof(bytes), startAddress, stopAddress) || attach(bytes_kunado_kukoki, sizeof(bytes_kunado_kukoki), startAddress, stopAddress);
 }
 /**
@@ -1525,10 +1522,49 @@ bool attachHistoryHook(ULONG startAddress, ULONG stopAddress)
 
   return attach(bytes, sizeof(bytes), startAddress, stopAddress);
 }
+static bool h2()
+{
+  const uint8_t BYTES_happymeafd[] = {
+      // ハピメアFD RE.ver
+      0x8a, 0x0f,
+      0x8a, 0xc1,
+      0x3c, 0x5c,
+      0x0f, 0x84, XX4,
+      0x3c, 0x7b,
+      0x0f, 0x84, XX4,
+      0x51,
+      0xe8, XX4,
+      0x85, 0xc0};
+  for (auto addr : Util::SearchMemory(BYTES_happymeafd, sizeof(BYTES_happymeafd), PAGE_EXECUTE_READWRITE, processStartAddress, processStopAddress))
+  {
+    auto faddr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (!faddr)
+      continue;
+    BYTE check[] = {
+        0x66, 0x0f, 0xbe, 0x07,
+        0x66, 0x0f, 0xbe, 0x4f, 0x01,
+        0x83, 0xc7, 0x02,
+        0x66, 0xc1, 0xe0, 0x08,
+        0x66, 0x23, 0xcb,
+        0x33, 0xdb,
+        0x66, 0x0b, 0xc8,
+        0xb8, 0x4a, 0x81, 0x00, 0x00};
+    if (!MemDbg::findBytes(check, sizeof(check), addr, addr + 0x100))
+      continue;
+    HookParam hp;
+    hp.address = faddr;
+    hp.offset = stackoffset(1);
+    hp.type = EMBED_ABLE | USING_STRING | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
+    hp.embed_hook_font = F_GetGlyphOutlineA;
+    return NewHook(hp, "EmbedCMVS");
+  }
+  return false;
+}
 bool CMVS::attach_function()
 {
   bool embed = attachScenarioHook(processStartAddress, processStopAddress);
   if (embed)
     attachHistoryHook(processStartAddress, processStopAddress);
+  embed |= h2();
   return InsertCMVSHook() || embed;
 }
