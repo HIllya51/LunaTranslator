@@ -34,12 +34,15 @@ class TTS(TTSbase):
             "http://localhost:{}/audio_query".format(self.config["Port"]),
             params=params,
         )
-        resp: dict = response.json()
-        resp.update({"speedScale": rate, "pitchScale": pitch})
-        params = {"speaker": voice}
-        response = self.proxysession.post(
-            "http://localhost:{}/synthesis".format(self.config["Port"]),
-            params=params,
-            json=resp,
-        )
-        return response
+        try:
+            resp: dict = response.json()
+            resp.update({"speedScale": rate, "pitchScale": pitch})
+            params = {"speaker": voice}
+            response = self.proxysession.post(
+                "http://localhost:{}/synthesis".format(self.config["Port"]),
+                params=params,
+                json=resp,
+            )
+            return response
+        except:
+            raise Exception(response)
