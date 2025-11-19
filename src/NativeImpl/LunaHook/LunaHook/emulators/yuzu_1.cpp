@@ -2769,6 +2769,13 @@ namespace
         F01001B900C0E2000_split(s.c_str(), s.find("#n") == s.npos);
         buffer->clear();
     }
+    void F010063C0212BE000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        strReplace(s, LR"(\n)", L"\n");
+        s = re::sub(s, LR"(【[ 　]*(.*?)[ 　]*】)", L"【$1】");
+        buffer->fromWA(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2776,6 +2783,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // PanicPalette ～パニックパレット～
+    {0x8001DA30, {FULL_STRING, 0, 0, 0, F010063C0212BE000, 0x010063C0212BE000ull, nullptr}}, // 1.0.1 1.1.0
     // The Ancient Magus' Bride Midsummer Pilgrimage
     {0x8006F4E0, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, f010061A01C1CE000, 0x01008D101EC40000ull, "1.0.0"}},
     // 白恋サクラ＊グラム
@@ -2793,6 +2802,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // DistortedCode －生者の残り香－
     {0x80011A48, {0, 0, 0, 0, F0100B9701BD4E000, 0x0100B9701BD4E000ull, "1.0.1"}},
     {0x80020184, {0, 1, 0, 0, F0100B9701BD4E0002, 0x0100B9701BD4E000ull, "1.0.1"}},
+    {0x80011D5C, {0, 0, 0, 0, F0100B9701BD4E000, 0x0100B9701BD4E000ull, "1.0.5"}},
+    {0x80020764, {0, 1, 0, 0, F0100B9701BD4E0002, 0x0100B9701BD4E000ull, "1.0.5"}},
     // DYNAMIC CHORD feat.[rēve parfait]
     {0x81a48614, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
     {0x81a5d890, {CODEC_UTF8, 1, 0, 0, F010076902126E000, 0x010076902126E000ull, "1.0.0"}},
