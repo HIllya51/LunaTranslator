@@ -22,7 +22,7 @@ def getpyfiles():
             res[path.replace("\\", "/")] = hs
     s = ""
     for k, v in res.items():
-        s += '{L"' + k + '", {parse_hex_string("' + v + '")}}'
+        s += '{L"' + k + '", {parse_hex_string("' + v + '")}},'
     return s
 
 
