@@ -39,11 +39,11 @@ def buildexe(arch, target):
     with open(path, "r", encoding="utf8") as ff:
         code = ff.read()
     with open(path, "w", encoding="utf8") as ff:
-        ff.write(
-            code.replace("CHECK_DIGEST_LIST", "\n" + pys).replace(
-                "CHECK_CERT_LIST", "\n" + pes
-            )
+        code = code.replace("CHECK_DIGEST_LIST", "\n" + pys).replace(
+            "CHECK_CERT_LIST", "\n" + pes
         )
+        print(code)
+        ff.write(code)
     buildPlugins(arch, target, " -DBUILD_EXEC_ONLY=ON")
 
 

@@ -41,8 +41,8 @@ def copycheck(src, tgt):
     shutil.copy(src, tgt)
 
 
-copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
-copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
+# copycheck(os.path.join(launch, "LunaTranslator.exe"), targetdir)
+# copycheck(os.path.join(launch, "LunaTranslator_admin.exe"), targetdir)
 with open(os.path.join(targetdir, "LunaTranslator_debug.bat"), "w") as ff:
     ff.write(
         r""".\LunaTranslator.exe
