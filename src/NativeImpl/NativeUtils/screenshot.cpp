@@ -154,8 +154,14 @@ namespace
     callback_t callback;
 }
 static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+static std::atomic<bool> onlyonewindow = false;
 DECLARE_API void CreateSelectRangeWindow(HWND parent, float _ocrselectalpha, int _range_r, int _range_g, int _range_b, float _ocrrangewidth, callback_t _callback)
 {
+    {
+        bool _ = false;
+        if (!onlyonewindow.compare_exchange_strong(_, true))
+            return;
+    }
     /*
     QApplication.setHighDpiScaleFactorRoundingPolicy(
             Qt.HighDpiScaleFactorRoundingPolicy.PassThrough
@@ -222,6 +228,7 @@ DECLARE_API void CreateSelectRangeWindow(HWND parent, float _ocrselectalpha, int
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+    onlyonewindow = false;
 }
 
 static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
