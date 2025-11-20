@@ -17,6 +17,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100D870102BC000 | DESIRE remaster ver. |
 |  | 010063C0212BE000 | PanicPalette ～パニックパレット～ |
 |  | 01008D101EC40000 | The Ancient Magus' Bride Midsummer Pilgrimage |
 |  | 0100EC30206AE000 | 白恋サクラ＊グラム |

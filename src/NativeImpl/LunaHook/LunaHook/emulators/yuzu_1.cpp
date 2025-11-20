@@ -2783,6 +2783,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // DESIRE remaster ver.
+    {0x8003D3B4, {FULL_STRING, 0, 0, 0, 0, 0x0100D870102BC000ull, "1.0.0"}},
     // PanicPalette ～パニックパレット～
     {0x8001DA30, {FULL_STRING, 0, 0, 0, F010063C0212BE000, 0x010063C0212BE000ull, nullptr}}, // 1.0.1 1.1.0
     // The Ancient Magus' Bride Midsummer Pilgrimage
