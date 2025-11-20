@@ -44,7 +44,6 @@ def buildexe(arch, target):
         code = code.replace("CHECK_DIGEST_LIST", "\n" + pys).replace(
             "CHECK_CERT_LIST", "\n" + pes
         )
-        print(code)
         ff.write(code)
     buildPlugins(arch, target, " -DBUILD_EXEC_ONLY=ON")
 
