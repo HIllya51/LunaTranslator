@@ -18,7 +18,7 @@ def getpyfiles():
             path = os.path.normpath(os.path.join(_dir, _f))
             with open(path, "r", encoding="utf8") as ff:
                 code = ff.read()
-            hs = hashlib.sha512(code.encode()).digest()
+            hs = hashlib.sha512(code.encode()).hexdigest()
             res[path.replace("\\", "/")] = hs
     s = ""
     for k, v in res.items():
