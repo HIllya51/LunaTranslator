@@ -149,10 +149,10 @@ def downloadCurl(target):
         os.chdir(rootDir)
         outputDirName32 = curlFile32xp.split("/")[-1].replace(".zip", "")
         # fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32")
-        fuckmove(
-            f"scripts/temp/{outputDirName32}/LunaTranslator_x86_winxp/files/DLL32/libcurl.dll",
-            "files/DLL32",
-        )
+        for _dir, _, _fs in os.walk(f"scripts/temp/{outputDirName32}"):
+            for _f in _fs:
+                if _f == "libcurl.dll":
+                    shutil.move(os.path.join(_dir, _f), "files/DLL32")
         return
     os.chdir(f"{rootDir}/scripts/temp")
     subprocess.run(f"curl -C - -LO {curlFile32}")
