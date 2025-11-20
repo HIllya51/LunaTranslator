@@ -10,6 +10,42 @@ CIRCUS hook:
  function filling the buffer. But we don't have to set hardware breakpoint to search
  the hook address if we know some characteristic instruction(cmp al,0x24) around there.
 ********************************************************************************************/
+
+static bool miyako(DWORD k)
+{
+  // 雅恋～MIYAKO～
+  auto fs = findxref_reverse_checkcallop(k, processStartAddress, processStopAddress, 0xe8);
+  if (fs.size() != 2)
+    return false;
+  auto f = fs[0];
+  f = MemDbg::findEnclosingAlignedFunction(f);
+  if (!f)
+    return false;
+  BYTE check[] = {
+      0x80, 0x3c, 0x3b, 0x81,
+      0x75, XX,
+      0x80, 0x7c, 0x3b, 0x01, 0x6d,
+      0x75, XX};
+  if (!MemDbg::findBytes(check, sizeof(check), f, f + 0x100))
+    return false;
+  HookParam hp;
+  hp.address = f;
+  hp.offset = stackoffset(1);
+  hp.type = USING_STRING | FULL_STRING;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    std::string s = buffer->strA();
+    static std::string last;
+    if (s == last)
+      return buffer->clear();
+    last = s;
+    s = re::sub(s, R"(\x81\x6f(.*?)\x81\x5e(.*?)\x81\x70)", "$2"); // ｛みす／御簾｝
+    s = re::sub(s, "\n(\x81\x40)*");
+    buffer->from(s);
+  };
+  return NewHook(hp, "Circus3");
+}
+
 bool InsertCircusHook1() // jichi 10/2/2013: Change return type to bool
 {
   for (DWORD i = processStartAddress + 0x1000; i < processStopAddress - 4; i++)
@@ -34,7 +70,7 @@ bool InsertCircusHook1() // jichi 10/2/2013: Change return type to bool
               StringFilter(buffer, TEXTANDLEN("\x81\x40"));
             };
             // RegisterEngineType(ENGINE_CIRCUS);
-            return NewHook(hp, "Circus1");
+            return miyako(k) || NewHook(hp, "Circus1");
           }
         }
       }

@@ -1636,7 +1636,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88DB214, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // TEXT
     {0x889E970, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME
     // 源狼 GENROH
-    {0x8940DA8, {0, 1, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
+    {0x888E494, {FULL_STRING, 0, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
     // 十鬼の絆 関ヶ原奇譚
     {0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
     {0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text

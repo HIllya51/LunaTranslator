@@ -1060,6 +1060,20 @@ namespace
         s = re::sub(s, R"(\$s\d+)");
         buffer->from(s);
     }
+    void SLPS20353(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+        {
+            return buffer->clear();
+        }
+        last = s;
+        strReplace(s, "$d");
+        s = re::sub(s, "\x81\x69(.*?)\x81\x6a");
+        strReplace(s, "\x81\x79\x81\x7a");
+        buffer->from(s);
+    }
     void SLPM66460(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -2646,7 +2660,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8DA13A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25809"}},
     // 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02
     {0x268CE9, {DIRECT_READ, 0, 0, SLPS20394<0x268CE9, 0x268D2A, 0x268D6B, 0x268DAC>, 0, "SLPS-20352"}}, //[ディスク 1]
-    {0x2690EA, {DIRECT_READ, 0, 0, SLPS20394<0x2690EA, 0x26912A, 0x26916B, 0x2691AC>, 0, "SLPS-20353"}}, //[ディスク 2]
+    {0x102CB0, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, SLPS20353, "SLPS-20353"}},
     // 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03
     {0x2AF161, {DIRECT_READ, 0, 0, SLPS20394<0x2AF161, 0x2AFAA8, 0x2AEFA4, 0x2AEFE5>, 0, "SLPS-20394"}},
     // ドラスティックキラー
