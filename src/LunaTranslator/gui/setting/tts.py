@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools
 import gobject
-from myutils.utils import splitocrtypes
+from myutils.utils import splitocrtypes, selectdebugfile
 from myutils.config import globalconfig
 from gui.inputdialog import (
     autoinitdialog_items,
@@ -158,7 +158,11 @@ def getttsgrid(self, names):
                     name,
                 )
             )
-
+        elif name == "selfbuild":
+            _3 = D_getIconButton(
+                callback=lambda: selectdebugfile("selfbuild_tts.py"),
+                icon="fa.edit",
+            )
         else:
             _3 = ""
 

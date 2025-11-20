@@ -107,7 +107,7 @@ class TTSbase(commonbase):
     def __init__(
         self,
         typename,
-        playaudiofunction,
+        playaudiofunction=None,
         privateconfig: dict = None,
         init=True,
         uid=None,
@@ -135,6 +135,8 @@ class TTSbase(commonbase):
 
         def _(force, volume, timestamp, data: TTSResult):
             if not data:
+                return
+            if not self.playaudiofunction:
                 return
             self.playaudiofunction(data.data, volume, force, timestamp)
 

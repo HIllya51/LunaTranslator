@@ -1160,6 +1160,10 @@
             "name": "NeoSpeech",
             "type": "offline"
         },
+        "selfbuild": {
+            "use": false,
+            "name": "自定义"
+        },
         "voiceroid2": {
             "use": false,
             "name": "VoiceRoid2",
