@@ -1,5 +1,4 @@
 import shutil, os
-import platform
 import sys
 from importanalysis import importanalysis
 
@@ -124,6 +123,12 @@ for f in collect:
             # print(len(bs))
         with open(f, "wb") as ff:
             ff.write(bs)
+
+
+os.system(f"python scripts/createsigexe.py {arch} {target}")
+copycheck(f"./builds/_{arch}_{target}/LunaTranslator.exe", targetdir)
+copycheck(f"./builds/_{arch}_{target}/LunaTranslator_admin.exe", targetdir)
+
 
 target = os.path.basename(targetdir)
 os.chdir(os.path.dirname(targetdir))

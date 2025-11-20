@@ -214,7 +214,7 @@ def buildhook(arch, target):
     shutil.rmtree(release)
 
 
-def buildPlugins(arch, target):
+def buildPlugins(arch, target, configx=""):
     os.chdir(rootDir + "/NativeImpl")
     archA = ("win32", "x64")[arch == "x64"]
     if target == "win10":
@@ -230,6 +230,7 @@ def buildPlugins(arch, target):
     if arch == "x86" and target == "win10":
         # 对于64位会使用自带的vcrt，win7/xp会静态编译，仅win10 shareddllproxy32这个文件可能会缺少vcrt，因此把它也静态编译以避免无法运行导致注入失败。
         config += " -DSTATIC_FORCE=ON"
+    config += configx
     subprocess.run(
         f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
     )
@@ -242,6 +243,7 @@ def buildPlugins(arch, target):
             ff = os.path.join(_dir, _f)
             if os.path.splitext(ff)[1].lower() not in (".dll", ".exe"):
                 os.remove(ff)
+    os.chdir(rootDir)
 
 
 def downloadbass():
@@ -327,8 +329,12 @@ if __name__ == "__main__":
 
         os.chdir(rootDir)
         if target == "winxp":
-            shutil.copytree("../build/cpp_x86_winxp", "NativeImpl/builds", dirs_exist_ok=True)
-            shutil.copytree("../build/cpp_x64_win7", "NativeImpl/builds", dirs_exist_ok=True)
+            shutil.copytree(
+                "../build/cpp_x86_winxp", "NativeImpl/builds", dirs_exist_ok=True
+            )
+            shutil.copytree(
+                "../build/cpp_x64_win7", "NativeImpl/builds", dirs_exist_ok=True
+            )
             shutil.copytree(
                 "../build/hook_x86_winxp", "files/LunaHook", dirs_exist_ok=True
             )
@@ -350,8 +356,12 @@ if __name__ == "__main__":
         shutil.copytree(
             f"../build/hook_x86_{target}", "files/LunaHook", dirs_exist_ok=True
         )
-        shutil.copytree(f"../build/cpp_x64_{target}", "NativeImpl/builds", dirs_exist_ok=True)
-        shutil.copytree(f"../build/cpp_x86_{target}", "NativeImpl/builds", dirs_exist_ok=True)
+        shutil.copytree(
+            f"../build/cpp_x64_{target}", "NativeImpl/builds", dirs_exist_ok=True
+        )
+        shutil.copytree(
+            f"../build/cpp_x86_{target}", "NativeImpl/builds", dirs_exist_ok=True
+        )
         os.makedirs("files/DLL32", exist_ok=True)
         shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x86_{target} files/DLL32 *.dll")
