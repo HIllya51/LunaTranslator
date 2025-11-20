@@ -189,6 +189,13 @@ bool InsertCatSystemHook()
                     0x0f, 0x84, XX4,
                     0xb8, 0x40, 0x81, 0x00, 0x00, // 0x8140
                     0x66, 0x3b, 0xf8};
+    BYTE check_1[] = {
+        // ちょっと素直にどんぶり感情
+        0x66, 0x83, 0xfe, 0x20, // 0x20
+        0x0f, 0x84, XX4,
+        0x66, 0x81, 0xfe, 0x40, 0x81, // 0x8140
+        0x0f, 0x84, XX4,
+        0X8B, 0X4F, 0X08};
     BYTE check2[] = {
         0X6A, 0XFF,
         0X68, XX4,
@@ -217,6 +224,11 @@ bool InsertCatSystemHook()
       // https://vndb.org/v5588
       hp.offset = regoffset(ecx);
       // hp.split = stackoffset(1);
+      hp.type &= ~USING_SPLIT;
+    }
+    else if (MemDbg::findBytes(check_1, sizeof(check_1), addr, addr + 0x700))
+    {
+      hp.offset = stackoffset(1);
       hp.type &= ~USING_SPLIT;
     }
     else
