@@ -2660,7 +2660,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8DA13A, {DIRECT_READ, 0, 0, 0, SLPS25809, "SLPS-25809"}},
     // 好きなものは好きだからしょうがない！！ -FIRST LIMIT & TARGET†NIGHTS- Sukisho！ Episode ＃01+＃02
     {0x268CE9, {DIRECT_READ, 0, 0, SLPS20394<0x268CE9, 0x268D2A, 0x268D6B, 0x268DAC>, 0, "SLPS-20352"}}, //[ディスク 1]
-    {0x102CB0, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, SLPS20353, "SLPS-20353"}},
+    {0x102CB0, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, SLPS20353, "SLPS-20353"}},                      //[ディスク 2]
     // 好きなものは好きだからしょうがない！！ -RAIN- Sukisyo！ Episode #03
     {0x2AF161, {DIRECT_READ, 0, 0, SLPS20394<0x2AF161, 0x2AFAA8, 0x2AEFA4, 0x2AEFE5>, 0, "SLPS-20394"}},
     // ドラスティックキラー
