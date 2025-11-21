@@ -11,9 +11,8 @@ if target == "winxp":
     os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
     pyrt = "runtime"
 else:
-    pyrt = f"pyrt_{arch}_{target}/runtime"
-launch = f"../src/NativeImpl/builds/_{arch}"
-launch += f"_{target}"
+    pyrt = f"pyrt/runtime"
+launch = f"NativeImpl/builds/_{arch}_{target}"
 targetdir = rf"build\LunaTranslator_{arch}_{target}"
 
 if arch == "x86":
@@ -126,8 +125,8 @@ for f in collect:
 
 
 os.system(f"python scripts/createsigexe.py {arch} {target} {targetdir}")
-copycheck(f"./NativeImpl/builds/_{arch}_{target}/LunaTranslator.exe", targetdir)
-copycheck(f"./NativeImpl/builds/_{arch}_{target}/LunaTranslator_admin.exe", targetdir)
+copycheck(f"{launch}/LunaTranslator.exe", targetdir)
+copycheck(f"{launch}/LunaTranslator_admin.exe", targetdir)
 
 
 target = os.path.basename(targetdir)
