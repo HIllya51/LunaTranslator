@@ -919,6 +919,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55032 | ピヨたん ～お屋敷潜入大作戦～ |
 |  | SLPS-25494 | Fragrance Tale ～フレグランス テイル～ |
 |  | SLPM-65971 | そして僕らは、・・・and he said |
 |  | SLPM-65710 | Apocripha/0 |
