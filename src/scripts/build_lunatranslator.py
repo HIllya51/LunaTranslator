@@ -380,7 +380,6 @@ if __name__ == "__main__":
             shutil.copytree(
                 "NativeImpl/LunaHook/builds/Release_winxp", "files/LunaHook"
             )
-            os.remove("files/LunaHook/LunaHost64.dll")
             os.makedirs("files/DLL32")
             shutil.copy("NativeImpl/builds/_x86_winxp/shareddllproxy32.exe", "files")
             shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
@@ -401,10 +400,6 @@ if __name__ == "__main__":
         shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
-        if arch == "x86":
-            os.remove(f"files/LunaHook/LunaHost64.dll")
-        else:
-            os.remove("files/LunaHook/LunaHost32.dll")
         os.system(
             f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
         )
