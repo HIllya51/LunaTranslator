@@ -126,7 +126,7 @@ jobs:
           name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}_1
           path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}.zip
 
-      - uses: signpath/github-action-submit-signing-request@v1
+      - uses: signpath/github-action-submit-signing-request@v2
         with:
           api-token: '${{ secrets.SIGNPATH_APITOKEN }}'
           organization-id: '2e2b9c90-04bb-4b70-8562-0171927d94c6'
