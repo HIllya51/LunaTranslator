@@ -66,6 +66,7 @@ PyStand::PyStand(const wchar_t *runtime)
 //---------------------------------------------------------------------
 // init: _args, _argv, _cwd, _pystand, _home, _runtime,
 //---------------------------------------------------------------------
+void checkintegrity();
 bool PyStand::CheckEnviron(const wchar_t *rtp)
 {
 	// init: _args, _argv
@@ -96,6 +97,8 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	_home = std::filesystem::path(path).parent_path().wstring();
 
 	SetCurrentDirectoryW(_home.c_str());
+	
+	checkintegrity();
 
 	_runtime = (std::filesystem::path(_home) / rtp).wstring();
 
@@ -481,7 +484,6 @@ int main()
 	{
 		return 3;
 	}
-	checkintegrity();
 	// print cmd无法显示的字符时，如果使用cmd打开，不论debug还是普通，都会error31崩溃。如果双击打开debug，却不会崩溃
 	// 但因为无法区分是使用cmd打开debug还是双击打开debug，所以干脆都这样吧。
 	if (AttachConsole(ATTACH_PARENT_PROCESS))
