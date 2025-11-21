@@ -135,6 +135,7 @@ jobs:
           github-artifact-id: '${{ steps.upload-artifact.outputs.artifact-id }}'
           wait-for-completion: true
           output-artifact-directory: 'signed_${{ matrix.arch }}_${{ matrix.target }}'
+          artifact-configuration-slug: 'sign_${{ matrix.arch }}_${{ matrix.target }}'
 
       - uses: actions/upload-artifact@v4
         with:
