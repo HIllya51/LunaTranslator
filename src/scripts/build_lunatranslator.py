@@ -394,6 +394,8 @@ if __name__ == "__main__":
             shutil.copy("NativeImpl/builds/_x86_winxp/shareddllproxy32.exe", "files")
             shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
             os.system(f"robocopy NativeImpl/builds/_x86_winxp files/DLL32 *.dll")
+            
+            os.remove("files/LunaHook/LunaHost64.dll")
             os.system(
                 f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
@@ -410,6 +412,11 @@ if __name__ == "__main__":
         shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
+        
+        if arch == "x86":
+            os.remove("files/LunaHook/LunaHost64.dll")
+        else:
+            os.remove("files/LunaHook/LunaHost32.dll")
         os.system(
             f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
         )
@@ -419,7 +426,7 @@ if __name__ == "__main__":
             "LunaTranslator_x64_win10",
             "LunaTranslator_x64_win7",
             "LunaTranslator_x86_win7",
-            "LunaTranslator_x86_win7",
+            "LunaTranslator_x86_winxp",
         ):
             for __ in myfiles:
                 f = os.path.join("../build", _, __)
