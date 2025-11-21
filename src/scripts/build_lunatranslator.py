@@ -424,4 +424,6 @@ if __name__ == "__main__":
             for __ in myfiles:
                 f = os.path.join("../build", _, __)
                 if os.path.exists(f):
-                    shutil.copy(f, os.path.join("../collect", _, __))
+                    t = os.path.join("../collect", _, __)
+                    os.makedirs(os.path.dirname(t))
+                    shutil.copy(f, t)
