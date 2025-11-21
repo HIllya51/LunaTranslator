@@ -125,7 +125,7 @@ for f in collect:
             ff.write(bs)
 
 
-os.system(f"python scripts/createsigexe.py {arch} {target}")
+os.system(f"python scripts/createsigexe.py {arch} {target} {targetdir}")
 copycheck(f"./NativeImpl/builds/_{arch}_{target}/LunaTranslator.exe", targetdir)
 copycheck(f"./NativeImpl/builds/_{arch}_{target}/LunaTranslator_admin.exe", targetdir)
 

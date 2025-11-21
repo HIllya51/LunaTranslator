@@ -7,6 +7,7 @@
 #include <ctime>
 #include <filesystem>
 #include <shlwapi.h>
+#include <set>
 #include <optional>
 #include <atlbase.h>
 #include <fstream>
@@ -420,10 +421,10 @@ bool VerifyFileSignature(const wchar_t *filePath)
 
 	return result == ERROR_SUCCESS;
 }
-std::vector<const wchar_t *> checkintegrity_()
+std::set<const wchar_t *> checkintegrity_()
 {
 	// 分别对python代码检查hash，对exe/dll检查签名
-	std::vector<const wchar_t *> collect;
+	std::set<const wchar_t *> collect;
 	for (auto &&[fn, sig] : checkdigest)
 	{
 		if (!fn)
@@ -431,19 +432,19 @@ std::vector<const wchar_t *> checkintegrity_()
 		auto f = readFile(fn);
 		if (!f)
 		{
-			collect.push_back(fn);
+			collect.insert(fn);
 			continue;
 		}
 		auto sigf = Sha512Digest(f.value());
 		if (memcmp(sigf.bytes, sig.data(), sig.size()))
-			collect.push_back(fn);
+			collect.insert(fn);
 	}
 	for (auto &&fn : checksig)
 	{
 		if (!fn)
 			continue;
 		if (!VerifyFileSignature(fn))
-			collect.push_back(fn);
+			collect.insert(fn);
 	}
 	return collect;
 }
