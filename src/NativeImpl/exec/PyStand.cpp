@@ -561,14 +561,15 @@ std::set<const wchar_t *> checkintegrity_()
 	wchar_t selfPath[MAX_PATH];
 	GetModuleFileNameW(NULL, selfPath, MAX_PATH);
 	auto selfKey = GetCertificatePublicKey(selfPath);
-	for (auto &&fn : checksig)
-	{
-		// 验证是否签名，且必须和自己签名相同
-		if (!fn)
-			continue;
-		if (!VerifyFileSignatureKeyMatchesSelf(fn, selfKey))
-			collect.insert(fn);
-	}
+	if (selfKey)
+		for (auto &&fn : checksig)
+		{
+			// 验证是否签名，且必须和自己签名相同
+			if (!fn)
+				continue;
+			if (!VerifyFileSignatureKeyMatchesSelf(fn, selfKey))
+				collect.insert(fn);
+		}
 	return collect;
 }
 void checkintegrity()
