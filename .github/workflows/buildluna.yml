@@ -25,7 +25,7 @@ jobs:
             target: win10
             pythonversion: '3.12.10'  
     permissions:
-      contents: read
+      contents: write   
       pages: write
       id-token: write
     steps:
