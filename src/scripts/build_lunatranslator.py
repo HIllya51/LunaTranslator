@@ -323,10 +323,10 @@ if __name__ == "__main__":
                 subprocess.run([sys.executable, *argv])
             elif argv[3] == "win10" or argv[3] == "win7":
                 argv[2] = "x86"
-                argv.insert(len(argv) - 1, str(int(argv[2] == sys.argv[2])))
+                argv.insert(len(argv) - 1, str(int(argv[2] != sys.argv[2])))
                 subprocess.run([sys.executable, *argv])
                 argv[2] = "x64"
-                argv[4] = str(int(argv[2] == sys.argv[2]))
+                argv[4] = str(int(argv[2] != sys.argv[2]))
                 subprocess.run([sys.executable, *argv])
             exit(0)
         buildPlugins(sys.argv[2], sys.argv[3], sexe=int(sys.argv[4]))
