@@ -24,6 +24,10 @@ jobs:
           - arch: x64
             target: win10
             pythonversion: '3.12.10'  
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       # - uses: microsoft/setup-msbuild@v2
