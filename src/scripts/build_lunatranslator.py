@@ -305,6 +305,7 @@ if __name__ == "__main__":
         if sys.argv[-1] != "0":
             argv = sys.argv.copy()
             argv.append("0")
+            argv[0] = sys.executable
             if argv[3] == "winxp":
                 argv[2] = "x86"
                 subprocess.run(argv)
@@ -322,6 +323,7 @@ if __name__ == "__main__":
         if sys.argv[-1] != "0":
             argv = sys.argv.copy()
             argv.append("0")
+            argv[0] = sys.executable
             if argv[3] == "winxp":
                 argv[2] = "x86"
                 subprocess.run(argv)

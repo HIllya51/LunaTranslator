@@ -56,10 +56,10 @@ jobs:
         with:
           python-version: ${{ matrix.pythonversion }}
           architecture: ${{ matrix.arch }}
-      - if: matrix.target != 'winxp'
-        run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
       - run: python src/scripts/build_lunatranslator.py hook ${{ matrix.arch }} ${{ matrix.target }}
       - run: python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{ matrix.target }}
+      - if: matrix.target != 'winxp'
+        run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
       - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{ matrix.target }}
 
       #添加验证
