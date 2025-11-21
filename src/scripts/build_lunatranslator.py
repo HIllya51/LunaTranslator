@@ -305,36 +305,34 @@ if __name__ == "__main__":
         if sys.argv[-1] != "0":
             argv = sys.argv.copy()
             argv.append("0")
-            argv[0] = sys.executable
             if argv[3] == "winxp":
                 argv[2] = "x86"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
                 argv[2] = "x64"
                 argv[3] = "win7"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
             elif argv[3] == "win10" or argv[3] == "win7":
                 argv[2] = "x86"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
                 argv[2] = "x64"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
             exit(0)
         buildPlugins(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "hook":
         if sys.argv[-1] != "0":
             argv = sys.argv.copy()
             argv.append("0")
-            argv[0] = sys.executable
             if argv[3] == "winxp":
                 argv[2] = "x86"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
                 argv[2] = "x64"
                 argv[3] = "win7"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
             elif argv[3] == "win10" or argv[3] == "win7":
                 argv[2] = "x86"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
                 argv[2] = "x64"
-                subprocess.run(argv)
+                subprocess.run(argv, executable=sys.executable)
             exit(0)
         buildhook(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "pyrt":
