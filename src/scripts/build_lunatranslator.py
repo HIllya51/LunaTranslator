@@ -304,7 +304,7 @@ if __name__ == "__main__":
     elif sys.argv[1] == "cpp":
         if sys.argv[-1] != "0":
             argv = sys.argv.copy()
-            argv.append(0)
+            argv.append("0")
             if argv[3] == "winxp":
                 argv[2] = "x86"
                 subprocess.run(argv)
@@ -321,7 +321,7 @@ if __name__ == "__main__":
     elif sys.argv[1] == "hook":
         if sys.argv[-1] != "0":
             argv = sys.argv.copy()
-            argv.append(0)
+            argv.append("0")
             if argv[3] == "winxp":
                 argv[2] = "x86"
                 subprocess.run(argv)
@@ -364,10 +364,14 @@ if __name__ == "__main__":
         os.chdir(rootDir)
         if target == "winxp":
             shutil.copytree(
-                "NativeImpl/LunaHook/builds/Release_win7", "files/LunaHook", dirs_exist_ok=True
+                "NativeImpl/LunaHook/builds/Release_win7",
+                "files/LunaHook",
+                dirs_exist_ok=True,
             )
             shutil.copytree(
-                "NativeImpl/LunaHook/builds/Release_winxp", "files/LunaHook", dirs_exist_ok=True
+                "NativeImpl/LunaHook/builds/Release_winxp",
+                "files/LunaHook",
+                dirs_exist_ok=True,
             )
             os.remove("files/LunaHook/LunaHost64.dll")
             os.makedirs("files/DLL32", exist_ok=True)
@@ -379,13 +383,19 @@ if __name__ == "__main__":
             )
             exit()
         shutil.copytree(
-            f"NativeImpl/LunaHook/builds/Release_{target}", "files/LunaHook", dirs_exist_ok=True
+            f"NativeImpl/LunaHook/builds/Release_{target}",
+            "files/LunaHook",
+            dirs_exist_ok=True,
         )
         shutil.copytree(
-            f"NativeImpl/builds/cpp_x64_{target}", "NativeImpl/builds", dirs_exist_ok=True
+            f"NativeImpl/builds/cpp_x64_{target}",
+            "NativeImpl/builds",
+            dirs_exist_ok=True,
         )
         shutil.copytree(
-            f"NativeImpl/builds/cpp_x86_{target}", "NativeImpl/builds", dirs_exist_ok=True
+            f"NativeImpl/builds/cpp_x86_{target}",
+            "NativeImpl/builds",
+            dirs_exist_ok=True,
         )
         os.makedirs("files/DLL32", exist_ok=True)
         shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")
