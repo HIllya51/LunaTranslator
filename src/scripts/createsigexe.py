@@ -36,13 +36,6 @@ def getpyfiles():
                 code = ff.read()
             hs = hashlib.sha512(code).hexdigest()
             res[path.replace("\\", "/")] = hs
-    for path in files:
-        if not os.path.exists(path):
-            continue
-        with open(path, "rb") as ff:
-            code = ff.read()
-        hs = hashlib.sha512(code).hexdigest()
-        res[path.replace("\\", "/")] = hs
     s = ""
     for k, v in res.items():
         s += '{L"' + k + '", {parse_hex_string("' + v + '")}},'

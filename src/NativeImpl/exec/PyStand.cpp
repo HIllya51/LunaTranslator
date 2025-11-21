@@ -22,6 +22,7 @@ extern "C"
 #include "WjCryptLib_Sha512.h"
 }
 #pragma comment(lib, "wintrust.lib")
+#pragma comment(lib, "crypt32.lib")
 
 #ifdef WIN10ABOVE
 #define RUNTIME L"runtime31264"
@@ -98,7 +99,7 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	_home = std::filesystem::path(path).parent_path().wstring();
 
 	SetCurrentDirectoryW(_home.c_str());
-	
+
 	checkintegrity();
 
 	_runtime = (std::filesystem::path(_home) / rtp).wstring();
@@ -391,36 +392,153 @@ std::optional<std::vector<uint8_t>> readFile(const std::wstring &filename)
 	return buffer;
 }
 
-bool VerifyFileSignature(const wchar_t *filePath)
+// 辅助函数：提取文件签名证书中的公钥数据
+std::optional<std::vector<BYTE>> GetCertificatePublicKey(const wchar_t *filePath)
 {
+	HCERTSTORE hStore = NULL;
+	HCRYPTMSG hMsg = NULL;
+	DWORD dwEncoding = 0;
+	DWORD dwContentType = 0;
+	DWORD dwFormatType = 0;
+
+	// 1. 从文件中查询加密对象（获取签名信息）
+	BOOL bRes = CryptQueryObject(
+		CERT_QUERY_OBJECT_FILE,
+		filePath,
+		CERT_QUERY_CONTENT_FLAG_PKCS7_SIGNED_EMBED,
+		CERT_QUERY_FORMAT_FLAG_BINARY,
+		0,
+		&dwEncoding,
+		&dwContentType,
+		&dwFormatType,
+		&hStore,
+		&hMsg,
+		NULL);
+
+	if (!bRes)
+		return {};
+
+	// 2. 获取 Signer Info 的大小
+	DWORD dwSignerInfoSize = 0;
+	if (!CryptMsgGetParam(hMsg, CMSG_SIGNER_INFO_PARAM, 0, NULL, &dwSignerInfoSize))
+	{
+		if (hStore)
+			CertCloseStore(hStore, 0);
+		if (hMsg)
+			CryptMsgClose(hMsg);
+		return {};
+	}
+
+	// 3. 获取 Signer Info
+	std::vector<BYTE> signerInfoBuf(dwSignerInfoSize);
+	PCMSG_SIGNER_INFO pSignerInfo = (PCMSG_SIGNER_INFO)signerInfoBuf.data();
+	std::vector<BYTE> result;
+	if (CryptMsgGetParam(hMsg, CMSG_SIGNER_INFO_PARAM, 0, pSignerInfo, &dwSignerInfoSize))
+	{
+
+		// 4. 根据 Signer Info 中的 SerialNumber 和 Issuer 在 Store 中查找证书
+		CERT_INFO CertInfo = {0};
+		CertInfo.Issuer = pSignerInfo->Issuer;
+		CertInfo.SerialNumber = pSignerInfo->SerialNumber;
+
+		PCCERT_CONTEXT pCertContext = CertFindCertificateInStore(
+			hStore,
+			dwEncoding,
+			0,
+			CERT_FIND_SUBJECT_CERT,
+			(PVOID)&CertInfo,
+			NULL);
+
+		if (pCertContext)
+		{
+			// ==============================================================
+			// 核心部分：提取公钥信息 (SubjectPublicKeyInfo)
+			// ==============================================================
+			// PublicKey 位于 pCertContext->pCertInfo->SubjectPublicKeyInfo
+			// 包含了算法 OID 和 公钥的二进制数据。
+			// 我们需要比较整个 PublicKeyInfo 的编码数据，或者单独比较 PublicKey.pbData
+
+			// 这里我们直接拷贝公钥的二进制流
+			DWORD keyLen = pCertContext->pCertInfo->SubjectPublicKeyInfo.PublicKey.cbData;
+			BYTE *keyPtr = pCertContext->pCertInfo->SubjectPublicKeyInfo.PublicKey.pbData;
+
+			if (keyLen > 0 && keyPtr != NULL)
+			{
+				result.assign(keyPtr, keyPtr + keyLen);
+			}
+
+			CertFreeCertificateContext(pCertContext);
+		}
+	}
+
+	if (hStore)
+		CertCloseStore(hStore, 0);
+	if (hMsg)
+		CryptMsgClose(hMsg);
+
+	return result;
+}
+
+// 主验证函数
+bool VerifyFileSignatureKeyMatchesSelf(const wchar_t *filePath, const std::optional<std::vector<uint8_t>> &selfKey)
+{
+	// 1. 验证目标文件签名的有效性 (可选，但推荐)
+	// 如果文件被篡改，WinVerifyTrust 会失败，此时也不应该信任它的公钥
 	WINTRUST_FILE_INFO fileInfo = {0};
 	fileInfo.cbStruct = sizeof(WINTRUST_FILE_INFO);
 	fileInfo.pcwszFilePath = filePath;
-	fileInfo.hFile = NULL;
-	fileInfo.pgKnownSubject = NULL;
 
 	WINTRUST_DATA trustData = {0};
 	trustData.cbStruct = sizeof(WINTRUST_DATA);
-	trustData.pPolicyCallbackData = NULL;
-	trustData.pSIPClientData = NULL;
 	trustData.dwUIChoice = WTD_UI_NONE;
 	trustData.fdwRevocationChecks = WTD_REVOKE_NONE;
 	trustData.dwUnionChoice = WTD_CHOICE_FILE;
 	trustData.pFile = &fileInfo;
 	trustData.dwStateAction = WTD_STATEACTION_VERIFY;
-	trustData.hWVTStateData = NULL;
-	trustData.pwszURLReference = NULL;
-	trustData.dwProvFlags = WTD_REVOCATION_CHECK_NONE;
-	trustData.dwUIContext = 0;
 
 	GUID policyGuid = WINTRUST_ACTION_GENERIC_VERIFY_V2;
-	LONG result = WinVerifyTrust(NULL, &policyGuid, &trustData);
+	LONG lStatus = WinVerifyTrust(NULL, &policyGuid, &trustData);
 
 	trustData.dwStateAction = WTD_STATEACTION_CLOSE;
 	WinVerifyTrust(NULL, &policyGuid, &trustData);
 
-	return result == ERROR_SUCCESS;
+	if (lStatus != ERROR_SUCCESS)
+	{
+		// 目标文件签名无效
+		return false;
+	}
+
+	// 2. 获取当前 EXE 的路径
+	wchar_t selfPath[MAX_PATH];
+	if (GetModuleFileNameW(NULL, selfPath, MAX_PATH) == 0)
+	{
+		return false;
+	}
+
+	auto targetKey = GetCertificatePublicKey(filePath);
+
+	// 4. 校验提取是否成功
+	if (!selfKey || !targetKey)
+	{
+		// 任意一方没有签名或无法提取公钥
+		return false;
+	}
+
+	// 5. 比较公钥是否完全相同
+	if (selfKey.value().size() != targetKey.value().size())
+	{
+		return false;
+	}
+
+	// 二进制比较
+	if (memcmp(selfKey.value().data(), targetKey.value().data(), selfKey.value().size()) == 0)
+	{
+		return true; // 私钥相同（因为公钥相同）
+	}
+
+	return false;
 }
+
 std::set<const wchar_t *> checkintegrity_()
 {
 	// 分别对python代码检查hash，对exe/dll检查签名
@@ -439,11 +557,16 @@ std::set<const wchar_t *> checkintegrity_()
 		if (memcmp(sigf.bytes, sig.data(), sig.size()))
 			collect.insert(fn);
 	}
+
+	wchar_t selfPath[MAX_PATH];
+	GetModuleFileNameW(NULL, selfPath, MAX_PATH);
+	auto selfKey = GetCertificatePublicKey(selfPath);
 	for (auto &&fn : checksig)
 	{
+		// 验证是否签名，且必须和自己签名相同
 		if (!fn)
 			continue;
-		if (!VerifyFileSignature(fn))
+		if (!VerifyFileSignatureKeyMatchesSelf(fn, selfKey))
 			collect.insert(fn);
 	}
 	return collect;
