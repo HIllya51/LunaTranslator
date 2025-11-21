@@ -50,6 +50,21 @@ curlFile64 = "https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
 
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
+myfiles = [
+    "files/DLL32/CVUtils.dll",
+    "files/DLL64/CVUtils.dll",
+    "files/DLL32/NativeUtils.dll",
+    "files/DLL64/NativeUtils.dll",
+    "files/LunaHook/LunaHook32.dll",
+    "files/LunaHook/LunaHook64.dll",
+    "files/LunaHook/LunaHost32.dll",
+    "files/LunaHook/LunaHost64.dll",
+    "files/shareddllproxy32.exe",
+    "files/shareddllproxy64.exe",
+    "LunaTranslator.exe",
+    "LunaTranslator_admin.exe",
+]
+
 
 def createPluginDirs():
     os.chdir(rootDir + "\\files")
@@ -398,3 +413,15 @@ if __name__ == "__main__":
         os.system(
             f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
         )
+    elif sys.argv[1] == "exedlls":
+        os.makedirs("../collect")
+        for _ in (
+            "LunaTranslator_x64_win10",
+            "LunaTranslator_x64_win7",
+            "LunaTranslator_x86_win7",
+            "LunaTranslator_x86_win7",
+        ):
+            for __ in myfiles:
+                f = os.path.join("../build", _, __)
+                if os.path.exists(f):
+                    shutil.copy(f, os.path.join("../collect", _, __))

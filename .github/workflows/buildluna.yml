@@ -24,10 +24,6 @@ jobs:
           - arch: x64
             target: win10
             pythonversion: '3.12.10'  
-    permissions:
-      contents: write   
-      pages: write
-      id-token: write
     steps:
       - uses: actions/checkout@v4
       # - uses: microsoft/setup-msbuild@v2
@@ -70,17 +66,15 @@ jobs:
         run:  C:\hostedtoolcache\windows\Python\3.12.10\x64\python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
       - run:  C:\hostedtoolcache\windows\Python\3.12.10\x64\python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{ matrix.target }}
 
-      #添加验证
       - uses: actions/upload-artifact@v4
-        id: upload-artifact
         with:
-          name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}_1
+          name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
           path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
 
       # - uses: actions/attest-build-provenance@v2.2.0
       #   with:
       #       subject-path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
-      
+
       # - uses: signpath/github-action-submit-signing-request@v2
       #   with:
       #     api-token: '${{ secrets.SIGNPATH_APITOKEN }}'
@@ -96,7 +90,26 @@ jobs:
       #   with:
       #     name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
       #     path: signed_${{ matrix.arch }}_${{ matrix.target }}
+  signandrepack:
+    runs-on: windows-latest
+    needs: [buildall]
+    permissions:
+      contents: write   
+      pages: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+            path: build
+      - run: python src/scripts/build_lunatranslator.py exedlls
 
+      - uses: actions/upload-artifact@v4
+        id: upload-artifact
+        with:
+          name: exedlls
+          path: collect
+  
   loadversion:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest
@@ -110,7 +123,7 @@ jobs:
   release:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest
-    needs: [buildall,loadversion]
+    needs: [signandrepack,loadversion]
     steps:
       - uses: actions/download-artifact@v4
         with:
