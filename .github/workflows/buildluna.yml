@@ -119,12 +119,12 @@ jobs:
       - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{matrix.target}}
       - uses: actions/attest-build-provenance@v2.2.0
         with:
-            subject-path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}.zip
+            subject-path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
       - uses: actions/upload-artifact@v4
         id: upload-artifact
         with:
           name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}_1
-          path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}.zip
+          path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
 
       - uses: signpath/github-action-submit-signing-request@v2
         with:
