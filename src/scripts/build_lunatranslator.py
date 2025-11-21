@@ -11,6 +11,18 @@ else:
 rootthisfiledir = rootDir
 rootDir = os.path.abspath(os.path.join(rootDir, ".."))
 
+originmakedirs = os.makedirs
+
+
+def fuckmakedirs(*a, **kw):
+    try:
+        originmakedirs(*a, **kw)
+    except:
+        pass
+
+
+os.makedirs = fuckmakedirs
+
 
 def fuckmove(src, tgt):
     print(src, tgt)
@@ -20,7 +32,7 @@ def fuckmove(src, tgt):
         try:
             shutil.copy(src, tgt)
         except:
-            shutil.copytree(src, tgt, dirs_exist_ok=True)
+            shutil.copytree(src, tgt)
 
 
 pluginDirs = ["DLL32", "DLL64"]
@@ -77,7 +89,7 @@ def downloadlr():
     fn = os.path.splitext(base)[0]
     subprocess.run(f"7z x -y {base}")
     os.chdir(rootDir)
-    os.makedirs("files/Locale/Locale_Remulator", exist_ok=True)
+    os.makedirs("files/Locale/Locale_Remulator")
 
     for f in [
         "LRHookx64.dll",
@@ -109,10 +121,7 @@ def downloadLocaleEmulator():
         "LECommonLibrary.dll",
     ]:
         os.chdir(rootDir)
-        os.makedirs(
-            "files/Locale/Locale.Emulator",
-            exist_ok=True,
-        )
+        os.makedirs("files/Locale/Locale.Emulator")
         fuckmove(
             os.path.join("scripts/temp/LocaleEmulator", f),
             "files/Locale/Locale.Emulator",
@@ -128,17 +137,9 @@ def downloadNtlea():
     subprocess.run(f"7z x -y {ntleaFile.split('/')[-1]} -ontlea")
 
     os.chdir(rootDir)
-    os.makedirs("files/Locale/ntleas046_x64", exist_ok=True)
-    shutil.copytree(
-        "scripts/temp/ntlea/x86",
-        "files/Locale/ntleas046_x64/x86",
-        dirs_exist_ok=True,
-    )
-    shutil.copytree(
-        "scripts/temp/ntlea/x64",
-        "files/Locale/ntleas046_x64/x64",
-        dirs_exist_ok=True,
-    )
+    os.makedirs("files/Locale/ntleas046_x64")
+    shutil.copytree("scripts/temp/ntlea/x86", "files/Locale/ntleas046_x64/x86")
+    shutil.copytree("scripts/temp/ntlea/x64", "files/Locale/ntleas046_x64/x64")
 
 
 def downloadCurl(target):
@@ -173,7 +174,7 @@ def downloadOCRModel():
     link = "https://lunatranslator.org/r2/luna/ocr_models_v5/jazhchten.zip"
     os.chdir("ocrmodel")
     __ = hashlib.md5(link.encode()).hexdigest()
-    os.makedirs(__, exist_ok=True)
+    os.makedirs(__)
     os.chdir(__)
     subprocess.run(f"curl -C - -LO {link}")
     subprocess.run(f"7z x -y jazhchten.zip")
@@ -212,7 +213,7 @@ def buildhook(arch, target):
         f"cmake --build ./build/{arch}_{target}_1 --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
     release = os.path.join("builds", os.listdir("builds")[0])
-    os.makedirs("builds/Release", exist_ok=True)
+    os.makedirs("builds/Release")
     for f in os.listdir(release):
         shutil.move(os.path.join(release, f), "builds/Release")
     shutil.rmtree(release)
@@ -273,7 +274,7 @@ def downloadbass():
 
 def downloadalls(target):
     os.chdir(rootDir)
-    os.makedirs("scripts/temp", exist_ok=True)
+    os.makedirs("scripts/temp")
     createPluginDirs()
     downloadNtlea()
     downloadbass()
@@ -365,18 +366,12 @@ if __name__ == "__main__":
 
         os.chdir(rootDir)
         if target == "winxp":
+            shutil.copytree("NativeImpl/LunaHook/builds/Release_win7", "files/LunaHook")
             shutil.copytree(
-                "NativeImpl/LunaHook/builds/Release_win7",
-                "files/LunaHook",
-                dirs_exist_ok=True,
-            )
-            shutil.copytree(
-                "NativeImpl/LunaHook/builds/Release_winxp",
-                "files/LunaHook",
-                dirs_exist_ok=True,
+                "NativeImpl/LunaHook/builds/Release_winxp", "files/LunaHook"
             )
             os.remove("files/LunaHook/LunaHost64.dll")
-            os.makedirs("files/DLL32", exist_ok=True)
+            os.makedirs("files/DLL32")
             shutil.copy("NativeImpl/builds/_x86_winxp/shareddllproxy32.exe", "files")
             shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
             os.system(f"robocopy NativeImpl/builds/_x86_winxp files/DLL32 *.dll")
@@ -385,24 +380,14 @@ if __name__ == "__main__":
             )
             exit()
         shutil.copytree(
-            f"NativeImpl/LunaHook/builds/Release_{target}",
-            "files/LunaHook",
-            dirs_exist_ok=True,
+            f"NativeImpl/LunaHook/builds/Release_{target}", "files/LunaHook"
         )
-        shutil.copytree(
-            f"NativeImpl/builds/cpp_x64_{target}",
-            "NativeImpl/builds",
-            dirs_exist_ok=True,
-        )
-        shutil.copytree(
-            f"NativeImpl/builds/cpp_x86_{target}",
-            "NativeImpl/builds",
-            dirs_exist_ok=True,
-        )
-        os.makedirs("files/DLL32", exist_ok=True)
+        shutil.copytree(f"NativeImpl/builds/cpp_x64_{target}", "NativeImpl/builds")
+        shutil.copytree(f"NativeImpl/builds/cpp_x86_{target}", "NativeImpl/builds")
+        os.makedirs("files/DLL32")
         shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x86_{target} files/DLL32 *.dll")
-        os.makedirs("files/DLL64", exist_ok=True)
+        os.makedirs("files/DLL64")
         shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
