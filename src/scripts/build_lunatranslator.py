@@ -216,11 +216,6 @@ def buildhook(arch, target):
     subprocess.run(
         f"cmake --build ./build/{arch}_{target}_1 --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
-    release = os.path.join("builds", os.listdir("builds")[0])
-    os.makedirs("builds/Release")
-    for f in os.listdir(release):
-        shutil.move(os.path.join(release, f), "builds/Release")
-    shutil.rmtree(release)
 
 
 def buildPlugins(arch, target, configx="", sexe=False):
