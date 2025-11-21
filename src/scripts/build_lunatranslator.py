@@ -384,9 +384,8 @@ if __name__ == "__main__":
             shutil.copy("NativeImpl/builds/_x86_winxp/shareddllproxy32.exe", "files")
             shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
             os.system(f"robocopy NativeImpl/builds/_x86_winxp files/DLL32 *.dll")
-            subprocess.run(
-                f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}",
-                shell=True,
+            os.system(
+                f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
             exit()
         shutil.copytree(
@@ -401,7 +400,6 @@ if __name__ == "__main__":
         shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
-        subprocess.run(
-            f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}",
-            shell=True,
+        os.system(
+            f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
         )
