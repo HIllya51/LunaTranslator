@@ -11,7 +11,7 @@ if target == "winxp":
     os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
     pyrt = "runtime"
 else:
-    pyrt = f"../build/pyrt_{arch}_{target}/runtime"
+    pyrt = f"pyrt_{arch}_{target}/runtime"
 launch = f"../src/NativeImpl/builds/_{arch}"
 launch += f"_{target}"
 targetdir = rf"build\LunaTranslator_{arch}_{target}"

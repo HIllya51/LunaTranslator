@@ -302,8 +302,38 @@ if __name__ == "__main__":
             print("version=" + versionstring)
             exit()
     elif sys.argv[1] == "cpp":
+        if sys.argv[-1] != "0":
+            argv = sys.argv.copy()
+            argv.append(0)
+            if argv[3] == "winxp":
+                argv[2] = "x86"
+                subprocess.run(argv)
+                argv[2] = "x64"
+                argv[3] = "win7"
+                subprocess.run(argv)
+            elif argv[3] == "win10" or argv[3] == "win7":
+                argv[2] = "x86"
+                subprocess.run(argv)
+                argv[2] = "x64"
+                subprocess.run(argv)
+            exit(0)
         buildPlugins(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "hook":
+        if sys.argv[-1] != "0":
+            argv = sys.argv.copy()
+            argv.append(0)
+            if argv[3] == "winxp":
+                argv[2] = "x86"
+                subprocess.run(argv)
+                argv[2] = "x64"
+                argv[3] = "win7"
+                subprocess.run(argv)
+            elif argv[3] == "win10" or argv[3] == "win7":
+                argv[2] = "x86"
+                subprocess.run(argv)
+                argv[2] = "x64"
+                subprocess.run(argv)
+            exit(0)
         buildhook(sys.argv[2], sys.argv[3])
     elif sys.argv[1] == "pyrt":
         arch = sys.argv[2]
@@ -334,16 +364,10 @@ if __name__ == "__main__":
         os.chdir(rootDir)
         if target == "winxp":
             shutil.copytree(
-                "../build/cpp_x86_winxp", "NativeImpl/builds", dirs_exist_ok=True
+                "NativeImpl/LunaHook/builds/Release_win7", "files/LunaHook", dirs_exist_ok=True
             )
             shutil.copytree(
-                "../build/cpp_x64_win7", "NativeImpl/builds", dirs_exist_ok=True
-            )
-            shutil.copytree(
-                "../build/hook_x86_winxp", "files/LunaHook", dirs_exist_ok=True
-            )
-            shutil.copytree(
-                "../build/hook_x64_win7", "files/LunaHook", dirs_exist_ok=True
+                "NativeImpl/LunaHook/builds/Release_winxp", "files/LunaHook", dirs_exist_ok=True
             )
             os.remove("files/LunaHook/LunaHost64.dll")
             os.makedirs("files/DLL32", exist_ok=True)
@@ -355,16 +379,13 @@ if __name__ == "__main__":
             )
             exit()
         shutil.copytree(
-            f"../build/hook_x64_{target}", "files/LunaHook", dirs_exist_ok=True
+            f"NativeImpl/LunaHook/builds/Release_{target}", "files/LunaHook", dirs_exist_ok=True
         )
         shutil.copytree(
-            f"../build/hook_x86_{target}", "files/LunaHook", dirs_exist_ok=True
+            f"NativeImpl/builds/cpp_x64_{target}", "NativeImpl/builds", dirs_exist_ok=True
         )
         shutil.copytree(
-            f"../build/cpp_x64_{target}", "NativeImpl/builds", dirs_exist_ok=True
-        )
-        shutil.copytree(
-            f"../build/cpp_x86_{target}", "NativeImpl/builds", dirs_exist_ok=True
+            f"NativeImpl/builds/cpp_x86_{target}", "NativeImpl/builds", dirs_exist_ok=True
         )
         os.makedirs("files/DLL32", exist_ok=True)
         shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")

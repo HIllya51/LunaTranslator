@@ -8,25 +8,22 @@ on:
         default: false
         required: false 
 jobs:
-  cpps:
+  buildall:
     runs-on: windows-latest
     strategy:
       matrix:
-        include:
-          - arch: x86
-            target: win7  
-          - arch: x64
-            target: win7  
-          - arch: x64
-            target: win10  
-          - arch: x86
-            target: win10  
+        include:  
           - arch: x86
             target: winxp
-    permissions:
-      id-token: write
-      attestations: write
-      contents: write
+          - arch: x86
+            target: win7
+            pythonversion: '3.7.9' 
+          - arch: x64
+            target: win7
+            pythonversion: '3.7.9' 
+          - arch: x64
+            target: win10
+            pythonversion: '3.12.10'  
     steps:
       - uses: actions/checkout@v4
       # - uses: microsoft/setup-msbuild@v2
@@ -53,70 +50,19 @@ jobs:
       # - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
       #   with:
       #     sdk-version: 26100
-      - run: python src/scripts/build_lunatranslator.py hook ${{matrix.arch}} ${{matrix.target}}
-      - run: python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{matrix.target}}
-      - uses: actions/upload-artifact@v4
-        with:
-          name: hook_${{matrix.arch}}_${{matrix.target}}
-          path: src/NativeImpl/LunaHook/builds/Release
-      - uses: actions/upload-artifact@v4
-        with:
-          name: cpp_${{matrix.arch}}_${{matrix.target}}
-          path: src/NativeImpl/builds
-          
-  pyrt:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        include:  
-          - arch: x86
-            target: win7
-            pythonversion: '3.7.9' 
-          - arch: x64
-            target: win7
-            pythonversion: '3.7.9' 
-          - arch: x64
-            target: win10
-            pythonversion: '3.12.10'  
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      - if: matrix.target != 'winxp'
+        uses: actions/setup-python@v5
         with:
-          python-version: ${{matrix.pythonversion}}
+          python-version: ${{ matrix.pythonversion }}
           architecture: ${{ matrix.arch }}
-      
-      - run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{matrix.pythonversion}} ${{matrix.target}}
+      - if: matrix.target != 'winxp'
+        run:  python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
+      - run: python src/scripts/build_lunatranslator.py hook ${{ matrix.arch }} ${{ matrix.target }}
+      - run: python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{ matrix.target }}
+      - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{ matrix.target }}
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: pyrt_${{matrix.arch}}_${{matrix.target}}
-          path: src/pyrt
-  
-  merge:
-    runs-on: windows-latest
-    needs: [pyrt,cpps]
-    permissions:
-      id-token: write
-      attestations: write
-      contents: write
-    strategy:
-      matrix:
-        include:
-          - arch: x86
-            target: win7 
-          - arch: x64
-            target: win7 
-          - arch: x64
-            target: win10 
-          - arch: x86
-            target: winxp
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-            path: build
-      - run:  python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{matrix.target}}
+      #添加验证
       - uses: actions/attest-build-provenance@v2.2.0
         with:
             subject-path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
@@ -126,21 +72,21 @@ jobs:
           name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}_1
           path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
 
-      - uses: signpath/github-action-submit-signing-request@v2
-        with:
-          api-token: '${{ secrets.SIGNPATH_APITOKEN }}'
-          organization-id: '2e2b9c90-04bb-4b70-8562-0171927d94c6'
-          project-slug: 'LunaTranslator'
-          signing-policy-slug: 'test-signing'
-          github-artifact-id: '${{ steps.upload-artifact.outputs.artifact-id }}'
-          wait-for-completion: true
-          output-artifact-directory: 'signed_${{ matrix.arch }}_${{ matrix.target }}'
-          artifact-configuration-slug: 'sign_${{ matrix.arch }}_${{ matrix.target }}'
+      # - uses: signpath/github-action-submit-signing-request@v2
+      #   with:
+      #     api-token: '${{ secrets.SIGNPATH_APITOKEN }}'
+      #     organization-id: '2e2b9c90-04bb-4b70-8562-0171927d94c6'
+      #     project-slug: 'LunaTranslator'
+      #     signing-policy-slug: 'test-signing'
+      #     github-artifact-id: '${{ steps.upload-artifact.outputs.artifact-id }}'
+      #     wait-for-completion: true
+      #     output-artifact-directory: 'signed_${{ matrix.arch }}_${{ matrix.target }}'
+      #     artifact-configuration-slug: 'sign_${{ matrix.arch }}_${{ matrix.target }}'
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
-          path: signed_${{ matrix.arch }}_${{ matrix.target }}
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
+      #     path: signed_${{ matrix.arch }}_${{ matrix.target }}
 
   loadversion:
     if: ${{inputs.createrelease}}
@@ -155,7 +101,7 @@ jobs:
   release:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest
-    needs: [merge,loadversion]
+    needs: [buildall,loadversion]
     steps:
       - uses: actions/download-artifact@v4
         with:
