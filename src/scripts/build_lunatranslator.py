@@ -223,7 +223,7 @@ def buildhook(arch, target):
     shutil.rmtree(release)
 
 
-def buildPlugins(arch, target, configx=""):
+def buildPlugins(arch, target, configx="", sexe=False):
     os.chdir(rootDir + "/NativeImpl")
     archA = ("win32", "x64")[arch == "x64"]
     if target == "win10":
@@ -240,6 +240,8 @@ def buildPlugins(arch, target, configx=""):
         # 对于64位会使用自带的vcrt，win7/xp会静态编译，仅win10 shareddllproxy32这个文件可能会缺少vcrt，因此把它也静态编译以避免无法运行导致注入失败。
         config += " -DSTATIC_FORCE=ON"
     config += configx
+    if sexe:
+        config += " -DBUILD_S_EXE_ONLY=ON"
     subprocess.run(
         f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
     )
@@ -313,17 +315,21 @@ if __name__ == "__main__":
             argv[0] = absthisfile
             if argv[3] == "winxp":
                 argv[2] = "x86"
+                argv.insert(len(argv) - 1, "0")
                 subprocess.run([sys.executable, *argv])
                 argv[2] = "x64"
                 argv[3] = "win7"
+                argv.insert(len(argv) - 1, "1")
                 subprocess.run([sys.executable, *argv])
             elif argv[3] == "win10" or argv[3] == "win7":
                 argv[2] = "x86"
+                argv.insert(len(argv) - 1, str(int(argv[2] == sys.argv[2])))
                 subprocess.run([sys.executable, *argv])
                 argv[2] = "x64"
+                argv.insert(len(argv) - 1, str(int(argv[2] == sys.argv[2])))
                 subprocess.run([sys.executable, *argv])
             exit(0)
-        buildPlugins(sys.argv[2], sys.argv[3])
+        buildPlugins(sys.argv[2], sys.argv[3], sexe=int(sys.argv[4]))
     elif sys.argv[1] == "hook":
         if sys.argv[-1] != "0":
             argv = sys.argv.copy()
@@ -386,8 +392,8 @@ if __name__ == "__main__":
         shutil.copytree(
             f"NativeImpl/LunaHook/builds/Release_{target}", "files/LunaHook"
         )
-        shutil.copytree(f"NativeImpl/builds/cpp_x64_{target}", "NativeImpl/builds")
-        shutil.copytree(f"NativeImpl/builds/cpp_x86_{target}", "NativeImpl/builds")
+        shutil.copytree(f"NativeImpl/builds/_x64_{target}", "NativeImpl/builds")
+        shutil.copytree(f"NativeImpl/builds/_x86_{target}", "NativeImpl/builds")
         os.makedirs("files/DLL32")
         shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x86_{target} files/DLL32 *.dll")
