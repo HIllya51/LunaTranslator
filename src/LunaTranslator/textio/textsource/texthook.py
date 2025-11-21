@@ -238,7 +238,6 @@ class texthook(basetext):
         ]
         self.keepref += procs
         self.Luna_Start(*procs)
-        self.setsettings()
         self.setlang()
 
     def i18nQueryCallback(self, querytext: str):
@@ -327,6 +326,7 @@ class texthook(basetext):
             self.waitend(pid)
         gobject.base.hwnd = hwnd
         self.gameuid = gameuid
+        self.setsettings()
         self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
         sqlitef = gobject.gettranslationrecorddir(
@@ -587,6 +587,7 @@ class texthook(basetext):
         self.Luna_ResetLang()
 
     def setsettings(self):
+        # 这个是游戏相关的设置，等设置gameuid以后再进行
         self.Luna_Settings(
             self.config["textthreaddelay"],
             False,  # 不使用内置去重
