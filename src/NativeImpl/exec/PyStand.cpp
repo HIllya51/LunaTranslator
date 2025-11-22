@@ -476,10 +476,7 @@ bool VerifyFileSignature(const wchar_t *filePath)
 	trustData.pFile = &fileInfo;
 	trustData.dwStateAction = WTD_STATEACTION_VERIFY;
 	// 只检查签名有效，不检查签名源
-	trustData.dwProvFlags = WTD_REVOCATION_CHECK_NONE |
-							WTD_CACHE_ONLY_URL_RETRIEVAL |
-							WTD_DISABLE_MD2_MD4 |
-							WTD_SAFER_FLAG;
+	trustData.dwProvFlags = WTD_REVOCATION_CHECK_NONE;
 	GUID policyGuid = WINTRUST_ACTION_GENERIC_VERIFY_V2;
 	LONG lStatus = WinVerifyTrust(NULL, &policyGuid, &trustData);
 
