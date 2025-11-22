@@ -110,6 +110,22 @@ jobs:
           name: exedlls
           path: collect
   
+      - uses: signpath/github-action-submit-signing-request@v2
+        with:
+          api-token: '${{ secrets.SIGNPATH_APITOKEN }}'
+          organization-id: '2e2b9c90-04bb-4b70-8562-0171927d94c6'
+          project-slug: 'LunaTranslator'
+          signing-policy-slug: 'test-signing'
+          github-artifact-id: '${{ steps.upload-artifact.outputs.artifact-id }}'
+          wait-for-completion: true
+          output-artifact-directory: 'signed_exedlls'
+          artifact-configuration-slug: 'exedlls'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: signed_exedlls
+          path: signed_exedlls
+
   loadversion:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest

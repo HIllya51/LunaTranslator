@@ -5,9 +5,6 @@ from build_lunatranslator import buildPlugins, myfiles
 arch = sys.argv[1]
 target = sys.argv[2]
 targetdir = sys.argv[3]
-if target == "winxp":
-    # xp版先不做
-    exit()
 
 
 def getpyfiles():
