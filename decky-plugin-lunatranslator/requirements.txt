@@ -1,2 +1,0 @@
-# LunaTranslator Decky Plugin Dependencies
-websockets>=11.0
