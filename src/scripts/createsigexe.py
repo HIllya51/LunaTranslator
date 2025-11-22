@@ -26,18 +26,11 @@ def getpyfiles():
 
 def getpefiles():
     s = ""
-    print(myfiles)
-    print(os.getcwd())
-    for _dir, _, _fs in os.walk(os.getcwd()):
-        print(_dir, _fs)
-    print(targetdir)
-    for _dir, _, _fs in os.walk(targetdir):
-        print(_dir, _fs)
     for _ in myfiles:
         if not os.path.exists(os.path.join(targetdir, _)):
             continue
         s += '{L"' + _ + '"},'
-    return ""
+    return s
 
 
 def buildexe(arch, target):
