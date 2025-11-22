@@ -1,7 +1,7 @@
 {
   "name": "decky-lunatranslator",
   "version": "1.0.0",
-  "description": "LunaTranslator overlay for Steam Deck Gaming Mode",
+  "description": "Real-time Visual Novel translation overlay for Steam Deck Gaming Mode. Connects to LunaTranslator via WebSocket and displays Japanese game translations as a customizable on-screen overlay.",
   "type": "module",
   "scripts": {
     "build": "shx rm -rf dist && rollup -c",
@@ -14,11 +14,19 @@
   },
   "keywords": [
     "decky",
+    "decky-loader",
     "plugin",
     "steam-deck",
     "lunatranslator",
     "translation",
-    "visual-novel"
+    "visual-novel",
+    "vn",
+    "galgame",
+    "japanese",
+    "overlay",
+    "gaming-mode",
+    "wine",
+    "proton"
   ],
   "author": "AnulTranslator",
   "license": "GPL-3.0",

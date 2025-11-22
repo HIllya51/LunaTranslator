@@ -1,168 +1,179 @@
-# LunaTranslator Overlay - Decky Plugin
+# LunaTranslator Overlay for Steam Deck
 
-Plugin do Decky Loader para exibir traduções do LunaTranslator no Gaming Mode do Steam Deck.
+> Play Japanese Visual Novels on Steam Deck with real-time translation overlay in Gaming Mode!
 
-## Como Funciona
+[![License: GPL-3.0](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![Steam Deck](https://img.shields.io/badge/Steam%20Deck-Compatible-green.svg)](https://www.steamdeck.com/)
+[![Decky Loader](https://img.shields.io/badge/Decky%20Loader-Plugin-orange.svg)](https://decky.xyz/)
+
+---
+
+## What is this?
+
+A **Decky Loader plugin** that displays [LunaTranslator](https://github.com/HIllya51/LunaTranslator) translations as an overlay directly in Steam Deck's Gaming Mode.
+
+**No more switching windows!** See translations right on top of your game.
+
+### How it works
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│ Wine Prefix (Lutris)                                        │
-│  ├── Visual Novel (jogo)                                    │
-│  └── LunaTranslator (captura e traduz texto)               │
-│         │                                                   │
-│         └── WebSocket Server (porta 8080)                   │
-└─────────────┬───────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────┐
+│ Wine/Proton (via Lutris)                                │
+│  ├── Visual Novel (your game)                           │
+│  └── LunaTranslator (hooks & translates)               │
+│         │                                               │
+│         └── WebSocket Server (port 8080)                │
+└─────────────┬───────────────────────────────────────────┘
               │ localhost:8080
-              ↓
-┌─────────────────────────────────────────────────────────────┐
-│ Steam Deck (Linux)                                          │
-│  └── Decky Plugin                                           │
-│        ├── WebSocket Client (conecta ao LunaTranslator)     │
-│        └── Overlay (exibe tradução no Gaming Mode)          │
-└─────────────────────────────────────────────────────────────┘
+              ▼
+┌─────────────────────────────────────────────────────────┐
+│ Steam Deck (Gaming Mode)                                │
+│  └── Decky Plugin                                       │
+│        ├── WebSocket Client (connects to LunaTranslator)│
+│        └── Overlay (displays translations on screen)    │
+└─────────────────────────────────────────────────────────┘
 ```
 
-## Requisitos
+---
 
-- Steam Deck (ou PC Linux com Steam no Gaming Mode)
-- [Decky Loader](https://decky.xyz/) instalado
-- LunaTranslator rodando via Wine/Lutris
-- Python 3.10+ com `websockets`
+## Features
 
-## Instalação
+- **Real-time translation display** - See translations as they happen
+- **Customizable overlay** - Position, size, colors, opacity
+- **Original + Translation** - Show both or just translation
+- **Auto-hide** - Overlay disappears after configurable timeout
+- **Easy configuration** - All settings accessible from Decky menu
+- **Low overhead** - Minimal performance impact
 
-### Método 1: Script Automático
+---
+
+## Screenshots
+
+*Coming soon*
+
+---
+
+## Requirements
+
+- Steam Deck (or Linux PC with Steam Gaming Mode)
+- [Decky Loader](https://decky.xyz/) installed
+- [Lutris](https://lutris.net/) (to run LunaTranslator via Wine)
+- [LunaTranslator](https://github.com/HIllya51/LunaTranslator) (Windows version)
+- Node.js/pnpm (for building)
+
+---
+
+## Quick Install
+
+### 1. Clone and build
 
 ```bash
-cd decky-plugin-lunatranslator
-chmod +x install.sh
+git clone https://github.com/tobidashite/AnulTranslator
+cd AnulTranslator/decky-plugin-lunatranslator
+./build.sh
 ./install.sh
 ```
 
-### Método 2: Manual
+### 2. Configure LunaTranslator
 
-1. **Build o plugin:**
-   ```bash
-   cd decky-plugin-lunatranslator
-   pnpm install
-   pnpm build
-   ```
+In LunaTranslator settings, enable **Network Service**:
+- Host: `0.0.0.0`
+- Port: `8080`
 
-2. **Copie para Decky:**
-   ```bash
-   cp -r . ~/homebrew/plugins/LunaTranslator\ Overlay/
-   ```
+### 3. Use in Gaming Mode
 
-3. **Instale dependência Python:**
-   ```bash
-   pip install --user websockets
-   ```
+1. Start your game (with LunaTranslator running)
+2. Press **...** (Quick Access)
+3. Open **Decky** → **LunaTranslator**
+4. Click **Connect**
+5. Play!
 
-4. **Reinicie o Steam**
+---
 
-## Configuração do LunaTranslator
+## Detailed Installation
 
-Para que o plugin funcione, você precisa habilitar o servidor de rede no LunaTranslator:
+See the complete guides:
 
-1. Abra LunaTranslator no Wine/Lutris
-2. Vá em **Configurações** → **Rede/Network**
-3. Habilite **"Serviço de Rede"** ou **"Network Service"**
-4. Configure a porta (padrão: `8080`)
-5. Certifique-se que o serviço está escutando em `0.0.0.0` ou `127.0.0.1`
+- **English:** [SETUP_LUTRIS.md](SETUP_LUTRIS.md)
+- **Portugues:** [GUIA_COMPLETO_PT-BR.md](GUIA_COMPLETO_PT-BR.md)
 
-### Verificar se está funcionando
+---
 
-No terminal do Steam Deck (Desktop Mode):
+## Configuration Options
 
-```bash
-# Teste a conexão WebSocket
-curl -i -N \
-  -H "Connection: Upgrade" \
-  -H "Upgrade: websocket" \
-  -H "Sec-WebSocket-Key: test" \
-  -H "Sec-WebSocket-Version: 13" \
-  http://127.0.0.1:8080/api/ws/text/origin
-```
+| Setting | Description | Default |
+|---------|-------------|---------|
+| **Enable Overlay** | Show/hide the overlay | On |
+| **Host** | LunaTranslator IP address | `127.0.0.1` |
+| **Port** | LunaTranslator port | `8080` |
+| **Show Original** | Display original Japanese text | On |
+| **Show Translation** | Display translated text | On |
+| **Position** | Overlay position on screen | Bottom |
+| **Font Size** | Text size in pixels | 18 |
+| **Width %** | Overlay width percentage | 80% |
+| **Background Opacity** | Background transparency | 80% |
+| **Auto-hide** | Hide after X seconds (0=never) | 10s |
 
-## Uso
+---
 
-1. Inicie seu jogo pelo Lutris/Steam (com LunaTranslator rodando)
-2. Pressione o botão **...** (Quick Access) no Steam Deck
-3. Encontre **LunaTranslator** na lista de plugins Decky
-4. Configure host/porta e clique em **Connect**
-5. As traduções aparecerão automaticamente sobre o jogo!
-
-## Configurações Disponíveis
-
-| Opção | Descrição | Padrão |
-|-------|-----------|--------|
-| **Host** | IP do LunaTranslator | `127.0.0.1` |
-| **Port** | Porta do serviço | `8080` |
-| **Show Original** | Exibir texto original | ✓ |
-| **Show Translation** | Exibir tradução | ✓ |
-| **Position** | Posição do overlay | `bottom` |
-| **Font Size** | Tamanho da fonte | `18` |
-| **Width %** | Largura do overlay | `80%` |
-| **Background Opacity** | Opacidade do fundo | `0.8` |
-| **Auto-hide** | Esconder após X segundos | `10s` |
-
-## Estrutura do Projeto
+## Project Structure
 
 ```
 decky-plugin-lunatranslator/
-├── main.py              # Backend Python (WebSocket client)
+├── main.py                  # Python backend (WebSocket client)
 ├── src/
-│   └── index.tsx        # Frontend React (overlay + settings)
-├── plugin.json          # Metadados do plugin
-├── package.json         # Dependências Node.js
-├── tsconfig.json        # Configuração TypeScript
-├── rollup.config.js     # Build config
+│   └── index.tsx            # React frontend (overlay + settings UI)
+├── plugin.json              # Decky plugin metadata
+├── package.json             # Node.js dependencies
+├── tsconfig.json            # TypeScript configuration
+├── rollup.config.js         # Build configuration
 ├── defaults/
-│   └── defaults.json    # Configurações padrão
-├── requirements.txt     # Dependências Python
-├── install.sh           # Script de instalação
-├── uninstall.sh         # Script de desinstalação
-└── README.md            # Este arquivo
+│   └── defaults.json        # Default settings
+├── requirements.txt         # Python dependencies
+├── build.sh                 # Build script
+├── install.sh               # Installation script
+├── uninstall.sh             # Uninstallation script
+├── README.md                # This file
+├── SETUP_LUTRIS.md          # Lutris setup guide (English)
+└── GUIA_COMPLETO_PT-BR.md   # Complete guide (Portuguese)
 ```
 
+---
+
 ## Troubleshooting
+
+### "Connection failed"
+
+1. Make sure LunaTranslator is running
+2. Check Network Service is enabled in LunaTranslator settings
+3. Verify host is set to `0.0.0.0` (not `127.0.0.1`)
 
 ### "websockets not installed"
 
 ```bash
 pip install --user websockets
-# ou
-pip3 install websockets
 ```
 
-### "Connection failed"
+### Overlay not showing
 
-1. Verifique se o LunaTranslator está rodando
-2. Verifique se o serviço de rede está habilitado
-3. Teste manualmente:
-   ```bash
-   python3 -c "import asyncio, websockets; asyncio.run(websockets.connect('ws://127.0.0.1:8080/api/ws/text/origin'))"
-   ```
+1. Check "Enable Overlay" is on
+2. Verify connection status shows "Connected"
+3. Make sure the game is producing text (try a dialogue scene)
 
-### Overlay não aparece
+### Can't connect from Gaming Mode
 
-1. Verifique se "Enable Overlay" está ativado
-2. Verifique se está conectado (status: Connected)
-3. Verifique os logs: `~/homebrew/logs/LunaTranslator Overlay/`
-
-### Problemas de rede Wine ↔ Linux
-
-Se o LunaTranslator no Wine não consegue ser acessado:
+The Wine network bridge might use a different IP. Try:
 
 ```bash
-# Verifique se a porta está escutando
-ss -tlnp | grep 8080
-
-# Se necessário, use o IP do Wine bridge
-ip addr show | grep wine
+# Find Wine's IP
+ip addr show | grep -E "192\.168|10\."
 ```
 
-## Desenvolvimento
+Use that IP in the plugin settings.
+
+---
+
+## Development
 
 ### Build
 
@@ -171,23 +182,50 @@ pnpm install
 pnpm build
 ```
 
-### Watch mode (desenvolvimento)
+### Watch mode
 
 ```bash
 pnpm watch
 ```
 
-### Deploy para teste
+### Deploy for testing
 
 ```bash
-pnpm build && cp -r dist main.py plugin.json ~/homebrew/plugins/LunaTranslator\ Overlay/
+pnpm build
+cp -r dist main.py plugin.json ~/homebrew/plugins/LunaTranslator\ Overlay/
 ```
 
-## Licença
+---
 
-GPL-3.0 (mesma licença do LunaTranslator original)
+## Contributing
 
-## Créditos
+Contributions are welcome! Please:
 
-- [LunaTranslator](https://github.com/HIllya51/LunaTranslator) - O tradutor de visual novels
-- [Decky Loader](https://decky.xyz/) - Framework de plugins para Steam Deck
+1. Fork the repository
+2. Create a feature branch
+3. Submit a pull request
+
+---
+
+## License
+
+GPL-3.0 (same as LunaTranslator)
+
+---
+
+## Credits
+
+- [LunaTranslator](https://github.com/HIllya51/LunaTranslator) - The amazing Visual Novel translator
+- [Decky Loader](https://decky.xyz/) - Steam Deck plugin framework
+- [Steam Deck Community](https://www.reddit.com/r/SteamDeck/) - For making this possible!
+
+---
+
+## Support
+
+- **Issues:** [GitHub Issues](https://github.com/tobidashite/AnulTranslator/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/tobidashite/AnulTranslator/discussions)
+
+---
+
+**Enjoy playing your favorite Visual Novels on Steam Deck!**
