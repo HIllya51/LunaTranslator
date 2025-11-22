@@ -205,7 +205,7 @@ def downloadOCRModel():
     os.chdir(rootDir)
 
 
-def buildhook(arch, target):
+def buildhook(arch, target, hookonly=False):
 
     os.chdir("NativeImpl/LunaHook")
     archA = ("win32", "x64")[arch == "x64"]
@@ -223,6 +223,8 @@ def buildhook(arch, target):
     subprocess.run(
         f"cmake --build ./build/{arch}_{target}_2 --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
+    if hookonly:
+        return
     if target != "win10":
         config += " -DUSE_VC_LTL=ON "
     subprocess.run(
@@ -347,17 +349,21 @@ if __name__ == "__main__":
             argv[0] = absthisfile
             if argv[3] == "winxp":
                 argv[2] = "x86"
+                argv.insert(len(argv) - 1, "0")
                 subprocess.run([sys.executable, *argv])
                 argv[2] = "x64"
                 argv[3] = "win7"
+                argv[4] = "1"
                 subprocess.run([sys.executable, *argv])
             elif argv[3] == "win10" or argv[3] == "win7":
                 argv[2] = "x86"
+                argv.insert(len(argv) - 1, str(int(argv[2] != sys.argv[2])))
                 subprocess.run([sys.executable, *argv])
                 argv[2] = "x64"
+                argv[4] = str(int(argv[2] != sys.argv[2]))
                 subprocess.run([sys.executable, *argv])
             exit(0)
-        buildhook(sys.argv[2], sys.argv[3])
+        buildhook(sys.argv[2], sys.argv[3], buildhost=int(sys.argv[4]))
     elif sys.argv[1] == "pyrt":
         arch = sys.argv[2]
         pythonversion = sys.argv[3]
@@ -394,8 +400,7 @@ if __name__ == "__main__":
             shutil.copy("NativeImpl/builds/_x86_winxp/shareddllproxy32.exe", "files")
             shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
             os.system(f"robocopy NativeImpl/builds/_x86_winxp files/DLL32 *.dll")
-            
-            os.remove("files/LunaHook/LunaHost64.dll")
+
             os.system(
                 f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
             )
@@ -412,11 +417,6 @@ if __name__ == "__main__":
         shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
-        
-        if arch == "x86":
-            os.remove("files/LunaHook/LunaHost64.dll")
-        else:
-            os.remove("files/LunaHook/LunaHost32.dll")
         os.system(
             f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
         )
