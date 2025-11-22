@@ -9,6 +9,8 @@ typedef enum RO_INIT_TYPE
     RO_INIT_MULTITHREADED = 1,  // COM calls objects on any thread.
 } RO_INIT_TYPE;
 
+typedef PVOID DLL_DIRECTORY_COOKIE, *PDLL_DIRECTORY_COOKIE;
+
 extern "C" DLL_DIRECTORY_COOKIE
     WINAPI
     AddDllDirectory(
