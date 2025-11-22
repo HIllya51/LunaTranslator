@@ -1,0 +1,10 @@
+{
+  "name": "LunaTranslator Overlay",
+  "author": "AnulTranslator",
+  "flags": ["root", "debug"],
+  "publish": {
+    "tags": ["translation", "visual-novel", "gaming", "overlay"],
+    "description": "Display LunaTranslator translations as an overlay in Gaming Mode",
+    "image": "https://raw.githubusercontent.com/tobidashite/AnulTranslator/main/decky-plugin-lunatranslator/assets/icon.png"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "host": "127.0.0.1",
+  "port": 8080,
+  "show_original": true,
+  "show_translation": true,
+  "position": "bottom",
+  "font_size": 18,
+  "background_opacity": 0.8,
+  "text_color": "#ffffff",
+  "background_color": "#000000",
+  "original_color": "#aaaaaa",
+  "max_lines": 5,
+  "auto_hide_seconds": 10,
+  "width_percent": 80
+}
