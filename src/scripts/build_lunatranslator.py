@@ -363,7 +363,7 @@ if __name__ == "__main__":
                 argv[4] = str(int(argv[2] != sys.argv[2]))
                 subprocess.run([sys.executable, *argv])
             exit(0)
-        buildhook(sys.argv[2], sys.argv[3], buildhost=int(sys.argv[4]))
+        buildhook(sys.argv[2], sys.argv[3], hookonly=int(sys.argv[4]))
     elif sys.argv[1] == "pyrt":
         arch = sys.argv[2]
         pythonversion = sys.argv[3]
@@ -391,30 +391,24 @@ if __name__ == "__main__":
         downloadalls(target)
 
         os.chdir(rootDir)
-        if target == "winxp":
-            shutil.copytree("NativeImpl/LunaHook/builds/Release_win7", "files/LunaHook")
-            shutil.copytree(
-                "NativeImpl/LunaHook/builds/Release_winxp", "files/LunaHook"
-            )
-            os.makedirs("files/DLL32")
-            shutil.copy("NativeImpl/builds/_x86_winxp/shareddllproxy32.exe", "files")
-            shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
-            os.system(f"robocopy NativeImpl/builds/_x86_winxp files/DLL32 *.dll")
 
-            os.system(
-                f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
-            )
-            exit()
         shutil.copytree(
             f"NativeImpl/LunaHook/builds/Release_{target}", "files/LunaHook"
         )
+        if target == "winxp":
+            shutil.copytree("NativeImpl/LunaHook/builds/Release_win7", "files/LunaHook")
         shutil.copytree(f"NativeImpl/builds/_x64_{target}", "NativeImpl/builds")
         shutil.copytree(f"NativeImpl/builds/_x86_{target}", "NativeImpl/builds")
         os.makedirs("files/DLL32")
         shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x86_{target} files/DLL32 *.dll")
         os.makedirs("files/DLL64")
-        shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
+        if target == "winxp":
+            shutil.copy("NativeImpl/builds/_x64_win7/shareddllproxy64.exe", "files")
+        else:
+            shutil.copy(
+                f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files"
+            )
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
         os.system(
