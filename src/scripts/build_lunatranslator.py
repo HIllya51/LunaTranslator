@@ -411,10 +411,10 @@ if __name__ == "__main__":
             for _f in _fs:
                 f2 = os.path.join(_dir, _f)
                 shutil.copy(f2, f2.replace("signed_exedlls", "build"))
+        os.makedirs("../signed")
         os.chdir("../build")
-        os.makedirs("signed")
         for d in os.listdir("."):
             os.system(
                 rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {d}.zip {d}'
             )
-            shutil.move(f"{d}.zip", "signed")
+            shutil.move(f"{d}.zip", "../signed")
