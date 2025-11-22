@@ -26,6 +26,8 @@ def getpyfiles():
 
 def getpefiles():
     s = ""
+    print(myfiles)
+    print(os.getcwd())
     for _ in myfiles:
         if not os.path.exists(_):
             continue
@@ -36,7 +38,8 @@ def getpefiles():
 def buildexe(arch, target):
     pys = getpyfiles()
     pes = getpefiles()
-
+    print(pys)
+    print(pes)
     path = r"NativeImpl\exec\checksigs.hpp"
     with open(path, "r", encoding="utf8") as ff:
         code = ff.read()
