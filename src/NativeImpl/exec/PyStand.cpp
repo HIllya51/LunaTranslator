@@ -53,6 +53,9 @@ PyStand::~PyStand()
 //---------------------------------------------------------------------
 PyStand::PyStand(const wchar_t *runtime)
 {
+	wchar_t path[MAX_PATH + 10];
+	GetModuleFileNameW(GetModuleHandle(0), path, MAX_PATH);
+	exepath = path;
 	_hDLL = NULL;
 	_Py_Main = NULL;
 	if (CheckEnviron(runtime) == false)
@@ -68,7 +71,7 @@ PyStand::PyStand(const wchar_t *runtime)
 //---------------------------------------------------------------------
 // init: _args, _argv, _cwd, _pystand, _home, _runtime,
 //---------------------------------------------------------------------
-void checkintegrity();
+
 bool PyStand::CheckEnviron(const wchar_t *rtp)
 {
 	// init: _args, _argv
@@ -88,15 +91,7 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	}
 	LocalFree(argvw);
 
-	wchar_t path[MAX_PATH + 10];
-
-	// init: _pystand (full path of PyStand.exe)
-	GetModuleFileNameW(NULL, path, MAX_PATH + 1);
-#if 0
-	wsprintf(path, L"e:\\github\\tools\\pystand\\pystand.exe");
-#endif
-	_pystand = path;
-	_home = std::filesystem::path(path).parent_path().wstring();
+	_home = std::filesystem::path(exepath).parent_path().wstring();
 
 	SetCurrentDirectoryW(_home.c_str());
 
@@ -127,10 +122,6 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		return false;
 	}
 #endif
-	// setup environment
-	SetEnvironmentVariableW(L"PYSTAND", _pystand.c_str());
-	SetEnvironmentVariableW(L"PYSTAND_HOME", _home.c_str());
-	SetEnvironmentVariableW(L"PYSTAND_RUNTIME", _runtime.c_str());
 
 	return true;
 }
@@ -246,15 +237,15 @@ int PyStand::RunString(const wchar_t *script)
 int PyStand::DetectScript()
 {
 	// init: _script (init script like PyStand.int or PyStand.py)
-	int size = (int)_pystand.size() - 1;
+	int size = (int)exepath.size() - 1;
 	for (; size >= 0; size--)
 	{
-		if (_pystand[size] == L'.')
+		if (exepath[size] == L'.')
 			break;
 	}
 	if (size < 0)
-		size = (int)_pystand.size();
-	std::wstring main = _pystand.substr(0, size);
+		size = (int)exepath.size();
+	std::wstring main = exepath.substr(0, size);
 	std::vector<const wchar_t *> exts;
 	std::vector<std::wstring> scripts;
 	_script.clear();
@@ -272,9 +263,7 @@ int PyStand::DetectScript()
 		return -1;
 	}
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
-	std::vector<wchar_t> buffer(MAX_PATH);
-	GetModuleFileNameW(GetModuleHandle(0), buffer.data(), MAX_PATH);
-	SetEnvironmentVariableW(L"LUNA_EXE_NAME", buffer.data());
+	SetEnvironmentVariableW(L"LUNA_EXE_NAME", exepath.c_str());
 	return 0;
 }
 
@@ -284,13 +273,8 @@ int PyStand::DetectScript()
 const auto init_script =
 	LR"(
 import os,functools, locale, sys
-PYSTAND = os.environ['PYSTAND']
-PYSTAND_HOME = os.environ['PYSTAND_HOME']
-PYSTAND_RUNTIME = os.environ['PYSTAND_RUNTIME']
 PYSTAND_SCRIPT = os.environ['PYSTAND_SCRIPT']
 sys.path_origin = [n for n in sys.path]
-sys.PYSTAND = PYSTAND
-sys.PYSTAND_HOME = PYSTAND_HOME
 sys.PYSTAND_SCRIPT = PYSTAND_SCRIPT
 def MessageBox(msg, info = 'Message'):
     import ctypes
@@ -478,12 +462,8 @@ std::optional<std::vector<BYTE>> GetCertificatePublicKey(const wchar_t *filePath
 
 	return result;
 }
-
-// 主验证函数
-bool VerifyFileSignatureKeyMatchesSelf(const wchar_t *filePath, const std::optional<std::vector<uint8_t>> &selfKey)
+bool VerifyFileSignature(const wchar_t *filePath)
 {
-	// 1. 验证目标文件签名的有效性 (可选，但推荐)
-	// 如果文件被篡改，WinVerifyTrust 会失败，此时也不应该信任它的公钥
 	WINTRUST_FILE_INFO fileInfo = {0};
 	fileInfo.cbStruct = sizeof(WINTRUST_FILE_INFO);
 	fileInfo.pcwszFilePath = filePath;
@@ -502,44 +482,24 @@ bool VerifyFileSignatureKeyMatchesSelf(const wchar_t *filePath, const std::optio
 	trustData.dwStateAction = WTD_STATEACTION_CLOSE;
 	WinVerifyTrust(NULL, &policyGuid, &trustData);
 
-	if (lStatus != ERROR_SUCCESS)
-	{
-		// 目标文件签名无效
-		return false;
-	}
-
-	// 2. 获取当前 EXE 的路径
-	wchar_t selfPath[MAX_PATH];
-	if (GetModuleFileNameW(NULL, selfPath, MAX_PATH) == 0)
-	{
-		return false;
-	}
-
-	auto targetKey = GetCertificatePublicKey(filePath);
-
-	// 4. 校验提取是否成功
-	if (!selfKey || !targetKey)
-	{
-		// 任意一方没有签名或无法提取公钥
-		return false;
-	}
-
-	// 5. 比较公钥是否完全相同
-	if (selfKey.value().size() != targetKey.value().size())
-	{
-		return false;
-	}
-
-	// 二进制比较
-	if (memcmp(selfKey.value().data(), targetKey.value().data(), selfKey.value().size()) == 0)
-	{
-		return true; // 私钥相同（因为公钥相同）
-	}
-
-	return false;
+	return lStatus == ERROR_SUCCESS;
 }
 
-std::set<const wchar_t *> checkintegrity_()
+bool VerifyKeyMatchesSelf(const wchar_t *filePath, const std::optional<std::vector<uint8_t>> &selfKey)
+{
+	wchar_t selfPath[MAX_PATH];
+	if (GetModuleFileNameW(NULL, selfPath, MAX_PATH) == 0)
+		return false;
+	auto targetKey = GetCertificatePublicKey(filePath);
+	if (!selfKey || !targetKey)
+		return false;
+
+	if (selfKey.value().size() != targetKey.value().size())
+		return false;
+	return memcmp(selfKey.value().data(), targetKey.value().data(), selfKey.value().size()) == 0;
+}
+
+std::set<const wchar_t *> PyStand::checkintegrity_()
 {
 	// 分别对python代码检查hash，对exe/dll检查签名
 	std::set<const wchar_t *> collect;
@@ -558,21 +518,23 @@ std::set<const wchar_t *> checkintegrity_()
 			collect.insert(fn);
 	}
 
-	wchar_t selfPath[MAX_PATH];
-	GetModuleFileNameW(NULL, selfPath, MAX_PATH);
-	auto selfKey = GetCertificatePublicKey(selfPath);
+	auto selfKey = GetCertificatePublicKey(exepath.c_str());
 	if (selfKey)
+	{
+		if (!VerifyFileSignature(exepath.c_str()))
+			collect.insert(exepath.c_str());
 		for (auto &&fn : checksig)
 		{
 			// 验证是否签名，且必须和自己签名相同
 			if (!fn)
 				continue;
-			if (!VerifyFileSignatureKeyMatchesSelf(fn, selfKey))
+			if (!VerifyKeyMatchesSelf(fn, selfKey))
 				collect.insert(fn);
 		}
+	}
 	return collect;
 }
-void checkintegrity()
+void PyStand::checkintegrity()
 {
 	auto invalidfiles = checkintegrity_();
 	if (invalidfiles.size())

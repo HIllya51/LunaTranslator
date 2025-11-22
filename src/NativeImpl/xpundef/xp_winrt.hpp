@@ -857,7 +857,7 @@ namespace ABI
             // correct parameterized interface specialization.
             typedef IAsyncOperationCompletedHandler<ABI::Windows::Graphics::Imaging::BitmapDecoder *> __FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CBitmapDecoder_t;
 #define __FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CBitmapDecoder ABI::Windows::Foundation::__FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CBitmapDecoder_t
-/* Foundation */ } /* Windows */
+        /* Foundation */ } /* Windows */
     } /* ABI */
 }
 namespace ABI
@@ -960,7 +960,7 @@ namespace ABI
             // correct parameterized interface specialization.
             typedef IAsyncOperationCompletedHandler<ABI::Windows::Media::Ocr::OcrResult *> __FIAsyncOperationCompletedHandler_1_Windows__CMedia__COcr__COcrResult_t;
 #define __FIAsyncOperationCompletedHandler_1_Windows__CMedia__COcr__COcrResult ABI::Windows::Foundation::__FIAsyncOperationCompletedHandler_1_Windows__CMedia__COcr__COcrResult_t
-/* Foundation */ } /* Windows */
+        /* Foundation */ } /* Windows */
     } /* ABI */
 }
 namespace ABI
@@ -1025,7 +1025,7 @@ namespace ABI
             // correct parameterized interface specialization.
             typedef IAsyncOperationCompletedHandler<ABI::Windows::Graphics::Imaging::SoftwareBitmap *> __FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CSoftwareBitmap_t;
 #define __FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CSoftwareBitmap ABI::Windows::Foundation::__FIAsyncOperationCompletedHandler_1_Windows__CGraphics__CImaging__CSoftwareBitmap_t
-/* Foundation */ } /* Windows */
+        /* Foundation */ } /* Windows */
     } /* ABI */
 }
 namespace ABI
@@ -1505,7 +1505,7 @@ namespace ABI
             // correct parameterized interface specialization.
             typedef ITypedEventHandler<ABI::Windows::Graphics::Capture::Direct3D11CaptureFramePool *, IInspectable *> __FITypedEventHandler_2_Windows__CGraphics__CCapture__CDirect3D11CaptureFramePool_IInspectable_t;
 #define __FITypedEventHandler_2_Windows__CGraphics__CCapture__CDirect3D11CaptureFramePool_IInspectable ABI::Windows::Foundation::__FITypedEventHandler_2_Windows__CGraphics__CCapture__CDirect3D11CaptureFramePool_IInspectable_t
-/* Foundation */ } /* Windows */
+        /* Foundation */ } /* Windows */
     } /* ABI */
 }
 namespace ABI
@@ -1775,7 +1775,7 @@ namespace ABI
                 // correct parameterized interface specialization.
                 typedef IIterable<ABI::Windows::ApplicationModel::Package *> __FIIterable_1_Windows__CApplicationModel__CPackage_t;
 #define __FIIterable_1_Windows__CApplicationModel__CPackage ABI::Windows::Foundation::Collections::__FIIterable_1_Windows__CApplicationModel__CPackage_t
-/* Collections */ } /* Foundation */
+            /* Collections */ } /* Foundation */
         } /* Windows */
     } /* ABI */
 }
@@ -1831,7 +1831,7 @@ namespace ABI
                 // correct parameterized interface specialization.
                 typedef IIterator<ABI::Windows::ApplicationModel::Package *> __FIIterator_1_Windows__CApplicationModel__CPackage_t;
 #define __FIIterator_1_Windows__CApplicationModel__CPackage ABI::Windows::Foundation::Collections::__FIIterator_1_Windows__CApplicationModel__CPackage_t
-/* Collections */ } /* Foundation */
+            /* Collections */ } /* Foundation */
         } /* Windows */
     } /* ABI */
 }

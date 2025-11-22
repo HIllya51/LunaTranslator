@@ -10,12 +10,12 @@
 #define _PYSTAND_H_
 #include <windows.h>
 
-
 #ifndef E_BOUNDS
 #define E_BOUNDS _HRESULT_TYPEDEF_(0x8000000BL)
 #endif
 
 #include <string>
+#include <set>
 #include <vector>
 //---------------------------------------------------------------------
 // PyStand
@@ -30,6 +30,10 @@ public:
 	int RunString(const wchar_t *script);
 	int DetectScript();
 
+	std::wstring exepath;
+	void checkintegrity();
+	std::set<const wchar_t *> checkintegrity_();
+
 protected:
 	bool CheckEnviron(const wchar_t *rtp);
 	bool LoadPython();
@@ -41,7 +45,6 @@ protected:
 protected:
 	HINSTANCE _hDLL;
 	std::wstring _args;	   // arguments
-	std::wstring _pystand; // absolute path of pystand
 	std::wstring _runtime; // absolute path of embedded python runtime
 	std::wstring _home;	   // home directory of PyStand.exe
 	std::wstring _script;  // init script like PyStand.int or PyStand.py

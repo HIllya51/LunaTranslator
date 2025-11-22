@@ -356,7 +356,7 @@ std::vector<NtdllExtensions::ProcessInfo> NtdllExtensions::processes() noexcept
 
         ProcessInfo item;
 #ifdef WINXP
-        item.name = unicode_to_str(*(UNICODE_STRING*)((BYTE)info_ptr + 56));
+        item.name = unicode_to_str(*(UNICODE_STRING*)((BYTE*)info_ptr + 56));
 #else
         item.name = unicode_to_str(info_ptr->ImageName);
 #endif

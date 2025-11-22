@@ -2,6 +2,7 @@
 #include <roapi.h>
 #else
 #include "../xpundef/xp_winrt.hpp"
+#include "../xpundef/xp_other.hpp"
 #endif
 
 #include <speechapi_cxx.h>
