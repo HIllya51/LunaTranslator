@@ -475,7 +475,11 @@ bool VerifyFileSignature(const wchar_t *filePath)
 	trustData.dwUnionChoice = WTD_CHOICE_FILE;
 	trustData.pFile = &fileInfo;
 	trustData.dwStateAction = WTD_STATEACTION_VERIFY;
-
+	// 只检查签名有效，不检查签名源
+	trustData.dwProvFlags = WTD_REVOCATION_CHECK_NONE |
+							WTD_CACHE_ONLY_URL_RETRIEVAL |
+							WTD_DISABLE_MD2_MD4 |
+							WTD_SAFER_FLAG;
 	GUID policyGuid = WINTRUST_ACTION_GENERIC_VERIFY_V2;
 	LONG lStatus = WinVerifyTrust(NULL, &policyGuid, &trustData);
 
@@ -487,8 +491,7 @@ bool VerifyFileSignature(const wchar_t *filePath)
 
 bool VerifyKeyMatchesSelf(const wchar_t *filePath, const std::optional<std::vector<uint8_t>> &selfKey)
 {
-	wchar_t selfPath[MAX_PATH];
-	if (GetModuleFileNameW(NULL, selfPath, MAX_PATH) == 0)
+	if (!VerifyFileSignature(filePath))
 		return false;
 	auto targetKey = GetCertificatePublicKey(filePath);
 	if (!selfKey || !targetKey)

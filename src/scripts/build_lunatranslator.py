@@ -325,7 +325,7 @@ if __name__ == "__main__":
             argv = sys.argv.copy()
             argv.append("0")
             argv[0] = absthisfile
-            
+
             argv[2] = "x86"
             argv.insert(len(argv) - 1, str(int(argv[2] != sys.argv[2])))
             subprocess.run([sys.executable, *argv])
@@ -404,3 +404,18 @@ if __name__ == "__main__":
                     t = os.path.join("../collect", _, __)
                     os.makedirs(os.path.dirname(t))
                     shutil.copy(f, t)
+    elif sys.argv[1] == "repack":
+        os.makedirs("../signed_exedlls")
+        for _dir, _, _fs in os.walk("../signed_exedlls"):
+            print(_dir, _fs)
+            for _f in _fs:
+                f = os.path.join("../build", _dir, _f)
+                f2 = os.path.join("../signed_exedlls", _dir, _f)
+                shutil.copy(f2, f)
+        os.chdir("../build")
+        os.makedirs("signed")
+        for d in os.listdir("."):
+            os.system(
+                rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {d}.zip {d}'
+            )
+            shutil.move(f"{d}.zip", "signed")

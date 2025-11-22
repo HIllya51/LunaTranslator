@@ -126,6 +126,14 @@ jobs:
           name: signed_exedlls
           path: signed_exedlls
 
+      - run: python src/scripts/build_lunatranslator.py repack
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: signed
+          path: signed
+
+
   loadversion:
     if: ${{inputs.createrelease}}
     runs-on: windows-latest
