@@ -17,12 +17,12 @@ constexpr auto parse_hex_string(const char (&str)[N])
     }
     return result;
 }
-using sha512_t = std::array<std::uint8_t, 64>;
+using sha256_t = std::array<std::uint8_t, 32>;
 
 struct
 {
     const wchar_t *file;
-    sha512_t sig;
+    sha256_t sig;
 } checkdigest[] = {
     // CHECK_DIGEST_LIST
     // 占位符，方便python脚本生成列表时替换字符串
