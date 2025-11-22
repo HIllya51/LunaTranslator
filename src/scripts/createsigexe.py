@@ -29,7 +29,7 @@ def getpefiles():
     print(myfiles)
     print(os.getcwd())
     for _ in myfiles:
-        if not os.path.exists(_):
+        if not os.path.exists(os.path.join(targetdir, _)):
             continue
         s += '{L"' + _ + '"},'
     return ""
