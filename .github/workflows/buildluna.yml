@@ -75,21 +75,6 @@ jobs:
       #   with:
       #       subject-path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
 
-      # - uses: signpath/github-action-submit-signing-request@v2
-      #   with:
-      #     api-token: '${{ secrets.SIGNPATH_APITOKEN }}'
-      #     organization-id: '2e2b9c90-04bb-4b70-8562-0171927d94c6'
-      #     project-slug: 'LunaTranslator'
-      #     signing-policy-slug: 'test-signing'
-      #     github-artifact-id: '${{ steps.upload-artifact.outputs.artifact-id }}'
-      #     wait-for-completion: true
-      #     output-artifact-directory: 'signed_${{ matrix.arch }}_${{ matrix.target }}'
-      #     artifact-configuration-slug: 'sign_${{ matrix.arch }}_${{ matrix.target }}'
-
-      # - uses: actions/upload-artifact@v4
-      #   with:
-      #     name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
-      #     path: signed_${{ matrix.arch }}_${{ matrix.target }}
   signandrepack:
     runs-on: windows-latest
     needs: [buildall]
