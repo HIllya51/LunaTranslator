@@ -35,6 +35,13 @@ extern "C"
 #endif
 #endif
 #endif
+
+#ifndef WINXP
+#define PYDLL L"python3.dll"
+#else
+#define PYDLL L"python34.dll"
+#endif
+
 #define FILES L"files\\"
 #define FILESRUNTIME FILES RUNTIME
 
@@ -104,22 +111,12 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
-#ifndef WINXP
-	// check python3.dll
-	if (!PathFileExistsW((_runtime + L"\\python3.dll").c_str()))
+	if (!PathFileExistsW((_runtime + L"\\" + PYDLL).c_str()))
 	{
-		std::wstring msg = L"Missing python3.dll in:\r\n" + _runtime;
+		std::wstring msg = std::wstring(L"Missing ") + PYDLL + L" in:\r\n" + _runtime;
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
-#else
-	if (!PathFileExistsW((_runtime + L"\\python34.dll").c_str()))
-	{
-		std::wstring msg = L"Missing python34.dll in:\r\n" + _runtime;
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
-		return false;
-	}
-#endif
 
 	return true;
 }
@@ -133,38 +130,30 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 //---------------------------------------------------------------------
 bool PyStand::LoadPython()
 {
-	std::wstring runtime = _runtime;
-	std::wstring previous;
-
-	// save current directory
-	wchar_t path[MAX_PATH + 10];
-	GetCurrentDirectoryW(MAX_PATH + 1, path);
-	previous = path;
-
 	// python dll must be load under "runtime"
-	SetCurrentDirectoryW(runtime.c_str());
+	SetCurrentDirectoryW(_runtime.c_str());
 	// LoadLibrary
 
 #ifdef WIN10ABOVE
 	// win10版将runtime路径设为DLL搜索路径，优先使用自带的高级vcrt
 	//  这样，即使将主exe静态编译，也能加载runtime中的vcrt
 	SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-	SetDllDirectoryW(runtime.c_str());
+	SetDllDirectoryW(_runtime.c_str());
 #else
 	WCHAR env[65535];
 	GetEnvironmentVariableW(L"PATH", env, 65535);
-	auto newenv = std::wstring(env) + L";" + runtime;
+	auto newenv = std::wstring(env) + L";" + _runtime;
 #ifndef WINXP
 	// win7版优先使用系统自带的，系统没有再用自带的
 	;
 #else
 	// xp版把这些路径都加进去
-	newenv += L";" + runtime + L"Lib/site-packages/PyQt5";
+	newenv += L";" + _runtime + L"Lib/site-packages/PyQt5";
 #endif
 	SetEnvironmentVariableW(L"PATH", newenv.c_str());
 #endif
 
-	std::wstring pydll = runtime + L"\\" + PYDLL;
+	std::wstring pydll = _runtime + L"\\" + PYDLL;
 	_hDLL = (HINSTANCE)LoadLibraryW(pydll.c_str());
 	if (_hDLL)
 	{
@@ -172,11 +161,11 @@ bool PyStand::LoadPython()
 	}
 
 	// restore director
-	SetCurrentDirectoryW(previous.c_str());
+	SetCurrentDirectoryW(_home.c_str());
 
 	if (_hDLL == NULL)
 	{
-		std::wstring msg = L"Cannot load python3.dll from:\r\n" + runtime;
+		std::wstring msg = L"Cannot load python3.dll from:\r\n" + _runtime;
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return false;
 	}
