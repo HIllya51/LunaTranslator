@@ -156,9 +156,9 @@ jobs:
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
-            build/LunaTranslator_x86_winxp/LunaTranslator_x86_winxp.zip
-            build/LunaTranslator_x86_win7/LunaTranslator_x86_win7.zip
-            build/LunaTranslator_x64_win7/LunaTranslator_x64_win7.zip
-            build/LunaTranslator_x64_win10/LunaTranslator_x64_win10.zip
+            build/signed/LunaTranslator_x86_winxp.zip
+            build/signed/LunaTranslator_x86_win7.zip
+            build/signed/LunaTranslator_x64_win7.zip
+            build/signed/LunaTranslator_x64_win10.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -21,8 +21,6 @@ extern "C"
 {
 #include "WjCryptLib_Sha256.h"
 }
-#pragma comment(lib, "wintrust.lib")
-#pragma comment(lib, "crypt32.lib")
 
 #ifdef WIN10ABOVE
 #define RUNTIME L"runtime31264"

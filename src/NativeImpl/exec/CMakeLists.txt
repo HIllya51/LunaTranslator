@@ -18,17 +18,18 @@ set(sources PyStand.cpp ${CMAKE_BINARY_DIR}/luna.rc ${versioninfo} WjCryptLib_Sh
 #add_executable(LunaTranslator_debug ${sources})
 #target_compile_definitions(LunaTranslator_debug PRIVATE PYSTAND_CONSOLE)
 add_executable(LunaTranslator WIN32 ${sources})
-if(NOT WINXP)
-add_executable(LunaTranslator_admin WIN32 ${sources})
-endif()
+target_link_libraries(LunaTranslator wintrust crypt32 ${YY_Thunks})
 set_target_properties(LunaTranslator PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
 if(NOT WINXP)
+add_executable(LunaTranslator_admin WIN32 ${sources})
+target_link_libraries(LunaTranslator_admin wintrust crypt32 ${YY_Thunks})
 set_target_properties(LunaTranslator_admin PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
 endif()
+
 if(MSVC)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 4)
     set_target_properties(LunaTranslator PROPERTIES LINK_FLAGS "/LARGEADDRESSAWARE")
