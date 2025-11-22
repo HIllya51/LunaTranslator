@@ -409,9 +409,8 @@ if __name__ == "__main__":
         for _dir, _, _fs in os.walk("../signed_exedlls"):
             print(_dir, _fs)
             for _f in _fs:
-                f = os.path.join("../build", _dir[len("../signed_exedlls") :], _f)
                 f2 = os.path.join(_dir, _f)
-                shutil.copy(f2, f)
+                shutil.copy(f2, f2.replace("signed_exedlls", "build"))
         os.chdir("../build")
         os.makedirs("signed")
         for d in os.listdir("."):
