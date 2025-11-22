@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  WjCryptLib_Sha512
+//  WjCryptLib_Sha256
 //
-//  Implementation of SHA512 hash function.
+//  Implementation of SHA256 hash function.
 //  Original author: Tom St Denis, tomstdenis@gmail.com, http://libtom.org
 //  Modified by WaterJuice retaining Public Domain license.
 //
@@ -20,56 +20,70 @@
 typedef struct
 {
     uint64_t    length;
-    uint64_t    state[8];
+    uint32_t    state[8];
     uint32_t    curlen;
-    uint8_t     buf[128];
-} Sha512Context;
+    uint8_t     buf[64];
+} Sha256Context;
 
-#define SHA512_HASH_SIZE           ( 512 / 8 )
+#define SHA256_HASH_SIZE           ( 256 / 8 )
 
 typedef struct
 {
-    uint8_t      bytes [SHA512_HASH_SIZE];
-} SHA512_HASH;
+    uint8_t      bytes [SHA256_HASH_SIZE];
+} SHA256_HASH;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //  PUBLIC FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  Sha512Initialise
+//  Sha256Initialise
 //
-//  Initialises a SHA512 Context. Use this to initialise/reset a context.
+//  Initialises a SHA256 Context. Use this to initialise/reset a context.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void
-    Sha512Initialise
+    Sha256Initialise
     (
-        Sha512Context*      Context         // [out]
+        Sha256Context*      Context         // [out]
     );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  Sha512Update
+//  Sha256Update
 //
-//  Adds data to the SHA512 context. This will process the data and update the internal state of the context. Keep on
-//  calling this function until all the data has been added. Then call Sha512Finalise to calculate the hash.
+//  Adds data to the SHA256 context. This will process the data and update the internal state of the context. Keep on
+//  calling this function until all the data has been added. Then call Sha256Finalise to calculate the hash.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void
-    Sha512Update
+    Sha256Update
     (
-        Sha512Context*      Context,        // [in out]
+        Sha256Context*      Context,        // [in out]
         void const*         Buffer,         // [in]
         uint32_t            BufferSize      // [in]
     );
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  Sha512Finalise
+//  Sha256Finalise
 //
-//  Performs the final calculation of the hash and returns the digest (64 byte buffer containing 512bit hash). After
-//  calling this, Sha512Initialised must be used to reuse the context.
+//  Performs the final calculation of the hash and returns the digest (32 byte buffer containing 256bit hash). After
+//  calling this, Sha256Initialised must be used to reuse the context.
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void
-    Sha512Finalise
+    Sha256Finalise
     (
-        Sha512Context*      Context,        // [in out]
-        SHA512_HASH*        Digest          // [out]
+        Sha256Context*      Context,        // [in out]
+        SHA256_HASH*        Digest          // [out]
+    );
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//  Sha256Calculate
+//
+//  Combines Sha256Initialise, Sha256Update, and Sha256Finalise into one function. Calculates the SHA256 hash of the
+//  buffer.
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void
+    Sha256Calculate
+    (
+        void  const*        Buffer,         // [in]
+        uint32_t            BufferSize,     // [in]
+        SHA256_HASH*        Digest          // [in]
     );

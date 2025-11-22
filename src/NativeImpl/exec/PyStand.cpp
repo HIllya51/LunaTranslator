@@ -19,7 +19,7 @@
 #include "checksigs.hpp"
 extern "C"
 {
-#include "WjCryptLib_Sha512.h"
+#include "WjCryptLib_Sha256.h"
 }
 #pragma comment(lib, "wintrust.lib")
 #pragma comment(lib, "crypt32.lib")
@@ -353,15 +353,15 @@ exec(code, environ)
 //! prebuild: windres resource.rc -o resource.o
 //! mode: win
 //! int: objs
-SHA512_HASH Sha512Digest(const std::vector<uint8_t> &str)
+SHA256_HASH Sha256Digest(const std::vector<uint8_t> &str)
 {
-	Sha512Context sha512Context;
-	SHA512_HASH sha512Hash;
+	Sha256Context sha256Context;
+	SHA256_HASH sha256Hash;
 	uint16_t i;
-	Sha512Initialise(&sha512Context);
-	Sha512Update(&sha512Context, str.data(), str.size());
-	Sha512Finalise(&sha512Context, &sha512Hash);
-	return sha512Hash;
+	Sha256Initialise(&sha256Context);
+	Sha256Update(&sha256Context, str.data(), str.size());
+	Sha256Finalise(&sha256Context, &sha256Hash);
+	return sha256Hash;
 }
 std::optional<std::vector<uint8_t>> readFile(const std::wstring &filename)
 {
@@ -513,7 +513,7 @@ std::set<const wchar_t *> PyStand::checkintegrity_()
 			collect.insert(fn);
 			continue;
 		}
-		auto sigf = Sha512Digest(f.value());
+		auto sigf = Sha256Digest(f.value());
 		if (memcmp(sigf.bytes, sig.data(), sig.size()))
 			collect.insert(fn);
 	}
