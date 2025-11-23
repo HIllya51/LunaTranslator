@@ -100,8 +100,8 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 
 	SetCurrentDirectoryW(_home.c_str());
 
-	checkintegrity();
-
+	if (!checkintegrity())
+		return false;
 	_runtime = (std::filesystem::path(_home) / rtp).wstring();
 
 	// check home
@@ -486,10 +486,28 @@ bool VerifyKeyMatchesSelf(const wchar_t *filePath, const std::optional<std::vect
 	return memcmp(selfKey.value().data(), targetKey.value().data(), selfKey.value().size()) == 0;
 }
 
-std::set<const wchar_t *> PyStand::checkintegrity_()
+std::set<const wchar_t *> PyStand::checkintegrity_(bool &succ)
 {
 	// 分别对python代码检查hash，对exe/dll检查签名
 	std::set<const wchar_t *> collect;
+
+	auto selfKey = GetCertificatePublicKey(exepath.c_str());
+	if (selfKey)
+	{
+		if (!VerifyFileSignature(exepath.c_str()))
+		{
+			succ = false;
+			return {};
+		}
+		for (auto &&fn : checksig)
+		{
+			// 验证是否签名，且必须和自己签名相同
+			if (!fn)
+				continue;
+			if (!VerifyKeyMatchesSelf(fn, selfKey))
+				collect.insert(fn);
+		}
+	}
 	for (auto &&[fn, sig] : checkdigest)
 	{
 		if (!fn)
@@ -504,26 +522,21 @@ std::set<const wchar_t *> PyStand::checkintegrity_()
 		if (memcmp(sigf.bytes, sig.data(), sig.size()))
 			collect.insert(fn);
 	}
-
-	auto selfKey = GetCertificatePublicKey(exepath.c_str());
-	if (selfKey)
-	{
-		if (!VerifyFileSignature(exepath.c_str()))
-			collect.insert(exepath.c_str());
-		for (auto &&fn : checksig)
-		{
-			// 验证是否签名，且必须和自己签名相同
-			if (!fn)
-				continue;
-			if (!VerifyKeyMatchesSelf(fn, selfKey))
-				collect.insert(fn);
-		}
-	}
 	return collect;
 }
-void PyStand::checkintegrity()
+bool PyStand::checkintegrity()
 {
-	auto invalidfiles = checkintegrity_();
+	bool succ = true;
+	auto invalidfiles = checkintegrity_(succ);
+	if (!succ)
+	{
+		std::wstringstream ss;
+		ss << L"主程序已被篡改，无法运行 ！";
+		ss << L"\n";
+		ss << L"The main program has been tampered with and cannot run!";
+		MessageBoxW(0, ss.str().c_str(), L"Error", 0);
+		return false;
+	}
 	if (invalidfiles.size())
 	{
 		// 检查到无效文件时，仍执行，但弹窗警告。
@@ -542,6 +555,7 @@ void PyStand::checkintegrity()
 		}
 		MessageBoxW(0, ss.str().c_str(), L"Warning", 0);
 	}
+	return true;
 }
 int main()
 {

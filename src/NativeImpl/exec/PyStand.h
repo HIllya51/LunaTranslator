@@ -31,8 +31,8 @@ public:
 	int DetectScript();
 
 	std::wstring exepath;
-	void checkintegrity();
-	std::set<const wchar_t *> checkintegrity_();
+	bool checkintegrity();
+	std::set<const wchar_t *> checkintegrity_(bool & succ);
 
 protected:
 	bool CheckEnviron(const wchar_t *rtp);
