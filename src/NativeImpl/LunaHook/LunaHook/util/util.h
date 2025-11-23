@@ -40,10 +40,10 @@ namespace Util
   DWORD FindImportEntry(DWORD hModule, DWORD fun);
 #endif
 
-  bool CheckFile_exits(LPCWSTR name, bool if_exits_also_ok);
+  bool CheckFile_exits(LPCWSTR name, bool if_exits_also_ok = false);
   bool CheckFile(LPCWSTR name);
 
-  bool SearchResourceString(LPCWSTR str, HMODULE hModule=NULL);
+  bool SearchResourceString(LPCWSTR str, HMODULE hModule = NULL);
 
   std::pair<uintptr_t, uintptr_t> QueryModuleLimits(HMODULE module, uintptr_t addition = 0x1000, DWORD protect = PAGE_EXECUTE);
   std::vector<uintptr_t> SearchMemory(const void *bytes, short length, DWORD protect = PAGE_EXECUTE, uintptr_t minAddr = 0, uintptr_t maxAddr = -1ULL);
@@ -51,8 +51,6 @@ namespace Util
 
 } // namespace Util
 
-uintptr_t SafeFindEnclosingAlignedFunction(uintptr_t addr, uintptr_t range);
-uintptr_t SafeFindBytes(LPCVOID pattern, size_t patternSize, uintptr_t lowerBound, uintptr_t upperBound);
 #ifndef _WIN64
 
 std::vector<DWORD> findrelativecall(const BYTE *pattern, int length, DWORD calladdress, DWORD start, DWORD end);

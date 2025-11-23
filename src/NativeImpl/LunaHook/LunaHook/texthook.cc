@@ -171,7 +171,7 @@ uintptr_t queryrelativeret(HookParam &hp, uintptr_t retaddr)
 	if (hp.jittype == JITTYPE::UNITY)
 	{
 #ifndef _WIN64
-		relative = retaddr - SafeFindEnclosingAlignedFunction(retaddr, 0x10000);
+		relative = retaddr - MemDbg::findEnclosingAlignedFunction(retaddr, 0x10000);
 #else
 		relative = retaddr - win64find0000(retaddr);
 #endif

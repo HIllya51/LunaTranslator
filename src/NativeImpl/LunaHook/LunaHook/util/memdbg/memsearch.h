@@ -187,6 +187,7 @@ dword_t findEnclosingFunctionAfterNop(dword_t addr, dword_t searchSize = Maximum
  *  @exception  illegal memory access
  */
 uintptr_t findBytes(const void *pattern, uintptr_t patternSize, uintptr_t lowerBound, uintptr_t upperBound);
+std::vector<uintptr_t> findBytesAll(const void *pattern, uintptr_t patternSize, uintptr_t lowerBound, uintptr_t upperBound);
 
 // User space: 0 - 2G (0 - 0x7ffeffff)
 // Kernel space: 2G - 4G  (0x80000000 - 0xffffffff)

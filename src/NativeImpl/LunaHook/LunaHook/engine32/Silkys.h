@@ -59,7 +59,7 @@ public:
         // https://vndb.org/v2380
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
-        { return Util::CheckFile_exits(L"*SYS*.ifl", true); }; // L"*SYS.ifl";
+        { return Util::CheckFile_exits(L"*SYS*.ifl"); }; // L"*SYS.ifl";
     };
     bool attach_function();
 };

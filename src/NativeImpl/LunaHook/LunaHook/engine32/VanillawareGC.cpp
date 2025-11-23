@@ -143,7 +143,7 @@ ULONG _SafeMatchBytesInMappedMemory(LPCVOID pattern, DWORD patternSize, BYTE wil
                                     ULONG start, ULONG stop, ULONG step)
 {
   for (ULONG i = start; i < stop; i += step) // + patternSize to avoid overlap
-    if (ULONG r = SafeFindBytes(pattern, patternSize, i, i + step + patternSize + 1))
+    if (ULONG r = MemDbg::findBytes(pattern, patternSize, i, i + step + patternSize + 1))
       return r;
   return 0;
 }

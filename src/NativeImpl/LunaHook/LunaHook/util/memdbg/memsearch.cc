@@ -642,7 +642,7 @@ uintptr_t findCallerAddress(uintptr_t funcAddr, DWORD sig, uintptr_t lowerBound,
   return 0;
 }
 
-uintptr_t findEnclosingAlignedFunction(uintptr_t start, uintptr_t back_range)
+static uintptr_t __findEnclosingAlignedFunction(uintptr_t start, uintptr_t back_range)
 {
   start &= ~0xf;
   for (uintptr_t i = start, j = start - back_range; i > j; i -= 0x10)
@@ -669,6 +669,18 @@ uintptr_t findEnclosingAlignedFunction(uintptr_t start, uintptr_t back_range)
   return 0;
 }
 
+uintptr_t findEnclosingAlignedFunction(uintptr_t start, uintptr_t back_range)
+{
+  __try
+  {
+    return __findEnclosingAlignedFunction(start, back_range); // this function might raise if failed
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+    return 0;
+  }
+}
+
 uintptr_t findEnclosingAlignedFunction_strict(uintptr_t start, uintptr_t back_range)
 {
   start &= ~0xf;
@@ -682,10 +694,27 @@ uintptr_t findEnclosingAlignedFunction_strict(uintptr_t start, uintptr_t back_ra
 }
 uintptr_t findBytes(const void *pattern, uintptr_t patternSize, uintptr_t lowerBound, uintptr_t upperBound)
 {
-  uintptr_t reladdr = SearchPattern(lowerBound, upperBound - lowerBound, pattern, patternSize);
-  return reladdr ? lowerBound + reladdr : 0;
+  __try
+  {
+    uintptr_t reladdr = SearchPattern(lowerBound, upperBound - lowerBound, pattern, patternSize);
+    return reladdr ? lowerBound + reladdr : 0;
+  }
+  __except (EXCEPTION_EXECUTE_HANDLER)
+  {
+    return 0;
+  }
 }
-
+std::vector<uintptr_t> findBytesAll(const void *pattern, uintptr_t patternSize, uintptr_t lowerBound, uintptr_t upperBound)
+{
+  std::vector<uintptr_t> ret;
+  auto lower = lowerBound;
+  while (auto addr = findBytes(pattern, patternSize, lower, upperBound))
+  {
+    ret.push_back(addr);
+    lower = addr + patternSize;
+  }
+  return ret;
+}
 // DWORD reverseFindBytes(const void *pattern, DWORD patternSize, DWORD lowerBound, DWORD upperBound)
 //{
 //   DWORD reladdr = reverseSearchPattern(lowerBound, upperBound - lowerBound, pattern, patternSize);

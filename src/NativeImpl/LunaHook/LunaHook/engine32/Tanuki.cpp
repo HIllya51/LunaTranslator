@@ -22,7 +22,7 @@ bool InsertTanukiHook()
 {
   for (DWORD i = processStartAddress; i < processStopAddress - 4; i++)
     if (*(DWORD *)i == 0x8140)
-      if (DWORD j = SafeFindEnclosingAlignedFunction(i, 0x400))
+      if (DWORD j = MemDbg::findEnclosingAlignedFunction(i, 0x400))
       { // jichi 9/14/2013: might crash the game without admin priv
         // GROWL_DWORD2(i, j);
         HookParam hp;

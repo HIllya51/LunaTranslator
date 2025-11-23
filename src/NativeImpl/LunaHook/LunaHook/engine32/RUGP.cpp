@@ -65,7 +65,7 @@ namespace
     { // jichi 10/1/2013: Changed to compare with 0x20000
       if (*(s - 2) != 0x81)
         return false;
-      if (DWORD i = SafeFindEnclosingAlignedFunction((DWORD)s, 0x200))
+      if (DWORD i = MemDbg::findEnclosingAlignedFunction((DWORD)s, 0x200))
       {
         auto [s, e] = Util::QueryModuleLimits((HMODULE)low);
         auto refs = findxref_reverse_checkcallop(i, s, e, 0xe8);

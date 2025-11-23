@@ -53,7 +53,7 @@ namespace
         for (DWORD j = i + 6, k = j + 0x10; j < k; j++)
           if (*(BYTE *)j == 0xb8 &&
               *(DWORD *)(j + 1) == push)
-            if (DWORD hook_addr = SafeFindEnclosingAlignedFunction(i, 0x200))
+            if (DWORD hook_addr = MemDbg::findEnclosingAlignedFunction(i, 0x200))
             {
               HookParam hp;
               hp.address = hook_addr;

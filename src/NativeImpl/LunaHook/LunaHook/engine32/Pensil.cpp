@@ -3,7 +3,7 @@ bool InsertPensilHook()
 {
   for (DWORD i = processStartAddress; i < processStopAddress - 4; i++)
     if (*(DWORD *)i == 0x6381) // cmp *,8163
-      if (DWORD j = SafeFindEnclosingAlignedFunction(i, 0x100))
+      if (DWORD j = MemDbg::findEnclosingAlignedFunction(i, 0x100))
       {
         // Artikash 7/20/2019: I don't understand how or why this is possible, but I found a game that by default has copy on write memory for its .text section
         VirtualProtect((void *)j, 1, PAGE_EXECUTE_READ, DUMMY);

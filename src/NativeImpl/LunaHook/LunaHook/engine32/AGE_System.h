@@ -46,7 +46,7 @@ public:
       auto s = check_by_list{L"Agrd.pac", L"vic.pac", L"se.pac", L"mus.pac"};
       return Util::SearchResourceString(L"AGE_System") // 已破解
              || std::all_of(s.begin(), s.end(), [](auto f)
-                            { return Util::CheckFile_exits(f, true); }); // 未破解
+                            { return Util::CheckFile_exits(f); }); // 未破解
     };
   };
   bool attach_function();

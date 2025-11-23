@@ -90,7 +90,7 @@ namespace
         i++;
         if (id[0] == 0xffff)
         { // cmp eax,0xffff
-          hp.address = SafeFindEnclosingAlignedFunction(i, 0x40);
+          hp.address = MemDbg::findEnclosingAlignedFunction(i, 0x40);
           if (hp.address)
           {
             hp.offset = stackoffset(3);
@@ -108,7 +108,7 @@ namespace
         i += 2;
         if (id[0] == 0xffff)
         { // cmp reg,0xffff
-          hp.address = SafeFindEnclosingAlignedFunction(i, 0x40);
+          hp.address = MemDbg::findEnclosingAlignedFunction(i, 0x40);
           if (hp.address)
           {
             hp.offset = stackoffset(3);

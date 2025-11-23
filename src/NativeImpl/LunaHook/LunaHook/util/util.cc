@@ -368,32 +368,6 @@ namespace Util
 
 }
 
-uintptr_t SafeFindEnclosingAlignedFunction(uintptr_t addr, uintptr_t range)
-{
-  uintptr_t r = 0;
-  __try
-  {
-    r = MemDbg::findEnclosingAlignedFunction(addr, range); // this function might raise if failed
-  }
-  __except (EXCEPTION_EXECUTE_HANDLER)
-  {
-  }
-  return r;
-}
-
-uintptr_t SafeFindBytes(LPCVOID pattern, size_t patternSize, uintptr_t lowerBound, uintptr_t upperBound)
-{
-  ULONG r = 0;
-  __try
-  {
-    r = MemDbg::findBytes(pattern, patternSize, lowerBound, upperBound);
-  }
-  __except (EXCEPTION_EXECUTE_HANDLER)
-  {
-  }
-  return r;
-}
-
 #ifndef _WIN64
 
 std::vector<DWORD> findrelativecall(const BYTE *pattern, int length, DWORD calladdress, DWORD start, DWORD end)

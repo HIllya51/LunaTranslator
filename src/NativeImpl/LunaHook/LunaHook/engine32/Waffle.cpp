@@ -23,7 +23,7 @@ bool InsertWaffleDynamicHook(LPVOID addr, hook_context *context)
   // jichi 9/30/2013: Fix the bug in ITH logic where j is uninitialized
   for (i = processStartAddress + 0x1000; i < processStopAddress - 4; i++)
     if (*id == handler && *(ib - 1) == 0x68)
-      if (DWORD t = SafeFindEnclosingAlignedFunction(i, 0x40))
+      if (DWORD t = MemDbg::findEnclosingAlignedFunction(i, 0x40))
       {
         HookParam hp;
         hp.address = t;

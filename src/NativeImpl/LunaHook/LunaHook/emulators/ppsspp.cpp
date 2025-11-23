@@ -71,7 +71,7 @@ namespace PPSSPP
         addr = MemDbg::findPushAddress(addr, processStartAddress, processStopAddress);
         if (!addr)
             return NULL;
-        addr = SafeFindEnclosingAlignedFunction(addr, 0x200);
+        addr = MemDbg::findEnclosingAlignedFunction(addr, 0x200);
 #else
         addr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
 

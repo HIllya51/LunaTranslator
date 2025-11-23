@@ -344,7 +344,7 @@ bool InsertCircusHook2() // jichi 10/2/2013: Change return type to bool
   for (DWORD i = processStartAddress + 0x1000; i < processStopAddress - 4; i++)
     if ((*(DWORD *)i & 0xffffff) == 0x75243c)
     { // cmp al, 24; je
-      if (DWORD j = SafeFindEnclosingAlignedFunction(i, 0x80))
+      if (DWORD j = MemDbg::findEnclosingAlignedFunction(i, 0x80))
       {
         HookParam hp;
         hp.address = j;
