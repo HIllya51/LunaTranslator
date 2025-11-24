@@ -48,6 +48,7 @@ from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
 import functools, gobject
 from gui.transhist import transhist
+from gui.transhistsearch import TransHistSearchWindow
 from gui.edittext import edittext
 from gui.flowsearchword import WordViewTooltip
 import importlib, qtawesome
@@ -1487,6 +1488,7 @@ class BASEOBJECT(QObject):
         self.setcommonstylesheet()
         self.settin_ui = Setting(self.commonstylebase)
         self.transhis = transhist(self.commonstylebase)
+        self.transhis_search = TransHistSearchWindow(self.commonstylebase)
         self.startreader()
         self.searchwordW = searchwordW(self.commonstylebase)
         self.hookselectdialog = hookselect(self.commonstylebase)

@@ -677,6 +677,7 @@ class TranslatorWindow(resizableframeless):
                 ),
             ),
             ("history", lambda: gobject.base.transhis.showsignal.emit()),
+            ("historysearch", lambda: gobject.base.transhis_search.show()),
             (
                 "noundict",
                 buttonfunctions(

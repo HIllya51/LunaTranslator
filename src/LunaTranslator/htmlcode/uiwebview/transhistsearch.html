@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>翻译历史检索</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-color: #2c2c2c;
+                color: #fff;
+            }
+            
+            .search-container,
+            .filter-container,
+            .history-item,
+            .message-toast {
+                background-color: #3c3c3c;
+                border-color: #555;
+            }
+            
+            input[type="text"],
+            select {
+                background-color: #4c4c4c;
+                color: #fff;
+                border-color: #666;
+            }
+            
+            .highlight {
+                background-color: #555;
+                color: #fff;
+            }
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        
+        .header {
+            padding: 16px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .search-container {
+            display: flex;
+            margin-bottom: 16px;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .search-container input[type="text"] {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        
+        .search-container button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: #666;
+        }
+        
+        .filter-container {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .filter-group select {
+            padding: 6px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .clear-filters {
+            align-self: flex-end;
+            padding: 6px 12px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .history-item {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        
+        .history-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        
+        .history-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .history-item-api {
+            font-weight: 500;
+        }
+        
+        .history-item-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .history-item-original,
+        .history-item-translation {
+            font-size: 14px;
+            line-height: 1.5;
+            max-height: 60px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+        }
+        
+        .history-item-original:hover,
+        .history-item-translation:hover {
+            max-height: none;
+            overflow: visible;
+        }
+        
+        .highlight {
+            background-color: #ffff00;
+            color: #000;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 64px 24px;
+            color: #999;
+        }
+        
+        .loading-state {
+            text-align: center;
+            padding: 64px 24px;
+            color: #666;
+        }
+        
+        .message-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        
+        .message-toast.hidden {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+        }
+        
+        .context-menu {
+            position: fixed;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1001;
+            list-style: none;
+            padding: 8px 0;
+        }
+        
+        .context-menu-item {
+            padding: 8px 16px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .context-menu-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="搜索原文或译文..." autocomplete="off">
+                <button id="searchButton">🔍</button>
+            </div>
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="timeFilter">时间范围</label>
+                    <select id="timeFilter">
+                        <option value="all">全部时间</option>
+                        <option value="today">今日</option>
+                        <option value="week">本周</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="engineFilter">翻译引擎</label>
+                    <select id="engineFilter">
+                        <option value="all">全部引擎</option>
+                    </select>
+                </div>
+                <button class="clear-filters" id="clearFilters">清除筛选</button>
+            </div>
+        </div>
+        <div class="content">
+            <div class="history-list" id="historyList">
+                <div class="loading-state">加载中...</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="message-toast hidden" id="messageToast"></div>
+    
+    <ul class="context-menu hidden" id="contextMenu">
+        <li class="context-menu-item" data-action="copy">复用译文</li>
+        <li class="context-menu-item" data-action="edit">编辑记录</li>
+        <li class="context-menu-item" data-action="delete">删除记录</li>
+    </ul>
+    
+    <script>
+        let historyData = [];
+        let filteredData = [];
+        let currentContextMenuRecord = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Request history data from Python
+            if (window.LUNAJSObject) {
+                window.LUNAJSObject.requestHistoryData();
+            }
+            
+            // Bind search input
+            const searchInput = document.getElementById('searchInput');
+            searchInput.addEventListener('input', debounce(searchHistory, 300));
+            
+            // Bind search button
+            const searchButton = document.getElementById('searchButton');
+            searchButton.addEventListener('click', searchHistory);
+            
+            // Bind filter inputs
+            const timeFilter = document.getElementById('timeFilter');
+            const engineFilter = document.getElementById('engineFilter');
+            timeFilter.addEventListener('change', filterHistory);
+            engineFilter.addEventListener('change', filterHistory);
+            
+            // Bind clear filters button
+            const clearFiltersButton = document.getElementById('clearFilters');
+            clearFiltersButton.addEventListener('click', clearFilters);
+            
+            // Bind context menu
+            const contextMenu = document.getElementById('contextMenu');
+            document.addEventListener('click', function() {
+                contextMenu.classList.add('hidden');
+            });
+            
+            contextMenu.addEventListener('click', function(e) {
+                const action = e.target.getAttribute('data-action');
+                if (action && currentContextMenuRecord) {
+                    handleContextMenuAction(action, currentContextMenuRecord);
+                }
+            });
+            
+            // Bind keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    navigateHistoryItems(e.key);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    selectCurrentHistoryItem();
+                }
+            });
+        });
+        
+        // Load history data from Python
+        function loadHistoryData(data) {
+            historyData = data;
+            filteredData = [...historyData];
+            
+            // Populate engine filter
+            const engineFilter = document.getElementById('engineFilter');
+            const engines = [...new Set(data.map(item => item.api))].filter(api => api);
+            engines.forEach(engine => {
+                const option = document.createElement('option');
+                option.value = engine;
+                option.textContent = engine;
+                engineFilter.appendChild(option);
+            });
+            
+            // Render initial data
+            renderHistoryList();
+        }
+        
+        // Search history
+        function searchHistory() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!searchTerm) {
+                filteredData = [...historyData];
+            } else {
+                filteredData = historyData.filter(item => {
+                    return item.original.toLowerCase().includes(searchTerm) || 
+                           item.translation.toLowerCase().includes(searchTerm);
+                });
+            }
+            
+            // Apply other filters
+            filterHistory();
+        }
+        
+        // Filter history
+        function filterHistory() {
+            const timeFilter = document.getElementById('timeFilter').value;
+            const engineFilter = document.getElementById('engineFilter').value;
+            
+            let result = [...filteredData];
+            
+            // Apply time filter
+            if (timeFilter === 'today') {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const todayTimestamp = today.getTime() / 1000;
+                result = result.filter(item => item.timestamp >= todayTimestamp);
+            } else if (timeFilter === 'week') {
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                weekAgo.setHours(0, 0, 0, 0);
+                const weekAgoTimestamp = weekAgo.getTime() / 1000;
+                result = result.filter(item => item.timestamp >= weekAgoTimestamp);
+            }
+            
+            // Apply engine filter
+            if (engineFilter !== 'all') {
+                result = result.filter(item => item.api === engineFilter);
+            }
+            
+            filteredData = result;
+            renderHistoryList();
+        }
+        
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('timeFilter').value = 'all';
+            document.getElementById('engineFilter').value = 'all';
+            
+            filteredData = [...historyData];
+            renderHistoryList();
+        }
+        
+        // Render history list
+        function renderHistoryList() {
+            const historyList = document.getElementById('historyList');
+            
+            if (filteredData.length === 0) {
+                historyList.innerHTML = '<div class="empty-state">没有找到匹配的翻译记录</div>';
+                return;
+            }
+            
+            // Sort by timestamp descending
+            filteredData.sort((a, b) => b.timestamp - a.timestamp);
+            
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const html = filteredData.map(item => {
+                const time = formatTimestamp(item.timestamp);
+                const original = highlightText(item.original, searchTerm);
+                const translation = highlightText(item.translation, searchTerm);
+                
+                return `
+                    <div class="history-item" data-id="${item.id}">
+                        <div class="history-item-header">
+                            <span class="history-item-api">${item.api || '无'}</span>
+                            <span class="history-item-time">${time}</span>
+                        </div>
+                        <div class="history-item-content">
+                            <div class="history-item-original">${original}</div>
+                            <div class="history-item-translation">${translation}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            historyList.innerHTML = html;
+            
+            // Bind click and context menu events
+            const historyItems = document.querySelectorAll('.history-item');
+            historyItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const recordId = parseInt(this.getAttribute('data-id'));
+                    const record = filteredData.find(r => r.id === recordId);
+                    if (record && record.translation) {
+                        copyTranslation(record.translation);
+                    }
+                });
+                
+                item.addEventListener('contextmenu', function(e) {
+                    e.preventDefault();
+                    const recordId = parseInt(this.getAttribute('data-id'));
+                    currentContextMenuRecord = filteredData.find(r => r.id === recordId);
+                    
+                    const contextMenu = document.getElementById('contextMenu');
+                    contextMenu.style.left = `${e.pageX}px`;
+                    contextMenu.style.top = `${e.pageY}px`;
+                    contextMenu.classList.remove('hidden');
+                });
+            });
+        }
+        
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp * 1000);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${year}-${month}-${day} ${hours}:${minutes}`;
+        }
+        
+        // Highlight text
+        function highlightText(text, term) {
+            if (!term) return text;
+            
+            const regex = new RegExp(`(${term})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        // Handle context menu action
+        function handleContextMenuAction(action, record) {
+            switch (action) {
+                case 'copy':
+                    if (record.translation) {
+                        copyTranslation(record.translation);
+                    }
+                    break;
+                case 'edit':
+                    if (window.LUNAJSObject) {
+                        window.LUNAJSObject.editRecord(record.id, record.original, record.translation, record.api, record.timestamp);
+                    }
+                    break;
+                case 'delete':
+                    if (window.LUNAJSObject) {
+                        if (confirm('确定要删除这条翻译记录吗？')) {
+                            window.LUNAJSObject.deleteRecord(record.id);
+                        }
+                    }
+                    break;
+            }
+            
+            // Hide context menu
+            document.getElementById('contextMenu').classList.add('hidden');
+        }
+        
+        // Copy translation
+        function copyTranslation(translation) {
+            if (window.LUNAJSObject) {
+                window.LUNAJSObject.copyTranslation(translation);
+            }
+        }
+        
+        // Navigate history items with keyboard
+        function navigateHistoryItems(key) {
+            const historyItems = document.querySelectorAll('.history-item');
+            if (historyItems.length === 0) return;
+            
+            let currentIndex = Array.from(historyItems).findIndex(item => item.classList.contains('selected'));
+            
+            if (key === 'ArrowDown') {
+                currentIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % historyItems.length;
+            } else if (key === 'ArrowUp') {
+                currentIndex = currentIndex === -1 ? historyItems.length - 1 : (currentIndex - 1 + historyItems.length) % historyItems.length;
+            }
+            
+            // Remove selected class from all items
+            historyItems.forEach(item => item.classList.remove('selected'));
+            
+            // Add selected class to current item
+            const selectedItem = historyItems[currentIndex];
+            selectedItem.classList.add('selected');
+            
+            // Scroll to selected item
+            selectedItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        
+        // Select current history item
+        function selectCurrentHistoryItem() {
+            const selectedItem = document.querySelector('.history-item.selected');
+            if (selectedItem) {
+                selectedItem.click();
+            }
+        }
+        
+        // Show message toast
+        function showMessage(message) {
+            const toast = document.getElementById('messageToast');
+            toast.textContent = message;
+            toast.classList.remove('hidden');
+            
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+        
+        // Debounce function
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+    </script>
+</body>
+</html>
