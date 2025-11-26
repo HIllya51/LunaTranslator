@@ -2776,6 +2776,17 @@ namespace
         s = re::sub(s, LR"(【[ 　]*(.*?)[ 　]*】)", L"【$1】");
         buffer->fromWA(s);
     }
+    void f0100D8B01D4FA000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        auto thisstring = s.substr(0, s.find('\x03'));
+        if (endWith(last, thisstring))
+            return buffer->clear();
+        last = thisstring;
+        strReplace(thisstring, "!!");
+        buffer->from(thisstring);
+    }
 }
 struct emfuncinfoX
 {
@@ -2783,6 +2794,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // かまいたちの夜×３
+    {0x8005E8A4, {0, 9, 0, 0, f0100D8B01D4FA000, 0x0100D8B01D4FA000ull, "1.0.1"}}, // 0x8005E8AC也行
     // DESIRE remaster ver.
     {0x8003D3B4, {FULL_STRING, 0, 0, 0, 0, 0x0100D870102BC000ull, "1.0.0"}},
     // PanicPalette ～パニックパレット～
