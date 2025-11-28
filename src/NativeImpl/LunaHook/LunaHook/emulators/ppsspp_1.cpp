@@ -932,7 +932,7 @@ namespace
     {
         auto s = buffer->strA();
         s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
-        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.])?\d+\])+)");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         strReplace(s, "#n");
         strReplace(s, "\x84\xbd", "!?");
         buffer->from(s);
@@ -1637,6 +1637,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x889E970, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME
     // 源狼 GENROH
     {0x888E494, {FULL_STRING, 0, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
+    {0x890D51C, {FULL_STRING, 0, 0, 0, ULJM06145, "ULJM06145"}}, // 交易物语
     // 十鬼の絆 関ヶ原奇譚
     {0x891AAAC, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // text
     {0x886E094, {0, 0, 0, 0, ULJM06129, "ULJM06129"}}, // name+text
