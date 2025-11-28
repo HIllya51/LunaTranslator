@@ -4,11 +4,8 @@
 
 namespace
 {
-    auto isFastMem = true;
-
-    auto isVirtual = true; // Process.arch === 'x64' && Process.platform === 'windows';
-    auto idxDescriptor = isVirtual == true ? 2 : 1;
-    auto idxEntrypoint = idxDescriptor + 1;
+    auto idxDescriptor = 2;
+    auto idxEntrypoint = 1;
 
     uintptr_t getDoJitAddress()
     {
@@ -31,10 +28,8 @@ namespace
         auto Patch = find_pattern(PatchSig1, processStartAddress, processStopAddress);
         if (Patch)
         {
-            auto beginSubSig1 = "4883EC ?? 48";
-            auto lookbackSize = 0x80;
-            auto address = Patch - lookbackSize;
-            auto subs = find_pattern(beginSubSig1, address, address + lookbackSize);
+            BYTE sig3[] = {0x48, 0x83, 0xec, XX, 0x48};
+            auto subs = reverseFindBytes(sig3, sizeof(sig3), Patch - 0x80, Patch, 0, true);
             if (subs)
             {
                 idxDescriptor = 1;
@@ -61,10 +56,8 @@ namespace
         RegisterBlock = MemDbg::findBytes(sig2, sizeof(sig2), processStartAddress, processStopAddress);
         if (RegisterBlock)
         {
-            auto beginSubSig1 = "CC 55 41 57 41 56";
-            auto lookbackSize = 0x400;
-            auto address = RegisterBlock - lookbackSize;
-            auto subs = find_pattern(beginSubSig1, address, address + lookbackSize);
+            BYTE sig3[] = {0xcc, 0x55, 0x41, 0x57, 0x41, 0x56};
+            auto subs = MemDbg::findBytes(sig3, sizeof(sig3), RegisterBlock - 0x400, RegisterBlock);
             if (subs)
             {
                 return subs + 1;
@@ -281,6 +274,7 @@ struct NSGameInfoC
 
 bool yuzu::attach_function1()
 {
+    // Eden-Windows-v0.0.4-rc2&&rc3，同一个函数只能捕获到极少量函数了，懒得弄了。
     auto DoJitPtr = getDoJitAddress();
     if (!DoJitPtr)
         return false;
