@@ -895,5 +895,7 @@
     "默认折叠": "Standaard samengevouwen",
     "优先级": "Prioriteit",
     "调整优先级": "Prioriteiten aanpassen",
-    "调整为": "Aangepast"
+    "调整为": "Aangepast",
+    "正在等待DLL注入到游戏中……": "Wacht tot de DLL in het spel wordt geïnjecteerd...",
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Als de wachttijd te lang is, kan het zijn dat het door antivirussoftware wordt geblokkeerd. Controleer zelf de relevante instellingen."
 }

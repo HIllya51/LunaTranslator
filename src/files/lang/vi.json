@@ -895,5 +895,7 @@
     "默认折叠": "Mặc định thu gọn",
     "优先级": "Ưu tiên",
     "调整优先级": "Điều chỉnh mức độ ưu tiên",
-    "调整为": "Điều chỉnh thành"
+    "调整为": "Điều chỉnh thành",
+    "正在等待DLL注入到游戏中……": "Đang chờ đợi DLL được tiêm vào trò chơi...",
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Nếu thời gian chờ quá lâu, có thể do phần mềm diệt virus đã chặn, vui lòng tự kiểm tra các cài đặt liên quan."
 }

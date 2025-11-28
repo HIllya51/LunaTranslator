@@ -895,5 +895,7 @@
     "默认折叠": "Domyślnie zwinięte",
     "优先级": "Priorytet",
     "调整优先级": "Dostosuj priorytety",
-    "调整为": "Dostosować"
+    "调整为": "Dostosować",
+    "正在等待DLL注入到游戏中……": "Oczekiwanie na wstrzyknięcie DLL do gry...",
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Jeśli czas oczekiwania jest zbyt długi, może to oznaczać, że program został zablokowany przez oprogramowanie antywirusowe. Sprawdź odpowiednie ustawienia."
 }

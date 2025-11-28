@@ -356,6 +356,12 @@ class texthook(basetext):
         ):
             gobject.base.hookselectdialog.realshowhide.emit(True)
         self.injectproc(injecttimeout, pids)
+        gobject.base.displayinfomessage(
+            _TR(
+                "正在等待DLL注入到游戏中……\n如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。"
+            ),
+            "<msg_info_refresh>",
+        )
 
     def QueryThreadHistory(self, tp, _latest=False):
         ret = []

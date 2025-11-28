@@ -895,5 +895,7 @@
     "默认折叠": "Predefinito ripiegato",
     "优先级": "Priorità",
     "调整优先级": "Regolare la priorità",
-    "调整为": "Regolato"
+    "调整为": "Regolato",
+    "正在等待DLL注入到游戏中……": "In attesa dell'iniezione della DLL nel gioco...",
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Se il tempo di attesa è troppo lungo, potrebbe essere bloccato dal software antivirus; si prega di verificare autonomamente le relative impostazioni."
 }

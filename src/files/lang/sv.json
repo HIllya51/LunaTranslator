@@ -895,5 +895,7 @@
     "默认折叠": "Standardkomprimering",
     "优先级": "Prioritet",
     "调整优先级": "Justera prioritet",
-    "调整为": "Justerad"
+    "调整为": "Justerad",
+    "正在等待DLL注入到游戏中……": "Väntar på att DLL ska injiceras i spelet...",
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Om väntetiden är för lång kan det bero på att antivirusprogrammet blockerar det, kontrollera gärna dina inställningar."
 }

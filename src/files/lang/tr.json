@@ -895,5 +895,7 @@
     "默认折叠": "Varsayılan olarak daraltılmış",
     "优先级": "Öncelik sırası",
     "调整优先级": "Önceliği ayarla",
-    "调整为": "Ayarlamak"
+    "调整为": "Ayarlamak",
+    "正在等待DLL注入到游戏中……": "DLL'nin oyuna enjekte edilmesi bekleniyor...",
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Eğer bekleme süresi çok uzunsa, antivirüs yazılımı tarafından engellenmiş olabilir, lütfen ilgili ayarları kendiniz kontrol edin."
 }

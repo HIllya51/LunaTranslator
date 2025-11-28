@@ -895,5 +895,7 @@
     "默认折叠": "Collapsed by default",
     "优先级": "Priority",
     "调整优先级": "Adjust priority",
-    "调整为": "Adjusted to"
+    "调整为": "Adjusted to",
+    "正在等待DLL注入到游戏中……": "Waiting for the DLL to be injected into the game...",
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "If the waiting time is too long, it may be blocked by antivirus software; please check the relevant settings yourself."
 }
