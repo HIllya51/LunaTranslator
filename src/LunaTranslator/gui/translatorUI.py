@@ -1869,4 +1869,4 @@ class TranslatorWindow(resizableframeless):
         except:
             print_exc()
 
-        super().closeEvent(a0)
+        os._exit(0)

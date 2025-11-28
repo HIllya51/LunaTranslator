@@ -3,7 +3,13 @@ import functools, binascii
 from collections import OrderedDict
 from traceback import print_exc
 import qtawesome, NativeUtils, gobject, os
-from myutils.config import savehook_new_data, globalconfig, _TR, static_data, dynamiclink
+from myutils.config import (
+    savehook_new_data,
+    globalconfig,
+    _TR,
+    static_data,
+    dynamiclink,
+)
 from myutils.utils import get_time_stamp, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
 from textio.textsource.texthook import texthook
@@ -225,10 +231,7 @@ class searchhookparam(LDialog):
         return super().showEvent(a0)
 
     def __init__(self, parent) -> None:
-        super().__init__(
-            parent,
-            Qt.WindowType.WindowCloseButtonHint | Qt.WindowType.WindowStaysOnTopHint,
-        )
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle("搜索设置")
         mainlayout = QVBoxLayout(self)
         checks = QButtonGroup_switch_widegt(self)
@@ -441,7 +444,6 @@ class hookselect(closeashidewindow):
 
     def __init__(self, parent):
         super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
-        self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | self.windowFlags())
         self.setupUi()
         self.hidesearchhookbuttons()
         self.is_focus_normal = True

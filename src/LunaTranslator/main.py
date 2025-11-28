@@ -315,4 +315,3 @@ if __name__ == "__main__":
     mayberror(error2)
     loadmainui(startwithgameuid)
     app.exit(app.exec())
-    os._exit(0)
