@@ -124,7 +124,6 @@ class SpecialFont(PopupWidget):
                     dd,
                     k,
                     double=True,
-                    step=0.1,
                     default=globalconfig[k],
                     callback=self.resetfont,
                 )

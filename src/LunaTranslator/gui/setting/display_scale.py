@@ -308,8 +308,7 @@ def makescalew():
                                     globalconfig["profiles_index"]
                                 ],
                                 "autoHideCursorDelay",
-                                double=True,
-                                step=0.1,
+                                double=True
                             ),
                         ],
                         [

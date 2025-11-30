@@ -207,6 +207,13 @@ class Textbrowser(QFrame):
             lambda _1: _1.setcolorstyle(),
         )
 
+    def setTextAreaBackStyle(self, _=None):
+        self.textbrowser.setTextAreaBackStyle()
+        WSForEach(
+            mainuiwsoutputsave,
+            lambda _1: _1.setTextAreaBackStyle(),
+        )
+
     def setfontstyle(self, _=None):
         self.textbrowser.setfontstyle()
         WSForEach(
@@ -247,6 +254,13 @@ class Textbrowser(QFrame):
         WSForEach(
             mainuiwsoutputsave,
             lambda _1: _1.showatcenter(_),
+        )
+
+    def showtextareabackground(self, _):
+        self.textbrowser.showtextareabackground(_)
+        WSForEach(
+            mainuiwsoutputsave,
+            lambda _1: _1.showtextareabackground(_),
         )
 
     def showhidetranslate(self, _):

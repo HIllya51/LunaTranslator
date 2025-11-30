@@ -312,7 +312,6 @@ def uisetting(self):
                                         globalconfig,
                                         "settingfontsize",
                                         double=True,
-                                        step=0.1,
                                         callback=lambda _: gobject.base.setcommonstylesheet(),
                                     ),
                                     "",

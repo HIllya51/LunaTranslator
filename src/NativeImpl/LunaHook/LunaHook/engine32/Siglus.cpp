@@ -1606,7 +1606,6 @@ bool InsertSiglusHookZ()
       0x8b, 0x12,
       0x66, 0x89, 0x04, 0x72};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("SiglusHookZ %p", addr);
   if (!addr)
     return false;
   HookParam hp;
@@ -1887,7 +1886,7 @@ static bool h3_n()
     arg->setText(buffer.viewW());
   };
   hp.embed_hook_font = F_GetGlyphOutlineW;
-  return NewHook(hp, "EmbedSiglus2_1");
+  return NewHookRetry(hp, "EmbedSiglus2_1");
 }
 static bool h3_t()
 {
@@ -1921,7 +1920,7 @@ static bool h3_t()
     arg->setText(buffer.viewW());
   };
   hp.embed_hook_font = F_GetGlyphOutlineW;
-  return NewHook(hp, "EmbedSiglus2");
+  return NewHookRetry(hp, "EmbedSiglus2");
 }
 static bool h3()
 {

@@ -47,7 +47,6 @@ protected:
 	std::wstring _args;	   // arguments
 	std::wstring _runtime; // absolute path of embedded python runtime
 	std::wstring _home;	   // home directory of PyStand.exe
-	std::wstring _script;  // init script like PyStand.int or PyStand.py
 	std::vector<std::wstring> _argv;
 	std::vector<std::wstring> _py_argv;
 	std::vector<wchar_t *> _py_args;

@@ -84,11 +84,6 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	int argc;
 	_args = GetCommandLineW();
 	argvw = CommandLineToArgvW(_args.c_str(), &argc);
-	if (argvw == NULL)
-	{
-		MessageBoxA(NULL, "Error in CommandLineToArgvW()", "ERROR", MB_OK);
-		return false;
-	}
 	_argv.resize(argc);
 	for (int i = 0; i < argc; i++)
 	{
@@ -223,33 +218,14 @@ int PyStand::RunString(const wchar_t *script)
 //---------------------------------------------------------------------
 int PyStand::DetectScript()
 {
-	// init: _script (init script like PyStand.int or PyStand.py)
-	int size = (int)exepath.size() - 1;
-	for (; size >= 0; size--)
-	{
-		if (exepath[size] == L'.')
-			break;
-	}
-	if (size < 0)
-		size = (int)exepath.size();
-	std::wstring main = exepath.substr(0, size);
-	std::vector<const wchar_t *> exts;
-	std::vector<std::wstring> scripts;
-	_script.clear();
-
-	std::wstring test;
-	test = _home + L"\\LunaTranslator\\main.py";
-	if (PathFileExistsW(test.c_str()))
-	{
-		_script = test;
-	}
-	if (_script.empty())
+	std::wstring test = _home + L"\\LunaTranslator\\main.py";
+	if (!PathFileExistsW(test.c_str()))
 	{
 		std::wstring msg = L"Can't find :\r\n" + test;
 		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
 		return -1;
 	}
-	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", _script.c_str());
+	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", test.c_str());
 	SetEnvironmentVariableW(L"LUNA_EXE_NAME", exepath.c_str());
 	return 0;
 }

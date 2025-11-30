@@ -3,7 +3,6 @@
 bool VALKYRIA::attach_function()
 {
   auto addr = findiatcallormov((DWORD)GetTextExtentPoint32A, processStartAddress, processStartAddress, processStopAddress);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   BYTE sehstart[] = {
@@ -24,9 +23,18 @@ bool VALKYRIA::attach_function()
   {
     // 实际上是单字符
     auto str = buffer->strA();
-    if (str == "\\r" || str == "\\R")
+    static bool isspace = false;
+    if (isspace && str == "\x81\x40")
+      buffer->clear();
+    else if (str == "\\r" || str == "\\R")
     {
-      buffer->from("\n");
+      isspace = true;
+      buffer->clear();
+      // buffer->from("\n");
+    }
+    else
+    {
+      isspace = false;
     }
     //   switch ( v12 )
     // {
@@ -50,5 +58,10 @@ bool VALKYRIA::attach_function()
     //     return sub_454C40(a2, a3, v91, a5, String, (int)a7, a8);
     // }
   };
-  return NewHook(hp, "VALKYRIA");
+  if (NewHook(hp, "VALKYRIA"))
+  {
+    PcHooks::hookGDIFunctions(GetTextExtentPoint32W);
+    return true;
+  }
+  return false;
 }

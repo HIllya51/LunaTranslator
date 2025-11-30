@@ -44,6 +44,8 @@ class somecommon(dataget):
         self.showhidetranslate(globalconfig["showfanyi"])
         self.showhidename(globalconfig["showfanyisource"])
         self.showatcenter(globalconfig["showatcenter"])
+        self.showtextareabackground(globalconfig["text_area_background"])
+        self.setTextAreaBackStyle()
         self.showhideclick()
         self.showhidert(globalconfig["isshowhira"])
         self.setfontstyle()
@@ -72,6 +74,21 @@ class somecommon(dataget):
 
     def showatcenter(self, show):
         self.debugeval("showatcenter({})".format(int(show)))
+
+    def showtextareabackground(self, show):
+        self.debugeval("showtextareabackground({})".format(int(show)))
+
+    def setTextAreaBackStyle(self, **_):
+        c = QColor(globalconfig["text_area_background_color"])
+        self.debugeval(
+            "setTextAreaBackStyle({}, {}, {}, '{}', {})".format(
+                globalconfig["text_area_background_r"],
+                globalconfig["text_area_background_w"],
+                globalconfig["text_area_background_h"],
+                c.name(QColor.NameFormat.HexRgb),
+                globalconfig["text_area_background_alpha"] / 100,
+            )
+        )
 
     def showhidert(self, show):
         self.debugeval("showhidert({})".format(int(show)))

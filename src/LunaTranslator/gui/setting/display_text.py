@@ -377,6 +377,49 @@ class Spacesetting(PopupWidget):
         self.display()
 
 
+class TextAreaBack(PopupWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+        form = LFormLayout(self)
+        form.addRow(
+            "颜色",
+            getcolorbutton(
+                self,
+                globalconfig,
+                "text_area_background_color",
+                callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+            ),
+        )
+        form.addRow(
+            "不透明度",
+            getspinbox(
+                0,
+                100,
+                globalconfig,
+                "text_area_background_alpha",
+                callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+            ),
+        )
+        for text, key in (
+            ("圆角", "text_area_background_r"),
+            ("延展宽度", "text_area_background_w"),
+            ("延展高度", "text_area_background_h"),
+        ):
+            form.addRow(
+                text,
+                getspinbox(
+                    0,
+                    50,
+                    globalconfig,
+                    key,
+                    double=True,
+                    step=0.2,
+                    callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                ),
+            )
+        self.display()
+
+
 def vistranslate_rank(self):
     _not = []
     for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
@@ -459,7 +502,6 @@ def xianshigrid_style(self):
                             globalconfig,
                             "fontsizeori",
                             double=True,
-                            step=0.1,
                             callback=mayberealtimesetfont,
                         ),
                         "",
@@ -519,7 +561,6 @@ def xianshigrid_style(self):
                             globalconfig,
                             "fontsize",
                             double=True,
-                            step=0.1,
                             callback=mayberealtimesetfont,
                         ),
                         "",
@@ -572,6 +613,14 @@ def xianshigrid_style(self):
                         "固定翻译显示顺序",
                         D_getsimpleswitch(globalconfig, "fix_translate_rank"),
                         D_getIconButton(functools.partial(vistranslate_rank, self)),
+                        "",
+                        "文字区域背景",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "text_area_background",
+                            callback=gobject.base.translation_ui.translate_text.showtextareabackground,
+                        ),
+                        D_getIconButton(callback=functools.partial(TextAreaBack, self)),
                     ],
                 ),
             ),

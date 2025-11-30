@@ -1,3 +1,23 @@
+<style>
+    #bg-layer {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -99;
+        pointer-events: none;
+        overflow: visible;
+        opacity: 0.5;
+        /*透明度必须放在这里，不能放到颜色里，否则会叠加 */
+    }
+</style>
+<style id="bg-layer-color-control">
+    .bg-rect {
+        fill: #ff0000;
+    }
+</style>
+<svg id="bg-layer"></svg>
 <div id="luna_root_div" dir="auto">
     <div id="luna_root_div_trans"></div>
     <div id="luna_root_div_origin"></div>
@@ -160,6 +180,7 @@
             lastZoomLevel = currentZoomLevel;
             safe_calllunaheightchange()
         }
+        drawBackgrounds()
     });
     function safe_calllunaheightchange() {
         let root = document.getElementById('luna_root_div')
@@ -390,20 +411,125 @@
     }
 </style>
 <script>
+    var text_area_background_r = 5;
+    var text_area_background_w = 5;
+    var text_area_background_h = 5;
+    function setTextAreaBackStyle(r, w, h, color, alpha) {
+        text_area_background_r = r
+        text_area_background_w = w
+        text_area_background_h = h
+        document.getElementById('bg-layer').style.opacity = alpha
+        document.getElementById('bg-layer-color-control').innerHTML = `.bg-rect {
+        fill: ${color};
+    }`
+        drawBackgrounds();
+    }
+    function isSame(v1, v2, diff = 1) {
+        return Math.abs(v1 - v2) <= diff;
+    }
+    function isHorizontalTouching(r1, r2, tolerance) {
+        return (r1.x + r1.w + tolerance >= r2.x) &&
+            (r2.x + r2.w + tolerance >= r1.x);
+    }
+    function isVerticalTouching(r1, r2, tolerance) {
+        return (r1.y + r1.h + tolerance >= r2.y) &&
+            (r2.y + r2.h + tolerance >= r1.y);
+    }
+    function mergeRectsAbsoluteInplace(list, tolerance = 0.1) {
+
+        let hasMerged = true;
+        while (hasMerged) {
+            hasMerged = false;
+
+            for (let i = 0; i < list.length; i++) {
+                for (let j = i + 1; j < list.length; j++) {
+                    const r1 = list[i];
+                    const r2 = list[j];
+
+                    let merged = null;
+                    if (isSame(r1.h, r2.h, tolerance) && isSame(r1.y, r2.y, tolerance)) {
+                        if (isHorizontalTouching(r1, r2, tolerance)) {
+                            merged = {
+                                x: Math.min(r1.x, r2.x),
+                                y: r1.y,
+                                w: Math.max(r1.x + r1.w, r2.x + r2.w) - Math.min(r1.x, r2.x),
+                                h: r1.h // 高度不变
+                            };
+                        }
+                    }
+                    else if (isSame(r1.w, r2.w, tolerance) && isSame(r1.x, r2.x, tolerance)) {
+                        if (isVerticalTouching(r1, r2, tolerance)) {
+                            merged = {
+                                x: r1.x, // X不变
+                                y: Math.min(r1.y, r2.y),
+                                w: r1.w,
+                                h: Math.max(r1.y + r1.h, r2.y + r2.h) - Math.min(r1.y, r2.y)
+                            };
+                        }
+                    }
+                    if (merged) {
+                        list[i] = merged;
+                        list.splice(j, 1);
+                        j--;
+                        hasMerged = true;
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    function drawBackgrounds() {
+        const spans = document.querySelectorAll('.lunatranslator_text_all');
+
+        let rectscollect = []
+
+        spans.forEach(span => {
+            let rects = span.getClientRects()
+            for (let i = 0; i < rects.length; i++) {
+                let rect = rects[i]
+                rectscollect.push({ 'x': rect.left, 'y': rect.top, 'w': rect.width, 'h': rect.height })
+            }
+
+        });
+        mergeRectsAbsoluteInplace(rectscollect)
+        const svg = document.getElementById('bg-layer');
+        svg.innerHTML = '';
+        rectscollect.forEach(rect => {
+            const svgRect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            svgRect.setAttribute('x', rect.x + window.scrollX - text_area_background_w);
+            svgRect.setAttribute('y', rect.y + window.scrollY - text_area_background_h);
+            svgRect.setAttribute('width', rect.w + 2 * text_area_background_w);
+            svgRect.setAttribute('height', rect.h + 2 * text_area_background_h);
+            svgRect.setAttribute('rx', text_area_background_r);
+            svgRect.setAttribute('ry', text_area_background_r);
+            svgRect.setAttribute('class', 'bg-rect');
+
+            svg.appendChild(svgRect);
+        });
+
+        // 如果页面高度变了，调整 SVG 高度
+        svg.style.height = document.body.scrollHeight + 'px';
+    }
     var allowclickword = false
     function sethovercolor(color) {
         document.getElementById('clickwordhover').innerHTML = `:root{
         --clickwordhover:${color}
     }`
     }
+    function showtextareabackground(show) {
+        document.getElementById('bg-layer').style.display = show ? '' : 'none'
+    }
     function showatcenter(center) {
         let css = ['', '.centercontrol{ text-align: center; }'][center]
         document.getElementById('maybeshowatcenter').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function showhidert(show) {
         let css = ['.lunatranslator_rt{   display: none;    }', '.lunatranslator_rt{}'][show]
         document.getElementById('maybeshowrt').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function showhideclick(show, clickable) {
@@ -418,26 +544,31 @@
         background-color: var(--clickwordhover);
     }  `][show]
         document.getElementById('maybeshowclick').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function showhidename(show) {
         let css = ['.lunatranslator_name{   display: none;    }', '.lunatranslator_name{}'][show]
         document.getElementById('maybeshowname').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function showhidetranslate(show) {
         let css = ['.lunatranslator_translate{   display: none;    }', '.lunatranslator_translate{}'][show]
         document.getElementById('maybeshowtranslate').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function showhideerror(show) {
         let css = ['.lunatranslator_error{   display: none;    }', '.lunatranslator_error{}'][show]
         document.getElementById('maybeshowerror').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function showhideorigin(show) {
         let css = ['.lunatranslator_origin{   display: none;    }', '.lunatranslator_origin{}'][show]
         document.getElementById('maybeshoworigin').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function get_out_div(_id) {
@@ -504,6 +635,7 @@
             clearparent(ele)
         ele.innerHTML = ''
         ele.appendChild(innerele)
+        drawBackgrounds()
         safe_calllunaheightchange()
         // scrollend()
     }
@@ -715,6 +847,7 @@
         if (tags[tags.length - 1].word == '\n') {
             ele.appendChild(document.createElement('br'))
         }
+        drawBackgrounds()
         safe_calllunaheightchange()
         //scrollend()
     }
@@ -727,6 +860,7 @@
     function clear_all() {
         document.getElementById('luna_root_div_origin').innerHTML = "";
         document.getElementById('luna_root_div_trans').innerHTML = "";
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     _clear_all = clear_all //保留符号
@@ -830,6 +964,7 @@
         line-height: normal;
         }
         `
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function yinying_dynamic(styleargs) {
@@ -869,6 +1004,7 @@
         document.getElementById('colorcontroller').innerHTML = `:root {
   ${style}
 }`
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function setdisplayrank(type) {
@@ -878,6 +1014,7 @@
         else {
             document.getElementById('luna_root_div').insertBefore(document.getElementById('luna_root_div_origin'), document.getElementById('luna_root_div_trans'))
         }
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function getCleanSelectionText() {
@@ -900,6 +1037,7 @@
     function verticalhorizontal(v) {
         let css = ['', 'body {writing-mode: vertical-rl;}'][v]
         document.getElementById('maybevertical').innerHTML = css;
+        drawBackgrounds()
         safe_calllunaheightchange()
     }
     function report_clickword_positions() {

@@ -1114,9 +1114,11 @@ def getlineedit(d, key, callback=None, readonly=False):
 
 
 def getspinbox(
-    mini, maxi, d: dict, key: str, double=False, step=1, callback=None, default=0
+    mini, maxi, d: dict, key: str, double=False, step=None, callback=None, default=0
 ):
     initvar = d.get(key, default)
+    if step is None:
+        step = 0.1 if double else 1
     if double:
         s = FocusDoubleSpin()
         s.setDecimals(math.ceil(-math.log10(step)))

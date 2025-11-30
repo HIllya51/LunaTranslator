@@ -59,8 +59,14 @@ class base(QWidget):
     def realx(self):
         return self.realmove.x()
 
+    def realy(self):
+        return self.realmove.y()
+
     def realw(self):
         return self.realsize.width()
+
+    def realh(self):
+        return self.realsize.height()
 
     def adjustSize(self):
         self._pix = None

@@ -296,6 +296,12 @@
     "buttonsize2": 18,
     "language_setted_2.4.5": false,
     "postprocess_rank": [],
+    "text_area_background": false,
+    "text_area_background_alpha": 50,
+    "text_area_background_color": "#ff0000",
+    "text_area_background_r": 5,
+    "text_area_background_w": 5,
+    "text_area_background_h": 5,
     "fix_translate_rank": false,
     "fix_translate_rank_rank": [],
     "cishuvisrank": [],
@@ -1646,7 +1652,7 @@
             "is_gpt_like": true
         },
         "microsoft": {
-            "use": true,
+            "use": false,
             "color": "gray",
             "useproxy": false,
             "name": "microsoft"
@@ -1664,7 +1670,7 @@
             "name": "必应"
         },
         "google": {
-            "use": false,
+            "use": true,
             "color": "#ff0000",
             "name": "谷歌"
         },
@@ -1693,13 +1699,13 @@
             "name": "阿里"
         },
         "youdaodict": {
-            "use": true,
+            "use": false,
             "useproxy": false,
             "color": "#95a5ff",
             "name": "有道"
         },
         "caiyun": {
-            "use": true,
+            "use": false,
             "useproxy": false,
             "color": "blue",
             "name": "彩云"
@@ -1813,7 +1819,7 @@
             "name": "yandex"
         },
         "qqimt": {
-            "use": true,
+            "use": false,
             "useproxy": false,
             "color": "blue",
             "name": "qqimt"
@@ -1826,7 +1832,7 @@
             "name": "小牛"
         },
         "huoshan": {
-            "use": true,
+            "use": false,
             "color": "blue",
             "useproxy": false,
             "name": "火山"
@@ -1846,7 +1852,7 @@
             "name": "火山"
         },
         "papago": {
-            "use": true,
+            "use": false,
             "useproxy": false,
             "color": "blue",
             "name": "papago"

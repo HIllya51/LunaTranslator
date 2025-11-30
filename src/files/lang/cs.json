@@ -897,5 +897,8 @@
     "调整优先级": "Upravit priority",
     "调整为": "Upravit",
     "正在等待DLL注入到游戏中……": "Čeká se na vložení DLL do hry...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Pokud je doba čekání příliš dlouhá, může to být způsobeno blokováním antivirovým softwarem, zkontrolujte prosím příslušná nastavení."
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Pokud je doba čekání příliš dlouhá, může to být způsobeno blokováním antivirovým softwarem, zkontrolujte prosím příslušná nastavení.",
+    "文字区域背景": "Textová oblast pozadí",
+    "延展宽度": "Rozšíření šířky",
+    "延展高度": "Rozšířená výška"
 }

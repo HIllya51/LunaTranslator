@@ -897,5 +897,8 @@
     "调整优先级": "Priorität anpassen",
     "调整为": "Angepasst",
     "正在等待DLL注入到游戏中……": "Warte darauf, dass die DLL in das Spiel injiziert wird...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Falls die Wartezeit zu lang ist, könnte sie von der Antivirensoftware blockiert werden. Bitte überprüfen Sie die entsprechenden Einstellungen selbst."
+    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Falls die Wartezeit zu lang ist, könnte sie von der Antivirensoftware blockiert werden. Bitte überprüfen Sie die entsprechenden Einstellungen selbst.",
+    "文字区域背景": "Textbereichshintergrund",
+    "延展宽度": "Erweiterung der Breite",
+    "延展高度": "Erweiterungshöhe"
 }

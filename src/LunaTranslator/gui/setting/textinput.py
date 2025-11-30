@@ -90,7 +90,6 @@ def gethookgrid_em(self):
                 globalconfig["embedded"],
                 "timeout_translate",
                 double=True,
-                step=0.1,
                 callback=lambda x: gobject.base.textsource.flashembedsettings(),
             ),
         ],

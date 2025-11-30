@@ -253,14 +253,7 @@ def _ocrparam_create(self, f):
             "执行周期_(s)",
             getboxlayout(
                 [
-                    D_getspinbox(
-                        0.1,
-                        100,
-                        globalconfig,
-                        "ocr_interval",
-                        double=True,
-                        step=0.1,
-                    ),
+                    D_getspinbox(0.1, 100, globalconfig, "ocr_interval", double=True),
                     QLabel,
                 ]
             ),
@@ -275,12 +268,7 @@ def _ocrparam_create(self, f):
             getboxlayout(
                 [
                     D_getspinbox(
-                        0,
-                        100,
-                        globalconfig,
-                        "ocr_trigger_delay",
-                        double=True,
-                        step=0.1,
+                        0, 100, globalconfig, "ocr_trigger_delay", double=True
                     ),
                     QLabel,
                 ]
