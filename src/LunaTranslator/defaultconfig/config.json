@@ -433,6 +433,7 @@
     "backcolor_tool": "#ffaaff",
     "transparent_tool": 50,
     "isshowhira": true,
+    "hidetools": false,
     "locktools": true,
     "locktoolsEx": false,
     "showfanyisource": false,
@@ -1557,7 +1558,7 @@
     "ocrmergelines_distance": 0.4,
     "ocr": {
         "selfbuild": {
-            "use": true,
+            "use": false,
             "name": "自定义",
             "type": "other"
         },

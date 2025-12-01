@@ -622,6 +622,20 @@ namespace
         last = s;
         buffer->from(strReplace(s, "\x01"));
     }
+    void SLPM66390(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (endWith(last, s))
+        {
+            buffer->clear();
+        }
+        else
+        {
+            buffer->from(re::sub(s, "[\r\n]+(\x81\x40)*"));
+        }
+        last = s;
+    }
     void SLPS25193(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2132,6 +2146,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 薔薇ノ木ニ薔薇ノ花咲ク -Das Versprechen-
+    {0x1231C8, {FULL_STRING, PCSX2_REG_OFFSET(t7), 0, 0, SLPM66390, "SLPM-66390"}},
     // ピヨたん ～お屋敷潜入大作戦～
     {0x12396C, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55032"}},
     // Fragrance Tale ～フレグランス テイル～

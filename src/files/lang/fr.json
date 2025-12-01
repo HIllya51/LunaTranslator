@@ -900,5 +900,6 @@
     "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Si le temps d'attente est trop long, cela peut être dû à une interception par un logiciel antivirus. Veuillez vérifier les paramètres correspondants.",
     "文字区域背景": "Zone de fond du texte",
     "延展宽度": "Élargissement de la largeur",
-    "延展高度": "Hauteur d'extension"
+    "延展高度": "Hauteur d'extension",
+    "隐藏工具栏": "Masquer la barre d'outils"
 }

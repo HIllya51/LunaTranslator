@@ -900,5 +900,6 @@
     "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Om väntetiden är för lång kan det bero på att antivirusprogrammet blockerar det, kontrollera gärna dina inställningar.",
     "文字区域背景": "Textområdets bakgrund",
     "延展宽度": "Utsträckt bredd",
-    "延展高度": "Utsträckbar höjd"
+    "延展高度": "Utsträckbar höjd",
+    "隐藏工具栏": "Dölj verktygsfältet"
 }

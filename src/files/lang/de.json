@@ -900,5 +900,6 @@
     "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Falls die Wartezeit zu lang ist, könnte sie von der Antivirensoftware blockiert werden. Bitte überprüfen Sie die entsprechenden Einstellungen selbst.",
     "文字区域背景": "Textbereichshintergrund",
     "延展宽度": "Erweiterung der Breite",
-    "延展高度": "Erweiterungshöhe"
+    "延展高度": "Erweiterungshöhe",
+    "隐藏工具栏": "Symbolleiste ausblenden"
 }

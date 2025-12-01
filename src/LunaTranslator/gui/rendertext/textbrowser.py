@@ -315,16 +315,23 @@ class TextBrowser(QWidget, dataget):
         menu = QMenu(gobject.base.commonstylebase)
         search = LAction("清空", menu)
         drag = LAction("可拖动的", menu)
+        hide = LAction("隐藏工具栏", menu)
         drag.setCheckable(True)
         drag.setChecked(globalconfig["dragable"])
+        hide.setCheckable(True)
+        hide.setChecked(globalconfig["hidetools"])
         menu.addAction(search)
         menu.addAction(drag)
+        menu.addAction(hide)
         action = menu.exec(QCursor.pos())
         if action == search:
             self.parent().clear(False)
             gobject.base.currenttext = ""
         elif action == drag:
             globalconfig["dragable"] = drag.isChecked()
+        elif action == hide:
+            globalconfig["hidetools"] = hide.isChecked()
+            gobject.base.translation_ui.enterfunction()
 
     def mouseMoveEvent(self, a0: QMouseEvent):
         if not globalconfig["dragable"]:
@@ -382,6 +389,7 @@ class TextBrowser(QWidget, dataget):
         self.setAcceptDrops(True)
         self.drawtextarealabel = TextAreaBack(self)
         self.drawtextarealabel.setMouseTracking(True)
+        self.showtextareabackground(globalconfig["text_area_background"])
         self.atback_color = QLabel(self)
         self.atback_color.setMouseTracking(True)
         self.atback2 = QLabel(self)
@@ -1209,7 +1217,6 @@ class TextBrowser(QWidget, dataget):
     def movesycn(self, y):
         self.textbrowser.move(0, y)
         self.atback_color.move(0, y)
-        self.drawtextarealabel.move(0, y)
 
     def clear(self):
         self.resets()

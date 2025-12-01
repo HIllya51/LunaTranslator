@@ -1775,32 +1775,35 @@ class TranslatorWindow(resizableframeless):
         self.enterfunction(delay=-1)
 
     @threader
-    def dodelayhide(self, delay):
-        enter_sig = uuid.uuid4()
-        self.enter_sig = enter_sig
-        if delay == -1:
-            return
-        while self.checkisentered():
-            time.sleep(0.1)
-        self._isentered = False
+    def dodelayhide(self, delay, force=False):
+        if not force:
+            enter_sig = uuid.uuid4()
+            self.enter_sig = enter_sig
+            if delay == -1:
+                return
+            while self.checkisentered():
+                time.sleep(0.1)
+            self._isentered = False
 
-        if delay is None:
-            delay = globalconfig["disappear_delay_tool"]
-        time.sleep(delay)
-        if self.enter_sig != enter_sig:
-            return
-        if globalconfig["locktools"]:
-            return
+            if delay is None:
+                delay = globalconfig["disappear_delay_tool"]
+            time.sleep(delay)
+            if self.enter_sig != enter_sig:
+                return
+            if globalconfig["locktools"]:
+                return
         self.toolbarhidedelaysignal.emit()
 
     def enterfunction(self, delay=None):
-        if (not globalconfig["locktoolsEx"]) or self.checklocktoolsEx():
+        if (not globalconfig["hidetools"]) and (
+            (not globalconfig["locktoolsEx"]) or self.checklocktoolsEx()
+        ):
             self.titlebar.show()
         self.translate_text.textbrowser.setVisible(True)
         self.autohidestart = True
         self.lastrefreshtime = time.time()
         self.set_color_transparency()
-        self.dodelayhide(delay)
+        self.dodelayhide(delay, force=globalconfig["hidetools"])
 
     def resizeEvent(self, e: QResizeEvent):
         super().resizeEvent(e)

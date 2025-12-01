@@ -416,17 +416,28 @@ class TextBrowser(WebviewWidget, somecommon):
             lambda: _TR("朗读"),
             lambda w: gobject.base.read_text(w.strip()),
         )
-        self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
+        i = self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
 
         def __cb():
             globalconfig["dragable"] = not globalconfig["dragable"]
             self.setMouseTracking(globalconfig["dragable"])
 
-        self.add_menu_noselect(
-            1,
+        i = self.add_menu_noselect(
+            i,
             lambda: _TR("可拖动的"),
             __cb,
             getchecked=lambda: globalconfig["dragable"],
+        )
+
+        def __cb2():
+            globalconfig["hidetools"] = not globalconfig["hidetools"]
+            gobject.base.translation_ui.enterfunction()
+
+        i = self.add_menu_noselect(
+            i,
+            lambda: _TR("隐藏工具栏"),
+            __cb2,
+            getchecked=lambda: globalconfig["hidetools"],
         )
         self.bind("calllunaclickedword", gobject.base.clickwordcallback)
         self.bind("calllunaMouseMove", self.calllunaMouseMove)
