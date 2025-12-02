@@ -36,3 +36,10 @@ LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 <a href="https://afdian.com/a/HIllya51"><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png" alt=""></a>
 
 <img src='../src/files/static/zan.jpg' style="height: 350px !important;">
+
+## Sponsors
+
+|  |  |
+|-|-|
+| <img src="https://signpath.org/assets/favicon.png" height="40px" align="center"> | Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/). |        |
+
