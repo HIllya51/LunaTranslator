@@ -43,8 +43,15 @@ def tryqueryfromhost():
         @trypass
         def __(i, main_server, proxy):
 
+            if runtime_for_xp:
+                target = "winxp"
+            elif runtime_for_win10:
+                target = "win10"
+            else:
+                target = "win7"
             res = requests.get(
                 "{main_server}/version".format(main_server=main_server),
+                param={"arch": ("x86", "x64")[runtime_bit_64], "target": target},
                 verify=False,
                 proxies=proxy,
             )
@@ -57,23 +64,17 @@ def tryqueryfromhost():
             __(i, main_server, None)
     wait.wait()
     gobject.serverindex = results[0][0]
-    return results[0][1]["version"], results[0][1]
+    return results[0][1]
 
 
 def trygetupdate():
     try:
-        version, links = tryqueryfromhost()
+        result = tryqueryfromhost()
+        version, link, sha256 = result["version"], result["link"], result["sha256"]
+        return version, link, sha256
     except:
         print_exc()
         return None
-    bit = ("x86", "x64")[runtime_bit_64]
-    if runtime_for_xp:
-        bit += "_winxp"
-    elif runtime_for_win10:
-        bit += "_win10"
-    else:
-        bit += "_win7"
-    return version, links[bit], links.get("sha256", {}).get(bit, None)
 
 
 def doupdate():

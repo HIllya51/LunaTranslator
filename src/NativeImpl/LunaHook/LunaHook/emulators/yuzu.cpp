@@ -5,7 +5,7 @@
 namespace
 {
     auto idxDescriptor = 2;
-    auto idxEntrypoint = 1;
+    auto idxEntrypoint = 3;
 
     uintptr_t getDoJitAddress()
     {
