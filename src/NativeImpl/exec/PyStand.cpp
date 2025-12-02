@@ -95,10 +95,14 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 
 	SetCurrentDirectoryW(_home.c_str());
 
-	if (!checkintegrity())
-		return false;
 	_runtime = (std::filesystem::path(_home) / rtp).wstring();
 
+	if (_runtime.find(LR"(\AppData\Local\Temp\)") != _runtime.npos)
+	{
+		std::wstring msg = L"请先解压后再运行！\nPlease decompress before running!";
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK);
+		return false;
+	}
 	// check home
 	if (!PathFileExistsW(_runtime.c_str()))
 	{
@@ -113,6 +117,8 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		return false;
 	}
 
+	if (!checkintegrity())
+		return false;
 	return true;
 }
 #ifndef WINXP
