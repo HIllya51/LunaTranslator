@@ -51,7 +51,7 @@ def tryqueryfromhost():
                 target = "win7"
             res = requests.get(
                 "{main_server}/version".format(main_server=main_server),
-                param={"arch": ("x86", "x64")[runtime_bit_64], "target": target},
+                params={"arch": ("x86", "x64")[runtime_bit_64], "target": target},
                 verify=False,
                 proxies=proxy,
             )
