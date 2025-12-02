@@ -100,7 +100,7 @@ jobs:
           api-token: '${{ secrets.SIGNPATH_APITOKEN }}'
           organization-id: '2e2b9c90-04bb-4b70-8562-0171927d94c6'
           project-slug: 'LunaTranslator'
-          signing-policy-slug: 'test-signing'
+          signing-policy-slug: 'release-signing'
           github-artifact-id: '${{ steps.upload-artifact.outputs.artifact-id }}'
           wait-for-completion: true
           output-artifact-directory: 'signed_exedlls'
