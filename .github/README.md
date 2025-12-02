@@ -39,7 +39,5 @@ LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 
 ## Sponsors
 
-|  |  |
-|-|-|
-| <img src="https://signpath.org/assets/favicon.png" height="40px" align="center"> | Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/). |        |
-
+| <img src="https://signpath.org/assets/favicon.png" width="25" height="25" align="center"> | Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/). |
+| :--- | :--- |
