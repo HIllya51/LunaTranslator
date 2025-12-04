@@ -5,6 +5,7 @@ from qtsymbols import *
 from myutils.config import findgameuidofpath, globalconfig
 from myutils.hwnd import ListProcess
 from myutils.wrapper import threader
+import threading
 import windows
 import gobject
 
@@ -14,7 +15,7 @@ class somedatabase:
         res = self.sqlsavegameinfo.execute(
             "SELECT gameinternalid_v2.gameuid, trace_strict.timestart, trace_strict.timestop FROM gameinternalid_v2 JOIN trace_strict ON gameinternalid_v2.gameinternalid = trace_strict.gameinternalid "
         ).fetchall()
-        mp = {}
+        mp: "dict[str, list]" = {}
         for uid, s, e in res:
             if uid not in mp:
                 mp[uid] = []
@@ -39,7 +40,7 @@ class somedatabase:
         ).fetchall()
 
     def __init__(self):
-
+        self.locked = threading.Lock()
         self.sqlsavegameinfo = sqlite3.connect(
             gobject.getconfig("savegame.db"),
             check_same_thread=False,
@@ -95,15 +96,34 @@ class somedatabase:
             )
         self.sqlsavegameinfo.commit()
 
-    def querytraceplaytime(self, gameuid):
+    def lockdata(self):
+        self.locked.acquire()
+
+    def unlockdata(self):
+        self.locked.release()
+
+    def settraceplaytime(self, gameuid, lst: "list[tuple[float, float]]"):
         table = ["trace_loose", "trace_strict"][globalconfig["is_tracetime_strict"]]
-        gameinternalid = self.get_gameinternalid(gameuid)
+        gameinternalid = self.__get_gameinternalid(gameuid)
+        self.sqlsavegameinfo.execute(
+            "DELETE FROM {} WHERE gameinternalid = ?".format(table), (gameinternalid,)
+        )
+        for s, e in lst:
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO {} VALUES(?,?,?)".format(table),
+                (gameinternalid, s, e),
+            )
+        self.sqlsavegameinfo.commit()
+
+    def querytraceplaytime(self, gameuid) -> "list[tuple[float, float]]":
+        table = ["trace_loose", "trace_strict"][globalconfig["is_tracetime_strict"]]
+        gameinternalid = self.__get_gameinternalid(gameuid)
         return self.sqlsavegameinfo.execute(
             "SELECT timestart,timestop FROM {} WHERE gameinternalid = ?".format(table),
             (gameinternalid,),
         ).fetchall()
 
-    def get_gameinternalid(self, gameuid):
+    def __get_gameinternalid(self, gameuid):
         while True:
             ret = self.sqlsavegameinfo.execute(
                 "SELECT * FROM gameinternalid_v2 WHERE gameuid = ?",
@@ -142,7 +162,7 @@ class somedatabase:
 
     def tracex(self, _t: float, uids: list, dic: dict, table: str):
         for uid in uids:
-            gameinternalid = self.get_gameinternalid(uid)
+            gameinternalid = self.__get_gameinternalid(uid)
             if uid in dic:
                 self.sqlsavegameinfo.execute(
                     "UPDATE {} SET timestop = ? WHERE (gameinternalid = ? and timestart = ?)".format(
@@ -168,22 +188,23 @@ class somedatabase:
         tlast = None
         t = time.time()
         while True:
-            tlast = t
-            t = time.time()
-            if t - tlast > 10:
-                # 虚拟机暂停
-                self.trace_loose.clear()
-                self.trace_strict.clear()
-                continue
+            with self.locked:
+                tlast = t
+                t = time.time()
+                if t - tlast > 10:
+                    # 虚拟机暂停
+                    self.trace_loose.clear()
+                    self.trace_strict.clear()
+                    continue
 
-            self.tracex(
-                t, self.finduids(ListProcess()), self.trace_loose, "trace_loose"
-            )
-            self.tracex(
-                t,
-                self.finduids(self.stricttraceexe()),
-                self.trace_strict,
-                "trace_strict",
-            )
-            self.sqlsavegameinfo.commit()
+                self.tracex(
+                    t, self.finduids(ListProcess()), self.trace_loose, "trace_loose"
+                )
+                self.tracex(
+                    t,
+                    self.finduids(self.stricttraceexe()),
+                    self.trace_strict,
+                    "trace_strict",
+                )
+                self.sqlsavegameinfo.commit()
             time.sleep(5)

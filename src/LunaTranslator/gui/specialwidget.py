@@ -140,7 +140,7 @@ class chartwidget(QWidget):
             # 纵坐标
             rects: "list[QRectF]" = []
             for i, label in enumerate(y_labels):
-                y = ymargin + height - height * yticks[i] / max_y
+                y = ymargin + height - height * yticks[i] / (max_y if max_y else 1)
                 painter.drawLine(
                     QPointF(xmargin - self.scalelinelen, y), QPointF(xmargin, y)
                 )
@@ -172,7 +172,7 @@ class chartwidget(QWidget):
             for i, (x, y) in enumerate(self.data):
                 x_coord = xmargin + i * x_scale
                 y_coord = ymargin + height - y * y_scale
-                points.append((int(x_coord), int(y_coord)))
+                points.append((x_coord, y_coord))
 
             # 绘制折线
             rects: "list[QRectF]" = []
@@ -180,7 +180,7 @@ class chartwidget(QWidget):
             for i in range(len(points) - 1):
                 x1, y1 = points[i]
                 x2, y2 = points[i + 1]
-                painter.drawLine(x1, y1, x2, y2)
+                painter.drawLine(QPointF(x1, y1), QPointF(x2, y2))
 
                 if self.data[i + 1][1]:  #!=0
                     text = self.ytext(self.data[i + 1][1])

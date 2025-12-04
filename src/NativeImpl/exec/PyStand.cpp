@@ -523,19 +523,33 @@ bool PyStand::checkintegrity()
 	{
 		// 检查到无效文件时，仍执行，但弹窗警告。
 		std::wstringstream ss;
-		ss << L"以下文件可能已被篡改，请注意甄别文件来源";
+		ss << L"以下文件可能已被篡改，是否仍要运行？";
 		ss << L"\n";
-		ss << L"The following files may have been altered. Please verify their origin.";
+		ss << L"The following files may have been altered. Do you still want to run it?";
 		int idx = 1;
 		for (auto &f : invalidfiles)
 		{
-			ss << L"\n";
-			ss << idx;
-			ss << L". ";
-			ss << f;
+			// 前十个和最后一个显示名称，中间显示一个省略号
+			if (idx == invalidfiles.size() || idx < 10)
+			{
+				ss << L"\n";
+				ss << idx;
+				ss << L". ";
+				ss << f;
+			}
+			else if (idx == 10)
+			{
+				ss << L"\n";
+				ss << L"...";
+			}
+			else if (idx > 10)
+			{
+			}
 			idx++;
 		}
-		MessageBoxW(0, ss.str().c_str(), L"Warning", 0);
+		auto checked = MessageBoxW(0, ss.str().c_str(), L"Warning", MB_YESNO | MB_ICONQUESTION);
+		if (checked != IDYES)
+			return false;
 	}
 	return true;
 }

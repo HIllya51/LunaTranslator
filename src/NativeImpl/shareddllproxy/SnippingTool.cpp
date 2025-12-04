@@ -46,7 +46,9 @@ int SnippingTool(int argc, wchar_t *argv[])
     HINSTANCE hDLL = LoadLibraryA(oneocr.string().c_str());
     if (hDLL == NULL)
     {
-        std::cerr << "Failed to load DLL: " << GetLastError() << std::endl;
+        std::stringstream ss;
+        ss << "Failed to load DLL: " << GetLastError();
+        MessageBoxA(GetForegroundWindow(), ss.string().c_str(), "Error", 0);
         return 0;
     }
     // Get function pointers
