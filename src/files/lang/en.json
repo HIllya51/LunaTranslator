@@ -902,5 +902,7 @@
     "延展宽度": "Extend width",
     "延展高度": "Extended height",
     "隐藏工具栏": "Hide Toolbar",
-    "结束": "End"
+    "结束": "End",
+    "通用文本翻译": "General Text Translation",
+    "大模型文本翻译": "Large Model Text Translation"
 }

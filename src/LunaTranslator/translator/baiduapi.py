@@ -19,6 +19,7 @@ class TS(basetrans):
             Languages.Arabic: "ara",
             Languages.Swedish: "swe",
             Languages.Latin: "lat",
+            Languages.TradChinese: "cht",
         }
 
     def translate(self, query):
@@ -26,6 +27,8 @@ class TS(basetrans):
             return self.translate_fy(query)
         elif self.config["interface"] == 1:
             return self.translate_bce(query)
+        elif self.config["interface"] == 2:
+            return self.translate_damoxing(query)
         raise Exception("unknown")
 
     def get_access_token(self, API_KEY, SECRET_KEY):
@@ -52,6 +55,22 @@ class TS(basetrans):
             acss = self.get_access_token(API_KEY, SECRET_KEY)
             self.access[(API_KEY, SECRET_KEY)] = acss
         return self.access[(API_KEY, SECRET_KEY)]
+
+    def translate_damoxing(self, q):
+        self.checkempty(["APP ID", "密钥"])
+        url = "https://fanyi-api.baidu.com/ait/api/aiTextTranslate"
+        para = {
+            "appid": self.multiapikeycurrent["APP ID"],
+            "q": q,
+            "from": self.srclang,
+            "to": self.tgtlang,
+        }
+        h = {"Authorization": "Bearer " + self.multiapikeycurrent["密钥"]}
+        r = self.proxysession.post(url, json=para, headers=h)
+        try:
+            return "\n".join([_["dst"] for _ in r.json()["result"]["trans_result"]])
+        except:
+            raise Exception(r)
 
     def translate_bce(self, q):
         accstoken = self.getaccess()

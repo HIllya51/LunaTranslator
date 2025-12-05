@@ -902,5 +902,7 @@
     "延展宽度": "Élargissement de la largeur",
     "延展高度": "Hauteur d'extension",
     "隐藏工具栏": "Masquer la barre d'outils",
-    "结束": "Fin"
+    "结束": "Fin",
+    "通用文本翻译": "Traduction de texte universel",
+    "大模型文本翻译": "Traduction de texte par grands modèles"
 }

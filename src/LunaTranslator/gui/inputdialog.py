@@ -809,16 +809,15 @@ class autoinitdialog(LDialog):
             refitems,
         ) in self.cachehasref.items():
 
-            def refcombofunction(refitems, _i):
+            def refcombofunction(refitems: "list[tuple[dict, int]]", _i):
                 viss = []
                 for linwinfo, row in refitems:
                     vis = True
-                    if linwinfo.get("refcombo_i") is not None:
-                        vis = linwinfo.get("refcombo_i") == _i
-                    elif linwinfo.get("refcombo_i_r") is not None:
-                        vis = linwinfo.get("refcombo_i_r") != _i
-                    elif linwinfo.get("refcombo_l") is not None:
-                        vis = _i in linwinfo.get("refcombo_l")
+                    refcombo_i = linwinfo.get("refcombo_i")
+                    if isinstance(refcombo_i, int):
+                        vis = refcombo_i == _i
+                    elif isinstance(refcombo_i, (list, tuple)):
+                        vis = _i in refcombo_i
                     if not vis:
                         formLayout.setRowVisible(row, False)
                     else:

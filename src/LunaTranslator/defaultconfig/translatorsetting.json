@@ -181,12 +181,18 @@
 		"argstype": {
 			"密钥": {
 				"refcombo": "interface",
-				"refcombo_i": 0,
+				"refcombo_i": [
+					0,
+					2
+				],
 				"type": "textlist"
 			},
 			"APP ID": {
 				"refcombo": "interface",
-				"refcombo_i": 0,
+				"refcombo_i": [
+					0,
+					2
+				],
 				"type": "textlist"
 			},
 			"API Key": {
@@ -204,8 +210,9 @@
 				"name": "接口",
 				"type": "combo",
 				"list": [
-					"百度翻译开放平台",
-					"百度智能云"
+					"百度翻译开放平台_通用文本翻译",
+					"百度智能云",
+					"百度翻译开放平台_大模型文本翻译"
 				]
 			}
 		}
