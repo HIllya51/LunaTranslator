@@ -425,7 +425,7 @@ def stringfyerror(e: Exception):
             e.args[0].reason,
             str(maybejson(e.args[0])).replace("\n", " ").replace("\r", ""),
         )
-    error = str(type(e))[8:-2] + " " + str(e)
+    error = str(e)
     if len(error.splitlines()) > 5:
         error = error.replace("\n", " ").replace("\r", "")
 

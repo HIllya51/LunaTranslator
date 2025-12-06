@@ -904,5 +904,6 @@
     "隐藏工具栏": "Verberg werkbalk",
     "结束": "Einde",
     "通用文本翻译": "Algemene tekstvertaling",
-    "大模型文本翻译": "Grote modeltekstvertaling"
+    "大模型文本翻译": "Grote modeltekstvertaling",
+    "无法加载，可能是系统缺少必要的运行库": "Kan niet laden, mogelijk ontbreekt het systeem aan de benodigde runtime-bibliotheken."
 }

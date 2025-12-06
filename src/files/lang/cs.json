@@ -904,5 +904,6 @@
     "隐藏工具栏": "Skrýt panel nástrojů",
     "结束": "Konec",
     "通用文本翻译": "Univerzální překlad textu",
-    "大模型文本翻译": "Velký model textového překladu"
+    "大模型文本翻译": "Velký model textového překladu",
+    "无法加载，可能是系统缺少必要的运行库": "Nelze načíst, může to být způsobeno chybějícími nezbytnými knihovnami v systému."
 }

@@ -904,5 +904,6 @@
     "隐藏工具栏": "Ukryj pasek narzędzi",
     "结束": "Koniec",
     "通用文本翻译": "Tłumaczenie tekstu ogólnego",
-    "大模型文本翻译": "Translacja tekstu za pomocą dużych modeli językowych"
+    "大模型文本翻译": "Translacja tekstu za pomocą dużych modeli językowych",
+    "无法加载，可能是系统缺少必要的运行库": "Nie można załadować, możliwe, że systemowi brakuje niezbędnych bibliotek uruchomieniowych."
 }

@@ -904,5 +904,6 @@
     "隐藏工具栏": "Araç çubuğunu gizle",
     "结束": "Son",
     "通用文本翻译": "Genel Metin Çevirisi",
-    "大模型文本翻译": "Büyük Model Metin Çevirisi"
+    "大模型文本翻译": "Büyük Model Metin Çevirisi",
+    "无法加载，可能是系统缺少必要的运行库": "Yüklenemiyor, sistem gerekli çalışma kütüphanelerinden yoksun olabilir."
 }

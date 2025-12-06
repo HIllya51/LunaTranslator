@@ -904,5 +904,6 @@
     "隐藏工具栏": "Dölj verktygsfältet",
     "结束": "Slut",
     "通用文本翻译": "Allmän textöversättning",
-    "大模型文本翻译": "Stor modell textöversättning"
+    "大模型文本翻译": "Stor modell textöversättning",
+    "无法加载，可能是系统缺少必要的运行库": "Det går inte att ladda, möjligen saknar systemet nödvändiga körbibliotek."
 }

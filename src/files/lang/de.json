@@ -904,5 +904,6 @@
     "隐藏工具栏": "Symbolleiste ausblenden",
     "结束": "Ende",
     "通用文本翻译": "Allgemeiner Textübersetzung",
-    "大模型文本翻译": "Großes Modell Textübersetzung"
+    "大模型文本翻译": "Großes Modell Textübersetzung",
+    "无法加载，可能是系统缺少必要的运行库": "Kann nicht geladen werden, möglicherweise fehlen dem System notwendige Laufzeitbibliotheken."
 }

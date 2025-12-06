@@ -904,5 +904,6 @@
     "隐藏工具栏": "Hide Toolbar",
     "结束": "End",
     "通用文本翻译": "General Text Translation",
-    "大模型文本翻译": "Large Model Text Translation"
+    "大模型文本翻译": "Large Model Text Translation",
+    "无法加载，可能是系统缺少必要的运行库": "Unable to load, possibly due to missing necessary runtime libraries."
 }

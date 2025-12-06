@@ -904,5 +904,6 @@
     "隐藏工具栏": "Ocultar barra de ferramentas",
     "结束": "Fim",
     "通用文本翻译": "Tradução de Texto Geral",
-    "大模型文本翻译": "Tradução de texto de modelo de grande escala"
+    "大模型文本翻译": "Tradução de texto de modelo de grande escala",
+    "无法加载，可能是系统缺少必要的运行库": "Não foi possível carregar, pode ser que o sistema esteja faltando bibliotecas de execução necessárias."
 }

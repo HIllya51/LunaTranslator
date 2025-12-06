@@ -1,6 +1,7 @@
 from qtsymbols import *
 import threading
 from traceback import print_exc
+from myutils.config import _TR
 from myutils.wrapper import trypass
 import qtawesome
 from gui.dynalang import IconToolButton
@@ -76,7 +77,7 @@ def find_best_ticks(max_seconds):
 class chartwidget(QWidget):
     def __init__(self) -> None:
         super().__init__()
-
+        self.setMouseTracking(True)
         font = QFont()
         font.setPointSize(10)
         fmetrics = QFontMetricsF(font)
@@ -85,17 +86,43 @@ class chartwidget(QWidget):
         self.font = font
         self.data = None
         self.ymargin = int(fhall)
+        self.xmargin = 0
         self.valuewidth = 10
         self.xtext = lambda x: str(x)
         self.ytext = lambda y: str(y)
         self.fmetrics = fmetrics
         self.scalelinelen = 5
+        self.w_internal = 1
 
     def setdata(self, data):
         data = sorted(data, key=lambda _: _[0])
         self.data = data
 
-    def paintEvent(self, event):
+    def formattime(self, t):
+        t = int(t)
+        s = t % 60
+        t = t // 60
+        m = t % 60
+        t = t // 60
+        h = t
+        string = ""
+        if h:
+            string += str(h) + _TR("时")
+        if m:
+            string += str(m) + _TR("分")
+        if s:
+            string += str(s) + _TR("秒")
+        return string
+
+    def mouseMoveEvent(self, a0):
+        idx = (a0.x() - self.xmargin) * (len(self.data) - 1) / self.w_internal
+        idx = round(idx)
+        idx = max(0, min(idx, len(self.data) - 1))
+        t = self.xtext(self.data[idx][0]) + "\n" + self.formattime(self.data[idx][1])
+        self.setToolTip(t)
+        return super().mouseMoveEvent(a0)
+
+    def paintEvent(self, _):
         if self.data is None or len(self.data) == 0:
             return
         try:
@@ -107,7 +134,6 @@ class chartwidget(QWidget):
             pen = QPen(Qt.GlobalColor.blue)
             pen.setWidth(2)
             painter.setPen(pen)
-
             painter.setFont(self.font)
 
             ymargin = self.ymargin
@@ -125,7 +151,10 @@ class chartwidget(QWidget):
                 xmargin = max(xmargin, self.fmetrics.size(0, l).width())
 
             xmargin = xmargin + self.scalelinelen
-
+            if x_labels:
+                w = self.fmetrics.size(0, x_labels[0]).width() / 2
+                xmargin = max(w, xmargin)
+            self.xmargin = xmargin
             width = (
                 self.width()
                 - xmargin
@@ -134,7 +163,7 @@ class chartwidget(QWidget):
                     self.fmetrics.size(0, self.ytext(self.data[-1][1])).width() // 2,
                 )
             )
-
+            self.w_internal = width
             height = self.height() - 2 * ymargin
 
             # 纵坐标

@@ -233,6 +233,7 @@ class OcrLineBoundingBox(Structure):
         ("y4", c_float),
     ]
 
+
 #   if ( (unsigned int)(a2[1] - 50) > 0x26DE || (unsigned int)(a2[2] - 50) > 0x26DE )
 #     return 3i64;
 class OCR(baseocr):
@@ -268,6 +269,12 @@ class OCR(baseocr):
         self.mem = windows.MapViewOfFile(self.mappedFile2)
 
     def ocr(self, qimage: QImage):
+        try:
+            self.ocr(qimage)
+        except:
+            raise Exception(_TR("无法加载，可能是系统缺少必要的运行库"))
+
+    def ocr_(self, qimage: QImage):
         if qimage.format() != QImage.Format.Format_RGBA8888:
             qimage = qimage.convertToFormat(QImage.Format.Format_RGBA8888)
         with self.lock:
@@ -286,7 +293,7 @@ class OCR(baseocr):
                 return
             boxs = []
             texts = []
-            for i in range(cnt):
+            for _ in range(cnt):
                 size = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
                 if not size:
                     continue

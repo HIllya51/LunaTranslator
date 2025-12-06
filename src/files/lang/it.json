@@ -904,5 +904,6 @@
     "隐藏工具栏": "Nascondi barra degli strumenti",
     "结束": "Fine",
     "通用文本翻译": "Traduzione di testo universale",
-    "大模型文本翻译": "Traduzione di testo con modelli di grandi dimensioni"
+    "大模型文本翻译": "Traduzione di testo con modelli di grandi dimensioni",
+    "无法加载，可能是系统缺少必要的运行库": "Impossibile caricare, potrebbe mancare una libreria di runtime necessaria al sistema."
 }
