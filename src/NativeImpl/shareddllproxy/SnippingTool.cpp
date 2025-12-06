@@ -47,8 +47,8 @@ int SnippingTool(int argc, wchar_t *argv[])
     if (hDLL == NULL)
     {
         std::stringstream ss;
-        ss << "Failed to load DLL: " << oneocr.string() << "\nErrorCode: " << std::hex << GetLastError();
-        MessageBoxA(GetForegroundWindow(), ss.str().c_str(), "Error", 0);
+        ss << "Failed to load DLL: " << oneocr.string();
+        MessageBoxA(GetForegroundWindow(), ss.str().c_str(), "Error", MB_SETFOREGROUND | MB_TOPMOST);
         return 0;
     }
     // Get function pointers
