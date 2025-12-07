@@ -4,6 +4,7 @@ from traceback import print_exc
 from myutils.config import _TR
 from myutils.wrapper import trypass
 import qtawesome
+from datetime import datetime
 from gui.dynalang import IconToolButton
 
 
@@ -115,12 +116,22 @@ class chartwidget(QWidget):
         return string
 
     def mouseMoveEvent(self, a0):
-        idx = (a0.x() - self.xmargin) * (len(self.data) - 1) / self.w_internal
-        idx = round(idx)
-        idx = max(0, min(idx, len(self.data) - 1))
-        t = self.xtext(self.data[idx][0]) + "\n" + self.formattime(self.data[idx][1])
-        self.setToolTip(t)
+        self.update()
         return super().mouseMoveEvent(a0)
+
+    def paintatmouse(self, painter: QPainter):
+        a0 = QCursor.pos()
+        a0 = QPointF(self.mapFromGlobal(a0))
+        if a0.x() < self.xmargin or a0.x() >= self.xmargin + self.w_internal:
+            return
+        idx_f = (a0.x() - self.xmargin) * (len(self.data) - 1) / self.w_internal
+        idx = round(idx_f)
+        idx = max(0, min(idx, len(self.data) - 1))
+        xt = lambda x: ("" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0])
+        t = xt(self.data[idx][0]) + "\n" + self.formattime(self.data[idx][1])
+        sz = self.fmetrics.size(0, t)
+        a0.setY(a0.y() - sz.height())
+        painter.drawText(QRectF(a0, sz), Qt.TextFlag.TextWordWrap, t)
 
     def paintEvent(self, _):
         if self.data is None or len(self.data) == 0:
@@ -249,7 +260,7 @@ class chartwidget(QWidget):
                         x_labels[i],
                     )
                     lastx2 = thisx + thisw
-
+            self.paintatmouse(painter)
         except:
             print_exc()
 

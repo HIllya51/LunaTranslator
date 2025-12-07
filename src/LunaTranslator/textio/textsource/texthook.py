@@ -33,7 +33,6 @@ from ctypes import (
     c_uint8,
     c_uint,
     c_char,
-    cast,
 )
 from ctypes.wintypes import DWORD, LPCWSTR
 

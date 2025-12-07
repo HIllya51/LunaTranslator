@@ -920,6 +920,7 @@ LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25444 | Cherry blossom ～チェリーブロッサム～ |
 |  | SLPM-66390 | 薔薇ノ木ニ薔薇ノ花咲ク -Das Versprechen- |
 |  | SLPM-55032 | ピヨたん ～お屋敷潜入大作戦～ |
 |  | SLPS-25494 | Fragrance Tale ～フレグランス テイル～ |

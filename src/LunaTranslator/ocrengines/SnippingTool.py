@@ -270,7 +270,7 @@ class OCR(baseocr):
 
     def ocr(self, qimage: QImage):
         try:
-            self.ocr(qimage)
+            return self.ocr_(qimage)
         except:
             raise Exception(_TR("无法加载，可能是系统缺少必要的运行库"))
 

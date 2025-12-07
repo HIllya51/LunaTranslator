@@ -2139,6 +2139,19 @@ namespace
             return buffer->clear();
         SLPS25395(buffer, hp);
     }
+    void SLPS25444(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        if (all_ascii(s))
+            return buffer->clear();
+        static std::wstring last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        strReplace(s, L"\\c\\n", L"\n");
+        s = re::sub(s, L"@P@p *(.*?) *@0", L"【$1】");
+        buffer->fromWA(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2146,6 +2159,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Cherry blossom ～チェリーブロッサム～
+    {0x128b78, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25444, "SLPS-25444"}},
     // 薔薇ノ木ニ薔薇ノ花咲ク -Das Versprechen-
     {0x1231C8, {FULL_STRING, PCSX2_REG_OFFSET(t7), 0, 0, SLPM66390, "SLPM-66390"}},
     // ピヨたん ～お屋敷潜入大作戦～
