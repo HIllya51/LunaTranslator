@@ -28,8 +28,14 @@ struct PermissivePointer
 	operator T *() { return (T *)p; }
 	void *p;
 };
-
-template <typename HandleCloser = Functor<CloseHandle>>
+struct __CloseHandle
+{
+	BOOL operator()(HANDLE h)
+	{
+		return CloseHandle(h);
+	}
+};
+template <typename HandleCloser = __CloseHandle> // Functor<CloseHandle>>
 class AutoHandle
 {
 public:
@@ -89,14 +95,14 @@ void SpawnThread(const F &f) // works in DllMain unlike std thread
 		return 0UL; }, copy, 0, nullptr));
 }
 
-inline struct // should be inline but MSVC (linker) is bugged
+inline struct __DUMMY_STRUCT // should be inline but MSVC (linker) is bugged
 {
-	inline static BYTE DUMMY[100];
+	inline static BYTE _DUMMY[100];
 	template <typename T>
 	operator T *()
 	{
-		static_assert(sizeof(T) < sizeof(DUMMY));
-		return (T *)DUMMY;
+		static_assert(sizeof(T) < sizeof(_DUMMY));
+		return (T *)_DUMMY;
 	}
 } DUMMY;
 

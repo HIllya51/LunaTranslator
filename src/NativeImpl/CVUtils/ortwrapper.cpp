@@ -29,7 +29,7 @@ void *getOrtSessionOptionsAppendExecutionProvider_DML()
     auto ort = GetModuleHandle(L"onnxruntime.dll");
     if (!ort)
         return nullptr;
-    return GetProcAddress(ort, "OrtSessionOptionsAppendExecutionProvider_DML");
+    return (void *)GetProcAddress(ort, "OrtSessionOptionsAppendExecutionProvider_DML");
 }
 static bool __isDMLAvailable()
 {

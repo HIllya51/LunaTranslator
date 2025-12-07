@@ -2,12 +2,6 @@
 // Copyright (C) 2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
 // This file is public domain software.
 
-#define _CRT_SECURE_NO_WARNINGS
-// SimpleBrowser.cpp --- simple Win32 browser
-// Copyright (C) 2019 Katayama Hirofumi MZ <katayama.hirofumi.mz@gmail.com>
-// This file is public domain software.
-
-#define _CRT_SECURE_NO_WARNINGS
 #include "MWebBrowser.hpp"
 
 BOOL GetIEVersion(LPWSTR pszVersion, DWORD cchVersionMax)
@@ -75,7 +69,7 @@ BOOL DoSetBrowserEmulation(DWORD dwValue)
 
     if (dwValue)
     {
-        return ERROR_SUCCESS == hkeyEmulation.SetValue(dwValue, pchFileName);
+        return ERROR_SUCCESS == hkeyEmulation.SetDWORDValue(pchFileName, dwValue);
     }
     else
     {
@@ -335,7 +329,7 @@ DECLARE_API void html_eval(MWebBrowserEx *ww, const wchar_t *js)
     static const wchar_t *epilogue = L";})();";
     int n = wcslen(prologue) + wcslen(epilogue) + wcslen(js) + 1;
     auto eval = std::make_unique<wchar_t[]>(n);
-    _snwprintf(eval.get(), n, L"%s%s%s", prologue, js, epilogue);
+    _snwprintf_s(eval.get(), n, _TRUNCATE, L"%s%s%s", prologue, js, epilogue);
     CComBSTR bstrVal = eval.get();
     arg->bstrVal = bstrVal;
     scriptDispatch->Invoke(

@@ -63,6 +63,7 @@ int mssr(int argc, wchar_t *argv[])
             case ResultReason::RecognizedSpeech:
                 callback(true, e.Result);
                 break;
+            default:;
             }
         };
         recognizer->Recognized.Connect(Recognized);
@@ -78,6 +79,7 @@ int mssr(int argc, wchar_t *argv[])
                 callback(true, std::exception{e.ErrorDetails.c_str()});
                 recognitionEnd.Set();
                 break;
+            default:;
             }
         };
         recognizer->Canceled.Connect(Canceled);

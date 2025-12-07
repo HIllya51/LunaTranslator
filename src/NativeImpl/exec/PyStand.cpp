@@ -572,8 +572,9 @@ int main()
 	// 但因为无法区分是使用cmd打开debug还是双击打开debug，所以干脆都这样吧。
 	if (AttachConsole(ATTACH_PARENT_PROCESS))
 	{
-		freopen("CONOUT$", "w", stdout);
-		freopen("CONOUT$", "w", stderr);
+		FILE *stream = nullptr;
+		freopen_s(&stream, "CONOUT$", "w", stdout);
+		freopen_s(&stream, "CONOUT$", "w", stderr);
 	}
 	int hr = ps.RunString(init_script);
 	return hr;

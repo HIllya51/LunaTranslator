@@ -2094,7 +2094,7 @@ namespace
         static std::string last;
         auto s = buffer->strA();
 
-        auto parse = [](std::string &s)
+        auto parse = [](std::string s)
         {
             strReplace(s, u8"㊤", u8"―");
             strReplace(s, u8"㊥", u8"―");

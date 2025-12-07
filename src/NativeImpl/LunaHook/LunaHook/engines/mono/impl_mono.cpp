@@ -37,7 +37,7 @@ namespace
             return NULL;
         return maybe;
     }
-    std::vector<MonoClass *> loopclass(std::vector<MonoImage *> &images)
+    std::vector<MonoClass *> loopclass(const std::vector<MonoImage *> &images)
     {
         std::vector<MonoClass *> maybes;
         for (auto image : images)
@@ -216,7 +216,7 @@ namespace
     }
 
 }
-monoloopinfo monofunctions::loop_all_methods(std::optional<std::function<void(std::string &)>> show)
+monoloopinfo monofunctions::loop_all_methods(std::optional<std::function<void(const std::string &)>> show)
 {
     auto thread = AutoThread();
     if (!thread.thread)

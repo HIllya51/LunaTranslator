@@ -1,10 +1,10 @@
 
 DECLARE_API void GetLnkTargetPath(const wchar_t *lnkFilePath, wchar_t *path, wchar_t *tgtpath, wchar_t *iconpath, wchar_t *dirpath)
 {
-    wcscpy(path, L"");
-    wcscpy(tgtpath, L"");
-    wcscpy(iconpath, L"");
-    wcscpy(dirpath, L"");
+    wcscpy_s(path, MAX_PATH, L"");
+    wcscpy_s(tgtpath, MAX_PATH, L"");
+    wcscpy_s(iconpath, MAX_PATH, L"");
+    wcscpy_s(dirpath, MAX_PATH, L"");
     CO_INIT co;
     CHECK_FAILURE_NORET(co);
     CComPtr<IShellLink> shellLink;

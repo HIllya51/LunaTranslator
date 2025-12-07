@@ -27,7 +27,13 @@ DECLARE_API double levenshtein_normalized_similarity(size_t len1, const wchar_t 
 
 DECLARE_API MeCab::Tagger *mecab_init(char *utf8path)
 {
-    char *argv[] = {"fugashi", "-C", "-r", "nul", "-d", utf8path, "-Owakati"};
+    char argv_0[] = "fugashi";
+    char argv_1[] = "-C";
+    char argv_2[] = "-r";
+    char argv_3[] = "nul";
+    char argv_4[] = "-d";
+    char argv_5[] = "-Owakati";
+    char *argv[] = {argv_0, argv_1, argv_2, argv_3, argv_4, utf8path, argv_5};
     MeCab::Tagger *tagger = MeCab::Tagger::create(ARRAYSIZE(argv), argv);
     if (!tagger)
     {
@@ -76,8 +82,9 @@ DECLARE_API const char *mecab_dictionary_codec(MeCab::Tagger *tagger)
 DECLARE_API LPWSTR str_alloc(LPCWSTR str)
 {
     // 从python向c++传递字符串时，需要转成非托管字符串，否则会内存泄漏
-    auto _ = new WCHAR[wcslen(str) + 1];
-    wcscpy(_, str);
+    auto __ = wcslen(str) + 1;
+    auto _ = new WCHAR[__];
+    wcscpy_s(_, __, str);
     return _;
 }
 
@@ -121,8 +128,9 @@ auto __ = []()
 {
     if (GetConsoleWindow())
     {
-        freopen("CONOUT$", "w", stdout);
-        freopen("CONOUT$", "w", stderr);
+        FILE *stream = nullptr;
+        freopen_s(&stream, "CONOUT$", "w", stdout);
+        freopen_s(&stream, "CONOUT$", "w", stderr);
     }
     return 0;
 }();

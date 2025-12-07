@@ -219,7 +219,7 @@ namespace
     wstrT ltrimA(wstrT text)
     {
       static const char *quotes[] = {"<>", "[]"}; // skip leading quotes
-      for each (const char *q in quotes)
+      for (const char *q : quotes)
         while (text[0] == q[0])
         {
           if (auto p = ::strchr(text, q[1]))
@@ -237,7 +237,7 @@ namespace
     wstrT ltrimW(wstrT text)
     {
       static const char *quotes[] = {"<>", "[]"}; // skip leading quotes
-      for each (const char *q in quotes)
+      for (const char *q : quotes)
         while (text[0] == q[0])
         {
           if (auto p = ::wcschr(text, q[1]))

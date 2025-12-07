@@ -32,7 +32,7 @@ namespace ebyroid
       char m[128];
       std::snprintf(m,
                     128,
-                    "LoadLibrary failed with code %d (Check out the voiceroid path setting)",
+                    "LoadLibrary failed with code %x (Check out the voiceroid path setting)",
                     GetLastError());
       throw new std::runtime_error(m);
     }

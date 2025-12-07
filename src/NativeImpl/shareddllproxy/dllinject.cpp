@@ -122,7 +122,11 @@ void bypass_wolf_WinVerifyTrust(HANDLE hProcess, DWORD pid)
     WriteProcessMemory(hProcess, (LPVOID)pWinVerifyTrust, hook, sizeof(hook), NULL);
 }
 #else
-#define bypass_wolf_WinVerifyTrust
+#define bypass_wolf_WinVerifyTrust(_, __) \
+    {                                     \
+        (void)_;                          \
+        (void)__;                         \
+    };
 #endif
 
 int dllinjectwmain(int argc, wchar_t *argv[])

@@ -178,7 +178,7 @@ namespace
 
   HFONT LogFontManager::get(const LOGFONTW &lf) const
   {
-    for each (const font_pair &it in fonts_)
+    for (const font_pair &it : fonts_)
       if (eq(it.second, lf))
         return it.first;
     return nullptr;
@@ -461,7 +461,7 @@ UINT decodeChar(UINT ch, bool *dynamic)
   if (ch > 0xff)
   {
     bool t;
-    char data[3] = {(BYTE)(ch >> 8) & 0xff, (BYTE)ch & 0xff, 0};
+    char data[3] = {(char)((BYTE)(ch >> 8) & 0xff), char((BYTE)ch & 0xff), 0};
     auto text = dynamiccodec->decode(data, &t);
     if (t && text.size() == 1)
     {

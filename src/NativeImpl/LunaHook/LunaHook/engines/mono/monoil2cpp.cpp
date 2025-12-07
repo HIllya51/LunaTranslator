@@ -82,7 +82,7 @@ void *tryfindmonoil2cppClass(const char *_dll, const char *_namespace, const cha
         return (void *)addr;
     return (void *)monofunctions::get_class_pointer(_dll, _namespace, _class, strict);
 }
-std::variant<monoloopinfo, il2cpploopinfo> loop_all_methods(std::optional<std::function<void(std::string &)>> show)
+std::variant<monoloopinfo, il2cpploopinfo> loop_all_methods(std::optional<std::function<void(const std::string &)>> show)
 {
     auto ms = il2cppfunctions::loop_all_methods(show);
     if (ms.size())

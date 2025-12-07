@@ -75,6 +75,8 @@ bool all_ascii(const std::string&);
 bool all_ascii(const std::string_view&);
 bool all_ascii(const char *s, int maxsize = VNR_TEXT_CAPACITY);
 bool all_ascii(const wchar_t *s, int maxsize = VNR_TEXT_CAPACITY);
+std::string &strReplace(const std::string &str, const std::string &oldStr, const std::string &newStr = "");
+std::wstring &strReplace(const std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr = L"");
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr = "");
 std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr = L"");
 std::u32string &strReplace(std::u32string &str, const std::u32string &oldStr, const std::u32string &newStr = U"");

@@ -373,7 +373,7 @@ void SearchForHooks_Return()
 			hp.address = records[i].address;
 			if (hp.jittype == JITTYPE::UNITY)
 			{
-				strncpy(hp.function, remapunityjit[hp.address].c_str(), sizeof(hp.function));
+				strncpy_s(hp.function, ARRAYSIZE(hp.function), remapunityjit[hp.address].c_str(), sizeof(hp.function));
 			}
 		}
 		else if (records[i].jittype == JITTYPE::PC)
@@ -464,7 +464,7 @@ void _SearchForHooks(SearchParam spUser)
 	initrecords();
 	if ((!sp.isjithook) || (jittypedefault == JITTYPE::PC))
 	{
-		*(void **)(trampoline + send_offset) = Send;
+		*(void **)(trampoline + send_offset) = (void *)&Send;
 		std::vector<uintptr_t> addresses;
 		if (*sp.boundaryModule)
 		{
@@ -546,7 +546,7 @@ void _SearchForHooks(SearchParam spUser)
 					addr += 0x100 - 1;
 					continue;
 				}
-				if (((*(BYTE *)addr) == 0xe8))
+				if ((*(BYTE *)addr) == 0xe8)
 				{
 					auto off = *(DWORD *)(addr + 1);
 					auto funcaddr = addr + 5 + off;
@@ -615,13 +615,14 @@ void _SearchForHooks(SearchParam spUser)
 		if (sp.searchTime == 0 || sp.maxAddress == 0)
 		{
 			std::stringstream cache;
-			auto callback = [&](std::string &s)
+			auto callback = [&](const std::string &s)
 			{
 				cache << s << "\n";
 			};
 			loop_all_methods(callback);
-			auto f = fopen("JIT_ADDR_MAP_DUMP.txt", "w");
-			fprintf(f, cache.str().c_str());
+			FILE *f;
+			fopen_s(&f, "JIT_ADDR_MAP_DUMP.txt", "w");
+			fprintf(f, "%s", cache.str().c_str());
 			fclose(f);
 			return;
 		}
@@ -630,7 +631,7 @@ void _SearchForHooks(SearchParam spUser)
 			auto methods = loop_all_methods({});
 			try
 			{
-				*(void **)(trampoline + send_offset) = SendCSharpString<JITTYPE::PC>;
+				*(void **)(trampoline + send_offset) = (void *)&SendCSharpString<JITTYPE::PC>;
 				std::vector<uintptr_t> addrs;
 				for (auto [_, addr] : std::get<il2cpploopinfo>(methods))
 					addrs.push_back(addr);
@@ -638,8 +639,7 @@ void _SearchForHooks(SearchParam spUser)
 			}
 			catch (std::bad_variant_access const &ex)
 			{
-
-				*(void **)(trampoline + send_offset) = SendCSharpString<JITTYPE::UNITY>;
+				*(void **)(trampoline + send_offset) = (void *)&SendCSharpString<JITTYPE::UNITY>;
 				auto functions = std::get<monoloopinfo>(methods);
 				std::vector<uintptr_t> addrs;
 				for (auto [addr, func] : functions)
@@ -667,14 +667,15 @@ void _SearchForHooks(SearchParam spUser)
 		ConsoleOutput("%p %p", sp.minAddress, sp.maxAddress);
 		if (sp.searchTime == 0 || sp.maxAddress == 0)
 		{
-			auto f = fopen("JIT_ADDR_MAP_DUMP.txt", "w");
+			FILE *f;
+			fopen_s(&f, "JIT_ADDR_MAP_DUMP.txt", "w");
 			std::stringstream cache;
 			cache << std::hex;
 			for (auto addr : jitaddr2emuaddr)
 			{
 				cache << addr.second.second << " => " << addr.first << "\n";
 			}
-			fprintf(f, cache.str().c_str());
+			fprintf(f, "%s", cache.str().c_str());
 			fclose(f);
 			return;
 		}
@@ -741,7 +742,7 @@ void SearchForText(wchar_t *text, UINT codepage)
 	};
 	uintptr_t minaddr = 0;
 #ifdef _WIN64
-	if ((jittypedefault == JITTYPE::PCSX2))
+	if (jittypedefault == JITTYPE::PCSX2)
 	{
 		minaddr = (uintptr_t)PCSX2Types::eeMem->Main;
 	}

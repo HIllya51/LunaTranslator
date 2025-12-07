@@ -189,7 +189,7 @@ namespace
 		return ret;
 	}
 }
-il2cpploopinfo il2cppfunctions::loop_all_methods(std::optional<std::function<void(std::string &)>> show)
+il2cpploopinfo il2cppfunctions::loop_all_methods(std::optional<std::function<void(const std::string &)>> show)
 {
 	auto thread = AutoThread();
 	if (!thread.thread)

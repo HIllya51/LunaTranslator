@@ -47,13 +47,14 @@ target_link_libraries(CVUtils PRIVATE Clipper2Lib libOpenCV onnxruntime dxgi ver
 if(NOT WINXP)
     target_link_libraries(CVUtils PRIVATE d3d12)
 endif()
-if(MSVC)
+
 target_link_libraries(CVUtils PRIVATE ${YY_Thunks})
 target_link_libraries(CVUtils PRIVATE NativeUtils)
 target_link_options(CVUtils PRIVATE "/DELAYLOAD:d3d12.dll")
 target_link_options(CVUtils PRIVATE "/DELAYLOAD:dxgi.dll")
 target_link_options(CVUtils PRIVATE "/DELAYLOAD:onnxruntime.dll")
-endif()
+target_link_libraries(CVUtils PRIVATE delayimp)
+
 if (NOT WINXP)
     add_custom_command(TARGET CVUtils
         POST_BUILD

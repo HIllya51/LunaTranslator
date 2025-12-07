@@ -85,36 +85,36 @@ public:
     HRESULT ZoomPercents(LONG percents);
 
     // IOleWindow interface
-    STDMETHODIMP GetWindow(HWND *phwnd);
-    STDMETHODIMP ContextSensitiveHelp(BOOL fEnterMode);
+    STDMETHODIMP GetWindow(HWND *phwnd) override;
+    STDMETHODIMP ContextSensitiveHelp(BOOL fEnterMode) override;
 
     // IOleInPlaceSite interface
-    STDMETHODIMP CanInPlaceActivate();
-    STDMETHODIMP OnInPlaceActivate();
-    STDMETHODIMP OnUIActivate();
+    STDMETHODIMP CanInPlaceActivate() override;
+    STDMETHODIMP OnInPlaceActivate() override;
+    STDMETHODIMP OnUIActivate() override;
     STDMETHODIMP GetWindowContext(
         IOleInPlaceFrame **ppFrame,
         IOleInPlaceUIWindow **ppDoc,
         LPRECT lprcPosRect,
         LPRECT lprcClipRect,
-        LPOLEINPLACEFRAMEINFO lpFrameInfo);
-    STDMETHODIMP Scroll(SIZE scrollExtant);
-    STDMETHODIMP OnUIDeactivate(BOOL fUndoable);
-    STDMETHODIMP OnInPlaceDeactivate();
-    STDMETHODIMP DiscardUndoState();
-    STDMETHODIMP DeactivateAndUndo();
-    STDMETHODIMP OnPosRectChange(LPCRECT lprcPosRect);
+        LPOLEINPLACEFRAMEINFO lpFrameInfo) override;
+    STDMETHODIMP Scroll(SIZE scrollExtant) override;
+    STDMETHODIMP OnUIDeactivate(BOOL fUndoable) override;
+    STDMETHODIMP OnInPlaceDeactivate() override;
+    STDMETHODIMP DiscardUndoState() override;
+    STDMETHODIMP DeactivateAndUndo() override;
+    STDMETHODIMP OnPosRectChange(LPCRECT lprcPosRect) override;
 
     // IOleClientSite interface
-    STDMETHODIMP SaveObject();
+    STDMETHODIMP SaveObject() override;
     STDMETHODIMP GetMoniker(
         DWORD dwAssign,
         DWORD dwWhichMoniker,
-        IMoniker **ppmk);
-    STDMETHODIMP GetContainer(IOleContainer **ppContainer);
-    STDMETHODIMP ShowObject();
-    STDMETHODIMP OnShowWindow(BOOL fShow);
-    STDMETHODIMP RequestNewObjectLayout();
+        IMoniker **ppmk) override;
+    STDMETHODIMP GetContainer(IOleContainer **ppContainer) override;
+    STDMETHODIMP ShowObject() override;
+    STDMETHODIMP OnShowWindow(BOOL fShow) override;
+    STDMETHODIMP RequestNewObjectLayout() override;
 
     // IStorage interface
     STDMETHODIMP CreateStream(
@@ -122,104 +122,104 @@ public:
         DWORD grfMode,
         DWORD reserved1,
         DWORD reserved2,
-        IStream **ppstm);
+        IStream **ppstm) override;
     STDMETHODIMP OpenStream(
         const OLECHAR *pwcsName,
         void *reserved1,
         DWORD grfMode,
         DWORD reserved2,
-        IStream **ppstm);
+        IStream **ppstm) override;
     STDMETHODIMP CreateStorage(
         const OLECHAR *pwcsName,
         DWORD grfMode,
         DWORD reserved1,
         DWORD reserved2,
-        IStorage **ppstg);
+        IStorage **ppstg) override;
     STDMETHODIMP OpenStorage(
         const OLECHAR *pwcsName,
         IStorage *pstgPriority,
         DWORD grfMode,
         SNB snbExclude,
         DWORD reserved,
-        IStorage **ppstg);
+        IStorage **ppstg) override;
     STDMETHODIMP CopyTo(
         DWORD ciidExclude,
         const IID *rgiidExclude,
         SNB snbExclude,
-        IStorage *pstgDest);
+        IStorage *pstgDest) override;
     STDMETHODIMP MoveElementTo(
         const OLECHAR *pwcsName,
         IStorage *pstgDest,
         const OLECHAR *pwcsNewName,
-        DWORD grfFlags);
-    STDMETHODIMP Commit(DWORD grfCommitFlags);
-    STDMETHODIMP Revert();
+        DWORD grfFlags) override;
+    STDMETHODIMP Commit(DWORD grfCommitFlags) override;
+    STDMETHODIMP Revert() override;
     STDMETHODIMP EnumElements(
         DWORD reserved1,
         void *reserved2,
         DWORD reserved3,
-        IEnumSTATSTG **ppenum);
-    STDMETHODIMP DestroyElement(const OLECHAR *pwcsName);
+        IEnumSTATSTG **ppenum) override;
+    STDMETHODIMP DestroyElement(const OLECHAR *pwcsName) override;
     STDMETHODIMP RenameElement(
         const OLECHAR *pwcsOldName,
-        const OLECHAR *pwcsNewName);
+        const OLECHAR *pwcsNewName) override;
     STDMETHODIMP SetElementTimes(
         const OLECHAR *pwcsName,
         const FILETIME *pctime,
         const FILETIME *patime,
-        const FILETIME *pmtime);
-    STDMETHODIMP SetClass(REFCLSID clsid);
-    STDMETHODIMP SetStateBits(DWORD grfStateBits, DWORD grfMask);
-    STDMETHODIMP Stat(STATSTG *pstatstg, DWORD grfStatFlag);
+        const FILETIME *pmtime) override;
+    STDMETHODIMP SetClass(REFCLSID clsid) override;
+    STDMETHODIMP SetStateBits(DWORD grfStateBits, DWORD grfMask) override;
+    STDMETHODIMP Stat(STATSTG *pstatstg, DWORD grfStatFlag) override;
 
     // IServiceProvider interface
     STDMETHODIMP QueryService(
         REFGUID guidService,
         REFIID riid,
-        void **ppvObject);
+        void **ppvObject) override;
 
     // IWindowForBindingUI interface
-    STDMETHODIMP GetWindow(REFGUID rguidReason, HWND *phwnd);
+    STDMETHODIMP GetWindow(REFGUID rguidReason, HWND *phwnd) override;
 
     // IHttpSecurity interface
-    STDMETHODIMP OnSecurityProblem(DWORD dwProblem);
+    STDMETHODIMP OnSecurityProblem(DWORD dwProblem) override;
 
     // IDocHostUIHandler interface
     STDMETHODIMP ShowContextMenu(
         DWORD dwID,
         POINT *ppt,
         IUnknown *pcmdtReserved,
-        IDispatch *pdispReserved);
-    STDMETHODIMP GetHostInfo(DOCHOSTUIINFO *pInfo);
+        IDispatch *pdispReserved) override;
+    STDMETHODIMP GetHostInfo(DOCHOSTUIINFO *pInfo) override;
     STDMETHODIMP ShowUI(
         DWORD dwID,
         IOleInPlaceActiveObject *pActiveObject,
         IOleCommandTarget *pCommandTarget,
         IOleInPlaceFrame *pFrame,
-        IOleInPlaceUIWindow *pDoc);
-    STDMETHODIMP HideUI();
-    STDMETHODIMP UpdateUI();
-    STDMETHODIMP EnableModeless(BOOL fEnable);
-    STDMETHODIMP OnDocWindowActivate(BOOL fActivate);
-    STDMETHODIMP OnFrameWindowActivate(BOOL fActivate);
+        IOleInPlaceUIWindow *pDoc) override;
+    STDMETHODIMP HideUI() override;
+    STDMETHODIMP UpdateUI() override;
+    STDMETHODIMP EnableModeless(BOOL fEnable) override;
+    STDMETHODIMP OnDocWindowActivate(BOOL fActivate) override;
+    STDMETHODIMP OnFrameWindowActivate(BOOL fActivate) override;
     STDMETHODIMP ResizeBorder(
         LPCRECT prcBorder,
         IOleInPlaceUIWindow *pUIWindow,
-        BOOL fRameWindow);
+        BOOL fRameWindow) override;
     STDMETHODIMP TranslateAccelerator(
         LPMSG lpMsg,
         const GUID *pguidCmdGroup,
-        DWORD nCmdID);
-    STDMETHODIMP GetOptionKeyPath(LPOLESTR *pchKey, DWORD dw);
+        DWORD nCmdID) override;
+    STDMETHODIMP GetOptionKeyPath(LPOLESTR *pchKey, DWORD dw) override;
     STDMETHODIMP GetDropTarget(
         IDropTarget *pDropTarget,
-        IDropTarget **ppDropTarget);
-    STDMETHODIMP GetExternal(IDispatch **ppDispatch);
+        IDropTarget **ppDropTarget) override;
+    STDMETHODIMP GetExternal(IDispatch **ppDispatch) override;
     STDMETHODIMP TranslateUrl(
         DWORD dwTranslate,
         OLECHAR *pchURLIn,
-        OLECHAR **ppchURLOut);
-    STDMETHODIMP FilterDataObject(IDataObject *pDO, IDataObject **ppDORet);
+        OLECHAR **ppchURLOut) override;
+    STDMETHODIMP FilterDataObject(IDataObject *pDO, IDataObject **ppDORet) override;
 
 protected:
     HWND m_hwndParent;

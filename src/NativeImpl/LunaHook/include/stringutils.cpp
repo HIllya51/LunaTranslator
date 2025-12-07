@@ -70,6 +70,16 @@ bool all_ascii(const std::wstring &s) { return all_ascii_impl(s); }
 bool all_ascii(const std::wstring_view &s) { return all_ascii_impl(s); }
 bool all_ascii(const std::string &s) { return all_ascii_impl(s); }
 bool all_ascii(const std::string_view &s) { return all_ascii_impl(s); }
+std::string &strReplace(const std::string &str, const std::string &oldStr, const std::string &newStr)
+{
+  auto _str = str;
+  return strReplace_impl<std::string>(_str, oldStr, newStr);
+}
+std::wstring &strReplace(const std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr)
+{
+  auto _str = str;
+  return strReplace_impl<std::wstring>(_str, oldStr, newStr);
+}
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr) { return strReplace_impl<std::string>(str, oldStr, newStr); }
 std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr) { return strReplace_impl<std::wstring>(str, oldStr, newStr); }
 std::u32string &strReplace(std::u32string &str, const std::u32string &oldStr, const std::u32string &newStr) { return strReplace_impl<std::u32string>(str, oldStr, newStr); }
@@ -210,7 +220,7 @@ std::u32string utf16_to_utf32(std::wstring_view wsv)
   {
     auto u16c = wsv[i];
     if (u16c - 0xd800u < 2048u)
-      if ((u16c & 0xfffffc00 == 0xd800) && (i < wsv.size() - 1) && (wsv[i + 1] & 0xfffffc00 == 0xdc00))
+      if (((u16c & 0xfffffc00) == 0xd800) && (i < wsv.size() - 1) && ((wsv[i + 1] & 0xfffffc00) == 0xdc00))
       {
         utf32String += (u16c << 10) + wsv[i + 1] - 0x35fdc00;
         i += 1;

@@ -10,8 +10,8 @@ namespace ebyroid
   {
     Settings settings;
     string license_path = base_dir_ + kWinDelimit + kLicFilename;
-    std::strcpy(settings.voice_name, voice_name_.c_str());
-    std::strcpy(settings.license_path, license_path.c_str());
+    strcpy_s(settings.voice_name, ARRAYSIZE(settings.voice_name), voice_name_.c_str());
+    strcpy_s(settings.license_path, ARRAYSIZE(settings.license_path), license_path.c_str());
 
 #ifndef _WIN64
     if (voice_name_.find("_22") != string::npos)
@@ -70,8 +70,8 @@ namespace ebyroid
         voice_dir = base_dir_.substr(0, base_dir_.rfind('\\')) + "\\Voice\\" + voice_name_;
       }
 #endif
-      std::strcpy(settings.voice_dir, voice_dir.c_str());
-      std::strcpy(settings.language_dir, language_dir.c_str());
+      strcpy_s(settings.voice_dir, ARRAYSIZE(settings.voice_dir), voice_dir.c_str());
+      strcpy_s(settings.language_dir, ARRAYSIZE(settings.language_dir), language_dir.c_str());
 
 #ifndef _WIN64
       settings.seed = EBY_SEED_A;

@@ -368,8 +368,8 @@ namespace Host
 			auto name = HOOK_SEARCH_SHARED_MEM + std::to_wstring(GetCurrentProcessId()) + std::to_wstring(idx++);
 			auto handle = CreateFileMappingW(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, size + 2, (name).c_str());
 			auto ptr = MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, size + 2);
-			wcscpy((LPWSTR)ptr, addresses);
-			wcscpy(sp.sharememname, name.c_str());
+			wcscpy_s((LPWSTR)ptr, size / 2, addresses);
+			wcscpy_s(sp.sharememname, ARRAYSIZE(sp.sharememname), name.c_str());
 			sp.sharememsize = size + 2;
 		}
 		prs.at(processId).Send(FindHookCmd(sp));
@@ -415,6 +415,7 @@ namespace Host
 			case HOSTINFO::EmuGameName:
 				text = L"[Game] " + text;
 				break;
+			default:;
 			}
 			OnHostInfo(HOSTINFO::Console, std::move(text));
 		}

@@ -40,8 +40,9 @@ target_precompile_headers(LunaHook REUSE_FROM pchhook)
 
 set_target_properties(LunaHook PROPERTIES OUTPUT_NAME "LunaHook${bitappendix}")
 
-target_link_libraries(LunaHook trhelper VERSION_DEF Version httpapi ws2_32 Shlwapi pch minhook commonengine emulators utils ${YY_Thunks})
+target_link_libraries(LunaHook PRIVATE trhelper VERSION_DEF Version httpapi ws2_32 Shlwapi pch minhook commonengine emulators utils ${YY_Thunks})
 
 target_link_options(LunaHook PRIVATE "/DELAYLOAD:httpapi.dll")
 target_link_options(LunaHook PRIVATE "/DELAYLOAD:WS2_32.dll")
 target_link_options(LunaHook PRIVATE "/DELAYLOAD:VERSION.dll")
+target_link_libraries(LunaHook PRIVATE delayimp)

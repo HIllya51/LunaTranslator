@@ -19,7 +19,8 @@ namespace
     hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
     hp.offset = regoffset(rdi);
     auto succ = NewHook(hp, "Ages7_1");
-    if (addr = MemDbg::findEnclosingAlignedFunction(addr))
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (addr)
     {
       hp.address = addr;
       hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
@@ -43,7 +44,8 @@ namespace
     hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;
     hp.offset = regoffset(rdi);
     auto suc = NewHook(hp, "Ages7_2");
-    if (addr = MemDbg::findEnclosingAlignedFunction(addr))
+    addr = MemDbg::findEnclosingAlignedFunction(addr);
+    if (addr)
     {
       hp.address = addr;
       hp.type = USING_STRING | CODEC_UTF8 | NO_CONTEXT;

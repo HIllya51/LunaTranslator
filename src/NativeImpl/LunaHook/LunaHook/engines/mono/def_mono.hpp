@@ -425,7 +425,7 @@ namespace monofunctions
 
 	std::optional<std::wstring_view> get_string(void *);
 	void *create_string(std::wstring_view ws);
-	monoloopinfo loop_all_methods(std::optional<std::function<void(std::string &)>>);
+	monoloopinfo loop_all_methods(std::optional<std::function<void(const std::string &)>>);
 	MonoType *get_type_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
 	MonoClass *get_class_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
 }

@@ -225,7 +225,7 @@ bool checklengthembedable(const HookParam &hp, size_t size)
 }
 void commonfilter(TextBuffer *buffer, HookParam *hp)
 {
-	if (hp->type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8)) 
+	if (hp->type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8))
 		return;
 	if (buffer->size == 2)
 	{
@@ -252,13 +252,13 @@ void TextHook::Send(hook_context *context)
 		{
 			hp.type &= ~HOOK_RETURN;
 			hp.address = context->retaddr;
-			strcat(hp.name, "_Return");
+			strcat_s(hp.name, ARRAYSIZE(hp.name), "_Return");
 			hp.emu_addr = 0;
 			// 清除module
 			hp.type &= ~MODULE_OFFSET;
 			hp.type &= ~FUNCTION_OFFSET;
-			strcpy(hp.function, "");
-			wcscpy(hp.module, L"");
+			strcpy_s(hp.function, ARRAYSIZE(hp.function), "");
+			wcscpy_s(hp.module, ARRAYSIZE(hp.module), L"");
 
 			NewHook(hp, hp.name);
 			hp.type |= HOOK_EMPTY;

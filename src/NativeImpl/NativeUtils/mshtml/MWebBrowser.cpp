@@ -962,7 +962,7 @@ HRESULT MWebBrowser::OnCompleted(DISPPARAMS *args)
     if (hHTMLContent)
     {
         wchar_t *p_content(static_cast<wchar_t *>(GlobalLock(hHTMLContent)));
-        ::wcscpy(p_content, htmlSource.c_str());
+        ::wcscpy_s(p_content, (htmlSource.size() + 1), htmlSource.c_str());
         GlobalUnlock(hHTMLContent);
 
         // create a stream object based on the HTML content

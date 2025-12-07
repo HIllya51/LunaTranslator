@@ -11,8 +11,34 @@ FetchContent_Populate(mecab)
 
 set(mecabsrc "${mecab_SOURCE_DIR}/mecab/src")
 
-if(NOT EXISTS "${mecabsrc}/writeonceflag")
+function(remove_register_from_files root_dir)
+    file(GLOB_RECURSE all_files 
+        LIST_DIRECTORIES false
+        "${root_dir}/*.cpp"
+        "${root_dir}/*.h"
+    )
+    
+    foreach(file_path IN LISTS all_files)
+        file(READ "${file_path}" file_content)
+        
+        string(FIND "${file_content}" "register" position)
+        if(NOT position EQUAL -1)
+            string(REPLACE
+                "register" 
+                "" 
+                new_content 
+                "${file_content}"
+            )
+            if(NOT "${file_content}" STREQUAL "${new_content}")
+                file(WRITE "${file_path}" "${new_content}")
+            endif()
+        endif()
+    endforeach()
+endfunction()
 
+
+if(NOT EXISTS "${mecabsrc}/writeonceflag")
+  remove_register_from_files(${mecabsrc})
     file(READ "${mecabsrc}/dictionary.cpp" dictionary)
     set(std_binary_function [=[
 
@@ -41,21 +67,21 @@ list(FILTER SOURCES EXCLUDE REGEX ".*/mecab[a-z\\-]*\\.cpp")
 add_library(libmecab ${SOURCES})
 
 target_include_directories(libmecab INTERFACE "${mecabsrc}")
-if(MSVC)
-target_compile_options(libmecab PRIVATE /EHsc
-                                        /std:c++14
-                                        /GL         
-                                        /GA       
-                                        /Ob2        
-                                        /W3         
-                                        /nologo    
-                                        /Zi        
-                                        /wd4800    
-                                        /wd4305
-                                        /wd4267
-                                        /wd4244)
+if(MSVC AND (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC"))
+    target_compile_options(libmecab PRIVATE /EHsc
+                                          /std:c++14
+                                          /GL         
+                                          /GA       
+                                          /Ob2        
+                                          /W3         
+                                          /nologo    
+                                          /Zi        
+                                          /wd4800    
+                                          /wd4305
+                                          /wd4267
+                                          /wd4244)
 else()
-target_compile_options(libmecab PRIVATE -std=c++14)
+  target_compile_options(libmecab PRIVATE -std=c++14 -w)
 endif()
 target_compile_definitions(
     libmecab PRIVATE

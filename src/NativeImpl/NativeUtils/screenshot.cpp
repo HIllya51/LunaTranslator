@@ -33,7 +33,7 @@ namespace
     }
 }
 extern HWND globalmessagehwnd;
-std::optional<SimpleBMP> parseBMP(std::optional<SimpleBMP> &bmp, bool needcheck = false)
+std::optional<SimpleBMP> parseBMP(std::optional<SimpleBMP> &&bmp, bool needcheck = false)
 {
     if (!bmp)
         return {};

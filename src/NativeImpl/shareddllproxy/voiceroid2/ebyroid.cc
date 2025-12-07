@@ -18,7 +18,6 @@ namespace ebyroid
     ApiAdapter *NewAdapter(const string &, const string &, const string &, const string &);
     int __stdcall HiraganaCallback(EventReasonCode, int32_t, IntPtr);
     int __stdcall SpeechCallback(EventReasonCode, int32_t, uint64_t, IntPtr);
-    inline pair<bool, string> WithDirecory(const char *dir, function<pair<bool, string>(void)> yield);
   } // namespace
 
   Ebyroid::~Ebyroid()
@@ -220,48 +219,6 @@ namespace ebyroid
       }
 
       return adapter.release();
-    }
-
-    inline pair<bool, string> WithDirecory(const char *dir, function<pair<bool, string>(void)> yield)
-    {
-      static constexpr size_t kErrMax = 64 + MAX_PATH;
-      char org[MAX_PATH];
-      DWORD result = GetCurrentDirectoryA(MAX_PATH, org);
-      if (result == 0)
-      {
-        char m[64];
-        std::snprintf(m, 64, "Could not get the current directory.\n\tErrorNo = %d", GetLastError());
-        return pair<bool, string>(true, string(m));
-      }
-      BOOL result1 = SetCurrentDirectoryA(dir);
-      if (!result1)
-      {
-        char m[kErrMax];
-        std::snprintf(m,
-                      kErrMax,
-                      "Could not change directory.\n\tErrorNo = %d\n\tTarget path: %s",
-                      GetLastError(),
-                      dir);
-        return pair<bool, string>(true, string(m));
-      }
-      bool is_error = yield().first;
-      string what = yield().second;
-      result1 = SetCurrentDirectoryA(org);
-      if (!result1 && !is_error)
-      {
-        char m[kErrMax];
-        std::snprintf(m,
-                      kErrMax,
-                      "Could not change directory.\n\tErrorNo = %d\n\tTarget path: %s",
-                      GetLastError(),
-                      org);
-        return pair<bool, string>(true, string(m));
-      }
-      if (is_error)
-      {
-        return pair<bool, string>(true, what);
-      }
-      return pair<bool, string>(false, string());
     }
     int __stdcall HiraganaCallback(EventReasonCode reason_code, int32_t job_id, IntPtr user_data)
     {

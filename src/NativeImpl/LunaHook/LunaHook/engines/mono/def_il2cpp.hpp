@@ -601,7 +601,7 @@ namespace il2cppfunctions
 								   const char *klassName, const char *name, int argsCount, bool strict);
 	std::optional<std::wstring_view> get_string(void *);
 	void *create_string(std::wstring_view ws);
-	il2cpploopinfo loop_all_methods(std::optional<std::function<void(std::string &)>>);
+	il2cpploopinfo loop_all_methods(std::optional<std::function<void(const std::string &)>>);
 	const Il2CppType *get_type_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
 	const Il2CppClass *get_class_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
 }

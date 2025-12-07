@@ -175,7 +175,7 @@ void HostInfo(HOSTINFO type, LPCWSTR text, ...)
 	va_list args;
 	va_start(args, text);
 	buffer.type = type;
-	_vsnwprintf(buffer.message, MESSAGE_SIZE, text, args);
+	_vsnwprintf_s(buffer.message, _TRUNCATE, MESSAGE_SIZE, text, args);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }
 Synchronized<std::unordered_map<uintptr_t, std::wstring>> modulecache;
@@ -223,7 +223,7 @@ void NotifyHookRemove(uint64_t addr, LPCSTR name)
 void NotifyHookInserting(uint64_t addr, wchar_t hookcode[])
 {
 	HookInsertingNotif buffer(addr);
-	wcscpy(buffer.hookcode, hookcode);
+	wcscpy_s(buffer.hookcode, ARRAYSIZE(buffer.hookcode), hookcode);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }
 BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID)
@@ -238,9 +238,9 @@ BOOL WINAPI DllMain(HINSTANCE hModule, DWORD fdwReason, LPVOID)
 			return FALSE;
 		DisableThreadLibraryCalls(hModule);
 
-		auto createfm = [](AutoHandle<> &handle, void **ptr, DWORD sz, std::wstring &name)
+		auto createfm = [](AutoHandle<> &handle, void **ptr, DWORD sz, const std::wstring &name)
 		{
-			handle = CreateFileMappingW(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, sz, (name).c_str());
+			handle = CreateFileMappingW(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, sz, name.c_str());
 			*ptr = MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, sz);
 			memset(*ptr, 0, sz);
 		};
@@ -405,8 +405,8 @@ bool NewHook(HookParam hp, LPCSTR name)
 			return true;
 		}
 	}
-	strcpy(hp.function, "");
-	wcscpy(hp.module, L"");
+	strcpy_s(hp.function, ARRAYSIZE(hp.function), "");
+	wcscpy_s(hp.module, ARRAYSIZE(hp.module), L"");
 	hp.type &= ~MODULE_OFFSET;
 
 	hp.jittype = emuaddr2jitaddr[hp.emu_addr].first;

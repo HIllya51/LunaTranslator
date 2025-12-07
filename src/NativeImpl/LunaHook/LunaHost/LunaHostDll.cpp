@@ -82,8 +82,9 @@ C_LUNA_API void *Luna_AllocString(const wchar_t *str)
 {
     if (!str)
         return nullptr;
-    auto _ = new WCHAR[wcslen(str) + 1];
-    wcscpy(_, str);
+    auto __ = wcslen(str) + 1;
+    auto _ = new WCHAR[__];
+    wcscpy_s(_, __, str);
     return _;
 }
 C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int defaultCodepage, int maxBufferSize, int maxHistorySize)
@@ -174,7 +175,7 @@ C_LUNA_API void Luna_EmbedCallback(ThreadParam tp, LPCWSTR text, LPCWSTR trans)
     auto sm = Host::GetCommonSharedMem(tp.processId);
     if (!sm)
         return;
-    wcsncpy(sm->text, trans, ARRAYSIZE(sm->text));
+    wcsncpy_s(sm->text, ARRAYSIZE(sm->text), trans, ARRAYSIZE(sm->text));
     char eventname[1000];
     sprintf(eventname, LUNA_EMBED_notify_event, tp.processId, simplehash::djb2_n2((const unsigned char *)(text), wcslen(text) * 2));
     win_event event1(eventname);

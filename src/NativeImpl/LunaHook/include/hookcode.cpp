@@ -196,8 +196,8 @@ namespace
 			hp.address = 0;
 			hp.type &= ~MODULE_OFFSET;
 			hp.type &= ~FUNCTION_OFFSET;
-			wcscpy(hp.module, L"");
-			strcpy(hp.function, wcasta(HCode).c_str());
+			wcscpy_s(hp.module, ARRAYSIZE(hp.module), L"");
+			strcpy_s(hp.function, ARRAYSIZE(hp.function), wcasta(HCode).c_str());
 		}
 		else
 		{
@@ -230,8 +230,8 @@ namespace
 				hp.address = 0;
 				hp.type &= ~MODULE_OFFSET;
 				hp.type &= ~FUNCTION_OFFSET;
-				strcpy(hp.function, "");
-				wcscpy(hp.module, L"");
+				strcpy_s(hp.function, ARRAYSIZE(hp.function), "");
+				wcscpy_s(hp.module, ARRAYSIZE(hp.module), L"");
 			}
 		}
 		return hp;
@@ -433,6 +433,7 @@ namespace
 				case JITTYPE::RPCS3:
 					HCode += L":JIT:RPCS3";
 					break;
+				default:;
 				}
 			}
 		}

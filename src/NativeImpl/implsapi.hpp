@@ -5,7 +5,7 @@ namespace
     const wchar_t SPCAT_VOICES_7[] = LR"(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices)";
     const wchar_t SPCAT_VOICES_10[] = LR"(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech_OneCore\Voices)";
 
-    std::optional<std::vector<byte>> Speak(const std::wstring &Content, LPCWSTR voiceid, int rate, int pitch, int volume=100)
+    std::optional<std::vector<byte>> Speak(const std::wstring &Content, LPCWSTR voiceid, int rate, int pitch, int volume = 100)
     {
         std::optional<std::vector<byte>> ret = {};
         [&]()
@@ -110,7 +110,7 @@ namespace
                 CComHeapPtr<WCHAR> pszVoiceName;
                 CHECK_FAILURE_CONTINUE(m_pISpObjectToken->GetId(&pszVoiceId));
                 CHECK_FAILURE_CONTINUE(m_pISpObjectToken->GetStringValue(NULL, &pszVoiceName));
-                ret.emplace_back(std::make_pair(pszVoiceId, pszVoiceName));
+                ret.emplace_back(std::move(pszVoiceId), std::move(pszVoiceName));
             }
         }();
         return ret;
@@ -118,7 +118,7 @@ namespace
 }
 namespace SAPI
 {
-    std::optional<std::vector<byte>> Speak(const std::wstring &Content, LPCWSTR voiceid, int rate, int pitch, int volume=100)
+    std::optional<std::vector<byte>> Speak(const std::wstring &Content, LPCWSTR voiceid, int rate, int pitch, int volume = 100)
     {
         return ::Speak(Content, voiceid, rate, pitch, volume);
     }
