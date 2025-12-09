@@ -1,6 +1,6 @@
 # [【软件下载 & 常见问题】](https://docs.lunatranslator.org/zh/README.html)
 
-### 简体中文  | [English](#custom-anchor) | [繁體中文](https://docs.lunatranslator.org/cht/) | [한국어](https://docs.lunatranslator.org/ko/) | [日本語](https://docs.lunatranslator.org/ja/) | [Tiếng Việt](https://docs.lunatranslator.org/vi/) | [Русский язык](https://docs.lunatranslator.org/ru/)
+### 简体中文  | [English](#lunatranslator-1) | [繁體中文](https://docs.lunatranslator.org/cht/) | [한국어](https://docs.lunatranslator.org/ko/) | [日本語](https://docs.lunatranslator.org/ja/) | [Tiếng Việt](https://docs.lunatranslator.org/vi/) | [Русский язык](https://docs.lunatranslator.org/ru/)
 
 ---
 
@@ -40,8 +40,6 @@ LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 
 ---
 
-<span id="en-anchor"></span>
-
 # LunaTranslator  
 
 > **Visual Novel Translator**
@@ -76,7 +74,7 @@ LunaTranslator uses [GPLv3](../LICENSE) License
 
 Software maintenance is not easy. If you find this software helpful, feel free to support me via [Patreon](https://patreon.com/HIllya51). Your support will contribute to the long-term maintenance of the software. Thank you~
 
-<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="../docs/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
 
 
 | <img src="https://signpath.org/assets/favicon.png" width="25" height="25" align="center"> | Free code signing provided by [SignPath.io](https://about.signpath.io/), certificate by [SignPath Foundation](https://signpath.org/). |
