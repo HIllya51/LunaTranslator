@@ -1207,6 +1207,7 @@
             "name": "GPT-SoVITS",
             "type": "offline",
             "args": {
+                "APITYPE": "gptsovits",
                 "URL": "http://127.0.0.1:9880",
                 "apiv": "v2",
                 "customparams": [
@@ -1225,10 +1226,64 @@
                         "value": "",
                         "type": "string"
                     }
-                ]
+                ],
+                "URL2": "http://127.0.0.1:8000",
+                "version": "v4",
+                "customparams2": []
             },
             "argstype": {
+                "APITYPE": {
+                    "rank": 0,
+                    "type": "combo",
+                    "name": "API TYPE",
+                    "list": [
+                        "RVC-Boss/GPT-SoVITS",
+                        "AI-Hobbyist/GPT-SoVITS-Inference"
+                    ],
+                    "internal": [
+                        "gptsovits",
+                        "gsvi"
+                    ]
+                },
+                "URL2": {
+                    "name": "URL",
+                    "refcombo": "APITYPE",
+                    "refcombo_i": "gsvi"
+                },
+                "URL": {
+                    "refcombo": "APITYPE",
+                    "refcombo_i": "gptsovits"
+                },
+                "version": {
+                    "refcombo": "APITYPE",
+                    "refcombo_i": "gsvi",
+                    "type": "combo",
+                    "name": "Version",
+                    "list": [
+                        "v4",
+                        "v3",
+                        "v2",
+                        "v2Pro",
+                        "v2ProPlus"
+                    ],
+                    "internal": [
+                        "v4",
+                        "v3",
+                        "v2",
+                        "v2Pro",
+                        "v2ProPlus"
+                    ]
+                },
+                "customparams2": {
+                    "refcombo": "APITYPE",
+                    "refcombo_i": "gsvi",
+                    "name": "其他参数",
+                    "type": "custom",
+                    "function": "customparams"
+                },
                 "apiv": {
+                    "refcombo": "APITYPE",
+                    "refcombo_i": "gptsovits",
                     "type": "combo",
                     "name": "API version",
                     "list": [
@@ -1241,64 +1296,8 @@
                     ]
                 },
                 "customparams": {
-                    "name": "其他参数",
-                    "type": "custom",
-                    "function": "customparams"
-                }
-            }
-        },
-        "gsvi":{
-            "use": true,
-            "name": "GPT-SoVITS-Inference",
-            "type": "offline",
-            "args": {
-                "URL": "http://127.0.0.1:8000",
-                "version": "v4",
-                "split_method": "不切",
-                "customparams": [
-
-                ]
-            },
-            "argstype": {
-                "version": {
-                    "type": "combo",
-                    "name": "Version",
-                    "list": [
-                    "v4",
-                    "v3",
-                    "v2",
-                    "v2Pro",
-                    "v2ProPlus"
-                    ],
-                    "internal": [
-                    "v4",
-                    "v3",
-                    "v2",
-                    "v2Pro",
-                    "v2ProPlus"
-                    ]
-                },
-                "split_method": {
-                    "type": "combo",
-                    "name": "切分方法",
-                    "list": [
-                    "不切",
-                    "凑四句一切",
-                    "凑50字一切",
-                    "按中文句号。切",
-                    "按英文句号.切",
-                    "按标点符号切"                 
-                    ],
-                    "internal": [
-                    "不切",
-                    "凑四句一切",
-                    "凑50字一切",
-                    "按中文句号。切",
-                    "按英文句号.切",
-                    "按标点符号切"
-                    ]
-                },
-                "customparams": {
+                    "refcombo": "APITYPE",
+                    "refcombo_i": "gptsovits",
                     "name": "其他参数",
                     "type": "custom",
                     "function": "customparams"

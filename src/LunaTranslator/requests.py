@@ -414,6 +414,8 @@ class Session:
             )
         scheme, server, port, param, url = _Functions._parseurl(url, params)
 
+        if server in ("0.0.0.0",):
+            server = "127.0.0.1"
         if server in ("127.0.0.1", "localhost"):
             # libcurl在本地地址走代理时有时会谜之502
             proxies = None

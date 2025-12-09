@@ -128,8 +128,12 @@ class SuperCombo(FocusCombo):
     def getCurrentData(self):
         return self.getIndexData(self.currentIndex())
 
-    def getIndexData(self, index):
-        item = self.mo.item(index, 0)
+    def getIndexData(self, index: "int | QModelIndex"):
+        if isinstance(index, int):
+            index = self.mo.index(index, 0)
+        if not index.isValid():
+            return
+        item = self.mo.itemFromIndex(index)
         if not item:
             return
         return item.data(self.Internalrole)

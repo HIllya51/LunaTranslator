@@ -117,7 +117,7 @@ class customparams(QWidget):
         lay.addWidget(btn, lay.rowCount(), 0, 1, 5 - self.stringonly)
         self.createline(lay, lay.rowCount() - 2, {})
 
-    def __init__(self, dd: dict, stringonly=False, needheader=True):
+    def __init__(self, dd: dict, key="customparams", stringonly=False, needheader=True):
         super().__init__()
         self.needheader = needheader
         self.stringonly = stringonly
@@ -126,7 +126,7 @@ class customparams(QWidget):
         lay = VisGridLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         self.lay = lay
-        value: list = dd["customparams"]
+        value: list = dd[key]
         for i, d in enumerate(value):
             self.createline(lay, i, d)
         icon = getIconButton(icon="fa.plus", fix=False)

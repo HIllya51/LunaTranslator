@@ -216,49 +216,6 @@ namespace
         s = filterBlankLinesFromString(s);
         buffer->from(s);
     }
-
-    void F0100F6A00A684000(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        auto parts = re::split(s, "(?=@.)");
-        s = "";
-        for (auto part : parts)
-        {
-            if (startWith(part, "@") == false)
-            {
-                s += part;
-                continue;
-            }
-            std::string tag = part.substr(0, 2);
-            std::string content = part.substr(2);
-            if (tag == "@r")
-            {
-                if (s == "")
-                    s = content;
-                else
-                    s += '\n' + content;
-            }
-            else if (tag == "@u" || tag == "@v" || tag == "@w" || tag == "@o" || tag == "@a" || tag == "@z" || tag == "@c" || tag == "@s")
-            {
-                auto splited = strSplit(content, ".");
-                if (splited.size() == 2)
-                    s += splited[1];
-            }
-            else if (tag == "@b")
-            {
-            }
-            else
-            {
-                s += content;
-            }
-        }
-        auto ws = StringToWideString(s, 932).value();
-        strReplace(ws, L"\uF8F0");
-        strReplace(ws, L"\uFFFD");
-        strReplace(ws, L"?", L"　");
-        ws = remapkatakana(ws);
-        buffer->fromWA(ws);
-    }
     void F01006590155AC000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -547,17 +504,17 @@ namespace
         s = re::sub(s, R"(#Color\[\d+?\])");
         buffer->from(s);
     }
-    template <int t = 0>
+    template <int t = 0, int cp = CP_UTF8>
     void F0100D4800C476000(TextBuffer *buffer, HookParam *hp)
     {
-        auto ws = buffer->strAW(CP_UTF8);
+        auto ws = buffer->strAW(cp);
         ws = remapkatakana(ws);
         if (t == 1)
         {
             ws = re::sub(ws, LR"(@v[/\d]+\.)");
             ws = re::sub(ws, LR"(@b(.*?)\.@<(.*?)@>)", L"$2");
         }
-        ws = re::sub(ws, LR"(@v\w+\.)");
+        ws = re::sub(ws, LR"(@v[\w/]+\.)");
         ws = re::sub(ws, LR"(@v\d+)");
         ws = re::sub(ws, LR"(@x\w+\.)");
         ws = re::sub(ws, LR"(@s\d{4})");
@@ -572,7 +529,7 @@ namespace
         strReplace(ws, L"@|");
         strReplace(ws, L"$");
         strReplace(ws, L"\uf8f0");
-        buffer->fromWA(ws, CP_UTF8);
+        buffer->fromWA(ws, cp);
     }
     void f0100AC600EB4C000(TextBuffer *buffer, HookParam *hp)
     {
@@ -581,7 +538,7 @@ namespace
         strReplace(ws, L"\uF8F0");
         strReplace(ws, L"@r");
         strReplace(ws, L"@y");
-        ws = re::sub(ws, LR"(@v\w+\.)");
+        ws = re::sub(ws, LR"(@v[\w/]+\.)");
         ws = re::sub(ws, LR"(@z\d+\.)");
         ws = re::sub(ws, LR"(@b(.*?)\.@<(.*?)@>)", L"$2");
         buffer->fromWA(ws);
@@ -3528,8 +3485,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80f91c08, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Language Selection
     {0x805c9014, {CODEC_UTF16, 0, 0, 0, F010043B013C5C000, 0x010029B018432000ull, "1.0.0"}}, // Story/Character Info
     // ひぐらしのなく頃に奉
-    {0x800bd6c8, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, "1.0.0"}}, // sjis
-    {0x800c2d20, {0, 0, 0, 0, F0100F6A00A684000, 0x0100F6A00A684000ull, nullptr}}, //  1.2.0 && 2.0.2
+    {0x800bd6c8, {FULL_STRING, 0, 0, 0, F0100D4800C476000<1, 932>, 0x0100F6A00A684000ull, "1.0.0"}}, // sjis
+    {0x800c2d20, {FULL_STRING, 0, 0, 0, F0100D4800C476000<1, 932>, 0x0100F6A00A684000ull, nullptr}}, //  1.2.0 && 2.0.2
     // うみねこのなく頃に咲 ～猫箱と夢想の交響曲～
     {0x800b4560, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000<1>, 0x01006A300BA2C000ull, "1.0.0"}}, // x0 name + text
     {0x801049c0, {CODEC_UTF8, 0, 0, 0, 0, 0x01006A300BA2C000ull, "1.0.0"}},                    // x0 prompt, bottomLeft

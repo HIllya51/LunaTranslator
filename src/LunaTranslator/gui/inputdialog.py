@@ -557,7 +557,7 @@ class autoinitdialog(LDialog):
                 lineWF = getattr(
                     importlib.import_module(self.modelfile), line["function"]
                 )
-                lineW = lineWF(self._dict)
+                lineW = lineWF(self._dict, key)
                 self.updater[key] = lineW.updateValues
             except:
                 print_exc()
@@ -759,12 +759,16 @@ class autoinitdialog(LDialog):
                 continue
             oklines.append(line)
         lines = oklines
-        self.cachecombo = {}
+        self.cachecombo: "dict[str, SuperCombo]" = {}
         self.cachehasref = {}
         for line in lines:
             if line.get("hide"):
                 continue
-            lineW = self.createobject(line, dd)
+            try:
+                lineW = self.createobject(line, dd)
+            except Exception as e:
+                print(line)
+                raise e
             if not lineW:
                 continue
             appends = line.get("appends", None)
@@ -809,12 +813,15 @@ class autoinitdialog(LDialog):
             refitems,
         ) in self.cachehasref.items():
 
-            def refcombofunction(refitems: "list[tuple[dict, int]]", _i):
+            def refcombofunction(
+                refitems: "list[tuple[dict, int]]", combo: SuperCombo, __i
+            ):
                 viss = []
                 for linwinfo, row in refitems:
                     vis = True
-                    refcombo_i = linwinfo.get("refcombo_i")
-                    if isinstance(refcombo_i, int):
+                    _i = combo.getIndexData(__i)
+                    refcombo_i: "str | int | list | tuple" = linwinfo.get("refcombo_i")
+                    if isinstance(refcombo_i, (str, int)):
                         vis = refcombo_i == _i
                     elif isinstance(refcombo_i, (list, tuple)):
                         vis = _i in refcombo_i
@@ -828,7 +835,9 @@ class autoinitdialog(LDialog):
                 self.resize(self.width(), 1)
 
             self.cachecombo[comboname].currentIndexChanged.connect(
-                functools.partial(refcombofunction, refitems)
+                functools.partial(
+                    refcombofunction, refitems, self.cachecombo[comboname]
+                )
             )
             self.cachecombo[comboname].currentIndexChanged.emit(
                 self.cachecombo[comboname].currentIndex()
