@@ -364,7 +364,7 @@ def setTabcishu_l(self):
                             tips="注音颜色",
                         ),
                         "",
-                        "字体缩放",
+                        "字体相对大小",
                         D_getspinbox(
                             0.1,
                             1,

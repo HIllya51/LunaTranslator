@@ -426,7 +426,6 @@
     "主题": "Tema",
     "引擎": "Mecanismo",
     "注音": "Guia Fonético",
-    "字体缩放": "Escala da Fonte",
     "主界面": "Interface Principal",
     "声音": "Voz",
     "行为": "Comportamento",
@@ -905,5 +904,7 @@
     "结束": "Fim",
     "通用文本翻译": "Tradução de Texto Universal",
     "大模型文本翻译": "Tradução de texto por modelos de linguagem de grande escala",
-    "无法加载，可能是系统缺少必要的运行库": "Não foi possível carregar, pode ser que o sistema esteja faltando as bibliotecas de execução necessárias."
+    "无法加载，可能是系统缺少必要的运行库": "Não foi possível carregar, pode ser que o sistema esteja faltando as bibliotecas de execução necessárias.",
+    "字体相对大小": "Tamanho relativo da fonte",
+    "修改游戏字体相对大小": "Modificar o tamanho relativo da fonte do jogo"
 }

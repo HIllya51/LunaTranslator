@@ -427,7 +427,6 @@
     "主题": "motyw",
     "引擎": "silnik",
     "注音": "Zhuyin.",
-    "字体缩放": "Skalowanie czcionki",
     "主界面": "główny interfejs",
     "声音": "głos",
     "行为": "zachowanie",
@@ -905,5 +904,7 @@
     "结束": "Koniec",
     "通用文本翻译": "Tłumaczenie tekstu ogólnego",
     "大模型文本翻译": "Translacja tekstu za pomocą dużych modeli językowych",
-    "无法加载，可能是系统缺少必要的运行库": "Nie można załadować, możliwe, że systemowi brakuje niezbędnych bibliotek uruchomieniowych."
+    "无法加载，可能是系统缺少必要的运行库": "Nie można załadować, możliwe, że systemowi brakuje niezbędnych bibliotek uruchomieniowych.",
+    "字体相对大小": "Względna wielkość czcionki",
+    "修改游戏字体相对大小": "Zmodyfikuj względny rozmiar czcionki w grze"
 }

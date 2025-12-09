@@ -46,6 +46,59 @@ namespace
 }
 namespace
 { // unnamed
+  void ScaleFont(int &lfHeight, int &lfWidth)
+  {
+    if (!(commonsharedmem->changeFontSize && (commonsharedmem->FontSizeRelative != 1)))
+      return;
+    auto scale = commonsharedmem->FontSizeRelative;
+    if (lfHeight != 0)
+    {
+      bool _ = lfHeight > 0;
+      lfHeight = (LONG)(lfHeight * scale);
+
+      if (lfHeight == 0)
+      {
+        lfHeight = _ ? 1 : -1;
+      }
+    }
+
+    if (lfWidth != 0)
+    {
+      bool _ = lfWidth > 0;
+      lfWidth = (LONG)(lfWidth * scale);
+      if (lfWidth == 0)
+      {
+        lfWidth = _ ? 1 : -1;
+      }
+    }
+  }
+  template <typename T>
+  void ScaleFont(T *plogf)
+  {
+    if (!(commonsharedmem->changeFontSize && (commonsharedmem->FontSizeRelative != 1)))
+      return;
+    auto scale = commonsharedmem->FontSizeRelative;
+    if (plogf->lfHeight != 0)
+    {
+      bool _ = plogf->lfHeight > 0;
+      plogf->lfHeight = (LONG)(plogf->lfHeight * scale);
+
+      if (plogf->lfHeight == 0)
+      {
+        plogf->lfHeight = _ ? 1 : -1;
+      }
+    }
+
+    if (plogf->lfWidth != 0)
+    {
+      bool _ = plogf->lfWidth > 0;
+      plogf->lfWidth = (LONG)(plogf->lfWidth * scale);
+      if (plogf->lfWidth == 0)
+      {
+        plogf->lfWidth = _ ? 1 : -1;
+      }
+    }
+  }
   UINT8 systemCharSet()
   {
     enum CodePage
@@ -217,6 +270,10 @@ namespace
   {
     return commonsharedmem->fontCharSetEnabled || wcslen(maybe_disabled_fontFamily());
   }
+  bool isFontSizeCustomized()
+  {
+    return commonsharedmem->changeFontSize && (commonsharedmem->FontSizeRelative != 1);
+  }
   DCFontSwitcher::DCFontSwitcher(HDC hdc)
       : hdc_(hdc), oldFont_(nullptr), newFont_(nullptr), newfontname(L"")
   {
@@ -244,7 +301,7 @@ namespace
     lf.lfPitchAndFamily = tm.tmPitchAndFamily;
 
     customizeLogFontW(&lf);
-
+    ScaleFont(&lf);
     if (std::wstring(maybe_disabled_fontFamily()).empty())
       ::GetTextFaceW(hdc_, LF_FACESIZE, lf.lfFaceName);
     else
@@ -273,27 +330,33 @@ HFONT WINAPI Hijack::newCreateFontIndirectA(const LOGFONTA *lplf)
   // DOUT("width:" << lplf->lfWidth << ", height:" << lplf->lfHeight << ", weight:" << lplf->lfWeight);
   // if (auto p = HijackHelper::instance()) {
   // auto s = p->settings();
-  std::wstring fontFamily = maybe_disabled_fontFamily();
-  if (lplf && isFontCustomized())
+  if (lplf && (isFontCustomized() || isFontSizeCustomized()))
   {
     union
     {
       LOGFONTA a;
       LOGFONTW w;
     } lf = {*lplf}; // only initialize the first member of LOGFONTA
-    customizeLogFontA(&lf.a);
-    if (!fontFamily.empty())
+    ScaleFont(&lf.a);
+    bool usewapi = false;
+    if (isFontCustomized())
     {
-      if (all_ascii(fontFamily))
-        ::strcpy(lf.a.lfFaceName, WideStringToString(fontFamily, CP_ACP).c_str());
-      else
+      std::wstring fontFamily = maybe_disabled_fontFamily();
+      customizeLogFontA(&lf.a);
+      if (!fontFamily.empty())
       {
-        lf.w.lfFaceName[fontFamily.size()] = 0;
-        // s->fontFamily.toWCharArray(lf.w.lfFaceName);
-        memcpy(lf.w.lfFaceName, fontFamily.c_str(), fontFamily.size());
-        return oldCreateFontIndirectW(&lf.w);
+        if (all_ascii(fontFamily))
+          ::strcpy(lf.a.lfFaceName, WideStringToString(fontFamily, CP_ACP).c_str());
+        else
+        {
+          lf.w.lfFaceName[fontFamily.size()] = 0;
+          memcpy(lf.w.lfFaceName, fontFamily.c_str(), fontFamily.size());
+          usewapi = true;
+        }
       }
     }
+    if (usewapi)
+      oldCreateFontIndirectW(&lf.w);
     return oldCreateFontIndirectA(&lf.a);
   }
   //}
@@ -306,10 +369,12 @@ HFONT WINAPI Hijack::newCreateFontIndirectW(const LOGFONTW *lplf)
   // DOUT("width:" << lplf->lfWidth << ", height:" << lplf->lfHeight << ", weight:" << lplf->lfWeight);
   // if (auto p = HijackHelper::instance()) {
   // auto s = p->settings();
-  if (lplf && isFontCustomized())
+  if (lplf && (isFontCustomized() || isFontSizeCustomized()))
   {
     LOGFONTW lf(*lplf);
-    customizeLogFontW(&lf);
+    ScaleFont(&lf);
+    if (isFontSizeCustomized())
+      customizeLogFontW(&lf);
     return oldCreateFontIndirectW(&lf);
   }
   // }
@@ -319,7 +384,7 @@ HFONT WINAPI Hijack::newCreateFontIndirectW(const LOGFONTW *lplf)
 #define CREATE_FONT_ARGS nHeight, nWidth, nEscapement, nOrientation, fnWeight, fdwItalic, fdwUnderline, fdwStrikeOut, fdwCharSet, fdwOutputPrecision, fdwClipPrecision, fdwQuality, fdwPitchAndFamily, lpszFace
 HFONT WINAPI Hijack::newCreateFontA(int nHeight, int nWidth, int nEscapement, int nOrientation, int fnWeight, DWORD fdwItalic, DWORD fdwUnderline, DWORD fdwStrikeOut, DWORD fdwCharSet, DWORD fdwOutputPrecision, DWORD fdwClipPrecision, DWORD fdwQuality, DWORD fdwPitchAndFamily, LPCSTR lpszFace)
 {
-
+  ScaleFont(nHeight, nWidth);
   if (isFontCustomized())
   {
     if (commonsharedmem->fontCharSetEnabled)
@@ -358,7 +423,7 @@ HFONT WINAPI Hijack::newCreateFontA(int nHeight, int nWidth, int nEscapement, in
 
 HFONT WINAPI Hijack::newCreateFontW(int nHeight, int nWidth, int nEscapement, int nOrientation, int fnWeight, DWORD fdwItalic, DWORD fdwUnderline, DWORD fdwStrikeOut, DWORD fdwCharSet, DWORD fdwOutputPrecision, DWORD fdwClipPrecision, DWORD fdwQuality, DWORD fdwPitchAndFamily, LPCWSTR lpszFace)
 {
-
+  ScaleFont(nHeight, nWidth);
   if (isFontCustomized())
   {
     if (commonsharedmem->fontCharSetEnabled)

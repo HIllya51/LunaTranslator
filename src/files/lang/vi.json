@@ -427,7 +427,6 @@
     "主题": "Chủ đề",
     "引擎": "Động cơ",
     "注音": "Ghi chú",
-    "字体缩放": "Thu phóng phông chữ",
     "主界面": "Giao diện chính",
     "声音": "Âm thanh",
     "行为": "Ứng xử",
@@ -905,5 +904,7 @@
     "结束": "Kết thúc",
     "通用文本翻译": "Dịch văn bản thông dụng",
     "大模型文本翻译": "Mô hình lớn dịch văn bản",
-    "无法加载，可能是系统缺少必要的运行库": "Không thể tải, có thể hệ thống thiếu các thư viện chạy cần thiết."
+    "无法加载，可能是系统缺少必要的运行库": "Không thể tải, có thể hệ thống thiếu các thư viện chạy cần thiết.",
+    "字体相对大小": "Kích thước tương đối của phông chữ",
+    "修改游戏字体相对大小": "Thay đổi kích thước phông chữ tương đối trong trò chơi"
 }

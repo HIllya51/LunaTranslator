@@ -66,6 +66,10 @@ After unchecking this setting, Simplified Chinese can be displayed correctly. Ho
 1. #### Modify Game Font
 
     Omitted
+    
+1. #### Adjust the relative font size in the game
+
+    Omitted
 
 1. #### Embedded Safety Check
 

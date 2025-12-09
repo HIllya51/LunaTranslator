@@ -430,7 +430,6 @@
     "主题": "Thema",
     "引擎": "Motor",
     "注音": "Phonetische Anmerkung",
-    "字体缩放": "Schriftgröße",
     "声音": "Stimme",
     "行为": "Verhalten",
     "自动化执行": "Automatisierte Ausführung",
@@ -905,5 +904,7 @@
     "结束": "Ende",
     "通用文本翻译": "Allgemeiner Textübersetzung",
     "大模型文本翻译": "Großes Modell Textübersetzung",
-    "无法加载，可能是系统缺少必要的运行库": "Kann nicht geladen werden, möglicherweise fehlen dem System notwendige Laufzeitbibliotheken."
+    "无法加载，可能是系统缺少必要的运行库": "Kann nicht geladen werden, möglicherweise fehlen dem System notwendige Laufzeitbibliotheken.",
+    "字体相对大小": "Relative Schriftgröße",
+    "修改游戏字体相对大小": "Ändern der relativen Schriftgröße im Spiel"
 }

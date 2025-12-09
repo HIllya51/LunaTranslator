@@ -117,6 +117,23 @@ def gethookgrid_em(self):
             creategamefont_comboBox,
         ],
         [
+            "修改游戏字体相对大小",
+            D_getsimpleswitch(
+                globalconfig["embedded"],
+                "changefontsize_use",
+                default=False,
+            ),
+            D_getspinbox(
+                0,
+                1,
+                globalconfig["embedded"],
+                "changefontsize",
+                step=0.01,
+                double=True,
+                default=1,
+            ),
+        ],
+        [
             "内嵌安全性检查",
             D_getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
             D_getIconButton(

@@ -427,7 +427,6 @@
     "主题": "tema",
     "引擎": "motor",
     "注音": "Zhuyin",
-    "字体缩放": "Yazıtipi ölçü",
     "主界面": "Ana arayüz",
     "声音": "sesi",
     "行为": "davranış",
@@ -905,5 +904,7 @@
     "结束": "Son",
     "通用文本翻译": "Genel Metin Çevirisi",
     "大模型文本翻译": "Büyük Model Metin Çevirisi",
-    "无法加载，可能是系统缺少必要的运行库": "Yüklenemiyor, sistem gerekli çalışma kütüphanelerinden yoksun olabilir."
+    "无法加载，可能是系统缺少必要的运行库": "Yüklenemiyor, sistem gerekli çalışma kütüphanelerinden yoksun olabilir.",
+    "字体相对大小": "Yazı tipi göreceli boyutu",
+    "修改游戏字体相对大小": "Oyun yazı tipi göreceli boyutunu değiştir"
 }

@@ -1335,6 +1335,27 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
         formLayout2.addRow(
+            "修改游戏字体相对大小",
+            getboxlayout(
+                [
+                    D_getsimpleswitch(
+                        savehook_new_data[gameuid]["embed_setting_private"],
+                        "changefontsize_use",
+                        default=globalconfig["embedded"]["changefontsize_use"],
+                    ),
+                    D_getspinbox(
+                        0,
+                        1,
+                        savehook_new_data[gameuid]["embed_setting_private"],
+                        "changefontsize",
+                        default=globalconfig["embedded"]["changefontsize"],
+                        step=0.01,
+                        double=True,
+                    ),
+                ]
+            ),
+        )
+        formLayout2.addRow(
             "内嵌安全性检查",
             getsimpleswitch(
                 savehook_new_data[gameuid]["embed_setting_private"],

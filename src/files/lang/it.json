@@ -427,7 +427,6 @@
     "主题": "tema",
     "引擎": "motore",
     "注音": "Zhuyin",
-    "字体缩放": "Scalamento dei caratteri",
     "主界面": "interfaccia principale",
     "声音": "voce",
     "行为": "comportamento",
@@ -905,5 +904,7 @@
     "结束": "Fine",
     "通用文本翻译": "Traduzione di testo universale",
     "大模型文本翻译": "Traduzione di testo con modelli di grandi dimensioni",
-    "无法加载，可能是系统缺少必要的运行库": "Impossibile caricare, potrebbe mancare una libreria di runtime necessaria al sistema."
+    "无法加载，可能是系统缺少必要的运行库": "Impossibile caricare, potrebbe mancare una libreria di runtime necessaria al sistema.",
+    "字体相对大小": "Dimensione relativa del carattere",
+    "修改游戏字体相对大小": "Modifica la dimensione relativa del font del gioco"
 }

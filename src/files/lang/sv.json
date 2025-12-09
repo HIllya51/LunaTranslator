@@ -430,7 +430,6 @@
     "主题": "tema",
     "引擎": "motor",
     "注音": "Fonetisk anteckning",
-    "字体缩放": "Skalning av teckensnitt",
     "声音": "röst",
     "行为": "beteenden",
     "自动化执行": "Automatisk körning",
@@ -905,5 +904,7 @@
     "结束": "Slut",
     "通用文本翻译": "Allmän textöversättning",
     "大模型文本翻译": "Stor modell textöversättning",
-    "无法加载，可能是系统缺少必要的运行库": "Det går inte att ladda, möjligen saknar systemet nödvändiga körbibliotek."
+    "无法加载，可能是系统缺少必要的运行库": "Det går inte att ladda, möjligen saknar systemet nödvändiga körbibliotek.",
+    "字体相对大小": "Relativ teckensnittsstorlek",
+    "修改游戏字体相对大小": "Ändra relativ teckenstorlek i spelet"
 }

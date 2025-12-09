@@ -430,7 +430,6 @@
     "主题": "téma",
     "引擎": "motor",
     "注音": "Fonetická anotace",
-    "字体缩放": "Škálování písem",
     "声音": "hlas",
     "行为": "chování",
     "自动化执行": "Automatizované provedení",
@@ -905,5 +904,7 @@
     "结束": "Konec",
     "通用文本翻译": "Univerzální překlad textu",
     "大模型文本翻译": "Velký model textového překladu",
-    "无法加载，可能是系统缺少必要的运行库": "Nelze načíst, může to být způsobeno chybějícími nezbytnými knihovnami v systému."
+    "无法加载，可能是系统缺少必要的运行库": "Nelze načíst, může to být způsobeno chybějícími nezbytnými knihovnami v systému.",
+    "字体相对大小": "Relativní velikost písma",
+    "修改游戏字体相对大小": "Upravit relativní velikost písma ve hře"
 }

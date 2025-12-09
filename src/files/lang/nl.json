@@ -430,7 +430,6 @@
     "主题": "thema",
     "引擎": "motor",
     "注音": "Fonetische annotatie",
-    "字体缩放": "Lettertypeschalen",
     "声音": "stem",
     "行为": "gedrag",
     "自动化执行": "Geautomatiseerde uitvoering",
@@ -905,5 +904,7 @@
     "结束": "Einde",
     "通用文本翻译": "Algemene tekstvertaling",
     "大模型文本翻译": "Grote modeltekstvertaling",
-    "无法加载，可能是系统缺少必要的运行库": "Kan niet laden, mogelijk ontbreekt het systeem aan de benodigde runtime-bibliotheken."
+    "无法加载，可能是系统缺少必要的运行库": "Kan niet laden, mogelijk ontbreekt het systeem aan de benodigde runtime-bibliotheken.",
+    "字体相对大小": "Relatieve lettergrootte",
+    "修改游戏字体相对大小": "Pas de relatieve grootte van het spellettertype aan"
 }

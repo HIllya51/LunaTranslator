@@ -33,6 +33,7 @@ from ctypes import (
     c_uint8,
     c_uint,
     c_char,
+    c_float,
 )
 from ctypes.wintypes import DWORD, LPCWSTR
 
@@ -213,6 +214,8 @@ class texthook(basetext):
             c_uint32,
             c_bool,
             c_bool,
+            c_bool,
+            c_float,
         )
         self.Luna_CheckIsUsingEmbed = LunaHost.Luna_CheckIsUsingEmbed
         self.Luna_CheckIsUsingEmbed.argtypes = (ThreadParam,)
@@ -544,6 +547,8 @@ class texthook(basetext):
                 self.embedconfig["displaymode"],
                 True,
                 self.embedconfig["clearText"],
+                self.embedconfig["changefontsize_use"],
+                self.embedconfig["changefontsize"],
             )
 
     def onremovehook(self, hc, hn: bytes, tp):

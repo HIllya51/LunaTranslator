@@ -427,7 +427,6 @@
     "主题": "Thèmes",
     "引擎": "Moteur",
     "注音": "Accent",
-    "字体缩放": "Zoom de police",
     "主界面": "Interface principale",
     "声音": "La voix",
     "行为": "Comportement",
@@ -905,5 +904,7 @@
     "结束": "Fin",
     "通用文本翻译": "Traduction de texte universel",
     "大模型文本翻译": "Traduction de texte par grands modèles",
-    "无法加载，可能是系统缺少必要的运行库": "Impossible de charger, il est possible que le système manque des bibliothèques d'exécution nécessaires."
+    "无法加载，可能是系统缺少必要的运行库": "Impossible de charger, il est possible que le système manque des bibliothèques d'exécution nécessaires.",
+    "字体相对大小": "Taille relative de la police",
+    "修改游戏字体相对大小": "Modifier la taille relative de la police du jeu"
 }

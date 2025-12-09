@@ -1137,7 +1137,7 @@ def getspinbox(
     return s
 
 
-def D_getspinbox(mini, maxi, d, key, double=False, step=1, callback=None, default=0):
+def D_getspinbox(mini, maxi, d, key, double=False, step=None, callback=None, default=0):
     return lambda: getspinbox(mini, maxi, d, key, double, step, callback, default)
 
 

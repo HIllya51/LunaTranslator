@@ -67,6 +67,10 @@ Sau khi bỏ chọn cài đặt này, tiếng Trung giản thể có thể đư�
 
     Bỏ qua
 
+1. #### Thay đổi kích thước phông chữ tương đối trong trò chơi
+
+    Bỏ qua
+
 1. #### Kiểm tra An toàn Nhúng
 
     Đối với các trò chơi như Renpy, văn bản được trích xuất thường bao gồm các ký tự của các phần tử cú pháp như `{` `}` `[` `]`. Nếu nguồn dịch không xử lý đúng các nội dung này, nó sẽ phá vỡ cú pháp và khiến trò chơi bị treo. Do đó, phần mềm mặc định **bỏ qua dịch thuật** của một số tổ hợp ký tự có thể gây ra lỗi trò chơi bằng cách khớp regex. Nếu bạn không lo lắng về lỗi trò chơi, bạn có thể hủy cài đặt này, hoặc thay thế thủ công một số khớp regex chi tiết hơn để giảm bỏ qua không cần thiết.
