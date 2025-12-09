@@ -1247,6 +1247,64 @@
                 }
             }
         },
+        "gsvi":{
+            "use": true,
+            "name": "GPT-SoVITS-Inference",
+            "type": "offline",
+            "args": {
+                "URL": "http://127.0.0.1:8000",
+                "version": "v4",
+                "split_method": "不切",
+                "customparams": [
+
+                ]
+            },
+            "argstype": {
+                "version": {
+                    "type": "combo",
+                    "name": "Version",
+                    "list": [
+                    "v4",
+                    "v3",
+                    "v2",
+                    "v2Pro",
+                    "v2ProPlus"
+                    ],
+                    "internal": [
+                    "v4",
+                    "v3",
+                    "v2",
+                    "v2Pro",
+                    "v2ProPlus"
+                    ]
+                },
+                "split_method": {
+                    "type": "combo",
+                    "name": "切分方法",
+                    "list": [
+                    "不切",
+                    "凑四句一切",
+                    "凑50字一切",
+                    "按中文句号。切",
+                    "按英文句号.切",
+                    "按标点符号切"                 
+                    ],
+                    "internal": [
+                    "不切",
+                    "凑四句一切",
+                    "凑50字一切",
+                    "按中文句号。切",
+                    "按英文句号.切",
+                    "按标点符号切"
+                    ]
+                },
+                "customparams": {
+                    "name": "其他参数",
+                    "type": "custom",
+                    "function": "customparams"
+                }
+            }
+        },
         "vitsSimpleAPI": {
             "use": false,
             "name": "vits-simple-api",
