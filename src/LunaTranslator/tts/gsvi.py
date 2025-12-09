@@ -1,0 +1,201 @@
+from myutils.config import urlpathjoin
+from tts.basettsclass import TTSbase, SpeechParam
+from gui.customparams import customparams, getcustombodyheaders
+import requests 
+import json 
+import re 
+import io 
+from threading import Thread
+from typing import List, Tuple
+
+try:
+    import simpleaudio as sa
+    HAS_SIMPLEAUDIO = True
+except ImportError:
+    HAS_SIMPLEAUDIO = False
+
+LANG_MAP = {
+    "ja": "日语",
+    "zh": "中文",
+    "en": "英语",
+}
+
+SUCCESS_MESSAGES = ["success", "Success", "合成成功", None]
+
+
+class TTS(TTSbase):
+    arg_support_pitch = False
+    
+    def _play_wav_data_async(self, wav_data: bytes):
+        if not HAS_SIMPLEAUDIO:
+            return
+            
+        try:
+            wave_read = io.BytesIO(wav_data)
+            play_obj = sa.play_buffer(
+                audio_data=wave_read.read(),
+                num_channels=1, 
+                bytes_per_sample=2, 
+                sample_rate=44100 
+            )
+            play_obj.wait_done()
+        except Exception:
+            pass
+
+    def get_supported_versions(self, base_url: str) -> List[str]:
+        version_url = urlpathjoin(base_url, "version")
+        default_version = self.config.get("apiv", "v2ProPlus")
+        fallback_versions = [default_version]
+        
+        try:
+            response = self.proxysession.get(version_url, timeout=5)
+            status_code = response.status_code
+            try:
+                response_json = response.json()
+            except json.JSONDecodeError:
+                response_json = None
+            response.raise_for_status()
+            
+            versions = []
+            if isinstance(response_json, list):
+                versions = [str(v) for v in response_json]
+            elif isinstance(response_json, dict):
+                versions = [str(v) for v in response_json.get('support_versions', []) or response_json.get('versions', [])]
+            
+            if not versions:
+                versions = fallback_versions
+            
+            return sorted(list(set(versions)))
+        
+        except requests.exceptions.RequestException:
+            return fallback_versions
+        except Exception:
+            return fallback_versions
+
+    def getvoicelist(self) -> Tuple[List[str], List[str]]:
+        base_url = self.config["URL"]
+        supported_versions = self.get_supported_versions(base_url)
+
+        all_display_names = []
+        all_internal_ids = []
+        models_url = urlpathjoin(base_url, "models")
+        
+        for version in supported_versions:
+            request_data = {"version": version}
+            
+            try:
+                response = self.proxysession.post(models_url, json=request_data, timeout=10)
+                status_code = response.status_code
+                try:
+                    response_json = response.json()
+                except json.JSONDecodeError:
+                    response_json = None
+                
+                if status_code != 200:
+                    continue
+                
+                models_data = response_json.get("models", {}) if response_json else {}
+                
+                if not isinstance(models_data, dict):
+                     continue
+
+                model_names = list(models_data.keys())
+                for model_name in model_names:
+                    display_name = f"【{version}】{model_name}"
+                    
+                    internal_id = display_name 
+                    
+                    all_display_names.append(display_name)
+                    all_internal_ids.append(internal_id)
+                
+            except requests.exceptions.RequestException:
+                pass
+
+        if not all_display_names:
+            return ["未找到模型"], [""]
+            
+        return all_display_names, all_internal_ids
+
+    def speak(self, content: str, voice: str, param: SpeechParam):
+        
+        version = self.config.get("apiv", "v2ProPlus")
+        model_name = voice
+
+        match_display = re.match(r"【(.+?)】(.+)", voice)
+        if match_display:
+            version = match_display.group(1)
+            model_name = match_display.group(2)
+        else:
+            pass
+            
+        text_lang = LANG_MAP.get(self.srclang, self.srclang)
+        
+        if param.speed > 0:
+            speed_facter = 1.0 + param.speed / 5.0
+        else:
+            speed_facter = 1.0 + param.speed / 15.0
+
+        url = urlpathjoin(self.config["URL"], "infer_single")
+        
+        emotion = self.config.get("emotion", "默认") 
+        prompt_text_lang = self.config.get("prompt_text_lang", text_lang) 
+        
+        request_data = {
+            "app_key": "", "dl_url": "",
+            "version": version, "model_name": model_name, 
+            "prompt_text_lang": prompt_text_lang, 
+            "emotion": emotion,
+            "text": content, "text_lang": text_lang, 
+            "top_k": 10, "top_p": 1.0, "temperature": 1.0,
+            "repetition_penalty": 1.35,
+            "text_split_method": "按标点符号切",
+            "batch_size": 1, "batch_threshold": 0.75,
+            "split_bucket": True, "fragment_interval": 0.3,
+            "speed_facter": speed_facter,
+            "media_type": "wav", "parallel_infer": True,
+            "seed": -1, "sample_steps": 32, "if_sr": False
+        }
+
+        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
+
+        headers = {"ngrok-skip-browser-warning": "true"}
+        headers.update(extraheader)
+        request_data.update(extrabody)
+        
+        request_data["text"] = content 
+        request_data["speed_facter"] = speed_facter
+        request_data["model_name"] = model_name 
+        request_data["version"] = version 
+        request_data["text_lang"] = text_lang 
+        
+        synthesis_response = self.proxysession.post(url, headers=headers, json=request_data)
+        synthesis_status_code = synthesis_response.status_code
+        
+        try:
+            synthesis_response_json = synthesis_response.json()
+            
+            if synthesis_status_code == 200 and synthesis_response_json.get('msg') in SUCCESS_MESSAGES:
+                audio_url = synthesis_response_json.get('audio_url')
+                
+                if audio_url:
+                    
+                    if "http://0.0.0.0" in audio_url:
+                        audio_url = audio_url.replace("http://0.0.0.0", "http://127.0.0.1")
+
+                    audio_response = self.proxysession.get(audio_url, timeout=30)
+                    audio_response.raise_for_status() 
+
+                    wav_data = audio_response.content
+                    
+                    Thread(target=self._play_wav_data_async, args=(wav_data,)).start()
+                    
+                    return wav_data 
+                
+        except requests.exceptions.RequestException:
+            pass
+        except json.JSONDecodeError:
+            pass
+        except Exception:
+            pass
+        
+        return synthesis_response
