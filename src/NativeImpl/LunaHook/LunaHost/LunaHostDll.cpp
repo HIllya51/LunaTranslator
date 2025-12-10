@@ -141,8 +141,7 @@ C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet
     sm->displaymode = displaymode;
     sm->fastskipignore = fastskipignore;
     sm->clearText = clearText;
-    sm->changeFontSize = changeFontSize;
-    sm->FontSizeRelative = FontSizeRelative;
+    sm->FontSizeRelative = changeFontSize ? FontSizeRelative : 1.;
 }
 C_LUNA_API bool Luna_CheckIsUsingEmbed(ThreadParam tp)
 {

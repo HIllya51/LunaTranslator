@@ -48,7 +48,7 @@ namespace
 { // unnamed
   void ScaleFont(int &lfHeight, int &lfWidth)
   {
-    if (!(commonsharedmem->changeFontSize && (commonsharedmem->FontSizeRelative != 1)))
+    if (commonsharedmem->FontSizeRelative == 1.)
       return;
     auto scale = commonsharedmem->FontSizeRelative;
     if (lfHeight != 0)
@@ -75,7 +75,7 @@ namespace
   template <typename T>
   void ScaleFont(T *plogf)
   {
-    if (!(commonsharedmem->changeFontSize && (commonsharedmem->FontSizeRelative != 1)))
+    if (commonsharedmem->FontSizeRelative == 1.)
       return;
     auto scale = commonsharedmem->FontSizeRelative;
     if (plogf->lfHeight != 0)
@@ -272,7 +272,7 @@ namespace
   }
   bool isFontSizeCustomized()
   {
-    return commonsharedmem->changeFontSize && (commonsharedmem->FontSizeRelative != 1);
+    return commonsharedmem->FontSizeRelative != 1;
   }
   DCFontSwitcher::DCFontSwitcher(HDC hdc)
       : hdc_(hdc), oldFont_(nullptr), newFont_(nullptr), newfontname(L"")
@@ -373,7 +373,7 @@ HFONT WINAPI Hijack::newCreateFontIndirectW(const LOGFONTW *lplf)
   {
     LOGFONTW lf(*lplf);
     ScaleFont(&lf);
-    if (isFontSizeCustomized())
+    if (isFontCustomized())
       customizeLogFontW(&lf);
     return oldCreateFontIndirectW(&lf);
   }

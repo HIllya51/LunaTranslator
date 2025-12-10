@@ -430,8 +430,7 @@ enum class Displaymode
 };
 struct CommonSharedMem
 {
-	bool changeFontSize;
-	float FontSizeRelative;
+	float FontSizeRelative = 1.;
 	UINT32 waittime;
 	Displaymode displaymode;
 	uint64_t hash;
