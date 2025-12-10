@@ -1344,8 +1344,8 @@ class dialog_setting_game_internal(QWidget):
                         default=globalconfig["embedded"]["changefontsize_use"],
                     ),
                     D_getspinbox(
-                        0,
-                        1,
+                        0.5,
+                        2,
                         savehook_new_data[gameuid]["embed_setting_private"],
                         "changefontsize",
                         default=globalconfig["embedded"]["changefontsize"],

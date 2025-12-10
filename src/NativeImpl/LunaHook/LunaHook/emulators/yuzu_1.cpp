@@ -19,6 +19,13 @@ namespace
         strReplace(s, "^");
         buffer->from(s);
     }
+    void t010024F024250000(hook_context *context, HookParam *hpx, TextBuffer *buffer, uintptr_t *split)
+    {
+        if (((WORD)YUZU::emu_arg(context)[4]) != 0xffff) // 开幕会输出所有的章节名
+            return;
+        auto s = (wchar_t *)YUZU::emu_arg(context)[8];
+        buffer->from(s);
+    }
     void T0100EC30206AE000(hook_context *context, HookParam *hpx, TextBuffer *buffer, uintptr_t *split)
     {
         auto s = (char *)YUZU::emu_arg(context)[1];
@@ -2744,6 +2751,18 @@ namespace
         strReplace(thisstring, "!!");
         buffer->from(thisstring);
     }
+    void F010024F024250000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        static std::wstring last;
+        if (s == last)
+            return buffer->clear();
+        last = s;
+        s = re::sub(s, LR"(@(.*?)@)", L"$1");
+        s = re::sub(s, LR"(\$K\(.*?\))");
+        strReplace(s, L"$(3)", L"リカ");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2751,6 +2770,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 闇色の魔珠
+    {0x8011EDA4, {FULL_STRING | CODEC_UTF16, 8, 0, t010024F024250000, F010024F024250000, 0x010024F024250000ull, "1.0.0"}},
     // かまいたちの夜×３
     {0x8005E8A4, {0, 9, 0, 0, f0100D8B01D4FA000, 0x0100D8B01D4FA000ull, "1.0.1"}}, // 0x8005E8AC也行
     // DESIRE remaster ver.

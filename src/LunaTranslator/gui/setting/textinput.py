@@ -124,8 +124,8 @@ def gethookgrid_em(self):
                 default=False,
             ),
             D_getspinbox(
-                0,
-                1,
+                0.5,
+                2,
                 globalconfig["embedded"],
                 "changefontsize",
                 step=0.01,
