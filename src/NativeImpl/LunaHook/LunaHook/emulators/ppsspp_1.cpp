@@ -1072,6 +1072,13 @@ namespace
             CharFilter(buffer, '\n');
         else
             StringFilter(buffer, TEXTANDLEN("%C"));
+        static std::string last;
+        auto s = buffer->strA();
+        if (startWith(s, last))
+        {
+            buffer->from(s.substr(last.size(), s.size() - last.size()));
+        }
+        last = s;
     }
     void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
     {
