@@ -2770,6 +2770,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 星空鉄道とシロの旅
+    {0x81AA3B14, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100B38021590000, 0x010045702355C000ull, "1.0.0"}},
     // 闇色の魔珠
     {0x8011EDA4, {FULL_STRING | CODEC_UTF16, 8, 0, t010024F024250000, F010024F024250000, 0x010024F024250000ull, "1.0.0"}},
     // かまいたちの夜×３
