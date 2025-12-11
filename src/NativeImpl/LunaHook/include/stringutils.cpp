@@ -54,7 +54,7 @@ inline std::vector<StringT> strSplit_impl(const StringT &s, const StringT &delim
 template <class StringT>
 inline bool endWith_impl(const StringT &s, const StringT &s2)
 {
-  return (s.size() >= s2.size()) && (s.substr(s.size() - s2.size(), s2.size()) == s2);
+  return (s.size() >= s2.size()) && (s.substr(s.size() - s2.size()) == s2);
 }
 
 template <class StringT>

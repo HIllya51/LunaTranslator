@@ -95,6 +95,8 @@ DECLARE_API bool GdiCropImage(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
         {
             if (!hwnd)
                 continue;
+            if (IsIconic(hwnd))
+                return false;
             RECT r;
             if (!GetWindowRect(hwnd, &r))
                 continue;

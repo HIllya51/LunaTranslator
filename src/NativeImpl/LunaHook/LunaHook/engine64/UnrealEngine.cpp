@@ -51,7 +51,7 @@ namespace
       static std::wstring last;
       if (startWith(s, last))
       {
-        buffer->from(s.substr(last.size(), s.size() - last.size()));
+        buffer->from(s.substr(last.size()));
       }
       last = s;
     };

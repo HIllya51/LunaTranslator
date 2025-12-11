@@ -879,7 +879,7 @@ namespace
         static std::wstring last;
         if (startWith(ws, last))
         {
-            auto _ = ws.substr(last.size(), ws.size() - last.size());
+            auto _ = ws.substr(last.size());
             last = ws;
             ws = _;
         }
@@ -1039,7 +1039,7 @@ namespace
         static std::string last;
         if (startWith(s, last))
         {
-            auto _ = s.substr(last.size(), s.size() - last.size());
+            auto _ = s.substr(last.size());
             last = s;
             s = _;
         }
@@ -1076,7 +1076,7 @@ namespace
         auto s = buffer->strA();
         if (startWith(s, last))
         {
-            buffer->from(s.substr(last.size(), s.size() - last.size()));
+            buffer->from(s.substr(last.size()));
         }
         last = s;
     }

@@ -1235,7 +1235,7 @@
                 "APITYPE": {
                     "rank": 0,
                     "type": "combo",
-                    "name": "API TYPE",
+                    "name": "repo",
                     "list": [
                         "RVC-Boss/GPT-SoVITS",
                         "AI-Hobbyist/GPT-SoVITS-Inference"

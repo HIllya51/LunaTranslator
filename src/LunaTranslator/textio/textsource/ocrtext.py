@@ -21,6 +21,8 @@ def imageCutEx(*a):
         succ, img = img
     else:
         succ = False
+    if img.isNull():
+        return img
     if not succ:
         rectX = QRect(a[1], a[2], a[3] - a[1], a[4] - a[2])
         rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
@@ -61,6 +63,8 @@ class rangemanger:
         imgr = imageCutEx(
             gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
         )
+        if imgr.isNull():
+            return
         result = ocr_run(imgr)
         self.savelastimg = cvMat.fromQImage(imgr)
         self.savelastrecimg = self.savelastimg
