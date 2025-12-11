@@ -227,7 +227,7 @@ namespace
     }
 
 }
-extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_get_font()
+static const wchar_t *__luna_internal_renpy_get_font()
 {
     if (wcslen(commonsharedmem->fontFamily) == 0)
         return NULL;
@@ -249,6 +249,11 @@ extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_get_font()
         else
             return found->second.c_str();
     }
+}
+extern "C" __declspec(dllexport) void luna_internal_renpy_get_font(const wchar_t **font, float *relsize)
+{
+    *font = __luna_internal_renpy_get_font();
+    *relsize = commonsharedmem->FontSizeRelative;
 }
 bool hookrenpy(HMODULE module)
 {

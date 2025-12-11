@@ -1342,6 +1342,7 @@ class dialog_setting_game_internal(QWidget):
                         savehook_new_data[gameuid]["embed_setting_private"],
                         "changefontsize_use",
                         default=globalconfig["embedded"]["changefontsize_use"],
+                        callback=lambda _: gobject.base.textsource.flashembedsettings(),
                     ),
                     D_getspinbox(
                         0.5,
@@ -1351,6 +1352,7 @@ class dialog_setting_game_internal(QWidget):
                         default=globalconfig["embedded"]["changefontsize"],
                         step=0.01,
                         double=True,
+                        callback=lambda _: gobject.base.textsource.flashembedsettings(),
                     ),
                 ]
             ),

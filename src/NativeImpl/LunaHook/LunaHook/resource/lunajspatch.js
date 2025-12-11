@@ -1,4 +1,6 @@
 var fontface = '';
+var fontSizeRelative = 1.0;
+var needResetFontSize = false
 var magicsend = '\x01LUNAFROMJS\x01'
 var magicrecv = '\x01LUNAFROMHOST\x01'
 var is_packed = IS_PACKED
@@ -7,14 +9,18 @@ var internal_http_port = INTERNAL_HTTP_PORT
 function splitfonttext(transwithfont) {
     if (transwithfont.substr(0, magicsend.length) == magicsend) //not trans
     {
-        split = transwithfont.search('\x02')
+        let split = transwithfont.search('\x02')
         return transwithfont.substr(split + 1);
     }
     else if (transwithfont.substr(0, magicrecv.length) == magicrecv) {
+        //magicrecv fontFamily \x02 FontSizeRelative \x03 text
         transwithfont = transwithfont.substr(magicrecv.length)
-        split = transwithfont.search('\x02')
+        let split = transwithfont.search('\x02')
         fontface = transwithfont.substr(0, split)
-        text = transwithfont.substr(split + 1)
+        let shengyu = transwithfont.substr(split + 1)
+        let split3 = shengyu.search('\x03')
+        fontSizeRelative = parseFloat(shengyu.substr(0, split3))
+        let text = shengyu.substr(split3 + 1)
         return text;
     }
     else {
@@ -75,9 +81,9 @@ function rpgmakerhook() {
         Bitmap.prototype.origin_makeFontNameText = Bitmap.prototype._makeFontNameText;
     }
     Bitmap.prototype._makeFontNameText = function () {
-        if (!fontface) return this.origin_makeFontNameText();
+        if ((!fontface) && (fontSizeRelative == 1.0)) return this.origin_makeFontNameText();
         return (this.fontItalic ? 'Italic ' : '') +
-            this.fontSize + 'px ' + fontface;
+            (fontSizeRelative * this.fontSize) + 'px ' + fontface;
     }
     Bitmap.prototype.collectstring = { 32: '', 5: '', 6: '' };
     setInterval(function () {
@@ -163,8 +169,24 @@ function tyranohook() {
     tyrano.plugin.kag.tag.text.start = function (pm) {
         if (1 != this.kag.stat.is_script && 1 != this.kag.stat.is_html) {
             pm.val = cppjsio('tyranoscript', pm.val, 0, true);
+
             if (fontface) {
                 this.kag.stat.font.face = fontface
+            }
+            else {
+                // this.kag.config.userFace;
+                // buyongle, morenhuizidong fuyuan
+            }
+
+            if (this.kag.config.defaultFontSize) {
+                if (fontSizeRelative != 1.0) {
+                    needResetFontSize = true
+                    this.kag.stat.font.size = parseFloat(this.kag.config.defaultFontSize) * fontSizeRelative
+                }
+                else if (needResetFontSize) {
+                    needResetFontSize = false
+                    this.kag.stat.font.size = parseFloat(this.kag.config.defaultFontSize)
+                }
             }
         }
         return this.originstart(pm)

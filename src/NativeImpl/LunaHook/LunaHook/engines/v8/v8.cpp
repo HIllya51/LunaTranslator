@@ -46,6 +46,8 @@ namespace
 		std::wstring transwithfont = magicrecv;
 		transwithfont += commonsharedmem->fontFamily;
 		transwithfont += L'\x02';
+		transwithfont += std::to_wstring(commonsharedmem->FontSizeRelative);
+		transwithfont += L'\x03';
 		transwithfont += view;
 		return transwithfont;
 	}

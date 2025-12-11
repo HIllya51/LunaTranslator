@@ -10,10 +10,15 @@ def callLunaHostFont():
             luna_internal_renpy_get_font = ctypes.CDLL(
                 "LunaHook32"
             ).luna_internal_renpy_get_font
-        luna_internal_renpy_get_font.restype = ctypes.c_wchar_p
-        return luna_internal_renpy_get_font()
+        luna_internal_renpy_get_font.argtypes = ctypes.POINTER(
+            ctypes.c_wchar_p
+        ), ctypes.POINTER(ctypes.c_float)
+        font = ctypes.c_wchar_p()
+        relsize = ctypes.c_float()
+        luna_internal_renpy_get_font(ctypes.pointer(font), ctypes.pointer(relsize))
+        return font.value, relsize.value
     except:
-        return None
+        return None, 1.0
 
 
 def callLunaIsUsingEmbed_nosplit():
@@ -44,7 +49,7 @@ try:
         def new_init(*args, **kwargs):
             # ctypes.windll.user32.MessageBoxW(None, str(kwargs), str(args), 0)
             if callLunaIsUsingEmbed_nosplit():
-                font = callLunaHostFont()
+                font, relsize = callLunaHostFont()
                 if font and font != "" and os.path.exists(font):
                     font = font.replace(
                         "\\", "/"
@@ -52,6 +57,16 @@ try:
                     args = (font,) + args[1:]
                     if "fn" in kwargs:
                         kwargs["fn"] = font
+                if relsize != 1.0:
+                    args = (
+                        args[:1]
+                        + (max(min(args[1], 1), int(args[1] * relsize)),)
+                        + args[2:]
+                    )
+                    if "size" in kwargs:
+                        kwargs["size"] = max(
+                            min(kwargs["size"], 1), int(kwargs["size"] * relsize)
+                        )
             return original(*args, **kwargs)
 
         return new_init

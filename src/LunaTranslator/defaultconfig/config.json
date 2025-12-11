@@ -288,7 +288,9 @@
         "changecharset_charset": 2,
         "limittextlength_use": false,
         "limittextlength_length": 40,
-        "clearText": false
+        "clearText": false,
+        "changefontsize": 1.0,
+        "changefontsize_use": false
     },
     "requestinterval": 0,
     "keepontop": true,

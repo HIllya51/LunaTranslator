@@ -122,6 +122,7 @@ def gethookgrid_em(self):
                 globalconfig["embedded"],
                 "changefontsize_use",
                 default=False,
+                callback=lambda _: gobject.base.textsource.flashembedsettings(),
             ),
             D_getspinbox(
                 0.5,
@@ -131,6 +132,7 @@ def gethookgrid_em(self):
                 step=0.01,
                 double=True,
                 default=1,
+                callback=lambda _: gobject.base.textsource.flashembedsettings(),
             ),
         ],
         [
