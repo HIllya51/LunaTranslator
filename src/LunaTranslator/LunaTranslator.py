@@ -166,6 +166,7 @@ class BASEOBJECT(QObject):
         self.specialreaders: "dict[object, TTSbase]" = {}
         self.textsource_p: basetext = None
         self.currenttext = ""
+        self.currenttext_raw = ""
         self.statusok = True
         self.currenttranslate = ""
         self.currenttranslate_1 = ""
@@ -379,6 +380,7 @@ class BASEOBJECT(QObject):
                     klass=str(uuid.uuid4()),
                 )
             )
+            self.currenttext_raw = text
             self.currenttext = text
             self.statusok = True
             self.currenttranslate = text
@@ -398,13 +400,14 @@ class BASEOBJECT(QObject):
     def maybeneedtranslateshowhidetranslate(self):
         if globalconfig["showfanyi"]:
             if not self.thishastranslated:
-                self.textgetmethod(self.currenttext, is_auto_run=False)
+                self.textgetmethod(self.currenttext_raw, is_auto_run=False)
             self.translation_ui.translate_text.showhidetranslate(True)
         else:
             self.translation_ui.translate_text.showhidetranslate(False)
 
     def updaterawtext(self, text):
         self.currenttext = text
+        self.currenttext_raw = text
         self.statusok = False
         self.latest_is_origin = True
         self.translation_ui.displayraw2.emit(text)
@@ -461,7 +464,7 @@ class BASEOBJECT(QObject):
             return
         if not text.strip():
             return
-        if is_auto_run and text == self.currenttext and statusok == self.statusok:
+        if is_auto_run and text == self.currenttext_raw and statusok == self.statusok:
             return
         origin = text
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
@@ -497,6 +500,7 @@ class BASEOBJECT(QObject):
         _showrawfunction_unsafe = None
         if not waitforresultcallback:
             self.currenttext = text
+            self.currenttext_raw = origin
             self.statusok = statusok
             self.currenttranslate = ""
             self.currenttranslate_1 = ""

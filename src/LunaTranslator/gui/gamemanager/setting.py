@@ -228,9 +228,13 @@ class timelistediter(LDialog):
         self.rm = []
         formLayout = QVBoxLayout(self)
         formLayout.addWidget(self.hctable)
-        add = LPushButton("添加")
-        add.clicked.connect(self.newline)
-        formLayout.addWidget(add)
+        button = manybuttonlayout(
+            [
+                ("添加行", self.newline),
+                ("保存", self.closeEvent11),
+            ]
+        )
+        formLayout.addLayout(button)
         self.lst = gobject.base.somedatabase.querytraceplaytime(self.gameuid)
         self.lst = [list(_) for _ in self.lst]
         for row, (s, e) in enumerate(self.lst):
@@ -284,7 +288,7 @@ class timelistediter(LDialog):
         else:
             another.setMaximumDateTime(curr)
 
-    def closeEvent(self, a0):
+    def closeEvent11(self):
         lst = []
         for i, _ in enumerate(self.lst):
             if i in self.rm:
@@ -293,6 +297,9 @@ class timelistediter(LDialog):
                 lst.append(_)
         lst = self.merge_intervals(lst)
         gobject.base.somedatabase.settraceplaytime(self.gameuid, lst)
+        self.close()
+
+    def closeEvent(self, a0):
         gobject.base.somedatabase.unlockdata()
         return super().closeEvent(a0)
 
