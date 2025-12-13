@@ -365,7 +365,9 @@ class dialog_memory(saveposwindow):
                 self.destroyed.connect(functools.partial(safestop, self.recorders))
             except Exception as e:
                 self.recorders = None
-                QMessageBox.critical(self, _TR("错误"), str(e))
+                QMessageBox.critical(
+                    self, _TR("错误"), _TR("系统不支持环回录制")
+                )  # str(e))
                 self.insertaudiobtn.click()
         else:
             self.is_recording = False

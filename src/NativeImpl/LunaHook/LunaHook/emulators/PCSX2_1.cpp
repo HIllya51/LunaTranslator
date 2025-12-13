@@ -1943,6 +1943,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 花帰葬
+    {0x15DAC0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, 0, "SLPM-66471"}},
     // Cherry blossom ～チェリーブロッサム～
     {0x128b78, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25444, "SLPS-25444"}},
     // 薔薇ノ木ニ薔薇ノ花咲ク -Das Versprechen-
@@ -1950,7 +1952,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ピヨたん ～お屋敷潜入大作戦～
     {0x12396C, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55032"}},
     // Fragrance Tale ～フレグランス テイル～
-    {0x128B78, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25494, "SLPS-25494"}},
+    {0x128B7c, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25494, "SLPS-25494"}}, // 也是128b78，但是退让一下
     {0x4A47A0, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPS-25494"}},
     // そして僕らは、・・・and he said
     {0x134A6C, {0, 0, 0, SLPM65971, FSLPM65971, "SLPM-65971"}},

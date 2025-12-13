@@ -476,7 +476,9 @@ class AnkiWindow(QWidget):
                 self.recorders[ii] = loopbackrecorder()
             except Exception as e:
                 self.recorders[ii] = None
-                QMessageBox.critical(self, _TR("错误"), str(e))
+                QMessageBox.critical(
+                    self, _TR("错误"), _TR("系统不支持环回录制")
+                )  # str(e))
                 btn.click()
                 return
             self.simulate_key(ii)

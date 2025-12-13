@@ -922,6 +922,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66471 | 花帰葬 |
 |  | SLPS-25444 | Cherry blossom ～チェリーブロッサム～ |
 |  | SLPM-66390 | 薔薇ノ木ニ薔薇ノ花咲ク -Das Versprechen- |
 |  | SLPM-55032 | ピヨたん ～お屋敷潜入大作戦～ |
