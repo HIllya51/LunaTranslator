@@ -53,14 +53,10 @@ void eRenderRecord::RecordThread()
         UINT32 FramesAvailable = 0;
         BYTE *Data = nullptr;
         DWORD dwCaptureFlags;
-        UINT64 u64DevicePosition = 0;
-        UINT64 u64QPCPosition = 0;
-        DWORD cbBytesToCapture = 0;
         while (SUCCEEDED(pCaptureClient->GetNextPacketSize(&FramesAvailable)) && FramesAvailable > 0)
         {
-            cbBytesToCapture = FramesAvailable * pwfx->nBlockAlign;
-
-            CHECK_FAILURE_NORET(pCaptureClient->GetBuffer(&Data, &FramesAvailable, &dwCaptureFlags, &u64DevicePosition, &u64QPCPosition));
+            CHECK_FAILURE_NORET(pCaptureClient->GetBuffer(&Data, &FramesAvailable, &dwCaptureFlags, NULL, NULL));
+            size_t cbBytesToCapture = FramesAvailable * pwfx->nBlockAlign;
             auto _data = std::string((char *)Data, cbBytesToCapture);
             if (!OnDataCallback)
                 buffer += _data;
@@ -68,6 +64,7 @@ void eRenderRecord::RecordThread()
             {
                 OnDataCallback(std::move(_data));
             }
+            totalBytesWritten += cbBytesToCapture;
 
             pCaptureClient->ReleaseBuffer(FramesAvailable);
         }

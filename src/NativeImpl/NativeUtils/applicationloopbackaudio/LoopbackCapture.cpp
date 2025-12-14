@@ -335,9 +335,6 @@ HRESULT CLoopbackCapture::OnAudioSampleRequested()
     UINT32 FramesAvailable = 0;
     BYTE *Data = nullptr;
     DWORD dwCaptureFlags;
-    UINT64 u64DevicePosition = 0;
-    UINT64 u64QPCPosition = 0;
-    DWORD cbBytesToCapture = 0;
 
     std::scoped_lock lock(m_CritSec);
 
@@ -370,7 +367,7 @@ HRESULT CLoopbackCapture::OnAudioSampleRequested()
     // over and over again until it indicates there are no more packets remaining.
     while (SUCCEEDED(m_AudioCaptureClient->GetNextPacketSize(&FramesAvailable)) && FramesAvailable > 0)
     {
-        cbBytesToCapture = FramesAvailable * m_CaptureFormat.nBlockAlign;
+        auto cbBytesToCapture = FramesAvailable * m_CaptureFormat.nBlockAlign;
 
         // WAV files have a 4GB (0xFFFFFFFF) size limit, so likely we have hit that limit when we
         // overflow here.  Time to stop the capture
@@ -381,7 +378,8 @@ HRESULT CLoopbackCapture::OnAudioSampleRequested()
         }
 
         // Get sample buffer
-        CHECK_FAILURE(m_AudioCaptureClient->GetBuffer(&Data, &FramesAvailable, &dwCaptureFlags, &u64DevicePosition, &u64QPCPosition));
+        CHECK_FAILURE(m_AudioCaptureClient->GetBuffer(&Data, &FramesAvailable, &dwCaptureFlags, NULL, NULL));
+        cbBytesToCapture = FramesAvailable * m_CaptureFormat.nBlockAlign;
 
         // Write File
         if (m_DeviceState != DeviceState::Stopping)

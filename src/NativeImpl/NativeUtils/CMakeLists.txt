@@ -41,10 +41,10 @@ target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz we
 
 target_link_libraries(NativeUtils PRIVATE ${YY_Thunks})
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:Dbghelp.dll")
-target_link_libraries(NativeUtils PRIVATE Mmdevapi)
-target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MMDevAPI.dll")
 if(NOT WINXP)
     target_link_libraries(NativeUtils PRIVATE ShCore)
+    target_link_libraries(NativeUtils PRIVATE Mmdevapi)
+    target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MMDevAPI.dll")
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MFPlat.dll")
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:dxgi.dll")
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:d3d11.dll")
