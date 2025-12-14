@@ -820,6 +820,8 @@ class autoinitdialog(LDialog):
                 for linwinfo, row in refitems:
                     vis = True
                     _i = combo.getIndexData(__i)
+                    if _i is None:
+                        _i = __i
                     refcombo_i: "str | int | list | tuple" = linwinfo.get("refcombo_i")
                     if isinstance(refcombo_i, (str, int)):
                         vis = refcombo_i == _i
