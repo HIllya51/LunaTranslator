@@ -109,8 +109,8 @@ HRESULT eRenderRecord::StartCaptureAsync()
         CHECK_FAILURE(pAudioClient->GetMixFormat(&pwfx));
     CHECK_FAILURE(pAudioClient->Initialize(
         AUDCLNT_SHAREMODE_SHARED,
-        AUDCLNT_STREAMFLAGS_LOOPBACK, // 环回模式必须加这个 flag
-        10000000,                     // 缓冲区时长: 1秒 (100ns 单位)
+        AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST, // 环回模式必须加这个 flag
+        10000000,                                                     // 缓冲区时长: 1秒 (100ns 单位)
         0,
         pwfx,
         NULL));
