@@ -73,17 +73,7 @@ HRESULT CLoopbackCapture::ActivateAudioInterface(DWORD processId, bool includePr
 //  when results of the activation are available.
 //
 
-CLoopbackCapture::CLoopbackCapture()
-{
-    // The app can also call m_AudioClient->GetMixFormat instead to get the capture format.
-    // 16 - bit PCM format.
-    m_CaptureFormat.wFormatTag = WAVE_FORMAT_PCM;
-    m_CaptureFormat.nChannels = 2;
-    m_CaptureFormat.nSamplesPerSec = 44100;
-    m_CaptureFormat.wBitsPerSample = 16;
-    m_CaptureFormat.nBlockAlign = m_CaptureFormat.nChannels * m_CaptureFormat.wBitsPerSample / BITS_PER_BYTE;
-    m_CaptureFormat.nAvgBytesPerSec = m_CaptureFormat.nSamplesPerSec * m_CaptureFormat.nBlockAlign;
-}
+CLoopbackCapture::CLoopbackCapture() : CLoopbackCapture(44100, 16, 2) {}
 CLoopbackCapture::CLoopbackCapture(int nSamplesPerSec, int wBitsPerSample, int nChannels)
 {
     // The app can also call m_AudioClient->GetMixFormat instead to get the capture format.
@@ -243,11 +233,11 @@ HRESULT CLoopbackCapture::OnStartCapture(IMFAsyncResult *pResult)
 }
 
 //
-//  StopCaptureAsync()
+//  StopCapture()
 //
 //  Stop capture asynchronously via MF Work Item
 //
-HRESULT CLoopbackCapture::StopCaptureAsync()
+HRESULT CLoopbackCapture::StopCapture()
 {
     if ((m_DeviceState != DeviceState::Capturing) &&
         (m_DeviceState != DeviceState::Error))
@@ -386,7 +376,7 @@ HRESULT CLoopbackCapture::OnAudioSampleRequested()
         // overflow here.  Time to stop the capture
         if ((m_cbDataSize + cbBytesToCapture) < m_cbDataSize)
         {
-            StopCaptureAsync();
+            StopCapture();
             break;
         }
 

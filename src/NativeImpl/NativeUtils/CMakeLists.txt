@@ -28,7 +28,7 @@ target_link_libraries(md4c-all INTERFACE md4c md4c-html)
 set(winrt_src winrt/winrtocr.cpp winrt/winrtsnapshot.cpp)
 set(mshtml_src mshtml/SimpleBrowser.cpp mshtml/MWebBrowser.cpp)
 set(webview2_src webview2/webview2.cpp webview2/webview2_impl.cpp)
-set(loopback_src applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp)
+set(loopback_src applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp applicationloopbackaudio/eRenderRecord.cpp)
 
 
 add_library(NativeUtils SHARED
@@ -41,9 +41,10 @@ target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz we
 
 target_link_libraries(NativeUtils PRIVATE ${YY_Thunks})
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:Dbghelp.dll")
+target_link_libraries(NativeUtils PRIVATE Mmdevapi)
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MMDevAPI.dll")
 if(NOT WINXP)
-    target_link_libraries(NativeUtils PRIVATE ShCore Mmdevapi)
-    target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MMDevAPI.dll")
+    target_link_libraries(NativeUtils PRIVATE ShCore)
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MFPlat.dll")
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:dxgi.dll")
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:d3d11.dll")

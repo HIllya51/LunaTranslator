@@ -742,8 +742,8 @@ StartCaptureAsync_cb = CFUNCTYPE(None, POINTER(c_char), c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (POINTER(c_void_p),)
 StartCaptureAsync.restype = LONG
-StopCaptureAsync = utilsdll.StopCaptureAsync
-StopCaptureAsync.argtypes = (c_void_p, StartCaptureAsync_cb)
+StopCapture = utilsdll.StopCapture
+StopCapture.argtypes = (c_void_p, StartCaptureAsync_cb)
 
 
 class loopbackrecorder:
@@ -752,7 +752,7 @@ class loopbackrecorder:
 
     def stop(self):
         __ = StartCaptureAsync_cb(self.__datacollect)
-        StopCaptureAsync(self.ptr, __)
+        StopCapture(self.ptr, __)
         self.ptr = None
 
     def __del__(self):

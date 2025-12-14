@@ -132,13 +132,13 @@ int mssr(int argc, wchar_t *argv[])
     try
     {
         std::shared_ptr<AudioConfig> audioConfig;
-        CComPtr<CLoopbackCapture> capture;
+        std::unique_ptr<SupperRecord> capture;
         // Creates a push stream
         std::shared_ptr<PushAudioInputStream> pushStream;
 
         if (wcscmp(argv[5], L"loopback") == 0)
         {
-            capture = new CLoopbackCapture{16000, 16, 1};
+            capture = std::make_unique<SupperRecord>(16000, 16, 1);
             if (!capture)
                 throw std::runtime_error("??");
             pushStream = AudioInputStream::CreatePushStream();
@@ -177,7 +177,7 @@ int mssr(int argc, wchar_t *argv[])
             WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
             // Stops recognition.
             if (capture)
-                capture->StopCaptureAsync();
+                capture->StopCapture();
             recognizer->StopContinuousRecognitionAsync().get();
             WaitForSingleObject(recognitionEnd, INFINITE);
         } while (true);

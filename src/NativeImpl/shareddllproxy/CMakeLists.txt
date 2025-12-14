@@ -37,7 +37,7 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 	add_executable(shareddllproxy ${shareddllproxy_common} 
 	SnippingTool.cpp 
     msnaturalvoice.cpp
-    mssr.cpp ../NativeUtils/applicationloopbackaudio/LoopbackCapture.cpp)
+    mssr.cpp ../NativeUtils/applicationloopbackaudio/LoopbackCapture.cpp ../NativeUtils/applicationloopbackaudio/eRenderRecord.cpp)
 
 else()
 	add_executable(shareddllproxy ${shareddllproxy_common} lec.cpp Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp)
