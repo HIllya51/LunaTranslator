@@ -380,7 +380,9 @@ bool tryhookv8()
 		if (hm == 0)
 			continue;
 		auto stringsucc = hookstring(hm);
-		auto funcsucc = v8script::init_v8_functions(hm);
+		auto use_inject_js = !std::filesystem::exists(std::filesystem::path(getModuleFilename().value()).replace_filename("disable.V8.Script.Run"));
+
+		auto funcsucc = use_inject_js && v8script::init_v8_functions(hm);
 		auto succ = stringsucc;
 		if (funcsucc)
 		{
