@@ -146,8 +146,34 @@ def parseresponseclaude(response: requests.Response):
     return message
 
 
+def parseresponseQWENMT(response: requests.Response):
+    message = ""
+    for json_data in stream_event_parser(response):
+        try:
+            if len(json_data["choices"]) == 0:
+                continue
+            delta: dict = json_data["choices"][0].get("delta", {})
+            msg: str = delta.get("content", None)
+            if msg.startswith(message):
+                yield msg[len(message) :]
+            else:
+                yield "\0"
+                yield msg
+            message = msg
+            rs = json_data["choices"][0].get("finish_reason")
+            if rs and rs != "null":
+                break
+        except:
+            raise Exception(json_data)
+    return message
+
+
 def parsestreamresp(
-    apiurl: str, response: requests.Response, hidethinking: bool, markdown2html: bool
+    apiurl: str,
+    response: requests.Response,
+    hidethinking: bool,
+    markdown2html: bool,
+    model: str,
 ):
     if (response.status_code != 200) and (
         not response.headers["Content-Type"].startswith("text/event-stream")
@@ -159,6 +185,10 @@ def parsestreamresp(
         respmessage = yield from parseresponsegemini(response, markdown2html)
     elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
         respmessage = yield from parseresponseclaude(response)
+    elif model == "qwen-mt-turbo" and apiurl.startswith(
+        "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    ):
+        respmessage = yield from parseresponseQWENMT(response)
     else:
         respmessage = yield from commonparseresponse_good(
             response, hidethinking, markdown2html
@@ -256,7 +286,9 @@ class gptcommon(basetrans):
                 self.proxy,
                 extraheader,
             )
-            _json = common_create_gpt_data(self.config, messages, extrabody)
+            _json = common_create_gpt_data(
+                self.config, self.__parse_qwen_mt_turbo(messages), extrabody
+            )
             response = self.proxysession.post(
                 self.createurl(), headers=headers, json=_json, stream=usingstream
             )
@@ -264,7 +296,7 @@ class gptcommon(basetrans):
         markdown2html = self.config.get("markdown2html", False)
         if usingstream:
             respmessage = yield from parsestreamresp(
-                self.apiurl, response, hidethinking, markdown2html
+                self.apiurl, response, hidethinking, markdown2html, self.config["model"]
             )
         else:
             respmessage = common_parse_normal_response(
@@ -283,6 +315,14 @@ class gptcommon(basetrans):
 
     def createurl(self):
         return createurl(self.apiurl)
+
+    def __parse_qwen_mt_turbo(self, messages: list):
+        if self.config["model"] == "qwen-mt-turbo" and self.apiurl.startswith(
+            "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        ):
+            if messages and messages[0]["role"] == "system":
+                messages.pop(0)
+        return messages
 
     def __replace_history(self, which, match: re.Match):
         n = int(match.group(1))
