@@ -100,20 +100,20 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 	if (_runtime.find(LR"(\AppData\Local\Temp\)") != _runtime.npos)
 	{
 		std::wstring msg = L"请先解压后再运行！\nPlease decompress before running!";
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SETFOREGROUND | MB_TOPMOST);
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SYSTEMMODAL);
 		return false;
 	}
 	// check home
 	if (!PathFileExistsW(_runtime.c_str()))
 	{
 		std::wstring msg = L"Missing embedded Python3 in:\n" + _runtime;
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SETFOREGROUND | MB_TOPMOST);
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SYSTEMMODAL);
 		return false;
 	}
 	if (!PathFileExistsW((_runtime + L"\\" + PYDLL).c_str()))
 	{
 		std::wstring msg = std::wstring(L"Missing ") + PYDLL + L" in:\r\n" + _runtime;
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SETFOREGROUND | MB_TOPMOST);
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SYSTEMMODAL);
 		return false;
 	}
 
@@ -167,14 +167,14 @@ bool PyStand::LoadPython()
 	if (_hDLL == NULL)
 	{
 		std::wstring msg = L"Cannot load python3.dll from:\r\n" + _runtime;
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SETFOREGROUND | MB_TOPMOST);
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SYSTEMMODAL);
 		return false;
 	}
 	else if (_Py_Main == NULL)
 	{
 		std::wstring msg = L"Cannot find Py_Main() in:\r\n";
 		msg += pydll;
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SETFOREGROUND | MB_TOPMOST);
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SYSTEMMODAL);
 		return false;
 	}
 	return true;
@@ -228,7 +228,7 @@ int PyStand::DetectScript()
 	if (!PathFileExistsW(test.c_str()))
 	{
 		std::wstring msg = L"Can't find :\r\n" + test;
-		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SETFOREGROUND | MB_TOPMOST);
+		MessageBoxW(NULL, msg.c_str(), L"ERROR", MB_OK | MB_SYSTEMMODAL);
 		return -1;
 	}
 	SetEnvironmentVariableW(L"PYSTAND_SCRIPT", test.c_str());
@@ -516,7 +516,7 @@ bool PyStand::checkintegrity()
 		ss << L"主程序已被篡改，无法运行 ！";
 		ss << L"\n";
 		ss << L"The main program has been tampered with and cannot run!";
-		MessageBoxW(0, ss.str().c_str(), L"Error", MB_SETFOREGROUND | MB_TOPMOST);
+		MessageBoxW(0, ss.str().c_str(), L"Error", MB_SYSTEMMODAL);
 		return false;
 	}
 	if (invalidfiles.size())
@@ -547,7 +547,7 @@ bool PyStand::checkintegrity()
 			}
 			idx++;
 		}
-		auto checked = MessageBoxW(0, ss.str().c_str(), L"Warning", MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST);
+		auto checked = MessageBoxW(0, ss.str().c_str(), L"Warning", MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL);
 		if (checked != IDYES)
 			return false;
 	}

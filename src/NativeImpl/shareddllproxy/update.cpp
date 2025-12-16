@@ -84,7 +84,7 @@ int updatewmain(int argc, wchar_t *argv[])
             result += L"\n";
         }
         result = (text_failed_occupied) + L"\n\n" + result;
-        auto checked = MessageBoxW(NULL, result.c_str(), text_error.c_str(), MB_YESNO | MB_ICONQUESTION | MB_SETFOREGROUND | MB_TOPMOST);
+        auto checked = MessageBoxW(NULL, result.c_str(), text_error.c_str(), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL);
         if (checked != IDYES)
             return 0;
         for (auto &&proc : processes)
@@ -117,7 +117,7 @@ int updatewmain(int argc, wchar_t *argv[])
         catch (...)
         {
         }
-        MessageBoxW(NULL, (std::wstring(text_update_failed) + L"\n\n" + StringToWideString(e.what(), CP_ACP)).c_str(), text_error.c_str(), MB_SETFOREGROUND | MB_TOPMOST);
+        MessageBoxW(NULL, (std::wstring(text_update_failed) + L"\n\n" + StringToWideString(e.what(), CP_ACP)).c_str(), text_error.c_str(), MB_SYSTEMMODAL);
         return 0;
     }
     try
@@ -127,7 +127,7 @@ int updatewmain(int argc, wchar_t *argv[])
     catch (std::exception &e)
     {
     }
-    MessageBoxW(NULL, text_update_succ.c_str(), text_succ.c_str(), MB_SETFOREGROUND | MB_TOPMOST);
+    MessageBoxW(NULL, text_update_succ.c_str(), text_succ.c_str(), MB_SYSTEMMODAL);
     if (needreload)
     {
         ShellExecute(0, L"open", L".\\LunaTranslator.exe", NULL, NULL, SW_SHOWNORMAL);

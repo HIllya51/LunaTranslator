@@ -53,7 +53,7 @@ bool CTransEngine::Init(std::wstring &szEnginePath)
     std::wstring szEngineDLL = szEnginePath + L"\\J2KEngine.dll";
     HMODULE hDLL = LoadLibrary(szEngineDLL.c_str());
     if (!hDLL)
-        MessageBox(0, L"이지트랜스 번역 엔진 초기화 실패\r\n: LoadLibrary Failed", 0, MB_ICONERROR | MB_SETFOREGROUND | MB_TOPMOST);
+        MessageBox(0, L"이지트랜스 번역 엔진 초기화 실패\r\n: LoadLibrary Failed", 0, MB_ICONERROR | MB_SYSTEMMODAL);
 
     wcscpy_s(EnginePath, szEngineDLL.c_str());
 
@@ -82,7 +82,7 @@ bool CTransEngine::Init(std::wstring &szEnginePath)
     for (int i = 0; i <= 18; i++)
         if (!ezt_addr[i])
         {
-            MessageBox(0, L"이지트랜스 번역 엔진 초기화 실패\r\n: 함수 정보 불러오기 실패", 0, MB_ICONERROR | MB_SETFOREGROUND | MB_TOPMOST);
+            MessageBox(0, L"이지트랜스 번역 엔진 초기화 실패\r\n: 함수 정보 불러오기 실패", 0, MB_ICONERROR | MB_SYSTEMMODAL);
             return false;
         }
 
