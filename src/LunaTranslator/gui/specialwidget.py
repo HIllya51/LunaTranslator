@@ -87,13 +87,11 @@ class chartwidget(QWidget):
         self.font = font
         self.data = None
         self.ymargin = int(fhall)
-        self.xmargin = 0
         self.valuewidth = 10
         self.xtext = lambda x: str(x)
         self.ytext = lambda y: str(y)
         self.fmetrics = fmetrics
         self.scalelinelen = 5
-        self.w_internal = 1
 
     def setdata(self, data):
         data = sorted(data, key=lambda _: _[0])
@@ -119,19 +117,47 @@ class chartwidget(QWidget):
         self.update()
         return super().mouseMoveEvent(a0)
 
-    def paintatmouse(self, painter: QPainter):
+    def leaveEvent(self, a0):
+        self.update()
+        return super().leaveEvent(a0)
+
+    def paintatmouse(
+        self, painter: QPainter, xmargin, ymargin, width, height, x_scale, y_scale
+    ):
         a0 = QCursor.pos()
         a0 = QPointF(self.mapFromGlobal(a0))
-        if a0.x() < self.xmargin or a0.x() >= self.xmargin + self.w_internal:
+        if a0.x() < xmargin or a0.x() >= xmargin + width:
             return
-        idx_f = (a0.x() - self.xmargin) * (len(self.data) - 1) / self.w_internal
+        if not self.rect().contains(a0.toPoint()):
+            return
+        idx_f = (a0.x() - xmargin) / x_scale
         idx = round(idx_f)
         idx = max(0, min(idx, len(self.data) - 1))
         xt = lambda x: ("" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0])
-        t = xt(self.data[idx][0]) + "\n" + self.formattime(self.data[idx][1])
+        _ = self.formattime(self.data[idx][1])
+        t = xt(self.data[idx][0])
+        if _:
+            t += "\n" + _
         sz = self.fmetrics.size(0, t)
         a0.setY(a0.y() - sz.height())
-        painter.drawText(QRectF(a0, sz), Qt.TextFlag.TextWordWrap, t)
+        a0.setX(a0.x() - sz.width() / 2)
+        painter.drawText(
+            QRectF(a0, sz), Qt.TextFlag.TextWordWrap | Qt.AlignmentFlag.AlignCenter, t
+        )
+        __x = xmargin + idx * x_scale
+        __y = ymargin + height - self.data[idx][1] * y_scale
+
+        pen = painter.pen()
+        pen.setWidth(1)
+        color = pen.color()
+        color.setAlphaF(0.5)
+        pen.setColor(color)
+        painter.setPen(pen)
+        painter.drawLine(QPointF(__x, ymargin), QPointF(__x, ymargin + height))  # Y轴
+        painter.drawLine(
+            QPointF(xmargin, __y),
+            QPointF(xmargin + width, __y),
+        )  # X轴
 
     def paintEvent(self, _):
         if self.data is None or len(self.data) == 0:
@@ -142,7 +168,7 @@ class chartwidget(QWidget):
             painter = QPainter(self)
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-            pen = QPen(Qt.GlobalColor.blue)
+            pen = QPen(self.palette().color(QPalette.ColorRole.Text))
             pen.setWidth(2)
             painter.setPen(pen)
             painter.setFont(self.font)
@@ -165,7 +191,6 @@ class chartwidget(QWidget):
             if x_labels:
                 w = self.fmetrics.size(0, x_labels[0]).width() / 2
                 xmargin = max(w, xmargin)
-            self.xmargin = xmargin
             width = (
                 self.width()
                 - xmargin
@@ -174,7 +199,6 @@ class chartwidget(QWidget):
                     self.fmetrics.size(0, self.ytext(self.data[-1][1])).width() // 2,
                 )
             )
-            self.w_internal = width
             height = self.height() - 2 * ymargin
 
             # 纵坐标
@@ -260,7 +284,9 @@ class chartwidget(QWidget):
                         x_labels[i],
                     )
                     lastx2 = thisx + thisw
-            self.paintatmouse(painter)
+            self.paintatmouse(
+                painter, xmargin, ymargin, width, height, x_scale, y_scale
+            )
         except:
             print_exc()
 

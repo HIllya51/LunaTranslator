@@ -2770,6 +2770,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Please Be Happy
+    {0x82660D48, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x01003CA01F3AE000ull, "1.0.0"}},
+    {0x839309D4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x01003CA01F3AE000ull, "1.0.4"}},
     // 星空鉄道とシロの旅
     {0x81AA3B14, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100B38021590000, 0x010045702355C000ull, "1.0.0"}},
     // 闇色の魔珠

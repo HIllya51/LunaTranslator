@@ -902,6 +902,12 @@ namespace
         strReplace(ws, L"^");
         buffer->fromWA(ws);
     }
+    void ULJM06111(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(%N(\x81\x40)*)");
+        buffer->from(s);
+    }
     void ULJM06129(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1499,6 +1505,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // アラビアンズ・ロスト //ULJM06104
     // MEMORIES OFF //ULJM05334
 
+    // しろくまベルスターズ♪ ハッピー・ホリデーズ！
+    {0x88547A8, {FULL_STRING, 1, 0, 0, ULJM06111, "ULJM06111"}},
     // 恋花デイズ
     {0x883EA4C, {0, 0, 0, 0, ULJM06286, "ULJM06286"}},
     // 雨格子の館 PORTABLE 一柳和、最初の受難
