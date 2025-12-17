@@ -996,6 +996,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8000F3E0, {0, 0XB, 0, 0, PCSG00826, "PCSG00458"}},
     // Rear pheles
     {0x80BB4F70, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 1, 0, 0, all_ascii_FilterW, "PCSG00663"}},
+    {0x83CB10D4, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 1, 0, 0, all_ascii_FilterW, "PCSG00663"}}, // 1.00
+    {0x80848520, {CODEC_UTF16 | USING_CHAR | DATA_INDIRECT, 1, 0, 0, all_ascii_FilterW, "PCSG00663"}}, // 1.02
     // TIME TRAVELERS
     {0x8119ADDA, {0, 7, 0, 0, PCSG00062, "PCSG00062"}},
     {0x811A6052, {0, 8, 0, 0, PCSG00062, "PCSG00062"}},

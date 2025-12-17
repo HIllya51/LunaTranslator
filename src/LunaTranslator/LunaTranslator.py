@@ -103,6 +103,7 @@ class BASEOBJECT(QObject):
     switchtotspage = pyqtSignal()
     RichMessageBox = pyqtSignal(object)
     starttranslatefiles = pyqtSignal(list)
+    ocr_search_word_save_image = pyqtSignal(QImage)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -125,6 +126,7 @@ class BASEOBJECT(QObject):
     def initsignals(self):
         self.__cachesignal: "dict[pyqtBoundSignal, tuple]" = {}
         self.__connect_internal(self.dispatch_translate)
+        self.__connect_internal(self.ocr_search_word_save_image)
         self.__connect_internal(self.portconflict)
         self.__connect_internal(self.thresholdsett1)
         self.__connect_internal(self.thresholdsett2)

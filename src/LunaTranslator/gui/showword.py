@@ -716,7 +716,16 @@ class AnkiWindow(QWidget):
         self.__ocrsettext.connect(self.example.appendPlainText)
 
         self.reset("")
+        gobject.base.connectsignal(
+            gobject.base.ocr_search_word_save_image, self.__ocr_search_word_save_image
+        )
         return wid
+
+    def __ocr_search_word_save_image(self, img: QImage):
+        print(img)
+        fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
+        img.save(fname)
+        self.editpath.setText(fname)
 
     def wrappedpixmap(self, src):
         if os.path.exists(src) == False:
@@ -1579,6 +1588,7 @@ class searchwordW(closeashidewindow):
         result = ocr_run(img)
         if result.error:
             return result.displayerror()
+        gobject.base.ocr_search_word_save_image.emit(img)
         self.search_word.emit(result.textonly, None, False)
 
     def __load(self):
