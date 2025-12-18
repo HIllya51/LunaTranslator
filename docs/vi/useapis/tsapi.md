@@ -65,17 +65,3 @@ https://yandex.cloud/en/docs/translate/api-ref/authentication#service-account_1
 https://www.huaweicloud.com/product/nlpmt.html
 
 :::
-
-## truyền thống
-
-::: tabs
-
-== DeepL
-
-`DeepLX` yêu cầu tải xuống và triển khai [DeepLX](https://github.com/OwO-Network/DeepLX) của riêng bạn, và nhập `DeepLX api` để sử dụng.
-
-== Lingva
-
-Máy chủ mặc định là `translate.plausibility.cloud`, hoặc bạn có thể triển khai [Lingva Translate](https://github.com/thedaviddelta/lingva-translate) của riêng bạn và nhập tên miền của bạn.
-
-:::

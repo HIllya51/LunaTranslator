@@ -67,17 +67,3 @@ https://www.huaweicloud.com/product/nlpmt.html
 
 :::
 
-
-## 傳統
-
-::: tabs
-
-== DeepL
-
-`DeepLX`需要在[DeepLX](https://github.com/OwO-Network/DeepLX)下載後自行部署，並填入`DeepLX api`以使用。
-
-== lingva
-
-預設 Host 為`translate.plausibility.cloud`，也可以在[lingva-translate](https://github.com/thedaviddelta/lingva-translate)自行部署後填入自己的域名。
-
-:::

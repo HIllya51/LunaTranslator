@@ -65,17 +65,3 @@ https://yandex.cloud/en/docs/translate/api-ref/authentication#service-account_1
 https://www.huaweicloud.com/product/nlpmt.html
 
 :::
-
-## Traditional
-
-::: tabs
-
-== DeepL
-
-`DeepLX` requires downloading and deploying [DeepLX](https://github.com/OwO-Network/DeepLX) yourself, and entering the `DeepLX api` to use.
-
-== Lingva
-
-The default host is `translate.plausibility.cloud`, or you can deploy [Lingva Translate](https://github.com/thedaviddelta/lingva-translate) yourself and enter your own domain.
-
-:::

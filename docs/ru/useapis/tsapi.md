@@ -66,17 +66,3 @@ https://www.huaweicloud.com/product/nlpmt.html
 
 :::
 
-
-## Традиционные
-
-::: tabs
-
-== DeepL
-
-`DeepLX` необходимо скачать на [DeepLX](https://github.com/OwO-Network/DeepLX) и развернуть самостоятельно, затем ввести `DeepLX api` для использования.
-
-== lingva
-
-Хост по умолчанию - `translate.plausibility.cloud`, также можно развернуть [lingva-translate](https://github.com/thedaviddelta/lingva-translate) самостоятельно и указать свой домен.
-
-:::
