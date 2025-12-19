@@ -2065,6 +2065,7 @@ class mshtmlWidget(abstractwebview):
         iswine = checkisusingwine()
         if iswine or (NativeUtils.html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
+        self.browser = None
         self.browser = NativeUtils.html_new(int(self.winId()))
         self.destroyed.connect(functools.partial(mshtmlWidget.onDestroy, self.browser))
         self.curr_url = None
@@ -2093,6 +2094,8 @@ class mshtmlWidget(abstractwebview):
         NativeUtils.html_navigate(self.browser, url)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
+        if not self.browser:
+            return
         size = a0.size() * self.devicePixelRatioF()
         NativeUtils.html_resize(self.browser, 0, 0, size.width(), size.height())
 
