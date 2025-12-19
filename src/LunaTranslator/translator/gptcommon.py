@@ -110,7 +110,11 @@ def parseresponsegemini(response: requests.Response, markdown2html: bool):
         __x = __x.strip()
         if not __x.startswith('"text":'):
             continue
-        __x = json.loads("{" + __x + "}")["text"]
+        try:
+            __x = json.loads("{" + __x + "}")["text"]
+        except:
+            # gemini-3-flash 之后还有别的东西
+            continue
         line += __x
         if markdown2html:
             _msg = NativeUtils.Markdown2Html(line)
