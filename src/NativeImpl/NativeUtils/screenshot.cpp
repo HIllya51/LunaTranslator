@@ -335,7 +335,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
                 DestroyWindow(hwnd);
                 return 0;
             }
-            auto &&bmp = CreateBMP(g_hScreenBitmap, false).value_or({});
+            auto &&bmp = CreateBMP(g_hScreenBitmap, false).value_or(SimpleBMP{});
             RECT rect;
             GetWindowRect(hwnd, &rect);
             ReleaseCapture();

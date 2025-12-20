@@ -1,4 +1,4 @@
-﻿#include "webview2_impl.hpp"
+﻿#include "webview2.hpp"
 
 class JSEvalCallback : public ComImpl<ICoreWebView2ExecuteScriptCompletedHandler>
 {
@@ -318,8 +318,10 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2Controller *se
 {
     double zoomFactor;
     CHECK_FAILURE(sender->get_ZoomFactor(&zoomFactor));
+    ref->fastcachezoom = zoomFactor;
     if (ref->zoomchange_callback)
         ref->zoomchange_callback(zoomFactor);
+    ref->put_ZoomFactor(zoomFactor); // 设为默认，从而避免在navigate/sethtml重新恢复为之前的zoom
     return S_OK;
 }
 class ContextMenuCallback : public ComImpl<ICoreWebView2CustomItemSelectedEventHandler>
@@ -471,7 +473,7 @@ std::wstring WebView2::GetUserDataFolder()
         return result;
     return UserDir(loadextension).value_or(L"");
 }
-void WebView2::AddMenu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
+void WebView2::add_menu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
 {
     auto &whichmenu = (std::get_if<contextmenu_callback_t>(&callback)) ? menus : menus_noselect;
     whichmenu.insert(whichmenu.begin() + index, {gettext, callback, getchecked, getuse});
@@ -521,33 +523,47 @@ void WebView2::set_transparent(bool ts)
     CHECK_FAILURE_NORET(m_webViewController.QueryInterface(&coreWebView2));
     coreWebView2->put_DefaultBackgroundColor(color);
 }
-void WebView2::put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME scheme)
+
+void WebView2::set_callbacks(zoomchange_callback_t _zoomchange_callback, navigating_callback_t _navigating_callback, webmessage_callback_t _webmessage_callback, FilesDropped_callback_t _FilesDropped_callback, titlechange_callback_t _titlechange_callback, IconChanged_callback_t _IconChanged_callback)
+{
+    zoomchange_callback = _zoomchange_callback;
+    navigating_callback = _navigating_callback;
+    webmessage_callback = _webmessage_callback;
+    FilesDropped_callback = _FilesDropped_callback;
+    titlechange_callback = _titlechange_callback;
+    IconChanged_callback = _IconChanged_callback;
+}
+void WebView2::put_PreferredColorScheme(PREFERRED_COLOR_SCHEME scheme)
 {
     CComPtr<ICoreWebView2_13> webView2_13;
     CHECK_FAILURE_NORET(m_webView.QueryInterface(&webView2_13));
     CComPtr<ICoreWebView2Profile> profile;
     CHECK_FAILURE_NORET(webView2_13->get_Profile(&profile));
-    CHECK_FAILURE_NORET(profile->put_PreferredColorScheme(scheme));
+    CHECK_FAILURE_NORET(profile->put_PreferredColorScheme(static_cast<COREWEBVIEW2_PREFERRED_COLOR_SCHEME>(scheme)));
 }
 
-void WebView2::Resize(int w, int h)
+void WebView2::resize(int w, int h)
 {
     RECT rect{0, 0, w, h};
     m_webViewController->put_Bounds(rect);
 }
-
-double WebView2::get_ZoomFactor()
+double WebView2::slow_get_ZoomFactor()
 {
     double zoomFactor;
     m_webViewController->get_ZoomFactor(&zoomFactor);
     return zoomFactor;
 }
+double WebView2::get_ZoomFactor()
+{
+    return fastcachezoom;
+}
 void WebView2::put_ZoomFactor(double zoomFactor)
 {
     m_webViewController->put_ZoomFactor(zoomFactor);
+    fastcachezoom = slow_get_ZoomFactor();
 }
 
-void WebView2::EvalJS(const wchar_t *js, evaljs_callback_t cb)
+void WebView2::evaljs(const wchar_t *js, evaljs_callback_t cb)
 {
     if (!cb)
         m_webView->ExecuteScript(js, nullptr);
@@ -559,15 +575,15 @@ void WebView2::EvalJS(const wchar_t *js, evaljs_callback_t cb)
     }
 }
 
-void WebView2::Navigate(LPCWSTR uri)
+void WebView2::navigate(LPCWSTR uri)
 {
     m_webView->Navigate(uri);
 }
-void WebView2::SetHTML(LPCWSTR html)
+void WebView2::sethtml(LPCWSTR html)
 {
     m_webView->NavigateToString(html);
 }
-void WebView2::Bind(LPCWSTR funcname)
+void WebView2::bind(LPCWSTR funcname, void *)
 {
     std::wstring js = std::wstring{} + L"window.LUNAJSObject." + funcname + L" = function(){window.chrome.webview.postMessage({    method: '" + funcname + L"',    args: Array.prototype.slice.call(arguments)});};";
     CHECK_FAILURE_NORET(m_webView->AddScriptToExecuteOnDocumentCreated(js.c_str(), nullptr));
@@ -575,4 +591,130 @@ void WebView2::Bind(LPCWSTR funcname)
 void WebView2::Reload()
 {
     m_webView->Reload();
+}
+
+namespace
+{
+    std::set<WebView2 *> save_ptrs;
+}
+
+WebView2::~WebView2()
+{
+    try
+    {
+        save_ptrs.erase(this);
+    }
+    catch (...)
+    {
+    }
+}
+
+HRESULT WebView2::Create(WebView2 **web, HWND parent, bool backgroundtransparent, bool loadextension)
+{
+    *web = nullptr;
+    auto _ = new WebView2(parent, backgroundtransparent);
+    if (!_)
+        return E_POINTER;
+    auto hr = _->init(loadextension);
+    if (FAILED(hr))
+    {
+        delete _;
+        _ = nullptr;
+    }
+    else
+    {
+        if (loadextension)
+            save_ptrs.insert(_);
+    }
+    *web = _;
+    return hr;
+}
+DECLARE_API HRESULT webview2_create(WebView2 **web, HWND parent, bool backgroundtransparent, bool loadextension)
+{
+    return WebView2::Create(web, parent, backgroundtransparent, loadextension);
+}
+DECLARE_API HRESULT webview2_ext_add(LPCWSTR extpath)
+{
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
+        return E_ACCESSDENIED;
+    CHECK_FAILURE((*begin)->AddExtension(extpath));
+    for (auto web : save_ptrs)
+    {
+        web->Reload();
+    }
+    return S_OK;
+}
+DECLARE_API HRESULT webview2_ext_list(List_Ext_callback_t cb)
+{
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
+        return E_ACCESSDENIED;
+    return (*begin)->ListExtensionDoSomething(cb, nullptr, FALSE, FALSE);
+}
+DECLARE_API HRESULT webview2_ext_enable(LPCWSTR id, BOOL enable)
+{
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
+        return E_ACCESSDENIED;
+    CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, FALSE, enable));
+    for (auto web : save_ptrs)
+    {
+        web->Reload();
+    }
+    return S_OK;
+}
+DECLARE_API HRESULT webview2_ext_rm(LPCWSTR id)
+{
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
+        return E_ACCESSDENIED;
+    CHECK_FAILURE((*begin)->ListExtensionDoSomething(nullptr, id, TRUE, FALSE));
+    for (auto web : save_ptrs)
+    {
+        web->Reload();
+    }
+    return S_OK;
+}
+
+DECLARE_API void webview2_detect_version(LPCWSTR dir, void (*cb)(LPCWSTR))
+{
+    CComHeapPtr<WCHAR> version;
+    CHECK_FAILURE_NORET(GetAvailableCoreWebView2BrowserVersionString(dir, &version));
+    cb(version);
+}
+
+DECLARE_API void webview2_get_userdir(void (*cb)(LPCWSTR))
+{
+    auto begin = save_ptrs.begin();
+    if (begin == save_ptrs.end())
+        return;
+    cb((*begin)->GetUserDataFolder().c_str());
+}
+
+DECLARE_API void webview2_set_callbacks(WebView2 *web, zoomchange_callback_t zoomchange_callback, navigating_callback_t navigating_callback, webmessage_callback_t webmessage_callback, FilesDropped_callback_t FilesDropped_callback, titlechange_callback_t titlechange_callback, IconChanged_callback_t IconChanged_callback)
+{
+    if (!web)
+        return;
+    web->set_callbacks(zoomchange_callback, navigating_callback, webmessage_callback, FilesDropped_callback, titlechange_callback, IconChanged_callback);
+}
+
+DECLARE_API double webview2_get_ZoomFactor(WebView2 *web)
+{
+    if (!web)
+        return 1;
+    return web->get_ZoomFactor();
+}
+
+DECLARE_API void webview2_put_ZoomFactor(WebView2 *web, double zoomFactor)
+{
+    if (!web)
+        return;
+    web->put_ZoomFactor(zoomFactor);
+}
+DECLARE_API void webview2_put_PreferredColorScheme(WebView2 *web, PREFERRED_COLOR_SCHEME scheme)
+{
+    if (!web)
+        return;
+    web->put_PreferredColorScheme(scheme);
 }

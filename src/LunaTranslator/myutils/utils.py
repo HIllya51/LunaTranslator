@@ -67,20 +67,6 @@ def qimage2binary(qimage: QImage, fmt="BMP") -> bytes:
     return image_data
 
 
-def checkisusingwine() -> bool:
-    iswine = True
-    try:
-        winreg.OpenKeyEx(
-            winreg.HKEY_CURRENT_USER,
-            r"Software\Wine",
-            0,
-            winreg.KEY_QUERY_VALUE,
-        )
-    except FileNotFoundError:
-        iswine = False
-    return iswine
-
-
 def __internal__getlang(k1: str, k2: str) -> str:
     try:
         for _ in (0,):

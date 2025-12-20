@@ -1,19 +1,14 @@
 ﻿
 #include <WebView2.h>
-typedef void (*evaljs_callback_t)(LPCWSTR);
+#include "webview.hpp"
+
 typedef void (*navigating_callback_t)(LPCWSTR, bool);
 typedef void (*titlechange_callback_t)(LPCWSTR);
-typedef void (*contextmenu_callback_t)(LPCWSTR);
-typedef LPWSTR (*contextmenu_gettext)();
-typedef bool (*contextmenu_getchecked)();
-typedef bool (*contextmenu_getuse)();
-typedef void (*contextmenu_notext_callback_t)();
 typedef void (*zoomchange_callback_t)(double);
 typedef void (*webmessage_callback_t)(LPCWSTR);
 typedef void (*FilesDropped_callback_t)(LPCWSTR);
-typedef void (*List_Ext_callback_t)(LPCWSTR, LPCWSTR, BOOL);
 typedef void (*IconChanged_callback_t)(const byte *, size_t);
-
+typedef void (*List_Ext_callback_t)(LPCWSTR, LPCWSTR, BOOL);
 class WebView2;
 class WebView2ComHandler2 : public ComImpl<ICoreWebView2FaviconChangedEventHandler, ICoreWebView2GetFaviconCompletedHandler>
 {
@@ -55,7 +50,6 @@ public:
     // ICoreWebView2ContextMenuRequestedEventHandler
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, ICoreWebView2ContextMenuRequestedEventArgs *args);
 };
-typedef std::variant<contextmenu_callback_t, contextmenu_notext_callback_t> contextmenu_callback_t_ex;
 struct MenuContexts
 {
     contextmenu_gettext gettext;
@@ -63,9 +57,10 @@ struct MenuContexts
     contextmenu_getchecked getchecked;
     contextmenu_getuse getuse;
 };
-class WebView2
+class WebView2 : public AbstractWebView
 {
     friend class WebView2ComHandler;
+    friend class WebView2ComHandler2;
     HWND parent;
     bool __init_backgroundtransparent = false;
     std::atomic_flag waitforloadflag = ATOMIC_FLAG_INIT;
@@ -77,35 +72,41 @@ class WebView2
     std::vector<MenuContexts> menus_noselect;
     std::optional<std::wstring> UserDir(bool);
     HRESULT CreateCoreWebView2EnvironmentError = S_OK, CreateCoreWebView2ControllerError = S_OK;
-    LONG chromeextensionpage = 0;
+    LONG chromeextensionpageoverride;
     bool loadextension;
 
-public:
     zoomchange_callback_t zoomchange_callback = nullptr;
     navigating_callback_t navigating_callback = nullptr;
     webmessage_callback_t webmessage_callback = nullptr;
     FilesDropped_callback_t FilesDropped_callback = nullptr;
     titlechange_callback_t titlechange_callback = nullptr;
     IconChanged_callback_t IconChanged_callback = nullptr;
+
+    void set_transparent(bool);
+    HRESULT ExtensionGetProfile7(ICoreWebView2Profile7 **profile7);
     void WaitForLoad();
-    void AddMenu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked = nullptr, contextmenu_getuse getuse = nullptr);
+    double fastcachezoom = 1.0;
+
+public:
     WebView2(HWND parent, bool);
     HRESULT init(bool);
-    void put_PreferredColorScheme(COREWEBVIEW2_PREFERRED_COLOR_SCHEME);
-    void set_transparent(bool);
-    void Resize(int, int);
-    double get_ZoomFactor();
-    void put_ZoomFactor(double);
-    void EvalJS(const wchar_t *js, evaljs_callback_t cb = nullptr);
-    void Navigate(LPCWSTR);
-    void SetHTML(LPCWSTR);
-    void Bind(LPCWSTR funcname);
     std::wstring GetUserDataFolder();
 
     HRESULT AddExtension(LPCWSTR);
     HRESULT ListExtensionDoSomething(List_Ext_callback_t, LPCWSTR, BOOL, BOOL);
     void Reload();
+    void set_callbacks(zoomchange_callback_t zoomchange_callback, navigating_callback_t navigating_callback, webmessage_callback_t webmessage_callback, FilesDropped_callback_t FilesDropped_callback, titlechange_callback_t titlechange_callback, IconChanged_callback_t IconChanged_callback);
 
-private:
-    HRESULT ExtensionGetProfile7(ICoreWebView2Profile7 **profile7);
+    double slow_get_ZoomFactor();
+
+public:
+    virtual ~WebView2();
+    VIRTUAL_FUNCTIONS_IMPL;
+
+    virtual double get_ZoomFactor() override;
+    virtual void put_ZoomFactor(double zoomFactor) override;
+    virtual void put_PreferredColorScheme(PREFERRED_COLOR_SCHEME scheme) override;
+
+public:
+    static HRESULT Create(WebView2 **web, HWND parent, bool backgroundtransparent, bool loadextension);
 };

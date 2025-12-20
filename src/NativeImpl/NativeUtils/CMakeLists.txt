@@ -26,15 +26,14 @@ target_link_libraries(md4c-all INTERFACE md4c md4c-html)
 
 
 set(winrt_src winrt/winrtocr.cpp winrt/winrtsnapshot.cpp)
-set(mshtml_src mshtml/SimpleBrowser.cpp mshtml/MWebBrowser.cpp)
-set(webview2_src webview2/webview2.cpp webview2/webview2_impl.cpp)
 set(loopback_src applicationloopbackaudio/runer.cpp applicationloopbackaudio/LoopbackCapture.cpp applicationloopbackaudio/eRenderRecord.cpp)
 
+aux_source_directory(webview webviewimpls)
 
 add_library(NativeUtils SHARED
     audiodevice.cpp
     globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp appx.cpp
-    ${loopback_src} ${winrt_src} ${mshtml_src} ${webview2_src} ${versioninfo}
+    ${loopback_src} ${winrt_src} ${webviewimpls} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
 target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz webview2 mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI Msimg32)

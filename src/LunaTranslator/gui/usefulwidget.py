@@ -16,7 +16,7 @@ from NativeUtils import WebView2
 import re
 from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink
 from myutils.wrapper import Singleton, threader, tryprint
-from myutils.utils import nowisdark, checkisusingwine
+from myutils.utils import nowisdark
 from myutils.hwnd import getcurrexe
 from ocrengines.baseocrclass import OCRResult
 from gui.RichMessageBox import RichMessageBox
@@ -1424,46 +1424,83 @@ def getboxwidget(widgets, lc=QHBoxLayout, delay=False):
 class abstractwebview(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
-    html_limit = 2 * 1024 * 1024
 
-    # 必须的接口
-    def getHtml(self, elementid):
-        return
+    #
+    def parsehtml(self, html):
+        return html
 
-    def setHtml(self, html):
-        pass
+    def getHtml(self, elementid: str):
+        return ""
 
-    def navigate(self, url):
-        pass
+    def __init__(self, *a, **k):
+        self.webview: NativeUtils.AbstractWebView = None
+        super().__init__(*a, **k)
+
+    #
+    def setHtml(self, html: str):
+        html = self.parsehtml(html)
+        if len(html) < self.webview.html_limit:
+            self.webview.setHtml(html)
+        else:
+            md5 = hashlib.md5(html.encode("utf8", errors="ignore")).hexdigest()
+            lastcachehtml = gobject.gettempdir(md5 + ".html")
+            with open(lastcachehtml, "w", encoding="utf8") as ff:
+                ff.write(html)
+            self.navigate(lastcachehtml)
+
+    def navigate(self, url: str):
+        self.webview.navigate(url)
+
+    def put_PreferredColorScheme(self, darklight):
+        self.webview.put_PreferredColorScheme(darklight)
+
+    def set_zoom(self, zoom):
+        self.webview.set_zoom(zoom)
+
+    def get_zoom(self):
+        return self.webview.get_zoom()
 
     def add_menu(
         self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
-        return index + 1
+        __ = NativeUtils.webview_add_menu_CALLBACK(callback) if callback else None
+        return self.webview._add_menu(
+            True,
+            index=index,
+            getlabel=getlabel,
+            callback=__,
+            getchecked=getchecked,
+            getuse=getuse,
+        )
 
     def add_menu_noselect(
         self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
     ):
-        return index + 1
-
-    def set_transparent(self, _):
-        pass
-
-    #
-    def parsehtml(self, html):
-        pass
-
-    def set_zoom(self, zoom):
-        pass
-
-    def get_zoom(self):
-        return 1
+        __ = (
+            NativeUtils.webview_add_menu_noselect_CALLBACK(callback)
+            if callback
+            else None
+        )
+        return self.webview._add_menu(
+            False,
+            index=index,
+            getlabel=getlabel,
+            callback=__,
+            getchecked=getchecked,
+            getuse=getuse,
+        )
 
     def bind(self, fname, func):
-        pass
+        self.webview.bind(fname, func)
 
-    def eval(self, js, retsaver=None):
-        pass
+    def eval(self, js, callback=None):
+        self.webview.eval(js, callback=callback)
+
+    def resizeEvent(self, a0: QResizeEvent) -> None:
+        if not self.webview:
+            return
+        r = self.devicePixelRatioF()
+        self.webview.resize(r * a0.size().width(), int(r * a0.size().height()))
 
     def _parsehtml_codec(self, html):
 
@@ -1808,7 +1845,6 @@ class Exteditor(LDialog):
 
 
 class WebviewWidget(abstractwebview):
-    html_limit = 1572834
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
     dropfilecallback = pyqtSignal(str)
     loadextensionwindow = pyqtSignal(str)
@@ -1826,34 +1862,6 @@ class WebviewWidget(abstractwebview):
         if not _:
             return ""
         return json.loads(_[0])
-
-    def bind(self, fname, func):
-        self.webview.bind(fname, func)
-
-    def eval(self, js, callback=None):
-        self.webview.eval(js, callback)
-
-    def add_menu(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        return self.webview.add_menu(
-            index=index,
-            getlabel=getlabel,
-            callback=callback,
-            getchecked=getchecked,
-            getuse=getuse,
-        )
-
-    def add_menu_noselect(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        return self.webview.add_menu_noselect(
-            index=index,
-            getlabel=getlabel,
-            callback=callback,
-            getchecked=getchecked,
-            getuse=getuse,
-        )
 
     @staticmethod
     def showError(e: Exception):
@@ -1882,14 +1890,13 @@ class WebviewWidget(abstractwebview):
     def __init__(self, parent=None, transp=False, loadext=False) -> None:
         super().__init__(parent)
         self.url = ""
-        self.webview = None
         self.webview = WebView2(
             int(self.winId()), transp, loadext, globalconfig["darklight2"]
         )
         self.loadextensionwindow.connect(self.__loadextensionwindow)
         self.destroyed.connect(self.webview.destroy)
-        self.webview.set_observe_ptrs(
-            self.zoomchange,
+        self.webview.set_callbacks(
+            self.on_ZoomFactorChanged.emit,
             self.__on_load,
             self.dropfilecallback.emit,
             self.titlechanged.emit,
@@ -1898,10 +1905,6 @@ class WebviewWidget(abstractwebview):
 
         self.add_menu()
         self.add_menu_noselect()
-        self.cachezoom = 1
-
-    def set_transparent(self, b):
-        self.webview.set_transparent(b)
 
     def IconChangedF(self, ptr, size):
         pixmap = QPixmap()
@@ -1919,33 +1922,86 @@ class WebviewWidget(abstractwebview):
     def __loadextensionwindow(self, url: str):
         ExtensionSetting(None, url, None)
 
-    def zoomchange(self, zoom):
-        self.cachezoom = zoom
-        self.on_ZoomFactorChanged.emit(zoom)
-        self.set_zoom(zoom)  # 置为默认值，档navi/sethtml时才能保持
-
-    def set_zoom(self, zoom):
-        self.webview.set_zoom(zoom)
-        self.cachezoom = self.webview.get_zoom()
-
-    def get_zoom(self):
-        # NativeUtils.get_ZoomFactor(self.get_controller()) 性能略差
-        return self.cachezoom
-
-    def navigate(self, url):
-        self.webview.navigate(url)
-
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-        if not self.webview:
-            return
-        r = self.devicePixelRatioF()
-        self.webview.resize(r * a0.size().width(), int(r * a0.size().height()))
-
-    def setHtml(self, html):
-        self.webview.setHtml(html)
-
     def parsehtml(self, html):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
+
+
+class EdgeHtmlWidget(abstractwebview):
+    def __init__(self, parent=None, transp=False) -> None:
+        super().__init__(parent)
+        self.webview = NativeUtils.EdgeHtml(int(self.winId()), transp=transp)
+        self.destroyed.connect(self.webview.destroy)
+        self.add_menu(0, lambda: _TR("复制"), NativeUtils.ClipBoard.setText)
+        self.add_menu(0)
+
+    def parsehtml(self, html):
+        return self._parsehtml_dark(html)
+
+
+class mshtmlWidget(abstractwebview):
+    def getHtml(self, elementid):
+        _ = []
+        cb = NativeUtils.html_get_select_text_cb(_.append)
+        NativeUtils.html_get_html(self.webview, cb, elementid)
+        if not _:
+            return ""
+        return _[0]
+
+    def __init__(self, parent=None) -> None:
+        super().__init__(parent)
+        self.webview: NativeUtils.MSHTML = NativeUtils.MSHTML(int(self.winId()))
+        self.destroyed.connect(self.webview.destroy)
+        self.curr_url = None
+        t = QTimer(self)
+        t.setInterval(100)
+        t.timeout.connect(self.__getcurrent)
+        t.timeout.emit()
+        t.start()
+        self.add_menu(0, lambda: _TR("复制"), NativeUtils.ClipBoard.setText)
+        self.add_menu(0)
+
+    def __getcurrent(self):
+        _u = self.webview.get_current_url()
+        if self.curr_url != _u:
+            self.curr_url = _u
+            self.on_load.emit(_u)
+
+        self.webview.is_ctrl_c_callback(NativeUtils.ClipBoard.setText)
+
+    def parsehtml(self, html):
+        return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
+
+
+class WebviewWidget_for_auto(WebviewWidget):
+    pluginsedit = pyqtSignal()
+    reloadx = pyqtSignal()
+
+    def appendext(self):
+        globalconfig["webviewLoadExt_cishu"] = not globalconfig["webviewLoadExt_cishu"]
+        auto_select_webview.switchtype()
+
+    def __init__(self, parent=None, transp=False) -> None:
+        super().__init__(
+            parent, loadext=globalconfig["webviewLoadExt_cishu"], transp=transp
+        )
+        self.pluginsedit.connect(functools.partial(Exteditor, self))
+        self.reloadx.connect(self.appendext)
+
+        nexti = self.add_menu_noselect()
+        nexti = self.add_menu_noselect(
+            nexti,
+            lambda: _TR("附加浏览器插件"),
+            threader(self.reloadx.emit),
+            getchecked=lambda: globalconfig["webviewLoadExt_cishu"],
+        )
+        nexti = self.add_menu_noselect(
+            nexti,
+            lambda: _TR("浏览器插件"),
+            threader(self.pluginsedit.emit),
+            getuse=lambda: globalconfig["webviewLoadExt_cishu"],
+        )
+        nexti = self.add_menu_noselect(nexti)
+        self.cachezoom = 1
 
 
 _request_delete_ok_cache = {}
@@ -1995,141 +2051,6 @@ def request_for_something(parent: QWidget = None, cache=None, title="确认删�
     if dont_ask_checkbox.isChecked():
         _request_delete_ok_cache[cache] = reply == QMessageBox.StandardButton.Yes
     return reply == QMessageBox.StandardButton.Yes
-
-
-class WebviewWidget_for_auto(WebviewWidget):
-    pluginsedit = pyqtSignal()
-    reloadx = pyqtSignal()
-
-    def appendext(self):
-        globalconfig["webviewLoadExt_cishu"] = not globalconfig["webviewLoadExt_cishu"]
-        auto_select_webview.switchtype()
-
-    def __init__(self, parent=None, transp=False) -> None:
-        super().__init__(
-            parent, loadext=globalconfig["webviewLoadExt_cishu"], transp=transp
-        )
-        self.pluginsedit.connect(functools.partial(Exteditor, self))
-        self.reloadx.connect(self.appendext)
-
-        nexti = self.add_menu_noselect()
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("附加浏览器插件"),
-            threader(self.reloadx.emit),
-            getchecked=lambda: globalconfig["webviewLoadExt_cishu"],
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("浏览器插件"),
-            threader(self.pluginsedit.emit),
-            getuse=lambda: globalconfig["webviewLoadExt_cishu"],
-        )
-        nexti = self.add_menu_noselect(nexti)
-        self.cachezoom = 1
-
-
-class mshtmlWidget(abstractwebview):
-    def getHtml(self, elementid):
-        _ = []
-        cb = NativeUtils.html_get_select_text_cb(_.append)
-        NativeUtils.html_get_html(self.browser, cb, elementid)
-        if not _:
-            return ""
-        return _[0]
-
-    def eval(self, js):
-        NativeUtils.html_eval(self.browser, js)
-
-    def __bindhelper(self, func, ppwc, argc):
-        argv = []
-        for i in range(argc):
-            argv.append(ppwc[argc - 1 - i])
-        func(*argv)
-
-    def bind(self, fname, func):
-        __f = NativeUtils.html_bind_function_FT(
-            functools.partial(self.__bindhelper, func)
-        )
-        self.bindfs.append(__f)
-        NativeUtils.html_bind_function(self.browser, fname, __f)
-
-    @staticmethod
-    def onDestroy(ptr):
-        NativeUtils.html_release(ptr)
-
-    def __init__(self, parent=None) -> None:
-        super().__init__(parent)
-        self.callbacks = []
-        self.bindfs = []
-        iswine = checkisusingwine()
-        if iswine or (NativeUtils.html_version() < 10001):  # ie10之前，sethtml会乱码
-            self.html_limit = 0
-        self.browser = None
-        self.browser = NativeUtils.html_new(int(self.winId()))
-        self.destroyed.connect(functools.partial(mshtmlWidget.onDestroy, self.browser))
-        self.curr_url = None
-        t = QTimer(self)
-        t.setInterval(100)
-        t.timeout.connect(self.__getcurrent)
-        t.timeout.emit()
-        t.start()
-        self.add_menu(0, lambda: _TR("复制"), NativeUtils.ClipBoard.setText)
-        self.add_menu(0)
-
-    def __getcurrent(self):
-        def __(_u):
-            if self.curr_url != _u:
-                self.curr_url = _u
-                self.on_load.emit(_u)
-
-        cb = NativeUtils.html_get_select_text_cb(__)
-        NativeUtils.html_get_current_url(self.browser, cb)
-
-        if NativeUtils.html_check_ctrlc(self.browser):
-            cb = NativeUtils.html_get_select_text_cb(NativeUtils.ClipBoard.setText)
-            NativeUtils.html_get_select_text(self.browser, cb)
-
-    def navigate(self, url):
-        NativeUtils.html_navigate(self.browser, url)
-
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-        if not self.browser:
-            return
-        size = a0.size() * self.devicePixelRatioF()
-        NativeUtils.html_resize(self.browser, 0, 0, size.width(), size.height())
-
-    def setHtml(self, html):
-        NativeUtils.html_set_html(self.browser, html)
-
-    def parsehtml(self, html):
-        return self._parsehtml_codec(self._parsehtml_font(self._parsehtml_dark(html)))
-
-    def add_menu(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        cb = NativeUtils.html_add_menu_cb(callback) if callback else None
-        self.callbacks.append(cb)
-        getlabel = NativeUtils.wrapgetlabel(getlabel)
-        cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
-        self.callbacks.append(cb2)
-        __2 = NativeUtils.html_contextmenu_getuse(getuse) if getuse else None
-        self.callbacks.append(__2)
-        NativeUtils.html_add_menu(self.browser, index, cb2, cb, __2)
-        return index + 1
-
-    def add_menu_noselect(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        cb = NativeUtils.html_add_menu_cb2(callback) if callback else None
-        self.callbacks.append(cb)
-        getlabel = NativeUtils.wrapgetlabel(getlabel)
-        cb2 = NativeUtils.html_add_menu_gettext(getlabel) if getlabel else None
-        self.callbacks.append(cb2)
-        __2 = NativeUtils.html_contextmenu_getuse(getuse) if getuse else None
-        self.callbacks.append(__2)
-        NativeUtils.html_add_menu_noselect(self.browser, index, cb2, cb, __2)
-        return index + 1
 
 
 class KeySequenceEdit(QKeySequenceEdit):
@@ -2244,15 +2165,7 @@ class auto_select_webview(QWidget):
         self.internal.navigate(url)
 
     def setHtml(self, html):
-        html = self.internal.parsehtml(html)
-        if len(html) < self.internal.html_limit:
-            self.internal.setHtml(html)
-        else:
-            md5 = hashlib.md5(html.encode("utf8", errors="ignore")).hexdigest()
-            lastcachehtml = gobject.gettempdir(md5 + ".html")
-            with open(lastcachehtml, "w", encoding="utf8") as ff:
-                ff.write(html)
-            self.internal.navigate(lastcachehtml)
+        self.internal.setHtml(html)
 
     def set_zoom(self, zoom):
         self.internal.set_zoom(zoom)
@@ -2324,7 +2237,11 @@ class auto_select_webview(QWidget):
             print_exc()
             if shoudong:
                 WebviewWidget.showError(e)
-            browser = mshtmlWidget()
+            try:
+                browser = EdgeHtmlWidget(self, transp=transp)
+            except:
+                print_exc()
+                browser = mshtmlWidget(self)
         return browser
 
 
@@ -3639,7 +3556,7 @@ class LinkLabel(QLabel):
             self.unsetCursor()
 
 
-def MyInputDialog(parent, title, label, default=None, w=500) -> str | None:
+def MyInputDialog(parent, title, label, default=None, w=500) -> "str | None":
     dia = QInputDialog(parent, Qt.WindowType.WindowCloseButtonHint)
     dia.resize(w, dia.height())
     dia.setWindowTitle(_TR(title))

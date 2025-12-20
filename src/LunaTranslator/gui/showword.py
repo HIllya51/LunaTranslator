@@ -36,6 +36,8 @@ from gui.usefulwidget import (
     closeashidewindow,
     auto_select_webview,
     WebviewWidget,
+    mshtmlWidget,
+    EdgeHtmlWidget,
     IconButton,
     getboxlayout,
     getboxwidget,
@@ -1418,7 +1420,7 @@ class WordViewer(QWidget):
             def _createwebview(_, *argc, **kw):
                 web = super()._createwebview(transp=transp, *argc, **kw)
                 if isinstance(web, WebviewWidget):
-                    web.html_limit = 1
+                    web.webview.html_limit = 1
                 return web
 
         self.textOutput = showwordfastwebview(self, True)
@@ -1460,8 +1462,8 @@ class WordViewer(QWidget):
         nexti = self.textOutput.add_menu_noselect(
             0,
             lambda: _TR("加亮模式"),
-            lambda: self.textOutput.eval("switch_hightlightmode()"),
-            getchecked=lambda: self.callvalue(),
+            self.switch_hightlightmode,
+            getchecked=lambda: self.ishightlight,
         )
         nexti = self.textOutput.add_menu_noselect(
             nexti, lambda: _TR("清除加亮"), self.clear_hightlight
@@ -1490,13 +1492,12 @@ class WordViewer(QWidget):
         tablayout.addWidget(self.tab)
         tablayout.addWidget(self.textOutput)
 
-    def callvalue(self):
-        if isinstance(self.textOutput.internal, WebviewWidget):
+    def switch_hightlightmode(self):
+        if isinstance(self.textOutput.internal, (WebviewWidget, EdgeHtmlWidget)):
             self.textOutput.eval("iswebview2=true")
-            return self.ishightlight
-        # mshtml会死锁。
-        self.ishightlight = not self.ishightlight
-        return self.ishightlight
+        self.textOutput.eval("switch_hightlightmode()")
+        if isinstance(self.textOutput.internal, (mshtmlWidget,)):
+            self.ishightlight = not self.ishightlight
 
     def luna_recheck_current_html(self, html):
         self.cache_results_highlighted[self.tabks[self.tab.currentIndex()]] = html

@@ -9,19 +9,19 @@ var internal_http_port = INTERNAL_HTTP_PORT
 function splitfonttext(transwithfont) {
     if (transwithfont.substr(0, magicsend.length) == magicsend) //not trans
     {
-        let split = transwithfont.search('\x02')
-        return transwithfont.substr(split + 1);
+        ___split = transwithfont.search('\x02')
+        return transwithfont.substr(___split + 1);
     }
     else if (transwithfont.substr(0, magicrecv.length) == magicrecv) {
         //magicrecv fontFamily \x02 FontSizeRelative \x03 text
         transwithfont = transwithfont.substr(magicrecv.length)
-        let split = transwithfont.search('\x02')
-        fontface = transwithfont.substr(0, split)
-        let shengyu = transwithfont.substr(split + 1)
-        let split3 = shengyu.search('\x03')
-        fontSizeRelative = parseFloat(shengyu.substr(0, split3))
-        let text = shengyu.substr(split3 + 1)
-        return text;
+        ___split = transwithfont.search('\x02')
+        fontface = transwithfont.substr(0, ___split)
+        ___shengyu = transwithfont.substr(___split + 1)
+        ___split3 = ___shengyu.search('\x03')
+        fontSizeRelative = parseFloat(shengyu.substr(0, ___split3))
+        ___text = ___shengyu.substr(___split3 + 1)
+        return ___text;
     }
     else {
         return transwithfont;
