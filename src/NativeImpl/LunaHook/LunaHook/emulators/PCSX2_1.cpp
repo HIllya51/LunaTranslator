@@ -2075,6 +2075,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1f1420, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM67003, "SLPM-67003"}},
     // サクラ大戦Ⅴ ～さらば愛しき人よ～
     {0x1F6E550, {DIRECT_READ, 0, 0, 0, SLPM67009, "SLPM-67009"}},
+    {0x645CC0, {DIRECT_READ, 0, 0, 0, SLPM67009, "SLPM-67009"}},
     {0x1F6E790, {DIRECT_READ, 0, 0, 0, SLPM67009, "SLPM-67009"}}, // 不知道为什么地址变成这个了，可能不是很稳定
     // 月は東に日は西に -Operation Sanctuary-
     {0x131890, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65717, "SLPM-65717"}},
