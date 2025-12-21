@@ -1,6 +1,7 @@
 
-#include "edgehtml.hpp"
 #ifndef WINXP
+
+#include "edgehtml.hpp"
 
 double EdgeHtml::get_ZoomFactor() { return m_webview.Scale(); }
 void EdgeHtml::put_ZoomFactor(double zoomFactor)
@@ -94,12 +95,12 @@ DECLARE_API void edgehtml_set_notify_callback(EdgeHtml *ret, web_notify_callback
 }
 #else
 
-DECLARE_API AbstractWebView *edgehtml_new(HWND parent, bool backgroundtransparent)
+DECLARE_API void *edgehtml_new(HWND parent, bool backgroundtransparent)
 {
     return nullptr;
 }
 
-DECLARE_API void edgehtml_set_notify_callback(EdgeHtml *ret, web_notify_callback_t callback)
+DECLARE_API void edgehtml_set_notify_callback(void *ret, web_notify_callback_t callback)
 {
 }
 #endif
