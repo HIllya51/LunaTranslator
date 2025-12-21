@@ -1,6 +1,6 @@
 
-#ifndef WINXP
 #include "edgehtml.hpp"
+#ifndef WINXP
 
 double EdgeHtml::get_ZoomFactor() { return m_webview.Scale(); }
 void EdgeHtml::put_ZoomFactor(double zoomFactor)
