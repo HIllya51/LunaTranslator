@@ -100,7 +100,7 @@ DECLARE_API void *edgehtml_new(HWND parent, bool backgroundtransparent)
     return nullptr;
 }
 
-DECLARE_API void edgehtml_set_notify_callback(void *ret, web_notify_callback_t callback)
+DECLARE_API void edgehtml_set_notify_callback(void *ret, void *callback)
 {
 }
 #endif
