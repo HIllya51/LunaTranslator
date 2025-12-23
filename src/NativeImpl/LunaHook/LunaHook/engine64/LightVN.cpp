@@ -154,7 +154,6 @@ namespace
       auto straddr = MemDbg::findBytes(str, wcslen(str) * 2, processStartAddress, processStopAddress);
       if (!straddr)
         continue;
-      ConsoleOutput("%p", straddr);
       // 140CADC30
       // 48 8D 0D C5 94 AB 00
       // 1401F4764
