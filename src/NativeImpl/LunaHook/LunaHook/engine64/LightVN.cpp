@@ -102,6 +102,8 @@ namespace
     auto str = buffer->strW();
     str = re::sub(str, L"-{2,}");
     str = re::sub(str, L"\\[(.*?)\\]<(.*?)>", L"$1");
+    strReplace(str, L"\n");
+    strReplace(str, L"\\n");
     buffer->from(str);
   }
   bool lightvnparsestring()
@@ -150,8 +152,9 @@ namespace
     for (auto str : checkstrings)
     {
       auto straddr = MemDbg::findBytes(str, wcslen(str) * 2, processStartAddress, processStopAddress);
-      if (straddr == 0)
+      if (!straddr)
         continue;
+      ConsoleOutput("%p", straddr);
       // 140CADC30
       // 48 8D 0D C5 94 AB 00
       // 1401F4764
@@ -161,9 +164,13 @@ namespace
         auto refaddr = (*(DWORD *)(leaaddr + 3)) + leaaddr + 7;
         if (refaddr != straddr)
           continue;
+        BYTE sig[] = {0x55, 0x41, XX, 0x41, XX, 0x41, XX, 0x41, XX}; // カタネガイ -Trial Edition-
         auto funcaddr = MemDbg::findEnclosingAlignedFunction_strict(leaaddr, 0x2000);
-        if (funcaddr == 0)
+        if (!funcaddr)
           continue;
+        auto funcaddr2 = reverseFindBytes(sig, sizeof(sig), leaaddr - 0x2000, leaaddr, 0, true);
+        if (funcaddr2 > funcaddr)
+          funcaddr = funcaddr2;
         HookParam hp;
         hp.address = funcaddr;
         hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;

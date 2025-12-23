@@ -42,7 +42,7 @@ static void WriteWavHeader(std::string &file, WAVEFORMATEX *pwfx, size_t dataSiz
 
     file = std::string((char *)(&header), sizeof(WavHeader)) + file;
 }
-void eRenderRecord::RecordThread()
+void LoopbackTranditional::RecordThread()
 {
     running = true;
     size_t totalBytesWritten = 0;
@@ -72,14 +72,14 @@ void eRenderRecord::RecordThread()
     WriteWavHeader(buffer, pwfx, totalBytesWritten);
     threadend.Set();
 }
-HRESULT eRenderRecord::StopCapture()
+HRESULT LoopbackTranditional::StopCapture()
 {
     running = false;
     WaitForSingleObject(threadend, INFINITE);
     return S_OK;
 }
-eRenderRecord::eRenderRecord() {}
-eRenderRecord::eRenderRecord(int nSamplesPerSec, int wBitsPerSample, int nChannels)
+LoopbackTranditional::LoopbackTranditional() {}
+LoopbackTranditional::LoopbackTranditional(int nSamplesPerSec, int wBitsPerSample, int nChannels)
 {
     // The app can also call m_AudioClient->GetMixFormat instead to get the capture format.
     // 16 - bit PCM format.
@@ -93,7 +93,7 @@ eRenderRecord::eRenderRecord(int nSamplesPerSec, int wBitsPerSample, int nChanne
     pwfx.Attach((WAVEFORMATEX *)CoTaskMemAlloc(sizeof(WAVEFORMATEX)));
     memcpy(pwfx, &m_CaptureFormat, sizeof(m_CaptureFormat));
 }
-HRESULT eRenderRecord::StartCaptureAsync()
+HRESULT LoopbackTranditional::StartCaptureAsync()
 {
     CHECK_FAILURE(threadend.Create(NULL, FALSE, FALSE, NULL));
     CO_INIT co;
@@ -125,13 +125,13 @@ HRESULT eRenderRecord::StartCaptureAsync()
 SupperRecord::SupperRecord()
 {
     capture = new CLoopbackCapture;
-    capture_lower = std::make_unique<eRenderRecord>();
+    capture_lower = std::make_unique<LoopbackTranditional>();
 };
 
 SupperRecord::SupperRecord(int nSamplesPerSec, int wBitsPerSample, int nChannels)
 {
     capture = new CLoopbackCapture(nSamplesPerSec, wBitsPerSample, nChannels);
-    capture_lower = std::make_unique<eRenderRecord>(nSamplesPerSec, wBitsPerSample, nChannels);
+    capture_lower = std::make_unique<LoopbackTranditional>(nSamplesPerSec, wBitsPerSample, nChannels);
 };
 HRESULT SupperRecord::StopCapture()
 {

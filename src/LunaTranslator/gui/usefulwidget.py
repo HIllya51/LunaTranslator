@@ -1421,7 +1421,7 @@ def getboxwidget(widgets, lc=QHBoxLayout, delay=False):
     return __getboxlayout(widgets=widgets, lc=lc, makewidget=True, delay=delay)
 
 
-class abstractwebview(QWidget):
+class AbstractWebviewWidget(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
@@ -1844,7 +1844,7 @@ class Exteditor(LDialog):
             QMessageBox.critical(self, _TR("错误"), str(e))
 
 
-class WebviewWidget(abstractwebview):
+class WebviewWidget(AbstractWebviewWidget):
     # https://github.com/MicrosoftEdge/WebView2Feedback/issues/1355#issuecomment-1384161283
     dropfilecallback = pyqtSignal(str)
     loadextensionwindow = pyqtSignal(str)
@@ -1926,7 +1926,7 @@ class WebviewWidget(abstractwebview):
         return self._parsehtml_codec(self._parsehtml_dark_auto(html))
 
 
-class EdgeHtmlWidget(abstractwebview):
+class EdgeHtmlWidget(AbstractWebviewWidget):
     def __init__(self, parent=None, transp=False) -> None:
         super().__init__(parent)
         self.webview = NativeUtils.EdgeHtml(int(self.winId()), transp=transp)
@@ -1938,7 +1938,7 @@ class EdgeHtmlWidget(abstractwebview):
         return self._parsehtml_dark(html)
 
 
-class mshtmlWidget(abstractwebview):
+class MSHtmlWidget(AbstractWebviewWidget):
     def getHtml(self, elementid):
         _ = []
         cb = NativeUtils.html_get_select_text_cb(_.append)
@@ -2241,7 +2241,7 @@ class auto_select_webview(QWidget):
                 browser = EdgeHtmlWidget(self, transp=transp)
             except:
                 print_exc()
-                browser = mshtmlWidget(self)
+                browser = MSHtmlWidget(self)
         return browser
 
 

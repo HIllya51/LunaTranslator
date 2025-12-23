@@ -36,7 +36,7 @@ from gui.usefulwidget import (
     closeashidewindow,
     auto_select_webview,
     WebviewWidget,
-    mshtmlWidget,
+    MSHtmlWidget,
     EdgeHtmlWidget,
     IconButton,
     getboxlayout,
@@ -1496,7 +1496,7 @@ class WordViewer(QWidget):
         if isinstance(self.textOutput.internal, (WebviewWidget, EdgeHtmlWidget)):
             self.textOutput.eval("iswebview2=true")
         self.textOutput.eval("switch_hightlightmode()")
-        if isinstance(self.textOutput.internal, (mshtmlWidget,)):
+        if isinstance(self.textOutput.internal, (MSHtmlWidget,)):
             self.ishightlight = not self.ishightlight
 
     def luna_recheck_current_html(self, html):

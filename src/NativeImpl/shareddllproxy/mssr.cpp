@@ -6,7 +6,7 @@
 #endif
 
 #include <speechapi_cxx.h>
-#include "../NativeUtils/applicationloopbackaudio/LoopbackCapture.h"
+#include "../NativeUtils/loopbackaudio/LoopbackCapture.h"
 
 using namespace Microsoft::CognitiveServices::Speech;
 using namespace Microsoft::CognitiveServices::Speech::Audio;

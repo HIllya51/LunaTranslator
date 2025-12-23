@@ -88,7 +88,7 @@ private:
     CEvent m_hCaptureStopped;
 };
 
-class eRenderRecord
+class LoopbackTranditional
 {
     CComPtr<IMMDeviceEnumerator> pEnumerator = nullptr;
     CComPtr<IMMDevice> pDevice = nullptr;
@@ -104,14 +104,14 @@ public:
     std::string buffer;
     HRESULT StopCapture();
     HRESULT StartCaptureAsync();
-    eRenderRecord();
-    eRenderRecord(int nSamplesPerSec, int wBitsPerSample, int nChannels);
+    LoopbackTranditional();
+    LoopbackTranditional(int nSamplesPerSec, int wBitsPerSample, int nChannels);
 };
 
 class SupperRecord
 {
     CComPtr<CLoopbackCapture> capture;
-    std::unique_ptr<eRenderRecord> capture_lower;
+    std::unique_ptr<LoopbackTranditional> capture_lower;
     bool usefirst = true;
 
 public:
