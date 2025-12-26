@@ -7,7 +7,7 @@
 #else
 ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_DML, _In_ OrtSessionOptions *options, int device_id)
 {
-    auto pOrtSessionOptionsAppendExecutionProvider_DML = (decltype(&OrtSessionOptionsAppendExecutionProvider_DML))getOrtSessionOptionsAppendExecutionProvider_DML();
+    auto pOrtSessionOptionsAppendExecutionProvider_DML = (decltype(&OrtSessionOptionsAppendExecutionProvider_DML))get_provider_ptr(DML);
     if (!pOrtSessionOptionsAppendExecutionProvider_DML)
         return nullptr;
     return pOrtSessionOptionsAppendExecutionProvider_DML(options, device_id);
@@ -24,16 +24,18 @@ ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_DML, _In_ OrtSessionOpti
 #define FGetOutputName GetOutputNameAllocated
 #define GetVector(X) {X.data()->get()}
 #endif
-void *getOrtSessionOptionsAppendExecutionProvider_DML()
-{
-    auto ort = GetModuleHandle(L"onnxruntime.dll");
-    if (!ort)
-        return nullptr;
-    return (void *)GetProcAddress(ort, "OrtSessionOptionsAppendExecutionProvider_DML");
-}
+#define get_provider_ptr(T)                                                                 \
+    []() -> void *                                                                          \
+    {                                                                                       \
+        auto ort = GetModuleHandle(L"onnxruntime.dll");                                     \
+        if (!ort)                                                                           \
+            return nullptr;                                                                 \
+        return (void *)GetProcAddress(ort, "OrtSessionOptionsAppendExecutionProvider_" #T); \
+    }()
+
 static bool __isDMLAvailable()
 {
-    if (!getOrtSessionOptionsAppendExecutionProvider_DML())
+    if (!get_provider_ptr(DML))
         return false;
     if (GetModuleHandle(L"DirectML.dll"))
         return true;
@@ -90,7 +92,14 @@ public:
             }
         }
         sessionOptions.SetIntraOpNumThreads(numOfThread);
-        sessionOptions.SetInterOpNumThreads(numOfThread); // 需要SetExecutionMode(ExecutionMode::ORT_PARALLEL)(默认即是)。这个好像对当前这个ocr模型没啥卵用
+        sessionOptions.SetInterOpNumThreads(numOfThread);
+        if (is_using_gpu)
+        {
+            // https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html
+            // If creating the onnxruntime InferenceSession object directly, you must set the appropriate fields on the onnxruntime::SessionOptions struct. Specifically, execution_mode must be set to ExecutionMode::ORT_SEQUENTIAL, and enable_mem_pattern must be false.
+            sessionOptions.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
+            sessionOptions.DisableMemPattern();
+        }
         sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);
         session = std::make_unique<Ort::Session>(env, path.c_str(), sessionOptions);
         getinputoutputNames(inputNamesPtr, &Ort::Session::GetInputCount, &Ort::Session::FGetInputName);
@@ -109,7 +118,8 @@ public:
         std::vector<const char *> outputNames = GetVector(outputNamesPtr);
         std::vector<Ort::Value> outputTensor;
         {
-            // 使用dml运行时，这个东西似乎线程不安全。
+            // https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html
+            // Additionally, as the DirectML execution provider does not support parallel execution, it does not support multi-threaded calls to Run on the same inference session. That is, if an inference session using the DirectML execution provider, only one thread may call Run at a time. Multiple threads are permitted to call Run simultaneously if they operate on different inference session objects.
             std::unique_lock lock(gpu_run_lock, std::defer_lock);
             if (is_using_gpu)
                 lock.lock();
