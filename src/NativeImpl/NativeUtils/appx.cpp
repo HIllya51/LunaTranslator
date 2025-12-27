@@ -11,6 +11,15 @@
 
 #include "winrt/hstring.hpp"
 
+using ABI::Windows::ApplicationModel::IPackage;
+using ABI::Windows::ApplicationModel::IPackageId;
+using ABI::Windows::ApplicationModel::Package;
+using ABI::Windows::Foundation::Collections::IIterable;
+using ABI::Windows::Foundation::Collections::IIterator;
+using ABI::Windows::Management::Deployment::IPackageManager;
+using ABI::Windows::Storage::IStorageFolder;
+using ABI::Windows::Storage::IStorageItem;
+
 std::optional<std::wstring> FindPackage(const wchar_t *packageFamilyName)
 {
     UINT32 count = 0;
@@ -95,31 +104,31 @@ DECLARE_API void GetPackagePathByPackageFamily(const wchar_t *packageFamilyName,
 
 DECLARE_API void FindPackages(void (*cb)(LPCWSTR, LPCWSTR), LPCWSTR checkid)
 {
-    CComPtr<ABI::Windows::Management::Deployment::IPackageManager> packageManager;
+    CComPtr<IPackageManager> packageManager;
     CHECK_FAILURE_NORET(RoActivateInstance(AutoHString(RuntimeClass_Windows_Management_Deployment_PackageManager), reinterpret_cast<IInspectable **>(&packageManager)));
 
-    CComPtr<ABI::Windows::Foundation::Collections::IIterable<ABI::Windows::ApplicationModel::Package *>> packagesFoundRaw;
+    CComPtr<IIterable<Package *>> packagesFoundRaw;
     CHECK_FAILURE_NORET(packageManager->FindPackagesByUserSecurityId(AutoHString(L""), &packagesFoundRaw));
 
-    CComPtr<ABI::Windows::Foundation::Collections::IIterator<ABI::Windows::ApplicationModel::Package *>> packagesFoundRaw_itor;
+    CComPtr<IIterator<Package *>> packagesFoundRaw_itor;
     CHECK_FAILURE_NORET(packagesFoundRaw->First(&packagesFoundRaw_itor));
 
     boolean fHasCurrent;
     CHECK_FAILURE_NORET(packagesFoundRaw_itor->get_HasCurrent(&fHasCurrent));
     while (fHasCurrent)
     {
-        CComPtr<ABI::Windows::ApplicationModel::IPackage> package;
+        CComPtr<IPackage> package;
         CHECK_FAILURE_NORET(packagesFoundRaw_itor->get_Current(&package));
-        CComPtr<ABI::Windows::ApplicationModel::IPackageId> packageid;
+        CComPtr<IPackageId> packageid;
         CHECK_FAILURE_NORET(package->get_Id(&packageid));
         AutoHString strname;
         CHECK_FAILURE_NORET(packageid->get_Name(&strname));
         PCWSTR _name = strname;
         if (wcsstr(_name, checkid) == _name)
         {
-            CComPtr<ABI::Windows::Storage::IStorageFolder> installpath;
+            CComPtr<IStorageFolder> installpath;
             CHECK_FAILURE_NORET(package->get_InstalledLocation(&installpath));
-            CComPtr<ABI::Windows::Storage::IStorageItem> item;
+            CComPtr<IStorageItem> item;
             CHECK_FAILURE_NORET(installpath.QueryInterface(&item));
             AutoHString str;
             item->get_Path(&str);

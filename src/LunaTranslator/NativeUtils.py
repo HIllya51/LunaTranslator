@@ -40,6 +40,8 @@ import gobject, os, json
 import windows, functools, re, csv
 from traceback import print_exc
 
+HRESULT = LONG
+
 utilsdll = CDLL(gobject.GetDllpath("NativeUtils.dll"))
 
 OpenFileEx = utilsdll.OpenFileEx
@@ -499,7 +501,7 @@ webview2_create.argtypes = (
     c_bool,
     c_bool,
 )
-webview2_create.restype = LONG
+webview2_create.restype = HRESULT
 webview2_set_callbacks = utilsdll.webview2_set_callbacks
 webview2_zoomchange_callback_t = CFUNCTYPE(None, c_double)
 webview2_navigating_callback_t = CFUNCTYPE(None, c_wchar_p, c_bool)
@@ -521,17 +523,17 @@ _webview2_detect_version.argtypes = c_wchar_p, c_void_p
 
 webview2_ext_add = utilsdll.webview2_ext_add
 webview2_ext_add.argtypes = (c_wchar_p,)
-webview2_ext_add.restype = LONG
+webview2_ext_add.restype = HRESULT
 webview2_list_ext_CALLBACK_T = CFUNCTYPE(None, c_wchar_p, c_wchar_p, BOOL)
 webview2_ext_list = utilsdll.webview2_ext_list
 webview2_ext_list.argtypes = (webview2_list_ext_CALLBACK_T,)
-webview2_ext_list.restype = LONG
+webview2_ext_list.restype = HRESULT
 webview2_ext_enable = utilsdll.webview2_ext_enable
 webview2_ext_enable.argtypes = (c_wchar_p, BOOL)
-webview2_ext_enable.restype = LONG
+webview2_ext_enable.restype = HRESULT
 webview2_ext_rm = utilsdll.webview2_ext_rm
 webview2_ext_rm.argtypes = (c_wchar_p,)
-webview2_ext_rm.restype = LONG
+webview2_ext_rm.restype = HRESULT
 webview2_get_userdir = utilsdll.webview2_get_userdir
 webview2_get_userdir_callback = CFUNCTYPE(None, c_wchar_p)
 webview2_get_userdir.argtypes = (webview2_get_userdir_callback,)
@@ -707,8 +709,8 @@ class WebView2(AbstractWebView):
 # EdgeHtml
 
 edgehtml_new = utilsdll.edgehtml_new
-edgehtml_new.argtypes = (HWND, c_bool)
-edgehtml_new.restype = AbstractWebViewPTR
+edgehtml_new.argtypes = (POINTER(AbstractWebViewPTR), HWND, c_bool)
+edgehtml_new.restype = HRESULT
 edgehtml_set_notify_callback = utilsdll.edgehtml_set_notify_callback
 web_notify_callback_t = CFUNCTYPE(None, LPCWSTR)
 edgehtml_set_notify_callback.argtypes = AbstractWebViewPTR, web_notify_callback_t
@@ -724,9 +726,8 @@ class EdgeHtml(AbstractWebView):
         super().__init__()
         self.binds = {}
         self.html_limit = 1572834
-        self.ptr = edgehtml_new(int(parent), transp)
-        if not self.ptr:
-            raise Exception("not support")
+        _ = windows.CO_INIT()
+        windows.CHECK_FAILURE(edgehtml_new(windows.pointer(self.ptr), parent, transp))
         self._keepref = web_notify_callback_t(self.__web_notify_callback)
         edgehtml_set_notify_callback(self.ptr, self._keepref)
 
@@ -819,7 +820,7 @@ class MSHTML(AbstractWebView):
 StartCaptureAsync_cb = CFUNCTYPE(None, POINTER(c_char), c_size_t)
 StartCaptureAsync = utilsdll.StartCaptureAsync
 StartCaptureAsync.argtypes = (POINTER(c_void_p),)
-StartCaptureAsync.restype = LONG
+StartCaptureAsync.restype = HRESULT
 StopCapture = utilsdll.StopCapture
 StopCapture.argtypes = (c_void_p, StartCaptureAsync_cb)
 

@@ -10,6 +10,10 @@ struct AutoHString
     {
         WindowsCreateStringReference(wstr, lstrlenW(wstr), &hh, &hstr);
     }
+    explicit AutoHString(const std::wstring &wstr)
+    {
+        WindowsCreateStringReference(wstr.c_str(), wstr.size(), &hh, &hstr);
+    }
     template <unsigned int sizeDest>
     explicit AutoHString(wchar_t const (&str)[sizeDest])
     {
@@ -31,5 +35,11 @@ struct AutoHString
     operator const WCHAR *()
     {
         return WindowsGetStringRawBuffer(hstr, NULL);
+    }
+    operator std::wstring()
+    {
+        UINT32 len;
+        auto ret = WindowsGetStringRawBuffer(hstr, &len);
+        return std::wstring(ret, len);
     }
 };

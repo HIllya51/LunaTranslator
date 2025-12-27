@@ -9,6 +9,7 @@
 #include "../../xpundef/xp_winrt.hpp"
 #endif
 #include "hstring.hpp"
+#include "await.hpp"
 
 using ABI::Windows::Foundation::AsyncStatus;
 using ABI::Windows::Foundation::GetActivationFactory;
@@ -33,32 +34,6 @@ using ABI::Windows::Media::Ocr::OcrResult;
 using ABI::Windows::Media::Ocr::OcrWord;
 using ABI::Windows::Storage::Streams::IRandomAccessStream;
 
-template <class OperationT, class HandlerT, class ResultT>
-struct CompleteCallback : ComImpl<HandlerT>
-{
-    CoAsyncTaskWaiter &event;
-    HRESULT &hrCallback;
-    ResultT **ppResult;
-    OperationT *pAsync;
-    CompleteCallback(OperationT *pAsync, CoAsyncTaskWaiter &event, HRESULT &hrCallback, ResultT **ppResult) : pAsync(pAsync), event(event), hrCallback(hrCallback), ppResult(ppResult) {}
-    HRESULT STDMETHODCALLTYPE Invoke(OperationT *asyncInfo, AsyncStatus status)
-    {
-        hrCallback = (status == AsyncStatus::Completed) ? pAsync->GetResults(ppResult) : E_FAIL;
-        event.Set();
-        return hrCallback;
-    }
-};
-template <class OperationT, class HandlerT, class ResultT>
-HRESULT await(OperationT *pAsync, ResultT **ppResult)
-{
-    CoAsyncTaskWaiter co;
-    HRESULT hrCallback = E_FAIL;
-    auto hr = pAsync->put_Completed(new CompleteCallback<OperationT, HandlerT, ResultT>(pAsync, co, hrCallback, ppResult));
-    if (FAILED(hr))
-        return hr;
-    co.Wait();
-    return hrCallback;
-}
 static HRESULT CreateLanguage(ILanguage **language, LPCWSTR Lang)
 {
     CComPtr<ILanguageFactory> language_factory;
@@ -117,20 +92,20 @@ DECLARE_API void winrt_OCR(const BYTE *ptr, size_t size, LPCWSTR lang, void (*cb
     CHECK_FAILURE_NORET(CreateRandomAccessStreamOverStream(mscom, BSOS_DEFAULT, IID_PPV_ARGS(&memoryStream)));
     CComPtr<IBitmapDecoderStatics> decoderfactory;
     CHECK_FAILURE_NORET(GetActivationFactory(AutoHString(RuntimeClass_Windows_Graphics_Imaging_BitmapDecoder), &decoderfactory));
-    CComPtr<__FIAsyncOperation_1_Windows__CGraphics__CImaging__CBitmapDecoder> decoder;
+    CComPtr<IAsyncOperation<BitmapDecoder *>> decoder;
     CHECK_FAILURE_NORET(decoderfactory->CreateAsync(memoryStream, &decoder));
     CComPtr<IBitmapDecoder> imagedecoder;
-    CHECK_FAILURE_NORET((await<__FIAsyncOperation_1_Windows__CGraphics__CImaging__CBitmapDecoder, IAsyncOperationCompletedHandler<BitmapDecoder *>, IBitmapDecoder>(decoder.p, &imagedecoder)));
+    CHECK_FAILURE_NORET(await(decoder.p, &imagedecoder));
     CComPtr<IBitmapFrameWithSoftwareBitmap> pBitmapFrameWithSoftwareBitmap;
     CHECK_FAILURE_NORET(imagedecoder.QueryInterface(&pBitmapFrameWithSoftwareBitmap));
-    CComPtr<__FIAsyncOperation_1_Windows__CGraphics__CImaging__CSoftwareBitmap> pAsync2;
+    CComPtr<IAsyncOperation<SoftwareBitmap *>> pAsync2;
     CHECK_FAILURE_NORET(pBitmapFrameWithSoftwareBitmap->GetSoftwareBitmapAsync(&pAsync2));
     CComPtr<ISoftwareBitmap> softwareBitmap;
-    CHECK_FAILURE_NORET((await<__FIAsyncOperation_1_Windows__CGraphics__CImaging__CSoftwareBitmap, IAsyncOperationCompletedHandler<SoftwareBitmap *>, ISoftwareBitmap>(pAsync2.p, &softwareBitmap)));
-    CComPtr<__FIAsyncOperation_1_Windows__CMedia__COcr__COcrResult> ocrResult;
+    CHECK_FAILURE_NORET(await(pAsync2.p, &softwareBitmap));
+    CComPtr<IAsyncOperation<OcrResult *>> ocrResult;
     CHECK_FAILURE_NORET(ocrEngine->RecognizeAsync(softwareBitmap, &ocrResult));
     CComPtr<IOcrResult> pOcrResult;
-    CHECK_FAILURE_NORET((await<__FIAsyncOperation_1_Windows__CMedia__COcr__COcrResult, IAsyncOperationCompletedHandler<OcrResult *>, IOcrResult>(ocrResult.p, &pOcrResult)));
+    CHECK_FAILURE_NORET(await(ocrResult.p, &pOcrResult));
     CComPtr<IVectorView<OcrLine *>> pOcrLines;
     CHECK_FAILURE_NORET(pOcrResult->get_Lines(&pOcrLines));
     uint32_t nlines;
