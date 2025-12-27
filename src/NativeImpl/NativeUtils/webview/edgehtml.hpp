@@ -7,10 +7,13 @@
 #include <windows.foundation.h>
 #include <windows.foundation.collections.h>
 #include <windows.web.ui.interop.h>
+#else
+#include "../../xpundef/xp_winrt.hpp"
+#include "../../xpundef/xp_winrt_web.hpp"
+#endif
 #include "../winrt/hstring.hpp"
 using ABI::Windows::Foundation::ActivateInstance;
 using ABI::Windows::Foundation::GetActivationFactory;
-using ABI::Windows::Foundation::IAsyncOperation;
 using ABI::Windows::Foundation::IAsyncOperationCompletedHandler;
 using ABI::Windows::Foundation::IPropertyValueStatics;
 using ABI::Windows::Foundation::ITypedEventHandler;
@@ -18,7 +21,6 @@ using ABI::Windows::Foundation::IUriRuntimeClass;
 using ABI::Windows::Foundation::IUriRuntimeClassFactory;
 using ABI::Windows::Foundation::Rect;
 using ABI::Windows::Foundation::Collections::IIterable;
-using ABI::Windows::Foundation::Collections::IVector;
 using ABI::Windows::Foundation::Collections::IVectorView;
 using ABI::Windows::UI::Color;
 using ABI::Windows::UI::IColorsStatics;
@@ -77,4 +79,3 @@ public:
   VIRTUAL_FUNCTIONS_IMPL;
   ~EdgeHtml();
 };
-#endif

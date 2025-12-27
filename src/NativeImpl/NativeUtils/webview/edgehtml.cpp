@@ -1,6 +1,3 @@
-
-#ifndef WINXP
-
 #include "edgehtml.hpp"
 #include "../winrt/await.hpp"
 
@@ -30,7 +27,7 @@ void EdgeHtml::evaljs(const wchar_t *js, evaljs_callback_t cb)
     CHECK_FAILURE_NORET(propertyValueStatics->CreateStringArray(1, arr, &inspectable));
     CComPtr<IVectorView<HSTRING>> args;
     CHECK_FAILURE_NORET(inspectable.QueryInterface(&args));
-    CComPtr<IAsyncOperation<HSTRING>> asyncOp;
+    CComPtr<ABI::Windows::Foundation::IAsyncOperation<HSTRING>> asyncOp;
     CComPtr<IIterable<HSTRING>> ihs;
     CHECK_FAILURE_NORET(args.QueryInterface(&ihs));
     control->InvokeScriptAsync(AutoHString(L"eval"), ihs, &asyncOp);
@@ -92,7 +89,7 @@ HRESULT EdgeHtml::init(bool backgroundtransparent)
     CO_INIT co;
     CComPtr<IWebViewControlProcess> process;
     CHECK_FAILURE(ActivateInstance(AutoHString(RuntimeClass_Windows_Web_UI_Interop_WebViewControlProcess), &process));
-    CComPtr<IAsyncOperation<WebViewControl *>> createWebViewAsyncOperation;
+    CComPtr<ABI::Windows::Foundation::IAsyncOperation<WebViewControl *>> createWebViewAsyncOperation;
     CHECK_FAILURE(process->CreateWebViewControlAsync(reinterpret_cast<INT64>(parent), Rect{}, &createWebViewAsyncOperation));
     CHECK_FAILURE(await(createWebViewAsyncOperation.p, &control));
     CHECK_FAILURE(control.QueryInterface(&control2));
@@ -142,14 +139,3 @@ DECLARE_API void edgehtml_set_notify_callback(EdgeHtml *ret, web_notify_callback
         return;
     ret->callback = callback;
 }
-#else
-
-DECLARE_API void *edgehtml_new(HWND parent, bool backgroundtransparent)
-{
-    return nullptr;
-}
-
-DECLARE_API void edgehtml_set_notify_callback(void *ret, void *callback)
-{
-}
-#endif

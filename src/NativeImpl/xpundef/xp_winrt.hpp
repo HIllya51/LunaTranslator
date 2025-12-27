@@ -170,23 +170,74 @@ extern "C" _Check_return_
             _In_ REFIID iid,
             _COM_Outptr_ void **factory);
 
+// Ro initialization flags; passed to Windows::Runtime::Initialize
+typedef enum RO_INIT_TYPE
+{
+#pragma region Desktop Family
+#if WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+    RO_INIT_SINGLETHREADED = 0, // Single-threaded application
+#endif                          // WINAPI_FAMILY_PARTITION(WINAPI_PARTITION_DESKTOP)
+    RO_INIT_MULTITHREADED = 1,  // COM calls objects on any thread.
+} RO_INIT_TYPE;
+
+
+namespace Windows
+{
+    namespace Foundation
+    {
+        // creation
+        template<class T>
+        _Check_return_
+        __inline  HRESULT ActivateInstance(_In_ HSTRING activatableClassId,_COM_Outptr_ T** instance)
+        {
+            *instance = nullptr;
+
+            IInspectable* pInspectable;
+            HRESULT hr = RoActivateInstance(activatableClassId, &pInspectable);
+            if (SUCCEEDED(hr))
+            {
+                if (__uuidof(T) == __uuidof(IInspectable))
+                {
+                    *instance = static_cast<T*>(pInspectable);
+                }
+                else
+                {
+                    hr = pInspectable->QueryInterface(IID_PPV_ARGS(instance));
+                    pInspectable->Release();
+                }
+            }
+            return hr;
+        }
+    }
+}
+
 namespace ABI
 {
     namespace Windows
     {
         namespace Foundation
         {
+            // creation
+            template<class T>
+            _Check_return_
+            __inline  HRESULT ActivateInstance(_In_ HSTRING activatableClassId,_COM_Outptr_ T** instance)
+            {
+                return ::Windows::Foundation::ActivateInstance(activatableClassId, instance);
+            }
+
             // get activation factory
-            template <class T>
-            _Check_return_ __inline HRESULT GetActivationFactory(
-                _In_ HSTRING activatableClassId,
-                _COM_Outptr_ T **factory)
+            template<class T>
+            _Check_return_
+            __inline HRESULT GetActivationFactory(
+                _In_        HSTRING activatableClassId,
+                _COM_Outptr_ T**     factory)
             {
                 return RoGetActivationFactory(activatableClassId, IID_PPV_ARGS(factory));
             }
         }
     }
 }
+
 namespace ABI
 {
     namespace Windows
