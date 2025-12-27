@@ -83,8 +83,45 @@ namespace
     _ = _3() || _;
     return _;
   }
+  bool h4()
+  {
+    // 君が望む永遠 ～Enhanced Edition R～ Ver 1.1.27
+    BYTE b1[] = {
+        0x49, 0x8b, 0x8d, XX4,
+        0x4c, 0x8d, XX, XX,
+        0x48, 0x83, XX, XX, 0x10,
+        0x4c, 0x0f, XX, XX, XX,
+        0x48, 0x81, 0xc1, XX4,
+        0x48, 0x8d, 0x54, XX, XX,
+        0xe8, XX4,
+        0x0f, 0x10, 0x00,
+        0x0f, 0x29, XX, XX,
+        0x4c, 0x8d, XX, XX,
+        0x48, 0x83, XX, XX, 0x10,
+        0x4c, 0x0f, XX, XX, XX,
+        0x49, 0x8b, 0x8d, XX4,
+        0x48, 0x81, 0xc1, XX4,
+        0x48, 0x8d, 0x55, XX,
+        0xe8, XX4};
+    auto addr = MemDbg::findBytes(b1, sizeof(b1), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr + 7 + 4 + 5 + 5 + 7 + 5;
+    hp.type = USING_STRING | CODEC_UTF8 | FULL_STRING;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      std::string name = (char *)context->r8;
+      std::string text = (char *)context->rdi;
+      strReplace(text, "\\w");
+      strReplace(text, "\\p");
+      strReplace(text, "\\n", "\n");
+      buffer->from(name + text);
+    };
+    return NewHook(hp, "Ages7_5");
+  }
 }
 bool AGES7::attach_function()
 {
-  return all();
+  return all() || h4();
 }

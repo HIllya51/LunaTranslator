@@ -602,10 +602,7 @@
         else if (texttype == 4) {
             div.classList.add('klass_font_trans')
             div.classList.add('lunatranslator_translate')
-            let divx = document.createElement('div')
-            divx.classList.add('lunatranslator_error')
-            divx.appendChild(div)
-            div = divx
+            div.classList.add('lunatranslator_error')
         }
         div.classList.add('centercontrol')
         if (args.klass) {

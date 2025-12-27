@@ -448,7 +448,7 @@ class BASEOBJECT(QObject):
         if klass:
             e = _TR(dynamicapiname(klass)) + " " + e
         self._delayshowraw(_showrawfunction)
-        self.translation_ui.displaystatus.emit(e, t)
+        self.translation_ui.displaystatusklass.emit(e, t, klass)
 
     def textgetmethod_1(
         self,

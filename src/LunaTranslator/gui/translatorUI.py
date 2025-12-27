@@ -333,6 +333,7 @@ class TranslatorWindow(resizableframeless):
     displayraw1 = pyqtSignal(str, bool)
     displayraw2 = pyqtSignal(str)
     displaystatus = pyqtSignal(str, int)
+    displaystatusklass = pyqtSignal(str, int, str)
     showhideuisignal = pyqtSignal()
     toolbarhidedelaysignal = pyqtSignal()
     showsavegame_signal = pyqtSignal()
@@ -481,7 +482,7 @@ class TranslatorWindow(resizableframeless):
             updateTranslate=updateTranslate,
         )
 
-    def showstatus(self, res, t: TextType):
+    def showstatus(self, res, t: TextType, klass=None):
         if t == TextType.Info:
             color = SpecialColor.RawTextColor
             clear = True
@@ -491,7 +492,7 @@ class TranslatorWindow(resizableframeless):
         elif t == TextType.Error_translator:
             color = SpecialColor.ErrorColor
             clear = False
-        self.showline(clear=clear, text=res, color=color, texttype=t)
+        self.showline(clear=clear, text=res, color=color, texttype=t, klass=klass)
 
     def cleartext(self, text: str):
         text = text.replace("\t", " ")
@@ -1021,6 +1022,7 @@ class TranslatorWindow(resizableframeless):
         self.displayglobaltooltip.connect(self.displayglobaltooltip_f)
         self.ocr_once_signal.connect(self.ocr_once_function)
         self.displaystatus.connect(self.showstatus)
+        self.displaystatusklass.connect(self.showstatus)
         self.showhideuisignal.connect(self.showhideui)
         self.displayres.connect(self.showres)
         self.displayraw1.connect(self.showraw)
