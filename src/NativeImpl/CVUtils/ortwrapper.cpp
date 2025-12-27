@@ -2,6 +2,16 @@
 // https://github.com/microsoft/onnxruntime/issues/3172#issuecomment-682193911
 #define ORT_API_MANUAL_INIT
 #include <onnxruntime_cxx_api.h>
+
+#define get_provider_ptr(T)                                                                 \
+    []() -> void *                                                                          \
+    {                                                                                       \
+        auto ort = GetModuleHandle(L"onnxruntime.dll");                                     \
+        if (!ort)                                                                           \
+            return nullptr;                                                                 \
+        return (void *)GetProcAddress(ort, "OrtSessionOptionsAppendExecutionProvider_" #T); \
+    }()
+
 #ifdef WIN10ABOVE
 #include <dml_provider_factory.h>
 #else
@@ -24,14 +34,6 @@ ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_DML, _In_ OrtSessionOpti
 #define FGetOutputName GetOutputNameAllocated
 #define GetVector(X) {X.data()->get()}
 #endif
-#define get_provider_ptr(T)                                                                 \
-    []() -> void *                                                                          \
-    {                                                                                       \
-        auto ort = GetModuleHandle(L"onnxruntime.dll");                                     \
-        if (!ort)                                                                           \
-            return nullptr;                                                                 \
-        return (void *)GetProcAddress(ort, "OrtSessionOptionsAppendExecutionProvider_" #T); \
-    }()
 
 static bool __isDMLAvailable()
 {
