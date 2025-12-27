@@ -5,11 +5,11 @@
 #include <Windows.Management.Deployment.h>
 #include <Windows.Foundation.Collections.h>
 #else
-#include "../xpundef/xp_winrt.hpp"
-#include "../xpundef/xp_appmodel.h"
+#include "../../xpundef/xp_winrt.hpp"
+#include "../../xpundef/xp_appmodel.h"
 #endif
 
-#include "winrt/hstring.hpp"
+#include "hstring.hpp"
 
 using ABI::Windows::ApplicationModel::IPackage;
 using ABI::Windows::ApplicationModel::IPackageId;
