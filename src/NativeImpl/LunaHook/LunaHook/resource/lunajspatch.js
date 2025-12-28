@@ -19,7 +19,7 @@ function splitfonttext(transwithfont) {
         fontface = transwithfont.substr(0, ___split)
         ___shengyu = transwithfont.substr(___split + 1)
         ___split3 = ___shengyu.search('\x03')
-        fontSizeRelative = parseFloat(shengyu.substr(0, ___split3))
+        fontSizeRelative = parseFloat(___shengyu.substr(0, ___split3))
         ___text = ___shengyu.substr(___split3 + 1)
         return ___text;
     }
