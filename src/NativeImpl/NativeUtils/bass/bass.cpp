@@ -74,6 +74,7 @@ struct stream_user_data
     std::vector<byte> data;
     size_t curr;
     HSTREAM ref;
+    bool end = false;
     void push(const void *_data, size_t size)
     {
         data.insert(data.end(), (char *)_data, (char *)_data + size);
@@ -103,7 +104,9 @@ struct stream_user_data
         auto user = static_cast<stream_user_data *>(_user);
         if (!user)
             return 0;
-        return user->data.size();
+        // 增加一个冗余长度，来防止停止。
+        // 即使预知了长度，也会提前停止。
+        return user->data.size() + !user->end;
     }
     static void CALLBACK MyFileClose(void *_user)
     {
@@ -122,16 +125,17 @@ DECLARE_API bool bass_stream_push_data(HSTREAM hs, const void *data, size_t size
 {
     if (!hs)
         return false;
-    if (!data)
-    {
-        BASS_ChannelStop(hs);
-        return false;
-    }
     std::unique_lock _(stream_user_data::mapdatalock);
     auto f = stream_user_data::mapdata.find(hs);
     if (f == stream_user_data::mapdata.end())
         return false;
-    f->second->push(data, size);
+    if (!data)
+    {
+        f->second->end = true;
+        BASS_ChannelStop(hs);
+    }
+    else
+        f->second->push(data, size);
     return true;
 }
 DECLARE_API HSTREAM bass_stream_handle_create(const void *_data, size_t size)

@@ -28,10 +28,13 @@
     }
 </style>
 <script>
+    var audio = null
     function read() {
         const url = new URL('/api/tts', window.location.origin);
         url.searchParams.append('text', document.getElementById('searchInput').value)
-        const audio = new Audio(url.toString());
+        if(audio)
+            audio.pause()
+        audio = new Audio(url.toString());
         audio.play()
     }
     function performSearch() {

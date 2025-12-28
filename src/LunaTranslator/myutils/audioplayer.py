@@ -12,6 +12,7 @@ class playonce:
         for d in data:
             if not NativeUtils.bass_stream_push_data(handle, d, len(d)):
                 break
+        NativeUtils.bass_stream_push_data(handle, None, 0)
 
     def __init__(self, fileormem, volume) -> None:
         self.handle = 0

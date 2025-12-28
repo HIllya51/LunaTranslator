@@ -135,9 +135,10 @@ class APItts(HTTPHandler):
         sema.wait()
         if ret[0].error:
             return {"error": ret[0].error}
-        return ResponseWithHeader(
-            data=ret[0].data, headers={"content-type": ret[0].mime}
-        )
+        h = {"content-type": ret[0].mime}
+        if len(ret[0]):
+            h["content-length"] = len(ret[0])
+        return ResponseWithHeader(data=ret[0].data, headers=h)
 
     def callbacktts(self, sema: threading.Event, ret: list, result: TTSResult):
         ret.append(result)

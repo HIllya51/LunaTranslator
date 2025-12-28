@@ -34,9 +34,19 @@ class TTSResult:
 
     def _make_generater(self, data: types.GeneratorType):
         self.__data = b""
+        __ = 0
+        needcl = not self.__content_length
         for _ in data:
-            self.__data += _
             yield _
+            self.__data += _
+            __ += len(_)
+            if needcl:
+                self.__content_length = __
+
+    def __len__(self):
+        if self.__ref:
+            return self.__ref.__content_length
+        return self.__content_length
 
     def __init__(
         self,
@@ -45,6 +55,8 @@ class TTSResult:
         error=None,
     ):
         self.__ref = None
+        self.__data = None
+        self.__content_length = 0
         if isinstance(data, TTSResult):
             if isinstance(data.__data, types.GeneratorType):
                 self.__ref = data
@@ -52,6 +64,7 @@ class TTSResult:
                 self.__data = data.__data
             self.error = data.error
             self.__type = data.__type
+            self.__content_length = data.__content_length
         elif isinstance(data, types.GeneratorType):
             self.__data = self._make_generater(data)
             self.__type = type
@@ -61,10 +74,12 @@ class TTSResult:
                 self.__data = self._make_generater(data.iter_content(32 * 1024))
             else:
                 self.__data = data.content
+            self.__content_length = int(data.headers.get("content-length", 0))
             self.__type = data.headers.get("content-type", type)
         elif isinstance(data, bytes):
             self.__data = data
             self.__type = type
+            self.__content_length = len(data)
         self.error = error
 
 

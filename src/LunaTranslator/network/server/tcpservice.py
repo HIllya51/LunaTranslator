@@ -53,10 +53,11 @@ class ResponseInfo:
         )
         self.version = version
         self.headers["Access-Control-Allow-Origin"] = "*"
+        hh = {}
         if isinstance(body, ResponseWithHeader):
-            self.headers.update(body.headers)
+            hh = body.headers
             body = body.data
-        if isinstance(body, bytes):
+        elif isinstance(body, bytes):
             self.headers["Content-Length"] = len(body)
         elif isinstance(body, str):
             body: bytes = body.encode()
@@ -75,6 +76,7 @@ class ResponseInfo:
             body = None
         elif isinstance(body, types.GeneratorType):
             self.headers["Content-Type"] = "text/event-stream; charset=utf-8"
+        self.headers.update(hh)
         self.body = body
 
     def write(self, client_socket: socket.socket):
