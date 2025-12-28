@@ -82,7 +82,7 @@ class AnkiWindow(QWidget):
             return
         if sig != edit.sig:
             return
-        data, ext = bass_code_cast(data.data, data.ext)
+        data, ext = bass_code_cast(data.databytes, data.ext)
         fname = gobject.gettempdir(str(uuid.uuid4()) + "." + ext)
         with open(fname, "wb") as ff:
             ff.write(data)

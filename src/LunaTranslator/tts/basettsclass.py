@@ -32,6 +32,13 @@ class TTSResult:
             return self.__ref.data
         return self.__data
 
+    @property
+    def databytes(self):
+        _ = self.data
+        if isinstance(_, types.GeneratorType):
+            return b"".join(_)
+        return _
+
     def _make_generater(self, data: types.GeneratorType):
         self.__data = b""
         __ = 0
