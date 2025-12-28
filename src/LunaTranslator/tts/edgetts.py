@@ -225,27 +225,28 @@ def transferMsTTSData(ssml, proxy_: "dict[str, str]"):
     ws.send(ssml_headers_plus_data(connect_id(), date, ssml))
 
     end_resp_pat = re.compile("Path:turn.end")
-    audio_stream = b""
-    while True:
-        response = ws.recv()
-        if response[:2] == b"\x03\xef":
-            raise Exception(response[2:].decode())
-        # print(type(response),"++++++++++++")
-        # Make sure the message isn't telling us to stop
-        if re.search(end_resp_pat, str(response)) == None:
-            # Check if our response is text data or the audio bytes
-            if type(response) == type(bytes()):
-                # Extract binary data
-                try:
-                    needle = b"Path:audio\r\n"
-                    idx = response.find(needle)
-                    if idx == -1:
-                        raise Exception()
-                    start_ind = idx + len(needle)
-                    audio_stream += response[start_ind:]
-                except:
-                    audio_stream += response
-        else:
-            break
-    ws.close()
-    return TTSResult(audio_stream, type="audio/mpeg")
+    
+    def __():
+        while True:
+            response = ws.recv()
+            if response[:2] == b"\x03\xef":
+                raise Exception(response[2:].decode())
+            # print(type(response),"++++++++++++")
+            # Make sure the message isn't telling us to stop
+            if re.search(end_resp_pat, str(response)) == None:
+                # Check if our response is text data or the audio bytes
+                if type(response) == type(bytes()):
+                    # Extract binary data
+                    try:
+                        needle = b"Path:audio\r\n"
+                        idx = response.find(needle)
+                        if idx == -1:
+                            raise Exception()
+                        start_ind = idx + len(needle)
+                        yield response[start_ind:]
+                    except:
+                        yield response
+            else:
+                break
+        ws.close()
+    return TTSResult(__(), type="audio/mpeg")

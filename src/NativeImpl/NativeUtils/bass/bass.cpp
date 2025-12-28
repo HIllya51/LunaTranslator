@@ -86,7 +86,15 @@ struct stream_user_data
             return 0;
         if (!user->data.data())
             return 0;
-        length = std::min(length, (DWORD)(user->data.size() - user->curr));
+        if (length + user->curr >= user->data.size())
+        {
+            length = user->data.size() - user->curr;
+            if (length && !user->end)
+            {
+                // 关键，防止停止。
+                length -= 1;
+            }
+        }
         memcpy(buffer, user->data.data() + user->curr, length);
         user->curr += length;
         return length;
@@ -104,9 +112,7 @@ struct stream_user_data
         auto user = static_cast<stream_user_data *>(_user);
         if (!user)
             return 0;
-        // 增加一个冗余长度，来防止停止。
-        // 即使预知了长度，也会提前停止。
-        return user->data.size() + !user->end;
+        return user->data.size();
     }
     static void CALLBACK MyFileClose(void *_user)
     {
