@@ -36,7 +36,7 @@ class TTS(TTSbase):
         else:
             length = 1 - param.speed / 5
         model, idx, _ = voice
-        query = dict(text=content, id=idx, length=length)
+        query = dict(text=content, id=idx, length=length, streaming=True)
         extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
         headers = {"ngrok-skip-browser-warning": "true"}
         headers.update(extraheader)
