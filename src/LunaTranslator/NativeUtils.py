@@ -1156,3 +1156,36 @@ CreateSelectRangeWindow.argtypes = (
     c_float,
     CreateSelectRangeWindow_CB,
 )
+
+
+_bass_code_cast = utilsdll.bass_code_cast
+bass_code_cast_CB = CFUNCTYPE(None, POINTER(c_char), c_size_t)
+_bass_code_cast.argtypes = bass_code_cast_CB, c_char_p, c_size_t, c_char_p, c_int, c_int
+
+
+def bass_code_cast(bs, to="mp3", mp3kbps=0, opusbitrate=0):
+    ret = []
+
+    def cb(ptr, size):
+        ret.append(ptr[:size])
+
+    _bass_code_cast(
+        bass_code_cast_CB(cb), bs, len(bs), to.encode(), mp3kbps, opusbitrate
+    )
+    if ret:
+        return ret[0]
+    return None
+
+
+HSTREAM = DWORD  # sample stream handle
+bass_handle_create = utilsdll.bass_handle_create
+bass_handle_create.argtypes = c_void_p, c_size_t, c_bool
+bass_handle_create.restype = HSTREAM
+bass_handle_free = utilsdll.bass_handle_free
+bass_handle_free.argtypes = (HSTREAM,)
+bass_handle_play = utilsdll.bass_handle_play
+bass_handle_play.argtypes = HSTREAM, c_float
+bass_handle_play.restype = c_bool
+bass_handle_isplaying = utilsdll.bass_handle_isplaying
+bass_handle_isplaying.argtypes = (HSTREAM,)
+bass_handle_isplaying.restype = c_bool

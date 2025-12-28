@@ -52,22 +52,4 @@ target_link_libraries(CVUtils PRIVATE ${YY_Thunks})
 target_link_libraries(CVUtils PRIVATE NativeUtils)
 target_link_options(CVUtils PRIVATE "/DELAYLOAD:d3d12.dll")
 target_link_options(CVUtils PRIVATE "/DELAYLOAD:dxgi.dll")
-target_link_options(CVUtils PRIVATE "/DELAYLOAD:onnxruntime.dll")
 target_link_libraries(CVUtils PRIVATE delayimp)
-
-if (NOT WINXP)
-    add_custom_command(TARGET CVUtils
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${onnxruntime_DLL}
-        ${CMAKE_FINAL_OUTPUT_DIRECTORY}/onnxruntime.dll
-    )
-    if(WIN10ABOVE)
-        add_custom_command(TARGET CVUtils
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${directml_DLL}
-            ${CMAKE_FINAL_OUTPUT_DIRECTORY}/DirectML.dll
-        )
-    endif()
-endif()

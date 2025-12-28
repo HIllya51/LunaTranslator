@@ -26,13 +26,14 @@ target_link_libraries(md4c-all INTERFACE md4c md4c-html)
 aux_source_directory(loopbackaudio loopbackaudio)
 aux_source_directory(winrt winrt)
 add_subdirectory(webview)
+add_subdirectory(bass)
 add_library(NativeUtils SHARED
     audiodevice.cpp
     globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp
     ${loopbackaudio} ${winrt} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
-target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz webview mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI Msimg32)
+target_link_libraries(NativeUtils PRIVATE tiny-aes Dbghelp libmecab rapidfuzz bassimp libbass webview mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI Msimg32)
 
 target_link_libraries(NativeUtils PRIVATE ${YY_Thunks})
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:Dbghelp.dll")

@@ -269,33 +269,11 @@ def buildPlugins(arch, target, configx="", sexe=False):
     os.chdir(rootDir)
 
 
-def downloadbass():
-
-    for link in (
-        "https://www.un4seen.com/files/bass24.zip",
-        "https://www.un4seen.com/files/z/2/bass_spx24.zip",
-        "https://www.un4seen.com/files/z/2/bass_aac24.zip",
-        "https://www.un4seen.com/files/bassopus24.zip",
-        "https://www.un4seen.com/files/bassenc24.zip",
-        "https://www.un4seen.com/files/bassenc_mp324.zip",
-        "https://www.un4seen.com/files/bassenc_opus24.zip",
-    ):
-        os.chdir(f"{rootDir}/scripts/temp")
-        name = link.split("/")[-1]
-        d = name.split(".")[0]
-        subprocess.run("curl -C - -LO " + link)
-        subprocess.run(f"7z x -y {name} -o{d}")
-        os.chdir(rootDir)
-        fuckmove(f"scripts/temp/{d}/{d[:-2]}.dll", "files/DLL32")
-        fuckmove(f"scripts/temp/{d}/x64/{d[:-2]}.dll", "files/DLL64")
-
-
 def downloadalls(target):
     os.chdir(rootDir)
     os.makedirs("scripts/temp")
     createPluginDirs()
     downloadNtlea()
-    downloadbass()
     downloadCurl(target)
     downloadLocaleEmulator()
     downloadlr()

@@ -46,6 +46,13 @@ if(WIN10ABOVE)
     FetchContent_MakeAvailable(directml)
     set(directml_DLL ${directml_SOURCE_DIR}/bin/${platform}-win/DirectML.dll)
     message(${directml_DLL})
+        
+    add_custom_target(copy_directml_dll
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${directml_DLL}
+            ${CMAKE_FINAL_OUTPUT_DIRECTORY}/DirectML.dll
+    )
+    add_dependencies(onnxruntime copy_directml_dll)
 else()
     set(ort_version 1.10.0)
 
@@ -59,4 +66,14 @@ else()
     target_link_libraries(onnxruntime INTERFACE ${onnxruntime_SOURCE_DIR}/lib/onnxruntime.lib)
     set(onnxruntime_DLL ${onnxruntime_SOURCE_DIR}/lib/onnxruntime.dll)
     message(${onnxruntime_DLL})
+    
 endif()
+
+add_custom_target(copy_onnxruntime_dll
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${onnxruntime_DLL}
+        ${CMAKE_FINAL_OUTPUT_DIRECTORY}/onnxruntime.dll
+)
+add_dependencies(onnxruntime copy_onnxruntime_dll)
+
+target_link_options(onnxruntime INTERFACE "/DELAYLOAD:onnxruntime.dll")
