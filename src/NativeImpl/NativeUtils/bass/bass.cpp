@@ -132,7 +132,6 @@ DECLARE_API bool bass_stream_push_data(HSTREAM hs, const void *data, size_t size
     if (!data)
     {
         f->second->end = true;
-        BASS_ChannelStop(hs);
     }
     else
         f->second->push(data, size);
