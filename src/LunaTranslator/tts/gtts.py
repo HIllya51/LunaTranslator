@@ -3,9 +3,6 @@ import base64
 import json
 import re
 
-# -*- coding: utf-8 -*-
-import re
-
 
 class symbols:
     # -*- coding: utf-8 -*-
@@ -239,16 +236,14 @@ class TTS(TTSbase):
             pre_processors.abbreviations,
             pre_processors.word_sub,
         ]
-        tokenizer_func = (
-            Tokenizer(
-                [
-                    tokenizer_cases.tone_marks,
-                    tokenizer_cases.period_comma,
-                    tokenizer_cases.colon,
-                    tokenizer_cases.other_punctuation,
-                ]
-            ).run,
-        )
+        tokenizer_func = Tokenizer(
+            [
+                tokenizer_cases.tone_marks,
+                tokenizer_cases.period_comma,
+                tokenizer_cases.colon,
+                tokenizer_cases.other_punctuation,
+            ]
+        ).run
         # Debug
         for k, v in dict(locals()).items():
             if k == "self":
@@ -338,7 +333,6 @@ class TTS(TTSbase):
 
         prepared_requests = self._prepare_requests(content, slow)
         for r in prepared_requests:
-
             # Write
             for line in r.content.split(b"\n"):
                 decoded_line = line.decode("utf-8")
@@ -353,9 +347,7 @@ class TTS(TTSbase):
                         raise Exception(r)
 
     def speak(self, content, _, speed: SpeechParam):
-        return TTSResult(
-            b"".join(self.stream(content, speed.speed < 0)), type="audio/mpeg"
-        )
+        return TTSResult(self.stream(content, speed.speed < 0), type="audio/mpeg")
 
     def ttscachekey(self, *argc):
         return self.srclang, super().ttscachekey(*argc)

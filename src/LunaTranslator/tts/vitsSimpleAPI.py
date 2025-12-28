@@ -45,6 +45,7 @@ class TTS(TTSbase):
             urlpathjoin(self.config["URL"], "voice/" + model.lower()),
             params=query,
             headers=headers,
+            stream=True,
         )
 
         return response

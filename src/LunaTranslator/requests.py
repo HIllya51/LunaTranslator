@@ -70,7 +70,7 @@ class Response:
         charset = m.group(1) if m else "utf-8"
         return charset
 
-    def json(self):
+    def json(self) -> "dict|list|str":
         return json.loads(self.text)
 
     def stream_decode_response_unicode(self, iterator):

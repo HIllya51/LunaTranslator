@@ -2,11 +2,17 @@ import time
 from traceback import print_exc
 from myutils.config import globalconfig
 from myutils.wrapper import threader
-import threading
+import threading, types
 import NativeUtils
 
 
 class playonce:
+    @threader
+    def ___push_data_thread(self, handle, data: "types.GeneratorType[bytes]"):
+        for d in data:
+            if not NativeUtils.bass_stream_push_data(handle, d, len(d)):
+                break
+
     def __init__(self, fileormem, volume) -> None:
         self.handle = 0
         self.__play(fileormem, volume)
@@ -18,10 +24,16 @@ class playonce:
     def isplaying(self):
         return NativeUtils.bass_handle_isplaying(self.handle)
 
-    def __play(self, fileormem, volume):
-        handle = NativeUtils.bass_handle_create(
-            fileormem, len(fileormem), isinstance(fileormem, bytes)
-        )
+    def __play(self, data: "bytes | str | types.GeneratorType[bytes]", volume):
+        if isinstance(data, (bytes, str)):
+            handle = NativeUtils.bass_handle_create(
+                data, len(data), isinstance(data, bytes)
+            )
+        elif isinstance(data, types.GeneratorType):
+            d = next(data)
+            handle = NativeUtils.bass_stream_handle_create(d, len(d))
+            self.___push_data_thread(handle, data)
+
         if not NativeUtils.bass_handle_play(handle, volume):
             return
         self.handle = handle

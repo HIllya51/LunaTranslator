@@ -5,15 +5,6 @@ from gui.customparams import customparams as customparams
 import requests
 import json
 import re
-import io
-from threading import Thread
-
-try:
-    import simpleaudio as sa
-
-    HAS_SIMPLEAUDIO = True
-except ImportError:
-    HAS_SIMPLEAUDIO = False
 
 
 class TTS(TTSbase):
@@ -51,24 +42,10 @@ class TTS(TTSbase):
         headers = {"ngrok-skip-browser-warning": "true"}
         headers.update(extraheader)
         query.update(extrabody)
-        response = self.proxysession.get(url, headers=headers, params=query)
+        response = self.proxysession.get(
+            url, headers=headers, params=query, stream=True
+        )
         return response
-
-    def _play_wav_data_async(self, wav_data: bytes):
-        if not HAS_SIMPLEAUDIO:
-            return
-
-        try:
-            wave_read = io.BytesIO(wav_data)
-            play_obj = sa.play_buffer(
-                audio_data=wave_read.read(),
-                num_channels=1,
-                bytes_per_sample=2,
-                sample_rate=44100,
-            )
-            play_obj.wait_done()
-        except Exception:
-            pass
 
     def get_supported_versions(self, base_url: str) -> "list[str]":
         version_url = urlpathjoin(base_url, "version")
@@ -226,14 +203,10 @@ class TTS(TTSbase):
 
                 if audio_url:
 
-                    audio_response = self.proxysession.get(audio_url, timeout=30)
-                    audio_response.raise_for_status()
-
-                    wav_data = audio_response.content
-
-                    Thread(target=self._play_wav_data_async, args=(wav_data,)).start()
-
-                    return wav_data
+                    audio_response = self.proxysession.get(
+                        audio_url, timeout=30, stream=True
+                    )
+                    return audio_response
 
         except requests.RequestException:
             pass

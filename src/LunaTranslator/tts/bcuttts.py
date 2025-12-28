@@ -64,9 +64,9 @@ class TTS(TTSbase):
             headers=headers,
             json=json_data,
         )
-
         response = self.proxysession.get(
             response.json()["data"]["result"]["results"][0]["url"],
             headers=headers,
+            stream=True,
         )
         return response

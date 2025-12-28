@@ -1189,3 +1189,10 @@ bass_handle_play.restype = c_bool
 bass_handle_isplaying = utilsdll.bass_handle_isplaying
 bass_handle_isplaying.argtypes = (HSTREAM,)
 bass_handle_isplaying.restype = c_bool
+
+bass_stream_handle_create = utilsdll.bass_stream_handle_create
+bass_stream_handle_create.argtypes = c_void_p, c_size_t
+bass_stream_handle_create.restype = HSTREAM
+bass_stream_push_data = utilsdll.bass_stream_push_data
+bass_stream_push_data.argtypes = HSTREAM, c_void_p, c_size_t
+bass_stream_push_data.restype = c_bool

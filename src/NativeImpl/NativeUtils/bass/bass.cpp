@@ -66,6 +66,87 @@ DECLARE_API HSTREAM bass_handle_create(const void *data, size_t size, bool isbyt
     else
         return BASS_StreamCreateFile(BASS_FILE_NAME, static_cast<LPCWSTR>(data), 0, 0, 0);
 }
+struct stream_user_data
+{
+    static inline std::map<HSTREAM, stream_user_data *> mapdata;
+    static inline std::mutex mapdatalock;
+
+    std::vector<byte> data;
+    size_t curr;
+    HSTREAM ref;
+    void push(const void *_data, size_t size)
+    {
+        data.insert(data.end(), (char *)_data, (char *)_data + size);
+    }
+    static DWORD CALLBACK MyFileRead(void *buffer, DWORD length, void *_user)
+    {
+        auto user = static_cast<stream_user_data *>(_user);
+        if (!user)
+            return 0;
+        if (!user->data.data())
+            return 0;
+        length = std::min(length, (DWORD)(user->data.size() - user->curr));
+        memcpy(buffer, user->data.data() + user->curr, length);
+        user->curr += length;
+        return length;
+    }
+    static BOOL CALLBACK MyFileSeek(QWORD offset, void *_user)
+    {
+        auto user = static_cast<stream_user_data *>(_user);
+        if (!user)
+            return FALSE;
+        user->curr = std::min((size_t)offset, user->data.size());
+        return user->curr == offset;
+    }
+    static QWORD CALLBACK MyFileLen(void *_user)
+    {
+        auto user = static_cast<stream_user_data *>(_user);
+        if (!user)
+            return 0;
+        return user->data.size();
+    }
+    static void CALLBACK MyFileClose(void *_user)
+    {
+        auto user = static_cast<stream_user_data *>(_user);
+        if (!user)
+            return;
+        {
+            std::unique_lock _(stream_user_data::mapdatalock);
+            stream_user_data::mapdata.erase(user->ref);
+        }
+        delete user;
+    }
+    static inline const BASS_FILEPROCS fileProcs{MyFileClose, MyFileLen, MyFileRead, MyFileSeek};
+};
+DECLARE_API bool bass_stream_push_data(HSTREAM hs, const void *data, size_t size)
+{
+    if (!hs)
+        return false;
+    if (!data)
+    {
+        BASS_ChannelStop(hs);
+        return false;
+    }
+    std::unique_lock _(stream_user_data::mapdatalock);
+    auto f = stream_user_data::mapdata.find(hs);
+    if (f == stream_user_data::mapdata.end())
+        return false;
+    f->second->push(data, size);
+    return true;
+}
+DECLARE_API HSTREAM bass_stream_handle_create(const void *_data, size_t size)
+{
+    bass_init();
+    auto data = new stream_user_data{};
+    data->push(_data, size);
+    auto h = BASS_StreamCreateFileUser(0, BASS_STREAM_AUTOFREE, &stream_user_data::fileProcs, data);
+    data->ref = h;
+    {
+        std::unique_lock _(stream_user_data::mapdatalock);
+        stream_user_data::mapdata[h] = data;
+    }
+    return h;
+}
 DECLARE_API void bass_handle_free(HSTREAM h)
 {
     if (!h)
@@ -83,13 +164,7 @@ DECLARE_API bool bass_handle_isplaying(HSTREAM handle)
 {
     if (!handle)
         return false;
-    auto channel_length = BASS_ChannelGetLength(handle, BASS_POS_BYTE);
-    if ((!channel_length) || (channel_length == -1))
-        return false;
-    auto channel_position = BASS_ChannelGetPosition(handle, BASS_POS_BYTE);
-    if (channel_position == -1)
-        return false;
-    return channel_position < channel_length;
+    return BASS_ChannelIsActive(handle);
 }
 DECLARE_API void bass_code_cast(void (*cb)(byte *, size_t), const byte *data, size_t size, const char *to_, int mp3kbps, int opusbitrate)
 {

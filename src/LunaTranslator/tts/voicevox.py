@@ -42,6 +42,7 @@ class TTS(TTSbase):
                 "http://localhost:{}/synthesis".format(self.config["Port"]),
                 params=params,
                 json=resp,
+                stream=True,
             )
             return response
         except:

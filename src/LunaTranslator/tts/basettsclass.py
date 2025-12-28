@@ -12,19 +12,31 @@ from myutils.mimehelper import query_mime
 
 class TTSResult:
     def __bool__(self):
-        return bool((not self.error) and self.data)
+        return bool((not self.error) and (self.__ref or self.__data))
 
     @property
     def ext(self):
-        if "/" in self._type:
-            return self._type.split("/")[1]
+        if "/" in self.__type:
+            return self.__type.split("/")[1]
         return "wav"
 
     @property
     def mime(self):
-        if "/" in self._type:
-            return self._type
-        return query_mime(self._type)
+        if "/" in self.__type:
+            return self.__type
+        return query_mime(self.__type)
+
+    @property
+    def data(self):
+        if self.__ref:
+            return self.__ref.data
+        return self.__data
+
+    def _make_generater(self, data: types.GeneratorType):
+        self.__data = b""
+        for _ in data:
+            self.__data += _
+            yield _
 
     def __init__(
         self,
@@ -32,17 +44,27 @@ class TTSResult:
         type: str = "audio/wav",
         error=None,
     ):
+        self.__ref = None
         if isinstance(data, TTSResult):
-            self.data = data.data
+            if isinstance(data.__data, types.GeneratorType):
+                self.__ref = data
+            else:
+                self.__data = data.__data
             self.error = data.error
-            self._type = data._type
+            self.__type = data.__type
+        elif isinstance(data, types.GeneratorType):
+            self.__data = self._make_generater(data)
+            self.__type = type
         elif isinstance(data, Response):
             data.raise_for_status()
-            self.data = data.content
-            self._type = data.headers.get("content-type", type)
-        else:
-            self.data = data
-            self._type = type
+            if data.stream:
+                self.__data = self._make_generater(data.iter_content(32 * 1024))
+            else:
+                self.__data = data.content
+            self.__type = data.headers.get("content-type", type)
+        elif isinstance(data, bytes):
+            self.__data = data
+            self.__type = type
         self.error = error
 
 

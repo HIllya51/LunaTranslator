@@ -67,7 +67,7 @@ class TTS(TTSbase):
         headers.update(extraheader)
         json_data.update(extrabody)
         response = self.proxysession.post(
-            self.createurl(), headers=headers, json=json_data
+            self.createurl(), headers=headers, json=json_data, stream=True
         )
         return response
 
