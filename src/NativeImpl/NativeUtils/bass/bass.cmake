@@ -1,49 +1,35 @@
+
 include(FetchContent)
-FetchContent_Declare(bass24
-    URL https://www.un4seen.com/files/bass24.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
+set(BASS_MODULE_URLS
+    "bass,https://www.un4seen.com/files/bass24.zip"
+    "bass_spx,https://www.un4seen.com/files/z/2/bass_spx24.zip"
+    "bass_aac,https://www.un4seen.com/files/z/2/bass_aac24.zip"
+    "bassopus,https://www.un4seen.com/files/bassopus24.zip"
+    "bassenc,https://www.un4seen.com/files/bassenc24.zip"
+    "bassenc_mp3,https://www.un4seen.com/files/bassenc_mp324.zip"
+    "bassenc_opus,https://www.un4seen.com/files/bassenc_opus24.zip"
 )
-FetchContent_Declare(bass_spx24
-    URL https://www.un4seen.com/files/z/2/bass_spx24.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_Declare(bass_aac24
-    URL https://www.un4seen.com/files/z/2/bass_aac24.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_Declare(bassopus24
-    URL https://www.un4seen.com/files/bassopus24.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_Declare(bassenc24
-    URL https://www.un4seen.com/files/bassenc24.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_Declare(bassenc_mp324
-    URL https://www.un4seen.com/files/bassenc_mp324.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_Declare(bassenc_opus24
-    URL https://www.un4seen.com/files/bassenc_opus24.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-FetchContent_MakeAvailable(bass24 bass_spx24 bass_aac24 bassopus24 bassenc24 bassenc_mp324 bassenc_opus24)
+
+foreach(item ${BASS_MODULE_URLS})
+    string(REPLACE "," " " item_list "${item}")
+    separate_arguments(item_list)
+    list(GET item_list 0 module)
+    list(GET item_list 1 url)
+    FetchContent_Declare(${module}24
+        URL ${url}
+        DOWNLOAD_EXTRACT_TIMESTAMP true
+    )
+    list(APPEND BASS_DECLARE_LIST ${module}24)
+    list(APPEND BASS_MODULES ${module})
+endforeach()
+
+FetchContent_MakeAvailable(${BASS_DECLARE_LIST})
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
     set(inter "/x64/")
 else()
     set(inter "/")
 endif()
-
-set(BASS_MODULES
-    bass
-    bass_spx
-    bass_aac
-    bassopus
-    bassenc
-    bassenc_mp3
-    bassenc_opus
-)
 
 add_library(libbass INTERFACE)
 
