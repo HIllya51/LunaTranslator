@@ -43,12 +43,16 @@ class TTSResult:
         self.__data = b""
         __ = 0
         needcl = not self.__content_length
-        for _ in data:
-            yield _
-            self.__data += _
-            __ += len(_)
-            if needcl:
-                self.__content_length = __
+        try:
+            for _ in data:
+                yield _
+                self.__data += _
+                __ += len(_)
+                if needcl:
+                    self.__content_length = __
+        except Exception as e:
+            self.error = e
+            print_exc()
 
     def __len__(self):
         if self.__ref:
