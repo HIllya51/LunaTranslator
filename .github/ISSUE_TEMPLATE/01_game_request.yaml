@@ -24,11 +24,13 @@ body:
   attributes:
     label: Game resource 游戏资源
     description: >
+      为防止版权风险，完成适配后issue将被删除。或者你可以将链接放在回复中，那么我将只删除包含链接的回复而非整个issue。<br>
       请使用onedrive或googledrive或其他不限速网盘给我游戏资源。<br>
       不接受任何需要安装客户端、需要登录下载的网盘，例如百度、pikpak、Terabox等。<br>
       不再接受MEGA，我总是无法下载它的文件。<br>
       不要给我steam链接。如果游戏来自steam，那么使用zip打包游戏文件夹，然后上传到网盘。<br>
       请确保链接符合要求，如果你不给我符合要求的链接，我将无法获取游戏进行测试，无法受理你的请求。<br>
+      To prevent copyright risks, the issue will be deleted after the adaptation is completed. Alternatively, you can place the link in a reply, then I will only delete the reply containing the link, not the entire issue.<br>
       Give me the game resource via onedrive or googledrive or other unlimited speed network disk. <br>
       Not accept any network disk that requires installing clients or logging in to download, such as Baidu, Pikpak, Terabox, etc.<br>
       No longer accepting MEGA, I always fail to download its files.<br>

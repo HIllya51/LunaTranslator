@@ -402,7 +402,9 @@ def is_port_listening(host, port):
         return False
 
 
-def stringfyerror(e: Exception):
+def stringfyerror(e: "Exception|str"):
+    if isinstance(e, str):
+        return e
     if e.args and isinstance(e.args[0], requests.Response):
         from myutils.commonbase import maybejson
 

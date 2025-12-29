@@ -43,7 +43,7 @@ enum class HOSTINFO
   Console,
   EmuWarning,
   EmuGameName,
-  Notification,
+  EmuConnected,
 };
 #define NEXT_MASK(x)            \
   DUMMY1_##x,                   \

@@ -906,5 +906,6 @@
     "大模型文本翻译": "Großes Modell Textübersetzung",
     "无法加载，可能是系统缺少必要的运行库": "Kann nicht geladen werden, möglicherweise fehlen dem System notwendige Laufzeitbibliotheken.",
     "字体相对大小": "Relative Schriftgröße",
-    "修改游戏字体相对大小": "Ändern der relativen Schriftgröße im Spiel"
+    "修改游戏字体相对大小": "Ändern der relativen Schriftgröße im Spiel",
+    "模拟器游戏支持表": "Simulatorspiel-Unterstützungsliste"
 }

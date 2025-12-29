@@ -906,5 +906,6 @@
     "大模型文本翻译": "Mô hình lớn dịch văn bản",
     "无法加载，可能是系统缺少必要的运行库": "Không thể tải, có thể hệ thống thiếu các thư viện chạy cần thiết.",
     "字体相对大小": "Kích thước tương đối của phông chữ",
-    "修改游戏字体相对大小": "Thay đổi kích thước phông chữ tương đối trong trò chơi"
+    "修改游戏字体相对大小": "Thay đổi kích thước phông chữ tương đối trong trò chơi",
+    "模拟器游戏支持表": "Bảng hỗ trợ trò chơi giả lập"
 }

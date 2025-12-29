@@ -32,8 +32,7 @@ class TTSResult:
             return self.__ref.data
         return self.__data
 
-    @property
-    def databytes(self):
+    def receive_all(self):
         _ = self.data
         if isinstance(_, types.GeneratorType):
             return b"".join(_)
@@ -52,7 +51,7 @@ class TTSResult:
                     self.__content_length = __
         except Exception as e:
             self.error = e
-            print_exc()
+            raise Exception(e)
 
     def __len__(self):
         if self.__ref:

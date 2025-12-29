@@ -25,6 +25,7 @@ class playonce:
     def isplaying(self):
         return NativeUtils.bass_handle_isplaying(self.handle)
 
+    @threader
     def __play(self, data: "bytes | str | types.GeneratorType[bytes]", volume):
         if isinstance(data, (bytes, str)):
             handle = NativeUtils.bass_handle_create(

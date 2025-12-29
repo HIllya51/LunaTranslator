@@ -906,5 +906,6 @@
     "大模型文本翻译": "Large Model Text Translation",
     "无法加载，可能是系统缺少必要的运行库": "Unable to load, possibly due to missing necessary runtime libraries.",
     "字体相对大小": "Relative font size",
-    "修改游戏字体相对大小": "Adjust the relative font size in the game"
+    "修改游戏字体相对大小": "Adjust the relative font size in the game",
+    "模拟器游戏支持表": "Simulator Game Compatibility List"
 }

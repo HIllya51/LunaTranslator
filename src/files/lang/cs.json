@@ -906,5 +906,6 @@
     "大模型文本翻译": "Velký model textového překladu",
     "无法加载，可能是系统缺少必要的运行库": "Nelze načíst, může to být způsobeno chybějícími nezbytnými knihovnami v systému.",
     "字体相对大小": "Relativní velikost písma",
-    "修改游戏字体相对大小": "Upravit relativní velikost písma ve hře"
+    "修改游戏字体相对大小": "Upravit relativní velikost písma ve hře",
+    "模拟器游戏支持表": "Tabulka podpory her pro emulátory"
 }

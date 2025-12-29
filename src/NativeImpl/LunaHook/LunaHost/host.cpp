@@ -407,7 +407,7 @@ namespace Host
 		{
 			switch (type)
 			{
-			case HOSTINFO::Notification:
+			case HOSTINFO::EmuConnected:
 				return;
 			case HOSTINFO::EmuWarning:
 				text = FormatString(L"[%s]", TR[T_WARNING]) + text;

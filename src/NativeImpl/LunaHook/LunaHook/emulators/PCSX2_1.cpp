@@ -622,6 +622,32 @@ namespace
         last = s;
         buffer->from(strReplace(s, "\x01"));
     }
+    void SLPM66882(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        switch ((*(uintptr_t*)PCSX2_REG(a0)) & 0xffffff)
+        {
+        case 0x47b480:
+            buffer->from("\x81\x79" + s + "\x81\x7a");
+            break;
+        case 0x7b2b00:
+        {
+            static std::string last;
+            if (startWith(s, last))
+            {
+                buffer->from(strReplace(strReplace(s.substr(last.size()), "\x81\x40"), "\n"));
+            }
+            else
+            {
+                buffer->from(strReplace(strReplace(s, "\x81\x40"), "\n"));
+            }
+            last = s;
+        }
+        break;
+        default:
+            buffer->from(s + "\n");
+        }
+    }
     void SLPM66390(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1942,6 +1968,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // はかれなはーと ～君がために輝きを～
+    {0x1053d8, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66882, "SLPM-66882"}},
     // 花帰葬
     {0x15DAC0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, 0, "SLPM-66471"}},
     // Cherry blossom ～チェリーブロッサム～

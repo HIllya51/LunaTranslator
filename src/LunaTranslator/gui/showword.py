@@ -16,6 +16,7 @@ import myutils.ankiconnect as anki
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.utils import (
+    stringfyerror,
     dynamiccishuname,
     loopbackrecorder,
     selectdebugfile,
@@ -73,16 +74,25 @@ class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
     settextsignal = pyqtSignal(QObject, str)
+    error = pyqtSignal(str)
 
     def settextsignalf(self, obj: QLineEdit, text):
         obj.setText(text)
 
     def callbacktts(self, edit, sig, data: TTSResult):
-        if not data:
+        if data is None:
             return
         if sig != edit.sig:
             return
-        data, ext = bass_code_cast(data.databytes, data.ext)
+        d = data.receive_all()
+        if sig != edit.sig:
+            return
+        if data.error:
+            self.error.emit(stringfyerror(data.error))
+            return
+        if not data:
+            return
+        data, ext = bass_code_cast(d, data.ext)
         fname = gobject.gettempdir(str(uuid.uuid4()) + "." + ext)
         with open(fname, "wb") as ff:
             ff.write(data)
@@ -144,6 +154,7 @@ class AnkiWindow(QWidget):
         super().__init__()
         self.refsearchw: searchwordW = p
         self.settextsignal.connect(self.settextsignalf)
+        self.error.connect(lambda t: RichMessageBox(self, _TR("错误"), t))
         self.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.setWindowTitle("Anki Connect")
         self.currentword = ""

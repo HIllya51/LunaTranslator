@@ -348,6 +348,8 @@ namespace
                 {
                     if (*(uint8_t *)(address + i + 1) == 0xaa)
                         i += 2;
+                    else if (*(uint8_t *)(address + i + 4) == 0xaa)
+                        i += 5; // 下天の華 & fd
                     else
                         break;
                 }
@@ -373,6 +375,11 @@ namespace
                 {
                     s += ' ';
                     i += 1;
+                }
+                else if (c == 0x1)
+                {
+                    i += 1;
+                    continue;
                 }
                 else
                 {
@@ -1430,6 +1437,12 @@ namespace
         s = s.substr(s.rfind("]") + 1);
         buffer->from(s);
     }
+    void ULJM06234(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\n*\x81\x75.*?\x81\x76\x95\x5c\x8e\xa6\n*)");
+        buffer->from(s);
+    }
     void NPJH50836_1(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1524,7 +1537,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 越えざるは紅い花　大河は未来を紡ぐ
     {0x8871340, {0, 5, 0, 0, 0, "NPJH50867"}}, // 需要自行将自定义人名占位符替换成自定义人名
     // 下天の華
-    {0x8915BB0, {0, 0, 0, ULJM05428, 0, "ULJM06234"}},
+    {0x8915BB0, {0, 0, 0, ULJM05428, ULJM06234, "ULJM06234"}},
     // 下天の華 夢灯り
     {0x8841B70, {0, 0, 0, ULJM05428, 0, "NPJH50864"}},
     // 忍び、恋うつつ

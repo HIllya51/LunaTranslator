@@ -70,16 +70,7 @@ bool all_ascii(const std::wstring &s) { return all_ascii_impl(s); }
 bool all_ascii(const std::wstring_view &s) { return all_ascii_impl(s); }
 bool all_ascii(const std::string &s) { return all_ascii_impl(s); }
 bool all_ascii(const std::string_view &s) { return all_ascii_impl(s); }
-std::string &strReplace(const std::string &str, const std::string &oldStr, const std::string &newStr)
-{
-  auto _str = str;
-  return strReplace_impl<std::string>(_str, oldStr, newStr);
-}
-std::wstring &strReplace(const std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr)
-{
-  auto _str = str;
-  return strReplace_impl<std::wstring>(_str, oldStr, newStr);
-}
+
 std::string &strReplace(std::string &str, const std::string &oldStr, const std::string &newStr) { return strReplace_impl<std::string>(str, oldStr, newStr); }
 std::wstring &strReplace(std::wstring &str, const std::wstring &oldStr, const std::wstring &newStr) { return strReplace_impl<std::wstring>(str, oldStr, newStr); }
 std::u32string &strReplace(std::u32string &str, const std::u32string &oldStr, const std::u32string &newStr) { return strReplace_impl<std::u32string>(str, oldStr, newStr); }

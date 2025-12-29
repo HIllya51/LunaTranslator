@@ -1253,41 +1253,39 @@ class TranslatorWindow(resizableframeless):
         except:
             pass
 
-    def showabout(self):
-
-        def makeMDlinkclick(text: str) -> "list[WordSegResult]":
-            if "\n" in text:
-                __ = []
-                for i, _ in enumerate(makeMDlinkclick(_) for _ in text.split("\n")):
-                    if i:
-                        __.append(WordSegResult("\n"))
-                    __ += _
-                return __
-            result = []
-            while text:
-                if text[0] == "[":
-                    _right = text.find("]")
-                    _r2 = text.find(")")
-                    result.append(
-                        WordSegResult(
-                            text[1:_right], specialinfo=text[_right + 2 : _r2]
-                        )
-                    )
-                    text = text[_r2 + 1 :]
+    def makeMDlinkclick(self, text: str) -> "list[WordSegResult]":
+        if "\n" in text:
+            __ = []
+            for i, _ in enumerate(self.makeMDlinkclick(_) for _ in text.split("\n")):
+                if i:
+                    __.append(WordSegResult("\n"))
+                __ += _
+            return __
+        result = []
+        while text:
+            if text[0] == "[":
+                _right = text.find("]")
+                _r2 = text.find(")")
+                result.append(
+                    WordSegResult(text[1:_right], specialinfo=text[_right + 2 : _r2])
+                )
+                text = text[_r2 + 1 :]
+            else:
+                if "[" in text:
+                    left = text.find("[")
+                    result.append(WordSegResult(text[:left], isshit=True))
+                    text = text[left:]
                 else:
-                    if "[" in text:
-                        left = text.find("[")
-                        result.append(WordSegResult(text[:left], isshit=True))
-                        text = text[left:]
-                    else:
-                        result.append(WordSegResult(text, isshit=True))
-                        text = None
-            return result
+                    result.append(WordSegResult(text, isshit=True))
+                    text = None
+        return result
+
+    def showabout(self):
 
         _t = get_about_info()
         if not globalconfig["adaptive_height"]:
             _t = _t.replace("\n\n", "\n")
-        segs = makeMDlinkclick(_t)
+        segs = self.makeMDlinkclick(_t)
         text = "".join(_.word for _ in segs)
         self.showline(
             text=text,
