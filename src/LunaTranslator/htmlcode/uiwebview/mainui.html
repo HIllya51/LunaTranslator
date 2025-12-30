@@ -836,6 +836,7 @@
                 rt.appendChild(makeinlineblock(dispatch_text_style(style, styleargs, '', word.kana, { color: kanacolor })))
                 rt.classList.add('klass_font_hira')
                 rt.classList.add('lunatranslator_rt')
+                rt.setAttribute('aria-hidden', 'true')
                 ruby.appendChild(rt)
                 eleori = ruby
             }
