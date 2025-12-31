@@ -24,7 +24,6 @@ from ctypes.wintypes import (
     WORD,
     HWND,
     DWORD,
-    RECT,
     WPARAM,
     LPARAM,
     HANDLE,
@@ -324,7 +323,7 @@ _GdiGrabWindow = utilsdll.GdiGrabWindow
 _GdiGrabWindow.argtypes = HWND, c_void_p
 
 _GdiCropImage = utilsdll.GdiCropImage
-_GdiCropImage.argtypes = HWND, RECT, c_void_p
+_GdiCropImage.argtypes = HWND, c_int, c_int, c_int, c_int, c_void_p
 _GdiCropImage.restype = c_bool
 
 
@@ -343,11 +342,6 @@ def GdiGrabWindow(hwnd):
 
 
 def GdiCropImage(x1, y1, x2, y2, hwnd=None):
-    rect = RECT()
-    rect.left = x1
-    rect.top = y1
-    rect.right = x2
-    rect.bottom = y2
     ret: "list[bytes]" = []
 
     def cb(ptr, size):
@@ -356,7 +350,7 @@ def GdiCropImage(x1, y1, x2, y2, hwnd=None):
     if windows.GetClassName(hwnd) == "UnityWndClass":
         hwnd = None
     succ: bool = _GdiCropImage(
-        hwnd, rect, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb)
+        hwnd, x1, y1, x2, y2, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb)
     )
     if not ret:
         return False, None

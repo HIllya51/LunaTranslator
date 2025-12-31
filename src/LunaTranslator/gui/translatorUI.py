@@ -603,8 +603,6 @@ class TranslatorWindow(resizableframeless):
 
     @threader
     def ocr_do_function(self, rect, img=None):
-        if not rect:
-            return
         if not img:
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
         result = ocr_run(img)
@@ -1703,9 +1701,6 @@ class TranslatorWindow(resizableframeless):
 
     @tryprint
     def afterrange(self, clear, rect, img=None):
-        (x1, y1), (x2, y2) = rect
-        if x1 == x2 or y1 == y2:
-            return
         if clear or not globalconfig["multiregion"]:
             gobject.base.textsource.clearrange()
         gobject.base.textsource.newrangeadjustor()

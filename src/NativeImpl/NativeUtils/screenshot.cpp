@@ -85,8 +85,15 @@ DECLARE_API void GdiGrabWindow(HWND hwnd, void (*cb)(byte *, size_t))
     if (bf)
         cb(bf.value().data.get(), bf.value().size);
 }
-DECLARE_API bool GdiCropImage(HWND hwnd, RECT rect, void (*cb)(byte *, size_t))
+DECLARE_API bool GdiCropImage(HWND hwnd, int x1, int y1, int x2, int y2, void (*cb)(byte *, size_t))
 {
+    if (x1 == x2 || y1 == y2)
+        return false;
+    RECT rect;
+    rect.left = x1;
+    rect.top = y1;
+    rect.right = x2;
+    rect.bottom = y2;
     for (int i = 0; i < 2; i++)
     {
         switch (i)

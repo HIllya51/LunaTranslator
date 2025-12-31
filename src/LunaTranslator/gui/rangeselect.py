@@ -334,11 +334,14 @@ def rangeselct_function(callback):
     p = p.winid if p.isVisible() else None
     color = QColor(globalconfig["ocrrangecolor"])
 
+    called = []
+
     def __cb(x1, y1, x2, y2, xoff, yoff, ptr, size):
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
         pix = safepixmap(ptr[:size]).copy(x1, y1, x2 - x1, y2 - y1).toImage()
         callback(((x1 + xoff, y1 + yoff), (x2 + xoff, y2 + yoff)), pix)
+        called.append(0)
 
     cb = NativeUtils.CreateSelectRangeWindow_CB(__cb)
     NativeUtils.CreateSelectRangeWindow(
@@ -350,3 +353,5 @@ def rangeselct_function(callback):
         globalconfig["ocrrangewidth"],
         cb,
     )
+    if not called:
+        callback(((0, 0), (0, 0)), None)
