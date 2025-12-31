@@ -18,7 +18,10 @@ from gui.usefulwidget import (
     LinkLabel,
     SClickableLabel,
     VisLFormLayout,
+    D_getIconButton,
+    tabadd_lazy,
 )
+from gui.setting.setting_year import yearsummary
 from language import UILanguages, Languages
 from myutils.updater import versionchecktask
 
@@ -326,7 +329,12 @@ class __delayloadlangs(QHBoxLayout):
         )
 
 
-def setTab_about(self, basel):
+def setTab_about(self: QWidget, basel):
+    def ____():
+        tabadd_lazy(
+            self.tab_widget, _TR("年度总结"), functools.partial(yearsummary, self)
+        )
+        self.tab_widget.adjust_list_widget_width()
 
     makescrollgrid(
         [
@@ -391,10 +399,10 @@ def setTab_about(self, basel):
                     "LICENSE",
                 )
             ],
+            [D_getIconButton(____, icon="fa.calendar")],
         ],
         basel,
     )
-
     gobject.base.connectsignal(
         gobject.base.progresssignal4,
         functools.partial(
