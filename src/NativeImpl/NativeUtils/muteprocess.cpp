@@ -157,8 +157,6 @@ DECLARE_API void StartMonitorVolume(MonitorPidVolume_callback_t callback)
     CHECK_FAILURE_NORET(enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &device));
     CHECK_FAILURE_NORET(device->Activate(__uuidof(IAudioSessionManager2), CLSCTX_ALL, NULL, (void **)&sessionManager));
     CHECK_FAILURE_NORET(sessionManager->RegisterSessionNotification(notification));
-    CComPtr<IAudioSessionEnumerator> pAudioSessionEnumerator;
-    CHECK_FAILURE_NORET(sessionManager->GetSessionEnumerator(&pAudioSessionEnumerator)); // 必须的，否则不管用，不知道为何。
 }
 namespace
 {
