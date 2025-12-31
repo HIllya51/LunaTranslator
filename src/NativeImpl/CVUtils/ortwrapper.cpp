@@ -35,6 +35,14 @@ ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_DML, _In_ OrtSessionOpti
 #define GetVector(X) {X.data()->get()}
 #endif
 
+ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_OpenVINO, _In_ OrtSessionOptions *options, _In_ const char *device_type)
+{
+    auto p = (decltype(&OrtSessionOptionsAppendExecutionProvider_OpenVINO))get_provider_ptr(OpenVINO);
+    if (!p)
+        return nullptr;
+    return p(options, device_type);
+}
+
 static bool __isDMLAvailable()
 {
     if (!get_provider_ptr(DML))
@@ -92,6 +100,37 @@ public:
             {
                 std::cout << e.what() << std::endl;
             }
+        }
+        if constexpr (sizeof(size_t) == 8)
+        {
+            []()
+            {
+                // 列出支持的device
+                auto hopenvino = GetModuleHandle(L"openvino.dll");
+                if (!hopenvino)
+                    return;
+                auto ctor = GetProcAddress(hopenvino, "??0Core@ov@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z");
+                auto dtor = GetProcAddress(hopenvino, "??1Core@ov@@QEAA@XZ");
+                auto get_available_devices = GetProcAddress(hopenvino, "?get_available_devices@Core@ov@@QEBA?AV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@XZ");
+                if (!dtor || !dtor || !get_available_devices)
+                    return;
+                // ov::Core core;
+                // std::vector<std::string> devices = core.get_available_devices();
+                // core.get_property(device, ov::device::capabilities);
+                alignas(16) char core[16];
+                std::string cfg = "";
+                ((void (*)(void *, const std::string &))ctor)(core, cfg);
+                std::vector<std::string> devices;
+                ((void (*)(const void *, std::vector<std::string> *))(get_available_devices))(core, &devices);
+                for (auto &d : devices)
+                {
+                    std::cout << d << std::endl;
+                }
+                ((void (*)(void *))dtor)(core);
+            }();
+
+            // https://docs.openvino.ai/2024/openvino-workflow/running-inference/inference-devices-and-modes/cpu-device.html
+            OrtSessionOptionsAppendExecutionProvider_OpenVINO(sessionOptions, "CPU");
         }
         sessionOptions.SetIntraOpNumThreads(numOfThread);
         sessionOptions.SetInterOpNumThreads(numOfThread);
