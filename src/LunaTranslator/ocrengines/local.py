@@ -100,6 +100,7 @@ class customwidget(LDialog):
             lform.insertRow(lform.rowCount() - 1, "正在加载可用GPU", None)
             self.__load()
         elif OcrIsProviderAvailable("OpenVINO"):
+            lform.insertRow(lform.rowCount() - 1, "正在加载可用GPU", None)
             devices = GetOpenVINODeviceTypes()
             self.delayload.emit(1, devices)
         else:
