@@ -52,12 +52,29 @@ static bool __isDMLAvailable()
     WCHAR path[MAX_PATH];
     GetModuleFileNameW(GetModuleHandle(L"onnxruntime.dll"), path, MAX_PATH);
     auto currdir = std::filesystem::path(path).parent_path();
-    auto mydml = (currdir / L"DirectML.dll").wstring();
-    return LoadLibrary(mydml.c_str()) || LoadLibrary(L"DirectML.dll");
+    return LoadLibrary((currdir / L"DirectML.dll").wstring().c_str()) ||
+           LoadLibrary(L"DirectML.dll");
+}
+static bool __isOpenVINOAvailableLAvailable()
+{
+    if (!get_provider_ptr(OpenVINO))
+        return false;
+    if (GetModuleHandle(L"openvino.dll"))
+        return true;
+    WCHAR path[MAX_PATH];
+    GetModuleFileNameW(GetModuleHandle(L"onnxruntime.dll"), path, MAX_PATH);
+    auto currdir = std::filesystem::path(path).parent_path();
+    return LoadLibrary((currdir / L"tbb12.dll").wstring().c_str()) &&
+           LoadLibrary((currdir / L"openvino.dll").wstring().c_str());
 }
 bool isDMLAvailable()
 {
     static bool __ = __isDMLAvailable();
+    return __;
+}
+bool isOpenVINOAvailable()
+{
+    static bool __ = __isOpenVINOAvailableLAvailable();
     return __;
 }
 class pOnnxSession
@@ -86,52 +103,42 @@ class pOnnxSession
     std::mutex gpu_run_lock;
 
 public:
-    pOnnxSession(const std::wstring &path, int numOfThread, bool gpu, int device)
+    pOnnxSession(const std::wstring &path, int numOfThread, const DeviceInfo &info)
     {
-        if (gpu && isDMLAvailable())
+        auto visitf = [&](auto &&info)
         {
-            try
+            using T = std::decay_t<decltype(info)>;
+            if constexpr (std::is_same_v<T, DeviceInfo::dml>)
             {
-                Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, device));
-                // 失败返回err=66，但没有errmsg，会回退到cpu，不要报错。
-                is_using_gpu = true;
-            }
-            catch (std::exception &e)
-            {
-                std::cout << e.what() << std::endl;
-            }
-        }
-        if constexpr (sizeof(size_t) == 8)
-        {
-            []()
-            {
-                // 列出支持的device
-                auto hopenvino = GetModuleHandle(L"openvino.dll");
-                if (!hopenvino)
-                    return;
-                auto ctor = GetProcAddress(hopenvino, "??0Core@ov@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z");
-                auto dtor = GetProcAddress(hopenvino, "??1Core@ov@@QEAA@XZ");
-                auto get_available_devices = GetProcAddress(hopenvino, "?get_available_devices@Core@ov@@QEBA?AV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@XZ");
-                if (!dtor || !dtor || !get_available_devices)
-                    return;
-                // ov::Core core;
-                // std::vector<std::string> devices = core.get_available_devices();
-                // core.get_property(device, ov::device::capabilities);
-                alignas(16) char core[16];
-                std::string cfg = "";
-                ((void (*)(void *, const std::string &))ctor)(core, cfg);
-                std::vector<std::string> devices;
-                ((void (*)(const void *, std::vector<std::string> *))(get_available_devices))(core, &devices);
-                for (auto &d : devices)
+                try
                 {
-                    std::cout << d << std::endl;
+                    Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_DML(sessionOptions, info.device));
+                    // 失败返回err=66，但没有errmsg，会回退到cpu，不要报错。
+                    is_using_gpu = true;
                 }
-                ((void (*)(void *))dtor)(core);
-            }();
+                catch (std::exception &e)
+                {
+                    std::cout << e.what() << std::endl;
+                }
+            }
+            else if constexpr (std::is_same_v<T, DeviceInfo::openvino>)
+            {
+                // https://docs.openvino.ai/2024/openvino-workflow/running-inference/inference-devices-and-modes/cpu-device.html
+                try
+                {
+                    Ort::ThrowOnError(OrtSessionOptionsAppendExecutionProvider_OpenVINO(sessionOptions, info.device_type.c_str()));
+                }
+                catch (std::exception &e)
+                {
+                    std::cout << e.what() << std::endl;
+                }
+            }
+            else if constexpr (std::is_same_v<T, DeviceInfo::normal>)
+            {
+            }
+        };
+        std::visit(visitf, info.info);
 
-            // https://docs.openvino.ai/2024/openvino-workflow/running-inference/inference-devices-and-modes/cpu-device.html
-            OrtSessionOptionsAppendExecutionProvider_OpenVINO(sessionOptions, "CPU");
-        }
         sessionOptions.SetIntraOpNumThreads(numOfThread);
         sessionOptions.SetInterOpNumThreads(numOfThread);
         if (is_using_gpu)
@@ -178,9 +185,9 @@ public:
 OnnxSession::OnnxSession(OnnxSession &&rhs) = default;
 OnnxSession &OnnxSession::operator=(OnnxSession &&rhs) = default;
 OnnxSession::~OnnxSession() = default;
-OnnxSession::OnnxSession(const std::wstring &path, int numOfThread, bool gpu, int device)
+OnnxSession::OnnxSession(const std::wstring &path, int numOfThread, const DeviceInfo &info)
 {
-    p_impl = std::make_unique<pOnnxSession>(path, numOfThread, gpu, device);
+    p_impl = std::make_unique<pOnnxSession>(path, numOfThread, info);
 }
 std::pair<std::vector<float>, std::vector<int64_t>> OnnxSession::RunSession(const std::array<int64_t, 4> &inputShape,
                                                                             std::vector<float> &inputTensorValues)

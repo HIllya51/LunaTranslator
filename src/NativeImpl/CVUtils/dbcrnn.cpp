@@ -221,7 +221,7 @@ cv::RotatedRect unClip(const TextBox &box, float unClipRatio)
     }
     return res;
 }
-CrnnNet::CrnnNet(const std::wstring &pathStr, const std::wstring &keysPath, int numOfThread, bool gpu, int device) : CommonOnnxModel(pathStr, {127.5, 127.5, 127.5}, {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5}, numOfThread, gpu, device)
+CrnnNet::CrnnNet(const std::wstring &pathStr, const std::wstring &keysPath, int numOfThread, const DeviceInfo &info) : CommonOnnxModel(pathStr, {127.5, 127.5, 127.5}, {1.0 / 127.5, 1.0 / 127.5, 1.0 / 127.5}, numOfThread, info)
 {
     // load keys
     std::ifstream in(keysPath.c_str());
@@ -417,6 +417,13 @@ cv::Mat makePadding(const cv::Mat &src, const int padding)
     cv::copyMakeBorder(src, paddingSrc, padding, padding, padding, padding, cv::BORDER_ISOLATED, paddingScalar);
     return paddingSrc;
 }
+
+OcrLite::OcrLite(const std::wstring &detPath,
+                 const std::wstring &recPath, const std::wstring &keysPath, int numOfThread, const DeviceInfo &info)
+{
+    dbNet = std::make_unique<DbNet>(detPath, numOfThread, info);
+    crnnNet = std::make_unique<CrnnNet>(recPath, keysPath, numOfThread, info);
+}
 std::vector<TextBlock> OcrLite::detect(const cv::Mat &src, // const void *binptr, size_t size,
                                        Directional mode,
                                        int padding,
@@ -446,10 +453,10 @@ std::vector<TextBlock> OcrLite::detect_internal(const cv::Mat &src, const int &p
                                                 float boxScoreThresh, float boxThresh, float unClipRatio, Directional mode)
 {
 
-    std::vector<TextBox> textBoxes = dbNet.getTextBoxes(src, scale, boxScoreThresh, boxThresh, unClipRatio);
+    std::vector<TextBox> textBoxes = dbNet->getTextBoxes(src, scale, boxScoreThresh, boxThresh, unClipRatio);
     std::vector<cv::Mat> partImages = getPartImages(src, textBoxes, mode);
 
-    std::vector<TextLine> textLines = crnnNet.getTextLines(partImages);
+    std::vector<TextLine> textLines = crnnNet->getTextLines(partImages);
 
     std::vector<TextBlock> textBlocks;
     for (size_t i = 0; i < textLines.size(); ++i)

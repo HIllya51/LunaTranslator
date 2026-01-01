@@ -58,7 +58,7 @@ static std::optional<DXGI_ADAPTER_DESC1> get_best_gpu()
     }
     return {};
 }
-static int findDeviceId(uint64_t &luid)
+int findDeviceId(uint64_t &luid)
 {
     if (luid == 0)
     {
@@ -76,20 +76,33 @@ static int findDeviceId(uint64_t &luid)
     }
     return 0;
 }
-DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, uint64_t luid, void (*cb2)(const char *))
+DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, uint64_t luid, const char *device_type, void (*cb2)(const char *))
 {
     OcrLite *pOcrObj = nullptr;
-    int device = 0;
-    if (gpu)
+    DeviceInfo info;
+    if (gpu && isDMLAvailable())
     {
-        device = findDeviceId(luid);
+        int device = findDeviceId(luid);
         std::wstringstream wss;
         wss << device << L"\t" << std::hex << luid;
         std::wcout << wss.str() << std::endl;
+        info.info = DeviceInfo::dml{device};
     }
+    else if (isOpenVINOAvailable())
+    {
+        std::string __;
+        for (auto &&_ : ListpenVINODeviceTypes())
+        {
+            __ = std::move(_);
+            if (__ == device_type)
+                break;
+        }
+        info.info = DeviceInfo::openvino{std::move(__)};
+    }
+
     try
     {
-        pOcrObj = new OcrLite(szDetModel, szRecModel, szKeyPath, nThreads, gpu, device);
+        pOcrObj = new OcrLite(szDetModel, szRecModel, szKeyPath, nThreads, info);
     }
     catch (std::exception &e)
     {
@@ -223,6 +236,10 @@ static bool __OcrLoadRuntime()
     if (!LoadLibrary(myonnx.c_str()))
         return false;
     _InitApi();
+    for (auto &&p : OrtGetAvailableProviders())
+    {
+        std::cout << p << std::endl;
+    }
     return true;
 }
 
@@ -232,21 +249,50 @@ DECLARE_API bool OcrLoadRuntime()
     return __;
 }
 
-DECLARE_API bool OcrIsDMLAvailable()
+DECLARE_API bool OcrIsProviderAvailable(const wchar_t *provider)
 {
     if (!OcrLoadRuntime())
         return false;
+    if (wcscmp(provider, L"DML") == 0)
+        return isDMLAvailable();
+    if (wcscmp(provider, L"OpenVINO") == 0)
+        return isOpenVINOAvailable();
+    return false;
+}
 
-    for (auto &&p : OrtGetAvailableProviders())
+std::vector<std::string> ListpenVINODeviceTypes()
+{
+    auto hopenvino = GetModuleHandle(L"openvino.dll");
+    if (!hopenvino)
+        return {};
+    auto ctor = GetProcAddress(hopenvino, "??0Core@ov@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z");
+    auto dtor = GetProcAddress(hopenvino, "??1Core@ov@@QEAA@XZ");
+    auto get_available_devices = GetProcAddress(hopenvino, "?get_available_devices@Core@ov@@QEBA?AV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@XZ");
+    if (!dtor || !dtor || !get_available_devices)
+        return {};
+    // ov::Core core;
+    // std::vector<std::string> devices = core.get_available_devices();
+    // core.get_property(device, ov::device::capabilities);
+    alignas(16) char core[16];
+    ((void (*)(void *, const std::string &))ctor)(core, "");
+    std::vector<std::string> devices;
+    ((void (*)(const void *, std::vector<std::string> *))(get_available_devices))(core, &devices);
+    ((void (*)(void *))dtor)(core);
+    return devices;
+}
+
+DECLARE_API void GetOpenVINODeviceTypes(void (*cb)(LPCSTR))
+{
+    for (auto &d : ListpenVINODeviceTypes())
     {
-        std::cout << p << std::endl;
+        cb(d.c_str());
     }
-    return isDMLAvailable();
 }
 
 #ifndef _GAMING_XBOX
 #define IID_GRAPHICS_PPV_ARGS IID_PPV_ARGS
 #endif
+
 DECLARE_API void GetDeviceInfoD3D12(void (*cb)(uint64_t, LPCWSTR))
 {
     // https://github.com/microsoft/onnxruntime/blob/main/onnxruntime/core/platform/windows/device_discovery.cc#L308

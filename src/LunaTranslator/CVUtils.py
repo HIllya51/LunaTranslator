@@ -95,12 +95,22 @@ _OcrDetectCallback = CFUNCTYPE(
 _error = CFUNCTYPE(None, c_char_p)
 
 
-def OcrIsDMLAvailable():
+def OcrIsProviderAvailable(provider="DML"):
     _CVUtils = _DelayLoadCVUtils()
-    OcrIsDMLAvailable = _CVUtils.OcrIsDMLAvailable
-    OcrIsDMLAvailable.restype = c_bool
+    OcrIsProviderAvailable = _CVUtils.OcrIsProviderAvailable
+    OcrIsProviderAvailable.restype = c_bool
+    OcrIsProviderAvailable.argtypes = (c_wchar_p,)
+    return OcrIsProviderAvailable(provider)
 
-    return OcrIsDMLAvailable()
+
+def GetOpenVINODeviceTypes():
+    _CVUtils = _DelayLoadCVUtils()
+    GetOpenVINODeviceTypes = _CVUtils.GetOpenVINODeviceTypes
+    GetOpenVINODeviceTypescb = CFUNCTYPE(None, c_char_p)
+    GetOpenVINODeviceTypes.argtypes = (GetOpenVINODeviceTypescb,)
+    ret: "list[bytes]" = []
+    GetOpenVINODeviceTypes(GetOpenVINODeviceTypescb(ret.append))
+    return [_.decode() for _ in ret]
 
 
 def GetDeviceInfoD3D12():
@@ -120,8 +130,9 @@ def GetDeviceInfoD3D12():
 
 class LocalOCR:
 
-    def __init__(self, det, rec, key, thread: int, gpu: bool, luid) -> None:
-
+    def __init__(
+        self, det, rec, key, thread: int, gpu: bool, luid, device_type: str
+    ) -> None:
         _CVUtils = _DelayLoadCVUtils()
         OcrLoadRuntime = _CVUtils.OcrLoadRuntime
         OcrLoadRuntime.restype = c_bool
@@ -137,6 +148,7 @@ class LocalOCR:
             c_int32,
             c_bool,
             c_uint64,
+            c_char_p,
             _error,
         )
 
@@ -162,6 +174,7 @@ class LocalOCR:
                 thread,
                 gpu,
                 luid,
+                device_type.encode(),
                 _error(error.append),
             ),
             OcrDestroy,

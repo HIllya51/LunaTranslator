@@ -4,7 +4,8 @@
             "thread": 4,
             "gpu": false,
             "luid": 0,
-            "accfirst": true
+            "accfirst": true,
+            "device_type": "CPU"
         }
     },
     "youdaodictocr": {

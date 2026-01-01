@@ -137,7 +137,7 @@ def getuidimage(uid):
     else:
         for _ in savehook_new_data[uid].get("imagepath_all", []):
             if _.startswith("http"):
-                return os.path.abspath(_)
+                return _
 
 
 def guji_word(everytimes, alleverytimes):
@@ -206,7 +206,11 @@ def yearsummary(self, basel: QHBoxLayout):
     for m, info in everymonth_uid_time.items():
         tu_m[m] = getimages(info)
     developer, webtags = getallgamelabels(yearinfos)
-    with open(r"LunaTranslator\htmlcode/yearsummary/yearsummary.value.js", "w", encoding="utf8") as ff2:
+    with open(
+        r"LunaTranslator\htmlcode/yearsummary/yearsummary.value.js",
+        "w",
+        encoding="utf8",
+    ) as ff2:
         ff2.write(
             r"""
 GAMES_YEAR_PLAYED={GAMES_YEAR_PLAYED}
