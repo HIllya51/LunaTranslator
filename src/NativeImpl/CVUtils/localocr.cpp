@@ -76,47 +76,6 @@ int findDeviceId(uint64_t &luid)
     }
     return 0;
 }
-DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, uint64_t luid, const char *device_type, void (*cb2)(const char *))
-{
-    OcrLite *pOcrObj = nullptr;
-    DeviceInfo info;
-    if (gpu && isDMLAvailable())
-    {
-        int device = findDeviceId(luid);
-        std::wstringstream wss;
-        wss << device << L"\t" << std::hex << luid;
-        std::wcout << wss.str() << std::endl;
-        info.info = DeviceInfo::dml{device};
-    }
-    else if (isOpenVINOAvailable())
-    {
-        std::string __;
-        for (auto &&_ : ListpenVINODeviceTypes())
-        {
-            __ = std::move(_);
-            if (__ == device_type)
-                break;
-        }
-        info.info = DeviceInfo::openvino{std::move(__)};
-    }
-
-    try
-    {
-        pOcrObj = new OcrLite(szDetModel, szRecModel, szKeyPath, nThreads, info);
-    }
-    catch (std::exception &e)
-    {
-        cb2(e.what());
-    }
-    if (pOcrObj)
-    {
-        return pOcrObj;
-    }
-    else
-    {
-        return nullptr;
-    }
-}
 
 DECLARE_API void OcrDetect(OcrLite *pOcrObj, const cv::Mat *mat,
                            Directional mode, void (*cb)(float, float, float, float, float, float, float, float, const char *), void (*cb2)(const char *))
@@ -327,5 +286,48 @@ DECLARE_API void GetDeviceInfoD3D12(void (*cb)(uint64_t, LPCWSTR))
         {
             cb(GetLuidKey(desc.AdapterLuid), desc.Description);
         }
+    }
+}
+
+
+DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecModel, const wchar_t *szKeyPath, int nThreads, bool gpu, uint64_t luid, const char *device_type, void (*cb2)(const char *))
+{
+    OcrLite *pOcrObj = nullptr;
+    DeviceInfo info;
+    if (gpu && isDMLAvailable())
+    {
+        int device = findDeviceId(luid);
+        std::wstringstream wss;
+        wss << device << L"\t" << std::hex << luid;
+        std::wcout << wss.str() << std::endl;
+        info.info = DeviceInfo::dml{device};
+    }
+    else if (isOpenVINOAvailable())
+    {
+        std::string __;
+        for (auto &&_ : ListpenVINODeviceTypes())
+        {
+            __ = std::move(_);
+            if (__ == device_type)
+                break;
+        }
+        info.info = DeviceInfo::openvino{std::move(__)};
+    }
+
+    try
+    {
+        pOcrObj = new OcrLite(szDetModel, szRecModel, szKeyPath, nThreads, info);
+    }
+    catch (std::exception &e)
+    {
+        cb2(e.what());
+    }
+    if (pOcrObj)
+    {
+        return pOcrObj;
+    }
+    else
+    {
+        return nullptr;
     }
 }

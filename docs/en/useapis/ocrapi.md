@@ -66,7 +66,24 @@ Same as [Translation](/en/guochandamoxing.html)
 
 The built-in system includes lightweight recognition models for Chinese, Japanese, and English. If you need to recognize other languages, you can download the corresponding language models from the `Resource Download` section.
 
-Additionally, high-precision models for Chinese, Japanese, and English are also available in `Resource Download`. If you are using the Windows 10 version of the software, or the system is Windows 11, you can enable GPU acceleration to improve the recognition efficiency of high-precision models.
+
+`Resource Downloads` also provide high-precision models for Chinese, Japanese, and English, which can achieve extremely high recognition accuracy, but the recognition speed is relatively slow.
+
+To improve the recognition efficiency of high-precision models, the following methods can be adopted:
+
+1. Use GPU Inference
+
+    If the software version being used is the Win10 version, or the system is Windows 11, the model can be set to run directly using the GPU.
+
+    ![img](https://image.lunatranslator.org/zh/dml_gpu.png)
+
+1. Use OpenVINO Inference
+
+    If using an Intel CPU/NPU/GPU, the inference engine can be replaced with OpenVINO to accelerate recognition.
+    
+    Download [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg). After extracting, overwrite all files in **runtimes/win-x64/native** to **LunaTranslator/files/DLL64**, and then select the device to use.
+
+    ![img](https://image.lunatranslator.org/zh/ov_device.png)
 
 == SnippingTool
 

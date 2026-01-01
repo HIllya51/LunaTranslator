@@ -66,7 +66,24 @@ Giống như [Dịch thuật](/en/guochandamoxing.html)
 
 Mô hình nhận dạng nhẹ tích hợp sẵn bao gồm tiếng Trung, tiếng Nhật và tiếng Anh. Nếu bạn cần nhận dạng ngôn ngữ khác, vui lòng tải thêm mô hình ngôn ngữ tương ứng trong mục `Tải tài nguyên`.  
 
-Ngoài ra, `Tải tài nguyên` cũng cung cấp mô hình độ chính xác cao cho tiếng Trung, tiếng Nhật và tiếng Anh. Nếu bạn đang sử dụng phiên bản Windows 10, Hoặc hệ thống là Windows 11, bạn có thể thiết lập sử dụng GPU để chạy mô hình, giúp tăng hiệu suất nhận dạng của mô hình độ chính xác cao.  
+
+`Tải xuống tài nguyên` cũng cung cấp các mô hình độ chính xác cao cho tiếng Trung, tiếng Nhật và tiếng Anh, có thể đạt độ nhận diện cực kỳ chính xác, nhưng tốc độ nhận diện tương đối chậm.
+
+Để cải thiện hiệu suất nhận diện của các mô hình độ chính xác cao, có thể áp dụng các biện pháp sau:
+
+1. Sử dụng Suy luận GPU
+
+    Nếu phiên bản phần mềm đang sử dụng là bản Win10 hoặc hệ thống là Windows 11, có thể thiết lập trực tiếp để chạy mô hình bằng GPU.
+
+    ![img](https://image.lunatranslator.org/zh/dml_gpu.png)
+
+1. Sử dụng Suy luận OpenVINO
+
+    Nếu sử dụng CPU/NPU/GPU của Intel, có thể thay thế công cụ suy luận bằng OpenVINO để tăng tốc nhận diện.
+    
+    Tải xuống [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg). Sau khi giải nén, sao chép đè tất cả tệp trong **runtimes/win-x64/native** vào **LunaTranslator/files/DLL64**, sau đó chọn thiết bị sử dụng.
+
+    ![img](https://image.lunatranslator.org/zh/ov_device.png)
 
 == SnippingTool
 

@@ -68,7 +68,24 @@ https://ocr.space/
 
 組み込みでは、中国語・日本語・英語の軽量認識モデルが含まれています。他の言語を認識する必要がある場合は、`リソースダウンロード`で対応する言語モデルを追加してください。
 
-さらに、`リソースダウンロード`では、中国語・日本語・英語の高精度モデルも提供されています。Windows 10版のソフトウェアを使用している場合、またはシステムがWindows 11の場合、GPUを使用してモデルを実行するように設定することで、高精度モデルの認識効率を向上させることができます。
+`リソースダウンロード`には中日英語の高精度モデルも提供されており、極めて高い認識精度を達成できますが、認識速度は比較的遅くなります。
+
+高精度モデルの認識効率を向上させるためには、以下の方法を採用できます：
+
+1. GPU推論の使用
+
+   使用しているソフトウェアのバージョンがWin10版、またはシステムがWindows11の場合、直接GPUを使用してモデルを実行するよう設定できます。
+
+    ![img](https://image.lunatranslator.org/zh/dml_gpu.png)
+
+1. OpenVINO推論の使用
+
+   IntelのCPU/NPU/GPUを使用している場合、推論エンジンをOpenVINOに置き換えて認識を高速化できます。
+    
+   [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)をダウンロードし、解凍後、**runtimes/win-x64/native**内のすべてのファイルを**LunaTranslator/files/DLL64**に上書きコピーし、使用するデバイスを選択します。
+
+    ![img](https://image.lunatranslator.org/zh/ov_device.png)
+
 
 == SnippingTool
 

@@ -69,7 +69,23 @@ https://ocr.space/
 
 기본적으로 중국어, 일본어, 영어 경량 인식 모델이 내장되어 있습니다. 다른 언어를 인식하려면 '리소스 다운로드'에서 해당 언어의 인식 모델을 추가해야 합니다.
 
-`리소스 다운로드`에는 중국어, 일본어, 영어 고정밀 모델도 제공됩니다. 사용 중인 소프트웨어 버전이 Win10 버전이거나 시스템이 Windows11인 경우, GPU를 사용하여 모델을 실행하도록 설정할 수 있어 고정밀 모델의 인식 효율을 높일 수 있습니다.
+`리소스 다운로드`에서는 중국어, 일본어, 영어에 대한 고정밀 모델도 제공되며, 극히 높은 인식 정확도를 달성할 수 있지만 인식 속도는 상대적으로 느립니다.
+
+고정밀 모델의 인식 효율을 높이기 위해 다음과 같은 방법을 사용할 수 있습니다:
+
+1. GPU 추론 사용
+
+    사용 중인 소프트웨어 버전이 Win10 버전이거나 시스템이 Windows11인 경우, GPU를 사용하여 모델을 직접 실행하도록 설정할 수 있습니다.
+
+    ![img](https://image.lunatranslator.org/zh/dml_gpu.png)
+
+1. OpenVINO 추론 사용
+
+    Intel의 CPU/NPU/GPU를 사용하는 경우, 추론 엔진을 OpenVINO로 교체하여 인식을 가속화할 수 있습니다.
+    
+    [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)를 다운로드하고 압축을 해제한 후, **runtimes/win-x64/native** 내의 모든 파일을 **LunaTranslator/files/DLL64**로 덮어쓴 다음, 사용할 장치를 선택합니다.
+
+    ![img](https://image.lunatranslator.org/zh/ov_device.png)
 
 == SnippingTool
 
