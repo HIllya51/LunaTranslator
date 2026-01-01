@@ -785,7 +785,7 @@ class TranslatorWindow(resizableframeless):
             (
                 "grabwindow",
                 buttonfunctions(
-                    clicked=grabwindow(screenshot=True),
+                    clicked=lambda: grabwindow(screenshot=True),
                     rightclick=lambda: grabwindow(tocliponly=True, screenshot=True),
                 ),
             ),

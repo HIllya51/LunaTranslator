@@ -76,14 +76,14 @@ def grabwindow(
     if not hwnd:
         return
     hwnd = windows.GetAncestor(hwnd)
-    if (not usewgc) or (screenshot and globalconfig["screenshot_method"]["gdi"]):
+    if ((not screenshot) and (not usewgc)) or (
+        screenshot and globalconfig["screenshot_method"]["gdi"]
+    ):
         p = safepixmap(NativeUtils.GdiGrabWindow(hwnd))
         callback(p, fname + "_gdi." + app)
     isshit = (not callback_origin) and (not tocliponly)
-    if (
-        usewgc
-        or (p.isNull() or isshit)
-        or (screenshot and globalconfig["screenshot_method"]["winrt"])
+    if ((not screenshot) and (usewgc or (p.isNull() or isshit))) or (
+        screenshot and globalconfig["screenshot_method"]["winrt"]
     ):
 
         @threader
@@ -93,7 +93,9 @@ def grabwindow(
 
         _()
 
-    if usewgc or isshit or (screenshot and globalconfig["screenshot_method"]["magpie"]):
+    if ((not screenshot) and (usewgc or isshit)) or (
+        screenshot and globalconfig["screenshot_method"]["magpie"]
+    ):
         gobject.base.displayinfomessage(
             "saved to " + os.path.dirname(fname), "<msg_info_refresh>"
         )
