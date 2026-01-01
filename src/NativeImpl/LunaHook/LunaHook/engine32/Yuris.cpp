@@ -422,7 +422,50 @@ bool Yuris::yuris8()
                     { return c == '1' || c == '2' || c == 'E' || c == 'C' || c == 'c' || c == 'R' || c == 'B' || c == 'P' || c == 'Z'; }))
       return buffer->clear();
   };
-  return NewHook(hp, "yuris8");
+  auto calltarget = addr + offset + 5 + *(int *)(addr + offset + 1);
+  auto yuris9 = [&]()
+  {
+    // 竜姫ぐーたらいふ 2 & 3 官方英文+繁中版
+    // yuris8无法捕获旁白
+    /*
+.text:00453460 85 C9                                         test    ecx, ecx
+.text:00453462 74 12                                         jz      short loc_453476
+.text:00453464 8B C5                                         mov     eax, ebp
+.text:00453466 8B 94 24 AC 00 00 00                          mov     edx, [esp+0CCh+var_20]
+.text:0045346D 8B CE                                         mov     ecx, esi
+<----- 在这里也可以
+.text:0045346F E8 84 85 00 00                                call    sub_45B9F8
+.text:00453474 EB 10                                         jmp     short loc_453486
+.text:00453476                               ; ---------------------------------------------------------------------------
+.text:00453476
+.text:00453476                               loc_453476:                             ; CODE XREF: sub_453178+2EA↑j
+.text:00453476 8B C3                                         mov     eax, ebx
+.text:00453478 8B 94 24 B0 00 00 00                          mov     edx, [esp+0CCh+var_1C]
+.text:0045347F 8B CE                                         mov     ecx, esi
+.text:00453481 E8 72 85 00 00                                call    sub_45B9F8
+    */
+    HookParam hp;
+    hp.address = calltarget;
+    hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
+    hp.offset = regoffset(ecx);
+    hp.codepage = codepage;
+    hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+      // 会把双语都提取出来。
+      // 调用频率过高，不要用filter_fun，不然会疯狂拷贝
+      std::string_view text = (char *)context->ecx;
+      if (text.size() <= 2)
+        return;
+      if (text[0] != '"' && text[text.size() - 1] != '"')
+        return;
+      static lru_cache<std::string> cache(4);
+      if (cache.touch(std::string(text)))
+        return;
+      buffer->from(text.substr(1, text.size() - 2));
+    };
+    return NewHook(hp, "yuris9");
+  };
+  return NewHook(hp, "yuris8") && yuris9();
 }
 UINT Yuris::codepagechecker()
 {
