@@ -907,5 +907,6 @@
     "无法加载，可能是系统缺少必要的运行库": "Kan niet laden, mogelijk ontbreekt het systeem aan de benodigde runtime-bibliotheken.",
     "字体相对大小": "Relatieve lettergrootte",
     "修改游戏字体相对大小": "Pas de relatieve grootte van het spellettertype aan",
-    "模拟器游戏支持表": "Simulator Game Support List"
+    "模拟器游戏支持表": "Simulator Game Support List",
+    "导入": "Importeren"
 }

@@ -907,5 +907,6 @@
     "无法加载，可能是系统缺少必要的运行库": "Impossibile caricare, potrebbe mancare una libreria di runtime necessaria al sistema.",
     "字体相对大小": "Dimensione relativa del carattere",
     "修改游戏字体相对大小": "Modifica la dimensione relativa del font del gioco",
-    "模拟器游戏支持表": "Tabella di supporto per i giochi su emulatore"
+    "模拟器游戏支持表": "Tabella di supporto per i giochi su emulatore",
+    "导入": "Importazione"
 }

@@ -907,5 +907,6 @@
     "无法加载，可能是系统缺少必要的运行库": "Det går inte att ladda, möjligen saknar systemet nödvändiga körbibliotek.",
     "字体相对大小": "Relativ teckensnittsstorlek",
     "修改游戏字体相对大小": "Ändra relativ teckenstorlek i spelet",
-    "模拟器游戏支持表": "Simulatorspel stödtabell"
+    "模拟器游戏支持表": "Simulatorspel stödtabell",
+    "导入": "Importera"
 }

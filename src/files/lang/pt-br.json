@@ -907,5 +907,6 @@
     "无法加载，可能是系统缺少必要的运行库": "Não foi possível carregar, pode ser que o sistema esteja faltando as bibliotecas de execução necessárias.",
     "字体相对大小": "Tamanho relativo da fonte",
     "修改游戏字体相对大小": "Modificar o tamanho relativo da fonte do jogo",
-    "模拟器游戏支持表": "Tabela de Suporte de Jogos de Emulador"
+    "模拟器游戏支持表": "Tabela de Suporte de Jogos de Emulador",
+    "导入": "Importar"
 }
