@@ -474,7 +474,7 @@ def leftwidget(self):
         r"files\static\llama.cpp.light.png", r"files\static\llama.cpp.dark.png"
     )
     btn4.clicked.connect(lambda: os.startfile("https://github.com/ggml-org/llama.cpp"))
-    return [btn3, btn, btn2, IconButton(None), btn4]
+    return [btn3, btn, btn2, IconButton(none=None), btn4]
 
 
 def __llmfold(self):

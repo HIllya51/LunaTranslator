@@ -3128,7 +3128,7 @@ class IconButton(LPushButton):
 
     def __init__(
         self,
-        icon,
+        icon=None,
         enable=True,
         qicon=None,
         parent=None,
@@ -3136,6 +3136,7 @@ class IconButton(LPushButton):
         fix=True,
         tips=None,
         color=None,
+        none=False,
     ):
         super().__init__(parent)
         if tips:
@@ -3151,7 +3152,7 @@ class IconButton(LPushButton):
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setStyleSheet(
             "border:transparent;padding: 0px;"
-            + ("background:transparent;" if (icon is None) else "")
+            + ("background:transparent;" if none else "")
         )
         self.setCheckable(checkable)
         self.setEnabled(enable and (bool(icon) or bool(qicon)))
