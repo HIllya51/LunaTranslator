@@ -25,9 +25,9 @@ from gui.usefulwidget import (
     request_delete_ok,
     IconButton,
 )
+from gui.gamemanager.common import loadvisinternal
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
-    getalistname,
     startgamecheck,
     getreflist,
     calculatetagidx,
@@ -702,7 +702,6 @@ class dialog_savedgame_v3(QWidget):
         startgame = LAction("开始游戏", menu)
         delgame = LAction("删除游戏", menu)
         opendir = LAction("打开目录", menu)
-        addtolist = LAction("添加到列表", menu)
         createlnk = LAction("创建快捷方式", menu)
         if not self.currentfocusuid:
 
@@ -720,7 +719,14 @@ class dialog_savedgame_v3(QWidget):
 
             menu.addAction(delgame)
             menu.addSeparator()
-            menu.addAction(addtolist)
+            __vis, __uid = loadvisinternal(True, self.reftagid)
+            if __uid:
+                addtolist = LMenu("添加到列表", menu)
+                menu.addMenu(addtolist)
+                for _ in range(len(__vis)):
+                    a = QAction(__vis[_], addtolist)
+                    a.setData(__uid[_])
+                    addtolist.addAction(a)
 
         action = menu.exec(QCursor.pos())
         if action == startgame:
@@ -733,10 +739,12 @@ class dialog_savedgame_v3(QWidget):
             self.shanchuyouxi()
         elif action == opendir:
             self.clicked4()
-        elif action == addtolist:
-            self.addtolist()
         elif action == createlnk:
             CreateShortcutForUid(self.currentfocusuid)
+        elif action:  # addtolist
+            __uid = action.data()
+            if __uid:
+                self.addtolistcallback(__uid, self.currentfocusuid)
 
     def addtolistcallback(self, uid, gameuid):
 
@@ -751,14 +759,6 @@ class dialog_savedgame_v3(QWidget):
             getreflist(self.reftagid).insert(0, getreflist(self.reftagid).pop(idx))
             self.stack.w(calculatetagidx(self.reftagid)).torank1(idx)
         self.reftagid = __save
-
-    def addtolist(self):
-        getalistname(
-            self,
-            lambda x: self.addtolistcallback(x, self.currentfocusuid),
-            True,
-            self.reftagid,
-        )
 
     def directshow(self):
         self.stack.directshow()

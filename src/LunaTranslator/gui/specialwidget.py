@@ -641,7 +641,9 @@ class shownumQPushButton(IconToolButton):
         if not self.num:
             return
         painter = QPainter(self)
-        painter.setPen(Qt.GlobalColor.gray)
+        c = self.palette().color(QPalette.ColorRole.Text)
+        c.setAlphaF(0.5)
+        painter.setPen(c)
         rect = self.rect()
 
         textRect = self.fontMetrics().boundingRect(self.text())

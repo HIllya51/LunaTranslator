@@ -72,6 +72,7 @@ from cishu.cishubase import cishubase
 from translator.basetranslator import basetrans
 from textio.textoutput.outputerbase import Base as outputerbase
 from myutils.updater import versioncheckthread
+from gui.qevent import DarkLightChangedEvent
 
 
 class BASEOBJECT(QObject):
@@ -1363,6 +1364,12 @@ class BASEOBJECT(QObject):
             NativeUtils.SetCornerNotRound(
                 int(widget.winId()), globalconfig["force_rect"], False
             )
+
+    def switch_darklight(self):
+        darklight = globalconfig["darklight2"]
+        isdark = nowisdark()
+        for widget in QApplication.allWidgets():
+            QApplication.postEvent(widget, DarkLightChangedEvent(darklight, isdark))
 
     def setcommonstylesheet(self):
 

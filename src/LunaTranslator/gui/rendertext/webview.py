@@ -15,6 +15,7 @@ import copy, uuid
 from gui.usefulwidget import WebviewWidget
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
+from gui.qevent import TransparentChangedEvent
 
 
 class wordwithcolor:
@@ -30,8 +31,8 @@ class wordwithcolor:
 
 class somecommon(dataget):
     def __init__(self):
-        self.colorset = set()
-        self.ts_klass = {}
+        self.colorset: "set[ColorControl]" = set()
+        self.ts_klass: "dict[str, dict]" = {}
 
     def debugeval(self, js: str): ...
     def refreshcontent(self): ...
@@ -334,12 +335,12 @@ class TextBrowser(WebviewWidget, somecommon):
     __tooltipshelper = pyqtSignal(object)
 
     def event(self, a0: QEvent) -> bool:
-        if a0.type() == QEvent.Type.User + 2:
-            self.__starttrans0checker()
+        if isinstance(a0, TransparentChangedEvent):
+            self.__starttrans0checker(a0.transparent_value())
         return super().event(a0)
 
-    def __starttrans0checker(self):
-        if gobject.base.translation_ui.transparent_value_actually == 0:
+    def __starttrans0checker(self, transparent_value):
+        if transparent_value == 0:
             self.trans0checker.start(50)
         else:
             self.trans0checker.stop()

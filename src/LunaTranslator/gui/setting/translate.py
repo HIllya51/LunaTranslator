@@ -25,6 +25,7 @@ from collections import Counter
 from myutils.wrapper import tryprint
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
+    AutoScaleImageButton,
     getIconButton,
     D_getcolorbutton,
     getcolorbutton,
@@ -469,25 +470,38 @@ def leftwidget(self):
         lambda: os.startfile(dynamiclink("guochandamoxing.html", docs=True))
     )
 
-    return [btn3, btn, btn2]
+    btn4 = AutoScaleImageButton(
+        r"files\static\llama.cpp.light.png", r"files\static\llama.cpp.dark.png"
+    )
+    btn4.clicked.connect(lambda: os.startfile("https://github.com/ggml-org/llama.cpp"))
+    return [btn3, btn, btn2, IconButton(None), btn4]
+
+
+def __llmfold(self):
+
+    is_gpt_likes = initsome11(self, getallllms(globalconfig["fanyi"]), save=True)
+    fold = createfoldgrid(
+        is_gpt_likes,
+        "大模型",
+        globalconfig["foldstatus"]["ts"],
+        "gpt",
+        "damoxinggridinternal",
+        self,
+        leftwidget=functools.partial(leftwidget, self),
+    )
+
+    return fold
 
 
 def initsome2(self, mianfei, api):
 
     onlinegrid = initsome11(self, mianfei)
     api = initsome11(self, api)
-    is_gpt_likes = initsome11(self, getallllms(globalconfig["fanyi"]), save=True)
     grids = [
         [
             functools.partial(
-                createfoldgrid,
-                is_gpt_likes,
-                "大模型",
-                globalconfig["foldstatus"]["ts"],
-                "gpt",
-                "damoxinggridinternal",
+                __llmfold,
                 self,
-                leftwidget=functools.partial(leftwidget, self),
             )
         ],
         [

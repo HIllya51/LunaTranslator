@@ -242,7 +242,6 @@ class dialog_savedgame_legacy(QWidget):
             )
         )
         btn = IconButton(None)
-        btn.setStyleSheet("border:transparent;padding: 0px;background:transparent;")
         formLayout.addWidget(btn)
         formLayout.addWidget(table)
         formLayout.addLayout(bottom)

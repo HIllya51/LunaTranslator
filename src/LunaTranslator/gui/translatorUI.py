@@ -26,6 +26,7 @@ from myutils.utils import (
 )
 from myutils.hwnd import mouseselectwindow, grabwindow, getExeIcon, getcurrexe
 from myutils.updater import doupdate
+from gui.qevent import TransparentChangedEvent
 from gui.dialog_memory import dialog_memory
 from gui.rendertext.texttype import TextType, SpecialColor
 from gui.textbrowser import Textbrowser
@@ -1379,23 +1380,21 @@ class TranslatorWindow(resizableframeless):
         )
         bottomr3 = self.createborderradiusstring(use_r2, False)
         bottomr = self.createborderradiusstring(radiu_valid * use_r2, True, True)
+        transparent_value_actually = max(
+            (1 - globalconfig["transparent_EX"]) * 100 / 255,
+            globalconfig["transparent"] * (not globalconfig["backtransparent"]),
+        )
         self.translate_text.setStyleSheet(
             "Textbrowser{border-width: 0;%s;background-color: %s}"
             % (
                 topr,
-                str2rgba(globalconfig["backcolor"], self.transparent_value_actually),
+                str2rgba(globalconfig["backcolor"], transparent_value_actually),
             )
         )
         self.titlebar.setstyle(bottomr, bottomr3)
         QApplication.postEvent(
-            self.translate_text.textbrowser, QEvent(QEvent.Type.User + 2)
-        )
-
-    @property
-    def transparent_value_actually(self):
-        return max(
-            (1 - globalconfig["transparent_EX"]) * 100 / 255,
-            globalconfig["transparent"] * (not globalconfig["backtransparent"]),
+            self.translate_text.textbrowser,
+            TransparentChangedEvent(transparent_value_actually),
         )
 
     def muteprocessfuntion(self):

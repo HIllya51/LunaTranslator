@@ -2,7 +2,7 @@ from qtsymbols import *
 import os, functools, uuid
 from traceback import print_exc
 import qtawesome
-from gui.dynalang import LAction
+from gui.dynalang import LAction, LMenu
 from gui.gamemanager.v3 import dialog_savedgame_v3
 from gui.gamemanager.legacy import dialog_savedgame_legacy
 from gui.gamemanager.setting import dialog_setting_game, userlabelset
@@ -35,7 +35,6 @@ from gui.gamemanager.common import (
     tagitem,
     startgamecheck,
     loadvisinternal,
-    getalistname,
     opendirforgameuid,
     CreateShortcutForUid,
     calculatetagidx,
@@ -261,8 +260,9 @@ class IMGWidget(QLabel):
         newpixmap.setDevicePixelRatio(rate)
         newpixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(newpixmap)
-        painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        painter.setRenderHints(
+            QPainter.RenderHint.Antialiasing | QPainter.RenderHint.SmoothPixmapTransform
+        )
         painter.drawPixmap(self.getrect(pixmap.size()), pixmap)
         painter.end()
         self.setPixmap(newpixmap)
@@ -498,7 +498,6 @@ class dialog_savedgame_new(QWidget):
         startgame = LAction("开始游戏", menu)
         delgame = LAction("删除游戏", menu)
         opendir = LAction("打开目录", menu)
-        addtolist = LAction("添加到列表", menu)
         createlnk = LAction("创建快捷方式", menu)
         gamesetting = LAction("游戏设置", menu)
         addgame = LAction("添加游戏", menu)
@@ -516,7 +515,14 @@ class dialog_savedgame_new(QWidget):
             menu.addAction(gamesetting)
             menu.addAction(delgame)
             menu.addSeparator()
-            menu.addAction(addtolist)
+            __vis, __uid = loadvisinternal(True, self.reftagid)
+            if __uid:
+                addtolist = LMenu("添加到列表", menu)
+                menu.addMenu(addtolist)
+                for _ in range(len(__vis)):
+                    a = QAction(__vis[_], addtolist)
+                    a.setData(__uid[_])
+                    addtolist.addAction(a)
         else:
             if self.reftagid:
                 menu.addAction(editname)
@@ -532,8 +538,6 @@ class dialog_savedgame_new(QWidget):
             startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
         elif action == gamesetting:
             self.showsettingdialog()
-        elif action == addtolist:
-            self.addtolist()
         elif action == createlnk:
             CreateShortcutForUid(self.currentfocusuid)
         elif action == delgame:
@@ -588,6 +592,11 @@ class dialog_savedgame_new(QWidget):
                     self.vislistcombo.currentIndex()
                 )
                 self.reflist = getreflist(self.reftagid)
+
+        elif action:  # addtolist
+            __uid = action.data()
+            if __uid:
+                self.addtolistcallback(__uid, self.currentfocusuid)
 
     def directshow(self):
         self.flow.directshow()
@@ -746,14 +755,6 @@ class dialog_savedgame_new(QWidget):
         except:
             pass
         return False
-
-    def addtolist(self):
-        getalistname(
-            self,
-            lambda x: self.addtolistcallback(x, self.currentfocusuid),
-            True,
-            self.reftagid,
-        )
 
     def addtolistcallback(self, uid, gameuid):
         if gameuid not in getreflist(uid):

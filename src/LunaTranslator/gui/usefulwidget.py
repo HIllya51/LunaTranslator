@@ -14,6 +14,7 @@ import NativeUtils
 import gobject
 from NativeUtils import WebView2
 import re
+from gui.qevent import DarkLightChangedEvent
 from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink
 from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark
@@ -1883,8 +1884,8 @@ class WebviewWidget(AbstractWebviewWidget):
         )
 
     def event(self, a0: QEvent):
-        if a0.type() == QEvent.Type.User + 1:
-            self.webview.put_PreferredColorScheme(globalconfig["darklight2"])
+        if isinstance(a0, DarkLightChangedEvent):
+            self.webview.put_PreferredColorScheme(a0.isdark())
         return super().event(a0)
 
     def __init__(self, parent=None, transp=False, loadext=False) -> None:
@@ -3013,8 +3014,10 @@ class pixmapviewer(QWidget):
 
                 if not self.pix.isNull():
                     painter = QPainter(self._pix)
-                    painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-                    painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
+                    painter.setRenderHints(
+                        QPainter.RenderHint.Antialiasing
+                        | QPainter.RenderHint.SmoothPixmapTransform
+                    )
                     pix = self.pix.scaled(
                         self.size() * self.devicePixelRatioF(),
                         Qt.AspectRatioMode.KeepAspectRatio,
@@ -3125,7 +3128,10 @@ class IconButton(LPushButton):
         if fix:
             self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.setStyleSheet("border:transparent;padding: 0px;")
+        self.setStyleSheet(
+            "border:transparent;padding: 0px;"
+            + ("background:transparent;" if (icon is None) else "")
+        )
         self.setCheckable(checkable)
         self.setEnabled(enable and (bool(icon) or bool(qicon)))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
@@ -3566,3 +3572,36 @@ def MyInputDialog(parent, title, label, default=None, w=500) -> "str | None":
     if not dia.exec():
         return
     return dia.textValue()
+
+
+class AutoScaleImageButton(QPushButton):
+    def __init__(self, light, dark):
+        super().__init__()
+        self.light = light
+        self.dark = dark
+        self.image = QPixmap(self.dark if nowisdark() else self.light)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setCheckable(True)
+        self.setMouseTracking(True)
+        self.hover_color = QColor(0, 0, 0, 50)
+        self.setStyleSheet("border:transparent")
+
+    def event(self, e):
+        if isinstance(e, DarkLightChangedEvent):
+            self.image = QPixmap(self.dark if e.isdark() else self.light)
+        return super().event(e)
+
+    def paintEvent(self, _):
+        painter = QPainter(self)
+        painter.setRenderHints(
+            QPainter.RenderHint.Antialiasing | QPainter.RenderHint.SmoothPixmapTransform
+        )
+        scaled_pixmap = self.image.scaled(
+            self.size(),
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation,
+        )
+        x = (self.width() - scaled_pixmap.width()) // 2
+        y = (self.height() - scaled_pixmap.height()) // 2
+        painter.drawPixmap(x, y, scaled_pixmap)
+        return super().paintEvent(_)
