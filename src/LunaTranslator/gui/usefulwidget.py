@@ -791,22 +791,43 @@ class MySwitch(QAbstractButton):
         )
         self.animation.start()
 
-    def getcurrentcolor(self):
-
-        __ = QColor(
-            [gobject.Consts.buttoncolor_disable, gobject.Consts.buttoncolor][
-                self.isChecked()
-            ]
-        )
-        if not self.isEnabled():
-            __ = qtawesome.disablecolor(__)
-        return __
-
     def paintanime(self, painter: QPainter):
-
-        painter.setBrush(self.getcurrentcolor())
+        if qtawesome.isdark:
+            backcolor = QColor(
+                [
+                    gobject.Consts.btncolor.dark.disabled.back,
+                    gobject.Consts.btncolor.dark.enabled.back,
+                ][self.isChecked()]
+            )
+            centercolor = QColor(
+                [
+                    gobject.Consts.btncolor.dark.disabled.center,
+                    gobject.Consts.btncolor.dark.enabled.center,
+                ][self.isChecked()]
+            )
+        else:
+            backcolor = QColor(
+                [
+                    gobject.Consts.btncolor.light.disabled.back,
+                    gobject.Consts.btncolor.light.enabled.back,
+                ][self.isChecked()]
+            )
+            centercolor = QColor(
+                [
+                    gobject.Consts.btncolor.light.disabled.center,
+                    gobject.Consts.btncolor.light.enabled.center,
+                ][self.isChecked()]
+            )
+        checkdisabled = lambda c: c if self.isEnabled() else qtawesome.disablecolor(c)
         wb = self.width() * 0.1
         hb = self.height() * 0.125
+        if not self.isChecked():
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            pen = QPen(checkdisabled(centercolor))
+            pen.setWidth(1)
+            painter.setPen(pen)
+        else:
+            painter.setBrush(checkdisabled(backcolor))
         painter.drawRoundedRect(
             QRectF(
                 wb,
@@ -817,10 +838,10 @@ class MySwitch(QAbstractButton):
             self.height() / 2 - hb,
             self.height() / 2 - hb,
         )
-        r = self.height() * 0.275
+        r = self.height() * 0.275 - 1
         rb = self.height() / 2 - hb - r
         offset = self.__currv * (self.width() - 2 * wb - 2 * r - 2 * rb) / 20
-        painter.setBrush(QColor(255, 255, 255))
+        painter.setBrush(checkdisabled(centercolor))
         painter.drawEllipse(
             QPointF(
                 (wb + r + rb) + offset,
@@ -3161,10 +3182,18 @@ class IconButton(LPushButton):
                 color = (
                     self._color
                     if self._color
-                    else ((None, gobject.Consts.buttoncolor)[self.isChecked()])
+                    else (
+                        (None, gobject.Consts.btncolor.light.enabled.back)[
+                            self.isChecked()
+                        ]
+                    )
                 )
             else:
-                color = self._color if self._color else gobject.Consts.buttoncolor
+                color = (
+                    self._color
+                    if self._color
+                    else gobject.Consts.btncolor.light.enabled.back
+                )
                 icon = self._icon
             icon = qtawesome.icon(icon, color=color)
         self.setIcon(icon)

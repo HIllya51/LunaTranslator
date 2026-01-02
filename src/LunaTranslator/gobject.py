@@ -64,8 +64,25 @@ istest = False
 
 
 class Consts:
-    buttoncolor = "#FF69B4"
-    buttoncolor_disable = "#afafaf"
+    class btncolor:
+        class light:
+            class enabled:
+                back = "#FF69B4"
+                center = "white"
+
+            class disabled:
+                back = "transparent"
+                center = "#5D5D5D"
+
+        class dark:
+            class enabled:
+                back = "#FF69B4"
+                center = "black"
+
+            class disabled:
+                back = "transparent"
+                center = "#CDCED1"
+
     btnscale = 1.2
     toolwdivh = 4 / 3
     toolscale = 1.5
