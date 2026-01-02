@@ -1374,10 +1374,12 @@ class BASEOBJECT(QObject):
     def setcommonstylesheet(self):
 
         dark = nowisdark()
-        darklight = ["light", "dark"][dark]
-
+        if dark == self.currentisdark:
+            return
         self.currentisdark = dark
         qtawesome.isdark = dark
+        darklight = ["light", "dark"][dark]
+
         for widget in QApplication.topLevelWidgets():
             self.setdarkandbackdrop(widget, dark)
         style = ""
