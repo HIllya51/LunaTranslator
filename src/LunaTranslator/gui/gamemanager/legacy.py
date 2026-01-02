@@ -241,7 +241,7 @@ class dialog_savedgame_legacy(QWidget):
                 ("添加游戏", self.clicked3),
             )
         )
-        btn = IconButton(none=None)
+        btn = IconButton(none=True)
         formLayout.addWidget(btn)
         formLayout.addWidget(table)
         formLayout.addLayout(bottom)
