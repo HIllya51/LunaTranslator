@@ -539,7 +539,6 @@
     "类型": "Type",
     "显示注音": "Show Phonetic Guide",
     "辞书显示顺序": "Dictionary Display Order",
-    "背景窗口透明": "Background Window Transparency",
     "文件翻译": "File Translation",
     "文件": "File",
     "最大结果条数": "Maximum Number of Results",
@@ -908,5 +907,6 @@
     "字体相对大小": "Relative font size",
     "修改游戏字体相对大小": "Adjust the relative font size in the game",
     "模拟器游戏支持表": "Simulator Game Compatibility List",
-    "导入": "Import"
+    "导入": "Import",
+    "窗口背景透明": "Window background transparency"
 }

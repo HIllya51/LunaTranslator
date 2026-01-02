@@ -539,7 +539,6 @@
     "类型": "typ",
     "显示注音": "Visa fonetisk notation",
     "辞书显示顺序": "Lexikografisk visningsordning",
-    "背景窗口透明": "Bakgrundsfönster genomskinligt",
     "文件翻译": "dokumentär översättning",
     "文件": "fil",
     "最大结果条数": "Maximalt antal resultat",
@@ -908,5 +907,6 @@
     "字体相对大小": "Relativ teckensnittsstorlek",
     "修改游戏字体相对大小": "Ändra relativ teckenstorlek i spelet",
     "模拟器游戏支持表": "Simulatorspel stödtabell",
-    "导入": "Importera"
+    "导入": "Importera",
+    "窗口背景透明": "Fönsterbakgrund genomskinlig"
 }

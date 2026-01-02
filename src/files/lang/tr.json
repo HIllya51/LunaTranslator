@@ -539,7 +539,6 @@
     "类型": "tür",
     "显示注音": "Fonetik notasyonu göster",
     "辞书显示顺序": "Lexicographical display order",
-    "背景窗口透明": "Arkaplan penceresi transparent",
     "文件翻译": "belgeler çeviri",
     "文件": "dosya",
     "最大结果条数": "En yüksek sonuçların sayısı",
@@ -908,5 +907,6 @@
     "字体相对大小": "Yazı tipi göreceli boyutu",
     "修改游戏字体相对大小": "Oyun yazı tipi göreceli boyutunu değiştir",
     "模拟器游戏支持表": "Simülatör Oyun Destek Tablosu",
-    "导入": "İthalat"
+    "导入": "İthalat",
+    "窗口背景透明": "Pencere arka planı şeffaf"
 }

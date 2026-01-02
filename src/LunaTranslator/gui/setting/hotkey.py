@@ -247,6 +247,7 @@ def registrhotkeys(self):
         "48": lambda: _ocr_focus_switch_near(),
         "49": lambda: _ocr_focus_No(),
         "50": safesaveall,
+        "51": lambda: gobject.base.translation_ui.changemousetransparentstate(1),
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -268,6 +269,7 @@ hotkeys = [
             "_51",
             "_6",
             "_8",
+            "51",
             "_9",
             "38",
             "_16",
@@ -492,11 +494,11 @@ def regist_or_not_key(self, name, _=None):
 
     if name in self.registok:
         NativeUtils.UnRegisterHotKey(self.registok[name])
-    __ = globalconfig["quick_setting"]["all"].get(name)
+    __: dict = globalconfig["quick_setting"]["all"].get(name)
     if not __:
         return
-    keystring = __["keystring"]
-    if keystring == "" or (not (__["use"] and globalconfig["quick_setting"]["use"])):
+    keystring = __.get("keystring")
+    if (not keystring) or (not (__.get("use") and globalconfig["quick_setting"]["use"])):
         return
 
     try:

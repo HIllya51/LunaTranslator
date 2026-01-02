@@ -539,7 +539,6 @@
     "类型": "type",
     "显示注音": "Toon fonetische notatie",
     "辞书显示顺序": "Lexicografische weergavevolgorde",
-    "背景窗口透明": "Achtergrondvenster transparant",
     "文件翻译": "documentaire vertaling",
     "文件": "bestand",
     "最大结果条数": "Maximaal aantal resultaten",
@@ -908,5 +907,6 @@
     "字体相对大小": "Relatieve lettergrootte",
     "修改游戏字体相对大小": "Pas de relatieve grootte van het spellettertype aan",
     "模拟器游戏支持表": "Simulator Game Support List",
-    "导入": "Importeren"
+    "导入": "Importeren",
+    "窗口背景透明": "Vensterachtergrond transparant"
 }

@@ -52,7 +52,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 
     Khi chuột di chuyển đến **khu vực của nút Cửa sổ xuyên chuột và một nút bên trái và phải**, nó sẽ tự động thoát ra để sử dụng các nút công cụ; nó sẽ tự động khôi phục xuyên qua khi di chuyển ra khỏi khu vực.
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> Trong suốt cửa sổ nền {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> Nền cửa sổ trong suốt {#anchor-backtransbutton}
     Chức năng của nút này là chuyển độ mờ của cửa sổ dịch sang 0 chỉ với một lần nhấp. Công tắc này sẽ không làm quên các cài đặt độ mờ ban đầu.
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> Khóa thanh công cụ {#anchor-locktoolsbutton}

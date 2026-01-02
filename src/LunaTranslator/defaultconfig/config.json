@@ -436,7 +436,7 @@
     "rawtextcolor": "#000000",
     "backcolor": "#ffaaff",
     "transparent": 10,
-    "transparent_EX": false,
+    "transparent_EX": true,
     "backcolor_tool": "#ffaaff",
     "transparent_tool": 50,
     "isshowhira": true,
@@ -597,8 +597,8 @@
                 "align": 2
             },
             "backtransbutton": {
-                "use": false,
-                "tip": "背景窗口透明",
+                "use": true,
+                "tip": "窗口背景透明",
                 "icon": "fa.lightbulb-o",
                 "align": 2
             },
@@ -871,230 +871,143 @@
     "quick_setting": {
         "use": true,
         "all": {
+            "51": {
+                "name": "窗口背景透明"
+            },
             "36": {
-                "use": false,
-                "name": "读取剪贴板",
-                "keystring": ""
+                "name": "读取剪贴板"
             },
             "_1": {
-                "use": false,
-                "name": "手动执行",
-                "keystring": ""
+                "name": "手动执行"
             },
             "_2": {
-                "use": false,
-                "name": "自动模式",
-                "keystring": ""
+                "name": "自动模式"
             },
             "_3": {
-                "use": false,
-                "name": "打开设置",
-                "keystring": ""
+                "name": "打开设置"
             },
             "_4": {
-                "use": false,
-                "name": "复制到剪贴板",
-                "keystring": ""
+                "name": "复制到剪贴板"
             },
             "_5": {
-                "use": false,
-                "name": "显示/隐藏原文",
-                "keystring": ""
+                "name": "显示/隐藏原文"
             },
             "_51": {
-                "use": false,
-                "name": "显示/隐藏翻译",
-                "keystring": ""
+                "name": "显示/隐藏翻译"
             },
             "_6": {
-                "use": false,
-                "name": "显示/隐藏历史文本",
-                "keystring": ""
+                "name": "显示/隐藏历史文本"
             },
             "_7": {
-                "use": false,
-                "name": "朗读",
-                "keystring": ""
+                "name": "朗读"
             },
             "_7_1": {
-                "use": false,
-                "name": "朗读_中断",
-                "keystring": ""
+                "name": "朗读_中断"
             },
             "_8": {
-                "use": false,
-                "name": "鼠标穿透窗口",
-                "keystring": ""
+                "name": "鼠标穿透窗口"
             },
             "_9": {
-                "use": false,
-                "name": "锁定工具栏",
-                "keystring": ""
+                "name": "锁定工具栏"
             },
             "_10": {
-                "use": false,
-                "name": "游戏管理",
-                "keystring": ""
+                "name": "游戏管理"
             },
             "_11": {
-                "use": false,
-                "name": "选择游戏",
-                "keystring": ""
+                "name": "选择游戏"
             },
             "_12": {
-                "use": false,
-                "name": "选择文本",
-                "keystring": ""
+                "name": "选择文本"
             },
             "_13": {
-                "use": false,
-                "name": "选取OCR范围",
-                "keystring": ""
+                "name": "选取OCR范围"
             },
             "_14": {
-                "use": false,
-                "name": "显示/隐藏范围框",
-                "keystring": ""
+                "name": "显示/隐藏范围框"
             },
             "_14_1": {
-                "use": false,
-                "name": "清除OCR范围",
-                "keystring": ""
+                "name": "清除OCR范围"
             },
             "44": {
-                "use": false,
-                "name": "连点器",
-                "keystring": ""
+                "name": "连点器"
             },
             "45": {
-                "use": false,
-                "name": "重置翻译状态",
-                "keystring": ""
+                "name": "重置翻译状态"
             },
             "46": {
-                "use": false,
-                "name": "多重区域模式_切换到前一个区域",
-                "keystring": ""
+                "name": "多重区域模式_切换到前一个区域"
             },
             "47": {
-                "use": false,
-                "name": "多重区域模式_切换到下一个区域",
-                "keystring": ""
+                "name": "多重区域模式_切换到下一个区域"
             },
             "48": {
-                "use": false,
-                "name": "多重区域模式_切换到鼠标临近区域",
-                "keystring": ""
+                "name": "多重区域模式_切换到鼠标临近区域"
             },
             "49": {
-                "use": false,
-                "name": "多重区域模式_取消区域聚焦",
-                "keystring": ""
+                "name": "多重区域模式_取消区域聚焦"
             },
             "50": {
-                "use": false,
-                "name": "立即保存配置",
-                "keystring": ""
+                "name": "立即保存配置"
             },
             "_15": {
-                "use": false,
-                "name": "绑定窗口_（点击自己取消）",
-                "keystring": ""
+                "name": "绑定窗口_（点击自己取消）"
             },
             "_16": {
-                "use": false,
-                "name": "显示/隐藏翻译窗口",
-                "keystring": ""
+                "name": "显示/隐藏翻译窗口"
             },
             "_17": {
-                "use": false,
-                "name": "退出",
-                "keystring": ""
+                "name": "退出"
             },
             "_21": {
-                "use": false,
-                "name": "窗口截图",
-                "keystring": ""
+                "name": "窗口截图"
             },
             "_22": {
-                "use": false,
-                "name": "游戏静音",
-                "keystring": ""
+                "name": "游戏静音"
             },
             "43": {
-                "use": true,
-                "name": "游戏暂停",
-                "keystring": ""
+                "name": "游戏暂停"
             },
             "41": {
-                "use": false,
-                "name": "Magpie_缩放",
-                "keystring": ""
+                "name": "Magpie_缩放"
             },
             "42": {
-                "use": false,
-                "name": "Magpie_窗口化缩放",
-                "keystring": ""
+                "name": "Magpie_窗口化缩放"
             },
             "_26": {
-                "use": false,
-                "name": "进行一次OCR",
-                "keystring": ""
+                "name": "进行一次OCR"
             },
             "_26_1": {
-                "use": false,
-                "name": "再次进行OCR",
-                "keystring": ""
+                "name": "再次进行OCR"
             },
             "_28": {
-                "use": false,
-                "name": "复制到剪贴板_翻译",
-                "keystring": ""
+                "name": "复制到剪贴板_翻译"
             },
             "37": {
-                "use": false,
-                "name": "取词查词",
-                "keystring": ""
+                "name": "取词查词"
             },
             "40": {
-                "use": false,
-                "name": "取词查词_在新窗口中",
-                "keystring": ""
+                "name": "取词查词_在新窗口中"
             },
             "38": {
-                "use": false,
-                "name": "取词翻译",
-                "keystring": ""
+                "name": "取词翻译"
             },
             "39": {
-                "use": false,
-                "name": "OCR_查词",
-                "keystring": ""
+                "name": "OCR_查词"
             },
             "_29": {
-                "use": false,
-                "name": "Anki_录音",
-                "keystring": ""
+                "name": "Anki_录音"
             },
             "_30": {
-                "use": false,
-                "name": "Anki_录音_例句",
-                "keystring": ""
+                "name": "Anki_录音_例句"
             },
             "_32": {
-                "use": false,
-                "name": "自动朗读",
-                "keystring": ""
+                "name": "自动朗读"
             },
             "_33": {
-                "use": false,
-                "name": "朗读_单词",
-                "keystring": ""
+                "name": "朗读_单词"
             },
             "_35": {
-                "use": false,
-                "name": "Anki_添加",
-                "keystring": ""
+                "name": "Anki_添加"
             }
         }
     },

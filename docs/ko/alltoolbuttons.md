@@ -53,7 +53,7 @@
 
     마우스를 **마우스 창 투과 버튼 및 그 좌우 한 버튼 영역**으로 이동하면 자동으로 투과 모드를 해제하여 도구 버튼을 사용할 수 있으며, 영역 밖으로 이동하면 자동으로 투과 모드가 복구됩니다.
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 배경 창 투명 {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 창 배경 투명 {#anchor-backtransbutton}
     이 버튼은 번역 창의 불투명도를 0으로 전환하는 기능만 수행합니다. 이 전환은 원래의 불투명도 설정을 잊어버리게 하지 않습니다.
 
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 툴바 잠금 {#anchor-locktoolsbutton}

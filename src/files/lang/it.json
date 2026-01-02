@@ -539,7 +539,6 @@
     "类型": "tipo",
     "显示注音": "Mostra notazione fonetica",
     "辞书显示顺序": "Ordine di visualizzazione lessicografico",
-    "背景窗口透明": "Finestra di sfondo trasparente",
     "文件翻译": "traduzione documentaria",
     "文件": "file",
     "最大结果条数": "Numero massimo di risultati",
@@ -908,5 +907,6 @@
     "字体相对大小": "Dimensione relativa del carattere",
     "修改游戏字体相对大小": "Modifica la dimensione relativa del font del gioco",
     "模拟器游戏支持表": "Tabella di supporto per i giochi su emulatore",
-    "导入": "Importazione"
+    "导入": "Importazione",
+    "窗口背景透明": "Sfondo della finestra trasparente"
 }

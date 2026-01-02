@@ -539,7 +539,6 @@
     "类型": "typ",
     "显示注音": "Zobrazit fonetickou zápis",
     "辞书显示顺序": "Lexikografické pořadí zobrazení",
-    "背景窗口透明": "Okno pozadí transparentní",
     "文件翻译": "dokumentární překlad",
     "文件": "soubor",
     "最大结果条数": "Maximální počet výsledků",
@@ -908,5 +907,6 @@
     "字体相对大小": "Relativní velikost písma",
     "修改游戏字体相对大小": "Upravit relativní velikost písma ve hře",
     "模拟器游戏支持表": "Tabulka podpory her pro emulátory",
-    "导入": "Import"
+    "导入": "Import",
+    "窗口背景透明": "Průhledné pozadí okna"
 }

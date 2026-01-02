@@ -539,7 +539,6 @@
     "类型": "Typ",
     "显示注音": "Phonetische Notation anzeigen",
     "辞书显示顺序": "Lexikographische Anzeigereihenfolge",
-    "背景窗口透明": "Hintergrundfenster transparent",
     "文件翻译": "Übersetzung von Dokumenten",
     "文件": "Datei",
     "最大结果条数": "Maximale Anzahl der Ergebnisse",
@@ -908,5 +907,6 @@
     "字体相对大小": "Relative Schriftgröße",
     "修改游戏字体相对大小": "Ändern der relativen Schriftgröße im Spiel",
     "模拟器游戏支持表": "Simulatorspiel-Unterstützungsliste",
-    "导入": "Importieren"
+    "导入": "Importieren",
+    "窗口背景透明": "Fensterhintergrund transparent"
 }

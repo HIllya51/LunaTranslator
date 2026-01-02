@@ -52,7 +52,7 @@
 
     マウスが**マウススルーウィンドウボタンとその左右の1つのボタンの領域**に移動すると、自動的にスルーを終了してツールボタンを使用できます。領域外に移動すると、自動的にスルーが復元されます。
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 背景ウィンドウを透明化 {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> ウィンドウの背景を透明にする {#anchor-backtransbutton}
     このボタンの機能は、翻訳ウィンドウの不透明度をワンクリックで0に切り替えることです。このスイッチは、元の不透明度設定を忘れることはありません。
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> ツールバーを固定 {#anchor-locktoolsbutton}

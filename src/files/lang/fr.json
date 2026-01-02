@@ -539,7 +539,6 @@
     "类型": "Type",
     "显示注音": "Afficher les notes",
     "辞书显示顺序": "Ordre d'affichage des discours",
-    "背景窗口透明": "Fenêtre de fond transparente",
     "文件翻译": "Traduction de documents",
     "文件": "Documents",
     "最大结果条数": "Nombre maximal de barres de résultats",
@@ -908,5 +907,6 @@
     "字体相对大小": "Taille relative de la police",
     "修改游戏字体相对大小": "Modifier la taille relative de la police du jeu",
     "模拟器游戏支持表": "Tableau de compatibilité des jeux d'émulateur",
-    "导入": "Importation"
+    "导入": "Importation",
+    "窗口背景透明": "Fond de fenêtre transparent"
 }

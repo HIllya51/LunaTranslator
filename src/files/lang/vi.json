@@ -539,7 +539,6 @@
     "类型": "Loại",
     "显示注音": "Hiện chú thích",
     "辞书显示顺序": "Trình tự hiển thị từ điển",
-    "背景窗口透明": "Trong suốt cửa sổ nền",
     "文件翻译": "Dịch tài liệu",
     "文件": "Tài liệu",
     "最大结果条数": "Số thanh kết quả tối đa",
@@ -908,5 +907,6 @@
     "字体相对大小": "Kích thước tương đối của phông chữ",
     "修改游戏字体相对大小": "Thay đổi kích thước phông chữ tương đối trong trò chơi",
     "模拟器游戏支持表": "Bảng hỗ trợ trò chơi giả lập",
-    "导入": "Nhập khẩu"
+    "导入": "Nhập khẩu",
+    "窗口背景透明": "Nền cửa sổ trong suốt"
 }

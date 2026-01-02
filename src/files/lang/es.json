@@ -539,7 +539,6 @@
     "类型": "Tipo",
     "显示注音": "Muestra la nota de sonido",
     "辞书显示顺序": "Orden de visualización del diccionario",
-    "背景窗口透明": "La ventana de fondo es transparente",
     "文件翻译": "Traducción de documentos",
     "文件": "Documentos",
     "最大结果条数": "Número máximo de resultados",
@@ -908,5 +907,6 @@
     "字体相对大小": "Tamaño relativo de la fuente",
     "修改游戏字体相对大小": "Modificar el tamaño relativo de la fuente del juego",
     "模拟器游戏支持表": "Tabla de compatibilidad de juegos de emulador",
-    "导入": "Importar"
+    "导入": "Importar",
+    "窗口背景透明": "Fondo de ventana transparente"
 }

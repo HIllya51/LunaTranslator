@@ -539,7 +539,6 @@
     "类型": "typ",
     "显示注音": "Wyświetla notację fonetyczną",
     "辞书显示顺序": "Kolejność wyświetlania leksygraficznego",
-    "背景窗口透明": "Okno tła przejrzyste",
     "文件翻译": "tłumaczenie dokumentów",
     "文件": "plik",
     "最大结果条数": "Maksymalna liczba wyników",
@@ -908,5 +907,6 @@
     "字体相对大小": "Względna wielkość czcionki",
     "修改游戏字体相对大小": "Zmodyfikuj względny rozmiar czcionki w grze",
     "模拟器游戏支持表": "Tabela obsługi gier emulatora",
-    "导入": "Import"
+    "导入": "Import",
+    "窗口背景透明": "Przezroczyste tło okna"
 }

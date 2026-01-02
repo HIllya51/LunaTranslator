@@ -52,7 +52,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     When the mouse moves to the **area of the Mouse Through Window button and one button to the left and right**, it will automatically exit through to use the tool buttons; it will automatically restore through when moving out of the area.
 
-1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> Background Window Transparency {#anchor-backtransbutton}
+1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> Window background transparency {#anchor-backtransbutton}
     The function of this button is to switch the opacity of the translation window to 0 with one click. This switch will not cause the original opacity settings to be forgotten.
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> Lock Toolbar {#anchor-locktoolsbutton}
