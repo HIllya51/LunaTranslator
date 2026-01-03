@@ -599,7 +599,7 @@ class dialog_setting_game_internal(QWidget):
         self.lauchpath = getsimplepatheditor(
             get_launchpath(gameuid),
             callback=self.selectexe_lauch,
-            icons=("fa.gear", "fa.refresh"),
+            icons=("fa.gear", "fa.undo"),
             clearset=lambda: uid2gamepath[gameuid],
         )
         formLayout.addRow("启动程序", self.lauchpath)
@@ -1008,7 +1008,7 @@ class dialog_setting_game_internal(QWidget):
                 False,
                 "*.sqlite",
                 functools.partial(selectimg, gameuid, "gamesqlitefile"),
-                icons=("fa.folder-open", "fa.refresh"),
+                icons=("fa.folder-open", "fa.undo"),
             ),
         )
 

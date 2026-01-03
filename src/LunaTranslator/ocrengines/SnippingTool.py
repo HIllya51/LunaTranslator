@@ -3,7 +3,7 @@ from qtsymbols import *
 from ctypes import Structure, memmove, c_longlong, c_int, c_float, c_int32, c_int64
 from ocrengines.baseocrclass import baseocr, OCRResult
 import os, zipfile, shutil
-from myutils.utils import stringfyerror
+from myutils.utils import stringfyerror, format_bytes
 from myutils.config import _TR, dynamiclink
 import gobject, requests
 from traceback import print_exc
@@ -82,14 +82,14 @@ class question(QWidget):
         self.skiplink2 = True
         target = gobject.gettempdir(saves[-1][2])
         with open(target, "wb") as ff:
+            asize = format_bytes(size)
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
                 file_size += len(_)
                 prg = int(10000 * file_size / size)
                 prg100 = prg / 100
-                sz = int(1000 * (int(size / 1024) / 1024)) / 1000
                 self.progresssetval.emit(
-                    _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
+                    _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
                     prg,
                 )
 
@@ -147,14 +147,14 @@ class question(QWidget):
         size = int(req.headers["Content-Length"])
         target = gobject.gettempdir(url.split("/")[-1])
         with open(target, "wb") as ff:
+            asize = format_bytes(size)
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
                 file_size += len(_)
                 prg = int(10000 * file_size / size)
                 prg100 = prg / 100
-                sz = int(1000 * (int(size / 1024) / 1024)) / 1000
                 self.progresssetval.emit(
-                    _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
+                    _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
                     prg,
                 )
         self.progresssetval.emit(_TR("正在解压"), 10000)

@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Modificar el tamaño relativo de la fuente del juego",
     "模拟器游戏支持表": "Tabla de compatibilidad de juegos de emulador",
     "导入": "Importar",
-    "窗口背景透明": "Fondo de ventana transparente"
+    "窗口背景透明": "Fondo de ventana transparente",
+    "伴随启动": "Acompañado de inicio",
+    "网络": "Red",
+    "参数": "Parámetro",
+    "环境变量": "Variable de entorno",
+    "停止": "Detener",
+    "启动中": "Iniciando",
+    "选择字体": "Seleccionar fuente",
+    "模型": "Modelo",
+    "更新时间": "Tiempo de actualización"
 }

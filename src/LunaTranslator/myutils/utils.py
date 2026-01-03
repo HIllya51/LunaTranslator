@@ -1233,3 +1233,37 @@ def is_ascii_symbo(c: str):
 def is_ascii_control(c: str):
     # 不要管\r\n
     return cinranges(c, (0, 0x9), (0xB, 0xC), (0xE, 0x1F), (0x7F, 0xA0))
+
+
+def format_bytes(bytes_num: int, precision: int = 2) -> str:
+    if not bytes_num:
+        return "0 B"
+    if not isinstance(bytes_num, (int, float)):
+        try:
+            bytes_num = float(bytes_num)
+        except:
+            return "0 B"
+    bytes_num = abs(bytes_num)
+
+    units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
+
+    if bytes_num == 0:
+        return f"0 {units[0]}"
+
+    unit_index = 0
+    while bytes_num >= 1000 and unit_index < len(units) - 1:
+        bytes_num /= 1024
+        unit_index += 1
+
+    if unit_index == 0:
+        return f"{int(bytes_num)} {units[unit_index]}"
+    else:
+
+        formatted = f"{bytes_num:.{precision}f}"
+
+        if formatted.endswith(".00"):
+            formatted = formatted[:-3]
+        elif formatted.endswith(".0"):
+            formatted = formatted[:-2]
+
+        return f"{formatted} {units[unit_index]}"

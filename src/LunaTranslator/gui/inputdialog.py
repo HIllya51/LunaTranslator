@@ -615,6 +615,7 @@ class autoinitdialog(LDialog):
                     getIconButton(
                         callback=functools.partial(self.__refresh, line, combo),
                         icon="fa.refresh",
+                        tips="刷新",
                     )
                 )
             lineW.addWidget(combo)

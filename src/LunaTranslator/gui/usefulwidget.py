@@ -1306,14 +1306,16 @@ def getsimpleswitch(
     return b
 
 
-def __getsmalllabel(text):
+def __getsmalllabel(text, tips=None):
     __ = LLabel(text)
+    if tips:
+        __.setToolTip(tips)
     __.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
     return __
 
 
-def getsmalllabel(text=""):
-    return lambda: __getsmalllabel(text)
+def getsmalllabel(text="", tips=None):
+    return lambda: __getsmalllabel(text, tips=tips)
 
 
 def __getcenterX(w, widget=False):
@@ -2407,8 +2409,11 @@ def makegroupingrid(args: dict):
         group = NQGroupBox()
     if not enable:
         group.setEnabled(False)
-    if groupname and parent:
-        setattr(parent, groupname, group)
+    if groupname and (parent is not None):
+        if isinstance(parent, dict):
+            parent[groupname] = group
+        else:
+            setattr(parent, groupname, group)
     if _type == "grid":
         grid = QGridLayout(group)
         automakegrid(grid, lis)
@@ -3137,6 +3142,7 @@ class IconButton(LPushButton):
         tips=None,
         color=None,
         none=False,
+        checkablechangecolor=True,
     ):
         super().__init__(parent)
         if tips:
@@ -3146,6 +3152,7 @@ class IconButton(LPushButton):
         self.clicked.connect(self.clicked_1)
         self.clicked.connect(self.__seticon)
         self._qicon = qicon
+        self.__checkablechangecolor = checkablechangecolor
         self.fix = fix
         if fix:
             self.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
@@ -3167,6 +3174,9 @@ class IconButton(LPushButton):
         self._icon = icon
         self.__seticon()
 
+    def iconStr(self):
+        return self._icon
+
     def __seticon(self):
         if self._qicon:
             icon = self._qicon
@@ -3174,7 +3184,7 @@ class IconButton(LPushButton):
             if self._icon is None:
                 # 用于虚拟占位度量
                 return
-            if self.isCheckable():
+            if self.isCheckable() and self.__checkablechangecolor:
                 if isinstance(self._icon, str):
                     icons = [self._icon, self._icon]
                 else:
@@ -3342,6 +3352,7 @@ class CollapsibleBox(NQGroupBox):
         if margin0:
             lay.setContentsMargins(0, 0, 0, 0)
         self.func = delayloadfunction
+        self.__lay = lay
         self.toggle(False)
 
     def toggle(self, checked):
@@ -3349,6 +3360,10 @@ class CollapsibleBox(NQGroupBox):
             self.func(self.layout())
             self.func = None
         self.setVisible(checked)
+
+    @property
+    def internalLayout(self):
+        return self.__lay
 
 
 class CollapsibleBoxWithButton(QWidget):
@@ -3388,6 +3403,10 @@ class CollapsibleBoxWithButton(QWidget):
         self.toggle_button.setIcon(
             qtawesome.icon("fa.chevron-down" if checked else "fa.chevron-right")
         )
+
+    @property
+    def internalLayout(self):
+        return self.content_area.internalLayout
 
 
 def createfoldgrid(

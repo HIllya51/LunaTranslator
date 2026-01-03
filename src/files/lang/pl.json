@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Zmodyfikuj względny rozmiar czcionki w grze",
     "模拟器游戏支持表": "Tabela obsługi gier emulatora",
     "导入": "Import",
-    "窗口背景透明": "Przezroczyste tło okna"
+    "窗口背景透明": "Przezroczyste tło okna",
+    "伴随启动": "Towarzyszące uruchomienie",
+    "网络": "Internet",
+    "参数": "Parametr",
+    "环境变量": "Zmienna środowiskowa",
+    "停止": "Stop",
+    "启动中": "Uruchamianie",
+    "选择字体": "Wybierz czcionkę",
+    "模型": "Model",
+    "更新时间": "Data aktualizacji"
 }

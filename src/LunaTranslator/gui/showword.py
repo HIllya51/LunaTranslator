@@ -1173,9 +1173,17 @@ class showdiction(QWidget):
         self.word = FQLineEdit()
         self.word.returnPressed.connect(self.setwordfilter)
         wordfilter.addWidget(self.word)
-        butn = getIconButton(self.setwordfilter, "fa.search")
+        butn = getIconButton(
+            self.setwordfilter,
+            "fa.search",
+            tips="搜索",
+        )
         wordfilter.addWidget(butn)
-        refresh = getIconButton(self.refresh, "fa.refresh")
+        refresh = getIconButton(
+            self.refresh,
+            "fa.refresh",
+            tips="刷新",
+        )
         wordfilter.addWidget(refresh)
         self.tree = kpQTreeView(self)
         self.tree.setUniformRowHeights(True)

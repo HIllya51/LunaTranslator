@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Adjust the relative font size in the game",
     "模拟器游戏支持表": "Simulator Game Compatibility List",
     "导入": "Import",
-    "窗口背景透明": "Window background transparency"
+    "窗口背景透明": "Window background transparency",
+    "伴随启动": "Accompanied startup",
+    "网络": "Internet",
+    "参数": "Parameter",
+    "环境变量": "Environment variable",
+    "选择字体": "Select font",
+    "停止": "Stop",
+    "启动中": "Starting up",
+    "模型": "Model",
+    "更新时间": "Update Time"
 }

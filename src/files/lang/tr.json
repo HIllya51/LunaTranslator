@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Oyun yazı tipi göreceli boyutunu değiştir",
     "模拟器游戏支持表": "Simülatör Oyun Destek Tablosu",
     "导入": "İthalat",
-    "窗口背景透明": "Pencere arka planı şeffaf"
+    "窗口背景透明": "Pencere arka planı şeffaf",
+    "伴随启动": "Eşlik eden başlatma",
+    "网络": "İnternet",
+    "参数": "Parametre",
+    "环境变量": "Çevre değişkeni",
+    "停止": "Dur",
+    "启动中": "Başlatılıyor",
+    "选择字体": "Yazı Tipi Seçin",
+    "模型": "Model",
+    "更新时间": "Güncelleme zamanı"
 }

@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Ändra relativ teckenstorlek i spelet",
     "模拟器游戏支持表": "Simulatorspel stödtabell",
     "导入": "Importera",
-    "窗口背景透明": "Fönsterbakgrund genomskinlig"
+    "窗口背景透明": "Fönsterbakgrund genomskinlig",
+    "伴随启动": "Med start",
+    "网络": "Nätverk",
+    "参数": "Parameter",
+    "环境变量": "Miljövariabel",
+    "停止": "Stopp",
+    "启动中": "Startar upp",
+    "选择字体": "Välj typsnitt",
+    "模型": "Modell",
+    "更新时间": "Uppdaterad tid"
 }

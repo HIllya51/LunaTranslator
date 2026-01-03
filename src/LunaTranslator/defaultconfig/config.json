@@ -1,4 +1,5 @@
 {
+    "llama.cpp": {},
     "screenshot_savepath": "",
     "screenshot_method": {
         "gdi": true,
@@ -748,7 +749,7 @@
             "history": {
                 "use": true,
                 "tip": "显示/隐藏历史文本",
-                "icon": "fa.rotate-left",
+                "icon": "fa.history",
                 "align": 2
             },
             "gamepad_new": {

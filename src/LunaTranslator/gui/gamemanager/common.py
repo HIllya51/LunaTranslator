@@ -268,7 +268,7 @@ def addgamebatch(callback, targetlist):
     res = QFileDialog.getExistingDirectory(
         options=QFileDialog.Option.DontResolveSymlinks
     )
-    if res == "":
+    if not res:
         return
     paths = []
     for _dir, _, _fs in os.walk(res):
@@ -360,9 +360,9 @@ def getfonteditor(d: dict, k: str, callback=None):
     lay.setContentsMargins(0, 0, 0, 0)
     e = QLineEdit(d.get(k, ""))
     e.setReadOnly(True)
-    icons = ("fa.font", "fa.refresh")
-    bu = getIconButton(icon=icons[0])
-    clear = getIconButton(icon=icons[1])
+    icons = ("fa.font", "fa.undo")
+    bu = getIconButton(icon=icons[0], tips="选择字体")
+    clear = getIconButton(icon=icons[1], tips="还原")
 
     def __selectfont(d: dict, k: str, callback, e: QLineEdit):
         f = QFont()

@@ -155,7 +155,7 @@
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 複製到剪貼簿 {#anchor-copy}
     複製目前擷取到的文字到剪貼簿一次。如果想要自動擷取到剪貼簿，應啟用`文字輸入`->`剪貼簿`->`自動輸出`->`自動輸出文字`。
 
-1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏歷史文字 {#anchor-history}
+1. #### <i class="fa fa-history"></i> <i class="fa fa-icon fa-rotate-right"></i> 顯示／隱藏歷史文字 {#anchor-history}
     開啟或關閉歷史文字的視窗。
 
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> 遊戲管理 {#anchor-gamepad_new}

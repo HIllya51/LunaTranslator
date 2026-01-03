@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Ändern der relativen Schriftgröße im Spiel",
     "模拟器游戏支持表": "Simulatorspiel-Unterstützungsliste",
     "导入": "Importieren",
-    "窗口背景透明": "Fensterhintergrund transparent"
+    "窗口背景透明": "Fensterhintergrund transparent",
+    "伴随启动": "Begleitstart",
+    "网络": "Netzwerk",
+    "参数": "Parameter",
+    "环境变量": "Umgebungsvariable",
+    "停止": "Halt",
+    "启动中": "Wird gestartet.",
+    "选择字体": "Schriftart auswählen",
+    "模型": "Modell",
+    "更新时间": "Aktualisierungszeit"
 }

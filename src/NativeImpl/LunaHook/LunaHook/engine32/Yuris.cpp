@@ -425,7 +425,7 @@ bool Yuris::yuris8()
   auto calltarget = addr + offset + 5 + *(int *)(addr + offset + 1);
   auto yuris9 = [&]()
   {
-    // 竜姫ぐーたらいふ 2 & 3 官方英文+繁中版
+    // 竜姫ぐーたらいふ 1 & LOVE+PLUS & 2 & 3 官方英文+繁中版
     // yuris8无法捕获旁白
     /*
 .text:00453460 85 C9                                         test    ecx, ecx

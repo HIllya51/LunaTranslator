@@ -2,7 +2,7 @@ import os
 from myutils.config import globalconfig
 import requests, zipfile, gobject
 from gui.usefulwidget import VisLFormLayout, getboxlayout, NQGroupBox, LinkLabel
-from myutils.utils import makehtml, stringfyerror
+from myutils.utils import makehtml, stringfyerror, format_bytes
 from myutils.config import _TR, mayberelpath, dynamiclink
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
@@ -155,14 +155,14 @@ class resourcewidget2(NQGroupBox):
             size = int(req.headers["Content-Length"])
             target = gobject.gettempdir(url.split("/")[-1])
             with open(target, "wb") as ff:
+                asize = format_bytes(size)
                 for _ in req.iter_content(chunk_size=1024 * 32):
                     ff.write(_)
                     file_size += len(_)
                     prg = int(10000 * file_size / size)
                     prg100 = prg / 100
-                    sz = int(1000 * (int(size / 1024) / 1024)) / 1000
                     self.progresssetval.emit(
-                        _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
+                        _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
                         prg,
                     )
 

@@ -624,7 +624,7 @@ class transhist(closeashidewindow):
         self.getnewsentencesignal.connect(self.getnewsentence)
         self.getnewtranssignal.connect(self.getnewtrans)
         self.setWindowTitle("历史文本")
-        self.setWindowIcon(qtawesome.icon("fa.rotate-left"))
+        self.setWindowIcon(qtawesome.icon("fa.history"))
         self.state = 0
 
     def __load(self):

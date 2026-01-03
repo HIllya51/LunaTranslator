@@ -140,7 +140,7 @@
     该朗读会无视`跳过`（如果在`语音指定`中，匹配当前文本目标为`跳过`，则使用按钮进行朗读时，会无视跳过，强制进行朗读）
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 复制到剪贴板 {#anchor-copy}
     复制当前提取到的文本到剪贴板一次。如果想要自动提取到剪贴板，应当激活`文本输入`->`剪贴板`->`自动输出`->`自动输出文本`。
-1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏历史文本 {#anchor-history}
+1. #### <i class="fa fa-history"></i> <i class="fa fa-icon fa-rotate-right"></i> 显示/隐藏历史文本 {#anchor-history}
     打开或关闭历史文本的窗口。
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> 游戏管理 {#anchor-gamepad_new}
     打开游戏管理器界面。

@@ -16,6 +16,7 @@ from traceback import print_exc
 from qtsymbols import *
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
+from myutils.utils import format_bytes
 from gui.usefulwidget import (
     SuperCombo,
     getboxwidget,
@@ -267,15 +268,15 @@ class question(QWidget):
         target = gobject.gettempdir("ocrmodel/" + hashlib.md5(url.encode()).hexdigest())
         md5 = hashlib.md5()
         with open(target, "wb") as ff:
+            asize = format_bytes(size)
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
                 md5.update(_)
                 file_size += len(_)
                 prg = int(10000 * file_size / size)
                 prg100 = prg / 100
-                sz = int(1000 * (int(size / 1024) / 1024)) / 1000
                 self.progresssetval.emit(
-                    _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
+                    _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
                     prg,
                 )
         self.progresssetval.emit(_TR("正在解压"), 10000)

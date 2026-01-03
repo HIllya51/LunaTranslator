@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Modifier la taille relative de la police du jeu",
     "模拟器游戏支持表": "Tableau de compatibilité des jeux d'émulateur",
     "导入": "Importation",
-    "窗口背景透明": "Fond de fenêtre transparent"
+    "窗口背景透明": "Fond de fenêtre transparent",
+    "伴随启动": "Accompagnement du démarrage",
+    "网络": "Internet",
+    "参数": "Paramètre",
+    "环境变量": "Variable d'environnement",
+    "停止": "Arrêt",
+    "启动中": "Démarrage en cours.",
+    "选择字体": "Choisir une police de caractères",
+    "模型": "Modèle",
+    "更新时间": "Date de mise à jour"
 }

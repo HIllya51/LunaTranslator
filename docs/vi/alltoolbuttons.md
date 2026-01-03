@@ -139,7 +139,7 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Việc đọc này sẽ bỏ qua `Bỏ qua` (nếu trong `Cài đặt giọng nói`, mục tiêu văn bản hiện tại được khớp là `Bỏ qua`, thì việc sử dụng nút để đọc sẽ bỏ qua bỏ qua và buộc đọc).
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> Sao chép vào bảng nháp {#anchor-copy}
     Sao chép văn bản hiện tại đã được trích xuất vào clipboard một lần. Nếu muốn tự động trích xuất vào clipboard, bật `Nhập văn bản` → `Clipboard` → `Tự động xuất` → `Tự động xuất văn bản`.
-1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> Hiển thị / ẩn văn bản lịch sử {#anchor-history}
+1. #### <i class="fa fa-history"></i> <i class="fa fa-icon fa-rotate-right"></i> Hiển thị / ẩn văn bản lịch sử {#anchor-history}
     Mở hoặc đóng cửa sổ văn bản lịch sử.
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> Quản lý trò chơi {#anchor-gamepad_new}
     Mở giao diện quản lý trò chơi.

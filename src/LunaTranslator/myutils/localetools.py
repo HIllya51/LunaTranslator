@@ -139,7 +139,7 @@ class le_internal(LEbase):
                 filter1="LEProc.exe",
                 callback=functools.partial(self.reselect, config, Guids),
                 clearset=lambda: _TR("内置"),
-                icons=("fa.gear", "fa.refresh"),
+                icons=("fa.gear", "fa.undo"),
             ),
         )
         layout.addRow("Profile", self.__profiles)
@@ -211,7 +211,7 @@ class NTLEAS64(LEbase):
                 filter1="ntleasWin.exe",
                 callback=self.reselect,
                 clearset=lambda: _TR("内置"),
-                icons=("fa.gear", "fa.refresh"),
+                icons=("fa.gear", "fa.undo"),
             ),
         )
         layout.addRow(
@@ -312,7 +312,7 @@ class lr_internal(LEbase):
                 filter1="LRProc.exe",
                 callback=functools.partial(self.reselect, config, Guids),
                 clearset=lambda: _TR("内置"),
-                icons=("fa.gear", "fa.refresh"),
+                icons=("fa.gear", "fa.undo"),
             ),
         )
         layout.addRow("Profile", self.__profiles)

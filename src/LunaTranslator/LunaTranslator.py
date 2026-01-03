@@ -17,6 +17,7 @@ from myutils.config import (
     dynamicapiname,
     dynamiclink,
 )
+from myutils.hwnd import subprochiderun
 from ctypes import cast, c_wchar_p
 from ctypes.wintypes import UINT, WPARAM, LPARAM
 from myutils.keycode import mod_map_r
@@ -73,6 +74,7 @@ from translator.basetranslator import basetrans
 from textio.textoutput.outputerbase import Base as outputerbase
 from myutils.updater import versioncheckthread
 from gui.qevent import DarkLightChangedEvent
+from gui.setting.translate import autostartllamacpp
 
 
 class BASEOBJECT(QObject):
@@ -105,12 +107,24 @@ class BASEOBJECT(QObject):
     RichMessageBox = pyqtSignal(object)
     starttranslatefiles = pyqtSignal(list)
     ocr_search_word_save_image = pyqtSignal(QImage)
+    llamacppstatus = pyqtSignal(int)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
             signal.disconnect()
             callback(*self.__cachesignal[signal])
+        elif signal in self.__cachesignal2:
+            signal.disconnect()
+            for arg in self.__cachesignal2[signal]:
+                callback(*arg)
         signal.connect(callback)
+
+    def __connect_internal_all(self, signal: pyqtBoundSignal):
+        self.__cachesignal2[signal] = []
+        signal.connect(functools.partial(self.__connect_internal_2, signal))
+
+    def __connect_internal_2(self, signal, *arg):
+        self.__cachesignal2[signal].append(arg)
 
     def __connect_internal(self, signal: pyqtBoundSignal):
         signal.connect(functools.partial(self.__connect_internal_1, signal))
@@ -126,7 +140,9 @@ class BASEOBJECT(QObject):
 
     def initsignals(self):
         self.__cachesignal: "dict[pyqtBoundSignal, tuple]" = {}
+        self.__cachesignal2: "dict[pyqtBoundSignal, list]" = {}
         self.__connect_internal(self.dispatch_translate)
+        self.__connect_internal(self.llamacppstatus)
         self.__connect_internal(self.ocr_search_word_save_image)
         self.__connect_internal(self.portconflict)
         self.__connect_internal(self.thresholdsett1)
@@ -1510,6 +1526,7 @@ class BASEOBJECT(QObject):
         self.urlprotocol()
         self.serviceinit()
         versioncheckthread()
+        autostartllamacpp()
 
     @property
     def focusWindow(self):

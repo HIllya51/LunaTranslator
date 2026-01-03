@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Upravit relativní velikost písma ve hře",
     "模拟器游戏支持表": "Tabulka podpory her pro emulátory",
     "导入": "Import",
-    "窗口背景透明": "Průhledné pozadí okna"
+    "窗口背景透明": "Průhledné pozadí okna",
+    "伴随启动": "Spuštění doprovázené",
+    "网络": "Internet",
+    "参数": "Parametr",
+    "环境变量": "Proměnná prostředí",
+    "停止": "Zastavit",
+    "启动中": "Spouštění",
+    "选择字体": "Vyberte písmo",
+    "模型": "Model",
+    "更新时间": "Čas aktualizace"
 }

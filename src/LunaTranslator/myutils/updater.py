@@ -3,6 +3,7 @@ from myutils.config import globalconfig, static_data, _TR
 from gobject import runtime_for_xp, runtime_bit_64, runtime_for_win10, runtimedir
 from myutils.wrapper import threader, tryprint, trypass
 from myutils.hwnd import getcurrexe
+from myutils.utils import format_bytes
 import requests, base64
 import shutil, gobject
 from myutils.proxy import getproxy
@@ -141,6 +142,7 @@ def updatemethod(urls: "tuple[str, str]"):
         r = requests.get(url, stream=True, verify=False, proxies=getproxy())
         size = int(r.headers["Content-Length"])
         file_size = 0
+        asize = format_bytes(size)
         for i in r.iter_content(chunk_size=1024 * 32):
             if check_interrupt():
                 return
@@ -152,9 +154,8 @@ def updatemethod(urls: "tuple[str, str]"):
 
             prg = int(10000 * file_size / size)
             prg100 = prg / 100
-            sz = int(1000 * (int(size / 1024) / 1024)) / 1000
             gobject.base.progresssignal4.emit(
-                _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
+                _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
                 prg,
             )
 

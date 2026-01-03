@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Pas de relatieve grootte van het spellettertype aan",
     "模拟器游戏支持表": "Simulator Game Support List",
     "导入": "Importeren",
-    "窗口背景透明": "Vensterachtergrond transparant"
+    "窗口背景透明": "Vensterachtergrond transparant",
+    "伴随启动": "Begeleidende lancering",
+    "网络": "Netwerk",
+    "参数": "Parameter",
+    "环境变量": "Omgevingsvariabele",
+    "停止": "Stop",
+    "启动中": "Opstarten",
+    "选择字体": "Lettertype kiezen",
+    "模型": "Model",
+    "更新时间": "Update tijd"
 }

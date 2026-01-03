@@ -908,5 +908,14 @@
     "修改游戏字体相对大小": "Thay đổi kích thước phông chữ tương đối trong trò chơi",
     "模拟器游戏支持表": "Bảng hỗ trợ trò chơi giả lập",
     "导入": "Nhập khẩu",
-    "窗口背景透明": "Nền cửa sổ trong suốt"
+    "窗口背景透明": "Nền cửa sổ trong suốt",
+    "伴随启动": "Khởi động kèm theo",
+    "网络": "Mạng lưới",
+    "参数": "Tham số",
+    "环境变量": "Biến môi trường",
+    "停止": "Dừng lại",
+    "启动中": "Đang khởi động",
+    "选择字体": "Chọn phông chữ",
+    "模型": "Mô hình",
+    "更新时间": "Thời gian cập nhật"
 }

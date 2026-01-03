@@ -1,35 +1,44 @@
 from qtsymbols import *
-import functools, os
-import gobject
+import functools, os, re
+import gobject, math, NativeUtils
 from myutils.config import (
     globalconfig,
     savehook_new_data,
     translatorsetting,
     _TR,
+    tryreadconfig2,
     getcopyfrom,
     copyllmapi,
     dynamicapiname,
     dynamiclink,
 )
+from datetime import datetime
+import requests
 from myutils.utils import (
     getlangtgt,
+    format_bytes,
     selectdebugfile,
     splittranslatortypes,
     translate_exits,
     getannotatedapiname,
 )
+from myutils.proxy import getproxy
+from myutils.hwnd import subprochiderun
 import json, sqlite3
 from traceback import print_exc
 from gui.usefulwidget import SuperCombo
 from collections import Counter
-from myutils.wrapper import tryprint
+from language import Languages
+from myutils.wrapper import tryprint, threader
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
+    D_getspinbox,
     AutoScaleImageButton,
     getIconButton,
     D_getcolorbutton,
     getcolorbutton,
     check_grid_append,
+    CollapsibleBoxWithButton,
     getsimpleswitch,
     D_getIconButton,
     MyInputDialog,
@@ -45,6 +54,7 @@ from gui.usefulwidget import (
     makescrollgrid,
     IconButton,
     PopupWidget,
+    getsimplecombobox,
 )
 from gui.setting.display_text import GetFormForLineHeight
 from gui.dynalang import LPushButton, LAction, LFormLayout, LDialog
@@ -450,8 +460,656 @@ def initsome21(self, not_is_gpt_like):
     return grids
 
 
-def leftwidget(self):
+def __create(download, keydir, key, check):
+    combollama = SuperCombo()
+    combollama.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
+    def refresh_llama(combo: SuperCombo):
+        llamacppdir = globalconfig["llama.cpp"].get(keydir, ".")
+        if not llamacppdir:
+            return
+        with QSignalBlocker(combo) as _:
+            combo.clear()
+            for _dir, _, _fs in os.walk(llamacppdir):
+                for _f in _fs:
+                    if not check(_f):
+                        continue
+                    _ = os.path.relpath(os.path.join(_dir, _f), llamacppdir)
+                    combo.addItem(_, internal=_)
+            combo.setCurrentData(globalconfig["llama.cpp"].get(key))
+
+    def getdir(combo):
+        llamacppdir = globalconfig["llama.cpp"].get(keydir, ".")
+        f = QFileDialog.getExistingDirectory(combo, directory=llamacppdir)
+        if not f:
+            return
+        globalconfig["llama.cpp"].__setitem__(keydir, f)
+        refresh_llama(combo)
+
+    refresh_llama(combollama)
+    combollama.currentIndexChanged.connect(
+        lambda idx: globalconfig["llama.cpp"].__setitem__(
+            key, combollama.getIndexData(idx)
+        )
+    )
+    return (
+        (
+            getIconButton(
+                callback=functools.partial(download, combollama),
+                icon="fa.download",
+            )
+            if download
+            else None
+        ),
+        combollama,
+        getIconButton(
+            callback=functools.partial(getdir, combollama),
+            icon="fa.folder-open",
+        ),
+        getIconButton(
+            callback=functools.partial(refresh_llama, combollama),
+            icon="fa.refresh",
+            tips="刷新",
+        ),
+    )
+
+
+def context_to_slider(context):
+    min_value = math.log(256)
+    max_value = math.log(131072)
+    return int(10000 * (math.log(context) - min_value) / (max_value - min_value))
+
+
+def slider_to_context(value):
+    min_value = math.log(256)
+    max_value = math.log(131072)
+    return int(math.exp(min_value + (value / 10000) * (max_value - min_value)))
+
+
+def update_context_from_slider(value):
+    context_length = slider_to_context(value)
+    context_length = max(256, min(131072, context_length))
+    context_length = round(context_length / 256) * 256
+    return context_length
+
+
+def update_slider_from_input(value):
+    value = round(value / 256) * 256
+    slider_value = context_to_slider(value)
+    slider_value = max(0, min(10000, slider_value))
+    return slider_value
+
+
+def _c_slice_spin(
+    keydefault,
+    keyvalue,
+    range0,
+    range1,
+    range20,
+    range21,
+    step,
+    step2,
+    default,
+    defaulttext,
+    f1=lambda x: x,
+    f2=lambda x: x,
+):
+    w = QWidget()
+    text = QLabel(defaulttext)
+    stack = QStackedWidget()
+    stack.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+    stack.addWidget(w)
+    stack.addWidget(text)
+
+    def __(_=None):
+        _df = globalconfig["llama.cpp"].get(keydefault, False)
+        stack.setCurrentIndex(1 - _df)
+
+    switch = getsimpleswitch(
+        globalconfig["llama.cpp"], keydefault, callback=__, default=False
+    )
+    __()
+    l2 = QHBoxLayout(w)
+    context_length = QSlider()
+    context_length.setOrientation(Qt.Orientation.Horizontal)
+    context_length.setRange(range0, range1)
+    context_length.setPageStep(step)
+    context_length.setValue(f1(globalconfig["llama.cpp"].get(keyvalue, default)))
+    context_length_input = QSpinBox()
+    context_length_input.setRange(range20, range21)
+    context_length_input.setSingleStep(step2)
+    context_length_input.setValue(globalconfig["llama.cpp"].get(keyvalue, default))
+    l2.setContentsMargins(0, 0, 0, 0)
+    l2.addWidget(context_length)
+    l2.addWidget(context_length_input)
+
+    def __(v):
+        with QSignalBlocker(context_length_input) as _:
+            context_length_input.setValue(f2(v))
+            globalconfig["llama.cpp"][keyvalue] = f2(v)
+
+    def __2(v):
+        with QSignalBlocker(context_length) as _:
+            context_length.setValue(f1(v))
+            globalconfig["llama.cpp"][keyvalue] = v
+
+    context_length.valueChanged.connect(__)
+    context_length_input.valueChanged.connect(__2)
+
+    l = QHBoxLayout()
+    l.setContentsMargins(0, 0, 0, 0)
+    l.addWidget(switch)
+    l.addWidget(stack)
+    return l
+
+
+def nglnum():
+    l = QHBoxLayout()
+    combo = getsimplecombobox(
+        ["auto", "all", "number"],
+        d=globalconfig["llama.cpp"],
+        k="gpu-layers-which",
+        internal=["auto", "all", "number"],
+        default="auto",
+    )
+    l.addWidget(combo)
+    stack = QStackedWidget()
+    stack.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+    stack.addWidget(QLabel())
+    stack.addWidget(
+        getspinbox(0, 200, globalconfig["llama.cpp"], "gpu-layers", default=200)
+    )
+
+    def cb(_):
+        stack.setCurrentIndex(combo.getIndexData(_) == "number")
+
+    combo.currentIndexChanged.connect(cb)
+    stack.setCurrentIndex(combo.getCurrentData() == "number")
+    l.addWidget(stack)
+    return l
+
+
+def mmapmlock():
+    ll = getsmalllabel(
+        "--mlock",
+        "--mlock    force system to keep model in RAM rather than swapping or compressing",
+    )()
+    swith2 = getsimpleswitch(globalconfig["llama.cpp"], key="mlock", default=False)
+
+    def ___(x):
+        ll.setHidden(x)
+        swith2.setHidden(x)
+
+    swith = getsimpleswitch(
+        globalconfig["llama.cpp"], key="mmap", default=True, callback=___
+    )
+    l = QHBoxLayout()
+    l.setContentsMargins(0, 0, 0, 0)
+    l.addWidget(swith)
+    l.addWidget(QLabel())
+    l.addWidget(ll)
+    l.addWidget(swith2)
+    if swith.isChecked():
+        swith2.hide()
+        ll.hide()
+    return l
+
+
+llamacppautoHandle = None
+
+
+def __getfirstllamacpp(llamacppdir: str):
+    for _dir, _, _fs in os.walk(llamacppdir):
+        for _f in _fs:
+            if _f.lower() == "llama-server.exe":
+                return os.path.abspath(os.path.join(_dir, _f))
+
+
+def __getfirstgguf(ggufdir: str):
+    for _dir, _, _fs in os.walk(ggufdir):
+        for _f in _fs:
+            if _f.lower().endswith(".gguf"):
+                return os.path.abspath(os.path.join(_dir, _f))
+
+
+@threader
+def autostartllamacpp(force=False):
+    if (not force) and (not globalconfig["llama.cpp"].get("autolaunch", False)):
+        return
+
+    gobject.base.llamacppstatus.emit(1)
+    loghandle = open(gobject.getcachedir("llama-server.log"), "a", encoding="utf8")
+
+    class _scopeexits:
+        def __del__(self):
+            gobject.base.llamacppstatus.emit(0)
+            loghandle.close()
+
+    __scopeexits = _scopeexits()
+    llamacppdir = globalconfig["llama.cpp"].get("llama-server.exe.dir", ".")
+    llamaserver = os.path.abspath(
+        os.path.join(llamacppdir, globalconfig["llama.cpp"].get("llama-server.exe", ""))
+    )
+    if not os.path.isfile(llamaserver):
+        llamaserver = __getfirstllamacpp(llamacppdir)
+        if not llamaserver:
+            return
+    ggufdir = globalconfig["llama.cpp"].get("models", ".")
+    gguf = os.path.abspath(
+        os.path.join(
+            ggufdir,
+            globalconfig["llama.cpp"].get("model", ""),
+        )
+    )
+    if not os.path.isfile(gguf):
+        gguf = __getfirstgguf(ggufdir)
+        if not gguf:
+            return
+    ctx = ""
+    if globalconfig["llama.cpp"].get("ctx-size-use", False):
+        ctx = "--ctx-size {}".format(globalconfig["llama.cpp"].get("ctx-size", 2048))
+    parallel = ""
+    if globalconfig["llama.cpp"].get("parallel-use", False):
+        parallel = "--parallel {}".format(globalconfig["llama.cpp"].get("parallel", 1))
+    fa = globalconfig["llama.cpp"].get("flash-attn", "auto")
+    ngl = globalconfig["llama.cpp"].get("gpu-layers-which", "auto")
+    if ngl == "number":
+        ngl = globalconfig["llama.cpp"].get("gpu-layers", 200)
+    gobject.base.translation_ui.displayglobaltooltip.emit("loading llama.cpp")
+    mmap = "--mmap"
+    if not globalconfig["llama.cpp"].get("mmap", True):
+        mmap = "--no-mmap"
+        if globalconfig["llama.cpp"].get("mlock", False):
+            mmap += " --mlock"
+    cmd = '"{llamaserver}" -m "{gguf}" --host {host} --port {port} {ctx} {parallel} --flash-attn {fa} --gpu-layers {ngl} {mmap} --metrics'.format(
+        mmap=mmap,
+        ngl=ngl,
+        fa=fa,
+        ctx=ctx,
+        parallel=parallel,
+        llamaserver=llamaserver,
+        gguf=gguf,
+        host=globalconfig["llama.cpp"].get("host", "127.0.0.1"),
+        port=globalconfig["llama.cpp"].get("port", 8080),
+    )
+    print(cmd, file=loghandle, flush=True)
+    env = None
+    _env: str = globalconfig["llama.cpp"].get("environment")
+    if _env:
+        env = os.environ.copy()
+        for _ in _env.split(";"):
+            _s = _.split("=")
+            if len(_s) != 2:
+                continue
+            if (not _s[0]) or (not _s[1]):
+                return
+            env[_s[0]] = _s[1]
+    proc = subprochiderun(cmd, cwd=os.path.dirname(llamaserver), run=False, env=env)
+    global llamacppautoHandle
+    llamacppautoHandle = NativeUtils.AutoKillProcess(proc.pid)
+
+    @threader
+    def _(std):
+        while True:
+            l = getattr(proc, std).readline()
+            if not l:
+                break
+            if l == "main: starting the main loop...\n":
+                gobject.base.translation_ui.displayglobaltooltip.emit(
+                    "llama.cpp loaded"
+                )
+                gobject.base.llamacppstatus.emit(2)
+            print(l, file=loghandle, flush=True, end="")
+
+    _("stderr")
+    _("stdout")
+
+    proc.wait()
+    gobject.base.translation_ui.displayglobaltooltip.emit("llama.cpp exit")
+
+
+def __llamadownload(parent):
+    try:
+        c = QCursor.pos()
+        res = requests.get(
+            "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
+            proxies=getproxy(),
+        ).json()
+        menu = QMenu(parent)
+        for _ in res["assets"]:
+            name = _["name"]
+            if (not "win" in name) or ("arm" in name):
+                continue
+            browser_download_url = _["browser_download_url"]
+            size = format_bytes(_["size"])
+            action = QAction(name + "\t" + size, menu)
+            action.setData(browser_download_url)
+            menu.addAction(action)
+        ret = menu.exec(c)
+        if ret:
+            os.startfile(ret.data())
+    except:
+        print_exc()
+        os.startfile("https://github.com/ggml-org/llama.cpp/releases")
+
+
+def __ggufdownload(parent, checked):
+    parent["pathlayout"].layout().setRowVisible(2, checked)
+
+
+class AdvancedTreeTable(QTreeWidget):
+    def __init__(self):
+        super().__init__()
+        self.setup_ui()
+
+    def setup_ui(self):
+        headers = [
+            _TR("模型"),
+            _TR("语言"),
+            _TR("大小"),
+            _TR("更新时间"),
+        ]
+        self.setHeaderLabels(headers)
+        header = self.header()
+        header.setSectionsClickable(True)
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        for i in range(1, self.columnCount()):
+            header.setSectionResizeMode(i, QHeaderView.ResizeMode.ResizeToContents)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.show_header_menu)
+        self.itemDoubleClicked.connect(self._itemDoubleClicked)
+        self.populate_data()
+        self.setSortingEnabled(False)
+        header.setSectionsClickable(True)
+        header.setSortIndicatorShown(True)
+        header.sortIndicatorChanged.connect(self.changed)
+
+    def changed(self, index, order: Qt.SortOrder):
+        self.sortItems(index, order)
+
+    def astimestm(self, input_value):
+        if isinstance(input_value, str):
+            try:
+                dt = datetime.fromisoformat(input_value.replace("Z", "+00:00"))
+            except ValueError:
+                dt = datetime.strptime(input_value.split("T")[0], "%Y-%m-%d")
+        elif isinstance(input_value, (int, float)):
+            if input_value > 1e10:
+                dt = datetime.fromtimestamp(input_value / 1000)
+            else:
+                dt = datetime.fromtimestamp(input_value)
+        return dt
+
+    def alightoday(self, input_value):
+        return self.astimestm(input_value).strftime("%Y-%m-%d")
+
+    def vislang(self, l):
+        def replace_match(_:"re.Match"):
+            return _TR(Languages.fromcode(_.group(0)).zhsname)
+
+        return re.sub("[a-z]+", replace_match, l)
+
+    def populate_data(self):
+        llm_model_list = tryreadconfig2("llm_model_list.json")
+        for line in llm_model_list:
+            user = QTreeWidgetItem(
+                self, [line.get("author", line["account"]), self.vislang(line["lang"])]
+            )
+            user.setExpanded(True)
+            for repo in line["repos"]:
+                r = QTreeWidgetItem(user, [repo["repo"]])
+                repo["models"].sort(
+                    key=lambda _: -self.astimestm(_["timestamp"]).timestamp()
+                )
+                for m in repo["models"]:
+                    itm = QTreeWidgetItem(
+                        r,
+                        [
+                            m["file"],
+                            None,
+                            m["size"],
+                            self.alightoday(m["timestamp"]),
+                        ],
+                    )
+                    itm.setData(
+                        0,
+                        Qt.ItemDataRole.UserRole + 20,
+                        (line["account"], repo["repo"], m["file"]),
+                    )
+
+    def _itemDoubleClicked(self, item: QTreeWidgetItem):
+        data = item.data(0, Qt.ItemDataRole.UserRole + 20)
+        if not data:
+            return
+        menu = QMenu(self)
+        action = LAction("下载_huggingface", menu)
+        action2 = LAction("下载_hf-mirror", menu)
+        menu.addAction(action)
+        menu.addAction(action2)
+        a = menu.exec(QCursor.pos())
+        if a:
+            u, r, m = data
+            if a == action:
+                os.startfile(
+                    "https://huggingface.co/{}/{}/resolve/main/{}".format(u, r, m)
+                )
+            elif a == action2:
+                os.startfile(
+                    "https://hf-mirror.com/{}/{}/resolve/main/{}".format(u, r, m)
+                )
+
+    def show_header_menu(self, position):
+        item = self.itemAt(position)
+        if not item:
+            return
+        self._itemDoubleClicked(item)
+
+    def hide_column(self):
+        action = self.sender()
+        col = action.data()
+        self.setColumnHidden(col, True)
+
+
+def modellist():
+    tree = AdvancedTreeTable()
+    tree.setMinimumHeight(400)
+    return tree
+
+
+def llamacppgrid():
+    _0, _1, _2, _3 = __create(
+        __llamadownload,
+        "llama-server.exe.dir",
+        "llama-server.exe",
+        lambda f: f.lower() == "llama-server.exe",
+    )
+    obj = dict()
+    _, _12, _22, _32 = __create(
+        None,
+        "models",
+        "model",
+        lambda f: f.lower().endswith(".gguf"),
+    )
+    _02 = IconButton(icon="fa.download", checkable=True, checkablechangecolor=False)
+    _02.clicked.connect(functools.partial(__ggufdownload, obj))
+
+    def _edit(k, df):
+        edit = QLineEdit(globalconfig["llama.cpp"].get(k, df))
+        edit.textChanged.connect(
+            functools.partial(globalconfig["llama.cpp"].__setitem__, k)
+        )
+        return edit
+
+    statusbtn = IconButton("fa.play", tips="启动")
+
+    def _cb():
+        if statusbtn.iconStr() == "fa.play":
+            autostartllamacpp(force=True)
+        else:
+            global llamacppautoHandle
+            llamacppautoHandle = None
+
+    statusbtn.clicked.connect(_cb)
+
+    def __status(status: int):
+        statusbtn.setIconStr(("fa.play", "fa.spinner", "fa.stop")[status])
+        statusbtn.setToolTip(("启动", "启动中", "停止")[status])
+
+    logopenbtn = getIconButton(
+        lambda: os.startfile(gobject.getcachedir("llama-server.log")),
+        "fa.terminal",
+        tips="log",
+    )
+    gobject.base.connectsignal(gobject.base.llamacppstatus, __status)
+    return [
+        [
+            getsmalllabel("伴随启动"),
+            getsimpleswitch(globalconfig["llama.cpp"], key="autolaunch", default=False),
+            "",
+            statusbtn,
+            "",
+            logopenbtn,
+            ("", 10),
+        ],
+        [
+            dict(
+                name="pathlayout",
+                title="路径",
+                parent=obj,
+                hiderows=[2],
+                grid=[
+                    ["llama-server", _0, _1, _2, _3],
+                    ["Model", _02, _12, _22, _32],
+                    [modellist],
+                ],
+            ),
+        ],
+        [
+            dict(
+                title="网络",
+                type="grid",
+                grid=[
+                    [
+                        "--port",
+                        D_getspinbox(
+                            0, 65536, globalconfig["llama.cpp"], "port", default=8080
+                        ),
+                        "",
+                        "--host",
+                        functools.partial(_edit, "host", "127.0.0.1"),
+                    ],
+                ],
+            ),
+        ],
+        [
+            dict(
+                title="参数",
+                type="grid",
+                grid=[
+                    [
+                        getsmalllabel(
+                            "size of the prompt context (-c)",
+                            "-c, --ctx-size N   size of the prompt context (default: 0, 0 = loaded from model)",
+                        ),
+                        _c_slice_spin(
+                            "ctx-size-use",
+                            "ctx-size",
+                            0,
+                            10000,
+                            256,
+                            131072,
+                            1,
+                            128,
+                            2048,
+                            "default: 0, 0 = loaded from model",
+                            f1=update_slider_from_input,
+                            f2=update_context_from_slider,
+                        ),
+                    ],
+                    [
+                        getsmalllabel(
+                            "number of server slots (-np)",
+                            "-np, --parallel N  number of server slots (default: -1, -1 = auto)",
+                        ),
+                        _c_slice_spin(
+                            "parallel-use",
+                            "parallel",
+                            1,
+                            32,
+                            1,
+                            32,
+                            1,
+                            1,
+                            1,
+                            "default: -1, -1 = auto",
+                        ),
+                    ],
+                    [
+                        getsmalllabel(
+                            "set Flash Attention use (-fa)",
+                            "-fa, --flash-attn [on|off|auto]    set Flash Attention use ('on', 'off', or 'auto', default: 'auto')",
+                        ),
+                        getsimplecombobox(
+                            ["auto", "on", "off"],
+                            globalconfig["llama.cpp"],
+                            k="flash-attn",
+                            internal=["auto", "on", "off"],
+                            default="auto",
+                        ),
+                    ],
+                    [
+                        getsmalllabel(
+                            "whether to memory-map model (--mmap)",
+                            "--mmap, --no-mmap  whether to memory-map model (if disabled, slower load but may reduce pageouts if not using mlock) (default: enabled)",
+                        ),
+                        mmapmlock,
+                    ],
+                    [
+                        getsmalllabel(
+                            "max. number of layers to store in VRAM (-ngl)",
+                            "-ngl, --gpu-layers, --n-gpu-layers N   max. number of layers to store in VRAM, either an exact number, 'auto', or 'all' (default: auto)",
+                        ),
+                        nglnum,
+                    ],
+                ],
+            )
+        ],
+        [
+            dict(
+                title="环境变量",
+                type="grid",
+                grid=[
+                    [
+                        "key=val;...",
+                        functools.partial(
+                            _edit, "environment", "CUDA_VISIBLE_DEVICES="
+                        ),
+                    ]
+                ],
+            )
+        ],
+    ]
+
+
+def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):
+    if ref[0].internalLayout.count() == 1:
+        w = QWidget()
+        ref[0].internalLayout.insertWidget(0, w)
+        l = QHBoxLayout(w)
+        margin = l.contentsMargins()
+        margin.setBottom(0)
+        l.setContentsMargins(margin)
+        box = QGroupBox()
+        box.setTitle("llama.cpp Launcher")
+        l.addWidget(box)
+        grid = QGridLayout(box)
+        automakegrid(grid, llamacppgrid())
+    else:
+        ref[0].internalLayout.itemAt(0).widget().setVisible(checked)
+
+
+def leftwidget(self, ref: "list[CollapsibleBoxWithButton]"):
     btn = IconButton("fa.plus", fix=False, tips="复制")
     btn.clicked.connect(functools.partial(btnpluscallback, self, self.__countnum))
 
@@ -473,13 +1131,15 @@ def leftwidget(self):
     btn4 = AutoScaleImageButton(
         r"files\static\llama.cpp.light.png", r"files\static\llama.cpp.dark.png"
     )
-    btn4.clicked.connect(lambda: os.startfile("https://github.com/ggml-org/llama.cpp"))
+    btn4.setToolTip("llama.cpp Launcher")
+    btn4.clicked.connect(functools.partial(__showllamacpp, ref))
     return [btn3, btn, btn2, IconButton(none=True), btn4]
 
 
 def __llmfold(self):
 
     is_gpt_likes = initsome11(self, getallllms(globalconfig["fanyi"]), save=True)
+    ref = []
     fold = createfoldgrid(
         is_gpt_likes,
         "大模型",
@@ -487,9 +1147,9 @@ def __llmfold(self):
         "gpt",
         "damoxinggridinternal",
         self,
-        leftwidget=functools.partial(leftwidget, self),
+        leftwidget=functools.partial(leftwidget, self, ref),
     )
-
+    ref.append(fold)
     return fold
 
 

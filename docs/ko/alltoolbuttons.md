@@ -140,7 +140,7 @@
     이 음성 재생은 '건너뛰기'를 무시합니다(`음성 지정`에서 현재 텍스트 대상이 '건너뛰기'로 매칭된 경우에도, 버튼을 사용하여 재생하면 건너뛰기를 무시하고 강제로 재생합니다).
 1. #### <i class="fa fa-copy"></i> <i class="fa fa-icon fa-rotate-right"></i> 클립보드에 복사 {#anchor-copy}
     현재 추출된 텍스트를 클립보드에 한 번 복사합니다. 자동으로 클립보드에 추출하려면 `텍스트 입력`->`클립보드`->`자동 출력`->`텍스트 자동 출력`을 활성화해야 합니다.
-1. #### <i class="fa fa-rotate-left"></i> <i class="fa fa-icon fa-rotate-right"></i> 기록 텍스트 표시/숨기기 {#anchor-history}
+1. #### <i class="fa fa-history"></i> <i class="fa fa-icon fa-rotate-right"></i> 기록 텍스트 표시/숨기기 {#anchor-history}
     기록 텍스트 창을 열거나 닫습니다.
 1. #### <i class="fa fa-gamepad"></i> <i class="fa fa-icon fa-rotate-right"></i> 게임 관리 {#anchor-gamepad_new}
     게임 관리자 인터페이스를 엽니다.

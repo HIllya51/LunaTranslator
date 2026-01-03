@@ -222,19 +222,22 @@ def safepixmap(bs):
     return pixmap
 
 
-def subprochiderun(cmd, cwd=None, encoding="utf8") -> subprocess.CompletedProcess:
+def subprochiderun(
+    cmd, cwd=None, encoding="utf8", run=True, env=None
+) -> "subprocess.CompletedProcess|subprocess.Popen":
 
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
     startupinfo.wShowWindow = subprocess.SW_HIDE
 
-    ss = subprocess.run(
+    ss = (subprocess.run if run else subprocess.Popen)(
         cmd,
         cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
         startupinfo=startupinfo,
         encoding=encoding,
+        env=env,
     )
 
     return ss
