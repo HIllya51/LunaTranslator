@@ -563,7 +563,9 @@ class dialog_savedgame_new(QWidget):
                         "opened": True,
                     }
                     savegametaged.insert(i, tag)
+                    globalconfig["currvislistuid"] = tag["uid"]
                     self.loadcombo(False)
+                    self.refresh_curr()
                 elif action == editname:
 
                     savegametaged[i]["title"] = title
@@ -588,15 +590,18 @@ class dialog_savedgame_new(QWidget):
                 i = calculatetagidx(self.reftagid)
                 savegametaged.pop(i)
                 self.loadcombo(False)
-                self.reftagid = self.vislistcombo.getIndexData(
-                    self.vislistcombo.currentIndex()
-                )
-                self.reflist = getreflist(self.reftagid)
+                self.refresh_curr()
 
         elif action:  # addtolist
             __uid = action.data()
             if __uid:
                 self.addtolistcallback(__uid, self.currentfocusuid)
+
+    def refresh_curr(self):
+
+        self.reftagid = self.vislistcombo.getIndexData(self.vislistcombo.currentIndex())
+        self.reflist = getreflist(self.reftagid)
+        self.tagschanged(self.currtags)
 
     def directshow(self):
         self.flow.directshow()
