@@ -3289,9 +3289,9 @@ class VisGridLayout(QGridLayout):
                 w.hide()
                 self.removeWidget(w)
             else:
+                super().addWidget(w, r, c, rs, cs)
                 if not w.isVisible():
                     w.setVisible(True)
-                super().addWidget(w, r, c, rs, cs)
 
 
 class __VisLFormLayout(VisGridLayout):

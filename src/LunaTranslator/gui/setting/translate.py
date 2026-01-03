@@ -34,6 +34,8 @@ from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     D_getspinbox,
     AutoScaleImageButton,
+    getboxlayout,
+    VisLFormLayout,
     getIconButton,
     D_getcolorbutton,
     getcolorbutton,
@@ -678,12 +680,10 @@ def autostartllamacpp(force=False):
         return
 
     gobject.base.llamacppstatus.emit(1)
-    loghandle = open(gobject.getcachedir("llama-server.log"), "a", encoding="utf8")
 
     class _scopeexits:
         def __del__(self):
             gobject.base.llamacppstatus.emit(0)
-            loghandle.close()
 
     __scopeexits = _scopeexits()
     llamacppdir = globalconfig["llama.cpp"].get("llama-server.exe.dir", ".")
@@ -732,7 +732,7 @@ def autostartllamacpp(force=False):
         host=globalconfig["llama.cpp"].get("host", "127.0.0.1"),
         port=globalconfig["llama.cpp"].get("port", 8080),
     )
-    print(cmd, file=loghandle, flush=True)
+    gobject.base.llamacppstdout.emit(cmd)
     env = None
     _env: str = globalconfig["llama.cpp"].get("environment")
     if _env:
@@ -759,7 +759,7 @@ def autostartllamacpp(force=False):
                     "llama.cpp loaded"
                 )
                 gobject.base.llamacppstatus.emit(2)
-            print(l, file=loghandle, flush=True, end="")
+            gobject.base.llamacppstdout.emit(l)
 
     _("stderr")
     _("stdout")
@@ -845,7 +845,7 @@ class AdvancedTreeTable(QTreeWidget):
         return self.astimestm(input_value).strftime("%Y-%m-%d")
 
     def vislang(self, l):
-        def replace_match(_:"re.Match"):
+        def replace_match(_: "re.Match"):
             return _TR(Languages.fromcode(_.group(0)).zhsname)
 
         return re.sub("[a-z]+", replace_match, l)
@@ -956,22 +956,36 @@ def llamacppgrid():
         statusbtn.setIconStr(("fa.play", "fa.spinner", "fa.stop")[status])
         statusbtn.setToolTip(("启动", "启动中", "停止")[status])
 
-    logopenbtn = getIconButton(
-        lambda: os.startfile(gobject.getcachedir("llama-server.log")),
-        "fa.terminal",
-        tips="log",
-    )
     gobject.base.connectsignal(gobject.base.llamacppstatus, __status)
+    _loglable = QPlainTextEdit()
+    _loglable.setReadOnly(True)
+    gobject.base.connectsignal(
+        gobject.base.llamacppstdout, lambda s: _loglable.appendPlainText(s[:-1])
+    )
+    logopenbtn = IconButton(
+        "fa.terminal", tips="log", checkable=True, checkablechangecolor=False
+    )
+    form = VisLFormLayout()
+    form.addRow(
+        "伴随启动",
+        getboxlayout(
+            [
+                getsimpleswitch(
+                    globalconfig["llama.cpp"], key="autolaunch", default=False
+                ),
+                getsmalllabel(""),
+                statusbtn,
+                getsmalllabel(""),
+                logopenbtn,
+                "",
+            ]
+        ),
+    )
+    form.addRow(_loglable)
+    form.setRowVisible(1, False)
+    logopenbtn.clicked.connect(lambda c: form.setRowVisible(1, c))
     return [
-        [
-            getsmalllabel("伴随启动"),
-            getsimpleswitch(globalconfig["llama.cpp"], key="autolaunch", default=False),
-            "",
-            statusbtn,
-            "",
-            logopenbtn,
-            ("", 10),
-        ],
+        [(form, -1)],
         [
             dict(
                 name="pathlayout",
