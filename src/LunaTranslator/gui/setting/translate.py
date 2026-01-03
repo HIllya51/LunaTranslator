@@ -680,10 +680,12 @@ def autostartllamacpp(force=False):
         return
 
     gobject.base.llamacppstatus.emit(1)
+    loghandle = open(gobject.getcachedir("llama-server.log"), "a", encoding="utf8")
 
     class _scopeexits:
         def __del__(self):
             gobject.base.llamacppstatus.emit(0)
+            loghandle.close()
 
     __scopeexits = _scopeexits()
     llamacppdir = globalconfig["llama.cpp"].get("llama-server.exe.dir", ".")
@@ -733,6 +735,7 @@ def autostartllamacpp(force=False):
         port=globalconfig["llama.cpp"].get("port", 8080),
     )
     gobject.base.llamacppstdout.emit(cmd)
+    print(cmd, file=loghandle, flush=True)
     env = None
     _env: str = globalconfig["llama.cpp"].get("environment")
     if _env:
@@ -759,7 +762,8 @@ def autostartllamacpp(force=False):
                     "llama.cpp loaded"
                 )
                 gobject.base.llamacppstatus.emit(2)
-            gobject.base.llamacppstdout.emit(l)
+            gobject.base.llamacppstdout.emit(l[:-1])
+            print(l, file=loghandle, flush=True, end="")
 
     _("stderr")
     _("stdout")
@@ -960,7 +964,7 @@ def llamacppgrid():
     _loglable = QPlainTextEdit()
     _loglable.setReadOnly(True)
     gobject.base.connectsignal(
-        gobject.base.llamacppstdout, lambda s: _loglable.appendPlainText(s[:-1])
+        gobject.base.llamacppstdout, lambda s: _loglable.appendPlainText(s)
     )
     logopenbtn = IconButton(
         "fa.terminal", tips="log", checkable=True, checkablechangecolor=False
