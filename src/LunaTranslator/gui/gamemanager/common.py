@@ -421,8 +421,8 @@ class dialog_syssetting(LDialog):
                 [
                     ("itemw", "宽度"),
                     ("itemh", "高度"),
-                    ("margin", "边距_intra"),
-                    ("margin2", "边距_inter"),
+                    ("margin", "边距_inter"),
+                    ("margin2", "边距_intra"),
                     ("radius", "圆角"),
                     ("radius2", "圆角_2"),
                     ("textH", "文字区高度"),
