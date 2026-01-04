@@ -753,11 +753,17 @@ def autostartllamacpp(force=False):
 
     @threader
     def _(std):
+        cnt = 0
         while True:
             l = getattr(proc, std).readline()
             if not l:
                 break
             if l == "main: starting the main loop...\n":
+                cnt += 1
+            elif l == "srv  update_slots: all slots are idle\n":
+                cnt += 1
+            if cnt == 2:
+                cnt = 0
                 gobject.base.translation_ui.displayglobaltooltip.emit(
                     "llama.cpp loaded"
                 )
@@ -802,18 +808,24 @@ def __ggufdownload(parent, checked):
 
 
 class AdvancedTreeTable(QTreeWidget):
+    def updatelangtext(self):
+        self.setHeaderLabels(_TR(self.headers))
+        for i, item in enumerate(self.langitem):
+            item.setText(self.vislang(self.langitemlang[i]))
+
     def __init__(self):
         super().__init__()
+        self.langitem: "list[QLabel]" = []
+        self.langitemlang: "list[str]" = []
         self.setup_ui()
 
     def setup_ui(self):
-        headers = [
-            _TR("模型"),
-            _TR("语言"),
-            _TR("大小"),
-            _TR("更新时间"),
+        self.headers = [
+            ("模型"),
+            ("大小"),
+            ("更新时间"),
         ]
-        self.setHeaderLabels(headers)
+        self.setHeaderLabels(_TR(self.headers))
         header = self.header()
         header.setSectionsClickable(True)
         header.setStretchLastSection(False)
@@ -857,9 +869,16 @@ class AdvancedTreeTable(QTreeWidget):
     def populate_data(self):
         llm_model_list = tryreadconfig2("llm_model_list.json")
         for line in llm_model_list:
-            user = QTreeWidgetItem(
-                self, [line.get("author", line["account"]), self.vislang(line["lang"])]
-            )
+            user = QTreeWidgetItem(self, [line.get("author", line["account"])])
+            _ = QWidget()
+            _l = QHBoxLayout(_)
+            _l.setContentsMargins(0, 0, 0, 0)
+            _l.setAlignment(Qt.AlignmentFlag.AlignRight)
+            label = QLabel(self.vislang(line["lang"]))
+            _l.addWidget(label)
+            self.setItemWidget(user, 0, _)
+            self.langitemlang.append(line["lang"])
+            self.langitem.append(label)
             user.setExpanded(True)
             for repo in line["repos"]:
                 r = QTreeWidgetItem(user, [repo["repo"]])
@@ -871,7 +890,6 @@ class AdvancedTreeTable(QTreeWidget):
                         r,
                         [
                             m["file"],
-                            None,
                             m["size"],
                             self.alightoday(m["timestamp"]),
                         ],
@@ -1361,7 +1379,7 @@ def setTabTwo_lazy(self, basel: QVBoxLayout):
     _, not_is_gpt_like = splitapillm(res.api)
     online_reg_grid = initsome2(self, res.free, not_is_gpt_like)
     prets = initsome11(self, res.pre)
-    prets[-1] += ["", functools.partial(createbtnexport, self)]
+    prets += [[(functools.partial(createbtnexport, self), 0)]]
     pretransgrid = [
         [dict(type="grid", title="预翻译", grid=prets)],
         [dict(type="grid", title="其他", grid=initsome11(self, res.other))],
