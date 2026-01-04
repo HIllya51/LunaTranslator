@@ -723,11 +723,12 @@ def autostartllamacpp(force=False):
     parallel = ""
     if globalconfig["llama.cpp"].get("parallel-use", False):
         parallel = "--parallel {}".format(globalconfig["llama.cpp"].get("parallel", 1))
+    fa = ""
     if version >= 6325:
         fa = globalconfig["llama.cpp"].get("flash-attn", "auto")
-        fa = "--flash-attn {fa}".format(fa=fa)
+        if globalconfig["llama.cpp"].get("flash-attn", "auto") != "auto":
+            fa = "--flash-attn {fa}".format(fa=fa)
     else:
-        fa = ""
         if globalconfig["llama.cpp"].get("flash-attn", "auto") == "on":
             fa = "-fa"
     ngl = globalconfig["llama.cpp"].get("gpu-layers-which", "auto")
