@@ -112,10 +112,24 @@ namespace
     void PCSG00766(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
+        if (s == u8"　")
+            return buffer->clear();
         s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
-        s = re::sub(s, R"((\x81\x40)*(#n)*(\x81\x40)*)");
+        if (hp->type & CODEC_UTF8)
+            s = re::sub(s, u8R"((　)*#n(　)*)");
+        else
+            s = re::sub(s, R"((\x81\x40)*(#n)*(\x81\x40)*)");
         s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
+    }
+    void PCSG00935_2(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+            buffer->clear();
+        last = s;
+        PCSG00766(buffer, hp);
     }
     void PCSG00935(TextBuffer *buffer, HookParam *hp)
     {
@@ -1053,6 +1067,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // BLACK WOLVES SAGA  -Weiβ und Schwarz-
     {0x800581a2, {CODEC_UTF8, 0, 0, 0, PCSG00766, "PCSG00935"}}, // text
     {0x800644F6, {CODEC_UTF8, 8, 0, 0, PCSG00935, "PCSG00935"}},
+    {0x800259DC, {CODEC_UTF8, 1, 0, 0, PCSG00935_2, "PCSG00935"}}, // 过场prolog
     // New Game! The Challenge Stage!
     {0x8012674c, {CODEC_UTF8, 0, 0, TPCSG00903, FPCSG00903, "PCSG00903"}},
     // 喧嘩番長 乙女
