@@ -708,13 +708,28 @@ def autostartllamacpp(force=False):
         gguf = __getfirstgguf(ggufdir)
         if not gguf:
             return
+
+    cmd = '"{llamaserver}" --version'.format(llamaserver=llamaserver)
+    proc = subprochiderun(cmd, cwd=os.path.dirname(llamaserver))
+    version: "re.Match" = re.search(r"version: (\d+?)", proc.stderr)
+    if not version:
+        gobject.base.translation_ui.displayglobaltooltip.emit("llama-server not runnable")
+        raise Exception()
+    version = int(version.groups()[0])
+
     ctx = ""
     if globalconfig["llama.cpp"].get("ctx-size-use", False):
         ctx = "--ctx-size {}".format(globalconfig["llama.cpp"].get("ctx-size", 2048))
     parallel = ""
     if globalconfig["llama.cpp"].get("parallel-use", False):
         parallel = "--parallel {}".format(globalconfig["llama.cpp"].get("parallel", 1))
-    fa = globalconfig["llama.cpp"].get("flash-attn", "auto")
+    if version >= 6325:
+        fa = globalconfig["llama.cpp"].get("flash-attn", "auto")
+        fa = "--flash-attn {fa}".format(fa=fa)
+    else:
+        fa = ""
+        if globalconfig["llama.cpp"].get("flash-attn", "auto") == "on":
+            fa = "-fa"
     ngl = globalconfig["llama.cpp"].get("gpu-layers-which", "auto")
     if ngl == "number":
         ngl = globalconfig["llama.cpp"].get("gpu-layers", 200)
@@ -724,7 +739,7 @@ def autostartllamacpp(force=False):
         mmap = "--no-mmap"
         if globalconfig["llama.cpp"].get("mlock", False):
             mmap += " --mlock"
-    cmd = '"{llamaserver}" -m "{gguf}" --host {host} --port {port} {ctx} {parallel} --flash-attn {fa} --gpu-layers {ngl} {mmap} --metrics'.format(
+    cmd = '"{llamaserver}" -m "{gguf}" --host {host} --port {port} {ctx} {parallel} --gpu-layers {ngl} {mmap} --metrics'.format(
         mmap=mmap,
         ngl=ngl,
         fa=fa,
@@ -753,10 +768,10 @@ def autostartllamacpp(force=False):
     llamacppautoHandle = NativeUtils.AutoKillProcess(proc.pid)
 
     @threader
-    def _(std):
+    def _():
         cnt = 0
         while True:
-            l = getattr(proc, std).readline()
+            l = proc.stderr.readline()
             if not l:
                 break
             if l == "main: starting the main loop...\n":
@@ -772,8 +787,7 @@ def autostartllamacpp(force=False):
             gobject.base.llamacppstdout.emit(l[:-1])
             print(l, file=loghandle, flush=True, end="")
 
-    _("stderr")
-    _("stdout")
+    _()
 
     proc.wait()
     gobject.base.translation_ui.displayglobaltooltip.emit("llama.cpp exit")
