@@ -1,8 +1,12 @@
 import requests, re, json
+import os
+from tqdm import tqdm
 
+os.chdir(os.path.dirname(__file__))
 res = [
     {
-        "account": "SakuraLLM", "lang": "ja->zh",
+        "account": "SakuraLLM",
+        "lang": "ja->zh",
         "repos": [
             {"repo": "GalTransl-v4-4B-2512"},
             {"repo": "Sakura-GalTransl-14B-v3.8"},
@@ -15,12 +19,15 @@ res = [
     },
     {
         "account": "mradermacher",
-        "author": "shisa-ai", "lang": "ja<->en",
+        "author": "shisa-ai",
+        "lang": "ja<->en",
         "repos": [{"repo": "shisa-v2-mistral-nemo-12b-GGUF"}],
     },
 ]
-for line in res:
-    for repo in line["repos"]:
+
+
+for line in tqdm(res, position=0):
+    for repo in tqdm(line["repos"], position=1, leave=False):
         t = requests.get(
             f"https://huggingface.co/{line['account']}/{repo['repo']}/tree/main"
         ).text
@@ -33,16 +40,32 @@ for line in res:
             t,
         )
         ls = []
-        for l in t:
+        for l in tqdm(t, position=2, leave=False):
             m = re.search(
                 r'<span class="truncate group-hover:underline">(.*?)</span>', l
             ).groups()[0]
             if not m.lower().endswith("gguf"):
                 continue
             tm = re.search(r'<time datetime="(.*?)"', l).groups()[0]
-            sz = re.search(
-                r'<span class="truncate max-sm:text-xs">(.*?)</span>', l
-            ).groups()[0]
-            ls.append({"file": m, "size": sz, "timestamp": tm})
+            # sz = re.search(
+            #     r'<span class="truncate max-sm:text-xs">(.*?)</span>', l
+            # ).groups()[0]
+            sz = requests.head(
+                "https://huggingface.co/{}/{}/resolve/main/{}".format(
+                    line["account"], repo["repo"], m
+                ),
+                allow_redirects=True,
+            ).headers["content-length"]
+            sz = int(sz)
+            internal = requests.get(
+                f"https://huggingface.co/{line['account']}/{repo['repo']}/blob/main/{m}"
+            ).text
+            sha = re.search(r'<dd class="truncate">(.*?)</dd>', internal).groups()[0]
+            ls.append({"file": m, "size": sz, "timestamp": tm, "sha256": sha})
         repo["models"] = ls
 print(json.dumps(res))
+
+with open(
+    "../LunaTranslator/defaultconfig/llm_model_list.json", "w", encoding="utf8"
+) as ff:
+    ff.write(json.dumps(res, indent=4))

@@ -21,6 +21,7 @@ from myutils.utils import (
     splittranslatortypes,
     translate_exits,
     getannotatedapiname,
+    format_bytes,
 )
 from myutils.proxy import getproxy
 from myutils.hwnd import subprochiderun
@@ -866,6 +867,11 @@ class AdvancedTreeTable(QTreeWidget):
 
         return re.sub("[a-z]+", replace_match, l)
 
+    def vissize(self, z):
+        if isinstance(z, str):
+            return z
+        return format_bytes(z)
+
     def populate_data(self):
         llm_model_list = tryreadconfig2("llm_model_list.json")
         for line in llm_model_list:
@@ -890,7 +896,7 @@ class AdvancedTreeTable(QTreeWidget):
                         r,
                         [
                             m["file"],
-                            m["size"],
+                            self.vissize(m["size"]),
                             self.alightoday(m["timestamp"]),
                         ],
                     )
