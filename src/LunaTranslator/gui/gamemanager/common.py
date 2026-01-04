@@ -421,8 +421,10 @@ class dialog_syssetting(LDialog):
                 [
                     ("itemw", "宽度"),
                     ("itemh", "高度"),
-                    ("margin", "边距"),
-                    ("margin2", "边距_2"),
+                    ("margin", "边距_intra"),
+                    ("margin2", "边距_inter"),
+                    ("radius", "圆角"),
+                    ("radius2", "圆角_2"),
                     ("textH", "文字区高度"),
                 ]
             ):
@@ -431,7 +433,10 @@ class dialog_syssetting(LDialog):
                     minv, 1000, globalconfig["dialog_savegame_layout"], key
                 )
                 formLayout.addRow(name, spin)
-                spin.valueChanged.connect(lambda _: self.parent().callchange())
+                if "radius" == key:
+                    spin.valueChanged.connect(lambda _: self.parent().setstyle())
+                else:
+                    spin.valueChanged.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
                 "字体",
                 getfonteditor(

@@ -497,6 +497,8 @@
         "itemh": 190,
         "margin": 6,
         "margin2": 6,
+        "radius": 10,
+        "radius2": 10,
         "textH": 0,
         "backcolor2": "#40ffffff",
         "onselectcolor2": "#40007fff",

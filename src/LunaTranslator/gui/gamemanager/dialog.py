@@ -226,35 +226,36 @@ class IMGWidget(QLabel):
             max_r = float(self.width()) / self.height()
             if r < max_r:
                 new_w = self.width()
-                new_h = int(new_w / r)
+                new_h = new_w / r
             else:
                 new_h = self.height()
-                new_w = int(new_h * r)
-            return QSize(new_w, new_h)
+                new_w = new_h * r
+            return QSizeF(new_w, new_h)
         elif globalconfig["imagewrapmode"] == 1:
             h, w = size.height(), size.width()
             r = float(w) / h
             max_r = float(self.width()) / self.height()
             if r > max_r:
                 new_w = self.width()
-                new_h = int(new_w / r)
+                new_h = new_w / r
             else:
                 new_h = self.height()
-                new_w = int(new_h * r)
-            return QSize(new_w, new_h)
+                new_w = new_h * r
+            return QSizeF(new_w, new_h)
         elif globalconfig["imagewrapmode"] == 2:
-            return self.size()
+            return QSizeF(self.size())
         elif globalconfig["imagewrapmode"] == 3:
-            return size
+            return QSizeF(size)
 
     def setimg(self, pixmap: QPixmap):
         if pixmap.isNull():
             return
         if not (self.height() and self.width()):
             return
-        if self.__last == (self.size(), globalconfig["imagewrapmode"]):
+        radius = globalconfig["dialog_savegame_layout"]["radius2"]
+        if self.__last == (radius, self.size(), globalconfig["imagewrapmode"]):
             return
-        self.__last = (self.size(), globalconfig["imagewrapmode"])
+        self.__last = (radius, self.size(), globalconfig["imagewrapmode"])
         rate = self.devicePixelRatioF()
         newpixmap = QPixmap(self.size() * rate)
         newpixmap.setDevicePixelRatio(rate)
@@ -263,15 +264,21 @@ class IMGWidget(QLabel):
         painter.setRenderHints(
             QPainter.RenderHint.Antialiasing | QPainter.RenderHint.SmoothPixmapTransform
         )
-        painter.drawPixmap(self.getrect(pixmap.size()), pixmap)
+        rectf = self.getrect(pixmap.size())
+
+        path = QPainterPath()
+        path.addRoundedRect(QRectF(self.rect()), radius, radius)
+        painter.setClipPath(path)
+
+        painter.drawPixmap(rectf, pixmap, QRectF(pixmap.rect()))
         painter.end()
         self.setPixmap(newpixmap)
 
     def getrect(self, size):
         size = self.adaptsize(size)
-        rect = QRect()
-        rect.setX(int((self.width() - size.width()) / 2))
-        rect.setY(int((self.height() - size.height()) / 2))
+        rect = QRectF()
+        rect.setX((self.width() - size.width()) / 2)
+        rect.setY((self.height() - size.height()) / 2)
         rect.setSize(size)
         return rect
 
@@ -658,15 +665,20 @@ class dialog_savedgame_new(QWidget):
             _style += "font-size:{}pt;".format(_f.pointSize())
             _style += 'font-family:"{}";'.format(_f.family())
         style = "#{}{{ {} }}".format(key, _style)
-
-        style += "#savegame_existsTrue{{background-color:{};}}".format(
-            globalconfig["dialog_savegame_layout"]["backcolor2"]
+        dialog_savegame_layout = globalconfig["dialog_savegame_layout"]
+        style += (
+            "#savegame_existsTrue{{background-color:{};border-radius: {}px;}}".format(
+                dialog_savegame_layout["backcolor2"], dialog_savegame_layout["radius"]
+            )
         )
-        style += "#savegame_existsFalse{{background-color:{};}}".format(
-            globalconfig["dialog_savegame_layout"]["onfilenoexistscolor2"]
+        style += (
+            "#savegame_existsFalse{{background-color:{};border-radius: {}px;}}".format(
+                dialog_savegame_layout["onfilenoexistscolor2"],
+                dialog_savegame_layout["radius"],
+            )
         )
-        style += "#savegame_onselectcolor1{{background-color: {};}}".format(
-            globalconfig["dialog_savegame_layout"]["onselectcolor2"]
+        style += "#savegame_onselectcolor1{{background-color: {};border-radius: {}px;}}".format(
+            dialog_savegame_layout["onselectcolor2"], dialog_savegame_layout["radius"]
         )
         self.setStyleSheet(style)
 
