@@ -4,7 +4,7 @@ from traceback import print_exc
 import os, gobject, requests, sys, uuid
 from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR, static_data
-from myutils.utils import selectdebugfile
+from myutils.utils import selectdebugfile, makehtml
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (
     MySwitch,
@@ -21,6 +21,7 @@ from gui.usefulwidget import (
     SplitLine,
     getIconButton,
     VisLFormLayout,
+    LinkLabel,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -538,6 +539,9 @@ class autoinitdialog(LDialog):
             key = line["k"]
         if line["type"] == "label":
             lineW = LLabel(dd[key])
+        elif line["type"] == "link":
+            lineW = LinkLabel()
+            lineW.setText(makehtml(dd[key], dd[key]))
         elif line["type"] == "textlist":
             directedit = isinstance(dd[key], str)
             if directedit:
