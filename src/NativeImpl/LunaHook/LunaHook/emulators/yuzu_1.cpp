@@ -202,11 +202,22 @@ namespace
     void F0100A1E00BFEA000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
+        s = re::sub(s, L"speaker_set.*?\"(.*?)\".*?;", L"$1");
         s = re::sub(s, L"[\\s]");
+        s = re::sub(s, L"\\n");
         s = re::sub(s, L"(.+? \")");
         s = re::sub(s, L"(\",.*)");
         s = re::sub(s, L"(\" .*)");
         buffer->from(s);
+    }
+    void F0100A1E00BFEA000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        static std::wstring last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        F0100A1E00BFEA000(buffer, hp);
     }
 
     void F0100A1200CA3C000(TextBuffer *buffer, HookParam *hp)
@@ -3170,10 +3181,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8014dc64, {CODEC_UTF16, 1, 0, ReadUnityString, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // name
     {0x80149b10, {CODEC_UTF16, 1, 0, ReadUnityString, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // dialogue
     {0x803add50, {CODEC_UTF16, 1, 0, ReadUnityString, F0100982015606000, 0x0100B5700CDFC000ull, "1.0.0"}}, // choice
-    // AMNESIA
-    {0x805bba5c, {CODEC_UTF16, 2, 0, ReadUnityString, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // dialogue
-    {0x805e9930, {CODEC_UTF16, 1, 0, ReadUnityString, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // choice
-    {0x805e7fd8, {CODEC_UTF16, 1, 0, ReadUnityString, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, "1.0.1"}}, // name
+    // AMNESIA  // 1.0.0 & 1.0.1
+    {0x805bba5c, {CODEC_UTF16, 2, 0, ReadUnityString, F0100A1E00BFEA000_1, 0x0100A1E00BFEA000ull, nullptr}}, // dialogue
+    {0x805e9930, {CODEC_UTF16, 1, 0, ReadUnityString, F0100A1E00BFEA000_1, 0x0100A1E00BFEA000ull, nullptr}}, // choice
+    {0x805e7fd8, {CODEC_UTF16, 1, 0, ReadUnityString, F0100A1E00BFEA000, 0x0100A1E00BFEA000ull, nullptr}},   // name
     // AMNESIA World
     {0x80113520, {CODEC_UTF8, 3, 0, 0, F010099901461A000, 0x010099901461A000ull, "1.0.0"}}, // text
     // Natsumon! 20th Century Summer Vacation
