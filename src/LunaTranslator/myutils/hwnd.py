@@ -61,8 +61,12 @@ def grabwindow(
             return
         if tocliponly:
             clipboard_set_image(p)
+            gobject.base.displayinfomessage("saved to clipboard", "<msg_info_refresh>")
             return
         p.save(fn)
+        gobject.base.displayinfomessage(
+            "saved to " + os.path.dirname(fn), "<msg_info_refresh>"
+        )
         if callback_origin:
             callback_origin(os.path.abspath(fn))
         if uid:
@@ -96,9 +100,6 @@ def grabwindow(
     if ((not screenshot) and (usewgc or isshit)) or (
         screenshot and globalconfig["screenshot_method"]["magpie"]
     ):
-        gobject.base.displayinfomessage(
-            "saved to " + os.path.dirname(fname), "<msg_info_refresh>"
-        )
 
         hwnd = windows.FindWindow(
             "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
@@ -111,8 +112,6 @@ def grabwindow(
                 callback(p, fname + "_winrt_magpie." + app)
 
             _()
-    elif tocliponly:
-        gobject.base.displayinfomessage("saved to clipboard", "<msg_info_refresh>")
 
 
 def getcurrexe():
