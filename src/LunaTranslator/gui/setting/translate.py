@@ -780,6 +780,7 @@ def autostartllamacpp(force=False):
             elif l == "srv  update_slots: all slots are idle\n":
                 cnt += 1
             if cnt == 2:
+                cnt += 1
                 gobject.base.translation_ui.displayglobaltooltip.emit(
                     "llama.cpp loaded"
                 )
