@@ -17,6 +17,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100A19025D44000 | Neon Clash Echoes of the Lost |
 |  | 01003CA01F3AE000 | Please Be Happy |
 |  | 010045702355C000 | 星空鉄道とシロの旅 |
 |  | 010024F024250000 | 闇色の魔珠 |

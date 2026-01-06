@@ -2774,6 +2774,12 @@ namespace
         strReplace(s, L"$(3)", L"リカ");
         buffer->from(s);
     }
+    void F0100A19025D44000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(\[(.*?)@(.*?)\])", L"$1");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2781,6 +2787,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Neon Clash Echoes of the Lost
+    {0x81C3F8AC, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100A19025D44000, 0x0100A19025D44000ull, "1.0.0"}},
     // Please Be Happy
     {0x82660D48, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x01003CA01F3AE000ull, "1.0.0"}},
     {0x839309D4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x01003CA01F3AE000ull, "1.0.4"}},
