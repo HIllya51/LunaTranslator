@@ -1090,6 +1090,25 @@
             "name": "NeoSpeech",
             "type": "offline"
         },
+        "tolk": {
+            "use": false,
+            "name": "Tolk (读屏软件)",
+            "type": "offline",
+            "args": {
+                "trySAPI": true,
+                "preferSAPI": false
+            },
+            "argstype": {
+                "trySAPI": {
+                    "name": "启用SAPI回退",
+                    "type": "switch"
+                },
+                "preferSAPI": {
+                    "name": "优先使用SAPI",
+                    "type": "switch"
+                }
+            }
+        },
         "selfbuild": {
             "use": false,
             "name": "自定义"
