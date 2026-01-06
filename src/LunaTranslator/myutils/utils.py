@@ -1248,7 +1248,7 @@ def format_bytes(bytes_num: int, precision: int = 2) -> str:
     units = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
 
     if bytes_num == 0:
-        return f"0 {units[0]}"
+        return "0 " + str(units[0])
 
     unit_index = 0
     while bytes_num >= 1000 and unit_index < len(units) - 1:
@@ -1256,14 +1256,14 @@ def format_bytes(bytes_num: int, precision: int = 2) -> str:
         unit_index += 1
 
     if unit_index == 0:
-        return f"{int(bytes_num)} {units[unit_index]}"
+        return "{} {}".format(int(bytes_num), units[unit_index])
     else:
 
-        formatted = f"{bytes_num:.{precision}f}"
+        formatted = str(round(bytes_num, precision))
 
         if formatted.endswith(".00"):
             formatted = formatted[:-3]
         elif formatted.endswith(".0"):
             formatted = formatted[:-2]
 
-        return f"{formatted} {units[unit_index]}"
+        return "{} {}".format(formatted, units[unit_index])

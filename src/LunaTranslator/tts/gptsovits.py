@@ -112,7 +112,7 @@ class TTS(TTSbase):
 
                 model_names = list(models_data.keys())
                 for model_name in model_names:
-                    display_name = f"【{version}】{model_name}"
+                    display_name = "【{}】{}".format(version, model_name)
 
                     internal_id = display_name
 
