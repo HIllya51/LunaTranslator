@@ -1201,3 +1201,8 @@ def SearchDllPath(filename):
     _SearchDllPath(filename, SearchDllPathCB(_.append))
     if _:
         return _[0]
+
+
+IsDLLBitSameAsMe = utilsdll.IsDLLBitSameAsMe
+IsDLLBitSameAsMe.argtypes = (LPCWSTR,)
+IsDLLBitSameAsMe.restype = c_bool

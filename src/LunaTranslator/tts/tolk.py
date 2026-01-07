@@ -6,11 +6,15 @@ from tts.basettsclass import TTSbase, SpeechParam
 Tolk_PATH = None
 
 Tolk_PATH = NativeUtils.SearchDllPath("Tolk.dll")
+if Tolk_PATH and not NativeUtils.IsDLLBitSameAsMe(Tolk_PATH):
+    Tolk_PATH = None
 if not Tolk_PATH:
     for _dir, _, __ in os.walk("."):
         __ = os.path.join(_dir, "Tolk.dll")
         if os.path.isfile(__):
-            Tolk_PATH = os.path.abspath(__)
+            if NativeUtils.IsDLLBitSameAsMe(__):
+                Tolk_PATH = os.path.abspath(__)
+                break
 
 
 def useExfunction():

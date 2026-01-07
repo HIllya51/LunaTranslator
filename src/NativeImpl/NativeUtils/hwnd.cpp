@@ -306,6 +306,8 @@ DECLARE_API void OpenFileEx(LPCWSTR file)
 
 std::optional<WORD> MyGetBinaryType(LPCWSTR file)
 {
+    if (!file)
+        return {};
     CHandle hFile{CreateFileW(file, GENERIC_READ, FILE_SHARE_READ, 0,
                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0)};
     if (!hFile)
@@ -364,10 +366,25 @@ DECLARE_API void SearchDllPath(LPCWSTR file, void (*cb)(LPCWSTR))
 
 DECLARE_API bool IsDLLBit64(LPCWSTR file)
 {
+    if (!file)
+        return false;
     auto type = MyGetBinaryType(file);
     if (!type)
         return false;
     return type.value() == IMAGE_FILE_MACHINE_AMD64;
+}
+
+DECLARE_API bool IsDLLBitSameAsMe(LPCWSTR file)
+{
+    if (!file)
+        return false;
+    auto type = MyGetBinaryType(file);
+    if (!type)
+        return false;
+    if constexpr (sizeof(size_t) == 8)
+        return type.value() == IMAGE_FILE_MACHINE_AMD64;
+    else
+        return type.value() == IMAGE_FILE_MACHINE_I386;
 }
 
 typedef struct
