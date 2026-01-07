@@ -338,6 +338,10 @@ std::optional<WORD> MyGetBinaryType(LPCWSTR file)
     return type;
 }
 
+#ifndef IMAGE_FILE_MACHINE_ARM64
+#define IMAGE_FILE_MACHINE_ARM64 0xAA64 // ARM64 Little-Endian
+#endif
+
 SHAREFUNCTION std::optional<std::wstring> SearchDllPath(const std::wstring &dll)
 {
     auto len = SearchPathW(NULL, dll.c_str(), NULL, 0, NULL, NULL);
@@ -351,8 +355,9 @@ SHAREFUNCTION std::optional<std::wstring> SearchDllPath(const std::wstring &dll)
     auto type = MyGetBinaryType(buff.c_str());
     if (!type)
         return {};
-    if (type.value() == IMAGE_FILE_MACHINE_ARM64)
-        return {};
+    if constexpr (sizeof(size_t) == 8)
+        if (type.value() == IMAGE_FILE_MACHINE_ARM64)
+            return {};
     return buff;
 }
 

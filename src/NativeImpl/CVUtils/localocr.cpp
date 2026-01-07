@@ -6,7 +6,6 @@
 #else
 #include "../xpundef/xp_dxgi.h"
 #include "../xpundef/xp_d3d12.h"
-#define IMAGE_FILE_MACHINE_ARM64 0xAA64 // ARM64 Little-Endian
 #endif
 #include "shared.hpp"
 
