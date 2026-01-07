@@ -61,12 +61,16 @@ def grabwindow(
             return
         if tocliponly:
             clipboard_set_image(p)
-            gobject.base.displayinfomessage("saved to clipboard", "<msg_info_refresh>")
+            if screenshot:
+                gobject.base.displayinfomessage(
+                    "saved to clipboard", "<msg_info_refresh>"
+                )
             return
         p.save(fn)
-        gobject.base.displayinfomessage(
-            "saved to " + os.path.dirname(fn), "<msg_info_refresh>"
-        )
+        if screenshot:
+            gobject.base.displayinfomessage(
+                "saved to " + os.path.dirname(fn), "<msg_info_refresh>"
+            )
         if callback_origin:
             callback_origin(os.path.abspath(fn))
         if uid:
