@@ -1190,3 +1190,14 @@ bass_stream_handle_create.restype = HSTREAM
 bass_stream_push_data = utilsdll.bass_stream_push_data
 bass_stream_push_data.argtypes = HSTREAM, c_void_p, c_size_t
 bass_stream_push_data.restype = c_bool
+
+_SearchDllPath = utilsdll.SearchDllPath
+SearchDllPathCB = CFUNCTYPE(None, LPCWSTR)
+_SearchDllPath.argtypes = LPCWSTR, SearchDllPathCB
+
+
+def SearchDllPath(filename):
+    _ = []
+    _SearchDllPath(filename, SearchDllPathCB(_.append))
+    if _:
+        return _[0]

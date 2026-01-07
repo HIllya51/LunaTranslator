@@ -93,19 +93,39 @@ def __translate_exits(fanyi):
     return None
 
 
-def translate_exits(fanyi, which=False):
+def translate_exits(fanyi, only_copy=False):
     # 不再加载废弃接口，以免煞笔问煞笔问题。
     _ = __translate_exits(fanyi)
 
     isdeprecated = (0 == _) and (
         (fanyi not in defaultglobalconfig["fanyi"]) and fanyi != "chatgpt-offline"
     )
-    if which:
-        if isdeprecated:
-            return None
-        return _
-    else:
-        return _ is not None
+    if isdeprecated:
+        return None
+    if _ is None:
+        return None
+    elif _ == 0 and (not only_copy):
+        return "translator." + fanyi
+    elif _ == 1:
+        return "copyed." + fanyi
+
+
+def useExCheck(fanyi, which=None, key="fanyi"):
+    # 当且仅当 useEx 调用并返回 False 时返回 False
+    useExfunction = globalconfig[key][fanyi].get("useEx")
+    if not useExfunction:
+        return True
+    if which is None:
+        which = translate_exits(fanyi)
+    if not which:
+        return True
+    try:
+        if not getattr(importlib.import_module(which), useExfunction)():
+            return False
+    except:
+        print_exc()
+        pass
+    return True
 
 
 def all_langs(src=True):

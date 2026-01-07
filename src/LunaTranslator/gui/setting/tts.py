@@ -1,7 +1,7 @@
 from qtsymbols import *
 import os, functools
 import gobject
-from myutils.utils import splitocrtypes, selectdebugfile
+from myutils.utils import splitocrtypes, selectdebugfile, useExCheck
 from myutils.config import globalconfig
 from gui.inputdialog import (
     autoinitdialog_items,
@@ -140,6 +140,8 @@ def getttsgrid(self, names):
 
         _f = "LunaTranslator/tts/{}.py".format(name)
         if os.path.exists(_f) == False:
+            continue
+        if not useExCheck(name, "tts." + name, "reader"):
             continue
         if "args" in globalconfig["reader"][name]:
             items = autoinitdialog_items(globalconfig["reader"][name])

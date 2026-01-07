@@ -1090,6 +1090,26 @@
             "name": "NeoSpeech",
             "type": "offline"
         },
+        "tolk": {
+            "use": false,
+            "name": "Tolk (读屏软件)",
+            "type": "offline",
+            "args": {
+                "trySAPI": true,
+                "preferSAPI": false
+            },
+            "argstype": {
+                "trySAPI": {
+                    "name": "启用SAPI回退",
+                    "type": "switch"
+                },
+                "preferSAPI": {
+                    "name": "优先使用SAPI",
+                    "type": "switch"
+                }
+            },
+            "useEx": "useExfunction"
+        },
         "selfbuild": {
             "use": false,
             "name": "自定义"
@@ -1894,8 +1914,7 @@
             "type": "other",
             "use": false,
             "color": "blue",
-            "name": "自定义翻译",
-            "lang": {}
+            "name": "自定义翻译"
         },
         "ibm": {
             "use": false,
@@ -1910,10 +1929,7 @@
             "name": "Sakura大模型",
             "is_gpt_like": true,
             "useproxy": false,
-            "langs": [
-                "zh",
-                "cht"
-            ]
+            "useEx": "useExfunction"
         },
         "realtime_edit": {
             "use": false,

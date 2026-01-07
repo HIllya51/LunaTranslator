@@ -1,6 +1,9 @@
+#pragma once
+
 #ifndef SHAREFUNCTION
-    #define SHAREFUNCTION __declspec(dllexport)
+    #define SHAREFUNCTION
 #endif
+
 using version_t = std::tuple<WORD, WORD, WORD, WORD>;
 SHAREFUNCTION std::optional<version_t> QueryVersion(const std::wstring& exe)
 {

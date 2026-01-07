@@ -4,6 +4,11 @@ import json
 from myutils.config import urlpathjoin
 from language import Languages
 from translator.gptcommon import list_models
+from myutils.utils import getlangtgt
+
+
+def useExfunction():
+    return getlangtgt() in (Languages.Chinese, Languages.TradChinese)
 
 
 class TS(basetrans):

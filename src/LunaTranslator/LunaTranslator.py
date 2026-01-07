@@ -17,7 +17,6 @@ from myutils.config import (
     dynamicapiname,
     dynamiclink,
 )
-from myutils.hwnd import subprochiderun
 from ctypes import cast, c_wchar_p
 from ctypes.wintypes import UINT, WPARAM, LPARAM
 from myutils.keycode import mod_map_r
@@ -32,6 +31,7 @@ from myutils.utils import (
     stringfyerror,
     targetmod,
     translate_exits,
+    useExCheck,
     safe_escape,
     getlangsrc,
 )
@@ -949,8 +949,10 @@ class BASEOBJECT(QObject):
     def __reader_usewhich(self):
 
         for key in globalconfig["reader"]:
-            if globalconfig["reader"][key]["use"] and os.path.exists(
-                ("LunaTranslator/tts/" + key + ".py")
+            if (
+                globalconfig["reader"][key]["use"]
+                and os.path.exists(("LunaTranslator/tts/" + key + ".py"))
+                and useExCheck(key, "tts." + key, "reader")
             ):
                 return key
         return None
@@ -1051,13 +1053,12 @@ class BASEOBJECT(QObject):
 
     def fanyiinitmethod(self, classname):
         try:
-            which = translate_exits(classname, which=True)
-            if which is None:
+            p = translate_exits(classname)
+            if not p:
                 return None
-            if which == 0:
-                aclass = importlib.import_module("translator." + classname).TS
-            elif which == 1:
-                aclass = importlib.import_module("copyed." + classname).TS
+            if not useExCheck(classname, p):
+                return None
+            aclass = importlib.import_module(p).TS
             return aclass(classname)
         except Exception as e:
             self.displayinfomessage(

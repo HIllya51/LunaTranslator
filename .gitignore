@@ -46,3 +46,6 @@ src/Microsoft.WebView2.FixedVersionRuntime.*
 src/translation_record
 src/scripts/temp
 src/cpp/LunaHook/LunaHook/engine32/Leaf.md
+
+
+*.dll

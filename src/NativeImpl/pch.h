@@ -83,4 +83,5 @@
 #include "common.hpp"
 #include "common2.hpp"
 
-#define DECLARE_API extern "C" __declspec(dllexport)
+#define SHAREFUNCTION __declspec(dllexport)
+#define DECLARE_API extern "C" SHAREFUNCTION

@@ -15,7 +15,7 @@ from myutils.config import (
 from datetime import datetime
 import requests
 from myutils.utils import (
-    getlangtgt,
+    useExCheck,
     format_bytes,
     selectdebugfile,
     splittranslatortypes,
@@ -25,7 +25,7 @@ from myutils.utils import (
 )
 from myutils.proxy import getproxy
 from myutils.hwnd import subprochiderun
-import json, sqlite3
+import json, sqlite3, importlib
 from traceback import print_exc
 from gui.usefulwidget import SuperCombo
 from collections import Counter
@@ -90,8 +90,8 @@ def loadvisinternal(copy):
     __uid = []
     for _ in getallllms(globalconfig["fanyi"]):
         if copy:
-            which = translate_exits(_, which=True)
-            if which != 1:
+            which = translate_exits(_, only_copy=True)
+            if not which:
                 continue
         else:
             if not translate_exits(_):
@@ -187,7 +187,7 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
     menu.addAction(editname)
     menu.addAction(specialfont)
     menu.addAction(astoppest)
-    which = translate_exits(apiuid, which=True)
+    which = translate_exits(apiuid, only_copy=True)
     is_gpt_like = globalconfig["fanyi"][apiuid].get("is_gpt_like", False)
     if is_gpt_like:
         menu.addSeparator()
@@ -195,7 +195,7 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
         usecache.setChecked(globalconfig["fanyi"][apiuid].get("use_trans_cache", True))
         menu.addAction(copy)
 
-    if which == 1 or "chatgpt-offline" == apiuid:
+    if which or "chatgpt-offline" == apiuid:
         menu.addAction(delete)
     if globalconfig["useproxy"] and globalconfig["fanyi"][apiuid].get("type") not in (
         "offline",
@@ -247,7 +247,7 @@ def getrenameablellabel(uid, self, countnum):
 
 
 def loadbutton(self, fanyi):
-    which = translate_exits(fanyi, which=True)
+    which = translate_exits(fanyi)
     copyfrom = getcopyfrom(fanyi)
     if (copyfrom != fanyi) and (copyfrom in translatorsetting):
         if "args" in translatorsetting[copyfrom]:
@@ -265,11 +265,7 @@ def loadbutton(self, fanyi):
                 "argstype"
             ]
     items = autoinitdialog_items(translatorsetting[fanyi])
-    if which == 0:
-        aclass = "translator." + fanyi
-    elif which == 1:
-        aclass = "copyed." + fanyi
-    else:
+    if not which:
         return
     return autoinitdialog(
         self,
@@ -277,7 +273,7 @@ def loadbutton(self, fanyi):
         dynamicapiname(fanyi),
         800,
         items,
-        aclass,
+        which,
         fanyi,
     )
 
@@ -360,14 +356,12 @@ def addordelete(delete, self, countnum):
     __vis, __uid = loadvisinternal(delete)
     if not __vis:
         return
-    lang = getlangtgt()
     actions = {}
     for i in range(len(__vis)):
         if not delete:
-            langs = globalconfig["fanyi"][__uid[i]].get("langs")
-            if langs and (lang not in langs):
+            if not useExCheck(__uid[i]):
                 continue
-        _ = QAction(__vis[i], menu)
+            _ = QAction(__vis[i], menu)
         actions[_] = __uid[i]
         menu.addAction(_)
     action = menu.exec(QCursor.pos())
@@ -397,13 +391,11 @@ def initsome11(self, l, save=False):
     countnum = []
     if save:
         self.__countnum = countnum
-    lang = getlangtgt()
     for fanyi in l:
-        langs = globalconfig["fanyi"][fanyi].get("langs")
-        if langs and (lang not in langs):
+        which = translate_exits(fanyi)
+        if not which:
             continue
-        which = translate_exits(fanyi, which=True)
-        if which is None:
+        if not useExCheck(fanyi, which):
             continue
         i += 1
         countnum.append(fanyi)
@@ -713,7 +705,9 @@ def autostartllamacpp(force=False):
     proc = subprochiderun(cmd, cwd=os.path.dirname(llamaserver))
     version: "re.Match" = re.search(r"version: (\d+?)", proc.stderr)
     if not version:
-        gobject.base.translation_ui.displayglobaltooltip.emit("llama-server not runnable")
+        gobject.base.translation_ui.displayglobaltooltip.emit(
+            "llama-server not runnable"
+        )
         raise Exception()
     version = int(version.groups()[0])
 

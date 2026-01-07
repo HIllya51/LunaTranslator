@@ -1,5 +1,5 @@
-from translator.gptcommon import gptcommon, list_models
-from gui.customparams import customparams
+from translator.gptcommon import *
+from gui.customparams import *
 
 class TS(gptcommon):
     pass
