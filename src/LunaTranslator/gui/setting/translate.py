@@ -25,7 +25,7 @@ from myutils.utils import (
 )
 from myutils.proxy import getproxy
 from myutils.hwnd import subprochiderun
-import json, sqlite3, importlib
+import json, sqlite3, NativeUtils
 from traceback import print_exc
 from gui.usefulwidget import SuperCombo
 from collections import Counter
@@ -701,14 +701,38 @@ def autostartllamacpp(force=False):
         if not gguf:
             return
 
-    cmd = '"{llamaserver}" --version'.format(llamaserver=llamaserver)
-    proc = subprochiderun(cmd, cwd=os.path.dirname(llamaserver))
+    cmd = '"{}" --version'.format(llamaserver)
+    llamaserverdir = os.path.dirname(llamaserver)
+    proc = subprochiderun(cmd, cwd=llamaserverdir)
     version: "re.Match" = re.search(r"version: (\d+?)", proc.stderr)
     if not version:
-        gobject.base.translation_ui.displayglobaltooltip.emit(
-            "llama-server not runnable"
-        )
+        notrunable = "llama-server not runnable"
+        gobject.base.llamacppstdout.emit(notrunable)
+        gobject.base.translation_ui.displayglobaltooltip.emit(notrunable)
+        print(notrunable, file=loghandle, flush=True)
         raise Exception()
+    lostss = {}
+    for ff in os.listdir(llamaserverdir):
+        if ff.lower().endswith(".dll") and ff.lower().startswith("ggml-"):
+            f = os.path.join(llamaserverdir, ff)
+            imports = NativeUtils.AnalysisDllImports(f)
+            losts = []
+            for imp in imports:
+                if not (
+                    os.path.isfile(os.path.join(llamaserverdir, imp))
+                    or NativeUtils.SearchDllPath(imp)
+                ):
+                    losts.append(imp)
+            if losts:
+                lostss[ff] = losts
+    if lostss:
+        _tips = "\n".join(
+            "DLL {} lost dependence: {}".format(_, ", ".join(lostss[_])) for _ in lostss
+        )
+        gobject.base.llamacppstdout.emit(_tips)
+        gobject.base.translation_ui.displayglobaltooltip.emit(_tips)
+        print(_tips, file=loghandle, flush=True)
+
     version = int(version.groups()[0])
 
     ctx = ""
@@ -728,7 +752,8 @@ def autostartllamacpp(force=False):
     ngl = globalconfig["llama.cpp"].get("gpu-layers-which", "auto")
     if ngl == "number":
         ngl = globalconfig["llama.cpp"].get("gpu-layers", 200)
-    gobject.base.translation_ui.displayglobaltooltip.emit("loading llama.cpp")
+    if not lostss:
+        gobject.base.translation_ui.displayglobaltooltip.emit("loading llama.cpp")
     mmap = "--mmap"
     if not globalconfig["llama.cpp"].get("mmap", True):
         mmap = "--no-mmap"
@@ -758,7 +783,7 @@ def autostartllamacpp(force=False):
             if (not _s[0]) or (not _s[1]):
                 return
             env[_s[0]] = _s[1]
-    proc = subprochiderun(cmd, cwd=os.path.dirname(llamaserver), run=False, env=env)
+    proc = subprochiderun(cmd, cwd=llamaserverdir, run=False, env=env)
     global llamacppautoHandle
     llamacppautoHandle = NativeUtils.AutoKillProcess(proc.pid)
 

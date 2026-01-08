@@ -1226,7 +1226,7 @@ def AnalysisDllExports(file):
     return result
 
 
-def AnalysisDllImports(file, needNameOnly=True, mergeDelay=True):
+def AnalysisDllImports(file, needNameOnly=True, Allimports=True):
 
     class Result:
         def __repr__(self):
@@ -1248,8 +1248,8 @@ def AnalysisDllImports(file, needNameOnly=True, mergeDelay=True):
     if needNameOnly:
         _res.imports = [_[0] for _ in _res.imports]
         _res.delay_imports = [_[0] for _ in _res.delay_imports]
-    if mergeDelay:
-        _res.imports.extend(_res.delay_imports)
+    if Allimports:
+        return _res.imports + _res.delay_imports
     return _res
 
 
