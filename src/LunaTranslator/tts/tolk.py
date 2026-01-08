@@ -9,7 +9,22 @@ Tolk_PATH = None
 def __istolkdll(file):
     if not NativeUtils.IsDLLBitSameAsMe(file):
         return False
-    return "Tolk_Load" in NativeUtils.AnalysisDllExports(file)
+    exports = NativeUtils.AnalysisDllExports(file)
+    return all(
+        _ in exports
+        for _ in (
+            "Tolk_Load",
+            "Tolk_Unload",
+            "Tolk_IsLoaded",
+            "Tolk_TrySAPI",
+            "Tolk_PreferSAPI",
+            "Tolk_HasSpeech",
+            "Tolk_HasBraille",
+            "Tolk_Output",
+            "Tolk_Speak",
+            "Tolk_Silence",
+        )
+    )
 
 
 Tolk_PATH = NativeUtils.SearchDllPath("Tolk.dll")
