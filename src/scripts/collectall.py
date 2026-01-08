@@ -80,7 +80,7 @@ for f in collect:
         if f.endswith("Magpie.Core.exe"):
             continue
         print(f)
-        imports = importanalysis(f)
+        imports = importanalysis(f)["imports"]
         print(f, imports)
         if len(imports) == 0:
             continue

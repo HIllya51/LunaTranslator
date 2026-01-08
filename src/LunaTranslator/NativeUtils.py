@@ -1206,3 +1206,69 @@ def SearchDllPath(filename):
 IsDLLBitSameAsMe = utilsdll.IsDLLBitSameAsMe
 IsDLLBitSameAsMe.argtypes = (LPCWSTR,)
 IsDLLBitSameAsMe.restype = c_bool
+
+_AnalysisDllImports = utilsdll.AnalysisDllImports
+AnalysisDllImports_CB = CFUNCTYPE(None, c_char_p, DWORD, c_bool)
+_AnalysisDllImports.argtypes = LPCWSTR, AnalysisDllImports_CB
+_AnalysisDllExports = utilsdll.AnalysisDllExports
+AnalysisDllExports_CB = CFUNCTYPE(None, c_char_p)
+_AnalysisDllExports.argtypes = LPCWSTR, AnalysisDllExports_CB
+
+
+def AnalysisDllExports(file):
+    result: "list[str]" = []
+
+    def _cb(name: bytes):
+        result.append(name.decode())
+
+    _AnalysisDllExports(file, AnalysisDllExports_CB(_cb))
+
+    return result
+
+
+def AnalysisDllImports(file, needNameOnly=True, mergeDelay=True):
+
+    class Result:
+        def __repr__(self):
+            return str(dict(imports=self.imports, delay_imports=self.delay_imports))
+
+        def __init__(self):
+            self.imports: "list[tuple[str, int]|str]" = []
+            self.delay_imports: "list[tuple[str, int]|str]" = []
+
+    _res = Result()
+
+    def _cb(fn: bytes, off, isimport):
+        if isimport:
+            _res.imports.append((fn.decode(), off))
+        else:
+            _res.delay_imports.append((fn.decode(), off))
+
+    _AnalysisDllImports(file, AnalysisDllImports_CB(_cb))
+    if needNameOnly:
+        _res.imports = [_[0] for _ in _res.imports]
+        _res.delay_imports = [_[0] for _ in _res.delay_imports]
+    if mergeDelay:
+        _res.imports.extend(_res.delay_imports)
+    return _res
+
+
+# print(
+#     AnalysisDllImports(
+#         r"D:\GitHub\LunaTranslator\src\files\DLL32\CVUtils.dll", False, False
+#     )
+# )
+# print(
+#     AnalysisDllImports(
+#         r"D:\GitHub\LunaTranslator\src\files\DLL64\NativeUtils.dll", False, False
+#     )
+# )
+# print(
+#     AnalysisDllExports(
+#         r"D:\GitHub\LunaTranslator\src\files\DLL64\NativeUtils.dll"
+#     )
+# )
+
+# print(
+#     AnalysisDllExports(r"D:\GitHub\LunaTranslator\src\files\DLL32\CVUtils.dll")
+# )

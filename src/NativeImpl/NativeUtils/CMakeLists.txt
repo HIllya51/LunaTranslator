@@ -29,6 +29,7 @@ add_subdirectory(webview)
 add_subdirectory(bass)
 add_library(NativeUtils SHARED
     audiodevice.cpp
+    dllanalysis.cpp
     globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp
     ${loopbackaudio} ${winrt} ${versioninfo}
 )

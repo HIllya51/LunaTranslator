@@ -157,6 +157,7 @@ PAGE_READWRITE = 0x04
 IMAGE_NT_OPTIONAL_HDR32_MAGIC = 0x10B
 IMAGE_NT_OPTIONAL_HDR64_MAGIC = 0x20B
 IMAGE_DIRECTORY_ENTRY_IMPORT = 1
+IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT = 13
 
 
 class IMAGE_IMPORT_DESCRIPTOR(Structure):
@@ -169,22 +170,38 @@ class IMAGE_IMPORT_DESCRIPTOR(Structure):
     ]
 
 
+class IMAGE_DELAYLOAD_DESCRIPTOR(Structure):
+    _fields_ = [
+        ("Attributes", DWORD),
+        ("Name", DWORD),
+        ("ModuleHandle", DWORD),
+        ("ImportAddressTable", DWORD),
+        ("ImportNameTable", DWORD),
+        ("BoundImportAddressTable", DWORD),
+        ("UnloadInformationTable", DWORD),
+        ("TimeDateStamp", DWORD),
+    ]
+
+
 def Rva2Offset(rva, psh, pnt, IMAGE_NT_HEADERS):
     pSeh = psh
-    psh = cast(psh, POINTER(IMAGE_SECTION_HEADER))
+
+    pSeh_start = cast(psh, POINTER(IMAGE_SECTION_HEADER))
     pnt = cast(pnt, POINTER(IMAGE_NT_HEADERS))
+
     for i in range(pnt.contents.FileHeader.NumberOfSections):
-        pSeh1 = cast(pSeh, POINTER(IMAGE_SECTION_HEADER)).contents
+        pSeh_current = pSeh_start[i]
         if (
-            rva >= pSeh1.VirtualAddress
-            and rva < pSeh1.VirtualAddress + pSeh1.VirtualSize
+            rva >= pSeh_current.VirtualAddress
+            and rva < pSeh_current.VirtualAddress + pSeh_current.VirtualSize
         ):
             break
-        pSeh += sizeof(IMAGE_SECTION_HEADER)
-    pSeh = cast(pSeh, POINTER(IMAGE_SECTION_HEADER)).contents
-    if pSeh.VirtualAddress == 0 or pSeh.PointerToRawData == 0:
+    else:
         return -1
-    return rva - pSeh.VirtualAddress + pSeh.PointerToRawData
+
+    if pSeh_current.VirtualAddress == 0 or pSeh_current.PointerToRawData == 0:
+        return -1
+    return rva - pSeh_current.VirtualAddress + pSeh_current.PointerToRawData
 
 
 def importanalysis(fname):
@@ -193,20 +210,23 @@ def importanalysis(fname):
 
     virtualpointer = VirtualAlloc(None, len(bs), MEM_COMMIT, PAGE_READWRITE)
     memmove(virtualpointer, bs, len(bs))
-    ntheaders_addr = (
-        virtualpointer
-        + cast(virtualpointer, POINTER(IMAGE_DOS_HEADER)).contents.e_lfanew
-    )
-    ntheaders = cast(ntheaders_addr, POINTER(IMAGE_NT_HEADERS32)).contents
-    IMAGE_NT_HEADERS = IMAGE_NT_HEADERS32
-    magic = ntheaders.OptionalHeader.Magic
-    if magic != IMAGE_NT_OPTIONAL_HDR32_MAGIC:
-        ntheaders = cast(ntheaders_addr, POINTER(IMAGE_NT_HEADERS64)).contents
-        IMAGE_NT_HEADERS = IMAGE_NT_HEADERS64
-        magic = ntheaders.OptionalHeader.Magic
-        if magic != IMAGE_NT_OPTIONAL_HDR64_MAGIC:
-            # 无效的文件
-            return []
+
+    dos_header = cast(virtualpointer, POINTER(IMAGE_DOS_HEADER)).contents
+    ntheaders_addr = virtualpointer + dos_header.e_lfanew
+
+    ntheaders_peek = cast(ntheaders_addr, POINTER(IMAGE_NT_HEADERS32)).contents
+    IMAGE_NT_HEADERS_TYPE = None
+
+    if ntheaders_peek.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR32_MAGIC:
+        IMAGE_NT_HEADERS_TYPE = IMAGE_NT_HEADERS32
+    elif ntheaders_peek.OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC:
+        IMAGE_NT_HEADERS_TYPE = IMAGE_NT_HEADERS64
+    else:
+        VirtualFree(virtualpointer, len(bs), MEM_DECOMMIT)
+        return {"imports": [], "delay_imports": []}
+
+    ntheaders = cast(ntheaders_addr, POINTER(IMAGE_NT_HEADERS_TYPE)).contents
+
     pSech = (
         ntheaders_addr
         + sizeof(DWORD)
@@ -214,30 +234,79 @@ def importanalysis(fname):
         + ntheaders.FileHeader.SizeOfOptionalHeader
     )
 
-    pImportDescriptor = virtualpointer + Rva2Offset(
-        ntheaders.OptionalHeader.DataDirectory[
-            IMAGE_DIRECTORY_ENTRY_IMPORT
-        ].VirtualAddress,
-        pSech,
-        ntheaders_addr,
-        IMAGE_NT_HEADERS,
-    )
-    pImportDescriptor_data = cast(
-        pImportDescriptor, POINTER(IMAGE_IMPORT_DESCRIPTOR)
-    ).contents
-    collect = []
-    while pImportDescriptor_data.Name:
-        offset = Rva2Offset(
-            pImportDescriptor_data.Name, pSech, ntheaders_addr, IMAGE_NT_HEADERS
+    imports_collect: "list[tuple[str, int]]" = []
+    import_directory_rva = ntheaders.OptionalHeader.DataDirectory[
+        IMAGE_DIRECTORY_ENTRY_IMPORT
+    ].VirtualAddress
+
+    if import_directory_rva != 0:
+        pImportDescriptor = virtualpointer + Rva2Offset(
+            import_directory_rva, pSech, ntheaders_addr, IMAGE_NT_HEADERS_TYPE
         )
-        if offset == -1:
-            # python3.dll，无导入
-            return []
-        name = virtualpointer + offset
-        collect.append((cast(name, c_char_p).value.decode(), offset))
-        pImportDescriptor += sizeof(IMAGE_IMPORT_DESCRIPTOR)
-        pImportDescriptor_data = cast(
-            pImportDescriptor, POINTER(IMAGE_IMPORT_DESCRIPTOR)
-        ).contents
+        if pImportDescriptor != -1:
+            pImportDescriptor_data = cast(
+                pImportDescriptor, POINTER(IMAGE_IMPORT_DESCRIPTOR)
+            ).contents
+
+            current_import_descriptor_ptr = pImportDescriptor
+            while pImportDescriptor_data.Name:
+                offset = Rva2Offset(
+                    pImportDescriptor_data.Name,
+                    pSech,
+                    ntheaders_addr,
+                    IMAGE_NT_HEADERS_TYPE,
+                )
+                if offset != -1:
+                    name = virtualpointer + offset
+                    imports_collect.append(
+                        (cast(name, c_char_p).value.decode(), offset)
+                    )
+
+                current_import_descriptor_ptr += sizeof(IMAGE_IMPORT_DESCRIPTOR)
+                pImportDescriptor_data = cast(
+                    current_import_descriptor_ptr, POINTER(IMAGE_IMPORT_DESCRIPTOR)
+                ).contents
+
+    delay_imports_collect: "list[tuple[str, int]]" = []
+    delay_import_directory_rva = ntheaders.OptionalHeader.DataDirectory[
+        IMAGE_DIRECTORY_ENTRY_DELAY_IMPORT
+    ].VirtualAddress
+
+    if delay_import_directory_rva != 0:
+        pDelayImportDescriptor = virtualpointer + Rva2Offset(
+            delay_import_directory_rva, pSech, ntheaders_addr, IMAGE_NT_HEADERS_TYPE
+        )
+        if pDelayImportDescriptor != -1:
+            pDelayImportDescriptor_data = cast(
+                pDelayImportDescriptor, POINTER(IMAGE_DELAYLOAD_DESCRIPTOR)
+            ).contents
+
+            current_delay_import_descriptor_ptr = pDelayImportDescriptor
+            while pDelayImportDescriptor_data.Name:
+                offset = Rva2Offset(
+                    pDelayImportDescriptor_data.Name,
+                    pSech,
+                    ntheaders_addr,
+                    IMAGE_NT_HEADERS_TYPE,
+                )
+                if offset != -1:
+                    name = virtualpointer + offset
+                    delay_imports_collect.append(
+                        (cast(name, c_char_p).value.decode(), offset)
+                    )
+
+                current_delay_import_descriptor_ptr += sizeof(
+                    IMAGE_DELAYLOAD_DESCRIPTOR
+                )
+                pDelayImportDescriptor_data = cast(
+                    current_delay_import_descriptor_ptr,
+                    POINTER(IMAGE_DELAYLOAD_DESCRIPTOR),
+                ).contents
+
     VirtualFree(virtualpointer, len(bs), MEM_DECOMMIT)
-    return collect
+    return {"imports": imports_collect, "delay_imports": delay_imports_collect}
+
+
+if __name__ == "__main__":
+    print(importanalysis(r"D:\GitHub\LunaTranslator\src\files\DLL32\CVUtils.dll"))
+    print(importanalysis(r"D:\GitHub\LunaTranslator\src\files\DLL64\NativeUtils.dll"))

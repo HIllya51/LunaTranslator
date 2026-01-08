@@ -1,5 +1,5 @@
-﻿#include <dbghelp.h>
-#include <uiautomation.h>
+﻿#include <uiautomation.h>
+#include "filemapping.hpp"
 #include "osversion.hpp"
 #ifndef WINXP
 #include <shellscalingapi.h>
@@ -306,36 +306,13 @@ DECLARE_API void OpenFileEx(LPCWSTR file)
 
 std::optional<WORD> MyGetBinaryType(LPCWSTR file)
 {
-    if (!file)
+    FileMapping fm(file);
+    if (!fm.mapAddr)
         return {};
-    CHandle hFile{CreateFileW(file, GENERIC_READ, FILE_SHARE_READ, 0,
-                              OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0)};
-    if (!hFile)
+    PIMAGE_NT_HEADERS peHdr = GetImageNtHeader(fm.mapAddr);
+    if (!peHdr)
         return {};
-    CHandle hMap{CreateFileMappingW(
-        hFile,
-        NULL,          // security attrs
-        PAGE_READONLY, // protection flags
-        0,             // max size - high DWORD
-        0,             // max size - low DWORD
-        NULL)};        // mapping name - not used
-    if (!hMap)
-        return {};
-
-    // next, map the file to our address space
-    void *mapAddr = MapViewOfFileEx(
-        hMap,          // mapping object
-        FILE_MAP_READ, // desired access
-        0,             // loc to map - hi DWORD
-        0,             // loc to map - lo DWORD
-        0,             // #bytes to map - 0=all
-        NULL);         // suggested map addr
-    if (!mapAddr)
-        return {};
-    auto peHdr = ImageNtHeader(mapAddr);
-    auto type = peHdr->FileHeader.Machine;
-    UnmapViewOfFile(mapAddr);
-    return type;
+    return peHdr->FileHeader.Machine;
 }
 
 #ifndef IMAGE_FILE_MACHINE_ARM64
