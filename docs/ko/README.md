@@ -61,6 +61,10 @@
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
+### DLL이 게임에 주입되기를 기다리는 중입니다... {#anchor-waitdll}
+
+해결 방법은 위와 동일합니다.
+
 ### Error/FileNotFoundError
 
 미리 신뢰할 수 있는 항목을 추가하지 않으면, 소프트웨어 실행 중 일부 필수 구성 요소가 바이러스 백신 프로그램에 의해 삭제될 수 있습니다. 이후 HOOK 모드에서 프로세스를 선택한 후 이 오류가 발생할 수 있습니다. 해결 방법은 위와 동일합니다.

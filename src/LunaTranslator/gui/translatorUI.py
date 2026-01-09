@@ -352,6 +352,7 @@ class TranslatorWindow(resizableframeless):
     changeshowhiderawsig = pyqtSignal()
     changeshowhidetranssig = pyqtSignal()
     magpiecallback = pyqtSignal(bool)
+    showMarkDownSig = pyqtSignal(str)
 
     def setbuttonsizeX(self):
         self.changeextendstated()
@@ -1081,6 +1082,7 @@ class TranslatorWindow(resizableframeless):
                 else None
             )
         )
+        self.showMarkDownSig.connect(self.showMarkDown)
         icon = getExeIcon(getcurrexe())
         self.setWindowIcon(icon)
         self.firstshow = True
@@ -1253,10 +1255,10 @@ class TranslatorWindow(resizableframeless):
         except:
             pass
 
-    def makeMDlinkclick(self, text: str) -> "list[WordSegResult]":
+    def __makeMDlinkclick(self, text: str) -> "list[WordSegResult]":
         if "\n" in text:
             __ = []
-            for i, _ in enumerate(self.makeMDlinkclick(_) for _ in text.split("\n")):
+            for i, _ in enumerate(self.__makeMDlinkclick(_) for _ in text.split("\n")):
                 if i:
                     __.append(WordSegResult("\n"))
                 __ += _
@@ -1280,12 +1282,8 @@ class TranslatorWindow(resizableframeless):
                     text = None
         return result
 
-    def showabout(self):
-
-        _t = get_about_info()
-        if not globalconfig["adaptive_height"]:
-            _t = _t.replace("\n\n", "\n")
-        segs = self.makeMDlinkclick(_t)
+    def showMarkDown(self, md):
+        segs = self.__makeMDlinkclick(md)
         text = "".join(_.word for _ in segs)
         self.showline(
             text=text,
@@ -1294,6 +1292,13 @@ class TranslatorWindow(resizableframeless):
             raw=True,
             color=SpecialColor.RawTextColor,
         )
+
+    def showabout(self):
+
+        _t = get_about_info()
+        if not globalconfig["adaptive_height"]:
+            _t = _t.replace("\n\n", "\n")
+        self.showMarkDown(_t)
 
     def showEvent(self, e):
         super().showEvent(e)

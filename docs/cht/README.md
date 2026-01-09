@@ -61,6 +61,10 @@
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png)
 :::
 
+### 正在等待DLL注入到遊戲中…… {#anchor-waitdll}
+
+解決方法同上。
+
 ### Error/FileNotFoundError
 
 如果沒有預先新增好例外，有可能在軟體執行一段時間後，部份必要元件才被防毒軟體刪除。然後等到 HOOK 模式選取處理程序之後，才會報出這個錯誤。解決方法同上。

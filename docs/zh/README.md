@@ -61,6 +61,10 @@
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
+### 正在等待DLL注入到游戏中…… {#anchor-waitdll}
+
+解决方法同上。
+
 ### Error/FileNotFoundError
 
 如果没有预先添加好信任，有可能在软件运行一段时间后，部分必要组件才被杀毒软件删除。然后等到HOOK模式选取进程之后，报出这个错误。解决方法同上。

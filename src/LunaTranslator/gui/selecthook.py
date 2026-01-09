@@ -10,7 +10,6 @@ from myutils.config import (
     static_data,
     dynamiclink,
 )
-from gui.rendertext.texttype import TextType, SpecialColor
 from myutils.utils import get_time_stamp, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
 from textio.textsource.texthook import texthook
@@ -1005,20 +1004,12 @@ class hookselect(closeashidewindow):
         elif info == HOSTINFO.EmuGameName:
             gobject.base.displayinfomessage(sentence, "<msg_info_refresh>")
         elif info == HOSTINFO.EmuConnected:
-            segs = gobject.base.translation_ui.makeMDlinkclick(
+            gobject.base.translation_ui.showMarkDownSig.emit(
                 "{}\n[{}]({})".format(
                     sentence,
                     _TR("模拟器游戏支持表"),
                     dynamiclink("emugames.html", docs=True),
                 )
-            )
-            text = "".join(_.word for _ in segs)
-            gobject.base.translation_ui.showline(
-                text=text,
-                texttype=TextType.Info,
-                hira=segs,
-                raw=True,
-                color=SpecialColor.RawTextColor,
             )
 
     def getnewsentence(self, sentence):

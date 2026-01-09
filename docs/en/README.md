@@ -64,6 +64,10 @@ Note: To achieve HOOK extraction of game text, it is necessary to inject Dll int
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
+### Waiting for the DLL to be injected into the game... {#anchor-waitdll}
+
+The solution is the same as above.
+
 ### Error/FileNotFoundError
 
 If trust isn't pre-established, some essential components might get deleted by antivirus software after the program has been running for a while. Then when selecting a process in HOOK mode, this error occurs. The solution is the same as above.

@@ -6,9 +6,11 @@ import zhconv, functools
 from myutils.config import (
     globalconfig,
     savehook_new_data,
+    dynamiclink,
     findgameuidofpath,
     _TR,
 )
+from gui.rendertext.texttype import TextType, SpecialColor
 from main import checkintegrity
 from textio.textsource.textsourcebase import basetext
 from myutils.utils import getlangtgt, safe_escape, stringfyerror
@@ -358,11 +360,14 @@ class texthook(basetext):
         ):
             gobject.base.hookselectdialog.realshowhide.emit(True)
         self.injectproc(injecttimeout, pids)
-        gobject.base.displayinfomessage(
+
+        gobject.base.translation_ui.showMarkDownSig.emit(
             _TR(
                 "正在等待DLL注入到游戏中……\n如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。"
-            ),
-            "<msg_info_refresh>",
+            )
+            + "\n[{}]({})".format(
+                _TR("说明"), dynamiclink("README.html#anchor-waitdll", docs=True)
+            )
         )
 
     def QueryThreadHistory(self, tp, _latest=False):
@@ -458,7 +463,7 @@ class texthook(basetext):
         if self.hconfig.get("insertpchooks_string", False):
             self.Luna_InsertPCHooks(pid, 0)
             self.Luna_InsertPCHooks(pid, 1)
-        gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
+        #gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
         self.flashembedsettings(pid)
 
     def InsertPCHooks(self, which):

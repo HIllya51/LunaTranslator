@@ -61,6 +61,10 @@
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
+### DLLがゲームに注入されるのを待っています… {#anchor-waitdll}
+
+解決方法は上記と同じです。
+
 ### Error/FileNotFoundError
 
 事前に信頼リストに追加していない場合、ソフトウェアがしばらく動作した後で必要なコンポーネントがウイルス対策ソフトに削除される可能性があります。その後、HOOKモードでプロセスを選択した際にこのエラーが発生します。解決方法は上記と同じです。

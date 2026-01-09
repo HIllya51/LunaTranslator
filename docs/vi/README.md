@@ -62,6 +62,10 @@ Lưu ý: Để thực hiện việc HOOK trích xuất văn bản trò chơi, c�
 ![img](https://image.lunatranslator.org/zh/cantstart/3.png) 
 ::: 
 
+### Đang chờ đợi DLL được tiêm vào trò chơi... {#anchor-waitdll}
+
+Cách khắc phục giống như trên.
+
 ### Error/FileNotFoundError
 
 Nếu không thêm vào danh sách tin cậy trước, có thể sau một thời gian phần mềm chạy, một số thành phần quan trọng sẽ bị phần mềm diệt virus xóa. Sau đó khi chọn tiến trình trong chế độ HOOK, lỗi này sẽ xuất hiện. Cách khắc phục giống như trên.
