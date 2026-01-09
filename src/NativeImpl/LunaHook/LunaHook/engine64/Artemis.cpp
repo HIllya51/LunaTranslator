@@ -4,20 +4,27 @@ namespace
 	void filtercommon(TextBuffer *buffer, HookParam *hp)
 	{
 		Utf8TypeChecker(buffer, hp);
+		auto s = buffer->strA();
 		if (hp->type & CODEC_UTF8)
 		{
-			if (buffer->viewA() == u8"「」（）『』")
-				buffer->clear();
-			else if (buffer->viewA() == u8"　")
-				buffer->clear();
+			if (s == u8"「」（）『』")
+				return buffer->clear();
+			else if (s == u8"　")
+				return buffer->clear();
+			else if (s == u8"「」（）『』")
+				return buffer->clear();
 		}
 		else
 		{
-			if (buffer->viewA() == "\x81\x75\x81\x76\x81\x69\x81\x6a\x81\x77\x81\x78")
-				buffer->clear();
-			else if (buffer->viewA() == "\x81\x40")
-				buffer->clear();
+			if (s == "\x81\x75\x81\x76\x81\x69\x81\x6a\x81\x77\x81\x78")
+				return buffer->clear();
+			else if (s == "\x81\x40")
+				return buffer->clear();
+			else if (s == "\x81\x75\x81\x76\x81\x69\x81\x6a\x81\x77\x81\x78")
+				return buffer->clear();
 		}
+		if (re::match(s, "\\d+"))
+			return buffer->clear();
 	}
 }
 bool Artemis64x()
@@ -63,9 +70,8 @@ bool Artemis64x()
 			continue;
 		HookParam hp;
 		hp.address = addr + 2;
-		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | USING_SPLIT | NO_CONTEXT;
+		hp.type = CODEC_UTF8 | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT;
 		hp.offset = regoffset(rdx);
-		hp.split = regoffset(rcx);
 		hp.filter_fun = filtercommon;
 		succ |= NewHook(hp, "Artemis64x");
 	}
