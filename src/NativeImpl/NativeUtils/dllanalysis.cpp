@@ -1,8 +1,10 @@
 #include "filemapping.hpp"
+#ifdef WINXP
+#include "../xpundef/xp_winnt.hpp"
+#endif
 
 using ImportInfoS = std::vector<std::pair<std::string, DWORD>>;
 using ImportAnalysisResult = std::pair<ImportInfoS, ImportInfoS>;
-
 
 inline PVOID Rva2Va(DWORD rva, PIMAGE_NT_HEADERS pNtHeaders, PVOID base)
 {
