@@ -715,9 +715,11 @@ def autostartllamacpp(force=False):
     for ff in os.listdir(llamaserverdir):
         if ff.lower().endswith(".dll") and ff.lower().startswith("ggml-"):
             f = os.path.join(llamaserverdir, ff)
-            imports = NativeUtils.AnalysisDllImports(f)
+            imports: "list[str]" = NativeUtils.AnalysisDllImports(f)
             losts = []
             for imp in imports:
+                if imp.lower().startswith("api-ms-win"):
+                    continue
                 if not (
                     os.path.isfile(os.path.join(llamaserverdir, imp))
                     or NativeUtils.SearchDllPath(imp)
