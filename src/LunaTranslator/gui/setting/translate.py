@@ -703,8 +703,7 @@ def __getllamacppdevices(llamaserver):
 @tryprint
 def try_remove_useless(d, tag):
     if not tag:
-        return shutil.rmtree(d)
-
+        return
     for _ in os.listdir(d):
         if _ == tag:
             continue
