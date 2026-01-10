@@ -149,8 +149,7 @@ def updatemethod(urls: "tuple[str, str]"):
             if not i:
                 continue
             file.write(i)
-            thislen = len(i)
-            file_size += thislen
+            file_size += len(i)
 
             prg = int(10000 * file_size / size)
             prg100 = prg / 100

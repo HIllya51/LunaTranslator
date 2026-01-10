@@ -917,5 +917,12 @@
     "启动中": "Opstarten",
     "选择字体": "Lettertype kiezen",
     "模型": "Model",
-    "更新时间": "Update tijd"
+    "更新时间": "Update tijd",
+    "{} 缺少依赖: {}": "{} heeft afhankelijkheden nodig: {}",
+    "当前选择的 llama-server 无法运行": "De momenteel geselecteerde llama-server kan niet worden uitgevoerd.",
+    "核心": "Kern",
+    "版本": "Versie",
+    "当前版本": "Huidige versie",
+    "架构": "Architectuur",
+    "缺少依赖": "Ontbrekende afhankelijkheid"
 }

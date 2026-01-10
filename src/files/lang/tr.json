@@ -917,5 +917,12 @@
     "启动中": "Başlatılıyor",
     "选择字体": "Yazı Tipi Seçin",
     "模型": "Model",
-    "更新时间": "Güncelleme zamanı"
+    "更新时间": "Güncelleme zamanı",
+    "{} 缺少依赖: {}": "{} Bağımlılık eksik: {}",
+    "当前选择的 llama-server 无法运行": "Seçili llama-server şu anda çalıştırılamıyor",
+    "核心": "Çekirdek",
+    "版本": "Sürüm",
+    "当前版本": "Mevcut sürüm",
+    "架构": "Mimari",
+    "缺少依赖": "Bağımlılık eksik"
 }

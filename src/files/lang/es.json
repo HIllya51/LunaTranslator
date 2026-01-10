@@ -917,5 +917,12 @@
     "启动中": "Iniciando",
     "选择字体": "Seleccionar fuente",
     "模型": "Modelo",
-    "更新时间": "Tiempo de actualización"
+    "更新时间": "Tiempo de actualización",
+    "{} 缺少依赖: {}": "{} Dependencia faltante: {}",
+    "当前选择的 llama-server 无法运行": "El servidor llama seleccionado actualmente no puede ejecutarse.",
+    "核心": "Núcleo",
+    "版本": "Versión",
+    "当前版本": "Versión actual",
+    "架构": "Arquitectura",
+    "缺少依赖": "Falta de dependencias"
 }

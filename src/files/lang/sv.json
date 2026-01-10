@@ -917,5 +917,12 @@
     "启动中": "Startar upp",
     "选择字体": "Välj typsnitt",
     "模型": "Modell",
-    "更新时间": "Uppdaterad tid"
+    "更新时间": "Uppdaterad tid",
+    "{} 缺少依赖: {}": "{} Saknar beroende: {}",
+    "当前选择的 llama-server 无法运行": "Den valda llama-servern kan inte köras.",
+    "核心": "Kärna",
+    "版本": "Version",
+    "当前版本": "Aktuell version",
+    "架构": "Arkitektur",
+    "缺少依赖": "Saknar beroenden"
 }

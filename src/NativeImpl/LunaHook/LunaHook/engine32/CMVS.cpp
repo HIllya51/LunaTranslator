@@ -1174,6 +1174,14 @@ bool InsertCMVSHook()
  *  00442BC9   CC               INT3
  *  00442BCA   CC               INT3
  */
+static void cmvsfilter(TextBuffer *buffer, HookParam *hp)
+{
+  std::string str = buffer->strA();
+  std::string result1 = re::sub(str, "\\{(.*?)/(.*?)\\}", "$1");
+  strReplace(result1, "\\wc");
+  strReplace(result1, "\\ws");
+  buffer->from(result1);
+}
 namespace
 {
   bool attach(const uint8_t pattern[], int patternSize, DWORD startAddress, DWORD stopAddress)
@@ -1189,12 +1197,7 @@ namespace
     hp.offset = stackoffset(1);
     hp.type = EMBED_ABLE | USING_STRING | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     hp.embed_hook_font = F_GetGlyphOutlineA;
-    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
-    {
-      std::string str = buffer->strA();
-      std::string result1 = re::sub(str, "\\{(.*?)/(.*?)\\}", "$1");
-      buffer->from(result1);
-    };
+    hp.filter_fun = cmvsfilter;
 
     return NewHook(hp, "EmbedCMVS");
   };
@@ -1556,7 +1559,8 @@ static bool h2()
     hp.offset = stackoffset(1);
     hp.type = EMBED_ABLE | USING_STRING | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
     hp.embed_hook_font = F_GetGlyphOutlineA;
-    return NewHook(hp, "EmbedCMVS");
+    hp.filter_fun = cmvsfilter;
+    return NewHook(hp, "EmbedCMVS_2");
   }
   return false;
 }

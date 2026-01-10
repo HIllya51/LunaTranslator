@@ -917,5 +917,12 @@
     "启动中": "Đang khởi động",
     "选择字体": "Chọn phông chữ",
     "模型": "Mô hình",
-    "更新时间": "Thời gian cập nhật"
+    "更新时间": "Thời gian cập nhật",
+    "{} 缺少依赖: {}": "{} thiếu phụ thuộc: {}",
+    "当前选择的 llama-server 无法运行": "llama-server hiện đang chọn không thể chạy được",
+    "核心": "Core",
+    "版本": "Phiên bản",
+    "当前版本": "Phiên bản hiện tại",
+    "架构": "Kiến trúc",
+    "缺少依赖": "Thiếu phụ thuộc"
 }

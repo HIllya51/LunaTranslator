@@ -3119,15 +3119,22 @@ class IconButton(LPushButton):
             self.__seticon()
         return super().event(e)
 
+    def setFixedSize(self, size: QSize):
+        self._FixedSize = size
+        super().setFixedSize(size)
+
     def resizedirect(self):
-        h = QFontMetricsF(self.font()).height()
-        sz = (
-            QSizeF(int(h * gobject.Consts.IconSizeHW), h) * gobject.Consts.btnscale
-        ).toSize()
-        if self.fix:
-            self.setFixedSize(sz)
+        if not self._FixedSize:
+            h = QFontMetricsF(self.font()).height()
+            sz = (
+                QSizeF(int(h * gobject.Consts.IconSizeHW), h) * gobject.Consts.btnscale
+            ).toSize()
+            if self.fix:
+                super().setFixedSize(sz)
+            else:
+                super().setFixedHeight(sz.height())
         else:
-            self.setFixedHeight(sz.height())
+            sz = self.size()
         self.setIconSize(sz)
         self.sizeChanged.emit(sz)
 
@@ -3147,6 +3154,7 @@ class IconButton(LPushButton):
         super().__init__(parent)
         if tips:
             self.setToolTip(tips)
+        self._FixedSize = None
         self._color = color
         self._icon = icon
         self.clicked.connect(self.clicked_1)

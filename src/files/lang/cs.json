@@ -917,5 +917,12 @@
     "启动中": "Spouštění",
     "选择字体": "Vyberte písmo",
     "模型": "Model",
-    "更新时间": "Čas aktualizace"
+    "更新时间": "Čas aktualizace",
+    "{} 缺少依赖: {}": "Chybí závislost: {}",
+    "当前选择的 llama-server 无法运行": "Vybraný llama-server nelze spustit.",
+    "核心": "Jádro",
+    "版本": "Verze",
+    "当前版本": "Aktuální verze",
+    "架构": "Architektura",
+    "缺少依赖": "Chybějící závislosti"
 }

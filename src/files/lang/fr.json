@@ -917,5 +917,12 @@
     "启动中": "Démarrage en cours.",
     "选择字体": "Choisir une police de caractères",
     "模型": "Modèle",
-    "更新时间": "Date de mise à jour"
+    "更新时间": "Date de mise à jour",
+    "{} 缺少依赖: {}": "{} Dépendances manquantes : {}",
+    "当前选择的 llama-server 无法运行": "Le serveur llama actuellement sélectionné ne peut pas être exécuté.",
+    "核心": "Noyau",
+    "版本": "Version",
+    "当前版本": "Version actuelle",
+    "架构": "Architecture",
+    "缺少依赖": "Dépendance manquante"
 }

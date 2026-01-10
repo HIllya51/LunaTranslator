@@ -109,6 +109,9 @@ class BASEOBJECT(QObject):
     ocr_search_word_save_image = pyqtSignal(QImage)
     llamacppstatus = pyqtSignal(int)
     llamacppstdout = pyqtSignal(str)
+    llamacppstdoutstatus = pyqtSignal(dict)
+    llamacppcurrversion = pyqtSignal(object)
+    llamacpparchcheck = pyqtSignal(object)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -143,6 +146,9 @@ class BASEOBJECT(QObject):
         self.__cachesignal: "dict[pyqtBoundSignal, tuple]" = {}
         self.__cachesignal2: "dict[pyqtBoundSignal, list]" = {}
         self.__connect_internal_all(self.llamacppstdout)
+        self.__connect_internal(self.llamacpparchcheck)
+        self.__connect_internal(self.llamacppstdoutstatus)
+        self.__connect_internal(self.llamacppcurrversion)
         self.__connect_internal(self.dispatch_translate)
         self.__connect_internal(self.llamacppstatus)
         self.__connect_internal(self.ocr_search_word_save_image)

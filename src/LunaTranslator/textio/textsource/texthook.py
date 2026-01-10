@@ -10,7 +10,6 @@ from myutils.config import (
     findgameuidofpath,
     _TR,
 )
-from gui.rendertext.texttype import TextType, SpecialColor
 from main import checkintegrity
 from textio.textsource.textsourcebase import basetext
 from myutils.utils import getlangtgt, safe_escape, stringfyerror
@@ -463,7 +462,7 @@ class texthook(basetext):
         if self.hconfig.get("insertpchooks_string", False):
             self.Luna_InsertPCHooks(pid, 0)
             self.Luna_InsertPCHooks(pid, 1)
-        #gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
+        gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
         self.flashembedsettings(pid)
 
     def InsertPCHooks(self, which):
