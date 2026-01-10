@@ -19,5 +19,6 @@ renpy_hook_text PYSOURCE "resource/renpy_hook_text.py"
 
 lunajspatch JSSOURCE "resource/lunajspatch.js"
 
+thfont CHARSET "resource/thfont.tbl"
 kizfont CHARSET "resource/kizfont.tbl"
 sizfont CHARSET "resource/sizfont.tbl"

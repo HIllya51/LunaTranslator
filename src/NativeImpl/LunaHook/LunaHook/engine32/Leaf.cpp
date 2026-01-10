@@ -861,7 +861,8 @@ namespace
   {
     static bool iskizuato = wcscmp(processName_lower, L"kizuato.exe") == 0;
     static bool issizuku = wcscmp(processName_lower, L"sizuku.exe") == 0;
-    if (!issizuku && !iskizuato)
+    static bool isthfont = wcscmp(processName_lower, L"lvns3.exe") == 0;
+    if (!issizuku && !iskizuato && !isthfont)
       return false;
     if (0)
     {
@@ -902,9 +903,27 @@ namespace
         0x05, 0x00, 0x04, 0x00, 0x00,
         0x01, 0x55, 0xf4,
         0x33, 0xd2};
+    BYTE sig3[] = {
+        0xe8, XX4,
+        0x83, 0xc4, 0x04,
+        0xa3, XX, XX, XX, 0x00,
+        0x0f, 0xbf, 0xcb,
+        0xc1, 0xe1, 0x03,
+        0x83, 0xc0, 0x28,
+        0x0f, 0xbf, 0xde,
+        0x8d, 0x14, 0xc9,
+        0xa3, XX4,
+        0x05, 0x00, 0x04, 0x00, 0x00,
+        0x01, 0x55, 0xfc,
+        0x0f, 0xbf, 0xcf,
+        0xa3, XX4,
+        0x89, 0x5d, 0xf4,
+        0x33, 0xd2};
     auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
     if (!addr)
       addr = MemDbg::findBytes(sig2, sizeof(sig2), processStartAddress, processStopAddress);
+    if (!addr)
+      addr = MemDbg::findBytes(sig3, sizeof(sig3), processStartAddress, processStopAddress);
     if (!addr)
       return false;
     addr = findfuncstart(addr, 0x100, true);
@@ -916,10 +935,10 @@ namespace
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       WORD ch = context->stack[3];
-      static auto charset = StringToWideString(LoadResData(iskizuato ? L"kizfont" : L"sizfont", L"CHARSET"));
+      static auto charset = StringToWideString(LoadResData(iskizuato ? L"kizfont" : (issizuku ? L"sizfont" : L"thfont"), L"CHARSET"));
       buffer->from_t(charset[ch]);
     };
-    return NewHook(hp, iskizuato ? "kizuato" : "sizuku");
+    return NewHook(hp, iskizuato ? "kizuato" : (issizuku ? "sizuku" : "toheart"));
   }
 }
 bool Leaf::attach_function()
