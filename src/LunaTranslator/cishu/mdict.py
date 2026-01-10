@@ -50,6 +50,7 @@ class IndexBuilder(object):
             + hashlib.md5(_filename.encode("utf8")).hexdigest()
         )
         _targetfilenamebase = gobject.getcachedir("mdict/index/" + _mdxmd5)
+        self.mdxmd5 = _mdxmd5
         self._mdx_db = _targetfilenamebase + ".mdx.v3.db"
         # make index anyway
 
@@ -158,7 +159,7 @@ class IndexBuilder(object):
             lookup_result_list.append(self.get_mdx_by_index(index))
         return lookup_result_list
 
-    def mdd_lookup(self, keyword, ignorecase=None):
+    def mdd_lookup(self, keyword, ignorecase=True):
         lookup_result_list = []
         for i in range(len(self._mdict_mdds)):
             indexes = self.lookup_indexes(self._mdd_dbs[i], keyword, ignorecase)
@@ -354,7 +355,7 @@ class mdict(cishubase):
 
     def subcallback(
         self,
-        index,
+        index: IndexBuilder,
         fn,
         base,
         audiob64vals: dict,
@@ -387,6 +388,7 @@ class mdict(cishubase):
                 file_content.decode("utf8", errors="ignore"), divclass
             )
             if css:
+                css = self.__parse_css_fontface_url_local(index, css)
                 csscollect[url] = css
                 return None
             else:
@@ -401,6 +403,26 @@ class mdict(cishubase):
             return matchall.replace(url, varname)
 
         return matchall
+
+    def __parse_css_fontface_url_local(self, index: IndexBuilder, css: str):
+        def replacer(match: re.Match):
+            _ = match.groups()[0]
+            _font = self.parse_url_in_mdd(index, _)
+            if not _font:
+                if ("#" not in _) and ("?" not in _):
+                    return 'url("' + match.group() + '")'
+                _ = re.sub(r"[\?#](.*?)$", "", _)
+                _font = self.parse_url_in_mdd(index, _)
+            if not _font:
+                return 'url("' + match.group() + '")'
+
+            f = gobject.getcachedir(os.path.join("mdict/index", index.mdxmd5, _))
+            with open(f, "wb") as ff:
+                ff.write(_font)
+            return 'url("' + f.replace("\\", "/") + '")'
+
+        css = re.sub(r'url\("(.*?)"\)', replacer, css)
+        return css
 
     def repairtarget(
         self,

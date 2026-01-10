@@ -11,3 +11,7 @@
 1. ## 최종 효과
 
     ![img](https://image.lunatranslator.org/zh/jiebapinyin.png)
+
+1. ## 중국어->영어 사전 검색 추가
+
+     [shawkynasr/CC-CEDICT](https://github.com/shawkynasr/CC-CEDICT)를 다운로드하고 **사전** -> **오프라인** -> **MDict**에 추가하세요.

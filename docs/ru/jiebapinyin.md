@@ -11,3 +11,8 @@
 1. ## Конечный результат
 
     ![img](https://image.lunatranslator.org/zh/jiebapinyin.png)
+
+
+1. ## Добавление поиска в словаре китайско->английский
+
+     Скачайте [shawkynasr/CC-CEDICT](https://github.com/shawkynasr/CC-CEDICT) и добавьте в **Словари** -> **Офлайн** -> **MDict**.

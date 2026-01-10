@@ -512,7 +512,7 @@ class BASEOBJECT(QObject):
             if len(text) > globalconfig["maxlength"]:
                 text = text[: globalconfig["maxlength"]] + "……"
 
-            self.translation_ui.displayraw1.emit(text, updateTranslate)
+            self.translation_ui.displayraw1.emit(text, updateTranslate, is_auto_run)
             if statusok:
                 self.transhis.getnewsentencesignal.emit(text)
             self.maybesetedittext(text)
@@ -531,7 +531,7 @@ class BASEOBJECT(QObject):
             self.dispatchoutputer(text, True)
 
             _showrawfunction_unsafe = functools.partial(
-                self.translation_ui.displayraw1.emit, text, updateTranslate
+                self.translation_ui.displayraw1.emit, text, updateTranslate, is_auto_run
             )
             self.thishastranslated = globalconfig["showfanyi"]
         _showrawfunction = lambda: (
@@ -613,7 +613,7 @@ class BASEOBJECT(QObject):
         usefultranslators = real_fix_rank.copy()
         if globalconfig["fix_translate_rank"] and (not waitforresultcallback):
             _showrawfunction = functools.partial(
-                self._delaypreparefixrank, _showrawfunction, real_fix_rank
+                self._delaypreparefixrank, _showrawfunction, real_fix_rank, is_auto_run
             )
         if not (updateTranslate or globalconfig["refresh_on_get_trans"]):
             _showrawfunction()
@@ -650,7 +650,7 @@ class BASEOBJECT(QObject):
                 return _.get("gpt_dict_origin")
         return text_solved
 
-    def _delaypreparefixrank(self, _showrawfunction, real_fix_rank):
+    def _delaypreparefixrank(self, _showrawfunction, real_fix_rank, is_auto_run):
         _showrawfunction()
         for engine in real_fix_rank:
             if engine not in globalconfig["fanyi"]:
@@ -661,6 +661,7 @@ class BASEOBJECT(QObject):
                 res="",
                 iter_context=(1, engine),
                 klass=engine,
+                is_auto_run=is_auto_run,
             )
             self.translation_ui.displayres.emit(displayreskwargs)
 
@@ -692,6 +693,7 @@ class BASEOBJECT(QObject):
             read_trans_once_check,
             erroroutput,
             statusok=statusok,
+            is_auto_run=is_auto_run,
         )
         task = (
             callback,
@@ -736,6 +738,7 @@ class BASEOBJECT(QObject):
         iter_res_status,
         iserror=False,
         statusok=True,
+        is_auto_run=True,
     ):
         with self.gettranslatelock:
             if classname in usefultranslators:
@@ -776,6 +779,7 @@ class BASEOBJECT(QObject):
                     res=res,
                     iter_context=(iter_res_status, classname),
                     klass=classname,
+                    is_auto_run=is_auto_run,
                 )
                 self.translation_ui.displayres.emit(displayreskwargs)
             if iter_res_status in (0, 2):  # 0为普通，1为iter，2为iter终止

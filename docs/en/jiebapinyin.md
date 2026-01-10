@@ -11,3 +11,7 @@
 1. ## Final Result
 
     ![img](https://image.lunatranslator.org/zh/jiebapinyin.png)
+
+1. ## Add Chinese->English Dictionary Lookup
+
+     Download [shawkynasr/CC-CEDICT](https://github.com/shawkynasr/CC-CEDICT) and add it to **Dictionaries** -> **Offline** -> **MDict**.

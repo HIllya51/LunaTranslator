@@ -11,3 +11,8 @@
 1. ## 最终效果
 
     ![img](https://image.lunatranslator.org/zh/jiebapinyin.png)
+
+
+1. ## 添加中文->英文词典查词
+
+    下载[shawkynasr/CC-CEDICT](https://github.com/shawkynasr/CC-CEDICT)，添加到**辞书**->**离线**->**MDict**即可。

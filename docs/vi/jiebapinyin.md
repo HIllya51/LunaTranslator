@@ -11,3 +11,7 @@
 1. ## Hiệu ứng cuối cùng
 
     ![img](https://image.lunatranslator.org/zh/jiebapinyin.png)
+
+1. ## Thêm tra cứu từ điển Trung->Anh
+
+     Tải xuống [shawkynasr/CC-CEDICT](https://github.com/shawkynasr/CC-CEDICT) và thêm vào **Từ điển** -> **Ngoại tuyến** -> **MDict**.

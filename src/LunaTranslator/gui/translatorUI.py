@@ -331,7 +331,7 @@ class ButtonBar(QFrame):
 class TranslatorWindow(resizableframeless):
     displayglobaltooltip = pyqtSignal(str)
     displayres = pyqtSignal(dict)
-    displayraw1 = pyqtSignal(str, bool)
+    displayraw1 = pyqtSignal(str, bool, bool)
     displayraw2 = pyqtSignal(str)
     displaystatus = pyqtSignal(str, int)
     displaystatusklass = pyqtSignal(str, int, str)
@@ -442,7 +442,7 @@ class TranslatorWindow(resizableframeless):
         t.timeout.emit()
         t.start()
 
-    def showres(self, kwargs):
+    def showres(self, kwargs: dict):
         try:
             name = kwargs.get("name", "")
             color = kwargs.get("color")
@@ -450,6 +450,7 @@ class TranslatorWindow(resizableframeless):
             iter_context = kwargs.get("iter_context", None)
             clear = kwargs.get("clear", False)
             klass = kwargs.get("klass", None)
+            is_auto_run = kwargs.get("is_auto_run", True)
             self.showline(
                 name=name,
                 clear=clear,
@@ -458,6 +459,7 @@ class TranslatorWindow(resizableframeless):
                 texttype=TextType.Translate,
                 iter_context=iter_context,
                 klass=klass,
+                is_auto_run=is_auto_run,
             )
 
         except:
@@ -470,7 +472,7 @@ class TranslatorWindow(resizableframeless):
 
         self.translate_text.updatetext(TextType.Origin, text, hira, color)
 
-    def showraw(self, text, updateTranslate):
+    def showraw(self, text, updateTranslate, is_auto_run):
         color = SpecialColor.RawTextColor
         clear = True
         text = self.cleartext(text)
@@ -531,10 +533,13 @@ class TranslatorWindow(resizableframeless):
         klass = kwargs.get("klass", None)
         raw = kwargs.get("raw", False)
         updateTranslate = kwargs.get("updateTranslate", False)
+        is_auto_run = kwargs.get("is_auto_run", True)
         if text is None:
             if clear:
                 self.translate_text.clear()
             return
+        if not is_auto_run:
+            self.show_()
         if not raw:
             text = self.cleartext(text)
         if iter_context:

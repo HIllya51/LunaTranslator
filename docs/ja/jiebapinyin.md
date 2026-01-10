@@ -11,3 +11,7 @@
 1. ## 最終効果
 
     ![img](https://image.lunatranslator.org/zh/jiebapinyin.png)
+
+1. ## 中国語→英語辞書検索の追加
+
+     [shawkynasr/CC-CEDICT](https://github.com/shawkynasr/CC-CEDICT)をダウンロードし、**辞書**→**オフライン**→**MDict**に追加してください。
