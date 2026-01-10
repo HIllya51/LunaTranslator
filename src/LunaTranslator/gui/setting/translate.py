@@ -721,14 +721,14 @@ def try_do_update_llamacpp():
     if check_interrupt():
         return
     toosetexe = os.path.join(d, tag, "llama-server.exe")
-    curruseexe = getllamaserverpath()
-    if os.path.normpath(toosetexe) == os.path.normpath(curruseexe):
+    curruseexe = getllamaserverpath(False)
+    if curruseexe and (os.path.normpath(toosetexe) == os.path.normpath(curruseexe)):
         return
     tooset = int(__getllamacppversion(toosetexe))
     if tooset != int(tag[1:]):
         return
     currversion = __getllamacppversion(curruseexe)
-    if currversion >= tooset:
+    if currversion and (currversion >= tooset):
         return
     globalconfig["llama.cpp"]["llama-server.exe.dir"] = os.path.join(d, tag)
     globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
@@ -807,12 +807,14 @@ def autoupdatellamacpp(llamaserver, currversion):
     )
 
 
-def getllamaserverpath():
+def getllamaserverpath(search=True):
     llamacppdir = globalconfig["llama.cpp"].get("llama-server.exe.dir", ".")
     llamaserver = os.path.abspath(
         os.path.join(llamacppdir, globalconfig["llama.cpp"].get("llama-server.exe", ""))
     )
     if not os.path.isfile(llamaserver):
+        if not search:
+            return None
         llamaserver = __getfirstllamacpp(llamacppdir)
         if not llamaserver:
             return
@@ -1506,9 +1508,7 @@ def llamacppgrid():
     form.setRowVisible(1, False)
     logopenbtn.clicked.connect(lambda c: form.setRowVisible(1, c))
     __testgguf(_12.currentIndex())
-    return functools.partial(
-        __testexe, obj, devicelist, combollama.getCurrentData()
-    ), [
+    return functools.partial(__testexe, obj, devicelist, combollama.getCurrentData()), [
         [(form, -1)],
         [
             dict(

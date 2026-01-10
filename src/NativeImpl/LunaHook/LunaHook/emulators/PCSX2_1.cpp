@@ -445,6 +445,11 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\x81\x91"), TEXTANDLEN("!!")); //"――"
         StringReplacer(buffer, TEXTANDLEN("\x81\x90"), TEXTANDLEN("!?")); //"――"
     }
+    void FSLPM65850(TextBuffer *buffer, HookParam *hp)
+    {
+        FSLPM66127(buffer, hp);
+        all_ascii_Filter(buffer, hp);
+    }
     void SLPS25801(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -625,7 +630,7 @@ namespace
     void SLPM66882(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        switch ((*(uintptr_t*)PCSX2_REG(a0)) & 0xffffff)
+        switch ((*(uintptr_t *)PCSX2_REG(a0)) & 0xffffff)
         {
         case 0x47b480:
             buffer->from("\x81\x79" + s + "\x81\x7a");
@@ -755,6 +760,20 @@ namespace
             buffer->from((char *)emu_addr(0xFA73EC) + collect);
         }
         last1 = collect;
+    }
+    void TSLPM65850(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        *split = (WORD)PCSX2_REG(t1);
+        switch (*split)
+        {
+        case 0:
+        case 1:
+            break;
+        default:
+            return;
+        }
+        auto str = (char *)PCSX2_REG(a0);
+        buffer->from(str);
     }
     void SLPM66127X(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -2599,6 +2618,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
     // 今日からマ王！ 眞マ国の休日
     {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
+    // 遙かなる時空の中で3
+    {0x29A618, {0, PCSX2_REG_OFFSET(a0), 0, TSLPM65850, FSLPM65850, "SLPM-65850"}},
     // 遙かなる時空の中で3 運命の迷宮
     {0x1FD73C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t7), 0, 0, FSLPM66127, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}}, // 开场
     {0x1FD6A0, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}},
