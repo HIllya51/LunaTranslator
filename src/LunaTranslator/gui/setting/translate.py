@@ -1326,9 +1326,13 @@ def detect_llama_installed_archs(llamaserver: str):
     return archs
 
 
-def __testexe(obj, devicelist: SuperCombo, index: int):
+def __testexe_1(obj, combollama: SuperCombo, devicelist: SuperCombo, index: int):
+    __testexe(obj, devicelist, combollama.getIndexData(index))
+
+
+def __testexe(obj, devicelist: SuperCombo, data):
     global BTNPlayEnable1
-    if index == -1:
+    if not data:
         gobject.base.llamacpparchcheck.emit(None)
         gobject.base.llamacppcurrversion.emit(0)
         BTNPlayEnable1 = False
@@ -1336,9 +1340,7 @@ def __testexe(obj, devicelist: SuperCombo, index: int):
         obj["pathlayout"].layout().setRowVisible(2, False)
         return
     llamacppdir = globalconfig["llama.cpp"].get("llama-server.exe.dir", ".")
-    llamaserver = os.path.abspath(
-        os.path.join(llamacppdir, globalconfig["llama.cpp"].get("llama-server.exe", ""))
-    )
+    llamaserver = os.path.abspath(os.path.join(llamacppdir, data))
     version = __getllamacppversion(llamaserver)
     gobject.base.llamacpparchcheck.emit(llamaserver)
 
@@ -1412,7 +1414,7 @@ def llamacppgrid():
         )
     )
     combollama.currentIndexChanged.connect(
-        functools.partial(__testexe, obj, devicelist)
+        functools.partial(__testexe_1, obj, combollama, devicelist)
     )
     _, _12, _22, _32 = __create(
         None,
@@ -1504,7 +1506,9 @@ def llamacppgrid():
     form.setRowVisible(1, False)
     logopenbtn.clicked.connect(lambda c: form.setRowVisible(1, c))
     __testgguf(_12.currentIndex())
-    return functools.partial(__testexe, obj, devicelist, combollama.currentIndex()), [
+    return functools.partial(
+        __testexe, obj, devicelist, combollama.getCurrentData()
+    ), [
         [(form, -1)],
         [
             dict(
