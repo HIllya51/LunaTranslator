@@ -679,17 +679,19 @@ llamacppautoHandle = None
 
 
 def __getfirstllamacpp(llamacppdir: str):
-    for _dir, _, _fs in os.walk(llamacppdir):
-        for _f in _fs:
-            if _f.lower() == "llama-server.exe":
-                return os.path.abspath(os.path.join(_dir, _f))
+    if llamacppdir and os.path.isdir(llamacppdir):
+        for _dir, _, _fs in os.walk(llamacppdir):
+            for _f in _fs:
+                if _f.lower() == "llama-server.exe":
+                    return os.path.abspath(os.path.join(_dir, _f))
 
 
 def __getfirstgguf(ggufdir: str):
-    for _dir, _, _fs in os.walk(ggufdir):
-        for _f in _fs:
-            if _f.lower().endswith(".gguf"):
-                return os.path.abspath(os.path.join(_dir, _f))
+    if ggufdir and os.path.isdir(ggufdir):
+        for _dir, _, _fs in os.walk(ggufdir):
+            for _f in _fs:
+                if _f.lower().endswith(".gguf"):
+                    return os.path.abspath(os.path.join(_dir, _f))
 
 
 def __getllamacppversion(llamaserver):
@@ -897,10 +899,12 @@ def autoupdatellamacpp(llamaserver, currversion):
 
 def getllamaserverpath(search=True):
     llamacppdir = globalconfig["llama.cpp"].get("llama-server.exe.dir", ".")
-    llamaserver = os.path.abspath(
-        os.path.join(llamacppdir, globalconfig["llama.cpp"].get("llama-server.exe", ""))
-    )
-    if not os.path.isfile(llamaserver):
+    llamaserver = globalconfig["llama.cpp"].get("llama-server.exe", "")
+    if llamaserver and llamacppdir:
+        llamaserver = os.path.abspath(os.path.join(llamacppdir, llamaserver))
+    else:
+        llamaserver = None
+    if (not llamaserver) or (not os.path.isfile(llamaserver)):
         if not search:
             return None
         llamaserver = __getfirstllamacpp(llamacppdir)
@@ -963,13 +967,12 @@ def getllamaservercmd(llamaserver, gguf, version):
 
 def getggufpath():
     ggufdir = globalconfig["llama.cpp"].get("models", ".")
-    gguf = os.path.abspath(
-        os.path.join(
-            ggufdir,
-            globalconfig["llama.cpp"].get("model", ""),
-        )
-    )
-    if not os.path.isfile(gguf):
+    gguf = globalconfig["llama.cpp"].get("model", "")
+    if gguf and ggufdir:
+        gguf = os.path.abspath(os.path.join(ggufdir, gguf))
+    else:
+        gguf = None
+    if (not gguf) or (not os.path.isfile(gguf)):
         gguf = __getfirstgguf(ggufdir)
         if not gguf:
             return
