@@ -202,7 +202,7 @@
 
 [new-api](https://github.com/QuantumNous/new-api)와 같은 API 중계 도구를 사용하여 여러 대형 모델 플랫폼 모델과 여러 키를 보다 편리하게 집계 관리할 수도 있습니다.
 
-사용 방법은 [이 글](https://www.newapi.ai/apps/luna-translator/)을 참조하십시오.
+사용 방법은 [이 글](https://www.newapi.ai/en/docs/apps/luna-translator)을 참조하십시오.
 
 
 ### 오프라인 배포 모델

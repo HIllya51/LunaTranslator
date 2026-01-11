@@ -201,7 +201,7 @@
 
 也可以使用[new-api](https://github.com/QuantumNous/new-api)等API中继工具，更方便地聚合管理多种大模型平台模型和多个密钥。
 
-使用方法可以参考[此文章](https://www.newapi.ai/apps/luna-translator/)
+使用方法可以参考[此文章](https://www.newapi.ai/zh/docs/apps/luna-translator)
 
 ### 离线部署模型
 

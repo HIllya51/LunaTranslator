@@ -197,7 +197,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 You can also use API relay tools such as [new-api](https://github.com/QuantumNous/new-api) to more conveniently aggregate and manage multiple large model platform models and multiple keys.
 
-For usage methods, you can refer to [this article](https://www.newapi.ai/apps/luna-translator/).
+For usage methods, you can refer to [this article](https://www.newapi.ai/en/docs/apps/luna-translator).
 
 ### Offline Deployment Model
 

@@ -201,7 +201,7 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 
 Bạn cũng có thể sử dụng các công cụ chuyển tiếp API như [new-api](https://github.com/QuantumNous/new-api) để quản lý tổng hợp nhiều nền tảng mô hình lớn và nhiều khóa một cách thuận tiện hơn.
 
-Để biết phương pháp sử dụng, bạn có thể tham khảo [bài viết này](https://www.newapi.ai/apps/luna-translator/).
+Để biết phương pháp sử dụng, bạn có thể tham khảo [bài viết này](https://www.newapi.ai/en/docs/apps/luna-translator).
 
 
 ### Mô hình triển khai ngoại tuyến

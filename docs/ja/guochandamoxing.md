@@ -203,7 +203,7 @@
 
 [new-api](https://github.com/QuantumNous/new-api)などのAPIリレーツールを使用して、複数の大規模モデルプラットフォームモデルと複数のキーをより便利に集約管理することもできます。
 
-使用方法については、[この記事](https://www.newapi.ai/apps/luna-translator/)を参照してください。
+使用方法については、[この記事](https://www.newapi.ai/ja/docs/apps/luna-translator)を参照してください。
 
 ### オフラインデプロイモデル
 
