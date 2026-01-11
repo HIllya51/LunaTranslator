@@ -465,7 +465,7 @@ def initsome21(self, not_is_gpt_like):
     return grids
 
 
-def __create(download, keydir, key, check):
+def __create(download, keydir, key, check, curropen):
     combollama = SuperCombo()
     combollama.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
 
@@ -498,6 +498,13 @@ def __create(download, keydir, key, check):
             key, combollama.getIndexData(idx)
         )
     )
+
+    def __(curropen):
+        _ = curropen()
+        if not _:
+            return
+        os.startfile(os.path.dirname(_))
+
     return (
         (
             getIconButton(
@@ -516,6 +523,11 @@ def __create(download, keydir, key, check):
             callback=functools.partial(refresh_llama, combollama),
             icon="fa.refresh",
             tips="刷新",
+        ),
+        getIconButton(
+            callback=functools.partial(__, curropen),
+            icon="fa.hdd-o",
+            tips="打开目录",
         ),
     )
 
@@ -765,6 +777,60 @@ def isdownloading_disable_btn_wrapper(func):
     return _wrapper
 
 
+def copy_move_not_exists(src: str, dst: str, lost_copy: bool = False):
+    # 尽量减少磁盘读写
+    os.makedirs(dst, exist_ok=True)
+    for root, dirs, files in os.walk(src):
+        rel_path = os.path.relpath(root, src)
+        target_dir = os.path.join(dst, rel_path)
+        if rel_path != ".":
+            os.makedirs(target_dir, exist_ok=True)
+        for file in files:
+            src_file = os.path.join(root, file)
+            dst_file = os.path.join(target_dir, file)
+            if os.path.exists(dst_file):
+                continue
+            if lost_copy:
+                shutil.copy2(src_file, dst_file)
+            else:
+                shutil.move(src_file, dst_file)
+
+
+def merge_copy_llamacpps(llamaserver, tag):
+    downloaddir = gobject.gettempdir("llamacpp/" + tag)
+
+    d = gobject.getcachedir("llamacpp")
+    dirname = "-".join(["llama", tag])
+    tgt = os.path.join(d, dirname)
+    # 相同版本的目录，不存在时移动，存在时跳过
+    copy_move_not_exists(downloaddir, tgt, lost_copy=False)
+
+    llamaserver = getllamaserverpath()
+    if llamaserver:
+        # 如果有旧的，那么对于其中我没有的dll，予以拷贝。不存在时拷贝，存在时跳过
+        copy_move_not_exists(os.path.dirname(llamaserver), tgt, lost_copy=True)
+
+    if os.path.isdir(d):
+        for _ in os.listdir(d):
+            if _.lower() == dirname.lower():
+                continue
+            try:
+                _ = os.path.join(d, _)
+                if os.path.isfile(_):
+                    os.remove(_)
+                else:
+                    shutil.rmtree(_)
+            except:
+                pass
+
+    globalconfig["llama.cpp"]["llama-server.exe.dir"] = tgt
+    globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
+
+    global LLAMA_CPP_REFRESH_BTN
+    if LLAMA_CPP_REFRESH_BTN:
+        gobject.base.safeinvokefunction.emit(LLAMA_CPP_REFRESH_BTN.click)
+
+
 @threader
 @isdownloading_disable_btn_wrapper
 def autoupdatellamacpp(llamaserver, currversion):
@@ -825,28 +891,8 @@ def autoupdatellamacpp(llamaserver, currversion):
         _.join()
     if sum(results) != len(results):
         raise Exception()
-    d = gobject.getcachedir("llamacpp")
-    for _ in os.listdir(d):
-        try:
-            _ = os.path.join(d, _)
-            if os.path.isfile(_):
-                os.remove(_)
-            else:
-                shutil.rmtree()
-        except:
-            pass
-    tgt = os.path.join(d, "-".join(["llama", res["tag_name"]] + archs_down))
-    try:
-        os.rename(gobject.gettempdir("llamacpp/" + res["tag_name"]), tgt)
-    except:
-        pass
 
-    globalconfig["llama.cpp"]["llama-server.exe.dir"] = tgt
-    globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
-
-    global LLAMA_CPP_REFRESH_BTN
-    if LLAMA_CPP_REFRESH_BTN:
-        gobject.base.safeinvokefunction.emit(LLAMA_CPP_REFRESH_BTN.click)
+    merge_copy_llamacpps(llamaserver, res["tag_name"])
 
 
 def getllamaserverpath(search=True):
@@ -915,16 +961,7 @@ def getllamaservercmd(llamaserver, gguf, version):
     return cmd
 
 
-@threader
-def autostartllamacpp(force=False):
-    if (not force) and (not globalconfig["llama.cpp"].get("autolaunch", False)):
-        if not force:
-            autoupdatellamacpp(None, None)
-        return
-
-    llamaserver = getllamaserverpath()
-    if not llamaserver:
-        return
+def getggufpath():
     ggufdir = globalconfig["llama.cpp"].get("models", ".")
     gguf = os.path.abspath(
         os.path.join(
@@ -935,9 +972,25 @@ def autostartllamacpp(force=False):
     if not os.path.isfile(gguf):
         gguf = __getfirstgguf(ggufdir)
         if not gguf:
-            if not force:
-                autoupdatellamacpp(llamaserver, None)
             return
+    return gguf
+
+
+@threader
+def autostartllamacpp(force=False):
+    if (not force) and (not globalconfig["llama.cpp"].get("autolaunch", False)):
+        if not force:
+            autoupdatellamacpp(None, None)
+        return
+
+    llamaserver = getllamaserverpath()
+    if not llamaserver:
+        return
+    gguf = getggufpath()
+    if not gguf:
+        if not force:
+            autoupdatellamacpp(llamaserver, None)
+        return
 
     gobject.base.translation_ui.displayglobaltooltip.emit("loading llama.cpp")
 
@@ -1337,29 +1390,8 @@ class llamalistQwidget_internal(QStackedWidget):
         def ___(arch, _, tag):
             if not downloadone(arch, _, None, tag):
                 return
-
-            d = gobject.getcachedir("llamacpp")
-            for _ in os.listdir(d):
-                try:
-                    _ = os.path.join(d, _)
-                    if os.path.isfile(_):
-                        os.remove(_)
-                    else:
-                        shutil.rmtree(_)
-                except:
-                    pass
-            tgt = os.path.join(d, "-".join(["llama", tag]))
-            try:
-                shutil.copytree(gobject.gettempdir("llamacpp/" + tag), tgt)
-            except:
-                pass
-
-            globalconfig["llama.cpp"]["llama-server.exe.dir"] = tgt
-            globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
-
-            global LLAMA_CPP_REFRESH_BTN
-            if LLAMA_CPP_REFRESH_BTN:
-                gobject.base.safeinvokefunction.emit(LLAMA_CPP_REFRESH_BTN.click)
+            llamaserver = getllamaserverpath()
+            merge_copy_llamacpps(llamaserver, tag)
 
         ___(arch, _, tag)
 
@@ -1370,7 +1402,8 @@ class llamalistQwidget_internal(QStackedWidget):
             proxies=getproxy(),
         ).json()
         # 必须检查一下是不是有效的相应
-        print(res["tag_name"])
+        if not "tag_name" in res:
+            return
         if not self.loadonce:
             return
         self.loadonce = False
@@ -1530,11 +1563,12 @@ LLAMA_CPP_REFRESH_BTN = None
 
 
 def llamacppgrid():
-    _, combollama, _2, _3 = __create(
+    _, combollama, _2, _3, _4 = __create(
         None,
         "llama-server.exe.dir",
         "llama-server.exe",
         lambda f: f.lower() == "llama-server.exe",
+        getllamaserverpath,
     )
     global LLAMA_CPP_REFRESH_BTN
     LLAMA_CPP_REFRESH_BTN = _3
@@ -1548,11 +1582,8 @@ def llamacppgrid():
     combollama.currentIndexChanged.connect(
         functools.partial(__testexe_1, obj, combollama, devicelist)
     )
-    _, _12, _22, _32 = __create(
-        None,
-        "models",
-        "model",
-        lambda f: f.lower().endswith(".gguf"),
+    _, _12, _22, _32, _42 = __create(
+        None, "models", "model", lambda f: f.lower().endswith(".gguf"), getggufpath
     )
     _12.currentIndexChanged.connect(functools.partial(__testgguf))
     _02 = IconButton(
@@ -1647,10 +1678,10 @@ def llamacppgrid():
                 parent=obj,
                 hiderows=[1, 2, 4],
                 grid=[
-                    ["llama-server", _0, combollama, _2, _3],
+                    ["llama-server", _0, combollama, _2, _3, _4],
                     [llamalist],
                     ["Device", devicelist],
-                    ["Model", _02, _12, _22, _32],
+                    ["Model", _02, _12, _22, _32, _42],
                     [modellist],
                 ],
             ),

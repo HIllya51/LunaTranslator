@@ -143,7 +143,10 @@ class dialog_savedgame_legacy(QWidget):
         if icon.isNull():
             return
         return getIconButton(
-            functools.partial(opendirforgameuid, k), qicon=icon, fix=False
+            functools.partial(opendirforgameuid, k),
+            qicon=icon,
+            fix=False,
+            tips="打开目录",
         )
 
     def callback_leuse(self, k, use):
@@ -153,28 +156,31 @@ class dialog_savedgame_legacy(QWidget):
             savehook_new_data[k]["launch_method"] = "direct"
 
     KRole = Qt.ItemDataRole.UserRole + 1
+
     def fuckswitch(self, k):
         class __(QWidget):
-                def __init__(self1):
-                    super().__init__()
-                    self1.once = True
+            def __init__(self1):
+                super().__init__()
+                self1.once = True
 
-                def showEvent(self1, _):
-                    if self1.once:
-                        self1.once = False
-                        self1.layout().invalidate()
-        
+            def showEvent(self1, _):
+                if self1.once:
+                    self1.once = False
+                    self1.layout().invalidate()
+
         __w = __()
         __w.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
         __l = QHBoxLayout(__w)
         __l.setContentsMargins(0, 0, 0, 0)
-        __l.addWidget(D_getsimpleswitch(
+        __l.addWidget(
+            D_getsimpleswitch(
                 {"1": savehook_new_data[k].get("launch_method") != "direct"},
                 "1",
                 callback=functools.partial(self.callback_leuse, k),
-            )())
+            )()
+        )
         return __w
-        
+
     def newline(self, row, k):
         title = QStandardItem(savehook_new_data[k]["title"])
         title.setData(k, self.KRole)
