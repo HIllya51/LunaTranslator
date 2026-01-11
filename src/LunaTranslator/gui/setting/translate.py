@@ -1355,6 +1355,7 @@ class llamalistQwidget_internal(QStackedWidget):
             progbar.setFormat(_TR("成功"))
         else:
             progbar.setValue(int(prog * 10000))
+            progbar.resetFormat()
 
     def __archcheck(
         self,
