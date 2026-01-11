@@ -188,6 +188,7 @@ class editswitchTextBrowserEx(QWidget):
         self.parent1 = parent
         self.fn = fn
         readoreditstack = QStackedWidget()
+        readoreditstack.setContentsMargins(0, 0, 0, 0)
         self.cache = self.fn + ".cache.html"
         self.readoreditstack = readoreditstack
         readoreditstack.currentChanged.connect(self.switch)

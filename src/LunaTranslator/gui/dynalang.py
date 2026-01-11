@@ -247,26 +247,54 @@ class LTabWidget(QTabWidget):
             self.setTabText(i, _TR(self.__titles[i]))
 
 
-class LStandardItemModel(QStandardItemModel):
+class LTableView(QTableView):
+    def updatelangtext(self):
+        m = self.model()
+        if isinstance(m, LStandardItemModel):
+            m.updatelangtext()
+
+
+class LStandardItem(QStandardItem):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
-        self.__ls = []
+        self.__t = ""
+        self.__tip = ""
 
-    def setHorizontalHeaderLabels(self, ls: list):
-        self.__ls = ls.copy()
-        super().setHorizontalHeaderLabels(_TR(ls))
+    def setText(self, atext):
+        self.__t = atext
+        return super().setText(_TR(atext))
+
+    def setToolTip(self, atext):
+        self.__tip = atext
+        return super().setToolTip(_TR(atext))
 
     def updatelangtext(self):
-        if self.__ls:
-            super().setHorizontalHeaderLabels(_TR(self.__ls))
+        if self.__t:
+            super().setText(_TR(self.__t))
+        if self.__tip:
+            super().setToolTip(_TR(self.__tip))
 
-    def insertColumn(self, column: int, items):
-        self.__ls.insert(column, "")
-        super().insertColumn(column, items)
 
-    def removeColumn(self, col):
-        self.__ls.pop(col)
-        super().removeColumn(col)
+class LStandardItemModel(QStandardItemModel):
+
+    def setHorizontalHeaderLabels(self, ls: list):
+        self.setColumnCount(len(ls))
+        for i, data in enumerate(ls):
+            item = LStandardItem()
+            item.setText(data)
+            item.setToolTip(data)
+            self.setHorizontalHeaderItem(i, item)
+
+    def updatelangtext(self):
+        for col in range(self.columnCount()):
+            item = self.horizontalHeaderItem(col)
+            if isinstance(item, LStandardItem):
+                item.updatelangtext()
+        for row in range(self.rowCount()):
+            for col in range(self.columnCount()):
+                item = self.item(row, col)
+                if isinstance(item, LStandardItem):
+                    item.updatelangtext()
 
 
 class IconToolButton(QToolButton):

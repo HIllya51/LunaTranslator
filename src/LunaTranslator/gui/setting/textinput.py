@@ -663,20 +663,20 @@ def filetranslate(self):
         [
             functools.partial(
                 createfoldgrid,
-                functools.partial(getnetgrid, self),
-                "网络服务",
+                [["使用代理", proxyusage]],
+                "代理设置",
                 globalconfig["foldstatus"]["others"],
-                "netservice",
-                leftwidget=D_getdoclink("apiservice.html"),
+                "proxy",
             )
         ],
         [
             functools.partial(
                 createfoldgrid,
-                [["使用代理", proxyusage]],
-                "代理设置",
+                functools.partial(getnetgrid, self),
+                "网络服务",
                 globalconfig["foldstatus"]["others"],
-                "proxy",
+                "netservice",
+                leftwidget=D_getdoclink("apiservice.html"),
             )
         ],
     ]

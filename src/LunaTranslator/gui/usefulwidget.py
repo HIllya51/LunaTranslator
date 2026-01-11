@@ -30,6 +30,7 @@ from gui.dynalang import (
     LTabWidget,
     LStandardItemModel,
     LDialog,
+    LTableView,
     LMainWindow,
     LToolButton,
 )
@@ -363,7 +364,7 @@ class NoTextDelegate(QStyledItemDelegate):
         super().paint(painter, option, index)
 
 
-class TableViewW(DelayLoadTableView):
+class TableViewW(DelayLoadTableView, LTableView):
     def __init__(self, *argc, updown=False, copypaste=False) -> None:
         super().__init__(*argc)
         self.setSelectionMode(QAbstractItemView.SelectionMode.ContiguousSelection)
@@ -497,11 +498,6 @@ class TableViewW(DelayLoadTableView):
             super().inputMethodEvent(event)
         else:
             event.accept()
-
-    def updatelangtext(self):
-        m = self.model()
-        if isinstance(m, LStandardItemModel):
-            m.updatelangtext()
 
     def getindexdata(self, index):
         return self.model().itemFromIndex(index).text()

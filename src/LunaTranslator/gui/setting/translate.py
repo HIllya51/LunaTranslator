@@ -1,6 +1,6 @@
 from qtsymbols import *
-import functools, os, re, shutil, zipfile
-import gobject, math, NativeUtils, hashlib
+import functools, os, re, shutil, zipfile, threading
+import gobject, math, NativeUtils, hashlib, uuid
 from myutils.config import (
     globalconfig,
     savehook_new_data,
@@ -49,7 +49,6 @@ from gui.usefulwidget import (
     MyInputDialog,
     D_getsimpleswitch,
     request_delete_ok,
-    LLabel,
     createfoldgrid,
     getspinbox,
     ClickableLabel,
@@ -63,7 +62,15 @@ from gui.usefulwidget import (
     getsimplecombobox,
 )
 from gui.setting.display_text import GetFormForLineHeight
-from gui.dynalang import LPushButton, LAction, LFormLayout, LDialog, LStandardItemModel
+from gui.dynalang import (
+    LPushButton,
+    LAction,
+    LFormLayout,
+    LDialog,
+    LStandardItemModel,
+    LStandardItem,
+    LTableView,
+)
 from gui.setting.about import offlinelinks
 
 
@@ -556,6 +563,7 @@ def _c_slice_spin(
     w = QWidget()
     text = QLabel(defaulttext)
     stack = QStackedWidget()
+    stack.setContentsMargins(0, 0, 0, 0)
     stack.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
     stack.addWidget(w)
     stack.addWidget(text)
@@ -613,6 +621,7 @@ def nglnum():
     )
     l.addWidget(combo)
     stack = QStackedWidget()
+    stack.setContentsMargins(0, 0, 0, 0)
     stack.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
     stack.addWidget(QLabel())
     stack.addWidget(
@@ -700,41 +709,64 @@ def __getllamacppdevices(llamaserver):
     return result
 
 
-@tryprint
-def try_remove_useless(d, tag):
-    if not tag:
-        return
-    for _ in os.listdir(d):
-        if _ == tag:
-            continue
-        shutil.rmtree(os.path.join(d, _))
+def downloadone(arch: str, _: "dict[str, str]", check_interrupt, tag: str):
+    url = _["browser_download_url"]
+    try:
+        digmethod, digest = _["digest"].upper().split(":")
+        if digmethod != "SHA256":
+            raise Exception()
+    except:
+        digest = None
+    try:
+        gobject.base.llamacppdownloadprogress.emit(arch, 0)
+        savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()) + ".zip")
+        with open(savep, "wb") as file:
+            r = requests.get(url, stream=True, verify=False, proxies=getproxy())
+            size = int(r.headers["Content-Length"])
+            file_size = 0
+            hash_obj = hashlib.sha256()
+            for i in r.iter_content(chunk_size=1024 * 32):
+                if check_interrupt and check_interrupt():
+                    raise Exception()
+                if not i:
+                    continue
+                file.write(i)
+                file_size += len(i)
+                gobject.base.llamacppdownloadprogress.emit(arch, file_size / size)
+                if digest:
+                    hash_obj.update(i)
+            if digest and (hash_obj.hexdigest().upper() != digest):
+                raise Exception()
+        with zipfile.ZipFile(savep) as zipf:
+            zipf.extractall(gobject.gettempdir("llamacpp/" + tag))
+        gobject.base.llamacppdownloadprogress.emit(arch, -2)
+        return True
+    except:
+        gobject.base.llamacppdownloadprogress.emit(arch, -1)
+        return False
 
 
-@tryprint
-def try_do_update_llamacpp():
-    tag = globalconfig["llama.cpp"].get("releases/latest/tag_name")
-    d = gobject.getcachedir("llamacpp")
-    try_remove_useless(d, tag)
-    if not tag:
-        return
-    check_interrupt = lambda: not globalconfig["llama.cpp"].get("autoupdate", False)
-    if check_interrupt():
-        return
-    toosetexe = os.path.join(d, tag, "llama-server.exe")
-    curruseexe = getllamaserverpath(False)
-    if curruseexe and (os.path.normpath(toosetexe) == os.path.normpath(curruseexe)):
-        return
-    tooset = int(__getllamacppversion(toosetexe))
-    if tooset != int(tag[1:]):
-        return
-    currversion = __getllamacppversion(curruseexe)
-    if currversion and (currversion >= tooset):
-        return
-    globalconfig["llama.cpp"]["llama-server.exe.dir"] = os.path.join(d, tag)
-    globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
+isdownloading_disable_btn = 0
+
+
+def isdownloading_disable_btn_wrapper(func):
+    def _wrapper(*args, **kwargs):
+        global isdownloading_disable_btn
+        isdownloading_disable_btn += 1
+        gobject.base.llamacppdownloadcheck.emit(isdownloading_disable_btn)
+        try:
+            func(*args, **kwargs)
+        except:
+            print_exc()
+
+        isdownloading_disable_btn -= 1
+        gobject.base.llamacppdownloadcheck.emit(isdownloading_disable_btn)
+
+    return _wrapper
 
 
 @threader
+@isdownloading_disable_btn_wrapper
 def autoupdatellamacpp(llamaserver, currversion):
     check_interrupt = lambda: not globalconfig["llama.cpp"].get("autoupdate", False)
     if check_interrupt():
@@ -754,7 +786,6 @@ def autoupdatellamacpp(llamaserver, currversion):
         proxies=getproxy(),
     ).json()
     lastest = int(res["tag_name"][1:])
-    globalconfig["llama.cpp"]["releases/latest/tag_name"] = res["tag_name"]
     if lastest <= currversion:
         return
     insarchs = detect_llama_installed_archs(llamaserver)
@@ -762,49 +793,60 @@ def autoupdatellamacpp(llamaserver, currversion):
     if len(insarchs) > 1:
         if "cpu" in insarchs:
             insarchs.pop("cpu")
+    archs_down = []
+
+    threads: "list[threading.Thread]" = []
+    results = []
+
+    def ___down(arch, _, check_interrupt, tag):
+        results.append(downloadone(arch, _, check_interrupt, tag))
 
     for _ in res["assets"]:
         name: str = _["name"]
         maich = re.match(r"llama-.*?-bin-win-(.*?)-x64\.zip", name)
         if not maich:
             continue
-        arch = maich.groups()[0]
+        arch_ = arch = maich.groups()[0]
         if arch.startswith("cuda-"):
             arch = arch.split(".")[0]
 
         if arch not in insarchs:
             continue
-        url = _["browser_download_url"]
+        archs_down.append(arch_)
+        threads.append(
+            threading.Thread(
+                target=___down,
+                args=(arch, _, check_interrupt, res["tag_name"]),
+            )
+        )
+    for _ in threads:
+        _.start()
+    for _ in threads:
+        _.join()
+    if sum(results) != len(results):
+        raise Exception()
+    d = gobject.getcachedir("llamacpp")
+    for _ in os.listdir(d):
         try:
-            digmethod, digest = _["digest"].upper().split(":")
-            if digmethod != "SHA256":
-                raise Exception()
+            _ = os.path.join(d, _)
+            if os.path.isfile(_):
+                os.remove(_)
+            else:
+                shutil.rmtree()
         except:
-            digest = None
-        savep = gobject.gettempdir("llamacpp/" + name)
-        with open(savep, "wb") as file:
-            r = requests.get(url, stream=True, verify=False, proxies=getproxy())
-            size = int(r.headers["Content-Length"])
-            file_size = 0
-            hash_obj = hashlib.sha256()
-            for i in r.iter_content(chunk_size=1024 * 32):
-                if check_interrupt():
-                    return
-                if not i:
-                    continue
-                file.write(i)
-                file_size += len(i)
-                print(name, file_size, size, file_size / size)
-                if digest:
-                    hash_obj.update(i)
-            if hash_obj.hexdigest().upper() != digest:
-                raise Exception()
-        with zipfile.ZipFile(savep) as zipf:
-            zipf.extractall(gobject.gettempdir("llamacpp/" + res["tag_name"]))
-    shutil.move(
-        gobject.gettempdir("llamacpp/" + res["tag_name"]),
-        gobject.getcachedir("llamacpp"),
-    )
+            pass
+    tgt = os.path.join(d, "-".join(["llama", res["tag_name"]] + archs_down))
+    try:
+        os.rename(gobject.gettempdir("llamacpp/" + res["tag_name"]), tgt)
+    except:
+        pass
+
+    globalconfig["llama.cpp"]["llama-server.exe.dir"] = tgt
+    globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
+
+    global LLAMA_CPP_REFRESH_BTN
+    if LLAMA_CPP_REFRESH_BTN:
+        gobject.base.safeinvokefunction.emit(LLAMA_CPP_REFRESH_BTN.click)
 
 
 def getllamaserverpath(search=True):
@@ -875,8 +917,6 @@ def getllamaservercmd(llamaserver, gguf, version):
 
 @threader
 def autostartllamacpp(force=False):
-    if not force:
-        try_do_update_llamacpp()
     if (not force) and (not globalconfig["llama.cpp"].get("autolaunch", False)):
         if not force:
             autoupdatellamacpp(None, None)
@@ -1115,7 +1155,7 @@ class llamalistQwidget(QWidget):
         versions.addWidget(self.newversionlabel)
 
 
-class llamalisttable(QTableView):
+class llamalisttable(LTableView):
     def __init__(self):
         super().__init__()
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -1123,15 +1163,14 @@ class llamalisttable(QTableView):
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.Model = LStandardItemModel()
         self.setModel(self.Model)
-        self.Model.setHorizontalHeaderLabels(["架构", "大小", "已安装", "缺少依赖"])
-        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        for _ in (1, 2, 3):
+        self.Model.setHorizontalHeaderLabels(["架构", "大小", "下载", "进度"])
+        for _ in (0, 1, 2, 3):
             self.horizontalHeader().setSectionResizeMode(
-                _, QHeaderView.ResizeMode.ResizeToContents
+                _, QHeaderView.ResizeMode.Stretch
             )
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_header_menu)
-        self.doubleClicked.connect(self._itemDoubleClicked)
+        # self.doubleClicked.connect(self._itemDoubleClicked)
 
     def show_header_menu(self, _):
         index = self.currentIndex()
@@ -1162,6 +1201,7 @@ class llamalistQwidget_internal(QStackedWidget):
     def __init__(self, parnet: llamalistQwidget):
         super().__init__()
         self.setMinimumHeight(250)
+        self.setContentsMargins(0, 0, 0, 0)
         w = QWidget()
         table = llamalisttable()
         self.addWidget(w)
@@ -1178,6 +1218,7 @@ class llamalistQwidget_internal(QStackedWidget):
         link = LinkLabel()
         l1.addWidget(link)
         link.setText(makehtml("https://github.com/ggml-org/llama.cpp/releases"))
+        self.loadonce = True
         self.initialize.connect(functools.partial(self.initialize_, parnet, table))
         self.firstshow()
 
@@ -1206,51 +1247,133 @@ class llamalistQwidget_internal(QStackedWidget):
             item = QStandardItem(arch)
             item.setData(browser_download_url, Qt.ItemDataRole.UserRole + 2)
             item.setData(cudas.get(arch, ["", ""]), Qt.ItemDataRole.UserRole + 3)
-            item3 = QStandardItem()
+            item3 = LStandardItem()
             item4 = QStandardItem()
-            table.Model.appendRow([item, QStandardItem(size), item3, item4])
-            icon = QLabel()
-            icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
-            table.setIndexWidget(table.Model.indexFromItem(item3), icon)
+            item2 = QStandardItem(size)
+            item2.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            item3.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+            table.Model.appendRow([item, item2, item3, item4])
             if arch.startswith("cuda-"):
                 arch = arch.split(".")[0]
-            archs[arch] = (icon, item4)
+            archs[arch] = (item, item4, item3)
+            item3.setData(res["tag_name"], Qt.ItemDataRole.UserRole + 10)
+            item3.setData(_, Qt.ItemDataRole.UserRole + 11)
+        table.setColumnHidden(3, True)
         gobject.base.connectsignal(
             gobject.base.llamacpparchcheck,
             functools.partial(self.__archcheck, archs, table),
         )
+        gobject.base.connectsignal(
+            gobject.base.llamacppdownloadprogress,
+            functools.partial(self._updateprogress, archs, table),
+        )
+        gobject.base.connectsignal(
+            gobject.base.llamacppdownloadcheck,
+            functools.partial(self.__checkdisable, table),
+        )
+
+    def __checkdisable(self, table: llamalisttable, i):
+        for row in range(table.Model.rowCount()):
+            btn: QPushButton = table.indexWidget(table.Model.index(row, 2))
+            if btn:
+                btn.setDisabled(i > 0)
+
+    def _updateprogress(
+        self,
+        archs: "dict[str, tuple[QStandardItem,QStandardItem, QStandardItem]]",
+        table: llamalisttable,
+        arch: str,
+        prog: float,
+    ):
+        if arch not in archs:
+            return
+        table.setColumnHidden(3, False)
+        item: QStandardItem = archs[arch][1]
+        progbar: QProgressBar = table.indexWidget(table.Model.indexFromItem(item))
+        if not progbar:
+            progbar = QProgressBar()
+            progbar.setRange(0, 10000)
+            table.setIndexWidget(table.Model.indexFromItem(item), progbar)
+        if prog == -1:
+            progbar.setValue(0)
+            progbar.setFormat(_TR("失败"))
+        elif prog == -2:
+            progbar.setValue(10000)
+            progbar.setFormat(_TR("成功"))
+        else:
+            progbar.setValue(int(prog * 10000))
 
     def __archcheck(
         self,
-        archs: "dict[str, tuple[QLabel,QStandardItem]]",
-        table: QTableView,
+        archs: "dict[str, tuple[QStandardItem, QStandardItem, QStandardItem]]",
+        table: llamalisttable,
         llamaserver: "None|str",
     ):
-        table.setColumnHidden(2, True)
-        table.setColumnHidden(3, True)
-        for _t, _i in archs.values():
-            _t.setText("")
-            _i.setText("")
-        if not llamaserver:
-            return
         insarchs = detect_llama_installed_archs(llamaserver)
-        for arch, lost in insarchs.items():
-            if arch not in archs:
-                continue
-            archs[arch][0].setText("√")
-            table.setColumnHidden(2, False)
-            if lost:
-                archs[arch][1].setText(", ".join(lost))
-                table.setColumnHidden(3, False)
+        for arch in archs:
+            item: LStandardItem = archs[arch][2]
+            item.setText("")
+            item.setToolTip("")
+            index = table.Model.indexFromItem(archs[arch][2])
+            if arch in insarchs:
+                item.setText("已下载")
+                table.setIndexWidget(index, None)
+            else:
+                btn = LPushButton("下载")
+                global isdownloading_disable_btn
+                if isdownloading_disable_btn:
+                    btn.setDisabled(True)
+                btn.clicked.connect(
+                    functools.partial(self.__click_download, item, arch)
+                )
+                table.setIndexWidget(index, btn)
+
+    def __click_download(self, item: QStandardItem, arch):
+        tag = item.data(Qt.ItemDataRole.UserRole + 10)
+        _ = item.data(Qt.ItemDataRole.UserRole + 11)
+
+        @threader
+        @isdownloading_disable_btn_wrapper
+        def ___(arch, _, tag):
+            if not downloadone(arch, _, None, tag):
+                return
+
+            d = gobject.getcachedir("llamacpp")
+            for _ in os.listdir(d):
+                try:
+                    _ = os.path.join(d, _)
+                    if os.path.isfile(_):
+                        os.remove(_)
+                    else:
+                        shutil.rmtree(_)
+                except:
+                    pass
+            tgt = os.path.join(d, "-".join(["llama", tag]))
+            try:
+                shutil.copytree(gobject.gettempdir("llamacpp/" + tag), tgt)
+            except:
+                pass
+
+            globalconfig["llama.cpp"]["llama-server.exe.dir"] = tgt
+            globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
+
+            global LLAMA_CPP_REFRESH_BTN
+            if LLAMA_CPP_REFRESH_BTN:
+                gobject.base.safeinvokefunction.emit(LLAMA_CPP_REFRESH_BTN.click)
+
+        ___(arch, _, tag)
 
     @threader
     def firstshow(self, _=None):
-        if self.currentIndex() == 1:
-            return
         res = requests.get(
             "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
             proxies=getproxy(),
         ).json()
+        # 必须检查一下是不是有效的相应
+        print(res["tag_name"])
+        if not self.loadonce:
+            return
+        self.loadonce = False
         self.initialize.emit(res)
 
 
@@ -1307,6 +1430,8 @@ def __checkcudaimports(f):
 
 
 def detect_llama_installed_archs(llamaserver: str):
+    if not llamaserver:
+        return {}
     llamaserverdir = os.path.dirname(llamaserver)
     archs: "dict[str, list[str]]" = {}
     for ff in os.listdir(llamaserverdir):
@@ -1401,6 +1526,9 @@ class tipslabel(QLabel):
             self.test(self.lostss)
 
 
+LLAMA_CPP_REFRESH_BTN = None
+
+
 def llamacppgrid():
     _, combollama, _2, _3 = __create(
         None,
@@ -1408,6 +1536,8 @@ def llamacppgrid():
         "llama-server.exe",
         lambda f: f.lower() == "llama-server.exe",
     )
+    global LLAMA_CPP_REFRESH_BTN
+    LLAMA_CPP_REFRESH_BTN = _3
     obj = dict()
     devicelist = SuperCombo(static=True)
     devicelist.currentIndexChanged.connect(

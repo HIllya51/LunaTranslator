@@ -1237,9 +1237,9 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 |  | SLPS-25902 | 純情ロマンチカ ～恋のドキドキ大作戦 |
 |  | SLPS-25662 | 今日からマ王！はじマりの旅 [プレミアムBOX] |
 |  | SLPS-25801 | 今日からマ王！ 眞マ国の休日 |
-|  | SLPM-65850 | 遙かなる時空の中で3 |
+|  | SLPM-65834 & SLPM-65849 & SLPM-65850 | 遙かなる時空の中で3 |
 |  | SLPM-66344 & SLPM-66347 & SLPM-66348 | 遙かなる時空の中で3 運命の迷宮 |
-|  | SLPM-66127 | 遙かなる時空の中で3 十六夜記 Harukanaru Toki no Naka de 3 - Izayoiki |
+|  | SLPM-66099 & SLPM-66100 & SLPM-66127 | 遙かなる時空の中で3 十六夜記 Harukanaru Toki no Naka de 3 - Izayoiki |
 |  | SLPM-66952 | 遙かなる時空の中で4 |
 |  | SLPM-65512 & SLPM-65513 | Angel's Feather |
 |  | SLPM-65848 | 空色の風琴 ～Remix～ |

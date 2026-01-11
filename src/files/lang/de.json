@@ -924,5 +924,6 @@
     "版本": "Version",
     "当前版本": "Aktuelle Version",
     "架构": "Architektur",
-    "缺少依赖": "Fehlende Abhängigkeit"
+    "缺少依赖": "Fehlende Abhängigkeit",
+    "已下载": "Heruntergeladen"
 }

@@ -445,11 +445,6 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\x81\x91"), TEXTANDLEN("!!")); //"――"
         StringReplacer(buffer, TEXTANDLEN("\x81\x90"), TEXTANDLEN("!?")); //"――"
     }
-    void FSLPM65850(TextBuffer *buffer, HookParam *hp)
-    {
-        FSLPM66127(buffer, hp);
-        all_ascii_Filter(buffer, hp);
-    }
     void SLPS25801(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -760,20 +755,6 @@ namespace
             buffer->from((char *)emu_addr(0xFA73EC) + collect);
         }
         last1 = collect;
-    }
-    void TSLPM65850(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
-    {
-        *split = (WORD)PCSX2_REG(t1);
-        switch (*split)
-        {
-        case 0:
-        case 1:
-            break;
-        default:
-            return;
-        }
-        auto str = (char *)PCSX2_REG(a0);
-        buffer->from(str);
     }
     void SLPM66127X(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
@@ -2619,13 +2600,14 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 今日からマ王！ 眞マ国の休日
     {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
     // 遙かなる時空の中で3
-    {0x29A618, {0, PCSX2_REG_OFFSET(a0), 0, TSLPM65850, FSLPM65850, "SLPM-65850"}},
+    {0x24CAE8, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t7), 0, 0, FSLPM66127, std::vector<const char *>{"SLPM-65834", "SLPM-65849", "SLPM-65850"}}},
+    {0x24CA50, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, std::vector<const char *>{"SLPM-65834", "SLPM-65849", "SLPM-65850"}}},
     // 遙かなる時空の中で3 運命の迷宮
     {0x1FD73C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t7), 0, 0, FSLPM66127, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}}, // 开场
     {0x1FD6A0, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, std::vector<const char *>{"SLPM-66344", "SLPM-66347", "SLPM-66348"}}},
     // 遙かなる時空の中で3 十六夜記 Harukanaru Toki no Naka de 3 - Izayoiki
-    {0x25882C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t7), 0, 0, FSLPM66127, "SLPM-66127"}},
-    {0x258790, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, "SLPM-66127"}},
+    {0x25882C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(t7), 0, 0, FSLPM66127, std::vector<const char *>{"SLPM-66099", "SLPM-66100", "SLPM-66127"}}},
+    {0x258790, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, std::vector<const char *>{"SLPM-66099", "SLPM-66100", "SLPM-66127"}}},
     // 遙かなる時空の中で4
     {0x1B043C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, FSLPM66127, "SLPM-66952"}},
     {0x1B0360, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, "SLPM-66952"}},

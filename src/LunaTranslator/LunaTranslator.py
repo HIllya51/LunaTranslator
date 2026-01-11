@@ -112,6 +112,8 @@ class BASEOBJECT(QObject):
     llamacppstdoutstatus = pyqtSignal(dict)
     llamacppcurrversion = pyqtSignal(object)
     llamacpparchcheck = pyqtSignal(object)
+    llamacppdownloadprogress = pyqtSignal(str, float)
+    llamacppdownloadcheck = pyqtSignal(int)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -146,6 +148,8 @@ class BASEOBJECT(QObject):
         self.__cachesignal: "dict[pyqtBoundSignal, tuple]" = {}
         self.__cachesignal2: "dict[pyqtBoundSignal, list]" = {}
         self.__connect_internal_all(self.llamacppstdout)
+        self.__connect_internal(self.llamacppdownloadprogress)
+        self.__connect_internal(self.llamacppdownloadcheck)
         self.__connect_internal(self.llamacpparchcheck)
         self.__connect_internal(self.llamacppstdoutstatus)
         self.__connect_internal(self.llamacppcurrversion)
