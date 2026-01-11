@@ -225,9 +225,6 @@ def fenciqisettings(self):
         ),
     )
     l1.addWidget(_3())
-    b = MySwitch(isplaceholder=True)
-    b.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    l1.addWidget(b)
     l1.addStretch(1)
     btn = LPushButton("资源下载")
     btn.setCheckable(True)

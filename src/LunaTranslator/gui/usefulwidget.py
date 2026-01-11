@@ -745,12 +745,11 @@ class MySwitch(QAbstractButton):
         sz = QSizeF(1.62 * h * gobject.Consts.btnscale, h * gobject.Consts.btnscale)
         self.setFixedSize(sz.toSize())
 
-    def __init__(self, parent=None, sign=True, enable=True, isplaceholder=False):
+    def __init__(self, parent=None, sign=True, enable=True):
         super().__init__(parent)
-        self.isplaceholder = isplaceholder
         self.setCheckable(True)
         super().setChecked(sign)
-        super().setEnabled(enable and not isplaceholder)
+        super().setEnabled(enable)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.clicksignal.connect(self.click)
         self.__currv = 0
@@ -848,8 +847,6 @@ class MySwitch(QAbstractButton):
         )
 
     def paintEvent(self, _):
-        if self.isplaceholder:
-            return
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
         painter.setPen(Qt.PenStyle.NoPen)
