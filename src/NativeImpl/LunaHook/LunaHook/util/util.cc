@@ -471,7 +471,7 @@ uintptr_t reverseFindBytes(const BYTE *pattern, int length, uintptr_t start, uin
     {
       auto ret = end + offset;
 
-      if (checkalign && ret & 0xf)
+      if (checkalign && (ret & 0xf))
         continue;
 
       return ret;

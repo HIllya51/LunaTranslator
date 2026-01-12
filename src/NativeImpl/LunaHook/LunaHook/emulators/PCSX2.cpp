@@ -53,6 +53,19 @@ namespace
             0x0f, 0x85, XX4,
             0xb9, 0x01, 0x00, 0x00, 0x00,
             0x89, 0xf2};
+        constexpr BYTE sig2_dynarecCheckBreakpoint[] = {
+            // v2.7.28
+            0x48, 0x83, 0xec, XX,
+            0x8b, 0x35, XX4,
+            0x8b, 0x05, XX4,
+            0x39, 0xf0,
+            0x0f, 0x95, 0xc1,
+            0x85, 0xc0,
+            0x0f, 0x94, 0xc0,
+            0x08, 0xc8,
+            0x74, 0x4b,
+            0xb9, 0x01, 0x00, 0x00, 0x00,
+            0x89, 0xf2};
         constexpr BYTE sig_BaseBlocksNew[] = {
             0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x56, 0x57, 0x55, 0x53,
             0x48, 0x83, 0xEC, 0x28,
@@ -64,6 +77,8 @@ namespace
             XX, 0x8b, XX, 0x08};
 
         dynarecCheckBreakpoint = MemDbg::findBytes(sig_dynarecCheckBreakpoint, sizeof(sig_dynarecCheckBreakpoint), processStartAddress, processStopAddress);
+        if (!dynarecCheckBreakpoint)
+            dynarecCheckBreakpoint = MemDbg::findBytes(sig2_dynarecCheckBreakpoint, sizeof(sig2_dynarecCheckBreakpoint), processStartAddress, processStopAddress);
         if (!dynarecCheckBreakpoint)
             return false;
         dynarecCheckBreakpoint = MemDbg::findEnclosingAlignedFunction((uintptr_t)dynarecCheckBreakpoint);

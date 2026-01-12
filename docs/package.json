@@ -1,7 +1,7 @@
 {
   "devDependencies": {
     "@giscus/vue": "^2.4.0",
-    "vitepress": "^1.6.3",
+    "vitepress": "^1.6.4",
     "vitepress-plugin-tabs": "^0.5.0"
   },
   "scripts": {
