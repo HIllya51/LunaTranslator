@@ -925,6 +925,8 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPS-25887 | スーパーロボット大戦Ｚ |
+|  | SLPS-25920 | スーパーロボット大戦Z スペシャルディスク |
 |  | SLPM-66882 | はかれなはーと ～君がために輝きを～ |
 |  | SLPM-66471 | 花帰葬 |
 |  | SLPS-25444 | Cherry blossom ～チェリーブロッサム～ |

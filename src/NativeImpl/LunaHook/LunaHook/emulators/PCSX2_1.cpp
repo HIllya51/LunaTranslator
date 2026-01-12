@@ -199,6 +199,12 @@ namespace
         s = re::sub(s, R"(\\n(\x81\x40)*)");
         buffer->from(s);
     }
+    void SLPS25887(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\n(\x81\x40)*)");
+        buffer->from(s);
+    }
     void SLPM66543(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("fc"));
@@ -1968,6 +1974,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // スーパーロボット大戦Ｚ
+    {0x1a0d88, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25887, "SLPS-25887"}},
+    // スーパーロボット大戦Z スペシャルディスク
+    {0x1a5238, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25887, "SLPS-25920"}},
     // はかれなはーと ～君がために輝きを～
     {0x1053d8, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66882, "SLPM-66882"}},
     // 花帰葬
