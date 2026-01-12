@@ -592,7 +592,7 @@
         {
             "vis": "Chutes",
             "value": "https://llm.chutes.ai",
-            "icon": "files/static/llm_icons/chutes.webp "
+            "icon": "files/static/llm_icons/chutes.webp"
         }
     ]
 }
