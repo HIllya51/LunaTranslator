@@ -4,7 +4,7 @@ from myutils.commonbase import proxysession
 from myutils.config import globalconfig, savehook_new_data, extradatas
 from myutils.utils import getlangtgt
 from traceback import print_exc
-from requests import RequestException
+import requests
 from myutils.wrapper import tryprint, threader
 
 
@@ -83,7 +83,7 @@ class common:
             try:
                 self.__do_searchfordata(gameuid, vid)
                 vis = info + "data loaded success"
-            except RequestException:
+            except requests.exceptions.RequestException:
                 remove = False
                 vis = info + "network error, retry later"
             except:
@@ -107,7 +107,7 @@ class common:
             remove = True
             try:
                 self.__do_download_img(url, save)
-            except RequestException:
+            except requests.exceptions.RequestException:
                 remove = False
             except:
                 print_exc()

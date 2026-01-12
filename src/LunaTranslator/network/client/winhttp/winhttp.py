@@ -1,7 +1,6 @@
 from ctypes import windll, POINTER, pointer, Structure, sizeof
 from ctypes.wintypes import LPCWSTR, DWORD, LPVOID, WORD, BOOL, LPCVOID, LPWSTR, USHORT
-from requests import RequestException, Timeout
-import windows
+import windows, requests
 
 
 class HINTERNET(LPVOID):
@@ -162,7 +161,7 @@ WINHTTP_DECOMPRESSION_FLAG_GZIP = 1
 WINHTTP_DECOMPRESSION_FLAG_DEFLATE = 2
 
 
-class WinhttpException(RequestException):
+class WinhttpException(requests.exceptions.RequestException):
     ERROR_INVALID_PARAMETER = 87
     ERROR_INVALID_OPERATION = 4317
     WINHTTP_ERROR_BASE = 12000
@@ -247,7 +246,7 @@ def MaybeRaiseException(error):
         return
     exception = WinhttpException(error)
     if error == WinhttpException.ERROR_WINHTTP_TIMEOUT:
-        raise Timeout(exception)
+        raise requests.exceptions.Timeout(exception)
     raise exception
 
 

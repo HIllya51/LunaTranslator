@@ -76,7 +76,7 @@ class TTS(TTSbase):
 
             return sorted(list(set(versions)))
 
-        except requests.RequestException:
+        except requests.exceptions.RequestException:
             return fallback_versions
         except Exception:
             return fallback_versions
@@ -119,7 +119,7 @@ class TTS(TTSbase):
                     all_display_names.append(display_name)
                     all_internal_ids.append(internal_id)
 
-            except requests.RequestException:
+            except requests.exceptions.RequestException:
                 pass
 
         if not all_display_names:
@@ -209,7 +209,7 @@ class TTS(TTSbase):
                     )
                     return audio_response
 
-        except requests.RequestException:
+        except requests.exceptions.RequestException:
             pass
         except json.JSONDecodeError:
             pass

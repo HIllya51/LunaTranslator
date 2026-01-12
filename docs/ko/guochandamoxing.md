@@ -84,6 +84,10 @@
 
 **API Key** https://aistudio.google.com/app/apikey
 
+== Nvidia
+
+**API Key** https://build.nvidia.com/explore/discover
+
 == claude
 
 **API Key** https://console.anthropic.com/

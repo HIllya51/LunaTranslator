@@ -83,6 +83,10 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
 **API Key** https://aistudio.google.com/app/apikey
 
+== Nvidia
+
+**API Key** https://build.nvidia.com/explore/discover
+
 == Claude
 
 **API Key** https://console.anthropic.com/

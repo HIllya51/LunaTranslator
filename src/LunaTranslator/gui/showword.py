@@ -804,7 +804,7 @@ class AnkiWindow(QWidget):
             if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
                 self.window().close()
             QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
-        except requests.RequestException:
+        except requests.exceptions.RequestException:
             t = _TR(
                 "无法连接到anki\n请打开anki，并安装AnkiConnect插件"
             ) + '\n<a href="{}">{}</a>'.format(

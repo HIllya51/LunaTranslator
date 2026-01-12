@@ -84,6 +84,10 @@ However, sometimes you may want to use multiple different API interface addresse
 
 **API Key** https://aistudio.google.com/app/apikey
 
+== Nvidia
+
+**API Key** https://build.nvidia.com/explore/discover
+
 == Claude
 
 **API Key** https://console.anthropic.com/

@@ -1066,7 +1066,7 @@ class AdvancedTreeTable(QTreeWidget):
         self.langitem: "list[QLabel]" = []
         self.langitemlang: "list[str]" = []
         self.setup_ui()
-        self.setMinimumHeight(400)
+        self.setMinimumHeight(300)
 
     def setup_ui(self):
         self.headers = [
@@ -1083,7 +1083,7 @@ class AdvancedTreeTable(QTreeWidget):
             header.setSectionResizeMode(i, QHeaderView.ResizeMode.ResizeToContents)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.show_header_menu)
-        self.itemDoubleClicked.connect(self._itemDoubleClicked)
+        self.itemDoubleClicked.connect(functools.partial(self._itemDoubleClicked, True))
         self.populate_data()
         self.setSortingEnabled(False)
         header.setSectionsClickable(True)
@@ -1121,21 +1121,27 @@ class AdvancedTreeTable(QTreeWidget):
         return format_bytes(z)
 
     def populate_data(self):
-        llm_model_list = tryreadconfig2("llm_model_list.json")
+        llm_model_list: "list[dict[str, list[dict[str, list]]]]" = tryreadconfig2(
+            "llm_model_list.json"
+        )
         for line in llm_model_list:
-            user = QTreeWidgetItem(self, [line.get("author", line["account"])])
+            series = QTreeWidgetItem(self, [line["series"]])
             _ = QWidget()
             _l = QHBoxLayout(_)
             _l.setContentsMargins(0, 0, 0, 0)
             _l.setAlignment(Qt.AlignmentFlag.AlignRight)
             label = QLabel(self.vislang(line["lang"]))
             _l.addWidget(label)
-            self.setItemWidget(user, 0, _)
+            self.setItemWidget(series, 0, _)
             self.langitemlang.append(line["lang"])
             self.langitem.append(label)
-            user.setExpanded(True)
+            series.setExpanded(True)
+            account = line.get("account", line["series"])
+            series.setData(0, Qt.ItemDataRole.UserRole + 21, account)
             for repo in line["repos"]:
-                r = QTreeWidgetItem(user, [repo["repo"]])
+                repoaccount = repo.get("account", account)
+                r = QTreeWidgetItem(series, [repo["repo"]])
+                r.setData(0, Qt.ItemDataRole.UserRole + 22, (repoaccount, repo["repo"]))
                 repo["models"].sort(
                     key=lambda _: -self.astimestm(_["timestamp"]).timestamp()
                 )
@@ -1151,35 +1157,56 @@ class AdvancedTreeTable(QTreeWidget):
                     itm.setData(
                         0,
                         Qt.ItemDataRole.UserRole + 20,
-                        (line["account"], repo["repo"], m["file"]),
+                        (repoaccount, repo["repo"], m["file"]),
                     )
 
-    def _itemDoubleClicked(self, item: QTreeWidgetItem):
-        data = item.data(0, Qt.ItemDataRole.UserRole + 20)
-        if not data:
+    def _itemDoubleClicked(self, doubleclick, item: QTreeWidgetItem):
+        series_account = item.data(0, Qt.ItemDataRole.UserRole + 21)
+        repo = item.data(0, Qt.ItemDataRole.UserRole + 22)
+        model = item.data(0, Qt.ItemDataRole.UserRole + 20)
+        if ((not doubleclick) and (not (series_account or model or repo))) or (
+            doubleclick and (not model)
+        ):
             return
         menu = QMenu(self)
-        action = LAction("下载_huggingface", menu)
-        action2 = LAction("下载_hf-mirror", menu)
+        if model:
+            action = LAction("下载_huggingface", menu)
+            action2 = LAction("下载_hf-mirror", menu)
+        else:
+            action = LAction("huggingface", menu)
+            action2 = LAction("hf-mirror", menu)
         menu.addAction(action)
         menu.addAction(action2)
         a = menu.exec(QCursor.pos())
         if a:
-            u, r, m = data
-            if a == action:
-                os.startfile(
-                    "https://huggingface.co/{}/{}/resolve/main/{}".format(u, r, m)
-                )
-            elif a == action2:
-                os.startfile(
-                    "https://hf-mirror.com/{}/{}/resolve/main/{}".format(u, r, m)
-                )
+            if model:
+                u, r, m = model
+                if a == action:
+                    os.startfile(
+                        "https://huggingface.co/{}/{}/resolve/main/{}".format(u, r, m)
+                    )
+                elif a == action2:
+                    os.startfile(
+                        "https://hf-mirror.com/{}/{}/resolve/main/{}".format(u, r, m)
+                    )
+            elif repo:
+                u, r = repo
+                if a == action:
+                    os.startfile("https://huggingface.co/{}/{}".format(u, r))
+                elif a == action2:
+                    os.startfile("https://hf-mirror.com/{}/{}".format(u, r))
+            elif series_account:
+                u = series_account
+                if a == action:
+                    os.startfile("https://huggingface.co/{}".format(u))
+                elif a == action2:
+                    os.startfile("https://hf-mirror.com/{}".format(u))
 
     def show_header_menu(self, position):
         item = self.itemAt(position)
         if not item:
             return
-        self._itemDoubleClicked(item)
+        self._itemDoubleClicked(False, item)
 
     def hide_column(self):
         action = self.sender()

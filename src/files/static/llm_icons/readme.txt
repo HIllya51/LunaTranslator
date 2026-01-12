@@ -1,0 +1,1 @@
+svgo .\xx.svg -o .\xx.svg

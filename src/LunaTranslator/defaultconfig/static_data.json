@@ -490,13 +490,18 @@
             "icon": "files/static/llm_icons/gemini.svg"
         },
         {
+            "vis": "Nvidia",
+            "value": "https://integrate.api.nvidia.com",
+            "icon": "files/static/llm_icons/nvidia.svg"
+        },
+        {
             "vis": "claude",
             "value": "https://api.anthropic.com/v1/messages",
             "icon": "files/static/llm_icons/claude.svg"
         },
         {
             "vis": "阿里云百炼大模型",
-            "value": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "value": "https://dashscope.aliyuncs.com/compatible-mode",
             "icon": "files/static/llm_icons/qwen.svg"
         },
         {
@@ -506,7 +511,7 @@
         },
         {
             "vis": "腾讯混元大模型",
-            "value": "https://api.hunyuan.cloud.tencent.com/v1",
+            "value": "https://api.hunyuan.cloud.tencent.com",
             "icon": "files/static/llm_icons/hunyuan.svg"
         },
         {
@@ -516,22 +521,22 @@
         },
         {
             "vis": "cohere",
-            "value": "https://api.cohere.ai/compatibility/v1",
+            "value": "https://api.cohere.ai/compatibility",
             "icon": "files/static/llm_icons/cohere.svg"
         },
         {
             "vis": "OpenRouter",
-            "value": "https://openrouter.ai/api/v1",
+            "value": "https://openrouter.ai/api",
             "icon": "files/static/llm_icons/openrouter.svg"
         },
         {
             "vis": "groq",
-            "value": "https://api.groq.com/openai/v1",
+            "value": "https://api.groq.com/openai",
             "icon": "files/static/llm_icons/groq.svg"
         },
         {
             "vis": "Mistral AI",
-            "value": "https://api.mistral.ai/v1",
+            "value": "https://api.mistral.ai",
             "icon": "files/static/llm_icons/mistral.svg"
         },
         {
@@ -556,8 +561,8 @@
         },
         {
             "vis": "讯飞星火大模型",
-            "value": "https://spark-api-open.xf-yun.com/v1",
-            "icon": "files/static/llm_icons/xunfei.ico"
+            "value": "https://spark-api-open.xf-yun.com",
+            "icon": "files/static/llm_icons/xunfei.svg"
         },
         {
             "vis": "百度千帆大模型",
@@ -571,23 +576,23 @@
         },
         {
             "vis": "cerebras",
-            "value": "https://api.cerebras.ai/v1",
-            "icon": "files/static/llm_icons/cerebras.png"
+            "value": "https://api.cerebras.ai",
+            "icon": "files/static/llm_icons/cerebras.svg"
         },
         {
             "vis": "deepinfra",
             "value": "https://api.deepinfra.com/v1/openai/chat/completions",
-            "icon": "files/static/llm_icons/deepinfra.webp"
+            "icon": "files/static/llm_icons/deepinfra.svg"
         },
         {
             "vis": "MiniMax",
-            "value": "https://api.minimax.chat/v1",
+            "value": "https://api.minimax.chat",
             "icon": "files/static/llm_icons/minimax.svg"
         },
         {
-            "vis": "Chute",
-            "value": "https://llm.chutes.ai/v1/chat/completions",
-            "icon": "files/static/llm_icons/chutes.webp"
+            "vis": "Chutes",
+            "value": "https://llm.chutes.ai",
+            "icon": "files/static/llm_icons/chutes.webp "
         }
     ]
 }

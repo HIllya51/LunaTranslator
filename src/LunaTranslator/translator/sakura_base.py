@@ -182,7 +182,7 @@ class TS(basetrans):
                 urlpathjoin(self.api_url, "chat/completions"), json=data
             )
 
-        except requests.RequestException as e:
+        except requests.exceptions.RequestException as e:
             raise ValueError("无法连接Sakura API，可能未正确部署Sakura模型")
         try:
             yield output.json()
@@ -217,7 +217,7 @@ class TS(basetrans):
                 json=data,
                 stream=True,
             )
-        except requests.RequestException:
+        except requests.exceptions.RequestException:
             raise ValueError("无法连接Sakura API，可能未正确部署Sakura模型")
 
         if (not output.headers["Content-Type"].startswith("text/event-stream")) and (

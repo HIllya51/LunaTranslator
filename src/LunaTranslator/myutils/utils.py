@@ -437,7 +437,7 @@ def stringfyerror(e: "Exception|str"):
     if len(error.splitlines()) > 5:
         error = error.replace("\n", " ").replace("\r", "")
 
-    if isinstance(e, requests.RequestException):
+    if isinstance(e, requests.exceptions.RequestException):
         error = _TR("网络错误") + ": " + error
         if e.proxy:
             try:

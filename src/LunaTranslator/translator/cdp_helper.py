@@ -122,7 +122,7 @@ class cdp_helper:
                     json.dumps({"id": self._id, "method": method, "params": params})
                 )
                 res = ws.recv()
-            except requests.RequestException:
+            except requests.exceptions.RequestException:
                 cdp_helper.commonloadchromium.maybeload(self.config)
                 raise Exception(_TR("连接失败"))
 
