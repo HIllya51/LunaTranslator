@@ -925,5 +925,7 @@
     "当前版本": "Version actuelle",
     "架构": "Architecture",
     "缺少依赖": "Dépendance manquante",
-    "已下载": "Téléchargé."
+    "已下载": "Téléchargé.",
+    "全字匹配": "Correspondance exacte de mots",
+    "区分大小写": "Sensible à la casse"
 }

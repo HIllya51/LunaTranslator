@@ -925,5 +925,7 @@
     "当前版本": "Versión actual",
     "架构": "Arquitectura",
     "缺少依赖": "Falta de dependencias",
-    "已下载": "Descargado."
+    "已下载": "Descargado.",
+    "全字匹配": "Coincidencia de palabras completas",
+    "区分大小写": "Distinción entre mayúsculas y minúsculas"
 }

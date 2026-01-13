@@ -925,5 +925,7 @@
     "当前版本": "Aktuell version",
     "架构": "Arkitektur",
     "缺少依赖": "Saknar beroenden",
-    "已下载": "Nedladdad"
+    "已下载": "Nedladdad",
+    "全字匹配": "Exakt ordmatchning",
+    "区分大小写": "Skiftlägeskänslig"
 }

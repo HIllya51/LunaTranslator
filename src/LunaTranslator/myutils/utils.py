@@ -558,10 +558,7 @@ def safe_escape(string: str) -> str:
 
 
 def case_insensitive_replace(text: str, old: str, new: str) -> str:
-    def replace_match(_):
-        return new
-
-    return re.sub(re.escape(old), replace_match, text, flags=re.IGNORECASE)
+    return re.sub(re.escape(old), lambda _: new, text, flags=re.IGNORECASE)
 
 
 @tryprint
@@ -569,23 +566,20 @@ def parsemayberegexreplace(lst: "list[dict]", line: str) -> str:
     if not line:
         line = ""
     for fil in lst:
-        regex = fil.get("regex", False)
-        escape = fil.get("escape", regex)
         key = fil.get("key", "")
-        value = fil.get("value", "")
-        if key == "":
+        if not key:
             continue
-        if regex:
-            if escape:
-                line = re.sub(safe_escape(key), safe_escape(value), line)
-            else:
-                line = re.sub(key, value, line)
-        else:
-            if escape:
-                line = line.replace(safe_escape(key), safe_escape(value))
-            else:
-                line = line.replace(key, value)
-
+        value = fil.get("value", "")
+        if fil.get("escape", False):
+            key = safe_escape(key)
+            value = safe_escape(value)
+        if not fil.get("regex", False):
+            key = re.escape(key)
+            value = functools.partial((lambda value, _: value), value)
+        if fil.get("whole-word", False):
+            key = r"\b" + key + r"\b"
+        flags = 0 if fil.get("case-sensitive", False) else re.IGNORECASE
+        line = re.sub(key, value, line, flags=flags)
     return line
 
 

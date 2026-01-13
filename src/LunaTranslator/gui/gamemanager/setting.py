@@ -104,7 +104,7 @@ def maybehavebutton(self, gameuid, post):
                         "internal"
                     ],
                     save_text_process_info["postprocessconfig"][post]["name"],
-                    ["正则", "转义", "原文内容", "替换为"],
+                    ["原文内容", "替换为"],
                 )
             elif isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
                 callback = functools.partial(
@@ -937,7 +937,7 @@ class dialog_setting_game_internal(QWidget):
                 self,
                 savehook_new_data[gameuid]["tts_repair_regex"],
                 "语音修正",
-                ["正则", "转义", "原文", "替换"],
+                ["原文", "替换"],
                 extraX=savehook_new_data[gameuid],
             )
 

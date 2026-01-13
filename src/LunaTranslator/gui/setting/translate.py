@@ -368,10 +368,9 @@ def addordelete(delete, self, countnum):
         return
     actions = {}
     for i in range(len(__vis)):
-        if not delete:
-            if not useExCheck(__uid[i]):
-                continue
-            _ = QAction(__vis[i], menu)
+        if (not delete) and (not useExCheck(__uid[i])):
+            continue
+        _ = QAction(__vis[i], menu)
         actions[_] = __uid[i]
         menu.addAction(_)
     action = menu.exec(QCursor.pos())

@@ -309,7 +309,7 @@ def setTab5lz(self):
                                                 "tts_repair_regex"
                                             ],
                                             "语音修正",
-                                            ["正则", "转义", "原文", "替换"],
+                                            ["原文", "替换"],
                                             extraX=globalconfig["ttscommon"],
                                         )
                                     ),

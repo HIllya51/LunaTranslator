@@ -236,8 +236,7 @@ class common:
                         {
                             "key": name,
                             "value": namemap[name] if usenamemap else name,
-                            "regex": False,
-                            "escape": False,
+                            "whole-word": True,
                         }
                     )
                 if not (name in dedump2):

@@ -3143,6 +3143,7 @@ class IconButton(LPushButton):
         color=None,
         none=False,
         checkablechangecolor=True,
+        checked=False,
     ):
         super().__init__(parent)
         if tips:
@@ -3163,6 +3164,8 @@ class IconButton(LPushButton):
             + ("background:transparent;" if none else "")
         )
         self.setCheckable(checkable)
+        if checked and checkable:
+            self.setChecked(checked)
         self.setEnabled(enable and (bool(icon) or bool(qicon)))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.resizedirect()

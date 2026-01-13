@@ -925,5 +925,7 @@
     "当前版本": "Aktualna wersja",
     "架构": "Architektura",
     "缺少依赖": "Brak zależności",
-    "已下载": "Pobrano"
+    "已下载": "Pobrano",
+    "全字匹配": "Dopasowanie pełnego słowa",
+    "区分大小写": "Rozróżnianie wielkości liter"
 }

@@ -925,5 +925,7 @@
     "当前版本": "Phiên bản hiện tại",
     "架构": "Kiến trúc",
     "缺少依赖": "Thiếu phụ thuộc",
-    "已下载": "Đã tải xuống"
+    "已下载": "Đã tải xuống",
+    "全字匹配": "Khớp toàn bộ từ",
+    "区分大小写": "Phân biệt chữ hoa chữ thường"
 }

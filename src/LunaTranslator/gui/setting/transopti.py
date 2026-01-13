@@ -126,7 +126,7 @@ def setTab7_lazy(self, basel: QLayout):
                         self,
                         postprocessconfig[post]["args"]["internal"],
                         postprocessconfig[post]["name"],
-                        ["正则", "转义", "原文内容", "替换为"],
+                        ["原文内容", "替换为"],
                     )
                 elif isinstance(
                     list(postprocessconfig[post]["args"].values())[0], dict

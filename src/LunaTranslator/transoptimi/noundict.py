@@ -1,33 +1,24 @@
 from myutils.config import savehook_new_data, globalconfig
-import gobject, json
+import gobject, re
 from qtsymbols import *
 from myutils.utils import postusewhich, case_insensitive_replace
 from myutils.config import get_launchpath
 from myutils.hwnd import getExeIcon
-from gui.inputdialog import postconfigdialog_1
+from myutils.wrapper import Singleton
+from gui.inputdialog import noundictconfigdialog1___
 
 
-class postconfigdialog_2(postconfigdialog_1):
-    def __init__(self, parent, configdict, title):
+@Singleton
+class postconfigdialog_2(noundictconfigdialog1___):
+    def __init__(self, parent, reflist, title):
         super().__init__(
             parent,
-            configdict,
+            reflist,
             title,
             ["原文", "翻译", "注释"],
             dictkeys=["src", "dst", "info"],
+            need_regex=False,
         )
-        self._parseclptext = self.table.parsepastetext
-        self.table.parsepastetext = self.parsepastetext
-
-    def parsepastetext(self, text):
-        try:
-            ls = json.loads(text)
-            __ = []
-            for _ in ls:
-                __.append(list(_[__1] for __1 in ("src", "dst", "info")))
-            return __
-        except:
-            return self._parseclptext(text)
 
 
 class Process:
@@ -53,7 +44,7 @@ class Process:
     def using_X(self):
         return postusewhich("noundict") != 0
 
-    def usewhich(self) -> dict:
+    def usewhich(self) -> "list[dict[str, list]]":
         which = postusewhich("noundict")
         if which == 1:
             return globalconfig["noundictconfig_ex"]
@@ -81,14 +72,18 @@ class Process:
         gpt_dict = []
         srcs = set()
         for gpt in self.usewhich():
-            src = gpt["src"]
+            src_1 = src = gpt["src"]
             if src in srcs:
                 continue
             srcs.add(src)
-            if src not in japanese:
+            if gpt.get("whole-word", False):
+                src = r"\b" + src + r"\b"
+            flags = 0 if gpt.get("case-sensitive", False) else re.IGNORECASE
+            found = re.search(src, japanese, flags)
+            if not found:
                 continue
             gpt_dict.append(gpt)
-            used.append((src, gpt["dst"]))
+            used.append((src_1, gpt["dst"]))
 
         self.zhanweifu = 0
         japanese1, mp1 = self.process_before1(japanese, used)
