@@ -191,7 +191,7 @@ class mssr(basetext):
         if not path:
             gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
-        if path and not path.isascii():
+        if not path.isascii():
             gobject.base.displayinfomessage(
                 _TR("请勿使用非英文路径"), "<msg_error_Origin>"
             )
