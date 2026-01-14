@@ -696,7 +696,7 @@
 			"frequency_penalty": 0.1,
 			"fix_degeneration": false,
 			"流式输出": true,
-			"prompt_version": 3,
+			"prompt_version": 4,
 			"s": ""
 		},
 		"argstype": {
@@ -721,7 +721,8 @@
 					"v0.9",
 					"v0.10pre1",
 					"v1.0/v1.0pre1",
-					"GalTransl-7B-v3"
+					"GalTransl-7B-v3",
+					"Sakura-14B-Qwen3-v1.5"
 				]
 			},
 			"API接口地址": {
