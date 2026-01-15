@@ -167,6 +167,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 |  | 01006B000A666000 | Cendrillon palikA |
 |  | 01007B601C608000 | Crayon Shin-chan Shiro of Coal Town |
 |  | 010046601125A000 | 風雨来記4 |
+|  | 010012601EC54000 | 風雨来記5 |
 |  | 0100771013FA8000 | 剣が君 for S |
 |  | 0100556015CCC000 | ANONYMOUS;CODE |
 |  | 0100325012B70000 | Sugar * Style |
@@ -910,6 +911,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 |  | PCSG01203 | タユタマ２ -you're the only one- |
 |  | PCSG01034 | 戦極姫７～戦雲つらぬく紅蓮の遺志～ |
 |  | PCSG00481 | 新装版クリムゾン・エンパイア |
+|  | PCSG00914 | うたの☆プリンスさまっ♪Repeat LOVE |
 |  | PCSG01081 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 |  | PCSG00745 | スカーレッドライダーゼクス |
 |  | PCSG00615 | 東京喰種トーキョーグール JAIL |

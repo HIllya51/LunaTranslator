@@ -1652,12 +1652,22 @@ namespace
         last = s;
         buffer->from(s);
     }
-
+    void f010012601EC54000(TextBuffer *buffer, HookParam *hp)
+    {
+        static lru_cache<std::string> cache(5);
+        auto s = buffer->strA();
+        static std::string last;
+        if (startWith(s, last))
+            buffer->from(strReplace(s.substr(last.size()), "\n"));
+        last = s;
+        if (cache.touch(s))
+            return buffer->clear();
+    }
     void F010046601125A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
         s = re::sub(s, L"<rb>(.+?)</rb><rt>.+?</rt>", L"$1");
-        s = re::sub(s, L"\n+", L" ");
+        s = re::sub(s, L"\n");
         buffer->from(utf16_to_utf32(s));
     }
     void F0100771013FA8000(TextBuffer *buffer, HookParam *hp)
@@ -2198,7 +2208,6 @@ namespace
     }
     void F010065301A2E0000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, L"<WaitFrame>\\d+</WaitFrame>");
         s = re::sub(s, L"<[^>]*>");
@@ -2206,7 +2215,6 @@ namespace
     }
     void F01002AE00F442000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, LR"(\[([^\]\/]+)\/[^\]]+\])", L"$1");
         s = re::sub(s, LR"(([^ \t\r\n\f\v]*)@)", L"$1");
@@ -2215,7 +2223,6 @@ namespace
     }
     void F01000A400AF2A000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
         s = re::sub(s, L"@[a-zA-Z]|%[a-zA-Z]+");
         static std::wstring last;
@@ -2538,11 +2545,20 @@ namespace
     void F0100BBA00B23E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = re::sub(s, LR"((^`)|(#\w+\[(\d*\.?\d+)\])|(\$K\d+)|(\$C\[\d+\]))");
-        s = re::sub(s, LR"(\$\[([^\$\/]*)\$\/[^\$]*\$]|([^\$\/]*)\$\/[^\$]*\$\])");
-        s = re::sub(s, LR"(@)");
-        s = re::sub(s, LR"($2)", L"凛");
+        s = re::sub(s, LR"([^`]*`(.*?)@)", L"$1");
+        s = re::sub(s, LR"(\$\[(.*?)\$/(.*?)\$\])", L"$1");
+        s = re::sub(s, LR"(\$[A-Z]\d*(\[\d*\])?)");
+        s = re::sub(s, LR"(\$2)", L"凛");
         buffer->from(s);
+    }
+    void F0100BBA00B23E000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::wstring last;
+        auto s = buffer->strW();
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        F0100BBA00B23E000(buffer, hp);
     }
     void F010091C01BD8A000(TextBuffer *buffer, HookParam *hp)
     {
@@ -3299,6 +3315,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80012ccc, {CODEC_UTF32, 1, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.00"}}, // Comments
     {0x80009f74, {CODEC_UTF32, 1, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.00"}}, // Choices
     {0x80023d64, {CODEC_UTF32, 0, 0, 0, F010046601125A000, 0x010046601125A000ull, "1.00"}}, // Location
+    // 風雨来記5
+    {0x8001DAF0, {CODEC_UTF8, 1, 0, 0, f010012601EC54000, 0x010012601EC54000ull, "1.00"}},
     // 剣が君 for S
     {0x81477128, {CODEC_UTF16, 0, 0, ReadUnityString, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}}, // Main Text
     {0x81470e38, {CODEC_UTF16, 0, 0, ReadUnityString, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}}, // Secondary Text
@@ -4159,10 +4177,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80009388, {CODEC_UTF32, 10, 0, 0, F0100AAF020664000, 0x0100AAF020664000ull, "1.0.1"}},
     {0x80014a64, {CODEC_UTF32, 0, 0, 0, F0100AAF020664000, 0x0100AAF020664000ull, "1.0.1"}},
     // 吉原彼岸花
-    {0x800818f8, {CODEC_UTF16, 9, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
+    {0x80081728, {CODEC_UTF16 | FULL_STRING, 9, 2, 0, F0100BBA00B23E000_1, 0x0100BBA00B23E000ull, "1.0.0"}},
+    {0x8013AF48, {CODEC_UTF16, 8, 0, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.0"}},
+    {0x8013AF7C, {CODEC_UTF16, 8, 0, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.0"}},
+    {0x800818f8, {CODEC_UTF16 | FULL_STRING, 9, 2, 0, F0100BBA00B23E000_1, 0x0100BBA00B23E000ull, "1.0.2"}},
     {0x8004deb4, {CODEC_UTF16, 0, 0, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
-    {0x8013b498, {CODEC_UTF16, 8, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
-    {0x8013b4cc, {CODEC_UTF16, 8, 2, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
+    {0x8013b498, {CODEC_UTF16, 8, 0, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
+    {0x8013b4cc, {CODEC_UTF16, 8, 0, 0, F0100BBA00B23E000, 0x0100BBA00B23E000ull, "1.0.2"}},
     // ラッキードッグ１
     {0x8016837C, {CODEC_UTF16, 8, 0, 0, 0, 0x0100813014B3A000ull, "1.0.0"}},
     // オメガヴァンパイア

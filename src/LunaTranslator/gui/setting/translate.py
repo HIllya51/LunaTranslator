@@ -1866,7 +1866,9 @@ def leftwidget(self, ref: "list[CollapsibleBoxWithButton]"):
     )
     btn4.setToolTip("llama.cpp Launcher")
     btn4.clicked.connect(functools.partial(__showllamacpp, ref))
-    return [btn3, btn, btn2, IconButton(none=True), btn4]
+    lb = QLabel()
+    lb.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+    return [btn3, btn, btn2, lb, btn4]
 
 
 def __llmfold(self):

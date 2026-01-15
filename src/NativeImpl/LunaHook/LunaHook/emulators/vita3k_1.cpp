@@ -38,6 +38,25 @@ namespace
         buffer->from((char *)(address - 3));
     }
 
+    void PCSG00914(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto ptr = (char *)VITA3K::emu_arg(context)[hp1->offset] + hp1->padding;
+        std::string collect;
+        while (*ptr)
+        {
+            std::string s = ptr;
+            collect += s;
+            if (endWith(s, "\n"))
+            {
+                collect = collect.substr(0, collect.size() - 1);
+            }
+            ptr += s.size() + 1;
+        }
+        strReplace(collect, "\x87\x6e");
+        strReplace(collect, "\x87\x6c", "\x8e\xb5\x8a\x43");
+        strReplace(collect, "\x87\x6d", "\x8f\x74\x89\xcc");
+        buffer->from(collect);
+    }
     void PCSG00595(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         hp1->text_fun = nullptr;
@@ -1435,6 +1454,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8276B2CE, {CODEC_UTF16, 0x9, 0, 0, PCSG01034, "PCSG01034"}},
     // 新装版クリムゾン・エンパイア
     {0x800125AE, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00481"}},
+    // うたの☆プリンスさまっ♪Repeat LOVE
+    {0x8005A534, {FULL_STRING, 1, 0x20, PCSG00914, 0, "PCSG00914"}},
     // うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
     {0x80052B34, {0, 0, 0x24, PCSG00595, 0, "PCSG01081"}},
     // スカーレッドライダーゼクス
