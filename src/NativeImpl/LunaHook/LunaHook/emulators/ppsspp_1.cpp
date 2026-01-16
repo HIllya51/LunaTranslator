@@ -501,7 +501,7 @@ namespace
         auto s = buffer->strA();
         s = s.substr(s.find("#n"));
         strReplace(s, "#n");
-        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
     }
     void NPJH50831_1(TextBuffer *buffer, HookParam *hp)
@@ -524,8 +524,25 @@ namespace
     {
         StringFilter(buffer, TEXTANDLEN("#n"));
         auto s = buffer->strA();
-        s = re::sub(s, R"((#[A-Za-z]+\[(\d*[.,])?\d+\])+)");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
+    }
+    void ULJM06131(TextBuffer *buffer, HookParam *hp)
+    {
+        ULJM05943F(buffer, hp);
+        auto s = buffer->strA();
+        if (s[0] == ' ')
+            s = s.substr(1);
+        buffer->from(s);
+    }
+    void ULJM06196(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        if (!endWith(buffer->strA(), "#n"))
+        {
+            return buffer->clear();
+        }
+        ULJM05943F(buffer, hp);
     }
     void ULJM05783(TextBuffer *buffer, HookParam *hp)
     {
@@ -1660,9 +1677,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88FB080, {0, 0, 0, 0, ULJM05867_1, "ULJM05867"}}, // TEXT
     {0x88FB0B8, {0, 0, 0, 0, ULJM05867_2, "ULJM05867"}}, // NAME
     // L.G.S～新説 封神演義～
-    {0x888A358, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME+TEXT
-    {0x88DB214, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // TEXT
-    {0x889E970, {0, 0, 0, 0, ULJM05943F, "ULJM06131"}}, // NAME
+    {0x888A358, {FULL_STRING, 0, 0, 0, ULJM06131, "ULJM06131"}}, // NAME+TEXT
+    {0x88AF9AC, {FULL_STRING, 1, 0, 0, ULJM06131, "ULJM06131"}}, // PROLOG+NAME+TEXT
     // 源狼 GENROH
     {0x888E494, {FULL_STRING, 0, 0, 0, ULJM06145, "ULJM06145"}}, // TEXT
     {0x890D51C, {FULL_STRING, 0, 0, 0, ULJM06145, "ULJM06145"}}, // 交易物语
@@ -1703,9 +1719,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 新装版クローバーの国のアリス～Wonderful Wonder World～
     {0x8875E50, {0, 1, 0, 0, 0, "NPJH50894"}},
     // Glass Heart Princess
-    {0x885FA30, {0, 0, 0, 0, ULJM05943F, "ULJM06196"}},
+    {0x885FA30, {FULL_STRING, 0, 0, 0, ULJM05943F, "ULJM06196"}},
+    {0x8921A74, {FULL_STRING, 0, 0, 0, ULJM06196, "ULJM06196"}},
     // Glass Heart Princess:PLATINUM
-    {0x885D4F0, {0, 0, 0, 0, ULJM05943F, "ULJM06309"}},
+    {0x885D4F0, {FULL_STRING, 0, 0, 0, ULJM05943F, "ULJM06309"}},
+    {0x8921BF8, {FULL_STRING, 0, 0, 0, ULJM06196, "ULJM06309"}},
     // ウィル・オ・ウィスプ ポータブル
     {0x885DD04, {0, 0, 0, 0, ULJM05943F, "ULJM05447"}},
     // 華鬼 ～恋い初める刻 永久の印～

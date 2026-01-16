@@ -25,6 +25,15 @@ res = [
             {"account": "mradermacher", "repo": "shisa-v2-mistral-nemo-12b-GGUF"},
         ],
     },
+    {
+        "series": "TranslateGemma",
+        "account": "google",
+        "repos": [
+            {"account": "bullerwins", "repo": "translategemma-4b-it-GGUF"},
+            {"account": "bullerwins", "repo": "translategemma-12b-it-GGUF"},
+            {"account": "bullerwins", "repo": "translategemma-27b-it-GGUF"},
+        ],
+    },
 ]
 import time
 

@@ -425,5 +425,155 @@
                 ]
             }
         ]
+    },
+    {
+        "series": "TranslateGemma",
+        "account": "google",
+        "repos": [
+            {
+                "account": "bullerwins",
+                "repo": "translategemma-4b-it-GGUF",
+                "models": [
+                    {
+                        "file": "translategemma-4b-it-Q3_K_L.gguf",
+                        "size": 2236100672,
+                        "timestamp": "2026-01-15T18:34:38",
+                        "sha256": "b67ec1f5578b8647f7d17410b4c219ef4bad6210e862f35d10908968c512e721"
+                    },
+                    {
+                        "file": "translategemma-4b-it-Q4_K_M.gguf",
+                        "size": 2489909312,
+                        "timestamp": "2026-01-15T18:34:38",
+                        "sha256": "7f7357c14abd9da4eb200b38b05da502cd6e10d7e1d403fbc9f78c19f3209b72"
+                    },
+                    {
+                        "file": "translategemma-4b-it-Q4_K_S.gguf",
+                        "size": 2377945152,
+                        "timestamp": "2026-01-15T18:34:38",
+                        "sha256": "44f0262d84e1572790e9c2e9bad4d4136625de786dab7945f1a4a3e17c97aa52"
+                    },
+                    {
+                        "file": "translategemma-4b-it-Q5_K_M.gguf",
+                        "size": 2829713472,
+                        "timestamp": "2026-01-15T18:34:38",
+                        "sha256": "3fd2255970d47ba85730c6d865ea23cd5eca9a67169b65dd4c90947e215928ce"
+                    },
+                    {
+                        "file": "translategemma-4b-it-Q5_K_S.gguf",
+                        "size": 2764607552,
+                        "timestamp": "2026-01-15T18:34:38",
+                        "sha256": "a36735d0852d512454ad8f5e3870a5be052e4cb90da9c7d61d1c500e4e23f613"
+                    },
+                    {
+                        "file": "translategemma-4b-it-Q6_K.gguf",
+                        "size": 3190755392,
+                        "timestamp": "2026-01-15T18:34:38",
+                        "sha256": "b8d7be5aa1720e95a5d59a50282efa01cfbd4efca94f6f224bd2ad4a0c68beb0"
+                    },
+                    {
+                        "file": "translategemma-4b-it-Q8_0.gguf",
+                        "size": 4130417472,
+                        "timestamp": "2026-01-15T18:34:38",
+                        "sha256": "75e70fb909803e68e5e0eaa22ee95881fc5fa4e55d8dfd6712b39e4983379345"
+                    }
+                ]
+            },
+            {
+                "account": "bullerwins",
+                "repo": "translategemma-12b-it-GGUF",
+                "models": [
+                    {
+                        "file": "translategemma-12b-it-Q3_K_L.gguf",
+                        "size": 6480201024,
+                        "timestamp": "2026-01-15T18:34:23",
+                        "sha256": "73e76c054259fe176fe111997670d98bafd9e39c7f1603c45d21d2dfb64fb32d"
+                    },
+                    {
+                        "file": "translategemma-12b-it-Q4_K_M.gguf",
+                        "size": 7300793664,
+                        "timestamp": "2026-01-15T18:34:23",
+                        "sha256": "9196d728812afbf5efc10b539298585725edc3a4ecc092c22fdde5bbaf41879e"
+                    },
+                    {
+                        "file": "translategemma-12b-it-Q4_K_S.gguf",
+                        "size": 6935348544,
+                        "timestamp": "2026-01-15T18:34:23",
+                        "sha256": "59b4ce52c8673db5476e7d80fb1de7830dbbfb3de254be2ae2194924636da68e"
+                    },
+                    {
+                        "file": "translategemma-12b-it-Q5_K_M.gguf",
+                        "size": 8445052224,
+                        "timestamp": "2026-01-15T18:34:23",
+                        "sha256": "fa1f1bf392d24f1aa6551a5e0f5128c698ed0611c2c8d583a6bb764267c8035f"
+                    },
+                    {
+                        "file": "translategemma-12b-it-Q5_K_S.gguf",
+                        "size": 8231978304,
+                        "timestamp": "2026-01-15T18:34:23",
+                        "sha256": "1212a7d7650358730ac51aea08002410f78344a7660f9ecc72691ccc1b95edfe"
+                    },
+                    {
+                        "file": "translategemma-12b-it-Q6_K.gguf",
+                        "size": 9660826944,
+                        "timestamp": "2026-01-15T18:34:23",
+                        "sha256": "bb867330f19324e4c82bef96ace5ce4bdcddd1ff1c49060828e74e453f97f954"
+                    },
+                    {
+                        "file": "translategemma-12b-it-Q8_0.gguf",
+                        "size": 12510227904,
+                        "timestamp": "2026-01-15T18:34:23",
+                        "sha256": "a1c57a783142858a6c992739793692cf9afbaaf738aa0993ada93fa9472ecbe1"
+                    }
+                ]
+            },
+            {
+                "account": "bullerwins",
+                "repo": "translategemma-27b-it-GGUF",
+                "models": [
+                    {
+                        "file": "translategemma-27b-it-Q3_K_L.gguf",
+                        "size": 14543477408,
+                        "timestamp": "2026-01-15T18:42:44",
+                        "sha256": "70fa50c334202a2b6f4ad2994f00808a04c3e8cf283f286b09c62bd6f222f486"
+                    },
+                    {
+                        "file": "translategemma-27b-it-Q4_K_M.gguf",
+                        "size": 16546704032,
+                        "timestamp": "2026-01-15T18:42:44",
+                        "sha256": "475bb629b999b4a197f5f0165503bc935a28e39a34cbeb32f73fc8b683deb5fa"
+                    },
+                    {
+                        "file": "translategemma-27b-it-Q4_K_S.gguf",
+                        "size": 15674071712,
+                        "timestamp": "2026-01-15T18:42:44",
+                        "sha256": "72f1925aa455b118ec26b499ac8ee191aa23e909716f9433a2f32e6b1ec91950"
+                    },
+                    {
+                        "file": "translategemma-27b-it-Q5_K_M.gguf",
+                        "size": 19271690912,
+                        "timestamp": "2026-01-15T18:21:48",
+                        "sha256": "f0643c3ca1780d81eb02e7d97bc7e169e14e2abe2500266bb042bc81e612978f"
+                    },
+                    {
+                        "file": "translategemma-27b-it-Q5_K_S.gguf",
+                        "size": 18767207072,
+                        "timestamp": "2026-01-15T18:42:44",
+                        "sha256": "fa6c3b83f63ab616fd94be81d10571f312be721d0ebee20c4a8117278dce4843"
+                    },
+                    {
+                        "file": "translategemma-27b-it-Q6_K.gguf",
+                        "size": 22166989472,
+                        "timestamp": "2026-01-15T18:21:48",
+                        "sha256": "6abe01bb29c6e091c0bfd4c330435a36a8b2098dc04599403a20de6d7ab2dc68"
+                    },
+                    {
+                        "file": "translategemma-27b-it-Q8_0.gguf",
+                        "size": 28707987488,
+                        "timestamp": "2026-01-15T18:21:48",
+                        "sha256": "7fd73133a763b58596a45852007452c092fd2aa06ba2e0828640f8c203cb8fbf"
+                    }
+                ]
+            }
+        ]
     }
 ]

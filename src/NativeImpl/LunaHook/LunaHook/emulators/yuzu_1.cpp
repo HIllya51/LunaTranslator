@@ -669,6 +669,10 @@ namespace
         last = s;
         F010027300A660000(buffer, hp);
     }
+    void f01006B000A666000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        StringCharReplacer(buffer, TEXTANDLEN("#n"), '\n');
+    }
     void F0100DE200C0DA000(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("#n"));
@@ -3305,8 +3309,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // The Legend of Zelda: Link's Awakening
     {0x80f57910, {CODEC_UTF8, 1, 0, 0, 0, 0x01006BB00C6F0000ull, "1.0.1"}}, // Main Text
     // Cendrillon palikA // 1.0.0 & 1.0.1
-    {0x8001ab8c, {CODEC_UTF8, 2, 0, 0, f01006B000A666000, 0x01006B000A666000ull, nullptr}}, // name
-    {0x80027b30, {CODEC_UTF8, 0, 0, 0, f01006B000A666000, 0x01006B000A666000ull, nullptr}}, // dialogue
+    {0x8001ab8c, {CODEC_UTF8, 2, 0, 0, f01006B000A666000, 0x01006B000A666000ull, nullptr}},               // name
+    {0x80013418, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, f01006B000A666000, 0x01006B000A666000ull, nullptr}}, // prolog+dialogue
     // Crayon Shin-chan Shiro of Coal Town
     {0x83fab4bc, {CODEC_UTF16, 0, 0, ReadUnityString, F01007B601C608000, 0x01007B601C608000ull, "1.0.1"}},
     // 風雨来記4
