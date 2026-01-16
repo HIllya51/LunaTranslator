@@ -93,13 +93,13 @@ runtime_for_xp = tuple(sys.version_info)[:2] == (3, 4)
 runtime_for_win10 = tuple(sys.version_info)[:2] >= (3, 9)
 
 if runtime_for_win10:
-    runtimedir = "runtime31264"
+    runtimedir = "runtime3.13-64"
 elif runtime_for_xp:
-    runtimedir = "runtime3432"
+    runtimedir = "runtime3.4-32"
 elif runtime_bit_64:
-    runtimedir = "runtime3764"
+    runtimedir = "runtime3.7-64"
 else:
-    runtimedir = "runtime3732"
+    runtimedir = "runtime3.7-32"
 runtimedir = "files/" + runtimedir
 sys_le_xp = int(platform.version().split(".")[0]) <= 5
 

@@ -53,13 +53,13 @@ copycheck("./LunaTranslator", targetdir)
 copycheck(r".\files", targetdir)
 copycheck(pyrt, targetdir + "/files")
 if target == "win10":
-    runtimedir = "runtime31264"
+    runtimedir = "runtime3.13-64"
 elif target == "winxp":
-    runtimedir = "runtime3432"
+    runtimedir = "runtime3.4-32"
 elif arch == "x64":
-    runtimedir = "runtime3764"
+    runtimedir = "runtime3.7-64"
 else:
-    runtimedir = "runtime3732"
+    runtimedir = "runtime3.7-32"
 os.rename(targetdir + "/files/runtime", targetdir + "/files/" + runtimedir)
 try:
     shutil.rmtree(rf"{targetdir}\files\{baddll}")

@@ -23,15 +23,15 @@ extern "C"
 }
 
 #ifdef WIN10ABOVE
-#define RUNTIME L"runtime31264"
+#define RUNTIME L"runtime3.13-64"
 #else
 #ifdef WINXP
-#define RUNTIME L"runtime3432"
+#define RUNTIME L"runtime3.4-32"
 #else
 #ifdef _WIN64
-#define RUNTIME L"runtime3764"
+#define RUNTIME L"runtime3.7-64"
 #else
-#define RUNTIME L"runtime3732"
+#define RUNTIME L"runtime3.7-32"
 #endif
 #endif
 #endif
