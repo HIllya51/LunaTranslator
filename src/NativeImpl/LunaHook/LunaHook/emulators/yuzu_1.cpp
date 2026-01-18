@@ -2807,6 +2807,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Apathy 鳴神学園 霊怪記
+    {0x80074E60, {FULL_STRING | CODEC_UTF16, 0, 0, 0, F010042300C4F6000_1, 0x01005FE025F22000ull, "1.0.0"}},
+    {0x80075A60, {FULL_STRING | CODEC_UTF16, 0, 0, 0, F010042300C4F6000_1, 0x01005FE025F22000ull, "1.0.1"}},
     // Neon Clash Echoes of the Lost
     {0x81C3F8AC, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100A19025D44000, 0x0100A19025D44000ull, "1.0.0"}},
     // Please Be Happy
@@ -3434,6 +3437,12 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // オランピアソワレ
     {0x8002ad60, {CODEC_UTF8, 31, 0, 0, F0100C310110B4000, 0x0100F9D00C186000ull, "1.0.0"}},
     {0x8004b9e0, {CODEC_UTF8, 1, 0, 0, F0100C310110B4000, 0x0100F9D00C186000ull, "1.0.0"}},
+    // オランピアソワレ Catharsis
+    {0x80019C70, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.0"}},
+    {0x8015B810, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.0"}},
+    {0x80061e14, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.0"}},
+    {0x80019CA0, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.1"}},
+    {0x8003657C, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.1"}},
     // 月影の鎖 -錯乱パラノイア-
     {0x21801c, {0, 2, 0, 0, F0100F7401AA74000, 0x0100F7401AA74000ull, "1.0.0"}}, // text,sjis
     {0x228fac, {0, 1, 0, 0, F0100F7401AA74000, 0x0100F7401AA74000ull, "1.0.0"}}, // choices

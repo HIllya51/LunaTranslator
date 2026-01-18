@@ -17,6 +17,7 @@ LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，�
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01005FE025F22000 | Apathy 鳴神学園 霊怪記 |
 |  | 0100A19025D44000 | Neon Clash Echoes of the Lost |
 |  | 01003CA01F3AE000 | Please Be Happy |
 |  | 010045702355C000 | 星空鉄道とシロの旅 |
@@ -191,6 +192,7 @@ LunaTranslator 透過模擬器支援大量遊戲。對於未支援的遊戲，�
 |  | 0100EDD018032000 | Harvestella |
 |  | 0100F8A017BAA000 | 千の刃濤、桃花染の皇姫 |
 |  | 0100F9D00C186000 | オランピアソワレ |
+|  | 0100D8002067A000 | オランピアソワレ Catharsis |
 |  | 0100F7401AA74000 | 月影の鎖 -錯乱パラノイア- |
 |  | 0100F3400332C000 | Xenoblade Chronicles 2 |
 |  | 0100FB7019ADE000 | Kanon |

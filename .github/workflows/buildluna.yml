@@ -2,11 +2,11 @@ name: _
 
 on:
   workflow_call:
-    inputs: 
-      createrelease:
-        type: boolean
-        default: false
-        required: false 
+    # inputs: 
+    #   createrelease:
+    #     type: boolean
+    #     default: false
+    #     required: false 
 jobs:
   buildall:
     runs-on: windows-latest
@@ -118,32 +118,3 @@ jobs:
           name: signed
           path: signed
 
-
-  loadversion:
-    if: ${{inputs.createrelease}}
-    runs-on: windows-latest
-    outputs:
-      version: ${{ steps.loadversion.outputs.version }}
-    steps:
-      - uses: actions/checkout@v4
-      - id: loadversion
-        run: python src/scripts/build_lunatranslator.py loadversion | Out-File -FilePath $Env:GITHUB_OUTPUT -Encoding utf8 -Append
-
-  release:
-    if: ${{inputs.createrelease}}
-    runs-on: windows-latest
-    needs: [signandrepack,loadversion]
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-            path: build
-      - uses: softprops/action-gh-release@v2.2.2
-        with:
-          tag_name: ${{ needs.loadversion.outputs.version }}
-          files: |
-            build/signed/LunaTranslator_x86_winxp.zip
-            build/signed/LunaTranslator_x86_win7.zip
-            build/signed/LunaTranslator_x64_win7.zip
-            build/signed/LunaTranslator_x64_win10.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
