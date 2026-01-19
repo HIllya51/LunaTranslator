@@ -60,7 +60,9 @@ class Response:
         try:
             return self.content.decode(self.charset)
         except:
-            raise exceptions.RequestException("unenable to decode with {}".format(self.charset))
+            raise exceptions.RequestException(
+                "unenable to decode with {}".format(self.charset)
+            )
 
     @property
     def charset(self):
@@ -170,7 +172,8 @@ class Requester_common:
 
     def _parseheader(self, headers: CaseInsensitiveDict, cookies: dict):
         _x = []
-
+        if headers is None:
+            headers = {}
         if cookies:
             cookie = self._parsecookie(cookies)
             headers.update({"Cookie": cookie})

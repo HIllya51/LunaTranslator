@@ -17,6 +17,7 @@ from ctypes import (
 
 libcurl = CDLL(gobject.GetDllpath(("libcurl.dll", "libcurl-x64.dll")))
 
+libcurl_Accept_Encoding = "gzip, deflate, br, zstd"
 
 class curl_ws_frame(Structure):
     _fields_ = [

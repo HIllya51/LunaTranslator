@@ -4,7 +4,7 @@ from urllib.parse import urlsplit
 import time
 
 
-class WebSocket:
+class WebSocket(requests.Requester_common):
     def send(self, data):
         if isinstance(data, str):
             _t = CURLWS_TEXT
@@ -65,7 +65,9 @@ class WebSocket:
         elif scheme == "ws":
             ishttps = False
         else:
-            raise requests.exceptions.RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
+            raise requests.exceptions.RequestException(
+                "unknown scheme {} for invalid url {}".format(scheme, url)
+            )
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -91,7 +93,7 @@ class WebSocket:
             curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 2)
 
     def connect(
-        self, url: str, header=None, http_proxy_host=None, http_proxy_port=None
+        self, url: str, header: dict = None, http_proxy_host=None, http_proxy_port=None
     ):
         https, server, port, path = self._parseurl2serverandpath(url)
         if server == "127.0.0.1":
@@ -105,9 +107,15 @@ class WebSocket:
         self._set_verify(self.curl, False)
 
         lheaders = auto_curl_slist()
-        if header:
-            for _ in header:
-                lheaders.append(_)
+        for _ in self._parseheader(header, None):
+            lheaders.append(_)
         curl_easy_setopt(self.curl, CURLoption.HTTPHEADER, lheaders.ptr)
 
+        encoding: str = (header if header else {}).get(
+            "Accept-Encoding", libcurl_Accept_Encoding
+        )
+        if encoding:
+            curl_easy_setopt(
+                self.curl, CURLoption.ACCEPT_ENCODING, encoding.encode("utf8")
+            )
         curl_easy_perform(self.curl)

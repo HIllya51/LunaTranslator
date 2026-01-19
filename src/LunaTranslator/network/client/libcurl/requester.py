@@ -98,8 +98,6 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.COOKIE, cookie.encode("utf8"))
         return lheaders
 
-    Accept_Encoding = "gzip, deflate, br, zstd"
-
     def request_impl(
         self,
         method,
@@ -132,7 +130,7 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.TIMEOUT_MS, sum(timeout))
         if method == "HEAD":
             curl_easy_setopt(curl, CURLoption.NOBODY, 1)
-        encoding: str = headers.get("Accept-Encoding", self.Accept_Encoding)
+        encoding: str = headers.get("Accept-Encoding", libcurl_Accept_Encoding)
         if encoding:
             curl_easy_setopt(curl, CURLoption.ACCEPT_ENCODING, encoding.encode("utf8"))
         curl_easy_setopt(curl, CURLoption.CUSTOMREQUEST, method.encode("utf8"))
