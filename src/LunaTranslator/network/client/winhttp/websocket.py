@@ -57,7 +57,7 @@ class WebSocket:
         elif scheme == "ws":
             ishttps = False
         else:
-            raise RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
+            raise requests.exceptions.RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -69,7 +69,7 @@ class WebSocket:
             else:
                 port = INTERNET_DEFAULT_HTTP_PORT
         else:
-            raise RequestException("invalid url " + url)
+            raise requests.exceptions.RequestException("invalid url " + url)
         if len(query):
             path += "?" + query
         return ishttps, server, port, path

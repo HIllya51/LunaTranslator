@@ -1,5 +1,8 @@
 import pytz
-import websocket
+
+# import websocket
+# 不知道为什么，curl不发送headers。回头再研究吧。
+from network.client.winhttp.websocket import WebSocket
 from datetime import datetime
 import time
 import re
@@ -201,7 +204,8 @@ def transferMsTTSData(ssml, proxy_: "dict[str, str]"):
         ip, port = proxy.split(":")
     else:
         ip = port = None
-    ws = websocket.create_connection(
+    ws = WebSocket()
+    ws.connect(
         "{}&Sec-MS-GEC={}&Sec-MS-GEC-Version={}&ConnectionId={}".format(
             WSS_URL, DRM.generate_sec_ms_gec(), SEC_MS_GEC_VERSION, connect_id()
         ),
@@ -225,7 +229,7 @@ def transferMsTTSData(ssml, proxy_: "dict[str, str]"):
     ws.send(ssml_headers_plus_data(connect_id(), date, ssml))
 
     end_resp_pat = re.compile("Path:turn.end")
-    
+
     def __():
         while True:
             response = ws.recv()
@@ -249,4 +253,5 @@ def transferMsTTSData(ssml, proxy_: "dict[str, str]"):
             else:
                 break
         ws.close()
+
     return TTSResult(__(), type="audio/mpeg")
