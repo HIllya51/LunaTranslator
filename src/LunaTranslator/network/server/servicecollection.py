@@ -316,6 +316,14 @@ class BasePage(HTTPHandler):
         return FileResponse(r"LunaTranslator\htmlcode\service\basepage.html")
 
 
+class TextInput(HTTPHandler):
+    path = "/api/textinput"
+
+    def parse(self, _: RequestInfo):
+        text = _.query.get("text")
+        gobject.base.textgetmethod(text, is_auto_run=False)
+
+
 def registerall(service: TCPService):
     service.register(APISearchWord)
     service.register(APImecab)
@@ -335,3 +343,4 @@ def registerall(service: TCPService):
     service.register(internalservicetranshistws)
     service.register(TextOutputOrigin)
     service.register(TextOutputTrans)
+    service.register(TextInput)

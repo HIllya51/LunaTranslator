@@ -68,6 +68,10 @@
 
     列出目前可用的翻譯器
 
+1. #### /api/textinput
+
+    必須指定參數 `text`  
+
 
 ### WebSocket 服務
 

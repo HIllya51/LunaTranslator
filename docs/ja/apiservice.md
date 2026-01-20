@@ -72,6 +72,10 @@
 1. #### /api/list/translator  
     現在利用可能な翻訳ツールを一覧表示します  
 
+1. #### /api/textinput
+
+    パラメータ `text` の指定が必須です  
+
 ### WebSocketサービス
 
 1.  #### /api/ws/text/origin

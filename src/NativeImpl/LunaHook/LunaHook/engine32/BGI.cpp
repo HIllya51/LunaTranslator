@@ -1163,11 +1163,7 @@ namespace
       {
         result = result.substr(0, result.size() - 1);
       }
-      if (startWith(result, "\x04"))
-      {
-        result = result.substr(1);
-      }
-      buffer->from(result);
+      buffer->from(strReplace(result, "\x04"));
     };
 
     hp.split = stackoffset(8); // pseudo arg8

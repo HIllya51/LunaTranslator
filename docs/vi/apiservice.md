@@ -74,6 +74,11 @@
 
     Liệt kê tất cả các công cụ dịch thuật hiện có.
 
+1. #### /api/textinput
+
+    Tham số `text` phải được chỉ định  
+
+
 ### Dịch vụ WebSocket
 
 1.  #### /api/ws/text/origin

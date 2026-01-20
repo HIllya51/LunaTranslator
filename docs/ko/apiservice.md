@@ -75,6 +75,10 @@
     현재 사용 가능한 번역기 목록을 출력합니다.
 
 
+1. #### /api/textinput
+
+    매개변수 `text`를 반드시 지정해야 합니다  
+
 ### WebSocket 서비스
 
 1.  #### /api/ws/text/origin

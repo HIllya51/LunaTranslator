@@ -75,6 +75,10 @@
 
     List all currently available translation tools  
 
+1. #### /api/textinput
+
+    Parameter `text` must be specified  
+
 ### WebSocket Service
 
 1.  #### /api/ws/text/origin

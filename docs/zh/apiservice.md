@@ -74,6 +74,10 @@
 
     列出当前可用的翻译器
 
+1. #### /api/textinput
+
+    必须指定参数`text`
+
 
 ### WebSocket服务
 
