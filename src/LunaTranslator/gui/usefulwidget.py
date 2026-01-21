@@ -249,20 +249,17 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
 
         if not w:
             return
-        if index.row() == 0:
-            # 浏览器插件设置的第一行的switch谜之显示错位
-            class __(QWidget):
-                def __init__(self1):
-                    super().__init__()
-                    self1.once = True
 
-                def showEvent(self1, _):
-                    if self1.once:
-                        self1.once = False
-                        self1.layout().invalidate()
+        class __(QWidget):
+            def __init__(self1):
+                super().__init__()
+                self1.once = True
 
-        else:
-            __ = QWidget
+            def showEvent(self1, _):
+                if self1.once:
+                    self1.once = False
+                    self1.layout().invalidate()
+
         __w = __()
         __l = QHBoxLayout(__w)
         __l.setContentsMargins(0, 0, 0, 0)
