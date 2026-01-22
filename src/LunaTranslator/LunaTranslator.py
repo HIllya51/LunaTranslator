@@ -858,7 +858,7 @@ class BASEOBJECT(QObject):
         return checkmd5reloadmodule(path1, "posts." + path).POSTSOLVE(text)
 
     def ttsrepair(self, text, usedict: dict):
-        if usedict.get("tts_repair", False):
+        if usedict.get("tts_repair", globalconfig["ttscommon"].get("tts_repair", False)):
             if usedict.get("ttsprocess_use", False):
                 try:
                     text = self.ttsprocess(usedict.get("ttsprocess_path"), text)
@@ -867,8 +867,7 @@ class BASEOBJECT(QObject):
             text = parsemayberegexreplace(usedict.get("tts_repair_regex", []), text)
         return text
 
-    def matchwhich(self, dic: "dict[str, dict[str, str]]", res: str, isorigin: bool):
-
+    def matchwhich(self, dic: "list[dict[str, str]]", res: str, isorigin: bool):
         for item in dic:
             range_ = item.get("range", 0)
             if range_ and ((range_ == 1) ^ isorigin):
@@ -903,8 +902,8 @@ class BASEOBJECT(QObject):
                         return item
         return None
 
-    def ttsskip(self, text, usedict, isorigin) -> dict:
-        if usedict.get("tts_skip", False):
+    def ttsskip(self, text, usedict: dict, isorigin) -> dict:
+        if usedict.get("tts_skip", globalconfig["ttscommon"].get("tts_skip", False)):
             return self.matchwhich(usedict.get("tts_skip_regex", []), text, isorigin)
         return None
 

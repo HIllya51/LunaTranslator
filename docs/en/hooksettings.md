@@ -5,7 +5,7 @@
 1. ####  Code Page
 
     ::: info
-    This setting is meaningful only when the text extracted from the game is a **multi-byte string with an unspecified encoding within the HOOK engine**. When the HOOK engine has already specified a code page, or the text is a **wide character string** or **UTF32** string, this setting has no meaning.
+    This setting is meaningful only when the text extracted from the game is a **multi-byte string with an unspecified encoding within the HOOK engine**. When the HOOK engine has already specified a code page, or the text is a **UTF-16** or **UTF-32** string, this setting has no meaning.
     :::
     This setting generally does not need to be modified. It is only necessary when some old engines (e.g., Yuris) may have GBK/BIG5/UTF8 in their official Chinese versions. If you cannot find the correct text, please send an [issue](https://lunatranslator.org/Resource/game_support) directly to me; modifying this setting is usually futile.
 

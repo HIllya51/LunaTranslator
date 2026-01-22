@@ -502,6 +502,18 @@ namespace
         s = re::sub(s, LR"([\r\n]+)");
         buffer->from(s);
     }
+    void F0100BDD01AAE4000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
+        s = re::sub(s, "#Color\\[[\\d]+\\]");
+        if (hp->type & CODEC_UTF8)
+            s = re::sub(s, u8"(　)*#n(　)*");
+        else
+            s = re::sub(s, R"((\x81\x40)*#n(\x81\x40)*)");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
+        buffer->from(s);
+    }
     void F010048101D49E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -1156,12 +1168,9 @@ namespace
     }
     void F010032300C562000(TextBuffer *buffer, HookParam *hp)
     {
+        F0100BDD01AAE4000(buffer, hp);
         auto s = buffer->strA();
         static std::string last;
-        s = re::sub(s, R"(#\w+\[\d+\])");
-        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
-        s = re::sub(s, R"(#\w+(\[.+?\])?)");
-        s = re::sub(s, u8"　");
         if (last == s)
             return buffer->clear();
         last = s;
@@ -1169,10 +1178,9 @@ namespace
     }
     void F010088B01A8FC000(TextBuffer *buffer, HookParam *hp)
     {
+        F0100BDD01AAE4000(buffer, hp);
         auto s = buffer->strA();
         static std::string last;
-        s = re::sub(s, R"(#\w+(\[.+?\])?)");
-        s = re::sub(s, u8"　");
         if (last == s)
             return buffer->clear();
         last = s;
@@ -1553,6 +1561,14 @@ namespace
         }
         buffer->from(s);
     }
+    void t0100D8002067A000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = (CHAR *)YUZU::emu_arg(context)[1];
+        while (*address)
+            address -= 1;
+        address += 1;
+        buffer->from(address);
+    }
     void T0100DB300B996000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto address = YUZU::emu_arg(context)[8] + 1;
@@ -1603,26 +1619,16 @@ namespace
     {
         StringCharReplacer(buffer, TEXTANDLEN("#n"), '\n');
     }
-    void F0100BDD01AAE4000(TextBuffer *buffer, HookParam *hp)
+    void f0100D8002067A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, R"(#\w+\[\d+\])");
-        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
-        if (hp->type & CODEC_UTF8)
-            s = re::sub(s, u8R"(#n(　)*)");
-        else
-            s = re::sub(s, R"(#n(\x81\x40)*)");
-        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
-        buffer->from(s);
-    }
-    void F0100C310110B4000(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        s = re::sub(s, R"(#\w+\[\d+\])");
-        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
-        s = re::sub(s, "#Color\\[[\\d]+\\]");
-        s = re::sub(s, u8"(　)*#n(　)*");
-        buffer->from(s);
+        if (s[0] == 'A')
+            return buffer->clear();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        F0100BDD01AAE4000(buffer, hp);
     }
     void F010003F003A34000(TextBuffer *buffer, HookParam *hp)
     {
@@ -2322,13 +2328,6 @@ namespace
         s = re::sub(s, LR"(<.+?>)");
         buffer->from(s);
     }
-    void F01005AF00E9DC000(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        s = re::sub(s, R"(#n)");
-        s = re::sub(s, R"(#\w+(\[.+?\])?)");
-        buffer->from(s);
-    }
     void F010031C01F410000(TextBuffer *buffer, HookParam *hp)
     {
 
@@ -2888,7 +2887,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // シロガネｘスピリッツ！
     {0x80497710, {CODEC_UTF8, 0, 0, 0, F0100D4800C476000, 0x010056401B548000ull, "1.0.0"}},
     // 花咲ワークスプリング！
-    {0x8001DFB4, {0, 0, 0, 0, F01005AF00E9DC000, 0x0100E7701A40C000ull, "1.0.0"}},
+    {0x8001DFB4, {0, 0, 0, 0, F0100BDD01AAE4000, 0x0100E7701A40C000ull, "1.0.0"}},
     // ボク姫PROJECT
     {0x810D7930, {CODEC_UTF16, 0, 0X14, 0, F01008D20101DE000, 0x01008D20101DE000ull, "1.0.0"}},
     {0x810D5260, {CODEC_UTF16, 0, 0X14, 0, F01008D20101DE000, 0x01008D20101DE000ull, "1.0.1"}},
@@ -3281,23 +3280,23 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // キスベル
     {0x8049d958, {CODEC_UTF8, 1, 0, 0, F01006590155AC000, 0x0100BD7015E6C000ull, "1.0.0"}}, // text
     // ピオフィオーレの晩鐘 -Ricordo-  CN
-    {0x80015fa0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerMsg
-    {0x80050d50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerName
-    {0x8002F430, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
-    {0x8002F4F0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
-    {0x8002F540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
+    {0x80015fa0, {CODEC_UTF8, 2, 0, 0, F0100BDD01AAE4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerMsg
+    {0x80050d50, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerName
+    {0x8002F430, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
+    {0x8002F4F0, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
+    {0x8002F540, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x0100C310110B4000ull, "1.0.0"}}, // handlerPrompt
     // ピオフィオーレの晩鐘 -Ricordo-
-    {0x800141d0, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerMsg
-    {0x8004ce20, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerName
-    {0x8002be90, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
-    {0x8002bf50, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
-    {0x8002bfa0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
+    {0x800141d0, {CODEC_UTF8, 2, 0, 0, F0100BDD01AAE4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerMsg
+    {0x8004ce20, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerName
+    {0x8002be90, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
+    {0x8002bf50, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
+    {0x8002bfa0, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005F700DC56000ull, "1.0.0"}}, // handlerPrompt
     // ピオフィオーレの晩鐘 -Episodio1926-
-    {0x80019630, {CODEC_UTF8, 2, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerMsg
-    {0x8005B7B0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerName
-    {0x80039230, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
-    {0x800392F0, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
-    {0x80039340, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
+    {0x80019630, {CODEC_UTF8, 2, 0, 0, F0100BDD01AAE4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerMsg
+    {0x8005B7B0, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerName
+    {0x80039230, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
+    {0x800392F0, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
+    {0x80039340, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01009E30120F4000ull, "1.0.0"}}, // handlerPrompt
     // Pokémon Let’s Go, Pikachu!
     {0x8067d9fc, {CODEC_UTF16, 0, 0, 0, F010003F003A34000, 0x010003F003A34000ull, "1.0.2"}}, // Text
     // イケメン戦国◆時をかける恋　新たなる出逢い
@@ -3435,14 +3434,16 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8003fc90, {CODEC_UTF8, 1, 0, 0, 0, 0x0100F8A017BAA000ull, "1.0.0"}}, // text1
     {0x8017a740, {CODEC_UTF8, 0, 0, 0, 0, 0x0100F8A017BAA000ull, "1.0.0"}}, // text2
     // オランピアソワレ
-    {0x8002ad60, {CODEC_UTF8, 31, 0, 0, F0100C310110B4000, 0x0100F9D00C186000ull, "1.0.0"}},
-    {0x8004b9e0, {CODEC_UTF8, 1, 0, 0, F0100C310110B4000, 0x0100F9D00C186000ull, "1.0.0"}},
+    {0x8002ad60, {CODEC_UTF8, 31, 0, 0, F0100BDD01AAE4000, 0x0100F9D00C186000ull, "1.0.0"}},
+    {0x8004b9e0, {CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, 0x0100F9D00C186000ull, "1.0.0"}},
     // オランピアソワレ Catharsis
-    {0x80019C70, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.0"}},
-    {0x8015B810, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.0"}},
-    {0x80061e14, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.0"}},
-    {0x80019CA0, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.1"}},
-    {0x8003657C, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100C310110B4000, 0x0100D8002067A000ull, "1.0.1"}},
+    {0x80019C70, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100BDD01AAE4000, 0x0100D8002067A000ull, "1.0.0"}},
+    {0x8015B810, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100BDD01AAE4000, 0x0100D8002067A000ull, "1.0.0"}},
+    {0x80061e14, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100BDD01AAE4000, 0x0100D8002067A000ull, "1.0.0"}},
+    {0x80110C44, {CODEC_UTF8 | FULL_STRING, 1, 0, t0100D8002067A000, f0100D8002067A000, 0x0100D8002067A000ull, "1.0.0"}},
+    {0x80019CA0, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100BDD01AAE4000, 0x0100D8002067A000ull, "1.0.1"}},
+    {0x8003657C, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F0100BDD01AAE4000, 0x0100D8002067A000ull, "1.0.1"}},
+    {0x80112668, {CODEC_UTF8 | FULL_STRING, 1, 0, t0100D8002067A000, f0100D8002067A000, 0x0100D8002067A000ull, "1.0.1"}},
     // 月影の鎖 -錯乱パラノイア-
     {0x21801c, {0, 2, 0, 0, F0100F7401AA74000, 0x0100F7401AA74000ull, "1.0.0"}}, // text,sjis
     {0x228fac, {0, 1, 0, 0, F0100F7401AA74000, 0x0100F7401AA74000ull, "1.0.0"}}, // choices
@@ -3638,9 +3639,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8003c184, {0, 0, 0, 0, F0100BDD01AAE4000, 0x01008C100C572000ull, "1.0.0"}}, // dialogue
     {0x8001f6d0, {0, 0, 0, 0, F0100BDD01AAE4000, 0x01008C100C572000ull, "1.0.0"}}, // prompt
     // 終遠のヴィルシュ -ErroR:salvation- //1.0.0 & 1.0.1
-    {0x8001f594, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, 0x01005B9014BE0000ull, "1.0.0"}}, // dialog
-    {0x8001f668, {CODEC_UTF8, 0, 0x1C, 0, F0100C310110B4000, 0x01005B9014BE0000ull, "1.0.0"}}, // center
-    {0x8003d540, {CODEC_UTF8, 0, 0, 0, F0100C310110B4000, 0x01005B9014BE0000ull, "1.0.0"}},    // choice
+    {0x8001f594, {CODEC_UTF8, 0, 0x1C, 0, F0100BDD01AAE4000, 0x01005B9014BE0000ull, "1.0.0"}}, // dialog
+    {0x8001f668, {CODEC_UTF8, 0, 0x1C, 0, F0100BDD01AAE4000, 0x01005B9014BE0000ull, "1.0.0"}}, // center
+    {0x8003d540, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005B9014BE0000ull, "1.0.0"}},    // choice
     // 終遠のヴィルシュ -EpiC:lycoris-
     {0x8002bf6c, {CODEC_UTF8, 0, 0x1c, 0, FF010061300DF48000_2, 0x01004D601B0AA000ull, "1.0.1"}},
     {0x8004e720, {CODEC_UTF8, 1, 0, 0, FF010061300DF48000_2, 0x01004D601B0AA000ull, "1.0.1"}},
@@ -3962,10 +3963,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8187882c, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.1"}},
     {0x817b8f64, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.1"}},
     // 時計仕掛けのアポカリプス
-    {0x8001d9c4, {CODEC_UTF8, 0, 0x1c, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
-    {0x8004ca84, {CODEC_UTF8, 1, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
-    {0x8005b304, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
-    {0x8005b310, {CODEC_UTF8, 0, 0, 0, F01005AF00E9DC000, 0x01005AF00E9DC000ull, "1.0.0"}},
+    {0x8001d9c4, {CODEC_UTF8, 0, 0x1c, 0, F0100BDD01AAE4000, 0x01005AF00E9DC000ull, "1.0.0"}},
+    {0x8004ca84, {CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, 0x01005AF00E9DC000ull, "1.0.0"}},
+    {0x8005b304, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005AF00E9DC000ull, "1.0.0"}},
+    {0x8005b310, {CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005AF00E9DC000ull, "1.0.0"}},
     // Lover Pretend
     {0x80034ad0, {CODEC_UTF8, 0, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
     {0x8004e950, {CODEC_UTF8, 1, 0, 0, F010032300C562000, 0x010032300C562000ull, "1.0.0"}},
@@ -3998,8 +3999,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x80122a4c, {CODEC_UTF16, 0, 0, T01000BB01CB8A000, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
     {0x800ba088, {CODEC_UTF16, 0, 0, T01000BB01CB8A000, F01000BB01CB8A000, 0x01000BB01CB8A000ull, "1.0.0"}},
     // 燃えよ！ 乙女道士 ～華遊恋語～
-    {0x8005c698, {CODEC_UTF8, 1, 0x20, 0, F01005AF00E9DC000, 0x01001BA01EBFC000ull, "1.0.0"}},
-    {0x80051cd0, {CODEC_UTF8, 1, 0, 0, F01005AF00E9DC000, 0x01001BA01EBFC000ull, "1.0.0"}},
+    {0x8005c698, {CODEC_UTF8, 1, 0x20, 0, F0100BDD01AAE4000, 0x01001BA01EBFC000ull, "1.0.0"}},
+    {0x80051cd0, {CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, 0x01001BA01EBFC000ull, "1.0.0"}},
     // planetarian～雪圏球～
     {0x800F32A0, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, 0, 0x010031C01F410000ull, "1.0.0"}}, // 各种语言一起都提取出来了
     // planetarian～ちいさなほしのゆめ＆雪圏球～ パッケージ版 英文版
@@ -4334,7 +4335,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 幻想牢獄のカレイドスコープ２
     {0x800C4C1C, {CODEC_UTF8, 0, 0, 0, f0100451020714000, 0x0100451020714000ull, "1.0.0"}},
     // 戦場の円舞曲
-    {0x80040010, {0, 0, 0, 0, F01005AF00E9DC000, 0x01002080191CE000ull, "1.0.0"}},
+    {0x80040010, {0, 0, 0, 0, F0100BDD01AAE4000, 0x01002080191CE000ull, "1.0.0"}},
     // 夏目友人帳 ～葉月の記～
     {0x8187D0CC, {CODEC_UTF16, 0, 0X14, 0, F0100DC1021662000, 0x0100DC1021662000ull, "1.0.0"}},
     {0x8188DA38, {CODEC_UTF16, 0, 0X14, 0, F0100DC1021662000, 0x0100DC1021662000ull, "1.0.1"}},

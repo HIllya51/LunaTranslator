@@ -5,7 +5,7 @@
 1. #### Mã Trang (Code Page)
 
     ::: info
-    Cài đặt này chỉ có ý nghĩa khi văn bản được trích xuất từ trò chơi là một **chuỗi đa byte với mã hóa không xác định trong engine HOOK**. Khi engine HOOK đã xác định mã trang, hoặc văn bản là một **chuỗi ký tự rộng** hoặc chuỗi **UTF32**, cài đặt này không có ý nghĩa.
+    Cài đặt này chỉ có ý nghĩa khi văn bản được trích xuất từ trò chơi là một **chuỗi đa byte với mã hóa không xác định trong engine HOOK**. Khi engine HOOK đã xác định mã trang, hoặc văn bản là một **UTF-16** hoặc chuỗi **UTF-32**, cài đặt này không có ý nghĩa.
     :::
     Thông thường không cần thay đổi cài đặt này. Chỉ cần thiết khi một số engine cũ (ví dụ: Yuris) có thể sử dụng GBK/BIG5/UTF8 trong các phiên bản tiếng Trung chính thức. Nếu bạn không thể tìm thấy văn bản chính xác, vui lòng gửi một [vấn đề](https://lunatranslator.org/Resource/game_support) trực tiếp cho tôi; việc thay đổi cài đặt này thường không hiệu quả.
 

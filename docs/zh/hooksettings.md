@@ -5,7 +5,7 @@
 1. #### 代码页
 
     ::: info
-    这一设置当且仅当从游戏中提取的文本是**HOOK引擎内部未指定编码**的**多字节字符串**时才有意义，当HOOK引擎内部已经指定了代码页，或者文本是**宽字符字符串**或者**UTF32**字符串时，这一设置没有任何意义
+    这一设置当且仅当从游戏中提取的文本是**HOOK引擎内部未指定编码**的**多字节字符串**时才有意义，当HOOK引擎内部已经指定了代码页，或者文本是**UTF-16**或者**UTF-32**字符串时，这一设置没有任何意义
     :::
 
     这一设置一般没有修改的必要，当且仅当部分古老引擎(例如Yuris)的官方中文版可能会有GBK/BIG5/UTF8。如果找不到正确的文本，直接向我发[issue](https://lunatranslator.org/Resource/game_support)，修改这个设置通常是徒劳的。
@@ -72,9 +72,9 @@
 
     H是inlineHook，B是vehhook
 
-    单字符：A/B是小端/大端的mbcs，C是UTF8，W是UTF16，I是UTF32。
+    单字符：A/B是小端/大端的mbcs，C是UTF8，W是UTF-16，I是UTF-32。
 
-    字符串：S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8。
+    字符串：S是默认ascii字符串，Q是UTF-16，U是UTF-32，V是UTF8。
 
     F：每次读取字符串后添加换行符
 
@@ -114,4 +114,4 @@
 
     R是直接内存读取的标志
 
-    S是默认ascii字符串，Q是UTF16，U是UTF32，V是UTF8
+    S是默认ascii字符串，Q是UTF-16，U是UTF-32，V是UTF8
