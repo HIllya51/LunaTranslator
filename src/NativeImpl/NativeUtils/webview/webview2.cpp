@@ -436,7 +436,9 @@ HRESULT WebView2::init(bool loadextension_)
     handler = new WebView2ComHandler{this};
     auto dir = UserDir(loadextension);
     ICoreWebView2EnvironmentOptions *optionptr = nullptr;
-    auto ext = loadextension ? L"--embedded-browser-webview-enable-extension" : L"";
+    std::wstring ext = L"--autoplay-policy=no-user-gesture-required"; // https://github.com/MicrosoftEdge/WebView2Feedback/issues/1598
+    if (loadextension)
+        ext += L" --embedded-browser-webview-enable-extension";
     CComPtr<CoreWebView2EnvironmentOptions> options;
 #ifndef WINXP
     options.Attach(Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>().Detach());
@@ -444,10 +446,10 @@ HRESULT WebView2::init(bool loadextension_)
     options = new CoreWebView2EnvironmentOptions();
 #endif
     // 必须用这个才能进行add，否则只能list/remove/enable
-    if (options && SUCCEEDED(options->put_AreBrowserExtensionsEnabled(loadextension)) && SUCCEEDED(options->put_AdditionalBrowserArguments(ext)))
+    if (options && SUCCEEDED(options->put_AreBrowserExtensionsEnabled(loadextension)) && SUCCEEDED(options->put_AdditionalBrowserArguments(ext.c_str())))
         optionptr = options;
     else
-        SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", ext);
+        SetEnvironmentVariableW(L"WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS", ext.c_str());
     CHECK_FAILURE(CreateCoreWebView2EnvironmentWithOptions(nullptr, dir ? dir.value().c_str() : nullptr, optionptr, handler));
     WaitForLoad();
     CHECK_FAILURE(CreateCoreWebView2EnvironmentError);

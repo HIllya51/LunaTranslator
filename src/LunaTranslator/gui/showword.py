@@ -1,5 +1,5 @@
 from qtsymbols import *
-import json
+import json, re
 import time
 import functools
 import os
@@ -1389,12 +1389,17 @@ class WordViewer(QWidget):
         openinbrowser = LAction("在浏览器中查词", menu)
         isinsert = LAction("不添加到Anki", menu)
         isinsert.setCheckable(True)
+        autoread = LAction("自动朗读", menu)
+        autoread.setCheckable(True)
         caninsert = self.tabks[idx] in globalconfig["ignoredict"]
         isinsert.setChecked(caninsert)
         cishu = gobject.base.cishus.get(self.tabks[idx])
         if cishu and cishu.canGetUrl:
             menu.addAction(openinbrowser)
         menu.addAction(isinsert)
+        if self.tabks[idx] == "mdict":
+            menu.addAction(autoread)
+            autoread.setChecked(globalconfig.get("mecabautoreadembedaudio", False))
         action = menu.exec(QCursor.pos())
         if action == isinsert:
             if isinsert.isChecked():
@@ -1403,6 +1408,8 @@ class WordViewer(QWidget):
                 globalconfig["ignoredict"].remove(self.tabks[idx])
         elif action == openinbrowser:
             os.startfile(cishu.getUrl(self.currWord))
+        elif action == autoread:
+            globalconfig["mecabautoreadembedaudio"] = autoread.isChecked()
 
     def __init__(self, parent=None, tabonehide=False, transp=False):
         super().__init__(parent)
@@ -1568,7 +1575,36 @@ class WordViewer(QWidget):
             "__luna_dict_internal_handle_bgcolor__", backgroundparser
         )
         html += self.loadmdictfoldstate(k)
+        html += self.__parsemaybeplaymdictaudio(html)
+
         self.textOutput.setHtml(html)
+
+    def __parsemaybeplaymdictaudio(self, html):
+        if not globalconfig.get("mecabautoreadembedaudio", False):
+            return ""
+        mdict_play_sound = re.findall(r"""mdict_play_sound\('(.*?)',(.*?)\)""", html)
+        if not mdict_play_sound:
+            return ""
+        return (
+            """<script>
+function playAudioList(urls) {
+  if (urls.length === 0) return; 
+  const audio = new Audio(); 
+  audio.src="data:"+urls[0][0]+";base64,"+urls[0][1]
+  audio.onended = () => { 
+    playAudioList(urls.slice(1));
+  }; 
+  audio.play().catch(error => { 
+    playAudioList(urls.slice(1));
+  });
+} 
+playAudioList("""
+            + "[{}]".format(
+                ",".join('["{}",{}]'.format(_0, _1) for _0, _1, in mdict_play_sound)
+            )
+            + """);
+        </script>"""
+        )
 
     def loadmdictfoldstate(self, k):
         if k != "mdict":
