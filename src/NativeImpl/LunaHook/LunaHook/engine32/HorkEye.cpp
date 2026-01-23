@@ -156,7 +156,7 @@
 // ex:【夏偾,S005_B_0002】「バーッ�ク
 static void HorkEyeFilter(TextBuffer *buffer, HookParam *)
 {
-  char *str = reinterpret_cast<char *>(buffer->buff),
+  char *str = reinterpret_cast<char *>(buffer->data),
        *start,
        *stop;
 
@@ -216,7 +216,7 @@ namespace
     buffer->from(old);
   }
   template <int offset = 1>
-  void hookafter(hook_context *s, TextBuffer buffer)
+  void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
   {
 
     auto newData = buffer.strA();

@@ -172,7 +172,7 @@ namespace
         // oldData.replace("\x81\x40", ""); // remove spaces in the middle of names
         buffer->from(oldData);
       }
-      void hookafter2(hook_context *s, TextBuffer buffer)
+      void hookafter2(hook_context *s, TextBuffer buffer, HookParam *)
       {
 
         auto newData = buffer.strA();
@@ -573,7 +573,7 @@ namespace
             return true;*/
       }
 
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto data_ = buffer.strA();
         s->stack[1] = (ULONG)allocateString(data_);

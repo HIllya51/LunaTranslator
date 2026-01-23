@@ -1316,7 +1316,7 @@ namespace
 {
   int type = 0;
   std::wstring saveend = L"";
-  void hookafter(hook_context *s, TextBuffer buffer)
+  void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
   {
 
     auto newText = buffer.strW(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
@@ -1647,7 +1647,7 @@ namespace
         return buffer->clear();
       buffer->from(t);
     };
-    hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *s, TextBuffer buffer, HookParam *)
     {
       auto t = std::wstring((wchar_t *)s->stack[off / 4]);
       auto newText = buffer.strW();

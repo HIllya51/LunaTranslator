@@ -233,7 +233,7 @@ namespace
       buffer->from(byte_8FA790);
     };
     hp.filter_fun = commonfilter;
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       strcpy(byte_8FA790, buffer.strA().c_str());
     };
@@ -306,7 +306,7 @@ namespace
   void filter(TextBuffer *buffer, HookParam *hp)
   {
     StringFilter(buffer, TEXTANDLEN("@s"));
-    auto data = buffer->buff;
+    auto data = buffer->data;
     if (strstr((char *)data, "@i") || strstr((char *)data, "@y"))
       return buffer->clear();
     // ｛てんきゅう／天穹｝
@@ -569,7 +569,7 @@ namespace
        *  0012F16C   0012F7CC
        *  0012F170   0012F7CC
        */
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto newData = buffer.strA();
         LPCSTR text = (LPCSTR)s->stack[2], // arg2

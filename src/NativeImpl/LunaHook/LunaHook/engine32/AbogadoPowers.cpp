@@ -25,9 +25,9 @@ bool AbogadoPowers::attach_function()
   };
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    if (buffer->buff[0] == '_')
+    if (buffer->data[0] == '_')
       return buffer->clear();
-    if (buffer->buff[0] == 0)
+    if (buffer->data[0] == 0)
       return buffer->clear();
   };
   return NewHook(hp, "AbogadoPowers");

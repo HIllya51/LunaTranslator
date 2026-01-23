@@ -666,7 +666,7 @@ namespace
         strReplace(oldData, "\\n", "\n");
         buffer->from(oldData);
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto newData = buffer.strA();
         strReplace(newData, "\n", "\\n");

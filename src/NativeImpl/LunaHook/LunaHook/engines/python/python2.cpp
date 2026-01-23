@@ -103,9 +103,9 @@ bool InsertRenpyHook()
                     if (PyUnicode_FromUnicode)
                     {
                         hp.type |= EMBED_ABLE;
-                        hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+                        hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
                         {
-                            context->argof(1) = (uintptr_t)PyUnicode_FromUnicode((Py_UNICODE *)buffer.buff, buffer.size / 2);
+                            context->argof(1) = (uintptr_t)PyUnicode_FromUnicode((Py_UNICODE *)buffer.data, buffer.size / 2);
                         };
                     }
                     return NewHook(hp, "PyUnicodeUCS2_Format");

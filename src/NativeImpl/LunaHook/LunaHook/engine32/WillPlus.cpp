@@ -458,7 +458,7 @@ namespace will3
     }
     buffer->from(text);
   }
-  void hookafter(hook_context *s, TextBuffer buffer)
+  void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
   {
     auto data_ = buffer.strW(); // EngineController::instance()->dispatchTextWSTD(innner, Engine::ScenarioRole, 0);
     std::wstring origin = (wchar_t *)s->stack[offset];
@@ -708,7 +708,7 @@ namespace
       buffer->from(trimmedText, trimmedSize * 2);
     }
     template <int idx>
-    void hookafter(hook_context *s, TextBuffer buffer)
+    void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
     {
       auto newText = buffer.strW();
       auto info = savetyperef.at(idx);
@@ -1207,7 +1207,7 @@ namespace
         ::strcpy(text, newData.c_str());
         return true;*/
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
 
         auto newData = buffer.strA();
@@ -1585,7 +1585,7 @@ namespace
       buffer->from(((TextUnionW *)context->ecx)->view());
       *split = context->ebx;
     };
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       ((TextUnionW *)context->ecx)->setText(buffer.viewW());
     };
@@ -1775,7 +1775,7 @@ LABEL_45:
     hp.type = CODEC_UTF16 | USING_STRING | EMBED_ABLE | NO_CONTEXT;
     hp.embed_hook_font = F_GetGlyphOutlineW;
     hp.filter_fun = WillPlus_extra_filter;
-    hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *s, TextBuffer buffer, HookParam *)
     {
       auto data_ = buffer.strW();
       std::wstring origin = (wchar_t *)s->edx;

@@ -209,7 +209,7 @@ namespace
         }; // split not used
         buffer->from(text);
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         std::string newData = buffer.strA();
         int capacity = s->stack[1]; // arg 2, should always be 0x1000

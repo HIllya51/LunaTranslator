@@ -6,9 +6,9 @@ namespace
 
     void mscorlib_system_string_InternalSubString_hook_fun(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        uintptr_t offset = context->argof(1);
-        uintptr_t startIndex = context->argof(2);
-        uintptr_t length = context->argof(3);
+        uintptr_t offset = context->smart_argof(1, hp);
+        uintptr_t startIndex = context->smart_argof(2, hp);
+        uintptr_t length = context->smart_argof(3, hp);
 
         MonoString *string = (MonoString *)offset;
         if (string == 0)
@@ -24,7 +24,7 @@ namespace
      */
     void SpecialHookMonoString(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        if (auto sw = commonsolvemonostring(context->argof(1)))
+        if (auto sw = commonsolvemonostring(context->smart_argof(1, hp)))
             buffer->from(sw.value());
 
 #ifndef _WIN64
@@ -67,11 +67,10 @@ namespace
         s = re::sub(s, LR"(<sprite anim=[^>]*?>)");
         buffer->from(s);
     }
-    template <int offset>
-    void tmpembed(hook_context *context, TextBuffer buffer)
+    void tmpembed(hook_context *context, TextBuffer buffer, HookParam *hp)
     {
         auto s = buffer.strW();
-        if (auto sw = commonsolvemonostring(context->argof(offset)))
+        if (auto sw = commonsolvemonostring(context->smart_argof(hp->offset, hp)))
         {
             auto origin = std::wstring(sw.value());
             std::wstring pre = re::match(origin, LR"(((<line-height=[^>]*?>|<sprite anim=[^>]*?>)*)(.*?))").value()[1];
@@ -168,11 +167,7 @@ namespace monocommon
         }
         hp.jittype = JITTYPE::UNITY;
         strcpy(hp.function, hook.info().c_str());
-#ifdef _WIN64
         return NewHookRetry(hp, hook.hookname().c_str());
-#else
-        return NewHook(hp, hook.hookname().c_str());
-#endif
     }
     std::vector<functioninfo> commonhooks{
         {"mscorlib", "System", "String", "ToCharArray", 0, 1},
@@ -185,9 +180,9 @@ namespace monocommon
         {"mscorlib", "System", "String", "op_Inequality", 2, 1},
         {"mscorlib", "System", "String", "InternalSubString", 2, 1, mscorlib_system_string_InternalSubString_hook_fun},
 
-        {"Unity.TextMeshPro", "TMPro", "TMP_Text", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed<2>},
-        {"Unity.TextMeshPro", "TMPro", "TextMeshPro", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed<2>},
-        {"Unity.TextMeshPro", "TMPro", "TextMeshProUGUI", "SetText", 2, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed<2>},
+        {"Unity.TextMeshPro", "TMPro", "TMP_Text", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed},
+        {"Unity.TextMeshPro", "TMPro", "TextMeshPro", "set_text", 1, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed},
+        {"Unity.TextMeshPro", "TMPro", "TextMeshProUGUI", "SetText", 2, 2, nullptr, true, true, nullptr, tmpfilter, tmpembed},
         {"UnityEngine.UI", "UnityEngine.UI", "Text", "set_text", 1, 2, nullptr, true},
         {"UnityEngine.UIElementsModule", "UnityEngine.UIElements", "TextElement", "set_text", 1, 2, nullptr, true},
         {"UnityEngine.UIElementsModule", "UnityEngine.UIElements", "TextField", "set_value", 1, 2, nullptr, true},

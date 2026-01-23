@@ -15,7 +15,7 @@ void Minori1EngFilter(TextBuffer *buffer, HookParam *)
 
 void Minori1JapFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
   StringFilter(buffer, TEXTANDLEN("\\a"));
   StringFilter(buffer, TEXTANDLEN("\\v"));
   StringFilter(buffer, TEXTANDLEN("\\N"));
@@ -72,7 +72,7 @@ bool InsertMinori1Hook()
 
 void Minori2Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
   StringCharReplacer(buffer, TEXTANDLEN("\\n"), ' ');
 
   if (cpp_strnstr(text, "{", buffer->size))
@@ -419,7 +419,7 @@ namespace
 
         buffer->from(oldData);
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         std::string newData = buffer.strA();
         auto arg = (TextUnionA *)s->stack[0]; // arg1

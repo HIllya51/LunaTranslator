@@ -1140,7 +1140,7 @@ namespace
     hp.type = USING_STRING | USING_SPLIT | EMBED_ABLE | EMBED_DYNA_SJIS | NO_CONTEXT;
 
     hp.text_fun = Private::hookBefore;
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       std::string sorigin = (char *)context->stack[Private::textIndex_];
       std::string s = buffer.strA();
@@ -1195,7 +1195,7 @@ void BGI7Filter(TextBuffer *buffer, HookParam *)
 
 void BGI56Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
 
   if (text[0] == '@')
   {

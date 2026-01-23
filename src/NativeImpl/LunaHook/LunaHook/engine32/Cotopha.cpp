@@ -603,7 +603,7 @@ namespace
 } // unnamed namespace
 void CotophaFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPWSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPWSTR>(buffer->data);
 
   if (buffer->size <= 2 || text[0] != L'\\')
     return buffer->clear();

@@ -269,15 +269,8 @@ void TextHook::Send(hook_context *context)
 
 		uintptr_t lpSplit = 0,
 				  lpRetn = context->retaddr,
-				  *plpdatain = (uintptr_t *)(context->base + hp.offset),
+				  *plpdatain = &context->smart_offset(hp.offset, hp),
 				  lpDataIn = *plpdatain;
-#ifndef _WIN64
-		if ((hp.type & BREAK_POINT) && (hp.offset > 0))
-		{
-			plpdatain = (uintptr_t *)(context->esp + hp.offset);
-			lpDataIn = *plpdatain;
-		}
-#endif
 		if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
 		{
 			lpDataIn = jitgetaddr(context, &hp, true);
@@ -285,7 +278,7 @@ void TextHook::Send(hook_context *context)
 		}
 		else if (hp.jittype == JITTYPE::UNITY || hp.type & CSHARP_STRING)
 		{
-			plpdatain = &context->argof(hp.offset);
+			plpdatain = &context->smart_argof(hp.offset, hp);
 			lpDataIn = *plpdatain;
 		}
 		auto text_fun = hp.text_fun; // 必须保存一下，否则text_fun中置nullptr会导致后续判定错误
@@ -330,10 +323,10 @@ void TextHook::Send(hook_context *context)
 		if (hp.type & USING_CHAR || (!text_fun && !(hp.type & USING_STRING)))
 		{
 			if (text_fun)
-				lpDataIn = *(uint32_t *)buff.buff;
+				lpDataIn = *(uint32_t *)buff.data;
 			if (hp.type & CODEC_UTF32 || hp.type & CODEC_UTF8)
 			{
-				*(char32_t *)buff.buff = lpDataIn & 0xffffffff;
+				*(char32_t *)buff.data = lpDataIn & 0xffffffff;
 			}
 			else
 			{ // CHAR_LITTEL_ENDIAN,CODEC_ANSI_BE,CODEC_UTF16
@@ -342,14 +335,14 @@ void TextHook::Send(hook_context *context)
 					lpDataIn = _byteswap_ushort(lpDataIn);
 				if (buff.size == 1)
 					lpDataIn &= 0xff;
-				*(WORD *)buff.buff = lpDataIn;
+				*(WORD *)buff.data = lpDataIn;
 			}
 		}
 		else if ((!text_fun) && (!(hp.type & CSHARP_STRING)))
 		{
 			if (lpDataIn == 0)
 				__leave;
-			::memcpy(buff.buff, (void *)lpDataIn, buff.size);
+			::memcpy(buff.data, (void *)lpDataIn, buff.size);
 		}
 		commonfilter(&buff, &hp);
 		if (buff.size <= 0)
@@ -362,7 +355,7 @@ void TextHook::Send(hook_context *context)
 		}
 
 		static BYTE ZeroCheckBuffer[TEXT_BUFFER_SIZE] = {0};
-		if (memcmp(ZeroCheckBuffer, buff.buff, buff.size) == 0)
+		if (memcmp(ZeroCheckBuffer, buff.data, buff.size) == 0)
 			__leave;
 
 		if (hp.type & (NO_CONTEXT | FIXING_SPLIT))
@@ -410,7 +403,7 @@ void TextHook::Send(hook_context *context)
 				{
 					auto size = max(size_origin, buff.size + zeros);
 					auto _ = new char[size];
-					memcpy(_, buff.buff, buff.size);
+					memcpy(_, buff.data, buff.size);
 					memset(_ + buff.size, 0, size - buff.size);
 					*(uintptr_t *)plpdatain = (uintptr_t)_;
 				}
@@ -418,14 +411,14 @@ void TextHook::Send(hook_context *context)
 				{
 					// 可能会导致最后一个字符损坏。但没办法，总不能溢出吧。
 					memset((char *)lpDataIn, 0, size_origin);
-					memcpy((void *)lpDataIn, buff.buff, buff.size);
+					memcpy((void *)lpDataIn, buff.data, buff.size);
 					memset((char *)lpDataIn + size_origin - zeros, 0, zeros);
 				}
 				else if (hp.embed_fun)
-					hp.embed_fun(context, buff);
+					hp.embed_fun(context, buff, &hp);
 				else if (hp.type & CSHARP_STRING)
 				{
-					unity_ui_string_embed_fun(context->argof(hp.offset), buff);
+					unity_ui_string_embed_fun(context->smart_argof(hp.offset, hp), buff);
 				}
 			}
 		}
@@ -514,7 +507,7 @@ void TextHook::Read()
 				hp.text_fun(0, &hp, &buff, &split);
 				if (!buff.size)
 					continue;
-				if ((buff.size == lastlen) && (memcmp(buff.buff, savelast, lastlen) == 0))
+				if ((buff.size == lastlen) && (memcmp(buff.data, savelast, lastlen) == 0))
 					continue;
 			}
 			else
@@ -522,13 +515,13 @@ void TextHook::Read()
 				int currentLen = HookStrlen((BYTE *)location);
 				if (!currentLen)
 					continue;
-				if ((currentLen == lastlen) && (memcmp(buff.buff, location, lastlen) == 0))
+				if ((currentLen == lastlen) && (memcmp(buff.data, location, lastlen) == 0))
 					continue;
 				buff.from(location, currentLen);
 			}
 			lastlen = buff.size;
 			if (savelast)
-				memcpy(savelast, buff.buff, buff.size);
+				memcpy(savelast, buff.data, buff.size);
 			if (hp.filter_fun && (!SafeFilterFun(hp, buff)))
 				continue;
 			TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);

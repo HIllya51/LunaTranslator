@@ -17,6 +17,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100A05026270000 | KANADE |
 |  | 01005FE025F22000 | Apathy 鳴神学園 霊怪記 |
 |  | 0100A19025D44000 | Neon Clash Echoes of the Lost |
 |  | 01003CA01F3AE000 | Please Be Happy |

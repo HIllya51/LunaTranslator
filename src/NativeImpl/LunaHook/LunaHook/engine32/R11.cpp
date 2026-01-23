@@ -38,7 +38,7 @@ static bool maintext()
   hp.type = USING_STRING | EMBED_ABLE; // 主要是可以嵌入英文
   hp.offset = stackoffset(1);
   hp.filter_fun = ff;
-  hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+  hp.embed_fun = [](hook_context *s, TextBuffer buffer, HookParam *)
   {
     auto prefixappendfix = [](const std::wstring &origin, const std::wstring &newstr)
     {

@@ -284,7 +284,7 @@ bool Nitroplus::attach_function()
 
 void NitroplusSysFilter(TextBuffer *buffer, HookParam *)
 {
-	auto text = reinterpret_cast<LPSTR>(buffer->buff);
+	auto text = reinterpret_cast<LPSTR>(buffer->data);
 
 	if (buffer->size <= 2)
 		return buffer->clear();

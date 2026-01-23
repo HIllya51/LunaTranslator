@@ -429,7 +429,7 @@ namespace
     hp.offset = regoffset(ecx);
     hp.filter_fun = [](TextBuffer *buffer, HookParam *)
     {
-      auto text = reinterpret_cast<LPSTR>(buffer->buff);
+      auto text = reinterpret_cast<LPSTR>(buffer->data);
       if (text[0] == '@')
       {
         return buffer->clear();

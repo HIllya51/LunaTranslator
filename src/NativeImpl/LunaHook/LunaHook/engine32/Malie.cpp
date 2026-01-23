@@ -1097,7 +1097,7 @@ namespace
         strReplace(text, shortPause);
       }
       // I need a cache retainer here to make sure same text result in same result
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         static std::unordered_set<uint64_t> hashes_;
         auto text = (LPCWSTR)s->stack[1];

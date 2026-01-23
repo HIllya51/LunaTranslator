@@ -25,7 +25,7 @@ inline SECURITY_ATTRIBUTES allAccess = std::invoke([] // allows non-admin proces
 	InitializeSecurityDescriptor(&sd, SECURITY_DESCRIPTOR_REVISION);
 	SetSecurityDescriptorDacl(&sd, TRUE, NULL, FALSE);
 	return SECURITY_ATTRIBUTES{ sizeof(SECURITY_ATTRIBUTES), &sd, FALSE }; });
-
+struct HookParam;
 struct hook_context
 {
 #ifndef _WIN64
@@ -176,6 +176,10 @@ struct hook_context
 		return eax;
 #endif
 	}
+	uintptr_t &smart_argof(int idx, const HookParam &hp);
+	uintptr_t &smart_argof(int idx, const HookParam *hp);
+	uintptr_t &smart_offset(int offset, const HookParam &hp);
+	uintptr_t &smart_offset(int offset, const HookParam *hp);
 };
 #define ___baseoffset (int)offsetof(hook_context, base)
 #define regoffset(reg) ((int)offsetof(hook_context, reg) - ___baseoffset)
@@ -221,7 +225,7 @@ struct HookParam
 	ALIGNPTR(uint64_t __12, uintptr_t user_value);
 	ALIGNPTR(uint64_t __2, void (*text_fun)(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split))
 	ALIGNPTR(uint64_t __3, void (*filter_fun)(TextBuffer *buffer, HookParam *hp)); // jichi 10/24/2014: Add filter function. Return false to skip the text
-	ALIGNPTR(uint64_t __7, void (*embed_fun)(hook_context *context, TextBuffer buffer));
+	ALIGNPTR(uint64_t __7, void (*embed_fun)(hook_context *context, TextBuffer buffer, HookParam *hp));
 	uint64_t embed_hook_font;
 	ALIGNPTR(uint64_t __9, const wchar_t *lineSeparator);
 	char name[HOOK_NAME_SIZE];
@@ -354,7 +358,7 @@ enum
 
 struct TextBuffer
 {
-	BYTE *const buff;
+	BYTE *const data;
 	size_t size;
 	template <typename CharT>
 	void from(const CharT *c)
@@ -363,51 +367,51 @@ struct TextBuffer
 			return;
 		size = strlenEx(c) * sizeof(CharT);
 		if (size)
-			strncpyEx((CharT *)buff, c, TEXT_BUFFER_SIZE);
+			strncpyEx((CharT *)data, c, TEXT_BUFFER_SIZE);
 	}
 	template <typename StringT, typename = std::enable_if_t<!std::is_pointer_v<StringT>>>
 	void from(const StringT &c)
 	{
 		size = min(TEXT_BUFFER_SIZE, strSize(c));
 		if (size)
-			memcpy(buff, c.data(), size);
+			memcpy(data, c.data(), size);
 	}
 	template <typename AddrT>
 	void from(const AddrT ptr, size_t t)
 	{
 		size = min(TEXT_BUFFER_SIZE, t);
 		if (size && ptr)
-			memcpy(buff, (void *)ptr, size);
+			memcpy(data, (void *)ptr, size);
 	}
 	template <typename T>
 	void from_t(const T tm)
 	{
 		size = sizeof(T);
-		*(T *)buff = tm;
+		*(T *)data = tm;
 	}
 	std::string_view viewA()
 	{
-		return std::string_view((char *)buff, size);
+		return std::string_view((char *)data, size);
 	}
 	std::wstring_view viewW()
 	{
-		return std::wstring_view((wchar_t *)buff, size / 2);
+		return std::wstring_view((wchar_t *)data, size / 2);
 	}
 	std::u32string_view viewU()
 	{
-		return std::u32string_view((char32_t *)buff, size / 4);
+		return std::u32string_view((char32_t *)data, size / 4);
 	}
 	std::string strA()
 	{
-		return std::string((char *)buff, size);
+		return std::string((char *)data, size);
 	}
 	std::u32string strU()
 	{
-		return std::u32string((char32_t *)buff, size / sizeof(char32_t));
+		return std::u32string((char32_t *)data, size / sizeof(char32_t));
 	}
 	std::wstring strW()
 	{
-		return std::wstring((wchar_t *)buff, size / 2);
+		return std::wstring((wchar_t *)data, size / 2);
 	}
 	std::wstring strAW(UINT cp = 932)
 	{

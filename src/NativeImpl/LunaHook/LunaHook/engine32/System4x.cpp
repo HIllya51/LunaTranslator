@@ -869,7 +869,7 @@ static bool InsertSystem43NewHook(ULONG startAddress, ULONG stopAddress, LPCSTR 
 }
 void System43aFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
 
   CharReplacer(buffer, '\n', ' ');
 
@@ -1031,7 +1031,7 @@ namespace
        *  005D6FA0   8B1C98           MOV EBX,DWORD PTR DS:[EAX+EBX*4]
        */
       std::unordered_set<uint64_t> hashes_;
-      void hookafter2(hook_context *s, TextBuffer buffer)
+      void hookafter2(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto newData = buffer.strA();
         static std::string data_;
@@ -1710,7 +1710,7 @@ namespace
 {
   void System42Filter(TextBuffer *buffer, HookParam *)
   {
-    auto text = reinterpret_cast<LPSTR>(buffer->buff);
+    auto text = reinterpret_cast<LPSTR>(buffer->data);
 
     if (buffer->size == 1)
       return buffer->clear();

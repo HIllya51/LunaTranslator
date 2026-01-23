@@ -174,7 +174,7 @@ namespace
           *role = Engine::ScenarioRole;
         buffer->from(oldData);
       }
-      void hookafter1(hook_context *s, TextBuffer buffer)
+      void hookafter1(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto newData = buffer.strA();
         cache_.put(newData);

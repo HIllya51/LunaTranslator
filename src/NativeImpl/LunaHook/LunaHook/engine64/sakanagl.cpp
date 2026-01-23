@@ -40,7 +40,7 @@ namespace
 			buffer->from(std::u32string_view(*str, context->rax));
 		};
 		hp.type = USING_STRING | CODEC_UTF32 | EMBED_ABLE;
-		hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+		hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
 		{
 			context->rax = buffer.viewU().size();
 			*str = allocateString(buffer.viewU());

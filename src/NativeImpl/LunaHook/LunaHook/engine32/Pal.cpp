@@ -131,7 +131,7 @@ namespace
       *role = s->stack[3] ? Engine::ScenarioRole : Engine::NameRole;
     buffer->from(trimmedText, trimmedSize);
   }
-  void after(hook_context *s, TextBuffer buffer)
+  void after(hook_context *s, TextBuffer buffer, HookParam *)
   {
     std::string newData = buffer.strA();
     auto text = (LPSTR)s->stack[2]; // text in arg2

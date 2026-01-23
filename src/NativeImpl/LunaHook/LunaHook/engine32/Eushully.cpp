@@ -582,7 +582,7 @@ namespace
       // 破折号和省略号会变成乱码
       for (auto i = 0; i < buffer->size / 2; i++)
       {
-        auto wc = (wchar_t *)buffer->buff;
+        auto wc = (wchar_t *)buffer->data;
         if (wc[i] == 0xe001)
           wc[i] = 0x2014;
         else if (wc[i] == 0xe003)

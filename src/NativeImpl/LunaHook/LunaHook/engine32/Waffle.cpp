@@ -187,7 +187,7 @@ namespace
         // auto sig = Engine::hashThreadSignature(role, reladdr);
         buffer->from(arg->view());
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
 
         auto newData = buffer.viewA();
@@ -669,7 +669,7 @@ namespace
     hp.filter_fun = filterline;
     hp.embed_hook_font = F_TextOutA | F_GetTextExtentPoint32A;
     hp.type = EMBED_ABLE | USING_STRING | EMBED_DYNA_SJIS;
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       ((TextUnionA *)context->stack[1])->setText(buffer.viewA());
     };

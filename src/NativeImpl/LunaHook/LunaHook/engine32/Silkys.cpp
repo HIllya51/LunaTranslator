@@ -259,7 +259,7 @@ void hookBefore(hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *r
 }
 TextUnionA *arg_,
     argValue_;
-void hookafter1(hook_context *s, TextBuffer buffer)
+void hookafter1(hook_context *s, TextBuffer buffer, HookParam *)
 {
   auto newData = buffer.strA();
   auto arg = (TextUnionA *)(s->stack[0] + sizeof(DWORD)); // arg1
@@ -852,7 +852,7 @@ namespace
       }
       buffer->from(result);
     };
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       auto va = buffer.strA();
       if (isnewlinefirst)

@@ -189,7 +189,7 @@ namespace __
 {
   void YukaSystem1Filter(TextBuffer *buffer, HookParam *)
   {
-    auto text = reinterpret_cast<LPSTR>(buffer->buff);
+    auto text = reinterpret_cast<LPSTR>(buffer->data);
 
     // if acii add a space at the end of the sentence overwriting null terminator
     if (buffer->size >= 2 && text[buffer->size - 2] > 0)

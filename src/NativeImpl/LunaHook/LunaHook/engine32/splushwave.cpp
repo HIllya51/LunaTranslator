@@ -31,7 +31,7 @@ namespace
   #EVENT_FLAG_ON:Ｅ＿ＯＰ＿終了#BGM_FADEOUT#FADE_SET#FADEOUT_BK
   #BGM:ＫＭ＿強化#FADE_SET#MES_CLR#MES_OFF#CG_CLR#BG:調教部屋#FADE_IN
   */
-      if ((*(char *)buffer->buff) == '#')
+      if ((*(char *)buffer->data) == '#')
         return buffer->clear();
       StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));
     };

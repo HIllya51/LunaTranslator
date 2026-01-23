@@ -469,7 +469,7 @@ bool InsertStuffScriptHook()
 }
 void StuffScript2Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
 
   if (text[0] == '-')
   {

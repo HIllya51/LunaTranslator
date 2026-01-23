@@ -408,7 +408,12 @@ bool InsertAbelHook()
         HookParam hp;
         hp.address = j;
         hp.offset = stackoffset(1);
-        hp.type = USING_STRING;
+        hp.type = USING_STRING | NO_CONTEXT;
+        hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+        {
+          if (buffer->size == 1 && buffer->data[0] == '\n')
+            return buffer->clear();
+        };
         return NewHook(hp, "Abel");
       }
   }

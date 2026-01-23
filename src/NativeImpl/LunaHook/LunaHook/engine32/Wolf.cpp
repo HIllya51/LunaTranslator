@@ -318,7 +318,7 @@ namespace
           }
         }
       }
-      void hookafter2(hook_context *s, TextBuffer buffer)
+      void hookafter2(hook_context *s, TextBuffer buffer, HookParam *)
       {
 
         auto newData = buffer.strA();

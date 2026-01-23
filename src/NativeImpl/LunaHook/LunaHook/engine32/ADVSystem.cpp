@@ -74,7 +74,7 @@ namespace
       auto s = buffer->strA();
       buffer->from(strReplace(s, "\r\n", "\n"));
     };
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       auto a1 = context->esi;
       auto v5 = *(DWORD *)(a1 + 12);
@@ -128,7 +128,7 @@ namespace
       }
       buffer->from(s);
     };
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       auto a1 = context->edi;
       auto v4 = *(DWORD *)(*(DWORD *)(a1 + 680) + 4);

@@ -21,7 +21,7 @@ namespace
     *split = FIXED_SPLIT_VALUE;
     buffer->from((char *)*(DWORD *)(context->base + hp->offset));
   }
-  void embed_fun(hook_context *s, TextBuffer buffer)
+  void embed_fun(hook_context *s, TextBuffer buffer, HookParam *)
   {
     auto ts = allocateString(buffer.viewA());
 

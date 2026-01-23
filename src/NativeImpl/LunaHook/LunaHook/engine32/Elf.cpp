@@ -249,7 +249,7 @@ namespace
           //  ::memset(text + oldData.size() - left, 0, left);
         }
       }
-      void hookafter1(hook_context *s, TextBuffer buffer)
+      void hookafter1(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto newData = buffer.strA();
         auto arg = (TextArgument *)s->stack[0]; // arg1 on the top of the stack
@@ -535,7 +535,7 @@ namespace
       auto text = (TextUnionA *)(a2 + 12);
       buffer->from(text->view());
     };
-    hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+    hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
     {
       auto a2 = context->stack[1];
       auto text = (TextUnionA *)(a2 + 12);

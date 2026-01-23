@@ -99,7 +99,7 @@ void InsertRealliveHook()
 
 void RlBabelFilter(TextBuffer *buffer, HookParam *)
 {
-  if (((char *)buffer->buff)[0] == '\x01')
+  if (((char *)buffer->data)[0] == '\x01')
   {
     StringFilterBetween(buffer, TEXTANDLEN("\x01"), TEXTANDLEN("\x02")); // remove names
   }

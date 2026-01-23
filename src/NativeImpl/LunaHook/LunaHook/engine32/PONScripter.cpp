@@ -25,7 +25,7 @@ bool InsertPONScripterHook()
 }
 void PONScripterFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
   static std::string prevText;
 
   for (int i = 0; i < buffer->size; i++)

@@ -175,7 +175,7 @@ namespace
         {
             return buffer->clear();
         }
-        auto w = *(WORD *)buffer->buff;
+        auto w = *(WORD *)buffer->data;
         if (!(IsShiftjisWord(w)))
         {
             return buffer->clear();
@@ -1216,16 +1216,16 @@ namespace
     }
     void SLPM66734(TextBuffer *buffer, HookParam *hp)
     {
-        auto w = *(WORD *)buffer->buff;
+        auto w = *(WORD *)buffer->data;
         if (!(IsShiftjisWord(w)))
         {
             return buffer->clear();
         }
-        buffer->size = strstr((char *)buffer->buff, "O$") - (char *)buffer->buff;
+        buffer->size = strstr((char *)buffer->data, "O$") - (char *)buffer->data;
     }
     void SLPM65786(TextBuffer *buffer, HookParam *hp)
     {
-        auto w = *(WORD *)buffer->buff;
+        auto w = *(WORD *)buffer->data;
         if (w == 0x4081 || !(IsShiftjisWord(w)))
         {
             buffer->clear();
@@ -1509,7 +1509,7 @@ namespace
     void SLPS25540(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        if (buffer->buff[0] <= 0x7f)
+        if (buffer->data[0] <= 0x7f)
             return buffer->clear();
         static std::set<std::string> cache;
         if (cache.find(s) != cache.end())
@@ -1593,7 +1593,7 @@ namespace
     }
     void SLPM65785(TextBuffer *buffer, HookParam *hp)
     {
-        if (*(WORD *)buffer->buff < 0x100)
+        if (*(WORD *)buffer->data < 0x100)
             buffer->clear();
     }
     void SLPM62375(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
@@ -1875,7 +1875,7 @@ namespace
     void SLPM65295(TextBuffer *buffer, HookParam *hp)
     {
         static bool last = false;
-        if (IsShiftjisLeadByte(*(BYTE *)buffer->buff))
+        if (IsShiftjisLeadByte(*(BYTE *)buffer->data))
         {
             last = true;
         }
@@ -1929,7 +1929,7 @@ namespace
     }
     void SLPM65910(TextBuffer *buffer, HookParam *hp)
     {
-        if (buffer->buff[0] == '&')
+        if (buffer->data[0] == '&')
             return buffer->clear();
         auto s = buffer->strAW();
         s = s.substr(0, s.rfind(L"fV"));
@@ -1938,7 +1938,7 @@ namespace
     }
     void SLPM66980(TextBuffer *buffer, HookParam *hp)
     {
-        if (buffer->buff[0] == '&')
+        if (buffer->data[0] == '&')
             return buffer->clear();
         auto s = buffer->strAW();
         s = s.substr(0, s.rfind(L"E\""));

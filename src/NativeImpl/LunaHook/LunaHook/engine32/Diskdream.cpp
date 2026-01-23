@@ -21,7 +21,7 @@ bool Diskdream::attach_function()
   hp.codepage = 932;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
-    if (!(bool)IsShiftjisLeadByte(*(BYTE *)buffer->buff))
+    if (!(bool)IsShiftjisLeadByte(*(BYTE *)buffer->data))
       buffer->clear();
   };
   return NewHook(hp, "Diskdream");

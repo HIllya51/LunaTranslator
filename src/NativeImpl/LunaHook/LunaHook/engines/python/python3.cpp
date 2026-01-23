@@ -191,9 +191,9 @@ bool InsertRenpy3Hook()
                     if (PyUnicode_FromKindAndData)
                     {
                         hp.type |= EMBED_ABLE | EMBED_CODEC_UTF16;
-                        hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+                        hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
                         {
-                            context->rcx = (uintptr_t)PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer.buff, buffer.size / 2);
+                            context->rcx = (uintptr_t)PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer.data, buffer.size / 2);
                         };
                     };
                     return NewHook(hp, "PyUnicode_Format");

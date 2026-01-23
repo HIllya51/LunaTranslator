@@ -603,7 +603,7 @@ namespace
         LPCSTR oldText_;
         size_t oldSize_;
         std::unordered_set<std::wstring> texts_;
-        void hookafter2(hook_context *s, TextBuffer buffer)
+        void hookafter2(hook_context *s, TextBuffer buffer, HookParam *)
         {
 
           enum
@@ -774,7 +774,7 @@ namespace
             //   }
           }
         }
-        void hookafter2(hook_context *s, TextBuffer buffer)
+        void hookafter2(hook_context *s, TextBuffer buffer, HookParam *)
         {
           {
             auto arg = (HookArgument *)s->stack[2]; // arg2
@@ -929,7 +929,7 @@ namespace
             }
           }
         }
-        void hookafter2(hook_context *s, TextBuffer buffer)
+        void hookafter2(hook_context *s, TextBuffer buffer, HookParam *)
         {
           {
             auto retaddr = s->stack[0];

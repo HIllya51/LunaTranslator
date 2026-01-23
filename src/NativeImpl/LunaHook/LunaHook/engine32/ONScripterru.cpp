@@ -2,7 +2,7 @@
 void ONScripterruCommonFilter(TextBuffer *buffer)
 {
 
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
   StringCharReplacer(buffer, TEXTANDLEN("{n}"), ' ');
   if (cpp_strnstr(text, "{c:", buffer->size))
   {
@@ -34,7 +34,7 @@ void ONScripterruCommonFilter(TextBuffer *buffer)
 
 void ONScripterru1Filter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
 
   if (text[0] == ':' || text[1] == '{')
     return buffer->clear();
@@ -96,7 +96,7 @@ void StringBetween(char *str, size_t *size, const char *fr, size_t frlen, const 
 
 void ONScripterru2Filter(TextBuffer *buffer, HookParam *)
 {
-  StringBetween((char *)buffer->buff, &buffer->size, "`", 1, "`", 1);
+  StringBetween((char *)buffer->data, &buffer->size, "`", 1, "`", 1);
 
   ONScripterruCommonFilter(buffer);
 }

@@ -740,7 +740,7 @@ namespace
 
         buffer->from(trimmedText, trimmedSize);
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         std::string newData = buffer.strA();
 

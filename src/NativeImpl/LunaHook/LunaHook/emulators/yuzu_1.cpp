@@ -1027,9 +1027,9 @@ namespace
     void F010027400BD24000_1(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
-        if (buffer->buff[0] == 0x2a || buffer->buff[0] == 0x24 || buffer->buff[0] == 0x18)
+        if (buffer->data[0] == 0x2a || buffer->data[0] == 0x24 || buffer->data[0] == 0x18)
         {
-            memmove(buffer->buff, buffer->buff + 1, buffer->size - 1);
+            memmove(buffer->data, buffer->data + 1, buffer->size - 1);
             buffer->size -= 1;
         }
     }
@@ -2799,6 +2799,13 @@ namespace
         s = re::sub(s, LR"(\[(.*?)@(.*?)\])", L"$1");
         buffer->from(s);
     }
+    void F0100A05026270000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        strReplace(s, L"\n");
+        s = re::sub(s, LR"(%i\d(.*?)%id)", L"$1");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2806,6 +2813,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // KANADE
+    {0x80050E70, {CODEC_UTF16, 0, 0, 0, F0100A05026270000, 0x0100A05026270000ull, "1.0.0"}},
     // Apathy 鳴神学園 霊怪記
     {0x80074E60, {FULL_STRING | CODEC_UTF16, 0, 0, 0, F010042300C4F6000_1, 0x01005FE025F22000ull, "1.0.0"}},
     {0x80075A60, {FULL_STRING | CODEC_UTF16, 0, 0, 0, F010042300C4F6000_1, 0x01005FE025F22000ull, "1.0.1"}},

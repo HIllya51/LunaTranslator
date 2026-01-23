@@ -264,7 +264,7 @@ namespace
       *role = Engine::OtherRole;
       buffer->from(text);
     }
-    void afterAgsSpriteCreateTextExW(hook_context *s, TextBuffer buffer)
+    void afterAgsSpriteCreateTextExW(hook_context *s, TextBuffer buffer, HookParam *)
     {
       auto text = (LPWSTR)s->stack[2];
       text = ltrimW(text);
@@ -300,14 +300,14 @@ namespace
         }
       buffer->from(text);
     }
-    void afterAgsSpriteCreateTextW(hook_context *s, TextBuffer buffer)
+    void afterAgsSpriteCreateTextW(hook_context *s, TextBuffer buffer, HookParam *)
     {
       auto text = (LPWSTR)s->stack[1];
       text = ltrimW(text);
       std::wstring _ = buffer.strW();
       wcscpy((LPWSTR)text, _.c_str());
     }
-    void afterAgsSpriteCreateTextA(hook_context *s, TextBuffer buffer)
+    void afterAgsSpriteCreateTextA(hook_context *s, TextBuffer buffer, HookParam *)
     {
       auto text = (LPSTR)s->stack[1]; // arg1
       text = ltrimA(text);

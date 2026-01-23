@@ -223,7 +223,7 @@ namespace
 { // unnamed
   void TamamoFilter(TextBuffer *buffer, HookParam *)
   {
-    LPSTR text = (LPSTR)buffer->buff;
+    LPSTR text = (LPSTR)buffer->data;
     if (::memchr(text, '<', buffer->size))
       StringFilter(buffer, TEXTANDLEN("<e>"));
     StringFilter(buffer, TEXTANDLEN("\x0d\x0a\x81\x40")); // remove \n before space

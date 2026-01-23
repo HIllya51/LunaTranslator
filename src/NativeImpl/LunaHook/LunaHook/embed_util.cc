@@ -269,7 +269,7 @@ bool checktranslatedok(TextBuffer buff)
   ZeroMemory(commonsharedmem->text, sizeof(commonsharedmem->text)); // clear trans before call
   if (buff.size > 1000)
     return true;
-  return translatecache.count(texthash(buff.buff, buff.size));
+  return translatecache.count(texthash(buff.data, buff.size));
 }
 bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
@@ -279,12 +279,12 @@ bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
     return true;
   }
   std::wstring origin;
-  if (auto t = commonparsestring(buff->buff, buff->size, &hp, commonsharedmem->codepage))
+  if (auto t = commonparsestring(buff->data, buff->size, &hp, commonsharedmem->codepage))
     origin = t.value();
   else
     return false;
   std::wstring translate;
-  auto hash = texthash(buff->buff, buff->size);
+  auto hash = texthash(buff->data, buff->size);
   auto found = translatecache.find(hash);
   if (found != translatecache.end())
   {

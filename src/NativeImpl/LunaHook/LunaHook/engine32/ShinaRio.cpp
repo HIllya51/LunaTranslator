@@ -560,7 +560,7 @@ namespace
       int hookStackIndex_; // hook argument index on the stack
       int textOffset_;     // distance of the text from the hook argument
       bool backtrackText_; // whether backtrack to find text address
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
 
         std::string newData = buffer.strA() + "\x20\x81\x40\x20";

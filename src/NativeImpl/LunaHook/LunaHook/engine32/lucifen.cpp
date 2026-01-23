@@ -56,7 +56,7 @@ void hookBefore_navel(hook_context *s, HookParam *hp, TextBuffer *buffer, uintpt
 
   buffer->from(text);
 }
-void hookafter_navel(hook_context *s, TextBuffer buffer)
+void hookafter_navel(hook_context *s, TextBuffer buffer, HookParam *)
 {
   auto text = std::string((char *)s->stack[1]); // text in arg1
   auto split = s->stack[0];                     // retaddr
@@ -374,7 +374,7 @@ namespace
         //  bool b1=  dispatchNameText(self + nameOffset_, retaddr,s,data,len1,role);
         dispatchScenarioText(self + scenarioOffset_, retaddr, s, buffer, split);
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto self = (LPSTR)s->ecx;
         ULONG retaddr = s->stack[0];
@@ -771,7 +771,7 @@ namespace
         *split = Engine::ChoiceRole;
         buffer->from(text);
       }
-      void hookafter(hook_context *s, TextBuffer buffer)
+      void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto newData = buffer.strA();
         strcpy((char *)s->stack[0], newData.c_str());
@@ -971,7 +971,7 @@ namespace
     *split = Engine::OtherRole;
     buffer->from(text);
   }
-  void hookafter(hook_context *s, TextBuffer buffer)
+  void hookafter(hook_context *s, TextBuffer buffer, HookParam *)
   {
     auto text = (LPSTR)s->stack[1]; // arg1 is text
 

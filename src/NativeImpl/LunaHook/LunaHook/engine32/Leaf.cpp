@@ -381,7 +381,7 @@ static void SpecialHookLeaf(hook_context *context, HookParam *hp, TextBuffer *bu
 // Remove both \n and \k
 static void LeafFilter(TextBuffer *buffer, HookParam *)
 {
-  LPSTR text = (LPSTR)buffer->buff;
+  LPSTR text = (LPSTR)buffer->data;
   if (::memchr(text, '\\', buffer->size))
   {
     StringFilter(buffer, TEXTANDLEN("\\n"));
@@ -396,7 +396,7 @@ namespace
     save = re::sub(save, "<R(.+?)\\|.+>", "$1");
     buffer->from(save);
   }
-  void hook2a(hook_context *s, TextBuffer buffer)
+  void hook2a(hook_context *s, TextBuffer buffer, HookParam *)
   {
     s->ecx = (DWORD)allocateString(buffer.viewA());
   }
@@ -493,7 +493,7 @@ bool activehook()
 }
 void AquaplusFilter(TextBuffer *buffer, HookParam *)
 {
-  auto text = reinterpret_cast<LPSTR>(buffer->buff);
+  auto text = reinterpret_cast<LPSTR>(buffer->data);
 
   CharReplacer(buffer, '^', '\"');
   StringCharReplacer(buffer, TEXTANDLEN("\\n"), ' ');

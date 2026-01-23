@@ -218,7 +218,7 @@
 static void AdobeFlashFilter(TextBuffer *buffer, HookParam *)
 {
   // TODO: Remove [0-9a-zA-Z./]{4,} as garbage
-  LPCWSTR p = reinterpret_cast<LPCWSTR>(buffer->buff);
+  LPCWSTR p = reinterpret_cast<LPCWSTR>(buffer->data);
   for (size_t i = 0; i < buffer->size / 2; i++)
     if (p[i] & 0xff00)
       return;

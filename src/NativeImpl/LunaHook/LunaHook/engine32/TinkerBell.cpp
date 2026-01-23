@@ -248,7 +248,7 @@ namespace
         // ff ff 4 305f 305f 304b 304b 306a 306a 3057 3057 3 5c0f 5c0f 9ce5 9ce5 904a 904a
         if (![=]()
             {
-              auto wc = *(wchar_t *)buffer->buff;
+              auto wc = *(wchar_t *)buffer->data;
               switch (wc)
               {
               case L'\xfe':
@@ -282,7 +282,7 @@ namespace
           buffer->clear();
           savecontext.cnt_valid = 0;
         }
-        else if (savecontext.cnt_valid + 1 == *(wchar_t *)buffer->buff)
+        else if (savecontext.cnt_valid + 1 == *(wchar_t *)buffer->data)
         {
           buffer->clear();
           savecontext.cnt_valid = 0;

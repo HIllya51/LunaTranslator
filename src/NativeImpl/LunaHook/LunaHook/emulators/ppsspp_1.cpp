@@ -32,7 +32,7 @@ namespace
     }
     void ULJM05659(TextBuffer *buffer, HookParam *hp)
     {
-        if (buffer->buff[buffer->size - 1] == ',')
+        if (buffer->data[buffer->size - 1] == ',')
             buffer->size -= 1;
     }
     void ULJS00403(TextBuffer *buffer, HookParam *hp)

@@ -59,11 +59,11 @@ bool embedbishop()
   static std::wstring flag;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
   {
-    if (buffer->buff[0] == L'\\')
+    if (buffer->data[0] == L'\\')
     {
       flag = buffer->strW().substr(0, 2);
       buffer->size -= 4;
-      memmove(buffer->buff, buffer->buff + 4, buffer->size);
+      memmove(buffer->data, buffer->data + 4, buffer->size);
     }
     else
     {
@@ -73,7 +73,7 @@ bool embedbishop()
     s = re::sub(s, LR"(\\n(　)*)");
     buffer->from(s);
   };
-  hp.embed_fun = [](hook_context *context, TextBuffer buffer)
+  hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
   {
     context->stack[2] = (DWORD)allocateString(flag + buffer.strW());
   };

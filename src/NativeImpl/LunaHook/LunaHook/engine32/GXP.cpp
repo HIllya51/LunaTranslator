@@ -353,7 +353,7 @@ namespace
           return;
         buffer->from(text);
       }
-      void hook2a(hook_context *s, TextBuffer buffer)
+      void hook2a(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto arg = (TextUnionW *)(s->stack[0] + 4); // arg1 + 0x4
         arg_ = arg;
@@ -446,7 +446,7 @@ namespace
           return;
         buffer->from(text);
       }
-      void hook2a(hook_context *s, TextBuffer buffer)
+      void hook2a(hook_context *s, TextBuffer buffer, HookParam *)
       {
         auto arg = (TextUnionW *)s->stack[0]; // arg1 + 0x4
         arg_ = arg;

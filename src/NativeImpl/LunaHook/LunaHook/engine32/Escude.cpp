@@ -212,7 +212,7 @@ namespace
     *role = arg->role();
     buffer->from(trimmedText);
   }
-  void embed_fun(hook_context *s, TextBuffer buffer)
+  void embed_fun(hook_context *s, TextBuffer buffer, HookParam *)
   {
     auto data_ = buffer.strA();
     auto arg = (HookArgument *)s->stack[1];

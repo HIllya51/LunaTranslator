@@ -65,7 +65,7 @@ namespace
 			parsebefore((wchar_t *)GlobalLock(hClipboardData), hp, split, buffer);
 			GlobalUnlock(hClipboardData);
 		};
-		hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+		hp.embed_fun = [](hook_context *s, TextBuffer buffer, HookParam *)
 		{
 			std::wstring transwithfont = parseafter(buffer.viewW());
 			HGLOBAL hClipboardData = GlobalAlloc(GMEM_MOVEABLE, transwithfont.size() * 2 + 2);
@@ -88,7 +88,7 @@ namespace
 		{
 			parsebefore((wchar_t *)context->argof(1), hp, split, buffer);
 		};
-		hp.embed_fun = [](hook_context *s, TextBuffer buffer)
+		hp.embed_fun = [](hook_context *s, TextBuffer buffer, HookParam *)
 		{
 			std::wstring transwithfont = parseafter(buffer.viewW());
 			s->argof(1) = (uintptr_t)allocateString(transwithfont);
@@ -342,7 +342,7 @@ namespace
 				R"(\\?\)", // 路径
 			};
 			if (std::any_of(checks.begin(), checks.end(), [&](auto str)
-							{ return strstr((char *)buffer->buff, str) != 0; }))
+							{ return strstr((char *)buffer->data, str) != 0; }))
 			{
 				return buffer->clear();
 			}
