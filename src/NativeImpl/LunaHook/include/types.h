@@ -176,10 +176,10 @@ struct hook_context
 		return eax;
 #endif
 	}
-	uintptr_t &smart_argof(int idx, const HookParam &hp);
-	uintptr_t &smart_argof(int idx, const HookParam *hp);
-	uintptr_t &smart_offset(int offset, const HookParam &hp);
-	uintptr_t &smart_offset(int offset, const HookParam *hp);
+	uintptr_t &argof(int idx, const HookParam &hp);
+	uintptr_t &argof(int idx, const HookParam *hp);
+	uintptr_t &offset(int offset, const HookParam &hp);
+	uintptr_t &offset(int offset, const HookParam *hp);
 };
 #define ___baseoffset (int)offsetof(hook_context, base)
 #define regoffset(reg) ((int)offsetof(hook_context, reg) - ___baseoffset)

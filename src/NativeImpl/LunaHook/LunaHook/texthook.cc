@@ -269,7 +269,7 @@ void TextHook::Send(hook_context *context)
 
 		uintptr_t lpSplit = 0,
 				  lpRetn = context->retaddr,
-				  *plpdatain = &context->smart_offset(hp.offset, hp),
+				  *plpdatain = &context->offset(hp.offset, hp),
 				  lpDataIn = *plpdatain;
 		if (hp.jittype != JITTYPE::PC && hp.jittype != JITTYPE::UNITY)
 		{
@@ -278,7 +278,7 @@ void TextHook::Send(hook_context *context)
 		}
 		else if (hp.jittype == JITTYPE::UNITY || hp.type & CSHARP_STRING)
 		{
-			plpdatain = &context->smart_argof(hp.offset, hp);
+			plpdatain = &context->argof(hp.offset, hp);
 			lpDataIn = *plpdatain;
 		}
 		auto text_fun = hp.text_fun; // 必须保存一下，否则text_fun中置nullptr会导致后续判定错误
@@ -418,7 +418,7 @@ void TextHook::Send(hook_context *context)
 					hp.embed_fun(context, buff, &hp);
 				else if (hp.type & CSHARP_STRING)
 				{
-					unity_ui_string_embed_fun(context->smart_argof(hp.offset, hp), buff);
+					unity_ui_string_embed_fun(context->argof(hp.offset, hp), buff);
 				}
 			}
 		}

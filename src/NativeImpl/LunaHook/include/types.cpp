@@ -1,9 +1,9 @@
 
-uintptr_t &hook_context::smart_argof(int idx, const HookParam *hp)
+uintptr_t &hook_context::argof(int idx, const HookParam *hp)
 {
-	return smart_argof(idx, *hp);
+	return argof(idx, *hp);
 }
-uintptr_t &hook_context::smart_argof(int idx, const HookParam &hp)
+uintptr_t &hook_context::argof(int idx, const HookParam &hp)
 {
 #ifndef _WIN64
 	if ((hp.type & BREAK_POINT) && (idx >= 0))
@@ -14,11 +14,11 @@ uintptr_t &hook_context::smart_argof(int idx, const HookParam &hp)
 	return argof(idx);
 }
 
-uintptr_t &hook_context::smart_offset(int offset, const HookParam *hp)
+uintptr_t &hook_context::offset(int offset, const HookParam *hp)
 {
-	return smart_argof(offset, *hp);
+	return argof(offset, *hp);
 }
-uintptr_t &hook_context::smart_offset(int offset, const HookParam &hp)
+uintptr_t &hook_context::offset(int offset, const HookParam &hp)
 {
 #ifndef _WIN64
 	if ((hp.type & BREAK_POINT) && (offset >= 0))

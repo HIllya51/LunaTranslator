@@ -6,9 +6,9 @@ namespace
 
     void mscorlib_system_string_InternalSubString_hook_fun(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        uintptr_t offset = context->smart_argof(1, hp);
-        uintptr_t startIndex = context->smart_argof(2, hp);
-        uintptr_t length = context->smart_argof(3, hp);
+        uintptr_t offset = context->argof(1, hp);
+        uintptr_t startIndex = context->argof(2, hp);
+        uintptr_t length = context->argof(3, hp);
 
         MonoString *string = (MonoString *)offset;
         if (string == 0)
@@ -24,7 +24,7 @@ namespace
      */
     void SpecialHookMonoString(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        if (auto sw = commonsolvemonostring(context->smart_argof(1, hp)))
+        if (auto sw = commonsolvemonostring(context->argof(1, hp)))
             buffer->from(sw.value());
 
 #ifndef _WIN64
@@ -70,7 +70,7 @@ namespace
     void tmpembed(hook_context *context, TextBuffer buffer, HookParam *hp)
     {
         auto s = buffer.strW();
-        if (auto sw = commonsolvemonostring(context->smart_argof(hp->offset, hp)))
+        if (auto sw = commonsolvemonostring(context->argof(hp->offset, hp)))
         {
             auto origin = std::wstring(sw.value());
             std::wstring pre = re::match(origin, LR"(((<line-height=[^>]*?>|<sprite anim=[^>]*?>)*)(.*?))").value()[1];
