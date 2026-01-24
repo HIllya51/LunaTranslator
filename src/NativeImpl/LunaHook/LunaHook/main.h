@@ -10,7 +10,7 @@ void HostInfo(HOSTINFO type, LPCWSTR text, ...);
 #define ConsoleOutput(text, ...) HostInfo(HOSTINFO::Console, text, ##__VA_ARGS__, -1)
 void NotifyHookFound(HookParam hp, wchar_t *text);
 void NotifyHookRemove(uint64_t addr, LPCSTR name);
-bool NewHook(HookParam hp, LPCSTR name);
+bool NewHook(HookParam hp, LPCSTR name, bool silentlyfail = false);
 bool NewHookRetry(HookParam hp, LPCSTR name);
 
 void RemoveHook(uint64_t addr, int maxOffset = 9);
