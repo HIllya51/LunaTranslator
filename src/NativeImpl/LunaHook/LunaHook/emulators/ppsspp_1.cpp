@@ -537,7 +537,6 @@ namespace
     }
     void ULJM06196(TextBuffer *buffer, HookParam *hp)
     {
-        static std::string last;
         if (!endWith(buffer->strA(), "#n"))
         {
             return buffer->clear();
@@ -550,6 +549,12 @@ namespace
         if (!startWith(s, "#Speed[5]#Effect[0]#Scale[1]#"))
             return buffer->clear();
         ULJM05943F(buffer, hp);
+    }
+    void ULJM05975Name(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->viewA();
+        if (s.find("#n") != s.npos)
+            return buffer->clear();
     }
     void ULJM05867_1(TextBuffer *buffer, HookParam *hp)
     {
@@ -1570,7 +1575,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Solomon's Ring ～火の章～
     {0x88061B0, {0, 2, 0, 0, ULJM06200, "ULJM06200"}},
     // 神なる君と
-    {0x888F054, {0, 0, 0, 0, ULJM06289, "ULJM05975"}},
+    {0x88F6660, {FULL_STRING, 3, 0, 0, ULJM06196, "ULJM05975"}},
+    {0x88F6648, {FULL_STRING, 0, 0, 0, ULJM05975Name, "ULJM05975"}},
     // DEARDROPS DISTORTION
     {0x8814110, {USING_CHAR | DATA_INDIRECT, 4, 0, 0, 0, "ULJM05819"}},
     // 流行り神ＰＯＲＴＡＢＬＥ
