@@ -12,6 +12,7 @@ from myutils.config import (
     savehook_new_list,
     translatorsetting,
 )
+from textio.textsource.texthook import texthook
 from gui.setting.about import get_about_info
 from myutils.magpie_builtin import MagpieBuiltin, AdapterService
 from gui.gamemanager.dialog import dialog_setting_game
@@ -1734,11 +1735,13 @@ class TranslatorWindow(resizableframeless):
     @threader
     def startTranslater(self):
         t = None
+        isFromHook = isinstance(gobject.base.textsource, texthook)
         if gobject.base.textsource:
             t = gobject.base.textsource.gettextonce()
         if not t:
             t = gobject.base.currenttext
-        gobject.base.textgetmethod(t, False)
+            isFromHook = False
+        gobject.base.textgetmethod(t, is_auto_run=False, isFromHook=isFromHook)
 
     def toolbarhidedelay(self):
 

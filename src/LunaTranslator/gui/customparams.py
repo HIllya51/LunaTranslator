@@ -127,6 +127,7 @@ class customparams(QWidget):
         lay.setContentsMargins(0, 0, 0, 0)
         self.lay = lay
         value: list = dd[key]
+        self._key = key
         for i, d in enumerate(value):
             self.createline(lay, i, d)
         icon = getIconButton(icon="fa.plus", fix=False)
@@ -144,7 +145,7 @@ class customparams(QWidget):
             if not k:
                 continue
             collect.append(dict(key=k, value=v, type=t))
-        return dict(customparams=collect)
+        return {self._key: collect}
 
 
 def getcustombodyheaders(customparams: "list[dict]", **kw):
