@@ -78,7 +78,8 @@ class FenciColor(ColorControl):
         self.donthighlight = word.donthighlight
         self.specialinfo = bool(word.specialinfo)
         super().__init__(
-            ColorControl.FENCI_COLOR, (self.isdeli, self.cixing, self.specialinfo)
+            ColorControl.FENCI_COLOR,
+            (self.isdeli, self.cixing, self.specialinfo, self.donthighlight),
         )
 
     def _randomcolor_1(self):
