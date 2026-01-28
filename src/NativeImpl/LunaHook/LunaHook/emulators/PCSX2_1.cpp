@@ -1967,6 +1967,12 @@ namespace
         s = re::sub(s, L"@P@p *(.*?) *@0", L"【$1】");
         buffer->fromWA(s);
     }
+    void SLPM55121(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        if (s == L"<" || s == L"\n" || s == L"\r")
+            return buffer->clear();
+    }
 }
 struct emfuncinfoX
 {
@@ -1974,6 +1980,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 不確定世界の探偵紳士 ～悪行双麻の事件ファイル～
+    {0x114128, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s2), 0, 0, SLPM55121, "SLPM-55121"}},
     // スーパーロボット大戦Ｚ
     {0x1a0d88, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25887, "SLPS-25887"}},
     // スーパーロボット大戦Z スペシャルディスク
