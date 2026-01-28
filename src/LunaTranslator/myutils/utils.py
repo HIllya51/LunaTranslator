@@ -1010,9 +1010,14 @@ def common_create_gemini_request(
         # https://ai.google.dev/gemini-api/docs/thinking?hl=zh-cn#set-budget
         gen_config.update(
             thinkingConfig=dict(
-                thinkingBudget={"low": 512, "medium": -1, "high": 24576, "minimal": 0}[
-                    config["reasoning_effort"]
-                ]
+                thinkingBudget={
+                    "low": 512,
+                    "medium": -1,
+                    "high": 24576,
+                    "xhigh": 24576,
+                    "minimal": 0,
+                    "none": 0,
+                }[config["reasoning_effort"]]
             )
         )
     model: str = config["model"]

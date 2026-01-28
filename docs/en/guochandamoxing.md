@@ -64,7 +64,7 @@ However, sometimes you may want to use multiple different API interface addresse
 
     For the Gemini platform, this option will automatically map to Gemini's `thinkingBudget`. The mapping rules are as follows:  
     
-    minimal -> 0 (disable thinking, but not applicable to the Gemini-2.5-Pro model), low -> 512, medium -> -1 (enable dynamic thinking), high -> 24576.
+    none/minimal -> 0 (disable thinking, but not applicable to the Gemini-2.5-Pro model), low -> 512, medium -> -1 (enable dynamic thinking), high/xhigh -> 24576.
 
 1. #### Other Parameters  
 

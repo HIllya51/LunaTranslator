@@ -64,7 +64,7 @@
 
     Geminiプラットフォームでは、このオプションをGeminiの`thinkingBudget`に自動的にマッピングします。マッピングルールは次の通りです：
     
-    minimal->0（思考無効、ただしGemini-2.5-Proモデルでは適用不可）、low->512、medium->-1（動的思考を有効）、high->24576。  
+    none/minimal->0（思考無効、ただしGemini-2.5-Proモデルでは適用不可）、low->512、medium->-1（動的思考を有効）、high/xhigh->24576。  
 
 1. #### その他のパラメータ  
 

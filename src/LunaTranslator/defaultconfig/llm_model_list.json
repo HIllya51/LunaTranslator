@@ -4,6 +4,29 @@
         "lang": "ja->zh",
         "repos": [
             {
+                "repo": "GalTransl-v4-4B-2601",
+                "models": [
+                    {
+                        "file": "GalTransl-v4-4B-2512-Q5_K_S.gguf",
+                        "size": 2823707232,
+                        "timestamp": "2025-12-17T07:28:22",
+                        "sha256": "2c256957d46c1ecfb7e7906c2fcd2728fb11fe88d41f27b29a980c75b4786478"
+                    },
+                    {
+                        "file": "GalTransl-v4-4B-2512.gguf",
+                        "size": 3306256992,
+                        "timestamp": "2025-12-17T01:19:41",
+                        "sha256": "149a7e390e4c395b7788146b49a1007c8796e54c6003b5099425e11931d5a08e"
+                    },
+                    {
+                        "file": "Galtransl-v4-4B-2601.gguf",
+                        "size": 3306256992,
+                        "timestamp": "2026-01-28T07:34:39",
+                        "sha256": "875d5f1f44981fce3c99a032c180cb0d66563bdd39aa27c0ee6a17676bc9e2cd"
+                    }
+                ]
+            },
+            {
                 "repo": "Sakura-14B-Qwen3-v1.5-GGUF",
                 "models": [
                     {
@@ -17,23 +40,6 @@
                         "size": 12121937120,
                         "timestamp": "2026-01-12T00:52:20",
                         "sha256": "c1314497e632990952826d3703e6832e24425c1314c0bb6d2dc47ef1db37987f"
-                    }
-                ]
-            },
-            {
-                "repo": "GalTransl-v4-4B-2512",
-                "models": [
-                    {
-                        "file": "GalTransl-v4-4B-2512-Q5_K_S.gguf",
-                        "size": 2823707232,
-                        "timestamp": "2025-12-17T07:28:22",
-                        "sha256": "2c256957d46c1ecfb7e7906c2fcd2728fb11fe88d41f27b29a980c75b4786478"
-                    },
-                    {
-                        "file": "GalTransl-v4-4B-2512.gguf",
-                        "size": 3306256992,
-                        "timestamp": "2025-12-17T01:19:41",
-                        "sha256": "149a7e390e4c395b7788146b49a1007c8796e54c6003b5099425e11931d5a08e"
                     }
                 ]
             },

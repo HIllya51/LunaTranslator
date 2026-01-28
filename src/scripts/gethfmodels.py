@@ -8,8 +8,8 @@ res = [
         "series": "SakuraLLM",
         "lang": "ja->zh",
         "repos": [
+            {"repo": "GalTransl-v4-4B-2601"},
             {"repo": "Sakura-14B-Qwen3-v1.5-GGUF"},
-            {"repo": "GalTransl-v4-4B-2512"},
             {"repo": "Sakura-GalTransl-14B-v3.8"},
             {"repo": "Sakura-GalTransl-7B-v3.7"},
             {"repo": "Sakura-7B-Qwen2.5-v1.0-GGUF"},
@@ -102,6 +102,7 @@ for line in tqdm(res, position=0):
             ls.append({"file": m, "size": sz, "timestamp": tm, "sha256": sha})
         repo["models"] = ls
 
+print(json.dumps(res, indent=4))
 with open(
     "../LunaTranslator/defaultconfig/llm_model_list.json", "w", encoding="utf8"
 ) as ff:

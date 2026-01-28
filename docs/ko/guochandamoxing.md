@@ -64,7 +64,7 @@
 
     Gemini 플랫폼에서는 이 옵션을 Gemini의 `thinkingBudget`에 자동으로 매핑합니다. 매핑 규칙은 다음과 같습니다: 
     
-    minimal→0(사고 비활성화, 단 Gemini-2.5-Pro 모델에는 적용되지 않음), low→512, medium→-1(동적 사고 활성화), high→24576.  
+    none/minimal→0(사고 비활성화, 단 Gemini-2.5-Pro 모델에는 적용되지 않음), low→512, medium→-1(동적 사고 활성화), high/xhigh→24576.  
 
 1. #### 기타 파라미터  
 

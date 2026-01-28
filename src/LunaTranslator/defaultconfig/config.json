@@ -1371,7 +1371,7 @@
                 "top_p_use": true,
                 "frequency_penalty": 0,
                 "frequency_penalty_use": false,
-                "reasoning_effort": "medium",
+                "reasoning_effort": "none",
                 "reasoning_effort_use": false,
                 "user_user_prompt_1": "",
                 "use_user_user_prompt": false,
@@ -1384,16 +1384,20 @@
                     "type": "combo",
                     "refswitch": "reasoning_effort_use",
                     "internal": [
+                        "none",
                         "minimal",
                         "low",
                         "medium",
-                        "high"
+                        "high",
+                        "xhign"
                     ],
                     "list": [
+                        "none",
                         "minimal",
                         "low",
                         "medium",
-                        "high"
+                        "high",
+                        "xhign"
                     ]
                 },
                 "customparams": {

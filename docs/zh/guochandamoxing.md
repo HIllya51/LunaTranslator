@@ -63,7 +63,7 @@
 
     对于Gemini平台，会自动将选项映射为Gemini的`thinkingBudget`，映射规则为：
     
-    minimal->0(停用思考，但对于Gemini-2.5-Pro模型不适用), low->512, medium->-1（开启动态思维）, high->24576。
+    none/minimal->0(停用思考，但对于Gemini-2.5-Pro模型不适用), low->512, medium->-1（开启动态思维）, high/xhigh->24576。
 
 1. #### 其他参数
 

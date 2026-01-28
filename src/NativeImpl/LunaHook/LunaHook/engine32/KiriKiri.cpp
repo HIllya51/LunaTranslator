@@ -1224,7 +1224,19 @@ namespace
       return buffer->clear();
     if (vw[0] == L' ' && vw.size() <= 2)
       return buffer->clear();
-    if (vw[0] == L'@' || vw[0] == L']')
+    if (vw[0] == L'@')
+    {
+      auto _s = buffer->strW();
+      if (auto mc = re::search(_s, LR"(@voice.*?name='(.*?)'.*?word='(.*?)')"))
+      {
+        auto name = mc.value()[1].str();
+        name = re::sub(name, L"（.*?）");
+        return buffer->from(name + L"「" + mc.value()[2].str() + L"」");
+      }
+      else
+        return buffer->clear();
+    }
+    if (vw[0] == L']')
       return buffer->clear();
     if (startWith(vw, L" : ") && endWith(vw, L" : "))
       return buffer->clear();
@@ -1630,8 +1642,19 @@ namespace
       auto t = buffer->strW();
       if (all_ascii(t))
         return buffer->clear();
-      if (t.find(L".ks") != t.npos || t.find(L".tjs") != t.npos || t.find(L".xp3") != t.npos || t.find(L"/") != t.npos || t.find(L"\\") != t.npos || t[0] == L'@')
+      if (t.find(L".ks") != t.npos || t.find(L".tjs") != t.npos || t.find(L".xp3") != t.npos || t.find(L"/") != t.npos || t.find(L"\\") != t.npos)
         return buffer->clear(); // 脚本路径或文件路径
+      if (t[0] == L'@')
+      {
+        if (auto mc = re::search(t, LR"(@voice.*?name='(.*?)'.*?word='(.*?)')"))
+        {
+          auto name = mc.value()[1].str();
+          name = re::sub(name, L"（.*?）");
+          return buffer->from(name + L"「" + mc.value()[2].str() + L"」");
+        }
+        else
+          return buffer->clear();
+      }
       // if(t.find(L"[\u540d\u524d]")!=t.npos)return false; //[名前]，翻译后破坏结构
       if (t.find(L"\u8aad\u307f\u8fbc\u307f") != t.npos)
         return buffer->clear(); // 読み込み
@@ -1650,6 +1673,8 @@ namespace
     hp.embed_fun = [](hook_context *s, TextBuffer buffer, HookParam *)
     {
       auto t = std::wstring((wchar_t *)s->stack[off / 4]);
+      if (t[0] == L'@')
+        return;
       auto newText = buffer.strW();
       if (t.size() > 4 && t.substr(t.size() - 4) == L"[np]")
         newText = newText + L"[np]";
