@@ -17,6 +17,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010068501FF9A000 | UN:LOGICAL |
 |  | 0100A05026270000 | KANADE |
 |  | 01005FE025F22000 | Apathy 鳴神学園 霊怪記 |
 |  | 0100A19025D44000 | Neon Clash Echoes of the Lost |

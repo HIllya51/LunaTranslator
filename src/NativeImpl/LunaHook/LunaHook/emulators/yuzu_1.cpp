@@ -2813,6 +2813,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // UN:LOGICAL
+    {0x818EE690, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x010068501FF9A000ull, "1.0.0"}},
+    {0x81BEC158, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x010068501FF9A000ull, "1.0.0"}},
+    {0x81BECDD4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x010068501FF9A000ull, "1.0.0"}}, // name
     // KANADE
     {0x80050E70, {CODEC_UTF16, 0, 0, 0, F0100A05026270000, 0x0100A05026270000ull, "1.0.0"}},
     // Apathy 鳴神学園 霊怪記
