@@ -9,7 +9,9 @@
 #include "engine64/CMVS.h"
 #include "engine64/5pb.h"
 #include "engine64/Chunsoft.h"
+#include "engine64/THLabyrinth3.h"
 #include "engine64/lucasystem.h"
+#include "engine64/WillPlus.h"
 #include "engine64/UnrealEngine.h"
 #include "engine64/TYPEMOON.h"
 #include "engine64/GameMaker.h"
@@ -59,5 +61,7 @@ std::vector<ENGINE *> check_engines()
         new GameMaker,
         new Chunsoft,
         new sakanagl,
+        new WillPlus,
+        new THLabyrinth3,
     };
 }
