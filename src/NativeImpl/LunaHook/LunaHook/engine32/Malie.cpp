@@ -1708,11 +1708,48 @@ namespace
 
 }
 
+static bool h7()
+{
+  // タペストリー
+  static bool _switch = false;
+  static std::wstring __s;
+  HookParam hp{};
+  wcscpy(hp.module, L"tools.dll");
+  strcpy(hp.function, "RichString_FormatEx");
+  hp.type = CODEC_UTF16 | USING_STRING | MODULE_OFFSET | FUNCTION_OFFSET;
+  hp.offset = stackoffset(2);
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+  {
+    static std::wstring last;
+    auto s = buffer->strW();
+    _switch = (last == s);
+    if (!_switch)
+      __s = L"\n";
+    last = s;
+    buffer->clear();
+  };
+  if (!NewHook(hp, "RichString_FormatEx"))
+    return false;
+  HookParam hp2{};
+  hp2.address = (DWORD)GetTextExtentExPointW;
+  hp2.type = CODEC_UTF16 | USING_CHAR | DATA_INDIRECT;
+  hp2.offset = stackoffset(2);
+  hp2.filter_fun = [](TextBuffer *buffer, HookParam *)
+  {
+    if (_switch)
+    {
+      buffer->from(__s);
+      __s.clear();
+    }
+  };
+  return NewHook(hp2, "GetTextExtentExPointW");
+}
 bool Malie::attach_function()
 {
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
   //   if(embed)Patch::attachFont(processStartAddress,processStopAddress); 导致闪退，放弃
   auto b1 = InsertMalieHook() || embed;
   b1 = malie_light() || b1;
+  b1 |= h7();
   return b1;
 }

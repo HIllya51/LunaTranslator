@@ -11,6 +11,7 @@
 #include "engine32/Hug.h"
 #include "engine32/Furaiki.h"
 #include "engine32/Cage.h"
+#include "engine32/MBSTRUTH.h"
 #include "engine32/ONScripterru.h"
 #include "engine32/ADVSystem.h"
 #include "engine32/Pinpai.h"
@@ -473,5 +474,6 @@ std::vector<ENGINE *> check_engines()
         new R11,
         new For,
         new AniSeed,
+        new MBSTRUTH,
     };
 }

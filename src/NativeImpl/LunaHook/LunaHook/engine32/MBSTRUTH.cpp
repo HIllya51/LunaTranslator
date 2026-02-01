@@ -1,0 +1,31 @@
+﻿#include "MBSTRUTH.h"
+
+bool MBSTRUTH::attach_function()
+{
+  //[030228][MBS TRUTH] DOOP ADVANCE
+  const BYTE bytes[] = {
+      0x55,
+      0x8b, 0xec,
+      0x81, 0xc4, XX4,
+      0x53,
+      0x56,
+      0x57,
+      0x33, 0xdb,
+      0x89, 0x9d, XX4,
+      0x89, 0x4d, XX,
+      0x8b, 0xf2,
+      0x89, 0x45, XX,
+      0x8b, 0x5d, 0x08,
+      0x33, 0xc0,
+      0x55,
+      0x68, XX4,
+      0x64, 0xff, 0x30,
+      0x64, 0x89, 0x20,
+      0x8b, 0x45, 0x0c};
+
+  HookParam hp;
+  hp.address = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  hp.offset = regoffset(edx);
+  hp.type = USING_CHAR | CODEC_ANSI_BE;
+  return NewHook(hp, "MBSTRUTH");
+}
