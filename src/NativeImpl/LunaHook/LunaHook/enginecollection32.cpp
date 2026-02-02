@@ -10,6 +10,7 @@
 #include "engine32/LCScript.h"
 #include "engine32/Hug.h"
 #include "engine32/Furaiki.h"
+#include "engine32/Milk.h"
 #include "engine32/Cage.h"
 #include "engine32/MBSTRUTH.h"
 #include "engine32/ONScripterru.h"
@@ -475,5 +476,6 @@ std::vector<ENGINE *> check_engines()
         new For,
         new AniSeed,
         new MBSTRUTH,
+        new Milk,
     };
 }
