@@ -916,6 +916,12 @@ namespace
         strReplace(ws, L"　");
         buffer->fromWA(ws);
     }
+    void PCSG00664(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"((\x81\x40)*\[n\](\x81\x40)*)");
+        buffer->from(s);
+    }
     void FPCSG01066(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1018,6 +1024,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // なないろ リンカネーション
+    {0x80035C34, {FULL_STRING, 0, 0, 0, PCSG00664, "PCSG00664"}},
     // 白と黒のアリス
     {0x80039656, {CODEC_UTF8, 0, 0, 0, FPCSG01066, "PCSG00944"}},
     {0x80012DFE, {CODEC_UTF8, 0, 0, 0, FPCSG01066, "PCSG00944"}},

@@ -2813,6 +2813,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // この素晴らしい世界に祝福を！　この欲望の衣装に寵愛を！ 
+    {0x803D9698, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x010016C011AAA000ull, "1.0.0"}},
     // UN:LOGICAL
     {0x818EE690, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x010068501FF9A000ull, "1.0.0"}},
     {0x81BEC158, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x010068501FF9A000ull, "1.0.0"}},
