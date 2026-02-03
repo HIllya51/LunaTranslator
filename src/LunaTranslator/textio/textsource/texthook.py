@@ -360,15 +360,6 @@ class texthook(basetext):
             gobject.base.hookselectdialog.realshowhide.emit(True)
         self.injectproc(injecttimeout, pids)
 
-        gobject.base.translation_ui.showMarkDownSig.emit(
-            _TR(
-                "正在等待DLL注入到游戏中……\n如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。"
-            )
-            + "\n[{}]({})".format(
-                _TR("说明"), dynamiclink("README.html#anchor-waitdll", docs=True)
-            )
-        )
-
     def QueryThreadHistory(self, tp, _latest=False):
         ret = []
         self.Luna_QueryThreadHistory(tp, _latest, QueryHistoryCallback(ret.append))
@@ -390,10 +381,19 @@ class texthook(basetext):
             self.Luna_ConnectProcess(pid)
             if self.Luna_CheckIfNeedInject(pid):
                 injectpids.append(pid)
-        if len(injectpids):
-            arch = ["32", "64"][self.is64bit]
-            dll = os.path.abspath("files/LunaHook/LunaHook{}.dll".format(arch))
-            self.injectdll(injectpids, arch, dll)
+        if not injectpids:
+            return
+        gobject.base.translation_ui.showMarkDownSig.emit(
+            _TR(
+                "正在等待DLL注入到游戏中……\n如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。"
+            )
+            + "\n[{}]({})".format(
+                _TR("说明"), dynamiclink("README.html#anchor-waitdll", docs=True)
+            )
+        )
+        arch = ["32", "64"][self.is64bit]
+        dll = os.path.abspath("files/LunaHook/LunaHook{}.dll".format(arch))
+        self.injectdll(injectpids, arch, dll)
 
     def injectdll(self, injectpids, bit, dll):
 
