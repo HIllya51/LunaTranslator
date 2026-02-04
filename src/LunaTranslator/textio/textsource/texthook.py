@@ -374,8 +374,7 @@ class texthook(basetext):
     def start_unsafe(self, pids):
         _ = checkintegrity()
         if _:
-            gobject.base.RichMessageBox.emit(_)
-            return
+            raise Exception(_[1])
         injectpids = []
         for pid in pids:
             self.Luna_ConnectProcess(pid)

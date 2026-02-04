@@ -157,24 +157,21 @@ def checkintegrity():
         if not os.path.exists(f):
             collect.append(os.path.normpath(os.path.abspath(f)))
     if len(collect):
-        return 1, (
-            _TR("错误"),
-            _TR("找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试").format(
-                modules="\n".join(collect)
-            )
-            + '\n<a href="{}">{}</a>'.format(
-                dynamiclink("README.html#anchor-commonerros", docs=True), _TR("说明")
-            ),
+        return 1, _TR(
+            "找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试"
+        ).format(modules="\n".join(collect)) + '\n<a href="{}">{}</a>'.format(
+            dynamiclink("README.html#anchor-commonerros", docs=True), _TR("说明")
         )
     return None
 
 
 def mayberror(error=None):
     from gui.RichMessageBox import RichMessageBox
+    from myutils.config import _TR
 
     if error:
         error, error_t = error
-        RichMessageBox(None, *error_t, iserror=error)
+        RichMessageBox(None, (_TR("成功"), _TR("失败"))[error], error_t, iserror=error)
         if error:
             os._exit(0)
 
@@ -290,13 +287,13 @@ def ifhasllmapi(_):
             startwithgameuid = _[1]
         elif _[0] == 2:
             if windows.GetLastError() == windows.ERROR_ALREADY_EXISTS:
-                error = 1, (_TR("错误"), _TR("请先关闭软件，然后再导入！"))
+                error = 1, _TR("请先关闭软件，然后再导入！")
             else:
                 try:
                     parsellmapi(_[1])
-                    error = 0, (_TR("成功"), _TR("添加成功"))
+                    error = 0, _TR("添加成功")
                 except:
-                    error = 1, (_TR("错误"), format_exc())
+                    error = 1, format_exc()
     return startwithgameuid, error
 
 

@@ -9,6 +9,7 @@
 #include "engine32/PixelGameMakerMVplayer.h"
 #include "engine32/LCScript.h"
 #include "engine32/Hug.h"
+#include "engine32/AZScript.h"
 #include "engine32/Furaiki.h"
 #include "engine32/Milk.h"
 #include "engine32/Cage.h"
@@ -477,5 +478,6 @@ std::vector<ENGINE *> check_engines()
         new AniSeed,
         new MBSTRUTH,
         new Milk,
+        new AZScript,
     };
 }
