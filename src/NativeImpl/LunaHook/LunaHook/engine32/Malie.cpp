@@ -1710,14 +1710,16 @@ namespace
 
 static bool h7()
 {
+  auto RichString_FormatEx = GetProcAddress(GetModuleHandleW(L"tools.dll"), "RichString_FormatEx");
+  if (!RichString_FormatEx)
+    return false; // 防止脑残问为什么failed
   // タペストリー
   static bool _switch = false;
   static std::wstring __s;
   HookParam hp{};
-  wcscpy(hp.module, L"tools.dll");
-  strcpy(hp.function, "RichString_FormatEx");
-  hp.type = CODEC_UTF16 | USING_STRING | MODULE_OFFSET | FUNCTION_OFFSET;
+  hp.type = CODEC_UTF16 | USING_STRING;
   hp.offset = stackoffset(2);
+  hp.address = (DWORD)RichString_FormatEx;
   hp.filter_fun = [](TextBuffer *buffer, HookParam *)
   {
     static std::wstring last;

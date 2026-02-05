@@ -44,6 +44,9 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 else()
 	add_executable(shareddllproxy ${shareddllproxy_common} lec.cpp Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp)
 endif()
+set_target_properties(shareddllproxy PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
 add_subdirectory(voiceroid2)
 add_subdirectory(FileLocksmithLibInterop)
 

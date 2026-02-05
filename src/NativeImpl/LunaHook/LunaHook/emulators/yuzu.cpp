@@ -129,8 +129,8 @@ namespace
         auto addr = MemDbg::findBytes(target, sizeof(target), processStartAddress, processStopAddress);
         if (!addr)
             return false;
-        addr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
-        if (!addr)
+        auto laddr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
+        if (!laddr)
             return false;
         /*
 .text:0000000140B117B2 48 8D 05 67 EB 51 00                          lea     rax, aBootingGame016 ; "Booting game: {:016X} | {} | {}"
@@ -155,26 +155,42 @@ namespace
             0xb2, XX,
             0x41, 0xB9, XX4,
             0xe8, XX4};
-        auto addr1 = MemDbg::findBytes(sig, sizeof(sig), addr, addr + 0x100);
-        auto addr2 = MemDbg::findBytes(sig2, sizeof(sig2), addr, addr + 0x100);
+        auto addr1 = MemDbg::findBytes(sig, sizeof(sig), laddr, laddr + 0x100);
+        auto addr2 = MemDbg::findBytes(sig2, sizeof(sig2), laddr, laddr + 0x100);
         addr = (addr1 && addr2) ? max(addr1, addr2) : (addr1 ? addr1 : addr2);
-        bool isclang = addr == addr2;
+        int ver = addr == addr2 ? 1 : 0;
+        if (!addr)
+        {
+            // citron 2026.2.1 pgo
+            BYTE sig3[] = {
+                0xb2, 0x02,
+                0x48, 0x89, XX, XX, XX,
+                0x4c, 0x89, XX, XX, XX,
+                0x48, XX4, XX4,
+                0xe8, XX4};
+            addr = MemDbg::findBytes(sig3, sizeof(sig3), laddr, laddr + 0x100);
+            ver = 2;
+        }
         if (!addr)
             return false;
         HookParam hp;
-        if (isclang)
-        {
-            hp.address = addr + 2 + 2 + 6 + 5 + *(int *)(addr + 2 + 2 + 6 + 1);
-            hp.user_value = *(char *)(addr + 3) | ((*(char *)(addr + 1)) << 8);
-        }
-        else
+        if (ver == 0)
         {
             hp.address = addr + 9 + *(int *)(addr + 5);
             hp.user_value = *(char *)(addr + 1) | ((*(char *)(addr + 3)) << 8);
         }
+        else if (ver == 1)
+        {
+            hp.address = addr + 2 + 2 + 6 + 5 + *(int *)(addr + 2 + 2 + 6 + 1);
+            hp.user_value = *(char *)(addr + 3) | ((*(char *)(addr + 1)) << 8);
+        }
+        else if (ver == 2)
+        {
+            hp.address = addr + 2 + 5 + 5 + 9 + 5 + *(int *)(addr + 2 + 5 + 5 + 9 + 1);
+        }
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
-            if (((uint8_t)context->argof(2) | ((uint8_t)context->argof(1) << 8)) != hp->user_value)
+            if (hp->user_value && (((uint8_t)context->argof(2) | ((uint8_t)context->argof(1) << 8)) != hp->user_value))
                 return;
             auto loadinfo = (char *)context->argof(5);
             if (strcmp("BootGame", loadinfo))
