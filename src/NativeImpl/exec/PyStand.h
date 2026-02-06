@@ -32,7 +32,7 @@ public:
 
 	std::wstring exepath;
 	bool checkintegrity();
-	std::set<const wchar_t *> checkintegrity_(bool & succ);
+	std::set<const wchar_t *> checkintegrity_(int & succ);
 
 protected:
 	bool CheckEnviron(const wchar_t *rtp);

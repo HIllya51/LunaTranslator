@@ -468,7 +468,7 @@ bool VerifyKeyMatchesSelf(const wchar_t *filePath, const std::optional<std::vect
 	return memcmp(selfKey.value().data(), targetKey.value().data(), selfKey.value().size()) == 0;
 }
 
-std::set<const wchar_t *> PyStand::checkintegrity_(bool &succ)
+std::set<const wchar_t *> PyStand::checkintegrity_(int &succ)
 {
 	// 分别对python代码检查hash，对exe/dll检查签名
 	std::set<const wchar_t *> collect;
@@ -478,7 +478,7 @@ std::set<const wchar_t *> PyStand::checkintegrity_(bool &succ)
 	{
 		if (!VerifyFileSignature(exepath.c_str()))
 		{
-			succ = false;
+			succ = -1;
 			return {};
 		}
 		for (auto &&fn : checksig)
@@ -497,6 +497,7 @@ std::set<const wchar_t *> PyStand::checkintegrity_(bool &succ)
 		auto f = readFile(fn);
 		if (!f)
 		{
+			succ = -2;
 			collect.insert(fn);
 			continue;
 		}
@@ -508,9 +509,9 @@ std::set<const wchar_t *> PyStand::checkintegrity_(bool &succ)
 }
 bool PyStand::checkintegrity()
 {
-	bool succ = true;
+	int succ = 1;
 	auto invalidfiles = checkintegrity_(succ);
-	if (!succ)
+	if (succ == -1)
 	{
 		std::wstringstream ss;
 		ss << L"主程序已被篡改，无法运行 ！";
@@ -519,33 +520,45 @@ bool PyStand::checkintegrity()
 		MessageBoxW(0, ss.str().c_str(), L"Error", MB_SYSTEMMODAL);
 		return false;
 	}
+	else if (succ == -2)
+	{
+		std::wstringstream ss;
+		ss << L"部分文件丢失，无法运行 ！";
+		ss << L"\n";
+		ss << L"Some program files lost, cannot run!";
+		MessageBoxW(0, ss.str().c_str(), L"Error", MB_SYSTEMMODAL);
+		return false;
+	}
 	if (invalidfiles.size())
 	{
 		// 检查到无效文件时，仍执行，但弹窗警告。
 		std::wstringstream ss;
-		ss << L"以下文件可能已被篡改，是否仍要运行？";
+		ss << L"部分文件可能已被篡改，是否仍要运行？";
 		ss << L"\n";
-		ss << L"The following files may have been altered. Do you still want to run it?";
-		int idx = 1;
-		for (auto &f : invalidfiles)
+		ss << L"Some files may have been altered. Do you still want to run it?";
+		if (0)
 		{
-			// 前十个和最后一个显示名称，中间显示一个省略号
-			if (idx == invalidfiles.size() || idx < 10)
+			int idx = 1;
+			for (auto &f : invalidfiles)
 			{
-				ss << L"\n";
-				ss << idx;
-				ss << L". ";
-				ss << f;
+				// 前十个和最后一个显示名称，中间显示一个省略号
+				if (idx == invalidfiles.size() || idx < 10)
+				{
+					ss << L"\n";
+					ss << idx;
+					ss << L". ";
+					ss << f;
+				}
+				else if (idx == 10)
+				{
+					ss << L"\n";
+					ss << L"...";
+				}
+				else if (idx > 10)
+				{
+				}
+				idx++;
 			}
-			else if (idx == 10)
-			{
-				ss << L"\n";
-				ss << L"...";
-			}
-			else if (idx > 10)
-			{
-			}
-			idx++;
 		}
 		auto checked = MessageBoxW(0, ss.str().c_str(), L"Warning", MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL);
 		if (checked != IDYES)
