@@ -1,5 +1,5 @@
-import shutil, os
-import sys
+import shutil, os, base64
+import sys, re, requests
 from importanalysis import importanalysis
 
 arch = sys.argv[1]
@@ -65,8 +65,23 @@ try:
     shutil.rmtree(rf"{targetdir}\files\{baddll}")
 except:
     pass
-shutil.copy(r"..\LICENSE", targetdir)
 
+shutil.make_archive("LICENSE")
+shutil.copy(r"..\LICENSE", os.path.join(targetdir, "LICENSE", "LICENSE.LunaTranslator"))
+with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
+    for _ in re.findall(r'makelink\(".*?"\)', ff.read()):
+        _js: dict[str, str] = requests.get(
+            rf"https://api.github.com/repos/{_[10:-1]}/license"
+        ).json()
+        content = _js.get("content")
+        if content:
+            content = base64.b64encode(content.encode()).decode()
+            with open(
+                os.path.join(targetdir, "LICENSE", "LICENSE." + _.replace("/", ".")),
+                "w",
+                encoding="utf8 ",
+            ) as ff:
+                ff.write(content)
 collect = []
 for _dir, _, fs in os.walk(targetdir):
     for f in fs:
@@ -137,7 +152,9 @@ if os.path.exists(rf"{target}.7z"):
     os.remove(rf"{target}.7z")
 
 if 0:
-    os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {target}.zip {target}')
+    os.system(
+        rf'"C:\Program Files\7-Zip\7z.exe" a -m0=Deflate -mx9 {target}.zip {target}'
+    )
 if 0:
     os.system(rf'"C:\Program Files\7-Zip\7z.exe" a -m0=LZMA2 -mx9 {target}.7z {target}')
     with open(r"C:\Program Files\7-Zip\7z.sfx", "rb") as ff:
