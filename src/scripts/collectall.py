@@ -13,14 +13,16 @@ def get_json(url: str, headers=None):
     headers.setdefault("User-Agent", "Mozilla/5.0")
 
     req = urllib.request.Request(url, headers=headers)
-
-    with urllib.request.urlopen(req) as response:
-        # 读取响应内容
-        data = response.read()
-        # 解码为字符串
-        text = data.decode("utf-8")
-        # 解析JSON
-        return json.loads(text)
+    try:
+        with urllib.request.urlopen(req) as response:
+            # 读取响应内容
+            data = response.read()
+            # 解码为字符串
+            text = data.decode("utf-8")
+            # 解析JSON
+            return json.loads(text)
+    except:
+        return {}
 
 
 arch = sys.argv[1]
