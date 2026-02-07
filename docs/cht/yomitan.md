@@ -8,6 +8,9 @@
 
 1. 啟用**使用瀏覽器擴充功能**，並新增 Yomitan 擴充功能。
 
+    >[!WARNING]
+    >你應該新增Chrome/Edge版本的插件，Firefox版本的插件無法相容。
+
    ![img](https://image.lunatranslator.org/zh/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)

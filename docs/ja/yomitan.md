@@ -8,6 +8,10 @@
 
 1. **ブラウザ拡張機能を使用**を有効にし、yomitan拡張機能を追加します。
 
+    >[!WARNING]
+    >Chrome / Edgeバージョンのプラグインを追加してください。Firefoxバージョンのプラグインは互換性がありません。
+
+
    ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)

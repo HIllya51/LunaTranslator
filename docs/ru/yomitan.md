@@ -8,6 +8,11 @@
 
 1. Включите **Использовать расширение браузера** и добавьте расширение Yomitan.
 
+    >[!WARNING]
+    >Вам следует добавить плагин для версии Chrome/Edge. Плагин для версии Firefox несовместим.
+
+
+
    ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)

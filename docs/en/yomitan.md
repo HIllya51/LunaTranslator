@@ -8,6 +8,10 @@
 
 1. Enable **Use Browser Extension** and add the Yomitan extension.
 
+    >[!WARNING]
+    >You should add the Chrome/Edge version of the plugin. The Firefox version of the plugin is not compatible.
+
+
    ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)

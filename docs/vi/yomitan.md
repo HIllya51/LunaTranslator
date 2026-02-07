@@ -8,6 +8,9 @@
 
 1. Kích hoạt **Sử dụng Tiện ích Trình duyệt** và thêm tiện ích Yomitan.
 
+    >[!WARNING]
+    >Bạn nên thêm phiên bản tiện ích mở rộng dành cho Chrome/Edge. Phiên bản dành cho Firefox không tương thích.
+
    ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)

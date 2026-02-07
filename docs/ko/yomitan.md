@@ -8,6 +8,10 @@
 
 1. **브라우저 확장 프로그램 사용**을 활성화하고 yomitan 확장 프로그램을 추가합니다.
 
+    >[!WARNING]
+    >Chrome/Edge 버전 플러그인을 추가해야 합니다. Firefox 버전 플러그인은 호환되지 않습니다.
+
+
    ![img](https://image.lunatranslator.org/en/yomitan3.png)
 
    ![img](https://image.lunatranslator.org/zh/yomitan2.png)

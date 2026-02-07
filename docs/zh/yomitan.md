@@ -8,6 +8,9 @@
 
 1. 激活**使用浏览器插件**，并添加yomitan插件。
 
+    >[!WARNING]
+    >你应该添加Chrome/Edge版本的插件，Firefox版本的插件无法兼容。
+
     ![img](https://image.lunatranslator.org/zh/yomitan3.png)
 
     ![img](https://image.lunatranslator.org/zh/yomitan2.png)
