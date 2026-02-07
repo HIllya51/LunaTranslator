@@ -94,7 +94,7 @@ shutil.copy(
 with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
     for _ in re.findall(r'makelink\(".*?"\)', ff.read()):
         _js: dict[str, str] = get_json(
-            rf"https://api.github.com/repos/{_[10:-1]}/license"
+            rf"https://api.github.com/repos/{_[10:-2]}/license"
         )
         content = _js.get("content")
         if content:
