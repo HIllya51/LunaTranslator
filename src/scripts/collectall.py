@@ -87,7 +87,7 @@ try:
 except:
     pass
 
-shutil.make_archive("LICENSES")
+os.makedirs("LICENSES")
 shutil.copy(
     r"..\LICENSE", os.path.join(targetdir, "LICENSES", "LICENSE.LunaTranslator")
 )
