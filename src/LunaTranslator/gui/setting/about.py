@@ -395,6 +395,7 @@ def setTab_about(self: QWidget, basel):
                         makelink("gexgd0419/NaturalVoiceSAPIAdapter"),
                         makelink("microsoft/PowerToys"),
                         makelink("WaterJuice/WjCryptLib"),
+                        makelink("dpirch/libfvad"),
                     ],
                     "LICENSE",
                 )
