@@ -102,7 +102,7 @@ with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
         if content:
             content = base64.b64encode(content.encode()).decode()
             with open(
-                os.path.join(targetdir, "LICENSES", "LICENSE." + _.replace("/", ".")),
+                os.path.join(targetdir, "LICENSES", "LICENSE." + _[10:-2].replace("/", ".")),
                 "w",
                 encoding="utf8 ",
             ) as ff:
