@@ -469,7 +469,8 @@
         "addsuccautocloseEx": false,
         "boldword": false,
         "tags": [],
-        "allowDuplicate": true
+        "allowDuplicate": true,
+        "autorecord": false
     },
     "imageformat2": "webp",
     "mp3kbps": 64,
@@ -1996,6 +1997,7 @@
     "proxies": null,
     "viewlistpos": 0,
     "wordlabel": [],
+    "wordlabel2": [],
     "getWordFallbackClipboard": true,
     "verticalhorizontal": false,
     "noundictconfig_ex": [],

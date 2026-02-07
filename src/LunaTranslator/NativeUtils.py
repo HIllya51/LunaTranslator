@@ -1272,3 +1272,32 @@ def AnalysisDllImports(file, needNameOnly=True, Allimports=True):
 # print(
 #     AnalysisDllExports(r"D:\GitHub\LunaTranslator\src\files\DLL32\CVUtils.dll")
 # )
+
+record_with_vad_create = utilsdll.record_with_vad_create
+record_with_vad_create.restype = c_void_p
+record_with_vad_delete = utilsdll.record_with_vad_delete
+record_with_vad_delete.argtypes = (c_void_p,)
+record_with_vad_get_last_voice = utilsdll.record_with_vad_get_last_voice
+record_with_vad_get_last_voice_CB = CFUNCTYPE(None, POINTER(c_char), c_size_t)
+record_with_vad_get_last_voice.argtypes = c_void_p, record_with_vad_get_last_voice_CB
+
+
+class record_with_vad:
+    def get(self) -> "bytes|None":
+        ret = []
+
+        def _cb(ptr, size):
+            ret.append(ptr[:size])
+
+        record_with_vad_get_last_voice(self.ptr, record_with_vad_get_last_voice_CB(_cb))
+        if not ret:
+            return None
+        return ret[0]
+
+    def __del__(self):
+        record_with_vad_delete(self.ptr)
+
+    def __init__(self):
+        self.ptr = record_with_vad_create()
+        if not self.ptr:
+            raise Exception()

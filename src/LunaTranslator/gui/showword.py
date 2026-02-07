@@ -389,6 +389,14 @@ class AnkiWindow(QWidget):
             "截图后进行OCR",
             getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
         )
+        layout.addRow(
+            "自动录音",
+            getsimpleswitch(
+                globalconfig["ankiconnect"],
+                "autorecord",
+                callback=self.refsearchw.safeloadrecorder,
+            ),
+        )
 
         layout.addRow(
             "自动TTS",
@@ -1044,18 +1052,61 @@ class HistoryViewer(QWidget):
     SentenceRole = Qt.ItemDataRole.UserRole + 100
     IndexRole = Qt.ItemDataRole.UserRole + 101
 
+    def showmenu(self, _):
+        idx = self.listview.currentIndex()
+        if not idx.isValid():
+            return
+        item = self.model.itemFromIndex(idx)
+        menu = QMenu(self)
+        delete = LAction("删除", menu)
+        label = LAction("收藏", menu)
+        label.setCheckable(True)
+        label.setChecked(item.text() in globalconfig["wordlabel2"])
+        if self.historshoucangjia == 0:
+            menu.addAction(delete)
+        menu.addAction(label)
+        action = menu.exec(QCursor.pos())
+        if action == delete:
+            self.deleteindex(idx)
+        elif action == label:
+            if label.isChecked():
+                if self.historshoucangjia == 0:
+                    item.setData(
+                        QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
+                    )
+                else:
+                    item.setData(None, Qt.ItemDataRole.BackgroundRole)
+                globalconfig["wordlabel2"].append(item.text())
+
+            else:
+                if self.historshoucangjia == 0:
+                    item.setData(None, Qt.ItemDataRole.BackgroundRole)
+                else:
+                    item.setData(
+                        QBrush(Qt.GlobalColor.gray), Qt.ItemDataRole.BackgroundRole
+                    )
+
+                try:
+                    globalconfig["wordlabel2"].remove(item.text())
+                except:
+                    pass
+
+    def deleteindex(self, index: QModelIndex):
+        if index.isValid():
+            item = self.model.itemFromIndex(index)
+            id_ = item.data(self.IndexRole)
+            self.model.removeRow(index.row())
+            gobject.base.somedatabase.removewhich(id_)
+
     def keyPressEvent(self, e: QKeyEvent):
-        if e.key() == Qt.Key.Key_Delete:
+        if (e.key() == Qt.Key.Key_Delete) and (self.historshoucangjia == 0):
             index = self.listview.currentIndex()
-            if index.isValid():
-                item = self.model.itemFromIndex(index)
-                id_ = item.data(self.IndexRole)
-                self.model.removeRow(index.row())
-                gobject.base.somedatabase.removewhich(id_)
+            self.deleteindex(index)
         return super().keyPressEvent(e)
 
     def __init__(self, parent: "searchwordW"):
         super(HistoryViewer, self).__init__(parent)
+        self.historshoucangjia = 0
         listview = QListView()
         self.listview = listview
         listview.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -1066,6 +1117,8 @@ class HistoryViewer(QWidget):
         v.addWidget(listview)
         v.setContentsMargins(0, 0, 0, 0)
         self.ref = parent
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showmenu)
 
     def selectwhich(self, index: QModelIndex):
         item = self.model.itemFromIndex(index)
@@ -1073,9 +1126,16 @@ class HistoryViewer(QWidget):
         s = item.data(self.SentenceRole)
         self.ref.search_function(w, s, False, isfromhist=True)
 
-    def refresh(self):
+    def refresh(self, who):
+        self.historshoucangjia = who
         self.model.clear()
+        maybehassentence = {}
         for _, w, s, t, __ in gobject.base.somedatabase.allwords():
+            isshoucangde = w in globalconfig["wordlabel2"]
+            if isshoucangde and (w not in maybehassentence):
+                maybehassentence[w] = s
+            if who == 1:
+                continue
             print(_, w, s, t)
             item = QStandardItem(w)
             t = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
@@ -1083,6 +1143,18 @@ class HistoryViewer(QWidget):
                 t = t + "\n" + s
             item.setToolTip(t)
             item.setData(s, self.SentenceRole)
+            item.setData(_, self.IndexRole)
+            if isshoucangde:
+                item.setData(
+                    QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
+                )
+            self.model.appendRow([item])
+        for w in reversed(globalconfig["wordlabel2"]):
+            item = QStandardItem(w)
+            s = maybehassentence.get(w)
+            if s:
+                item.setToolTip(s)
+                item.setData(s, self.SentenceRole)
             item.setData(_, self.IndexRole)
             self.model.appendRow([item])
 
@@ -1634,6 +1706,17 @@ class searchwordW(closeashidewindow):
         self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.ocr_once_signal.connect(lambda: rangeselct_function(self.ocr_do_function))
         self.__state = 0
+        self.safeloadrecorder()
+
+    @threader
+    def safeloadrecorder(self, _=None):
+        self.autorecorder = None
+        if not globalconfig["ankiconnect"]["autorecord"]:
+            return
+        try:
+            self.autorecorder = NativeUtils.record_with_vad()
+        except:
+            self.autorecorder = None
 
     @threader
     def ocr_do_function(self, rect, img=None):
@@ -1700,19 +1783,45 @@ class searchwordW(closeashidewindow):
             menu.addAction(act)
         if __:
             menu.addSeparator()
-        hists = menu.addAction("更多……")
+        hists = LAction("更多……", menu)
         hists.setCheckable(True)
+        menu.addAction(hists)
+        menu.addSeparator()
+        label = LAction("收藏", menu)
+        label.setCheckable(True)
+        labeljia = LAction("收藏夹", menu)
+        labeljia.setCheckable(True)
+        t = self.searchtext.text()
+        if t:
+            menu.addAction(label)
+            label.setChecked(t in globalconfig["wordlabel2"])
 
-        def __():
+        menu.addAction(labeljia)
+
+        def __1(i):
             try:
-                return self.showhistwidget.isVisible()
+                return self.showhistwidget.isVisible() and (
+                    self.showhistwidget.historshoucangjia == i
+                )
             except:
                 return False
 
-        hists.setChecked(__())
+        hists.setChecked(__1(0))
+        labeljia.setChecked(__1(1))
+
         action = menu.exec(QCursor.pos())
         if action == hists:
-            self.onceaddshowhistwidget(hists.isChecked())
+            self.onceaddshowhistwidget(hists.isChecked(), 0)
+        elif action == labeljia:
+            self.onceaddshowhistwidget(labeljia.isChecked(), 1)
+        elif action == label:
+            if label.isChecked():
+                globalconfig["wordlabel2"].append(t)
+            else:
+                try:
+                    globalconfig["wordlabel2"].remove(t)
+                except:
+                    pass
         elif action:
             self.searchtext.setText(action.text())
             self.search(action.text())
@@ -1834,7 +1943,7 @@ class searchwordW(closeashidewindow):
             self.showdictwidget.hide()
             self.maybehidehide()
 
-    def onceaddshowhistwidget(self, idx):
+    def onceaddshowhistwidget(self, idx, who):
         if idx:
             self.maybecreateleftsplitter()
             try:
@@ -1843,7 +1952,7 @@ class searchwordW(closeashidewindow):
                 self.showhistwidget = HistoryViewer(self)
                 self._leftwidgets.addWidget(self.showhistwidget)
             self._leftwidgets.show()
-            self.showhistwidget.refresh()
+            self.showhistwidget.refresh(who)
         else:
             self.showhistwidget.hide()
             self.maybehidehide()
@@ -1876,6 +1985,15 @@ class searchwordW(closeashidewindow):
             self.ankiwindow.langdu()
         if globalconfig["ankiconnect"]["autoruntts2"]:
             self.ankiwindow.langdu2()
+        if globalconfig["ankiconnect"]["autorecord"] and self.autorecorder:
+            data = self.autorecorder.get()
+            if data:
+                self.ankiwindow.audiopath_sentence.sig = uuid.uuid4()
+                self.ankiwindow.callbacktts(
+                    self.ankiwindow.audiopath_sentence,
+                    self.ankiwindow.audiopath_sentence.sig,
+                    TTSResult(data),
+                )
         self.ankiwindow.remarks.setPlainText(gobject.base.currenttranslate)
         if globalconfig["ankiconnect"]["autocrop"]:
             grabwindow(

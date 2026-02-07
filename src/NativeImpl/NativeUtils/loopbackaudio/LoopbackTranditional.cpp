@@ -97,7 +97,6 @@ HRESULT LoopbackTranditional::StartCaptureAsync()
 {
     CHECK_FAILURE(threadend.Create(NULL, FALSE, FALSE, NULL));
     CO_INIT co;
-    CHECK_FAILURE(co);
     CHECK_FAILURE(CoCreateInstance(__uuidof(MMDeviceEnumerator), NULL, CLSCTX_ALL, IID_PPV_ARGS(&pEnumerator)));
 
     CHECK_FAILURE(pEnumerator->GetDefaultAudioEndpoint(
@@ -107,10 +106,13 @@ HRESULT LoopbackTranditional::StartCaptureAsync()
         NULL, (void **)&pAudioClient));
     if (!pwfx)
         CHECK_FAILURE(pAudioClient->GetMixFormat(&pwfx));
+    auto flag = AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST;
+    if (pwfx)
+        flag |= AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM;
     CHECK_FAILURE(pAudioClient->Initialize(
         AUDCLNT_SHAREMODE_SHARED,
-        AUDCLNT_STREAMFLAGS_LOOPBACK | AUDCLNT_STREAMFLAGS_NOPERSIST, // 环回模式必须加这个 flag
-        10000000,                                                     // 缓冲区时长: 1秒 (100ns 单位)
+        flag,     // 环回模式必须加这个 flag
+        10000000, // 缓冲区时长: 1秒 (100ns 单位)
         0,
         pwfx,
         NULL));

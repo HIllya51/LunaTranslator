@@ -14,7 +14,7 @@ public:
   {
     CloseHandle(hsema);
   }
-  void push(T _)
+  void push(T &&_)
   {
     std::lock_guard _l(lock);
     data.push(std::move(_));
