@@ -66,8 +66,8 @@ try:
 except:
     pass
 
-shutil.make_archive("LICENSE")
-shutil.copy(r"..\LICENSE", os.path.join(targetdir, "LICENSE", "LICENSE.LunaTranslator"))
+shutil.make_archive("LICENSES")
+shutil.copy(r"..\LICENSE", os.path.join(targetdir, "LICENSES", "LICENSE.LunaTranslator"))
 with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
     for _ in re.findall(r'makelink\(".*?"\)', ff.read()):
         _js: dict[str, str] = requests.get(
@@ -77,7 +77,7 @@ with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
         if content:
             content = base64.b64encode(content.encode()).decode()
             with open(
-                os.path.join(targetdir, "LICENSE", "LICENSE." + _.replace("/", ".")),
+                os.path.join(targetdir, "LICENSES", "LICENSE." + _.replace("/", ".")),
                 "w",
                 encoding="utf8 ",
             ) as ff:
