@@ -1,6 +1,27 @@
 import shutil, os, base64
-import sys, re, requests
+import sys, re, json
 from importanalysis import importanalysis
+import urllib.request
+import urllib.error
+
+
+def get_json(url: str, headers=None):
+    if headers is None:
+        headers = {}
+
+    # 设置默认的User-Agent（很多API需要）
+    headers.setdefault("User-Agent", "Mozilla/5.0")
+
+    req = urllib.request.Request(url, headers=headers)
+
+    with urllib.request.urlopen(req) as response:
+        # 读取响应内容
+        data = response.read()
+        # 解码为字符串
+        text = data.decode("utf-8")
+        # 解析JSON
+        return json.loads(text)
+
 
 arch = sys.argv[1]
 target = sys.argv[2]
@@ -67,12 +88,14 @@ except:
     pass
 
 shutil.make_archive("LICENSES")
-shutil.copy(r"..\LICENSE", os.path.join(targetdir, "LICENSES", "LICENSE.LunaTranslator"))
+shutil.copy(
+    r"..\LICENSE", os.path.join(targetdir, "LICENSES", "LICENSE.LunaTranslator")
+)
 with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
     for _ in re.findall(r'makelink\(".*?"\)', ff.read()):
-        _js: dict[str, str] = requests.get(
+        _js: dict[str, str] = get_json(
             rf"https://api.github.com/repos/{_[10:-1]}/license"
-        ).json()
+        )
         content = _js.get("content")
         if content:
             content = base64.b64encode(content.encode()).decode()
