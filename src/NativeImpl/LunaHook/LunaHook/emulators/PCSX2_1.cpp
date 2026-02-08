@@ -1980,6 +1980,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 学園ヘヴン BOY'S LOVE SCRAMBLE！
+    {0x1d39b4, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, all_ascii_Filter, "SLPS-25282"}},
     // 不確定世界の探偵紳士 ～悪行双麻の事件ファイル～
     {0x114128, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s2), 0, 0, SLPM55121, "SLPM-55121"}},
     // スーパーロボット大戦Ｚ
