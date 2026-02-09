@@ -5,7 +5,7 @@ from functools import partial
 from myutils.config import globalconfig
 from network.structures import CaseInsensitiveDict
 
-default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.60 Safari/537.36"
+default_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.7559.133 Safari/537.36"
 
 default_timeout = 10
 

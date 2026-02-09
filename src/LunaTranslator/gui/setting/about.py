@@ -396,6 +396,7 @@ def setTab_about(self: QWidget, basel):
                         makelink("microsoft/PowerToys"),
                         makelink("WaterJuice/WjCryptLib"),
                         makelink("dpirch/libfvad"),
+                        makelink("chromium/chromium"),
                     ],
                     "LICENSE",
                 )
