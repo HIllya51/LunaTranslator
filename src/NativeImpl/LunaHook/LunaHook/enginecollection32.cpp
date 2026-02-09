@@ -32,6 +32,7 @@
 #include "engine32/TAKUYO.h"
 #include "engine32/GSX.h"
 #include "engine32/TYPEMOON.h"
+#include "engine32/GLuer.h"
 #include "engine32/VALKYRIA.h"
 #include "engine32/Moonstone.h"
 #include "engine32/mirage.h"
@@ -479,5 +480,6 @@ std::vector<ENGINE *> check_engines()
         new MBSTRUTH,
         new Milk,
         new AZScript,
+        new GLuer, 
     };
 }
