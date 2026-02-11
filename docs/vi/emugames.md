@@ -933,6 +933,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66214 | WHITE CLARITY ～And The tears became you.～ |
 |  | SLPS-25282 | 学園ヘヴン BOY'S LOVE SCRAMBLE！ |
 |  | SLPM-55121 | 不確定世界の探偵紳士 ～悪行双麻の事件ファイル～ |
 |  | SLPS-25887 | スーパーロボット大戦Ｚ |

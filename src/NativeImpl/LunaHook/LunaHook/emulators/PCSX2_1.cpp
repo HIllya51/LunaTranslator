@@ -1973,6 +1973,13 @@ namespace
         if (s == L"<" || s == L"\n" || s == L"\r")
             return buffer->clear();
     }
+    void SLPM66214(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->data[0] != 0xd5)
+            buffer->clear();
+        else
+            buffer->from(buffer->strA().substr(1));
+    }
 }
 struct emfuncinfoX
 {
@@ -1980,6 +1987,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // WHITE CLARITY ～And The tears became you.～
+    {0x16AC58, {0, PCSX2_REG_OFFSET(v0), 0, 0, SLPM66214, "SLPM-66214"}},
     // 学園ヘヴン BOY'S LOVE SCRAMBLE！
     {0x1d39b4, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, all_ascii_Filter, "SLPS-25282"}},
     // 不確定世界の探偵紳士 ～悪行双麻の事件ファイル～
