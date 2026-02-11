@@ -1555,9 +1555,9 @@
             "use": false,
             "refreshinterval": 1.5,
             "refreshinterval2": 1.5,
-            "mode": "direct",
-            "hidewindow": false,
-            "autokill": false
+            "mode": "indirect",
+            "hidewindow": true,
+            "autokill": true
         },
         "texthook": {
             "use": true
