@@ -485,6 +485,7 @@ class TranslatorWindow(resizableframeless):
             color=color,
             hira=hira,
             updateTranslate=updateTranslate,
+            is_auto_run=is_auto_run,
         )
 
     def showstatus(self, res, t: TextType, klass=None):
@@ -540,7 +541,8 @@ class TranslatorWindow(resizableframeless):
                 self.translate_text.clear()
             return
         if not is_auto_run:
-            self.show_()
+            if not gobject.base.transhis.isVisible():
+                self.show_()
         if not raw:
             text = self.cleartext(text)
         if iter_context:
@@ -616,7 +618,7 @@ class TranslatorWindow(resizableframeless):
         result = ocr_run(img)
         result = result.maybeerror()
         if result:
-            gobject.base.textgetmethod(result, False)
+            gobject.base.textgetmethod(result, is_auto_run=False)
 
     def ocr_once_function(self):
         def ocroncefunction(rect, img=None):

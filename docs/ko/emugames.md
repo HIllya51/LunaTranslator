@@ -17,6 +17,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01002AB02254C000 | Glass Heart Princess |
 |  | 010016C011AAA000 | この素晴らしい世界に祝福を！　この欲望の衣装に寵愛を！ |
 |  | 010068501FF9A000 | UN:LOGICAL |
 |  | 0100A05026270000 | KANADE |
@@ -933,6 +934,7 @@ LunaTranslator는 에뮬레이터를 통해 많은 게임을 지원합니다. �
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-62597 | 学園ヘヴン おかわりっ！ |
 |  | SLPM-66214 | WHITE CLARITY ～And The tears became you.～ |
 |  | SLPS-25282 | 学園ヘヴン BOY'S LOVE SCRAMBLE！ |
 |  | SLPM-55121 | 不確定世界の探偵紳士 ～悪行双麻の事件ファイル～ |

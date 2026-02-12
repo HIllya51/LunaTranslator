@@ -1980,6 +1980,13 @@ namespace
         else
             buffer->from(buffer->strA().substr(1));
     }
+    void FSLPM62597(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((DWORD)PCSX2_REG(t0))
+            return buffer->clear();
+        StringFilter(buffer, TEXTANDLEN("$t"));
+        StringFilter(buffer, TEXTANDLEN("$d"));
+    }
 }
 struct emfuncinfoX
 {
@@ -1987,6 +1994,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 学園ヘヴン おかわりっ！
+    {0x1DD89C, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, FSLPM62597, "SLPM-62597"}},
     // WHITE CLARITY ～And The tears became you.～
     {0x16AC58, {0, PCSX2_REG_OFFSET(v0), 0, 0, SLPM66214, "SLPM-66214"}},
     // 学園ヘヴン BOY'S LOVE SCRAMBLE！
