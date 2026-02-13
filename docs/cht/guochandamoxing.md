@@ -83,25 +83,25 @@
 
 **API Key** https://aistudio.google.com/app/apikey
 
-== Nvidia
+== NVIDIA
 
 **API Key** https://build.nvidia.com/explore/discover
 
-== claude
+== Claude
 
 **API Key** https://console.anthropic.com/
 
 **Model**  https://docs.anthropic.com/en/docs/about-claude/models
 
-== cohere
+== Cohere
 
 **API Key** https://dashboard.cohere.com/api-keys
 
-== x.ai
+== xAI
 
 **API Key** https://console.x.ai/
 
-== groq
+== Groq
 
 **API Key** https://console.groq.com/keys
 
@@ -120,11 +120,11 @@
 
 其中，將`{endpoint}`和`{deployName}`取代成你的 Endpoint 和 DeployName
 
-== deepinfra
+== DeepInfra
 
 **API Key** https://deepinfra.com/dash/api_keys
 
-== cerebras
+== Cerebras
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
 

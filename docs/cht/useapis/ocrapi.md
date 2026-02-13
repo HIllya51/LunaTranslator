@@ -70,21 +70,21 @@ https://ocr.space/
 內建已包含中日英文的輕量級辨識模型。如果需要辨識其他語言，需要在`資源下載`中新增對應語言的辨識模型。
 
 
-`資源下載`中還提供了中日英語的高精度模型，可以達到極高的識別準確率，但識別速度相對較慢。
+`資源下載`中還提供了中日英文的高精度模型，可以達到極高的辨識準確率，但辨識速度相對較慢。
 
-為提高高精度模型的識別效率，可以採用以下手段：
+為提高高精度模型的辨識效率，可以採用以下手段：
 
-1. 使用GPU推理
+1. 使用 GPU 推理
 
-    如果使用的軟件版本為Win10版，或系統為Windows11，那麼可以直接設定使用GPU運行模型。
+    如果使用的軟體版本為 Win10 版，或系統為 Windows 11，那麼可以直接設定使用 GPU 執行模型。
 
     ![img](https://image.lunatranslator.org/zh/dml_gpu.png)
 
-1. 使用OpenVINO推理
+1. 使用 OpenVINO 推理
 
-    如果使用Intel的CPU/NPU/GPU，那麼可以替換推理引擎為OpenVINO來加速識別。
+    如果使用 Intel 的 CPU/NPU/GPU，那麼可以將推理引擎替換為OpenVINO 來加速辨識。
     
-    下載[onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)，解壓後將**runtimes/win-x64/native**中的所有檔案覆蓋到**LunaTranslator/files/DLL64**中，然後選擇使用的裝置即可。
+    下載 [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)，解壓縮後將 **runtimes/win-x64/native** 中的所有檔案覆蓋到 **LunaTranslator/files/DLL64** 中，然後選擇使用的裝置即可。
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
 
