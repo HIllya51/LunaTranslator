@@ -15,7 +15,7 @@
 在 Windows 10 上，系統內缺少必要的執行環境和辨識模型；或者 Windows 11 的版本過低，系統內建的執行環境版本過低。請先下載我打包好的[執行環境和中日英語言辨識模型](https://lunatranslator.org/Resource/DirectLiveCaptions.zip)，將其解壓縮到軟體目錄中，軟體即可辨識到我打包好的執行環境和辨識模型，從而可以使用該功能。
 
 如果需要其他語言的辨識模型，可以自行尋找對應語言的辨識模型。方法為：
-在 https://store.rg-adguard.net/ 上，用`PacakgeFamilyName`搜尋`MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`，其中`{LANGUAGE}`是你所需要的語言代碼，例如法語為`MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`。然後，在下方下載最新版本的 MSIX 後，解壓縮到軟體目錄中即可。
+在 https://store.rg-adguard.net/ 上，用`PacakgeFamilyName`搜尋`MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`，其中`{LANGUAGE}`是您所需要的語言代碼，例如法語為`MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`。然後，在下方下載最新版本的 MSIX 後，解壓縮到軟體目錄中即可。
 
 ::: details store.rg-adguard.net
 ![img](https://image.lunatranslator.org/zh/srpackage.png)

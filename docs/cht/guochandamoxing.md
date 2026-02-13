@@ -118,7 +118,7 @@
 
 **API 介面位址** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
 
-其中，將`{endpoint}`和`{deployName}`取代成你的 Endpoint 和 DeployName
+其中，將`{endpoint}`和`{deployName}`取代成您的 Endpoint 和 DeployName
 
 == DeepInfra
 

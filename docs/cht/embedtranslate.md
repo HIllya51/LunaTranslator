@@ -21,7 +21,7 @@
 
 ![img](https://image.lunatranslator.org/zh/embed/luanma.png)
 
-這時，你需要啟用**修改遊戲字型**，並選擇一個適當的字型，以顯示中文字元
+這時，您需要啟用**修改遊戲字型**，並選擇一個適當的字型，以顯示中文字元
 
 ![img](https://image.lunatranslator.org/zh/embed/ziti.png)
 
