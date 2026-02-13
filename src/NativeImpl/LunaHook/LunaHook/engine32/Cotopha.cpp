@@ -644,7 +644,8 @@ bool InsertCotophaHook1()
   DWORD funcs[] =
       {
           0xec8b55,
-          0xdc8b53 // バカップル・サプリメント体験版
+          0xdc8b53,   // バカップル・サプリメント体験版
+          0x0000a164, // こんねこ
       };
   ULONG addr = MemDbg::findMultiCallerAddress((ULONG)::GetTextMetricsA, funcs, ARRAYSIZE(funcs), processStartAddress, processStopAddress);
   if (!addr)
