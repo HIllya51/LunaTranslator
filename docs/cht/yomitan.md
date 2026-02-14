@@ -9,7 +9,7 @@
 1. 啟用**使用瀏覽器擴充功能**，並新增 Yomitan 擴充功能。
 
     >[!WARNING]
-    >你應該新增Chrome/Edge版本的插件，Firefox版本的插件無法相容。
+    >你應該新增 Chrome/Edge 版本的擴充功能，Firefox 版本的附加元件無法相容。
 
    ![img](https://image.lunatranslator.org/zh/yomitan3.png)
 
@@ -18,7 +18,7 @@
 1. 等待初始化完成後，對 Yomitan 進行設定。
 
    >[!WARNING]
-   >有時添加插件後可能無法被識別，需要關閉軟體後重新打開才能識別。
+   >有時新增擴充功能後可能無法被辨識，需要關閉軟體後重新開啟才能辨識。
 
    ![img](https://image.lunatranslator.org/zh/yomitan4.png)
 

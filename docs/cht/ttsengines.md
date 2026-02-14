@@ -31,7 +31,7 @@
 
 需要下載 [VOICEVOX](https://github.com/VOICEVOX/voicevox/releases) 並執行。
 
-預設的連接埠編號和 VOICEVOX 的預設連接埠編號相同。如果你不修改雙方的設定，執行並啟用後即可使用。
+預設的連接埠編號和 VOICEVOX 的預設連接埠編號相同。如果您不修改雙方的設定，執行並啟用後即可使用。
 
 == GPT-SoVITS
 
