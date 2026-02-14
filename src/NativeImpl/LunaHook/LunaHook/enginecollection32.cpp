@@ -11,6 +11,7 @@
 #include "engine32/Hug.h"
 #include "engine32/AZScript.h"
 #include "engine32/Furaiki.h"
+#include "engine32/ZeroEscape.h"
 #include "engine32/Milk.h"
 #include "engine32/Cage.h"
 #include "engine32/MBSTRUTH.h"
@@ -480,6 +481,7 @@ std::vector<ENGINE *> check_engines()
         new MBSTRUTH,
         new Milk,
         new AZScript,
-        new GLuer, 
+        new GLuer,
+        new ZeroEscape,
     };
 }
