@@ -99,6 +99,16 @@
     .lunatranslator_clickword_force:hover {
         background-color: var(--clickwordhover);
     }
+
+    .lunatranslator_wrap {
+        white-space: pre-wrap;
+    }
+
+    @supports (-moz-appearance: none) {
+        .lunatranslator_wrap {
+            white-space: pre;
+        }
+    }
 </style>
 <script>
     function settooltipsstyle(c1, c2, pd, r) {
@@ -304,7 +314,7 @@
         }
         else {
             ele.innerText = text
-            ele.style.whiteSpace = 'pre-wrap'
+            ele.classList.add('lunatranslator_wrap')
         }
     }
     function createnameandtext(name, text, args) {
