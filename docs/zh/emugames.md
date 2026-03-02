@@ -38,6 +38,8 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 |  | 0100B9701BD4E000 | DistortedCode －生者の残り香－ |
 |  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
 |  | 0100447021272000 | DYNAMIC CHORD feat.Liar-S Remaster edition |
+|  | 010036F023A16000 | DYNAMIC CHORD feat.KYOHSO Remaster edition |
+|  | 0100C32023A1A000 | DYNAMIC CHORD feat.apple-polisher Remaster edition |
 |  | 0100D4300EBF8000 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 |  | 01007FD0211DA000 | 連呪 |
 |  | 010081D016E4E000 | DIG-ROCK -Documentary of Youthful Sounds- |

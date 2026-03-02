@@ -2806,6 +2806,12 @@ namespace
         s = re::sub(s, LR"(%i\d(.*?)%id)", L"$1");
         buffer->from(s);
     }
+    void F010036F023A16000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"　*<br>　*");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2866,6 +2872,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // DYNAMIC CHORD feat.Liar-S Remaster edition
     {0x81B67904, {CODEC_UTF16, 0, 0x14, 0, 0, 0x0100447021272000ull, "1.0.0"}},
     {0x81B6796C, {CODEC_UTF16, 0, 0x14, 0, NewLineCharFilterW, 0x0100447021272000ull, "1.0.0"}},
+    // DYNAMIC CHORD feat.KYOHSO Remaster edition
+    {0x81B6D55C, {CODEC_UTF16, 0, 0x14, 0, F010036F023A16000, 0x010036F023A16000ull, "1.0.0"}},
+    // DYNAMIC CHORD feat.apple-polisher Remaster edition
+    {0x81B72940, {CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x0100C32023A1A000ull, "1.0.0"}},
     // うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
     {0x80038B34, {0, 0, 0, 0, f0100D4300EBF8000, 0x0100D4300EBF8000ull, "1.0.0"}},
     // 連呪
