@@ -289,7 +289,7 @@ if __name__ == "__main__":
     if sys.argv[1] == "download":
         downloadalls(sys.argv[2] if len(sys.argv) >= 3 else "")
     elif sys.argv[1] == "loadversion":
-        with open("NativeImpl/version.cmake", "r", encoding="utf8") as ff:
+        with open("version.cmake", "r", encoding="utf8") as ff:
             pattern = r"set\(VERSION_MAJOR\s*(\d+)\s*\)\nset\(VERSION_MINOR\s*(\d+)\s*\)\nset\(VERSION_PATCH\s*(\d+)\s*\)\nset\(VERSION_REVISION\s*(\d+)\s*\)"
             match = re.findall(pattern, ff.read())[0]
             version_major, version_minor, version_patch, version_revison = match
