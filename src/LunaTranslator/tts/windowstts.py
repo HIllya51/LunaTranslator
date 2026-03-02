@@ -131,7 +131,7 @@ class TTS(TTSbase):
             return NativeUtils.SAPI.Speak(content, voice, param.speed, param.pitch)
         elif t == 1:
             with self.lock:
-                content = self.createSSML(content, voice, param)
+                content = self.createSSML(content, None, param)
                 self.checkifnatural(voice_1)
                 windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
                 size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value

@@ -223,10 +223,15 @@ class TTSbase(commonbase):
         # 按照微软文档，pitch应当取值-50%~50%，rate应该取值-50%~100%。虽然实测可以超出范围，但还是按他说的来吧。
         pitch = int(param.pitch * 5)
         rate = int(param.speed * 10) if param.speed > 0 else int(param.speed * 5)
-        ssml = (
-            "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>"
-            "<voice name='{}'><prosody pitch='{}%' rate='{}%'>{}</prosody></voice></speak>".format(
-                escape(voice), pitch, rate, escape(content)
+        _voice = "<prosody pitch='{}%' rate='{}%'>{}</prosody>".format(
+            pitch, rate, escape(content)
+        )
+        if voice:
+            _voice = "<voice name='{}'>{}</voice>".format(
+                escape(voice),
+                _voice,
             )
+        ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'>{}</speak>".format(
+            _voice
         )
         return ssml
