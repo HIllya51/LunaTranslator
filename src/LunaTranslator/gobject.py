@@ -102,27 +102,14 @@ elif runtime_bit_64:
     runtimedir = "runtime3.7-64"
 else:
     runtimedir = "runtime3.7-32"
+
 runtimedir = "files/" + runtimedir
-sys_le_xp = int(platform.version().split(".")[0]) <= 5
-
-
-class RTL_OSVERSIONINFOW(Structure):
-    _fields_ = [
-        ("_1", DWORD),
-        ("_2", DWORD),
-        ("_3", DWORD),
-        ("dwBuildNumber", DWORD),
-        ("_4", DWORD),
-        ("_5", WCHAR * 128),
-    ]
-
-
-RtlGetVersion = windll.ntdll.RtlGetVersion
-RtlGetVersion.argtypes = (POINTER(RTL_OSVERSIONINFOW),)
-__version = RTL_OSVERSIONINFOW()
-RtlGetVersion(pointer(__version))
-sys_ge_win_11 = __version.dwBuildNumber >= 22000  # 21h2
-sys_ge_win_10 = int(platform.version().split(".")[0]) >= 10
-sys_ge_win8 = tuple(int(_) for _ in platform.version().split(".")[:2]) >= (6, 2)
-sys_le_win7 = tuple(int(_) for _ in platform.version().split(".")[:2]) <= (6, 1)
-sys_le_win81 = int(platform.version().split(".")[0]) <= 6
+platformversion = tuple(int(_) for _ in platform.version().split("."))
+sys_le_xp = platformversion[0] <= 5
+sys_ge_win_11 = platformversion[2] >= 22000  # 21h2
+sys_ge_win_10 = platformversion[0] >= 10
+sys_ge_win8 = platformversion[:2] >= (6, 2)
+sys_le_win7 = platformversion[:2] <= (6, 1)
+sys_le_win81 = platformversion[0] <= 6
+# https://learn.microsoft.com/en-us/windows/release-health/release-information
+sys_win10_release_supported = platformversion[2] >= 17134  # 1803

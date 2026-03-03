@@ -931,5 +931,6 @@
     "更多……": "Daha fazla...",
     "收藏夹": "Sık Kullanılanlar",
     "准备完毕，将在退出后更新": "Hazırlık tamamlandı, çıkış yaptıktan sonra güncellenecek",
-    "准备完毕，点击消息后退出并开始更新": "Hazır, mesaja tıkladıktan sonra çıkın ve güncellemeye başlayın."
+    "准备完毕，点击消息后退出并开始更新": "Hazır, mesaja tıkladıktan sonra çıkın ve güncellemeye başlayın.",
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Yazılımın mevcut sürümü Windows 10 1803 veya üstünü gerektirir. Lütfen yazılımın başka bir sürümünü kullanın."
 }

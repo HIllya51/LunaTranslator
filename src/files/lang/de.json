@@ -931,5 +931,6 @@
     "更多……": "Mehr...",
     "收藏夹": "Lesezeichen",
     "准备完毕，将在退出后更新": "Bereit, wird nach dem Beenden aktualisiert.",
-    "准备完毕，点击消息后退出并开始更新": "Bereit, nach dem Klicken auf die Nachricht wird beendet und das Update gestartet."
+    "准备完毕，点击消息后退出并开始更新": "Bereit, nach dem Klicken auf die Nachricht wird beendet und das Update gestartet.",
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Die aktuelle Version der Software erfordert Windows 10 1803 oder höher. Bitte verwenden Sie eine andere Version der Software."
 }

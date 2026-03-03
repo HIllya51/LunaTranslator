@@ -1,5 +1,5 @@
 ﻿#include "v8.h"
-#include "osversion.hpp"
+
 int makehttpgetserverinternal();
 const wchar_t *LUNA_CONTENTBYPASS(const wchar_t *_);
 #define MAGIC_SEND "\x01LUNAFROMJS\x01"

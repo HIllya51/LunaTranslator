@@ -4,7 +4,7 @@
 
 | 操作系统 | 64位 | 
 | - | - | 
-| Windows 10 & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | 
+| Windows 10(1803+) & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> | 
 
 ::: details 旧版操作系统兼容版
 

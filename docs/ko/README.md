@@ -4,7 +4,7 @@
 
 | 운영 체제 | 64비트 |
 | - | - |
-| Windows 10 & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> |
+| Windows 10(1803+) & 11 | <downloadbtn href="https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1"/> |
 
 ::: details 구형 운영체제 호환 버전  
 
