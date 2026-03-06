@@ -1334,6 +1334,7 @@ class BASEOBJECT(QObject):
 
     def inittray(self):
         self.tray = QSystemTrayIcon()
+        self.tray.setToolTip("LunaTranslator")
         self.tray.setIcon(getExeIcon(getcurrexe()))
         self.tray.setContextMenu(self.createmenu1())
         self.tray.activated.connect(self.leftclicktray)
