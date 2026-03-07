@@ -89,6 +89,40 @@ DECLARE_API bool Is64bit(DWORD pid)
     return f64bitProc;
 }
 
+bool IsInteractiveUserProcess(DWORD processId)
+{
+    CHandle hProcess{OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+                                 FALSE, processId)};
+    if (!hProcess)
+        return false;
+
+    CHandle hToken;
+    if (!OpenProcessToken(hProcess, TOKEN_QUERY, &hToken.m_h))
+    {
+        return false;
+    }
+
+    DWORD tokenInfoLength = 0;
+    GetTokenInformation(hToken, TokenUser, NULL, 0, &tokenInfoLength);
+
+    std::vector<BYTE> tokenInfo(tokenInfoLength);
+    if (GetTokenInformation(hToken, TokenUser, tokenInfo.data(),
+                            tokenInfoLength, &tokenInfoLength))
+    {
+        PTOKEN_USER pTokenUser = (PTOKEN_USER)tokenInfo.data();
+
+        SID_IDENTIFIER_AUTHORITY ntAuthority = SECURITY_NT_AUTHORITY;
+        PSID systemSid;
+        AllocateAndInitializeSid(&ntAuthority, 1, SECURITY_LOCAL_SYSTEM_RID,
+                                 0, 0, 0, 0, 0, 0, 0, &systemSid);
+
+        BOOL isSystem = EqualSid(pTokenUser->User.Sid, systemSid);
+        FreeSid(systemSid);
+
+        return !isSystem;
+    }
+    return false;
+}
 DECLARE_API void ListProcesses(void (*cb)(DWORD, const wchar_t *))
 {
     std::unordered_map<std::wstring, std::vector<int>> exe_pid;
@@ -103,6 +137,11 @@ DECLARE_API void ListProcesses(void (*cb)(DWORD, const wchar_t *))
     {
         do
         {
+            // 过滤System,Registry,Memory Compression,Secure System等
+            if ((!wcschr(pe32.szExeFile, L'.')) && (!IsInteractiveUserProcess(pe32.th32ProcessID)))
+            {
+                continue;
+            }
             cb(pe32.th32ProcessID, pe32.szExeFile);
         } while (Process32Next(hSnapshot, &pe32));
     }
