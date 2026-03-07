@@ -345,28 +345,34 @@ class gptcommon(basetrans):
         return query
 
     def __if_has_dwp(self, dictionary: GptDict, prompt):
-        _has = re.search(r"\{DictWithPrompt\[(.*?)\]\}", prompt)
+        _has = re.search(r"\{DictWithPrompt(.*?)\[(.*?)\]\}", prompt)
         if _has:
 
             def __rep(m: re.Match):
-                nextc = m.groups()[1]
+                tabsplit = m.groups()[0] == "TabSplit"
+                nextc = m.groups()[2]
                 if not dictionary:
                     if nextc == "\n":
                         return ""
                     return nextc
                 __ = []
                 for _ in dictionary:
-                    info = ("", " #{}", format(_.info))[bool(_.info)]
-                    single = "\t{}->{}".format(_.src, _.dst) + info
+                    info = ("", (" #{}", "\t{}")[tabsplit].format(_.info))[bool(_.info)]
+                    single = (
+                        "{}{}{}{}".format(
+                            ("\t", "")[tabsplit], _.src, ("->", "\t")[tabsplit], _.dst
+                        )
+                        + info
+                    )
                     __.append(single)
                 if nextc != "\n":
                     nextc = "\n" + nextc
-                pro: str = m.groups()[0]
+                pro: str = m.groups()[1]
                 if not pro.endswith("\n"):
                     pro += "\n"
                 return pro + "\n".join(__) + nextc
 
-            prompt = re.sub(r"\{DictWithPrompt\[(.*?)\]\}([\s\S]?)", __rep, prompt)
+            prompt = re.sub(r"\{DictWithPrompt(.*?)\[(.*?)\]\}([\s\S]?)", __rep, prompt)
         return prompt, bool(_has)
 
     def __gpt_create_query_maybe_with_dict(self, query_2: GptTextWithDict, _has_1):
