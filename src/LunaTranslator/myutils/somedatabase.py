@@ -72,12 +72,6 @@ class somedatabase:
             self.sqlsavegameinfo.execute(
                 "INSERT INTO trace_strict SELECT gameinternalid,timestart,timestop FROM traceplaytime_v4"
             )
-            self.sqlsavegameinfo.execute(
-                "CREATE TABLE trace_loose(gameinternalid INT,timestart BIGINT,timestop BIGINT);"
-            )
-            self.sqlsavegameinfo.execute(
-                "INSERT INTO trace_loose SELECT gameinternalid,timestart,timestop FROM traceplaytime_v4"
-            )
             self.sqlsavegameinfo.commit()
         except:
             pass
@@ -103,7 +97,7 @@ class somedatabase:
         self.locked.release()
 
     def settraceplaytime(self, gameuid, lst: "list[tuple[float, float]]"):
-        table = ["trace_loose", "trace_strict"][globalconfig["is_tracetime_strict"]]
+        table = "trace_strict"
         gameinternalid = self.__get_gameinternalid(gameuid)
         self.sqlsavegameinfo.execute(
             "DELETE FROM {} WHERE gameinternalid = ?".format(table), (gameinternalid,)
@@ -116,7 +110,7 @@ class somedatabase:
         self.sqlsavegameinfo.commit()
 
     def querytraceplaytime(self, gameuid) -> "list[tuple[float, float]]":
-        table = ["trace_loose", "trace_strict"][globalconfig["is_tracetime_strict"]]
+        table = "trace_strict"
         gameinternalid = self.__get_gameinternalid(gameuid)
         return self.sqlsavegameinfo.execute(
             "SELECT timestart,timestop FROM {} WHERE gameinternalid = ?".format(table),
@@ -183,7 +177,6 @@ class somedatabase:
 
     @threader
     def checkgameplayingthread(self):
-        self.trace_loose = {}
         self.trace_strict = {}
         tlast = None
         t = time.time()
@@ -193,13 +186,9 @@ class somedatabase:
                 t = time.time()
                 if t - tlast > 10:
                     # 虚拟机暂停
-                    self.trace_loose.clear()
                     self.trace_strict.clear()
                     continue
 
-                self.tracex(
-                    t, self.finduids(ListProcess()), self.trace_loose, "trace_loose"
-                )
                 self.tracex(
                     t,
                     self.finduids(self.stricttraceexe()),

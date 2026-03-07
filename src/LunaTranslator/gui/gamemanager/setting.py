@@ -633,7 +633,7 @@ class dialog_setting_game_internal(QWidget):
             for (_,) in sql.execute("SELECT source FROM artificialtrans").fetchall():
                 cnt += len(_)
             savehook_new_data[self.gameuid]["statistic_wordcount"] = max(
-                cnt, savehook_new_data[self.gameuid]["statistic_wordcount"]
+                cnt, savehook_new_data[self.gameuid].get("statistic_wordcount", 0)
             )
 
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
@@ -669,12 +669,6 @@ class dialog_setting_game_internal(QWidget):
                 [
                     "游戏时间",
                     self._timelabel,
-                    getsmalllabel("严格的"),
-                    getsimpleswitch(
-                        globalconfig,
-                        "is_tracetime_strict",
-                        callback=lambda _: t.timeout.emit(),
-                    ),
                     getIconButton(
                         icon="fa.edit", callback=functools.partial(timelistediter, self)
                     ),
