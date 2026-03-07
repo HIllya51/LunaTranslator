@@ -232,8 +232,22 @@ uintptr_t getDoJitAddress()
     if (!addr1 || !addr2 || addr1 != addr2)
         return 0;
     auto xrefs = findxref_reverse_checkcallop(addr1, processStartAddress, processStopAddress, 0xe8);
-    addr1 = MemDbg::findEnclosingAlignedFunction_strict(xrefs[xrefs.size() - 1 - 3], 0x400);
-    addr2 = MemDbg::findEnclosingAlignedFunction_strict(xrefs[xrefs.size() - 1 - 4], 0x500);
+
+    auto findfunction2 = [](uintptr_t addr, int len)
+    {
+#ifndef _WIN64
+        return MemDbg::findEnclosingAlignedFunction_strict(addr, len);
+#else
+        // v1.20+
+        auto _ = MemDbg::findEnclosingAlignedFunction_strict(addr, len);
+        if (_)
+            return _;
+        BYTE sig[] = {0x48, 0x89, 0x5C, 0x24, 0x10, 0x4c, 0x89, 0x44, 0x24, 0x18};
+        return reverseFindBytes(sig, sizeof(sig), addr - len, addr, 0, true);
+#endif
+    };
+    addr1 = findfunction2(xrefs[xrefs.size() - 1 - 3], 0x400);
+    addr2 = findfunction2(xrefs[xrefs.size() - 1 - 4], 0x500);
     if (!addr1 || !addr2 || addr1 != addr2)
         return 0;
     return addr1;
@@ -305,10 +319,18 @@ namespace ppsspp
         auto op = found->second;
 #ifndef _WIN64
         BYTE sig[] = {
-            0x8b, XX2,                    // mov reg,[ebp-off]
-            0x8b, 0xc6,                   // mov eax,esi
-            0x25, 0xff, 0xff, 0xff, 0x3f, // and eax,0x3fffffff
-            0x89, XX, XX4,                // mov [eax+base+off],reg
+            0x8b,
+            XX2, // mov reg,[ebp-off]
+            0x8b,
+            0xc6, // mov eax,esi
+            0x25,
+            0xff,
+            0xff,
+            0xff,
+            0x3f, // and eax,0x3fffffff
+            0x89,
+            XX,
+            XX4, // mov [eax+base+off],reg
 
         };
         auto findbase = MemDbg::findBytes(sig, sizeof(sig), ret, ret + 0x20);
@@ -494,7 +516,7 @@ namespace ppsspp
             }
         }
     }
-    bool Load_PSP_ISO_StringFromFormat_1()
+    bool Load_PSP_ISO_StringFromFormat()
     {
         /*
         bool Load_PSP_ISO(FileLoader *fileLoader, std::string *error_string) {
@@ -680,11 +702,62 @@ namespace ppsspp
             HostInfo(HOSTINFO::EmuGameName, "%s %s", context->argof(3), context->argof(4));
             jitaddrclear();
         };
-        return NewHook(hp, "PPSSPPGameInfo");
+        return NewHook(hp, "PPSSPPGameInfo StringFromFormat");
     }
-    bool Load_PSP_ISO_StringFromFormat()
+
+    enum class SystemRequestType
     {
-        if (Load_PSP_ISO_StringFromFormat_1())
+        SET_WINDOW_TITLE = 11,
+    };
+#define NO_REQUESTER_TOKEN -1
+    bool MakeSystemRequest()
+    {
+        // v1.20+
+        BYTE sig[] = {
+#ifdef _WIN64
+            0xba, 0x0b, 0x00, 0x00, 0x00,
+            0x48, 0x8d, 0x0d, XX4,
+            0xe8
+#else
+            0x6a, 0xff,
+            0x6a, 0x0b,
+            0xc7, XX2, 0x00, 0x00, 0x00, 0x00,
+            0xe8
+#endif
+        };
+        auto addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+        addr += sizeof(sig) - 1;
+        addr += 5 + *(int *)(addr + 1);
+        HookParam hp;
+        hp.address = addr;
+        hp.text_fun = [](hook_context *context, HookParam *hp, auto *buff, auto *split)
+        {
+            if ((int)SystemRequestType::SET_WINDOW_TITLE != context->argof_thiscall(1))
+                return;
+            if (NO_REQUESTER_TOKEN != (int)context->argof_thiscall(2))
+                return;
+#ifdef _WIN64
+            auto param = std::string(*(std::string_view *)context->argof_thiscall(5));
+#else
+            std::string param = (char *)context->stack[23];
+#endif
+            auto match = re::match(param, "(.*?) : (.*?)");
+            if (!match)
+                return;
+            game_info.DISC_ID = match.value()[1];
+            game_info.TITLE = match.value()[2];
+            HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            jitaddrclear();
+        };
+        return NewHook(hp, "PPSSPPGameInfo MakeSystemRequest");
+    }
+    bool Load_PSP_GameInfo(std::optional<version_t> version)
+    {
+        if (version && version >= std::make_tuple(1u, 20u, 0u, 0u) && MakeSystemRequest())
+            return true;
+        if (Load_PSP_ISO_StringFromFormat())
             return true;
         // v1.19.1
         /*
@@ -761,24 +834,15 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
             info = std::move(game_info);
         }
     };
-
-    bool hookPPSSPPDoJit()
+    bool hookDoJit(uintptr_t addr)
     {
-        auto DoJitPtr = getDoJitAddress();
-        if (!DoJitPtr)
-            return false;
-        ppsspp_load_functions(emfunctionhooks);
-        JIT_Keeper<GameInfoC>::CreateStatic(dohookemaddr);
-        if (!Load_PSP_ISO_StringFromFormat())
-            return false;
         HookParam hp;
-        hp.address = DoJitPtr; // Jit::DoJit
+        hp.address = addr; // Jit::DoJit
         hp.user_value = (uintptr_t)new uintptr_t;
         hp.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
         {
             static auto once1 = oncegetJitBlockCache(context);
             auto em_address = context->argof_thiscall(1);
-
             *(uintptr_t *)(hp->user_value) = em_address;
 
             HookParam hpinternal;
@@ -805,13 +869,99 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
 
         return NewHook(hp, "PPSSPPDoJit");
     }
+    uintptr_t findAfterFinalize()
+    {
+        char aAfterfinalize[] = "AfterFinalize";
+        auto addr = MemDbg::findBytes(aAfterfinalize, sizeof(aAfterfinalize), processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+        addr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
+        if (!addr)
+            return false;
+#ifdef _WIN64
+        BYTE sig[] = {
+            0x4c, XX2, XX4,
+            0x44, XX, XX,
+            0x8b, XX,
+            0x48, XX, XX,
+            0xe8};
+#else
+        BYTE sig[] = {0x68, XX4,
+                      0x56,
+                      0xff, 0x75, 0x08,
+                      XX, XX,
+                      0xe8};
+#endif
+        auto offset = sizeof(sig) - 1;
+        if (!MatchPattern(addr, sig, sizeof(sig)))
+            return false;
+        addr += offset;
+        addr += 5 + *(int *)(addr + 1);
+        return addr;
+    }
+    bool hookAfterFinalize(uintptr_t addr)
+    {
+        // v1.20+
+        /*
+        // Sometimes we compile fairly large blocks, although it's uncommon.
+    BeginWrite(JitBlockCache::MAX_BLOCK_INSTRUCTIONS * 16);
+
+    int block_num = blocks.AllocateBlock(em_address);
+    JitBlock *b = blocks.GetBlock(block_num);
+    b->DoIntegrityCheck(em_address, block_num, "BeforeJit");
+    DoJit(em_address, b);
+    b->DoIntegrityCheck(em_address, block_num, "BeforeFinalize");
+    blocks.FinalizeBlock(block_num, jo.enableBlocklink);
+    b->DoIntegrityCheck(em_address, block_num, "AfterFinalize");
+    _dbg_assert_(js.nextExit <= 2);
+
+    EndWrite();
+        */
+
+        HookParam hp;
+        hp.address = addr;
+        hp.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
+        {
+            auto reason = (char *)context->argof_thiscall(3);
+            if (strcmp(reason, "AfterFinalize"))
+                return;
+            auto em_address = context->argof_thiscall(1);
+            auto _this = (JitBlock *)context->argof_thiscall(0);
+            auto target = (uintptr_t)_this->checkedEntry;
+            if (!IsValidAddress(em_address))
+                return;
+            [&]()
+            {
+                if (breakpoints.count(target))
+                    return;
+                breakpoints.insert(target);
+
+                dohookemaddr(em_address, target);
+            }();
+            delayinsertNewHook(em_address);
+        };
+
+        return NewHook(hp, "PPSSPPDoJit");
+    }
+    bool hookPPSSPPDoJit(std::optional<version_t> version)
+    {
+        auto DoJitPtr = getDoJitAddress();
+        auto AfterFinalize = findAfterFinalize(); // v1.20+
+        if (!DoJitPtr && !AfterFinalize)
+            return false;
+        ppsspp_load_functions(emfunctionhooks);
+        JIT_Keeper<GameInfoC>::CreateStatic(dohookemaddr);
+        if (!Load_PSP_GameInfo(version))
+            return false;
+        return (AfterFinalize && hookAfterFinalize(AfterFinalize)) || (DoJitPtr && hookDoJit(DoJitPtr));
+    }
 }
 bool PPSSPPWindows::attach_function1()
 {
     auto minver = std::make_tuple(1u, 15u, 0u, 0u);
     if (version && version < minver)
         return false;
-    auto succ = ppsspp::hookPPSSPPDoJit();
+    auto succ = ppsspp::hookPPSSPPDoJit(version);
     succ &= InsertPPSSPPHLEHooks();
     return succ;
 }
