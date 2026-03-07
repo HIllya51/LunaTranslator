@@ -67,7 +67,7 @@ bool WillPlus::attach_function()
   };
   hp.text_fun = [](hook_context *s, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    if (s->r8 != 0x10)
+    if (s->r8 != 0x10 && s->r8 != 0x14)
       return;
     auto text = (LPWSTR)s->rdx;
     buffer->from(text);
