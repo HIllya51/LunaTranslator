@@ -278,6 +278,10 @@ class texthook(basetext):
             ret.append(fn)
         return sorted(ret)
 
+    @property
+    def autohookblacklist(self):
+        return (r"C:\Windows\explorer.exe",)
+
     def connecthwnd(self, hwnd):
         if (
             gobject.base.AttachProcessDialog
@@ -289,6 +293,8 @@ class texthook(basetext):
             return
         name_ = windows.GetProcessFileName(pid)
         if not name_:
+            return
+        if name_ in self.autohookblacklist:
             return
         uid, reflist = findgameuidofpath(name_)
         if not uid:
