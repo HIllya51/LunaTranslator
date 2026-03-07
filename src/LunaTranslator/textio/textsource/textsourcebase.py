@@ -1,5 +1,5 @@
 import gobject, queue
-import json
+import json, time
 from traceback import print_exc
 from myutils.config import globalconfig, savehook_new_data
 from myutils.utils import autosql
@@ -107,6 +107,10 @@ class basetext:
                         savehook_new_data[gobject.base.gameuid][
                             "statistic_wordcount"
                         ] += lensrc
+
+                        gobject.base.somedatabase.wordcountqueue.put(
+                            (time.time(), gobject.base.gameuid, lensrc)
+                        )
                     except:
                         pass
                     if ret is None:
@@ -120,19 +124,6 @@ class basetext:
                                 "INSERT INTO artificialtrans VALUES(NULL,?,?);",
                                 (src, json.dumps({})),
                             )
-                        try:
-                            if (
-                                "statistic_wordcount_nodump"
-                                not in savehook_new_data[gobject.base.gameuid]
-                            ):
-                                savehook_new_data[gobject.base.gameuid][
-                                    "statistic_wordcount_nodump"
-                                ] = 0
-                            savehook_new_data[gobject.base.gameuid][
-                                "statistic_wordcount_nodump"
-                            ] += lensrc
-                        except:
-                            pass
                 elif len(task) == 3:
                     src, clsname, trans = task
                     ret = self.sqlwrite2.execute(

@@ -2,10 +2,10 @@ import sqlite3, gobject, time, windows
 import time
 import os
 from qtsymbols import *
-from myutils.config import findgameuidofpath, globalconfig
-from myutils.hwnd import ListProcess
+from myutils.config import findgameuidofpath
 from myutils.wrapper import threader
 import threading
+from queue import Queue
 import windows
 import gobject
 
@@ -40,6 +40,7 @@ class somedatabase:
         ).fetchall()
 
     def __init__(self):
+        self.wordcountqueue = Queue()
         self.locked = threading.Lock()
         self.sqlsavegameinfo = sqlite3.connect(
             gobject.getconfig("savegame.db"),
@@ -54,41 +55,27 @@ class somedatabase:
             pass
         try:
             self.sqlsavegameinfo.execute(
-                "CREATE TABLE traceplaytime_v4(id INTEGER PRIMARY KEY AUTOINCREMENT,gameinternalid INT,timestart BIGINT,timestop BIGINT);"
-            )
-        except:
-            pass
-        try:
-            self.sqlsavegameinfo.execute(
                 "CREATE TABLE gameinternalid_v2(gameinternalid INTEGER PRIMARY KEY AUTOINCREMENT,gameuid TEXT);"
             )
-            self.trycastoldversion()
         except:
             pass
         try:
             self.sqlsavegameinfo.execute(
                 "CREATE TABLE trace_strict(gameinternalid INT,timestart BIGINT,timestop BIGINT);"
             )
+            self.sqlsavegameinfo.commit()
+        except:
+            pass
+        try:
             self.sqlsavegameinfo.execute(
-                "INSERT INTO trace_strict SELECT gameinternalid,timestart,timestop FROM traceplaytime_v4"
+                "CREATE TABLE game_word_count(gameinternalid INT,time BIGINT,wordcount BIGINT);"
             )
             self.sqlsavegameinfo.commit()
         except:
             pass
 
         self.checkgameplayingthread()
-
-    def trycastoldversion(self):
-        for _id, gamepath in self.sqlsavegameinfo.execute(
-            "SELECT * from gameinternalid"
-        ).fetchall():
-            gameuid = findgameuidofpath(gamepath)
-            if not gameuid:
-                continue
-            self.sqlsavegameinfo.execute(
-                "INSERT INTO gameinternalid_v2 VALUES(?,?)", (_id, gameuid[0])
-            )
-        self.sqlsavegameinfo.commit()
+        self.wordcountthread()
 
     def lockdata(self):
         self.locked.acquire()
@@ -110,12 +97,26 @@ class somedatabase:
         self.sqlsavegameinfo.commit()
 
     def querytraceplaytime(self, gameuid) -> "list[tuple[float, float]]":
-        table = "trace_strict"
         gameinternalid = self.__get_gameinternalid(gameuid)
-        return self.sqlsavegameinfo.execute(
-            "SELECT timestart,timestop FROM {} WHERE gameinternalid = ?".format(table),
+        __ = self.sqlsavegameinfo.execute(
+            "SELECT timestart,timestop FROM trace_strict WHERE gameinternalid = ?",
             (gameinternalid,),
         ).fetchall()
+        __ = tuple(_ for _ in __ if _[1] > _[0])
+        return __
+
+    def querywordcount(self, gameuid: "str|None") -> "list[tuple[float, float]]":
+        if gameuid:
+            gameinternalid = self.__get_gameinternalid(gameuid)
+            __ = self.sqlsavegameinfo.execute(
+                "SELECT time,wordcount FROM game_word_count WHERE gameinternalid = ?",
+                (gameinternalid,),
+            ).fetchall()
+        else:
+            __ = self.sqlsavegameinfo.execute(
+                "SELECT time,wordcount FROM game_word_count"
+            ).fetchall()
+        return __
 
     def __get_gameinternalid(self, gameuid):
         while True:
@@ -188,7 +189,6 @@ class somedatabase:
                     # 虚拟机暂停
                     self.trace_strict.clear()
                     continue
-
                 self.tracex(
                     t,
                     self.finduids(self.stricttraceexe()),
@@ -197,3 +197,18 @@ class somedatabase:
                 )
                 self.sqlsavegameinfo.commit()
             time.sleep(5)
+
+    @threader
+    def wordcountthread(self):
+        lastuid = None
+        while True:
+            t, uid, wc = self.wordcountqueue.get()
+            if not uid:
+                continue
+            if lastuid != uid:
+                gameinternalid = self.__get_gameinternalid(uid)
+                lastuid = uid
+            self.sqlsavegameinfo.execute(
+                "INSERT INTO game_word_count VALUES(?,?,?)",
+                (gameinternalid, t, wc),
+            )

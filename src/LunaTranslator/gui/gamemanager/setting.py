@@ -1,6 +1,7 @@
 from qtsymbols import *
 import functools, uuid, os, qtawesome, time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from datetime import time as dttime
 from traceback import print_exc
 import gobject, NativeUtils
 import copy
@@ -333,6 +334,7 @@ class dialog_setting_game_internal(QWidget):
 
     def __init__(self, parent, gameuid, keepindexobject=None) -> None:
         super().__init__(parent)
+        self.__quanju_wc = False
         self.keepindexobject = keepindexobject
         vbox = QVBoxLayout(self)
         self.lauchpath = None
@@ -636,14 +638,27 @@ class dialog_setting_game_internal(QWidget):
                 cnt, savehook_new_data[self.gameuid].get("statistic_wordcount", 0)
             )
 
+    def chartwidget_ctxmenu(self, p):
+        menu = QMenu(self)
+        quanju = LAction("this" if self.__quanju_wc else "all", menu)
+        menu.addAction(quanju)
+        action = menu.exec(self.cursor().pos())
+        if action == quanju:
+            self.__quanju_wc = not self.__quanju_wc
+
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
+
         chart = chartwidget()
         chart.xtext = lambda x: (
             "0" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0]
         )
         chart.ytext = lambda y: self.formattime(y, False)
 
-        self.chart = chart
+        chart2 = chartwidget()
+        chart2.xtext = chart.xtext
+        chart2.ytext = str
+        chart2.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        chart2.customContextMenuRequested.connect(self.chartwidget_ctxmenu)
         self._timelabel = QLabel()
         self._wordlabel = QLabel()
         self._wordlabel.setSizePolicy(
@@ -652,34 +667,49 @@ class dialog_setting_game_internal(QWidget):
         self._timelabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
-        formLayout.addLayout(
-            getboxlayout(
-                [
-                    "文字计数",
-                    getboxlayout(
-                        [self._wordlabel, getIconButton(self.__refresh, "fa.refresh")]
-                    ),
-                ]
-            )
-        )
+        stack = QStackedWidget()
+        stack.addWidget(chart)
+        stack.addWidget(chart2)
+        wc = LPushButton("文字计数")
+        tm = LPushButton("游戏时间")
+        wc.setCheckable(True)
+        tm.setCheckable(True)
 
-        t = QTimer(self)
+        def clicktm(b):
+            stack.setCurrentIndex(1 - b)
+            globalconfig["statisticvistm"] = b
+            wc.setChecked(not b)
+
+        def clickwc(b):
+            stack.setCurrentIndex(b)
+            globalconfig["statisticvistm"] = not b
+            tm.setChecked(not b)
+
+        tm.toggled.connect(clicktm)
+        wc.toggled.connect(clickwc)
+        if globalconfig.get("statisticvistm", True):
+            tm.setChecked(True)
+        else:
+            wc.setChecked(True)
         formLayout.addLayout(
             getboxlayout(
                 [
-                    "游戏时间",
+                    wc,
+                    self._wordlabel,
+                    "",
+                    tm,
                     self._timelabel,
                     getIconButton(
                         icon="fa.edit", callback=functools.partial(timelistediter, self)
                     ),
+                    getIconButton(self.__refresh, "fa.refresh"),
                 ]
             )
         )
-
-        formLayout.addWidget(chart)
+        formLayout.addWidget(stack)
         t = QTimer(self)
         t.setInterval(1000)
-        t.timeout.connect(self.refresh)
+        t.timeout.connect(functools.partial(self.refresh, chart, chart2, gameuid))
         t.timeout.emit()
         t.start()
 
@@ -718,14 +748,30 @@ class dialog_setting_game_internal(QWidget):
             lists.append((k, everyday[k]))
         return lists
 
-    def refresh(self):
-        __ = gobject.base.somedatabase.querytraceplaytime(self.gameuid)
+    def refresh(self, chart: chartwidget, chart2: chartwidget, gameuid):
+        __ = gobject.base.somedatabase.querytraceplaytime(gameuid)
         _cnt = sum([_[1] - _[0] for _ in __])
         self._timelabel.setText(self.formattime(_cnt))
         self._wordlabel.setText(
-            str(savehook_new_data[self.gameuid].get("statistic_wordcount", 0))
+            str(savehook_new_data[gameuid].get("statistic_wordcount", 0))
         )
-        self.chart.setdata(self.split_range_into_days(__))
+        chart.setdata(self.split_range_into_days(__))
+
+        __ = gobject.base.somedatabase.querywordcount(
+            None if self.__quanju_wc else gameuid
+        )
+        chart2.setdata(self.wordcountbydate(__))
+
+    def wordcountbydate(self, l: tuple[tuple[float, int]]):
+        daily_sum: "dict[date, int]" = {}
+        for timestamp, value in l:
+            date = datetime.fromtimestamp(timestamp).date()
+            daily_sum[date] = daily_sum.get(date, 0) + value
+        lists = []
+        for k in sorted(daily_sum.keys()):
+            lists.append((datetime.combine(k, dttime.min).timestamp(), daily_sum[k]))
+        
+        return lists
 
     def formattime(self, t, usingnotstart=True):
         t = int(t)

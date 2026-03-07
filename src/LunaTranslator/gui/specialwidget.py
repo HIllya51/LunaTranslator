@@ -97,22 +97,6 @@ class chartwidget(QWidget):
         data = sorted(data, key=lambda _: _[0])
         self.data = data
 
-    def formattime(self, t):
-        t = int(t)
-        s = t % 60
-        t = t // 60
-        m = t % 60
-        t = t // 60
-        h = t
-        string = ""
-        if h:
-            string += str(h) + _TR("时")
-        if m:
-            string += str(m) + _TR("分")
-        if s:
-            string += str(s) + _TR("秒")
-        return string
-
     def mouseMoveEvent(self, a0):
         self.update()
         return super().mouseMoveEvent(a0)
@@ -134,7 +118,7 @@ class chartwidget(QWidget):
         idx = round(idx_f)
         idx = max(0, min(idx, len(self.data) - 1))
         xt = lambda x: ("" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0])
-        _ = self.formattime(self.data[idx][1])
+        _ = self.ytext(self.data[idx][1])
         t = xt(self.data[idx][0])
         if _:
             t += "\n" + _
