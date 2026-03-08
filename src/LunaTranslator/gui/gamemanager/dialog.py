@@ -793,7 +793,7 @@ class dialog_savedgame_new(QWidget):
                 Qt.Key.Key_Down,
                 Qt.Key.Key_Up,
             ):
-                offset = self.flow.calc_last_next_line_offset(
+                offset, tolast = self.flow.calc_last_next_line_offset(
                     self.idxsave.index(self.currentfocusuid),
                     e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Left),
                     shu=e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down),
@@ -801,15 +801,14 @@ class dialog_savedgame_new(QWidget):
                 if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
                     self.moverank(offset)
                 else:
-                    self.movefocus(offset)
+                    self.movefocus(offset, tolast)
 
-    def movefocus(self, dx):
+    def movefocus(self, dx, tolast):
         game = self.currentfocusuid
-
         idx1 = self.idxsave.index(game)
         idx2 = (idx1 + dx) % len(self.idxsave)
 
-        if idx1 == 0 and dx == -1:
+        if (idx1 == 0 and dx == -1) or tolast:
             self.flow.verticalScrollBar().setValue(
                 self.flow.verticalScrollBar().maximum()
             )

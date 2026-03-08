@@ -492,7 +492,7 @@ class lazyscrollflow(ScrollArea):
     def calc_last_next_line_offset(self, idx, last, shu=True):
         offset = -1 if last else 1
         if not shu:
-            return offset
+            return offset, False
         for i in range(len(self.widgetlogicposmap)):
             for j in range(len(self.widgetlogicposmap[i])):
                 if self.widgetlogicposmap[i][j] == idx:
@@ -506,7 +506,7 @@ class lazyscrollflow(ScrollArea):
                         if i >= len(self.widgetlogicposmap):
                             i = i % len(self.widgetlogicposmap)
                         need = self.widgetlogicposmap[i]
-                    return need[j] - idx
+                    return need[j] - idx, i < 0
 
 
 def has_intersection(interval1, interval2):
