@@ -442,7 +442,7 @@ class dialog_savedgame_new(QWidget):
         self.formLayout.removeWidget(self.flow)
         self.flow.hide()
         self.flow.deleteLater()
-        self.flow = lazyscrollflow()
+        self.flow = lazyscrollflow(self.keypressed)
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.flow.setsize(
             QSize(
@@ -780,23 +780,28 @@ class dialog_savedgame_new(QWidget):
             idx = getreflist(uid).index(gameuid)
             getreflist(uid).insert(0, getreflist(uid).pop(idx))
 
-    def keyPressEvent(self, e: QKeyEvent):
+    def keypressed(self, e: QKeyEvent):
         if self.currentfocusuid:
+
             if e.key() == Qt.Key.Key_Return:
                 startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
             elif e.key() == Qt.Key.Key_Delete:
                 self.clicked2()
-            elif e.key() == Qt.Key.Key_Left:
+            elif e.key() in (
+                Qt.Key.Key_Left,
+                Qt.Key.Key_Right,
+                Qt.Key.Key_Down,
+                Qt.Key.Key_Up,
+            ):
+                offset = self.flow.calc_last_next_line_offset(
+                    self.idxsave.index(self.currentfocusuid),
+                    e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Left),
+                    shu=e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down),
+                )
                 if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
-                    self.moverank(-1)
+                    self.moverank(offset)
                 else:
-                    self.movefocus(-1)
-            elif e.key() == Qt.Key.Key_Right:
-                if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
-                    self.moverank(1)
-                else:
-                    self.movefocus(1)
-        super().keyPressEvent(e)
+                    self.movefocus(offset)
 
     def movefocus(self, dx):
         game = self.currentfocusuid
@@ -864,6 +869,7 @@ class dialog_savedgame_new(QWidget):
         gameitem.focuschanged.connect(self.itemfocuschanged)
         if focus:
             gameitem.click()
+            self.flow.setFocus()
         return gameitem
 
     def newline(self, k, first=False):

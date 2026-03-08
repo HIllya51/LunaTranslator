@@ -312,11 +312,13 @@ class lazyscrollflow(ScrollArea):
         QApplication.processEvents()
         self.doshowlazywidget(True, self.internalwid.visibleRegion().boundingRect())
 
-    def __init__(self):
+    def __init__(self, keypressed):
         super().__init__()
+        self._keypressed = keypressed
         self.setStyleSheet("lazyscrollflow{background: transparent;}")
         self.widgets = []
         self.fakegeos = []
+        self.widgetlogicposmap = []
         self._spacing = 6
         self._margin = self._spacing  # 9
         self.lock = threading.Lock()
@@ -459,6 +461,8 @@ class lazyscrollflow(ScrollArea):
                 effective_rect.right()
                 - self.anylyze(effective_rect, space_x, len(self.widgets))
             ) // 2
+            self.widgetlogicposmap = []
+            currline = []
             for i, wid in enumerate(self.widgets):
                 if isinstance(wid, QWidget):
                     resize = True
@@ -469,13 +473,40 @@ class lazyscrollflow(ScrollArea):
                     x = effective_rect.x()
                     y = y + self._size.height() + space_y
                     next_x = x + self._size.width() + space_x
+                    self.widgetlogicposmap.append(currline.copy())
+                    currline.clear()
+                currline.append(i)
                 if resize:
                     wid.setGeometry(QRect(QPoint(x + dx, y), self._size))
                 self.fakegeos[i] = QRect(QPoint(x + dx, y), self._size)
                 x = next_x
+            if currline:
+                self.widgetlogicposmap.append(currline.copy())
 
             new_height = y + self._size.height() + self._margin
         self.internalwid.setFixedHeight(new_height)
+
+    def keyPressEvent(self, e: QKeyEvent):
+        self._keypressed(e)
+
+    def calc_last_next_line_offset(self, idx, last, shu=True):
+        offset = -1 if last else 1
+        if not shu:
+            return offset
+        for i in range(len(self.widgetlogicposmap)):
+            for j in range(len(self.widgetlogicposmap[i])):
+                if self.widgetlogicposmap[i][j] == idx:
+                    offset = -1 if last else 1
+                    i = i + offset
+                    if i >= len(self.widgetlogicposmap):
+                        i = i % len(self.widgetlogicposmap)
+                    need = self.widgetlogicposmap[i]
+                    if j >= len(need):
+                        i = i + offset
+                        if i >= len(self.widgetlogicposmap):
+                            i = i % len(self.widgetlogicposmap)
+                        need = self.widgetlogicposmap[i]
+                    return need[j] - idx
 
 
 def has_intersection(interval1, interval2):
