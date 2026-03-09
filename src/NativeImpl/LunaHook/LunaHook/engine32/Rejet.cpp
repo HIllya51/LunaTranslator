@@ -149,7 +149,6 @@ namespace
       if (!addr)
       {
         // ITH_MSG(L"failed");
-        ConsoleOutput("Rejet: pattern not found");
         return false;
       }
 
@@ -162,7 +161,6 @@ namespace
       // };
     } while (0xe8202474 != *(DWORD *)(addr - 3));
 
-    ConsoleOutput("INSERT Rejet");
     HookParam hp;
     hp.address = addr; //- 0xf;
     hp.type = NO_CONTEXT | DATA_INDIRECT | FIXING_SPLIT;
@@ -240,7 +238,7 @@ namespace
     enum
     {
       hook_offset = -0xc
-    };                                // hook parameter
+    }; // hook parameter
     ULONG addr = processStartAddress; //- sizeof(bytes);
     while (true)
     {
@@ -250,7 +248,6 @@ namespace
       if (!addr)
       {
         // ITH_MSG(L"failed");
-        ConsoleOutput("Rejet: pattern not found");
         return false;
       }
       addr += sizeof(bytes);
@@ -277,7 +274,6 @@ namespace
 
     // GROWL_DWORD(addr - processStartAddress); // = 0xb3578 for 剣が君
 
-    ConsoleOutput("INSERT Rejet");
     // The same as type2
     HookParam hp;
     hp.address = addr; //- 0xf;
@@ -292,9 +288,27 @@ bool InsertRejetHook()
 {
   return InsertRejetHook2() || InsertRejetHook1() || InsertRejetHook3();
 } // insert hook2 first, since 2's pattern seems to be more unique
-
+static bool htokyo()
+{
+  // https://vndb.org/v7675
+  // TOKYOヤマノテBOYS DARK CHERRY DISC
+  auto addr = findiatcallormov((DWORD)GetTextExtentPoint32A, processStartAddress, processStartAddress, processStopAddress, true);
+  if (!addr)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  { StringFilter(buffer, TEXTANDLEN("\x81\x40")); };
+  hp.offset = stackoffset(1);
+  hp.split = regoffset(edi);
+  hp.type = CODEC_ANSI_BE | USING_SPLIT | USING_STRING | DATA_INDIRECT;
+  return NewHook(hp, "Rejet");
+}
 bool Rejet::attach_function()
 {
 
-  return InsertRejetHook();
+  return ((!tokyo) && InsertRejetHook()) || (tokyo && htokyo());
 }
