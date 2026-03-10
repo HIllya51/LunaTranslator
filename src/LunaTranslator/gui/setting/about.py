@@ -401,7 +401,7 @@ def setTab_about(self: QWidget, basel):
                     "LICENSE",
                 )
             ],
-            [getboxlayout([D_getIconButton(____, icon="fa.calendar"), ""])],
+            # [getboxlayout([D_getIconButton(____, icon="fa.calendar"), ""])],
         ],
         basel,
     )
