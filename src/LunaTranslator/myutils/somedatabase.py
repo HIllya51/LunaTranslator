@@ -96,12 +96,17 @@ class somedatabase:
             )
         self.sqlsavegameinfo.commit()
 
-    def querytraceplaytime(self, gameuid) -> "list[tuple[float, float]]":
-        gameinternalid = self.__get_gameinternalid(gameuid)
-        __ = self.sqlsavegameinfo.execute(
-            "SELECT timestart,timestop FROM trace_strict WHERE gameinternalid = ?",
-            (gameinternalid,),
-        ).fetchall()
+    def querytraceplaytime(self, gameuid: "str | None") -> "list[tuple[float, float]]":
+        if gameuid:
+            gameinternalid = self.__get_gameinternalid(gameuid)
+            __ = self.sqlsavegameinfo.execute(
+                "SELECT timestart,timestop FROM trace_strict WHERE gameinternalid = ?",
+                (gameinternalid,),
+            ).fetchall()
+        else:
+            __ = self.sqlsavegameinfo.execute(
+                "SELECT timestart,timestop FROM trace_strict"
+            ).fetchall()
         __ = tuple(_ for _ in __ if _[1] > _[0])
         return __
 

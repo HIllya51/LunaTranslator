@@ -657,8 +657,6 @@ class dialog_setting_game_internal(QWidget):
         chart2 = chartwidget()
         chart2.xtext = chart.xtext
         chart2.ytext = str
-        chart2.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        chart2.customContextMenuRequested.connect(self.chartwidget_ctxmenu)
         self._timelabel = QLabel()
         self._wordlabel = QLabel()
         self._wordlabel.setSizePolicy(
@@ -670,6 +668,8 @@ class dialog_setting_game_internal(QWidget):
         stack = QStackedWidget()
         stack.addWidget(chart)
         stack.addWidget(chart2)
+        stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        stack.customContextMenuRequested.connect(self.chartwidget_ctxmenu)
         wc = LPushButton("文字计数")
         tm = LPushButton("游戏时间")
         wc.setCheckable(True)
@@ -749,7 +749,9 @@ class dialog_setting_game_internal(QWidget):
         return lists
 
     def refresh(self, chart: chartwidget, chart2: chartwidget, gameuid):
-        __ = gobject.base.somedatabase.querytraceplaytime(gameuid)
+        __ = gobject.base.somedatabase.querytraceplaytime(
+            None if self.__quanju_wc else gameuid
+        )
         _cnt = sum([_[1] - _[0] for _ in __])
         self._timelabel.setText(self.formattime(_cnt))
         self._wordlabel.setText(
@@ -770,7 +772,7 @@ class dialog_setting_game_internal(QWidget):
         lists = []
         for k in sorted(daily_sum.keys()):
             lists.append((datetime.combine(k, dttime.min).timestamp(), daily_sum[k]))
-        
+
         return lists
 
     def formattime(self, t, usingnotstart=True):
