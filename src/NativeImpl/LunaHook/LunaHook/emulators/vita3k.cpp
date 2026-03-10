@@ -1,4 +1,4 @@
-﻿#include "vita3k.h"
+#include "vita3k.h"
 #include "vita3k_1.h"
 #include "JIT_Keeper.hpp"
 namespace

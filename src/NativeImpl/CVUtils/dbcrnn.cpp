@@ -1,4 +1,4 @@
-﻿#include "dbcrnn.hpp"
+#include "dbcrnn.hpp"
 #include <clipper2/clipper.h>
 ScaleParam getScaleParam(const cv::Mat &src, const int targetSize)
 {

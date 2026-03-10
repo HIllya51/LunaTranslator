@@ -1,4 +1,4 @@
-﻿#include "TeethingRing.h"
+#include "TeethingRing.h"
 
 bool TeethingRing_attach_function()
 {

@@ -1,4 +1,4 @@
-﻿#include "AOS.h"
+#include "AOS.h"
 
 /**
  *  jichi 4/1/2014: Insert AOS hook

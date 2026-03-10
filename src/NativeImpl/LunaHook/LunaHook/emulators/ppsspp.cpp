@@ -1,4 +1,4 @@
-﻿#include "ppsspp.h"
+#include "ppsspp.h"
 #include "ppsspp_1.h"
 #include "JIT_Keeper.hpp"
 // See: https://github.com/hrydgard/ppsspp

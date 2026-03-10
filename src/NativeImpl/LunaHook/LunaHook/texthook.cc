@@ -1,4 +1,4 @@
-﻿
+
 #include "MinHook.h"
 #include "veh_hook.h"
 extern WinMutex viewMutex;

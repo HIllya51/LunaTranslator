@@ -1,4 +1,4 @@
-﻿#include "v8.h"
+#include "v8.h"
 
 int makehttpgetserverinternal();
 const wchar_t *LUNA_CONTENTBYPASS(const wchar_t *_);

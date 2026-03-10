@@ -1,4 +1,4 @@
-﻿#include "WillPlus.h"
+#include "WillPlus.h"
 namespace
 {
   std::wstring prefixappendfix(const std::wstring &origin, const std::wstring &newstr)

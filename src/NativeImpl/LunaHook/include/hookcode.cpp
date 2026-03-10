@@ -1,4 +1,4 @@
-﻿
+
 namespace
 {
 	std::optional<HookParam> ParseRCode(std::wstring RCode)

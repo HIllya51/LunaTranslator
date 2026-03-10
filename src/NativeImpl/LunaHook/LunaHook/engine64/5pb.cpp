@@ -1,4 +1,4 @@
-﻿#include "5pb.h"
+#include "5pb.h"
 #include "mages/mages.h"
 namespace
 {

@@ -1,4 +1,4 @@
-﻿
+
 #include "../loopbackaudio/LoopbackCapture.h"
 #include <fvad.h>
 #include "lockedqueue.hpp"

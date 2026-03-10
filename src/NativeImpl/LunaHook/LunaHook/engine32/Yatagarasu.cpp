@@ -1,4 +1,4 @@
-﻿#include "Yatagarasu.h"
+#include "Yatagarasu.h"
 
 bool Yatagarasu::attach_function()
 {

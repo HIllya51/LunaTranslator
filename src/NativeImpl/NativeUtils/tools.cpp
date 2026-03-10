@@ -1,4 +1,4 @@
-﻿
+
 #include <mecab.h>
 #include <rapidfuzz/distance.hpp>
 #include <aes.hpp>

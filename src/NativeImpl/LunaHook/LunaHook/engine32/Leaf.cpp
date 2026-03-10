@@ -1,4 +1,4 @@
-﻿#include "Leaf.h"
+#include "Leaf.h"
 
 /** jichi 12/25/2014: Leaf/AQUAPLUS
  *  Sample game: [141224] [AQUAPLUS] WHITE ALBUM2 ミニアフタースト�リー

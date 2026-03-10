@@ -1,4 +1,4 @@
-﻿
+
 struct OSVersion
 {
     bool Isge20H1() const noexcept

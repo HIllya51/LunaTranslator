@@ -1,4 +1,4 @@
-﻿#include "NeXAS.h"
+#include "NeXAS.h"
 
 /** jichi 7/6/2014 NeXAS
  *  Sample game: BALDRSKYZERO EXTREME

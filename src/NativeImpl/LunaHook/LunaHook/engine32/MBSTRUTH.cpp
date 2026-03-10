@@ -1,4 +1,4 @@
-﻿#include "MBSTRUTH.h"
+#include "MBSTRUTH.h"
 
 bool MBSTRUTH::attach_function()
 {

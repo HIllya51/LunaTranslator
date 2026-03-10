@@ -1,4 +1,4 @@
-﻿include(${CMAKE_CURRENT_LIST_DIR}/../version.cmake)
+include(${CMAKE_CURRENT_LIST_DIR}/../version.cmake)
 
 set(LUNA_VERSION "{${VERSION_MAJOR},${VERSION_MINOR},${VERSION_PATCH},${VERSION_REVISION}}")
 add_library(VERSION_DEF ${CMAKE_CURRENT_LIST_DIR}/version_def.cpp)

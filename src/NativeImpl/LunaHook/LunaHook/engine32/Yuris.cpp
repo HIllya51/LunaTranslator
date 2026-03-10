@@ -1,4 +1,4 @@
-﻿#include "Yuris.h"
+#include "Yuris.h"
 /********************************************************************************************
 YU-RIS hook:
   Becomes common recently. I first encounter this game in Whirlpool games.

@@ -1,4 +1,4 @@
-﻿#include "dbcrnn.hpp"
+#include "dbcrnn.hpp"
 #ifndef WINXP
 #include <dxgi.h>
 #include <dxgi1_6.h>

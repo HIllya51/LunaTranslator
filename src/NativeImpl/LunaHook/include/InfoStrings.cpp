@@ -1,4 +1,4 @@
-﻿#include "InfoStrings.h"
+#include "InfoStrings.h"
 #include <unordered_map>
 #include <string>
 

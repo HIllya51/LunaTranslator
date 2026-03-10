@@ -1,4 +1,4 @@
-﻿#include "sakanagl.h"
+#include "sakanagl.h"
 namespace
 {
 	bool h1(uintptr_t minAddress, uintptr_t maxAddress)

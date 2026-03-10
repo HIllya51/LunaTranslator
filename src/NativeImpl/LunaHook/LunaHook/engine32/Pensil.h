@@ -1,4 +1,4 @@
-﻿
+
 
 class Pensil : public ENGINE
 {

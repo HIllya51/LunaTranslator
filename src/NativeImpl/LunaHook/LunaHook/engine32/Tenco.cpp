@@ -1,4 +1,4 @@
-﻿#include "Tenco.h"
+#include "Tenco.h"
 
 /**
  *  jichi 4/1/2014: Insert AU hook

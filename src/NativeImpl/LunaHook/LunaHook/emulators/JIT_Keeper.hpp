@@ -1,4 +1,4 @@
-﻿
+
 template <typename InfoT>
 struct JIT_Keeper
 {

@@ -1,4 +1,4 @@
-﻿#include "PCSX2_1.h"
+#include "PCSX2_1.h"
 
 namespace
 {

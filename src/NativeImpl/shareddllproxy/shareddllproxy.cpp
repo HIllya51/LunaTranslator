@@ -1,4 +1,4 @@
-﻿#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
+#pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
 
 int dllinjectwmain(int argc, wchar_t *argv[]);
 int updatewmain(int argc, wchar_t *wargv[]);

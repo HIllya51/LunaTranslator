@@ -1,4 +1,4 @@
-﻿#ifndef WINXP
+#ifndef WINXP
 #include <winstring.h>
 #include <roapi.h>
 #include <inspectable.h>

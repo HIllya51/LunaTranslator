@@ -1,4 +1,4 @@
-﻿#include "rpcs3.h"
+#include "rpcs3.h"
 #include "rpcs3_1.h"
 #include "JIT_Keeper.hpp"
 namespace

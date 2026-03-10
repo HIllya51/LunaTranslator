@@ -1,4 +1,4 @@
-﻿#include "ortwrapper.hpp"
+#include "ortwrapper.hpp"
 #include <opencv2/opencv.hpp>
 
 class CommonOnnxModel : public OnnxSession

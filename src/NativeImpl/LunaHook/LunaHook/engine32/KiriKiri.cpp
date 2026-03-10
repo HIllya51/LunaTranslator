@@ -1,4 +1,4 @@
-﻿#include "KiriKiri.h"
+#include "KiriKiri.h"
 
 namespace kirikiri
 {

@@ -1,4 +1,4 @@
-﻿#include "R11.h"
+#include "R11.h"
 // Remember 11
 static void ff(TextBuffer *buffer, HookParam *)
 {

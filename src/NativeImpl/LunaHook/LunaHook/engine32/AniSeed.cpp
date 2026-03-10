@@ -1,4 +1,4 @@
-﻿#include "AniSeed.h"
+#include "AniSeed.h"
 
 bool AniSeed::attach_function()
 {

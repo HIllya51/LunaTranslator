@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // main.h
 // 8/23/2013 jichi

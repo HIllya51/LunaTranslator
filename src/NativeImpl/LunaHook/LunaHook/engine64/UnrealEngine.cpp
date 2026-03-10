@@ -1,4 +1,4 @@
-﻿#include "UnrealEngine.h"
+#include "UnrealEngine.h"
 
 namespace
 {

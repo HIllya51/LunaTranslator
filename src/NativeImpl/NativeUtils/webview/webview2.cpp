@@ -1,4 +1,4 @@
-﻿#include "webview2.hpp"
+#include "webview2.hpp"
 
 class JSEvalCallback : public ComImpl<ICoreWebView2ExecuteScriptCompletedHandler>
 {

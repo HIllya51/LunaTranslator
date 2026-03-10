@@ -1,4 +1,4 @@
-﻿#include "Milk.h"
+#include "Milk.h"
 /*
 int __cdecl sub_40C750(char *a1, _DWORD *a2)
 {

@@ -1,4 +1,4 @@
-﻿#include "RPGMakerRGSS3.h"
+#include "RPGMakerRGSS3.h"
 namespace
 { // unnamed
 

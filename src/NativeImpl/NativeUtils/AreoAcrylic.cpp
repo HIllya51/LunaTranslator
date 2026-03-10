@@ -1,4 +1,4 @@
-﻿
+
 #include <dwmapi.h>
 #include "osversion.hpp"
 typedef enum _WINDOWCOMPOSITIONATTRIB

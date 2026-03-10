@@ -1,4 +1,4 @@
-﻿#include "../implsapi.hpp"
+#include "../implsapi.hpp"
 
 DECLARE_API bool SAPI_Speak(const wchar_t *Content, LPCWSTR voiceid, int rate, int volume, int pitch, void (*cb)(byte *, size_t))
 {

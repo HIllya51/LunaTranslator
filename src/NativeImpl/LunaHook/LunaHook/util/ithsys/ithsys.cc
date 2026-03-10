@@ -1,4 +1,4 @@
-﻿// ithsys.cc
+// ithsys.cc
 // 8/21/2013 jichi
 // Branch: ITH_SYS/SYS.cpp, rev 126
 //

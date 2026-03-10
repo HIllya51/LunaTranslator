@@ -1,4 +1,4 @@
-﻿#ifndef _WIN64
+#ifndef _WIN64
 
 // https://stackoverflow.com/questions/59287991/how-to-get-remote-proc-address-of-injected-dll-into-another-process
 #define ReCa reinterpret_cast

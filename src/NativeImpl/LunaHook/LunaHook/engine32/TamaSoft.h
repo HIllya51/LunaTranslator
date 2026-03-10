@@ -1,4 +1,4 @@
-﻿
+
 
 class TamaSoft : public ENGINE
 {

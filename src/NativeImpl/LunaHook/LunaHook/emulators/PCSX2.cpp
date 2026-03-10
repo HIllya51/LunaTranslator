@@ -1,4 +1,4 @@
-﻿#include "PCSX2.h"
+#include "PCSX2.h"
 #include "PCSX2_1.h"
 #include "JIT_Keeper.hpp"
 namespace GameList

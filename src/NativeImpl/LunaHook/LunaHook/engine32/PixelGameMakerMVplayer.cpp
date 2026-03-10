@@ -1,4 +1,4 @@
-﻿#include "PixelGameMakerMVplayer.h"
+#include "PixelGameMakerMVplayer.h"
 
 namespace agtk
 {

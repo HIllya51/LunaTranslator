@@ -1,4 +1,4 @@
-﻿#include "pluginmanager.h"
+#include "pluginmanager.h"
 #include <filesystem>
 #include "Plugin/extension.h"
 #include <fstream>

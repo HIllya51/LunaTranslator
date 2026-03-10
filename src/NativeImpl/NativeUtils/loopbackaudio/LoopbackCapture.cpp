@@ -1,4 +1,4 @@
-﻿
+
 #include "LoopbackCapture.h"
 
 HRESULT CLoopbackCapture::SetDeviceStateErrorIfFailed(HRESULT hr)

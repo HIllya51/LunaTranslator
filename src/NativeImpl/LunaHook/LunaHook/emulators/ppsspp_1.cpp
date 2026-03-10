@@ -1,4 +1,4 @@
-﻿#include "ppsspp_1.h"
+#include "ppsspp_1.h"
 namespace
 {
     void NPJH50796(TextBuffer *buffer, HookParam *hp)

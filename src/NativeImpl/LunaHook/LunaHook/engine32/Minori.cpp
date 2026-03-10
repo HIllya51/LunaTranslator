@@ -1,4 +1,4 @@
-﻿#include "Minori.h"
+#include "Minori.h"
 
 void Minori1EngFilter(TextBuffer *buffer, HookParam *)
 {

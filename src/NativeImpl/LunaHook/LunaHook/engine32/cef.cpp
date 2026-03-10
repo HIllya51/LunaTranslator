@@ -1,4 +1,4 @@
-﻿#include "cef.h"
+#include "cef.h"
 typedef wchar_t char16;
 
 typedef struct _cef_string_wide_t

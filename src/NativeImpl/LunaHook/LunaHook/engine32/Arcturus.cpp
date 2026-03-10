@@ -1,4 +1,4 @@
-﻿#include "Arcturus.h"
+#include "Arcturus.h"
 
 static bool h2()
 {

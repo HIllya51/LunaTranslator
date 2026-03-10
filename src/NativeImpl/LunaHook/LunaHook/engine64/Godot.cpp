@@ -1,4 +1,4 @@
-﻿#include "Godot.h"
+#include "Godot.h"
 static bool _shaped_text_add_string()
 {
 	char _shaped_text_add_string[] = "_shaped_text_add_string";

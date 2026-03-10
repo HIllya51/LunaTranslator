@@ -1,4 +1,4 @@
-﻿#include "sakanagl.h"
+#include "sakanagl.h"
 
 bool sakanagl::attach_function()
 {

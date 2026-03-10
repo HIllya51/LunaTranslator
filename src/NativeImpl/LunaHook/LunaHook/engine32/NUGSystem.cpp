@@ -1,4 +1,4 @@
-﻿#include "NUGSystem.h"
+#include "NUGSystem.h"
 
 bool NUGSystem::attach_function()
 {

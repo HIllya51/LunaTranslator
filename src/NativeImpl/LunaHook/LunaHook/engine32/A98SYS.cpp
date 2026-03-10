@@ -1,4 +1,4 @@
-﻿#include "A98SYS.h"
+#include "A98SYS.h"
 
 bool A98SYS::attach_function()
 {

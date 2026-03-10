@@ -1,4 +1,4 @@
-﻿#include "RUNE.h"
+#include "RUNE.h"
 
 bool RUNE1()
 {

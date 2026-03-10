@@ -1,4 +1,4 @@
-﻿#include "THLabyrinth3.h"
+#include "THLabyrinth3.h"
 
 bool THLabyrinth3::attach_function()
 {

@@ -1,4 +1,4 @@
-﻿#include "RUGP.h"
+#include "RUGP.h"
 
 namespace
 { // unnamed rUGP

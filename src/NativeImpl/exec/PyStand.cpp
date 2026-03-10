@@ -1,4 +1,4 @@
-﻿
+
 #include "PyStand.h"
 
 #include <iomanip>

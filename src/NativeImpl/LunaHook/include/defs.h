@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 // texthook/defs.h
 // 8/23/2013 jichi

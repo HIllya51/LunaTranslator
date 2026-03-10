@@ -1,4 +1,4 @@
-﻿#include "python.h"
+#include "python.h"
 #include <dwrite.h>
 #include <atlbase.h>
 extern "C" __declspec(dllexport) const wchar_t *luna_internal_renpy_call_host(const wchar_t *text, int split)

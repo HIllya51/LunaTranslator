@@ -1,4 +1,4 @@
-﻿#include "ZeroEscape.h"
+#include "ZeroEscape.h"
 
 static bool ze2()
 {

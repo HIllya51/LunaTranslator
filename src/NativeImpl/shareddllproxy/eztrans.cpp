@@ -1,4 +1,4 @@
-﻿
+
 bool ehndSupport = false;
 class CTransEngine
 {

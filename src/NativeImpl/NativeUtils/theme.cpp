@@ -1,4 +1,4 @@
-﻿
+
 // https://github.com/Blinue/Xaml-Islands-Cpp/blob/main/src/XamlIslandsCpp/XamlWindow.h
 #include "osversion.hpp"
 enum class PreferredAppMode

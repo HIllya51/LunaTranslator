@@ -1,4 +1,4 @@
-﻿#include "../implsapi.hpp"
+#include "../implsapi.hpp"
 int neospeechlist(int argc, wchar_t *argv[])
 {
     FILE *f = _wfopen(argv[1], L"wb");

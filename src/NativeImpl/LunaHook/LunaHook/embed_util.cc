@@ -1,4 +1,4 @@
-﻿#include "MinHook.h"
+#include "MinHook.h"
 static std::atomic<bool> patch_fun_ptrs_patch_once_flag = true;
 DynamicShiftJISCodec *dynamiccodec = new DynamicShiftJISCodec(932);
 

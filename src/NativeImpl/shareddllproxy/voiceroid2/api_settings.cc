@@ -1,4 +1,4 @@
-﻿#include "api_settings.h"
+#include "api_settings.h"
 
 #include "ebyutil.h"
 namespace ebyroid

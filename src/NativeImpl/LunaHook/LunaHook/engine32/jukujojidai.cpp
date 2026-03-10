@@ -1,4 +1,4 @@
-﻿#include "jukujojidai.h"
+#include "jukujojidai.h"
 
 bool jukujojidai::attach_function()
 {

@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include <AudioClient.h>
 #include <mmdeviceapi.h>

@@ -1,4 +1,4 @@
-﻿#include "Footy2.h"
+#include "Footy2.h"
 bool insertstrcpyhook()
 {
   const BYTE bytes[] = {

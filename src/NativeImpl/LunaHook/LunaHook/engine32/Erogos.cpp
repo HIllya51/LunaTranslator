@@ -1,4 +1,4 @@
-﻿#include "Erogos.h"
+#include "Erogos.h"
 static bool h1()
 {
   // らぶフェチ～手コキ編～

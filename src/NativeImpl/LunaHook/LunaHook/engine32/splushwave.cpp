@@ -1,4 +1,4 @@
-﻿#include "splushwave.h"
+#include "splushwave.h"
 namespace
 {
   bool splushwave_(const char *buf, int size)

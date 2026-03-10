@@ -1,4 +1,4 @@
-﻿#include "LizardFactory.h"
+#include "LizardFactory.h"
 
 bool LizardFactory::attach_function()
 {

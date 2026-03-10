@@ -1,4 +1,4 @@
-﻿class NoEngine : public ENGINE
+class NoEngine : public ENGINE
 {
 public:
     bool attach_function()

@@ -1,4 +1,4 @@
-﻿// Magpie\AdaptersService.cpp
+// Magpie\AdaptersService.cpp
 #ifndef WINXP
 #include <dxgi1_6.h>
 #else

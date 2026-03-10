@@ -1,4 +1,4 @@
-﻿#include "Nitroplus2.h"
+#include "Nitroplus2.h"
 
 /**
  *  Jazzinghen 23/05/2020: Add TokyoNecro hook

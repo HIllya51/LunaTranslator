@@ -1,4 +1,4 @@
-﻿#include "host.h"
+#include "host.h"
 #define HOOK_SEARCH_LENGTH STRING
 // #define HOOK_SEARCH_LENGTH 0
 namespace

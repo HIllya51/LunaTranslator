@@ -1,4 +1,4 @@
-﻿#include "T2U.h"
+#include "T2U.h"
 
 bool T2U::attach_function()
 {

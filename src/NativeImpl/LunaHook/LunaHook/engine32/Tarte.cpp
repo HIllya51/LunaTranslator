@@ -1,4 +1,4 @@
-﻿#include "Tarte.h"
+#include "Tarte.h"
 
 bool Tarte::attach_function()
 {

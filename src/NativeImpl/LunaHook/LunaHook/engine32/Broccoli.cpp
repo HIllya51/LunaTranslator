@@ -1,4 +1,4 @@
-﻿#include "Broccoli.h"
+#include "Broccoli.h"
 
 bool Broccoli::attach_function()
 {

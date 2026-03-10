@@ -1,4 +1,4 @@
-﻿#include "Artemis.h"
+#include "Artemis.h"
 namespace
 {
 	void filtercommon(TextBuffer *buffer, HookParam *hp)

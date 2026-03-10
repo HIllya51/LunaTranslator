@@ -1,4 +1,4 @@
-﻿#include "CMVS.h"
+#include "CMVS.h"
 namespace
 {
   uintptr_t getptr2()

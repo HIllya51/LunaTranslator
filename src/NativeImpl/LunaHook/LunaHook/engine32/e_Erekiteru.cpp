@@ -1,4 +1,4 @@
-﻿#include "e_Erekiteru.h"
+#include "e_Erekiteru.h"
 
 bool e_Erekiteru::attach_function()
 {

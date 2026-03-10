@@ -1,4 +1,4 @@
-﻿#include "AZScript.h"
+#include "AZScript.h"
 // すたじおみりす
 // 空の森
 bool AZScript::attach_function()

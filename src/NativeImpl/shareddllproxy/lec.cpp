@@ -1,4 +1,4 @@
-﻿// https://github.com/uyjulian/LECTranslate
+// https://github.com/uyjulian/LECTranslate
 
 // #if 1
 // // Jp->En engine

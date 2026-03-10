@@ -1,4 +1,4 @@
-﻿#include "LightVN.h"
+#include "LightVN.h"
 namespace
 {
   bool _1()

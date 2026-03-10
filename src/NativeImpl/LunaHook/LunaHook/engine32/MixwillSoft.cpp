@@ -1,4 +1,4 @@
-﻿#include "MixwillSoft.h"
+#include "MixwillSoft.h"
 // https://vndb.org/v10193
 bool MixwillSoft::attach_function()
 {

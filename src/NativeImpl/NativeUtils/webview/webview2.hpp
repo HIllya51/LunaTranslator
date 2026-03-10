@@ -1,4 +1,4 @@
-﻿
+
 #include <WebView2.h>
 #include "webview.hpp"
 

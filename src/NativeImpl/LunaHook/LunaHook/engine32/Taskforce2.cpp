@@ -1,4 +1,4 @@
-﻿#include "Taskforce2.h"
+#include "Taskforce2.h"
 /**
  *  jichi 1/2/2014: Taskforce2 Engine
  *

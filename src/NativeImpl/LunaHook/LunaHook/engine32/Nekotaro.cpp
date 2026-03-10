@@ -1,4 +1,4 @@
-﻿#include "Nekotaro.h"
+#include "Nekotaro.h"
 
 bool Nekotaro::attach_function()
 {

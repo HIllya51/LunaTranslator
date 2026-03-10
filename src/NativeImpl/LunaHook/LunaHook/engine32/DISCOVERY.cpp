@@ -1,4 +1,4 @@
-﻿#include "DISCOVERY.h"
+#include "DISCOVERY.h"
 namespace
 {
   bool DISCOVERY1()

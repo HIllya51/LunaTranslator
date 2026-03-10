@@ -1,4 +1,4 @@
-﻿#include "littlecheese.h"
+#include "littlecheese.h"
 
 bool littlecheeseattach_function()
 {

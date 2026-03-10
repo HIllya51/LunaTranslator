@@ -1,4 +1,4 @@
-﻿#include "Siglus.h"
+#include "Siglus.h"
 namespace
 { // unnamed
 

@@ -1,4 +1,4 @@
-﻿
+
 #include "vita3k_1.h"
 
 namespace

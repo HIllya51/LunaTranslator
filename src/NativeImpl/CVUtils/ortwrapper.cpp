@@ -1,4 +1,4 @@
-﻿#include "ortwrapper.hpp"
+#include "ortwrapper.hpp"
 // https://github.com/microsoft/onnxruntime/issues/3172#issuecomment-682193911
 #define ORT_API_MANUAL_INIT
 #include <onnxruntime_cxx_api.h>

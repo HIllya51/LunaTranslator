@@ -1,4 +1,4 @@
-﻿#include "Elf.h"
+#include "Elf.h"
 
 /**
  *  jichi 6/1/2014:

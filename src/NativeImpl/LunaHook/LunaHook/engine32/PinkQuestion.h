@@ -1,4 +1,4 @@
-﻿
+
 class PinkQuestion : public ENGINE
 {
 public:

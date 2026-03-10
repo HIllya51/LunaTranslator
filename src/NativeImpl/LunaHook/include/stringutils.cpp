@@ -1,4 +1,4 @@
-﻿
+
 
 template <class CharT>
 inline bool all_ascii_impl(const CharT *s, int maxsize)

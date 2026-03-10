@@ -1,4 +1,4 @@
-﻿#include "Debonosu.h"
+#include "Debonosu.h"
 
 namespace
 { // unnamed

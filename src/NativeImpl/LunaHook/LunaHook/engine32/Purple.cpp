@@ -1,4 +1,4 @@
-﻿#include "Purple.h"
+#include "Purple.h"
 
 bool Purple::attach_function()
 {

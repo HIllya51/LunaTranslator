@@ -1,4 +1,4 @@
-﻿#include "Lightvn.h"
+#include "Lightvn.h"
 
 // https://vndb.org/r?f=fwLight_evn-
 #define PATTERN1 R"(\[PARSETOKENS\] line:[-"'\.]+(.*?)\(scenario:(.*?))"

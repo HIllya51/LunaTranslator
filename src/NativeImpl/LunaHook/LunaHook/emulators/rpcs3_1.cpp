@@ -1,4 +1,4 @@
-﻿#include "rpcs3_1.h"
+#include "rpcs3_1.h"
 
 struct emfuncinfoX
 {

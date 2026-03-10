@@ -1,4 +1,4 @@
-﻿// pchooks.cc
+// pchooks.cc
 // 8/1/2014 jichi
 
 #include "pchooks.h"

@@ -1,4 +1,4 @@
-﻿#include "Waffle.h"
+#include "Waffle.h"
 #include "pchhook.h"
 bool InsertWaffleDynamicHook(LPVOID addr, hook_context *context)
 {

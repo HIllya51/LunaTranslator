@@ -1,4 +1,4 @@
-﻿#include "osversion.hpp"
+#include "osversion.hpp"
 
 typedef void (*MonitorPidVolume_callback_t)(BOOL);
 namespace

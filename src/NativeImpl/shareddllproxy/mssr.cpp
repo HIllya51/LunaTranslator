@@ -1,4 +1,4 @@
-﻿#ifndef WINXP
+#ifndef WINXP
 #include <roapi.h>
 #else
 #include "../xpundef/xp_winrt.hpp"

@@ -1,4 +1,4 @@
-﻿#include "SystemAoi.h"
+#include "SystemAoi.h"
 /* 7/8/2014: The engine name is supposed to be: AoiGameSystem Engine
  * See: http://capita.tistory.com/m/post/205
  *

@@ -1,4 +1,4 @@
-﻿#include "mages/mages.h"
+#include "mages/mages.h"
 #include "yuzu_1.h"
 
 namespace

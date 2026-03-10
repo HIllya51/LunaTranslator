@@ -1,4 +1,4 @@
-﻿#include <commoncontrols.h>
+#include <commoncontrols.h>
 #include <shellapi.h>
 #include "bmpx.hpp"
 #include "osversion.hpp"

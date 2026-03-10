@@ -21,7 +21,7 @@ if(MSVC)
   if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_options(/MP)
   endif()
-  add_definitions(/utf-8)
+  add_compile_options(/utf-8)
 endif()
 include(FetchContent)
 

@@ -1,4 +1,4 @@
-﻿
+
 
 class Ryokucha : public ENGINE
 {

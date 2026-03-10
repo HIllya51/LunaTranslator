@@ -1,4 +1,4 @@
-﻿#include "livecaptions.h"
+#include "livecaptions.h"
 
 bool livecaptions::attach_function()
 {

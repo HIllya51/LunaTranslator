@@ -1,4 +1,4 @@
-﻿#include "Eushully.h"
+#include "Eushully.h"
 
 /** jichi 6/1/2014 Eushully
  *  Insert to the last GetTextExtentPoint32A

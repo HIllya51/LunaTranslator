@@ -1,4 +1,4 @@
-﻿#include "EntisGLS.h"
+#include "EntisGLS.h"
 namespace
 {
     bool h2()

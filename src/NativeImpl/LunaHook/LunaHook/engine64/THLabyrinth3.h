@@ -1,4 +1,4 @@
-﻿
+
 // Labyrinth of Touhou Tri
 class THLabyrinth3 : public ENGINE
 {

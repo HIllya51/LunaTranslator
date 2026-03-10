@@ -1,4 +1,4 @@
-﻿#include <uiautomation.h>
+#include <uiautomation.h>
 #include "filemapping.hpp"
 #include "osversion.hpp"
 #ifndef WINXP

@@ -1,4 +1,4 @@
-﻿#include "Bishop.h"
+#include "Bishop.h"
 
 bool bishopmbcjmstojis()
 {

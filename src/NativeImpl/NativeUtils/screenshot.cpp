@@ -1,4 +1,4 @@
-﻿#include "bmpx.hpp"
+#include "bmpx.hpp"
 
 HBITMAP GetBitmap(RECT &rect, HDC hDC)
 {

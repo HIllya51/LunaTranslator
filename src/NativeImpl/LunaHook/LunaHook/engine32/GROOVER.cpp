@@ -1,4 +1,4 @@
-﻿#include "GROOVER.h"
+#include "GROOVER.h"
 
 bool GreenGreen3_textonly()
 {

@@ -1,4 +1,4 @@
-﻿
+
 #ifndef WINXP
 #include <appmodel.h>
 #include <roapi.h>

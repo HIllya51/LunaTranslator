@@ -1,4 +1,4 @@
-﻿#include "System4x.h"
+#include "System4x.h"
 
 /**
  *  jichi 12/26/2013: Rance hook

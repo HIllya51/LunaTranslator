@@ -1,4 +1,4 @@
-﻿#include <opencv2/opencv.hpp>
+#include <opencv2/opencv.hpp>
 inline std::unique_ptr<cv::Mat> __cvMatFromBMPRGB888(const void *binptr, size_t size)
 {
     auto imageptr = (uintptr_t)binptr;

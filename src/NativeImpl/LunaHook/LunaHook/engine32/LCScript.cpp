@@ -1,4 +1,4 @@
-﻿#include "LCScript.h"
+#include "LCScript.h"
 namespace
 { // unnamed
   namespace ScenarioHook

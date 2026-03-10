@@ -1,4 +1,4 @@
-﻿#include "LucaSystem.h"
+#include "LucaSystem.h"
 namespace
 {
   void LucaSystemFilter(TextBuffer *buffer, HookParam *)

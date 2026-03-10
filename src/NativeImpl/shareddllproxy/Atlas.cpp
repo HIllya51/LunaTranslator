@@ -1,4 +1,4 @@
-﻿#include "Atlas.h"
+#include "Atlas.h"
 // https://github.com/uyjulian/AtlasTranslate
 
 wchar_t AtlasPath[2 * MAX_PATH];

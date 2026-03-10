@@ -1,4 +1,4 @@
-﻿#include "EME.h"
+#include "EME.h"
 
 /********************************************************************************************
 EMEHook hook: (Contributed by Freaka)

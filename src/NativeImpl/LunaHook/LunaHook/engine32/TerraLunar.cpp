@@ -1,4 +1,4 @@
-﻿#include "TerraLunar.h"
+#include "TerraLunar.h"
 namespace
 {
   bool H1()

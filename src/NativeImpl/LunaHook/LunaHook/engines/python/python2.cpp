@@ -1,4 +1,4 @@
-﻿#include "python.h"
+#include "python.h"
 namespace
 {
     typedef wchar_t Py_UNICODE;

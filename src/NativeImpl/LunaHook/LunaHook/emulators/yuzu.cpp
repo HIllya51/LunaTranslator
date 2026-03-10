@@ -1,4 +1,4 @@
-﻿#include "yuzu.h"
+#include "yuzu.h"
 #include "yuzu_1.h"
 #include "JIT_Keeper.hpp"
 

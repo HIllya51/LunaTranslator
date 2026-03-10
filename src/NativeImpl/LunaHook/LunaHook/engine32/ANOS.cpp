@@ -1,4 +1,4 @@
-﻿#include "ANOS.h"
+#include "ANOS.h"
 
 bool ANOS::attach_function()
 {
