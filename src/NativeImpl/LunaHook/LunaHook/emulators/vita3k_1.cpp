@@ -1484,7 +1484,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 逢魔が刻～かくりよの縁～
     {0x8003CA08, {0, 3, 0, PCSG00769, 0, "PCSG00769"}},
     // Goes!
-    {0x8004D2D4, {CODEC_UTF16, 0xe, 0, 0, PCSG00367, "PCSG00367"}},
+    {0x8004D4A0, {FULL_STRING | CODEC_UTF16, 0xe, 0, 0, PCSG00367, "PCSG00367"}}, // 1.01
+    {0x8004D2D4, {FULL_STRING | CODEC_UTF16, 0xe, 0, 0, PCSG00367, "PCSG00367"}}, // 1.00
     // RE:VICE[D]
     {0x8002D4CA, {0, 0, 0, 0, PCSG00472, "PCSG00382"}},
     // SA7 -Silent Ability Seven-
