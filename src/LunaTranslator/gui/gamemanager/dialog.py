@@ -793,7 +793,7 @@ class dialog_savedgame_new(QWidget):
                 Qt.Key.Key_Down,
                 Qt.Key.Key_Up,
             ):
-                offset, tolast = self.flow.calc_last_next_line_offset(
+                offset = self.flow.calc_last_next_line_offset(
                     self.idxsave.index(self.currentfocusuid),
                     e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Left),
                     shu=e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down),
@@ -801,22 +801,16 @@ class dialog_savedgame_new(QWidget):
                 if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
                     self.moverank(offset)
                 else:
-                    self.movefocus(offset, tolast)
+                    self.movefocus(offset)
 
-    def movefocus(self, dx, tolast):
+    def movefocus(self, dx):
         game = self.currentfocusuid
         idx1 = self.idxsave.index(game)
         idx2 = (idx1 + dx) % len(self.idxsave)
 
-        if (idx1 == 0 and dx == -1) or tolast:
-            self.flow.verticalScrollBar().setValue(
-                self.flow.verticalScrollBar().maximum()
-            )
-        else:
-            try:
-                self.flow.ensureWidgetVisible(self.flow.widget(idx2))
-            except:
-                pass
+        self.flow.enableidx(idx2)
+        self.flow.ensureWidgetVisible(self.flow.widget(idx2))
+
         try:
             self.flow.widget(idx2).click()
         except:
@@ -831,10 +825,7 @@ class dialog_savedgame_new(QWidget):
         self.idxsave.insert(idx2, self.idxsave.pop(idx1))
         self.flow.switchidx(idx1, idx2)
 
-        try:
-            self.flow.ensureWidgetVisible(self.flow.widget(idx2))
-        except:
-            pass
+        self.flow.ensureWidgetVisible(self.flow.widget(idx2))
         idx1 = self.reflist.index(game)
         idx2 = self.reflist.index(game2)
         self.reflist.insert(idx2, self.reflist.pop(idx1))

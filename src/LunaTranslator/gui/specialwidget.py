@@ -440,6 +440,18 @@ class lazyscrollflow(ScrollArea):
             x = next_x
         return x
 
+    def enableidx(self, i):
+        with self.lock:
+            widfunc = self.widgets[i]
+            if not callable(widfunc):
+                return
+            widfunc: QWidget = widfunc()
+            widfunc.setParent(self.internalwid)
+            widfunc.adjustSize()
+            widfunc.setVisible(True)
+            widfunc.setGeometry(self.fakegeos[i])
+            self.widgets[i] = widfunc
+
     def fakeresize(self):
         with self.lock:
             scrollw = (
@@ -492,7 +504,7 @@ class lazyscrollflow(ScrollArea):
     def calc_last_next_line_offset(self, idx, last, shu=True):
         offset = -1 if last else 1
         if not shu:
-            return offset, False
+            return offset
         for i in range(len(self.widgetlogicposmap)):
             for j in range(len(self.widgetlogicposmap[i])):
                 if self.widgetlogicposmap[i][j] == idx:
@@ -506,7 +518,7 @@ class lazyscrollflow(ScrollArea):
                         if i >= len(self.widgetlogicposmap):
                             i = i % len(self.widgetlogicposmap)
                         need = self.widgetlogicposmap[i]
-                    return need[j] - idx, i < 0
+                    return need[j] - idx
 
 
 def has_intersection(interval1, interval2):
