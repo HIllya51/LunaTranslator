@@ -137,7 +137,7 @@ namespace
         if (hp->type & CODEC_UTF8)
             s = re::sub(s, u8R"((　)*#n(　)*)");
         else
-            s = re::sub(s, R"((\x81\x40)*(#n)*(\x81\x40)*)");
+            s = re::sub(s, R"((\x81\x40)*#n(\x81\x40)*)");
         s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
     }
@@ -374,14 +374,6 @@ namespace
         }
         buffer->from(s);
         PCSG00472(buffer, hp);
-    }
-    void FPCSG00389(TextBuffer *buffer, HookParam *hp)
-    {
-        auto s = buffer->strA();
-        s = re::sub(s, "[\\s]");
-        s = re::sub(s, "(#n)+");
-        s = re::sub(s, "#[A-Za-z]+\\[(\\d*[.,])?\\d+\\]");
-        buffer->from(s);
     }
     void FPCSG00405(TextBuffer *buffer, HookParam *hp)
     {
@@ -1129,7 +1121,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 熱血異能部活譚 Trigger Kiss
     {0x8004e44a, {0, 0, 0, 0, FPCSG00410, "PCSG00410"}}, // dialogue,sjis
     // バイナリースター
-    {0x80058606, {0, 1, 0xd, 0, FPCSG00389, "PCSG00389"}}, // dialogue,sjis
+    {0x800B85C6, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}},  // 1.00
+    {0x800B849A, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}},  // 1.01
     // アマガミ
     {0x80070658, {0, 0, 0, TPCSG00291, 0, "PCSG00291"}},
     // るいは智を呼ぶ
