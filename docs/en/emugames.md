@@ -754,6 +754,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG01049 | TOKYOヤマノテBOYS for V FAN DISC |
 |  | PCSG00664 | なないろ リンカネーション |
 |  | PCSG00944 | 白と黒のアリス |
 |  | PCSG01192 | 白と黒のアリス -Twilight line- |

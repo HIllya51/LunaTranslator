@@ -1016,6 +1016,13 @@ namespace
         strReplace(s, LR"(\n)", L"\n");
         buffer->fromWA(s);
     }
+    void PCSG01049(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(<br>　*<br>)", L"\n");
+        s = re::sub(s, LR"(　*<br>　*)");
+        buffer->from(s);
+    }
 }
 
 struct emfuncinfoX
@@ -1024,6 +1031,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // TOKYOヤマノテBOYS for V FAN DISC
+    {0x81F38A40, {CODEC_UTF16 | FULL_STRING, 0, 0xc, 0, PCSG01049, "PCSG01049"}},
     // なないろ リンカネーション
     {0x80035C34, {FULL_STRING, 0, 0, 0, PCSG00664, "PCSG00664"}},
     // 白と黒のアリス

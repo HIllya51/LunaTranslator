@@ -754,6 +754,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG01049 | TOKYOヤマノテBOYS for V FAN DISC |
 |  | PCSG00664 | なないろ リンカネーション |
 |  | PCSG00944 | 白と黒のアリス |
 |  | PCSG01192 | 白と黒のアリス -Twilight line- |
