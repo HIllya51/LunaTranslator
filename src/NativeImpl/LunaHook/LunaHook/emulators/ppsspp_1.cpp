@@ -1678,7 +1678,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88ac3a8, {0, 1, 0, 0, 0, "ULJM06393"}},
     // S・Y・K ～新説西遊記～ ポータブル
     {0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
-    {0x88DA420, {0, 4, 0, 0, ULJM05943F, "ULJM05697"}},
+    {0x8811DAC, {FULL_STRING, 0xc, 0, 0, ULJM05943F, "ULJM05697"}},
     // S.Y.K ～蓮咲伝～ Portable
     {0x88FB080, {0, 0, 0, 0, ULJM05867_1, "ULJM05867"}}, // TEXT
     {0x88FB0B8, {0, 0, 0, 0, ULJM05867_2, "ULJM05867"}}, // NAME
