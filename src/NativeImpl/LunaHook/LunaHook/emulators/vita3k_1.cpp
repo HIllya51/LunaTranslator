@@ -837,6 +837,10 @@ namespace
         if (buffer->viewA() == PCSG00535)
             buffer->clear();
     }
+    void PCSG00787(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\\');
+    }
     void PCSG01114(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '@');
@@ -1205,10 +1209,11 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 絶対迷宮 秘密のおやゆび姫
     {0x8003F554, {0, 5, 0, 0, 0, "PCSG00611"}},
     // 鏡界の白雪
-    {0x810286C8, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG00787"}}, // VPK版手动复制安装
-    {0x8002BB78, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG00787"}}, // zip安装版
+    {0x810286C8, {CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG00787"}},               // VPK版手动复制安装
+    {0x8002BB78, {FULL_STRING | CODEC_UTF8, 0, 0, 0, NewLineCharFilterA, "PCSG00787"}}, // zip安装版
     {0x80025f0e, {CODEC_UTF8, 5, 0, 0, NewLineCharFilterA, "PCSG00787"}},
     {0x80141978, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00787"}},
+    {0x8001D862, {FULL_STRING | CODEC_UTF8, 4, 0, 0, PCSG00787, "PCSG00787"}},
     // ニセコイ　ヨメイリ！？
     {0x8189e60c, {CODEC_UTF8, 4, 0, 0, 0, "PCSG00397"}},
     // DIABOLIK LOVERS DARK FATE
