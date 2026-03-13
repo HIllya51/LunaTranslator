@@ -7,6 +7,8 @@ def dopathexists(file: str):
 
     if not file:
         return False
+    if not isinstance(file, str):
+        file = str(file)
     if not file.strip():
         return False
     file = windows.check_maybe_unc_file(file)
