@@ -187,7 +187,7 @@ class mssr(basetext):
     def init_direct(self):
 
         path = globalconfig["sourcestatus2"]["mssr"]["path"]
-        path = findallmodel(checkX=True, check=path)
+        path: str = os.path.abspath(findallmodel(checkX=True, check=path))
         if not path:
             gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
