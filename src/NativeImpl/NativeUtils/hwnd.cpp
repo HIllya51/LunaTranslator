@@ -91,7 +91,7 @@ DECLARE_API bool Is64bit(DWORD pid)
 
 bool IsInteractiveUserProcess(DWORD processId)
 {
-    CHandle hProcess{OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
+    CHandle hProcess{OpenProcess(FUCKPRIVI,
                                  FALSE, processId)};
     if (!hProcess)
         return false;

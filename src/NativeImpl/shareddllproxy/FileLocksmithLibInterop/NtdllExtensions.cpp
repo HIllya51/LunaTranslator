@@ -1,4 +1,5 @@
 #include "NtdllExtensions.h"
+#include "../../NativeUtils/osversion.hpp"
 #include <thread>
 #include <atomic>
 
@@ -290,7 +291,7 @@ std::vector<NtdllExtensions::HandleInfo> NtdllExtensions::handles() noexcept
 
 std::wstring NtdllExtensions::pid_to_user(DWORD pid)
 {
-    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, pid);
+    HANDLE process = OpenProcess(FUCKPRIVI, FALSE, pid);
     std::wstring user;
     std::wstring domain;
 
