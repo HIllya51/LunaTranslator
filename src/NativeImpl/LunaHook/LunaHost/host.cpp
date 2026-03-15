@@ -89,7 +89,7 @@ namespace
 		GUID get_guid;
 		ReadFile(hookPipe, &get_guid, sizeof(get_guid), &bytesRead, nullptr);
 		if (!IsEqualGUID(get_guid, compatible_sig))
-			Host::InfoOutput(HOSTINFO::EmuWarning, TR[UNMATCHABLEVERSION]);
+			Host::InfoOutput(HOSTINFO::Warning, TR[UNMATCHABLEVERSION]);
 	}
 	void __handlepipethread(DWORD processId, HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
 	{
@@ -409,6 +409,7 @@ namespace Host
 			{
 			case HOSTINFO::EmuConnected:
 				return;
+			case HOSTINFO::Warning:
 			case HOSTINFO::EmuWarning:
 				text = FormatString(L"[%s]", TR[T_WARNING]) + text;
 				break;

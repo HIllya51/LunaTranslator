@@ -40,9 +40,10 @@ from gui.dynalang import (
 
 class HOSTINFO:
     Console = 0
-    EmuWarning = 1
-    EmuGameName = 2
-    EmuConnected = 3
+    Warning = 1
+    EmuWarning = 2
+    EmuGameName = 3
+    EmuConnected = 4
 
 
 def getformlayoutw(w=None, cls=LFormLayout, hide=False):
@@ -990,14 +991,14 @@ class hookselect(closeashidewindow):
             self.textbrowappendandmovetoend(
                 self.sysOutput, get_time_stamp() + " " + sentence
             )
-        elif info == HOSTINFO.EmuWarning:
+        elif info in (HOSTINFO.Warning, HOSTINFO.EmuWarning):
+            app = '' if info == HOSTINFO.Warning else '\n<a href="{}">{}</a>'.format(
+                dynamiclink("emugames.html", docs=True), _TR("使用说明")
+            )
             RichMessageBox(
                 self,
                 _TR("警告"),
-                sentence
-                + '\n<a href="{}">{}</a>'.format(
-                    dynamiclink("emugames.html", docs=True), _TR("使用说明")
-                ),
+                sentence + app,
                 iserror=False,
                 iswarning=True,
             )

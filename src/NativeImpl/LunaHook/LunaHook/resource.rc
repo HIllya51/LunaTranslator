@@ -22,3 +22,5 @@ lunajspatch JSSOURCE "resource/lunajspatch.js"
 thfont CHARSET "resource/thfont.tbl"
 kizfont CHARSET "resource/kizfont.tbl"
 sizfont CHARSET "resource/sizfont.tbl"
+
+PiAS CHARSET "resource/PiAS.txt"

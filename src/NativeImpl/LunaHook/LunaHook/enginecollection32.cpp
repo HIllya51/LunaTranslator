@@ -98,6 +98,7 @@
 #include "engine32/Regista.h"
 #include "engine32/Pal.h"
 #include "engine32/Footy2.h"
+#include "engine32/PiAS.h"
 #include "engine32/NeXAS.h"
 #include "engine32/Interheart.h"
 #include "engine32/LunaSoft.h"
@@ -487,5 +488,6 @@ std::vector<ENGINE *> check_engines()
         new ANOS,
         new PinkQuestion,
         new InteractiveNovelEngine,
+        new PiAS,
     };
 }
