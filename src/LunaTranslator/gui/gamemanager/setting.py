@@ -638,13 +638,14 @@ class dialog_setting_game_internal(QWidget):
                 cnt, savehook_new_data[self.gameuid].get("statistic_wordcount", 0)
             )
 
-    def chartwidget_ctxmenu(self, p):
+    def chartwidget_ctxmenu(self, refreshcallback, p):
         menu = QMenu(self)
         quanju = LAction("this" if self.__quanju_wc else "all", menu)
         menu.addAction(quanju)
         action = menu.exec(self.cursor().pos())
         if action == quanju:
             self.__quanju_wc = not self.__quanju_wc
+            refreshcallback()
 
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
 
@@ -658,32 +659,38 @@ class dialog_setting_game_internal(QWidget):
         chart2.xtext = chart.xtext
         chart2.ytext = str
         self._timelabel = QLabel()
+        self._timelabel.setSizePolicy(
+            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
+        )
         self._wordlabel = QLabel()
         self._wordlabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
-        self._timelabel.setSizePolicy(
+        self._wordlabel = QLabel()
+        self._wordlabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
+        refreshcallback=functools.partial(self.refresh, chart, chart2, gameuid)
         stack = QStackedWidget()
         stack.addWidget(chart)
         stack.addWidget(chart2)
         stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        stack.customContextMenuRequested.connect(self.chartwidget_ctxmenu)
+        stack.customContextMenuRequested.connect(functools.partial(self.chartwidget_ctxmenu, refreshcallback))
         wc = LPushButton("文字计数")
         tm = LPushButton("游戏时间")
         wc.setCheckable(True)
         tm.setCheckable(True)
-
         def clicktm(b):
             stack.setCurrentIndex(1 - b)
             globalconfig["statisticvistm"] = b
             wc.setChecked(not b)
+            refreshcallback()
 
         def clickwc(b):
             stack.setCurrentIndex(b)
             globalconfig["statisticvistm"] = not b
             tm.setChecked(not b)
+            refreshcallback()
 
         tm.toggled.connect(clicktm)
         wc.toggled.connect(clickwc)
@@ -709,13 +716,17 @@ class dialog_setting_game_internal(QWidget):
         formLayout.addWidget(stack)
         t = QTimer(self)
         t.setInterval(1000)
-        t.timeout.connect(functools.partial(self.refresh, chart, chart2, gameuid))
+        t.timeout.connect(refreshcallback)
         t.timeout.emit()
         t.start()
 
-    def split_range_into_days(self, times):
-        everyday = {}
-        for start, end in times:
+    def split_range_into_days(self, times: "list[tuple[float, float]|tuple[float, float, str]]"):
+        everyday: "dict[date, int|dict[str, int]]" = {}
+        for _ in times:
+            if len(_) == 2:
+                start, end = _
+            elif len(_) == 3:
+                start, end, gameuid = _
             if start == 0:
                 everyday[0] = end
                 continue
@@ -736,43 +747,51 @@ class dialog_setting_game_internal(QWidget):
                     useend = end_of_day
                 duration = useend - current_date.timestamp()
                 today = end_of_day - 1
-                if today not in everyday:
-                    everyday[today] = 0
-                everyday[today] += duration
+                if len(_) == 2:
+                    everyday[today] = everyday.get(today, 0) + duration
+                elif len(_) == 3:
+                    if today not in everyday:
+                        everyday[today] = {}
+                    everyday[today][gameuid] = everyday[today].get(gameuid, 0) + duration
                 current_date += timedelta(days=1)
                 current_date = current_date.replace(
                     hour=0, minute=0, second=0, microsecond=0
                 )
-        lists = []
+        lists: "list[tuple[float, int|dict[str, int]]]" = []
         for k in sorted(everyday.keys()):
             lists.append((k, everyday[k]))
         return lists
 
     def refresh(self, chart: chartwidget, chart2: chartwidget, gameuid):
-        __ = gobject.base.somedatabase.querytraceplaytime(
-            None if self.__quanju_wc else gameuid
-        )
+        _gameuid = None if self.__quanju_wc else gameuid
+    
+        __ = gobject.base.somedatabase.querytraceplaytime(_gameuid)
         _cnt = sum([_[1] - _[0] for _ in __])
         self._timelabel.setText(self.formattime(_cnt))
         self._wordlabel.setText(
             str(savehook_new_data[gameuid].get("statistic_wordcount", 0))
         )
         chart.setdata(self.split_range_into_days(__))
-
-        __ = gobject.base.somedatabase.querywordcount(
-            None if self.__quanju_wc else gameuid
-        )
+        
+        __ = gobject.base.somedatabase.querywordcount(_gameuid)
         chart2.setdata(self.wordcountbydate(__))
 
-    def wordcountbydate(self, l: tuple[tuple[float, int]]):
-        daily_sum: "dict[date, int]" = {}
-        for timestamp, value in l:
-            date = datetime.fromtimestamp(timestamp).date()
-            daily_sum[date] = daily_sum.get(date, 0) + value
-        lists = []
+    def wordcountbydate(self, l: "list[tuple[float, int]|tuple[float, int, str]]"):
+        daily_sum: "dict[date, int|dict[str, int]]" = {}
+        for _ in l:
+            if len(_) == 2:
+                timestamp, value = _
+                date = datetime.fromtimestamp(timestamp).date()
+                daily_sum[date] = daily_sum.get(date, 0) + value
+            elif len(_) == 3:
+                timestamp, value, gameuid = _
+                date = datetime.fromtimestamp(timestamp).date()
+                if date not in daily_sum:
+                    daily_sum[date] = {}
+                daily_sum[date][gameuid] = daily_sum[date].get(gameuid, 0) + value
+        lists: "list[tuple[float, int|dict[str, int]]]" = []
         for k in sorted(daily_sum.keys()):
             lists.append((datetime.combine(k, dttime.min).timestamp(), daily_sum[k]))
-
         return lists
 
     def formattime(self, t, usingnotstart=True):

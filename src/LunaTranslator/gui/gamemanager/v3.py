@@ -836,15 +836,12 @@ class dialog_savedgame_v3(QWidget):
                         )
                     elif e.key() == Qt.Key.Key_Delete:
                         self_.ref.shanchuyouxi()
-                    elif e.key() == Qt.Key.Key_Left:
-                        self_.ref.moverank(-1)
-                    elif e.key() == Qt.Key.Key_Right:
-                        self_.ref.moverank(1)
-                    elif e.key() == Qt.Key.Key_Down:
-                        self_.ref.movefocus(1)
-                        return e.ignore()
-                    elif e.key() == Qt.Key.Key_Up:
-                        self_.ref.movefocus(-1)
+                    elif e.key() in (Qt.Key.Key_Down, Qt.Key.Key_Up):
+                        offset = 1 if e.key() == Qt.Key.Key_Down else -1
+                        if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                            self_.ref.moverank(offset)
+                        else:
+                            self_.ref.movefocus(offset)
                         return e.ignore()
                 super().keyPressEvent(e)
 

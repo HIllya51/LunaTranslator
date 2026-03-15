@@ -1,7 +1,7 @@
 from qtsymbols import *
 import threading
 from traceback import print_exc
-from myutils.config import _TR
+from myutils.config import savehook_new_data
 from myutils.wrapper import trypass
 import qtawesome
 from datetime import datetime
@@ -93,7 +93,7 @@ class chartwidget(QWidget):
         self.fmetrics = fmetrics
         self.scalelinelen = 5
 
-    def setdata(self, data):
+    def setdata(self, data: "list[tuple[float, int|dict[str, int]]]"):
         data = sorted(data, key=lambda _: _[0])
         self.data = data
 
@@ -118,18 +118,18 @@ class chartwidget(QWidget):
         idx = round(idx_f)
         idx = max(0, min(idx, len(self.data) - 1))
         xt = lambda x: ("" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0])
-        _ = self.ytext(self.data[idx][1])
+        _ = self.viewpoint(self.data[idx][1])
         t = xt(self.data[idx][0])
         if _:
             t += "\n" + _
         sz = self.fmetrics.size(0, t)
         a0.setY(a0.y() - sz.height())
-        a0.setX(a0.x() - sz.width() / 2)
+        a0.setX(max(0, min(xmargin + width - sz.width(), a0.x())))
         painter.drawText(
-            QRectF(a0, sz), Qt.TextFlag.TextWordWrap | Qt.AlignmentFlag.AlignCenter, t
+            QRectF(a0, sz), Qt.TextFlag.TextWordWrap | Qt.AlignmentFlag.AlignLeft, t
         )
         __x = xmargin + idx * x_scale
-        __y = ymargin + height - self.data[idx][1] * y_scale
+        __y = ymargin + height - self.yy(self.data[idx][1]) * y_scale
 
         pen = painter.pen()
         pen.setWidth(1)
@@ -141,7 +141,26 @@ class chartwidget(QWidget):
         painter.drawLine(
             QPointF(xmargin, __y),
             QPointF(xmargin + width, __y),
-        )  # X轴
+        )
+
+    def viewpoint(self, d: "int|float|dict[str, int|float]"):
+        _ = self.ytext(self.yy(d))
+        if not _:
+            return _
+        if isinstance(d, dict):
+            __ = []
+            for uid, val in sorted(list(d.items()), key=lambda ___: -___[1]):
+                __.append('{} : {}'.format(self.ytext(self.yy(val)), savehook_new_data.get(uid, {}).get("title", "???")))
+            if len(d) != 1:
+                __.insert(0, _)
+            if len(__) > 10:
+                __ = __[:10]
+                __.append('...')
+            _ = '\n'.join(__)
+        return _
+            
+    def yy(self, y: "int|float|dict[str, int|float]"):
+        return y if isinstance(y, (int, float)) else sum(y.values())
 
     def paintEvent(self, _):
         if self.data is None or len(self.data) == 0:
@@ -160,11 +179,10 @@ class chartwidget(QWidget):
             ymargin = self.ymargin
 
             xmargin = 0
-
-            max_y = int(max(y for _, y in self.data))
+            max_y = int(max(self.yy(y) for _, y in self.data))
             yticks = find_best_ticks(max_y)
             if self.data and self.data[0][1]:
-                yticks.insert(0, self.data[0][1])
+                yticks.insert(0, self.yy(self.data[0][1]))
             y_labels = [self.ytext(y) for y in yticks]
 
             x_labels = [self.xtext(x) for x, _ in self.data]
@@ -180,7 +198,7 @@ class chartwidget(QWidget):
                 - xmargin
                 - max(
                     self.fmetrics.size(0, x_labels[-1]).width() // 2,
-                    self.fmetrics.size(0, self.ytext(self.data[-1][1])).width() // 2,
+                    self.fmetrics.size(0, self.ytext(self.yy(self.data[-1][1]))).width() // 2,
                 )
             )
             height = self.height() - 2 * ymargin
@@ -214,12 +232,12 @@ class chartwidget(QWidget):
 
             # 计算数据点在绘图区域中的坐标
             x_scale = width / (len(self.data) - 1)
-            y_scale = height / max(max(y for _, y in self.data), 1)
+            y_scale = height / max(max_y, 1)
 
             points = []
             for i, (x, y) in enumerate(self.data):
                 x_coord = xmargin + i * x_scale
-                y_coord = ymargin + height - y * y_scale
+                y_coord = ymargin + height - self.yy(y) * y_scale
                 points.append((x_coord, y_coord))
 
             # 绘制折线
@@ -231,7 +249,7 @@ class chartwidget(QWidget):
                 painter.drawLine(QPointF(x1, y1), QPointF(x2, y2))
 
                 if self.data[i + 1][1]:  #!=0
-                    text = self.ytext(self.data[i + 1][1])
+                    text = self.ytext(self.yy(self.data[i + 1][1]))
                     W = self.fmetrics.size(0, text).width()
                     next_ = points[i + 2][1] if ((i + 2) < len(points)) else y2
 

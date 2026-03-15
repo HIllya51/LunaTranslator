@@ -2,7 +2,7 @@ import sqlite3, gobject, time, windows
 import time
 import os
 from qtsymbols import *
-from myutils.config import findgameuidofpath
+from myutils.config import findgameuidofpath, savehook_new_data
 from myutils.wrapper import threader
 import threading
 from queue import Queue
@@ -40,6 +40,7 @@ class somedatabase:
         ).fetchall()
 
     def __init__(self):
+        self._cache={}
         self.wordcountqueue = Queue()
         self.locked = threading.Lock()
         self.sqlsavegameinfo = sqlite3.connect(
@@ -96,7 +97,7 @@ class somedatabase:
             )
         self.sqlsavegameinfo.commit()
 
-    def querytraceplaytime(self, gameuid: "str | None") -> "list[tuple[float, float]]":
+    def querytraceplaytime(self, gameuid: "str | None") -> "list[tuple[float, float]|tuple[float, float, str]]":
         if gameuid:
             gameinternalid = self.__get_gameinternalid(gameuid)
             __ = self.sqlsavegameinfo.execute(
@@ -104,13 +105,17 @@ class somedatabase:
                 (gameinternalid,),
             ).fetchall()
         else:
-            __ = self.sqlsavegameinfo.execute(
-                "SELECT timestart,timestop FROM trace_strict"
+            ___ = self.sqlsavegameinfo.execute(
+                "SELECT timestart,timestop,gameinternalid FROM trace_strict"
             ).fetchall()
+            __=[]
+            for timestart,timestop,gameinternalid in ___:
+                __id=self.__get_gameuid(gameinternalid)
+                __.append((timestart,timestop, __id))
         __ = tuple(_ for _ in __ if _[1] > _[0])
         return __
 
-    def querywordcount(self, gameuid: "str|None") -> "list[tuple[float, float]]":
+    def querywordcount(self, gameuid: "str|None") -> "list[tuple[float, int]|tuple[float, int, str]]":
         if gameuid:
             gameinternalid = self.__get_gameinternalid(gameuid)
             __ = self.sqlsavegameinfo.execute(
@@ -118,10 +123,28 @@ class somedatabase:
                 (gameinternalid,),
             ).fetchall()
         else:
-            __ = self.sqlsavegameinfo.execute(
-                "SELECT time,wordcount FROM game_word_count"
+            ___ = self.sqlsavegameinfo.execute(
+                "SELECT time,wordcount,gameinternalid FROM game_word_count"
             ).fetchall()
+            __=[]
+            for _time,wordcount,gameinternalid in ___:
+                __id=self.__get_gameuid(gameinternalid)
+                __.append((_time,wordcount, __id))
+        __ = tuple(_ for _ in __ if _[1] > 0)
         return __
+
+    def __get_gameuid(self, internalid):
+        if internalid not in self._cache:
+            ret = self.sqlsavegameinfo.execute(
+                "SELECT gameuid FROM gameinternalid_v2 WHERE gameinternalid = ?",
+                (internalid,),
+            ).fetchone()
+            if not ret:
+                return None
+            self._cache[internalid] = ret[0]
+        if self._cache[internalid] not in savehook_new_data:
+            return None
+        return self._cache[internalid]
 
     def __get_gameinternalid(self, gameuid):
         while True:
