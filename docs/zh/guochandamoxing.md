@@ -45,7 +45,7 @@
 
     - **优化缓存命中** - 对于DeepSeek等平台，平台会对缓存命中的输入以更低的价格计费。激活后会优化附带上下文时的形式以增加缓存命中率。
 
-1. #### 自定义 system prompt / 自定义 user message / prefill
+1. #### 自定义 system prompt / 自定义 user message / prefill {#anchor-prompt}
 
     几种不同的控制输出内容的手段，可以根据喜好设置，或者使用默认即可。
 

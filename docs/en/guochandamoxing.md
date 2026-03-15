@@ -45,7 +45,7 @@ However, sometimes you may want to use multiple different API interface addresse
 
     - **Optimize Cache Hits** – For platforms like DeepSeek, the platform charges a lower price for cache-hit inputs. Enabling this will optimize the format of contextual messages to increase cache hit rates.  
 
-1. #### Custom System Prompt / Custom User Message / Prefill  
+1. #### Custom System Prompt / Custom User Message / Prefill {#anchor-prompt}
 
     Different methods to control output content. You can configure them as preferred or use the defaults.  
 

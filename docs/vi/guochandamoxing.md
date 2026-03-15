@@ -45,7 +45,7 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
     - **Tối ưu tỷ lệ trúng cache** - Đối với các nền tảng như DeepSeek, nền tảng sẽ tính phí thấp hơn cho đầu vào trúng cache. Khi kích hoạt, hình thức đính kèm ngữ cảnh sẽ được tối ưu để tăng tỷ lệ trúng cache.
 
-1. #### Tùy chỉnh system prompt / Tùy chỉnh user message / Prefill
+1. #### Tùy chỉnh system prompt / Tùy chỉnh user message / Prefill {#anchor-prompt}
 
     Một số cách khác nhau để kiểm soát nội dung đầu ra, có thể thiết lập theo sở thích hoặc sử dụng mặc định.
 

@@ -45,7 +45,7 @@
 
     - **캐시 적중률 최적화** — DeepSeek 등의 플랫폼에서는 캐시에 적중된 입력에 대해 더 낮은 가격으로 청구됩니다. 활성화하면 컨텍스트 첨부 방식을 최적화하여 캐시 적중률을 높입니다.  
 
-1. #### 사용자 정의 system prompt / 사용자 정의 user message / prefill  
+1. #### 사용자 정의 system prompt / 사용자 정의 user message / prefill  {#anchor-prompt}
 
     출력 내용을 제어하는 여러 가지 방법으로, 선호에 따라 설정하거나 기본값을 사용할 수 있습니다.  
 

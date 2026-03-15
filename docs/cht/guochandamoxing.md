@@ -45,7 +45,7 @@
 
     - **優化快取命中** - 對於 DeepSeek 等平台，平台會對快取命中的輸入以更低的價格計費。啟用後會優化附帶上下文時的形式以增加快取命中率。
 
-1. #### 自訂 System Prompt／自訂 User Message／Prefill
+1. #### 自訂 System Prompt／自訂 User Message／Prefill {#anchor-prompt}
 
     幾種不同的控制輸出內容的手段，可以根據喜好設定，或者使用預設即可。
 

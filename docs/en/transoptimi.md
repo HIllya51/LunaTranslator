@@ -12,11 +12,11 @@
 
 1. ## Proper Noun Translation {#anchor-noundict}
 
-    If using the `sakura large model` and setting the prompt format to support the gpt dictionary prompt, it will be converted into the gpt dictionary format. Otherwise, it will refer to the VNR approach, replacing the original text with the placeholder `ZX?Z` (ps: I don't know what this means), and after the source translation, the placeholder is generally not destroyed. Then, after the translation, the placeholder will be replaced with the translation.
+    For the `Universal LLM Interface`, if its prompt includes `DictWithPrompt`, the term will be added to the model's prompt. For usage, please refer to [this document](/ja/guochandamoxing.html#anchor-prompt).
 
-    For game-specific entries, it is recommended not to add them in `Text Processing` -> `Translation Optimization`. In the past, the game's md5 value was used to distinguish entries for multiple games, but this implementation was not very good and has been deprecated. Now, it is recommended to add game-specific entries in the `Game Settings` -> `Translation Optimization` settings for this method.
+    For other traditional translations, or if the prompt of the `Universal LLM Interface` does not contain `DictWithPrompt`, the method follows VNR's approach: the original text is replaced with a placeholder `ZX?Z` (PS: I'm not sure what this means either). The translation source typically does not disrupt the placeholder during translation, and after translation, the placeholder is replaced with the translated text.
 
-    The last column `Comment` is only used for the `Sakura Large Model`; other translations will ignore this column.
+    For game-specific terms, it is recommended not to add them under Text Processing -> Translation Optimization. Instead, please add game-specific terms in the settings for this method under `Translation Optimization` in `Game Settings`.
 
     When loading metadata from VNDB, the game queries character name information to set as a preset dictionary. For English users, the extracted English text is populated as the translation corresponding to the original text. Otherwise, the translation is left empty to avoid affecting translations when users make no modifications.
 
