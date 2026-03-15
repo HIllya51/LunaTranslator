@@ -58,13 +58,13 @@ jobs:
       - if: matrix.target != 'win10'
         uses: actions/setup-python@v5
         with:
-          python-version: 3.13.11
+          python-version: 3.13.12
           architecture: x64
-      - run: C:\hostedtoolcache\windows\Python\3.13.11\x64\python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{ matrix.target }}
-      - run: C:\hostedtoolcache\windows\Python\3.13.11\x64\python src/scripts/build_lunatranslator.py hook ${{ matrix.arch }} ${{ matrix.target }}
+      - run: C:\hostedtoolcache\windows\Python\3.13.12\x64\python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{ matrix.target }}
+      - run: C:\hostedtoolcache\windows\Python\3.13.12\x64\python src/scripts/build_lunatranslator.py hook ${{ matrix.arch }} ${{ matrix.target }}
       - if: matrix.target != 'winxp'
-        run:  C:\hostedtoolcache\windows\Python\3.13.11\x64\python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
-      - run:  C:\hostedtoolcache\windows\Python\3.13.11\x64\python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{ matrix.target }}
+        run:  C:\hostedtoolcache\windows\Python\3.13.12\x64\python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
+      - run:  C:\hostedtoolcache\windows\Python\3.13.12\x64\python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{ matrix.target }}
 
       - uses: actions/upload-artifact@v4
         with:
