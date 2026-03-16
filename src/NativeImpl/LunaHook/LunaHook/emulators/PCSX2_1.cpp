@@ -2005,6 +2005,25 @@ namespace
         StringFilter(buffer, TEXTANDLEN("$t"));
         StringFilter(buffer, TEXTANDLEN("$d"));
     }
+    void SLPM66845(TextBuffer *buffer, HookParam *hp)
+    {
+        CharFilter(buffer, '\\');
+    }
+    void SLPM668452(TextBuffer *buffer, HookParam *hp)
+    {
+        if (PCSX2_REG(a1) & 0xfffffff != 0)
+            return buffer->clear();
+        if (buffer->data[0] <= 127)
+            return buffer->clear();
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            return buffer->clear();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        CharFilter(buffer, '\\');
+    }
 }
 struct emfuncinfoX
 {
@@ -2012,6 +2031,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 悠久ノ桜
+    {0x13DDC0, {FULL_STRING, PCSX2_REG_OFFSET(s2), 0, 0, SLPM66845, "SLPM-66845"}},
+    {0x12a630, {FULL_STRING, PCSX2_REG_OFFSET(s2), 0, 0, SLPM668452, "SLPM-66845"}},
     // 学園ヘヴン おかわりっ！
     {0x1DD89C, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, FSLPM62597, "SLPM-62597"}},
     // WHITE CLARITY ～And The tears became you.～

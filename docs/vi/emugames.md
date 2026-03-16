@@ -937,6 +937,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66845 | 悠久ノ桜 |
 |  | SLPM-62597 | 学園ヘヴン おかわりっ！ |
 |  | SLPM-66214 | WHITE CLARITY ～And The tears became you.～ |
 |  | SLPS-25282 | 学園ヘヴン BOY'S LOVE SCRAMBLE！ |
