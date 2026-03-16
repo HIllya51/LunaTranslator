@@ -452,28 +452,6 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\x81\x90"), TEXTANDLEN("!?")); //"――"
     }
 
-    std::string filter_out_simple(const std::string &data)
-    {
-        std::string result;
-        for (size_t i = 0; i < data.length();)
-        {
-            if (i + 1 < data.length() &&
-                data[i] == '\xaa' && data[i + 1] == '\x1b')
-            {
-                size_t j = i + 2;
-                while (j < data.length() && data[j] != '\xaa')
-                    j++;
-                if (j < data.length() && data[j] == '\xaa')
-                {
-                    i = j + 1;
-                    continue;
-                }
-            }
-            result.push_back(data[i]);
-            i++;
-        }
-        return result;
-    }
     void SLPM55138F(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
