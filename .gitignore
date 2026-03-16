@@ -51,5 +51,5 @@ src/cpp/LunaHook/LunaHook/engine32/Leaf.md
 *.dll
 src/scripts/autocommit/llmapis.py
 
-src/NativeImpl/LunaHook/LunaHook/engine32/extracted_font
+src/NativeImpl/LunaHook/LunaHook/engine32/font_chars
 src/NativeImpl/LunaHook/LunaHook/engine32/font.dat

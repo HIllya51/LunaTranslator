@@ -25,7 +25,7 @@ bool PiAS::attach_function()
     return false;
   HookParam hp;
   hp.address = addr;
-  hp.type = USING_STRING | CODEC_UTF16;
+  hp.type = USING_STRING | CODEC_UTF16 | FULL_STRING;
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
     static auto charset = StringToWideString(LoadResData(L"PiAS", L"CHARSET"));
