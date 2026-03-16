@@ -451,6 +451,46 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\x81\x91"), TEXTANDLEN("!!")); //"――"
         StringReplacer(buffer, TEXTANDLEN("\x81\x90"), TEXTANDLEN("!?")); //"――"
     }
+
+    std::string filter_out_simple(const std::string &data)
+    {
+        std::string result;
+        for (size_t i = 0; i < data.length();)
+        {
+            if (i + 1 < data.length() &&
+                data[i] == '\xaa' && data[i + 1] == '\x1b')
+            {
+                size_t j = i + 2;
+                while (j < data.length() && data[j] != '\xaa')
+                    j++;
+                if (j < data.length() && data[j] == '\xaa')
+                {
+                    i = j + 1;
+                    continue;
+                }
+            }
+            result.push_back(data[i]);
+            i++;
+        }
+        return result;
+    }
+    void SLPM55138F(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+        {
+            last = s;
+            buffer->clear();
+            return;
+        }
+        last = s;
+        if (startWith(s, "\xaa\x1b"))
+            return buffer->clear();
+        if (s[0] == '\xaa')
+            s = s.substr(1);
+        buffer->from(strReplace(s, "\n"));
+    }
     void SLPS25801(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\n');
@@ -2637,6 +2677,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
     // 今日からマ王！ 眞マ国の休日
     {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
+    // 遙かなる時空の中で 夢の浮橋
+    {0x1ECF7C, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM55138F, "SLPM-55138"}},
     // 遙かなる時空の中で 舞一夜
     {0x1c04ec, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM66127, "SLPM-66548"}},
     // 遙かなる時空の中で3
