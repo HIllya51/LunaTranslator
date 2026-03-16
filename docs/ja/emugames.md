@@ -937,6 +937,7 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-55166 | 風色サーフ |
 |  | SLPM-66845 | 悠久ノ桜 |
 |  | SLPM-62597 | 学園ヘヴン おかわりっ！ |
 |  | SLPM-66214 | WHITE CLARITY ～And The tears became you.～ |

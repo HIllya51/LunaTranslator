@@ -2031,6 +2031,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 風色サーフ
+    {0x10a328, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55166"}},
     // 悠久ノ桜
     {0x13DDC0, {FULL_STRING, PCSX2_REG_OFFSET(s2), 0, 0, SLPM66845, "SLPM-66845"}},
     {0x12a630, {FULL_STRING, PCSX2_REG_OFFSET(s2), 0, 0, SLPM668452, "SLPM-66845"}},
