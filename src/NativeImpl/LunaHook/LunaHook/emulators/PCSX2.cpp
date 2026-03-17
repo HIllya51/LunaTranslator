@@ -139,8 +139,9 @@ namespace
                            0x48, 0x3b, 0x05, XX4,
                            0x72, 0x07,
                            0xc6, 0x05, XX4, 0x01};
-            // 2.5.146
-            recRecompile = (decltype(recRecompile))reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x2800, fmtstrptr, 0, true);
+            // v2.5.146 - 0x2800
+            // v2.7.187 - 0x2b00
+            recRecompile = (decltype(recRecompile))reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x2b00, fmtstrptr, 0, true);
         }
         return recRecompile;
     }
