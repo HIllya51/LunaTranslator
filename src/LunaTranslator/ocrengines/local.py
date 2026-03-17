@@ -176,15 +176,13 @@ class localmodels:
     @staticmethod
     def _findmostaccmodel(ms: "list[localmodels]", accfirst):
         # 先匹配有精度说明的，没有精度说明的即使设置为速度优先也放到后面。
-        mss = None
+        mss = ms[0] if ms else None
         for m in ms:
             if m.scaleunknown:
                 continue
             if accfirst == (m.scale > (mss.scale if mss else -1)):
                 mss = m
-        if mss:
-            return mss
-        return ms[0] if ms else None
+        return mss
 
     @staticmethod
     def findmodel(ms: "list[localmodels]", lang, accfirst):
