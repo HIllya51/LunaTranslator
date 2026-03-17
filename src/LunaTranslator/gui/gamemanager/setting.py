@@ -420,8 +420,8 @@ class dialog_setting_game_internal(QWidget):
     def makegamedata(self, vbox: QVBoxLayout, gameuid):
 
         functs = [
-            ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
             ("统计", functools.partial(self.___tabf2, self.getstatistic)),
+            ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
             ("标签", functools.partial(self.___tabf2, self.getlabelsetting)),
         ]
         methodtab, do = makesubtab_lazy(
