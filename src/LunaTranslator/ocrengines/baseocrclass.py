@@ -6,63 +6,54 @@ import re, gobject, math, time
 from qtsymbols import *
 
 
-class UnionFind:
-    def __init__(self, n):
-        self.parent = list(range(n))
-    def find(self, i):
-        if self.parent[i] == i:
-            return i
-        self.parent[i] = self.find(self.parent[i])
-        return self.parent[i]
-    def union(self, i, j):
-        root_i = self.find(i)
-        root_j = self.find(j)
-        if root_i != root_j:
-            self.parent[root_i] = root_j
-            return True
-        return False
-
 def _sort_text_lines(boxs, texts, vertical, space: str):
-    if not boxs: return []
-    mids_idx = 1 if vertical else 0 
-    mids = [((b[0] + b[2]) / 2, (b[1] + b[3]) / 2) for b in boxs]
+    if not boxs:
+        return []
+    mids_idx = 1 if not vertical else 0
+    other_idx = 1 - mids_idx
     
-    passed = [False] * len(boxs)
+    mids = [((box[0] + box[2]) / 2, (box[1] + box[3]) / 2) for box in boxs]
+    ranges = [((box[0], box[2]), (box[1], box[3])) for box in boxs]
+    
+    n = len(boxs)
+    passed = [False] * n
     juhe = []
-    
-    for i in range(len(boxs)):
-        if passed[i]: continue
+    for i in range(n):
+        if passed[i]:
+            continue
         ls = [i]
         passed[i] = True
-        mi_val = mids[i][mids_idx]
         
-        for j in range(i + 1, len(boxs)):
-            if passed[j]: continue
-            # 这里的逻辑是判断两个box在行/列方向上是否有重叠
-            # 优化：直接使用索引访问
-            if (mi_val > boxs[j][mids_idx] and mi_val < boxs[j][mids_idx + 2] and
-                mids[j][mids_idx] > boxs[i][mids_idx] and mids[j][mids_idx] < boxs[i][mids_idx + 2]):
+        mi_val = mids[i][mids_idx]
+        ri_min, ri_max = ranges[i][mids_idx]
+        
+        for j in range(i + 1, n):
+            if passed[j]:
+                continue
+                
+            mj_val = mids[j][mids_idx]
+            rj_min, rj_max = ranges[j][mids_idx]
+            
+            if (mi_val > rj_min and mi_val < rj_max and 
+                mj_val > ri_min and mj_val < ri_max):
                 passed[j] = True
                 ls.append(j)
-        
-        # 排序行内文字
-        ls.sort(key=lambda x: mids[x][1 - mids_idx])
         juhe.append(ls)
 
-    # 排序行与行之间
+    for i in range(len(juhe)):
+        juhe[i].sort(key=lambda x: mids[x][other_idx])
+    
     juhe.sort(key=lambda x: mids[x[0]][mids_idx], reverse=vertical)
     
     return [space.join([texts[idx] for idx in line]) for line in juhe]
 
+
 def box8to4(box):
     if len(box) == 4:
         return box
-    return (
-        min([box[i * 2] for i in range(len(box) // 2)]),
-        min([box[i * 2 + 1] for i in range(len(box) // 2)]),
-        max([box[i * 2] for i in range(len(box) // 2)]),
-        max([box[i * 2 + 1] for i in range(len(box) // 2)]),
-    )
+    x_coords = box[0::2]
+    y_coords = box[1::2]
+    return (min(x_coords), min(y_coords), max(x_coords), max(y_coords))
 
 
 def box4to8(box):
@@ -243,63 +234,57 @@ class OCRResult:
         return whs < 1
 
     def __nearmergeboxs(self, space: str):
-        n = len(self.blocks)
-        if n <= 1:
-            return
+        blocksX = list(_OCRBlockS([_]) for _ in self.blocks)
+        ocrmergelines_distance = globalconfig["ocrmergelines_distance"]
+        n = len(blocksX)
         
-        # 1. 预计算所有单块的whmin和box4，避免重复调用 property
-        block_data = []
-        for b in self.blocks:
-            box4 = b.box4
-            block_data.append({
-                'box4': box4,
-                'whmin': min(box4[2] - box4[0], box4[3] - box4[1]),
-                'obj': b
-            })
-
-        dist_threshold_ratio = globalconfig.get("ocrmergelines_distance", 1.0)
-        uf = UnionFind(n)
-
-        # 2. $O(N^2)$ 一次性遍历所有点对（对于OCR来说，N通常不大，N^2完全可以接受）
-        # 如果N非常大（如>2000），可以考虑 R-Tree 空间索引
+        dist_matrix = [[0.0] * n for _ in range(n)]
         for i in range(n):
-            b1 = block_data[i]
             for j in range(i + 1, n):
-                b2 = block_data[j]
+                d = blocksX[i].distance(blocksX[j])
+                dist_matrix[i][j] = dist_matrix[j][i] = d
+
+        i = 0
+        while i < len(blocksX):
+            box1 = blocksX[i]
+            merged_happened = False
+            
+            j = 0
+            while j < len(blocksX):
+                if i == j:
+                    j += 1
+                    continue
                 
-                # 计算两个矩形最短距离 (内联优化)
-                dx = max(0, b1['box4'][0] - b2['box4'][2], b2['box4'][0] - b1['box4'][2])
-                dy = max(0, b1['box4'][1] - b2['box4'][3], b2['box4'][1] - b1['box4'][3])
+                box2 = blocksX[j]
+                threshold = ocrmergelines_distance * min(box1.whmin, box2.whmin)
                 
-                if dx == 0 and dy == 0:
-                    distance = 0
+                if dist_matrix[i][j] <= threshold:
+                    box1.merge(blocksX.pop(j))
+                    
+                    dist_matrix.pop(j)
+                    for row in dist_matrix:
+                        row.pop(j)
+                    
+                    n_curr = len(blocksX)
+                    for k in range(n_curr):
+                        if i != k:
+                            d = box1.distance(blocksX[k])
+                            dist_matrix[i][k] = dist_matrix[k][i] = d
+                    
+                    if j < i:
+                        i -= 1
+                        box1 = blocksX[i]
+                    j = 0
+                    merged_happened = True
                 else:
-                    distance = math.sqrt(dx*dx + dy*dy)
+                    j += 1
+            
+            if not merged_happened:
+                i += 1
 
-                # 合并条件
-                if distance <= dist_threshold_ratio * min(b1['whmin'], b2['whmin']):
-                    uf.union(i, j)
-
-        # 3. 根据并查集结果分组
-        groups = {}
-        for i in range(n):
-            root = uf.find(i)
-            if root not in groups:
-                groups[root] = []
-            groups[root].append(self.blocks[i])
-
-        # 4. 重新构建 blocks
-        new_blocks = []
-        for group in groups.values():
-            if len(group) == 1:
-                new_blocks.append(group[0])
-            else:
-                # 使用原来的 _OCRBlockS.asblock 逻辑进行合并
-                temp_s = _OCRBlockS(group)
-                new_blocks.append(temp_s.asblock(self.vertical, space))
-        
-        self.blocks = new_blocks
- 
+        self.blocks.clear()
+        for _ in blocksX:
+            self.blocks.append(_.asblock(self.vertical, space))
 
 class OCRResultParsed:
     @property
