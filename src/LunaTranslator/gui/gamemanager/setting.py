@@ -674,6 +674,7 @@ class dialog_setting_game_internal(QWidget):
         stack = QStackedWidget()
         stack.addWidget(chart)
         stack.addWidget(chart2)
+        stack.setCurrentIndex(1)
         stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         stack.customContextMenuRequested.connect(functools.partial(self.chartwidget_ctxmenu, refreshcallback))
         wc = LPushButton("文字计数")
@@ -768,28 +769,32 @@ class dialog_setting_game_internal(QWidget):
         __ = gobject.base.somedatabase.querytraceplaytime(_gameuid)
         _cnt = sum([_[1] - _[0] for _ in __])
         self._timelabel.setText(self.formattime(_cnt))
-        self._wordlabel.setText(
-            str(savehook_new_data[gameuid].get("statistic_wordcount", 0))
-        )
+        count = savehook_new_data[gameuid].get("statistic_wordcount", 0)
+        self._wordlabel.setText(str(count) if _gameuid else "")
         chart.setdata(self.split_range_into_days(__))
         
         __ = gobject.base.somedatabase.querywordcount(_gameuid)
-        chart2.setdata(self.wordcountbydate(__))
+        chart2.setdata(self.wordcountbydate(__, count))
 
-    def wordcountbydate(self, l: "list[tuple[float, int]|tuple[float, int, str]]"):
+    def wordcountbydate(self, l: "list[tuple[float, int]|tuple[float, int, str]]", count: int):
         daily_sum: "dict[date, int|dict[str, int]]" = {}
+        cnt = 0
         for _ in l:
             if len(_) == 2:
                 timestamp, value = _
                 date = datetime.fromtimestamp(timestamp).date()
                 daily_sum[date] = daily_sum.get(date, 0) + value
+                cnt += value
             elif len(_) == 3:
                 timestamp, value, gameuid = _
                 date = datetime.fromtimestamp(timestamp).date()
                 if date not in daily_sum:
                     daily_sum[date] = {}
                 daily_sum[date][gameuid] = daily_sum[date].get(gameuid, 0) + value
+                cnt += value
         lists: "list[tuple[float, int|dict[str, int]]]" = []
+        if cnt < count:
+            lists.append((0, count - cnt))
         for k in sorted(daily_sum.keys()):
             lists.append((datetime.combine(k, dttime.min).timestamp(), daily_sum[k]))
         return lists
