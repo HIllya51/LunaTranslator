@@ -169,22 +169,39 @@ bool InsertCatSystemHook()
     return false;
 
   HookParam hp;
-  hp.address = addr + addr_offset; // skip 1 push?
-  hp.offset = stackoffset(2);      // text character is in arg2
+  hp.address = addr + addr_offset;
+  hp.type = CODEC_ANSI_BE;
 
-  // jichi 12/23/2014: Modify split for new catsystem
   bool newEngine = Util::CheckFile(L"cs2conf.dll");
   if (newEngine)
   {
-    // hp.text_fun = SpecialHookCatSystem3; // type not needed
-    // NewHook(hp, "CatSystem3");
-    // ConsoleOutput("INSERT CatSystem3");
-    hp.type = CODEC_ANSI_BE | USING_SPLIT;
+    hp.offset = stackoffset(2);
+    hp.type |= USING_SPLIT;
     hp.split = regoffset(esi);
-    return NewHook(hp, "CatSystem3new");
   }
   else
   {
+    BYTE check3[] = {0X6A, 0XFF,
+                     0X68, XX4,
+                     0X64, 0XA1, 0, 0, 0, 0,
+                     0X50,
+                     0X64, 0X89, 0x25, 0, 0, 0, 0,
+                     0x81, 0xec, XX4,
+                     0XA1, XX4,
+                     0x55,
+                     0x56,
+                     0X89, 0X84, 0X24, XX4,
+                     0x57,
+                     0x8b, 0xf1,
+                     0X8D, 0X44, 0X24, XX,
+                     0x50,
+                     0X8D, 0X4c, 0X24, XX,
+                     0x51,
+                     0X8B, XX,
+                     0xe8, XX4,
+                     0x8b, XX, 0x24, XX4,
+                     0x66, 0x3b, 0x6e, 0x14,
+                     0x8b, XX, 0x24, XX4};
     BYTE check[] = {0x66, 0x83, 0xff, 0x20, // 0x20
                     0x0f, 0x84, XX4,
                     0xb8, 0x40, 0x81, 0x00, 0x00, // 0x8140
@@ -212,11 +229,11 @@ bool InsertCatSystemHook()
         0X8D, 0X84, 0X24, XX4,
         0X64, 0XA3, 0, 0, 0, 0,
         0X8B, 0XF9};
-    hp.type = CODEC_ANSI_BE | USING_SPLIT;
     if (MemDbg::findBytes(check, sizeof(check), addr, addr + 0x100))
     {
       hp.split = stackoffset(1);
       hp.offset = regoffset(edx);
+      hp.type |= USING_SPLIT;
     }
     else if (MatchPattern(hp.address, check2, sizeof(check2)))
     {
@@ -224,19 +241,27 @@ bool InsertCatSystemHook()
       // https://vndb.org/v5588
       hp.offset = regoffset(ecx);
       // hp.split = stackoffset(1);
-      hp.type &= ~USING_SPLIT;
     }
     else if (MemDbg::findBytes(check_1, sizeof(check_1), addr, addr + 0x700))
     {
       hp.offset = stackoffset(1);
-      hp.type &= ~USING_SPLIT;
+    }
+    else if (MatchPattern(hp.address, check3, sizeof(check3)))
+    {
+      // 魔法とHのカンケイ。
+      // https://vndb.org/v1809
+      hp.offset = stackoffset(1);
+      hp.type |= USING_SPLIT;
+      hp.split = regoffset(ecx);
     }
     else
     {
+      hp.offset = stackoffset(2);
       hp.split = regoffset(edx);
+      hp.type |= USING_SPLIT;
     }
-    return NewHook(hp, "CatSystem2");
   }
+  return NewHook(hp, "CatSystem2");
 }
 bool InsertCatSystem2Hook()
 {

@@ -1027,6 +1027,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 大図書館の羊飼い -Library Party-
+    {0x80031B24, {FULL_STRING, 0, 0, 0, 0, "PCSG00505"}},
     // TOKYOヤマノテBOYS for V FAN DISC
     {0x81F38A40, {CODEC_UTF16 | FULL_STRING, 0, 0xc, 0, PCSG01049, "PCSG01049"}},
     // なないろ リンカネーション
@@ -1121,8 +1123,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 熱血異能部活譚 Trigger Kiss
     {0x8004e44a, {0, 0, 0, 0, FPCSG00410, "PCSG00410"}}, // dialogue,sjis
     // バイナリースター
-    {0x800B85C6, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}},  // 1.00
-    {0x800B849A, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}},  // 1.01
+    {0x800B85C6, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}}, // 1.00
+    {0x800B849A, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00389"}}, // 1.01
     // アマガミ
     {0x80070658, {0, 0, 0, TPCSG00291, 0, "PCSG00291"}},
     // るいは智を呼ぶ

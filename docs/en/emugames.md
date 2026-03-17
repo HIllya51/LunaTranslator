@@ -754,6 +754,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00505 | 大図書館の羊飼い -Library Party- |
 |  | PCSG01049 | TOKYOヤマノテBOYS for V FAN DISC |
 |  | PCSG00664 | なないろ リンカネーション |
 |  | PCSG00944 | 白と黒のアリス |
