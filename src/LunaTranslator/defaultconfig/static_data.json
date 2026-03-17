@@ -353,21 +353,6 @@
                     }
                 ]
             }
-        ],
-        "magpie": [
-            {
-                "name": "Magpie",
-                "links": [
-                    {
-                        "name": "Github",
-                        "link": "https://github.com/Blinue/Magpie/releases"
-                    },
-                    {
-                        "name": "win7适配版",
-                        "link": "/Resource/Magpie9_Win7"
-                    }
-                ]
-            }
         ]
     },
     "transoptimi": [
