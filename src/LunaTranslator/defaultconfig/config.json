@@ -1655,6 +1655,11 @@
             "name": "Tesseract5",
             "type": "offline"
         },
+        "paddleocr": {
+            "use": false,
+            "name": "PaddleOCR",
+            "type": "offline"
+        },
         "chatgptlike": {
             "use": false,
             "name": "大模型通用接口"

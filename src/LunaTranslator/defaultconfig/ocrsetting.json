@@ -341,5 +341,45 @@
                 "max": 65535
             }
         }
+    },
+    "paddleocr": {
+        "args": {
+            "paddleocr_path": "",
+            "supportFilesPath": "",
+            "use_gpu": false,
+            "use_angle_cls": false,
+            "use_server_model": false,
+            "conf_threshold": 75
+        },
+        "argstype": {
+            "paddleocr_path": {
+                "type": "file",
+                "name": "PaddleOCR路径",
+                "dir": false
+            },
+            "supportFilesPath": {
+                "type": "file",
+                "name": "支持文件路径",
+                "dir": true
+            },
+            "use_gpu": {
+                "type": "switch",
+                "name": "使用GPU"
+            },
+            "use_angle_cls": {
+                "type": "switch",
+                "name": "角度分类"
+            },
+            "use_server_model": {
+                "type": "switch",
+                "name": "服务器模型"
+            },
+            "conf_threshold": {
+                "type": "intspin",
+                "name": "置信度阈值",
+                "min": 0,
+                "max": 100
+            }
+        }
     }
 }
