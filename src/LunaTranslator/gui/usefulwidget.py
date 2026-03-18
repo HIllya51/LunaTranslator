@@ -3609,21 +3609,22 @@ class LinkLabel(QLabel):
             self.palette().color(QPalette.ColorRole.Link),
             self.palette().color(QPalette.ColorRole.Text),
         ).name()
-        t = re.sub("<a(.*?)>", '<a\\1 style="color: {};">'.format(color1), t)
+        t = re.sub(
+            '<a(.*?)style=".*?"(.*?)>', '<a\\1\\2 style="color: {};">'.format(color1), t
+        )
         super().setText(t)
 
     def change_link_color(self, link):
         if link:
             super().setText(
                 re.sub(
-                    """<a href="({})".*?>""".format(link),
-                    '<a href="\\1" style="color: {};">'.format(self.color2),
+                    """<a href="{}".*?>""".format(re.escape(link)),
+                    '<a href="{}" style="color: {};">'.format(link, self.color2),
                     self.text(),
                 )
             )
         else:
             self.setText(self.text())
-
         if link:
             self.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
         else:
