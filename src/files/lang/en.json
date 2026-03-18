@@ -236,7 +236,6 @@
     "标题": "Title",
     "封面": "Cover",
     "游戏时间": "Play Time",
-    "未开始": "Not Started",
     "秒": " s",
     "文字计数": "Character Count",
     "分": " min ",
@@ -282,7 +281,6 @@
     "隐藏不存在的游戏": "Hide Non-existent Games",
     "宽度": "Width",
     "高度": "Height",
-    "选中时颜色": "Active Selection Color",
     "游戏不存在时颜色": "Missing Game Color",
     "原文": "Original Text",
     "选取OCR范围后显示范围框": "Display Selected OCR Region Border",
@@ -905,5 +903,8 @@
     "更多……": "More...",
     "收藏夹": "Favorites",
     "准备完毕，将在退出后更新": "Ready, will update after exiting.",
-    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "The current version of the software requires Windows 10 1803 or higher. Please use another version of the software."
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "The current version of the software requires Windows 10 1803 or higher. Please use another version of the software.",
+    "边框宽度": "Border width",
+    "边框颜色": "Border color",
+    "选中时": "Selected"
 }

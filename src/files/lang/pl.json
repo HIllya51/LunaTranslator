@@ -236,7 +236,6 @@
     "标题": "tytuł",
     "封面": "osłona",
     "游戏时间": "Czas gry",
-    "未开始": "Nie uruchomiono",
     "秒": "drugie",
     "文字计数": "Liczba tekstów",
     "分": "oddział",
@@ -282,7 +281,6 @@
     "隐藏不存在的游戏": "Ukryj gry, które nie istnieją",
     "宽度": "szerokość",
     "高度": "wysokość",
-    "选中时颜色": "Kolor po zaznaczeniu",
     "游戏不存在时颜色": "Kolor, gdy gra nie istnieje",
     "原文": "tekst oryginalny",
     "选取OCR范围后显示范围框": "Pokaż pole zakresu po wybraniu zakresu OCR",
@@ -905,5 +903,8 @@
     "更多……": "Więcej...",
     "收藏夹": "Zakładki",
     "准备完毕，将在退出后更新": "Przygotowanie zakończone, aktualizacja nastąpi po wyjściu.",
-    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Obecna wersja oprogramowania wymaga systemu Windows 10 w wersji 1803 lub nowszej. Proszę użyć innej wersji oprogramowania."
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Obecna wersja oprogramowania wymaga systemu Windows 10 w wersji 1803 lub nowszej. Proszę użyć innej wersji oprogramowania.",
+    "边框宽度": "Szerokość obramowania",
+    "边框颜色": "Kolor obramowania",
+    "选中时": "Zaznaczone"
 }

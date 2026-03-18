@@ -424,8 +424,9 @@ class dialog_syssetting(LDialog):
                     ("margin", "边距_inter"),
                     ("margin2", "边距_intra"),
                     ("radius", "圆角"),
-                    ("radius2", "圆角_2"),
+                    ("radius2", "圆角_internal"),
                     ("textH", "文字区高度"),
+                    ("borderW", "边框宽度"),
                 ]
             ):
                 minv = 0 if i >= 2 else 32
@@ -435,6 +436,8 @@ class dialog_syssetting(LDialog):
                 formLayout.addRow(name, spin)
                 if "radius" == key:
                     spin.valueChanged.connect(lambda _: self.parent().setstyle())
+                elif "borderW" == key:
+                    spin.valueChanged.connect(lambda _: (self.parent().setstyle(), self.parent().callchange()))
                 else:
                     spin.valueChanged.connect(lambda _: self.parent().callchange())
             formLayout.addRow(
@@ -454,7 +457,6 @@ class dialog_syssetting(LDialog):
                     callback=lambda _: self.parent().callchange(),
                 ),
             )
-
         elif type_ == 1:
             for key, name in [
                 ("listitemheight", "高度"),
@@ -474,9 +476,9 @@ class dialog_syssetting(LDialog):
         formLayout.addRow(SplitLine())
         for key, name in [
             ("backcolor2", "颜色"),
-            ("onselectcolor2", "选中时颜色"),
+            ("onselectcolor2", "颜色_选中时"),
             ("onfilenoexistscolor2", "游戏不存在时颜色"),
-        ]:
+        ] + ([('borderColor', "边框颜色"), ('borderColor2', "边框颜色_选中时")] if type_ == 2 else []):
             formLayout.addRow(
                 name,
                 getcolorbutton(

@@ -56,7 +56,6 @@
     "将汉字转换成繁体/日式汉字": "Převést čínské znaky na tradiční/japonské čínské znaky",
     "失败": "selhat",
     "其他": "ostatní",
-    "未开始": "Ještě nezačalo",
     "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件": "Pokud se vám proces, který chcete připojit, nevidíte, můžete zkusit kliknout na tlačítko níže a potom kliknout na okno hry, nebo zkusit spustit tento software s právy správce",
     "转区": "Přenosová zóna",
     "过滤文本中的非日语字符集字符": "Filtrovat nejaponské znaky sady znaků v textu",
@@ -284,7 +283,6 @@
     "隐藏不存在的游戏": "Skrýt neexistující hry",
     "宽度": "šířka",
     "高度": "výška",
-    "选中时颜色": "Barva při vybrání",
     "游戏不存在时颜色": "Barva, když hra neexistuje",
     "原文": "původní text",
     "下载": "stáhnout",
@@ -905,5 +903,8 @@
     "更多……": "Více...",
     "收藏夹": "Záložky",
     "准备完毕，将在退出后更新": "Připraveno, aktualizace proběhne po ukončení.",
-    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Aktuální verze softwaru vyžaduje Windows 10 1803 nebo vyšší. Použijte prosím jinou verzi softwaru."
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Aktuální verze softwaru vyžaduje Windows 10 1803 nebo vyšší. Použijte prosím jinou verzi softwaru.",
+    "边框宽度": "Šířka okraje",
+    "边框颜色": "Barva rámečku",
+    "选中时": "Vybrané"
 }

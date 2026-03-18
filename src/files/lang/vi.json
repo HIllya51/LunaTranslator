@@ -236,7 +236,6 @@
     "标题": "Tiêu đề",
     "封面": "Ảnh bìa",
     "游戏时间": "Thời gian chơi",
-    "未开始": "Chưa bắt đầu",
     "秒": " giây",
     "文字计数": "Số ký tự",
     "分": " phút ",
@@ -282,7 +281,6 @@
     "隐藏不存在的游戏": "Ẩn các trò chơi không tồn tại",
     "宽度": "Chiều rộng",
     "高度": "Chiều cao",
-    "选中时颜色": "Màu khi được chọn",
     "游戏不存在时颜色": "Màu khi trò chơi không tồn tại",
     "原文": "Bản gốc",
     "选取OCR范围后显示范围框": "Hiển thị khung sau khi chọn vùng OCR",
@@ -905,5 +903,8 @@
     "更多……": "Xem thêm...",
     "收藏夹": "Danh sách yêu thích",
     "准备完毕，将在退出后更新": "Đã sẵn sàng, sẽ cập nhật sau khi thoát.",
-    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Phiên bản hiện tại của phần mềm yêu cầu Windows 10 1803 trở lên. Vui lòng sử dụng phiên bản khác của phần mềm."
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Phiên bản hiện tại của phần mềm yêu cầu Windows 10 1803 trở lên. Vui lòng sử dụng phiên bản khác của phần mềm.",
+    "边框宽度": "Độ rộng viền",
+    "边框颜色": "Màu viền",
+    "选中时": "Khi được chọn"
 }

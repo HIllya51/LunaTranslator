@@ -493,6 +493,9 @@
     "usesysproxy": true,
     "tagNameRemap": {},
     "dialog_savegame_layout": {
+        "borderColor": "#00000000",
+        "borderColor2": "#ff000000",
+        "borderW": 2,
         "itemw": 130,
         "itemh": 190,
         "margin": 6,

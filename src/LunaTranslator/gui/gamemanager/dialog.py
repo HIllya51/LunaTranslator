@@ -297,7 +297,36 @@ class IMGWidget(QLabel):
     def switch(self):
         self.setimg(self._pixmap)
 
-
+class AntiAliasingLabel(QFrame):
+    def paintEvent(self, a0):
+        dialog_savegame_layout = globalconfig["dialog_savegame_layout"]
+        w:ItemWidget=self.parent()
+        hasFocus=dialog_savegame_layout["onselectcolor2"] if w.isfucked else None
+        background= dialog_savegame_layout[('backcolor2', "onfilenoexistscolor2",)[self.objectName()=='savegame_existsFalse']]
+        bordercolor= dialog_savegame_layout[('borderColor', "borderColor2",)[w.isfucked]]
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        offset = dialog_savegame_layout['borderW']
+        radius = dialog_savegame_layout['radius']
+        color1 = QColor(bordercolor)
+        if color1.alpha() == 0:
+            offset = 0
+        rect = QRectF(self.rect())
+        painter.setPen(Qt.PenStyle.NoPen)
+        path_outer = QPainterPath()
+        path_outer.addRoundedRect(rect, radius, radius)
+        if color1.alpha():
+            inner_rect = rect.adjusted(offset, offset, -offset, -offset)
+            inner_radius = max(0, radius - offset) 
+            path_inner = QPainterPath()
+            path_inner.addRoundedRect(inner_rect, inner_radius, inner_radius)
+            ring_path = path_outer.subtracted(path_inner)
+            painter.fillPath(ring_path, color1)
+        else:
+            path_inner = path_outer
+        painter.fillPath(path_inner, QColor(background))
+        if hasFocus:
+            painter.fillPath(path_inner, QColor(hasFocus))
 class ItemWidget(QWidget):
     focuschanged = pyqtSignal(bool, str)
     doubleclicked = pyqtSignal(str)
@@ -314,7 +343,8 @@ class ItemWidget(QWidget):
 
     def click(self):
         try:
-            self.bottommask.show()
+            self.isfucked = True
+            self.maskshowfileexists.update()
             if self != ItemWidget.globallashfocus:
                 ItemWidget.clearfocus()
             ItemWidget.globallashfocus = self
@@ -326,19 +356,19 @@ class ItemWidget(QWidget):
         self.click()
 
     def focusOut(self):
-        self.bottommask.hide()
+        self.isfucked = False
+        self.maskshowfileexists.update()
         self.focuschanged.emit(False, self.gameuid)
 
     def mouseDoubleClickEvent(self, e):
         self.doubleclicked.emit(self.gameuid)
 
     def resizeEvent(self, a0: QResizeEvent) -> None:
-        self.bottommask.resize(a0.size())
         self.maskshowfileexists.resize(a0.size())
 
     def others(self):
         self.l.setContentsMargins(
-            *([globalconfig["dialog_savegame_layout"]["margin2"]] * 4)
+            *([globalconfig["dialog_savegame_layout"]["margin2"] + globalconfig["dialog_savegame_layout"]['borderW']] * 4)
         )
 
         if self._img._pixmap.isNull():
@@ -349,12 +379,13 @@ class ItemWidget(QWidget):
 
     def __init__(self, gameuid) -> None:
         super().__init__()
+        self.isfucked = False
         self.gameuid = gameuid
-        self.maskshowfileexists = QLabel(self)
+        self.maskshowfileexists = AntiAliasingLabel(self)
         self.l = QVBoxLayout(self)
         self.l.setSpacing(0)
         self.l.setContentsMargins(
-            *([globalconfig["dialog_savegame_layout"]["margin2"]] * 4)
+            *([globalconfig["dialog_savegame_layout"]["margin2"] + globalconfig["dialog_savegame_layout"]['borderW']] * 4)
         )
         for image in savehook_new_data[gameuid].get("imagepath_all", []):
             fr = extradatas["imagefrom"].get(image)
@@ -375,11 +406,6 @@ class ItemWidget(QWidget):
         self.l.addWidget(self._lb)
         exists = os.path.exists(get_launchpath(gameuid))
         self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
-        if not exists:
-            self.maskshowfileexists.raise_()
-        self.bottommask = QLabel(self)
-        self.bottommask.hide()
-        self.bottommask.setObjectName("savegame_onselectcolor1")
 
 
 class dialog_savedgame_new(QWidget):
@@ -665,21 +691,6 @@ class dialog_savedgame_new(QWidget):
             _style += "font-size:{}pt;".format(_f.pointSize())
             _style += 'font-family:"{}";'.format(_f.family())
         style = "#{}{{ {} }}".format(key, _style)
-        dialog_savegame_layout = globalconfig["dialog_savegame_layout"]
-        style += (
-            "#savegame_existsTrue{{background-color:{};border-radius: {}px;}}".format(
-                dialog_savegame_layout["backcolor2"], dialog_savegame_layout["radius"]
-            )
-        )
-        style += (
-            "#savegame_existsFalse{{background-color:{};border-radius: {}px;}}".format(
-                dialog_savegame_layout["onfilenoexistscolor2"],
-                dialog_savegame_layout["radius"],
-            )
-        )
-        style += "#savegame_onselectcolor1{{background-color: {};border-radius: {}px;}}".format(
-            dialog_savegame_layout["onselectcolor2"], dialog_savegame_layout["radius"]
-        )
         self.setStyleSheet(style)
 
     reference = None

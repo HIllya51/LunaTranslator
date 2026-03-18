@@ -653,7 +653,7 @@ class dialog_setting_game_internal(QWidget):
         chart.xtext = lambda x: (
             "0" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0]
         )
-        chart.ytext = lambda y: self.formattime(y, False)
+        chart.ytext = lambda y: self.formattime(y)
 
         chart2 = chartwidget()
         chart2.xtext = chart.xtext
@@ -799,7 +799,7 @@ class dialog_setting_game_internal(QWidget):
             lists.append((datetime.combine(k, dttime.min).timestamp(), daily_sum[k]))
         return lists
 
-    def formattime(self, t, usingnotstart=True):
+    def formattime(self, t):
         t = int(t)
         s = t % 60
         t = t // 60
@@ -811,13 +811,10 @@ class dialog_setting_game_internal(QWidget):
             string += str(h) + _TR("时")
         if m:
             string += str(m) + _TR("分")
-        if s and (not (not usingnotstart and h)):
+        if s:
             string += str(s) + _TR("秒")
         if not string:
-            if usingnotstart:
-                string = _TR("未开始")
-            else:
-                string = "0"
+            string = "0"
         return string
 
     def tagenewitem(

@@ -56,7 +56,6 @@
     "将汉字转换成繁体/日式汉字": "Converter caracteres chineses para caracteres chineses tradicionais / japoneses",
     "失败": "falha",
     "其他": "outros",
-    "未开始": "Ainda não começou",
     "如果没看见想要附加的进程，可以尝试点击下方按钮后点击游戏窗口,或者尝试使用管理员权限运行本软件": "Se você não vir o processo que deseja anexar, você pode tentar clicar no botão abaixo e, em seguida, clicar na janela do jogo, ou tentar executar este software com privilégios de administrador",
     "转区": "Zona de transferência",
     "过滤文本中的非日语字符集字符": "Filtrar caracteres não japoneses no texto",
@@ -284,7 +283,6 @@
     "隐藏不存在的游戏": "Esconder jogos inexistentes",
     "宽度": "largura",
     "高度": "altura",
-    "选中时颜色": "Cor quando seleccionada",
     "游戏不存在时颜色": "Cor quando o jogo não existe",
     "原文": "texto original",
     "下载": "download",
@@ -905,5 +903,8 @@
     "更多……": "Mais...",
     "收藏夹": "Favoritos",
     "准备完毕，将在退出后更新": "Pronto, a atualização será aplicada após a saída.",
-    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "A versão atual do software requer Windows 10 1803 ou superior. Por favor, utilize outra versão do software."
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "A versão atual do software requer Windows 10 1803 ou superior. Por favor, utilize outra versão do software.",
+    "边框宽度": "largura da borda",
+    "边框颜色": "Cor da borda",
+    "选中时": "Selecionado"
 }

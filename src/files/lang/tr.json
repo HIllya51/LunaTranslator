@@ -236,7 +236,6 @@
     "标题": "isim",
     "封面": "cover",
     "游戏时间": "Oyun zamanı",
-    "未开始": "Başlanmadı",
     "秒": "saniye",
     "文字计数": "Metin Sayısı",
     "分": "branch",
@@ -282,7 +281,6 @@
     "隐藏不存在的游戏": "Olmadığı oyunları gizleyin",
     "宽度": "genişlik",
     "高度": "yükseklik",
-    "选中时颜色": "Seçildiğinde renk",
     "游戏不存在时颜色": "Oyun yok olduğunda renk",
     "原文": "orijinal metin",
     "选取OCR范围后显示范围框": "OCR menzili seçmeden sonra menzil kutusunu göster",
@@ -905,5 +903,8 @@
     "更多……": "Daha fazla...",
     "收藏夹": "Sık Kullanılanlar",
     "准备完毕，将在退出后更新": "Hazırlık tamamlandı, çıkış yaptıktan sonra güncellenecek",
-    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Yazılımın mevcut sürümü Windows 10 1803 veya üstünü gerektirir. Lütfen yazılımın başka bir sürümünü kullanın."
+    "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "Yazılımın mevcut sürümü Windows 10 1803 veya üstünü gerektirir. Lütfen yazılımın başka bir sürümünü kullanın.",
+    "边框宽度": "Kenar genişliği",
+    "边框颜色": "Çerçeve rengi",
+    "选中时": "Seçildiğinde"
 }
