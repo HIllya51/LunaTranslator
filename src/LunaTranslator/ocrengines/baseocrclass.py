@@ -11,10 +11,10 @@ def _sort_text_lines(boxs, texts, vertical, space: str):
         return []
     mids_idx = 1 if not vertical else 0
     other_idx = 1 - mids_idx
-    
+
     mids = [((box[0] + box[2]) / 2, (box[1] + box[3]) / 2) for box in boxs]
     ranges = [((box[0], box[2]), (box[1], box[3])) for box in boxs]
-    
+
     n = len(boxs)
     passed = [False] * n
     juhe = []
@@ -23,28 +23,32 @@ def _sort_text_lines(boxs, texts, vertical, space: str):
             continue
         ls = [i]
         passed[i] = True
-        
+
         mi_val = mids[i][mids_idx]
         ri_min, ri_max = ranges[i][mids_idx]
-        
+
         for j in range(i + 1, n):
             if passed[j]:
                 continue
-                
+
             mj_val = mids[j][mids_idx]
             rj_min, rj_max = ranges[j][mids_idx]
-            
-            if (mi_val > rj_min and mi_val < rj_max and 
-                mj_val > ri_min and mj_val < ri_max):
+
+            if (
+                mi_val > rj_min
+                and mi_val < rj_max
+                and mj_val > ri_min
+                and mj_val < ri_max
+            ):
                 passed[j] = True
                 ls.append(j)
         juhe.append(ls)
 
     for i in range(len(juhe)):
         juhe[i].sort(key=lambda x: mids[x][other_idx])
-    
+
     juhe.sort(key=lambda x: mids[x[0]][mids_idx], reverse=vertical)
-    
+
     return [space.join([texts[idx] for idx in line]) for line in juhe]
 
 
@@ -237,7 +241,7 @@ class OCRResult:
         blocksX = list(_OCRBlockS([_]) for _ in self.blocks)
         ocrmergelines_distance = globalconfig["ocrmergelines_distance"]
         n = len(blocksX)
-        
+
         dist_matrix = [[0.0] * n for _ in range(n)]
         for i in range(n):
             for j in range(i + 1, n):
@@ -248,29 +252,29 @@ class OCRResult:
         while i < len(blocksX):
             box1 = blocksX[i]
             merged_happened = False
-            
+
             j = 0
             while j < len(blocksX):
                 if i == j:
                     j += 1
                     continue
-                
+
                 box2 = blocksX[j]
                 threshold = ocrmergelines_distance * min(box1.whmin, box2.whmin)
-                
+
                 if dist_matrix[i][j] <= threshold:
                     box1.merge(blocksX.pop(j))
-                    
+
                     dist_matrix.pop(j)
                     for row in dist_matrix:
                         row.pop(j)
-                    
+
                     n_curr = len(blocksX)
                     for k in range(n_curr):
                         if i != k:
                             d = box1.distance(blocksX[k])
                             dist_matrix[i][k] = dist_matrix[k][i] = d
-                    
+
                     if j < i:
                         i -= 1
                         box1 = blocksX[i]
@@ -278,13 +282,14 @@ class OCRResult:
                     merged_happened = True
                 else:
                     j += 1
-            
+
             if not merged_happened:
                 i += 1
 
         self.blocks.clear()
         for _ in blocksX:
             self.blocks.append(_.asblock(self.vertical, space))
+
 
 class OCRResultParsed:
     @property

@@ -670,17 +670,20 @@ class dialog_setting_game_internal(QWidget):
         self._wordlabel.setSizePolicy(
             QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed
         )
-        refreshcallback=functools.partial(self.refresh, chart, chart2, gameuid)
+        refreshcallback = functools.partial(self.refresh, chart, chart2, gameuid)
         stack = QStackedWidget()
         stack.addWidget(chart)
         stack.addWidget(chart2)
         stack.setCurrentIndex(1)
         stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        stack.customContextMenuRequested.connect(functools.partial(self.chartwidget_ctxmenu, refreshcallback))
+        stack.customContextMenuRequested.connect(
+            functools.partial(self.chartwidget_ctxmenu, refreshcallback)
+        )
         wc = LPushButton("文字计数")
         tm = LPushButton("游戏时间")
         wc.setCheckable(True)
         tm.setCheckable(True)
+
         def clicktm(b):
             stack.setCurrentIndex(1 - b)
             globalconfig["statisticvistm"] = b
@@ -721,7 +724,9 @@ class dialog_setting_game_internal(QWidget):
         t.timeout.emit()
         t.start()
 
-    def split_range_into_days(self, times: "list[tuple[float, float]|tuple[float, float, str]]"):
+    def split_range_into_days(
+        self, times: "list[tuple[float, float]|tuple[float, float, str]]"
+    ):
         everyday: "dict[date, int|dict[str, int]]" = {}
         for _ in times:
             if len(_) == 2:
@@ -753,7 +758,9 @@ class dialog_setting_game_internal(QWidget):
                 elif len(_) == 3:
                     if today not in everyday:
                         everyday[today] = {}
-                    everyday[today][gameuid] = everyday[today].get(gameuid, 0) + duration
+                    everyday[today][gameuid] = (
+                        everyday[today].get(gameuid, 0) + duration
+                    )
                 current_date += timedelta(days=1)
                 current_date = current_date.replace(
                     hour=0, minute=0, second=0, microsecond=0
@@ -765,18 +772,20 @@ class dialog_setting_game_internal(QWidget):
 
     def refresh(self, chart: chartwidget, chart2: chartwidget, gameuid):
         _gameuid = None if self.__quanju_wc else gameuid
-    
+
         __ = gobject.base.somedatabase.querytraceplaytime(_gameuid)
         _cnt = sum([_[1] - _[0] for _ in __])
         self._timelabel.setText(self.formattime(_cnt))
         count = savehook_new_data[gameuid].get("statistic_wordcount", 0)
         self._wordlabel.setText(str(count) if _gameuid else "")
         chart.setdata(self.split_range_into_days(__))
-        
+
         __ = gobject.base.somedatabase.querywordcount(_gameuid)
         chart2.setdata(self.wordcountbydate(__, count))
 
-    def wordcountbydate(self, l: "list[tuple[float, int]|tuple[float, int, str]]", count: int):
+    def wordcountbydate(
+        self, l: "list[tuple[float, int]|tuple[float, int, str]]", count: int
+    ):
         daily_sum: "dict[date, int|dict[str, int]]" = {}
         cnt = 0
         for _ in l:

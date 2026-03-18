@@ -40,7 +40,7 @@ class somedatabase:
         ).fetchall()
 
     def __init__(self):
-        self._cache={}
+        self._cache = {}
         self.wordcountqueue = Queue()
         self.locked = threading.Lock()
         self.sqlsavegameinfo = sqlite3.connect(
@@ -97,7 +97,9 @@ class somedatabase:
             )
         self.sqlsavegameinfo.commit()
 
-    def querytraceplaytime(self, gameuid: "str | None") -> "list[tuple[float, float]|tuple[float, float, str]]":
+    def querytraceplaytime(
+        self, gameuid: "str | None"
+    ) -> "list[tuple[float, float]|tuple[float, float, str]]":
         if gameuid:
             gameinternalid = self.__get_gameinternalid(gameuid)
             __ = self.sqlsavegameinfo.execute(
@@ -108,14 +110,16 @@ class somedatabase:
             ___ = self.sqlsavegameinfo.execute(
                 "SELECT timestart,timestop,gameinternalid FROM trace_strict"
             ).fetchall()
-            __=[]
-            for timestart,timestop,gameinternalid in ___:
-                __id=self.__get_gameuid(gameinternalid)
-                __.append((timestart,timestop, __id))
+            __ = []
+            for timestart, timestop, gameinternalid in ___:
+                __id = self.__get_gameuid(gameinternalid)
+                __.append((timestart, timestop, __id))
         __ = tuple(_ for _ in __ if _[1] > _[0])
         return __
 
-    def querywordcount(self, gameuid: "str|None") -> "list[tuple[float, int]|tuple[float, int, str]]":
+    def querywordcount(
+        self, gameuid: "str|None"
+    ) -> "list[tuple[float, int]|tuple[float, int, str]]":
         if gameuid:
             gameinternalid = self.__get_gameinternalid(gameuid)
             __ = self.sqlsavegameinfo.execute(
@@ -126,10 +130,10 @@ class somedatabase:
             ___ = self.sqlsavegameinfo.execute(
                 "SELECT time,wordcount,gameinternalid FROM game_word_count"
             ).fetchall()
-            __=[]
-            for _time,wordcount,gameinternalid in ___:
-                __id=self.__get_gameuid(gameinternalid)
-                __.append((_time,wordcount, __id))
+            __ = []
+            for _time, wordcount, gameinternalid in ___:
+                __id = self.__get_gameuid(gameinternalid)
+                __.append((_time, wordcount, __id))
         __ = tuple(_ for _ in __ if _[1] > 0)
         return __
 

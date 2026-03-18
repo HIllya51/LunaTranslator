@@ -150,15 +150,20 @@ class chartwidget(QWidget):
         if isinstance(d, dict):
             __ = []
             for uid, val in sorted(list(d.items()), key=lambda ___: -___[1]):
-                __.append('{} : {}'.format(self.ytext(self.yy(val)), savehook_new_data.get(uid, {}).get("title", "???")))
+                __.append(
+                    "{} : {}".format(
+                        self.ytext(self.yy(val)),
+                        savehook_new_data.get(uid, {}).get("title", "???"),
+                    )
+                )
             if len(d) != 1:
                 __.insert(0, _)
             if len(__) > 10:
                 __ = __[:10]
-                __.append('...')
-            _ = '\n'.join(__)
+                __.append("...")
+            _ = "\n".join(__)
         return _
-            
+
     def yy(self, y: "int|float|dict[str, int|float]"):
         return y if isinstance(y, (int, float)) else sum(y.values())
 
@@ -198,7 +203,8 @@ class chartwidget(QWidget):
                 - xmargin
                 - max(
                     self.fmetrics.size(0, x_labels[-1]).width() // 2,
-                    self.fmetrics.size(0, self.ytext(self.yy(self.data[-1][1]))).width() // 2,
+                    self.fmetrics.size(0, self.ytext(self.yy(self.data[-1][1]))).width()
+                    // 2,
                 )
             )
             height = self.height() - 2 * ymargin

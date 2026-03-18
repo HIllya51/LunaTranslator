@@ -992,8 +992,12 @@ class hookselect(closeashidewindow):
                 self.sysOutput, get_time_stamp() + " " + sentence
             )
         elif info in (HOSTINFO.Warning, HOSTINFO.EmuWarning):
-            app = '' if info == HOSTINFO.Warning else '\n<a href="{}">{}</a>'.format(
-                dynamiclink("emugames.html", docs=True), _TR("使用说明")
+            app = (
+                ""
+                if info == HOSTINFO.Warning
+                else '\n<a href="{}">{}</a>'.format(
+                    dynamiclink("emugames.html", docs=True), _TR("使用说明")
+                )
             )
             RichMessageBox(
                 self,

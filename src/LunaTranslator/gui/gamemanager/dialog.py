@@ -297,17 +297,28 @@ class IMGWidget(QLabel):
     def switch(self):
         self.setimg(self._pixmap)
 
+
 class AntiAliasingLabel(QFrame):
     def paintEvent(self, a0):
         dialog_savegame_layout = globalconfig["dialog_savegame_layout"]
-        w:ItemWidget=self.parent()
-        hasFocus=dialog_savegame_layout["onselectcolor2"] if w.isfucked else None
-        background= dialog_savegame_layout[('backcolor2', "onfilenoexistscolor2",)[self.objectName()=='savegame_existsFalse']]
-        bordercolor= dialog_savegame_layout[('borderColor', "borderColor2",)[w.isfucked]]
+        w: ItemWidget = self.parent()
+        hasFocus = dialog_savegame_layout["onselectcolor2"] if w.isfucked else None
+        background = dialog_savegame_layout[
+            (
+                "backcolor2",
+                "onfilenoexistscolor2",
+            )[self.objectName() == "savegame_existsFalse"]
+        ]
+        bordercolor = dialog_savegame_layout[
+            (
+                "borderColor",
+                "borderColor2",
+            )[w.isfucked]
+        ]
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        offset = dialog_savegame_layout['borderW']
-        radius = dialog_savegame_layout['radius']
+        offset = dialog_savegame_layout["borderW"]
+        radius = dialog_savegame_layout["radius"]
         color1 = QColor(bordercolor)
         if color1.alpha() == 0:
             offset = 0
@@ -317,7 +328,7 @@ class AntiAliasingLabel(QFrame):
         path_outer.addRoundedRect(rect, radius, radius)
         if color1.alpha():
             inner_rect = rect.adjusted(offset, offset, -offset, -offset)
-            inner_radius = max(0, radius - offset) 
+            inner_radius = max(0, radius - offset)
             path_inner = QPainterPath()
             path_inner.addRoundedRect(inner_rect, inner_radius, inner_radius)
             ring_path = path_outer.subtracted(path_inner)
@@ -327,6 +338,8 @@ class AntiAliasingLabel(QFrame):
         painter.fillPath(path_inner, QColor(background))
         if hasFocus:
             painter.fillPath(path_inner, QColor(hasFocus))
+
+
 class ItemWidget(QWidget):
     focuschanged = pyqtSignal(bool, str)
     doubleclicked = pyqtSignal(str)
@@ -368,7 +381,13 @@ class ItemWidget(QWidget):
 
     def others(self):
         self.l.setContentsMargins(
-            *([globalconfig["dialog_savegame_layout"]["margin2"] + globalconfig["dialog_savegame_layout"]['borderW']] * 4)
+            *(
+                [
+                    globalconfig["dialog_savegame_layout"]["margin2"]
+                    + globalconfig["dialog_savegame_layout"]["borderW"]
+                ]
+                * 4
+            )
         )
 
         if self._img._pixmap.isNull():
@@ -385,7 +404,13 @@ class ItemWidget(QWidget):
         self.l = QVBoxLayout(self)
         self.l.setSpacing(0)
         self.l.setContentsMargins(
-            *([globalconfig["dialog_savegame_layout"]["margin2"] + globalconfig["dialog_savegame_layout"]['borderW']] * 4)
+            *(
+                [
+                    globalconfig["dialog_savegame_layout"]["margin2"]
+                    + globalconfig["dialog_savegame_layout"]["borderW"]
+                ]
+                * 4
+            )
         )
         for image in savehook_new_data[gameuid].get("imagepath_all", []):
             fr = extradatas["imagefrom"].get(image)
