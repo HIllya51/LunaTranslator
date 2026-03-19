@@ -3610,7 +3610,7 @@ class LinkLabel(QLabel):
             self.palette().color(QPalette.ColorRole.Text),
         ).name()
         t = re.sub(
-            '<a(.*?)style=".*?"(.*?)>', '<a\\1\\2 style="color: {};">'.format(color1), t
+            '<a(.*?)(style=".*?")?(.*?)>', '<a\\1\\3 style="color: {};">'.format(color1), t
         )
         super().setText(t)
 
