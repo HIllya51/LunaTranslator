@@ -88,7 +88,7 @@ class dialog_savedgame_integrated(saveposwindow):
 
         self.switch = threeswitch(self, icons=["fa.list", "fa.th-list", "fa.th"])
         self.switch.btnclicked.connect(self.selectlayout)
-        self.syssettingbtn = IconButton(icon="fa.gear", parent=self)
+        self.syssettingbtn = IconButton(icon="fa.gear", parent=self, tips="界面设置")
         self.syssettingbtn.clicked.connect(self.syssetting)
         self.syssettingbtn.sizeChanged.connect(self.do_resize)
         self.switch.sizeChanged.connect(self.do_resize)
@@ -781,7 +781,9 @@ class dialog_savedgame_new(QWidget):
         self.___.setStyleSheet("background:transparent")
         layout.addWidget(self.tagswidget)
         layout.addWidget(
-            getIconButton(icon="fa.sort-amount-asc", callback=self.sortgamecallback)
+            getIconButton(
+                icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
+            )
         )
         layout.addWidget(self.___)
         formLayout.addLayout(layout)

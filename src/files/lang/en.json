@@ -906,5 +906,6 @@
     "软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。": "The current version of the software requires Windows 10 1803 or higher. Please use another version of the software.",
     "边框宽度": "Border width",
     "边框颜色": "Border color",
-    "选中时": "Selected"
+    "选中时": "Selected",
+    "排序": "Sorting"
 }
