@@ -1,5 +1,5 @@
 from myutils.utils import (
-    createurl,
+    APIType,
     common_list_models,
     common_create_gemini_request,
     common_parse_normal_response,
@@ -17,7 +17,7 @@ import random
 def list_models(typename, regist):
     return common_list_models(
         getproxy(("cishu", typename)),
-        regist["API接口地址"](),
+        APIType(regist["API接口地址"]()),
         regist["SECRET_KEY"]().split("|")[0],
     )
 
@@ -40,22 +40,20 @@ class chatgptlike(cishubase):
         temperature = random.randint(0, int(20 * self.config["Temperature"]))
         return (word, sentence, temperature, str(__))
 
-    @property
-    def apiurl(self):
-        return self.config["API接口地址"].strip()
-
-    def search_1(self, sysprompt, query, extrabody, extraheader):
+    def search_1(self, apitype: APIType, sysprompt, query, extrabody, extraheader):
         message = [{"role": "system", "content": sysprompt}]
         message.append({"role": "user", "content": query})
         headers = createheaders(
-            self.apiurl,
+            apitype,
             self.multiapikeycurrent["SECRET_KEY"],
             self.maybeuse,
             self.proxy,
             extraheader,
         )
         _json = common_create_gpt_data(self.config, message, extrabody)
-        response = self.proxysession.post(self.createurl(), headers=headers, json=_json)
+        response = self.proxysession.post(
+            apitype.finalurl(), headers=headers, json=_json
+        )
         return response
 
     def _gptlike_createsys(self, usekey, tempk):
@@ -87,14 +85,14 @@ class chatgptlike(cishubase):
             word, sentence, "use_user_user_prompt", "user_user_prompt_1"
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
-        apiurl = self.config["API接口地址"]
-        if apiurl.startswith("https://generativelanguage.googleapis.com"):
-            resp = self.query_gemini(sysprompt, query, extrabody, extraheader)
-        elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
+        apitype = APIType(self.config["API接口地址"])
+        if apitype == APIType.gemini:
+            resp = self.query_gemini(apitype, sysprompt, query, extrabody, extraheader)
+        elif apitype == APIType.claude:
             resp = self.query_cld(sysprompt, query, extrabody, extraheader)
         else:
-            resp = self.search_1(sysprompt, query, extrabody, extraheader)
-        think, resp = common_parse_normal_response(resp, apiurl, splitthink=True)
+            resp = self.search_1(apitype, sysprompt, query, extrabody, extraheader)
+        think, resp = common_parse_normal_response(resp, apitype, splitthink=True)
         resp = NativeUtils.Markdown2Html(resp)
         if think:
             think = '<details style="border:2px solid"><summary style="text-align:center;background-color:pink;">Thinking</summary>{}</details>'.format(
@@ -102,9 +100,6 @@ class chatgptlike(cishubase):
             )
             resp = think + resp
         return resp
-
-    def createurl(self):
-        return createurl(self.apiurl)
 
     def query_cld(self, sysprompt, query, extrabody, extraheader):
         temperature = self.config["Temperature"]
@@ -132,7 +127,7 @@ class chatgptlike(cishubase):
         )
         return response
 
-    def query_gemini(self, sysprompt, query, extrabody, extraheader):
+    def query_gemini(self, apitype, sysprompt, query, extrabody, extraheader):
         return common_create_gemini_request(
             self.proxysession,
             self.config,
@@ -141,4 +136,5 @@ class chatgptlike(cishubase):
             [{"role": "user", "parts": [{"text": query}]}],
             extraheader,
             extrabody,
+            apitype,
         )

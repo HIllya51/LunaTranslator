@@ -2,7 +2,7 @@ from ocrengines.baseocrclass import baseocr, OCRResult
 import base64
 from language import Languages
 from myutils.utils import (
-    createurl,
+    APIType,
     common_list_models,
     common_parse_normal_response,
     common_create_gemini_request,
@@ -15,7 +15,7 @@ from gui.customparams import customparams, getcustombodyheaders
 def list_models(typename, regist):
     return common_list_models(
         getproxy(("ocr", typename)),
-        regist["apiurl"](),
+        APIType(regist["apiurl"]()),
         regist["SECRET_KEY"]().split("|")[0],
     )
 
@@ -52,7 +52,7 @@ class OCR(baseocr):
         except:
             raise Exception(response)
 
-    def ocr_gemini(self, prompt, base64_image, extrabody, extraheader):
+    def ocr_gemini(self, apitype, prompt, base64_image, extrabody, extraheader):
         return common_create_gemini_request(
             self.proxysession,
             self.config,
@@ -73,9 +73,12 @@ class OCR(baseocr):
             ],
             extraheader,
             extrabody,
+            apitype,
         )
 
-    def ocr_normal(self, prompt, base64_image, extrabody, extraheader):
+    def ocr_normal(
+        self, apitype: APIType, prompt, base64_image, extrabody, extraheader
+    ):
 
         message = [
             {
@@ -94,7 +97,7 @@ class OCR(baseocr):
         ]
         h = self.createheaders(extraheader)
         response = self.proxysession.post(
-            createurl(self.config["apiurl"]),
+            apitype.finalurl(),
             headers=h,
             json=common_create_gpt_data(self.config, message, extrabody),
         )
@@ -116,16 +119,16 @@ class OCR(baseocr):
             "use_custom_prompt", "custom_prompt"
         )
         base64_image = base64.b64encode(imagebinary).decode("utf-8")
-
-        if self.config["apiurl"].startswith(
-            "https://generativelanguage.googleapis.com"
-        ):
-            response = self.ocr_gemini(prompt, base64_image, extrabody, extraheader)
-        elif self.config["apiurl"].startswith("https://api.mistral.ai/v1"):
+        apitype = APIType(self.config["apiurl"])
+        if apitype == APIType.gemini:
+            response = self.ocr_gemini(apitype, prompt, base64_image, extrabody, extraheader)
+        elif apitype == APIType.mistral:
             return self.ocr_mistral(prompt, base64_image, extrabody, extraheader)
         else:
-            response = self.ocr_normal(prompt, base64_image, extrabody, extraheader)
+            response = self.ocr_normal(
+                apitype, prompt, base64_image, extrabody, extraheader
+            )
         return OCRResult(
-            texts=common_parse_normal_response(response, self.config["apiurl"]),
+            texts=common_parse_normal_response(response, apitype),
             isocrtranslate=isocrtranslate,
         )

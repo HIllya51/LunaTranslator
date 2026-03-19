@@ -869,19 +869,72 @@ def checkv1(api_url: str):
         return api_url + "/v1"
 
 
-def createurl(url: str, checkend="/chat/completions"):
-    if "openai.azure.com/openai/deployments/" in url:
-        return url
-    if url.endswith(checkend):
+class APIType:
+    class openai:
         pass
-    elif url.endswith("#"):
-        return url[:-1]
-    else:
-        ex = "/chat/completions"
-        if url.endswith(ex):
-            url = url[: -len(ex)]
-        url = urlpathjoin(checkv1(url), checkend)
-    return url
+
+    class gemini:
+        pass
+
+    class claude:
+        pass
+
+    class qianfan(openai):
+        pass
+
+    class azure(openai):
+        pass
+
+    class aliyuncs(openai):
+        pass
+
+    class cohere:
+        pass
+
+    class mistral:
+        pass
+
+    def __eq__(self, value):
+        return issubclass(self._value_, value)
+
+    def __init__(self, url: str):
+        self.url = url = url.strip()
+        isgemini = re.fullmatch("(.*)/v1beta(/(models/?)?)?", url)
+        geminiurl = "https://generativelanguage.googleapis.com"
+        if url.startswith(geminiurl) or isgemini:
+            self._value_ = APIType.gemini
+            base = isgemini.groups()[0] if isgemini else geminiurl
+            self.url = "{}/v1beta/models".format(base)
+        elif url.startswith("https://api.anthropic.com/v1/messages"):
+            self._value_ = APIType.claude
+        elif "openai.azure.com/openai/deployments/" in url:
+            self._value_ = APIType.azure
+        elif "qianfan.baidubce.com/v2" in url:
+            self._value_ = APIType.qianfan
+        elif url.startswith("https://dashscope.aliyuncs.com/compatible-mode/v1"):
+            self._value_ = APIType.aliyuncs
+        elif url.startswith("https://api.cohere."):
+            self._value_ = APIType.cohere
+        elif url.startswith("https://api.mistral.ai/v1"):
+            self._value_ = APIType.mistral
+        else:
+            self._value_ = APIType.openai
+
+    def finalurl(self, checkend="/chat/completions"):
+        if self == APIType.azure:
+            return url
+        if self == APIType.gemini:
+            return self.url + "/v1beta/models"
+        url = self.url
+        if url.endswith(checkend):
+            return url
+        elif url.endswith("#"):
+            return url[:-1]
+        else:
+            ex = "/chat/completions"
+            if url.endswith(ex):
+                url = url[: -len(ex)]
+            return urlpathjoin(checkv1(url), checkend)
 
 
 def parsecoheremodellist(proxies, apikey):
@@ -903,12 +956,8 @@ def parsecoheremodellist(proxies, apikey):
     return sorted(mm)
 
 
-def parsegeminimodellist(proxies, apikey):
-    js = requests.get(
-        "https://generativelanguage.googleapis.com/v1beta/models",
-        params={"key": apikey},
-        proxies=proxies,
-    )
+def parsegeminimodellist(apitype: APIType, proxies, apikey):
+    js = requests.get(apitype.url, params={"key": apikey}, proxies=proxies)
     try:
         models = js.json()["models"]
     except:
@@ -938,18 +987,19 @@ def parseclaudemodellist(proxies, apikey):
         raise Exception(resp)
 
 
-def common_list_models(proxies, apiurl: str, apikey: str, checkend="/chat/completions"):
-    apiurl = apiurl.strip()
+def common_list_models(
+    proxies, apitype: APIType, apikey: str, checkend="/chat/completions"
+):
     apikey = apikey.strip()
-    if apiurl.startswith("https://api.cohere."):
+    if apitype == APIType.cohere:
         return parsecoheremodellist(proxies, apikey)
-    elif apiurl.startswith("https://generativelanguage.googleapis.com"):
-        return parsegeminimodellist(proxies, apikey)
-    elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
+    elif apitype == APIType.gemini:
+        return parsegeminimodellist(apitype, proxies, apikey)
+    elif apitype == APIType.claude:
         return parseclaudemodellist(proxies, apikey)
     params = dict(headers={"Authorization": "Bearer {}".format(apikey)})
     modellink = urlpathjoin(
-        createurl(apiurl, checkend=checkend)[: -len(checkend) + 1], "models"
+        apitype.finalurl(checkend=checkend)[: -len(checkend) + 1], "models"
     )
     resp = requests.get(modellink, proxies=proxies, **params)
     if resp.status_code == 404:
@@ -997,6 +1047,7 @@ def common_create_gemini_request(
     contents,
     extraheader,
     extrabody,
+    apitype: APIType,
 ):
     gen_config = {
         "stopSequences": [" \n"],
@@ -1055,10 +1106,9 @@ def common_create_gemini_request(
         payload.update(sys_message)
     payload.update(generationConfig=gen_config)
     payload.update(extrabody)
+    t = ["generateContent", "streamGenerateContent"][usingstream]
     res = proxysession.post(
-        "https://generativelanguage.googleapis.com/v1beta/models/{}:{}".format(
-            model, ["generateContent", "streamGenerateContent"][usingstream]
-        ),
+        "{}/{}:{}".format(apitype.url, model, t),
         headers=extraheader,
         params={"key": key},
         json=payload,
@@ -1067,12 +1117,12 @@ def common_create_gemini_request(
     return res
 
 
-def common_parse_normal_response_1(response: requests.Response, apiurl: str):
+def common_parse_normal_response_1(response: requests.Response, apitype: APIType):
     try:
         js = response.json()
-        if apiurl.startswith("https://api.anthropic.com/v1/messages"):
+        if apitype == APIType.claude:
             return js["content"][0]["text"], None
-        elif apiurl.startswith("https://generativelanguage.googleapis.com"):
+        elif apitype == APIType.gemini:
             return js["candidates"][0]["content"]["parts"][0]["text"], None
         else:
             message: dict = js["choices"][0]["message"]
@@ -1082,9 +1132,9 @@ def common_parse_normal_response_1(response: requests.Response, apiurl: str):
 
 
 def common_parse_normal_response(
-    response: requests.Response, apiurl: str, hidethinking=False, splitthink=False
+    response: requests.Response, apitype: APIType, hidethinking=False, splitthink=False
 ):
-    resp, reasoning = common_parse_normal_response_1(response, apiurl)
+    resp, reasoning = common_parse_normal_response_1(response, apitype)
     if hidethinking:
         # 有时，会没有<think>只有</think>比如使用prefill的时候。移除第一个</think>之前的内容
         resp = re.sub(r"([\s\S]*)</think>\n*", "", resp)

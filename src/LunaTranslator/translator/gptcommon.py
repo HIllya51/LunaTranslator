@@ -2,7 +2,7 @@ from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import json, requests, hmac, hashlib, NativeUtils, re, functools
 from datetime import datetime, timezone
 from myutils.utils import (
-    createurl,
+    APIType,
     common_list_models,
     common_parse_normal_response,
     common_create_gemini_request,
@@ -13,10 +13,10 @@ from language import Languages
 from gui.customparams import getcustombodyheaders
 
 
-def list_models(typename, regist):
+def list_models(typename, regist: dict):
     return common_list_models(
         getproxy(("fanyi", typename)),
-        regist["API接口地址"](),
+        APIType(regist["API接口地址"]()),
         regist.get("SECRET_KEY", lambda: "")().split("|")[0],
     )
 
@@ -173,7 +173,7 @@ def parseresponseQWENMT(response: requests.Response):
 
 
 def parsestreamresp(
-    apiurl: str,
+    apitype: APIType,
     response: requests.Response,
     hidethinking: bool,
     markdown2html: bool,
@@ -185,13 +185,11 @@ def parsestreamresp(
         # application/json
         # text/html
         raise Exception(response)
-    if apiurl.startswith("https://generativelanguage.googleapis.com"):
+    if apitype == APIType.gemini:
         respmessage = yield from parseresponsegemini(response, markdown2html)
-    elif apiurl.startswith("https://api.anthropic.com/v1/messages"):
+    elif apitype == APIType.claude:
         respmessage = yield from parseresponseclaude(response)
-    elif model == "qwen-mt-turbo" and apiurl.startswith(
-        "https://dashscope.aliyuncs.com/compatible-mode/v1"
-    ):
+    elif model == "qwen-mt-turbo" and apitype == APIType.aliyuncs:
         respmessage = yield from parseresponseQWENMT(response)
     else:
         respmessage = yield from commonparseresponse_good(
@@ -232,14 +230,14 @@ class qianfanIAM:
         ).json()["token"]
 
 
-def createheaders(apiurl: str, curkey: str, maybeuse: dict, proxy, extra):
+def createheaders(apitype: APIType, curkey: str, maybeuse: dict, proxy, extra):
     _ = {}
     if curkey:
         # 部分白嫖接口可以不填，填了反而报错
         _.update({"Authorization": "Bearer " + curkey})
-    if "openai.azure.com/openai/deployments/" in apiurl:
+    if apitype == APIType.azure:
         _.update({"api-key": curkey})
-    elif ("qianfan.baidubce.com/v2" in apiurl) and (":" in curkey):
+    elif (apitype == APIType.qianfan) and (":" in curkey):
         if not maybeuse.get(curkey):
             Access_Key, Secret_Key = curkey.split(":")
             key = qianfanIAM.getkey(Access_Key, Secret_Key, proxy)
@@ -251,10 +249,6 @@ def createheaders(apiurl: str, curkey: str, maybeuse: dict, proxy, extra):
 
 
 class gptcommon(basetrans):
-    @property
-    def apiurl(self) -> str:
-        return self.config.get("API接口地址", "").strip()
-
     def langmap(self):
         return Languages.createenglishlangmap()
 
@@ -275,35 +269,36 @@ class gptcommon(basetrans):
         )
         usingstream = self.config["流式输出"]
         messages, query, query_1 = self.commoncreatemessages(query_2)
-        if self.apiurl.startswith("https://generativelanguage.googleapis.com"):
-            response = self.request_gemini(messages, extrabody, extraheader)
-        elif self.apiurl.startswith("https://api.anthropic.com/v1/messages"):
+        apitype = APIType(self.config.get("API接口地址", ""))
+        if apitype == APIType.gemini:
+            response = self.request_gemini(apitype, messages, extrabody, extraheader)
+        elif apitype == APIType.gemini:
             response = self.req_claude(
                 messages, extrabody, extraheader, self.config.get("cachecontext", False)
             )
         else:
             headers = createheaders(
-                self.apiurl,
+                apitype,
                 self.multiapikeycurrent["SECRET_KEY"],
                 self.maybeuse,
                 self.proxy,
                 extraheader,
             )
             _json = common_create_gpt_data(
-                self.config, self.__parse_qwen_mt_turbo(messages), extrabody
+                self.config, self.__parse_qwen_mt_turbo(apitype, messages), extrabody
             )
             response = self.proxysession.post(
-                self.createurl(), headers=headers, json=_json, stream=usingstream
+                apitype.finalurl(), headers=headers, json=_json, stream=usingstream
             )
         hidethinking = self.config.get("hidethinking", False)
         markdown2html = self.config.get("markdown2html", False)
         if usingstream:
             respmessage = yield from parsestreamresp(
-                self.apiurl, response, hidethinking, markdown2html, self.config["model"]
+                apitype, response, hidethinking, markdown2html, self.config["model"]
             )
         else:
             respmessage = common_parse_normal_response(
-                response, self.apiurl, hidethinking=hidethinking
+                response, apitype, hidethinking=hidethinking
             )
             if markdown2html:
                 yield "LUNASHOWHTML" + NativeUtils.Markdown2Html(respmessage)
@@ -316,13 +311,8 @@ class gptcommon(basetrans):
         self.context.append({"role": "assistant", "content": respmessage})
         self.context_for_cache.append({"role": "assistant", "content": respmessage})
 
-    def createurl(self):
-        return createurl(self.apiurl)
-
-    def __parse_qwen_mt_turbo(self, messages: list):
-        if self.config["model"] == "qwen-mt-turbo" and self.apiurl.startswith(
-            "https://dashscope.aliyuncs.com/compatible-mode/v1"
-        ):
+    def __parse_qwen_mt_turbo(self, apitype: APIType, messages: list):
+        if self.config["model"] == "qwen-mt-turbo" and apitype == APIType.aliyuncs:
             if messages and messages[0]["role"] == "system":
                 messages.pop(0)
         return messages
@@ -418,7 +408,7 @@ class gptcommon(basetrans):
             message.append({"role": "assistant", "content": prefill})
         return message, query, query_1
 
-    def request_gemini(self, messages: list, extrabody, extraheader):
+    def request_gemini(self, apitype, messages: list, extrabody, extraheader):
 
         sysprompt = messages[0]["content"]
         messages.pop(0)
@@ -435,6 +425,7 @@ class gptcommon(basetrans):
             messages,
             extraheader,
             extrabody,
+            apitype,
         )
 
     def req_claude(self, messages: list, extrabody, extraheader, cache_control):
