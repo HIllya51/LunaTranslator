@@ -1,4 +1,4 @@
-file(READ "${CMAKE_CURRENT_SOURCE_DIR}/../version.txt" VERSION_STR)
+file(READ "${CMAKE_CURRENT_LIST_DIR}/../version.txt" VERSION_STR)
 string(STRIP "${VERSION_STR}" VERSION_STR)
 
 string(REPLACE "." ";" VERSION_PARTS "${VERSION_STR}")
