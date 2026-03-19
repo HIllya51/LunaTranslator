@@ -838,107 +838,34 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
     {
         HookParam hp;
         hp.address = addr; // Jit::DoJit
-        hp.user_value = (uintptr_t)new uintptr_t;
         hp.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
         {
+            static struct argpair
+            {
+                u32 em_address;
+                JitBlock *b;
+            } args;
             static auto once1 = oncegetJitBlockCache(context);
-            auto em_address = context->argof_thiscall(1);
-            *(uintptr_t *)(hp->user_value) = em_address;
+            args = argpair{(u32)context->argof_thiscall(1), (JitBlock *)context->argof_thiscall(2)};
 
             HookParam hpinternal;
-            hpinternal.user_value = hp->user_value;
             hpinternal.address = context->retaddr;
             hpinternal.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
             {
-                auto em_address = *(uintptr_t *)(hp->user_value);
-                if (!IsValidAddress(em_address))
+                if (!IsValidAddress(args.em_address))
                     return;
                 [&]()
                 {
-                    auto ret = context->last_ret_val();
-                    if (breakpoints.count(ret))
+                    auto ret = args.b->normalEntry;
+                    if (breakpoints.count((uintptr_t)ret))
                         return;
-                    breakpoints.insert(ret);
+                    breakpoints.insert((uintptr_t)ret);
 
-                    dohookemaddr(em_address, ret);
+                    dohookemaddr(args.em_address, (uintptr_t)ret);
                 }();
-                delayinsertNewHook(em_address);
+                delayinsertNewHook(args.em_address);
             };
             static auto once = NewHook(hpinternal, "DoJitPtrRet");
-        };
-
-        return NewHook(hp, "PPSSPPDoJit");
-    }
-    uintptr_t findAfterFinalize()
-    {
-        char aAfterfinalize[] = "AfterFinalize";
-        auto addr = MemDbg::findBytes(aAfterfinalize, sizeof(aAfterfinalize), processStartAddress, processStopAddress);
-        if (!addr)
-            return false;
-        addr = MemDbg::find_leaorpush_addr(addr, processStartAddress, processStopAddress);
-        if (!addr)
-            return false;
-#ifdef _WIN64
-        BYTE sig[] = {
-            0x4c, XX2, XX4,
-            0x44, XX, XX,
-            0x8b, XX,
-            0x48, XX, XX,
-            0xe8};
-#else
-        BYTE sig[] = {0x68, XX4,
-                      0x56,
-                      0xff, 0x75, 0x08,
-                      XX, XX,
-                      0xe8};
-#endif
-        auto offset = sizeof(sig) - 1;
-        if (!MatchPattern(addr, sig, sizeof(sig)))
-            return false;
-        addr += offset;
-        addr += 5 + *(int *)(addr + 1);
-        return addr;
-    }
-    bool hookAfterFinalize(uintptr_t addr)
-    {
-        // v1.20+
-        /*
-        // Sometimes we compile fairly large blocks, although it's uncommon.
-    BeginWrite(JitBlockCache::MAX_BLOCK_INSTRUCTIONS * 16);
-
-    int block_num = blocks.AllocateBlock(em_address);
-    JitBlock *b = blocks.GetBlock(block_num);
-    b->DoIntegrityCheck(em_address, block_num, "BeforeJit");
-    DoJit(em_address, b);
-    b->DoIntegrityCheck(em_address, block_num, "BeforeFinalize");
-    blocks.FinalizeBlock(block_num, jo.enableBlocklink);
-    b->DoIntegrityCheck(em_address, block_num, "AfterFinalize");
-    _dbg_assert_(js.nextExit <= 2);
-
-    EndWrite();
-        */
-
-        HookParam hp;
-        hp.address = addr;
-        hp.text_fun = [](hook_context *context, HookParam *hp, auto *, auto *)
-        {
-            auto reason = (char *)context->argof_thiscall(3);
-            if (strcmp(reason, "AfterFinalize"))
-                return;
-            auto em_address = context->argof_thiscall(1);
-            auto _this = (JitBlock *)context->argof_thiscall(0);
-            auto target = (uintptr_t)_this->checkedEntry;
-            if (!IsValidAddress(em_address))
-                return;
-            [&]()
-            {
-                if (breakpoints.count(target))
-                    return;
-                breakpoints.insert(target);
-
-                dohookemaddr(em_address, target);
-            }();
-            delayinsertNewHook(em_address);
         };
 
         return NewHook(hp, "PPSSPPDoJit");
@@ -946,14 +873,13 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
     bool hookPPSSPPDoJit(std::optional<version_t> version)
     {
         auto DoJitPtr = getDoJitAddress();
-        auto AfterFinalize = findAfterFinalize(); // v1.20+
-        if (!DoJitPtr && !AfterFinalize)
+        if (!DoJitPtr)
             return false;
         ppsspp_load_functions(emfunctionhooks);
         JIT_Keeper<GameInfoC>::CreateStatic(dohookemaddr);
         if (!Load_PSP_GameInfo(version))
             return false;
-        return (AfterFinalize && hookAfterFinalize(AfterFinalize)) || (DoJitPtr && hookDoJit(DoJitPtr));
+        return hookDoJit(DoJitPtr);
     }
 }
 bool PPSSPPWindows::attach_function1()
