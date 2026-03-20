@@ -212,6 +212,7 @@ def setTab7_lazy(self, basel: QLayout):
         ["文本预处理", "翻译优化"],
         [___, functools.partial(makescrollgrid, grids2)],
         delay=True,
+        padding=True,
     )
     basel.addWidget(tab)
     dotab()

@@ -804,6 +804,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
                         lambda l: makescrollgrid(gethookgrid_em(self), l),
                     ],
                     delay=True,
+                    padding=True,
                 ),
                 0,
             )
@@ -858,6 +859,7 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         titles,
         funcs,
         delay=True,
+        padding=True,
     )
     basel.addWidget(tab)
     basel.setSpacing(0)

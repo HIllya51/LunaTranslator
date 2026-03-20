@@ -441,7 +441,7 @@ def setTab_quick(self, l: QVBoxLayout):
         __.append(functools.partial(___x, _[1]))
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
-    tab, do = makesubtab_lazy(__vis, __, delay=True)
+    tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True)
 
     l.addWidget(tab)
     l.setSpacing(0)
@@ -498,7 +498,9 @@ def regist_or_not_key(self, name, _=None):
     if not __:
         return
     keystring = __.get("keystring")
-    if (not keystring) or (not (__.get("use") and globalconfig["quick_setting"]["use"])):
+    if (not keystring) or (
+        not (__.get("use") and globalconfig["quick_setting"]["use"])
+    ):
         return
 
     try:
