@@ -163,7 +163,6 @@
     "分析图像更新+周期执行": "Analiza aktualizacji obrazów+wykonanie cyklu",
     "代理设置": "Ustawienia proxy",
     "自动更新": "Automatyczna aktualizacja",
-    "排除复制自翻译器的文本": "Wyklucz tekst skopiowany z tłumacza",
     "文本设置": "Ustawienia tekstu",
     "语法加亮": "Podkreślenie gramatyki",
     "语音合成": "synteza mowy",
@@ -907,5 +906,6 @@
     "边框宽度": "Szerokość obramowania",
     "边框颜色": "Kolor obramowania",
     "选中时": "Zaznaczone",
-    "排序": "Sortowanie"
+    "排序": "Sortowanie",
+    "输出内容": "Wynik wyjściowy"
 }

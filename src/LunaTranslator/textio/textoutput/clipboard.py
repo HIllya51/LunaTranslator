@@ -1,5 +1,4 @@
 from textio.textoutput.outputerbase import Base
-from myutils.config import globalconfig
 import NativeUtils
 
 
@@ -8,10 +7,6 @@ class Outputer(Base):
         if not (
             (isorigin and self.config["origin"])
             or ((not isorigin) and self.config["trans"])
-        ):
-            return
-        if globalconfig["sourcestatus2"]["copy"]["use"] and (
-            not globalconfig["excule_from_self"]
         ):
             return
 

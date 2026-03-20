@@ -22,7 +22,6 @@ from gui.usefulwidget import (
     createfoldgrid,
     getIconButton,
     manybuttonlayout,
-    LinkLabel,
     makegrid,
     listediter,
     getsimplecombobox,
@@ -242,50 +241,30 @@ def creategamefont_comboBox():
     return gamefont_comboBox
 
 
-def getTabclip():
+def getTabclip(_):
 
     grids = [
         [
-            dict(
-                title="输入",
-                grid=(
-                    [
-                        "排除复制自翻译器的文本",
-                        D_getsimpleswitch(globalconfig, "excule_from_self"),
-                    ],
-                ),
-            ),
+            getsmalllabel("自动输出文本"),
+            D_getsimpleswitch(globalconfig["textoutputer"]["clipboard"], "use"),
+            "",
         ],
-        [],
         [
             dict(
-                title="输出",
+                type="grid",
+                title="输出内容",
                 grid=(
                     [
-                        "自动输出文本",
+                        "原文",
                         D_getsimpleswitch(
-                            globalconfig["textoutputer"]["clipboard"], "use"
+                            globalconfig["textoutputer"]["clipboard"],
+                            "origin",
                         ),
-                    ],
-                    [
-                        dict(
-                            type="grid",
-                            title="内容",
-                            grid=(
-                                [
-                                    "原文",
-                                    D_getsimpleswitch(
-                                        globalconfig["textoutputer"]["clipboard"],
-                                        "origin",
-                                    ),
-                                    "",
-                                    "翻译",
-                                    D_getsimpleswitch(
-                                        globalconfig["textoutputer"]["clipboard"],
-                                        "trans",
-                                    ),
-                                ],
-                            ),
+                        "",
+                        "翻译",
+                        D_getsimpleswitch(
+                            globalconfig["textoutputer"]["clipboard"],
+                            "trans",
                         ),
                     ],
                 ),
@@ -637,6 +616,15 @@ def filetranslate(self):
         [
             functools.partial(
                 createfoldgrid,
+                functools.partial(getTabclip, self),
+                "剪贴板",
+                globalconfig["foldstatus"]["others"],
+                "copy",
+            )
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
                 functools.partial(getsrgrid, self),
                 "语音识别",
                 globalconfig["foldstatus"]["others"],
@@ -859,11 +847,10 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     ]
     gridlayoutwidget, do = makegrid(tab1grids, delay=True)
     basel.addWidget(gridlayoutwidget)
-    titles = ["HOOK设置", "OCR设置", "剪贴板", "其他"]
+    titles = ["HOOK设置", "OCR设置", "其他"]
     funcs = [
         lambda l: setTabOne_lazy_h(self, l),
         lambda l: getocrgrid_table(self, l),
-        lambda l: makescrollgrid(getTabclip(), l),
         lambda l: makescrollgrid(filetranslate(self), l),
     ]
 

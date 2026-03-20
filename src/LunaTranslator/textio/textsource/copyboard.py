@@ -1,5 +1,4 @@
 from textio.textsource.textsourcebase import basetext
-from myutils.config import globalconfig
 import NativeUtils, gobject
 
 
@@ -10,7 +9,7 @@ class copyboard(basetext):
         # 不需要disconnect。而且Qt6在结束时closeEvent里disconnect会谜之卡住最后的退出
 
     def __callback(self, ismy, string):
-        if globalconfig["excule_from_self"] and ismy:
+        if ismy:
             return
         self.dispatchtext(string)
 

@@ -216,7 +216,6 @@
     "日语": "Japonština",
     "语法加亮": "Zvýraznění gramatiky",
     "分析图像更新+周期执行": "Analyzovat aktualizace obrazu+pravidelné provádění",
-    "排除复制自翻译器的文本": "Vyloučit text zkopírovaný z překladatele",
     "游戏时间": "Čas hry",
     "路径": "trasa",
     "删除游戏": "Smazat hru",
@@ -907,5 +906,6 @@
     "边框宽度": "Šířka okraje",
     "边框颜色": "Barva rámečku",
     "选中时": "Vybrané",
-    "排序": "Řazení"
+    "排序": "Řazení",
+    "输出内容": "Výstupní obsah"
 }

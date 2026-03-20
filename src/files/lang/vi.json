@@ -163,7 +163,6 @@
     "分析图像更新+周期执行": "Phân tích cập nhật ảnh + Thực thi định kỳ",
     "代理设置": "Cài đặt Proxy",
     "自动更新": "Tự động cập nhật",
-    "排除复制自翻译器的文本": "Loại trừ văn bản sao chép từ trình dịch",
     "文本设置": "Cài đặt văn bản",
     "语法加亮": "Làm nổi bật cú pháp",
     "语音合成": "Tổng hợp giọng nói (TTS)",
@@ -907,5 +906,6 @@
     "边框宽度": "Độ rộng viền",
     "边框颜色": "Màu viền",
     "选中时": "Khi được chọn",
-    "排序": "Sắp xếp"
+    "排序": "Sắp xếp",
+    "输出内容": "Nội dung đầu ra"
 }

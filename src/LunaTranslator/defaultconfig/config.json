@@ -21,7 +21,6 @@
     "multihookmergeby": "\n",
     "autoopenselecttext": true,
     "displayrank": 0,
-    "excule_from_self": true,
     "showrangeafterrangeselect": true,
     "autodisappear": false,
     "autodisappear_which": 0,
@@ -40,10 +39,11 @@
             "other": false
         },
         "others": {
-            "fts": true,
-            "netservice": true,
-            "sr": true,
-            "proxy": false
+            "fts": false,
+            "netservice": false,
+            "sr": false,
+            "proxy": false,
+            "copy": false
         },
         "proxy": {
             "gpt": true,
