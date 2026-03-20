@@ -582,7 +582,9 @@ def proxyusage():
     hbox.setContentsMargins(0, 0, 0, 0)
     w2 = QWidget()
     w2.setEnabled(globalconfig["useproxy"])
-    switch1 = D_getsimpleswitch(globalconfig, "useproxy", callback=w2.setEnabled)()
+    switch1 = D_getsimpleswitch(
+        globalconfig, "useproxy", callback=w2.setEnabled, default=True
+    )()
     hbox.addWidget(switch1)
     hbox.addWidget(QLabel())
     hbox.addWidget(w2)
@@ -597,7 +599,7 @@ def proxyusage():
         getboxlayout(
             [
                 "使用系统代理",
-                D_getsimpleswitch(globalconfig, "usesysproxy", callback=__)(),
+                D_getsimpleswitch(globalconfig, "usesysproxy", callback=__, default=True)(),
                 0,
             ]
         ),
