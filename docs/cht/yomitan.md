@@ -24,6 +24,14 @@
 
 1. 最終效果。
 
+   > [!TIP]
+   > 預設情況下，主視窗會根據文字和翻譯內容自動調整視窗尺寸，這也會連帶調整 Yomitan 的視窗大小。
+   >
+   > 請在 **顯示設定** → **介面設定** → **主介面** 中，取消勾選 **自動調整高度** 設定。
+   >
+   > ![img](https://image.lunatranslator.org/zh/yomi9.png)
+
+
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 
 1. 除了主介面外，歷史文字視窗也可以使用瀏覽器擴充功能，但為了節省資源預設不會啟用。

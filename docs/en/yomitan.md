@@ -25,6 +25,13 @@
 
 1. Final Result
 
+   > [!TIP]
+   > By default, the main window automatically resizes based on the text and translation content, which also adjusts the Yomitan window size.
+   >
+   > Go to **Display Settings** → **Interface Settings** → **Main Window**, and disable **Auto Adjust Height**.
+   >
+   > ![img](https://image.lunatranslator.org/en/yomi9.png)
+
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 
 1. In addition to the main interface, the history text window can also use the browser extension, but it is not enabled by default to save resources.

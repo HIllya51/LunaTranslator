@@ -24,6 +24,14 @@
 
 1. 最终效果
 
+    >[!TIP]
+    >默认情况下，主窗口会根据文本和翻译内容自动调整窗口尺寸，这会使得Yomitan的窗口尺寸也被调整。
+    >
+    >可以在**显示设置**->**界面设置**->**主界面**，取消激活**自动调整高度**设置。
+    >
+    >![img](https://image.lunatranslator.org/zh/yomi9.png)
+    
+
     ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 
 1. 除了主界面外，历史文本窗口也可以使用浏览器插件，但为了节省资源默认不会启用

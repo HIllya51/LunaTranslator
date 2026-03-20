@@ -24,6 +24,14 @@
 
 1. Kết quả cuối cùng
 
+   > [!TIP]
+   > Theo mặc định, cửa sổ chính sẽ tự động điều chỉnh kích thước dựa trên nội dung văn bản và bản dịch, điều này cũng làm thay đổi kích thước cửa sổ Yomitan.
+   >
+   > Vào **Cài đặt hiển thị** → **Cài đặt giao diện** → **Giao diện chính**, bỏ chọn **Tự động điều chỉnh chiều cao**.
+   >
+   > ![img](https://image.lunatranslator.org/en/yomi9.png)
+
+
    ![img](https://image.lunatranslator.org/zh/yomitan5.png)
 
 1. Ngoài giao diện chính, cửa sổ văn bản lịch sử cũng có thể sử dụng tiện ích trình duyệt, nhưng mặc định không được bật để tiết kiệm tài nguyên.
