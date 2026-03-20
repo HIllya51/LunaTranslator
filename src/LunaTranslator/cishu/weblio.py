@@ -6,7 +6,7 @@ import re, threading
 
 class weblio(cishubase):
     backgroundparser = """
-            document.querySelectorAll('.lunawebliocsswrapper').forEach((ele) => {
+            document.querySelectorAll('.lunawb').forEach((ele) => {
                 ele.style.backgroundColor = {color}
                 ele.querySelectorAll('#base').forEach((ele) => {
                     ele.style.backgroundColor = {color}
@@ -15,8 +15,8 @@ class weblio(cishubase):
 """
 
     def init(self):
-        self.cache = localcachehelper("cishucss/weblio")
-        self.klass = "lunawebliocsswrapper"
+        self.cache = localcachehelper("cishucss/weblio_1")
+        self.klass = "lunawb"
 
     def search(self, word):
         url = self.getUrl(word)

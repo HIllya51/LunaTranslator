@@ -14,4 +14,4 @@ lastUpdated: false
 
 <a href="https://afdian.com/a/HIllya51" target='_blank'><img width="200" src="https://pic1.afdiancdn.com/static/img/welcome/button-sponsorme.png"></a>
 
-<img src='https://image.lunatranslator.org/zh/zan.jpg' style="height: 350px !important;">
+<img src='https://image.lunatranslator.org/zh/zan.jpg' style="height: 300px !important;">

@@ -252,7 +252,7 @@ class aboutwidget(NQGroupBox):
                 200,
                 "https://afdian.com/a/HIllya51",
             )
-            self.createlabel("files/static/zan.jpg", 350)
+            self.createlabel("files/static/zan.jpg", 300)
         elif lang == Languages.TradChinese:
             self.createlabel(
                 "files/static/become_a_patron_4x1_black_logo_white_text_on_coral.svg",

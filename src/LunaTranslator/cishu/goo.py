@@ -6,8 +6,8 @@ from cishu.cishubase import cishubase
 class goo(cishubase):
 
     def init(self):
-        self.cache = localcachehelper("cishucss/goo")
-        self.klass = "lunagoocsswrapper"
+        self.cache = localcachehelper("cishucss/goo_1")
+        self.klass = "lunagoo"
 
     def search(self, word):
         url = self.getUrl(word)

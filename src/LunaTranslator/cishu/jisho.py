@@ -4,11 +4,11 @@ from myutils.utils import get_element_by, simplehtmlparser_all, localcachehelper
 
 
 class jisho(cishubase):
-    backgroundparser = "document.querySelectorAll('.lunajishocsswrapper').forEach((ele) => { ele.style.backgroundColor = {color} });"
+    backgroundparser = "document.querySelectorAll('.lunajisho').forEach((ele) => { ele.style.backgroundColor = {color} });"
 
     def init(self):
-        self.style = localcachehelper("cishucss/jisho")
-        self.klass = "lunajishocsswrapper"
+        self.style = localcachehelper("cishucss/jisho_1")
+        self.klass = "lunajisho"
 
     def generatehtml_tabswitch(self, allres):
         btns = []

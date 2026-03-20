@@ -4,11 +4,11 @@ import re
 
 
 class jpdb(cishubase):
-    backgroundparser = "document.querySelectorAll('.lunajpdbcsswrapper').forEach((ele) => { ele.style.backgroundColor = {color} });"
+    backgroundparser = "document.querySelectorAll('.lunajpdb').forEach((ele) => { ele.style.backgroundColor = {color} });"
 
     def init(self):
-        self.style = localcachehelper("cishucss/jpdb")
-        self.klass = "lunajpdbcsswrapper"
+        self.style = localcachehelper("cishucss/jpdb_1")
+        self.klass = "lunajpdb"
 
     def getUrl(self, word):
         return "https://jpdb.io/search?q={}&lang=english".format(word)

@@ -4,7 +4,7 @@ import re
 
 
 class japandict(cishubase):
-    backgroundparser = """document.querySelectorAll('.lunajapandictcsswrapper').forEach((ele) => {
+    backgroundparser = """document.querySelectorAll('.lunajpdc').forEach((ele) => {
                 ele.style.backgroundColor = {color}
                 ele.querySelectorAll('.list-group-item').forEach((ele) => {
                     ele.style.backgroundColor = {color}
@@ -12,8 +12,8 @@ class japandict(cishubase):
             });"""
 
     def init(self):
-        self.style = localcachehelper("cishucss/japandict")
-        self.klass = "lunajapandictcsswrapper"
+        self.style = localcachehelper("cishucss/japandict_1")
+        self.klass = "lunajpdc"
 
     def search(self, word):
         url = "https://www.japandict.com/"
@@ -32,6 +32,8 @@ class japandict(cishubase):
         if not self.style[csslink]:
             css = self.proxysession.get(csslink).text
             css = css.replace("padding-top:60px !important", "")
+            css = re.sub(r"/\*.*?\*/", "", css)
+            css = css.split(".klaro")[0]
             css = self.parse_stylesheet(css, self.klass)
             self.style[csslink] = css
         return '<style>{}</style><div class="{}">{}</div>'.format(
