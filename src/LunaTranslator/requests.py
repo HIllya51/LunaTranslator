@@ -247,6 +247,7 @@ class _Functions:
             raise exceptions.RequestException(
                 "unknown scheme {} for invalid url {}".format(scheme, url)
             )
+        original_host = server
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -268,8 +269,9 @@ class _Functions:
             path += "?" + query
         if frag:
             path += "#" + frag
-        url = scheme + "://" + server + path
+        url = scheme + "://" + original_host + path
         return scheme, server, port, path, url
+
 
     @staticmethod
     def _parsejson(_json):
