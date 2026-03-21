@@ -11,7 +11,6 @@ from gui.usefulwidget import (
     makescrollgrid,
     D_getsimpleswitch,
     getsmalllabel,
-    qtawesome,
     getcenterX,
     D_getspinbox,
     D_getcolorbutton,
@@ -22,9 +21,12 @@ from gui.setting.display_ui import toolcolorchange
 
 
 class dialog_selecticon(LDialog):
-    def __init__(self, parent, dict, name, key, btn: IconButton, color) -> None:
+    def __init__(
+        self, parent, cb1, dict: dict, name, key, btn: IconButton, color
+    ) -> None:
 
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.cb1 = cb1
         self.dict = dict
         self.btn = btn
         self.name = name
@@ -37,7 +39,14 @@ class dialog_selecticon(LDialog):
         ) as ff:
             js = json.load(ff)
 
-        layout = QGridLayout(self)
+        self.curr = self.dict.get(self.key)
+        lineEdit = QLineEdit(self)
+        lineEdit.setText(self.curr)
+        lineEdit.textChanged.connect(self.cb)
+        vbox = QVBoxLayout(self)
+        vbox.addWidget(lineEdit)
+        layout = QGridLayout()
+        vbox.addLayout(layout)
         for i, name in enumerate(js):
             layout.addWidget(
                 getIconButton(
@@ -50,14 +59,23 @@ class dialog_selecticon(LDialog):
             )
         self.show()
 
+    def cb(self, _):
+        print(_)
+        self.curr = _
+        self.dict[self.key] = _
+        self.btn.setIconStr(_)
+        self.cb1()
+
     def selectcallback(self, _):
         print(_)
+        self.curr = _
         self.dict[self.key] = _
         self.close()
         self.btn.setIconStr(_)
+        self.cb1()
 
 
-def doadjust(_):
+def doadjust(*_):
     gobject.base.translation_ui.adjustbuttons()
     gobject.base.translation_ui.enterfunction()
 
@@ -92,7 +110,7 @@ def changerank(item, up, tomax, sortlist: list, savelist, savelay, savescroll):
             scroll.verticalScrollBar().setValue(scroll.verticalScrollBar().minimum())
         else:
             scroll.verticalScrollBar().setValue(scroll.verticalScrollBar().maximum())
-    doadjust(None)
+    doadjust()
 
 
 savebtns: "dict[tuple[str, str], IconButton]" = {}
@@ -110,7 +128,7 @@ def refreshtoolicon():
         btn.setColor(color)
 
 
-def createbtn(self, name, key):
+def createbtn(self, name, key, cb):
     color = (
         globalconfig["buttoncolor_1"]
         if "icon" == key and globalconfig["toolbutton"]["buttons"][name].get("icon2")
@@ -125,6 +143,7 @@ def createbtn(self, name, key):
         functools.partial(
             dialog_selecticon,
             self,
+            cb,
             globalconfig["toolbutton"]["buttons"][name],
             name,
             key,
@@ -226,10 +245,24 @@ def createbuttonwidget(self, lay: QLayout):
                 fixedsize=True,
             ),
             getsmalllabel(),
-            functools.partial(createbtn, self, k, "icon"),
+            functools.partial(
+                createbtn,
+                self,
+                k,
+                "icon",
+                lambda: gobject.base.translation_ui.titlebar.refreshtoolicon(),
+            ),
         ]
         if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
-            l.append(functools.partial(createbtn, self, k, "icon2"))
+            l.append(
+                functools.partial(
+                    createbtn,
+                    self,
+                    k,
+                    "icon2",
+                    lambda: gobject.base.translation_ui.titlebar.refreshtoolicon(),
+                )
+            )
         else:
             l.append("")
         l.append(getsmalllabel())

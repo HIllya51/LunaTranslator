@@ -79,15 +79,17 @@ class IconicFont(QObject):
         with open(os.path.join(directory, charmap_filename), "r") as codes:
             self.charmap = json.load(codes)
 
-    def icon(self, name, color):
+    def icon(self, name: str, color):
         if isinstance(color, QColor):
             cache_key = "{}{}".format(name, color.name())
         else:
             cache_key = "{}{}".format(name, color)
 
         if cache_key not in self.icon_cache:
-
-            char = chr(int((self.charmap[name[3:]]), 16))
+            if name.startswith("fa."):
+                char = chr(int((self.charmap[name[3:]]), 16))
+            else:
+                char = name[:1]
             self.icon_cache[cache_key] = self._icon_by_painter(char, color)
 
         return self.icon_cache[cache_key]
