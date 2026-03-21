@@ -17,7 +17,7 @@ def _sort_text_lines(boxs, texts, vertical, space: str):
 
     n = len(boxs)
     passed = [False] * n
-    juhe = []
+    juhe: "list[list]" = []
     for i in range(n):
         if passed[i]:
             continue
@@ -52,30 +52,17 @@ def _sort_text_lines(boxs, texts, vertical, space: str):
     return [space.join([texts[idx] for idx in line]) for line in juhe]
 
 
-def box8to4(box):
-    if len(box) == 4:
-        return box
-    x_coords = box[0::2]
-    y_coords = box[1::2]
-    return (min(x_coords), min(y_coords), max(x_coords), max(y_coords))
-
-
-def box4to8(box):
-    if len(box) == 8:
-        return box
-    x1, y1, x2, y2 = box
-    return (x1, y1, x2, y1, x2, y2, x1, y2)
-
-
 class _OCRBlockS:
     def __init__(self, blocks: "list[OCRBlock]"):
         self.blocks = blocks
 
     def distance(self, blocks: "_OCRBlockS"):
-        mindis = 9999999
+        mindis = math.inf
         for block1 in self.blocks:
             for block2 in blocks.blocks:
                 mindis = min(mindis, block1.distance(block2))
+                if mindis == 0:
+                    return 0
         return mindis
 
     @property
@@ -111,16 +98,24 @@ class _OCRBlockS:
 
 class OCRBlock:
     def __init__(self, text: str, box: list = None):
-        if box:
-            box = box4to8(box)
+
+        if box and (len(box) == 4):
+            x1, y1, x2, y2 = box
+            box = (x1, y1, x2, y1, x2, y2, x1, y2)
+
         self.box = box
         self.text = text
 
     @property
     def box4(self):
-        if not self.box:
+        box = self.box
+        if not box:
             return
-        return box8to4(self.box)
+        if len(box) == 4:
+            return box
+        x_coords = box[0::2]
+        y_coords = box[1::2]
+        return (min(x_coords), min(y_coords), max(x_coords), max(y_coords))
 
     @property
     def json(self):
@@ -142,8 +137,7 @@ class OCRBlock:
         return min(box[2] - box[0], box[3] - box[1])
 
     def distance(self, box2: "OCRBlock"):
-        box1 = self.box4
-        x1_min, y1_min, x1_max, y1_max = box1
+        x1_min, y1_min, x1_max, y1_max = self.box4
         x2_min, y2_min, x2_max, y2_max = box2.box4
 
         # 检查是否有重叠

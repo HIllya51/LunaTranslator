@@ -96,9 +96,9 @@ class IconLabelX(LLabel):
 
     def paintEvent(self, a0: QPaintEvent) -> None:
 
-        painter = QPainter(self)
         if self._size.isEmpty():
             return
+        painter = QPainter(self)
         rect = QRect(
             (self.width() - self._size.width()) // 2,
             (self.height() - self._size.height()) // 2,

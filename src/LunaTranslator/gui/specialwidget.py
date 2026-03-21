@@ -3,7 +3,7 @@ import threading
 from traceback import print_exc
 from myutils.config import savehook_new_data
 from myutils.wrapper import trypass
-import qtawesome
+import qtawesome, math
 from datetime import datetime
 from gui.dynalang import IconToolButton
 
@@ -276,7 +276,7 @@ class chartwidget(QWidget):
                         rects.append(newrect)
                         painter.drawText(newrect, text)  # value
 
-            lastx2 = -999
+            lastx2 = -math.inf
             for i, (x, y) in enumerate(points):
                 painter.drawLine(
                     QPointF(x, ymargin + height), QPointF(x, ymargin + height + 5)
