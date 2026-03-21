@@ -144,11 +144,9 @@ bool InsertElfHook()
       hp.text_fun = SpecialHookElf;
       hp.type = USING_STRING | NO_CONTEXT; // = 9
 
-      ConsoleOutput("INSERT Elf");
 
       return NewHook(hp, "Elf");
     }
-  ConsoleOutput("Elf: function not found");
   return false;
 }
 namespace
@@ -159,7 +157,7 @@ namespace
         // 姫騎士オリヴィア ～へ、変態、この変態男!少しは恥を知りなさい!～
         // 女系家族III～秘密HIMITSU卑蜜～
         // ベロちゅー！～コスプレメイドをエロメロしちゃう魔法の舌戯～
-        0x0F, 0xB7, XX, XX4, // v11 == 30081 // movzx   edx, ds:word_4C285C //word_4C285C dw 7581h
+        0x0F, 0xB7, XX, XX4 // v11 == 30081 // movzx   edx, ds:word_4C285C //word_4C285C dw 7581h
     };
 
     for (auto addr : Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE, processStartAddress, processStopAddress))
@@ -567,11 +565,44 @@ static bool avking()
   hp.type = NO_CONTEXT | USING_STRING;
   return NewHook(hp, "elf6");
 }
+static bool ai6win()
+{
+  // 風紀委員長 聖薇～あなたなんて大嫌い、死ねばいいのに～
+  if (wcscmp(processName_lower, L"ai6win.exe"))
+    return false;
+  const uint8_t bytes[] = {
+      0x83, 0xec, 0x14,
+      0x8b, 0x44, 0x24, 0x18,
+      0x8a, 0x00,
+      0x3c, 0x81,
+      0x53,
+      0x55,
+      0x56,
+      0x57,
+      XX2,
+      XX4,
+      0x72, 0x04,
+      0x3c, 0x9f,
+      0x76, 0x06,
+      0x04, 0x20,
+      0x3c, 0x0f,
+      0x77, 0x07,
+      0xb8, 0x01, 0x00, 0x00, 0x00,
+      0xeb, 0x02};
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(1);
+  hp.type = USING_STRING;
+  return NewHook(hp, "elf7");
+}
 bool Elf::attach_function()
 {
   if (type == 1)
   {
-    auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || elf3();
+    auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || elf3() || ai6win();
     return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
   }
   else if (type == 2)
