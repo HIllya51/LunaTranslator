@@ -37,7 +37,6 @@ bool InsertTinkerBellHook()
   }
   if (count)
     return true;
-  ConsoleOutput("TinkerBell: failed");
   return false;
 }
 
@@ -110,6 +109,10 @@ namespace
     last = str;
     buffer->from(str);
   }
+  namespace
+  {
+    DECLARE_FUNCTION(fuck, EXPAND_BRACKETS(WCHAR, uintptr_t));
+  }
   bool tkbl()
   {
     // せをはやみ
@@ -133,12 +136,26 @@ namespace
     hp.filter_fun = tkbl_filter;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
+      fuck(context->stack[1], context->retaddr);
       auto str = (wchar_t *)context->ebx;
       *split = (wcschr(str, 0x3010) != nullptr) && (wcschr(str, 0x3011) != nullptr);
       buffer->from(str);
     };
     hp.offset = regoffset(ebx);
-    return NewHookRetry(hp, "tkbl");
+    return NewHookRetry(hp, "tkbl") && []()
+    {
+      // 人妻上司の分からせ方
+      HookParam hp;
+      hp.address = (DWORD)fuck;
+      hp.offset = stackoffset(1);
+      hp.split = stackoffset(2);
+      hp.type = USING_CHAR | CODEC_UTF16 | USING_SPLIT;
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+      {
+        CharFilter(buffer, L'þ');
+      };
+      return NewHook(hp, "tkbl2");
+    }();
   }
 }
 
@@ -198,7 +215,6 @@ bool InsertWendyBellHook()
     hp.offset = regoffset(ebx);
     hp.filter_fun = WendyBell_filter;
     hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
-    ConsoleOutput("%p", addr);
     succ |= NewHook(hp, "WendyBell");
     if (*(WORD *)(6 + addr) == 0x006a)
     {
