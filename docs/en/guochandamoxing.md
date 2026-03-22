@@ -52,7 +52,7 @@ However, sometimes you may want to use multiple different API interface addresse
     Custom system prompts and user messages can use fields to reference some information:
     - `{sentence}`: The text to be translated
     - `{srclang}` and `{tgtlang}`: Source language and target language. If only English is used in the prompt, they will be replaced with the English translation of the language names. Otherwise, they will be replaced with the translation of the language names in the current UI language.
-    - `{contextOriginal[N]}` and `{contextTranslation[N]}` and `{contextTranslation[N]}`: N pieces of historical original text, translations, and both. N is unrelated to the "number of accompanying contexts" and should be replaced with an integer when input.
+    - `{contextOriginal[N]}` and `{contextTranslation[N]}` and `{contextBoth[N]}`: N pieces of historical original text, translations, and both. N is unrelated to the "number of accompanying contexts" and should be replaced with an integer when input.
     - `{DictWithPrompt[XXXXX]}`: This field can reference entries from the "Proper Noun Translation" list. **If no matching entry is found, this field will be cleared to avoid disrupting the translation content**. Here, `XXXXX` is a prompt that guides the LLM to use the given entries for optimizing the translation. It can be customized, or you can disable custom user messages to use the default prompt.
 
 
