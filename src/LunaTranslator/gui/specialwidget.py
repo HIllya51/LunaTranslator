@@ -339,7 +339,7 @@ class lazyscrollflow(ScrollArea):
     def __init__(self, keypressed):
         super().__init__()
         self._keypressed = keypressed
-        self.setStyleSheet("lazyscrollflow{background: transparent;}")
+        self.setStyleSheet("lazyscrollflow{background: transparent;border:none;}")
         self.widgets = []
         self.fakegeos = []
         self.widgetlogicposmap = []

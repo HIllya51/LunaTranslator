@@ -121,6 +121,7 @@ class TagWidget(QWidget):
         tagitem.setstyles(self)
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
         self.lineEdit = FocusCombo()
         if exfoucus:
@@ -129,7 +130,11 @@ class TagWidget(QWidget):
             # FQLineEdit仅用于和webview同一窗口内焦点缺失问题，所以既然用不到那就不要多此一举了
         else:
             self.lineEdit.setEditable(True)
-        self.lineEdit.lineEdit().returnPressed.connect(
+        edit = self.lineEdit.lineEdit()
+        action = QAction(edit)
+        action.setIcon(qtawesome.icon("fa.search"))
+        edit.addAction(action, QLineEdit.ActionPosition.LeadingPosition)
+        edit.returnPressed.connect(
             lambda: self.linepressedenter.emit(self.lineEdit.currentText())
         )
 
@@ -765,9 +770,10 @@ class dialog_savedgame_new(QWidget):
         self.setstyle()
         dialog_savedgame_new.reference = self
         formLayout = QVBoxLayout(self)
+        formLayout.setContentsMargins(0, 0, 0, 0)
+        formLayout.setSpacing(0)
         layout = QHBoxLayout()
         self.setAcceptDrops(True)
-        layout.setContentsMargins(0, 0, 0, 0)
         self.__layout = layout
         self.loadcombo(True)
         self.reftagid = self.vislistcombo.getIndexData(self.vislistcombo.currentIndex())
