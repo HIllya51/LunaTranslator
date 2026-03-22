@@ -173,9 +173,8 @@ bool InsertAIRNovelHook()
     //		memcmp((char*)str, "app:/", 5);
     // };
 
-    ConsoleOutput("INSERT AIRNovel");
 
-    return NewHook(hp, "AIRNovel");
+    return NewHookRetry(hp, "AIRNovel");
   }
   return false;
 }
@@ -222,7 +221,7 @@ bool adobelair3()
     }
     leng = ws.length();
   };
-  return NewHook(hp, "AIRNovel");
+  return NewHookRetry(hp, "AIRNovel");
 }
 namespace
 {
