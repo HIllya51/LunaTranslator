@@ -1027,6 +1027,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // オメルタ CODE:TYCOON 戒
+    {0x800BB456, {FULL_STRING, 5, 0, 0, 0, "PCSG00789"}},
     // 大図書館の羊飼い -Library Party-
     {0x80031B24, {FULL_STRING, 0, 0, 0, 0, "PCSG00505"}},
     // TOKYOヤマノテBOYS for V FAN DISC
