@@ -1053,7 +1053,7 @@ class HistoryViewer(QWidget):
     IndexRole = Qt.ItemDataRole.UserRole + 101
 
     def showmenu(self, _):
-        idx = self.listview.currentIndex()
+        idx = self.listview.indexAt(_)
         if not idx.isValid():
             return
         item = self.model.itemFromIndex(idx)
@@ -1117,8 +1117,8 @@ class HistoryViewer(QWidget):
         v.addWidget(listview)
         v.setContentsMargins(0, 0, 0, 0)
         self.ref = parent
-        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.customContextMenuRequested.connect(self.showmenu)
+        listview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        listview.customContextMenuRequested.connect(self.showmenu)
 
     def selectwhich(self, index: QModelIndex):
         item = self.model.itemFromIndex(index)

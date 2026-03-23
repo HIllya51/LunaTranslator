@@ -798,6 +798,7 @@ def checkmd5reloadmodule(filename: str, module: str):
     cachedmd5 = globalcachedmodule.get(key, {}).get("md5", None)
     if md5 != cachedmd5:
         try:
+            importlib.invalidate_caches()
             _ = importlib.import_module(module)
             _ = importlib.reload(_)
         except ModuleNotFoundError:
