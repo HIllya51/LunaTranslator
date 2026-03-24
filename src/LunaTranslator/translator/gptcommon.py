@@ -189,7 +189,7 @@ def parsestreamresp(
         respmessage = yield from parseresponsegemini(response, markdown2html)
     elif apitype == APIType.claude:
         respmessage = yield from parseresponseclaude(response)
-    elif model == "qwen-mt-turbo" and apitype == APIType.aliyuncs:
+    elif model.startswith("qwen-mt-") and apitype == APIType.aliyuncs:
         respmessage = yield from parseresponseQWENMT(response)
     else:
         respmessage = yield from commonparseresponse_good(
@@ -312,7 +312,7 @@ class gptcommon(basetrans):
         self.context_for_cache.append({"role": "assistant", "content": respmessage})
 
     def __parse_qwen_mt_turbo(self, apitype: APIType, messages: list):
-        if self.config["model"] == "qwen-mt-turbo" and apitype == APIType.aliyuncs:
+        if self.config["model"].startswith("qwen-mt-") and apitype == APIType.aliyuncs:
             if messages and messages[0]["role"] == "system":
                 messages.pop(0)
         return messages
