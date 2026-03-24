@@ -620,7 +620,7 @@ class BASEOBJECT(QObject):
                 return
 
         usefultranslators = real_fix_rank.copy()
-        if globalconfig["fix_translate_rank"] and (not waitforresultcallback):
+        if not waitforresultcallback:
             _showrawfunction = functools.partial(
                 self._delaypreparefixrank, _showrawfunction, real_fix_rank, is_auto_run
             )
@@ -666,9 +666,9 @@ class BASEOBJECT(QObject):
             if engine not in globalconfig["fanyi"]:
                 engine = "premt"
             displayreskwargs = dict(
-                name="",
+                name=_TR(dynamicapiname(engine)),
                 color=TranslateColor(engine),
-                res="",
+                res=_TR("翻译中..."),
                 iter_context=(1, engine),
                 klass=engine,
                 is_auto_run=is_auto_run,
