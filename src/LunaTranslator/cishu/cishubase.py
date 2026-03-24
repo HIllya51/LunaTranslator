@@ -87,18 +87,39 @@ class cishubase(commonbase):
             if cacheresult:
                 callback(cacheresult)
                 return
+        
+        is_error = False
+        error_msg = ""
         try:
             res = self.multiapikeywrapper(self.search_XX)(word, sentence)
-        except:
+            if not res:
+                is_error = True
+                error_msg = "获取结果为空 (Empty Result)"
+        except Exception as e:
+            import traceback
             print_exc()
+            error_msg = traceback.format_exc()
             self.needinit = True
             res = None
-        if res:
-            callback(res)
-            if key:
-                self.__cache_results.put(key, res)
+            is_error = True
+
+        if is_error:
+            safe_err = str(error_msg).replace('<', '&lt;').replace('>', '&gt;')
+            fail_html = f"<div style='color:#ff4d4f; padding:15px; background:#fff2f0; border:1px solid #ffccc7; border-radius:5px; margin:10px;'><h3>❌ 加载失败</h3><pre style='white-space: pre-wrap; word-wrap: break-word; font-family: monospace; font-size: 13px;'>{safe_err}</pre></div>"
+            callback(fail_html)
         else:
-            callback(None)
+            import inspect
+            if inspect.isgenerator(res):
+                final_res = ""
+                for chunk in res:
+                    final_res = chunk
+                    callback(chunk)
+                if key:
+                    self.__cache_results.put(key, final_res)
+            else:
+                callback(res)
+                if key:
+                    self.__cache_results.put(key, res)
 
     def __parseaqr(self, rule: QualifiedRule, divclass):
         start = True

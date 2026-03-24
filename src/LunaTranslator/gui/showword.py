@@ -1360,42 +1360,70 @@ class WordViewer(QWidget):
             if unuse:
                 if k in unuse:
                     continue
+            thisp = self.thisps.get(k, 0)
+            idx = 0
+            for kk in self.tabks:
+                if self.thisps.get(kk, 0) >= thisp:
+                    idx += 1
+            self.tabks.insert(idx, k)
+            self.tab.insertTab(idx, (dynamiccishuname(k)))
+            self.cache_results[k] = _TR("加载中...")
+            
             gobject.base.cishus[k].safesearch(
                 functools.partial(self.__show_dict_result.emit, current, k),
                 word,
                 sentence,
             )
 
+        if not self.hasclicked and self.tabks:
+            self.tab.setCurrentIndex(0)
+            self.tab.tabBarClicked.emit(0)
+            self.hasclicked = True
+
     @tryprint
     def __show_dict_result_function(self, timestamp, k, res):
         if self.current != timestamp:
             return
         if not res:
-            if (
-                not self.hasclicked
-                and self.thisps[k] == max(self.thisps.values())
-                and len(self.cache_results)
-            ):
-                self.tab.setCurrentIndex(0)
-                self.tab.tabBarClicked.emit(0)
-                self.hasclicked = True
+            if k in self.tabks:
+                idx = self.tabks.index(k)
+                was_current = (self.tab.currentIndex() == idx)
+                self.tabks.pop(idx)
+                self.tab.blockSignals(True)
+                self.tab.removeTab(idx)
+                self.tab.blockSignals(False)
+                if len(self.tabks) == 0:
+                    self.textOutput.clear()
+                elif was_current:
+                    self.tabcurrentindex = -1
+                    self.tab.setCurrentIndex(0)
+                    self.tabclicked(0)
+                else:
+                    self.tabcurrentindex = self.tab.currentIndex()
             self.thisps.pop(k)
             self.bad_result.add(k)
             return
+
         self.cache_results[k] = res
 
-        thisp = self.thisps.get(k, 0)
-        idx = 0
-        for kk in self.tabks:
-            if self.thisps.get(kk, 0) >= thisp:
-                idx += 1
-        self.tabks.insert(idx, k)
-        self.tab.insertTab(idx, (dynamiccishuname(k)))
+        if k not in self.tabks:
+            thisp = self.thisps.get(k, 0)
+            idx = 0
+            for kk in self.tabks:
+                if self.thisps.get(kk, 0) >= thisp:
+                    idx += 1
+            self.tabks.insert(idx, k)
+            self.tab.insertTab(idx, (dynamiccishuname(k)))
+            
+        if self.tabks and self.tab.currentIndex() >= 0 and self.tabks[self.tab.currentIndex()] == k:
+            self.tabclicked(self.tab.currentIndex())
+            
         if not self.hasclicked:
-            if self.tabonehide or thisp == max(self.thisps.values()):
+            if self.tabonehide or self.thisps.get(k, 0) == max(self.thisps.values()):
                 self.tab.setCurrentIndex(0)
                 self.tab.tabBarClicked.emit(0)
                 self.hasclicked = True
+
         if self.__firstresult != timestamp:
             self.__firstresult = timestamp
             self.first_result_shown.emit()

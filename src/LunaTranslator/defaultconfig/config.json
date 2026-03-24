@@ -1372,6 +1372,9 @@
                 "reasoning_effort_use": false,
                 "user_user_prompt_1": "",
                 "use_user_user_prompt": false,
+                "流式输出": true,
+                "hidethinking": true,
+                "markdown2html": true,
                 "s": "",
                 "s2": "",
                 "customparams": []
@@ -1417,6 +1420,20 @@
                 "s2": {
                     "type": "split",
                     "rank": 5.12
+                },
+                "流式输出": {
+                    "type": "switch",
+                    "rank": 5.13
+                },
+                "hidethinking": {
+                    "type": "switch",
+                    "name": "隐藏思考过程",
+                    "rank": 5.14
+                },
+                "markdown2html": {
+                    "type": "switch",
+                    "name": "转换Markdown为HTML",
+                    "rank": 5.15
                 },
                 "API接口地址": {
                     "rank": 0,

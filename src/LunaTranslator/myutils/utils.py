@@ -1128,8 +1128,12 @@ def common_parse_normal_response_1(response: requests.Response, apitype: APIType
         else:
             message: dict = js["choices"][0]["message"]
             return message["content"], message.get("reasoning")
-    except:
-        raise Exception(response)
+    except Exception as e:
+        try:
+            err_text = response.text
+        except:
+            err_text = str(response)
+        raise Exception(f"解析响应失败: {err_text}") from e
 
 
 def common_parse_normal_response(

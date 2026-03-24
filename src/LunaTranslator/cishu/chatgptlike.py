@@ -51,14 +51,15 @@ class chatgptlike(cishubase):
             extraheader,
         )
         _json = common_create_gpt_data(self.config, message, extrabody)
+        stream = self.config.get("流式输出", False)
         response = self.proxysession.post(
-            apitype.finalurl(), headers=headers, json=_json
+            apitype.finalurl(), headers=headers, json=_json, stream=stream
         )
         return response
 
     def _gptlike_createsys(self, usekey, tempk):
         default = "You are a professional dictionary assistant whose task is to help users search for information such as the meaning, pronunciation, etymology, synonyms, antonyms, and example sentences of {srclang} words. \nYou should be able to handle queries in multiple languages and provide in-depth information or simple definitions according to user needs. You should reply in {tgtlang}.\nThe user may provide the sentence in which the word is located. If the user provides the sentence in which the word is located, the semantics of the word in the sentence should also be analyzed."
-        template = self.config[tempk] if self.config[usekey] else None
+        template = self.config[tempk] if self.config.get(usekey) else None
         template = template if template else default
         template = self.smartparselangprompt(template)
         return template
@@ -77,6 +78,39 @@ class chatgptlike(cishubase):
             user_prompt = user_prompt.replace("{sentence}", sentence)
         return user_prompt
 
+    def __format_html_dict(self, text, think=None):
+        import re
+        hidethinking = self.config.get("hidethinking", True)
+        if hidethinking:
+            text = re.sub(r"<think>[\s\S]*?</think>\n*", "", text)
+            if "<think>" in text:
+                text = re.sub(r"<think>[\s\S]*$", "<i>thinking...</i>", text)
+            resp = text
+            think = None
+        else:
+            if not think:
+                pieces = re.split(r"<think>([\s\S]*?)</think>", text)
+                if len(pieces) == 1:
+                    resp = pieces[0]
+                    if "<think>" in resp:
+                        parts = resp.split("<think>", 1)
+                        resp = parts[0]
+                        think = parts[1]
+                else:
+                    think, resp = pieces[1], pieces[2]
+            else:
+                resp = text
+        
+        if self.config.get("markdown2html", True):
+            resp = NativeUtils.Markdown2Html(resp)
+            if think:
+                think = NativeUtils.Markdown2Html(think)
+        
+        if think:
+            think = '<details style="border:2px solid" open><summary style="text-align:center;background-color:pink;">Thinking</summary>{}</details>'.format(think)
+            resp = think + resp
+        return resp
+
     def search(self, word, sentence=None):
         extrabody, extraheader = getcustombodyheaders(
             self.config.get("customparams"), **locals()
@@ -85,24 +119,31 @@ class chatgptlike(cishubase):
             word, sentence, "use_user_user_prompt", "user_user_prompt_1"
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
-        apitype = APIType(self.config["API接口地址"])
+        apitype = APIType(self.config.get("API接口地址", ""))
         if apitype == APIType.gemini:
             resp = self.query_gemini(apitype, sysprompt, query, extrabody, extraheader)
         elif apitype == APIType.claude:
             resp = self.query_cld(sysprompt, query, extrabody, extraheader)
         else:
             resp = self.search_1(apitype, sysprompt, query, extrabody, extraheader)
-        think, resp = common_parse_normal_response(resp, apitype, splitthink=True)
-        resp = NativeUtils.Markdown2Html(resp)
-        if think:
-            think = '<details style="border:2px solid"><summary style="text-align:center;background-color:pink;">Thinking</summary>{}</details>'.format(
-                NativeUtils.Markdown2Html(think)
-            )
-            resp = think + resp
-        return resp
+        
+        usingstream = self.config.get("流式输出", False)
+        if usingstream:
+            from translator.gptcommon import parsestreamresp
+            def dict_streamer():
+                # We use hidethinking=False locally to receive <think> in chunks, then post-process
+                gen = parsestreamresp(apitype, resp, False, False, self.config.get("model", ""))
+                cumulative = ""
+                for chunk in gen:
+                    cumulative += chunk
+                    yield self.__format_html_dict(cumulative)
+            return dict_streamer()
+        else:
+            think, resp_str = common_parse_normal_response(resp, apitype, splitthink=True)
+            return self.__format_html_dict(resp_str, think=think)
 
     def query_cld(self, sysprompt, query, extrabody, extraheader):
-        temperature = self.config["Temperature"]
+        temperature = self.config.get("Temperature", 0.3)
 
         message = []
         message.append({"role": "user", "content": query})
@@ -111,12 +152,14 @@ class chatgptlike(cishubase):
             "accept": "application/json",
             "X-Api-Key": self.multiapikeycurrent["SECRET_KEY"],
         }
+        stream = self.config.get("流式输出", False)
         data = dict(
-            model=self.config["model"],
+            model=self.config.get("model", ""),
             messages=message,
             system=sysprompt,
-            max_tokens=self.config["max_tokens"],
+            max_tokens=self.config.get("max_tokens", 4096),
             temperature=temperature,
+            stream=stream,
         )
         data.update(extrabody)
         headers.update(extraheader)
@@ -124,6 +167,7 @@ class chatgptlike(cishubase):
             "https://api.anthropic.com/v1/messages",
             headers=headers,
             json=data,
+            stream=stream,
         )
         return response
 
