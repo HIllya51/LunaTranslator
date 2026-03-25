@@ -1162,7 +1162,7 @@ class IDParser(HTMLParser):
         self.watch_startpos = False
         HTMLParser.__init__(self)
 
-    def loads(self, html):
+    def loads(self, html: str):
         self.html = html
         self.feed(html)
         self.close()

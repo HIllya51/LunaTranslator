@@ -250,7 +250,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             if (
                 focused_widget
                 and focused_widget.window()
-                and focused_widget.window().parent() == self
+                and (self in (focused_widget, focused_widget.window().parent() == self))
             ):
                 pass
             else:
@@ -419,7 +419,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.view.from_webview_search_word_in_new_window.connect(
             lambda w: gobject.base.searchwordW.searchwinnewwindow(w)
         )
-        self.view.setStyleSheet("background:transparent")
+        self.view.tab.setStyleSheet("background:transparent")
         self.view.internalsizechanged.connect(self.w2.resize)
         self.view.internalmoved.connect(
             lambda pos: self.w2.move(self.view.mapToParent(pos))

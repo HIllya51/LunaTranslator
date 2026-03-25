@@ -2029,7 +2029,7 @@ namespace
         auto s = buffer->strAW();
         s = remapkatakana(s);
         s = re::sub(s, LR"(([^！])r)", L"$1\n");                 // 换行
-        s = re::sub(s, LR"(([^！])k)", L"$1");                        // 需要按键
+        s = re::sub(s, LR"(([^！])k)", L"$1");                   // 需要按键
         s = re::sub(s, LR"(([^！])b(.*?)\.<(.*?)>\.)", L"$1$3"); // 注音
         s = re::sub(s, LR"(！([\u0000-\u007F]))", L"$1");
         strReplace(s, L"\uf8f0"); // 行起始

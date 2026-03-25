@@ -1,5 +1,5 @@
 from cishu.cishubase import cishubase
-from myutils.utils import simplehtmlparser, localcachehelper
+from myutils.utils import simplehtmlparser, localcachehelper, simplehtmlparser_all
 import re
 
 
@@ -29,7 +29,7 @@ class jpdb(cishubase):
         res = '<div class="{}"><div class="container bugfix" style="padding-top:16px;padding-bottom:16px;">{}</div></div>'.format(
             self.klass, res
         )
-
+        res += "".join(simplehtmlparser_all(text, "script", "<script>"))
         csss = re.findall('<link rel="stylesheet" media="screen" href="(.*?)" />', text)
         cssall = ""
         for link in csss:
@@ -43,7 +43,7 @@ class jpdb(cishubase):
                 css = self.parse_stylesheet(css, self.klass)
                 self.style[link] = css
 
-            cssall += self.style[link]
+            cssall += self.style[link].replace(".{}  .dark-mode".format(self.klass), ".dark-mode")
 
         cssall = "<style>{}</style>".format(cssall)
         return res + cssall

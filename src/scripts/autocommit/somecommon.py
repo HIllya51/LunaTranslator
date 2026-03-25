@@ -35,9 +35,7 @@ def call_llm_api(prompt: str, api_key: str, api_url: str, model: str):
         "temperature": 0,
         "max_tokens": 300,
     }
-
     response = requests.post(api_url, headers=headers, json=data, timeout=30)
-    response.raise_for_status()
     try:
         result = response.json()
         message = result["choices"][0]["message"]["content"].strip()
