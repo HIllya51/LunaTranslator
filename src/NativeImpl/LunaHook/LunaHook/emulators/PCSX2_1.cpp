@@ -2024,6 +2024,18 @@ namespace
         last = s;
         CharFilter(buffer, '\\');
     }
+    void SLPM66856F(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strAW();
+        s = remapkatakana(s);
+        s = re::sub(s, LR"(！([\u0000-\u007F]))", L"$1");
+        s = re::sub(s, LR"(b(.*?)\.<(.*?)>\.)", L"$2");
+        strReplace(s, L"r", L"\n"); // 换行
+        strReplace(s, L"k");        // 需要按键
+        strReplace(s, L"\uf8f0");   // 行起始
+        strReplace(s, L"w80.");
+        buffer->fromWA(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2031,6 +2043,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 咎狗の血 True Blood
+    {0x1424F8, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, SLPM66856F, std::vector<const char *>{"SLPM-66855", "SLPM-66856"}}}, //@mills
     // 風色サーフ
     {0x10a328, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(a0), 0, 0, 0, "SLPM-55166"}},
     // 悠久ノ桜

@@ -939,6 +939,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66855 & SLPM-66856 | 咎狗の血 True Blood |
 |  | SLPM-55166 | 風色サーフ |
 |  | SLPM-66845 | 悠久ノ桜 |
 |  | SLPM-62597 | 学園ヘヴン おかわりっ！ |
