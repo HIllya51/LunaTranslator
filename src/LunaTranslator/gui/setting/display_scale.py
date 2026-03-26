@@ -62,10 +62,37 @@ def createadaptercombo():
     return combo
 
 
+import os
+import re
+# 确保你已经从 qtsymbols 中导入了 QApplication (通常星号导入已经包含)
+# 如果没有包含，可以加上: from qtsymbols import QApplication
+
 def __getsavedir():
-    screenshotsDir = magpie_config["overlay"]["screenshotsDir"]
+    screenshotsDir = magpie_config["overlay"].get("screenshotsDir", "")
     if not screenshotsDir:
-        return os.path.expanduser("~/Pictures/Screenshots")
+        # 1. 尝试获取当前程序的实例
+        app = QApplication.instance()
+        title = "Magpie_Screenshots"  # 默认备用名称
+        
+        if app:
+            # 尝试获取当前活动窗口
+            active_window = app.activeWindow()
+            if active_window and active_window.windowTitle():
+                # 读取当前程序的窗口标题
+                title = active_window.windowTitle()
+            elif app.applicationName():
+                # 如果没有活动窗口，尝试获取程序名称
+                title = app.applicationName()
+                
+        # 2. 清理标题中的非法路径字符 (防止标题中有 / \ : * ? " < > | 等字符导致无法创建文件夹)
+        safe_title = re.sub(r'[\\/*?:"<>|]', "_", title).strip()
+        if not safe_title:
+            safe_title = "Screenshots"
+            
+        # 3. 组装最终的路径，例如：C:/Users/用户名/Pictures/Screenshots/程序标题
+        base_dir = os.path.expanduser("~/Pictures/Screenshots")
+        return os.path.join(base_dir, safe_title)
+        
     return screenshotsDir
 
 
