@@ -912,11 +912,11 @@ class APIType:
             self._value_ = APIType.azure
         elif "qianfan.baidubce.com/v2" in url:
             self._value_ = APIType.qianfan
-        elif url.startswith("https://dashscope.aliyuncs.com/compatible-mode/v1"):
+        elif url.startswith("https://dashscope.aliyuncs.com/compatible-mode"):
             self._value_ = APIType.aliyuncs
         elif url.startswith("https://api.cohere."):
             self._value_ = APIType.cohere
-        elif url.startswith("https://api.mistral.ai/v1"):
+        elif url.startswith("https://api.mistral.ai"):
             self._value_ = APIType.mistral
         else:
             self._value_ = APIType.openai
