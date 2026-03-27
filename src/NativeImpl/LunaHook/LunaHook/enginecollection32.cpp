@@ -9,6 +9,7 @@
 #include "engine32/PixelGameMakerMVplayer.h"
 #include "engine32/LCScript.h"
 #include "engine32/Hug.h"
+#include "engine32/Seraphim.h"
 #include "engine32/InteractiveNovelEngine.h"
 #include "engine32/AZScript.h"
 #include "engine32/Furaiki.h"
@@ -489,5 +490,6 @@ std::vector<ENGINE *> check_engines()
         new PinkQuestion,
         new InteractiveNovelEngine,
         new PiAS,
+        new Seraphim,
     };
 }

@@ -43,6 +43,16 @@ namespace Util
   bool CheckFileEx(LPCWSTR name, bool if_exits_also_ok = true);
   bool CheckFile(LPCWSTR name);
 
+  inline bool CheckFilesAll(std::initializer_list<LPCWSTR> _)
+  {
+    return std::all_of(_.begin(), _.end(), CheckFile);
+  }
+
+  inline bool CheckFilesAny(std::initializer_list<LPCWSTR> _)
+  {
+    return std::any_of(_.begin(), _.end(), CheckFile);
+  }
+
   bool SearchResourceString(LPCWSTR str, HMODULE hModule = NULL);
 
   std::pair<uintptr_t, uintptr_t> QueryModuleLimits(HMODULE module, uintptr_t addition = 0x1000, DWORD protect = PAGE_EXECUTE);
