@@ -1898,7 +1898,7 @@ class WebviewWidget(AbstractWebviewWidget):
 
     def event(self, a0: QEvent):
         if isinstance(a0, DarkLightChangedEvent):
-            self.webview.put_PreferredColorScheme(a0.isdark())
+            self.webview.put_PreferredColorScheme(a0.darklight())
         return super().event(a0)
 
     def __init__(self, parent=None, transp=False, loadext=False) -> None:
