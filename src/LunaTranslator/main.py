@@ -129,11 +129,10 @@ def checkintegrity():
         runtime_for_win10,
         runtime_bit_64,
         GetDllpath,
-        sys_ge_win_10,
         sys_win10_release_supported,
     )
 
-    if sys_ge_win_10 and not sys_win10_release_supported:
+    if runtime_for_win10 and not sys_win10_release_supported:
         return 1, _TR("软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。")
     dll3264 = [
         "NativeUtils.dll",
