@@ -931,7 +931,7 @@ class TranslatorWindow(resizableframeless):
 
     def show_(self):
 
-        if globalconfig["showintab"]:
+        if globalconfig["showintab"] or globalconfig["showna"]:
             windows.ShowWindow(self.winid, windows.SW_SHOWNOACTIVATE)
         else:
             self.show()
