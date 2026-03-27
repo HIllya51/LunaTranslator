@@ -47,6 +47,14 @@ class jisho(cishubase):
                 self.proxysession.get(link).text, self.klass
             )
         saver["style"] = self.style[link]
+        saver["style"] = re.sub(
+            r"(\.{})([ ]*)(\[data-color-theme.*?\])".format(self.klass),
+            r" \3 \1 ",
+            saver["style"],
+        )
+        saver["style"] = re.sub(
+            r"body([ ]*)(\.{})".format(self.klass), r" \2 body ", saver["style"]
+        )
         return (
             get_element_by("id", "main_results", res)
             + "<script>document.documentElement.setAttribute('data-color-theme', 'auto');</script>"
