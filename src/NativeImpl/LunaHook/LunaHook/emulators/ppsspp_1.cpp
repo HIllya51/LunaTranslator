@@ -2239,6 +2239,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8856FC8, {0, 0, 0, 0, ULJM06173, "ULJM06173"}},
     // TOKYOヤマノテBOYS Portable HONEY MILK DISC
     {0x8856C80, {0, 0, 0, 0, ULJM06173, "ULJM06171"}},
+    // TOKYOヤマノテBOYS Portable SUPER MINT DISC
+    {0x8856FC0, {FULL_STRING, 0, 0, 0, ULJM06173, "ULJM06172"}},
     // アンジェリーク 魔恋の六騎士
     {0x889CBC8, {0, 1, 0, 0, ULJM06129, "ULJM05986"}},
     // MISSINGPARTS the TANTEI stories Complete

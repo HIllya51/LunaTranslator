@@ -743,6 +743,7 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 |  | ULJS00520 | 探偵オペラ　ミルキィホームズ　２ |
 |  | ULJM06173 | TOKYOヤマノテBOYS Portable DARK CHERRY DISC |
 |  | ULJM06171 | TOKYOヤマノテBOYS Portable HONEY MILK DISC |
+|  | ULJM06172 | TOKYOヤマノテBOYS Portable SUPER MINT DISC |
 |  | ULJM05986 | アンジェリーク 魔恋の六騎士 |
 |  | NPJH50689 | MISSINGPARTS the TANTEI stories Complete |
 |  | ULJM05659 | Canvas3 ～七色の奇跡～ |
