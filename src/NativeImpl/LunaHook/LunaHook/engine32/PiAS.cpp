@@ -36,7 +36,5 @@ bool PiAS::attach_function()
     }
     buffer->from(wss);
   };
-  // ConsoleOutput("Please adjust text speed to fastest/immediate.");
-  // RegisterEngineType(ENGINE_AB2T);
   return NewHook(hp, "PiAS");
 }

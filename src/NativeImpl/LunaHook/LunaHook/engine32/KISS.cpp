@@ -23,7 +23,6 @@ bool InsertKissHook()
 	ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
 	if (!addr)
 	{
-		ConsoleOutput("Kiss: pattern not found");
 		return false;
 	}
 

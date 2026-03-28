@@ -96,7 +96,6 @@ namespace
             hp.offset = stackoffset(3);
             hp.split = regoffset(esp);
             hp.type = CODEC_ANSI_BE | USING_SPLIT;
-            ConsoleOutput("INSERT BGI#1");
 
             // RegisterEngineType(ENGINE_BGI);
             return NewHook(hp, "BGI");
@@ -114,7 +113,6 @@ namespace
             hp.offset = stackoffset(3);
             hp.split = regoffset(esp);
             hp.type = CODEC_ANSI_BE | USING_SPLIT;
-            ConsoleOutput("INSERT BGI#2");
 
             // RegisterEngineType(ENGINE_BGI);
             return NewHook(hp, "BGI");
@@ -122,12 +120,9 @@ namespace
         }
       }
     }
-    // ConsoleOutput("Unknown BGI engine.");
 
-    // ConsoleOutput("Probably BGI. Wait for text.");
     // SwitchTrigger(true);
     // trigger_fun=InsertBGIDynamicHook;
-    ConsoleOutput("BGI: failed");
     return false;
   }
 
@@ -708,7 +703,6 @@ namespace
     // ULONG range = qMin(stopAddress - startAddress, Engine::MaximumMemoryRange);
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
     if (!addr)
-      // ConsoleOutput("BGI2: pattern not found");
       return 0;
     enum : WORD
     {
@@ -835,7 +829,6 @@ namespace
     // ULONG range = qMin(stopAddress - startAddress, Engine::MaximumMemoryRange);
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
     if (!addr)
-      // ConsoleOutput("BGI2: pattern not found");
       return 0;
 
     addr += hook_offset;
@@ -844,7 +837,6 @@ namespace
       push_ebp = 0x55
     }; // 011d4c80  /$ 55             push ebp
     if (*(uint8_t *)addr != push_ebp)
-      // ConsoleOutput("BGI2: pattern found but the function offset is invalid");
       return 0;
 
     return addr;
@@ -1110,7 +1102,6 @@ namespace
         break;
       // Artikash 8/1/2018: Looks like it's basically always 4*2. Remove error from default case: breaks SubaHibi HD. Will figure out how to do this properly if it becomes an issue.
       default:
-        ConsoleOutput("BGI2 WARN: function-code distance unknown");
         Private::textIndex_ = 2;
         break;
       }
@@ -1254,7 +1245,6 @@ bool InsertBGI4Hook_1()
   hp.type = CODEC_UTF16 | USING_STRING;
   hp.filter_fun = BGI7Filter;
   hp.offset = GETARG(2);
-  ConsoleOutput("BGI4");
 
   return NewHook(hp, "BGI4");
 }

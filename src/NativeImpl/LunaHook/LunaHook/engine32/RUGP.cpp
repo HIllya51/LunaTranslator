@@ -100,7 +100,6 @@ namespace
       t = SearchPattern(low, range, &s, 4);
       if (!t)
       {
-        // ConsoleOutput("Can't find characteristic instruction.");
         return false;
       }
 
@@ -109,20 +108,14 @@ namespace
         if (s[0] == 0x90 && *(DWORD *)(s - 3) == 0x90909090)
         {
           t = low + t - i + 1;
-          // swprintf(str, L"HookAddr 0x%.8x", t);
-          // ConsoleOutput(str);
           HookParam hp;
           hp.address = t;
           hp.offset = stackoffset(1);
           hp.type = CODEC_ANSI_BE;
-          ConsoleOutput("INSERT rUGP#2");
           return NewHook(hp, "rUGP");
         }
     }
-    ConsoleOutput("rUGP: failed");
     return false;
-    // rt:
-    // ConsoleOutput("Unknown rUGP engine.");
   }
 
   /** rUGP2 10/11/2014 jichi
@@ -214,7 +207,6 @@ namespace
     auto module = GetModuleHandleW(L"vm60.dll");
     if (!module /*|| !SafeFillRange(L"vm60.dll", &low, &high)*/)
     {
-      ConsoleOutput("rUGP2: vm60.dll does not exist");
       return false;
     }
     const BYTE bytes[] = {
@@ -257,7 +249,6 @@ namespace
       return false;
     auto [s, e] = Util::QueryModuleLimits(low);
     auto caller = findiatcallormov((DWORD)GetGlyphOutlineA, (DWORD)low, s, e);
-    ConsoleOutput("%p", caller);
     if (!caller)
       return false;
     auto func = findfuncstart(caller, 0x200, true);

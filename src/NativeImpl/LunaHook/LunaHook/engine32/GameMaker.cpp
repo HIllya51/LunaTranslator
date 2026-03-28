@@ -24,7 +24,6 @@ bool InsertGameMakerHook()
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-        ConsoleOutput("GameMaker: pattern not found");
         return false;
     }
 
@@ -36,9 +35,7 @@ bool InsertGameMakerHook()
     {
         CharFilter(buffer, '#');
     };
-    ConsoleOutput(" INSERT GameMaker");
 
-    ConsoleOutput("GameMaker: use regex filter .+\\]");
     return NewHook(hp, "GameMaker");
 }
 

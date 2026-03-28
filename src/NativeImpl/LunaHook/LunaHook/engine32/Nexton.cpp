@@ -45,7 +45,6 @@ bool InsertNextonHook()
     ULONG range = min(processStopAddress - addr, MAX_REL_ADDR);
     addr = MemDbg::findBytes(bytes, sizeof(bytes), addr, addr + range);
     if (!addr) {
-      ConsoleOutput("NEXTON: pattern not exist");
       return false;
     }
 
@@ -71,7 +70,6 @@ bool InsertNextonHook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
   {
-    ConsoleOutput("NEXTON: pattern not exist");
     return false;
   }
 
@@ -90,16 +88,7 @@ bool InsertNextonHook()
   hp.split = stackoffset(1);
   hp.type = CODEC_ANSI_BE | USING_SPLIT; // 0x54
 
-  // Indirect is needed for new games,
-  // Such as: /HA-C*0@4583DE for 「魔王のくせに生イキ�っ���  //hp.type = CODEC_ANSI_BE|DATA_INDIRECT; // 12
-  // hp.type = CODEC_UTF16;
-  // GROWL_DWORD3(addr, -hp.offset, hp.type);
-
-  ConsoleOutput("INSERT NEXTON");
   return NewHook(hp, "NEXTON");
-
-  // ConsoleOutput("NEXTON: disable GDI hooks"); // There are no GDI functions hooked though
-  //  // disable GetGlyphOutlineA
 }
 
 namespace

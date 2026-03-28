@@ -39,7 +39,6 @@ namespace
     DWORD addr = Util::FindImportEntry(processStartAddress, (DWORD)lstrcatA);
     if (!addr)
     {
-      ConsoleOutput("Debonosu: lstrcatA is not called");
       return false;
     }
     DWORD search = 0x15ff | (addr << 16); // jichi 10/20/2014: call dword ptr ds

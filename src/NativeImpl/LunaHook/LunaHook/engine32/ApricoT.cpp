@@ -138,17 +138,14 @@ bool InsertApRicoTHook()
           hp.address = j + 3;
           hp.text_fun = SpecialHookApRicoT;
           hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16;
-          ConsoleOutput("INSERT ApRicoT");
           // GROWL_DWORD3(hp.address, processStartAddress, processStopAddress);
 
           // RegisterEngineType(ENGINE_APRICOT);
           //  jichi 2/14/2015: disable cached GDI functions
-          ConsoleOutput("ApRicoT: disable GDI hooks");
 
           return NewHook(hp, "ApRicoT");
         }
 
-  ConsoleOutput("ApRicoT: failed");
   return false;
 }
 

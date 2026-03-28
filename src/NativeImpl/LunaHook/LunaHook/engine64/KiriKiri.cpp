@@ -43,10 +43,8 @@ bool Insertkrkrz64Hook()
 		0x41, 0x0F, 0xBF, 0x44, 0x24, 0x0C,
 		0x89, 0x43, 0x14};
 	auto addrs = Util::SearchMemory(BYTES, sizeof(BYTES), PAGE_EXECUTE_READ, processStartAddress, processStopAddress);
-	ConsoleOutput("%p %p", processStartAddress, processStopAddress);
 	for (auto addr : addrs)
 	{
-		ConsoleOutput("krkrz64 %p", addr);
 		const BYTE funcstart[] = {0xcc, 0xcc, 0xcc, 0xcc};
 		addr = reverseFindBytes(funcstart, sizeof(funcstart), addr - 0x1000, addr);
 		if (!addr)
@@ -57,11 +55,9 @@ bool Insertkrkrz64Hook()
 		hp.type = CODEC_UTF16 | DATA_INDIRECT;
 		hp.offset = regoffset(rcx);
 		hp.index = 0x18;
-		ConsoleOutput("krkrz64 %p %x", addr);
 		return NewHook(hp, "krkrz64");
 	}
 
-	ConsoleOutput("krkrz64 failed");
 	return false;
 }
 bool KiriKiri::attach_function()

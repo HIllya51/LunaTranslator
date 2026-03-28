@@ -122,7 +122,6 @@ bool InsertSideBHook()
   // GROWL_DWORD(addr); // supposed to be 0x4010e0
   if (!addr)
   {
-    ConsoleOutput("SideB: pattern not found");
     return false;
   }
   addr += addr_offset;
@@ -132,7 +131,6 @@ bool InsertSideBHook()
   }; // 011d4c80  /$ 55             push ebp
   if (*(BYTE *)addr != push_ebp)
   {
-    ConsoleOutput("SideB: pattern found but the function offset is invalid");
     return false;
   }
   // GROWL_DWORD(addr);
@@ -143,7 +141,6 @@ bool InsertSideBHook()
   hp.offset = stackoffset(1);                        // [esp+4] == arg1
   hp.type = USING_STRING | NO_CONTEXT | USING_SPLIT; // NO_CONTEXT && RELATIVE_SPLIT to get rid of floating return address
   hp.split = 0;                                      // use retaddr as split
-  ConsoleOutput("INSERT SideB");
   return NewHook(hp, "SideB");
 }
 

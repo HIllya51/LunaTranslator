@@ -104,10 +104,7 @@ bool InsertCaramelBoxHook()
       }
     }
   }
-  ConsoleOutput("CaramelBox: failed");
   return false;
-  //_unknown_engine:
-  // ConsoleOutput("Unknown CarmelBox engine.");
 }
 
 bool CaramelBox::attach_function()

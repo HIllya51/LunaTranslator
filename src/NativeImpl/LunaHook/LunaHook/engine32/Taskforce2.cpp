@@ -148,7 +148,6 @@ bool InsertTaskforce2Hook()
   // GROWL_DWORD3(reladdr, processStartAddress, range);
   if (!addr)
   {
-    ConsoleOutput("Taskforce2: pattern not exist");
     return false;
   }
 
@@ -160,7 +159,6 @@ bool InsertTaskforce2Hook()
   // GROWL_DWORD(hp.address);
   // hp.address = 0x1948e9 + processStartAddress;
 
-  ConsoleOutput("INSERT Taskforce2");
   return NewHook(hp, "Taskforce2");
 }
 bool InsertTaskforce2XHook()
@@ -173,7 +171,6 @@ bool InsertTaskforce2XHook()
 
   if (!addr)
   {
-    ConsoleOutput("Taskforce2: pattern not exist");
     return false;
   }
 
@@ -184,7 +181,6 @@ bool InsertTaskforce2XHook()
   hp.split = regoffset(eax);
   hp.filter_fun = all_ascii_Filter;
 
-  ConsoleOutput("INSERT Taskforce2");
   return NewHook(hp, "Taskforce2");
 }
 namespace

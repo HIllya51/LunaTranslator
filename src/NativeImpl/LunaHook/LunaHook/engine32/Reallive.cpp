@@ -81,8 +81,6 @@ static bool InsertRealliveDynamicHook(LPVOID addr, hook_context *context)
         hp.type = CODEC_ANSI_BE | USING_SPLIT;
         // GROWL_DWORD(hp.address);
 
-        // RegisterEngineType(ENGINE_REALLIVE);
-        ConsoleOutput("RealLive: disable GDI hooks");
 
         return NewHook(hp, "RealLive");
       }
@@ -92,8 +90,6 @@ static bool InsertRealliveDynamicHook(LPVOID addr, hook_context *context)
 void InsertRealliveHook()
 {
   PcHooks::hookGDIFunctions();
-  // ConsoleOutput("Probably Reallive. Wait for text.");
-  ConsoleOutput("TRIGGER Reallive");
   trigger_fun = InsertRealliveDynamicHook;
 }
 
@@ -140,7 +136,6 @@ bool InsertRlBabelHook()
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = RlBabelFilter;
-  ConsoleOutput("INSERT RealLive Babel");
   return NewHook(hp, "RealLive Babel");
 }
 namespace

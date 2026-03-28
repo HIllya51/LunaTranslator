@@ -48,7 +48,6 @@ bool InsertV8Hook(HMODULE module)
 		}
 	}
 	std::tie(spDefault.minAddress, spDefault.maxAddress) = std::tuple{ minAddress, maxAddress };
-	ConsoleOutput("JavaScript hook is known to be low quality: try searching for hooks if you don't like it");
 	HookParam hp;
 	hp.address = (DWORD)GetProcAddress(module, "?Write@String@v8@@QBEHPAGHHH@Z");
 	hp.offset=regoffset(ecx);

@@ -110,12 +110,10 @@ namespace
             hp.address = j;
             hp.offset = regoffset(edx);
             hp.type = USING_STRING;
-            ConsoleOutput("INSERT SystemC#1");
 
             // RegisterEngineType(ENGINE_CANDY);
             return NewHook(hp, "SystemC");
           }
-    ConsoleOutput("CandyHook1: failed");
     return false;
   }
 
@@ -219,13 +217,11 @@ namespace
         0x75};
     for (auto addr : Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE))
     {
-      ConsoleOutput("%x", addr);
       if ((*(BYTE *)(addr - 1) == 0x3c) || ((*(BYTE *)(addr - 2) == 0x83) && (*(BYTE *)(addr - 1) == 0xf9)))
       {
         addr = MemDbg::findEnclosingAlignedFunction(addr);
         if (!addr)
           continue;
-        ConsoleOutput("!%x", addr);
         HookParam hp;
         hp.type = USING_STRING;
         if (*(BYTE *)addr == 0x55)
@@ -270,7 +266,6 @@ namespace
     hp.address = addr + 1;
     hp.offset = stackoffset(4);
     hp.type = USING_STRING | CODEC_UTF16;
-    ConsoleOutput("INSERT SystemC#3");
 
     return NewHook(hp, "SystemC#3");
   }

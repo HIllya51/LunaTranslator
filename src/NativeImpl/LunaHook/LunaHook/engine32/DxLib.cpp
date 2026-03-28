@@ -26,7 +26,6 @@ bool InsertDxLibHook()
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-        ConsoleOutput("DxLib: pattern not found");
         return false;
     }
 
@@ -35,7 +34,6 @@ bool InsertDxLibHook()
     hp.offset = regoffset(esi);
     hp.type = USING_STRING;
     hp.filter_fun = DxLibFilter;
-    ConsoleOutput(" INSERT DxLib");
 
     return NewHook(hp, "DxLib");
 }

@@ -48,7 +48,6 @@ bool InsertShinyDaysGameHook()
   {
     StringCharReplacer(buffer, TEXTANDLEN(L"\\n"), L'\n');
   };
-  ConsoleOutput("INSERT ShinyDays");
   return NewHook(hp, "ShinyDays");
 }
 

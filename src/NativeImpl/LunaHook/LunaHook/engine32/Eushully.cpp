@@ -450,7 +450,6 @@ bool InsertEushullyHook()
   ULONG addr = MemDbg::findLastCallerAddressAfterInt3((DWORD)::GetTextExtentPoint32A, processStartAddress, processStopAddress);
   //GROWL_DWORD(addr);
   if (!addr) {
-    ConsoleOutput("Eushully: failed");
     return false;
   }
   */

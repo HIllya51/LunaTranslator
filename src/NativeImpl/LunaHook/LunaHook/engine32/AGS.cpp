@@ -38,7 +38,6 @@ bool InsertAGSHook()
     hp.address = addr;
     hp.offset = regoffset(eax);
     hp.type = USING_STRING;
-    ConsoleOutput("INSERT HOOK_AGS %p", addr);
 
     ok |= NewHook(hp, "HOOK_AGS");
   }
@@ -55,7 +54,6 @@ namespace
     {
 
       auto funcaddr = findfuncstart(addr, 0x1000);
-      ConsoleOutput("funcaddr %p", funcaddr);
       if (!funcaddr)
         continue;
       BYTE sig1[] = {0x68, 0x00, 0x80, 0x00, 0x00, 0x6a, 0x00};
@@ -66,7 +64,6 @@ namespace
       for (auto sigsz : std::vector<std::pair<BYTE *, int>>{{sig1, sizeof(sig1)}, {sig2, sizeof(sig2)}, {sig3, sizeof(sig3)}, {sig4, sizeof(sig4)}})
       {
         auto fd = MemDbg::findBytes(sigsz.first, sigsz.second, funcaddr, addr);
-        ConsoleOutput("%p", fd);
         if (fd)
           found += 1;
       }

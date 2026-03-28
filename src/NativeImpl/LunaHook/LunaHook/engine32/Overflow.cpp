@@ -21,7 +21,6 @@ bool InsertSekaiProject1Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("SekaiProject1: pattern not found");
     return false;
   }
 
@@ -29,7 +28,6 @@ bool InsertSekaiProject1Hook()
   hp.address = addr + 1;
   hp.offset = stackoffset(1);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-  ConsoleOutput("INSERT SekaiProject1");
   return NewHook(hp, "SekaiProject1");
 }
 
@@ -52,7 +50,6 @@ bool InsertSekaiProject2Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("SekaiProject2: pattern not found");
     return false;
   }
 
@@ -60,7 +57,6 @@ bool InsertSekaiProject2Hook()
   hp.address = addr;
   hp.offset = stackoffset(21);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-  ConsoleOutput("INSERT SekaiProject2");
   return NewHook(hp, "SekaiProject2");
 }
 
@@ -85,7 +81,6 @@ bool InsertSekaiProject3Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("SekaiProject3: pattern not found");
     return false;
   }
 
@@ -93,7 +88,6 @@ bool InsertSekaiProject3Hook()
   hp.address = addr + 1;
   hp.offset = stackoffset(1);
   hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT;
-  ConsoleOutput("INSERT SekaiProject3");
   return NewHook(hp, "SekaiProject3");
 }
 

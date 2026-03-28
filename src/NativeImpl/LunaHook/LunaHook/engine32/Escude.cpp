@@ -232,13 +232,11 @@ bool InsertEscudeHook()
   // GROWL(addr);
   if (!addr)
   {
-    ConsoleOutput("Escude: pattern not found");
     return false;
   }
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   if (!addr)
   {
-    ConsoleOutput("Escude: enclosing function not found");
     return false;
   }
   HookParam hp;
@@ -250,7 +248,6 @@ bool InsertEscudeHook()
   hp.filter_fun = EscudeFilter;
   hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT | EMBED_ABLE | EMBED_DYNA_SJIS; // NO_CONTEXT as this function is only called by one caller anyway
   hp.lineSeparator = L"<r>";
-  ConsoleOutput("INSERT Escude");
 
   return NewHook(hp, "Escude");
 }

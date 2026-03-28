@@ -71,7 +71,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytecodes, sizeof(bytecodes), processStartAddress, processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("TokyoNecro: pattern not found");
       return false;
     }
 
@@ -79,7 +78,6 @@ namespace
     const ULONG function_start = MemDbg::findEnclosingAlignedFunction(addr);
     if (memcmp((void *)function_start, funcSig, sizeof(funcSig)) != 0)
     {
-      ConsoleOutput("TokyoNecro: function start not found");
       return false;
     }
 
@@ -92,7 +90,6 @@ namespace
     // using the data in the registers
     hp.offset = stackoffset(1);
     hp.type = USING_STRING;
-    ConsoleOutput("INSERT TokyoNecroText");
     return NewHook(hp, "TokyoNecroText");
   }
 
@@ -143,7 +140,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytecodes, sizeof(bytecodes), processStartAddress, processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("TokyoNecro: pattern not found");
       return false;
     }
 
@@ -151,7 +147,6 @@ namespace
     const ULONG function_start = MemDbg::findEnclosingAlignedFunction(addr);
     if (memcmp((void *)function_start, funcSig, sizeof(funcSig)) != 0)
     {
-      ConsoleOutput("TokyoNecro: function start not found");
       return false;
     }
 
@@ -160,7 +155,6 @@ namespace
     hp.offset = stackoffset(1);
     hp.type = USING_STRING;
     return NewHook(hp, "TokyoNecroDatabase");
-    ConsoleOutput("INSERT TokyoNecroDatabase");
   }
 
   bool InsertTokyoNecroHook()
@@ -187,8 +181,6 @@ bool InsertNitroPlusHook()
       0xe8, XX, XX, 0xff, 0xff};
   auto addr1 = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   auto addr2 = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
-  ConsoleOutput("NitroPlus %p", addr1);
-  ConsoleOutput("NitroPlus %p", addr2);
   if (addr1 == 0 && addr2 == 0)
     return false;
   auto succ = false;

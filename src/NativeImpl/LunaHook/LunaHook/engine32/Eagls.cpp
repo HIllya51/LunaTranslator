@@ -19,7 +19,6 @@ bool InsertEaglsHook()
   hp.offset = stackoffset(2);
   hp.split = stackoffset(4);
   // hp.split = arg7_lpmat2;
-  ConsoleOutput("INSERT EAGLS");
 
   return NewHook(hp, "EAGLS");
 }

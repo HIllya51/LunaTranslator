@@ -212,7 +212,6 @@ bool InsertExpHook()
   // GROWL_DWORD(addr);
   if (!addr)
   {
-    ConsoleOutput("EXP: pattern not found");
     return false;
   }
 
@@ -220,9 +219,7 @@ bool InsertExpHook()
   hp.address = addr + addr_offset;
   hp.type = NO_CONTEXT | USING_STRING; // NO_CONTEXT to get rid of floating address
   hp.text_fun = SpecialHookExp;
-  ConsoleOutput("INSERT EXP");
 
-  ConsoleOutput("EXP: disable GDI hooks"); // There are no GDI functions hooked though
 
   return NewHook(hp, "EXP"); // FIXME: text displayed line by line
 }

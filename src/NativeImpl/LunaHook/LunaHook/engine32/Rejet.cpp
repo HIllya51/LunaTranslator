@@ -148,7 +148,6 @@ namespace
       addr = MemDbg::findBytes(pattern, pattern_size, addr, addr + range);
       if (!addr)
       {
-        // ITH_MSG(L"failed");
         return false;
       }
 
@@ -247,7 +246,6 @@ namespace
       addr = MemDbg::findBytes(bytes, sizeof(bytes), addr, addr + range);
       if (!addr)
       {
-        // ITH_MSG(L"failed");
         return false;
       }
       addr += sizeof(bytes);

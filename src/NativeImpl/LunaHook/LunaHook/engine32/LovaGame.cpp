@@ -37,7 +37,6 @@ bool LovaGame::attach_function()
  
   ULONG processStartAddress, processStopAddress;
   if (!FillRange(processName,&startAddress, &stopAddress)) { // need accurate stopAddress
-    ConsoleOutput("LOVA: failed to get memory range");
     return false;
   }
 
@@ -56,7 +55,6 @@ bool LovaGame::attach_function()
   enum { addr_offset = sizeof(bytes) - 1 };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr) {
-    ConsoleOutput("LOVA: could not find instruction pattern");
     return false;
   }
 
@@ -65,7 +63,6 @@ bool LovaGame::attach_function()
   //hp.text_fun = SpecialGameHookLova;
   hp.offset=stackoffset(2); // source in arg2
   hp.type = USING_STRING|RELATIVE_SPLIT;
-  ConsoleOutput("INSERT LOVA");
   return NewHook(hp, "LOVA");
 #endif
 }

@@ -285,14 +285,12 @@ bool InsertSilkysHook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
   {
-    ConsoleOutput("Silkys: pattern not found");
     return false;
   }
 
   addr = MemDbg::findEnclosingAlignedFunction(addr);
   if (!addr)
   {
-    ConsoleOutput("Silkys: function not found");
     return false;
   }
 
@@ -301,7 +299,6 @@ bool InsertSilkysHook()
   hp.text_fun = SpecialHookSilkys;
   hp.type = USING_STRING | NO_CONTEXT; // = 9
 
-  ConsoleOutput("INSERT Silkys");
   auto succ = NewHook(hp, "SilkysPlus");
   auto fun = [](ULONG addr) -> bool
   {

@@ -21,7 +21,6 @@ bool InsertSysdHook()
 	ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
 	if (!addr)
 	{
-		ConsoleOutput("Sysd: pattern not found");
 		return false;
 	}
 
@@ -37,7 +36,6 @@ bool InsertSysdHook()
 	{
 		CharFilter(buffer, '\n');
 	};
-	ConsoleOutput("INSERT Sysd");
 	return NewHook(hp, "Sysd");
 }
 

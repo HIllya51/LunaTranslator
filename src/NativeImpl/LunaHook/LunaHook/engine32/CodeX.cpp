@@ -35,7 +35,6 @@ bool InsertCodeXHook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("CodeX: pattern not found");
     return false;
   }
 
@@ -46,7 +45,6 @@ bool InsertCodeXHook()
   hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_OVERWRITE | NO_CONTEXT; // 无法解决中文乱码
   hp.embed_hook_font = F_GetGlyphOutlineA;
   hp.filter_fun = CodeXFilter;
-  ConsoleOutput("INSERT CodeX");
 
   return NewHook(hp, "CodeX");
 }
@@ -259,8 +257,6 @@ LABEL_3:
       return false;
     auto __ismbblead = *(int *)(addrX + 2 + 2 + 6 + 3 + 1 + 1) + addrX + 2 + 2 + 6 + 3 + 1 + 5;
     auto __ismbbtrail = *(int *)(addrX + sizeof(bytes2) - 4) + addrX + sizeof(bytes2);
-    ConsoleOutput("%p", __ismbblead);
-    ConsoleOutput("%p", __ismbbtrail);
     HookParam hp;
     hp.address = faddr;
     hp.offset = stackoffset(1);

@@ -18,7 +18,6 @@ bool InsertLucifenHook()
   hp.split = regoffset(esp);
   hp.length_offset = 3;
   hp.type = USING_STRING | USING_SPLIT;
-  ConsoleOutput("INSERT Lucifen");
   return NewHook(hp, "Lucifen");
   // RegisterEngineType(ENGINE_LUCIFEN);
 }

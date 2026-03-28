@@ -62,7 +62,6 @@ bool InsertAtelierKaguya2Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Atelier KAGUYA2: pattern not found");
     return false;
   }
 
@@ -72,7 +71,6 @@ bool InsertAtelierKaguya2Hook()
   hp.type = USING_STRING | EMBED_AFTER_OVERWRITE | EMBED_ABLE | EMBED_DYNA_SJIS;
   hp.embed_hook_font = F_TextOutA;
   hp.filter_fun = NewLineCharToSpaceA;
-  ConsoleOutput("INSERT Atelier KAGUYA2");
 
   return NewHook(hp, "Atelier KAGUYA2");
 }
@@ -99,7 +97,6 @@ bool InsertAtelierKaguya3Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Atelier KAGUYA3: pattern not found");
     return false;
   }
 
@@ -108,7 +105,6 @@ bool InsertAtelierKaguya3Hook()
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = NewLineCharToSpaceA;
-  ConsoleOutput("INSERT Atelier KAGUYA3");
 
   return NewHook(hp, "Atelier KAGUYA3");
 }
@@ -139,7 +135,6 @@ bool InsertAtelierKaguya4Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Atelier KAGUYA4: pattern not found");
     return false;
   }
 
@@ -148,7 +143,6 @@ bool InsertAtelierKaguya4Hook()
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = NewLineCharToSpaceA;
-  ConsoleOutput("INSERT Atelier KAGUYA4");
 
   return NewHook(hp, "Atelier KAGUYA4");
 }
@@ -184,7 +178,6 @@ bool InsertAtelierKaguya5Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Atelier KAGUYA5: pattern not found");
     return false;
   }
 
@@ -193,7 +186,6 @@ bool InsertAtelierKaguya5Hook()
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = NewLineCharToSpaceA;
-  ConsoleOutput("INSERT Atelier KAGUYA5");
 
   return NewHook(hp, "Atelier KAGUYA5");
 }

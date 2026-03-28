@@ -129,14 +129,12 @@ bool InsertFocasLensHook()
   // GROWL(addr);
   if (!addr)
   {
-    ConsoleOutput("FocasLens: pattern not found");
     return false;
   }
   HookParam hp;
   hp.address = addr + addr_offset;
   hp.text_fun = SpecialHookFocasLens;                               // use special hook to force byte access
   hp.type = USING_STRING | USING_SPLIT | FIXING_SPLIT | NO_CONTEXT; // no context to get rid of relative function address
-  ConsoleOutput("INSERT FocasLens");
 
   // GDI functions are kept in case the font is not cached
   //

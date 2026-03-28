@@ -173,28 +173,21 @@ namespace
         auto succ = false;
         if (hp.address)
         {
-          ConsoleOutput("INSERT SystemAoi");
           if (addr == ::GetGlyphOutlineW)
             succ |= NewHook(hp, "SystemAoi2"); // jichi 2/12/2015
           else
             succ |= NewHook(hp, "SystemAoi"); // jichi 7/8/2014: renamed, see: ja.wikipedia.org/wiki/ソフトハウスキャラ
-          ConsoleOutput("SystemAoi: disable GDI hooks");
         }
-        else
-          ConsoleOutput("failed to detect SystemAoi");
         // RegisterEngineType(ENGINE_SOFTHOUSE);
         return succ;
       }
     }
-    ConsoleOutput("SystemAoi: failed");
     return true; // jichi 12/25/2013: return true
   }
 
   bool InsertSystemAoiDynamic()
   {
     PcHooks::hookGDIFunctions();
-    ConsoleOutput("DYNAMIC SystemAoi");
-    // ConsoleOutput("Probably SoftHouseChara. Wait for text.");
     trigger_fun = InsertSystemAoiDynamicHook;
     return true;
   }
@@ -746,7 +739,6 @@ namespace
     ULONG addr = findAoiProc(hModule, "AgsSpriteCreateText", 1);
     if (!addr)
     {
-      ConsoleOutput("SystemAoiStatic: function found");
       return false;
     }
     HookParam hp;
@@ -756,7 +748,6 @@ namespace
 
     hp.type = EMBED_ABLE | USING_STRING | NO_CONTEXT; //|EMBED_AFTER_OVERWRITE;
     // hp.type |= NO_CONTEXT|USING_SPLIT|SPLIT_INDIRECT;
-    ConsoleOutput("INSERT static SystemAoi");
     auto succ = false;
     if (wideChar)
     {

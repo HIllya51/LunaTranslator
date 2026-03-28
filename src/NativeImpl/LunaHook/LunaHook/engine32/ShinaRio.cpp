@@ -108,7 +108,6 @@ bool InsertShinaHook(int ver)
       {
         // Address of text is somewhere on stack in call to func. Search for it.
         DWORD addr = *((DWORD *)context->esp + i);
-        // ConsoleOutput(std::to_string((DWORD)*addr).c_str());
         if (IthGetMemoryRange((void *)addr, nullptr, nullptr) && strlen((char *)addr) > 9)
         {
           if (IsSJIS((char *)addr) || strstr((char *)addr, "_r"))
@@ -122,14 +121,12 @@ bool InsertShinaHook(int ver)
               StringFilter(buffer, TEXTANDLEN("_r"));
               buffer->from(re::sub(buffer->strA(), "_t!.*?[/>]"));
             };
-            ConsoleOutput("triggered: adding dynamic reader");
             ret |= NewHook(hp, "ShinaRio READ");
           }
         };
       }
       return ret;
     };
-    ConsoleOutput("ShinaRio 2.50+: adding trigger");
   }
   // 被embedshinario取代
   /*
@@ -138,7 +135,6 @@ bool InsertShinaHook(int ver)
     hp.address = (DWORD)::GetTextExtentPoint32A;
     hp.text_fun = SpecialHookShina2;
     hp.type = USING_STRING;
-    ConsoleOutput("INSERT ShinaRio > 2.47");
     NewHook(hp, "ShinaRio");
     //RegisterEngineType(ENGINE_SHINA);
     return true;
@@ -162,7 +158,6 @@ bool InsertShinaHook(int ver)
 
     enum { sub_esp = 0xec81 }; // jichi: caller pattern: sub esp = 0x81,0xec
     if (DWORD s = Util::FindCallAndEntryBoth((DWORD)GetTextExtentPoint32A, processStopAddress - processStartAddress, processStartAddress, sub_esp)) {
-      ConsoleOutput("INSERT ShinaRio <= 2.47 dynamic split");
       hp.split = *(DWORD *)(s + 2) + 4;
        //RegisterEngineType(ENGINE_SHINA);
       NewHook(hp, "ShinaRio");
@@ -185,7 +180,6 @@ bool InsertShinaHook(int ver)
       // 1. The text speed must NOT to be set to the fastest.
       // 2. There might be a wrong text thread that is almost correct, except that its first character is chopped.
       // Otherwise, the first character will be split in another thread
-      ConsoleOutput("INSERT ShinaRio <= 2.47 static split");
       hp.split = 0x44;
       //hp.type |= FIXING_SPLIT|NO_CONTEXT; // merge all threads
       //hp.text_fun = SpecialHookShina1;
@@ -193,7 +187,6 @@ bool InsertShinaHook(int ver)
     }
     return true;
   }
-  ConsoleOutput("ShinaRio: unknown version");
 
   */
   return false;

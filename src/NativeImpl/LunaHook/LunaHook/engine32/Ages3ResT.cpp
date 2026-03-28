@@ -20,9 +20,7 @@ bool Ages3ResTHook()
   bool succ = false;
   for (auto addr : addrs)
   {
-    ConsoleOutput("Ages3ResT %p", addr);
     addr = findfuncstart(addr);
-    ConsoleOutput("Ages3ResT %p", addr);
     if (!addr)
       continue;
     HookParam hp;
@@ -85,9 +83,7 @@ bool Ages3ResTHook_1()
   bool succ = false;
   for (auto addr2 : addrs)
   {
-    ConsoleOutput("Ages3ResT2 %p", addr2);
     auto addr = findfuncstart(addr2);
-    ConsoleOutput("Ages3ResT2 %p", addr);
     if (!addr)
       continue;
     if (!MemDbg::findBytes(sig1, sizeof(sig1), addr, addr2))

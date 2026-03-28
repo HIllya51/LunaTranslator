@@ -7,12 +7,10 @@ namespace
 		const BYTE bytes[] = {
 			0x8a, 0x10, 0x83, 0xC0, 0x04, 0x83, 0xc1, 0x04, 0x84, 0xd2, 0x74};
 		auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-		ConsoleOutput("%p", addr);
 		if (!addr)
 			return false;
 
 		addr = findfuncstart(addr, 0x40);
-		ConsoleOutput("%p", addr);
 		if (!addr)
 			return false;
 		HookParam hp;

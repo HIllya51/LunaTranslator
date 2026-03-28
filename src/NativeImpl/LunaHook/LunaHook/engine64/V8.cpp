@@ -13,7 +13,6 @@ bool InsertV8Hook(HMODULE module)
 	{
 		std::tie(spDefault.minAddress, spDefault.maxAddress) = Util::QueryModuleLimits(module);
 		spDefault.maxRecords = Util::SearchMemory(spDefault.pattern, spDefault.length, PAGE_EXECUTE, spDefault.minAddress, spDefault.maxAddress).size() * 20;
-		ConsoleOutput("JavaScript hook is known to be low quality: try searching for hooks if you don't like it");
 	}
 	auto succ=false;
 	if (addr1)
@@ -163,12 +162,10 @@ namespace{
 		//a3是一个callback,并不是字符串。
 		char innerHTML[]="innerHTML";
 		auto addr = MemDbg::findBytes(innerHTML, sizeof(innerHTML),  processStartAddress, processStopAddress);
-		ConsoleOutput("%x",addr);
 		if(!addr)return false;
 		bool ok=false;
 		for(auto _addr=processStartAddress+4;_addr<processStopAddress;_addr+=1){
 			if((_addr+*(int*)(_addr-4) )==addr){
-				ConsoleOutput("%x",_addr-processStartAddress);
 				for(int i=0;i<0x20;i++){
 					if(*(BYTE*)(_addr+i)==0xe8){
 						uintptr_t subaddr=_addr+i+5+*(int*)(_addr+i+1);

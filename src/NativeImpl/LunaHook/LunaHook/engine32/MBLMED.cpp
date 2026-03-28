@@ -28,8 +28,6 @@ bool InsertMBLHook()
       hp.type = CODEC_ANSI_BE | USING_SPLIT;
       ret |= NewHook(hp, "MBL");
     }
-  if (!ret)
-    ConsoleOutput("MBL: failed");
   return ret;
 }
 namespace
@@ -76,8 +74,6 @@ bool InsertMEDHook()
           }
         }
 
-  // ConsoleOutput("Unknown MED engine.");
-  ConsoleOutput("MED: failed");
   return false;
 }
 

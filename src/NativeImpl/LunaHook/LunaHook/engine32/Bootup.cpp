@@ -182,7 +182,6 @@ namespace
     }
     if (!addr)
     {
-      ConsoleOutput("BootupGDI: failed to find TextOut");
       return false;
     }
 
@@ -209,9 +208,6 @@ namespace
       hp->text_fun = nullptr;
     };
 
-    ConsoleOutput("INSERT BootupGDI");
-
-    ConsoleOutput("BootupGDI: disable GDI hooks");
 
     return NewHook(hp, widechar ? "BootupW" : "BootupA");
   }
@@ -227,7 +223,6 @@ namespace
     }
     if (!addr)
     {
-      ConsoleOutput("BootupLstr: failed to find GetCharABCWidths");
       return false;
     }
     // GROWL_DWORD2(addr, processStartAddress);
@@ -237,7 +232,6 @@ namespace
                                    addr - processStartAddress); //, range); // no range
     if (!addr)
     {
-      ConsoleOutput("BootupLstr: failed to find lstrlen");
       return false;
     }
 
@@ -247,7 +241,6 @@ namespace
     // hp.type = CODEC_UTF16|NO_CONTEXT|USING_SPLIT; // use text address as split
     // hp.split = 0;
 
-    ConsoleOutput("INSERT BootupLstr");
 
     return NewHook(hp, widechar ? "BootupLstrW" : "BootupLstrA");
   }

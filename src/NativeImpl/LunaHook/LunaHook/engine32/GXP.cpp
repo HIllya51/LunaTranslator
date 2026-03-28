@@ -267,11 +267,6 @@ static bool InsertGXP1Hook()
             // DWORD call = Util::FindCallAndEntryAbs(hp.address, processStopAddress - processStartAddress, processStartAddress, 0xec8b55); // zero
             // GROWL_DWORD3(call, processStartAddress, call - processStartAddress);
 
-            ConsoleOutput("INSERT GXP");
-
-            // jichi 5/13/2015: Disable hooking to GetGlyphOutlineW
-            // FIXME: GetGlyphOutlineW can extract name, but GXP cannot
-            ConsoleOutput("GXP: disable GDI hooks");
 
             return NewHook(hp, "GXP");
           }
@@ -279,8 +274,6 @@ static bool InsertGXP1Hook()
         i++;
       }
   }
-  // ConsoleOutput("Unknown GXP engine.");
-  ConsoleOutput("GXP: failed");
   return false;
 }
 
@@ -301,16 +294,12 @@ static bool InsertGXP2Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
   {
-    ConsoleOutput("GXP2: pattern not found");
     return false;
   }
 
   HookParam hp;
   hp.address = addr + addr_offset;
   hp.type = CODEC_UTF16 | NO_CONTEXT | DATA_INDIRECT | FIXING_SPLIT | USING_STRING;
-  ConsoleOutput("INSERT GXP2");
-
-  ConsoleOutput("GXP: disable GDI hooks");
 
   return NewHook(hp, "GXP2");
 }

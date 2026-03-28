@@ -86,13 +86,11 @@ bool InsertAnex86Hook()
     hp.type = USING_CHAR;
     hp.text_fun = SpecialHookAnex86;
     // hp.type = EXTERN_HOOK;
-    ConsoleOutput("INSERT Anex86");
 
     found |= NewHook(hp, "Anex86");
   }
   if (found)
     return true;
-  ConsoleOutput("Anex86: failed");
   return false;
 }
 

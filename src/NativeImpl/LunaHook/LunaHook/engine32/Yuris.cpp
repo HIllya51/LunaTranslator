@@ -17,14 +17,12 @@ bool Yuris::InsertYuris1Hook()
   // GROWL_DWORD(entry);
   if (!entry)
   {
-    ConsoleOutput("YU-RIS: function entry does not exist");
     return false;
   }
   entry = Util::FindCallAndEntryRel(entry - 4, processStopAddress - processStartAddress, processStartAddress, 0xec83);
   // GROWL_DWORD(entry);
   if (!entry)
   {
-    ConsoleOutput("YU-RIS: function entry does not exist");
     return false;
   }
   entry = Util::FindCallOrJmpRel(entry - 4, processStopAddress - processStartAddress - 0x10000, processStartAddress + 0x10000, false);
@@ -36,7 +34,6 @@ bool Yuris::InsertYuris1Hook()
     for (i = entry - 4; i > entry - 0x100; i--)
       if (::IsBadReadPtr((LPCVOID)i, 4))
       { // jichi 12/27/2014: might raise in new YU-RIS, 4 = sizeof(DWORD)
-        ConsoleOutput("YU-RIS: do not have read permission");
         return false;
       }
       else if (*(WORD *)i == 0xc085)
@@ -56,12 +53,10 @@ bool Yuris::InsertYuris1Hook()
   }
   __except (EXCEPTION_EXECUTE_HANDLER)
   {
-    ConsoleOutput("YU-RIS: illegal access exception");
     return false;
   }
   if (i == entry - 0x100)
   {
-    ConsoleOutput("YU-RIS: pattern not exist");
     return false;
   }
   // GROWL_DWORD2(i,t);
@@ -70,7 +65,6 @@ bool Yuris::InsertYuris1Hook()
   hp.offset = regoffset(edi);
   hp.split = regoffset(eax);
   hp.type = USING_STRING | USING_SPLIT;
-  ConsoleOutput("INSERT YU-RIS");
   // GROWL_DWORD(hp.address);
   return NewHook(hp, "YU-RIS");
 }
@@ -164,7 +158,6 @@ bool Yuris::InsertYuris2Hook()
   ULONG addr = MemDbg::findCallAddress((ULONG)::TextOutA, processStartAddress, processStopAddress);
   if (!addr)
   {
-    ConsoleOutput("YU-RIS2: failed");
     return false;
   }
 
@@ -181,7 +174,6 @@ bool Yuris::InsertYuris2Hook()
   hp.offset = stackoffset(3);
   hp.split = stackoffset(5);
 
-  ConsoleOutput("INSERT YU-RIS 2");
   return NewHook(hp, "YU-RIS2");
 }
 
@@ -213,7 +205,6 @@ bool Yuris::InsertYuris4Hook()
     hp.address = addr + addr_offset;
     hp.offset = regoffset(edx);
     hp.type = USING_STRING;
-    ConsoleOutput("INSERT YU-RIS 4");
     found |= NewHook(hp, "YU-RIS4");
   }
   return found;
@@ -249,7 +240,6 @@ bool Yuris::InsertYuris5Hook()
   hp.offset = regoffset(ecx);
   hp.type = USING_STRING | NO_CONTEXT;
 
-  ConsoleOutput("INSERT YU-RIS 5");
   return NewHook(hp, "YU-RIS5");
 }
 

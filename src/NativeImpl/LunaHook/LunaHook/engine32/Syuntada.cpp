@@ -160,17 +160,13 @@ bool InsertSyuntadaHook()
   // GROWL(addr);
   if (!addr)
   {
-    ConsoleOutput("Syuntada: pattern not found");
     return false;
   }
   HookParam hp;
   hp.address = addr + addr_offset;
   hp.offset = regoffset(ebp);
   hp.type = CODEC_ANSI_BE; // 0x4
-  ConsoleOutput("INSERT Syuntada");
 
-  // TextOutA will produce repeated texts
-  ConsoleOutput("Syuntada: disable GDI hooks");
 
   return NewHook(hp, "Syuntada");
 }

@@ -49,7 +49,6 @@ bool InsertMinori1Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Minori1: pattern not found");
     return false;
   }
 
@@ -59,12 +58,10 @@ bool InsertMinori1Hook()
   hp.codepage = 932;
   hp.type = USING_STRING;
   hp.filter_fun = Minori1JapFilter;
-  ConsoleOutput(" INSERT Minori1");
   auto succ = NewHook(hp, "Minori1");
 
   hp.address = addr + alt_addr_offset;
   hp.filter_fun = Minori1EngFilter;
-  ConsoleOutput(" INSERT Minori1eng");
   succ |= NewHook(hp, "Minori1eng");
 
   return succ;
@@ -100,18 +97,14 @@ bool InsertMinori2Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Minori2: pattern not found");
     return false;
   }
 
-  ConsoleOutput(" INSERT Minori2");
   HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(eax);
   hp.type = USING_STRING;
   hp.filter_fun = Minori2Filter;
-  ConsoleOutput(" INSERT Minori2");
-  ConsoleOutput("Minori2: Please, set text to max speed");
   return NewHook(hp, "Minori2");
 }
 

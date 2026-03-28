@@ -117,12 +117,10 @@ static bool InsertMinkDynamicHook(LPVOID fun, DWORD frame, DWORD stack)
     return false;
   DWORD addr = *(DWORD *)(stack + 4);
   if (!addr) {
-    ConsoleOutput("Mink: missing function return addr, this should never happen");
     return true;
   }
   addr = MemDbg::findEnclosingAlignedFunction(addr, 0x200); // range is around 0x120
   if (!addr) {
-    ConsoleOutput("Mink: failed to caller address");
     return true;
   }
 
@@ -183,8 +181,6 @@ bool InsertMinkHook()
   hp.text_fun = SpecialHookMink;
   return NewHook(hp, "Mink");
 
-  // ConsoleOutput("Mink: disable GDI hooks");
-  //
 }
 
 bool Mink2::attach_function()

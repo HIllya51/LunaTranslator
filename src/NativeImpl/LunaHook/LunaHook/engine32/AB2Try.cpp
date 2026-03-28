@@ -61,7 +61,6 @@ namespace
       hp.address = addr;
       hp.text_fun = SpecialHookAB2Try;
       hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16;
-      // ConsoleOutput("Please adjust text speed to fastest/immediate.");
       // RegisterEngineType(ENGINE_AB2T);
       return NewHook(hp, "AB2Try");
     }

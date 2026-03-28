@@ -136,7 +136,7 @@ class SuperCombo(FocusCombo):
         if not index.isValid():
             return
         item = self.mo.itemFromIndex(index)
-        if not item:
+        if item is None:
             return
         return item.data(self.Internalrole)
 

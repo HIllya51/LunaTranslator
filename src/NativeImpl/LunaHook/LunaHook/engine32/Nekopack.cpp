@@ -53,9 +53,6 @@ bool InsertNekopackHook()
 
   return NewHook(hp, "NekoPack");
 
-  // Disable GDIHook(um.. ?), which is cached and hence missing characters.
-  // ConsoleOutput("NekoPack: disable GDI hooks");
-  //
 }
 
 bool Nekopack::attach_function()

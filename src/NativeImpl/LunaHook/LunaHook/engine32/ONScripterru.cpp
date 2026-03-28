@@ -63,7 +63,6 @@ bool InsertONScripterruHook1()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
   {
-    ConsoleOutput("ONScripter-RU 1: pattern not found");
     return false;
   }
 
@@ -72,7 +71,6 @@ bool InsertONScripterruHook1()
   hp.offset = regoffset(eax);
   hp.type = USING_STRING | CODEC_UTF8;
   hp.filter_fun = ONScripterru1Filter;
-  ConsoleOutput("INSERT ONScripter-RU 1");
   return NewHook(hp, "ONScripter-RU1");
 }
 
@@ -119,7 +117,6 @@ bool InsertONScripterruHook2()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("ONScripter-RU 2: pattern not found");
     return false;
   }
 
@@ -130,7 +127,6 @@ bool InsertONScripterruHook2()
   hp.type = USING_STRING | CODEC_UTF8 | USING_SPLIT | KNOWN_UNSTABLE;
   // hp.type =  USING_STRING | CODEC_UTF8 | USING_SPLIT;
   hp.filter_fun = ONScripterru2Filter;
-  ConsoleOutput("INSERT ONScripter-RU 2");
   return NewHook(hp, "ONScripter-RU2");
 }
 

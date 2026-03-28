@@ -107,7 +107,6 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
         t++;
       if (t == flag + 1) // We find call to GetGlyphOutlineW or GetTextExtentPoint32W.
         // swprintf(str, L"CALL addr:0x%.8X",i+pt);
-        // ConsoleOutput(str);
         for (DWORD j = i; j > i - StartAddress; j--)
           if (((*(DWORD *)(pt + j)) & 0xffffff) == sig)
           {
@@ -123,7 +122,6 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
                   {
                     // for (k+=pt+0x14; *(WORD*)(k)!=0xC483;k++);
                     // swprintf(str, L"Hook addr: 0x%.8X",pt+k);
-                    // ConsoleOutput(str);
                     HookParam hp;
                     hp.address = pt + k + 0x14;
                     hp.offset = regoffset(ebx);
@@ -160,7 +158,6 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
             else
             {
               // swprintf(str, L"Hook addr: 0x%.8X",pt+j);
-              // ConsoleOutput(str);
               HookParam hp;
               hp.address = (DWORD)pt + j;
               hp.offset = regoffset(eax);
@@ -176,18 +173,14 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
               if (xrefs.size() == 4)
                 for (auto addr : xrefs)
                 {
-                  // ConsoleOutput("%p",addr);
                   addr = findfuncstart(addr, 0x300); // DrawTextMultiple or 2，DrawTextSingle
-                  // ConsoleOutput("%p",addr);
                   if (addr)
                   {
                     xrefs = findxref_reverse_checkcallop(addr, processStartAddress, processStopAddress, 0xe8);
                     if (xrefs.size() == 1)
                     {
                       addr = xrefs[0];
-                      // ConsoleOutput("%p",addr);
                       addr = findfuncstart(addr, 0x300); // DrawText
-                      // ConsoleOutput("%p",addr);
                       if (addr)
                       {
                         /*
@@ -221,7 +214,6 @@ bool FindKiriKiriHook(DWORD fun, DWORD size, DWORD pt, DWORD flag) // jichi 10/2
             }
             return false;
           }
-      // ConsoleOutput("KiriKiri: FAILED to find function entry");
     }
   return false;
 }
@@ -371,20 +363,17 @@ bool InsertKAGParserHook()
 {
   ULONG processStartAddress, processStopAddress;
   if (!NtInspect::getModuleMemoryRange(L"KAGParser.dll", &startAddress, &stopAddress)) {
-    ConsoleOutput("KAGParser: failed to get memory range");
     return false;
   }
   const wchar_t *patternString = L"[r]";
   const size_t patternStringSize = ::wcslen(patternString) * 2;
   ULONG addr = MemDbg::findBytes(patternString, patternStringSize, processStartAddress, processStopAddress);
   if (!addr) {
-    ConsoleOutput("KAGParser: [r] global string not found");
     return false;
   }
   // Find where it is used as function parameter
   addr = MemDbg::findPushAddress(addr, processStartAddress, processStopAddress);
   if (!addr) {
-    ConsoleOutput("KAGParser: push address not found");
     return false;
   }
 
@@ -394,7 +383,6 @@ bool InsertKAGParserHook()
   enum { range = 0x20 }; // 0x6e5622a8 - 0x6e562297 = 17
   addr = MemDbg::findBytes(ins, sizeof(ins), addr, addr + range);
   if (!addr) {
-    ConsoleOutput("KAGParser: instruction pattern not found");
     return false;
   }
 
@@ -403,7 +391,6 @@ bool InsertKAGParserHook()
   hp.text_fun = SpecialHookKAGParser;
   hp.filter_fun = KAGParserFilter;
   hp.type = CODEC_UTF16|FIXING_SPLIT|NO_CONTEXT; // Fix the split value to merge all threads
-  ConsoleOutput("INSERT KAGParser");
   
   return NewHook(hp, "KAGParser");
 }
@@ -411,20 +398,17 @@ bool InsertKAGParserExHook()
 {
   ULONG processStartAddress, processStopAddress;
   if (!NtInspect::getModuleMemoryRange(L"KAGParserEx.dll", &startAddress, &stopAddress)) {
-    ConsoleOutput("KAGParserEx: failed to get memory range");
     return false;
   }
   const wchar_t *patternString = L"[r]";
   const size_t patternStringSize = ::wcslen(patternString) * 2;
   ULONG addr = MemDbg::findBytes(patternString, patternStringSize, processStartAddress, processStopAddress);
   if (!addr) {
-    ConsoleOutput("KAGParserEx: [r] global string not found");
     return false;
   }
   // Find where it is used as function parameter
   addr = MemDbg::findPushAddress(addr, processStartAddress, processStopAddress);
   if (!addr) {
-    ConsoleOutput("KAGParserEx: push address not found");
     return false;
   }
 
@@ -434,7 +418,6 @@ bool InsertKAGParserExHook()
   enum { range = 0x20 }; // 0x10013960 - 0x10013948 = 24
   addr = MemDbg::findBytes(ins, sizeof(ins), addr, addr + range);
   if (!addr) {
-    ConsoleOutput("KAGParserEx: instruction pattern not found");
     return false;
   }
 
@@ -442,8 +425,7 @@ bool InsertKAGParserExHook()
   hp.address = addr;
   hp.text_fun = SpecialHookKAGParserEx;
   hp.filter_fun = KAGParserFilter;
-  hp.type = CODEC_UTF16|FIXING_SPLIT|NO_CONTEXT; // Fix the split value to merge all threads
-  ConsoleOutput("INSERT KAGParserEx");
+  hp.type = CODEC_UTF16|FIXING_SPLIT|NO_CONTEXT; 
   
   return NewHook(hp, "KAGParserEx");
 }
@@ -1507,7 +1489,6 @@ dl 16
             }
         return (DWORD)0;
       }(addr + 1, stopAddress);
-      // ConsoleOutput("%p",0x400000+addr-startAddress);
       if (!addr)
         continue;
       auto check = [](DWORD addr, DWORD stopAddress)

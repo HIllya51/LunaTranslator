@@ -146,7 +146,6 @@ bool InsertYukaSystem2Hook()
     buffer->from(str);
   };
   // hp.text_fun = SpecialHookYukaSystem2;
-  ConsoleOutput("INSERT YukaSystem2");
   return NewHook(hp, "YukaSystem2");
 }
 namespace
@@ -218,7 +217,6 @@ namespace __
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-      ConsoleOutput("YukaSystem1: pattern not found");
       return false;
     }
 
@@ -227,7 +225,6 @@ namespace __
     hp.offset = regoffset(eax);
     hp.type = USING_STRING | KNOWN_UNSTABLE;
     hp.filter_fun = YukaSystem1Filter;
-    ConsoleOutput("INSERT YukaSystem1");
     return NewHook(hp, "YukaSystem1");
   }
 }

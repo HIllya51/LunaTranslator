@@ -11,14 +11,12 @@ bool InsertC4Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
   {
-    ConsoleOutput("C4: pattern not found");
     return false;
   }
   HookParam hp;
   hp.address = addr;
   hp.offset = regoffset(eax);
   hp.type = DATA_INDIRECT | NO_CONTEXT;
-  ConsoleOutput("INSERT C4");
 
   // RegisterEngineType(ENGINE_C4);
   return NewHook(hp, "C4");

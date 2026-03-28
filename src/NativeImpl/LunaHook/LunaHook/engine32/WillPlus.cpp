@@ -130,7 +130,6 @@ namespace
     { // add esp, $
       l = ::disasm(pb);
       if (++i == 5)
-        // ConsoleOutput("Fail to detect offset.");
         break;
       retn += l;
     }

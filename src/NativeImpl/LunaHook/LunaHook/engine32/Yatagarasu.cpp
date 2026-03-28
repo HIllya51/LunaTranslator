@@ -15,7 +15,6 @@ bool Yatagarasu::attach_function()
     return false;
   addr1 = MemDbg::findEnclosingAlignedFunction(addr1);
   addr2 = MemDbg::findEnclosingAlignedFunction(addr2);
-  ConsoleOutput("%p %p", addr1, addr2);
     return false;
   if (addr1 != addr2)
     return false;

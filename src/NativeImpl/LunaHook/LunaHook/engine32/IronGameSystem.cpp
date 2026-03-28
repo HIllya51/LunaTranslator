@@ -17,22 +17,17 @@ bool InsertIGSDynamicHook(LPVOID addr, hook_context *context)
   hp.offset = regoffset(edx);
   hp.split = regoffset(esp);
   hp.type = CODEC_UTF16 | USING_SPLIT;
-  ConsoleOutput("INSERT IronGameSystem");
 
-  // ConsoleOutput("IGS - Please set text(ヂ�ス� display speed(表示速度) to fastest(瞬�");
   // RegisterEngineType(ENGINE_IGS);
   return NewHook(hp, "IronGameSystem");
   //}
   //}
-  ConsoleOutput("IGS: failed");
   return true; // jichi 12/25/2013: return true
 }
 void InsertIronGameSystemHook()
 {
   PcHooks::hookGDIFunctions();
-  // ConsoleOutput("Probably IronGameSystem. Wait for text.");
   trigger_fun = InsertIGSDynamicHook;
-  ConsoleOutput("TRIGGER IronGameSystem");
 }
 
 bool IronGameSystem::attach_function()

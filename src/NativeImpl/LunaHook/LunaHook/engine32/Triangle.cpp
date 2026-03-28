@@ -25,15 +25,12 @@ bool InsertTriangleHook()
             hp.address = t;
             hp.offset = stackoffset(1);
             hp.type = USING_STRING;
-            ConsoleOutput("INSERT Triangle");
             return NewHook(hp, "Triangle");
           }
         }
     }
   }
 
-  // ConsoleOutput("Old/Unknown Triangle engine.");
-  ConsoleOutput("Triangle: failed");
   return false;
 }
 
@@ -109,11 +106,9 @@ bool Triangle2_attach_function()
       0x68, 0x0F, 0x27, 0x00, 0x00,
       0x0f, 0x57, XX};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   HookParam hp;

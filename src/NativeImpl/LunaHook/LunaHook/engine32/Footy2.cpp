@@ -16,7 +16,6 @@ bool insertstrcpyhook()
     hp.address = addr;
     hp.offset = stackoffset(1);
     hp.type = USING_STRING;
-    ConsoleOutput("strcpy %p", addr);
     succ |= NewHook(hp, "strcpy");
   }
   return false;

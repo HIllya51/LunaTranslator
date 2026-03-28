@@ -169,8 +169,6 @@ namespace
     // reladdr = 0x1a3df4;
     if (!addr)
     {
-      // ITH_MSG(0, "Wrong1", "t", 0);
-      // ConsoleOutput("Not malie2 engine");
       return false;
     }
 
@@ -184,7 +182,6 @@ namespace
     addr = MemDbg::findBytes(&bytes2, sizeof(bytes2), addr, addr + range2);
     if (!addr)
     {
-      // ConsoleOutput("Not malie2 engine");
       return false;
     }
 

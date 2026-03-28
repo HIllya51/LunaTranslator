@@ -161,7 +161,6 @@ ULONG SafeMatchBytesInGCMemory(LPCVOID pattern, DWORD patternSize)
 }
 bool InsertVanillawareGCHook()
 {
-  ConsoleOutput("Vanillaware GC: enter");
 
   const BYTE bytes[] = {
       0x83, 0xc4, 0x04,                   // 16094193   83c4 04          add esp,0x4
@@ -191,20 +190,16 @@ bool InsertVanillawareGCHook()
 
   DWORD addr = SafeMatchBytesInGCMemory(bytes, sizeof(bytes));
   auto succ = false;
-  if (!addr)
-    ConsoleOutput("Vanillaware GC: pattern not found");
-  else
+  if (addr)
   {
     HookParam hp;
     hp.address = addr + addr_offset;
     hp.user_value = *(DWORD *)(hp.address + memory_offset);
     hp.text_fun = SpecialGCHookVanillaware;
     hp.type = USING_STRING | NO_CONTEXT; // no context is needed to get rid of variant retaddr
-    ConsoleOutput("Vanillaware GC: INSERT");
     succ |= NewHook(hp, "Vanillaware GC");
   }
 
-  ConsoleOutput("Vanillaware GC: leave");
   return succ;
 }
 /** jichi 7/20/2014 Dolphin

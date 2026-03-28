@@ -7,7 +7,6 @@ bool InsertAnimHook()
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-        ConsoleOutput("Anim: pattern not found");
         return false;
     }
     HookParam myhp;
@@ -29,7 +28,6 @@ bool InsertAnim2Hook()
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-        ConsoleOutput("Anim2: pattern not found");
         return false;
     }
     HookParam myhp;
@@ -84,7 +82,6 @@ namespace
         ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
         if (!addr)
         {
-            ConsoleOutput("Anim3: pattern not found");
             return false;
         }
 
@@ -93,7 +90,6 @@ namespace
         hp.offset = regoffset(edx);
         hp.type = USING_STRING;
         hp.filter_fun = Anim3Filter;
-        ConsoleOutput("INSERT Anim3");
 
         return NewHook(hp, "Anim3");
     }

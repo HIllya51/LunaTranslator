@@ -243,7 +243,7 @@
             "apiurl": {
                 "name": "API接口地址",
                 "rank": 0,
-                "type": "listedit_with_name"
+                "type": "llm_api_urls"
             },
             "model": {
                 "rank": 1,

@@ -137,7 +137,6 @@ bool InsertArtemis2Hook()
   hp.index = 8; // ebp was also pushed
   hp.type = CODEC_UTF8 | USING_STRING | DATA_INDIRECT;
   succ |= NewHook(hp, "Artemis2");
-  // ConsoleOutput("Artemis2");
   return succ;
 }
 

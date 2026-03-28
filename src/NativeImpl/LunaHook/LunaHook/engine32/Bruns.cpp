@@ -19,7 +19,6 @@ bool InsertBrunsHook()
       hp.address = (DWORD)GetProcAddress(GetModuleHandleW(L"msvcp110.dll"), "?push_back@?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@@std@@QAEXG@Z");
     if (hp.address)
     {
-      ConsoleOutput("INSERT Brus#1");
       success |= NewHook(hp, "Bruns");
     }
   }
@@ -66,7 +65,6 @@ bool InsertBrunsHook()
               hp.address = t;
               hp.offset = stackoffset(1);
               hp.type = CODEC_UTF16 | DATA_INDIRECT;
-              ConsoleOutput("INSERT Brus#2");
 
               return NewHook(hp, "Bruns2");
             }
@@ -77,8 +75,6 @@ bool InsertBrunsHook()
       }
     }
   }
-  // ConsoleOutput("Unknown Bruns engine.");
-  ConsoleOutput("Brus: failed");
   return success;
 }
 

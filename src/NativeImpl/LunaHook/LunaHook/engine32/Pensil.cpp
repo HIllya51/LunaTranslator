@@ -12,12 +12,9 @@ bool InsertPensilHook()
         hp.offset = stackoffset(2);
         hp.split = stackoffset(1);
         hp.type = USING_SPLIT;
-        ConsoleOutput("INSERT Pensil");
         return NewHook(hp, "Pensil");
         // RegisterEngineType(ENGINE_PENSIL);
       }
-  // ConsoleOutput("Unknown Pensil engine.");
-  ConsoleOutput("Pensil: failed");
   return false;
 }
 
@@ -888,7 +885,6 @@ bool Insert2RMHook()
   // GROWL_DWORD(addr); // supposed to be 0x4010e0
   if (!addr)
   {
-    ConsoleOutput("2RM: pattern not found");
     return false;
   }
 
@@ -896,7 +892,6 @@ bool Insert2RMHook()
   hp.address = addr + addr_offset;
   hp.offset = regoffset(edi);
   hp.type = NO_CONTEXT | DATA_INDIRECT;
-  ConsoleOutput("INSERT 2RM");
   return NewHook(hp, "2RM");
 }
 namespace

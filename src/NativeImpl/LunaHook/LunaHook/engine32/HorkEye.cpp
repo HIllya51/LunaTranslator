@@ -374,17 +374,14 @@ bool InsertHorkEye6Hook()
   auto addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
   if (!addr)
     return false;
-  ConsoleOutput("hk6 %p", addr);
   const BYTE start[] = {0x6A, 0xFF};
   addr = reverseFindBytes(start, sizeof(start), addr - 0x1000, addr);
   if (!addr)
     return false;
-  ConsoleOutput("hk6 %p", addr);
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(3);
   hp.type = CODEC_ANSI_BE;
-  ConsoleOutput("INSERT HorkEye6 %p", addr);
 
   return NewHook(hp, "HorkEye6");
 }

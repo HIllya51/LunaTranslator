@@ -36,19 +36,14 @@ bool InsertRyokuchaDynamicHook(LPVOID addr, hook_context *)
     hp.address = insert_addr;
     hp.text_fun = SpecialHookRyokucha;
     hp.type = CODEC_ANSI_BE | USING_CHAR;
-    ConsoleOutput("INSERT StudioRyokucha");
     return NewHook(hp, "StudioRyokucha");
   }
-  // else ConsoleOutput("Unknown Ryokucha engine.");
-  ConsoleOutput("StudioRyokucha: failed");
   return true;
 }
 void InsertRyokuchaHook()
 {
   PcHooks::hookGDIFunctions();
-  // ConsoleOutput("Probably Ryokucha. Wait for text.");
   trigger_fun = InsertRyokuchaDynamicHook;
-  ConsoleOutput("TRIGGER Ryokucha");
 }
 
 /**
@@ -237,7 +232,6 @@ bool InsertScenarioPlayerHook()
   ULONG start = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!start)
   {
-    ConsoleOutput("ScenarioPlayer: pattern not found");
     return false;
   }
 
@@ -249,7 +243,6 @@ bool InsertScenarioPlayerHook()
   }; // 011d4c80  /$ 55             push ebp
   if (!addr || *(BYTE *)addr != push_ebp)
   {
-    ConsoleOutput("ScenarioPlayer: pattern found but the function offset is invalid");
     return false;
   }
   auto succ = false;
@@ -269,16 +262,13 @@ bool InsertScenarioPlayerHook()
     // (The method used to tell the hooks apart previously fails on https://vndb.org/v19713)
 
     hp.type = CODEC_UTF16;
-    ConsoleOutput("INSERT ScenarioPlayerW");
     succ = NewHook(hp, "ScenarioPlayerW");
   }
   else
   {
     hp.type = CODEC_ANSI_BE; // 4
-    ConsoleOutput("INSERT ScenarioPlayerA");
     succ = NewHook(hp, "ScenarioPlayerA");
   }
-  ConsoleOutput("Text encoding might be wrong: try changing it if this hook finds garbage!");
   return succ;
 }
 
@@ -289,11 +279,9 @@ bool InsertScenarioPlayerHookx()
   const BYTE bytes[] = {
       0xC1, 0xE8, 0x02, 0x25, 0x01, 0xFF, 0xFF, 0xFF, 0x89, 0x45, XX};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   auto addrs = findxref_reverse_checkcallop(addr, addr - 0x1000, addr, 0xe9);
@@ -370,11 +358,9 @@ bool Ryokucha2::attach_function()
   const BYTE bytes[] = {
       0x8b, XX2, 0x2b, 0xd1, 0xc1, 0xfa, 0x02, 0x3b, 0xd0, 0x76};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
 

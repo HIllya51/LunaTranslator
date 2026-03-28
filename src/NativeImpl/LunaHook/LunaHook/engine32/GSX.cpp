@@ -63,7 +63,6 @@ namespace
       addr = addr2;
     if (!addr)
       return false;
-    ConsoleOutput("%p", addr);
     HookParam hp;
     hp.address = addr;
     hp.type = USING_CHAR;

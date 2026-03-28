@@ -163,7 +163,6 @@ namespace
       addr = MemDbg::findCallerAddressAfterInt3((DWORD)GetGlyphOutlineA, processStartAddress, processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("CMVS2: pattern not found");
       return false;
     }
 
@@ -174,7 +173,6 @@ namespace
     hp.offset = stackoffset(3);
     hp.type = CODEC_ANSI_BE;
 
-    ConsoleOutput("INSERT CMVS2");
 
     return NewHook(hp, "CMVS2");
   }

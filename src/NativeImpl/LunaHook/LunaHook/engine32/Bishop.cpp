@@ -78,7 +78,7 @@ bool embedbishop()
     context->stack[2] = (DWORD)allocateString(flag + buffer.strW());
   };
   hp.lineSeparator = L"\\n";
-  return NewHook(hp, "bishop");
+  return NewHookRetry(hp, "bishop");
 }
 bool Bishop2attach_function()
 {
@@ -97,16 +97,13 @@ bool Bishop2attach_function()
     auto xrefs = findxref_reverse_checkcallop(addr, max(processStartAddress, addr - 0x100000), min(processStopAddress, addr + 0x100000), 0xe8);
     for (auto addrx : xrefs)
     {
-      // ConsoleOutput("xref %p",addrx);
       const BYTE aligned[] = {0xCC, 0xCC};
       auto addrx1 = reverseFindBytes(aligned, sizeof(aligned), addrx - 0x200, addrx);
-      // ConsoleOutput("Aligned %p",addrx1);
       if (!addrx1)
         continue;
       addrx1 += 2;
       BYTE __1[] = {0xDC, 0x0D, XX, XX, XX, 0x00};
       auto _1 = MemDbg::findBytes(__1, 6, addrx - 0x30, addrx);
-      // ConsoleOutput("sig %p",_1);
       if (_1 == 0)
         continue;
       BYTE checkthiscall[] = {0x8B, 0xF9}; // mov     edi, ecx

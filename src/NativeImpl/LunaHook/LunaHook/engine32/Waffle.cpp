@@ -4,7 +4,6 @@ bool InsertWaffleDynamicHook(LPVOID addr, hook_context *context)
 {
   if (addr != ::GetTextExtentPoint32A)
     return false;
-  ConsoleOutput("WaffleDynamic:triggered");
 
   auto tib = (NT_TIB *)__readfsdword(0);
   auto exception = tib->ExceptionList;
@@ -30,11 +29,8 @@ bool InsertWaffleDynamicHook(LPVOID addr, hook_context *context)
         hp.offset = stackoffset(2);
         hp.index = 4;
         hp.type = DATA_INDIRECT;
-        ConsoleOutput("INSERT Dynamic Waffle");
         return NewHook(hp, "Waffle");
       }
-  ConsoleOutput("DynamicWaffle: failed");
-  // ConsoleOutput("Unknown waffle engine.");
   return true; // jichi 12/25/2013: return true
 }
 
@@ -84,7 +80,6 @@ bool InsertWaffleHook()
     return NewHook(hp, "WAFFLE2");
   }
   return false;
-  // ConsoleOutput("WAFFLE: failed");
 }
 bool InsertWaffleHookx()
 {

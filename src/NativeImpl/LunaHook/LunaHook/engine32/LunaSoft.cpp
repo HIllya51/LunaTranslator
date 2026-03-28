@@ -98,20 +98,14 @@ bool InsertLunaSoftHook()
   // GROWL(addr);
   if (!addr)
   {
-    ConsoleOutput("LunaSoft: pattern not found");
     return false;
   }
   HookParam hp;
   hp.address = addr + addr_offset;
   hp.offset = stackoffset(1);
   hp.type = USING_STRING;
-  // hp.filter_fun = LunaSoftFilter; // remove \n
-  ConsoleOutput("INSERT LunaSoft");
   return NewHook(hp, "LunaSoft");
 
-  // There are no GDI functions anyway
-  // ConsoleOutput("LunaSoft: disable GDI hooks");
-  //
 }
 bool InsertXXkata()
 {

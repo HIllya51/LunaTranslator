@@ -22,7 +22,6 @@ bool InsertEMEHook()
   //}
   if (!addr)
   {
-    ConsoleOutput("EME: pattern does not exist");
     return false;
   }
   HookParam hp;

@@ -87,7 +87,6 @@ bool InsertTencoHook()
   hp.offset = regoffset(ecx);
   hp.type = NO_CONTEXT | DATA_INDIRECT;
 
-  ConsoleOutput("INSERT Tenco");
   return NewHook(hp, "Tenco");
 }
 bool LWScript()

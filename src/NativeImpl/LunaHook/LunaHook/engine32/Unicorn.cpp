@@ -24,7 +24,6 @@ bool InsertUnicornHook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Unicorn: pattern not exist");
     return false;
   }
 
@@ -36,7 +35,6 @@ bool InsertUnicornHook()
   // index = SearchPattern(processStartAddress, size,ins, sizeof(ins));
   // GROWL_DWORD2(base, index);
 
-  ConsoleOutput("INSERT Unicorn");
   return NewHook(hp, "Unicorn");
 }
 namespace

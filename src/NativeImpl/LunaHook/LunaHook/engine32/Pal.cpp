@@ -77,7 +77,6 @@ static bool InsertOldPalHook() // this is used in case the new pattern does not 
   // reladdr = 0x26159; // 魔女こいにっ�trial
   if (!addr)
   {
-    ConsoleOutput("AMUSE CRAFT: pattern not found");
     return false;
   }
 
@@ -87,7 +86,6 @@ static bool InsertOldPalHook() // this is used in case the new pattern does not 
   // hp.type = NO_CONTEXT|USING_SPLIT|DATA_INDIRECT|RELATIVE_SPLIT;  // Use relative address to prevent floating issue
   hp.type = NO_CONTEXT | USING_SPLIT | DATA_INDIRECT;
   hp.offset = regoffset(eax); // eax
-  ConsoleOutput("INSERT AMUSE CRAFT");
   return NewHook(hp, "Pal");
 }
 namespace
@@ -168,7 +166,6 @@ static bool InsertNewPal1Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Pal1: pattern not found");
     return false;
   }
 
@@ -183,7 +180,6 @@ static bool InsertNewPal1Hook()
     buffer->from(rubyRemove(buffer->strA()));
   };
   hp.embed_hook_font = F_CreateFontIndirectA | F_CreateFontA;
-  ConsoleOutput("INSERT Pal1");
   return NewHook(hp, "Pal");
 }
 // Eguni 2016/11/06
@@ -203,7 +199,6 @@ static bool InsertNewPal2Hook()
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
   if (!addr)
   {
-    ConsoleOutput("Pal2: pattern not found");
     return false;
   }
 
@@ -211,7 +206,6 @@ static bool InsertNewPal2Hook()
   hp.address = addr;
   hp.offset = stackoffset(2); // arg2
   hp.type = USING_STRING;
-  ConsoleOutput("INSERT Pal2");
   return NewHook(hp, "Pal");
 }
 namespace

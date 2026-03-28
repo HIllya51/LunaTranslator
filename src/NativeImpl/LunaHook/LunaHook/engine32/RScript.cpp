@@ -61,8 +61,6 @@ bool RScript::attach_function()
     return false;
   auto __ismbblead = *(int *)(addrX + 2 + 2 + 6 + 3 + 1 + 1) + addrX + 2 + 2 + 6 + 3 + 1 + 5;
   auto __ismbbtrail = *(int *)(addrX + sizeof(bytes2) - 4) + addrX + sizeof(bytes2);
-  ConsoleOutput("%p", __ismbblead);
-  ConsoleOutput("%p", __ismbbtrail);
   HookParam hp;
   hp.address = faddr;
   hp.offset = stackoffset(1);

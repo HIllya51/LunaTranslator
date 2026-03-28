@@ -10,7 +10,6 @@ bool Sceplay::attach_function()
     if (addr1 != GetGlyphOutlineA)
       return false;
     auto addr = MemDbg::findEnclosingAlignedFunction((DWORD)context->retaddr);
-    ConsoleOutput("%p", addr);
     if (!addr)
       return true;
     HookParam hp;

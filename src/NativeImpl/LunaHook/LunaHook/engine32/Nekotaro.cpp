@@ -11,7 +11,6 @@ bool Nekotaro::attach_function()
       0X24, 0XDF,
       0X88, 0X44, 0X24, XX};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
-  ConsoleOutput("%p", addr);
   if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr, 0X300);

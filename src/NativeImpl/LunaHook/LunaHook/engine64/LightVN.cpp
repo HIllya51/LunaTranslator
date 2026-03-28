@@ -33,13 +33,11 @@ namespace
     auto addrs = Util::SearchMemory(BYTES, sizeof(BYTES), PAGE_EXECUTE, processStartAddress, processStopAddress);
     for (auto addr : addrs)
     {
-      ConsoleOutput("LightVN %p", addr);
       const BYTE aligned[] = {0xCC, 0xCC, 0xCC, 0xCC};
       addr = reverseFindBytes(aligned, sizeof(aligned), addr - 0x100, addr);
       if (!addr)
         continue;
       addr += 4;
-      ConsoleOutput("LightVN %p", addr);
       HookParam hp;
       hp.address = addr;
       hp.type = CODEC_UTF16 | USING_STRING | DATA_INDIRECT;

@@ -598,7 +598,7 @@ class autoinitdialog(LDialog):
                 lineW.setCurrentIndex(dd.get(key, 0))
                 self.regist[key] = lineW.currentIndex
             self.cachecombo[key] = lineW
-        elif line["type"] == "listedit_with_name":
+        elif line["type"] == "llm_api_urls":
             lineW = QHBoxLayout()
             combo = SuperComboX()
             combo.setEditable(True)
@@ -656,12 +656,6 @@ class autoinitdialog(LDialog):
 
             lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
             lineW.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
-        elif line["type"] == "lineedit":
-            if not isinstance(dd[key], str):
-                return
-            lineW = QLineEdit(dd[key])
-            lineW.setPlaceholderText(line.get("placeholder", ""))
-            self.regist[key] = lineW.text
         elif line["type"] == "multiline":
             lineW = QPlainTextEdit(dd[key])
             lineW.setPlaceholderText(line.get("placeholder", ""))
@@ -703,6 +697,12 @@ class autoinitdialog(LDialog):
             self.regist[key] = lineW.value
         elif line["type"] == "split":
             lineW = SplitLine()
+        else:  # elif line["type"] == "lineedit":
+            if not isinstance(dd[key], str):
+                return
+            lineW = QLineEdit(dd[key])
+            lineW.setPlaceholderText(line.get("placeholder", ""))
+            self.regist[key] = lineW.text
         return lineW
 
     def save(self, callback=None):

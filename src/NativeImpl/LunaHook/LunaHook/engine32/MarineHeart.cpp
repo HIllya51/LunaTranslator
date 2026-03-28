@@ -101,7 +101,6 @@ bool InsertMarineHeartHook()
   // GROWL_DWORD(reladdr);
   if (!addr)
   {
-    ConsoleOutput("MarineHeart: pattern not found");
     return false;
   }
 
@@ -114,7 +113,6 @@ bool InsertMarineHeartHook()
   }; // 011d4c80  /$ 55             push ebp
   if (*(BYTE *)addr != push_ebp)
   {
-    ConsoleOutput("MarineHeart: pattern found but the function offset is invalid");
     return false;
   }
 
@@ -123,7 +121,6 @@ bool InsertMarineHeartHook()
   hp.offset = stackoffset(1);
   hp.type = USING_STRING | DATA_INDIRECT; // = 9
 
-  ConsoleOutput("INSERT MarineHeart");
   return NewHook(hp, "MarineHeart");
 }
 

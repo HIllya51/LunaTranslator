@@ -16,7 +16,6 @@ bool InsertRpgmXPHook()
     hp.split = regoffset(esi);
     hp.split_index = 0;
     hp.type = CODEC_UTF16 | USING_SPLIT | MODULE_OFFSET | FUNCTION_OFFSET;
-    ConsoleOutput(" INSERT RpgmXP");
 
     return NewHook(hp, "RpgmXP");
 }

@@ -31,7 +31,6 @@ static bool InsertAliceHook1(DWORD addr)
 {
   if (!addr)
   {
-    ConsoleOutput("AliceHook1: failed");
     return false;
   }
   for (DWORD i = addr, s = addr; i < s + 0x100; i++)
@@ -52,19 +51,16 @@ static bool InsertAliceHook1(DWORD addr)
       hp.split = -8 - ((c & 0xf) << 2);
       hp.type = USING_STRING | USING_SPLIT;
       // if (s>j) hp.type^=USING_SPLIT;
-      ConsoleOutput("INSERT AliceHook1");
 
       // RegisterEngineType(ENGINE_SYS40);
       return NewHook(hp, "System40");
     }
-  ConsoleOutput("AliceHook1: failed");
   return false;
 }
 static bool InsertAliceHook2(DWORD addr)
 {
   if (!addr)
   {
-    ConsoleOutput("AliceHook2: failed");
     return false;
   }
   HookParam hp;
@@ -72,7 +68,6 @@ static bool InsertAliceHook2(DWORD addr)
   hp.offset = regoffset(eax);
   hp.index = 0x8;
   hp.type = DATA_INDIRECT;
-  ConsoleOutput("INSERT AliceHook2");
   return NewHook(hp, "System40");
   // RegisterEngineType(ENGINE_SYS40);
 }
@@ -97,7 +92,6 @@ bool InsertAliceHook()
 
     ok |= InsertAliceHook2(addr);
   }
-  // ConsoleOutput("AliceHook: failed");
   return ok;
 }
 namespace

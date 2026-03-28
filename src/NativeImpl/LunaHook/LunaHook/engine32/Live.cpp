@@ -14,16 +14,13 @@ bool InsertLiveDynamicHook(LPVOID addr, DWORD frame, DWORD stack)
     hp.address = j;
     hp.offset = regoffset(edx);
     hp.type = CODEC_ANSI_BE;
-    ConsoleOutput("INSERT DynamicLive");
     return NewHook(hp, "Live");
     // RegisterEngineType(ENGINE_LIVE);
   }
-  ConsoleOutput("DynamicLive: failed");
   return true; // jichi 12/25/2013: return true
 }
 // void InsertLiveHook()
 //{
-//   ConsoleOutput("Probably Live. Wait for text.");
 //   trigger_fun=InsertLiveDynamicHook;
 //   SwitchTrigger(true);
 // }
@@ -72,7 +69,6 @@ static bool live2()
     return false;
   auto jmptable = *(DWORD **)(addr + sizeof(ins) - 4);
   auto target = jmptable[0x32];
-  ConsoleOutput("%p", target);
   const BYTE CHECKOK[] = {
       0x8d, 0x55, XX,
       0x8b, 0xc3,

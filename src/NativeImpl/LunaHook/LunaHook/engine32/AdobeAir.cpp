@@ -73,7 +73,6 @@ bool InsertAdobeAirHook()
 
   // ULONG processStartAddress, processStopAddress;
   // if (!NtInspect::getModuleMemoryRange(L"Adobe AIR.dll", &startAddress, &stopAddress)) {
-  //   ConsoleOutput("Adobe AIR: module not found");
   //   return false;
   // }
 

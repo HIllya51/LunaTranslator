@@ -27,7 +27,6 @@ bool utawarerumonoh()
     hp.lineSeparator = L"\\n";
     hp.offset = stackoffset(1);
     hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
-    ConsoleOutput("utawarerumono");
     succ |= NewHook(hp, "utawarerumono");
   }
   return succ;
@@ -47,7 +46,6 @@ bool utawarerumonoh2()
     hp.offset = regoffset(esi);
     hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
     hp.lineSeparator = L"\\n";
-    ConsoleOutput("utawarerumono %p", addr);
     succ |= NewHook(hp, "utawarerumono");
   }
   return succ;

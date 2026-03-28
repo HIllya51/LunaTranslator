@@ -270,7 +270,6 @@ bool InsertTamamoHook()
     if (addr)
     {
       addr += addr_offset;
-      ConsoleOutput("Tamamo: pattern for new version found");
     }
   }
   if (!addr)
@@ -290,12 +289,10 @@ bool InsertTamamoHook()
     if (addr)
     {
       addr += addr_offset;
-      ConsoleOutput("Tamamo: pattern for old version found");
     }
   }
   if (!addr)
   {
-    ConsoleOutput("Tamamo: pattern not found");
     return false;
   }
   HookParam hp;
@@ -303,7 +300,6 @@ bool InsertTamamoHook()
   hp.text_fun = SpecialHookTamamo;
   hp.filter_fun = TamamoFilter;
   hp.type = USING_STRING | USING_SPLIT | NO_CONTEXT;
-  ConsoleOutput("INSERT Tamamo");
   return NewHook(hp, "Tamamo");
 }
 namespace

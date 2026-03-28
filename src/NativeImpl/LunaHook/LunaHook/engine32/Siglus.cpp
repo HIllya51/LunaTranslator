@@ -90,13 +90,11 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-      // ConsoleOutput("Unknown SiglusEngine");
       return false;
     }
 
     // addr = MemDbg::findEnclosingAlignedFunction(addr, 50); // 0x002667dc - 0x002667c0 = 28
     // if (!addr) {
-    //   ConsoleOutput("Siglus3: enclosing function not found");
     //   return false;
     // }
 
@@ -234,13 +232,11 @@ namespace
     // ULONG addr = processStartAddress + 0x0018cf39;
     if (!addr)
     {
-      // ConsoleOutput("Unknown SiglusEngine");
       return false;
     }
 
     // addr = MemDbg::findEnclosingAlignedFunction(addr, 50); // 0x002667dc - 0x002667c0 = 28
     // if (!addr) {
-    //   ConsoleOutput("Siglus3: enclosing function not found");
     //   return false;
     // }
 
@@ -394,7 +390,6 @@ bool InsertSiglus4Hook()
 {
   ULONG processStartAddress, processStopAddress;
   if (!FillRange(processName,&startAddress, &stopAddress)) { // need accurate stopAddress
-    ConsoleOutput("Siglus4: failed to get memory range");
     return false;
   }
   const BYTE bytes[] = {
@@ -417,13 +412,10 @@ bool InsertSiglus4Hook()
   };
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr) {
-    //ConsoleOutput("Unknown SiglusEngine");
-    ConsoleOutput("Siglus4: pattern not found");
     return false;
   }
   addr = MemDbg::findEnclosingAlignedFunction(addr, 0x100); // 0x0020f55b - 0x0020F520 = 59
   if (!addr) {
-    ConsoleOutput("Siglus4: enclosing function not found");
     return false;
   }
 
@@ -438,10 +430,8 @@ bool InsertSiglus4Hook()
 
   //GROWL_DWORD(addr);
 
-  ConsoleOutput("INSERT Siglus4");
   NewHook(hp, "SiglusEngine4");
 
-  ConsoleOutput("Siglus4: disable GDI hooks");
   
   return true;
 }
@@ -1568,7 +1558,6 @@ bool InsertSiglus4Hook()
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     { // jichi 8/17/2013: Add "== 0" check to prevent breaking new games
-      // ConsoleOutput("Unknown SiglusEngine");
       return false;
     }
 
@@ -1733,7 +1722,6 @@ namespace
         }; // 0x00b6bcf8 - 0x00b6b880 = 0x478
         return MemDbg::findBytes(bytes, sizeof(bytes), addr - range, addr);
         // if (!reladdr)
-        //   //ConsoleOutput("Siglus2: pattern not found");
         //   return 0;
         // addr += reladdr;
         // return addr;

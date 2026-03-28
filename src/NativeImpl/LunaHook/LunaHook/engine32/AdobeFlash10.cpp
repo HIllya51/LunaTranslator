@@ -241,7 +241,6 @@ bool InsertAdobeFlash10Hook()
   // addr = 0x01612AC0;
   if (!addr)
   {
-    ConsoleOutput("AdobeFlash10: pattern not found");
     return false;
   }
 
@@ -251,10 +250,6 @@ bool InsertAdobeFlash10Hook()
   // hp.length_offset = 2 * 4; // arg2 might be the length
   hp.type = CODEC_UTF16 | USING_STRING;
   hp.filter_fun = AdobeFlashFilter;
-  ConsoleOutput("INSERT Adobe Flash 10");
-
-  ConsoleOutput("AdobeFlash10: disable GDI hooks");
-
   return NewHook(hp, "Adobe Flash 10");
 }
 namespace

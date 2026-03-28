@@ -103,8 +103,6 @@ static bool InsertSystem43OldHook(ULONG startAddress, ULONG stopAddress, LPCSTR 
   //   ULONG range = min(processStopAddress - addr, MAX_REL_ADDR);
   //   addr = MemDbg::findBytes(ins, sizeof(ins), addr, addr + range);
   //   if (!addr) {
-  //     //ITH_MSG(L"failed");
-  //     ConsoleOutput("System43: pattern not found");
   //     return false;
   //   }
   //   addr += addr_offset;
@@ -130,7 +128,6 @@ static bool InsertSystem43OldHook(ULONG startAddress, ULONG stopAddress, LPCSTR 
   // GROWL_DWORD(addr);
   if (!addr)
   {
-    ConsoleOutput("System43: pattern not found");
     return false;
   }
 
@@ -139,8 +136,6 @@ static bool InsertSystem43OldHook(ULONG startAddress, ULONG stopAddress, LPCSTR 
   hp.offset = stackoffset(1);
   hp.split = regoffset(esp);
   hp.type = NO_CONTEXT | USING_SPLIT | USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
-  ConsoleOutput("INSERT System43");
-  ConsoleOutput("System43: disable GDI hooks"); // disable hooking to TextOutA, which is cached
   return NewHook(hp, hookName);
 }
 

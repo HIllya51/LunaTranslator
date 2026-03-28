@@ -38,8 +38,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
     {
-      ConsoleOutput("QLIE3: pattern not found");
-      // ConsoleOutput("Not QLIE2");
       return false;
     }
 
@@ -49,7 +47,6 @@ namespace
     hp.split = regoffset(edi);
     hp.address = addr;
 
-    ConsoleOutput("INSERT QLIE3");
     return NewHook(hp, "QLiE3");
   }
   /**
@@ -91,8 +88,6 @@ namespace
     ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
     if (!addr)
     {
-      ConsoleOutput("QLIE2: pattern not found");
-      // ConsoleOutput("Not QLIE2");
       return false;
     }
 
@@ -101,7 +96,6 @@ namespace
     hp.offset = stackoffset(5);
     hp.address = addr;
 
-    ConsoleOutput("INSERT QLIE2");
     return NewHook(hp, "QLiE2");
   }
 

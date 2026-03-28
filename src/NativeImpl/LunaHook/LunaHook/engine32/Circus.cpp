@@ -74,8 +74,6 @@ bool InsertCircusHook1() // jichi 10/2/2013: Change return type to bool
           }
         }
       }
-  // break;
-  // ConsoleOutput("Unknown CIRCUS engine");
   return false;
 }
 namespace

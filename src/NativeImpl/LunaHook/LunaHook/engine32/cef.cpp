@@ -119,13 +119,10 @@ bool InsertlibcefHook(HMODULE module)
 			hp.offset = func.textIndex * 4;
 			hp.length_offset = func.lengthIndex * 4;
 			hp.text_fun = (decltype(hp.text_fun))func.text_fun;
-			ConsoleOutput("libcef: INSERT");
 			ret |= NewHook(hp, func.functionName);
 		}
 	}
 
-	if (!ret)
-		ConsoleOutput("libcef: failed to find function address");
 	return ret;
 }
 namespace
@@ -144,7 +141,6 @@ bool libcefhook(HMODULE module)
 	// 魔降ル夜ノ凜 Animation ダウンロード版
 
 	auto [minAddress, maxAddress] = Util::QueryModuleLimits(module);
-	ConsoleOutput("check v8libcefhook %p %p", minAddress, maxAddress);
 	const BYTE bytes[] = {
 		0x50,
 		0x51,

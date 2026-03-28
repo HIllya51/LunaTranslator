@@ -100,7 +100,6 @@ bool InsertAOS1Hook()
   // GROWL(reladdr);
   if (!addr)
   {
-    ConsoleOutput("AOS1: pattern not found");
     return false;
   }
   addr += addr_offset;
@@ -111,7 +110,6 @@ bool InsertAOS1Hook()
   }; // beginning of the function
   if (*(BYTE *)addr != push_ecx)
   {
-    ConsoleOutput("AOS1: beginning of the function not found");
     return false;
   }
 
@@ -119,8 +117,6 @@ bool InsertAOS1Hook()
   hp.address = addr;
   hp.offset = stackoffset(2);
   hp.type = DATA_INDIRECT;
-
-  ConsoleOutput("INSERT AOS1");
 
   return NewHook(hp, "AOS1");
 }
@@ -148,7 +144,6 @@ bool InsertAOS2Hook()
   // GROWL(reladdr);
   if (!addr)
   {
-    ConsoleOutput("AOS2: pattern not found");
     return false;
   }
   addr += addr_offset;
@@ -159,7 +154,6 @@ bool InsertAOS2Hook()
   }; // beginning of the function
   if (*(BYTE *)addr != push_ecx)
   {
-    ConsoleOutput("AOS2: beginning of the function not found");
     return false;
   }
 
@@ -168,7 +162,6 @@ bool InsertAOS2Hook()
   hp.offset = stackoffset(2);
   hp.type = DATA_INDIRECT;
 
-  ConsoleOutput("INSERT AOS2");
 
   return NewHook(hp, "AOS2");
 }
@@ -190,9 +183,7 @@ namespace
     if (!addr)
       return 0;
     auto calladdr = *(int *)((char *)addr + 1);
-    ConsoleOutput("calladdr %p", calladdr);
     addr = calladdr + addr + 5;
-    ConsoleOutput("funcaddr %p", addr);
     if (*(BYTE *)((BYTE *)addr - 1) != 0xcc)
       return 0;
     return addr;
