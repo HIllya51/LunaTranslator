@@ -451,7 +451,13 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\x81\x91"), TEXTANDLEN("!!")); //"――"
         StringReplacer(buffer, TEXTANDLEN("\x81\x90"), TEXTANDLEN("!?")); //"――"
     }
-
+    void SLPM65957(TextBuffer *buffer, HookParam *hp)
+    {
+        FSLPM66127(buffer, hp);
+        auto s = buffer->strA();
+        s = re::sub(s, "k\x01(.*?)k", "$1"); // 颜色
+        buffer->from(s);
+    }
     void SLPM55138F(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -782,7 +788,7 @@ namespace
     }
     void SLPM66127X(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
-        auto str = (char *)PCSX2_REG(a1);
+        auto str = (char *)((hp1->offset == PCSX2_REG_OFFSET(a1)) ? PCSX2_REG(a1) : PCSX2_REG(a0));
         std::string collect;
         while (*str)
         {
@@ -2693,6 +2699,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x356FB0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25662, "SLPS-25662"}},
     // 今日からマ王！ 眞マ国の休日
     {0x3428D0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, SLPS25801, "SLPS-25801"}},
+    // 遙かなる時空の中で ～八葉抄～
+    {0x1AD28C, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, SLPM66127X, SLPM65957, "SLPM-65957"}},
     // 遙かなる時空の中で 夢の浮橋
     {0x1ECF7C, {0, PCSX2_REG_OFFSET(s4), 0, 0, SLPM55138F, "SLPM-55138"}},
     // 遙かなる時空の中で 舞一夜

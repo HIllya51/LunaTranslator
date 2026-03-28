@@ -13,6 +13,7 @@ import gobject
 import windows
 import NativeUtils
 import myutils.ankiconnect as anki
+from collections import OrderedDict
 from myutils.hwnd import grabwindow
 from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.utils import (
@@ -1060,14 +1061,40 @@ class HistoryViewer(QWidget):
         menu = QMenu(self)
         delete = LAction("删除", menu)
         label = LAction("收藏", menu)
+        daochu = LAction("导出", menu)
         label.setCheckable(True)
         label.setChecked(item.text() in globalconfig["wordlabel2"])
         if self.historshoucangjia == 0:
             menu.addAction(delete)
         menu.addAction(label)
+        if self.historshoucangjia != 0:
+            menu.addAction(daochu)
         action = menu.exec(QCursor.pos())
         if action == delete:
             self.deleteindex(idx)
+        elif action == daochu:
+            text = ""
+            maybehassentence = OrderedDict()
+            for _, w, s, t, __ in gobject.base.somedatabase.allwords():
+                isshoucangde = w in globalconfig["wordlabel2"]
+                if isshoucangde and (w not in maybehassentence):
+                    maybehassentence[w] = s
+            for w in reversed(globalconfig["wordlabel2"]):
+                t = "<li><strong>"
+                t += w
+                t += "</strong>"
+                s = maybehassentence.get(w)
+                if s:
+                    t += "<br>&nbsp;&nbsp;&nbsp;"
+                    t += s
+                t += "</li>"
+                text += t
+            ff = QFileDialog.getSaveFileName(self, directory="save.html")
+            if ff[0] == "":
+                return
+            with open(ff[0], "w", encoding="utf8") as ff:
+                ff.write("<ul>{}</ul>".format(text))
+
         elif action == label:
             if label.isChecked():
                 if self.historshoucangjia == 0:
