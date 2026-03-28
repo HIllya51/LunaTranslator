@@ -1259,6 +1259,11 @@ namespace
         StringCharReplacer(buffer, TEXTANDLEN("\x81\x40<br>"), '\n');
         StringFilter(buffer, TEXTANDLEN("<br>"));
     }
+    void ULJM06173Ex(TextBuffer *buffer, HookParam *hp)
+    {
+        ULJM05433(buffer, hp);
+        StringFilter(buffer, TEXTANDLEN("<br>"));
+    }
     void ULJS00592(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("<br>"));
@@ -2236,11 +2241,14 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 探偵オペラ　ミルキィホームズ　２
     {0x88B3848, {CODEC_UTF8, 0xf, 0, 0, NewLineCharFilterA, "ULJS00520"}},
     // TOKYOヤマノテBOYS Portable DARK CHERRY DISC
-    {0x8856FC8, {0, 0, 0, 0, ULJM06173, "ULJM06173"}},
+    {0x8856FC8, {FULL_STRING, 0, 0, 0, ULJM06173, "ULJM06173"}},
+    {0x887666C, {FULL_STRING, 0, 0, 0, ULJM06173Ex, "ULJM06173"}},
     // TOKYOヤマノテBOYS Portable HONEY MILK DISC
-    {0x8856C80, {0, 0, 0, 0, ULJM06173, "ULJM06171"}},
+    {0x8856C80, {FULL_STRING, 0, 0, 0, ULJM06173, "ULJM06171"}},
+    {0x88761A4, {FULL_STRING, 0, 0, 0, ULJM06173Ex, "ULJM06171"}},
     // TOKYOヤマノテBOYS Portable SUPER MINT DISC
     {0x8856FC0, {FULL_STRING, 0, 0, 0, ULJM06173, "ULJM06172"}},
+    {0x8876508, {FULL_STRING, 0, 0, 0, ULJM06173Ex, "ULJM06172"}},
     // アンジェリーク 魔恋の六騎士
     {0x889CBC8, {0, 1, 0, 0, ULJM06129, "ULJM05986"}},
     // MISSINGPARTS the TANTEI stories Complete
