@@ -1,6 +1,6 @@
 #include "Seraphim.h"
 
-bool Seraphim::attach_function()
+bool Seraphimattach_function2()
 {
   // https://vndb.org/v3212
   // School Captain 2 会王をねらえ!
@@ -21,4 +21,23 @@ bool Seraphim::attach_function()
     return true;
   };
   return findiatcallormov((DWORD)GetGlyphOutlineW, processStartAddress, processStartAddress, processStopAddress);
+}
+
+bool Seraphimattach_function1()
+{
+  // Laughter Land
+  auto addr = findiatcallormov((DWORD)GetGlyphOutlineA, processStartAddress, processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  BYTE sig[] = {0x81, 0xEC, 0xB8, 0x00, 0x00, 0x00};
+  HookParam hp;
+  hp.address = reverseFindBytes(sig, sizeof(sig), addr - 0x400, addr);
+  hp.type = USING_STRING;
+  hp.offset = stackoffset(7);
+  return NewHook(hp, "Seraphim2");
+}
+
+bool Seraphim::attach_function()
+{
+  return Seraphimattach_function2() || Seraphimattach_function1();
 }
