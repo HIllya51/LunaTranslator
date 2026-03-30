@@ -21,7 +21,7 @@ public:
         is_engine_certain = false;
         check_by_target = []()
         {
-            return Util::CheckFile(L"Vita3K.exe") || Util::SearchResourceString(L"Vita3K PSVita Emulator");
+            return Util::CheckFile(L"Vita3K.exe") || Util::SearchStringFileInfo(L"Vita3K PSVita Emulator");
         };
     };
     bool attach_function();

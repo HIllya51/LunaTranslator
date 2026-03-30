@@ -38,6 +38,111 @@ namespace
 
 } // namespace unnamed
 
+#define MY_ALIGN32(x) (((x) + 3) & ~3)
+namespace
+{
+  struct VS_HEADER
+  {
+    WORD wLength;
+    WORD wValueLength;
+    WORD wType;
+    WCHAR szKey[1];
+  };
+  size_t SafeKeyLen(VS_HEADER *pHeader, LPBYTE pMaxAddr)
+  {
+    if (!pHeader)
+      return 0;
+    WCHAR *pKeyStart = pHeader->szKey;
+    size_t maxChars = (pMaxAddr - (LPBYTE)pKeyStart) / sizeof(WCHAR);
+
+    for (size_t i = 0; i < maxChars; ++i)
+    {
+      if (pKeyStart[i] == L'\0')
+        return i;
+    }
+    return 0;
+  }
+  LPVOID GetValuePtr(VS_HEADER *pHeader, LPBYTE pMaxAddr)
+  {
+    size_t keyLen = SafeKeyLen(pHeader, pMaxAddr);
+    size_t keyLenBytes = (keyLen + 1) * sizeof(WCHAR);
+    return (LPBYTE)pHeader + MY_ALIGN32(sizeof(WORD) * 3 + keyLenBytes);
+  }
+
+  VS_HEADER *_GetFirstChild(VS_HEADER *pHeader, LPBYTE pMaxAddr)
+  {
+    if (pHeader->wLength < sizeof(WORD) * 3 + 2)
+      return nullptr;
+    size_t keyLen = SafeKeyLen(pHeader, pMaxAddr);
+    size_t keyLenBytes = (keyLen + 1) * sizeof(WCHAR);
+    size_t valueOffset = MY_ALIGN32(sizeof(WORD) * 3 + keyLenBytes);
+    size_t valueBytes = pHeader->wValueLength * (pHeader->wType == 1 ? sizeof(WCHAR) : 1);
+    size_t firstChildOffset = MY_ALIGN32(valueOffset + valueBytes);
+
+    if (firstChildOffset >= pHeader->wLength)
+      return nullptr;
+
+    VS_HEADER *pChild = (VS_HEADER *)((LPBYTE)pHeader + firstChildOffset);
+    if ((LPBYTE)pChild >= pMaxAddr)
+      return nullptr;
+    return pChild;
+  }
+  VS_HEADER *_GetNextSibling(VS_HEADER *pHeader, LPBYTE pMaxAddr)
+  {
+    if (pHeader->wLength == 0)
+      return nullptr; // 防止死循环
+    VS_HEADER *pNext = (VS_HEADER *)((LPBYTE)pHeader + MY_ALIGN32(pHeader->wLength));
+    if ((LPBYTE)pNext >= pMaxAddr)
+      return nullptr;
+    return pNext;
+  }
+
+  bool EnumStringFileInfo(LPVOID pData, DWORD dwSize, LPCWSTR check)
+  {
+    LPBYTE pMaxAddr = (LPBYTE)pData + dwSize;
+    VS_HEADER *pRoot = (VS_HEADER *)pData;
+
+    VS_HEADER *pStringFileInfo = _GetFirstChild(pRoot, pMaxAddr);
+    while (pStringFileInfo)
+    {
+      size_t keyLen = SafeKeyLen(pStringFileInfo, pMaxAddr);
+      if (keyLen > 0 && wcscmp(pStringFileInfo->szKey, L"StringFileInfo") == 0)
+        break;
+
+      pStringFileInfo = _GetNextSibling(pStringFileInfo, pMaxAddr);
+    }
+
+    if (!pStringFileInfo)
+      return false;
+
+    VS_HEADER *pStringTable = _GetFirstChild(pStringFileInfo, pMaxAddr);
+    while (pStringTable && (LPBYTE)pStringTable < (LPBYTE)pStringFileInfo + pStringFileInfo->wLength)
+    {
+      // Language-CodePage pStringTable->szKey
+      // 可以用这个和VerQueryValueW，但已经这样了，就算了。
+      VS_HEADER *pString = _GetFirstChild(pStringTable, pMaxAddr);
+      while (pString && (LPBYTE)pString < (LPBYTE)pStringTable + pStringTable->wLength)
+      {
+        LPWSTR pValue = (LPWSTR)GetValuePtr(pString, pMaxAddr);
+
+        if (pString->wValueLength > 0 && pString->wType == 1) // wType == 1 表示是字符串
+        {
+          size_t maxChars = (pMaxAddr - (LPBYTE)pValue) / sizeof(WCHAR);
+          size_t actualSearchLen = (size_t)pString->wValueLength < maxChars ? (size_t)pString->wValueLength : maxChars;
+
+          std::wstring_view haystack(pValue, actualSearchLen);
+          if (haystack.find(check) != std::wstring_view::npos)
+            return true;
+        }
+        pString = _GetNextSibling(pString, pMaxAddr);
+      }
+      pStringTable = _GetNextSibling(pStringTable, pMaxAddr);
+    }
+
+    return false;
+  }
+}
+
 namespace Util
 {
 
@@ -305,7 +410,43 @@ namespace Util
     }
     return false;
   }
+  bool SearchStringFileInfo(LPCWSTR str, HMODULE hModule)
+  {
+    if (!hModule)
+      hModule = GetModuleHandleW(nullptr);
 
+    struct EnumParam
+    {
+      LPCWSTR searchStr;
+      bool found;
+    } param = {str, false};
+
+    auto cb = [](HMODULE hModule, LPCWSTR lpType, LPWSTR lpName, LONG_PTR lParam) -> BOOL
+    {
+      EnumParam *pParam = (EnumParam *)lParam;
+      HRSRC hResInfo = FindResourceW(hModule, lpName, lpType);
+      if (!hResInfo)
+        return TRUE;
+      DWORD dwSize = SizeofResource(hModule, hResInfo);
+      if (dwSize == 0)
+        return TRUE;
+      HGLOBAL hResData = LoadResource(hModule, hResInfo);
+      if (!hResData)
+        return TRUE;
+      LPVOID pData = LockResource(hResData);
+      if (!pData)
+        return TRUE;
+      if (EnumStringFileInfo(pData, dwSize, pParam->searchStr))
+      {
+        pParam->found = true;
+        return FALSE;
+      }
+      return TRUE;
+    };
+
+    EnumResourceNamesW(hModule, RT_VERSION, (ENUMRESNAMEPROCW)cb, (LONG_PTR)&param);
+    return param.found;
+  }
   std::pair<uintptr_t, uintptr_t> QueryModuleLimits(HMODULE module, uintptr_t addition, DWORD protect)
   {
     uintptr_t moduleStartAddress = (uintptr_t)module + addition;

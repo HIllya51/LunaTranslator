@@ -20,7 +20,7 @@ public:
         jittype = JITTYPE::PPSSPP;
         check_by_target = []()
         {
-            return Util::CheckFile(L"PPSSPP*.exe") || Util::SearchResourceString(L"PPSSPP PSP emulator");
+            return Util::CheckFile(L"PPSSPP*.exe") || Util::SearchStringFileInfo(L"PPSSPP PSP emulator");
         };
     };
     bool attach_function();

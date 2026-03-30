@@ -33,7 +33,7 @@ bool ENGINE::check_function()
     }
     case CHECK_BY::RESOURCE_STR:
     {
-        return (Util::SearchResourceString(std::get<check_by_single>(check_by_target)));
+        return Util::SearchResourceString(std::get<check_by_single>(check_by_target));
     }
 
     case CHECK_BY::CUSTOM:
