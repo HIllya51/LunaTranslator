@@ -1493,12 +1493,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid],
                 "insertpchooks_string",
                 callback=lambda _: (
-                    (
-                        gobject.base.textsource.InsertPCHooks(0),
-                        gobject.base.textsource.InsertPCHooks(1),
-                    )
-                    if _
-                    else None
+                    gobject.base.textsource.InsertPCHooks() if _ else None
                 ),
                 default=False,
             ),

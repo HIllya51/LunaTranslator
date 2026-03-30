@@ -127,8 +127,8 @@ class texthook(basetext):
 
     def init(self):
 
-        self.pids = []
-        self.maybepids = []
+        self.pids: "list[int]" = []
+        self.maybepids: "list[int]" = []
         self.maybepidslock = threading.Lock()
         self.keepref = []
         self.selectedhook = []
@@ -169,7 +169,7 @@ class texthook(basetext):
         self.Luna_InsertPCHooks = LunaHost.Luna_InsertPCHooks
         self.Luna_InsertPCHooks.argtypes = (DWORD, c_int)
         self.Luna_Settings = LunaHost.Luna_Settings
-        self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int, c_int
+        self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int, c_int, c_bool
         self.Luna_Start = LunaHost.Luna_Start
         self.Luna_Start.argtypes = (
             ProcessEvent,
@@ -465,14 +465,14 @@ class texthook(basetext):
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
         if self.hconfig.get("insertpchooks_string", False):
-            self.Luna_InsertPCHooks(pid, 0)
-            self.Luna_InsertPCHooks(pid, 1)
+            self.InsertPCHooks(pid)
         gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
         self.flashembedsettings(pid)
 
-    def InsertPCHooks(self, which):
-        for pid in self.pids:
-            self.Luna_InsertPCHooks(pid, which)
+    def InsertPCHooks(self, pid: int = None):
+        for pid in [pid] if pid else self.pids:
+            self.Luna_InsertPCHooks(pid, 0)
+            self.Luna_InsertPCHooks(pid, 1)
 
     def newhookinsert(self, pid, addr, hcode):
         if hcode in self.hconfig.get("removeforeverhook", []):
@@ -613,6 +613,7 @@ class texthook(basetext):
             self.codepage(),
             self.config["maxBufferSize"],
             self.config["maxHistorySize"],
+            False,
         )
 
     def codepage(self):

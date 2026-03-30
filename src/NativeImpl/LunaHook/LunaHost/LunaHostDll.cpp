@@ -87,13 +87,14 @@ C_LUNA_API void *Luna_AllocString(const wchar_t *str)
     wcscpy_s(_, __, str);
     return _;
 }
-C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int defaultCodepage, int maxBufferSize, int maxHistorySize)
+C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int defaultCodepage, int maxBufferSize, int maxHistorySize, bool enablePCHooks)
 {
     TextThread::flushDelay = flushDelay;
     TextThread::filterRepetition = filterRepetition;
-    Host::defaultCodepage = defaultCodepage;
     TextThread::maxBufferSize = maxBufferSize;
     TextThread::maxHistorySize = maxHistorySize;
+    Host::defaultCodepage = defaultCodepage;
+    Host::enablePCHooks = enablePCHooks;
 }
 C_LUNA_API void Luna_ResetLang()
 {

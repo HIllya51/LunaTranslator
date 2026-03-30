@@ -27,6 +27,7 @@ namespace Host
 	void AddConsoleOutput(std::wstring text);
 
 	inline int defaultCodepage = SHIFT_JIS;
+	inline bool enablePCHooks = true;
 
 	bool CheckIsUsingEmbed(ThreadParam tp);
 

@@ -101,6 +101,11 @@ namespace
 		processRecordsByIds->try_emplace(processId, processId, hostPipe);
 		OnConnect(processId);
 		Host::AddConsoleOutput(FormatString(TR[PROC_CONN], processId));
+		if (Host::enablePCHooks)
+		{
+			processRecordsByIds->at(processId).Send(InsertPCHooksCmd(0));
+			processRecordsByIds->at(processId).Send(InsertPCHooksCmd(1));
+		}
 		BYTE buffer[PIPE_BUFFER_SIZE] = {};
 		DWORD bytesRead;
 		while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
