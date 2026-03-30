@@ -1222,6 +1222,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 |  | SLPS-25678 & SLPS-25679 | うたわれるもの 散りゆく者への子守唄 |
 |  | SLPS-25150 | Only you リベルクルス ドラマCD付き |
 |  | SLPM-65400 | D.C.P.S. ～ダ・カーポ～ プラスシチュエーション |
+|  | SLPM-66922 | D.C.Ⅱ P.S. ～ダ・カーポⅡ～ プラスシチュエーション DXパック |
 |  | SLPM-66905 | D.C. ～ダ・カーポ～ the Origin |
 |  | SLPM-55156 | D.C.I.F. ～ダ・カーポ～イノセント・フィナーレ～ [通常版] |
 |  | SLPM-66225 | D.C.F.S. ～ダ・カーポ～ フォーシーズンズ DXパック |

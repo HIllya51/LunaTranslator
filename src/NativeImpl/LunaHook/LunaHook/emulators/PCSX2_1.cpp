@@ -2621,6 +2621,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x461F38, {DIRECT_READ, 0, 0, SLPS25150, 0, "SLPS-25150"}},
     // D.C.P.S. ～ダ・カーポ～ プラスシチュエーション
     {0x114384, {0, PCSX2_REG_OFFSET(a0), 0, 0, SLPM65400, "SLPM-65400"}},
+    // D.C.Ⅱ P.S. ～ダ・カーポⅡ～ プラスシチュエーション DXパック
+    {0x10daf8, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, 0, "SLPM-66922"}},
     // D.C. ～ダ・カーポ～ the Origin
     {0x517688, {DIRECT_READ, 0, 0, 0, SLPM66905, "SLPM-66905"}},
     // D.C.I.F. ～ダ・カーポ～イノセント・フィナーレ～ [通常版]
