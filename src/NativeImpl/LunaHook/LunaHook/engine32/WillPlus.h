@@ -22,8 +22,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
-            auto _ = {L"*.BIN", L"DATA\\*.ENV", L"DATA\\*.WBP"};
-            auto checkfile = std::all_of(_.begin(), _.end(), Util::CheckFile);
+            auto checkfile = Util::CheckFileAll({L"*.BIN", L"DATA\\*.ENV", L"DATA\\*.WBP"});
             if (checkfile)
             {
                 auto __ = R"(Software\WILL\)";

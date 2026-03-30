@@ -37,9 +37,8 @@ public:
     check_by = CHECK_BY::CUSTOM;
     check_by_target = []()
     {
-      auto _ = {L"bgm/*.wdt", L"eve/*.sdt", L"gra/*.gdt", L"se/*.wdt", L"voice/*.wdt"};
-      auto checkfile = std::all_of(_.begin(), _.end(), Util::CheckFile);
-      return checkfile && Util::SearchResourceString(L"Xmas Present");
+      return Util::CheckFileAll({L"bgm/*.wdt", L"eve/*.sdt", L"gra/*.gdt", L"se/*.wdt", L"voice/*.wdt"}) &&
+             Util::SearchResourceString(L"Xmas Present");
     };
   };
   bool attach_function();

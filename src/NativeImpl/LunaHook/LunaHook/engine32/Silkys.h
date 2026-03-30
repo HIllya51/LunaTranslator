@@ -59,7 +59,7 @@ public:
         // https://vndb.org/v2380
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
-        { return Util::CheckFileEx(L"*SYS*.ifl"); }; // L"*SYS.ifl";
+        { return Util::CheckFile(L"*SYS*.ifl", true); }; // L"*SYS.ifl";
     };
     bool attach_function();
 };
@@ -73,8 +73,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
-            auto check1 = Util::CheckFile(L"script.arc") && Util::CheckFile(L"sequence.arc") && Util::CheckFile(L"mask.arc") && Util::CheckFile(L"bitmap.arc") && Util::CheckFile(L"flag0000");
-            if (!check1)
+            if (!Util::CheckFileAll({L"script.arc", L"sequence.arc", L"mask.arc", L"bitmap.arc", L"flag0000"}))
                 return false;
             char AISYSTEM_6[] = "AISYSTEM_6";
             return 0 != MemDbg::findBytes(AISYSTEM_6, sizeof(AISYSTEM_6), processStartAddress, min(processStopAddress, processStartAddress + 0x100000));

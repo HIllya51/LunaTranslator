@@ -105,7 +105,6 @@ bool InsertLunaSoftHook()
   hp.offset = stackoffset(1);
   hp.type = USING_STRING;
   return NewHook(hp, "LunaSoft");
-
 }
 bool InsertXXkata()
 {
@@ -515,12 +514,11 @@ namespace
   {
     // https://vndb.org/v5385
     // F ~ファナティック~
-    auto _ = {L"pac/voice.hed", L"pac/voice.pac",
-              L"pac/se.hed", L"pac/se.pac",
-              L"pac/snd.hed", L"pac/snd.pac",
-              L"pac/vis.hed", L"pac/vis.pac",
-              L"pac/tak.hed", L"pac/tak.pac"};
-    if (!std::all_of(_.begin(), _.end(), Util::CheckFile))
+    if (!Util::CheckFileAll({L"pac/voice.hed", L"pac/voice.pac",
+                             L"pac/se.hed", L"pac/se.pac",
+                             L"pac/snd.hed", L"pac/snd.pac",
+                             L"pac/vis.hed", L"pac/vis.pac",
+                             L"pac/tak.hed", L"pac/tak.pac"}))
       return false;
     PcHooks::hookGDIFunctions(GetGlyphOutlineA);
     return true;

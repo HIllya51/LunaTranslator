@@ -46,7 +46,7 @@ public:
             //      }
             //    }
             //  }
-            return (Util::CheckFile(L"system") && Util::CheckFile(L"system.dat")) || Util::CheckFile(L"*01");
+            return Util::CheckFileAll({L"system", L"system.dat"}) || Util::CheckFile(L"*01");
         };
 
         is_engine_certain = false;

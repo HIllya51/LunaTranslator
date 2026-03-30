@@ -8,9 +8,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = [&]()
         {
-            auto _ = {L"gd.dat", L"pf.dat", L"sd.dat"};
-            auto checkfile = std::all_of(_.begin(), _.end(), Util::CheckFile);
-            if (checkfile)
+            if (Util::CheckFileAll({L"gd.dat", L"pf.dat", L"sd.dat"}))
                 return true;
             tokyo = Util::SearchResourceString(L"Rejet株式会社");
             return tokyo;

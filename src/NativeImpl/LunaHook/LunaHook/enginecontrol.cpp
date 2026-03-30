@@ -22,12 +22,14 @@ bool ENGINE::check_function()
     case CHECK_BY::FILE_ALL:
     {
         auto _list = std::get<check_by_list>(check_by_target);
-        return std::all_of(_list.begin(), _list.end(), Util::CheckFile);
+        return std::all_of(_list.begin(), _list.end(), [](LPCWSTR s)
+                           { return Util::CheckFile(s); });
     }
     case CHECK_BY::FILE_ANY:
     {
         auto _list = std::get<check_by_list>(check_by_target);
-        return std::any_of(_list.begin(), _list.end(), Util::CheckFile);
+        return std::any_of(_list.begin(), _list.end(), [](LPCWSTR s)
+                           { return Util::CheckFile(s); });
     }
     case CHECK_BY::RESOURCE_STR:
     {

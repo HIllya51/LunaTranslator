@@ -11,8 +11,8 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
-            auto _ = {L"bgm.dat", L"data.dat", L"image.dat", L"se.dat", L"story.dat", L"system.dat", L"voice.dat"};
-            return std::all_of(_.begin(), _.end(), Util::CheckFile) && Util::SearchResourceString(L"NUG System");
+            return Util::CheckFileAll({L"bgm.dat", L"data.dat", L"image.dat", L"se.dat", L"story.dat", L"system.dat", L"voice.dat"}) &&
+                   Util::SearchResourceString(L"NUG System");
         };
     };
     bool attach_function();

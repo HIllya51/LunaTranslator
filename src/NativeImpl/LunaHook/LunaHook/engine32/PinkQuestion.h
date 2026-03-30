@@ -4,12 +4,8 @@ class PinkQuestion : public ENGINE
 public:
   PinkQuestion()
   {
-    check_by = CHECK_BY::CUSTOM;
-    check_by_target = []()
-    {
-      auto _ = {L"nayuta.exe", L"data.0*"};
-      return std::all_of(_.begin(), _.end(), Util::CheckFile);
-    };
+    check_by = CHECK_BY::FILE_ALL;
+    check_by_target = check_by_list{L"nayuta.exe", L"data.0*"};
   };
   bool attach_function();
 };

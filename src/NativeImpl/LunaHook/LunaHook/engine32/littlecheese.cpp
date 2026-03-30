@@ -64,8 +64,7 @@ bool Rufattach_function()
 bool littlecheese::attach_function()
 {
     auto _ = littlecheeseattach_function();
-    auto fs = {L"*.arc", L"*.scb"};
-    if (std::all_of(fs.begin(), fs.end(), Util::CheckFile) && (Util::CheckFile(L"*.wsm") || GetModuleHandle(L"Kagura.dll")))
+    if (Util::CheckFileAll({L"*.arc", L"*.scb", L"*.wsm"}) || GetModuleHandle(L"Kagura.dll"))
     {
         _ |= Rufattach_function();
     }

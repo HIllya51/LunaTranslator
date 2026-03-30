@@ -40,7 +40,7 @@ public:
     check_by_target = []()
     {
       return true;
-      return Util::CheckFilesAll({L"ArchPac.Dat", L"ScnPac.Dat", L"Voice0.dat"}) && Util::SearchResourceString(L"Seraphim");
+      return Util::CheckFileAll({L"ArchPac.Dat", L"ScnPac.Dat", L"Voice0.dat"}) && Util::SearchResourceString(L"Seraphim");
     };
   };
   bool attach_function();

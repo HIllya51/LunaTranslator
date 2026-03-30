@@ -14,12 +14,11 @@ public:
             // - PSetup.exe no longer exists
             // - MovieTexture.dll information shows MovieTex dynamic library, copyright Pensil 2013
             // - ta_trial.exe information shows 2XT - Primula Adventure Engine
-            return (Util::CheckFile(L"PSetup.exe") ||
-                    Util::CheckFile(L"PENCIL.*") ||
-                    Util::SearchResourceString(L"2XT -")) ||
+            return (Util::CheckFileAny({L"PSetup.exe", L"PENCIL.*"}) || Util::SearchResourceString(L"2XT -")) ||
                    Util::CheckFile(L"MovieTexture.dll") ||
-                   ((Util::SearchResourceString(L"2RM") && Util::SearchResourceString(L"Adventure Engine"))) ||
-                   (Util::CheckFile(L"archive.dat") && Util::CheckFile(L"bgm.dat") && Util::CheckFile(L"se.dat") && Util::CheckFile(L"voice.dat") && Util::CheckFile(L"save\\syssave.dat")); // 鬼孕の学園　スク水少女異種姦凌辱劇
+                   (Util::SearchResourceString(L"2RM") && Util::SearchResourceString(L"Adventure Engine")) ||
+                   Util::CheckFileAll({L"archive.dat", L"bgm.dat", L"se.dat", L"voice.dat",
+                                        L"save\\syssave.dat"}); // 鬼孕の学園　スク水少女異種姦凌辱劇
         };
     };
     bool attach_function();

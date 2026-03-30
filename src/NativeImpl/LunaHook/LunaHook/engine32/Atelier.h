@@ -21,8 +21,8 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
-            return (Util::CheckFile(L"*.ARC") && Util::CheckFile(L"*.ARI")) ||
-                   (Util::CheckFile(L"ARC\\*.ARC") && Util::CheckFile(L"ARC\\*.ARI"));
+            return Util::CheckFileAll({L"*.ARC", L"*.ARI"}) ||
+                   Util::CheckFileAll({L"ARC\\*.ARC", L"ARC\\*.ARI"});
         };
     };
     bool attach_function();

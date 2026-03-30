@@ -8,8 +8,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = [&]()
         {
-            auto _ = Util::CheckFile(L"data.gsp") && Util::CheckFile(L"Image*.gsp") && Util::CheckFile(L"bgm*.gsp") && Util::CheckFile(L"se.gsp");
-            if (!_)
+            if (!Util::CheckFileAll({L"data.gsp", L"Image*.gsp", L"bgm*.gsp", L"se.gsp"}))
                 return false;
             if (Util::CheckFile(L"voice/*.gsp"))
             {

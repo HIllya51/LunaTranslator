@@ -17,7 +17,7 @@ public:
             str[len - 2] = L'i';
             str[len - 1] = L'n';
             str[len] = 0;
-            return (Util::CheckFile(str.c_str()) || Util::CheckFile(L"trial.bin"));
+            return Util::CheckFileAny({str.c_str(), L"trial.bin"});
         };
         is_engine_certain = false;
     };

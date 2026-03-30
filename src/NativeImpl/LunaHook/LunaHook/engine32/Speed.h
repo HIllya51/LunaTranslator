@@ -11,7 +11,7 @@ public:
         {
             auto hcb = std::wstring(processName);
             hcb = hcb.substr(0, hcb.size() - 4) + L".hcb";
-            return (Util::CheckFile(hcb.c_str()) && Util::CheckFile(L"bgm.bin") && Util::CheckFile(L"cg.bin") && Util::CheckFile(L"se.bin") && Util::CheckFile(L"vo.bin"));
+            return Util::CheckFileAll({hcb.c_str(),L"bgm.bin",L"cg.bin",L"se.bin",L"vo.bin"});
         };
     };
     bool attach_function();

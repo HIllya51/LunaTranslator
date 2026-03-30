@@ -31,9 +31,9 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
-            auto _ = {L"data/data*.hud", L"data/img.hud", L"data/mv.hud", L"data/se.hud", L"data/txt.hud", L"data/vo.hud", L"data/bgm/*.hum"};
-            auto checkfile = std::all_of(_.begin(), _.end(), Util::CheckFile);
-            return checkfile && Util::SearchResourceString(L"Copyright (C)Hug");
+            return Util::CheckFileAll({L"data/data*.hud", L"data/img.hud", L"data/mv.hud", L"data/se.hud",
+                                        L"data/txt.hud", L"data/vo.hud", L"data/bgm/*.hum"}) &&
+                   Util::SearchResourceString(L"Copyright (C)Hug");
         };
     };
     bool attach_function();

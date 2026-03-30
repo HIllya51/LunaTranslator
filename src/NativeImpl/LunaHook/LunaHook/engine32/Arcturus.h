@@ -11,9 +11,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = [&]()
         {
-            auto _ = {L"advdata/voice.dat", L"advdata/mes/*.mes", L"advdata/se/*.pcm"};
-            auto checkfile = std::all_of(_.begin(), _.end(), Util::CheckFile);
-            if (!checkfile)
+            if (!Util::CheckFileAll({L"advdata/voice.dat", L"advdata/mes/*.mes", L"advdata/se/*.pcm"}))
                 return false;
             if (Util::SearchResourceString(L"Getchu"))
                 type = 1;

@@ -256,11 +256,7 @@ namespace Util
   }
 #endif
 
-  bool CheckFile(LPCWSTR name)
-  {
-    return CheckFileEx(name, false);
-  }
-  bool CheckFileEx(LPCWSTR name, bool if_exits_also_ok)
+  bool CheckFile(LPCWSTR name, bool if_exits_also_ok)
   {
     WIN32_FIND_DATAW unused;
     HANDLE file = FindFirstFileW(name, &unused);

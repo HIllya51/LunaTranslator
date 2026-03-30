@@ -20,11 +20,8 @@ public:
     {
         // https://vndb.org/v6180
         // 海の女神 空の女神
-        check_by = CHECK_BY::CUSTOM;
-        check_by_target = []()
-        {
-            return Util::CheckFile(L"nnndir/*.txt");
-        };
+        check_by = CHECK_BY::FILE;
+        check_by_target = L"nnndir/*.txt";
         is_engine_certain = false;
     };
 };

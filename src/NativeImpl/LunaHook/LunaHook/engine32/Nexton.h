@@ -10,11 +10,7 @@ public:
         check_by_target = []()
         {
             return Util::CheckFile(L"aInfo.db") ||
-                   (Util::CheckFile(L"cfg.cfg") &&
-                    Util::CheckFile(L"SystemConfig.exe") &&
-                    Util::CheckFile(L"data.arc") &&
-                    Util::CheckFile(L"se_000.arc") &&
-                    Util::CheckFile(L"voice_000.arc"));
+                   Util::CheckFileAll({L"cfg.cfg", L"SystemConfig.exe", L"data.arc", L"se_000.arc", L"voice_000.arc"});
         };
     };
     bool attach_function();
