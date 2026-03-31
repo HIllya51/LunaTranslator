@@ -74,10 +74,14 @@ def cishusX():
 class pastepathEdit(QLineEdit):
 
     def __parseclipboard(self):
+        f = NativeUtils.ClipBoard.files
+        if f and os.path.isfile(f[0]):
+            self.setText(f[0])
+            return
         t = NativeUtils.ClipBoard.text
-        if os.path.exists(t):
+        if os.path.isfile(t):
             self.setText(t)
-        elif t.startswith('"') and t.endswith('"') and os.path.exists(t[1:-1]):
+        elif t.startswith('"') and t.endswith('"') and os.path.isfile(t[1:-1]):
             self.setText(t[1:-1])
 
     def keyPressEvent(self, e: QKeyEvent):
@@ -91,14 +95,22 @@ class pastepathEdit(QLineEdit):
 
 class pasteimageEdit(QLineEdit):
     def __parseclipboard(self):
+        f = NativeUtils.ClipBoard.files
+        if (
+            f
+            and os.path.splitext(f[0])[1][1:] in getimageformatlist()
+            and os.path.isfile(f[0])
+        ):
+            self.setText(f[0])
+            return
         t = NativeUtils.ClipBoard.text
-        if os.path.splitext(t)[1][1:] in getimageformatlist() and os.path.exists(t):
+        if os.path.splitext(t)[1][1:] in getimageformatlist() and os.path.isfile(t):
             self.setText(t)
         elif (
             t.startswith('"')
             and t.endswith('"')
             and os.path.splitext(t[1:-1])[1][1:] in getimageformatlist()
-            and os.path.exists(t[1:-1])
+            and os.path.isfile(t[1:-1])
         ):
             self.setText(t[1:-1])
         else:

@@ -169,6 +169,9 @@ mecab_end.argtypes = (mecab,)
 _ClipBoardGetText = utilsdll.ClipBoardGetText
 _ClipBoardGetText.argtypes = (c_void_p,)
 _ClipBoardGetText.restype = c_bool
+_ClipBoardGetFileNames = utilsdll.ClipBoardGetFileNames
+_ClipBoardGetFileNames.argtypes = (c_void_p,)
+_ClipBoardGetFileNames.restype = c_bool
 _ClipBoardSetText = utilsdll.ClipBoardSetText
 _ClipBoardSetText.argtypes = (c_wchar_p,)
 _ClipBoardSetImage = utilsdll.ClipBoardSetImage
@@ -181,6 +184,13 @@ _ClipBoardGetImage.restype = c_bool
 
 
 class _ClipBoard:
+    @property
+    def files(self):
+        ret: "list[str]" = []
+        if not _ClipBoardGetFileNames(CFUNCTYPE(None, c_wchar_p)(ret.append)):
+            return []
+        return ret
+
     @property
     def text(self):
         ret = []

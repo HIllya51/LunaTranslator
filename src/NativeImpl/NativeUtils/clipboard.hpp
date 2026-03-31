@@ -237,3 +237,33 @@ DECLARE_API bool ClipBoardGetImage(void (*cb)(void *ptr, size_t size))
     cb(fullBmp.data(), fullBmp.size());
     return fullBmp.size();
 }
+
+DECLARE_API bool ClipBoardGetFileNames(void (*cb)(const wchar_t *))
+{
+    if (!IsClipboardFormatAvailable(CF_HDROP))
+        return false;
+    if (tryopenclipboard() == false)
+        return false;
+    bool succ = false;
+    HGLOBAL hGlobal = GetClipboardData(CF_HDROP);
+    if (hGlobal != NULL)
+    {
+        HDROP hDrop = (HDROP)GlobalLock(hGlobal);
+        if (hDrop != NULL)
+        {
+            UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+
+            for (UINT i = 0; i < fileCount; ++i)
+            {
+                UINT pathLen = DragQueryFile(hDrop, i, NULL, 0);
+                auto pszFileName = std::make_unique<WCHAR[]>(pathLen + 1);
+                DragQueryFile(hDrop, i, pszFileName.get(), pathLen + 1);
+                succ = true;
+                cb(pszFileName.get());
+            }
+            GlobalUnlock(hGlobal);
+        }
+    }
+    CloseClipboard();
+    return succ;
+}
