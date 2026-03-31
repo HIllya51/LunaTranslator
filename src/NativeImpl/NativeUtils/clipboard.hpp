@@ -1,5 +1,9 @@
 
-bool tryopenclipboard(HWND hwnd = 0)
+struct clipboardcloser
+{
+    ~clipboardcloser() { CloseClipboard(); }
+};
+std::unique_ptr<clipboardcloser> tryopenclipboard(HWND hwnd = 0)
 {
     bool success = false;
     for (int i = 0; i < 50; i++)
@@ -14,28 +18,26 @@ bool tryopenclipboard(HWND hwnd = 0)
             Sleep(10);
         }
     }
-    return success;
+    if (success)
+        return std::make_unique<clipboardcloser>();
+    return {};
 }
 
 std::optional<std::wstring> clipboard_get_internal()
 {
     if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
         return {};
-    if (tryopenclipboard() == false)
+    auto clip = tryopenclipboard();
+    if (!clip)
         return {};
-    std::optional<std::wstring> data = {};
-    do
-    {
-        HANDLE hData = GetClipboardData(CF_UNICODETEXT);
-        if (hData == 0)
-            break;
-        LPWSTR pszText = static_cast<LPWSTR>(GlobalLock(hData));
-        if (pszText == 0)
-            break;
-        data = std::move(std::wstring(pszText));
-        GlobalUnlock(hData);
-    } while (false);
-    CloseClipboard();
+    HANDLE hData = GetClipboardData(CF_UNICODETEXT);
+    if (hData == 0)
+        return {};
+    LPWSTR pszText = static_cast<LPWSTR>(GlobalLock(hData));
+    if (pszText == 0)
+        return {};
+    std::wstring data = pszText;
+    GlobalUnlock(hData);
     return data;
 }
 
@@ -51,35 +53,29 @@ extern HWND globalmessagehwnd;
 
 DECLARE_API bool ClipBoardSetText(wchar_t *text)
 {
-    bool success = false;
-    if (tryopenclipboard(globalmessagehwnd) == false)
+    auto clip = tryopenclipboard(globalmessagehwnd);
+    if (!clip)
         return false;
     EmptyClipboard();
-    do
+    HGLOBAL hClipboardData;
+    size_t len = wcslen(text) + 1;
+    hClipboardData = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(wchar_t));
+    if (hClipboardData == 0)
+        return false;
+    auto pchData = (wchar_t *)GlobalLock(hClipboardData);
+    if (pchData == 0)
     {
-        HGLOBAL hClipboardData;
-        size_t len = wcslen(text) + 1;
-        hClipboardData = GlobalAlloc(GMEM_MOVEABLE, len * sizeof(wchar_t));
-        if (hClipboardData == 0)
-            break;
-        auto pchData = (wchar_t *)GlobalLock(hClipboardData);
-        if (pchData == 0)
-        {
-            GlobalFree(hClipboardData);
-            break;
-        }
-        wcscpy_s(pchData, len, text);
-        GlobalUnlock(hClipboardData);
-        if (SetClipboardData(CF_UNICODETEXT, hClipboardData))
-            success = true;
-        else
-        {
-            GlobalFree(hClipboardData);
-        }
-
-    } while (false);
-    CloseClipboard();
-    return success;
+        GlobalFree(hClipboardData);
+        return false;
+    }
+    wcscpy_s(pchData, len, text);
+    GlobalUnlock(hClipboardData);
+    if (!SetClipboardData(CF_UNICODETEXT, hClipboardData))
+    {
+        GlobalFree(hClipboardData);
+        return false;
+    }
+    return true;
 }
 inline bool iscurrentowndclipboard()
 {
@@ -188,16 +184,15 @@ DECLARE_API bool ClipBoardSetImage(void *ptr, size_t size)
         return false;
     }
     memcpy((char *)pDib, (char *)ptr + sizeof(BITMAPFILEHEADER), size);
-    if (tryopenclipboard(globalmessagehwnd) == false)
+    auto clip = tryopenclipboard(globalmessagehwnd);
+    if (!clip)
         return false;
     EmptyClipboard();
     if (!SetClipboardData(CF_DIB, hDib))
     {
         GlobalFree(hDib);
-        CloseClipboard();
         return false;
     }
-    CloseClipboard();
     return true;
 }
 
@@ -205,65 +200,61 @@ DECLARE_API bool ClipBoardGetImage(void (*cb)(void *ptr, size_t size))
 {
     if (!IsClipboardFormatAvailable(CF_DIB))
         return false;
-    if (tryopenclipboard() == false)
+    auto clip = tryopenclipboard();
+    if (!clip)
         return false;
     bool success = false;
 
     HANDLE hClipboardData = GetClipboardData(CF_DIB);
+    if (!hClipboardData)
+        return false;
+    BYTE *pDib = (BYTE *)GlobalLock(hClipboardData);
+    SIZE_T dibSize = GlobalSize(hClipboardData);
+
+    if (!pDib)
+        return false;
     std::vector<BYTE> fullBmp;
-    if (hClipboardData != NULL)
-    {
-        BYTE *pDib = (BYTE *)GlobalLock(hClipboardData);
-        SIZE_T dibSize = GlobalSize(hClipboardData);
+    fullBmp.resize(sizeof(BITMAPFILEHEADER) + dibSize);
+    BITMAPFILEHEADER *bfh = (BITMAPFILEHEADER *)fullBmp.data();
+    bfh->bfType = 0x4D42;
+    bfh->bfSize = (DWORD)fullBmp.size();
+    bfh->bfReserved1 = 0;
+    bfh->bfReserved2 = 0;
+    BITMAPINFOHEADER *pHeader = (BITMAPINFOHEADER *)pDib;
+    DWORD dwPaletteSize = (pHeader->biBitCount <= 8) ? (1 << pHeader->biBitCount) * sizeof(RGBQUAD) : 0;
+    bfh->bfOffBits = sizeof(BITMAPFILEHEADER) + pHeader->biSize + dwPaletteSize;
 
-        if (pDib)
-        {
-            fullBmp.resize(sizeof(BITMAPFILEHEADER) + dibSize);
-            BITMAPFILEHEADER *bfh = (BITMAPFILEHEADER *)fullBmp.data();
-            bfh->bfType = 0x4D42;
-            bfh->bfSize = (DWORD)fullBmp.size();
-            bfh->bfReserved1 = 0;
-            bfh->bfReserved2 = 0;
-            BITMAPINFOHEADER *pHeader = (BITMAPINFOHEADER *)pDib;
-            DWORD dwPaletteSize = (pHeader->biBitCount <= 8) ? (1 << pHeader->biBitCount) * sizeof(RGBQUAD) : 0;
-            bfh->bfOffBits = sizeof(BITMAPFILEHEADER) + pHeader->biSize + dwPaletteSize;
+    memcpy(fullBmp.data() + sizeof(BITMAPFILEHEADER), pDib, dibSize);
 
-            memcpy(fullBmp.data() + sizeof(BITMAPFILEHEADER), pDib, dibSize);
-
-            GlobalUnlock(hClipboardData);
-        }
-    }
-    CloseClipboard();
+    GlobalUnlock(hClipboardData);
     cb(fullBmp.data(), fullBmp.size());
-    return fullBmp.size();
+    return true;
 }
 
 DECLARE_API bool ClipBoardGetFileNames(void (*cb)(const wchar_t *))
 {
     if (!IsClipboardFormatAvailable(CF_HDROP))
         return false;
-    if (tryopenclipboard() == false)
+    auto clip = tryopenclipboard();
+    if (!clip)
         return false;
-    bool succ = false;
     HGLOBAL hGlobal = GetClipboardData(CF_HDROP);
-    if (hGlobal != NULL)
-    {
-        HDROP hDrop = (HDROP)GlobalLock(hGlobal);
-        if (hDrop != NULL)
-        {
-            UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
+    if (!hGlobal)
+        return false;
+    HDROP hDrop = (HDROP)GlobalLock(hGlobal);
+    if (!hDrop)
+        return false;
+    UINT fileCount = DragQueryFile(hDrop, 0xFFFFFFFF, NULL, 0);
 
-            for (UINT i = 0; i < fileCount; ++i)
-            {
-                UINT pathLen = DragQueryFile(hDrop, i, NULL, 0);
-                auto pszFileName = std::make_unique<WCHAR[]>(pathLen + 1);
-                DragQueryFile(hDrop, i, pszFileName.get(), pathLen + 1);
-                succ = true;
-                cb(pszFileName.get());
-            }
-            GlobalUnlock(hGlobal);
-        }
+    bool succ = false;
+    for (UINT i = 0; i < fileCount; ++i)
+    {
+        UINT pathLen = DragQueryFile(hDrop, i, NULL, 0);
+        auto pszFileName = std::make_unique<WCHAR[]>(pathLen + 1);
+        DragQueryFile(hDrop, i, pszFileName.get(), pathLen + 1);
+        succ = true;
+        cb(pszFileName.get());
     }
-    CloseClipboard();
+    GlobalUnlock(hGlobal);
     return succ;
 }
