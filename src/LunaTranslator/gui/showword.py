@@ -71,6 +71,41 @@ def cishusX():
     return __
 
 
+class pasteimageEdit(QLineEdit):
+    def __parseclipboard(self):
+        t = NativeUtils.ClipBoard.text
+        if os.path.splitext(t)[1][1:] in getimageformatlist() and os.path.exists(t):
+            self.setText(t)
+        elif (
+            t.startswith('"')
+            and t.endswith('"')
+            and os.path.splitext(t[1:-1])[1][1:] in getimageformatlist()
+            and os.path.exists(t[1:-1])
+        ):
+            self.setText(t[1:-1])
+        else:
+            t = NativeUtils.ClipBoard.image
+            if not t:
+                return
+
+            image = QImage()
+            if not image.loadFromData(t):
+                return
+            if image.isNull():
+                return
+            fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
+            image.save(fname)
+            self.setText(fname)
+
+    def keyPressEvent(self, e: QKeyEvent):
+        if (
+            e.modifiers() == Qt.KeyboardModifier.ControlModifier
+            and e.key() == Qt.Key.Key_V
+        ):
+            self.__parseclipboard()
+        super().keyPressEvent(e)
+
+
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
@@ -580,7 +615,7 @@ class AnkiWindow(QWidget):
         self.audiopath.setReadOnly(True)
         self.audiopath_sentence = QLineEdit()
         self.audiopath_sentence.setReadOnly(True)
-        self.editpath = QLineEdit()
+        self.editpath = pasteimageEdit()
         self.editpath.setReadOnly(True)
         self.viewimagelabel = pixmapviewer()
         self.editpath.textChanged.connect(self.wrappedpixmap)

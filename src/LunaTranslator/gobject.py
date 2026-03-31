@@ -45,7 +45,7 @@ def gettempdir_1():
 
 
 def gettempdir(filename=""):
-    tgt = __getdir(os.path.join("temp/{}".format(os.getpid()), filename))
+    tgt = __getdir(os.path.join("temp", str(os.getpid()), filename))
     return tgt
 
 
@@ -103,7 +103,7 @@ elif runtime_bit_64:
 else:
     runtimedir = "runtime3.7-32"
 
-runtimedir = "files/" + runtimedir
+runtimedir = os.path.join("files", runtimedir)
 platformversion = tuple(int(_) for _ in platform.version().split("."))
 sys_le_xp = platformversion[0] <= 5
 sys_ge_win_11 = platformversion[2] >= 22000  # 21h2

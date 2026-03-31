@@ -174,6 +174,10 @@ _ClipBoardSetText.argtypes = (c_wchar_p,)
 _ClipBoardSetImage = utilsdll.ClipBoardSetImage
 _ClipBoardSetImage.argtypes = (c_void_p, c_size_t)
 _ClipBoardSetImage.restype = c_bool
+_ClipBoardGetImage = utilsdll.ClipBoardGetImage
+_ClipBoardGetImage_CB = CFUNCTYPE(None, POINTER(c_char), c_size_t)
+_ClipBoardGetImage.argtypes = (_ClipBoardGetImage_CB,)
+_ClipBoardGetImage.restype = c_bool
 
 
 class _ClipBoard:
@@ -189,7 +193,18 @@ class _ClipBoard:
         _ClipBoardSetText(t)
 
     @property
-    def image(self): ...
+    def image(self):
+        ret: "list[bytes]" = []
+
+        def _cb(ptr, size):
+            ret.append(ptr[:size])
+
+        if not _ClipBoardGetImage(_ClipBoardGetImage_CB(_cb)):
+            return None
+        if ret:
+            return ret[0]
+        return None
+
     @image.setter
     def image(self, bytes_: bytes):
         _ClipBoardSetImage(bytes_, len(bytes_))

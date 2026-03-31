@@ -200,3 +200,40 @@ DECLARE_API bool ClipBoardSetImage(void *ptr, size_t size)
     CloseClipboard();
     return true;
 }
+
+DECLARE_API bool ClipBoardGetImage(void (*cb)(void *ptr, size_t size))
+{
+    if (!IsClipboardFormatAvailable(CF_DIB))
+        return false;
+    if (tryopenclipboard() == false)
+        return false;
+    bool success = false;
+
+    HANDLE hClipboardData = GetClipboardData(CF_DIB);
+    std::vector<BYTE> fullBmp;
+    if (hClipboardData != NULL)
+    {
+        BYTE *pDib = (BYTE *)GlobalLock(hClipboardData);
+        SIZE_T dibSize = GlobalSize(hClipboardData);
+
+        if (pDib)
+        {
+            fullBmp.resize(sizeof(BITMAPFILEHEADER) + dibSize);
+            BITMAPFILEHEADER *bfh = (BITMAPFILEHEADER *)fullBmp.data();
+            bfh->bfType = 0x4D42;
+            bfh->bfSize = (DWORD)fullBmp.size();
+            bfh->bfReserved1 = 0;
+            bfh->bfReserved2 = 0;
+            BITMAPINFOHEADER *pHeader = (BITMAPINFOHEADER *)pDib;
+            DWORD dwPaletteSize = (pHeader->biBitCount <= 8) ? (1 << pHeader->biBitCount) * sizeof(RGBQUAD) : 0;
+            bfh->bfOffBits = sizeof(BITMAPFILEHEADER) + pHeader->biSize + dwPaletteSize;
+
+            memcpy(fullBmp.data() + sizeof(BITMAPFILEHEADER), pDib, dibSize);
+
+            GlobalUnlock(hClipboardData);
+        }
+    }
+    CloseClipboard();
+    cb(fullBmp.data(), fullBmp.size());
+    return fullBmp.size();
+}

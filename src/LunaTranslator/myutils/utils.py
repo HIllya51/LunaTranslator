@@ -1224,19 +1224,19 @@ def get_element_by(attr, attrv, html):
 
 
 def __getimageformatlist():
+    def __movefirst(v, l: list):
+        l.remove(v)
+        l.insert(0, v)
+
     _ = sorted([_.data().decode() for _ in QImageWriter.supportedImageFormats()])
     if "png" in _:
-        _.remove("png")
-        _.insert(0, "png")
+        __movefirst("png", _)
     if "jpeg" in _:
-        _.remove("jpeg")
-        _.insert(0, "jpeg")
+        __movefirst("jpeg", _)
     if "jpg" in _:
-        _.remove("jpg")
-        _.insert(0, "jpg")
+        __movefirst("jpg", _)
     if "webp" in _:
-        _.remove("webp")
-        _.insert(0, "webp")
+        __movefirst("webp", _)
     return _
 
 

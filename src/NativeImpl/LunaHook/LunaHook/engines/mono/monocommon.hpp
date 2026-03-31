@@ -108,7 +108,6 @@ namespace monocommon
                 hp.filter_fun = all_ascii_Filter;
                 hp.offset = stackoffset(func.textIndex);
                 hp.text_fun = (decltype(hp.text_fun))func.text_fun;
-                HostMsg::Log ("Mono: INSERT");
                 NewHook(hp, func.functionName);
             }
         }
