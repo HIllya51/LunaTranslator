@@ -1362,7 +1362,7 @@
                 "SECRET_KEY": "",
                 "使用自定义promt": false,
                 "自定义promt": "",
-                "Temperature": 0.3,
+                "Temperature": 0,
                 "max_tokens": 4096,
                 "use_max_completion_tokens": false,
                 "top_p": 0.3,

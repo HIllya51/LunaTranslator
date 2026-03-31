@@ -224,7 +224,7 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 			if (n == sp.maxRecords)
 			{
 				spDefault.maxRecords = sp.maxRecords * 2;
-				ConsoleOutput(TR[OUT_OF_RECORDS_RETRY]);
+				HostMsg::Log(TR[OUT_OF_RECORDS_RETRY]);
 			}
 		}
 	}
@@ -357,7 +357,7 @@ void mergevector(std::vector<uintptr_t> &v1, const std::vector<uintptr_t> &v2)
 }
 void SearchForHooks_Return()
 {
-	ConsoleOutput(TR[HOOK_SEARCH_FINISHED], sp.maxRecords - recordsAvailable);
+	HostMsg::Log(TR[HOOK_SEARCH_FINISHED], sp.maxRecords - recordsAvailable);
 	for (int i = 0, results = 0; i < sp.maxRecords; ++i)
 	{
 		HookParam hp;
@@ -392,7 +392,7 @@ void SearchForHooks_Return()
 		}
 		NotifyHookFound(hp, (wchar_t *)records[i].text);
 		if (++results % 100'000 == 0)
-			ConsoleOutput(TR[ResultsNum], results);
+			HostMsg::Log(TR[ResultsNum], results);
 	}
 	records.reset();
 	for (int i = 0; i < CACHE_SIZE; ++i)
@@ -407,7 +407,7 @@ void initrecords()
 		}
 		catch (std::bad_alloc)
 		{
-			ConsoleOutput(TR[SearchForHooks_ERROR], sp.maxRecords /= 2);
+			HostMsg::Log(TR[SearchForHooks_ERROR], sp.maxRecords /= 2);
 		}
 	while (!records && sp.maxRecords);
 }
@@ -429,7 +429,7 @@ void inlinehookpipeline(std::vector<uintptr_t> &addresses)
 		*(uintptr_t *)(trampolines[i] + addr_offset) = addresses[i];
 		*(void **)(trampolines[i] + original_offset) = original;
 		if (i % 2500 == 0)
-			ConsoleOutput(TR[HOOK_SEARCH_INITIALIZING], 1 + 98. * i / addresses.size());
+			HostMsg::Log(TR[HOOK_SEARCH_INITIALIZING], 1 + 98. * i / addresses.size());
 	}
 	// 避免MH_RemoveHook时移除原本已有hook
 	for (int i = 0; i < mherroridx.size(); i++)
@@ -438,10 +438,10 @@ void inlinehookpipeline(std::vector<uintptr_t> &addresses)
 		addresses.erase(addresses.begin() + reverseidx);
 	}
 
-	ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], addresses.size());
+	HostMsg::Log(TR[HOOK_SEARCH_INITIALIZED], addresses.size());
 	MH_ApplyQueued();
-	ConsoleOutput(TR[HOOK_SEARCH_STARTING]);
-	ConsoleOutput(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
+	HostMsg::Log(TR[HOOK_SEARCH_STARTING]);
+	HostMsg::Log(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
 	Sleep(sp.searchTime);
 	for (auto addr : addresses)
 		MH_QueueDisableHook((void *)addr);
@@ -457,7 +457,7 @@ void _SearchForHooks(SearchParam spUser)
 {
 	static std::mutex m;
 	std::scoped_lock lock(m);
-	ConsoleOutput(TR[HOOK_SEARCH_INITIALIZING], 0.);
+	HostMsg::Log(TR[HOOK_SEARCH_INITIALIZING], 0.);
 
 	sp = spUser.length == 0 ? spDefault : spUser;
 	sp.codepage = spUser.codepage;
@@ -656,15 +656,15 @@ void _SearchForHooks(SearchParam spUser)
 
 		uintptr_t minemaddr = -1, maxemaddr = 0;
 
-		ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], jitaddr2emuaddr.size());
+		HostMsg::Log(TR[HOOK_SEARCH_INITIALIZED], jitaddr2emuaddr.size());
 
 		for (auto addr : jitaddr2emuaddr)
 		{
 			minemaddr = min(minemaddr, addr.second.second);
 			maxemaddr = max(maxemaddr, addr.second.second);
 		}
-		ConsoleOutput("%p %p", minemaddr, maxemaddr);
-		ConsoleOutput("%p %p", sp.minAddress, sp.maxAddress);
+		HostMsg::Log("%p %p", minemaddr, maxemaddr);
+		HostMsg::Log("%p %p", sp.minAddress, sp.maxAddress);
 		if (sp.searchTime == 0 || sp.maxAddress == 0)
 		{
 			FILE *f;
@@ -684,7 +684,7 @@ void _SearchForHooks(SearchParam spUser)
 		std::vector<void *> successaddr;
 		for (auto addr : jitaddr2emuaddr)
 		{
-			// ConsoleOutput("%llx => %p", addr.second.second ,addr.first);
+			// HostMsg::Log("%llx => %p", addr.second.second ,addr.first);
 			if (addr.second.second > sp.maxAddress || addr.second.second < sp.minAddress)
 				continue;
 
@@ -692,10 +692,10 @@ void _SearchForHooks(SearchParam spUser)
 			successaddr.push_back((void *)addr.first);
 		}
 		successaddr = add_veh_hook(successaddr, funcs);
-		ConsoleOutput(TR[HOOK_SEARCH_INITIALIZED], successaddr.size());
+		HostMsg::Log(TR[HOOK_SEARCH_INITIALIZED], successaddr.size());
 		if (successaddr.size() == 0)
 			return;
-		ConsoleOutput(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
+		HostMsg::Log(TR[MAKE_GAME_PROCESS_TEXT], sp.searchTime / 1000);
 		Sleep(sp.searchTime);
 		// remove_veh_hook(successaddr);
 		// remove_veh_hook还是有问题，容易崩
@@ -719,8 +719,8 @@ void SearchForText(wchar_t *text, UINT codepage)
 		WideCharToMultiByte(codepage, 0, text, PATTERN_SIZE, codepageText, PATTERN_SIZE * 4, nullptr, nullptr);
 
 	if (strlen(utf8Text) < 4 || ((codepage != CP_UTF8) && (strlen(codepageText) < 4)) || wcslen(text) < 3)
-		return ConsoleOutput(TR[NOT_ENOUGH_TEXT]);
-	ConsoleOutput(TR[HOOK_SEARCH_STARTING]);
+		return HostMsg::Log(TR[NOT_ENOUGH_TEXT]);
+	HostMsg::Log(TR[HOOK_SEARCH_STARTING]);
 	auto GenerateHooks = [&](uintptr_t minaddr, std::vector<uintptr_t> addresses, HookParamType type)
 	{
 		for (auto addr : addresses)
@@ -752,5 +752,5 @@ void SearchForText(wchar_t *text, UINT codepage)
 		GenerateHooks(minaddr, Util::SearchMemory(codepageText, strlen(codepageText), PAGE_READWRITE, minaddr), USING_STRING);
 	GenerateHooks(minaddr, Util::SearchMemory(text, wcslen(text) * sizeof(wchar_t), PAGE_READWRITE, minaddr), CODEC_UTF16);
 	if (!found)
-		ConsoleOutput(TR[COULD_NOT_FIND]);
+		HostMsg::Log(TR[COULD_NOT_FIND]);
 }

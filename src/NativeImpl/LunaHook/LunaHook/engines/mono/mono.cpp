@@ -49,7 +49,7 @@ namespace
       if (!addr)
         continue;
 
-      ConsoleOutput("monobdwgcdll %p", addr);
+      HostMsg::Log ("monobdwgcdll %p", addr);
       HookParam hp;
       hp.address = addr + 4;
       hp.offset = regoffset(rcx);
@@ -99,7 +99,7 @@ bool monobdwgc()
 	auto succ = false;
 	for (auto addr : addrs)
 	{
-		ConsoleOutput("monobdwgcdll %p", addr);
+		HostMsg::Log ("monobdwgcdll %p", addr);
 		HookParam hp;
 		hp.address = (DWORD)addr;
 		hp.offset = regoffset(eax);
@@ -122,7 +122,7 @@ bool monodll()
 	auto succ = false;
 	for (auto addr : addrs)
 	{
-		ConsoleOutput("monodll %p", addr);
+		HostMsg::Log ("monodll %p", addr);
 		HookParam hp;
 		hp.address = (DWORD)addr;
 		hp.offset = regoffset(ebx);

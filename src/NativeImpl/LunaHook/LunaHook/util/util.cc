@@ -31,7 +31,7 @@ namespace
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
-      ConsoleOutput("SearchMemory ERROR");
+      HostMsg::Log("SearchMemory ERROR");
     }
     return 0;
   }
@@ -532,9 +532,9 @@ std::vector<DWORD> findrelativecall(const BYTE *pattern, int length, DWORD calla
       calladdr += 1;
       BYTE *_b = (BYTE *)calladdr;
       BYTE *_a = relative._bytes;
-      /*ConsoleOutput("%p", addr);
-      ConsoleOutput("%p %x", calladdress, relative._dw);
-      ConsoleOutput("%02x%02x%02x%02x %02x%02x%02x%02x", _a[0], _a[1], _a[2], _a[3], _b[0], _b[1], _b[2], _b[3]);*/
+      /*HostMsg::Log("%p", addr);
+      HostMsg::Log("%p %x", calladdress, relative._dw);
+      HostMsg::Log("%02x%02x%02x%02x %02x%02x%02x%02x", _a[0], _a[1], _a[2], _a[3], _b[0], _b[1], _b[2], _b[3]);*/
       if ((_a[0] == _b[0]) && (_a[1] == _b[1]) && (_a[2] == _b[2]) && (_a[3] == _b[3]))
       {
         save.push_back(start);

@@ -195,7 +195,7 @@
             "SECRET_KEY": "",
             "use_custom_prompt": false,
             "custom_prompt": "",
-            "Temperature": 0.3,
+            "Temperature": 0,
             "max_tokens": 1024,
             "top_p": 0.3,
             "top_p_use": true,

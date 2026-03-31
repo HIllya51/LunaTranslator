@@ -53,8 +53,8 @@ bool safematch(ENGINE *m, const char *enginename)
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
-        ConsoleOutput(TR[Match_Error], enginename);
-        // ConsoleOutput("match ERROR");
+        HostMsg::Log(TR[Match_Error], enginename);
+        // HostMsg::Log("match ERROR");
     }
     return matched;
 }
@@ -67,8 +67,8 @@ bool safeattach(ENGINE *m, const char *enginename)
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
-        ConsoleOutput(TR[Attach_Error], enginename);
-        // ConsoleOutput("attach ERROR");
+        HostMsg::Log(TR[Attach_Error], enginename);
+        // HostMsg::Log("attach ERROR");
     }
     return attached;
 }
@@ -87,11 +87,11 @@ bool checkengine()
         auto enginename = m->getenginename();
         bool matched = safematch(m, enginename.c_str());
 
-        // ConsoleOutput("Progress %d/%d, checked engine %s, %s",current,engines.size(),m->getenginename(),infomations[matched+attached]);
-        // ConsoleOutput("Progress %d/%d, %s",current,engines.size(),infomations[matched+attached]);
+        // HostMsg::Log("Progress %d/%d, checked engine %s, %s",current,engines.size(),m->getenginename(),infomations[matched+attached]);
+        // HostMsg::Log("Progress %d/%d, %s",current,engines.size(),infomations[matched+attached]);
         if (!matched)
             continue;
-        ConsoleOutput(TR[MatchedEngine], enginename.c_str());
+        HostMsg::Log(TR[MatchedEngine], enginename.c_str());
         bool attached = safeattach(m, enginename.c_str());
         if (attached)
         {
@@ -102,18 +102,18 @@ bool checkengine()
                 spDefault.minAddress = 0;
                 spDefault.maxAddress = -1;
                 if (jittypedefault != JITTYPE::UNITY)
-                    HostInfo(HOSTINFO::EmuConnected, TR[IsEmuNotify], enginename.c_str());
+                    HostMsg::EmuConnected(TR[IsEmuNotify], enginename.c_str());
             }
         }
         if (m->is_engine_certain)
         {
-            ConsoleOutput(TR[ConfirmStop], enginename.c_str());
+            HostMsg::Log(TR[ConfirmStop], enginename.c_str());
             return attached;
         }
 
         if (attached)
         {
-            ConsoleOutput(TR[Attach_Stop], enginename.c_str());
+            HostMsg::Log(TR[Attach_Stop], enginename.c_str());
             return true;
         }
     }
@@ -135,10 +135,10 @@ void HIJACK()
     std::tie(processStartAddress, processStopAddress) = Util::QueryModuleLimits(GetModuleHandleW(nullptr), 0, 1 + PAGE_NOACCESS);
     spDefault.minAddress = processStartAddress;
     spDefault.maxAddress = processStopAddress;
-    ConsoleOutput(TR[ProcessRange], processStartAddress, processStopAddress);
+    HostMsg::Log(TR[ProcessRange], processStartAddress, processStopAddress);
 
     if (processStartAddress + 0x40000 > processStopAddress)
-        ConsoleOutput(TR[WarningDummy]);
+        HostMsg::Log(TR[WarningDummy]);
 
     bool result = false;
     __try
@@ -147,7 +147,7 @@ void HIJACK()
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
-        ConsoleOutput(TR[HIJACK_ERROR]);
+        HostMsg::Log(TR[HIJACK_ERROR]);
     }
 
     if (!result)

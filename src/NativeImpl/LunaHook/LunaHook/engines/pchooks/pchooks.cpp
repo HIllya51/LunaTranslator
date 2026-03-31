@@ -192,7 +192,7 @@ void PcHooks::hookD3DXFunctions(HMODULE d3dxModule, void *ptr)
     createFont = (uintptr_t)GetProcAddress(d3dxModule, "D3DX10CreateFontIndirectA");
   if (!createFont)
   {
-    ConsoleOutput("D3DX failed: couldn't find entry function");
+    HostMsg::Log ("D3DX failed: couldn't find entry function");
     return;
   }
 
@@ -227,7 +227,7 @@ void PcHooks::hookD3DXFunctions(HMODULE d3dxModule, void *ptr)
       return;
     }
   }
-  ConsoleOutput("D3DX failed: couldn't find vtable");
+  HostMsg::Log ("D3DX failed: couldn't find vtable");
   return;
 }
 

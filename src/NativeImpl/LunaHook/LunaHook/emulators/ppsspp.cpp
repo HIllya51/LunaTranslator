@@ -175,7 +175,7 @@ bool PPSSPPinithooksearch(){
 			if (info.RegionSize == 0x1f00000 && info.Protect == PAGE_READWRITE && info.Type == MEM_MAPPED)
 			{
 				found = true;
-				ConsoleOutput("PPSSPP memory found: searching for hooks should yield working hook codes");
+				HostMsg::Log("PPSSPP memory found: searching for hooks should yield working hook codes");
 #ifndef _WIN64
                 // PPSSPP 1.8.0 compiles jal to sub dword ptr [ebp+0x360],??
 				memcpy(spDefault.pattern, Array<BYTE>{ 0x83, 0xAD, 0x60, 0x03, 0x00, 0x00 }, spDefault.length = 6);
@@ -337,7 +337,7 @@ namespace ppsspp
         if (!findbase)
             findbase = MemDbg::findBytes(sig, sizeof(sig), ret - 0x1000, ret + 0x1000);
         if (!findbase)
-            ConsoleOutput("can't find emu_baseaddr");
+            HostMsg::Log("can't find emu_baseaddr");
         PPSSPP::x86_baseaddr = (*(DWORD *)(findbase + 12)) & 0xffff0000;
 #endif
         HookParam hpinternal;
@@ -512,7 +512,7 @@ namespace ppsspp
                 continue;
             if (*(BYTE *)(check + i) != bytes[i])
             {
-                ConsoleOutput("%p", check + i - processStartAddress);
+                HostMsg::Log("%p", check + i - processStartAddress);
             }
         }
     }
@@ -699,7 +699,7 @@ namespace ppsspp
                 return;
             game_info.DISC_ID = (char *)context->argof(3);
             game_info.TITLE = (char *)context->argof(4);
-            HostInfo(HOSTINFO::EmuGameName, "%s %s", context->argof(3), context->argof(4));
+            HostMsg::EmuGameName("%s %s", context->argof(3), context->argof(4));
             jitaddrclear();
         };
         return NewHook(hp, "PPSSPPGameInfo StringFromFormat");
@@ -748,7 +748,7 @@ namespace ppsspp
                 return;
             game_info.DISC_ID = match.value()[1];
             game_info.TITLE = match.value()[2];
-            HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            HostMsg::EmuGameName("%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
             jitaddrclear();
         };
         return NewHook(hp, "PPSSPPGameInfo MakeSystemRequest");
@@ -793,7 +793,7 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
         {
             game_info.DISC_ID = ((TextUnionA *)context->argof_thiscall(1))->view();
             game_info.TITLE = ((TextUnionA *)context->argof_thiscall(2))->view();
-            HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            HostMsg::EmuGameName("%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
             jitaddrclear();
         };
         return NewHook(hp, "PPSSPPGameInfo");
@@ -810,7 +810,7 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
             game_info = std::move(info_1);
             if (game_info.DISC_ID.size())
             {
-                HostInfo(HOSTINFO::EmuGameName, "%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+                HostMsg::EmuGameName("%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
             }
             return ret;
         }
@@ -894,6 +894,6 @@ bool PPSSPPWindows::attach_function1()
 bool PPSSPPWindows::attach_function()
 {
     if (!attach_function1())
-        HostInfo(HOSTINFO::EmuWarning, TR[EMUVERSIONTOOOLD]);
+        HostMsg::EmuWarning(TR[EMUVERSIONTOOOLD]);
     return true;
 }

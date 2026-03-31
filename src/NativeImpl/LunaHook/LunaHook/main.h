@@ -1,13 +1,18 @@
 #pragma once
-
-// main.h
-// 8/23/2013 jichi
-// Branch: ITH/IHF_DLL.h, rev 66
+namespace HostMsg
+{
+    template <typename T>
+    void Log(const T *text, ...);
+    void Log(UINT codepage, LPCSTR text, ...);
+    template <typename T>
+    void EmuConnected(const T *text, ...);
+    template <typename T>
+    void EmuWarning(const T *text, ...);
+    template <typename T>
+    void EmuGameName(const T *text, ...);
+}
 
 void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T(*buffer), int len);
-void HostInfo(HOSTINFO type, LPCSTR text, ...);
-void HostInfo(HOSTINFO type, LPCWSTR text, ...);
-#define ConsoleOutput(text, ...) HostInfo(HOSTINFO::Console, text, ##__VA_ARGS__, -1)
 void NotifyHookFound(HookParam hp, wchar_t *text);
 void NotifyHookRemove(uint64_t addr, LPCSTR name);
 bool NewHook(HookParam hp, LPCSTR name, bool silentlyfail = false);

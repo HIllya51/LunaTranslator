@@ -209,7 +209,7 @@ namespace
             game_info = GameInfo{title_name, title_id, title_version};
             if (game_info.id)
             {
-                HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
+                HostMsg::EmuGameName("%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
             }
             jitaddrclear();
         };
@@ -274,7 +274,7 @@ struct NSGameInfoC
         game_info = std::move(info);
         if (game_info.id)
         {
-            HostInfo(HOSTINFO::EmuGameName, "%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
+            HostMsg::EmuGameName("%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
         }
         return true;
     }
@@ -316,6 +316,6 @@ bool yuzu::attach_function1()
 bool yuzu::attach_function()
 {
     if (!attach_function1())
-        HostInfo(HOSTINFO::EmuWarning, TR[EMUVERSIONTOOOLD]);
+        HostMsg::EmuWarning(TR[EMUVERSIONTOOOLD]);
     return true;
 }

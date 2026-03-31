@@ -116,8 +116,8 @@ namespace
             return NULL;
         if (auto s = getclassinfo(klass))
         {
-            ConsoleOutput(s.value().c_str());
-            ConsoleOutput(getmethodinfo(MonoClassMethod).c_str());
+            HostMsg::Log (s.value().c_str());
+            HostMsg::Log (getmethodinfo(MonoClassMethod).c_str());
         }
         return MonoClassMethod;
     }
@@ -229,12 +229,12 @@ monoloopinfo monofunctions::loop_all_methods(std::optional<std::function<void(co
         if (!s)
             continue;
         if (show)
-            ConsoleOutput(s.value().c_str());
+            HostMsg::Log (s.value().c_str());
         gpointer iter = nullptr;
         while (auto method = SafeFptr(mono_class_get_methods)(klass, &iter))
         {
             if (show)
-                ConsoleOutput(getmethodinfo(method).c_str());
+                HostMsg::Log (getmethodinfo(method).c_str());
             else
             {
                 safe_getxx(&hps, method, klass);

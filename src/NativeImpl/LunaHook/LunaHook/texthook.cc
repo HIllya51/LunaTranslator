@@ -107,14 +107,14 @@ uintptr_t getasbaddr(const HookParam &hp)
 			if (function)
 				address += (uint64_t)function;
 			else
-				return ConsoleOutput(TR[FUNC_MISSING]), 0;
+				return HostMsg::Log(TR[FUNC_MISSING]), 0;
 		}
 		else
 		{
 			if (HMODULE moduleBase = GetModuleHandleW(hp.module))
 				address += (uint64_t)moduleBase;
 			else
-				return ConsoleOutput(TR[MODULE_MISSING]), 0;
+				return HostMsg::Log(TR[MODULE_MISSING]), 0;
 		}
 	}
 	return address;
@@ -126,7 +126,7 @@ bool TextHook::Insert(HookParam hp)
 	if (!addr)
 		return false;
 	RemoveHook(addr, 0);
-	ConsoleOutput(TR[INSERTING_HOOK], hp.name, addr);
+	HostMsg::Log(TR[INSERTING_HOOK], hp.name, addr);
 	local_buffer = new BYTE[PIPE_BUFFER_SIZE];
 	{
 		std::scoped_lock lock(viewMutex);
@@ -317,7 +317,7 @@ void TextHook::Send(hook_context *context)
 			__leave;
 		if (buff.size > TEXT_BUFFER_SIZE)
 		{
-			ConsoleOutput(TR[InvalidLength], buff.size, hp.name);
+			HostMsg::Log(TR[InvalidLength], buff.size, hp.name);
 			buff.size = TEXT_BUFFER_SIZE;
 		}
 		if (hp.type & USING_CHAR || (!text_fun && !(hp.type & USING_STRING)))
@@ -428,7 +428,7 @@ void TextHook::Send(hook_context *context)
 		if (!err && !(hp.type & KNOWN_UNSTABLE))
 		{
 			err = true;
-			ConsoleOutput(TR[SEND_ERROR], hp.name);
+			HostMsg::Log(TR[SEND_ERROR], hp.name);
 		}
 	}
 
@@ -465,7 +465,7 @@ bool TextHook::InsertHookCode()
 		if (error == MH_ERROR_ALREADY_CREATED)
 			RemoveHook(address);
 		else
-			return ConsoleOutput(MH_StatusToString(error)), false;
+			return HostMsg::Log(MH_StatusToString(error)), false;
 
 	*(TextHook **)(common_hook + this_offset) = this;
 	*(void(TextHook::**)(uintptr_t))(common_hook + send_offset) = &TextHook::Send;
@@ -533,7 +533,7 @@ void TextHook::Read()
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		ConsoleOutput(TR[READ_ERROR], hp.name);
+		HostMsg::Log(TR[READ_ERROR], hp.name);
 		Clear();
 	}
 }

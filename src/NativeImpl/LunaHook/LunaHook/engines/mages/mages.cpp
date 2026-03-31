@@ -352,7 +352,7 @@ namespace hookmages
         }
         if (offset == -1)
             return false;
-        ConsoleOutput("%p", pos - processStartAddress);
+        HostMsg::Log ("%p", pos - processStartAddress);
         switch (pos - processStartAddress)
         {
         case 0x6e69b: // SG My Darling's Embrace 破解版
@@ -385,7 +385,7 @@ namespace hookmages
             // Memories_Off_-Innocent_Fille-_for_Dearest
             gametype = 0;
         }
-        // ConsoleOutput("%x",pos-processStartAddress);
+        // HostMsg::Log ("%x",pos-processStartAddress);
         HookParam hp;
         // hp.address = hookaddr;
         hp.address = hookaddr;
@@ -397,7 +397,7 @@ namespace hookmages
         hp.address = pos;
         hp.text_fun = SpecialHookMAGES<1>;
         _ |= NewHook(hp, "MAGES_text");
-        ConsoleOutput("%p %p", hookaddr, pos);
+        HostMsg::Log ("%p %p", hookaddr, pos);
         return _;
 
 #else
@@ -579,7 +579,7 @@ v60 = v26[1] + ((v28 & 0x7F) << 8);
                 if ((((*(DWORD *)(pos)) & 0xffffff) == 0x13b60f))
                 {
                     offset = regoffset(rbx); // rbx
-                    // ConsoleOutput("%p",pos-processStartAddress);
+                    // HostMsg::Log ("%p",pos-processStartAddress);
                     break;
                 }
                 pos += 1;

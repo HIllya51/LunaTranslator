@@ -3,7 +3,7 @@ class NoEngine : public ENGINE
 public:
     bool attach_function()
     {
-        ConsoleOutput("IGNORE %s", getenginename().c_str());
+        HostMsg::Log("IGNORE %s", getenginename().c_str());
         return false;
     }
 };
@@ -144,14 +144,14 @@ public:
 // };
 
 // if (Util::CheckFile(L"AGERC.DLL")) { // jichi 3/17/2014: Eushully, AGE.EXE
-//   ConsoleOutput("IGNORE Eushully");
+//   HostMsg::Log("IGNORE Eushully");
 //   return true;
 // }
 // if (Util::CheckFile(L"*\\Managed\\UnityEngine.dll")) { // jichi 12/3/2013: Unity (BALDRSKY ZERO)
-//   ConsoleOutput("IGNORE Unity");
+//   HostMsg::Log("IGNORE Unity");
 //   return true;
 // }
 // if (Util::CheckFile(L"bsz_Data\\Managed\\UnityEngine.dll") || Util::CheckFile(L"bsz2_Data\\Managed\\UnityEngine.dll")) {
-//   ConsoleOutput("IGNORE Unity");
+//   HostMsg::Log("IGNORE Unity");
 //   return true;
 // }

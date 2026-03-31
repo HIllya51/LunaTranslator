@@ -160,23 +160,50 @@ void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T *buffer
 	memcpy(&buffer->hp, &hp, sizeof(hp));
 	WriteFile(hookPipe, buffer, sizeof(TextOutput_T) + len, DUMMY, nullptr);
 }
-void HostInfo(HOSTINFO type, LPCSTR text, ...)
+
+namespace HostMsg
 {
-	HostInfoNotif buffer;
-	va_list args;
-	va_start(args, text);
-	buffer.type = type;
-	vsnprintf(buffer.message, MESSAGE_SIZE, text, args);
-	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
-}
-void HostInfo(HOSTINFO type, LPCWSTR text, ...)
-{
-	HostInfoNotifW buffer;
-	va_list args;
-	va_start(args, text);
-	buffer.type = type;
-	_vsnwprintf_s(buffer.message, _TRUNCATE, MESSAGE_SIZE, text, args);
-	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
+#define vhostinfoA(_type, cp)                                         \
+	{                                                                 \
+		va_list args;                                                 \
+		va_start(args, text);                                         \
+		HostInfoNotif buffer;                                         \
+		buffer.type = _type;                                          \
+		buffer.codepage = cp;                                         \
+		vsnprintf(buffer.message, MESSAGE_SIZE, text, args);          \
+		va_end(args);                                                 \
+		WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr); \
+	}
+
+#define vhostinfoW(_type)                                                   \
+	{                                                                       \
+		va_list args;                                                       \
+		va_start(args, text);                                               \
+		HostInfoNotifW buffer;                                              \
+		buffer.type = _type;                                                \
+		_vsnwprintf_s(buffer.message, MESSAGE_SIZE, _TRUNCATE, text, args); \
+		va_end(args);                                                       \
+		WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);       \
+	}
+
+#define definefunction(funcname, type)             \
+	template <>                                    \
+	void funcname<char>(LPCSTR text, ...)          \
+		vhostinfoA(type, CP_UTF8);                 \
+	template <>                                    \
+	void funcname<wchar_t>(LPCWSTR text, ...)      \
+		vhostinfoW(type);                          \
+	void funcname(UINT codepage, LPCSTR text, ...) \
+		vhostinfoA(type, codepage);
+
+	definefunction(Log, HOSTINFO::Console);
+	definefunction(EmuConnected, HOSTINFO::EmuConnected);
+	definefunction(EmuWarning, HOSTINFO::EmuWarning);
+	definefunction(EmuGameName, HOSTINFO::EmuGameName);
+
+#undef definefunction
+#undef vhostinfoW
+#undef vhostinfoA
 }
 Synchronized<std::unordered_map<uintptr_t, std::wstring>> modulecache;
 std::wstring &querymodule(uintptr_t addr)
@@ -216,7 +243,7 @@ void NotifyHookFound(HookParam hp, wchar_t *text)
 void NotifyHookRemove(uint64_t addr, LPCSTR name)
 {
 	if (name)
-		ConsoleOutput(TR[REMOVING_HOOK], name);
+		HostMsg::Log(TR[REMOVING_HOOK], name);
 	HookRemovedNotif buffer(addr);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }
@@ -306,7 +333,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 {
 	if (++currentHook >= MAX_HOOK)
 	{
-		ConsoleOutput(TR[TOO_MANY_HOOKS]);
+		HostMsg::Log(TR[TOO_MANY_HOOKS]);
 		return false;
 	}
 	if (lpname && *lpname)
@@ -316,7 +343,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 	if (!(*hooks)[currentHook].Insert(hp))
 	{
 		if (!silentlyfail)
-			ConsoleOutput(TR[InsertHookFailed], WideStringToString(hp.hookcode).c_str());
+			HostMsg::Log(TR[InsertHookFailed], WideStringToString(hp.hookcode).c_str());
 		(*hooks)[currentHook].Clear();
 		return false;
 	}
@@ -324,7 +351,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 	{
 		if (hp.emu_addr)
 		{
-			ConsoleOutput("%p => %p", hp.emu_addr, hp.address);
+			HostMsg::Log("%p => %p", hp.emu_addr, hp.address);
 			std::lock_guard __(JIT_HP_Records_lock);
 			JIT_HP_Records.push_back(hp);
 		}
@@ -335,7 +362,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 void delayinsertadd(HookParam hp, std::string name)
 {
 	delayinserthook->insert(std::make_pair(hp.emu_addr, std::make_pair(name, hp)));
-	ConsoleOutput(TR[INSERTING_HOOK], name.c_str(), hp.emu_addr);
+	HostMsg::Log(TR[INSERTING_HOOK], name.c_str(), hp.emu_addr);
 }
 void delayinsertNewHook(uint64_t em_address)
 {
@@ -358,7 +385,7 @@ bool NewHook(HookParam hp, LPCSTR name, bool silentlyfail)
 		auto spls = strSplit(hp.function, ":");
 		if (spls.size() != 5)
 		{
-			ConsoleOutput("invalid");
+			HostMsg::Log("invalid");
 			return false;
 		}
 		int argcount;
@@ -374,7 +401,7 @@ bool NewHook(HookParam hp, LPCSTR name, bool silentlyfail)
 
 		if (!hp.address)
 		{
-			ConsoleOutput("not find");
+			HostMsg::Log("not find");
 			return false;
 		}
 		return NewHook_1(hp, name, silentlyfail);

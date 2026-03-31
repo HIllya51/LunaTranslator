@@ -31,16 +31,16 @@ void tryinsertglobalfunction(void *isolate)
 	void *FunctionTemplate;
 	void *unknown;
 	void *v12[7];
-	ConsoleOutput("%p %p %p %p %p", SetObject, Global, FunctionTemplateNew, FunctionTemplateGetFunction, FunctionSetName);
+	HostMsg::Log("%p %p %p %p %p", SetObject, Global, FunctionTemplateNew, FunctionTemplateGetFunction, FunctionSetName);
 	GetCurrentContext(isolate, &context);
-	ConsoleOutput("context %p", context);
+	HostMsg::Log("context %p", context);
 	auto f = FunctionTemplateNew(&FunctionTemplate, context, Method, v12[0], 0, 0, 1, 0);
 
-	ConsoleOutput("FunctionTemplate %p %p", *(void **)f, unknown);
+	HostMsg::Log("FunctionTemplate %p %p", *(void **)f, unknown);
 	void *Function = FunctionTemplateGetFunction(FunctionTemplate, &unknown, context);
 
 	auto string = NewFromUtf8(&v8string, isolate, "hello", 1, -1);
-	ConsoleOutput("%p %p", *(void **)string, v8string);
+	HostMsg::Log("%p %p", *(void **)string, v8string);
 	FunctionSetName(*(void **)Function, *(void **)string);
 
 	auto global = Global(context, &unknown);

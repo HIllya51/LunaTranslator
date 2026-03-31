@@ -314,9 +314,14 @@ struct HostInfoI18NReq
 };
 struct HostInfoNotif
 {
-	HostInfoNotif(std::string message = "") { strncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1); }
+	HostInfoNotif(std::string message = "", UINT _codepage = CP_UTF8)
+	{
+		codepage = _codepage;
+		strncpy_s(this->message, message.c_str(), MESSAGE_SIZE - 1);
+	}
 	HostNotificationType command = HOST_NOTIFICATION_TEXT;
 	HOSTINFO type;
+	UINT codepage;
 	char message[MESSAGE_SIZE] = {};
 };
 struct HostInfoNotifW
