@@ -71,6 +71,24 @@ def cishusX():
     return __
 
 
+class pastepathEdit(QLineEdit):
+
+    def __parseclipboard(self):
+        t = NativeUtils.ClipBoard.text
+        if os.path.exists(t):
+            self.setText(t)
+        elif t.startswith('"') and t.endswith('"') and os.path.exists(t[1:-1]):
+            self.setText(t[1:-1])
+
+    def keyPressEvent(self, e: QKeyEvent):
+        if (
+            e.modifiers() == Qt.KeyboardModifier.ControlModifier
+            and e.key() == Qt.Key.Key_V
+        ):
+            self.__parseclipboard()
+        super().keyPressEvent(e)
+
+
 class pasteimageEdit(QLineEdit):
     def __parseclipboard(self):
         t = NativeUtils.ClipBoard.text
@@ -611,9 +629,9 @@ class AnkiWindow(QWidget):
                         self.setTextCursor(cursor)
                 return super().keyPressEvent(e)
 
-        self.audiopath = QLineEdit()
+        self.audiopath = pastepathEdit()
         self.audiopath.setReadOnly(True)
-        self.audiopath_sentence = QLineEdit()
+        self.audiopath_sentence = pastepathEdit()
         self.audiopath_sentence.setReadOnly(True)
         self.editpath = pasteimageEdit()
         self.editpath.setReadOnly(True)
