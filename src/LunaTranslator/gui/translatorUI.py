@@ -931,10 +931,8 @@ class TranslatorWindow(resizableframeless):
 
     def show_(self):
 
-        if globalconfig["showintab"] or globalconfig["showna"]:
-            windows.ShowWindow(self.winid, windows.SW_SHOWNOACTIVATE)
-        else:
-            self.show()
+        self.show()
+        if not (globalconfig["showintab"] or globalconfig["showna"]):
             windows.SetForegroundWindow(self.winid)
         gobject.base.commonstylebase.hide()
 
