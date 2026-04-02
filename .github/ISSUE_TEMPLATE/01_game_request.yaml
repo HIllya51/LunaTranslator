@@ -46,16 +46,3 @@ body:
       Game screenshots and Select Text window screenshots
   validations:
     required: true
-- type: checkboxes
-  attributes:
-    label: Validations
-    description: 检查以下问题，否则问题将不会得到受理。Please check the following questions, otherwise your question will not be processed.
-    options:
-      - label: 确认你正使用使用软件的最新版本。Make sure you are using the latest version of the software.
-        required: true
-      - label: 确认游戏是视觉小说。Make sure the game is a visual novel.
-        required: true
-      - label: 确认游戏资源链接符合要求。Confirm that the game resource link meets the requirements.
-        required: true
-      - label: 确认上传了有效的截图。Confirm that a valid screenshot has been uploaded.
-        required: true
