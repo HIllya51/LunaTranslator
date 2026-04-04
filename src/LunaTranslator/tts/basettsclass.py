@@ -95,8 +95,8 @@ class TTSResult:
 
 class SpeechParam:
     def __init__(self, speed, pitch):
-        self.speed = speed
-        self.pitch = pitch
+        self.speed = speed  # -10~10
+        self.pitch = pitch  # -10~10
 
     def __hash__(self):
         return self._tuple_().__hash__()

@@ -1305,6 +1305,13 @@
         "gtts": {
             "use": false,
             "name": "GoogleTTS"
+        },
+        "chrome": {
+            "use": false,
+            "name": "Chrome speechSynthesis",
+            "args": {
+                "key": ""
+            }
         }
     },
     "hirasetting": {
