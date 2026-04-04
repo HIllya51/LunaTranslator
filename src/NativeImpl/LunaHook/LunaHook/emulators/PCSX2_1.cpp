@@ -621,8 +621,14 @@ namespace
     void FSLPM65997(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        s = re::sub(s, R"(#\w+?\[[\.\d]*\])");
-        strReplace(s, "#n");
+        if (s == u8"　")
+            return buffer->clear();
+        s = re::sub(s, R"(#Ruby\[(.*?),(.*?)\])", "$1");
+        if (hp->type & CODEC_UTF8)
+            s = re::sub(s, u8R"((　)*#n(　)*)");
+        else
+            s = re::sub(s, R"((\x81\x40)*#n(\x81\x40)*)");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
     }
     void SLPM66437(TextBuffer *buffer, HookParam *hp)
@@ -1639,7 +1645,6 @@ namespace
     }
     void SLPM65736(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, TEXTANDLEN("#n\x81\x40"));
         FSLPM65997(buffer, hp);
         auto s = buffer->strA();
         static std::string last;
@@ -2049,6 +2054,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // S.Y.K ～新説西遊記～
+    {0x1d8f90, {FULL_STRING, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM65997, "SLPM-55206"}},
     // 咎狗の血 True Blood
     {0x1424F8, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, SLPM66856F, std::vector<const char *>{"SLPM-66855", "SLPM-66856"}}}, //@mills
     // 風色サーフ

@@ -173,7 +173,7 @@ namespace
 			case HOST_NOTIFICATION_TEXT:
 			{
 				auto info = (HostInfoNotif *)buffer;
-				Host::InfoOutput(info->type, StringToWideString(info->message));
+				Host::InfoOutput(info->type, StringToWideString(info->message, info->codepage).value_or(L""));
 			}
 			break;
 			case HOST_NOTIFICATION_TEXT_W:

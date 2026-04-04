@@ -5,6 +5,8 @@ namespace HostMsg
     void Log(const T *text, ...);
     void Log(UINT codepage, LPCSTR text, ...);
     template <typename T>
+    void Warning(const T *text, ...);
+    template <typename T>
     void EmuConnected(const T *text, ...);
     template <typename T>
     void EmuWarning(const T *text, ...);

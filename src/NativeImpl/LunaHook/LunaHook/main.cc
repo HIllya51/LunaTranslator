@@ -197,6 +197,7 @@ namespace HostMsg
 		vhostinfoA(type, codepage);
 
 	definefunction(Log, HOSTINFO::Console);
+	definefunction(Warning, HOSTINFO::Warning);
 	definefunction(EmuConnected, HOSTINFO::EmuConnected);
 	definefunction(EmuWarning, HOSTINFO::EmuWarning);
 	definefunction(EmuGameName, HOSTINFO::EmuGameName);
