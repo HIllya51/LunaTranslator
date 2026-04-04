@@ -49,7 +49,7 @@ class OCR(baseocr):
         b64 = base64.b64encode(imagebinary)
         data = {
             "language": self.srclang,
-            "base64Image": "data:image/jpeg;base64," + str(b64, encoding="utf8"),
+            "base64Image": "data:image/png;base64," + str(b64, encoding="utf8"),
             "isOverlayRequired": "true",
             "OCREngine": 1,
             "apikey": apikey,
