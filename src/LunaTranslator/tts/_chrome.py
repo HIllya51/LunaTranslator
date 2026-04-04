@@ -4,10 +4,10 @@ import json
 from urllib.parse import quote
 
 # https://github.com/chromium/chromium/blob/main/chrome/browser/resources/network_speech_synthesis/tts_extension.js
+# https://github.com/chromium/chromium/blob/main/chrome/browser/resources/network_speech_synthesis/manifest.json
 
 
 class TTS(TTSbase):
-    arg_support_pitch = False
 
     def getvoicelist(self):
         voices = r"""
