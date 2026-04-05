@@ -141,6 +141,14 @@ namespace
         s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
     }
+    void PCSG00689(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::wstring last;
+        auto s = buffer->strW();
+        if (endWith(last, s))
+            buffer->clear();
+        last = s;
+    }
     void PCSG00935_2(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -1027,6 +1035,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ToLOVEる ダークネス トゥループリンセス
+    {0x8097D494, {FULL_STRING | CODEC_UTF16, 1, 0, 0, PCSG00689, "PCSG00689"}},
     // オメルタ CODE:TYCOON 戒
     {0x800BB456, {FULL_STRING, 5, 0, 0, 0, "PCSG00789"}},
     // 大図書館の羊飼い -Library Party-

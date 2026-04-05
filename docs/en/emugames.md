@@ -755,6 +755,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00689 | ToLOVEる ダークネス トゥループリンセス |
 |  | PCSG00789 | オメルタ CODE:TYCOON 戒 |
 |  | PCSG00505 | 大図書館の羊飼い -Library Party- |
 |  | PCSG01049 | TOKYOヤマノテBOYS for V FAN DISC |
