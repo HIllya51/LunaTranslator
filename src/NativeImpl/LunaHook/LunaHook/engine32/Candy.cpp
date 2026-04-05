@@ -344,10 +344,32 @@ bool WillowSoft::attach_function()
     return false;
 
   HookParam hp;
-  hp.type = USING_STRING;
-  hp.offset = stackoffset(2);
-  hp.type |= DATA_INDIRECT;
-  hp.index = 0;
+  hp.type = USING_STRING | FULL_STRING;
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    // 裸執事
+    unsigned int src = context->stack[2];
+    if (hp->user_value == 0)
+      if (IsBadReadPtr(*(char **)src, 0x100))
+        hp->user_value = 1;
+      else
+        hp->user_value = 2;
+
+    buffer->from(hp->user_value == 2 ? *(char **)src : (char *)src);
+  };
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto s = buffer->strA();
+    if (all_ascii(s))
+      return buffer->clear();
+
+    static std::string last;
+    if (last == s)
+      return buffer->clear();
+    last = s;
+    s = re::sub(s, R"((\x81\x40)*[\n\r](\x81\x40)*)");
+    buffer->from(s);
+  };
   hp.address = addr;
   return NewHook(hp, "WillowSoft");
 }
