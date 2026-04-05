@@ -908,5 +908,7 @@
     "选中时": "Vybrané",
     "排序": "Řazení",
     "输出内容": "Výstupní obsah",
-    "导出": "Export"
+    "导出": "Export",
+    "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Pokud narazíte na nepodporovanou hru, doporučuji mi ji poslat k přizpůsobení, místo abyste se ji snažili vyhledat sami.",
+    "仍要继续尝试自己搜索吗？": "Chcete i nadále zkoušet hledat sami?"
 }

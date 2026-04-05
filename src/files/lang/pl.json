@@ -908,5 +908,7 @@
     "选中时": "Zaznaczone",
     "排序": "Sortowanie",
     "输出内容": "Wynik wyjściowy",
-    "导出": "Export"
+    "导出": "Export",
+    "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Jeśli trafisz na nieobsługiwaną grę, najlepiej zgłoś mi ją do dodania obsługi, zamiast samodzielnie próbować jej wyszukiwać.",
+    "仍要继续尝试自己搜索吗？": "Czy nadal chcesz kontynuować samodzielne wyszukiwanie?"
 }

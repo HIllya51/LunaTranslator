@@ -908,5 +908,7 @@
     "选中时": "Khi được chọn",
     "排序": "Sắp xếp",
     "输出内容": "Nội dung đầu ra",
-    "导出": "Export"
+    "导出": "Export",
+    "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Nếu gặp trò chơi chưa được hỗ trợ, bạn nên gửi trò chơi đó cho tôi để tôi thêm hỗ trợ, thay vì tự mình thử tìm kiếm.",
+    "仍要继续尝试自己搜索吗？": "Bạn vẫn muốn tiếp tục thử tự mình tìm kiếm chứ?"
 }

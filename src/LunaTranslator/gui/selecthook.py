@@ -882,8 +882,19 @@ class hookselect(closeashidewindow):
         if globalconfig["sourcestatus2"]["texthook"]["use"] == False:
             return
         if self.firsttimex:
-            self.firsttimex = False
-            QMessageBox.warning(self, _TR("警告"), _TR("该功能可能会导致游戏崩溃！"))
+            ret = QMessageBox.question(
+                self,
+                _TR("警告"),
+                _TR(
+                    "该功能可能会导致游戏崩溃！\n如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。\n仍要继续尝试自己搜索吗？"
+                ),
+                defaultButton=QMessageBox.StandardButton.No,
+            )
+            if ret == QMessageBox.StandardButton.Yes:
+                self.firsttimex = False
+            elif ret == QMessageBox.StandardButton.No:
+                return os.startfile(dynamiclink("Resource/game_support"))
+
         if not self.searchhookparam:
             self.searchhookparam = searchhookparam(self)
         self.searchhookparam.show()
