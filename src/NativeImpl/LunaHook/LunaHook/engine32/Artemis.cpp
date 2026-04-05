@@ -126,18 +126,9 @@ bool InsertArtemis2Hook()
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(1);
-  hp.type = USING_STRING | NO_CONTEXT;
-
-  bool succ = NewHook(hp, "Artemis2");
-
-  // Artikash 1/1/2019: Recent games seem to use utf8 encoding instead, other than that the hook is identical.
-  // Not sure how to differentiate which games are sjis/utf8 so insert both
-  hp.address = addr + 6;
-  hp.offset = regoffset(ebp);
-  hp.index = 8; // ebp was also pushed
-  hp.type = CODEC_UTF8 | USING_STRING | DATA_INDIRECT;
-  succ |= NewHook(hp, "Artemis2");
-  return succ;
+  hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
+  hp.filter_fun = Utf8TypeChecker;
+  return NewHook(hp, "Artemis2");
 }
 
 bool InsertArtemis3Hook()
@@ -163,7 +154,7 @@ bool InsertArtemis3Hook()
       0x80, 0x3F, 0x00,                               // 005FD7B1 | 803F 00                  | cmp byte ptr ds:[edi],0                 |
       0x0F, 0x84, XX4,                                // 005FD7B4 | 0F84 88040000            | je ヘンタイ・プリズンsplit 1.5FDC42              |
       0x83, 0xB8, XX4, 0x00,                          // 005FD7BA | 83B8 74030000 00         | cmp dword ptr ds:[eax+374],0            |
-      0x8B, 0xDF,                                     // 005FD7C1 | 8BDF                     | mov ebx,edi                             |
+      0x8B, 0xDF                                      // 005FD7C1 | 8BDF                     | mov ebx,edi                             |
   };
 
   enum

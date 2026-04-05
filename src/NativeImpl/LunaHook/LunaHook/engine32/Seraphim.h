@@ -39,7 +39,6 @@ public:
     check_by = CHECK_BY::CUSTOM;
     check_by_target = []()
     {
-      return true;
       return Util::CheckFileAll({L"ArchPac.Dat", L"ScnPac.Dat", L"Voice0.dat"}) && Util::SearchResourceString(L"Seraphim");
     };
   };
