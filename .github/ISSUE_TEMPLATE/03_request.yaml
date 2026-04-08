@@ -15,4 +15,6 @@ body:
     required: true
 - type: textarea
   attributes:
-    label: Alternative behavior (optional) 近似的功能（可选）
+    label: Detailed description of the function 功能的详细描述
+  validations:
+    required: true
