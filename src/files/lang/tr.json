@@ -34,7 +34,6 @@
     "HOOK设置": "HOOK ayarları",
     "代码页": "kod sayfası",
     "OCR设置": "OCR ayarları",
-    "本地OCR": "Yerel OCR",
     "普通字体": "Normal yazıtipi",
     "描边字体": "Sıçrama yazıtipi",
     "显示设置": "Gösterim ayarları",
@@ -910,5 +909,6 @@
     "输出内容": "Çıktı içeriği",
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Desteklenmeyen bir oyunla karşılaşırsanız, kendi başınıza aramayı denemek yerine oyunu uyarlamam için bana göndermeniz önerilir.",
-    "仍要继续尝试自己搜索吗？": "Yine de kendi başınıza aramayı denemeye devam etmek istiyor musunuz?"
+    "仍要继续尝试自己搜索吗？": "Yine de kendi başınıza aramayı denemeye devam etmek istiyor musunuz?",
+    "内置OCR": "Yerleşik OCR"
 }

@@ -143,7 +143,6 @@
     "法语": "Französisch",
     "导出翻译记录为json文件": "Übersetzungsdateien als JSON-Dateien exportieren",
     "谷歌": "Google",
-    "本地OCR": "Lokale OCR",
     "模拟按键Ctrl": "Taste simulieren Strg",
     "搜索特殊码": "Suche nach speziellen Codes",
     "复制特殊码": "Sondercode kopieren",
@@ -910,5 +909,6 @@
     "输出内容": "Ausgabeinhalt",
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Wenn Sie auf ein nicht unterstütztes Spiel stoßen, empfehle ich, mir das Spiel zur Anpassung einzureichen, anstatt selbst danach zu suchen.",
-    "仍要继续尝试自己搜索吗？": "Möchten Sie weiterhin versuchen, selbst zu suchen?"
+    "仍要继续尝试自己搜索吗？": "Möchten Sie weiterhin versuchen, selbst zu suchen?",
+    "内置OCR": "Integrierte OCR"
 }

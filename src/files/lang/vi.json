@@ -18,7 +18,6 @@
     "去除花括号{}": "Lọc dấu ngoặc nhọn {}",
     "选择文件": "Chọn tệp",
     "剪贴板": "Khay nhớ tạm",
-    "本地OCR": "OCR cục bộ",
     "阿里": "Alibaba",
     "自动朗读": "Tự động đọc",
     "缩放时禁用窗口大小调整": "Vô hiệu hóa chỉnh kích thước khi phóng to",
@@ -910,5 +909,6 @@
     "输出内容": "Nội dung đầu ra",
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Nếu gặp trò chơi chưa được hỗ trợ, bạn nên gửi trò chơi đó cho tôi để tôi thêm hỗ trợ, thay vì tự mình thử tìm kiếm.",
-    "仍要继续尝试自己搜索吗？": "Bạn vẫn muốn tiếp tục thử tự mình tìm kiếm chứ?"
+    "仍要继续尝试自己搜索吗？": "Bạn vẫn muốn tiếp tục thử tự mình tìm kiếm chứ?",
+    "内置OCR": "OCR tích hợp"
 }

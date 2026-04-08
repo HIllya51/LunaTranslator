@@ -143,7 +143,6 @@
     "法语": "Francouzština",
     "导出翻译记录为json文件": "Exportovat překladové záznamy jako soubory JSON",
     "谷歌": "Google",
-    "本地OCR": "Místní OCR",
     "模拟按键Ctrl": "Simulovat klávesu Ctrl",
     "搜索特殊码": "Hledat speciální kódy",
     "复制特殊码": "Kopírovat speciální kód",
@@ -910,5 +909,6 @@
     "输出内容": "Výstupní obsah",
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Pokud narazíte na nepodporovanou hru, doporučuji mi ji poslat k přizpůsobení, místo abyste se ji snažili vyhledat sami.",
-    "仍要继续尝试自己搜索吗？": "Chcete i nadále zkoušet hledat sami?"
+    "仍要继续尝试自己搜索吗？": "Chcete i nadále zkoušet hledat sami?",
+    "内置OCR": "Vestavěné OCR"
 }

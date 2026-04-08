@@ -34,7 +34,6 @@
     "HOOK设置": "Ustawienia HOOK",
     "代码页": "strona kodowa",
     "OCR设置": "Ustawienia OCR",
-    "本地OCR": "Lokalne OCR",
     "普通字体": "Normalna czcionka",
     "描边字体": "Czcionka kresu",
     "显示设置": "Ustawienia wyświetlania",
@@ -910,5 +909,6 @@
     "输出内容": "Wynik wyjściowy",
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Jeśli trafisz na nieobsługiwaną grę, najlepiej zgłoś mi ją do dodania obsługi, zamiast samodzielnie próbować jej wyszukiwać.",
-    "仍要继续尝试自己搜索吗？": "Czy nadal chcesz kontynuować samodzielne wyszukiwanie?"
+    "仍要继续尝试自己搜索吗？": "Czy nadal chcesz kontynuować samodzielne wyszukiwanie?",
+    "内置OCR": "Wbudowany OCR"
 }

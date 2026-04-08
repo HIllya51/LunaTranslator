@@ -62,7 +62,7 @@ Same as [Translation](/en/guochandamoxing.html)
 
 ::: tabs
 
-== Local OCR
+== Built-in OCR
 
 The built-in system includes lightweight recognition models for Chinese, Japanese, and English. If you need to recognize other languages, you can download the corresponding language models from the `Resource Download` section.
 

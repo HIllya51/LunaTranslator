@@ -1591,7 +1591,7 @@
         },
         "local": {
             "use": true,
-            "name": "本地OCR",
+            "name": "内置OCR",
             "type": "offline",
             "argstype": "customwidget"
         },

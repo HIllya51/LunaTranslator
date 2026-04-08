@@ -62,7 +62,7 @@ Giống như [Dịch thuật](/en/guochandamoxing.html)
 
 ::: tabs
 
-== Local OCR
+== OCR tích hợp
 
 Mô hình nhận dạng nhẹ tích hợp sẵn bao gồm tiếng Trung, tiếng Nhật và tiếng Anh. Nếu bạn cần nhận dạng ngôn ngữ khác, vui lòng tải thêm mô hình ngôn ngữ tương ứng trong mục `Tải tài nguyên`.  
 

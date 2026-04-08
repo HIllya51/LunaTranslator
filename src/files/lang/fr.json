@@ -34,7 +34,6 @@
     "HOOK设置": "Paramètres Hook",
     "代码页": "Page de code",
     "OCR设置": "Paramètres ocr",
-    "本地OCR": "OCR local",
     "普通字体": "Police normale",
     "描边字体": "Police de bord",
     "显示设置": "Paramètres d 'affichage",
@@ -910,5 +909,6 @@
     "输出内容": "Contenu de sortie",
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Si vous rencontrez un jeu non pris en charge, il est recommandé de me le soumettre afin que je l’adapte, plutôt que d’essayer de le rechercher vous-même.",
-    "仍要继续尝试自己搜索吗？": "Voulez-vous quand même continuer à chercher par vous-même ?"
+    "仍要继续尝试自己搜索吗？": "Voulez-vous quand même continuer à chercher par vous-même ?",
+    "内置OCR": "OCR intégré"
 }

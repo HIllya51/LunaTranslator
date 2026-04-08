@@ -18,7 +18,6 @@
     "去除花括号{}": "Filter Curly Braces {}",
     "选择文件": "Select File",
     "剪贴板": "Clipboard",
-    "本地OCR": "Local OCR",
     "阿里": "Alibaba",
     "自动朗读": "Auto Read Aloud",
     "缩放时禁用窗口大小调整": "Disable Window Resize on Maximize",
@@ -910,5 +909,6 @@
     "输出内容": "Output content",
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "If you encounter a game that isn’t supported, it’s recommended to submit it to me so I can add support for it, rather than trying to search for it yourself.",
-    "仍要继续尝试自己搜索吗？": "Do you still want to continue trying to search on your own?"
+    "仍要继续尝试自己搜索吗？": "Do you still want to continue trying to search on your own?",
+    "内置OCR": "Built-in OCR"
 }

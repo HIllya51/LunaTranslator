@@ -22,7 +22,7 @@ def get_original_git_show(commit_hash):
 def call_llm_api(prompt: str, api_key: str, api_url: str, model: str):
 
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {api_key}"}
-
+    print(prompt)
     data = {
         "model": model,
         "messages": [

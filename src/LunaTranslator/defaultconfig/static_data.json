@@ -194,7 +194,7 @@
         ],
         "ocr": [
             {
-                "name": "本地OCR",
+                "name": "内置OCR",
                 "function": [
                     "ocrengines.local",
                     "question"
