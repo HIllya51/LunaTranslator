@@ -18,6 +18,9 @@ class youdao(cishubase):
         text = self.proxysession.get(url, params={"word": word, "lang": lang}).text
         if not get_element_by("class", "word-head", text):
             return
+        title = get_element_by("class", "title", text)
+        if title:
+            text = text.replace(title, "")
         text = re.sub("<header([\\s\\S]*?)></header>", "", text)
         text = re.sub("<aside([\\s\\S]*?)></aside>", "", text)
 
