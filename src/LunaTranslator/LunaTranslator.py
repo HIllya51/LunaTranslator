@@ -1424,15 +1424,15 @@ class BASEOBJECT(QObject):
     def setcommonstylesheet(self):
 
         dark = nowisdark()
+        qtawesome.isdark = dark
         if self.currentisdark != dark:
             for widget in QApplication.allWidgets():
                 QApplication.postEvent(widget, DarkLightChangedEvent(dark))
+            for widget in QApplication.topLevelWidgets():
+                self.setdarkandbackdrop(widget, dark)
         self.currentisdark = dark
-        qtawesome.isdark = dark
         darklight = ["light", "dark"][dark]
 
-        for widget in QApplication.topLevelWidgets():
-            self.setdarkandbackdrop(widget, dark)
         style = ""
         for _ in (0,):
             try:
@@ -1468,12 +1468,14 @@ class BASEOBJECT(QObject):
             fontstr(globalconfig["settingfontsize"] + 2)
         )
         style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
-        self.commonstylebase.setStyleSheet(style)
+        if self.commonstylebase.styleSheet() != style:
+            self.commonstylebase.setStyleSheet(style)
         font = QFont()
         font.setFamily(globalconfig["settingfonttype"])
         font.setPointSizeF(globalconfig["settingfontsize"])
         font.setBold(globalconfig["settingfontbold"])
-        QApplication.instance().setFont(font)
+        if QApplication.instance().font() != font:
+            QApplication.instance().setFont(font)
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:
 
