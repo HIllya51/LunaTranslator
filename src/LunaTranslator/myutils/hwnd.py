@@ -6,7 +6,7 @@ import time, NativeUtils, hashlib
 from urllib.parse import quote
 from myutils.config import savehook_new_data, globalconfig, relpath, _TR
 from myutils.wrapper import threader
-from myutils.utils import qimage2binary
+from myutils.utils import qimage2binary, get_time_stamp
 
 
 def clipboard_set_image(p: QImage):
@@ -22,7 +22,7 @@ def clipboard_set_image(p: QImage):
 
 
 def __getuidandfname(app):
-    tmsp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
+    tmsp = get_time_stamp(forfilename=True)
     tmsp += "." + app
     hwndx = gobject.base.hwnd
     if not hwndx:

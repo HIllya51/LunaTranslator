@@ -168,7 +168,7 @@ class TTS(TTSbase):
 
     def speak(self, content, voice: "tuple[str, str]", param: SpeechParam):
         lang, gender = voice
-        key = f"{lang.lower()}-{gender}"
+        key = "{}-{}".format(lang.lower(), gender)
         voiceName = self.LANG_AND_GENDER_TO_VOICE_NAME_.get(key)
 
         url = self.SPEECH_SERVER_URL_

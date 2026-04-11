@@ -123,7 +123,7 @@ class pasteimageEdit(QLineEdit):
                 return
             if image.isNull():
                 return
-            fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
+            fname = gobject.gettempdir("{}.{}".format(uuid.uuid4(), getimageformat()))
             image.save(fname)
             self.setText(fname)
 
@@ -137,9 +137,7 @@ class pasteimageEdit(QLineEdit):
 
 
 def sc_callback(cb, p: QPixmap):
-    tmsp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
-    tmsp += "." + getimageformat()
-    fname = gobject.gettempdir(tmsp)
+    fname = gobject.gettempdir("{}.{}".format(uuid.uuid4(), getimageformat()))
     p.save(fname)
     cb(fname)
 

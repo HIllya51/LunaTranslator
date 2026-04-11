@@ -1,9 +1,9 @@
 from qtsymbols import *
 import gobject, qtawesome, os, json, functools, uuid
-import NativeUtils, re, time
+import NativeUtils, re
 from myutils.config import globalconfig, get_launchpath, savehook_new_data, relpath
 from myutils.wrapper import Singleton
-from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR
+from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR, get_time_stamp
 from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
 from myutils.mecab import mecab
@@ -461,7 +461,7 @@ class dialog_memory(saveposwindow):
     def cropcallback1(self, p: QPixmap):
         if p.isNull():
             return
-        tmsp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
+        tmsp = get_time_stamp(forfilename=True)
         tmsp += "." + getimageformat()
         tgt = os.path.join(self.rwpath, tmsp)
         p.save(tgt)
