@@ -1674,6 +1674,34 @@ namespace ABI
     }
 }
 
+#if !defined(____x_ABI_CWindows_CGraphics_CCapture_CIGraphicsCaptureSession3_INTERFACE_DEFINED__)
+#define ____x_ABI_CWindows_CGraphics_CCapture_CIGraphicsCaptureSession3_INTERFACE_DEFINED__
+extern const __declspec(selectany) _Null_terminated_ WCHAR InterfaceName_Windows_Graphics_Capture_IGraphicsCaptureSession3[] = L"Windows.Graphics.Capture.IGraphicsCaptureSession3";
+namespace ABI {
+    namespace Windows {
+        namespace Graphics {
+            namespace Capture {
+                MIDL_INTERFACE("f2cdd966-22ae-5ea1-9596-3a289344c3be")
+                IGraphicsCaptureSession3 : public IInspectable
+                {
+                public:
+                    virtual HRESULT STDMETHODCALLTYPE get_IsBorderRequired(
+                        boolean* value
+                        ) = 0;
+                    virtual HRESULT STDMETHODCALLTYPE put_IsBorderRequired(
+                        boolean value
+                        ) = 0;
+                };
+
+                MIDL_CONST_ID IID& IID_IGraphicsCaptureSession3 = __uuidof(IGraphicsCaptureSession3);
+            } /* Capture */
+        } /* Graphics */
+    } /* Windows */
+} /* ABI */
+
+EXTERN_C const IID IID___x_ABI_CWindows_CGraphics_CCapture_CIGraphicsCaptureSession3;
+#endif /* !defined(____x_ABI_CWindows_CGraphics_CCapture_CIGraphicsCaptureSession3_INTERFACE_DEFINED__) */
+
 STDAPI CreateDirect3D11DeviceFromDXGIDevice(
     _In_ IDXGIDevice *dxgiDevice,
     _COM_Outptr_ IInspectable **graphicsDevice);

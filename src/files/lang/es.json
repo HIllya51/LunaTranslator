@@ -910,5 +910,8 @@
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Si encuentras un juego que no es compatible, te recomiendo enviármelo para que lo adapte, en lugar de intentar buscarlo por tu cuenta.",
     "仍要继续尝试自己搜索吗？": "¿Quieres seguir intentando buscar por tu cuenta?",
-    "内置OCR": "OCR integrado"
+    "内置OCR": "OCR integrado",
+    "打开图片": "Abrir imagen",
+    "打开路径": "Abrir ruta",
+    "已保存为： {}": "Guardado como: {}"
 }

@@ -1,7 +1,7 @@
 from qtsymbols import *
 import gobject, qtawesome, os, json, functools, uuid
-import NativeUtils, re
-from myutils.config import globalconfig, get_launchpath, savehook_new_data
+import NativeUtils, re, time
+from myutils.config import globalconfig, get_launchpath, savehook_new_data, relpath
 from myutils.wrapper import Singleton
 from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR
 from gui.rangeselect import rangeselct_function
@@ -12,7 +12,6 @@ from gui.usefulwidget import (
     saveposwindow,
     makesubtab_lazy,
     request_delete_ok,
-    mayberelpath,
     MyInputDialog,
     IconButton,
     auto_select_webview,
@@ -403,7 +402,7 @@ class dialog_memory(saveposwindow):
             return
         tgt = os.path.join(self.rwpath, os.path.basename(path))
         os.rename(path, tgt)
-        tgt = mayberelpath(tgt)
+        tgt = relpath(tgt)
         html = """\n<audio controls src="{}"></audio>\n""".format(
             os.path.basename(path)
         )
@@ -413,18 +412,15 @@ class dialog_memory(saveposwindow):
         menu = QMenu(self)
         crop = LAction("截图", menu)
         crop2 = LAction("隐藏并截图", menu)
-        crophwnd = LAction("窗口截图_gdi", menu)
-        crophwnd2 = LAction("窗口截图_winrt", menu)
+        crophwnd = LAction("窗口截图", menu)
         select = LAction("图片", menu)
         crop.setIcon(qtawesome.icon("fa.crop"))
         crop2.setIcon(qtawesome.icon("fa.crop"))
         crophwnd.setIcon(qtawesome.icon("fa.camera"))
-        crophwnd2.setIcon(qtawesome.icon("fa.camera"))
         select.setIcon(qtawesome.icon("fa.folder-open"))
         menu.addAction(crop)
         menu.addAction(crop2)
         menu.addAction(crophwnd)
-        menu.addAction(crophwnd2)
         menu.addAction(select)
         action = menu.exec(QCursor.pos())
         if action == crop:
@@ -432,9 +428,7 @@ class dialog_memory(saveposwindow):
         elif action == crop2:
             self.crophide(s=True)
         elif action == crophwnd:
-            grabwindow(getimageformat(), self.cropcallback, usewgc=False)
-        elif action == crophwnd2:
-            grabwindow(getimageformat(), self.cropcallback, usewgc=True)
+            grabwindow(callback=self.cropcallback1)
         elif action == select:
             f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
             res = f[0]
@@ -464,12 +458,20 @@ class dialog_memory(saveposwindow):
 
         rangeselct_function(__ocroncefunction)
 
+    def cropcallback1(self, p: QPixmap):
+        if p.isNull():
+            return
+        tmsp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        tmsp += "." + getimageformat()
+        tgt = os.path.join(self.rwpath, tmsp)
+        p.save(tgt)
+        self.editor.insertPlainText("\n![img]({})\n".format(tmsp))
+
     def cropcallback(self, path):
         if not path:
             return
         tgt = os.path.join(self.rwpath, os.path.basename(path))
         os.rename(path, tgt)
-        tgt = mayberelpath(tgt)
         self.editor.insertPlainText("\n![img]({})\n".format(os.path.basename(path)))
 
     def TextInsert(self):

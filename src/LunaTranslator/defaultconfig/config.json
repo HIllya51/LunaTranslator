@@ -2,11 +2,6 @@
     "showna": true,
     "llama.cpp": {},
     "screenshot_savepath": "",
-    "screenshot_method": {
-        "gdi": true,
-        "winrt": true,
-        "magpie": true
-    },
     "history": {
         "autosave": false,
         "showorigin": true,

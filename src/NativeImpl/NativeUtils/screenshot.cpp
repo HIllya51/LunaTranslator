@@ -42,7 +42,9 @@ std::optional<SimpleBMP> parseBMP(std::optional<SimpleBMP> &&bmp, bool needcheck
         bool checkempty = false;
         if (bmp.value().bitCount == 32)
         {
-            checkempty = std::all_of((uint32_t *)bmp.value().pixels, (uint32_t *)bmp.value().pixels + bmp.value().pixelsize / 4, std::bind(std::equal_to<uint32_t>(), std::placeholders::_1, *(uint32_t *)bmp.value().pixels));
+            // 任一为透明像素，则放弃，改用屏幕截图或windowscapture
+            checkempty = std::any_of((uint32_t *)bmp.value().pixels, (uint32_t *)(bmp.value().pixels + bmp.value().pixelsize), [](uint32_t p)
+                                     { return (p >> 24) != 0xFF; });
         }
         else
         {
@@ -76,7 +78,7 @@ std::optional<SimpleBMP> __gdi_screenshot(HWND hwnd, RECT rect)
         return {};
     auto bm = GetBitmap(rect, hdc);
     ReleaseDC(hwnd, hdc);
-    return parseBMP(CreateBMP(bm, false), needcheck);
+    return parseBMP(CreateBMP(bm), needcheck);
 }
 DECLARE_API void GdiGrabWindow(HWND hwnd, void (*cb)(byte *, size_t))
 {
@@ -342,7 +344,7 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
                 DestroyWindow(hwnd);
                 return 0;
             }
-            auto &&bmp = CreateBMP(g_hScreenBitmap, false).value_or(SimpleBMP{});
+            auto &&bmp = CreateBMP(g_hScreenBitmap).value_or(SimpleBMP{});
             RECT rect;
             GetWindowRect(hwnd, &rect);
             ReleaseCapture();

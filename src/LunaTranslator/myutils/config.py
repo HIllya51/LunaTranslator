@@ -10,7 +10,7 @@ import shutil
 import copy
 
 
-def __mayberelpath(path):
+def relpath(path):
     try:
         # https://bugs.python.org/issue36689
         # commonpath在低版本上不能跨盘比较
@@ -22,7 +22,7 @@ def __mayberelpath(path):
 
 
 def mayberelpath(path):
-    p = __mayberelpath(path)
+    p = relpath(path)
     if os.path.exists(p):
         return p
     return path

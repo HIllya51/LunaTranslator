@@ -910,5 +910,8 @@
     "导出": "Export",
     "如果遇到不支持的游戏，建议把游戏提交给我适配，而不是自己尝试搜索。": "Desteklenmeyen bir oyunla karşılaşırsanız, kendi başınıza aramayı denemek yerine oyunu uyarlamam için bana göndermeniz önerilir.",
     "仍要继续尝试自己搜索吗？": "Yine de kendi başınıza aramayı denemeye devam etmek istiyor musunuz?",
-    "内置OCR": "Yerleşik OCR"
+    "内置OCR": "Yerleşik OCR",
+    "打开图片": "Resmi aç",
+    "打开路径": "Yolu aç",
+    "已保存为： {}": "{} olarak kaydedildi."
 }

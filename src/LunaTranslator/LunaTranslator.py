@@ -2,6 +2,7 @@ import time, uuid, json
 import os, threading, re, winreg, copy
 from qtsymbols import *
 from traceback import print_exc
+from urllib.parse import unquote
 from sometypes import TranslateResult, TranslateError, WordSegResult
 from myutils.config import (
     globalconfig,
@@ -16,6 +17,7 @@ from myutils.config import (
     saveallconfig,
     dynamicapiname,
     dynamiclink,
+    relpath,
 )
 from ctypes import cast, c_wchar_p
 from ctypes.wintypes import UINT, WPARAM, LPARAM
@@ -1228,7 +1230,23 @@ class BASEOBJECT(QObject):
         return all(windows.GetAsyncKeyState(vk) & 0x8000 for vk in allvk)
 
     def aboutlinkclicked(self, link, parent):
+        if link == "SCREENSHOTSETTING":
 
+            def __():
+                res = QFileDialog.getExistingDirectory(
+                    self.translation_ui,
+                    directory=globalconfig.get("screenshot_savepath", "")
+                    .replace("{exename}", "")
+                    .replace("{}", ""),
+                )
+                if res:
+                    globalconfig["screenshot_savepath"] = relpath(
+                        os.path.join(res, "{exename}")
+                    )
+
+            self.safeinvokefunction.emit(__)
+        if link.startswith("OPEN-"):
+            return os.startfile(unquote(link[5:]))
         if link == "WEIXIN":
             return self.createimageviewsig.emit(parent)
         if link == "/":

@@ -12,6 +12,7 @@
 
 #include "hstring.hpp"
 #include "../bmpx.hpp"
+#include "../osversion.hpp"
 
 using ABI::Windows::Foundation::GetActivationFactory;
 using ABI::Windows::Foundation::IClosable;
@@ -24,6 +25,7 @@ using ABI::Windows::Graphics::Capture::IDirect3D11CaptureFramePoolStatics;
 using ABI::Windows::Graphics::Capture::IGraphicsCaptureItem;
 using ABI::Windows::Graphics::Capture::IGraphicsCaptureSession;
 using ABI::Windows::Graphics::Capture::IGraphicsCaptureSession2;
+using ABI::Windows::Graphics::Capture::IGraphicsCaptureSession3;
 using ABI::Windows::Graphics::DirectX::DirectXPixelFormat;
 using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DDevice;
 using ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DSurface;
@@ -104,6 +106,9 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
     CComPtr<IGraphicsCaptureSession2> session2;
     if (SUCCEEDED(session.QueryInterface(&session2)))
         session2->put_IsCursorCaptureEnabled(false);
+    CComPtr<IGraphicsCaptureSession3> session3;
+    if (SUCCEEDED(session.QueryInterface(&session3)))
+        session3->put_IsBorderRequired(false);
     EventRegistrationToken token;
     std::atomic_flag waitforloadflag = ATOMIC_FLAG_INIT;
     waitforloadflag.test_and_set();
@@ -154,14 +159,12 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t))
 DECLARE_API void winrt_capture_window(HWND hwnd, void (*cb)(byte *, size_t))
 {
     // auto hwnd = GetForegroundWindow();// FindWindow(L"Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", 0);
-    auto style_ex = GetWindowLong(hwnd, GWL_EXSTYLE);
+    auto style_ex = GetWindowExStyle(hwnd);
     auto style_ex_save = style_ex;
-    bool needset = !(((style_ex & WS_EX_APPWINDOW) && !(style_ex & WS_EX_TOOLWINDOW)));
+    bool needset = !(style_ex & WS_EX_APPWINDOW);
     if (needset)
     {
-
         style_ex |= WS_EX_APPWINDOW;
-        style_ex &= ~WS_EX_TOOLWINDOW;
         SetWindowLong(hwnd, GWL_EXSTYLE, style_ex);
     }
     capture_window(hwnd, cb);

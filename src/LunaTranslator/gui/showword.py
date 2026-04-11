@@ -136,6 +136,14 @@ class pasteimageEdit(QLineEdit):
         super().keyPressEvent(e)
 
 
+def sc_callback(cb, p: QPixmap):
+    tmsp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+    tmsp += "." + getimageformat()
+    fname = gobject.gettempdir(tmsp)
+    p.save(fname)
+    cb(fname)
+
+
 class AnkiWindow(QWidget):
     __ocrsettext = pyqtSignal(str)
     refreshhtml = pyqtSignal()
@@ -598,19 +606,12 @@ class AnkiWindow(QWidget):
         grabwindowbtn = getIconButton(
             icon="fa.camera",
             callback=lambda: grabwindow(
-                getimageformat(),
-                functools.partial(self.settextsignal.emit, self.editpath),
+                callback=functools.partial(
+                    sc_callback,
+                    functools.partial(self.settextsignal.emit, self.editpath),
+                )
             ),
-            tips="窗口截图_gdi",
-        )
-        grabwindowbtn2 = getIconButton(
-            icon="fa.camera",
-            callback=lambda: grabwindow(
-                getimageformat(),
-                functools.partial(self.settextsignal.emit, self.editpath),
-                usewgc=True,
-            ),
-            tips="窗口截图_winrt",
+            tips="窗口截图",
         )
 
         def createtbn(target: QLineEdit):
@@ -786,7 +787,6 @@ class AnkiWindow(QWidget):
                                     cropbutton,
                                     cropbutton2,
                                     grabwindowbtn,
-                                    grabwindowbtn2,
                                     folder_open3,
                                     functools.partial(createtbn, self.editpath),
                                 ]
@@ -2089,10 +2089,12 @@ class searchwordW(closeashidewindow):
         self.ankiwindow.remarks.setPlainText(gobject.base.currenttranslate)
         if globalconfig["ankiconnect"]["autocrop"]:
             grabwindow(
-                getimageformat(),
-                functools.partial(
-                    self.ankiwindow.settextsignal.emit, self.ankiwindow.editpath
-                ),
+                callback=functools.partial(
+                    sc_callback,
+                    functools.partial(
+                        self.ankiwindow.settextsignal.emit, self.ankiwindow.editpath
+                    ),
+                )
             )
 
     def __parsehistory(self, word, append, sentence, isfromhist):
