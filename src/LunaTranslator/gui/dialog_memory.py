@@ -461,7 +461,7 @@ class dialog_memory(saveposwindow):
     def cropcallback1(self, p: QPixmap):
         if p.isNull():
             return
-        tmsp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+        tmsp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
         tmsp += "." + getimageformat()
         tgt = os.path.join(self.rwpath, tmsp)
         p.save(tgt)

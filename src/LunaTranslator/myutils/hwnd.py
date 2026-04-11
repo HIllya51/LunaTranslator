@@ -22,7 +22,7 @@ def clipboard_set_image(p: QImage):
 
 
 def __getuidandfname(app):
-    tmsp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+    tmsp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
     tmsp += "." + app
     hwndx = gobject.base.hwnd
     if not hwndx:

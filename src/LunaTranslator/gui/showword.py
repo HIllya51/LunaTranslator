@@ -137,7 +137,7 @@ class pasteimageEdit(QLineEdit):
 
 
 def sc_callback(cb, p: QPixmap):
-    tmsp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
+    tmsp = time.strftime("%Y-%m-%d %H-%M-%S", time.localtime())
     tmsp += "." + getimageformat()
     fname = gobject.gettempdir(tmsp)
     p.save(fname)
