@@ -45,7 +45,7 @@ localeEmulatorFile = "https://github.com/xupefei/Locale-Emulator/releases/downlo
 LocaleRe = "https://github.com/InWILL/Locale_Remulator/releases/download/v1.6.0/Locale_Remulator.1.6.0.zip"
 
 "https://web.archive.org/web/20220828191750/https://curl.se/windows/dl-7.84.0_9/curl-7.84.0_9-win32-mingw.zip"
-curlFile32xp = "https://web.archive.org/web/20230528201434if_/https://curl.se/windows/dl-7.84.0_9/curl-7.84.0_9-win32-mingw.zip"
+curlFile32xp = "https://web.archive.org/web/20220101212640if_/https://curl.se/windows/dl-7.80.0/curl-7.80.0-win32-mingw.zip"
 curlFile32 = "https://web.archive.org/web/20260102155019if_/https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win32-mingw.zip"
 curlFile64 = "https://web.archive.org/web/20260106011529if_/https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
 
