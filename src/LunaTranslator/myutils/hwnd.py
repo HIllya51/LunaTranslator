@@ -97,7 +97,7 @@ def grabwindow(app="PNG", callback=None, tocliponly=False):
         "Window_Magpie_967EB565-6F73-4E94-AE53-00CC42592A22", None
     )
     if hwnd:
-        p = safepixmap(NativeUtils.WinRT.capture_window(hwnd))
+        p = safepixmap(NativeUtils.WinRT.capture_window(hwnd, blackborderremove=True))
         if callback_2(p):
             return
 

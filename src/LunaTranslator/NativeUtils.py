@@ -960,7 +960,7 @@ winrt_OCR_get_AvailableRecognizerLanguages = (
 winrt_OCR_get_AvailableRecognizerLanguages.argtypes = (c_void_p,)
 
 winrt_capture_window = utilsdll.winrt_capture_window
-winrt_capture_window.argtypes = c_void_p, c_void_p
+winrt_capture_window.argtypes = c_void_p, c_void_p, c_bool
 
 
 class WinRT:
@@ -992,13 +992,13 @@ class WinRT:
         return ret
 
     @staticmethod
-    def capture_window(hwnd):
+    def capture_window(hwnd, blackborderremove=False):
         ret = []
 
         def cb(ptr, size):
             ret.append(ptr[:size])
 
-        winrt_capture_window(hwnd, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb))
+        winrt_capture_window(hwnd, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb), blackborderremove)
         if len(ret):
             return ret[0]
         return None
