@@ -1,7 +1,7 @@
 import sys
 import os
 
-ssss=os.path.exists
+
 def dopathexists(file: str):
     import windows
 
