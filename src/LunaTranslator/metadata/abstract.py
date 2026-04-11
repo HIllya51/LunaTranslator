@@ -21,7 +21,7 @@ class common:
         return None
 
     @property
-    def config(self):
+    def config(self) -> "dict[str, str]":
         return self.config_all["args"]
 
     @property

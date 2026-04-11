@@ -7,7 +7,7 @@ from qtsymbols import *
 from metadata.abstract import common
 from gui.gamemanager.common import getreflist, getalistname
 from myutils.wrapper import threader
-from gui.usefulwidget import manybuttonlayout
+from gui.usefulwidget import manybuttonlayout, getsimpleswitch
 
 
 def saferequestvndb(proxy, method, url, json=None, headers=None):
@@ -40,13 +40,13 @@ def safegetvndbjson(proxy, url, json=None, headers=None):
     return saferequestvndb(proxy, "POST", url, json, headers)
 
 
-def gettitlefromjs(js):
+def gettitlefromjs(js, main=True):
     try:
 
         for _ in js["titles"]:
-            main = _["main"]
+            _main = _["main"]
             title = _["title"]
-            if main:
+            if _main == main:
                 return title
 
         raise Exception()
@@ -117,7 +117,7 @@ def getcharnamemapbyid(proxy, vid):
     return namemap
 
 
-def getinfosbyvid(proxy, vid):
+def getinfosbyvid(proxy, vid, main=True):
     js = safegetvndbjson(
         proxy,
         "vn",
@@ -144,7 +144,7 @@ def getinfosbyvid(proxy, vid):
         rates = [_["rating"] for _ in js["results"][0]["tags"]]
 
         return dict(
-            title=gettitlefromjs(js["results"][0]),
+            title=gettitlefromjs(js["results"][0], main=main),
             img=js["results"][0]["image"]["url"] if js["results"][0]["image"] else None,
             sc=imgs,
             dev=dev,
@@ -298,6 +298,9 @@ class vndbsettings(QFormLayout):
         self._token = s
         vbox.addWidget(s)
         vbox.addWidget(self.lbinfo)
+        self.addRow(
+            "title - main", getsimpleswitch(_ref.config, "title-main", default=True)
+        )
         self.addRow("Token", vbox)
         btn = manybuttonlayout(
             (
@@ -363,7 +366,7 @@ class searcher(common):
 
     def searchfordata(self, _vid):
         vid = "v{}".format(_vid)
-        infos = getinfosbyvid(self.proxy, vid)
+        infos = getinfosbyvid(self.proxy, vid, main=self.config.get("title-main", True))
         namemap = getcharnamemapbyid(self.proxy, vid)
 
         return {
@@ -372,5 +375,5 @@ class searcher(common):
             "images": [infos["img"]] + self.getreleasecvfromhtml(_vid) + infos["sc"],
             "webtags": infos["tags"],
             "developers": infos["dev"],
-            "description": infos["description"]
+            "description": infos["description"],
         }
