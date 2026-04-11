@@ -63,10 +63,10 @@ struct FrameArrivedCallback : ComImpl<ITypedEventHandler<Direct3D11CaptureFrameP
     }
 };
 
-inline bool IsNotBlack(const unsigned char *pixel, int byteCount)
+inline bool IsNotBlack(const unsigned char *pixel)
 {
     for (int i = 0; i < 3; ++i)
-    { // 只检查 RGB，忽略 Alpha 通道（如果是32位）
+    {
         if (pixel[i] != 0)
             return true;
     }
@@ -101,7 +101,7 @@ void CropBMPBlackBordersInPlace(unsigned char *data, size_t &dataSize)
         unsigned char *rowPtr = pixelBase + y * oldStride;
         for (int x = 0; x < oldWidth; ++x)
         {
-            if (IsNotBlack(rowPtr + x * bytesPerPixel, bytesPerPixel))
+            if (IsNotBlack(rowPtr + x * bytesPerPixel))
             {
                 if (x < minX)
                     minX = x;

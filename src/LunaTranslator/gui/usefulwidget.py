@@ -693,7 +693,10 @@ class saveposwindow_1(LMainWindow):
 
 class saveposwindow(saveposwindow_1):
     def keyPressEvent(self, a0: QKeyEvent):
-        if a0.key() == Qt.Key.Key_Escape:
+        if (a0.key() == Qt.Key.Key_Escape) or (
+            a0.key() == Qt.Key.Key_W
+            and (a0.modifiers() & Qt.KeyboardModifier.ControlModifier)
+        ):
             self.close()
         return super().keyPressEvent(a0)
 
