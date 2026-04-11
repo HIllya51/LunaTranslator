@@ -229,8 +229,8 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t), bool blackbo
     d3d_context->CopyResource(user_texture, texture);
     D3D11_MAPPED_SUBRESOURCE resource;
     CHECK_FAILURE_NORET(d3d_context->Map(user_texture, NULL, D3D11_MAP_READ, 0, &resource));
-
-    auto bmp = CreateBMP(captured_texture_desc.Width, captured_texture_desc.Height, 32, false); // alpha=false
+    bool alpha = blackborderremove ? false : true;
+    auto bmp = CreateBMP(captured_texture_desc.Width, captured_texture_desc.Height, 32, alpha);
 
     UINT l_bmp_row_pitch = captured_texture_desc.Width * 4;
     auto sptr = static_cast<BYTE *>(resource.pData);
