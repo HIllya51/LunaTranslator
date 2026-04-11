@@ -1421,15 +1421,12 @@ class BASEOBJECT(QObject):
                 int(widget.winId()), globalconfig["force_rect"], False
             )
 
-    def switch_darklight(self):
-        darklight = globalconfig["darklight2"]
-        isdark = nowisdark()
-        for widget in QApplication.allWidgets():
-            QApplication.postEvent(widget, DarkLightChangedEvent(darklight, isdark))
-
     def setcommonstylesheet(self):
 
         dark = nowisdark()
+        if self.currentisdark != dark:
+            for widget in QApplication.allWidgets():
+                QApplication.postEvent(widget, DarkLightChangedEvent(dark))
         self.currentisdark = dark
         qtawesome.isdark = dark
         darklight = ["light", "dark"][dark]

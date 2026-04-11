@@ -5,6 +5,7 @@ import gobject
 from myutils.config import globalconfig, static_data
 from myutils.utils import nowisdark
 from gui.flowsearchword import createsomecontrols
+from gui.qevent import DarkLightSettingChangedEvent
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -202,6 +203,12 @@ def __rs():
     )
 
 
+def switch_darklight():
+    darklight = globalconfig["darklight2"]
+    for widget in QApplication.allWidgets():
+        QApplication.postEvent(widget, DarkLightSettingChangedEvent(darklight))
+
+
 def uisetting(self):
     windoweffects = [
         getsmalllabel("窗口特效"),
@@ -342,7 +349,7 @@ def uisetting(self):
                                         "darklight2",
                                         lambda _: (
                                             gobject.base.setcommonstylesheet(),
-                                            gobject.base.switch_darklight(),
+                                            switch_darklight(),
                                         ),
                                     ),
                                 ],

@@ -14,7 +14,7 @@ import NativeUtils
 import gobject
 from NativeUtils import WebView2
 import re
-from gui.qevent import DarkLightChangedEvent
+from gui.qevent import DarkLightChangedEvent, DarkLightSettingChangedEvent
 from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink
 from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark
@@ -691,7 +691,14 @@ class saveposwindow_1(LMainWindow):
         self.__checked_savepos()
 
 
-class saveposwindow(saveposwindow_1):
+class DarkLightAutoResetIconHelper(QWidget):
+    def event(self, a0: QEvent):
+        if isinstance(a0, DarkLightChangedEvent):
+            self.setWindowIcon(self.windowIcon())
+        return super().event(a0)
+
+
+class saveposwindow(saveposwindow_1, DarkLightAutoResetIconHelper):
     def keyPressEvent(self, a0: QKeyEvent):
         if (a0.key() == Qt.Key.Key_Escape) or (
             a0.key() == Qt.Key.Key_W
@@ -1900,7 +1907,7 @@ class WebviewWidget(AbstractWebviewWidget):
         )
 
     def event(self, a0: QEvent):
-        if isinstance(a0, DarkLightChangedEvent):
+        if isinstance(a0, DarkLightSettingChangedEvent):
             self.webview.put_PreferredColorScheme(a0.darklight())
         return super().event(a0)
 
@@ -2586,7 +2593,7 @@ def makesubtab_lazy(
 
 
 @Singleton
-class listediter(LDialog):
+class listediter(LDialog, DarkLightAutoResetIconHelper):
     def showmenu(self, p: QPoint):
         curr = self.hctable.currentIndex()
         if not curr.isValid():

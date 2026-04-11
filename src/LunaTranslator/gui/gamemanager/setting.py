@@ -40,6 +40,7 @@ from gui.inputdialog import (
 )
 from gui.specialwidget import chartwidget
 from gui.usefulwidget import (
+    DarkLightAutoResetIconHelper,
     TableViewW,
     automakegrid,
     D_getspinbox,
@@ -194,7 +195,7 @@ def userlabelset(key="usertags"):
 
 
 @Singleton
-class timelistediter(LDialog):
+class timelistediter(LDialog, DarkLightAutoResetIconHelper):
 
     def __init__(
         self,

@@ -22,6 +22,7 @@ from gui.usefulwidget import (
     getIconButton,
     VisLFormLayout,
     LinkLabel,
+    DarkLightAutoResetIconHelper,
 )
 from gui.dynalang import (
     LFormLayout,
@@ -33,7 +34,7 @@ from gui.dynalang import (
 )
 
 
-class noundictconfigdialog1___(LDialog):
+class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
     def newline(self, row, item: dict):
         items = []
         for _ in self.switchcols:
@@ -520,7 +521,7 @@ class SuperComboX(SuperCombo):
 
 
 @Singleton
-class autoinitdialog(LDialog):
+class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
     def closeEvent(self, a0):
         if not isqt5:
             for _ in self.__qt6fucker:
@@ -719,7 +720,7 @@ class autoinitdialog(LDialog):
 
     def __init__(
         self,
-        parent,
+        parent: QWidget,
         dd: "dict",
         title,
         width,
@@ -733,6 +734,7 @@ class autoinitdialog(LDialog):
             Qt.WindowType.WindowCloseButtonHint
             | Qt.WindowType.WindowMaximizeButtonHint,
         )
+        self.setWindowIcon(parent.windowIcon())
         self.setWindowTitle(title)
         self.resize(QSize(width, 10))
         formLayout = VisLFormLayout(self)

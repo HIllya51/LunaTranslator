@@ -27,6 +27,7 @@ from gui.usefulwidget import (
     getcolorbutton,
     KeySequenceEdit,
     check_grid_append,
+    DarkLightAutoResetIconHelper,
 )
 import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
@@ -35,7 +36,7 @@ from gui.showword import cishusX
 
 
 @Singleton
-class multicolorset(LDialog):
+class multicolorset(LDialog, DarkLightAutoResetIconHelper):
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle("颜色设置")
@@ -310,7 +311,10 @@ def setTabcishu_l(self):
     ]
 
     def _getkeys(key):
-        dia = QDialog(self)
+        class __(QDialog, DarkLightAutoResetIconHelper):
+            pass
+
+        dia = __(self)
         dia.setWindowIcon(qtawesome.icon("fa.keyboard-o"))
         dia.setWindowFlags(
             dia.windowFlags() & ~Qt.WindowType.WindowContextHelpButtonHint

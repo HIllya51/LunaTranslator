@@ -1,5 +1,5 @@
 from qtsymbols import *
-import threading, windows
+import windows
 import gobject, qtawesome, os, json
 from myutils.config import globalconfig, savehook_new_data, translatorsetting
 from myutils.wrapper import Singleton, threader
@@ -8,6 +8,7 @@ from gui.usefulwidget import (
     getsimplecombobox,
     getIconButton,
     IconButton,
+    DarkLightAutoResetIconHelper,
 )
 from gui.rendertext.texttype import TranslateColor
 from gui.dynalang import LPushButton, LMainWindow
@@ -101,7 +102,7 @@ class ctrlenter(QPlainTextEdit):
 
 
 @Singleton
-class edittrans(LMainWindow):
+class edittrans(LMainWindow, DarkLightAutoResetIconHelper):
 
     def __init__(self, parent):
         self.followhwnd = gobject.base.hwnd
