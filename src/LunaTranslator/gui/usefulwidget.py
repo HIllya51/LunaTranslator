@@ -82,10 +82,32 @@ class SuperCombo(FocusCombo):
     def vu(self) -> QListView:
         return self.view()
 
+    def event(self, a0: QEvent):
+        if isinstance(a0, DarkLightChangedEvent):
+            for _ in range(self.mo.rowCount()):
+                item = self.mo.item(_)
+                if a0.isdark():
+                    icon = item.data(Qt.ItemDataRole.UserRole + 11)
+                else:
+                    icon = item.data(Qt.ItemDataRole.UserRole + 10)
+                if icon:
+                    item.setIcon(icon)
+
+        return super().event(a0)
+
     def addItem(self, item, internal=None, icon=None):
         text = _TR(item) if not self.static else item
+        isdark = None
         if icon:
-            item1 = QStandardItem(icon, text)
+            if isinstance(icon, QIcon):
+                item1 = QStandardItem(icon, text)
+            else:
+                item1 = QStandardItem(text)
+                item1.setData(icon["light"], Qt.ItemDataRole.UserRole + 10)
+                item1.setData(icon["dark"], Qt.ItemDataRole.UserRole + 11)
+                if isdark is None:
+                    isdark = nowisdark()
+                item1.setIcon(icon["dark"] if isdark else icon["light"])
         else:
             item1 = QStandardItem(text)
         item1.setData(item, self.Visoriginrole)
@@ -95,7 +117,9 @@ class SuperCombo(FocusCombo):
     def clear(self):
         self.mo.clear()
 
-    def addItems(self, items, internals=None, icons=None):
+    def addItems(
+        self, items, internals=None, icons: "list[QIcon|dict[str:QIcon]]" = None
+    ):
         for i, item in enumerate(items):
             iternal = None
             if internals and i < len(internals):

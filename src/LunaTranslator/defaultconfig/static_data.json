@@ -462,7 +462,10 @@
         {
             "vis": "OpenAI",
             "value": "https://api.openai.com",
-            "icon": "files/static/llm_icons/openai.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/openai_dark.svg",
+                "light": "files/static/llm_icons/openai_light.svg"
+            }
         },
         {
             "vis": "DeepSeek",
@@ -512,12 +515,18 @@
         {
             "vis": "OpenRouter",
             "value": "https://openrouter.ai/api",
-            "icon": "files/static/llm_icons/openrouter.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/openrouter_dark.svg",
+                "light": "files/static/llm_icons/openrouter.svg"
+            }
         },
         {
             "vis": "groq",
             "value": "https://api.groq.com/openai",
-            "icon": "files/static/llm_icons/groq.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/groq_dark.svg",
+                "light": "files/static/llm_icons/groq.svg"
+            }
         },
         {
             "vis": "Mistral AI",
@@ -527,17 +536,26 @@
         {
             "vis": "x.ai",
             "value": "https://api.x.ai/",
-            "icon": "files/static/llm_icons/xai.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/xai_dark.svg",
+                "light": "files/static/llm_icons/xai.svg"
+            }
         },
         {
             "vis": "Ollama",
             "value": "http://127.0.0.1:11434",
-            "icon": "files/static/llm_icons/ollama.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/ollama_dark.svg",
+                "light": "files/static/llm_icons/ollama.svg"
+            }
         },
         {
             "vis": "月之暗面",
             "value": "https://api.moonshot.cn",
-            "icon": "files/static/llm_icons/moonshot.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/moonshot_dark.svg",
+                "light": "files/static/llm_icons/moonshot.svg"
+            }
         },
         {
             "vis": "智谱AI",
@@ -557,12 +575,18 @@
         {
             "vis": "零一万物",
             "value": "https://api.lingyiwanwu.com",
-            "icon": "files/static/llm_icons/lyww.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/lyww_dark.svg",
+                "light": "files/static/llm_icons/lyww.svg"
+            }
         },
         {
             "vis": "cerebras",
             "value": "https://api.cerebras.ai",
-            "icon": "files/static/llm_icons/cerebras.svg"
+            "icon": {
+                "dark": "files/static/llm_icons/cerebras_dark.svg",
+                "light": "files/static/llm_icons/cerebras.svg"
+            }
         },
         {
             "vis": "deepinfra",

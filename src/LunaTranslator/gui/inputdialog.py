@@ -609,7 +609,17 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                 for _ in static_data["API_URL_PRESETS"]
             ]
             value = [_["value"] for _ in static_data["API_URL_PRESETS"]]
-            icons = [QIcon(_["icon"]) for _ in static_data["API_URL_PRESETS"]]
+            icons = [
+                (
+                    QIcon(_["icon"])
+                    if isinstance(_["icon"], str)
+                    else {
+                        "dark": QIcon(_["icon"]["dark"]),
+                        "light": QIcon(_["icon"]["light"]),
+                    }
+                )
+                for _ in static_data["API_URL_PRESETS"]
+            ]
 
             def __(combo: SuperCombo, index):
                 combo.setCurrentText(combo.getIndexData(index))
