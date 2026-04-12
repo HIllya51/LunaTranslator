@@ -30,13 +30,6 @@ from gui.usefulwidget import (
 )
 
 
-def showcountgame(window: QMainWindow, num):
-    if num:
-        window.setWindowTitle("游戏管理__-__" + str(num))
-    else:
-        window.setWindowTitle("游戏管理")
-
-
 class tagitem(QFrame):
     # search game
     TYPE_SEARCH = 0
@@ -280,15 +273,22 @@ def addgamebatch(callback, targetlist):
     addgamebatch_x(callback, targetlist, paths)
 
 
-def loadvisinternal(skipid=False, skipidid=None):
+def loadvisinternal(skipid=False, skipidid=None, recent=True, global_=True):
     __vis = []
     __uid = []
     for _ in savegametaged:
         if _ is None:
-            __vis.append("GLOBAL")
+            if not global_:
+                continue
+            __vis.append("所有游戏")
             __uid.append(None)
+        elif _ == 1:
+            if not recent:
+                continue
+            __vis.append("最近游戏")
+            __uid.append(1)
         else:
-            __vis.append(_["title"])
+            __vis.append("[[{}]]".format(_["title"]))
             __uid.append(_["uid"])
         if skipid:
             if skipidid == __uid[-1]:
@@ -297,52 +297,33 @@ def loadvisinternal(skipid=False, skipidid=None):
     return __vis, __uid
 
 
-def getalistname(parent, callback, skipid=False, skipidid=None, title="添加到列表"):
-    __d = {"k": 0}
-    __vis, __uid = loadvisinternal(skipid, skipidid)
-
-    def __wrap(callback, __d, __uid):
-        if len(__uid) == 0:
-            return
-
-        uid = __uid[__d["k"]]
-        callback(uid)
-
-    if len(__uid) > 1:
-        autoinitdialog(
-            parent,
-            __d,
-            title,
-            600,
-            [
-                {
-                    "type": "combo",
-                    "name": "目标列表",
-                    "k": "k",
-                    "list": __vis,
-                },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(__wrap, callback, __d, __uid),
-                },
-            ],
-            exec_=True,
-        )
-    elif len(__uid):
-
-        callback(__uid[0])
-
-
 def calculatetagidx(tagid):
     i = 0
     for save in savegametaged:
         if save is None and tagid is None:
             return i
-        elif save and tagid and save["uid"] == tagid:
+        elif save == 1 and tagid == 1:
+            return i
+        elif (
+            (save not in (None, 1))
+            and (tagid not in (None, 1))
+            and save["uid"] == tagid
+        ):
             return i
         i += 1
 
     return None
+
+
+def loadrecentlist():
+    data = gobject.base.somedatabase.all()
+    datas = {}
+    for uid, tms in data.items():
+        tm = tms[-1][1]
+        datas[uid] = tm
+    ks = list(datas.keys())
+    ks.sort(key=lambda uid: -datas[uid])
+    return ks[: globalconfig.get("recentgamelistnum", 10)]
 
 
 def getreflist(reftagid):
@@ -352,6 +333,8 @@ def getreflist(reftagid):
     tag = savegametaged[_idx]
     if tag is None:
         return savehook_new_list
+    if tag == 1:
+        return 1
     return tag["games"]
 
 

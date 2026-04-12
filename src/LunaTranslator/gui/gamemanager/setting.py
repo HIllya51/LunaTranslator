@@ -1461,7 +1461,7 @@ class dialog_setting_game_internal(QWidget):
 
     def creategamefont_comboBox(self, gameuid):
 
-        gamefont_comboBox = FocusFontCombo()
+        gamefont_comboBox = FocusFontCombo(sizeX=True)
 
         def callback(x):
             savehook_new_data[gameuid]["embed_setting_private"].__setitem__(
@@ -1526,6 +1526,7 @@ class dialog_setting_game_internal(QWidget):
                 lambda _: gobject.base.textsource.setsettings(),
                 default=globalconfig["codepage_value"],
                 internal=static_data["codepage_real"],
+                sizeX=True,
             ),
         )
 

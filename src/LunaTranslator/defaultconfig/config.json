@@ -24,7 +24,6 @@
     "WindowEffect": 0,
     "WindowEffect_shadow": true,
     "read_raw": true,
-    "global_list_opened": true,
     "read_trans": false,
     "disappear_delay": 5,
     "network": 1,

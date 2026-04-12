@@ -1,13 +1,8 @@
 import requests, re
-from myutils.config import savehook_new_data
-from myutils.utils import initanewitem, gamdidchangedtask
-import functools
 import time
 from qtsymbols import *
 from metadata.abstract import common
-from gui.gamemanager.common import getreflist, getalistname
-from myutils.wrapper import threader
-from gui.usefulwidget import manybuttonlayout, getsimpleswitch
+from gui.usefulwidget import getsimpleswitch
 
 
 def saferequestvndb(proxy, method, url, json=None, headers=None):

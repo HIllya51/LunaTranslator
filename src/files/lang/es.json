@@ -908,5 +908,7 @@
     "内置OCR": "OCR integrado",
     "打开图片": "Abrir imagen",
     "打开路径": "Abrir ruta",
-    "已保存为： {}": "Guardado como: {}"
+    "已保存为： {}": "Guardado como: {}",
+    "所有游戏": "Todos los juegos",
+    "最近游戏": "Juegos recientes"
 }

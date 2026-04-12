@@ -5,7 +5,7 @@ from myutils.config import savehook_new_data
 from myutils.wrapper import trypass
 import qtawesome, math
 from datetime import datetime
-from gui.dynalang import IconToolButton
+from gui.dynalang import LToolButton
 
 
 def find_best_ticks(max_seconds):
@@ -666,7 +666,7 @@ class delayloadvbox(QWidget):
         return len(self.internal_widgets)
 
 
-class shownumQPushButton(IconToolButton):
+class shownumQPushButton(LToolButton):
     def __init__(self, T):
         super().__init__()
         self.setText(T)

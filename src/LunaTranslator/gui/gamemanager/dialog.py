@@ -32,6 +32,7 @@ from gui.usefulwidget import (
 )
 from gui.gamemanager.common import (
     dialog_syssetting,
+    loadrecentlist,
     tagitem,
     startgamecheck,
     loadvisinternal,
@@ -40,7 +41,6 @@ from gui.gamemanager.common import (
     calculatetagidx,
     getreflist,
     getpixfunction,
-    showcountgame,
     addgamesingle,
     addgamebatch,
     addgamebatch_x,
@@ -437,6 +437,7 @@ class ItemWidget(QWidget):
         self.l.addWidget(self._lb)
         exists = os.path.exists(get_launchpath(gameuid))
         self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
+        self.setToolTip(self._lb.text())
 
 
 class dialog_savedgame_new(QWidget):
@@ -468,7 +469,6 @@ class dialog_savedgame_new(QWidget):
             except:
                 self.flow.widget(idx2 - 1).click()
 
-            showcountgame(self._parent, len(self.idxsave))
         except:
             print_exc()
 
@@ -483,13 +483,18 @@ class dialog_savedgame_new(QWidget):
             self.idxsave.pop(idx)
             self.idxsave.insert(0, uid)
             self.flow.totop1(idx)
-        showcountgame(self._parent, len(self.idxsave))
 
     def clicked3_batch(self):
         addgamebatch(self.addgame, self.reflist)
 
     def clicked3(self):
         addgamesingle(self, self.addgame, self.reflist)
+
+    @property
+    def reflistx(self):
+        if self.reflist != 1:
+            return self.reflist
+        return loadrecentlist()
 
     def tagschanged(self, tags):
         self.currtags = tags
@@ -511,7 +516,7 @@ class dialog_savedgame_new(QWidget):
         self.flow.setSpacing(globalconfig["dialog_savegame_layout"]["margin"])
         self.formLayout.insertWidget(self.formLayout.count(), self.flow)
         idx = 0
-        for k in self.reflist:
+        for k in self.reflistx:
             if newtags != self.currtags:
                 break
             notshow = False
@@ -550,7 +555,6 @@ class dialog_savedgame_new(QWidget):
             self.newline(k, idx == 0)
             idx += 1
 
-        showcountgame(self._parent, idx)
         self.flow.directshow()
 
     def showmenu(self, p):
@@ -578,25 +582,29 @@ class dialog_savedgame_new(QWidget):
             elif os.path.exists(os.path.dirname(lc)):
                 menu.addAction(opendir)
             menu.addAction(gamesetting)
-            menu.addAction(delgame)
+            if self.reftagid not in (1,):
+                menu.addAction(delgame)
             menu.addSeparator()
-            __vis, __uid = loadvisinternal(True, self.reftagid)
+            __vis, __uid = loadvisinternal(
+                True, self.reftagid, recent=False, global_=False
+            )
             if __uid:
                 addtolist = LMenu("添加到列表", menu)
                 menu.addMenu(addtolist)
                 for _ in range(len(__vis)):
-                    a = QAction(__vis[_], addtolist)
+                    a = LAction(__vis[_], addtolist)
                     a.setData(__uid[_])
                     addtolist.addAction(a)
         else:
-            if self.reftagid:
+            if self.reftagid not in (None, 1):
                 menu.addAction(editname)
             menu.addAction(addlist)
-            if self.reftagid:
+            if self.reftagid not in (None, 1):
                 menu.addAction(dellist)
             menu.addSeparator()
-            menu.addAction(addgame)
-            menu.addAction(batchadd)
+            if self.reftagid not in (1,):
+                menu.addAction(addgame)
+                menu.addAction(batchadd)
             menu.addSeparator()
         action = menu.exec(self.mapToGlobal(p))
         if action == startgame:
@@ -689,7 +697,6 @@ class dialog_savedgame_new(QWidget):
             "currvislistuid",
             self.resetcurrvislist,
             internal=uid,
-            static=True,
         )
         self.__layout.insertWidget(0, self.vislistcombo)
 
@@ -864,6 +871,8 @@ class dialog_savedgame_new(QWidget):
             pass
 
     def moverank(self, dx):
+        if self.reflist == 1:
+            return
         game = self.currentfocusuid
 
         idx1 = self.idxsave.index(game)

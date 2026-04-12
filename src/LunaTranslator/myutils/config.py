@@ -131,6 +131,11 @@ else:
             continue
         parselist(sub["games"])
 
+if None not in savegametaged:
+    savegametaged.append(None)
+if 1 not in savegametaged:
+    savegametaged.append(1)
+
 try:
     extradatas = _savehook[4]
 except:
@@ -260,6 +265,8 @@ def findgameuidofpath(gamepath, findall=False):
         return uids
     collect = []
     for sub in savegametaged:
+        if sub == 1:
+            continue
         if sub is None:
             use = savehook_new_list
         else:

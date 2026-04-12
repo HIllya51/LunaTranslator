@@ -908,5 +908,7 @@
     "内置OCR": "OCR intégré",
     "打开图片": "Ouvrir l'image",
     "打开路径": "Ouvrir le chemin",
-    "已保存为： {}": "Enregistré sous : {}"
+    "已保存为： {}": "Enregistré sous : {}",
+    "所有游戏": "Tous les jeux",
+    "最近游戏": "Jeux récents"
 }

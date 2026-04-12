@@ -1,12 +1,9 @@
 import requests, os
-from myutils.config import savehook_new_data, static_data
-from myutils.utils import initanewitem, gamdidchangedtask
-import functools, time, json, gobject
+from myutils.config import static_data
+import time, json, gobject
 from qtsymbols import *
 from metadata.abstract import common
-from gui.gamemanager.common import getreflist, getalistname
 from myutils.wrapper import threader
-from gui.usefulwidget import manybuttonlayout
 
 
 class bgmsettings(QFormLayout):

@@ -28,6 +28,7 @@ from gui.usefulwidget import (
 from gui.gamemanager.common import loadvisinternal
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
+    loadrecentlist,
     startgamecheck,
     getreflist,
     calculatetagidx,
@@ -651,7 +652,7 @@ class dialog_savedgame_v3(QSplitter):
                 self.fuckqt6 = _
                 v.addWidget(_)
 
-            tabadd_lazy(self.righttop, "设置", __)
+            tabadd_lazy(self.righttop, "_设置_", __)
             self.righttop.setCurrentIndex(currvis)
         except:
             print_exc()
@@ -714,14 +715,17 @@ class dialog_savedgame_v3(QSplitter):
             elif os.path.exists(os.path.dirname(lc)):
                 menu.addAction(opendir)
 
-            menu.addAction(delgame)
+            if self.reftagid not in (1,):
+                menu.addAction(delgame)
             menu.addSeparator()
-            __vis, __uid = loadvisinternal(True, self.reftagid)
+            __vis, __uid = loadvisinternal(
+                True, self.reftagid, recent=False, global_=False
+            )
             if __uid:
                 addtolist = LMenu("添加到列表", menu)
                 menu.addMenu(addtolist)
                 for _ in range(len(__vis)):
-                    a = QAction(__vis[_], addtolist)
+                    a = LAction(__vis[_], addtolist)
                     a.setData(__uid[_])
                     addtolist.addAction(a)
 
@@ -870,7 +874,7 @@ class dialog_savedgame_v3(QSplitter):
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        self.righttop.addTab(self.pixview, "画廊")
+        self.righttop.addTab(self.pixview, "_画廊_")
         self.addWidget(self.righttop)
         self.setObjectName("NOBORDER")
 
@@ -885,13 +889,18 @@ class dialog_savedgame_v3(QSplitter):
         isfirst = True
         for i, tag in enumerate(savegametaged):
             if tag is None:
-                title = "GLOBAL"
+                title = "所有游戏"
                 lst = savehook_new_list
                 tagid = None
-                opened = globalconfig["global_list_opened"]
+                opened = globalconfig.get("global_list_opened", True)
+            elif tag == 1:
+                title = "最近游戏"
+                lst = loadrecentlist()
+                tagid = 1
+                opened = globalconfig.get("recent_list_opened", True)
             else:
                 lst = tag["games"]
-                title = tag["title"]
+                title = "[[{}]]".format(tag["title"])
                 tagid = tag["uid"]
                 opened = tag.get("opened", True)
             group0, btn = self.createtaglist(self.stack, title, tagid, opened)
@@ -936,14 +945,15 @@ class dialog_savedgame_v3(QSplitter):
         menu.addAction(Upaction)
         menu.addAction(Downaction)
         menu.addSeparator()
-        if tagid:
+        if tagid not in (None, 1):
             menu.addAction(editname)
         menu.addAction(addlist)
-        if tagid:
+        if tagid not in (None, 1):
             menu.addAction(dellist)
         menu.addSeparator()
-        menu.addAction(addgame)
-        menu.addAction(batchadd)
+        if tagid not in (1,):
+            menu.addAction(addgame)
+            menu.addAction(batchadd)
 
         action = menu.exec(QCursor.pos())
         if action == addgame:
@@ -1007,13 +1017,21 @@ class dialog_savedgame_v3(QSplitter):
     def _revertoepn(self, tagid):
         item = savegametaged[calculatetagidx(tagid)]
         if item is None:
-            globalconfig["global_list_opened"] = not globalconfig["global_list_opened"]
+            globalconfig["global_list_opened"] = not globalconfig.get(
+                "global_list_opened", True
+            )
+        elif item == 1:
+            globalconfig["recent_list_opened"] = not globalconfig.get(
+                "recent_list_opened", True
+            )
         else:
             savegametaged[calculatetagidx(tagid)]["opened"] = not savegametaged[
                 calculatetagidx(tagid)
             ]["opened"]
 
     def moverank(self, dx):
+        if self.reftagid == 1:
+            return
         uid = self.currentfocusuid
         idx1 = self.reallist[self.reftagid].index(uid)
         idx2 = (idx1 + dx) % len(self.reallist[self.reftagid])
