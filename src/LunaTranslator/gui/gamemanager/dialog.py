@@ -735,6 +735,8 @@ class dialog_savedgame_new(QWidget):
     reference = None
 
     def sortgamecallback(self):
+        if self.reflist == 1:
+            return
         menu = QMenu(self)
         sortbytime = LAction("按添加时间排序", menu)
         sortbytime.setIcon(qtawesome.icon("fa.sort-numeric-asc"))
