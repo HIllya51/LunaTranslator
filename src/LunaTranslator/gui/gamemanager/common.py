@@ -321,8 +321,9 @@ def loadrecentlist():
     for uid, tms in data.items():
         tm = tms[-1][1]
         datas[uid] = tm
-    ks = list(datas.keys())
+    ks = list(_ for _ in datas if _ in savehook_new_data)
     ks.sort(key=lambda uid: -datas[uid])
+
     return ks[: globalconfig.get("recentgamelistnum", 10)]
 
 
