@@ -232,6 +232,7 @@ class previewimages(QListWidget):
 
     def __init__(self, p=None):
         super(previewimages, self).__init__(p)
+        self.setObjectName("NOBORDER")
         self.imageDelegate = ImageDelegate(self)
         self.setItemDelegate(self.imageDelegate)
         self.lock = threading.Lock()
@@ -523,6 +524,7 @@ class pixwrapper(QSplitter):
 
     def __init__(self, p: "dialog_savedgame_v3") -> None:
         super().__init__(p)
+        self.setObjectName("NOBORDER")
         self.ref = p
         self.setAcceptDrops(True)
         self.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
@@ -624,7 +626,7 @@ class pixwrapper(QSplitter):
         self.pixview.bottombtn.setVisible(os.path.exists(get_launchpath(k)))
 
 
-class dialog_savedgame_v3(QWidget):
+class dialog_savedgame_v3(QSplitter):
     def deleteLater(self):
 
         if not isqt5:
@@ -787,7 +789,7 @@ class dialog_savedgame_v3(QWidget):
         style += "#savegame_onselectcolor1{{background-color: {};}}".format(
             globalconfig["dialog_savegame_layout"]["onselectcolor2"]
         )
-        self.setStyleSheet(style)
+        self.stack.setStyleSheet(style)
 
     def movefocus(self, dx):
         uid = self.currentfocusuid
@@ -808,15 +810,14 @@ class dialog_savedgame_v3(QWidget):
         except:
             pass
 
-    def __init__(self, parent: QMainWindow) -> None:
+    def __init__(self, parent) -> None:
         super().__init__(parent)
-        parent.setWindowTitle("游戏管理")
         self.currentfocusuid = None
         self.reftagid: str = None
         self.reallist: "dict[str,list]" = {}
         self.keepindexobject = {}
 
-        class ___(stackedlist):
+        class stackedlist11(stackedlist):
             def __init__(self_, ref: dialog_savedgame_v3):
                 super().__init__()
                 self_.ref = ref
@@ -840,7 +841,7 @@ class dialog_savedgame_v3(QWidget):
                         return e.ignore()
                 super().keyPressEvent(e)
 
-        self.stack = ___(self)
+        self.stack = stackedlist11(self)
         self.stack.setheight(
             globalconfig["dialog_savegame_layout"]["listitemheight"] + 1
         )
@@ -848,14 +849,11 @@ class dialog_savedgame_v3(QWidget):
         self.stack.customContextMenuRequested.connect(self.stack_showmenu)
 
         self.stack.bgclicked.connect(clickitem.clearfocus)
+        self.stack.setObjectName("NOBORDER")
         self.setstyle()
-        spl = QSplitter()
-        spl.setHandleWidth(0)
-        _l = QHBoxLayout(self)
-        _l.setContentsMargins(0, 0, 0, 0)
-        _l.addWidget(spl)
+        self.setHandleWidth(0)
 
-        spl.addWidget(self.stack)
+        self.addWidget(self.stack)
         self.righttop = makesubtab_lazy()
         self.pixview = pixwrapper(self)
         self.pixview.startgame.connect(
@@ -864,15 +862,16 @@ class dialog_savedgame_v3(QWidget):
             )
         )
         self.righttop.addTab(self.pixview, "画廊")
-        spl.addWidget(self.righttop)
+        self.addWidget(self.righttop)
+        self.setObjectName("NOBORDER")
 
         def __(_):
-            globalconfig["dialog_savegame_layout"]["listitemwidth_2"] = spl.sizes()
+            globalconfig["dialog_savegame_layout"]["listitemwidth_2"] = self.sizes()
 
-        spl.setSizes(globalconfig["dialog_savegame_layout"]["listitemwidth_2"])
-        spl.splitterMoved.connect(__)
-        spl.setStretchFactor(0, 0)
-        spl.setStretchFactor(1, 1)
+        self.setSizes(globalconfig["dialog_savegame_layout"]["listitemwidth_2"])
+        self.splitterMoved.connect(__)
+        self.setStretchFactor(0, 0)
+        self.setStretchFactor(1, 1)
 
         isfirst = True
         for i, tag in enumerate(savegametaged):

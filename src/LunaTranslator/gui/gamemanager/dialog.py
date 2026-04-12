@@ -76,6 +76,7 @@ class dialog_savedgame_integrated(saveposwindow):
             | Qt.WindowType.WindowCloseButtonHint,
             poslist=globalconfig["savegamedialoggeo"],
         )
+        self.setWindowTitle("游戏管理")
         self.setWindowIcon(
             qtawesome.icon(globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"])
         )
@@ -499,6 +500,7 @@ class dialog_savedgame_new(QWidget):
         self.flow.hide()
         self.flow.deleteLater()
         self.flow = lazyscrollflow(self.keypressed)
+        self.flow.setObjectName("NOBORDER")
         self.flow.bgclicked.connect(ItemWidget.clearfocus)
         self.flow.setsize(
             QSize(

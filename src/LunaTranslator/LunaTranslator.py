@@ -1468,6 +1468,7 @@ class BASEOBJECT(QObject):
             fontstr(globalconfig["settingfontsize"] + 2)
         )
         style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
+        style += "#NOBORDER{border:0;margin:0;padding:0;}"
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
