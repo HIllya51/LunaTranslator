@@ -683,6 +683,7 @@ class dialog_savedgame_new(QWidget):
         self.reftagid = uid
         self.reflist = getreflist(uid)
         self.tagschanged(self.currtags)
+        self.vislistcombo.setFocus()
 
     def loadcombo(self, init):
         vis, uid = loadvisinternal()
