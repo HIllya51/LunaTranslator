@@ -24,103 +24,8 @@ class bgmsettings(QFormLayout):
         )
         return response.json()["username"]
 
-    def querylist(self):
-
-        params = {
-            "subject_type": "4",
-            "limit": "30",
-            "offset": "0",
-        }
-        collectresults = []
-        response = requests.get(
-            "https://api.bgm.tv/v0/users/{}/collections".format(self.username),
-            params=params,
-            headers=self.headers,
-            proxies=self._ref.proxy,
-        )
-        for item in response.json()["data"]:
-            collectresults.append(
-                {"id": item["subject_id"], "name": item["subject"]["name"]}
-            )
-        return collectresults
-
-    def getalistname_download(self, uid):
-
-        reflist = getreflist(uid)
-        collectresults = self.querylist()
-        thislistvids = [
-            savehook_new_data[gameuid].get(self._ref.idname, 0) for gameuid in reflist
-        ]
-        collect = {}
-        for gameuid in savehook_new_data:
-            vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
-            if not vid:
-                continue
-            collect[vid] = gameuid
-
-        for item in collectresults:
-            title = item["name"]
-            vid = item["id"]
-            if vid in thislistvids:
-                continue
-
-            if vid in collect:
-                gameuid = collect[vid]
-            else:
-                gameuid = initanewitem(title)
-                savehook_new_data[gameuid][self._ref.idname] = vid
-                gamdidchangedtask(self._ref.typename, self._ref.idname, gameuid)
-            reflist.insert(0, gameuid)
-
-    def getalistname_upload(self, uid):
-        reflist = getreflist(uid)
-        vids = [item["id"] for item in self.querylist()]
-
-        for gameuid in reflist:
-            vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
-            if not vid:
-                continue
-            if vid in vids:
-                continue
-
-            requests.post(
-                "https://api.bgm.tv/v0/users/-/collections/{}".format(vid),
-                headers=self.headers,
-                json={
-                    "type": 4,
-                    # "rate": 10,
-                    # "comment": "string",
-                    # "private": True,
-                    # "tags": ["string"],
-                },
-                proxies=self._ref.proxy,
-            )
-
-    def singleupload_existsoverride(self, gameuid):
-        vid = savehook_new_data[gameuid].get(self._ref.idname, 0)
-        if not vid:
-            return
-        try:
-            requests.post(
-                "https://api.bgm.tv/v0/users/-/collections/{}".format(vid),
-                headers=self.headers,
-                json={
-                    "type": 4,
-                    # "rate": 10,
-                    # "comment": "string",
-                    # "private": True,
-                    # "tags": ["string"],
-                },
-                proxies=self._ref.proxy,
-            )
-        except:
-            pass
-
-    showhide = pyqtSignal(bool)
-
     @threader
     def checkvalid(self, k):
-        self.showhide.emit(False)
         self.lbinfo.setText("")
         t = time.time()
         self.tm = t
@@ -163,12 +68,10 @@ class bgmsettings(QFormLayout):
             info += "有效期至： " + time.strftime(
                 "%Y-%m-%d %H:%M:%S", time.localtime(expires)
             )
-            self.showhide.emit(True)
         else:
             info = " ".join(
                 (response.get("error", ""), response.get("error_description", ""))
             )
-            self.showhide.emit(False)
         self.lbinfo.setText(info)
 
     def __oauth(self):
@@ -228,12 +131,6 @@ class bgmsettings(QFormLayout):
         self.lbinfo = QLabel()
         s.textChanged.connect(self.checkvalid)
         s.setText(_ref.config["access-token"])
-        ww = QWidget()
-        fl2 = QFormLayout(ww)
-        fl2.setContentsMargins(0, 0, 0, 0)
-        ww.hide()
-        self.fl2 = ww
-        self.showhide.connect(self.fl2.setVisible)
         self._token = s
         vbox.addLayout(hbox)
         hbox.addWidget(s)
@@ -242,34 +139,6 @@ class bgmsettings(QFormLayout):
         oauth.clicked.connect(self.__oauth)
         vbox.addWidget(self.lbinfo)
         self.addRow("access-token", vbox)
-        btn = manybuttonlayout(
-            (
-                (
-                    "上传游戏",
-                    functools.partial(self.singleupload_existsoverride, gameuid),
-                ),
-                (
-                    "上传游戏列表",
-                    functools.partial(
-                        getalistname,
-                        ww,
-                        self.getalistname_upload,
-                        title="上传游戏列表",
-                    ),
-                ),
-                (
-                    "获取游戏列表",
-                    functools.partial(
-                        getalistname,
-                        ww,
-                        self.getalistname_download,
-                        title="添加到列表",
-                    ),
-                ),
-            )
-        )
-        fl2.addRow(btn)
-        self.addRow(ww)
 
 
 class searcher(common):
