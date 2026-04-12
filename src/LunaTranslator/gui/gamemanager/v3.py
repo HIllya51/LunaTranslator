@@ -217,6 +217,17 @@ class ImageDelegate(QStyledItemDelegate):
 
 class MyQListWidget(QListWidget):
 
+    def wheelEvent(self, event: QWheelEvent):
+        delta = event.angleDelta().y()
+        if self.flow() == QListView.Flow.LeftToRight:
+            h_bar = self.horizontalScrollBar()
+            if h_bar.isVisible():
+                new_value = h_bar.value() - delta
+                h_bar.setValue(new_value)
+                event.accept()
+                return
+        super().wheelEvent(event)
+
     def sethor(self, hor):
         if hor:
             self.setFlow(QListWidget.Flow.LeftToRight)
