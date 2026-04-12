@@ -1518,6 +1518,22 @@ namespace
         if (cache.touch(s))
             return buffer->clear();
     }
+    DECLARE_FUNCTION(ULJM05697S, const char *_);
+    void ULJM05697(TextBuffer *buffer, HookParam *hpx)
+    {
+        auto s = buffer->strA();
+        if (s.find("#n") == s.npos)
+        {
+            HookParam hp;
+            hp.address = (uintptr_t)ULJM05697S;
+            hp.offset = GETARG(1);
+            hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
+            static auto _ = NewHook(hp, hpx->name);
+            ULJM05697S(s.c_str());
+            return buffer->clear();
+        }
+        ULJM05943F(buffer, hpx);
+    }
 }
 struct emfuncinfoX
 {
@@ -1682,8 +1698,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8885fd8, {0, 0, 0, 0, 0, "ULJM06393"}},
     {0x88ac3a8, {0, 1, 0, 0, 0, "ULJM06393"}},
     // S・Y・K ～新説西遊記～ ポータブル
-    {0x88DD918, {0, 0, 0, 0, ULJM05823_2, "ULJM05697"}}, // text+name->name
-    {0x8811DAC, {FULL_STRING, 0xc, 0, 0, ULJM05943F, "ULJM05697"}},
+    {0x88DD918, {FULL_STRING, 0, 0, 0, ULJM05697, "ULJM05697"}},
     // S.Y.K ～蓮咲伝～ Portable
     {0x88FB080, {0, 0, 0, 0, ULJM05867_1, "ULJM05867"}}, // TEXT
     {0x88FB0B8, {0, 0, 0, 0, ULJM05867_2, "ULJM05867"}}, // NAME
