@@ -63,6 +63,8 @@ class jisho(cishubase):
     def search(self, word):
         saver = {}
         res = self.paradown(word, "search", saver)
+        if not res:
+            return
         return '<style>{}</style><div class="{}">{}</div>'.format(
             saver.get("style", ""), self.klass, res
         )

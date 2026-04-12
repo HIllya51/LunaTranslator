@@ -215,38 +215,33 @@ class ImageDelegate(QStyledItemDelegate):
             opt.decorationSize = QSize(100, 100)
 
 
-class MyQListWidget(QListWidget):
+class previewimages(QListWidget):
+    changepixmappath = pyqtSignal(str)
+    removepath = pyqtSignal(str)
 
     def wheelEvent(self, event: QWheelEvent):
-        delta = event.angleDelta().y()
         if self.flow() == QListView.Flow.LeftToRight:
             h_bar = self.horizontalScrollBar()
             if h_bar.isVisible():
+                delta = event.angleDelta().y()
                 new_value = h_bar.value() - delta
                 h_bar.setValue(new_value)
                 event.accept()
                 return
         super().wheelEvent(event)
 
-    def sethor(self, hor):
-        if hor:
-            self.setFlow(QListWidget.Flow.LeftToRight)
-            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
-            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-        else:
-            self.setFlow(QListWidget.Flow.TopToBottom)
-            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
-            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
-            self.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
-
     def __init__(self, p=None):
-        super(MyQListWidget, self).__init__(p)
+        super(previewimages, self).__init__(p)
         self.imageDelegate = ImageDelegate(self)
         self.setItemDelegate(self.imageDelegate)
         self.lock = threading.Lock()
         self.loadTimer = QTimer(interval=25, timeout=self.loadImage)
         self.loadTimer.start()
+        self.currentRowChanged.connect(self._visidx)
+
+        self.setDragEnabled(True)
+        self.setDragDropMode(QListWidget.DragDropMode.InternalMove)
+        self.setDefaultDropAction(Qt.DropAction.MoveAction)
 
     def loadImage(self):
         try:
@@ -272,61 +267,53 @@ class MyQListWidget(QListWidget):
                             if self.item(self.currentRow()).isHidden():
                                 self.setCurrentRow(row)
                             item.setIcon(QIcon(image))
+
         except:
             print_exc()
 
-
-class previewimages(QWidget):
-    changepixmappath = pyqtSignal(str)
-    removepath = pyqtSignal(str)
-
     def sethor(self, hor):
-        self.hor = hor
-        self.list.sethor(hor)
-
-        if self.hor:
-            self.list.setIconSize(QSize(self.height(), self.height()))
+        if hor:
+            self.setFlow(QListWidget.Flow.LeftToRight)
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.setHorizontalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         else:
-            self.list.setIconSize(QSize(self.width(), self.width()))
+            self.setFlow(QListWidget.Flow.TopToBottom)
+            self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+            self.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+
+        if hor:
+            self.setIconSize(QSize(self.height(), self.height()))
+        else:
+            self.setIconSize(QSize(self.width(), self.width()))
 
     def sizeHint(self):
         return QSize(100, 100)
 
-    def __init__(self, p) -> None:
-        super().__init__(p)
-        self.lay = QHBoxLayout(self)
-        self.lay.setContentsMargins(0, 0, 0, 0)
-        self.list = MyQListWidget(self)
-        self.list.currentRowChanged.connect(self._visidx)
-
-        self.list.setDragEnabled(True)
-        self.list.setDragDropMode(QListWidget.DragDropMode.InternalMove)
-        self.list.setDefaultDropAction(Qt.DropAction.MoveAction)
-        self.lay.addWidget(self.list)
-
     def tolastnext(self, dx):
-        if self.list.count() == 0:
-            return self.list.setCurrentRow(-1)
-        first = (self.list.currentRow() + dx) % self.list.count()
+        if self.count() == 0:
+            return self.setCurrentRow(-1)
+        first = (self.currentRow() + dx) % self.count()
         test = first
         while True:
-            if not self.list.item(test).isHidden():
-                self.list.setCurrentRow(test)
+            if not self.item(test).isHidden():
+                self.setCurrentRow(test)
                 break
-            test = (test + dx) % self.list.count()
+            test = (test + dx) % self.count()
             if test == first:
                 break
 
     def dumppaths(self):
         nlst = []
-        for i in range(self.list.model().rowCount()):
-            nlst.append(self.list.model().data(self.list.model().index(i, 0), PathRole))
+        for i in range(self.model().rowCount()):
+            nlst.append(self.model().data(self.model().index(i, 0), PathRole))
         return nlst
 
     def additems(self, paths, clear=True, insert=False):
-        self.list.blockSignals(True)
+        self.blockSignals(True)
         if clear:
-            self.list.clear()
+            self.clear()
         first = None
         for path in paths:
             item = QListWidgetItem()
@@ -335,23 +322,23 @@ class previewimages(QWidget):
             item.setData(PathRole, path)
             item.setData(ImageRequestedRole, False)
             if insert:
-                self.list.insertItem(self.list.currentRow() + 1, item)
+                self.insertItem(self.currentRow() + 1, item)
             else:
-                self.list.addItem(item)
-        self.list.blockSignals(False)
+                self.addItem(item)
+        self.blockSignals(False)
         if first:
-            self.list.setCurrentItem(first)
+            self.setCurrentItem(first)
 
     def setpixmaps(self, paths: list, currentpath):
-        self.list.setCurrentRow(-1)
+        self.setCurrentRow(-1)
         self.additems(paths)
         pixmapi = 0
         if currentpath in paths:
             pixmapi = paths.index(currentpath)
-        self.list.setCurrentRow(pixmapi)
+        self.setCurrentRow(pixmapi)
 
     def _visidx(self, _):
-        item = self.list.currentItem()
+        item = self.currentItem()
         if item is None:
             pixmap_ = None
         else:
@@ -359,13 +346,13 @@ class previewimages(QWidget):
         self.changepixmappath.emit(pixmap_)
 
     def removecurrent(self, delfile):
-        idx = self.list.currentRow()
-        item = self.list.currentItem()
+        idx = self.currentRow()
+        item = self.currentItem()
         if item is None:
             return
         path = item.data(PathRole)
         self.removepath.emit(path)
-        self.list.takeItem(idx)
+        self.takeItem(idx)
         if delfile:
             try:
                 os.remove(extradatas["localedpath"].get(path, path))
@@ -373,10 +360,10 @@ class previewimages(QWidget):
                 pass
 
     def resizeEvent(self, e: QResizeEvent):
-        if self.hor:
-            self.list.setIconSize(QSize(self.height(), self.height()))
+        if self.flow() == QListView.Flow.LeftToRight:
+            self.setIconSize(QSize(self.height(), self.height()))
         else:
-            self.list.setIconSize(QSize(self.width(), self.width()))
+            self.setIconSize(QSize(self.width(), self.width()))
         return super().resizeEvent(e)
 
 
@@ -458,7 +445,7 @@ class viewpixmap_x(QWidget):
         self.pixmapviewer.showpixmap(pixmap)
 
 
-class pixwrapper(QWidget):
+class pixwrapper(QSplitter):
     startgame = pyqtSignal()
 
     def keyPressEvent(self, e: QKeyEvent):
@@ -519,19 +506,19 @@ class pixwrapper(QWidget):
 
     def setrank(self, rank):
         if rank:
-            self.spliter.addWidget(self.pixview)
-            self.spliter.addWidget(self.previewimages)
+            self.addWidget(self.pixview)
+            self.addWidget(self.previewimages)
         else:
-            self.spliter.addWidget(self.previewimages)
-            self.spliter.addWidget(self.pixview)
+            self.addWidget(self.previewimages)
+            self.addWidget(self.pixview)
 
     def sethor(self, hor):
         if hor:
 
-            self.spliter.setOrientation(Qt.Orientation.Vertical)
+            self.setOrientation(Qt.Orientation.Vertical)
         else:
 
-            self.spliter.setOrientation(Qt.Orientation.Horizontal)
+            self.setOrientation(Qt.Orientation.Horizontal)
         self.previewimages.sethor(hor)
 
     def __init__(self, p: "dialog_savedgame_v3") -> None:
@@ -543,14 +530,10 @@ class pixwrapper(QWidget):
         hor = (globalconfig["viewlistpos"] % 2) == 0
 
         self.previewimages = previewimages(self)
-        self.previewimages.list.model().rowsMoved.connect(self._rowsMoved)
-        self.vlayout = QVBoxLayout(self)
-        self.vlayout.setContentsMargins(0, 0, 0, 0)
+        self.previewimages.model().rowsMoved.connect(self._rowsMoved)
         self.pixview = viewpixmap_x(self)
         self.pixview.startgame.connect(self.startgame)
-        self.spliter = QSplitter(self)
-        self.spliter.setHandleWidth(0)
-        self.vlayout.addWidget(self.spliter)
+        self.setHandleWidth(0)
         self.setrank(rank)
         self.sethor(hor)
         self.pixview.tolastnext.connect(self.previewimages.tolastnext)
@@ -624,7 +607,7 @@ class pixwrapper(QWidget):
         self.sethor(hor)
 
     def removepath(self, path):
-        lst = savehook_new_data[self.k].get("imagepath_all", [])
+        lst: list = savehook_new_data[self.k].get("imagepath_all", [])
         lst.pop(lst.index(path))
 
     def changepixmappath(self, path):
@@ -880,10 +863,7 @@ class dialog_savedgame_v3(QWidget):
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        _w = QWidget()
-        rightlay = QVBoxLayout(_w)
-        rightlay.setContentsMargins(0, 0, 0, 0)
-        self.righttop.addTab(_w, "画廊")
+        self.righttop.addTab(self.pixview, "画廊")
         spl.addWidget(self.righttop)
 
         def __(_):
@@ -893,7 +873,6 @@ class dialog_savedgame_v3(QWidget):
         spl.splitterMoved.connect(__)
         spl.setStretchFactor(0, 0)
         spl.setStretchFactor(1, 1)
-        rightlay.addWidget(self.pixview)
 
         isfirst = True
         for i, tag in enumerate(savegametaged):

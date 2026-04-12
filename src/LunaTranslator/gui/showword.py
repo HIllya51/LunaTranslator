@@ -1112,15 +1112,15 @@ class kpQTreeView(QTreeView):
             super().keyPressEvent(e)
 
 
-class HistoryViewer(QWidget):
+class HistoryViewer(QListView):
     SentenceRole = Qt.ItemDataRole.UserRole + 100
     IndexRole = Qt.ItemDataRole.UserRole + 101
 
     def showmenu(self, _):
-        idx = self.listview.indexAt(_)
+        idx = self.indexAt(_)
         if not idx.isValid():
             return
-        item = self.model.itemFromIndex(idx)
+        item = self.model_.itemFromIndex(idx)
         menu = QMenu(self)
         delete = LAction("删除", menu)
         label = LAction("收藏", menu)
@@ -1183,42 +1183,40 @@ class HistoryViewer(QWidget):
 
     def deleteindex(self, index: QModelIndex):
         if index.isValid():
-            item = self.model.itemFromIndex(index)
+            item = self.model_.itemFromIndex(index)
             id_ = item.data(self.IndexRole)
-            self.model.removeRow(index.row())
+            self.model_.removeRow(index.row())
             gobject.base.somedatabase.removewhich(id_)
 
     def keyPressEvent(self, e: QKeyEvent):
         if (e.key() == Qt.Key.Key_Delete) and (self.historshoucangjia == 0):
-            index = self.listview.currentIndex()
+            index = self.currentIndex()
             self.deleteindex(index)
         return super().keyPressEvent(e)
 
     def __init__(self, parent: "searchwordW"):
         super(HistoryViewer, self).__init__(parent)
         self.historshoucangjia = 0
-        listview = QListView()
-        self.listview = listview
-        listview.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.model = QStandardItemModel(listview)
-        listview.setModel(self.model)
-        listview.doubleClicked.connect(self.selectwhich)
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.model_ = QStandardItemModel(self)
+        self.setModel(self.model_)
+        self.doubleClicked.connect(self.selectwhich)
         v = QHBoxLayout(self)
-        v.addWidget(listview)
+        v.addWidget(self)
         v.setContentsMargins(0, 0, 0, 0)
         self.ref = parent
-        listview.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        listview.customContextMenuRequested.connect(self.showmenu)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showmenu)
 
     def selectwhich(self, index: QModelIndex):
-        item = self.model.itemFromIndex(index)
+        item = self.model_.itemFromIndex(index)
         w = item.text()
         s = item.data(self.SentenceRole)
         self.ref.search_function(w, s, False, isfromhist=True)
 
     def refresh(self, who):
         self.historshoucangjia = who
-        self.model.clear()
+        self.model_.clear()
         maybehassentence = {}
         for _, w, s, t, __ in gobject.base.somedatabase.allwords():
             isshoucangde = w in globalconfig["wordlabel2"]
@@ -1238,7 +1236,7 @@ class HistoryViewer(QWidget):
                 item.setData(
                     QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
                 )
-            self.model.appendRow([item])
+            self.model_.appendRow([item])
         for w in reversed(globalconfig["wordlabel2"]):
             item = QStandardItem(w)
             s = maybehassentence.get(w)
@@ -1246,7 +1244,7 @@ class HistoryViewer(QWidget):
                 item.setToolTip(s)
                 item.setData(s, self.SentenceRole)
             item.setData(_, self.IndexRole)
-            self.model.appendRow([item])
+            self.model_.appendRow([item])
 
 
 class showdiction(QWidget):
