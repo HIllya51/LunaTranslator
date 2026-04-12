@@ -773,7 +773,7 @@ class dialog_savedgame_new(QWidget):
         dialog_savedgame_new.reference = self
         formLayout = QVBoxLayout(self)
         formLayout.setContentsMargins(0, 0, 0, 0)
-        formLayout.setSpacing(0)
+        formLayout.setSpacing(1)
         layout = QHBoxLayout()
         self.setAcceptDrops(True)
         self.__layout = layout

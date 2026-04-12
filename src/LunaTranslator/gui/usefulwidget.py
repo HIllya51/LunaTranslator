@@ -3259,8 +3259,12 @@ class IconButton(LPushButton):
 class SplitLine(QFrame):
     def __init__(self, *argc):
         super().__init__(*argc)
-        self.setStyleSheet("background-color: gray;")
-        self.setFixedHeight(2)
+        color = QColor(Qt.GlobalColor.gray)
+        color.setAlphaF(0.7)
+        self.setStyleSheet(
+            "background-color: {};".format(color.name(QColor.NameFormat.HexArgb))
+        )
+        self.setFixedHeight(1)
 
 
 def clearlayout(ll: QLayout):

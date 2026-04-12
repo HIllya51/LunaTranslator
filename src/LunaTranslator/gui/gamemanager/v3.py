@@ -855,6 +855,13 @@ class dialog_savedgame_v3(QSplitter):
 
         self.addWidget(self.stack)
         self.righttop = makesubtab_lazy()
+        self.righttop.currentChanged.connect(
+            lambda idx: (
+                self.righttop.setStyleSheet(
+                    "QTabWidget::pane{border:0;margin:0;padding:0;}" if idx == 0 else ""
+                ),
+            )
+        )
         self.pixview = pixwrapper(self)
         self.pixview.startgame.connect(
             lambda: startgamecheck(
