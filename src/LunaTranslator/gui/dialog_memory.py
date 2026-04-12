@@ -410,22 +410,17 @@ class dialog_memory(saveposwindow):
 
     def Picselect(self):
         menu = QMenu(self)
-        crop = LAction("截图", menu)
         crop2 = LAction("隐藏并截图", menu)
         crophwnd = LAction("窗口截图", menu)
         select = LAction("图片", menu)
-        crop.setIcon(qtawesome.icon("fa.crop"))
         crop2.setIcon(qtawesome.icon("fa.crop"))
         crophwnd.setIcon(qtawesome.icon("fa.camera"))
         select.setIcon(qtawesome.icon("fa.folder-open"))
-        menu.addAction(crop)
         menu.addAction(crop2)
         menu.addAction(crophwnd)
         menu.addAction(select)
         action = menu.exec(QCursor.pos())
-        if action == crop:
-            self.crophide()
-        elif action == crop2:
+        if action == crop2:
             self.crophide(s=True)
         elif action == crophwnd:
             grabwindow(callback=self.cropcallback1)

@@ -591,11 +591,7 @@ class AnkiWindow(QWidget):
 
         soundbutton2 = IconButton("fa.music", tips="语音合成")
         soundbutton2.clicked.connect(self.langdu2)
-        cropbutton = getIconButton(
-            icon="fa.crop",
-            callback=functools.partial(self.crophide, False),
-            tips="截图",
-        )
+        
         cropbutton2 = getIconButton(
             icon="fa.crop",
             callback=functools.partial(self.crophide, True),
@@ -782,7 +778,6 @@ class AnkiWindow(QWidget):
                                 [
                                     LLabel("截图"),
                                     self.editpath,
-                                    cropbutton,
                                     cropbutton2,
                                     grabwindowbtn,
                                     folder_open3,

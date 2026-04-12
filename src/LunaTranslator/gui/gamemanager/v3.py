@@ -535,7 +535,7 @@ class pixwrapper(QSplitter):
         self.previewimages.model().rowsMoved.connect(self._rowsMoved)
         self.pixview = viewpixmap_x(self)
         self.pixview.startgame.connect(self.startgame)
-        self.setHandleWidth(0)
+        self.setHandleWidth(1)
         self.setrank(rank)
         self.sethor(hor)
         self.pixview.tolastnext.connect(self.previewimages.tolastnext)
@@ -851,7 +851,9 @@ class dialog_savedgame_v3(QSplitter):
         self.stack.bgclicked.connect(clickitem.clearfocus)
         self.stack.setObjectName("NOBORDER")
         self.setstyle()
-        self.setHandleWidth(0)
+
+        self.setHandleWidth(1)
+        self.setStyleSheet("QSplitter::handle {margin:0}")
 
         self.addWidget(self.stack)
         self.righttop = makesubtab_lazy()
