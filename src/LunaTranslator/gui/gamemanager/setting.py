@@ -1484,8 +1484,7 @@ class dialog_setting_game_internal(QWidget):
 
     def gethooktab_internal(self, formLayout: LFormLayout, gameuid):
 
-        box = LGroupBox()
-        box.setTitle("额外的钩子")
+        box = NQGroupBox()
         settinglayout = LFormLayout(box)
         formLayout.addRow(box)
         settinglayout.addRow(
