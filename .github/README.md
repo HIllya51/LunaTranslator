@@ -1,10 +1,11 @@
-# [【软件下载 & 常见问题】](https://docs.lunatranslator.org/zh/README.html)
 
 ### 简体中文  | [English](#lunatranslator-1) | [繁體中文](https://docs.lunatranslator.org/cht/) | [한국어](https://docs.lunatranslator.org/ko/) | [日本語](https://docs.lunatranslator.org/ja/) | [Tiếng Việt](https://docs.lunatranslator.org/vi/) | [Русский язык](https://docs.lunatranslator.org/ru/)
 
 ---
 
-# LunaTranslator 
+# LunaTranslator  <span style="float: right;">[【软件下载 & 常见问题】](https://docs.lunatranslator.org/zh/README.html)</span>
+
+
 
 > **视觉小说翻译器**
 
