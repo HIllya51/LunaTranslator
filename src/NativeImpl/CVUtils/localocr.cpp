@@ -288,7 +288,7 @@ DECLARE_API OcrLite *OcrInit(const wchar_t *szDetModel, const wchar_t *szRecMode
     else if (isOpenVINOAvailable())
     {
         std::string __;
-        for (auto &&_ : ListpenVINODeviceTypes())
+        for (auto &&_ : ListOpenVINODeviceTypes())
         {
             __ = std::move(_);
             if (__ == device_type)

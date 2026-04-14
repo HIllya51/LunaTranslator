@@ -798,6 +798,8 @@ class stackedlist(ScrollArea):
 
     def __init__(self):
         super().__init__()
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+
         self._h = 1
         self.setStyleSheet(
             """QWidget#shit{background-color:transparent;}QScrollArea{background-color:transparent;border:0px}"""

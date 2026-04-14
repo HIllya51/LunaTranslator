@@ -3010,12 +3010,17 @@ class threeswitch(QWidget):
         except:
             pass
 
-    def __init__(self, p, icons):
+    def setDirection(self, Direction):
+        self.hv.setDirection(Direction)
+        self._sizechange(self.btns[0].size())
+
+    def __init__(self, p, icons, Direction=QBoxLayout.Direction.LeftToRight):
         super().__init__(p)
         self.btns: "list[QPushButton]" = []
-        hv = QHBoxLayout(self)
+        hv = QBoxLayout(Direction, self)
         hv.setContentsMargins(0, 0, 0, 0)
         hv.setSpacing(0)
+        self.hv = hv
         for i, icon in enumerate(icons):
             btn = IconButton(parent=self, icon=icon, checkable=True)
             btn.clicked.connect(functools.partial(self.selectlayout, i))
@@ -3024,8 +3029,18 @@ class threeswitch(QWidget):
             hv.addWidget(btn)
 
     def sizechange(self, size: QSize):
-        self.setFixedSize(QSize(size.width() * len(self.btns), size.height()))
+        self._sizechange(size)
         self.sizeChanged.emit(self.size())
+
+    def _sizechange(self, size: QSize):
+        if self.hv.direction() in (
+            QBoxLayout.Direction.LeftToRight,
+            QBoxLayout.Direction.RightToLeft,
+        ):
+            size.setWidth(len(self.btns) * size.width())
+        else:
+            size.setHeight(len(self.btns) * size.height())
+        self.setFixedSize(size)
 
 
 class pixmapviewer(QWidget):
