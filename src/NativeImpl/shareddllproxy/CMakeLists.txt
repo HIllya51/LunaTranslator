@@ -67,4 +67,4 @@ if(WIN10ABOVE)
 endif()
 
 target_link_libraries(shareddllproxy PRIVATE FileLocksmith base64)
-target_link_libraries(shareddllproxy PRIVATE delayimp)
+target_link_libraries(shareddllproxy PRIVATE delayimp Dbghelp)
