@@ -440,7 +440,7 @@ class ItemWidget(QWidget):
         self.setToolTip(self._lb.text())
 
 
-class dialog_savedgame_new(QWidget):
+class dialog_savedgame_new(QSplitter):
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
@@ -501,7 +501,6 @@ class dialog_savedgame_new(QWidget):
         newtags = tags
         self.idxsave.clear()
         ItemWidget.clearfocus()
-        self.formLayout.removeWidget(self.flow)
         self.flow.hide()
         self.flow.deleteLater()
         self.flow = lazyscrollflow(self.keypressed)
@@ -514,7 +513,7 @@ class dialog_savedgame_new(QWidget):
             )
         )
         self.flow.setSpacing(globalconfig["dialog_savegame_layout"]["margin"])
-        self.formLayout.insertWidget(self.formLayout.count(), self.flow)
+        self.flowcontainer.addWidget(self.flow)
         idx = 0
         for k in self.reflistx:
             if newtags != self.currtags:
@@ -554,7 +553,6 @@ class dialog_savedgame_new(QWidget):
                 continue
             self.newline(k, idx == 0)
             idx += 1
-
         self.flow.directshow()
 
     def showmenu(self, p):
@@ -776,15 +774,33 @@ class dialog_savedgame_new(QWidget):
             )
             self.tagschanged(self.currtags)
 
+    def event(self, e: QEvent):
+        if e.type() == QEvent.Type.FontChange:
+            self.topw.setFixedHeight(self.topw.sizeHint().height())
+        return super().event(e)
+
+    def createHandle(self):
+        class MySplitterHandle(QSplitterHandle):
+            def paintEvent(self1, event):
+                if self1.underMouse():
+                    super().paintEvent(event)
+                else:
+                    pass
+
+        return MySplitterHandle(self.orientation(), self)
+
     def __init__(self, parent) -> None:
         super().__init__(parent)
         self._parent = parent
         self.setstyle()
         dialog_savedgame_new.reference = self
-        formLayout = QVBoxLayout(self)
-        formLayout.setContentsMargins(0, 0, 0, 0)
-        formLayout.setSpacing(1)
-        layout = QHBoxLayout()
+        self.setObjectName("NOBORDER")
+        self.setOrientation(Qt.Orientation.Vertical)
+        self.setHandleWidth(1)
+        _w = QWidget()
+        self.topw = _w
+        layout = QHBoxLayout(_w)
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
         self.setAcceptDrops(True)
         self.__layout = layout
@@ -805,12 +821,14 @@ class dialog_savedgame_new(QWidget):
             )
         )
         layout.addWidget(self.___)
-        formLayout.addLayout(layout)
+        self.addWidget(_w)
+        __ = QWidget()
+        self.flowcontainer = QHBoxLayout(__)
+        self.flowcontainer.setContentsMargins(0, 0, 0, 0)
         self.flow = QWidget()
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
-        formLayout.addWidget(self.flow)
-        self.formLayout = formLayout
+        self.addWidget(__)
         self.savebutton = []
 
         self.idxsave = []
@@ -821,6 +839,13 @@ class dialog_savedgame_new(QWidget):
         else:
             self.tagschanged(tuple())
         self.installEventFilter(self)
+
+        def __(_):
+            globalconfig["dialogsplit"] = self.sizes()
+
+        if "dialogsplit" in globalconfig:
+            self.setSizes(globalconfig["dialogsplit"])
+        self.splitterMoved.connect(__)
 
     def eventFilter(self, obj, _):
         try:
