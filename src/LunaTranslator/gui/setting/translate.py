@@ -449,7 +449,7 @@ def initsome11(self, l, save=False):
 
 def initsome21(self, not_is_gpt_like):
     not_is_gpt_like = initsome11(self, not_is_gpt_like)
-    not_is_gpt_like += [[(functools.partial(offlinelinks, "translate"), 0)]]
+    # not_is_gpt_like += [[(functools.partial(offlinelinks, "translate"), 0)]]
     grids = [
         [
             functools.partial(
