@@ -29,6 +29,7 @@
 #include "engine32/Yatagarasu.h"
 #include "engine32/TACTICS.h"
 #include "engine32/For.h"
+#include "engine32/Azurite.h"
 #include "engine32/splushwave.h"
 #include "engine32/GJ.h"
 #include "engine32/ANOS.h"
@@ -491,5 +492,6 @@ std::vector<ENGINE *> check_engines()
         new InteractiveNovelEngine,
         new PiAS,
         new Seraphim,
+        new Azurite,
     };
 }
