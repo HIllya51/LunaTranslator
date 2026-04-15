@@ -4,7 +4,7 @@
 #define ReCa reinterpret_cast
 std::uintptr_t GetModuleBaseEx(DWORD pid, const wchar_t *modul)
 {
-    HANDLE snapshot_handle = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid);
+    CHandle snapshot_handle{CreateToolhelp32Snapshot(TH32CS_SNAPMODULE, pid)};
 
     MODULEENTRY32W me32;
     me32.dwSize = sizeof(MODULEENTRY32W);
@@ -16,8 +16,6 @@ std::uintptr_t GetModuleBaseEx(DWORD pid, const wchar_t *modul)
         if (!lstrcmpiW(me32.szModule, modul))
             return reinterpret_cast<std::uintptr_t>(me32.modBaseAddr);
     } while (Module32NextW(snapshot_handle, &me32));
-
-    CloseHandle(snapshot_handle);
     return 0;
 }
 uintptr_t GetProcAddressEx(HANDLE hProcess, DWORD pid, const wchar_t *module, const char *function)

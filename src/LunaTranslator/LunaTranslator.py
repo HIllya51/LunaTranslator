@@ -1361,21 +1361,7 @@ class BASEOBJECT(QObject):
         self.tray.show()
         version = NativeUtils.QueryVersion(getcurrexe())
         if "load_doc_or_log" not in globalconfig:
-            self.showtraymessage(
-                _TR("使用说明"),
-                "",
-                lambda: os.startfile(dynamiclink(docs=True)),
-            )
-            self.settin_ui.show()
-        elif 0:  # version != tuple(globalconfig["load_doc_or_log"]):
-            vs = ".".join(str(_) for _ in version)
-            if vs.endswith(".0"):
-                vs = vs[:-2]
-            self.showtraymessage(
-                "v" + vs,
-                _TR("更新记录"),
-                lambda: os.startfile(dynamiclink("ChangeLog")),
-            )
+            os.startfile(dynamiclink(docs=True))
 
         globalconfig["load_doc_or_log"] = version
 
