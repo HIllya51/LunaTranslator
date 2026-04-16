@@ -1,5 +1,6 @@
 {
     "开关_Overlay": "Kích hoạt lớp phủ",
+    "关闭所有_Overlay": "Đóng tất cả lớp phủ",
     "浮窗叠加": "Cài đặt lớp phủ",
     "ovlEnable": "Bật Lớp phủ",
     "ovlTextColor": "Màu chữ",
@@ -925,5 +926,6 @@
     "打开路径": "Mở đường dẫn",
     "已保存为： {}": "Đã lưu thành: {}",
     "所有游戏": "Tất cả trò chơi",
-    "最近游戏": "Gần đây trò chơi"
+    "最近游戏": "Gần đây trò chơi",
+    "关闭所有": ""
 }

@@ -1,5 +1,6 @@
 {
     "开关_Overlay": "启用Overlay",
+    "关闭所有_Overlay": "关闭所有Overlay",
     "ovlEnable": "启用Overlay",
     "ovlTextColor": "文字颜色",
     "ovlTextOpacity": "透明度",
