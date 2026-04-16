@@ -64,14 +64,12 @@ class somedatabase:
             self.sqlsavegameinfo.execute(
                 "CREATE TABLE trace_strict(gameinternalid INT,timestart BIGINT,timestop BIGINT);"
             )
-            self.sqlsavegameinfo.commit()
         except:
             pass
         try:
             self.sqlsavegameinfo.execute(
                 "CREATE TABLE game_word_count(gameinternalid INT,time BIGINT,wordcount BIGINT);"
             )
-            self.sqlsavegameinfo.commit()
         except:
             pass
 
