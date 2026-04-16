@@ -9,24 +9,8 @@ from gui.usefulwidget import (
     getboxlayout,
     FocusFontCombo
 )
-from myutils.config import _TR as _TR_original
+from myutils.config import _TR
 import ovl
-
-_en_cache = None
-    
-def _TR(key):
-    global _en_cache
-    res = _TR_original(key)
-    if res == key and isinstance(key, str):
-        if _en_cache is None:
-            try:
-                with open("files/lang/en.json", "r", encoding="utf-8") as f:
-                    _en_cache = json.load(f)
-            except:
-                _en_cache = {}
-        return _en_cache.get(key, key)
-    return res
-
 # Ensure config is loaded
 ovl.load_config()
 
