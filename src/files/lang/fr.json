@@ -910,5 +910,6 @@
     "打开路径": "Ouvrir le chemin",
     "已保存为： {}": "Enregistré sous : {}",
     "所有游戏": "Tous les jeux",
-    "最近游戏": "Jeux récents"
+    "最近游戏": "Jeux récents",
+    "Unicode正规化": "Normalisation Unicode"
 }

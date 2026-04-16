@@ -2812,6 +2812,19 @@ namespace
         s = re::sub(s, L"　*<br>　*");
         buffer->from(s);
     }
+    void F010056B024B92000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"<ruby=(.*?)>(.*?)</ruby>", L"$2");
+        s = re::sub(s, L"<(.*?)>");
+        s = re::sub(s, L"　*\n　*");
+        buffer->from(s);
+    }
+    void F010056B024B92000N(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->size > 8)
+            buffer->size = 0;
+    }
 }
 struct emfuncinfoX
 {
@@ -2819,6 +2832,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ハンサムロンダリング -the mystic lover-
+    {0x834B1E20, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.0.0"}},
+    {0x834B1E60, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.1.0"}},
+    {0x834D669C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000N, 0x010056B024B92000ull, "1.1.0"}},
     // Glass Heart Princess
     {0x8005D740, {FULL_STRING | CODEC_UTF8, 1, 0, 0, F010081D016E4E000, 0x01002AB02254C000ull, "1.0.0"}},
     // この素晴らしい世界に祝福を！　この欲望の衣装に寵愛を！

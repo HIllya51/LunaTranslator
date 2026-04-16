@@ -910,5 +910,6 @@
     "打开路径": "Open pad",
     "已保存为： {}": "Opgeslagen als: {}",
     "所有游戏": "Alle spellen",
-    "最近游戏": "Recent games"
+    "最近游戏": "Recent games",
+    "Unicode正规化": "Unicode-normalisatie"
 }

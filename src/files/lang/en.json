@@ -910,5 +910,6 @@
     "打开路径": "Open path",
     "已保存为： {}": "Saved as: {}",
     "所有游戏": "All games",
-    "最近游戏": "Recently, games."
+    "最近游戏": "Recently, games.",
+    "Unicode正规化": "Unicode Normalization"
 }

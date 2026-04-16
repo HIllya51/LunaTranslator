@@ -6,7 +6,6 @@ from myutils.utils import (
     checkpostlangmatch,
     loadpostsettingwindowmethod,
 )
-from myutils.post import processfunctions
 from myutils.config import globalconfig, postprocessconfig, static_data
 from gui.usefulwidget import (
     D_getIconButton,
@@ -62,15 +61,6 @@ def setTab7_lazy(self, basel: QLayout):
             ("", 5),
         ]
     ]
-    for k in postprocessconfig:
-        if k not in globalconfig["postprocess_rank"]:
-            globalconfig["postprocess_rank"].append(k)
-    _bads = []
-    for _ in globalconfig["postprocess_rank"]:
-        if _ not in processfunctions:
-            _bads.append(_)
-    for _ in _bads:
-        globalconfig["postprocess_rank"].remove(_)
     sortlist: list = globalconfig["postprocess_rank"]
     savelist = []
     savelay = []

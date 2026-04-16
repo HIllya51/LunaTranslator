@@ -292,7 +292,10 @@ class BASEOBJECT(QObject):
         else:
             _pid = windows.GetWindowThreadProcessId(__hwnd)
             if _pid:
-                NativeUtils.MonitorPidVolume(_pid)
+                try:
+                    NativeUtils.MonitorPidVolume(_pid)
+                except:
+                    print_exc()
                 self.translation_ui.isbindedwindow = True
                 self.translation_ui.refreshtooliconsignal.emit()
                 try:

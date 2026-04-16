@@ -17,6 +17,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010056B024B92000 | ハンサムロンダリング -the mystic lover- |
 |  | 01002AB02254C000 | Glass Heart Princess |
 |  | 010016C011AAA000 | この素晴らしい世界に祝福を！　この欲望の衣装に寵愛を！ |
 |  | 010068501FF9A000 | UN:LOGICAL |

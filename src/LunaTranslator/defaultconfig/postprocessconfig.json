@@ -28,6 +28,32 @@
         "name": "去除花括号{}",
         "isExUse": true
     },
+    "fulltohalf": {
+        "use": true,
+        "name": "Unicode正规化",
+        "isExUse": true,
+        "args": {
+            "type": "NFKC"
+        },
+        "argstype": {
+            "type": {
+                "type": "combo",
+                "name": "type",
+                "list": [
+                    "NFD",
+                    "NFC",
+                    "NFKD",
+                    "NFKC"
+                ],
+                "internal": [
+                    "NFD",
+                    "NFC",
+                    "NFKD",
+                    "NFKC"
+                ]
+            }
+        }
+    },
     "lines_threshold_1": {
         "use": false,
         "name": "截取指定行数",

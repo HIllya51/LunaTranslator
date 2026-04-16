@@ -7,6 +7,7 @@ from urllib.parse import quote
 from myutils.config import savehook_new_data, globalconfig, relpath, _TR
 from myutils.wrapper import threader
 from myutils.utils import qimage2binary, get_time_stamp
+from traceback import print_exc
 
 
 def clipboard_set_image(p: QImage):
@@ -33,29 +34,31 @@ def __getuidandfname(app):
     uid = gobject.base.gameuid
     screenshot_savepath: str = globalconfig.get("screenshot_savepath", "")
 
+    class __Exception(Exception):
+        pass
+
     try:
         if not screenshot_savepath:
-            raise Exception()
+            raise __Exception()
         try:
             if "{exename}" in screenshot_savepath:
                 dirname = screenshot_savepath.format(exename=exename)
             else:
-                raise Exception()
+                raise __Exception()
         except:
             try:
                 if "{}" in screenshot_savepath:
                     dirname = screenshot_savepath.format(exename)
                 else:
-                    raise Exception()
+                    raise __Exception()
             except:
                 dirname = screenshot_savepath
                 tmsp = exename + "-" + tmsp
         os.makedirs(dirname, exist_ok=True)
         fname = os.path.join(dirname, tmsp)
-    except:
-        from traceback import print_exc
-
-        print_exc()
+    except Exception as e:
+        if not isinstance(e, __Exception):
+            print_exc()
         fname = gobject.getcachedir(r"screenshot\{}\{}".format(exename, tmsp))
     return uid, relpath(fname)
 

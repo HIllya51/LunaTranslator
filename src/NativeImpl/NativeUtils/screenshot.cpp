@@ -39,18 +39,7 @@ std::optional<SimpleBMP> parseBMP(std::optional<SimpleBMP> &&bmp, bool needcheck
         return {};
     if (needcheck)
     {
-        bool checkempty = false;
-        if (bmp.value().bitCount == 32)
-        {
-            // 任一为透明像素，则放弃，改用屏幕截图或windowscapture
-            checkempty = std::any_of((uint32_t *)bmp.value().pixels, (uint32_t *)(bmp.value().pixels + bmp.value().pixelsize), [](uint32_t p)
-                                     { return (p >> 24) != 0xFF; });
-        }
-        else
-        {
-            checkempty = std::all_of(bmp.value().pixels, bmp.value().pixels + bmp.value().pixelsize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0));
-        }
-        if (checkempty)
+        if (std::all_of(bmp.value().pixels, bmp.value().pixels + bmp.value().pixelsize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0)))
             return {};
     }
     return std::move(bmp);

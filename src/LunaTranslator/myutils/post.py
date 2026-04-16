@@ -1,4 +1,4 @@
-import re, inspect
+import re, inspect, unicodedata
 from traceback import print_exc
 from collections import Counter
 import gobject
@@ -309,6 +309,10 @@ def _mypostloader(line, file, module):
     return _.POSTSOLVE(line)
 
 
+def fulltohalf(text: str, args: dict) -> str:
+    return unicodedata.normalize(args.get("type", "NFKC"), text)
+
+
 processfunctions = {
     "_remove_symbo": _remove_symbo,
     "_2": _2_f,
@@ -334,7 +338,18 @@ processfunctions = {
     "lines_threshold_1": lines_threshold,
     "_11": _mypostloader,
     "stringreplace": stringreplace,
+    "fulltohalf": fulltohalf,
 }
+
+for k in postprocessconfig:
+    if k not in globalconfig["postprocess_rank"]:
+        globalconfig["postprocess_rank"].append(k)
+_bads = []
+for _ in globalconfig["postprocess_rank"]:
+    if _ not in processfunctions:
+        _bads.append(_)
+for _ in _bads:
+    globalconfig["postprocess_rank"].remove(_)
 
 
 def POSTSOLVE(line: str, isEx=False, isFromHook=False, useAll=False) -> str:

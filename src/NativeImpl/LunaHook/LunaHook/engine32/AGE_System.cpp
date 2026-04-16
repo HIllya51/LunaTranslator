@@ -53,5 +53,5 @@ bool AGE_System::attach_function()
   hp.offset = stackoffset(3);
   hp.type = USING_STRING | EMBED_ABLE | EMBED_DYNA_SJIS | EMBED_AFTER_NEW;
   hp.embed_hook_font = F_GetGlyphOutlineA;
-  return NewHook(hp, "AGE_System");
+  return NewHookRetry(hp, "AGE_System");
 }

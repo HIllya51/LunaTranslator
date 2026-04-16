@@ -34,6 +34,12 @@ Most processing methods do not take effect when embedding translations to reduce
 
     Many game scripts use {} and some other characters to add furigana to kanji, for example: `{kanji/furigana}` and `{kanji:furigana}`, such as `「{恵麻/えま}さん、まだ{起き/おき}てる？」` or `「{恵麻:えま}さん、まだ{起き:おき}てる？」` will be processed into `「恵麻さん、まだ起きてる？」`. It will first attempt to remove the furigana according to these patterns, and then remove all curly braces and their contents.
 
+1. #### Unicode Normalization {#anchor-fulltohalf}
+
+    See details: [https://en.wikipedia.org/wiki/Unicode_equivalence](https://en.wikipedia.org/wiki/Unicode_equivalence)
+
+    Example: `？？？（Ｉ ｇｕｅｓｓ ｈｅ ｄｏｅｓｎ’ｔ ｗａｎｔ ｔｏ ｔａｌｋ ｔｏ ｓｔｒａｎｇｅｒｓ．．．）` will be converted to: `???(I guess he doesn’t want to talk to strangers...)`
+
 1. #### Extract Specified Number of Lines {#anchor-lines_threshold_1}
 
     This method will extract the number of lines specified by **Number of Lines to Extract**.

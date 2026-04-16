@@ -1,6 +1,6 @@
 # Chức Năng của Các Tối Ưu Hóa Dịch Thuật
 
-1. ## Bản dịch của proprietary noun {#anchor-noundict}
+1. ## Dịch danh từ riêng {#anchor-noundict}
 
     Phương pháp này thay thế trực tiếp văn bản gốc bằng văn bản đã dịch trước khi dịch. Nó hỗ trợ sử dụng `Regex` và `Escape` để thực hiện các thay thế phức tạp hơn.
 
@@ -10,7 +10,7 @@
     ![img](https://image.lunatranslator.org/zh/transoptimi/1.png)
     :::
 
-1. ## Bản dịch của proprietary noun {#anchor-noundict}
+1. ## Dịch danh từ riêng {#anchor-noundict}
 
     Đối với `Giao diện chung mô hình lớn`, nếu prompt của nó chứa `DictWithPrompt`, thì mục từ sẽ được đưa vào prompt của mô hình. Cách sử dụng tham khảo [tài liệu này](/vi/guochandamoxing.html#anchor-prompt).
 
@@ -27,7 +27,7 @@
       ![img](https://image.lunatranslator.org/zh/transoptimi/3.png)
     :::
 
-1. ## Sửa kết quả dịch {#anchor-transerrorfix}
+1. ## Chỉnh sửa kết quả dịch {#anchor-transerrorfix}
 
     Phương pháp này cho phép sửa chữa nhất định đối với kết quả dịch sau khi dịch và có thể sử dụng toàn bộ biểu thức để thực hiện các sửa chữa phức tạp.
 
@@ -35,7 +35,7 @@
 
     Viết một script Python để xử lý phức tạp hơn
 
-1. ## Bỏ qua các câu chỉ chứa dấu câu {#anchor-skiponlypunctuations}
+1. ## Bỏ qua những câu chỉ chứa dấu câu. {#anchor-skiponlypunctuations}
 
     Không áp dụng.
 
