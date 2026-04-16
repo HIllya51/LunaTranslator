@@ -243,6 +243,7 @@ class SnippingOCRResult(OCRResult):
         if self.blocks and scale != 1:
             for block in self.blocks:
                 block.box = tuple(_ / scale for _ in block.box)
+        return super().parse(space, scale)
 
 
 class OCR(baseocr):
