@@ -41,6 +41,7 @@ class somedatabase:
 
     def __init__(self):
         self._cache = {}
+        self._cache2 = {}
         self.wordcountqueue = Queue()
         self.locked = threading.Lock()
         self.sqlsavegameinfo = sqlite3.connect(
@@ -93,7 +94,6 @@ class somedatabase:
                 "INSERT INTO {} VALUES(?,?,?)".format(table),
                 (gameinternalid, s, e),
             )
-        self.sqlsavegameinfo.commit()
 
     def querytraceplaytime(
         self, gameuid: "str | None"
@@ -149,6 +149,8 @@ class somedatabase:
         return self._cache[internalid]
 
     def __get_gameinternalid(self, gameuid):
+        if gameuid in self._cache2:
+            return self._cache2[gameuid]
         while True:
             ret = self.sqlsavegameinfo.execute(
                 "SELECT * FROM gameinternalid_v2 WHERE gameuid = ?",
@@ -158,8 +160,8 @@ class somedatabase:
                 self.sqlsavegameinfo.execute(
                     "INSERT INTO gameinternalid_v2 VALUES(NULL,?)", (gameuid,)
                 )
-                self.sqlsavegameinfo.commit()
             else:
+                self._cache2[gameuid] = ret[0]
                 return ret[0]
 
     def stricttraceexe(self):
@@ -225,8 +227,7 @@ class somedatabase:
                     self.trace_strict,
                     "trace_strict",
                 )
-                self.sqlsavegameinfo.commit()
-            time.sleep(5)
+            time.sleep(10)
 
     @threader
     def wordcountthread(self):
