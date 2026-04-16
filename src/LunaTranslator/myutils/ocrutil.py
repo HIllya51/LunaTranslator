@@ -57,7 +57,7 @@ def __ocr_init():
     _nowuseocr = use
 
 
-def ocr_run(qimage: QImage):
+def ocr_run(qimage: QImage, offset=None):
     gobject.base.setimage.emit(qimage)
     if (qimage is None) or qimage.isNull() or (qimage.bits() is None):
         return OCRResultParsed()
@@ -66,7 +66,7 @@ def ocr_run(qimage: QImage):
     try:
         ocr_init()
         thisocrtype: str = _ocrengine.typename
-        res = _ocrengine._private_ocr(qimage)
+        res = _ocrengine._private_ocr(qimage, offset)
         gobject.base.setresult.emit(res)
         return res
     except Exception as e:

@@ -6,7 +6,7 @@ import re, gobject, math, time
 from qtsymbols import *
 
 
-def _sort_text_lines(boxs, texts, vertical, space: str):
+def _group_text_lines(boxs, texts, vertical):
     if not boxs:
         return []
     mids_idx = 1 if not vertical else 0
@@ -49,6 +49,11 @@ def _sort_text_lines(boxs, texts, vertical, space: str):
 
     juhe.sort(key=lambda x: mids[x[0]][mids_idx], reverse=vertical)
 
+    return juhe
+
+
+def _sort_text_lines(boxs, texts, vertical, space: str):
+    juhe = _group_text_lines(boxs, texts, vertical)
     return [space.join([texts[idx] for idx in line]) for line in juhe]
 
 
@@ -353,7 +358,9 @@ class OCRResultParsed:
         engine=None,
         scale=1,
         timecost=None,
+        offset=(0, 0),
     ):
+        self.offset = offset
         self.timecost = timecost
         self.engine = engine
         self.error = error
@@ -371,14 +378,21 @@ class OCRResultParsed:
         if not self.result.hasboxs:
             textonly = "\n".join((_.text for _ in self.result.blocks))
         else:
-            textonly = "\n".join(
-                _sort_text_lines(
-                    list(_.box4 for _ in self.result.blocks),
-                    list(_.text for _ in self.result.blocks),
-                    self.result.vertical,
-                    self.space,
-                )
-            )
+            boxs = list(_.box4 for _ in self.result.blocks)
+            texts = list(_.text for _ in self.result.blocks)
+            juhe = _group_text_lines(boxs, texts, self.result.vertical)
+            lines = []
+            for grouped in juhe:
+                line_box = boxs[grouped[0]]
+                for idx in grouped[1:]:
+                    line_box = _OCRBlockS.four_point_box_union(line_box, boxs[idx])
+                x1 = line_box[0] + self.offset[0]
+                y1 = line_box[1] + self.offset[1]
+                w = line_box[2] - line_box[0]
+                h = line_box[3] - line_box[1]
+                line_text = self.space.join([texts[idx] for idx in grouped])
+                lines.append("[{:.0f} {:.0f}|{:.0f} {:.0f}] {}".format(x1, y1, w, h, line_text))
+            textonly = "\n".join(lines)
         if self.result.isocrtranslate:
             return textonly
         return self._100_f(textonly)
@@ -435,7 +449,7 @@ class baseocr(commonbase):
             raise e
         self.needinit = False
 
-    def _private_ocr(self, qimage: QImage):
+    def _private_ocr(self, qimage: QImage, offset=None):
         if self.needinit:
             self.level2init()
         try:
@@ -466,6 +480,7 @@ class baseocr(commonbase):
             if not image:
                 return OCRResultParsed()
             t = time.time()
+            self.offset = offset or (0, 0)
             result = self.multiapikeywrapper(self.ocr)(image)
             return OCRResultParsed(
                 result,
@@ -473,6 +488,7 @@ class baseocr(commonbase):
                 engine=self.typename,
                 scale=scale,
                 timecost=time.time() - t,
+                offset=self.offset,
             )
         except Exception as e:
             self.needinit = True

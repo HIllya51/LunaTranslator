@@ -2,6 +2,7 @@ from qtsymbols import *
 import time, functools, threading, os, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, NativeUtils
+import ovl
 from myutils.wrapper import threader, tryprint
 from myutils.config import (
     globalconfig,
@@ -546,7 +547,11 @@ class TranslatorWindow(resizableframeless):
             iter_res_status = 0
         if (not iter_res_status) and (not is_auto_run):
             # 流式输出时，不要每次都触发。
-            if not gobject.base.transhis.isVisible():
+            hidden_by_user = (globalconfig["showintab"] and self.isMinimized()) or (
+                (not globalconfig["showintab"]) and self.isHidden()
+            )
+            keep_hidden_for_overlay = bool(ovl.CONFIG.get("enable", 1)) and hidden_by_user
+            if (not keep_hidden_for_overlay) and (not gobject.base.transhis.isVisible()):
                 self.show_()
         if not raw:
             text = self.cleartext(text)
@@ -615,7 +620,7 @@ class TranslatorWindow(resizableframeless):
     def ocr_do_function(self, rect, img=None):
         if not img:
             img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
-        result = ocr_run(img)
+        result = ocr_run(img, (rect[0][0], rect[0][1]))
         result = result.maybeerror()
         if result:
             gobject.base.textgetmethod(result, is_auto_run=False)

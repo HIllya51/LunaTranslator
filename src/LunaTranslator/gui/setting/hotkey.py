@@ -183,6 +183,20 @@ def _ocr_focus_switch_near():
     gobject.base.translation_ui.startTranslater()
 
 
+def toggle_overlay():
+    import ovl
+
+    ovl.load_config()
+    ovl.CONFIG["enable"] = 0 if ovl.CONFIG.get("enable", 1) else 1
+    ovl.save_config()
+
+
+def close_all_overlays():
+    import ovl
+
+    ovl.close_all()
+
+
 def safesaveall():
     _ = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
     if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
@@ -247,6 +261,8 @@ def registrhotkeys(self):
         "48": lambda: _ocr_focus_switch_near(),
         "49": lambda: _ocr_focus_No(),
         "50": safesaveall,
+        "_52": toggle_overlay,
+        "_53": close_all_overlays,
         "51": lambda: gobject.base.translation_ui.changemousetransparentstate(1),
     }
 
@@ -280,7 +296,10 @@ hotkeys = [
         ],
     ],
     ["HOOK", ["_11", "_12"]],
-    ["OCR", ["_13", "_14", "_14_1", "_26", "_26_1", "46", "47", "48", "49"]],
+    [
+        "OCR",
+        ["_13", "_14", "_14_1", "_26", "_26_1", "_52", "_53", "46", "47", "48", "49"],
+    ],
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
     ["游戏", ["_10", "_15", "_21", "_22", "43", "41", "42"]],

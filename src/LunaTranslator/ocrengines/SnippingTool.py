@@ -236,6 +236,15 @@ class OcrLineBoundingBox(Structure):
 
 #   if ( (unsigned int)(a2[1] - 50) > 0x26DE || (unsigned int)(a2[2] - 50) > 0x26DE )
 #     return 3i64;
+class SnippingOCRResult(OCRResult):
+    def parse(self, space, scale):
+        if not self:
+            return
+        if self.blocks and scale != 1:
+            for block in self.blocks:
+                block.box = tuple(_ / scale for _ in block.box)
+
+
 class OCR(baseocr):
     required_image_format = QImage
     required_mini_height = 50
@@ -303,4 +312,4 @@ class OCR(baseocr):
                 )
                 box = (box.x1, box.y1, box.x2, box.y2, box.x3, box.y3, box.x4, box.y4)
                 boxs.append(box)
-            return OCRResult(boxs=boxs, texts=texts)
+            return SnippingOCRResult(boxs=boxs, texts=texts)

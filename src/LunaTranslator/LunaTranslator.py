@@ -77,6 +77,7 @@ from textio.textoutput.outputerbase import Base as outputerbase
 from myutils.updater import versioncheckthread
 from gui.qevent import DarkLightChangedEvent
 from gui.setting.translate import autostartllamacpp
+import ovl
 
 
 class BASEOBJECT(QObject):
@@ -405,7 +406,7 @@ class BASEOBJECT(QObject):
             self.translation_ui.displayres.emit(
                 dict(
                     color=SpecialColor.RawTextColor,
-                    res=text,
+                    res=self._sanitize_ui_text(text),
                     clear=True,
                     klass=str(uuid.uuid4()),
                 )
@@ -439,7 +440,7 @@ class BASEOBJECT(QObject):
         self.currenttext_raw = text
         self.statusok = False
         self.latest_is_origin = True
-        self.translation_ui.displayraw2.emit(text)
+        self.translation_ui.displayraw2.emit(self._sanitize_ui_text(text))
 
     def textgetmethod(
         self,
@@ -523,7 +524,9 @@ class BASEOBJECT(QObject):
             if len(text) > globalconfig["maxlength"]:
                 text = text[: globalconfig["maxlength"]] + "……"
 
-            self.translation_ui.displayraw1.emit(text, updateTranslate, is_auto_run)
+            self.translation_ui.displayraw1.emit(
+                self._sanitize_ui_text(text), updateTranslate, is_auto_run
+            )
             if statusok and not isRefresh:
                 self.transhis.getnewsentencesignal.emit(text)
             self.maybesetedittext(text)
@@ -543,7 +546,10 @@ class BASEOBJECT(QObject):
                 self.dispatchoutputer(text, True)
 
             _showrawfunction_unsafe = functools.partial(
-                self.translation_ui.displayraw1.emit, text, updateTranslate, is_auto_run
+                self.translation_ui.displayraw1.emit,
+                self._sanitize_ui_text(text),
+                updateTranslate,
+                is_auto_run,
             )
         _showrawfunction = lambda: (
             _showrawfunction_unsafe() if _showrawfunction_unsafe else None
@@ -788,10 +794,16 @@ class BASEOBJECT(QObject):
                 and (iter_res_status in (0, 1))
                 and (not waitforresultcallback)
             ):
+                try:
+                    formatted = re.sub(r"(\[\d+ \d+\|\d+ \d+\])", r"\n\1", res).strip()
+                    self.safeinvokefunction.emit(partial(ovl.show_overlay, formatted))
+                except Exception:
+                    print_exc()
+                res_clean = self._sanitize_ui_text(res)
                 displayreskwargs = dict(
                     name=_TR(dynamicapiname(classname)),
                     color=TranslateColor(classname),
-                    res=res,
+                    res=res_clean,
                     iter_context=(iter_res_status, classname),
                     klass=classname,
                     is_auto_run=is_auto_run,
@@ -914,6 +926,19 @@ class BASEOBJECT(QObject):
             return self.matchwhich(usedict.get("tts_skip_regex", []), text, isorigin)
         return None
 
+    def _strip_ocr_coord_tags(self, text: str):
+        if not isinstance(text, str):
+            return text
+        cleaned = re.sub(r"\[\d+ \d+\|\d+ \d+\]\s*", "", text)
+        cleaned = re.sub(r"\s{2,}", " ", cleaned).strip()
+        return cleaned if cleaned else text
+
+    def _sanitize_tts_text(self, text: str) -> str:
+        return self._strip_ocr_coord_tags(text)
+
+    def _sanitize_ui_text(self, text: str) -> str:
+        return self._strip_ocr_coord_tags(text)
+
     @threader
     def readcurrent(self, force=False):
         if (not force) and (not globalconfig["autoread"]):
@@ -949,6 +974,7 @@ class BASEOBJECT(QObject):
         if reader is None:
             return
         text2 = self.ttsrepair(text1, self.__usewhich())
+        text2 = self._sanitize_tts_text(text2)
         self.audioplayer.timestamp = uuid.uuid4()
         reader.read(text2, force, self.audioplayer.timestamp)
 
@@ -956,6 +982,7 @@ class BASEOBJECT(QObject):
     def read_text(self, text):
         if not self.reader:
             return
+        text = self._sanitize_tts_text(text)
         self.audioplayer.timestamp = uuid.uuid4()
         self.reader.read(text, True, self.audioplayer.timestamp)
 
