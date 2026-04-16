@@ -119,7 +119,7 @@ def overlaysetting(self):
     return [
         [
             dict(
-                title=_TR("OverlaySetting"),
+                title=_TR("浮窗叠加"),
                 type="grid",
                 grid=[
                     [
