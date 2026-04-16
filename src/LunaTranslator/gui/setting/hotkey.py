@@ -183,12 +183,27 @@ def _ocr_focus_switch_near():
     gobject.base.translation_ui.startTranslater()
 
 
+def _save_overlay_config_without_ui_state(ovl):
+    ui_only_keys = [
+        key
+        for key in list(ovl.CONFIG.keys())
+        if isinstance(key, str) and key.startswith("_")
+    ]
+    ui_only_values = {key: ovl.CONFIG[key] for key in ui_only_keys}
+    try:
+        for key in ui_only_keys:
+            ovl.CONFIG.pop(key, None)
+        ovl.save_config()
+    finally:
+        ovl.CONFIG.update(ui_only_values)
+
+
 def toggle_overlay():
     import ovl
 
     ovl.load_config()
     ovl.CONFIG["enable"] = 0 if ovl.CONFIG.get("enable", 1) else 1
-    ovl.save_config()
+    _save_overlay_config_without_ui_state(ovl)
 
 
 def close_all_overlays():
