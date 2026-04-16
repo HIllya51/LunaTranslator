@@ -929,7 +929,7 @@ class BASEOBJECT(QObject):
     def _strip_ocr_coord_tags(self, text: str):
         if not isinstance(text, str):
             return text
-        cleaned = re.sub(r"\[\d+ \d+\|\d+ \d+\]\s*", "", text)
+        cleaned = re.sub(r"\[-?\d+ -?\d+\|-?\d+ -?\d+\]\s*", "", text)
         cleaned = re.sub(r"\s{2,}", " ", cleaned).strip()
         return cleaned if cleaned else text
 
