@@ -76,7 +76,7 @@ def parse_color(color_str: str) -> QColor:
 
 
 BOX_PATTERN = re.compile(
-    r"\[(?P<x>\d+)\s+(?P<y>\d+)\|(?P<w>\d+)\s+(?P<h>\d+)\]\s*(?P<text>.*?)(?=\[\d+\s+\d+\|\d+\s+\d+\]|$)",
+    r"\[(?P<x>-?\d+)\s+(?P<y>-?\d+)\|(?P<w>\d+)\s+(?P<h>\d+)\]\s*(?P<text>.*?)(?=\[-?\d+\s+-?\d+\|\d+\s+\d+\]|$)",
     re.DOTALL,
 )
 
