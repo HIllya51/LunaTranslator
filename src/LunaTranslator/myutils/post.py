@@ -312,6 +312,7 @@ def _mypostloader(line, file, module):
 processfunctions = {
     "_remove_symbo": _remove_symbo,
     "_2": _2_f,
+    "fulltohalf": _2_f,
     "_3": _3_f,
     "_3_2": _3_2,
     "_10": _10_f,
