@@ -46,7 +46,7 @@ src/Microsoft.WebView2.FixedVersionRuntime.*
 src/translation_record
 src/scripts/temp
 src/cpp/LunaHook/LunaHook/engine32/Leaf.md
-
+runtime3.*
 
 *.dll
 src/scripts/autocommit/llmapis.py

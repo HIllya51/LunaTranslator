@@ -65,7 +65,7 @@ class rangemanger:
         )
         if imgr.isNull():
             return
-        result = ocr_run(imgr)
+        result = ocr_run(imgr, (rect[0][0], rect[0][1]))
         self.savelastimg = cvMat.fromQImage(imgr)
         self.savelastrecimg = self.savelastimg
         self.lastocrtime = time.time()
@@ -106,7 +106,7 @@ class rangemanger:
                 ok = False
         if ok == False:
             return
-        result = ocr_run(imgr)
+        result = ocr_run(imgr, (rect[0][0], rect[0][1]))
         t = result.textonly
         self.lastocrtime = time.time()
         sim = NativeUtils.distance(self.savelasttext, t)
