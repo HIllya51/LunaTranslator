@@ -217,7 +217,7 @@ class somedatabase:
             with self.locked:
                 tlast = t
                 t = time.time()
-                if t - tlast > 10:
+                if t - tlast > 20:
                     # 虚拟机暂停
                     self.trace_strict.clear()
                     continue

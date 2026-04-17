@@ -168,18 +168,17 @@ uintptr_t queryrelativeret(HookParam &hp, uintptr_t retaddr)
 	if (found != re.end())
 		return found->second;
 	uintptr_t relative = retaddr;
-	if (hp.jittype == JITTYPE::UNITY)
+	if (MEMORY_BASIC_INFORMATION info = {}; VirtualQuery((LPCVOID)retaddr, &info, sizeof(info)))
+	{
+		relative -= (uintptr_t)info.AllocationBase;
+	}
+	else if (hp.jittype == JITTYPE::UNITY)
 	{
 #ifndef _WIN64
 		relative = retaddr - MemDbg::findEnclosingAlignedFunction(retaddr, 0x10000);
 #else
 		relative = retaddr - win64find0000(retaddr);
 #endif
-	}
-	else
-	{
-		if (MEMORY_BASIC_INFORMATION info = {}; VirtualQuery((LPCVOID)retaddr, &info, sizeof(info)))
-			relative -= (uintptr_t)info.AllocationBase;
 	}
 	re.insert(std::make_pair(retaddr, relative));
 	return relative;
