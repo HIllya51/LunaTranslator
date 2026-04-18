@@ -50,8 +50,9 @@ from gui.gamemanager.common import (
 @Singleton
 class dialog_savedgame_integrated(saveposwindow):
 
-    def selectlayout(self, type):
-        self.syssettingbtn.setVisible(type != 0)
+    def selectlayout(self, type, init=False):
+        if not init:
+            self.syssettingbtn.setVisible(type != 0)
         try:
             globalconfig["gamemanager_integrated_internal_layout"] = type
             self.do_resize()
@@ -93,13 +94,23 @@ class dialog_savedgame_integrated(saveposwindow):
             icons=["fa.list", "fa.th-list", "fa.th"],
             Direction=QBoxLayout.Direction.TopToBottom,
         )
-        self.switch.btnclicked.connect(self.selectlayout)
         self.syssettingbtn = IconButton(icon="fa.gear", parent=self, tips="界面设置")
         self.syssettingbtn.clicked.connect(self.syssetting)
         self.syssettingbtn.sizeChanged.connect(self.do_resize)
         self.switch.sizeChanged.connect(self.do_resize)
         self.show()
         self.switch.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
+        self.switch.btnclicked.connect(self.selectlayout)
+        self.selectlayout(globalconfig["gamemanager_integrated_internal_layout"], True)
+
+    def showEvent(self, a0):
+        self.__check()
+        return super().showEvent(a0)
+
+    def __check(self):
+        if not (self.hasFocus() and self.underMouse()):
+            self.syssettingbtn.hide()
+            self.switch.hide()
 
     def syssetting(self):
         dialog_syssetting(
@@ -123,6 +134,16 @@ class dialog_savedgame_integrated(saveposwindow):
             self.switch.move(x, 0)
             x -= self.syssettingbtn.width()
             self.syssettingbtn.move(x, 0)
+
+    def leaveEvent(self, a0):
+        self.switch.hide()
+        self.syssettingbtn.hide()
+        return super().leaveEvent(a0)
+
+    def enterEvent(self, a0):
+        self.switch.show()
+        self.syssettingbtn.show()
+        return super().enterEvent(a0)
 
 
 class TagWidget(QWidget):
