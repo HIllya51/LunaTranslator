@@ -2812,18 +2812,34 @@ namespace
         s = re::sub(s, L"　*<br>　*");
         buffer->from(s);
     }
-    void F010056B024B92000(TextBuffer *buffer, HookParam *hp)
+    DECLARE_FUNCTION(NF010056B024B92000, const wchar_t *_);
+    void F010056B024B92000(TextBuffer *buffer, HookParam *hpx)
     {
         auto s = buffer->strW();
         s = re::sub(s, L"<ruby=(.*?)>(.*?)</ruby>", L"$2");
         s = re::sub(s, L"<(.*?)>");
+        if (s.find(L'「') == s.npos &&
+            s.find(L'」') == s.npos &&
+            s.find(L'、') == s.npos &&
+            s.find(L'。') == s.npos &&
+            s.find(L'（') == s.npos &&
+            s.find(L'）') == s.npos &&
+            s.find(L"\\n") == s.npos)
+        {
+            HookParam hp;
+            hp.address = (uintptr_t)NF010056B024B92000;
+            hp.offset = GETARG(1);
+            hp.type = CODEC_UTF16 | USING_STRING | NO_CONTEXT | FULL_STRING;
+            static auto _ = NewHook(hp, hpx->name);
+            NF010056B024B92000(s.c_str());
+            return buffer->clear();
+        }
         s = re::sub(s, L"　*\n　*");
+        static std::wstring last;
+        if (s == last)
+            return buffer->clear();
+        last = s;
         buffer->from(s);
-    }
-    void F010056B024B92000N(TextBuffer *buffer, HookParam *hp)
-    {
-        if (buffer->size > 8)
-            buffer->size = 0;
     }
 }
 struct emfuncinfoX
@@ -2833,9 +2849,8 @@ struct emfuncinfoX
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
     // ハンサムロンダリング -the mystic lover-
-    {0x834B1E20, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.0.0"}},
-    {0x834B1E60, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.1.0"}},
-    {0x834D669C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000N, 0x010056B024B92000ull, "1.1.0"}},
+    {0x834D665C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.0.0"}},
+    {0x834D669C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.1.0"}},
     // Glass Heart Princess
     {0x8005D740, {FULL_STRING | CODEC_UTF8, 1, 0, 0, F010081D016E4E000, 0x01002AB02254C000ull, "1.0.0"}},
     // この素晴らしい世界に祝福を！　この欲望の衣装に寵愛を！
