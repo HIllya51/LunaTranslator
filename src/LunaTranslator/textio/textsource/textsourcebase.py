@@ -1,10 +1,52 @@
 import gobject, queue
-import json, time
+import json, time, re
 from traceback import print_exc
 from myutils.config import globalconfig, savehook_new_data
 from myutils.utils import autosql
 from myutils.wrapper import threader
+from myutils.mecab import punctuations
 from sometypes import TranslateResult
+
+
+def count_words_mixed(text: str) -> int:
+    if not text:
+        return 0
+
+    # 1. 将标点符号列表转义并构建成正则表达式的 split 模式
+    # re.escape 会自动处理像 . * ? 这样的正则特殊字符
+    punc_pattern = "|".join([re.escape(p) for p in punctuations])
+
+    # 2. 先根据标点符号将句子拆分成片段
+    # 如果 punc_pattern 为空，则不拆分
+
+    total_count = 0
+
+    # 匹配中日韩 (CJK) 字符的正则
+    cjk_regex = re.compile(r"[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]")
+
+    for seg in re.split(punc_pattern, text):
+        seg = seg.strip()
+        if not seg:
+            continue
+
+        # --- 处理中日韩字符 ---
+        # 统计所有中日韩字符的数量（每个字计为 1）
+        cjk_chars = cjk_regex.findall(seg)
+        total_count += len(cjk_chars)
+
+        # --- 处理西文单词 (英语、法语等) ---
+        # 我们把已经统计过的 CJK 字符替换为空格，防止干扰西文单词提取
+        # 这样剩下的就是拉丁字母、数字和空格
+        remain_text = cjk_regex.sub(" ", seg)
+
+        # 根据空格切分剩下的文本
+        # .split() 不传参数时会处理连续空格、换行符等
+        latin_words = remain_text.split()
+
+        # 累计西文单词数
+        total_count += len(latin_words)
+
+    return total_count
 
 
 class basetext:
@@ -92,7 +134,7 @@ class basetext:
             try:
                 if len(task) == 2:
                     src, origin = task
-                    lensrc = len(src)
+                    lensrc = count_words_mixed(src)
                     ret = self.sqlwrite2.execute(
                         "SELECT * FROM artificialtrans WHERE source = ?", (src,)
                     ).fetchone()
