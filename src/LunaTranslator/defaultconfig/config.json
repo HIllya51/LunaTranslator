@@ -1694,7 +1694,7 @@
             "name": "必应"
         },
         "google": {
-            "use": true,
+            "use": false,
             "color": "#ff0000",
             "name": "谷歌"
         },

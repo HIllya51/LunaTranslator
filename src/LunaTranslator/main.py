@@ -112,7 +112,7 @@ def loadmainui(startwithgameuid):
 def checklang():
 
     from myutils.config import globalconfig
-    from language import GetUILanguage
+    from language import GetUILanguage, Languages
     import windows
 
     if "languageuse2" in globalconfig:
@@ -120,6 +120,10 @@ def checklang():
     lang = GetUILanguage(windows.GetLocale())
     globalconfig["languageuse2"] = lang.code
     globalconfig["tgtlang4"] = lang.code
+    if lang == Languages.Chinese:
+        globalconfig["fanyi"]["youdaodict"]["use"] = True
+    else:
+        globalconfig["fanyi"]["google"]["use"] = True
 
 
 def checkintegrity():
