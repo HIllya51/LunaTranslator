@@ -135,6 +135,7 @@ class ocrtext(basetext):
 
     def init(self):
         self.stop = True
+        self._pause_state = None
         self.startsql(gobject.gettranslationrecorddir("0_ocr.sqlite"))
         threader(ocr_init)()
         self.ranges: "list[rangemanger]" = []
@@ -296,6 +297,15 @@ class ocrtext(basetext):
 
     def gettextonce(self):
         return self.getallres(False)
+
+    def pause_recognition(self):
+        self._pause_state = self.stop
+        self.stop = True
+
+    def resume_recognition(self):
+        if self._pause_state is not None:
+            self.stop = self._pause_state
+            self._pause_state = None
 
     def end(self):
         globalconfig["ocrregions"] = [_.range_ui.getrect() for _ in self.ranges]
