@@ -2850,7 +2850,7 @@ struct emfuncinfoX
 static const emfuncinfoX emfunctionhooks_1[] = {
     // ハンサムロンダリング -the mystic lover-
     {0x834D665C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.0.0"}},
-    {0x834D669C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.1.0"}},
+    {0x834D669C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, nullptr}}, // 1.1.0 & 1.1.1
     // Glass Heart Princess
     {0x8005D740, {FULL_STRING | CODEC_UTF8, 1, 0, 0, F010081D016E4E000, 0x01002AB02254C000ull, "1.0.0"}},
     // この素晴らしい世界に祝福を！　この欲望の衣装に寵愛を！
