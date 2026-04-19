@@ -1255,10 +1255,10 @@ def D_getIconButton_mousefollow(
     return b
 
 
-def check_grid_append(grids):
-    if len(grids) < 2:
+def check_grid_append(grids: "list[list]", minlen=None):
+    if minlen is None and len(grids) < 2:
         return
-    len0 = len(grids[0])
+    len0 = minlen if minlen else len(grids[0])
     notx = True
     for line in grids:
         if len(line) != len0:

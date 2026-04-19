@@ -173,6 +173,9 @@ def getrenameablellabel(uid):
     return name
 
 
+savelenx = 0
+
+
 def initgridsources(self, names):
     line = []
     i = 0
@@ -242,6 +245,12 @@ def initgridsources(self, names):
     if len(line):
         grids_source.append(line)
     check_grid_append(grids_source)
+
+    global savelenx
+    if len(grids_source) >= 2:
+        savelenx = savelenx if savelenx else len(grids_source[0])
+    elif len(grids_source) == 1:
+        grids_source[0] += [""] * (savelenx - len(grids_source[0]))
 
     return grids_source
 
@@ -418,6 +427,8 @@ class showocrimage(saveposwindow):
 
 def internal(self):
     offline, online, other = splitocrtypes(globalconfig["ocr"], other=True)
+    outdate = [_ for _ in offline if globalconfig["ocr"][_].get("outdate", False)]
+    offline = [_ for _ in offline if _ not in outdate]
     offgrids = initgridsources(self, offline)
     offgrids += [
         [(functools.partial(offlinelinks, "ocr"), 0)],
@@ -440,12 +451,30 @@ def internal(self):
             )
         ],
         [
-            functools.partial(
-                createfoldgrid,
-                initgridsources(self, other),
-                "其他",
-                d=globalconfig["foldstatus"]["ocr"],
-                k="other",
+            (
+                functools.partial(
+                    createfoldgrid,
+                    [
+                        [
+                            dict(
+                                type="grid",
+                                title="其他",
+                                grid=initgridsources(self, other),
+                            )
+                        ],
+                        [
+                            dict(
+                                type="grid",
+                                title="过时的",
+                                grid=initgridsources(self, outdate),
+                            )
+                        ],
+                    ],
+                    "其他",
+                    d=globalconfig["foldstatus"]["ocr"],
+                    k="other",
+                ),
+                -1,
             )
         ],
         [

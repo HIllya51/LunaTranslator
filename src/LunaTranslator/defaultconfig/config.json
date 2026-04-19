@@ -1602,7 +1602,8 @@
         "windowsocr": {
             "use": false,
             "name": "WindowsOCR",
-            "type": "offline"
+            "type": "offline",
+            "outdate": true
         },
         "baiduocr_X": {
             "use": false,
@@ -1658,7 +1659,8 @@
         "tesseract5": {
             "use": false,
             "name": "Tesseract5",
-            "type": "offline"
+            "type": "offline",
+            "outdate": true
         },
         "chatgptlike": {
             "use": false,
