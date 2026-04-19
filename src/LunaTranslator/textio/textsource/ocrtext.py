@@ -134,15 +134,13 @@ class rangemanger:
 class ocrtext(basetext):
 
     def init(self):
-        self.stop = True
-        self._pause_state = None
+        self._pause_state = False
         self.startsql(gobject.gettranslationrecorddir("0_ocr.sqlite"))
         threader(ocr_init)()
         self.ranges: "list[rangemanger]" = []
         self.gettextthread()
 
     def clearrange(self):
-        self.stop = True
         self.ranges.clear()
         globalconfig["ocrregions"].clear()
 
@@ -175,9 +173,6 @@ class ocrtext(basetext):
                 if region:
                     self.newrangeadjustor()
                     self.setrect(region)
-
-            self.stop = False
-
             return
         for _ in self.ranges:
             if b:
@@ -192,13 +187,16 @@ class ocrtext(basetext):
         laststate = tuple((0 for _ in range(len(globalconfig["ocr_trigger_events"]))))
         lastevents = copy.deepcopy(globalconfig["ocr_trigger_events"])
         while not self.ending:
-            if self.stop:
+            if self._pause_state:
                 time.sleep(0.1)
                 continue
             if not self.isautorunning:
                 time.sleep(0.1)
                 continue
-
+            rs = self.getuseranges()
+            if not rs:
+                time.sleep(0.1)
+                continue
             if globalconfig["ocr_auto_method_v2"] == "trigger":
                 triggered = False
                 this = tuple(
@@ -299,13 +297,10 @@ class ocrtext(basetext):
         return self.getallres(False)
 
     def pause_recognition(self):
-        self._pause_state = self.stop
-        self.stop = True
+        self._pause_state = True
 
     def resume_recognition(self):
-        if self._pause_state is not None:
-            self.stop = self._pause_state
-            self._pause_state = None
+        self._pause_state = False
 
     def end(self):
         globalconfig["ocrregions"] = [_.range_ui.getrect() for _ in self.ranges]

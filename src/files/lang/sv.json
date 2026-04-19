@@ -911,5 +911,6 @@
     "已保存为： {}": "Sparat som: {}",
     "所有游戏": "Alla spel",
     "最近游戏": "Nyligen spel",
-    "Unicode正规化": "Unicode-normalisering"
+    "Unicode正规化": "Unicode-normalisering",
+    "打开窗口时暂停自动OCR": "Pausa automatisk OCR när fönstret öppnas"
 }

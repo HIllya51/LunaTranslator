@@ -911,5 +911,6 @@
     "已保存为： {}": "Guardado como: {}",
     "所有游戏": "Todos los juegos",
     "最近游戏": "Juegos recientes",
-    "Unicode正规化": "Normalización Unicode"
+    "Unicode正规化": "Normalización Unicode",
+    "打开窗口时暂停自动OCR": "Pausar OCR automático al abrir la ventana"
 }

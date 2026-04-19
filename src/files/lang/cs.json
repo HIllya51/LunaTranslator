@@ -911,5 +911,6 @@
     "已保存为： {}": "Uloženo jako: {}",
     "所有游戏": "Všechny hry",
     "最近游戏": "Nedávné hry",
-    "Unicode正规化": "Unicode normalizace"
+    "Unicode正规化": "Unicode normalizace",
+    "打开窗口时暂停自动OCR": "Pozastavit automatické OCR při otevření okna"
 }
