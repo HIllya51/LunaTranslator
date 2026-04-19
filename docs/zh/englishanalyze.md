@@ -5,7 +5,7 @@
 
 1. ## 下载依赖库并解压
     
-    下载[分析器](https://lunatranslator.org/Resource/otherresource/spacy_wrapper)，将内容解压到软件的**根目录**或**LunaTranslator目录**或**配置文件目录(userconfig)**中。
+    下载[分析器](https://lunatranslator.org/Resource/otherresource/spacy_wrapper)，将内容解压到软件的**根目录**或**LunaTranslator目录**或**配置文件目录(userconfig)** 中。
 
 1. ## 切换语言
 
