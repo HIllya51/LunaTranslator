@@ -2,7 +2,7 @@
 
 1. ## 依存ライブラリをダウンロードして解凍
     
-    [中国語分かち書きツールと振り仮名変換ツール](https://lunatranslator.org/Resource/otherresource/jiebapinyin)をダウンロードし、内容をソフトウェアのルートディレクトリに解凍します。
+    [中国語形態素解析・ピンイン変換器](https://lunatranslator.org/Resource/otherresource/jiebapinyin)をダウンロードし、内容をソフトウェアの**ルートディレクトリ**、**LunaTranslatorディレクトリ**、または**設定ディレクトリ (userconfig)**に解凍してください。
 
 1. ## 言語切替
 

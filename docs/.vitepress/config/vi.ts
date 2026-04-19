@@ -108,18 +108,25 @@ export const vi = defineConfig({
             collapsed: true,
             items: [
               { text: 'Công cụ Tổng hợp Giọng nói', link: '/vi/ttsengines' },
-              { text: 'Sử dụng giọng nói khác nhau cho từng nhân vật', link: '/vi/ttsofname' }
+              { text: 'Sử dụng giọng nói khác nhau cho từng nhân vật', link: '/vi/ttsofname' },
             ]
           },
           {
             text: 'Học ngôn ngữ', link: '/vi/qa1',
             collapsed: true,
             items: [
-              { text: 'Phân đoạn từ tiếng Nhật và phiên âm kana', link: '/vi/qa1' },
+              {
+                text: 'Công cụ phân tích phân tách từ và chú âm',
+                collapsed: false,
+                items: [
+                  { text: 'Phân đoạn từ tiếng Nhật và phiên âm kana', link: '/vi/qa1' },
+                  { text: 'Phân đoạn từ tiếng Trung và Chú âm', link: '/vi/jiebapinyin' },
+                  { text: 'Phân tích từ gốc tiếng Anh', link: '/vi/englishanalyze' },
+                ]
+              },
               { text: 'Cách sử dụng công cụ tra từ tích hợp', link: '/vi/internaldict' },
               { text: 'Cài đặt tiện ích mở rộng trình duyệt Yomitan', link: '/vi/yomitan' },
               { text: 'Tích hợp Anki', link: '/vi/qa2' },
-              { text: 'Phân đoạn từ tiếng Trung và Chú âm', link: '/vi/jiebapinyin' },
             ]
           },
           { text: 'Nút công cụ', link: '/vi/alltoolbuttons' },

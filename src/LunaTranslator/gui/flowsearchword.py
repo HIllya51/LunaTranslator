@@ -379,7 +379,9 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
                 tips="语音合成",
             )
         )
-        buttons.addStretch(1)
+        self.wordlabel = QLabel()
+        self.wordlabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        buttons.addWidget(self.wordlabel)
         searchword = lambda anki: (
             self.close(),
             gobject.base.searchwordW.move(self.pos()),
@@ -415,7 +417,9 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         self.view.use_bg_color_parser = True
         self.setCentralWidget(w)
         self.view.first_result_shown.connect(self.showresult)
-        self.view.from_webview_search_word.connect(self.view.searchword)
+        self.view.from_webview_search_word.connect(
+            lambda t: (self.view.searchword(t), self.wordlabel.setText(t))
+        )
         self.view.from_webview_search_word_in_new_window.connect(
             lambda w: gobject.base.searchwordW.searchwinnewwindow(w)
         )
@@ -465,6 +469,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         if append:
             word = self.view.currWord + word
         unuse = globalconfig[("ignoredict_S_click", "ignoredict_S_hover")[fromhover]]
+        self.wordlabel.setText(word)
         self.view.searchword(word, sentence, unuse=unuse)
 
     def showresult(self):

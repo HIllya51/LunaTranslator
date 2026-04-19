@@ -23,7 +23,7 @@ from ctypes import cast, c_wchar_p
 from ctypes.wintypes import UINT, WPARAM, LPARAM
 from myutils.keycode import mod_map_r
 from gobject import sys_le_xp
-from myutils.mecab import mecab, latin, jiebapinyin
+from myutils.mecab import mecab, latin, jiebapinyin, spacy_wrapper
 from myutils.utils import (
     parsemayberegexreplace,
     find_or_create_uid,
@@ -395,6 +395,17 @@ class BASEOBJECT(QObject):
             return []
 
         if text.isascii():
+            if getlangsrc() in (Languages.English,):
+                try:
+                    if "spacy_wrapper" not in dir(self):
+                        self.spacy_wrapper = spacy_wrapper()
+                except:
+                    self.spacy_wrapper = None
+                try:
+                    if self.spacy_wrapper:
+                        return self.spacy_wrapper.safeparse(text)
+                except:
+                    pass
             return latin().safeparse(text)
         if getlangsrc() in (Languages.Chinese, Languages.TradChinese):
             return jiebapinyin().safeparse(text)

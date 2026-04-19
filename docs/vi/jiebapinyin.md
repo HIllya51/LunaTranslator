@@ -2,7 +2,7 @@
 
 1. ## Tải thư viện dependency và giải nén
     
-    Tải [Công cụ phân đoạn từ tiếng Trung và bộ chuyển đổi phiên âm](https://lunatranslator.org/Resource/otherresource/jiebapinyin), giải nén nội dung vào thư mục gốc của phần mềm.
+    Tải xuống [Trình phân đoạn từ và chuyển đổi phiên âm tiếng Trung](https://lunatranslator.org/Resource/otherresource/jiebapinyin), giải nén nội dung vào **thư mục gốc**, **thư mục LunaTranslator** hoặc **thư mục cấu hình (userconfig)** của phần mềm.
 
 1. ## Chuyển đổi ngôn ngữ
 

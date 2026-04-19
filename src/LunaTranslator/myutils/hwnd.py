@@ -236,6 +236,7 @@ def subprochiderun(
         cwd=cwd,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        stdin=subprocess.PIPE,
         startupinfo=startupinfo,
         encoding=encoding,
         env=env,

@@ -134,11 +134,18 @@ export const cht = defineConfig({
                         text: '語言學習', link: '/cht/qa1',
                         collapsed: true,
                         items: [
-                            { text: '日文分詞及假名注音', link: '/cht/qa1' },
+                            {
+                                text: '斷詞與注音分析工具',
+                                collapsed: false,
+                                items: [
+                                    { text: '日文分詞及假名注音', link: '/cht/qa1' },
+                                    { text: '中文分詞及注音', link: '/cht/jiebapinyin' },
+                                    { text: '英語單字原型分析', link: '/cht/englishanalyze' },
+                                ]
+                            },
                             { text: '使用內建查詞工具', link: '/cht/internaldict' },
                             { text: '安裝 Yomitan 瀏覽器外掛程式', link: '/cht/yomitan' },
                             { text: 'Anki 整合', link: '/cht/qa2' },
-                            // { text: '中文分詞及注音', link: '/cht/jiebapinyin' },
                         ]
                     },
                     { text: '工具按鈕', link: '/cht/alltoolbuttons' },

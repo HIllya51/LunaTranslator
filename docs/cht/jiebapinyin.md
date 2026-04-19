@@ -2,7 +2,8 @@
 
 1. ## 下載依賴庫並解壓
     
-    下載[中文分詞器和拼音轉換器](https://lunatranslator.org/Resource/otherresource/jiebapinyin)，將內容解壓到軟體的根目錄中。
+    下載 [中文分詞器和拼音轉換器](https://lunatranslator.org/Resource/otherresource/jiebapinyin)，將內容解壓縮到軟體的**根目錄**、**LunaTranslator 目錄**或**設定檔目錄 (userconfig)** 中。
+
 
 1. ## 切換語言
 

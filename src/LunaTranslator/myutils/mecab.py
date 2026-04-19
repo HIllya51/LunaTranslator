@@ -1,6 +1,7 @@
 import NativeUtils
-import os
+import os, threading, gobject, json
 from myutils.config import globalconfig
+from myutils.hwnd import subprochiderun
 from traceback import print_exc
 from qtsymbols import *
 from sometypes import WordSegResult
@@ -25,8 +26,7 @@ casthira2kata = str.maketrans(allhira, allkata)
 
 
 class _base:
-    def init(self):
-        pass
+    def init(self): ...
 
     def parse(self, text) -> "list[WordSegResult]": ...
 
@@ -311,3 +311,62 @@ class jiebapinyin(_base):
                 result.append((jb[jbidx], pys))
                 jbidx += 1
         return (WordSegResult(t, kana=py, isshit=not py) for t, py in result)
+
+
+class spacy_wrapper(_base):
+    def init(self):
+        for path in (
+            "spacy_wrapper",
+            "LunaTranslator/spacy_wrapper",
+            os.path.join(gobject.thisuserconfig, "spacy_wrapper"),
+        ):
+            if os.path.isfile(
+                os.path.join(path, "Python312/python.exe")
+            ) and os.path.isfile(os.path.join(path, "spacy_wrapper.py")):
+                self.proc = subprochiderun(
+                    '"{}" "{}"'.format(
+                        os.path.join(path, "Python312/python.exe"),
+                        os.path.join(path, "spacy_wrapper.py"),
+                    ),
+                    run=False,
+                )
+                self._ = NativeUtils.AutoKillProcess(self.proc.pid)
+                self._.setkill(True)
+                self.lock = threading.Lock()
+                return
+        raise Exception()
+
+    def parse(self, text: str):
+        with self.lock:
+            self.proc.stdin.write(text + "\n")
+            self.proc.stdin.flush()
+            res = json.loads(self.proc.stdout.readline())
+            ress = []
+            lastend = 0
+            for i in range(len(res["tokens"])):
+                token = res["tokens"][i]
+                if token["start"] != lastend:
+                    ress.append(
+                        WordSegResult(
+                            text[lastend : token["start"]],
+                            donthighlight=True,
+                            isshit=True,
+                        )
+                    )
+                lastend = token["end"]
+                ress.append(
+                    WordSegResult(
+                        text[token["start"] : token["end"]],
+                        donthighlight=True,
+                        prototype=token["lemma"],
+                    )
+                )
+            if lastend != len(text):
+                ress.append(
+                    WordSegResult(
+                        text[lastend:],
+                        donthighlight=True,
+                        isshit=True,
+                    )
+                )
+            return ress

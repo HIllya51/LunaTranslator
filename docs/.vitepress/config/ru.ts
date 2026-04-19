@@ -133,11 +133,18 @@ export const ru = defineConfig({
                         text: 'Изучение языков', link: '/ru/qa1',
                         collapsed: true,
                         items: [
-                            { text: 'Японская сегментация слов и произношение каной', link: '/ru/qa1' },
+                            {
+                                text: 'Инструмент для сегментации слов и фонетического анализа',
+                                collapsed: false,
+                                items: [
+                                    { text: 'Японская сегментация слов и произношение каной', link: '/ru/qa1' },
+                                    { text: 'Китайская сегментация и транскрипция', link: '/ru/jiebapinyin' },
+                                    { text: 'Анализ начальной формы английских слов (Лемматизация)', link: '/ru/englishanalyze' },
+                                ]
+                            },
                             { text: 'Использование встроенного инструмента для поиска слов', link: '/ru/internaldict' },
                             { text: 'Установите расширение для браузера Yomitan', link: '/ru/yomitan' },
                             { text: 'Интеграция с Anki', link: '/ru/qa2' },
-                            { text: 'Китайская сегментация и транскрипция', link: '/ru/jiebapinyin' },
                         ]
                     },
                     { text: 'Инструментальные кнопки', link: '/ru/alltoolbuttons' },

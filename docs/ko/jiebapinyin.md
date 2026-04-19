@@ -2,7 +2,7 @@
 
 1. ## 의존 라이브러리 다운로드 및 압축 해제
     
-    [중국어 분절기 및 병음 변환기](https://lunatranslator.org/Resource/otherresource/jiebapinyin)를 다운로드하고 내용을 소프트웨어의 루트 디렉토리에 압축 해제합니다.
+    [중국어 형태소 분석기 및 병음 변환기](https://lunatranslator.org/Resource/otherresource/jiebapinyin)를 다운로드한 후, 내용을 소프트웨어의 **루트 디렉터리**, **LunaTranslator 디렉터리** 또는 **설정 파일 디렉터리(userconfig)**에 압축을 푸세요.
 
 1. ## 언어 전환
 

@@ -133,11 +133,18 @@ export const ko = defineConfig({
                         text: '언어 학습', link: '/ko/qa1',
                         collapsed: true,
                         items: [
-                            { text: '일본어 단어 분할 및 가나 발음 표기', link: '/ko/qa1' },
+                            {
+                                text: '형태소 분석 및 발음 표기 분석 도구',
+                                collapsed: false,
+                                items: [
+                                    { text: '일본어 단어 분할 및 가나 발음 표기', link: '/ko/qa1' },
+                                    { text: '중국어 분절 및 주음', link: '/ko/jiebapinyin' },
+                                    { text: '영어 단어 원형 분석', link: '/ko/englishanalyze' },
+                                ]
+                            },
                             { text: '내장 사전 도구 사용 방법', link: '/ko/internaldict' },
                             { text: 'Yomitan 브라우저 확장 프로그램 설치', link: '/ko/yomitan' },
                             { text: 'Anki 통합', link: '/ko/qa2' },
-                            { text: '중국어 분절 및 주음', link: '/ko/jiebapinyin' },
                         ]
                     },
                     { text: '도구 버튼', link: '/ko/alltoolbuttons' },

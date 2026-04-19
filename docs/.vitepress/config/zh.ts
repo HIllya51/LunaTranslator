@@ -133,11 +133,18 @@ export const zh = defineConfig({
                         text: '语言学习', link: '/zh/qa1',
                         collapsed: true,
                         items: [
-                            { text: '日语分词及假名注音', link: '/zh/qa1' },
+                            {
+                                text: '分词和注音分析工具',
+                                collapsed: false,
+                                items: [
+                                    { text: '日语分词及假名注音', link: '/zh/qa1' },
+                                    { text: '中文分词及注音', link: '/zh/jiebapinyin' },
+                                    { text: '英语单词原型分析', link: '/zh/englishanalyze' },
+                                ]
+                            },
                             { text: '使用内置查词工具', link: '/zh/internaldict' },
                             { text: '安装Yomitan浏览器插件', link: '/zh/yomitan' },
                             { text: 'Anki集成', link: '/zh/qa2' },
-                            // { text: '中文分词及注音', link: '/zh/jiebapinyin' },
                         ]
                     },
                     { text: '工具按钮', link: '/zh/alltoolbuttons' },

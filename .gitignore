@@ -53,3 +53,4 @@ src/scripts/autocommit/llmapis.py
 
 src/NativeImpl/LunaHook/LunaHook/engine32/font_chars
 src/NativeImpl/LunaHook/LunaHook/engine32/font.dat
+spacy_wrapper
