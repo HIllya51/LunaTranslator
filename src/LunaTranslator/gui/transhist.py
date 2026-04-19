@@ -637,6 +637,15 @@ class transhist(closeashidewindow):
     def showEvent(self, e):
         super().showEvent(e)
         self.__load()
+        from textio.textsource.ocrtext import ocrtext
+        if isinstance(gobject.base.textsource, ocrtext):
+            gobject.base.textsource.pause_recognition()
+
+    def hideEvent(self, e):
+        from textio.textsource.ocrtext import ocrtext
+        if isinstance(gobject.base.textsource, ocrtext):
+            gobject.base.textsource.resume_recognition()
+        super().hideEvent(e)
 
     def setf(self):
         WSForEach(transhistwsoutputsave, lambda _: _.setf())
