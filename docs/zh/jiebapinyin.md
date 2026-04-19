@@ -2,7 +2,7 @@
 
 1. ## 下载依赖库并解压
     
-    下载[中文分词器和拼音转换器](http://lunatranslator.org/Resource/otherresource/jiebapinyin)，将内容解压到软件的根目录中。
+    下载[中文分词器和拼音转换器](https://lunatranslator.org/Resource/otherresource/jiebapinyin)，将内容解压到软件的根目录中。
 
 1. ## 切换语言
 

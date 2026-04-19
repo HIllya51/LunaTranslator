@@ -2,7 +2,7 @@
 
 1. ## Tải thư viện dependency và giải nén
     
-    Tải [Công cụ phân đoạn từ tiếng Trung và bộ chuyển đổi phiên âm](http://lunatranslator.org/Resource/otherresource/jiebapinyin), giải nén nội dung vào thư mục gốc của phần mềm.
+    Tải [Công cụ phân đoạn từ tiếng Trung và bộ chuyển đổi phiên âm](https://lunatranslator.org/Resource/otherresource/jiebapinyin), giải nén nội dung vào thư mục gốc của phần mềm.
 
 1. ## Chuyển đổi ngôn ngữ
 

@@ -2,7 +2,7 @@
 
 1. ## Download and Extract Dependency Libraries
     
-    Download the [Chinese word segmenter and Pinyin converter](http://lunatranslator.org/Resource/otherresource/jiebapinyin), and extract the contents to the root directory of the software.
+    Download the [Chinese word segmenter and Pinyin converter](https://lunatranslator.org/Resource/otherresource/jiebapinyin), and extract the contents to the root directory of the software.
 
 1. ## Switch Language
 
