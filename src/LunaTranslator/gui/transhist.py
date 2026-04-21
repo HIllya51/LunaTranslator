@@ -544,7 +544,7 @@ class Qtranshist(QPlainTextEdit):
             menu.addSeparator()
             if isinstance(gobject.base.textsource, ocrtext):
                 menu.addAction(suspendocr)
-            menu.addSeparator()
+                menu.addSeparator()
             menu.addAction(webview2qt)
 
         action = menu.exec(QCursor.pos())

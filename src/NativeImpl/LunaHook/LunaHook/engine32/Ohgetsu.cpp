@@ -229,8 +229,56 @@ static bool h8()
   };
   return NewHook(hp, "Ohgetsu");
 }
+bool aquablue()
+{
+  // AQUA BLUE
+  // https://vndb.org/v4445
+  const BYTE bytes[] = {
+      0x8b, 0x45, 0x60,
+      0x8b, 0x75, 0x58,
+      0x03, 0xc6,
+      0x8a, 0x08,
+      0x84, 0xc9,
+      0x0f, 0x84, XX4,
+      0x80, 0xf9, 0x40,
+      0x0f, 0x85, XX4,
+      0x0f, 0xbe, 0x48, 0x01,
+      0x83, 0xc1, 0x9a,
+      0x83, 0xf9, 0x10,
+      0x0f, 0x87, XX4,
+      0x33, 0xd2,
+      0x8a, 0x91, XX4,
+      0xff, 0x24, 0x95, XX4};
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.type = USING_STRING | FULL_STRING;
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    auto ptr = *(DWORD *)(context->argof_thiscall(0) + 88);
+    buffer->from((char *)ptr);
+  };
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    static std::string save;
+    auto s = buffer->strA();
+    if (startWith(s, "@v"))
+    {
+      save = re::sub(s, "@v\\d+");
+      return buffer->clear();
+    }
+    s = s + save;
+    save.clear();
+    buffer->from(s);
+  };
+  return NewHook(hp, "aquablue");
+}
 bool Ohgetsu::attach_function()
 {
-  bool ok = _4();
-  return hook1() || hook2() || _7() || _3() || ok || h8();
+  return hook1() || hook2() || _7() || _3() || _4() || h8() || aquablue();
 }
