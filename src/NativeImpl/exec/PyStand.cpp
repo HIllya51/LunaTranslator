@@ -468,11 +468,40 @@ bool VerifyKeyMatchesSelf(const wchar_t *filePath, const std::optional<std::vect
 	return memcmp(selfKey.value().data(), targetKey.value().data(), selfKey.value().size()) == 0;
 }
 
+bool IsSHA256Supported()
+{
+	HCRYPTPROV hProv = NULL;
+	HCRYPTHASH hHash = NULL;
+	bool bSupported = false;
+
+	// 尝试获取加密提供程序句柄
+	// 使用 PROV_RSA_AES (24)，这是一个支持 SHA256 的现代 CSP
+	if (CryptAcquireContext(&hProv, NULL, NULL, PROV_RSA_AES, CRYPT_VERIFYCONTEXT))
+	{
+		// 尝试创建 SHA256 哈希对象
+		// CALG_SHA_256 定义在 Wincrypt.h 中
+		// 如果系统不支持，此函数会返回 FALSE 且 GetLastError() 为 NTE_BAD_ALGID
+		if (CryptCreateHash(hProv, CALG_SHA_256, 0, 0, &hHash))
+		{
+			bSupported = true;
+			CryptDestroyHash(hHash);
+		}
+		CryptReleaseContext(hProv, 0);
+	}
+
+	return bSupported;
+}
 std::set<const wchar_t *> PyStand::checkintegrity_(int &succ)
 {
 	// 分别对python代码检查hash，对exe/dll检查签名
 	std::set<const wchar_t *> collect;
-
+#ifdef WINXP
+	// windows xp sp2 不支持sha256
+	if (!IsSHA256Supported())
+	{
+		return {};
+	}
+#endif
 	auto selfKey = GetCertificatePublicKey(exepath.c_str());
 	if (selfKey)
 	{
