@@ -1,13 +1,13 @@
 from qtsymbols import *
 import functools, NativeUtils
-import gobject, os, re
+import gobject, os, re, functools
 from myutils.config import globalconfig, static_data
 from myutils.utils import all_langs
 from traceback import print_exc
 from language import Languages
 from gui.setting.textinput_ocr import getocrgrid_table
 from gui.gamemanager.dialog import dialog_savedgame_integrated
-from gui.dynalang import LLabel, LStandardItemModel
+from gui.dynalang import LLabel, LStandardItemModel, LDialog
 from myutils.wrapper import Singleton
 from textio.textsource.mssr import findallmodel, mssr
 from gui.usefulwidget import (
@@ -322,8 +322,7 @@ def createdownloadprogress(self):
     return downloadprogress
 
 
-def loadmssrsource(mssrsource: SuperCombo):
-    curr = globalconfig["sourcestatus2"]["mssr"]["source"]
+def sources(_):
     sources = ["loopback"]
     vis = ["环回录制"]
     if 1:
@@ -340,23 +339,19 @@ def loadmssrsource(mssrsource: SuperCombo):
         for _, _id in NativeUtils.ListEndpoints(False):
             sources.append(_id)
             vis.append("[[" + _ + "]]")
-    mssrsource.blockSignals(True)
-    mssrsource.clear()
-    mssrsource.addItems(vis, internals=sources)
-    mssrsource.setCurrentData(curr)
-    mssrsource.blockSignals(False)
 
-
-def hhfordirect(__vis, paths):
-
-    mssrsource = D_getsimplecombobox(
-        [""],
+    mssrsource = getsimplecombobox(
+        vis,
         globalconfig["sourcestatus2"]["mssr"],
         "source",
-        internal=[0],
-        callback=lambda _: gobject.base.textsource.init(),
-    )()
-    loadmssrsource(mssrsource)
+        internal=sources,
+        callback=lambda _: (gobject.base.textsource.init(),),
+    )
+    return mssrsource
+
+
+def hhfordirect(self, __vis, paths):
+
     return getboxwidget(
         [
             getsmalllabel("语言"),
@@ -379,7 +374,7 @@ def hhfordirect(__vis, paths):
             ),
             "",
             getsmalllabel("音源"),
-            mssrsource,
+            functools.partial(sources, self),
         ]
     )
 
@@ -419,7 +414,7 @@ def hhforindirect():
     )
 
 
-def modesW(__vis, paths):
+def modesW(self, __vis, paths):
     w = QWidget()
     layout = VisLFormLayout(w)
     layout.setContentsMargins(0, 0, 0, 0)
@@ -437,7 +432,7 @@ def modesW(__vis, paths):
             callback=lambda _: (gobject.base.textsource.init(), setvisrow(_)),
         ),
     )
-    layout.addRow(hhfordirect(__vis, paths))
+    layout.addRow(hhfordirect(self, __vis, paths))
     layout.addRow(hhforindirect())
     setvisrow(globalconfig["sourcestatus2"]["mssr"]["mode"])
     return w
@@ -449,7 +444,7 @@ def getsrgrid(self):
         return [["系统不支持"]]
 
     if os.path.exists(mssr.lcexe):
-        __w = modesW(__vis, paths)
+        __w = modesW(self, __vis, paths)
     else:
         __w = hhfordirect(__vis, paths)
     __w.setEnabled(globalconfig["sourcestatus2"]["mssr"]["use"])

@@ -68,7 +68,7 @@ class mssr(basetext):
         self.engine = None
 
     def runornot(self, _):
-        windows.SetEvent(self.notify)
+        windows.SetEvent(self.notifyrun if _ else self.notifystop)
 
     cogdll = "Microsoft.CognitiveServices.Speech.extension.embedded.sr.dll"
 
@@ -174,6 +174,8 @@ class mssr(basetext):
 
     def init(self):
         self.end()
+        self.hwnd = None
+        self.hPipe2 = None
         self.uuid = uuid.uuid4()
         self.curr = ""
         if (
@@ -184,10 +186,30 @@ class mssr(basetext):
         else:
             self.init_direct()
 
+    def gethwndppid(self, hwnd):
+        pid = windows.GetWindowThreadProcessId(hwnd)
+        if not pid:
+            return 0
+        pexe = windows.GetProcessFileName(pid)
+        ppid = pid
+        while True:
+            _ = NativeUtils.GetParentProcessID(ppid)
+            if _ in (0, ppid):
+                break
+            if windows.GetProcessFileName(_) != pexe:
+                break
+            ppid = _
+        return ppid
+
+    def hwndChanged(self, hwnd):
+        self.hwnd = hwnd
+        windows.WriteFile(self.hPipe2, bytes(c_int(self.gethwndppid(hwnd))))
+
     def init_direct(self):
 
         path = globalconfig["sourcestatus2"]["mssr"]["path"]
-        path: str = os.path.abspath(findallmodel(checkX=True, check=path))
+        path = findallmodel(checkX=True, check=path)
+        path: str = os.path.abspath(path) if path else None
         if not path:
             gobject.base.displayinfomessage(_TR("无可用语言"), "<msg_error_Origin>")
             return
@@ -203,11 +225,14 @@ class mssr(basetext):
             return
         print(path, dll, NativeUtils.QueryVersion(os.path.join(dll, self.cogdll)))
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
+        pipename2 = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         notify = str(uuid.uuid4())
-        self.notify = NativeUtils.SimpleCreateEvent(notify)
+        notify2 = str(uuid.uuid4())
+        self.notifyrun = NativeUtils.SimpleCreateEvent(notify)
+        self.notifystop = NativeUtils.SimpleCreateEvent(notify2)
         self.engine = NativeUtils.AutoKillProcess(
-            'files/shareddllproxy64.exe mssr {} {} {} "{}" {} "{}" "{}"'.format(
+            'files/shareddllproxy64.exe mssr {} {} {} "{}" {} "{}" "{}" {} {}'.format(
                 pipename,
                 waitsignal,
                 notify,
@@ -215,14 +240,19 @@ class mssr(basetext):
                 self.getsource(),
                 dll,
                 self.extralicense if (getlocaleandlv(path)[1] != "0") else "",
+                pipename2,
+                notify,
             )
         )
         windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
         windows.WaitNamedPipe(pipename)
+        windows.WaitNamedPipe(pipename2)
         self.hPipe = windows.CreateFile(pipename)
+        self.hPipe2 = windows.CreateFile(pipename2)
+        self.hwndChanged(self.hwnd)
         self.listen()
         if globalconfig["autorun"]:
-            windows.SetEvent(self.notify)
+            windows.SetEvent(self.notifyrun)
 
     @threader
     def listen(self):

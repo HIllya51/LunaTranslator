@@ -7,12 +7,13 @@ from myutils.config import (
     globalconfig,
     savehook_new_data,
     dynamiclink,
+    savehook_new_list,
     findgameuidofpath,
     _TR,
 )
 from main import checkintegrity
 from textio.textsource.textsourcebase import basetext
-from myutils.utils import getlangtgt, safe_escape, stringfyerror
+from myutils.utils import getlangtgt, safe_escape, stringfyerror, find_or_create_uid
 from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import test_injectable, ListProcess
 from myutils.wrapper import threader
@@ -282,7 +283,7 @@ class texthook(basetext):
     def autohookblacklist(self):
         return (r"C:\Windows\explorer.exe",)
 
-    def connecthwnd(self, hwnd):
+    def connecthwnd(self, hwnd, force=False):
         if (
             gobject.base.AttachProcessDialog
             and gobject.base.AttachProcessDialog.isVisible()
@@ -298,7 +299,13 @@ class texthook(basetext):
             return
         uid, reflist = findgameuidofpath(name_)
         if not uid:
-            return
+            if force:
+                uid = find_or_create_uid(
+                    savehook_new_list, name_, windows.GetWindowText(hwnd)
+                )
+                savehook_new_list.insert(0, uid)
+            else:
+                return
         pids = ListProcess(name_)
         if self.ending:
             return
@@ -307,8 +314,13 @@ class texthook(basetext):
         if globalconfig["startgamenototop"] == False:
             idx = reflist.index(uid)
             reflist.insert(0, reflist.pop(idx))
-        self.start(hwnd, pids, name_, uid, autostart=True)
+        self.start(pids, name_, uid, autostart=not force)
         return True
+
+    def hwndChanged(self, hwnd):
+        pass
+        # 没啥必要，而且不好处理切换问题，先不加了。
+        # self.connecthwnd(hwnd, force=True)
 
     @threader
     def autohookmonitorthread(self):
@@ -330,10 +342,9 @@ class texthook(basetext):
     def gameuid(self, gameuid):
         gobject.base.gameuid = gameuid
 
-    def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
+    def start(self, pids, gamepath, gameuid, autostart=False):
         for pid in pids:
             self.waitend(pid)
-        gobject.base.hwnd = hwnd
         self.gameuid = gameuid
         self.setsettings()
         self.detachall()

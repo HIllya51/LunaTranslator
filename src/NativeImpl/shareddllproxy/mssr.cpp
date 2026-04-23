@@ -18,15 +18,25 @@ static std::string getkey()
 {
     return "\x4b\x65\x79\x3a\x58\x55\x77\x37\x43\x30\x72\x63\x5a\x41\x49\x51\x76\x47\x38\x33\x37\x59\x50\x34\x46\x31\x4b\x48\x7a\x32\x52\x71\x59\x75\x51\x67\x74\x79\x58\x72\x63\x62\x46\x68\x73\x57\x46\x4e\x47\x6a\x47\x30\x38\x48\x4a\x45\x6c\x6d\x50\x47\x65\x73\x78\x4e\x4d\x62\x69\x62\x30\x73\x38\x79\x33\x39\x4e\x45\x74\x69\x33\x71\x33\x52\x77\x50\x4e\x52\x62\x75\x44\x76\x37\x35\x65\x6a\x5a\x62\x54\x61\x39\x79\x4c\x63\x54\x41\x55\x69\x78\x43";
 }
+void pidchangedlistener(HANDLE hPipe)
+{
+    DWORD pid, _;
+    while (ReadFile(hPipe, &pid, 4, &_, NULL))
+    {
+        MessageBoxW(0, std::to_wstring(pid).c_str(), L"", MB_OK | MB_SYSTEMMODAL);
+    }
+}
 int mssr(int argc, wchar_t *argv[])
 {
 
     HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
+    HANDLE hPipe2 = CreateNamedPipe(argv[8], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
     if (!ConnectNamedPipe(hPipe, NULL))
         return 0;
-
+    if (!ConnectNamedPipe(hPipe2, NULL))
+        return 0;
     RoInitialize(RO_INIT_MULTITHREADED); // 系统的版本必须roinit
 
     // WCHAR env[65535];
@@ -135,7 +145,8 @@ int mssr(int argc, wchar_t *argv[])
         std::unique_ptr<SupperRecord> capture;
         // Creates a push stream
         std::shared_ptr<PushAudioInputStream> pushStream;
-
+        DWORD pid, _;
+        ReadFile(hPipe2, &pid, 4, &_, NULL);
         if (wcscmp(argv[5], L"loopback") == 0)
         {
             capture = std::make_unique<SupperRecord>(16000, 16, 1);
@@ -161,19 +172,34 @@ int mssr(int argc, wchar_t *argv[])
         auto recognizer = create_recognizer(audioConfig, callback);
         callback(true, 1);
         // Starts continuous recognition. Uses StopContinuousRecognitionAsync() to stop recognition.
+        bool running = false;
+        std::thread([&pid, &hPipe2, &running, argv]()
+                    {
+            DWORD _;
+            while(ReadFile(hPipe2, &pid, 4, &_, NULL))
+            {
+                if(running)
+                {
+                    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[9]));
+                    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[3]));
+                }
+            } })
+            .detach();
         do
         {
             int action;
             DWORD _;
             recognitionEnd.Reset();
+            running = false;
             WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
             recognizer->StartContinuousRecognitionAsync().wait();
             if (capture)
             {
-                auto hr = capture->StartCaptureAsync(GetCurrentProcessId(), false);
+                auto hr = capture->StartCaptureAsync(pid ? pid : GetCurrentProcessId(), !!pid);
                 if (FAILED(hr))
                     throw std::runtime_error(std::string("??") + std::to_string((DWORD)hr));
             }
+            running = true;
             WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
             // Stops recognition.
             if (capture)

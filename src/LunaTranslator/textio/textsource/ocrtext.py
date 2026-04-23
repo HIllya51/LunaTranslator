@@ -46,7 +46,8 @@ def imageCutEx(*a):
 
 
 class rangemanger:
-    def __init__(self, ranges: "list[rangemanger]"):
+    def __init__(self, ref: "ocrtext", ranges: "list[rangemanger]"):
+        self.ref = ref
         self.range_ui = rangeadjust(gobject.base.settin_ui, ranges)
         self.savelastimg: cvMat = None
         self.savelastrecimg: cvMat = None
@@ -60,9 +61,7 @@ class rangemanger:
         rect = self.range_ui.getrect()
         if rect is None:
             return
-        imgr = imageCutEx(
-            gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
-        )
+        imgr = imageCutEx(self.ref.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
         if imgr.isNull():
             return
         result = ocr_run(imgr)
@@ -76,9 +75,7 @@ class rangemanger:
         rect = self.range_ui.getrect()
         if rect is None:
             return
-        imgr = imageCutEx(
-            gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
-        )
+        imgr = imageCutEx(self.ref.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
         ok = True
         if globalconfig["ocr_auto_method_v2"] == "analysis":
             imgr1 = cvMat.fromQImage(imgr)
@@ -120,9 +117,7 @@ class rangemanger:
         rect = self.range_ui.getrect()
         if rect is None:
             return False
-        imgr = imageCutEx(
-            gobject.base.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1]
-        )
+        imgr = imageCutEx(self.ref.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
         imgr1 = cvMat.fromQImage(imgr)
         image_score = imgr1.MSSIM(self.savelastimg)
 
@@ -132,8 +127,11 @@ class rangemanger:
 
 
 class ocrtext(basetext):
+    def hwndChanged(self, hwnd):
+        self.hwnd = hwnd
 
     def init(self):
+        self.hwnd = None
         self._pause_state = False
         self.startsql(gobject.gettranslationrecorddir("0_ocr.sqlite"))
         threader(ocr_init)()
@@ -151,7 +149,7 @@ class ocrtext(basetext):
 
     def newrangeadjustor(self):
         if len(self.ranges) == 0 or globalconfig["multiregion"]:
-            self.ranges.append(rangemanger(self.ranges))
+            self.ranges.append(rangemanger(self, self.ranges))
 
     def starttrace(self, pos):
         for _r in self.ranges:
@@ -219,10 +217,10 @@ class ocrtext(basetext):
                         break
                 laststate = this
                 if triggered:
-                    if gobject.base.hwnd:
+                    if self.hwnd:
                         for _ in range(2):
                             # 切换前台窗口
-                            p1 = windows.GetWindowThreadProcessId(gobject.base.hwnd)
+                            p1 = windows.GetWindowThreadProcessId(self.hwnd)
                             p2 = windows.GetWindowThreadProcessId(
                                 windows.GetForegroundWindow()
                             )

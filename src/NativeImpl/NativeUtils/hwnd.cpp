@@ -7,6 +7,25 @@
 #include "../xpundef/xp_shellscalingapi.h"
 #endif
 
+DECLARE_API DWORD GetParentProcessID(DWORD pid)
+{
+    CHandle hSnapshot{CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)};
+    if (hSnapshot == INVALID_HANDLE_VALUE)
+        return 0;
+
+    PROCESSENTRY32 pe32;
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+    auto currpid = GetCurrentProcessId();
+    if (Process32First(hSnapshot, &pe32))
+    {
+        do
+        {
+            if (pe32.th32ProcessID == pid)
+                return pe32.th32ParentProcessID;
+        } while (Process32Next(hSnapshot, &pe32));
+    }
+    return 0;
+}
 DECLARE_API void SetWindowInTaskbar(HWND hwnd, bool show, bool tool)
 {
     // WS_EX_TOOLWINDOW可以立即生效，WS_EX_APPWINDOW必须切换焦点才生效。但是WS_EX_TOOLWINDOW会改变窗口样式，因此只对无边框窗口使用。
@@ -408,54 +427,6 @@ DECLARE_API bool IsDLLBitSameAsMe(LPCWSTR file)
         return type.value() == IMAGE_FILE_MACHINE_I386;
 }
 
-typedef struct
-{
-    DWORD ExitStatus;
-    DWORD PebBaseAddress;
-    DWORD AffinityMask;
-    DWORD BasePriority;
-    ULONG UniqueProcessId;
-    ULONG InheritedFromUniqueProcessId;
-} __PROCESS_BASIC_INFORMATION;
-
-#define ProcessBasicInformation 0
-typedef LONG(__stdcall *PROCNTQSIP)(HANDLE, UINT, PVOID, ULONG, PULONG);
-
-DECLARE_API DWORD GetParentProcessID(DWORD dwProcessId)
-{
-    LONG status;
-    DWORD dwParentPID = (DWORD)-1;
-    __PROCESS_BASIC_INFORMATION pbi;
-
-    PROCNTQSIP NtQueryInformationProcess = (PROCNTQSIP)GetProcAddress(
-        GetModuleHandle(L"ntdll"), "NtQueryInformationProcess");
-
-    if (NULL == NtQueryInformationProcess)
-    {
-        return (DWORD)-1;
-    }
-    // Get process handle
-    CHandle hProcess{OpenProcess(PROCESS_QUERY_INFORMATION, FALSE, dwProcessId)};
-    if (!hProcess)
-    {
-        return (DWORD)-1;
-    }
-
-    // Retrieve information
-    status = NtQueryInformationProcess(hProcess,
-                                       ProcessBasicInformation,
-                                       (PVOID)&pbi,
-                                       sizeof(__PROCESS_BASIC_INFORMATION),
-                                       NULL);
-
-    // Copy parent Id on success
-    if (!status)
-    {
-        dwParentPID = pbi.InheritedFromUniqueProcessId;
-    }
-
-    return dwParentPID;
-}
 DECLARE_API void MouseMoveWindow(HWND hwnd)
 {
     ReleaseCapture();

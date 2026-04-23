@@ -308,6 +308,8 @@ class BASEOBJECT(QObject):
             else:
                 if self.autoswitchgameuid:
                     self.gameuid = 0
+        if self.textsource:
+            self.textsource.hwndChanged(__hwnd)
         if globalconfig["keepontop"]:
             self.translation_ui.settop()
 
@@ -1030,7 +1032,7 @@ class BASEOBJECT(QObject):
         else:
             gameuid = find_or_create_uid(savehook_new_list, pexe, title)
             savehook_new_list.insert(0, gameuid)
-        self.textsource.start(hwnd, pids, pexe, gameuid, autostart=False)
+        self.textsource.start(pids, pexe, gameuid, autostart=False)
 
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
