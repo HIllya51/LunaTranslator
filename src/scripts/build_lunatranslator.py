@@ -291,9 +291,10 @@ if __name__ == "__main__":
         downloadalls(sys.argv[2] if len(sys.argv) >= 3 else "")
     elif sys.argv[1] == "loadversion":
         with open("version.txt", "r", encoding="utf8") as ff:
-            version_major, version_minor, version_patch, version_revison = (
-                ff.read().strip().split(".")
-            )
+            spl = ff.read().strip().split(".")
+            if len(spl) == 3:
+                spl.append(0)
+            version_major, version_minor, version_patch, version_revison = spl
             versionstring = f"v{version_major}.{version_minor}.{version_patch}"
             if int(version_revison):
                 versionstring += f".{version_revison}"
