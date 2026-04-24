@@ -377,7 +377,7 @@ void delayinsertNewHook(uint64_t em_address)
 #ifdef _WIN64
 bool PCSX2_UserHook_delayinsert(uint32_t);
 #endif
-bool NewHook(HookParam hp, LPCSTR name, bool silentlyfail)
+bool NewHook_2(HookParam hp, LPCSTR name, bool silentlyfail = false)
 {
 	if (hp.address || hp.jittype == JITTYPE::PC)
 		return NewHook_1(hp, name, silentlyfail);
@@ -453,14 +453,16 @@ bool NewHook(HookParam hp, LPCSTR name, bool silentlyfail)
 #endif
 }
 
-bool NewHookRetry(HookParam hp, LPCSTR name)
+bool NewHook(HookParam hp, LPCSTR name)
 {
-	if (NewHook(hp, name, true))
+	if (NewHook_2(hp, name, true))
 		return true;
 	if (hp.type & BREAK_POINT)
 		return false;
+	if (!commonsharedmem->tryvehhook)
+		return false;
 	hp.type |= BREAK_POINT;
-	return NewHook(hp, name);
+	return NewHook_2(hp, name);
 }
 void RemoveHook(uint64_t addr, int maxOffset)
 {

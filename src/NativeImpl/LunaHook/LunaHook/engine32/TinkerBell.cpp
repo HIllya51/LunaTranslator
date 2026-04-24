@@ -29,7 +29,7 @@ bool InsertTinkerBellHook()
       }
       if (hp.address)
       {
-        auto succ = NewHookRetry(hp, "TinkerBell");
+        auto succ = NewHook(hp, "TinkerBell");
         count += succ;
         hp.address = 0;
       }
@@ -142,7 +142,7 @@ namespace
       buffer->from(str);
     };
     hp.offset = regoffset(ebx);
-    return NewHookRetry(hp, "tkbl") && []()
+    return NewHook(hp, "tkbl") && []()
     {
       // 人妻上司の分からせ方
       HookParam hp;
@@ -308,7 +308,7 @@ namespace
           savecontext.cnt_valid += 1;
         }
       };
-      succ |= NewHookRetry(hp, "TinkerBell2");
+      succ |= NewHook(hp, "TinkerBell2");
     }
     if (succ)
     {

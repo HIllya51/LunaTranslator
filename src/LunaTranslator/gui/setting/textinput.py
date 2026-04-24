@@ -64,7 +64,7 @@ def gethookgrid_em(self):
             D_getsimpleswitch(
                 globalconfig["embedded"],
                 "clearText",
-                callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
             "",
             "",
@@ -77,7 +77,7 @@ def gethookgrid_em(self):
                 ["翻译", "原文_翻译", "翻译_原文"],
                 globalconfig["embedded"],
                 "displaymode",
-                callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
         ],
         [
@@ -89,7 +89,7 @@ def gethookgrid_em(self):
                 globalconfig["embedded"],
                 "timeout_translate",
                 double=True,
-                callback=lambda x: gobject.base.textsource.flashembedsettings(),
+                callback=lambda x: gobject.base.textsource.set_settings_ex(),
             ),
         ],
         [
@@ -111,7 +111,7 @@ def gethookgrid_em(self):
             D_getsimpleswitch(
                 globalconfig["embedded"],
                 "changefont",
-                callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
             creategamefont_comboBox,
         ],
@@ -121,7 +121,7 @@ def gethookgrid_em(self):
                 globalconfig["embedded"],
                 "changefontsize_use",
                 default=False,
-                callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
             D_getspinbox(
                 0.5,
@@ -131,7 +131,7 @@ def gethookgrid_em(self):
                 step=0.01,
                 double=True,
                 default=1,
-                callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
         ],
         [
@@ -232,7 +232,7 @@ def creategamefont_comboBox():
     def callback(x):
         globalconfig["embedded"].__setitem__("changefont_font", x)
         try:
-            gobject.base.textsource.flashembedsettings()
+            gobject.base.textsource.set_settings_ex()
         except:
             pass
 

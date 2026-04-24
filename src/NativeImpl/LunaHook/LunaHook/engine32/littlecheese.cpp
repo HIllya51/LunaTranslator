@@ -31,7 +31,7 @@ bool littlecheeseattach_function()
         hp.split = regoffset(edx);
         hp.type = USING_CHAR | CODEC_ANSI_BE | NO_CONTEXT | USING_SPLIT;
     }
-    return NewHookRetry(hp, "littlecheese");
+    return NewHook(hp, "littlecheese");
 }
 
 bool Rufattach_function()
@@ -59,7 +59,7 @@ bool Rufattach_function()
     hp.address = addr;
     hp.offset = regoffset(edx);
     hp.type |= CODEC_ANSI_BE;
-    return NewHookRetry(hp, "Ruf");
+    return NewHook(hp, "Ruf");
 }
 bool littlecheese::attach_function()
 {

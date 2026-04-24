@@ -450,6 +450,7 @@ struct CommonSharedMem
 	UINT codepage;
 	bool fastskipignore;
 	bool clearText;
+	bool tryvehhook =  false;
 	struct
 	{
 		bool use;

@@ -986,7 +986,7 @@ namespace
     hp.type = CODEC_UTF16 | DATA_INDIRECT | USING_SPLIT | SPLIT_INDIRECT;
     // https://vndb.org/r67025
     // drm保护导致inlinehook失效
-    return NewHookRetry(hp, "KiriKiriZ");
+    return NewHook(hp, "KiriKiriZ");
   }
 
   bool InsertKiriKiriZHook1()

@@ -206,8 +206,8 @@ class texthook(basetext):
             FindHooksCallback_t,
             c_wchar_p,
         )
-        self.Luna_EmbedSettings = LunaHost.Luna_EmbedSettings
-        self.Luna_EmbedSettings.argtypes = (
+        self.Luna_SettingsEx = LunaHost.Luna_SettingsEx
+        self.Luna_SettingsEx.argtypes = (
             DWORD,
             c_uint32,
             c_uint8,
@@ -218,6 +218,7 @@ class texthook(basetext):
             c_bool,
             c_bool,
             c_float,
+            c_bool,
         )
         self.Luna_CheckIsUsingEmbed = LunaHost.Luna_CheckIsUsingEmbed
         self.Luna_CheckIsUsingEmbed.argtypes = (ThreadParam,)
@@ -478,7 +479,7 @@ class texthook(basetext):
         if self.hconfig.get("insertpchooks_string", False):
             self.InsertPCHooks(pid)
         gobject.base.displayinfomessage(self.hconfig["title"], "<msg_info_refresh>")
-        self.flashembedsettings(pid)
+        self.set_settings_ex(pid)
 
     def InsertPCHooks(self, pid: int = None):
         for pid in [pid] if pid else self.pids:
@@ -548,13 +549,13 @@ class texthook(basetext):
             trans = "\n".join(newlines)
         return trans
 
-    def flashembedsettings(self, pid=None):
+    def set_settings_ex(self, pid=None):
         if pid:
             pids = [pid]
         else:
             pids = self.pids.copy()
         for pid in pids:
-            self.Luna_EmbedSettings(
+            self.Luna_SettingsEx(
                 pid,
                 int(1000 * self.embedconfig["timeout_translate"]),
                 2,  # static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
@@ -569,6 +570,7 @@ class texthook(basetext):
                 self.embedconfig["clearText"],
                 self.embedconfig["changefontsize_use"],
                 self.embedconfig["changefontsize"],
+                True,
             )
 
     def onremovehook(self, hc, hn: bytes, tp):

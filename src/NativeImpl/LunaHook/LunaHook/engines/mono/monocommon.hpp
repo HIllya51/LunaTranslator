@@ -166,7 +166,7 @@ namespace monocommon
         }
         hp.jittype = JITTYPE::UNITY;
         strcpy(hp.function, hook.info().c_str());
-        return NewHookRetry(hp, hook.hookname().c_str());
+        return NewHook(hp, hook.hookname().c_str());
     }
     std::vector<functioninfo> commonhooks{
         {"mscorlib", "System", "String", "ToCharArray", 0, 1},

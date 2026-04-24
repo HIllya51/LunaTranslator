@@ -96,6 +96,21 @@ C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int default
     Host::defaultCodepage = defaultCodepage;
     Host::enablePCHooks = enablePCHooks;
 }
+C_LUNA_API void Luna_SettingsEx(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, Displaymode displaymode, bool fastskipignore, bool clearText, bool changeFontSize, float FontSizeRelative, bool tryvehhook)
+{
+    auto sm = Host::GetCommonSharedMem(pid);
+    if (!sm)
+        return;
+    sm->waittime = waittime;
+    sm->fontCharSet = fontCharSet;
+    sm->fontCharSetEnabled = fontCharSetEnabled;
+    wcscpy_s(sm->fontFamily, ARRAYSIZE(sm->fontFamily), fontFamily);
+    sm->displaymode = displaymode;
+    sm->fastskipignore = fastskipignore;
+    sm->clearText = clearText;
+    sm->FontSizeRelative = changeFontSize ? FontSizeRelative : 1.;
+    sm->tryvehhook = tryvehhook;
+}
 C_LUNA_API void Luna_ResetLang()
 {
     Host::ResetLanguage();
@@ -129,20 +144,6 @@ C_LUNA_API void Luna_FindHooks(DWORD pid, SearchParam sp, findhookcallback_t fin
                             wchar_t hookcode[HOOKCODE_LEN];
                             wcscpy_s(hookcode,HOOKCODE_LEN, hp.hookcode);
                             findhookcallback(hookcode,text.c_str()); }, addresses);
-}
-C_LUNA_API void Luna_EmbedSettings(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, Displaymode displaymode, bool fastskipignore, bool clearText, bool changeFontSize, float FontSizeRelative)
-{
-    auto sm = Host::GetCommonSharedMem(pid);
-    if (!sm)
-        return;
-    sm->waittime = waittime;
-    sm->fontCharSet = fontCharSet;
-    sm->fontCharSetEnabled = fontCharSetEnabled;
-    wcscpy_s(sm->fontFamily, ARRAYSIZE(sm->fontFamily), fontFamily);
-    sm->displaymode = displaymode;
-    sm->fastskipignore = fastskipignore;
-    sm->clearText = clearText;
-    sm->FontSizeRelative = changeFontSize ? FontSizeRelative : 1.;
 }
 C_LUNA_API bool Luna_CheckIsUsingEmbed(ThreadParam tp)
 {

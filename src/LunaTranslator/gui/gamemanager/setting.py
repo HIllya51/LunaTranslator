@@ -1351,7 +1351,7 @@ class dialog_setting_game_internal(QWidget):
             savehook_new_data[gameuid],
             "embed_follow_default",
             formLayout,
-            callback=lambda: gobject.base.textsource.flashembedsettings(),
+            callback=lambda: gobject.base.textsource.set_settings_ex(),
         )
         formLayout2.addRow(
             "清除游戏内显示的文字",
@@ -1359,7 +1359,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["embed_setting_private"],
                 "clearText",
                 default=globalconfig["embedded"]["clearText"],
-                callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
         )
 
@@ -1370,7 +1370,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["embed_setting_private"],
                 "displaymode",
                 default=globalconfig["embedded"]["displaymode"],
-                callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
         )
         formLayout2.addRow(
@@ -1408,7 +1408,7 @@ class dialog_setting_game_internal(QWidget):
                         savehook_new_data[gameuid]["embed_setting_private"],
                         "changefont",
                         default=globalconfig["embedded"]["changefont"],
-                        callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                        callback=lambda _: gobject.base.textsource.set_settings_ex(),
                     ),
                     functools.partial(self.creategamefont_comboBox, gameuid),
                 ]
@@ -1422,7 +1422,7 @@ class dialog_setting_game_internal(QWidget):
                         savehook_new_data[gameuid]["embed_setting_private"],
                         "changefontsize_use",
                         default=globalconfig["embedded"]["changefontsize_use"],
-                        callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                        callback=lambda _: gobject.base.textsource.set_settings_ex(),
                     ),
                     D_getspinbox(
                         0.5,
@@ -1432,7 +1432,7 @@ class dialog_setting_game_internal(QWidget):
                         default=globalconfig["embedded"]["changefontsize"],
                         step=0.01,
                         double=True,
-                        callback=lambda _: gobject.base.textsource.flashembedsettings(),
+                        callback=lambda _: gobject.base.textsource.set_settings_ex(),
                     ),
                 ]
             ),
@@ -1468,7 +1468,7 @@ class dialog_setting_game_internal(QWidget):
                 "changefont_font", x
             )
             try:
-                gobject.base.textsource.flashembedsettings()
+                gobject.base.textsource.set_settings_ex()
             except:
                 pass
 

@@ -137,7 +137,7 @@ bool AdobeAIRhook2()
   hp.address = addr + 3;
   hp.offset = stackoffset(1);
   hp.type = USING_STRING | CODEC_UTF16;
-  return NewHookRetry(hp, "AdobeAIR");
+  return NewHook(hp, "AdobeAIR");
 }
 
 /**
@@ -173,7 +173,7 @@ bool InsertAIRNovelHook()
     // };
 
 
-    return NewHookRetry(hp, "AIRNovel");
+    return NewHook(hp, "AIRNovel");
   }
   return false;
 }
@@ -220,7 +220,7 @@ bool adobelair3()
     }
     leng = ws.length();
   };
-  return NewHookRetry(hp, "AIRNovel");
+  return NewHook(hp, "AIRNovel");
 }
 namespace
 {
