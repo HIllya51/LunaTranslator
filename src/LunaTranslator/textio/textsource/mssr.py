@@ -241,7 +241,7 @@ class mssr(basetext):
                 dll,
                 self.extralicense if (getlocaleandlv(path)[1] != "0") else "",
                 pipename2,
-                notify,
+                notify2,
             )
         )
         windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))

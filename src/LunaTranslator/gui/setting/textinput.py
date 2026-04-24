@@ -446,7 +446,7 @@ def getsrgrid(self):
     if os.path.exists(mssr.lcexe):
         __w = modesW(self, __vis, paths)
     else:
-        __w = hhfordirect(__vis, paths)
+        __w = hhfordirect(self, __vis, paths)
     __w.setEnabled(globalconfig["sourcestatus2"]["mssr"]["use"])
 
     return [
