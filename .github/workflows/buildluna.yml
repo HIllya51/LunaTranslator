@@ -25,7 +25,7 @@ jobs:
             target: win10
             pythonversion: '3.13.12'  
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       # - uses: microsoft/setup-msbuild@v2
       - if: matrix.target == 'winxp'
         run: |
@@ -51,12 +51,12 @@ jobs:
       #   with:
       #     sdk-version: 26100
       - if: matrix.target != 'winxp'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.pythonversion }}
           architecture: ${{ matrix.arch }}
       - if: matrix.target != 'win10'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.13.12
           architecture: x64
@@ -66,7 +66,7 @@ jobs:
         run:  C:\hostedtoolcache\windows\Python\3.13.12\x64\python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
       - run:  C:\hostedtoolcache\windows\Python\3.13.12\x64\python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{ matrix.target }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
           path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
@@ -83,13 +83,13 @@ jobs:
       pages: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v6
+      - uses: actions/download-artifact@v8
         with:
             path: build
       - run: python src/scripts/build_lunatranslator.py exedlls
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         id: upload-artifact
         with:
           name: exedlls
@@ -106,14 +106,14 @@ jobs:
           output-artifact-directory: 'signed_exedlls'
           artifact-configuration-slug: 'exedlls'
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: signed_exedlls
           path: signed_exedlls
 
       - run: python src/scripts/build_lunatranslator.py repack
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: signed
           path: signed
