@@ -713,8 +713,8 @@ class transhist(closeashidewindow):
         self.trace.append(line)
         sharedfunctions.autosave(line)
         if self.state == 2:
-            self.textOutput.getnewsentence(self.trace[-1])
-        WSForEach(transhistwsoutputsave, lambda _: _.getnewsentence(self.trace[-1]))
+            self.textOutput.getnewsentence(line)
+        WSForEach(transhistwsoutputsave, lambda _: _.getnewsentence(line))
 
     def getnewtrans(self, api, sentence):
         tm = time.time()
@@ -722,8 +722,8 @@ class transhist(closeashidewindow):
         self.trace.append(line)
         sharedfunctions.autosave(line)
         if self.state == 2:
-            self.textOutput.getnewtrans(self.trace[-1])
-        WSForEach(transhistwsoutputsave, lambda _: _.getnewtrans(self.trace[-1]))
+            self.textOutput.getnewtrans(line)
+        WSForEach(transhistwsoutputsave, lambda _: _.getnewtrans(line))
 
     def loadviewer(self, shoudong=False):
         if self.textOutput:

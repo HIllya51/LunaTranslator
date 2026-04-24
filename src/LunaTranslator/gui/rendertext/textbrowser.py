@@ -268,6 +268,10 @@ class TextBrowser(QWidget, dataget):
     dropfilecallback = pyqtSignal(str)
     _padding = 5
 
+    def wheelEvent(self, a0: QWheelEvent):
+        gobject.base.wheelhistory.emit(-1 if a0.angleDelta().y() > 0 else 1)
+        return super().wheelEvent(a0)
+
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
             event.accept()

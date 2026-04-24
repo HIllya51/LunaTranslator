@@ -440,6 +440,7 @@ class TextBrowser(WebviewWidget, somecommon):
             __cb2,
             getchecked=lambda: globalconfig["hidetools"],
         )
+        self.bind("callwheelEvent", gobject.base.wheelhistory.emit)
         self.bind("calllunaclickedword", gobject.base.clickwordcallback)
         self.bind("calllunaMouseMove", self.calllunaMouseMove)
         self.bind("calllunaMousePress", self.calllunaMousePress)

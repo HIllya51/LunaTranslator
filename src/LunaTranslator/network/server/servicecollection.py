@@ -64,6 +64,7 @@ class internalservicemainuiws(WSHandler, somecommon_1):
         args = message.get("args", tuple())
         dict(
             calllunaloadready=self.calllunaloadready,
+            callwheelEvent=gobject.base.wheelhistory.emit,
             calllunaclickedword=gobject.base.clickwordcallback,
         )[function](*args)
 
