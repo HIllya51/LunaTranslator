@@ -341,7 +341,6 @@
     "拉伸": "protahování",
     "居中": "Centrované",
     "边距": "Okraje",
-    "文字区高度": "Výška textové oblasti",
     "标签": "štítek",
     "存在": "existence",
     "添加": "přidat do",
@@ -912,5 +911,10 @@
     "所有游戏": "Všechny hry",
     "最近游戏": "Nedávné hry",
     "Unicode正规化": "Unicode normalizace",
-    "打开窗口时暂停自动OCR": "Pozastavit automatické OCR při otevření okna"
+    "打开窗口时暂停自动OCR": "Pozastavit automatické OCR při otevření okna",
+    "文字": "Text",
+    "文字区": "Textová oblast",
+    "上下": "Nahoře a dole",
+    "悬浮": "Závěsný",
+    "布局": "Rozložení"
 }

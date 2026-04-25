@@ -336,7 +336,6 @@
     "拉伸": "stretching",
     "居中": "Centered",
     "边距": "Margins",
-    "文字区高度": "Metin alanının yüksekliği",
     "标签": "etiket",
     "存在": "varlığı",
     "添加": "Ekle",
@@ -912,5 +911,10 @@
     "所有游戏": "Tüm oyunlar",
     "最近游戏": "Son zamanlarda oyunlar",
     "Unicode正规化": "Unicode Normalleştirme",
-    "打开窗口时暂停自动OCR": "Pencere açıldığında otomatik OCR'yi duraklat"
+    "打开窗口时暂停自动OCR": "Pencere açıldığında otomatik OCR'yi duraklat",
+    "文字": "Metin",
+    "文字区": "Metin alanı",
+    "上下": "Yukarı aşağı",
+    "悬浮": "Asılı",
+    "布局": "Düzen"
 }

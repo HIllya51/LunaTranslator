@@ -335,7 +335,6 @@
     "拉伸": "Kéo giãn",
     "居中": "Căn giữa",
     "边距": "Căn lề",
-    "文字区高度": "Chiều cao khu vực văn bản",
     "标签": "Thẻ",
     "存在": "Tồn tại",
     "添加": "Thêm",
@@ -912,5 +911,10 @@
     "所有游戏": "Tất cả trò chơi",
     "最近游戏": "Gần đây trò chơi",
     "Unicode正规化": "Chuẩn hóa Unicode",
-    "打开窗口时暂停自动OCR": "Tạm dừng OCR tự động khi mở cửa sổ"
+    "打开窗口时暂停自动OCR": "Tạm dừng OCR tự động khi mở cửa sổ",
+    "文字": "Chữ viết",
+    "文字区": "Khu vực văn bản",
+    "上下": "Lên xuống",
+    "悬浮": "Lơ lửng",
+    "布局": "Bố trí"
 }

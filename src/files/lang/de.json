@@ -341,7 +341,6 @@
     "拉伸": "Dehnung",
     "居中": "Zentriert",
     "边距": "Margen",
-    "文字区高度": "Höhe des Textbereichs",
     "标签": "Etikett",
     "存在": "Existenz",
     "添加": "hinzufügen zu",
@@ -912,5 +911,10 @@
     "所有游戏": "Alle Spiele",
     "最近游戏": "Kürzlich gespielte Spiele",
     "Unicode正规化": "Unicode-Normalisierung",
-    "打开窗口时暂停自动OCR": "Automatische OCR beim Öffnen des Fensters pausieren"
+    "打开窗口时暂停自动OCR": "Automatische OCR beim Öffnen des Fensters pausieren",
+    "文字": "Text",
+    "文字区": "Textbereich",
+    "上下": "oben und unten",
+    "悬浮": "Schwebend",
+    "布局": "Anordnung"
 }

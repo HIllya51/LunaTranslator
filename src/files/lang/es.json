@@ -336,7 +336,6 @@
     "拉伸": "Estiramiento",
     "居中": "En el Centro",
     "边距": "Margen",
-    "文字区高度": "Altura del área de texto",
     "标签": "Etiquetas",
     "存在": "Existencia",
     "添加": "Añadir",
@@ -912,5 +911,10 @@
     "所有游戏": "Todos los juegos",
     "最近游戏": "Juegos recientes",
     "Unicode正规化": "Normalización Unicode",
-    "打开窗口时暂停自动OCR": "Pausar OCR automático al abrir la ventana"
+    "打开窗口时暂停自动OCR": "Pausar OCR automático al abrir la ventana",
+    "文字": "Letras",
+    "文字区": "Zona de texto",
+    "上下": "Arriba y abajo",
+    "悬浮": "Flotante",
+    "布局": "Diseño"
 }

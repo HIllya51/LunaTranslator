@@ -341,7 +341,6 @@
     "拉伸": "alongamento",
     "居中": "Centrado",
     "边距": "Margens",
-    "文字区高度": "Altura da área de texto",
     "标签": "rótulo",
     "存在": "existência",
     "添加": "adicionar a",
@@ -912,5 +911,10 @@
     "所有游戏": "Todos os jogos",
     "最近游戏": "Jogos recentes",
     "Unicode正规化": "Normalização Unicode",
-    "打开窗口时暂停自动OCR": "Pausar OCR automático ao abrir a janela"
+    "打开窗口时暂停自动OCR": "Pausar OCR automático ao abrir a janela",
+    "文字": "文字",
+    "文字区": "Área de texto",
+    "上下": "Acima e abaixo",
+    "悬浮": "Suspensão",
+    "布局": "Layout"
 }

@@ -5,7 +5,6 @@ from myutils.wrapper import threader, Singleton
 from myutils.utils import find_or_create_uid, duplicateconfig
 from myutils.hwnd import getExeIcon, getcurrexe
 import gobject, hashlib, NativeUtils, uuid, re
-from gui.inputdialog import autoinitdialog
 from gui.dynalang import LFormLayout, LDialog
 from myutils.localetools import localeswitchedrun
 from myutils.config import (
@@ -20,11 +19,7 @@ from myutils.config import (
 )
 from gui.usefulwidget import (
     getIconButton,
-    getsimplecombobox,
-    getspinbox,
-    getcolorbutton,
     getsimpleswitch,
-    getspinbox,
     SClickableLabel,
     SplitLine,
 )
@@ -321,7 +316,7 @@ def loadrecentlist():
     for uid, tms in data.items():
         tm = tms[-1][1]
         datas[uid] = tm
-    ks = list(_ for _ in datas if _ in savehook_new_data)
+    ks = list(_ for _ in datas if _ in savehook_new_data and _ in savehook_new_list)
     ks.sort(key=lambda uid: -datas[uid])
 
     return ks[: globalconfig.get("recentgamelistnum", 10)]
@@ -379,10 +374,7 @@ def getfonteditor(d: dict, k: str, callback=None):
 @Singleton
 class dialog_syssetting(LDialog):
 
-    def closeEvent(self, e):
-        self.parent().callchange()
-
-    def __init__(self, parent, type_=1) -> None:
+    def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle("其他设置")
         formLayout = LFormLayout(self)
@@ -400,83 +392,5 @@ class dialog_syssetting(LDialog):
         )
 
         formLayout.addRow(SplitLine())
-        if type_ == 2:
-            for i, (key, name) in enumerate(
-                [
-                    ("itemw", "宽度"),
-                    ("itemh", "高度"),
-                    ("margin", "边距_inter"),
-                    ("margin2", "边距_intra"),
-                    ("radius", "圆角"),
-                    ("radius2", "圆角_internal"),
-                    ("textH", "文字区高度"),
-                    ("borderW", "边框宽度"),
-                ]
-            ):
-                minv = 0 if i >= 2 else 32
-                spin = getspinbox(
-                    minv, 1000, globalconfig["dialog_savegame_layout"], key
-                )
-                formLayout.addRow(name, spin)
-                if "radius" == key:
-                    spin.valueChanged.connect(lambda _: self.parent().setstyle())
-                elif "borderW" == key:
-                    spin.valueChanged.connect(
-                        lambda _: (self.parent().setstyle(), self.parent().callchange())
-                    )
-                else:
-                    spin.valueChanged.connect(lambda _: self.parent().callchange())
-            formLayout.addRow(
-                "字体",
-                getfonteditor(
-                    d=globalconfig,
-                    k="savegame_textfont1",
-                    callback=lambda _: self.parent().setstyle(),
-                ),
-            )
-            formLayout.addRow(
-                "缩放",
-                getsimplecombobox(
-                    ["填充", "适应", "拉伸", "居中"],
-                    globalconfig,
-                    "imagewrapmode",
-                    callback=lambda _: self.parent().callchange(),
-                ),
-            )
-        elif type_ == 1:
-            for key, name in [
-                ("listitemheight", "高度"),
-            ]:
-                spin = getspinbox(10, 1000, globalconfig["dialog_savegame_layout"], key)
-                formLayout.addRow(name, spin)
-                spin.valueChanged.connect(lambda _: self.parent().callchange())
-            formLayout.addRow(
-                "字体",
-                getfonteditor(
-                    d=globalconfig,
-                    k="savegame_textfont2",
-                    callback=lambda _: self.parent().setstyle(),
-                ),
-            )
-
-        formLayout.addRow(SplitLine())
-        for key, name in [
-            ("backcolor2", "颜色"),
-            ("onselectcolor2", "颜色_选中时"),
-            ("onfilenoexistscolor2", "游戏不存在时颜色"),
-        ] + (
-            [("borderColor", "边框颜色"), ("borderColor2", "边框颜色_选中时")]
-            if type_ == 2
-            else []
-        ):
-            formLayout.addRow(
-                name,
-                getcolorbutton(
-                    self,
-                    globalconfig["dialog_savegame_layout"],
-                    key,
-                    callback=lambda _: self.parent().setstyle(),
-                    alpha=True,
-                ),
-            )
+        self.parent().createsettings(formLayout)
         self.show()

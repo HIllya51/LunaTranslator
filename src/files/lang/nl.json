@@ -341,7 +341,6 @@
     "拉伸": "stretchen",
     "居中": "Gecentreerd",
     "边距": "Marges",
-    "文字区高度": "Hoogte tekstgebied",
     "标签": "label",
     "存在": "bestaan",
     "添加": "toevoegen aan",
@@ -912,5 +911,10 @@
     "所有游戏": "Alle spellen",
     "最近游戏": "Recent games",
     "Unicode正规化": "Unicode-normalisatie",
-    "打开窗口时暂停自动OCR": "Automatische OCR pauzeren bij het openen van een venster"
+    "打开窗口时暂停自动OCR": "Automatische OCR pauzeren bij het openen van een venster",
+    "文字": "Tekst",
+    "文字区": "Tekstgebied",
+    "上下": "上下",
+    "悬浮": "Zwevend",
+    "布局": "Indeling"
 }

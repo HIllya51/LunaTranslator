@@ -341,7 +341,6 @@
     "拉伸": "sträckning",
     "居中": "Centrerad",
     "边距": "Marginaler",
-    "文字区高度": "Textområdets höjd",
     "标签": "etikett",
     "存在": "existens",
     "添加": "Lägg till",
@@ -912,5 +911,10 @@
     "所有游戏": "Alla spel",
     "最近游戏": "Nyligen spel",
     "Unicode正规化": "Unicode-normalisering",
-    "打开窗口时暂停自动OCR": "Pausa automatisk OCR när fönstret öppnas"
+    "打开窗口时暂停自动OCR": "Pausa automatisk OCR när fönstret öppnas",
+    "文字": "Text",
+    "文字区": "Textområde",
+    "上下": "Upp och ner",
+    "悬浮": "Svävande",
+    "布局": "Här är översättningen av \"布局\" till svenska:  \n**Layout**"
 }

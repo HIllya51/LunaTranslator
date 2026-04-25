@@ -335,7 +335,6 @@
     "拉伸": "Stretch",
     "居中": "Center",
     "边距": "Margin",
-    "文字区高度": "Text Area Height",
     "标签": "Tag",
     "存在": "Exist",
     "添加": "Add",
@@ -912,5 +911,10 @@
     "所有游戏": "All games",
     "最近游戏": "Recently, games.",
     "Unicode正规化": "Unicode Normalization",
-    "打开窗口时暂停自动OCR": "Pause automatic OCR when opening a window"
+    "打开窗口时暂停自动OCR": "Pause automatic OCR when opening a window",
+    "文字": "text",
+    "文字区": "Text area",
+    "上下": "Up and down",
+    "悬浮": "Suspension",
+    "布局": "layout"
 }

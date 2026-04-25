@@ -24,10 +24,15 @@ from gui.usefulwidget import (
     MyInputDialog,
     request_delete_ok,
     IconButton,
+    getcolorbutton,
+    getspinbox,
+    SplitLine,
 )
+
 from gui.gamemanager.common import loadvisinternal
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
+    getfonteditor,
     loadrecentlist,
     startgamecheck,
     getreflist,
@@ -108,6 +113,7 @@ class clickitem(QWidget):
         self._ = _
         _.setScaledContents(True)
         _.setStyleSheet("background:transparent")
+        _.setObjectName("NOBORDER")
         for image in savehook_new_data[uid].get("imagepath_all", []):
             fr = extradatas["imagefrom"].get(image)
             if fr:
@@ -628,6 +634,36 @@ class pixwrapper(QSplitter):
 
 
 class dialog_savedgame_v3(QSplitter):
+    def createsettings(self, formLayout: QFormLayout):
+        for key, name in [
+            ("listitemheight", "高度"),
+        ]:
+            spin = getspinbox(10, 1000, globalconfig["dialog_savegame_layout"], key)
+            formLayout.addRow(name, spin)
+            spin.valueChanged.connect(self.callchange)
+            formLayout.addRow(
+                "字体",
+                getfonteditor(
+                    d=globalconfig, k="savegame_textfont2", callback=self.setstyle
+                ),
+            )
+        formLayout.addRow(SplitLine())
+        for key, name in [
+            ("backcolor3", "颜色"),
+            ("onselectcolor3", "颜色_选中时"),
+            ("onfilenoexistscolor3", "游戏不存在时颜色"),
+        ]:
+            formLayout.addRow(
+                name,
+                getcolorbutton(
+                    self,
+                    globalconfig["dialog_savegame_layout"],
+                    key,
+                    callback=self.setstyle,
+                    alpha=True,
+                ),
+            )
+
     def deleteLater(self):
 
         if not isqt5:
@@ -767,13 +803,13 @@ class dialog_savedgame_v3(QSplitter):
     def callexists(self, _):
         pass
 
-    def callchange(self):
+    def callchange(self, _=None):
         self.stack.setheight(
             globalconfig["dialog_savegame_layout"]["listitemheight"] + 1
         )
         self.stack.directshow_1()
 
-    def setstyle(self):
+    def setstyle(self, _=None):
         key = "savegame_textfont2"
         fontstring = globalconfig.get(key, "")
         _style = """background-color: rgba(255,255,255, 0);"""
@@ -785,13 +821,13 @@ class dialog_savedgame_v3(QSplitter):
         style = "#{}{{ {} }}".format(key, _style)
 
         style += "#savegame_existsTrue{{background-color:{};}}".format(
-            globalconfig["dialog_savegame_layout"]["backcolor2"]
+            globalconfig["dialog_savegame_layout"]["backcolor3"]
         )
         style += "#savegame_existsFalse{{background-color:{};}}".format(
-            globalconfig["dialog_savegame_layout"]["onfilenoexistscolor2"]
+            globalconfig["dialog_savegame_layout"]["onfilenoexistscolor3"]
         )
         style += "#savegame_onselectcolor1{{background-color: {};}}".format(
-            globalconfig["dialog_savegame_layout"]["onselectcolor2"]
+            globalconfig["dialog_savegame_layout"]["onselectcolor3"]
         )
         self.stack.setStyleSheet(style)
 
