@@ -417,6 +417,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | NPJH50560 | 文明開華 葵座異聞録 再演 |
 |  | ULJM05491 | サイファーPORTABLE |
 |  | ULJM05962 | 花と乙女に祝福を　～春風の贈り物～　portable |
 |  | ULJM05683 | Starry☆Sky ～in Spring～ Portable |

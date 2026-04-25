@@ -596,11 +596,20 @@ namespace
         last = ws;
         buffer->from(strReplace(ws, L"[br]"));
     }
+    DECLARE_FUNCTION(ULJM06167N, const char *_);
     void ULJM06167(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->viewA();
+        auto s = buffer->strA();
         if (s.find("#n") == s.npos)
+        {
+            HookParam hp;
+            hp.address = (uintptr_t)ULJM06167N;
+            hp.offset = GETARG(1);
+            hp.type = USING_STRING;
+            static auto _ = NewHook(hp, "ULJM06167");
+            ULJM06167N(s.c_str());
             return buffer->clear();
+        }
         ULJM05943F(buffer, hp);
     }
     void ULJM05610(TextBuffer *buffer, HookParam *hp)
@@ -1234,7 +1243,6 @@ namespace
         void ULJM06115(TextBuffer *buffer, HookParam *hpx)
         {
             auto s = buffer->strA();
-
             HookParam hp;
             hp.address = (uintptr_t)ULJM06115_C;
             hp.offset = GETARG(1);
@@ -1546,6 +1554,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 文明開華 葵座異聞録 再演
+    {0x886A55C, {FULL_STRING, 0, 0, 0, FULJM05889, "NPJH50560"}},
+    {0x886A600, {FULL_STRING, 0xC, 0, 0, FULJM05889, "NPJH50560"}}, // name
     // サイファーPORTABLE
     {0x880FF80, {0, 3, 0, 0, ULJM05491, "ULJM05491"}}, // 不可以快进
     // 花と乙女に祝福を　～春風の贈り物～　portable
@@ -1761,8 +1772,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8829F14, {0, 4, 0, 0, ULJM05943F, "ULJM05847"}},
     {0x886D270, {0, 0, 0, 0, ULJM05823_2, "ULJM05847"}},
     // 華鬼 ～夢のつづき～
-    {0x88406CC, {0, 0, 0, 0, ULJM05943F, "ULJM06048"}}, // text
-    {0x885B7BC, {0, 0, 0, 0, ULJM05943F, "ULJM06048"}}, // name+text
+    {0x885B7BC, {FULL_STRING, 0, 0, 0, ULJM05943F, "ULJM06048"}}, // name+text
+    {0x8912534, {FULL_STRING, 0, 0, 0, ULJM06167, "ULJM06048"}},
     // サモンナイト３
     {0x89DCF90, {0, 6, 0, 0, NPJH50380, "NPJH50380"}},
     // サモンナイト４
