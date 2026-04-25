@@ -550,6 +550,11 @@ namespace
             return buffer->clear();
         ULJM05943F(buffer, hp);
     }
+    void ULJM06314(TextBuffer *buffer, HookParam *hp)
+    {
+        StringReplacer(buffer, TEXTANDLEN("#Name[1]"), TEXTANDLEN("\x8e\x8c\x8b\x49")); // 詞紀
+        ULJM05943F(buffer, hp);
+    }
     void ULJM05975Name(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->viewA();
@@ -593,8 +598,8 @@ namespace
     }
     void ULJM06167(TextBuffer *buffer, HookParam *hp)
     {
-        auto s = buffer->strA();
-        if (s == "0")
+        auto s = buffer->viewA();
+        if (s.find("#n") == s.npos)
             return buffer->clear();
         ULJM05943F(buffer, hp);
     }
@@ -1929,10 +1934,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88644D4, {0, 1, 0, 0, NPJH50899, "NPJH50879"}},
     // 白華の檻～緋色の欠片４～
     {0x88FE8C0, {0, 0, 0, 0, ULJM05823_2, "ULJM06167"}},
-    {0x894672C, {0, 4, 0, 0, ULJM06167, "ULJM06167"}},
+    {0x88FE8D8, {FULL_STRING, 1, 0, 0, ULJM06167, "ULJM06167"}},
     // 白華の檻 ～緋色の欠片４～ 四季の詩
     {0x8851EA0, {0, 0, 0, 0, ULJM06266, "ULJM06314"}},
-    {0x88E33E0, {0, 0, 0, 0, ULJM05943F, "ULJM06314"}},
+    {0x89082AC, {FULL_STRING, 0, 0, 0, ULJM06314, "ULJM06314"}},
     // 蒼黒の楔 緋色の欠片３ ポータブル
     {0x888ACD4, {0, 0, 0, 0, ULJM05823_2, "NPJH50609"}},
     {0x8885390, {0, 4, 0, 0, ULJM06289, "NPJH50609"}},
