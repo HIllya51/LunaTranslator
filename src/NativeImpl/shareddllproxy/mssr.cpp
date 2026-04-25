@@ -200,7 +200,7 @@ int mssr(int argc, wchar_t *argv[])
                     throw std::runtime_error(std::string("??") + std::to_string((DWORD)hr));
             }
             running = true;
-            WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[3]), INFINITE);
+            WaitForSingleObject(CreateEvent(&allAccess, FALSE, FALSE, argv[9]), INFINITE);
             // Stops recognition.
             if (capture)
                 capture->StopCapture();
