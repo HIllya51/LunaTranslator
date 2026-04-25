@@ -1372,6 +1372,8 @@
                 "frequency_penalty_use": false,
                 "reasoning_effort": "none",
                 "reasoning_effort_use": false,
+                "thinking.type": "disabled",
+                "thinking.type.use": false,
                 "user_user_prompt_1": "",
                 "use_user_user_prompt": false,
                 "s": "",
@@ -1379,6 +1381,18 @@
                 "customparams": []
             },
             "argstype": {
+                "thinking.type": {
+                    "type": "combo",
+                    "refswitch": "thinking.type.use",
+                    "internal": [
+                        "disabled",
+                        "enabled"
+                    ],
+                    "list": [
+                        "disabled",
+                        "enabled"
+                    ]
+                },
                 "reasoning_effort": {
                     "type": "combo",
                     "refswitch": "reasoning_effort_use",

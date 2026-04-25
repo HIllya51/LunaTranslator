@@ -399,6 +399,8 @@
 			"frequency_penalty_use": false,
 			"reasoning_effort": "medium",
 			"reasoning_effort_use": false,
+			"thinking.type": "disabled",
+			"thinking.type.use": false,
 			"user_user_prompt": "",
 			"use_user_user_prompt": false,
 			"s": "",
@@ -410,6 +412,18 @@
 			"customparams": []
 		},
 		"argstype": {
+			"thinking.type": {
+				"type": "combo",
+				"refswitch": "thinking.type.use",
+				"internal": [
+					"disabled",
+					"enabled"
+				],
+				"list": [
+					"disabled",
+					"enabled"
+				]
+			},
 			"cachecontext": {
 				"name": "优化缓存命中",
 				"type": "switch"
@@ -488,16 +502,20 @@
 				"type": "combo",
 				"refswitch": "reasoning_effort_use",
 				"internal": [
+					"none",
 					"minimal",
 					"low",
 					"medium",
-					"high"
+					"high",
+					"xhign"
 				],
 				"list": [
+					"none",
 					"minimal",
 					"low",
 					"medium",
-					"high"
+					"high",
+					"xhign"
 				]
 			},
 			"use_max_completion_tokens": {

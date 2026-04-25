@@ -203,26 +203,44 @@
             "frequency_penalty_use": false,
             "reasoning_effort": "medium",
             "reasoning_effort_use": false,
+            "thinking.type": "disabled",
+            "thinking.type.use": false,
             "modellistcache": [],
             "s": "",
             "use_max_completion_tokens": false,
             "customparams": []
         },
         "argstype": {
+            "thinking.type": {
+                "type": "combo",
+                "refswitch": "thinking.type.use",
+                "internal": [
+                    "disabled",
+                    "enabled"
+                ],
+                "list": [
+                    "disabled",
+                    "enabled"
+                ]
+            },
             "reasoning_effort": {
                 "type": "combo",
                 "refswitch": "reasoning_effort_use",
                 "internal": [
+                    "none",
                     "minimal",
                     "low",
                     "medium",
-                    "high"
+                    "high",
+                    "xhign"
                 ],
                 "list": [
+                    "none",
                     "minimal",
                     "low",
                     "medium",
-                    "high"
+                    "high",
+                    "xhign"
                 ]
             },
             "customparams": {

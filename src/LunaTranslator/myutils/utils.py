@@ -1037,6 +1037,8 @@ def common_create_gpt_data(config: dict, message, extrabody):
         data.update(top_p=config["top_p"])
     if config.get("reasoning_effort_use", False):
         data.update(reasoning_effort=config["reasoning_effort"])
+    if config.get("thinking.type.use", False):
+        data.update(thinking={"type": config.get("thinking.type", "disabled")})
     if extrabody:
         data.update(extrabody)
     return data
