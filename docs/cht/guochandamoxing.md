@@ -60,10 +60,14 @@
     對於部份平台的部份模型，可能`top p`和`frequency penalty`等參數不被介面接受，或者`max tokens`參數被廢棄並改為`max completion tokens`。啟用或停用開關可以解決這些問題。
 
 1. #### reasoning effort
+    部分平台支援的思考強度控制。
 
-    對於 Gemini 平台，會自動將選項映射為 Gemini 的`thinkingBudget`，映射規則為：
+    對於 Gemini 平台，會自動將選項映射為 Gemini 的 `thinkingBudget`，映射規則為：
+    
+    none/minimal -> 0（停用思考，但不適用於 Gemini-2.5-Pro 模型），low -> 512，medium -> -1（開啟動態思維），high/xhigh -> 24576。
 
-    `none/minimal`->`0`（停用思考，但對於 Gemini-2.5-Pro 模型不適用）；`low`->`512`；`medium`->`-1`（啟用動態思維）；`high/xhigh`->`24576`。
+1. #### thinking.type
+    部分平台支援的思考模式開關。
 
 1. #### 其他參數
 

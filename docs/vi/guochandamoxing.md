@@ -59,11 +59,15 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
     Đối với một số nền tảng và mô hình, các tham số như `top p` và `frequency penalty` có thể không được chấp nhận bởi giao diện, hoặc tham số `max tokens` đã bị loại bỏ và thay bằng `max completion tokens`. Việc kích hoạt hoặc hủy kích hoạt công tắc có thể giải quyết những vấn đề này.
 
-1. #### Reasoning effort
+1. #### reasoning effort
+    Kiểm soát cường độ suy luận được hỗ trợ bởi một số nền tảng.
 
-    Đối với nền tảng Gemini, tùy chọn sẽ tự động ánh xạ thành `thinkingBudget` của Gemini, quy tắc ánh xạ: 
+    Đối với nền tảng Gemini, các tùy chọn sẽ tự động được ánh xạ tới `thinkingBudget` của Gemini. Quy tắc ánh xạ như sau:
     
-    none/minimal->0 (tắt suy nghĩ, nhưng không áp dụng cho model Gemini-2.5-Pro), low->512, medium->-1 (kích hoạt suy nghĩ động), high/xhigh->24576.
+    none/minimal -> 0 (tắt suy luận, không áp dụng cho mô hình Gemini-2.5-Pro), low -> 512, medium -> -1 (bật suy luận động), high/xhigh -> 24576.
+
+1. #### thinking.type
+    Công tắc chuyển đổi chế độ suy luận được hỗ trợ bởi một số nền tảng.
 
 1. #### Các tham số khác
 

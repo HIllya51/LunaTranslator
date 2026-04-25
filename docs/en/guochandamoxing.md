@@ -60,11 +60,15 @@ However, sometimes you may want to use multiple different API interface addresse
 
     For certain models on some platforms, parameters like `top p` and `frequency penalty` may not be accepted by the interface, or the `max tokens` parameter may have been deprecated and replaced with `max completion tokens`. Activating or deactivating the switch can resolve these issues.
 
-1. #### Reasoning Effort  
+1. #### reasoning effort
+    Control for reasoning intensity supported by some platforms.
 
-    For the Gemini platform, this option will automatically map to Gemini's `thinkingBudget`. The mapping rules are as follows:  
+    For the Gemini platform, options are automatically mapped to Gemini's `thinkingBudget`. The mapping rules are:
     
-    none/minimal -> 0 (disable thinking, but not applicable to the Gemini-2.5-Pro model), low -> 512, medium -> -1 (enable dynamic thinking), high/xhigh -> 24576.
+    none/minimal -> 0 (disable thinking; not applicable to Gemini-2.5-Pro), low -> 512, medium -> -1 (enable dynamic thinking), high/xhigh -> 24576.
+
+1. #### thinking.type
+    Switch for thinking modes supported by some platforms.
 
 1. #### Other Parameters  
 

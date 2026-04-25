@@ -60,11 +60,15 @@
 
     일부 플랫폼의 일부 모델에서는 `top p` 및 `frequency penalty`와 같은 매개변수가 인터페이스에서 허용되지 않을 수 있으며, 또는 `max tokens` 매개변수가 더 이상 사용되지 않고 `max completion tokens`로 변경되었을 수 있습니다. 이 문제는 스위치를 활성화하거나 비활성화하여 해결할 수 있습니다.
 
-1. #### reasoning effort  
+1. #### reasoning effort
+    일부 플랫폼에서 지원하는 추론 강도 제어 설정입니다.
 
-    Gemini 플랫폼에서는 이 옵션을 Gemini의 `thinkingBudget`에 자동으로 매핑합니다. 매핑 규칙은 다음과 같습니다: 
+    Gemini 플랫폼의 경우, 옵션이 Gemini의 `thinkingBudget`으로 자동 매핑됩니다. 매핑 규칙은 다음과 같습니다:
     
-    none/minimal→0(사고 비활성화, 단 Gemini-2.5-Pro 모델에는 적용되지 않음), low→512, medium→-1(동적 사고 활성화), high/xhigh→24576.  
+    none/minimal -> 0 (추론 비활성화, 단 Gemini-2.5-Pro 모델에는 적용되지 않음), low -> 512, medium -> -1 (동적 추론 활성화), high/xhigh -> 24576.
+
+1. #### thinking.type
+    일부 플랫폼에서 지원하는 추론 모드 전환 스위치입니다.
 
 1. #### 기타 파라미터  
 

@@ -60,11 +60,15 @@
 
     一部のプラットフォームの一部のモデルでは、`top p` や `frequency penalty` などのパラメータがインターフェースで受け入れられない場合があります。また、`max tokens` パラメータが廃止され、代わりに `max completion tokens` に変更されている場合もあります。これらの問題は、スイッチをオンまたはオフにすることで解決できます。
 
-1. #### reasoning effort  
+1. #### reasoning effort
+    一部のプラットフォームでサポートされている推論強度の制御設定です。
 
-    Geminiプラットフォームでは、このオプションをGeminiの`thinkingBudget`に自動的にマッピングします。マッピングルールは次の通りです：
+    Geminiプラットフォームの場合、各オプションは自動的にGeminiの`thinkingBudget`にマッピングされます。マッピングルールは以下の通りです：
     
-    none/minimal->0（思考無効、ただしGemini-2.5-Proモデルでは適用不可）、low->512、medium->-1（動的思考を有効）、high/xhigh->24576。  
+    none/minimal -> 0 (推論を無効化、ただしGemini-2.5-Proモデルには適用されません), low -> 512, medium -> -1 (動的推論を有効化), high/xhigh -> 24576。
+
+1. #### thinking.type
+    一部のプラットフォームでサポートされている推論モードの切り替えスイッチです。
 
 1. #### その他のパラメータ  
 
