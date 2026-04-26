@@ -315,7 +315,7 @@ class texthook(basetext):
         if globalconfig["startgamenototop"] == False:
             idx = reflist.index(uid)
             reflist.insert(0, reflist.pop(idx))
-        self.start(pids, name_, uid, autostart=not force)
+        self.start(hwnd, pids, name_, uid, autostart=True)
         return True
 
     def hwndChanged(self, hwnd):
@@ -343,9 +343,10 @@ class texthook(basetext):
     def gameuid(self, gameuid):
         gobject.base.gameuid = gameuid
 
-    def start(self, pids, gamepath, gameuid, autostart=False):
+    def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
         for pid in pids:
             self.waitend(pid)
+        gobject.base.hwnd = hwnd
         self.gameuid = gameuid
         self.setsettings()
         self.detachall()

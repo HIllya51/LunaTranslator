@@ -1101,7 +1101,7 @@ class BASEOBJECT(QObject):
         else:
             gameuid = find_or_create_uid(savehook_new_list, pexe, title)
             savehook_new_list.insert(0, gameuid)
-        self.textsource.start(pids, pexe, gameuid, autostart=False)
+        self.textsource.start(hwnd, pids, pexe, gameuid, autostart=False)
 
     def starttextsource(self, use=None, checked=True):
         self.translation_ui.showhidestate = False
