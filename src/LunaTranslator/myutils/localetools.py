@@ -1,7 +1,8 @@
-import windows, os, NativeUtils, functools
+import windows, os, NativeUtils, functools, winreg
 from qtsymbols import *
-from myutils.config import savehook_new_data, get_launchpath, globalconfig, _TR
-from gobject import sys_le_xp
+from myutils.config import savehook_new_data, get_launchpath, globalconfig, _TR, relpath
+from myutils.hwnd import subprochiderun
+from gobject import sys_le_xp, runtime_bit_64
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
 from traceback import print_exc
 import xml.etree.ElementTree as ET
@@ -16,13 +17,39 @@ class Launcher:
     def setting(self, layout: QFormLayout, config): ...
 
 
+def shellexecutehelper(_, op, exe, args, dirpath, bshow):
+    # 主程序中的SetDllDirectoryW会被继承，导致执行错误。
+    subprochiderun(
+        [
+            r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
+            "shellexecutehelper",
+            op,
+            exe,
+            args,
+            dirpath,
+            str(bshow),
+        ]
+    )
+
+
+def createprocesshelper(_, cmd, _2, _3, _4, _5, _6, dirpath, _7):
+    subprochiderun(
+        [
+            r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
+            "createprocesshelper",
+            cmd,
+            dirpath,
+        ]
+    )
+
+
 class LEbase(Launcher):
     def runX(self, exe, usearg, dirpath, config: dict): ...
     def run(self, game: str, config):
         dirpath = os.path.dirname(game)
         if not (game.lower().endswith(".exe") or game.lower().endswith(".lnk")):
             # 对于其他文件，需要AssocQueryStringW获取命令行才能正确le，太麻烦，放弃。
-            windows.ShellExecute(None, "open", game, "", dirpath, windows.SW_SHOW)
+            shellexecutehelper(None, "open", game, "", dirpath, windows.SW_SHOW)
             return
 
         execheck3264 = game
@@ -43,6 +70,27 @@ class LEbase(Launcher):
         self.runX(execheck3264, usearg, dirpath, config)
 
 
+def findsyslex(clsid, exe, xml):
+    for kk in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+        try:
+            k = winreg.OpenKeyEx(
+                kk,
+                r"Software\Classes\CLSID\{}\InprocServer32".format(clsid),
+                0,
+                winreg.KEY_QUERY_VALUE,
+            )
+            base: str = winreg.QueryValueEx(k, "CodeBase")[0]
+            winreg.CloseKey(k)
+            if base.startswith("file:///"):
+                base = base[len("file:///") :]
+            __ = os.path.join(os.path.dirname(base), exe)
+            __2 = os.path.join(os.path.dirname(base), xml)
+            if os.path.isfile(__) and os.path.isfile(__2):
+                return __
+        except:
+            pass
+
+
 class le_internal(LEbase):
     name = "Locale Emulator"
     id = "le"
@@ -52,11 +100,18 @@ class le_internal(LEbase):
 
     def getlrpath(self, show=False):
         LEProc = globalconfig.get("le_extra_path", "")
-        if not (LEProc and os.path.exists(LEProc)):
+        if not (LEProc and os.path.isfile(LEProc)):
+            LEProc = findsyslex(
+                "{C52B9871-E5E9-41FD-B84D-C5ACADBEC7AE}", "LEProc.exe", "LEConfig.xml"
+            )
+        if not (LEProc and os.path.isfile(LEProc)):
             if show:
                 return _TR("内置")
             LEProc = "files/Locale/Locale.Emulator/LEProc.exe"
-        return os.path.abspath(LEProc)
+        LEProc = os.path.abspath(LEProc)
+        if show:
+            LEProc = relpath(LEProc)
+        return LEProc
 
     def profiles(self, config: dict):
         _Names = []
@@ -108,7 +163,7 @@ class le_internal(LEbase):
             # 程序的配置运行
             arg = "-run {}".format(usearg)
             admin = False
-        windows.ShellExecute(
+        shellexecutehelper(
             None,
             "runas" if admin else "open",
             LEProc,
@@ -187,7 +242,7 @@ class NTLEAS64(LEbase):
             usearg,
             config.get("ntleasparam", '"C932" "L1041" "FMS PGothic" "P4"'),
         )
-        windows.ShellExecute(
+        shellexecutehelper(
             None,
             "open",
             LEProc,
@@ -242,15 +297,9 @@ class lr_internal(LEbase):
         Names, Guids = [], []
         run_as_admins = []
         try:
-
-            with open(
-                os.path.join(
-                    os.path.dirname(self.getlrpath()),
-                    "LRConfig.xml",
-                ),
-                "r",
-                encoding="utf8",
-            ) as ff:
+            _ = os.path.dirname(self.getlrpath())
+            _xml = os.path.join(_, "LRConfig.xml")
+            with open(_xml, "r", encoding="utf8") as ff:
                 root = ET.fromstring(ff.read())
                 profiles = root.find("Profiles").findall("Profile")
 
@@ -266,11 +315,18 @@ class lr_internal(LEbase):
 
     def getlrpath(self, show=False):
         LEProc = globalconfig.get("lr_extra_path", "")
-        if not (LEProc and os.path.exists(LEProc)):
+        if not (LEProc and os.path.isfile(LEProc)):
+            LEProc = findsyslex(
+                "{D5D46CFE-9467-3646-BAD1-3534DAA31492}", "LRProc.exe", "LRConfig.xml"
+            )
+        if not (LEProc and os.path.isfile(LEProc)):
             if show:
                 return _TR("内置")
             LEProc = "files/Locale/Locale_Remulator/LRProc.exe"
-        return os.path.abspath(LEProc)
+        LEProc = os.path.abspath(LEProc)
+        if show:
+            LEProc = relpath(LEProc)
+        return LEProc
 
     def runX(self, exe, usearg, dirpath, config):
 
@@ -281,7 +337,7 @@ class lr_internal(LEbase):
             guid = prof[1][0]
         idx = prof[1].index(guid)
         admin = prof[2][idx]
-        windows.ShellExecute(
+        shellexecutehelper(
             None,
             "runas" if admin else "open",
             LEProc,
@@ -326,7 +382,7 @@ class CommandLine(Launcher):
         dirpath = os.path.dirname(gameexe)
 
         usearg = config.get("startcmd", "{exepath}").format(exepath=gameexe)
-        windows.CreateProcess(
+        createprocesshelper(
             None,
             usearg,
             None,
@@ -354,7 +410,7 @@ class Direct(Launcher):
 
     def run(self, gameexe, argsdict):
         dirpath = os.path.dirname(gameexe)
-        windows.ShellExecute(None, "open", gameexe, "", dirpath, windows.SW_SHOW)
+        shellexecutehelper(None, "open", gameexe, "", dirpath, windows.SW_SHOW)
 
 
 x86tools: "list[LEbase]" = [

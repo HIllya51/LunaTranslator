@@ -1,5 +1,7 @@
 #pragma comment(linker, "/subsystem:windows /entry:wmainCRTStartup")
 
+int createprocesshelper(int argc, wchar_t *argv[]);
+int shellexecutehelper(int argc, wchar_t *argv[]);
 int dllinjectwmain(int argc, wchar_t *argv[]);
 int updatewmain(int argc, wchar_t *wargv[]);
 bool checkisapatch();
@@ -59,6 +61,8 @@ int wmain(int argc, wchar_t *argv[])
     auto argv0 = std::wstring(argv[1]);
     typedef int (*wmaint)(int, wchar_t **);
     std::map<std::wstring, wmaint> fm = {
+        {L"createprocesshelper", createprocesshelper},
+        {L"shellexecutehelper", shellexecutehelper},
         {L"dllinject", dllinjectwmain},
         {L"listpm", listprocessmodule},
         {L"update", updatewmain},
@@ -79,4 +83,33 @@ int wmain(int argc, wchar_t *argv[])
 #endif // !_WIN64
     };
     return fm[argv0](argc - 1, argv + 1);
+}
+
+int shellexecutehelper(int argc, wchar_t *argv[])
+{
+    SetDllDirectoryW(NULL);
+    ShellExecute(
+        NULL,
+        argv[1],
+        argv[2],
+        argv[3],
+        argv[4],
+        std::stoi(argv[5]));
+    return 0;
+}
+
+int createprocesshelper(int argc, wchar_t *argv[])
+{
+    SetDllDirectoryW(NULL);
+    STARTUPINFOW si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory(&si, sizeof(si));
+    si.cb = sizeof(si);
+    ZeroMemory(&pi, sizeof(pi));
+    CreateProcessW(
+        NULL,
+        argv[1],
+        NULL, NULL, FALSE, 0, NULL, argv[2], &si, &pi);
+    return 0;
 }

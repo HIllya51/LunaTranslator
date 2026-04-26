@@ -224,7 +224,7 @@ def safepixmap(bs):
 
 
 def subprochiderun(
-    cmd, cwd=None, encoding="utf8", run=True, env=None
+    cmd: "str|list[str]", cwd=None, encoding="utf8", run=True, env=None
 ) -> "subprocess.CompletedProcess|subprocess.Popen":
 
     startupinfo = subprocess.STARTUPINFO()

@@ -121,11 +121,6 @@ bool PyStand::CheckEnviron(const wchar_t *rtp)
 		return false;
 	return true;
 }
-#ifndef WINXP
-#define PYDLL L"python3.dll"
-#else
-#define PYDLL L"python34.dll"
-#endif
 //---------------------------------------------------------------------
 // load python
 //---------------------------------------------------------------------
@@ -137,7 +132,7 @@ bool PyStand::LoadPython()
 
 #ifdef WIN10ABOVE
 	// win10版将runtime路径设为DLL搜索路径，优先使用自带的高级vcrt
-	//  这样，即使将主exe静态编译，也能加载runtime中的vcrt
+	// 这样，即使将主exe静态编译，也能加载runtime中的vcrt
 	SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
 	SetDllDirectoryW(_runtime.c_str());
 #else
