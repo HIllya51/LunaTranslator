@@ -103,6 +103,8 @@ def setTab7_lazy(self, basel: QLayout):
                 )
 
     for i, post in enumerate(sortlist):
+        if post not in postprocessconfig:
+            continue
         if post == "_11":
             config = D_getIconButton(
                 callback=lambda: selectdebugfile("mypost.py"), icon="fa.edit"

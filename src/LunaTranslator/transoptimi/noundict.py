@@ -76,6 +76,7 @@ class Process:
             if src in srcs:
                 continue
             srcs.add(src)
+            src = re.escape(src)
             if gpt.get("whole-word", False):
                 src = r"\b" + src + r"\b"
             flags = 0 if gpt.get("case-sensitive", False) else re.IGNORECASE

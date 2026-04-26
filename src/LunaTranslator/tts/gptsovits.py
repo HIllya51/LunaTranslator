@@ -137,7 +137,7 @@ class TTS(TTSbase):
             return ["未找到模型"], [""]
 
         return all_display_names, all_internal_ids
-    
+
     def speak_gsvi(self, content: str, voice: str, speed_facter):
 
         version = self.config.get("apiv", "v2ProPlus")
@@ -200,31 +200,21 @@ class TTS(TTSbase):
         synthesis_response = self.proxysession.post(
             url, headers=headers, json=request_data
         )
-        synthesis_status_code = synthesis_response.status_code
 
         try:
+
             synthesis_response_json = synthesis_response.json()
 
-            if synthesis_status_code == 200 and synthesis_response_json.get("msg") in [
+            if synthesis_response_json.get("msg") in [
                 "success",
                 "Success",
                 "合成成功",
                 None,
             ]:
                 audio_url = synthesis_response_json.get("audio_url")
-
-                if audio_url:
-
-                    audio_response = self.proxysession.get(
-                        audio_url, timeout=30, stream=True
-                    )
-                    return audio_response
-
-        except requests.exceptions.RequestException:
-            pass
-        except json.JSONDecodeError:
-            pass
-        except Exception:
-            pass
-
-        return synthesis_response
+                audio_response = self.proxysession.get(
+                    audio_url, timeout=30, stream=True
+                )
+                return audio_response
+        except:
+            raise Exception(synthesis_response)
