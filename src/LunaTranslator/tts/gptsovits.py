@@ -88,46 +88,56 @@ class TTS(TTSbase):
 
         all_display_names = []
         all_internal_ids = []
-        models_url = urlpathjoin(base_url, "models")
 
         for version in supported_versions:
-            request_data = {"version": version}
+            models_set = set()  # 用于合并两种请求的模型名并去重
 
+            # 原有 POST 请求
+            post_url = urlpathjoin(base_url, "models")
             try:
                 response = self.proxysession.post(
-                    models_url, json=request_data, timeout=10
+                    post_url, json={"version": version}, timeout=10
                 )
-                status_code = response.status_code
-                try:
-                    response_json = response.json()
-                except json.JSONDecodeError:
-                    response_json = None
-
-                if status_code != 200:
-                    continue
-
-                models_data = response_json.get("models", {}) if response_json else {}
-
-                if not isinstance(models_data, dict):
-                    continue
-
-                model_names = list(models_data.keys())
-                for model_name in model_names:
-                    display_name = "【{}】{}".format(version, model_name)
-
-                    internal_id = display_name
-
-                    all_display_names.append(display_name)
-                    all_internal_ids.append(internal_id)
-
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                    except json.JSONDecodeError:
+                        data = None
+                    if isinstance(data, dict):
+                        models_data = data.get("models", {})
+                        if isinstance(models_data, dict):
+                            models_set.update(models_data.keys())
             except requests.exceptions.RequestException:
                 pass
+
+            # 新增 GET 请求（URL 中包含版本号）
+            get_url = urlpathjoin(base_url, "models", version)
+            try:
+                response = self.proxysession.get(get_url, timeout=10)
+                if response.status_code == 200:
+                    try:
+                        data = response.json()
+                    except json.JSONDecodeError:
+                        data = None
+                    if isinstance(data, dict):
+                        models_data = data.get("models", {})
+                        if isinstance(models_data, dict):
+                            models_set.update(models_data.keys())
+            except requests.exceptions.RequestException:
+                pass
+
+            # 根据合并后的模型名生成显示名称和内部ID
+            for model_name in models_set:
+                display_name = "【{}】{}".format(version, model_name)
+                internal_id = display_name
+                all_display_names.append(display_name)
+                all_internal_ids.append(internal_id)
 
         if not all_display_names:
             return ["未找到模型"], [""]
 
         return all_display_names, all_internal_ids
-
+    
     def speak_gsvi(self, content: str, voice: str, speed_facter):
 
         version = self.config.get("apiv", "v2ProPlus")
