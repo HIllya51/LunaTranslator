@@ -1635,6 +1635,22 @@ namespace
         WORD _ = PCSX2_REG(v0) | (PCSX2_REG(a0) << 8);
         buffer->from_t(_);
     }
+    void SLPM65016(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((WORD)PCSX2_REG(a0) > 3)
+            return buffer->clear();
+
+        static std::map<WORD, std::string> lasts;
+        auto s = buffer->strA();
+        auto &last = lasts[(WORD)PCSX2_REG(a0)];
+        if (startWith(s, last))
+        {
+            buffer->from(s.substr(last.size()));
+            last = s;
+            return;
+        }
+        last = s;
+    }
     void SLPM65762(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
@@ -2054,6 +2070,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Love Songs アイドルがクラスメ～ト
+    {0x14A4E8, {0, PCSX2_REG_OFFSET(s2), 0, 0, SLPM65016, std::vector<const char *>{"SLPM-65016", "SLPM-65017"}}},
     // S.Y.K ～新説西遊記～
     {0x1d8f90, {FULL_STRING, PCSX2_REG_OFFSET(a3), 0, 0, FSLPM65997, "SLPM-55206"}},
     // 咎狗の血 True Blood
