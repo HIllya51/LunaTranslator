@@ -255,7 +255,7 @@ class TagWidget(QWidget):
 
 class imagehelper:
     def size(self):
-        return QSize(self.p.width() - 2 * self.p.margin, self.p.imageheight)
+        return QSizeF(self.p.width() - 2 * self.p.margin, self.p.imageheight)
 
     def height(self):
         return self.size().height()
@@ -264,7 +264,7 @@ class imagehelper:
         return self.size().width()
 
     def rect(self):
-        return QRect(QPoint(0, 0), self.size())
+        return QRectF(QPoint(0, 0), self.size())
 
     def adaptsize(self, size: QSize):
 
@@ -307,7 +307,7 @@ class imagehelper:
             return
         self.__last = (self.size(), globalconfig["imagewrapmode"])
         rate = self.p.devicePixelRatioF()
-        newpixmap = QPixmap(self.size() * rate)
+        newpixmap = QPixmap((self.size() * rate).toSize())
         newpixmap.setDevicePixelRatio(rate)
         newpixmap.fill(Qt.GlobalColor.transparent)
         painter = QPainter(newpixmap)
