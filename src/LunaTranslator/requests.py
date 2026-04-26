@@ -1,5 +1,5 @@
 import json, base64, re, string, random, codecs
-from urllib.parse import urlencode, urlsplit, quote, parse_qsl, urlunsplit
+from urllib.parse import urlencode, urlsplit, quote, parse_qsl, urlunparse, urlparse
 from typing import Generator
 from functools import partial
 from myutils.config import globalconfig
@@ -272,7 +272,6 @@ class _Functions:
         url = scheme + "://" + original_host + path
         return scheme, server, port, path, url
 
-
     @staticmethod
     def _parsejson(_json):
         databytes = json.dumps(_json).encode("utf8")
@@ -378,6 +377,14 @@ class Session:
             idx = self.requester_idx
         return self._loadwitch(idx)
 
+    def __parseurl_0000(self, url: str):
+        parsed = urlparse(url)
+        if parsed.hostname == "0.0.0.0":
+            new_netloc = parsed.netloc.replace("0.0.0.0", "127.0.0.1", 1)
+            parsed = parsed._replace(netloc=new_netloc)
+            return urlunparse(parsed)
+        return url
+
     def request(
         self,
         method: str,
@@ -416,10 +423,9 @@ class Session:
                     ).strip()
                 ).decode()
             )
+        url = self.__parseurl_0000(url)
         scheme, server, port, param, url = _Functions._parseurl(url, params)
 
-        if server in ("0.0.0.0",):
-            server = "127.0.0.1"
         if server in ("127.0.0.1", "localhost"):
             # libcurl在本地地址走代理时有时会谜之502
             proxies = None
