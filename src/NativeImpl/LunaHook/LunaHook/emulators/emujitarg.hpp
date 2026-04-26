@@ -331,7 +331,7 @@ namespace YUZU
         bool is64;
 
     public:
-        emu_arg(hook_context *context, uint64_t em_addr = 0) : context(context), is64(em_addr == 0 || em_addr > 0x80004000) {};
+        emu_arg(hook_context *context, uint32_t em_addr = 0) : context(context), is64(em_addr == 0 || em_addr > 0x80004000) {};
         uintptr_t value(int idx)
         {
             if (is64)

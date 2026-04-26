@@ -3,18 +3,18 @@
 void HIJACK();
 void detachall();
 #if EMUADD_MAP_MULTI
-std::unordered_map<uint64_t, std::pair<JITTYPE, std::set<uintptr_t>>> emuaddr2jitaddr;
+std::unordered_map<uint32_t, std::pair<JITTYPE, std::set<uintptr_t>>> emuaddr2jitaddr;
 #else
-std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
+std::unordered_map<uint32_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
 #endif
-std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
+std::unordered_map<uintptr_t, std::pair<JITTYPE, uint32_t>> jitaddr2emuaddr;
 std::mutex maplock;
 std::vector<HookParam> JIT_HP_Records;
 std::mutex JIT_HP_Records_lock;
 HMODULE hLUNAHOOKDLL;
 WinMutex viewMutex;
 CommonSharedMem *commonsharedmem;
-Synchronized<std::map<uint64_t, std::pair<std::string, HookParam>>> delayinserthook;
+Synchronized<std::map<uint32_t, std::pair<std::string, HookParam>>> delayinserthook;
 namespace
 {
 	AutoHandle<> hookPipe = INVALID_HANDLE_VALUE,
@@ -318,7 +318,7 @@ void jitaddrclear()
 		JIT_HP_Records.clear();
 	}
 }
-void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE jittype)
+void jitaddraddr(uint32_t em_addr, uintptr_t jitaddr, JITTYPE jittype)
 {
 	std::lock_guard _(maplock);
 #if EMUADD_MAP_MULTI
@@ -352,7 +352,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 	{
 		if (hp.emu_addr)
 		{
-			HostMsg::Log("%p => %p", hp.emu_addr, hp.address);
+			HostMsg::Log("%x => %p", hp.emu_addr, (uintptr_t)hp.address);
 			std::lock_guard __(JIT_HP_Records_lock);
 			JIT_HP_Records.push_back(hp);
 		}
@@ -365,7 +365,7 @@ void delayinsertadd(HookParam hp, std::string name)
 	delayinserthook->insert(std::make_pair(hp.emu_addr, std::make_pair(name, hp)));
 	HostMsg::Log(TR[INSERTING_HOOK], name.c_str(), hp.emu_addr);
 }
-void delayinsertNewHook(uint64_t em_address)
+void delayinsertNewHook(uint32_t em_address)
 {
 	auto &&_delayinserthook = delayinserthook.Acquire();
 	if (_delayinserthook->find(em_address) == _delayinserthook->end())

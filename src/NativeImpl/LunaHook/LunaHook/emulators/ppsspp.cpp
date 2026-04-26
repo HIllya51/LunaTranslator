@@ -307,7 +307,7 @@ namespace ppsspp
             return false;
         }
     }
-    void dohookemaddr(uint64_t em_address, uintptr_t ret)
+    void dohookemaddr(uint32_t em_address, uintptr_t ret)
     {
         jitaddraddr(em_address, ret, JITTYPE::PPSSPP);
         auto found = emfunctionhooks.find(em_address);

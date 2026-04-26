@@ -2128,7 +2128,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88385E0, {0, 1, 0, 0, NewLineCharFilterA, "ULJM06116"}},
     // デザート・キングダム ポータブル
     {0x88274D0, {0, 1, 0, 0, ULJM05823_2, "ULJM06249"}},
-    {0x88730AC, {0, 1, 0, 0, ULJM05943F, "ULJM06249"}},
+    {0x88730AC, {FULL_STRING, 1, 0, 0, ULJM05943F, "ULJM06249"}},
     // 猛獣使いと王子様 Portable
     {0x88FFEF0, {0, 0, 0, 0, ULJM05943F, "ULJM05895"}},
     {0x8879C38, {0, 0, 0, 0, ULJM05943F, "ULJM05895"}},

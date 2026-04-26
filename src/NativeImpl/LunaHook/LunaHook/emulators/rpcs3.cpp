@@ -76,7 +76,7 @@ namespace
         }
         return nullptr;
     };
-    void dohookemaddr_1(uintptr_t em_address, uintptr_t ret)
+    void dohookemaddr_1(uint32_t em_address, uintptr_t ret)
     {
         auto found = emfunctionhooks.find(em_address);
         if (found == emfunctionhooks.end())
@@ -99,7 +99,7 @@ namespace
         NewHook(hpinternal, getmatched);
     }
 
-    void dohookemaddr(uintptr_t em_address, uintptr_t ret)
+    void dohookemaddr(uint32_t em_address, uintptr_t ret)
     {
         jitaddraddr(em_address, ret, JITTYPE::RPCS3);
         dohookemaddr_1(em_address, ret);

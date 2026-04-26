@@ -29,20 +29,20 @@ int HookStrLen(HookParam *, BYTE *data);
 // v141_xp上，定义inline std::map会直接导致dll detach后发生崩溃。
 #define EMUADD_MAP_MULTI 0
 #if EMUADD_MAP_MULTI
-extern std::unordered_map<uint64_t, std::pair<JITTYPE, std::set<uintptr_t>>> emuaddr2jitaddr;
+extern std::unordered_map<uint32_t, std::pair<JITTYPE, std::set<uintptr_t>>> emuaddr2jitaddr;
 #else
-extern std::unordered_map<uint64_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
+extern std::unordered_map<uint32_t, std::pair<JITTYPE, uintptr_t>> emuaddr2jitaddr;
 #endif
-extern std::unordered_map<uintptr_t, std::pair<JITTYPE, uint64_t>> jitaddr2emuaddr;
+extern std::unordered_map<uintptr_t, std::pair<JITTYPE, uint32_t>> jitaddr2emuaddr;
 extern std::mutex maplock;
 
 extern std::vector<HookParam> JIT_HP_Records;
 extern std::mutex JIT_HP_Records_lock;
-void jitaddraddr(uint64_t em_addr, uintptr_t jitaddr, JITTYPE);
+void jitaddraddr(uint32_t em_addr, uintptr_t jitaddr, JITTYPE);
 void jitaddrclear();
 
 void delayinsertadd(HookParam, std::string);
-void delayinsertNewHook(uint64_t);
+void delayinsertNewHook(uint32_t);
 inline bool dont_detach = false;
 inline bool host_connected = false;
 using version_t = std::tuple<WORD, WORD, WORD, WORD>;

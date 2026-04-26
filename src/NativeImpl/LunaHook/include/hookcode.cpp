@@ -35,7 +35,7 @@ namespace
 		}
 		if (std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+):EMUMEM:PCSX2")))
 		{
-			hp.emu_addr = std::stoull(match[1], nullptr, 16);
+			hp.emu_addr = std::stoul(match[1], nullptr, 16);
 			hp.jittype = JITTYPE::PCSX2;
 			return hp;
 		}

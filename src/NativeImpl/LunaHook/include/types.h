@@ -208,7 +208,7 @@ enum class JITTYPE
 struct TextBuffer;
 struct HookParam
 {
-	// address和emu_addr需要在host和hook之间传递，因此不能用uintptr_t
+	// address需要在host和hook之间传递，因此不能用uintptr_t
 	uint64_t address; // absolute or relative address
 	int offset,		  // offset of the data in the memory
 		index,		  // deref_offset1
@@ -234,7 +234,7 @@ struct HookParam
 	{
 		ZeroMemory(this, sizeof(HookParam));
 	}
-	uint64_t emu_addr;
+	uint32_t emu_addr;
 	JITTYPE jittype;
 };
 

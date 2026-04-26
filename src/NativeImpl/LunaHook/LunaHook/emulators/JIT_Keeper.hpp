@@ -16,7 +16,7 @@ struct JIT_Keeper
     HANDLE handle;
     // ptr指向保存数据的指针，不析构，保存到进程结束
     // handle不Close，用于在dll Detach&Attach后找到ptr数据所在的地址，不保存实际内容
-    JIT_Keeper(std::function<void(uint64_t, uintptr_t)> checkfunction)
+    JIT_Keeper(std::function<void(uint32_t, uintptr_t)> checkfunction)
     {
         constexpr int sz = sizeof(void *);
         std::wstring name = L"LUNA_JIT_MAP_KEEPER_" + std::to_wstring(GetCurrentProcessId());
@@ -62,7 +62,7 @@ struct JIT_Keeper
             (*ptr)->jitaddr2emuaddr = std::move(jitaddr2emuaddr);
         }
     }
-    static void CreateStatic(std::function<void(uint64_t, uintptr_t)> checkfunction)
+    static void CreateStatic(std::function<void(uint32_t, uintptr_t)> checkfunction)
     {
         // dll Detach时析构static变量
         static JIT_Keeper<InfoT> _(checkfunction);

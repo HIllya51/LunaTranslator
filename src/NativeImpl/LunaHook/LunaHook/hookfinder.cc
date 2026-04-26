@@ -11,7 +11,7 @@ namespace
 	struct HookRecord
 	{
 		uint64_t address = 0;
-		uint64_t em_addr = 0;
+		uint32_t em_addr = 0;
 		intptr_t padding = 0;
 		int offset = 0;
 		JITTYPE jittype;
@@ -147,7 +147,7 @@ namespace
 		return maybeAnsitringja(str) || maybeWideStringja(str);
 	}
 }
-void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jittype = JITTYPE::PC, uint64_t em_addr = 0, bool csstring = false)
+void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jittype = JITTYPE::PC, uint32_t em_addr = 0, bool csstring = false)
 {
 	str += padding;
 #if HOOK_SEARCH_CHAR
@@ -263,7 +263,7 @@ void SendCSharpString(char **strs, uintptr_t address)
 		}
 	}
 }
-void SafeSendJitVeh(hook_context *context, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
+void SafeSendJitVeh(hook_context *context, uintptr_t address, uint32_t em_addr, JITTYPE jittype, intptr_t padding)
 {
 	__try
 	{
@@ -303,7 +303,7 @@ void SafeSendJitVeh(hook_context *context, uintptr_t address, uint64_t em_addr, 
 }
 bool safeleave = false;
 std::unordered_map<uintptr_t, uint64_t> addresscalledtime;
-bool SendJitVeh(PCONTEXT pcontext, uintptr_t address, uint64_t em_addr, JITTYPE jittype, intptr_t padding)
+bool SendJitVeh(PCONTEXT pcontext, uintptr_t address, uint32_t em_addr, JITTYPE jittype, intptr_t padding)
 {
 	if (safeleave)
 		return false;

@@ -218,7 +218,7 @@ namespace
 }
 namespace
 {
-    void NS_CheckEmAddrHOOKable(uint64_t em_address, uintptr_t entrypoint)
+    void NS_CheckEmAddrHOOKable(uint32_t em_address, uintptr_t entrypoint)
     {
         auto found = emfunctionhooks.find(em_address);
         if (found == emfunctionhooks.end())

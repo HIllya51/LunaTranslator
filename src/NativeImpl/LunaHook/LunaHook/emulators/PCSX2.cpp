@@ -259,7 +259,7 @@ namespace
         }
         return nullptr;
     };
-    void CheckForHook(uint64_t em_address, uintptr_t entrypoint)
+    void CheckForHook(uint32_t em_address, uintptr_t entrypoint)
     {
         auto found = emfunctionhooks.find(em_address);
         if (found == emfunctionhooks.end())
