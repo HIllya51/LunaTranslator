@@ -63,6 +63,34 @@ namespace
                 return subs + 1;
             }
         }
+
+        // citron-neo 2026-04-17
+        BYTE sig3[] = {
+            0xff, 0x50, 0x10,
+            0x48, 0x8B, XX, XX, XX,
+            0x48, 0x83, 0xfa, 0x0f,
+            0x76, XX,
+            0x48, 0x8b, XX, XX, XX,
+            0x48, 0xff, 0xc2,
+            0x48, 0x81, 0xfa, 0x00, 0x10, 0x00, 0x00,
+            0x72, XX,
+            0x48, 0x8b, 0x48, 0xf8,
+            0x48, 0x2b, 0xc1,
+            0x48, 0x83, 0xe8, 0x08,
+            0x48, 0x83, 0xf8, 0x1f,
+            0x77, XX,
+            0x48, 0x83, 0xc2, 0x27,
+            0xeb, XX,
+            0xb9, 0x05, 0x00, 0x00, 0x00,
+            0xcd, 0x29 // int 29, 约等于invoke_watson
+        };
+        RegisterBlock = MemDbg::findBytes(sig3, sizeof(sig3), processStartAddress, processStopAddress);
+        if (RegisterBlock)
+        {
+            auto addr = MemDbg::findEnclosingAlignedFunction(RegisterBlock, 0x40);
+            if (addr)
+                return addr;
+        }
         return 0;
     }
 
