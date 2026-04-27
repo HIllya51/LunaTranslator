@@ -57,7 +57,7 @@ Sometimes it may be flagged by antivirus software. Please add it to the trust li
 
 Solution: Close antivirus software. If it cannot be closed (such as Windows Defender), add it to the trust list and then re-download.
 
-Note: To achieve HOOK extraction of game text, it is necessary to inject Dll into the game. Files such as shareddllproxy32.exe/LunaHost32.dll implement this, and therefore are particularly likely to be considered as viruses. The software is currently automatically built by [Github Actions](https://github.com/HIllya51/LunaTranslator/actions). Unless the Github server is infected, it is impossible to contain viruses, so it can be safely added to the trust list.
+Note: To achieve HOOK extraction of game text, it is necessary to inject Dll into the game. Files such as LunaSubprocess32.exe/LunaHost32.dll implement this, and therefore are particularly likely to be considered as viruses. The software is currently automatically built by [Github Actions](https://github.com/HIllya51/LunaTranslator/actions). Unless the Github server is infected, it is impossible to contain viruses, so it can be safely added to the trust list.
 
 ::: details For Windows Defender, the method is: “Virus & threat protection” -> “Exclusions” -> “Add or remove exclusions” -> “Add an exclusion” -> “Folder”, add Luna's folder to it
 ![img](https://image.lunatranslator.org/zh/cantstart/4.png) 

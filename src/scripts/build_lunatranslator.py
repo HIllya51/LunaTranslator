@@ -60,8 +60,8 @@ myfiles = [
     "files/LunaHook/LunaHook64.dll",
     "files/LunaHook/LunaHost32.dll",
     "files/LunaHook/LunaHost64.dll",
-    "files/shareddllproxy32.exe",
-    "files/shareddllproxy64.exe",
+    "files/LunaSubprocess32.exe",
+    "files/LunaSubprocess64.exe",
     "LunaTranslator.exe",
     "LunaTranslator_admin.exe",
 ]
@@ -250,7 +250,7 @@ def buildPlugins(arch, target, configx="", sexe=False):
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
 
     if arch == "x86" and target == "win10":
-        # 对于64位会使用自带的vcrt，win7/xp会静态编译，仅win10 shareddllproxy32这个文件可能会缺少vcrt，因此把它也静态编译以避免无法运行导致注入失败。
+        # 对于64位会使用自带的vcrt，win7/xp会静态编译，仅win10 LunaSubprocess32这个文件可能会缺少vcrt，因此把它也静态编译以避免无法运行导致注入失败。
         config += " -DSTATIC_FORCE=ON"
     config += configx
     if sexe:
@@ -361,10 +361,10 @@ if __name__ == "__main__":
         shutil.copytree(f"NativeImpl/builds/_x64_{target}", "NativeImpl/builds")
         shutil.copytree(f"NativeImpl/builds/_x86_{target}", "NativeImpl/builds")
         os.makedirs("files/DLL32")
-        shutil.copy(f"NativeImpl/builds/_x86_{target}/shareddllproxy32.exe", "files")
+        shutil.copy(f"NativeImpl/builds/_x86_{target}/LunaSubprocess32.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x86_{target} files/DLL32 *.dll")
         os.makedirs("files/DLL64")
-        shutil.copy(f"NativeImpl/builds/_x64_{target}/shareddllproxy64.exe", "files")
+        shutil.copy(f"NativeImpl/builds/_x64_{target}/LunaSubprocess64.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
         os.system(

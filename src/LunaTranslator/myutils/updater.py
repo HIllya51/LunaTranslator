@@ -84,7 +84,7 @@ def doupdate():
     exe1 = gobject.getcachedir("update/Updater.exe")
     exe = os.path.abspath(exe1)
     shutil.copy(
-        r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
+        r".\files\LunaSubprocess{}.exe".format(("32", "64")[runtime_bit_64]),
         exe,
     )
     for dll in os.listdir(runtimedir):

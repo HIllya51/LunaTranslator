@@ -252,7 +252,7 @@ class OCR(baseocr):
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())
-        exepath = os.path.abspath("files/shareddllproxy64.exe")
+        exepath = os.path.abspath("files/LunaSubprocess64.exe")
         self.engine = NativeUtils.AutoKillProcess(
             '"{}" SnippingTool {} {} {}'.format(
                 exepath,

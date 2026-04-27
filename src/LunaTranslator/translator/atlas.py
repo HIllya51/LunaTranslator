@@ -10,7 +10,7 @@ class TS(basetrans):
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         self.engine = NativeUtils.AutoKillProcess(
-            "files/shareddllproxy32.exe atlaswmain {} {}".format(
+            "files/LunaSubprocess32.exe atlaswmain {} {}".format(
                 pipename, waitsignal
             ),
         )

@@ -232,7 +232,7 @@ class mssr(basetext):
         self.notifyrun = NativeUtils.SimpleCreateEvent(notify)
         self.notifystop = NativeUtils.SimpleCreateEvent(notify2)
         self.engine = NativeUtils.AutoKillProcess(
-            'files/shareddllproxy64.exe mssr {} {} {} "{}" {} "{}" "{}" {} {}'.format(
+            'files/LunaSubprocess64.exe mssr {} {} {} "{}" {} "{}" "{}" {} {}'.format(
                 pipename,
                 waitsignal,
                 notify,

@@ -21,7 +21,7 @@ def shellexecutehelper(_, op, exe, args, dirpath, bshow):
     # 主程序中的SetDllDirectoryW会被继承，导致执行错误。
     subprochiderun(
         [
-            r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
+            r".\files\LunaSubprocess{}.exe".format(("32", "64")[runtime_bit_64]),
             "shellexecutehelper",
             op,
             exe,
@@ -35,7 +35,7 @@ def shellexecutehelper(_, op, exe, args, dirpath, bshow):
 def createprocesshelper(_, cmd, _2, _3, _4, _5, _6, dirpath, _7):
     subprochiderun(
         [
-            r".\files\shareddllproxy{}.exe".format(("32", "64")[runtime_bit_64]),
+            r".\files\LunaSubprocess{}.exe".format(("32", "64")[runtime_bit_64]),
             "createprocesshelper",
             cmd,
             dirpath,

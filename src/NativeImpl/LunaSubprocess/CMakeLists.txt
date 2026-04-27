@@ -1,5 +1,5 @@
 
-project(shareddllproxy)
+project(LunaSubprocess)
 
 include(FetchContent)
 FetchContent_Declare(cpp_base64
@@ -30,41 +30,41 @@ if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
 endif()
 
 
-set(shareddllproxy_common 
-	shareddllproxy.cpp dllinject.cpp update.cpp ${versioninfo})
+set(LunaSubprocess_common 
+	LunaSubprocess.cpp dllinject.cpp update.cpp ${versioninfo})
 
 	
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	add_executable(shareddllproxy ${shareddllproxy_common} 
+	add_executable(LunaSubprocess ${LunaSubprocess_common} 
 	SnippingTool.cpp 
     msnaturalvoice.cpp
     mssr.cpp 
 	../NativeUtils/loopbackaudio/LoopbackCapture.cpp ../NativeUtils/loopbackaudio/LoopbackTranditional.cpp)
 
 else()
-	add_executable(shareddllproxy ${shareddllproxy_common} lec.cpp Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp)
+	add_executable(LunaSubprocess ${LunaSubprocess_common} lec.cpp Atlas.cpp eztrans.cpp dreye.cpp jbj7.cpp kingsoft.cpp neospeech.cpp)
 endif()
 add_subdirectory(voiceroid2)
 add_subdirectory(FileLocksmithLibInterop)
 
-target_precompile_headers(shareddllproxy REUSE_FROM pch) 
+target_precompile_headers(LunaSubprocess REUSE_FROM pch) 
 
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-	target_link_libraries(shareddllproxy PRIVATE mfuuid CognitiveServices voiceroid2 version ${YY_Thunks})
-	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy64")
+	target_link_libraries(LunaSubprocess PRIVATE mfuuid CognitiveServices voiceroid2 version ${YY_Thunks})
+	set_target_properties(LunaSubprocess PROPERTIES OUTPUT_NAME "LunaSubprocess64")
 	if(NOT WINXP)
-        target_link_libraries(shareddllproxy PRIVATE Mmdevapi)
-        target_link_options(shareddllproxy PRIVATE "/DELAYLOAD:MMDevAPI.dll")
-        target_link_options(shareddllproxy PRIVATE "/DELAYLOAD:MFPlat.dll")
+        target_link_libraries(LunaSubprocess PRIVATE Mmdevapi)
+        target_link_options(LunaSubprocess PRIVATE "/DELAYLOAD:MMDevAPI.dll")
+        target_link_options(LunaSubprocess PRIVATE "/DELAYLOAD:MFPlat.dll")
     endif()
 else()
-	target_link_libraries(shareddllproxy PRIVATE ${YY_Thunks} voiceroid2)
-	set_target_properties(shareddllproxy PROPERTIES OUTPUT_NAME "shareddllproxy32")
+	target_link_libraries(LunaSubprocess PRIVATE ${YY_Thunks} voiceroid2)
+	set_target_properties(LunaSubprocess PROPERTIES OUTPUT_NAME "LunaSubprocess32")
 endif()
 
 if(WIN10ABOVE)
-	target_link_libraries(shareddllproxy PRIVATE windowsapp)
+	target_link_libraries(LunaSubprocess PRIVATE windowsapp)
 endif()
 
-target_link_libraries(shareddllproxy PRIVATE FileLocksmith base64)
-target_link_libraries(shareddllproxy PRIVATE delayimp Dbghelp)
+target_link_libraries(LunaSubprocess PRIVATE FileLocksmith base64)
+target_link_libraries(LunaSubprocess PRIVATE delayimp Dbghelp)

@@ -251,7 +251,7 @@ class texthook(basetext):
     def listprocessm(self):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
         arch = "64" if self.is64bit else "32"
-        exe = os.path.abspath("files/shareddllproxy{}.exe".format(arch))
+        exe = os.path.abspath("files/LunaSubprocess{}.exe".format(arch))
         pid = " ".join([str(_) for _ in self.pids])
         subprocess.run('"{}"  listpm "{}" {}'.format(exe, cachefname, pid))
 
@@ -415,7 +415,7 @@ class texthook(basetext):
 
     def injectdll(self, injectpids, bit, dll):
 
-        injecter = os.path.abspath("files/shareddllproxy{}.exe".format(bit))
+        injecter = os.path.abspath("files/LunaSubprocess{}.exe".format(bit))
         pid = " ".join([str(_) for _ in injectpids])
         for _ in (0,):
             if not test_injectable(injectpids):

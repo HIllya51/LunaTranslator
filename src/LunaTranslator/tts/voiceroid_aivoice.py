@@ -160,7 +160,7 @@ class TTS(TTSbase):
         mapname = str(uuid.uuid4())
         is64 = NativeUtils.IsDLLBit64(dllpath)
         # AIVoice & AIVoice2 -> 64位
-        exepath = os.path.abspath("files/shareddllproxy{}.exe".format([32, 64][is64]))
+        exepath = os.path.abspath("files/LunaSubprocess{}.exe".format([32, 64][is64]))
         self.engine = NativeUtils.AutoKillProcess(
             '"{}" voiceroid2 "{}" "{}" {} {} {} {} {}'.format(
                 exepath,

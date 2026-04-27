@@ -98,7 +98,7 @@ class TTS(TTSbase):
             return
         dllp = self.finddlldirectory()
         print(path, dllp, NativeUtils.QueryVersion(os.path.join(dllp, self.cogdll)))
-        exepath = os.path.join(os.getcwd(), "files/shareddllproxy64.exe")
+        exepath = os.path.join(os.getcwd(), "files/LunaSubprocess64.exe")
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         mapname = str(uuid.uuid4())

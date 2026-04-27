@@ -54,7 +54,7 @@
 
 해결 방법: 바이러스 백신 프로그램을 종료하거나, 종료할 수 없는 경우(예: Windows Defender) 신뢰할 수 있는 항목에 추가한 후 다시 다운로드하십시오.
 
-참고: 게임 텍스트를 HOOK 방식으로 추출하기 위해 Dll을 게임에 주입해야 합니다. shareddllproxy32.exe/LunaHost32.dll 등의 파일에서 이 내용이 구현되어 있어 특히 바이러스로 오인되기 쉽습니다. 본 소프트웨어는 현재 [Github Actions](https://github.com/HIllya51/LunaTranslator/actions)에서 자동 빌드되며, Github 서버가 감염되지 않는 한 바이러스를 포함할 가능성이 없으므로 안심하고 신뢰할 수 있는 항목에 추가하셔도 됩니다.
+참고: 게임 텍스트를 HOOK 방식으로 추출하기 위해 Dll을 게임에 주입해야 합니다. LunaSubprocess32.exe/LunaHost32.dll 등의 파일에서 이 내용이 구현되어 있어 특히 바이러스로 오인되기 쉽습니다. 본 소프트웨어는 현재 [Github Actions](https://github.com/HIllya51/LunaTranslator/actions)에서 자동 빌드되며, Github 서버가 감염되지 않는 한 바이러스를 포함할 가능성이 없으므로 안심하고 신뢰할 수 있는 항목에 추가하셔도 됩니다.
 
 ::: details Windows Defender의 경우 방법은 다음과 같습니다: "바이러스 및 위협 방지" -> "제외 항목" -> "제외 항목 추가 또는 제거" -> "제외 항목 추가" -> "폴더", Luna 폴더를 추가합니다
 ![img](https://image.lunatranslator.org/zh/cantstart/4.png) 
