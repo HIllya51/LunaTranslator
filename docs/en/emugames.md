@@ -943,6 +943,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-66737 | 桜蘭高校ホスト部 |
 |  | SLPM-65016 & SLPM-65017 | Love Songs アイドルがクラスメ～ト |
 |  | SLPM-55206 | S.Y.K ～新説西遊記～ |
 |  | SLPM-66855 & SLPM-66856 | 咎狗の血 True Blood |

@@ -2063,6 +2063,15 @@ namespace
         strReplace(s, L"w80.");
         buffer->fromWA(s);
     }
+    void SLPM66737(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            return buffer->clear();
+        if ((WORD)PCSX2_REG(a2) != 0 && (WORD)PCSX2_REG(a2) != 0xec78)
+            return buffer->clear();
+        FSLPM65997(buffer, hp);
+    }
 }
 struct emfuncinfoX
 {
@@ -2070,6 +2079,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 桜蘭高校ホスト部
+    {0x1056F8, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66737, "SLPM-66737"}},
     // Love Songs アイドルがクラスメ～ト
     {0x14A4E8, {0, PCSX2_REG_OFFSET(s2), 0, 0, SLPM65016, std::vector<const char *>{"SLPM-65016", "SLPM-65017"}}},
     // S.Y.K ～新説西遊記～

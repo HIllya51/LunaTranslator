@@ -8,15 +8,21 @@ import NativeUtils
 
 class playonce:
     @threader
-    def ___push_data_thread(self, handle, data: "types.GeneratorType[bytes]"):
-        for d in data:
-            if not NativeUtils.bass_stream_push_data(handle, d, len(d)):
+    def ___push_data_thread(self, data: "types.GeneratorType[bytes]", volume):
+        for i, d in enumerate(data):
+            if i == 0:
+                self.handle = NativeUtils.bass_stream_handle_create(d, len(d))
+                if not NativeUtils.bass_handle_play(self.handle, volume):
+                    return
+                self.idle = False
+            elif not NativeUtils.bass_stream_push_data(self.handle, d, len(d)):
                 break
-        NativeUtils.bass_stream_push_data(handle, None, 0)
+        NativeUtils.bass_stream_push_data(self.handle, None, 0)
 
     def __init__(self, fileormem, volume) -> None:
         self.handle = 0
         self.__play(fileormem, volume)
+        self.idle = True
 
     def __del__(self):
         self.__stop()
@@ -28,17 +34,14 @@ class playonce:
     @threader
     def __play(self, data: "bytes | str | types.GeneratorType[bytes]", volume):
         if isinstance(data, (bytes, str)):
-            handle = NativeUtils.bass_handle_create(
+            self.handle = NativeUtils.bass_handle_create(
                 data, len(data), isinstance(data, bytes)
             )
+            if not NativeUtils.bass_handle_play(self.handle, volume):
+                return
+            self.idle = False
         elif isinstance(data, types.GeneratorType):
-            d = next(data)
-            handle = NativeUtils.bass_stream_handle_create(d, len(d))
-            self.___push_data_thread(handle, data)
-
-        if not NativeUtils.bass_handle_play(handle, volume):
-            return
-        self.handle = handle
+            self.___push_data_thread(data, volume)
 
     def __stop(self):
         _ = self.handle
@@ -102,11 +105,14 @@ class series_audioplayer:
                 if not binary:
                     continue
                 _playonce = playonce(binary, volume)
+                while _playonce.idle and not self.tasks:
+                    time.sleep(0.1)
                 while _playonce.isplaying:
                     time.sleep(0.1)
                     if self.tasks and not (
                         globalconfig["ttsnointerrupt"] and (not self.tasks[-1])
                     ):
+                        print(self.tasks)
                         break
                 else:
                     if self.playovercallback:
