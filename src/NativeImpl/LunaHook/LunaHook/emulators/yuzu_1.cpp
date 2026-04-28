@@ -4226,8 +4226,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // アイキス3cute
     {0x804C18C4, {CODEC_UTF8, 1, 0, 0, F0100FD4016528000, 0x0100FD4016528000ull, nullptr}}, // 1.0.0 && 1.0.2
     // OZMAFIA!! VIVACE
-    {0x80058544, {0, 1, 0, 0, F0100509013040000, 0x01002BE0118AE000ull, nullptr}}, // 1.0.0 && 1.0.1
-    {0x8005b1f4, {0, 0, 0, 0, F01005090130400002, 0x01002BE0118AE000ull, nullptr}},
+    {0x80058544, {FULL_STRING, 1, 0, 0, F0100509013040000, 0x01002BE0118AE000ull, nullptr}}, // 1.0.0 && 1.0.1
+    {0x8005b1f4, {FULL_STRING, 0, 0, 0, F01005090130400002, 0x01002BE0118AE000ull, nullptr}},
     // ときめきメモリアル Girl's Side 3rd Story
     {0x82270d80, {CODEC_UTF16, 2, 0, ReadUnityString, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},
     {0x82270c60, {CODEC_UTF16, 2, 0, ReadUnityString, F010091C01BD8A000, 0x010091C01BD8A000ull, "1.0.1"}},

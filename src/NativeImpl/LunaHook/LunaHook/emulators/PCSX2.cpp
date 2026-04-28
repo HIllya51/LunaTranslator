@@ -321,7 +321,7 @@ bool PCSX2::attach_function1()
             const GameList::Entry *entry = (GameList::Entry *)context->rdx;
             current_serial = entry->serial;
             jitaddrclear();
-            HostMsg::EmuGameName("%s %s", entry->serial.c_str(), entry->title.c_str());
+            Msg::EmuGameName("%s %s", entry->serial.c_str(), entry->title.c_str());
             for (auto &&[addr, op] : emfunctionhooks)
             {
                 auto useid = MatchGameId(op._id);
@@ -395,6 +395,6 @@ bool PCSX2::attach_function1()
 bool PCSX2::attach_function()
 {
     if (!attach_function1())
-        HostMsg::EmuWarning(TR[EMUVERSIONTOOOLD]);
+        Msg::EmuWarning(TR[EMUVERSIONTOOOLD]);
     return true;
 }

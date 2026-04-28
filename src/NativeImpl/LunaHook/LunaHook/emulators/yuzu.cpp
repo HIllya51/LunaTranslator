@@ -7,7 +7,7 @@ namespace
     auto idxDescriptor = 2;
     auto idxEntrypoint = 3;
 
-    uintptr_t getDoJitAddress()
+    uintptr_t getRegisterBlock()
     {
         // Dynarmic::Backend::X64::EmitX64::RegisterBlock
         auto RegisterBlockSig1 = "E8 ?? ?? ?? ?? 4? 8B ?? 4? 8B ?? 4? 8B ?? E8 ?? ?? ?? ?? 4? 89?? 4? 8B???? ???????? 4? 89?? ?? 4? 8B?? 4? 89";
@@ -38,32 +38,6 @@ namespace
             }
         }
 
-        BYTE sig2[] = {
-            // Eden-Windows-v0.0.4-rc1-amd64-clang-standard
-            0xe8, XX4,
-            0x4C, 0x8B, XX, XX,
-            0x48, 0x89, 0xF9,
-            0x48, 0x89, 0xDA,
-            0x4D, 0x89, 0xF0,
-            0xE8, XX4,
-            0x4C, 0x89, 0x36,
-            0x4C, 0x89, 0x7E, 0x08,
-            0x48, 0x83, 0xC7, 0x18,
-            0x48, 0x8B, 0x03,
-            0x48, 0x89, XX, XX,
-            0x48, 0x8B, 0x06,
-            0x48, 0x89, XX, XX};
-        RegisterBlock = MemDbg::findBytes(sig2, sizeof(sig2), processStartAddress, processStopAddress);
-        if (RegisterBlock)
-        {
-            BYTE sig3[] = {0xcc, 0x55, 0x41, 0x57, 0x41, 0x56};
-            auto subs = MemDbg::findBytes(sig3, sizeof(sig3), RegisterBlock - 0x400, RegisterBlock);
-            if (subs)
-            {
-                return subs + 1;
-            }
-        }
-
         // citron-neo 2026-04-17
         BYTE sig3[] = {
             0xff, 0x50, 0x10,
@@ -88,6 +62,42 @@ namespace
         if (RegisterBlock)
         {
             auto addr = MemDbg::findEnclosingAlignedFunction(RegisterBlock, 0x40);
+            if (addr)
+                return addr;
+        }
+
+        BYTE sig4[] = {
+            // Eden-Windows-v0.0.4-rc3-amd64-msvc-standard
+            0xff, 0x50, 0x10,
+            0x48, 0x8B, XX, XX, XX,
+            0x48, 0x83, 0xfa, 0x0f,
+            0x76, XX,
+            0x48, 0x8b, XX, XX, XX,
+            0x48, 0xff, 0xc2,
+            0x48, 0x8b, 0xc1,
+            0x48, 0x81, 0xfa, 0x00, 0x10, 0x00, 0x00,
+            0x72, XX,
+            0x48, 0x8b, 0x49, 0xf8,
+            0x48, 0x83, 0xc2, 0x27,
+            0x48, 0x2b, 0xc1,
+            0x48, 0x83, 0xe8, 0x08,
+            0x48, 0x83, 0xf8, 0x1f,
+            0x76, XX,
+            0X45, 0x33, 0xc9,
+            0x48, XX4, XX4,
+            0x45, 0x33, 0xc0,
+            0x33, 0xd2,
+            0x33, 0xc9,
+            0xff, 0x15 //_invoke_watson
+        };
+        RegisterBlock = MemDbg::findBytes(sig4, sizeof(sig4), processStartAddress, processStopAddress);
+        if (RegisterBlock)
+        {
+            auto addr = MemDbg::findEnclosingAlignedFunction(RegisterBlock, 0x40);
+            if (addr)
+                return addr;
+            BYTE ff[] = {0x40, 0x53, 0x55, 0x56, 0x57}; // Eden-Windows-v0.0.4-amd64-msvc-standard
+            addr = reverseFindBytes(ff, sizeof(ff), RegisterBlock - 0x40, RegisterBlock, 0, true);
             if (addr)
                 return addr;
         }
@@ -178,29 +188,24 @@ namespace
             0xb1, XX,
             0xe8, XX4};
         BYTE sig2[] = {
-            // Eden-Windows-v0.0.4-rc1-amd64-clang-standard
             0xb1, XX,
             0xb2, XX,
             0x41, 0xB9, XX4,
             0xe8, XX4};
+        BYTE sig3[] = {
+            0xb2, 0x02,
+            0x48, 0x89, XX, XX, XX,
+            0x4c, 0x89, XX, XX, XX,
+            0x48, XX4, XX4,
+            0xe8, XX4};
         auto addr1 = MemDbg::findBytes(sig, sizeof(sig), laddr, laddr + 0x100);
         auto addr2 = MemDbg::findBytes(sig2, sizeof(sig2), laddr, laddr + 0x100);
+        auto addr3 = MemDbg::findBytes(sig3, sizeof(sig3), laddr, laddr + 0x100);
         addr = (addr1 && addr2) ? max(addr1, addr2) : (addr1 ? addr1 : addr2);
-        int ver = addr == addr2 ? 1 : 0;
-        if (!addr)
-        {
-            // citron 2026.2.1 pgo
-            BYTE sig3[] = {
-                0xb2, 0x02,
-                0x48, 0x89, XX, XX, XX,
-                0x4c, 0x89, XX, XX, XX,
-                0x48, XX4, XX4,
-                0xe8, XX4};
-            addr = MemDbg::findBytes(sig3, sizeof(sig3), laddr, laddr + 0x100);
-            ver = 2;
-        }
+        addr = addr ? addr : addr3;
         if (!addr)
             return false;
+        int ver = addr == addr2 ? 1 : (addr == addr1 ? 0 : 2);
         HookParam hp;
         if (ver == 0)
         {
@@ -237,7 +242,7 @@ namespace
             game_info = GameInfo{title_name, title_id, title_version};
             if (game_info.id)
             {
-                HostMsg::EmuGameName("%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
+                Msg::EmuGameName("%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
             }
             jitaddrclear();
         };
@@ -302,7 +307,7 @@ struct NSGameInfoC
         game_info = std::move(info);
         if (game_info.id)
         {
-            HostMsg::EmuGameName("%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
+            Msg::EmuGameName("%s %s %s", game_info.name.c_str(), ull2hex(game_info.id).c_str(), game_info.version.c_str());
         }
         return true;
     }
@@ -318,32 +323,32 @@ struct NSGameInfoC
 
 bool yuzu::attach_function1()
 {
-    // Eden-Windows-v0.0.4-rc2&&rc3，同一个函数只能捕获到极少量函数了，懒得弄了。
-    auto DoJitPtr = getDoJitAddress();
-    if (!DoJitPtr)
+    static int emaddroffet = isedenv0_0_4_rc2_above ? 0x7c5000 : 0;
+    auto RegisterBlock = getRegisterBlock();
+    if (!RegisterBlock)
         return false;
     yuzu_load_functions(emfunctionhooks);
     JIT_Keeper<NSGameInfoC>::CreateStatic(NS_CheckEmAddrHOOKable);
     if (!LOG_INFO())
         return false;
     HookParam hp;
-    hp.address = DoJitPtr;
+    hp.address = RegisterBlock;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto descriptor = context->argof(idxDescriptor + 1); // r8
         auto entrypoint = context->argof(idxEntrypoint + 1); // r9
-        auto em_address = *(uint64_t *)descriptor;
+        auto em_address = *(uint64_t *)descriptor - emaddroffet;
         if (!entrypoint)
             return;
         jitaddraddr(em_address, entrypoint, JITTYPE::YUZU);
         NS_CheckEmAddrHOOKable(em_address, entrypoint);
         delayinsertNewHook(em_address);
     };
-    return NewHook(hp, "YuzuDoJit");
+    return NewHook(hp, "RegisterBlock");
 }
 bool yuzu::attach_function()
 {
     if (!attach_function1())
-        HostMsg::EmuWarning(TR[EMUVERSIONTOOOLD]);
+        Msg::EmuWarning(TR[EMUVERSIONTOOOLD]);
     return true;
 }

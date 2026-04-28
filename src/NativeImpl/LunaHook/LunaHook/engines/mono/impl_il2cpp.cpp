@@ -168,8 +168,8 @@ namespace
 			return NULL;
 		if (auto s = getclassinfo(klass))
 		{
-			HostMsg::Log(s.value().c_str());
-			HostMsg::Log(getmethodinfo(ret).c_str());
+			Msg::Log(s.value().c_str());
+			Msg::Log(getmethodinfo(ret).c_str());
 		}
 		return ret;
 	}

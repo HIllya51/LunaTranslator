@@ -1,5 +1,5 @@
 #pragma once
-namespace HostMsg
+namespace Msg
 {
     template <typename T>
     void Log(const T *text, ...);

@@ -73,7 +73,7 @@ namespace
                 game_info.Vita3KGameID = wcasta(curr);
                 game_info.lastcheck = curr;
                 game_info.game = game;
-                return HostMsg::EmuGameName(game_info.game.c_str());
+                return Msg::EmuGameName(game_info.game.c_str());
             }
         };
         hp.type = DIRECT_READ;
@@ -133,7 +133,7 @@ namespace
             if (info.Vita3KGameID.size())
             {
                 game_info = std::move(info);
-                HostMsg::EmuGameName(game_info.game.c_str());
+                Msg::EmuGameName(game_info.game.c_str());
             }
             return true;
         }
@@ -166,7 +166,7 @@ bool vita3k::attach_function1()
             em_address += 0x80000000; // 0.1.9 3339
         if (!entrypoint)
             return;
-        // HostMsg::Log("%p",em_address);
+        // Msg::Log("%p",em_address);
         CheckEmAddrHOOKable(em_address, entrypoint);
         jitaddraddr(em_address, entrypoint, JITTYPE::VITA3K);
 
@@ -177,6 +177,6 @@ bool vita3k::attach_function1()
 bool vita3k::attach_function()
 {
     if (!attach_function1())
-        HostMsg::EmuWarning(TR[EMUVERSIONTOOOLD]);
+        Msg::EmuWarning(TR[EMUVERSIONTOOOLD]);
     return true;
 }

@@ -161,7 +161,7 @@ void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T *buffer
 	WriteFile(hookPipe, buffer, sizeof(TextOutput_T) + len, DUMMY, nullptr);
 }
 
-namespace HostMsg
+namespace Msg
 {
 #define vhostinfoA(_type, cp)                                         \
 	{                                                                 \
@@ -244,7 +244,7 @@ void NotifyHookFound(HookParam hp, wchar_t *text)
 void NotifyHookRemove(uint64_t addr, LPCSTR name)
 {
 	if (name)
-		HostMsg::Log(TR[REMOVING_HOOK], name);
+		Msg::Log(TR[REMOVING_HOOK], name);
 	HookRemovedNotif buffer(addr);
 	WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
 }
@@ -334,7 +334,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 {
 	if (++currentHook >= MAX_HOOK)
 	{
-		HostMsg::Log(TR[TOO_MANY_HOOKS]);
+		Msg::Log(TR[TOO_MANY_HOOKS]);
 		return false;
 	}
 	if (lpname && *lpname)
@@ -344,7 +344,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 	if (!(*hooks)[currentHook].Insert(hp))
 	{
 		if (!silentlyfail)
-			HostMsg::Log(TR[InsertHookFailed], WideStringToString(hp.hookcode).c_str());
+			Msg::Log(TR[InsertHookFailed], WideStringToString(hp.hookcode).c_str());
 		(*hooks)[currentHook].Clear();
 		return false;
 	}
@@ -352,7 +352,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 	{
 		if (hp.emu_addr)
 		{
-			HostMsg::Log("%x => %p", hp.emu_addr, (uintptr_t)hp.address);
+			Msg::Log("%x => %p", hp.emu_addr, (uintptr_t)hp.address);
 			std::lock_guard __(JIT_HP_Records_lock);
 			JIT_HP_Records.push_back(hp);
 		}
@@ -363,7 +363,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 void delayinsertadd(HookParam hp, std::string name)
 {
 	delayinserthook->insert(std::make_pair(hp.emu_addr, std::make_pair(name, hp)));
-	HostMsg::Log(TR[INSERTING_HOOK], name.c_str(), hp.emu_addr);
+	Msg::Log(TR[INSERTING_HOOK], name.c_str(), hp.emu_addr);
 }
 void delayinsertNewHook(uint32_t em_address)
 {
@@ -386,7 +386,7 @@ bool NewHook_2(HookParam hp, LPCSTR name, bool silentlyfail = false)
 		auto spls = strSplit(hp.function, ":");
 		if (spls.size() != 5)
 		{
-			HostMsg::Log("invalid");
+			Msg::Log("invalid");
 			return false;
 		}
 		int argcount;
@@ -402,7 +402,7 @@ bool NewHook_2(HookParam hp, LPCSTR name, bool silentlyfail = false)
 
 		if (!hp.address)
 		{
-			HostMsg::Log("not find");
+			Msg::Log("not find");
 			return false;
 		}
 		return NewHook_1(hp, name, silentlyfail);

@@ -67,7 +67,7 @@ struct passinfo
 };
 bool Ryujinx::attach_function()
 {
-  HostMsg::EmuWarning(TR[RYUJINXUNSUPPORT]);
+  Msg::EmuWarning(TR[RYUJINXUNSUPPORT]);
   return true;
   /*
   UnsafeJitFunction
@@ -96,12 +96,12 @@ LABEL_89:
   auto lea_aFailedToLoadJi = MemDbg::find_leaorpush_addr(paFailedToLoadJi, processStartAddress, processStopAddress);
   if (!lea_aFailedToLoadJi)
     return false;
-  HostMsg::Log("lea_aFailedToLoadJi %p", lea_aFailedToLoadJi - processStartAddress);
+  Msg::Log("lea_aFailedToLoadJi %p", lea_aFailedToLoadJi - processStartAddress);
   BYTE funcstart[] = {0x48, 0x89, 0x5c, 0x24, 0x10, 0x55, 0x56, 0x57, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57};
   auto UnsafeJitFunction = reverseFindBytes(funcstart, sizeof(funcstart), lea_aFailedToLoadJi - 0x1000, lea_aFailedToLoadJi);
   if (!UnsafeJitFunction)
     return false;
-  HostMsg::Log("UnsafeJitFunction %p", UnsafeJitFunction - processStartAddress);
+  Msg::Log("UnsafeJitFunction %p", UnsafeJitFunction - processStartAddress);
   BYTE sig_call_invokeCompileMethodHelper[] = {
       0x48, 0x8D, 0x44, 0x24, XX,   // lea rax,[rbp+xx]
       0x48, 0x89, 0x44, 0x24, 0x28, // mov [rsp+28],rax
@@ -130,7 +130,7 @@ LABEL_89:
   getMethodNameFromMetadata = (decltype(getMethodNameFromMetadata))reverseFindBytes(start_getMethodNameFromMetadata, sizeof(start_getMethodNameFromMetadata), ptr_sig_getMethodNameFromMetadata - 0x100, ptr_sig_getMethodNameFromMetadata, 0, true);
   if (!getMethodNameFromMetadata)
     return false;
-  HostMsg::Log("getMethodNameFromMetadata %p", (uintptr_t)getMethodNameFromMetadata - processStartAddress);
+  Msg::Log("getMethodNameFromMetadata %p", (uintptr_t)getMethodNameFromMetadata - processStartAddress);
   HookParam hp_invokeCompileMethodHelper;
   hp_invokeCompileMethodHelper.address = *(int *)(call_invokeCompileMethodHelper + sizeof(sig_call_invokeCompileMethodHelper) - 4) + call_invokeCompileMethodHelper + sizeof(sig_call_invokeCompileMethodHelper);
   hp_invokeCompileMethodHelper.user_value = (uintptr_t) new passinfo{};
@@ -190,7 +190,7 @@ LABEL_89:
     hp_cs_function.address = *(uintptr_t *)info->nativeEntry;
     hp_cs_function.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-      HostMsg::Log("%s\n%p %p %p %p %p %p", hp->name, context->rcx, context->rdx, context->r8, context->r9, context->r10, context->r11);
+      Msg::Log("%s\n%p %p %p %p %p %p", hp->name, context->rcx, context->rdx, context->r8, context->r9, context->r10, context->r11);
     };
     NewHook(hp_cs_function, (info->namespaceName + ":" + info->className + ":" + info->methodname).c_str());
   };

@@ -29,17 +29,17 @@ namespace
         */
         char log[] = "ppu_register_function_at(0x%x): empty range";
         auto logstrptr = MemDbg::findBytes(log, sizeof(log), processStartAddress, processStopAddress);
-        HostMsg::Log("%p", logstrptr);
+        Msg::Log("%p", logstrptr);
         if (logstrptr == 0)
             return 0;
         auto addr = MemDbg::find_leaorpush_addr(logstrptr, processStartAddress, processStopAddress);
-        HostMsg::Log("%p", addr);
+        Msg::Log("%p", addr);
         if (!addr)
             return 0;
         // ff cc cc cc,find不到。。
         BYTE start[] = {XX, 0xCC, 0xCC, 0xCC};
         addr = reverseFindBytes(start, sizeof(start), addr - 0x200, addr, 4, true);
-        HostMsg::Log("%p", addr);
+        Msg::Log("%p", addr);
         return addr;
     }
     std::unordered_map<DWORD, emfuncinfo> emfunctionhooks;
@@ -157,7 +157,7 @@ namespace
             game_info.lastcheck = curr;
             game_info.game = curr;
             game_info.GameID = wcasta(match.value()[5].str());
-            return HostMsg::EmuGameName(curr.c_str());
+            return Msg::EmuGameName(curr.c_str());
         }
     }
     void trygetgameinwindowtitle()
@@ -199,6 +199,6 @@ bool attach_function1()
 bool rpcs3::attach_function()
 {
     if (!attach_function1())
-        HostMsg::EmuWarning(TR[EMUVERSIONTOOOLD]);
+        Msg::EmuWarning(TR[EMUVERSIONTOOOLD]);
     return true;
 }

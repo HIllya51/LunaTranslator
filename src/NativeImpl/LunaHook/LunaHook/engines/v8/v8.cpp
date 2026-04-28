@@ -147,9 +147,9 @@ namespace v8script
 		void *v8string;
 		void *script;
 		void *useless;
-		HostMsg::Log("isolate %p", isolate);
+		Msg::Log("isolate %p", isolate);
 		GetCurrentContext(isolate, &context);
-		HostMsg::Log("context %p", context);
+		Msg::Log("context %p", context);
 		if (!context)
 			return;
 		int is_packed = 0;
@@ -176,26 +176,26 @@ namespace v8script
 		strReplace(lunajspatch, "IS_USECLIPBOARD", std::to_string(useclipboard));
 		strReplace(lunajspatch, "INTERNAL_HTTP_PORT", std::to_string(usehttp_port));
 		NewFromUtf8(&v8string, isolate, lunajspatch.c_str(), 1, -1);
-		HostMsg::Log("v8string %p", v8string);
+		Msg::Log("v8string %p", v8string);
 		if (!v8string)
 			return;
 		if (NewFromUtf8v1)
 		{
 			(Compile_local)(&script, v8string, 0, 0, 0);
-			HostMsg::Log("script %p", script);
+			Msg::Log("script %p", script);
 			if (!script)
 				return;
 			(Run_local)(script, &useless);
-			HostMsg::Log("useless %p", useless);
+			Msg::Log("useless %p", useless);
 		}
 		else if (NewFromUtf8v2)
 		{
 			(Compile_maybelocal)(&script, context, v8string, 0);
-			HostMsg::Log("script %p", script);
+			Msg::Log("script %p", script);
 			if (!script)
 				return;
 			(Run_maybelocal)(script, &useless, context);
-			HostMsg::Log("useless %p", useless);
+			Msg::Log("useless %p", useless);
 		}
 	}
 	bool init_v8_functions(HMODULE hmodule)
@@ -391,7 +391,7 @@ bool tryhookv8()
 			// if (usehttp)
 			{
 				usehttp_port = makehttpgetserverinternal();
-				HostMsg::Log("%d %d", GetCurrentProcessId(), usehttp_port);
+				Msg::Log("%d %d", GetCurrentProcessId(), usehttp_port);
 				hook_LUNA_CONTENTBYPASS();
 				dont_detach = true;
 			}
