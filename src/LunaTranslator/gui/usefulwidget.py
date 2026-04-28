@@ -65,7 +65,7 @@ class SuperCombo(FocusCombo):
         return super().event(e)
 
     def __resizedirect(self):
-        h = QFontMetricsF(self.font()).ascent()
+        h = QFontMetricsF(self.font(), self).ascent()
         sz = QSizeF(h, h).toSize()
         self.setIconSize(sz)
 
@@ -772,7 +772,7 @@ class MySwitch(QAbstractButton):
         return super().event(a0)
 
     def __loadsize(self):
-        h = QFontMetricsF(self.font()).height()
+        h = QFontMetricsF(self.font(), self).height()
         sz = QSizeF(1.62 * h * gobject.Consts.btnscale, h * gobject.Consts.btnscale)
         self.setFixedSize(sz.toSize())
 
@@ -3167,7 +3167,7 @@ class IconButton(LPushButton):
 
     def resizedirect(self):
         if not self._FixedSize:
-            h = QFontMetricsF(self.font()).height()
+            h = QFontMetricsF(self.font(), self).height()
             sz = (
                 QSizeF(int(h * gobject.Consts.IconSizeHW), h) * gobject.Consts.btnscale
             ).toSize()

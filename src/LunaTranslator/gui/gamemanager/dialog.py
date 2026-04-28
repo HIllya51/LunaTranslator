@@ -429,7 +429,7 @@ class ItemWidget(QWidget):
 
     @property
     def textareaheight(self):
-        h = QFontMetricsF(self.textfont).height() - 1
+        h = QFontMetricsF(self.textfont, self).height()
         h = globalconfig["dialog_savegame_layout"]["textH2"] * h
         return h
 
@@ -513,7 +513,7 @@ class ItemWidget(QWidget):
         radius = dialog_savegame_layout["radius"]
         return self.get_shrunk_rounded_rect_path(QRectF(self.rect()), radius, offset)
 
-    def get_shrunk_rounded_rect_path(self, rect: QRect, r, shrink_width):
+    def get_shrunk_rounded_rect_path(self, rect: QRectF, r, shrink_width):
         shrunk_rect = rect.adjusted(
             shrink_width, shrink_width, -shrink_width, -shrink_width
         )

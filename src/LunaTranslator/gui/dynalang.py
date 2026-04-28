@@ -308,7 +308,7 @@ class IconToolButton(QToolButton):
         return super().event(e)
 
     def __resizedirect(self):
-        h = QFontMetricsF(self.font()).ascent()
+        h = QFontMetricsF(self.font(), self).ascent()
         sz = QSizeF(h, h).toSize()
         self.setIconSize(sz)
 

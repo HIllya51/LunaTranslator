@@ -72,7 +72,7 @@ class base(QWidget):
         self._pix = None
         font = self.font()
         text = self.text()
-        font_m = QFontMetricsF(font)
+        font_m = QFontMetricsF(font, self)
         w, h = self.extraWH()
         size = QSizeF(font_m.size(0, text).width(), font_m.height())
         sizex = size + QSizeF(w, h)

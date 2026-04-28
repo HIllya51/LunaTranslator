@@ -81,7 +81,7 @@ class chartwidget(QWidget):
         self.setMouseTracking(True)
         font = QFont()
         font.setPointSize(10)
-        fmetrics = QFontMetricsF(font)
+        fmetrics = QFontMetricsF(font, self)
 
         fhall = fmetrics.height()
         self.font = font

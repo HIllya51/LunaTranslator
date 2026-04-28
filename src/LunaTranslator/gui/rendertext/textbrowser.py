@@ -1123,7 +1123,7 @@ class TextBrowser(QWidget, dataget):
         if half:
             fs *= globalconfig["kanarate"]
         font.setPointSizeF(fs)
-        fm = QFontMetricsF(font)
+        fm = QFontMetricsF(font, self)
         if getfm:
             return fm
         return fm.height(), font

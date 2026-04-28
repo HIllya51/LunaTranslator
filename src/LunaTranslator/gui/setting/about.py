@@ -285,7 +285,7 @@ class delayloadsvg(QSvgWidget):
         return super().event(a0)
 
     def loadh(self):
-        h = QFontMetricsF(self.font()).height()
+        h = QFontMetricsF(self.font(), self).height()
         renderer = self.renderer()
         if renderer != None:
             size = renderer.defaultSize()
