@@ -123,18 +123,9 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
 Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của bạn.
 
-== Deepinfra
-
-**API Key** https://deepinfra.com/dash/api_keys
-
 == Cerebras
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
-
-== Chutes
-
-**API Key** https://chutes.ai/app/api
-
 
 :::
 
@@ -145,6 +136,10 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 == DeepSeek
 
 **API Key** https://platform.deepseek.com/api_keys
+
+== Xiaomi MiMo
+
+**API Key** https://platform.xiaomimimo.com/#/console/api-keys
 
 == Alibaba Cloud Bailian Large Model
 

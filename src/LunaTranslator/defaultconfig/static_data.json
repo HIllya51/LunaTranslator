@@ -468,6 +468,14 @@
             "icon": "files/static/llm_icons/deepseek.svg"
         },
         {
+            "vis": "Xiaomi MiMo",
+            "value": "https://api.xiaomimimo.com",
+            "icon": {
+                "dark": "files/static/llm_icons/mimo_dark.svg",
+                "light": "files/static/llm_icons/mimo.svg"
+            }
+        },
+        {
             "vis": "Gemini",
             "value": "https://generativelanguage.googleapis.com",
             "icon": "files/static/llm_icons/gemini.svg"
@@ -584,19 +592,9 @@
             }
         },
         {
-            "vis": "deepinfra",
-            "value": "https://api.deepinfra.com/v1/openai/chat/completions",
-            "icon": "files/static/llm_icons/deepinfra.svg"
-        },
-        {
             "vis": "MiniMax",
             "value": "https://api.minimax.chat",
             "icon": "files/static/llm_icons/minimax.svg"
-        },
-        {
-            "vis": "Chutes",
-            "value": "https://llm.chutes.ai",
-            "icon": "files/static/llm_icons/chutes.webp"
         }
     ]
 }

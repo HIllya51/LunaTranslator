@@ -124,17 +124,9 @@ However, sometimes you may want to use multiple different API interface addresse
 
 Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
-== Deepinfra
-
-**API Key** https://deepinfra.com/dash/api_keys
-
 == Cerebras
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
-
-== Chutes
-
-**API Key** https://chutes.ai/app/api
 
 :::
 
@@ -145,6 +137,10 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 == DeepSeek
 
 **API Key** https://platform.deepseek.com/api_keys
+
+== Xiaomi MiMo
+
+**API Key** https://platform.xiaomimimo.com/#/console/api-keys
 
 == Alibaba Cloud Bailian Large Model
 

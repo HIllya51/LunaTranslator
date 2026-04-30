@@ -125,17 +125,9 @@
 
 여기서 `{endpoint}`와 `{deployName}`을 당신의 endpoint와 deployName으로 교체해 주세요.
 
-== deepinfra
-
-**API Key** https://deepinfra.com/dash/api_keys
-
 == cerebras
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
-
-== Chutes
-
-**API Key** https://chutes.ai/app/api
 
 :::
 
@@ -146,6 +138,10 @@
 == DeepSeek
 
 **API Key** https://platform.deepseek.com/api_keys
+
+== Xiaomi MiMo
+
+**API Key** https://platform.xiaomimimo.com/#/console/api-keys
 
 == 알리바이둔 백련 대형 모델
 

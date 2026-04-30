@@ -126,17 +126,9 @@
 
 其中，将`{endpoint}`和`{deployName}`替换成你的endpoint和deployName
 
-== deepinfra
-
-**API Key** https://deepinfra.com/dash/api_keys
-
 == cerebras
 
 **API Key** https://cloud.cerebras.ai/  ->  API Keys
-
-== Chutes
-
-**API Key** https://chutes.ai/app/api
 
 :::
 
@@ -147,6 +139,10 @@
 == DeepSeek
 
 **API Key** https://platform.deepseek.com/api_keys
+
+== Xiaomi MiMo
+
+**API Key** https://platform.xiaomimimo.com/#/console/api-keys
 
 == 阿里云百炼大模型
 
