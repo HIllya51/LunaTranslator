@@ -26,37 +26,55 @@ bool InsertNekopackHook()
   };
   ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
   ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
-  enum
-  {
-    addr_offset = 0
-  }; // distance to the beginning of the function, which is 0x55 (push ebp)
-  // GROWL(reladdr);
-  if (!addr)
-  {
-    return false;
-  }
-  addr += addr_offset;
-  // GROWL(addr);
-  enum
-  {
-    push_ebp = 0x55
-  }; // beginning of the function
-  if (*(BYTE *)addr != push_ebp)
-  {
-    return false;
-  }
 
+  if (!addr)
+    return false;
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(2);
   hp.type = USING_STRING;
 
   return NewHook(hp, "NekoPack");
-
 }
+static bool LOVEMILF()
+{
+  // LOVEMILF
+  // https://vndb.org/v5259
 
+  const BYTE bytes[] = {
+      0x55, 0x8b, 0xec,
+      0x83, 0xe4, 0xf8,
+      0x83, 0xec, XX,
+      0x56,
+      0x8b, 0xf1,
+      0x8b, 0x06,
+      0x8b, 0x90, XX4,
+      0xc7, 0x44, XX, XX, 0xf1, 0x00, 0x00, 0x00,
+      0xff, 0xd2,
+      0x8b, 0x4d, 0x14,
+      0x51,
+      0x8b, 0x4d, 0x10,
+      0x8d, 0x54, XX, XX,
+      0x52,
+      0x8b, 0x55, 0x0c,
+      0x51,
+      0x8b, 0x4d, 0x08,
+      0x52,
+      0x89, 0x44, XX, XX,
+      0x8b, 0x06};
+  ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(3);
+  hp.type = USING_STRING;
+
+  return NewHook(hp, "LOVEMILF");
+}
 bool Nekopack::attach_function()
 {
-
-  return InsertNekopackHook();
+  return InsertNekopackHook() || LOVEMILF();
 }

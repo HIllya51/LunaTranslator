@@ -15,13 +15,9 @@ namespace
         if (RegisterBlock)
         {
             auto beginSubSig1 = "CC 40 5? 5? 5?";
-            auto lookbackSize = 0x400;
-            auto address = RegisterBlock - lookbackSize;
-            auto subs = find_pattern(beginSubSig1, address, address + lookbackSize);
+            auto subs = find_pattern(beginSubSig1, RegisterBlock - 0x400, RegisterBlock);
             if (subs)
-            {
                 return subs + 1;
-            }
         }
 
         auto PatchSig1 = "4????? 4????? 4????? FF?? ?? 4????? ?? 4????? 75 ?? 4????? ?? 4????? ?? 4?";
