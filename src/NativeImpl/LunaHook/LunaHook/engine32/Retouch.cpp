@@ -13,14 +13,11 @@ namespace
                                    : FIXED_SPLIT_VALUE * 3; // other
   }
 
-  bool InsertRetouch1Hook()
+  bool InsertRetouch1Hook(HMODULE hm)
   {
-    HMODULE hModule = ::GetModuleHandleA("resident.dll");
-    if (!hModule)
-      return false;
     // private: bool __thiscall RetouchPrintManager::printSub(char const *,class UxPrintData &,unsigned long)	0x10050650	0x00050650	2904 (0xb58)	resident.dll	C:\Local\箱庭ロジヂ�\resident.dll	Exported Function
     const char *sig = "?printSub@RetouchPrintManager@@AAE_NPBDAAVUxPrintData@@K@Z";
-    DWORD addr = (DWORD)::GetProcAddress(hModule, sig);
+    DWORD addr = (DWORD)::GetProcAddress(hm, sig);
     if (!addr)
       return false;
 
@@ -33,14 +30,11 @@ namespace
     return NewHook(hp, "Retouch1");
   }
 
-  bool InsertRetouch2Hook()
+  bool InsertRetouch2Hook(HMODULE hm)
   {
-    HMODULE hModule = ::GetModuleHandleA("resident.dll");
-    if (!hModule)
-      return false;
     // private: void __thiscall RetouchPrintManager::printSub(char const *,unsigned long,int &,int &)	0x10046560	0x00046560	2902 (0xb56)	resident.dll	C:\Local\箱庭ロジヂ�\resident.dll	Exported Function
     const char *sig = "?printSub@RetouchPrintManager@@AAEXPBDKAAH1@Z";
-    DWORD addr = (DWORD)::GetProcAddress(hModule, sig);
+    DWORD addr = (DWORD)::GetProcAddress(hm, sig);
     if (!addr)
       return false;
 
@@ -58,11 +52,9 @@ namespace
     {
       return inst + 5 + *(ULONG *)(inst + 1);
     }
-    bool attach() // attach scenario
+    bool attach(HMODULE hm) // attach scenario
     {
-      if (GetModuleHandle(L"resident.dll") == 0)
-        return false;
-      auto [startAddress, stopAddress] = Util::QueryModuleLimits(GetModuleHandle(L"resident.dll"));
+      auto [startAddress, stopAddress] = Util::QueryModuleLimits(hm);
       const uint8_t bytes[] = {
           0x8b, 0x44, 0x24, 0x04, // 051cf2e0   8b4424 04        mov eax,dword ptr ss:[esp+0x4]
           0x6a, 0x02,             // 051cf2e4   6a 02            push 0x2
@@ -88,15 +80,39 @@ namespace
 
   } // namespace HistoryHook
 } // unnamed namespace
-bool InsertRetouchHook()
+static bool old(HMODULE hm)
 {
-  bool ok = InsertRetouch1Hook();
-  ok = InsertRetouch2Hook() || ok;
-  ok = HistoryHook::attach() || ok;
-  return ok;
+  // Pia Carrot e Youkoso!! 3
+  // https://vndb.org/r12883
+  // https://archive.org/download/pia-carrot-e-youkoso-3/Pia_Carrot_e_Youkoso_3.rar
+
+  return [&]()
+  {
+    // 这作会把每行分开，不好内嵌。
+    auto message = (DWORD)GetProcAddress(hm, "?message@FCProjectAdvSystem@@UAEXPBDH@Z");
+    if (!message)
+      return false;
+    HookParam hp;
+    hp.address = message;
+    hp.offset = stackoffset(1);
+    hp.type = USING_STRING;
+    return NewHook(hp, "FCProjectAdvSystem::message");
+  }() && [&]()
+  {
+    auto name = (DWORD)GetProcAddress(hm, "?name@FCProjectAdvSystem@@UAEXPBD0H@Z");
+    if (!name)
+      return false;
+    HookParam hp;
+    hp.address = name;
+    hp.offset = stackoffset(1);
+    hp.type = USING_STRING;
+    return NewHook(hp, "FCProjectAdvSystem::name");
+  }();
 }
 bool Retouch::attach_function()
 {
-
-  return InsertRetouchHook();
+  bool ok = InsertRetouch1Hook(hm);
+  ok = InsertRetouch2Hook(hm) || ok;
+  ok = HistoryHook::attach(hm) || ok;
+  return ok || old(hm);
 }
