@@ -165,10 +165,6 @@
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
-== 零一萬物
-
-**API Key** https://platform.lingyiwanwu.com/apikeys
-
 == 矽基流動
 
 **API Key** https://cloud-hk.siliconflow.cn/account/ak

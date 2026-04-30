@@ -576,14 +576,6 @@
             "icon": "files/static/llm_icons/wenxin.svg"
         },
         {
-            "vis": "零一万物",
-            "value": "https://api.lingyiwanwu.com",
-            "icon": {
-                "dark": "files/static/llm_icons/lyww_dark.svg",
-                "light": "files/static/llm_icons/lyww.svg"
-            }
-        },
-        {
             "vis": "cerebras",
             "value": "https://api.cerebras.ai",
             "icon": {

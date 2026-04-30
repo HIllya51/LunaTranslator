@@ -166,10 +166,6 @@
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
-== 영일만물
-
-**API Key** https://platform.lingyiwanwu.com/apikeys
-
 == 실리콘 기반 흐름
 
 **API Key** https://cloud-hk.siliconflow.cn/account/ak

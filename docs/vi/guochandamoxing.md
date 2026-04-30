@@ -165,10 +165,6 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 
 **model** https://bigmodel.cn/dev/howuse/model
 
-== Lingyi Wanwu
-
-**API Key** https://platform.lingyiwanwu.com/apikeys
-
 == SiliconFlow
 
 **API Key** https://cloud-hk.siliconflow.cn/account/ak

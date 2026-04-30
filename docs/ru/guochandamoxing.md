@@ -166,10 +166,6 @@
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
-== 01.AI
-
-**API Key** https://platform.lingyiwanwu.com/apikeys
-
 == SiliconFlow
 
 **API Key** https://cloud-hk.siliconflow.cn/account/ak

@@ -162,10 +162,6 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
-== Lingyi Wanwu
-
-**API Key** https://platform.lingyiwanwu.com/apikeys
-
 == SiliconFlow
 
 **API Key** https://cloud-hk.siliconflow.cn/account/ak
