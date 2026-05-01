@@ -368,7 +368,7 @@ bool InsertNeXASHookW()
         0x8d, XX, XX4,       // lea     edx, [edi+0A8h], XX4:0xa8, 0x00, 0x00, 0x00
         0x89, XX, XX,
         0x72, 0x06,
-        0x8b, XX, XX4, // mov     edx, [edi+0A8h], XX4:0xa8, 0x00, 0x00, 0x00
+        0x8b, XX, XX4 // mov     edx, [edi+0A8h], XX4:0xa8, 0x00, 0x00, 0x00
 
     };
     auto addrx = MemDbg::findBytes(check, sizeof(check), addr, addr1);
@@ -517,6 +517,9 @@ namespace
     hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
     {
       auto s = buffer->strA();
+      // 制服カノジョ2.5
+      // 【古賀】@n@v09020004「あ、@*name@00@板橋@*@さんもこんな時間に。@k
+      s = re::sub(s, R"(@\*name@\d+@(.*?)@\*@)", "$1");
       s = re::sub(s, "@([_v][a-zA-Z0-9]+)+");
       s = re::sub(s, R"(@t\d{4})");
       s = re::sub(s, R"(@w\d{4})");
