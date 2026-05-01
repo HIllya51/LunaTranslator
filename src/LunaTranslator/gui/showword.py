@@ -12,6 +12,7 @@ import requests
 import gobject
 import windows
 import NativeUtils
+import traceback
 import myutils.ankiconnect as anki
 from collections import OrderedDict
 from myutils.hwnd import grabwindow
@@ -591,7 +592,7 @@ class AnkiWindow(QWidget):
 
         soundbutton2 = IconButton("fa.music", tips="语音合成")
         soundbutton2.clicked.connect(self.langdu2)
-        
+
         cropbutton2 = getIconButton(
             icon="fa.crop",
             callback=functools.partial(self.crophide, True),
@@ -1402,7 +1403,7 @@ class showdiction(QWidget):
 class WordViewer(QWidget):
     from_webview_search_word = pyqtSignal(str)
     from_webview_search_word_in_new_window = pyqtSignal(str)
-    __show_dict_result = pyqtSignal(object, str, str)
+    __show_dict_result = pyqtSignal(object, str, object)
     first_result_shown = pyqtSignal()
     use_bg_color_parser = False
 
@@ -1450,7 +1451,7 @@ class WordViewer(QWidget):
             )
 
     @tryprint
-    def __show_dict_result_function(self, timestamp, k, res):
+    def __show_dict_result_function(self, timestamp, k, res: "str|Exception"):
         if self.current != timestamp:
             return
         if not res:
@@ -1490,7 +1491,7 @@ class WordViewer(QWidget):
             if k in globalconfig["ignoredict"]:
                 continue
             v = self.cache_results_highlighted.get(k, self.cache_results[k])
-            if len(v) == 0:
+            if (not v) or (isinstance(v, Exception)):
                 continue
             thisp = self.thisps.get(k, 0)
 
@@ -1714,6 +1715,17 @@ class WordViewer(QWidget):
             r"LunaTranslator\htmlcode\uiwebview\dictionary.html", "r", encoding="utf8"
         ) as ff:
             frame = ff.read()
+        if isinstance(html, Exception):
+            exp = html
+            html = _TR("错误")
+            html += "<br>"
+            html += stringfyerror(exp)
+            html += "<br><hr>"
+            html += "<br>".join(
+                traceback.format_exception(type(exp), exp, exp.__traceback__)
+            )
+            html += '<script>document.querySelector("#luna_dict_internal_view > article").style.backgroundColor="rgba(0,0,0,0)"</script>'
+            use_github_md_css = True
         if use_github_md_css:
             with open(
                 r"files\static\github-markdown-css\template.html", "r", encoding="utf8"

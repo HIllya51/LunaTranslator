@@ -82,7 +82,7 @@ liandianqi_stoped = True
 
 def invoke_liandianqi_or_stop():
     global liandianqi_stoped
-    key = globalconfig.get("liandianqi_vkey", vkcode_map[list(vkcode_map.keys())])
+    key = globalconfig.get("liandianqi_vkey", vkcode_map[list(vkcode_map.keys())[0]])
     if not key:
         return
     interval = globalconfig.get("liandianqi_interval", 1)

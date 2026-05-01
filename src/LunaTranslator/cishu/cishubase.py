@@ -89,16 +89,13 @@ class cishubase(commonbase):
                 return
         try:
             res = self.multiapikeywrapper(self.search_XX)(word, sentence)
-        except:
-            print_exc()
-            self.needinit = True
-            res = None
-        if res:
             callback(res)
             if key:
                 self.__cache_results.put(key, res)
-        else:
-            callback(None)
+        except Exception as e:
+            print_exc()
+            self.needinit = True
+            callback(e)
 
     def __parseaqr(self, rule: QualifiedRule, divclass):
         start = True
