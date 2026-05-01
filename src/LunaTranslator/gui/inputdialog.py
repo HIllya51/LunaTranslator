@@ -995,5 +995,30 @@ class noundictconfigdialog1(noundictconfigdialog1___):
     pass
 
 
-def postconfigdialog2x(parent, reflist, title, header):
-    noundictconfigdialog1(parent, reflist, title, header)
+@Singleton
+class stringreplacedialog_klass(noundictconfigdialog1___):
+    def __init__(self, parent, reflist, title, label, ischild, args):
+        super().__init__(parent, reflist, title, label, None, True, None)
+        if not ischild:
+            return
+        vbox: QVBoxLayout = self.layout()
+        vbox.insertLayout(
+            0,
+            getboxlayout(
+                [
+                    getsmalllabel("继承默认"),
+                    getsimpleswitch(args, "merge", default=False),
+                    "",
+                ],
+                QHBoxLayout,
+            ),
+        )
+
+
+def stringreplacedialog(parent, reflistdict, ischild=False):
+    args = reflistdict["args"]
+    title = reflistdict["name"]
+    reflist = args["internal"]
+    stringreplacedialog_klass(
+        parent, reflist, title, ["原文内容", "替换为"], ischild, args
+    )

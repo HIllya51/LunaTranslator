@@ -33,7 +33,7 @@ from myutils.utils import (
 from gui.inputdialog import (
     noundictconfigdialog1,
     yuyinzhidingsetting,
-    postconfigdialog2x,
+    stringreplacedialog,
     autoinitdialog,
     autoinitdialog_items,
     postconfigdialog,
@@ -100,13 +100,10 @@ def maybehavebutton(self, gameuid, post):
         if "args" in postprocessconfig[post]:
             if post == "stringreplace":
                 callback = functools.partial(
-                    postconfigdialog2x,
+                    stringreplacedialog,
                     self,
-                    save_text_process_info["postprocessconfig"][post]["args"][
-                        "internal"
-                    ],
-                    save_text_process_info["postprocessconfig"][post]["name"],
-                    ["原文内容", "替换为"],
+                    save_text_process_info["postprocessconfig"][post],
+                    True,
                 )
             elif isinstance(list(postprocessconfig[post]["args"].values())[0], dict):
                 callback = functools.partial(
@@ -1231,7 +1228,7 @@ class dialog_setting_game_internal(QWidget):
         __dict = savehook_new_data[self.__privatetextproc_gameuid][
             "save_text_process_info"
         ]["postprocessconfig"]
-        if _internal not in __dict:
+        if (_internal not in __dict) and (_internal != "stringreplace"):
             __dict[_internal] = copy.deepcopy(postprocessconfig[_internal])
             __dict[_internal]["use"] = True
         btn = maybehavebutton(self, self.__privatetextproc_gameuid, _internal)

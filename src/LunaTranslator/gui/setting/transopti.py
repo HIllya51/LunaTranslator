@@ -22,7 +22,7 @@ from gui.inputdialog import (
     postconfigdialog,
     autoinitdialog,
     autoinitdialog_items,
-    postconfigdialog2x,
+    stringreplacedialog,
 )
 
 
@@ -114,11 +114,7 @@ def setTab7_lazy(self, basel: QLayout):
 
                 if post == "stringreplace":
                     callback = functools.partial(
-                        postconfigdialog2x,
-                        self,
-                        postprocessconfig[post]["args"]["internal"],
-                        postprocessconfig[post]["name"],
-                        ["原文内容", "替换为"],
+                        stringreplacedialog, self, postprocessconfig[post]
                     )
                 elif isinstance(
                     list(postprocessconfig[post]["args"].values())[0], dict

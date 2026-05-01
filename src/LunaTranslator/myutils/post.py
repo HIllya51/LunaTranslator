@@ -213,8 +213,10 @@ def _92_f(line):
     return line
 
 
-def stringreplace(line, args):
+def stringreplace(line, args: dict):
     filters = args["internal"]
+    if args.get("merge", False):
+        filters += postprocessconfig["stringreplace"]["args"]["internal"]
     return parsemayberegexreplace(filters, line)
 
 
