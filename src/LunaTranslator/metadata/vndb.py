@@ -92,7 +92,7 @@ def getcharnamemapbyid(proxy, vid):
                     "=",
                     ["id", "=", vid],
                 ],
-                "fields": "name,original",
+                "fields": "name,original,aliases,sex",
                 "results": results,
             },
         )
@@ -106,7 +106,11 @@ def getcharnamemapbyid(proxy, vid):
             # 英语游戏没有original
             if not _o:
                 _o = r["name"]
-            namemap[_o] = r["name"]
+            namemap[_o] = {
+                "aliases": r["aliases"],
+                "name": r["name"],
+                "sex": r["sex"][0] if r["sex"] else "",
+            }
     except:
         pass
     return namemap

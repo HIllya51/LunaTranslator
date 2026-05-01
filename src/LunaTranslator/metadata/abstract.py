@@ -151,16 +151,39 @@ class common:
     def __b64string(self, a: str):
         return hashlib.md5(a.encode("utf8")).hexdigest()
 
-    def namemapcast(self, namemap: "dict[str,str]"):
+    def namemapcast(self, namemap: "dict[str, dict]"):
         bettermap = namemap.copy()
+        subword_entries = {}
+        subword_sexes = {}
+
         for k, v in namemap.items():
-            for sp in ["・", " "]:
-                spja = k.split(sp)
-                spen = v.split(sp if k == v else " ")
-                if len(spja) == len(spen) and len(spen) > 1:
-                    for i in range(len(spja)):
-                        if len(spja[i]) >= 2:
-                            bettermap[spja[i]] = spen[i]
+            aliases = v["aliases"]
+            if len(aliases) % 2 != 0 or all(a.isascii() for a in aliases):
+                alias_entries = [(a, a, v["sex"]) for a in aliases]
+            else:
+                alias_entries = [(aliases[i], aliases[i + 1], v["sex"]) for i in range(0, len(aliases) - 1, 2)]
+
+            for original, name, sex in [(k, v["name"], v["sex"])] + alias_entries:
+                if original not in bettermap:
+                    bettermap[original] = {"name": name, "sex": sex}
+
+                for sp in ["・", " "]:
+                    spja = original.split(sp)
+                    spen = name.split(sp if original == name else " ")
+                    if len(spja) == len(spen) and len(spen) > 1:
+                        for i in range(len(spja)):
+                            if len(spja[i]) >= 2:
+                                sub = spja[i]
+                                subword_entries[sub] = {"name": spen[i], "sex": sex}
+                                if sub not in subword_sexes:
+                                    subword_sexes[sub] = set()
+                                subword_sexes[sub].add(sex)
+
+        for sub, entry in subword_entries.items():
+            if len(subword_sexes[sub]) > 1:
+                entry["sex"] = None
+            bettermap[sub] = entry
+
         return bettermap
 
     @tryprint
@@ -205,6 +228,7 @@ class common:
         description = data.get("description", None)
         if description:
             self.__tryinserttomemory(description, gameuid)
+        sex_info_map = {"m": "男性", "f": "女性"}
         self.typename
         for _ in images:
             if not _:
@@ -229,13 +253,17 @@ class common:
             namemap = self.namemapcast(namemap)
             usenamemap = getlangtgt() == "en"
             for name in namemap:
+                en_name = namemap[name]["name"]
+                sex = namemap[name]["sex"]
+                info_val = sex_info_map.get(sex, "")
+
                 if not (name in dedump):
                     if "namemap2" not in savehook_new_data[gameuid]:
                         savehook_new_data[gameuid]["namemap2"] = []
                     savehook_new_data[gameuid]["namemap2"].append(
                         {
                             "key": name,
-                            "value": namemap[name] if usenamemap else name,
+                            "value": en_name if usenamemap else name,
                             "whole-word": True,
                         }
                     )
@@ -245,8 +273,8 @@ class common:
                     savehook_new_data[gameuid]["noundictconfig_ex"].append(
                         {
                             "src": name,
-                            "dst": namemap[name] if usenamemap else "",
-                            "info": "",
+                            "dst": en_name if usenamemap else "",
+                            "info": info_val,
                         }
                     )
 
