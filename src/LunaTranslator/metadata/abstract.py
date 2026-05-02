@@ -232,7 +232,7 @@ class common:
             for _ in savehook_new_data[gameuid].get("noundictconfig_ex", []):
                 dedump2.add(_.get("src", ""))
             namemap = self.namemapcast(namemap)
-            usenamemap = getlangtgt() == "en"
+            usenamemap = getlangtgt() not in ("ja", "zh", "cht")
             for name in namemap:
                 en_name = namemap[name]["name"]
                 sex = namemap[name]["sex"]
