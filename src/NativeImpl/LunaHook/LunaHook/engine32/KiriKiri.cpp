@@ -1702,8 +1702,9 @@ namespace
   bool krkrz2()
   {
     // すれ違う兄妹の壊れる倫理観
+    // 飛べない蝶のバレンタイン
     const BYTE bytes[] = {
-        0x3b, 0xd7,
+        0x3b, XX,
         0x73, 0x18,
         0x0f, 0x1f, 0x80, 0x00, 0x00, 0x00, 0x00,
         0x8b, 0x43, 0x38,
@@ -1750,7 +1751,7 @@ bool KiriKiri::attach_function()
     // else if (Util::CheckFile(L"plugin\\KAGParserEx.dll"))
     //  InsertKAGParserExHook();
     bool krz = Private::attach(processStartAddress, processStopAddress);
-    if (InsertKiriKiriZHook() || krkrz2() || krz)
+    if (InsertKiriKiriZHook() | krkrz2() | krz)
       return true;
   }
   bool b1 = attachkr2(processStartAddress, processStopAddress);

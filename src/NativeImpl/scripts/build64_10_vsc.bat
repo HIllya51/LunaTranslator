@@ -1,4 +1,4 @@
 set https_proxy=http://127.0.0.1:7897
 cmake --build ..\build\ --config Release --target ALL_BUILD -j %NUMBER_OF_PROCESSORS%
-copy ..\builds\Release_x64_win10\LunaSubprocess64.exe ..\..\files
-robocopy ..\builds\Release_x64_win10 ..\..\files\DLL64 *.dll
+copy ..\builds\_x64_win10\LunaSubprocess64.exe ..\..\files
+robocopy ..\builds\_x64_win10 ..\..\files\DLL64 *.dll
