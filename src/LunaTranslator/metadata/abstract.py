@@ -154,7 +154,7 @@ class common:
     def namemapcast(self, namemap: "dict[str, dict[str,str]]"):
         bettermap = namemap.copy()
         for k, v in namemap.items():
-            for sp in ["・", " "]:
+            for sp in ["・", "＝", " "]:
                 spja = k.split(sp)
                 spen = v["name"].split(sp if k == v["name"] else " ")
                 if len(spja) == len(spen) and len(spen) > 1:
