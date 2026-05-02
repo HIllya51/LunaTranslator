@@ -6,6 +6,7 @@ from myutils.utils import getlangtgt
 from traceback import print_exc
 import requests
 from myutils.wrapper import tryprint, threader
+from myutils.config import _TR
 
 
 class common:
@@ -208,7 +209,7 @@ class common:
         description = data.get("description", None)
         if description:
             self.__tryinserttomemory(description, gameuid)
-        sex_info_map = {"m": "男性", "f": "女性"}
+        sex_info_map = {"m": _TR("男性"), "f": _TR("女性")}
         self.typename
         for _ in images:
             if not _:
