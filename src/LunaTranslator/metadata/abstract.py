@@ -234,17 +234,13 @@ class common:
             namemap = self.namemapcast(namemap)
             usenamemap = getlangtgt() not in ("ja", "zh", "cht")
             for name in namemap:
-                en_name = namemap[name]["name"]
-                sex = namemap[name]["sex"]
-                info = sex_info_map.get(sex, "")
-
                 if not (name in dedump):
                     if "namemap2" not in savehook_new_data[gameuid]:
                         savehook_new_data[gameuid]["namemap2"] = []
                     savehook_new_data[gameuid]["namemap2"].append(
                         {
                             "key": name,
-                            "value": en_name if usenamemap else name,
+                            "value": namemap[name]["name"] if usenamemap else name,
                             "whole-word": True,
                         }
                     )
@@ -254,8 +250,8 @@ class common:
                     savehook_new_data[gameuid]["noundictconfig_ex"].append(
                         {
                             "src": name,
-                            "dst": en_name if usenamemap else "",
-                            "info": info,
+                            "dst": namemap[name]["name"] if usenamemap else "",
+                            "info": sex_info_map.get(namemap[name]["sex"], ""),
                         }
                     )
 
