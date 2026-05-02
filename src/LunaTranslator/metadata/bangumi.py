@@ -213,18 +213,20 @@ class searcher(common):
                             developers.append(__)
                         elif isinstance(__, dict):
                             developers.append(__["v"])
-        namemaps = {}
+        namemap = {}
         try:
             charas = self.proxysession.get(
                 "https://api.bgm.tv/v0/subjects/{}/characters".format(sid),
                 headers=headers,
             ).json()
             for _ in charas:
-                namemaps[_["name"]] = _["name"]
+                # 目前取得的角色資訊不包含性別
+                # 取得每個角色的性別須為每個角色分別呼叫：/v0/characters/{character_id}
+                namemap[_["name"]] = {"name": _["name"], "sex": ""}
         except:
             pass
         return {
-            "namemap": namemaps,
+            "namemap": namemap,
             "title": response["name"],
             "images": [response["images"]["large"]],
             "webtags": vndbtags,
