@@ -10,6 +10,7 @@
 #include "engine32/LCScript.h"
 #include "engine32/Hug.h"
 #include "engine32/Seraphim.h"
+#include "engine32/ArcSystemWorks.h"
 #include "engine32/InteractiveNovelEngine.h"
 #include "engine32/AZScript.h"
 #include "engine32/Furaiki.h"
@@ -493,5 +494,6 @@ std::vector<ENGINE *> check_engines()
         new PiAS,
         new Seraphim,
         new Azurite,
+        new ArcSystemWorks,
     };
 }

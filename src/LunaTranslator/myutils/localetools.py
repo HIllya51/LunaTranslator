@@ -28,7 +28,8 @@ def shellexecutehelper(_, op, exe, args, dirpath, bshow):
             args,
             dirpath,
             str(bshow),
-        ]
+        ],
+        run=False,
     )
 
 
@@ -39,7 +40,8 @@ def createprocesshelper(_, cmd, _2, _3, _4, _5, _6, dirpath, _7):
             "createprocesshelper",
             cmd,
             dirpath,
-        ]
+        ],
+        run=False,
     )
 
 
