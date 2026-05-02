@@ -159,12 +159,11 @@ class common:
                 spen = v["name"].split(sp if k == v["name"] else " ")
                 if len(spja) == len(spen) and len(spen) > 1:
                     for i in range(len(spja)):
-                        if len(spja[i]) >= 2:
-                            if spja[i] in bettermap:
-                                if bettermap[spja[i]]["sex"] != v["sex"]:
-                                    bettermap[spja[i]]["sex"] = ""
-                            else:
-                                bettermap[spja[i]] = {"name": spen[i], "sex": v.get("sex", "")}
+                        if spja[i] in bettermap:
+                            if bettermap[spja[i]]["sex"] != v["sex"]:
+                                bettermap[spja[i]]["sex"] = ""
+                        else:
+                            bettermap[spja[i]] = {"name": spen[i], "sex": v.get("sex", "")}
         return bettermap
 
     @tryprint
