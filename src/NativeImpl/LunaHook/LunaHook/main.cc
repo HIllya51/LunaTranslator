@@ -352,7 +352,7 @@ bool NewHook_1(HookParam &hp, LPCSTR lpname, bool silentlyfail = false)
 	{
 		if (hp.emu_addr)
 		{
-			Msg::Log("%x => %p", hp.emu_addr, (uintptr_t)hp.address);
+			Msg::Log("%08X => %p", hp.emu_addr, (uintptr_t)hp.address);
 			std::lock_guard __(JIT_HP_Records_lock);
 			JIT_HP_Records.push_back(hp);
 		}

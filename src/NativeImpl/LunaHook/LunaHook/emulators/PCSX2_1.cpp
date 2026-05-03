@@ -128,6 +128,19 @@ namespace
         strReplace(s, L"%n");
         buffer->fromWA(s);
     }
+    void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%K"));
+        StringFilter(buffer, TEXTANDLEN("%P"));
+        // StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧
+        StringFilter(buffer, TEXTANDLEN("\x81\x99")); // ☆
+
+        StringReplacer(buffer, TEXTANDLEN("\x84\xa5"), TEXTANDLEN("\x81\x5b"));
+        StringReplacer(buffer, TEXTANDLEN("\x84\xa7"), TEXTANDLEN("\x81\x5b"));
+        auto s = buffer->strA();
+        s = re::sub(s, R"(\{(.*?)\}\[(.*?)\])", "$1");
+        buffer->from(s);
+    }
     void FSLPM66045(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2072,6 +2085,26 @@ namespace
             return buffer->clear();
         FSLPM65997(buffer, hp);
     }
+    void SLPS25693(hook_context *_, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    {
+        auto s = std::string((char *)PCSX2_REG(a1));
+        if (s.size() <= 2)
+            return;
+        s = re::split(s, "[\r\n;]{3}")[0];
+        if (!startWith(s ,"WINDOW NAME"))
+            return;
+        static std::string last;
+        if (endWith(last, s))
+        {
+            last = s;
+            return;
+        }
+        last = s;
+        s = re::sub(s, R"(WINDOW NAME=\"(.*?)\">)", "\x81\x79$1\x81\x7a");
+        s = re::sub(s, R"(<.*?>)");
+        s = re::sub(s, R"([\r\n])");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2079,6 +2112,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // プリンセス・プリンセス 姫たちのアブナい放課後
+    {0x14F0C8, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, SLPS25693, 0, "SLPS-25693"}},
+    // モノクローム・ファクター cross road
+    {0x1B9120, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, ULJM06040_1, "SLPM-55103"}},
     // 桜蘭高校ホスト部
     {0x1056F8, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66737, "SLPM-66737"}},
     // Love Songs アイドルがクラスメ～ト
