@@ -53,7 +53,7 @@
     - `{sentence}`：目前欲翻譯的文字。
     - `{srclang}`和`{tgtlang}`：來源語言和目標語言。如果 Prompt 中僅使用英文，則會取代成語言名稱的英文翻譯，否則會取代成語言名稱的目前 UI 語言翻譯。
     - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextBoth[N]}`：`N`筆歷史原文、譯文、兩者。`N`與「附帶上下文個數」無關，輸入時需替換成整數。
-    - `{DictWithPrompt[XXXXX]}`：此欄位可以引用「專有名詞翻譯」清單中的詞條。**當沒有匹配到的詞條時，該欄位會被清除以避免破壞翻譯內容**。其中，`XXXXX`是一段引導LLM使用給定的詞條來最佳化翻譯的提示，可以自行定義，或停用自訂使用者訊息以使用預設的提示。
+    - `{DictWithPrompt[XXXXX]}`：此欄位可以引用「專有名詞翻譯」中的詞條。**當沒有匹配到的詞條時，該欄位會被清除以避免破壞翻譯內容**。其中，`XXXXX`是一段引導 LLM 使用給定的詞條來優化翻譯的 Prompt，可以自行定義，或停用自訂使用者訊息以使用預設的引導 Prompt。
 
 1. #### Temperature／Max Tokens／Top P／Frequency Penalty
 
@@ -67,7 +67,7 @@
     none/minimal -> 0（停用思考，但不適用於 Gemini-2.5-Pro 模型），low -> 512，medium -> -1（開啟動態思維），high/xhigh -> 24576。
 
 1. #### thinking.type
-    部分平台支援的思考模式開關。
+    部份平台支援的思考模式開關。
 
 1. #### 其他參數
 
