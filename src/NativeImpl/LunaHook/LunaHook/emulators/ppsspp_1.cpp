@@ -1849,6 +1849,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8863D5C, {0, 3, 0, 0, ULJM05874, "ULJM05874"}},
     // メモリーズオフ ゆびきりの記憶
     {0x88A50B0, {0, 1, 0, 0, ULJM06040_1, "ULJM05875"}},
+    // Memories Off ～それから～
+    {0x89435F8, {FULL_STRING, 0, 0, 0, 0, "ULJM05350"}},
+    // ユア・メモリーズオフ
+    {0x88EF260, {0, 1, 0, 0, FULJM05603, "ULJM05435"}},
     // CLANNAD
     {0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, std::vector<const char *>{"ULJM05338", "ULJM05339"}}},
     // ＣＬＡＮＮＡＤ　光見守る坂道で　上巻
@@ -1873,8 +1877,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x882C6B4, {0, 6, 0, 0, NewLineCharFilterA, "ULJS00124"}},
     // code_18
     {0x884B8B8, {0, 0, 0, 0, ULJM05821, "ULJM05936"}},
-    // ユア・メモリーズオフ
-    {0x88EF260, {0, 1, 0, 0, FULJM05603, "ULJM05435"}},
     // 華ヤカ哉、我ガ一族
     {0x885138C, {FULL_STRING, 1, 0, 0, ULJM05691, "ULJM05691"}},
     // 華ヤカ哉、我ガ一族 キネマモザイク
