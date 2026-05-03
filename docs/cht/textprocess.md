@@ -35,7 +35,7 @@
 
     許多遊戲腳本使用{}和一些其他字元來給漢字加讀音，例如：`{漢字/讀音}`和`{漢字:讀音}`，如`「{恵麻/えま}さん、まだ{起き/おき}てる？」`或`「{恵麻:えま}さん、まだ{起き:おき}てる？」`將被處理成`「恵麻さん、まだ起きてる？」`。會先按照這些模式嘗試去除讀音標註，然後去除所有花括號及其內的內容。
 
-1. #### Unicode正規化 {#anchor-fulltohalf}
+1. #### Unicode 正規化 {#anchor-fulltohalf}
 
     詳見：[https://zh.wikipedia.org/wiki/Unicode等價性](https://zh.wikipedia.org/wiki/Unicode%E7%AD%89%E5%83%B9%E6%80%A7)
 
