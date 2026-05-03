@@ -7,9 +7,9 @@
 
 但有時想要同時使用多個不同的 API 介面位址／Prompt／Model／參數等來對比翻譯效果。方法是：
 
-1. 點擊上方的「+」按鈕，選擇大模型通用接口
+1. 點擊上方的「+」按鈕，選擇大模型通用介面
     ![img](https://image.lunatranslator.org/zh/damoxing/plus.png)
-1. 彈出一個視窗，為之取個名字。這樣會複製一份當前大模型通用接口的設定和API
+1. 彈出一個視窗，為之取個名字。這樣會複製一份目前大模型通用介面的設定和 API
     ![img](https://image.lunatranslator.org/zh/damoxing/name.png)
 1. 啟用複製的介面，並可以進行單獨設定。複製的介面可以和原介面一起執行，從而使用多個不同的設定來執行。
     ![img](https://image.lunatranslator.org/zh/damoxing/extraapi3.png)
@@ -60,7 +60,7 @@
     對於部份平台的部份模型，可能`top p`和`frequency penalty`等參數不被介面接受，或者`max tokens`參數被廢棄並改為`max completion tokens`。啟用或停用開關可以解決這些問題。
 
 1. #### reasoning effort
-    部分平台支援的思考強度控制。
+    部份平台支援的思考強度控制。
 
     對於 Gemini 平台，會自動將選項映射為 Gemini 的 `thinkingBudget`，映射規則為：
     

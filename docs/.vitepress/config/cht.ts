@@ -135,12 +135,12 @@ export const cht = defineConfig({
                         collapsed: true,
                         items: [
                             {
-                                text: '斷詞與注音分析工具',
+                                text: '分詞與讀音分析工具',
                                 collapsed: false,
                                 items: [
-                                    { text: '日文分詞及假名注音', link: '/cht/qa1' },
+                                    { text: '日文分詞及假名讀音', link: '/cht/qa1' },
                                     { text: '中文分詞及注音', link: '/cht/jiebapinyin' },
-                                    { text: '英語單字原型分析', link: '/cht/englishanalyze' },
+                                    { text: '英文單字原型分析', link: '/cht/englishanalyze' },
                                 ]
                             },
                             { text: '使用內建查詞工具', link: '/cht/internaldict' },
