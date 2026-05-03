@@ -6,6 +6,7 @@ from myutils.utils import getlangtgt
 from traceback import print_exc
 import requests
 from myutils.wrapper import tryprint, threader
+from myutils.config import _TR
 
 
 class common:
@@ -151,16 +152,19 @@ class common:
     def __b64string(self, a: str):
         return hashlib.md5(a.encode("utf8")).hexdigest()
 
-    def namemapcast(self, namemap: "dict[str,str]"):
+    def namemapcast(self, namemap: "dict[str, dict[str,str]]"):
         bettermap = namemap.copy()
         for k, v in namemap.items():
-            for sp in ["・", " "]:
+            for sp in ["・", "＝", " "]:
                 spja = k.split(sp)
-                spen = v.split(sp if k == v else " ")
+                spen = v["name"].split(sp if k == v["name"] else " ")
                 if len(spja) == len(spen) and len(spen) > 1:
                     for i in range(len(spja)):
-                        if len(spja[i]) >= 2:
-                            bettermap[spja[i]] = spen[i]
+                        if spja[i] in bettermap:
+                            if bettermap[spja[i]]["sex"] != v["sex"]:
+                                bettermap[spja[i]]["sex"] = ""
+                        else:
+                            bettermap[spja[i]] = {"name": spen[i], "sex": v.get("sex", "")}
         return bettermap
 
     @tryprint
@@ -205,6 +209,7 @@ class common:
         description = data.get("description", None)
         if description:
             self.__tryinserttomemory(description, gameuid)
+        sex_info_map = {"m": _TR("男性"), "f": _TR("女性")}
         self.typename
         for _ in images:
             if not _:
@@ -227,7 +232,7 @@ class common:
             for _ in savehook_new_data[gameuid].get("noundictconfig_ex", []):
                 dedump2.add(_.get("src", ""))
             namemap = self.namemapcast(namemap)
-            usenamemap = getlangtgt() == "en"
+            usenamemap = getlangtgt() not in ("ja", "zh", "cht")
             for name in namemap:
                 if not (name in dedump):
                     if "namemap2" not in savehook_new_data[gameuid]:
@@ -235,7 +240,7 @@ class common:
                     savehook_new_data[gameuid]["namemap2"].append(
                         {
                             "key": name,
-                            "value": namemap[name] if usenamemap else name,
+                            "value": namemap[name]["name"] if usenamemap else name,
                             "whole-word": True,
                         }
                     )
@@ -245,8 +250,8 @@ class common:
                     savehook_new_data[gameuid]["noundictconfig_ex"].append(
                         {
                             "src": name,
-                            "dst": namemap[name] if usenamemap else "",
-                            "info": "",
+                            "dst": namemap[name]["name"] if usenamemap else "",
+                            "info": sex_info_map.get(namemap[name]["sex"], ""),
                         }
                     )
 
