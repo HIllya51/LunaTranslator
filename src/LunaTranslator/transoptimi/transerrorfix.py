@@ -26,6 +26,9 @@ class Process:
             savehook_new_data[gameuid]["transerrorfix"],
             "翻译结果修正_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
             ["翻译", "替换"],
+            merged=savehook_new_data[gameuid],
+            mergek="transerrorfix_merge",
+            mergedf=False,
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
     def process_after(self, res, _):

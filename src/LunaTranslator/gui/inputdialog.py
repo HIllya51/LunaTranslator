@@ -54,6 +54,9 @@ class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
         extraX: dict = None,
         need_regex=True,
         dictkeys=None,
+        merged=None,
+        mergek=None,
+        mergedf=None,
     ) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
         self.setWindowTitle(title)
@@ -63,6 +66,17 @@ class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
         # self.setWindowModality(Qt.ApplicationModal)
         self.reflist = reflist
         formLayout = QVBoxLayout(self)  # 配置layout
+        if merged:
+            formLayout.addLayout(
+                getboxlayout(
+                    [
+                        getsmalllabel("继承默认"),
+                        getsimpleswitch(merged, mergek, default=mergedf),
+                        "",
+                    ],
+                    QHBoxLayout,
+                ),
+            )
         if extraX:
             ttsprocess = extraX.get("ttsprocess_path")
             if not ttsprocess:
@@ -348,7 +362,7 @@ class yuyinzhidingsetting(LDialog):
             else:
                 com.setCurrentIndex(1)
 
-    def __init__(self, parent, reflist) -> None:
+    def __init__(self, parent, reflist, merged=None, mergek=None, mergedf=None) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
 
         self.setWindowTitle("语音指定")
@@ -356,7 +370,17 @@ class yuyinzhidingsetting(LDialog):
         # self.setWindowModality(Qt.ApplicationModal)
         self.reflist = reflist
         formLayout = QVBoxLayout(self)  # 配置layout
-
+        if merged:
+            formLayout.addLayout(
+                getboxlayout(
+                    [
+                        getsmalllabel("继承默认"),
+                        getsimpleswitch(merged, mergek, default=mergedf),
+                        "",
+                    ],
+                    QHBoxLayout,
+                ),
+            )
         self.model = LStandardItemModel()
         self.model.setHorizontalHeaderLabels(["范围", "条件", "正则", "目标", "指定为"])
         table = TableViewW(self, updown=True)
@@ -995,30 +1019,16 @@ class noundictconfigdialog1(noundictconfigdialog1___):
     pass
 
 
-@Singleton
-class stringreplacedialog_klass(noundictconfigdialog1___):
-    def __init__(self, parent, reflist, title, label, ischild, args):
-        super().__init__(parent, reflist, title, label, None, True, None)
-        if not ischild:
-            return
-        vbox: QVBoxLayout = self.layout()
-        vbox.insertLayout(
-            0,
-            getboxlayout(
-                [
-                    getsmalllabel("继承默认"),
-                    getsimpleswitch(args, "merge", default=False),
-                    "",
-                ],
-                QHBoxLayout,
-            ),
-        )
-
-
 def stringreplacedialog(parent, reflistdict, ischild=False):
     args = reflistdict["args"]
     title = reflistdict["name"]
     reflist = args["internal"]
-    stringreplacedialog_klass(
-        parent, reflist, title, ["原文内容", "替换为"], ischild, args
+    noundictconfigdialog1(
+        parent,
+        reflist,
+        title,
+        ["原文内容", "替换为"],
+        merged=args if ischild else None,
+        mergek="merge",
+        mergedf=False,
     )

@@ -10,7 +10,9 @@ from gui.inputdialog import noundictconfigdialog1___
 
 @Singleton
 class postconfigdialog_2(noundictconfigdialog1___):
-    def __init__(self, parent, reflist, title):
+    def __init__(
+        self, parent, reflist: list, title, merged=None, mergek=None, mergedf=None
+    ):
         super().__init__(
             parent,
             reflist,
@@ -18,6 +20,9 @@ class postconfigdialog_2(noundictconfigdialog1___):
             ["原文", "翻译", "注释"],
             dictkeys=["src", "dst", "info"],
             need_regex=False,
+            merged=merged,
+            mergek=mergek,
+            mergedf=mergedf,
         )
 
 
@@ -38,6 +43,9 @@ class Process:
             parent_window,
             savehook_new_data[gameuid]["noundictconfig_ex"],
             "专有名词翻译_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
+            merged=savehook_new_data[gameuid]["noundictconfig_ex"],
+            mergek="noundict_merge",
+            mergedf=False,
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
     @property

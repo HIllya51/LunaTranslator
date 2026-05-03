@@ -28,6 +28,9 @@ class Process:
             savehook_new_data[gameuid]["namemap2"],
             "翻译前替换_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
             ["原文", "翻译"],
+            merged=savehook_new_data[gameuid],
+            mergek="vndbnamemap_merge",
+            mergedf=False,
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
 
     @property
