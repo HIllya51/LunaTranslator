@@ -43,7 +43,7 @@ class Process:
             parent_window,
             savehook_new_data[gameuid]["noundictconfig_ex"],
             "专有名词翻译_-_[[{}]]".format(savehook_new_data[gameuid]["title"]),
-            merged=savehook_new_data[gameuid]["noundictconfig_ex"],
+            merged=savehook_new_data[gameuid],
             mergek="noundict_merge",
             mergedf=False,
         ).setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))

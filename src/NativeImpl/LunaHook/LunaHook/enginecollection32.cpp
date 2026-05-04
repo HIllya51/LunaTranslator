@@ -5,6 +5,7 @@
 #include "engine32/KISS.h"
 #include "engine32/Tarte.h"
 #include "engine32/sakanagl.h"
+#include "engine32/Monochrome.h"
 #include "engine32/H_do_C.h"
 #include "engine32/PixelGameMakerMVplayer.h"
 #include "engine32/LCScript.h"
@@ -495,5 +496,6 @@ std::vector<ENGINE *> check_engines()
         new Seraphim,
         new Azurite,
         new ArcSystemWorks,
+        new Monochrome,
     };
 }
