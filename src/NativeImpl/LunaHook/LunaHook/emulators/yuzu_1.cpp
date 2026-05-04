@@ -2860,6 +2860,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Gakuen Club
+    {0x80128A00, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010052900B8EE000ull, "1.0.0"}},
+    {0x8012962C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010052900B8EE000ull, "1.1.0"}},
     // ハンサムロンダリング -the mystic lover-
     {0x834D665C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, "1.0.0"}},
     {0x834D669C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010056B024B92000, 0x010056B024B92000ull, nullptr}}, // 1.1.0 & 1.1.1
