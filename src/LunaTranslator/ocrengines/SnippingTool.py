@@ -93,6 +93,8 @@ class question(QWidget):
                     prg,
                 )
 
+        if file_size != size:
+            raise Exception()
         self.progresssetval.emit(_TR("正在解压"), 10000)
         self.unzipmsix(target)
 
@@ -158,6 +160,8 @@ class question(QWidget):
                     ),
                     prg,
                 )
+        if file_size != size:
+            raise Exception()
         self.progresssetval.emit(_TR("正在解压"), 10000)
         with zipfile.ZipFile(target) as zipf:
             zipf.extractall(gobject.getcachedir())

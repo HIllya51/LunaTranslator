@@ -278,6 +278,8 @@ class question(QWidget):
                     ),
                     prg,
                 )
+        if file_size != size:
+            raise Exception()
         self.progresssetval.emit(_TR("正在解压"), 10000)
         self.writeinfos(data, target, md5.hexdigest())
 

@@ -738,7 +738,8 @@ def downloadgguf(key, url: str):
                 file.write(i)
                 file_size += len(i)
                 gobject.base.llamacppdownloadprogress.emit(key, url, file_size, size)
-
+        if file_size != size:
+            raise Exception()
         gobject.base.llamacppdownloadprogress.emit(key, url, -2, 0)
 
         shutil.move(savep, gobject.getcachedir("llamacpp/" + key))
