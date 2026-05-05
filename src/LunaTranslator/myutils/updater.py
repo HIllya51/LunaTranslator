@@ -24,7 +24,7 @@ def testdocconnect():
         @threader
         @trypass
         def __(i, main_server, proxy):
-            res = requests.get(main_server, verify=False, proxies=proxy)
+            res = requests.get(main_server, proxies=proxy)
             if res.status_code == 200:
                 results.append((i, res))
                 wait.set()
@@ -53,7 +53,6 @@ def tryqueryfromhost():
             res = requests.get(
                 "{main_server}/version".format(main_server=main_server),
                 params={"arch": ("x86", "x64")[runtime_bit_64], "target": target},
-                verify=False,
                 proxies=proxy,
             )
             res = res.json()
@@ -139,7 +138,7 @@ def updatemethod(urls: "tuple[str, str]"):
     if updatemethod_checkalready(savep, sha256):
         return savep
     with open(savep, "wb") as file:
-        r = requests.get(url, stream=True, verify=False, proxies=getproxy())
+        r = requests.get(url, stream=True, proxies=getproxy())
         size = int(r.headers["Content-Length"])
         file_size = 0
         asize = format_bytes(size)

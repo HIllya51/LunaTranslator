@@ -84,16 +84,13 @@ class WebSocket(requests.Requester_common):
             path += "?" + query
         return ishttps, server, port, path
 
-    def _set_verify(self, curl, verify):
-        if verify == False:
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, 0)
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 0)
-        else:
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, 1)
-            curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, 2)
-
     def connect(
-        self, url: str, header: dict = None, http_proxy_host=None, http_proxy_port=None
+        self,
+        url: str,
+        header: dict = None,
+        verify=True,
+        http_proxy_host=None,
+        http_proxy_port=None,
     ):
         https, server, port, path = self._parseurl2serverandpath(url)
         if server == "127.0.0.1":
@@ -104,7 +101,7 @@ class WebSocket(requests.Requester_common):
         curl_easy_setopt(self.curl, CURLoption.URL, url.encode("utf8"))
         curl_easy_setopt(self.curl, CURLoption.PORT, port)
         self._setproxy(self.curl, http_proxy_host, http_proxy_port)
-        self._set_verify(self.curl, False)
+        curl_set_verify(self.curl, verify)
 
         lheaders = auto_curl_slist()
         for _ in self._parseheader(header, None):

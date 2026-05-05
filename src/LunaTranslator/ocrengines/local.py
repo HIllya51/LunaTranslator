@@ -261,7 +261,7 @@ class question(QWidget):
         url: str = data["link"]
         self.progresssetval.emit("……", 0)
         file_size = 0
-        req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
+        req = requests.get(url, proxies=getproxy(), stream=True)
         size = int(req.headers["Content-Length"])
         target = gobject.gettempdir("ocrmodel/" + hashlib.md5(url.encode()).hexdigest())
         md5 = hashlib.md5()
@@ -375,7 +375,6 @@ class question(QWidget):
         try:
             result = requests.get(
                 dynamiclink("Resource/ocr_models_list"),
-                verify=False,
                 proxies=getproxy(),
             ).json()
         except:

@@ -143,7 +143,7 @@ class question(QWidget):
     def downloadx(self, url: str):
 
         file_size = 0
-        req = requests.get(url, verify=False, proxies=getproxy(), stream=True)
+        req = requests.get(url, proxies=getproxy(), stream=True)
         size = int(req.headers["Content-Length"])
         target = gobject.gettempdir(url.split("/")[-1])
         with open(target, "wb") as ff:

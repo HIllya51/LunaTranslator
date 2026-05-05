@@ -36,7 +36,7 @@ class TS(basetrans):
         if not self.is_src_auto:
             data += "&source_lang=" + self.srclang
         response = self.proxysession.post(
-            endpoint, headers=headers, verify=False, data=data
+            endpoint, headers=headers, data=data
         )
 
         try:

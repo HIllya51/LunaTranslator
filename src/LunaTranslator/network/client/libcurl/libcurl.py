@@ -19,6 +19,7 @@ libcurl = CDLL(gobject.GetDllpath(("libcurl.dll", "libcurl-x64.dll")))
 
 libcurl_Accept_Encoding = "gzip, deflate, br, zstd"
 
+
 class curl_ws_frame(Structure):
     _fields_ = [
         ("age", c_int),
@@ -34,6 +35,7 @@ CURLcode = c_uint
 
 class CURLoption(c_int):
     CURLOPTTYPE_LONG = 0
+    CURLOPTTYPE_VALUES = CURLOPTTYPE_LONG
     CURLOPTTYPE_OBJECTPOINT = 10000
     CURLOPTTYPE_FUNCTIONPOINT = 20000
 
@@ -69,6 +71,12 @@ class CURLoption(c_int):
     CONNECT_ONLY = CURLOPTTYPE_LONG + 141
     TIMEOUT_MS = CURLOPTTYPE_LONG + 155
     CONNECTTIMEOUT_MS = CURLOPTTYPE_LONG + 156
+    VERBOSE = CURLOPTTYPE_LONG + 41
+    CAINFO = CURLOPTTYPE_STRINGPOINT + 65
+    SSL_OPTIONS = CURLOPTTYPE_VALUES + 216
+
+
+CURLSSLOPT_NATIVE_CA = 1 << 4
 
 
 class CURLINFO(c_int):
@@ -378,3 +386,14 @@ def MaybeRaiseException(error):
     if error == CURLException.OPERATION_TIMEDOUT:
         raise requests.exceptions.Timeout(e)
     raise e
+
+
+def curl_set_verify(curl: CURL, verify: bool | str):
+    curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, (0, 1)[bool(verify)])
+    curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, (0, 2)[bool(verify)])
+    if not verify:
+        return
+    if isinstance(verify, str):
+        curl_easy_setopt(curl, CURLoption.CAINFO, verify.encode())
+    else:
+        curl_easy_setopt(curl, CURLoption.SSL_OPTIONS, CURLSSLOPT_NATIVE_CA)

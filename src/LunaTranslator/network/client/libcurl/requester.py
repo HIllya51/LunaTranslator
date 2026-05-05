@@ -123,6 +123,7 @@ class Requester(Requester_common):
             __ = 0
 
         curl_easy_reset(curl)
+        # curl_easy_setopt(curl, CURLoption.VERBOSE, 1)
         curl_easy_setopt(curl, CURLoption.COOKIEJAR, "")
         if timeout[0]:
             curl_easy_setopt(curl, CURLoption.CONNECTTIMEOUT_MS, timeout[0])
@@ -138,9 +139,7 @@ class Requester(Requester_common):
         curl_easy_setopt(curl, CURLoption.PORT, port)
         lheaders = self._setheaders(curl, headers, cookies)
 
-        curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, (0, 1)[bool(verify)])
-        curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, (0, 2)[bool(verify)])
-
+        curl_set_verify(curl, verify)
         if proxy:
             curl_easy_setopt(curl, CURLoption.PROXY, proxy.encode("utf8"))
         curl_easy_setopt(curl, CURLoption.FOLLOWLOCATION, int(allow_redirects))

@@ -88,7 +88,7 @@ class WebSocket:
         proxy = "{}:{}".format(http_proxy_host, http_proxy_port)
         winhttpsetproxy(hsess, proxy)
 
-    def connect(self, url, header=None, http_proxy_host=None, http_proxy_port=None):
+    def connect(self, url, header=None, verify=True, http_proxy_host=None, http_proxy_port=None):
         https, server, port, path = self._parseurl2serverandpath(url)
         if https:
             flag = WINHTTP_FLAG_SECURE

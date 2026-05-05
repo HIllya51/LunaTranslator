@@ -28,7 +28,6 @@ class TS(basetrans):
             "https://api.niutrans.com/NiuTransServer/translation",
             headers=headers,
             data=params,
-            verify=False,
         )
 
         try:

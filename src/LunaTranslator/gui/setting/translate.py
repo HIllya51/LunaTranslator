@@ -727,7 +727,7 @@ def downloadgguf(key, url: str):
         gobject.base.llamacppdownloadprogress.emit(key, url, 0, 0)
         savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()))
         with open(savep, "wb") as file:
-            r = requests.get(url, stream=True, verify=False, proxies=getproxy())
+            r = requests.get(url, stream=True, proxies=getproxy())
             size = int(r.headers["Content-Length"])
             file_size = 0
             for i in r.iter_content(chunk_size=1024 * 32):
@@ -764,7 +764,7 @@ def downloadone(key, url: str, digest: str, check_interrupt, tag: str):
         gobject.base.llamacppdownloadprogress.emit(key, url, 0, 0)
         savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()) + ".zip")
         with open(savep, "wb") as file:
-            r = requests.get(url, stream=True, verify=False, proxies=getproxy())
+            r = requests.get(url, stream=True, proxies=getproxy())
             size = int(r.headers["Content-Length"])
             file_size = 0
             hash_obj = hashlib.sha256()

@@ -310,7 +310,6 @@ class TTS(TTSbase):
 
         response = self.proxysession.post(
             "https://translate.google.com/_/TranslateWebserverUi/data/batchexecute",
-            verify=False,
             headers=headers,
             data=freq,
         )

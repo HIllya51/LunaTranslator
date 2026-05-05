@@ -401,7 +401,7 @@ class Session:
         allow_redirects=True,
         hooks=None,
         stream=None,
-        verify=False,
+        verify=True,
         cert=None,
     ):
         requester_ = self.requester
