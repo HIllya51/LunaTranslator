@@ -157,8 +157,9 @@ class BASEOBJECT(QObject):
     llamacppstdoutstatus = pyqtSignal(dict)
     llamacppcurrversion = pyqtSignal(object)
     llamacpparchcheck = pyqtSignal(object)
-    llamacppdownloadprogress = pyqtSignal(str, float)
+    llamacppdownloadprogress = pyqtSignal(str, str, object, object)
     llamacppdownloadcheck = pyqtSignal(int)
+    llamacppposttask = pyqtSignal(str, object)
     wheelhistory = pyqtSignal(int)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):

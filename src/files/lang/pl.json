@@ -628,7 +628,6 @@
     "智谱AI": "Sztuczna inteligencja Zhipu",
     "讯飞星火大模型": "Duży model Xunfei Spark",
     "大模型通用接口": "Ogólny interfejs dla dużych modeli",
-    "总大小": "Całkowity rozmiar",
     "进度": "Postęp",
     "范围": "zakres",
     "字体设置": "Ustawienia czcionek",
@@ -917,5 +916,6 @@
     "悬浮": "Zawieszony",
     "布局": "Układ",
     "男性": "Mężczyzna",
-    "女性": "Kobieta"
+    "女性": "Kobieta",
+    "重新下载": "Ponownie pobierz"
 }

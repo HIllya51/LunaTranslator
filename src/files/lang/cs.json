@@ -628,7 +628,6 @@
     "智谱AI": "Zhipu AI",
     "讯飞星火大模型": "Xunfei Spark velký model",
     "大模型通用接口": "Obecné rozhraní pro velké modely",
-    "总大小": "Celková velikost",
     "进度": "Pokrok",
     "范围": "rozmezí",
     "字体设置": "Nastavení písma",
@@ -917,5 +916,6 @@
     "悬浮": "Závěsný",
     "布局": "Rozložení",
     "男性": "Mužský",
-    "女性": "Ženský"
+    "女性": "Ženský",
+    "重新下载": "Znovu stáhnout"
 }

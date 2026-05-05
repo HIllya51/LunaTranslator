@@ -628,7 +628,6 @@
     "智谱AI": "Zhipu AI",
     "讯飞星火大模型": "Xunfei Spark stor modell",
     "大模型通用接口": "Allmänt gränssnitt för stora modeller",
-    "总大小": "Total storlek",
     "进度": "Framsteg",
     "范围": "sortiment",
     "字体设置": "Inställningar för teckensnitt",
@@ -917,5 +916,6 @@
     "悬浮": "Svävande",
     "布局": "Här är översättningen av \"布局\" till svenska:  \n**Layout**",
     "男性": "Man",
-    "女性": "Kvinna"
+    "女性": "Kvinna",
+    "重新下载": "Ladda ner igen"
 }

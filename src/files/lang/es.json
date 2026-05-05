@@ -628,7 +628,6 @@
     "智谱AI": "IA de Zhipu",
     "讯飞星火大模型": "Modelo grande Xunfei Spark",
     "大模型通用接口": "Interfaz general para modelos grandes",
-    "总大小": "Tamaño total",
     "进度": "Progreso",
     "范围": "gama",
     "字体设置": "Configuración de fuentes",
@@ -917,5 +916,6 @@
     "悬浮": "Flotante",
     "布局": "Diseño",
     "男性": "Masculino",
-    "女性": "Femenino"
+    "女性": "Femenino",
+    "重新下载": "Descargar de nuevo"
 }

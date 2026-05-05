@@ -272,9 +272,10 @@ class question(QWidget):
                 md5.update(_)
                 file_size += len(_)
                 prg = int(10000 * file_size / size)
-                prg100 = prg / 100
                 self.progresssetval.emit(
-                    _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
+                    _TR("{}/{} _进度_{:0.2f}%").format(
+                        format_bytes(file_size), asize, prg / 100
+                    ),
                     prg,
                 )
         self.progresssetval.emit(_TR("正在解压"), 10000)

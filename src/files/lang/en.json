@@ -628,7 +628,6 @@
     "智谱AI": "ZhipuAI",
     "讯飞星火大模型": "iFLYTEK SparkDesk LLM",
     "大模型通用接口": "General LLM Interface",
-    "总大小": "Total Size",
     "进度": "Progress",
     "范围": "Range",
     "字体设置": "Font Settings",
@@ -917,5 +916,6 @@
     "悬浮": "Suspension",
     "布局": "layout",
     "男性": "Male",
-    "女性": "Female"
+    "女性": "Female",
+    "重新下载": "Download again"
 }

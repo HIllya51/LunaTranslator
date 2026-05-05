@@ -628,7 +628,6 @@
     "智谱AI": "ZhipuAI",
     "讯飞星火大模型": "Modelo de Linguagem iFLYTEK SparkDesk",
     "大模型通用接口": "Interface Geral de Modelo de Linguagem",
-    "总大小": "Tamanho Total",
     "进度": "Progresso",
     "范围": "Intervalo",
     "字体设置": "Configurações de Fonte",
@@ -917,5 +916,6 @@
     "悬浮": "Suspenso",
     "布局": "Layout",
     "男性": "Masculino",
-    "女性": "Feminino"
+    "女性": "Feminino",
+    "重新下载": "Baixar novamente"
 }

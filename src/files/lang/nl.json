@@ -628,7 +628,6 @@
     "智谱AI": "Zhipu AI",
     "讯飞星火大模型": "Xunfei Spark groot model",
     "大模型通用接口": "Algemene interface voor grote modellen",
-    "总大小": "Totale grootte",
     "进度": "Vooruitgang",
     "范围": "bereik",
     "字体设置": "Instellingen voor lettertypen",
@@ -917,5 +916,6 @@
     "悬浮": "Zwevend",
     "布局": "Indeling",
     "男性": "Mannelijk",
-    "女性": "Vrouwelijk"
+    "女性": "Vrouwelijk",
+    "重新下载": "Opnieuw downloaden"
 }

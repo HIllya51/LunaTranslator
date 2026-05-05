@@ -150,11 +150,11 @@ def updatemethod(urls: "tuple[str, str]"):
                 continue
             file.write(i)
             file_size += len(i)
-
             prg = int(10000 * file_size / size)
-            prg100 = prg / 100
             gobject.base.progresssignal4.emit(
-                _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
+                _TR("{}/{} _进度_{:0.2f}%").format(
+                    format_bytes(file_size), asize, prg / 100
+                ),
                 prg,
             )
 

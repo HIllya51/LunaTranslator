@@ -34,16 +34,17 @@ class resourcewidget(NQGroupBox):
         file_size = 0
         req = requests.get(url, stream=True, proxies=getproxy())
         size = int(req.headers["Content-Length"])
+        szstr = format_bytes(size)
         target = gobject.gettempdir(self.oldlinkfnname)
         with open(target, "wb") as ff:
             for _ in req.iter_content(chunk_size=1024 * 32):
                 ff.write(_)
                 file_size += len(_)
                 prg = int(10000 * file_size / size)
-                prg100 = prg / 100
-                sz = int(1000 * (int(size / 1024) / 1024)) / 1000
                 self.progresssetval.emit(
-                    _TR("总大小_{} MB _进度_{:0.2f}%").format(sz, prg100),
+                    _TR("{}/{}_进度_{:0.2f}%").format(
+                        format_bytes(file_size), szstr, prg / 100
+                    ),
                     prg,
                 )
 
@@ -160,9 +161,10 @@ class resourcewidget2(NQGroupBox):
                     ff.write(_)
                     file_size += len(_)
                     prg = int(10000 * file_size / size)
-                    prg100 = prg / 100
                     self.progresssetval.emit(
-                        _TR("总大小_{} _进度_{:0.2f}%").format(asize, prg100),
+                        _TR("{}/{}_进度_{:0.2f}%").format(
+                            format_bytes(file_size), asize, prg / 100
+                        ),
                         prg,
                     )
 

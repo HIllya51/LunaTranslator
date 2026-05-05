@@ -628,7 +628,6 @@
     "智谱AI": "ZhipuAI",
     "讯飞星火大模型": "iFLYTEK SparkDesk LLM",
     "大模型通用接口": "Giao diện chung của LLM",
-    "总大小": "Tổng kích thước",
     "进度": "Tiến trình",
     "范围": "Phạm vi",
     "字体设置": "Cài đặt phông chữ",
@@ -917,5 +916,6 @@
     "悬浮": "Lơ lửng",
     "布局": "Bố trí",
     "男性": "Nam",
-    "女性": "Nữ"
+    "女性": "Nữ",
+    "重新下载": "Tải lại"
 }

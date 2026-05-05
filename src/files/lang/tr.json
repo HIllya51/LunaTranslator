@@ -628,7 +628,6 @@
     "智谱AI": "Zhipu Yapay Zekası",
     "讯飞星火大模型": "Xunfei Spark büyük modeli",
     "大模型通用接口": "Büyük modeller için genel arayüz",
-    "总大小": "Toplam boyut",
     "进度": "İlerleme",
     "范围": "aralık",
     "字体设置": "Yazı tipi ayarları",
@@ -917,5 +916,6 @@
     "悬浮": "Asılı",
     "布局": "Düzen",
     "男性": "Erkek",
-    "女性": "Kadın"
+    "女性": "Kadın",
+    "重新下载": "Tekrar indir"
 }
