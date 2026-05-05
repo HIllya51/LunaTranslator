@@ -1055,7 +1055,6 @@ def common_create_gemini_request(
     apitype: APIType,
 ):
     gen_config = {
-        "stopSequences": [" \n"],
         "temperature": config["Temperature"],
         "maxOutputTokens": config["max_tokens"],
         "topP": config["top_p"],
@@ -1101,12 +1100,12 @@ def common_create_gemini_request(
     ]
     # https://discuss.ai.google.dev/t/gemma-3-missing-features-despite-announcement/71692/13
     sys_message = (
-        {"systemInstruction": {"parts": {"text": sysprompt}}} if sysprompt else {}
+        {"systemInstruction": {"parts": [{"text": sysprompt}]}} if sysprompt else {}
     )
     usingstream = config.get("流式输出", False)
     payload = {}
     payload.update(contents=contents)
-    payload.update(safety_settings=safety)
+    payload.update(safetySettings=safety)
     if not model.startswith("gemma-3"):
         payload.update(sys_message)
     payload.update(generationConfig=gen_config)
@@ -1122,13 +1121,32 @@ def common_create_gemini_request(
     return res
 
 
+def common_parse_gemini_candidate_text(candidate: dict):
+    content: dict = candidate.get("content", {})
+    return "".join(
+        part.get("text", "")
+        for part in content.get("parts", [])
+        if isinstance(part, dict) and not part.get("thought")
+    )
+
+
+def common_parse_gemini_response_text(js: dict):
+    candidates = js.get("candidates", [])
+    if not candidates:
+        return ""
+    return common_parse_gemini_candidate_text(candidates[0])
+
+
 def common_parse_normal_response_1(response: requests.Response, apitype: APIType):
     try:
         js = response.json()
         if apitype == APIType.claude:
             return js["content"][0]["text"], None
         elif apitype == APIType.gemini:
-            return js["candidates"][0]["content"]["parts"][0]["text"], None
+            resp = common_parse_gemini_response_text(js)
+            if not resp:
+                raise Exception()
+            return resp, None
         else:
             message: dict = js["choices"][0]["message"]
             return message["content"], message.get("reasoning")
