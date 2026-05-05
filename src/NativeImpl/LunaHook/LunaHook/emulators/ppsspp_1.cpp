@@ -1547,6 +1547,22 @@ namespace
         }
         ULJM05943F(buffer, hpx);
     }
+    DECLARE_FUNCTION(ULJM05823F, const char *_);
+    void ULJM05823(TextBuffer *buffer, HookParam *hpx)
+    {
+        auto s = buffer->strA();
+        if (s.find("#n") == s.npos)
+        {
+            HookParam hp;
+            hp.address = (uintptr_t)ULJM05823F;
+            hp.offset = GETARG(1);
+            hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
+            static auto _ = NewHook(hp, hpx->name);
+            ULJM05823F(s.c_str());
+            return buffer->clear();
+        }
+        ULJM05943F(buffer, hpx);
+    }
 }
 struct emfuncinfoX
 {
@@ -1744,8 +1760,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // アーメン・ノワール ポータブル
     {0x883b6a8, {0, 0, 0, 0, ULJM05943F, "ULJM06064"}},
     // デス・コネクション　ポータブル
-    {0x882AEF4, {0, 0, 0, 0, ULJM05943F, "ULJM05823"}},
-    {0x88B2464, {0, 0, 0, 0, ULJM05823_2, "ULJM05823"}}, // text+name->name
+    {0x8855594, {FULL_STRING, 0, 0, 0, ULJM05823, "ULJM05823"}},
     // しらつゆの怪
     {0x888A26C, {0, 0, 0, 0, ULJM06289, "ULJM06289"}},
     // ダイヤの国のアリス～Wonderful Wonder World～
