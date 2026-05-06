@@ -2038,13 +2038,6 @@ namespace
         else
             buffer->from(buffer->strA().substr(1));
     }
-    void FSLPM62597(TextBuffer *buffer, HookParam *hp)
-    {
-        if ((DWORD)PCSX2_REG(t0))
-            return buffer->clear();
-        StringFilter(buffer, TEXTANDLEN("$t"));
-        StringFilter(buffer, TEXTANDLEN("$d"));
-    }
     void SLPM66845(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, '\\');
@@ -2091,7 +2084,7 @@ namespace
         if (s.size() <= 2)
             return;
         s = re::split(s, "[\r\n;]{3}")[0];
-        if (!startWith(s ,"WINDOW NAME"))
+        if (!startWith(s, "WINDOW NAME"))
             return;
         static std::string last;
         if (endWith(last, s))
@@ -2105,6 +2098,15 @@ namespace
         s = re::sub(s, R"([\r\n])");
         buffer->from(s);
     }
+    void SLPM62597(hook_context *_, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    {
+        *role = (WORD)PCSX2_REG(v0);
+        std::string s = (char *)PCSX2_REG(a2);
+        s = re::sub(s, "^(\x81\x40)+");
+        s = re::sub(s, "(\x81\x40)+$");
+        s = re::sub(s, "[\r\n]");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2112,6 +2114,11 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 漢のためのバイブル THE 友情アドベンチャー ～炎多留・魂～
+    {0x12fc50, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-65393"}},
+    {0x12fe80, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-65393"}},
+    // 学園ヘヴン おかわりっ！
+    {0x138950, {0, 0, 0, SLPM62597, 0, "SLPM-62597"}},
     // プリンセス・プリンセス 姫たちのアブナい放課後
     {0x14F0C8, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, SLPS25693, 0, "SLPS-25693"}},
     // モノクローム・ファクター cross road
@@ -2129,8 +2136,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 悠久ノ桜
     {0x13DDC0, {FULL_STRING, PCSX2_REG_OFFSET(s2), 0, 0, SLPM66845, "SLPM-66845"}},
     {0x12a630, {FULL_STRING, PCSX2_REG_OFFSET(s2), 0, 0, SLPM668452, "SLPM-66845"}},
-    // 学園ヘヴン おかわりっ！
-    {0x1DD89C, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, FSLPM62597, "SLPM-62597"}},
     // WHITE CLARITY ～And The tears became you.～
     {0x16AC58, {0, PCSX2_REG_OFFSET(v0), 0, 0, SLPM66214, "SLPM-66214"}},
     // 学園ヘヴン BOY'S LOVE SCRAMBLE！

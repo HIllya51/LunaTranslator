@@ -1563,6 +1563,13 @@ namespace
         }
         ULJM05943F(buffer, hpx);
     }
+    void NPJH50715(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strAW();
+        ws = remapkatakana(ws);
+        ws = re::sub(ws, LR"(\{ruby:(.*?)&.*?\})", L"$1");
+        buffer->fromWA(ws);
+    }
 }
 struct emfuncinfoX
 {
@@ -1570,6 +1577,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 恋愛0キロメートル Portable
+    {0x881F154, {FULL_STRING, 1, 0, 0, NPJH50715, "NPJH50715"}},
     // 文明開華 葵座異聞録 再演
     {0x886A55C, {FULL_STRING, 0, 0, 0, FULJM05889, "NPJH50560"}},
     {0x886A600, {FULL_STRING, 0xC, 0, 0, FULJM05889, "NPJH50560"}}, // name

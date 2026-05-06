@@ -418,6 +418,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | NPJH50715 | 恋愛0キロメートル Portable |
 |  | NPJH50560 | 文明開華 葵座異聞録 再演 |
 |  | ULJM05491 | サイファーPORTABLE |
 |  | ULJM05962 | 花と乙女に祝福を　～春風の贈り物～　portable |
@@ -945,6 +946,8 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | SLPM-65393 | 漢のためのバイブル THE 友情アドベンチャー ～炎多留・魂～ |
+|  | SLPM-62597 | 学園ヘヴン おかわりっ！ |
 |  | SLPS-25693 | プリンセス・プリンセス 姫たちのアブナい放課後 |
 |  | SLPM-55103 | モノクローム・ファクター cross road |
 |  | SLPM-66737 | 桜蘭高校ホスト部 |
@@ -953,7 +956,6 @@ LunaTranslator supports a large number of games through emulators. For games tha
 |  | SLPM-66855 & SLPM-66856 | 咎狗の血 True Blood |
 |  | SLPM-55166 | 風色サーフ |
 |  | SLPM-66845 | 悠久ノ桜 |
-|  | SLPM-62597 | 学園ヘヴン おかわりっ！ |
 |  | SLPM-66214 | WHITE CLARITY ～And The tears became you.～ |
 |  | SLPS-25282 | 学園ヘヴン BOY'S LOVE SCRAMBLE！ |
 |  | SLPM-55121 | 不確定世界の探偵紳士 ～悪行双麻の事件ファイル～ |

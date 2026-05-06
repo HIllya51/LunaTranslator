@@ -40,9 +40,6 @@ def stream_event_parser(response: requests.Response):
         yield json_data
 
 
-_gemini_text_line = re.compile(r'^"text"\s*:\s*("(?:\\.|[^"\\])*")\s*,?$')
-
-
 def commonparseresponse_good(
     response: requests.Response, hidethinking: bool, markdown2html: bool
 ):
@@ -110,6 +107,7 @@ def commonparseresponse_good(
 
 def parseresponsegemini(response: requests.Response, markdown2html: bool):
     line = ""
+    _gemini_text_line = re.compile(r'^"text"\s*:\s*("(?:\\.|[^"\\])*")\s*,?$')
     for __x in response.iter_lines(decode_unicode=True):
         __x = __x.strip()
         if not __x:

@@ -189,25 +189,43 @@ namespace
     hp.address = addr;
     hp.type = USING_SPLIT | NO_CONTEXT | USING_CHAR;   // use NO_CONTEXT to get rid of floating reladdr
     hp.type |= widechar ? CODEC_UTF16 : CODEC_ANSI_BE; // use context as split is sufficient, but will produce floating split
-
-    hp.offset = stackoffset(2); // arg2, character in arg2, could be modified by hook
-    if (widechar)
-      hp.split = regoffset(edx);
-    else
-      hp.split = stackoffset(1);
-    hp.text_fun =
-        [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    BYTE check[] = {
+        0x83, 0xec, 0x14,
+        0x53,
+        0x56,
+        0x8b, 0xf0,
+        0x8b, 0x5e, XX,
+        0x66, 0x39, 0x0b,
+        0x74, XX};
+    if (MatchPattern(addr, check, sizeof(check)))
     {
-      DWORD arg2 = context->stack[2];
-      if ((arg2 & 0xffff0000))
-      { // if arg2 high bits are there, this is new Bootup game
-        hp->type |= DATA_INDIRECT;
-        hp->offset = stackoffset(3);
-        hp->split = regoffset(ebx);
-      }
-      hp->text_fun = nullptr;
-    };
-
+      // Daylight - 朝に光の冠を
+      hp.offset = regoffset(ecx);
+      hp.split = stackoffset(2);
+      hp.type |= SPLIT_INDIRECT;
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+      { StringFilter(buffer, TEXTANDLEN("\x81\x40")); };
+    }
+    else
+    {
+      hp.offset = stackoffset(2); // arg2, character in arg2, could be modified by hook
+      if (widechar)
+        hp.split = regoffset(edx);
+      else
+        hp.split = stackoffset(1);
+      hp.text_fun =
+          [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+      {
+        DWORD arg2 = context->stack[2];
+        if ((arg2 & 0xffff0000))
+        { // if arg2 high bits are there, this is new Bootup game
+          hp->type |= DATA_INDIRECT;
+          hp->offset = stackoffset(3);
+          hp->split = regoffset(ebx);
+        }
+        hp->text_fun = nullptr;
+      };
+    }
 
     return NewHook(hp, widechar ? "BootupW" : "BootupA");
   }
@@ -240,7 +258,6 @@ namespace
     hp.type = widechar ? (USING_STRING | CODEC_UTF16) : USING_STRING; // use context as split is sufficient, but will produce floating split
     // hp.type = CODEC_UTF16|NO_CONTEXT|USING_SPLIT; // use text address as split
     // hp.split = 0;
-
 
     return NewHook(hp, widechar ? "BootupLstrW" : "BootupLstrA");
   }

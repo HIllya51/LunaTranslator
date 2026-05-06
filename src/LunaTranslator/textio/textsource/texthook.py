@@ -717,7 +717,6 @@ class texthook(basetext):
             self.multiselectedcollector.append((key, text))
 
     def handle_output(self, hc, hn: bytes, tp, output):
-
         key = (hc, hn.decode("utf8"), tp)
         if key in self.selectedhook:
             if len(self.selectedhook) == 1:
