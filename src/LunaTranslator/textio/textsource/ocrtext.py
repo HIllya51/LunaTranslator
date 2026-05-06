@@ -35,7 +35,7 @@ def imageCutEx(*a):
             painter.drawRect(rect)
             painter.end()
 
-    if globalconfig["use_ocr_preprocess"]:
+    if globalconfig.get("use_ocr_preprocess", False):
         try:
             img = checkmd5reloadmodule(
                 gobject.getconfig("ocr_preprocess.py"), "ocr_preprocess"

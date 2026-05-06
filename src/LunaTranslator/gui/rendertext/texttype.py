@@ -99,7 +99,12 @@ class FenciColor(ColorControl):
                 c = QColor(globalconfig["cixingcolor"][self.cixing])
             except:
                 pass
-        return (c.red(), c.green(), c.blue(), globalconfig["showcixing_touming"] / 100)
+        return (
+            c.red(),
+            c.green(),
+            c.blue(),
+            globalconfig.get("showcixing_touming", 30) / 100,
+        )
 
     def get(self):
         color = self._randomcolor_1()
@@ -143,11 +148,11 @@ class dataget:
         if texttype == TextType.Origin:
             fm = globalconfig["fonttype"]
             fs = globalconfig["fontsizeori"]
-            bold = globalconfig["showbold"]
+            bold = globalconfig.get("showbold", False)
         else:
             fm = globalconfig["fonttype2"]
             fs = globalconfig["fontsize"]
-            bold = globalconfig["showbold_trans"]
+            bold = globalconfig.get("showbold_trans", False)
         return fm, fs, bold
 
     def _getfontinfo_kana(self):

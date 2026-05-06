@@ -191,7 +191,7 @@ class QTextBrowser_1(QTextEdit):
         return super().focusOutEvent(e)
 
     def mouseMoveEvent(self, ev: QMouseEvent):
-        if globalconfig["selectable"] and globalconfig["selectableEx"]:
+        if globalconfig.get("selectable", True) and globalconfig.get("selectableEx", True):
             tooltipswidget.hidetooltipwindow()
             return super().mouseMoveEvent(ev)
         for label in self.p.searchmasklabels:
@@ -238,15 +238,15 @@ class TextAreaBack(QLabel):
     def paintEvent(self, a0):
         parent: TextBrowser = self.parent()
         parent.yinyinglabels
-        c = QColor(globalconfig["text_area_background_color"])
-        c.setAlphaF(globalconfig["text_area_background_alpha"] / 100)
+        c = QColor(globalconfig.get("text_area_background_color", "#ff0000"))
+        c.setAlphaF(globalconfig.get("text_area_background_alpha", 50) / 100)
 
         painter = QPainter(self)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        __r = globalconfig["text_area_background_r"]
-        __h = globalconfig["text_area_background_h"]
-        __w = globalconfig["text_area_background_w"]
+        __r = globalconfig.get("text_area_background_r", 5)
+        __h = globalconfig.get("text_area_background_h", 5)
+        __w = globalconfig.get("text_area_background_w", 5)
         xpath = QPainterPath()
         for label in parent.yinyinglabels:
             if not label.isVisible():
@@ -324,7 +324,7 @@ class TextBrowser(QWidget, dataget):
         wheel.setCheckable(True)
         wheel.setChecked(globalconfig.get("enable_wheel_history", True))
         drag.setCheckable(True)
-        drag.setChecked(globalconfig["dragable"])
+        drag.setChecked(globalconfig.get("dragable", True))
         hide.setCheckable(True)
         hide.setChecked(globalconfig["hidetools"])
         menu.addAction(search)
@@ -344,7 +344,7 @@ class TextBrowser(QWidget, dataget):
             globalconfig["enable_wheel_history"] = wheel.isChecked()
 
     def mouseMoveEvent(self, a0: QMouseEvent):
-        if not globalconfig["dragable"]:
+        if not globalconfig.get("dragable", True):
             a0.accept()
             return
         return super().mouseMoveEvent(a0)
@@ -399,7 +399,7 @@ class TextBrowser(QWidget, dataget):
         self.setAcceptDrops(True)
         self.drawtextarealabel = TextAreaBack(self)
         self.drawtextarealabel.setMouseTracking(True)
-        self.showtextareabackground(globalconfig["text_area_background"])
+        self.showtextareabackground(globalconfig.get("text_area_background", False))
         self.atback_color = QLabel(self)
         self.atback_color.setMouseTracking(True)
         self.atback2 = QLabel(self)
@@ -447,7 +447,7 @@ class TextBrowser(QWidget, dataget):
         self.masklabel_top.setMouseTracking(True)
         # self.masklabel_bottom.setStyleSheet('background-color:red')
         self.resets1()
-        self.setselectable(globalconfig["selectable"])
+        self.setselectable(globalconfig.get("selectable", True))
 
     def resets1(self):
         self.currenttype = globalconfig["rendertext_using_internal"]["textbrowser"]
@@ -580,7 +580,7 @@ class TextBrowser(QWidget, dataget):
         ):
             return True
         if (texttype in (TextType.Error_translator, TextType.Error_origin)) and (
-            not globalconfig["showtranexception"]
+            not globalconfig.get("showtranexception", True)
         ):
             return True
         return False

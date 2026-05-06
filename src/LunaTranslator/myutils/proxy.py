@@ -11,8 +11,8 @@ def getsysproxy():
 
 
 def _getproxy():
-    if globalconfig["useproxy"]:
-        if globalconfig["usesysproxy"]:
+    if globalconfig.get("useproxy", True):
+        if globalconfig.get("usesysproxy", True):
             p = getsysproxy()
         else:
             p = globalconfig["proxy"]

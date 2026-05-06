@@ -146,7 +146,7 @@ def safeloadfunction(p, args, file, func, name):
 
 
 def checkclickable(name: ClickableLabel):
-    name.setClickable(globalconfig["useproxy"])
+    name.setClickable(globalconfig.get("useproxy", True))
 
 
 def renameapi(qlabel: QLabel, apiuid):
@@ -562,6 +562,7 @@ def internal(self):
                 globalconfig,
                 "ocrrangewidth",
                 callback=lambda _: gobject.base.textsource.setstyle(),
+                default=2,
             ),
             "",
             "",
@@ -569,7 +570,7 @@ def internal(self):
         ],
         [
             "选取OCR范围后显示范围框",
-            D_getsimpleswitch(globalconfig, "showrangeafterrangeselect"),
+            D_getsimpleswitch(globalconfig, "showrangeafterrangeselect", default=True),
         ],
     ]
     allothers = [

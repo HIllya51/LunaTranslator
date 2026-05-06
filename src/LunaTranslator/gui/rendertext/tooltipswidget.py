@@ -104,15 +104,15 @@ class tooltipswidget(QMainWindow, dataget):
             tooltipswidget.tooltipwindow._seteffect()
 
     def _seteffect(self):
-        if globalconfig["word_hover_DWM"] == 0:
+        if globalconfig.get("word_hover_DWM", 0) == 0:
             NativeUtils.clearEffect(int(self.winId()))
-        elif globalconfig["word_hover_DWM"] == 1:
+        elif globalconfig.get("word_hover_DWM", 0) == 1:
             NativeUtils.setAcrylicEffect(
-                int(self.winId()), globalconfig["word_hover_DWM_1"], 0x00FFFFFF
+                int(self.winId()), globalconfig.get("word_hover_DWM_1", True), 0x00FFFFFF
             )
-        elif globalconfig["word_hover_DWM"] == 2:
+        elif globalconfig.get("word_hover_DWM", 0) == 2:
             NativeUtils.setAeroEffect(
-                int(self.winId()), globalconfig["word_hover_DWM_1"]
+                int(self.winId()), globalconfig.get("word_hover_DWM_1", True)
             )
 
     tooltipwindow: "tooltipswidget" = None
@@ -134,7 +134,7 @@ class tooltipswidget(QMainWindow, dataget):
             int(self.winId()), False, globalconfig.get("word_hover_border_R_SYS", False)
         )
 
-        radiu_valid = globalconfig["word_hover_DWM"] == 0 and not (
+        radiu_valid = globalconfig.get("word_hover_DWM", 0) == 0 and not (
             gobject.sys_ge_win_11 and globalconfig.get("word_hover_border_R_SYS", False)
         )
         self.qlabel.setStyleSheet(

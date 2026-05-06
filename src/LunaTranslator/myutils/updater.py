@@ -127,7 +127,7 @@ def updatemethod_checkalready(savep, sha256):
 def updatemethod(urls: "tuple[str, str]"):
     url, sha256 = urls
     check_interrupt = lambda: not (
-        globalconfig["autoupdate"] and versionchecktask.empty()
+        globalconfig.get("autoupdate", True) and versionchecktask.empty()
     )
 
     savep = gobject.getcachedir("update/" + url.split("/")[-1])
@@ -195,7 +195,7 @@ def versioncheckthread():
             and _version
             and version < tuple(int(_) for _ in _version[0][1:].split("."))
         )
-        if not (need and globalconfig["autoupdate"]):
+        if not (need and globalconfig.get("autoupdate", True)):
             continue
         gobject.base.progresssignal4.emit("……", 0)
         savep = updatemethod(_version[1:])

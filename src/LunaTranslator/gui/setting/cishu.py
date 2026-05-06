@@ -52,6 +52,7 @@ class multicolorset(LDialog, DarkLightAutoResetIconHelper):
             d=globalconfig,
             key="showcixing_touming",
             callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+            default=30,
         )
         _hori.addWidget(_s)
         formLayout.addRow(_hori)
@@ -110,7 +111,7 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
     menu.addAction(editname)
     useproxy = LAction("使用代理", menu)
     useproxy.setCheckable(True)
-    if globalconfig["useproxy"] and globalconfig["cishu"][apiuid].get("type") not in (
+    if globalconfig.get("useproxy", True) and globalconfig["cishu"][apiuid].get("type") not in (
         "offline",
     ):
         menu.addSeparator()

@@ -119,7 +119,7 @@ class AttachProcessDialog(saveposwindow):
         refreshbutton.clicked.connect(self.refreshfunction)
         bottomlayout.addWidget(refreshbutton)
         autoopen = LCheckBox("打开选择文本窗口")
-        autoopen.setChecked(globalconfig["autoopenselecttext"])
+        autoopen.setChecked(globalconfig.get("autoopenselecttext", True))
         autoopen.stateChanged.connect(
             lambda x: globalconfig.__setitem__("autoopenselecttext", x)
         )

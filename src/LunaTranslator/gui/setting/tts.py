@@ -117,7 +117,7 @@ def renameapi(qlabel: QLabel, apiuid):
 
 
 def checkclickable(name: ClickableLabel):
-    name.setClickable(globalconfig["useproxy"])
+    name.setClickable(globalconfig.get("useproxy", True))
 
 
 def getrenameablellabel(uid):

@@ -155,7 +155,7 @@ class SpecialFont(PopupWidget):
                 t = "加粗"
                 k = "showbold"
                 w = getsimpleswitch(
-                    dd, k, default=globalconfig[k], callback=self.resetfont
+                    dd, k, default=globalconfig.get(k, False), callback=self.resetfont
                 )
             elif i == 3:
                 t = "间距"
@@ -207,7 +207,7 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
 
     if which or "chatgpt-offline" == apiuid:
         menu.addAction(delete)
-    if globalconfig["useproxy"] and globalconfig["fanyi"][apiuid].get("type") not in (
+    if globalconfig.get("useproxy", True) and globalconfig["fanyi"][apiuid].get("type") not in (
         "offline",
         "other",
         "pre",

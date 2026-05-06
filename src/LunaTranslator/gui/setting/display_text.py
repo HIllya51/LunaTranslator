@@ -194,6 +194,7 @@ class otherdisplaysetting(PopupWidget):
                 globalconfig,
                 "displayrank",
                 callback=gobject.base.translation_ui.translate_text.setdisplayrank,
+                default=0,
             ),
         )
         form.addRow(
@@ -203,6 +204,7 @@ class otherdisplaysetting(PopupWidget):
                 globalconfig,
                 "verticalhorizontal",
                 callback=gobject.base.translation_ui.verticalhorizontal,
+                default=False,
             ),
         )
         # form.addRow(
@@ -238,7 +240,7 @@ def resetgroudswitchcallback(self, group):
         )
         _btn2 = getIconButton(
             callback=functools.partial(Exteditor, self),
-            enable=globalconfig["webviewLoadExt"],
+            enable=globalconfig.get("webviewLoadExt", True),
         )
         switch2 = getsimpleswitch(
             globalconfig,
@@ -247,6 +249,7 @@ def resetgroudswitchcallback(self, group):
                 gobject.base.translation_ui.translate_text.loadinternal(True, True),
                 _btn2.setEnabled(x),
             ),
+            default=True,
         )
         self.goodfontsettingsformlayout.addRow(
             getboxlayout(
@@ -388,6 +391,7 @@ class TextAreaBack(PopupWidget):
                 globalconfig,
                 "text_area_background_color",
                 callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                default="#ff0000",
             ),
         )
         form.addRow(
@@ -398,6 +402,7 @@ class TextAreaBack(PopupWidget):
                 globalconfig,
                 "text_area_background_alpha",
                 callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                default=50,
             ),
         )
         for text, key in (
@@ -415,6 +420,7 @@ class TextAreaBack(PopupWidget):
                     double=True,
                     step=0.2,
                     callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                    default=5,
                 ),
             )
         self.display()
@@ -510,6 +516,7 @@ def xianshigrid_style(self):
                             globalconfig,
                             "showbold",
                             callback=mayberealtimesetfont,
+                            default=False,
                         ),
                         "",
                         "间距",
@@ -569,6 +576,7 @@ def xianshigrid_style(self):
                             globalconfig,
                             "showbold_trans",
                             callback=mayberealtimesetfont,
+                            default=False,
                         ),
                         "",
                         "间距",
@@ -596,11 +604,12 @@ def xianshigrid_style(self):
                             globalconfig,
                             "showtranexception",
                             callback=lambda x: changeshowerrorstate(self, x),
+                            default=True,
                         ),
                         "",
                         "",
                         "收到翻译时才刷新",
-                        D_getsimpleswitch(globalconfig, "refresh_on_get_trans"),
+                        D_getsimpleswitch(globalconfig, "refresh_on_get_trans", default=False),
                     ],
                     [
                         "显示翻译器名称",
@@ -619,6 +628,7 @@ def xianshigrid_style(self):
                             globalconfig,
                             "text_area_background",
                             callback=gobject.base.translation_ui.translate_text.showtextareabackground,
+                            default=False,
                         ),
                         D_getIconButton(callback=functools.partial(TextAreaBack, self)),
                     ],

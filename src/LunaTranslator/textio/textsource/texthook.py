@@ -374,7 +374,7 @@ class texthook(basetext):
         if (
             len(autostarthookcode) == 0
             and len(self.hconfig.get("embedablehook", [])) == 0
-            and globalconfig["autoopenselecttext"]
+            and globalconfig.get("autoopenselecttext", True)
         ):
             gobject.base.hookselectdialog.realshowhide.emit(True)
         self.injectproc(injecttimeout, pids)

@@ -111,6 +111,7 @@ def updatexx(self):
                         else ""
                     ),
                 ),
+                default=True,
             ),
             getsmalllabel(""),
             getsmalllabel("最新版本"),
@@ -136,7 +137,7 @@ def _progresssignal4(
 ):
     downloadprogress.setValue(val)
     downloadprogress.setFormat(text)
-    if (val or text) and globalconfig["autoupdate"]:
+    if (val or text) and globalconfig.get("autoupdate", True):
         updatelayout.setRowVisible(2, True)
 
 

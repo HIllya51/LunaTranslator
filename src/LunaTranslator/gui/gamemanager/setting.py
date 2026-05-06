@@ -556,7 +556,7 @@ class dialog_setting_game_internal(QWidget):
     def getrenameablellabel(self, key, name):
 
         def checkclickable(name: ClickableLabel):
-            name.setClickable(globalconfig["useproxy"])
+            name.setClickable(globalconfig.get("useproxy", True))
 
         name = ClickableLabel(name)
         fn = functools.partial(self.renameapi, name, key)

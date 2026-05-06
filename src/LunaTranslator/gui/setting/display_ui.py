@@ -71,8 +71,8 @@ def createhorizontal_slider(self):
         )
     )
 
-    self.horizontal_slider.setEnabled(not globalconfig["backtransparent"])
-    self.horizontal_slider_label.setEnabled(not globalconfig["backtransparent"])
+    self.horizontal_slider.setEnabled(not globalconfig.get("backtransparent", False))
+    self.horizontal_slider_label.setEnabled(not globalconfig.get("backtransparent", False))
     return w
 
 
@@ -223,6 +223,7 @@ def uisetting(self):
             "WindowBackdrop",
             callback=lambda _: gobject.base.setcommonstylesheet(),
             static=True,
+            default=3,
         ),
         "",
         getsmalllabel("强制直角"),
@@ -265,7 +266,7 @@ def uisetting(self):
                                     ),
                                     "",
                                     "自动隐藏",
-                                    D_getsimpleswitch(globalconfig, "autodisappear"),
+                                    D_getsimpleswitch(globalconfig, "autodisappear", default=False),
                                     lambda: createdynamicswitch(self),
                                     getboxlayout(
                                         [lambda: createdynamicdelay(self), "(s)"]
@@ -279,9 +280,12 @@ def uisetting(self):
                                     ),
                                     "",
                                     "自动调整高度",
-                                    D_getsimpleswitch(globalconfig, "adaptive_height"),
+                                    D_getsimpleswitch(globalconfig, "adaptive_height", default=True),
                                     D_getsimplecombobox(
-                                        ["向上", "向下"], globalconfig, "top_align"
+                                        ["向上", "向下"],
+                                        globalconfig,
+                                        "top_align",
+                                        default=0,
                                     ),
                                     getboxlayout(
                                         [
@@ -391,13 +395,13 @@ def createdynamicswitch(self):
         )
 
     return D_getsimplecombobox(
-        ["窗口", "文本"], globalconfig, "autodisappear_which", callback=__
+        ["窗口", "文本"], globalconfig, "autodisappear_which", callback=__, default=0,
     )()
 
 
 def createdynamicdelay(self):
     self.disappear_delay = D_getspinbox(
-        [1, 0][globalconfig["autodisappear_which"]],
+        [1, 0][globalconfig.get("autodisappear_which", 0)],
         100,
         globalconfig,
         "disappear_delay",
