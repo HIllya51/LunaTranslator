@@ -235,6 +235,8 @@ class BASEOBJECT(QObject):
             return (self.currenttranslate_1, self.currenttext)[self.latest_is_origin]
 
     def __wheelhistory(self, offset: int):
+        if not globalconfig.get("enable_wheel_history", True):
+            return
         hist = self.history.get_offset(offset)
         if not hist:
             return

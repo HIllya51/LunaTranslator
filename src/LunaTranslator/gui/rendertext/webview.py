@@ -440,6 +440,15 @@ class TextBrowser(WebviewWidget, somecommon):
             __cb2,
             getchecked=lambda: globalconfig["hidetools"],
         )
+        i = self.add_menu_noselect(
+            i,
+            lambda: _TR("鼠标滚动查看历史文本"),
+            lambda: globalconfig.__setitem__(
+                "enable_wheel_history",
+                not globalconfig.get("enable_wheel_history", True),
+            ),
+            getchecked=lambda: globalconfig.get("enable_wheel_history", True),
+        )
         self.bind("callwheelEvent", gobject.base.wheelhistory.emit)
         self.bind("calllunaclickedword", gobject.base.clickwordcallback)
         self.bind("calllunaMouseMove", self.calllunaMouseMove)

@@ -320,6 +320,9 @@ class TextBrowser(QWidget, dataget):
         search = LAction("清空", menu)
         drag = LAction("可拖动的", menu)
         hide = LAction("隐藏工具栏", menu)
+        wheel = LAction("鼠标滚动查看历史文本", menu)
+        wheel.setCheckable(True)
+        wheel.setChecked(globalconfig.get("enable_wheel_history", True))
         drag.setCheckable(True)
         drag.setChecked(globalconfig["dragable"])
         hide.setCheckable(True)
@@ -327,6 +330,7 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(search)
         menu.addAction(drag)
         menu.addAction(hide)
+        menu.addAction(wheel)
         action = menu.exec(QCursor.pos())
         if action == search:
             self.parent().clear(False)
@@ -336,6 +340,8 @@ class TextBrowser(QWidget, dataget):
         elif action == hide:
             globalconfig["hidetools"] = hide.isChecked()
             gobject.base.translation_ui.enterfunction()
+        elif action == wheel:
+            globalconfig["enable_wheel_history"] = wheel.isChecked()
 
     def mouseMoveEvent(self, a0: QMouseEvent):
         if not globalconfig["dragable"]:
