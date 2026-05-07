@@ -648,13 +648,13 @@ class dialog_setting_game_internal(QWidget):
 
     def getstatistic(self, formLayout: QVBoxLayout, gameuid):
 
-        chart = chartwidget()
+        chart = chartwidget(timechart=True)
         chart.xtext = lambda x: (
             "0" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0]
         )
         chart.ytext = lambda y: self.formattime(y)
 
-        chart2 = chartwidget()
+        chart2 = chartwidget(timechart=False)
         chart2.xtext = chart.xtext
         chart2.ytext = str
         self._timelabel = QLabel()

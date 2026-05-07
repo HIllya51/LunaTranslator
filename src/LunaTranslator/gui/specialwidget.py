@@ -76,7 +76,8 @@ def find_best_ticks(max_seconds):
 
 
 class githubheatmaphelper:
-    def __init__(self, parent: "chartwidget"):
+    def __init__(self, parent: "chartwidget", timechart: bool):
+        self.timechart = timechart
         self.parent = parent
         self.cell_size = 13
         self.cell_spacing = 3
@@ -119,13 +120,17 @@ class githubheatmaphelper:
     def get_level(self, count: "int|dict[str,int]"):
         if isinstance(count, dict):
             count = sum(count.values())
+        if self.timechart:
+            splits = [60 * 5, 60 * 15, 60 * 60]
+        else:
+            splits = [10000, 25000, 100000]
         if count <= 0:
             return 0
-        if count < 3:
+        if count < splits[0]:
             return 1
-        if count < 6:
+        if count < splits[1]:
             return 2
-        if count < 9:
+        if count < splits[2]:
             return 3
         return 4
 
@@ -466,10 +471,10 @@ class chartwidget(QWidget):
             _ = "\n".join(__)
         return _
 
-    def __init__(self):
+    def __init__(self, timechart):
         super().__init__()
         self.setMouseTracking(True)
-        self._helper1 = githubheatmaphelper(self)
+        self._helper1 = githubheatmaphelper(self, timechart)
         self._helper2 = charthelper(self)
         self.setMinimumHeight(180)
         self.xtext = lambda x: str(x)
