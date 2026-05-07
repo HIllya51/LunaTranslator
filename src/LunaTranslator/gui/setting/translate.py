@@ -207,7 +207,9 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
 
     if which or "chatgpt-offline" == apiuid:
         menu.addAction(delete)
-    if globalconfig.get("useproxy", True) and globalconfig["fanyi"][apiuid].get("type") not in (
+    if globalconfig.get("useproxy", True) and globalconfig["fanyi"][apiuid].get(
+        "type"
+    ) not in (
         "offline",
         "other",
         "pre",
@@ -721,6 +723,8 @@ def __getllamacppdevices(llamaserver):
         result.append(__)
     return result
 
+class interruptexc(Exception):
+    pass
 
 def downloadgguf(key, url: str):
     try:
@@ -728,11 +732,13 @@ def downloadgguf(key, url: str):
         savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()))
         with open(savep, "wb") as file:
             r = requests.get(url, stream=True, proxies=getproxy())
+            if r.headers.get("Content-Type"):
+                raise Exception()
             size = int(r.headers["Content-Length"])
             file_size = 0
             for i in r.iter_content(chunk_size=1024 * 32):
                 if interrupt.get(key, False):
-                    raise Exception()
+                    raise interruptexc()
                 if not i:
                     continue
                 file.write(i)
@@ -749,6 +755,9 @@ def downloadgguf(key, url: str):
         if GGUF_REFRESH_BTN:
             gobject.base.safeinvokefunction.emit(GGUF_REFRESH_BTN.click)
         return True
+    except interruptexc:
+        gobject.base.llamacppdownloadprogress.emit(key, url, -3, 0)
+        return False
     except:
         gobject.base.llamacppdownloadprogress.emit(key, url, -1, 0)
         return False
@@ -773,7 +782,7 @@ def downloadone(key, url: str, digest: str, check_interrupt, tag: str):
                 if (check_interrupt and check_interrupt()) or (
                     interrupt.get(key, False)
                 ):
-                    raise Exception()
+                    raise interruptexc()
                 if not i:
                     continue
                 file.write(i)
@@ -787,6 +796,9 @@ def downloadone(key, url: str, digest: str, check_interrupt, tag: str):
             zipf.extractall(gobject.gettempdir("llamacpp/" + tag))
         gobject.base.llamacppdownloadprogress.emit(key, url, -2, 0)
         return True
+    except interruptexc:
+        gobject.base.llamacppdownloadprogress.emit(key, url, -3, 0)
+        return False
     except:
         gobject.base.llamacppdownloadprogress.emit(key, url, -1, 0)
         return False
@@ -1571,7 +1583,9 @@ def _findkey(downloadtasks: QFormLayout, name) -> QHBoxLayout:
 interrupt = {}
 
 
-def _updateprogress(downloadtasks: QFormLayout, form: VisLFormLayout, name, link, curr, size):
+def _updateprogress(
+    downloadtasks: QFormLayout, form: VisLFormLayout, name, link, curr, size
+):
     lay = _findkey(downloadtasks, name)
     progbar: QProgressBar = lay.itemAt(0).widget() if lay else None
 
@@ -1579,6 +1593,11 @@ def _updateprogress(downloadtasks: QFormLayout, form: VisLFormLayout, name, link
         if progbar:
             progbar.setValue(0)
             progbar.setFormat(_TR("失败"))
+            progbar.fuck = True
+    elif curr == -3:
+        if progbar:
+            progbar.setValue(0)
+            progbar.setFormat(_TR("已取消"))
             progbar.fuck = True
     elif curr == -2:
         if progbar:
@@ -1603,7 +1622,7 @@ def _updateprogress(downloadtasks: QFormLayout, form: VisLFormLayout, name, link
                     lambda: (
                         interrupt.__setitem__(name, True),
                         downloadtasks.removeRow(lay if lay else hb),
-                        form.setRowVisible(2, downloadtasks.count())
+                        form.setRowVisible(2, downloadtasks.count()),
                     ),
                     icon="fa.times",
                 )

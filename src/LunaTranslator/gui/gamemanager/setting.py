@@ -51,7 +51,7 @@ from gui.usefulwidget import (
     getboxlayout,
     NQGroupBox,
     clearlayout,
-    getcenterX,
+    IconButton,
     getsimplecombobox,
     D_getIconButton,
     D_getsimpleswitch,
@@ -701,6 +701,20 @@ class dialog_setting_game_internal(QWidget):
             tm.setChecked(True)
         else:
             wc.setChecked(True)
+
+        btn = IconButton(
+            icon="fa.line-chart",
+            parent=self,
+            checkable=True,
+            checkablechangecolor=False,
+        )
+        btn.setChecked(globalconfig.get("timecharttype", 0) == 0)
+        btn.clicked.connect(
+            lambda x: (
+                globalconfig.__setitem__("timecharttype", 0 if x else 1),
+                self.update(),
+            )
+        )
         formLayout.addLayout(
             getboxlayout(
                 [
@@ -713,6 +727,7 @@ class dialog_setting_game_internal(QWidget):
                         icon="fa.edit", callback=functools.partial(timelistediter, self)
                     ),
                     getIconButton(self.__refresh, "fa.refresh"),
+                    btn,
                 ]
             )
         )

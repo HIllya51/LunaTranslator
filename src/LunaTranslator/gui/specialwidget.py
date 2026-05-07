@@ -1,7 +1,7 @@
 from qtsymbols import *
-import threading
+import threading, gobject
 from traceback import print_exc
-from myutils.config import savehook_new_data
+from myutils.config import savehook_new_data, globalconfig
 from myutils.wrapper import trypass
 import qtawesome, math
 from datetime import datetime
@@ -75,21 +75,182 @@ def find_best_ticks(max_seconds):
     return ticks
 
 
-class chartwidget(QWidget):
-    def __init__(self) -> None:
-        super().__init__()
-        self.setMouseTracking(True)
+class githubheatmaphelper:
+    def __init__(self, parent: "chartwidget"):
+        self.parent = parent
+        self.cell_size = 13
+        self.cell_spacing = 3
+        self.margin_lr = 20
+        self.margin_tb = 20
+
+        self.label_x_width = 35
+        self.label_y_height = 25
+
+        self.color_bg_light = Qt.GlobalColor.white
+        self.color_bg = QColor("#0d1117")  # 主背景色
+        self.color_text = QColor("#7d8590")  # 辅助文字颜色
+        self.color_text_light = QColor("#767676")
+        self.level_colors_dark = [
+            QColor("#161b22"),  # Level 0: 极深灰
+            QColor("#0e4429"),  # Level 1: 深绿
+            QColor("#006d32"),  # Level 2: 中绿
+            QColor("#26a641"),  # Level 3: 亮绿
+            QColor("#39d353"),  # Level 4: 荧光绿
+        ]
+        self.level_colors = [
+            QColor("#ebedf0"),
+            QColor("#9be9a8"),
+            QColor("#40c463"),
+            QColor("#30a14e"),
+            QColor("#216e39"),
+        ]
+        self.data = {}
+        self.end_date = QDate.currentDate()
+        days_to_saturday = 6 - (self.end_date.dayOfWeek() % 7)
+        self.anchor_date = self.end_date.addDays(days_to_saturday)
+
+    def setdata(self, data: "list[tuple[float, int|dict[str, int]]]"):
+        data = sorted(data, key=lambda _: _[0])
+        data = {
+            QDateTime.fromMSecsSinceEpoch(int(_ * 1000)).date(): __ for _, __ in data
+        }
+        self.data = data
+
+    def get_level(self, count: "int|dict[str,int]"):
+        if isinstance(count, dict):
+            count = sum(count.values())
+        if count <= 0:
+            return 0
+        if count < 3:
+            return 1
+        if count < 6:
+            return 2
+        if count < 9:
+            return 3
+        return 4
+
+    def paintEvent(self, event):
+        painter = QPainter(self.parent)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+
+        painter.fillRect(
+            self.parent.rect(),
+            self.color_bg if gobject.base.currentisdark else self.color_bg_light,
+        )
+
+        step = self.cell_size + self.cell_spacing
+        draw_start_x = self.margin_lr + self.label_x_width
+        draw_start_y = self.margin_tb + self.label_y_height
+
+        # 使用 QFontMetrics 计算文字宽度
+        font = QFont("Segoe UI", 8)
+        painter.setFont(font)
+        metrics = QFontMetrics(font, self.parent)
+
+        # 1. 绘制左侧星期标签
+        painter.setPen(
+            self.color_text if gobject.base.currentisdark else self.color_text_light
+        )
+        for row, text in {1: "Mon", 3: "Wed", 5: "Fri"}.items():
+            y_text = draw_start_y + row * step + self.cell_size - 2
+            painter.drawText(self.margin_lr, int(y_text), text)
+
+        # 2. 准备绘制方块和月份
+        available_width = self.parent.width() - self.margin_lr - draw_start_x
+        max_cols = (available_width + self.cell_spacing) // step
+
+        # 核心逻辑：记录上一次绘制月份标签的左边缘 X 坐标
+        # 因为是从右向左绘图，所以上一个标签在当前标签的右边
+        last_drawn_label_left_x = self.parent.width() + 100
+
+        for col in range(max_cols):
+            x = self.parent.width() - self.margin_lr - (col * step) - self.cell_size
+            if x < draw_start_x:
+                break
+
+            current_week_sat = self.anchor_date.addDays(-(col * 7))  # 本周六
+            left_week_sat = self.anchor_date.addDays(-((col + 1) * 7))  # 左边一周的周六
+
+            # 逻辑：如果本周六的月份与左边那一周周六的月份不同，说明本周是该月的起始周
+            if current_week_sat.month() != left_week_sat.month():
+                month_name = QDate.shortMonthName(current_week_sat.month())
+                text_width = metrics.horizontalAdvance(month_name)
+
+                if x + text_width + 5 < last_drawn_label_left_x:
+                    painter.setPen(
+                        self.color_text
+                        if gobject.base.currentisdark
+                        else self.color_text_light
+                    )
+                    painter.drawText(int(x), draw_start_y - 8, month_name)
+                    last_drawn_label_left_x = x
+
+            # 3. 绘制方块
+            for row in range(7):
+                y = draw_start_y + row * step
+                days_diff = col * 7 + (6 - row)
+                target_date = self.anchor_date.addDays(-days_diff)
+
+                if target_date > self.end_date:
+                    continue
+
+                count = self.data.get(target_date, 0)
+                color = (
+                    self.level_colors_dark
+                    if gobject.base.currentisdark
+                    else self.level_colors
+                )[self.get_level(count)]
+
+                painter.setPen(Qt.PenStyle.NoPen)
+                painter.setBrush(QBrush(color))
+                painter.drawRoundedRect(
+                    QRect(int(x), int(y), self.cell_size, self.cell_size), 2, 2
+                )
+
+    def _get_date_at_pos(self, x, y):
+        step = self.cell_size + self.cell_spacing
+        draw_area_left = self.margin_lr + self.label_x_width
+        draw_area_top = self.margin_tb + self.label_y_height
+
+        if draw_area_left <= x <= self.parent.width() - self.margin_lr:
+            dist_from_right = self.parent.width() - self.margin_lr - x
+            col_from_right = dist_from_right // step
+            row = (y - draw_area_top) // step
+            if 0 <= row < 7:
+                days_diff = col_from_right * 7 + (6 - row)
+                return self.anchor_date.addDays(-days_diff)
+        return None
+
+    def leaveEvent(self, a0):
+        pass
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        pos = event.pos()
+        target_date = self._get_date_at_pos(pos.x(), pos.y())
+        if target_date and target_date <= self.end_date and self.data.get(target_date):
+            data = self.data.get(target_date)
+            xt = lambda x: ("" if x == 0 else target_date.toString("yyyy-MM-dd"))
+            _ = self.parent.viewpoint(data)
+            t = xt(target_date)
+            if _:
+                t += "\n" + _
+            QToolTip.showText(event.globalPos(), t, self.parent)
+        else:
+            QToolTip.hideText()
+
+
+class charthelper:
+    def __init__(self, parent: "chartwidget") -> None:
+        self.parent = parent
         font = QFont()
         font.setPointSize(10)
-        fmetrics = QFontMetricsF(font, self)
+        fmetrics = QFontMetricsF(font, parent)
 
         fhall = fmetrics.height()
         self.font = font
         self.data = None
-        self.ymargin = int(fhall)
+        self.ymargin = int(fhall) + 5
         self.valuewidth = 10
-        self.xtext = lambda x: str(x)
-        self.ytext = lambda y: str(y)
         self.fmetrics = fmetrics
         self.scalelinelen = 5
 
@@ -98,27 +259,25 @@ class chartwidget(QWidget):
         self.data = data
 
     def mouseMoveEvent(self, a0):
-        self.update()
-        return super().mouseMoveEvent(a0)
+        self.parent.update()
 
     def leaveEvent(self, a0):
-        self.update()
-        return super().leaveEvent(a0)
+        self.parent.update()
 
     def paintatmouse(
         self, painter: QPainter, xmargin, ymargin, width, height, x_scale, y_scale
     ):
         a0 = QCursor.pos()
-        a0 = QPointF(self.mapFromGlobal(a0))
+        a0 = QPointF(self.parent.mapFromGlobal(a0))
         if a0.x() < xmargin or a0.x() >= xmargin + width:
             return
-        if not self.rect().contains(a0.toPoint()):
+        if not self.parent.rect().contains(a0.toPoint()):
             return
         idx_f = (a0.x() - xmargin) / x_scale
         idx = round(idx_f)
         idx = max(0, min(idx, len(self.data) - 1))
         xt = lambda x: ("" if x == 0 else str(datetime.fromtimestamp(x)).split(" ")[0])
-        _ = self.viewpoint(self.data[idx][1])
+        _ = self.parent.viewpoint(self.data[idx][1])
         t = xt(self.data[idx][0])
         if _:
             t += "\n" + _
@@ -129,7 +288,7 @@ class chartwidget(QWidget):
             QRectF(a0, sz), Qt.TextFlag.TextWordWrap | Qt.AlignmentFlag.AlignLeft, t
         )
         __x = xmargin + idx * x_scale
-        __y = ymargin + height - self.yy(self.data[idx][1]) * y_scale
+        __y = ymargin + height - self.parent.yy(self.data[idx][1]) * y_scale
 
         pen = painter.pen()
         pen.setWidth(1)
@@ -143,40 +302,16 @@ class chartwidget(QWidget):
             QPointF(xmargin + width, __y),
         )
 
-    def viewpoint(self, d: "int|float|dict[str, int|float]"):
-        _ = self.ytext(self.yy(d))
-        if not _:
-            return _
-        if isinstance(d, dict):
-            __ = []
-            for uid, val in sorted(list(d.items()), key=lambda ___: -___[1]):
-                __.append(
-                    "{} : {}".format(
-                        self.ytext(self.yy(val)),
-                        savehook_new_data.get(uid, {}).get("title", "???"),
-                    )
-                )
-            if len(d) != 1:
-                __.insert(0, _)
-            if len(__) > 10:
-                __ = __[:10]
-                __.append("...")
-            _ = "\n".join(__)
-        return _
-
-    def yy(self, y: "int|float|dict[str, int|float]"):
-        return y if isinstance(y, (int, float)) else sum(y.values())
-
     def paintEvent(self, _):
         if self.data is None or len(self.data) == 0:
             return
         try:
             if len(self.data) == 1:
                 self.data.insert(0, (0, 0))
-            painter = QPainter(self)
+            painter = QPainter(self.parent)
             painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
-            pen = QPen(self.palette().color(QPalette.ColorRole.Text))
+            pen = QPen(self.parent.palette().color(QPalette.ColorRole.Text))
             pen.setWidth(2)
             painter.setPen(pen)
             painter.setFont(self.font)
@@ -184,13 +319,13 @@ class chartwidget(QWidget):
             ymargin = self.ymargin
 
             xmargin = 0
-            max_y = int(max(self.yy(y) for _, y in self.data))
+            max_y = int(max(self.parent.yy(y) for _, y in self.data))
             yticks = find_best_ticks(max_y)
             if self.data and self.data[0][1]:
-                yticks.insert(0, self.yy(self.data[0][1]))
-            y_labels = [self.ytext(y) for y in yticks]
+                yticks.insert(0, self.parent.yy(self.data[0][1]))
+            y_labels = [self.parent.ytext(y) for y in yticks]
 
-            x_labels = [self.xtext(x) for x, _ in self.data]
+            x_labels = [self.parent.xtext(x) for x, _ in self.data]
             for l in y_labels:
                 xmargin = max(xmargin, self.fmetrics.size(0, l).width())
 
@@ -199,15 +334,17 @@ class chartwidget(QWidget):
                 w = self.fmetrics.size(0, x_labels[0]).width() / 2
                 xmargin = max(w, xmargin)
             width = (
-                self.width()
+                self.parent.width()
                 - xmargin
                 - max(
                     self.fmetrics.size(0, x_labels[-1]).width() // 2,
-                    self.fmetrics.size(0, self.ytext(self.yy(self.data[-1][1]))).width()
+                    self.fmetrics.size(
+                        0, self.parent.ytext(self.parent.yy(self.data[-1][1]))
+                    ).width()
                     // 2,
                 )
             )
-            height = self.height() - 2 * ymargin
+            height = self.parent.height() - 2 * ymargin
 
             # 纵坐标
             rects: "list[QRectF]" = []
@@ -243,7 +380,7 @@ class chartwidget(QWidget):
             points = []
             for i, (x, y) in enumerate(self.data):
                 x_coord = xmargin + i * x_scale
-                y_coord = ymargin + height - self.yy(y) * y_scale
+                y_coord = ymargin + height - self.parent.yy(y) * y_scale
                 points.append((x_coord, y_coord))
 
             # 绘制折线
@@ -255,7 +392,7 @@ class chartwidget(QWidget):
                 painter.drawLine(QPointF(x1, y1), QPointF(x2, y2))
 
                 if self.data[i + 1][1]:  #!=0
-                    text = self.ytext(self.yy(self.data[i + 1][1]))
+                    text = self.parent.ytext(self.parent.yy(self.data[i + 1][1]))
                     W = self.fmetrics.size(0, text).width()
                     next_ = points[i + 2][1] if ((i + 2) < len(points)) else y2
 
@@ -297,6 +434,63 @@ class chartwidget(QWidget):
             )
         except:
             print_exc()
+
+
+class chartwidget(QWidget):
+
+    def setdata(self, data):
+        self._helper1.setdata(data)
+        self._helper2.setdata(data)
+
+    def yy(self, y: "int|float|dict[str, int|float]"):
+        return y if isinstance(y, (int, float)) else sum(y.values())
+
+    def viewpoint(self, d: "int|float|dict[str, int|float]"):
+        _ = self.ytext(self.yy(d))
+        if not _:
+            return _
+        if isinstance(d, dict):
+            __ = []
+            for uid, val in sorted(list(d.items()), key=lambda ___: -___[1]):
+                __.append(
+                    "{} : {}".format(
+                        self.ytext(self.yy(val)),
+                        savehook_new_data.get(uid, {}).get("title", "???"),
+                    )
+                )
+            if len(d) != 1:
+                __.insert(0, _)
+            if len(__) > 10:
+                __ = __[:10]
+                __.append("...")
+            _ = "\n".join(__)
+        return _
+
+    def __init__(self):
+        super().__init__()
+        self.setMouseTracking(True)
+        self._helper1 = githubheatmaphelper(self)
+        self._helper2 = charthelper(self)
+        self.setMinimumHeight(180)
+        self.xtext = lambda x: str(x)
+        self.ytext = lambda y: str(y)
+
+    @property
+    def usehelper(self):
+        return (
+            self._helper2
+            if globalconfig.get("timecharttype", 0) == 0
+            else self._helper1
+        )
+
+    def paintEvent(self, event):
+        self.usehelper.paintEvent(event)
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        self.usehelper.mouseMoveEvent(event)
+
+    def leaveEvent(self, a0):
+        self.usehelper.leaveEvent(a0)
 
 
 class ScrollArea(QScrollArea):

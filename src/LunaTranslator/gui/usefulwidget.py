@@ -1203,9 +1203,18 @@ def getIconButton(
     fix=True,
     tips=None,
     color=None,
+    checkablechangecolor=True,
 ):
 
-    b = IconButton(icon, enable, qicon, fix=fix, tips=tips, color=color)
+    b = IconButton(
+        icon,
+        enable,
+        qicon,
+        fix=fix,
+        tips=tips,
+        color=color,
+        checkablechangecolor=checkablechangecolor,
+    )
     if callback:
         b.clicked_1.connect(callback)
     if callback2:
