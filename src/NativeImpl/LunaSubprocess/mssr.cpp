@@ -6,6 +6,7 @@
 #endif
 
 #include <speechapi_cxx.h>
+#include <delayimp.h>
 #include "../NativeUtils/loopbackaudio/LoopbackCapture.h"
 
 using namespace Microsoft::CognitiveServices::Speech;
@@ -26,9 +27,22 @@ void pidchangedlistener(HANDLE hPipe)
         MessageBoxW(0, std::to_wstring(pid).c_str(), L"", MB_OK | MB_SYSTEMMODAL);
     }
 }
+
+FARPROC WINAPI MyDelayLoadFailureHook(unsigned dliNotify, PDelayLoadInfo pdli)
+{
+    if (dliNotify == dliFailLoadLib)
+    {
+        WCHAR error[255];
+        wsprintf(error, L"Failed to load DLL: %s\nError code: %lu\n", pdli->szDll, pdli->dwLastError);
+        MessageBoxW(NULL, error, L"ERROR", MB_SYSTEMMODAL);
+        return 0;
+    }
+    return NULL;
+}
+ExternC const PfnDliHook __pfnDliFailureHook2 = MyDelayLoadFailureHook;
+
 int mssr(int argc, wchar_t *argv[])
 {
-
     HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
     HANDLE hPipe2 = CreateNamedPipe(argv[8], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 

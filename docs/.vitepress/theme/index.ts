@@ -23,20 +23,34 @@ export default {
     },
     setup() {
         const handleRouteChange = () => {
+            let connectable = false
+            fetch('https://lunatranslator.org/Resource/DownloadLuna/x64_win10?doc=1', {
+                method: 'HEAD',
+                mode: 'cors',
+            })
+                .then(res => {
+                    connectable = true
+                })
+                .catch(err => {
+                    connectable = false
+                });
+
             document.querySelectorAll('.downloadlink').forEach((e) => {
                 e.addEventListener('click', () => {
                     let fuck = parseInt(window.localStorage.fuck)
-                    let isfuck = isNaN(fuck)
-                    window.localStorage.fuck = 1
-                    if (!isfuck) return
+                    let isfuck = isNaN(fuck) ? 0 : fuck
+                    window.localStorage.fuck = isfuck + 1
                     function checkIfMobile() {
                         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
                         return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
                     }
                     if (checkIfMobile()) return;
-                    setTimeout(() => {
-                        window.open(`/${window.localStorage.currentlang}/support.html`, '_blank')
-                    }, 1000);
+                    if (isfuck % 3 == 0) {
+                        if (connectable)
+                            window.open(`/${window.localStorage.currentlang}/support.html`, '_blank')
+                    }
+                    else if (window.localStorage.currentlang == 'zh')
+                        window.open('https://space.bilibili.com/592120404/video', '_blank')
                 });
             })
             if (!window.location.hostname.startsWith('docs')) return;

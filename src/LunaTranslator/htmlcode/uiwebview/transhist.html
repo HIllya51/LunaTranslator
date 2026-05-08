@@ -22,6 +22,10 @@
     }
 </style>
 <script>
+    var autoscroll_x = true
+    function autoscroll(x) {
+        autoscroll_x = x
+    }
     function setfont(font) {
         document.getElementById('fontcontroller').innerHTML = decodeURIComponent(font);
     }
@@ -125,6 +129,7 @@
         scrollend()
     }
     function scrollend() {
+        if (!autoscroll_x) return
         window.scrollTo({
             top: document.body.scrollHeight,
             behavior: 'instant'

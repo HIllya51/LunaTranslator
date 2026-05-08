@@ -61,7 +61,7 @@ isRunningMutex = None
 serverindex = 0
 serverindex2 = 0
 istest = False
-
+tempconfig = {}
 
 class Consts:
     linkcolor = "#E91E63"

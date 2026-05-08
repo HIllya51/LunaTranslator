@@ -111,7 +111,7 @@ int updatewmain(int argc, wchar_t *argv[])
             result += L"\n";
         }
         result = (text_failed_occupied) + L"\n\n" + result;
-        auto checked = MessageBoxW(NULL, result.c_str(), text_error.c_str(), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL);
+        auto checked = IDNO; // MessageBoxW(NULL, result.c_str(), text_error.c_str(), MB_YESNO | MB_ICONQUESTION | MB_SYSTEMMODAL);
         if (checked != IDYES)
             return 0;
         for (auto &&proc : processes)
@@ -151,7 +151,7 @@ int updatewmain(int argc, wchar_t *argv[])
         catch (...)
         {
         }
-        MessageBoxW(NULL, (std::wstring(text_update_failed) + L"\n\n" + StringToWideString(e.what(), CP_ACP)).c_str(), text_error.c_str(), MB_SYSTEMMODAL);
+        // MessageBoxW(NULL, (std::wstring(text_update_failed) + L"\n\n" + StringToWideString(e.what(), CP_ACP)).c_str(), text_error.c_str(), MB_SYSTEMMODAL);
         return 0;
     }
     try
