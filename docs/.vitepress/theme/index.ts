@@ -45,12 +45,14 @@ export default {
                         return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent);
                     }
                     if (checkIfMobile()) return;
-                    if (isfuck % 3 == 0) {
-                        if (connectable)
-                            window.open(`/${window.localStorage.currentlang}/support.html`, '_blank')
-                    }
-                    else if (window.localStorage.currentlang == 'zh')
-                        window.open('https://space.bilibili.com/592120404/video', '_blank')
+                    setTimeout(() => {
+                        if (isfuck % 3 == 0) {
+                            if (connectable)
+                                window.open(`/${window.localStorage.currentlang}/support.html`, '_blank')
+                        }
+                        else if (window.localStorage.currentlang == 'zh')
+                            window.open('https://space.bilibili.com/592120404/video', '_blank')
+                    }, 1000);
                 });
             })
             if (!window.location.hostname.startsWith('docs')) return;
