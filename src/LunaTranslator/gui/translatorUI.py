@@ -133,10 +133,10 @@ class IconLabelX(LLabel):
         self.setIconSize(QSize(int(h * gobject.Consts.IconSizeHW), h))
 
     def setIconStr(self, icon: str, color: str):
-        if icon == "lunaicon" or not icon.startswith("fa."):
+        if icon == "luna" or not icon.startswith("fa."):
             self.pixmap_ = (
                 getExeIcon(getcurrexe(), icon=False, large=True)
-                if icon == "lunaicon"
+                if icon == "luna"
                 else load_specific_icon_size(icon)
             )
             self.update_scaled_pixmap()

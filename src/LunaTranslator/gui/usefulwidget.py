@@ -3260,10 +3260,10 @@ class IconButton(LPushButton):
         self.__seticon()
 
     def _setIconStr(self, icon: str):
-        if icon is not None and (icon == "lunaicon" or not icon.startswith("fa.")):
+        if icon is not None and (icon == "luna" or not icon.startswith("fa.")):
             self.pixmap_ = (
                 getExeIcon(getcurrexe(), icon=False, large=True)
-                if icon == "lunaicon"
+                if icon == "luna"
                 else load_specific_icon_size(icon)
             )
             self._icon = None
