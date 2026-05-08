@@ -13,6 +13,7 @@ from myutils.config import (
     uid2gamepath,
     savehook_new_data,
     findgameuidofpath,
+    findgameuidofemugame,
     getdefaultsavehook,
     gamepath2uid_index,
     defaultglobalconfig,
@@ -380,7 +381,7 @@ def duplicateconfig(uidold):
     return uid
 
 
-def find_or_create_uid(targetlist, gamepath: str, title=None):
+def find_or_create_uid(targetlist: list, gamepath: str, title=None):
     uids = findgameuidofpath(gamepath, findall=True)
     if len(uids) == 0:
         uid = initanewitem(title)
@@ -397,6 +398,26 @@ def find_or_create_uid(targetlist, gamepath: str, title=None):
         else:
             uid2gamepath[uid] = gamepath
         trysearchforid(uid, [title] + guessmaybetitle(gamepath, title))
+        return uid
+    else:
+        intarget = uids[0]
+        index = len(targetlist)
+        for uid in uids:
+            if uid in targetlist:
+                thisindex = targetlist.index(uid)
+                if thisindex < index:
+                    index = thisindex
+                    intarget = uid
+        return intarget
+
+
+def find_or_create_uid_for_emu(targetlist: list, gameid: str, emuid: str, title=None):
+    uids = findgameuidofemugame(gameid, findall=True)
+    if len(uids) == 0:
+        uid = initanewitem(title)
+        uid2gamepath[uid] = uid2gamepath[emuid]
+        savehook_new_data[uid]["emugameid"] = gameid
+        trysearchforid(uid, [title])
         return uid
     else:
         intarget = uids[0]

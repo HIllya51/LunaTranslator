@@ -810,7 +810,7 @@
     "警告，注入的进程内存很小，可能是无用进程!": "Cảnh báo: Tiến trình bị Inject có rất ít bộ nhớ, có thể là tiến trình vô dụng!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Không hỗ trợ Ryujinx, vui lòng sử dụng Yuzu/Sudachi/Citron/Eden.",
     "模拟器版本过旧，请使用新版模拟器": "Phiên bản giả lập quá cũ, vui lòng dùng phiên bản mới hơn.",
-    "检测到模拟器: %s": "Phát hiện giả lập: %s",
+    "检测到模拟器: {}": "Phát hiện giả lập: %s",
     "游戏暂停": "Trò chơi tạm dừng",
     "跳过仅包含标点的句子": "Bỏ qua những câu chỉ chứa dấu câu.",
     "连点器": "Auto Clicker",

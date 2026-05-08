@@ -12,7 +12,7 @@ from myutils.config import (
 )
 from myutils.utils import get_time_stamp, is_ascii_control
 from gui.gamemanager.dialog import dialog_setting_game
-from textio.textsource.texthook import texthook
+from textio.textsource.texthook import texthook, HOSTINFO
 from gui.usefulwidget import (
     closeashidewindow,
     getsimplecombobox,
@@ -36,14 +36,6 @@ from gui.dynalang import (
     LTabWidget,
     LCheckBox,
 )
-
-
-class HOSTINFO:
-    Console = 0
-    Warning = 1
-    EmuWarning = 2
-    EmuGameName = 3
-    EmuConnected = 4
 
 
 def getformlayoutw(w=None, cls=LFormLayout, hide=False):
@@ -1017,9 +1009,10 @@ class hookselect(closeashidewindow):
                 iserror=False,
                 iswarning=True,
             )
-        elif info == HOSTINFO.EmuGameName:
-            gobject.base.displayinfomessage(sentence, "<msg_info_refresh>")
         elif info == HOSTINFO.EmuConnected:
+            sentence = _TR(
+                "检测到模拟器: {}\n请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏"
+            ).format(sentence)
             gobject.base.translation_ui.showMarkDownSig.emit(
                 "{}\n[{}]({})".format(
                     sentence,

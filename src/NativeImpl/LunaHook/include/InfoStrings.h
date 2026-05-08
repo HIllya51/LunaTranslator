@@ -89,7 +89,6 @@ enum LANG_STRINGS_HOOK
     WarningDummy,
     RYUJINXUNSUPPORT,
     EMUVERSIONTOOOLD,
-    IsEmuNotify,
 };
 enum SUPPORT_LANG;
 

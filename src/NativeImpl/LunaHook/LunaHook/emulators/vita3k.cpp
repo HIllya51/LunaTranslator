@@ -39,6 +39,10 @@ namespace
 
 namespace
 {
+    std::pair<std::string, std::string> splitpair(const std::wstring &s)
+    {
+        return {WideStringToString(re::sub(s, LR"(^ (.*)\((.*?)\).*$)", L"$2")), WideStringToString(re::sub(s, LR"(^ (.*)\((.*?)\).*$)", L"$1"))};
+    }
     void trygetgameinwindowtitle()
     {
         HookParam hp;
@@ -73,7 +77,8 @@ namespace
                 game_info.Vita3KGameID = wcasta(curr);
                 game_info.lastcheck = curr;
                 game_info.game = game;
-                return Msg::EmuGameName(game_info.game.c_str());
+                auto &&[id, title] = splitpair(game_info.game);
+                return Msg::EmuGameInfo(id.c_str(), title.c_str());
             }
         };
         hp.type = DIRECT_READ;
@@ -133,7 +138,8 @@ namespace
             if (info.Vita3KGameID.size())
             {
                 game_info = std::move(info);
-                Msg::EmuGameName(game_info.game.c_str());
+                auto &&[id, title] = splitpair(game_info.game);
+                Msg::EmuGameInfo(id.c_str(), title.c_str());
             }
             return true;
         }

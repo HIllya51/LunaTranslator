@@ -312,6 +312,20 @@ struct HostInfoI18NReq
 	LANG_STRINGS_HOOK enum_;
 	char key[MESSAGE_SIZE] = {};
 };
+struct EmuGameInfoNotif
+{
+	EmuGameInfoNotif(const char *_id, const char *_title, const char *_version)
+	{
+		strncpy_s(this->id, _id, MESSAGE_SIZE - 1);
+		strncpy_s(this->title, _title, MESSAGE_SIZE - 1);
+		strncpy_s(this->version, _version, MESSAGE_SIZE - 1);
+	}
+	HostNotificationType command = HOST_NOTIFICATION_EMUINFO;
+	HOSTINFO type = HOSTINFO::EmuWarning;
+	char id[MESSAGE_SIZE] = {};
+	char title[MESSAGE_SIZE] = {};
+	char version[MESSAGE_SIZE] = {};
+};
 struct HostInfoNotif
 {
 	HostInfoNotif(std::string message = "", UINT _codepage = CP_UTF8)
@@ -450,7 +464,7 @@ struct CommonSharedMem
 	UINT codepage;
 	bool fastskipignore;
 	bool clearText;
-	bool tryvehhook =  false;
+	bool tryvehhook = false;
 	struct
 	{
 		bool use;

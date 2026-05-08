@@ -102,7 +102,7 @@ bool checkengine()
                 spDefault.minAddress = 0;
                 spDefault.maxAddress = -1;
                 if (jittypedefault != JITTYPE::UNITY)
-                    Msg::EmuConnected(TR[IsEmuNotify], enginename.c_str());
+                    Msg::EmuConnected(enginename.c_str());
             }
         }
         if (m->is_engine_certain)

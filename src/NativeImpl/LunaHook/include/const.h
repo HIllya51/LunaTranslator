@@ -37,13 +37,13 @@ enum HostNotificationType
   HOST_NOTIFICATION_TEXT_W,
   HOST_NOTIFICATION_I18N_RESP,
   HOST_NOTIFICATION_PREPARED_OK,
+  HOST_NOTIFICATION_EMUINFO,
 };
 enum class HOSTINFO
 {
   Console,
   Warning,
   EmuWarning,
-  EmuGameName,
   EmuConnected,
 };
 #define NEXT_MASK(x)            \

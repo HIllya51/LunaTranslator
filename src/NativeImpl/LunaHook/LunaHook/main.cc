@@ -200,7 +200,11 @@ namespace Msg
 	definefunction(Warning, HOSTINFO::Warning);
 	definefunction(EmuConnected, HOSTINFO::EmuConnected);
 	definefunction(EmuWarning, HOSTINFO::EmuWarning);
-	definefunction(EmuGameName, HOSTINFO::EmuGameName);
+	void EmuGameInfo(const char *id, const char *title, const char *version)
+	{
+		EmuGameInfoNotif buffer(id, title, version);
+		WriteFile(hookPipe, &buffer, sizeof(buffer), DUMMY, nullptr);
+	}
 
 #undef definefunction
 #undef vhostinfoW

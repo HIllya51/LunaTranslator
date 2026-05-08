@@ -13,7 +13,13 @@ from myutils.config import (
 )
 from main import checkintegrity
 from textio.textsource.textsourcebase import basetext
-from myutils.utils import getlangtgt, safe_escape, stringfyerror, find_or_create_uid
+from myutils.utils import (
+    getlangtgt,
+    safe_escape,
+    stringfyerror,
+    find_or_create_uid,
+    find_or_create_uid_for_emu,
+)
 from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import test_injectable, ListProcess
 from myutils.wrapper import threader
@@ -38,6 +44,13 @@ from ctypes import (
     c_float,
 )
 from ctypes.wintypes import DWORD, LPCWSTR
+
+
+class HOSTINFO:
+    Console = 0
+    Warning = 1
+    EmuWarning = 2
+    EmuConnected = 3
 
 
 class ThreadParam(Structure):
@@ -90,6 +103,7 @@ HookInsertHandler = CFUNCTYPE(None, DWORD, c_uint64, c_wchar_p)
 EmbedCallback = CFUNCTYPE(None, c_wchar_p, ThreadParam)
 QueryHistoryCallback = CFUNCTYPE(None, c_wchar_p)
 I18NQueryCallback = CFUNCTYPE(c_void_p, c_wchar_p)
+EmuGameInfoCallback = CFUNCTYPE(None, c_wchar_p, c_wchar_p, c_wchar_p)
 
 
 class texthook(basetext):
@@ -240,10 +254,21 @@ class texthook(basetext):
             HookInsertHandler(self.newhookinsert),
             EmbedCallback(self.getembedtext),
             I18NQueryCallback(self.i18nQueryCallback),
+            EmuGameInfoCallback(self.EmuGameInfoCallback),
         ]
         self.keepref += procs
         self.Luna_Start(*procs)
         self.setlang()
+
+    def EmuGameInfoCallback(self, _id, title, version):
+        text = "{} {} {}".format(_id, title, version)
+        gobject.base.displayinfomessage(text, "<msg_info_refresh>")
+        gobject.base.hookselectdialog.sysmessagesignal.emit(
+            HOSTINFO.Console, "[Game] " + text
+        )
+        uid = find_or_create_uid_for_emu(savehook_new_list, _id, self.gameuid, title)
+        savehook_new_list.insert(0, uid)
+        self.gameuid = uid
 
     def i18nQueryCallback(self, querytext: str):
         return self.Luna_AllocString(_TR(querytext))

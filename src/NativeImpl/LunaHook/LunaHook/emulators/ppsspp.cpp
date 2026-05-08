@@ -699,7 +699,7 @@ namespace ppsspp
                 return;
             game_info.DISC_ID = (char *)context->argof(3);
             game_info.TITLE = (char *)context->argof(4);
-            Msg::EmuGameName("%s %s", context->argof(3), context->argof(4));
+            Msg::EmuGameInfo(game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
             jitaddrclear();
         };
         return NewHook(hp, "PPSSPPGameInfo StringFromFormat");
@@ -748,7 +748,7 @@ namespace ppsspp
                 return;
             game_info.DISC_ID = match.value()[1];
             game_info.TITLE = match.value()[2];
-            Msg::EmuGameName("%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            Msg::EmuGameInfo(game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
             jitaddrclear();
         };
         return NewHook(hp, "PPSSPPGameInfo MakeSystemRequest");
@@ -793,7 +793,7 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
         {
             game_info.DISC_ID = ((TextUnionA *)context->argof_thiscall(1))->view();
             game_info.TITLE = ((TextUnionA *)context->argof_thiscall(2))->view();
-            Msg::EmuGameName("%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+            Msg::EmuGameInfo(game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
             jitaddrclear();
         };
         return NewHook(hp, "PPSSPPGameInfo");
@@ -810,7 +810,7 @@ bool Config::loadGameConfig(const std::string &pGameId, const std::string &title
             game_info = std::move(info_1);
             if (game_info.DISC_ID.size())
             {
-                Msg::EmuGameName("%s %s", game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
+                Msg::EmuGameInfo(game_info.DISC_ID.c_str(), game_info.TITLE.c_str());
             }
             return ret;
         }

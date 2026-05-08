@@ -321,7 +321,7 @@ bool PCSX2::attach_function1()
             const GameList::Entry *entry = (GameList::Entry *)context->rdx;
             current_serial = entry->serial;
             jitaddrclear();
-            Msg::EmuGameName("%s %s", entry->serial.c_str(), entry->title.c_str());
+            Msg::EmuGameInfo(entry->serial.c_str(), entry->title.c_str());
             for (auto &&[addr, op] : emfunctionhooks)
             {
                 auto useid = MatchGameId(op._id);

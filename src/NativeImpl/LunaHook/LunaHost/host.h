@@ -10,7 +10,8 @@ namespace Host
 	using HookInsertHandler = std::function<void(DWORD, uint64_t, const std::wstring &)>;
 	using EmbedCallback = std::function<void(const std::wstring &, const ThreadParam &)>;
 	using I18NQueryCallback = std::function<std::optional<std::wstring>(const std::wstring &str)>;
-	void Start(std::optional<ProcessEventHandler> Connect, std::optional<ProcessEventHandler> Disconnect, std::optional<ThreadEventHandler> Create, std::optional<ThreadEventHandler> Destroy, std::optional<TextThread::OutputCallback> Output, std::optional<HostInfoHandler> hostinfo, std::optional<HookInsertHandler> hookinsert, std::optional<EmbedCallback> embed, std::optional<I18NQueryCallback> i18nQueryCallback);
+	using EmuGameInfoCallback = std::function<void(const std::wstring &, const std::wstring &, const std::wstring &)>;
+	void Start(std::optional<ProcessEventHandler> Connect, std::optional<ProcessEventHandler> Disconnect, std::optional<ThreadEventHandler> Create, std::optional<ThreadEventHandler> Destroy, std::optional<TextThread::OutputCallback> Output, std::optional<HostInfoHandler> hostinfo, std::optional<HookInsertHandler> hookinsert, std::optional<EmbedCallback> embed, std::optional<I18NQueryCallback> i18nQueryCallback, std::optional<EmuGameInfoCallback> emuGameInfoCallback);
 	void ConnectAndInjectProcess(DWORD processId);
 	void ConnectProcess(DWORD processId);
 	bool CheckIfNeedInject(DWORD processId);

@@ -22,6 +22,7 @@ typedef void (*OutputCallback)(const wchar_t *hookcode, const char *hookname, Th
 typedef void (*HostInfoHandler)(HOSTINFO type, const wchar_t *log);
 typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t *hookcode);
 typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
+typedef void (*EmuGameInfoCallback)(const wchar_t *id, const wchar_t *title, const wchar_t *version);
 typedef wchar_t *(*I18NQueryCallback)(const wchar_t *text);
 typedef void (*findhookcallback_t)(wchar_t *hookcode, const wchar_t *text);
 template <typename T>
@@ -32,7 +33,7 @@ std::optional<T> checkoption(bool check, T &&t)
     return {};
 }
 
-C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed, I18NQueryCallback i18nQueryCallback)
+C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed, I18NQueryCallback i18nQueryCallback, EmuGameInfoCallback emuGameInfoCallback)
 {
     Host::Start(
         checkoption(Connect, std::function<void(DWORD)>(Connect)),
@@ -58,6 +59,11 @@ C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, Thread
                         std::wstring ret = s;
                         delete s;
                         return ret;
+                    }),
+        checkoption(emuGameInfoCallback,
+                    [=](const std::wstring &id, const std::wstring &title, const std::wstring &version)
+                    {
+                        emuGameInfoCallback(id.c_str(), title.c_str(), version.c_str());
                     }));
 }
 #if 0

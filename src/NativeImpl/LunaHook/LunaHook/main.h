@@ -10,8 +10,7 @@ namespace Msg
     void EmuConnected(const T *text, ...);
     template <typename T>
     void EmuWarning(const T *text, ...);
-    template <typename T>
-    void EmuGameName(const T *text, ...);
+    void EmuGameInfo(const char *id, const char *title, const char *version = "");
 }
 
 void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T(*buffer), int len);

@@ -60,8 +60,7 @@ std::unordered_map<LANG_STRINGS_HOOK, i18nString<char>> _internal_lang_strings_h
     {ProcessRange, u8"获取到进程内存地址范围 0x%p 到 0x%p"},
     {WarningDummy, u8"警告，注入的进程内存很小，可能是无用进程!"},
     {RYUJINXUNSUPPORT, u8"不支持ryujinx，请使用yuzu/sudachi/Citron/Eden"},
-    {EMUVERSIONTOOOLD, u8"模拟器版本过旧，请使用新版模拟器"},
-    {IsEmuNotify, u8"检测到模拟器: %s\n请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏"}};
+    {EMUVERSIONTOOOLD, u8"模拟器版本过旧，请使用新版模拟器"}};
 
 DEFINEFUNCTION(LANG_STRINGS_HOOK, _internal_lang_strings_hook, char, get_hook)
 #endif

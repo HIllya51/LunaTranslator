@@ -367,16 +367,13 @@ class dialog_setting_game_internal(QWidget):
             functools.partial(savehook_new_data[gameuid].__setitem__, "title")
         )
         titleedit.returnPressed.connect(_titlechange)
-
-        formLayout.addRow(
-            "标题",
-            getboxlayout(
-                [
-                    titleedit,
-                    getIconButton(_titlechange, icon="fa.search"),
-                ]
-            ),
-        )
+        __list = [
+            titleedit,
+            getIconButton(_titlechange, icon="fa.search"),
+        ]
+        if savehook_new_data[gameuid].get("emugameid"):
+            __list.insert(1, getsmalllabel(savehook_new_data[gameuid].get("emugameid")))
+        formLayout.addRow("标题", getboxlayout(__list))
 
         functs = [
             ("游戏设置", functools.partial(self.___tabf3, self.makegamesettings)),
