@@ -610,7 +610,7 @@ class TextBrowser(WebviewWidget, somecommon):
             tooltipswidget.hidetooltipwindow()
 
     def calllunaMouseMove(self, x, y):
-        if globalconfig.get("selectable", True) and globalconfig.get("selectableEx", True):
+        if globalconfig.get("selectable", True) and globalconfig.get("selectableEx", False):
             return
         pos = self.parsexyaspos(x, y)
         event = QMouseEvent(

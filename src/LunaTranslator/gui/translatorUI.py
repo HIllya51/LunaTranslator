@@ -32,7 +32,7 @@ from gui.dialog_memory import dialog_memory
 from gui.rendertext.texttype import TextType, SpecialColor
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless
+from gui.usefulwidget import resizableframeless, load_specific_icon_size
 from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.gamemanager.common import startgame
@@ -67,6 +67,52 @@ class IconLabelX(LLabel):
         self._icon = QIcon()
         self._size = QSize()
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
+        self.pixmap_ = None
+        self.setScaledContents(True)
+
+    def update_scaled_pixmap(self):
+        if self.pixmap_ is None:
+            return
+        label_size = self.size()
+        if label_size.width() <= 0 or label_size.height() <= 0:
+            return
+
+        original_width = self.pixmap_.width()
+        original_height = self.pixmap_.height()
+        label_ratio = label_size.width() / label_size.height()
+        img_ratio = original_width / original_height
+
+        if 1:
+            if label_ratio > img_ratio:
+                canvas_width = original_width
+                canvas_height = original_width / label_ratio
+            else:
+                canvas_width = original_height * label_ratio
+                canvas_height = original_height
+        else:
+            if label_ratio > img_ratio:
+                canvas_width = original_height * label_ratio
+                canvas_height = original_height
+            else:
+                canvas_width = original_width
+                canvas_height = original_width / label_ratio
+
+        dpr = self.devicePixelRatioF()
+        canvas = QPixmap(int(canvas_width * dpr), int(canvas_height * dpr))
+        canvas.setDevicePixelRatio(dpr)
+        canvas.fill(Qt.GlobalColor.transparent)
+
+        painter = QPainter(canvas)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        x = int((canvas_width - original_width) / 2)
+        y = int((canvas_height - original_height) / 2)
+        painter.drawPixmap(x, y, self.pixmap_)
+        painter.end()
+        self.setPixmap(canvas)
+
+    def resizeEvent(self, event):
+        self.update_scaled_pixmap()
+        super().resizeEvent(event)
 
     def showinlayout(self, layout: QBoxLayout):
 
@@ -86,8 +132,17 @@ class IconLabelX(LLabel):
         h = int(e.size().height() / gobject.Consts.toolscale)
         self.setIconSize(QSize(int(h * gobject.Consts.IconSizeHW), h))
 
-    def setIcon(self, icon: QIcon):
-        self._icon = icon
+    def setIconStr(self, icon: str, color: str):
+        if icon == "lunaicon" or not icon.startswith("fa."):
+            self.pixmap_ = (
+                getExeIcon(getcurrexe(), icon=False, large=True)
+                if icon == "lunaicon"
+                else load_specific_icon_size(icon)
+            )
+            self.update_scaled_pixmap()
+            pass
+        else:
+            self._icon = qtawesome.icon(icon, color=color)
         self.update()
 
     def setIconSize(self, size: QSize):
@@ -95,7 +150,8 @@ class IconLabelX(LLabel):
         self.update()
 
     def paintEvent(self, a0: QPaintEvent) -> None:
-
+        if self.pixmap():
+            return super().paintEvent(a0)
         if self._size.isEmpty():
             return
         painter = QPainter(self)
@@ -203,7 +259,7 @@ class ButtonBar(QFrame):
                 )
             else:
                 icon = globalconfig["toolbutton"]["buttons"][name]["icon"]
-            self.buttons[name].setIcon(qtawesome.icon(icon, color=color))
+            self.buttons[name].setIconStr(icon, color)
 
     def setstyle(self, bottomr, bottomr3):
 
@@ -432,7 +488,11 @@ class TranslatorWindow(resizableframeless):
             if windows.MonitorFromWindow(hwnd) != windows.MonitorFromWindow(self.winid):
                 self.__lastpos = None
                 return
-            if globalconfig.get("verticalhorizontal", False) + globalconfig.get("top_align", 0) != 1:
+            if (
+                globalconfig.get("verticalhorizontal", False)
+                + globalconfig.get("top_align", 0)
+                != 1
+            ):
                 self.safemove(
                     self.__tracepos - self.__lastpos.topLeft() + rect.topLeft()
                 )
@@ -1007,7 +1067,9 @@ class TranslatorWindow(resizableframeless):
                 self.winid, globalconfig.get("WindowEffect_shadow", True), 0x00FFFFFF
             )
         elif globalconfig.get("WindowEffect", 0) == 2:
-            NativeUtils.setAeroEffect(self.winid, globalconfig.get("WindowEffect_shadow", True))
+            NativeUtils.setAeroEffect(
+                self.winid, globalconfig.get("WindowEffect_shadow", True)
+            )
         self.changeextendstated()
 
     def initvalues(self):
@@ -1394,7 +1456,8 @@ class TranslatorWindow(resizableframeless):
         bottomr = self.createborderradiusstring(radiu_valid * use_r2, True, True)
         transparent_value_actually = max(
             (1 - globalconfig["transparent_EX"]) * 100 / 255,
-            globalconfig["transparent"] * (not globalconfig.get("backtransparent", False)),
+            globalconfig["transparent"]
+            * (not globalconfig.get("backtransparent", False)),
         )
         self.translate_text.setStyleSheet(
             "Textbrowser{border-width: 0;%s;background-color: %s}"
@@ -1501,12 +1564,18 @@ class TranslatorWindow(resizableframeless):
     def changemousetransparentstate(self, idx):
         if idx == 0:
 
-            globalconfig["mousetransparent"] = not globalconfig.get("mousetransparent", False)
+            globalconfig["mousetransparent"] = not globalconfig.get(
+                "mousetransparent", False
+            )
             self.mousetransparent_check()
         elif idx == 1:
-            globalconfig["backtransparent"] = not globalconfig.get("backtransparent", False)
+            globalconfig["backtransparent"] = not globalconfig.get(
+                "backtransparent", False
+            )
             self.set_color_transparency()
-            gobject.base.backtransparentstatus.emit(not globalconfig.get("backtransparent", False))
+            gobject.base.backtransparentstatus.emit(
+                not globalconfig.get("backtransparent", False)
+            )
         self.refreshtoolicon()
 
     def showhideocrrange(self):

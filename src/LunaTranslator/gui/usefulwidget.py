@@ -14,6 +14,7 @@ import NativeUtils
 import gobject
 from NativeUtils import WebView2
 import re
+from myutils.hwnd import getExeIcon, getcurrexe
 from gui.qevent import DarkLightChangedEvent, DarkLightSettingChangedEvent
 from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink
 from myutils.wrapper import Singleton, threader, tryprint
@@ -34,6 +35,17 @@ from gui.dynalang import (
     LMainWindow,
     LToolButton,
 )
+
+def load_specific_icon_size(ico_path):
+    reader = QImageReader(ico_path)
+    total_images = reader.imageCount()
+    best_image = None
+    for i in range(total_images):
+        reader.jumpToImage(i)
+        size = reader.size()
+        if best_image is None or size.width() > best_image.size().width():
+            best_image = QPixmap.fromImage(reader.read())
+    return best_image
 
 
 class FocusCombo(QComboBox):
@@ -3221,8 +3233,9 @@ class IconButton(LPushButton):
         if tips:
             self.setToolTip(tips)
         self._FixedSize = None
+        self.pixmap_ = None
         self._color = color
-        self._icon = icon
+        self._setIconStr(icon)
         self.clicked.connect(self.clicked_1)
         self.clicked.connect(self.__seticon)
         self._qicon = qicon
@@ -3246,14 +3259,27 @@ class IconButton(LPushButton):
         self._color = color
         self.__seticon()
 
+    def _setIconStr(self, icon: str):
+        if icon is not None and (icon == "lunaicon" or not icon.startswith("fa.")):
+            self.pixmap_ = (
+                getExeIcon(getcurrexe(), icon=False, large=True)
+                if icon == "lunaicon"
+                else load_specific_icon_size(icon)
+            )
+            self._icon = None
+        else:
+            self.pixmap_ = None
+            self._icon = icon
     def setIconStr(self, icon: str):
-        self._icon = icon
+        self._setIconStr(icon)
         self.__seticon()
 
     def iconStr(self):
         return self._icon
 
     def __seticon(self):
+        if self.pixmap_ is not None:
+            return self.setIcon(QIcon(self.pixmap_))
         if self._qicon:
             icon = self._qicon
         else:

@@ -685,7 +685,7 @@
             "move": {
                 "use": true,
                 "tip": "移动",
-                "icon": "fa.hand-paper-o",
+                "icon": "lunaicon",
                 "align": 0
             },
             "fullscreen": {

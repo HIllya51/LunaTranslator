@@ -191,7 +191,7 @@ class QTextBrowser_1(QTextEdit):
         return super().focusOutEvent(e)
 
     def mouseMoveEvent(self, ev: QMouseEvent):
-        if globalconfig.get("selectable", True) and globalconfig.get("selectableEx", True):
+        if globalconfig.get("selectable", True) and globalconfig.get("selectableEx", False):
             tooltipswidget.hidetooltipwindow()
             return super().mouseMoveEvent(ev)
         for label in self.p.searchmasklabels:
