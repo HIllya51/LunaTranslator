@@ -82,7 +82,7 @@ class IconLabelX(LLabel):
         label_ratio = label_size.width() / label_size.height()
         img_ratio = original_width / original_height
 
-        if 1:
+        if 0:
             if label_ratio > img_ratio:
                 canvas_width = original_width
                 canvas_height = original_width / label_ratio
