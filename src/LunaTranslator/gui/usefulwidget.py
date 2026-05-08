@@ -3260,7 +3260,7 @@ class IconButton(LPushButton):
         self.__seticon()
 
     def _setIconStr(self, icon: str):
-        if icon is not None and (icon == "luna" or not icon.startswith("fa.")):
+        if icon is not None and len(icon) > 1 and (icon == "luna" or not icon.startswith("fa.")):
             self.pixmap_ = (
                 getExeIcon(getcurrexe(), icon=False, large=True)
                 if icon == "luna"

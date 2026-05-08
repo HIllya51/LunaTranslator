@@ -920,5 +920,7 @@
     "重新下载": "Tekrar indir",
     "鼠标滚动查看历史文本": "Fareyi kaydırarak geçmiş metinleri görüntüleyin",
     "已取消": "İptal edildi",
-    "自动滚动到最后": "Otomatik olarak sona kaydır"
+    "自动滚动到最后": "Otomatik olarak sona kaydır",
+    "字符": "Karakter",
+    "图片路径": "Resim yolu"
 }

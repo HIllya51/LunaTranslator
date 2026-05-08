@@ -133,15 +133,16 @@ class IconLabelX(LLabel):
         self.setIconSize(QSize(int(h * gobject.Consts.IconSizeHW), h))
 
     def setIconStr(self, icon: str, color: str):
-        if icon == "luna" or not icon.startswith("fa."):
+        if len(icon) > 1 and (icon == "luna" or not icon.startswith("fa.")):
             self.pixmap_ = (
                 getExeIcon(getcurrexe(), icon=False, large=True)
                 if icon == "luna"
                 else load_specific_icon_size(icon)
             )
             self.update_scaled_pixmap()
-            pass
+            self._icon = None
         else:
+            self.pixmap_ = None
             self._icon = qtawesome.icon(icon, color=color)
         self.update()
 
@@ -152,6 +153,8 @@ class IconLabelX(LLabel):
     def paintEvent(self, a0: QPaintEvent) -> None:
         if self.pixmap():
             return super().paintEvent(a0)
+        if self._icon is None:
+            return
         if self._size.isEmpty():
             return
         painter = QPainter(self)
@@ -712,6 +715,7 @@ class TranslatorWindow(resizableframeless):
             windows.keybd_event(windows.VK_CONTROL, 0, windows.KEYEVENTF_KEYUP, 0)
 
         functions = (
+            ("luna", None),
             ("move", None),
             ("retrans", self.startTranslater),
             (
@@ -951,7 +955,7 @@ class TranslatorWindow(resizableframeless):
                 tp,
                 clicked,
                 rightclick,
-                globalconfig["toolbutton"]["buttons"][btn]["tip"],
+                globalconfig["toolbutton"]["buttons"][btn].get("tip", ""),
                 btn,
                 belong,
                 iconstate,

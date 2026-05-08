@@ -510,6 +510,7 @@
     "profiles_index": 0,
     "toolbutton": {
         "rank2": [
+            "luna",
             "move",
             "retrans",
             "automodebutton",
@@ -548,6 +549,12 @@
             "reset_TS_status"
         ],
         "buttons": {
+            "luna":{
+                "use":false,
+                "icon": "luna",
+                "tip": "luna",
+                "align": 0
+            },
             "retrans": {
                 "use": true,
                 "tip": "手动执行",

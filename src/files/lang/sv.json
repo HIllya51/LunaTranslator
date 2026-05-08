@@ -920,5 +920,7 @@
     "重新下载": "Ladda ner igen",
     "鼠标滚动查看历史文本": "Rulla musen för att visa historisk text",
     "已取消": "Avbruten",
-    "自动滚动到最后": "Automatisk rullning till slutet"
+    "自动滚动到最后": "Automatisk rullning till slutet",
+    "字符": "Tecken",
+    "图片路径": "Bildsökväg"
 }
