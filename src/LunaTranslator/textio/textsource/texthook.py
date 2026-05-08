@@ -267,7 +267,8 @@ class texthook(basetext):
             HOSTINFO.Console, "[Game] " + text
         )
         uid = find_or_create_uid_for_emu(savehook_new_list, _id, self.gameuid, title)
-        savehook_new_list.insert(0, uid)
+        if uid not in savehook_new_list:
+            savehook_new_list.insert(0, uid)
         self.gameuid = uid
 
     def i18nQueryCallback(self, querytext: str):
