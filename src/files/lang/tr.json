@@ -856,7 +856,6 @@
     "调整优先级": "Önceliği ayarla",
     "调整为": "Ayarlamak",
     "正在等待DLL注入到游戏中……": "DLL'nin oyuna enjekte edilmesi bekleniyor...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Eğer bekleme süresi çok uzunsa, antivirüs yazılımı tarafından engellenmiş olabilir, lütfen ilgili ayarları kendiniz kontrol edin.",
     "文字区域背景": "Metin alanı arka planı",
     "延展宽度": "Genişlik uzatma",
     "延展高度": "Genişletilmiş yükseklik",
@@ -922,5 +921,8 @@
     "已取消": "İptal edildi",
     "自动滚动到最后": "Otomatik olarak sona kaydır",
     "字符": "Karakter",
-    "图片路径": "Resim yolu"
+    "图片路径": "Resim yolu",
+    "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Bekleme süresi çok uzunsa, Windows Defender veya başka bir antivirüs yazılımı tarafından engellenmiş olabilir.",
+    "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Lütfen [Windows Defender hariç tutma ekleyin](WDADDEXCEPTION) veya diğer ilgili ayarları kontrol edip tekrar deneyin.",
+    "禁用其他全部快捷键": "Diğer tüm kısayol tuşlarını devre dışı bırak"
 }

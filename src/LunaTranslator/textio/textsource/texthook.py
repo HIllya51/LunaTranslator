@@ -429,7 +429,7 @@ class texthook(basetext):
             return
         gobject.base.translation_ui.showMarkDownSig.emit(
             _TR(
-                "正在等待DLL注入到游戏中……\n如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。"
+                "正在等待DLL注入到游戏中……\n如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。\n请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。"
             )
             + "\n[{}]({})".format(
                 _TR("说明"), dynamiclink("README.html#anchor-waitdll", docs=True)

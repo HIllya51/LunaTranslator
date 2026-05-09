@@ -856,7 +856,6 @@
     "调整优先级": "Chỉnh sửa mức độ ưu tiên",
     "调整为": "Đã điều chỉnh thành",
     "正在等待DLL注入到游戏中……": "Đang chờ Inject DLL vào trò chơi...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Nếu chờ quá lâu, có thể DLL bị phần mềm diệt virus chặn, vui lòng tự kiểm tra lại cài đặt.",
     "文字区域背景": "Nền khu vực văn bản",
     "延展宽度": "Kéo dài chiều rộng",
     "延展高度": "Kéo dài chiều cao",
@@ -922,5 +921,8 @@
     "已取消": "Đã hủy",
     "自动滚动到最后": "Tự động cuộn đến cuối",
     "字符": "Ký tự",
-    "图片路径": "Đường dẫn hình ảnh"
+    "图片路径": "Đường dẫn hình ảnh",
+    "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Nếu thời gian chờ quá lâu, có thể đã bị Windows Defender hoặc phần mềm diệt virus khác chặn.",
+    "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Vui lòng [thêm mục loại trừ Windows Defender](WDADDEXCEPTION) hoặc kiểm tra các cài đặt liên quan khác rồi thử lại.",
+    "禁用其他全部快捷键": "Vô hiệu hóa tất cả các phím tắt khác"
 }

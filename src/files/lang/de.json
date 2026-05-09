@@ -856,7 +856,6 @@
     "调整优先级": "Priorität anpassen",
     "调整为": "Angepasst",
     "正在等待DLL注入到游戏中……": "Warte darauf, dass die DLL in das Spiel injiziert wird...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Falls die Wartezeit zu lang ist, könnte sie von der Antivirensoftware blockiert werden. Bitte überprüfen Sie die entsprechenden Einstellungen selbst.",
     "文字区域背景": "Textbereichshintergrund",
     "延展宽度": "Erweiterung der Breite",
     "延展高度": "Erweiterungshöhe",
@@ -922,5 +921,8 @@
     "已取消": "Storniert",
     "自动滚动到最后": "Automatisch bis zum Ende scrollen",
     "字符": "Zeichen",
-    "图片路径": "Bildpfad"
+    "图片路径": "Bildpfad",
+    "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Wenn die Wartezeit zu lang ist, könnte es sein, dass Windows Defender oder andere Antivirensoftware den Vorgang blockiert.",
+    "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Bitte fügen Sie einen [Windows Defender-Ausschluss](WDADDEXCEPTION) hinzu oder überprüfen Sie andere relevante Einstellungen und versuchen Sie es erneut.",
+    "禁用其他全部快捷键": "Deaktivieren Sie alle anderen Tastenkombinationen."
 }

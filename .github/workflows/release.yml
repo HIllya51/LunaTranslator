@@ -27,7 +27,7 @@ jobs:
       - uses: actions/download-artifact@v8
         with:
             path: build
-      - uses: softprops/action-gh-release@v2.2.2
+      - uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |

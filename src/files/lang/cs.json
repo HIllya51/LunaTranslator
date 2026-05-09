@@ -856,7 +856,6 @@
     "调整优先级": "Upravit priority",
     "调整为": "Upravit",
     "正在等待DLL注入到游戏中……": "Čeká se na vložení DLL do hry...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Pokud je doba čekání příliš dlouhá, může to být způsobeno blokováním antivirovým softwarem, zkontrolujte prosím příslušná nastavení.",
     "文字区域背景": "Textová oblast pozadí",
     "延展宽度": "Rozšíření šířky",
     "延展高度": "Rozšířená výška",
@@ -922,5 +921,8 @@
     "已取消": "Zrušeno",
     "自动滚动到最后": "Automatické posouvání na konec",
     "字符": "Znak",
-    "图片路径": "Cesta k obrázku"
+    "图片路径": "Cesta k obrázku",
+    "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Pokud čekání trvá příliš dlouho, mohlo dojít k zablokování ze strany Windows Defenderu nebo jiného antivirového softwaru.",
+    "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Prosím, [přidejte výjimku pro Windows Defender](WDADDEXCEPTION) nebo zkontrolujte další související nastavení a poté to zkuste znovu.",
+    "禁用其他全部快捷键": "Zakázat všechny ostatní klávesové zkratky"
 }

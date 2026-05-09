@@ -856,7 +856,6 @@
     "调整优先级": "Justera prioritet",
     "调整为": "Justerad",
     "正在等待DLL注入到游戏中……": "Väntar på att DLL ska injiceras i spelet...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Om väntetiden är för lång kan det bero på att antivirusprogrammet blockerar det, kontrollera gärna dina inställningar.",
     "文字区域背景": "Textområdets bakgrund",
     "延展宽度": "Utsträckt bredd",
     "延展高度": "Utsträckbar höjd",
@@ -922,5 +921,8 @@
     "已取消": "Avbruten",
     "自动滚动到最后": "Automatisk rullning till slutet",
     "字符": "Tecken",
-    "图片路径": "Bildsökväg"
+    "图片路径": "Bildsökväg",
+    "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Om väntetiden är för lång kan det bero på att Windows Defender eller annat antivirusprogram blockerar det.",
+    "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Lägg till [undantag i Windows Defender](WDADDEXCEPTION) eller kontrollera andra relaterade inställningar och försök igen.",
+    "禁用其他全部快捷键": "Inaktivera alla andra kortkommandon"
 }

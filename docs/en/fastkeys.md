@@ -6,6 +6,9 @@
 
 ## General
 
+1. #### Disable All Other Shortcuts {#anchor-disableothers}
+    Disables all other shortcuts except this one. Triggering this shortcut again will release the disable.
+
 1. #### Manual execution {#anchor-_1}
     Reads input once from the current text input source and performs translation.
     For example, if the current mode is OCR, it will perform OCR again.

@@ -5,6 +5,9 @@
 
 ## Chung
 
+1. #### Vô hiệu hóa mọi phím tắt khác {#anchor-disableothers}
+    Vô hiệu hóa tất cả các phím tắt khác ngoại trừ phím tắt này. Kích hoạt lại phím tắt này sẽ hủy bỏ trạng thái vô hiệu hóa.
+
 1. #### Thực thi thủ công {#anchor-_1}
     Đọc đầu vào một lần từ nguồn đầu vào văn bản hiện tại và thực hiện dịch.
     Ví dụ: nếu chế độ hiện tại là OCR, nó sẽ thực hiện OCR lại.

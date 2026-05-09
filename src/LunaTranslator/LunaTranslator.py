@@ -1336,6 +1336,17 @@ class BASEOBJECT(QObject):
             return os.startfile(unquote(link[5:]))
         if link == "WEIXIN":
             return self.createimageviewsig.emit(parent)
+        if link == "WDADDEXCEPTION":
+            return windows.ShellExecute(
+                0,
+                "runas",
+                "powershell",
+                r'Add-MpPreference -ExclusionPath "{}"'.format(
+                    os.path.normpath(os.path.dirname(getcurrexe()))
+                ),
+                None,
+                windows.SW_HIDE,
+            )
         if link == "/":
             link = dynamiclink("", docs=True)
         os.startfile(link)

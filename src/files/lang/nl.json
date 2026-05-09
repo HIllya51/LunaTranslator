@@ -856,7 +856,6 @@
     "调整优先级": "Prioriteiten aanpassen",
     "调整为": "Aangepast",
     "正在等待DLL注入到游戏中……": "Wacht tot de DLL in het spel wordt geïnjecteerd...",
-    "如果等待时间过长，可能是被杀毒软件拦截，请自行检查相关设置。": "Als de wachttijd te lang is, kan het zijn dat het door antivirussoftware wordt geblokkeerd. Controleer zelf de relevante instellingen.",
     "文字区域背景": "Tekstgebied achtergrond",
     "延展宽度": "Verbreding",
     "延展高度": "Uitbreidingshoogte",
@@ -922,5 +921,8 @@
     "已取消": "Geannuleerd",
     "自动滚动到最后": "Automatisch naar het einde scrollen",
     "字符": "Karakter",
-    "图片路径": "Afbeeldingspad"
+    "图片路径": "Afbeeldingspad",
+    "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Als de wachttijd te lang is, kan het zijn dat Windows Defender of andere antivirussoftware het heeft geblokkeerd.",
+    "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Voeg een uitsluiting toe aan Windows Defender ([WDADDEXCEPTION]) of controleer andere gerelateerde instellingen en probeer het opnieuw.",
+    "禁用其他全部快捷键": "Schakel alle andere sneltoetsen uit."
 }

@@ -549,8 +549,8 @@
             "reset_TS_status"
         ],
         "buttons": {
-            "luna":{
-                "use":false,
+            "luna": {
+                "use": false,
                 "icon": "luna",
                 "tip": "luna",
                 "align": 0
@@ -860,6 +860,9 @@
             },
             "36": {
                 "name": "读取剪贴板"
+            },
+            "disableothers": {
+                "name": "禁用其他快捷键"
             },
             "_1": {
                 "name": "手动执行"
