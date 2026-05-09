@@ -3259,17 +3259,27 @@ class IconButton(LPushButton):
         self._color = color
         self.__seticon()
 
-    def _setIconStr(self, icon: str):
-        if icon is not None and len(icon) > 1 and (icon == "luna" or not icon.startswith("fa.")):
-            self.pixmap_ = (
-                getExeIcon(getcurrexe(), icon=False, large=True)
-                if icon == "luna"
-                else load_specific_icon_size(icon)
-            )
+    def _setIconStr(self, icon):
+        if self._is_pixmap_icon(icon):
+            self.pixmap_ = self._load_pixmap(icon)
             self._icon = None
         else:
             self.pixmap_ = None
             self._icon = icon
+
+    @staticmethod
+    def _is_pixmap_icon(icon) -> bool:
+        return (
+            isinstance(icon, str)
+            and len(icon) > 1
+            and (icon == "luna" or not icon.startswith("fa."))
+        )
+
+    @staticmethod
+    def _load_pixmap(icon: str):
+        if icon == "luna":
+            return getExeIcon(getcurrexe(), icon=False, large=True)
+        return load_specific_icon_size(icon)
     def setIconStr(self, icon: str):
         self._setIconStr(icon)
         self.__seticon()
