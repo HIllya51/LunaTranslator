@@ -28,11 +28,22 @@ export default {
                 method: 'HEAD',
                 mode: 'cors',
             })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error();
+                    }
+                })
                 .then(res => {
                     connectable = true
                 })
                 .catch(err => {
-                    connectable = false
+                    connectable = true
+                    document.querySelectorAll('a').forEach((e) => {
+                        if (e.href.endsWith('/x64_win10?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64_win10.zip'
+                        else if (e.href.endsWith('/x64_win7?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64_win7.zip'
+                        else if (e.href.endsWith('/x86_win7?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_win7.zip'
+                        else if (e.href.endsWith('/x86_winxp?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_winxp.zip'
+                    })
                 });
 
             document.querySelectorAll('.downloadlink').forEach((e) => {
