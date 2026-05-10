@@ -329,13 +329,21 @@ bool yuzu::attach_function1()
         return false;
     HookParam hp;
     hp.address = RegisterBlock;
+    hp.user_value = iscitron_neo;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto descriptor = context->argof(idxDescriptor + 1); // r8
         auto entrypoint = context->argof(idxEntrypoint + 1); // r9
-        auto em_address = *(uint64_t *)descriptor - emaddroffet;
         if (!entrypoint)
             return;
+        auto em_address = *(uint64_t *)descriptor - emaddroffet;
+        if (hp->user_value)
+        {
+            // citron neo的蜜汁修改。example: ひめひび -Princess Days-
+            // 旧版citron没有这个问题。但为了省事，就这样了吧。
+            if (em_address < 0x80000000 && em_address > 0x700000)
+                em_address -= 0x500000;
+        }
         jitaddraddr(em_address, entrypoint, JITTYPE::YUZU);
         NS_CheckEmAddrHOOKable(em_address, entrypoint);
         delayinsertNewHook(em_address);

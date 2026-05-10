@@ -4,6 +4,7 @@ class yuzu : public ENGINE
 {
 public:
     bool isedenv0_0_4_rc2_above = false;
+    bool iscitron_neo = false;
     yuzu()
     {
         jittype = JITTYPE::YUZU;
@@ -11,7 +12,10 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = [&]()
         {
-            auto exes = {L"suyu.exe", L"yuzu.exe", L"sudachi.exe", L"citron.exe", L"sumi.exe"};
+            iscitron_neo = wcscmp(L"citron.exe", processName_lower) == 0;
+            if (iscitron_neo)
+                return true;
+            auto exes = {L"suyu.exe", L"yuzu.exe", L"sudachi.exe", L"sumi.exe"};
             auto succ = std::any_of(exes.begin(), exes.end(), [](const wchar_t *e)
                                     { return wcscmp(processName_lower, e) == 0; }) &&
                         (GetModuleHandleW(L"Qt6Core.dll") || GetModuleHandleW(L"Qt5Core.dll"));
