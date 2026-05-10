@@ -577,29 +577,34 @@ def proxyusage():
     hbox.setContentsMargins(0, 0, 0, 0)
     w2 = QWidget()
     w2.setEnabled(globalconfig.get("useproxy", True))
-    switch1 = D_getsimpleswitch(globalconfig, "useproxy", callback=w2.setEnabled, default=True)()
+    switch1 = D_getsimpleswitch(
+        globalconfig, "useproxy", callback=w2.setEnabled, default=True
+    )()
     hbox.addWidget(switch1)
     hbox.addWidget(QLabel())
     hbox.addWidget(w2)
     hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
     vbox = VisLFormLayout(w2)
     vbox.setContentsMargins(0, 0, 0, 0)
+    check = QLabel()
+    proxy = QLineEdit(globalconfig["proxy"])
+    __p = getboxwidget(["手动设置代理", proxy, check])
 
     def __(x):
-        vbox.setRowVisible(1, not x)
+        __p.setEnabled(x)
 
     vbox.addRow(
         getboxlayout(
             [
                 "使用系统代理",
-                D_getsimpleswitch(globalconfig, "usesysproxy", callback=__, default=True)(),
+                D_getsimpleswitch(
+                    globalconfig, "usesysproxy", callback=__, default=True
+                )(),
                 0,
             ]
         ),
     )
-    check = QLabel()
-    proxy = QLineEdit(globalconfig["proxy"])
-    vbox.addRow(getboxlayout(["手动设置代理", proxy, check]))
+    vbox.addRow(__p)
     __(globalconfig.get("usesysproxy", True))
     validator(check, globalconfig["proxy"])
     proxy.textChanged.connect(functools.partial(validator, check))
@@ -627,15 +632,15 @@ def filetranslate(self):
                 leftwidget=D_getdoclink("sr.html"),
             )
         ],
-        [
-            functools.partial(
-                createfoldgrid,
-                functools.partial(getftsgrid, self),
-                "文件翻译",
-                globalconfig["foldstatus"]["others"],
-                "fts",
-            )
-        ],
+        # [
+        #     functools.partial(
+        #         createfoldgrid,
+        #         functools.partial(getftsgrid, self),
+        #         "文件翻译",
+        #         globalconfig["foldstatus"]["others"],
+        #         "fts",
+        #     )
+        # ],
         [
             functools.partial(
                 createfoldgrid,
