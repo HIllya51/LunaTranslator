@@ -72,7 +72,9 @@ def createhorizontal_slider(self):
     )
 
     self.horizontal_slider.setEnabled(not globalconfig.get("backtransparent", False))
-    self.horizontal_slider_label.setEnabled(not globalconfig.get("backtransparent", False))
+    self.horizontal_slider_label.setEnabled(
+        not globalconfig.get("backtransparent", False)
+    )
     return w
 
 
@@ -164,13 +166,15 @@ def opensettingwindow(self):
 def createbtnthemelight(self):
     self.btnthemelight = getIconButton(functools.partial(opensettingwindow, self))
     lightsetting = getget_setting_window()
-    self.btnthemelight.setVisible(bool(lightsetting))
+    if not bool(lightsetting):
+        self.btnthemelight.hide()
     return self.btnthemelight
 
 
 def checkthemesettingvisandapply(self, _):
     lightsetting = getget_setting_window()
-    self.btnthemelight.setVisible(bool(lightsetting))
+    if not bool(lightsetting):
+        self.btnthemelight.hide()
     gobject.base.setcommonstylesheet()
 
 
@@ -266,7 +270,9 @@ def uisetting(self):
                                     ),
                                     "",
                                     "自动隐藏",
-                                    D_getsimpleswitch(globalconfig, "autodisappear", default=False),
+                                    D_getsimpleswitch(
+                                        globalconfig, "autodisappear", default=False
+                                    ),
                                     lambda: createdynamicswitch(self),
                                     getboxlayout(
                                         [lambda: createdynamicdelay(self), "(s)"]
@@ -280,7 +286,9 @@ def uisetting(self):
                                     ),
                                     "",
                                     "自动调整高度",
-                                    D_getsimpleswitch(globalconfig, "adaptive_height", default=True),
+                                    D_getsimpleswitch(
+                                        globalconfig, "adaptive_height", default=True
+                                    ),
                                     D_getsimplecombobox(
                                         ["向上", "向下"],
                                         globalconfig,
@@ -395,7 +403,11 @@ def createdynamicswitch(self):
         )
 
     return D_getsimplecombobox(
-        ["窗口", "文本"], globalconfig, "autodisappear_which", callback=__, default=0,
+        ["窗口", "文本"],
+        globalconfig,
+        "autodisappear_which",
+        callback=__,
+        default=0,
     )()
 
 
