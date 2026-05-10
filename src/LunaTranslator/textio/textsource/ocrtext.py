@@ -133,7 +133,6 @@ class ocrtext(basetext):
     def init(self):
         self.hwnd = None
         self._pause_state = False
-        self.startsql(gobject.gettranslationrecorddir("0_ocr.sqlite"))
         threader(ocr_init)()
         self.ranges: "list[rangemanger]" = []
         self.gettextthread()

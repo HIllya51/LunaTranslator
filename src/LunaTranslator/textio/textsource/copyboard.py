@@ -14,7 +14,6 @@ class copyboard(basetext):
         self.dispatchtext(string)
 
     def init(self) -> None:
-        self.startsql(gobject.gettranslationrecorddir("0_copy.sqlite"))
         gobject.base.clipboardcallback.connect(self.__callback)
         NativeUtils.ClipBoardListenerStart()
 

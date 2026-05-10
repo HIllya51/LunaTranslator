@@ -377,6 +377,8 @@ class texthook(basetext):
         self.setsettings()
         self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
+        if savehook_new_data[gameuid].get("emugameid"):
+            _filename = savehook_new_data[gameuid].get("emugameid")
         sqlitef = gobject.gettranslationrecorddir(
             "{}_{}.sqlite".format(_filename, gameuid)
         )
