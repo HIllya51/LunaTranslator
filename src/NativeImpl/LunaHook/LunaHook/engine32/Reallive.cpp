@@ -60,36 +60,49 @@ static bool InsertRealliveDynamicHook(LPVOID addr, hook_context *context)
 {
   if (addr != ::GetGlyphOutlineA)
     return false;
-  // jichi 5/13/2015: Find the enclosing caller of GetGlyphOutlineA
-  if (DWORD i = context->ebp)
-  {
-    i = *(DWORD *)(i + 4);
-    for (DWORD j = i; j > i - 0x100; j--)
-      if (*(WORD *)j == 0xec83)
-      { // jichi 7/26/2014: function starts
-        // 012da80f   cc               int3
-        // 012da810   55               push ebp    ; jichi: change to hook here
-        // 012da811   8bec             mov ebp,esp
-        // 012da813   83ec 10          sub esp,0x10 ; jichi: hook here by default
-        if (*(DWORD *)(j - 3) == 0x83ec8b55)
-          j -= 3;
+  for (DWORD j = context->retaddr; j > context->retaddr - 0x100; j--)
+    if (*(WORD *)j == 0xec83)
+    {
 
-        HookParam hp;
-        hp.address = j;
-        hp.offset = stackoffset(5);
-        hp.split = regoffset(esp);
-        hp.type = CODEC_ANSI_BE | USING_SPLIT;
-        // GROWL_DWORD(hp.address);
+      // jichi 7/26/2014: function starts
+      // 012da80f   cc               int3
+      // 012da810   55               push ebp    ; jichi: change to hook here
+      // 012da811   8bec             mov ebp,esp
+      // 012da813   83ec 10          sub esp,0x10 ; jichi: hook here by default
+      if (*(DWORD *)(j - 3) == 0x83ec8b55)
+        j -= 3;
 
+      BYTE check[] = {
+          // clannad eng
+          // https://vndb.org/r66916
+          // 不需要这个。且不正确
+          0x55,
+          0x8b, 0xec,
+          0x83, 0xec, XX,
+          0xa1, XX4,
+          0x33, 0xc5,
+          0x89, 0x45, 0xfc,
+          0x8b, 0x45, 0x08,
+          0x53,
+          0x56, 0x57,
+          0xff, 0x35, XX4,
+          0x8b, 0xd9};
+      if (MatchPattern(j, check, sizeof(check)))
+        return true;
+      HookParam hp;
+      hp.address = j;
+      hp.offset = stackoffset(5);
+      hp.split = regoffset(esp);
+      hp.type = CODEC_ANSI_BE | USING_SPLIT;
+      // GROWL_DWORD(hp.address);
 
-        return NewHook(hp, "RealLive");
-      }
-  }
+      return NewHook(hp, "RealLive");
+    }
   return true; // jichi 12/25/2013: return true
 }
 void InsertRealliveHook()
 {
-  PcHooks::hookGDIFunctions();
+  PcHooks::hookGDIFunctions(GetGlyphOutlineA);
   trigger_fun = InsertRealliveDynamicHook;
 }
 

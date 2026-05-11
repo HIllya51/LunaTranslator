@@ -9,7 +9,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = []()
         {
-            return (wcsstr(processName_lower, L"reallive") || Util::CheckFileAny({L"Reallive.exe", L"REALLIVEDATA\\Start.ini"}));
+            return (wcsstr(processName_lower, L"reallive") || Util::CheckFileAny({L"Reallive.exe", L"REALLIVEDATA\\Start.ini"})) || (Util::SearchResourceString(L"RealLive Engine") && Util::SearchResourceString(L"VisualArt's RealLiveSystem"));
         };
     };
     bool attach_function();
