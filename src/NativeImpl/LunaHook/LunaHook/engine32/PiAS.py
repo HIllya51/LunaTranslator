@@ -100,7 +100,7 @@ if __name__ == "__main__":
                 continue
             if not l:
                 continue
-            collect+=l
+            collect+=l+'\n'
         
             print(len(l), len(collect))
             print(l)
