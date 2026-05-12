@@ -723,13 +723,15 @@ def __getllamacppdevices(llamaserver):
         result.append(__)
     return result
 
+
 class interruptexc(Exception):
     pass
+
 
 def downloadgguf(key, url: str):
     try:
         gobject.base.llamacppdownloadprogress.emit(key, url, 0, 0)
-        savep = gobject.gettempdir("llamacpp/" + str(uuid.uuid4()))
+        savep = gobject.gettempdir("llamacpp-models/" + str(uuid.uuid4()))
         with open(savep, "wb") as file:
             r = requests.get(url, stream=True, proxies=getproxy())
             if r.headers.get("Content-Type"):
@@ -748,8 +750,8 @@ def downloadgguf(key, url: str):
             raise Exception()
         gobject.base.llamacppdownloadprogress.emit(key, url, -2, 0)
 
-        shutil.move(savep, gobject.getcachedir("llamacpp/" + key))
-        globalconfig["llama.cpp"]["models"] = gobject.getcachedir("llamacpp")
+        shutil.move(savep, gobject.getcachedir("llamacpp-models/" + key))
+        globalconfig["llama.cpp"]["models"] = gobject.getcachedir("llamacpp-models")
         globalconfig["llama.cpp"]["model"] = key
         global GGUF_REFRESH_BTN
         if GGUF_REFRESH_BTN:
@@ -843,7 +845,7 @@ def merge_copy_llamacpps(llamaserver, tag):
                 continue
             try:
                 _ = os.path.join(d, _)
-                if os.path.isfile(_):
+                if os.path.isfile(_) and (_.endswith(".dll") or _.endswith(".exe")):
                     os.remove(_)
                 else:
                     shutil.rmtree(_)
