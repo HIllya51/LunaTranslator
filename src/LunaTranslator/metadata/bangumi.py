@@ -36,7 +36,7 @@ class bgmsettings(QFormLayout):
         ).json()
         if t != self.tm:
             return
-        print(response)
+        # print(response)
         expires = response.get("expires", 0)
         if expires:
             info = ""
@@ -47,7 +47,7 @@ class bgmsettings(QFormLayout):
                     headers=self.headers,
                     proxies=self._ref.proxy,
                 )
-                print(response1.json())
+                # print(response1.json())
                 info += "用户名： " + response1.json()["nickname"] + "\n"
             except:
                 pass
@@ -96,7 +96,7 @@ class bgmsettings(QFormLayout):
                     code = ff.read()
             except:
                 continue
-            print(code)
+            # print(code)
             os.remove(bangumioauth)
             response = requests.post(
                 "https://bgm.tv/oauth/access_token",
@@ -109,12 +109,12 @@ class bgmsettings(QFormLayout):
                 },
                 proxies=self._ref.proxy,
             ).json()
-            print(response)
+            # print(response)
             access_token = response["access_token"]
             self._token.setText(access_token)
             self._ref.config["refresh_token"] = response["refresh_token"]
             self._ref.config["access-token"] = access_token
-            print(self._ref.config)
+            # print(self._ref.config)
             break
 
     def __init__(self, layout: QVBoxLayout, _ref: common, gameuid: str) -> None:
@@ -160,7 +160,7 @@ class searcher(common):
                 self.config["refresh_token"] = resp["refresh_token"]
                 self.config["access-token"] = resp["access_token"]
             except:
-                print(resp)
+                # print(resp)
                 self.config["refresh_token"] = ""
 
     def querysettingwindow(self, gameuid, layout):
@@ -176,7 +176,7 @@ class searcher(common):
         response = self.proxysession.get(
             "https://api.bgm.tv/search/subject/" + title, params=params
         )
-        print(response.text)
+        # print(response.text)
         try:
             response = response.json()
         except:

@@ -142,7 +142,7 @@ class texthook(basetext):
 
     def init(self):
 
-        self.pids: "list[int]" = []
+        self.pids: "dict[str,list[int]]" = {0: []}
         self.maybepids: "list[int]" = []
         self.maybepidslock = threading.Lock()
         self.keepref = []
@@ -269,6 +269,7 @@ class texthook(basetext):
         uid = find_or_create_uid_for_emu(savehook_new_list, _id, self.gameuid, title)
         if uid not in savehook_new_list:
             savehook_new_list.insert(0, uid)
+        self.pids[uid] = self.pids[self.gameuid]
         self.gameuid = uid
 
     def i18nQueryCallback(self, querytext: str):
@@ -278,7 +279,7 @@ class texthook(basetext):
         cachefname = gobject.gettempdir("{}.txt".format(time.time()))
         arch = "64" if self.is64bit else "32"
         exe = os.path.abspath("files/LunaSubprocess{}.exe".format(arch))
-        pid = " ".join([str(_) for _ in self.pids])
+        pid = " ".join([str(_) for _ in self.pids[self.gameuid]])
         subprocess.run('"{}"  listpm "{}" {}'.format(exe, cachefname, pid))
 
         with open(cachefname, "r", encoding="utf-16-le") as ff:
@@ -336,7 +337,7 @@ class texthook(basetext):
         pids = ListProcess(name_)
         if self.ending:
             return
-        if len(self.pids):
+        if len(self.pids[self.gameuid]):
             return
         if globalconfig["startgamenototop"] == False:
             idx = reflist.index(uid)
@@ -351,7 +352,7 @@ class texthook(basetext):
 
     @threader
     def autohookmonitorthread(self):
-        while (not self.ending) and (len(self.pids) == 0):
+        while (not self.ending) and (len(self.pids[self.gameuid]) == 0):
             try:
                 hwnd = windows.GetForegroundWindow()
                 hwnd = windows.GetAncestor(hwnd)
@@ -374,6 +375,7 @@ class texthook(basetext):
             self.waitend(pid)
         gobject.base.hwnd = hwnd
         self.gameuid = gameuid
+        self.pids[gameuid] = []
         self.setsettings()
         self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
@@ -413,8 +415,11 @@ class texthook(basetext):
         return ret[0]
 
     def removeproc(self, pid):
-        self.pids.remove(pid)
-        if len(self.pids) == 0:
+        if pid not in self.pids[self.gameuid]:
+            # 不detach，直接hook新游戏，发生uid切换。
+            return
+        self.pids[self.gameuid].remove(pid)
+        if len(self.pids[self.gameuid]) == 0:
             self.gameuid = 0
             self.autohookmonitorthread()
 
@@ -491,14 +496,14 @@ class texthook(basetext):
             windows.OpenProcess(windows.SYNCHRONIZE, False, pid)
         )
         with self.maybepidslock:
-            if len(self.pids) == 0 and len(self.maybepids):
+            if len(self.pids[self.gameuid]) == 0 and len(self.maybepids):
                 # 如果进程连接，则剔除maybepids
                 # 当进程结束，且发现是被试探过&未曾连接，则重试
                 self.maybepids.clear()
                 self.autohookmonitorthread()
 
     def onprocconnect(self, pid):
-        self.pids.append(pid)
+        self.pids[self.gameuid].append(pid)
         try:
             self.maybepids.remove(pid)
         except:
@@ -511,7 +516,7 @@ class texthook(basetext):
         self.set_settings_ex(pid)
 
     def InsertPCHooks(self, pid: int = None):
-        for pid in [pid] if pid else self.pids:
+        for pid in [pid] if pid else self.pids[self.gameuid]:
             self.Luna_InsertPCHooks(pid, 0)
             self.Luna_InsertPCHooks(pid, 1)
 
@@ -582,7 +587,7 @@ class texthook(basetext):
         if pid:
             pids = [pid]
         else:
-            pids = self.pids.copy()
+            pids = self.pids[self.gameuid].copy()
         for pid in pids:
             self.Luna_SettingsEx(
                 pid,
@@ -687,7 +692,7 @@ class texthook(basetext):
     @threader
     def findhook(self, usestruct, addresses):
         savefound: "dict[str, list]" = {}
-        pids = self.pids.copy()
+        pids = self.pids[self.gameuid].copy()
         cntref = []
 
         def __callback(cntref: list, hcode, text):
@@ -710,7 +715,7 @@ class texthook(basetext):
 
     def inserthook(self, hookcode):
         succ = True
-        for pid in self.pids.copy():
+        for pid in self.pids[self.gameuid].copy():
             succ = self.Luna_InsertHookCode(pid, hookcode) and succ
         if succ == False:
             QMessageBox.critical(
@@ -782,5 +787,6 @@ class texthook(basetext):
         time.sleep(0.1)
 
     def detachall(self):
-        for pid in self.pids.copy():
-            self.Luna_DetachProcess(pid)
+        for _ in self.pids.values():
+            for pid in _.copy():
+                self.Luna_DetachProcess(pid)

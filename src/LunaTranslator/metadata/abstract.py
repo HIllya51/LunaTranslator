@@ -68,7 +68,8 @@ class common:
                     globalconfig["metadata"][self.typename][name].pop(i)
                     break
         except:
-            print_exc()
+            # print_exc()
+            pass
 
     def __tasks_searchfordata_thread(self):
 
@@ -88,7 +89,8 @@ class common:
                 remove = False
                 vis = info + "network error, retry later"
             except:
-                print_exc()
+                # print_exc()
+                pass
                 vis = info + " load failed"
             if remove:
 
@@ -111,7 +113,8 @@ class common:
             except requests.exceptions.RequestException:
                 remove = False
             except:
-                print_exc()
+                # print_exc()
+                pass
             if remove:
                 self.__safe_remove_task("downloadtasks", pair)
             else:
@@ -164,7 +167,10 @@ class common:
                             if bettermap[spja[i]]["sex"] != v["sex"]:
                                 bettermap[spja[i]]["sex"] = ""
                         else:
-                            bettermap[spja[i]] = {"name": spen[i], "sex": v.get("sex", "")}
+                            bettermap[spja[i]] = {
+                                "name": spen[i],
+                                "sex": v.get("sex", ""),
+                            }
         return bettermap
 
     @tryprint

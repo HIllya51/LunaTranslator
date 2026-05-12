@@ -312,7 +312,7 @@ def trysearchforid_1(gameuid, searchargs: list, target=None):
             try:
                 vid = targetmod[key].getidbytitle(arg)
             except:
-                print_exc()
+                # print_exc()
                 continue
             if vid:
                 break
