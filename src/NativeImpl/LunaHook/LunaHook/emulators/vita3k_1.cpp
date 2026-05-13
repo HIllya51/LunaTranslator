@@ -1027,6 +1027,14 @@ namespace
         s = re::sub(s, LR"(　*<br>　*)");
         buffer->from(s);
     }
+    void PCSG00543(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::wstring last;
+        auto s = buffer->strW();
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+    }
 }
 
 struct emfuncinfoX
@@ -1035,6 +1043,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 冴えない彼女の育てかた -blessing flowers-
+    {0x80014426, {FULL_STRING | CODEC_UTF16, 0xb, 0, 0, PCSG00543, "PCSG00543"}},
     // ToLOVEる ダークネス トゥループリンセス
     {0x8097D494, {FULL_STRING | CODEC_UTF16, 1, 0, 0, PCSG00689, "PCSG00689"}},
     // オメルタ CODE:TYCOON 戒

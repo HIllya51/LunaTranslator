@@ -167,10 +167,6 @@
 
 **model** https://bigmodel.cn/dev/howuse/model
 
-== 硅基流動
-
-**API Key** https://cloud-hk.siliconflow.cn/account/ak
-
 == 訊飛星火大模型
 
 **API Key** [公式ドキュメント](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E)を参照して**APIKey**と**APISecret**を取得し、`APIKey:APISecret`の形式で記入

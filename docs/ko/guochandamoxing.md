@@ -166,10 +166,6 @@
 
 **API Key** https://bigmodel.cn/usercenter/apikeys
 
-== 실리콘 기반 흐름
-
-**API Key** https://cloud-hk.siliconflow.cn/account/ak
-
 == iFLYTEK 스파크 대형 모델
 
 **API 키** [공식 문서](https://www.xfyun.cn/doc/spark/HTTP%E8%B0%83%E7%94%A8%E6%96%87%E6%A1%A3.html#_3-%E8%AF%B7%E6%B1%82%E8%AF%B4%E6%98%8E) 참조하여 **APIKey**와 **APISecret** 획득 후, **APIKey:APISecret** 형식으로 입력

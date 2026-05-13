@@ -632,15 +632,15 @@ def filetranslate(self):
                 leftwidget=D_getdoclink("sr.html"),
             )
         ],
-        # [
-        #     functools.partial(
-        #         createfoldgrid,
-        #         functools.partial(getftsgrid, self),
-        #         "文件翻译",
-        #         globalconfig["foldstatus"]["others"],
-        #         "fts",
-        #     )
-        # ],
+        [
+            functools.partial(
+                createfoldgrid,
+                functools.partial(getftsgrid, self),
+                "文件翻译",
+                globalconfig["foldstatus"]["others"],
+                "fts",
+            )
+        ],
         [
             functools.partial(
                 createfoldgrid,

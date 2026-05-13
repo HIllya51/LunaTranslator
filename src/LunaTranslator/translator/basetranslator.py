@@ -1,5 +1,4 @@
 from traceback import print_exc
-from queue import Queue
 from threading import Thread
 import time, types
 import gobject
@@ -7,7 +6,7 @@ import json
 import functools
 from myutils.wrapper import threader
 from myutils.config import globalconfig, translatorsetting, dynamicapiname
-from myutils.utils import stringfyerror, autosql, PriorityQueue
+from myutils.utils import stringfyerror, PriorityQueue
 from myutils.commonbase import ArgsEmptyExc, commonbase
 
 
@@ -113,8 +112,6 @@ class basetrans(commonbase):
         if (self.transtype == "offline") and (not self.is_gpt_like):
             self.gconfig["useproxy"] = False
         self.queue = PriorityQueue()
-        self.sqlqueue = None
-        self.sqlwrite2 = None
         try:
             self._private_init()
         except Exception as e:
@@ -131,55 +128,12 @@ class basetrans(commonbase):
 
         self.newline = None
 
-        if not self.never_use_trans_cache:
-            try:
-
-                self.sqlwrite2 = autosql(
-                    gobject.gettranslationrecorddir(
-                        "cache/{}.sqlite".format(self.typename)
-                    ),
-                    check_same_thread=False,
-                    isolation_level=None,
-                )
-                try:
-                    self.sqlwrite2.execute(
-                        "CREATE TABLE cache(srclang,tgtlang,source,trans);"
-                    )
-                except:
-                    pass
-            except:
-                print_exc
-            self.sqlqueue = Queue()
-            threader(self._sqlitethread)()
         threader(self._fythread)()
-
-    def notifyqueuforend(self):
-        if self.sqlqueue:
-            self.sqlqueue.put(None)
-        self.queue.put(None, 999)
 
     def _private_init(self):
         self.initok = False
         self.init()
         self.initok = True
-
-    def _sqlitethread(self):
-        while self.using:
-            task = self.sqlqueue.get()
-            if task is None:
-                break
-            try:
-                src, trans = task
-                self.sqlwrite2.execute(
-                    "DELETE from cache WHERE (srclang=? and tgtlang=? and source=?)",
-                    (str(self.srclang_1), str(self.tgtlang_1), src),
-                )
-                self.sqlwrite2.execute(
-                    "INSERT into cache VALUES(?,?,?,?)",
-                    (str(self.srclang_1), str(self.tgtlang_1), src, trans),
-                )
-            except:
-                print_exc()
 
     @property
     def using_gpt_dict(self):
@@ -187,13 +141,9 @@ class basetrans(commonbase):
         return self.gconfig.get("is_gpt_like", False)
 
     @property
-    def never_use_trans_cache(self):
-        return self.transtype in ("pre", "other")
-
-    @property
     def use_trans_cache(self):
         return (self.gconfig.get("use_trans_cache", True)) and (
-            not self.never_use_trans_cache
+            not self.transtype in ("pre", "other")
         )
 
     @property
@@ -227,31 +177,6 @@ class basetrans(commonbase):
             priority = 0
         self.queue.put(content, priority)
 
-    def longtermcacheget(self, src):
-        if not self.sqlwrite2:
-            return
-        try:
-            ret = self.sqlwrite2.execute(
-                "SELECT trans FROM cache WHERE (( (srclang=? and tgtlang=?) or  (srclang=? and tgtlang=?)) and source=?)",
-                (
-                    str(self.srclang_1),
-                    str(self.tgtlang_1),
-                    str(self.srclang),
-                    str(self.tgtlang),
-                    src,
-                ),
-            ).fetchone()
-            if ret:
-                return ret[0]
-            return None
-        except:
-            print_exc()
-            return None
-
-    def longtermcacheset(self, src, tgt):
-        if self.sqlqueue:
-            self.sqlqueue.put((src, tgt))
-
     def shorttermcacheget(self, src):
         langkey = (self.srclang_1, self.tgtlang_1)
         if langkey not in self._cache:
@@ -274,9 +199,6 @@ class basetrans(commonbase):
         if not self.use_trans_cache:
             return
         res = self.shorttermcacheget(content)
-        if res:
-            return res
-        res = self.longtermcacheget(content)
         if res:
             return res
         return None
@@ -400,7 +322,6 @@ class basetrans(commonbase):
         # 保存缓存
         # 不管是否使用翻译缓存，都存下来
         self.shorttermcacheset(cache_use, res)
-        self.longtermcacheset(cache_use, res)
 
     def __parse_gpt_dict(self, contentsolved, optimization_params):
         gpt_dict = []

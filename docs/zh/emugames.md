@@ -760,6 +760,7 @@ LunaTranslator通过模拟器支持大量游戏。对于未支持的游戏，请
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00543 | 冴えない彼女の育てかた -blessing flowers- |
 |  | PCSG00689 | ToLOVEる ダークネス トゥループリンセス |
 |  | PCSG00789 | オメルタ CODE:TYCOON 戒 |
 |  | PCSG00505 | 大図書館の羊飼い -Library Party- |

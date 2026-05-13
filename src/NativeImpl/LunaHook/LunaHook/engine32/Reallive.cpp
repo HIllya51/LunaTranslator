@@ -60,7 +60,11 @@ static bool InsertRealliveDynamicHook(LPVOID addr, hook_context *context)
 {
   if (addr != ::GetGlyphOutlineA)
     return false;
-  for (DWORD j = context->retaddr; j > context->retaddr - 0x100; j--)
+  DWORD i = context->ebp;
+  if (!i)
+    return true;
+  i = *(DWORD *)(i + 4);
+  for (DWORD j = i; j > i - 0x100; j--)
     if (*(WORD *)j == 0xec83)
     {
 

@@ -1207,10 +1207,6 @@ class BASEOBJECT(QObject):
     def commonloader_warp(self, fanyiorcishu, dictobject, initmethod, _type):
         try:
             if _type in dictobject:
-                try:
-                    dictobject[_type].notifyqueuforend()
-                except:
-                    pass
                 dictobject.pop(_type)
             use = globalconfig[fanyiorcishu][_type]["use"]
             rankkeys = {"cishu": "cishuvisrank", "fanyi": "fix_translate_rank_rank"}
