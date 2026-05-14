@@ -28,10 +28,6 @@ https://cloud.tencent.com/document/product/866/33526
 
 https://cloud.tencent.com/document/product/551/17232
 
-== Từ điển Youdao
-
-https://www.patreon.com/posts/high-precision-133319068
-
 == Youdao
 
 https://ai.youdao.com/doc.s#guide
