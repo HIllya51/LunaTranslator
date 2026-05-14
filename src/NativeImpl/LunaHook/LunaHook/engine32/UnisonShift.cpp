@@ -114,11 +114,44 @@ namespace
     return NewHook(hp, "_056");
   }
 }
+static bool h1()
+{
+  // 胸キュン！はぁとde恋シ・テ・ル～お兄ちゃんもっと大好き～
+  // https://vndb.org/v4263
 
+  BYTE bytes[] = {
+      0x8b, 0x15, XX4,
+      0x56,
+      0xbe, XX4,
+      0x8b, 0x0c, 0x95, XX4,
+      0x8a, 0x01,
+      0x84, 0xc0,
+      0x74, XX,
+      0x2b, 0xce,
+      0x88, 0x06,
+      0x8a, 0x44, 0x31, 0x01,
+      0x46,
+      0x84, 0xc0,
+      0x75, XX};
+  auto addr1 = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr1)
+    return false;
+  HookParam hp;
+  hp.address = addr1 + 6 + 1 + 5 + 7;
+  hp.offset = regoffset(ecx);
+  hp.type = USING_STRING | FULL_STRING;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto s = buffer->strAW();
+    s = re::sub(s, L"#");
+    buffer->fromWA(s);
+  };
+  return NewHook(hp, "UnisonShift3");
+}
 bool UnisonShift2::attach_function()
 {
   bool b1 = InsertUnisonShift2Hook();
   bool b2 = InsertUnisonShift3Hook();
   auto __ = _056();
-  return b1 || b2 || __;
+  return b1 || b2 || __ || h1();
 }
