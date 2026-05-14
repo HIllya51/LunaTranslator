@@ -425,6 +425,7 @@ namespace
     void F0100EA001A626000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = utf32_to_utf16(buffer->viewU());
+        s = re::sub(s, L"　*\n　*");
         if (s == L"　　")
         {
             return buffer->clear();
@@ -3093,6 +3094,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // マツリカの炯-kEi- 天命胤異伝
     {0x8017ad54, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100EA001A626000ull, "1.0.0"}}, // text
     {0x80174d4c, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100EA001A626000ull, "1.0.0"}}, // name
+    // マツリカの炯-kEi- 天命華燭伝
+    {0x8024667C, {CODEC_UTF32 | FULL_STRING, 0, 0, 0, F0100EA001A626000, 0x0100DAA021616000ull, "1.0.0"}},
+    {0x80238084, {CODEC_UTF32 | FULL_STRING, 8, 0, 0, F0100EA001A626000, 0x0100DAA021616000ull, "1.0.0"}},
+    {0x80245C30, {CODEC_UTF32 | FULL_STRING, 1, 0, 0, F0100EA001A626000, 0x0100DAA021616000ull, "1.0.0"}},
+    {0x802466D4, {CODEC_UTF32 | FULL_STRING, 0, 0, 0, F0100EA001A626000, 0x0100DAA021616000ull, "1.0.1"}},
+    {0x802384F4, {CODEC_UTF32 | FULL_STRING, 8, 0, 0, F0100EA001A626000, 0x0100DAA021616000ull, "1.0.1"}},
+    {0x80245cf8, {CODEC_UTF32 | FULL_STRING, 1, 0, 0, F0100EA001A626000, 0x0100DAA021616000ull, "1.0.1"}},
     // 茉莉花之炯 天命胤異傳
     {0x80138DFC, {CODEC_UTF32, 1, 0, 0, F0100EA001A626000, 0x0100F5A01EA12000ull, "1.0.0"}}, // text
     {0x801769CC, {CODEC_UTF32, 0, 0, 0, F0100EA001A626000, 0x0100F5A01EA12000ull, "1.0.0"}}, // name
