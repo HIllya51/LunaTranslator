@@ -86,7 +86,29 @@ namespace
             0x33, 0xc9,
             0xff, 0x15 //_invoke_watson
         };
+
+        BYTE sig5[] = {
+            // Eden-Windows-v0.2.0-amd64-msvc-standard
+            0xff, 0x50, 0x10,
+            0x48, 0x8B, XX, XX, XX,
+            0x48, 0x83, 0xf8, 0x10,
+            0x72, XX,
+            0x48, 0x8b, XX, XX, XX,
+            0x48, 0x8d, 0x50, 0x01,
+            0x48, 0x81, 0xfa, 0x00, 0x10, 0x00, 0x00,
+            0x72, XX,
+            0x4c, 0x8b, 0x41, 0xf8,
+            0x48, 0x83, 0xc1, 0xf8,
+            0x4c, 0x29, 0xc1,
+            0x48, 0x83, 0xf9, 0x20,
+            0x73, XX,
+            0X48, 0x83, 0xc0, 0x28,
+            0x48, 0x89, 0xc2,
+            0x4c, 0x89, 0xc1,
+            0xe8, XX4};
         RegisterBlock = MemDbg::findBytes(sig4, sizeof(sig4), processStartAddress, processStopAddress);
+        if (!RegisterBlock)
+            RegisterBlock = MemDbg::findBytes(sig5, sizeof(sig5), processStartAddress, processStopAddress);
         if (RegisterBlock)
         {
             auto addr = MemDbg::findEnclosingAlignedFunction(RegisterBlock, 0x40);
