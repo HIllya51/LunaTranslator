@@ -288,7 +288,7 @@ class gptcommon(basetrans):
         apitype = APIType(self.config.get("API接口地址", ""))
         if apitype == APIType.gemini:
             response = self.request_gemini(apitype, messages, extrabody, extraheader)
-        elif apitype == APIType.gemini:
+        elif apitype == APIType.claude:
             response = self.req_claude(
                 messages, extrabody, extraheader, self.config.get("cachecontext", False)
             )
