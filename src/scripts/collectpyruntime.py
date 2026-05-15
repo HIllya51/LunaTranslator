@@ -109,6 +109,7 @@ with zipfile.ZipFile("pylibs.zip", "w") as zipf:
             if end == r"PyQt5\__init__.py":
                 with open(dependency, "r") as ff:
                     s = ff.read()
+                dependency += ".1"
                 with open(dependency, "w") as ff:
                     ff.write(
                         s.replace(
