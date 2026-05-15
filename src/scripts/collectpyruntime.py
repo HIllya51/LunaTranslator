@@ -1,7 +1,7 @@
 import os
 import modulefinder, shutil, os, sys
 import builtins, platform
-import sys
+import sys, zipfile
 
 target = sys.argv[1]
 rootDir = os.path.dirname(__file__)
@@ -65,7 +65,7 @@ def copycheck(src, tgt):
     shutil.copy(src, tgt)
 
 
-all_dependencies = set()
+all_dependencies: "set[str]" = set()
 for _d, _, _fs in os.walk("./LunaTranslator"):
     for f in _fs:
         if not f.endswith(".py"):
@@ -90,26 +90,41 @@ for _d, _, _fs in os.walk("./LunaTranslator"):
         all_dependencies = all_dependencies.union(set(got))
 got = get_dependencies("keeprefs.py")
 all_dependencies = all_dependencies.union(set(got))
-
-for dependency in all_dependencies:
-    if dependency.startswith("./"):
-        continue
-    if not dependency.startswith(py37Path):
-        continue
-    print(dependency)
-    end = dependency[len(py37Path) + 1 :]
-    if end.lower().startswith("lib"):
-        end = end[4:]
-        if end.lower().startswith("site-packages"):
-            end = end[len("site-packages") + 1 :]
-    elif end.lower().startswith("dlls"):
-        end = end[5:]
-    print(end)
-    tgtreal = os.path.join(runtime, os.path.dirname(end))
-    copycheck(dependency, tgtreal)
+with zipfile.ZipFile("pylibs.zip", "w") as zipf:
+    for dependency in all_dependencies:
+        if dependency.startswith("./"):
+            continue
+        if not dependency.startswith(py37Path):
+            continue
+        print(dependency)
+        end: str = dependency[len(py37Path) + 1 :]
+        if end.lower().startswith("lib"):
+            end = end[4:]
+            if end.lower().startswith("site-packages"):
+                end = end[len("site-packages") + 1 :]
+        elif end.lower().startswith("dlls"):
+            end = end[5:]
+        print(end)
+        if end.lower().endswith(".py"):
+            if end == r"PyQt5\__init__.py":
+                with open(dependency, "r") as ff:
+                    s = ff.read()
+                with open(dependency, "w") as ff:
+                    ff.write(
+                        s.replace(
+                            "os.path.dirname(__file__)",
+                            "os.path.join(os.path.dirname(os.path.dirname(__file__)), r'PyQt5\pylibs.zip')",
+                        )
+                    )
+            zipf.write(dependency, end)
+        else:
+            tgtreal = os.path.join(runtime, os.path.dirname(end))
+            copycheck(dependency, tgtreal)
 
 with open(os.path.join(runtime, f"python{pyversion2}._pth"), "w") as ff:
-    ff.write("..\n.")
+    ff.write("..\n.\npylibs.zip")
+
+copycheck("pylibs.zip", runtime)
 
 copycheck(os.path.join(py37Path, "python3.dll"), runtime)
 copycheck(os.path.join(py37Path, f"python{pyversion2}.dll"), runtime)
