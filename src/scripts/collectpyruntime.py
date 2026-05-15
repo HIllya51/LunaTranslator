@@ -90,6 +90,9 @@ for _d, _, _fs in os.walk("./LunaTranslator"):
         all_dependencies = all_dependencies.union(set(got))
 got = get_dependencies("keeprefs.py")
 all_dependencies = all_dependencies.union(set(got))
+for _ in os.listdir(os.path.join(py37Path, "Lib/encodings")):
+    if _.endswith(".py"):
+        all_dependencies.add(os.path.join(os.path.join(py37Path, "Lib/encodings"), _))
 with zipfile.ZipFile("pylibs.zip", "w") as zipf:
     for dependency in all_dependencies:
         if dependency.startswith("./"):
@@ -131,7 +134,6 @@ copycheck(os.path.join(py37Path, "python3.dll"), runtime)
 copycheck(os.path.join(py37Path, f"python{pyversion2}.dll"), runtime)
 copycheck(os.path.join(py37Path, "Dlls/sqlite3.dll"), runtime)
 
-copycheck(os.path.join(py37Path, "Lib/encodings"), runtime)
 copycheck(os.path.join(py37Path, "DLLs/libffi-7.dll"), runtime)
 copycheck(os.path.join(py37Path, "DLLs/libffi-8.dll"), runtime)
 
