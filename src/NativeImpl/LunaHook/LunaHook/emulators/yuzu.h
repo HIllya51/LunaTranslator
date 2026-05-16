@@ -36,7 +36,15 @@ public:
             */
             BYTE edennewsig[] = {XX, 0x69, XX, 0x27, 0x7F, 0x28, 0x00,
                                  0x81, XX, 0x00, 0xF0, 0xFF, 0x00};
-            isedenv0_0_4_rc2_above = MemDbg::findBytes(edennewsig, sizeof(edennewsig), processStartAddress, processStopAddress);
+            /*
+            Eden v0.2.0 又tm改了。
+     std::uintptr_t aslr_offset = ((::Settings::values.rng_seed_enabled.GetValue()
+         ? ::Settings::values.rng_seed.GetValue() : Common::Random::Random64(0)) << 12) & 0xfff000;
+            */
+            BYTE edennewsig2[] = {0xc1, XX, 0x0c,
+                                  0x81, XX, 0x00, 0xF0, 0xFF, 0x00};
+            isedenv0_0_4_rc2_above = MemDbg::findBytes(edennewsig, sizeof(edennewsig), processStartAddress, processStopAddress) ||
+                                     MemDbg::findBytes(edennewsig2, sizeof(edennewsig2), processStartAddress, processStopAddress);
             return true;
         };
         auto _enginename = wcasta(processName);

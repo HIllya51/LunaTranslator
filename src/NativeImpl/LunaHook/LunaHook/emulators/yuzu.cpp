@@ -341,7 +341,6 @@ struct NSGameInfoC
 
 bool yuzu::attach_function1()
 {
-    static int emaddroffet = isedenv0_0_4_rc2_above ? 0x7c5000 : 0;
     auto RegisterBlock = getRegisterBlock();
     if (!RegisterBlock)
         return false;
@@ -351,20 +350,48 @@ bool yuzu::attach_function1()
         return false;
     HookParam hp;
     hp.address = RegisterBlock;
-    hp.user_value = iscitron_neo;
+    struct emutype
+    {
+        bool iscitron_neo;
+        bool isedenv0_0_4_rc2_above;
+        uint32_t eden_startup_addr_offset = 0;
+    };
+    hp.user_value = (decltype(hp.user_value))new emutype{iscitron_neo, isedenv0_0_4_rc2_above};
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto descriptor = context->argof(idxDescriptor + 1); // r8
         auto entrypoint = context->argof(idxEntrypoint + 1); // r9
         if (!entrypoint)
             return;
-        auto em_address = *(uint64_t *)descriptor - emaddroffet;
-        if (hp->user_value)
+        auto em_address = *(uint64_t *)descriptor;
+        auto type = (emutype *)hp->user_value;
+        if (type->iscitron_neo)
         {
             // citron neo的蜜汁修改。example: ひめひび -Princess Days-
             // 旧版citron没有这个问题。但为了省事，就这样了吧。
             if (em_address < 0x80000000 && em_address > 0x700000)
                 em_address -= 0x500000;
+        }
+        else if (type->isedenv0_0_4_rc2_above)
+        {
+            if (em_address & 0xfff != 0)
+            {
+                // 非初始化启动。
+                hp->text_fun = nullptr;
+                return;
+            }
+            if (type->eden_startup_addr_offset == 0)
+            {
+                if (em_address >= 0x80000000)
+                {
+                    type->eden_startup_addr_offset = em_address - 0x80000000;
+                }
+                else if (em_address >= 0x200000)
+                {
+                    type->eden_startup_addr_offset = em_address - 0x200000;
+                }
+            }
+            em_address = em_address - type->eden_startup_addr_offset;
         }
         jitaddraddr(em_address, entrypoint, JITTYPE::YUZU);
         NS_CheckEmAddrHOOKable(em_address, entrypoint);
