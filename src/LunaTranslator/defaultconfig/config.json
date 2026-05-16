@@ -1334,10 +1334,6 @@
             "use": true,
             "name": "weblio"
         },
-        "goo": {
-            "use": true,
-            "name": "goo"
-        },
         "chatgptlike": {
             "canGetUrl": false,
             "use": false,
