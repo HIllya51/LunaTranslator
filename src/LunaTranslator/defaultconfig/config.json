@@ -1526,6 +1526,7 @@
     "theme3": "PyQtDarkTheme",
     "useopenlink": false,
     "useopenlinklink1": [
+        "https://www.google.com/search?q={word}",
         "https://jpdb.io/search?q={word}",
         "https://www.weblio.jp/content/{word}"
     ],
