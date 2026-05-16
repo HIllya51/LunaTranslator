@@ -13,6 +13,8 @@ import gobject
 import windows
 import NativeUtils
 import traceback
+from collections import Counter
+from urllib.parse import urlparse
 import myutils.ankiconnect as anki
 from collections import OrderedDict
 from myutils.hwnd import grabwindow
@@ -1854,7 +1856,7 @@ class searchwordW(closeashidewindow):
         _.move(_.pos() + QPoint(20, 20))
         _.search_word.emit(word, None, False)
 
-    def _createnewwindowsearch(self, _):
+    def _createnewwindowsearch(self, *_):
         word = self.searchtext.text()
         self.searchwinnewwindow(word)
 
@@ -1944,9 +1946,10 @@ class searchwordW(closeashidewindow):
         searchbutton = getIconButton(
             icon="fa.search",
             callback=lambda: self.search(self.searchtext.text()),
-            callback2=self._createnewwindowsearch,
             tips="查词",
         )
+        searchbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        searchbutton.customContextMenuRequested.connect(self.searchbutton_contextmenu)
         self.searchtext.returnPressed.connect(searchbutton.clicked.emit)
 
         self.searchlayout.addWidget(searchbutton)
@@ -2002,6 +2005,35 @@ class searchwordW(closeashidewindow):
         self.spliter.setStretchFactor(1, 0)
         self.ankiwindow.setMinimumHeight(1)
         self.ankiwindow.setMinimumWidth(1)
+
+    def searchbutton_contextmenu(self, _):
+        links = globalconfig["useopenlinklink1"]
+        if not links:
+            return self._createnewwindowsearch()
+
+        menu = QMenu(self)
+        newwindow = LAction("在新窗口中查词", menu)
+        menu.addAction(newwindow)
+        menu.addSeparator()
+        __dict = {}
+        checkdump = []
+        for link in links:
+            checkdump.append(urlparse(link).netloc)
+        count = Counter(checkdump)
+        for link in links:
+            netloc=urlparse(link).netloc
+            ac = QAction(link if count[netloc] > 1 else netloc, menu)
+            menu.addAction(ac)
+            __dict[ac] = link
+
+        action = menu.exec(QCursor.pos())
+        if action == newwindow:
+            self._createnewwindowsearch()
+        else:
+            link: str = __dict.get(action)
+            if not link:
+                return
+            os.startfile(link.replace("{word}", self.searchtext.text()))
 
     def maybecreateleftsplitter(self):
         if self.isfirstshowleftwidgets:
