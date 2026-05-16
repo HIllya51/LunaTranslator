@@ -153,6 +153,7 @@ class texthook(basetext):
         self.multiselectedcollectorlock = threading.Lock()
         self.lastflushtime = 0
         self.runonce_line = ""
+        self.emugameid = None
         gobject.base.autoswitchgameuid = False
         self.initdll()
         self.delaycollectallselectedoutput()
@@ -272,6 +273,7 @@ class texthook(basetext):
             savehook_new_list.insert(0, uid)
         uid2gamepath[uid] = uid2gamepath[self.gameuid]
         self.pids[uid] = self.pids[self.gameuid]
+        self.emugameid = _id
         self.gameuid = uid
 
     def i18nQueryCallback(self, querytext: str):
@@ -375,6 +377,7 @@ class texthook(basetext):
     def start(self, hwnd, pids, gamepath, gameuid, autostart=False):
         for pid in pids:
             self.waitend(pid)
+        self.emugameid = None
         gobject.base.hwnd = hwnd
         self.gameuid = gameuid
         self.pids[gameuid] = []

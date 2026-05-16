@@ -181,10 +181,21 @@ class somedatabase:
     def finduids(self, exes):
         uids = []
         for exe in exes:
-            uid, _ = findgameuidofpath(exe)
-            if not uid:
-                continue
-            uids.append(uid)
+            uids.extend(findgameuidofpath(exe, True))
+        isemus = False
+        for uid in uids:
+            if savehook_new_data[uid].get("emugameid"):
+                isemus = True
+                break
+        try:
+            cureumgameid = gobject.base.textsource.emugameid
+        except:
+            cureumgameid = None
+        if isemus:
+            for uid in uids.copy():
+                _emugameid = savehook_new_data[uid].get("emugameid")
+                if _emugameid and (_emugameid != cureumgameid):
+                    uids.remove(uid)
         return uids
 
     def tracex(self, _t: float, uids: list, dic: dict, table: str):
