@@ -116,6 +116,6 @@ class series_audioplayer:
                         break
                 else:
                     if self.playovercallback:
-                        self.playovercallback()
+                        self.playovercallback(force)
         except:
             print_exc()

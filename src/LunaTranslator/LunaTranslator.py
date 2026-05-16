@@ -313,7 +313,9 @@ class BASEOBJECT(QObject):
                 gobject.base.portconflict.emit("端口冲突")
 
     @threader
-    def ttsautoforward(self):
+    def ttsautoforward(self, isforce):
+        if isforce:
+            return
         if not globalconfig["ttsautoforward"]:
             return
         if not globalconfig["autorun"]:
