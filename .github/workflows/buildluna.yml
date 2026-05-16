@@ -23,7 +23,7 @@ jobs:
             pythonversion: '3.7.9' 
           - arch: x64
             target: win10
-            pythonversion: '3.13.12'  
+            pythonversion: '3.13.13'  
     steps:
       - uses: actions/checkout@v6
       # - uses: microsoft/setup-msbuild@v2
