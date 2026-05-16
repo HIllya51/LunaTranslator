@@ -246,15 +246,6 @@ def makescalew():
                 grid=(
                     [
                         [
-                            "缩放时禁用窗口大小调整",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
-                                ],
-                                "disableWindowResizing",
-                            ),
-                        ],
-                        [
                             "捕获标题栏",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
