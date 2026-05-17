@@ -54,7 +54,7 @@
     当把鼠标移动到**鼠标穿透窗口按钮及其左右一个按钮的区域**时，会自动退出穿透以使用工具按钮；移出区域时自动恢复穿透。
 
 1. #### <i class="fa fa-lightbulb"></i> <i class="btnstatus2 fa fa-lightbulb"></i> 窗口背景透明 {#anchor-backtransbutton}
-    该按钮作用仅是一键使得翻译窗口的不透明度切换到0。这个切换不会使得原本的不透明度设置被遗忘。
+    该按钮作用仅是一键使得翻译窗口的不透明度切换到0。当不透明度为0时，鼠标也会穿透窗口。
     
 1. #### <i class="fa fa-lock"></i> <i class="btnstatus2 fa fa-unlock"></i> 锁定工具栏 {#anchor-locktoolsbutton}
     激活后工具栏将始终显示。

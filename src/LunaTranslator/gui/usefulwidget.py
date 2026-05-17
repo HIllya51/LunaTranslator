@@ -36,6 +36,7 @@ from gui.dynalang import (
     LToolButton,
 )
 
+
 def load_specific_icon_size(ico_path):
     reader = QImageReader(ico_path)
     total_images = reader.imageCount()
@@ -2980,6 +2981,7 @@ def getsimplepatheditor(
     dirorfile=False,
     clearable=True,
     clearset=None,
+    editable=False,
 ):
     if multi:
         lay = listediterline(
@@ -2991,7 +2993,7 @@ def getsimplepatheditor(
         lay = QHBoxLayout()
         lay.setContentsMargins(0, 0, 0, 0)
         e = QLineEdit(text)
-        e.setReadOnly(True)
+        e.setReadOnly(not editable)
         if icons:
             bu = getIconButton(icon=icons[0])
             if clearable:
@@ -3013,12 +3015,15 @@ def getsimplepatheditor(
             callback,
         )
         bu.clicked.connect(_cb)
+        if callback:
+            e.textEdited.connect(callback)
         lay.addWidget(e)
         lay.addWidget(bu)
         if clearable:
 
             def __(_cb, _e: QLineEdit, t):
-                _cb("")
+                if _cb:
+                    _cb("")
                 if not t:
                     _e.setText("")
                 elif callable(t):
@@ -3280,6 +3285,7 @@ class IconButton(LPushButton):
         if icon == "luna":
             return getExeIcon(getcurrexe(), icon=False, large=True)
         return load_specific_icon_size(icon)
+
     def setIconStr(self, icon: str):
         self._setIconStr(icon)
         self.__seticon()

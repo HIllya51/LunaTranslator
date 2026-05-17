@@ -922,5 +922,6 @@
     "图片路径": "Resim yolu",
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Bekleme süresi çok uzunsa, Windows Defender veya başka bir antivirüs yazılımı tarafından engellenmiş olabilir.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Lütfen [Windows Defender hariç tutma ekleyin](WDADDEXCEPTION) veya diğer ilgili ayarları kontrol edip tekrar deneyin.",
-    "禁用其他全部快捷键": "Diğer tüm kısayol tuşlarını devre dışı bırak"
+    "禁用其他全部快捷键": "Diğer tüm kısayol tuşlarını devre dışı bırak",
+    "背景图片": "Arka plan resmi"
 }

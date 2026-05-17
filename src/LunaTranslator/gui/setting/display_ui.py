@@ -3,7 +3,7 @@ import functools, importlib
 from traceback import print_exc
 import gobject
 from myutils.config import globalconfig, static_data
-from myutils.utils import nowisdark
+from myutils.utils import nowisdark, getimagefilefilter
 from gui.flowsearchword import createsomecontrols
 from gui.qevent import DarkLightSettingChangedEvent
 from gui.usefulwidget import (
@@ -13,80 +13,98 @@ from gui.usefulwidget import (
     getIconButton,
     FocusFontCombo,
     D_getsimpleswitch,
-    getsimpleswitch,
+    D_getIconButton,
     getsmalllabel,
     getboxlayout,
+    DarkLightAutoResetIconHelper,
+    getsimpleswitch,
+    getsimplepatheditor,
 )
+from myutils.wrapper import Singleton
+import qtawesome
+from gui.dynalang import LDialog, LFormLayout
 
 
-def changeHorizontal(self):
+def changeHorizontal_pic(
+    horizontal_slider_tool: QSlider, horizontal_slider_tool_label: QLabel
+):
 
-    globalconfig["transparent"] = self.horizontal_slider.value()
-    try:
-        self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent"]))
-    except:
-        pass
-    #
+    globalconfig["transparent_pic"] = horizontal_slider_tool.value()
+    horizontal_slider_tool_label.setText(
+        "{}%".format(globalconfig.get("transparent_pic", 20))
+    )
+    gobject.base.translation_ui.translate_text.setbackgroudimageandopt()
+
+
+def createhorizontal_slider_pic():
+
+    horizontal_slider = QSlider()
+    horizontal_slider.setMaximum(100)
+    horizontal_slider.setMinimum(0)
+    horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
+    horizontal_slider.setValue(globalconfig.get("transparent_pic", 20))
+
+    horizontal_slider_label = QLabel()
+    horizontal_slider.valueChanged.connect(
+        functools.partial(
+            changeHorizontal_pic, horizontal_slider, horizontal_slider_label
+        )
+    )
+    horizontal_slider_label.setText(
+        "{}%".format(globalconfig.get("transparent_pic", 20))
+    )
+
+    gobject.base.backtransparentstatus_2.connect(
+        lambda x: (
+            horizontal_slider.setEnabled(x),
+            horizontal_slider_label.setEnabled(x),
+        )
+    )
+
+    return getboxlayout([horizontal_slider, horizontal_slider_label])
+
+
+def changeHorizontal(
+    horizontal_slider_tool: QSlider, horizontal_slider_tool_label: QLabel
+):
+
+    globalconfig["transparent"] = horizontal_slider_tool.value()
+    horizontal_slider_tool_label.setText("{}%".format(globalconfig["transparent"]))
     gobject.base.translation_ui.set_color_transparency()
 
 
-def __exswitch(self, ex):
-    self.horizontal_slider.setMinimum(1 - ex)
-    gobject.base.translation_ui.set_color_transparency()
+def createhorizontal_slider():
 
+    horizontal_slider = QSlider()
+    horizontal_slider.setMaximum(100)
+    horizontal_slider.setMinimum(1)
+    horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
+    horizontal_slider.setValue(globalconfig.get("transparent", 10))
 
-def createhorizontal_slider(self):
-
-    self.horizontal_slider = QSlider()
-    self.horizontal_slider.setMaximum(100)
-    self.horizontal_slider.setMinimum(1 - globalconfig["transparent_EX"])
-    self.horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
-    self.horizontal_slider.setValue(globalconfig["transparent"])
-    self.horizontal_slider.valueChanged.connect(
-        functools.partial(changeHorizontal, self)
+    horizontal_slider_label = QLabel()
+    horizontal_slider.valueChanged.connect(
+        functools.partial(changeHorizontal, horizontal_slider, horizontal_slider_label)
     )
-    w = QWidget()
-    hb = QHBoxLayout(w)
-    hb.setContentsMargins(0, 0, 0, 0)
-
-    self.horizontal_slider_label = QLabel()
-    self.horizontal_slider_label.setText("{}%".format(globalconfig["transparent"]))
-    hb.addWidget(self.horizontal_slider)
-    hb.addWidget(self.horizontal_slider_label)
-
-    l = getsmalllabel("  EX")()
-    hb.addWidget(l)
-    sw = getsimpleswitch(
-        globalconfig,
-        "transparent_EX",
-        callback=functools.partial(__exswitch, self),
-    )
-
-    hb.addWidget(sw)
+    horizontal_slider_label.setText("{}%".format(globalconfig.get("transparent", 10)))
 
     gobject.base.backtransparentstatus.connect(
         lambda x: (
-            self.horizontal_slider.setEnabled(x),
-            self.horizontal_slider_label.setEnabled(x),
+            horizontal_slider.setEnabled(x),
+            horizontal_slider_label.setEnabled(x),
         )
     )
 
-    self.horizontal_slider.setEnabled(not globalconfig.get("backtransparent", False))
-    self.horizontal_slider_label.setEnabled(
-        not globalconfig.get("backtransparent", False)
+    return getboxlayout([horizontal_slider, horizontal_slider_label])
+
+
+def changeHorizontal_tool(
+    horizontal_slider_tool: QSlider, horizontal_slider_tool_label: QLabel
+):
+
+    globalconfig["transparent_tool"] = horizontal_slider_tool.value()
+    horizontal_slider_tool_label.setText(
+        "{}%".format(globalconfig.get("transparent_tool", 50))
     )
-    return w
-
-
-def changeHorizontal_tool(self):
-
-    globalconfig["transparent_tool"] = self.horizontal_slider_tool.value()
-    try:
-        self.horizontal_slider_tool_label.setText(
-            "{}%".format(globalconfig["transparent_tool"])
-        )
-    except:
-        pass
     #
     gobject.base.translation_ui.enterfunction()
     gobject.base.translation_ui.set_color_transparency()
@@ -99,25 +117,25 @@ def toolcolorchange():
     gobject.base.translation_ui.set_color_transparency()
 
 
-def createhorizontal_slider_tool(self):
+def createhorizontal_slider_tool():
 
-    self.horizontal_slider_tool = QSlider()
-    self.horizontal_slider_tool.setMaximum(100)
-    self.horizontal_slider_tool.setMinimum(1)
-    self.horizontal_slider_tool.setOrientation(Qt.Orientation.Horizontal)
-    self.horizontal_slider_tool.setValue(0)
-    self.horizontal_slider_tool.setValue(globalconfig["transparent_tool"])
-    self.horizontal_slider_tool.valueChanged.connect(
-        functools.partial(changeHorizontal_tool, self)
-    )
+    horizontal_slider_tool = QSlider()
+    horizontal_slider_tool.setMaximum(100)
+    horizontal_slider_tool.setMinimum(1)
+    horizontal_slider_tool.setOrientation(Qt.Orientation.Horizontal)
+    horizontal_slider_tool.setValue(0)
+    horizontal_slider_tool.setValue(globalconfig.get("transparent_tool", 50))
 
-    self.horizontal_slider_tool_label = QLabel()
-    self.horizontal_slider_tool_label.setText(
-        "{}%".format(globalconfig["transparent_tool"])
+    horizontal_slider_tool_label = QLabel()
+    horizontal_slider_tool.valueChanged.connect(
+        functools.partial(
+            changeHorizontal_tool, horizontal_slider_tool, horizontal_slider_tool_label
+        )
     )
-    return getboxlayout(
-        [self.horizontal_slider_tool, self.horizontal_slider_tool_label]
+    horizontal_slider_tool_label.setText(
+        "{}%".format(globalconfig.get("transparent_tool", 50))
     )
+    return getboxlayout([horizontal_slider_tool, horizontal_slider_tool_label])
 
 
 def createfontcombo():
@@ -421,29 +439,47 @@ def createdynamicdelay(self):
     return self.disappear_delay
 
 
+@Singleton
+class picselector(LDialog, DarkLightAutoResetIconHelper):
+    def __init__(self, parent):
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle("背景图片")
+        self.setWindowIcon(qtawesome.icon("fa.picture-o"))
+        self.resize(QSize(600, 10))
+        form = LFormLayout(self)
+        form.addRow(
+            "使用",
+            getsimpleswitch(
+                globalconfig,
+                "usebackgroundpic",
+                default=False,
+                callback=gobject.base.translation_ui.translate_text.setbackgroudimageandopt,
+            ),
+        )
+        form.addRow(
+            "图片",
+            getsimplepatheditor(
+                globalconfig.get(
+                    "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
+                ),
+                False,
+                False,
+                filter1=getimagefilefilter(),
+                callback=lambda _: (
+                    globalconfig.__setitem__("backgroundpic", _),
+                    gobject.base.translation_ui.translate_text.setbackgroudimageandopt(),
+                ),
+                clearable=False,
+                icons=("fa.folder-open",),
+                editable=True,
+            ),
+        )
+        self.show()
+
+
 def mainuisetting(self):
 
     return [
-        [
-            dict(
-                title="文本区",
-                type="grid",
-                grid=(
-                    [
-                        "背景颜色",
-                        D_getcolorbutton(
-                            self,
-                            globalconfig,
-                            "backcolor",
-                            callback=lambda _: gobject.base.translation_ui.set_color_transparency(),
-                        ),
-                        "",
-                        "不透明度",
-                        functools.partial(createhorizontal_slider, self),
-                    ],
-                ),
-            ),
-        ],
         [
             dict(
                 title="工具栏",
@@ -459,9 +495,40 @@ def mainuisetting(self):
                         ),
                         "",
                         "不透明度",
-                        functools.partial(createhorizontal_slider_tool, self),
+                        createhorizontal_slider_tool,
                     ]
                 ],
+            ),
+        ],
+        [
+            dict(
+                title="文本区",
+                type="grid",
+                grid=(
+                    [
+                        "背景颜色",
+                        D_getcolorbutton(
+                            self,
+                            globalconfig,
+                            "backcolor",
+                            callback=lambda _: gobject.base.translation_ui.set_color_transparency(),
+                        ),
+                        "",
+                        "不透明度",
+                        createhorizontal_slider,
+                    ],
+                    [
+                        "背景图片",
+                        D_getIconButton(
+                            icon="fa.picture-o",
+                            tips="背景图片",
+                            callback=lambda: picselector(self),
+                        ),
+                        "",
+                        "不透明度",
+                        createhorizontal_slider_pic,
+                    ],
+                ),
             ),
         ],
     ]

@@ -922,5 +922,6 @@
     "图片路径": "Cesta k obrázku",
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Pokud čekání trvá příliš dlouho, mohlo dojít k zablokování ze strany Windows Defenderu nebo jiného antivirového softwaru.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Prosím, [přidejte výjimku pro Windows Defender](WDADDEXCEPTION) nebo zkontrolujte další související nastavení a poté to zkuste znovu.",
-    "禁用其他全部快捷键": "Zakázat všechny ostatní klávesové zkratky"
+    "禁用其他全部快捷键": "Zakázat všechny ostatní klávesové zkratky",
+    "背景图片": "Obrázek na pozadí"
 }

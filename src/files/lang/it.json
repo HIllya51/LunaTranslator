@@ -922,5 +922,6 @@
     "图片路径": "Percorso dell'immagine",
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Se il tempo di attesa è troppo lungo, potrebbe essere bloccato da Windows Defender o da altri software antivirus.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Aggiungi [un'esclusione di Windows Defender](WDADDEXCEPTION) oppure verifica le altre impostazioni correlate e riprova.",
-    "禁用其他全部快捷键": "Disabilita tutte le altre scorciatoie da tastiera."
+    "禁用其他全部快捷键": "Disabilita tutte le altre scorciatoie da tastiera.",
+    "背景图片": "Sfondo immagine"
 }

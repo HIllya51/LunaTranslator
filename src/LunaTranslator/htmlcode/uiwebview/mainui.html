@@ -24,6 +24,36 @@
 </div>
 <div id="luna_overlay_div"></div>
 <div id="luna_atback_div"></div>
+<style id="backimageproperty">
+    /* :root {
+        --backgroundimageurl: url("https://image.lunatranslator.org/luna.jpg");
+        --backgroundimageopacity: 0.1;
+    } */
+</style>
+<script>
+    function setbackgroudimageandopt(use, url, opt) {
+        url = decodeURIComponent(url)
+        if (!((url.toLowerCase().startsWith('http://')) || (url.toLowerCase().startsWith('https://')))) {
+            url = url.replace(/\\/g, '/');
+        }
+        document.documentElement.style.setProperty('--backgroundimageurl', use ? `url("${url}")` : "");
+        document.documentElement.style.setProperty('--backgroundimageopacity', use ? opt : 0);
+    }
+</script>
+<style>
+    body::before {
+        background-image: var(--backgroundimageurl);
+        opacity: var(--backgroundimageopacity);
+        background-size: 100% auto;
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: -9999;
+    }
+</style>
 <style>
     #luna_overlay_div {
         position: absolute;

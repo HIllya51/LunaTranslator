@@ -922,5 +922,6 @@
     "图片路径": "Afbeeldingspad",
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Als de wachttijd te lang is, kan het zijn dat Windows Defender of andere antivirussoftware het heeft geblokkeerd.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Voeg een uitsluiting toe aan Windows Defender ([WDADDEXCEPTION]) of controleer andere gerelateerde instellingen en probeer het opnieuw.",
-    "禁用其他全部快捷键": "Schakel alle andere sneltoetsen uit."
+    "禁用其他全部快捷键": "Schakel alle andere sneltoetsen uit.",
+    "背景图片": "Achtergrondafbeelding"
 }

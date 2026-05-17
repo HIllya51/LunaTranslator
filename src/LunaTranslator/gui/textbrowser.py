@@ -318,6 +318,13 @@ class Textbrowser(QFrame):
             lambda _1: _1.sethovercolor(color),
         )
 
+    def setbackgroudimageandopt(self, *_):
+        self.textbrowser.setbackgroudimageandopt()
+        WSForEach(
+            mainuiwsoutputsave,
+            lambda _1: _1.setbackgroudimageandopt(),
+        )
+
     def verticalhorizontal(self, _):
         self.textbrowser.verticalhorizontal(_)
         WSForEach(

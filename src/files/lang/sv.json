@@ -922,5 +922,6 @@
     "图片路径": "Bildsökväg",
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Om väntetiden är för lång kan det bero på att Windows Defender eller annat antivirusprogram blockerar det.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Lägg till [undantag i Windows Defender](WDADDEXCEPTION) eller kontrollera andra relaterade inställningar och försök igen.",
-    "禁用其他全部快捷键": "Inaktivera alla andra kortkommandon"
+    "禁用其他全部快捷键": "Inaktivera alla andra kortkommandon",
+    "背景图片": "Bakgrundsbild"
 }

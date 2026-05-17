@@ -922,5 +922,6 @@
     "图片路径": "Image path",
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "If the waiting time is too long, it may be blocked by Windows Defender or other antivirus software.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Please [add a Windows Defender exclusion](WDADDEXCEPTION), or check other related settings and try again.",
-    "禁用其他全部快捷键": "Disable all other shortcut keys."
+    "禁用其他全部快捷键": "Disable all other shortcut keys.",
+    "背景图片": "Background image"
 }

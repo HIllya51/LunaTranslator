@@ -36,7 +36,7 @@
     This feature must be used in conjunction with the mouse pass-through window tool button to function correctly.
 
 1. #### Window background transparency {#anchor-51}
-    The function of this button is to switch the opacity of the translation window to 0 with one click. This switch will not cause the original opacity settings to be forgotten.
+    The function of this button is to switch the opacity of the translation window to 0 with one click. When the opacity is 0, the mouse will also penetrate through the window.
 
 1. #### Lock Toolbar {#anchor-_9}
     When the toolbar is not locked, it will automatically hide when the mouse moves out; activating this will keep the toolbar always visible.

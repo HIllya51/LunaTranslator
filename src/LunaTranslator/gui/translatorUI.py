@@ -286,7 +286,7 @@ class ButtonBar(QFrame):
             color0="red",
             bottomr=bottomr,
             color2=str2rgba(
-                globalconfig["backcolor_tool"], globalconfig["transparent_tool"]
+                globalconfig["backcolor_tool"], globalconfig.get("transparent_tool", 50)
             ),
         )
         self.setStyleSheet(style)
@@ -1459,8 +1459,8 @@ class TranslatorWindow(resizableframeless):
         bottomr3 = self.createborderradiusstring(use_r2, False)
         bottomr = self.createborderradiusstring(radiu_valid * use_r2, True, True)
         transparent_value_actually = max(
-            (1 - globalconfig["transparent_EX"]) * 100 / 255,
-            globalconfig["transparent"]
+            (1 - globalconfig.get("backtransparent", False)) * 100 / 255,
+            globalconfig.get("transparent", 10)
             * (not globalconfig.get("backtransparent", False)),
         )
         self.translate_text.setStyleSheet(
@@ -1580,6 +1580,10 @@ class TranslatorWindow(resizableframeless):
             gobject.base.backtransparentstatus.emit(
                 not globalconfig.get("backtransparent", False)
             )
+            gobject.base.backtransparentstatus_2.emit(
+                not globalconfig.get("backtransparent", False)
+            )
+            self.translate_text.setbackgroudimageandopt()
         self.refreshtoolicon()
 
     def showhideocrrange(self):

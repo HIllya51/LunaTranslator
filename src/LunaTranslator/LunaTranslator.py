@@ -142,6 +142,7 @@ class BASEOBJECT(QObject):
     showandsolvesig = pyqtSignal(str, str)
     selecthookbuttonstatus = pyqtSignal(bool)
     backtransparentstatus = pyqtSignal(bool)
+    backtransparentstatus_2 = pyqtSignal(bool)
     show_fany_switch = pyqtSignal(bool)
     show_original_switch = pyqtSignal(bool)
     sourceswitchs = pyqtSignal(str, bool)

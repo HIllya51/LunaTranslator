@@ -35,7 +35,7 @@
     Tính năng này phải được sử dụng cùng với nút công cụ cửa sổ xuyên chuột để hoạt động chính xác.
 
 1. #### Nền cửa sổ trong suốt {#anchor-51}
-    Chức năng của nút này là chuyển độ mờ của cửa sổ dịch sang 0 chỉ với một lần nhấp. Công tắc này sẽ không làm quên các cài đặt độ mờ ban đầu.
+    Chức năng của nút này là chuyển độ mờ của cửa sổ dịch sang 0 chỉ với một lần nhấp. Khi độ mờ bằng 0, chuột cũng sẽ xuyên qua cửa sổ.
 
 1. #### Khóa thanh công cụ {#anchor-_9}
     Khi thanh công cụ không bị khóa, nó sẽ tự động ẩn khi chuột di chuyển ra ngoài; kích hoạt tính năng này sẽ giữ thanh công cụ luôn hiển thị.
