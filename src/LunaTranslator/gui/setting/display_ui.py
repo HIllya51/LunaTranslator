@@ -31,7 +31,7 @@ def changeHorizontal_pic(
 
     globalconfig["transparent_pic"] = horizontal_slider_tool.value()
     horizontal_slider_tool_label.setText(
-        "{}%".format(globalconfig.get("transparent_pic", 20))
+        "{}%".format(globalconfig.get("transparent_pic", 0))
     )
     gobject.base.translation_ui.translate_text.setbackgroudimageandopt()
 
@@ -42,7 +42,7 @@ def createhorizontal_slider_pic():
     horizontal_slider.setMaximum(100)
     horizontal_slider.setMinimum(0)
     horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
-    horizontal_slider.setValue(globalconfig.get("transparent_pic", 20))
+    horizontal_slider.setValue(globalconfig.get("transparent_pic", 0))
 
     horizontal_slider_label = QLabel()
     horizontal_slider.valueChanged.connect(
@@ -51,7 +51,7 @@ def createhorizontal_slider_pic():
         )
     )
     horizontal_slider_label.setText(
-        "{}%".format(globalconfig.get("transparent_pic", 20))
+        "{}%".format(globalconfig.get("transparent_pic", 0))
     )
 
     gobject.base.backtransparentstatus_2.connect(
@@ -447,15 +447,6 @@ class picselector(LDialog, DarkLightAutoResetIconHelper):
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
         self.resize(QSize(600, 10))
         form = LFormLayout(self)
-        form.addRow(
-            "使用",
-            getsimpleswitch(
-                globalconfig,
-                "usebackgroundpic",
-                default=False,
-                callback=gobject.base.translation_ui.translate_text.setbackgroudimageandopt,
-            ),
-        )
         form.addRow(
             "图片",
             getsimplepatheditor(

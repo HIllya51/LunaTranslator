@@ -295,13 +295,13 @@ class BackImage(QWidget):
             print_exc()
             return None
 
-    def setimage(self, use, url: str, opt):
-        if self.__last != (use, url):
-            self.backimage = QPixmap(self.maybedownloadimage(url) if use else None)
+    def setimage(self, url: str, opt):
+        if self.__last != (opt == 0, url):
+            self.backimage = QPixmap(self.maybedownloadimage(url) if opt else None)
             self.resizedimage = QPixmap()
             self.updateresizedimage()
-        self.__last = (use, url)
-        self.backimageopt = opt if use else 0
+        self.__last = (opt == 0, url)
+        self.backimageopt = opt
         self.update()
 
     def updateresizedimage(self):
@@ -341,7 +341,7 @@ class TextBrowser(QWidget, dataget):
     dropfilecallback = pyqtSignal(str)
     _padding = 5
 
-    __setimagehelper = pyqtSignal(bool, str, float, uuid.UUID)
+    __setimagehelper = pyqtSignal(str, float, uuid.UUID)
 
     def wheelEvent(self, a0: QWheelEvent):
         gobject.base.wheelhistory.emit(-1 if a0.angleDelta().y() > 0 else 1)
@@ -1324,21 +1324,19 @@ class TextBrowser(QWidget, dataget):
                 pass
 
     def setbackgroudimageandopt(self):
-        use = (not globalconfig.get("backtransparent", False)) and globalconfig.get(
-            "usebackgroundpic", False
-        )
+        use = not globalconfig.get("backtransparent", False)
         self.__setimage_sig = __setimage_sig = uuid.uuid4()
+        opt = globalconfig.get("transparent_pic", 0) / 100 if use else 0
         self.__setimagehelper.emit(
-            use,
             globalconfig.get(
                 "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
             ),
-            globalconfig.get("transparent_pic", 20) / 100,
+            opt,
             __setimage_sig,
         )
 
     @threader
-    def ____setimagehelper__(self, use, url: str, opt, sig):
+    def ____setimagehelper__(self, url: str, opt, sig):
         if sig != self.__setimage_sig:
             return
-        self.backimagelabel.setimage(use, url, opt)
+        self.backimagelabel.setimage(url, opt)

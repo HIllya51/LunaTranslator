@@ -65,24 +65,15 @@ class somecommon(dataget):
         self.refreshcontent()
 
     # js api
-    def __setbackgroudimageandopt(self, use, url, opt):
-        # 本地图片无法在浏览器里加载。用base64会很卡，没必要。
-        url = quote(url)
-        self.debugeval(
-            'setbackgroudimageandopt({}, "{}",{});'.format(int(use), url, opt)
-        )
-
     def setbackgroudimageandopt(self):
-        use = (not globalconfig.get("backtransparent", False)) and globalconfig.get(
-            "usebackgroundpic", False
-        )
-        self.__setbackgroudimageandopt(
-            use,
+        use = not globalconfig.get("backtransparent", False)
+        opt = globalconfig.get("transparent_pic", 0) / 100 if use else 0
+        url = quote(
             globalconfig.get(
                 "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
-            ),
-            globalconfig.get("transparent_pic", 20) / 100,
+            )
         )
+        self.debugeval('setbackgroudimageandopt(  "{}",{});'.format(url, opt))
 
     def sethovercolor(self, color):
         self.debugeval('sethovercolor("{}")'.format(self._qcolor_as_rgba(color)))
