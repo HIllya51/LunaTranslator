@@ -9,7 +9,7 @@ from gui.rendertext.texttype import (
 )
 from myutils.proxy import getproxy
 from myutils.wrapper import threader
-import gobject, functools, importlib, NativeUtils, uuid, requests, hashlib
+import gobject, functools, importlib, NativeUtils, uuid, requests, hashlib, os
 from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
@@ -282,14 +282,17 @@ class BackImage(QWidget):
         ):
             return url
         try:
-            req = requests.get(url, stream=True, proxies=getproxy()).content
             fn = gobject.gettempdir(
                 hashlib.md5(url.encode()).hexdigest() + "__cacheimage.png"
             )
+            if os.path.isfile(fn):
+                return fn
+            req = requests.get(url, proxies=getproxy()).content
             with open(fn, "wb") as ff:
                 ff.write(req)
             return fn
         except:
+            print_exc()
             return None
 
     def setimage(self, use, url: str, opt):
