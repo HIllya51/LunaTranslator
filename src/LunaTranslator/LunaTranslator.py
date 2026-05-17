@@ -266,6 +266,7 @@ class BASEOBJECT(QObject):
     def __init__(self) -> None:
         super().__init__()
         self.initsignals()
+        self.willshutdown = False
         self.history = HistoryHelper()
         self.currentisdark = None
         self.currentmica = None
@@ -1705,7 +1706,10 @@ class BASEOBJECT(QObject):
         elif msg == 5:
             magpie_config.update(json.loads(cast(value2, c_wchar_p).value))
         elif msg == -1:
-            saveallconfig()
+            self.willshutdown = True
+            _ = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
+            if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
+                saveallconfig()
 
     def _dowhenwndcreate(self, obj):
         if not isinstance(obj, QWidget):

@@ -1954,7 +1954,8 @@ class TranslatorWindow(resizableframeless):
                         "\n\n".join(errors),
                     )
                 self.tryremoveuseless()
-                doupdate()
+                if not gobject.base.willshutdown:
+                    doupdate()
         except:
             print_exc()
 
