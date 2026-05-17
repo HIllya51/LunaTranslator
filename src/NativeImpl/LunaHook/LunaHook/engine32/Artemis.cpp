@@ -126,7 +126,7 @@ bool InsertArtemis2Hook()
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(1);
-  hp.type = USING_STRING | NO_CONTEXT | FULL_STRING;
+  hp.type = USING_STRING | NO_CONTEXT;
   hp.filter_fun = Utf8TypeChecker;
   return NewHook(hp, "Artemis2");
 }
