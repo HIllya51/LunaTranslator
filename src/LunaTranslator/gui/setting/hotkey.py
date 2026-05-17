@@ -468,7 +468,7 @@ def setTab_quick_lazy(self, ls):
                 "keystring",
                 functools.partial(regist_or_not_key, self, name),
             ),
-            (functools.partial(delaycreatereferlabels, self, name), -1),
+            (functools.partial(delaycreatereferlabels, self, name), 0),
         ]
         if name in hotkeysettings:
             l[1] = (l[1][0], 1)

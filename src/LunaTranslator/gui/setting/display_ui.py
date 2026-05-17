@@ -16,13 +16,8 @@ from gui.usefulwidget import (
     D_getIconButton,
     getsmalllabel,
     getboxlayout,
-    DarkLightAutoResetIconHelper,
-    getsimpleswitch,
     getsimplepatheditor,
 )
-from myutils.wrapper import Singleton
-import qtawesome
-from gui.dynalang import LDialog, LFormLayout
 
 
 def changeHorizontal_pic(
@@ -439,35 +434,6 @@ def createdynamicdelay(self):
     return self.disappear_delay
 
 
-@Singleton
-class picselector(LDialog, DarkLightAutoResetIconHelper):
-    def __init__(self, parent):
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("背景图片")
-        self.setWindowIcon(qtawesome.icon("fa.picture-o"))
-        self.resize(QSize(600, 10))
-        form = LFormLayout(self)
-        form.addRow(
-            "图片",
-            getsimplepatheditor(
-                globalconfig.get(
-                    "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
-                ),
-                False,
-                False,
-                filter1=getimagefilefilter(),
-                callback=lambda _: (
-                    globalconfig.__setitem__("backgroundpic", _),
-                    gobject.base.translation_ui.translate_text.setbackgroudimageandopt(),
-                ),
-                clearable=False,
-                icons=("fa.folder-open",),
-                editable=True,
-            ),
-        )
-        self.show()
-
-
 def mainuisetting(self):
 
     return [
@@ -495,6 +461,9 @@ def mainuisetting(self):
             dict(
                 title="文本区",
                 type="grid",
+                hiderows=[2],
+                name="textareaobject",
+                parent=self,
                 grid=(
                     [
                         "背景颜色",
@@ -513,11 +482,35 @@ def mainuisetting(self):
                         D_getIconButton(
                             icon="fa.picture-o",
                             tips="背景图片",
-                            callback=lambda: picselector(self),
+                            callback=lambda: self.textareaobject.layout().setRowVisible(
+                                2, not self.textareaobject.layout().rowVisible(2)
+                            ),
                         ),
                         "",
                         "不透明度",
                         createhorizontal_slider_pic,
+                    ],
+                    [
+                        "图片",
+                        (
+                            lambda: getsimplepatheditor(
+                                globalconfig.get(
+                                    "backgroundpic",
+                                    "https://image.lunatranslator.org/luna.jpg",
+                                ),
+                                False,
+                                False,
+                                filter1=getimagefilefilter(),
+                                callback=lambda _: (
+                                    globalconfig.__setitem__("backgroundpic", _),
+                                    gobject.base.translation_ui.translate_text.setbackgroudimageandopt(),
+                                ),
+                                clearable=False,
+                                icons=("fa.folder-open",),
+                                editable=True,
+                            ),
+                            0,
+                        ),
                     ],
                 ),
             ),
