@@ -241,7 +241,9 @@ class BASEOBJECT(QObject):
         hist = self.history.get_offset(offset)
         if not hist:
             return
+        self.currenttext = self.currenttext_raw = hist.text
         self.translation_ui.displayraw1.emit(hist.text, False, False)
+        first = True
         for classname, trans in hist.trans.items():
             try:
                 displayreskwargs = dict(
@@ -251,6 +253,13 @@ class BASEOBJECT(QObject):
                     klass=classname,
                 )
                 self.translation_ui.displayres.emit(displayreskwargs)
+                if first:
+                    first = False
+                    self.currenttranslate = self.currenttranslate_1 = ""
+                if len(self.currenttranslate):
+                    self.currenttranslate += "\n"
+                self.currenttranslate += trans
+                self.currenttranslate_1 = trans
             except:
                 print_exc()
 
