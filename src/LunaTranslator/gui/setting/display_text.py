@@ -390,29 +390,31 @@ class Spacesetting(NQGroupBox):
         )
 
 
-class TextAreaBack(PopupWidget):
+class TextAreaBack(NQGroupBox):
     def __init__(self, parent):
         super().__init__(parent)
         form = LFormLayout(self)
         form.addRow(
             "颜色",
-            getcolorbutton(
-                self,
-                globalconfig,
-                "text_area_background_color",
-                callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                default="#ff0000",
-            ),
-        )
-        form.addRow(
-            "不透明度",
-            getspinbox(
-                0,
-                100,
-                globalconfig,
-                "text_area_background_alpha",
-                callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                default=50,
+            getboxlayout(
+                [
+                    getcolorbutton(
+                        self,
+                        globalconfig,
+                        "text_area_background_color",
+                        callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                        default="#ff0000",
+                    ),
+                    getsmalllabel("不透明度"),
+                    getspinbox(
+                        0,
+                        100,
+                        globalconfig,
+                        "text_area_background_alpha",
+                        callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                        default=50,
+                    ),
+                ]
             ),
         )
         for text, key in (
@@ -433,7 +435,6 @@ class TextAreaBack(PopupWidget):
                     default=5,
                 ),
             )
-        self.display()
 
 
 def vistranslate_rank(self):
@@ -608,6 +609,9 @@ def xianshigrid_style(self):
         [
             dict(
                 type="grid",
+                hiderows=[2],
+                name="otherobject",
+                parent=self,
                 grid=(
                     [
                         "居中显示",
@@ -650,8 +654,13 @@ def xianshigrid_style(self):
                             callback=gobject.base.translation_ui.translate_text.showtextareabackground,
                             default=False,
                         ),
-                        D_getIconButton(callback=functools.partial(TextAreaBack, self)),
+                        D_getIconButton(
+                            callback=lambda: self.otherobject.layout().setRowVisible(
+                                2, not self.otherobject.layout().rowVisible(2)
+                            ),
+                        ),
                     ],
+                    [(functools.partial(TextAreaBack, self), 0)],
                 ),
             ),
         ],
