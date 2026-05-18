@@ -207,7 +207,11 @@ int PyStand::RunString(const wchar_t *script)
 
 #ifdef WINXP
 	auto Py_SetPath = (void (*)(const wchar_t *))GetProcAddress(_hDLL, "Py_SetPath");
-	std::wstring path = std::wstring(FILESRUNTIME) + L"\\Lib\\pylibs.zip;" + FILESRUNTIME + L"\\DLLs;" + FILESRUNTIME + L"\\Lib\\site-packages";
+	std::wstring path = std::wstring() +
+						FILESRUNTIME + L"\\Lib;" +
+						FILESRUNTIME + L"\\Lib\\pylibs.zip;" +
+						FILESRUNTIME + L"\\DLLs;" +
+						FILESRUNTIME + L"\\Lib\\site-packages";
 	Py_SetPath(path.c_str());
 #endif
 	hr = _Py_Main((int)_py_args.size(), &_py_args[0]);
