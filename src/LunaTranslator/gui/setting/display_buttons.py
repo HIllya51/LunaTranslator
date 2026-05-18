@@ -271,8 +271,11 @@ def createbuttonwidget(self, lay: QLayout):
         l.append(getsmalllabel())
         t = globalconfig["toolbutton"]["buttons"][k].get("tip", "")
         if "belong" in globalconfig["toolbutton"]["buttons"][k]:
-            t += "_(仅_{})".format(
-                " ".join(globalconfig["toolbutton"]["buttons"][k]["belong"])
+            t += "_(仅{}模式下可用)".format(
+                ",".join(
+                    {"texthook": "HOOK", "ocr": "OCR"}.get(_, "?")
+                    for _ in globalconfig["toolbutton"]["buttons"][k]["belong"]
+                )
             )
         l.append(D_getdoclink("alltoolbuttons.html#anchor-" + k))
         l.append(t)

@@ -239,7 +239,6 @@
     "百度": "Baidu",
     "搜索结果数上限": "Maximale Anzahl der Suchergebnisse",
     "添加行": "Zeilen hinzufügen",
-    "仅": "nur",
     "阿里": "Alibaba",
     "朗读翻译": "Vorlesen und übersetzen",
     "火山TTS": "Vulkan TTS",
@@ -923,5 +922,7 @@
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Wenn die Wartezeit zu lang ist, könnte es sein, dass Windows Defender oder andere Antivirensoftware den Vorgang blockiert.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Bitte fügen Sie einen [Windows Defender-Ausschluss](WDADDEXCEPTION) hinzu oder überprüfen Sie andere relevante Einstellungen und versuchen Sie es erneut.",
     "禁用其他全部快捷键": "Deaktivieren Sie alle anderen Tastenkombinationen.",
-    "背景图片": "Hintergrundbild"
+    "背景图片": "Hintergrundbild",
+    "仅HOOK模式下可用": "Nur im HOOK-Modus verfügbar.",
+    "仅OCR模式下可用": "Nur im OCR-Modus verfügbar."
 }

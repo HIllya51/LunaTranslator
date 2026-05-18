@@ -212,7 +212,6 @@
     "处理": "Đang xử lý",
     "波兰语": "Tiếng Ba Lan",
     "窗口置顶": "Ghim cửa sổ trên cùng",
-    "仅": "Chỉ",
     "任务栏中显示": "Hiển thị trên thanh Taskbar",
     "移除": "Xóa bỏ",
     "复制特殊码": "Sao chép Hook Code",
@@ -923,5 +922,7 @@
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Nếu thời gian chờ quá lâu, có thể đã bị Windows Defender hoặc phần mềm diệt virus khác chặn.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Vui lòng [thêm mục loại trừ Windows Defender](WDADDEXCEPTION) hoặc kiểm tra các cài đặt liên quan khác rồi thử lại.",
     "禁用其他全部快捷键": "Vô hiệu hóa tất cả các phím tắt khác",
-    "背景图片": "Hình nền"
+    "背景图片": "Hình nền",
+    "仅HOOK模式下可用": "Chỉ khả dụng trong chế độ HOOK.",
+    "仅OCR模式下可用": "Chỉ khả dụng trong chế độ OCR."
 }

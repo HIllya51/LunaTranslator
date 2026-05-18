@@ -212,7 +212,6 @@
     "处理": "maniglia",
     "波兰语": "Polacco",
     "窗口置顶": "Finestra in alto",
-    "仅": "Solo",
     "任务栏中显示": "Mostra nella barra delle applicazioni",
     "移除": "rimuovere",
     "复制特殊码": "Copia codice speciale",
@@ -923,5 +922,7 @@
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Se il tempo di attesa è troppo lungo, potrebbe essere bloccato da Windows Defender o da altri software antivirus.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Aggiungi [un'esclusione di Windows Defender](WDADDEXCEPTION) oppure verifica le altre impostazioni correlate e riprova.",
     "禁用其他全部快捷键": "Disabilita tutte le altre scorciatoie da tastiera.",
-    "背景图片": "Sfondo immagine"
+    "背景图片": "Sfondo immagine",
+    "仅HOOK模式下可用": "Disponibile solo in modalità HOOK.",
+    "仅OCR模式下可用": "Disponibile solo in modalità OCR."
 }

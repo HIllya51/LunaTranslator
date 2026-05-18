@@ -239,7 +239,6 @@
     "百度": "Baidu",
     "搜索结果数上限": "Maximaal aantal zoekresultaten",
     "添加行": "rijen toevoegen",
-    "仅": "alleen",
     "阿里": "Alibaba",
     "朗读翻译": "Voorlezen en vertalen",
     "火山TTS": "Vulkaan TTS",
@@ -923,5 +922,7 @@
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Als de wachttijd te lang is, kan het zijn dat Windows Defender of andere antivirussoftware het heeft geblokkeerd.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Voeg een uitsluiting toe aan Windows Defender ([WDADDEXCEPTION]) of controleer andere gerelateerde instellingen en probeer het opnieuw.",
     "禁用其他全部快捷键": "Schakel alle andere sneltoetsen uit.",
-    "背景图片": "Achtergrondafbeelding"
+    "背景图片": "Achtergrondafbeelding",
+    "仅HOOK模式下可用": "Alleen beschikbaar in de HOOK-modus.",
+    "仅OCR模式下可用": "Alleen beschikbaar in OCR-modus."
 }

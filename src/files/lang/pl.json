@@ -212,7 +212,6 @@
     "处理": "uchwyt",
     "波兰语": "Polski",
     "窗口置顶": "Góra okna",
-    "仅": "Tylko",
     "任务栏中显示": "Pokaż na pasku zadań",
     "移除": "usuń",
     "复制特殊码": "Kopiuj kod specjalny",
@@ -923,5 +922,7 @@
     "如果等待时间过长，可能是被Windows Defender或其他杀毒软件拦截。": "Jeśli czas oczekiwania jest zbyt długi, może to oznaczać, że program Windows Defender lub inne oprogramowanie antywirusowe zablokowało działanie.",
     "请[添加Windows Defender排除项](WDADDEXCEPTION)，或检查其他相关设置后重试。": "Proszę [dodać wykluczenie w Windows Defender](WDADDEXCEPTION) lub sprawdzić inne powiązane ustawienia, a następnie spróbować ponownie.",
     "禁用其他全部快捷键": "Wyłącz wszystkie inne skróty klawiszowe.",
-    "背景图片": "Tło obrazu"
+    "背景图片": "Tło obrazu",
+    "仅HOOK模式下可用": "Tylko w trybie HOOK dostępne.",
+    "仅OCR模式下可用": "Dostępne tylko w trybie OCR."
 }
