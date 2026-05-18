@@ -4,6 +4,7 @@ from traceback import print_exc
 import os, gobject, requests, sys, uuid
 from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR, static_data
+from myutils.llmcard import LLM_MODEL_CARD_KEYS, llm_model_card_choices
 from myutils.utils import selectdebugfile, makehtml
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (
@@ -508,11 +509,14 @@ class yuyinzhidingsetting(LDialog):
 
 def autoinitdialog_items(dic):
     items = []
+    hide_llm_card_keys = "llm_model_card" in dic.get("args", {})
     for arg in dic["args"]:
         default = dict(name=arg, k=arg, type="lineedit")
 
         if "argstype" in dic and arg in dic["argstype"]:
             default.update(dic["argstype"][arg])
+        if hide_llm_card_keys and arg in LLM_MODEL_CARD_KEYS:
+            default["hide"] = True
         items.append(default)
     items.append(dict(type="okcancel", rank=-sys.float_info.min))
     return items
@@ -623,6 +627,41 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                 lineW.setCurrentIndex(dd.get(key, 0))
                 self.regist[key] = lineW.currentIndex
             self.cachecombo[key] = lineW
+        elif line["type"] == "llm_model_card":
+            lineW = QHBoxLayout()
+            combo = SuperCombo(static=True, sizeX=True)
+            vis, internal = llm_model_card_choices(line.get("capability"))
+            if not internal:
+                vis, internal = [_TR("未配置")], [""]
+            combo.addItems(vis, internal)
+            combo.setCurrentData(dd.get(key, ""))
+            self.regist[key] = combo.getCurrentData
+            lineW.addWidget(combo)
+        elif line["type"] == "llm_capabilities":
+            values = dd.get(key, [])
+            if not isinstance(values, (list, tuple)):
+                values = ["text"]
+            selected = set(values)
+            names = [
+                ("text", "文本"),
+                ("vision", "图像"),
+                ("tts", "语音"),
+            ]
+            checks = {}
+            lineW = QHBoxLayout()
+            for cap, vis in names:
+                lineW.addWidget(getsmalllabel(vis)())
+                switch = MySwitch(sign=cap in selected)
+                checks[cap] = switch
+                lineW.addWidget(switch)
+            lineW.addStretch()
+
+            def _get_capabilities(checks=checks):
+                return [cap for cap, switch in checks.items() if switch.isChecked()] or [
+                    "text"
+                ]
+
+            self.regist[key] = _get_capabilities
         elif line["type"] == "llm_api_urls":
             lineW = QHBoxLayout()
             combo = SuperComboX()

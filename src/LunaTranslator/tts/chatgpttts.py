@@ -1,6 +1,7 @@
 from tts.basettsclass import TTSbase, SpeechParam
 from myutils.utils import APIType, common_list_models
 from myutils.proxy import getproxy
+from myutils.llmcard import resolve_llm_config
 import base64, ctypes
 from gui.customparams import getcustombodyheaders, customparams
 
@@ -16,6 +17,10 @@ def list_models(typename, regist):
 
 class TTS(TTSbase):
     arg_support_pitch = False
+
+    @property
+    def keyfrom(self):
+        return resolve_llm_config(self.config)
 
     def getvoicelist(self):
         voice = self.config["voice_list"]
@@ -33,6 +38,7 @@ class TTS(TTSbase):
         return _
 
     def speak(self, content, voice, param: SpeechParam):
+        llm_config = resolve_llm_config(self.config)
 
         if param.speed > 0:
             speed = 1 + 3 * param.speed / 10
@@ -40,22 +46,31 @@ class TTS(TTSbase):
             speed = 1 + 0.75 * param.speed / 10
 
         extrabody, extraheader = getcustombodyheaders(
-            self.config.get("customparams"), **locals()
+            llm_config.get("customparams"), **locals()
         )
-        apitype = APIType(self.config["API接口地址"])
+        apitype = APIType(llm_config["API接口地址"])
         if apitype == APIType.gemini:
             return self.request_gemini(
-                apitype, content, voice, speed, extrabody, extraheader
+                llm_config, apitype, content, voice, speed, extrabody, extraheader
             )
         else:
-            return self.requestnormal(content, voice, speed, extrabody, extraheader)
+            return self.requestnormal(
+                llm_config, apitype, content, voice, speed, extrabody, extraheader
+            )
 
     def requestnormal(
-        self, apitype: APIType, content, voice, speed, extrabody, extraheader
+        self,
+        llm_config: dict,
+        apitype: APIType,
+        content,
+        voice,
+        speed,
+        extrabody,
+        extraheader,
     ):
 
         json_data = {
-            "model": self.config["model"],
+            "model": llm_config["model"],
             "input": content,
             "voice": voice,
             "speed": speed,  # 0.25 to 4.0. 1.0 is the default.
@@ -73,7 +88,14 @@ class TTS(TTSbase):
         return response
 
     def request_gemini(
-        self, apitype: APIType, content, voice, speed, extrabody, extraheader
+        self,
+        llm_config: dict,
+        apitype: APIType,
+        content,
+        voice,
+        speed,
+        extrabody,
+        extraheader,
     ):
 
         body = {
@@ -84,11 +106,11 @@ class TTS(TTSbase):
                     "voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}
                 },
             },
-            "model": self.config["model"],
+            "model": llm_config["model"],
         }
         body.update(extrabody)
         response = self.proxysession.post(
-            "{}/{}:generateContent".format(apitype.url, self.config["model"]),
+            "{}/{}:generateContent".format(apitype.url, llm_config["model"]),
             params={"key": self.multiapikeycurrent["SECRET_KEY"]},
             headers=extraheader,
             json=body,

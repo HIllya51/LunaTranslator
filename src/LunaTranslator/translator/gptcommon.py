@@ -10,6 +10,7 @@ from myutils.utils import (
     common_create_gpt_data,
 )
 from myutils.proxy import getproxy
+from myutils.llmcard import resolve_llm_config
 from language import Languages
 from gui.customparams import getcustombodyheaders
 
@@ -265,6 +266,10 @@ def createheaders(apitype: APIType, curkey: str, maybeuse: dict, proxy, extra):
 
 
 class gptcommon(basetrans):
+    @property
+    def keyfrom(self):
+        return resolve_llm_config(self.config)
+
     def langmap(self):
         return Languages.createenglishlangmap()
 
@@ -277,20 +282,28 @@ class gptcommon(basetrans):
         super().__init__(typename)
 
     def translate(self, query_2: GptTextWithDict):
-        self.checkempty("API接口地址")
+        llm_config = resolve_llm_config(self.config)
+        if not llm_config.get("API接口地址"):
+            self.checkempty("API接口地址")
         if isinstance(query_2, str):
             query_2 = GptTextWithDict(query_2)
         extrabody, extraheader = getcustombodyheaders(
-            self.config.get("customparams"), **locals()
+            llm_config.get("customparams"), **locals()
         )
-        usingstream = self.config["流式输出"]
+        usingstream = llm_config["流式输出"]
         messages, query, query_1 = self.commoncreatemessages(query_2)
-        apitype = APIType(self.config.get("API接口地址", ""))
+        apitype = APIType(llm_config.get("API接口地址", ""))
         if apitype == APIType.gemini:
-            response = self.request_gemini(apitype, messages, extrabody, extraheader)
+            response = self.request_gemini(
+                llm_config, apitype, messages, extrabody, extraheader
+            )
         elif apitype == APIType.claude:
             response = self.req_claude(
-                messages, extrabody, extraheader, self.config.get("cachecontext", False)
+                llm_config,
+                messages,
+                extrabody,
+                extraheader,
+                llm_config.get("cachecontext", False),
             )
         else:
             headers = createheaders(
@@ -301,7 +314,9 @@ class gptcommon(basetrans):
                 extraheader,
             )
             _json = common_create_gpt_data(
-                self.config, self.__parse_qwen_mt_turbo(apitype, messages), extrabody
+                llm_config,
+                self.__parse_qwen_mt_turbo(llm_config, apitype, messages),
+                extrabody,
             )
             response = self.proxysession.post(
                 apitype.finalurl(), headers=headers, json=_json, stream=usingstream
@@ -310,7 +325,7 @@ class gptcommon(basetrans):
         markdown2html = self.config.get("markdown2html", False)
         if usingstream:
             respmessage = yield from parsestreamresp(
-                apitype, response, hidethinking, markdown2html, self.config["model"]
+                apitype, response, hidethinking, markdown2html, llm_config["model"]
             )
         else:
             respmessage = common_parse_normal_response(
@@ -327,8 +342,10 @@ class gptcommon(basetrans):
         self.context.append({"role": "assistant", "content": respmessage})
         self.context_for_cache.append({"role": "assistant", "content": respmessage})
 
-    def __parse_qwen_mt_turbo(self, apitype: APIType, messages: list):
-        if self.config["model"].startswith("qwen-mt-") and apitype == APIType.aliyuncs:
+    def __parse_qwen_mt_turbo(
+        self, llm_config: dict, apitype: APIType, messages: list
+    ):
+        if llm_config["model"].startswith("qwen-mt-") and apitype == APIType.aliyuncs:
             if messages and messages[0]["role"] == "system":
                 messages.pop(0)
         return messages
@@ -424,7 +441,9 @@ class gptcommon(basetrans):
             message.append({"role": "assistant", "content": prefill})
         return message, query, query_1
 
-    def request_gemini(self, apitype, messages: list, extrabody, extraheader):
+    def request_gemini(
+        self, llm_config: dict, apitype, messages: list, extrabody, extraheader
+    ):
 
         sysprompt = messages[0]["content"]
         messages.pop(0)
@@ -435,7 +454,7 @@ class gptcommon(basetrans):
             }
         return common_create_gemini_request(
             self.proxysession,
-            self.config,
+            llm_config,
             self.multiapikeycurrent["SECRET_KEY"],
             sysprompt,
             messages,
@@ -444,8 +463,10 @@ class gptcommon(basetrans):
             apitype,
         )
 
-    def req_claude(self, messages: list, extrabody, extraheader, cache_control):
-        temperature = self.config["Temperature"]
+    def req_claude(
+        self, llm_config: dict, messages: list, extrabody, extraheader, cache_control
+    ):
+        temperature = llm_config["Temperature"]
         sysprompt = messages[0]["content"]
         messages.pop(0)
 
@@ -463,12 +484,12 @@ class gptcommon(basetrans):
             "X-Api-Key": self.multiapikeycurrent["SECRET_KEY"],
         }
 
-        usingstream = self.config["流式输出"]
+        usingstream = llm_config["流式输出"]
         data = dict(
-            model=self.config["model"],
+            model=llm_config["model"],
             messages=messages,
             system=sysprompt,
-            max_tokens=self.config["max_tokens"],
+            max_tokens=llm_config["max_tokens"],
             temperature=temperature,
             stream=usingstream,
         )

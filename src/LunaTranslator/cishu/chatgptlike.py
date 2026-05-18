@@ -7,6 +7,7 @@ from myutils.utils import (
 )
 import NativeUtils
 from myutils.proxy import getproxy
+from myutils.llmcard import resolve_llm_config
 from cishu.cishubase import cishubase
 from translator.gptcommon import createheaders
 from gui.customparams import customparams, getcustombodyheaders
@@ -26,6 +27,10 @@ class chatgptlike(cishubase):
     use_github_md_css = True
     backgroundparser = 'document.querySelector("#luna_dict_internal_view > article").style.backgroundColor="rgba(0,0,0,0)"'
 
+    @property
+    def keyfrom(self):
+        return resolve_llm_config(self.config)
+
     def init(self):
         self.maybeuse = {}
 
@@ -37,10 +42,16 @@ class chatgptlike(cishubase):
         __.update(self.rawconfig)
         if "modellistcache" in __:
             __.pop("modellistcache")
-        temperature = random.randint(0, int(20 * self.config["Temperature"]))
+        llm_config = resolve_llm_config(self.config)
+        if "modellistcache" in llm_config:
+            llm_config.pop("modellistcache")
+        temperature = random.randint(0, int(20 * llm_config["Temperature"]))
+        __["llm_model_config"] = llm_config
         return (word, sentence, temperature, str(__))
 
-    def search_1(self, apitype: APIType, sysprompt, query, extrabody, extraheader):
+    def search_1(
+        self, llm_config: dict, apitype: APIType, sysprompt, query, extrabody, extraheader
+    ):
         message = [{"role": "system", "content": sysprompt}]
         message.append({"role": "user", "content": query})
         headers = createheaders(
@@ -50,7 +61,7 @@ class chatgptlike(cishubase):
             self.proxy,
             extraheader,
         )
-        _json = common_create_gpt_data(self.config, message, extrabody)
+        _json = common_create_gpt_data(llm_config, message, extrabody)
         response = self.proxysession.post(
             apitype.finalurl(), headers=headers, json=_json
         )
@@ -78,20 +89,25 @@ class chatgptlike(cishubase):
         return user_prompt
 
     def search(self, word, sentence=None):
+        llm_config = resolve_llm_config(self.config)
         extrabody, extraheader = getcustombodyheaders(
-            self.config.get("customparams"), **locals()
+            llm_config.get("customparams"), **locals()
         )
         query = self._gptlike_createquery(
             word, sentence, "use_user_user_prompt", "user_user_prompt_1"
         )
         sysprompt = self._gptlike_createsys("使用自定义promt", "自定义promt")
-        apitype = APIType(self.config["API接口地址"])
+        apitype = APIType(llm_config["API接口地址"])
         if apitype == APIType.gemini:
-            resp = self.query_gemini(apitype, sysprompt, query, extrabody, extraheader)
+            resp = self.query_gemini(
+                llm_config, apitype, sysprompt, query, extrabody, extraheader
+            )
         elif apitype == APIType.claude:
-            resp = self.query_cld(sysprompt, query, extrabody, extraheader)
+            resp = self.query_cld(llm_config, sysprompt, query, extrabody, extraheader)
         else:
-            resp = self.search_1(apitype, sysprompt, query, extrabody, extraheader)
+            resp = self.search_1(
+                llm_config, apitype, sysprompt, query, extrabody, extraheader
+            )
         think, resp = common_parse_normal_response(resp, apitype, splitthink=True)
         resp = NativeUtils.Markdown2Html(resp)
         if think:
@@ -101,8 +117,8 @@ class chatgptlike(cishubase):
             resp = think + resp
         return resp
 
-    def query_cld(self, sysprompt, query, extrabody, extraheader):
-        temperature = self.config["Temperature"]
+    def query_cld(self, llm_config: dict, sysprompt, query, extrabody, extraheader):
+        temperature = llm_config["Temperature"]
 
         message = []
         message.append({"role": "user", "content": query})
@@ -112,10 +128,10 @@ class chatgptlike(cishubase):
             "X-Api-Key": self.multiapikeycurrent["SECRET_KEY"],
         }
         data = dict(
-            model=self.config["model"],
+            model=llm_config["model"],
             messages=message,
             system=sysprompt,
-            max_tokens=self.config["max_tokens"],
+            max_tokens=llm_config["max_tokens"],
             temperature=temperature,
         )
         data.update(extrabody)
@@ -127,10 +143,12 @@ class chatgptlike(cishubase):
         )
         return response
 
-    def query_gemini(self, apitype, sysprompt, query, extrabody, extraheader):
+    def query_gemini(
+        self, llm_config: dict, apitype, sysprompt, query, extrabody, extraheader
+    ):
         return common_create_gemini_request(
             self.proxysession,
-            self.config,
+            llm_config,
             self.multiapikeycurrent["SECRET_KEY"],
             sysprompt,
             [{"role": "user", "parts": [{"text": query}]}],

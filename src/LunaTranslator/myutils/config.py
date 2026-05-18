@@ -557,6 +557,147 @@ def copyllmapi(fanyi, newname=None, uid=None, args: dict = None, use=False):
     return uid
 
 
+LLM_MIGRATION_VERSION = 1
+
+_LLM_CARD_DEFAULT = {
+    "name": "大模型",
+    "API接口地址": "https://api.openai.com",
+    "SECRET_KEY": "",
+    "model": "gpt-4o-mini",
+    "modellistcache": [],
+    "Temperature": 0,
+    "max_tokens": 1024,
+    "top_p": 0.3,
+    "top_p_use": True,
+    "frequency_penalty": 0,
+    "frequency_penalty_use": False,
+    "reasoning_effort": "medium",
+    "reasoning_effort_use": False,
+    "thinking.type": "disabled",
+    "thinking.type.use": False,
+    "use_max_completion_tokens": False,
+    "customparams": [],
+    "capabilities": ["text"],
+}
+
+_LLM_CARD_KEYS = tuple(k for k in _LLM_CARD_DEFAULT if k not in ("name", "capabilities"))
+
+
+def _ensure_llm_model_cards_config():
+    globalconfig.setdefault("llm_model_cards", {})
+    globalconfig.setdefault("llm_model_cards_rank", [])
+    globalconfig.setdefault("llm_migration_version", 0)
+
+
+def _add_llm_model_card_selector(setting: dict, capability: str):
+    if not isinstance(setting, dict) or "args" not in setting:
+        return
+    args = setting["args"]
+    if "llm_model_card" not in args:
+        newargs = {"llm_model_card": ""}
+        newargs.update(args)
+        setting["args"] = newargs
+    setting.setdefault("argstype", {})
+    setting["argstype"]["llm_model_card"] = {
+        "name": "模型卡",
+        "type": "llm_model_card",
+        "capability": capability,
+        "rank": 0,
+    }
+
+
+def _ensure_llm_model_card_selectors():
+    _add_llm_model_card_selector(
+        translatorsetting.get("chatgpt-3rd-party"), "text"
+    )
+    _add_llm_model_card_selector(globalconfig["cishu"].get("chatgptlike"), "text")
+    _add_llm_model_card_selector(ocrsetting.get("chatgptlike"), "vision")
+    _add_llm_model_card_selector(globalconfig["reader"].get("chatgpttts"), "tts")
+    for uid in globalconfig["fanyi"]:
+        if getcopyfrom(uid) != "chatgpt-3rd-party":
+            continue
+        _add_llm_model_card_selector(translatorsetting.get(uid), "text")
+
+
+def _llm_card_from_args(args: dict, api_key="API接口地址", capability="text"):
+    card = copy.deepcopy(_LLM_CARD_DEFAULT)
+    for key in _LLM_CARD_KEYS:
+        oldkey = api_key if key == "API接口地址" else key
+        if oldkey in args:
+            card[key] = copy.deepcopy(args[oldkey])
+    card["capabilities"] = [capability]
+    model = str(card.get("model") or "").strip()
+    apiurl = str(card.get("API接口地址") or "").strip()
+    card["name"] = model or apiurl or "大模型"
+    return card
+
+
+def _llm_card_empty(card: dict):
+    return not any(
+        str(card.get(k, "")).strip() for k in ("API接口地址", "SECRET_KEY", "model")
+    )
+
+
+def _llm_card_signature(card: dict):
+    return json.dumps(
+        {k: card.get(k) for k in _LLM_CARD_KEYS if k != "modellistcache"},
+        ensure_ascii=False,
+        sort_keys=True,
+    )
+
+
+def _get_or_create_llm_card(card: dict):
+    cards = globalconfig["llm_model_cards"]
+    signature = _llm_card_signature(card)
+    for uid, oldcard in cards.items():
+        if _llm_card_signature(oldcard) != signature:
+            continue
+        oldcaps = oldcard.setdefault("capabilities", [])
+        for cap in card.get("capabilities", []):
+            if cap not in oldcaps:
+                oldcaps.append(cap)
+        return uid
+    uid = str(uuid.uuid4())
+    cards[uid] = card
+    globalconfig["llm_model_cards_rank"].append(uid)
+    return uid
+
+
+def _migrate_llm_card_from_setting(setting: dict, api_key, capability):
+    if not isinstance(setting, dict) or "args" not in setting:
+        return
+    args = setting["args"]
+    if args.get("llm_model_card") in globalconfig["llm_model_cards"]:
+        return
+    card = _llm_card_from_args(args, api_key, capability)
+    if _llm_card_empty(card):
+        return
+    args["llm_model_card"] = _get_or_create_llm_card(card)
+
+
+def _migrate_llm_model_cards():
+    _ensure_llm_model_cards_config()
+    _ensure_llm_model_card_selectors()
+    if globalconfig.get("llm_migration_version", 0) >= LLM_MIGRATION_VERSION:
+        return
+    for uid in list(globalconfig["fanyi"].keys()):
+        if getcopyfrom(uid) == "chatgpt-3rd-party":
+            _migrate_llm_card_from_setting(
+                translatorsetting.get(uid), "API接口地址", "text"
+            )
+    _migrate_llm_card_from_setting(
+        globalconfig["cishu"].get("chatgptlike"), "API接口地址", "text"
+    )
+    _migrate_llm_card_from_setting(ocrsetting.get("chatgptlike"), "apiurl", "vision")
+    _migrate_llm_card_from_setting(
+        globalconfig["reader"].get("chatgpttts"), "API接口地址", "tts"
+    )
+    globalconfig["llm_migration_version"] = LLM_MIGRATION_VERSION
+
+
+_migrate_llm_model_cards()
+
+
 def urlpathjoin(*argc: str):
     urlx = []
     for i, u in enumerate(argc):

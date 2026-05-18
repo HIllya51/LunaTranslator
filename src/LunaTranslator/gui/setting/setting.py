@@ -6,6 +6,7 @@ from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting.textinput import setTabOne_lazy
 from gui.setting.translate import setTabTwo_lazy
+from gui.setting.llmcard import setTabllmcard
 from gui.setting.display import setTabThree_lazy
 from gui.setting.tts import setTab5
 from gui.setting.cishu import setTabcishu
@@ -95,6 +96,7 @@ class Setting(closeashidewindow):
             [
                 "核心设置",
                 "翻译设置",
+                "模型配置",
                 "显示设置",
                 "文本处理",
                 "辞书设置",
@@ -105,6 +107,7 @@ class Setting(closeashidewindow):
             [
                 functools.partial(setTabOne_lazy, self),
                 functools.partial(setTabTwo_lazy, self),
+                functools.partial(setTabllmcard, self),
                 functools.partial(setTabThree_lazy, self),
                 functools.partial(setTab7_lazy, self),
                 functools.partial(setTabcishu, self),
