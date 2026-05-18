@@ -998,7 +998,9 @@ class WinRT:
         def cb(ptr, size):
             ret.append(ptr[:size])
 
-        winrt_capture_window(hwnd, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb), blackborderremove)
+        winrt_capture_window(
+            hwnd, CFUNCTYPE(None, POINTER(c_char), c_size_t)(cb), blackborderremove
+        )
         if len(ret):
             return ret[0]
         return None

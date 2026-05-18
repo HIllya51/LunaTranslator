@@ -9,7 +9,7 @@ from gui.rendertext.texttype import (
 )
 from myutils.proxy import getproxy
 from myutils.wrapper import threader
-import gobject, functools, importlib, NativeUtils, uuid, requests, hashlib, os
+import gobject, functools, importlib, NativeUtils, uuid, requests
 from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
 from gui.dynalang import LAction
@@ -275,29 +275,32 @@ class BackImage(QWidget):
         self.backimageopt = 0
         self.resizedimage = QPixmap()
         self.__last = None
+        self.__caches: "dict[str, QPixmap]" = {}
 
     def maybedownloadimage(self, url: str):
+        if not url:
+            return QPixmap()
         if not (
             url.lower().startswith("https://") or url.lower().startswith("http://")
         ):
-            return url
+            return QPixmap(url)
         try:
-            fn = gobject.gettempdir(
-                hashlib.md5(url.encode()).hexdigest() + "__cacheimage.png"
-            )
-            if os.path.isfile(fn):
-                return fn
+            if self.__caches.get(url):
+                return self.__caches.get(url)
+
             req = requests.get(url, proxies=getproxy()).content
-            with open(fn, "wb") as ff:
-                ff.write(req)
-            return fn
+            img = QImage()
+            img.loadFromData(req)
+            img = QPixmap.fromImage(img)
+            self.__caches[url] = img
+            return img
         except:
             print_exc()
-            return None
+            return QPixmap()
 
     def setimage(self, url: str, opt):
         if self.__last != (opt == 0, url):
-            self.backimage = QPixmap(self.maybedownloadimage(url) if opt else None)
+            self.backimage = self.maybedownloadimage(url if opt else None)
             self.resizedimage = QPixmap()
             self.updateresizedimage()
         self.__last = (opt == 0, url)

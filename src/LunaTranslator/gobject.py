@@ -1,6 +1,4 @@
 import platform, os, sys
-from ctypes import windll, Structure, POINTER, pointer
-from ctypes.wintypes import DWORD, WCHAR
 
 thisuserconfig = "userconfig"
 runtime_bit_64 = platform.architecture()[0] == "64bit"

@@ -1,9 +1,15 @@
 from qtsymbols import *
 import gobject, qtawesome, os, json, functools, uuid
-import NativeUtils, re
+import NativeUtils, re, shutil
 from myutils.config import globalconfig, get_launchpath, savehook_new_data, relpath
 from myutils.wrapper import Singleton
-from myutils.utils import getimagefilefilter, getimageformat, loopbackrecorder, _TR, get_time_stamp
+from myutils.utils import (
+    getimagefilefilter,
+    getimageformat,
+    loopbackrecorder,
+    _TR,
+    get_time_stamp,
+)
 from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
 from myutils.mecab import mecab
@@ -427,6 +433,8 @@ class dialog_memory(saveposwindow):
         elif action == select:
             f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
             res = f[0]
+            if not res:
+                return
             self.cropcallback(res)
 
     def crophide(self, s=False):
@@ -441,9 +449,7 @@ class dialog_memory(saveposwindow):
                 img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
             if img.isNull():
                 return
-            fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
-            img.save(fname)
-            self.cropcallback(fname)
+            self.cropcallback(img)
 
         def __ocroncefunction(rect, img=None):
             ocroncefunction(rect, img=img)
@@ -462,11 +468,12 @@ class dialog_memory(saveposwindow):
         p.save(tgt)
         self.editor.insertPlainText("\n![img]({})\n".format(tmsp))
 
-    def cropcallback(self, path):
-        if not path:
-            return
+    def cropcallback(self, path: "str|QImage"):
         tgt = os.path.join(self.rwpath, os.path.basename(path))
-        os.rename(path, tgt)
+        if isinstance(path, str):
+            shutil.copy(path, tgt)
+        else:
+            path.save(tgt)
         self.editor.insertPlainText("\n![img]({})\n".format(os.path.basename(path)))
 
     def TextInsert(self):
