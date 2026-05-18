@@ -125,9 +125,6 @@ with zipfile.ZipFile("pylibs.zip", "w") as zipf:
             tgtreal = os.path.join(runtime, os.path.dirname(end))
             copycheck(dependency, tgtreal)
 
-with open(os.path.join(runtime, f"python{pyversion2}._pth"), "w") as ff:
-    ff.write("..\n.\npylibs.zip")
-
 copycheck("pylibs.zip", runtime)
 
 copycheck(os.path.join(py37Path, "python3.dll"), runtime)
