@@ -113,8 +113,9 @@ class dialog_savedgame_integrated(saveposwindow):
 
     def __check(self):
         if not (self.hasFocus() and self.underMouse()):
+            if globalconfig["gamemanager_integrated_internal_layout"] != 0:
+                self.switch.hide()
             self.syssettingbtn.hide()
-            self.switch.hide()
 
     def resizeEvent(self, e: QResizeEvent):
         self.do_resize()
@@ -134,13 +135,15 @@ class dialog_savedgame_integrated(saveposwindow):
             self.syssettingbtn.move(x, 0)
 
     def leaveEvent(self, a0):
-        self.switch.hide()
+        if globalconfig["gamemanager_integrated_internal_layout"] != 0:
+            self.switch.hide()
         self.syssettingbtn.hide()
         return super().leaveEvent(a0)
 
     def enterEvent(self, a0):
         self.switch.show()
-        self.syssettingbtn.show()
+        if globalconfig["gamemanager_integrated_internal_layout"] != 0:
+            self.syssettingbtn.show()
         return super().enterEvent(a0)
 
 
