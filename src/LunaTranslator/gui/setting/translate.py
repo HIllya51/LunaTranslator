@@ -1914,7 +1914,8 @@ def llamacppgrid():
 
 
 def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):
-    if ref[0].internalLayout.count() == 1:
+    isclosenotinit = ref[0].internalLayout.itemAt(0) is None 
+    if isclosenotinit or ref[0].internalLayout.count() == 1:
         w = QWidget()
         ref[0].internalLayout.insertWidget(0, w)
         l = QHBoxLayout(w)
@@ -1928,6 +1929,8 @@ def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):
         do, grids = llamacppgrid()
         automakegrid(grid, grids)
         do()
+        if isclosenotinit:
+            ref[0].toggle_button.click()
     else:
         ref[0].internalLayout.itemAt(0).widget().setVisible(checked)
 

@@ -3,7 +3,7 @@ from threading import Thread
 import time, types
 import gobject
 import json
-import functools
+import functools, hashlib
 from myutils.wrapper import threader
 from myutils.config import globalconfig, translatorsetting, dynamicapiname
 from myutils.utils import stringfyerror, PriorityQueue
@@ -107,6 +107,9 @@ class basetrans(commonbase):
     _globalconfig_key = "fanyi"
     _setting_dict = translatorsetting
 
+    def result_cache_key(self, src, tgt, sentence):
+        return src, tgt, sentence
+
     def __init__(self, typename):
         super().__init__(typename)
         if (self.transtype == "offline") and (not self.is_gpt_like):
@@ -177,31 +180,16 @@ class basetrans(commonbase):
             priority = 0
         self.queue.put(content, priority)
 
-    def shorttermcacheget(self, src):
-        langkey = (self.srclang_1, self.tgtlang_1)
-        if langkey not in self._cache:
-            self._cache[langkey] = {}
-        try:
-            return self._cache[langkey][src]
-        except KeyError:
-            return None
-
-    def shorttermcacheset(self, src, tgt):
-        langkey = (self.srclang_1, self.tgtlang_1)
-
-        if langkey not in self._cache:
-            self._cache[langkey] = {}
-        self._cache[langkey][src] = tgt
-
     def shortorlongcacheget(self, content, is_auto_run):
         if self.is_gpt_like and not is_auto_run:
             return None
         if not self.use_trans_cache:
-            return
-        res = self.shorttermcacheget(content)
+            return None, None
+        key = hashlib.md5(str(self.result_cache_key(self.srclang_1, self.tgtlang_1, content)).encode()).digest()
+        res = self._cache.get(key)
         if res:
-            return res
-        return None
+            return res, key
+        return None, key
 
     def __cap_trans(self, t):
         if isinstance(t, GptTextWithDict) and (
@@ -293,7 +281,7 @@ class basetrans(commonbase):
         else:
             cache_use = TS_use = contentsolved
 
-        res = self.shortorlongcacheget(cache_use, is_auto_run)
+        res, cachekey = self.shortorlongcacheget(cache_use, is_auto_run)
         if not res:
             res = self.intervaledtranslate(TS_use)
         # 不能因为被打断而放弃后面的操作，发出的请求不会因为不再处理而无效，所以与其浪费不如存下来
@@ -321,7 +309,7 @@ class basetrans(commonbase):
 
         # 保存缓存
         # 不管是否使用翻译缓存，都存下来
-        self.shorttermcacheset(cache_use, res)
+        self._cache[cachekey] = res
 
     def __parse_gpt_dict(self, contentsolved, optimization_params):
         gpt_dict = []

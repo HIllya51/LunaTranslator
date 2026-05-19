@@ -3,7 +3,7 @@ from myutils.wrapper import threader
 from myutils.utils import LRUCache
 from traceback import print_exc
 from myutils.commonbase import commonbase
-import uuid
+import uuid, hashlib
 import inspect
 from tinycss2 import parse_stylesheet, serialize
 from tinycss2.ast import (
@@ -13,7 +13,6 @@ from tinycss2.ast import (
     ParseError,
     LiteralToken,
 )
-
 
 try:
     TYPE_CHECKING = False
@@ -41,11 +40,9 @@ class cishubase(commonbase):
     def init(self):
         pass
 
-    def search(self, word: str) -> str: 
-        ...
+    def search(self, word: str) -> str: ...
 
-    def getUrl(self, word: str) -> str: 
-        ...
+    def getUrl(self, word: str) -> str: ...
 
     def result_cache_key(self, word, sentence=None):
         return word, sentence, str(self.rawconfig)
@@ -81,7 +78,7 @@ class cishubase(commonbase):
         if self.needinit:
             self.init()
             self.needinit = False
-        key = self.result_cache_key(word, sentence)
+        key = hashlib.md5(str(self.result_cache_key(word, sentence)).encode()).digest()
         if key:
             cacheresult = self.__cache_results.get(key)
             if cacheresult:

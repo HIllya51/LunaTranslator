@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
-import json, requests, hmac, hashlib, NativeUtils, re, functools
+import json, requests, hmac, hashlib, NativeUtils, re, functools, random
 from datetime import datetime, timezone
 from myutils.utils import (
     APIType,
@@ -267,6 +267,19 @@ def createheaders(apitype: APIType, curkey: str, maybeuse: dict, proxy, extra):
 class gptcommon(basetrans):
     def langmap(self):
         return Languages.createenglishlangmap()
+
+    def result_cache_key(self, src, tgt, sentence):
+        __ = {}
+        __.update(self.rawconfig)
+        if "modellistcache" in __:
+            __.pop("modellistcache")
+        return (
+            src,
+            tgt,
+            sentence,
+            str(__),
+            random.randint(0, int(20 * self.config["Temperature"])),
+        )
 
     def __init__(self, typename):
         self.context = []

@@ -1,6 +1,6 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
-import json
+import json, random
 from myutils.config import urlpathjoin
 from language import Languages
 from translator.gptcommon import list_models
@@ -13,6 +13,19 @@ def useExfunction():
 
 class TS(basetrans):
     needzhconv = True
+
+    def result_cache_key(self, src, tgt, sentence):
+        __ = {}
+        __.update(self.rawconfig)
+        if "modellistcache" in __:
+            __.pop("modellistcache")
+        return (
+            src,
+            tgt,
+            sentence,
+            str(__),
+            random.randint(0, int(20 * self.config["temperature"])),
+        )
 
     @property
     def is_version_new(self):
