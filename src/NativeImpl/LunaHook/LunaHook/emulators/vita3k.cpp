@@ -158,6 +158,10 @@ bool vita3k::attach_function1()
     auto DoJitPtr = getDoJitAddress();
     if (!DoJitPtr)
         return false;
+    static bool isgtv021_4000 = GetModuleHandle(L"Qt6Core.dll");
+    // 大约是从v0.2.1 4000版本左右开始，增加了一个偏移量。
+    // 这个版本左右差不多开始，使用qt增加了主UI界面，所以暂且就用这个来分辨了吧。
+    static int addr_offset = isgtv021_4000 ? -0x1000 : 0; // 新版所有地址都比旧版地址高了0x1000.
     vita3k_load_functions(emfunctionhooks);
     JIT_Keeper<IDremember>::CreateStatic(CheckEmAddrHOOKable);
     trygetgameinwindowtitle();
@@ -172,7 +176,8 @@ bool vita3k::attach_function1()
             em_address += 0x80000000; // 0.1.9 3339
         if (!entrypoint)
             return;
-        // Msg::Log("%p",em_address);
+        em_address += addr_offset;
+        // Msg::Log("%p", em_address);
         CheckEmAddrHOOKable(em_address, entrypoint);
         jitaddraddr(em_address, entrypoint, JITTYPE::VITA3K);
 

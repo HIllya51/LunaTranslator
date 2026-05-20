@@ -1043,8 +1043,6 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
-    // アブナイ☆恋の捜査室 ～Eternal Happiness～
-    {0x800161A4, {FULL_STRING | CODEC_UTF16, 0, 0, 0, 0, "PCSG00591"}},
     // 冴えない彼女の育てかた -blessing flowers-
     {0x80014426, {FULL_STRING | CODEC_UTF16, 0xb, 0, 0, PCSG00543, "PCSG00543"}},
     // ToLOVEる ダークネス トゥループリンセス

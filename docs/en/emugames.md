@@ -761,7 +761,6 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
-|  | PCSG00591 | アブナイ☆恋の捜査室 ～Eternal Happiness～ |
 |  | PCSG00543 | 冴えない彼女の育てかた -blessing flowers- |
 |  | PCSG00689 | ToLOVEる ダークネス トゥループリンセス |
 |  | PCSG00789 | オメルタ CODE:TYCOON 戒 |
