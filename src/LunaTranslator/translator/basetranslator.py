@@ -182,7 +182,7 @@ class basetrans(commonbase):
 
     def shortorlongcacheget(self, content, is_auto_run):
         if self.is_gpt_like and not is_auto_run:
-            return None
+            return None, None
         if not self.use_trans_cache:
             return None, None
         key = hashlib.md5(str(self.result_cache_key(self.srclang_1, self.tgtlang_1, content)).encode()).digest()
