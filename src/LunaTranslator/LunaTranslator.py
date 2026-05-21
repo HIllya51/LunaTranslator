@@ -1191,9 +1191,9 @@ class BASEOBJECT(QObject):
             )
             raise e
 
-    @threader
-    def prepare(self, now=None, remove=False, _=None):
-        self.commonloader("fanyi", self.translators, self.fanyiinitmethod, now, remove)
+    def prepare(self, now=None, remove=False, _=None, sync=False):
+        ff = self.commonloader if sync else threader(self.commonloader)
+        ff("fanyi", self.translators, self.fanyiinitmethod, now, remove)
 
     def commonloader(
         self, fanyiorcishu, dictobject, initmethod, _type=None, remove=False
