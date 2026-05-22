@@ -129,6 +129,7 @@ namespace
         std::string name{""};
         uint64_t id{0};
         std::string version{""};
+        uint32_t eden_startup_addr_offset = 0;
     } game_info;
     bool checkiscurrentgame(const emfuncinfo &em)
     {
@@ -350,13 +351,7 @@ bool yuzu::attach_function1()
         return false;
     HookParam hp;
     hp.address = RegisterBlock;
-    struct emutype
-    {
-        bool iscitron_neo;
-        bool isedenv0_0_4_rc2_above;
-        uint32_t eden_startup_addr_offset = 0;
-    };
-    hp.user_value = (decltype(hp.user_value))new emutype{iscitron_neo, isedenv0_0_4_rc2_above};
+    hp.user_value = (decltype(hp.user_value))this;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto descriptor = context->argof(idxDescriptor + 1); // r8
@@ -364,7 +359,7 @@ bool yuzu::attach_function1()
         if (!entrypoint)
             return;
         auto em_address = *(uint64_t *)descriptor;
-        auto type = (emutype *)hp->user_value;
+        auto type = (yuzu *)hp->user_value;
         if (type->iscitron_neo)
         {
             // citron neo的蜜汁修改。example: ひめひび -Princess Days-
@@ -380,18 +375,18 @@ bool yuzu::attach_function1()
                 hp->text_fun = nullptr;
                 return;
             }
-            if (type->eden_startup_addr_offset == 0)
+            if (game_info.eden_startup_addr_offset == 0)
             {
                 if (em_address >= 0x80000000)
                 {
-                    type->eden_startup_addr_offset = em_address - 0x80000000;
+                    game_info.eden_startup_addr_offset = em_address - 0x80000000;
                 }
                 else if (em_address >= 0x200000)
                 {
-                    type->eden_startup_addr_offset = em_address - 0x200000;
+                    game_info.eden_startup_addr_offset = em_address - 0x200000;
                 }
             }
-            em_address = em_address - type->eden_startup_addr_offset;
+            em_address = em_address - game_info.eden_startup_addr_offset;
         }
         jitaddraddr(em_address, entrypoint, JITTYPE::YUZU);
         NS_CheckEmAddrHOOKable(em_address, entrypoint);
