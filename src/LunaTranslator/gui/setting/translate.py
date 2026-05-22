@@ -2151,7 +2151,9 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
 
 
 def sqlite2json(self):
-    f = QFileDialog.getOpenFileName(directory="translation_record", filter="*.sqlite")
+    f = QFileDialog.getOpenFileName(
+        directory=gobject.getcachedir("translation_record"), filter="*.sqlite"
+    )
     if f[0] == "":
         return
 

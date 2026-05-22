@@ -619,8 +619,8 @@ class dialog_setting_game_internal(QWidget):
     @tryprint
     def __refresh(self):
         _filename, _ = os.path.splitext(os.path.basename(uid2gamepath[self.gameuid]))
-        sqlitef = gobject.gettranslationrecorddir(
-            "{}_{}.sqlite".format(_filename, self.gameuid)
+        sqlitef = gobject.getcachedir(
+            "translation_record/{}_{}.sqlite".format(_filename, self.gameuid)
         )
         if not os.path.exists(sqlitef):
             return
