@@ -14,9 +14,20 @@ def countfls(f: str):
         cnt[ext.split(".")[-1]] += ll
 
 
-def checkskip(f):
+def checkkeep(f):
     _, ext = os.path.splitext(f)
-    return ext in (".pyc", ".ico", ".zip", ".7z", ".json")
+    return ext in (
+        ".cpp",
+        ".c",
+        ".cc",
+        ".h",
+        ".hpp",
+        ".cmake",
+        ".py",
+        ".html",
+        ".css",
+        ".js",
+    )
 
 
 def checkdir(dd, skips=None):
@@ -25,7 +36,7 @@ def checkdir(dd, skips=None):
         if skips and any(d[len(__) + 1 :].startswith(_) for _ in skips):
             continue
         for f in fs:
-            if checkskip(f):
+            if not checkkeep(os.path.join(d, f)):
                 continue
             countfls(os.path.join(d, f))
 
@@ -34,10 +45,8 @@ checkdir("LunaTranslator")
 checkdir(
     "NativeImpl",
     (
-        "libs\\",
         "build",
         "builds",
-        r"wcocr\wechat-ocr",
         r"LunaHook\build",
         r"LunaHook\builds",
     ),
@@ -45,7 +54,7 @@ checkdir(
 # print(cnt)
 cntx = defaultdict(int)
 for k in cnt:
-    if k in ("cpp", "cc", "h", "hpp", "cmake"):
+    if k in ("cpp", "c", "cc", "h", "hpp", "cmake"):
         cntx["cpp"] += cnt[k]
     else:
         cntx[k] = cnt[k]
