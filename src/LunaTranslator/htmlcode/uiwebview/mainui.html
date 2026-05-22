@@ -33,9 +33,6 @@
 <script>
     function setbackgroudimageandopt(url, opt) {
         url = decodeURIComponent(url)
-        if (!((url.toLowerCase().startsWith('http://')) || (url.toLowerCase().startsWith('https://')))) {
-            url = url.replace(/\\/g, '/');
-        }
         document.documentElement.style.setProperty('--backgroundimageurl', opt ? `url("${url}")` : "");
         document.documentElement.style.setProperty('--backgroundimageopacity', opt);
     }

@@ -68,12 +68,12 @@ class somecommon(dataget):
     def setbackgroudimageandopt(self):
         use = not globalconfig.get("backtransparent", False)
         opt = globalconfig.get("transparent_pic", 0) / 100 if use else 0
-        url = quote(
-            globalconfig.get(
-                "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
-            )
+        url: str = globalconfig.get(
+            "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
         )
-        self.debugeval('setbackgroudimageandopt(  "{}",{});'.format(url, opt))
+        if not any((url.lower().startswith(_)) for _ in ("https://", "http://")):
+            url = os.path.abspath(url).replace("\\", "/")
+        self.debugeval('setbackgroudimageandopt(  "{}",{});'.format(quote(url), opt))
 
     def sethovercolor(self, color):
         self.debugeval('sethovercolor("{}")'.format(self._qcolor_as_rgba(color)))
