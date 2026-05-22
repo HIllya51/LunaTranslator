@@ -508,6 +508,7 @@ def mainuisetting(self):
                                 clearable=False,
                                 icons=("fa.folder-open",),
                                 editable=True,
+                                btnatleft=True,
                             ),
                             0,
                         ),

@@ -2987,6 +2987,7 @@ def getsimplepatheditor(
     clearable=True,
     clearset=None,
     editable=False,
+    btnatleft=False,
 ):
     if multi:
         lay = listediterline(
@@ -3022,7 +3023,8 @@ def getsimplepatheditor(
         bu.clicked.connect(_cb)
         if callback:
             e.textEdited.connect(callback)
-        lay.addWidget(e)
+        if not btnatleft:
+            lay.addWidget(e)
         lay.addWidget(bu)
         if clearable:
 
@@ -3036,6 +3038,8 @@ def getsimplepatheditor(
 
             clear.clicked.connect(functools.partial(__, callback, e, clearset))
             lay.addWidget(clear)
+        if btnatleft:
+            lay.addWidget(e)
     return lay
 
 
