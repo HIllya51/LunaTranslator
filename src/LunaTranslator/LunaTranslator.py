@@ -729,7 +729,9 @@ class BASEOBJECT(QObject):
             _showrawfunction = functools.partial(
                 self._delaypreparefixrank, _showrawfunction, real_fix_rank, is_auto_run
             )
-        if not (updateTranslate or globalconfig.get("refresh_on_get_trans", False)):
+        if globalconfig["isshowrawtext"] and not (
+            updateTranslate or globalconfig.get("refresh_on_get_trans", False)
+        ):
             _showrawfunction()
             _showrawfunction = None
         read_trans_once_check = []
