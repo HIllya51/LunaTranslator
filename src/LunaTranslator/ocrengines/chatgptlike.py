@@ -9,6 +9,7 @@ from myutils.utils import (
     common_create_gpt_data,
 )
 from myutils.proxy import getproxy
+from myutils.llmcard import resolve_llm_config
 from gui.customparams import customparams, getcustombodyheaders
 
 
@@ -21,6 +22,9 @@ def list_models(typename, regist):
 
 
 class OCR(baseocr):
+    @property
+    def keyfrom(self):
+        return resolve_llm_config(self.config, "apiurl")
 
     def langmap(self):
         return Languages.createenglishlangmap()
@@ -30,9 +34,9 @@ class OCR(baseocr):
         h.update(extraheader)
         return h
 
-    def ocr_mistral(self, _, base64_image, extrabody, extraheader):
+    def ocr_mistral(self, llm_config: dict, base64_image, extrabody, extraheader):
         payload = {
-            "model": self.config["model"],
+            "model": llm_config["model"],
             "document": {
                 "type": "image_url",
                 "image_url": "data:image/jpeg;base64,{}".format(base64_image),
@@ -52,10 +56,12 @@ class OCR(baseocr):
         except:
             raise Exception(response)
 
-    def ocr_gemini(self, apitype, prompt, base64_image, extrabody, extraheader):
+    def ocr_gemini(
+        self, llm_config: dict, apitype, prompt, base64_image, extrabody, extraheader
+    ):
         return common_create_gemini_request(
             self.proxysession,
-            self.config,
+            llm_config,
             self.multiapikeycurrent["SECRET_KEY"],
             None,
             [
@@ -77,7 +83,13 @@ class OCR(baseocr):
         )
 
     def ocr_normal(
-        self, apitype: APIType, prompt, base64_image, extrabody, extraheader
+        self,
+        llm_config: dict,
+        apitype: APIType,
+        prompt,
+        base64_image,
+        extrabody,
+        extraheader,
     ):
 
         message = [
@@ -99,7 +111,7 @@ class OCR(baseocr):
         response = self.proxysession.post(
             apitype.finalurl(),
             headers=h,
-            json=common_create_gpt_data(self.config, message, extrabody),
+            json=common_create_gpt_data(llm_config, message, extrabody),
         )
         return response
 
@@ -112,21 +124,24 @@ class OCR(baseocr):
         return template, isocrtranslate
 
     def ocr(self, imagebinary):
+        llm_config = resolve_llm_config(self.config, "apiurl")
         extrabody, extraheader = getcustombodyheaders(
-            self.config.get("customparams"), **locals()
+            llm_config.get("customparams"), **locals()
         )
         prompt, isocrtranslate = self._gptlike_createsys(
             "use_custom_prompt", "custom_prompt"
         )
         base64_image = base64.b64encode(imagebinary).decode("utf-8")
-        apitype = APIType(self.config["apiurl"])
+        apitype = APIType(llm_config["apiurl"])
         if apitype == APIType.gemini:
-            response = self.ocr_gemini(apitype, prompt, base64_image, extrabody, extraheader)
+            response = self.ocr_gemini(
+                llm_config, apitype, prompt, base64_image, extrabody, extraheader
+            )
         elif apitype == APIType.mistral:
-            return self.ocr_mistral(prompt, base64_image, extrabody, extraheader)
+            return self.ocr_mistral(llm_config, base64_image, extrabody, extraheader)
         else:
             response = self.ocr_normal(
-                apitype, prompt, base64_image, extrabody, extraheader
+                llm_config, apitype, prompt, base64_image, extrabody, extraheader
             )
         return OCRResult(
             texts=common_parse_normal_response(response, apitype),
