@@ -185,7 +185,9 @@ class basetrans(commonbase):
             return None, None
         if not self.use_trans_cache:
             return None, None
-        key = hashlib.md5(str(self.result_cache_key(self.srclang_1, self.tgtlang_1, content)).encode()).digest()
+        key = hashlib.md5(
+            str(self.result_cache_key(self.srclang_1, self.tgtlang_1, content)).encode()
+        ).digest()
         res = self._cache.get(key)
         if res:
             return res, key

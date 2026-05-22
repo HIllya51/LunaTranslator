@@ -108,7 +108,9 @@ class tooltipswidget(QMainWindow, dataget):
             NativeUtils.clearEffect(int(self.winId()))
         elif globalconfig.get("word_hover_DWM", 0) == 1:
             NativeUtils.setAcrylicEffect(
-                int(self.winId()), globalconfig.get("word_hover_DWM_1", True), 0x00FFFFFF
+                int(self.winId()),
+                globalconfig.get("word_hover_DWM_1", True),
+                0x00FFFFFF,
             )
         elif globalconfig.get("word_hover_DWM", 0) == 2:
             NativeUtils.setAeroEffect(
@@ -192,9 +194,7 @@ class tooltipswidget(QMainWindow, dataget):
     def tracetooltipwindow(word: WordSegResult, pos):
         skip = False
         if globalconfig["usesearchword_S_hover"]:
-            result = gobject.base.checkkeypresssatisfy(
-                "searchword_S_hover", False
-            )
+            result = gobject.base.checkkeypresssatisfy("searchword_S_hover", False)
             result = result == -1 or result == True
             skip = result
             wordwhich = lambda k: (word.word, word.prototype)[

@@ -35,9 +35,7 @@ class TS(basetrans):
         data = "text=" + parse.quote(query) + "&target_lang=" + self.tgtlang
         if not self.is_src_auto:
             data += "&source_lang=" + self.srclang
-        response = self.proxysession.post(
-            endpoint, headers=headers, data=data
-        )
+        response = self.proxysession.post(endpoint, headers=headers, data=data)
 
         try:
             return response.json()["translations"][0]["text"]

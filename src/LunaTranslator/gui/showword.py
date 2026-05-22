@@ -2021,7 +2021,7 @@ class searchwordW(closeashidewindow):
             checkdump.append(urlparse(link).netloc)
         count = Counter(checkdump)
         for link in links:
-            netloc=urlparse(link).netloc
+            netloc = urlparse(link).netloc
             ac = QAction(link if count[netloc] > 1 else netloc, menu)
             menu.addAction(ac)
             __dict[ac] = link

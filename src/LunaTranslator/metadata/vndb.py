@@ -110,10 +110,13 @@ def getcharnamemapbyid(proxy, vid):
             _s = r["sex"][0] if r["sex"] else ""
             aliases = r["aliases"]
             aliases_formatted = []
-            
+
             if aliases:
                 if len(aliases) % 2 == 0 and not all(a.isascii() for a in aliases):
-                    aliases_formatted = [(aliases[i], aliases[i + 1], _s) for i in range(0, len(aliases) - 1, 2)]
+                    aliases_formatted = [
+                        (aliases[i], aliases[i + 1], _s)
+                        for i in range(0, len(aliases) - 1, 2)
+                    ]
                 else:
                     aliases_formatted = [(a, a, _s) for a in aliases]
 

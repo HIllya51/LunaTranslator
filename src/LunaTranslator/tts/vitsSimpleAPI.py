@@ -10,7 +10,9 @@ class TTS(TTSbase):
     arg_support_pitch = False
 
     def getvoicelist(self):
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
+        extrabody, extraheader = getcustombodyheaders(
+            self.config.get("customparams"), **locals()
+        )
         headers = {"ngrok-skip-browser-warning": "true"}
         headers.update(extraheader)
         responseVits: dict = self.proxysession.get(
@@ -37,7 +39,9 @@ class TTS(TTSbase):
             length = 1 - param.speed / 5
         model, idx, _ = voice
         query = dict(text=content, id=idx, length=length, streaming=True)
-        extrabody, extraheader = getcustombodyheaders(self.config.get("customparams"), **locals())
+        extrabody, extraheader = getcustombodyheaders(
+            self.config.get("customparams"), **locals()
+        )
         headers = {"ngrok-skip-browser-warning": "true"}
         headers.update(extraheader)
         query.update(extrabody)

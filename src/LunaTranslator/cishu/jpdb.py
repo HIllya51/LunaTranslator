@@ -43,7 +43,9 @@ class jpdb(cishubase):
                 css = self.parse_stylesheet(css, self.klass)
                 self.style[link] = css
 
-            cssall += self.style[link].replace(".{}  .dark-mode".format(self.klass), ".dark-mode")
+            cssall += self.style[link].replace(
+                ".{}  .dark-mode".format(self.klass), ".dark-mode"
+            )
 
         cssall = "<style>{}</style>".format(cssall)
         return res + cssall

@@ -507,7 +507,7 @@ class mojidict(cishubase):
             "sec-ch-ua-platform": '"Windows"',
             "sec-fetch-dest": "empty",
             "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-site"
+            "sec-fetch-site": "same-site",
         }
         data = {
             "searchText": word,
@@ -601,7 +601,7 @@ class mojidict(cishubase):
                 "sec-ch-ua-platform": '"Windows"',
                 "sec-fetch-dest": "empty",
                 "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-site"
+                "sec-fetch-site": "same-site",
             },
         )
 

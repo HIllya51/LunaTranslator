@@ -3,7 +3,6 @@ import hashlib, hmac, json
 from datetime import datetime
 from urllib.parse import quote, unquote
 
-
 text_type = str
 binary_type = bytes
 

@@ -316,6 +316,7 @@ class PageManyInOne(HTTPHandler):
     def parse(self, _):
         return FileResponse(r"LunaTranslator\htmlcode\service\manyinone.html")
 
+
 class PageIndex(HTTPHandler):
     path = "/"
 

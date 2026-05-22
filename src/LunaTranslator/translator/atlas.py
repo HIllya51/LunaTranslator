@@ -10,9 +10,7 @@ class TS(basetrans):
         pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
         waitsignal = str(uuid.uuid4())
         self.engine = NativeUtils.AutoKillProcess(
-            "files/LunaSubprocess32.exe atlaswmain {} {}".format(
-                pipename, waitsignal
-            ),
+            "files/LunaSubprocess32.exe atlaswmain {} {}".format(pipename, waitsignal),
         )
 
         windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))

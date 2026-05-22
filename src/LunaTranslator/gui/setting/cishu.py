@@ -111,9 +111,9 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
     menu.addAction(editname)
     useproxy = LAction("使用代理", menu)
     useproxy.setCheckable(True)
-    if globalconfig.get("useproxy", True) and globalconfig["cishu"][apiuid].get("type") not in (
-        "offline",
-    ):
+    if globalconfig.get("useproxy", True) and globalconfig["cishu"][apiuid].get(
+        "type"
+    ) not in ("offline",):
         menu.addSeparator()
         menu.addAction(useproxy)
         useproxy.setChecked(globalconfig["cishu"][apiuid].get("useproxy", True))

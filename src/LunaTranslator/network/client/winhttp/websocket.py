@@ -57,7 +57,9 @@ class WebSocket:
         elif scheme == "ws":
             ishttps = False
         else:
-            raise requests.exceptions.RequestException("unknown scheme {} for invalid url {}".format(scheme, url))
+            raise requests.exceptions.RequestException(
+                "unknown scheme {} for invalid url {}".format(scheme, url)
+            )
         spl = server.split(":")
         if len(spl) == 2:
             server = spl[0]
@@ -88,7 +90,9 @@ class WebSocket:
         proxy = "{}:{}".format(http_proxy_host, http_proxy_port)
         winhttpsetproxy(hsess, proxy)
 
-    def connect(self, url, header=None, verify=True, http_proxy_host=None, http_proxy_port=None):
+    def connect(
+        self, url, header=None, verify=True, http_proxy_host=None, http_proxy_port=None
+    ):
         https, server, port, path = self._parseurl2serverandpath(url)
         if https:
             flag = WINHTTP_FLAG_SECURE

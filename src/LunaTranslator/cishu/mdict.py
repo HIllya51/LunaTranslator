@@ -88,8 +88,7 @@ class IndexBuilder(object):
         index_list = list(mdd.items())
         conn = sqlite3.connect(db_name)
         c = conn.cursor()
-        c.execute(
-            """ CREATE TABLE MDX_INDEX
+        c.execute(""" CREATE TABLE MDX_INDEX
                (key_text text not null{},
                 file_pos integer,
                 compressed_size integer,
@@ -97,10 +96,7 @@ class IndexBuilder(object):
                 record_start integer,
                 record_end integer,
                 offset integer
-                )""".format(
-                " unique" if (not ismdx) else ""
-            )
-        )
+                )""".format(" unique" if (not ismdx) else ""))
         tuple_list = [
             (
                 item["key_text"],
@@ -115,13 +111,9 @@ class IndexBuilder(object):
         ]
         c.executemany("INSERT INTO MDX_INDEX VALUES (?,?,?,?,?,?,?)", tuple_list)
 
-        c.execute(
-            """
+        c.execute("""
                 CREATE{} INDEX key_index ON MDX_INDEX (key_text)
-                """.format(
-                " UNIQUE" if (not ismdx) else ""
-            )
-        )
+                """.format(" UNIQUE" if (not ismdx) else ""))
 
         conn.commit()
         conn.close()
@@ -633,9 +625,7 @@ function onclickbtn_mdict_internal(_id) {
         </div>
     </div>
 </div>
-""".format(
-            btns="".join(btns), contents="".join(contents)
-        )
+""".format(btns="".join(btns), contents="".join(contents))
         return res
 
     def generatehtml_flow(self, allres):
@@ -686,9 +676,7 @@ if(window.LUNAJSObject)
         content += r"""
 <div class="collapsible-list">
          {}
-    </div>""".format(
-            "".join(lis)
-        )
+    </div>""".format("".join(lis))
 
         return content
 

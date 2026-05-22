@@ -37,8 +37,7 @@ class tagitem(QFrame):
 
     @staticmethod
     def setstyles(parent: QWidget):
-        parent.setStyleSheet(
-            """
+        parent.setStyleSheet("""
             tagitem#red {
                 border: 1px solid red;
             }
@@ -54,8 +53,7 @@ class tagitem(QFrame):
             tagitem#yellow {
                 border: 1px solid yellow;
             }
-        """
-        )
+        """)
 
     def __init__(self, tag, removeable=True, _type=TYPE_SEARCH, refdata=None) -> None:
         super().__init__()

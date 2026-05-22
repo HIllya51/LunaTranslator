@@ -121,7 +121,7 @@ class OCRBlock:
     def json(self):
         _ = dict(text=self.text)
         if self.box:
-            (x1, y1, x2, y1, x2, y2, x1, y2) = self.box
+            x1, y1, x2, y1, x2, y2, x1, y2 = self.box
             box = [
                 dict(x=x1, y=y1),
                 dict(x=x2, y=y1),

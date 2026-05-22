@@ -397,9 +397,7 @@ class hoverbtn(LLabel):
             QLabel:hover{
                 background-color: rgba(255,255,255,0.5); 
                 color:black;
-            }""" % (
-            min(self.height(), self.width()) // 3
-        )
+            }""" % (min(self.height(), self.width()) // 3)
         self.setStyleSheet(style)
         super().resizeEvent(e)
 

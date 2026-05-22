@@ -121,7 +121,9 @@ class OCR(baseocr):
         base64_image = base64.b64encode(imagebinary).decode("utf-8")
         apitype = APIType(self.config["apiurl"])
         if apitype == APIType.gemini:
-            response = self.ocr_gemini(apitype, prompt, base64_image, extrabody, extraheader)
+            response = self.ocr_gemini(
+                apitype, prompt, base64_image, extrabody, extraheader
+            )
         elif apitype == APIType.mistral:
             return self.ocr_mistral(prompt, base64_image, extrabody, extraheader)
         else:
