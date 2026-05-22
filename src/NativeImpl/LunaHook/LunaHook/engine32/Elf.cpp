@@ -144,7 +144,6 @@ bool InsertElfHook()
       hp.text_fun = SpecialHookElf;
       hp.type = USING_STRING | NO_CONTEXT; // = 9
 
-
       return NewHook(hp, "Elf");
     }
   return false;
@@ -455,6 +454,39 @@ namespace
 }
 namespace
 {
+  bool aijiemei4DL()
+  {
+    // 愛姉妹IV 悔しくて気持ち良かったなんて言えない DL版
+    // https://vndb.org/v14826
+    BYTE sig[] = {
+        0X55,
+        0x8b, 0xec, // mov ebp,esp
+        0x83, 0xec, 0x14, 0x53,
+        0x56,
+        0x8b, 0xf1,
+        0x8b, 0x4d, 0x08,
+        0x57,
+        0x8a, 0x11,
+        0x88, 0x55, 0xff,
+        0x80, 0xfa, 0x81, // cmp dl,0x81
+        0x72, 0x05,
+        0x80, 0xfa, 0x9f, // cmp dl,0x9f
+        0x76, 0x08,
+        0x8a, 0xc2,
+        0x04, 0x20,
+        0x3c, 0x0f,
+        0x77, 0x07,
+        0xb8, 0x01, 0x00, 0x00, 0x00};
+    ULONG addr = MemDbg::findBytes(sig, sizeof(sig), processStartAddress, processStopAddress);
+    if (!addr)
+      return false;
+    HookParam hp;
+    hp.address = addr;
+    hp.type = USING_STRING | USING_SPLIT;
+    hp.offset = stackoffset(1);
+    hp.split = stackoffset(6);
+    return NewHook(hp, "Elf5");
+  }
   bool nvxijiazu()
   {
     // https://vndb.org/v3327
@@ -602,7 +634,7 @@ bool Elf::attach_function()
 {
   if (type == 1)
   {
-    auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || elf3() || ai6win();
+    auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || aijiemei4DL() || elf3() || ai6win();
     return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
   }
   else if (type == 2)
