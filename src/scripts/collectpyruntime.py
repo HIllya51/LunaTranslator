@@ -117,7 +117,7 @@ with zipfile.ZipFile("pylibs.zip", "w") as zipf:
                     ff.write(
                         s.replace(
                             "os.path.dirname(__file__)",
-                            "os.path.join(os.path.dirname(os.path.dirname(__file__)), r'PyQt5\pylibs.zip')",
+                            r"os.path.join(os.path.dirname(os.path.dirname(__file__)), r'PyQt5\pylibs.zip')",
                         )
                     )
             zipf.write(dependency, end)
