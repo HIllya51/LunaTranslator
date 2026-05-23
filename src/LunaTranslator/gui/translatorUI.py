@@ -1459,7 +1459,7 @@ class TranslatorWindow(resizableframeless):
         bottomr3 = self.createborderradiusstring(use_r2, False)
         bottomr = self.createborderradiusstring(radiu_valid * use_r2, True, True)
         transparent_value_actually = max(
-            (1 - globalconfig.get("backtransparent", False)) * 100 / 255,
+            (1 - globalconfig.get("transparent_EX", False)) * 100 / 255,
             globalconfig.get("transparent", 10)
             * (not globalconfig.get("backtransparent", False)),
         )

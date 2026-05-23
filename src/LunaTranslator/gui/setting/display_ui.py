@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     getIconButton,
     FocusFontCombo,
     D_getsimpleswitch,
+    getsimpleswitch,
     D_getIconButton,
     getsmalllabel,
     getboxlayout,
@@ -49,13 +50,14 @@ def createhorizontal_slider_pic():
         "{}%".format(globalconfig.get("transparent_pic", 0))
     )
 
-    gobject.base.backtransparentstatus_2.connect(
-        lambda x: (
-            horizontal_slider.setEnabled(x),
-            horizontal_slider_label.setEnabled(x),
+    def dosomething(x):
+        horizontal_slider.setEnabled(x)
+        horizontal_slider_label.setText(
+            "{}%".format(globalconfig.get("transparent_pic", 0) if x else 0)
         )
-    )
 
+    gobject.base.backtransparentstatus_2.connect(dosomething)
+    dosomething(not globalconfig.get("backtransparent", False))
     return getboxlayout([horizontal_slider, horizontal_slider_label])
 
 
@@ -72,24 +74,43 @@ def createhorizontal_slider():
 
     horizontal_slider = QSlider()
     horizontal_slider.setMaximum(100)
-    horizontal_slider.setMinimum(1)
+    horizontal_slider.setMinimum(1 - globalconfig.get("transparent_EX", False))
     horizontal_slider.setOrientation(Qt.Orientation.Horizontal)
     horizontal_slider.setValue(globalconfig.get("transparent", 10))
-
     horizontal_slider_label = QLabel()
     horizontal_slider.valueChanged.connect(
         functools.partial(changeHorizontal, horizontal_slider, horizontal_slider_label)
     )
+
     horizontal_slider_label.setText("{}%".format(globalconfig.get("transparent", 10)))
 
-    gobject.base.backtransparentstatus.connect(
-        lambda x: (
-            horizontal_slider.setEnabled(x),
-            horizontal_slider_label.setEnabled(x),
+    l = getsmalllabel("  EX")()
+
+    def dosomething(en):
+        horizontal_slider.setEnabled(en)
+        horizontal_slider_label.setText(
+            "{}%".format(
+                globalconfig.get("transparent", 10)
+                if en
+                else (1 - globalconfig.get("transparent_EX", False))
+            )
         )
+
+    sw = getsimpleswitch(
+        globalconfig,
+        "transparent_EX",
+        callback=lambda ex: (
+            horizontal_slider.setMinimum(1 - ex),
+            gobject.base.translation_ui.set_color_transparency(),
+            dosomething(not globalconfig.get("backtransparent", False)),
+        ),
+        default=False,
     )
 
-    return getboxlayout([horizontal_slider, horizontal_slider_label])
+    gobject.base.backtransparentstatus.connect(dosomething)
+
+    dosomething(not globalconfig.get("backtransparent", False))
+    return getboxlayout([horizontal_slider, horizontal_slider_label, l, sw])
 
 
 def changeHorizontal_tool(
