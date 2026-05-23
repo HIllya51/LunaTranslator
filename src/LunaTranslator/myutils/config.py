@@ -170,7 +170,7 @@ def getdefaultsavehook(title=None):
         # "embedablehook": [],
         # "statistic_wordcount": 0,
         # "hook": [],
-        # "inserthooktimeout": 250,
+        # "inserthooktimeout": 500,
         # "insertpchooks_string": False,
         # "needinserthookcode": [],
         # "removeforeverhook": [],

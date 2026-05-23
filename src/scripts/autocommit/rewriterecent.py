@@ -14,6 +14,7 @@ newmsg = generate_commit_messages(get_original_git_show(full_id))
 
 
 def amend_last_commit_message(new_message):
+    print(new_message)
     subprocess.run(["git", "commit", "--amend", "-m", new_message], check=True)
 
 
