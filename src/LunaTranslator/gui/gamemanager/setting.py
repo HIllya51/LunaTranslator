@@ -1480,6 +1480,12 @@ class dialog_setting_game_internal(QWidget):
         settinglayout = LFormLayout(box)
         formLayout.addRow(box)
         settinglayout.addRow(
+            "延迟注入_(ms)",
+            getspinbox(
+                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=500
+            ),
+        )
+        settinglayout.addRow(
             "Win32通用钩子",
             getsimpleswitch(
                 savehook_new_data[gameuid],
@@ -1499,6 +1505,16 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["needinserthookcode"],
             ),
         )
+        if savehook_new_data[gameuid].get("removeforeverhook"):
+
+            settinglayout.addRow(
+                "移除且总是移除",
+                listediterline(
+                    "移除且总是移除",
+                    savehook_new_data[gameuid]["removeforeverhook"],
+                    specialklass=embeddisabler,
+                ),
+            )
         box = NQGroupBox()
         settinglayout = LFormLayout(box)
         formLayout.addRow(box)
@@ -1555,25 +1571,6 @@ class dialog_setting_game_internal(QWidget):
                 default=globalconfig["maxHistorySize"],
             ),
         )
-        formLayout2.addRow(
-            "延迟注入_(ms)",
-            getspinbox(
-                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=500
-            ),
-        )
-        if savehook_new_data[gameuid].get("removeforeverhook"):
-            box = NQGroupBox()
-            settinglayout = LFormLayout(box)
-
-            settinglayout.addRow(
-                "移除且总是移除",
-                listediterline(
-                    "移除且总是移除",
-                    savehook_new_data[gameuid]["removeforeverhook"],
-                    specialklass=embeddisabler,
-                ),
-            )
-            formLayout.addRow(box)
 
     def gethooktab(self, gameuid):
         _w = QWidget()
