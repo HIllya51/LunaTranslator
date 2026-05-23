@@ -53,8 +53,8 @@ def getcomparelayout(self):
 def setTab7_lazy(self, basel: QLayout):
     grids = [
         [
-            ("预处理方法", 6),
             "",
+            ("预处理方法", 6),
             "",
             "",
             getcenterX("调整执行顺序"),
