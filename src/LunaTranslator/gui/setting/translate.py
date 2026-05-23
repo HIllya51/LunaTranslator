@@ -1070,9 +1070,9 @@ def autostartllamacpp(force=False):
             l: str = proc.stderr.readline()
             if not l:
                 break
-            if l.endswith("main: starting the main loop...\n"):
+            if "starting the main loop" in l:
                 cnt += 1
-            elif l.endswith("srv  update_slots: all slots are idle\n"):
+            elif "all slots are idle" in l:
                 cnt += 1
             if cnt == 2:
                 cnt += 1
