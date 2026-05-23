@@ -150,32 +150,30 @@ bool AdobeAIRhook2()
 bool InsertAIRNovelHook()
 {
   wcscpy_s(spDefault.boundaryModule, L"Adobe AIR.dll");
-  if (DWORD FREGetObjectAsUTF8 = (DWORD)GetProcAddress(GetModuleHandleW(L"Adobe AIR.dll"), "FREGetObjectAsUTF8"))
-  {
-    DWORD func = FREGetObjectAsUTF8 + 0x5a + 5 + *(int *)(FREGetObjectAsUTF8 + 0x5b);
-    HookParam hp;
-    hp.address = func;
-    hp.type = CODEC_UTF16 | USING_STRING /*|USING_SPLIT|SPLIT_INDIRECT*/ | DATA_INDIRECT; // Artikash 12/14/2018: doesn't seem to be a good split anymore
-    hp.offset = stackoffset(1);
-    hp.split = stackoffset(1);
-    hp.index = 0x8;
-    hp.split_index = 0x4;
-    // hp.filter_fun = [](void* str, DWORD* len, HookParam* hp, BYTE index)  // removes some of the garbage threads
-    //{
-    //	return *len < 4 &&
-    //		*(char*)str != '[' &&
-    //		*(char*)str != ';' &&
-    //		*(char*)str != '&' &&
-    //		*(char*)str != '*' &&
-    //		*(char*)str != '\n' &&
-    //		*(char*)str != '\t' &&
-    //		memcmp((char*)str, "app:/", 5);
-    // };
+  DWORD FREGetObjectAsUTF8 = (DWORD)GetProcAddress(GetModuleHandleW(L"Adobe AIR.dll"), "FREGetObjectAsUTF8");
+  if (!FREGetObjectAsUTF8)
+    return false;
+  DWORD func = FREGetObjectAsUTF8 + 0x5a + 5 + *(int *)(FREGetObjectAsUTF8 + 0x5b);
+  HookParam hp;
+  hp.address = func;
+  hp.type = CODEC_UTF16 | USING_STRING /*|USING_SPLIT|SPLIT_INDIRECT*/ | DATA_INDIRECT; // Artikash 12/14/2018: doesn't seem to be a good split anymore
+  hp.offset = stackoffset(1);
+  hp.split = stackoffset(1);
+  hp.index = 0x8;
+  hp.split_index = 0x4;
+  // hp.filter_fun = [](void* str, DWORD* len, HookParam* hp, BYTE index)  // removes some of the garbage threads
+  //{
+  //	return *len < 4 &&
+  //		*(char*)str != '[' &&
+  //		*(char*)str != ';' &&
+  //		*(char*)str != '&' &&
+  //		*(char*)str != '*' &&
+  //		*(char*)str != '\n' &&
+  //		*(char*)str != '\t' &&
+  //		memcmp((char*)str, "app:/", 5);
+  // };
 
-
-    return NewHook(hp, "AIRNovel");
-  }
-  return false;
+  return NewHook(hp, "AIRNovel");
 }
 bool adobelair3()
 {
@@ -280,11 +278,53 @@ namespace
   }
 } // namespace name
 
+static bool text()
+{
+  auto findstart = [](DWORD addr)
+  {
+    BYTE start[] = {0x55, 0x81, 0xec};
+    return reverseFindBytes(start, sizeof(start), addr - 0x80, addr);
+  };
+  auto [s, e] = Util::QueryModuleLimits(GetModuleHandleW(L"Adobe AIR.dll"), 0, PAGE_READONLY);
+  char _text[] = ".rend.text.set";
+  auto ___text = MemDbg::findBytes(_text, sizeof(_text), s, e);
+  if (!___text)
+    return false;
+  auto addr = MemDbg::find_leaorpush_addr(___text, s, e);
+  if (!addr)
+    return false;
+  addr = findstart(addr);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.type = CODEC_UTF8 | USING_STRING | FULL_STRING;
+  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+  {
+    // 0 是长度递增，直到完整
+    // 1 是完整。
+    if (!context->stack[2])
+      return;
+    buffer->from((char *)context->stack[1]);
+  };
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    static int idx = 0;
+    if (idx++ % 2)
+      return buffer->clear();
+    auto s = buffer->strA();
+    s = re::sub(s, "<font color='.*?'>");
+    s = re::sub(s, "</font>");
+    buffer->from(s);
+  };
+  return NewHook(hp, "AIRNovel4");
+};
 bool AdobeAir::attach_function()
 {
   bool b1 = InsertAdobeAirHook();
   b1 |= AdobeAIRhook2();
   b1 |= adobelair3();
+  b1 |= text();
   b1 = b1 || InsertAIRNovelHook(); // 乱码太多了这个
   return b1 || h4();
 }
