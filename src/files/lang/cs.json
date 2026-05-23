@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Zakázat všechny ostatní klávesové zkratky",
     "背景图片": "Obrázek na pozadí",
     "仅HOOK模式下可用": "Pouze v režimu HOOK je k dispozici.",
-    "仅OCR模式下可用": "Pouze v režimu OCR je k dispozici."
+    "仅OCR模式下可用": "Pouze v režimu OCR je k dispozici.",
+    "重新启动后生效": "Po restartu se projeví."
 }

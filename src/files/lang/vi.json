@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Vô hiệu hóa tất cả các phím tắt khác",
     "背景图片": "Hình nền",
     "仅HOOK模式下可用": "Chỉ khả dụng trong chế độ HOOK.",
-    "仅OCR模式下可用": "Chỉ khả dụng trong chế độ OCR."
+    "仅OCR模式下可用": "Chỉ khả dụng trong chế độ OCR.",
+    "重新启动后生效": "Khởi động lại để có hiệu lực"
 }

@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Disabilita tutte le altre scorciatoie da tastiera.",
     "背景图片": "Sfondo immagine",
     "仅HOOK模式下可用": "Disponibile solo in modalità HOOK.",
-    "仅OCR模式下可用": "Disponibile solo in modalità OCR."
+    "仅OCR模式下可用": "Disponibile solo in modalità OCR.",
+    "重新启动后生效": "Efficace dopo il riavvio."
 }

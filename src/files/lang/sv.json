@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Inaktivera alla andra kortkommandon",
     "背景图片": "Bakgrundsbild",
     "仅HOOK模式下可用": "Endast tillgängligt i HOOK-läge.",
-    "仅OCR模式下可用": "Endast tillgängligt i OCR-läge."
+    "仅OCR模式下可用": "Endast tillgängligt i OCR-läge.",
+    "重新启动后生效": "Träder i kraft efter omstart"
 }

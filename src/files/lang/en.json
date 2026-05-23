@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Disable all other shortcut keys.",
     "背景图片": "Background image",
     "仅HOOK模式下可用": "Only available in HOOK mode.",
-    "仅OCR模式下可用": "Only available in OCR mode."
+    "仅OCR模式下可用": "Only available in OCR mode.",
+    "重新启动后生效": "Effective after restart"
 }

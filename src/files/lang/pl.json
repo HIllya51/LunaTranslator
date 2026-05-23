@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Wyłącz wszystkie inne skróty klawiszowe.",
     "背景图片": "Tło obrazu",
     "仅HOOK模式下可用": "Tylko w trybie HOOK dostępne.",
-    "仅OCR模式下可用": "Dostępne tylko w trybie OCR."
+    "仅OCR模式下可用": "Dostępne tylko w trybie OCR.",
+    "重新启动后生效": "Wymaga ponownego uruchomienia, aby zacząć obowiązywać."
 }

@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Schakel alle andere sneltoetsen uit.",
     "背景图片": "Achtergrondafbeelding",
     "仅HOOK模式下可用": "Alleen beschikbaar in de HOOK-modus.",
-    "仅OCR模式下可用": "Alleen beschikbaar in OCR-modus."
+    "仅OCR模式下可用": "Alleen beschikbaar in OCR-modus.",
+    "重新启动后生效": "Na herstart van kracht"
 }

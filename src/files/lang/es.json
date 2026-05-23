@@ -924,5 +924,6 @@
     "禁用其他全部快捷键": "Desactivar todos los demás atajos de teclado",
     "背景图片": "Imagen de fondo",
     "仅HOOK模式下可用": "Solo disponible en modo HOOK.",
-    "仅OCR模式下可用": "Solo disponible en modo OCR."
+    "仅OCR模式下可用": "Solo disponible en modo OCR.",
+    "重新启动后生效": "Efectivo después de reiniciar"
 }

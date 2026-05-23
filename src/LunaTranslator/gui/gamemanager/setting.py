@@ -1479,21 +1479,45 @@ class dialog_setting_game_internal(QWidget):
         box = NQGroupBox()
         settinglayout = LFormLayout(box)
         formLayout.addRow(box)
+        __label = getsmalllabel("重新启动后生效")()
+        __label.hide()
         settinglayout.addRow(
             "延迟注入_(ms)",
-            getspinbox(
-                0, 1000000, savehook_new_data[gameuid], "inserthooktimeout", default=500
+            getboxlayout(
+                [
+                    getspinbox(
+                        0,
+                        1000000,
+                        savehook_new_data[gameuid],
+                        "inserthooktimeout",
+                        default=500,
+                        callback=lambda _: __label.show(),
+                    ),
+                    __label,
+                ]
             ),
         )
+        __label2 = getsmalllabel("重新启动后生效")()
+        __label2.hide()
         settinglayout.addRow(
             "Win32通用钩子",
-            getsimpleswitch(
-                savehook_new_data[gameuid],
-                "insertpchooks_string",
-                callback=lambda _: (
-                    gobject.base.textsource.InsertPCHooks() if _ else None
-                ),
-                default=False,
+            getboxlayout(
+                [
+                    getsimpleswitch(
+                        savehook_new_data[gameuid],
+                        "insertpchooks_string",
+                        callback=lambda _: (
+                            (
+                                gobject.base.textsource.InsertPCHooks()
+                                if _
+                                else __label2.show()
+                            )
+                        ),
+                        default=False,
+                    ),
+                    "",
+                    __label2,
+                ]
             ),
         )
         if "needinserthookcode" not in savehook_new_data[gameuid]:
