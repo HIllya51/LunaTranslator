@@ -172,6 +172,8 @@ class ocrtext(basetext):
                     self.setrect(region)
             return
         for _ in self.ranges:
+            windows.MouseTrans.unset(_.range_ui.winId())
+
             if b:
                 _r = _.range_ui.getrect()
                 if _r:

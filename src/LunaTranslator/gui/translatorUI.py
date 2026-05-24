@@ -1542,28 +1542,12 @@ class TranslatorWindow(resizableframeless):
             if (not btn.isVisible()) and (btn.reflayout is not None):
                 usegeo = self.mousetranscheckrect
             if usegeo.contains(cursor_pos):
-
-                windows.SetWindowLong(
-                    hwnd,
-                    windows.GWL_EXSTYLE,
-                    windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
-                    & ~windows.WS_EX_TRANSPARENT,
-                )
+                windows.MouseTrans.unset(hwnd)
             else:
-                windows.SetWindowLong(
-                    hwnd,
-                    windows.GWL_EXSTYLE,
-                    windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
-                    | windows.WS_EX_TRANSPARENT,
-                )
+                windows.MouseTrans.set(hwnd)
             time.sleep(0.1)
         # 结束时取消穿透(可能以快捷键终止)
-        windows.SetWindowLong(
-            hwnd,
-            windows.GWL_EXSTYLE,
-            windows.GetWindowLong(hwnd, windows.GWL_EXSTYLE)
-            & ~windows.WS_EX_TRANSPARENT,
-        )
+        windows.MouseTrans.unset(hwnd)
 
     def changemousetransparentstate(self, idx):
         if idx == 0:

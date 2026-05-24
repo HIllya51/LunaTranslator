@@ -137,6 +137,24 @@ WM_KEYDOWN = 0x0100
 WM_KEYUP = 0x0101
 
 
+class MouseTrans:
+    @staticmethod
+    def set(hwnd):
+        SetWindowLong(
+            int(hwnd),
+            GWL_EXSTYLE,
+            GetWindowLong(int(hwnd), GWL_EXSTYLE) | WS_EX_TRANSPARENT,
+        )
+
+    @staticmethod
+    def unset(hwnd):
+        SetWindowLong(
+            int(hwnd),
+            GWL_EXSTYLE,
+            GetWindowLong(int(hwnd), GWL_EXSTYLE) & ~WS_EX_TRANSPARENT,
+        )
+
+
 class STARTUPINFO(Structure):
     _fields_ = [
         ("cb", c_uint),

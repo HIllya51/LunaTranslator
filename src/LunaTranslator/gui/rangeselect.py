@@ -241,12 +241,7 @@ class rangeadjust(Mainw):
         menu.addAction(close)
         action = menu.exec(QCursor.pos())
         if action == mousetransp:
-            windows.SetWindowLong(
-                int(self.winId()),
-                windows.GWL_EXSTYLE,
-                windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
-                | windows.WS_EX_TRANSPARENT,
-            )
+            windows.MouseTrans.set(self.winId())
         elif action == close:
             self._rect = None
             self.isfocus = False

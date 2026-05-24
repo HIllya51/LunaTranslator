@@ -158,12 +158,7 @@ class tooltipswidget(QMainWindow, dataget):
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | self.windowFlags())
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
         self.setAttribute(Qt.WidgetAttribute.WA_ShowWithoutActivating)
-        windows.SetWindowLong(
-            int(self.winId()),
-            windows.GWL_EXSTYLE,
-            windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
-            | windows.WS_EX_TRANSPARENT,
-        )
+        windows.MouseTrans.set(self.winId())
         qlabel = TextEdit(self)
         self.qlabel = qlabel
         self._setstyle()
