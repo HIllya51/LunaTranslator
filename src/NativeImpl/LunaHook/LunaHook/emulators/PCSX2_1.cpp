@@ -2163,6 +2163,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x134A6C, {0, 0, 0, SLPM65971, FSLPM65971, "SLPM-65971"}},
     // Apocripha/0
     {0x1222c8, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, SLPM65710, 0, "SLPM-65710"}},
+    // Angel's Feather
+    {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
     // Angel's Feather −黒の残影−
     {0x12D940, {0, PCSX2_REG_OFFSET(t7), 0, 0, SLPM65943, "SLPM-65943"}},
     // 銀のエクリプス
@@ -2797,8 +2799,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 遙かなる時空の中で4
     {0x1B043C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s1), 0, 0, FSLPM66127, "SLPM-66952"}},
     {0x1B0360, {0, PCSX2_REG_OFFSET(a1), 0, SLPM66127X, FSLPM66127, "SLPM-66952"}},
-    // Angel's Feather
-    {0x31B880, {DIRECT_READ, 0, 0, SLPS20394<0x31B480, 0x31B880, 0x31BC80, 0x31C080>, 0, std::vector<const char *>{"SLPM-65512", "SLPM-65513"}}},
     // 空色の風琴 ～Remix～
     {0x1A9238, {DIRECT_READ, 0, 0, 0, SLPS25395, "SLPM-65848"}},
     {0x10c324, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25395, "SLPM-65848"}},

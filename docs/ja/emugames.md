@@ -971,6 +971,7 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 |  | SLPS-25494 | Fragrance Tale ～フレグランス テイル～ |
 |  | SLPM-65971 | そして僕らは、・・・and he said |
 |  | SLPM-65710 | Apocripha/0 |
+|  | SLPM-65512 & SLPM-65513 | Angel's Feather |
 |  | SLPM-65943 | Angel's Feather −黒の残影− |
 |  | SLPM-66980 | 銀のエクリプス |
 |  | SLPM-65910 | カフェ・リンドバーグ -summer season- |
@@ -1283,7 +1284,6 @@ LunaTranslatorはエミュレータを通じて多数のゲームをサポート
 |  | SLPM-66344 & SLPM-66347 & SLPM-66348 | 遙かなる時空の中で3 運命の迷宮 |
 |  | SLPM-66099 & SLPM-66100 & SLPM-66127 | 遙かなる時空の中で3 十六夜記 Harukanaru Toki no Naka de 3 - Izayoiki |
 |  | SLPM-66952 | 遙かなる時空の中で4 |
-|  | SLPM-65512 & SLPM-65513 | Angel's Feather |
 |  | SLPM-65848 | 空色の風琴 ～Remix～ |
 
 :::
