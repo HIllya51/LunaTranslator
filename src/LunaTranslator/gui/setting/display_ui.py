@@ -18,6 +18,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     getboxlayout,
     getsimplepatheditor,
+    createfoldgrid,
 )
 
 
@@ -280,76 +281,61 @@ def uisetting(self):
     ]
     if not gobject.sys_ge_win_11:
         list(windoweffects.append(("", windoweffects.pop(3))[0]) for _ in range(3))
-    __ = [
+    __ = mainuisetting(self) + [
         [
             dict(
-                title="主界面",
                 type="grid",
-                grid=[
-                    [
-                        dict(
-                            type="grid",
-                            grid=([__rs],),
-                        )
-                    ],
-                    [
-                        dict(
-                            type="grid",
-                            grid=(
-                                [
-                                    "游戏窗口移动时同步移动",
-                                    D_getsimpleswitch(
-                                        globalconfig,
-                                        "movefollow",
-                                    ),
-                                    "",
-                                    "自动隐藏",
-                                    D_getsimpleswitch(
-                                        globalconfig, "autodisappear", default=False
-                                    ),
-                                    lambda: createdynamicswitch(self),
-                                    getboxlayout(
-                                        [lambda: createdynamicdelay(self), "(s)"]
-                                    ),
-                                ],
-                                [
-                                    "游戏失去焦点时取消置顶",
-                                    D_getsimpleswitch(
-                                        globalconfig,
-                                        "focusnotop",
-                                    ),
-                                    "",
-                                    "自动调整高度",
-                                    D_getsimpleswitch(
-                                        globalconfig, "adaptive_height", default=True
-                                    ),
-                                    D_getsimplecombobox(
-                                        ["向上", "向下"],
-                                        globalconfig,
-                                        "top_align",
-                                        default=0,
-                                    ),
-                                    getboxlayout(
-                                        [
-                                            "最小高度",
-                                            D_getspinbox(
-                                                0, 9999, globalconfig, "min_auto_height"
-                                            ),
-                                            "px",
-                                        ]
-                                    ),
-                                ],
-                            ),
-                        ),
-                    ],
-                ],
+                grid=([__rs],),
             )
         ],
         [
             dict(
                 type="grid",
-                title="其他界面",
                 grid=(
+                    [
+                        "游戏窗口移动时同步移动",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "movefollow",
+                        ),
+                        "",
+                        "自动隐藏",
+                        D_getsimpleswitch(globalconfig, "autodisappear", default=False),
+                        lambda: createdynamicswitch(self),
+                        getboxlayout([lambda: createdynamicdelay(self), "(s)"]),
+                    ],
+                    [
+                        "游戏失去焦点时取消置顶",
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "focusnotop",
+                        ),
+                        "",
+                        "自动调整高度",
+                        D_getsimpleswitch(
+                            globalconfig, "adaptive_height", default=True
+                        ),
+                        D_getsimplecombobox(
+                            ["向上", "向下"],
+                            globalconfig,
+                            "top_align",
+                            default=0,
+                        ),
+                        getboxlayout(
+                            [
+                                "最小高度",
+                                D_getspinbox(0, 9999, globalconfig, "min_auto_height"),
+                                "px",
+                            ]
+                        ),
+                    ],
+                ),
+            ),
+        ],
+        [
+            functools.partial(
+                createfoldgrid,
+                (
                     [
                         dict(
                             type="grid",
@@ -422,11 +408,12 @@ def uisetting(self):
                         )
                     ],
                 ),
-            ),
+                "其他界面",
+            )
         ],
     ]
 
-    return mainuisetting(self) + __
+    return __
 
 
 def createdynamicswitch(self):
