@@ -471,7 +471,7 @@
         "layout": "updown",
         "textColor": "#000000",
         "textbackColor": "#ffffffff",
-        "borderColor": "#00000000",
+        "borderColor": "#10000000",
         "borderColor2": "#ff000000",
         "borderW": 1,
         "itemw": 130,
