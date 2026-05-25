@@ -526,7 +526,6 @@
     "命名为": "Benannt als",
     "复制自": "Kopieren von",
     "目标列表": "Zielliste",
-    "prompt格式（需要根据模型版本决定）": "Aufforderungsformat (abhängig von der Modellversion)",
     "设为图标": "Als Symbol festlegen",
     "拉丁语": "Lateinische Sprache",
     "显示/隐藏翻译": "Übersetzung ein-/ausblenden",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication unterstützt keine Fenstermodus-Skalierung.",
     "3D 游戏模式下不支持窗口模式缩放。": "Im 3D-Spielmodus wird die Skalierung des Fenstermodus nicht unterstützt.",
     "启用触控支持失败。": "Aktivierung der Touch-Unterstützung fehlgeschlagen.",
-    "缩放模式无效。": "Der Zoom-Modus ist ungültig."
+    "缩放模式无效。": "Der Zoom-Modus ist ungültig.",
+    "prompt格式": "Prompt-Format",
+    "特定离线翻译模型": "Spezifisches Offline-Übersetzungsmodell"
 }

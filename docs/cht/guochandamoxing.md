@@ -199,12 +199,17 @@
 
 使用方法可以參考[此文章](https://www.newapi.ai/zh/docs/apps/luna-translator).
 
+## 特定離線翻譯模型
 
-### 离线部署模型
+存在一些專為離線翻譯所設計，或針對特定場景微調的離線翻譯大模型。
 
-可以使用 [llama.cpp](https://github.com/ggerganov/llama.cpp)、[Ollama](https://github.com/ollama/ollama) 之類的工具進行模型的部署，然後將位址和模型填入。
+大部分模型部署好後，直接使用**大模型通用介面**呼叫即可。但部分模型，可能需要使用專用的prompt格式，來發揮其更好的翻譯效果。
 
+該介面專為這類需要專用prompt格式的模型而來。因此本介面不提供使用者自訂的prompt設定，而是使用模型發佈者提供的prompt格式。
 
-#### Sakura 大模型
+目前，本介面支援以下模型：
 
-部署方法可參考：https://github.com/SakuraLLM/SakuraLLM/wiki
+| 作者 | 模型 | 語言 |
+| ---- | ---------- | ---------- | 
+| tencent | Hy-MT2 | 通用 |
+| SakuraLLM | SakuraLLM & GalTransl | 日語 -> 中文 |

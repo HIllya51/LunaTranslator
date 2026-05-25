@@ -199,7 +199,17 @@ Bạn cũng có thể sử dụng các công cụ chuyển tiếp API như [new-
 Để biết phương pháp sử dụng, bạn có thể tham khảo [bài viết này](https://www.newapi.ai/en/docs/apps/luna-translator).
 
 
-### Mô hình triển khai ngoại tuyến
+## Các mô hình dịch thuật ngoại tuyến cụ thể
 
-Bạn cũng có thể sử dụng các công cụ như [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) để triển khai các mô hình, sau đó điền địa chỉ và mô hình.
+Có một số mô hình lớn được thiết kế đặc biệt cho dịch thuật ngoại tuyến hoặc được tinh chỉnh cho các tình huống cụ thể.
 
+Hầu hết các mô hình, sau khi triển khai, có thể được gọi trực tiếp bằng **giao diện tổng quát cho mô hình lớn**. Tuy nhiên, một số mô hình có thể yêu cầu sử dụng định dạng prompt chuyên dụng để phát huy hiệu quả dịch thuật tốt hơn.
+
+Giao diện này được thiết kế dành riêng cho các mô hình yêu cầu định dạng prompt chuyên dụng như vậy. Do đó, giao diện này không cung cấp cài đặt prompt tùy chỉnh theo người dùng, mà sử dụng định dạng prompt do nhà phát hành mô hình cung cấp.
+
+Hiện tại, giao diện này hỗ trợ các mô hình sau:
+
+| Tác giả | Mô hình | Ngôn ngữ |
+| ---- | ---------- | ---------- | 
+| tencent | Hy-MT2 | Đa năng |
+| SakuraLLM | SakuraLLM & GalTransl | Tiếng Nhật -> Tiếng Trung |

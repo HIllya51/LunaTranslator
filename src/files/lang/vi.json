@@ -526,7 +526,6 @@
     "命名为": "Đặt tên là",
     "复制自": "Sao chép từ",
     "目标列表": "Danh sách mục tiêu",
-    "prompt格式（需要根据模型版本决定）": "Định dạng Prompt (Tùy thuộc vào phiên bản Model)",
     "设为图标": "Đặt làm biểu tượng",
     "拉丁语": "Tiếng Latinh",
     "显示/隐藏翻译": "Hiện/Ẩn bản dịch",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication không hỗ trợ thu phóng ở chế độ cửa sổ.",
     "3D 游戏模式下不支持窗口模式缩放。": "Chế độ thu phóng cửa sổ không được hỗ trợ trong chế độ chơi game 3D.",
     "启用触控支持失败。": "Kích hoạt hỗ trợ cảm ứng thất bại.",
-    "缩放模式无效。": "Chế độ thu phóng không hiệu lực."
+    "缩放模式无效。": "Chế độ thu phóng không hiệu lực.",
+    "prompt格式": "Định dạng prompt",
+    "特定离线翻译模型": "Mô hình dịch thuật ngoại tuyến cụ thể"
 }

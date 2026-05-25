@@ -526,7 +526,6 @@
     "命名为": "Denominato come",
     "复制自": "Copia da",
     "目标列表": "Elenco target",
-    "prompt格式（需要根据模型版本决定）": "Formato di richiesta (a seconda della versione del modello)",
     "设为图标": "Imposta come icona",
     "拉丁语": "Lingua latina",
     "显示/隐藏翻译": "Mostra/Nascondi traduzione",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "La cattura tramite Desktop Duplication non supporta la modalità di ridimensionamento delle finestre.",
     "3D 游戏模式下不支持窗口模式缩放。": "La modalità finestra non supporta il ridimensionamento in modalità di gioco 3D.",
     "启用触控支持失败。": "Abilitazione del supporto tattile fallita.",
-    "缩放模式无效。": "La modalità di zoom non è valida."
+    "缩放模式无效。": "La modalità di zoom non è valida.",
+    "prompt格式": "Formato del prompt",
+    "特定离线翻译模型": "Modello di traduzione offline specifico"
 }

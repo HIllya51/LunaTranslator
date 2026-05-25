@@ -195,7 +195,17 @@ You can also use API relay tools such as [new-api](https://github.com/QuantumNou
 
 For usage methods, you can refer to [this article](https://www.newapi.ai/en/docs/apps/luna-translator).
 
-### Offline Deployment Model
+## Specific Offline Translation Models
 
-You can also use tools like [llama.cpp](https://github.com/ggerganov/llama.cpp), [ollama](https://github.com/ollama/ollama) to deploy models, and then fill in the address and model.
+There are offline large language models specifically designed for offline translation or fine-tuned for particular scenarios.
 
+After deploying most models, you can directly call them using the **general-purpose API for large language models**. However, some models may require a dedicated prompt format to achieve better translation performance.
+
+This interface is designed specifically for models that require such dedicated prompt formats. Therefore, this interface does not provide user-customizable prompt settings; instead, it uses the prompt format provided by the model publisher.
+
+Currently, this interface supports the following models:
+
+| Author | Model | Languages |
+| ---- | ---------- | ---------- | 
+| tencent | Hy-MT2 | General |
+| SakuraLLM | SakuraLLM & GalTransl | Japanese -> Chinese |

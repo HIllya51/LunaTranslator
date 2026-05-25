@@ -526,7 +526,6 @@
     "命名为": "İsimlendirilmiş",
     "复制自": "Kopyalayın",
     "目标列表": "Hedef Listesi",
-    "prompt格式（需要根据模型版本决定）": "Soru format ı (model versiyonuna bağlı)",
     "设为图标": "İşaretçi olarak ayarlayın",
     "拉丁语": "Latin dili",
     "显示/隐藏翻译": "Çeviri Göster/Gizle",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication yakalama, pencere modu ölçeklendirmeyi desteklemez.",
     "3D 游戏模式下不支持窗口模式缩放。": "3D oyun modunda pencere modu ölçeklemesi desteklenmez.",
     "启用触控支持失败。": "Dokunmatik destek etkinleştirilemedi.",
-    "缩放模式无效。": "Yakınlaştırma modu geçersiz."
+    "缩放模式无效。": "Yakınlaştırma modu geçersiz.",
+    "prompt格式": "İstek formatı",
+    "特定离线翻译模型": "Belirli bir çevrimdışı çeviri modeli"
 }

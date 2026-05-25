@@ -1,24 +1,19 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
 import random
-from language import Languages
 from translator.gptcommon import list_models
-from myutils.utils import getlangtgt, APIType, urlpathjoin
+from myutils.utils import APIType
 from translator.gptcommon import (
     createheaders,
     common_create_gpt_data,
     parsestreamresp,
     common_parse_normal_response,
 )
+from language import Languages
 from gui.customparams import *
 
 
-def useExfunction():
-    return getlangtgt() in (Languages.Chinese, Languages.TradChinese)
-
-
 class TS(basetrans):
-    needzhconv = True
 
     def result_cache_key(self, src, tgt, sentence):
         __ = {}
@@ -39,7 +34,7 @@ class TS(basetrans):
         self.context = []
         self.__model = None
 
-    def make_gpt_dict_text(self, gpt_dict: GptDict):
+    def make_gpt_dict_text(self, gpt_dict: GptDict, needinfo=True, split="->"):
         gpt_dict_text_list = []
         for gpt in gpt_dict:
             src = gpt.src
@@ -47,10 +42,10 @@ class TS(basetrans):
             dst = self.checklangzhconv(self.srclang, gpt.dst)
             info = self.checklangzhconv(self.srclang, gpt.info)
 
-            if info:
-                single = "{}->{} #{}".format(src, dst, info)
+            if info and needinfo:
+                single = "{}{}{} #{}".format(src, split, dst, info)
             else:
-                single = "{}->{}".format(src, dst)
+                single = "{}{}{}".format(src, split, dst)
             gpt_dict_text_list.append(single)
 
         gpt_dict_raw_text = "\n".join(gpt_dict_text_list)
@@ -75,15 +70,10 @@ class TS(basetrans):
                 )
             messages.append({"role": "assistant", "content": "\n".join(__zh)})
 
-    def make_messages(self, prompt_version, query, gpt_dict: GptDict = None):
-        contextnum = (
-            self.config["append_context_num"] if self.config["use_context"] else 0
-        )
-        if prompt_version == "auto":
-            sysprompt = self._gptlike_createsys(None, None)
-            messages = [{"role": "system", "content": sysprompt}]
-            messages.append({"role": "user", "content": query})
-        elif prompt_version == "SakuraLLM v0.9":
+    def sakura_make_messages(
+        self, contextnum, prompt_version, query, gpt_dict: GptDict = None
+    ):
+        if prompt_version == "SakuraLLM v0.9":
             messages = [
                 {
                     "role": "system",
@@ -166,6 +156,62 @@ class TS(basetrans):
             messages.append({"role": "user", "content": content})
         return messages
 
+    def hymt2_make_messages(self, query, gpt_dict: GptDict = None):
+        if not gpt_dict:
+            if self.tgtlang_1 in (Languages.Chinese, Languages.TradChinese):
+                messages = [
+                    {
+                        "role": "user",
+                        "content": f"将以下文本翻译成{self.tgtlang_1.zhsname},注意只需要输出翻译后的结果,不要额外解释:\n\n{query}",
+                    }
+                ]
+            else:
+                messages = [
+                    {
+                        "role": "user",
+                        "content": f"Translate the following text into {self.tgtlang_1.engname}. Note that you should only output the translated result without any additional explanation:\n\n{query}",
+                    }
+                ]
+        else:
+            if self.tgtlang_1 in (Languages.Chinese, Languages.TradChinese):
+                messages = [
+                    {
+                        "role": "user",
+                        "content": f"""参考下面的翻译：
+{self.make_gpt_dict_text(gpt_dict, False, '翻译成')}
+将以下文本翻译为{self.tgtlang_1.zhsname}，注意只需要输出翻译后的结果，不要额外解释：\n\n{query}""",
+                    }
+                ]
+            else:
+                messages = [
+                    {
+                        "role": "user",
+                        "content": f"""Reference the following translations:
+{self.make_gpt_dict_text(gpt_dict, False, ' translates to ')}
+Translate the following text into {self.tgtlang_1.engname}. Note that you must ONLY output the translated result without any additional explanation:\n\n{query}""",
+                    }
+                ]
+        return messages
+
+    def make_messages(self, prompt_version: str, query, gpt_dict: GptDict = None):
+        contextnum = (
+            self.config["append_context_num"] if self.config["use_context"] else 0
+        )
+        if prompt_version == "auto":
+            sysprompt = self._gptlike_createsys(None, None)
+            messages = [{"role": "system", "content": sysprompt}]
+            messages.append({"role": "user", "content": query})
+            self.needzhconv = False
+        elif prompt_version == "GalTransl" or prompt_version.startswith("SakuraLLM"):
+            messages = self.sakura_make_messages(
+                contextnum, prompt_version, query, gpt_dict
+            )
+            self.needzhconv = True
+        elif prompt_version == "Hy-MT2":
+            messages = self.hymt2_make_messages(query, gpt_dict)
+            self.needzhconv = False
+        return messages
+
     def maybedetectprompttype(self, prompt_version):
         if prompt_version != "auto":
             return prompt_version
@@ -173,6 +219,8 @@ class TS(basetrans):
             if (not m) or (m == "sukinishiro"):
                 continue
             mlow = m.lower()
+            if "hy-mt2" in mlow:
+                return "Hy-MT2"
             if "galtransl" in mlow:
                 return "GalTransl"
             if "sakura" in mlow:

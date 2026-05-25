@@ -526,7 +526,6 @@
     "命名为": "Nomear Como",
     "复制自": "Copiar De",
     "目标列表": "Lista de Destino",
-    "prompt格式（需要根据模型版本决定）": "Formato do Prompt (Depende da Versão do Modelo)",
     "设为图标": "Definir como Ícone",
     "拉丁语": "Latim",
     "显示/隐藏翻译": "Mostrar/Ocultar Tradução",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "A captura por Duplicação de Área de Trabalho não suporta redimensionamento no modo janela.",
     "3D 游戏模式下不支持窗口模式缩放。": "No modo de jogo 3D, não é suportado o redimensionamento em modo janela.",
     "启用触控支持失败。": "Falha ao ativar o suporte a toque.",
-    "缩放模式无效。": "Modo de zoom inválido."
+    "缩放模式无效。": "Modo de zoom inválido.",
+    "prompt格式": "Formato de prompt",
+    "特定离线翻译模型": "Modelo de tradução offline específico"
 }

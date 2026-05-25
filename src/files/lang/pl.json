@@ -526,7 +526,6 @@
     "命名为": "Nazwa:",
     "复制自": "Kopiuj z",
     "目标列表": "Lista docelowa",
-    "prompt格式（需要根据模型版本决定）": "Format pytania (w zależności od wersji modelu)",
     "设为图标": "Ustaw jako ikonę",
     "拉丁语": "Język łaciński",
     "显示/隐藏翻译": "Pokaż/ukryj tłumaczenie",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Przechwytywanie duplikacji pulpitu nie obsługuje skalowania w trybie okna.",
     "3D 游戏模式下不支持窗口模式缩放。": "Tryb okienkowy nie jest obsługiwany w trybie gry 3D.",
     "启用触控支持失败。": "Włączanie obsługi dotykowej nie powiodło się.",
-    "缩放模式无效。": "Tryb skalowania jest nieprawidłowy."
+    "缩放模式无效。": "Tryb skalowania jest nieprawidłowy.",
+    "prompt格式": "format promptu",
+    "特定离线翻译模型": "Konkretny model tłumaczenia offline"
 }

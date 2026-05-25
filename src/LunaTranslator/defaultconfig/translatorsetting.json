@@ -712,6 +712,8 @@
 			"top_p_use": true,
 			"frequency_penalty": 0,
 			"frequency_penalty_use": false,
+			"repetition_penalty": 1,
+			"repetition_penalty_use": true,
 			"s": "",
 			"customparams": [],
 			"prompt_version_1": "auto"
@@ -746,6 +748,7 @@
 				"type": "combo",
 				"internal": [
 					"auto",
+					"Hy-MT2",
 					"GalTransl",
 					"SakuraLLM v0.9",
 					"SakuraLLM v0.10",
@@ -754,6 +757,7 @@
 				],
 				"list": [
 					"自动",
+					"Hy-MT2",
 					"GalTransl",
 					"SakuraLLM v0.9",
 					"SakuraLLM v0.10",
@@ -798,6 +802,13 @@
 				"refswitch": "frequency_penalty_use",
 				"type": "spin",
 				"min": -2,
+				"max": 2,
+				"step": 0.01
+			},
+			"repetition_penalty": {
+				"refswitch": "repetition_penalty_use",
+				"type": "spin",
+				"min": 0,
 				"max": 2,
 				"step": 0.01
 			}

@@ -526,7 +526,6 @@
     "命名为": "Jmenuje se jako",
     "复制自": "Kopírovat z",
     "目标列表": "Seznam cílů",
-    "prompt格式（需要根据模型版本决定）": "Formát výzvy (v závislosti na verzi modelu)",
     "设为图标": "Nastavit jako ikona",
     "拉丁语": "Latinský jazyk",
     "显示/隐藏翻译": "Zobrazit/skrýt překlad",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication zachycení nepodporuje změnu měřítka v režimu okna.",
     "3D 游戏模式下不支持窗口模式缩放。": "V režimu 3D hry není podporováno škálování v okenním režimu.",
     "启用触控支持失败。": "Povolení podpory dotyku selhalo.",
-    "缩放模式无效。": "Režim přiblížení je neplatný."
+    "缩放模式无效。": "Režim přiblížení je neplatný.",
+    "prompt格式": "Formát promptu",
+    "特定离线翻译模型": "Specifický offline překladový model"
 }

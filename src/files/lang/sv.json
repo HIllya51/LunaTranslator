@@ -526,7 +526,6 @@
     "命名为": "Namnet som",
     "复制自": "Kopiera från",
     "目标列表": "Mållista",
-    "prompt格式（需要根据模型版本决定）": "Frågaformat (beroende på modellversion)",
     "设为图标": "Ange som ikon",
     "拉丁语": "Latinska språk",
     "显示/隐藏翻译": "Visa/dölj översättning",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication-fångst stöder inte fönsterlägeskalning.",
     "3D 游戏模式下不支持窗口模式缩放。": "3D-spelläget stöder inte skalning av fönsterläge.",
     "启用触控支持失败。": "Aktivering av pekstöd misslyckades.",
-    "缩放模式无效。": "Skalningsläget är ogiltigt."
+    "缩放模式无效。": "Skalningsläget är ogiltigt.",
+    "prompt格式": "Självklart! Vänligen skicka den kinesiska texten du vill ha översatt, så översätter jag den till svenska åt dig.",
+    "特定离线翻译模型": "Specifik offlineöversättningsmodell"
 }

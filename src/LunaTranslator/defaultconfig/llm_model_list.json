@@ -1,5 +1,57 @@
 [
     {
+        "series": "Hy-MT2",
+        "account": "tencent",
+        "repos": [
+            {
+                "repo": "Hy-MT2-7B-GGUF",
+                "models": [
+                    {
+                        "file": "HY-MT2-7B-Q6_K.gguf",
+                        "size": 6164482720,
+                        "timestamp": "2026-05-20T12:48:56",
+                        "sha256": "63f7a9efe0d491c558d3f1f297430d52267b9f87cc669bc27dfc71ccf1b3854f"
+                    },
+                    {
+                        "file": "HY-MT2-7B-Q8_0.gguf",
+                        "size": 7981928896,
+                        "timestamp": "2026-05-20T12:48:56",
+                        "sha256": "ef45599071ee7f4d01a17ad2879ea302ccd58e5b55671c4c5cf070f0d2c2e372"
+                    },
+                    {
+                        "file": "Hy-MT2-7B-Q4_K_M.gguf",
+                        "size": 4624648896,
+                        "timestamp": "2026-05-20T12:48:56",
+                        "sha256": "42ee72b7c802de430d62ec5db0a56527da8133e3890c3da48cc925b34540e45d"
+                    }
+                ]
+            },
+            {
+                "repo": "Hy-MT2-1.8B-GGUF",
+                "models": [
+                    {
+                        "file": "Hy-MT2-1.8B-Q4_K_M.gguf",
+                        "size": 1133080448,
+                        "timestamp": "2026-05-20T12:49:18",
+                        "sha256": "a7725d3b0b25dd12b87709a4ef9a4faa70e80d23de3d190661f3d01439b11e0c"
+                    },
+                    {
+                        "file": "Hy-MT2-1.8B-Q6_K.gguf",
+                        "size": 1474785120,
+                        "timestamp": "2026-05-20T12:49:18",
+                        "sha256": "d75465aeda120d36bbb7371e15719add92400ccd0909fc1378207a194a0d6d10"
+                    },
+                    {
+                        "file": "Hy-MT2-1.8B-Q8_0.gguf",
+                        "size": 1908528192,
+                        "timestamp": "2026-05-20T12:49:18",
+                        "sha256": "749a74621e95acefdef168ad866852fd7127469c82dbeed33e1d44c4bc435796"
+                    }
+                ]
+            }
+        ]
+    },
+    {
         "series": "SakuraLLM",
         "lang": "ja->zh",
         "repos": [

@@ -1930,10 +1930,9 @@
             "use": false,
             "type": "offline",
             "color": "blue",
-            "name": "Sakura大模型",
+            "name": "特定离线翻译模型",
             "is_gpt_like": true,
-            "useproxy": false,
-            "useEx": "useExfunction"
+            "useproxy": false
         },
         "realtime_edit": {
             "use": false,

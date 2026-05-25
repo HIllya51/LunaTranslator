@@ -201,10 +201,20 @@
 
 使用方法可以参考[此文章](https://www.newapi.ai/zh/docs/apps/luna-translator)
 
-### 离线部署模型
+## 特定离线翻译模型
 
-也可以使用[llama.cpp](https://github.com/ggerganov/llama.cpp) 、[ollama](https://github.com/ollama/ollama)之类的工具进行模型的部署，然后将地址和模型填入。
+存在一些专为离线翻译所设计，或针对特定场景微调的离线翻译大模型。
 
-#### Sakura大模型
+大部分模型部署好后，直接使用**大模型通用接口**调用即可。但部分模型，可能需要使用专用的prompt格式，来发挥其更好的翻译效果。
 
-部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki ，也可以部署到[Kaggle](https://kaggle.com/kernels/welcome?src=https://lunatranslator.org/nginxfile/llamacpp.ipynb)
+该接口专为这类需要专用prompt格式的模型而来。因此本接口不提供用户自定义的prompt设置，而是使用模型发布者提供的prompt格式。
+
+目前，本接口支持以下模型：
+
+| 作者 | 模型 | 语言 |
+| ---- | ---------- | ---------- | 
+| tencent | Hy-MT2 | 通用 |
+| SakuraLLM | SakuraLLM & GalTransl | 日语 -> 中文 |
+
+<!-- 
+部署方法可参考 https://github.com/SakuraLLM/SakuraLLM/wiki ，也可以部署到[Kaggle](https://kaggle.com/kernels/welcome?src=https://lunatranslator.org/nginxfile/llamacpp.ipynb) -->

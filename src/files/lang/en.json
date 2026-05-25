@@ -526,7 +526,6 @@
     "命名为": "Name As",
     "复制自": "Copy From",
     "目标列表": "Target List",
-    "prompt格式（需要根据模型版本决定）": "Prompt Format (Depends on Model Version)",
     "设为图标": "Set as Icon",
     "拉丁语": "Latin",
     "显示/隐藏翻译": "Show/Hide Translation",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication capture does not support window mode scaling.",
     "3D 游戏模式下不支持窗口模式缩放。": "Window mode scaling is not supported in 3D game mode.",
     "启用触控支持失败。": "Failed to enable touch support.",
-    "缩放模式无效。": "Zoom mode is invalid."
+    "缩放模式无效。": "Zoom mode is invalid.",
+    "prompt格式": "Prompt format",
+    "特定离线翻译模型": "Specific offline translation model"
 }

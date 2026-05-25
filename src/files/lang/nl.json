@@ -526,7 +526,6 @@
     "命名为": "Genoemd als",
     "复制自": "Kopiëren van",
     "目标列表": "Doellijst",
-    "prompt格式（需要根据模型版本决定）": "Prompt formaat (afhankelijk van de modelversie)",
     "设为图标": "Als pictogram instellen",
     "拉丁语": "Latijnse taal",
     "显示/隐藏翻译": "Vertaling tonen/verbergen",
@@ -937,5 +936,7 @@
     "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication vastleggen ondersteunt geen venstermodus schaling.",
     "3D 游戏模式下不支持窗口模式缩放。": "In de 3D-spelmodus wordt schalen in venstermodus niet ondersteund.",
     "启用触控支持失败。": "Inschakelen van aanraakondersteuning mislukt.",
-    "缩放模式无效。": "De zoommodus is ongeldig."
+    "缩放模式无效。": "De zoommodus is ongeldig.",
+    "prompt格式": "prompt-formaat",
+    "特定离线翻译模型": "Specifiek offline vertaalmodel"
 }

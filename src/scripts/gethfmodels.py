@@ -5,6 +5,16 @@ from tqdm import tqdm
 os.chdir(os.path.dirname(__file__))
 res = [
     {
+        "series": "Hy-MT2",
+        "account": "tencent",
+        "repos": [
+            {"repo": "Hy-MT2-7B-GGUF"},
+            {"repo": "Hy-MT2-1.8B-GGUF"},
+            # {"repo": "Hy-MT2-1.8B-1.25Bit-GGUF"}, #llama.cpp还未合并https://github.com/ggml-org/llama.cpp/pull/19357，先不列出
+            # {"repo": "Hy-MT2-1.8B-2Bit-GGUF"},
+        ],
+    },
+    {
         "series": "SakuraLLM",
         "lang": "ja->zh",
         "repos": [
@@ -87,6 +97,7 @@ for line in tqdm(res, position=0):
             ).groups()[0]
             if not m.lower().endswith("gguf"):
                 continue
+            print(m)
             tm = re.search(r'<time datetime="(.*?)"', l).groups()[0]
             # sz = re.search(
             #     r'<span class="truncate max-sm:text-xs">(.*?)</span>', l
@@ -98,7 +109,12 @@ for line in tqdm(res, position=0):
             internal = getNtimes(
                 f"https://{base}/{repoaccount}/{repo['repo']}/blob/main/{m}"
             ).text
-            sha = re.search(r'<dd class="truncate">(.*?)</dd>', internal).groups()[0]
+            try:
+                sha = re.search(r'<dd class="truncate">(.*?)</dd>', internal).groups()[
+                    0
+                ]
+            except:
+                sha = None
             ls.append({"file": m, "size": sz, "timestamp": tm, "sha256": sha})
         repo["models"] = ls
 
