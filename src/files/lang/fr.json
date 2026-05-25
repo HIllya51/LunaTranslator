@@ -292,7 +292,6 @@
     "罗马音": "Voix romaine",
     "日语注音方案": "Programme d'accent japonais",
     "Sakura大模型": "Sakura Grand Modèle",
-    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Utilisez les informations ci - dessus pour traduire (il y a généralement une certaine augmentation de l'effet, mais cela entraîne un ralentissement)",
     "去除重复字符": "Supprimer les caractères dupliqués",
     "内联效果参数": "Paramètres d'effet inline",
     "保持非重复字符": "Garder les caractères non répétitifs",

@@ -291,7 +291,6 @@
     "罗马音": "Romaji",
     "日语注音方案": "Hệ thống ngữ âm tiếng Nhật (Furigana)",
     "Sakura大模型": "Sakura LLM",
-    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Dịch dựa trên ngữ cảnh trước đó (Giúp tăng chất lượng nhưng có thể làm chậm tốc độ)",
     "去除重复字符": "Xóa ký tự trùng lặp",
     "内联效果参数": "Thông số Inline Effect",
     "保持非重复字符": "Giữ các ký tự không trùng lặp",

@@ -230,7 +230,7 @@ class basetrans(commonbase):
     def _gptlike_createsys(self, usekey, tempk):
 
         default = "You are a translator. Please help me translate the following {srclang} text into {tgtlang}. You should only tell me the translation result without any additional explanations."
-        template = self.config[tempk] if self.config[usekey] else None
+        template = self.config[tempk] if self.config.get(usekey, False) else None
         template = template if template else default
         template = self.smartparselangprompt(template)
         return template

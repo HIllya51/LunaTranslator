@@ -532,7 +532,7 @@
 			},
 			"流式输出": {
 				"type": "switch",
-				"rank": 3
+				"rank": 2.3
 			},
 			"自定义promt": {
 				"type": "multiline",
@@ -548,7 +548,7 @@
 				"type": "intspin",
 				"min": 0,
 				"max": 99999,
-				"rank": 4.9
+				"rank": 2.4
 			},
 			"Temperature": {
 				"type": "spin",
@@ -701,23 +701,32 @@
 	"sakura": {
 		"args": {
 			"API接口地址": "http://127.0.0.1:8080/",
-			"model": "sukinishiro",
+			"model": "",
 			"modellistcache": [],
-			"use_context": false,
-			"append_context_num": 3,
-			"temperature": 0.6,
-			"top_p": 0.8,
-			"num_beams": 1,
-			"do_sample": true,
-			"max_new_token": 1024,
-			"repetition_penalty": 1,
-			"frequency_penalty": 0.1,
-			"fix_degeneration": false,
 			"流式输出": true,
-			"prompt_version": 4,
-			"s": ""
+			"append_context_num": 3,
+			"use_context": false,
+			"Temperature": 0.6,
+			"max_tokens": 1024,
+			"top_p": 0.8,
+			"top_p_use": true,
+			"frequency_penalty": 0,
+			"frequency_penalty_use": false,
+			"s": "",
+			"customparams": [],
+			"prompt_version_1": "auto"
 		},
 		"argstype": {
+			"s2": {
+				"type": "split",
+				"rank": 5.12
+			},
+			"customparams": {
+				"name": "其他参数",
+				"type": "custom",
+				"function": "customparams",
+				"rank": -1
+			},
 			"model": {
 				"rank": 0.2,
 				"type": "lineedit_or_combo",
@@ -729,18 +738,27 @@
 			},
 			"s": {
 				"type": "split",
-				"rank": 0.5
+				"rank": 5
 			},
-			"prompt_version": {
-				"rank": 1.1,
-				"name": "prompt格式（需要根据模型版本决定）",
+			"prompt_version_1": {
+				"rank": 0.21,
+				"name": "prompt格式",
 				"type": "combo",
+				"internal": [
+					"auto",
+					"GalTransl",
+					"SakuraLLM v0.9",
+					"SakuraLLM v0.10",
+					"SakuraLLM v1.0",
+					"SakuraLLM v1.5"
+				],
 				"list": [
-					"v0.9",
-					"v0.10pre1",
-					"v1.0/v1.0pre1",
-					"GalTransl-7B-v3",
-					"Sakura-14B-Qwen3-v1.5"
+					"自动",
+					"GalTransl",
+					"SakuraLLM v0.9",
+					"SakuraLLM v0.10",
+					"SakuraLLM v1.0",
+					"SakuraLLM v1.5"
 				]
 			},
 			"API接口地址": {
@@ -751,46 +769,33 @@
 				"rank": 1
 			},
 			"append_context_num": {
+				"refswitch": "use_context",
 				"type": "intspin",
 				"min": 1,
 				"max": 99999,
-				"refswitch": "use_context",
-				"name": "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）"
+				"name": "附带上下文个数",
+				"rank": 4
 			},
-			"temperature": {
+			"Temperature": {
 				"type": "spin",
 				"min": 0,
 				"max": 2,
 				"step": 0.01
 			},
 			"top_p": {
+				"refswitch": "top_p_use",
 				"type": "spin",
 				"min": 0,
 				"max": 1,
 				"step": 0.01
 			},
-			"num_beams": {
-				"type": "intspin",
-				"min": 1,
-				"max": 16
-			},
-			"do_sample": {
-				"type": "switch"
-			},
-			"fix_degeneration": {
-				"type": "switch"
-			},
-			"max_new_token": {
+			"max_tokens": {
 				"type": "intspin",
 				"min": 1,
 				"max": 1000000
 			},
-			"repetition_penalty": {
-				"type": "spin",
-				"min": 0,
-				"max": 2
-			},
 			"frequency_penalty": {
+				"refswitch": "frequency_penalty_use",
 				"type": "spin",
 				"min": -2,
 				"max": 2,

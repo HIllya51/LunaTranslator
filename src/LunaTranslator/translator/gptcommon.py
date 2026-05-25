@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
-import json, requests, hmac, hashlib, NativeUtils, re, functools, random
+import json, requests, hmac, hashlib, NativeUtils, re, functools, random, types
 from datetime import datetime, timezone
 from myutils.utils import (
     APIType,
@@ -34,14 +34,17 @@ def stream_event_parser(response: requests.Response):
         if response_data == "[DONE]":
             break
         try:
-            json_data = json.loads(response_data)
+            json_data: dict = json.loads(response_data)
         except:
             raise Exception(response_data)
         yield json_data
 
 
 def commonparseresponse_good(
-    response: requests.Response, hidethinking: bool, markdown2html: bool
+    response: requests.Response,
+    hidethinking: bool,
+    markdown2html: bool,
+    getmodelhook: list = None,
 ):
     message = ""
     thinkcnt = 0
@@ -49,6 +52,8 @@ def commonparseresponse_good(
     isreasoning_content = False
     unsafethinkonce = True
     for json_data in stream_event_parser(response):
+        if getmodelhook is not None and json_data.get("model"):
+            getmodelhook.append(json_data.get("model"))
         try:
             if len(json_data["choices"]) == 0:
                 continue
@@ -194,6 +199,7 @@ def parsestreamresp(
     hidethinking: bool,
     markdown2html: bool,
     model: str,
+    getmodelhook=None,
 ):
     if (response.status_code != 200) and (
         not response.headers["Content-Type"].startswith("text/event-stream")
@@ -209,7 +215,7 @@ def parsestreamresp(
         respmessage = yield from parseresponseQWENMT(response)
     else:
         respmessage = yield from commonparseresponse_good(
-            response, hidethinking, markdown2html
+            response, hidethinking, markdown2html, getmodelhook=getmodelhook
         )
     return respmessage
 

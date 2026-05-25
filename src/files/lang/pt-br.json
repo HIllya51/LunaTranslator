@@ -291,7 +291,6 @@
     "罗马音": "Romaji",
     "日语注音方案": "Sistema de Guia Fonético Japonês",
     "Sakura大模型": "Modelo Sakura LLM",
-    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Ativar Tradução com Contexto (Melhora a qualidade usando texto anterior para contexto de tradução, mas pode ser mais lento)",
     "去除重复字符": "Remover Caracteres Duplicados",
     "内联效果参数": "Parâmetros de Efeito Inline",
     "保持非重复字符": "Manter Caracteres Únicos",

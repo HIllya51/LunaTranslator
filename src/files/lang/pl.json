@@ -292,7 +292,6 @@
     "罗马音": "Dźwięk romański",
     "日语注音方案": "Japoński schemat fonetyczny",
     "Sakura大模型": "Duży model Sakura",
-    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Przetłumacz za pomocą informacji podanych w poprzednim tekście (zwykle z pewną poprawą skuteczności, ale może to prowadzić do wolniejszego tłumaczenia)",
     "去除重复字符": "Usuń duplikaty znaków",
     "内联效果参数": "Parametry efektu liniowego",
     "保持非重复字符": "Zachowaj niepowtarzające się znaki",

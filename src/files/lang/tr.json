@@ -292,7 +292,6 @@
     "罗马音": "Romanik sesi",
     "日语注音方案": "Japon fonetik taslağı",
     "Sakura大模型": "Sakura Büyük Modeli",
-    "利用上文信息翻译（通常会有一定的效果提升，但会导致变慢）": "Önceki metinde verilen bilgileri kullanarak çevirin (genelde etkinliğinde bazı gelişmelerle, fakat daha yavaş çeviriye yol açabilir)",
     "去除重复字符": "Çift karakterleri sil",
     "内联效果参数": "İçeri etkisi parametreleri",
     "保持非重复字符": "Tekrarlamayan karakterleri tut",
