@@ -925,5 +925,18 @@
     "背景图片": "Achtergrondafbeelding",
     "仅HOOK模式下可用": "Alleen beschikbaar in de HOOK-modus.",
     "仅OCR模式下可用": "Alleen beschikbaar in OCR-modus.",
-    "重新启动后生效": "Na herstart van kracht"
+    "重新启动后生效": "Na herstart van kracht",
+    "缩放失败": "Schaalvergroting mislukt",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "De huidige grafische kaart ondersteunt ID3D11Device5::CreateFence niet. Probeer de grafische kaart te wisselen of de stuurprogramma's bij te werken.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Kan dit venster niet vastleggen. Probeer de opnamemethode te wijzigen.",
+    "详情请参阅日志。": "Raadpleeg de logboeken voor meer informatie.",
+    "不支持窗口模式缩放这个窗口。": "Het schalen van dit venster in de venstermodus wordt niet ondersteund.",
+    "无法应用自定义裁剪。": "Kan aangepaste uitsnede niet toepassen.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Magpie moet als administrator worden uitgevoerd om dit venster te kunnen schalen.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Het is verboden om vensters die gemaximaliseerd of op volledig scherm zijn, te schalen. Je kunt dit gedrag wijzigen op de startpagina.",
+    "不支持缩放这个窗口。": "Het is niet toegestaan om dit venster te vergroten of te verkleinen.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication vastleggen ondersteunt geen venstermodus schaling.",
+    "3D 游戏模式下不支持窗口模式缩放。": "In de 3D-spelmodus wordt schalen in venstermodus niet ondersteund.",
+    "启用触控支持失败。": "Inschakelen van aanraakondersteuning mislukt.",
+    "缩放模式无效。": "De zoommodus is ongeldig."
 }

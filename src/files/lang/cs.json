@@ -925,5 +925,18 @@
     "背景图片": "Obrázek na pozadí",
     "仅HOOK模式下可用": "Pouze v režimu HOOK je k dispozici.",
     "仅OCR模式下可用": "Pouze v režimu OCR je k dispozici.",
-    "重新启动后生效": "Po restartu se projeví."
+    "重新启动后生效": "Po restartu se projeví.",
+    "缩放失败": "Zvětšení se nezdařilo.",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "Současná grafická karta nepodporuje ID3D11Device5::CreateFence. Zkuste přepnout grafickou kartu nebo aktualizovat ovladač.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Toto okno nelze zachytit, zkuste prosím přepnout způsob zachycení.",
+    "详情请参阅日志。": "Podrobnosti naleznete v protokolu.",
+    "不支持窗口模式缩放这个窗口。": "Toto okno nepodporuje změnu velikosti v režimu okna.",
+    "无法应用自定义裁剪。": "Nelze použít vlastní oříznutí.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Straka musí být spuštěna jako správce, aby mohla toto okno změnit velikost.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Změna velikosti, maximalizace nebo zobrazení na celou obrazovku je zakázáno. Toto chování můžete změnit na hlavní stránce.",
+    "不支持缩放这个窗口。": "Toto okno nepodporuje změnu velikosti.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication zachycení nepodporuje změnu měřítka v režimu okna.",
+    "3D 游戏模式下不支持窗口模式缩放。": "V režimu 3D hry není podporováno škálování v okenním režimu.",
+    "启用触控支持失败。": "Povolení podpory dotyku selhalo.",
+    "缩放模式无效。": "Režim přiblížení je neplatný."
 }

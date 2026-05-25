@@ -925,5 +925,18 @@
     "背景图片": "Hình nền",
     "仅HOOK模式下可用": "Chỉ khả dụng trong chế độ HOOK.",
     "仅OCR模式下可用": "Chỉ khả dụng trong chế độ OCR.",
-    "重新启动后生效": "Khởi động lại để có hiệu lực"
+    "重新启动后生效": "Khởi động lại để có hiệu lực",
+    "缩放失败": "Thu phóng thất bại",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "Card đồ họa hiện tại không hỗ trợ ID3D11Device5::CreateFence, vui lòng thử chuyển card đồ họa hoặc cập nhật driver.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Không thể chụp được cửa sổ này, vui lòng thử chuyển đổi phương thức chụp.",
+    "详情请参阅日志。": "Vui lòng xem chi tiết trong nhật ký.",
+    "不支持窗口模式缩放这个窗口。": "Không hỗ trợ thay đổi kích thước cửa sổ này ở chế độ cửa sổ.",
+    "无法应用自定义裁剪。": "Không thể áp dụng cắt xén tùy chỉnh.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Magpie cần được chạy với quyền quản trị viên để có thể thu phóng cửa sổ này.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Cửa sổ đã bị cấm thu nhỏ, phóng to hoặc toàn màn hình. Bạn có thể thay đổi hành vi này trong trang chủ.",
+    "不支持缩放这个窗口。": "Không hỗ trợ phóng to/thu nhỏ cửa sổ này.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication không hỗ trợ thu phóng ở chế độ cửa sổ.",
+    "3D 游戏模式下不支持窗口模式缩放。": "Chế độ thu phóng cửa sổ không được hỗ trợ trong chế độ chơi game 3D.",
+    "启用触控支持失败。": "Kích hoạt hỗ trợ cảm ứng thất bại.",
+    "缩放模式无效。": "Chế độ thu phóng không hiệu lực."
 }

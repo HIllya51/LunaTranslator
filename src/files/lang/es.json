@@ -925,5 +925,18 @@
     "背景图片": "Imagen de fondo",
     "仅HOOK模式下可用": "Solo disponible en modo HOOK.",
     "仅OCR模式下可用": "Solo disponible en modo OCR.",
-    "重新启动后生效": "Efectivo después de reiniciar"
+    "重新启动后生效": "Efectivo después de reiniciar",
+    "缩放失败": "La ampliación ha fallado.",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "La tarjeta gráfica actual no es compatible con ID3D11Device5::CreateFence. Intente cambiar la tarjeta gráfica o actualizar el controlador.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "No se puede capturar esta ventana, intente cambiar el método de captura.",
+    "详情请参阅日志。": "Consulte los detalles en el registro.",
+    "不支持窗口模式缩放这个窗口。": "No se admite el cambio de tamaño de esta ventana en modo ventana.",
+    "无法应用自定义裁剪。": "No se puede aplicar el recorte personalizado.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Magpie necesita ejecutarse como administrador para poder escalar esta ventana.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Se ha prohibido escalar, maximizar o poner en pantalla completa la ventana. Puedes cambiar este comportamiento en la página de inicio.",
+    "不支持缩放这个窗口。": "No se admite cambiar el tamaño de esta ventana.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "La captura por duplicación de escritorio no admite la escala en modo ventana.",
+    "3D 游戏模式下不支持窗口模式缩放。": "En el modo de juego 3D no se admite la escala en modo ventana.",
+    "启用触控支持失败。": "Fallo al habilitar el soporte táctil.",
+    "缩放模式无效。": "El modo de zoom no es válido."
 }

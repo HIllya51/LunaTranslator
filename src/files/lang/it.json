@@ -925,5 +925,18 @@
     "背景图片": "Sfondo immagine",
     "仅HOOK模式下可用": "Disponibile solo in modalità HOOK.",
     "仅OCR模式下可用": "Disponibile solo in modalità OCR.",
-    "重新启动后生效": "Efficace dopo il riavvio."
+    "重新启动后生效": "Efficace dopo il riavvio.",
+    "缩放失败": "Ridimensionamento fallito.",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "La scheda grafica attuale non supporta ID3D11Device5::CreateFence. Prova a cambiare scheda grafica o ad aggiornare il driver.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Impossibile catturare questa finestra. Prova a cambiare modalità di cattura.",
+    "详情请参阅日志。": "Per favore, consulta il registro per i dettagli.",
+    "不支持窗口模式缩放这个窗口。": "Non supporta il ridimensionamento di questa finestra in modalità finestra.",
+    "无法应用自定义裁剪。": "Impossibile applicare il ritaglio personalizzato.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Magpie deve essere eseguito come amministratore per ridimensionare questa finestra.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Le finestre con zoom massimizzato o a schermo intero sono state disabilitate. Puoi modificare questo comportamento nella pagina principale.",
+    "不支持缩放这个窗口。": "Non supporta il ridimensionamento di questa finestra.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "La cattura tramite Desktop Duplication non supporta la modalità di ridimensionamento delle finestre.",
+    "3D 游戏模式下不支持窗口模式缩放。": "La modalità finestra non supporta il ridimensionamento in modalità di gioco 3D.",
+    "启用触控支持失败。": "Abilitazione del supporto tattile fallita.",
+    "缩放模式无效。": "La modalità di zoom non è valida."
 }

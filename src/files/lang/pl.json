@@ -925,5 +925,18 @@
     "背景图片": "Tło obrazu",
     "仅HOOK模式下可用": "Tylko w trybie HOOK dostępne.",
     "仅OCR模式下可用": "Dostępne tylko w trybie OCR.",
-    "重新启动后生效": "Wymaga ponownego uruchomienia, aby zacząć obowiązywać."
+    "重新启动后生效": "Wymaga ponownego uruchomienia, aby zacząć obowiązywać.",
+    "缩放失败": "Skalowanie nie powiodło się.",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "Obecna karta graficzna nie obsługuje ID3D11Device5::CreateFence. Spróbuj przełączyć kartę graficzną lub zaktualizować sterownik.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Nie można przechwycić tego okna, spróbuj zmienić metodę przechwytywania.",
+    "详情请参阅日志。": "Proszę zapoznać się z dziennikiem, aby uzyskać szczegółowe informacje.",
+    "不支持窗口模式缩放这个窗口。": "Nie obsługuje skalowania tego okna w trybie okienkowym.",
+    "无法应用自定义裁剪。": "Nie można zastosować niestandardowego przycięcia.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Sroka musi być uruchomiona jako administrator, aby zmienić rozmiar tego okna.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Zablokowano skalowanie okna, które jest zmaksymalizowane lub wyświetlane na pełnym ekranie. Możesz zmienić to zachowanie na stronie głównej.",
+    "不支持缩放这个窗口。": "Nie obsługuje skalowania tego okna.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "Przechwytywanie duplikacji pulpitu nie obsługuje skalowania w trybie okna.",
+    "3D 游戏模式下不支持窗口模式缩放。": "Tryb okienkowy nie jest obsługiwany w trybie gry 3D.",
+    "启用触控支持失败。": "Włączanie obsługi dotykowej nie powiodło się.",
+    "缩放模式无效。": "Tryb skalowania jest nieprawidłowy."
 }

@@ -22,7 +22,7 @@
     "disableFontCache": false,
     "saveEffectSources": false,
     "warningsAreErrors": false,
-    "allowScalingMaximized": false,
+    "allowScalingMaximized": true,
     "simulateExclusiveFullscreen": false,
     "alwaysRunAsAdmin": false,
     "showNotifyIcon": true,

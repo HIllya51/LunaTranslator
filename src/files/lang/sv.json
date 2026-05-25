@@ -925,5 +925,18 @@
     "背景图片": "Bakgrundsbild",
     "仅HOOK模式下可用": "Endast tillgängligt i HOOK-läge.",
     "仅OCR模式下可用": "Endast tillgängligt i OCR-läge.",
-    "重新启动后生效": "Träder i kraft efter omstart"
+    "重新启动后生效": "Träder i kraft efter omstart",
+    "缩放失败": "Skalningen misslyckades.",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "Det nuvarande grafikkortet stöder inte ID3D11Device5::CreateFence. Försök att byta grafikkort eller uppdatera drivrutinen.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Det går inte att fånga det här fönstret. Försök att byta fångstmetod.",
+    "详情请参阅日志。": "Se detaljerna i loggen.",
+    "不支持窗口模式缩放这个窗口。": "Stöder inte fönsterlägeskalning för det här fönstret.",
+    "无法应用自定义裁剪。": "Anpassad beskärning kan inte tillämpas.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Magpie måste köras som administratör för att kunna skala det här fönstret.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Fönster som är maximerade eller i helskärm har förbjudits att zoomas. Du kan ändra detta beteende på startsidan.",
+    "不支持缩放这个窗口。": "Det går inte att zooma det här fönstret.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication-fångst stöder inte fönsterlägeskalning.",
+    "3D 游戏模式下不支持窗口模式缩放。": "3D-spelläget stöder inte skalning av fönsterläge.",
+    "启用触控支持失败。": "Aktivering av pekstöd misslyckades.",
+    "缩放模式无效。": "Skalningsläget är ogiltigt."
 }

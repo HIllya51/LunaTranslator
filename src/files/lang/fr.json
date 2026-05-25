@@ -925,5 +925,18 @@
     "背景图片": "Image de fond",
     "仅HOOK模式下可用": "Disponible uniquement en mode HOOK.",
     "仅OCR模式下可用": "Disponible uniquement en mode OCR.",
-    "重新启动后生效": "Prend effet après le redémarrage."
+    "重新启动后生效": "Prend effet après le redémarrage.",
+    "缩放失败": "Échec du zoom.",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "La carte graphique actuelle ne prend pas en charge ID3D11Device5::CreateFence. Veuillez essayer de changer de carte graphique ou de mettre à jour le pilote.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Impossible de capturer cette fenêtre, veuillez essayer de changer le mode de capture.",
+    "详情请参阅日志。": "Veuillez consulter le journal pour plus de détails.",
+    "不支持窗口模式缩放这个窗口。": "Le redimensionnement de cette fenêtre en mode fenêtré n'est pas pris en charge.",
+    "无法应用自定义裁剪。": "Impossible d'appliquer le recadrage personnalisé.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Magpie doit être exécuté en tant qu'administrateur pour redimensionner cette fenêtre.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Le redimensionnement, l'agrandissement ou le passage en plein écran des fenêtres est désactivé. Vous pouvez modifier ce comportement dans la page d'accueil.",
+    "不支持缩放这个窗口。": "Ce fenêtre ne supporte pas le zoom.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "La capture par duplication de bureau ne prend pas en charge le redimensionnement en mode fenêtré.",
+    "3D 游戏模式下不支持窗口模式缩放。": "Le mode fenêtré n'est pas pris en charge dans le mode de jeu 3D.",
+    "启用触控支持失败。": "Échec de l'activation du support tactile.",
+    "缩放模式无效。": "Le mode de zoom n'est pas valide."
 }

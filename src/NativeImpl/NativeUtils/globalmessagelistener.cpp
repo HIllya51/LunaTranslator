@@ -2,6 +2,7 @@
 static auto LUNA_UPDATE_PREPARED_OK = RegisterWindowMessage(L"LUNA_UPDATE_PREPARED_OK");
 static auto WM_MAGPIE_SCALINGCHANGED = RegisterWindowMessage(L"MagpieScalingChanged");
 static auto Magpie_Core_CLI_ToastMessage = RegisterWindowMessage(L"Magpie_Core_CLI_ToastMessage");
+static auto Magpie_Core_CLI_ErrorMessage = RegisterWindowMessage(L"Magpie_Core_CLI_ErrorMessage");
 static auto Magpie_Core_CLI_ScalingOptions_Save = RegisterWindowMessage(L"Magpie_Core_CLI_ScalingOptions_Save");
 static auto WM_SYS_HOTKEY = RegisterWindowMessage(L"SYS_HOTKEY_REG_UNREG");
 bool IsColorSchemeChangeMessage(LPARAM lParam)
@@ -18,6 +19,108 @@ struct hotkeymessageLP
     UINT vk;
     hotkeycallback_t callback;
 };
+
+enum class ScalingError
+{
+    NoError,
+
+    /////////////////////////////////////
+    //
+    // 先决条件错误
+    //
+    /////////////////////////////////////
+
+    // 未配置缩放模式或者缩放模式不合法
+    InvalidScalingMode,
+    // 启用触控支持失败
+    TouchSupport,
+    // 3D 游戏模式下不支持窗口模式缩放
+    Windowed3DGameMode,
+    // Desktop Duplication 不支持窗口模式缩放
+    WindowedDesktopDuplication,
+    // 通用的不支持缩放错误
+    InvalidSourceWindow,
+    // 因窗口已最大化或全屏而无法缩放，可通过更改设置强制缩放
+    Maximized,
+    // 因窗口的 IL 更高而无法缩放
+    LowIntegrityLevel,
+    // 应用自定义裁剪后尺寸太小或为负
+    InvalidCropping,
+    // 窗口不符合窗口模式缩放的条件，如已最大化
+    BannedInWindowedMode,
+
+    /////////////////////////////////////
+    //
+    // 初始化和缩放时错误
+    //
+    /////////////////////////////////////
+
+    // 通用的缩放失败错误
+    ScalingFailedGeneral,
+    // FrameSource 初始化失败
+    CaptureFailed,
+    // ID3D11Device5::CreateFence 失败
+    CreateFenceFailed
+};
+
+static std::pair<const wchar_t *, const wchar_t *> ShowError(ScalingError error) noexcept
+{
+    const wchar_t *key = nullptr;
+
+    bool isFail = true;
+    switch (error)
+    {
+    case ScalingError::InvalidScalingMode:
+        key = L"Message_InvalidScalingMode";
+        isFail = false;
+        break;
+    case ScalingError::TouchSupport:
+        key = L"Message_TouchSupport";
+        break;
+    case ScalingError::Windowed3DGameMode:
+        key = L"Message_Windowed3DGameMode";
+        isFail = false;
+        break;
+    case ScalingError::WindowedDesktopDuplication:
+        key = L"Message_WindowedDesktopDuplication";
+        isFail = false;
+        break;
+    case ScalingError::InvalidSourceWindow:
+        key = L"Message_InvalidSourceWindow";
+        break;
+    case ScalingError::Maximized:
+        key = L"Message_Maximized";
+        isFail = false;
+        break;
+    case ScalingError::LowIntegrityLevel:
+        key = L"Message_LowIntegrityLevel";
+        isFail = false;
+        break;
+    case ScalingError::InvalidCropping:
+        key = L"Message_InvalidCropping";
+        break;
+    case ScalingError::BannedInWindowedMode:
+        key = L"Message_BannedInWindowedMode";
+        isFail = false;
+        break;
+    case ScalingError::ScalingFailedGeneral:
+        key = L"Message_ScalingFailedGeneral";
+        break;
+    case ScalingError::CaptureFailed:
+        key = L"Message_CaptureFailed";
+        break;
+    case ScalingError::CreateFenceFailed:
+        key = L"Message_CreateFenceFailed";
+        break;
+    default:;
+        // assert(false);
+        // return;
+    }
+
+    auto title = isFail ? L"Message_ScalingFailed" : L"";
+    return {title, key};
+}
+
 static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     auto callback = (WindowMessageCallback_t)GetWindowLongPtrW(hWnd, GWLP_USERDATA);
@@ -54,14 +157,22 @@ static LRESULT CALLBACK WNDPROC_1(HWND hWnd, UINT message, WPARAM wParam, LPARAM
     }
     break;
     }
-    if (message == Magpie_Core_CLI_ToastMessage || message == Magpie_Core_CLI_ScalingOptions_Save)
+    if (message == Magpie_Core_CLI_ToastMessage || message == Magpie_Core_CLI_ScalingOptions_Save || message == Magpie_Core_CLI_ErrorMessage)
     {
-        ATOM atom = (ATOM)wParam;
-        WCHAR buffer[256];
-        if (GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer)))
+        if (message == Magpie_Core_CLI_ErrorMessage)
         {
-            GlobalDeleteAtom(atom);
-            callback(message == Magpie_Core_CLI_ToastMessage ? 4 : 5, false, (LPARAM)buffer);
+            auto &&[title, key] = ShowError((ScalingError)wParam);
+            callback(6, (WPARAM)title, (LPARAM)key);
+        }
+        else
+        {
+            ATOM atom = (ATOM)wParam;
+            WCHAR buffer[256];
+            if (GlobalGetAtomName(atom, buffer, ARRAYSIZE(buffer)))
+            {
+                GlobalDeleteAtom(atom);
+                callback(message == Magpie_Core_CLI_ToastMessage ? 4 : 5, false, (LPARAM)buffer);
+            }
         }
     }
     else if (message == WM_MAGPIE_SCALINGCHANGED)
@@ -148,6 +259,8 @@ DECLARE_API void globalmessagelistener(WinEventHookCALLBACK_t callback1, WindowM
     ChangeWindowMessageFilterEx(hWnd, LUNA_UPDATE_PREPARED_OK, MSGFLT_ALLOW, nullptr);
     ChangeWindowMessageFilterEx(hWnd, WM_MAGPIE_SCALINGCHANGED, MSGFLT_ALLOW, nullptr);
     ChangeWindowMessageFilterEx(hWnd, Magpie_Core_CLI_ToastMessage, MSGFLT_ALLOW, nullptr);
+    ChangeWindowMessageFilterEx(hWnd, Magpie_Core_CLI_ErrorMessage, MSGFLT_ALLOW, nullptr);
+    ChangeWindowMessageFilterEx(hWnd, Magpie_Core_CLI_ScalingOptions_Save, MSGFLT_ALLOW, nullptr);
     WinEventHookCALLBACK = callback1;
     SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_FOREGROUND, wc.hInstance, WinEventHookPROC, 0, 0, 0);
     SetWinEventHook(EVENT_OBJECT_DESTROY, EVENT_OBJECT_DESTROY, wc.hInstance, WinEventHookPROC, 0, 0, 0);

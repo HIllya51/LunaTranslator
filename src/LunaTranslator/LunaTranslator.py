@@ -1710,6 +1710,25 @@ class BASEOBJECT(QObject):
             _ = NativeUtils.SimpleCreateMutex("LUNASAVECONFIGUPDATE")
             if windows.GetLastError() != windows.ERROR_ALREADY_EXISTS:
                 saveallconfig()
+        elif msg == 6:
+            strings = {
+                "Message_ScalingFailed": "缩放失败",
+                "Message_CreateFenceFailed": "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。",
+                "Message_CaptureFailed": "无法捕获这个窗口，请尝试切换捕获方式。",
+                "Message_ScalingFailedGeneral": "详情请参阅日志。",
+                "Message_BannedInWindowedMode": "不支持窗口模式缩放这个窗口。",
+                "Message_InvalidCropping": "无法应用自定义裁剪。",
+                "Message_LowIntegrityLevel": "Magpie 需要以管理员身份运行才能缩放这个窗口。",
+                "Message_Maximized": "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。",
+                "Message_InvalidSourceWindow": "不支持缩放这个窗口。",
+                "Message_WindowedDesktopDuplication": "Desktop Duplication 捕获不支持窗口模式缩放。",
+                "Message_Windowed3DGameMode": "3D 游戏模式下不支持窗口模式缩放。",
+                "Message_TouchSupport": "启用触控支持失败。",
+                "Message_InvalidScalingMode": "缩放模式无效。",
+            }
+            title = strings.get(cast(value1, c_wchar_p).value, "")
+            msg = strings.get(cast(value2, c_wchar_p).value, "")
+            self.RichMessageBox.emit((_TR(title if title else "错误"), _TR(msg)))
 
     def _dowhenwndcreate(self, obj):
         if not isinstance(obj, QWidget):

@@ -925,5 +925,18 @@
     "背景图片": "Arka plan resmi",
     "仅HOOK模式下可用": "Yalnızca HOOK modunda kullanılabilir.",
     "仅OCR模式下可用": "Yalnızca OCR modunda kullanılabilir.",
-    "重新启动后生效": "Yeniden başlatmanın ardından geçerli olur."
+    "重新启动后生效": "Yeniden başlatmanın ardından geçerli olur.",
+    "缩放失败": "Yakınlaştırma başarısız oldu",
+    "当前显卡不支持 ID3D11Device5::CreateFence，请尝试切换显卡或更新驱动。": "Mevcut grafik kartı ID3D11Device5::CreateFence'i desteklemiyor. Lütfen grafik kartını değiştirmeyi veya sürücüyü güncellemeyi deneyin.",
+    "无法捕获这个窗口，请尝试切换捕获方式。": "Bu pencere yakalanamıyor, lütfen yakalama yöntemini değiştirmeyi deneyin.",
+    "详情请参阅日志。": "Detaylar için lütfen loglara bakın.",
+    "不支持窗口模式缩放这个窗口。": "Bu pencere için pencere modu ölçekleme desteklenmiyor.",
+    "无法应用自定义裁剪。": "Özel kırpma uygulanamıyor.",
+    "Magpie 需要以管理员身份运行才能缩放这个窗口。": "Magpie'nin bu pencereyi ölçeklendirebilmesi için yönetici olarak çalıştırılması gerekiyor.",
+    "已禁止缩放最大化或全屏的窗口。你可以在主页里更改这个行为。": "Yakınlaştırma, büyütme veya tam ekran yapma engellenmiş bir pencere. Bu davranışı ana sayfada değiştirebilirsiniz.",
+    "不支持缩放这个窗口。": "Bu pencereyi ölçeklendirme desteklenmiyor.",
+    "Desktop Duplication 捕获不支持窗口模式缩放。": "Desktop Duplication yakalama, pencere modu ölçeklendirmeyi desteklemez.",
+    "3D 游戏模式下不支持窗口模式缩放。": "3D oyun modunda pencere modu ölçeklemesi desteklenmez.",
+    "启用触控支持失败。": "Dokunmatik destek etkinleştirilemedi.",
+    "缩放模式无效。": "Yakınlaştırma modu geçersiz."
 }
