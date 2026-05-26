@@ -25,7 +25,7 @@ class TS(basetrans):
             tgt,
             sentence,
             str(__),
-            random.randint(0, int(20 * self.config["temperature"])),
+            random.randint(0, int(20 * self.config["Temperature"])),
         )
 
     def __init__(self, typename):
