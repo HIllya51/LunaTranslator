@@ -32,6 +32,7 @@ class TS(basetrans):
         super().__init__(typename)
         self.maybeuse = {}
         self.context = []
+        self.contextReal = []
         self.__model = None
 
     def make_gpt_dict_text(self, gpt_dict: GptDict, needinfo=True, split="->"):
@@ -156,7 +157,7 @@ class TS(basetrans):
             messages.append({"role": "user", "content": content})
         return messages
 
-    def hymt2_make_messages(self, query, gpt_dict: GptDict = None):
+    def hymt2_make_messages(self, contextnum, query, gpt_dict: GptDict = None):
         if not gpt_dict:
             if self.tgtlang_1 in (Languages.Chinese, Languages.TradChinese):
                 messages = [
@@ -191,6 +192,10 @@ class TS(basetrans):
 Translate the following text into {self.tgtlang_1.engname}. Note that you must ONLY output the translated result without any additional explanation:\n\n{query}""",
                     }
                 ]
+        if contextnum and len(self.contextReal):
+            l = min(contextnum, len(self.contextReal) // 2)
+            messages = self.contextReal[-2 * l:] + messages
+        print(messages)
         return messages
 
     def make_messages(self, prompt_version: str, query, gpt_dict: GptDict = None):
@@ -208,7 +213,7 @@ Translate the following text into {self.tgtlang_1.engname}. Note that you must O
             )
             self.needzhconv = True
         elif prompt_version == "Hy-MT2":
-            messages = self.hymt2_make_messages(query, gpt_dict)
+            messages = self.hymt2_make_messages(contextnum, query, gpt_dict)
             self.needzhconv = False
         return messages
 
@@ -283,5 +288,7 @@ Translate the following text into {self.tgtlang_1.engname}. Note that you must O
         self.__model = getmodelhook[0] if getmodelhook else self.config["model"]
         if not (query.strip() and respmessage.strip()):
             return
-        self.context.append(query)
+        self.context.append(query_.rawtext)
         self.context.append(respmessage)
+        self.contextReal.append({"role": "user", "content": query_.rawtext})
+        self.contextReal.append({"role": "assistant", "content": respmessage})
