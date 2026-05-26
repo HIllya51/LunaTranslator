@@ -464,7 +464,7 @@ class TextBrowser(QWidget, dataget):
         self.searchmasklabels_clicked2: "list[Qlabel_c]" = []
         self.searchmasklabels_clicked_num = 0
         self.searchmasklabels: "list[FenciQLabel]" = []
-        self.showatcenterflag = globalconfig["showatcenter"]
+        self.showatcenterflag = globalconfig.get("showatcenter", True)
         self.yinyinglabels: "list[base]" = []
         self.yinyinglabels_idx = 0
 
@@ -659,7 +659,7 @@ class TextBrowser(QWidget, dataget):
         if (texttype in (TextType.Origin,)) and (not globalconfig["isshowrawtext"]):
             return True
         if (texttype in (TextType.Translate, TextType.Error_translator)) and (
-            not globalconfig["showfanyi"]
+            not globalconfig.get("showfanyi", True)
         ):
             return True
         if (texttype in (TextType.Error_translator, TextType.Error_origin)) and (
@@ -677,7 +677,7 @@ class TextBrowser(QWidget, dataget):
         return i
 
     def checkaddname(self, name, text):
-        if name and globalconfig["showfanyisource"]:
+        if name and globalconfig.get("showfanyisource", False):
             text = name + " " + text
         return text
 
@@ -769,7 +769,7 @@ class TextBrowser(QWidget, dataget):
             return
         text = self.checkaddname(name, text)
         if len(tag):
-            isshowhira = globalconfig["isshowhira"]
+            isshowhira = globalconfig.get("isshowhira", True)
             font = self._createqfont(texttype, klass)
             tag = list(WordSegResultX.fromW(word) for word in tag)
             textlines, linetags = self._splitlinestags(font, tag, text)

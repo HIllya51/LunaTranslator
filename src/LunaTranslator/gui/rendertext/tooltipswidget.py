@@ -41,7 +41,7 @@ class tooltipssetting(LDialog):
             "word_hover_DWM",
             "word_hover_DWM_1",
             (globalconfig["rendertext_using"] != "webview")
-            or (not globalconfig["word_hover_action_usewb2"]),
+            or (not globalconfig.get("word_hover_action_usewb2", False)),
         )
         formLayout.addRow("圆角", spin1)
         if lay:
@@ -206,7 +206,7 @@ class tooltipswidget(QMainWindow, dataget):
             return
         if gobject.base.WordViewTooltip.isVisible():
             return
-        if globalconfig["word_hover_show_word_info"]:
+        if globalconfig.get("word_hover_show_word_info", False):
 
             try:
                 if not tooltipswidget.tooltipwindow:

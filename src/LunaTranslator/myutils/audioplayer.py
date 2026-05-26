@@ -110,7 +110,7 @@ class series_audioplayer:
                 while _playonce.isplaying:
                     time.sleep(0.1)
                     if self.tasks and not (
-                        globalconfig["ttsnointerrupt"] and (not self.tasks[-1])
+                        globalconfig.get("ttsnointerrupt", False) and (not self.tasks[-1])
                     ):
                         print(self.tasks)
                         break

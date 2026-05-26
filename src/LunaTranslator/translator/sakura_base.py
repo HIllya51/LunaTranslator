@@ -195,7 +195,6 @@ Translate the following text into {self.tgtlang_1.engname}. Note that you must O
         if contextnum and len(self.contextReal):
             l = min(contextnum, len(self.contextReal) // 2)
             messages = self.contextReal[-2 * l:] + messages
-        print(messages)
         return messages
 
     def make_messages(self, prompt_version: str, query, gpt_dict: GptDict = None):

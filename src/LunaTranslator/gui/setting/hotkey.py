@@ -53,7 +53,7 @@ def autoreadswitch(self):
     try:
         self.autoread.clicksignal.emit()
     except:
-        globalconfig["autoread"] = not globalconfig["autoread"]
+        globalconfig["autoread"] = not globalconfig.get("autoread", False)
 
 
 def safeGet():

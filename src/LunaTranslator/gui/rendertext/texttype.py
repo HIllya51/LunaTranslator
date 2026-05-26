@@ -89,7 +89,7 @@ class FenciColor(ColorControl):
             return None
         if self.isdeli:
             return None
-        if not globalconfig["show_fenci"]:
+        if not globalconfig.get("show_fenci", True):
             return None
         c = QColor(Qt.GlobalColor.white)
         if self.cixing:
@@ -140,7 +140,7 @@ class dataget:
     def _clickhovershow(self):
         return (
             self._clickable
-            or globalconfig["word_hover_show_word_info"]
+            or globalconfig.get("word_hover_show_word_info", False)
             or globalconfig["usesearchword_S_hover"]
         )
 

@@ -745,8 +745,8 @@ class TranslatorWindow(resizableframeless):
                 "showtrans",
                 buttonfunctions(
                     clicked=self.changeshowhidetrans,
-                    iconstate=lambda: globalconfig["showfanyi"],
-                    colorstate=lambda: globalconfig["showfanyi"],
+                    iconstate=lambda: globalconfig.get("showfanyi", True),
+                    colorstate=lambda: globalconfig.get("showfanyi", True),
                 ),
             ),
             ("history", lambda: gobject.base.transhis.showsignal.emit()),
@@ -1598,8 +1598,8 @@ class TranslatorWindow(resizableframeless):
         gobject.base.fenyinsettings.emit(isshowrawtext)
 
     def changeshowhidetrans(self):
-        globalconfig["showfanyi"] = not globalconfig["showfanyi"]
-        gobject.base.show_fany_switch.emit(globalconfig["showfanyi"])
+        globalconfig["showfanyi"] = not globalconfig.get("showfanyi", True)
+        gobject.base.show_fany_switch.emit(globalconfig.get("showfanyi", True))
         self.refreshtoolicon()
         gobject.base.maybeneedtranslateshowhidetranslate()
 
