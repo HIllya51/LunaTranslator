@@ -329,7 +329,7 @@ class BASEOBJECT(QObject):
             return
         if not globalconfig.get("ttsautoforward", False):
             return
-        if not globalconfig["autorun"]:
+        if not globalconfig.get("autorun", True):
             return
         windows.SetForegroundWindow(self.hwnd)
         time.sleep(0.001)

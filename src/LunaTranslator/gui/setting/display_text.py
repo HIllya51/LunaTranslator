@@ -475,6 +475,7 @@ def __xianshi(self):
         globalconfig,
         "isshowrawtext",
         callback=functools.partial(__changeuibuttonstate, self),
+        default=True,
     )
     gobject.base.show_original_switch.connect(btn.setChecked)
     return btn

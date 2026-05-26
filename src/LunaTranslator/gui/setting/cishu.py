@@ -355,7 +355,7 @@ def setTabcishu_l(self):
                 type="grid",
                 parent=self,
                 name="fenyinsettings",
-                enable=globalconfig["isshowrawtext"],
+                enable=globalconfig.get("isshowrawtext", True),
                 grid=(
                     [
                         "显示注音",

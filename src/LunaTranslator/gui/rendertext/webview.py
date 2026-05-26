@@ -41,7 +41,7 @@ class somecommon(dataget):
         self.ts_klass.clear()
         self.setselectable(globalconfig.get("selectable", True))
         self.showhideerror(globalconfig.get("showtranexception", True))
-        self.showhideorigin(globalconfig["isshowrawtext"])
+        self.showhideorigin(globalconfig.get("isshowrawtext", True))
         self.showhidetranslate(globalconfig.get("showfanyi", True))
         self.showhidename(globalconfig.get("showfanyisource", False))
         self.showatcenter(globalconfig.get("showatcenter", True))

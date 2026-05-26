@@ -113,7 +113,7 @@ class basetext:
 
     @property
     def isautorunning(self):
-        return globalconfig["autorun"]
+        return globalconfig.get("autorun", True)
 
     ##################
     def endX(self):

@@ -722,8 +722,8 @@ class TranslatorWindow(resizableframeless):
                 "automodebutton",
                 buttonfunctions(
                     clicked=self.changeTranslateMode,
-                    iconstate=lambda: globalconfig["autorun"],
-                    colorstate=lambda: globalconfig["autorun"],
+                    iconstate=lambda: globalconfig.get("autorun", True),
+                    colorstate=lambda: globalconfig.get("autorun", True),
                 ),
             ),
             ("setting", lambda: gobject.base.settin_ui_showsignal.emit()),
@@ -737,8 +737,8 @@ class TranslatorWindow(resizableframeless):
                 "showraw",
                 buttonfunctions(
                     clicked=self.changeshowhideraw,
-                    iconstate=lambda: globalconfig["isshowrawtext"],
-                    colorstate=lambda: globalconfig["isshowrawtext"],
+                    iconstate=lambda: globalconfig.get("isshowrawtext", True),
+                    colorstate=lambda: globalconfig.get("isshowrawtext", True),
                 ),
             ),
             (
@@ -1590,7 +1590,7 @@ class TranslatorWindow(resizableframeless):
         gobject.base.hwnd = hwnd if pid != _pid else None
 
     def changeshowhideraw(self):
-        isshowrawtext = not globalconfig["isshowrawtext"]
+        isshowrawtext = not globalconfig.get("isshowrawtext", True)
         globalconfig["isshowrawtext"] = isshowrawtext
         gobject.base.show_original_switch.emit(isshowrawtext)
         self.refreshtoolicon()
@@ -1598,16 +1598,18 @@ class TranslatorWindow(resizableframeless):
         gobject.base.fenyinsettings.emit(isshowrawtext)
 
     def changeshowhidetrans(self):
-        globalconfig["showfanyi"] = not globalconfig.get("showfanyi", True)
-        gobject.base.show_fany_switch.emit(globalconfig.get("showfanyi", True))
+        _ = not globalconfig.get("showfanyi", True)
+        globalconfig["showfanyi"] = _
+        gobject.base.show_fany_switch.emit(_)
         self.refreshtoolicon()
         gobject.base.maybeneedtranslateshowhidetranslate()
 
     def changeTranslateMode(self):
-        globalconfig["autorun"] = not globalconfig["autorun"]
+        _ = not globalconfig.get("autorun", True)
+        globalconfig["autorun"] = _
         self.refreshtoolicon()
         if gobject.base.textsource:
-            gobject.base.textsource.runornot(globalconfig["autorun"])
+            gobject.base.textsource.runornot(_)
 
     def changetoolslockstateEx(self):
         globalconfig["locktoolsEx"] = True

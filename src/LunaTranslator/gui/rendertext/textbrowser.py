@@ -656,7 +656,7 @@ class TextBrowser(QWidget, dataget):
                 label.maybestylechanged()
 
     def checkskip(self, texttype: TextType):
-        if (texttype in (TextType.Origin,)) and (not globalconfig["isshowrawtext"]):
+        if (texttype in (TextType.Origin,)) and (not globalconfig.get("isshowrawtext", True)):
             return True
         if (texttype in (TextType.Translate, TextType.Error_translator)) and (
             not globalconfig.get("showfanyi", True)

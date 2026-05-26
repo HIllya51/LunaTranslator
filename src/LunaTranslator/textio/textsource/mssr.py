@@ -251,7 +251,7 @@ class mssr(basetext):
         self.hPipe2 = windows.CreateFile(pipename2)
         self.hwndChanged(self.hwnd)
         self.listen()
-        if globalconfig["autorun"]:
+        if globalconfig.get("autorun", True):
             windows.SetEvent(self.notifyrun)
 
     @threader
