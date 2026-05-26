@@ -509,14 +509,14 @@ def internal(self):
         [
             "识别方向",
             D_getsimplecombobox(
-                ["横向", "竖向", "自适应"], globalconfig, "verticalocr"
+                ["横向", "竖向", "自适应"], globalconfig, "verticalocr", default=2
             ),
             "",
             "合并临近行",
-            D_getsimpleswitch(globalconfig, "ocrmergelines"),
+            D_getsimpleswitch(globalconfig, "ocrmergelines", default=True),
             getsmalllabel("距离"),
             D_getspinbox(
-                0, 3, globalconfig, "ocrmergelines_distance", double=True, step=0.01
+                0, 3, globalconfig, "ocrmergelines_distance", double=True, step=0.01, default=0.4
             ),
             getsmalllabel("x"),
             "",

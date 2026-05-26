@@ -448,8 +448,6 @@
         600
     ],
     "global_namemap2": [],
-    "settingfontsize": 12,
-    "settingfontbold": false,
     "buttoncolor": "#2e2eff",
     "buttoncolor_1": "#ff03f2",
     "ocrrangecolor": "#000000",
@@ -489,10 +487,6 @@
         400
     ],
     "hovercolor": "#80000000",
-    "anki_Orientation_V": true,
-    "gamemanageruseversion": 0,
-    "gamemanager_integrated_internal_layout": 2,
-    "profiles_index": 0,
     "toolbutton": {
         "rank2": [
             "luna",
@@ -795,7 +789,6 @@
         }
     },
     "disappear_delay_tool": 1,
-    "proxy": "127.0.0.1:7890",
     "cixingcolor": {
         "形容詞": "aliceblue",
         "形状詞": "antiquewhite",
@@ -1556,9 +1549,6 @@
             "use": false
         }
     },
-    "verticalocr": 2,
-    "ocrmergelines": true,
-    "ocrmergelines_distance": 0.4,
     "ocr": {
         "selfbuild": {
             "use": false,
@@ -1972,10 +1962,8 @@
         }
     ],
     "proxies": null,
-    "viewlistpos": 0,
     "wordlabel": [],
     "wordlabel2": [],
-    "getWordFallbackClipboard": true,
     "noundictconfig_ex": [],
     "toppest_translator": null,
     "extraLangs": []

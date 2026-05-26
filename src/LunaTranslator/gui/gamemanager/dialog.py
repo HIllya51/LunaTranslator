@@ -103,9 +103,9 @@ class dialog_savedgame_integrated(saveposwindow):
         self.syssettingbtn.sizeChanged.connect(self.do_resize)
         self.switch.sizeChanged.connect(self.do_resize)
         self.show()
-        self.switch.selectlayout(globalconfig["gamemanager_integrated_internal_layout"])
+        self.switch.selectlayout(globalconfig.get("gamemanager_integrated_internal_layout", 2))
         self.switch.btnclicked.connect(self.selectlayout)
-        self.selectlayout(globalconfig["gamemanager_integrated_internal_layout"], True)
+        self.selectlayout(globalconfig.get("gamemanager_integrated_internal_layout", 2), True)
 
     def showEvent(self, a0):
         self.__check()
@@ -113,7 +113,7 @@ class dialog_savedgame_integrated(saveposwindow):
 
     def __check(self):
         if not (self.hasFocus() and self.underMouse()):
-            if globalconfig["gamemanager_integrated_internal_layout"] != 0:
+            if globalconfig.get("gamemanager_integrated_internal_layout", 2) != 0:
                 self.switch.hide()
             self.syssettingbtn.hide()
 
@@ -121,7 +121,7 @@ class dialog_savedgame_integrated(saveposwindow):
         self.do_resize()
 
     def do_resize(self, _=None):
-        if globalconfig["gamemanager_integrated_internal_layout"] in (2,):
+        if globalconfig.get("gamemanager_integrated_internal_layout", 2) in (2,):
             self.switch.setDirection(QBoxLayout.Direction.TopToBottom)
             self.switch.move(0, self.height() - self.switch.height())
             self.syssettingbtn.move(
@@ -135,14 +135,14 @@ class dialog_savedgame_integrated(saveposwindow):
             self.syssettingbtn.move(x, 0)
 
     def leaveEvent(self, a0):
-        if globalconfig["gamemanager_integrated_internal_layout"] != 0:
+        if globalconfig.get("gamemanager_integrated_internal_layout", 2) != 0:
             self.switch.hide()
         self.syssettingbtn.hide()
         return super().leaveEvent(a0)
 
     def enterEvent(self, a0):
         self.switch.show()
-        if globalconfig["gamemanager_integrated_internal_layout"] != 0:
+        if globalconfig.get("gamemanager_integrated_internal_layout", 2) != 0:
             self.syssettingbtn.show()
         return super().enterEvent(a0)
 

@@ -59,7 +59,7 @@ def autoreadswitch(self):
 def safeGet():
 
     t = NativeUtils.GetSelectedText()
-    if (t is None) and (globalconfig["getWordFallbackClipboard"]):
+    if (t is None) and (globalconfig.get("getWordFallbackClipboard", True)):
         t = NativeUtils.ClipBoard.text
     if 0:
         QToolTip.showText(QCursor.pos(), _TR("取词失败"), gobject.base.commonstylebase)

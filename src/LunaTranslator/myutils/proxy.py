@@ -15,7 +15,7 @@ def _getproxy():
         if globalconfig.get("usesysproxy", True):
             p = getsysproxy()
         else:
-            p = globalconfig["proxy"]
+            p = globalconfig.get("proxy", "127.0.0.1:7890")
     else:
         p = None
     return {"https": p, "http": p}

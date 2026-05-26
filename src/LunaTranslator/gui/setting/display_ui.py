@@ -352,6 +352,7 @@ def uisetting(self):
                                         "settingfontsize",
                                         double=True,
                                         callback=lambda _: gobject.base.setcommonstylesheet(),
+                                        default=12,
                                     ),
                                     "",
                                     getsmalllabel("加粗"),
@@ -359,6 +360,7 @@ def uisetting(self):
                                         globalconfig,
                                         "settingfontbold",
                                         callback=lambda _: gobject.base.setcommonstylesheet(),
+                                        default=False,
                                     ),
                                 ]
                             ],

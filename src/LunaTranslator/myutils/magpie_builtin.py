@@ -111,7 +111,7 @@ class MagpieBuiltin:
 
     def changestatus(self, hwnd, full, windowmode):
         if full:
-            profiles_index = globalconfig["profiles_index"]
+            profiles_index = globalconfig.get("profiles_index", 0)
             if profiles_index > len(magpie_config["profiles"]):
                 profiles_index = 0
 

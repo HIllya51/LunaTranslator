@@ -32,7 +32,7 @@ def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
         visx[i] = "[[{}]]".format(visx[i])
     combo.addItems([default] + visx, [[-1, 0, 0]] + infosx)
     combo.blockSignals(False)
-    graphicsCardId: dict = magpie_config["profiles"][globalconfig["profiles_index"]][
+    graphicsCardId: dict = magpie_config["profiles"][globalconfig.get("profiles_index", 0)][
         "graphicsCardId"
     ]
     curr = (
@@ -45,7 +45,7 @@ def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
 
 def __changed(combo: SuperCombo, idx):
     data = combo.getIndexData(idx)
-    graphicsCardId: dict = magpie_config["profiles"][globalconfig["profiles_index"]][
+    graphicsCardId: dict = magpie_config["profiles"][globalconfig.get("profiles_index", 0)][
         "graphicsCardId"
     ]
     graphicsCardId.update(idx=data[0], vendorId=data[1], deviceId=data[2])
@@ -88,7 +88,7 @@ def __select(combo: SuperCombo):
 def __layout():
     combo = getsimplecombobox(
         [_["name"] for _ in magpie_config["scalingModes"]],
-        magpie_config["profiles"][globalconfig["profiles_index"]],
+        magpie_config["profiles"][globalconfig.get("profiles_index", 0)],
         "scalingMode",
         static=True,
     )
@@ -116,7 +116,7 @@ def makescalew():
                                     "DwmSharedSurface",
                                 ],
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "captureMethod",
                                 static=True,
@@ -126,7 +126,7 @@ def makescalew():
                             "3D游戏模式",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "3DGameMode",
                             ),
@@ -201,7 +201,7 @@ def makescalew():
                                     "自定义",
                                 ],
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "initialWindowedScaleFactor",
                             ),
@@ -221,7 +221,7 @@ def makescalew():
                             "帧率限制",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "frameRateLimiterEnabled",
                             ),
@@ -231,7 +231,7 @@ def makescalew():
                                 0,
                                 9999,
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "maxFrameRate",
                             ),
@@ -249,7 +249,7 @@ def makescalew():
                             "捕获标题栏",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "captureTitleBar",
                             ),
@@ -258,7 +258,7 @@ def makescalew():
                             "自定义剪裁",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "croppingEnabled",
                             ),
@@ -285,7 +285,7 @@ def makescalew():
                                     "和源窗口相同",
                                 ],
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "cursorScaling",
                             ),
@@ -295,7 +295,7 @@ def makescalew():
                             D_getsimplecombobox(
                                 ["最邻近", "双线性"],
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "cursorInterpolationMode",
                             ),
@@ -304,7 +304,7 @@ def makescalew():
                             "光标静止时自动隐藏",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "autoHideCursorEnabled",
                             ),
@@ -314,7 +314,7 @@ def makescalew():
                                 0.1,
                                 5,
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "autoHideCursorDelay",
                                 double=True,
@@ -324,7 +324,7 @@ def makescalew():
                             "缩放时调整光标速度",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "adjustCursorSpeed",
                             ),
@@ -383,7 +383,7 @@ def makescalew():
                                     "右下角",
                                 ],
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "destAlignment",
                             ),
@@ -392,7 +392,7 @@ def makescalew():
                             "禁用DirectFlip",
                             D_getsimpleswitch(
                                 magpie_config["profiles"][
-                                    globalconfig["profiles_index"]
+                                    globalconfig.get("profiles_index", 0)
                                 ],
                                 "disableDirectFlip",
                             ),

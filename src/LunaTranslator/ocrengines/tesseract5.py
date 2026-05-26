@@ -71,12 +71,13 @@ class OCR(baseocr):
         lang = self.srclang
         psm = 6
         imgfile = None
-        if globalconfig["verticalocr"] == 0:
+        verticalocr = globalconfig.get("verticalocr", 2)
+        if verticalocr == 0:
             pass
-        elif globalconfig["verticalocr"] == 1:
+        elif verticalocr == 1:
             lang += "_vert"
             psm = 5
-        elif globalconfig["verticalocr"] == 2:
+        elif verticalocr == 2:
             fname = gobject.gettempdir(str(uuid.uuid4()) + ".png")
             with open(fname, "wb") as ff:
                 ff.write(imagebinary)

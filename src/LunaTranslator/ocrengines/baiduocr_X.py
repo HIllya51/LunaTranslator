@@ -217,7 +217,7 @@ class OCR(baseocr):
 
         data = {
             "image": b64,
-            "detect_direction": int(globalconfig["verticalocr"]) != 0,
+            "detect_direction": int(globalconfig.get("verticalocr", 2)) != 0,
             "language_type": self.srclang,
         }
 

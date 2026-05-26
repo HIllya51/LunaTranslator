@@ -360,7 +360,7 @@ syncconfig(transerrorfixdictconfig, defaulterrorfix)
 
 syncconfig(magpie_config, dfmagpie_config)
 syncconfig(
-    magpie_config["profiles"][globalconfig["profiles_index"]],
+    magpie_config["profiles"][globalconfig.get("profiles_index", 0)],
     dfmagpie_config["profiles"][0],
 )
 syncconfig(translatorsetting, translatordfsetting)

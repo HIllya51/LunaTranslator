@@ -481,6 +481,6 @@ class OCR(baseocr):
         self.checkchange()
         pss, texts = self._ocr.OcrDetect(
             image,
-            globalconfig["verticalocr"],
+            globalconfig.get("verticalocr", 2),
         )
         return OCRResult(boxs=pss, texts=texts)

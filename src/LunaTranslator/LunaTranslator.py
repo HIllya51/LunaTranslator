@@ -1555,11 +1555,11 @@ class BASEOBJECT(QObject):
         fontstr = lambda fsize: "font:{fontsize}pt  {fonttype}; {bold}".format(
             fontsize=fsize,
             fonttype=globalconfig["settingfonttype"],
-            bold=("", "font-weight: bold;")[globalconfig["settingfontbold"]],
+            bold=("", "font-weight: bold;")[globalconfig.get("settingfontbold", False)],
         )
-        style += "*{{  {}  }}".format(fontstr(globalconfig["settingfontsize"]))
+        style += "*{{  {}  }}".format(fontstr(globalconfig.get("settingfontsize", 12)))
         style += "QListWidget {{ {} }}".format(
-            fontstr(globalconfig["settingfontsize"] + 2)
+            fontstr(globalconfig.get("settingfontsize", 12) + 2)
         )
         style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
         style += "#NOBORDER{border:0;margin:0;padding:0;}"
@@ -1567,8 +1567,8 @@ class BASEOBJECT(QObject):
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
         font.setFamily(globalconfig["settingfonttype"])
-        font.setPointSizeF(globalconfig["settingfontsize"])
-        font.setBold(globalconfig["settingfontbold"])
+        font.setPointSizeF(globalconfig.get("settingfontsize", 12))
+        font.setBold(globalconfig.get("settingfontbold", False))
         if QApplication.instance().font() != font:
             QApplication.instance().setFont(font)
 

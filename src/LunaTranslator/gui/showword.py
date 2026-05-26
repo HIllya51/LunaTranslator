@@ -247,7 +247,7 @@ class AnkiWindow(QWidget):
         self.refreshhtml.connect(self.refreshhtmlfunction)
         self.tabs.currentChanged.connect(self.ifshowrefresh)
         self.orientswitch = threeswitch(self, icons=["fa.arrows-h", "fa.arrows-v"])
-        self.orientswitch.selectlayout(globalconfig["anki_Orientation_V"])
+        self.orientswitch.selectlayout(globalconfig.get("anki_Orientation_V", True))
         self.orientswitch.btnclicked.connect(self.selectlayout)
         self.orientswitch.sizeChanged.connect(self.do_resize)
 
@@ -255,7 +255,7 @@ class AnkiWindow(QWidget):
         globalconfig["anki_Orientation_V"] = i
         self.refsearchw.spliter.setOrientation(
             Qt.Orientation.Vertical
-            if globalconfig["anki_Orientation_V"]
+            if globalconfig.get("anki_Orientation_V", True)
             else Qt.Orientation.Horizontal
         )
 
@@ -1986,7 +1986,7 @@ class searchwordW(closeashidewindow):
         self.isfirstshowleftwidgets = True
         self.spliter.setOrientation(
             Qt.Orientation.Vertical
-            if globalconfig["anki_Orientation_V"]
+            if globalconfig.get("anki_Orientation_V", True)
             else Qt.Orientation.Horizontal
         )
 

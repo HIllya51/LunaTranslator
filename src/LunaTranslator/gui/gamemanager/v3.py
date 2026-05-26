@@ -533,8 +533,8 @@ class pixwrapper(QSplitter):
         self.ref = p
         self.setAcceptDrops(True)
         self.setFocusPolicy(Qt.FocusPolicy.ClickFocus)
-        rank = (globalconfig["viewlistpos"] // 2) == 0
-        hor = (globalconfig["viewlistpos"] % 2) == 0
+        rank = (globalconfig.get("viewlistpos", 0) // 2) == 0
+        hor = (globalconfig.get("viewlistpos", 0) % 2) == 0
 
         self.previewimages = previewimages(self)
         self.previewimages.model().rowsMoved.connect(self._rowsMoved)
@@ -574,7 +574,7 @@ class pixwrapper(QSplitter):
         pos.addActions(sxzy)
         for i, _ in enumerate(sxzy):
             _.setCheckable(True)
-            _.setChecked(i == globalconfig["viewlistpos"])
+            _.setChecked(i == globalconfig.get("viewlistpos", 0))
         if curr and os.path.exists(extradatas["localedpath"].get(curr, curr)):
             menu.addAction(setimage)
             menu.addAction(seticon)
@@ -608,8 +608,8 @@ class pixwrapper(QSplitter):
 
     def switchpos(self, pos):
         globalconfig["viewlistpos"] = pos
-        rank = (globalconfig["viewlistpos"] // 2) == 0
-        hor = (globalconfig["viewlistpos"] % 2) == 0
+        rank = (pos // 2) == 0
+        hor = (pos % 2) == 0
         self.setrank(rank)
         self.sethor(hor)
 

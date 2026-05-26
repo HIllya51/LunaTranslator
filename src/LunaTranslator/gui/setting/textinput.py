@@ -587,7 +587,7 @@ def proxyusage():
     vbox = VisLFormLayout(w2)
     vbox.setContentsMargins(0, 0, 0, 0)
     check = QLabel()
-    proxy = QLineEdit(globalconfig["proxy"])
+    proxy = QLineEdit(globalconfig.get("proxy", "127.0.0.1:7890"))
     __p = getboxwidget(["手动设置代理", proxy, check])
 
     def __(x):
@@ -606,7 +606,7 @@ def proxyusage():
     )
     vbox.addRow(__p)
     __(globalconfig.get("usesysproxy", True))
-    validator(check, globalconfig["proxy"])
+    validator(check, globalconfig.get("proxy", "127.0.0.1:7890"))
     proxy.textChanged.connect(functools.partial(validator, check))
     return hbox
 
