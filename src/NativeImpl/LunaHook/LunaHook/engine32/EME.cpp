@@ -134,8 +134,51 @@ namespace
     return InsertEMEHook();
   }
 }
+static bool egoto()
+{
+  // エゴと後悔のジレンマ
+  // https://vndb.org/v24132
+  BYTE bytes[] = {
+      0xa1, XX4,
+      0x53,
+      0x8b, 0x5c, 0x24, 0x0c,
+      0x55,
+      0x8b, 0xa8, XX4,
+      0x8b, 0x90, XX4,
+      0x56,
+      0x8b, 0xb0, XX4,
+      0x2b, 0xee,
+      0x57,
+      0x8d, 0x4c, 0x2b, 0x02,
+      0x3b, 0xca,
+      0x0f, 0x82, XX4,
+      0x8b, 0x88, XX4,
+      0x6a, 0x00,
+      0x83, 0xc9, 0x08};
+  bool succ = false;
+  for (auto addr : Util::SearchMemory(bytes, sizeof(bytes), PAGE_EXECUTE, processStartAddress, processStopAddress))
+  {
+    HookParam hp;
+    hp.address = addr;
+    hp.offset = stackoffset(1);
+    hp.type = FULL_STRING | USING_STRING;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      static std::string last;
+      auto s = buffer->strA();
+      if (endWith(last, s))
+      {
+        last = s;
+        buffer->clear();
+        return;
+      }
+      last = s;
+    };
+    succ |= NewHook(hp, "egoto");
+  }
+  return succ;
+}
 bool EME::attach_function()
 {
-
-  return emeengine() | takeout();
+  return egoto() || (emeengine() | takeout());
 }
