@@ -1292,7 +1292,12 @@ class llamalisttable(LTableView):
         self.Model.setHorizontalHeaderLabels(["架构", "大小", "下载"])
         for _ in (0, 1, 2):
             self.horizontalHeader().setSectionResizeMode(
-                _, QHeaderView.ResizeMode.Stretch
+                _,
+                (
+                    QHeaderView.ResizeMode.Stretch
+                    if _ != 0
+                    else QHeaderView.ResizeMode.ResizeToContents
+                ),
             )
 
     def initialize_(
@@ -1316,7 +1321,15 @@ class llamalisttable(LTableView):
                 continue
             arch = maich.groups()[0]
             size = format_bytes(_["size"])
-            item = QStandardItem(arch)
+            if arch == "sycl":
+                arch += " (Intel GPU/NPU)"
+            elif arch.startswith("cuda"):
+                arch += " (Nvidia GPU)"
+            elif arch == "hip-radeon":
+                arch += " (AMD GPU/NPU)"
+            elif arch == "vulkan":
+                arch += "_(通用)"
+            item = LStandardItem(arch)
             item.setData(_["browser_download_url"], Qt.ItemDataRole.UserRole + 2)
             item.setData(res["tag_name"], Qt.ItemDataRole.UserRole + 10)
             item.setData(_["digest"], Qt.ItemDataRole.UserRole + 4)
@@ -1327,7 +1340,6 @@ class llamalisttable(LTableView):
             item2.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             item3.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             self.Model.appendRow([item, item2, item3])
-        self.setColumnHidden(3, True)
         gobject.base.connectsignal(gobject.base.llamacpparchcheck, self.__archcheck)
 
     def __archcheck(

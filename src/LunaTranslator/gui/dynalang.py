@@ -257,8 +257,9 @@ class LTableView(QTableView):
 class LStandardItem(QStandardItem):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
-        self.__t = ""
-        self.__tip = ""
+        self.__t = self.text()
+        self.__tip = self.toolTip()
+        self.updatelangtext()
 
     def setText(self, atext):
         self.__t = atext
@@ -292,7 +293,6 @@ class LStandardItemModel(QStandardItemModel):
                 item.updatelangtext()
         for row in range(self.rowCount()):
             for col in range(self.columnCount()):
-                item = self.item(row, col)
                 if isinstance(item, LStandardItem):
                     item.updatelangtext()
 
@@ -317,7 +317,7 @@ class LToolButton(IconToolButton):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)
         self._text = self.text()
-        super().setText(_TR(self._text))
+        self.updatelangtext()
 
     def setText(self, t):
         self._text = t
