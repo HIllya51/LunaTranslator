@@ -817,7 +817,7 @@ def copy_move_not_exists(src: str, dst: str, lost_copy: bool = False):
         for file in files:
             src_file = os.path.join(root, file)
             dst_file = os.path.join(target_dir, file)
-            if os.path.exists(dst_file):
+            if os.path.exists(dst_file) and not dst_file.lower().endswith(".exe"):
                 continue
             if lost_copy:
                 shutil.copy2(src_file, dst_file)
@@ -1070,11 +1070,9 @@ def autostartllamacpp(force=False):
             l: str = proc.stderr.readline()
             if not l:
                 break
-            if "starting the main loop" in l:
+            if "all slots are idle" in l:
                 cnt += 1
-            elif "all slots are idle" in l:
-                cnt += 1
-            if cnt == 2:
+            if cnt == 1:
                 cnt += 1
                 gobject.base.translation_ui.displayglobaltooltip.emit(
                     "llama.cpp loaded"
