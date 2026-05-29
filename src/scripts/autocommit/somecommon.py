@@ -45,7 +45,7 @@ def call_llm_api(prompt: str, api_key: str, api_url: str, model: str):
 
 
 def generate_commit_messages(diff_text: str):
-    chinese_prompt = f"""Based on the Git diff provided, generate an English only commit message. Do not describe overly specific code changes.
+    chinese_prompt = f"""Based on the Git diff provided, generate an English commit message, with only ascii characters. Do not describe overly specific code changes.
 
 Git diff:
 ```

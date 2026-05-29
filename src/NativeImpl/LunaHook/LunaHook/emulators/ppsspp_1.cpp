@@ -744,6 +744,28 @@ namespace
             return buffer->clear();
         FULJM05603(buffer, hp);
     }
+    void ULJM05840(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto s = (char *)PPSSPP::emu_arg(context)[0x01];
+        while (*(s - 1) || *(s - 2))
+            s -= 1;
+        if (!*s)
+            s += 1;
+        std::string ss;
+        while (*s)
+        {
+            std::string _s = s;
+            ss += _s;
+            s += _s.size() + 1;
+        }
+        if (all_ascii(ss))
+            return;
+        static std::string last;
+        if (last == ss)
+            return;
+        last = ss;
+        buffer->from(ss);
+    }
     void ULJM05810(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto data = PPSSPP::emu_arg(context)[0x0f];
@@ -1577,6 +1599,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 学園ヘタリア Portable
+    {0x88113B0, {0, 0, 0, ULJM05840, 0, "ULJM05840"}},
     // 恋愛0キロメートル Portable
     {0x881F154, {FULL_STRING, 1, 0, 0, NPJH50715, "NPJH50715"}},
     // 文明開華 葵座異聞録 再演
