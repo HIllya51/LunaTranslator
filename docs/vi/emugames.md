@@ -419,7 +419,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
-|  | ULJM05840 | 学園ヘタリア Portable |
+|  | ULJM05839 & ULJM05840 | 学園ヘタリア Portable |
 |  | NPJH50715 | 恋愛0キロメートル Portable |
 |  | NPJH50560 | 文明開華 葵座異聞録 再演 |
 |  | ULJM05491 | サイファーPORTABLE |

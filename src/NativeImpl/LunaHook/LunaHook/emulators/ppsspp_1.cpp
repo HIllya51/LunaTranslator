@@ -1600,7 +1600,7 @@ struct emfuncinfoX
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
     // 学園ヘタリア Portable
-    {0x88113B0, {0, 0, 0, ULJM05840, 0, "ULJM05840"}},
+    {0x88113B0, {0, 0, 0, ULJM05840, 0, std::vector<const char *>{"ULJM05839", "ULJM05840"}}},
     // 恋愛0キロメートル Portable
     {0x881F154, {FULL_STRING, 1, 0, 0, NPJH50715, "NPJH50715"}},
     // 文明開華 葵座異聞録 再演
