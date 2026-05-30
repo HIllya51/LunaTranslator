@@ -16,6 +16,7 @@ from datetime import datetime
 import requests
 from myutils.utils import (
     useExCheck,
+    stringfyerror,
     makehtml,
     selectdebugfile,
     splittranslatortypes,
@@ -1301,8 +1302,16 @@ class llamalisttable(LTableView):
             )
 
     def initialize_(
-        self, p: "llamalistQwidget_internal", parnet: llamalistQwidget, res: dict
+        self,
+        p: "llamalistQwidget_internal",
+        parnet: llamalistQwidget,
+        res: "dict|Exception",
     ):
+        if isinstance(res, Exception):
+            p.link.setText(stringfyerror(res) + "<br>" + p.t)
+            p.refs.show()
+            return
+
         p.setCurrentIndex(1)
         parnet.newversionlabel.setText(makehtml(res["html_url"], res["tag_name"][1:]))
         cudas = {}
@@ -1395,7 +1404,7 @@ class llamalisttable(LTableView):
 
 
 class llamalistQwidget_internal(QStackedWidget):
-    initialize = pyqtSignal(dict)
+    initialize = pyqtSignal(object)
 
     def __init__(self, parnet: llamalistQwidget):
         super().__init__()
@@ -1407,26 +1416,32 @@ class llamalistQwidget_internal(QStackedWidget):
         self.addWidget(table)
         l1 = QVBoxLayout(w)
         hb = QHBoxLayout()
-        refs = IconButton("fa.refresh", tips="刷新")
-        refs.setFixedSize(QSize(100, 100))
-        hb.addWidget(refs)
+        self.refs = IconButton("fa.refresh", tips="刷新")
+        self.refs.setFixedSize(QSize(100, 100))
+        self.refs.hide()
+        hb.addWidget(self.refs)
         hb.setAlignment(Qt.AlignmentFlag.AlignCenter)
         l1.setAlignment(Qt.AlignmentFlag.AlignCenter)
         l1.addLayout(hb)
-        refs.clicked.connect(self.firstshow)
-        link = LinkLabel()
-        l1.addWidget(link)
-        link.setText(makehtml("https://github.com/ggml-org/llama.cpp/releases"))
+        self.refs.clicked.connect(self.firstshow)
+        self.link = LinkLabel()
+        l1.addWidget(self.link)
+        self.t = makehtml("https://github.com/ggml-org/llama.cpp/releases")
+        self.link.setText("loading...")
         self.loadonce = True
         self.initialize.connect(functools.partial(table.initialize_, self, parnet))
         self.firstshow()
 
     @threader
     def firstshow(self, _=None):
-        res = requests.get(
-            "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
-            proxies=getproxy(),
-        ).json()
+        try:
+            res = requests.get(
+                "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
+                proxies=getproxy(),
+            ).json()
+        except Exception as e:
+            self.initialize.emit(e)
+            return
         # 必须检查一下是不是有效的相应
         if not "tag_name" in res:
             return
