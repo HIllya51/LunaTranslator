@@ -1330,6 +1330,7 @@ class llamalisttable(LTableView):
                 continue
             arch = maich.groups()[0]
             size = format_bytes(_["size"])
+            _arch = arch
             if arch == "sycl":
                 arch += " (Intel GPU/NPU)"
             elif arch.startswith("cuda"):
@@ -1342,8 +1343,8 @@ class llamalisttable(LTableView):
             item.setData(_["browser_download_url"], Qt.ItemDataRole.UserRole + 2)
             item.setData(res["tag_name"], Qt.ItemDataRole.UserRole + 10)
             item.setData(_["digest"], Qt.ItemDataRole.UserRole + 4)
-            item.setData(cudas.get(arch, ""), Qt.ItemDataRole.UserRole + 3)
-            item.setData(cudasdigest.get(arch, ""), Qt.ItemDataRole.UserRole + 30)
+            item.setData(cudas.get(_arch, ""), Qt.ItemDataRole.UserRole + 3)
+            item.setData(cudasdigest.get(_arch, ""), Qt.ItemDataRole.UserRole + 30)
             item3 = LStandardItem()
             item2 = QStandardItem(size)
             item2.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
