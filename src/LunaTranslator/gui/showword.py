@@ -1923,6 +1923,11 @@ class searchwordW(closeashidewindow):
             self.searchtext.setText(action.text())
             self.search(action.text())
 
+    def maybeusecachesentence(self):
+        if self.searchtext.text() in self.wordviewer.save_sentence:
+            return self.wordviewer.save_sentence
+        return None
+
     def setupUi(self):
         self.historys = []
         self.setWindowTitle("查词")
@@ -1945,7 +1950,9 @@ class searchwordW(closeashidewindow):
         self.searchlayout.addWidget(self.searchtext)
         searchbutton = getIconButton(
             icon="fa.search",
-            callback=lambda: self.search(self.searchtext.text()),
+            callback=lambda: self.search(
+                self.searchtext.text(), sentence=self.maybeusecachesentence()
+            ),
             tips="查词",
         )
         searchbutton.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
@@ -2006,11 +2013,8 @@ class searchwordW(closeashidewindow):
         self.ankiwindow.setMinimumHeight(1)
         self.ankiwindow.setMinimumWidth(1)
 
-    def searchbutton_contextmenu(self, _):
+    def searchbutton_contextmenu(self, *_):
         links = globalconfig["useopenlinklink1"]
-        if not links:
-            return self._createnewwindowsearch()
-
         menu = QMenu(self)
         newwindow = LAction("在新窗口中查词", menu)
         menu.addAction(newwindow)
@@ -2026,14 +2030,30 @@ class searchwordW(closeashidewindow):
             menu.addAction(ac)
             __dict[ac] = link
 
+        menu.addSeparator()
+        editlist = LAction("设置")
+        menu.addAction(editlist)
         action = menu.exec(QCursor.pos())
         if action == newwindow:
             self._createnewwindowsearch()
-        else:
-            link: str = __dict.get(action)
-            if not link:
-                return
-            os.startfile(link.replace("{word}", self.searchtext.text()))
+            return
+        if editlist == action:
+            listediter(
+                self,
+                "设置",
+                globalconfig["useopenlinklink1"],
+                exec=True,
+                icon="fa.link",
+            )
+            return
+        link: str = __dict.get(action)
+        if not link:
+            return
+        os.startfile(
+            link.replace("{word}", self.searchtext.text()).replace(
+                "{sentence}", self.maybeusecachesentence()
+            )
+        )
 
     def maybecreateleftsplitter(self):
         if self.isfirstshowleftwidgets:

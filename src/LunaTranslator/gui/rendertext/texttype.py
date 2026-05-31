@@ -132,7 +132,6 @@ class dataget:
         return (
             globalconfig["usesearchword"]
             or globalconfig["usecopyword"]
-            or globalconfig["useopenlink"]
             or globalconfig["usesearchword_S"]
         )
 
