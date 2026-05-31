@@ -41,7 +41,7 @@ namespace
 {
     std::pair<std::string, std::string> splitpair(const std::wstring &s)
     {
-        return {WideStringToString(re::sub(s, LR"(^ (.*)\((.*?)\).*$)", L"$2")), WideStringToString(re::sub(s, LR"(^ (.*)\((.*?)\).*$)", L"$1"))};
+        return {WideStringToString(re::sub(s, LR"((.*)\((.*?)\))", L"$2")), WideStringToString(re::sub(s, LR"((.*)\((.*?)\))", L"$1"))};
     }
     void trygetgameinwindowtitle()
     {
@@ -62,10 +62,19 @@ namespace
                 size_t end = nextPos;
                 return str.substr(start, end - start);
             };
+            auto getFirstSubstring = [](const std::wstring &str) -> std::wstring
+            {
+                size_t firstPos = str.find(L'|');
+                if (firstPos == std::wstring::npos)
+                    return L"";
+                size_t start = 0;
+                size_t end = firstPos;
+                return str.substr(start, end - start);
+            };
             auto wininfos = get_proc_windows();
             for (auto &&info : wininfos)
             {
-                auto game = getSecondSubstring(info.title);
+                auto game = startWith(info.title, L"Vita3K ") ? getSecondSubstring(info.title) : getFirstSubstring(info.title);
                 if (!game.size())
                     continue;
                 auto match = re::search(game, L"\\((.*?)\\)");
@@ -77,7 +86,7 @@ namespace
                 game_info.Vita3KGameID = wcasta(curr);
                 game_info.lastcheck = curr;
                 game_info.game = game;
-                auto &&[id, title] = splitpair(game_info.game);
+                auto &&[id, title] = splitpair(Trim(game_info.game));
                 return Msg::EmuGameInfo(id.c_str(), title.c_str());
             }
         };
