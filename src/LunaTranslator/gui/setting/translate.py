@@ -816,9 +816,13 @@ def copy_move_not_exists(src: str, dst: str, lost_copy: bool = False):
         if rel_path != ".":
             os.makedirs(target_dir, exist_ok=True)
         for file in files:
-            src_file = os.path.join(root, file)
-            dst_file = os.path.join(target_dir, file)
-            if os.path.exists(dst_file) and not dst_file.lower().endswith(".exe"):
+            src_file = os.path.normpath(os.path.join(root, file))
+            dst_file = os.path.normpath(os.path.join(target_dir, file))
+            if (
+                src_file != dst_file
+                and os.path.exists(dst_file)
+                and not dst_file.lower().endswith(".exe")
+            ):
                 continue
             if lost_copy:
                 shutil.copy2(src_file, dst_file)
@@ -1418,7 +1422,7 @@ class llamalistQwidget_internal(QStackedWidget):
         l1 = QVBoxLayout(w)
         hb = QHBoxLayout()
         self.refs = IconButton("fa.refresh", tips="刷新")
-        self.refs.setFixedSize(QSize(100, 100))
+        self.refs.setFixedSize(QSize(75, 75))
         self.refs.hide()
         hb.addWidget(self.refs)
         hb.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1426,6 +1430,10 @@ class llamalistQwidget_internal(QStackedWidget):
         l1.addLayout(hb)
         self.refs.clicked.connect(self.firstshow)
         self.link = LinkLabel()
+        self.link.setWordWrap(True)
+        self.link.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         l1.addWidget(self.link)
         self.t = makehtml("https://github.com/ggml-org/llama.cpp/releases")
         self.link.setText("loading...")
@@ -1440,11 +1448,10 @@ class llamalistQwidget_internal(QStackedWidget):
                 "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
                 proxies=getproxy(),
             ).json()
+            if not "tag_name" in res:
+                raise Exception(res)
         except Exception as e:
             self.initialize.emit(e)
-            return
-        # 必须检查一下是不是有效的相应
-        if not "tag_name" in res:
             return
         if not self.loadonce:
             return
