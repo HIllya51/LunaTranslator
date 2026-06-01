@@ -999,6 +999,14 @@ namespace
             buffer->from(s);
         }
     }
+    void NPJH50627(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, R"(#Rubi\[(.*?)\])");
+        s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
+        s = re::sub(s, R"((\x81\x40)*#n(\x81\x40)*)");
+        buffer->from(s);
+    }
     void ULJM06145(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -1599,6 +1607,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 桜花センゴク Portable
+    {0x881441C, {FULL_STRING, 1, 0, 0, NPJH50627, "NPJH50627"}},
     // 学園ヘタリア Portable
     {0x88113B0, {0, 0, 0, ULJM05840, 0, std::vector<const char *>{"ULJM05839", "ULJM05840"}}},
     // 恋愛0キロメートル Portable
