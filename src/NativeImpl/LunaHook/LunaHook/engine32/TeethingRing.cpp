@@ -110,8 +110,32 @@ bool TeethingRing_attach_function2()
   };
   return NewHook(hp, "TeethingRing");
 }
+static bool Garnet_Cradle()
+{
+  // Garnet Cradle
+  BYTE bytes[] = {
+      0x66, 0x3d, 0x80, 0x00,
+      0x72, 0x06,
+      0x66, 0x3d, 0x9f, 0x00,
+      0x76, 0x10,
+      0x8d, 0x88, XX4,
+      0x66, 0x83, 0xf9, 0x1f,
+      0x0f, 0x87, XX4,
+      0x8b, XX, XX,
+      0x66, 0x8b, 0x50, 0xff,
+      0x83, 0xc0, 0x01};
+
+  auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr + sizeof(bytes);
+  hp.offset = regoffset(edx);
+  hp.type = USING_CHAR | NO_CONTEXT;
+  return NewHook(hp, "Garnet Cradle");
+}
 
 bool TeethingRing::attach_function()
 {
-  return TeethingRing_attach_function() || TeethingRing_attach_function2();
+  return TeethingRing_attach_function() || TeethingRing_attach_function2() || Garnet_Cradle();
 }
