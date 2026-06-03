@@ -108,5 +108,5 @@ bool Jellyfish::Jellyfish_attach_function3()
 bool Jellyfish::attach_function()
 {
   std::tie(minaddr, maxaddr) = Util::QueryModuleLimits(ism);
-  return Jellyfish_attach_function() | Jellyfish_attach_function2() | Jellyfish_attach_function3();
+  return Jellyfish_attach_function() || Jellyfish_attach_function2() || Jellyfish_attach_function3();
 }
