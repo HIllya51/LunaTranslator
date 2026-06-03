@@ -17,6 +17,7 @@
 #include "engine32/Furaiki.h"
 #include "engine32/ZeroEscape.h"
 #include "engine32/Milk.h"
+#include "engine32/ivory.h"
 #include "engine32/Cage.h"
 #include "engine32/MBSTRUTH.h"
 #include "engine32/ONScripterru.h"
@@ -497,5 +498,6 @@ std::vector<ENGINE *> check_engines()
         new Azurite,
         new ArcSystemWorks,
         new Monochrome,
+        new ivory,
     };
 }

@@ -33,8 +33,10 @@ bool Jellyfish::Jellyfish_attach_function()
       return buffer->clear();
     StringCharReplacer(buffer, TEXTANDLEN("\\n"), '\n');
     StringCharReplacer(buffer, TEXTANDLEN("\\N"), '\n');
+    StringFilter(buffer, TEXTANDLEN("\x81\xa4"));
+    StringFilter(buffer, TEXTANDLEN("\x81\x40"));
 
-    buffer->from(re::sub(buffer->strA(), "\\\\[0-7a-zA-Z]"));
+    buffer->from(re::sub(buffer->strA(), "\\\\[0-7a-zA-Z]+"));
   };
 
   return NewHook(hp, "Jellyfish");
@@ -106,5 +108,5 @@ bool Jellyfish::Jellyfish_attach_function3()
 bool Jellyfish::attach_function()
 {
   std::tie(minaddr, maxaddr) = Util::QueryModuleLimits(ism);
-  return Jellyfish_attach_function() || Jellyfish_attach_function2() || Jellyfish_attach_function3();
+  return Jellyfish_attach_function() | Jellyfish_attach_function2() | Jellyfish_attach_function3();
 }
