@@ -1924,6 +1924,8 @@ class searchwordW(closeashidewindow):
             self.search(action.text())
 
     def maybeusecachesentence(self):
+        if not self.wordviewer.save_sentence:
+            return None
         if self.searchtext.text() in self.wordviewer.save_sentence:
             return self.wordviewer.save_sentence
         return None
