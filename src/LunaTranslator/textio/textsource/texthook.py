@@ -716,10 +716,15 @@ class texthook(basetext):
         for pid in pids:
             self.Luna_FindHooks(pid, usestruct, _callback, addresses)
 
+        searchdeadline = time.time() + usestruct.searchTime / 1000 + 60
         while True:
             lastsize = len(cntref)
             time.sleep(2)
-            if lastsize == len(cntref) and lastsize != 0:
+            if (
+                (lastsize == len(cntref) and lastsize != 0)
+                or time.time() > searchdeadline
+                or self.ending
+            ):
                 break
         gobject.base.hookselectdialog.getfoundhooksignal.emit(savefound)
 
