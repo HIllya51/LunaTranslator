@@ -1,3 +1,4 @@
+import json
 import re
 from translator.basetranslator import basetrans
 from language import Languages
@@ -21,7 +22,7 @@ class TS(basetrans):
         result_str = re.compile("var params_AbusePreventionHelper = (.*?);").findall(
             host_html
         )[0]
-        result = eval(result_str)
+        result = json.loads(result_str)
         return {"key": result[0], "token": result[1]}
 
     def translate(self, content):
