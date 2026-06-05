@@ -20,6 +20,8 @@ namespace
   }
   bool GSX2()
   {
+    PcHooks::hookGDIFunctions(GetTextExtentPoint32A);
+    PcHooks::hookGDIFunctions(TextOutA);
     // https://vndb.org/v1930
     // 星の王女 体验版
     // https://dlsoft.dmm.co.jp/detail/stone_0016/
