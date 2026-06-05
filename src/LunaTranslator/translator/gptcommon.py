@@ -179,12 +179,13 @@ def parseresponseQWENMT(response: requests.Response):
                 continue
             delta: dict = json_data["choices"][0].get("delta", {})
             msg: str = delta.get("content", None)
-            if msg.startswith(message):
-                yield msg[len(message) :]
-            else:
-                yield "\0"
-                yield msg
-            message = msg
+            if msg:
+                if msg.startswith(message):
+                    yield msg[len(message) :]
+                else:
+                    yield "\0"
+                    yield msg
+                message = msg
             rs = json_data["choices"][0].get("finish_reason")
             if rs and rs != "null":
                 break
