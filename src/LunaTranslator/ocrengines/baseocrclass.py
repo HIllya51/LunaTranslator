@@ -337,7 +337,7 @@ class OCRResultParsed:
                 continue
             else:
                 if fil.isascii():
-                    line = re.sub(r"\b{}\b".format(re.escape(fil)), fil, line)
+                    line = re.sub(r"\b{}\b".format(re.escape(fil)), lambda m: filters[fil], line)
                 else:
                     line = line.replace(fil, filters[fil])
         return line
