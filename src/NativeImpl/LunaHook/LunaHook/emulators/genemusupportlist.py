@@ -106,54 +106,13 @@ pcsx2 = pcsx2()
 
 
 def maketable(lst):
-    res = """
-|  | ID       | Game                |
+    res = """|  | ID       | Game                |
 | ---- | ---------- | ------------------- |"""
     for i, (_id, game) in enumerate(lst):
         res += "\n" + f"|  | {_id} | {game} |"
     return res
 
 
-append = r"""
-| - | - |
-| NS | ~~yuzu(&ge;1616)~~, [Eden (MSVC)](https://eden-emu.dev/), [Citron (MSVC)](https://citron-neo.github.io/)|
-| PSP | [PPSSPP](https://github.com/hrydgard/ppsspp) &ge;v1.15.0 |
-| PSV | [Vita3K](https://github.com/Vita3K/Vita3K) &ge;v0.1.9.3339 |
-| PS2 | [PCSX2](https://github.com/PCSX2/pcsx2) &ge;v1.7.4473 |
-<!-- | PS3 | [RPCS3](https://github.com/RPCS3/rpcs3) |-->
-
-::: tabs
-
-== NS
-
-NS_GAME_LIST
-
-== PSP
-
-PSP_GAME_LIST
-
-== PSV
-
-PSV_GAME_LIST
-
-== PS2
-
-PS2_GAME_LIST
-
-:::"""
-
-for lang in os.listdir("../../../../../docs"):
-    if not os.path.exists(f"../../../../../docs/{lang}/emugames_template.md"):
-        continue
-    with open(
-        f"../../../../../docs/{lang}/emugames_template.md", "r", encoding="utf8"
-    ) as ff:
-        temp = ff.read()
-
-    append = append.replace("NS_GAME_LIST", maketable(ns))
-    append = append.replace("PSP_GAME_LIST", maketable(psp))
-    append = append.replace("PSV_GAME_LIST", maketable(psv))
-    append = append.replace("PS3_GAME_LIST", maketable(rpcs3))
-    append = append.replace("PS2_GAME_LIST", maketable(pcsx2))
-    with open(f"../../../../../docs/{lang}/emugames.md", "w", encoding="utf8") as ff:
-        ff.write(temp + append)
+for k, f in (("ns", ns), ("psp", psp), ("ps2", pcsx2), ("psv", psv)):
+    with open(f"../../../../../docs/emusupportlist/{k}.md", "w", encoding="utf8") as ff:
+        ff.write(maketable(f))
