@@ -1,6 +1,10 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta charset="UTF-8">
+    <title>LunaTranslator</title>
 </head>
+<body>
 <script>
     function onclickbtn_1_internal(_id) {
         tabPanes = document.querySelectorAll('.tab-widget_1_internal .tab-pane_1_internal');
@@ -126,23 +130,23 @@
     }
 </script>
 <div class="search-container">
-    <input type="text" class="search-input" id="searchInput">
-    <button class="search-button" onclick="performSearch()">
+    <input type="text" class="search-input" id="searchInput" aria-label="Search term">
+    <button class="search-button" onclick="performSearch()" aria-label="Search">
         <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
-            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21L16.65 16.65" />
         </svg></button>
-    <button class="search-button" onclick="read()">
-        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" 
-            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+    <button class="search-button" onclick="read()" aria-label="Read aloud">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         </svg></button>
-    <button class="search-button" onclick="pasteAndSearch()">
-        <svg width="30" height="30" viewBox="0 0 30 30" fill="none" 
-            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2">
+    <button class="search-button" onclick="pasteAndSearch()" aria-label="Paste and search">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"
+            xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
         </svg>
@@ -251,3 +255,5 @@
         }
     });
 </script>
+</body>
+</html>

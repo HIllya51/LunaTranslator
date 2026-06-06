@@ -1,6 +1,10 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
 <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta charset="UTF-8">
+    <title>LunaTranslator</title>
 </head>
+<body>
 <style>
     .search-input {
         padding: 10px 15px;
@@ -44,9 +48,9 @@
     }
 </script>
 <div height="24px" style="display: flex;">
-    <button class="search-button" onclick="performSearch()"><svg version="1.1" width="24" height="24" id="Capa_1"
+    <button class="search-button" onclick="performSearch()" aria-label="Download audio"><svg version="1.1" width="24" height="24" id="Capa_1"
             xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 29.978 29.978"
-            xml:space="preserve">
+            xml:space="preserve" aria-hidden="true">
             <style>
                 path {
                     fill: white;
@@ -58,12 +62,14 @@
                 <path
                     d="M14.62,18.426l-5.764-6.965c0,0-0.877-0.828,0.074-0.828s3.248,0,3.248,0s0-0.557,0-1.416c0-2.449,0-6.906,0-8.723c0,0-0.129-0.494,0.615-0.494c0.75,0,4.035,0,4.572,0c0.536,0,0.524,0.416,0.524,0.416c0,1.762,0,6.373,0,8.742c0,0.768,0,1.266,0,1.266s1.842,0,2.998,0c1.154,0,0.285,0.867,0.285,0.867s-4.904,6.51-5.588,7.193C15.092,18.979,14.62,18.426,14.62,18.426z" />
         </svg></button>
-    <button class="search-button" onclick="read()"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+    <button class="search-button" onclick="read()" aria-label="Play audio"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-            stroke-linejoin="round">
+            stroke-linejoin="round" aria-hidden="true">
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
             <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
             <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
         </svg></button>
 </div>
-<textarea class="search-input" id="searchInput" style="height: calc( 100% - 48px );"></textarea>
+<textarea class="search-input" id="searchInput" style="height: calc( 100% - 48px );" aria-label="Text to read aloud"></textarea>
+</body>
+</html>
