@@ -184,7 +184,7 @@
         if (!text) return
         let tss = await gettranslators()
         tss.forEach(element => {
-            let html = `<div><div class="collapsible-header flex-parent " id="tsid_${element.id}"><div class="align-left">${element.name}</div><button class="align-right" onclick="researchx('${element.id}')" id="btnid_${element.id}" aria-label="Translate again"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+            let html = `<div><div class="collapsible-header flex-parent " id="tsid_${element.id}"><div class="align-left">${element.name}</div><button class="align-right" onclick="researchx('${element.id}')" id="btnid_${element.id}" aria-label="Translate again for ${element.name}"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"
             xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21L16.65 16.65" />
