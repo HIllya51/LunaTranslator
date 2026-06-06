@@ -1600,6 +1600,28 @@ namespace
         ws = re::sub(ws, LR"(\{ruby:(.*?)&.*?\})", L"$1");
         buffer->fromWA(ws);
     }
+    void NPJH50654(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        std::string ws = (char *)PPSSPP::emu_arg(context)[0xf];
+        if (ws == u8"■■■")
+            return;
+        if (ws == u8"%nn")
+            return;
+        if (ws == u8"%")
+            return;
+        static bool nextisname = false;
+        if (ws == u8"　")
+        {
+            nextisname = true;
+            return;
+        }
+        if (nextisname)
+        {
+            nextisname = false;
+            *split = 1;
+        }
+        buffer->from(ws);
+    }
 }
 struct emfuncinfoX
 {
@@ -1607,6 +1629,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // AKB1/149 恋愛総選挙
+    {0x89DB26C, {FULL_STRING | CODEC_UTF8, 0xf, 0, NPJH50654, NewLineCharFilterA, std::vector<const char *>{"NPJH50654", "NPJH50655"}}},
     // 桜花センゴク Portable
     {0x881441C, {FULL_STRING, 1, 0, 0, NPJH50627, "NPJH50627"}},
     // 学園ヘタリア Portable

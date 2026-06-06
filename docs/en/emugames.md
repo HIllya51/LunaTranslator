@@ -419,6 +419,7 @@ LunaTranslator supports a large number of games through emulators. For games tha
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | NPJH50654 & NPJH50655 | AKB1/149 恋愛総選挙 |
 |  | NPJH50627 | 桜花センゴク Portable |
 |  | ULJM05839 & ULJM05840 | 学園ヘタリア Portable |
 |  | NPJH50715 | 恋愛0キロメートル Portable |

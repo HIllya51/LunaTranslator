@@ -419,6 +419,7 @@ LunaTranslator hỗ trợ rất nhiều trò chơi thông qua trình giả lập
 
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | NPJH50654 & NPJH50655 | AKB1/149 恋愛総選挙 |
 |  | NPJH50627 | 桜花センゴク Portable |
 |  | ULJM05839 & ULJM05840 | 学園ヘタリア Portable |
 |  | NPJH50715 | 恋愛0キロメートル Portable |
