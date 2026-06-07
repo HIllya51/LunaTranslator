@@ -354,7 +354,11 @@ class gptcommon(basetrans):
         return messages
 
     def __replace_history(self, which, match: re.Match):
-        n = int(match.group(1))
+        n = (
+            self.config["附带上下文个数"]
+            if match.group(1) == "N"
+            else int(match.group(1))
+        )
         __message: "list[dict]" = []
         self._gpt_common_parse_context(__message, self.context, n)
         check = lambda k: (which == 2) or (k == ("user", "assistant")[which])
@@ -363,9 +367,9 @@ class gptcommon(basetrans):
 
     def __parsecontextN(self, query):
         for k, b in (
-            (r"\{contextOriginal\[(\d+)\]\}", 0),
-            (r"\{contextTranslation\[(\d+)\]\}", 1),
-            (r"\{contextBoth\[(\d+)\]\}", 2),
+            (r"\{contextOriginal\[(N|[\d+])\]\}", 0),
+            (r"\{contextTranslation\[(N|[\d+])\]\}", 1),
+            (r"\{contextBoth\[(N|[\d+])\]\}", 2),
         ):
             query = re.sub(k, functools.partial(self.__replace_history, b), query)
         return query
