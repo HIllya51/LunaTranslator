@@ -239,6 +239,8 @@ def buildhook(arch, target, hookonly=False):
 def buildPlugins(arch, target, configx="", sexe=False):
     os.chdir(rootDir + "/NativeImpl")
     archA = ("win32", "x64")[arch == "x64"]
+    if target == "winxp" and arch == "x64":
+        target = "win7"
     if target == "win10":
         config = "-DWIN10ABOVE=ON"
     elif target == "win7":
