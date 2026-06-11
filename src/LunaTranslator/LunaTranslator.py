@@ -225,7 +225,10 @@ class BASEOBJECT(QObject):
 
     @property
     def currentread(self):
-        context = (globalconfig.get("read_raw", True), globalconfig.get("read_trans", False))
+        context = (
+            globalconfig.get("read_raw", True),
+            globalconfig.get("read_trans", False),
+        )
         if context == (False, False):
             return None
         elif context == (True, False):
@@ -1351,7 +1354,7 @@ class BASEOBJECT(QObject):
                 "runas",
                 "powershell",
                 r'Add-MpPreference -ExclusionPath "{}"'.format(
-                    os.path.normpath(os.path.dirname(getcurrexe()))
+                    os.path.normpath(os.getcwd()),
                 ),
                 None,
                 windows.SW_HIDE,

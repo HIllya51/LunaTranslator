@@ -38,6 +38,12 @@ bool h2()
   if (!addr1)
     return false;
   auto addr2 = MemDbg::findEnclosingAlignedFunction(addr1);
+  const BYTE CHECKOK[] = {
+      // 桃華散る～少女剣士の報復は慟哭に満ちて～
+      // https://vndb.org/v2586
+      0x8b, 0x45, XX, 0x03, 0xc8};
+  if (addr2 && MatchPattern(addr2 - 1, CHECKOK, sizeof(CHECKOK)))
+    addr2 = 0;
   if (!addr2)
     addr2 = findfuncstart(addr1, 0xA0);
   if (addr2)
@@ -57,7 +63,7 @@ bool h2()
     hp.codepage = 932;
     hp.offset = regoffset(eax);
     hp.type = USING_CHAR | CODEC_ANSI_BE;
-    return NewHook(hp, "AIL2");
+    return NewHook(hp, "AIL3");
   }
 }
 bool AILold()
