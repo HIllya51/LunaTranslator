@@ -209,8 +209,6 @@ def downloadOCRModel():
 def buildhook(arch, target, hookonly=False):
 
     os.chdir("NativeImpl/LunaHook")
-    if target == "winxp" and arch == "x64":
-        target = "win7"
     archA = ("win32", "x64")[arch == "x64"]
     vsver = "Visual Studio 18 2026"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
@@ -241,8 +239,6 @@ def buildhook(arch, target, hookonly=False):
 def buildPlugins(arch, target, configx="", sexe=False):
     os.chdir(rootDir + "/NativeImpl")
     archA = ("win32", "x64")[arch == "x64"]
-    if target == "winxp" and arch == "x64":
-        target = "win7"
     if target == "win10":
         config = "-DWIN10ABOVE=ON"
     elif target == "win7":
@@ -362,15 +358,14 @@ if __name__ == "__main__":
         shutil.copytree(
             f"NativeImpl/LunaHook/builds/Release_{target}", "files/LunaHook"
         )
+        shutil.copytree(f"NativeImpl/builds/_x64_{target}", "NativeImpl/builds")
         shutil.copytree(f"NativeImpl/builds/_x86_{target}", "NativeImpl/builds")
         os.makedirs("files/DLL32")
         shutil.copy(f"NativeImpl/builds/_x86_{target}/LunaSubprocess32.exe", "files")
         os.system(f"robocopy NativeImpl/builds/_x86_{target} files/DLL32 *.dll")
-        _target = "win7" if target == "winxp" else target
-        shutil.copytree(f"NativeImpl/builds/_x64_{_target}", "NativeImpl/builds")
         os.makedirs("files/DLL64")
-        shutil.copy(f"NativeImpl/builds/_x64_{_target}/LunaSubprocess64.exe", "files")
-        os.system(f"robocopy NativeImpl/builds/_x64_{_target} files/DLL64 *.dll")
+        shutil.copy(f"NativeImpl/builds/_x64_{target}/LunaSubprocess64.exe", "files")
+        os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
         os.system(
             f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
