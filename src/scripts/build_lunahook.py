@@ -40,14 +40,14 @@ if sys.argv[1] == "plugin":
         if bits == "32":
             ff.write(
                 rf"""
-cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ./CMakeLists.txt -G "Visual Studio 17 2022" -A win32 -T host=x86 -B ./build/plugin32
+cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ./CMakeLists.txt -G "Visual Studio 18 2026" -A win32 -T host=x86 -B ./build/plugin32
 cmake --build ./build/plugin32 --config Release --target ALL_BUILD -j {os.cpu_count()}
 """
             )
         else:
             ff.write(
                 rf"""
-cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ./CMakeLists.txt -G "Visual Studio 17 2022" -A x64 -T host=x64 -B ./build/plugin64
+cmake -DBUILD_CORE=OFF -DUSESYSQTPATH=1 -DBUILD_PLUGIN=ON ./CMakeLists.txt -G "Visual Studio 18 2026" -A x64 -T host=x64 -B ./build/plugin64
 cmake --build ./build/plugin64 --config Release --target ALL_BUILD -j {os.cpu_count()}
 """
             )
@@ -58,7 +58,7 @@ elif sys.argv[1] == "build":
     target = sys.argv[4]
 
     archA = ("win32", "x64")[arch == "x64"]
-    vsver = "Visual Studio 17 2022"
+    vsver = "Visual Studio 18 2026"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     config = (
         "-DWIN10ABOVE=ON"

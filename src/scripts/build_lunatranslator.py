@@ -210,7 +210,7 @@ def buildhook(arch, target, hookonly=False):
 
     os.chdir("NativeImpl/LunaHook")
     archA = ("win32", "x64")[arch == "x64"]
-    vsver = "Visual Studio 17 2022"
+    vsver = "Visual Studio 18 2026"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     if target == "win10":
         config = "-DWIN10ABOVE=ON"
@@ -246,7 +246,7 @@ def buildPlugins(arch, target, configx="", sexe=False):
     elif target == "winxp":
         config = "-DWINXP=ON -DWIN10ABOVE=OFF"
     sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 "
-    vsver = "Visual Studio 17 2022"
+    vsver = "Visual Studio 18 2026"
     Tool = "v141_xp" if target == "winxp" else f"host={arch}"
 
     if arch == "x86" and target == "win10":
