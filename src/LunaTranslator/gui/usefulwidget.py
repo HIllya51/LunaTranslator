@@ -2892,6 +2892,18 @@ class ClickableLine(QLineEdit):
         self.clicked.emit()
         super().mousePressEvent(e)
 
+    def __init__(self, issecret=False):
+        super().__init__()
+        self.issecret = issecret
+
+    def paintEvent(self, a0):
+        if self.text() and self.issecret and not (self.underMouse() or self.hasFocus()):
+            painter = QPainter(self)
+            painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Clear)
+            painter.fillRect(self.rect(), Qt.GlobalColor.transparent)
+        else:
+            super().paintEvent(a0)
+
 
 class listediterline(QHBoxLayout):
 
@@ -2909,9 +2921,10 @@ class listediterline(QHBoxLayout):
         directedit=False,
         specialklass=None,
         exec=False,
+        issecret=False,
     ):
         super().__init__()
-        self.edit = ClickableLine()
+        self.edit = ClickableLine(issecret=issecret)
         self.reflist = reflist
         self.setText("|".join((str(_) for _ in reflist)))
         self.setContentsMargins(0, 0, 0, 0)

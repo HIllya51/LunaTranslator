@@ -594,7 +594,12 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                 __list = dd[key].split("|")
             else:
                 __list = dd[key].copy()
-            lineW = listediterline(line["name"], __list, directedit=directedit)
+            lineW = listediterline(
+                line["name"],
+                __list,
+                directedit=directedit,
+                issecret=line.get("issecret", False),
+            )
 
             def __getv(l, directedit):
                 if directedit:

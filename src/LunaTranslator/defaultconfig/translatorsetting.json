@@ -185,7 +185,8 @@
 					0,
 					2
 				],
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"APP ID": {
 				"refcombo": "interface",
@@ -193,17 +194,20 @@
 					0,
 					2
 				],
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"API Key": {
 				"refcombo": "interface",
 				"refcombo_i": 1,
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"Secret Key": {
 				"refcombo": "interface",
 				"refcombo_i": 1,
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"interface": {
 				"rank": 0,
@@ -223,7 +227,8 @@
 		},
 		"argstype": {
 			"Token": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -239,14 +244,16 @@
 				"name": "Auth Key",
 				"refcombo": "usewhich",
 				"refcombo_i": 0,
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"DeepL-Auth-Key-2": {
 				"rank": 2,
 				"name": "Auth Key",
 				"refcombo": "usewhich",
 				"refcombo_i": 1,
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"usewhich": {
 				"rank": 0,
@@ -266,7 +273,8 @@
 		"argstype": {
 			"key": {
 				"name": "API key",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -276,7 +284,8 @@
 		},
 		"argstype": {
 			"key": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -292,10 +301,12 @@
 		},
 		"argstype": {
 			"Access Key ID": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"Secret Access Key": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -307,10 +318,12 @@
 		},
 		"argstype": {
 			"SecretId": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"SecretKey": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"Region": {
 				"type": "combo",
@@ -342,7 +355,8 @@
 		},
 		"argstype": {
 			"apikey": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -354,11 +368,13 @@
 		"argstype": {
 			"APP_KEY": {
 				"name": "应用ID",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"APP_SECRET": {
 				"name": "应用密钥",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -371,11 +387,13 @@
 		"argstype": {
 			"ak": {
 				"name": "Access Key Id",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"sk": {
 				"name": "Secret Access Key",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -473,7 +491,8 @@
 			"SECRET_KEY": {
 				"rank": 1,
 				"name": "API Key",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"model": {
 				"rank": 2,
@@ -664,7 +683,8 @@
 		},
 		"argstype": {
 			"key1": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -675,10 +695,12 @@
 		},
 		"argstype": {
 			"apiurl": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"apikey": {
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},
@@ -690,11 +712,13 @@
 		"argstype": {
 			"Access_Key": {
 				"name": "AccessKey ID",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			},
 			"SECRET_KEY": {
 				"name": "AccessKey Secret",
-				"type": "textlist"
+				"type": "textlist",
+                "issecret": true
 			}
 		}
 	},

@@ -1026,7 +1026,8 @@
                 "SECRET_KEY": {
                     "rank": 1,
                     "name": "API Key",
-                    "type": "textlist"
+                    "type": "textlist",
+                    "issecret": true
                 },
                 "model": {
                     "rank": 2,
@@ -1401,7 +1402,8 @@
                 "SECRET_KEY": {
                     "rank": 1,
                     "name": "API Key",
-                    "type": "textlist"
+                    "type": "textlist",
+                    "issecret": true
                 },
                 "model": {
                     "rank": 2,

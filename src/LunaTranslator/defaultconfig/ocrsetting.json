@@ -37,7 +37,8 @@
                     3,
                     4
                 ],
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "Secret Key": {
                 "refcombo": "接口",
@@ -48,19 +49,22 @@
                     3,
                     4
                 ],
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "app_key": {
                 "name": "密钥",
                 "refcombo": "接口",
                 "refcombo_i": 5,
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "app_id": {
                 "name": "APP ID",
                 "refcombo": "接口",
                 "refcombo_i": 5,
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "接口": {
                 "rank": 0,
@@ -86,15 +90,18 @@
         },
         "argstype": {
             "SecretId": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "SecretKey": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "ProjectId": {
                 "refcombo": "interface",
                 "refcombo_i": 1,
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "Region": {
                 "rank": 1,
@@ -128,11 +135,13 @@
         "argstype": {
             "APP_SECRET": {
                 "name": "应用密钥",
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "APP_KEY": {
                 "name": "应用ID",
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "interface1": {
                 "rank": 0,
@@ -152,7 +161,8 @@
         },
         "argstype": {
             "apikey": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "interface": {
                 "rank": 0,
@@ -171,10 +181,12 @@
         },
         "argstype": {
             "Access Key ID": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "Secret Access Key": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             }
         }
     },
@@ -184,7 +196,8 @@
         },
         "argstype": {
             "key": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             }
         }
     },
@@ -252,7 +265,8 @@
             "SECRET_KEY": {
                 "rank": 0.5,
                 "name": "API Key",
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "s": {
                 "type": "split",
@@ -325,13 +339,16 @@
         },
         "argstype": {
             "APPId": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "APISecret": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "APIKey": {
-                "type": "textlist"
+                "type": "textlist",
+                "issecret": true
             },
             "interface": {
                 "rank": 0,
