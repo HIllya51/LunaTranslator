@@ -48,7 +48,9 @@ class TTS(TTSbase):
                 apitype, content, voice, speed, extrabody, extraheader
             )
         else:
-            return self.requestnormal(content, voice, speed, extrabody, extraheader)
+            return self.requestnormal(
+                apitype, content, voice, speed, extrabody, extraheader
+            )
 
     def requestnormal(
         self, apitype: APIType, content, voice, speed, extrabody, extraheader
