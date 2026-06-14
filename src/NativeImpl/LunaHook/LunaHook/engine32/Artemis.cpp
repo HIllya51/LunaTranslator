@@ -176,8 +176,8 @@ bool InsertArtemis3Hook()
   HookParam hp;
   hp.address = addr;
   hp.offset = stackoffset(1);
-  hp.type = USING_STRING | EMBED_ABLE | CODEC_UTF8 | EMBED_AFTER_NEW;
-
+  hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW;
+  hp.filter_fun = Utf8TypeChecker;
   return NewHook(hp, "EmbedArtemis");
 }
 
@@ -460,8 +460,9 @@ float *__fastcall sub_5FEDD0(_DWORD *a1, int a2, int *a3, void *a4, void *a5, in
       return false;
     HookParam hp;
     hp.address = faddr;
-    hp.type = USING_STRING | CODEC_UTF8;
+    hp.type = USING_STRING;
     hp.offset = stackoffset(2);
+    hp.filter_fun = Utf8TypeChecker;
     return NewHook(hp, "artemis::CTextLayer::COneLine::COneBlock");
   }
 }
