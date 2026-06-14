@@ -2854,6 +2854,27 @@ namespace
         last = s;
         buffer->from(s);
     }
+    std::wstring F0100D640254B0000_name;
+    void F0100D640254B0000_0(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        if (s == L"narration")
+            return buffer->clear();
+        F0100D640254B0000_name = re::sub(s, L"(.*)>(.*?)<(.*)", L"$2");
+        buffer->clear();
+    }
+    void F0100D640254B0000_1(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"<ruby=(.*?)>(.*?)</ruby>", L"$2");
+        s = re::sub(s, L"<(.*?)>");
+        if (F0100D640254B0000_name.size())
+        {
+            s = L"【" + F0100D640254B0000_name + L"】" + s;
+            F0100D640254B0000_name.clear();
+        }
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2861,6 +2882,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 陰キャラブコメ　インシツマシマシ
+    {0x8253DF90, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100D640254B0000_1, 0x0100D640254B0000ull, "1.0"}},
+    {0x8253FF54, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100D640254B0000_0, 0x0100D640254B0000ull, "1.0"}},
     // Gakuen Club
     {0x80128A00, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010052900B8EE000ull, "1.0.0"}},
     {0x8012962C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010052900B8EE000ull, "1.1.0"}},
