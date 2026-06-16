@@ -10,7 +10,7 @@ def callLunaHost(text, split):
             luna_internal_renpy_call_host = ctypes.CDLL(
                 "LunaHook32"
             ).luna_internal_renpy_call_host
-        luna_internal_renpy_call_host.argstype = ctypes.c_wchar_p, ctypes.c_int
+        luna_internal_renpy_call_host.argtypes = ctypes.c_wchar_p, ctypes.c_int
         luna_internal_renpy_call_host.restype = ctypes.c_wchar_p
 
         try:
