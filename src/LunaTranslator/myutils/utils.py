@@ -700,7 +700,7 @@ class unsupportkey(Exception):
 
 
 def parsekeystringtomodvkcode(keystring: str, modes=False, canonlymod=False):
-    keystring = keystring.upper()
+    keystring = keystring.upper().replace(" ", "_")
     keys = []
     mode = 0
     _modes = []
