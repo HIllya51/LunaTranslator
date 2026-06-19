@@ -2825,6 +2825,13 @@ namespace
         s = re::sub(s, L"　*<br>　*");
         buffer->from(s);
     }
+    void F0100A3D026610000(TextBuffer *buffer, HookParam *hp)
+    {
+        F010036F023A16000(buffer, hp);
+        auto s = buffer->strW();
+        strReplace(s, L"<lastname>", L"夜久");
+        buffer->from(s);
+    }
     DECLARE_FUNCTION(NF010056B024B92000, const wchar_t *_);
     void F010056B024B92000(TextBuffer *buffer, HookParam *hpx)
     {
@@ -2882,6 +2889,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Starry☆Sky～Spring Memories～
+    {0x81B951AC, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100A3D026610000, 0x0100A3D026610000ull, "1.0.0"}},
     // 陰キャラブコメ　インシツマシマシ
     {0x8253DF90, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100D640254B0000_1, 0x0100D640254B0000ull, "1.0"}},
     {0x8253FF54, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100D640254B0000_0, 0x0100D640254B0000ull, "1.0"}},
