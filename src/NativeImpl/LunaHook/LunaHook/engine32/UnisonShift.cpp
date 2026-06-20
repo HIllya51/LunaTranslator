@@ -66,9 +66,17 @@ bool InsertUnisonShift3Hook()
       continue;
     addr = (DWORD)((BYTE *)addr + 1 - x);
     auto raddr = *(int *)addr;
+    if (raddr <= processStartAddress || raddr >= processStopAddress) // mov eax,1; addr=0x1，不对。
+      continue;
     HookParam hp;
     hp.address = raddr;
     hp.type = DIRECT_READ;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    {
+      auto s = buffer->strAW();
+      s = re::sub(s, L"#");
+      buffer->fromWA(s);
+    };
     succ |= NewHook(hp, "UnisonShift3");
   }
 
@@ -146,7 +154,7 @@ static bool h1()
     s = re::sub(s, L"#");
     buffer->fromWA(s);
   };
-  return NewHook(hp, "UnisonShift3");
+  return NewHook(hp, "UnisonShift4");
 }
 bool UnisonShift2::attach_function()
 {
