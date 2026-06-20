@@ -52,6 +52,7 @@
 |  | NPJH50847 | 金色のコルダ３ AnotherSky feat.天音学園 |
 |  | NPJH50619 | Sol Trigger |
 |  | NPJH50505 | Fate/EXTRA CCC |
+|  | ULUS10576 | Fate/EXTRA |
 |  | NPJH50247 | Fate/EXTRA |
 |  | NPJH50809 | 神々の悪戯 |
 |  | NPJH50909 | 神々の悪戯 InFinite |

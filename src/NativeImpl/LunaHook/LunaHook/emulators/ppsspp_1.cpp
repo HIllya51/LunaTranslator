@@ -1065,7 +1065,17 @@ namespace
         s = re::sub(s, "#FAMILY", "$FAMILY");
         s = re::sub(s, "#GIVE", "$GIVE");
         s = re::sub(s, "(#[A-Z0-9\\-]+)+");
-        s = re::sub(s, "\\n+");
+        strReplace(s, "\n");
+        buffer->from(s);
+    }
+    void ULUS10576(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = re::sub(s, "#RUBS(#[A-Z0-9]+)*[^#]+");
+        s = re::sub(s, "#C[0-9]+");
+        s = re::sub(s, "#CDEF");
+        strReplace(s, "\n", " ");
+        strReplace(s, "+", "-");
         buffer->from(s);
     }
     void ULJM05441(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -1740,6 +1750,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88bcef8, {CODEC_UTF8, 1, 0, 0, NPJH50619F, "NPJH50619"}}, // battle talk
     // Fate/EXTRA CCC
     {0x8958490, {0, 0, 0, 0, NPJH50505F, "NPJH50505"}},
+    // Fate/EXTRA
+    {0x882F980, {FULL_STRING, 0, 0, 0, ULUS10576, "ULUS10576"}},
     // Fate/EXTRA
     {0x88B87F0, {0, 6, 0, 0, FNPJH50247, "NPJH50247"}},
     // 神々の悪戯
