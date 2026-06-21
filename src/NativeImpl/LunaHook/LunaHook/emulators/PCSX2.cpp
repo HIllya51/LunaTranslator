@@ -66,7 +66,29 @@ namespace
             0x74, 0x4b,
             0xb9, 0x01, 0x00, 0x00, 0x00,
             0x89, 0xf2};
+        constexpr BYTE sig3_dynarecCheckBreakpoint[] = {
+            // pcsx2-v2.7.423-windows-x64-Qt
+            0x48, 0x83, 0xec, XX,
+            0x8b, 0x35, XX4,
+            0x8b, 0x05, XX4,
+            0x39, 0xf0,
+            0x0f, 0x95, 0xc1,
+            0x85, 0xc0,
+            0x0f, 0x94, 0xc0,
+            0x08, 0xc8,
+            0x0f, 0x84, XX4,
+            0x89, 0xf1,
+            0xe8, XX4};
         constexpr BYTE sig_BaseBlocksNew[] = {
+            0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x56, 0x57, 0x55, 0x53,
+            0x48, 0x83, 0xEC, 0x28,
+            XX, 0x89, XX,
+            0x89, 0xd3,
+            XX, 0x89, XX,
+            0x48, 0x8b, XX,
+            0x48, 0x8d, XX, 0x08,
+            XX, 0x8b, XX, 0x08};
+        constexpr BYTE sig_BaseBlocksNew2[] = {
             0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54, 0x56, 0x57, 0x55, 0x53,
             0x48, 0x83, 0xEC, 0x28,
             XX, 0x89, XX,
@@ -79,6 +101,8 @@ namespace
         dynarecCheckBreakpoint = MemDbg::findBytes(sig_dynarecCheckBreakpoint, sizeof(sig_dynarecCheckBreakpoint), processStartAddress, processStopAddress);
         if (!dynarecCheckBreakpoint)
             dynarecCheckBreakpoint = MemDbg::findBytes(sig2_dynarecCheckBreakpoint, sizeof(sig2_dynarecCheckBreakpoint), processStartAddress, processStopAddress);
+        if (!dynarecCheckBreakpoint)
+            dynarecCheckBreakpoint = MemDbg::findBytes(sig3_dynarecCheckBreakpoint, sizeof(sig3_dynarecCheckBreakpoint), processStartAddress, processStopAddress);
         if (!dynarecCheckBreakpoint)
             return false;
         dynarecCheckBreakpoint = MemDbg::findEnclosingAlignedFunction((uintptr_t)dynarecCheckBreakpoint);
@@ -143,6 +167,20 @@ namespace
             // v2.7.187 - 0x2b00
             recRecompile = (decltype(recRecompile))reverseFindBytes(sig2, sizeof(sig2), fmtstrptr - 0x2b00, fmtstrptr, 0, true);
         }
+        if (!recRecompile)
+        {
+            BYTE sig4[] = {0x41, 0x57, 0x41, 0x56, 0x41, 0x55, 0x41, 0x54,
+                           0x56, 0x57, 0x55, 0x53,
+                           0x48, 0x81, 0xec, XX4,
+                           0x66, XX4, XX4,
+                           0x89, 0xcd,
+                           0x48, 0x8b, 0x05, XX4,
+                           0x48, 0x3b, 0x05, XX4,
+                           0x72, 0x07,
+                           0xc6, 0x05, XX4, 0x01};
+            // pcsx2-v2.7.423-windows-x64-Qt
+            recRecompile = (decltype(recRecompile))reverseFindBytes(sig4, sizeof(sig4), fmtstrptr - 0x2e00, fmtstrptr, 0, true);
+        }
         return recRecompile;
     }
     bool findAddBreakPoint()
@@ -179,7 +217,7 @@ namespace
         AddBreakPoint = AddBreakPoint_1;
         return true;
     }
-    bool find_cpuRegistersPack()
+    bool find_cpuRegistersPack(const std::optional<version_t> &version)
     {
         BYTE sig_OpCodeImpl_CACHE_1[] = {
             0x48, 0x83, 0xec, XX,
@@ -206,16 +244,22 @@ namespace
         }
         if (!OpCodeImpl_CACHE)
             return false;
-        _cpuRegistersPack = (decltype(_cpuRegistersPack))(OpCodeImpl_CACHE + 4 + 6 + *(int *)(OpCodeImpl_CACHE + 4 + 2) - 0x2ac);
+        auto target = OpCodeImpl_CACHE + 4 + 6 + *(int *)(OpCodeImpl_CACHE + 4 + 2) - 0x2ac;
+        // https://github.com/PCSX2/pcsx2/releases/tag/v2.7.162
+        // https://github.com/PCSX2/pcsx2/commit/f576962dd838e79384cb97985a92a52c3751167b
+        if (version && version < std::make_tuple(2u, 7u, 162u, 0u))
+            _cpuRegistersPack_old = (decltype(_cpuRegistersPack_old))target;
+        else
+            _cpuRegistersPack = (decltype(_cpuRegistersPack))target;
         return true;
     }
-    bool hookFunctions()
+    bool hookFunctions(const std::optional<version_t> &version)
     {
         if (!(findstartGameListEntry() &&
               find_BaseBlocksNew_and_dynarecCheckBreakpoint() &&
               findrecRecompile() &&
               findAddBreakPoint() &&
-              find_cpuRegistersPack()))
+              find_cpuRegistersPack(version)))
             return false;
 
         auto EEmem = GetProcAddress(GetModuleHandle(NULL), "EEmem");
@@ -298,7 +342,7 @@ bool PCSX2::attach_function1()
     auto minver = std::make_tuple(1u, 7u, 4473u, 0u);
     if (version && version < minver)
         return false;
-    if (!hookFunctions())
+    if (!hookFunctions(version))
         return false;
     pcsx2_load_functions(emfunctionhooks);
     bool succ = true;

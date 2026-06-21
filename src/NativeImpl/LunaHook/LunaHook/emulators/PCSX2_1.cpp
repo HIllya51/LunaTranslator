@@ -1691,6 +1691,13 @@ namespace
         strReplace(s, L"n");
         buffer->fromWA(s);
     }
+    void SLPM66779(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            return buffer->clear();
+        buffer->from(strReplace(s, "\n"));
+    }
     void SLPM65641(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -2114,6 +2121,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ギャラクシーエンジェルⅡ 無限回廊の鍵
+    {0x284D08, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66779, std::vector<const char *>{"SLPM-66779", "SLPM-66780"}}},
     // 漢のためのバイブル THE 友情アドベンチャー ～炎多留・魂～
     {0x12fc50, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-65393"}},
     {0x12fe80, {FULL_STRING, PCSX2_REG_OFFSET(v0), 0, 0, 0, "SLPM-65393"}},
