@@ -793,7 +793,10 @@ namespace
 bool InsertCotophaHook()
 {
   auto _old = InsertCotophaHook1();
-  return (InsertCotophaHook4() | InsertCotophaHook3()) || InsertCotophaHook2() || h5() || _old;
+  auto _ = (InsertCotophaHook4() | InsertCotophaHook3()) || InsertCotophaHook2() || h5();
+  if (!_)
+    PcHooks::hookGDIFunctions(GetGlyphOutlineW);
+  return _ || _old;
 }
 bool Cotopha::attach_function()
 {
