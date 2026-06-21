@@ -32,9 +32,9 @@ FARPROC WINAPI MyDelayLoadFailureHook(unsigned dliNotify, PDelayLoadInfo pdli)
 {
     if (dliNotify == dliFailLoadLib)
     {
-        WCHAR error[255];
-        wsprintf(error, L"Failed to load DLL: %s\nError code: %lu\n", pdli->szDll, pdli->dwLastError);
-        MessageBoxW(NULL, error, L"ERROR", MB_SYSTEMMODAL);
+        CHAR error[255];
+        sprintf(error, "Failed to load DLL: %s\nError code: %lu\nIt's most likely because the VC++ runtime environment is missing. Please install vcredist.", pdli->szDll, pdli->dwLastError);
+        MessageBoxA(NULL, error, "ERROR", MB_SYSTEMMODAL);
         return 0;
     }
     return NULL;
