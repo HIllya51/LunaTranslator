@@ -60,10 +60,11 @@ Same as [Translation](/en/guochandamoxing.html)
 
 == Built-in OCR
 
-The built-in system includes lightweight recognition models for Chinese, Japanese, and English. If you need to recognize other languages, you can download the corresponding language models from the `Resource Download` section.
+The built-in **PP-OCRv5_mobile** (lightweight recognition model for Chinese, Japanese, and English) is already included. If you need to recognize other languages or want to use other models, you need to download the models in the settings and configure them for use.
 
+![img](https://image.lunatranslator.org/zh/localocr.png)
 
-`Resource Downloads` also provide high-precision models for Chinese, Japanese, and English, which can achieve extremely high recognition accuracy, but the recognition speed is relatively slow.
+The settings also provide some high-precision models, such as PP-OCRv6_medium and PP-OCRv5_server, which can achieve extremely high recognition accuracy, but the recognition speed is relatively slower.
 
 To improve the recognition efficiency of high-precision models, the following methods can be adopted:
 
@@ -86,9 +87,8 @@ To improve the recognition efficiency of high-precision models, the following me
 >[!WARNING]
 >Only supports Windows 10 and Windows 11 operating systems.
 
-If you are using the latest version of Windows 11, you can use it directly. 
-
-Otherwise, you need to install this module from `Resource Download` to enable its functionality.
+If you are using the latest version of Windows 11, you can use it directly; otherwise, you need to install this module in Settings to use it.
+![img](https://image.lunatranslator.org/zh/snip.png)
 
 == Manga-OCR
 

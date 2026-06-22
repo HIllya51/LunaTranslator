@@ -63,9 +63,11 @@ https://ocr.space/
 
 == 内置OCR
 
-内置已包含中日英语的轻量级识别模型。如果需要识别其他语言，需要在`资源下载`中添加对应语言的识别模型。
+内置已包含**PP-OCRv5_mobile**（中日英语的轻量级识别模型）。如果需要识别其他语言，或想要使用其他模型，需要在设置中下载模型并设置使用。
 
-`资源下载`中还提供了中日英语的高精度模型，可以达到极高的识别准确率，但识别速度相对较慢。
+![img](https://image.lunatranslator.org/zh/localocr.png)
+
+设置中还提供了一些高精度模型，例如（PP-OCRv6_medium、PP-OCRv5_server），可以达到极高的识别准确率，但识别速度相对较慢。
 
 为提高高精度模型的识别效率，可以采用以下手段：
 
@@ -88,7 +90,8 @@ https://ocr.space/
 >[!WARNING]
 仅支持win10-win11操作系统
 
-如果是最新版windows 11系统则可以直接使用，否则需要在`资源下载`中安装该模块以使用。
+如果是最新版windows 11系统则可以直接使用，否则需要在设置中安装该模块以使用。
+![img](https://image.lunatranslator.org/zh/snip.png)
 
 == manga-ocr
 

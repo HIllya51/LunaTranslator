@@ -63,10 +63,11 @@ https://ocr.space/
 
 == 內建 OCR
 
-內建已包含中日英文的輕量級辨識模型。如果需要辨識其他語言，需要在`資源下載`中新增對應語言的辨識模型。
+內建已包含**PP-OCRv5_mobile**（中日英語的輕量級辨識模型）。如果需要辨識其他語言，或想要使用其他模型，需要在設定中下載模型並設定使用。
 
+![img](https://image.lunatranslator.org/zh/localocr.png)
 
-`資源下載`中還提供了中日英文的高精度模型，可以達到極高的辨識準確率，但辨識速度相對較慢。
+設定中還提供了一些高精度模型，例如（PP-OCRv6_medium、PP-OCRv5_server），可以達到極高的辨識準確率，但辨識速度相對較慢。
 
 為提高高精度模型的辨識效率，可以採用以下手段：
 
@@ -84,12 +85,13 @@ https://ocr.space/
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
 
-== Snipping Tool
+== SnippingTool
 
 >[!WARNING]
 僅支援 Win10～Win11 作業系統
 
-如果是最新版 Windows 11 系統則可以直接使用，否則需要在`資源下載`中安裝該模組以使用。
+如果是最新版的 Windows 11 系統則可以直接使用，否則需要在設定中安裝該模組以使用。
+![img](https://image.lunatranslator.org/zh/snip.png)
 
 == Manga OCR
 

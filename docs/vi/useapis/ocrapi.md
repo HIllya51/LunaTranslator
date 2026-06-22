@@ -60,10 +60,12 @@ Giống như [Dịch thuật](/en/guochandamoxing.html)
 
 == OCR tích hợp
 
-Mô hình nhận dạng nhẹ tích hợp sẵn bao gồm tiếng Trung, tiếng Nhật và tiếng Anh. Nếu bạn cần nhận dạng ngôn ngữ khác, vui lòng tải thêm mô hình ngôn ngữ tương ứng trong mục `Tải tài nguyên`.  
+Đã bao gồm sẵn **PP-OCRv5_mobile** (mô hình nhận dạng nhẹ cho tiếng Trung, Nhật và Anh). Nếu cần nhận dạng ngôn ngữ khác hoặc muốn sử dụng mô hình khác, bạn cần tải xuống mô hình trong phần cài đặt và thiết lập sử dụng.
 
+![img](https://image.lunatranslator.org/zh/localocr.png)
 
-`Tải xuống tài nguyên` cũng cung cấp các mô hình độ chính xác cao cho tiếng Trung, tiếng Nhật và tiếng Anh, có thể đạt độ nhận diện cực kỳ chính xác, nhưng tốc độ nhận diện tương đối chậm.
+Phần cài đặt cũng cung cấp một số mô hình độ chính xác cao, ví dụ (PP-OCRv6_medium, PP-OCRv5_server), có thể đạt độ chính xác nhận dạng cực cao, nhưng tốc độ nhận dạng tương đối chậm hơn.
+
 
 Để cải thiện hiệu suất nhận diện của các mô hình độ chính xác cao, có thể áp dụng các biện pháp sau:
 
@@ -86,9 +88,8 @@ Mô hình nhận dạng nhẹ tích hợp sẵn bao gồm tiếng Trung, tiếng
 >[!WARNING]
 >Chỉ hỗ trợ hệ điều hành Windows 10 và Windows 11.
 
-Nếu bạn đang sử dụng phiên bản mới nhất của Windows 11, bạn có thể sử dụng trực tiếp.
-
-Nếu không, bạn cần cài đặt mô-đun này từ `Tải xuống Tài nguyên` để kích hoạt chức năng của nó.
+Nếu bạn đang sử dụng phiên bản Windows 11 mới nhất thì có thể sử dụng trực tiếp, nếu không thì cần cài đặt mô-đun này trong phần Cài đặt để sử dụng.
+![img](https://image.lunatranslator.org/zh/snip.png)
 
 == Manga-OCR
 
