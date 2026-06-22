@@ -444,7 +444,6 @@
     "人名": "nome",
     "游戏数据": "Dati di gioco",
     "当前支持的语言": "Lingue attualmente supportate",
-    "添加语言包": "Aggiungi pacchetto linguistico",
     "在线": "on-line",
     "阴影": "ombra",
     "火山": "vulcano",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Utilizzo dei raccordi di sistema",
     "圆角": "Angoli arrotondati",
     "高精度": "Alta precisione",
-    "确认移除": "Conferma la rimozione",
     "确认": "Confermare",
     "线程数": "Numero di fili",
     "使用GPU": "Usa una GPU",
-    "优先使用更高精度的模型": "Dare priorità all'uso di modelli di maggiore precisione",
     "未选择OCR引擎": "Il motore OCR non è selezionato",
     "当前软件或操作系统版本不支持使用GPU": "L'attuale versione del software o del sistema operativo non supporta l'uso di GPU",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[LunaTranslar](https://github.com/hillya51/lunatranslar) usa la licenza [GPLV3](https://github.com/hillya51/lunatranslar/Blob/Main/license).",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "Il sistema non supporta la registrazione in loop.",
     "微信赞赏码": "Codice di apprezzamento WeChat",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Per favore, assicurati di agganciare l'emulatore con il traduttore HOOK prima di caricare il gioco nell'emulatore, altrimenti il gioco caricato all'interno dell'emulatore non sarà riconosciuto.",
-    "未添加“{currlang}”的OCR模型": "Modello OCR per \"{currlang}\" non aggiunto",
     "当前支持的语言：{langs}": "Lingue attualmente supportate: {langs}",
     "系统未安装“{currlang}”的OCR模型": "Il sistema non ha installato il modello OCR per \"{currlang}\"",
     "找不到重要组件：": "Componente importante non trovata:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Abilitazione del supporto tattile fallita.",
     "缩放模式无效。": "La modalità di zoom non è valida.",
     "prompt格式": "Formato del prompt",
-    "特定离线翻译模型": "Modello di traduzione offline specifico"
+    "特定离线翻译模型": "Modello di traduzione offline specifico",
+    "选择模型": "Scegli il modello.",
+    "支持的语言": "Lingue supportate",
+    "任意": "Qualsiasi"
 }

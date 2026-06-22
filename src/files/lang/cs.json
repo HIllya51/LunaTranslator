@@ -444,7 +444,6 @@
     "人名": "jméno",
     "游戏数据": "Údaje o hře",
     "当前支持的语言": "Aktuálně podporované jazyky",
-    "添加语言包": "Přidat jazykový balíček",
     "在线": "on-line",
     "阴影": "stín",
     "火山": "sopka",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Použít systémová zaoblení",
     "圆角": "Zaoblené rohy",
     "高精度": "Vysoká přesnost",
-    "确认移除": "Potvrďte odebrání",
     "确认": "Potvrdit",
     "线程数": "Počet vláken",
     "使用GPU": "Použití GPU",
-    "优先使用更高精度的模型": "Upřednostněte použití modelů s vyšší přesností",
     "未选择OCR引擎": "Modul OCR není vybrán",
     "当前软件或操作系统版本不支持使用GPU": "Aktuální verze softwaru nebo operačního systému nepodporuje použití GPU",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) používá licenci [gplv3](https://github.com/hillya51/lunatranslator/blob/main/license)).",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "Systém nepodporuje zpětnou smyčku nahrávání.",
     "微信赞赏码": "WeChat ocenění kód",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Před načtením hry v emulátoru nejprve připojte překladač HOOK k emulátoru, jinak nebude možné rozpoznat hru načtenou v emulátoru.",
-    "未添加“{currlang}”的OCR模型": "Nebyl přidán OCR model pro „{currlang}“",
     "当前支持的语言：{langs}": "Aktuálně podporované jazyky: {langs}",
     "系统未安装“{currlang}”的OCR模型": "Systém nemá nainstalovaný OCR model pro \"{currlang}\"",
     "找不到重要组件：": "Nepodařilo se najít důležitou součástku:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Povolení podpory dotyku selhalo.",
     "缩放模式无效。": "Režim přiblížení je neplatný.",
     "prompt格式": "Formát promptu",
-    "特定离线翻译模型": "Specifický offline překladový model"
+    "特定离线翻译模型": "Specifický offline překladový model",
+    "选择模型": "Výběr modelu",
+    "支持的语言": "Podporované jazyky",
+    "任意": "Jakýkoli"
 }

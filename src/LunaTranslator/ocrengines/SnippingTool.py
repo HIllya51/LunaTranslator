@@ -10,7 +10,8 @@ from traceback import print_exc
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
 import re, uuid
-from gui.dynalang import LPushButton, LLabel
+from gui.dynalang import LPushButton, LLabel, LDialog, LFormLayout
+from myutils.wrapper import Singleton
 from gui.usefulwidget import VisLFormLayout
 
 flist = ["oneocr.dll", "oneocr.onemodel", "onnxruntime.dll"]
@@ -213,6 +214,18 @@ class question(QWidget):
         formLayout.setRowVisible(0, False)
         formLayout.setRowVisible(2, False)
         self.formLayout = formLayout
+
+
+@Singleton
+class customwidget(LDialog):
+    def __init__(self, parent, config: dict, title) -> None:
+        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle(title)
+        self.resize(QSize(400, 10))
+        lform = LFormLayout(self)
+        lform.addWidget(question())
+        self.resize(600, 1)
+        self.show()
 
 
 class Img(Structure):

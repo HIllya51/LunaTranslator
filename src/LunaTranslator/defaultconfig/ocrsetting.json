@@ -1,12 +1,15 @@
 {
     "local": {
         "args": {
+            "model": "PP-OCRv5_mobile",
             "thread": 4,
             "gpu": false,
             "luid": 0,
-            "accfirst": true,
             "device_type": "CPU"
         }
+    },
+    "SnippingTool": {
+        "args": {}
     },
     "youdaodictocr": {
         "args": {

@@ -34,7 +34,6 @@ import gobject, qtawesome, importlib
 from gui.dynalang import LFormLayout, LDialog, LAction, LLabel
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
 from myutils.wrapper import threader, Singleton
-from gui.setting.about import offlinelinks
 from ocrengines.baseocrclass import OCRResultParsed
 
 
@@ -430,9 +429,6 @@ def internal(self):
     outdate = [_ for _ in offline if globalconfig["ocr"][_].get("outdate", False)]
     offline = [_ for _ in offline if _ not in outdate]
     offgrids = initgridsources(self, offline)
-    offgrids += [
-        [(functools.partial(offlinelinks, "ocr"), 0)],
-    ]
     engines = [
         [
             dict(

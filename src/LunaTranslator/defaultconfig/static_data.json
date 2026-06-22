@@ -187,22 +187,6 @@
                 "about": "日语_->_韩语"
             }
         ],
-        "ocr": [
-            {
-                "name": "内置OCR",
-                "function": [
-                    "ocrengines.local",
-                    "question"
-                ]
-            },
-            {
-                "name": "SnippingTool",
-                "function": [
-                    "ocrengines.SnippingTool",
-                    "question"
-                ]
-            }
-        ],
         "tts": [
             {
                 "name": "NeoSpeech",

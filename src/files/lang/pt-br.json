@@ -444,7 +444,6 @@
     "人名": "Nome",
     "游戏数据": "Dados do Jogo",
     "当前支持的语言": "Idiomas Atualmente Suportados",
-    "添加语言包": "Adicionar Pacote de Idioma",
     "在线": "Online",
     "阴影": "Sombra",
     "火山": "Volcengine",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Usar Cantos Arredondados do Sistema",
     "圆角": "Cantos Arredondados",
     "高精度": "Alta Precisão",
-    "确认移除": "Confirmar Remoção",
     "确认": "Confirmar",
     "线程数": "Número de Threads",
     "使用GPU": "Usar GPU",
-    "优先使用更高精度的模型": "Priorizar Uso de Modelos de Alta Precisão",
     "未选择OCR引擎": "Mecanismo OCR Não Selecionado",
     "当前软件或操作系统版本不支持使用GPU": "A versão atual do software ou sistema operacional não suporta uso de GPU",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[LunaTranslator](https://github.com/HIllya51/LunaTranslator) usa a licença [GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE).",
@@ -763,7 +760,6 @@
     "软件维护不易，如果您感觉该软件对你有帮助，欢迎通过[patreon](https://patreon.com/HIllya51)支持我，您的支持将成为软件长期维护的助力，谢谢~": "A manutenção do software não é fácil. Se você acha que este software é útil, sinta-se à vontade para me apoiar via [Patreon](https://patreon.com/HIllya51). Seu apoio contribuirá para a manutenção de longo prazo do software. Obrigado~",
     "不可用": "Não disponível",
     "巴西": "Brazil",
-    "未添加“{currlang}”的OCR模型": "Modelo OCR para \"{currlang}\" não adicionado",
     "当前支持的语言：{langs}": "Idiomas atualmente suportados: {langs}",
     "系统未安装“{currlang}”的OCR模型": "O sistema não possui o modelo OCR instalado para \"{currlang}\"",
     "窗口模式缩放": "Modo janela com zoom",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Falha ao ativar o suporte a toque.",
     "缩放模式无效。": "Modo de zoom inválido.",
     "prompt格式": "Formato de prompt",
-    "特定离线翻译模型": "Modelo de tradução offline específico"
+    "特定离线翻译模型": "Modelo de tradução offline específico",
+    "选择模型": "Selecionar modelo",
+    "支持的语言": "Idiomas suportados",
+    "任意": "Qualquer"
 }

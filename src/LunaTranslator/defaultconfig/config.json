@@ -1566,7 +1566,8 @@
         "SnippingTool": {
             "use": false,
             "name": "SnippingTool",
-            "type": "offline"
+            "type": "offline",
+            "argstype": "customwidget"
         },
         "weixinocr": {
             "use": false,

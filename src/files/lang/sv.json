@@ -444,7 +444,6 @@
     "人名": "namn",
     "游戏数据": "Speldata",
     "当前支持的语言": "Språk som stöds för närvarande",
-    "添加语言包": "Lägg till språkpaket",
     "在线": "on-line",
     "阴影": "skugga",
     "火山": "vulkan",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Använd systemfiléer",
     "圆角": "Rundade hörn",
     "高精度": "Hög precision",
-    "确认移除": "Bekräfta borttagningen",
     "确认": "Bekräfta",
     "线程数": "Antal trådar",
     "使用GPU": "Använda en GPU",
-    "优先使用更高精度的模型": "Prioritera användningen av modeller med högre precision",
     "未选择OCR引擎": "OCR-motorn är inte vald",
     "当前软件或操作系统版本不支持使用GPU": "Den aktuella programvaru- eller operativsystemversionen stöder inte användning av GPU:er",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) använder [GPLV3](https://github.com/hillya51/lunatranslator/blob/main/license) licens.",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "Systemet stöder inte loopinspelning.",
     "微信赞赏码": "WeChat uppskattningskod",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Låt översättaren HOOK emulatorn innan du laddar spelet i emulatorn, annars kommer det inte att känna igen spelet som laddas i emulatorn.",
-    "未添加“{currlang}”的OCR模型": "OCR-modell för \"{currlang}\" har inte lagts till",
     "当前支持的语言：{langs}": "Språk som stöds för närvarande: {langs}",
     "系统未安装“{currlang}”的OCR模型": "Systemet har inte installerat OCR-modellen för \"{currlang}\"",
     "找不到重要组件：": "Viktig komponent saknas:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Aktivering av pekstöd misslyckades.",
     "缩放模式无效。": "Skalningsläget är ogiltigt.",
     "prompt格式": "Självklart! Vänligen skicka den kinesiska texten du vill ha översatt, så översätter jag den till svenska åt dig.",
-    "特定离线翻译模型": "Specifik offlineöversättningsmodell"
+    "特定离线翻译模型": "Specifik offlineöversättningsmodell",
+    "选择模型": "Välj modell",
+    "支持的语言": "Språk som stöds",
+    "任意": "Valfri"
 }

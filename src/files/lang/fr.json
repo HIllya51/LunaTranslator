@@ -444,7 +444,6 @@
     "人名": "Nom de la personne",
     "游戏数据": "Données du jeu",
     "当前支持的语言": "Langues actuellement supportées",
-    "添加语言包": "Ajouter un pack de langue",
     "在线": "En ligne",
     "阴影": "Ombre",
     "火山": "Le volcan",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Utiliser les congés système",
     "圆角": "Coins arrondis",
     "高精度": "Haute précision",
-    "确认移除": "Confirmer la suppression",
     "确认": "Confirmer",
     "线程数": "Nombre de fils",
     "使用GPU": "Utiliser un GPU",
-    "优先使用更高精度的模型": "Privilégiez l’utilisation de modèles de plus grande précision",
     "未选择OCR引擎": "Le moteur OCR n’est pas sélectionné",
     "当前软件或操作系统版本不支持使用GPU": "La version actuelle du logiciel ou du système d’exploitation ne prend pas en charge l’utilisation des GPU",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslateur](https://github.com/hillya51/lunatranslator) utilise la licence [GPLV3](https://github.com/hillya51/lunatranslator/blob/main/license).",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "Le système ne prend pas en charge l'enregistrement en boucle.",
     "微信赞赏码": "Code de récompense WeChat",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Veuillez d'abord faire en sorte que le traducteur HOOK le simulateur avant de charger le jeu dans le simulateur, sinon le jeu chargé dans le simulateur ne sera pas reconnu.",
-    "未添加“{currlang}”的OCR模型": "Modèle OCR pour \"{currlang}\" non ajouté",
     "当前支持的语言：{langs}": "Langues actuellement prises en charge : {langs}",
     "系统未安装“{currlang}”的OCR模型": "Le système ne dispose pas du modèle OCR pour \"{currlang}\"",
     "找不到重要组件：": "Composant important introuvable :",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Échec de l'activation du support tactile.",
     "缩放模式无效。": "Le mode de zoom n'est pas valide.",
     "prompt格式": "Format du prompt",
-    "特定离线翻译模型": "Modèle de traduction hors ligne spécifique"
+    "特定离线翻译模型": "Modèle de traduction hors ligne spécifique",
+    "选择模型": "Sélectionner un modèle",
+    "支持的语言": "Langues prises en charge",
+    "任意": "N'importe lequel"
 }

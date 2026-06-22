@@ -444,7 +444,6 @@
     "人名": "nazwa",
     "游戏数据": "Dane gry",
     "当前支持的语言": "Obecnie obsługiwane języki",
-    "添加语言包": "Dodaj pakiet językowy",
     "在线": "on-line",
     "阴影": "cień",
     "火山": "wulkan",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Używanie zaokrągleń systemowych",
     "圆角": "Zaokrąglone rogi",
     "高精度": "Wysoka precyzja",
-    "确认移除": "Potwierdź usunięcie",
     "确认": "Potwierdzić",
     "线程数": "Liczba wątków",
     "使用GPU": "Korzystanie z procesora graficznego",
-    "优先使用更高精度的模型": "Nadawanie priorytetu korzystaniu z modeli o wyższej precyzji",
     "未选择OCR引擎": "Silnik OCR nie jest wybrany",
     "当前软件或操作系统版本不支持使用GPU": "Bieżąca wersja oprogramowania lub systemu operacyjnego nie obsługuje korzystania z procesorów graficznych",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) używa licencji [GPLV3](https://github.com/hillya51/lunatranslator/blob/main/license).",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "System nie obsługuje nagrywania zwrotnego.",
     "微信赞赏码": "Kod podziękowania WeChat",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Przed załadowaniem gry w emulatorze, najpierw podłącz translator HOOK do emulatora, w przeciwnym razie nie będzie możliwe rozpoznanie gry załadowanej w emulatorze.",
-    "未添加“{currlang}”的OCR模型": "Nie dodano modelu OCR dla „{currlang}”",
     "当前支持的语言：{langs}": "Obecnie obsługiwane języki: {langs}",
     "系统未安装“{currlang}”的OCR模型": "System nie ma zainstalowanego modelu OCR dla \"{currlang}\"",
     "找不到重要组件：": "Nie znaleziono ważnego komponentu:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Włączanie obsługi dotykowej nie powiodło się.",
     "缩放模式无效。": "Tryb skalowania jest nieprawidłowy.",
     "prompt格式": "format promptu",
-    "特定离线翻译模型": "Konkretny model tłumaczenia offline"
+    "特定离线翻译模型": "Konkretny model tłumaczenia offline",
+    "选择模型": "Wybierz model",
+    "支持的语言": "Obsługiwane języki",
+    "任意": "Dowolny"
 }

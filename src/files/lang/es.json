@@ -444,7 +444,6 @@
     "人名": "Nombre",
     "游戏数据": "Datos del juego",
     "当前支持的语言": "Idiomas apoyados actualmente",
-    "添加语言包": "Añadir paquetes de idiomas",
     "在线": "En línea",
     "阴影": "Sombra",
     "火山": "Volcán",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Usar empalmes del sistema",
     "圆角": "Esquinas redondeadas",
     "高精度": "Alta precisión",
-    "确认移除": "Confirmar la eliminación",
     "确认": "Confirmar",
     "线程数": "Número de subprocesos",
     "使用GPU": "Usar una GPU",
-    "优先使用更高精度的模型": "Priorizar el uso de modelos de mayor precisión",
     "未选择OCR引擎": "El motor de OCR no está seleccionado",
     "当前软件或操作系统版本不支持使用GPU": "La versión actual del software o del sistema operativo no es compatible con el uso de GPU",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) usa la licencia [GPLV3](https://github.com/hillya51/lunatranslator/blob/main/llicense).",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "El sistema no admite la grabación en bucle.",
     "微信赞赏码": "Código de recompensa de WeChat",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Por favor, permite que el traductor HOOK enganche el emulador antes de cargar el juego en el emulador; de lo contrario, no podrá reconocer el juego cargado dentro del emulador.",
-    "未添加“{currlang}”的OCR模型": "No se ha añadido el modelo OCR para \"{currlang}\"",
     "当前支持的语言：{langs}": "Idiomas admitidos actualmente: {langs}",
     "系统未安装“{currlang}”的OCR模型": "El sistema no tiene instalado el modelo OCR para \"{currlang}\".",
     "找不到重要组件：": "No se encontró un componente importante:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Fallo al habilitar el soporte táctil.",
     "缩放模式无效。": "El modo de zoom no es válido.",
     "prompt格式": "Formato de prompt",
-    "特定离线翻译模型": "Modelo de traducción fuera de línea específico"
+    "特定离线翻译模型": "Modelo de traducción fuera de línea específico",
+    "选择模型": "Seleccionar modelo",
+    "支持的语言": "Idiomas compatibles",
+    "任意": "Cualquier"
 }

@@ -444,7 +444,6 @@
     "人名": "isim",
     "游戏数据": "Oyun verileri",
     "当前支持的语言": "Şu anda desteklenmiş diller",
-    "添加语言包": "Dil paketi ekle",
     "在线": "on line",
     "阴影": "gölge",
     "火山": "vulkan",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Sistem filetolarını kullanın",
     "圆角": "Yuvarlatılmış köşeler",
     "高精度": "Yüksek hassasiyet",
-    "确认移除": "Kaldırma işlemini onaylayın",
     "确认": "Onaylamak",
     "线程数": "İş parçacığı sayısı",
     "使用GPU": "Bir GPU kullanın",
-    "优先使用更高精度的模型": "Daha yüksek hassasiyetli modellerin kullanımına öncelik verin",
     "未选择OCR引擎": "OCR motoru seçili değil",
     "当前软件或操作系统版本不支持使用GPU": "Mevcut yazılım veya işletim sistemi sürümü GPU kullanımını desteklemiyor",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) [gplv3](https://github.com/hillya51/lunatranslator/blob/main/license) lisansını kullanır.",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "Sistem döngü kaydını desteklemiyor.",
     "微信赞赏码": "WeChat Takdir Kodu",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Lütfen öykünücüye oyun yüklemeden önce çeviriciyi HOOK öykünücüye bağlayın, aksi takdirde öykünücü içinde yüklenen oyun tanınmayacaktır.",
-    "未添加“{currlang}”的OCR模型": "\"{currlang}\" OCR modeli eklenmedi",
     "当前支持的语言：{langs}": "Şu anda desteklenen diller: {langs}",
     "系统未安装“{currlang}”的OCR模型": "Sistemde \"{currlang}\" için OCR modeli yüklü değil",
     "找不到重要组件：": "Önemli bileşen bulunamadı:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Dokunmatik destek etkinleştirilemedi.",
     "缩放模式无效。": "Yakınlaştırma modu geçersiz.",
     "prompt格式": "İstek formatı",
-    "特定离线翻译模型": "Belirli bir çevrimdışı çeviri modeli"
+    "特定离线翻译模型": "Belirli bir çevrimdışı çeviri modeli",
+    "选择模型": "Model seçimi",
+    "支持的语言": "Desteklenen diller",
+    "任意": "Herhangi bir"
 }

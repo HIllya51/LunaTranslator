@@ -444,7 +444,6 @@
     "人名": "Name",
     "游戏数据": "Game Data",
     "当前支持的语言": "Currently Supported Languages",
-    "添加语言包": "Add Language Pack",
     "在线": "Online",
     "阴影": "Shadow",
     "火山": "Volcengine",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Use system fillets",
     "圆角": "Rounded corners",
     "高精度": "High precision",
-    "确认移除": "Confirm the removal",
     "确认": "Confirm",
     "线程数": "Number of threads",
     "使用GPU": "Use a GPU",
-    "优先使用更高精度的模型": "Prioritize the use of higher-precision models",
     "未选择OCR引擎": "The OCR engine is not selected",
     "当前软件或操作系统版本不支持使用GPU": "The current software or operating system version does not support the use of GPUs",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[LunaTranslator](https://github.com/hillya51/LunaTranslator) uses the [GPLv3](https://github.com/hillya51/LunaTranslator/blob/main/LICENSE) license.",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "The system does not support loopback recording.",
     "微信赞赏码": "WeChat Appreciation Code",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Please let the translator HOOK the emulator before loading the game in the emulator, otherwise it will not recognize the game loaded in the emulator.",
-    "未添加“{currlang}”的OCR模型": "OCR model for \"{currlang}\" not added",
     "当前支持的语言：{langs}": "Currently supported languages: {langs}",
     "系统未安装“{currlang}”的OCR模型": "The system does not have the OCR model for \"{currlang}\" installed.",
     "找不到重要组件：": "Important component not found:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Failed to enable touch support.",
     "缩放模式无效。": "Zoom mode is invalid.",
     "prompt格式": "Prompt format",
-    "特定离线翻译模型": "Specific offline translation model"
+    "特定离线翻译模型": "Specific offline translation model",
+    "选择模型": "Select model",
+    "支持的语言": "Supported Languages",
+    "任意": "any"
 }

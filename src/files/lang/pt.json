@@ -444,7 +444,6 @@
     "人名": "nome",
     "游戏数据": "Dados do jogo",
     "当前支持的语言": "Línguas actualmente suportadas",
-    "添加语言包": "Adicionar pacote de idiomas",
     "在线": "on-line",
     "阴影": "sombra",
     "火山": "vulcão",
@@ -710,11 +709,9 @@
     "使用系统圆角": "Usar filetes do sistema",
     "圆角": "Cantos arredondados",
     "高精度": "Alta precisão",
-    "确认移除": "Confirme a remoção",
     "确认": "Confirmar",
     "线程数": "Número de threads",
     "使用GPU": "Use uma GPU",
-    "优先使用更高精度的模型": "Priorize o uso de modelos de maior precisão",
     "未选择OCR引擎": "O mecanismo de OCR não está selecionado",
     "当前软件或操作系统版本不支持使用GPU": "A versão atual do software ou do sistema operacional não suporta o uso de GPUs",
     "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。": "[Lunatranslator](https://github.com/hillya51/lunatranslator) usa o [gplv3](https://github.com/hillya51/lunatranslator/blob/main/license).",
@@ -745,7 +742,6 @@
     "系统不支持环回录制": "O sistema não suporta gravação em loop.",
     "微信赞赏码": "Código de Apreciação do WeChat",
     "请在模拟器加载游戏之前，先让翻译器HOOK模拟器，否则将无法识别模拟器内加载的游戏": "Antes de carregar o jogo no emulador, certifique-se de que o tradutor HOOK esteja conectado ao emulador, caso contrário, não será possível reconhecer o jogo carregado dentro do emulador.",
-    "未添加“{currlang}”的OCR模型": "Modelo OCR para \"{currlang}\" não adicionado",
     "当前支持的语言：{langs}": "Idiomas atualmente suportados: {langs}",
     "系统未安装“{currlang}”的OCR模型": "O sistema não possui o modelo OCR para \"{currlang}\" instalado.",
     "找不到重要组件：": "Componente importante não encontrado:",
@@ -938,5 +934,8 @@
     "启用触控支持失败。": "Falha ao ativar o suporte a toque.",
     "缩放模式无效。": "Modo de zoom inválido.",
     "prompt格式": "Formato de prompt",
-    "特定离线翻译模型": "Modelo de tradução offline específico"
+    "特定离线翻译模型": "Modelo de tradução offline específico",
+    "选择模型": "Selecionar modelo",
+    "支持的语言": "Idiomas suportados",
+    "任意": "Qualquer"
 }
