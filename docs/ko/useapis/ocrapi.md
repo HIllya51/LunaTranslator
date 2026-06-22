@@ -58,16 +58,25 @@ https://ocr.space/
 
 ## 오프라인 OCR {#anchor-offline}
 
+### 내장 OCR {#anchor-localocr}
 
-::: tabs
-
-== 내장 OCR
 
 내장된 **PP-OCRv5_mobile**(중국어, 일본어, 영어 경량 인식 모델)이 이미 포함되어 있습니다. 다른 언어를 인식해야 하거나 다른 모델을 사용하려면 설정에서 모델을 다운로드하고 사용하도록 설정해야 합니다.
 
 ![img](https://image.lunatranslator.org/zh/localocr.png)
 
 설정에서는 또한 일부 고정밀 모델(예: PP-OCRv6_medium, PP-OCRv5_server)을 제공하며, 매우 높은 인식 정확도를 달성할 수 있지만 인식 속도는 상대적으로 느립니다.
+
+| 모델 | 검출 모듈 Hmean(%) | 인식 모듈 Avg Accuracy(%) | 지원 언어 | 크기(MB) |
+| - | - | - | - | - |
+| PP-OCRv6_small | 84.1 | 81.3 | 모든 언어 | 25.2 |
+| PP-OCRv6_medium | 86.2 | 83.2 | 모든 언어 | 99.7 |
+| PP-OCRv6_tiny | 80.6 | 73.5 | 모든 언어 | 5.45 |
+| PP-OCRv5_mobile | 79.0 | 81.29 | 중국어 간체, 중국어 번체, 영어, 일본어 | 17.7 |
+| PP-OCRv5_server | 83.8 | 86.38 | 중국어 간체, 중국어 번체, 영어, 일본어 | 148 |
+| eslav_PP-OCRv5_mobile | 79.0 | 81.6 | 동슬라브어군 | 11.2 |
+| korean_PP-OCRv5_mobile | 79.0 | 88.0 | 한국어 | 12.2 |
+| latin_PP-OCRv5_mobile | 79.0 | 84.7 | 라틴 문자 사용 언어 | 11.3 |
 
 고정밀 모델의 인식 효율을 높이기 위해 다음과 같은 방법을 사용할 수 있습니다:
 
@@ -84,6 +93,10 @@ https://ocr.space/
     [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)를 다운로드하고 압축을 해제한 후, **runtimes/win-x64/native** 내의 모든 파일을 **LunaTranslator/files/DLL64**로 덮어쓴 다음, 사용할 장치를 선택합니다.
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
+
+### 기타 OCR
+
+::: tabs
 
 == SnippingTool
 

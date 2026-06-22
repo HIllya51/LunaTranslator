@@ -58,16 +58,25 @@ https://ocr.space/
 
 ## 離線 OCR {#anchor-offline}
 
+### 內建 OCR {#anchor-localocr}
 
-::: tabs
-
-== 內建 OCR
 
 內建已包含**PP-OCRv5_mobile**（中日英語的輕量級辨識模型）。如果需要辨識其他語言，或想要使用其他模型，需要在設定中下載模型並設定使用。
 
 ![img](https://image.lunatranslator.org/zh/localocr.png)
 
 設定中還提供了一些高精度模型，例如（PP-OCRv6_medium、PP-OCRv5_server），可以達到極高的辨識準確率，但辨識速度相對較慢。
+
+| 模型 | 檢測模組 Hmean(%) | 識別模組 Avg Accuracy(%) | 支援的語言 | 體積(MB) |
+| - | - | - | - | - |
+| PP-OCRv6_small | 84.1 | 81.3 | 任意 | 25.2 |
+| PP-OCRv6_medium | 86.2 | 83.2 | 任意 | 99.7 |
+| PP-OCRv6_tiny | 80.6 | 73.5 | 任意 | 5.45 |
+| PP-OCRv5_mobile | 79.0 | 81.29 | 簡體中文、繁體中文、英文、日文 | 17.7 |
+| PP-OCRv5_server | 83.8 | 86.38 | 簡體中文、繁體中文、英文、日文 | 148 |
+| eslav_PP-OCRv5_mobile | 79.0 | 81.6 | 東斯拉夫語言 | 11.2 |
+| korean_PP-OCRv5_mobile | 79.0 | 88.0 | 韓語 | 12.2 |
+| latin_PP-OCRv5_mobile | 79.0 | 84.7 | 拉丁字母語言 | 11.3 |
 
 為提高高精度模型的辨識效率，可以採用以下手段：
 
@@ -84,6 +93,10 @@ https://ocr.space/
     下載 [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)，解壓縮後將 **runtimes/win-x64/native** 中的所有檔案覆蓋到 **LunaTranslator/files/DLL64** 中，然後選擇使用的裝置即可。
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
+
+### 其他OCR
+
+::: tabs
 
 == SnippingTool
 

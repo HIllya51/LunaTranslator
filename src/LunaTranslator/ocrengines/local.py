@@ -24,6 +24,7 @@ from gui.usefulwidget import (
     getboxlayout,
     getspinbox,
     getsimpleswitch,
+    D_getdoclink,
     getsimplecombobox,
 )
 import functools
@@ -150,7 +151,11 @@ class question(QWidget):
         l.setStretch(0, 2)
         l.setStretch(1, 1)
         self.lineX.setEnabled(False)
-        formLayout.addRow(self.lineX)
+        formLayout.addRow(
+            getboxwidget(
+                [D_getdoclink("useapis/ocrapi.html#anchor-offline"), self.lineX]
+            )
+        )
         self.infolabel = LLabel()
         self.infolabel.setWordWrap(True)
         formLayout.addRow("支持的语言", self.infolabel)

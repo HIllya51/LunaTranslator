@@ -56,9 +56,7 @@ Giống như [Dịch thuật](/en/guochandamoxing.html)
 
 ## OCR Ngoại tuyến {#anchor-offline}
 
-::: tabs
-
-== OCR tích hợp
+### OCR tích hợp {#anchor-localocr}
 
 Đã bao gồm sẵn **PP-OCRv5_mobile** (mô hình nhận dạng nhẹ cho tiếng Trung, Nhật và Anh). Nếu cần nhận dạng ngôn ngữ khác hoặc muốn sử dụng mô hình khác, bạn cần tải xuống mô hình trong phần cài đặt và thiết lập sử dụng.
 
@@ -66,6 +64,16 @@ Giống như [Dịch thuật](/en/guochandamoxing.html)
 
 Phần cài đặt cũng cung cấp một số mô hình độ chính xác cao, ví dụ (PP-OCRv6_medium, PP-OCRv5_server), có thể đạt độ chính xác nhận dạng cực cao, nhưng tốc độ nhận dạng tương đối chậm hơn.
 
+| Mô hình | Mô-đun phát hiện Hmean(%) | Mô-đun nhận dạng Avg Accuracy(%) | Ngôn ngữ hỗ trợ | Dung lượng(MB) |
+| - | - | - | - | - |
+| PP-OCRv6_small | 84.1 | 81.3 | Bất kỳ | 25.2 |
+| PP-OCRv6_medium | 86.2 | 83.2 | Bất kỳ | 99.7 |
+| PP-OCRv6_tiny | 80.6 | 73.5 | Bất kỳ | 5.45 |
+| PP-OCRv5_mobile | 79.0 | 81.29 | Tiếng Trung Giản thể, Tiếng Trung Phồn thể, Tiếng Anh, Tiếng Nhật | 17.7 |
+| PP-OCRv5_server | 83.8 | 86.38 | Tiếng Trung Giản thể, Tiếng Trung Phồn thể, Tiếng Anh, Tiếng Nhật | 148 |
+| eslav_PP-OCRv5_mobile | 79.0 | 81.6 | Ngôn ngữ Đông Slav | 11.2 |
+| korean_PP-OCRv5_mobile | 79.0 | 88.0 | Tiếng Hàn | 12.2 |
+| latin_PP-OCRv5_mobile | 79.0 | 84.7 | Ngôn ngữ sử dụng bảng chữ cái Latinh | 11.3 |
 
 Để cải thiện hiệu suất nhận diện của các mô hình độ chính xác cao, có thể áp dụng các biện pháp sau:
 
@@ -82,6 +90,10 @@ Phần cài đặt cũng cung cấp một số mô hình độ chính xác cao, 
     Tải xuống [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg). Sau khi giải nén, sao chép đè tất cả tệp trong **runtimes/win-x64/native** vào **LunaTranslator/files/DLL64**, sau đó chọn thiết bị sử dụng.
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
+
+### OCR khác
+
+::: tabs
 
 == SnippingTool
 
