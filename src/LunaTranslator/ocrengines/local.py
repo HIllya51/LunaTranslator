@@ -40,7 +40,7 @@ class question(QWidget):
     def downloadauto(self):
         data, support, _ = self.combo.getIndexData(self.combo.currentIndex())
         if support:
-            self.config__["model"] = data["name"]
+            self.config__["model"] = data.get("name")
             self.loadcombos(self.result)
         else:
             self.downloadxSafe(data)
@@ -209,7 +209,7 @@ class question(QWidget):
                 for ___ in m:
                     __[___] = _.get(___)
                 if m == __:
-                    if m["name"] == self.config__["model"]:
+                    if m.get("name") == self.config__["model"]:
                         v = "√ " + v
                         if init:
                             idx = i
@@ -354,7 +354,7 @@ class localmodels:
             return None
 
         for m in ms:
-            if m.info["name"] == model:
+            if m.info.get("name") == model:
                 return m
         return None
 
