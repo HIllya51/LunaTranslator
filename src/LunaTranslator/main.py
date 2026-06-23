@@ -286,7 +286,7 @@ def parsellmapi(result):
     copyllmapi("chatgpt-3rd-party", args["name"], args["uid"], args=args, use=True)
 
 
-def ifhasllmapi(_):
+def checkargs():
     import gobject
     import NativeUtils
     import windows
@@ -296,6 +296,7 @@ def ifhasllmapi(_):
     gobject.isRunningMutex = NativeUtils.SimpleCreateMutex("LUNA_IS_RUNNING_MUTEX")
     startwithgameuid = None
     error = None
+    _ = parseargs()
     if _:
         if _[0] == 1:
             startwithgameuid = _[1]
@@ -313,16 +314,15 @@ def ifhasllmapi(_):
 
 if __name__ == "__main__":
     switchdir()
-    args = parseargs()
     checklang()
-    startwithgameuid, error = ifhasllmapi(args)
     error2 = checkintegrity()
-    prepareqtenv(error or error2)
+    prepareqtenv(error2)
     from qtsymbols import QApplication
 
     app = QApplication(sys.argv)
     # app.setQuitOnLastWindowClosed(False)
-    mayberror(error)
     mayberror(error2)
+    startwithgameuid, error = checkargs()
+    mayberror(error)
     loadmainui(startwithgameuid)
     app.exit(app.exec())
