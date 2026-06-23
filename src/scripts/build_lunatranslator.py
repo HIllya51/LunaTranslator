@@ -191,7 +191,7 @@ def downloadOCRModel():
     os.chdir(rootDir + "\\files")
     if not os.path.exists("ocrmodel"):
         os.mkdir("ocrmodel/")
-    link = "https://lunatranslator.org/r2/luna/ocr_models_v5/jazhchten.zip"
+    link = "https://lunatranslator.org/r2/luna/ocr_models_v6/jazhchten.zip"
     os.chdir("ocrmodel")
     __ = hashlib.md5(link.encode()).hexdigest()
     os.makedirs(__)
