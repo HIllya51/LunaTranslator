@@ -178,7 +178,7 @@ namespace
     hp.address = addr;
     hp.text_fun = SpecialHookWillPlus;
     hp.type = USING_STRING;
-    return NewHook(hp, "WillPlus");
+    return NewHook(hp, "WillPlus1");
   }
 
   const char *_willplus_trim_a(const char *text, size_t *size)
@@ -427,9 +427,9 @@ namespace
 
 } // unnamed namespace
 
-bool InsertWillPlusHook()
+bool InsertWillPlusHook(bool old = true)
 {
-  bool ok = InsertOldWillPlusHook();
+  bool ok = old && InsertOldWillPlusHook();
   ok = InsertWillPlusWHook() || InsertNewWillPlusHook() || InsertWillPlusAHook() || ok;
   return ok;
 }
@@ -1786,11 +1786,11 @@ LABEL_45:
 bool WillPlus::attach_function()
 {
   bool succ = WillPlusEngine::attach();
-  succ |= InsertWillPlusHook();
+  succ |= InsertWillPlusHook(false);
   succ |= InsertWillPlus4Hook() || willplus_1_9_9_15();
   succ |= InsertWillPlus5Hook();
   succ |= insertwillplus6();
-  succ |= willX();
+  succ |= willX(); // willS会和WillPlus1冲突，例如：Laughter Land https://vndb.org/v1076
   succ |= InsertWillPlus5();
   return succ || h8() || h7();
 }
