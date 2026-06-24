@@ -28,7 +28,7 @@
 			}
 		}
 	},
-	"deepl_1": {
+	"deepl": {
 		"args": {
 			"usewhich": 1,
 			"api": "http://127.0.0.1:1188/translate",

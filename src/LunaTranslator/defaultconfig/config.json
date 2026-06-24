@@ -1709,7 +1709,7 @@
             "color": "blue",
             "name": "彩云"
         },
-        "deepl_1": {
+        "deepl": {
             "use": false,
             "color": "blue",
             "name": "DeepL",
