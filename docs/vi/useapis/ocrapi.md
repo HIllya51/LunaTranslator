@@ -60,7 +60,7 @@ Giống như [Dịch thuật](/en/guochandamoxing.html)
 
 Đã bao gồm sẵn **PP-OCRv5_mobile** (mô hình nhận dạng nhẹ cho tiếng Trung, Nhật và Anh). Nếu cần nhận dạng ngôn ngữ khác hoặc muốn sử dụng mô hình khác, bạn cần tải xuống mô hình trong phần cài đặt và thiết lập sử dụng.
 
-![img](https://image.lunatranslator.org/zh/localocr.png)
+![img](https://image.lunatranslator.org/en/localocr.png)
 
 Phần cài đặt cũng cung cấp một số mô hình độ chính xác cao, ví dụ (PP-OCRv6_medium, PP-OCRv5_server), có thể đạt độ chính xác nhận dạng cực cao, nhưng tốc độ nhận dạng tương đối chậm hơn.
 

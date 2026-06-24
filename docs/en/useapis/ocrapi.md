@@ -60,7 +60,7 @@ Same as [Translation](/en/guochandamoxing.html)
 
 The built-in **PP-OCRv5_mobile** (lightweight recognition model for Chinese, Japanese, and English) is already included. If you need to recognize other languages or want to use other models, you need to download the models in the settings and configure them for use.
 
-![img](https://image.lunatranslator.org/zh/localocr.png)
+![img](https://image.lunatranslator.org/en/localocr.png)
 
 The settings also provide some high-precision models, such as PP-OCRv6_medium and PP-OCRv5_server, which can achieve extremely high recognition accuracy, but the recognition speed is relatively slower.
 

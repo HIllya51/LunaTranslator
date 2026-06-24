@@ -61,7 +61,7 @@ https://ocr.space/
 
 内蔵済みの**PP-OCRv5_mobile**（中日英語の軽量認識モデル）が含まれています。他の言語を認識したい場合、または他のモデルを使用したい場合は、設定でモデルをダウンロードして使用するように設定する必要があります。
 
-![img](https://image.lunatranslator.org/zh/localocr.png)
+![img](https://image.lunatranslator.org/en/localocr.png)
 
 設定では、高精度モデル（例：PP-OCRv6_medium、PP-OCRv5_server）も提供されており、非常に高い認識精度を達成できますが、認識速度は比較的遅くなります。
 
