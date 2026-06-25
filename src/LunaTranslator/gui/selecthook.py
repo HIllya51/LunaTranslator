@@ -667,13 +667,11 @@ class hookselect(closeashidewindow):
 
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
-        userhookinsert = LPushButton("插入特殊码")
-        userhookinsert.clicked.connect(self.inserthook)
-        self.searchtextlayout.addWidget(userhookinsert)
+        self.userhook.returnPressed.connect(self.inserthook)
 
         self.searchtextlayout.addWidget(D_getdoclink("hooksettings.html#特殊码格式")())
 
-        self.userhookfind = LPushButton("搜索特殊码")
+        self.userhookfind = LPushButton("搜索")
         self.userhookfind.clicked.connect(self.findhook)
         self.searchtextlayout.addWidget(self.userhookfind)
         self.searchtextlayout.addWidget(__)
