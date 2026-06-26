@@ -575,7 +575,7 @@ class BASEOBJECT(QObject):
         if erroroutput:
             return erroroutput(TranslateError(klass, e))
         if klass:
-            e = _TR(dynamicapiname(klass)) + " " + e
+            e = _TR(dynamicapiname(klass)) + ": " + e
         self._delayshowraw(_showrawfunction)
         self.translation_ui.displaystatusklass.emit(e, t, klass)
 

@@ -512,9 +512,10 @@ def saveallconfig(test=False):
 
 
 def dynamicapiname(apiuid):
-    return globalconfig["fanyi"][apiuid].get(
-        "name_self_set", globalconfig["fanyi"][apiuid]["name"]
-    )
+    my = globalconfig["fanyi"][apiuid].get("name_self_set")
+    if my:
+        return my
+    return _TR(globalconfig["fanyi"][apiuid]["name"])
 
 
 def getcopyfrom(uid):

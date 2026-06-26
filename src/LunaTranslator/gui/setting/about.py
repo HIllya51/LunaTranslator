@@ -18,7 +18,6 @@ from gui.usefulwidget import (
     LinkLabel,
     SClickableLabel,
     VisLFormLayout,
-    D_getIconButton,
     tabadd_lazy,
 )
 from gui.setting.setting_year import yearsummary

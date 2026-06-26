@@ -8,7 +8,7 @@ import requests, types
 
 class ArgsEmptyExc(Exception):
     def __init__(self, valuelist) -> None:
-        super().__init__(" , ".join(valuelist) + getlanguse().space + _TR("不能为空"))
+        super().__init__(" , ".join(_TR(_) for _ in valuelist) + getlanguse().space + _TR("不能为空"))
 
 
 class maybejson:
