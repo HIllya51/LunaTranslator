@@ -47,7 +47,22 @@ bool WillPlus::attach_function()
       0X48, 0X8B, 0X55, XX,
       0XE8, XX4,
       0X48, 0X8B, XX};
+  const BYTE bytes2[] = {
+      //[260626][1363903][Guilty] 虜ノ桜 ～美しく咲き、淫らに散らされる処女たち～ ifエロパッチ対応豪華版
+      0X48, 0X8D, XX, XX,
+      0X48, 0X83, 0X7D, XX, 0X07,
+      0X48, 0X0F, 0X47, XX, XX,
+      0x48, 0x83, 0xf8, 0x01,
+      0x0f, 0x82, XX4,
+      0x48, 0x8d, 0x1c, 0x47,
+      0x41, 0xb9, 0x01, 0x00, 0x00, 0x00,
+      0X4C, 0X8D, 0X05, XX4,
+      0x48, 0x8b, XX,
+      0x48, 0x8b, XX,
+      0XE8, XX4};
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    addr = MemDbg::findBytes(bytes2, sizeof(bytes2), processStartAddress, processStopAddress);
   if (!addr)
     return false;
   addr = MemDbg::findEnclosingAlignedFunction(addr);

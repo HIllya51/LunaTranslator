@@ -16,6 +16,27 @@ namespace
     {
         // Vita3K\external\dynarmic\src\dynarmic\backend\x64\emit_x64.h
         // BlockDescriptor EmitX64::RegisterBlock(const IR::LocationDescriptor& location_descriptor, CodePtr entrypoint, size_t size);
+
+        // v0.2.1 4049 Corresponding commit: cmake: Dynamic link libc and stdc++ (#4008) (Pedro Montes Alcalde)
+        // https://github.com/Vita3K/Vita3K/commit/7c567c18043bc83282b1d834dc027dae13e5a296
+        BYTE pattern1[] = {0x40, 0x53, 0x55, 0x56, 0x57, 0x41, 0x54, 0x41, 0x55, 0x41, 0x56, 0x41, 0x57,
+                           0x48, 0x83, 0xec, XX,
+                           0x48, 0x8b, 0x41, 0x08,
+                           0x48, 0x8B, 0xd9,
+                           0x48, 0x83, 0xc1, 0x70,
+                           0x49, 0x8B, 0xF0,
+                           0x48, 0x8B, 0xeA,
+                           0x4c, 0x8B, 0x60, 0x40,
+                           0x4c, 0x8B, 0x68, 0x38,
+                           0xe8, XX4};
+        auto addr = MemDbg::findBytes(pattern1, sizeof(pattern1), processStartAddress, processStopAddress);
+        if (addr)
+        {
+            idxDescriptor = 1;
+            idxEntrypoint = 2;
+            return addr;
+        }
+
         BYTE RegisterBlockSig1[] = {0x40, 0x55, 0x53, 0x56, 0x57, 0x41, 0x54, 0x41, 0x56, 0x41, 0x57, 0x48, 0x8D, 0x6C, 0x24, 0xE9, 0x48, 0x81, 0xEC, 0x90, 0x00, 0x00, 0x00, 0x48, 0x8B, XX, XX, XX, XX, XX, 0x48, 0x33, 0xC4, 0x48, 0x89, 0x45, 0x07, 0x4D, 0x8B, 0xF1, 0x49, 0x8B, 0xF0, 0x48, 0x8B, 0xFA, 0x48, 0x8B, 0xD9, 0x4C, 0x8B, 0x7D, 0x77, 0x48, 0x8B, 0x01, 0x48, 0x8D, 0x55, 0xC7, 0xFF, 0x50, 0x10};
         auto first = MemDbg::findBytes(RegisterBlockSig1, sizeof(RegisterBlockSig1), processStartAddress, processStopAddress);
         if (first)
@@ -168,9 +189,12 @@ bool vita3k::attach_function1()
     if (!DoJitPtr)
         return false;
     static bool isgtv021_4000 = GetModuleHandle(L"Qt6Core.dll");
-    // 大约是从v0.2.1 4000版本左右开始，增加了一个偏移量。
+    // 大约是从v0.2.1 4000版本左右开始，增加了一个偏移量0x1000。
     // 这个版本左右差不多开始，使用qt增加了主UI界面，所以暂且就用这个来分辨了吧。
-    static int addr_offset = isgtv021_4000 ? -0x1000 : 0; // 新版所有地址都比旧版地址高了0x1000.
+    // v0.2.1 4033开始，偏移量应该为：0xFFC000
+    static int addr_offset = isgtv021_4000
+                                 ? ((version && version < std::make_tuple(0u, 2u, 1u, 4033u)) ? -0x1000 : -0xFFC000)
+                                 : 0;
     vita3k_load_functions(emfunctionhooks);
     JIT_Keeper<IDremember>::CreateStatic(CheckEmAddrHOOKable);
     trygetgameinwindowtitle();
@@ -178,15 +202,15 @@ bool vita3k::attach_function1()
     hp.address = DoJitPtr;
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        auto descriptor = context->argof(idxDescriptor + 1); // r8
         auto entrypoint = context->argof(idxEntrypoint + 1); // r9
-        auto em_address = *(uint32_t *)descriptor;
-        if (em_address < 0x80000000)
-            em_address += 0x80000000; // 0.1.9 3339
         if (!entrypoint)
             return;
+        auto descriptor = context->argof(idxDescriptor + 1); // r8
+        auto em_address = *(uint32_t *)descriptor;
+        // Msg::Log("%x", em_address);
         em_address += addr_offset;
-        // Msg::Log("%p", em_address);
+        if (em_address < 0x80000000)
+            em_address += 0x80000000; // 0.1.9 3339
         CheckEmAddrHOOKable(em_address, entrypoint);
         jitaddraddr(em_address, entrypoint, JITTYPE::VITA3K);
 
