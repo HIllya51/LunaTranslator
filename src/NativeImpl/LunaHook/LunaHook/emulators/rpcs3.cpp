@@ -145,20 +145,21 @@ namespace
 {
     void initgameid()
     {
-        // auto wininfos = get_proc_windows();
-        // for (auto &&info : wininfos)
-        // {
-        //     auto match = re::match(info.title, LR"((.*?)\|(.*?)\|(.*?)\|(.*) \[(.*?)\])");
-        //     if (!match)
-        //         return;
-        //     auto curr = match.value()[5].str() + match.value()[4].str();
-        //     if (game_info.lastcheck == curr)
-        //         return;
-        //     game_info.lastcheck = curr;
-        //     game_info.game = curr;
-        //     game_info.GameID = wcasta(match.value()[5].str());
-        //     return Msg::EmuGameInfo(curr.c_str());
-        // }
+        auto wininfos = get_proc_windows();
+        for (auto &&info : wininfos)
+        {
+            auto match = re::match(info.title, LR"((.*?)\|(.*?)\|(.*?)\|(.*) \[(.*?)\])");
+            if (!match)
+                return;
+            auto curr = match.value()[5].str() + match.value()[4].str();
+            if (game_info.lastcheck == curr)
+                return;
+            game_info.lastcheck = curr;
+            game_info.game = match.value()[4].str();
+            game_info.GameID = wcasta(Trim(match.value()[5].str()));
+            return Msg::EmuGameInfo(game_info.GameID.c_str(),
+                                    WideStringToString(game_info.game).c_str());
+        }
     }
     void trygetgameinwindowtitle()
     {
