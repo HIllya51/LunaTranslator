@@ -11,6 +11,7 @@
 |  | ULJM05740 | Starry☆Sky～in Summer～Portable |
 |  | ULJM05809 | Starry☆Sky～in Autumn～Portable |
 |  | ULJM05861 | Starry☆Sky～in Winter～Portable |
+|  | ULJM05746 | L@ve once |
 |  | ULJM06207 | Starry☆Sky～After Spring～Portable |
 |  | ULJM06208 | Starry☆Sky～After Summer～Portable |
 |  | ULJM06209 | Starry☆Sky～After Autumn～Portable |

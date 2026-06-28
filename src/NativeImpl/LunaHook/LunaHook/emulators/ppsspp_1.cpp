@@ -1663,6 +1663,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Starry☆Sky～in Winter～Portable
     {0x8835DD0, {USING_CHAR | DATA_INDIRECT, 0XD, 0, 0, 0, "ULJM05861"}},
     /* sceFontGetCharInfo 还有很多无法用JIThook的游戏可以用这个函数，包括有JIThook地址的，但之前没有进行记录，现在进行以下记录，仅用于避免未来重复劳动。*/
+    // L@ve once //ULJM05746
     // Starry☆Sky～After Spring～Portable //ULJM06207
     // Starry☆Sky～After Summer～Portable //ULJM06208
     // Starry☆Sky～After Autumn～Portable //ULJM06209
