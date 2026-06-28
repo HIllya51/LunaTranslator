@@ -528,7 +528,7 @@ std::set<const wchar_t *> PyStand::checkintegrity_(int &succ)
 		auto f = readFile(fn);
 		if (!f)
 		{
-			if (!wcsstr(fn, L"LunaTranslator/translator/_"))
+			if (fn != wcsstr(fn, L"LunaTranslator/translator/_"))
 			{
 				succ = -2;
 				collect.insert(fn);
