@@ -591,7 +591,7 @@ def proxyusage():
     __p = getboxwidget(["手动设置代理", proxy, check])
 
     def __(x):
-        __p.setEnabled(x)
+        __p.setEnabled(not x)
 
     vbox.addRow(
         getboxlayout(
