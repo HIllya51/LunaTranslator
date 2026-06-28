@@ -737,6 +737,11 @@ void SearchForText(wchar_t *text, UINT codepage)
 				hp.emu_addr = addr - minaddr;
 				hp.jittype = JITTYPE::PCSX2;
 			}
+			else if (jittypedefault == JITTYPE::RPCS3)
+			{
+				hp.emu_addr = addr - minaddr;
+				hp.jittype = JITTYPE::RPCS3;
+			}
 			NewHook(hp, "Search");
 		}
 	};
@@ -745,6 +750,10 @@ void SearchForText(wchar_t *text, UINT codepage)
 	if (jittypedefault == JITTYPE::PCSX2)
 	{
 		minaddr = (uintptr_t)PCSX2Types::eeMem->Main;
+	}
+	else if (jittypedefault == JITTYPE::RPCS3)
+	{
+		minaddr = (uintptr_t)RPCS3::g_base_addr + 0x30000000;
 	}
 #endif
 	GenerateHooks(minaddr, Util::SearchMemory(utf8Text, strlen(utf8Text), PAGE_READWRITE, minaddr), CODEC_UTF8);

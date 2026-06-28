@@ -359,6 +359,21 @@ namespace RPCS3
             return base + args[idx];
         }
     };
+    using usz = std::size_t;
+    using u64 = std::uint64_t;
+    using u32 = std::uint32_t;
+    using u8 = std::uint8_t;
+    inline u8 *g_base_addr = nullptr;
+    inline u8 *g_exec_addr = nullptr;
+    inline uintptr_t emu_addr(uint32_t addr)
+    {
+        return (uintptr_t)g_base_addr + addr;
+    }
+    static inline u8 *ppu_ptr(u32 addr)
+    {
+        return g_exec_addr + u64{addr} * 2;
+    }
+
 }
 namespace YUZU
 {

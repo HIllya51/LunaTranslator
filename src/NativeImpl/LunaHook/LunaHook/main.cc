@@ -380,6 +380,7 @@ void delayinsertNewHook(uint32_t em_address)
 }
 #ifdef _WIN64
 bool PCSX2_UserHook_delayinsert(uint32_t);
+bool RPCS3_UserHook_insert(HookParam hp, LPCSTR name, std::function<bool(HookParam hp, LPCSTR)>);
 #endif
 bool NewHook_2(HookParam hp, LPCSTR name, bool silentlyfail = false)
 {
@@ -427,6 +428,19 @@ bool NewHook_2(HookParam hp, LPCSTR name, bool silentlyfail = false)
 		{
 			delayinsertadd(hp, name);
 			return true;
+		}
+	}
+	else if (hp.jittype == JITTYPE::RPCS3)
+	{
+		if (hp.type & DIRECT_READ)
+		{
+			hp.address = RPCS3::emu_addr(hp.emu_addr);
+			return NewHook_1(hp, name, silentlyfail);
+		}
+		else
+		{
+			return RPCS3_UserHook_insert(hp, name, [=](auto _, auto _2)
+										 { return NewHook_1(_, _2, silentlyfail); });
 		}
 	}
 	else

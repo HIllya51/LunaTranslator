@@ -111,21 +111,16 @@ namespace
                                                      Py_ssize_t size);
     PyUnicode_FromKindAndData_t PyUnicode_FromKindAndData;
 
+    typedef const char *(*PyUnicode_AsUTF8AndSize_t)(PyObject *unicode, Py_ssize_t *size);
+    PyUnicode_AsUTF8AndSize_t PyUnicode_AsUTF8AndSize;
+
 }
 #ifdef _WIN64
 void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-
-    if (!fmtstr)
-        return;
-
-    auto fmtdata = PyUnicode_DATA(fmtstr);
-    auto fmtkind = PyUnicode_KIND(fmtstr);
-    auto fmtcnt = PyUnicode_GET_LENGTH(fmtstr);
     bool lastispercent = false;
-    for (auto i = 0; i < fmtcnt; i++)
+    auto checkgood = [&](const char thischar)
     {
-        auto thischar = PyUnicode_READ(fmtkind, fmtdata, i);
         if (thischar == '%')
         {
             lastispercent = true;
@@ -134,32 +129,59 @@ void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer, uintptr
         else if (lastispercent)
         {
             if (((thischar <= 'Z') && (thischar >= 'A')) || ((thischar <= 'z') && (thischar >= 'a')) || ((thischar <= '9') && (thischar >= '0')))
-            {
-                return;
-            }
+                return false;
         }
-    }
-    size_t len;
-    hp->type &= ~CODEC_UTF8;
-    hp->type &= ~CODEC_UTF16;
-    hp->type &= ~CODEC_UTF32;
+        return true;
+    };
 
-    switch (fmtkind)
+    if (!fmtstr)
+        return;
+    if (PyUnicode_AsUTF8AndSize)
     {
-    case PyUnicode_WCHAR_KIND:
-    case PyUnicode_2BYTE_KIND:
-        hp->type |= CODEC_UTF16;
-        len = fmtcnt * sizeof(Py_UCS2);
-        break;
-    case PyUnicode_1BYTE_KIND:
+        Py_ssize_t size;
+        auto utf8str = PyUnicode_AsUTF8AndSize(fmtstr, &size);
+        if (!utf8str || !size)
+            return;
+        for (auto i = 0; i < size; i++)
+        {
+            if (!checkgood(utf8str[i]))
+                return;
+        }
         hp->type |= CODEC_UTF8;
-        len = fmtcnt * sizeof(Py_UCS1);
-        break;
-    case PyUnicode_4BYTE_KIND: // Py_UCS4,utf32
-        hp->type |= CODEC_UTF32;
-        len = fmtcnt * sizeof(Py_UCS4);
+        return buffer->from(utf8str, size);
     }
-    buffer->from(fmtdata, len);
+    else
+    {
+        auto fmtdata = PyUnicode_DATA(fmtstr);
+        auto fmtkind = PyUnicode_KIND(fmtstr);
+        auto fmtcnt = PyUnicode_GET_LENGTH(fmtstr);
+        for (auto i = 0; i < fmtcnt; i++)
+        {
+            if (!checkgood(PyUnicode_READ(fmtkind, fmtdata, i)))
+                return;
+        }
+        size_t len;
+        hp->type &= ~CODEC_UTF8;
+        hp->type &= ~CODEC_UTF16;
+        hp->type &= ~CODEC_UTF32;
+
+        switch (fmtkind)
+        {
+        case PyUnicode_WCHAR_KIND:
+        case PyUnicode_2BYTE_KIND:
+            hp->type |= CODEC_UTF16;
+            len = fmtcnt * sizeof(Py_UCS2);
+            break;
+        case PyUnicode_1BYTE_KIND:
+            hp->type |= CODEC_UTF8;
+            len = fmtcnt * sizeof(Py_UCS1);
+            break;
+        case PyUnicode_4BYTE_KIND: // Py_UCS4,utf32
+            hp->type |= CODEC_UTF32;
+            len = fmtcnt * sizeof(Py_UCS4);
+        }
+        buffer->from(fmtdata, len);
+    }
 }
 bool InsertRenpy3Hook()
 {
@@ -175,6 +197,7 @@ bool InsertRenpy3Hook()
                 auto f1 = [=]()
                 {
                     uintptr_t addr = (uintptr_t)GetProcAddress(module, "PyUnicode_Format");
+                    PyUnicode_AsUTF8AndSize = (PyUnicode_AsUTF8AndSize_t)GetProcAddress(module, "PyUnicode_AsUTF8AndSize");
                     // PyUnicode_FromString=(PyUnicode_FromString_t)GetProcAddress(module, "PyUnicode_FromString");
                     PyUnicode_FromKindAndData = (PyUnicode_FromKindAndData_t)GetProcAddress(module, "PyUnicode_FromKindAndData");
                     if (!addr)

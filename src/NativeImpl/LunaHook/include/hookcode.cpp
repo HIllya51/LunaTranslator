@@ -39,6 +39,12 @@ namespace
 			hp.jittype = JITTYPE::PCSX2;
 			return hp;
 		}
+		if (std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+):EMUMEM:RPCS3")))
+		{
+			hp.emu_addr = std::stoul(match[1], nullptr, 16);
+			hp.jittype = JITTYPE::RPCS3;
+			return hp;
+		}
 		// @addr
 		if (!std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+)")))
 			return {};

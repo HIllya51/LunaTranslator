@@ -63,10 +63,10 @@ def psv():
 
 
 def rpcs3():
-    with open("rpcs3.cpp", "r", encoding="utf8") as ff:
+    with open("rpcs3_1.cpp", "r", encoding="utf8") as ff:
         content = ff.read()
     ret = []
-    for match in re.finditer(r"^            // (.*?)\n", content, re.MULTILINE):
+    for match in re.finditer(r"^    // (.*?)\n", content, re.MULTILINE):
         game = match.groups()[0]
         m = re.search("(.*?) //(.*)", game)
         if m:
@@ -113,6 +113,6 @@ def maketable(lst):
     return res
 
 
-for k, f in (("ns", ns), ("psp", psp), ("ps2", pcsx2), ("psv", psv)):
+for k, f in (("ns", ns), ("psp", psp), ("ps2", pcsx2), ("psv", psv), ("ps3", rpcs3)):
     with open(f"../../../../../docs/emusupportlist/{k}.md", "w", encoding="utf8") as ff:
         ff.write(maketable(f))
