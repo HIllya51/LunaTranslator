@@ -528,8 +528,11 @@ std::set<const wchar_t *> PyStand::checkintegrity_(int &succ)
 		auto f = readFile(fn);
 		if (!f)
 		{
-			succ = -2;
-			collect.insert(fn);
+			if (!wcsstr(fn, L"LunaTranslator/translator/_"))
+			{
+				succ = -2;
+				collect.insert(fn);
+			}
 			continue;
 		}
 		auto sigf = Sha256Digest(f.value());
