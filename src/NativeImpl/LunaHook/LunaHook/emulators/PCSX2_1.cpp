@@ -644,6 +644,18 @@ namespace
         s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
     }
+    void FSLPM65997X(TextBuffer *buffer, HookParam *hp)
+    {
+        StringCharReplacer(buffer, TEXTANDLEN("#n\x81\x40#n"), '\n');
+        FSLPM65997(buffer, hp);
+    }
+    void FSLPM55216(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((WORD)PCSX2_REG(a2) != 0)
+            return buffer->clear();
+        FSLPM65997X(buffer, hp);
+        all_ascii_Filter(buffer, hp);
+    }
     void SLPM66437(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strAW();
@@ -2121,6 +2133,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 緋色の欠片 ～玉依姫奇譚～
+    {0x16C960, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66453", "SLPM-66454"}}},
+    // 緋色の欠片 愛蔵版 ～玉依姫奇譚～
+    {0x12BBC0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM55216, "SLPM-55216"}},
     // ギャラクシーエンジェルⅡ 無限回廊の鍵
     {0x284D08, {0, PCSX2_REG_OFFSET(a1), 0, 0, SLPM66779, std::vector<const char *>{"SLPM-66779", "SLPM-66780"}}},
     // 漢のためのバイブル THE 友情アドベンチャー ～炎多留・魂～
