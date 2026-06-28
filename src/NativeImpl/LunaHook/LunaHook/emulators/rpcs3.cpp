@@ -14,6 +14,20 @@ bool RPCS3_UserHook_insert(HookParam hp, LPCSTR name, std::function<bool(HookPar
     hp.address = funcaddr;
     return fn(hp, name);
 }
+void RPCS3_ADDR_MAP(std::stringstream & cache)
+{
+    for (auto addr = 0x10000; addr < 0x400000; addr += 4)
+    {
+        auto table = RPCS3::ppu_ptr(addr);
+        if (IsBadReadPtr((void *)table, sizeof(uintptr_t)))
+            continue;
+        auto funcaddr = *(uintptr_t *)table;
+        funcaddr &= 0x0000ffffffffffff;
+        if (!funcaddr)
+            continue;
+        cache << addr << " => " << funcaddr << "\n";
+    }
+}
 namespace
 {
     uintptr_t find_string_function(const char *str, size_t size)
@@ -134,30 +148,6 @@ namespace
         hp.address = 0x500000000;
         hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
         {
-#if 0
-            static bool once = true;
-            if (once)
-            {
-                once = false;
-                FILE *f;
-                fopen_s(&f, "JIT_ADDR_MAP_DUMP.txt", "w");
-                std::stringstream cache;
-                cache << std::hex;
-                for (auto addr = 0x10000; addr < 0x400000; addr += 4)
-                {
-                    auto table = RPCS3::ppu_ptr(addr);
-                    if (IsBadReadPtr((void *)table, sizeof(uintptr_t)))
-                        continue;
-                    auto funcaddr = *(uintptr_t *)table;
-                    funcaddr &= 0x0000ffffffffffff;
-                    if (!funcaddr)
-                        continue;
-                    cache << addr << " => " << funcaddr << "\n";
-                }
-                fprintf(f, "%s", cache.str().c_str());
-                fclose(f);
-            }
-#endif
             for (auto [addr, info] : emfunctionhooks)
             {
                 uintptr_t funcaddr;

@@ -453,6 +453,9 @@ void inlinehookpipeline(std::vector<uintptr_t> &addresses)
 }
 uintptr_t getasbaddr(const HookParam &hp);
 
+#ifdef _WIN64
+void RPCS3_ADDR_MAP(std::stringstream &cache);
+#endif
 void _SearchForHooks(SearchParam spUser)
 {
 	static std::mutex m;
@@ -671,9 +674,18 @@ void _SearchForHooks(SearchParam spUser)
 			fopen_s(&f, "JIT_ADDR_MAP_DUMP.txt", "w");
 			std::stringstream cache;
 			cache << std::hex;
-			for (auto addr : jitaddr2emuaddr)
+			if (jittypedefault == JITTYPE::RPCS3)
 			{
-				cache << addr.second.second << " => " << addr.first << "\n";
+#ifdef _WIN64
+				RPCS3_ADDR_MAP(cache);
+#endif
+			}
+			else
+			{
+				for (auto addr : jitaddr2emuaddr)
+				{
+					cache << addr.second.second << " => " << addr.first << "\n";
+				}
 			}
 			fprintf(f, "%s", cache.str().c_str());
 			fclose(f);
