@@ -5,7 +5,7 @@
 bool RPCS3_UserHook_insert(HookParam hp, LPCSTR name, std::function<bool(HookParam hp, LPCSTR)> fn)
 {
     auto table = RPCS3::ppu_ptr(hp.emu_addr);
-    if (IsBadReadPtr((void *)table, sizeof(uintptr_t)))
+    if (!is_memory_readable_ex((void *)table, sizeof(uintptr_t)))
         return false;
     auto funcaddr = *(uintptr_t *)table;
     funcaddr &= 0x0000ffffffffffff;
@@ -14,12 +14,12 @@ bool RPCS3_UserHook_insert(HookParam hp, LPCSTR name, std::function<bool(HookPar
     hp.address = funcaddr;
     return fn(hp, name);
 }
-void RPCS3_ADDR_MAP(std::stringstream & cache)
+void RPCS3_ADDR_MAP(std::stringstream &cache)
 {
     for (auto addr = 0x10000; addr < 0x400000; addr += 4)
     {
         auto table = RPCS3::ppu_ptr(addr);
-        if (IsBadReadPtr((void *)table, sizeof(uintptr_t)))
+        if (!is_memory_readable_ex((void *)table, sizeof(uintptr_t)))
             continue;
         auto funcaddr = *(uintptr_t *)table;
         funcaddr &= 0x0000ffffffffffff;

@@ -183,32 +183,6 @@ uintptr_t queryrelativeret(HookParam &hp, uintptr_t retaddr)
 	re.insert(std::make_pair(retaddr, relative));
 	return relative;
 }
-static bool is_memory_readable_ex(void *ptr, size_t size)
-{
-	if (!ptr)
-		return false;
-
-	MEMORY_BASIC_INFORMATION mbi = {};
-	SIZE_T result = VirtualQuery(ptr, &mbi, sizeof(mbi));
-
-	if (result == 0)
-	{
-		return false;
-	}
-	if (mbi.State != MEM_COMMIT)
-	{
-		return false;
-	}
-	DWORD readable_protections = PAGE_READONLY | PAGE_READWRITE |
-								 PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE |
-								 PAGE_WRITECOPY | PAGE_EXECUTE_WRITECOPY;
-	if (mbi.Protect & PAGE_NOACCESS)
-	{
-		return false;
-	}
-	return (mbi.Protect & readable_protections) != 0 &&
-		   mbi.RegionSize >= size;
-}
 static uintptr_t jitgetaddr(hook_context *context, HookParam *hp, bool offset)
 {
 	int off;

@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | BLJM60322 | L@ve once -mermaid's tears- |
 |  | BLJM61067 | DISORDER6 |
 |  | BLJM60347 | Dunamis15 |
 |  | BLJM60444 | たっち、しよっ！ ～Love Application～ |

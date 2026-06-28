@@ -7,7 +7,18 @@ struct emfuncinfoX
 };
 namespace
 {
-
+    void BLJM60322(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (all_ascii(s))
+            return buffer->clear();
+        if (s.size() <= 2)
+            return buffer->clear();
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+    }
     void BLJM60444(TextBuffer *buffer, HookParam *hp)
     {
         static std::string last;
@@ -47,6 +58,8 @@ namespace
 }
 
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // L@ve once -mermaid's tears-
+    {0x19CF60, {FULL_STRING, 1, 0, 0, BLJM60322, "BLJM60322"}},
     // DISORDER6
     {0x1bc188, {FULL_STRING, 2, 0, 0, BLJM61067, "BLJM61067"}},
     // Dunamis15

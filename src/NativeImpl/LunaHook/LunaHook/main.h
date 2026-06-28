@@ -40,6 +40,7 @@ extern std::mutex JIT_HP_Records_lock;
 void jitaddraddr(uint32_t em_addr, uintptr_t jitaddr, JITTYPE);
 void jitaddrclear();
 
+bool is_memory_readable_ex(void *ptr, size_t size);
 void delayinsertadd(HookParam, std::string);
 void delayinsertNewHook(uint32_t);
 inline bool dont_detach = false;
