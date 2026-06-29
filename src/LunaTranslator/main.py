@@ -200,23 +200,14 @@ def switchdir():
 
 
 def _parseargs():
-    import argparse
     import gobject
     from urllib.parse import urlsplit
     from traceback import print_exc
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--URLProtocol", required=False)
-    parser.add_argument("--Exec", required=False)
-    parser.add_argument("--test", required=False, action="store_true")
-    parser.add_argument("--userconfig", required=False)
     try:
-        args = parser.parse_args()
         URLProtocol: str = args.URLProtocol
         Exec: str = args.Exec
         gobject.istest = args.test
-        userconfig = args.userconfig
-        gobject.thisuserconfig = userconfig if userconfig else gobject.thisuserconfig
         if URLProtocol:
             print(URLProtocol)
             result = urlsplit(URLProtocol)
@@ -236,14 +227,6 @@ def _parseargs():
             return 1, Exec
     except Exception:
         print_exc()
-
-
-def parseargs():
-    import gobject
-
-    _ = _parseargs()
-    sys.path.insert(1, gobject.thisuserconfig)
-    return _
 
 
 def parsellmapi(result):
@@ -296,7 +279,7 @@ def checkargs():
     gobject.isRunningMutex = NativeUtils.SimpleCreateMutex("LUNA_IS_RUNNING_MUTEX")
     startwithgameuid = None
     error = None
-    _ = parseargs()
+    _ = _parseargs()
     if _:
         if _[0] == 1:
             startwithgameuid = _[1]
@@ -312,8 +295,31 @@ def checkargs():
     return startwithgameuid, error
 
 
+def create_argparser():
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--URLProtocol", required=False)
+    parser.add_argument("--Exec", required=False)
+    parser.add_argument("--test", required=False, action="store_true")
+    parser.add_argument("--userconfig", required=False)
+    args = parser.parse_args()
+    return args
+
+
+def check_userdir(args):
+    import gobject
+
+    userconfig = args.userconfig
+    gobject.thisuserconfig = userconfig if userconfig else gobject.thisuserconfig
+    sys.path.insert(1, gobject.thisuserconfig)
+
+
 if __name__ == "__main__":
     switchdir()
+    args = create_argparser()
+    check_userdir(args)
+
     checklang()
     error2 = checkintegrity()
     prepareqtenv(error2)
