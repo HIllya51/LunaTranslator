@@ -67,9 +67,32 @@ namespace
         CharFilter(buffer, '\x08');
         CharFilter(buffer, '\x09');
     }
+    void BLJS10133(TextBuffer *buffer, HookParam *hp)
+    {
+        auto sx = buffer->strA();
+        if (sx.size() <= 4)
+            return buffer->clear();
+        auto s = (char *)RPCS3::emu_addr(hp->emu_addr);
+        std::string ss;
+        while (*s)
+        {
+            std::string _s = s;
+            if (!isStringUtf8(_s))
+                break;
+            ss += _s + "\n";
+            s += _s.size() + 1;
+            if (startWith(sx, u8"「") && endWith(_s, u8"」"))
+                break;
+            if (startWith(sx, u8"（") && endWith(_s, u8"）"))
+                break;
+        }
+        buffer->from(ss);
+    }
 }
 
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 第２次スーパーロボット大戦ＯＧ
+    {0x300d0ee0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, BLJS10133, "BLJS10133"}},
     // 俺たちに翼はない
     {0x185EC8, {FULL_STRING, 1, 0, 0, BLJM61018, "BLJM61018"}},
     // L@ve once -mermaid's tears-

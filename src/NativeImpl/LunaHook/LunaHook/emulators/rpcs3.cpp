@@ -14,9 +14,9 @@ bool RPCS3_UserHook_insert(HookParam hp, LPCSTR name, std::function<bool(HookPar
     hp.address = funcaddr;
     return fn(hp, name);
 }
-void RPCS3_ADDR_MAP(std::stringstream &cache)
+void RPCS3_ADDR_MAP(FILE *f)
 {
-    for (auto addr = 0x10000; addr < 0x400000; addr += 4)
+    for (auto addr = 0x10000; addr < 0x1000000; addr += 4)
     {
         auto table = RPCS3::ppu_ptr(addr);
         if (!is_memory_readable_ex((void *)table, sizeof(uintptr_t)))
@@ -25,7 +25,7 @@ void RPCS3_ADDR_MAP(std::stringstream &cache)
         funcaddr &= 0x0000ffffffffffff;
         if (!funcaddr)
             continue;
-        cache << addr << " => " << funcaddr << "\n";
+        fprintf(f, "%x => %p\n", addr, funcaddr);
     }
 }
 namespace

@@ -33,13 +33,13 @@ namespace
 			hp.codepage = std::stoi(match[1]);
 			RCode.erase(0, match[0].length());
 		}
-		if (std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+):EMUMEM:PCSX2")))
+		if (std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+):JIT:PCSX2")))
 		{
 			hp.emu_addr = std::stoul(match[1], nullptr, 16);
 			hp.jittype = JITTYPE::PCSX2;
 			return hp;
 		}
-		if (std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+):EMUMEM:RPCS3")))
+		if (std::regex_match(RCode, match, std::wregex(L"@([[:xdigit:]]+):JIT:RPCS3")))
 		{
 			hp.emu_addr = std::stoul(match[1], nullptr, 16);
 			hp.jittype = JITTYPE::RPCS3;

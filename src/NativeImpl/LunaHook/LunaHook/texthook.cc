@@ -494,7 +494,7 @@ void TextHook::Read()
 	auto buffer = (TextOutput_T *)local_buffer;
 	buffer->type = hp.type;
 	TextBuffer buff{buffer->data, 1};
-
+	bool is_emu_hook = (hp.jittype != JITTYPE::PC) && (hp.jittype != JITTYPE::UNITY);
 	auto savelast = new BYTE[PIPE_BUFFER_SIZE];
 	int lastlen = 0;
 	__try
@@ -537,7 +537,8 @@ void TextHook::Read()
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
 		Msg::Log(TR[READ_ERROR], hp.name);
-		Clear();
+		if (!is_emu_hook)
+			Clear();
 	}
 }
 
