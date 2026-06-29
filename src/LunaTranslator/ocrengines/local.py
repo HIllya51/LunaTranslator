@@ -38,14 +38,11 @@ class question(QWidget):
     installsucc = pyqtSignal(bool, str)
 
     def downloadauto(self):
-        data, support, _ = self.combo.getIndexData(self.combo.currentIndex())
-        if support:
-            self.config__["model"] = data.get("name")
-            self.loadcombos(self.result)
-        else:
-            self.downloadxSafe(data)
-            self.formLayout.setRowVisible(self.row, True)
-            self.lineX.setEnabled(False)
+        data, __, _ = self.combo.getIndexData(self.combo.currentIndex())
+
+        self.downloadxSafe(data)
+        self.formLayout.setRowVisible(self.row, True)
+        self.lineX.setEnabled(False)
 
     progresssetval = pyqtSignal(str, int)
 
@@ -123,9 +120,11 @@ class question(QWidget):
             return
         self.lineX.setEnabled(True)
         print(self.combo.getIndexData(i))
-        _, support, langs = self.combo.getIndexData(i)
+        data, support, langs = self.combo.getIndexData(i)
         self.infolabel.setText(langs)
-        self.stack.setCurrentIndex(support)
+        self.btninstall.setHidden(support)
+        if support:
+            self.config__["model"] = data.get("name")
 
     def __init__(self, config__: dict, *argc, **kw):
         super().__init__(*argc, **kw)
@@ -136,17 +135,11 @@ class question(QWidget):
         formLayout.setContentsMargins(0, 0, 0, 0)
         self.combo = SuperCombo(static=True)
         self.combo.currentIndexChanged.connect(self.combochanged)
-        stack = QStackedWidget()
-        stack.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         btninstall = LPushButton("下载")
         btninstall.clicked.connect(self.downloadauto)
-        stack.addWidget(btninstall)
-        checkbox = LPushButton("使用")
-        checkbox.clicked.connect(self.downloadauto)
-        self.checkbox = checkbox
-        stack.addWidget(checkbox)
-        self.stack = stack
-        self.lineX = getboxwidget([self.combo, stack])
+        btninstall.hide()
+        self.btninstall = btninstall
+        self.lineX = getboxwidget([self.combo, btninstall])
         l: QHBoxLayout = self.lineX.layout()
         l.setStretch(0, 2)
         l.setStretch(1, 1)
@@ -209,8 +202,8 @@ class question(QWidget):
                 for ___ in m:
                     __[___] = _.get(___)
                 if m == __:
+                    v = "√ " + v
                     if m.get("name") == self.config__["model"]:
-                        v = "√ " + v
                         if init:
                             idx = i
                     support = True
