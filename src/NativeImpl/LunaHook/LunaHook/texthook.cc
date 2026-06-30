@@ -497,9 +497,10 @@ void TextHook::Read()
 	bool is_emu_hook = (hp.jittype != JITTYPE::PC) && (hp.jittype != JITTYPE::UNITY);
 	auto savelast = new BYTE[PIPE_BUFFER_SIZE];
 	int lastlen = 0;
-	__try
+	bool exception_once = false;
+	while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
 	{
-		while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
+		__try
 		{
 			if (!location)
 				continue;
@@ -533,12 +534,16 @@ void TextHook::Read()
 				buff.from(savelast ? savelast : location, lastlen);
 			}
 		}
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		Msg::Log(TR[READ_ERROR], hp.name);
-		if (!is_emu_hook)
-			Clear();
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			if (!exception_once)
+			{
+				exception_once = true;
+				Msg::Log(TR[READ_ERROR], hp.name);
+			}
+			if (!is_emu_hook)
+				Clear();
+		}
 	}
 }
 
