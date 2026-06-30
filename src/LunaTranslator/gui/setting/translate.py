@@ -1070,15 +1070,11 @@ def autostartllamacpp(force=False):
 
     @threader
     def _():
-        cnt = 0
         while True:
             l: str = proc.stderr.readline()
             if not l:
                 break
-            if "all slots are idle" in l:
-                cnt += 1
-            if cnt == 1:
-                cnt += 1
+            if "all slots are idle" in l or "listening on http://" in l:
                 gobject.base.translation_ui.displayglobaltooltip.emit(
                     "llama.cpp loaded"
                 )
