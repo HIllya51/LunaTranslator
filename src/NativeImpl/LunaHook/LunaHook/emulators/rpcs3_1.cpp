@@ -88,9 +88,20 @@ namespace
         }
         buffer->from(ss);
     }
+    void BLJM61120(TextBuffer *buffer, HookParam *hp)
+    {
+        static std::string last;
+        auto s = buffer->strA();
+        if (endWith(last, s))
+            return buffer->clear();
+        last = s;
+        NewLineCharFilterA(buffer, hp);
+    }
 }
 
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Rozen Maiden -Wechseln sie welt ab-
+    {0xe08d90, {FULL_STRING, 0, 0, 0, BLJM61120, "BLJM61120"}},
     // 第２次スーパーロボット大戦ＯＧ
     {0x300d0ee0, {DIRECT_READ | CODEC_UTF8, 0, 0, 0, BLJS10133, "BLJS10133"}},
     // 俺たちに翼はない
