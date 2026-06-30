@@ -25,7 +25,7 @@ void RPCS3_ADDR_MAP(FILE *f)
         funcaddr &= 0x0000ffffffffffff;
         if (!funcaddr)
             continue;
-        fprintf(f, "%x => %p\n", addr, funcaddr);
+        fprintf(f, "%x => %p\n", addr, (void *)funcaddr);
     }
 }
 namespace

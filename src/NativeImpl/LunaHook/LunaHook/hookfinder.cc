@@ -682,7 +682,7 @@ void _SearchForHooks(SearchParam spUser)
 			{
 				for (auto addr : jitaddr2emuaddr)
 				{
-					fprintf(f, "%x => %p\n", addr.second.second, addr.first);
+					fprintf(f, "%x => %p\n", addr.second.second, (void* )addr.first);
 				}
 			}
 			fclose(f);

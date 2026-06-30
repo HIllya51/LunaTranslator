@@ -1703,6 +1703,33 @@ namespace
         strReplace(s, L"n");
         buffer->fromWA(s);
     }
+    void SLPM65054(TextBuffer *buffer, HookParam *hp)
+    {
+        static char last = 0;
+        auto s = buffer->strA();
+        if (last)
+        {
+            s = last + s;
+            last = 0;
+
+            s = strReplace(s, "\x81\xa4");
+            s = strReplace(s, "\x81\x8a");
+            s = strReplace(s, "\x84\x8d", "\x81\x48");
+            s = strReplace(s, "\x81\x80", "\x81\x40");
+            s = strReplace(s, "\x84\x8c", "!!");
+            return buffer->from(s);
+        }
+        if (IsDBCSLeadByteEx(932, (s[0])))
+        {
+            last = s[0];
+            return buffer->clear();
+        }
+        else
+        {
+            last = 0;
+            return buffer->clear();
+        }
+    }
     void SLPM66779(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2133,6 +2160,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 暴れん坊プリンセス
+    {0x2D6490, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65054, "SLPM-65054"}},
     // 緋色の欠片 ～玉依姫奇譚～
     {0x16C960, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, FSLPM65997, std::vector<const char *>{"SLPM-66453", "SLPM-66454"}}},
     // 緋色の欠片 愛蔵版 ～玉依姫奇譚～
