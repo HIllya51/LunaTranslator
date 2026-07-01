@@ -1968,8 +1968,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8816BFC, {0, 0, 0, 0, ULJM06052, "ULJM06052"}}, // 只能在下一句时提取到上一句
     // CHAOS;HEAD らぶChu☆Chu!
     {0x88B5AD8, {0, 0xe, 0, 0, ULJM05821, "ULJM05821"}},
+    // 涼宮ハルヒの追想
+    {0x881AAD8, {FULL_STRING | CODEC_UTF16, 1, 0, 0, 0, "ULJS00371"}},
     // 涼宮ハルヒの約束
-    {0x882C6B4, {0, 6, 0, 0, NewLineCharFilterA, "ULJS00124"}},
+    {0x882C6B4, {0, 6, 0, 0, NewLineCharFilterA, std::vector<const char *>{"ULJS00123", "ULJS00124"}}},
     // code_18
     {0x884B8B8, {0, 0, 0, 0, ULJM05821, "ULJM05936"}},
     // 華ヤカ哉、我ガ一族
