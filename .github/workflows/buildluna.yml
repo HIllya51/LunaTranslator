@@ -69,7 +69,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
-          path: src/build/LunaTranslator_${{ matrix.arch }}_${{ matrix.target }}
+          path: src/build/LunaTranslator_${{ matrix.arch }}${{ matrix.target != 'win10' && format('_{0}', matrix.target) || '' }}
 
       # - uses: actions/attest-build-provenance@v2.2.0
       #   with:
