@@ -373,7 +373,7 @@ if __name__ == "__main__":
     elif sys.argv[1] == "exedlls":
         os.makedirs("../collect")
         for _ in (
-            "LunaTranslator_x64_win10",
+            "LunaTranslator_x64",
             "LunaTranslator_x64_win7",
             "LunaTranslator_x86_win7",
             "LunaTranslator_x86_winxp",
