@@ -1078,6 +1078,7 @@ def autostartllamacpp(force=False):
             if "all slots are idle" in l or "listening on http://" in l:
                 cnt += 1
             if cnt == 1:
+                cnt += 1
                 gobject.base.translation_ui.displayglobaltooltip.emit(
                     "llama.cpp loaded"
                 )
