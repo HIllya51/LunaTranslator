@@ -110,6 +110,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x19CF60, {FULL_STRING, 1, 0, 0, BLJM60322, "BLJM60322"}},
     // DISORDER6
     {0x1bc188, {FULL_STRING, 2, 0, 0, BLJM61067, "BLJM61067"}},
+    {0x1bc398, {FULL_STRING, 2, 0, 0, BLJM61067, "NPJB00424"}},
     // Dunamis15
     {0x42c90, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, BLJM61131, "BLJM60347"}},
     // たっち、しよっ！ ～Love Application～
@@ -117,7 +118,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ‘＆’ - 空の向こうで咲きますように -
     {0x46328, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, BLJM61131, "BLJM61131"}},
     // 解放少女 SIN
-    {0x3300C2480, {DIRECT_READ, 0, 0, 0, BLJM61067, "BLJM61118"}},
+    {0x300C2480, {DIRECT_READ, 0, 0, 0, BLJM61067, "BLJM61118"}},
 
 };
 
