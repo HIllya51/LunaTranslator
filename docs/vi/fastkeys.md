@@ -42,6 +42,9 @@
     Khi thanh công cụ không bị khóa và `Cửa Sổ Xuyên Chuột` được kích hoạt, thanh công cụ sẽ chỉ hiển thị khi chuột di chuyển đến **nút Cửa Sổ Xuyên Chuột và khu vực bên trái và phải của nó**; nếu không, nó sẽ hiển thị ngay khi chuột vào cửa sổ dịch thuật.
     Nếu sử dụng hiệu ứng cửa sổ (Aero/Acrylic) và thanh công cụ không bị khóa, thanh công cụ sẽ nằm trong khu vực trục z phía trên khu vực văn bản, không phải trên trục y phía trên khu vực văn bản. Điều này là do, với Windows, khi sử dụng hiệu ứng cửa sổ, nếu thanh công cụ chỉ bị ẩn thay vì thu nhỏ để giảm chiều cao cửa sổ, thanh công cụ bị ẩn vẫn sẽ được hiển thị với nền Acrylic/Aero, gây ra một khu vực trống nơi thanh công cụ nằm.
 
+1. #### Ẩn thanh công cụ {#anchor-52}
+    Ẩn thanh công cụ. Cài đặt này có mức độ ưu tiên cao hơn so với khóa thanh công cụ.
+    
 1. #### Trích xuất từ và dịch {#anchor-38}
     Dịch văn bản hiện được chọn bởi chuột.
 
