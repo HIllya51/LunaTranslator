@@ -112,6 +112,11 @@ namespace
         }
         buffer->from(s);
     }
+    void T0100B1F0123B6000(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
+    {
+        buffer->from((wchar_t *)YUZU::emu_arg(context)[0x1]);
+        *split = YUZU::emu_arg(context)[0x4];
+    }
     void T001005BB019EC0000(hook_context *context, HookParam *hp1, TextBuffer *buffer, uintptr_t *split)
     {
         if ((WORD)YUZU::emu_arg(context)[0x6] == 0)
@@ -2319,10 +2324,10 @@ namespace
 
     void F010096000CA38000(TextBuffer *buffer, HookParam *hp)
     {
-
         auto s = buffer->strW();
-        s = re::sub(s, LR"(\$\w{1,2})");
-        s = re::sub(s, LR"(\$\[|\$\/.+?])");
+        s = re::sub(s, LR"(\$[a-zA-Z0-9]{1,2})");
+        s = strReplace(s, L"@");
+        s = re::sub(s, LR"(\$\[|\$\/.+?\])");
         buffer->from(s);
     }
     void F0100EC001DE7E000(TextBuffer *buffer, HookParam *hp)
@@ -4018,12 +4023,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8002a530, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x010095E01581C000ull, "1.1.1"}},
     {0x8000f564, {CODEC_UTF8, 0, 0, 0, F010095E01581C000, 0x010095E01581C000ull, "1.1.1"}},
     // 大正×対称アリス all in one
-    {0x80064ab8, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
-    {0x80064bd4, {CODEC_UTF16, 1, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
-    {0x8015f968, {CODEC_UTF16, 0, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
+    {0x800640DC, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.1"}},
+    {0x80064ab8, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
+    {0x80064bd4, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
+    {0x8015f968, {CODEC_UTF16 | FULL_STRING, 0, 0, 0, F010096000CA38000, 0x010096000CA38000ull, "1.0.2"}},
     // 大正×対称アリス HEADS&TAILS
-    {0x8009bb3c, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, 0x0100B1F0123B6000ull, "2.0.0"}},
-    {0x8009bc58, {CODEC_UTF16, 1, 0, 0, F0100B1F0123B6000, 0x0100B1F0123B6000ull, "2.0.0"}},
+    {0x8009bb3c, {CODEC_UTF16 | FULL_STRING, 1, 0, T0100B1F0123B6000, F0100B1F0123B6000, 0x0100B1F0123B6000ull, "2.0.0"}},
+    {0x8009bc58, {CODEC_UTF16 | FULL_STRING, 1, 0, 0, F0100B1F0123B6000, 0x0100B1F0123B6000ull, "2.0.0"}},
     // 幻想マネージュ
     {0x8124f690, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, 0x010037500DF38000ull, "1.0.4"}},
     {0x811f63f0, {CODEC_UTF16, 0, 0x14, 0, F010037500DF38000, 0x010037500DF38000ull, "1.0.4"}},
