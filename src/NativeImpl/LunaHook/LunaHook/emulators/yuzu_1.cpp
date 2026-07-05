@@ -2321,12 +2321,25 @@ namespace
         s = re::sub(s, "<[^>]+>|\\[[^\\]]+\\]");
         buffer->from(s);
     }
-
+    void F01007ED02424E000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        s = strReplace(s, "@");
+        s = strReplace(s, u8"❝", "\"");
+        s = strReplace(s, u8"❞", "\"");
+        s = strReplace(s, u8"❛", "'");
+        s = strReplace(s, u8"❜", "'");
+        buffer->from(s);
+    }
     void F010096000CA38000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
         s = re::sub(s, LR"(\$[a-zA-Z0-9]{1,2})");
         s = strReplace(s, L"@");
+        s = strReplace(s, L"❝", L"\"");
+        s = strReplace(s, L"❞", L"\"");
+        s = strReplace(s, L"❛", L"'");
+        s = strReplace(s, L"❜", L"'");
         s = re::sub(s, LR"(\$\[|\$\/.+?\])");
         buffer->from(s);
     }
@@ -2894,6 +2907,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // CARTAGRA
+    {0x801A24E0, {FULL_STRING | CODEC_UTF16, 8, 0, 0, F010096000CA38000, 0x01007ED02424E000ull, "1.0.0"}},
+    {0x8010EFB8, {FULL_STRING | CODEC_UTF8, 9, 0, 0, F01007ED02424E000, 0x01007ED02424E000ull, "1.0.0"}},
     // Starry☆Sky～Spring Memories～
     {0x81B951AC, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100A3D026610000, 0x0100A3D026610000ull, "1.0.0"}},
     // 陰キャラブコメ　インシツマシマシ
