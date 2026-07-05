@@ -379,10 +379,12 @@ class texthook(basetext):
             self.waitend(pid)
         self.emugameid = None
         gobject.base.hwnd = hwnd
+        issame = gameuid == self.gameuid
         self.gameuid = gameuid
         self.pids[gameuid] = []
         self.setsettings()
-        self.detachall()
+        if not issame:
+            self.detachall()
         _filename, _ = os.path.splitext(os.path.basename(gamepath))
         if savehook_new_data[gameuid].get("emugameid"):
             _filename = savehook_new_data[gameuid].get("emugameid")
