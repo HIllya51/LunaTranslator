@@ -3716,6 +3716,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81322cec, {CODEC_UTF16, 0, 0, ReadUnityString, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
     {0x819b1a78, {CODEC_UTF16, 2, 0, ReadUnityString, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
     {0x81314e8c, {CODEC_UTF16, 0, 0, ReadUnityString, F010042300C4F6000, 0x0100E390145C8000ull, "1.0.0"}}, // dialogue
+    // ときめきメモリアル forever with you エモーショナル
+    {0x819F08C0, {CODEC_UTF8 | FULL_STRING, 1, 0, 0, f0100A460141B8000, 0x01005F201D534000ull, "1.0.0"}},
     // ときめきメモリアル Girl's Side
     {0x822454a4, {CODEC_UTF16, 0, 0, ReadUnityString, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // dialogue1
     {0x82247138, {CODEC_UTF16, 0, 0, ReadUnityString, F0100D9A01BD86000, 0x0100D9A01BD86000ull, "1.0.1"}}, // dialogue2
