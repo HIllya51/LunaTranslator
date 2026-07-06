@@ -864,10 +864,52 @@ namespace
     return NewHook(hp, "Circus2_4");
   }
 }
+static bool nightshade()
+{
+  // Nightshade/百花百狼
+  // https://store.steampowered.com/app/512180/Nightshade
+
+  const BYTE bytes[] = {
+      0x8b, 0x44, 0x24, 0x04,
+      0x56,
+      0x8b, 0x74, 0x24, 0x0c,
+      0x8a, 0x0e,
+      0x57,
+      0x33, 0xff,
+      0x84, 0xc9,
+      0x0f, 0x84, XX4,
+      0x80, 0xf9, 0x40,
+      0x75, XX,
+      0x80, 0x7e, 0x01, 0x69,
+      0x75, XX,
+      0x80, 0x7e, 0x02, 0x24,
+      0x75, XX,
+      0x80, 0x7e, 0x03, 0x6e,
+      0x75, XX,
+      0x83, 0xc6, 0x02,
+      0xbf, 0x01, 0x00, 0x00, 0x00};
+
+  ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(2);
+  hp.type = USING_STRING | FULL_STRING | NO_CONTEXT;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto s = buffer->strA();
+    s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
+    strReplace(s, "$n", "\x9e\xc5");
+    buffer->from(s);
+  };
+
+  return NewHook(hp, "nightshade");
+}
 bool Circus2_attach_function()
 {
   bool ch2 = InsertCircusHook2();
-  bool _1 = ch2 || c3() || c4() || c2();
+  bool _1 = ch2 || c3() || c4() || nightshade() || c2();
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
   return _1 || embed;
 }

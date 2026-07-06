@@ -22,12 +22,9 @@ bool InsertDxLibHook()
         0xEB, XX          // jmp BookofShadows.exe+15FE76
     };
 
-    ULONG range = min(processStopAddress - processStartAddress, MAX_REL_ADDR);
-    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStartAddress + range);
+    ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
     if (!addr)
-    {
         return false;
-    }
 
     HookParam hp;
     hp.address = addr;
