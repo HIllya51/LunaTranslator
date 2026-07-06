@@ -218,6 +218,12 @@ namespace
         s = re::sub(s, R"(\n(\x81\x40)*)");
         buffer->from(s);
     }
+    void SLPS25228(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((WORD)PCSX2_REG(t0) != 1)
+            return buffer->clear();
+        SLPS25887(buffer, hp);
+    }
     void SLPM66543(TextBuffer *buffer, HookParam *hp)
     {
         StringFilter(buffer, TEXTANDLEN("fc"));
@@ -2196,6 +2202,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x1d39b4, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, all_ascii_Filter, "SLPS-25282"}},
     // 不確定世界の探偵紳士 ～悪行双麻の事件ファイル～
     {0x114128, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s2), 0, 0, SLPM55121, "SLPM-55121"}},
+    // 第2次スーパーロボット大戦α
+    {0x1C3a2c, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25228, "SLPS-25228"}},
     // スーパーロボット大戦Ｚ
     {0x1a0d88, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25887, "SLPS-25887"}},
     // スーパーロボット大戦Z スペシャルディスク
