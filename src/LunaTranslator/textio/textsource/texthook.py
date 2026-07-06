@@ -590,8 +590,12 @@ class texthook(basetext):
             for line in lines:
                 line = line.split(space) if space else line
                 while len(line):
-                    newlines.append(space.join(line[:length]))
-                    line = line[length:]
+                    __line = line[0]
+                    line.pop(0)
+                    while len(line) and (len(__line + space + line[0]) <= length):
+                        __line += space + line[0]
+                        line.pop(0)
+                    newlines.append(__line)
             trans = "\n".join(newlines)
         return trans
 
