@@ -2907,6 +2907,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Dies irae -Amantes amentes-
+    {0x262C44, {FULL_STRING, 3, 0, 0, 0, 0x0100BB900B5B4000ull, nullptr}}, // 1.0.0 & 1.0.1
     // 戦国†恋姫EX～COLLECTION～
     {0x804D7FD0, {FULL_STRING | CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x010079F01E36A000ull, "1.0.0"}},
     {0x804DA920, {FULL_STRING | CODEC_UTF8, 0, 0, 0, F01003080177CA000, 0x010079F01E36A000ull, "1.0.2"}},

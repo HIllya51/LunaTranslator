@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100BB900B5B4000 | Dies irae -Amantes amentes- |
 |  | 010079F01E36A000 | 戦国†恋姫EX～COLLECTION～ |
 |  | 01007ED02424E000 | CARTAGRA |
 |  | 0100A3D026610000 | Starry☆Sky～Spring Memories～ |
