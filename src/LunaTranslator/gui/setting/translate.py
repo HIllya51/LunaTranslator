@@ -1337,6 +1337,8 @@ class llamalisttable(LTableView):
             _arch = arch
             if arch == "sycl":
                 arch += " (Intel GPU/NPU)"
+            elif arch.startswith("openvino"):
+                arch += " (Intel GPU/NPU)"
             elif arch.startswith("cuda"):
                 arch += " (Nvidia GPU)"
             elif arch == "hip-radeon":
@@ -1368,6 +1370,7 @@ class llamalisttable(LTableView):
             item.setToolTip("")
             index = self.Model.indexFromItem(item)
             _arch = arch.split(".")[0] if arch.startswith("cuda-") else arch
+            _arch = "openvino" if _arch.startswith("openvino") else _arch
             t = "下载"
             cudaonly = False
             if _arch in insarchs:
@@ -1527,6 +1530,8 @@ def detect_llama_installed_archs(llamaserver: str):
                 archs["hip-radeon"] = _detect_runtime_lost(llamaserverdir, ff)
             elif ff == "ggml-vulkan.dll":
                 archs["vulkan"] = _detect_runtime_lost(llamaserverdir, ff)
+            elif ff == "ggml-openvino.dll":
+                archs["openvino"] = _detect_runtime_lost(llamaserverdir, ff)
             elif ff == "ggml-cuda.dll":
                 f = os.path.join(llamaserverdir, ff)
                 cudaver = __checkcudaimports(f)
