@@ -308,6 +308,7 @@ std::vector<ENGINE *> check_engines()
         new Debonosu,
         new C4,
         new WillPlus,
+        new WillPlusETERNAL,
         new Tanuki,
         new GXP,
         new AOS,

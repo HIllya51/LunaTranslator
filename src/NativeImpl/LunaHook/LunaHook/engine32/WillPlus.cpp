@@ -1814,3 +1814,14 @@ bool Willold::attach_function()
   hp.offset = stackoffset(1);
   return NewHook(hp, "will");
 }
+
+bool WillPlusETERNAL::attach_function()
+{
+  // 銀の刻のコロナ
+  if (findiatcallormov((ULONG)GetGlyphOutlineW, processStartAddress, processStartAddress, processStopAddress))
+  {
+    PcHooks::hookGDIFunctions(GetGlyphOutlineW);
+    return true;
+  }
+  return false;
+}

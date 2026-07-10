@@ -1,4 +1,18 @@
 
+class WillPlusETERNAL : public ENGINE
+{
+public:
+    WillPlusETERNAL()
+    {
+        check_by = CHECK_BY::CUSTOM;
+        check_by_target = []()
+        {
+            // 銀の刻のコロナ
+            return Util::SearchStringFileInfo(L"Will Plus/ETERNAL") && Util::CheckFile(L"Data/Rio.arc");
+        };
+    };
+    bool attach_function();
+};
 
 class WillPlus : public ENGINE
 {
