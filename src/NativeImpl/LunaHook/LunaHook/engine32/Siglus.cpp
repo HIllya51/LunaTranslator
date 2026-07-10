@@ -174,31 +174,11 @@ namespace
   }
   void SpecialHookSiglus4(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    // static uint64_t lastTextHash_;
-    DWORD eax = context->eax;        // text
-    if (!eax || !*(const BYTE *)eax) // empty data
-      return;
-    DWORD size = *(DWORD *)(eax + 0x10);
-    if (!size)
-      return;
-    DWORD data;
-    if (size < 8)
-      data = eax;
-    else
-      data = *(DWORD *)eax;
-
-    // Skip all ascii characters
-    if (all_ascii((LPCWSTR)data))
+    auto tu = (TextUnionW *)(context->eax);
+    if (all_ascii(tu->view()))
       return;
 
-    // Avoid duplication
-    // LPCWSTR text = (LPCWSTR)*data;
-    // auto hash = hashstr(text);
-    // if (hash == lastTextHash_)
-    //  return;
-    // lastTextHash_ = hash;
-
-    buffer->from(data, size * 2); // UTF-16
+    buffer->from(tu->view()); // UTF-16
     DWORD s0 = context->retaddr;  // use stack[0] as split
     if (s0 <= 0xff)               // scenario text
       *split = FIXED_SPLIT_VALUE;
@@ -1741,11 +1721,11 @@ namespace
         arg->setText(buffer.viewW());
       }
     }
-    bool attach(ULONG startAddress, ULONG stopAddress) // attach scenario
+    std::optional<HookParam> attach(ULONG startAddress, ULONG stopAddress) // attach scenario
     {
       ULONG addr = Private::search(startAddress, stopAddress, &Private::type_);
       if (!addr)
-        return false;
+        return {};
       // return Private::oldHookFun = (Private::hook_fun_t)winhook::replace_fun(addr, (ULONG)Private::newHookFun);
       HookParam hp;
       hp.address = addr;
@@ -1753,7 +1733,8 @@ namespace
       hp.text_fun = Private::text_fun;
       hp.embed_fun = Private::hookafter;
       hp.embed_hook_font = F_GetGlyphOutlineW;
-      return NewHook(hp, "EmbedSiglus");
+      strcpy(hp.name, "EmbedSiglus");
+      return hp;
     }
   }
 }
@@ -1825,18 +1806,19 @@ namespace OtherHook
 
   } // namespace Private
 
-  bool attach(ULONG startAddress, ULONG stopAddress)
+  std::optional<HookParam> attach(ULONG startAddress, ULONG stopAddress)
   {
     ULONG addr = Private::search(startAddress, stopAddress);
     if (!addr)
-      return false;
+      return {};
     HookParam hp;
     hp.address = addr;
     hp.type = EMBED_ABLE | CODEC_UTF16 | EMBED_INSERT_SPACE_AFTER_UNENCODABLE | NO_CONTEXT; // 0x41
     hp.text_fun = Private::hookBefore;
     hp.embed_fun = Private::hookafter2;
     hp.embed_hook_font = F_GetGlyphOutlineW;
-    return NewHook(hp, "EmbedSiglus");
+    strcpy(hp.name, "EmbedSiglus2");
+    return hp;
   }
 
 } // namespace OtherHook
@@ -1917,11 +1899,22 @@ static bool h3()
 }
 bool Siglus::attach_function()
 {
-
-  bool b3 = ScenarioHook::attach(processStartAddress, processStopAddress);
+  std::vector<HookParam> hps;
+  auto b3 = ScenarioHook::attach(processStartAddress, processStopAddress); // 这个会和其他有重叠。
   if (b3)
-    OtherHook::attach(processStartAddress, processStopAddress);
+  {
+    hps.push_back(b3.value());
+    if (auto __ = OtherHook::attach(processStartAddress, processStopAddress))
+      hps.push_back(__.value());
+  }
   bool b1 = InsertSiglusHook();
   bool b2 = InsertSiglusHookZ();
-  return b1 || b2 || b3 || h3();
+  return [&]()
+  {
+    auto b = false;
+    for (auto hp : hps)
+      b |= NewHook(hp, hp.name);
+    return b;
+  }() || b1 ||
+         b2 || h3();
 }
