@@ -56,7 +56,7 @@ bool InsertMinori1Hook()
   hp.address = addr;
   hp.offset = regoffset(edx);
   hp.codepage = 932;
-  hp.type = USING_STRING;
+  hp.type = USING_STRING | BREAK_POINT;
   hp.filter_fun = Minori1JapFilter;
   auto succ = NewHook(hp, "Minori1");
 
@@ -665,13 +665,6 @@ namespace
           {
             buffer->from(re::sub(buffer->strA(), "\\{.*?\\}"));
           };
-          count |= NewHook(hp, "EmbedMinori");
-        }
-        {
-          HookParam hp;
-          hp.address = addr + 5;
-          hp.text_fun = Private::hookAfter;
-          hp.embed_fun = Private::hookafter;
           count |= NewHook(hp, "EmbedMinori");
         }
         return true; // replace all functions
