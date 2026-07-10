@@ -24,6 +24,7 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LAction
 from gui.markdownhighlighter import MarkdownHighlighter
+from urllib.parse import quote
 
 
 class HtmlPlainTextEdit(QTextEdit):
@@ -381,7 +382,10 @@ class dialog_memory(saveposwindow):
                 return
             file = self.recorders.stop_save()
             self.recorders = None
-            self.audiocallback(file)
+            tmsp = get_time_stamp(forfilename=True).replace(" ", "_")
+            tgt = os.path.join(os.path.dirname(file), tmsp + os.path.splitext(file)[1])
+            shutil.move(file, tgt)
+            self.audiocallback(tgt)
 
     def AudioSelect(self):
         if self.is_recording:
@@ -410,7 +414,7 @@ class dialog_memory(saveposwindow):
         os.rename(path, tgt)
         tgt = relpath(tgt)
         html = """\n<audio controls src="{}"></audio>\n""".format(
-            os.path.basename(path)
+            quote(os.path.basename(path))
         )
         self.editor.insertPlainText(html)
 
@@ -462,19 +466,23 @@ class dialog_memory(saveposwindow):
     def cropcallback1(self, p: QPixmap):
         if p.isNull():
             return
-        tmsp = get_time_stamp(forfilename=True)
+        tmsp = get_time_stamp(forfilename=True).replace(" ", "_")
         tmsp += "." + getimageformat()
         tgt = os.path.join(self.rwpath, tmsp)
         p.save(tgt)
-        self.editor.insertPlainText("\n![img]({})\n".format(tmsp))
+        self.editor.insertPlainText("\n![img]({})\n".format(quote(tmsp)))
 
     def cropcallback(self, path: "str|QImage"):
-        tgt = os.path.join(self.rwpath, os.path.basename(path))
         if isinstance(path, str):
+            tgt = os.path.join(self.rwpath, os.path.basename(path))
             shutil.copy(path, tgt)
         else:
+            tmsp = get_time_stamp(forfilename=True).replace(" ", "_")
+            tmsp += "." + getimageformat()
+            tgt = os.path.join(self.rwpath, tmsp)
             path.save(tgt)
-        self.editor.insertPlainText("\n![img]({})\n".format(os.path.basename(path)))
+            path = tgt
+        self.editor.insertPlainText("\n![img]({})\n".format(quote(os.path.basename(path))))
 
     def TextInsert(self):
         menu = QMenu(self)
