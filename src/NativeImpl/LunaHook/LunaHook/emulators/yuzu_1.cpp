@@ -2711,6 +2711,8 @@ namespace
     void F01005CF02300A000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
+        s = re::sub(s, LR"(<ruby=(.*?)>(.*?)</ruby>)", L"$2");
+        s = re::sub(s, LR"(<align(.*?)>)");
         s = re::sub(s, LR"(\\n(　)*)");
         buffer->from(s);
     }
@@ -2969,6 +2971,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Blackish House sideA→ -Retour-
     {0x83485010, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F01005CF02300A000, 0x01005CF02300A000ull, "1.0.0"}},
     {0x834C1038, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F01005CF02300A000, 0x01005CF02300A000ull, "1.0.1"}},
+    // Blackish House ←sideZ -Retour-
+    {0x83F50518, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F01005CF02300A000, 0x0100BB80260C2000ull, "1.0.0"}},
+    {0x83F50678, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F01005CF02300A000, 0x0100BB80260C2000ull, "1.0.1"}},
     // その日の獣には、
     {0x804E32EC, {CODEC_UTF8 | FULL_STRING, 0, 0, 0, F010081E0161B2000, 0x0100BEE01FE42000ull, nullptr}}, // 1.0.0 1.0.2
     // DistortedCode －生者の残り香－

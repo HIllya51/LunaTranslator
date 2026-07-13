@@ -24,6 +24,7 @@
 |  | 0100B38021590000 | もし、この世界に神様がいるとするならば |
 |  | 010015301DB94000 | オンエア！ |
 |  | 01005CF02300A000 | Blackish House sideA→ -Retour- |
+|  | 0100BB80260C2000 | Blackish House ←sideZ -Retour- |
 |  | 0100BEE01FE42000 | その日の獣には、 |
 |  | 0100B9701BD4E000 | DistortedCode －生者の残り香－ |
 |  | 010076902126E000 | DYNAMIC CHORD feat.[rēve parfait] |
