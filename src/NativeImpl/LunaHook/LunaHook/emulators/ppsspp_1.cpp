@@ -1639,6 +1639,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // あかね色に染まる坂ぽ～たぶる
+    {0x8832594, {USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, "ULJM05589"}},
     // AKB1/149 恋愛総選挙
     {0x89DB26C, {FULL_STRING | CODEC_UTF8, 0xf, 0, NPJH50654, NewLineCharFilterA, std::vector<const char *>{"NPJH50654", "NPJH50655"}}},
     // 桜花センゴク Portable
