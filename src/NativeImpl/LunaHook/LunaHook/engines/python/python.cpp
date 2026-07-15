@@ -26,6 +26,47 @@ extern "C" __declspec(dllexport) bool luna_internal_renpy_call_is_embed_using(in
 {
     return Luna_checkisusingembed((uint64_t)luna_internal_renpy_call_host, split, usingsplit);
 }
+
+void RenpyCommonFilter(TextBuffer *buffer, HookParam *hp)
+{
+    // [variable!q!t]  变量引用，无法解决。就这样吧，崩了拉到。
+    std::wstring u16 = buffer->strW();
+    u16 = re::sub(u16, LR"(\{b\}(.*?)\{/b\})", L"$1");
+    u16 = re::sub(u16, LR"(\{i\}(.*?)\{/i\})", L"$1");
+    u16 = re::sub(u16, LR"(\{u\}(.*?)\{/u\})", L"$1");
+    u16 = re::sub(u16, LR"(\{s\}(.*?)\{/s\})", L"$1");
+    u16 = re::sub(u16, LR"(\{b=.*?\}(.*?)\{/b\})", L"$1");
+    u16 = re::sub(u16, LR"(\{i=.*?\}(.*?)\{/i\})", L"$1");
+    u16 = re::sub(u16, LR"(\{u=.*?\}(.*?)\{/u\})", L"$1");
+    u16 = re::sub(u16, LR"(\{s=.*?\}(.*?)\{/s\})", L"$1");
+    u16 = re::sub(u16, LR"(\{outlinecolor=.*?\}(.*?)\{/outlinecolor\})", L"$1");
+    u16 = re::sub(u16, LR"(\{outlinealpha=.*?\}(.*?)\{/outlinealpha\})", L"$1");
+    u16 = re::sub(u16, LR"(\{plain\}(.*?)\{/plain\})", L"$1");
+    u16 = re::sub(u16, LR"(\{alpha=.*?\}(.*?)\{/alpha\})", L"$1");
+    u16 = re::sub(u16, LR"(\{color=.*?\}(.*?)\{/color\})", L"$1");
+    u16 = re::sub(u16, LR"(\{size=.*?\}(.*?)\{/size\})", L"$1");
+    u16 = re::sub(u16, LR"(\{font=.*?\}(.*?)\{/font\})", L"$1");
+    u16 = re::sub(u16, LR"(\{cps=.*?\}(.*?)\{/cps\})", L"$1");
+    u16 = re::sub(u16, LR"(\{cps\}(.*?)\{/cps\})", L"$1");
+    u16 = re::sub(u16, LR"(\{a=.*?\}(.*?)\{/a\})", L"$1");
+    u16 = re::sub(u16, LR"(\{k=.*?\}(.*?)\{/k\})", L"$1");
+    u16 = re::sub(u16, LR"(\{done\})");
+    u16 = re::sub(u16, LR"(\{p\})");
+    u16 = re::sub(u16, LR"(\{p=.*?\})");
+    u16 = re::sub(u16, LR"(\{nw\})");
+    u16 = re::sub(u16, LR"(\{noalt\})");
+    u16 = re::sub(u16, LR"(\{w\})");
+    u16 = re::sub(u16, LR"(\{w=.*?\})");
+    u16 = re::sub(u16, LR"(\{fast\})");
+    u16 = re::sub(u16, LR"(\{space=.*?\})");
+    u16 = re::sub(u16, LR"(\{vspace=.*?\})");
+    u16 = re::sub(u16, LR"(\{image=.*?\})");
+    u16 = re::sub(u16, LR"(\{clear\})");
+    u16 = re::sub(u16, LR"(\{rb\}(.*?)\{rb\}\{rt.*?\}.*?\{rt\})", L"$1");
+    u16 = re::sub(u16, LR"(\{rby\}(.*?)\{rby\}\{rty\}.*?\{rty\})", L"$1");
+    u16 = re::sub(u16, LR"(\{\{)", L"{");
+    buffer->from(u16);
+}
 namespace
 {
     struct PyObject;
@@ -73,6 +114,7 @@ namespace
         hp_internal.address = (uintptr_t)luna_internal_renpy_call_host;
         hp_internal.offset = GETARG(1);
         hp_internal.split = GETARG(2);
+        hp_internal.filter_fun = RenpyCommonFilter;
         hp_internal.type = USING_SPLIT | USING_STRING | CODEC_UTF16 | EMBED_ABLE | EMBED_AFTER_NEW | NO_CONTEXT | FULL_STRING;
         return NewHook(hp_internal, "luna_internal_renpy_call_host") &&
                PyRunScript(LoadResData(L"renpy_hook_text", L"PYSOURCE").c_str());

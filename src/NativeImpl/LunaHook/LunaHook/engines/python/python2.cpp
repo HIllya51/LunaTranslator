@@ -74,6 +74,7 @@ namespace
     PyUnicode_FromUnicode_t PyUnicode_FromUnicode;
 
 }
+void RenpyCommonFilter(TextBuffer *buffer, HookParam *hp);
 bool InsertRenpyHook()
 {
     wchar_t python[] = L"python2X.dll", libpython[] = L"libpython2.X.dll";
@@ -94,12 +95,13 @@ bool InsertRenpyHook()
                         return false;
                     HookParam hp;
                     hp.address = addr;
-                    hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT;
+                    hp.type = USING_STRING | CODEC_UTF16 | NO_CONTEXT | FULL_STRING;
                     hp.text_fun = [](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
                     {
                         auto format = (PyObject *)context->argof(1);
                         GetPyUnicodeString(format, buffer, split);
                     };
+                    hp.filter_fun = RenpyCommonFilter;
                     if (PyUnicode_FromUnicode)
                     {
                         hp.type |= EMBED_ABLE;

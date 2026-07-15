@@ -147,8 +147,8 @@ void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer, uintptr
             if (!checkgood(utf8str[i]))
                 return;
         }
-        hp->type |= CODEC_UTF8;
-        return buffer->from(utf8str, size);
+        auto u8 = std::string(utf8str, size);
+        return buffer->from(StringToWideString(u8));
     }
     else
     {
@@ -161,28 +161,34 @@ void DoReadPyString(PyObject *fmtstr, HookParam *hp, TextBuffer *buffer, uintptr
                 return;
         }
         size_t len;
-        hp->type &= ~CODEC_UTF8;
-        hp->type &= ~CODEC_UTF16;
-        hp->type &= ~CODEC_UTF32;
 
         switch (fmtkind)
         {
         case PyUnicode_WCHAR_KIND:
         case PyUnicode_2BYTE_KIND:
-            hp->type |= CODEC_UTF16;
+        {
             len = fmtcnt * sizeof(Py_UCS2);
-            break;
-        case PyUnicode_1BYTE_KIND:
-            hp->type |= CODEC_UTF8;
-            len = fmtcnt * sizeof(Py_UCS1);
-            break;
-        case PyUnicode_4BYTE_KIND: // Py_UCS4,utf32
-            hp->type |= CODEC_UTF32;
-            len = fmtcnt * sizeof(Py_UCS4);
+            buffer->from(fmtdata, len);
         }
-        buffer->from(fmtdata, len);
+        break;
+        case PyUnicode_1BYTE_KIND:
+        {
+            len = fmtcnt * sizeof(Py_UCS1);
+            auto u8 = std::string((char *)fmtdata, len);
+            buffer->from(StringToWideString(u8));
+        }
+        break;
+        case PyUnicode_4BYTE_KIND: // Py_UCS4,utf32
+        {
+            len = fmtcnt * sizeof(Py_UCS4);
+            auto u32 = std::u32string_view((char32_t *)fmtdata, len);
+            buffer->from(utf32_to_utf16(u32));
+        }
+        break;
+        }
     }
 }
+void RenpyCommonFilter(TextBuffer *buffer, HookParam *hp);
 bool InsertRenpy3Hook()
 {
     wchar_t pythonf[] = L"python3%d.dll", libpython[] = L"libpython3.%d.dll";
@@ -204,16 +210,17 @@ bool InsertRenpy3Hook()
                         return false;
                     HookParam hp;
                     hp.address = addr;
-                    hp.type = NO_CONTEXT | USING_STRING;
+                    hp.type = NO_CONTEXT | USING_STRING | FULL_STRING | CODEC_UTF16;
                     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
                     {
                         auto fmtstr = (PyObject *)context->rcx;
 
                         DoReadPyString(fmtstr, hp, buffer, split);
                     };
+                    hp.filter_fun = RenpyCommonFilter;
                     if (PyUnicode_FromKindAndData)
                     {
-                        hp.type |= EMBED_ABLE | EMBED_CODEC_UTF16;
+                        hp.type |= EMBED_ABLE;
                         hp.embed_fun = [](hook_context *context, TextBuffer buffer, HookParam *)
                         {
                             context->rcx = (uintptr_t)PyUnicode_FromKindAndData(PyUnicode_2BYTE_KIND, buffer.data, buffer.size / 2);
