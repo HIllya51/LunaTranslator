@@ -6,7 +6,7 @@ void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans,
 {
 
   if (hp.type & CODEC_UTF16)
-  { // renpy
+  {
     buff->from(trans);
   }
   else if (hp.type & CODEC_UTF32)

@@ -192,7 +192,9 @@ function tyranohook() {
         return this.originstart(pm)
     }
     tyrano.plugin.kag.tag.chara_ptext.start = function (pm) {
-        pm.name = cppjsio('tyranoscript', pm.name, 1, true)
+        this.kag.stat.jcharas[pm.name] && (pm.name = this.kag.stat.jcharas[pm.name]);
+		var cpm = this.kag.stat.charas[pm.name];
+        pm.name = cppjsio('tyranoscript', cpm?cpm.jname:pm.name, 1, true)
         return this.startorigin(pm)
     }
 }
