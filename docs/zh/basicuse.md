@@ -20,6 +20,8 @@
 
 ## OCR模式
 
+![img](https://image.lunatranslator.org/zh/basicuse/ocrmode.png)
+
 有时也可以使用OCR模式来识别图像文本。切换到OCR模式，然后选择识别区域，即可自动识别文本翻译。
 
 请注意，不要使用错误的按钮，后一个按钮默认图标相同的按钮只用于临时选取并识别一次图像，而非自动持续识别。
