@@ -545,33 +545,23 @@ class texthook(basetext):
                 tp.ctx2 = _ctx2
                 self.Luna_UseEmbed(tp, True)
 
-    def safeembedcheck(self, text):
-        try:
-            if not self.embedconfig["safecheck_use"]:
-                return True
-            for regex in self.embedconfig["safecheckregexs"]:
-                if re.match(safe_escape(regex), text):
-                    return False
-            return True
-        except:
-            return False
+    def __safechecktransresult(self, text, trans):
+        for pattern in [r"\[[^\]]+\]", r"\{[^\}]+\}"]:
+            regex = re.compile(pattern)
+            original_marks = set(regex.findall(text))
+            trans_marks = set(regex.findall(trans))
+            if original_marks != trans_marks:
+                return False
+        return True
 
     @threader
     def getembedtext(self, text: str, tp):
         if not self.isautorunning:
             return self.embedcallback(text, "", tp)
-        if self.safeembedcheck(text):
-            trans = self.waitfortranslation(text)
-        else:
-            collect = []
-            for _ in text.split("\n"):
-                if _ and self.safeembedcheck(_):
-                    _ = self.waitfortranslation(_)
-                    if not _:
-                        continue
-                collect.append(_)
-            trans = "\n".join(collect)
+        trans = self.waitfortranslation(text)
         if not trans:
+            trans = ""
+        elif not self.__safechecktransresult(text, trans):
             trans = ""
         if self.embedconfig["trans_kanji"]:
             trans = kanjitrans(zhconv.convert(trans, "zh-tw"))

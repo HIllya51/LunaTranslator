@@ -1429,14 +1429,6 @@ class dialog_setting_game_internal(QWidget):
                 ]
             ),
         )
-        formLayout2.addRow(
-            "内嵌安全性检查",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["embed_setting_private"],
-                "safecheck_use",
-                default=globalconfig["embedded"]["safecheck_use"],
-            ),
-        )
         if savehook_new_data[gameuid].get("embedablehook"):
             box = NQGroupBox()
             settinglayout = LFormLayout(box)

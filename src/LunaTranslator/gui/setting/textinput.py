@@ -134,17 +134,6 @@ def gethookgrid_em(self):
                 callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
         ],
-        [
-            "内嵌安全性检查",
-            D_getsimpleswitch(globalconfig["embedded"], "safecheck_use"),
-            D_getIconButton(
-                callback=lambda: listediter(
-                    self,
-                    "正则匹配",
-                    globalconfig["embedded"]["safecheckregexs"],
-                )
-            ),
-        ],
     ]
 
     return grids

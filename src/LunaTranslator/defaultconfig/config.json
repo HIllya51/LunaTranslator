@@ -261,11 +261,6 @@
         "websocket": {}
     },
     "embedded": {
-        "safecheck_use": true,
-        "safecheckregexs": [
-            "(.*?)\\{(.*?)\\}(.*?)",
-            "(.*?)\\[(.*?)\\](.*?)"
-        ],
         "timeout_translate": 2,
         "trans_kanji": false,
         "displaymode": 0,
