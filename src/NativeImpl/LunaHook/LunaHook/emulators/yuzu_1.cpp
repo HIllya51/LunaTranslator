@@ -2902,6 +2902,22 @@ namespace
         }
         buffer->from(s);
     }
+    void f01008EC02394E000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(%rbs(.*?)\{(.*?)\}%rbe)", L"$1");
+        s = re::sub(s, L"(　)*@n(　)*");
+        strReplace(s, L"%[l]", L"\n");
+        s = re::sub(s, L"%\\[.*?\\]");
+        buffer->from(s);
+    }
+    void f0100D20026E02000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"(<ruby=(.*?)>(.*?)</ruby>)", L"$2");
+        s = re::sub(s, L"(　)*<br>(　)*");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2909,6 +2925,11 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 魔法少女ノ魔女裁判
+    {0x819AB020, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D20026E02000, 0x0100D20026E02000ull, "2.0.0a"}},
+    {0x8196D4C8, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D20026E02000, 0x0100D20026E02000ull, "2.0.0a"}},
+    // ハッピールートを終わらせて
+    {0x816A4E74, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f01008EC02394E000, 0x01008EC02394E000ull, "1.0.0"}},
     // Dies irae -Amantes amentes-
     {0x262C44, {FULL_STRING, 3, 0, 0, 0, 0x0100BB900B5B4000ull, nullptr}}, // 1.0.0 & 1.0.1
     // 戦国†恋姫EX～COLLECTION～
@@ -4209,9 +4230,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // アイ★チュウ
     {0x824865C4, {CODEC_UTF16, 3, 0, 0, F01006CC015ECA000, 0x01006CC015ECA000ull, "1.14"}},
     // カエル畑DEつかまえて☆彡
-    {0x2206bc, {0, 0, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
-    {0x220cfc, {0, 0, 0, 0, F0100E5200D1A2000<true>, 0x0100E5200D1A2000ull, "1.0.0"}},
-    {0x2372b0, {0, 1, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
+    {0x2206bc, {FULL_STRING, 0, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
+    {0x220cfc, {FULL_STRING, 0, 0, 0, F0100E5200D1A2000<true>, 0x0100E5200D1A2000ull, "1.0.0"}},
+    {0x2372b0, {FULL_STRING, 1, 0, 0, F0100E5200D1A2000<false>, 0x0100E5200D1A2000ull, "1.0.0"}},
     // カエル畑ＤＥつかまえて・夏　千木良参戦！
     {0x2210d0, {0, 0, 0, 0, F0100EFE0159C6000<false>, 0x0100EFE0159C6000ull, "1.0.0"}},
     {0x221768, {0, 0, 0, 0, F0100EFE0159C6000<true>, 0x0100EFE0159C6000ull, "1.0.0"}},
