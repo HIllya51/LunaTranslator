@@ -71,11 +71,6 @@ After unchecking this setting, Simplified Chinese can be displayed correctly. Ho
 
     Omitted
 
-1. #### Embedded Safety Check
-
-    For games like Renpy, the extracted text often includes characters of syntax elements such as `{` `}` `[` `]`. If the translation source does not handle these contents correctly, it will break the syntax and cause the game to crash. Therefore, the software defaults to **skipping translation** of certain character combinations that may cause the game by regex matching. If you are not worried about game crashes, you can cancel this setting, or manually replace some finer-grained regex matches to reduce unnecessary skipping.
-
-    ![img](https://image.lunatranslator.org/zh/embed/safeskip.png)
     
 1. #### Clear In-Game Display Text
 
