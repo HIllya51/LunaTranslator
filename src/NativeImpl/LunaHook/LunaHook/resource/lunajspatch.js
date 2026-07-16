@@ -164,6 +164,7 @@ function Almighthook() {
 function tyranohook() {
 
     if (tyrano.plugin.kag.tag.text.originstart) return;
+    tyrano.plugin.kag.tag.glink.startorigin = tyrano.plugin.kag.tag.glink.start;
     tyrano.plugin.kag.tag.text.originstart = tyrano.plugin.kag.tag.text.start;
     tyrano.plugin.kag.tag.chara_ptext.startorigin = tyrano.plugin.kag.tag.chara_ptext.start;
     tyrano.plugin.kag.tag.text.start = function (pm) {
@@ -193,8 +194,12 @@ function tyranohook() {
     }
     tyrano.plugin.kag.tag.chara_ptext.start = function (pm) {
         this.kag.stat.jcharas[pm.name] && (pm.name = this.kag.stat.jcharas[pm.name]);
-		var cpm = this.kag.stat.charas[pm.name];
-        pm.name = cppjsio('tyranoscript', cpm?cpm.jname:pm.name, 1, true)
+        var cpm = this.kag.stat.charas[pm.name];
+        pm.name = cppjsio('tyranoscript', cpm ? cpm.jname : pm.name, 0, true)
+        return this.startorigin(pm)
+    }
+    tyrano.plugin.kag.tag.glink.start = function (pm) {
+        pm.text = cppjsio('tyranoscript', pm.text, 0, true)
         return this.startorigin(pm)
     }
 }

@@ -58,7 +58,7 @@ namespace
 	{
 		HookParam hp;
 		hp.address = (uintptr_t)SetClipboardData;
-		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE;
+		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE | FULL_STRING;
 		hp.text_fun = [](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
 			HGLOBAL hClipboardData = (HGLOBAL)context->argof(2);
@@ -83,7 +83,7 @@ namespace
 	{
 		HookParam hp;
 		hp.address = (uintptr_t)LUNA_CONTENTBYPASS;
-		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE;
+		hp.type = USING_STRING | NO_CONTEXT | CODEC_UTF16 | EMBED_ABLE | FULL_STRING;
 		hp.text_fun = [](hook_context *context, HookParam *hp, auto *buffer, uintptr_t *split)
 		{
 			parsebefore((wchar_t *)context->argof(1), hp, split, buffer);
@@ -346,6 +346,10 @@ namespace
 			{
 				return buffer->clear();
 			}
+			auto s = buffer->strA();
+			s = re::sub(s, "<span.*?>");
+			s = re::sub(s, "</span>");
+			buffer->from(s);
 		};
 		bool succ = false;
 

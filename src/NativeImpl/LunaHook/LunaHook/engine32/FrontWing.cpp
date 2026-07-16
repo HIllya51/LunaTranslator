@@ -9,11 +9,13 @@ bool FrontWing::attach_function()
   auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
   if (!addr)
     return false;
-  addr = MemDbg::findEnclosingAlignedFunction(addr);
-  if (!addr)
+  auto faddr = MemDbg::findEnclosingAlignedFunction(addr);
+  if (!faddr)
+    faddr = findfuncstart(addr, 0x240);
+  if (!faddr)
     return false;
   HookParam hp;
-  hp.address = addr;
+  hp.address = faddr;
   hp.offset = stackoffset(1);
   hp.type = USING_STRING;
   return NewHook(hp, "FrontWing");
