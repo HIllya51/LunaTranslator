@@ -444,9 +444,17 @@ class dialog_memory(saveposwindow):
     def crophide(self, s=False):
         currpos = gobject.base.translation_ui.pos()
         currpos2 = self.window().pos()
+        _save = {}
         if s:
             self.window().move(-9999, -9999)
             gobject.base.translation_ui.move(-9999, -9999)
+            try:
+                gobject.base.textsource.pause_recognition()
+                for _ in gobject.base.textsource.ranges:
+                    _save[_] = _.range_ui.getrect()
+                    _.range_ui.setrect(((-9999, -9999), (-9999, -9999)))
+            except:
+                pass
 
         def ocroncefunction(rect, img=None):
             if not img:
@@ -460,6 +468,11 @@ class dialog_memory(saveposwindow):
             if s:
                 gobject.base.translation_ui.move(currpos)
                 self.window().move(currpos2)
+                try:
+                    for _ in gobject.base.textsource.ranges:
+                        _.range_ui.setrect(_save[_])
+                except:
+                    pass
 
         rangeselct_function(__ocroncefunction)
 
