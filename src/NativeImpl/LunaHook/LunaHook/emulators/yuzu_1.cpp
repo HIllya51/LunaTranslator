@@ -2918,6 +2918,12 @@ namespace
         s = re::sub(s, L"(　)*<br>(　)*");
         buffer->from(s);
     }
+    void f0100AA9025A4C000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"<color=.*?>(.*?)<\\/color>", L"$1");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2925,6 +2931,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Dear Mirror Flower
+    {0x818F4BD4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100AA9025A4C000, 0x0100AA9025A4C000ull, "1.0.0"}},
     // 魔法少女ノ魔女裁判
     {0x819AB020, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D20026E02000, 0x0100D20026E02000ull, "2.0.0a"}},
     {0x8196D4C8, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D20026E02000, 0x0100D20026E02000ull, "2.0.0a"}},
