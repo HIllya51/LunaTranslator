@@ -229,7 +229,7 @@ def __rs():
             "窗口特效",
             lay,
             "",
-            "圆角",
+            getsmalllabel("圆角"),
             spin,
             "",
             getsmalllabel("任务栏中显示"),
