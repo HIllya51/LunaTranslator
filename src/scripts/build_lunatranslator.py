@@ -165,7 +165,7 @@ def downloadNtlea():
 def downloadCurl(target):
     if target == "winxp":
         os.chdir(f"{rootDir}/scripts/temp")
-        subprocess.run(f"curl -C - -LO {curlFile32xp}")
+        subprocess.run(f"curl --retry 5 --retry-delay 3 --retry-max-time 60 -C - -LO {curlFile32xp}")
         subprocess.run(f"7z x -y {curlFile32xp.split('/')[-1]}")
         os.chdir(rootDir)
         outputDirName32 = curlFile32xp.split("/")[-1].replace(".zip", "")
@@ -176,8 +176,8 @@ def downloadCurl(target):
                     shutil.move(os.path.join(_dir, _f), "files/DLL32")
         return
     os.chdir(f"{rootDir}/scripts/temp")
-    subprocess.run(f"curl -C - -LO {curlFile32}")
-    subprocess.run(f"curl -C - -LO {curlFile64}")
+    subprocess.run(f"curl --retry 5 --retry-delay 3 --retry-max-time 60 -C - -LO {curlFile32}")
+    subprocess.run(f"curl --retry 5 --retry-delay 3 --retry-max-time 60 -C - -LO {curlFile64}")
     subprocess.run(f"7z x -y {curlFile32.split('/')[-1]}")
     subprocess.run(f"7z x -y {curlFile64.split('/')[-1]}")
     os.chdir(rootDir)
