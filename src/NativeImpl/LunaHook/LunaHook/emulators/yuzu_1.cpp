@@ -2924,6 +2924,19 @@ namespace
         s = re::sub(s, L"<color=.*?>(.*?)<\\/color>", L"$1");
         buffer->from(s);
     }
+    void f0100020023EB6000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, L"<.*?>");
+        s = re::sub(s, LR"((　)*\n(　)*)");
+        buffer->from(s);
+    }
+    void f0100020023EB6000_2(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"((　)*\\(　)*)");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2931,6 +2944,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // CRAZY CHA!N -エルピスの鎖-
+    {0x81DE2D24, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100020023EB6000_2, 0x0100020023EB6000ull, "1.0.0"}},
+    {0x81D71180, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100020023EB6000, 0x0100020023EB6000ull, "1.0.0"}},
     // Dear Mirror Flower
     {0x818F4BD4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100AA9025A4C000, 0x0100AA9025A4C000ull, "1.0.0"}},
     // 魔法少女ノ魔女裁判
