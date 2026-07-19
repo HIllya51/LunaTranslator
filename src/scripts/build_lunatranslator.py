@@ -69,6 +69,9 @@ def downloadcopylibcurl(which, to):
                 if _f == "libcurl.dll":
                     shutil.move(os.path.join(_dir, _f), to)
                     return
+                if _f == "libcurl-x64.dll":
+                    shutil.move(os.path.join(_dir, _f), to)
+                    return
     raise Exception()
 
 
