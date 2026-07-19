@@ -49,6 +49,27 @@ curlFile32xp = "https://web.archive.org/web/20220101212640if_/https://curl.se/wi
 curlFile32 = "https://web.archive.org/web/20260102155019if_/https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win32-mingw.zip"
 curlFile64 = "https://web.archive.org/web/20260106011529if_/https://curl.se/windows/dl-8.8.0_3/curl-8.8.0_3-win64-mingw.zip"
 
+
+def downloadcopylibcurl(which, to):
+    urls1 = {"32": curlFile32, "64": curlFile64, "xp": curlFile32xp}
+    urls2 = {
+        "32": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_win7.zip",
+        "64": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64_win10.zip",
+        "xp": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_winxp.zip",
+    }
+    for urls in (urls1, urls2):
+        os.chdir(f"{rootDir}/scripts/temp")
+        url = urls[which]
+        subprocess.run(f"curl -C - -LO {url}")
+        subprocess.run(f"7z x -y {url.split('/')[-1]}")
+        os.chdir(rootDir)
+        outputDirName32 = url.split("/")[-1].replace(".zip", "")
+        for _dir, _, _fs in os.walk(f"scripts/temp/{outputDirName32}"):
+            for _f in _fs:
+                if _f == "libcurl.dll":
+                    shutil.move(os.path.join(_dir, _f), to)
+
+
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
 
 myfiles = [
@@ -164,27 +185,10 @@ def downloadNtlea():
 
 def downloadCurl(target):
     if target == "winxp":
-        os.chdir(f"{rootDir}/scripts/temp")
-        subprocess.run(f"curl --retry 5 --retry-delay 3 --retry-max-time 60 -C - -LO {curlFile32xp}")
-        subprocess.run(f"7z x -y {curlFile32xp.split('/')[-1]}")
-        os.chdir(rootDir)
-        outputDirName32 = curlFile32xp.split("/")[-1].replace(".zip", "")
-        # fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32")
-        for _dir, _, _fs in os.walk(f"scripts/temp/{outputDirName32}"):
-            for _f in _fs:
-                if _f == "libcurl.dll":
-                    shutil.move(os.path.join(_dir, _f), "files/DLL32")
+        downloadcopylibcurl("xp", "files/DLL32")
         return
-    os.chdir(f"{rootDir}/scripts/temp")
-    subprocess.run(f"curl --retry 5 --retry-delay 3 --retry-max-time 60 -C - -LO {curlFile32}")
-    subprocess.run(f"curl --retry 5 --retry-delay 3 --retry-max-time 60 -C - -LO {curlFile64}")
-    subprocess.run(f"7z x -y {curlFile32.split('/')[-1]}")
-    subprocess.run(f"7z x -y {curlFile64.split('/')[-1]}")
-    os.chdir(rootDir)
-    outputDirName32 = curlFile32.split("/")[-1].replace(".zip", "")
-    fuckmove(f"scripts/temp/{outputDirName32}/bin/libcurl.dll", "files/DLL32")
-    outputDirName64 = curlFile64.split("/")[-1].replace(".zip", "")
-    fuckmove(f"scripts/temp/{outputDirName64}/bin/libcurl-x64.dll", "files/DLL64")
+    downloadcopylibcurl("32", "files/DLL32")
+    downloadcopylibcurl("64", "files/DLL64")
 
 
 def downloadOCRModel():
