@@ -39,7 +39,7 @@ export default {
                 .catch(err => {
                     connectable = true
                     document.querySelectorAll('a').forEach((e) => {
-                        if (e.href.endsWith('/x64_win10?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64_win10.zip'
+                        if (e.href.endsWith('/x64_win10?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64.zip'
                         else if (e.href.endsWith('/x64_win7?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64_win7.zip'
                         else if (e.href.endsWith('/x86_win7?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_win7.zip'
                         else if (e.href.endsWith('/x86_winxp?doc=1')) e.href = 'https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_winxp.zip'

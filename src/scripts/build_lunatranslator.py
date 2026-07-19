@@ -54,7 +54,7 @@ def downloadcopylibcurl(which, to):
     urls1 = {"32": curlFile32, "64": curlFile64, "xp": curlFile32xp}
     urls2 = {
         "32": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_win7.zip",
-        "64": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64_win10.zip",
+        "64": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x64.zip",
         "xp": "https://github.com/HIllya51/LunaTranslator/releases/latest/download/LunaTranslator_x86_winxp.zip",
     }
     for urls in (urls1, urls2):
@@ -68,6 +68,8 @@ def downloadcopylibcurl(which, to):
             for _f in _fs:
                 if _f == "libcurl.dll":
                     shutil.move(os.path.join(_dir, _f), to)
+                    return
+    raise Exception()
 
 
 availableLocales = ["cht", "en", "ja", "ko", "ru", "zh"]
