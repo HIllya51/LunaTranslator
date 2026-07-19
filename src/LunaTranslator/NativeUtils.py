@@ -804,22 +804,9 @@ class MSHTML(AbstractWebView):
         self.html_limit = 1
         self.browser = AbstractWebViewPTR()
         html_new(int(parent), pointer(self.browser))
-        iswine = self.__checkisusingwine()
-        if iswine or (html_version() < 10001):  # ie10之前，sethtml会乱码
+        if gobject.sys_is_wine or (html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
 
-    def __checkisusingwine(self) -> bool:
-        iswine = True
-        try:
-            winreg.OpenKeyEx(
-                winreg.HKEY_CURRENT_USER,
-                r"Software\Wine",
-                0,
-                winreg.KEY_QUERY_VALUE,
-            )
-        except FileNotFoundError:
-            iswine = False
-        return iswine
 
     def get_current_url(self) -> str:
         _ = []

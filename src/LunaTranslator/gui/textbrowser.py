@@ -64,7 +64,7 @@ class Textbrowser(QFrame):
             tb = importlib.import_module("gui.rendertext.textbrowser").TextBrowser
             self.textbrowser = tb(self)
 
-        if gobject.sys_le_win7:
+        if gobject.sys_le_win7 or gobject.sys_is_wine:
             # win7不可以同时FramelessWindowHint和WA_TranslucentBackground，否则会导致无法显示
             # win8没问题
             self.window().setAttribute(
