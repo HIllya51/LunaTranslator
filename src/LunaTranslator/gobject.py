@@ -1,5 +1,4 @@
-import platform, os, sys, ctypes
-from ctypes import wintypes
+import platform, os, sys
 
 thisuserconfig = "userconfig"
 runtime_bit_64 = platform.architecture()[0] == "64bit"
@@ -112,6 +111,9 @@ sys_win10_release_supported = platformversion[2] >= 17134  # 1803
 
 
 def is_running_on_wine():
+    import ctypes
+    from ctypes import wintypes
+
     kernel32 = ctypes.WinDLL("kernel32.dll", use_last_error=False)
     GetModuleHandleW = kernel32.GetModuleHandleW
     GetModuleHandleW.argtypes = [wintypes.LPCWSTR]
@@ -124,6 +126,3 @@ def is_running_on_wine():
     func_addr = GetProcAddress(hmodule, b"wine_get_version")
 
     return func_addr is not None and func_addr != 0
-
-
-sys_is_wine = is_running_on_wine()

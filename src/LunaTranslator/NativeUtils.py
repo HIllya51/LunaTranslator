@@ -804,7 +804,7 @@ class MSHTML(AbstractWebView):
         self.html_limit = 1
         self.browser = AbstractWebViewPTR()
         html_new(int(parent), pointer(self.browser))
-        if gobject.sys_is_wine or (html_version() < 10001):  # ie10之前，sethtml会乱码
+        if gobject.is_running_on_wine() or (html_version() < 10001):  # ie10之前，sethtml会乱码
             self.html_limit = 0
 
 
