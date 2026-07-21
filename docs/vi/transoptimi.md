@@ -1,6 +1,6 @@
 # Chức Năng của Các Tối Ưu Hóa Dịch Thuật
 
-1. ## Dịch danh từ riêng {#anchor-noundict}
+1. ## Thay thế trước khi dịch {#anchor-vndbnamemap}
 
     Phương pháp này thay thế trực tiếp văn bản gốc bằng văn bản đã dịch trước khi dịch. Nó hỗ trợ sử dụng `Regex` và `Escape` để thực hiện các thay thế phức tạp hơn.
 

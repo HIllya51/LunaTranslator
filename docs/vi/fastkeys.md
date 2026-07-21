@@ -5,7 +5,7 @@
 
 ## Chung
 
-1. #### Vô hiệu hóa mọi phím tắt khác {#anchor-disableothers}
+1. #### Vô hiệu hóa tất cả các phím tắt khác {#anchor-disableothers}
     Vô hiệu hóa tất cả các phím tắt khác ngoại trừ phím tắt này. Kích hoạt lại phím tắt này sẽ hủy bỏ trạng thái vô hiệu hóa.
 
 1. #### Thực thi thủ công {#anchor-_1}

@@ -6,7 +6,7 @@
 
 ## General
 
-1. #### Disable All Other Shortcuts {#anchor-disableothers}
+1. #### Disable all other shortcut keys. {#anchor-disableothers}
     Disables all other shortcuts except this one. Triggering this shortcut again will release the disable.
 
 1. #### Manual execution {#anchor-_1}
