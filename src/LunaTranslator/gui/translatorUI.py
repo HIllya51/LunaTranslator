@@ -688,7 +688,7 @@ class TranslatorWindow(resizableframeless):
             self.ocr_once_follow_rect = rect
             self.ocr_do_function(rect, img)
 
-        rangeselct_function(ocroncefunction)
+        rangeselct_function(ocroncefunction, hideshow=True)
 
     @threader
     def simulate_key_enter(self):

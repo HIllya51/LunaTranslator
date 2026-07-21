@@ -324,8 +324,36 @@ class rangeadjust(Mainw):
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
 
-def rangeselct_function(callback):
+def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
     p = gobject.base.translation_ui
+    if hideshow:
+        currpos = p.pos()
+        _save = {}
+        # hide会有隐藏动画残影
+        if parent:
+            currpos2 = parent.pos()
+            parent.move(-9999, -9999)
+        p.move(-9999, -9999)
+        try:
+            gobject.base.textsource.pause_recognition()
+            for _ in gobject.base.textsource.ranges:
+                _save[_] = _.range_ui.getrect()
+                _.range_ui.setrect(((-9999, -9999), (-9999, -9999)))
+        except:
+            pass
+
+    def reset():
+        if not hideshow:
+            return
+        gobject.base.translation_ui.move(currpos)
+        if parent:
+            parent.move(currpos2)
+        try:
+            for _ in gobject.base.textsource.ranges:
+                _.range_ui.setrect(_save[_])
+        except:
+            pass
+
     p = p.winid if p.isVisible() else None
     color = QColor(globalconfig["ocrrangecolor"])
 
@@ -335,6 +363,7 @@ def rangeselct_function(callback):
         x1, x2 = min(x1, x2), max(x1, x2)
         y1, y2 = min(y1, y2), max(y1, y2)
         pix = safepixmap(ptr[:size]).copy(x1, y1, x2 - x1, y2 - y1).toImage()
+        reset()
         callback(((x1 + xoff, y1 + yoff), (x2 + xoff, y2 + yoff)), pix)
         called.append(0)
 
@@ -349,4 +378,5 @@ def rangeselct_function(callback):
         cb,
     )
     if not called:
+        reset()
         callback(((0, 0), (0, 0)), None)

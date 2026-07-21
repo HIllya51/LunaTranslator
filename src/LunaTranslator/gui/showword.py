@@ -198,21 +198,7 @@ class AnkiWindow(QWidget):
     def asyncocr(self, img):
         self.__ocrsettext.emit(ocr_run(img).textonly)
 
-    def crophide(self, s=False):
-        currpos = gobject.base.translation_ui.pos()
-        currpos2 = self.window().pos()
-        _save = {}
-        # hide会有隐藏动画残影
-        if s:
-            self.window().move(-9999, -9999)
-            gobject.base.translation_ui.move(-9999, -9999)
-            try:
-                gobject.base.textsource.pause_recognition()
-                for _ in gobject.base.textsource.ranges:
-                    _save[_] = _.range_ui.getrect()
-                    _.range_ui.setrect(((-9999, -9999), (-9999, -9999)))
-            except:
-                pass
+    def crophide(self):
 
         def ocroncefunction(rect, img=None):
             if not img:
@@ -225,18 +211,7 @@ class AnkiWindow(QWidget):
             if globalconfig["ankiconnect"]["ocrcroped"]:
                 self.asyncocr(img)
 
-        def __ocroncefunction(rect, img=None):
-            ocroncefunction(rect, img=img)
-            if s:
-                gobject.base.translation_ui.move(currpos)
-                self.window().move(currpos2)
-                try:
-                    for _ in gobject.base.textsource.ranges:
-                        _.range_ui.setrect(_save[_])
-                except:
-                    pass
-
-        rangeselct_function(__ocroncefunction)
+        rangeselct_function(ocroncefunction, self.window(), hideshow=True)
 
     def __init__(self, p) -> None:
         super().__init__()
@@ -610,7 +585,7 @@ class AnkiWindow(QWidget):
 
         cropbutton2 = getIconButton(
             icon="fa.crop",
-            callback=functools.partial(self.crophide, True),
+            callback=self.crophide,
             tips="隐藏并截图",
         )
         grabwindowbtn = getIconButton(
