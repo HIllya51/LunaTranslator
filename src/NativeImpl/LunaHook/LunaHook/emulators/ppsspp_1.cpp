@@ -711,23 +711,6 @@ namespace
         StringReplacer(buffer, TEXTANDLEN("\x81\x54"), TEXTANDLEN("!!"));
         ULJM06289(buffer, hp);
     }
-    void FULJM05603(TextBuffer *buffer, HookParam *)
-    {
-        StringFilter(buffer, TEXTANDLEN("%N"));
-        StringFilter(buffer, TEXTANDLEN("%K"));
-        StringFilter(buffer, TEXTANDLEN("%P"));
-        StringFilter(buffer, TEXTANDLEN("%V"));
-        StringFilter(buffer, TEXTANDLEN("%LC"));
-        StringFilter(buffer, TEXTANDLEN("%LE"));
-        StringFilter(buffer, TEXTANDLEN("%FS"));
-        StringFilter(buffer, TEXTANDLEN("%FE"));
-        StringFilter(buffer, TEXTANDLEN("%CFFFF"));
-        auto s = buffer->strA();
-        s = re::sub(s, R"(\{(.*?)\}\[(.*?)\])", "$1");
-        s = re::sub(s, R"(%O\d{3})", "$1");
-        s = re::sub(s, R"(%S\d{3})", "$1");
-        buffer->from(s);
-    }
     void NPJH50745(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -736,13 +719,37 @@ namespace
         strReplace(s, u8"▼");
         buffer->from(s);
     }
+    void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("%K"));
+        StringFilter(buffer, TEXTANDLEN("%P"));
+        StringFilter(buffer, TEXTANDLEN("%p"));
+        StringFilter(buffer, TEXTANDLEN("%N"));
+        StringFilter(buffer, TEXTANDLEN("%V"));
+        StringFilter(buffer, TEXTANDLEN("%LC"));
+        StringFilter(buffer, TEXTANDLEN("%LE"));
+        StringFilter(buffer, TEXTANDLEN("%FS"));
+        StringFilter(buffer, TEXTANDLEN("%FE"));
+        StringFilter(buffer, TEXTANDLEN("%CFFFF"));
+        // StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧
+        StringFilter(buffer, TEXTANDLEN("\x81\x99")); // ☆
+
+        StringReplacer(buffer, TEXTANDLEN("\x84\xa5"), TEXTANDLEN("\x81\x5b"));
+        StringReplacer(buffer, TEXTANDLEN("\x84\xa7"), TEXTANDLEN("\x81\x5b"));
+        auto s = buffer->strAW();
+        s = re::sub(s, LR"(\{(.*?)\}\[(.*?)\])", L"$1");
+        s = re::sub(s, LR"(%O\d{3})");
+        s = re::sub(s, LR"(%S\d{3})");
+        s = re::sub(s, LR"(%A\d)");
+        buffer->fromWA(s);
+    }
     void ULJM05821(TextBuffer *buffer, HookParam *hp)
     {
         static lru_cache<std::string> lastx(2);
         auto s = buffer->strA();
         if (lastx.touch(s))
             return buffer->clear();
-        FULJM05603(buffer, hp);
+        ULJM06040_1(buffer, hp);
     }
     void ULJM05840(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
@@ -1168,19 +1175,6 @@ namespace
             buffer->from(s.substr(last.size()));
         }
         last = s;
-    }
-    void ULJM06040_1(TextBuffer *buffer, HookParam *hp)
-    {
-        StringFilter(buffer, TEXTANDLEN("%K"));
-        StringFilter(buffer, TEXTANDLEN("%P"));
-        // StringFilterBetween(buffer, "\x81k", 2, "\x81l", 2);//〔ちなつ？〕〔直樹☆〕，人名，但可能不全，甚至包含剧透。想了一下还是留下吧
-        StringFilter(buffer, TEXTANDLEN("\x81\x99")); // ☆
-
-        StringReplacer(buffer, TEXTANDLEN("\x84\xa5"), TEXTANDLEN("\x81\x5b"));
-        StringReplacer(buffer, TEXTANDLEN("\x84\xa7"), TEXTANDLEN("\x81\x5b"));
-        auto s = buffer->strA();
-        s = re::sub(s, R"(\{(.*?)\}\[(.*?)\])", "$1");
-        buffer->from(s);
     }
     void NPJH00122(TextBuffer *buffer, HookParam *hp)
     {
@@ -1639,6 +1633,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Ｌの季節 ダブルポケット
+    {0x887B6E8, {FULL_STRING, 0, 0, 0, ULJM06040_1, "ULJM05555"}},
     // あかね色に染まる坂ぽ～たぶる
     {0x8832594, {USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, "ULJM05589"}},
     // AKB1/149 恋愛総選挙
@@ -1768,9 +1764,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x88eeba4, {0, 0, 0, 0, ULJM05943F, "ULJM05943"}}, // a0 - monologue text
     {0x8875e0c, {0, 1, 6, 0, ULJM05943F, "ULJM05943"}}, // a1 - dialogue text
     // My Merry May with be
-    {0x886F014, {0, 3, 0, 0, FULJM05603, "ULJM05603"}},
+    {0x886F014, {0, 3, 0, 0, ULJM06040_1, "ULJM05603"}},
     // コープスパーティー -THE ANTHOLOGY- サチコの恋愛遊戯♥Hysteric Birthday 2U
-    {0x88517C8, {0, 1, 0, 0, FULJM05603, "ULJM06114"}},
+    {0x88517C8, {0, 1, 0, 0, ULJM06040_1, "ULJM06114"}},
     // 向日葵の教会と長い夏休み
     {0x881c444, {FULL_STRING, 0, 0, 0, 0, "ULJM06321"}}, // name+text,sjit,FULL_STRING to split name and text
     // ましろ色シンフォニー *mutsu-no-hana
@@ -1949,7 +1945,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Memories Off ～それから～
     {0x89435F8, {FULL_STRING, 0, 0, 0, 0, "ULJM05350"}},
     // ユア・メモリーズオフ
-    {0x88EF260, {0, 1, 0, 0, FULJM05603, "ULJM05435"}},
+    {0x88EF260, {0, 1, 0, 0, ULJM06040_1, "ULJM05435"}},
     // CLANNAD
     {0x880F240, {CODEC_UTF16, 0, 0, 0, ULJM05282, std::vector<const char *>{"ULJM05338", "ULJM05339"}}},
     // ＣＬＡＮＮＡＤ　光見守る坂道で　上巻
@@ -1963,7 +1959,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 雅恋 ～MIYAKO～ あわゆきのうたげ
     {0x8811368, {CODEC_UTF8, 1, 0, 0, ULJM06070, "ULJM06070"}},
     // ナルキッソス～もしも明日があるなら～Portable
-    {0x8857B28, {0, 1, 0, 0, FULJM05603, "ULJM05674"}},
+    {0x8857B28, {0, 1, 0, 0, ULJM06040_1, "ULJM05674"}},
     // 未来日記　－１３人目の日記所有者－
     {0x884C30C, {0, 0, 0, 0, ULJM05565, "ULJM05565"}}, // 切换场景时会有很多辣鸡文本
     // 未来日記　１３人目の日記所有者　ＲＥ：ＷＲＩＴＥ
@@ -2254,7 +2250,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ダンガンロンパ　希望の学園と絶望の高校生　PSP® the Best
     {0x88540B0, {CODEC_UTF16, 0, 0, 0, NPJH50515, "NPJH50515"}},
     // 12Riven　-the Ψcliminal of integral-
-    {0x8942AD4, {0, 0, 0, 0, FULJM05603, "ULJM05445"}},
+    {0x8942AD4, {0, 0, 0, 0, ULJM06040_1, "ULJM05445"}},
     // リトルウィッチ パルフェ　黒猫魔法店物語
     {0x8840D18, {0, 0, 0, 0, NewLineCharFilterA, "ULJM06019"}},
     // ＢＬＡＣＫ ＣＯＤＥ　ブラック・コード
