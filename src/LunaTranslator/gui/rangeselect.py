@@ -308,11 +308,12 @@ class rangeadjust(Mainw):
     def getrect(self):
         return self._rect
 
-    def setrect(self, rect):
+    def setrect(self, rect, show=True):
         self.tracepos = QPoint()
         if rect:
             (x1, y1), (x2, y2) = rect
-            self.show()
+            if show:
+                self.show()
             r = self.devicePixelRatioF()
             self.setGeometry(
                 x1 - int(globalconfig.get("ocrrangewidth", 2) * r),
@@ -338,7 +339,7 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
             gobject.base.textsource.pause_recognition()
             for _ in gobject.base.textsource.ranges:
                 _save[_] = _.range_ui.getrect()
-                _.range_ui.setrect(((-9999, -9999), (-9999, -9999)))
+                _.range_ui.setrect(((-9999, -9999), (-9999, -9999)), show=False)
         except:
             pass
 
@@ -350,7 +351,8 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
             parent.move(currpos2)
         try:
             for _ in gobject.base.textsource.ranges:
-                _.range_ui.setrect(_save[_])
+                _.range_ui.setrect(_save[_], show=False)
+            gobject.base.textsource.resume_recognition()
         except:
             pass
 
