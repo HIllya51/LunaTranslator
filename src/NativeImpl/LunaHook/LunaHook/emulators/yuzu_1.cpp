@@ -2968,6 +2968,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8196D998, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D20026E02000, 0x0100D20026E02000ull, "2.0.1a"}},
     // ハッピールートを終わらせて
     {0x816A4E74, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f01008EC02394E000, 0x01008EC02394E000ull, "1.0.0"}},
+    {0x8189D548, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f01008EC02394E000, 0x01008EC02394E000ull, "1.0.1"}},
     // Dies irae -Amantes amentes-
     {0x262C44, {FULL_STRING, 3, 0, 0, 0, 0x0100BB900B5B4000ull, nullptr}}, // 1.0.0 & 1.0.1
     // 戦国†恋姫EX～COLLECTION～
