@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01005E8023EEE000 | DRAMAtical Murder re:code |
 |  | 0100020023EB6000 | CRAZY CHA!N -エルピスの鎖- |
 |  | 0100AA9025A4C000 | Dear Mirror Flower |
 |  | 0100D20026E02000 | 魔法少女ノ魔女裁判 |

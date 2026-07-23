@@ -224,6 +224,16 @@ namespace
         last = s;
         F0100A1E00BFEA000(buffer, hp);
     }
+    void f01005E8023EEE000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        static std::string last;
+        if (last == s)
+            return buffer->clear();
+        last = s;
+        s = re::sub(s, u8R"(\n(　)*)");
+        buffer->from(s);
+    }
 
     void F0100A1200CA3C000(TextBuffer *buffer, HookParam *hp)
     {
@@ -2944,6 +2954,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // DRAMAtical Murder re:code
+    {0x8012D9F0, {FULL_STRING | CODEC_UTF8, 1, 0, 0, f01005E8023EEE000, 0x01005E8023EEE000ull, "1.0.0"}},
     // CRAZY CHA!N -エルピスの鎖-
     {0x81DE2D24, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100020023EB6000_2, 0x0100020023EB6000ull, "1.0.0"}},
     {0x81D71180, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100020023EB6000, 0x0100020023EB6000ull, "1.0.0"}},
