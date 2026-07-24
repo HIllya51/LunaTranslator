@@ -151,9 +151,7 @@ Thay thế `{endpoint}` và `{deployName}` bằng endpoint và deployName của 
 
 **API Key** [Tạo API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D) để lấy.
 
-**model** Sau khi [tạo điểm cuối suy luận](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10), điền vào **endpoint** thay vì **model**.
-
-![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
+**model** https://console.volcengine.com/ark/region:cn-beijing/docs/82379/1330310?lang=zh
 
 == Moonshot AI
 

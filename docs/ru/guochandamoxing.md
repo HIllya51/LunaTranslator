@@ -153,10 +153,7 @@
 
 **API Key** Получите [создав API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey？apikey=%7B%7D)
 
-**model** После [создания точки доступа для вывода](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint？current=1&pageSize=10) введите **точку доступа**, а не **модель**
-
-![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
-
+**model** https://console.volcengine.com/ark/region:cn-beijing/docs/82379/1330310?lang=zh
 
 == Moon's Dark Side
 

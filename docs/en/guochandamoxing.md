@@ -150,9 +150,7 @@ Replace `{endpoint}` and `{deployName}` with your endpoint and deployName.
 
 **API Key** [Create API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D) to obtain.
 
-**model** After [creating an inference endpoint](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10), fill in the **endpoint** instead of the **model**.
-
-![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
+**model** https://console.volcengine.com/ark/region:cn-beijing/docs/82379/1330310?lang=zh
 
 == Moonshot AI
 

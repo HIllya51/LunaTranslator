@@ -152,10 +152,7 @@
 
 **API Key** [建立 API Key](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D) 取得
 
-**Model** [建立推理接入點](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)後，填入**接入點**而非**模型**
-
-![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
-
+**Model** https://console.volcengine.com/ark/region:cn-beijing/docs/82379/1330310?lang=zh
 
 == 月之暗面
 

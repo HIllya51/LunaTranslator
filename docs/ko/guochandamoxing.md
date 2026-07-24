@@ -153,10 +153,7 @@
 
 **API 키** [API 키 생성](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey？apikey=%7B%7D)에서 획득
 
-**모델** [추론 엔드포인트 생성](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint？current=1&pageSize=10) 후, **모델**이 아닌 **엔드포인트**를 입력
-
-![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
-
+**모델** https://console.volcengine.com/ark/region:cn-beijing/docs/82379/1330310?lang=zh
 
 == 달의 어두운 면
 

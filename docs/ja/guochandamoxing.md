@@ -153,9 +153,7 @@
 
 **API Key** [API Keyを作成](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)して取得
 
-**model** [推論エンドポイントを作成](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?current=1&pageSize=10)した後、**エンドポイント**を記入（**モデル**ではない）
-
-![img](https://image.lunatranslator.org/zh/damoxing/doubao.png)
+**model** https://console.volcengine.com/ark/region:cn-beijing/docs/82379/1330310?lang=zh
 
 == 月の暗面
 
