@@ -3,6 +3,7 @@
 class Elf : public ENGINE
 {
     int type = 0;
+    bool ai5win = false;
 
 public:
     Elf()
@@ -10,6 +11,7 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = [&]() -> bool
         {
+            ai5win = Util::CheckFile(L"Ai5win.exe", true) && Util::CheckFileAny({L"data.arc", L"MISC\\data.arc"}, true) && (Util::CheckFileAny({L"mes.arc", L"MISC\\mes.arc"}, true));
             if (Util::CheckFileAll({L"data.arc", L"mes.arc"}, true) &&
                 Util::CheckFileAny({L"effect.arc", L"effect.awf"}, true))
             {
@@ -26,25 +28,10 @@ public:
                 type = 2;
             }
 
-            return type;
+            return type || ai5win;
         };
         // Util::CheckFile(L"Silkys.exe") ||    // It might or might not have Silkys.exe
         // data, effect, layer, mes, music
-    };
-    bool attach_function();
-};
-
-class Elf2 : public ENGINE
-{
-public:
-    Elf2()
-    {
-        check_by = CHECK_BY::CUSTOM;
-        check_by_target = []()
-        {
-            // check_by_list{L"data.arc",L"Ai5win.exe",L"mes.arc"};
-            return Util::CheckFile(L"Ai5win.exe", true) && Util::CheckFileAny({L"data.arc", L"MISC\\data.arc"}, true) && (Util::CheckFileAny({L"mes.arc", L"MISC\\mes.arc"}, true));
-        };
     };
     bool attach_function();
 };

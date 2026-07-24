@@ -248,7 +248,6 @@ std::vector<ENGINE *> check_engines()
         new Eushully,
         new Majiro,
         new Elf,
-        new Elf2,
         new Silkys,
         new SilkysOld,
         new CMVS,

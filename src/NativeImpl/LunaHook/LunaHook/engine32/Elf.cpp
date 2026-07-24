@@ -630,7 +630,7 @@ static bool ai6win()
   hp.type = USING_STRING;
   return NewHook(hp, "elf7");
 }
-bool Elf::attach_function()
+bool Elfattach_function(int type)
 {
   if (type == 1)
   {
@@ -904,11 +904,18 @@ static bool koihime()
   hp.offset = stackoffset(1);
   return NewHook(hp, "koihime");
 }
-bool Elf2::attach_function()
-{
-  return elf2() || Elf2attach_function() || all() || el() || deja() || koihime();
-}
 
+bool Elf2attach_functions()
+{
+  auto _ = elf2() || Elf2attach_function() || all() || el() || deja() || koihime();
+  if (!_)
+    PcHooks::hookGDIFunctions(TextOutA);
+  return _;
+}
+bool Elf::attach_function()
+{
+  return Elfattach_function(type) | (ai5win && Elf2attach_functions());
+}
 bool ElfFunClubFinal::attach_function()
 {
   // mov reg,ds:TextOutA
