@@ -735,7 +735,7 @@ def downloadgguf(key, url: str):
         savep = gobject.gettempdir("llamacpp-models/" + str(uuid.uuid4()))
         with open(savep, "wb") as file:
             r = requests.get(url, stream=True, proxies=getproxy())
-            if r.headers.get("Content-Type"):
+            if r.headers.get("Content-Type") not in (None, "application/octet-stream"):
                 raise Exception()
             size = int(r.headers["Content-Length"])
             file_size = 0
@@ -762,6 +762,7 @@ def downloadgguf(key, url: str):
         gobject.base.llamacppdownloadprogress.emit(key, url, -3, 0)
         return False
     except:
+        print_exc()
         gobject.base.llamacppdownloadprogress.emit(key, url, -1, 0)
         return False
 
