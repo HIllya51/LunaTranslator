@@ -195,8 +195,14 @@ function tyranohook() {
     tyrano.plugin.kag.tag.chara_ptext.start = function (pm) {
         this.kag.stat.jcharas[pm.name] && (pm.name = this.kag.stat.jcharas[pm.name]);
         var cpm = this.kag.stat.charas[pm.name];
-        pm.name = cppjsio('tyranoscript', cpm ? cpm.jname : pm.name, 0, true)
-        return this.startorigin(pm)
+        savecpmjname = ""
+        if(cpm && cpm.jname){
+            savecpmjname = cpm.jname
+            cpm.jname = cppjsio('tyranoscript', cpm.jname, 0, true)
+        }
+        retv = this.startorigin(pm)
+        cpm.jname = savecpmjname
+        return retv
     }
     tyrano.plugin.kag.tag.glink.start = function (pm) {
         pm.text = cppjsio('tyranoscript', pm.text, 0, true)
