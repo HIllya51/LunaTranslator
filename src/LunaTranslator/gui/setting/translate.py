@@ -1934,20 +1934,6 @@ def llamacppgrid():
                 ],
             )
         ],
-        [
-            dict(
-                title="环境变量",
-                type="grid",
-                grid=[
-                    [
-                        "key=val;...",
-                        functools.partial(
-                            _edit, "environment", "CUDA_VISIBLE_DEVICES="
-                        ),
-                    ]
-                ],
-            )
-        ],
     ]
 
 
