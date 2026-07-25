@@ -201,7 +201,8 @@ function tyranohook() {
             cpm.jname = cppjsio('tyranoscript', cpm.jname, 0, true)
         }
         retv = this.startorigin(pm)
-        cpm.jname = savecpmjname
+        if(savecpmjname)
+            cpm.jname = savecpmjname
         return retv
     }
     tyrano.plugin.kag.tag.glink.start = function (pm) {

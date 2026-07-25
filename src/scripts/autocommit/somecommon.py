@@ -34,6 +34,7 @@ def call_llm_api(prompt: str, api_key: str, api_url: str, model: str):
         ],
         "temperature": 0,
         "max_tokens": 300,
+        "thinking": {"type": "disabled"},
     }
     response = requests.post(api_url, headers=headers, json=data)
     try:
