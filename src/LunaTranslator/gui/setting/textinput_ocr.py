@@ -30,7 +30,6 @@ from gui.usefulwidget import (
 )
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
-from myutils.keycode import vkcode_map
 import gobject, qtawesome, importlib
 from gui.dynalang import LFormLayout, LDialog, LAction, LLabel
 from myutils.ocrutil import ocr_end, ocr_init, ocr_run
@@ -98,7 +97,6 @@ class triggereditor(LDialog):
         self.internalrealname = []
         formLayout = QVBoxLayout(self)
         formLayout.addWidget(self.hctable)
-        self.vkeys = list(vkcode_map.keys())
         for row, k in enumerate(self.list):  # 2
             self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem()])
             combo = KeyPressDetector(k.get("vkey"))
