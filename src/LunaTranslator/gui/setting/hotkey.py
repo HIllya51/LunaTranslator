@@ -84,7 +84,7 @@ def invoke_liandianqi_or_stop():
     key = globalconfig.get("liandianqi_key")
     if not key:
         return
-    key = parsekeystringtomodvkcode(key)[1],
+    key = parsekeystringtomodvkcode(key)[1]
     interval = globalconfig.get("liandianqi_interval", 1)
     if liandianqi_stoped:
         liandianqi_stoped = False
