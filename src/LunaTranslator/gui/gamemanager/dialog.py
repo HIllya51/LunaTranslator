@@ -1054,7 +1054,7 @@ class dialog_savedgame_new(QSplitter):
                     e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Left),
                     shu=e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down),
                 )
-                if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                if e.modifiers() & Qt.KeyboardModifier.ControlModifier:
                     self.moverank(offset)
                 else:
                     self.movefocus(offset)

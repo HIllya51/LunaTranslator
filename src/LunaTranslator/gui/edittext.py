@@ -90,9 +90,9 @@ class ctrlenter(QPlainTextEdit):
     def keyPressEvent(self, e):
         if e.key() == Qt.Key.Key_Return or e.key() == Qt.Key.Key_Enter:
             if (
-                e.modifiers() == Qt.KeyboardModifier.ControlModifier
-                or e.modifiers() == Qt.KeyboardModifier.ShiftModifier
-                or e.modifiers() == Qt.KeyboardModifier.AltModifier
+                (e.modifiers() & Qt.KeyboardModifier.ControlModifier)
+                or (e.modifiers() & Qt.KeyboardModifier.ShiftModifier)
+                or (e.modifiers() & Qt.KeyboardModifier.AltModifier)
             ):
                 self.insertPlainText("\n")
             else:

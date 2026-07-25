@@ -1047,3 +1047,37 @@ class stackedlist(ScrollArea):
 
     def switchidx(self, i1, i2):
         self.lay.insertItem(i2, self.lay.takeAt(i1))
+
+
+class KeyPressDetector(QLineEdit):
+    callback = pyqtSignal(str)
+
+    def __init__(self, *_):
+        super().__init__(*_)
+        self.setReadOnly(True)
+        self.callback.connect(self.setText)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.NoContextMenu)
+
+    def keyPressEvent(self, a0: QKeyEvent):
+        if a0.modifiers() & Qt.KeyboardModifier.ControlModifier:
+            self.callback.emit("Ctrl")
+        elif a0.modifiers() & Qt.KeyboardModifier.AltModifier:
+            self.callback.emit("Alt")
+        elif a0.modifiers() & Qt.KeyboardModifier.ShiftModifier:
+            self.callback.emit("Shift")
+        elif a0.modifiers() & Qt.KeyboardModifier.MetaModifier:
+            pass
+        elif a0.key() == Qt.Key.Key_Meta:
+            pass
+        else:
+            self.callback.emit(QKeySequence(a0.key()).toString())
+
+    def mousePressEvent(self, a0: QMouseEvent):
+        if a0.button() == Qt.MouseButton.LeftButton:
+            self.callback.emit("LButton")
+        elif a0.button() == Qt.MouseButton.RightButton:
+            self.callback.emit("RButton")
+        elif a0.button() == Qt.MouseButton.MidButton:
+            self.callback.emit("MButton")
+        else:
+            pass

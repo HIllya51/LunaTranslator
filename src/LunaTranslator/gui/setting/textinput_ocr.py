@@ -28,6 +28,7 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     makescrollgrid,
 )
+from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
 from myutils.keycode import vkcode_map
 import gobject, qtawesome, importlib
@@ -100,9 +101,7 @@ class triggereditor(LDialog):
         self.vkeys = list(vkcode_map.keys())
         for row, k in enumerate(self.list):  # 2
             self.hcmodel.insertRow(row, [QStandardItem(), QStandardItem()])
-            combo = SuperCombo()
-            combo.addItems(self.vkeys, internals=self.vkeys)
-            combo.setCurrentData(k.get("vkey"))
+            combo = KeyPressDetector(k.get("vkey"))
             self.hctable.setIndexWidget(self.hcmodel.index(row, 0), combo)
             combo = SuperCombo()
             combo.addItems(["按下", "松开"])
@@ -116,7 +115,10 @@ class triggereditor(LDialog):
         self.show()
 
     def __getindexwidgetdata(self, index: QModelIndex):
-        return self.hctable.indexWidgetX(index).currentIndex()
+        if index.column() == 0:
+            return self.hctable.indexWidgetX(index).text()
+        else:
+            return self.hctable.indexWidgetX(index).currentIndex()
 
     def closeEvent(self, a0: QCloseEvent) -> None:
         rows = self.hcmodel.rowCount()
@@ -124,12 +126,11 @@ class triggereditor(LDialog):
         for row in range(rows):
             i0 = self.hctable.getdata(row, 0)
             i1 = self.hctable.getdata(row, 1)
-            self.list.append({"vkey": self.vkeys[i0], "event": i1})
+            self.list.append({"vkey": i0, "event": i1})
 
     def click1(self):
         self.hcmodel.insertRow(0, [QStandardItem(), QStandardItem()])
-        combo = SuperCombo()
-        combo.addItems(self.vkeys)
+        combo = KeyPressDetector()
         self.hctable.setIndexWidget(self.hcmodel.index(0, 0), combo)
         combo = SuperCombo()
         combo.addItems(["按下", "松开"])
@@ -512,7 +513,13 @@ def internal(self):
             D_getsimpleswitch(globalconfig, "ocrmergelines", default=True),
             getsmalllabel("距离"),
             D_getspinbox(
-                0, 3, globalconfig, "ocrmergelines_distance", double=True, step=0.01, default=0.4
+                0,
+                3,
+                globalconfig,
+                "ocrmergelines_distance",
+                double=True,
+                step=0.01,
+                default=0.4,
             ),
             getsmalllabel("x"),
             "",

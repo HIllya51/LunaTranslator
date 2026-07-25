@@ -89,9 +89,8 @@ class pastepathEdit(QLineEdit):
 
     def keyPressEvent(self, e: QKeyEvent):
         if (
-            e.modifiers() == Qt.KeyboardModifier.ControlModifier
-            and e.key() == Qt.Key.Key_V
-        ):
+            e.modifiers() & Qt.KeyboardModifier.ControlModifier
+        ) and e.key() == Qt.Key.Key_V:
             self.__parseclipboard()
         super().keyPressEvent(e)
 
@@ -132,9 +131,8 @@ class pasteimageEdit(QLineEdit):
 
     def keyPressEvent(self, e: QKeyEvent):
         if (
-            e.modifiers() == Qt.KeyboardModifier.ControlModifier
-            and e.key() == Qt.Key.Key_V
-        ):
+            e.modifiers() & Qt.KeyboardModifier.ControlModifier
+        ) and e.key() == Qt.Key.Key_V:
             self.__parseclipboard()
         super().keyPressEvent(e)
 
@@ -607,9 +605,8 @@ class AnkiWindow(QWidget):
         class ctrlbedit(FQPlainTextEdit):
             def keyPressEvent(self, e):
                 if (
-                    e.modifiers() == Qt.KeyboardModifier.ControlModifier
-                    and e.key() == Qt.Key.Key_B
-                ):
+                    e.modifiers() & Qt.KeyboardModifier.ControlModifier
+                ) and e.key() == Qt.Key.Key_B:
                     cursor = self.textCursor()
                     if cursor.hasSelection():
                         selected_text = cursor.selectedText()

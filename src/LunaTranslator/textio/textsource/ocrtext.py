@@ -1,13 +1,12 @@
 import time, copy
 from myutils.config import globalconfig
-from myutils.utils import checkmd5reloadmodule
+from myutils.utils import checkmd5reloadmodule, parsekeystringtomodvkcode
 import NativeUtils, windows
 from gui.rangeselect import rangeadjust
 from myutils.wrapper import threader
 from myutils.ocrutil import imageCut, ocr_run, ocr_init
 import time, gobject
 from qtsymbols import *
-from myutils.keycode import vkcode_map
 from textio.textsource.textsourcebase import basetext
 from ocrengines.baseocrclass import OCRResultParsed
 from CVUtils import cvMat
@@ -200,7 +199,7 @@ class ocrtext(basetext):
                 triggered = False
                 this = tuple(
                     (
-                        windows.GetAsyncKeyState(vkcode_map[line["vkey"]])
+                        windows.GetAsyncKeyState(parsekeystringtomodvkcode(line["vkey"])[1])
                         for line in globalconfig["ocr_trigger_events"]
                     )
                 )

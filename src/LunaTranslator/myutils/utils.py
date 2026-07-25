@@ -22,7 +22,7 @@ from myutils.config import (
 )
 from myutils.keycode import vkcode_map, mod_map
 from language import Languages, TransLanguages
-import threading, winreg
+import threading
 import re, heapq, NativeUtils
 from myutils.wrapper import tryprint, threader
 from html.parser import HTMLParser

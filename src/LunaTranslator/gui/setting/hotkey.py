@@ -11,6 +11,7 @@ from myutils.utils import (
     selectdebugfile,
     checkmd5reloadmodule,
 )
+from gui.specialwidget import KeyPressDetector
 from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplekeyseq,
@@ -27,7 +28,6 @@ from gui.usefulwidget import (
     IconButton,
     makescroll,
     SClickableLabel,
-    getsimplecombobox,
 )
 from gui.dynalang import LLabel, LAction, LDialog, LFormLayout
 
@@ -204,8 +204,14 @@ def registrhotkeys(self):
         "_7": lambda: gobject.base.readcurrent(force=True),
         "_7_1": lambda: gobject.base.audioplayer.stop(),
         "_8": lambda: gobject.base.translation_ui.changemousetransparentstate(0),
-        "_9": lambda: (gobject.base.translation_ui.changetoolslockstate(), gobject.base.translation_ui.enterfunction()),
-        "52": lambda: (globalconfig.__setitem__("hidetools", not globalconfig["hidetools"]), gobject.base.translation_ui.enterfunction()),
+        "_9": lambda: (
+            gobject.base.translation_ui.changetoolslockstate(),
+            gobject.base.translation_ui.enterfunction(),
+        ),
+        "52": lambda: (
+            globalconfig.__setitem__("hidetools", not globalconfig["hidetools"]),
+            gobject.base.translation_ui.enterfunction(),
+        ),
         "_10": gobject.base.translation_ui.showsavegame_signal.emit,
         "_11": gobject.base.translation_ui.hotkeyuse_selectprocsignal.emit,
         "_12": lambda: gobject.base.hookselectdialog.showsignal.emit(),
@@ -303,12 +309,16 @@ class liandianqi(LDialog):
                 0.1, 10000, globalconfig, "liandianqi_interval", True, 0.1, default=1
             ),
         )
-        combo = getsimplecombobox(
-            list(vkcode_map.keys()),
-            globalconfig,
-            "liandianqi_vkey",
-            default=1,
-            internal=list(vkcode_map.values()),
+        combo = KeyPressDetector(
+            list(vkcode_map.keys())[
+                list(vkcode_map.values()).index(globalconfig.get("liandianqi_vkey", 1))
+            ]
+        )
+        combo.callback.connect(
+            lambda ks: globalconfig.__setitem__(
+                "liandianqi_vkey",
+                parsekeystringtomodvkcode(ks)[1],
+            )
         )
         formLayout.addRow("按键", combo)
         self.exec()

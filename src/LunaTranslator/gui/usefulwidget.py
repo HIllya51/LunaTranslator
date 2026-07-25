@@ -436,7 +436,7 @@ class TableViewW(DelayLoadTableView, LTableView):
 
     def keyPressEvent(self, e):
         if self.copypaste:
-            if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
+            if e.modifiers() & Qt.KeyboardModifier.ControlModifier:
                 if e.key() == Qt.Key.Key_C:
                     self.copytable()
                 elif e.key() == Qt.Key.Key_V:

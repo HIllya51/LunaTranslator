@@ -872,7 +872,7 @@ class dialog_savedgame_v3(QSplitter):
                         self_.ref.shanchuyouxi()
                     elif e.key() in (Qt.Key.Key_Down, Qt.Key.Key_Up):
                         offset = 1 if e.key() == Qt.Key.Key_Down else -1
-                        if e.modifiers() == Qt.KeyboardModifier.ControlModifier:
+                        if e.modifiers() & Qt.KeyboardModifier.ControlModifier:
                             self_.ref.moverank(offset)
                         else:
                             self_.ref.movefocus(offset)
