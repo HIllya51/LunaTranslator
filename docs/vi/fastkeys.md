@@ -55,7 +55,7 @@
 1. #### Thoát {#anchor-_17}
     Không áp dụng.
 
-1. #### Auto Clicker {#anchor-44}
+1. #### Auto Clicker {#anchor-53}
     Không áp dụng.
 
 1. #### Đặt lại trạng thái dịch {#anchor-45}

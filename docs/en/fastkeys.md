@@ -56,7 +56,7 @@
 1. #### Exit {#anchor-_17}
     N/A
 
-1. #### Auto Clicker {#anchor-44}
+1. #### Auto Clicker {#anchor-53}
     N/A
 
 1. #### Reset translation state {#anchor-45}
