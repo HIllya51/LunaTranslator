@@ -178,9 +178,10 @@ bool InsertAIRNovelHook()
 bool adobelair3()
 {
   // 虚構英雄ジンガイアVol3
-  DWORD base = (DWORD)GetModuleHandleW(L"Adobe AIR.dll");
+  auto base = GetModuleHandleW(L"Adobe AIR.dll");
   if (!base)
     return false;
+  auto [s, e] = Util::QueryModuleLimits(GetModuleHandleW(L"Adobe AIR.dll"));
   BYTE sig[] = {
       0x8b, 0x85, XX4,
       0x8B, 0x4E, 0x04,
@@ -196,12 +197,7 @@ bool adobelair3()
       0x83, 0xc4, 0x08,
       0x85, 0xc9,
       0x0f, 0x85, XX4};
-  enum
-  {
-    range = 0x600000
-  }; // larger than relative addresses
-  auto [minAddress, maxAddress] = std::make_pair(base, base + range);
-  auto addr = MemDbg::findBytes(sig, sizeof(sig), minAddress, maxAddress);
+  auto addr = MemDbg::findBytes(sig, sizeof(sig), s, e);
   HookParam hp;
   hp.address = addr;
   hp.type = CODEC_UTF8 | USING_STRING | NO_CONTEXT;
@@ -218,7 +214,22 @@ bool adobelair3()
     }
     leng = ws.length();
   };
-  return NewHook(hp, "AIRNovel");
+  auto _ = NewHook(hp, "AIRNovel3");
+  // Re;quartz
+  hp.address += 6;
+  hp.type |= FULL_STRING;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    auto s = buffer->strA();
+    if (!isStringUtf8(s))
+      return buffer->clear();
+    static std::string last;
+    if (last == s)
+      return buffer->clear();
+    last = s;
+  };
+  _ |= NewHook(hp, "AIRNovel3");
+  return _;
 }
 namespace
 {
