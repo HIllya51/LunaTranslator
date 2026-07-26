@@ -439,6 +439,6 @@ bool PCSX2::attach_function1()
 bool PCSX2::attach_function()
 {
     if (!attach_function1())
-        Msg::EmuWarning(TR[EMUVERSIONTOOOLD]);
+        Msg::EmuWarning(TR[EMUVERSIONUNSUPPORT]);
     return true;
 }

@@ -797,7 +797,6 @@
     "获取到进程内存地址范围 0x%p 到 0x%p": "Hämtade minnesadressintervallet för processen från 0x%p till 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Varning, den injicerade processens minne är mycket litet, kan vara en meningslös process!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Stödjer inte Ryujinx, använd Yuzu/Sudachi/Citron/Eden istället.",
-    "模拟器版本过旧，请使用新版模拟器": "Simulatorversionen är för gammal, vänligen använd den nya versionen av simulatorn.",
     "检测到模拟器: {}": "Simulator upptäckt: {}",
     "游戏暂停": "Spelpaus",
     "跳过仅包含标点的句子": "Hoppa över meningar som endast består av skiljetecken.",
@@ -933,5 +932,6 @@
     "特定离线翻译模型": "Specifik offlineöversättningsmodell",
     "选择模型": "Välj modell",
     "支持的语言": "Språk som stöds",
-    "任意": "Valfri"
+    "任意": "Valfri",
+    "不支持当前模拟器版本": "Stöder inte den aktuella simulatorversionen"
 }

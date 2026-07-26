@@ -797,7 +797,6 @@
     "获取到进程内存地址范围 0x%p 到 0x%p": "Obtained process memory address range from 0x%p to 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Warning: The injected process has very little memory and may be a useless process!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Not compatible with Ryujinx, please use Yuzu/Sudachi/Citron/Eden.",
-    "模拟器版本过旧，请使用新版模拟器": "The simulator version is outdated, please use the new version of the simulator.",
     "检测到模拟器: {}": "Detected emulator: {}",
     "游戏暂停": "Game paused",
     "跳过仅包含标点的句子": "Skip sentences that contain only punctuation.",
@@ -933,5 +932,6 @@
     "特定离线翻译模型": "Specific offline translation model",
     "选择模型": "Select model",
     "支持的语言": "Supported Languages",
-    "任意": "any"
+    "任意": "any",
+    "不支持当前模拟器版本": "The current emulator version is not supported."
 }

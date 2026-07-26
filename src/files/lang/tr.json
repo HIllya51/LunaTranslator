@@ -797,7 +797,6 @@
     "获取到进程内存地址范围 0x%p 到 0x%p": "İşlem bellek adresi aralığı 0x%p ile 0x%p arasında alındı",
     "警告，注入的进程内存很小，可能是无用进程!": "Uyarı, enjekte edilen işlem belleği çok küçük, bu işe yaramaz bir işlem olabilir!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Ryujinx desteklenmiyor, lütfen yuzu/sudachi/Citron/Eden kullanın.",
-    "模拟器版本过旧，请使用新版模拟器": "Simülatör sürümü çok eski, lütfen yeni sürüm simülatör kullanın.",
     "检测到模拟器: {}": "Simülatör algılandı: {}",
     "游戏暂停": "Oyun duraklatıldı",
     "跳过仅包含标点的句子": "Noktalama işaretleri içeren cümleleri atla.",
@@ -933,5 +932,6 @@
     "特定离线翻译模型": "Belirli bir çevrimdışı çeviri modeli",
     "选择模型": "Model seçimi",
     "支持的语言": "Desteklenen diller",
-    "任意": "Herhangi bir"
+    "任意": "Herhangi bir",
+    "不支持当前模拟器版本": "Mevcut simülatör sürümü desteklenmiyor."
 }

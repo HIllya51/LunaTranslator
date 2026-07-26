@@ -88,7 +88,7 @@ enum LANG_STRINGS_HOOK
     ProcessRange,
     WarningDummy,
     RYUJINXUNSUPPORT,
-    EMUVERSIONTOOOLD,
+    EMUVERSIONUNSUPPORT,
 };
 enum SUPPORT_LANG;
 

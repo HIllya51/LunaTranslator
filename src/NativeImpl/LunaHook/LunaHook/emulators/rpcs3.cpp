@@ -288,6 +288,6 @@ bool attach_function1()
 bool rpcs3::attach_function()
 {
     if (!attach_function1())
-        Msg::EmuWarning(TR[EMUVERSIONTOOOLD]);
+        Msg::EmuWarning(TR[EMUVERSIONUNSUPPORT]);
     return true;
 }

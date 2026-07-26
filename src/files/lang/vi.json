@@ -797,7 +797,6 @@
     "获取到进程内存地址范围 0x%p 到 0x%p": "Đã lấy phạm vi địa chỉ bộ nhớ tiến trình từ 0x%p đến 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Cảnh báo: Tiến trình bị Inject có rất ít bộ nhớ, có thể là tiến trình vô dụng!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Không hỗ trợ Ryujinx, vui lòng sử dụng Yuzu/Sudachi/Citron/Eden.",
-    "模拟器版本过旧，请使用新版模拟器": "Phiên bản giả lập quá cũ, vui lòng dùng phiên bản mới hơn.",
     "检测到模拟器: {}": "Phát hiện giả lập: {}",
     "游戏暂停": "Trò chơi tạm dừng",
     "跳过仅包含标点的句子": "Bỏ qua những câu chỉ chứa dấu câu.",
@@ -933,5 +932,6 @@
     "特定离线翻译模型": "Mô hình dịch thuật ngoại tuyến cụ thể",
     "选择模型": "Chọn mô hình",
     "支持的语言": "Ngôn ngữ được hỗ trợ",
-    "任意": "Bất kỳ"
+    "任意": "Bất kỳ",
+    "不支持当前模拟器版本": "Không hỗ trợ phiên bản trình giả lập hiện tại"
 }

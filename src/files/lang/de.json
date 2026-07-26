@@ -797,7 +797,6 @@
     "获取到进程内存地址范围 0x%p 到 0x%p": "Speicherbereich des Prozesses von 0x%p bis 0x%p abgerufen",
     "警告，注入的进程内存很小，可能是无用进程!": "Warnung, der injizierte Prozessspeicher ist sehr klein, möglicherweise ein nutzloser Prozess!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Ryujinx wird nicht unterstützt, bitte verwenden Sie yuzu/sudachi/Citron/Eden.",
-    "模拟器版本过旧，请使用新版模拟器": "Die Simulator-Version ist veraltet. Bitte verwenden Sie die neue Version des Simulators.",
     "检测到模拟器: {}": "Emulator erkannt: {}",
     "游戏暂停": "Spielpause",
     "跳过仅包含标点的句子": "Überspringe Sätze, die nur Interpunktion enthalten.",
@@ -933,5 +932,6 @@
     "特定离线翻译模型": "Spezifisches Offline-Übersetzungsmodell",
     "选择模型": "Modell auswählen",
     "支持的语言": "Unterstützte Sprachen",
-    "任意": "beliebig"
+    "任意": "beliebig",
+    "不支持当前模拟器版本": "Die aktuelle Emulator-Version wird nicht unterstützt."
 }

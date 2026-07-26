@@ -397,6 +397,6 @@ bool yuzu::attach_function1()
 bool yuzu::attach_function()
 {
     if (!attach_function1())
-        Msg::EmuWarning(TR[EMUVERSIONTOOOLD]);
+        Msg::EmuWarning(TR[EMUVERSIONUNSUPPORT]);
     return true;
 }

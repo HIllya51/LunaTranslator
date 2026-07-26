@@ -797,7 +797,6 @@
     "获取到进程内存地址范围 0x%p 到 0x%p": "Geheugenadresbereik van proces verkregen van 0x%p tot 0x%p",
     "警告，注入的进程内存很小，可能是无用进程!": "Waarschuwing, het geïnjecteerde proces heeft weinig geheugen, mogelijk een nutteloos proces!",
     "不支持ryujinx，请使用yuzu/sudachi/Citron/Eden": "Ryujinx wordt niet ondersteund, gebruik alstublieft yuzu/sudachi/Citron/Eden.",
-    "模拟器版本过旧，请使用新版模拟器": "Simulatorversie is verouderd, gebruik alstublieft de nieuwe versie van de simulator.",
     "检测到模拟器: {}": "Simulator gedetecteerd: {}",
     "游戏暂停": "Spel gepauzeerd",
     "跳过仅包含标点的句子": "Sla zinnen over die alleen leestekens bevatten.",
@@ -933,5 +932,6 @@
     "特定离线翻译模型": "Specifiek offline vertaalmodel",
     "选择模型": "Het model kiezen",
     "支持的语言": "Ondersteunde talen",
-    "任意": "Willekeurig"
+    "任意": "Willekeurig",
+    "不支持当前模拟器版本": "Huidige simulatorversie wordt niet ondersteund."
 }
