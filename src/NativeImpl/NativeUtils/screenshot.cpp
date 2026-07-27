@@ -39,8 +39,13 @@ std::optional<SimpleBMP> parseBMP(std::optional<SimpleBMP> &&bmp, bool needcheck
         return {};
     if (needcheck)
     {
-        if (std::all_of(bmp.value().pixels, bmp.value().pixels + bmp.value().pixelsize, std::bind(std::equal_to<unsigned char>(), std::placeholders::_1, 0)))
+        if (std::all_of(bmp.value().pixels,
+                        bmp.value().pixels + bmp.value().pixelsize,
+                        [](unsigned char c)
+                        { return c == 0 || c == 255; }))
+        {
             return {};
+        }
     }
     return std::move(bmp);
 }
