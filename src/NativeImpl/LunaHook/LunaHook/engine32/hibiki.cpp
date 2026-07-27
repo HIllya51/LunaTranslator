@@ -25,7 +25,7 @@ bool hibikihook()
     hp.address = addr;
 
     hp.offset = stackoffset(3);
-    hp.type = CODEC_UTF16;
+    hp.type = CODEC_UTF16 | NO_CONTEXT;
     succ |= NewHook(hp, "hibiki_extra");
   }
 

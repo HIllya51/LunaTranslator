@@ -1711,7 +1711,7 @@ namespace
     void F0100771013FA8000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = re::sub(s, L"<br>", L"\n");
+        s = re::sub(s, L"<br>");
         s = re::sub(s, L"^(\\s+)");
         buffer->from(s);
     }
@@ -3533,8 +3533,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // 風雨来記5
     {0x8001DAF0, {CODEC_UTF8, 1, 0, 0, f010012601EC54000, 0x010012601EC54000ull, "1.00"}},
     // 剣が君 for S
-    {0x81477128, {CODEC_UTF16, 0, 0, ReadUnityString, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}}, // Main Text
-    {0x81470e38, {CODEC_UTF16, 0, 0, ReadUnityString, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}}, // Secondary Text
+    {0x81476F28, {CODEC_UTF16 | FULL_STRING, 0, 0, ReadUnityString, F0100771013FA8000, 0x0100771013FA8000ull, "1.0"}},
+    {0x81477128, {CODEC_UTF16 | FULL_STRING, 0, 0, ReadUnityString, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}},
+    {0x81470e38, {CODEC_UTF16 | FULL_STRING, 0, 0, ReadUnityString, F0100771013FA8000, 0x0100771013FA8000ull, "1.1"}},
     // ANONYMOUS;CODE
     {0x80011608, {CODEC_UTF8, 1, 0, 0, F0100556015CCC000, 0x0100556015CCC000ull, "1.0.0"}}, // dialouge, menu
     // Sugar * Style
