@@ -391,10 +391,14 @@ def find_or_create_uid(targetlist: list, gamepath: str, title=None):
                 + "/"
                 + os.path.basename(gamepath)
             )
-        if gamepath.lower().endswith(".lnk"):
+        name1, ext = os.path.splitext(gamepath.lower())
+        if ext.lower() == ".lnk":
             exepath, _, _, _ = NativeUtils.GetLnkTargetPath(gamepath)
             uid2gamepath[uid] = exepath
             savehook_new_data[uid]["launchpath"] = gamepath
+        elif (ext.lower() != ".exe") and (os.path.isfile(name1 + ".exe")):
+            uid2gamepath[uid] = gamepath
+            savehook_new_data[uid]["launchpath"] = name1 + ".exe"
         else:
             uid2gamepath[uid] = gamepath
         trysearchforid(uid, [title] + guessmaybetitle(gamepath, title))

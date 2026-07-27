@@ -162,7 +162,7 @@ def getpixfunction(kk, small=False, iconfirst=False) -> QPixmap:
         pix = getcachedimage(_, small)
         if not pix.isNull():
             return pix
-    _pix: QPixmap = getExeIcon(uid2gamepath[kk], False, cache=True, large=True)
+    _pix: QPixmap = getExeIcon(get_launchpath(kk), False, cache=True, large=True)
     return _pix
 
 
