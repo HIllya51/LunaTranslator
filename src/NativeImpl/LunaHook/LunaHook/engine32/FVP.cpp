@@ -456,30 +456,35 @@ namespace
           0x8d, 0x9b, 0x00, 0x00, 0x00, 0x00 // 0043365a   8d9b 00000000    lea ebx,dword ptr ds:[ebx]
       };
       ULONG addr = MemDbg::findBytes(bytes, sizeof(bytes), startAddress, stopAddress);
-      if (!addr)
-        return false;
+      if (addr)
+        addr = MemDbg::findEnclosingFunctionBeforeDword(0x550cec83, addr, MemDbg::MaximumFunctionSize, 1);
 
-      // 0042EAAD   CC               INT3
-      // 0042EAAE   CC               INT3
-      // 0042EAAF   CC               INT3
-      // 0042EAB0   83EC 0C          SUB ESP,0xC
-      // 0042EAB3   55               PUSH EBP
-      // 0042EAB4   56               PUSH ESI
-      //
-      // 00433657 - 00433610 = 71, function not aligned
-      addr = MemDbg::findEnclosingFunctionBeforeDword(0x550cec83, addr, MemDbg::MaximumFunctionSize, 1); // step = 1
-      // addr = MemDbg::findEnclosingAlignedFunction(addr); // does not work
-      // addr = MemDbg::findEnclosingFunctionAfterInt3(addr); // does not work as there is not enough int3
+      HookParam hp;
+      hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS | FULL_STRING;
+      if (!addr)
+      {
+        // ウィズ アニバーサリィー
+        BYTE check[] = {
+            0x99,
+            0x83, 0xe2, 0x1f,
+            0x03, 0xc2,
+            0xbe, 0x01, 0x00, 0x00, 0x00,
+            0xc1, 0xf8, 0x05,
+            0xd3, 0xe6};
+        if (MemDbg::findBytes(check, sizeof(check), startAddress, stopAddress))
+        {
+          addr = (DWORD)lstrlenA;
+          hp.type &= ~EMBED_ABLE;
+        }
+      }
       if (!addr)
         return false;
-      HookParam hp;
       hp.address = addr;
       hp.offset = stackoffset(1);
-      hp.type = USING_STRING | EMBED_ABLE | EMBED_AFTER_NEW | EMBED_DYNA_SJIS;
       hp.embed_hook_font = F_DrawTextA | F_GetGlyphOutlineA;
       hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
       {
-        buffer->from(re::sub(buffer->strA(), "\\[.+\\|(.+?)\\]", "$1"));
+        buffer->fromWA(re::sub(buffer->strAW(), L"\\[.+?\\|(.+?)\\]", L"$1"));
       };
 
       return NewHook(hp, "EmbedFVP");
@@ -487,47 +492,11 @@ namespace
   } // namespace ScenarioHook
 } // unnamed namespace
 
-/** Public class */
-
 bool FVP::attach_function()
 {
   ULONG startAddress, stopAddress;
 
   if (!ScenarioHook::attach(processStartAddress, processStopAddress))
     return false;
-  // HijackManager::instance()->attachFunction((ULONG)::GetGlyphOutlineA); // for new game: 紅い瞳に映るセカイ
-  // HijackManager::instance()->attachFunction((ULONG)::DrawTextA); // for old game: 星空のメモリア
-  // HijackManager::instance()->attachFunction((ULONG)::CreateFontA);
   return true;
 }
-
-/**
- *  Get rid of ruby. Examples:
- *  [まぶた|瞼]を閉じた。
- */
-// QString FVPEngine::rubyCreate(const QString &rb, const QString &rt)
-//{
-//   static QString fmt = "[%2|%1]";
-//   return fmt.arg(rb, rt);
-// }
-//
-//// Remove furigana in scenario thread.
-// QString FVPEngine::rubyRemove(const QString &text)
-//{
-//   if (!text.contains('|'))
-//     return text;
-//   static QRegExp rx("\\[.+\\|(.+)\\]");
-//   if (!rx.isMinimal())
-//     rx.setMinimal(true);
-//   return QString(text).replace(rx, "\\1");
-// }
-
-// std::wstring FVPEngine::rubyRemove(const std::wstring& text)
-// {
-//     if (text.find(L'|') == std::wstring::npos)
-//         return text;
-//     static std::wregex rx(L"\\[.+\\|(.+?)\\]");
-//     return re::sub(text, rx, L"$1");
-// }
-
-// EOF
