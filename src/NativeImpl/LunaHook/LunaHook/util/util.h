@@ -40,18 +40,16 @@ namespace Util
   DWORD FindImportEntry(DWORD hModule, DWORD fun);
 #endif
 
-  bool CheckFile(LPCWSTR name, bool if_exits_also_ok = false);
+  bool CheckFile(LPCWSTR name);
 
-  inline bool CheckFileAll(std::initializer_list<LPCWSTR> _, bool if_exits_also_ok = false)
+  inline bool CheckFileAll(std::initializer_list<LPCWSTR> _)
   {
-    return std::all_of(_.begin(), _.end(), [if_exits_also_ok](LPCWSTR s)
-                       { return CheckFile(s, if_exits_also_ok); });
+    return std::all_of(_.begin(), _.end(), CheckFile);
   }
 
-  inline bool CheckFileAny(std::initializer_list<LPCWSTR> _, bool if_exits_also_ok = false)
+  inline bool CheckFileAny(std::initializer_list<LPCWSTR> _)
   {
-    return std::any_of(_.begin(), _.end(), [if_exits_also_ok](LPCWSTR s)
-                       { return CheckFile(s, if_exits_also_ok); });
+    return std::any_of(_.begin(), _.end(), CheckFile);
   }
 
   bool SearchResourceString(LPCWSTR str, HMODULE hModule = NULL);

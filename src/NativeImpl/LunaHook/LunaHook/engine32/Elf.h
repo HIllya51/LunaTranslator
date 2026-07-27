@@ -11,9 +11,9 @@ public:
         check_by = CHECK_BY::CUSTOM;
         check_by_target = [&]() -> bool
         {
-            ai5win = Util::CheckFile(L"Ai5win.exe", true) && Util::CheckFileAny({L"data.arc", L"MISC\\data.arc"}, true) && (Util::CheckFileAny({L"mes.arc", L"MISC\\mes.arc"}, true));
-            if (Util::CheckFileAll({L"data.arc", L"mes.arc"}, true) &&
-                Util::CheckFileAny({L"effect.arc", L"effect.awf"}, true))
+            ai5win = Util::CheckFile(L"Ai5win.exe") && Util::CheckFileAny({L"data.arc", L"MISC\\data.arc"}) && (Util::CheckFileAny({L"mes.arc", L"MISC\\mes.arc"}));
+            if (Util::CheckFileAll({L"data.arc", L"mes.arc"}) &&
+                Util::CheckFileAny({L"effect.arc", L"effect.awf"}))
             {
                 // flutter of birds～鳥達の羽ばたき～ WIN10版本
                 // https://vndb.org/v2379

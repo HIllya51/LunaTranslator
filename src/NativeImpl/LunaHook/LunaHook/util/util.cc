@@ -361,29 +361,32 @@ namespace Util
   }
 #endif
 
-  bool CheckFile(LPCWSTR name, bool if_exits_also_ok)
+  bool CheckFile1(LPCWSTR name)
   {
     WIN32_FIND_DATAW unused;
     HANDLE file = FindFirstFileW(name, &unused);
-    if ((file != INVALID_HANDLE_VALUE) || (if_exits_also_ok && PathFileExists(name)))
+    if (file != INVALID_HANDLE_VALUE)
     {
       FindClose(file);
       return true;
     }
+    else if (PathFileExists(name))
+      return true;
     wchar_t path[MAX_PATH * 2];
     wchar_t *end = path + GetModuleFileNameW(nullptr, path, MAX_PATH);
     while (*(--end) != L'\\')
       ;
     wcscpy_s(end + 1, MAX_PATH, name);
     file = FindFirstFileW(path, &unused);
-    if ((file != INVALID_HANDLE_VALUE) || (if_exits_also_ok && PathFileExists(path)))
+    if (file != INVALID_HANDLE_VALUE)
     {
       FindClose(file);
       return true;
     }
+    else if (PathFileExists(name))
+      return true;
     return false;
   }
-
   // Search string in rsrc section. This section usually contains version and copyright info.
   bool SearchResourceString(LPCWSTR str, HMODULE hModule)
   {

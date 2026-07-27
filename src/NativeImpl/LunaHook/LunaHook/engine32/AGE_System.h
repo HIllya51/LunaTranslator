@@ -43,7 +43,7 @@ public:
     check_by = CHECK_BY::CUSTOM;
     check_by_target = []()
     {
-      return Util::CheckFileAll({L"Agrd.pac", L"vic.pac", L"se.pac", L"mus.pac"}, true) || // 未破解
+      return Util::CheckFileAll({L"Agrd.pac", L"vic.pac", L"se.pac", L"mus.pac"}) || // 未破解
              Util::SearchResourceString(L"AGE_System");                                     // 已破解
     };
   };
