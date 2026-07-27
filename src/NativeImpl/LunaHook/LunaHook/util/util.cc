@@ -361,7 +361,7 @@ namespace Util
   }
 #endif
 
-  bool CheckFile1(LPCWSTR name)
+  bool CheckFile(LPCWSTR name)
   {
     WIN32_FIND_DATAW unused;
     HANDLE file = FindFirstFileW(name, &unused);
