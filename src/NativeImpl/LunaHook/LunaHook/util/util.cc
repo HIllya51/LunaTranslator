@@ -360,7 +360,17 @@ namespace Util
     return 0;
   }
 #endif
-
+  bool CheckFileViaHelper(LPCWSTR _name)
+  {
+    std::wstring name = _name;
+    strReplace(name, L"/", L"\\");
+    for (auto &fname : checkFileHelperVector)
+    {
+      if (PathMatchSpecW(fname.c_str(), name.c_str()))
+        return true;
+    }
+    return false;
+  }
   bool CheckFile(LPCWSTR name)
   {
     WIN32_FIND_DATAW unused;
@@ -370,7 +380,7 @@ namespace Util
       FindClose(file);
       return true;
     }
-    else if (PathFileExists(name))
+    else if (PathFileExists(name) || CheckFileViaHelper(name))
       return true;
     wchar_t path[MAX_PATH * 2];
     wchar_t *end = path + GetModuleFileNameW(nullptr, path, MAX_PATH);
@@ -383,7 +393,7 @@ namespace Util
       FindClose(file);
       return true;
     }
-    else if (PathFileExists(name))
+    else if (PathFileExists(name) || CheckFileViaHelper(name))
       return true;
     return false;
   }

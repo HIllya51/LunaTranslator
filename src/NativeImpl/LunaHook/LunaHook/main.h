@@ -47,3 +47,6 @@ inline bool dont_detach = false;
 inline bool host_connected = false;
 using version_t = std::tuple<WORD, WORD, WORD, WORD>;
 std::optional<version_t> queryversion();
+
+
+extern std::vector<std::wstring> checkFileHelperVector;

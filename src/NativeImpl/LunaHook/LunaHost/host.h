@@ -24,8 +24,8 @@ namespace Host
 	CommonSharedMem *GetCommonSharedMem(DWORD pid);
 	TextThread *GetThread(int64_t handle);
 	TextThread &GetThread(ThreadParam tp);
-	void InfoOutput(HOSTINFO type, std::wstring text);
-	void AddConsoleOutput(std::wstring text);
+	void InfoOutput(HOSTINFO type, const std::wstring &text);
+	void AddConsoleOutput(const std::wstring &text);
 
 	inline int defaultCodepage = SHIFT_JIS;
 	inline bool enablePCHooks = true;

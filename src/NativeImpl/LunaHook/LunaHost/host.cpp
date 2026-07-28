@@ -92,12 +92,40 @@ namespace
 		if (!IsEqualGUID(get_guid, compatible_sig))
 			Host::InfoOutput(HOSTINFO::Warning, TR[UNMATCHABLEVERSION]);
 	}
+	void CheckFileHelper(HANDLE hookPipe, HANDLE hostPipe)
+	{
+		DWORD count;
+		int size;
+		ReadFile(hookPipe, &size, sizeof(size), &count, nullptr);
+		std::wstring currpath;
+		currpath.resize(size);
+		ReadFile(hookPipe, currpath.data(), 2 * size, &count, nullptr);
+		auto handler = [&](auto &&entry)
+		{
+			auto fname = entry.wstring();
+			size = fname.size();
+			WriteFile(hostPipe, &size, 4, &count, nullptr);
+			WriteFile(hostPipe, fname.c_str(), 2 * size, &count, nullptr);
+		};
+
+		for (const auto &entry : std::filesystem::directory_iterator(currpath))
+		{
+			handler(entry.path().filename());
+			if (!std::filesystem::is_directory(entry.path()))
+				continue;
+			for (const auto &sub_entry : std::filesystem::directory_iterator(entry))
+				handler(std::filesystem::relative(sub_entry.path(), currpath));
+		}
+		size = -1;
+		WriteFile(hostPipe, &size, 4, &count, nullptr);
+	}
 	void __handlepipethread(DWORD processId, HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
 	{
 		ConnectNamedPipe(hookPipe, nullptr);
 		CloseHandle(pipeAvailableEvent);
 
 		VersionMatchCheck(hookPipe);
+		CheckFileHelper(hookPipe, hostPipe);
 
 		processRecordsByIds->try_emplace(processId, processId, hostPipe);
 		OnConnect(processId);
@@ -409,26 +437,25 @@ namespace Host
 			return nullptr;
 		return found->second.commonsharedmem;
 	}
-	void AddConsoleOutput(std::wstring text)
+	void AddConsoleOutput(const std::wstring &text)
 	{
 		InfoOutput(HOSTINFO::Console, text);
 	}
-	void InfoOutput(HOSTINFO type, std::wstring text)
+	void InfoOutput(HOSTINFO type, const std::wstring &text)
 	{
-		OnHostInfo(type, std::move(text));
+		OnHostInfo(type, text);
 
-		if (type != HOSTINFO::Console)
+		switch (type)
 		{
-			switch (type)
-			{
-			case HOSTINFO::EmuConnected:
-				return;
-			case HOSTINFO::Warning:
-			case HOSTINFO::EmuWarning:
-				text = FormatString(L"[%s]", TR[T_WARNING]) + text;
-				break;
-			default:;
-			}
+		case HOSTINFO::Console:
+		case HOSTINFO::EmuConnected:
+			return;
+		case HOSTINFO::Warning:
+		case HOSTINFO::EmuWarning:
+			OnHostInfo(HOSTINFO::Console, FormatString(L"[%s]", TR[T_WARNING]) + text);
+			break;
+		default:
+
 			OnHostInfo(HOSTINFO::Console, std::move(text));
 		}
 	}

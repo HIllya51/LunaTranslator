@@ -14,6 +14,7 @@ std::mutex JIT_HP_Records_lock;
 HMODULE hLUNAHOOKDLL;
 WinMutex viewMutex;
 CommonSharedMem *commonsharedmem;
+std::vector<std::wstring> checkFileHelperVector;
 Synchronized<std::map<uint32_t, std::pair<std::string, HookParam>>> delayinserthook;
 namespace
 {
@@ -101,7 +102,24 @@ void CommunicationInitialize(HANDLE hostPipe, HANDLE hookPipe, bool &running)
 	DWORD count;
 	WriteFile(hookPipe, LUNA_VERSION, sizeof(LUNA_VERSION), &count, nullptr);
 	WriteFile(hookPipe, &compatible_sig, sizeof(compatible_sig), &count, nullptr);
-	// 2. hook->host && host->hook
+	// 2. checkFile
+	// host->currentpath
+	// hook->list files
+	auto currpath = std::filesystem::current_path().wstring();
+	int size = currpath.size();
+	WriteFile(hookPipe, &size, 4, &count, nullptr);
+	WriteFile(hookPipe, currpath.c_str(), 2 * currpath.size(), &count, nullptr);
+	while (true)
+	{
+		ReadFile(hostPipe, &size, sizeof(size), &count, nullptr);
+		if (size == -1)
+			break;
+		std::wstring fname;
+		fname.resize(size);
+		ReadFile(hostPipe, fname.data(), 2 * size, &count, nullptr);
+		checkFileHelperVector.push_back(fname);
+	}
+	// 3. hook->host && host->hook
 	// i18n key & result
 	for (auto &[_en, data] : TR.get_hook())
 	{
