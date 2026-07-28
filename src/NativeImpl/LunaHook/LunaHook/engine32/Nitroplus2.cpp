@@ -64,9 +64,9 @@ namespace
   {
 
     const BYTE bytecodes[] = {
-        0x8B, 0xF8,                   // 8B F8             - mov edi,eax
-        0x8D, 0x75, 0xD8,             // 8D 75 D8          - lea esi,[ebp-28]
-        0xE8, 0x6C, 0xE1, 0xF4, 0xFF, // E8 6CE1F4FF       - call TokyoNecro.exe+35E0
+        0x8B, 0xF8,                  // 8B F8             - mov edi,eax
+        0x8D, 0x75, 0xD8,            // 8D 75 D8          - lea esi,[ebp-28]
+        0xE8, 0x6C, 0xE1, 0xF4, 0xFF // E8 6CE1F4FF       - call TokyoNecro.exe+35E0
     };
     ULONG addr = MemDbg::findBytes(bytecodes, sizeof(bytecodes), processStartAddress, processStopAddress);
     if (!addr)
@@ -133,9 +133,9 @@ namespace
   bool DatabaseHook()
   {
     const BYTE bytecodes[] = {
-        0x8B, 0xF8,                   // 8B F8             - mov edi,eax
-        0x8D, 0x75, 0xD8,             // 8D 75 D8          - lea esi,[ebp-28]
-        0xE8, 0x0C, 0xE2, 0xF4, 0xFF, // E8 6CE1F4FF       - call TokyoNecro.exe+35E0
+        0x8B, 0xF8,                  // 8B F8             - mov edi,eax
+        0x8D, 0x75, 0xD8,            // 8D 75 D8          - lea esi,[ebp-28]
+        0xE8, 0x0C, 0xE2, 0xF4, 0xFF // E8 6CE1F4FF       - call TokyoNecro.exe+35E0
     };
     ULONG addr = MemDbg::findBytes(bytecodes, sizeof(bytecodes), processStartAddress, processStopAddress);
     if (!addr)
@@ -520,11 +520,43 @@ namespace
     return succ;
   }
 }
+static bool hprint()
+{
+  char aPrint[] = "print";
+  auto addr = MemDbg::findBytes(aPrint, sizeof(aPrint), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = MemDbg::findPushAddress(addr, processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  BYTE check[] = {
+      0x53, 0x57,
+      0x68, XX4,
+      0x68, XX4,
+      0x8b, 0xce,
+      0xe8, XX4};
+  if (!MatchPattern(addr - 2, check, sizeof(check)))
+    return false;
+  auto faddr = *(int *)(addr + 5 + 1);
+  HookParam hp;
+  hp.address = faddr;
+  hp.offset = stackoffset(1);
+  hp.type = USING_STRING | FULL_STRING;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *)
+  {
+    auto s = buffer->strA();
+    s = re::sub(s, "<I>");
+    s = re::sub(s, "</I>");
+    buffer->from(s);
+  };
+  return NewHook(hp, "Nitroplus3");
+}
 bool Nitroplus2::attach_function()
 {
   bool embed = ScenarioHook::attach(processStartAddress, processStopAddress);
   bool b = InsertNitroPlusHook();
+  bool b3 = hprint();
   bool b2 = (Util::SearchResourceString(L"TOKYONECRO")) && InsertTokyoNecroHook();
   b2 |= sayanouta();
-  return b || b2 || embed;
+  return b3 || b || b2 || embed;
 }
