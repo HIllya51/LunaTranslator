@@ -18,7 +18,17 @@
 
 :::
 
-## 啟動
+## 社群 & 支持作者
+
+如果使用中遇到困難，可以觀看[我的 B 站影片](https://space.bilibili.com/592120404/video)，也歡迎加入 [Discord](https://discord.com/invite/ErtDwVeAbhtB)／[QQ 群](https://qm.qq.com/q/mPSu3sG5ri)。
+
+<a href="https://discord.gg/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Discord"></a>
+
+軟體維護不易，若您覺得此軟體對您有所幫助，歡迎透過 [Patreon](https://patreon.com/HIllya51) 支持我，您的支持將成為軟體長期維護的動力，謝謝～
+
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
+
+## 啟動 & 更新
 
 下載後解壓縮到任意目錄
 
@@ -26,13 +36,9 @@
 但請不要把軟體放到 **C:\Program Files** 等特殊路徑下，否則即使使用管理員身分，也可能無法儲存配置和快取檔案，甚至無法執行。
 :::
 
-**LunaTranslator.exe**：會以普通模式啟動。
-
-**LunaTranslator_admin.exe**：會以管理員身分啟動，部份遊戲需要管理員權限才能 HOOK，僅這時需要使用這個，其他時候普通模式啟動即可。
-
-**LunaTranslator_debug.bat**：會顯示命令提示字元的視窗。
-
-## 更新
+| LunaTranslator.exe | LunaTranslator_admin.exe | LunaTranslator_debug.bat |
+| - | - | - |
+| 會以普通模式啟動 | 會以管理員身分啟動，部份遊戲需要管理員權限才能 HOOK，僅這時需要使用這個，其他時候普通模式啟動即可 | 會顯示命令提示字元的視窗 |
 
 預設會自動進行更新。如果自動更新失敗，可以手動更新。
 

@@ -47,7 +47,11 @@ LunaTranslator使用 [GPLv3](../LICENSE) 许可证。
 
 > **Visual Novel Translator**
 
-**If you encounter any difficulties while using the software, you can check the [User Guide](https://docs.lunatranslator.org/en), or join our [Discord](https://discord.com/invite/ErtDwVeAbB).**
+## Community
+
+If you encounter any difficulties while using the software, you can check the [User Guide](https://docs.lunatranslator.org/en), or join our [Discord](https://discord.com/invite/ErtDwVeAbB).
+
+<a href="https://discord.gg/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Discord"></a>
 
 ## Features
 

@@ -71,7 +71,7 @@ export const ja = defineConfig({
         nav: [
             // { text: "公式サイト", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
-            { text: "作者を支援する", link: "/ja/support" },
+            { text: "作者を支援する", link: "/ja/README.html#anchor-support" },
         ],
         sidebar: [
             {
@@ -79,7 +79,6 @@ export const ja = defineConfig({
                 items: [
                     { text: 'ソフトウェアダウンロード & よくある質問', link: '/ja/README' },
                     { text: '基本の使い方', link: '/ja/basicuse' },
-                    { text: '作者を支援する', link: '/ja/support' }
                 ]
             },
             {

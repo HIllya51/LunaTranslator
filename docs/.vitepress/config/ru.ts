@@ -74,7 +74,7 @@ export const ru = defineConfig({
         nav: [
             // { text: "Официальный сайт", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
-            { text: "Поддержать автора", link: "/ru/support" },
+            { text: "Поддержать автора", link: "/ru/README.html#anchor-support" },
         ],
         sidebar: [
             {
@@ -82,7 +82,6 @@ export const ru = defineConfig({
                 items: [
                     { text: 'Загрузка программного обеспечения & Часто задаваемые вопросы', link: '/ru/README' },
                     { text: 'Основное использование', link: '/ru/basicuse' },
-                    { text: 'Поддержать автора', link: '/ru/support' }
                 ]
             },
             {

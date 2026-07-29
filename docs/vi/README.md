@@ -18,7 +18,18 @@ Các phiên bản này có hiệu suất kém hơn, chạy không ổn định, 
 
 :::
 
-## Khởi chạy
+## Cộng đồng & Hỗ trợ tác giả {#anchor-support}
+ 
+Nếu bạn gặp bất kỳ khó khăn nào khi sử dụng phần mềm, bạn có thể tham gia [Discord](https://discord.com/invite/ErtDwVeAbB) của chúng tôi.
+
+<a href="https://discord.gg/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Discord"></a>
+
+
+Bảo trì phần mềm không dễ dàng, nếu bạn cảm thấy phần mềm này hữu ích, vui lòng hỗ trợ tôi qua [patreon](https://patreon.com/HIllya51). Sự hỗ trợ của bạn sẽ là động lực để duy trì phần mềm lâu dài, cảm ơn~
+
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
+
+## Khởi chạy & Cập nhật
 
 Sau khi tải xuống, giải nén các tệp vào bất kỳ thư mục nào.
 
@@ -26,13 +37,10 @@ Sau khi tải xuống, giải nén các tệp vào bất kỳ thư mục nào.
 Nhưng vui lòng không đặt phần mềm vào các đường dẫn đặc biệt như **C:\Program Files**, nếu không, ngay cả khi có quyền quản trị viên, bạn có thể không lưu được tệp cấu hình và bộ nhớ đệm hoặc thậm chí không thể chạy chương trình.
 :::
 
-- **LunaTranslator.exe** sẽ khởi động ở chế độ bình thường.
+| LunaTranslator.exe | LunaTranslator_admin.exe | LunaTranslator_debug.bat |
+| - | - | - |
+| sẽ khởi động ở chế độ bình thường. | sẽ khởi động với quyền quản trị viên, cần thiết để hook một số trò chơi; chỉ sử dụng khi cần thiết, nếu không hãy khởi động ở chế độ bình thường. | sẽ hiển thị cửa sổ dòng lệnh. |
 
-- **LunaTranslator_admin.exe** sẽ khởi động với quyền quản trị viên, cần thiết để hook một số trò chơi; chỉ sử dụng khi cần thiết, nếu không hãy khởi động ở chế độ bình thường.
-
-- **LunaTranslator_debug.bat** sẽ hiển thị cửa sổ dòng lệnh.
-
-## Cập nhật
 
 Mặc định sẽ tự động cập nhật. Nếu tự động cập nhật thất bại, có thể cập nhật thủ công.
 

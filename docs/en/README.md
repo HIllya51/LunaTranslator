@@ -18,7 +18,19 @@ These versions have poorer performance, run less stably, lack some features and 
 
 :::
 
-## Launch
+
+## Community & Sponsorship {#anchor-support}
+
+If you encounter any difficulties while using the software, you can join our [Discord](https://discord.com/invite/ErtDwVeAbB).
+
+<a href="https://discord.gg/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Discord"></a>
+
+Software maintenance is not easy. If you find this software helpful, feel free to support me via [Patreon](https://patreon.com/HIllya51). Your support will contribute to the long-term maintenance of the software. Thank you~
+
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
+
+
+## Launch & Update
 
 After downloading, extract the files to any directory.
 
@@ -26,13 +38,9 @@ After downloading, extract the files to any directory.
 But please do not put the software in special paths such as **C:\Program Files**, otherwise, even with administrator privileges, you may not be able to save configuration and cache files, or even run the program.
 :::
 
-- **LunaTranslator.exe** will start in normal mode.
-
-- **LunaTranslator_admin.exe** will start with administrator privileges, which is required for hooking some games; use this only when necessary, otherwise start in normal mode.
-
-- **LunaTranslator_debug.bat** will display a command-line window.
-
-## Update
+| LunaTranslator.exe | LunaTranslator_admin.exe | LunaTranslator_debug.bat |
+| - | - | - |
+| start in normal mode | start with administrator privileges, which is required for hooking some games; use this only when necessary, otherwise start in normal mode | display a command-line window |
 
 Updates are performed automatically by default. If automatic update fails, you can update manually.
 

@@ -52,7 +52,7 @@ export const vi = defineConfig({
     nav: [
       // { text: "Trang chủ", link: "https://lunatranslator.org/" },
       { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
-      { text: "Tài trợ", link: "/vi/support" },
+      { text: "Tài trợ", link: "/vi/README.html#anchor-support" },
     ],
     editLink: {
       pattern: 'https://github.com/vuejs/vitepress/edit/main/docs/:path',
@@ -64,7 +64,6 @@ export const vi = defineConfig({
         items: [
           { text: 'Tải xuống phần mềm & Câu hỏi thường gặp', link: '/vi/README' },
           { text: 'Cách sử dụng cơ bản', link: '/vi/basicuse' },
-          { text: 'Tài trợ', link: '/vi/support' }
         ]
       },
       {
@@ -76,7 +75,7 @@ export const vi = defineConfig({
             items: [
               { text: 'Cài đặt HOOK', link: '/vi/hooksettings' },
               { text: 'Dịch nhúng', link: '/vi/embedtranslate' },
-              { text: 'Hỗ trợ trò chơi giả lập', link: '/vi/emugames' },
+              { text: 'Cộng đồng & Hỗ trợ tác giả', link: '/vi/emugames' },
             ]
           },
           {

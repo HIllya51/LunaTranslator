@@ -74,7 +74,7 @@ export const ko = defineConfig({
         nav: [
             // { text: "공식 웹사이트", link: "https://lunatranslator.org/" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
-            { text: "작가 지원", link: "/ko/support" },
+            { text: "작가 지원", link: "/ko/README.html#anchor-support" },
         ],
         sidebar: [
             {
@@ -82,7 +82,6 @@ export const ko = defineConfig({
                 items: [
                     { text: '소프트웨어 다운로드 & 자주 묻는 질문', link: '/ko/README' },
                     { text: '기본 사용법', link: '/ko/basicuse' },
-                    { text: '작가 지원', link: '/ko/support' }
                 ]
             },
             {

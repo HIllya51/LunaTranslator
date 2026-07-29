@@ -18,7 +18,7 @@
 
 :::
 
-## 启动
+## 启动 & 更新
 
 下载后解压到任意目录
 
@@ -26,13 +26,9 @@
 但请不要把软件放到**C:\Program Files**等特殊路径下，否则即使使用管理员权限，也可能无法保存配置和缓存文件，甚至无法运行。
 :::
 
-**LunaTranslator.exe** 会以普通模式启动 
-
-**LunaTranslator_admin.exe** 会以管理员权限启动，部分游戏需要管理员权限才能HOOK，仅这时需要使用这个，其他时候普通模式启动即可。
-
-**LunaTranslator_debug.bat** 会显示命令行窗口
-
-## 更新
+| LunaTranslator.exe | LunaTranslator_admin.exe | LunaTranslator_debug.bat |
+| - | - | - |
+| 会以普通模式启动  | 会以管理员权限启动，部分游戏需要管理员权限才能HOOK，仅这时需要使用这个，其他时候普通模式启动即可。 | 会显示命令行窗口 |
 
 默认会自动进行更新。如果自动更新失败，可以手动更新。
 

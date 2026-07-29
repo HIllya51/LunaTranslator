@@ -75,7 +75,7 @@ export const cht = defineConfig({
             { text: "影片教學", link: "https://space.bilibili.com/592120404/video" },
             { text: "QQ 群", link: "https://qm.qq.com/q/mPSu3sG5ri" },
             { text: "Discord", link: "https://discord.com/invite/ErtDwVeAbB" },
-            { text: "支持作者", link: "/cht/support" },
+            { text: "支持作者", link: "/cht/README.html#anchor-support" },
         ],
         sidebar: [
             {
@@ -83,7 +83,6 @@ export const cht = defineConfig({
                 items: [
                     { text: '軟體下載 & 常見問題', link: '/cht/README' },
                     { text: '基本用法', link: '/cht/basicuse' },
-                    { text: '支持作者', link: '/cht/support' }
                 ]
             },
             {

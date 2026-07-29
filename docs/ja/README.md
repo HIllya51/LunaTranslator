@@ -18,7 +18,18 @@
 
 :::
 
-## 起動
+## コミュニティ & 作者を支援 {#anchor-support}
+
+ソフトウェアの使用中に問題が発生した場合は、[Discord](https://discord.com/invite/ErtDwVeAbB)に参加してください。
+
+<a href="https://discord.gg/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Discord"></a>
+
+
+ソフトウェアのメンテナンスは容易ではありません。もしこのソフトウェアが役に立ったと感じていただけたら、[patreon](https://patreon.com/HIllya51)を通じてサポートしていただけると嬉しいです。皆様のサポートがソフトウェアの長期的なメンテナンスの力になります。ありがとうございます～
+
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
+
+## 起動 & 更新
 
 ダウンロード後、任意のディレクトリにファイルを解凍します。
 
@@ -26,13 +37,9 @@
 ただし、**C:\Program Files** などの特別なパスにソフトウェアを配置しないでください。そうしないと、管理者権限があっても、構成やキャッシュファイルを保存したり、プログラムを実行したりできない可能性があります。
 :::
 
-- **LunaTranslator.exe** は通常モードで起動します。
-
-- **LunaTranslator_admin.exe** は管理者権限で起動します。一部のゲームのフックには管理者権限が必要です。必要な場合のみ使用し、通常は通常モードで起動してください。
-
-- **LunaTranslator_debug.bat** はコマンドラインウィンドウを表示します。
-
-## 更新
+| LunaTranslator.exe | LunaTranslator_admin.exe | LunaTranslator_debug.bat |
+| - | - | - |
+| 通常モードで起動します | 管理者権限で起動します。一部のゲームのフックには管理者権限が必要です。必要な場合のみ使用し、通常は通常モードで起動してください | コマンドラインウィンドウを表示します |
 
 デフォルトでは自動的に更新されます。自動更新に失敗した場合、手動で更新できます。
 

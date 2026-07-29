@@ -18,7 +18,7 @@ hero:
       link: ./basicuse  
     - theme: alt
       text: 作者を支援する
-      link: ./support
+      link: ./README.html#anchor-support
     - theme: alt  
       text: Github  
       link: https://github.com/HIllya51/LunaTranslator  

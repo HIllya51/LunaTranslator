@@ -82,7 +82,7 @@ export const zh = defineConfig({
                 items: [
                     { text: '软件下载 & 常见问题', link: '/zh/README' },
                     { text: '基本用法', link: '/zh/basicuse' },
-                    { text: '支持作者', link: '/zh/support' }
+                    { text: '社群 & 支持作者', link: '/zh/support' }
                 ]
             },
             {

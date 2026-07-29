@@ -18,7 +18,18 @@
 
 :::
 
-## 실행
+## 커뮤니티 & 저자 지원 {#anchor-support}
+
+소프트웨어 사용 중 어려움을 겪으시면 [Discord](https://discord.com/invite/ErtDwVeAbB)에 참여해 주세요.
+
+<a href="https://discord.gg/invite/ErtDwVeAbB"><img src="https://img.shields.io/discord/1262692128031772733?style=for-the-badge&logo=discord&logoColor=white&label=Discord&color=5865F2" alt="Discord"></a>
+
+
+소프트웨어 유지보수는 쉽지 않습니다. 이 소프트웨어가 도움이 되셨다면 [Patreon](https://patreon.com/HIllya51)을 통해 저를 후원해 주세요. 여러분의 후원은 소프트웨어의 장기적인 유지보수에 기여할 것입니다. 감사합니다~
+
+<a href="https://patreon.com/HIllya51" target='_blank'><img width="200" src="/become_a_patron_4x1_black_logo_white_text_on_coral.svg"></a>
+
+## 실행 & 업데이트
 
 다운로드 후 임의의 디렉토리에 압축 해제
 
@@ -26,13 +37,10 @@
 하지만 소프트웨어를 **C:\Program Files** 등의 특수 경로에 두지 마십시오. 그렇지 않으면 관리자 권한을 사용하더라도 설정 및 캐시 파일을 저장할 수 없거나 실행조차 되지 않을 수 있습니다.
 :::
 
-**LunaTranslator.exe** 는 일반 모드로 실행됩니다. 
+| LunaTranslator.exe | LunaTranslator_admin.exe | LunaTranslator_debug.bat |
+| - | - | - |
+| 는 일반 모드로 실행됩니다 | 는 관리자 권한으로 실행되며, 일부 게임은 후킹을 위해 관리자 권한이 필요합니다. 이 경우에만 사용하고, 다른 경우에는 일반 모드로 실행하십시오 | 은 커맨드 라인 창을 표시합니다 |
 
-**LunaTranslator_admin.exe** 는 관리자 권한으로 실행되며, 일부 게임은 후킹을 위해 관리자 권한이 필요합니다. 이 경우에만 사용하고, 다른 경우에는 일반 모드로 실행하십시오.
-
-**LunaTranslator_debug.bat** 은 커맨드 라인 창을 표시합니다.
-
-## 업데이트
 
 기본적으로 자동 업데이트가 수행됩니다. 자동 업데이트가 실패한 경우 수동으로 업데이트할 수 있습니다.
 
