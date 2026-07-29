@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010090802801A000 | sins of KALEIDO |
 |  | 01005E8023EEE000 | DRAMAtical Murder re:code |
 |  | 0100020023EB6000 | CRAZY CHA!N -エルピスの鎖- |
 |  | 0100AA9025A4C000 | Dear Mirror Flower |

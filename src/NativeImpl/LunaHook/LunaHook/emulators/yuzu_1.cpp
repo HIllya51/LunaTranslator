@@ -2947,6 +2947,12 @@ namespace
         s = re::sub(s, LR"((　)*\\(　)*)");
         buffer->from(s);
     }
+    void f010090802801A000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strW();
+        s = re::sub(s, LR"((　)*\n(　)*)");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2954,6 +2960,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // sins of KALEIDO
+    {0x821838BC, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f010090802801A000, 0x010090802801A000ull, "1.0.0"}},
+    {0x82149C44, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f010090802801A000, 0x010090802801A000ull, "1.0.1"}},
     // DRAMAtical Murder re:code
     {0x8012D9F0, {FULL_STRING | CODEC_UTF8, 1, 0, 0, f01005E8023EEE000, 0x01005E8023EEE000ull, "1.0.0"}},
     // CRAZY CHA!N -エルピスの鎖-
