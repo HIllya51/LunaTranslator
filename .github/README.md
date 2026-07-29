@@ -11,6 +11,9 @@
 
 **如果使用中遇到困难，可以查阅[使用说明](https://docs.lunatranslator.org/zh)、观看[我的B站视频](https://space.bilibili.com/592120404/video)，也欢迎加入[QQ群](https://qm.qq.com/q/mPSu3sG5ri)。**
 
+<a href="https://qm.qq.com/q/mPSu3sG5ri"><img src="https://img.shields.io/badge/1059137614-EB1923?style=for-the-badge&logo=qq&logoColor=white&label=QQ&color=5865F2" alt="Discord"></a>
+
+
 ## 功能支持
 
 - **[HOOK](https://docs.lunatranslator.org/zh/hooksettings.html)** 主要使用HOOK提取游戏文本，几乎适配了所有的常见和冷门的视觉小说
