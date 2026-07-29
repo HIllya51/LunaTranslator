@@ -10,6 +10,7 @@
     "docs:preview": "vitepress preview"
   },
   "dependencies": {
+    "markdown-it": "^14.3.0",
     "markdown-it-container": "^4.0.0"
   }
 }

@@ -72,3 +72,11 @@
 如果软件被放到`C:\Program Files`等特殊文件夹，可能会无法正常运行。
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png" width=400>
+
+
+## ChangeLog
+
+::: details
+<RemoteMarkdown />
+
+:::

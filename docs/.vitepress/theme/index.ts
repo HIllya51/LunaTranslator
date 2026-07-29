@@ -6,6 +6,7 @@ import { enhanceAppWithTabs } from 'vitepress-plugin-tabs/client'
 import giscus from './giscus.vue'
 import notfound from './notfound.vue';
 import downloadbtn from './downloadbtn.vue' // 路径根据你的结构调整
+import RemoteMarkdown from './RemoteMarkdown.vue' // 路径根据你的结构调整
 export default {
     ...DefaultTheme,
     Layout() {
@@ -17,6 +18,7 @@ export default {
     enhanceApp({ app }) {
         enhanceAppWithTabs(app)
         app.component('downloadbtn', downloadbtn)
+        app.component('RemoteMarkdown', RemoteMarkdown)
     },
     setup() {
         const handleRouteChange = () => {

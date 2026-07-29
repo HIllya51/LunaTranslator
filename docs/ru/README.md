@@ -83,3 +83,10 @@
 Если программа размещена в системных папках типа `C:\Program Files`, она может работать некорректно.
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png" width=400>
+
+## ChangeLog
+
+::: details
+<RemoteMarkdown />
+
+:::

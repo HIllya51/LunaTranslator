@@ -87,3 +87,10 @@ If trust isn't pre-established, some essential components might get deleted by a
 If the software is placed in special folders such as `C:\Program Files`, it may not work properly.
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png"  width=400>
+
+## ChangeLog
+
+::: details
+<RemoteMarkdown />
+
+:::

@@ -83,3 +83,10 @@
 ソフトウェアが`C:\Program Files`などの特殊なフォルダーに配置されている場合、正常に動作しない可能性があります。
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png" width=400>
+
+## ChangeLog
+
+::: details
+<RemoteMarkdown />
+
+:::

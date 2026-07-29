@@ -84,3 +84,10 @@
 소프트웨어가 `C:\Program Files` 등의 특수 폴더에 위치한 경우 정상적으로 작동하지 않을 수 있습니다.
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png" width=400>
+
+## ChangeLog
+
+::: details
+<RemoteMarkdown />
+
+:::

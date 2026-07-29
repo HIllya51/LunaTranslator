@@ -85,3 +85,10 @@ Nếu không thêm vào danh sách tin cậy trước, có thể sau một thờ
 Nếu phần mềm được đặt trong các thư mục đặc biệt như `C:\Program Files`, có thể không hoạt động đúng cách.
 
 <img src="https://image.lunatranslator.org/zh/cantstart/6.png"  width=400>
+
+## ChangeLog
+
+::: details
+<RemoteMarkdown />
+
+:::
