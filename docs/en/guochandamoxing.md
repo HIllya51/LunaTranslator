@@ -35,10 +35,6 @@ However, sometimes you may want to use multiple different API interface addresse
 
     When enabled, the model's output will be displayed incrementally in a streaming manner. Otherwise, the entire output will be displayed at once after completion.  
 
-1. #### Hide Thought Process  
-
-    When enabled, content wrapped in `<think>` tags will not be displayed. If the thought process is hidden, the current thinking progress will still be shown.  
-
 1. #### Number of Contextual Messages  
 
     A specified number of historical original and translated messages will be provided to the large model to improve translation. Setting this to 0 will disable this optimization.  

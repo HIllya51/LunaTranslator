@@ -325,7 +325,7 @@ class gptcommon(basetrans):
             response = self.proxysession.post(
                 apitype.finalurl(), headers=headers, json=_json, stream=usingstream
             )
-        hidethinking = self.config.get("hidethinking", False)
+        hidethinking = self.config.get("hidethinking", True)
         markdown2html = self.config.get("markdown2html", False)
         if usingstream:
             respmessage = yield from parsestreamresp(

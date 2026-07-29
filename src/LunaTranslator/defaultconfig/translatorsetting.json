@@ -425,7 +425,6 @@
 			"s2": "",
 			"prefill": "",
 			"prefill_use": false,
-			"hidethinking": true,
 			"markdown2html": false,
 			"customparams": []
 		},
@@ -456,11 +455,6 @@
 				"name": "转换Markdown为HTML",
 				"type": "switch",
 				"rank": 3.6
-			},
-			"hidethinking": {
-				"type": "switch",
-				"name": "隐藏思考过程",
-				"rank": 3.5
 			},
 			"prefill": {
 				"refswitch": "prefill_use",

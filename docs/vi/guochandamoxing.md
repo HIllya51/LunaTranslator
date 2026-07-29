@@ -35,10 +35,6 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
     Khi bật, nội dung đầu ra của model sẽ được hiển thị theo luồng tăng dần. Nếu tắt, tất cả nội dung sẽ được hiển thị một lần sau khi model hoàn thành.
 
-1. #### Ẩn quá trình suy nghĩ
-
-    Khi bật, nội dung được bao bọc bởi thẻ \<think\> sẽ không được hiển thị. Nếu bật ẩn quá trình suy nghĩ, tiến độ suy nghĩ hiện tại sẽ được hiển thị.
-
 1. #### Số lượng ngữ cảnh đính kèm
 
     Sẽ đính kèm một số lịch sử văn bản gốc và API dịch cho mô hình lớn để tối ưu hóa bản dịch. Đặt thành 0 sẽ tắt tối ưu hóa này.
