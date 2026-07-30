@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | PCSG00271 | Princess Arthur |
 |  | PCSG00543 | 冴えない彼女の育てかた -blessing flowers- |
 |  | PCSG00689 | ToLOVEる ダークネス トゥループリンセス |
 |  | PCSG00789 | オメルタ CODE:TYCOON 戒 |

@@ -1043,6 +1043,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Princess Arthur
+    {0x80065554, {FULL_STRING, 0, 0, 0, PCSG00766, "PCSG00271"}},
     // 冴えない彼女の育てかた -blessing flowers-
     {0x80014426, {FULL_STRING | CODEC_UTF16, 0xb, 0, 0, PCSG00543, "PCSG00543"}}, // 这作可以用来锚定不同版本模拟器的偏移量。搜索后这条很明显。然后再用任意另一作验证即可。
     // ToLOVEる ダークネス トゥループリンセス
