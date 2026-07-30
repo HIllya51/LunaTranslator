@@ -8,6 +8,13 @@ from traceback import print_exc
 from language import Languages
 import shutil
 import copy
+from gobject import (
+    runtime_for_xp,
+    runtime_for_win10,
+    runtime_bit_64,
+    GetDllpath,
+    sys_win10_release_supported,
+)
 
 
 def relpath(path):
@@ -577,3 +584,48 @@ def dynamiclink(text: str = "", docs=False) -> str:
     if docs:
         _.insert(1, str(getlanguse()))
     return urlpathjoin(*_)
+
+
+def checkintegrity():
+
+    if runtime_for_win10 and not sys_win10_release_supported:
+        return 1, _TR("软件当前版本需要 Windows 10 1803 及以上。请使用软件的其他版本。")
+    dll3264 = [
+        "NativeUtils.dll",
+        "onnxruntime.dll" if not runtime_for_xp else None,
+        "DirectML.dll" if runtime_for_win10 else None,
+        "CVUtils.dll",
+        "bass.dll",
+        "bass_spx.dll",
+        "bass_aac.dll",
+    ]
+
+    dll3264.append(("libcurl.dll", "libcurl-x64.dll")[runtime_bit_64])
+
+    flist = []
+    for f in dll3264:
+        if f:
+            flist.append(GetDllpath(f))
+
+    dllshared = [
+        "LunaHook/" + ("LunaHost32.dll", "LunaHost64.dll")[runtime_bit_64],
+        "LunaSubprocess32.exe",
+        "LunaSubprocess64.exe",
+        "Magpie/Magpie.Core.exe" if not runtime_for_xp else None,
+        "LunaHook/LunaHook32.dll",
+        "LunaHook/LunaHook64.dll",
+    ]
+    for f in dllshared:
+        if f:
+            flist.append("files/" + f)
+    collect = []
+    for f in flist:
+        if not os.path.exists(f):
+            collect.append(os.path.normpath(os.path.abspath(f)))
+    if len(collect):
+        return 1, _TR(
+            "找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试"
+        ).format(modules="\n".join(collect)) + '\n<a href="{}">{}</a>'.format(
+            dynamiclink("README.html#anchor-commonerros", docs=True), _TR("说明")
+        )
+    return None
