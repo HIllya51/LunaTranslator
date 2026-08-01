@@ -63,7 +63,7 @@
     none/minimal -> 0（停用思考，但不適用於 Gemini-2.5-Pro 模型），low -> 512，medium -> -1（開啟動態思維），high/xhigh -> 24576。
 
 1. #### thinking.type
-    部份平台支援的思考模式開關。
+    部分平台（主要是DeepSeek）支援的思考模式開關。
 
 1. #### 其他參數
 

@@ -64,7 +64,8 @@ However, sometimes you may want to use multiple different API interface addresse
     none/minimal -> 0 (disable thinking; not applicable to Gemini-2.5-Pro), low -> 512, medium -> -1 (enable dynamic thinking), high/xhigh -> 24576.
 
 1. #### thinking.type
-    Switch for thinking modes supported by some platforms.
+    
+    The thinking mode switch supported by some platforms (mainly DeepSeek).
 
 1. #### Other Parameters  
 
