@@ -1,5 +1,7 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 01003000276E4000 | Clover Reset |
+|  | 0100C920270AA000 | Clover Reset |
 |  | 010090802801A000 | sins of KALEIDO |
 |  | 01005E8023EEE000 | DRAMAtical Murder re:code |
 |  | 0100020023EB6000 | CRAZY CHA!N -エルピスの鎖- |

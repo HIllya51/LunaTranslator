@@ -1302,8 +1302,10 @@ namespace
     void F0100943010310000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
-        strReplace(s, u8"❞", "\"");
-        strReplace(s, u8"❝", "\"");
+        s = strReplace(s, u8"❝", "\"");
+        s = strReplace(s, u8"❞", "\"");
+        s = strReplace(s, u8"❛", "'");
+        s = strReplace(s, u8"❜", "'");
         s = re::sub(s, "@(.*?)@", u8"【$1】");
         buffer->from(s);
     }
@@ -2960,6 +2962,13 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Clover Reset
+    {0x80126E10, {FULL_STRING | CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003000276E4000ull, "1.0.0"}},
+    {0x80126D44, {FULL_STRING | CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003000276E4000ull, "1.0.1"}},
+    {0x80195410, {FULL_STRING | CODEC_UTF16, 8, 0, 0, F010096000CA38000, 0x01003000276E4000ull, "1.0.0"}},
+    {0x801954E4, {FULL_STRING | CODEC_UTF16, 8, 0, 0, F010096000CA38000, 0x01003000276E4000ull, "1.0.1"}},
+    // Clover Reset
+    {0x80046370, {USING_CHAR | DATA_INDIRECT | CODEC_UTF8, 1, 0, 0, 0, 0x0100C920270AA000ull, "1.0.0"}},
     // sins of KALEIDO
     {0x821838BC, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f010090802801A000, 0x010090802801A000ull, "1.0.0"}},
     {0x82149C44, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f010090802801A000, 0x010090802801A000ull, "1.0.1"}},
