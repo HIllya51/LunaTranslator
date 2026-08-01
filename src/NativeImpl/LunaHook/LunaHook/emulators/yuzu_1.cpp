@@ -2962,7 +2962,7 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
-    // Clover Reset
+    // Dreamin' Her -僕は、彼女の夢を見る。-
     {0x80126E10, {FULL_STRING | CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003000276E4000ull, "1.0.0"}},
     {0x80126D44, {FULL_STRING | CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003000276E4000ull, "1.0.1"}},
     {0x80195410, {FULL_STRING | CODEC_UTF16, 8, 0, 0, F010096000CA38000, 0x01003000276E4000ull, "1.0.0"}},
