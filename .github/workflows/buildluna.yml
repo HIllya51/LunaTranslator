@@ -29,14 +29,14 @@ jobs:
       # - uses: microsoft/setup-msbuild@v2
       - if: matrix.target == 'winxp'
         run: |
-            Set-Location "C:\Program Files (x86)\Microsoft Visual Studio\Installer\"
+            $vs_installer = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
             $InstallPath = "C:\Program Files\Microsoft Visual Studio\18\Enterprise"
             $componentsToAdd = @(
               "Microsoft.VisualStudio.Component.WinXP"
             )
             [string]$workloadArgs = $componentsToAdd | ForEach-Object {" --add " +  $_}
-            $Arguments = ('/c', "vs_installer.exe", 'modify', '--installPath', "`"$InstallPath`"",$workloadArgs, '--quiet', '--norestart', '--nocache')
-            $process = Start-Process -FilePath cmd.exe -ArgumentList $Arguments -Wait -PassThru -WindowStyle Hidden
+            $Arguments = ('modify', '--installPath', "`"$InstallPath`"",$workloadArgs, '--quiet', '--norestart', '--nocache')
+            $process = Start-Process -FilePath $vs_installer -ArgumentList $Arguments -Wait -PassThru -WindowStyle Hidden
             if ($process.ExitCode -eq 0)
             {
                 Write-Host "components have been successfully added"
