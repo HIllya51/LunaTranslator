@@ -16,9 +16,6 @@ hero:
     - theme: alt  
       text: Basic Usage  
       link: ./basicuse  
-    - theme: alt
-      text: Sponsorship
-      link: ./README.html#anchor-support
     - theme: alt  
       text: Github  
       link: https://github.com/HIllya51/LunaTranslator  
