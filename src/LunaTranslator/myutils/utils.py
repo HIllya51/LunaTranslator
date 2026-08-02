@@ -68,7 +68,7 @@ def qimage2binary(qimage: QImage, fmt="BMP") -> bytes:
     return image_data
 
 
-def __internal__getlang(k1: str, k2: str) -> str:
+def __internal__getlang(k1: str, k2: str, default: str) -> str:
     try:
         for _ in (0,):
             gameuid = gobject.base.gameuid
@@ -77,10 +77,10 @@ def __internal__getlang(k1: str, k2: str) -> str:
             if savehook_new_data[gameuid].get("lang_follow_default", True):
                 break
 
-            return savehook_new_data[gameuid][k1], globalconfig[k2]
+            return savehook_new_data[gameuid][k1], globalconfig.get(k2, default)
     except:
         pass
-    return globalconfig[k2], globalconfig[k2]
+    return globalconfig.get(k2, default), globalconfig.get(k2, default)
 
 
 def __translate_exits(fanyi):
@@ -158,12 +158,12 @@ def __fucklang(src, _) -> Languages:
 
 
 def getlangsrc() -> Languages:
-    return __fucklang(True, __internal__getlang("private_srclang_2", "srclang4"))
+    return __fucklang(True, __internal__getlang("private_srclang_2", "srclang4", "auto"))
 
 
 def getlangtgt() -> Languages:
 
-    return __fucklang(False, __internal__getlang("private_tgtlang_2", "tgtlang4"))
+    return __fucklang(False, __internal__getlang("private_tgtlang_2", "tgtlang4", "zh"))
 
 
 def findenclose(text: str, tag: str) -> str:
@@ -224,7 +224,7 @@ def simplehtmlparser_all(text: str, tag: str, sign: str) -> "list[str]":
 
 
 def nowisdark() -> bool:
-    dl = globalconfig["darklight2"]
+    dl = globalconfig.get("darklight2", 0)
     if dl == 1:
         dark = False
     elif dl == 2:
@@ -1309,7 +1309,7 @@ def getimageformatlist():
 
 
 def getimageformat():
-    fmt = globalconfig["imageformat2"]
+    fmt = globalconfig.get("imageformat2", "webp")
     __ = getimageformatlist()
     if fmt not in __:
         return __[0]

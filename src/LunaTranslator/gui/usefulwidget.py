@@ -1971,7 +1971,7 @@ class WebviewWidget(AbstractWebviewWidget):
         super().__init__(parent)
         self.url = ""
         self.webview = WebView2(
-            int(self.winId()), transp, loadext, globalconfig["darklight2"]
+            int(self.winId()), transp, loadext, globalconfig.get("darklight2", 0)
         )
         self.loadextensionwindow.connect(self.__loadextensionwindow)
         self.destroyed.connect(self.webview.destroy)
@@ -3168,7 +3168,7 @@ class pixmapviewer(QWidget):
 
                             font = QFont()
                             font.setFamily(globalconfig["fonttype"])
-                            font.setPointSizeF(globalconfig["fontsizeori"])
+                            font.setPointSizeF(globalconfig.get("fontsizeori", 16))
                             pen = QPen()
                             pen.setColor(QColor(globalconfig["rawtextcolor"]))
                             painter.setFont(font)

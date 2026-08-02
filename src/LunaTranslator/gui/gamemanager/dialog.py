@@ -1008,7 +1008,7 @@ class dialog_savedgame_new(QSplitter):
         self.idxsave = []
         self.activategamenum = 1
         self.itemfocuschanged(False, None)
-        if globalconfig["hide_not_exists"]:
+        if globalconfig.get("hide_not_exists", False):
             self.tagswidget.addTag(_TR("存在"), tagitem.TYPE_EXISTS)
         else:
             self.tagschanged(tuple())

@@ -1016,7 +1016,7 @@ class hookselect(closeashidewindow):
             gobject.base.translation_ui.showMarkDownSig.emit(
                 "{}\n[{}]({})".format(
                     sentence,
-                    _TR("模拟器游戏支持表"),
+                    _TR("使用说明"),
                     dynamiclink("emugames.html", docs=True),
                 )
             )

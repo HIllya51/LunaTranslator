@@ -941,7 +941,7 @@ class dialog_savedgame_v3(QSplitter):
             self.stack.insertw(i, group0)
             rowreal = 0
             for row, k in enumerate(lst):
-                if globalconfig["hide_not_exists"]:
+                if globalconfig.get("hide_not_exists", False):
                     if not os.path.exists(get_launchpath(k)):
                         continue
                 self.reallist[tagid].append(k)

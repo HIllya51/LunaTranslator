@@ -404,7 +404,7 @@ class TextBrowser(QWidget, dataget):
         drag.setCheckable(True)
         drag.setChecked(globalconfig.get("dragable", True))
         hide.setCheckable(True)
-        hide.setChecked(globalconfig["hidetools"])
+        hide.setChecked(globalconfig.get("hidetools", False))
         menu.addAction(search)
         menu.addAction(drag)
         menu.addAction(hide)
@@ -1210,7 +1210,7 @@ class TextBrowser(QWidget, dataget):
         font.setBold(bold)
         font.setFamily(fm)
         if half:
-            fs *= globalconfig["kanarate"]
+            fs *= globalconfig.get("kanarate", 0.5)
         font.setPointSizeF(fs)
         fm = QFontMetricsF(font, self)
         if getfm:

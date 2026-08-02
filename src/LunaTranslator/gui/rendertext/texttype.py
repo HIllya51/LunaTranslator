@@ -146,17 +146,17 @@ class dataget:
     def _getfontinfo(self, texttype: TextType):
         if texttype == TextType.Origin:
             fm = globalconfig["fonttype"]
-            fs = globalconfig["fontsizeori"]
+            fs = globalconfig.get("fontsizeori", 16)
             bold = globalconfig.get("showbold", False)
         else:
             fm = globalconfig["fonttype2"]
-            fs = globalconfig["fontsize"]
+            fs = globalconfig.get("fontsize", 16)
             bold = globalconfig.get("showbold_trans", False)
         return fm, fs, bold
 
     def _getfontinfo_kana(self):
         fm, fs, bold = self._getfontinfo(TextType.Origin)
-        return fm, fs * globalconfig["kanarate"], bold
+        return fm, fs * globalconfig.get("kanarate", 0.5), bold
 
     def _createqfont(self, texttype: TextType, klass=None):
         fm, fs, bold = self._getfontinfo(texttype)

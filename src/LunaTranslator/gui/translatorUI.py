@@ -443,7 +443,7 @@ class TranslatorWindow(resizableframeless):
 
         def __():
 
-            if not globalconfig["movefollow"]:
+            if not globalconfig.get("movefollow", True):
                 self.__lastpos = None
                 return
             if self.isdoingsomething():
@@ -808,8 +808,8 @@ class TranslatorWindow(resizableframeless):
                 "locktoolsbutton",
                 buttonfunctions(
                     clicked=self.changetoolslockstate,
-                    iconstate=lambda: globalconfig["locktools"],
-                    colorstate=lambda: globalconfig["locktools"],
+                    iconstate=lambda: globalconfig.get("locktools", False),
+                    colorstate=lambda: globalconfig.get("locktools", False),
                     rightclick=self.changetoolslockstateEx,
                 ),
             ),
@@ -1053,7 +1053,7 @@ class TranslatorWindow(resizableframeless):
                 return self.canceltop()
             hwnd = windows.GetForegroundWindow()
             _focusp = windows.GetWindowThreadProcessId(hwnd)
-            if globalconfig["focusnotop"]:
+            if globalconfig.get("focusnotop", False):
                 try:
                     p_pids = windows.GetWindowThreadProcessId(gobject.base.hwnd)
                     if p_pids and _focusp not in (p_pids, os.getpid(), __magpid()):
@@ -1369,7 +1369,7 @@ class TranslatorWindow(resizableframeless):
     def showabout(self):
 
         _t = get_about_info()
-        if not globalconfig.get("adaptive_height", True):
+        if not globalconfig.get("adaptive_height", False):
             _t = _t.replace("\n\n", "\n")
         self.showMarkDown(_t)
 
@@ -1453,7 +1453,7 @@ class TranslatorWindow(resizableframeless):
         )
         topr = self.createborderradiusstring(
             use_r1,
-            (radiu_valid or globalconfig["locktools"]) and self.titlebar.isVisible(),
+            (radiu_valid or globalconfig.get("locktools", False)) and self.titlebar.isVisible(),
             False,
         )
         bottomr3 = self.createborderradiusstring(use_r2, False)
@@ -1503,7 +1503,7 @@ class TranslatorWindow(resizableframeless):
     @property
     def mousetranscheckrect(self):
         if (
-            globalconfig["locktoolsEx"]
+            globalconfig.get("locktoolsEx", False)
             and (not self.titlebar.isVisible())
             and (not gobject.base.settin_ui.isVisible())
         ):
@@ -1613,12 +1613,12 @@ class TranslatorWindow(resizableframeless):
 
     def changetoolslockstateEx(self):
         globalconfig["locktoolsEx"] = True
-        globalconfig["locktools"] = not globalconfig["locktools"]
+        globalconfig["locktools"] = not globalconfig.get("locktools", False)
         self.refreshtoolicon()
 
     def changetoolslockstate(self):
         globalconfig["locktoolsEx"] = False
-        globalconfig["locktools"] = not globalconfig["locktools"]
+        globalconfig["locktools"] = not globalconfig.get("locktools", False)
         self.refreshtoolicon()
 
     def dynamicextraheight(self):
@@ -1628,7 +1628,7 @@ class TranslatorWindow(resizableframeless):
                 return int(IconLabelX.w())
             else:
                 return int(IconLabelX.h())
-        if globalconfig["locktools"]:
+        if globalconfig.get("locktools", False):
             if globalconfig.get("verticalhorizontal", False):
                 return int(IconLabelX.w())
             else:
@@ -1714,7 +1714,7 @@ class TranslatorWindow(resizableframeless):
         # size只有一个维度是准确的，应当根据显示方向来使用其中有效的部分
         if self.translate_text.cleared:
             return
-        if not globalconfig.get("adaptive_height", True):
+        if not globalconfig.get("adaptive_height", False):
             self.translate_text.scrolltoend()
             return
         if globalconfig.get("verticalhorizontal", False):
@@ -1862,20 +1862,20 @@ class TranslatorWindow(resizableframeless):
             time.sleep(delay)
             if self.enter_sig != enter_sig:
                 return
-            if globalconfig["locktools"]:
+            if globalconfig.get("locktools", False):
                 return
         self.toolbarhidedelaysignal.emit()
 
     def enterfunction(self, delay=None):
-        if (not globalconfig["hidetools"]) and (
-            (not globalconfig["locktoolsEx"]) or self.checklocktoolsEx()
+        if (not globalconfig.get("hidetools", False)) and (
+            (not globalconfig.get("locktoolsEx", False)) or self.checklocktoolsEx()
         ):
             self.titlebar.show()
         self.translate_text.textbrowser.setVisible(True)
         self.autohidestart = True
         self.lastrefreshtime = time.time()
         self.set_color_transparency()
-        self.dodelayhide(delay, force=globalconfig["hidetools"])
+        self.dodelayhide(delay, force=globalconfig.get("hidetools", False))
 
     def resizeEvent(self, e: QResizeEvent):
         super().resizeEvent(e)

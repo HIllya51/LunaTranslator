@@ -382,6 +382,7 @@ def setTabcishu_l(self):
                             double=True,
                             step=0.05,
                             callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                            default=0.5,
                         ),
                         "",
                         "日语注音方案",
@@ -394,6 +395,7 @@ def setTabcishu_l(self):
                             globalconfig,
                             "hira_vis_type",
                             callback=lambda _: gobject.base.translation_ui.translate_text.refreshcontent(),
+                            default=0,
                         ),
                     ],
                     [

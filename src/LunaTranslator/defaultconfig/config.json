@@ -380,11 +380,6 @@
     "ocr_stable_sim2_v2": 0.95,
     "ocr_diff_sim_v2": 0.95,
     "ocr_text_diff": 3,
-    "fontsize": 16.0,
-    "fontsizeori": 16.0,
-    "localeswitchmethod": 0,
-    "hide_not_exists": false,
-    "startgamenototop": true,
     "lineheights": {
         "lineHeight": 1,
         "lineHeightNormal": true,
@@ -399,17 +394,9 @@
     },
     "fonttype": "",
     "fonttype2": "",
-    "hira_vis_type": 0,
-    "min_auto_height": 0,
-    "iskongxin": true,
-    "kanarate": 0.5,
     "rawtextcolor": "#000000",
     "backcolor": "#ffaaff",
     "backcolor_tool": "#ffaaff",
-    "transparent_tool": 50,
-    "hidetools": false,
-    "locktools": true,
-    "locktoolsEx": false,
     "jiamingcolor": "black",
     "ankiconnect": {
         "host": "127.0.0.1",
@@ -431,11 +418,6 @@
         "allowDuplicate": true,
         "autorecord": false
     },
-    "imageformat2": "webp",
-    "mp3kbps": 64,
-    "opusbitrate": 10,
-    "audioformat": "mp3",
-    "settingfonttype": "",
     "setting_geo_2": [
         100,
         100,
@@ -1499,8 +1481,6 @@
             "name": "自定义"
         }
     },
-    "force_rect": true,
-    "darklight2": 0,
     "theme3": "PyQtDarkTheme",
     "useopenlink": false,
     "useopenlinklink1": [
@@ -1524,7 +1504,6 @@
         "tts_skip": false,
         "tts_skip_regex": []
     },
-    "allowmulti": true,
     "sourcestatus2": {
         "mssr": {
             "path": "",
@@ -1920,7 +1899,6 @@
         }
     },
     "realtime_edit_target": "realtime_edit",
-    "movefollow": true,
     "WordViewTooltipColor": "#c0ffc0ff",
     "WordViewTooltipContentColor": "#c0ffffff",
     "WordViewTooltipHideFocus": true,
@@ -1931,15 +1909,9 @@
     "word_hover_border": 8,
     "word_hover_bg_color": "#333",
     "word_hover_text_color": "white",
-    "focusnotop": false,
     "autostarthook": true,
     "minlength": 0,
     "maxlength": 10000,
-    "srclang4": "auto",
-    "tgtlang4": "zh",
-    "ocr_auto_method_v2": "period",
-    "ocr_interval": 1.5,
-    "ocr_trigger_delay": 0,
     "ocr_trigger_events": [
         {
             "vkey": "LBUTTON",
@@ -1962,7 +1934,6 @@
             "event": 1
         }
     ],
-    "proxies": null,
     "wordlabel": [],
     "wordlabel2": [],
     "noundictconfig_ex": [],

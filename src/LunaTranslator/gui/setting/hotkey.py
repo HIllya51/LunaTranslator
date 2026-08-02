@@ -209,7 +209,7 @@ def registrhotkeys(self):
             gobject.base.translation_ui.enterfunction(),
         ),
         "52": lambda: (
-            globalconfig.__setitem__("hidetools", not globalconfig["hidetools"]),
+            globalconfig.__setitem__("hidetools", not globalconfig.get("hidetools", False)),
             gobject.base.translation_ui.enterfunction(),
         ),
         "_10": gobject.base.translation_ui.showsavegame_signal.emit,

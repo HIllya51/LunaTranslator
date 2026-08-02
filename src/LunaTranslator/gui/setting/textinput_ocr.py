@@ -260,7 +260,7 @@ def _ocrparam_create(self, f):
             "执行周期_(s)",
             getboxlayout(
                 [
-                    D_getspinbox(0.1, 100, globalconfig, "ocr_interval", double=True),
+                    D_getspinbox(0.1, 100, globalconfig, "ocr_interval", double=True, default=1.5),
                     QLabel,
                 ]
             ),
@@ -275,7 +275,8 @@ def _ocrparam_create(self, f):
             getboxlayout(
                 [
                     D_getspinbox(
-                        0, 100, globalconfig, "ocr_trigger_delay", double=True
+                        0, 100, globalconfig, "ocr_trigger_delay", double=True,
+                        default=0,
                     ),
                     QLabel,
                 ]
@@ -324,7 +325,7 @@ def _ocrparam_create(self, f):
 def _ocrparam(self):
     self._ocrparam = NQGroupBox()
     self._ocrparaml = LFormLayout(self._ocrparam)
-    _ocrparam_create(self, globalconfig["ocr_auto_method_v2"])
+    _ocrparam_create(self, globalconfig.get("ocr_auto_method_v2", "period"))
     return self._ocrparam
 
 
@@ -494,6 +495,7 @@ def internal(self):
                         "ocr_auto_method_v2",
                         internal=["analysis", "period", "trigger"],
                         callback=functools.partial(_ocrparam_create, self),
+                        default="period"
                     ),
                 ]
             ),

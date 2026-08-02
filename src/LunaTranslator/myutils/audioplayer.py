@@ -51,9 +51,9 @@ class playonce:
 
 def bass_code_cast(bs, fr="mp3"):
     # fr没啥用，仅用来给出编码失败时的用来占位的后缀，以少写代码
-    to = globalconfig["audioformat"]
+    to = globalconfig.get("audioformat", "mp3")
     ret = NativeUtils.bass_code_cast(
-        bs, to, globalconfig["mp3kbps"], globalconfig["opusbitrate"]
+        bs, to, globalconfig.get("mp3kbps", 64), globalconfig.get("opusbitrate", 10)
     )
     if not ret:
         return bs, fr

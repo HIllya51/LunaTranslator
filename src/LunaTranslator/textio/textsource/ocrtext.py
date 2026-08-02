@@ -76,7 +76,7 @@ class rangemanger:
             return
         imgr = imageCutEx(self.ref.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
         ok = True
-        if globalconfig["ocr_auto_method_v2"] == "analysis":
+        if globalconfig.get("ocr_auto_method_v2", "period") == "analysis":
             imgr1 = cvMat.fromQImage(imgr)
 
             image_score = imgr1.MSSIM(self.savelastimg)
@@ -95,8 +95,8 @@ class rangemanger:
                     self.savelastrecimg = imgr1
             else:
                 ok = False
-        elif globalconfig["ocr_auto_method_v2"] == "period":
-            if time.time() - self.lastocrtime > globalconfig["ocr_interval"]:
+        elif globalconfig.get("ocr_auto_method_v2", "period") == "period":
+            if time.time() - self.lastocrtime > globalconfig.get("ocr_interval", 1.5):
                 ok = True
             else:
                 ok = False
@@ -195,7 +195,7 @@ class ocrtext(basetext):
             if not rs:
                 time.sleep(0.1)
                 continue
-            if globalconfig["ocr_auto_method_v2"] == "trigger":
+            if globalconfig.get("ocr_auto_method_v2", "period") == "trigger":
                 triggered = False
                 this = tuple(
                     (
@@ -233,13 +233,13 @@ class ocrtext(basetext):
 
                     t1 = time.time()
                     while (not self.ending) and (
-                        globalconfig["ocr_auto_method_v2"] == "trigger"
+                        globalconfig.get("ocr_auto_method_v2", "period") == "trigger"
                     ):
                         time.sleep(0.1)
-                        if time.time() - t1 >= globalconfig["ocr_trigger_delay"]:
+                        if time.time() - t1 >= globalconfig.get("ocr_trigger_delay", 0):
                             break
                     while (not self.ending) and (
-                        globalconfig["ocr_auto_method_v2"] == "trigger"
+                        globalconfig.get("ocr_auto_method_v2", "period") == "trigger"
                     ):
                         if self.waitforstablex():
                             break

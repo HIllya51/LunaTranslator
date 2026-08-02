@@ -479,6 +479,7 @@ class AnkiWindow(QWidget):
                 "imageformat2",
                 static=True,
                 internal=getimageformatlist(),
+                default="webp",
             ),
         )
         layout.addRow(
@@ -509,6 +510,7 @@ class AnkiWindow(QWidget):
                 "audioformat",
                 internal=["mp3", "opus"],
                 callback=__,
+                default="mp3"
             ),
         )
 
@@ -519,13 +521,14 @@ class AnkiWindow(QWidget):
                 globalconfig,
                 "mp3kbps",
                 internal=[8 * i for i in range(1, 320 // 8 + 1)],
+                default=64,
             ),
         )
         layout.addRow(
             "OPUS bitrate",
-            getspinbox(6, 256, globalconfig, "opusbitrate"),
+            getspinbox(6, 256, globalconfig, "opusbitrate", default=10),
         )
-        __(globalconfig["audioformat"])
+        __(globalconfig.get("audioformat", "mp3"))
 
     @threader
     def simulate_key(self, i):

@@ -342,7 +342,7 @@ class texthook(basetext):
             return
         if len(self.pids[self.gameuid]):
             return
-        if globalconfig["startgamenototop"] == False:
+        if not globalconfig.get("startgamenototop", True):
             idx = reflist.index(uid)
             reflist.insert(0, reflist.pop(idx))
         self.start(hwnd, pids, name_, uid, autostart=True)

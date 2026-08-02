@@ -38,7 +38,7 @@ class Textbrowser(QFrame):
         self.textbrowser.resize(event.size())
 
     def _contentsChanged(self, size: QSize):
-        size.setHeight(max(size.height(), globalconfig["min_auto_height"]))
+        size.setHeight(max(size.height(), globalconfig.get("min_auto_height", 0)))
         self.contentsChanged.emit(size)
 
     def loadinternal(self, shoudong=False, forceReload=False):

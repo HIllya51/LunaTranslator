@@ -1115,7 +1115,7 @@ class BASEOBJECT(QObject):
             return
         gameuid, reflist = findgameuidofpath(pexe)
         if gameuid:
-            if globalconfig["startgamenototop"] == False:
+            if not globalconfig.get("startgamenototop", True):
                 idx = reflist.index(gameuid)
                 reflist.insert(0, reflist.pop(idx))
         else:
@@ -1514,7 +1514,7 @@ class BASEOBJECT(QObject):
             if self.ismenulistframeless(widget):
                 continue
             NativeUtils.SetCornerNotRound(
-                int(widget.winId()), globalconfig["force_rect"], False
+                int(widget.winId()), globalconfig.get("force_rect", True), False
             )
 
     def setcommonstylesheet(self):
@@ -1557,7 +1557,7 @@ class BASEOBJECT(QObject):
                 print_exc()
         fontstr = lambda fsize: "font:{fontsize}pt  {fonttype}; {bold}".format(
             fontsize=fsize,
-            fonttype=globalconfig["settingfonttype"],
+            fonttype=globalconfig.get("settingfonttype", ""),
             bold=("", "font-weight: bold;")[globalconfig.get("settingfontbold", False)],
         )
         style += "*{{  {}  }}".format(fontstr(globalconfig.get("settingfontsize", 12)))
@@ -1569,7 +1569,7 @@ class BASEOBJECT(QObject):
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
-        font.setFamily(globalconfig["settingfonttype"])
+        font.setFamily(globalconfig.get("settingfonttype", ""))
         font.setPointSizeF(globalconfig.get("settingfontsize", 12))
         font.setBold(globalconfig.get("settingfontbold", False))
         if QApplication.instance().font() != font:
@@ -1605,7 +1605,7 @@ class BASEOBJECT(QObject):
 
     def parsedefaultfont(self):
         for k in ["fonttype", "fonttype2", "settingfonttype"]:
-            if globalconfig[k] == "":
+            if not globalconfig.get(k, ""):
                 l = Languages.Japanese if k == "fonttype" else getlanguse()
                 self.set_font_default(l, k)
                 # globalconfig[k] = QFontDatabase.systemFont(
@@ -1692,7 +1692,7 @@ class BASEOBJECT(QObject):
 
     def WindowMessageCallback(self, msg: UINT, value1: WPARAM, value2: LPARAM):
         if msg == 0:
-            if globalconfig["darklight2"] == 0:
+            if globalconfig.get("darklight2", 0) == 0:
                 self.setstylesheetsignal.emit()
         elif msg == 1:
             running = value1 or value2

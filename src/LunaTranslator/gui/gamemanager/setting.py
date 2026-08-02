@@ -1323,7 +1323,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid],
                 "private_srclang_2",
                 internal=all_langs()[1],
-                default=globalconfig["srclang4"],
+                default=globalconfig.get("srclang4", "auto"),
             ),
         )
         formLayout2.addRow(
@@ -1333,7 +1333,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid],
                 "private_tgtlang_2",
                 internal=all_langs(False)[1],
-                default=globalconfig["tgtlang4"],
+                default=globalconfig.get("tgtlang4", "zh"),
             ),
         )
 

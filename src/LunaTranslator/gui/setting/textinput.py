@@ -729,8 +729,8 @@ class extralangs(LDialog):
         tgtlangw.addItems(all_langs(False)[0], internals=all_langs(False)[1])
         srclangw.blockSignals(False)
         tgtlangw.blockSignals(False)
-        srclangw.setCurrentData(globalconfig["srclang4"])
-        tgtlangw.setCurrentData(globalconfig["tgtlang4"])
+        srclangw.setCurrentData(globalconfig.get("srclang4", "auto"))
+        tgtlangw.setCurrentData(globalconfig.get("tgtlang4", "zh"))
 
 
 def __srclangw(self):
@@ -739,6 +739,7 @@ def __srclangw(self):
         globalconfig,
         "srclang4",
         internal=all_langs()[1],
+        default="auto",
     )
     return self.srclangw
 
@@ -749,6 +750,7 @@ def __tgtlangw(self):
         globalconfig,
         "tgtlang4",
         internal=all_langs(False)[1],
+        default="zh"
     )
     return self.tgtlangw
 

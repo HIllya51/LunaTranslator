@@ -163,7 +163,7 @@ def createfontcombo():
         globalconfig.__setitem__("settingfonttype", x)
         gobject.base.setcommonstylesheet()
 
-    sfont_comboBox.setCurrentFont(QFont(globalconfig["settingfonttype"]))
+    sfont_comboBox.setCurrentFont(QFont(globalconfig.get("settingfonttype", "")))
     sfont_comboBox.currentTextChanged.connect(callback)
     return sfont_comboBox
 
@@ -243,7 +243,7 @@ def __rs():
 
 
 def switch_darklight():
-    darklight = globalconfig["darklight2"]
+    darklight = globalconfig.get("darklight2", 0)
     for widget in QApplication.allWidgets():
         QApplication.postEvent(widget, DarkLightSettingChangedEvent(darklight))
 
@@ -270,6 +270,7 @@ def uisetting(self):
             globalconfig,
             "force_rect",
             callback=lambda _: gobject.base.cornerornot(),
+            default=True,
         ),
         "",
         getsmalllabel("任务栏中显示"),
@@ -297,6 +298,7 @@ def uisetting(self):
                         D_getsimpleswitch(
                             globalconfig,
                             "movefollow",
+                            default=True,
                         ),
                         "",
                         "自动隐藏",
@@ -309,22 +311,17 @@ def uisetting(self):
                         D_getsimpleswitch(
                             globalconfig,
                             "focusnotop",
+                            default=False,
                         ),
                         "",
                         "自动调整高度",
                         D_getsimpleswitch(
-                            globalconfig, "adaptive_height", default=True
-                        ),
-                        D_getsimplecombobox(
-                            ["向上", "向下"],
-                            globalconfig,
-                            "top_align",
-                            default=0,
+                            globalconfig, "adaptive_height", default=False
                         ),
                         getboxlayout(
                             [
                                 "最小高度",
-                                D_getspinbox(0, 9999, globalconfig, "min_auto_height"),
+                                D_getspinbox(0, 9999, globalconfig, "min_auto_height", default=0),
                                 "px",
                             ]
                         ),
@@ -385,6 +382,7 @@ def uisetting(self):
                                             gobject.base.setcommonstylesheet(),
                                             switch_darklight(),
                                         ),
+                                        default=0,
                                     ),
                                 ],
                                 [

@@ -204,7 +204,7 @@ def startgamecheck(self: QWidget, reflist: list, gameuid):
         return
     if not os.path.exists(get_launchpath(gameuid)):
         return
-    if globalconfig["startgamenototop"] == False:
+    if not globalconfig.get("startgamenototop", True):
         idx = reflist.index(gameuid)
         reflist.insert(0, reflist.pop(idx))
     self.window().close()
@@ -380,13 +380,14 @@ class dialog_syssetting(LDialog):
         formLayout.addRow(
             "隐藏不存在的游戏",
             getsimpleswitch(
-                globalconfig, "hide_not_exists", callback=self.parent().callexists
+                globalconfig, "hide_not_exists", callback=self.parent().callexists,
+                default=False,
             ),
         )
 
         formLayout.addRow(
             "启动游戏不修改顺序",
-            getsimpleswitch(globalconfig, "startgamenototop"),
+            getsimpleswitch(globalconfig, "startgamenototop", default=True),
         )
 
         formLayout.addRow(SplitLine())

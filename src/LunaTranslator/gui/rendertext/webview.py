@@ -444,14 +444,14 @@ class TextBrowser(WebviewWidget, somecommon):
         )
 
         def __cb2():
-            globalconfig["hidetools"] = not globalconfig["hidetools"]
+            globalconfig["hidetools"] = not globalconfig.get("hidetools", False)
             gobject.base.translation_ui.enterfunction()
 
         i = self.add_menu_noselect(
             i,
             lambda: _TR("隐藏工具栏"),
             __cb2,
-            getchecked=lambda: globalconfig["hidetools"],
+            getchecked=lambda: globalconfig.get("hidetools", False),
         )
         i = self.add_menu_noselect(
             i,

@@ -149,7 +149,7 @@ class SpecialFont(PopupWidget):
                     dd,
                     k,
                     double=True,
-                    default=globalconfig[k],
+                    default=globalconfig.get(k, 16),
                     callback=self.resetfont,
                 )
             elif i == 2:

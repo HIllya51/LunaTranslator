@@ -102,7 +102,7 @@ class _base:
             _ = len(hira) - 1 - _1
             if not hira[_].kana:
                 continue
-            hira_vis_type = globalconfig["hira_vis_type"]
+            hira_vis_type = globalconfig.get("hira_vis_type", 0)
             if hira_vis_type in (0, 1):
                 if len(set(hira[_].word) - set(allkata + allhira)) == 0:
                     hira[_].hidekana = True
