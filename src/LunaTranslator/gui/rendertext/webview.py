@@ -431,6 +431,8 @@ class TextBrowser(WebviewWidget, somecommon):
             lambda w: gobject.base.read_text(w.strip()),
         )
         i = self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
+        i = self.add_menu_noselect(i, lambda: _TR("设置"), gobject.base.settin_ui_showsignal.emit)
+        i = self.add_menu_noselect(i)
 
         def __cb():
             globalconfig["dragable"] = not globalconfig.get("dragable", True)
