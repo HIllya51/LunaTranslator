@@ -74,7 +74,7 @@ export const zh = defineConfig({
             // { text: "官方网站", link: "https://lunatranslator.org/" },
             { text: "视频教程", link: "https://space.bilibili.com/592120404/video" },
             { text: "QQ群", link: "https://qm.qq.com/q/mPSu3sG5ri" },
-            { text: "支持作者", link: "/zh/support" },
+            { text: "支持作者", link: "/zh/README#anchor-support" },
         ],
         sidebar: [
             {
@@ -82,7 +82,6 @@ export const zh = defineConfig({
                 items: [
                     { text: '软件下载 & 常见问题', link: '/zh/README' },
                     { text: '基本用法', link: '/zh/basicuse' },
-                    { text: '支持作者', link: '/zh/support' }
                 ]
             },
             {
