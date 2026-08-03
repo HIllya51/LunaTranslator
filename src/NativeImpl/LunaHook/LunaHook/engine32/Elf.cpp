@@ -630,11 +630,37 @@ static bool ai6win()
   hp.type = USING_STRING;
   return NewHook(hp, "elf7");
 }
+static bool Hyakki()
+{
+  // https://vndb.org/r66508
+  // 百鬼～淫黙された廃墟～【Windows10対応】
+  char symbol[] = "\x81\x76\x81\x78\x81\x7a\x81\x45\x81\x48\x81\x49";
+  ULONG addr = MemDbg::findBytes(symbol, sizeof(symbol), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  //  HA4@49140:AI5WIN.exe
+  BYTE bytes[] = {
+      0x66, 0xc1, 0xc0, 0x08,
+      0xf3, 0x0f, 0x7e, 0x05, XX4,
+      0x57};
+  *(int *)(bytes + 8) = addr;
+  addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  addr = MemDbg::findEnclosingAlignedFunction(addr, 0x80);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.type = USING_CHAR | CODEC_ANSI_BE;
+  hp.offset = stackoffset(1);
+  return NewHook(hp, "Elf8");
+}
 bool Elfattach_function(int type)
 {
   if (type == 1)
   {
-    auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || aijiemei4DL() || elf3() || ai6win();
+    auto _1 = InsertElfHook() || __() || elf4() || nvxijiazu() || malunohuanzhe() || aijiemei4DL() || Hyakki() || elf3() || ai6win();
     return ScenarioHook::attach(processStartAddress, processStopAddress) || _1;
   }
   else if (type == 2)
