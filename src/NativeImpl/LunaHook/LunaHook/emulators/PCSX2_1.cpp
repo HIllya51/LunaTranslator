@@ -2724,6 +2724,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x19BF230, {DIRECT_READ, 0, 0, 0, SLPM65684, "SLPM-65684"}},
     // マイネリーベⅡ ～誇りと正義と愛～
     {0x1FFD0DC, {DIRECT_READ, 0, 0, 0, SLPM66247, "SLPM-66247"}},
+    // 幻想水滸伝V
+    {0x24CB94, {0, PCSX2_REG_OFFSET(a3), 0, 0, NewLineCharFilterA, std::vector<const char*>{"SLPM-66286", "SLPM-66170", "SLPM-74238"}}},
     // セパレイトハーツ (Separate Hearts)
     {0x1F63320, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66298"}}, //@mills
     // アカイイト
