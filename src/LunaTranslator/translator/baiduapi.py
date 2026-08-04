@@ -68,7 +68,7 @@ class TS(basetrans):
         h = {"Authorization": "Bearer " + self.multiapikeycurrent["密钥"]}
         r = self.proxysession.post(url, json=para, headers=h)
         try:
-            return "\n".join([_["dst"] for _ in r.json()["result"]["trans_result"]])
+            return "\n".join([_["dst"] for _ in r.json()["trans_result"]])
         except:
             raise Exception(r)
 
