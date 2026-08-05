@@ -389,6 +389,9 @@ def MaybeRaiseException(error):
 
 
 def curl_set_verify(curl: CURL, verify: bool | str):
+    if gobject.sys_le_xp and isinstance(verify, bool):
+        # xp的本地证书过旧，无法验证。
+        verify = False
     curl_easy_setopt(curl, CURLoption.SSL_VERIFYPEER, (0, 1)[bool(verify)])
     curl_easy_setopt(curl, CURLoption.SSL_VERIFYHOST, (0, 2)[bool(verify)])
     if not verify:
