@@ -672,7 +672,6 @@ class TranslatorWindow(resizableframeless):
         self.titlebar.refreshtoolicon()
         self.set_color_transparency()
         self.seteffect()
-        self.changeextendstated()
 
     @threader
     def ocr_do_function(self, rect, img=None):
@@ -1441,6 +1440,7 @@ class TranslatorWindow(resizableframeless):
         radiu_valid = self.radiu_valid
 
         NativeUtils.SetCornerNotRound(self.winid, False, globalconfig["yuanjiao_sys"])
+        self.changeextendstated()
         use_r1 = radiu_valid * min(
             self.translate_text.height() // 2,
             self.translate_text.width() // 2,
