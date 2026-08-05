@@ -187,15 +187,15 @@ class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
             return index.data(self.table.ValRole)
         return self.model.itemFromIndex(index).text()
 
-    def apply(self):
-        def __check(row):
-            k = self.table.getdata(row, 2 + self.need_regex)
-            if not k:
-                return ""
-            switchs = tuple(self.table.getdata(row, _) for _ in self.switchcols)
-            return (switchs, k)
+    def dedumpcheck(self, row):
+        k = self.table.getdata(row, 2 + self.need_regex)
+        if not k:
+            return
+        switchs = tuple(self.table.getdata(row, _) for _ in self.switchcols)
+        return (switchs, k)
 
-        self.table.dedumpmodel(__check)
+    def apply(self):
+        self.table.dedumpmodel(self.dedumpcheck)
         self.reflist.clear()
         for row in range(self.model.rowCount()):
             d = {}

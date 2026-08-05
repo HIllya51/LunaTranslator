@@ -25,6 +25,15 @@ class postconfigdialog_2(noundictconfigdialog1___):
             mergedf=mergedf,
         )
 
+    def dedumpcheck(self, row):
+        k = self.table.getdata(row, 2)
+        if not k:
+            return
+        switchs = tuple(self.table.getdata(row, _) for _ in self.switchcols)
+        t = self.table.getdata(row, 3)
+        t2 = self.table.getdata(row, 4)
+        return (switchs, k, t, t2)
+
 
 class Process:
     @staticmethod
@@ -78,12 +87,8 @@ class Process:
     def process_before(self, japanese):
         used = []
         gpt_dict = []
-        srcs = set()
         for gpt in self.usewhich():
             src_1 = src = gpt["src"]
-            if src in srcs:
-                continue
-            srcs.add(src)
             src = re.escape(src)
             if gpt.get("whole-word", False):
                 src = r"\b" + src + r"\b"
@@ -93,7 +98,6 @@ class Process:
                 continue
             gpt_dict.append(gpt)
             used.append((src_1, gpt["dst"]))
-
         self.zhanweifu = 0
         japanese1, mp1 = self.process_before1(japanese, used)
 
@@ -105,9 +109,13 @@ class Process:
 
     def process_before1(self, content: str, dic: list):
         mp1 = {}
+        srcs = set()
         for k, v in dic:
             if not k:
                 continue
+            if k in srcs:
+                continue
+            srcs.add(k)
             if not v:
                 # 译文不可以为空
                 # 这是为了方便自动从VNDB中导入人名表，且避免破坏现有翻译

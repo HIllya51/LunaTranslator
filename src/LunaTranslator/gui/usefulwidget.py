@@ -464,7 +464,7 @@ class TableViewW(DelayLoadTableView, LTableView):
                 k = self.getdata(row, col)
             elif callable(col):
                 k = col(row)
-            if k == "" or k in dedump:
+            if k is None or k in dedump:
                 needremoves.append(row)
                 continue
             dedump.add(k)
