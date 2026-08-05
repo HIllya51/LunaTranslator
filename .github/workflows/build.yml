@@ -1,13 +1,12 @@
 name: Build
 
-# on:
-#   push:
-#     paths: [ '.github/workflows/build.yml','.github/workflows/buildluna.yml','src/**']
-#   pull_request:
-#     paths: [ '.github/workflows/build.yml','.github/workflows/buildluna.yml','src/**']
 
 on:
   workflow_dispatch:
+  # push:
+  #   paths: [ '.github/workflows/build.yml','.github/workflows/buildluna.yml','src/**']
+  pull_request:
+    paths: [ '.github/workflows/build.yml','.github/workflows/buildluna.yml','src/**']
 
 jobs:
   buildluna:

@@ -15,7 +15,7 @@ jobs:
         include:  
           - arch: x86
             target: winxp
-            os: windows-2022
+         #   os: windows-2022
           - arch: x86
             target: win7
             pythonversion: '3.7.9' 
@@ -27,8 +27,7 @@ jobs:
             pythonversion: '3.13.13'  
     steps:
       - uses: actions/checkout@v6
-      # - uses: microsoft/setup-msbuild@v2
-      - if: matrix.target == 'winxp'
+      - if: 0 && matrix.target == 'winxp'
         run: |
             $vs_installer = "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe"
             $InstallPath = "C:\Program Files\Microsoft Visual Studio\2022\Enterprise"
@@ -56,7 +55,7 @@ jobs:
         with:
           python-version: ${{ matrix.pythonversion }}
           architecture: ${{ matrix.arch }}
-      - if: matrix.target != 'win10'
+      - if: matrix.pythonversion != '3.13.13'
         uses: actions/setup-python@v6
         with:
           python-version: 3.13.13
