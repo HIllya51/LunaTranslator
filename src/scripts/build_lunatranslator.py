@@ -225,6 +225,7 @@ def get_cmake_args(arch, target):
     elif target == "winxp":
         config = "-DWINXP=ON -DWIN10ABOVE=OFF"
     if 0:
+        config += " -DWINXPEXTRADEF=ON"
         vsver = "Visual Studio 17 2022" if target == "winxp" else "Visual Studio 18 2026"
         Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     else:

@@ -1,12 +1,13 @@
 #include "dbcrnn.hpp"
-#ifndef WINXP
+#if WINXPEXTRADEF
+#include "../xpundef/xp_dxgi.h"
+#include "../xpundef/xp_d3d12.h"
+#else
 #include <dxgi.h>
 #include <dxgi1_6.h>
 #include <d3d12.h>
-#else
-#include "../xpundef/xp_dxgi.h"
-#include "../xpundef/xp_d3d12.h"
 #endif
+
 #include "shared.hpp"
 
 inline uint64_t GetLuidKey(LUID luid)
