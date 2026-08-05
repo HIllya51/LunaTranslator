@@ -1628,7 +1628,7 @@ class TranslatorWindow(resizableframeless):
                 return int(IconLabelX.w())
             else:
                 return int(IconLabelX.h())
-        if globalconfig.get("locktools", False):
+        if (not globalconfig.get("hidetools", False)) and globalconfig.get("locktools", False):
             if globalconfig.get("verticalhorizontal", False):
                 return int(IconLabelX.w())
             else:
