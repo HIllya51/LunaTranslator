@@ -76,7 +76,7 @@ class parsesrt:
             "w",
             encoding="utf8",
         ) as ff:
-            ff.write("\n\n".join(self.blocks))
+            ff.write("\n\n".join(self.blocks) + self.padding)
 
     def __init__(self, file, saveorigin):
         self.file = file
@@ -86,6 +86,10 @@ class parsesrt:
             if text.endswith("\n"):
                 text = text[:-1]
             self.blocks = text.split("\n\n")
+            self.padding = ""
+            while self.blocks and self.blocks[-1] and (self.blocks[-1][-1] == "\n"):
+                self.blocks[-1] = self.blocks[-1][:-1]
+                self.padding += "\n"
 
     def __len__(self):
         return len(self.blocks)

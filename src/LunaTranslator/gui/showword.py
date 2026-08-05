@@ -30,6 +30,7 @@ from myutils.utils import (
     checkmd5reloadmodule,
     getimageformat,
 )
+from NativeUtils import MenuItem
 from cishu.cishubase import DictionaryRoot
 from sometypes import WordSegResult
 from myutils.mecab import mecab
@@ -309,7 +310,7 @@ class AnkiWindow(QWidget):
             )
         )
 
-        self.htmlbrowser = auto_select_webview(self, True)
+        self.htmlbrowser = auto_select_webview(self, False)
         self.htmlbrowser.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
@@ -510,7 +511,7 @@ class AnkiWindow(QWidget):
                 "audioformat",
                 internal=["mp3", "opus"],
                 callback=__,
-                default="mp3"
+                default="mp3",
             ),
         )
 
@@ -1557,6 +1558,62 @@ class WordViewer(QWidget):
         elif action == autoread:
             globalconfig["mecabautoreadembedaudio"] = autoread.isChecked()
 
+    def __internal_on_menu(self, selectedtext: str):
+        if selectedtext:
+
+            def __():
+                _ = gobject.base.cishus.get(self.tabks[self.tab.currentIndex()])
+                return _ and _.canGetUrl
+
+            return [
+                MenuItem(
+                    text=_TR("查词"),
+                    clicked=functools.partial(
+                        self.from_webview_search_word.emit, selectedtext.strip()
+                    ),
+                ),
+                MenuItem(
+                    text=_TR("在新窗口中查词"),
+                    clicked=lambda: threader(
+                        self.from_webview_search_word_in_new_window.emit
+                    )(selectedtext.strip()),
+                ),
+                (
+                    MenuItem(
+                        text=_TR("在浏览器中查词"),
+                        clicked=lambda: os.startfile(
+                            gobject.base.cishus.get(
+                                self.tabks[self.tab.currentIndex()]
+                            ).getUrl(selectedtext.strip())
+                        ),
+                    )
+                    if __()
+                    else None
+                ),
+                MenuItem(
+                    text=_TR("翻译"),
+                    clicked=functools.partial(gobject.base.textgetmethod, selectedtext),
+                ),
+                MenuItem(
+                    text=_TR("朗读"),
+                    clicked=functools.partial(gobject.base.read_text, selectedtext),
+                ),
+                MenuItem(
+                    text=_TR("加亮"),
+                    clicked=lambda: self.textOutput.eval("highlightSelection()"),
+                ),
+            ]
+        else:
+            return [
+                MenuItem(
+                    text=_TR("加亮模式"),
+                    clicked=self.switch_hightlightmode,
+                    checkable=True,
+                    checked=self.ishightlight,
+                ),
+                MenuItem(text=_TR("清除加亮"), clicked=self.clear_hightlight),
+            ]
+
     def __init__(self, parent=None, tabonehide=False, transp=False):
         super().__init__(parent)
         self.tabonehide = tabonehide
@@ -1596,50 +1653,10 @@ class WordViewer(QWidget):
                 return web
 
         self.textOutput = showwordfastwebview(self, True)
-        nexti = self.textOutput.add_menu(
-            0, lambda: _TR("查词"), self.from_webview_search_word.emit
-        )
-        nexti = self.textOutput.add_menu(
-            nexti,
-            lambda: _TR("在新窗口中查词"),
-            threader(self.from_webview_search_word_in_new_window.emit),
-        )
+        self.textOutput.on_menu = self.__internal_on_menu
 
-        def __():
-            _ = gobject.base.cishus.get(self.tabks[self.tab.currentIndex()])
-            return _ and _.canGetUrl
-
-        nexti = self.textOutput.add_menu(
-            nexti,
-            lambda: _TR("在浏览器中查词"),
-            lambda word: os.startfile(
-                gobject.base.cishus.get(self.tabks[self.tab.currentIndex()]).getUrl(
-                    word
-                )
-            ),
-            getuse=__,
-        )
-        nexti = self.textOutput.add_menu(
-            nexti, lambda: _TR("翻译"), gobject.base.textgetmethod
-        )
-        nexti = self.textOutput.add_menu(
-            nexti, lambda: _TR("朗读"), gobject.base.read_text
-        )
-        nexti = self.textOutput.add_menu(
-            nexti,
-            lambda: _TR("加亮"),
-            lambda _: self.textOutput.eval("highlightSelection()"),
-        )
         self.ishightlight = False
-        nexti = self.textOutput.add_menu_noselect(
-            0,
-            lambda: _TR("加亮模式"),
-            self.switch_hightlightmode,
-            getchecked=lambda: self.ishightlight,
-        )
-        nexti = self.textOutput.add_menu_noselect(
-            nexti, lambda: _TR("清除加亮"), self.clear_hightlight
-        )
+
         self.textOutput.set_zoom(globalconfig.get("ZoomFactor", 1))
         self.textOutput.on_ZoomFactorChanged.connect(
             functools.partial(globalconfig.__setitem__, "ZoomFactor")

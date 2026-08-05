@@ -18,6 +18,9 @@ from ctypes import (
     c_uint64,
     c_int32,
     CFUNCTYPE,
+    Structure,
+    c_wchar,
+    sizeof,
 )
 import winreg
 from ctypes.wintypes import (
@@ -397,21 +400,30 @@ webview_destroy = utilsdll.webview_destroy
 webview_destroy.argtypes = (AbstractWebViewPTR,)
 webview_resize = utilsdll.webview_resize
 webview_resize.argtypes = AbstractWebViewPTR, c_int, c_int
-webview_add_menu = utilsdll.webview_add_menu
-webview_add_menu_noselect_CALLBACK = CFUNCTYPE(None)
-webview_add_menu_CALLBACK = CFUNCTYPE(None, c_wchar_p)
-webview_add_menu_noselect_getchecked = CFUNCTYPE(c_bool)
-webview_add_menu_noselect_getuse = CFUNCTYPE(c_bool)
-webview_contextmenu_gettext = CFUNCTYPE(c_wchar_p)
-webview_add_menu.argtypes = (
+
+webview_contextmenu_clicked_t = CFUNCTYPE(None)
+
+
+class webview_c_MenuItem(Structure):
+    _fields_ = [
+        ("issep", c_bool),
+        ("checkable", c_bool),
+        ("checked", c_bool),
+        ("clicked", webview_contextmenu_clicked_t),
+        ("text", c_wchar * 256),
+    ]
+
+
+webview_menu_handler_t = CFUNCTYPE(None, LPCWSTR, POINTER(c_size_t), POINTER(POINTER(webview_c_MenuItem)))
+webview_set_menu_handler = utilsdll.webview_set_menu_handler
+webview_set_menu_handler.argtypes = (
     AbstractWebViewPTR,
-    c_int,
-    c_void_p,
-    c_void_p,
-    c_void_p,
-    c_void_p,
-    c_bool,
+    webview_menu_handler_t,
 )
+webview_set_menu_handler.restype = c_bool
+webview_allocate_buffer = utilsdll.webview_allocate_buffer
+webview_allocate_buffer.argtypes = (c_size_t,)
+webview_allocate_buffer.restype = c_void_p
 webview_evaljs = utilsdll.webview_evaljs
 webview_evaljs.argtypes = AbstractWebViewPTR, c_wchar_p, c_void_p
 webview_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)
@@ -431,15 +443,15 @@ webview_get_ZoomFactor.argtypes = (AbstractWebViewPTR,)
 webview_get_ZoomFactor.restype = c_double
 
 
-def wrapgetlabel(getlabel):
-    if not getlabel:
-        return
-
-    def __(f):
-        _ = f()
-        return str_alloc(_)
-
-    return functools.partial(__, getlabel)
+class MenuItem:
+    def __init__(
+        self, issep=False, checkable=False, checked=False, clicked=lambda: 0, text=""
+    ):
+        self.issep = issep
+        self.checkable = checkable
+        self.checked = checked
+        self.clicked = clicked
+        self.text = text
 
 
 class AbstractWebView:
@@ -458,7 +470,13 @@ class AbstractWebView:
     def __init__(self):
         self.html_limit = 2 * 1024 * 1024
         self.callbacks = []
+        self.__menu_clicked_ptr = []
         self.ptr = AbstractWebViewPTR()
+
+    def _init(self):
+        ptr = webview_menu_handler_t(self.__menu_handler)
+        self.callbacks.append(ptr)
+        webview_set_menu_handler(self.ptr, ptr)
 
     def eval(self, js: str, callback=None):
         cb = webview_evaljs_CALLBACK(callback) if callback else None
@@ -488,26 +506,24 @@ class AbstractWebView:
     def setHtml(self, html: str):
         webview_sethtml(self.ptr, html)
 
-    def _add_menu(
-        self,
-        select,
-        index=0,
-        getlabel=None,
-        callback=None,
-        getchecked=None,
-        getuse=None,
-    ):
-        __ = callback
-        self.callbacks.append(__)
-        __1 = webview_add_menu_noselect_getchecked(getchecked) if getchecked else None
-        self.callbacks.append(__1)
-        __2 = webview_add_menu_noselect_getuse(getuse) if getuse else None
-        self.callbacks.append(__2)
-        getlabel = wrapgetlabel(getlabel)
-        __3 = webview_contextmenu_gettext(getlabel) if getlabel else None
-        self.callbacks.append(__3)
-        webview_add_menu(self.ptr, index, __3, __, __1, __2, select)
-        return index + 1
+    def on_menu(self, selecttext) -> "list[MenuItem]":
+        return []
+
+    def __menu_handler(self, selecttext, psizet, ppcmenu):
+        self.__menu_clicked_ptr.clear()
+        menuitens = self.on_menu(selecttext)
+        menuitens = [_ for _ in menuitens if _]
+        psizet[0] = c_size_t(len(menuitens))
+        buffer = cast(webview_allocate_buffer(len(menuitens) * sizeof(webview_c_MenuItem)), POINTER(webview_c_MenuItem))
+        for i, item in enumerate(menuitens):
+            buffer[i].issep = item.issep
+            buffer[i].checkable = item.checkable
+            buffer[i].checked = item.checked
+            __ = webview_contextmenu_clicked_t(item.clicked)
+            self.__menu_clicked_ptr.append(__)
+            buffer[i].clicked = __
+            buffer[i].text = item.text
+        ppcmenu[0] = buffer
 
 
 # Abastract Webview end
@@ -614,6 +630,7 @@ class WebView2(AbstractWebView):
             webview2_create(windows.pointer(self.ptr), parent, transp, loadext)
         )
         self.put_PreferredColorScheme(darklight)
+        self._init()
 
     def bind(self, fname, func):
         self.binds[fname] = func
@@ -749,6 +766,7 @@ class EdgeHtml(AbstractWebView):
         windows.CHECK_FAILURE(edgehtml_new(windows.pointer(self.ptr), parent, transp))
         self._keepref = web_notify_callback_t(self.__web_notify_callback)
         edgehtml_set_notify_callback(self.ptr, self._keepref)
+        self._init()
 
     def __web_notify_callback(self, js):
         try:
@@ -804,9 +822,11 @@ class MSHTML(AbstractWebView):
         self.html_limit = 1
         self.browser = AbstractWebViewPTR()
         html_new(int(parent), pointer(self.browser))
-        if gobject.is_running_on_wine() or (html_version() < 10001):  # ie10之前，sethtml会乱码
+        if gobject.is_running_on_wine() or (
+            html_version() < 10001
+        ):  # ie10之前，sethtml会乱码
             self.html_limit = 0
-
+        self._init()
 
     def get_current_url(self) -> str:
         _ = []
@@ -1011,9 +1031,6 @@ IsDLLBit64.restype = c_bool
 CreateShortcut = utilsdll.CreateShortcut
 CreateShortcut.argtypes = LPCWSTR, LPCWSTR, LPCWSTR, LPCWSTR
 
-str_alloc = utilsdll.str_alloc
-str_alloc.argtypes = (c_wchar_p,)
-str_alloc.restype = c_void_p
 GetParentProcessID = utilsdll.GetParentProcessID
 GetParentProcessID.argtypes = (DWORD,)
 GetParentProcessID.restype = DWORD

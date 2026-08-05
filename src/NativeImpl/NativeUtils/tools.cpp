@@ -79,14 +79,6 @@ DECLARE_API const char *mecab_dictionary_codec(MeCab::Tagger *tagger)
     return tagger->dictionary_info()->charset;
 }
 
-DECLARE_API LPWSTR str_alloc(LPCWSTR str)
-{
-    // 从python向c++传递字符串时，需要转成非托管字符串，否则会内存泄漏
-    auto __ = wcslen(str) + 1;
-    auto _ = new WCHAR[__];
-    wcscpy_s(_, __, str);
-    return _;
-}
 
 DECLARE_API void AES_decrypt(uint8_t *key, uint8_t *iv, uint8_t *ptr, size_t size)
 {

@@ -21,6 +21,7 @@ from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark
 from myutils.hwnd import getcurrexe
 from ocrengines.baseocrclass import OCRResult
+from NativeUtils import MenuItem
 from gui.RichMessageBox import RichMessageBox
 from gui.dynalang import (
     LLabel,
@@ -1511,6 +1512,9 @@ class AbstractWebviewWidget(QWidget):
     on_load = pyqtSignal(str)
     on_ZoomFactorChanged = pyqtSignal(float)
 
+    def on_menu(self, selecttext) -> "list[NativeUtils.MenuItem]":
+        return []
+
     #
     def parsehtml(self, html):
         return html
@@ -1545,36 +1549,6 @@ class AbstractWebviewWidget(QWidget):
 
     def get_zoom(self):
         return self.webview.get_zoom()
-
-    def add_menu(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        __ = NativeUtils.webview_add_menu_CALLBACK(callback) if callback else None
-        return self.webview._add_menu(
-            True,
-            index=index,
-            getlabel=getlabel,
-            callback=__,
-            getchecked=getchecked,
-            getuse=getuse,
-        )
-
-    def add_menu_noselect(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        __ = (
-            NativeUtils.webview_add_menu_noselect_CALLBACK(callback)
-            if callback
-            else None
-        )
-        return self.webview._add_menu(
-            False,
-            index=index,
-            getlabel=getlabel,
-            callback=__,
-            getchecked=getchecked,
-            getuse=getuse,
-        )
 
     def bind(self, fname, func):
         self.webview.bind(fname, func)
@@ -1967,12 +1941,16 @@ class WebviewWidget(AbstractWebviewWidget):
             self.webview.put_PreferredColorScheme(a0.darklight())
         return super().event(a0)
 
+    def __on_menu(self, c):
+        return self.on_menu(c)
+
     def __init__(self, parent=None, transp=False, loadext=False) -> None:
         super().__init__(parent)
         self.url = ""
         self.webview = WebView2(
             int(self.winId()), transp, loadext, globalconfig.get("darklight2", 0)
         )
+        self.webview.on_menu = self.__on_menu
         self.loadextensionwindow.connect(self.__loadextensionwindow)
         self.destroyed.connect(self.webview.destroy)
         self.webview.set_callbacks(
@@ -1982,9 +1960,6 @@ class WebviewWidget(AbstractWebviewWidget):
             self.titlechanged.emit,
             self.IconChangedF,
         )
-
-        self.add_menu()
-        self.add_menu_noselect()
 
     def IconChangedF(self, ptr, size):
         pixmap = QPixmap()
@@ -2011,8 +1986,19 @@ class EdgeHtmlWidget(AbstractWebviewWidget):
         super().__init__(parent)
         self.webview = NativeUtils.EdgeHtml(int(self.winId()), transp=transp)
         self.destroyed.connect(self.webview.destroy)
-        self.add_menu(0, lambda: _TR("复制"), NativeUtils.ClipBoard.setText)
-        self.add_menu(0)
+        self.webview.on_menu = self.__on_menu
+
+    def __on_menu(self, c):
+        menu = self.on_menu(c)
+        if c:
+            menu += [
+                MenuItem(issep=True),
+                MenuItem(
+                    text=_TR("复制"),
+                    clicked=functools.partial(NativeUtils.ClipBoard.setText, c),
+                ),
+            ]
+        return menu
 
     def parsehtml(self, html):
         return self._parsehtml_dark(html)
@@ -2031,14 +2017,25 @@ class MSHtmlWidget(AbstractWebviewWidget):
         super().__init__(parent)
         self.webview: NativeUtils.MSHTML = NativeUtils.MSHTML(int(self.winId()))
         self.destroyed.connect(self.webview.destroy)
+        self.webview.on_menu = self.__on_menu
         self.curr_url = None
         t = QTimer(self)
         t.setInterval(100)
         t.timeout.connect(self.__getcurrent)
         t.timeout.emit()
         t.start()
-        self.add_menu(0, lambda: _TR("复制"), NativeUtils.ClipBoard.setText)
-        self.add_menu(0)
+
+    def __on_menu(self, c):
+        menu = self.on_menu(c)
+        if c:
+            menu += [
+                MenuItem(issep=True),
+                MenuItem(
+                    text=_TR("复制"),
+                    clicked=functools.partial(NativeUtils.ClipBoard.setText, c),
+                ),
+            ]
+        return menu
 
     def __getcurrent(self):
         _u = self.webview.get_current_url()
@@ -2070,22 +2067,6 @@ class WebviewWidget_for_auto(WebviewWidget):
         )
         self.pluginsedit.connect(functools.partial(Exteditor, self))
         self.reloadx.connect(self.appendext)
-
-        nexti = self.add_menu_noselect()
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("附加浏览器插件"),
-            threader(self.reloadx.emit),
-            getchecked=lambda: globalconfig.get("webviewLoadExt_cishu", True),
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("浏览器插件"),
-            threader(self.pluginsedit.emit),
-            getuse=lambda: globalconfig.get("webviewLoadExt_cishu", True),
-        )
-        nexti = self.add_menu_noselect(nexti)
-        self.cachezoom = 1
 
 
 _request_delete_ok_cache = {}
@@ -2226,22 +2207,6 @@ class auto_select_webview(QWidget):
         self.bindinfo.append((funcname, function))
         self.internal.bind(funcname, function)
 
-    def add_menu(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        self.addmenuinfo.append((index, getlabel, callback, getchecked, getuse))
-        return self.internal.add_menu(index, getlabel, callback, getchecked, getuse)
-
-    def add_menu_noselect(
-        self, index=0, getlabel=None, callback=None, getchecked=None, getuse=None
-    ):
-        self.addmenuinfo_noselect.append(
-            (index, getlabel, callback, getchecked, getuse)
-        )
-        return self.internal.add_menu_noselect(
-            index, getlabel, callback, getchecked, getuse
-        )
-
     def clear(self):
         self.internal.setHtml(self.internal.parsehtml(""))  # 夜间
 
@@ -2290,10 +2255,6 @@ class auto_select_webview(QWidget):
         self.internal.on_load.connect(self._on_load)
         self.internal.on_ZoomFactorChanged.connect(self.on_ZoomFactorChanged)
         self.layout().addWidget(self.internal)
-        for _ in self.addmenuinfo:
-            self.internal.add_menu(*_)
-        for _ in self.addmenuinfo_noselect:
-            self.internal.add_menu_noselect(*_)
         for _ in self.bindinfo:
             self.internal.bind(*_)
 
@@ -2326,7 +2287,33 @@ class auto_select_webview(QWidget):
             except:
                 print_exc()
                 browser = MSHtmlWidget(self)
+        browser.on_menu = self.__on_menu
         return browser
+
+    def on_menu(self, selectedtext):
+        return []
+
+    def __on_menu(self, selectedtext):
+        menu = self.on_menu(selectedtext)
+        if (not selectedtext) and isinstance(self.internal, WebviewWidget_for_auto):
+            menu += [
+                MenuItem(issep=True),
+                MenuItem(
+                    text=_TR("附加浏览器插件"),
+                    clicked=threader(self.internal.reloadx.emit),
+                    checkable=True,
+                    checked=globalconfig.get("webviewLoadExt_cishu", True),
+                ),
+                (
+                    MenuItem(
+                        text=_TR("浏览器插件"),
+                        clicked=threader(self.internal.pluginsedit.emit),
+                    )
+                    if globalconfig.get("webviewLoadExt_cishu", True)
+                    else None
+                ),
+            ]
+        return menu
 
 
 def manybuttonlayout(textandfunctions: list):

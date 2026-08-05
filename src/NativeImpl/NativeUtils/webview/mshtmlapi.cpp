@@ -130,10 +130,7 @@ void MWebBrowserEx::resize(int w, int h)
     r.bottom = h;
     MoveWindow(r);
 }
-void MWebBrowserEx::add_menu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
-{
-    NativeMenuHelper::add_menu(index, gettext, callback, getchecked, getuse);
-}
+
 void MWebBrowserEx::evaljs(const wchar_t *js, evaljs_callback_t cb)
 {
     CComPtr<IHTMLDocument2> pDocument;
@@ -210,13 +207,13 @@ STDMETHODIMP MWebBrowserEx::ShowContextMenu(
     case CONTEXT_MENU_TEXTSELECT:
     {
         std::wstring s;
-        if (dwID == CONTEXT_MENU_DEFAULT)
+        if (dwID == CONTEXT_MENU_TEXTSELECT)
         {
             CComBSTR selectedText;
             if (SUCCEEDED(getselectedtext(&selectedText)))
                 s = selectedText;
         }
-        CreateMenu(hwndParent, s, ppt);
+        CreateMenu(hwndParent, s, ppt, menu_handler);
         return S_OK;
     }
     default:

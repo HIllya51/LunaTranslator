@@ -56,10 +56,6 @@ void EdgeHtml::bind(const wchar_t *f, void *)
 EdgeHtml::~EdgeHtml()
 {
 }
-void EdgeHtml::add_menu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
-{
-    NativeMenuHelper::add_menu(index, gettext, callback, getchecked, getuse);
-}
 
 HRESULT EdgeHtmlComHandler::Invoke(IWebViewControl *sender, IWebViewControlScriptNotifyEventArgs *args)
 {
@@ -69,7 +65,7 @@ HRESULT EdgeHtmlComHandler::Invoke(IWebViewControl *sender, IWebViewControlScrip
     static std::wstring __contextmenu__helper = L"__contextmenu__helper";
     if (value._Starts_with(__contextmenu__helper))
     {
-        ref->CreateMenu(ref->parent, value.substr(__contextmenu__helper.size()));
+        ref->CreateMenu(ref->parent, value.substr(__contextmenu__helper.size()), nullptr, ref->menu_handler);
     }
     else if (ref->callback)
     {

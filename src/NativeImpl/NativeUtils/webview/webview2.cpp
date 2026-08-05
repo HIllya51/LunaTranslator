@@ -327,34 +327,22 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2Controller *se
 class ContextMenuCallback : public ComImpl<ICoreWebView2CustomItemSelectedEventHandler>
 {
 public:
-    COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND targetKind;
-    std::wstring CurrSelectText;
-    contextmenu_callback_t_ex callback;
-    ContextMenuCallback(COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND targetKind, LPCWSTR CurrSelectText_1, contextmenu_callback_t_ex callback) : targetKind(targetKind), callback(callback)
+    contextmenu_clicked_t callback;
+    ContextMenuCallback(contextmenu_clicked_t _callback) : callback(_callback)
     {
-        if (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)
-            CurrSelectText = CurrSelectText_1;
     }
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2ContextMenuItem *sender, IUnknown *args)
     {
-        if (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)
-        {
-            auto f = std::get<contextmenu_callback_t>(callback);
-            if (f)
-                f(CurrSelectText.c_str());
-        }
-        else
-        {
-            auto f = std::get<contextmenu_notext_callback_t>(callback);
-            if (f)
-                f();
-        }
+        if (callback)
+            callback();
         return S_OK;
     }
 };
 // ICoreWebView2ContextMenuRequestedEventHandler
 HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICoreWebView2ContextMenuRequestedEventArgs *args)
 {
+    if (!ref->menu_handler)
+        return S_OK;
     CComPtr<ICoreWebView2ContextMenuTarget> target;
     CHECK_FAILURE(args->get_ContextMenuTarget(&target));
     BOOL hasselection;
@@ -372,34 +360,27 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
     CHECK_FAILURE(ref->m_env.QueryInterface(&webviewEnvironment_5));
     EventRegistrationToken token;
     UINT idx = 0;
-    for (auto &&context : (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT ? ref->menus : ref->menus_noselect))
+    auto menuitems = ref->menu_handler(CurrSelectText);
+    if (menuitems.size())
     {
-        if (context.getuse && !context.getuse())
-            continue;
+        MenuItem it;
+        it.issep = true;
+        menuitems.push_back(it);
+    }
+    for (auto &&context : menuitems)
+    {
         CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
-        auto _text = [&]() -> std::optional<std::wstring>
+        if (context.issep)
         {
-            if (!context.gettext)
-                return {};
-            auto text_ = context.gettext();
-            if (!text_)
-                return {};
-            std::wstring _ = text_;
-            delete text_;
-            return _;
-        };
-
-        if (auto text = _text())
-        {
-            CComPtr<ContextMenuCallback> callbackhandler = new ContextMenuCallback(targetKind, CurrSelectText, context.callback);
-            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(text.value().c_str(), nullptr, context.getchecked ? COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX : COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
-            newMenuItem->add_CustomItemSelected(callbackhandler, &token);
-            if (context.getchecked)
-                newMenuItem->put_IsChecked(context.getchecked());
+            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
         }
         else
         {
-            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+            CComPtr<ContextMenuCallback> callbackhandler = new ContextMenuCallback(context.clicked);
+            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(context.text, nullptr, context.checkable ? COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX : COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+            newMenuItem->add_CustomItemSelected(callbackhandler, &token);
+            if (context.checkable)
+                newMenuItem->put_IsChecked(context.checked);
         }
         CHECK_FAILURE_CONTINUE(items->InsertValueAtIndex(idx++, newMenuItem));
     }
@@ -474,11 +455,6 @@ std::wstring WebView2::GetUserDataFolder()
     if (SUCCEEDED(hr))
         return result;
     return UserDir(loadextension).value_or(L"");
-}
-void WebView2::add_menu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
-{
-    auto &whichmenu = (std::get_if<contextmenu_callback_t>(&callback)) ? menus : menus_noselect;
-    whichmenu.insert(whichmenu.begin() + index, {gettext, callback, getchecked, getuse});
 }
 HRESULT WebView2::ExtensionGetProfile7(ICoreWebView2Profile7 **profile7)
 {

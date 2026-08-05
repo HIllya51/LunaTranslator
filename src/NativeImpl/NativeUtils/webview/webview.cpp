@@ -13,11 +13,28 @@ DECLARE_API void webview_resize(AbstractWebView *web, int w, int h)
         return;
     web->resize(w, h);
 }
-DECLARE_API void webview_add_menu(AbstractWebView *web, int index, contextmenu_gettext gettext, void *callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse, bool hasSelectText)
+typedef void (*c_menu_handler_t)(LPCWSTR, size_t *, MenuItem **);
+DECLARE_API void *webview_allocate_buffer(size_t s)
+{
+    return new BYTE[s];
+}
+DECLARE_API void webview_set_menu_handler(AbstractWebView *web, c_menu_handler_t h)
 {
     if (!web)
         return;
-    web->add_menu(index, gettext, hasSelectText ? contextmenu_callback_t_ex{(contextmenu_callback_t)callback} : contextmenu_callback_t_ex{(contextmenu_notext_callback_t)callback}, getchecked, getuse);
+    web->menu_handler = [=](LPCWSTR text)
+    {
+        std::vector<MenuItem> items;
+        size_t num;
+        MenuItem *item;
+        h(text, &num, &item);
+        for (auto i = 0; i < num; i++)
+        {
+            items.push_back(item[i]);
+        }
+        delete[] item;
+        return items;
+    };
 }
 DECLARE_API double webview_get_ZoomFactor(AbstractWebView *web)
 {
@@ -66,24 +83,6 @@ double AbstractWebView::get_ZoomFactor() { return 1.0; }
 void AbstractWebView::put_ZoomFactor(double) {}
 void AbstractWebView::put_PreferredColorScheme(PREFERRED_COLOR_SCHEME) {}
 
-void NativeMenuHelper::add_menu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse)
-{
-    if (auto c = std::get_if<contextmenu_callback_t>(&callback))
-    {
-        auto ptr = menuitems.begin() + index;
-        auto command = CommandBase++;
-        menuitems.insert(ptr, {gettext, command, getuse, getchecked});
-        menucallbacks[command] = *c;
-    }
-    else if (auto c = std::get_if<contextmenu_notext_callback_t>(&callback))
-    {
-        auto ptr = menuitems_noselect.begin() + index;
-        auto command = CommandBase++;
-        menuitems_noselect.insert(ptr, {gettext, command, getuse, getchecked});
-        menucallbacks_noselect[command] = *c;
-    }
-}
-
 static std::optional<std::wstring> getstring(contextmenu_gettext gettext)
 {
     if (!gettext)
@@ -96,31 +95,33 @@ static std::optional<std::wstring> getstring(contextmenu_gettext gettext)
     return _;
 };
 
-void NativeMenuHelper::CreateMenu(HWND hwndParent, const std::wstring &s, POINT *ppt)
+void NativeMenuHelper::CreateMenu(HWND hwndParent, const std::wstring &s, POINT *ppt, menu_handler_t menu_handler)
 {
-    auto usemenu = s.empty() ? menuitems_noselect : menuitems;
-    if (!usemenu.size())
+    if (!menu_handler)
+        return;
+    auto menuitems = menu_handler(s.c_str());
+    if (menuitems.empty())
         return;
     HMENU hMenu = CreatePopupMenu();
     int idx = 0;
-    for (auto &item : usemenu)
+    for (auto &item : menuitems)
     {
-        if (std::get<2>(item) && !std::get<2>(item)())
-            continue;
-        if (auto text = getstring(std::get<0>(item)))
+        if (item.issep)
+            AppendMenu(hMenu, MF_SEPARATOR, 0, nullptr);
+        else
         {
             auto flag = MF_STRING;
-            if (auto check = std::get<3>(item))
+            if (item.checkable)
             {
-                if (check())
+                if (item.checked)
                     flag |= MF_CHECKED;
                 else
                     flag |= MF_UNCHECKED;
             }
-            AppendMenu(hMenu, flag, std::get<1>(item), text.value().c_str());
+            auto command = CommandBase++;
+            AppendMenu(hMenu, flag, command, item.text);
+            menucallbacks[command] = item.clicked;
         }
-        else if (idx)
-            AppendMenu(hMenu, MF_SEPARATOR, 0, nullptr);
         idx += 1;
     }
     POINT p;
@@ -131,16 +132,8 @@ void NativeMenuHelper::CreateMenu(HWND hwndParent, const std::wstring &s, POINT 
     auto found = menucallbacks.find((int)wp);
     if (found != menucallbacks.end())
     {
-        [&]()
-        {
-            found->second(s.c_str());
-        }();
-    }
-    else
-    {
-        auto found2 = menucallbacks_noselect.find((int)wp);
-        if (found2 != menucallbacks_noselect.end())
-            found2->second();
+        if (found->second)
+            found->second();
     }
     DestroyMenu(hMenu);
 }

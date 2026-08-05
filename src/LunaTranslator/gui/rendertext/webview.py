@@ -16,6 +16,7 @@ from gui.usefulwidget import WebviewWidget
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
 from gui.qevent import TransparentChangedEvent
+from NativeUtils import MenuItem
 
 
 class wordwithcolor:
@@ -60,7 +61,9 @@ class somecommon(dataget):
         )
         self.verticalhorizontal(globalconfig.get("verticalhorizontal", False))
         self.setwordhoveruse(globalconfig.get("word_hover_action_usewb2", False))
-        self.set_word_hover_show_word_info(globalconfig.get("word_hover_show_word_info", False))
+        self.set_word_hover_show_word_info(
+            globalconfig.get("word_hover_show_word_info", False)
+        )
         self.setbackgroudimageandopt()
         self.refreshcontent()
 
@@ -345,6 +348,69 @@ class TextBrowser(WebviewWidget, somecommon):
     _isDragging = pyqtSignal(bool)
     __tooltipshelper = pyqtSignal(object)
 
+    def on_menu(self, selecttext: str):
+        if selecttext:
+            return [
+                MenuItem(
+                    text=_TR("查词"),
+                    clicked=functools.partial(self.menusearchword, selecttext.strip()),
+                ),
+                MenuItem(
+                    text=_TR("翻译"),
+                    clicked=functools.partial(
+                        gobject.base.textgetmethod, selecttext.strip()
+                    ),
+                ),
+                MenuItem(
+                    text=_TR("朗读"),
+                    clicked=functools.partial(
+                        gobject.base.read_text, selecttext.strip()
+                    ),
+                ),
+            ]
+        else:
+
+            def __cb():
+                globalconfig["dragable"] = not globalconfig.get("dragable", True)
+                self.setMouseTracking(globalconfig.get("dragable", True))
+
+            def __cb2():
+                globalconfig["hidetools"] = not globalconfig.get("hidetools", False)
+                gobject.base.translation_ui.enterfunction()
+
+            return [
+                MenuItem(
+                    text=_TR("清空"),
+                    clicked=self.___cleartext,
+                ),
+                MenuItem(
+                    text=_TR("设置"),
+                    clicked=gobject.base.settin_ui_showsignal.emit,
+                ),
+                MenuItem(issep=True),
+                MenuItem(
+                    text=_TR("可拖动的"),
+                    clicked=__cb,
+                    checkable=True,
+                    checked=globalconfig.get("dragable", True),
+                ),
+                MenuItem(
+                    text=_TR("隐藏工具栏"),
+                    clicked=__cb2,
+                    checkable=True,
+                    checked=globalconfig.get("hidetools", True),
+                ),
+                MenuItem(
+                    text=_TR("鼠标滚动查看历史文本"),
+                    clicked=lambda: globalconfig.__setitem__(
+                        "enable_wheel_history",
+                        not globalconfig.get("enable_wheel_history", True),
+                    ),
+                    checkable=True,
+                    checked=globalconfig.get("enable_wheel_history", True),
+                ),
+            ]
+
     def event(self, a0: QEvent) -> bool:
         if isinstance(a0, TransparentChangedEvent):
             self.__starttrans0checker(a0.transparent_value())
@@ -419,51 +485,6 @@ class TextBrowser(WebviewWidget, somecommon):
         )
         # webview2当会执行alert之类的弹窗js时，若qt窗口不可视，会卡住
         self.setMouseTracking(globalconfig.get("dragable", True))
-        nexti = self.add_menu(0, lambda: _TR("查词"), self.menusearchword)
-        nexti = self.add_menu(
-            nexti,
-            lambda: _TR("翻译"),
-            lambda w: gobject.base.textgetmethod(w.strip()),
-        )
-        nexti = self.add_menu(
-            nexti,
-            lambda: _TR("朗读"),
-            lambda w: gobject.base.read_text(w.strip()),
-        )
-        i = self.add_menu_noselect(0, lambda: _TR("清空"), self.___cleartext)
-        i = self.add_menu_noselect(i, lambda: _TR("设置"), gobject.base.settin_ui_showsignal.emit)
-        i = self.add_menu_noselect(i)
-
-        def __cb():
-            globalconfig["dragable"] = not globalconfig.get("dragable", True)
-            self.setMouseTracking(globalconfig.get("dragable", True))
-
-        i = self.add_menu_noselect(
-            i,
-            lambda: _TR("可拖动的"),
-            __cb,
-            getchecked=lambda: globalconfig.get("dragable", True),
-        )
-
-        def __cb2():
-            globalconfig["hidetools"] = not globalconfig.get("hidetools", False)
-            gobject.base.translation_ui.enterfunction()
-
-        i = self.add_menu_noselect(
-            i,
-            lambda: _TR("隐藏工具栏"),
-            __cb2,
-            getchecked=lambda: globalconfig.get("hidetools", False),
-        )
-        i = self.add_menu_noselect(
-            i,
-            lambda: _TR("鼠标滚动查看历史文本"),
-            lambda: globalconfig.__setitem__(
-                "enable_wheel_history",
-                not globalconfig.get("enable_wheel_history", True),
-            ),
-            getchecked=lambda: globalconfig.get("enable_wheel_history", True),
-        )
         self.bind("callwheelEvent", gobject.base.wheelhistory.emit)
         self.bind("calllunaclickedword", gobject.base.clickwordcallback)
         self.bind("calllunaMouseMove", self.calllunaMouseMove)

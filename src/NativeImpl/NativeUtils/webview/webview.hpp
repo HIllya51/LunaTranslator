@@ -1,19 +1,27 @@
 #pragma once
 
 typedef void (*evaljs_callback_t)(LPCWSTR);
-typedef void (*contextmenu_callback_t)(LPCWSTR);
+typedef void (*contextmenu_clicked_t)();
 typedef LPWSTR (*contextmenu_gettext)();
 typedef bool (*contextmenu_getchecked)();
 typedef bool (*contextmenu_getuse)();
 typedef void (*contextmenu_notext_callback_t)();
-typedef std::variant<contextmenu_callback_t, contextmenu_notext_callback_t> contextmenu_callback_t_ex;
 
-#define VIRTUAL_FUNCTIONS_PURE(__)                                                                                                                                       \
-    virtual void resize(int w, int h)##__;                                                                                                                               \
-    virtual void add_menu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse)##__; \
-    virtual void evaljs(const wchar_t *js, evaljs_callback_t cb = nullptr)##__;                                                                                          \
-    virtual void navigate(LPCWSTR uri)##__;                                                                                                                              \
-    virtual void sethtml(LPCWSTR html)##__;                                                                                                                              \
+struct MenuItem
+{
+    bool issep;
+    bool checkable;
+    bool checked;
+    contextmenu_clicked_t clicked;
+    WCHAR text[256];
+};
+typedef std::function<std::vector<MenuItem>(LPCWSTR)> menu_handler_t;
+
+#define VIRTUAL_FUNCTIONS_PURE(__)                                              \
+    virtual void resize(int w, int h)##__;                                      \
+    virtual void evaljs(const wchar_t *js, evaljs_callback_t cb = nullptr)##__; \
+    virtual void navigate(LPCWSTR uri)##__;                                     \
+    virtual void sethtml(LPCWSTR html)##__;                                     \
     virtual void bind(LPCWSTR funcname, void *)##__;
 
 #define VIRTUAL_FUNCTIONS_BASE VIRTUAL_FUNCTIONS_PURE(= 0)
@@ -27,7 +35,9 @@ enum class PREFERRED_COLOR_SCHEME
 };
 class AbstractWebView
 {
+
 public:
+    menu_handler_t menu_handler = nullptr;
     virtual ~AbstractWebView() = default;
     VIRTUAL_FUNCTIONS_BASE;
     virtual double get_ZoomFactor();
@@ -37,13 +47,9 @@ public:
 
 class NativeMenuHelper
 {
-    std::vector<std::tuple<contextmenu_gettext, int, contextmenu_getuse, contextmenu_getchecked>> menuitems;
-    std::vector<std::tuple<contextmenu_gettext, int, contextmenu_getuse, contextmenu_getchecked>> menuitems_noselect;
-    std::map<int, void (*)(LPCWSTR)> menucallbacks;
-    std::map<int, void (*)()> menucallbacks_noselect;
     UINT CommandBase = 10086;
+    std::map<int, void (*)()> menucallbacks;
 
 public:
-    void add_menu(int index, contextmenu_gettext gettext, contextmenu_callback_t_ex callback, contextmenu_getchecked getchecked, contextmenu_getuse getuse);
-    void CreateMenu(HWND hwndParent, const std::wstring &s, POINT *ppt = nullptr);
+    void CreateMenu(HWND hwndParent, const std::wstring &s, POINT *ppt = nullptr, menu_handler_t menu_handler = nullptr);
 };

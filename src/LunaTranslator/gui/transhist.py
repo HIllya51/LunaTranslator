@@ -12,6 +12,7 @@ from traceback import print_exc
 from gui.setting.display_text import extrahtml
 from network.server.servicecollection_1 import WSForEach, transhistwsoutputsave
 import time, threading, windows
+from NativeUtils import MenuItem
 
 
 class somecommon:
@@ -260,6 +261,133 @@ class wvtranshist(WebviewWidget, somecommon):
     pluginsedit = pyqtSignal()
     reloadx = pyqtSignal()
 
+    def on_menu(self, selecttext):
+        if selecttext:
+            return [
+                MenuItem(
+                    text=_TR("查词"),
+                    clicked=threader(
+                        lambda: gobject.base.searchwordW.search_word.emit(
+                            selecttext.replace("\n", "").strip(), None, False
+                        )
+                    ),
+                ),
+                MenuItem(
+                    text=_TR("翻译"),
+                    clicked=functools.partial(gobject.base.textgetmethod, selecttext),
+                ),
+                MenuItem(
+                    text=_TR("朗读"),
+                    clicked=functools.partial(gobject.base.read_text, selecttext),
+                ),
+            ]
+        else:
+            ctrlx = windows.GetKeyState(windows.VK_CONTROL) < 0
+            isocr = isinstance(gobject.base.textsource, ocrtext)
+
+            def _():
+                globalconfig["suspendocrwhentranshistshow"] = not globalconfig.get(
+                    "suspendocrwhentranshistshow", False
+                )
+                self.p.maybexocr()
+
+            return [
+                MenuItem(text=_TR("清空"), clicked=self.clear),
+                MenuItem(text=_TR("字体"), clicked=self.seletcfont),
+                MenuItem(
+                    text=_TR("自动滚动到最后"),
+                    clicked=self.scrollend,
+                    checkable=True,
+                    checked=gobject.tempconfig.get("autoscroll", True),
+                ),
+                MenuItem(issep=True),
+                MenuItem(
+                    text=_TR("保存"),
+                    clicked=lambda: sharedfunctions.savetxt(self, self.p.trace),
+                ),
+                (
+                    MenuItem(
+                        text=_TR("保存_SRT"),
+                        clicked=lambda: sharedfunctions.savesrt(self, self.p.trace),
+                    )
+                    if ctrlx
+                    else None
+                ),
+                MenuItem(
+                    text=_TR("自动保存"),
+                    clicked=self.autosavecb,
+                    checkable=True,
+                    checked=globalconfig["history"]["autosave"],
+                ),
+                MenuItem(issep=True),
+                MenuItem(
+                    text=_TR("显示原文"),
+                    clicked=self.showhideraw_,
+                    checkable=True,
+                    checked=globalconfig["history"]["showorigin"],
+                ),
+                MenuItem(
+                    text=_TR("显示翻译"),
+                    clicked=self.showtrans_,
+                    checkable=True,
+                    checked=globalconfig["history"]["showtrans"],
+                ),
+                MenuItem(
+                    text=_TR("显示翻译器名称"),
+                    clicked=self.showtransname_,
+                    checkable=True,
+                    checked=globalconfig["history"]["showtransname"],
+                ),
+                MenuItem(
+                    text=_TR("显示时间"),
+                    clicked=self.showhidetime_,
+                    checkable=True,
+                    checked=globalconfig["history"]["showtime"],
+                ),
+                MenuItem(issep=True) if isocr else None,
+                (
+                    MenuItem(
+                        text=_TR("打开窗口时暂停自动OCR"),
+                        clicked=_,
+                        checkable=True,
+                        checked=globalconfig.get("suspendocrwhentranshistshow", False),
+                    )
+                    if isocr
+                    else None
+                ),
+                MenuItem(issep=True),
+                MenuItem(
+                    text=_TR("使用Webview2显示"),
+                    clicked=self.useweb,
+                    checkable=True,
+                    checked=globalconfig["history"]["usewebview2"],
+                ),
+                MenuItem(
+                    text=_TR("附加HTML"),
+                    clicked=functools.partial(
+                        extrahtml,
+                        self,
+                        "extrahtml_transhist.html",
+                        r"LunaTranslator\htmlcode\uiwebview\extrahtml\transhist.html",
+                        self,
+                    ),
+                ),
+                MenuItem(
+                    text=_TR("附加浏览器插件"),
+                    clicked=threader(self.reloadx.emit),
+                    checkable=True,
+                    checked=globalconfig["history"]["webviewLoadExt"],
+                ),
+                (
+                    MenuItem(
+                        text=_TR("浏览器插件"),
+                        clicked=threader(self.pluginsedit.emit),
+                    )
+                    if globalconfig["history"]["webviewLoadExt"]
+                    else None
+                ),
+            ]
+
     def scrollend(self):
         gobject.tempconfig["autoscroll"] = not gobject.tempconfig.get(
             "autoscroll", True
@@ -279,119 +407,6 @@ class wvtranshist(WebviewWidget, somecommon):
         gobject.tempconfig = {}
         self.pluginsedit.connect(functools.partial(Exteditor, self))
         self.reloadx.connect(self.appendext)
-        nexti = self.add_menu_noselect(0, lambda: _TR("清空"), self.clear)
-        nexti = self.add_menu_noselect(nexti, lambda: _TR("字体"), self.seletcfont)
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("自动滚动到最后"),
-            self.scrollend,
-            getchecked=lambda: gobject.tempconfig.get("autoscroll", True),
-        )
-        nexti = self.add_menu_noselect(nexti)
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("保存"),
-            lambda: sharedfunctions.savetxt(self, self.p.trace),
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("保存_SRT"),
-            lambda: sharedfunctions.savesrt(self, self.p.trace),
-            getuse=lambda: windows.GetKeyState(windows.VK_CONTROL) < 0,
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("自动保存"),
-            self.autosavecb,
-            getchecked=lambda: globalconfig["history"]["autosave"],
-        )
-        nexti = self.add_menu_noselect(nexti)
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("显示原文"),
-            self.showhideraw_,
-            getchecked=lambda: globalconfig["history"]["showorigin"],
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("显示翻译"),
-            self.showtrans_,
-            getchecked=lambda: globalconfig["history"]["showtrans"],
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("显示翻译器名称"),
-            self.showtransname_,
-            getchecked=lambda: globalconfig["history"]["showtransname"],
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("显示时间"),
-            self.showhidetime_,
-            getchecked=lambda: globalconfig["history"]["showtime"],
-        )
-        nexti = self.add_menu_noselect(
-            nexti, getuse=lambda: isinstance(gobject.base.textsource, ocrtext)
-        )
-
-        def _():
-            globalconfig["suspendocrwhentranshistshow"] = not globalconfig.get(
-                "suspendocrwhentranshistshow", False
-            )
-            p.maybexocr()
-
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("打开窗口时暂停自动OCR"),
-            callback=_,
-            getchecked=lambda: globalconfig.get("suspendocrwhentranshistshow", False),
-            getuse=lambda: isinstance(gobject.base.textsource, ocrtext),
-        )
-        nexti = self.add_menu_noselect(nexti)
-
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("使用Webview2显示"),
-            self.useweb,
-            getchecked=lambda: globalconfig["history"]["usewebview2"],
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("附加HTML"),
-            functools.partial(
-                extrahtml,
-                self,
-                "extrahtml_transhist.html",
-                r"LunaTranslator\htmlcode\uiwebview\extrahtml\transhist.html",
-                self,
-            ),
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("附加浏览器插件"),
-            threader(self.reloadx.emit),
-            getchecked=lambda: globalconfig["history"]["webviewLoadExt"],
-        )
-        nexti = self.add_menu_noselect(
-            nexti,
-            lambda: _TR("浏览器插件"),
-            threader(self.pluginsedit.emit),
-            getuse=lambda: globalconfig["history"]["webviewLoadExt"],
-        )
-        nexti = self.add_menu_noselect(nexti)
-
-        nexti = self.add_menu(
-            0,
-            lambda: _TR("查词"),
-            threader(
-                lambda w: gobject.base.searchwordW.search_word.emit(
-                    w.replace("\n", "").strip(), None, False
-                )
-            ),
-        )
-        nexti = self.add_menu(nexti, lambda: _TR("翻译"), gobject.base.textgetmethod)
-        nexti = self.add_menu(nexti, lambda: _TR("朗读"), gobject.base.read_text)
-        nexti = self.add_menu(nexti)
         self.loadex()
 
     def loadex(self, extra=None):

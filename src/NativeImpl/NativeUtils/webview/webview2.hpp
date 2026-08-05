@@ -50,13 +50,7 @@ public:
     // ICoreWebView2ContextMenuRequestedEventHandler
     HRESULT STDMETHODCALLTYPE Invoke(ICoreWebView2 *sender, ICoreWebView2ContextMenuRequestedEventArgs *args);
 };
-struct MenuContexts
-{
-    contextmenu_gettext gettext;
-    contextmenu_callback_t_ex callback;
-    contextmenu_getchecked getchecked;
-    contextmenu_getuse getuse;
-};
+
 class WebView2 : public AbstractWebView
 {
     friend class WebView2ComHandler;
@@ -68,8 +62,6 @@ class WebView2 : public AbstractWebView
     CComPtr<ICoreWebView2> m_webView;
     CComPtr<ICoreWebView2Environment> m_env;
     CComPtr<WebView2ComHandler> handler;
-    std::vector<MenuContexts> menus;
-    std::vector<MenuContexts> menus_noselect;
     std::optional<std::wstring> UserDir(bool);
     HRESULT CreateCoreWebView2EnvironmentError = S_OK, CreateCoreWebView2ControllerError = S_OK;
     LONG chromeextensionpageoverride;
