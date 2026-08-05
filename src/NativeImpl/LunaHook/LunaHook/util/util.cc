@@ -364,11 +364,11 @@ namespace Util
   {
     std::wstring name = _name;
     strReplace(name, L"/", L"\\");
-    auto hasxiegang = !!wcschr(_name, L'\\');
+    auto hasxiegang = !!wcschr(name.c_str(), L'\\');
     for (auto &fname : checkFileHelperVector)
     {
       if (hasxiegang != !!wcschr(fname.c_str(), L'\\'))
-        return false;
+        continue;;
       if (PathMatchSpecW(fname.c_str(), name.c_str()))
         return true;
     }
