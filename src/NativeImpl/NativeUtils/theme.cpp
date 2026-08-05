@@ -44,7 +44,7 @@ static bool InitApis() noexcept
     return initok();
 }
 
-#ifdef WINXP
+#if WINXPEXTRADEF
 
 typedef enum
 {

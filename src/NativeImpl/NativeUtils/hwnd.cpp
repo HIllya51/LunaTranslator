@@ -1,10 +1,10 @@
 #include <uiautomation.h>
 #include "filemapping.hpp"
 #include "osversion.hpp"
-#ifndef WINXP
-#include <shellscalingapi.h>
-#else
+#if WINXPEXTRADEF
 #include "../xpundef/xp_shellscalingapi.h"
+#else
+#include <shellscalingapi.h>
 #endif
 
 DECLARE_API DWORD GetParentProcessID(DWORD pid)

@@ -80,7 +80,7 @@ public:
     virtual ~ComImpl() = default;
 };
 
-#ifdef WINXP
+#ifdef WINXPEXTRADEF
 #define COWAIT_INPUTAVAILABLE 4
 #define COWAIT_DISPATCH_CALLS 8
 #define COWAIT_DISPATCH_WINDOW_MESSAGES 0x10

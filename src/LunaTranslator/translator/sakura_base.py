@@ -162,14 +162,18 @@ class TS(basetrans):
                 messages = [
                     {
                         "role": "user",
-                        "content": f"将以下文本翻译成{self.tgtlang_1.zhsname},注意只需要输出翻译后的结果,不要额外解释:\n\n{query}",
+                        "content": "将以下文本翻译成{},注意只需要输出翻译后的结果,不要额外解释:\n\n{}".format(
+                            self.tgtlang_1.engname, query
+                        ),
                     }
                 ]
             else:
                 messages = [
                     {
                         "role": "user",
-                        "content": f"Translate the following text into {self.tgtlang_1.engname}. Note that you should only output the translated result without any additional explanation:\n\n{query}",
+                        "content": "Translate the following text into {}. Note that you should only output the translated result without any additional explanation:\n\n{}".format(
+                            self.tgtlang_1.engname, query
+                        ),
                     }
                 ]
         else:
@@ -177,23 +181,29 @@ class TS(basetrans):
                 messages = [
                     {
                         "role": "user",
-                        "content": f"""参考下面的翻译：
-{self.make_gpt_dict_text(gpt_dict, False, '翻译成')}
-将以下文本翻译为{self.tgtlang_1.zhsname}，注意只需要输出翻译后的结果，不要额外解释：\n\n{query}""",
+                        "content": """参考下面的翻译：
+{}
+将以下文本翻译为{}，注意只需要输出翻译后的结果，不要额外解释：\n\n{}""".format(
+                            self.make_gpt_dict_text(gpt_dict, False, "翻译成"),
+                            self.tgtlang_1.zhsname,
+                            query,
+                        ),
                     }
                 ]
             else:
                 messages = [
                     {
                         "role": "user",
-                        "content": f"""Reference the following translations:
+                        "content": """Reference the following translations:
 {self.make_gpt_dict_text(gpt_dict, False, ' translates to ')}
-Translate the following text into {self.tgtlang_1.engname}. Note that you must ONLY output the translated result without any additional explanation:\n\n{query}""",
+Translate the following text into {}. Note that you must ONLY output the translated result without any additional explanation:\n\n{}""".format(
+                            self.tgtlang_1.engname, query
+                        ),
                     }
                 ]
         if contextnum and len(self.contextReal):
             l = min(contextnum, len(self.contextReal) // 2)
-            messages = self.contextReal[-2 * l:] + messages
+            messages = self.contextReal[-2 * l :] + messages
         return messages
 
     def make_messages(self, prompt_version: str, query, gpt_dict: GptDict = None):

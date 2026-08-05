@@ -1,12 +1,12 @@
-#ifndef WINXP
+#if WINXPEXTRADEF
+#include "../../xpundef/xp_winrt.hpp"
+#else
 #include <winstring.h>
 #include <roapi.h>
 #include <shcore.h>
 #include <windows.foundation.collections.h>
 #include <windows.globalization.h>
 #include <windows.media.ocr.h>
-#else
-#include "../../xpundef/xp_winrt.hpp"
 #endif
 #include "hstring.hpp"
 #include "await.hpp"

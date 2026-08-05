@@ -215,20 +215,69 @@ def downloadOCRModel():
     os.chdir(rootDir)
 
 
-def buildhook(arch, target, hookonly=False):
+def get_cmake_args(arch, target):
 
-    os.chdir("NativeImpl/LunaHook")
     archA = ("win32", "x64")[arch == "x64"]
-    vsver = "Visual Studio 17 2022" if target == "winxp" else "Visual Studio 18 2026"
-    Tool = "v141_xp" if target == "winxp" else f"host={arch}"
     if target == "win10":
         config = "-DWIN10ABOVE=ON"
     elif target == "win7":
         config = "-DWIN10ABOVE=OFF"
     elif target == "winxp":
         config = "-DWINXP=ON -DWIN10ABOVE=OFF"
+    if 0:
+        config += " -DWINXPEXTRADEF=ON"
+        vsver = "Visual Studio 17 2022" if target == "winxp" else "Visual Studio 18 2026"
+        Tool = "v141_xp" if target == "winxp" else f"host={arch}"
+    else:
+        vsver = "Visual Studio 18 2026"
+        Tool = f"host={arch}"
+    args = f'-G "{vsver}" -A {archA} -T {Tool}'
+    return config, args
+
+
+def loop_parse_file(target):
+    if target == "winxp":
+        os.system(f"{sys.executable} -m pip install pefile")
+
+    targetversion = {
+        "MajorOperatingSystemVersion": 5,
+        "MinorOperatingSystemVersion": 1,
+        "MajorSubsystemVersion": 5,
+        "MinorSubsystemVersion": 1,
+    }
+    for _dir, _, _fs in os.walk("builds"):
+        print(_dir, _fs)
+        for _f in _fs:
+            ff = os.path.join(_dir, _f)
+            if os.path.splitext(ff)[1].lower() not in (".dll", ".exe"):
+                os.remove(ff)
+            elif target == "winxp":
+                import pefile, tempfile
+
+                temp_dir = tempfile.gettempdir()
+                tempf = os.path.join(temp_dir, os.path.basename(ff))
+                shutil.copy(ff, tempf)
+                p = pefile.PE(tempf)
+                for headerName in ("OPTIONAL_HEADER", "FILE_HEADER", "DOS_HEADER"):
+                    if not hasattr(p, headerName):
+                        continue
+                    h = getattr(p, headerName)
+
+                    for k, v in targetversion.items():
+                        try:
+                            setattr(h, k, v)
+                        except:
+                            pass
+                p.write(ff)
+
+
+def buildhook(arch, target, hookonly=False):
+
+    os.chdir("NativeImpl/LunaHook")
+
+    config, args = get_cmake_args(arch, target)
     subprocess.run(
-        f'cmake {config} -DBUILD_HOST=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_2'
+        f"cmake {config} -DBUILD_HOST=OFF ./CMakeLists.txt {args} -B ./build/{arch}_{target}_2"
     )
     subprocess.run(
         f"cmake --build ./build/{arch}_{target}_2 --config Release --target ALL_BUILD -j {os.cpu_count()}"
@@ -238,25 +287,19 @@ def buildhook(arch, target, hookonly=False):
     if target != "win10":
         config += " -DUSE_VC_LTL=ON "
     subprocess.run(
-        f'cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target}_1'
+        f"cmake {config} -DBUILD_HOOK=OFF ./CMakeLists.txt {args} -B ./build/{arch}_{target}_1"
     )
     subprocess.run(
         f"cmake --build ./build/{arch}_{target}_1 --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
+    loop_parse_file(target)
 
 
 def buildPlugins(arch, target, configx="", sexe=False):
     os.chdir(rootDir + "/NativeImpl")
-    archA = ("win32", "x64")[arch == "x64"]
-    if target == "win10":
-        config = "-DWIN10ABOVE=ON"
-    elif target == "win7":
-        config = "-DWIN10ABOVE=OFF"
-    elif target == "winxp":
-        config = "-DWINXP=ON -DWIN10ABOVE=OFF"
+    config, args = get_cmake_args(arch, target)
+
     sysver = " -DCMAKE_SYSTEM_VERSION=10.0.26621.0 "
-    vsver = "Visual Studio 17 2022" if target == "winxp" else "Visual Studio 18 2026"
-    Tool = "v141_xp" if target == "winxp" else f"host={arch}"
 
     if arch == "x86" and target == "win10":
         # 对于64位会使用自带的vcrt，win7/xp会静态编译，仅win10 LunaSubprocess32这个文件可能会缺少vcrt，因此把它也静态编译以避免无法运行导致注入失败。
@@ -265,17 +308,12 @@ def buildPlugins(arch, target, configx="", sexe=False):
     if sexe:
         config += " -DBUILD_S_EXE_ONLY=ON"
     subprocess.run(
-        f'cmake {config} ./CMakeLists.txt -G "{vsver}" -A {archA} -T {Tool} -B ./build/{arch}_{target} {sysver}'
+        f"cmake {config} ./CMakeLists.txt {args} -B ./build/{arch}_{target} {sysver}"
     )
     subprocess.run(
         f"cmake --build ./build/{arch}_{target} --config Release --target ALL_BUILD -j {os.cpu_count()}"
     )
-    for _dir, _, _fs in os.walk("builds"):
-        print(_dir, _fs)
-        for _f in _fs:
-            ff = os.path.join(_dir, _f)
-            if os.path.splitext(ff)[1].lower() not in (".dll", ".exe"):
-                os.remove(ff)
+    loop_parse_file(target)
     os.chdir(rootDir)
 
 

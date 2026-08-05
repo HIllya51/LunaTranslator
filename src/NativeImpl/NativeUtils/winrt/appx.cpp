@@ -1,12 +1,12 @@
 
-#ifndef WINXP
+#if WINXPEXTRADEF
+#include "../../xpundef/xp_winrt.hpp"
+#include "../../xpundef/xp_appmodel.h"
+#else
 #include <appmodel.h>
 #include <roapi.h>
 #include <Windows.Management.Deployment.h>
 #include <Windows.Foundation.Collections.h>
-#else
-#include "../../xpundef/xp_winrt.hpp"
-#include "../../xpundef/xp_appmodel.h"
 #endif
 
 #include "hstring.hpp"

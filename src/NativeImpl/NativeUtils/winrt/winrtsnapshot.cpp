@@ -1,4 +1,6 @@
-#ifndef WINXP
+#if WINXPEXTRADEF
+#include "../../xpundef/xp_winrt.hpp"
+#else
 #include <winstring.h>
 #include <roapi.h>
 #include <inspectable.h>
@@ -6,8 +8,6 @@
 #include <windows.graphics.directx.direct3d11.interop.h>
 #include <windows.graphics.directx.direct3d11.h>
 #include <windows.graphics.directx.direct3d11.h>
-#else
-#include "../../xpundef/xp_winrt.hpp"
 #endif
 
 #include "hstring.hpp"
