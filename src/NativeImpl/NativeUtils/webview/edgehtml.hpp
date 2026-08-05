@@ -1,15 +1,15 @@
 #include "webview.hpp"
 
-#ifndef WINXP
+#if WINXPEXTRADEF
+#include "../../xpundef/xp_winrt.hpp"
+#include "../../xpundef/xp_winrt_web.hpp"
+#else
 // EdgeHTML headers and libs
 #include <roapi.h>
 #include <windows.ui.h>
 #include <windows.foundation.h>
 #include <windows.foundation.collections.h>
 #include <windows.web.ui.interop.h>
-#else
-#include "../../xpundef/xp_winrt.hpp"
-#include "../../xpundef/xp_winrt_web.hpp"
 #endif
 #include "../winrt/hstring.hpp"
 using ABI::Windows::Foundation::ActivateInstance;

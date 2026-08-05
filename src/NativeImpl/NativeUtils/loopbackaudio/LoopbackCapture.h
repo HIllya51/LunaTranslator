@@ -5,10 +5,10 @@
 #include <initguid.h>
 #include <guiddef.h>
 #include <mfapi.h>
-#ifndef WINXP
-#include <audioclientactivationparams.h>
-#else
+#if WINXPEXTRADEF
 #include "../../xpundef/xp_waspi.hpp"
+#else
+#include <audioclientactivationparams.h>
 #endif
 
 #include "Common.h"
