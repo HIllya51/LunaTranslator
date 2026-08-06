@@ -44,7 +44,7 @@ namespace
     // https://vndb.org/v6187
     // みちくさ～Loitering on the way～
 
-    PcHooks::hookGDIFunctions();
+    PcHooks::hookGDIFunctions(GetGlyphOutlineA);
     trigger_fun = [](LPVOID addr, hook_context *context)
     {
       if (addr != (LPVOID)GetGlyphOutlineA)
@@ -134,10 +134,14 @@ namespace
     return InsertEMEHook();
   }
 }
+DECLARE_FUNCTION(Tegoto, const char *_);
 static bool egoto()
 {
   // エゴと後悔のジレンマ
   // https://vndb.org/v24132
+  // 妹とヤリたいことのすべて「ごくん……ねぇ、なんでもするから、これ、もっとちょうだい、お兄ちゃん」
+  // https://vndb.org/v24131
+
   BYTE bytes[] = {
       0xa1, XX4,
       0x53,
@@ -161,8 +165,8 @@ static bool egoto()
     HookParam hp;
     hp.address = addr;
     hp.offset = stackoffset(1);
-    hp.type = FULL_STRING | USING_STRING;
-    hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+    hp.type = USING_STRING;
+    hp.filter_fun = [](TextBuffer *buffer, HookParam *hpx)
     {
       static std::string last;
       auto s = buffer->strA();
@@ -173,6 +177,21 @@ static bool egoto()
         return;
       }
       last = s;
+      HookParam hp;
+      hp.address = (uintptr_t)Tegoto;
+      hp.offset = GETARG(1);
+      hp.type = USING_STRING;
+      hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+      {
+        auto s = buffer->strA();
+        s = re::sub(s, "\t(\x81\x40)*");
+        s = re::sub(s, "^\x81\x40");
+        strReplace(s, "\r");
+        buffer->from(s);
+      };
+      static auto _ = NewHook(hp, hpx->name);
+      Tegoto(s.c_str());
+      buffer->clear();
     };
     succ |= NewHook(hp, "egoto");
   }
