@@ -1,4 +1,4 @@
-#if WINXPEXTRADEF
+#ifdef WINXP
 #include "../../xpundef/xp_winrt.hpp"
 #else
 #include <winstring.h>

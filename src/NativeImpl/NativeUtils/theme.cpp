@@ -44,7 +44,7 @@ static bool InitApis() noexcept
     return initok();
 }
 
-#if WINXPEXTRADEF
+#if (_WIN32_WINNT < 0x0602)
 
 typedef enum
 {
@@ -68,6 +68,7 @@ enum DWM_SYSTEMBACKDROP_TYPE
 };
 
 #endif
+
 static void SetWindowTheme(HWND hWnd, bool darkBorder, bool darkMenu) noexcept
 {
     if (GetOSVersion().IsleWin8())

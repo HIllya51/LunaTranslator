@@ -1,7 +1,7 @@
 #include <uiautomation.h>
 #include "filemapping.hpp"
 #include "osversion.hpp"
-#if WINXPEXTRADEF
+#ifdef WINXP
 #include "../xpundef/xp_shellscalingapi.h"
 #else
 #include <shellscalingapi.h>

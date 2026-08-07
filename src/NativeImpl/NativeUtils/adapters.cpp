@@ -1,5 +1,5 @@
 // Magpie\AdaptersService.cpp
-#ifndef WINXPEXTRADEF
+#ifdef WINXP
 #include "../xpundef/xp_dxgi.h"
 #else
 #include <dxgi1_6.h>

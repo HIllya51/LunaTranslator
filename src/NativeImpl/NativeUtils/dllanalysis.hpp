@@ -1,5 +1,5 @@
 #include "filemapping.hpp"
-#if WINXPEXTRADEF
+#ifdef WINXP
 #include "../xpundef/xp_winnt.hpp"
 #endif
 

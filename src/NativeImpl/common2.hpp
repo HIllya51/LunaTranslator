@@ -80,11 +80,15 @@ public:
     virtual ~ComImpl() = default;
 };
 
-#ifdef WINXPEXTRADEF
+#if (_WIN32_WINNT <= _WIN32_WINNT_WIN7)
+
 #define COWAIT_INPUTAVAILABLE 4
 #define COWAIT_DISPATCH_CALLS 8
 #define COWAIT_DISPATCH_WINDOW_MESSAGES 0x10
 
+#endif
+
+#if (WINVER <= _WIN32_WINNT_WIN7)
 extern "C" WINUSERAPI
     UINT
         WINAPI

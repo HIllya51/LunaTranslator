@@ -1,5 +1,5 @@
 
-#if WINXPEXTRADEF
+#ifdef WINXP
 #include "../../xpundef/xp_winrt.hpp"
 #include "../../xpundef/xp_appmodel.h"
 #else

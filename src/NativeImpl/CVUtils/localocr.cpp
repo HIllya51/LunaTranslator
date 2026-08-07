@@ -1,5 +1,5 @@
 #include "dbcrnn.hpp"
-#if WINXPEXTRADEF
+#ifdef WINXP
 #include "../xpundef/xp_dxgi.h"
 #include "../xpundef/xp_d3d12.h"
 #else

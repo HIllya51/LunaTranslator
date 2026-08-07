@@ -1,8 +1,27 @@
 
+#ifndef __IAgileObject_INTERFACE_DEFINED__
+#define __IAgileObject_INTERFACE_DEFINED__
+
+/* interface IAgileObject */
+/* [uuid][object][local] */
+
+EXTERN_C const IID IID_IAgileObject;
+
 MIDL_INTERFACE("94ea2b94-e9cc-49e0-c0ff-ee64ca8f5b90")
 IAgileObject : public IUnknown{
     public :
 };
+
+#endif
+
+#ifndef __IActivateAudioInterfaceAsyncOperation_INTERFACE_DEFINED__
+#define __IActivateAudioInterfaceAsyncOperation_INTERFACE_DEFINED__
+
+/* interface IActivateAudioInterfaceAsyncOperation */
+/* [unique][helpstring][nonextensible][uuid][local][object] */
+
+EXTERN_C const IID IID_IActivateAudioInterfaceAsyncOperation;
+
 MIDL_INTERFACE("72A22D78-CDE4-431D-B8CC-843A71199B6D")
 IActivateAudioInterfaceAsyncOperation : public IUnknown
 {
@@ -13,6 +32,15 @@ public:
         /* [annotation][out] */
         _Outptr_result_maybenull_ IUnknown * *activatedInterface) = 0;
 };
+#endif /* __IActivateAudioInterfaceAsyncOperation_INTERFACE_DEFINED__ */
+
+#ifndef __IActivateAudioInterfaceCompletionHandler_INTERFACE_DEFINED__
+#define __IActivateAudioInterfaceCompletionHandler_INTERFACE_DEFINED__
+
+/* interface IActivateAudioInterfaceCompletionHandler */
+/* [unique][helpstring][nonextensible][uuid][local][object] */
+
+EXTERN_C const IID IID_IActivateAudioInterfaceCompletionHandler;
 MIDL_INTERFACE("41D949AB-9862-444A-80F6-C261334DA5EB")
 IActivateAudioInterfaceCompletionHandler : public IUnknown
 {
@@ -21,6 +49,9 @@ public:
         /* [annotation][in] */
         _In_ IActivateAudioInterfaceAsyncOperation * activateOperation) = 0;
 };
+
+#endif /* __IActivateAudioInterfaceCompletionHandler_INTERFACE_DEFINED__ */
+
 #define MFASYNC_CALLBACK_QUEUE_MULTITHREADED 0x00000005
 
 typedef /* [v1_enum] */
@@ -52,6 +83,9 @@ typedef struct AUDIOCLIENT_ACTIVATION_PARAMS
 
 #define AUDCLNT_STREAMFLAGS_AUTOCONVERTPCM 0x80000000
 
+
+#if (WINVER <= _WIN32_WINNT_WIN7)
+
 STDAPI ActivateAudioInterfaceAsync(
     _In_ LPCWSTR deviceInterfacePath,
     _In_ REFIID riid,
@@ -74,3 +108,5 @@ STDAPI MFLockSharedWorkQueue(
     _In_ LONG BasePriority,
     _Inout_ DWORD *pdwTaskId,
     _Out_ DWORD *pID);
+
+#endif
