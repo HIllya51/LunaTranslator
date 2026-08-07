@@ -2962,6 +2962,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 千銃士:Rhodoknight
+    {0x81EAB6B4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f010061A01C1CE000, 0x01001D402587E000ull, "1.0.0"}},
     // Dreamin' Her -僕は、彼女の夢を見る。-
     {0x80126E10, {FULL_STRING | CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003000276E4000ull, "1.0.0"}},
     {0x80126D44, {FULL_STRING | CODEC_UTF8, 8, 0, 0, F0100943010310000, 0x01003000276E4000ull, "1.0.1"}},
