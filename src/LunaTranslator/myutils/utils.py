@@ -158,7 +158,9 @@ def __fucklang(src, _) -> Languages:
 
 
 def getlangsrc() -> Languages:
-    return __fucklang(True, __internal__getlang("private_srclang_2", "srclang4", "auto"))
+    return __fucklang(
+        True, __internal__getlang("private_srclang_2", "srclang4", "auto")
+    )
 
 
 def getlangtgt() -> Languages:
@@ -1044,15 +1046,15 @@ def common_list_models(
 
 
 def common_create_gpt_data(config: dict, message, extrabody):
-    temperature = config["Temperature"]
 
     data = dict(
         model=config["model"],
         messages=message,
         # n=1,
         # stop=None,
-        temperature=temperature,
     )
+    if config.get("Temperature.use", True):
+        data.update(temperature=config["Temperature"])
     use_max_completion_tokens = config.get("use_max_completion_tokens", False)
     key_tokens = ("max_tokens", "max_completion_tokens")[use_max_completion_tokens]
     data.update({key_tokens: config["max_tokens"]})
@@ -1084,10 +1086,11 @@ def common_create_gemini_request(
     apitype: APIType,
 ):
     gen_config = {
-        "temperature": config["Temperature"],
         "maxOutputTokens": config["max_tokens"],
         "topP": config["top_p"],
     }
+    if config.get("Temperature.use", True):
+        gen_config.update(temperature=config["Temperature"])
     if config.get("frequency_penalty_use", False):
         gen_config.update(frequencyPenalty=config["frequency_penalty"])
     if config.get("reasoning_effort_use", False):

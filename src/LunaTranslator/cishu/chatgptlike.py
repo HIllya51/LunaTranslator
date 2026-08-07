@@ -102,7 +102,6 @@ class chatgptlike(cishubase):
         return resp
 
     def query_cld(self, sysprompt, query, extrabody, extraheader):
-        temperature = self.config["Temperature"]
 
         message = []
         message.append({"role": "user", "content": query})
@@ -116,8 +115,9 @@ class chatgptlike(cishubase):
             messages=message,
             system=sysprompt,
             max_tokens=self.config["max_tokens"],
-            temperature=temperature,
         )
+        if self.config.get("Temperature.use", True):
+            data.update(temperature=self.config["Temperature"])
         data.update(extrabody)
         headers.update(extraheader)
         response = self.proxysession.post(

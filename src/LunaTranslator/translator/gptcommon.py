@@ -468,7 +468,6 @@ class gptcommon(basetrans):
         )
 
     def req_claude(self, messages: list, extrabody, extraheader, cache_control):
-        temperature = self.config["Temperature"]
         sysprompt = messages[0]["content"]
         messages.pop(0)
 
@@ -492,9 +491,10 @@ class gptcommon(basetrans):
             messages=messages,
             system=sysprompt,
             max_tokens=self.config["max_tokens"],
-            temperature=temperature,
             stream=usingstream,
         )
+        if self.config.get("Temperature.use", True):
+            data.update(temperature = self.config["Temperature"])
         headers.update(extraheader)
         data.update(extrabody)
         response = self.proxysession.post(

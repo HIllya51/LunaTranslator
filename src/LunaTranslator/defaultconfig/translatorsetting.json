@@ -409,8 +409,9 @@
 			"使用自定义promt": false,
 			"自定义promt": "",
 			"流式输出": true,
-			"Temperature": 0,
 			"max_tokens": 1024,
+			"Temperature": 0,
+			"Temperature.use": true,
 			"top_p": 0.3,
 			"top_p_use": true,
 			"frequency_penalty": 0,
@@ -564,6 +565,7 @@
 				"rank": 2.4
 			},
 			"Temperature": {
+				"refswitch": "Temperature.use",
 				"type": "spin",
 				"min": 0,
 				"max": 2,
@@ -724,8 +726,9 @@
 			"流式输出": true,
 			"append_context_num": 3,
 			"use_context": false,
-			"Temperature": 0.6,
 			"max_tokens": 1024,
+			"Temperature": 0.6,
+			"Temperature.use": true,
 			"top_p": 0.8,
 			"top_p_use": true,
 			"frequency_penalty": 0,
@@ -799,6 +802,7 @@
 				"rank": 4
 			},
 			"Temperature": {
+				"refswitch": "Temperature.use",
 				"type": "spin",
 				"min": 0,
 				"max": 2,
