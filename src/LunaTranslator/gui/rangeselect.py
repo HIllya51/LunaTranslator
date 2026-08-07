@@ -151,7 +151,7 @@ class rangeadjust(Mainw):
                         range_ui.__isfocus = False
                         range_ui.setstyle()
 
-        if sum(not (r.range_ui._rect is None) for r in self.ranges) > 1:
+        if sum(r.range_ui._rect.isValid() for r in self.ranges) > 1:
             if f:
                 cleanother()
                 self.__isfocus = True
@@ -193,12 +193,7 @@ class rangeadjust(Mainw):
             self.tracepos = _geo.topLeft()
             self.traceposstart = curr
         target = self.tracepos + (curr - self.traceposstart) * self.devicePixelRatioF()
-        self.setGeometry(
-            target.x(),
-            target.y(),
-            _geo.width(),
-            _geo.height(),
-        )
+        self.setGeometry(QRect(target.x(), target.y(), _geo.width(), _geo.height()))
 
     def rect(self):
         geo = self.geometry()
@@ -221,7 +216,7 @@ class rangeadjust(Mainw):
         self.drag_label = QLabel(self)
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking = False
-        self._rect = None
+        self._rect = QRect()
         self.setWindowFlags(
             Qt.WindowType.WindowStaysOnTopHint
             | Qt.WindowType.FramelessWindowHint
@@ -243,7 +238,7 @@ class rangeadjust(Mainw):
         if action == mousetransp:
             windows.MouseTrans.set(self.winId())
         elif action == close:
-            self._rect = None
+            self._rect = QRect()
             self.isfocus = False
             self.close()
 
@@ -262,7 +257,7 @@ class rangeadjust(Mainw):
             self._endPos = e.pos() - self._startPos
             _geo = self.geometry()
             _geo.translate(self._endPos)
-            self.setGeometry(*_geo.getRect())
+            self.setGeometry(_geo)
 
     def mousePressEvent(self, e: QMouseEvent):
         if e.button() == Qt.MouseButton.LeftButton:
@@ -276,13 +271,13 @@ class rangeadjust(Mainw):
             self._endPos = None
 
     def rectoffset(self, rect: QRect):
-        r = self.devicePixelRatioF()
-        r = int(globalconfig.get("ocrrangewidth", 2) * r)
-        _ = [(rect.left() + r, rect.top() + r), (rect.right() - r, rect.bottom() - r)]
-        return _
+        r = round(globalconfig.get("ocrrangewidth", 2) * self.devicePixelRatioF())
+        return rect.adjusted(r, r, -r, -r)
 
-    def setGeometry(self, x, y, w, h):
-        windows.MoveWindow(int(self.winId()), x, y, w, h, True)
+    def setGeometry(self, r: QRect):
+        windows.MoveWindow(
+            int(self.winId()), r.left(), r.top(), r.width(), r.height(), True
+        )
 
     def geometry(self):
         rect = windows.GetWindowRect(int(self.winId()))
@@ -299,8 +294,7 @@ class rangeadjust(Mainw):
         self.drag_label.setStyleSheet("background-color:none")
 
     def resizeEvent(self, a0):
-
-        self.label.setGeometry(0, 0, self.width(), self.height())
+        self.label.setGeometry(self.rect())
         if self._rect:
             self._rect = self.rectoffset(self.geometry())
         super().resizeEvent(a0)
@@ -308,16 +302,13 @@ class rangeadjust(Mainw):
     def getrect(self):
         return self._rect
 
-    def setrect(self, rect, show=True):
+    def setrect(self, rect: QRect, show=True):
         self.tracepos = QPoint()
-        if rect:
-            (x1, y1), (x2, y2) = rect
+        if rect.isValid():
             if show:
                 self.show()
-            r = self.devicePixelRatioF()
-            r = int(globalconfig.get("ocrrangewidth", 2) * r)
-            r = int(globalconfig.get("ocrrangewidth", 2) * r)
-            self.setGeometry(x1 - r, y1 - r, x2 - x1 + 2 * r, y2 - y1 + 2 * r)
+            r = round(globalconfig.get("ocrrangewidth", 2) * self.devicePixelRatioF())
+            self.setGeometry(rect.adjusted(-r, -r, r, r))
         self._rect = rect
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
 
@@ -336,9 +327,9 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
             gobject.base.textsource.pause_recognition()
             for _ in gobject.base.textsource.ranges:
                 _save[_] = _.range_ui.getrect()
-                _.range_ui.setrect(((-9999, -9999), (-9999, -9999)), show=False)
+                _.range_ui.setrect(QRect(-9999, -9999, 1, 1), show=False)
         except:
-            pass
+            print_exc()
 
     def reset():
         if not hideshow:
@@ -351,7 +342,7 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
                 _.range_ui.setrect(_save[_], show=False)
             gobject.base.textsource.resume_recognition()
         except:
-            pass
+            print_exc()
 
     p = p.winid if p.isVisible() else None
     color = QColor(globalconfig["ocrrangecolor"])
@@ -363,7 +354,8 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
         y1, y2 = min(y1, y2), max(y1, y2)
         pix = safepixmap(ptr[:size]).copy(x1, y1, x2 - x1, y2 - y1).toImage()
         reset()
-        callback(((x1 + xoff, y1 + yoff), (x2 + xoff, y2 + yoff)), pix)
+        rect = QRect(x1 + xoff, y1 + yoff, x2 - x1, y2 - y1)
+        callback(rect, pix)
         called.append(0)
 
     cb = NativeUtils.CreateSelectRangeWindow_CB(__cb)
@@ -378,4 +370,4 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
     )
     if not called:
         reset()
-        callback(((0, 0), (0, 0)), None)
+        callback(QRect(), None)

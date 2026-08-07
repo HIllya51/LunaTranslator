@@ -13,21 +13,20 @@ from CVUtils import cvMat
 from traceback import print_exc
 
 
-def imageCutEx(*a):
-    img = imageCut(*a)
+def imageCutEx(hwnd, rectX: QRect):
+    img = imageCut(hwnd, rectX)
     succ = True
-    if a[0]:
+    if hwnd:
         succ, img = img
     else:
         succ = False
     if img.isNull():
         return img
     if not succ:
-        rectX = QRect(a[1], a[2], a[3] - a[1], a[4] - a[2])
         rect2 = windows.GetWindowRect(gobject.base.translation_ui.winid)
         rect = QRect(rect2[0], rect2[1], rect2[2] - rect2[0], rect2[3] - rect2[1])
         if rectX.intersected(rect):
-            rect.translate(-a[1], -a[2])
+            rect.translate(-rectX.x(), -rectX.y())
             painter = QPainter(img)
             painter.setBrush(Qt.GlobalColor.white)
             painter.setPen(Qt.PenStyle.NoPen)
@@ -58,9 +57,9 @@ class rangemanger:
 
     def getresmanual(self):
         rect = self.range_ui.getrect()
-        if rect is None:
+        if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        imgr = imageCutEx(self.ref.hwnd, rect)
         if imgr.isNull():
             return
         result = ocr_run(imgr)
@@ -72,9 +71,9 @@ class rangemanger:
 
     def getresauto(self):
         rect = self.range_ui.getrect()
-        if rect is None:
+        if not rect.isValid():
             return
-        imgr = imageCutEx(self.ref.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        imgr = imageCutEx(self.ref.hwnd, rect)
         ok = True
         if globalconfig.get("ocr_auto_method_v2", "period") == "analysis":
             imgr1 = cvMat.fromQImage(imgr)
@@ -114,9 +113,9 @@ class rangemanger:
 
     def waitforstable(self):
         rect = self.range_ui.getrect()
-        if rect is None:
+        if not rect.isValid():
             return False
-        imgr = imageCutEx(self.ref.hwnd, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+        imgr = imageCutEx(self.ref.hwnd, rect)
         imgr1 = cvMat.fromQImage(imgr)
         image_score = imgr1.MSSIM(self.savelastimg)
 
@@ -157,7 +156,7 @@ class ocrtext(basetext):
         for _r in self.ranges:
             _r.range_ui.traceoffsetsignal.emit(curr)
 
-    def setrect(self, rect):
+    def setrect(self, rect: QRect):
         self.ranges[-1].range_ui.setrect(rect)
 
     def setstyle(self):
@@ -166,9 +165,10 @@ class ocrtext(basetext):
     def showhiderangeui(self, b):
         if b and len(self.ranges) == 0:
             for region in globalconfig["ocrregions"]:
-                if region:
-                    self.newrangeadjustor()
-                    self.setrect(region)
+                if not region:
+                    continue
+                self.newrangeadjustor()
+                self.setrect(QRect(*region))
             return
         for _ in self.ranges:
             windows.MouseTrans.unset(_.range_ui.winId())
@@ -199,7 +199,9 @@ class ocrtext(basetext):
                 triggered = False
                 this = tuple(
                     (
-                        windows.GetAsyncKeyState(parsekeystringtomodvkcode(line["vkey"])[1])
+                        windows.GetAsyncKeyState(
+                            parsekeystringtomodvkcode(line["vkey"])[1]
+                        )
                         for line in globalconfig["ocr_trigger_events"]
                     )
                 )
@@ -301,5 +303,7 @@ class ocrtext(basetext):
         self._pause_state = False
 
     def end(self):
-        globalconfig["ocrregions"] = [_.range_ui.getrect() for _ in self.ranges]
+        globalconfig["ocrregions"] = [
+            _.range_ui.getrect().getRect() for _ in self.ranges
+        ]
         self.ranges.clear()

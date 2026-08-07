@@ -201,7 +201,7 @@ class AnkiWindow(QWidget):
 
         def ocroncefunction(rect, img=None):
             if not img:
-                img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+                img = imageCut(0, rect)
             if img.isNull():
                 return
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
@@ -1823,7 +1823,7 @@ class searchwordW(closeashidewindow):
     @threader
     def ocr_do_function(self, rect, img=None):
         if not img:
-            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+            img = imageCut(0, rect)
         result = ocr_run(img)
         if result.error:
             return result.displayerror()

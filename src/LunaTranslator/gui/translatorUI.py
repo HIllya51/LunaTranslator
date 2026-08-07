@@ -676,7 +676,7 @@ class TranslatorWindow(resizableframeless):
     @threader
     def ocr_do_function(self, rect, img=None):
         if not img:
-            img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+            img = imageCut(0, rect)
         result = ocr_run(img)
         result = result.maybeerror()
         if result:
@@ -1453,7 +1453,8 @@ class TranslatorWindow(resizableframeless):
         )
         topr = self.createborderradiusstring(
             use_r1,
-            (radiu_valid or globalconfig.get("locktools", False)) and self.titlebar.isVisible(),
+            (radiu_valid or globalconfig.get("locktools", False))
+            and self.titlebar.isVisible(),
             False,
         )
         bottomr3 = self.createborderradiusstring(use_r2, False)
@@ -1628,7 +1629,9 @@ class TranslatorWindow(resizableframeless):
                 return int(IconLabelX.w())
             else:
                 return int(IconLabelX.h())
-        if (not globalconfig.get("hidetools", False)) and globalconfig.get("locktools", False):
+        if (not globalconfig.get("hidetools", False)) and globalconfig.get(
+            "locktools", False
+        ):
             if globalconfig.get("verticalhorizontal", False):
                 return int(IconLabelX.w())
             else:

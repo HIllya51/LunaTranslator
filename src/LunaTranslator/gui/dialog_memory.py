@@ -444,7 +444,7 @@ class dialog_memory(saveposwindow):
     def crophide(self):
         def ocroncefunction(rect, img=None):
             if not img:
-                img = imageCut(0, rect[0][0], rect[0][1], rect[1][0], rect[1][1])
+                img = imageCut(0, rect)
             if img.isNull():
                 return
             self.cropcallback(img)
