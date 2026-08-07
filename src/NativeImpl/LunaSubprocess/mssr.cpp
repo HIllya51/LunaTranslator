@@ -1,10 +1,5 @@
-#ifdef WINXP
-#include "../xpundef/xp_winrt.hpp"
-#include "../xpundef/xp_other.hpp"
-#else
-#include <roapi.h>
-#endif
 
+#include <roapi.h>
 #include <speechapi_cxx.h>
 #include <delayimp.h>
 #include "../NativeUtils/loopbackaudio/LoopbackCapture.h"

@@ -1,9 +1,5 @@
-#ifdef WINXP
-#include "../xpundef/xp_winrt.hpp"
-#include "../xpundef/xp_other.hpp"
-#else
+
 #include <roapi.h>
-#endif
 #include "../fileversion.hpp"
 #include <speechapi_cxx.h>
 
