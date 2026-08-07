@@ -106,7 +106,7 @@ class basetext:
             text,
             is_auto_run=True,
             waitforresultcallback=resultwaitor.put,
-            waitforresultcallbackengine=globalconfig["toppest_translator"],
+            waitforresultcallbackengine=globalconfig.get("toppest_translator"),
         )
         tsres: TranslateResult = resultwaitor.get()
         return tsres.result

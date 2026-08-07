@@ -247,7 +247,7 @@ class rangeadjust(Mainw):
             " border:%spx solid %s; background-color: rgba(0,0,0, %s); border-radius:0;"
             % (
                 globalconfig.get("ocrrangewidth", 2),
-                "red" if self.isfocus else globalconfig["ocrrangecolor"],
+                "red" if self.isfocus else globalconfig.get("ocrrangecolor", "#000000"),
                 1 / 255,
             )
         )
@@ -345,7 +345,7 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
             print_exc()
 
     p = p.winid if p.isVisible() else None
-    color = QColor(globalconfig["ocrrangecolor"])
+    color = QColor(globalconfig.get("ocrrangecolor", "#000000"))
 
     called = []
 

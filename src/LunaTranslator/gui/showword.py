@@ -438,7 +438,7 @@ class AnkiWindow(QWidget):
             "自定义Anki生成脚本",
             getboxlayout(
                 [
-                    getsimpleswitch(globalconfig, "usecustomankigen"),
+                    getsimpleswitch(globalconfig, "usecustomankigen", default=False),
                     getIconButton(
                         callback=functools.partial(selectdebugfile, "myanki_v2.py"),
                         icon="fa.edit",
@@ -926,7 +926,7 @@ class AnkiWindow(QWidget):
         tags = globalconfig["ankiconnect"]["tags"]
         anki.Deck.create(DeckName)
         fields = static_data["model_fileds"]
-        if globalconfig["usecustomankigen"]:
+        if globalconfig.get("usecustomankigen", False):
             module = checkmd5reloadmodule(
                 gobject.getconfig("myanki_v2.py"), "myanki_v2"
             )
@@ -998,7 +998,7 @@ class AnkiWindow(QWidget):
         return audios, pictures
 
     def custompass(self, text_fields: dict, audios: list, pictures: list):
-        if globalconfig["usecustomankigen"]:
+        if globalconfig.get("usecustomankigen", False):
             module = checkmd5reloadmodule(
                 gobject.getconfig("myanki_v2.py"), "myanki_v2"
             )
@@ -1870,7 +1870,7 @@ class searchwordW(closeashidewindow):
         menu = QMenu(self)
         auto = LAction("自动", menu)
         auto.setCheckable(True)
-        auto.setChecked(globalconfig["is_search_word_auto_tts"])
+        auto.setChecked(globalconfig.get("is_search_word_auto_tts", False))
         menu.addAction(auto)
         action = menu.exec(QCursor.pos())
         if action == auto:
@@ -2180,7 +2180,7 @@ class searchwordW(closeashidewindow):
         if not word:
             return
         self.__parsehistory(word, append, sentence, isfromhist)
-        if globalconfig["is_search_word_auto_tts"]:
+        if globalconfig.get("is_search_word_auto_tts", False):
             gobject.base.read_text(self.searchtext.text())
         self.ankiwindow.maybereset(word)
         self.wordviewer.searchword(word, sentence, readydata=readydata)

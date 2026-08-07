@@ -103,9 +103,13 @@ class dialog_savedgame_integrated(saveposwindow):
         self.syssettingbtn.sizeChanged.connect(self.do_resize)
         self.switch.sizeChanged.connect(self.do_resize)
         self.show()
-        self.switch.selectlayout(globalconfig.get("gamemanager_integrated_internal_layout", 2))
+        self.switch.selectlayout(
+            globalconfig.get("gamemanager_integrated_internal_layout", 2)
+        )
         self.switch.btnclicked.connect(self.selectlayout)
-        self.selectlayout(globalconfig.get("gamemanager_integrated_internal_layout", 2), True)
+        self.selectlayout(
+            globalconfig.get("gamemanager_integrated_internal_layout", 2), True
+        )
 
     def showEvent(self, a0):
         self.__check()
@@ -269,9 +273,13 @@ class imagehelper:
     def rect(self):
         return QRectF(QPoint(0, 0), self.size())
 
+    @property
+    def imagewrapmode(self):
+        return globalconfig.get("imagewrapmode", 0)
+
     def adaptsize(self, size: QSize):
 
-        if globalconfig["imagewrapmode"] == 0:
+        if self.imagewrapmode == 0:
             h, w = size.height(), size.width()
             r = float(w) / h
             max_r = float(self.width()) / self.height()
@@ -282,7 +290,7 @@ class imagehelper:
                 new_h = self.height()
                 new_w = new_h * r
             return QSizeF(new_w, new_h)
-        elif globalconfig["imagewrapmode"] == 1:
+        elif self.imagewrapmode == 1:
             h, w = size.height(), size.width()
             r = float(w) / h
             max_r = float(self.width()) / self.height()
@@ -293,9 +301,9 @@ class imagehelper:
                 new_h = self.height()
                 new_w = new_h * r
             return QSizeF(new_w, new_h)
-        elif globalconfig["imagewrapmode"] == 2:
+        elif self.imagewrapmode == 2:
             return QSizeF(self.size())
-        elif globalconfig["imagewrapmode"] == 3:
+        elif self.imagewrapmode == 3:
             return QSizeF(size)
 
     def setimg(self):
@@ -306,9 +314,9 @@ class imagehelper:
             return
         if not (self.height() and self.width()):
             return
-        if self.__last == (self.size(), globalconfig["imagewrapmode"]):
+        if self.__last == (self.size(), self.imagewrapmode):
             return
-        self.__last = (self.size(), globalconfig["imagewrapmode"])
+        self.__last = (self.size(), self.imagewrapmode)
         rate = self.p.devicePixelRatioF()
         newpixmap = QPixmap((self.size() * rate).toSize())
         newpixmap.setDevicePixelRatio(rate)
@@ -784,6 +792,7 @@ class dialog_savedgame_new(QSplitter):
             "currvislistuid",
             self.resetcurrvislist,
             internal=uid,
+            default=None,
         )
         self.__layout.insertWidget(0, self.vislistcombo)
 
@@ -838,6 +847,7 @@ class dialog_savedgame_new(QSplitter):
                 globalconfig,
                 "imagewrapmode",
                 callback=self.callchange,
+                default=0,
             ),
         )
 

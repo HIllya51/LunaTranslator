@@ -25,9 +25,9 @@ class ColorControl:
 
     def get(self):
         if self.type == self.RAW_TEXT_COLOR:
-            return globalconfig["rawtextcolor"]
+            return globalconfig.get("rawtextcolor", "#000000")
         if self.type == self.KANA_COLOR:
-            return globalconfig["jiamingcolor"]
+            return globalconfig.get("jiamingcolor", "black")
         if self.type == self.ERROR_COLOR:
             return "red"
         if self.type == self.COLOR_DEFAULT:

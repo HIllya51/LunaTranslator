@@ -52,7 +52,7 @@ class somecommon(dataget):
         self.showhidert(globalconfig.get("isshowhira", True))
         self.setfontstyle()
         self.setdisplayrank(globalconfig.get("displayrank", 0))
-        self.sethovercolor(globalconfig["hovercolor"])
+        self.sethovercolor(globalconfig.get("hovercolor", "#80000000"))
         self.settooltipsstyle(
             globalconfig["word_hover_bg_color"],
             globalconfig["word_hover_text_color"],
@@ -570,7 +570,7 @@ class TextBrowser(WebviewWidget, somecommon):
 
     @staticmethod
     def loadextra():
-        if not globalconfig["useextrahtml"]:
+        if not globalconfig.get("useextrahtml", False):
             return
         for _ in [
             gobject.getconfig("extrahtml.html"),

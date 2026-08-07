@@ -660,11 +660,11 @@ class texthook(basetext):
     def setsettings(self):
         # 这个是游戏相关的设置，等设置gameuid以后再进行
         self.Luna_Settings(
-            self.config["textthreaddelay"],
+            self.config.get("textthreaddelay", 500),
             False,  # 不使用内置去重
             self.codepage(),
-            self.config["maxBufferSize"],
-            self.config["maxHistorySize"],
+            self.config.get("maxBufferSize", 3000),
+            self.config.get("maxHistorySize", 1000000),
             False,
         )
 
@@ -737,7 +737,7 @@ class texthook(basetext):
         while not self.ending:
             time.sleep(0.01)
             if time.time() < self.lastflushtime + min(
-                0.1, self.config["textthreaddelay"] / 1000
+                0.1, self.config.get("textthreaddelay", 500) / 1000
             ):
                 continue
             if len(self.multiselectedcollector) == 0:

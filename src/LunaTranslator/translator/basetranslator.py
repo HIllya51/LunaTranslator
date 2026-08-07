@@ -302,7 +302,7 @@ class basetrans(commonbase):
             res = collectiterres
 
         else:
-            if globalconfig["fix_translate_rank"]:
+            if globalconfig.get("fix_translate_rank", False):
                 # 这个性能会稍微差一点，不然其实可以全都这样的。
                 callback(res, 1)
                 callback(res, 2)

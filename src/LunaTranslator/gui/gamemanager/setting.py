@@ -1548,7 +1548,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "codepage_value",
                 lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig["codepage_value"],
+                default=globalconfig.get("codepage_value", 932),
                 internal=static_data["codepage_real"],
                 sizeX=True,
             ),
@@ -1562,7 +1562,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "textthreaddelay",
                 callback=lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig["textthreaddelay"],
+                default=globalconfig.get("textthreaddelay", 500),
             ),
         )
         formLayout2.addRow(
@@ -1573,7 +1573,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "maxBufferSize",
                 callback=lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig["maxBufferSize"],
+                default=globalconfig.get("maxBufferSize", 3000),
             ),
         )
         formLayout2.addRow(
@@ -1584,7 +1584,7 @@ class dialog_setting_game_internal(QWidget):
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "maxHistorySize",
                 callback=lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig["maxHistorySize"],
+                default=globalconfig.get("maxHistorySize", 1000000),
             ),
         )
 

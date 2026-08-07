@@ -371,6 +371,7 @@ def setTabcishu_l(self):
                             "jiamingcolor",
                             callback=gobject.base.translation_ui.translate_text.setcolorstyle,
                             tips="注音颜色",
+                            default="black",
                         ),
                         "",
                         "字体相对大小",
@@ -427,6 +428,7 @@ def setTabcishu_l(self):
                                 "hovercolor",
                                 callback=gobject.base.translation_ui.translate_text.sethovercolor,
                                 alpha=True,
+                                default="#80000000",
                             ),
                             grid=[
                                 [

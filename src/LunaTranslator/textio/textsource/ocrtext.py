@@ -83,12 +83,12 @@ class rangemanger:
             gobject.base.thresholdsett1.emit(str(image_score))
             self.savelastimg = imgr1
 
-            if image_score > globalconfig["ocr_stable_sim_v2"]:
+            if image_score > globalconfig.get("ocr_stable_sim_v2", 0.5):
 
                 image_score2 = imgr1.MSSIM(self.savelastrecimg)
 
                 gobject.base.thresholdsett2.emit(str(image_score2))
-                if image_score2 > globalconfig["ocr_diff_sim_v2"]:
+                if image_score2 > globalconfig.get("ocr_diff_sim_v2", 0.95):
                     ok = False
                 else:
                     self.savelastrecimg = imgr1
@@ -106,7 +106,7 @@ class rangemanger:
         self.lastocrtime = time.time()
         sim = NativeUtils.distance(self.savelasttext, t)
         self.savelasttext = t
-        if sim < globalconfig["ocr_text_diff"]:
+        if sim < globalconfig.get("ocr_text_diff", 3):
             return
         self.savelasttext = t
         return result
@@ -121,7 +121,7 @@ class rangemanger:
 
         gobject.base.thresholdsett1.emit(str(float(image_score)))
         self.savelastimg = imgr1
-        return image_score > globalconfig["ocr_stable_sim2_v2"]
+        return image_score > globalconfig.get("ocr_stable_sim2_v2", 0.95)
 
 
 class ocrtext(basetext):
@@ -137,7 +137,10 @@ class ocrtext(basetext):
 
     def clearrange(self):
         self.ranges.clear()
-        globalconfig["ocrregions"].clear()
+        try:
+            globalconfig.pop("ocrregions2")
+        except:
+            pass
 
     def leaveone(self):
         self.ranges = self.ranges[-1:]
@@ -145,7 +148,7 @@ class ocrtext(basetext):
             self.ranges[0].range_ui.isfocus = False
 
     def newrangeadjustor(self):
-        if len(self.ranges) == 0 or globalconfig["multiregion"]:
+        if len(self.ranges) == 0 or globalconfig.get("multiregion", False):
             self.ranges.append(rangemanger(self, self.ranges))
 
     def starttrace(self, pos):
@@ -164,7 +167,7 @@ class ocrtext(basetext):
 
     def showhiderangeui(self, b):
         if b and len(self.ranges) == 0:
-            for region in globalconfig["ocrregions"]:
+            for region in globalconfig.get("ocrregions2", []):
                 if not region:
                     continue
                 self.newrangeadjustor()
@@ -303,7 +306,7 @@ class ocrtext(basetext):
         self._pause_state = False
 
     def end(self):
-        globalconfig["ocrregions"] = [
+        globalconfig["ocrregions2"] = [
             _.range_ui.getrect().getRect() for _ in self.ranges
         ]
         self.ranges.clear()

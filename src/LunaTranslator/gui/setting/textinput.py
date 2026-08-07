@@ -151,6 +151,7 @@ def gethookgrid():
                     "codepage_value",
                     lambda x: gobject.base.textsource.setsettings(),
                     internal=static_data["codepage_real"],
+                    default=932,
                 ),
                 2,
             ),
@@ -166,6 +167,7 @@ def gethookgrid():
                     globalconfig,
                     "textthreaddelay",
                     callback=lambda x: gobject.base.textsource.setsettings(),
+                    default=500,
                 ),
                 2,
             ),
@@ -179,6 +181,7 @@ def gethookgrid():
                     globalconfig,
                     "maxBufferSize",
                     callback=lambda x: gobject.base.textsource.setsettings(),
+                    default=3000,
                 ),
                 2,
             ),
@@ -192,6 +195,7 @@ def gethookgrid():
                     globalconfig,
                     "maxHistorySize",
                     callback=lambda x: gobject.base.textsource.setsettings(),
+                    default=1000000,
                 ),
                 2,
             ),
@@ -491,11 +495,12 @@ def getnetgrid(self):
                         globalconfig,
                         "networktcpenable",
                         callback=lambda _: gobject.base.serviceinit(),
+                        default=False,
                     ),
                     D_getIconButton(
                         icon="fa.chrome",
                         callback=lambda: os.startfile(
-                            "http://127.0.0.1:{}".format(globalconfig["networktcpport"])
+                            "http://127.0.0.1:{}".format(globalconfig.get("networktcpport", 2333))
                         ),
                         tips="打开",
                     ),
@@ -512,6 +517,7 @@ def getnetgrid(self):
                         globalconfig,
                         "networktcpport",
                         callback=lambda _: gobject.base.serviceinit(),
+                        default=2333,
                     ),
                     __portconflict,
                 ]

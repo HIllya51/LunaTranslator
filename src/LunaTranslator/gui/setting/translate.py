@@ -194,7 +194,7 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
     usecache.setCheckable(True)
     useproxy = LAction("使用代理", menu)
     useproxy.setCheckable(True)
-    astoppest.setChecked(globalconfig["toppest_translator"] == apiuid)
+    astoppest.setChecked(globalconfig.get("toppest_translator") == apiuid)
     menu.addAction(editname)
     menu.addAction(specialfont)
     menu.addAction(astoppest)

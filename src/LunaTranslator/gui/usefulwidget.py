@@ -1330,8 +1330,10 @@ def getcolorbutton(
     return b
 
 
-def D_getcolorbutton(parent, d, key, callback, alpha=False, tips="颜色"):
-    return lambda: getcolorbutton(parent, d, key, callback, alpha=alpha, tips=tips)
+def D_getcolorbutton(parent, d, key, callback, alpha=False, tips="颜色", default=None):
+    return lambda: getcolorbutton(
+        parent, d, key, callback, alpha=alpha, tips=tips, default=default
+    )
 
 
 def yuitsu_switch(parent, configdict, dictobjectn, key, callback, checked):
@@ -3157,7 +3159,9 @@ class pixmapviewer(QWidget):
                             font.setFamily(globalconfig["fonttype"])
                             font.setPointSizeF(globalconfig.get("fontsizeori", 16))
                             pen = QPen()
-                            pen.setColor(QColor(globalconfig["rawtextcolor"]))
+                            pen.setColor(
+                                QColor(globalconfig.get("rawtextcolor", "#000000"))
+                            )
                             painter.setFont(font)
                             painter.setPen(pen)
                             if not self.boxtext.hasboxs:

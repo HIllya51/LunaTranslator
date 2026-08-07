@@ -123,19 +123,19 @@ def refreshtoolicon():
     for (name, key), btn in savebtns.items():
 
         color = (
-            globalconfig["buttoncolor_1"]
+            globalconfig.get("buttoncolor_1", "#ff03f2")
             if "icon" == key
             and globalconfig["toolbutton"]["buttons"][name].get("icon2")
-            else globalconfig["buttoncolor"]
+            else globalconfig.get("buttoncolor", "#2e2eff")
         )
         btn.setColor(color)
 
 
 def createbtn(self, name, key, cb):
     color = (
-        globalconfig["buttoncolor_1"]
+        globalconfig.get("buttoncolor_1", "#ff03f2")
         if "icon" == key and globalconfig["toolbutton"]["buttons"][name].get("icon2")
-        else globalconfig["buttoncolor"]
+        else globalconfig.get("buttoncolor", "#2e2eff")
     )
     btn = getIconButton(
         icon=globalconfig["toolbutton"]["buttons"][name][key],
@@ -167,6 +167,7 @@ def createbuttonwidget(self, lay: QLayout):
                 globalconfig,
                 "buttonsize",
                 callback=lambda _: toolcolorchange(),
+                default=25,
             ),
             getsmalllabel(""),
             getsmalllabel("颜色"),
@@ -175,12 +176,14 @@ def createbuttonwidget(self, lay: QLayout):
                 globalconfig,
                 "buttoncolor",
                 callback=lambda _: (toolcolorchange(), refreshtoolicon()),
+                default="#2e2eff",
             ),
             D_getcolorbutton(
                 self,
                 globalconfig,
                 "buttoncolor_1",
                 callback=lambda _: (toolcolorchange(), refreshtoolicon()),
+                default="#ff03f2",
             ),
             D_getcolorbutton(
                 self,

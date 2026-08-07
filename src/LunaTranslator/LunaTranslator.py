@@ -320,9 +320,9 @@ class BASEOBJECT(QObject):
     def serviceinit(self):
         gobject.base.portconflict.emit("")
         self.service.stop()
-        if globalconfig["networktcpenable"]:
+        if globalconfig.get("networktcpenable", False):
             try:
-                self.service.init(globalconfig["networktcpport"])
+                self.service.init(globalconfig.get("networktcpport", 2333))
             except OSError:
                 gobject.base.portconflict.emit("端口冲突")
 
@@ -394,7 +394,7 @@ class BASEOBJECT(QObject):
                     self.gameuid = 0
         if self.textsource:
             self.textsource.hwndChanged(__hwnd)
-        if globalconfig["keepontop"]:
+        if globalconfig.get("keepontop", True):
             self.translation_ui.settop()
 
     @textsource.setter
@@ -728,7 +728,7 @@ class BASEOBJECT(QObject):
                 return
 
         usefultranslators = real_fix_rank.copy()
-        if globalconfig["fix_translate_rank"] and (not waitforresultcallback):
+        if globalconfig.get("fix_translate_rank", False) and (not waitforresultcallback):
             _showrawfunction = functools.partial(
                 self._delaypreparefixrank, _showrawfunction, real_fix_rank, is_auto_run
             )
@@ -924,8 +924,8 @@ class BASEOBJECT(QObject):
                         globalconfig.get("read_trans", False)
                         and (not read_trans_once_check)
                         and (
-                            (globalconfig["toppest_translator"] == classname)
-                            or ((not globalconfig["toppest_translator"]))
+                            (globalconfig.get("toppest_translator") == classname)
+                            or ((not globalconfig.get("toppest_translator")))
                         )
                     ):
                         self.readcurrent()
@@ -1233,7 +1233,7 @@ class BASEOBJECT(QObject):
                     # 若手动调整到非指定位置，则保持不变
                     if (
                         fanyiorcishu == "fanyi"
-                        and _type == globalconfig["toppest_translator"]
+                        and _type == globalconfig.get("toppest_translator")
                     ):
                         globalconfig[rankkey].insert(0, _type)
                     else:
@@ -1424,7 +1424,7 @@ class BASEOBJECT(QObject):
             return
         if widget == self.translation_ui:
             NativeUtils.SetWindowInTaskbar(
-                int(widget.winId()), globalconfig["showintab"], True
+                int(widget.winId()), globalconfig.get("showintab", True), True
             )
             return
         if self.__dontshowintaborsetbackdrop(widget):
@@ -1439,7 +1439,7 @@ class BASEOBJECT(QObject):
             # combobox的下拉框，然后这个widget会迅速销毁，会导致任务栏闪一下。没别的办法了姑且这样过滤一下
             return
         NativeUtils.SetWindowInTaskbar(
-            int(widget.winId()), globalconfig["showintab_sub"], False
+            int(widget.winId()), globalconfig.get("showintab_sub", True), False
         )
 
     def createmenu1(self):
@@ -1619,7 +1619,7 @@ class BASEOBJECT(QObject):
 
         self.translation_ui = TranslatorWindow()
         NativeUtils.SetWindowInTaskbar(
-            int(self.translation_ui.winId()), globalconfig["showintab"], True
+            int(self.translation_ui.winId()), globalconfig.get("showintab", True), True
         )
         self.translation_ui.show()
         self.translation_ui.aftershowdosomething()

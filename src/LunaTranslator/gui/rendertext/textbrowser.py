@@ -77,12 +77,12 @@ class Qlabel_c(QLabel_w):
         try:
             if self.company:
                 self.company.ref.setStyleSheet(
-                    "background-color: " + globalconfig["hovercolor"]
+                    "background-color: " + globalconfig.get("hovercolor", "#80000000")
                 )
                 reference.append(self.company.ref)
         except:
             pass
-        self.ref.setStyleSheet("background-color: " + globalconfig["hovercolor"])
+        self.ref.setStyleSheet("background-color: " + globalconfig.get("hovercolor", "#80000000"))
         reference.append(self.ref)
         return super().enterEvent(a0)
 
@@ -217,10 +217,10 @@ class QTextBrowser_1(QTextEdit):
                     targetlabel.refmask.word, self.mapToGlobal(ev.pos())
                 )
                 targetlabel.refmask.setStyleSheet(
-                    "background-color: " + globalconfig["hovercolor"]
+                    "background-color: " + globalconfig.get("hovercolor", "#80000000")
                 )
                 targetlabel.company.refmask.setStyleSheet(
-                    "background-color: " + globalconfig["hovercolor"]
+                    "background-color: " + globalconfig.get("hovercolor", "#80000000")
                 )
                 reference.append(targetlabel.refmask)
                 reference.append(targetlabel.company.refmask)

@@ -188,7 +188,7 @@ class filetrans(basetext):
 
     def query(self, origin):
         ts = self.__query(origin)
-        toppest = globalconfig["toppest_translator"]
+        toppest = globalconfig.get("toppest_translator")
         if toppest:
             return ts.get(toppest, None)
         return (list(ts.values()) + [None])[0]

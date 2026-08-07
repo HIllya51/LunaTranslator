@@ -15,7 +15,6 @@
     "multihookmergeby": "\n",
     "disappear_delay": 5,
     "network": 1,
-    "useextrahtml": false,
     "foldstatus": {
         "ocr": {
             "other": false
@@ -40,11 +39,7 @@
             "special": false
         }
     },
-    "usecustomankigen": false,
-    "is_search_word_auto_tts": false,
-    "is_search_word_auto_tts_2": false,
     "network_websocket": 1,
-    "imagewrapmode": 0,
     "rendertext_using_internal": {
         "webview": "yinying",
         "textbrowser": "miaobian1"
@@ -249,8 +244,6 @@
             "target": "steamid"
         }
     },
-    "networktcpport": 2333,
-    "networktcpenable": false,
     "network_service_disabled_paths": [],
     "textoutputer": {
         "clipboard": {
@@ -276,14 +269,9 @@
         "changefontsize_use": false
     },
     "requestinterval": 0,
-    "keepontop": true,
-    "buttonsize": 25,
-    "buttonsize2": 18,
-    "language_setted_2.4.5": false,
     "postprocess_rank": [
         "fulltohalf"
     ],
-    "fix_translate_rank": false,
     "fix_translate_rank_rank": [],
     "cishuvisrank": [],
     "ignoredict": [],
@@ -297,15 +285,7 @@
         "arabic_reshaper": false,
         "skiponlypunctuations": true
     },
-    "showintab": true,
-    "showintab_sub": true,
-    "remove_useless_hook": false,
     "button_color_normal": "#FFFFFF",
-    "textthreaddelay": 500,
-    "maxBufferSize": 3000,
-    "maxHistorySize": 1000000,
-    "yuanjiao_r": 0,
-    "yuanjiao_sys": false,
     "extensionsetting": [
         500,
         500,
@@ -372,14 +352,6 @@
         500,
         500
     ],
-    "codepage_value": 932,
-    "currvislistuid": null,
-    "multiregion": false,
-    "ocrregions": [],
-    "ocr_stable_sim_v2": 0.5,
-    "ocr_stable_sim2_v2": 0.95,
-    "ocr_diff_sim_v2": 0.95,
-    "ocr_text_diff": 3,
     "lineheights": {
         "lineHeight": 1,
         "lineHeightNormal": true,
@@ -394,10 +366,6 @@
     },
     "fonttype": "",
     "fonttype2": "",
-    "rawtextcolor": "#000000",
-    "backcolor": "#ffaaff",
-    "backcolor_tool": "#ffaaff",
-    "jiamingcolor": "black",
     "ankiconnect": {
         "host": "127.0.0.1",
         "port": 8765,
@@ -425,9 +393,6 @@
         600
     ],
     "global_namemap2": [],
-    "buttoncolor": "#2e2eff",
-    "buttoncolor_1": "#ff03f2",
-    "ocrrangecolor": "#000000",
     "tagNameRemap": {},
     "dialog_savegame_layout": {
         "layout": "updown",
@@ -463,7 +428,6 @@
         400,
         400
     ],
-    "hovercolor": "#80000000",
     "toolbutton": {
         "rank2": [
             "luna",
@@ -1909,7 +1873,6 @@
     "word_hover_border": 8,
     "word_hover_bg_color": "#333",
     "word_hover_text_color": "white",
-    "autostarthook": true,
     "minlength": 0,
     "maxlength": 10000,
     "ocr_trigger_events": [
@@ -1937,6 +1900,5 @@
     "wordlabel": [],
     "wordlabel2": [],
     "noundictconfig_ex": [],
-    "toppest_translator": null,
     "extraLangs": []
 }

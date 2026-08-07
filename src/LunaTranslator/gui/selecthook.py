@@ -236,10 +236,10 @@ class searchhookparam(LDialog):
         if savehook_new_data[gobject.base.gameuid].get(
             "hooksetting_follow_default", True
         ):
-            cp = globalconfig["codepage_value"]
+            cp = globalconfig.get("codepage_value", 932)
         else:
             cp = savehook_new_data[gobject.base.gameuid]["hooksetting_private"].get(
-                "codepage_value", globalconfig["codepage_value"]
+                "codepage_value", globalconfig.get("codepage_value", 932)
             )
         self.codepagesave = {"spcp": cp}
         layout1.addWidget(

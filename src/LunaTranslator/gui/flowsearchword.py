@@ -157,7 +157,7 @@ class dialog_syssetting(LDialog):
 
         formLayout.addRow(
             "自动朗读",
-            getsimpleswitch(globalconfig, "is_search_word_auto_tts_2"),
+            getsimpleswitch(globalconfig, "is_search_word_auto_tts_2", default=False),
         )
         focus = getsimpleswitch(
             globalconfig,
@@ -464,7 +464,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
                 self.__f.start()
                 return
         self.savepos = QCursor.pos()
-        if globalconfig["is_search_word_auto_tts_2"]:
+        if globalconfig.get("is_search_word_auto_tts_2", False):
             gobject.base.read_text(word)
         if append:
             word = self.view.currWord + word

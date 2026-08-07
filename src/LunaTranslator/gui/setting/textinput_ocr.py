@@ -260,7 +260,9 @@ def _ocrparam_create(self, f):
             "执行周期_(s)",
             getboxlayout(
                 [
-                    D_getspinbox(0.1, 100, globalconfig, "ocr_interval", double=True, default=1.5),
+                    D_getspinbox(
+                        0.1, 100, globalconfig, "ocr_interval", double=True, default=1.5
+                    ),
                     QLabel,
                 ]
             ),
@@ -275,7 +277,11 @@ def _ocrparam_create(self, f):
             getboxlayout(
                 [
                     D_getspinbox(
-                        0, 100, globalconfig, "ocr_trigger_delay", double=True,
+                        0,
+                        100,
+                        globalconfig,
+                        "ocr_trigger_delay",
+                        double=True,
                         default=0,
                     ),
                     QLabel,
@@ -294,6 +300,7 @@ def _ocrparam_create(self, f):
                         ("ocr_stable_sim_v2", "ocr_stable_sim2_v2")[f == "trigger"],
                         double=True,
                         step=0.001,
+                        default=(0.5, 0.95)[f == "trigger"],
                     ),
                     functools.partial(__label1, self),
                 ]
@@ -311,6 +318,7 @@ def _ocrparam_create(self, f):
                         "ocr_diff_sim_v2",
                         double=True,
                         step=0.001,
+                        default=0.95,
                     ),
                     functools.partial(__label2, self),
                 ]
@@ -318,7 +326,7 @@ def _ocrparam_create(self, f):
         )
     self._ocrparaml.addRow(
         "文本相似度阈值",
-        getboxlayout([D_getspinbox(0, 100000, globalconfig, "ocr_text_diff"), QLabel]),
+        getboxlayout([D_getspinbox(0, 100000, globalconfig, "ocr_text_diff", default=3), QLabel]),
     )
 
 
@@ -495,7 +503,7 @@ def internal(self):
                         "ocr_auto_method_v2",
                         internal=["analysis", "period", "trigger"],
                         callback=functools.partial(_ocrparam_create, self),
-                        default="period"
+                        default="period",
                     ),
                 ]
             ),
@@ -532,6 +540,7 @@ def internal(self):
                 globalconfig,
                 "multiregion",
                 callback=lambda _: gobject.base.textsource.leaveone(),
+                default=False,
             ),
             "",
             "易错内容修正",
@@ -556,6 +565,7 @@ def internal(self):
                 globalconfig,
                 "ocrrangecolor",
                 callback=lambda _: gobject.base.textsource.setstyle(),
+                default="#000000",
             ),
             "",
             "范围框宽度",

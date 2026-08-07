@@ -237,6 +237,7 @@ def resetgroudswitchcallback(self, group):
             globalconfig,
             "useextrahtml",
             callback=lambda x: gobject.base.translation_ui.translate_text.textbrowser.loadex(),
+            default=False,
         )
         _btn2 = getIconButton(
             callback=functools.partial(Exteditor, self),
@@ -507,6 +508,7 @@ def xianshigrid_style(self):
                                         globalconfig,
                                         "rawtextcolor",
                                         callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+                                        default="#000000",
                                     ),
                                 ]
                             ),
@@ -652,7 +654,7 @@ def xianshigrid_style(self):
                         ),
                         "",
                         "固定翻译显示顺序",
-                        D_getsimpleswitch(globalconfig, "fix_translate_rank"),
+                        D_getsimpleswitch(globalconfig, "fix_translate_rank", default=False),
                         D_getIconButton(functools.partial(vistranslate_rank, self)),
                         "",
                         "文字区域背景",

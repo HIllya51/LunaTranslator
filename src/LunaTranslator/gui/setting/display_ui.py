@@ -237,6 +237,7 @@ def __rs():
                 globalconfig,
                 "showintab",
                 callback=lambda _: gobject.base.setshowintab(),
+                default=True,
             ),
         ]
     )
@@ -278,6 +279,7 @@ def uisetting(self):
             globalconfig,
             "showintab_sub",
             callback=lambda _: gobject.base.setshowintab(),
+            default=True,
         ),
     ]
     if not gobject.sys_ge_win_11:
@@ -457,6 +459,7 @@ def mainuisetting(self):
                             globalconfig,
                             "backcolor_tool",
                             callback=lambda _: toolcolorchange(),
+                            default="#ffaaff",
                         ),
                         "",
                         "不透明度",
@@ -480,6 +483,7 @@ def mainuisetting(self):
                             globalconfig,
                             "backcolor",
                             callback=lambda _: gobject.base.translation_ui.set_color_transparency(),
+                            default="#ffaaff",
                         ),
                         "",
                         "不透明度",
