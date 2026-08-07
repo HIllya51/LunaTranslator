@@ -80,7 +80,7 @@ public:
     virtual ~ComImpl() = default;
 };
 
-#if (_WIN32_WINNT <= _WIN32_WINNT_WIN7)
+#if (WINVER <= _WIN32_WINNT_WIN7)
 
 #define COWAIT_INPUTAVAILABLE 4
 #define COWAIT_DISPATCH_CALLS 8

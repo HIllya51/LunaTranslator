@@ -44,7 +44,7 @@ static bool InitApis() noexcept
     return initok();
 }
 
-#if (_WIN32_WINNT < 0x0602)
+#if (WINVER <= _WIN32_WINNT_WIN7)
 
 typedef enum
 {

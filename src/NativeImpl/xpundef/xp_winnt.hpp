@@ -1,5 +1,5 @@
 
-#if (_WIN32_WINNT < 0x0602)
+#if (WINVER <= _WIN32_WINNT_WIN7)
 typedef struct _IMAGE_DELAYLOAD_DESCRIPTOR
 {
     union
