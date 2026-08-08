@@ -55,7 +55,7 @@ def createtextfontcom(key):
         mayberealtimesetfont()
 
     font_comboBox = FocusFontCombo()
-    font_comboBox.setCurrentFont(QFont(globalconfig[key]))
+    font_comboBox.setCurrentFont(QFont(globalconfig.get(key, "")))
     font_comboBox.currentTextChanged.connect(functools.partial(_f, key))
     return font_comboBox
 

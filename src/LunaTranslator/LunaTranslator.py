@@ -728,7 +728,9 @@ class BASEOBJECT(QObject):
                 return
 
         usefultranslators = real_fix_rank.copy()
-        if globalconfig.get("fix_translate_rank", False) and (not waitforresultcallback):
+        if globalconfig.get("fix_translate_rank", False) and (
+            not waitforresultcallback
+        ):
             _showrawfunction = functools.partial(
                 self._delaypreparefixrank, _showrawfunction, real_fix_rank, is_auto_run
             )
@@ -1231,9 +1233,8 @@ class BASEOBJECT(QObject):
                 if _type not in globalconfig[rankkey]:
                     # 对于首选的翻译，如果关闭后重新激活，则置顶而非置底
                     # 若手动调整到非指定位置，则保持不变
-                    if (
-                        fanyiorcishu == "fanyi"
-                        and _type == globalconfig.get("toppest_translator")
+                    if fanyiorcishu == "fanyi" and _type == globalconfig.get(
+                        "toppest_translator"
                     ):
                         globalconfig[rankkey].insert(0, _type)
                     else:
@@ -1398,7 +1399,7 @@ class BASEOBJECT(QObject):
         noneedkeys = []
         keytriggered = []
         for k in funcs:
-            if not globalconfig["use" + k]:
+            if not globalconfig.get("use" + k, k == "searchword"):
                 continue
             result = self.checkkeypresssatisfy(k)
             if result == -1:

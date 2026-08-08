@@ -282,7 +282,7 @@ class ButtonBar(QFrame):
             #titlebar{{border-width: 0;{bottomr};background-color: {color2}}}
         """.format(
             bottomr3=bottomr3,
-            color1=globalconfig["button_color_normal"],
+            color1=globalconfig.get("button_color_normal", "#FFFFFF"),
             color0="red",
             bottomr=bottomr,
             color2=str2rgba(

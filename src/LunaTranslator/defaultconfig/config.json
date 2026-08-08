@@ -285,7 +285,6 @@
         "arabic_reshaper": false,
         "skiponlypunctuations": true
     },
-    "button_color_normal": "#FFFFFF",
     "extensionsetting": [
         500,
         500,
@@ -364,8 +363,6 @@
         "marginTop": 0,
         "marginBottom": 0
     },
-    "fonttype": "",
-    "fonttype2": "",
     "ankiconnect": {
         "host": "127.0.0.1",
         "port": 8765,
@@ -1448,16 +1445,11 @@
         }
     },
     "theme3": "PyQtDarkTheme",
-    "useopenlink": false,
     "useopenlinklink1": [
         "https://www.google.com/search?q={word}",
         "https://jpdb.io/search?q={word}",
         "https://www.weblio.jp/content/{word}"
     ],
-    "usesearchword": false,
-    "usesearchword_S": false,
-    "usesearchword_S_hover": false,
-    "usecopyword": false,
     "wordclickkbtriggerneed": {},
     "wordclickkbtrigger": {},
     "usewordoriginfor": {},

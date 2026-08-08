@@ -284,7 +284,7 @@ class rangeadjust(Mainw):
         return QRect(rect[0], rect[1], rect[2] - rect[0], rect[3] - rect[1])
 
     def moveEvent(self, _):
-        if self._rect:
+        if self._rect.isValid():
             self._rect = self.rectoffset(self.geometry())
 
     def enterEvent(self, _):
@@ -295,7 +295,7 @@ class rangeadjust(Mainw):
 
     def resizeEvent(self, a0):
         self.label.setGeometry(self.rect())
-        if self._rect:
+        if self._rect.isValid():
             self._rect = self.rectoffset(self.geometry())
         super().resizeEvent(a0)
 

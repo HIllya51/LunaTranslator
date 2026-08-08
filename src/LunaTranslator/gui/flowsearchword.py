@@ -430,7 +430,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         )
 
     def __detectkey(self):
-        if not globalconfig["usesearchword_S_hover"]:
+        if not globalconfig.get("usesearchword_S_hover", False):
             self.__f.stop()
             return
         result = gobject.base.checkkeypresssatisfy("searchword_S_hover", False)

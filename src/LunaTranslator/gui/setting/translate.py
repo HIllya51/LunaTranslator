@@ -138,7 +138,7 @@ class SpecialFont(PopupWidget):
                     self.resetfont()
 
                 w = FocusFontCombo()
-                w.setCurrentFont(QFont(dd.get(k, globalconfig["fonttype2"])))
+                w.setCurrentFont(QFont(dd.get(k, globalconfig.get("fonttype2", ""))))
                 w.currentTextChanged.connect(functools.partial(_f, dd, k))
             elif i == 1:
                 t = "大小"

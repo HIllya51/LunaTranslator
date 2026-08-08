@@ -457,6 +457,7 @@ def setTabcishu_l(self):
                                         globalconfig,
                                         "usesearchword_S_hover",
                                         callback=gobject.base.translation_ui.translate_text.showhideclick,
+                                        default=False,
                                     ),
                                     D_getIconButton(
                                         callback=functools.partial(
@@ -515,6 +516,7 @@ def setTabcishu_l(self):
                                         globalconfig,
                                         "usesearchword",
                                         callback=gobject.base.translation_ui.translate_text.showhideclick,
+                                        default=True,
                                     ),
                                     "",
                                     "",
@@ -549,6 +551,7 @@ def setTabcishu_l(self):
                                         globalconfig,
                                         "usesearchword_S",
                                         callback=gobject.base.translation_ui.translate_text.showhideclick,
+                                        default=False,
                                     ),
                                     D_getIconButton(
                                         callback=functools.partial(
@@ -594,6 +597,7 @@ def setTabcishu_l(self):
                                         globalconfig,
                                         "usecopyword",
                                         callback=gobject.base.translation_ui.translate_text.showhideclick,
+                                        default=False,
                                     ),
                                     "",
                                     "",
@@ -628,6 +632,7 @@ def setTabcishu_l(self):
                                         globalconfig,
                                         "useopenlink",
                                         callback=gobject.base.translation_ui.translate_text.showhideclick,
+                                        default=False,
                                     ),
                                     D_getIconButton(
                                         icon="fa.link",

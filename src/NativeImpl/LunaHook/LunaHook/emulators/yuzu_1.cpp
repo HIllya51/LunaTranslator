@@ -881,7 +881,7 @@ namespace
     }
     void F0100068019996000(TextBuffer *buffer, HookParam *hp)
     {
-        StringReplacer(buffer, TEXTANDLEN("%N"), TEXTANDLEN(u8"\n"));
+        StringReplacer(buffer, TEXTANDLEN("%N"), TEXTANDLEN("\n"));
     }
     void F0100ADC014DA0000(TextBuffer *buffer, HookParam *hp)
     {
@@ -3073,6 +3073,13 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81B72940, {CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x0100C32023A1A000ull, "1.0.0"}},
     // うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE
     {0x80038B34, {0, 0, 0, 0, f0100D4300EBF8000, 0x0100D4300EBF8000ull, "1.0.0"}},
+    // うたの☆プリンスさまっ♪ Repeat LOVE
+    {0x800374a0, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}},
+    {0x8002ea08, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}},
+    // うたの☆プリンスさまっ♪All Star
+    {0x800102E4, {USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, 0x0100B3E0149FC000ull, "1.0.0"}},
+    // うたの☆プリンスさまっ♪Debut
+    {0x800104C4, {USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, 0x010088200EFE8000ull, "1.0.0"}},
     // 連呪
     {0x83700E60, {CODEC_UTF16, 0, 0X14, 0, F01007FD0211DA000, 0x01007FD0211DA000ull, "1.0.0"}},
     // DIG-ROCK -Documentary of Youthful Sounds-
@@ -3607,9 +3614,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81b1c68c, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // choice1
     {0x81b1c664, {CODEC_UTF16, 0, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // choice2
     {0x81b1e5b0, {CODEC_UTF16, 3, 0X14, 0, F010094601D910000, 0x010094601D910000ull, "1.0.1"}}, // dialogue
-    // うたの☆プリンスさまっ♪ Repeat LOVE
-    {0x800374a0, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Main Text + Name,sjis
-    {0x8002ea08, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}}, // Choices,sjis
     // ワンド オブ フォーチュン Ｒ～
     {0x81ed0580, {CODEC_UTF16, 0, 0, ReadUnityString, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // dialogue
     {0x81f96bac, {CODEC_UTF16, 0, 0, ReadUnityString, F0100DA201E0DA000, 0x01000C7019E1C000ull, "1.0.0"}}, // name

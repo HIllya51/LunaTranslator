@@ -190,6 +190,7 @@ def createbuttonwidget(self, lay: QLayout):
                 globalconfig,
                 "button_color_normal",
                 callback=lambda _: (toolcolorchange(), refreshtoolicon()),
+                default="#FFFFFF",
             ),
             "",
         ]

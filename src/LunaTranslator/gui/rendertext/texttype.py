@@ -130,9 +130,9 @@ class dataget:
     @property
     def _clickable(self):
         return (
-            globalconfig["usesearchword"]
-            or globalconfig["usecopyword"]
-            or globalconfig["usesearchword_S"]
+            globalconfig.get("usesearchword", True)
+            or globalconfig.get("usecopyword", False)
+            or globalconfig.get("usesearchword_S", False)
         )
 
     @property
@@ -140,16 +140,16 @@ class dataget:
         return (
             self._clickable
             or globalconfig.get("word_hover_show_word_info", False)
-            or globalconfig["usesearchword_S_hover"]
+            or globalconfig.get("usesearchword_S_hover", False)
         )
 
     def _getfontinfo(self, texttype: TextType):
         if texttype == TextType.Origin:
-            fm = globalconfig["fonttype"]
+            fm = globalconfig.get("fonttype", "")
             fs = globalconfig.get("fontsizeori", 16)
             bold = globalconfig.get("showbold", False)
         else:
-            fm = globalconfig["fonttype2"]
+            fm = globalconfig.get("fonttype2", "")
             fs = globalconfig.get("fontsize", 16)
             bold = globalconfig.get("showbold_trans", False)
         return fm, fs, bold

@@ -41,6 +41,9 @@
 |  | 010036F023A16000 | DYNAMIC CHORD feat.KYOHSO Remaster edition |
 |  | 0100C32023A1A000 | DYNAMIC CHORD feat.apple-polisher Remaster edition |
 |  | 0100D4300EBF8000 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
+|  | 010024200E00A000 | うたの☆プリンスさまっ♪ Repeat LOVE |
+|  | 0100B3E0149FC000 | うたの☆プリンスさまっ♪All Star |
+|  | 010088200EFE8000 | うたの☆プリンスさまっ♪Debut |
 |  | 01007FD0211DA000 | 連呪 |
 |  | 010081D016E4E000 | DIG-ROCK -Documentary of Youthful Sounds- |
 |  | 010065402030A000 | 十鬼の絆 |
@@ -187,7 +190,6 @@
 |  | 0100874017BE2000 | BUSTAFELLOWS シーズン2 |
 |  | 0100F6F0207CC000 | BUSTAFELLOWS season2 |
 |  | 010094601D910000 | 5分後に意外な結末　モノクロームの図書館 |
-|  | 010024200E00A000 | うたの☆プリンスさまっ♪ Repeat LOVE |
 |  | 01000C7019E1C000 | ワンド オブ フォーチュン Ｒ～ |
 |  | 010088A01A774000 | ワンド オブ フォーチュン Ｒ２ ～時空に沈む黙示録～ |
 |  | 010051701A7BE000 | ワンド オブ フォーチュン Ｒ２ ＦＤ ～君に捧げるエピローグ～ |
