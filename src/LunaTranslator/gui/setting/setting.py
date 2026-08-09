@@ -5,7 +5,7 @@ import time, gobject
 from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy
 from gui.setting.textinput import setTabOne_lazy
-from gui.setting.translate import setTabTwo_lazy
+from gui.setting.translate import setTabTwo_lazy, show_tscolor_setting_guide
 from gui.setting.display import setTabThree_lazy
 from gui.setting.tts import setTab5
 from gui.setting.cishu import setTabcishu
@@ -120,4 +120,4 @@ class Setting(closeashidewindow):
         self.tab_widget.adjust_list_widget_width()
         index = 0
         self.tab_widget.setCurrentIndex(index)
-        gobject.base.switchtotspage.connect(lambda: self.tab_widget.setCurrentIndex(1))
+        gobject.base.switchtotspage.connect(lambda: (self.tab_widget.setCurrentIndex(1), show_tscolor_setting_guide()))

@@ -252,6 +252,233 @@ def renameapi(qlabel: QLabel, apiuid, self, countnum, _=None):
         selectllmcallback(self, countnum, apiuid)
 
 
+class RippleWidget(QWidget):
+    """简洁明亮的电磁波圆环聚集动画组件"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+
+        # 动画参数
+        self.ripple_count = 3  # 同时显示的波纹数量
+        self.max_radius = 80  # 最大半径
+        self.min_radius = 3  # 最小半径
+
+        # 颜色配置 - 更亮的蓝色
+        self.ring_color = QColor(0, 150, 255)  # 圆环主色
+
+        # 初始化波纹
+        self.ripples = []
+        for i in range(self.ripple_count):
+            self.ripples.append(
+                {
+                    "radius": self.max_radius
+                    - i * (self.max_radius / self.ripple_count),
+                    "opacity": 0.0,
+                }
+            )
+
+        # 动画定时器
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.update_animation)
+        self.timer.start(30)
+
+        # 固定大小
+        self.setFixedSize(self.max_radius * 2 + 20, self.max_radius * 2 + 20)
+
+    def set_center(self, center_pos):
+        """设置中心位置"""
+        if center_pos:
+            self.move(
+                int(center_pos.x() - self.width() // 2),
+                int(center_pos.y() - self.height() // 2),
+            )
+
+    def update_animation(self):
+        """更新动画状态"""
+        for ripple in self.ripples:
+            # 缩小半径
+            ripple["radius"] -= 2.0
+
+            # 当波纹到达最小半径时重置
+            if ripple["radius"] < self.min_radius:
+                ripple["radius"] = self.max_radius
+                ripple["opacity"] = 0.0
+
+            # 平滑淡入淡出
+            if ripple["radius"] > self.max_radius * 0.7:
+                target_opacity = 1.0 - (ripple["radius"] - self.max_radius * 0.7) / (
+                    self.max_radius * 0.3
+                )
+                ripple["opacity"] += (target_opacity - ripple["opacity"]) * 0.3
+            elif ripple["radius"] < self.max_radius * 0.3:
+                target_opacity = ripple["radius"] / (self.max_radius * 0.3)
+                ripple["opacity"] += (target_opacity - ripple["opacity"]) * 0.3
+            else:
+                ripple["opacity"] += (1.0 - ripple["opacity"]) * 0.3
+
+        self.update()
+
+    def paintEvent(self, event):
+        """绘制明亮的电磁波圆环"""
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+
+        center = QPoint(self.width() // 2, self.height() // 2)
+
+        for ripple in self.ripples:
+            if ripple["opacity"] <= 0.01:
+                continue
+
+            radius = ripple["radius"]
+            opacity = ripple["opacity"]
+
+            base_color = QColor(self.ring_color)
+
+            # 1. 外层光晕（让圆环看起来发光）
+            outer_glow = QRadialGradient(center, radius + 6)
+            outer_glow.setColorAt(
+                0.0,
+                QColor(
+                    base_color.red(),
+                    base_color.green(),
+                    base_color.blue(),
+                    int(100 * opacity),
+                ),
+            )
+            outer_glow.setColorAt(
+                1.0, QColor(base_color.red(), base_color.green(), base_color.blue(), 0)
+            )
+
+            pen = QPen(QBrush(outer_glow), 12)
+            painter.setPen(pen)
+            painter.setBrush(Qt.NoBrush)
+            painter.drawEllipse(center, int(radius), int(radius))
+
+            # 2. 主圆环（明亮的线条）
+            main_gradient = QRadialGradient(center, radius)
+            main_gradient.setColorAt(
+                0.0, QColor(base_color.red(), base_color.green(), base_color.blue(), 0)
+            )
+            main_gradient.setColorAt(
+                0.75,
+                QColor(
+                    base_color.red(),
+                    base_color.green(),
+                    base_color.blue(),
+                    int(230 * opacity),
+                ),
+            )
+            main_gradient.setColorAt(0.85, QColor(255, 255, 255, int(255 * opacity)))
+            main_gradient.setColorAt(
+                0.88,
+                QColor(
+                    base_color.red(),
+                    base_color.green(),
+                    base_color.blue(),
+                    int(240 * opacity),
+                ),
+            )
+            main_gradient.setColorAt(
+                1.0, QColor(base_color.red(), base_color.green(), base_color.blue(), 0)
+            )
+
+            pen = QPen(QBrush(main_gradient), 3.5)
+            painter.setPen(pen)
+            painter.drawEllipse(center, int(radius), int(radius))
+
+            # 3. 内层高光线（让圆环更有层次）
+            inner_highlight = QRadialGradient(center, radius)
+            inner_highlight.setColorAt(0.0, QColor(255, 255, 255, 0))
+            inner_highlight.setColorAt(0.85, QColor(255, 255, 255, int(180 * opacity)))
+            inner_highlight.setColorAt(1.0, QColor(255, 255, 255, 0))
+
+            pen = QPen(QBrush(inner_highlight), 1)
+            painter.setPen(pen)
+            painter.drawEllipse(center, int(radius), int(radius))
+
+        painter.end()
+
+    def reset_animation(self):
+        """重置动画状态"""
+        for i, ripple in enumerate(self.ripples):
+            ripple["radius"] = self.max_radius - i * (
+                self.max_radius / self.ripple_count
+            )
+            ripple["opacity"] = 0.0
+
+
+class GuideOverlay(QWidget):
+    """引导遮罩层"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WA_TranslucentBackground)
+
+        self.ripple = RippleWidget(self)
+        self.target_pos = None
+        self._updating_geometry = False
+
+    def show_at(self, target_widget):
+        """在指定控件位置显示引导"""
+        if self.parent() and target_widget:
+            target_pos = target_widget.mapTo(
+                self.parent(), target_widget.rect().center()
+            )
+            self.target_pos = target_pos
+
+            parent_rect = self.parent().rect()
+            self.setGeometry(parent_rect)
+
+            self.ripple.reset_animation()
+            self.ripple.set_center(target_pos)
+
+            self.show()
+            self.raise_()
+
+    def update_position(self):
+        """更新位置"""
+        if self.target_pos and not self._updating_geometry:
+            self._updating_geometry = True
+            parent_rect = self.parent().rect()
+            self.setGeometry(parent_rect)
+            self.ripple.set_center(self.target_pos)
+            self._updating_geometry = False
+
+
+tscolor_setting_collector = []
+
+
+def show_tscolor_setting_guide():
+    for _ in tscolor_setting_collector:
+        _[1].show_at(_[0].color)
+
+
+class IconButtonWithOverlay(QWidget):
+    def __init__(self, *argc, **kw):
+        super().__init__()
+        self.color = getcolorbutton(*argc, **kw)
+        self.color.setParent(self)
+        self.guide = GuideOverlay(self)
+        self.guide.hide()
+        self.color.clicked.connect(
+            lambda: [_[1].hide() for _ in tscolor_setting_collector]
+        )
+        tscolor_setting_collector.append((self, self.guide))
+
+    def resizeEvent(self, a0):
+        super().resizeEvent(a0)
+        if hasattr(self, "color"):
+            self.color.setGeometry(self.rect())
+        if hasattr(self, "guide") and self.guide.isVisible():
+            self.guide.update_position()
+
+def D_IconButtonWithOverlay(*argc, **kw):
+    return lambda: IconButtonWithOverlay(*argc, **kw)
+
+
 def getrenameablellabel(uid, self, countnum):
     name = ClickableLabel(dynamicapiname(uid))
     fn = functools.partial(renameapi, name, uid, self, countnum)
@@ -304,7 +531,7 @@ def selectllmcallback(self, countnum: list, fanyi, newname=None):
         "use",
         callback=functools.partial(gobject.base.prepare, uid),
     )
-    color = getcolorbutton(
+    color = IconButtonWithOverlay(
         self,
         globalconfig["fanyi"][uid],
         "color",
@@ -427,7 +654,7 @@ def initsome11(self, l, save=False):
                 "use",
                 callback=functools.partial(gobject.base.prepare, fanyi),
             ),
-            D_getcolorbutton(
+            D_IconButtonWithOverlay(
                 self,
                 globalconfig["fanyi"][fanyi],
                 "color",
