@@ -257,8 +257,8 @@ class RippleWidget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         # 动画参数
         self.ripple_count = 3  # 同时显示的波纹数量
@@ -323,7 +323,7 @@ class RippleWidget(QWidget):
     def paintEvent(self, event):
         """绘制明亮的电磁波圆环"""
         painter = QPainter(self)
-        painter.setRenderHint(QPainter.Antialiasing)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
         center = QPoint(self.width() // 2, self.height() // 2)
 
@@ -414,8 +414,8 @@ class GuideOverlay(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setAttribute(Qt.WA_TransparentForMouseEvents)
-        self.setAttribute(Qt.WA_TranslucentBackground)
+        self.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents)
+        self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
         self.ripple = RippleWidget(self)
         self.target_pos = None
