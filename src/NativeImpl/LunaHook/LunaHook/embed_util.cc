@@ -275,7 +275,10 @@ bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
   if (commonsharedmem->clearText)
   {
-    buff->from(" "); // 也可以选择对齐空格长度。到底哪个更稳定需要更多测试
+    if (((hp.type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8)) == 0) && (commonsharedmem->codepage == 932))
+      buff->from(" \x81\x40");
+    else
+      buff->from(" ");
     return true;
   }
   std::wstring origin;
