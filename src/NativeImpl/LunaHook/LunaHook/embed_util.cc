@@ -275,7 +275,7 @@ bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
   if (commonsharedmem->clearText)
   {
-    buff->from(" "); // 也可以选择对齐空格长度。到底哪个更稳定需要更多测试
+    buff->from(" 　"); // 也可以选择对齐空格长度。到底哪个更稳定需要更多测试
     return true;
   }
   std::wstring origin;
