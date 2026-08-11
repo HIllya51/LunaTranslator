@@ -2,7 +2,7 @@
 include(FetchContent)
 
 FetchContent_Declare(webview2 
-    URL https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/1.0.4022.49
+    URL https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2/1.0.4129.50
     DOWNLOAD_EXTRACT_TIMESTAMP true
 )
 FetchContent_MakeAvailable(webview2)

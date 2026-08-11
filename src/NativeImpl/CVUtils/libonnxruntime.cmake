@@ -13,9 +13,9 @@ if(WIN10ABOVE)
     # DML和ort的版本必须对应，因此必须附带而非加载系统的，否则无法使用gpu
     
     if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
-        set(ort_version 1.23.0) 
+        set(ort_version 1.24.4) 
     else()
-        set(ort_version 1.22.0) #之后不再有32位release
+        set(ort_version 1.22.1) #之后不再有32位release
     endif()
     FetchContent_Declare(onnxruntime 
         URL https://www.nuget.org/api/v2/package/Microsoft.ML.OnnxRuntime.DirectML/${ort_version}
