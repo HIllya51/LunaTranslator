@@ -1,6 +1,6 @@
 import re
 from cishu.cishubase import cishubase
-from myutils.utils import get_element_by, simplehtmlparser
+from myutils.utils import get_element_by, simplehtmlparser, simplehtmlparser_all
 from language import Languages
 
 
@@ -28,6 +28,8 @@ class youdao(cishubase):
         text = re.sub('<script([\\s\\S]*?)src="(.*?)"([\\s\\S]*?)</script>', "", text)
         text = re.sub('<div class="lang-tip-con"([\\s\\S]*?)</div>', "", text)
 
+        for _ in simplehtmlparser_all(text, "div", '<div class="pronounce_comp"'):
+            text = text.replace(_, "")
         text = text.replace(
             simplehtmlparser(text, "div", '<div class="footer_container"'), ""
         )
