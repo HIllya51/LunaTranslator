@@ -475,6 +475,7 @@ class IconButtonWithOverlay(QWidget):
         if hasattr(self, "guide") and self.guide.isVisible():
             self.guide.update_position()
 
+
 def D_IconButtonWithOverlay(*argc, **kw):
     return lambda: IconButtonWithOverlay(*argc, **kw)
 
@@ -851,6 +852,49 @@ def _c_slice_spin(
     return l
 
 
+def loadmodewidget():
+    w = QWidget()
+    text = QLabel("(default: mmap)")
+    stack = QStackedWidget()
+    stack.setContentsMargins(0, 0, 0, 0)
+    stack.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+    stack.addWidget(w)
+    stack.addWidget(text)
+
+    def __(_=None):
+        _df = globalconfig["llama.cpp"].get("load-mode-use", False)
+        stack.setCurrentIndex(1 - _df)
+
+    switch = getsimpleswitch(
+        globalconfig["llama.cpp"], "load-mode-use", callback=__, default=False
+    )
+    __()
+    l2 = QHBoxLayout(w)
+
+    l2.setContentsMargins(0, 0, 0, 0)
+    l2.addWidget(
+        getsimplecombobox(
+            ["none", "mmap", "mlock", "mmap+mlock", "dio"],
+            globalconfig["llama.cpp"],
+            k="load-mode",
+            internal=[
+                "none",
+                "mmap",
+                "mlock",
+                "mmap+mlock",
+                "dio",
+            ],
+            default="mmap",
+        ),
+    )
+
+    l = QHBoxLayout()
+    l.setContentsMargins(0, 0, 0, 0)
+    l.addWidget(switch)
+    l.addWidget(stack)
+    return l
+
+
 def nglnum():
     l = QHBoxLayout()
     combo = getsimplecombobox(
@@ -875,32 +919,6 @@ def nglnum():
     combo.currentIndexChanged.connect(cb)
     stack.setCurrentIndex(combo.getCurrentData() == "number")
     l.addWidget(stack)
-    return l
-
-
-def mmapmlock():
-    ll = getsmalllabel(
-        "--mlock",
-        "--mlock    force system to keep model in RAM rather than swapping or compressing",
-    )()
-    swith2 = getsimpleswitch(globalconfig["llama.cpp"], key="mlock", default=False)
-
-    def ___(x):
-        ll.setHidden(x)
-        swith2.setHidden(x)
-
-    swith = getsimpleswitch(
-        globalconfig["llama.cpp"], key="mmap", default=True, callback=___
-    )
-    l = QHBoxLayout()
-    l.setContentsMargins(0, 0, 0, 0)
-    l.addWidget(swith)
-    l.addWidget(QLabel())
-    l.addWidget(ll)
-    l.addWidget(swith2)
-    if swith.isChecked():
-        swith2.hide()
-        ll.hide()
     return l
 
 
@@ -1206,19 +1224,26 @@ def getllamaservercmd(llamaserver, gguf, version):
     if ngl == "number":
         ngl = globalconfig["llama.cpp"].get("gpu-layers", 200)
 
-    mmap = "--mmap"
-    if not globalconfig["llama.cpp"].get("mmap", True):
-        mmap = "--no-mmap"
-        if globalconfig["llama.cpp"].get("mlock", False):
-            mmap += " --mlock"
+    load_mode = ""
+    if globalconfig["llama.cpp"].get("load-mode-use", False):
+        _load_mode = globalconfig["llama.cpp"].get("load-mode", "mmap")
+        if version >= 10105:
+            load_mode = "--load-mode {}".format(_load_mode)
+        else:
+            if _load_mode == "mmap":
+                load_mode = "--mmap"
+            elif _load_mode == "mlock":
+                load_mode = "--mlock"
+            elif _load_mode == "mmap+mlock":
+                load_mode = "--mmap --mlock"
     if device == "auto":
         device = ""
     elif device == "cpu":
         device = "--device none"
     else:
         device = "--device {}".format(device.split(":")[0])
-    cmd = '"{llamaserver}" -m "{gguf}" --host {host} --port {port} {ctx} {parallel} --gpu-layers {ngl} {mmap} --metrics {device}'.format(
-        mmap=mmap,
+    cmd = '"{llamaserver}" -m "{gguf}" --host {host} --port {port} {ctx} {parallel} --gpu-layers {ngl} {load_mode} --metrics {device}'.format(
+        load_mode=load_mode,
         ngl=ngl,
         fa=fa,
         ctx=ctx,
@@ -2147,10 +2172,10 @@ def llamacppgrid():
                     ],
                     [
                         getsmalllabel(
-                            "whether to memory-map model (--mmap)",
-                            "--mmap, --no-mmap  whether to memory-map model (if disabled, slower load but may reduce pageouts if not using mlock) (default: enabled)",
+                            "model loading mode (--load-mode)",
+                            "-lm,   --load-mode MODE                 model loading mode (default: mmap)",
                         ),
-                        mmapmlock,
+                        loadmodewidget,
                     ],
                     [
                         getsmalllabel(
