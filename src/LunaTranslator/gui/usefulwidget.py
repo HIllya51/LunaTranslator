@@ -3838,7 +3838,11 @@ def create_centered_rect(width: int, height: int, widget: QWidget = None) -> QRe
     if widget:
         screen_center = widget.geometry().center()
     else:
-        screen = QApplication.primaryScreen()
+            
+        cursor_pos = QCursor.pos()
+        screen = QApplication.screenAt(cursor_pos)
+        if not screen:
+            screen = QApplication.primaryScreen()
 
         if not screen:
             return QRect(0, 0, width, height)

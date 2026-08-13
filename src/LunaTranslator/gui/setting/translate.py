@@ -1230,7 +1230,9 @@ def getllamaservercmd(llamaserver, gguf, version):
         if version >= 10105:
             load_mode = "--load-mode {}".format(_load_mode)
         else:
-            if _load_mode == "mmap":
+            if _load_mode == "none":
+                load_mode = "--no-mmap"
+            elif _load_mode == "mmap":
                 load_mode = "--mmap"
             elif _load_mode == "mlock":
                 load_mode = "--mlock"
