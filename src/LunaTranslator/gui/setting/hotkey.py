@@ -139,7 +139,7 @@ def _calc_dis_and_centerdis(rect: QRect, point):
     x1, x2 = rect.left(), rect.right()
     y1, y2 = rect.top(), rect.bottom()
 
-    if rect.contains(point):
+    if rect.contains(QPoint(px, py)):
         edge_dist = 0
     else:
         dx = max(x1 - px, 0, px - x2)

@@ -2151,6 +2151,9 @@ class KeySequenceEdit(QKeySequenceEdit):
 
     def __init__(self, parent=None, callonlymod=False):
         super(KeySequenceEdit, self).__init__(parent)
+        internalLineEdit  = self.findChild(QLineEdit)
+        if internalLineEdit:
+            internalLineEdit.setReadOnly(True)
         self.callonlymod = callonlymod
 
     def keyPressEvent(self, ke: QKeyEvent):
