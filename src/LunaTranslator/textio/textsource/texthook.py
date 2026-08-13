@@ -473,7 +473,7 @@ class texthook(basetext):
             pids = NativeUtils.collect_running_pids(injectpids)
             pid = " ".join([str(_) for _ in pids])
 
-        windows.ShellExecute(
+        ret = windows.ShellExecute(
             0,
             "runas",
             injecter,
@@ -481,6 +481,12 @@ class texthook(basetext):
             None,
             windows.SW_HIDE,
         )
+        if ret < 32:
+            if ret in (windows.ERROR_ACCESS_DENIED,):
+                gobject.base.translation_ui.showMarkDownSig.emit(
+                    _TR("权限不足，请以管理员权限运行！")
+                )
+            raise Exception(windows.FormatMessage(ret))
 
     @threader
     def injectproc(self, injecttimeout, pids):

@@ -586,6 +586,9 @@ def MoveWindow(hwnd, X, Y, w, h, bRepaint):
 def ShellExecute(hwnd: int, op: str, file: str, params: str, _dir: str, bShow):
     return _ShellExecuteW(hwnd, op, file, params, _dir, bShow)
 
+ERROR_FILE_NOT_FOUND = 2
+ERROR_PATH_NOT_FOUND = 3
+SE_ERR_ACCESSDENIED = ERROR_ACCESS_DENIED = 5
 
 def OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId):
     return _OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId)
