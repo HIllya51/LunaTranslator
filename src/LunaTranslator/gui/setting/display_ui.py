@@ -170,7 +170,7 @@ def createfontcombo():
 
 def getget_setting_window():
     try:
-        name = globalconfig["theme3"]
+        name = globalconfig.get("theme3", "PyQtDarkTheme")
         _fn = None
         for n in static_data["themes"]:
             if n["name"] == name:
@@ -323,7 +323,9 @@ def uisetting(self):
                         getboxlayout(
                             [
                                 "最小高度",
-                                D_getspinbox(0, 9999, globalconfig, "min_auto_height", default=0),
+                                D_getspinbox(
+                                    0, 9999, globalconfig, "min_auto_height", default=0
+                                ),
                                 "px",
                             ]
                         ),
@@ -399,6 +401,7 @@ def uisetting(self):
                                                     checkthemesettingvisandapply, self
                                                 ),
                                                 internal=["default"] + themelist(),
+                                                default="PyQtDarkTheme",
                                             ),
                                             functools.partial(
                                                 createbtnthemelight, self

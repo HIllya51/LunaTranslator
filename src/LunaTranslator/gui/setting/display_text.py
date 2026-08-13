@@ -15,6 +15,7 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     getcolorbutton,
     saveposwindow,
+    create_centered_rect,
     listediter,
     getIconButton,
     getsimpleswitch,
@@ -79,7 +80,14 @@ class extrahtml(saveposwindow):
             ff.write(self.vistext.toPlainText())
 
     def __init__(self, parent, fn, fneg, tester) -> None:
-        super().__init__(parent, poslist=globalconfig["geo_extrahtml"])
+        super().__init__(
+            parent,
+            posinit=gobject.tempconfig.get(
+                "geo_extrahtml",
+                create_centered_rect(600, 400, gobject.base.settin_ui).getRect(),
+            ),
+            possave=functools.partial(gobject.tempconfig.__setitem__, "geo_extrahtml"),
+        )
         self.setWindowTitle("附加HTML")
         self.tester = tester
         self.fneg = fneg
@@ -654,7 +662,9 @@ def xianshigrid_style(self):
                         ),
                         "",
                         "固定翻译显示顺序",
-                        D_getsimpleswitch(globalconfig, "fix_translate_rank", default=False),
+                        D_getsimpleswitch(
+                            globalconfig, "fix_translate_rank", default=False
+                        ),
                         D_getIconButton(functools.partial(vistranslate_rank, self)),
                         "",
                         "文字区域背景",

@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os
+import os, functools
 import windows, qtawesome, gobject
 from NativeUtils import GetProcessFirstWindow
 from myutils.config import globalconfig, _TR
@@ -10,7 +10,7 @@ from myutils.hwnd import (
     getExeIcon,
     test_injectable,
 )
-from gui.usefulwidget import saveposwindow
+from gui.usefulwidget import saveposwindow, create_centered_rect
 from gui.dynalang import LPushButton, LLabel, LCheckBox
 
 
@@ -47,8 +47,11 @@ class AttachProcessDialog(saveposwindow):
     def __init__(self, parent, callback, hookselectdialog=None):
         super().__init__(
             parent,
-            poslist=globalconfig["attachprocessgeo"],
             flags=Qt.WindowType.WindowStaysOnTopHint,
+            posinit=globalconfig.get(
+                "attachprocessgeo", create_centered_rect(800, 400).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "attachprocessgeo"),
         )
         self.setcurrentpidpnamesignal.connect(self.selectwindowcallback)
 

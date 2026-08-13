@@ -21,6 +21,7 @@ from gui.usefulwidget import (
     MyInputDialog,
     IconButton,
     auto_select_webview,
+    create_centered_rect,
 )
 from gui.dynalang import LAction
 from gui.markdownhighlighter import MarkdownHighlighter
@@ -298,7 +299,10 @@ class dialog_memory(saveposwindow):
             parent,
             flags=Qt.WindowType.WindowCloseButtonHint
             | Qt.WindowType.WindowMinMaxButtonsHint,
-            poslist=globalconfig["memorydialoggeo"],
+            posinit=globalconfig.get(
+                "memorydialoggeo", create_centered_rect(800, 600).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "memorydialoggeo"),
         )
         self.show()
         self.setWindowTitle(

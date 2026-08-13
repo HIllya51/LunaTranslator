@@ -930,5 +930,6 @@
     "选择模型": "Wybierz model",
     "支持的语言": "Obsługiwane języki",
     "任意": "Dowolny",
-    "不支持当前模拟器版本": "Nie obsługuje bieżącej wersji emulatora."
+    "不支持当前模拟器版本": "Nie obsługuje bieżącej wersji emulatora.",
+    "保存窗口位置": "Zapisz pozycję okna"
 }

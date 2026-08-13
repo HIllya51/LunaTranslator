@@ -26,6 +26,7 @@ from gui.usefulwidget import (
     getsmalllabel,
     manybuttonlayout,
     makesubtab_lazy,
+    create_centered_rect,
     makescrollgrid,
 )
 from gui.specialwidget import KeyPressDetector
@@ -326,7 +327,9 @@ def _ocrparam_create(self, f):
         )
     self._ocrparaml.addRow(
         "文本相似度阈值",
-        getboxlayout([D_getspinbox(0, 100000, globalconfig, "ocr_text_diff", default=3), QLabel]),
+        getboxlayout(
+            [D_getspinbox(0, 100000, globalconfig, "ocr_text_diff", default=3), QLabel]
+        ),
     )
 
 
@@ -372,7 +375,13 @@ class showocrimage(saveposwindow):
 
     def __init__(self, parent):
         self.originimage = None
-        super().__init__(parent, poslist=globalconfig["showocrgeo"])
+        super().__init__(
+            parent,
+            posinit=gobject.tempconfig.get(
+                "showocrgeo", create_centered_rect(600, 300, gobject.base.settin_ui).getRect()
+            ),
+            possave=functools.partial(gobject.tempconfig.__setitem__, "showocrgeo"),
+        )
         self.setWindowIcon(qtawesome.icon("fa.picture-o"))
         self.setWindowTitle("查看")
         self.originlabel = pixmapviewer()

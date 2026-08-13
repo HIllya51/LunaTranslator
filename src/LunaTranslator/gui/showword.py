@@ -47,6 +47,7 @@ from gui.usefulwidget import (
     IconButton,
     getboxlayout,
     getboxwidget,
+    create_centered_rect,
     getspinbox,
     getsimplecombobox,
     getlineedit,
@@ -1803,7 +1804,13 @@ class searchwordW(closeashidewindow):
     ocr_once_signal = pyqtSignal()
 
     def __init__(self, parent):
-        super(searchwordW, self).__init__(parent, globalconfig["sw_geo"])
+        super(searchwordW, self).__init__(
+            parent,
+            posinit=globalconfig.get(
+                "sw_geo", create_centered_rect(500, 500).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "sw_geo"),
+        )
         self.search_word.connect(self._click_word_search_function)
         self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.ocr_once_signal.connect(lambda: rangeselct_function(self.ocr_do_function))
@@ -2013,7 +2020,7 @@ class searchwordW(closeashidewindow):
         def __(_):
             globalconfig["ankisplit"] = self.spliter.sizes()
 
-        self.spliter.setSizes(globalconfig["ankisplit"])
+        self.spliter.setSizes(globalconfig.get("ankisplit", [400, 400]))
         self.spliter.splitterMoved.connect(__)
         self.spliter.setStretchFactor(0, 1)
         self.spliter.setStretchFactor(1, 0)
@@ -2073,7 +2080,7 @@ class searchwordW(closeashidewindow):
             def __(_):
                 globalconfig["mdictsplit"] = self.dict_textoutput_spl.sizes()
 
-            self.dict_textoutput_spl.setSizes(globalconfig["mdictsplit"])
+            self.dict_textoutput_spl.setSizes(globalconfig.get("mdictsplit", [400, 400]))
             self.dict_textoutput_spl.splitterMoved.connect(__)
         self.isfirstshowleftwidgets = False
 

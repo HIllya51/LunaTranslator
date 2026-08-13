@@ -930,5 +930,6 @@
     "选择模型": "Scegli il modello.",
     "支持的语言": "Lingue supportate",
     "任意": "Qualsiasi",
-    "不支持当前模拟器版本": "Versione attuale del simulatore non supportata"
+    "不支持当前模拟器版本": "Versione attuale del simulatore non supportata",
+    "保存窗口位置": "Salva la posizione della finestra"
 }

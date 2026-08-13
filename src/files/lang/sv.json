@@ -930,5 +930,6 @@
     "选择模型": "Välj modell",
     "支持的语言": "Språk som stöds",
     "任意": "Valfri",
-    "不支持当前模拟器版本": "Stöder inte den aktuella simulatorversionen"
+    "不支持当前模拟器版本": "Stöder inte den aktuella simulatorversionen",
+    "保存窗口位置": "Spara fönsterposition"
 }

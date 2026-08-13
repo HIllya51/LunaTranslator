@@ -285,72 +285,6 @@
         "arabic_reshaper": false,
         "skiponlypunctuations": true
     },
-    "extensionsetting": [
-        500,
-        500,
-        800,
-        800
-    ],
-    "transuigeo": [
-        500,
-        500,
-        800,
-        200
-    ],
-    "geo_extrahtml": [
-        100,
-        100,
-        600,
-        300
-    ],
-    "hist_geo": [
-        100,
-        100,
-        600,
-        300
-    ],
-    "edit_geo": [
-        100,
-        100,
-        600,
-        300
-    ],
-    "showocrgeo": [
-        100,
-        100,
-        600,
-        300
-    ],
-    "attachprocessgeo": [
-        100,
-        100,
-        800,
-        400
-    ],
-    "selecthookgeo": [
-        100,
-        100,
-        800,
-        600
-    ],
-    "memorydialoggeo": [
-        100,
-        100,
-        800,
-        600
-    ],
-    "savegamedialoggeo": [
-        100,
-        100,
-        800,
-        600
-    ],
-    "sw_geo": [
-        100,
-        100,
-        500,
-        500
-    ],
     "lineheights": {
         "lineHeight": 1,
         "lineHeightNormal": true,
@@ -383,12 +317,6 @@
         "allowDuplicate": true,
         "autorecord": false
     },
-    "setting_geo_2": [
-        100,
-        100,
-        1000,
-        600
-    ],
     "global_namemap2": [],
     "tagNameRemap": {},
     "dialog_savegame_layout": {
@@ -417,14 +345,6 @@
             500
         ]
     },
-    "ankisplit": [
-        400,
-        400
-    ],
-    "mdictsplit": [
-        400,
-        400
-    ],
     "toolbutton": {
         "rank2": [
             "luna",
@@ -1444,7 +1364,6 @@
             "name": "自定义"
         }
     },
-    "theme3": "PyQtDarkTheme",
     "useopenlinklink1": [
         "https://www.google.com/search?q={word}",
         "https://jpdb.io/search?q={word}",

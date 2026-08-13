@@ -930,5 +930,6 @@
     "选择模型": "Sélectionner un modèle",
     "支持的语言": "Langues prises en charge",
     "任意": "N'importe lequel",
-    "不支持当前模拟器版本": "La version actuelle de l'émulateur n'est pas prise en charge."
+    "不支持当前模拟器版本": "La version actuelle de l'émulateur n'est pas prise en charge.",
+    "保存窗口位置": "Enregistrer la position de la fenêtre"
 }

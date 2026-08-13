@@ -930,5 +930,6 @@
     "选择模型": "Select model",
     "支持的语言": "Supported Languages",
     "任意": "any",
-    "不支持当前模拟器版本": "The current emulator version is not supported."
+    "不支持当前模拟器版本": "The current emulator version is not supported.",
+    "保存窗口位置": "Save window position."
 }

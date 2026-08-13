@@ -3,7 +3,7 @@ import functools
 import qtawesome
 import time, gobject
 from myutils.config import globalconfig
-from gui.usefulwidget import closeashidewindow, makesubtab_lazy
+from gui.usefulwidget import closeashidewindow, makesubtab_lazy, create_centered_rect
 from gui.setting.textinput import setTabOne_lazy
 from gui.setting.translate import setTabTwo_lazy, show_tscolor_setting_guide
 from gui.setting.display import setTabThree_lazy
@@ -74,7 +74,13 @@ class TabWidget(QWidget):
 class Setting(closeashidewindow):
 
     def __init__(self, parent):
-        super(Setting, self).__init__(parent, globalconfig["setting_geo_2"])
+        super(Setting, self).__init__(
+            parent,
+            posinit=globalconfig.get(
+                "setting_geo_2", create_centered_rect(1000, 600).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "setting_geo_2"),
+        )
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self.isfirst = True
         registrhotkeys(self)
@@ -120,4 +126,6 @@ class Setting(closeashidewindow):
         self.tab_widget.adjust_list_widget_width()
         index = 0
         self.tab_widget.setCurrentIndex(index)
-        gobject.base.switchtotspage.connect(lambda: (self.tab_widget.setCurrentIndex(1), show_tscolor_setting_guide()))
+        gobject.base.switchtotspage.connect(
+            lambda: (self.tab_widget.setCurrentIndex(1), show_tscolor_setting_guide())
+        )

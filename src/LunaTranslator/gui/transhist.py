@@ -3,7 +3,12 @@ import gobject, os
 import qtawesome, NativeUtils, functools, json
 from myutils.config import globalconfig, _TR
 from myutils.utils import get_time_stamp
-from gui.usefulwidget import closeashidewindow, WebviewWidget, Exteditor
+from gui.usefulwidget import (
+    closeashidewindow,
+    WebviewWidget,
+    Exteditor,
+    create_centered_rect,
+)
 from gui.dynalang import LAction
 from urllib.parse import quote
 from myutils.wrapper import threader
@@ -666,7 +671,13 @@ class transhist(closeashidewindow):
     getnewtranssignal = pyqtSignal(str, str)
 
     def __init__(self, parent):
-        super(transhist, self).__init__(parent, globalconfig["hist_geo"])
+        super(transhist, self).__init__(
+            parent,
+            posinit=globalconfig.get(
+                "hist_geo", create_centered_rect(800, 400).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "hist_geo"),
+        )
         self.trace = []
         self.textOutput = None
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)

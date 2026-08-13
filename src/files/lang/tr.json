@@ -930,5 +930,6 @@
     "选择模型": "Model seçimi",
     "支持的语言": "Desteklenen diller",
     "任意": "Herhangi bir",
-    "不支持当前模拟器版本": "Mevcut simülatör sürümü desteklenmiyor."
+    "不支持当前模拟器版本": "Mevcut simülatör sürümü desteklenmiyor.",
+    "保存窗口位置": "Pencere konumunu kaydet"
 }

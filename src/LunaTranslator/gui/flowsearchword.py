@@ -329,8 +329,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         resizableframeless.__init__(
             self,
             parent,
-            Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint,
-            None,
+            flags=Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint,
         )
         self.__state = 0
         gobject.base.hover_search_word.connect(self.searchword)

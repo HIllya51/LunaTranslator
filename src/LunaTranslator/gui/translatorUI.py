@@ -32,7 +32,11 @@ from gui.dialog_memory import dialog_memory
 from gui.rendertext.texttype import TextType, SpecialColor
 from gui.textbrowser import Textbrowser
 from gui.rangeselect import rangeselct_function
-from gui.usefulwidget import resizableframeless, load_specific_icon_size
+from gui.usefulwidget import (
+    resizableframeless,
+    load_specific_icon_size,
+    create_centered_rect,
+)
 from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.gamemanager.common import startgame
@@ -1144,8 +1148,15 @@ class TranslatorWindow(resizableframeless):
         )
         if globalconfig.get("keepontop", True):
             flags |= Qt.WindowType.WindowStaysOnTopHint
+        if globalconfig.get("savewindowpos", True):
+            posinit = globalconfig.get("transuigeo", create_centered_rect(800, 200).getRect())
+        else:
+            posinit = create_centered_rect(800, 200).getRect()
         super(TranslatorWindow, self).__init__(
-            None, flags=flags, poslist=globalconfig["transuigeo"]
+            None,
+            flags=flags,
+            posinit=posinit,
+            possave=functools.partial(globalconfig.__setitem__, "transuigeo"),
         )
         self.fullscreenmanager = None
         self.magpiecallback.connect(

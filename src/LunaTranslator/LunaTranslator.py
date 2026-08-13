@@ -1302,7 +1302,7 @@ class BASEOBJECT(QObject):
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         if ismenulist:
-            name = globalconfig["theme3"]
+            name = globalconfig.get("theme3", "PyQtDarkTheme")
             NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
             if name == "QTWin11":
                 NativeUtils.setAcrylicEffect(
@@ -1534,7 +1534,7 @@ class BASEOBJECT(QObject):
         style = ""
         for _ in (0,):
             try:
-                name = globalconfig["theme3"]
+                name = globalconfig.get("theme3", "PyQtDarkTheme")
                 _fn = None
                 for n in static_data["themes"]:
                     if n["name"] == name:

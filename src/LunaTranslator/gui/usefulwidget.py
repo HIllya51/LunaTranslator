@@ -648,14 +648,15 @@ class saveposwindow_1(LMainWindow):
             t += "{}[[{}]]".format("_-_", gobject.thisuserconfig)
         return super().setWindowTitle(t)
 
-    def __init__(self, parent, poslist=None, flags=None) -> None:
+    def __init__(self, parent, flags=None, posinit=None, possave=None) -> None:
         LMainWindow.__init__(self, parent)
         if flags:
             self.setWindowFlags(self.windowFlags() | flags)
 
-        self.poslist = poslist
-        if self.poslist:
-            self.setGeometry(QRect(poslist[0], poslist[1], poslist[2], poslist[3]))
+        self.posinit = posinit
+        self.possave = possave
+        if self.posinit:
+            self.setGeometry(QRect(*self.posinit))
         self.adjust_window_to_screen_bounds(self.screen().geometry())
         self.___firstshow = True
 
@@ -709,13 +710,12 @@ class saveposwindow_1(LMainWindow):
             self.setGeometry(new_window_rect)
 
     def __checked_savepos(self):
-        if not self.poslist:
+        if not self.possave:
             return
         if windows.IsZoomed(int(self.winId())) != 0:
             return
         # self.isMaximized()会在event结束后才被设置，不符合预期。
-        for i, _ in enumerate(self.geometry().getRect()):
-            self.poslist[i] = _
+        self.possave(self.geometry().getRect())
 
     def resizeEvent(self, a0) -> None:
         self.__checked_savepos()
@@ -750,8 +750,8 @@ class closeashidewindow(saveposwindow):
     showsignal = pyqtSignal()
     realshowhide = pyqtSignal(bool)
 
-    def __init__(self, parent, poslist=None) -> None:
-        super().__init__(parent, poslist)
+    def __init__(self, *_, **kw) -> None:
+        super().__init__(*_, **kw)
         self.showsignal.connect(self.showfunction)
         self.realshowhide.connect(self.realshowhidefunction)
 
@@ -922,8 +922,8 @@ class resizableframeless(saveposwindow_1):
     def _padding(self):
         return 8
 
-    def __init__(self, parent, flags, poslist) -> None:
-        saveposwindow_1.__init__(self, parent, poslist, flags)
+    def __init__(self, *_, **kw) -> None:
+        saveposwindow_1.__init__(self, *_, **kw)
         self.setMouseTracking(True)
         # WS_THICKFRAME可以让无边框窗口可resize，但不兼容透明窗口
         self.usesysmove = False
@@ -1621,8 +1621,15 @@ class MiddleClickTab(QTabWidget):
 
 
 class SingleExtensionSetting_(saveposwindow):
-    def __init__(self, parent):
-        super().__init__(parent, globalconfig["extensionsetting"])
+    def __init__(self, parent: QWidget):
+        super().__init__(
+            parent,
+            posinit=globalconfig.get(
+                "extensionsetting",
+                create_centered_rect(800, 800).getRect(),
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "extensionsetting"),
+        )
         self.tabw = MiddleClickTab(self)
         self.tabw.setTabsClosable(True)
         self.tabw.tabCloseRequested.connect(self.close_tab)
@@ -2151,7 +2158,7 @@ class KeySequenceEdit(QKeySequenceEdit):
 
     def __init__(self, parent=None, callonlymod=False):
         super(KeySequenceEdit, self).__init__(parent)
-        internalLineEdit  = self.findChild(QLineEdit)
+        internalLineEdit = self.findChild(QLineEdit)
         if internalLineEdit:
             internalLineEdit.setReadOnly(True)
         self.callonlymod = callonlymod
@@ -3824,3 +3831,22 @@ class AutoScaleImageButton(QPushButton):
         y = (self.height() - scaled_pixmap.height()) // 2
         painter.drawPixmap(x, y, scaled_pixmap)
         return super().paintEvent(_)
+
+
+def create_centered_rect(width: int, height: int, widget: QWidget = None) -> QRect:
+
+    if widget:
+        screen_center = widget.geometry().center()
+    else:
+        screen = QApplication.primaryScreen()
+
+        if not screen:
+            return QRect(0, 0, width, height)
+
+        screen_rect = screen.geometry()
+        screen_center = screen_rect.center()
+
+    x = screen_center.x() - width // 2
+    y = screen_center.y() - height // 2
+
+    return QRect(x, y, width, height)

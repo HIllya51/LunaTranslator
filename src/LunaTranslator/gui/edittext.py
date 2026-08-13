@@ -1,10 +1,11 @@
 from qtsymbols import *
-import windows
+import windows, functools
 import gobject, qtawesome, os, json
 from myutils.config import globalconfig, savehook_new_data, translatorsetting
 from myutils.wrapper import Singleton, threader
 from gui.usefulwidget import (
     saveposwindow,
+    create_centered_rect,
     getsimplecombobox,
     getIconButton,
     IconButton,
@@ -43,7 +44,13 @@ class edittext(saveposwindow):
         super().closeEvent(e)
 
     def __init__(self, parent, cached):
-        super().__init__(parent, poslist=globalconfig["edit_geo"])
+        super().__init__(
+            parent,
+            posinit=globalconfig.get(
+                "edit_geo", create_centered_rect(600, 300).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "edit_geo"),
+        )
         self.setupUi()
         # self.setWindowFlags(self.windowFlags()&~Qt.WindowMinimizeButtonHint)
         self.getnewsentencesignal.connect(self.getnewsentence)

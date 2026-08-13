@@ -24,6 +24,7 @@ from gui.usefulwidget import (
     getIconButton,
     FocusCombo,
     TableViewW,
+    create_centered_rect,
 )
 from gui.RichMessageBox import RichMessageBox
 from gui.dynalang import (
@@ -437,7 +438,13 @@ class hookselect(closeashidewindow):
         return gobject.base.textsource
 
     def __init__(self, parent):
-        super(hookselect, self).__init__(parent, globalconfig["selecthookgeo"])
+        super(hookselect, self).__init__(
+            parent,
+            posinit=globalconfig.get(
+                "selecthookgeo", create_centered_rect(800, 600).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "selecthookgeo"),
+        )
         self.setupUi()
         self.hidesearchhookbuttons()
         self.is_focus_normal = True
@@ -669,12 +676,12 @@ class hookselect(closeashidewindow):
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
         self.userhook.returnPressed.connect(self.inserthook)
-        userhookinsert = getIconButton(icon='fa.plus', callback=self.inserthook)
+        userhookinsert = getIconButton(icon="fa.plus", callback=self.inserthook)
         self.searchtextlayout.addWidget(userhookinsert)
 
         self.searchtextlayout.addWidget(D_getdoclink("hooksettings.html#特殊码格式")())
 
-        self.userhookfind = getIconButton(icon='fa.search', callback=self.findhook)
+        self.userhookfind = getIconButton(icon="fa.search", callback=self.findhook)
         self.searchtextlayout.addWidget(self.userhookfind)
         self.searchtextlayout.addWidget(__)
 

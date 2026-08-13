@@ -24,6 +24,7 @@ from gui.usefulwidget import (
     IconButton,
     getspinbox,
     SplitLine,
+    create_centered_rect,
     getcolorbutton,
     threeswitch,
     getsimplecombobox,
@@ -80,7 +81,10 @@ class dialog_savedgame_integrated(saveposwindow):
             parent,
             flags=Qt.WindowType.WindowMinMaxButtonsHint
             | Qt.WindowType.WindowCloseButtonHint,
-            poslist=globalconfig["savegamedialoggeo"],
+            posinit=globalconfig.get(
+                "savegamedialoggeo", create_centered_rect(800, 600).getRect()
+            ),
+            possave=functools.partial(globalconfig.__setitem__, "savegamedialoggeo"),
         )
         self.setWindowTitle("游戏管理")
         self.setWindowIcon(
