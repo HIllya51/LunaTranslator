@@ -931,5 +931,7 @@
     "支持的语言": "Desteklenen diller",
     "任意": "Herhangi bir",
     "不支持当前模拟器版本": "Mevcut simülatör sürümü desteklenmiyor.",
-    "保存窗口位置": "Pencere konumunu kaydet"
+    "保存窗口位置": "Pencere konumunu kaydet",
+    "内存占用: {}": "Bellek kullanımı: {}",
+    "显存占用: {}": "Video belleği kullanımı: {}"
 }

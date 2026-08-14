@@ -414,7 +414,9 @@ class webview_c_MenuItem(Structure):
     ]
 
 
-webview_menu_handler_t = CFUNCTYPE(None, LPCWSTR, POINTER(c_size_t), POINTER(POINTER(webview_c_MenuItem)))
+webview_menu_handler_t = CFUNCTYPE(
+    None, LPCWSTR, POINTER(c_size_t), POINTER(POINTER(webview_c_MenuItem))
+)
 webview_set_menu_handler = utilsdll.webview_set_menu_handler
 webview_set_menu_handler.argtypes = (
     AbstractWebViewPTR,
@@ -514,7 +516,10 @@ class AbstractWebView:
         menuitens = self.on_menu(selecttext)
         menuitens = [_ for _ in menuitens if _]
         psizet[0] = c_size_t(len(menuitens))
-        buffer = cast(webview_allocate_buffer(len(menuitens) * sizeof(webview_c_MenuItem)), POINTER(webview_c_MenuItem))
+        buffer = cast(
+            webview_allocate_buffer(len(menuitens) * sizeof(webview_c_MenuItem)),
+            POINTER(webview_c_MenuItem),
+        )
         for i, item in enumerate(menuitens):
             buffer[i].issep = item.issep
             buffer[i].checkable = item.checkable
@@ -1332,3 +1337,11 @@ class record_with_vad:
         self.ptr = record_with_vad_create()
         if not self.ptr:
             raise Exception()
+
+
+GetProcessMemory = utilsdll.GetProcessMemory
+GetProcessMemory.argtypes = (DWORD,)
+GetProcessMemory.restype = c_uint64
+GetProcessVRAM = utilsdll.GetProcessVRAM
+GetProcessVRAM.argtypes = DWORD, c_bool
+GetProcessVRAM.restype = c_uint64

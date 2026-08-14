@@ -931,5 +931,7 @@
     "支持的语言": "Idiomas suportados",
     "任意": "Qualquer",
     "不支持当前模拟器版本": "Versão atual do simulador não suportada",
-    "保存窗口位置": "Salvar a posição da janela"
+    "保存窗口位置": "Salvar a posição da janela",
+    "内存占用: {}": "Uso de memória: {}",
+    "显存占用: {}": "Uso de memória de vídeo: {}"
 }

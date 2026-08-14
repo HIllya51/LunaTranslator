@@ -947,7 +947,11 @@ def __getllamacppversion(llamaserver):
     cmd = '"{}" --version'.format(llamaserver)
     llamaserverdir = os.path.dirname(llamaserver)
     proc = subprochiderun(cmd, cwd=llamaserverdir)
-    version: "re.Match" = re.search(r"version: (\d+)", proc.stderr)
+    version: "re.Match" = re.search(
+        r"version: .*? \(build (\d+), commit .*?\)", proc.stderr
+    )
+    if not version:
+        version: "re.Match" = re.search(r"version: (\d+) \(.*?\)", proc.stderr)
     if not version:
         return None
     version = int(version.groups()[0])
@@ -965,6 +969,8 @@ def __getllamacppdevices(llamaserver):
     for __ in _[1].splitlines():
         __ = __.strip()
         if not __:
+            continue
+        if __ == "(none)":
             continue
         result.append(__)
     return result
@@ -1064,6 +1070,8 @@ def copy_move_not_exists(src: str, dst: str, lost_copy: bool = False):
         for file in files:
             src_file = os.path.normpath(os.path.join(root, file))
             dst_file = os.path.normpath(os.path.join(target_dir, file))
+            if dst_file == src_file:
+                continue
             if (
                 src_file != dst_file
                 and os.path.exists(dst_file)
@@ -1109,77 +1117,6 @@ def merge_copy_llamacpps(llamaserver, tag):
     global LLAMA_CPP_REFRESH_BTN
     if LLAMA_CPP_REFRESH_BTN:
         gobject.base.safeinvokefunction.emit(LLAMA_CPP_REFRESH_BTN.click)
-
-
-@threader
-def autoupdatellamacpp(llamaserver, currversion):
-    check_interrupt = lambda: not globalconfig["llama.cpp"].get("autoupdate", False)
-    if check_interrupt():
-        return
-
-    if not llamaserver:
-        llamaserver = getllamaserverpath()
-    if not llamaserver:
-        return
-    if not currversion:
-        currversion = __getllamacppversion(llamaserver)
-    if not currversion:
-        return
-
-    res = requests.get(
-        "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
-        proxies=getproxy(),
-    ).json()
-    lastest = int(res["tag_name"][1:])
-    if lastest <= currversion:
-        return
-    insarchs = detect_llama_installed_archs(llamaserver)
-
-    if len(insarchs) > 1:
-        if "cpu" in insarchs:
-            insarchs.pop("cpu")
-    archs_down = []
-
-    threads: "list[threading.Thread]" = []
-    results = []
-
-    def ___down(arch, _, check_interrupt, tag):
-        results.append(
-            downloadone(
-                "llama.cpp " + arch,
-                _["browser_download_url"],
-                _["digest"],
-                check_interrupt,
-                tag,
-            )
-        )
-
-    for _ in res["assets"]:
-        name: str = _["name"]
-        maich = re.match(r"llama-.*?-bin-win-(.*?)-x64\.zip", name)
-        if not maich:
-            continue
-        arch_ = arch = maich.groups()[0]
-        if arch.startswith("cuda-"):
-            arch = arch.split(".")[0]
-
-        if arch not in insarchs:
-            continue
-        archs_down.append(arch_)
-        threads.append(
-            threading.Thread(
-                target=___down,
-                args=(arch, _, check_interrupt, res["tag_name"]),
-            )
-        )
-    for _ in threads:
-        _.start()
-    for _ in threads:
-        _.join()
-    if sum(results) != len(results):
-        raise Exception()
-
-    merge_copy_llamacpps(llamaserver, res["tag_name"])
 
 
 def getllamaserverpath(search=True):
@@ -1276,8 +1213,6 @@ def getggufpath():
 @threader
 def autostartllamacpp(force=False):
     if (not force) and (not globalconfig["llama.cpp"].get("autolaunch", False)):
-        if not force:
-            autoupdatellamacpp(None, None)
         return
 
     llamaserver = getllamaserverpath()
@@ -1285,8 +1220,6 @@ def autostartllamacpp(force=False):
         return
     gguf = getggufpath()
     if not gguf:
-        if not force:
-            autoupdatellamacpp(llamaserver, None)
         return
 
     gobject.base.translation_ui.displayglobaltooltip.emit("loading llama.cpp")
@@ -1294,8 +1227,6 @@ def autostartllamacpp(force=False):
     version = __getllamacppversion(llamaserver)
     if not version:
         return
-    if not force:
-        autoupdatellamacpp(llamaserver, version)
     cmd = getllamaservercmd(llamaserver, gguf, version)
     global llamacppautoHandle
     loghandle = open(gobject.getcachedir("llama-server.log"), "a", encoding="utf8")
@@ -1337,6 +1268,7 @@ def autostartllamacpp(force=False):
                 gobject.base.translation_ui.displayglobaltooltip.emit(
                     "llama.cpp loaded"
                 )
+                # print(NativeUtils.GetProcessMemory(proc.pid), NativeUtils.GetProcessVRAM(proc.pid, True))
                 gobject.base.llamacppstatus.emit(2)
             gobject.base.llamacppstdout.emit(l[:-1])
             print(l, file=loghandle, flush=True, end="")
@@ -1527,10 +1459,6 @@ class llamalistQwidget(QWidget):
         lay.setContentsMargins(0, 0, 0, 0)
         lay.addLayout(versions)
         lay.addWidget(llamalistQwidget_internal(self))
-        versions.addWidget(getsmalllabel("自动更新")())
-        versions.addWidget(
-            getsimpleswitch(globalconfig["llama.cpp"], "autoupdate", default=False)
-        )
         versions.addWidget(getsmalllabel("当前版本")())
         gobject.base.connectsignal(
             gobject.base.llamacppcurrversion,
@@ -1598,12 +1526,15 @@ class llamalisttable(LTableView):
                 arch += " (Nvidia GPU)"
             elif arch == "hip-radeon":
                 arch += " (AMD GPU/NPU)"
+            elif arch.startswith("rocm"):
+                arch += " (AMD GPU/NPU)"
             elif arch == "vulkan":
                 arch += "_(通用)"
             item = LStandardItem(arch)
             item.setData(_["browser_download_url"], Qt.ItemDataRole.UserRole + 2)
             item.setData(res["tag_name"], Qt.ItemDataRole.UserRole + 10)
             item.setData(_["digest"], Qt.ItemDataRole.UserRole + 4)
+            item.setData(_arch, Qt.ItemDataRole.UserRole + 6)
             item.setData(cudas.get(_arch, ""), Qt.ItemDataRole.UserRole + 3)
             item.setData(cudasdigest.get(_arch, ""), Qt.ItemDataRole.UserRole + 30)
             item3 = LStandardItem()
@@ -1619,7 +1550,7 @@ class llamalisttable(LTableView):
     ):
         insarchs = detect_llama_installed_archs(llamaserver)
         for i in range(self.Model.rowCount()):
-            arch = self.Model.item(i, 0).text()
+            arch: str = self.Model.item(i, 0).data(Qt.ItemDataRole.UserRole + 6)
             item: LStandardItem = self.Model.item(i, 2)
             item.setText("")
             item.setToolTip("")
@@ -2003,9 +1934,12 @@ def llamacppgrid():
         else:
             global llamacppautoHandle
             llamacppautoHandle = None
+            update_text(label2)
 
     statusbtn.clicked.connect(_cb)
 
+    label2 = QLabel()
+    label2.hide()
     label = tipslabel()
     label.setWordWrap(True)
     gobject.base.connectsignal(gobject.base.llamacppstdoutstatus, label.test)
@@ -2037,6 +1971,9 @@ def llamacppgrid():
     logopenbtn = IconButton(
         "fa.terminal", tips="log", checkable=True, checkablechangecolor=False
     )
+    timer = QTimer(logopenbtn)
+    timer.timeout.connect(functools.partial(update_text, label2))
+    timer.start(2000)
     form = VisLFormLayout()
     form.addRow(
         "伴随启动",
@@ -2049,7 +1986,7 @@ def llamacppgrid():
                 statusbtn,
                 getsmalllabel(""),
                 logopenbtn,
-                getsmalllabel(""),
+                label2,
                 label,
             ]
         ),
@@ -2190,6 +2127,24 @@ def llamacppgrid():
             )
         ],
     ]
+
+
+def update_text(label: QLabel):
+    if not llamacppautoHandle:
+        gobject.base.safeinvokefunction.emit(lambda: (label.hide(), label.setText("")))
+        return
+    mem = NativeUtils.GetProcessMemory(llamacppautoHandle.pid)
+    vmem = NativeUtils.GetProcessVRAM(llamacppautoHandle.pid, True)
+    text = ""
+    if mem:
+        mem = format_bytes(mem)
+        text += _TR("内存占用: {}").format(mem)
+    if vmem:
+        vmem = format_bytes(vmem)
+        if text:
+            text += " "
+        text += _TR("显存占用: {}").format(vmem)
+    gobject.base.safeinvokefunction.emit(lambda: (label.show(), label.setText(text)))
 
 
 def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):

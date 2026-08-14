@@ -931,5 +931,7 @@
     "支持的语言": "Ondersteunde talen",
     "任意": "Willekeurig",
     "不支持当前模拟器版本": "Huidige simulatorversie wordt niet ondersteund.",
-    "保存窗口位置": "Vensterpositie opslaan"
+    "保存窗口位置": "Vensterpositie opslaan",
+    "内存占用: {}": "Geheugengebruik: {}",
+    "显存占用: {}": "VRAM-gebruik: {}"
 }

@@ -931,5 +931,7 @@
     "支持的语言": "Språk som stöds",
     "任意": "Valfri",
     "不支持当前模拟器版本": "Stöder inte den aktuella simulatorversionen",
-    "保存窗口位置": "Spara fönsterposition"
+    "保存窗口位置": "Spara fönsterposition",
+    "内存占用: {}": "Minnesutrymme: {}",
+    "显存占用: {}": "Grafikminnesanvändning: {}"
 }

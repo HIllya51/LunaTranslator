@@ -931,5 +931,7 @@
     "支持的语言": "Unterstützte Sprachen",
     "任意": "beliebig",
     "不支持当前模拟器版本": "Die aktuelle Emulator-Version wird nicht unterstützt.",
-    "保存窗口位置": "Fensterposition speichern"
+    "保存窗口位置": "Fensterposition speichern",
+    "内存占用: {}": "Speicherverbrauch: {}",
+    "显存占用: {}": "VRAM-Belegung: {}"
 }
