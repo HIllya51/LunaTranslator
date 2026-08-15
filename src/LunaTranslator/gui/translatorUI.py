@@ -1380,7 +1380,7 @@ class TranslatorWindow(resizableframeless):
     def showabout(self):
 
         _t = get_about_info()
-        if not globalconfig.get("adaptive_height", False):
+        if not globalconfig.get("adaptive_height", True):
             _t = _t.replace("\n\n", "\n")
         self.showMarkDown(_t)
 
@@ -1733,7 +1733,7 @@ class TranslatorWindow(resizableframeless):
         # size只有一个维度是准确的，应当根据显示方向来使用其中有效的部分
         if self.translate_text.cleared:
             return
-        if not globalconfig.get("adaptive_height", False):
+        if not globalconfig.get("adaptive_height", True):
             self.translate_text.scrolltoend()
             return
         if globalconfig.get("verticalhorizontal", False):

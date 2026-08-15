@@ -28,18 +28,52 @@ void TextThread::Stop()
 {
 	timer = NULL;
 }
-
-void TextThread::AddSentence(std::wstring &&sentence)
+void TextThread::RunDectectCodePage(BYTE *data, int length)
 {
-	queuedSentences->emplace_back(std::move(sentence));
+	if (Host::detectedCodepage)
+		return;
+	if (UseForDetectRaw.size() > 32)
+		return;
+	if (!hp.isAscii())
+		return;
+	UseForDetectRaw.append((const char *)data, length);
+	if (all_ascii(UseForDetectRaw))
+		return;
+	if (isStringUtf8(UseForDetectRaw))
+	{
+		Host::detectedCodepage = CP_UTF8;
+	}
+	else
+	{
+		auto test = [&](DWORD cp)
+		{
+			auto _ = StringToWideString(UseForDetectRaw, cp);
+			if (!_)
+				return false;
+			return WideStringToString(_.value(), cp) == UseForDetectRaw;
+		};
+		if (test(932))
+			Host::detectedCodepage = 932;
+		else if (test(936))
+			Host::detectedCodepage = 936;
+		else if (test(950))
+			Host::detectedCodepage = 950;
+		else if (test(949))
+			Host::detectedCodepage = 949;
+		else
+			Host::detectedCodepage = 932;
+	}
+	Host::BroadCastCodePage();
 }
-
 void TextThread::Push(BYTE *data, int length)
 {
 	if (length < 0)
 		return;
 	std::scoped_lock lock(bufferMutex);
 
+	auto hostcodepage = Host::HostCodePage();
+	if (hp.isAscii() && !hostcodepage)
+		return;
 	BYTE doubleByteChar[2];
 	if (length == 1) // doublebyte characters must be processed as pairs
 	{
@@ -51,7 +85,7 @@ void TextThread::Push(BYTE *data, int length)
 			length = 2;
 			leadByte = 0;
 		}
-		else if (IsDBCSLeadByteEx(hp.codepage ? hp.codepage : Host::defaultCodepage, data[0]))
+		else if (IsDBCSLeadByteEx(hp.codepage ? hp.codepage : hostcodepage, data[0]))
 		{
 			leadByte = data[0];
 			length = 0;
@@ -59,7 +93,7 @@ void TextThread::Push(BYTE *data, int length)
 	}
 	if (length)
 	{
-		if (auto converted = commonparsestring(data, length, &hp, Host::defaultCodepage))
+		if (auto converted = commonparsestring(data, length, &hp, hostcodepage))
 		{
 			bufferDecoded.append(converted.value());
 			if (hp.type & FULL_STRING && (flushDelay == 0 || (converted.value().size() > 1)))
@@ -70,15 +104,20 @@ void TextThread::Push(BYTE *data, int length)
 			Host::AddConsoleOutput(TR[INVALID_CODEPAGE]);
 		}
 	}
-	bufferRaw.append((const char *)data, length);
 
 	UpdateFlushTime();
 
 	if (flushDelay == 0 && hp.type & FULL_STRING)
 	{
-		AddSentence(std::move(bufferDecoded));
-		bufferDecoded.clear();
+		FlushBufferToQueue();
 	}
+}
+void TextThread::FlushBufferToQueue()
+{
+	if (bufferDecoded.empty())
+		return;
+	queuedDecodedSentences->emplace_back(std::move(bufferDecoded));
+	bufferDecoded.clear();
 }
 void TextThread::UpdateFlushTime(bool recursive)
 {
@@ -118,7 +157,7 @@ std::wstring TextThread::GetHistoryText()
 void TextThread::Flush()
 {
 	std::vector<std::wstring> sentences;
-	queuedSentences->swap(sentences);
+	queuedDecodedSentences->swap(sentences);
 	for (auto &sentence : sentences)
 	{
 		sentence.erase(std::remove(sentence.begin(), sentence.end(), 0), sentence.end());
@@ -127,11 +166,8 @@ void TextThread::Flush()
 	}
 
 	std::scoped_lock lock(bufferMutex);
-	if (bufferDecoded.empty())
-		return;
 	if (bufferDecoded.size() > maxBufferSize || GetTickCount64() - lastPushTime > flushDelay)
 	{
-		AddSentence(std::move(bufferDecoded));
-		bufferDecoded.clear();
+		FlushBufferToQueue();
 	}
 }

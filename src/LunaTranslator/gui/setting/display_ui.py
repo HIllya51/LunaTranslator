@@ -318,7 +318,7 @@ def uisetting(self):
                         "",
                         "自动调整高度",
                         D_getsimpleswitch(
-                            globalconfig, "adaptive_height", default=False
+                            globalconfig, "adaptive_height", default=True
                         ),
                         getboxlayout(
                             [

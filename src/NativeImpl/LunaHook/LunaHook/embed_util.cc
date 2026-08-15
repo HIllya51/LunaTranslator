@@ -2,7 +2,7 @@
 static std::atomic<bool> patch_fun_ptrs_patch_once_flag = true;
 DynamicShiftJISCodec *dynamiccodec = new DynamicShiftJISCodec(932);
 
-void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans, bool normal)
+void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans, bool normal, DWORD hostcodepage)
 {
 
   if (hp.type & CODEC_UTF16)
@@ -22,7 +22,7 @@ void cast_back(const HookParam &hp, TextBuffer *buff, const std::wstring &trans,
     }
     else
     {
-      astr = WideStringToString(trans, hp.codepage ? hp.codepage : ((hp.type & CODEC_UTF8) ? CP_UTF8 : commonsharedmem->codepage));
+      astr = WideStringToString(trans, hp.codepage ? hp.codepage : ((hp.type & CODEC_UTF8) ? CP_UTF8 : hostcodepage));
     }
     buff->from(astr);
   }
@@ -180,24 +180,24 @@ bool charEncodableSTD(const wchar_t &ch, UINT codepage)
   s.push_back(ch);
   return StringToWideString(WideStringToString(s, codepage), codepage).value() == s;
 }
-static std::wstring insertSpacesAfterUnencodableSTD(const std::wstring &text, HookParam hp)
+static std::wstring insertSpacesAfterUnencodableSTD(const std::wstring &text, HookParam hp, DWORD hostcodepage)
 {
 
   std::wstring ret;
   for (const wchar_t &c : text)
   {
     ret.push_back(c);
-    if (!charEncodableSTD(c, hp.codepage ? hp.codepage : commonsharedmem->codepage))
+    if (!charEncodableSTD(c, hp.codepage ? hp.codepage : hostcodepage))
       ret.push_back(L' ');
   }
   return ret;
 }
-std::wstring adjustSpacesSTD(const std::wstring &text, HookParam hp)
+std::wstring adjustSpacesSTD(const std::wstring &text, HookParam hp, DWORD hostcodepage)
 {
   if (hp.type & EMBED_INSERT_SPACE_ALWAYS)
     return alwaysInsertSpacesSTD(text);
   else if (hp.type & EMBED_INSERT_SPACE_AFTER_UNENCODABLE)
-    return insertSpacesAfterUnencodableSTD(text, hp);
+    return insertSpacesAfterUnencodableSTD(text, hp, hostcodepage);
   return text;
 }
 bool isPauseKeyPressed()
@@ -273,16 +273,19 @@ bool checktranslatedok(TextBuffer buff)
 }
 bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
+  auto hostcodepage = commonsharedmem->codepage;
+  if (hp.isAscii() && (hostcodepage == 0))
+    return false;
   if (commonsharedmem->clearText)
   {
-    if (((hp.type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8)) == 0) && (commonsharedmem->codepage == 932))
+    if (hp.isAscii() && (hostcodepage == 932))
       buff->from(" \x81\x40");
     else
       buff->from(" ");
     return true;
   }
   std::wstring origin;
-  if (auto t = commonparsestring(buff->data, buff->size, &hp, commonsharedmem->codepage))
+  if (auto t = commonparsestring(buff->data, buff->size, &hp, hostcodepage))
     origin = t.value();
   else
     return false;
@@ -304,7 +307,7 @@ bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
   }
   if (hp.lineSeparator)
     strReplace(translate, L"\n", hp.lineSeparator);
-  translate = adjustSpacesSTD(translate, hp);
+  translate = adjustSpacesSTD(translate, hp, hostcodepage);
   switch (commonsharedmem->displaymode)
   {
   case Displaymode::TRANS:
@@ -317,6 +320,6 @@ bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
     break;
   }
   solvefont(hp);
-  cast_back(hp, buff, translate, false);
+  cast_back(hp, buff, translate, false, hostcodepage);
   return true;
 }

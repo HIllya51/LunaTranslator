@@ -1544,12 +1544,12 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.addRow(
             "代码页",
             getsimplecombobox(
-                static_data["codepage_display"],
+                ["自动"] + static_data["codepage_display"],
                 savehook_new_data[gameuid]["hooksetting_private"],
                 "codepage_value",
                 lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig.get("codepage_value", 932),
-                internal=static_data["codepage_real"],
+                default=globalconfig.get("codepage_value", 0),
+                internal=[0] + static_data["codepage_real"],
                 sizeX=True,
             ),
         )

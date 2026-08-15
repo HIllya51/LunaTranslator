@@ -39,22 +39,24 @@ public:
 	HookParam hp;
 	std::wstring GetHistoryText();
 	std::wstring GetLatestText();
+	void RunDectectCodePage(BYTE *data, int length);
+
 private:
 	Synchronized<StorageDecoded> storageDecoded;
 	inline static int threadCounter = 0;
 
 	void Flush();
-	void AddSentence(std::wstring &&sentence);
 	std::wstring bufferDecoded;
-	std::string bufferRaw;
+	std::string UseForDetectRaw;
 	BYTE leadByte = 0;
 	std::mutex bufferMutex;
 	DWORD64 lastPushTime = 0;
-	Synchronized<std::vector<std::wstring>> queuedSentences;
+	Synchronized<std::vector<std::wstring>> queuedDecodedSentences;
 	struct TimerDeleter
 	{
 		void operator()(HANDLE h) { DeleteTimerQueueTimer(NULL, h, INVALID_HANDLE_VALUE); }
 	};
 	AutoHandle<TimerDeleter> timer = NULL;
 	void UpdateFlushTime(bool recursive = true);
+	void FlushBufferToQueue();
 };

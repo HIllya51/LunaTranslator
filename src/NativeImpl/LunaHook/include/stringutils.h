@@ -187,6 +187,6 @@ inline std::wstring FormatString(const wchar_t *format, const Args &...args)
   return buffer;
 }
 
-std::optional<std::wstring> commonparsestring(void *, size_t, void *, DWORD);
+std::optional<std::wstring> commonparsestring(const void *, size_t, void *, DWORD);
 #pragma warning(pop)
 #endif

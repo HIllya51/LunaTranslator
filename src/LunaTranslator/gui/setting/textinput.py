@@ -146,12 +146,12 @@ def gethookgrid():
             "代码页",
             (
                 D_getsimplecombobox(
-                    static_data["codepage_display"],
+                    ["自动"] + static_data["codepage_display"],
                     globalconfig,
                     "codepage_value",
                     lambda x: gobject.base.textsource.setsettings(),
-                    internal=static_data["codepage_real"],
-                    default=932,
+                    internal=[0] + static_data["codepage_real"],
+                    default=0,
                 ),
                 2,
             ),
@@ -500,7 +500,9 @@ def getnetgrid(self):
                     D_getIconButton(
                         icon="fa.chrome",
                         callback=lambda: os.startfile(
-                            "http://127.0.0.1:{}".format(globalconfig.get("networktcpport", 2333))
+                            "http://127.0.0.1:{}".format(
+                                globalconfig.get("networktcpport", 2333)
+                            )
                         ),
                         tips="打开",
                     ),
@@ -756,7 +758,7 @@ def __tgtlangw(self):
         globalconfig,
         "tgtlang4",
         internal=all_langs(False)[1],
-        default="zh"
+        default="zh",
     )
     return self.tgtlangw
 

@@ -22,12 +22,15 @@ namespace Host
 	void RemoveHook(DWORD processId, uint64_t address);
 	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound = {}, LPCWSTR addresses = nullptr);
 	CommonSharedMem *GetCommonSharedMem(DWORD pid);
+	void BroadCastCodePage();
 	TextThread *GetThread(int64_t handle);
 	TextThread &GetThread(ThreadParam tp);
 	void InfoOutput(HOSTINFO type, const std::wstring &text);
 	void AddConsoleOutput(const std::wstring &text);
 
-	inline int defaultCodepage = SHIFT_JIS;
+	inline int defaultCodepage = 0;
+	inline int detectedCodepage = 0;
+	inline int HostCodePage() { return defaultCodepage ? defaultCodepage : detectedCodepage; }
 	inline bool enablePCHooks = true;
 
 	bool CheckIsUsingEmbed(ThreadParam tp);

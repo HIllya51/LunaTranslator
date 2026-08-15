@@ -324,14 +324,14 @@ std::wstring acastw(const std::string &x)
     xx += c;
   return xx;
 }
-std::optional<std::wstring> commonparsestring(void *data, size_t length, void *php, DWORD df)
+std::optional<std::wstring> commonparsestring(const void *data, size_t length, void *php, DWORD df)
 {
   auto hp = (HookParam *)php;
   if (hp->type & CODEC_UTF16)
-    return std::wstring((wchar_t *)data, length / sizeof(wchar_t));
+    return std::wstring((const wchar_t *)data, length / sizeof(wchar_t));
   else if (hp->type & CODEC_UTF32)
-    return utf32_to_utf16(std::u32string_view((char32_t *)data, length / sizeof(char32_t)));
-  else if (auto converted = StringToWideString(std::string((char *)data, length), (hp->type & CODEC_UTF8) ? CP_UTF8 : (hp->codepage ? hp->codepage : df)))
+    return utf32_to_utf16(std::u32string_view((const char32_t *)data, length / sizeof(char32_t)));
+  else if (auto converted = StringToWideString(std::string((const char *)data, length), (hp->type & CODEC_UTF8) ? CP_UTF8 : (hp->codepage ? hp->codepage : df)))
     return converted.value();
   else
     return {};

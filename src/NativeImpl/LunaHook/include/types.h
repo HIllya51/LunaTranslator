@@ -236,6 +236,7 @@ struct HookParam
 	}
 	uint32_t emu_addr;
 	JITTYPE jittype;
+	inline bool isAscii() { return (type & (CODEC_UTF16 | CODEC_UTF32 | CODEC_UTF8)) == 0; };
 };
 
 struct ThreadParam

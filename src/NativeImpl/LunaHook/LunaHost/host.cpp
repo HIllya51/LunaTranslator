@@ -240,8 +240,8 @@ namespace
 				}
 
 				thread->second.hp.type = data->type;
+				thread->second.RunDectectCodePage(data->data, length);
 				thread->second.Push(data->data, length);
-
 				[&]()
 				{
 					auto &thp = thread->second.hp;
@@ -252,7 +252,9 @@ namespace
 						return;
 					if (sm->clearText)
 						return;
-					auto t = commonparsestring(data->data, length, &thp, Host::defaultCodepage);
+					if (thp.isAscii() && !Host::HostCodePage())
+						return;
+					auto t = commonparsestring(data->data, length, &thp, Host::HostCodePage());
 					if (!t)
 						return;
 					auto text = t.value();
@@ -429,6 +431,17 @@ namespace Host
 				return &thread;
 		return nullptr;
 	}
+	void BroadCastCodePage()
+	{
+		for (auto &[pid, rcd] : processRecordsByIds.Acquire().contents)
+		{
+			auto m = rcd.commonsharedmem;
+			if (!m)
+				continue;
+			m->codepage = Host::HostCodePage();
+		}
+	}
+
 	CommonSharedMem *GetCommonSharedMem(DWORD processId)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;

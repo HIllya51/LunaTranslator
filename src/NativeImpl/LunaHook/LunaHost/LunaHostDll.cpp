@@ -100,6 +100,7 @@ C_LUNA_API void Luna_Settings(int flushDelay, int defaultCodepage, int maxBuffer
     TextThread::maxHistorySize = maxHistorySize;
     Host::defaultCodepage = defaultCodepage;
     Host::enablePCHooks = enablePCHooks;
+    Host::BroadCastCodePage();
 }
 C_LUNA_API void Luna_SettingsEx(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, Displaymode displaymode, bool fastskipignore, bool clearText, bool changeFontSize, float FontSizeRelative, bool tryvehhook)
 {
@@ -159,7 +160,7 @@ C_LUNA_API void Luna_UseEmbed(ThreadParam tp, bool use)
     auto sm = Host::GetCommonSharedMem(tp.processId);
     if (!sm)
         return;
-    sm->codepage = Host::defaultCodepage;
+    sm->codepage = Host::HostCodePage();
     for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
     {
         if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))
