@@ -127,7 +127,7 @@ namespace
 		VersionMatchCheck(hookPipe);
 		CheckFileHelper(hookPipe, hostPipe);
 
-		auto &&process = processRecordsByIds->try_emplace(processId, processId, hostPipe);
+		processRecordsByIds->try_emplace(processId, processId, hostPipe);
 		OnConnect(processId);
 		Host::AddConsoleOutput(FormatString(TR[PROC_CONN], processId));
 		if (Host::enablePCHooks)
@@ -257,9 +257,10 @@ namespace
 						return;
 					if (sm->clearText)
 						return;
-					if (thp.isAscii() && !(Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage))
+					auto codepage = Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage;
+					if (thp.isAscii() && !codepage)
 						return;
-					auto t = commonparsestring(data->data, length, &thp, Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
+					auto t = commonparsestring(data->data, length, &thp, codepage);
 					if (!t)
 						return;
 					auto text = t.value();

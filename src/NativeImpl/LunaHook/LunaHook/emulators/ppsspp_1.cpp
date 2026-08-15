@@ -418,7 +418,7 @@ namespace
             if (0) //_this < 0x8200)
             {
                 auto h = _byteswap_ushort(_this + 0x11e);
-                ws += StringToWideString(std::string((char *)&h, 2), 932).value_or(std::wstring(L"[") + hex + L"]");
+                ws += StringToWideString(std::string_view((char *)&h, 2), 932).value_or(std::wstring(L"[") + hex + L"]");
             }
             else
             {

@@ -54,13 +54,13 @@ inline std::vector<StringT> strSplit_impl(const StringT &s, const StringT &delim
 template <class StringT>
 inline bool endWith_impl(const StringT &s, const StringT &s2)
 {
-  return (s.size() >= s2.size()) && (s.substr(s.size() - s2.size()) == s2);
+  return (s.size() >= s2.size()) && (s.compare(s.size() - s2.size(), s2.size(), s2) == 0);
 }
 
 template <class StringT>
 inline bool startWith_impl(const StringT &s, const StringT &s2)
 {
-  return (s.size() >= s2.size()) && (s.substr(0, s2.size()) == s2);
+  return (s.size() >= s2.size()) && (s.compare(0, s2.size(), s2) == 0);
 }
 
 bool all_ascii(const char *s, int maxsize) { return all_ascii_impl<char>(s, maxsize); }
@@ -207,6 +207,7 @@ inline unsigned int convertUTF32ToUTF16(unsigned int cUTF32, unsigned int &h, un
 std::u32string utf16_to_utf32(std::wstring_view wsv)
 {
   std::u32string utf32String;
+  utf32String.reserve(wsv.size());
   for (size_t i = 0; i < wsv.size(); i++)
   {
     auto u16c = wsv[i];
@@ -229,6 +230,7 @@ std::u32string utf16_to_utf32(std::wstring_view wsv)
 std::wstring utf32_to_utf16(std::u32string_view sv)
 {
   std::wstring u16str;
+  u16str.reserve(sv.size() * 2);
   for (auto i = 0; i < sv.size(); i++)
   {
     unsigned h, l;
@@ -331,7 +333,7 @@ std::optional<std::wstring> commonparsestring(const void *data, size_t length, v
     return std::wstring((const wchar_t *)data, length / sizeof(wchar_t));
   else if (hp->type & CODEC_UTF32)
     return utf32_to_utf16(std::u32string_view((const char32_t *)data, length / sizeof(char32_t)));
-  else if (auto converted = StringToWideString(std::string((const char *)data, length), (hp->type & CODEC_UTF8) ? CP_UTF8 : (hp->codepage ? hp->codepage : df)))
+  else if (auto converted = StringToWideString(std::string_view((const char *)data, length), (hp->type & CODEC_UTF8) ? CP_UTF8 : (hp->codepage ? hp->codepage : df)))
     return converted.value();
   else
     return {};
