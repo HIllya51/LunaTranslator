@@ -409,14 +409,6 @@ class TextBrowser(WebviewWidget, somecommon):
                     checkable=True,
                     checked=globalconfig.get("enable_wheel_history", True),
                 ),
-                MenuItem(
-                    text=_TR("保存窗口位置"),
-                    clicked=lambda: globalconfig.__setitem__(
-                        "savewindowpos", not globalconfig.get("savewindowpos", True)
-                    ),
-                    checkable=True,
-                    checked=globalconfig.get("savewindowpos", True),
-                ),
             ]
 
     def event(self, a0: QEvent) -> bool:

@@ -65,7 +65,7 @@ from myutils.somedatabase import somedatabase
 from myutils.audioplayer import series_audioplayer
 from gui.dynalang import LAction, LDialog
 from gui.setting.setting import Setting
-from gui.usefulwidget import PopupWidget, pixmapviewer
+from gui.usefulwidget import PopupWidget, pixmapviewer, create_centered_rect
 from gui.RichMessageBox import RichMessageBox
 from gui.rendertext.texttype import TextType, SpecialColor, TranslateColor
 from network.server.servicecollection import registerall
@@ -1447,16 +1447,18 @@ class BASEOBJECT(QObject):
         trayMenu = QMenu(self.commonstylebase)
         showAction = LAction("显示", trayMenu)
         showAction.triggered.connect(self.translation_ui.show_)
+        showcenter = LAction("屏幕中间显示__", trayMenu)
+        def showatcenter():
+            self.translation_ui.setGeometry(create_centered_rect(self.translation_ui.width(), self.translation_ui.height()))
+            self.translation_ui.show_()
+        showcenter.triggered.connect(showatcenter)
         settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
         settingAction.triggered.connect(gobject.base.settin_ui_showsignal)
         quitAction = LAction(qtawesome.icon("fa.times"), "退出", trayMenu)
         quitAction.triggered.connect(self.translation_ui.close)
         trayMenu.addAction(showAction)
         trayMenu.addAction(settingAction)
-        trayMenu.addSeparator()
-        trayMenu.addAction(quitAction)
-        trayMenu.addAction(showAction)
-        trayMenu.addAction(settingAction)
+        trayMenu.addAction(showcenter)
         trayMenu.addSeparator()
         trayMenu.addAction(quitAction)
         return trayMenu

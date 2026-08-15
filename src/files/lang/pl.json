@@ -931,7 +931,7 @@
     "支持的语言": "Obsługiwane języki",
     "任意": "Dowolny",
     "不支持当前模拟器版本": "Nie obsługuje bieżącej wersji emulatora.",
-    "保存窗口位置": "Zapisz pozycję okna",
     "内存占用: {}": "Zużycie pamięci: {}",
-    "显存占用: {}": "Zużycie pamięci GPU: {}"
+    "显存占用: {}": "Zużycie pamięci GPU: {}",
+    "屏幕中间显示": "Na środku ekranu wyświetla się"
 }

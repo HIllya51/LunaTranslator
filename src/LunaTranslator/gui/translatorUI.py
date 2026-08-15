@@ -1148,10 +1148,7 @@ class TranslatorWindow(resizableframeless):
         )
         if globalconfig.get("keepontop", True):
             flags |= Qt.WindowType.WindowStaysOnTopHint
-        if globalconfig.get("savewindowpos", True):
-            posinit = globalconfig.get("transuigeo", create_centered_rect(800, 200).getRect())
-        else:
-            posinit = create_centered_rect(800, 200).getRect()
+        posinit = globalconfig.get("transuigeo", create_centered_rect(800, 200).getRect())
         super(TranslatorWindow, self).__init__(
             None,
             flags=flags,

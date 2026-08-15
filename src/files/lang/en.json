@@ -931,7 +931,7 @@
     "支持的语言": "Supported Languages",
     "任意": "any",
     "不支持当前模拟器版本": "The current emulator version is not supported.",
-    "保存窗口位置": "Save window position.",
     "内存占用: {}": "Memory usage: {}",
-    "显存占用: {}": "Video memory usage: {}"
+    "显存占用: {}": "Video memory usage: {}",
+    "屏幕中间显示": "The center of the screen displays"
 }

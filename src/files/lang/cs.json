@@ -931,7 +931,7 @@
     "支持的语言": "Podporované jazyky",
     "任意": "Jakýkoli",
     "不支持当前模拟器版本": "Nepodporuje aktuální verzi emulátoru.",
-    "保存窗口位置": "Uložit pozici okna",
     "内存占用: {}": "Využití paměti: {}",
-    "显存占用: {}": "Využití paměti GPU: {}"
+    "显存占用: {}": "Využití paměti GPU: {}",
+    "屏幕中间显示": "Uprostřed obrazovky se zobrazí"
 }
