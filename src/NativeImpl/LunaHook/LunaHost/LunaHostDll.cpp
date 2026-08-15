@@ -93,10 +93,9 @@ C_LUNA_API void *Luna_AllocString(const wchar_t *str)
     wcscpy_s(_, __, str);
     return _;
 }
-C_LUNA_API void Luna_Settings(int flushDelay, bool filterRepetition, int defaultCodepage, int maxBufferSize, int maxHistorySize, bool enablePCHooks)
+C_LUNA_API void Luna_Settings(int flushDelay, int defaultCodepage, int maxBufferSize, int maxHistorySize, bool enablePCHooks)
 {
     TextThread::flushDelay = flushDelay;
-    TextThread::filterRepetition = filterRepetition;
     TextThread::maxBufferSize = maxBufferSize;
     TextThread::maxHistorySize = maxHistorySize;
     Host::defaultCodepage = defaultCodepage;
@@ -135,9 +134,9 @@ C_LUNA_API bool Luna_InsertHookCode(DWORD pid, LPCWSTR hookcode)
 C_LUNA_API void Luna_QueryThreadHistory(ThreadParam tp, bool latest, void (*callback)(const wchar_t *))
 {
     if (latest)
-        callback(Host::GetThread(tp).latest->c_str());
+        callback(Host::GetThread(tp).GetLatestText().c_str());
     else
-        callback(Host::GetThread(tp).storage->c_str());
+        callback(Host::GetThread(tp).GetHistoryText().c_str());
 }
 C_LUNA_API void Luna_RemoveHook(DWORD pid, uint64_t addr)
 {

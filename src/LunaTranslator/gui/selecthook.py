@@ -479,6 +479,7 @@ class hookselect(closeashidewindow):
             self.getnewsentence(output)
         output = output[:200].replace("\n", " ")
         colidx = 2 + int(bool(self.embedablenum))
+        self.tttable.setRowHidden(row, False)
         self.ttCombomodelmodel.item(row, colidx).setText(output)
 
     def removehook(self, key):
@@ -573,6 +574,8 @@ class hookselect(closeashidewindow):
 
         if select and self.tttable.currentIndex() == -1:
             self.tttable.setCurrentIndex(rown)
+
+        self.tttable.setRowHidden(rown, True)
 
     def _check_tp_using(self, key):
         hc, hn, tp = key

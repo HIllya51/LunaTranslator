@@ -29,7 +29,7 @@ void TextThread::Stop()
 	timer = NULL;
 }
 
-void TextThread::AddSentence(std::wstring sentence)
+void TextThread::AddSentence(std::wstring &&sentence)
 {
 	queuedSentences->emplace_back(std::move(sentence));
 }
@@ -61,35 +61,23 @@ void TextThread::Push(BYTE *data, int length)
 	{
 		if (auto converted = commonparsestring(data, length, &hp, Host::defaultCodepage))
 		{
-			buffer.append(converted.value());
+			bufferDecoded.append(converted.value());
 			if (hp.type & FULL_STRING && (flushDelay == 0 || (converted.value().size() > 1)))
-				buffer.push_back(L'\n');
+				bufferDecoded.push_back(L'\n');
 		}
 		else
 		{
 			Host::AddConsoleOutput(TR[INVALID_CODEPAGE]);
 		}
 	}
+	bufferRaw.append((const char *)data, length);
 
 	UpdateFlushTime();
 
-	if (filterRepetition)
-	{
-		if (std::all_of(buffer.begin(), buffer.end(), [&](wchar_t ch)
-						{ return repeatingChars.count(ch); }))
-			buffer.clear();
-		if (RemoveRepetition(buffer)) // sentence repetition detected, which means the entire sentence has already been received
-		{
-			repeatingChars = std::unordered_set(buffer.begin(), buffer.end());
-			AddSentence(std::move(buffer));
-			buffer.clear();
-		}
-	}
-
 	if (flushDelay == 0 && hp.type & FULL_STRING)
 	{
-		AddSentence(std::move(buffer));
-		buffer.clear();
+		AddSentence(std::move(bufferDecoded));
+		bufferDecoded.clear();
 	}
 }
 void TextThread::UpdateFlushTime(bool recursive)
@@ -107,41 +95,43 @@ void TextThread::UpdateFlushTime(bool recursive)
 		t->UpdateFlushTime(false);
 	}
 }
-void TextThread::Push(const wchar_t *data)
-{
-	std::scoped_lock lock(bufferMutex);
-	// not sure if this should filter repetition
-	UpdateFlushTime();
-	buffer += data;
-}
 
+std::wstring TextThread::GetLatestText()
+{
+	for (auto &&_ : storageDecoded->data)
+	{
+		return _;
+	}
+	return L"";
+}
+std::wstring TextThread::GetHistoryText()
+{
+	std::wstring text;
+	for (auto &&_ : storageDecoded->data)
+	{
+		if (!text.empty())
+			text += L"\n";
+		text += _;
+	}
+	return text;
+}
 void TextThread::Flush()
 {
-	{
-		auto storage = this->storage.Acquire();
-		if (storage->size() > maxHistorySize)
-			storage->erase(0, storage->size() - maxHistorySize); // https://github.com/Artikash/Textractor/issues/127#issuecomment-486882983
-	}
-
 	std::vector<std::wstring> sentences;
 	queuedSentences->swap(sentences);
 	for (auto &sentence : sentences)
 	{
 		sentence.erase(std::remove(sentence.begin(), sentence.end(), 0), sentence.end());
 		Output(*this, sentence);
-		if (!storage->empty())
-			storage->append(L"\n");
-		storage->append(sentence);
-
-		latest->assign(sentence.c_str());
+		storageDecoded->push_back(maxHistorySize, std::move(sentence));
 	}
 
 	std::scoped_lock lock(bufferMutex);
-	if (buffer.empty())
+	if (bufferDecoded.empty())
 		return;
-	if (buffer.size() > maxBufferSize || GetTickCount64() - lastPushTime > flushDelay)
+	if (bufferDecoded.size() > maxBufferSize || GetTickCount64() - lastPushTime > flushDelay)
 	{
-		AddSentence(std::move(buffer));
-		buffer.clear();
+		AddSentence(std::move(bufferDecoded));
+		bufferDecoded.clear();
 	}
 }

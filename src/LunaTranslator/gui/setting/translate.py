@@ -1973,7 +1973,7 @@ def llamacppgrid():
     )
     timer = QTimer(logopenbtn)
     timer.timeout.connect(functools.partial(update_text, label2))
-    timer.start(2000)
+    timer.start(1000)
     form = VisLFormLayout()
     form.addRow(
         "伴随启动",
@@ -2136,10 +2136,10 @@ def update_text(label: QLabel):
     mem = NativeUtils.GetProcessMemory(llamacppautoHandle.pid)
     vmem = NativeUtils.GetProcessVRAM(llamacppautoHandle.pid, True)
     text = ""
-    if mem:
+    if mem > 1024 * 1024 * 64:
         mem = format_bytes(mem)
         text += _TR("内存占用: {}").format(mem)
-    if vmem:
+    if vmem > 1024 * 1024 * 64:
         vmem = format_bytes(vmem)
         if text:
             text += " "

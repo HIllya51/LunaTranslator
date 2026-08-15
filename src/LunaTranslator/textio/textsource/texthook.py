@@ -185,7 +185,7 @@ class texthook(basetext):
         self.Luna_InsertPCHooks = LunaHost.Luna_InsertPCHooks
         self.Luna_InsertPCHooks.argtypes = (DWORD, c_int)
         self.Luna_Settings = LunaHost.Luna_Settings
-        self.Luna_Settings.argtypes = c_int, c_bool, c_int, c_int, c_int, c_bool
+        self.Luna_Settings.argtypes = c_int, c_int, c_int, c_int, c_bool
         self.Luna_Start = LunaHost.Luna_Start
         self.Luna_Start.argtypes = (
             ProcessEvent,
@@ -667,7 +667,6 @@ class texthook(basetext):
         # 这个是游戏相关的设置，等设置gameuid以后再进行
         self.Luna_Settings(
             self.config.get("textthreaddelay", 500),
-            False,  # 不使用内置去重
             self.codepage(),
             self.config.get("maxBufferSize", 3000),
             self.config.get("maxHistorySize", 1000000),
