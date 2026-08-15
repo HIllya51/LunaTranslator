@@ -29,8 +29,6 @@ namespace Host
 	void AddConsoleOutput(const std::wstring &text);
 
 	inline int defaultCodepage = 0;
-	inline int detectedCodepage = 0;
-	inline int HostCodePage() { return defaultCodepage ? defaultCodepage : detectedCodepage; }
 	inline bool enablePCHooks = true;
 
 	bool CheckIsUsingEmbed(ThreadParam tp);

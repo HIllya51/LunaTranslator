@@ -37,6 +37,9 @@ class GptDict:
     def __str__(self):
         return json.dumps(self.__, ensure_ascii=False)
 
+    def __repr__(self):
+        return self.__str__()
+
 
 class GptTextWithDict:
     def __init__(self, rawtext: str = None, parsedtext: str = None, dictionary=None):
@@ -45,6 +48,9 @@ class GptTextWithDict:
         self.parsedtext = parsedtext
         self.dictionary = GptDict(dictionary)
         self.rawtext = rawtext
+
+    def __repr__(self):
+        return self.__str__()
 
     def __str__(self):
         return json.dumps(
@@ -282,7 +288,7 @@ class basetrans(commonbase):
             TS_use = contentsolved
         else:
             cache_use = TS_use = contentsolved
-
+        print(cache_use)
         res, cachekey = self.shortorlongcacheget(cache_use, is_auto_run)
         if not res:
             res = self.intervaledtranslate(TS_use)

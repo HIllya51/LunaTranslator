@@ -230,6 +230,7 @@ struct HookParam
 	ALIGNPTR(uint64_t __9, const wchar_t *lineSeparator);
 	char name[HOOK_NAME_SIZE];
 	wchar_t hookcode[HOOKCODE_LEN];
+	DWORD detectedCodepage = 0;
 	HookParam()
 	{
 		ZeroMemory(this, sizeof(HookParam));
@@ -287,6 +288,13 @@ DECLARE_SIMPLE_CMD(InsertHookCmd, HookParam, hp, HOST_COMMAND_NEW_HOOK)
 DECLARE_SIMPLE_CMD(RemoveHookCmd, uint64_t, address, HOST_COMMAND_REMOVE_HOOK)
 DECLARE_SIMPLE_CMD(FindHookCmd, SearchParam, sp, HOST_COMMAND_FIND_HOOK)
 
+struct SetDetectedCodepageCmd
+{
+	SetDetectedCodepageCmd(DWORD codepage, uint64_t hpaddress) : codepage(codepage), hpaddress(hpaddress) {}
+	HostCommandType command = HOST_COMMAND_SET_DETECTED_CODEPAGE;
+	DWORD codepage;
+	uint64_t hpaddress;
+};
 struct ResetLanguageCmd
 {
 	HostCommandType command = HOST_COMMAND_I18N_QUERY;

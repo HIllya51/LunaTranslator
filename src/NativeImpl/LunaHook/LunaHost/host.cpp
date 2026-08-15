@@ -127,7 +127,7 @@ namespace
 		VersionMatchCheck(hookPipe);
 		CheckFileHelper(hookPipe, hostPipe);
 
-		processRecordsByIds->try_emplace(processId, processId, hostPipe);
+		auto &&process = processRecordsByIds->try_emplace(processId, processId, hostPipe);
 		OnConnect(processId);
 		Host::AddConsoleOutput(FormatString(TR[PROC_CONN], processId));
 		if (Host::enablePCHooks)
@@ -240,7 +240,12 @@ namespace
 				}
 
 				thread->second.hp.type = data->type;
-				thread->second.RunDectectCodePage(data->data, length);
+				thread->second.hp.detectedCodepage = data->hp.detectedCodepage;
+				if (auto codepage = thread->second.RunDectectCodePage(data->data, length))
+				{
+					SetDetectedCodepageCmd cmd{codepage.value(), hp.address};
+					processRecordsByIds->at(processId).Send(cmd);
+				}
 				thread->second.Push(data->data, length);
 				[&]()
 				{
@@ -252,9 +257,9 @@ namespace
 						return;
 					if (sm->clearText)
 						return;
-					if (thp.isAscii() && !Host::HostCodePage())
+					if (thp.isAscii() && !(Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage))
 						return;
-					auto t = commonparsestring(data->data, length, &thp, Host::HostCodePage());
+					auto t = commonparsestring(data->data, length, &thp, Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
 					if (!t)
 						return;
 					auto text = t.value();
@@ -438,7 +443,7 @@ namespace Host
 			auto m = rcd.commonsharedmem;
 			if (!m)
 				continue;
-			m->codepage = Host::HostCodePage();
+			m->codepage = Host::defaultCodepage;
 		}
 	}
 

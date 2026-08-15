@@ -87,6 +87,19 @@ static void ParseCommand(HANDLE hostPipe, bool &running)
 			SearchForHooks(info->sp);
 	}
 	break;
+	case HOST_COMMAND_SET_DETECTED_CODEPAGE:
+	{
+		auto info = (SetDetectedCodepageCmd *)buffer;
+
+		for (auto &hook : *hooks)
+			if (abs((long long)(hook.address - info->hpaddress)) <= 0)
+			{
+				if (!hook.hp.detectedCodepage)
+					hook.hp.detectedCodepage = info->codepage;
+				break;
+			}
+	}
+	break;
 	case HOST_COMMAND_DETACH:
 	{
 		running = false;

@@ -273,7 +273,7 @@ bool checktranslatedok(TextBuffer buff)
 }
 bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
-  auto hostcodepage = commonsharedmem->codepage;
+  auto hostcodepage = commonsharedmem->codepage ? commonsharedmem->codepage : hp.detectedCodepage;
   if (hp.isAscii() && (hostcodepage == 0))
     return false;
   if (commonsharedmem->clearText)

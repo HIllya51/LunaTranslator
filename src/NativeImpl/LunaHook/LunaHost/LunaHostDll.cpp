@@ -160,7 +160,7 @@ C_LUNA_API void Luna_UseEmbed(ThreadParam tp, bool use)
     auto sm = Host::GetCommonSharedMem(tp.processId);
     if (!sm)
         return;
-    sm->codepage = Host::HostCodePage();
+    sm->codepage = Host::defaultCodepage;
     for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
     {
         if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))

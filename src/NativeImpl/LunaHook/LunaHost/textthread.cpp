@@ -28,20 +28,20 @@ void TextThread::Stop()
 {
 	timer = NULL;
 }
-void TextThread::RunDectectCodePage(BYTE *data, int length)
+std::optional<DWORD> TextThread::RunDectectCodePage(BYTE *data, int length)
 {
-	if (Host::detectedCodepage)
-		return;
+	if (hp.detectedCodepage)
+		return {};
 	if (UseForDetectRaw.size() > 32)
-		return;
+		return {};
 	if (!hp.isAscii())
-		return;
+		return {};
 	UseForDetectRaw.append((const char *)data, length);
 	if (all_ascii(UseForDetectRaw))
-		return;
+		return {};
 	if (isStringUtf8(UseForDetectRaw))
 	{
-		Host::detectedCodepage = CP_UTF8;
+		hp.detectedCodepage = CP_UTF8;
 	}
 	else
 	{
@@ -53,15 +53,17 @@ void TextThread::RunDectectCodePage(BYTE *data, int length)
 			return WideStringToString(_.value(), cp) == UseForDetectRaw;
 		};
 		if (test(932))
-			Host::detectedCodepage = 932;
+			hp.detectedCodepage = 932;
 		else if (test(936))
-			Host::detectedCodepage = 936;
+			hp.detectedCodepage = 936;
 		else if (test(950))
-			Host::detectedCodepage = 950;
+			hp.detectedCodepage = 950;
 		else if (test(949))
-			Host::detectedCodepage = 949;
+			hp.detectedCodepage = 949;
 	}
-	Host::BroadCastCodePage();
+	if (!hp.detectedCodepage)
+		return {};
+	return hp.detectedCodepage;
 }
 void TextThread::Push(BYTE *data, int length)
 {
@@ -69,7 +71,7 @@ void TextThread::Push(BYTE *data, int length)
 		return;
 	std::scoped_lock lock(bufferMutex);
 
-	auto hostcodepage = Host::HostCodePage();
+	auto hostcodepage = Host::defaultCodepage ? Host::defaultCodepage : hp.detectedCodepage;
 	if (hp.isAscii() && !hostcodepage)
 		return;
 	BYTE doubleByteChar[2];

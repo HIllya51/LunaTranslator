@@ -119,6 +119,9 @@ class RequestInfo:
     def log(self):
         return "{} {}".format(self.method, self.rawpath)
 
+    def __repr__(self):
+        return self.__str__()
+
     def __str__(self):
         vis = dict(
             method=self.method,

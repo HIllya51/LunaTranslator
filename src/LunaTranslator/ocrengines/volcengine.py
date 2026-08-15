@@ -314,6 +314,9 @@ class ApiInfo(object):
     def __str__(self):
         return "method: " + self.method + ", path: " + self.path
 
+    def __repr__(self):
+        return self.__str__()
+
 
 class Service(object):
     def __init__(self, service_info, api_info):

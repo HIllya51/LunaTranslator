@@ -39,7 +39,7 @@ public:
 	HookParam hp;
 	std::wstring GetHistoryText();
 	std::wstring GetLatestText();
-	void RunDectectCodePage(BYTE *data, int length);
+	std::optional<DWORD> RunDectectCodePage(BYTE *data, int length);
 
 private:
 	Synchronized<StorageDecoded> storageDecoded;
