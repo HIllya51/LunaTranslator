@@ -118,7 +118,12 @@ size_t strnlenEx(const CharT *s, size_t sz)
   else if constexpr (std::is_same_v<CharT, wchar_t>)
     t = wcsnlen(s, sz);
   else if constexpr (std::is_same_v<CharT, char32_t>)
-    t = strlenEx(s);
+  {
+    size_t i = 0;
+    for (; i < sz && s[i] != 0; ++i)
+      ;
+    t = i;
+  }
   else
     static_assert(true);
   return t;
@@ -146,7 +151,14 @@ CharT *strncpyEx(CharT *s, const CharT *r, size_t sz)
   else if constexpr (std::is_same_v<CharT, wchar_t>)
     return wcsncpy(s, r, sz);
   else if constexpr (std::is_same_v<CharT, char32_t>)
-    return u32strcpy(s, r);
+  {
+    size_t i = 0;
+    for (; i < sz && r[i] != 0; ++i)
+      s[i] = r[i];
+    if (i < sz)
+      s[i] = 0;
+    return s;
+  }
   else
     static_assert(true);
   return nullptr;
