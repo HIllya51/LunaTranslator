@@ -9,7 +9,7 @@ struct StorageDecoded
 		while (count > maxHistorySize && (count - data.front().size() > maxHistorySize))
 		{
 			count -= data.front().size();
-			data.pop_back();
+			data.pop_front();
 		}
 		count += text.size();
 		data.push_back(std::move(text));

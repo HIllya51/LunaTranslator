@@ -288,7 +288,6 @@ class basetrans(commonbase):
             TS_use = contentsolved
         else:
             cache_use = TS_use = contentsolved
-        print(cache_use)
         res, cachekey = self.shortorlongcacheget(cache_use, is_auto_run)
         if not res:
             res = self.intervaledtranslate(TS_use)
