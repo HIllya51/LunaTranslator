@@ -60,8 +60,6 @@ void TextThread::RunDectectCodePage(BYTE *data, int length)
 			Host::detectedCodepage = 950;
 		else if (test(949))
 			Host::detectedCodepage = 949;
-		else
-			Host::detectedCodepage = 932;
 	}
 	Host::BroadCastCodePage();
 }
