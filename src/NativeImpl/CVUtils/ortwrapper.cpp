@@ -32,7 +32,7 @@ ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_DML, _In_ OrtSessionOpti
 #define STRINGT Ort::AllocatedStringPtr
 #define FGetInputName GetInputNameAllocated
 #define FGetOutputName GetOutputNameAllocated
-#define GetVector(X) {X.data()->get()}
+#define GetVector(X) [&] { std::vector<const char *> _v; _v.reserve((X).size()); for (auto &_p : (X)) _v.push_back(_p.get()); return _v; }()
 #endif
 
 ORT_API_STATUS(OrtSessionOptionsAppendExecutionProvider_OpenVINO, _In_ OrtSessionOptions *options, _In_ const char *device_type)
