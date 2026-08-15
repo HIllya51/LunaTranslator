@@ -203,7 +203,7 @@ cv::RotatedRect unClip(const TextBox &box, float unClipRatio)
 
     for (size_t j = 0; j < soln.size(); j++)
     {
-        for (size_t i = 0; i < soln[soln.size() - 1].size(); i++)
+        for (size_t i = 0; i < soln[j].size(); i++)
         {
             points.emplace_back(cv::Point2f{float(soln[j][i].x), float(soln[j][i].y)});
         }

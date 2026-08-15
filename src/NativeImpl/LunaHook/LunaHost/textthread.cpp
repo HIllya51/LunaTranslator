@@ -137,16 +137,16 @@ void TextThread::UpdateFlushTime(bool recursive)
 
 std::wstring TextThread::GetLatestText()
 {
-	for (auto &&_ : storageDecoded->data)
-	{
-		return _;
-	}
-	return L"";
+	auto lock = storageDecoded.Acquire();
+	if (lock.contents.data.empty())
+		return L"";
+	return lock.contents.data.back();
 }
 std::wstring TextThread::GetHistoryText()
 {
 	std::wstring text;
-	for (auto &&_ : storageDecoded->data)
+	auto lock = storageDecoded.Acquire();
+	for (const auto &_ : lock.contents.data)
 	{
 		if (!text.empty())
 			text += L"\n";

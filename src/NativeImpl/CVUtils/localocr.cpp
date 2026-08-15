@@ -211,7 +211,7 @@ std::vector<std::string> ListOpenVINODeviceTypes()
     auto ctor = GetProcAddress(hopenvino, "??0Core@ov@@QEAA@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z");
     auto dtor = GetProcAddress(hopenvino, "??1Core@ov@@QEAA@XZ");
     auto get_available_devices = GetProcAddress(hopenvino, "?get_available_devices@Core@ov@@QEBA?AV?$vector@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$allocator@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@@std@@XZ");
-    if (!dtor || !dtor || !get_available_devices)
+    if (!ctor || !dtor || !get_available_devices)
         return {};
     // ov::Core core;
     // std::vector<std::string> devices = core.get_available_devices();
