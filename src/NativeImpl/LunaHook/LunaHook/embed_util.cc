@@ -163,6 +163,7 @@ void solvefont(HookParam hp)
 static std::wstring alwaysInsertSpacesSTD(const std::wstring &text)
 {
   std::wstring ret;
+  ret.reserve(text.size() * 2);
   for (auto c : text)
   {
     ret.push_back(c);
@@ -184,6 +185,7 @@ static std::wstring insertSpacesAfterUnencodableSTD(const std::wstring &text, Ho
 {
 
   std::wstring ret;
+  ret.reserve(text.size() * 2);
   for (const wchar_t &c : text)
   {
     ret.push_back(c);

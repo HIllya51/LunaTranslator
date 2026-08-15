@@ -42,8 +42,6 @@ int dreyewmain(int argc, wchar_t *argv[])
                 break;
 
             _TranTextFlowCJ(src, buffer, 3000, _wtoi(argv[3]));
-            // MessageBoxW(0, StringToWideString(src,932).c_str(),L"", 0);
-            StringToWideString(src, 932);
             WriteFile(hPipe, buffer, strlen(buffer), &_, NULL);
         }
     }

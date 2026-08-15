@@ -84,6 +84,9 @@ class pOnnxSession
     std::unique_ptr<Ort::Session> session;
     Ort::Env env = Ort::Env(ORT_LOGGING_LEVEL_ERROR);
     Ort::SessionOptions sessionOptions = Ort::SessionOptions();
+    std::vector<const char *> inputNames;
+    std::vector<const char *> outputNames;
+    Ort::MemoryInfo memoryInfo = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
 
     template <typename T, typename Func, typename Func2>
     void getinputoutputNames(T &vec, Func func, Func2 func2)
@@ -152,18 +155,17 @@ public:
         session = std::make_unique<Ort::Session>(env, path.c_str(), sessionOptions);
         getinputoutputNames(inputNamesPtr, &Ort::Session::GetInputCount, &Ort::Session::FGetInputName);
         getinputoutputNames(outputNamesPtr, &Ort::Session::GetOutputCount, &Ort::Session::FGetOutputName);
+        inputNames = GetVector(inputNamesPtr);
+        outputNames = GetVector(outputNamesPtr);
     }
 
     std::pair<std::vector<float>, std::vector<int64_t>> RunSession(const std::array<int64_t, 4> &inputShape,
                                                                    std::vector<float> &inputTensorValues)
     {
-        auto memoryInfo = Ort::MemoryInfo::CreateCpu(OrtDeviceAllocator, OrtMemTypeCPU);
         Ort::Value inputTensor = Ort::Value::CreateTensor<float>(memoryInfo, inputTensorValues.data(),
                                                                  inputTensorValues.size(), inputShape.data(),
                                                                  inputShape.size());
         assert(inputTensor.IsTensor());
-        std::vector<const char *> inputNames = GetVector(inputNamesPtr);
-        std::vector<const char *> outputNames = GetVector(outputNamesPtr);
         std::vector<Ort::Value> outputTensor;
         {
             // https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html

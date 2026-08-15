@@ -50,13 +50,11 @@ std::tuple<float, float, float, float> TextBox2XYXY(const TextBox &box)
 }
 cv::Mat getRotateCropImage(const cv::Mat &src, const TextBox &box, Directional mode)
 {
-    cv::Mat image;
-    src.copyTo(image);
     TextBox points = box;
     auto &&[left, top, right, bottom] = TextBox2XYXY(box);
 
     cv::Mat imgCrop;
-    image(cv::Rect(left, top, right - left, bottom - top)).copyTo(imgCrop);
+    src(cv::Rect(left, top, right - left, bottom - top)).copyTo(imgCrop);
 
     for (auto &point : points)
     {
@@ -380,19 +378,10 @@ std::vector<TextBox> DbNet::getTextBoxes(const cv::Mat &src, ScaleParam &s, floa
     //-----Data preparation-----
     int outHeight = (int)outputShape[2];
     int outWidth = (int)outputShape[3];
-    size_t area = outHeight * outWidth;
 
-    std::vector<float> predData(area, 0.0);
-    std::vector<unsigned char> cbufData(area, ' ');
-
-    for (int i = 0; i < area; i++)
-    {
-        predData[i] = float(outputData[i]);
-        cbufData[i] = (unsigned char)((outputData[i]) * 255);
-    }
-
-    cv::Mat predMat(outHeight, outWidth, CV_32F, (float *)predData.data());
-    cv::Mat cBufMat(outHeight, outWidth, CV_8UC1, (unsigned char *)cbufData.data());
+    cv::Mat predMat(outHeight, outWidth, CV_32F, (float *)outputData.data());
+    cv::Mat cBufMat;
+    predMat.convertTo(cBufMat, CV_8U, 255.0);
 
     //-----boxThresh-----
     const double maxValue = 255;

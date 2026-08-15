@@ -327,10 +327,10 @@ namespace
 			auto length = ((size_t(THISCALL *)(void *))Utf8Length)((void *)context->argof_thiscall());
 			if (!length)
 				return;
-			auto u8str = new char[length + 1];
+			auto u8str = std::make_unique<char[]>(length + 1);
 			int writen;
-			((size_t(THISCALL *)(void *, char *, int, int *, int))WriteUtf8)((void *)context->argof_thiscall(), u8str, length, &writen, 0);
-			buffer->from(u8str, length);
+			((size_t(THISCALL *)(void *, char *, int, int *, int))WriteUtf8)((void *)context->argof_thiscall(), u8str.get(), length, &writen, 0);
+			buffer->from(u8str.get(), length);
 		};
 		hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
 		{

@@ -73,6 +73,12 @@ BOOL
 
 typedef BOOL(WINAPI *pfnSetWindowCompositionAttribute)(HWND, WINDOWCOMPOSITIONATTRIBDATA *);
 
+static pfnSetWindowCompositionAttribute GetSetWindowCompositionAttribute()
+{
+	static auto fn = (pfnSetWindowCompositionAttribute)GetProcAddress(GetModuleHandle(L"user32.dll"), "SetWindowCompositionAttribute");
+	return fn;
+}
+
 #define common                                                                                                             \
 	ACCENT_POLICY accentPolicy;                                                                                            \
 	WINDOWCOMPOSITIONATTRIBDATA winCompAttrData;                                                                           \
@@ -81,8 +87,7 @@ typedef BOOL(WINAPI *pfnSetWindowCompositionAttribute)(HWND, WINDOWCOMPOSITIONAT
 	winCompAttrData.Attrib = WCA_ACCENT_POLICY;                                                                            \
 	winCompAttrData.cbData = sizeof(accentPolicy);                                                                         \
 	winCompAttrData.pvData = &accentPolicy;                                                                                \
-	auto setWindowCompositionAttribute =                                                                                   \
-		(pfnSetWindowCompositionAttribute)GetProcAddress(GetModuleHandle(L"user32.dll"), "SetWindowCompositionAttribute"); \
+	auto setWindowCompositionAttribute = GetSetWindowCompositionAttribute();                                                \
 	if (!setWindowCompositionAttribute)                                                                                    \
 		return;
 

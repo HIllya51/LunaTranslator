@@ -59,7 +59,7 @@ void LoopbackTranditional::RecordThread()
             size_t cbBytesToCapture = FramesAvailable * pwfx->nBlockAlign;
             auto _data = std::string((char *)Data, cbBytesToCapture);
             if (!OnDataCallback)
-                buffer += _data;
+                buffer += std::move(_data);
             else
             {
                 OnDataCallback(std::move(_data));

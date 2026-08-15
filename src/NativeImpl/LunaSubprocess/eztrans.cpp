@@ -208,6 +208,7 @@ namespace CTextProcess
 std::wstring CTextProcess::HangulEncode(const std::wstring &input)
 {
     std::wstring output;
+    output.reserve(input.size() * 2);
     wchar_t buf[8];
 
     std::wstring::const_iterator it = input.begin();
@@ -584,6 +585,7 @@ std::wstring CTextProcess::HangulEncode(const std::wstring &input)
 std::wstring CTextProcess::HangulDecode(const std::wstring &input)
 {
     std::wstring output;
+    output.reserve(input.size());
     wchar_t buf[8];
     std::wstring::const_iterator it = input.begin();
     for (DWORD count = 0; it != input.end(); it++, count++)

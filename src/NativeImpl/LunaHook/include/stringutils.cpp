@@ -107,10 +107,11 @@ std::optional<std::wstring> StringToWideString(std::string_view text, UINT encod
   {
     int _s = text.size();
     int _s2 = buffer.size();
-    auto h = LoadLibrary(TEXT("mlang.dll"));
-    if (h == 0)
-      return {};
-    auto ConvertINetMultiByteToUnicode = (CONVERTINETMULTIBYTETOUNICODE)GetProcAddress(h, "ConvertINetMultiByteToUnicode");
+    static auto ConvertINetMultiByteToUnicode = []
+    {
+      HMODULE h = LoadLibrary(TEXT("mlang.dll"));
+      return h ? (CONVERTINETMULTIBYTETOUNICODE)GetProcAddress(h, "ConvertINetMultiByteToUnicode") : nullptr;
+    }();
     if (ConvertINetMultiByteToUnicode == 0)
       return {};
     auto hr = ConvertINetMultiByteToUnicode(0, encoding, text.data(), &_s, buffer.data(), &_s2);
@@ -169,10 +170,12 @@ std::string WideStringToString(std::wstring_view text, UINT cp)
   {
     int _s = text.size();
     int _s2 = buffer.size();
-    auto h = LoadLibrary(TEXT("mlang.dll"));
-    if (h == 0)
-      return {};
-    auto ConvertINetUnicodeToMultiByte = (CONVERTINETUNICODETOMULTIBYTE)GetProcAddress(h, "ConvertINetUnicodeToMultiByte");
+    static auto ConvertINetUnicodeToMultiByte = []
+    {
+      HMODULE h = LoadLibrary(TEXT("mlang.dll"));
+      return h ? (CONVERTINETUNICODETOMULTIBYTE)GetProcAddress(h, "ConvertINetUnicodeToMultiByte") : nullptr;
+    }();
+    ;
     if (ConvertINetUnicodeToMultiByte == 0)
       return {};
     auto hr = ConvertINetUnicodeToMultiByte(0, cp, text.data(), &_s, buffer.data(), &_s2);

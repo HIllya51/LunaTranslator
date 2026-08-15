@@ -87,7 +87,7 @@ DECLARE_API void OcrDetect(OcrLite *pOcrObj, const cv::Mat *mat,
     {
         auto result = pOcrObj->detect(*mat, mode);
 
-        for (auto item : result)
+        for (const auto &item : result)
         {
             cb(item.first[0].x, item.first[0].y,
                item.first[1].x, item.first[1].y,
