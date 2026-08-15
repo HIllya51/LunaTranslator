@@ -1,4 +1,4 @@
-import time, copy
+import time, json
 from myutils.config import globalconfig
 from myutils.utils import checkmd5reloadmodule, parsekeystringtomodvkcode
 import NativeUtils, windows
@@ -186,7 +186,7 @@ class ocrtext(basetext):
     @threader
     def gettextthread(self):
         laststate = tuple((0 for _ in range(len(globalconfig["ocr_trigger_events"]))))
-        lastevents = copy.deepcopy(globalconfig["ocr_trigger_events"])
+        lastevents = json.dumps(globalconfig["ocr_trigger_events"])
         while not self.ending:
             if self._pause_state:
                 time.sleep(0.1)
@@ -208,9 +208,9 @@ class ocrtext(basetext):
                         for line in globalconfig["ocr_trigger_events"]
                     )
                 )
-                if lastevents != globalconfig["ocr_trigger_events"]:
+                if lastevents != json.dumps(globalconfig["ocr_trigger_events"]):
                     laststate = this
-                    lastevents = copy.deepcopy(globalconfig["ocr_trigger_events"])
+                    lastevents = json.dumps(globalconfig["ocr_trigger_events"])
                     continue
                 for _, line in enumerate(globalconfig["ocr_trigger_events"]):
                     event = line["event"]

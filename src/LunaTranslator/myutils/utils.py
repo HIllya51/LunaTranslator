@@ -1,6 +1,7 @@
 import os, time
 import codecs, hashlib, shutil
 import socket, gobject, uuid, functools
+from collections import OrderedDict
 import importlib, json, requests
 from qtsymbols import *
 from traceback import print_exc
@@ -759,10 +760,9 @@ def get_time_stamp(ct=None, ms=True, forfilename=False):
 
 class LRUCache:
     def __init__(self, capacity: int):
-        self.cache = {}
+        self.cache = OrderedDict()
         self.Lock = threading.Lock()
         self.capacity = capacity
-        self.order = []
 
     def setcap(self, cap):
         with self.Lock:
@@ -774,8 +774,7 @@ class LRUCache:
 
     def __get(self, key):
         if key in self.cache:
-            self.order.remove(key)
-            self.order.append(key)
+            self.cache.move_to_end(key)
             return self.cache[key]
         return None
 
@@ -787,12 +786,10 @@ class LRUCache:
         if not self.capacity:
             return
         if key in self.cache:
-            self.order.remove(key)
-        elif len(self.order) == self.capacity:
-            old_key = self.order.pop(0)
-            del self.cache[old_key]
+            self.cache.move_to_end(key)
+        elif len(self.cache) == self.capacity:
+            self.cache.popitem(last=False)
         self.cache[key] = value
-        self.order.append(key)
 
     def put(self, key, value=True) -> None:
         with self.Lock:

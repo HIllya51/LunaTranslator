@@ -55,17 +55,17 @@ def _2_f(line, args):
             guesstimes = guesstimes[1:]
         guesstimes = guesstimes[0]
     if keepnodump:
-        newline = ""
+        newline = []
         i = 0
         while i < len(line):
-            newline += line[i]
+            newline.append(line[i])
             nextn = line[i : i + guesstimes]
             # print(guesstimes,nextn,len(set(nextn)))
             if len(nextn) == guesstimes and len(set(nextn)) == 1:
                 i += guesstimes
             else:
                 i += 1
-        line = newline
+        line = "".join(newline)
     else:
         newline = [line[i * guesstimes] for i in range(len(line) // guesstimes)]
         line = "".join(newline)
@@ -88,7 +88,7 @@ def _3_f(line, args):
 
 
 def _3_2(line):
-    cache = ""
+    cache = []
 
     while len(line):
         last = None
@@ -105,15 +105,15 @@ def _3_2(line):
             else:
                 current = line[:dumplength]
                 if last and last != current:
-                    cache += current
+                    cache.append(current)
                 last = current
                 line = line[dumplength:]
                 break
         if last is None:
-            cache += line[0]
+            cache.append(line[0])
             line = line[1:]
 
-    return cache
+    return "".join(cache)
 
 
 def _10_f(line: str):
@@ -254,33 +254,23 @@ def _8_f(line, args):
 
 
 def _remove_non_shiftjis_char(line: str):
-    newline = ""
+    newline = []
     for char in line:
         try:
             char.encode("shiftjis")
-            newline += char
+            newline.append(char)
         except:
             pass
-    return newline
+    return "".join(newline)
 
 
 def _remove_symbo(line):
 
-    newline = ""
-    for r in line:
-        if is_ascii_symbo(r):
-            continue
-        newline += r
-    return newline
+    return "".join(r for r in line if not is_ascii_symbo(r))
 
 
 def _remove_control(line):
-    newline = ""
-    for r in line:
-        if is_ascii_control(r):
-            continue
-        newline += r
-    return newline
+    return "".join(r for r in line if not is_ascii_control(r))
 
 
 def _remove_not_in_ja_bracket(line: str):
