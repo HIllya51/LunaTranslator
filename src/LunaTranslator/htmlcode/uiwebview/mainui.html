@@ -939,6 +939,15 @@
     document.addEventListener('mousedown', function (e) {
         if (e.button == 0)
             window.getSelection().removeAllRanges()
+        // 当 Qt 已接管光标（鼠标处于窗口边框 resize 区）时，按下必须交给
+        // 外部 Qt 框架处理缩放，并阻止 webview 内的文字选取；否则点击边框
+        // 附近文字时会被 isPointOverText 判定为选文字，导致无法缩放窗口。
+        if (luna_current_cursor !== 'default' && luna_current_cursor !== 'text') {
+            e.preventDefault()
+            if (window.LUNAJSObject)
+                LUNAJSObject.calllunaMousePress(e.button, e.clientX, e.clientY)
+            return
+        }
         if (!isPointOverText(e.clientX, e.clientY)) {
             if (window.LUNAJSObject)
                 LUNAJSObject.calllunaMousePress(e.button, e.clientX, e.clientY)
@@ -959,10 +968,12 @@
             LUNAJSObject.calllunaEnter()
         }
     });
+    var luna_current_cursor = 'default'
     function switchcursor(cursor) {
         // 用通配 + !important 注入，压过文字/链接等元素自带的光标，
         // 否则 resize 光标会被内容元素覆盖（原来只改两个 div，压不住）。
         // cursor 为 'default' 时不注入规则，交还给内容元素自身的光标。
+        luna_current_cursor = cursor || 'default'
         var s = document.getElementById('luna_cursor_style')
         if (!s) {
             s = document.createElement('style')
