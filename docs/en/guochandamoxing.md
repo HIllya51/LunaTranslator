@@ -39,7 +39,6 @@ However, sometimes you may want to use multiple different API interface addresse
 
     A specified number of historical original and translated messages will be provided to the large model to improve translation. Setting this to 0 will disable this optimization.  
 
-    - **Optimize Cache Hits** – For platforms like DeepSeek, the platform charges a lower price for cache-hit inputs. Enabling this will optimize the format of contextual messages to increase cache hit rates.  
 
 1. #### Custom System Prompt / Custom User Message / Prefill {#anchor-prompt}
 

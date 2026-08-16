@@ -39,7 +39,6 @@ Tuy nhiên, đôi khi bạn có thể muốn sử dụng nhiều địa chỉ gi
 
     Sẽ đính kèm một số lịch sử văn bản gốc và API dịch cho mô hình lớn để tối ưu hóa bản dịch. Đặt thành 0 sẽ tắt tối ưu hóa này.
 
-    - **Tối ưu tỷ lệ trúng cache** - Đối với các nền tảng như DeepSeek, nền tảng sẽ tính phí thấp hơn cho đầu vào trúng cache. Khi kích hoạt, hình thức đính kèm ngữ cảnh sẽ được tối ưu để tăng tỷ lệ trúng cache.
 
 1. #### Tùy chỉnh system prompt / Tùy chỉnh user message / Prefill {#anchor-prompt}
 

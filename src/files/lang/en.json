@@ -712,7 +712,6 @@
     "翻译接口": "Translation interface",
     "不使用的辞书": "Non-used dictionary",
     "使用单词原型": "Use word archetypes",
-    "优化缓存命中": "Optimize cache hits",
     "正在加载可用GPU": "Loading available GPUs",
     "正在加载语音识别模型": "Loading speech recognition model",
     "加载完毕": "Loaded",
