@@ -53,8 +53,7 @@ cv::Mat getRotateCropImage(const cv::Mat &src, const TextBox &box, Directional m
     TextBox points = box;
     auto &&[left, top, right, bottom] = TextBox2XYXY(box);
 
-    cv::Mat imgCrop;
-    src(cv::Rect(left, top, right - left, bottom - top)).copyTo(imgCrop);
+    cv::Mat imgCrop = src(cv::Rect(left, top, right - left, bottom - top));
 
     for (auto &point : points)
     {
@@ -159,9 +158,7 @@ float boxScoreFast(const TextBox &boxes, const cv::Mat &pred)
     int npts[] = {4};
     cv::fillPoly(mask, pts, npts, 1, cv::Scalar(1));
 
-    cv::Mat croppedImg;
-    pred(cv::Rect(minX, minY, maxX - minX + 1, maxY - minY + 1))
-        .copyTo(croppedImg);
+    cv::Mat croppedImg = pred(cv::Rect(minX, minY, maxX - minX + 1, maxY - minY + 1));
 
     auto score = (float)cv::mean(croppedImg, mask)[0];
     return score;

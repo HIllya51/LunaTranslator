@@ -175,7 +175,6 @@ std::string WideStringToString(std::wstring_view text, UINT cp)
       HMODULE h = LoadLibrary(TEXT("mlang.dll"));
       return h ? (CONVERTINETUNICODETOMULTIBYTE)GetProcAddress(h, "ConvertINetUnicodeToMultiByte") : nullptr;
     }();
-    ;
     if (ConvertINetUnicodeToMultiByte == 0)
       return {};
     auto hr = ConvertINetUnicodeToMultiByte(0, cp, text.data(), &_s, buffer.data(), &_s2);

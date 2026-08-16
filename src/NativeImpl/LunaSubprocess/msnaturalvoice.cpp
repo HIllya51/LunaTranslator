@@ -85,7 +85,7 @@ int msnaturalvoice(int argc, wchar_t *argv[])
     config->SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat::Riff24Khz16BitMonoPcm);
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestSentenceBoundary, "true");
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestPunctuationBoundary, "false");
-    config->SetSpeechSynthesisVoice(config->GetSpeechSynthesisVoiceName(), extra.empty() ? parsekey(getkey()) : extra);
+    config->SetProperty(PropertyId::SpeechServiceConnection_SynthModelKey, extra.empty() ? parsekey(getkey()) : extra);
     auto synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
     wchar_t text[10000];
     DWORD _;
