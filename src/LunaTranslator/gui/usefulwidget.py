@@ -946,6 +946,24 @@ class resizableframeless(saveposwindow_1):
             or self._corner_drag_youshang
         )
 
+    def in_resize_zone(self, winpos: QPoint) -> bool:
+        # winpos 为本窗口局部坐标。判断是否落在边框缩放区（四边与四角）。
+        # 供子 widget（如工具栏按钮）判断是否应把鼠标事件交还给本窗口处理。
+        for name in (
+            "_top_rect",
+            "_bottom_rect",
+            "_left_rect",
+            "_right_rect",
+            "_corner_youxia",
+            "_corner_zuoxia",
+            "_corner_youshang",
+            "_corner_zuoshang",
+        ):
+            r = getattr(self, name, None)
+            if r is not None and r.contains(winpos):
+                return True
+        return False
+
     def resetflags(self):
         self._move_drag = False
         self._corner_drag_youxia = False

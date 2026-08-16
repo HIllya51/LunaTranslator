@@ -74,6 +74,10 @@ class IconLabelX(LLabel):
         self.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding)
         self.pixmap_ = None
         self.setScaledContents(True)
+        # 开启鼠标跟踪，使鼠标在按钮上移动时事件能向父窗口传播，
+        # 从而让 resizableframeless 更新边框 resize 光标（按钮无显式
+        # cursor，会继承父窗口光标）。
+        self.setMouseTracking(True)
 
     def update_scaled_pixmap(self):
         if self.pixmap_ is None:
@@ -177,11 +181,25 @@ class IconLabelX(LLabel):
             QIcon.State.On,
         )
 
+    def _resize_ancestor(self):
+        win = self.window()
+        if isinstance(win, resizableframeless):
+            return win
+        return None
+
     def mousePressEvent(self, ev: QMouseEvent) -> None:
+        win = self._resize_ancestor()
+        if win and win.in_resize_zone(self.mapTo(win, ev.pos())):
+            return super().mousePressEvent(ev)
         if QObject.receivers(self, self.clicked) == 0:
             return super().mousePressEvent(ev)
 
     def mouseReleaseEvent(self, ev: QMouseEvent) -> None:
+        # 父窗口正在拖动缩放时，把释放事件传播回去以结束拖动，
+        # 并避免在缩放结束后误触发按钮 click。
+        win = self._resize_ancestor()
+        if win and win.isdoingsomething():
+            return super().mouseReleaseEvent(ev)
         if self.rect().contains(ev.pos()):
             if ev.button() == Qt.MouseButton.RightButton:
                 self.rightclick.emit()
