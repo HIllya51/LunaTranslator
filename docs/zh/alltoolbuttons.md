@@ -114,12 +114,15 @@
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 窗口缩放 {#anchor-fullscreen}
     当绑定游戏窗口后，可以一键对游戏窗口使用内置的Magpie进行缩放。
 
-    左键为窗口化缩放，右键为全屏缩放。
+    默认左键为窗口化缩放，右键为全屏缩放。可以设置切换右键和左键点击功能。
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 窗口截图 {#anchor-grabwindow}
-    当绑定游戏窗口后，可以对绑定的窗口进行截图，（默认会截两张图，GDI和Winrt，两者均有一定概率会失败）。如果当前正在使用Magpie进行缩放，还会对放大的窗口进行截图。
+    如果当前正在使用Magpie进行缩放，则会对放大的窗口进行截图。
 
-    左键点击时会把截图保存到文件，右键点击时截图会保存到剪贴板。
+    当绑定游戏窗口后，可以对绑定的窗口进行截图。优先使用GDI截图，若失败则会使用Windows.Capture截图
+
+    默认左键点击时会把截图保存到文件，右键点击时截图会保存到剪贴板。可以设置切换右键和左键点击功能。
+
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 游戏静音 {#anchor-muteprocess}
     当绑定游戏窗口后，可以一键对游戏进行静音，省去了在系统音量合成器进行游戏静音的麻烦。
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 显示/隐藏原文 {#anchor-showraw}

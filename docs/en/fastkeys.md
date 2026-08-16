@@ -157,7 +157,11 @@
     In OCR/clipboard mode, after binding the window, it can also be associated with the current game settings in HOOK mode, thus using the game's proprietary translation optimization dictionary, etc.
 
 1. #### Window Screenshot {#anchor-_21}
-    After binding the game window, you can take screenshots of the bound window (by default, two screenshots will be taken: GDI and Winrt, both of which may fail). If Magpie scaling is currently in use, it will also capture the magnified window.
+    If Magpie scaling is currently in use, it will capture the magnified window.
+
+    After binding the game window, you can take screenshots of the bound window. It first attempts a GDI capture, and falls back to Windows.Capture if that fails.
+
+    By default, left-click saves the screenshot to a file, and right-click saves it to the clipboard. The left and right click functions can be swapped in settings.
 
 1. #### Mute Game {#anchor-_22}
     After binding the game window, you can mute the game with one click, eliminating the hassle of muting the game in the system volume mixer.

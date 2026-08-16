@@ -112,12 +112,14 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Thu phóng cửa sổ {#anchor-fullscreen}
     Bạn có thể thay đổi tỷ lệ cửa sổ trò chơi chỉ với một lần nhấp bằng Magpie tích hợp.
 
-    Nhấp chuột trái để thay đổi tỷ lệ cửa sổ, và nhấp chuột phải để thay đổi tỷ lệ toàn màn hình.
+    Theo mặc định, nhấp chuột trái để thay đổi tỷ lệ cửa sổ, và nhấp chuột phải để thay đổi tỷ lệ toàn màn hình. Chức năng nhấp chuột trái và phải có thể được hoán đổi trong cài đặt.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> Chụp cửa sổ {#anchor-grabwindow}
-    Có thể chụp màn hình cửa sổ đã gắn (mặc định chụp hai ảnh, GDI và Winrt, cả hai đều có thể thất bại). Điểm tốt nhất là nếu Magpie hiện đang được sử dụng để tỷ lệ, nó cũng sẽ chụp màn hình cửa sổ đã tỷ lệ.
+    Nếu Magpie hiện đang được sử dụng để tỷ lệ, nó sẽ chụp màn hình cửa sổ đã tỷ lệ.
 
-    Khi nhấp chuột trái, ảnh chụp màn hình sẽ được lưu vào tệp, và khi nhấp chuột phải, ảnh chụp màn hình sẽ được lưu vào clipboard. Nút giữa mở lớp phủ trong trò chơi.
+    Sau khi liên kết cửa sổ game, bạn có thể chụp ảnh cửa sổ đã liên kết. Nó ưu tiên chụp bằng GDI, và nếu thất bại sẽ dùng Windows.Capture.
+
+    Theo mặc định, nhấp chuột trái sẽ lưu ảnh chụp màn hình vào tệp, và nhấp chuột phải sẽ lưu vào clipboard. Chức năng nhấp chuột trái và phải có thể được hoán đổi trong cài đặt. Nút giữa mở lớp phủ trong trò chơi.
 
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> Tắt tiếng trò chơi {#anchor-muteprocess}
     Sau khi liên kết cửa sổ trò chơi, bạn có thể tắt tiếng trò chơi chỉ với một lần nhấp, tiết kiệm rắc rối của việc tắt tiếng trò chơi trong bộ trộn âm lượng hệ thống.

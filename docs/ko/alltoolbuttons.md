@@ -114,12 +114,14 @@
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 창 확대/축소 {#anchor-fullscreen}
     게임 창에 내장된 Magpie를 사용하여 한 번의 클릭으로 크기 조절이 가능합니다.
     
-    왼쪽 버튼은 창 모드 조절, 오른쪽 버튼은 전체 화면 조절입니다.
+    기본적으로 왼쪽 버튼은 창 모드 조절, 오른쪽 버튼은 전체 화면 조절입니다. 오른쪽과 왼쪽 클릭 기능은 설정에서 서로 바꿀 수 있습니다.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 창 스크린샷 {#anchor-grabwindow}
-    바인딩된 창의 스크린샷을 찍을 수 있습니다 (기본적으로 GDI와 Winrt 방식으로 각각 한 장씩 총 두 장을 찍으며, 둘 다 실패할 가능성이 있습니다). 가장 좋은 점은 현재 Magpie로 확대 중인 창일 경우, 확대된 창의 스크린샷도 찍을 수 있다는 것입니다.
+    현재 Magpie로 확대 중인 경우, 확대된 창의 스크린샷을 찍습니다.
 
-    왼쪽 버튼 클릭 시 스크린샷을 파일로 저장하고, 오른쪽 버튼 클릭 시 스크린샷을 클립보드에 저장합니다.
+    게임 창을 바인딩한 후, 바인딩된 창의 스크린샷을 찍을 수 있습니다. GDI 방식으로 먼저 캡처하며, 실패할 경우 Windows.Capture로 캡처합니다.
+
+    기본적으로 왼쪽 버튼 클릭 시 스크린샷을 파일로 저장하고, 오른쪽 버튼 클릭 시 스크린샷을 클립보드에 저장합니다. 오른쪽과 왼쪽 클릭 기능은 설정에서 서로 바꿀 수 있습니다.
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 게임 음소거 {#anchor-muteprocess}
     게임 창을 바인딩한 후, 게임 음소거를 한 번의 클릭으로 수행할 수 있어 시스템 볼륨 믹서에서 게임 음소거를 하는 번거로움을 덜 수 있습니다.
 1. #### <i class="fa fa-eye"></i> <i class="btnstatus2 fa fa-eye-slash"></i> 원문 표시/숨기기 {#anchor-showraw}

@@ -156,7 +156,11 @@
     Trong chế độ OCR/clipboard, sau khi gắn cửa sổ, nó cũng có thể được liên kết với cài đặt trò chơi hiện tại trong chế độ HOOK, do đó sử dụng từ điển tối ưu hóa dịch thuật riêng của trò chơi, v.v.
 
 1. #### Chụp cửa sổ {#anchor-_21}
-    Sau khi liên kết cửa sổ game, bạn có thể chụp ảnh cửa sổ đã liên kết (mặc định sẽ chụp hai ảnh: GDI và Winrt, cả hai đều có thể thất bại). Nếu đang sử dụng Magpie để phóng to, nó cũng sẽ chụp ảnh cửa sổ đã phóng to.
+    Nếu Magpie hiện đang được sử dụng để tỷ lệ, nó sẽ chụp màn hình cửa sổ đã tỷ lệ.
+
+    Sau khi liên kết cửa sổ game, bạn có thể chụp ảnh cửa sổ đã liên kết. Nó ưu tiên chụp bằng GDI, và nếu thất bại sẽ dùng Windows.Capture.
+
+    Theo mặc định, nhấp chuột trái sẽ lưu ảnh chụp màn hình vào tệp, và nhấp chuột phải sẽ lưu vào clipboard. Chức năng nhấp chuột trái và phải có thể được hoán đổi trong cài đặt.
 
 1. #### Tắt tiếng trò chơi {#anchor-_22}
     Sau khi liên kết cửa sổ game, bạn có thể tắt tiếng game bằng một cú nhấp chuột, tiết kiệm thời gian so với việc tắt tiếng trong bộ trộn âm lượng hệ thống.

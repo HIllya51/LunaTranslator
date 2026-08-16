@@ -125,12 +125,14 @@
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 視窗縮放 全螢幕模式縮放 {#anchor-fullscreen}
     可以一鍵對遊戲視窗使用內建的 Magpie 進行縮放。
 
-    左鍵為視窗化縮放，右鍵為全螢幕縮放。
+    預設左鍵為視窗化縮放，右鍵為全螢幕縮放。可以設定切換右鍵和左鍵點擊功能。
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 視窗截圖 {#anchor-grabwindow}
-    當綁定遊戲視窗後，可以對綁定的視窗進行截圖（預設會截兩張圖，GDI 和 WinRT，兩者均有一定機率會失敗）。如果目前正在使用 Magpie 進行縮放，還會對放大的視窗進行截圖。
+    如果目前正在使用 Magpie 進行縮放，則會對放大的視窗進行截圖。
 
-    左鍵點擊時會把截圖儲存到檔案，右鍵點擊時截圖會儲存到剪貼簿。
+    當綁定遊戲視窗後，可以對綁定的視窗進行截圖。優先使用 GDI 截圖，若失敗則會使用 Windows.Capture 截圖
+
+    預設左鍵點擊時會把截圖儲存到檔案，右鍵點擊時截圖會儲存到剪貼簿。可以設定切換右鍵和左鍵點擊功能。
 
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> 遊戲靜音 {#anchor-muteprocess}
     當綁定遊戲視窗後，可以一鍵對遊戲進行靜音，節省了還要在系統音量混音程式才能將遊戲靜音的麻煩。

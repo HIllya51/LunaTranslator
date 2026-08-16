@@ -112,12 +112,14 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Window Zoom Full-screen mode zoom {#anchor-fullscreen}
     You can scale the game window with one click using the built-in Magpie.
 
-    Left-click for windowed scaling, and right-click for full-screen scaling.
+    By default, left-click is windowed scaling and right-click is full-screen scaling. The left and right click functions can be swapped in settings.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> Window Screenshot {#anchor-grabwindow}
-    After binding the game window, you can take screenshots of the bound window (by default, two screenshots will be taken: GDI and Winrt, both of which may fail). If Magpie scaling is currently in use, it will also capture the magnified window.
+    If Magpie scaling is currently in use, it will capture the magnified window.
 
-    When left clicked, the screenshot will be saved to a file, and when right clicked, the screenshot will be saved to the clipboard. The middle key opens the in-game overlay.
+    After binding the game window, you can take screenshots of the bound window. It first attempts a GDI capture, and falls back to Windows.Capture if that fails.
+
+    By default, left-click saves the screenshot to a file, and right-click saves it to the clipboard. The left and right click functions can be swapped in settings. The middle key opens the in-game overlay.
 
 1. #### <i class="fa fa-volume-off"></i> <i class="btnstatus2 fa fa-volume-up"></i> Mute Game {#anchor-muteprocess}
     After binding the game window, you can mute the game with one click, saving the trouble of muting the game in the system volume mixer.
