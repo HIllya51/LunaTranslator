@@ -12,6 +12,7 @@ from myutils.wrapper import threader
 import gobject, functools, importlib, NativeUtils, uuid, requests
 from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
+from gui.usefulwidget import qwidget_screen
 from gui.dynalang import LAction
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
@@ -1079,7 +1080,7 @@ class TextBrowser(QWidget, dataget):
 
     @property
     def maxvisheight(self):
-        return self.screen().virtualGeometry().height() * 2
+        return qwidget_screen(self).virtualGeometry().height() * 2
 
     def _showyinyingtext(self, b1, b2, color: ColorControl, font: QFont):
         linei = self.yinyingposline

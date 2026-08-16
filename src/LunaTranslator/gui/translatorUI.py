@@ -36,6 +36,7 @@ from gui.usefulwidget import (
     resizableframeless,
     load_specific_icon_size,
     create_centered_rect,
+    qwidget_screen,
 )
 from gui.edittext import edittrans
 from gui.gamemanager.dialog import dialog_savedgame_integrated
@@ -1129,7 +1130,7 @@ class TranslatorWindow(resizableframeless):
         self.changeshowhidetranssig.connect(self.changeshowhidetrans)
 
     def safemove(self, pos: QPoint):
-        screengeo = self.screen().geometry()
+        screengeo = qwidget_screen(self).geometry()
         if pos.x() < screengeo.left():
             pos.setX(screengeo.left())
         if pos.y() < screengeo.top():
@@ -1734,7 +1735,7 @@ class TranslatorWindow(resizableframeless):
             self.translate_text.scrolltoend()
             return
         if globalconfig.get("verticalhorizontal", False):
-            limit = min(size.width(), self.screen().geometry().width())
+            limit = min(size.width(), qwidget_screen(self).geometry().width())
             newW = limit + self.dynamicextraheight()
             size = QSize(newW, self.height())
             self.smooth_resizer.stop()
@@ -1754,7 +1755,7 @@ class TranslatorWindow(resizableframeless):
                     self.smooth_resizer4.setEndValue(newW)
                     self.smooth_resizer4.start()
         else:
-            limit = min(size.height(), self.screen().geometry().height())
+            limit = min(size.height(), qwidget_screen(self).geometry().height())
             newHeight = limit + self.dynamicextraheight()
             size = QSize(self.width(), newHeight)
             self.smooth_resizer.stop()

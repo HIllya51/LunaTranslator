@@ -40,7 +40,6 @@ def parsecode(code: str, arch):
     code = typeHintRemover(code)
     if arch == "winxp":
         # PyQt
-        code = code.replace("self.screen()", "QApplication.primaryScreen()")
         code = code.replace("self.parent().devicePixelRatioF()", "1")
         code = code.replace("self.devicePixelRatioF()", "1")
         code = re.sub(

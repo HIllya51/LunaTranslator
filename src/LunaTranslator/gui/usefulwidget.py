@@ -657,20 +657,20 @@ class saveposwindow_1(LMainWindow):
         self.possave = possave
         if self.posinit:
             self.setGeometry(QRect(*self.posinit))
-        self.adjust_window_to_screen_bounds(self.screen().geometry())
+        self.adjust_window_to_screen_bounds(qwidget_screen(self).geometry())
         self.___firstshow = True
 
     def showEvent(self, a0):
         if self.___firstshow:
             self.___firstshow = False
             self.windowHandle().screenChanged.connect(self.__screenChanged)
-            self.__screenChanged(self.screen())
+            self.__screenChanged(qwidget_screen(self))
         return super().showEvent(a0)
 
     @tryprint
     def _changed(self, _id: str, geo: QRect):
         try:
-            if _id != self.screen().serialNumber():
+            if _id != qwidget_screen(self).serialNumber():
                 return
         except:
             pass
@@ -3838,9 +3838,15 @@ def create_centered_rect(width: int, height: int, widget: QWidget = None) -> QRe
     if widget:
         screen_center = widget.geometry().center()
     else:
-            
+
         cursor_pos = QCursor.pos()
-        screen = QApplication.screenAt(cursor_pos)
+
+        if qVersionX > (5, 10):
+            screen = QApplication.screenAt(cursor_pos)
+        else:
+            desktop = QApplication.desktop()
+            screen_index = desktop.screenNumber(cursor_pos)
+            screen = desktop.screen(screen_index)
         if not screen:
             screen = QApplication.primaryScreen()
 
@@ -3854,3 +3860,12 @@ def create_centered_rect(width: int, height: int, widget: QWidget = None) -> QRe
     y = screen_center.y() - height // 2
 
     return QRect(x, y, width, height)
+
+
+def qwidget_screen(object: QWidget):
+    if qVersionX > (5, 10):
+        return object.screen()
+
+    desktop = QApplication.desktop()
+    screen_index = desktop.screenNumber(object)
+    return desktop.screen(screen_index)
