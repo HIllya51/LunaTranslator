@@ -621,7 +621,6 @@
     "范围": "bereik",
     "字体设置": "Instellingen voor lettertypen",
     "成功添加后隐藏Anki页面": "Verberg de Anki-pagina nadat deze met succes is toegevoegd",
-    "窗口化缩放": "Inzoomen met venster",
     "窗口缩放": "Venster zoomen",
     "创建快捷方式": "Een snelkoppeling maken",
     "间距": "Afstand",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Huidige simulatorversie wordt niet ondersteund.",
     "内存占用: {}": "Geheugengebruik: {}",
     "显存占用: {}": "VRAM-gebruik: {}",
-    "屏幕中间显示": "In het midden van het scherm weergegeven."
+    "屏幕中间显示": "In het midden van het scherm weergegeven.",
+    "右键点击": "Rechtsklikken",
+    "左键点击": "Linksklikken",
+    "已保存到剪贴板": "Opgeslagen naar klembord",
+    "保存到文件": "Opslaan naar bestand",
+    "保存到剪贴板": "Naar klembord kopiëren"
 }

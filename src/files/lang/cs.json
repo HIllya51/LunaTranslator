@@ -621,7 +621,6 @@
     "范围": "rozmezí",
     "字体设置": "Nastavení písma",
     "成功添加后隐藏Anki页面": "Po úspěšném přidání skryjte stránku Anki",
-    "窗口化缩放": "Zvětšení v okně",
     "窗口缩放": "Zvětšení okna",
     "创建快捷方式": "Vytvoření zástupce",
     "间距": "rozteč",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Nepodporuje aktuální verzi emulátoru.",
     "内存占用: {}": "Využití paměti: {}",
     "显存占用: {}": "Využití paměti GPU: {}",
-    "屏幕中间显示": "Uprostřed obrazovky se zobrazí"
+    "屏幕中间显示": "Uprostřed obrazovky se zobrazí",
+    "右键点击": "Klepněte pravým tlačítkem myši",
+    "左键点击": "Klepněte levým tlačítkem myši",
+    "已保存到剪贴板": "Uloženo do schránky",
+    "保存到文件": "Uložit do souboru",
+    "保存到剪贴板": "Zkopírovat do schránky"
 }

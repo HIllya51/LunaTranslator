@@ -39,7 +39,6 @@ from gui.usefulwidget import (
     getboxlayout,
     VisLFormLayout,
     getIconButton,
-    D_getcolorbutton,
     getcolorbutton,
     check_grid_append,
     CollapsibleBoxWithButton,

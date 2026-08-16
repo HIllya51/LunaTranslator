@@ -621,7 +621,6 @@
     "范围": "Phạm vi",
     "字体设置": "Cài đặt phông chữ",
     "成功添加后隐藏Anki页面": "Ẩn trang Anki sau khi thêm thành công",
-    "窗口化缩放": "Thu phóng dạng cửa sổ",
     "窗口缩放": "Thu phóng cửa sổ",
     "创建快捷方式": "Tạo Shortcut",
     "间距": "Khoảng cách",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Không hỗ trợ phiên bản trình giả lập hiện tại",
     "内存占用: {}": "Dung lượng bộ nhớ chiếm dụng: {}",
     "显存占用: {}": "Dung lượng VRAM chiếm dụng: {}",
-    "屏幕中间显示": "Màn hình hiển thị ở giữa"
+    "屏幕中间显示": "Màn hình hiển thị ở giữa",
+    "右键点击": "Nhấp chuột phải",
+    "左键点击": "Nhấp chuột trái",
+    "已保存到剪贴板": "Đã lưu vào clipboard",
+    "保存到文件": "Lưu vào tệp",
+    "保存到剪贴板": "Sao chép vào bảng tạm"
 }

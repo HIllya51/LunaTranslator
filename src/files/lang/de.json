@@ -621,7 +621,6 @@
     "范围": "Bereich",
     "字体设置": "Einstellungen für Schriftarten",
     "成功添加后隐藏Anki页面": "Blenden Sie die Anki-Seite aus, nachdem sie erfolgreich hinzugefügt wurde",
-    "窗口化缩放": "Zoom mit Fenster",
     "窗口缩放": "Zoom des Fensters",
     "创建快捷方式": "Erstellen einer Verknüpfung",
     "间距": "Abstand",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Die aktuelle Emulator-Version wird nicht unterstützt.",
     "内存占用: {}": "Speicherverbrauch: {}",
     "显存占用: {}": "VRAM-Belegung: {}",
-    "屏幕中间显示": "In der Mitte des Bildschirms wird angezeigt."
+    "屏幕中间显示": "In der Mitte des Bildschirms wird angezeigt.",
+    "右键点击": "Rechtsklick",
+    "左键点击": "Linksklick",
+    "已保存到剪贴板": "In die Zwischenablage gespeichert",
+    "保存到文件": "In Datei speichern",
+    "保存到剪贴板": "In die Zwischenablage kopieren"
 }

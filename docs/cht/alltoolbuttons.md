@@ -122,7 +122,7 @@
 
     實際上當按鈕欄有或沒有按鈕存在的額外空白區域時，都可以隨意拖動。該按鈕僅用來預留一個拖動位置。
 
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 視窗縮放 {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 視窗縮放 全螢幕模式縮放 {#anchor-fullscreen}
     可以一鍵對遊戲視窗使用內建的 Magpie 進行縮放。
 
     左鍵為視窗化縮放，右鍵為全螢幕縮放。

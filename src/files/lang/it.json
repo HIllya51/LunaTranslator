@@ -621,7 +621,6 @@
     "范围": "gamma",
     "字体设置": "Impostazioni dei caratteri",
     "成功添加后隐藏Anki页面": "Nascondi la pagina Anki dopo che è stata aggiunta correttamente",
-    "窗口化缩放": "Zoom finestrato",
     "窗口缩放": "Zoom finestra",
     "创建快捷方式": "Creare una scorciatoia",
     "间距": "spaziatura",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Versione attuale del simulatore non supportata",
     "内存占用: {}": "Occupazione della memoria: {}",
     "显存占用: {}": "Occupazione della memoria video: {}",
-    "屏幕中间显示": "Al centro dello schermo viene visualizzato"
+    "屏幕中间显示": "Al centro dello schermo viene visualizzato",
+    "右键点击": "Fare clic con il tasto destro",
+    "左键点击": "Fare clic con il tasto sinistro",
+    "已保存到剪贴板": "Salvato negli appunti.",
+    "保存到文件": "Salva su file",
+    "保存到剪贴板": "Copia negli appunti"
 }

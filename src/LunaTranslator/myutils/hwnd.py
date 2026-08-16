@@ -68,7 +68,7 @@ def callback_1(callback_origin, tocliponly: bool, app, p: QPixmap):
         return False
     if tocliponly:
         clipboard_set_image(p)
-        gobject.base.displayinfomessage("saved to clipboard", "<msg_info_refresh>")
+        gobject.base.displayinfomessage(_TR("已保存到剪贴板"), "<msg_info_refresh>")
         return True
     if callback_origin:
         callback_origin(p)

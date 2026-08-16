@@ -621,7 +621,6 @@
     "范围": "sortiment",
     "字体设置": "Inställningar för teckensnitt",
     "成功添加后隐藏Anki页面": "Dölj Anki-sidan efter att den har lagts till",
-    "窗口化缩放": "Zoom i fönster",
     "窗口缩放": "Zooma fönster",
     "创建快捷方式": "Skapa en genväg",
     "间距": "avstånd",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Stöder inte den aktuella simulatorversionen",
     "内存占用: {}": "Minnesutrymme: {}",
     "显存占用: {}": "Grafikminnesanvändning: {}",
-    "屏幕中间显示": "Skärmens mitt visar"
+    "屏幕中间显示": "Skärmens mitt visar",
+    "右键点击": "Högerklicka",
+    "左键点击": "Vänsterklicka",
+    "已保存到剪贴板": "Kopierat till urklipp",
+    "保存到文件": "Spara till fil",
+    "保存到剪贴板": "Kopiera till urklipp"
 }

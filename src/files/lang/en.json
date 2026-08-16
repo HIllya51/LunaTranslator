@@ -621,7 +621,6 @@
     "范围": "Range",
     "字体设置": "Font Settings",
     "成功添加后隐藏Anki页面": "Hide Anki Page After Successfully Adding",
-    "窗口化缩放": "Windowed Scaling",
     "窗口缩放": "Window Zoom",
     "创建快捷方式": "Create Shortcut",
     "间距": "Spacing",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "The current emulator version is not supported.",
     "内存占用: {}": "Memory usage: {}",
     "显存占用: {}": "Video memory usage: {}",
-    "屏幕中间显示": "The center of the screen displays"
+    "屏幕中间显示": "The center of the screen displays",
+    "右键点击": "Right-click.",
+    "左键点击": "Left-click.",
+    "已保存到剪贴板": "Saved to clipboard.",
+    "保存到文件": "Save to file.",
+    "保存到剪贴板": "Save to clipboard."
 }

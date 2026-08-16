@@ -621,7 +621,6 @@
     "范围": "Rango",
     "字体设置": "Configuración de fuentes",
     "成功添加后隐藏Anki页面": "Oculta la página de Anki después de que se haya agregado con éxito",
-    "窗口化缩放": "Zoom en ventana",
     "窗口缩放": "Zoom de ventana",
     "创建快捷方式": "Crear acceso directo",
     "间距": "espaciamiento",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "No compatible con la versión actual del simulador.",
     "内存占用: {}": "Uso de memoria: {}",
     "显存占用: {}": "Uso de memoria de video: {}",
-    "屏幕中间显示": "En el centro de la pantalla se muestra."
+    "屏幕中间显示": "En el centro de la pantalla se muestra.",
+    "右键点击": "Haz clic con el botón derecho",
+    "左键点击": "Haz clic izquierdo",
+    "已保存到剪贴板": "Copiado al portapapeles",
+    "保存到文件": "Guardar en archivo",
+    "保存到剪贴板": "Guardar en el portapapeles"
 }

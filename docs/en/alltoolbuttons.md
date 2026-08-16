@@ -109,7 +109,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     Drag the translation window.
 
     In fact, when there is no button on the button bar, there is additional blank area, you can drag it at will. This button is just for reserving a drag position.
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Window Zoom {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Window Zoom Full-screen mode zoom {#anchor-fullscreen}
     You can scale the game window with one click using the built-in Magpie.
 
     Left-click for windowed scaling, and right-click for full-screen scaling.

@@ -696,6 +696,15 @@ class TranslatorWindow(resizableframeless):
         rangeselct_function(ocroncefunction, hideshow=True)
 
     @threader
+    def simulate_key_ctrl(self):
+        windows.SetForegroundWindow(gobject.base.hwnd)
+        time.sleep(0.1)
+        windows.keybd_event(windows.VK_CONTROL, 0, 0, 0)
+        while windows.GetForegroundWindow() == gobject.base.hwnd:
+            time.sleep(0.001)
+        windows.keybd_event(windows.VK_CONTROL, 0, windows.KEYEVENTF_KEYUP, 0)
+
+    @threader
     def simulate_key_enter(self):
         windows.SetForegroundWindow(gobject.base.hwnd)
         time.sleep(0.1)
@@ -711,13 +720,6 @@ class TranslatorWindow(resizableframeless):
         self.checksettop()
 
     def addbuttons(self):
-        def simulate_key_ctrl():
-            windows.SetForegroundWindow(gobject.base.hwnd)
-            time.sleep(0.1)
-            windows.keybd_event(windows.VK_CONTROL, 0, 0, 0)
-            while windows.GetForegroundWindow() == gobject.base.hwnd:
-                time.sleep(0.001)
-            windows.keybd_event(windows.VK_CONTROL, 0, windows.KEYEVENTF_KEYUP, 0)
 
         functions = (
             ("luna", None),
@@ -856,15 +858,26 @@ class TranslatorWindow(resizableframeless):
             (
                 "fullscreen",
                 buttonfunctions(
-                    clicked=lambda: self._fullsgame(False),
-                    rightclick=lambda: self._fullsgame(True),
+                    clicked=lambda: self._fullsgame(
+                        not globalconfig.get("fullscreen_left_full", True)
+                    ),
+                    rightclick=lambda: self._fullsgame(
+                        globalconfig.get("fullscreen_left_full", True)
+                    ),
                     iconstate=lambda: self.isletgamefullscreened,
                 ),
             ),
             (
                 "grabwindow",
                 buttonfunctions(
-                    clicked=grabwindow, rightclick=lambda: grabwindow(tocliponly=True)
+                    clicked=lambda: grabwindow(
+                        tocliponly=not globalconfig.get(
+                            "grabwindow_left_savefile", True
+                        )
+                    ),
+                    rightclick=lambda: grabwindow(
+                        tocliponly=globalconfig.get("grabwindow_left_savefile", True)
+                    ),
                 ),
             ),
             (
@@ -890,10 +903,7 @@ class TranslatorWindow(resizableframeless):
                     colorstate=lambda: globalconfig.get("keepontop", True),
                 ),
             ),
-            (
-                "simulate_key_ctrl",
-                lambda: threader(simulate_key_ctrl)(),
-            ),
+            ("simulate_key_ctrl", self.simulate_key_ctrl),
             (
                 "simulate_key_enter",
                 self.simulate_key_enter,
@@ -1149,7 +1159,9 @@ class TranslatorWindow(resizableframeless):
         )
         if globalconfig.get("keepontop", True):
             flags |= Qt.WindowType.WindowStaysOnTopHint
-        posinit = globalconfig.get("transuigeo", create_centered_rect(800, 200).getRect())
+        posinit = globalconfig.get(
+            "transuigeo", create_centered_rect(800, 200).getRect()
+        )
         super(TranslatorWindow, self).__init__(
             None,
             flags=flags,

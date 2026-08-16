@@ -621,7 +621,6 @@
     "范围": "zakres",
     "字体设置": "Ustawienia czcionek",
     "成功添加后隐藏Anki页面": "Ukryj stronę Anki po jej pomyślnym dodaniu",
-    "窗口化缩放": "Powiększenie w oknie",
     "窗口缩放": "Powiększenie okna",
     "创建快捷方式": "Tworzenie skrótu",
     "间距": "Odstępy",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Nie obsługuje bieżącej wersji emulatora.",
     "内存占用: {}": "Zużycie pamięci: {}",
     "显存占用: {}": "Zużycie pamięci GPU: {}",
-    "屏幕中间显示": "Na środku ekranu wyświetla się"
+    "屏幕中间显示": "Na środku ekranu wyświetla się",
+    "右键点击": "Kliknij prawym przyciskiem myszy",
+    "左键点击": "Kliknij lewym przyciskiem myszy",
+    "已保存到剪贴板": "Skopiowano do schowka",
+    "保存到文件": "Zapisz do pliku",
+    "保存到剪贴板": "Skopiuj do schowka"
 }

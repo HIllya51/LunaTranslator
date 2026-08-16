@@ -621,7 +621,6 @@
     "范围": "aralık",
     "字体设置": "Yazı tipi ayarları",
     "成功添加后隐藏Anki页面": "Başarıyla eklendikten sonra Anki sayfasını gizleyin",
-    "窗口化缩放": "Pencereli yakınlaştırma",
     "窗口缩放": "Pencere yakınlaştırma",
     "创建快捷方式": "Kısayol oluşturma",
     "间距": "Aralığı",
@@ -933,5 +932,10 @@
     "不支持当前模拟器版本": "Mevcut simülatör sürümü desteklenmiyor.",
     "内存占用: {}": "Bellek kullanımı: {}",
     "显存占用: {}": "Video belleği kullanımı: {}",
-    "屏幕中间显示": "Ekranın ortasında gösteriliyor"
+    "屏幕中间显示": "Ekranın ortasında gösteriliyor",
+    "右键点击": "Sağ tıklayın",
+    "左键点击": "Sol tıklayın",
+    "已保存到剪贴板": "Panoya kaydedildi",
+    "保存到文件": "Dosyaya kaydet",
+    "保存到剪贴板": "Panoya kopyala"
 }

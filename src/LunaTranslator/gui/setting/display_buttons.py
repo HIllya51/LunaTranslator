@@ -14,7 +14,10 @@ from gui.usefulwidget import (
     getcenterX,
     D_getspinbox,
     D_getcolorbutton,
+    D_getIconButton,
     makegrid,
+    MySwitch,
+    PopupWidget,
 )
 from gui.dynalang import LDialog, LLabel
 from gui.setting.display_ui import toolcolorchange
@@ -157,6 +160,60 @@ def createbtn(self, name, key, cb):
     return btn
 
 
+class LeftRightFunctionSetter(PopupWidget):
+    def __init__(self, key, default, text1, text2, p):
+        super().__init__(p)
+        self.key = key
+        layout = QGridLayout()
+        self.setLayout(layout)
+
+        self.btns: "list[list[QPushButton]]" = []
+        for i in range(2):
+            row = []
+            for j in range(2):
+                btn = MySwitch(sign=globalconfig.get(key, default) == (i == j))
+                btn.clicked.connect(functools.partial(self.click, btn, i, j))
+                row.append(btn)
+                layout.addWidget(btn, i + 1, j + 1)
+            self.btns.append(row)
+
+        layout.addWidget(LLabel(text1), 1, 0)
+        layout.addWidget(LLabel(text2), 2, 0)
+        layout.addWidget(LLabel("左键点击"), 0, 1)
+        layout.addWidget(LLabel("右键点击"), 0, 2)
+
+        self.display()
+
+    def click(self, btn: QPushButton, i, j):
+        globalconfig[self.key] = (i == j) == btn.isChecked()
+        for row in range(2):
+            for col in range(2):
+                if (i, j) != (row, col):
+                    self.btns[row][col].setChecked(
+                        btn.isChecked()
+                        if (i != row and j != col)
+                        else not btn.isChecked()
+                    )
+
+
+specialbuttonsettings = {
+    "fullscreen": functools.partial(
+        LeftRightFunctionSetter,
+        "fullscreen_left_full",
+        True,
+        "全屏模式缩放",
+        "窗口模式缩放",
+    ),
+    "grabwindow": functools.partial(
+        LeftRightFunctionSetter,
+        "grabwindow_left_savefile",
+        True,
+        "保存到文件",
+        "保存到剪贴板",
+    ),
+}
+
+
 def createbuttonwidget(self, lay: QLayout):
     grids = [
         [
@@ -205,7 +262,8 @@ def createbuttonwidget(self, lay: QLayout):
     savescroll = []
     grids = [
         [
-            getcenterX("显示"),
+            getcenterX("使用"),
+            "",
             "",
             "",
             getcenterX("对齐"),
@@ -241,6 +299,13 @@ def createbuttonwidget(self, lay: QLayout):
                 globalconfig["toolbutton"]["buttons"][k],
                 "use",
                 callback=doadjust,
+            ),
+            (
+                D_getIconButton(
+                    callback=functools.partial(specialbuttonsettings[k], self)
+                )
+                if k in specialbuttonsettings
+                else getsmalllabel()
             ),
             button_up,
             button_down,
