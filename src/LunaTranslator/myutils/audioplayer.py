@@ -21,8 +21,8 @@ class playonce:
 
     def __init__(self, fileormem, volume) -> None:
         self.handle = 0
-        self.__play(fileormem, volume)
         self.idle = True
+        self.__play(fileormem, volume)
 
     def __del__(self):
         self.__stop()

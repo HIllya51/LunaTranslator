@@ -11,7 +11,6 @@ from cishu.cishubase import cishubase
 from translator.gptcommon import createheaders
 from gui.customparams import customparams, getcustombodyheaders
 from language import Languages
-import random
 
 
 def list_models(typename, regist):
@@ -37,8 +36,7 @@ class chatgptlike(cishubase):
         __.update(self.rawconfig)
         if "modellistcache" in __:
             __.pop("modellistcache")
-        temperature = random.randint(0, int(20 * self.config["Temperature"]))
-        return (word, sentence, temperature, str(__))
+        return (word, sentence, str(__))
 
     def search_1(self, apitype: APIType, sysprompt, query, extrabody, extraheader):
         message = [{"role": "system", "content": sysprompt}]

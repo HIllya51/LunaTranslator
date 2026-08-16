@@ -35,7 +35,7 @@ class OCR(baseocr):
             Languages.Vietnamese: "vie",
             Languages.Russian: "rus",
             Languages.Italian: "ita",
-            Languages.Italian: "hol",
+            Languages.Dutch: "hol",
             Languages.Swedish: "swe",
             Languages.Hungarian: "hun",
             Languages.Thai: "tha",

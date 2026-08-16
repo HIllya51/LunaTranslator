@@ -221,8 +221,11 @@ def simplehtmlparser_all(text: str, tag: str, sign: str) -> "list[str]":
             break
         text = text[idx:]
         inner = findenclose(text, tag)
+        if not inner:
+            text = text[len(sign) :] if len(sign) else text[1:]
+            continue
         inners.append(inner.replace("\n", ""))
-        text = text[len(inners) :]
+        text = text[len(inner) :]
     return inners
 
 
@@ -951,9 +954,9 @@ class APIType:
 
     def finalurl(self, checkend="/chat/completions"):
         if self == APIType.azure:
-            return url
+            return self.url
         if self == APIType.gemini:
-            return self.url + "/v1beta/models"
+            return self.url
         url = self.url
         if url.endswith(checkend):
             return url

@@ -20,17 +20,41 @@ class TS(basetrans):
     def checkfilechanged(self, p1, p):
         if self.paths != (p1, p):
             self.sql = None
+            self._sql_path = None
+            self._rows_cache = None  # 路径变化，失效全表缓存
             if p:
                 if os.path.exists(p):
                     self.sql = autosql(p, check_same_thread=False)
+                    self._sql_path = p
             if p1:
                 if os.path.exists(p1):
                     self.sql = autosql(p1, check_same_thread=False)
+                    self._sql_path = p1
             self.paths = (p1, p)
+
+    def _fetchallrows(self, sql):
+        # 模糊匹配模式下每次翻译都要扫全表，按数据库文件修改时间缓存，
+        # 避免每条文本都读盘 + 全表相似度扫描。
+        path = self._sql_path
+        if path is not None:
+            try:
+                mt = os.path.getmtime(path)
+            except OSError:
+                mt = None
+            cache = self._rows_cache
+            if cache is not None and cache[0] == mt and cache[1] == path:
+                return cache[2]
+            rows = sql.execute("SELECT * FROM artificialtrans").fetchall()
+            if mt is not None:
+                self._rows_cache = (mt, path, rows)
+            return rows
+        return sql.execute("SELECT * FROM artificialtrans").fetchall()
 
     def init(self):
         self.sql = None
         self.paths = (None, None)
+        self._sql_path = None
+        self._rows_cache = None
         self.checkfilechanged(
             self.unsafegetcurrentgameconfig(), self.config["sqlitefile"]
         )
@@ -49,7 +73,7 @@ class TS(basetrans):
         if self.config["premtsimi2"] < 100:
             maxsim = 0
             savet = "{}"
-            ret = sql.execute("SELECT * FROM artificialtrans  ").fetchall()
+            ret = self._fetchallrows(sql)
             if not ret:
                 return {}
             for line in ret:

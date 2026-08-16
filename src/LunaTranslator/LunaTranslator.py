@@ -727,7 +727,7 @@ class BASEOBJECT(QObject):
             elif waitforresultcallbackengine_force:
                 return
 
-        usefultranslators = real_fix_rank.copy()
+        usefultranslators = set(real_fix_rank)
         if globalconfig.get("fix_translate_rank", False) and (
             not waitforresultcallback
         ):
@@ -844,7 +844,7 @@ class BASEOBJECT(QObject):
 
     def GetTranslationCallback(
         self,
-        usefultranslators: list,
+        usefultranslators: set,
         waitforresultcallback,
         classname,
         currentsignature,
@@ -860,8 +860,7 @@ class BASEOBJECT(QObject):
         is_auto_run=True,
     ):
         with self.gettranslatelock:
-            if classname in usefultranslators:
-                usefultranslators.remove(classname)
+            usefultranslators.discard(classname)
             if (
                 waitforresultcallback is None
                 and currentsignature != self.currentsignature

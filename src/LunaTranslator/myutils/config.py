@@ -228,7 +228,7 @@ for gameconfig in savehook_new_data.values():
     for __k, __v in _dfsavehook.items():
         if __k not in gameconfig:
             if isinstance(__v, (list, dict)):
-                __v = __v.copy()
+                __v = copy.deepcopy(__v)
             gameconfig[__k] = __v
 
 

@@ -142,8 +142,8 @@ class texthook(basetext):
 
     def init(self):
 
-        self.pids: "dict[str,list[int]]" = {0: []}
-        self.maybepids: "list[int]" = []
+        self.pids: "dict[str,set[int]]" = {0: set()}
+        self.maybepids: "set[int]" = set()
         self.maybepidslock = threading.Lock()
         self.keepref = []
         self.selectedhook = []
@@ -380,7 +380,7 @@ class texthook(basetext):
         gobject.base.hwnd = hwnd
         issame = gameuid == self.gameuid
         self.gameuid = gameuid
-        self.pids[gameuid] = []
+        self.pids[gameuid] = set()
         self.setsettings()
         if not issame:
             self.detachall()
@@ -429,7 +429,7 @@ class texthook(basetext):
         if pid not in self.pids[self.gameuid]:
             # 不detach，直接hook新游戏，发生uid切换。
             return
-        self.pids[self.gameuid].remove(pid)
+        self.pids[self.gameuid].discard(pid)
         if len(self.pids[self.gameuid]) == 0:
             self.gameuid = 0
             self.autohookmonitorthread()
@@ -508,7 +508,7 @@ class texthook(basetext):
     @threader
     def waitend(self, pid):
         # 如果有进程一闪而逝，没来的及注入，导致无法自动重连
-        self.maybepids.append(pid)
+        self.maybepids.add(pid)
         windows.WaitForSingleObject(
             windows.OpenProcess(windows.SYNCHRONIZE, False, pid)
         )
@@ -520,11 +520,8 @@ class texthook(basetext):
                 self.autohookmonitorthread()
 
     def onprocconnect(self, pid):
-        self.pids[self.gameuid].append(pid)
-        try:
-            self.maybepids.remove(pid)
-        except:
-            pass
+        self.pids[self.gameuid].add(pid)
+        self.maybepids.discard(pid)
         for hookcode in self.needinserthookcode:
             self.Luna_InsertHookCode(pid, hookcode)
         if self.hconfig.get("insertpchooks_string", False):
@@ -583,14 +580,18 @@ class texthook(basetext):
             newlines = []
             space = getlangtgt().space
             for line in lines:
-                line = line.split(space) if space else line
-                while len(line):
-                    __line = line[0]
-                    line.pop(0)
-                    while len(line) and (len(__line + space + line[0]) <= length):
-                        __line += space + line[0]
-                        line.pop(0)
-                    newlines.append(__line)
+                words = line.split(space) if space else line
+                i = 0
+                n = len(words)
+                while i < n:
+                    frags = [words[i]]
+                    curlen = len(words[i])
+                    i += 1
+                    while i < n and (curlen + len(space) + len(words[i]) <= length):
+                        frags.append(words[i])
+                        curlen += len(space) + len(words[i])
+                        i += 1
+                    newlines.append(space.join(frags))
             trans = "\n".join(newlines)
         return trans
 

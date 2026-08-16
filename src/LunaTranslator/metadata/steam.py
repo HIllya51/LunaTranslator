@@ -64,9 +64,7 @@ class searcher(common):
 
         tagsall = tagsuser.union(tags)
         for _ in ("", "+"):
-            if _ not in tagsall:
-                continue
-            tagsall.remove(_)
+            tagsall.discard(_)
         return list(tagsall)
 
     def searchfordata(self, _id):

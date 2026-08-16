@@ -17,7 +17,7 @@ from gui.dynalang import LAction
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
 
-reference: "list[QLabel]" = []
+reference: "set[QLabel]" = set()
 
 
 class WordSegResultX(WordSegResult):
@@ -80,25 +80,22 @@ class Qlabel_c(QLabel_w):
                 self.company.ref.setStyleSheet(
                     "background-color: " + globalconfig.get("hovercolor", "#80000000")
                 )
-                reference.append(self.company.ref)
+                reference.add(self.company.ref)
         except:
             pass
         self.ref.setStyleSheet("background-color: " + globalconfig.get("hovercolor", "#80000000"))
-        reference.append(self.ref)
+        reference.add(self.ref)
         return super().enterEvent(a0)
 
     def leaveEvent(self, a0) -> None:
         try:
             if self.company:
                 self.company.ref.setStyleSheet("background-color: rgba(0,0,0,0.01);")
-                reference.remove(self.company.ref)
+                reference.discard(self.company.ref)
         except:
             pass
         self.ref.setStyleSheet("background-color: rgba(0,0,0,0.01);")
-        try:
-            reference.remove(self.ref)
-        except:
-            pass
+        reference.discard(self.ref)
         tooltipswidget.hidetooltipwindow()
         return super().leaveEvent(a0)
 
@@ -207,8 +204,8 @@ class QTextBrowser_1(QTextEdit):
                 label.company.refmask.setStyleSheet(
                     "background-color: rgba(0,0,0,0.01);"
                 )
-                reference.remove(label.refmask)
-                reference.remove(label.company.refmask)
+                reference.discard(label.refmask)
+                reference.discard(label.company.refmask)
             except:
                 pass
         targetlabel = self.getcurrlabel(ev.pos())
@@ -223,8 +220,8 @@ class QTextBrowser_1(QTextEdit):
                 targetlabel.company.refmask.setStyleSheet(
                     "background-color: " + globalconfig.get("hovercolor", "#80000000")
                 )
-                reference.append(targetlabel.refmask)
-                reference.append(targetlabel.company.refmask)
+                reference.add(targetlabel.refmask)
+                reference.add(targetlabel.company.refmask)
             except:
                 pass
         else:
