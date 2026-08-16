@@ -120,7 +120,7 @@ std::optional<std::wstring> StringToWideString(std::string_view text, UINT encod
       // S_FALSE 时 _s2 是所需大小，可能超过 buffer，必须截断避免越界读
       if (_s2 < 0)
         _s2 = 0;
-      size_t n = std::min((size_t)_s2, buffer.size());
+      size_t n = min((size_t)_s2, buffer.size());
       return std::wstring(buffer.data(), n);
     }
     else
@@ -186,7 +186,7 @@ std::string WideStringToString(std::wstring_view text, UINT cp)
     {
       if (_s2 < 0)
         _s2 = 0;
-      size_t n = std::min((size_t)_s2, buffer.size());
+      size_t n = min((size_t)_s2, buffer.size());
       return std::string(buffer.data(), n);
     }
     else
