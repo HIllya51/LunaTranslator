@@ -362,39 +362,6 @@ def syncconfig(config1, default, drop=False, deep=0):
                 config1.pop(key)
 
 
-class MagpieConfig:
-    @staticmethod
-    def remove(gameuid):
-        path = os.path.normpath(uid2gamepath[gameuid])
-        for profile in magpie_config["profiles"].copy():
-            if path == profile.get("pathRule"):
-                magpie_config["profiles"].remove(profile)
-                break
-
-    @staticmethod
-    def find(gameuid, notexitscreate=False):
-        if not gameuid:
-            return magpie_config["profiles"][0]
-        path = os.path.normpath(uid2gamepath[gameuid])
-        found = None
-        for profile in magpie_config["profiles"]:
-            if path == profile.get("pathRule"):
-                found = profile
-                break
-        if notexitscreate and not found:
-            cp = copy.deepcopy(magpie_config["profiles"][0])
-            cp["pathRule"] = path
-            cp["name"] = savehook_new_data[gameuid]["title"]
-            cp["packaged"] = False
-            cp["classNameRule"] = "PLACEHOLDER"
-            cp["launcherPath"] = ""
-            cp["launchParameters"] = ""
-            cp["autoScale"] = 0
-            magpie_config["profiles"].append(cp)
-            found = cp
-        return found
-
-
 syncconfig(globalconfig, defaultglobalconfig)
 syncconfig(transerrorfixdictconfig, defaulterrorfix)
 

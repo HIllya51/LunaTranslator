@@ -15,8 +15,8 @@ from myutils.config import (
     defaultpost,
     globalconfig,
     static_data,
-    MagpieConfig,
 )
+from myutils.magpie_builtin import MagpieConfig
 from gui.setting.display_scale import makescalew
 from myutils.wrapper import tryprint
 import sqlite3
