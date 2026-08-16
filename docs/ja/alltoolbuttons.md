@@ -110,10 +110,11 @@
     翻訳ウィンドウをドラッグします。
 
     実際には、ボタンバーにボタンがない場合、追加の空白領域があり、自由にドラッグできます。このボタンはドラッグ位置を予約するためのものです。
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> ウィンドウ拡大縮小 {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> ウィンドウ拡大縮小 全画面モードでズーム {#anchor-fullscreen}
     ゲームウィンドウをバインド後、ゲームウィンドウに内蔵のMagpieを使用してワンクリックでスケーリングが可能です。
 
-    左クリックでウィンドウスケーリング、右クリックでフルスクリーンスケーリングを行います。
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> ウィンドウ拡大縮小 ウィンドウモードのズーム {#anchor-windowscaling}
+    ゲームウィンドウをバインド後、ゲームウィンドウに内蔵のMagpieを使用してワンクリックでスケーリングが可能です。
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> ウィンドウスクリーンショット {#anchor-grabwindow}
     ゲームウィンドウをバインド後、バインドされたウィンドウのスクリーンショットを撮ることができます（デフォルトではGDIとWinrtの2枚が撮られ、どちらも失敗する可能性があります）。Magpieでスケーリング中使用中の場合は、拡大されたウィンドウも撮影されます。

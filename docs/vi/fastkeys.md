@@ -164,10 +164,10 @@
 1. #### Trò chơi tạm dừng {#anchor-43}
     Sau khi liên kết cửa sổ game, bạn có thể tạm dừng hoặc tiếp tục quá trình game bằng một cú nhấp chuột.
 
-1. #### Magpie Thu phóng {#anchor-41}
+1. #### Thu phóng cửa sổ Thu phóng chế độ toàn màn hình {#anchor-41}
     Sau khi liên kết cửa sổ game, bạn có thể sử dụng Magpie tích hợp để phóng to cửa sổ game toàn màn hình bằng một cú nhấp chuột.
 
-1. #### Magpie Thu phóng dạng cửa sổ {#anchor-42}
+1. #### Thu phóng cửa sổ Thu phóng chế độ cửa sổ {#anchor-42}
     Sau khi liên kết cửa sổ game, bạn có thể sử dụng Magpie tích hợp để phóng to cửa sổ game dạng cửa sổ bằng một cú nhấp chuột.
 
 ## Tra Từ Điển

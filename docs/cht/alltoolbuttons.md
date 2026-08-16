@@ -122,10 +122,13 @@
 
     實際上當按鈕欄有或沒有按鈕存在的額外空白區域時，都可以隨意拖動。該按鈕僅用來預留一個拖動位置。
 
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 視窗縮放 {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 視窗縮放 全螢幕模式縮放 {#anchor-fullscreen}
     可以一鍵對遊戲視窗使用內建的 Magpie 進行縮放。
 
-    左鍵為視窗化縮放，右鍵為全螢幕縮放。
+
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 視窗縮放 視窗模式縮放 {#anchor-windowscaling}
+    可以一鍵對遊戲視窗使用內建的 Magpie 進行縮放。
+
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 視窗截圖 {#anchor-grabwindow}
     當綁定遊戲視窗後，可以對綁定的視窗進行截圖（預設會截兩張圖，GDI 和 WinRT，兩者均有一定機率會失敗）。如果目前正在使用 Magpie 進行縮放，還會對放大的視窗進行截圖。

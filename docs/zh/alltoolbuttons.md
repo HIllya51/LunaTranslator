@@ -111,10 +111,11 @@
     拖动翻译窗口。
 
     实际上当按钮栏有没有按钮存在的额外空白区域时，都可以随意拖动。该按钮仅用来预留一个拖动位置。
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 窗口缩放 {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 窗口缩放 全屏模式缩放 {#anchor-fullscreen}
     当绑定游戏窗口后，可以一键对游戏窗口使用内置的Magpie进行缩放。
 
-    左键为窗口化缩放，右键为全屏缩放。
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 窗口缩放 窗口模式缩放 {#anchor-windowscaling}
+    当绑定游戏窗口后，可以一键对游戏窗口使用内置的Magpie进行缩放。
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 窗口截图 {#anchor-grabwindow}
     当绑定游戏窗口后，可以对绑定的窗口进行截图，（默认会截两张图，GDI和Winrt，两者均有一定概率会失败）。如果当前正在使用Magpie进行缩放，还会对放大的窗口进行截图。

@@ -357,6 +357,7 @@
             "hideocrrange",
             "bindwindow",
             "fullscreen",
+            "windowscaling",
             "grabwindow",
             "muteprocess",
             "memory",
@@ -521,7 +522,14 @@
             },
             "fullscreen": {
                 "use": true,
-                "tip": "窗口缩放",
+                "tip": "窗口缩放_全屏模式缩放",
+                "icon": "fa.compress",
+                "icon2": "fa.expand",
+                "align": 2
+            },
+            "windowscaling": {
+                "use": false,
+                "tip": "窗口缩放_窗口模式缩放",
                 "icon": "fa.compress",
                 "icon2": "fa.expand",
                 "align": 2
@@ -781,10 +789,10 @@
                 "name": "游戏暂停"
             },
             "41": {
-                "name": "Magpie_缩放"
+                "name": "窗口缩放_全屏模式缩放"
             },
             "42": {
-                "name": "Magpie_窗口化缩放"
+                "name": "窗口缩放_窗口模式缩放"
             },
             "_26": {
                 "name": "进行一次OCR"

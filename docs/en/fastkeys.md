@@ -165,10 +165,10 @@
 1. #### Game paused {#anchor-43}
     After binding the game window, you can pause or resume the game process with one click.
 
-1. #### Magpie Scale {#anchor-41}
+1. #### Window Zoom Full-screen mode zoom {#anchor-41}
     After binding the game window, you can use the built-in Magpie to perform full-screen scaling on the game window with one click.
 
-1. #### Magpie Windowed Scaling {#anchor-42}
+1. #### Window Zoom Windowed mode scaling {#anchor-42}
     After binding the game window, you can use the built-in Magpie to perform windowed scaling on the game window with one click.
 
 ## Dictionary Lookup
