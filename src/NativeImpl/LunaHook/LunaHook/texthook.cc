@@ -495,7 +495,7 @@ void TextHook::Read()
 	buffer->type = hp.type;
 	TextBuffer buff{buffer->data, 1};
 	bool is_emu_hook = (hp.jittype != JITTYPE::PC) && (hp.jittype != JITTYPE::UNITY);
-	auto savelast = std::make_unique<BYTE[]>(PIPE_BUFFER_SIZE);
+	auto savelast = new BYTE[PIPE_BUFFER_SIZE];
 	int lastlen = 0;
 	bool exception_once = false;
 	while ((!(hp.type & HOOK_EMPTY)) && (WaitForSingleObject(readerEvent, 500) == WAIT_TIMEOUT))
@@ -511,7 +511,7 @@ void TextHook::Read()
 				hp.text_fun(0, &hp, &buff, &split);
 				if (!buff.size)
 					continue;
-				if ((buff.size == lastlen) && (memcmp(buff.data, savelast.get(), lastlen) == 0))
+				if ((buff.size == lastlen) && (memcmp(buff.data, savelast, lastlen) == 0))
 					continue;
 			}
 			else
@@ -524,13 +524,13 @@ void TextHook::Read()
 				buff.from(location, currentLen);
 			}
 			lastlen = buff.size;
-			memcpy(savelast.get(), buff.data, buff.size);
+			memcpy(savelast, buff.data, buff.size);
 			if (hp.filter_fun && (!SafeFilterFun(hp, buff)))
 				continue;
 			TextOutput({GetCurrentProcessId(), address, 0, 0}, hp, buffer, buff.size);
 			if (hp.filter_fun)
 			{
-				buff.from(savelast.get(), lastlen);
+				buff.from(savelast, lastlen);
 			}
 		}
 		__except (EXCEPTION_EXECUTE_HANDLER)
@@ -544,6 +544,7 @@ void TextHook::Read()
 				Clear();
 		}
 	}
+	delete[] savelast;
 }
 
 bool TextHook::InsertReadCode()
