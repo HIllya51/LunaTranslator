@@ -157,7 +157,7 @@ class MagpieBuiltin:
 
     def changestatus(self, hwnd, full, windowmode):
         if full:
-            profiles_index = MagpieConfig.findHWNDIndex(gobject.base.hwnd)
+            profiles_index = MagpieConfig.findHWNDIndex(hwnd)
             profile = magpie_config["profiles"][profiles_index]
             scalingMode = profile["scalingMode"]
             if scalingMode >= len(magpie_config["scalingModes"]):

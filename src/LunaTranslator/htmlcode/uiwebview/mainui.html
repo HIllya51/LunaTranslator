@@ -960,9 +960,16 @@
         }
     });
     function switchcursor(cursor) {
-        document.getElementById('luna_atback_div').style.cursor = cursor
-        document.getElementById('luna_overlay_div').style.cursor = cursor
-
+        // 用通配 + !important 注入，压过文字/链接等元素自带的光标，
+        // 否则 resize 光标会被内容元素覆盖（原来只改两个 div，压不住）。
+        // cursor 为 'default' 时不注入规则，交还给内容元素自身的光标。
+        var s = document.getElementById('luna_cursor_style')
+        if (!s) {
+            s = document.createElement('style')
+            s.id = 'luna_cursor_style'
+            document.head.appendChild(s)
+        }
+        s.innerHTML = (cursor && cursor !== 'default') ? ('*{cursor:' + cursor + ' !important;}') : ''
     }
     function measureheight(t, args) {
         let span = document.createElement('span')
