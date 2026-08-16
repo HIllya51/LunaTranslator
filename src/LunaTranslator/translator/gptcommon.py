@@ -1,5 +1,5 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
-import json, requests, hmac, hashlib, NativeUtils, re, functools, random, types
+import json, requests, hmac, hashlib, NativeUtils, re, functools
 from datetime import datetime, timezone
 from myutils.utils import (
     APIType,
@@ -288,10 +288,9 @@ class gptcommon(basetrans):
         )
 
     def __init__(self, typename):
-        self.context = []
-        self.context_for_cache = []
-        self.context_for_cache_skipinter = 0
-        self.context_for_cache_skipinter_shouldmove = False
+        self._context = []
+        self._context_skipinter = 0
+        self._context_skipinter_shouldmove = False
         self.maybeuse = {}
         super().__init__(typename)
 
@@ -304,12 +303,13 @@ class gptcommon(basetrans):
         )
         usingstream = self.config["流式输出"]
         messages, query, query_1 = self.commoncreatemessages(query_2)
+        print(messages)
         apitype = APIType(self.config.get("API接口地址", ""))
         if apitype == APIType.gemini:
             response = self.request_gemini(apitype, messages, extrabody, extraheader)
         elif apitype == APIType.claude:
             response = self.req_claude(
-                messages, extrabody, extraheader, self.config.get("cachecontext", False)
+                messages, extrabody, extraheader, self.config.get("cachecontext", True)
             )
         else:
             headers = createheaders(
@@ -341,10 +341,9 @@ class gptcommon(basetrans):
                 yield respmessage
         if not (respmessage and query_1.strip() and respmessage.strip()):
             return
-        self.context.append({"role": "user", "content": query_1})
-        self.context_for_cache.append({"role": "user", "content": query})
-        self.context.append({"role": "assistant", "content": respmessage})
-        self.context_for_cache.append({"role": "assistant", "content": respmessage})
+        # 改为始终使用query来作为history请求
+        self._context.append({"role": "user", "content": query, "query_1": query_1})
+        self._context.append({"role": "assistant", "content": respmessage})
 
     def __parse_qwen_mt_turbo(self, apitype: APIType, messages: list):
         if self.config["model"].startswith("qwen-mt-") and apitype == APIType.aliyuncs:
@@ -359,9 +358,13 @@ class gptcommon(basetrans):
             else int(match.group(1))
         )
         __message: "list[dict]" = []
-        self._gpt_common_parse_context(__message, self.context, n)
+        self._gpt_common_parse_context(__message, self._context, n)
         check = lambda k: (which == 2) or (k == ("user", "assistant")[which])
-        __message = [_.get("content") for _ in __message if (check(_.get("role")))]
+        __message = [
+            _.get("query_1", _.get("content"))
+            for _ in __message
+            if (check(_.get("role")))
+        ]
         return "\n".join(__message)
 
     def __parsecontextN(self, query):
@@ -424,22 +427,18 @@ class gptcommon(basetrans):
         message = [{"role": "system", "content": sysprompt}]
         checknum = self.config["附带上下文个数"]
         __message = []
-        if self.config.get("cachecontext", False):
-            if self.context_for_cache_skipinter_shouldmove:
-                self.context_for_cache_skipinter = (
-                    len(self.context_for_cache) - (checknum // 2) * 2
-                )
-                self.context_for_cache_skipinter_shouldmove = False
-            if len(self.context_for_cache) < checknum:
-                self.context_for_cache_skipinter = 0
+        if self.config.get("cachecontext", True):
+            if self._context_skipinter_shouldmove:
+                self._context_skipinter = len(self._context) - (checknum // 2) * 2
+                self._context_skipinter_shouldmove = False
+            if len(self._context) < checknum:
+                self._context_skipinter = 0
             self._gpt_common_parse_context(
                 __message,
-                self.context_for_cache[self.context_for_cache_skipinter :],
+                self._context[self._context_skipinter :],
                 checknum,
             )
-        else:
-            self._gpt_common_parse_context(__message, self.context, checknum)
-        self.context_for_cache_skipinter_shouldmove = len(__message) == checknum * 2
+        self._context_skipinter_shouldmove = len(__message) == checknum * 2
         message.extend(__message)
         message.append({"role": "user", "content": query})
         prefill = self._gptlike_create_prefill("prefill_use", "prefill")
@@ -494,7 +493,7 @@ class gptcommon(basetrans):
             stream=usingstream,
         )
         if self.config.get("Temperature.use", True):
-            data.update(temperature = self.config["Temperature"])
+            data.update(temperature=self.config["Temperature"])
         headers.update(extraheader)
         data.update(extrabody)
         response = self.proxysession.post(

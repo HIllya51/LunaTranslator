@@ -402,7 +402,6 @@
 			"model": "",
 			"modellistcache": [],
 			"附带上下文个数": 0,
-			"cachecontext": false,
 			"use_max_completion_tokens": false,
 			"API接口地址": "",
 			"SECRET_KEY": "",
@@ -441,10 +440,6 @@
 					"disabled",
 					"enabled"
 				]
-			},
-			"cachecontext": {
-				"name": "优化缓存命中",
-				"type": "switch"
 			},
 			"customparams": {
 				"name": "其他参数",
@@ -556,9 +551,6 @@
 				"placeholder": "You are a translator. Please help me translate the following {srclang} text into {tgtlang}. You should only tell me the translation result without any additional explanations."
 			},
 			"附带上下文个数": {
-				"appends": [
-					"cachecontext"
-				],
 				"type": "intspin",
 				"min": 0,
 				"max": 99999,
