@@ -357,7 +357,6 @@
             "hideocrrange",
             "bindwindow",
             "fullscreen",
-            "windowscaling",
             "grabwindow",
             "muteprocess",
             "memory",
@@ -522,14 +521,7 @@
             },
             "fullscreen": {
                 "use": true,
-                "tip": "窗口缩放_全屏模式缩放",
-                "icon": "fa.compress",
-                "icon2": "fa.expand",
-                "align": 2
-            },
-            "windowscaling": {
-                "use": false,
-                "tip": "窗口缩放_窗口模式缩放",
+                "tip": "窗口缩放",
                 "icon": "fa.compress",
                 "icon2": "fa.expand",
                 "align": 2

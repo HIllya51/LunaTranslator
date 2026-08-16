@@ -862,14 +862,6 @@ class TranslatorWindow(resizableframeless):
                 ),
             ),
             (
-                "windowscaling",
-                buttonfunctions(
-                    rightclick=lambda: self._fullsgame(False),
-                    clicked=lambda: self._fullsgame(True),
-                    iconstate=lambda: self.isletgamefullscreened,
-                ),
-            ),
-            (
                 "grabwindow",
                 buttonfunctions(
                     clicked=grabwindow, rightclick=lambda: grabwindow(tocliponly=True)

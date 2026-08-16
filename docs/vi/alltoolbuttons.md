@@ -109,11 +109,10 @@ Một số nút có hai biểu tượng để biểu thị hai trạng thái kh�
     Kéo cửa sổ dịch.
 
     Thực tế, khi không có nút nào trên thanh nút, có thêm khu vực trống, bạn có thể kéo nó tùy ý. Nút này chỉ để dành một vị trí kéo.
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Thu phóng cửa sổ Thu phóng chế độ toàn màn hình {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Thu phóng cửa sổ {#anchor-fullscreen}
     Bạn có thể thay đổi tỷ lệ cửa sổ trò chơi chỉ với một lần nhấp bằng Magpie tích hợp.
 
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> Thu phóng cửa sổ Thu phóng chế độ cửa sổ {#anchor-windowscaling}
-    Bạn có thể thay đổi tỷ lệ cửa sổ trò chơi chỉ với một lần nhấp bằng Magpie tích hợp.
+    Nhấp chuột trái để thay đổi tỷ lệ cửa sổ, và nhấp chuột phải để thay đổi tỷ lệ toàn màn hình.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> Chụp cửa sổ {#anchor-grabwindow}
     Có thể chụp màn hình cửa sổ đã gắn (mặc định chụp hai ảnh, GDI và Winrt, cả hai đều có thể thất bại). Điểm tốt nhất là nếu Magpie hiện đang được sử dụng để tỷ lệ, nó cũng sẽ chụp màn hình cửa sổ đã tỷ lệ.

@@ -111,11 +111,10 @@
     번역 창을 드래그합니다.
 
     실제로 버튼 바에 버튼이 없는 추가 빈 공간이 있을 경우, 자유롭게 드래그할 수 있습니다. 이 버튼은 드래그 위치를 예약하기 위한 용도입니다.
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 창 확대/축소 전체 화면 모드 확대/축소 {#anchor-fullscreen}
+1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 창 확대/축소 {#anchor-fullscreen}
     게임 창에 내장된 Magpie를 사용하여 한 번의 클릭으로 크기 조절이 가능합니다.
     
-1. #### <i class="fa fa-compress"></i> <i class="fa fa-expand"></i> 창 확대/축소 창 모드 확대/축소 {#anchor-windowscaling}
-    게임 창에 내장된 Magpie를 사용하여 한 번의 클릭으로 크기 조절이 가능합니다.
+    왼쪽 버튼은 창 모드 조절, 오른쪽 버튼은 전체 화면 조절입니다.
 
 1. #### <i class="fa fa-camera"></i> <i class="fa fa-icon fa-rotate-right"></i> 창 스크린샷 {#anchor-grabwindow}
     바인딩된 창의 스크린샷을 찍을 수 있습니다 (기본적으로 GDI와 Winrt 방식으로 각각 한 장씩 총 두 장을 찍으며, 둘 다 실패할 가능성이 있습니다). 가장 좋은 점은 현재 Magpie로 확대 중인 창일 경우, 확대된 창의 스크린샷도 찍을 수 있다는 것입니다.
