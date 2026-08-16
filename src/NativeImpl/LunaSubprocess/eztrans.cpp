@@ -5,7 +5,7 @@ class CTransEngine
 public:
     CTransEngine();
     bool Init(std::wstring &szTransPath);
-    void GetEnginePath(std::wstring szEnginePath);
+    void GetEnginePath(std::wstring &szEnginePath);
     ~CTransEngine();
 
     void J2K_FreeMem(void *addr);
@@ -42,7 +42,7 @@ CTransEngine::CTransEngine()
     // InitializeCriticalSection(&CriticalSection);
 }
 
-void CTransEngine::GetEnginePath(std::wstring szEnginePath)
+void CTransEngine::GetEnginePath(std::wstring &szEnginePath)
 {
     szEnginePath = EnginePath;
 }
@@ -53,7 +53,10 @@ bool CTransEngine::Init(std::wstring &szEnginePath)
     std::wstring szEngineDLL = szEnginePath + L"\\J2KEngine.dll";
     HMODULE hDLL = LoadLibrary(szEngineDLL.c_str());
     if (!hDLL)
+    {
         MessageBox(0, L"이지트랜스 번역 엔진 초기화 실패\r\n: LoadLibrary Failed", 0, MB_ICONERROR | MB_SYSTEMMODAL);
+        return false;
+    }
 
     wcscpy_s(EnginePath, szEngineDLL.c_str());
 
@@ -645,6 +648,8 @@ std::optional<std::wstring> CTextProcess::eztrans_proc(const std::wstring &input
     if (ehndSupport)
     {
         lpszBuff = (wchar_t *)TransEngine->J2K_TranslateMMNTW(0, (wchar_t *)szContext.c_str());
+        if (!lpszBuff)
+            return {};
         output = lpszBuff;
         TransEngine->J2K_FreeMem(lpszBuff);
     }
@@ -661,6 +666,8 @@ std::optional<std::wstring> CTextProcess::eztrans_proc(const std::wstring &input
         WideCharToMultiByte(932, 0, szContext.c_str(), -1, szBuff, nBufLen, NULL, NULL);
         szBuff2 = (char *)TransEngine->J2K_TranslateMMNT(0, szBuff);
         delete[] szBuff;
+        if (!szBuff2)
+            return {};
 
         nBufLen = MultiByteToWideChar(949, 0, szBuff2, -1, NULL, NULL);
         lpszBuff = new wchar_t[((nBufLen + 2) * 2)];
@@ -690,17 +697,18 @@ int eztrans(int argc, wchar_t *argv[])
 
     std::wstring _p = argv[1]; //// LR"(C:\Program Files\ChangShinSoft\ezTrans XP)";
     TransEngine = new CTransEngine();
-    TransEngine->Init(_p);
+    if (!TransEngine->Init(_p))
+        return 0;
 
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[3]));
-    if (!ConnectNamedPipe(hPipe, NULL))
+    if (!ConnectNamedPipe(hPipe, NULL) && GetLastError() != ERROR_PIPE_CONNECTED)
         return 0;
     WCHAR buff[6000];
     while (true)
     {
         DWORD _;
         ZeroMemory(buff, 12000);
-        if (!ReadFile(hPipe, buff, 12000, &_, NULL))
+        if (!ReadFile(hPipe, buff, sizeof(buff) - sizeof(WCHAR), &_, NULL))
             break;
         auto trans = CTextProcess::eztrans_proc(buff);
         if (trans)

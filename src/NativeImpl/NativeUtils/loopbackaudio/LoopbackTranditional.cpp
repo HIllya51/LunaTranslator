@@ -55,7 +55,11 @@ void LoopbackTranditional::RecordThread()
         DWORD dwCaptureFlags;
         while (SUCCEEDED(pCaptureClient->GetNextPacketSize(&FramesAvailable)) && FramesAvailable > 0)
         {
-            CHECK_FAILURE_NORET(pCaptureClient->GetBuffer(&Data, &FramesAvailable, &dwCaptureFlags, NULL, NULL));
+            if (FAILED(pCaptureClient->GetBuffer(&Data, &FramesAvailable, &dwCaptureFlags, NULL, NULL)))
+            {
+                running = false;
+                break;
+            }
             size_t cbBytesToCapture = FramesAvailable * pwfx->nBlockAlign;
             auto _data = std::string((char *)Data, cbBytesToCapture);
             if (!OnDataCallback)

@@ -62,7 +62,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
 
     When the toolbar is not locked, if `Mouse Through Window` is activated, the toolbar will only be displayed when the mouse moves to the **area of the Mouse Through Window button and one button to the left and right**; otherwise, as long as the mouse enters the translation window, the toolbar will be displayed.
 
-    If the window effect (Aero/Arylic) is currently used and the toolbar is not locked, the toolbar will be in the area above the text area on the z-axis, not on the y-axis above the text area. This is because due to Windows, when using the window effect, if the toolbar is only hidden instead of reducing its window height, the hidden toolbar will still be rendered with the acrylic/Aero background, resulting in a blank area where the toolbar is located.
+    If the window effect (Aero/Acrylic) is currently used and the toolbar is not locked, the toolbar will be in the area above the text area on the z-axis, not on the y-axis above the text area. This is because due to Windows, when using the window effect, if the toolbar is only hidden instead of reducing its window height, the hidden toolbar will still be rendered with the acrylic/Aero background, resulting in a blank area where the toolbar is located.
 1. #### <i class="fa fa-link"></i> <i class="fa fa-icon fa-rotate-right"></i> Select Game {#anchor-selectgame}
     **This button is only available in HOOK mode**
 
@@ -167,7 +167,7 @@ Some buttons have two icons to indicate two different states. Some buttons only 
     In HOOK mode, it will automatically bind the game window according to the connected game, but you can also use this button to re-select other windows.
 
     In OCR mode, after binding the window, it also allows the OCR area and range box to move automatically in sync with the movement of the game window.
-    In OCR/Clipboard model, after binding the window, you can also link to the current game's game settings like in HOOK mode, to use the current game's dedicated translation optimization dictionary, etc.
+    In OCR/Clipboard mode, after binding the window, you can also link to the current game's game settings like in HOOK mode, to use the current game's dedicated translation optimization dictionary, etc.
 
 1. #### <i class="fa fa-neuter"></i> <i class="btnstatus2 fa fa-neuter"></i> Window Always On Top {#anchor-keepontop}
     Cancel/Always on Top translation window

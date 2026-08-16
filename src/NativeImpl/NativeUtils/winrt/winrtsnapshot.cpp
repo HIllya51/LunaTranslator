@@ -215,8 +215,8 @@ void capture_window(HWND window_handle, void (*cb)(byte *, size_t), bool blackbo
         }
     }
     CComPtr<IClosable> closer;
-    session.QueryInterface(&closer);
-    closer->Close();
+    if (SUCCEEDED(session.QueryInterface(&closer)) && closer)
+        closer->Close();
     D3D11_TEXTURE2D_DESC captured_texture_desc;
     texture->GetDesc(&captured_texture_desc);
     captured_texture_desc.Usage = D3D11_USAGE_STAGING;

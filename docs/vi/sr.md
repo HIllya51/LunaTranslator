@@ -15,7 +15,7 @@ Trên Windows 11, hệ thống có thể tự động phát hiện ngôn ngữ �
 Trên Windows 10, hệ thống thiếu các runtime và mô hình nhận dạng cần thiết; hoặc phiên bản Windows 11 quá thấp, phiên bản runtime tích hợp sẵn trong hệ thống quá cũ. Trước tiên, hãy tải xuống [runtime và mô hình nhận dạng ngôn ngữ Trung-Nhật-Anh](https://lunatranslator.org/Resource/DirectLiveCaptions.zip) mà tôi đã đóng gói, giải nén vào thư mục phần mềm, phần mềm sẽ nhận diện runtime và mô hình nhận dạng đã đóng gói, từ đó có thể sử dụng tính năng này.
 
 Nếu cần mô hình nhận dạng ngôn ngữ khác, bạn có thể tự tìm mô hình nhận dạng ngôn ngữ tương ứng. Cách làm như sau:
-Tại https://store.rg-adguard.net/, tìm kiếm `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy` bằng `PacakgeFamilyName`, trong đó `{LANGUAGE}` là tên ngôn ngữ bạn cần, ví dụ tiếng Pháp là `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`. Sau đó, tải xuống phiên bản msix mới nhất và giải nén vào thư mục phần mềm.
+Tại https://store.rg-adguard.net/, tìm kiếm `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy` bằng `PackageFamilyName`, trong đó `{LANGUAGE}` là tên ngôn ngữ bạn cần, ví dụ tiếng Pháp là `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`. Sau đó, tải xuống phiên bản msix mới nhất và giải nén vào thư mục phần mềm.
 
 ::: details store.rg-adguard.net
 ![img](https://image.lunatranslator.org/zh/srpackage.png)

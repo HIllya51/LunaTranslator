@@ -109,7 +109,7 @@ https://ocr.space/
 == manga-ocr
 
 >[!WARNING]
->此OCR引擎对于横向文本识别不效果不佳。
+>此OCR引擎对于横向文本识别效果不佳。
 
 CPU整合包 https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/cpu
 

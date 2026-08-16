@@ -51,7 +51,7 @@ https://ocr.space/
 
 == 대형 모델 통합 인터페이스
 
-[번역](/zh/guochandamoxing.html)과 동일
+[번역](/ko/guochandamoxing.html)과 동일
 
 :::
 
@@ -127,7 +127,7 @@ start.bat을 처음 실행할 때 huggingface에서 모델을 다운로드하려
 
 1. VPN 사용 (TUN 프록시 설정이 필요할 수 있음)
 
-1. vscode를 사용하여，"폴더 열기"로 통합 패키지 폴더를 엽니다。
+1. vscode를 사용하여, "폴더 열기"로 통합 패키지 폴더를 엽니다.
 
 
 ![img](https://image.lunatranslator.org/zh/mangaocr/fix2.png)

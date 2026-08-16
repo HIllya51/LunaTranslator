@@ -148,7 +148,7 @@ public:
         {
             // https://onnxruntime.ai/docs/execution-providers/DirectML-ExecutionProvider.html
             // If creating the onnxruntime InferenceSession object directly, you must set the appropriate fields on the onnxruntime::SessionOptions struct. Specifically, execution_mode must be set to ExecutionMode::ORT_SEQUENTIAL, and enable_mem_pattern must be false.
-            sessionOptions.SetExecutionMode(ExecutionMode::ORT_PARALLEL);
+            sessionOptions.SetExecutionMode(ExecutionMode::ORT_SEQUENTIAL);
             sessionOptions.DisableMemPattern();
         }
         sessionOptions.SetGraphOptimizationLevel(GraphOptimizationLevel::ORT_ENABLE_ALL);

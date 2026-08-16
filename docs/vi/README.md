@@ -49,7 +49,7 @@ Nếu muốn cập nhật thủ công, chỉ cần tải phiên bản mới và 
 Nếu muốn xóa và tải lại, chú ý không xóa thư mục userconfig, nếu không sẽ mất thiết lập trước đó!!!
 
 
-## Lỗi Thường Gặp {#anchor-commonerros}
+## Lỗi Thường Gặp {#anchor-commonerrors}
 
 ### Thiếu các thành phần quan trọng / Missing embedded Python3
 

@@ -150,7 +150,7 @@ int mssr(int argc, wchar_t *argv[])
         std::atomic<DWORD> pid{0};
         std::atomic<bool> running{false};
         {
-            DWORD _, initpid;
+            DWORD _, initpid = 0;
             ReadFile(hPipe2, &initpid, 4, &_, NULL);
             pid.store(initpid);
         }

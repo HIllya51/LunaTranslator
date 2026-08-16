@@ -15,7 +15,7 @@
 В Windows 10 в системе отсутствуют необходимые runtime-компоненты и модели распознавания; или в Windows 11 версия слишком старая и встроенные runtime-компоненты устарели. Сначала скачайте мой готовый пакет [runtime и модели распознавания для китайского, японского и английского языков](https://lunatranslator.org/Resource/DirectLiveCaptions.zip), распакуйте его в директорию программы, после чего программа сможет обнаружить мои готовые runtime-компоненты и модели распознавания, что позволит использовать эту функцию.
 
 Если нужны модели распознавания для других языков, вы можете самостоятельно найти соответствующие языковые модели. Метод следующий:
-На сайте https://store.rg-adguard.net/ выполните поиск по `PacakgeFamilyName` для `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`, где `{LANGUAGE}` - название нужного языка, например для французского это `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`. Затем скачайте последнюю версию msix внизу страницы и распакуйте в директорию программы.
+На сайте https://store.rg-adguard.net/ выполните поиск по `PackageFamilyName` для `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`, где `{LANGUAGE}` - название нужного языка, например для французского это `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`. Затем скачайте последнюю версию msix внизу страницы и распакуйте в директорию программы.
 
 ::: details store.rg-adguard.net
 ![img](https://image.lunatranslator.org/zh/srpackage.png)

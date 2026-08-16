@@ -46,7 +46,7 @@
 
 如果想要刪除重下，注意不要刪除`userconfig`資料夾，否則會失去之前的設定！！！
 
-## 常見錯誤 {#anchor-commonerros}
+## 常見錯誤 {#anchor-commonerrors}
 
 ### 找不到重要元件 / Missing embedded Python3
 

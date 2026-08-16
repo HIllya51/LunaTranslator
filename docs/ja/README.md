@@ -47,7 +47,7 @@
 
 削除して再ダウンロードしたい場合は、userconfigフォルダを削除しないように注意してください。削除すると以前の設定が失われます！！！
 
-## よくあるエラー {#anchor-commonerros}
+## よくあるエラー {#anchor-commonerrors}
 
 ### 重要なコンポーネントが見つからない / Missing embedded Python3
 

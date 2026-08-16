@@ -26,19 +26,22 @@ int dreyewmain(int argc, wchar_t *argv[])
             _TranTextFlowCJ = (TranTextFlowCJ)GetProcAddress(h, "TranTextFlowEC"); // WStrToStr(apitrans, 936).c_str());
         }
 
+        if (!_MTInitCJ || !_TranTextFlowCJ)
+            return 0;
+
         _MTInitCJ(_wtoi(argv[3]));
 
         HANDLE hPipe = CreateNamedPipe(argv[4], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
         SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[5]));
-        if (!ConnectNamedPipe(hPipe, NULL))
+        if (!ConnectNamedPipe(hPipe, NULL) && GetLastError() != ERROR_PIPE_CONNECTED)
             return 0;
         while (true)
         {
             char src[4096] = {0};
             char buffer[3000] = {0};
             DWORD _;
-            if (!ReadFile(hPipe, src, 4096, &_, NULL))
+            if (!ReadFile(hPipe, src, sizeof(src) - 1, &_, NULL))
                 break;
 
             _TranTextFlowCJ(src, buffer, 3000, _wtoi(argv[3]));

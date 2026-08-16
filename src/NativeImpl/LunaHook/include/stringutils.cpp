@@ -117,7 +117,11 @@ std::optional<std::wstring> StringToWideString(std::string_view text, UINT encod
     auto hr = ConvertINetMultiByteToUnicode(0, encoding, text.data(), &_s, buffer.data(), &_s2);
     if (SUCCEEDED(hr))
     {
-      return std::wstring(buffer.data(), _s2);
+      // S_FALSE 时 _s2 是所需大小，可能超过 buffer，必须截断避免越界读
+      if (_s2 < 0)
+        _s2 = 0;
+      size_t n = std::min((size_t)_s2, buffer.size());
+      return std::wstring(buffer.data(), n);
     }
     else
       return {};
@@ -180,7 +184,10 @@ std::string WideStringToString(std::wstring_view text, UINT cp)
     auto hr = ConvertINetUnicodeToMultiByte(0, cp, text.data(), &_s, buffer.data(), &_s2);
     if (SUCCEEDED(hr))
     {
-      return std::string(buffer.data(), _s2);
+      if (_s2 < 0)
+        _s2 = 0;
+      size_t n = std::min((size_t)_s2, buffer.size());
+      return std::string(buffer.data(), n);
     }
     else
       return {};

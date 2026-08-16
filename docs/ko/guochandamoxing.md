@@ -2,7 +2,7 @@
 
 ## 대형 모델 일반 인터페이스
 
-::: details 여러 대형 모델 인터페이스를 동시에 사용하기？
+::: details 여러 대형 모델 인터페이스를 동시에 사용하기?
 단순히 여러 개의 다른 키를 번갈아 사용하려면 |로 구분하면 됩니다.
 
 하지만 때로는 여러 개의 다른 API 인터페이스 주소/prompt/model/매개변수 등을 동시에 사용하여 번역 결과를 비교하고 싶을 수 있습니다. 방법은 다음과 같습니다:
@@ -47,7 +47,7 @@
     사용자 정의 시스템 프롬프트와 사용자 메시지에서 필드를 사용하여 일부 정보를 참조할 수 있습니다:
     - `{sentence}`: 현재 번역할 텍스트
     - `{srclang}` 및 `{tgtlang}`: 소스 언어 및 대상 언어. 프롬프트에서 영어만 사용된 경우, 언어 이름의 영어 번역으로 대체됩니다. 그렇지 않은 경우 현재 UI 언어의 언어 이름 번역으로 대체됩니다.    
-    - `{contextOriginal[N]}`과 `{contextTranslation[N]}`과 `{contextBoth[N]}`: N개의 이전 원문, 번역문, 둘 다. 입력이 `contextBoth[N]`인 경우 `附带上下文个数` 값을 참조하고, 입력이 `contextBoth[10]`인 경우 입력된 10개 항목 수를 사용합니다.
+    - `{contextOriginal[N]}`과 `{contextTranslation[N]}`과 `{contextBoth[N]}`: N개의 이전 원문, 번역문, 둘 다. 입력이 `contextBoth[N]`인 경우 `첨부할 컨텍스트 개수` 값을 참조하고, 입력이 `contextBoth[10]`인 경우 입력된 10개 항목 수를 사용합니다.
     - `{DictWithPrompt[XXXXX]}`: 이 필드는 "고유 명사 번역" 목록의 항목을 참조할 수 있습니다. **일치하는 항목이 없을 경우, 번역 내용을 손상시키지 않도록 이 필드는 지워집니다**. 여기서 `XXXXX`는 LLM이 주어진 항목을 사용하여 번역을 최적화하도록 안내하는 프롬프트로, 사용자 정의할 수 있거나 사용자 지정 메시지를 비활성화하여 기본 프롬프트를 사용할 수 있습니다.
 
 
@@ -116,7 +116,7 @@
 
 == Azure
 
-**API 인터페이스 주소** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions？api-version=2023-12-01-preview`
+**API 인터페이스 주소** `https://{endpoint}.openai.azure.com/openai/deployments/{deployName}/chat/completions?api-version=2023-12-01-preview`
 
 여기서 `{endpoint}`와 `{deployName}`을 당신의 endpoint와 deployName으로 교체해 주세요.
 
@@ -146,7 +146,7 @@
 
 == 바이트댄스 화산 엔진
 
-**API 키** [API 키 생성](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey？apikey=%7B%7D)에서 획득
+**API 키** [API 키 생성](https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D)에서 획득
 
 **모델** https://console.volcengine.com/ark/region:cn-beijing/docs/82379/1330310?lang=zh
 

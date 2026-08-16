@@ -51,7 +51,7 @@ https://ocr.space/
 
 == Универсальный интерфейс для больших моделей
 
-То же, что и [перевод](/zh/guochandamoxing.html)
+То же, что и [перевод](/ru/guochandamoxing.html)
 
 :::
 
@@ -114,7 +114,7 @@ CPU сборка https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/c
 
 GPU сборка https://lunatranslator.org/Resource/IntegrationPack/manga_ocr/gpu
 
-#### Что делать, если сборка mangaocr для Китая не запускается？
+#### Что делать, если сборка mangaocr для Китая не запускается?
 
 При первом запуске start.bat будет попытка загрузить модель с huggingface, но в Китае… вы понимаете.
 

@@ -627,6 +627,6 @@ def checkintegrity():
         return 1, _TR(
             "找不到重要组件：\n{modules}\n请重新下载并关闭杀毒软件后重试"
         ).format(modules="\n".join(collect)) + '\n<a href="{}">{}</a>'.format(
-            dynamiclink("README.html#anchor-commonerros", docs=True), _TR("说明")
+            dynamiclink("README.html#anchor-commonerrors", docs=True), _TR("说明")
         )
     return None

@@ -52,7 +52,7 @@
 
     如果指定参数`id`（词典的ID），则会返回该词典的查询结果的`application/json`对象，包含词典ID`id`、词典名称`name`和HTML内容`result`。如果查询失败则会返回一个空的对象。
 
-    否则会查询所有词典，返回`event/text-stream`，每个event为一个JSON对象，包含词典ID`id`、词典名称`name`和HTML内容`result`
+    否则会查询所有词典，返回`text/event-stream`，每个event为一个JSON对象，包含词典ID`id`、词典名称`name`和HTML内容`result`
 
 1. #### /api/mecab
     

@@ -15,7 +15,7 @@ Windows 11에서는 시스템에 설치된 언어 및 해당 음성 인식 모�
 Windows 10에서는 시스템에 필요한 런타임과 인식 모델이 부족할 수 있습니다. 또는 Windows 11의 버전이 너무 낮아 시스템에 포함된 런타임 버전이 낮을 수 있습니다. 먼저 제가 패키징한 [런타임 및 중/일/영어 음성 인식 모델](https://lunatranslator.org/Resource/DirectLiveCaptions.zip)을 다운로드하여 소프트웨어 디렉토리에 압축을 해제하면, 소프트웨어가 패키징된 런타임과 인식 모델을 인식하여 해당 기능을 사용할 수 있습니다.
 
 다른 언어의 인식 모델이 필요한 경우, 해당 언어의 인식 모델을 직접 찾을 수 있습니다. 방법은 다음과 같습니다:
-https://store.rg-adguard.net/ 에서 `PacakgeFamilyName`으로 `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`를 검색하세요. 여기서 `{LANGUAGE}`는 필요한 언어명입니다(예: 프랑스어는 `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`). 그런 다음 최신 버전의 msix를 다운로드하여 압축을 풀고 소프트웨어 디렉토리에 넣으면 됩니다.
+https://store.rg-adguard.net/ 에서 `PackageFamilyName`으로 `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`를 검색하세요. 여기서 `{LANGUAGE}`는 필요한 언어명입니다(예: 프랑스어는 `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`). 그런 다음 최신 버전의 msix를 다운로드하여 압축을 풀고 소프트웨어 디렉토리에 넣으면 됩니다.
 
 ::: details store.rg-adguard.net
 ![img](https://image.lunatranslator.org/zh/srpackage.png)

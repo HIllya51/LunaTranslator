@@ -15,7 +15,7 @@ Windows 11では、システムにインストールされている言語とそ�
 Windows 10では、システムに必要なランタイムおよび認識モデルが不足しています。または、Windows 11のバージョンが低すぎるため、システムに組み込まれているランタイムのバージョンが低くなっています。まず、私がパッケージ化した[ランタイムと中日英言語認識モデル](https://lunatranslator.org/Resource/DirectLiveCaptions.zip)をダウンロードし、ソフトウェアディレクトリに解凍してください。そうすれば、ソフトウェアは私がパッケージ化したランタイムと認識モデルを認識し、この機能を使用できるようになります。
 
 他の言語の認識モデルが必要な場合は、対応する言語の認識モデルを自分で探すことができます。方法は次のとおりです：
-https://store.rg-adguard.net/ で、`PacakgeFamilyName`を使用して`MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`を検索します。ここで、`{LANGUAGE}`は必要な言語名です（たとえばフランス語の場合は`MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`）。次に、最新バージョンのmsixをダウンロードして、ソフトウェアディレクトリに解凍します。
+https://store.rg-adguard.net/ で、`PackageFamilyName`を使用して`MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy`を検索します。ここで、`{LANGUAGE}`は必要な言語名です（たとえばフランス語の場合は`MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`）。次に、最新バージョンのmsixをダウンロードして、ソフトウェアディレクトリに解凍します。
 
 ::: details store.rg-adguard.net
 ![img](https://image.lunatranslator.org/zh/srpackage.png)

@@ -256,9 +256,9 @@ TextLine CrnnNet::scoreToTextLine(const std::vector<float> &outputData, size_t h
     {
         size_t start = i * w;
         size_t stop = (i + 1) * w;
-        if (stop > dataSize - 1)
+        if (stop > dataSize)
         {
-            stop = (i + 1) * w - 1;
+            stop = dataSize;
         }
         maxIndex = int(argmax(&outputData[start], &outputData[stop]));
         // maxValue = float(*std::max_element(&outputData[start], &outputData[stop]));
@@ -452,8 +452,8 @@ std::vector<TextBlock> OcrLite::detect_internal(const cv::Mat &src, const int &p
             p.x -= padding;
             p.y -= padding;
         }
-        TextBlock textBlock{textBoxes[i], textLines[i]};
-        textBlocks.emplace_back(textBlock);
+        TextBlock textBlock{std::move(textBoxes[i]), std::move(textLines[i])};
+        textBlocks.emplace_back(std::move(textBlock));
     }
 
     return textBlocks;

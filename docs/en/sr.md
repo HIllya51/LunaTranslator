@@ -15,7 +15,7 @@ On Windows 11, the system can directly detect installed languages and their spee
 On Windows 10, the necessary runtime and recognition models are missing in the system; or the Windows 11 version is too low, and the built-in runtime version is outdated. Please first download my packaged [runtime and Chinese-Japanese-English language recognition models](https://lunatranslator.org/Resource/DirectLiveCaptions.zip), extract them to the software directory, and the software will recognize the packaged runtime and recognition models, enabling this feature.
 
 If you need recognition models for other languages, you can find the corresponding language recognition models yourself. The method is as follows:
-On https://store.rg-adguard.net/, search for `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy` using `PacakgeFamilyName`, where `{LANGUAGE}` is the name of the language you need (for example, French is `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`). Then, download the latest version of the msix file and extract it to the software directory.
+On https://store.rg-adguard.net/, search for `MicrosoftWindows.Speech.{LANGUAGE}.1_cw5n1h2txyewy` using `PackageFamilyName`, where `{LANGUAGE}` is the name of the language you need (for example, French is `MicrosoftWindows.Speech.fr-FR.1_cw5n1h2txyewy`). Then, download the latest version of the msix file and extract it to the software directory.
 
 ::: details store.rg-adguard.net
 ![img](https://image.lunatranslator.org/zh/srpackage.png)

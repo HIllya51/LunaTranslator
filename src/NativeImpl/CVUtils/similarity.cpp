@@ -23,6 +23,8 @@ DECLARE_API double cvMatMSSIM(const cv::Mat *mat_1, const cv::Mat *mat_2)
         return 0;
     if (mat_1->size() != mat_2->size())
         return 0;
+    if (mat_1->channels() != mat_2->channels())
+        return 0;
     const double C1 = 6.5025, C2 = 58.5225;
     /***************************** INITS **********************************/
     int d = CV_32F;

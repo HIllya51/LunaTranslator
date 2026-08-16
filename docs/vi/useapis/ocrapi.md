@@ -50,7 +50,7 @@ https://ocr.space/
 
 == General Large Model Interface
 
-Giống như [Dịch thuật](/en/guochandamoxing.html)
+Giống như [Dịch thuật](/vi/guochandamoxing.html)
 
 :::
 

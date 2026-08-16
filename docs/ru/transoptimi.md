@@ -27,7 +27,7 @@
     Вместо:
     ![img](https://image.lunatranslator.org/zh/transoptimi/3.png)
     :::
-    ::: details sakuraНастройки большой модели prompt в формате v0.10pre1 (поддерживает gpt словарь)
+    ::: details sakura Настройки большой модели prompt в формате v0.10pre1 (поддерживает gpt словарь)
     ![img](https://image.lunatranslator.org/zh/transoptimi/4.png)
     :::
 

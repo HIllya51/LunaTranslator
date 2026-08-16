@@ -37,6 +37,7 @@ public:
 
     // Event<> AdaptersChanged;
     std::vector<void (*)()> AdaptersChangeds;
+    std::mutex adaptersChangedsLock;
 
 private:
     AdaptersService() = default;
@@ -62,7 +63,10 @@ struct DirectXHelper
 };
 bool AdaptersService::Initialize(void (*callback)()) noexcept
 {
-    AdaptersChangeds.push_back(callback);
+    {
+        std::lock_guard _(adaptersChangedsLock);
+        AdaptersChangeds.push_back(callback);
+    }
     CComPtr<IDXGIFactory7> dxgiFactory;
 
     HRESULT hr = CreateDXGIFactory1(IID_PPV_ARGS(&dxgiFactory));
@@ -248,7 +252,12 @@ bool AdaptersService::_GatherAdapterInfos(
                        }),
         adapterInfos.end());
 
-    for (auto &&_ : AdaptersChangeds)
+    std::vector<void (*)()> callbacks;
+    {
+        std::lock_guard _(adaptersChangedsLock);
+        callbacks = AdaptersChangeds;
+    }
+    for (auto &&_ : callbacks)
         _();
     return true;
 }
@@ -319,7 +328,10 @@ DECLARE_API void AdaptersServiceStartMonitor(void (*callback)())
     else
     {
         callback();
-        AdaptersService::Get().AdaptersChangeds.push_back(callback);
+        {
+            std::lock_guard _(AdaptersService::Get().adaptersChangedsLock);
+            AdaptersService::Get().AdaptersChangeds.push_back(callback);
+        }
     }
 }
 DECLARE_API void AdaptersServiceUninitialize()

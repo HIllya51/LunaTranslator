@@ -23,8 +23,9 @@ DECLARE_API uint64_t GetProcessVRAM(DWORD pid, bool Dedicated)
     if (status != ERROR_SUCCESS)
         return 0;
 
-    auto return0 = [=]()
-    { PdhCloseQuery(hQuery);return 0; };
+    uint64_t totalBytes = 0;
+    auto returnX = [=]()
+    { PdhCloseQuery(hQuery);return totalBytes; };
 
     std::wstring path = L"\\GPU Process Memory(pid_" + std::to_wstring(pid) + (Dedicated ? L"_*)\\Dedicated Usage" : L"_*)\\Shared Usage");
 
@@ -35,7 +36,7 @@ DECLARE_API uint64_t GetProcessVRAM(DWORD pid, bool Dedicated)
 
     status = PdhCollectQueryData(hQuery);
     if (status != ERROR_SUCCESS)
-        return return0();
+        return returnX();
 
     DWORD dwBufferSize = 0;
     DWORD dwItemCount = 0;
@@ -43,9 +44,9 @@ DECLARE_API uint64_t GetProcessVRAM(DWORD pid, bool Dedicated)
     PDH_STATUS stat = PdhGetFormattedCounterArrayW(hCounter, PDH_FMT_LARGE, &dwBufferSize, &dwItemCount, NULL);
 
     if (!(stat == PDH_MORE_DATA || stat == ERROR_SUCCESS))
-        return return0();
+        return returnX();
     if (dwBufferSize == 0 || dwItemCount == 0)
-        return return0();
+        return returnX();
 
     std::vector<BYTE> buffer(dwBufferSize);
     PPDH_FMT_COUNTERVALUE_ITEM_W pItems = (PPDH_FMT_COUNTERVALUE_ITEM_W)buffer.data();
@@ -53,12 +54,11 @@ DECLARE_API uint64_t GetProcessVRAM(DWORD pid, bool Dedicated)
     stat = PdhGetFormattedCounterArrayW(hCounter, PDH_FMT_LARGE, &dwBufferSize, &dwItemCount, pItems);
 
     if (stat != ERROR_SUCCESS)
-        return return0();
-    uint64_t totalBytes = 0;
+        return returnX();
 
     for (DWORD i = 0; i < dwItemCount; i++)
     {
         totalBytes += pItems[i].FmtValue.largeValue;
     }
-    return totalBytes;
+    return returnX();
 }

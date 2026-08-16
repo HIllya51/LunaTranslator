@@ -10,6 +10,8 @@ inline std::wstring StringToWideString(const std::string &text, UINT encoding = 
 {
     std::vector<wchar_t> buffer(text.size() + 1);
     int length = MultiByteToWideChar(encoding, 0, text.c_str(), text.size() + 1, buffer.data(), buffer.size());
+    if (length <= 0)
+        return {};
     return std::wstring(buffer.data(), length - 1);
 }
 inline std::string WideStringToString(const std::wstring &text, UINT cp = CP_UTF8)

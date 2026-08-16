@@ -140,7 +140,7 @@ void MWebBrowserEx::evaljs(const wchar_t *js, evaljs_callback_t cb)
     DISPID dispid;
     CComBSTR evalStr = L"eval";
     CHECK_FAILURE_NORET(scriptDispatch->GetIDsOfNames(IID_NULL, &evalStr, 1,
-                                                      LOCALE_SYSTEM_DEFAULT, &dispid) != S_OK);
+                                                      LOCALE_SYSTEM_DEFAULT, &dispid));
 
     DISPPARAMS params;
     AutoVariant arg;
@@ -157,7 +157,7 @@ void MWebBrowserEx::evaljs(const wchar_t *js, evaljs_callback_t cb)
     auto eval = std::make_unique<wchar_t[]>(n);
     _snwprintf_s(eval.get(), n, _TRUNCATE, L"%s%s%s", prologue, js, epilogue);
     CComBSTR bstrVal = eval.get();
-    arg->bstrVal = bstrVal;
+    arg->bstrVal = bstrVal.Detach();
     scriptDispatch->Invoke(
         dispid, IID_NULL, 0, DISPATCH_METHOD,
         &params, &result, &excepInfo, &nArgErr);

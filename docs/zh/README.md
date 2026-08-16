@@ -52,7 +52,7 @@
 
 如果想要删除重下，注意不要删除userconfig文件夹，否则会失去之前的设置！！！
 
-## 常见错误 {#anchor-commonerros}
+## 常见错误 {#anchor-commonerrors}
 
 ### 找不到重要组件 / Missing embedded Python3
 

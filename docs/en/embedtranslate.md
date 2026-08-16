@@ -29,7 +29,7 @@ After modifying the font, Chinese characters can be displayed correctly:
 
 ![img](https://image.lunatranslator.org/zh/embed/okembed.png) 
 
-For many ancient Japanese galgames, they used their built-in shift ji character set to process Chinese characters correctly. You can try **converting Chinese characters to traditional/Japanese characters** to reduce the occurrence of garbled characters.
+For many ancient Japanese galgames, they used their built-in Shift-JIS character set to process Chinese characters correctly. You can try **converting Chinese characters to traditional/Japanese characters** to reduce the occurrence of garbled characters.
 
 For newer game engines and most English games, Unicode character sets such as utf-8 or utf-16 are generally used (such as **KiriKiri**, **Renpy**, **TyranoScript**, **RPGMakerMV**, etc.), and even if garbled text appears, it is usually a font issue, not a character set issue.
 

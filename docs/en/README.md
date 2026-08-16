@@ -51,7 +51,7 @@ If you want to delete and re-download, be careful not to delete the userconfig f
 
 
 
-## Common Errors {#anchor-commonerros}
+## Common Errors {#anchor-commonerrors}
 
 ### Missing Important Components / Missing embedded Python3
 

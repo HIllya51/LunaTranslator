@@ -194,7 +194,10 @@ inline std::string FormatString(const char *format, const Args &...args)
 template <typename... Args>
 inline std::wstring FormatString(const wchar_t *format, const Args &...args)
 {
-  std::wstring buffer(_snwprintf(nullptr, 0, format, FormatArg(args)...), L'\0');
+  int n = _scwprintf(format, FormatArg(args)...);
+  if (n < 0)
+    n = 0;
+  std::wstring buffer(n, L'\0');
   _swprintf(buffer.data(), format, FormatArg(args)...);
   return buffer;
 }

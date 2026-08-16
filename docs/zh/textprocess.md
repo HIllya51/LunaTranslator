@@ -39,8 +39,7 @@
 
     详见：https://zh.wikipedia.org/wiki/Unicode%E7%AD%89%E5%83%B9%E6%80%A7
 
-    例如：`？？？（Ｉ ｇｕｅｓｓ ｈｅ ｄｏｅｓｎ’ｔ ｗａｎｔ ｔｏ ｔａｌｋ ｔｏ ｓｔｒａｎｇｅｒｓ．．．）`，会转化成：`???(I guess he doesn’t want to talk to strangers...)
-`
+    例如：`？？？（Ｉ ｇｕｅｓｓ ｈｅ ｄｏｅｓｎ’ｔ ｗａｎｔ ｔｏ ｔａｌｋ ｔｏ ｓｔｒａｎｇｅｒｓ．．．）`，会转化成：`???(I guess he doesn’t want to talk to strangers...)`
 
 1. #### 截取指定行数 {#anchor-lines_threshold_1}
 
