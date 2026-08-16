@@ -6,7 +6,6 @@ from myutils.utils import all_langs
 from traceback import print_exc
 from language import Languages
 from gui.setting.textinput_ocr import getocrgrid_table
-from gui.gamemanager.dialog import dialog_savedgame_integrated
 from gui.dynalang import LLabel, LStandardItemModel, LDialog
 from myutils.wrapper import Singleton
 from textio.textsource.mssr import findallmodel, mssr
@@ -23,7 +22,6 @@ from gui.usefulwidget import (
     getIconButton,
     manybuttonlayout,
     makegrid,
-    listediter,
     getsimplecombobox,
     yuitsu_switch,
     D_getsimpleswitch,
@@ -56,14 +54,18 @@ def __create2():
     return selecthookbutton
 
 
-def gethookgrid_em(self):
+def gethookgrid_em(dic=None):
+    isglobal = dic is None
+    if dic is None:
+        dic = globalconfig["embedded"]
     grids = [
-        [D_getdoclink("embedtranslate.html")],
+        [D_getdoclink("embedtranslate.html")] if isglobal else None,
         [
             "清除游戏内显示的文字",
             D_getsimpleswitch(
-                globalconfig["embedded"],
+                dic,
                 "clearText",
+                default=False,
                 callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
             "",
@@ -75,8 +77,9 @@ def gethookgrid_em(self):
             "",
             D_getsimplecombobox(
                 ["翻译", "原文_翻译", "翻译_原文"],
-                globalconfig["embedded"],
+                dic,
                 "displaymode",
+                default=0,
                 callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
         ],
@@ -86,39 +89,42 @@ def gethookgrid_em(self):
             D_getspinbox(
                 0,
                 30,
-                globalconfig["embedded"],
+                dic,
                 "timeout_translate",
                 double=True,
+                default=2,
                 callback=lambda x: gobject.base.textsource.set_settings_ex(),
             ),
         ],
         [
             "将汉字转换成繁体/日式汉字",
-            D_getsimpleswitch(globalconfig["embedded"], "trans_kanji"),
+            D_getsimpleswitch(dic, "trans_kanji", default=False),
         ],
         [
             "限制每行字数",
-            D_getsimpleswitch(globalconfig["embedded"], "limittextlength_use"),
+            D_getsimpleswitch(dic, "limittextlength_use", default=False),
             D_getspinbox(
                 0,
                 1000,
-                globalconfig["embedded"],
+                dic,
                 "limittextlength_length",
+                default=40,
             ),
         ],
         [
             "修改游戏字体",
             D_getsimpleswitch(
-                globalconfig["embedded"],
+                dic,
                 "changefont",
+                default=False,
                 callback=lambda _: gobject.base.textsource.set_settings_ex(),
             ),
-            creategamefont_comboBox,
+            functools.partial(creategamefont_comboBox, dic),
         ],
         [
             "修改游戏字体相对大小",
             D_getsimpleswitch(
-                globalconfig["embedded"],
+                dic,
                 "changefontsize_use",
                 default=False,
                 callback=lambda _: gobject.base.textsource.set_settings_ex(),
@@ -126,7 +132,7 @@ def gethookgrid_em(self):
             D_getspinbox(
                 0.5,
                 2,
-                globalconfig["embedded"],
+                dic,
                 "changefontsize",
                 step=0.01,
                 double=True,
@@ -135,23 +141,26 @@ def gethookgrid_em(self):
             ),
         ],
     ]
-
     return grids
 
 
-def gethookgrid():
+def gethookgrid(dic=None):
+    isglobal = dic is None
+    if dic is None:
+        dic = globalconfig
     grids = [
-        [D_getdoclink("hooksettings.html")],
+        [D_getdoclink("hooksettings.html")] if isglobal else None,
         [
             "代码页",
             (
                 D_getsimplecombobox(
                     ["自动"] + static_data["codepage_display"],
-                    globalconfig,
+                    dic,
                     "codepage_value",
                     lambda x: gobject.base.textsource.setsettings(),
                     internal=[0] + static_data["codepage_real"],
                     default=0,
+                    sizeX=True,
                 ),
                 2,
             ),
@@ -164,7 +173,7 @@ def gethookgrid():
                 D_getspinbox(
                     0,
                     10000,
-                    globalconfig,
+                    dic,
                     "textthreaddelay",
                     callback=lambda x: gobject.base.textsource.setsettings(),
                     default=500,
@@ -178,7 +187,7 @@ def gethookgrid():
                 D_getspinbox(
                     0,
                     1000000,
-                    globalconfig,
+                    dic,
                     "maxBufferSize",
                     callback=lambda x: gobject.base.textsource.setsettings(),
                     default=3000,
@@ -192,7 +201,7 @@ def gethookgrid():
                 D_getspinbox(
                     0,
                     1000000000,
-                    globalconfig,
+                    dic,
                     "maxHistorySize",
                     callback=lambda x: gobject.base.textsource.setsettings(),
                     default=1000000,
@@ -200,37 +209,41 @@ def gethookgrid():
                 2,
             ),
         ],
-        [
-            "最大允许输出文本长度",
-            (
-                D_getspinbox(
-                    0,
-                    1000000000,
-                    globalconfig,
-                    "maxOutputSize",
-                    default=10000,
+        (
+            [
+                "最大允许输出文本长度",
+                (
+                    D_getspinbox(
+                        0,
+                        1000000000,
+                        dic,
+                        "maxOutputSize",
+                        default=10000,
+                    ),
+                    2,
                 ),
-                2,
-            ),
-        ],
+            ]
+            if isglobal
+            else None
+        ),
     ]
 
     return grids
 
 
-def creategamefont_comboBox():
+def creategamefont_comboBox(dic: dict):
 
     gamefont_comboBox = FocusFontCombo()
 
     def callback(x):
-        globalconfig["embedded"].__setitem__("changefont_font", x)
+        dic.__setitem__("changefont_font", x)
         try:
             gobject.base.textsource.set_settings_ex()
         except:
             pass
 
     gamefont_comboBox.currentTextChanged.connect(callback)
-    gamefont_comboBox.setCurrentFont(QFont(globalconfig["embedded"]["changefont_font"]))
+    gamefont_comboBox.setCurrentFont(QFont(dic.get("changefont_font", "")))
     return gamefont_comboBox
 
 
@@ -789,7 +802,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
             "",
             "游戏管理",
             D_getIconButton(
-                lambda: dialog_savedgame_integrated(self),
+                lambda: gobject.base.translation_ui.showsavegame_signal.emit(),
                 icon=globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"],
             ),
             "",
@@ -800,7 +813,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
                     ["默认设置", "内嵌翻译"],
                     [
                         lambda l: makescrollgrid(gethookgrid(), l),
-                        lambda l: makescrollgrid(gethookgrid_em(self), l),
+                        lambda l: makescrollgrid(gethookgrid_em(), l),
                     ],
                     delay=True,
                     padding=True,

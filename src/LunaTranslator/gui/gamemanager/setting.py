@@ -15,7 +15,9 @@ from myutils.config import (
     defaultpost,
     globalconfig,
     static_data,
+    MagpieConfig,
 )
+from gui.setting.display_scale import makescalew
 from myutils.wrapper import tryprint
 import sqlite3
 from gui.dialog_memory import dialog_memory
@@ -39,13 +41,14 @@ from gui.inputdialog import (
     autoinitdialog_items,
     postconfigdialog,
 )
+from gui.setting.textinput import gethookgrid_em, gethookgrid
 from gui.specialwidget import chartwidget
 from gui.usefulwidget import (
     DarkLightAutoResetIconHelper,
-    TableViewW,
+    clearlayout,
+    makescrollgrid,
     automakegrid,
-    D_getspinbox,
-    FocusFontCombo,
+    TableViewW,
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
@@ -444,6 +447,7 @@ class dialog_setting_game_internal(QWidget):
             ("翻译优化", functools.partial(self.___tabf, self.gettransoptimi)),
             ("语音", functools.partial(self.___tabf, self.getttssetting)),
             ("预翻译", functools.partial(self.___tabf, self.getpretranstab)),
+            ("窗口缩放", functools.partial(self.___tabf, self.getmagpietab)),
         ]
         methodtab, do = makesubtab_lazy(
             [_[0] for _ in functs],
@@ -1058,6 +1062,32 @@ class dialog_setting_game_internal(QWidget):
             ],
         )
 
+    def getmagpietab(self, formLayout: LFormLayout, gameuid):
+        def __(x):
+            clearlayout(internal)
+            if x:
+                MagpieConfig.remove(gameuid)
+            else:
+                makescrollgrid(
+                    makescalew(MagpieConfig.find(gameuid, notexitscreate=True)),
+                    internal,
+                )
+
+        internal = QGridLayout()
+        internal.setContentsMargins(0, 0, 0, 0)
+        btn = getsimpleswitch(
+            {}, None, default=not MagpieConfig.find(gameuid), callback=__
+        )
+        formLayout.setContentsMargins(0, 0, 0, 0)
+        formLayout.setSpacing(0)
+        _w = QWidget()
+        btnline = LFormLayout(_w)
+        btnline.addRow("跟随默认", btn)
+        formLayout.addRow(_w)
+        formLayout.addRow(internal)
+        if MagpieConfig.find(gameuid):
+            __(False)
+
     def getpretranstab(self, formLayout: LFormLayout, gameuid):
 
         def selectimg(gameuid, key, res):
@@ -1344,90 +1374,11 @@ class dialog_setting_game_internal(QWidget):
             "embed_follow_default",
             formLayout,
             callback=lambda: gobject.base.textsource.set_settings_ex(),
+            klass=VisGridLayout,
         )
-        formLayout2.addRow(
-            "清除游戏内显示的文字",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["embed_setting_private"],
-                "clearText",
-                default=globalconfig["embedded"]["clearText"],
-                callback=lambda _: gobject.base.textsource.set_settings_ex(),
-            ),
-        )
-
-        formLayout2.addRow(
-            "显示模式",
-            getsimplecombobox(
-                ["翻译", "原文_翻译", "翻译_原文"],
-                savehook_new_data[gameuid]["embed_setting_private"],
-                "displaymode",
-                default=globalconfig["embedded"]["displaymode"],
-                callback=lambda _: gobject.base.textsource.set_settings_ex(),
-            ),
-        )
-        formLayout2.addRow(
-            "将汉字转换成繁体/日式汉字",
-            getsimpleswitch(
-                savehook_new_data[gameuid]["embed_setting_private"],
-                "trans_kanji",
-                default=globalconfig["embedded"]["trans_kanji"],
-            ),
-        )
-        formLayout2.addRow(
-            "限制每行字数",
-            getboxlayout(
-                [
-                    D_getsimpleswitch(
-                        savehook_new_data[gameuid]["embed_setting_private"],
-                        "limittextlength_use",
-                        default=globalconfig["embedded"]["limittextlength_use"],
-                    ),
-                    D_getspinbox(
-                        0,
-                        1000,
-                        savehook_new_data[gameuid]["embed_setting_private"],
-                        "limittextlength_length",
-                        default=globalconfig["embedded"]["limittextlength_length"],
-                    ),
-                ]
-            ),
-        )
-        formLayout2.addRow(
-            "修改游戏字体",
-            getboxlayout(
-                [
-                    D_getsimpleswitch(
-                        savehook_new_data[gameuid]["embed_setting_private"],
-                        "changefont",
-                        default=globalconfig["embedded"]["changefont"],
-                        callback=lambda _: gobject.base.textsource.set_settings_ex(),
-                    ),
-                    functools.partial(self.creategamefont_comboBox, gameuid),
-                ]
-            ),
-        )
-        formLayout2.addRow(
-            "修改游戏字体相对大小",
-            getboxlayout(
-                [
-                    D_getsimpleswitch(
-                        savehook_new_data[gameuid]["embed_setting_private"],
-                        "changefontsize_use",
-                        default=globalconfig["embedded"]["changefontsize_use"],
-                        callback=lambda _: gobject.base.textsource.set_settings_ex(),
-                    ),
-                    D_getspinbox(
-                        0.5,
-                        2,
-                        savehook_new_data[gameuid]["embed_setting_private"],
-                        "changefontsize",
-                        default=globalconfig["embedded"]["changefontsize"],
-                        step=0.01,
-                        double=True,
-                        callback=lambda _: gobject.base.textsource.set_settings_ex(),
-                    ),
-                ]
-            ),
+        automakegrid(
+            formLayout2,
+            gethookgrid_em(savehook_new_data[gameuid]["embed_setting_private"]),
         )
         if savehook_new_data[gameuid].get("embedablehook"):
             box = NQGroupBox()
@@ -1442,29 +1393,6 @@ class dialog_setting_game_internal(QWidget):
                 ),
             )
             formLayout.addRow(box)
-
-    def creategamefont_comboBox(self, gameuid):
-
-        gamefont_comboBox = FocusFontCombo(sizeX=True)
-
-        def callback(x):
-            savehook_new_data[gameuid]["embed_setting_private"].__setitem__(
-                "changefont_font", x
-            )
-            try:
-                gobject.base.textsource.set_settings_ex()
-            except:
-                pass
-
-        gamefont_comboBox.setCurrentFont(
-            QFont(
-                savehook_new_data[gameuid]["embed_setting_private"].get(
-                    "changefont_font", globalconfig["embedded"]["changefont_font"]
-                )
-            )
-        )
-        gamefont_comboBox.currentTextChanged.connect(callback)
-        return gamefont_comboBox
 
     def gethooktab_internal(self, formLayout: LFormLayout, gameuid):
 
@@ -1540,52 +1468,11 @@ class dialog_setting_game_internal(QWidget):
             "hooksetting_follow_default",
             settinglayout,
             lambda: gobject.base.textsource.setsettings(),
+            klass=VisGridLayout,
         )
-        formLayout2.addRow(
-            "代码页",
-            getsimplecombobox(
-                ["自动"] + static_data["codepage_display"],
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "codepage_value",
-                lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig.get("codepage_value", 0),
-                internal=[0] + static_data["codepage_real"],
-                sizeX=True,
-            ),
-        )
-
-        formLayout2.addRow(
-            "刷新延迟_(ms)",
-            getspinbox(
-                0,
-                10000,
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "textthreaddelay",
-                callback=lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig.get("textthreaddelay", 500),
-            ),
-        )
-        formLayout2.addRow(
-            "最大缓冲区长度",
-            getspinbox(
-                0,
-                1000000,
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "maxBufferSize",
-                callback=lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig.get("maxBufferSize", 3000),
-            ),
-        )
-        formLayout2.addRow(
-            "最大缓存文本长度",
-            getspinbox(
-                0,
-                1000000000,
-                savehook_new_data[gameuid]["hooksetting_private"],
-                "maxHistorySize",
-                callback=lambda _: gobject.base.textsource.setsettings(),
-                default=globalconfig.get("maxHistorySize", 1000000),
-            ),
+        automakegrid(
+            formLayout2,
+            gethookgrid(savehook_new_data[gameuid]["hooksetting_private"]),
         )
 
     def gethooktab(self, gameuid):

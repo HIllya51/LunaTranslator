@@ -254,19 +254,6 @@
         "websocket": {}
     },
     "embedded": {
-        "timeout_translate": 2,
-        "trans_kanji": false,
-        "displaymode": 0,
-        "insertspace_policy": 0,
-        "changefont": false,
-        "changefont_font": "",
-        "changecharset": false,
-        "changecharset_charset": 2,
-        "limittextlength_use": false,
-        "limittextlength_length": 40,
-        "clearText": false,
-        "changefontsize": 1.0,
-        "changefontsize_use": false
     },
     "requestinterval": 0,
     "postprocess_rank": [

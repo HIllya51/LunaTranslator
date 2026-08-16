@@ -19,7 +19,7 @@ class SuperCombo__1(SuperCombo):
     signal = pyqtSignal(list)
 
 
-def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
+def adapterchangedcallback(profile, combo: SuperCombo, adapterinfos: list):
     combo.blockSignals(True)
     combo.clear()
     print(adapterinfos)
@@ -32,9 +32,7 @@ def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
         visx[i] = "[[{}]]".format(visx[i])
     combo.addItems([default] + visx, [[-1, 0, 0]] + infosx)
     combo.blockSignals(False)
-    graphicsCardId: dict = magpie_config["profiles"][globalconfig.get("profiles_index", 0)][
-        "graphicsCardId"
-    ]
+    graphicsCardId: dict = profile["graphicsCardId"]
     curr = (
         graphicsCardId["idx"],
         graphicsCardId["vendorId"],
@@ -43,21 +41,19 @@ def adapterchangedcallback(combo: SuperCombo, adapterinfos: list):
     combo.setCurrentData(list(curr))
 
 
-def __changed(combo: SuperCombo, idx):
+def __changed(profile, combo: SuperCombo, idx):
     data = combo.getIndexData(idx)
-    graphicsCardId: dict = magpie_config["profiles"][globalconfig.get("profiles_index", 0)][
-        "graphicsCardId"
-    ]
+    graphicsCardId: dict = profile["graphicsCardId"]
     graphicsCardId.update(idx=data[0], vendorId=data[1], deviceId=data[2])
 
 
-def createadaptercombo():
+def createadaptercombo(profile):
     # AdapterServic对于不使用的人来说，开销太大了，太浪费。
     # 因此偷懒起见，如果不修改显示卡，则直接使用配置里的设置去调用，不去加载AdapterService以检查有效性。
     # 仅在使用这个修改显示卡时，才加载AdapterService
     combo = SuperCombo__1()
-    combo.signal.connect(functools.partial(adapterchangedcallback, combo))
-    combo.currentIndexChanged.connect(functools.partial(__changed, combo))
+    combo.signal.connect(functools.partial(adapterchangedcallback, profile, combo))
+    combo.currentIndexChanged.connect(functools.partial(__changed, profile, combo))
     AdapterService.init(combo.signal.emit)
     return combo
 
@@ -85,27 +81,32 @@ def __select(combo: SuperCombo):
         magpie_config["scalingModes"] = __["scalingModes"]
 
 
-def __layout():
+def __layout(isglobal, profile):
     combo = getsimplecombobox(
         [_["name"] for _ in magpie_config["scalingModes"]],
-        magpie_config["profiles"][globalconfig.get("profiles_index", 0)],
+        profile,
         "scalingMode",
         static=True,
     )
+    if not isglobal:
+        return combo
     btn = LPushButton("导入")
     btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    btn.clicked.connect(functools.partial(__select, combo))
+    btn.clicked.connect(functools.partial(__select, profile, combo))
     return getboxlayout([combo, btn])
 
 
-def makescalew():
+def makescalew(profile=None):
+    isglobal = profile is None
+    if profile is None:
+        profile = magpie_config["profiles"][0]
     innermagpie = [
         [
             dict(
                 title="常规",
                 grid=(
                     [
-                        ["缩放模式", __layout],
+                        ["缩放模式", functools.partial(__layout, isglobal, profile)],
                         [
                             "捕获模式",
                             D_getsimplecombobox(
@@ -115,73 +116,71 @@ def makescalew():
                                     "GDI",
                                     "DwmSharedSurface",
                                 ],
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
+                                profile,
                                 "captureMethod",
                                 static=True,
                             ),
                         ],
                         [
                             "3D游戏模式",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "3DGameMode",
-                            ),
+                            D_getsimpleswitch(profile, "3DGameMode"),
                         ],
                     ]
                 ),
             ),
         ],
-        [
-            dict(
-                title="工具栏",
-                grid=[
-                    [
-                        "工具栏初始状态",
-                        getboxlayout(
-                            [
-                                getboxlayout(
-                                    [
-                                        "全屏模式缩放",
-                                        D_getsimplecombobox(
-                                            ["关闭", "始终显示", "自动隐藏"],
-                                            magpie_config["overlay"],
-                                            "fullscreenInitialToolbarState",
-                                        ),
-                                    ]
-                                ),
-                                getboxlayout(
-                                    [
-                                        "窗口模式缩放",
-                                        D_getsimplecombobox(
-                                            ["关闭", "始终显示", "自动隐藏"],
-                                            magpie_config["overlay"],
-                                            "windowedInitialToolbarState",
-                                        ),
-                                    ]
-                                ),
-                            ],
-                            lc=QVBoxLayout,
-                        ),
-                    ],
-                    [
-                        "截图保存目录",
-                        functools.partial(
-                            getsimplepatheditor,
-                            text=__getsavedir(),
-                            isdir=True,
-                            clearset=__getsavedir,
-                            callback=functools.partial(
-                                magpie_config["overlay"].__setitem__, "screenshotsDir"
+        (
+            [
+                dict(
+                    title="工具栏",
+                    grid=[
+                        [
+                            "工具栏初始状态",
+                            getboxlayout(
+                                [
+                                    getboxlayout(
+                                        [
+                                            "全屏模式缩放",
+                                            D_getsimplecombobox(
+                                                ["关闭", "始终显示", "自动隐藏"],
+                                                magpie_config["overlay"],
+                                                "fullscreenInitialToolbarState",
+                                            ),
+                                        ]
+                                    ),
+                                    getboxlayout(
+                                        [
+                                            "窗口模式缩放",
+                                            D_getsimplecombobox(
+                                                ["关闭", "始终显示", "自动隐藏"],
+                                                magpie_config["overlay"],
+                                                "windowedInitialToolbarState",
+                                            ),
+                                        ]
+                                    ),
+                                ],
+                                lc=QVBoxLayout,
                             ),
-                        ),
+                        ],
+                        [
+                            "截图保存目录",
+                            functools.partial(
+                                getsimplepatheditor,
+                                text=__getsavedir(),
+                                isdir=True,
+                                clearset=__getsavedir,
+                                callback=functools.partial(
+                                    magpie_config["overlay"].__setitem__,
+                                    "screenshotsDir",
+                                ),
+                            ),
+                        ],
                     ],
-                ],
-            )
-        ],
+                )
+            ]
+            if isglobal
+            else None
+        ),
         [
             dict(
                 title="窗口模式缩放",
@@ -200,9 +199,7 @@ def makescalew():
                                     "3x",
                                     "自定义",
                                 ],
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
+                                profile,
                                 "initialWindowedScaleFactor",
                             ),
                         ],
@@ -216,25 +213,13 @@ def makescalew():
                 type="grid",
                 grid=(
                     [
-                        ["显示卡", (createadaptercombo, 0)],
+                        ["显示卡", (functools.partial(createadaptercombo, profile), 0)],
                         [
                             "帧率限制",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "frameRateLimiterEnabled",
-                            ),
+                            D_getsimpleswitch(profile, "frameRateLimiterEnabled"),
                             "",
                             "最大帧率",
-                            D_getspinbox(
-                                0,
-                                9999,
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "maxFrameRate",
-                            ),
+                            D_getspinbox(0, 9999, profile, "maxFrameRate"),
                         ],
                     ]
                 ),
@@ -247,21 +232,11 @@ def makescalew():
                     [
                         [
                             "捕获标题栏",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "captureTitleBar",
-                            ),
+                            D_getsimpleswitch(profile, "captureTitleBar"),
                         ],
                         [
                             "自定义剪裁",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "croppingEnabled",
-                            ),
+                            D_getsimpleswitch(profile, "croppingEnabled"),
                         ],
                     ]
                 ),
@@ -284,50 +259,32 @@ def makescalew():
                                     "2x",
                                     "和源窗口相同",
                                 ],
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
+                                profile,
                                 "cursorScaling",
                             ),
                         ],
                         [
                             "插值算法",
                             D_getsimplecombobox(
-                                ["最邻近", "双线性"],
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "cursorInterpolationMode",
+                                ["最邻近", "双线性"], profile, "cursorInterpolationMode"
                             ),
                         ],
                         [
                             "光标静止时自动隐藏",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "autoHideCursorEnabled",
-                            ),
+                            D_getsimpleswitch(profile, "autoHideCursorEnabled"),
                             "",
                             "隐藏延迟（秒）",
                             D_getspinbox(
                                 0.1,
                                 5,
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
+                                profile,
                                 "autoHideCursorDelay",
                                 double=True,
                             ),
                         ],
                         [
                             "缩放时调整光标速度",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "adjustCursorSpeed",
-                            ),
+                            D_getsimpleswitch(profile, "adjustCursorSpeed"),
                         ],
                     ]
                 ),
@@ -338,36 +295,52 @@ def makescalew():
                 title="高级",
                 grid=(
                     [
-                        [
-                            "允许缩放最大化或全屏的窗口",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "allowScalingMaximized",
-                            ),
-                        ],
-                        [
-                            "内联效果参数",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "inlineParams",
-                            ),
-                        ],
-                        [
-                            "缩放时模拟独占全屏",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "simulateExclusiveFullscreen",
-                            ),
-                        ],
-                        [
-                            "最小帧率",
-                            D_getsimplecombobox(
-                                ["0", "5", "10", "15", "20", "30", "60"],
-                                magpie_config,
-                                "minFrameRate",
-                                internal=[0, 5, 10, 15, 20, 30, 60],
-                            ),
-                        ],
+                        (
+                            [
+                                "允许缩放最大化或全屏的窗口",
+                                D_getsimpleswitch(
+                                    magpie_config,
+                                    "allowScalingMaximized",
+                                ),
+                            ]
+                            if isglobal
+                            else None
+                        ),
+                        (
+                            [
+                                "内联效果参数",
+                                D_getsimpleswitch(
+                                    magpie_config,
+                                    "inlineParams",
+                                ),
+                            ]
+                            if isglobal
+                            else None
+                        ),
+                        (
+                            [
+                                "缩放时模拟独占全屏",
+                                D_getsimpleswitch(
+                                    magpie_config,
+                                    "simulateExclusiveFullscreen",
+                                ),
+                            ]
+                            if isglobal
+                            else None
+                        ),
+                        (
+                            [
+                                "最小帧率",
+                                D_getsimplecombobox(
+                                    ["0", "5", "10", "15", "20", "30", "60"],
+                                    magpie_config,
+                                    "minFrameRate",
+                                    internal=[0, 5, 10, 15, 20, 30, 60],
+                                ),
+                            ]
+                            if isglobal
+                            else None
+                        ),
                         [
                             "输出画面位置",
                             D_getsimplecombobox(
@@ -382,106 +355,103 @@ def makescalew():
                                     "底部居中",
                                     "右下角",
                                 ],
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
+                                profile,
                                 "destAlignment",
                             ),
                         ],
                         [
                             "禁用DirectFlip",
-                            D_getsimpleswitch(
-                                magpie_config["profiles"][
-                                    globalconfig.get("profiles_index", 0)
-                                ],
-                                "disableDirectFlip",
-                            ),
+                            D_getsimpleswitch(profile, "disableDirectFlip"),
                         ],
                     ]
                 ),
             ),
         ],
-        [
-            functools.partial(
-                createfoldgrid,
-                [
+        (
+            [
+                functools.partial(
+                    createfoldgrid,
                     [
-                        "调试模式",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "debugMode",
-                        ),
+                        [
+                            "调试模式",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "debugMode",
+                            ),
+                        ],
+                        [
+                            "性能测试模式",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "benchmarkMode",
+                            ),
+                        ],
+                        [
+                            "禁用缩放窗口置顶",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "disableTopmost",
+                            ),
+                        ],
+                        [
+                            "禁用效果缓存",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "disableEffectCache",
+                            ),
+                        ],
+                        [
+                            "解析效果时保存源代码",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "saveEffectSources",
+                            ),
+                        ],
+                        [
+                            "编译效果时将警告视为错误",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "warningsAreErrors",
+                            ),
+                        ],
+                        [
+                            "禁止在着色器中使用 FP16",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "disableFP16",
+                            ),
+                        ],
+                        [
+                            "禁用字体缓存",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "disableFontCache",
+                            ),
+                        ],
+                        [
+                            "检测重复帧",
+                            D_getsimplecombobox(
+                                ["总是检测", "动态检测", "从不检测"],
+                                magpie_config,
+                                "duplicateFrameDetectionMode",
+                            ),
+                        ],
+                        [
+                            "启用动态检测统计",
+                            D_getsimpleswitch(
+                                magpie_config,
+                                "enableStatisticsForDynamicDetection",
+                            ),
+                        ],
                     ],
-                    [
-                        "性能测试模式",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "benchmarkMode",
-                        ),
-                    ],
-                    [
-                        "禁用缩放窗口置顶",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "disableTopmost",
-                        ),
-                    ],
-                    [
-                        "禁用效果缓存",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "disableEffectCache",
-                        ),
-                    ],
-                    [
-                        "解析效果时保存源代码",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "saveEffectSources",
-                        ),
-                    ],
-                    [
-                        "编译效果时将警告视为错误",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "warningsAreErrors",
-                        ),
-                    ],
-                    [
-                        "禁止在着色器中使用 FP16",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "disableFP16",
-                        ),
-                    ],
-                    [
-                        "禁用字体缓存",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "disableFontCache",
-                        ),
-                    ],
-                    [
-                        "检测重复帧",
-                        D_getsimplecombobox(
-                            ["总是检测", "动态检测", "从不检测"],
-                            magpie_config,
-                            "duplicateFrameDetectionMode",
-                        ),
-                    ],
-                    [
-                        "启用动态检测统计",
-                        D_getsimpleswitch(
-                            magpie_config,
-                            "enableStatisticsForDynamicDetection",
-                        ),
-                    ],
-                ],
-                "开发者选项",
-                magpie_config,
-                "developerMode",
-            )
-        ],
+                    "开发者选项",
+                    magpie_config,
+                    "developerMode",
+                )
+            ]
+            if isglobal
+            else None
+        ),
     ]
 
     return innermagpie

@@ -2357,6 +2357,7 @@ def makelabel(s: str):
 
 
 def makeforms(lay: LFormLayout, lis, hiderows=None):
+    lis = [_ for _ in lis if not (_ is None)]
     for i, line in enumerate(lis):
         if len(line) == 0:
             lay.addRow(QLabel())
@@ -2493,6 +2494,7 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
     save = isinstance(savelist, list)
     maxl = 1
     linecolss = []
+    lis = [_ for _ in lis if not (_ is None)]
     for nowr, line in enumerate(lis):
         nowc = 0
         linecolssx = []

@@ -568,7 +568,7 @@ class texthook(basetext):
             trans = ""
         elif not self.__safechecktransresult(text, trans):
             trans = ""
-        if self.embedconfig["trans_kanji"]:
+        if self.embedconfig.get("trans_kanji", False):
             trans = kanjitrans(zhconv.convert(trans, "zh-tw"))
         self.embedcallback(text, trans, tp)
 
@@ -577,8 +577,8 @@ class texthook(basetext):
         self.Luna_EmbedCallback(tp, text, trans)
 
     def splitembedlines(self, trans: str):
-        if len(trans) and self.embedconfig["limittextlength_use"]:
-            length = self.embedconfig["limittextlength_length"]
+        if len(trans) and self.embedconfig.get("limittextlength_use", False):
+            length = self.embedconfig.get("limittextlength_length", 40)
             lines = trans.split("\n")
             newlines = []
             space = getlangtgt().space
@@ -602,19 +602,19 @@ class texthook(basetext):
         for pid in pids:
             self.Luna_SettingsEx(
                 pid,
-                int(1000 * self.embedconfig["timeout_translate"]),
+                int(1000 * self.embedconfig.get("timeout_translate", 2)),
                 2,  # static_data["charsetmap"][globalconfig['embedded']['changecharset_charset']]
                 False,  # globalconfig['embedded']['changecharset']
                 (
-                    self.embedconfig["changefont_font"]
-                    if self.embedconfig["changefont"]
+                    self.embedconfig.get("changefont_font", "")
+                    if self.embedconfig.get("changefont", False)
                     else ""
                 ),
-                self.embedconfig["displaymode"],
+                self.embedconfig.get("displaymode", 0),
                 True,
-                self.embedconfig["clearText"],
-                self.embedconfig["changefontsize_use"],
-                self.embedconfig["changefontsize"],
+                self.embedconfig.get("clearText", False),
+                self.embedconfig.get("changefontsize_use", False),
+                self.embedconfig.get("changefontsize", 1.0),
                 True,
             )
 

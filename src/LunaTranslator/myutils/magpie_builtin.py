@@ -1,12 +1,12 @@
 import json
 import windows, gobject
-from myutils.config import globalconfig, magpie_config
+from myutils.config import globalconfig, magpie_config, MagpieConfig
 import NativeUtils, functools
 from myutils.wrapper import threader
 
 
 class AdapterService:
-    AdaptersServiceStartMonitor_Callback_ptr = None
+    AdaptersServiceStartMonitor_Callback_ptrs = []
 
     @staticmethod
     def AdaptersServiceStartMonitor_Callback(callback):
@@ -26,15 +26,18 @@ class AdapterService:
 
     @staticmethod
     def init(callback):
-        AdapterService.AdaptersServiceStartMonitor_Callback_ptr = (
+        AdaptersServiceStartMonitor_Callback_ptr = (
             NativeUtils.AdaptersServiceStartMonitor_Callback(
                 functools.partial(
                     AdapterService.AdaptersServiceStartMonitor_Callback, callback
                 )
             )
         )
+        AdapterService.AdaptersServiceStartMonitor_Callback_ptrs.append(
+            AdaptersServiceStartMonitor_Callback_ptr
+        )
         NativeUtils.AdaptersServiceStartMonitor(
-            AdapterService.AdaptersServiceStartMonitor_Callback_ptr
+            AdaptersServiceStartMonitor_Callback_ptr
         )
 
     @staticmethod
@@ -111,9 +114,12 @@ class MagpieBuiltin:
 
     def changestatus(self, hwnd, full, windowmode):
         if full:
-            profiles_index = globalconfig.get("profiles_index", 0)
-            if profiles_index > len(magpie_config["profiles"]):
-                profiles_index = 0
+            profile = MagpieConfig.find(gobject.base.gameuid)
+            profiles_index = magpie_config["profiles"].index(profile) if profile else 0
+            profile = magpie_config["profiles"][profiles_index]
+            scalingMode = profile["scalingMode"]
+            if scalingMode >= len(magpie_config["scalingModes"]):
+                scalingMode = 0
 
             self.saveconfig()
             windows.SendMessage(
