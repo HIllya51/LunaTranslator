@@ -303,7 +303,6 @@ class gptcommon(basetrans):
         )
         usingstream = self.config["流式输出"]
         messages, query, query_1 = self.commoncreatemessages(query_2)
-        print(messages)
         apitype = APIType(self.config.get("API接口地址", ""))
         if apitype == APIType.gemini:
             response = self.request_gemini(apitype, messages, extrabody, extraheader)
