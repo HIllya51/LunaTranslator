@@ -143,7 +143,8 @@ class ocrtext(basetext):
             pass
 
     def leaveone(self):
-        self.ranges = self.ranges[-1:]
+        while len(self.ranges) > 1:
+            self.ranges.pop(0)  # 直接[-1:]不知道为什么不work
         if self.ranges:
             self.ranges[0].range_ui.isfocus = False
 
