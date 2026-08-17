@@ -1115,6 +1115,7 @@ class TranslatorWindow(resizableframeless):
         self.fullscreenmanager_busy = threading.Lock()
         self.isletgamefullscreened = False
         self.showhidestate = False
+        self.showhidestateFirst = True
         self.autohidestart = False
         self.processismuteed = False
         self.isbindedwindow = False
@@ -1141,10 +1142,9 @@ class TranslatorWindow(resizableframeless):
         self.clickRange_signal.connect(self.clickRange)
         self.showhide_signal.connect(self.showhideocrrange)
 
-        def __():
-            self.clearstate() or gobject.base.textsource.clearrange()
-
-        self.clear_signal_1.connect(tryprint(__))
+        self.clear_signal_1.connect(
+            lambda: tryprint(gobject.base.textsource.clearrange)()
+        )
         self.bindcropwindow_signal.connect(
             functools.partial(mouseselectwindow, self.bindcropwindowcallback)
         )
@@ -1616,17 +1616,18 @@ class TranslatorWindow(resizableframeless):
         self.refreshtoolicon()
 
     def showhideocrrange(self):
+        self.showhidestate = not self.showhidestate
+        self.refreshtoolicon()
         try:
-            self.showhidestate = not self.showhidestate
-            self.refreshtoolicon()
             gobject.base.textsource.showhiderangeui(self.showhidestate)
         except:
             pass
 
     def clearstate(self):
+        self.showhidestate = False
+        self.refreshtoolicon()
         try:
-            self.showhidestate = False
-            self.refreshtoolicon()
+            gobject.base.textsource.clearrange()
         except:
             pass
 
@@ -1811,14 +1812,12 @@ class TranslatorWindow(resizableframeless):
     def clickRange(self):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
             return
-        self.showhidestate = False
 
         rangeselct_function(functools.partial(self.afterrange, False))
 
     def clickRangeclear(self):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
             return
-        self.showhidestate = False
         rangeselct_function(functools.partial(self.afterrange, True))
 
     @tryprint
@@ -1827,9 +1826,16 @@ class TranslatorWindow(resizableframeless):
             gobject.base.textsource.clearrange()
         gobject.base.textsource.newrangeadjustor()
         gobject.base.textsource.setrect(rect)
-        self.showhideocrrange()
-        if not globalconfig.get("showrangeafterrangeselect", True):
-            self.showhideocrrange()
+        if (self.showhidestateFirst) or (
+            self.showhidestate and not self.showhidestateFirst
+        ):
+            self.showhidestateFirst = False
+            self.showhidestate = True
+            self.refreshtoolicon()
+        try:
+            gobject.base.textsource.showhiderangeui(self.showhidestate)
+        except:
+            pass
 
         def __():
             # 选取范围后立即直接一次，期间不要让自动之前去瞎跑以免浪费一次。

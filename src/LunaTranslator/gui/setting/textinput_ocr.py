@@ -566,39 +566,9 @@ def internal(self):
         ],
     ]
 
-    others = [
-        [
-            "范围框颜色",
-            D_getcolorbutton(
-                self,
-                globalconfig,
-                "ocrrangecolor",
-                callback=lambda _: gobject.base.textsource.setstyle(),
-                default="#000000",
-            ),
-            "",
-            "范围框宽度",
-            D_getspinbox(
-                1,
-                100,
-                globalconfig,
-                "ocrrangewidth",
-                callback=lambda _: gobject.base.textsource.setstyle(),
-                default=2,
-            ),
-            "",
-            "",
-            "",
-        ],
-        [
-            "选取OCR范围后显示范围框",
-            D_getsimpleswitch(globalconfig, "showrangeafterrangeselect", default=True),
-        ],
-    ]
     allothers = [
         [dict(title="识别设置", type="grid", grid=reco)],
         [dict(title="自动化执行", grid=autorun, button=D_getdoclink("ocrparam.html"))],
-        [dict(title="其他设置", type="grid", grid=others)],
     ]
 
     return makesubtab_lazy(

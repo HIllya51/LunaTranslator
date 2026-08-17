@@ -246,7 +246,7 @@ class rangeadjust(Mainw):
         self.label.setStyleSheet(
             " border:%spx solid %s; background-color: rgba(0,0,0, %s); border-radius:0;"
             % (
-                globalconfig.get("ocrrangewidth", 2),
+                globalconfig.get("ocrrangewidth", 1),
                 "red" if self.isfocus else globalconfig.get("ocrrangecolor", "#000000"),
                 1 / 255,
             )
@@ -271,7 +271,7 @@ class rangeadjust(Mainw):
             self._endPos = None
 
     def rectoffset(self, rect: QRect):
-        r = round(globalconfig.get("ocrrangewidth", 2) * self.devicePixelRatioF())
+        r = round(globalconfig.get("ocrrangewidth", 1) * self.devicePixelRatioF())
         return rect.adjusted(r, r, -r, -r)
 
     def setGeometry(self, r: QRect):
@@ -307,7 +307,7 @@ class rangeadjust(Mainw):
         if rect.isValid():
             if show:
                 self.show()
-            r = round(globalconfig.get("ocrrangewidth", 2) * self.devicePixelRatioF())
+            r = round(globalconfig.get("ocrrangewidth", 1) * self.devicePixelRatioF())
             self.setGeometry(rect.adjusted(-r, -r, r, r))
         self._rect = rect
         # 由于使用movewindow而非qt函数，导致内部执行绪有问题。
@@ -365,7 +365,7 @@ def rangeselct_function(callback, parent: QWidget = None, hideshow=False):
         color.red(),
         color.green(),
         color.blue(),
-        globalconfig.get("ocrrangewidth", 2),
+        globalconfig.get("ocrrangewidth", 1),
         cb,
     )
     if not called:
