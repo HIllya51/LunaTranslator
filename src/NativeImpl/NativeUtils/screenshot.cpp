@@ -287,19 +287,15 @@ static LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM l
             int r_width = r_right - r_left;
             int r_height = r_bottom - r_top;
             auto scale = GetDevicePixelRatioF(hwnd);
-            auto __ocrrangewidth = scale * ocrrangewidth;
+            int r = (int)std::lround(scale * ocrrangewidth);
+            if (r < 1)
+                r = 1;
+            RECT frame{r_left - r, r_top - r, r_right + r, r_bottom + r};
+            HBRUSH hFrameBrush = CreateSolidBrush(RGB(range_r, range_g, range_b));
+            FillRect(g_hMemDC, &frame, hFrameBrush);
+            DeleteObject(hFrameBrush);
 
-            BitBlt(g_hMemDC, r_left - ceil(__ocrrangewidth), r_top - ceil(__ocrrangewidth), r_width + 2 * floor(__ocrrangewidth), r_height + 2 * floor(__ocrrangewidth), hMemDCBitmap, r_left - ceil(__ocrrangewidth), r_top - ceil(__ocrrangewidth), SRCCOPY);
-
-            HPEN hPen = CreatePen(PS_SOLID, ceil(__ocrrangewidth), RGB(range_r, range_g, range_b));
-            HPEN hOldPen = (HPEN)SelectObject(g_hMemDC, hPen);
-            HBRUSH hOldBrush = (HBRUSH)SelectObject(g_hMemDC, GetStockObject(NULL_BRUSH));
-
-            Rectangle(g_hMemDC, r_left - ceil(__ocrrangewidth / 2), r_top - ceil(__ocrrangewidth / 2), r_right + ceil(__ocrrangewidth / 2), r_bottom + ceil(__ocrrangewidth / 2));
-
-            SelectObject(g_hMemDC, hOldPen);
-            SelectObject(g_hMemDC, hOldBrush);
-            DeleteObject(hPen);
+            BitBlt(g_hMemDC, r_left, r_top, r_width, r_height, hMemDCBitmap, r_left, r_top, SRCCOPY);
         }
 
         BitBlt(hdc, 0, 0, width, height, g_hMemDC, 0, 0, SRCCOPY);
