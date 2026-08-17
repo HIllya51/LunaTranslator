@@ -2962,6 +2962,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 君に惑い、君に溺れる。
+    {0x8011C76C, {FULL_STRING | CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, 0x010079D02431E000ull, "1.0.0"}},
     // 千銃士:Rhodoknight
     {0x81EAB6B4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f010061A01C1CE000, 0x01001D402587E000ull, "1.0.0"}},
     // Dreamin' Her -僕は、彼女の夢を見る。-
