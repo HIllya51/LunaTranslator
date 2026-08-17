@@ -1105,16 +1105,18 @@ class HistoryViewer(QListView):
     IndexRole = Qt.ItemDataRole.UserRole + 101
 
     def showmenu(self, _):
-        idx = self.indexAt(_)
-        if not idx.isValid():
+        indexs = self.selectionModel().selectedIndexes()
+        if not indexs:
             return
-        item = self.model_.itemFromIndex(idx)
         menu = QMenu(self)
         delete = LAction("删除", menu)
         label = LAction("收藏", menu)
         daochu = LAction("导出", menu)
         label.setCheckable(True)
-        label.setChecked(item.text() in globalconfig["wordlabel2"])
+        items = [self.model_.itemFromIndex(index) for index in indexs]
+        label.setChecked(
+            all(item.text() in globalconfig["wordlabel2"] for item in items)
+        )
         if self.historshoucangjia == 0:
             menu.addAction(delete)
         menu.addAction(label)
@@ -1122,7 +1124,7 @@ class HistoryViewer(QListView):
             menu.addAction(daochu)
         action = menu.exec(QCursor.pos())
         if action == delete:
-            self.deleteindex(idx)
+            self.deleteindex(indexs)
         elif action == daochu:
             text = ""
             maybehassentence = OrderedDict()
@@ -1147,45 +1149,63 @@ class HistoryViewer(QListView):
                 ff.write("<ul>{}</ul>".format(text))
 
         elif action == label:
-            if label.isChecked():
-                if self.historshoucangjia == 0:
-                    item.setData(
-                        QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
-                    )
+            for item in items:
+                if label.isChecked():
+                    if self.historshoucangjia == 0:
+                        item.setData(
+                            QBrush(Qt.GlobalColor.cyan), Qt.ItemDataRole.BackgroundRole
+                        )
+                    else:
+                        item.setData(None, Qt.ItemDataRole.BackgroundRole)
+                    globalconfig["wordlabel2"].append(item.text())
+
                 else:
-                    item.setData(None, Qt.ItemDataRole.BackgroundRole)
-                globalconfig["wordlabel2"].append(item.text())
+                    if self.historshoucangjia == 0:
+                        item.setData(None, Qt.ItemDataRole.BackgroundRole)
+                    else:
+                        item.setData(
+                            QBrush(Qt.GlobalColor.gray), Qt.ItemDataRole.BackgroundRole
+                        )
 
-            else:
-                if self.historshoucangjia == 0:
-                    item.setData(None, Qt.ItemDataRole.BackgroundRole)
-                else:
-                    item.setData(
-                        QBrush(Qt.GlobalColor.gray), Qt.ItemDataRole.BackgroundRole
-                    )
+                    try:
+                        globalconfig["wordlabel2"].remove(item.text())
+                    except:
+                        pass
 
-                try:
-                    globalconfig["wordlabel2"].remove(item.text())
-                except:
-                    pass
+    def deleteindex(self, indexs: "list[QModelIndex]"):
+        if not indexs:
+            return
 
-    def deleteindex(self, index: QModelIndex):
-        if index.isValid():
-            item = self.model_.itemFromIndex(index)
-            id_ = item.data(self.IndexRole)
-            self.model_.removeRow(index.row())
-            gobject.base.somedatabase.removewhich(id_)
+        rows_to_delete = sorted([idx.row() for idx in indexs if idx.isValid()])
+        if not rows_to_delete:
+            return
+        first_row = rows_to_delete[0]
+        new_focus_row = first_row
+        if first_row >= self.model_.rowCount() - len(rows_to_delete):
+            new_focus_row = max(0, first_row - 1)
+
+        for row in sorted(rows_to_delete, reverse=True):
+            item = self.model_.item(row)
+            if item:
+                id_ = item.data(self.IndexRole)
+                self.model_.removeRow(row)
+                gobject.base.somedatabase.removewhich(id_)
+
+        new_index = self.model_.index(new_focus_row, 0)
+        if new_index.isValid():
+            self.setCurrentIndex(new_index)
 
     def keyPressEvent(self, e: QKeyEvent):
         if (e.key() == Qt.Key.Key_Delete) and (self.historshoucangjia == 0):
-            index = self.currentIndex()
-            self.deleteindex(index)
+            indexs = self.selectionModel().selectedIndexes()
+            self.deleteindex(indexs)
         return super().keyPressEvent(e)
 
     def __init__(self, parent: "searchwordW"):
         super(HistoryViewer, self).__init__(parent)
         self.historshoucangjia = 0
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         self.model_ = QStandardItemModel(self)
         self.setModel(self.model_)
         self.doubleClicked.connect(self.selectwhich)
@@ -2080,7 +2100,9 @@ class searchwordW(closeashidewindow):
             def __(_):
                 globalconfig["mdictsplit"] = self.dict_textoutput_spl.sizes()
 
-            self.dict_textoutput_spl.setSizes(globalconfig.get("mdictsplit", [400, 400]))
+            self.dict_textoutput_spl.setSizes(
+                globalconfig.get("mdictsplit", [400, 400])
+            )
             self.dict_textoutput_spl.splitterMoved.connect(__)
         self.isfirstshowleftwidgets = False
 
