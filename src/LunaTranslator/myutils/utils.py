@@ -453,6 +453,12 @@ def is_port_listening(host, port):
         return False
 
 
+def str2rgba(string, alpha100):
+    c = QColor(string)
+    c.setAlphaF(alpha100 / 100)
+    return c.name(QColor.NameFormat.HexArgb)
+
+
 def stringfyerror(e: "Exception|str"):
     if isinstance(e, str):
         return e
