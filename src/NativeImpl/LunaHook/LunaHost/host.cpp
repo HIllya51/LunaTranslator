@@ -124,9 +124,6 @@ namespace
 	}
 	void registerHostRpcHandlers()
 	{
-		// Host-side handlers receive the source process id as the first argument
-		// (threaded through rpc::dispatch by __handlepipethread) — no thread-local.
-
 		rpc::on_ctx<rpc::Id::NotifyPreparedOK>([](DWORD pid)
 											   { SetEvent(processRecordsByIds->at(pid).prepareWaiter); });
 
@@ -138,7 +135,7 @@ namespace
 		rpc::on_ctx<rpc::Id::NotifyHookFound>([](DWORD pid, HookParam hp, RpcBlob text)
 											  {
 			auto OnHookFound = processRecordsByIds->at(pid).OnHookFound;
-			auto info_text = (wchar_t *)text.data; // may not be UTF-16; reused as raw bytes below
+			auto info_text = (wchar_t *)text.data;
 			std::wstring wide = info_text;
 			if (wide.size() > HOOK_SEARCH_LENGTH)
 			{

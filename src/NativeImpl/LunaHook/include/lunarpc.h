@@ -14,11 +14,6 @@ namespace rpc
 		uint32_t payloadSize;
 	};
 
-	// ============================================================== RPC table
-	// Each entry:  X(name, signature)
-	//   name      - identifier, available as rpc::Id::name
-	//   signature - function type, e.g. void(HookParam, std::string)
-	// Add a line here to register a new RPC; both sides pick it up.
 #define RPC_TABLE(X)                                                  \
 	/* ---- host -> hook (commands) ---- */                           \
 	X(NewHook, void(HookParam))                                       \
@@ -48,7 +43,6 @@ namespace rpc
 		COUNT
 	};
 
-	// ---------------------------------------------------------------- pack
 	namespace detail
 	{
 		template <class T>
@@ -75,8 +69,6 @@ namespace rpc
 			}
 			else
 			{
-				// blittable: structs (HookParam, SearchParam, ThreadParam),
-				// scalars (uint64_t, DWORD, int) and enums (HOSTINFO, LANG_STRINGS_HOOK).
 				return (uint32_t)sizeof(U);
 			}
 		}
@@ -108,35 +100,31 @@ namespace rpc
 		}
 
 		template <class T>
-		T getArg(const BYTE *&cur)
+		T makeArg(const BYTE *p, uint32_t sz)
 		{
-			uint32_t sz;
-			memcpy(&sz, cur, 4);
-			cur += 4;
 			T v;
 			if constexpr (std::is_same_v<T, std::string>)
-				v.assign((const char *)cur, sz);
+				v.assign((const char *)p, sz);
 			else if constexpr (std::is_same_v<T, std::wstring>)
-				v.assign((const wchar_t *)cur, sz / sizeof(wchar_t));
+				v.assign((const wchar_t *)p, sz / sizeof(wchar_t));
 			else if constexpr (std::is_same_v<T, RpcBlob>)
 			{
-				v.data = const_cast<BYTE *>(cur);
+				v.data = const_cast<BYTE *>(p);
 				v.size = sz;
 			}
 			else
-				memcpy(&v, cur, sz);
-			cur += sz;
+				memcpy(&v, p, sz < sizeof(T) ? sz : sizeof(T));
 			return v;
 		}
 	} // namespace detail
 
-	// ---------------------------------------------------------------- call
 	template <class... Args>
 	void callRaw(uint32_t id, HANDLE pipe, const Args &...args)
 	{
-		thread_local std::vector<BYTE> buf;
 		uint32_t payload = (0u + ... + (4u + detail::dataLen(args)));
-		buf.resize(sizeof(Header) + payload);
+		if (sizeof(Header) + payload > PIPE_BUFFER_SIZE)
+			return;
+		std::vector<BYTE> buf(sizeof(Header) + payload);
 		BYTE *base = buf.data();
 		uint32_t off = sizeof(Header);
 		auto put = [&](const auto &v)
@@ -148,19 +136,12 @@ namespace rpc
 		WriteFile(pipe, base, sizeof(Header) + payload, &written, nullptr);
 	}
 
-	// ----------------------------------------------------- registry / dispatch
-	// Handlers receive an opaque `ctx` (threaded through dispatch, e.g. the
-	// source process id) so a receiver can address per-message context without
-	// thread-local state.
 	using Handler = std::function<void(const BYTE *payload, uint32_t size, DWORD ctx)>;
 	inline std::array<Handler, (size_t)Id::COUNT> &registry()
 	{
 		static std::array<Handler, (size_t)Id::COUNT> r;
 		return r;
 	}
-	// Dispatch one received message. `ctx` is forwarded to the handler.
-	// Returns the function id (so a caller may react to specific ids — e.g.
-	// Detach — without a registered handler).
 	inline uint32_t dispatch(const BYTE *msg, uint32_t total, DWORD ctx=0)
 	{
 		Header h;
@@ -171,7 +152,6 @@ namespace rpc
 		return h.id;
 	}
 
-	// ----------------------------------------------------------- typed glue
 	namespace detail
 	{
 		template <class Sig>
@@ -192,29 +172,32 @@ namespace rpc
 			static constexpr bool value = (std::is_convertible_v<A, typename sig_params<Sig>::template arg<I>> && ...);
 		};
 
-		// Invoke h(args...) reading each argument sequentially from `cur`, in
-		// argument order. Done by recursion (each level reads one arg, then
-		// chains a continuation), which gives guaranteed left-to-right order
-		// without std::tuple/std::apply — those trip an MSVC internal compiler
-		// error on some signature/type combinations here.
 		template <class... A>
 		struct Invoke;
 		template <>
 		struct Invoke<>
 		{
 			template <class H>
-			static void run(H &h, const BYTE *&) { h(); }
+			static void run(H &h, const BYTE *&, const BYTE *) { h(); }
 		};
 		template <class Head, class... Tail>
 		struct Invoke<Head, Tail...>
 		{
 			template <class H>
-			static void run(H &h, const BYTE *&cur)
+			static void run(H &h, const BYTE *&cur, const BYTE *end)
 			{
-				Head arg = detail::getArg<Head>(cur); // sequenced before the recursive call below
+				if (cur + 4 > end)
+					return;
+				uint32_t sz;
+				memcpy(&sz, cur, 4);
+				const BYTE *val = cur + 4;
+				if (val + sz > end)
+					return;
+				cur = val + sz;
+				Head arg = detail::makeArg<Head>(val, sz); // sequenced before the recursive call below
 				auto rest = [&, arg = std::move(arg)](Tail... t) mutable
 				{ h(arg, std::move(t)...); };
-				Invoke<Tail...>::run(rest, cur);
+				Invoke<Tail...>::run(rest, cur, end);
 			}
 		};
 
@@ -225,15 +208,13 @@ namespace rpc
 		{
 			static Handler build(F fn)
 			{
-				return [h = std::move(fn)](const BYTE *p, uint32_t, DWORD)
+				return [h = std::move(fn)](const BYTE *p, uint32_t size, DWORD)
 				{
 					const BYTE *cur = p;
-					detail::Invoke<A...>::run(h, cur);
+					detail::Invoke<A...>::run(h, cur, p + size);
 				};
 			}
 		};
-		// Variant whose handler takes the dispatch context as its first argument:
-		//   on_ctx<Id::Foo>([](DWORD ctx, A... args){ ... })
 		template <class Sig, class F>
 		struct make_handler_ctx;
 		template <class... A, class F>
@@ -241,19 +222,19 @@ namespace rpc
 		{
 			static Handler build(F fn)
 			{
-				return [h = std::move(fn)](const BYTE *p, uint32_t, DWORD ctx)
+				return [h = std::move(fn)](const BYTE *p, uint32_t size, DWORD ctx)
 				{
 					const BYTE *cur = p;
 					auto wrapper = [&](A... args)
 					{ h(ctx, args...); };
-					detail::Invoke<A...>::run(wrapper, cur);
+					detail::Invoke<A...>::run(wrapper, cur, p + size);
 				};
 			}
 		};
 	} // namespace detail
 
 	template <Id I>
-	struct Traits; // specialized per RPC below
+	struct Traits;
 #define X(name, sig)        \
 	template <>             \
 	struct Traits<Id::name> \
@@ -263,24 +244,17 @@ namespace rpc
 	RPC_TABLE(X)
 #undef X
 
-	// Register a typed handler. The handler's parameter types must match the
-	// RPC's declared signature. The dispatch context is ignored.
 	template <Id I, class F>
 	void on(F f)
 	{
 		registry()[(uint32_t)I] = detail::make_handler<typename Traits<I>::sig_t, F>::build(std::move(f));
 	}
-	// Like on(), but the handler receives the dispatch context (the value passed
-	// to dispatch()) as its first argument. Use on the receiver side that needs
-	// per-message context (e.g. the host, which passes the process id).
 	template <Id I, class F>
 	void on_ctx(F f)
 	{
 		registry()[(uint32_t)I] = detail::make_handler_ctx<typename Traits<I>::sig_t, F>::build(std::move(f));
 	}
 
-	// Call a remote function. Argument count and convertibility are checked
-	// against the declared signature at compile time.
 	template <Id I, class... Args>
 	void call(HANDLE pipe, Args &&...args)
 	{
