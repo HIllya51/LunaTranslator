@@ -113,7 +113,10 @@ namespace rpc
 				v.size = sz;
 			}
 			else
+			{
+				memset(&v, 0, sizeof(T));
 				memcpy(&v, p, sz < sizeof(T) ? sz : sizeof(T));
+			}
 			return v;
 		}
 	} // namespace detail
@@ -124,8 +127,8 @@ namespace rpc
 		uint32_t payload = (0u + ... + (4u + detail::dataLen(args)));
 		if (sizeof(Header) + payload > PIPE_BUFFER_SIZE)
 			return;
-		std::vector<BYTE> buf(sizeof(Header) + payload);
-		BYTE *base = buf.data();
+		std::unique_ptr<BYTE[]> buf(new BYTE[sizeof(Header) + payload]);
+		BYTE *base = buf.get();
 		uint32_t off = sizeof(Header);
 		auto put = [&](const auto &v)
 		{ off += detail::putArg(base + off, v); };
@@ -196,7 +199,7 @@ namespace rpc
 				cur = val + sz;
 				Head arg = detail::makeArg<Head>(val, sz); // sequenced before the recursive call below
 				auto rest = [&, arg = std::move(arg)](Tail... t) mutable
-				{ h(arg, std::move(t)...); };
+				{ h(std::move(arg), std::move(t)...); };
 				Invoke<Tail...>::run(rest, cur, end);
 			}
 		};
@@ -208,6 +211,7 @@ namespace rpc
 		{
 			static Handler build(F fn)
 			{
+				static_assert(std::is_invocable_v<F, A...>, "rpc::on: handler is not callable with the declared argument types");
 				return [h = std::move(fn)](const BYTE *p, uint32_t size, DWORD)
 				{
 					const BYTE *cur = p;
@@ -222,11 +226,12 @@ namespace rpc
 		{
 			static Handler build(F fn)
 			{
+				static_assert(std::is_invocable_v<F, DWORD, A...>, "rpc::on_ctx: handler is not callable with (ctx, declared-args...)");
 				return [h = std::move(fn)](const BYTE *p, uint32_t size, DWORD ctx)
 				{
 					const BYTE *cur = p;
 					auto wrapper = [&](A... args)
-					{ h(ctx, args...); };
+					{ h(ctx, std::move(args)...); };
 					detail::Invoke<A...>::run(wrapper, cur, p + size);
 				};
 			}
