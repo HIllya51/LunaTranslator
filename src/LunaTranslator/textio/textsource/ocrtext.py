@@ -63,7 +63,7 @@ class rangemanger:
         if imgr.isNull():
             return
         result = ocr_run(imgr)
-        self.savelastimg = cvMat.fromQImage(imgr)
+        self.savelastimg = cvMat(imgr)
         self.savelastrecimg = self.savelastimg
         self.lastocrtime = time.time()
         self.savelasttext = result.textonly
@@ -76,7 +76,7 @@ class rangemanger:
         imgr = imageCutEx(self.ref.hwnd, rect)
         ok = True
         if globalconfig.get("ocr_auto_method_v2", "period") == "analysis":
-            imgr1 = cvMat.fromQImage(imgr)
+            imgr1 = cvMat(imgr)
 
             image_score = imgr1.MSSIM(self.savelastimg)
 
@@ -116,7 +116,7 @@ class rangemanger:
         if not rect.isValid():
             return False
         imgr = imageCutEx(self.ref.hwnd, rect)
-        imgr1 = cvMat.fromQImage(imgr)
+        imgr1 = cvMat(imgr)
         image_score = imgr1.MSSIM(self.savelastimg)
 
         gobject.base.thresholdsett1.emit(str(float(image_score)))

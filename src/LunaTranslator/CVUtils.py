@@ -38,32 +38,29 @@ class _unique_ptr(c_void_p):
         self.deleter = deleter
 
     def __del__(self):
-        self.deleter(self)
+        if self:
+            self.deleter(self)
 
 
-class cvMat(c_void_p):
-    @staticmethod
-    def fromQImage(image: QImage):
+class cvMat(_unique_ptr):
+    def __init__(self, image: QImage):
         if (image is None) or image.isNull() or (image.bits() is None):
-            return cvMat(None)
+            super().__init__(None, cvMatDestroy)
+            return
         _CVUtils = _DelayLoadCVUtils()
+        cvMatDestroy = _CVUtils.cvMatDestroy
+        cvMatDestroy.argtypes = (c_void_p,)
         cvMatFromRGB888 = _CVUtils.cvMatFromRGB888
         cvMatFromRGB888.argtypes = c_void_p, c_int, c_int, c_int
-        cvMatFromRGB888.restype = cvMat
+        cvMatFromRGB888.restype = c_void_p
         if image.format() != QImage.Format.Format_RGB888:
             image = image.convertToFormat(QImage.Format.Format_RGB888)
-        ptr: cvMat = cvMatFromRGB888(
+        ptr = cvMatFromRGB888(
             int(image.bits()), image.width(), image.height(), image.bytesPerLine()
         )
         if not ptr:
             raise InvalidImage()
-        return ptr
-
-    def __del__(self):
-        if self:
-            cvMatDestroy = _DelayLoadCVUtils().cvMatDestroy
-            cvMatDestroy.argtypes = (cvMat,)
-            cvMatDestroy(self)
+        super().__init__(ptr, cvMatDestroy)
 
     def MSSIM(self, mat: "cvMat"):
         cvMatMSSIM = _DelayLoadCVUtils().cvMatMSSIM
@@ -128,7 +125,7 @@ def GetDeviceInfoD3D12():
     return ret
 
 
-class LocalOCR:
+class LocalOCR(_unique_ptr):
 
     def __init__(
         self, det, rec, key, thread: int, gpu: bool, luid, device_type: str
@@ -139,9 +136,9 @@ class LocalOCR:
         if not OcrLoadRuntime():
             raise SysNotSupport()
 
-        self._OcrInit = _CVUtils.OcrInit
-        self._OcrInit.restype = c_void_p
-        self._OcrInit.argtypes = (
+        OcrInit = _CVUtils.OcrInit
+        OcrInit.restype = c_void_p
+        OcrInit.argtypes = (
             c_wchar_p,
             c_wchar_p,
             c_wchar_p,
@@ -152,22 +149,13 @@ class LocalOCR:
             _error,
         )
 
-        self._OcrDetect = _CVUtils.OcrDetect
-        self._OcrDetect.argtypes = (
-            c_void_p,
-            cvMat,
-            c_int32,
-            _OcrDetectCallback,
-            _error,
-        )
-
         OcrDestroy = _CVUtils.OcrDestroy
         OcrDestroy.argtypes = (c_void_p,)
 
         error: "list[bytes]" = []
 
-        self.pOcrObj = _unique_ptr(
-            self._OcrInit(
+        super().__init__(
+            OcrInit(
                 det,
                 rec,
                 key,
@@ -183,7 +171,7 @@ class LocalOCR:
             raise Exception(
                 error[0].decode(locale.getpreferredencoding(), errors="ignore")
             )
-        if not self.pOcrObj:
+        if not self:
             raise ModelLoadFailed()
 
     def OcrDetect(self, image: QImage, mode: int):
@@ -195,11 +183,18 @@ class LocalOCR:
             pss.append((x1, y1, x2, y2, x3, y3, x4, y4))
             texts.append(text.decode("utf8"))
 
-        mat = cvMat.fromQImage(image)
+        mat = cvMat(image)
         error: "list[bytes]" = []
-        self._OcrDetect(
-            self.pOcrObj, mat, mode, _OcrDetectCallback(cb), _error(error.append)
+        _CVUtils = _DelayLoadCVUtils()
+        OcrDetect = _CVUtils.OcrDetect
+        OcrDetect.argtypes = (
+            c_void_p,
+            cvMat,
+            c_int32,
+            _OcrDetectCallback,
+            _error,
         )
+        OcrDetect(self, mat, mode, _OcrDetectCallback(cb), _error(error.append))
         if error:
             raise Exception(
                 error[0].decode(locale.getpreferredencoding(), errors="ignore")
