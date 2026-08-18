@@ -476,7 +476,7 @@ def stringfyerror(e: "Exception|str"):
 
     if isinstance(e, requests.exceptions.RequestException):
         error = _TR("网络错误") + ": " + error
-        if e.proxy:
+        if ("proxy" in dir(e)) and e.proxy:
             try:
                 hostname, port = e.proxy.split(":")
                 if not is_port_listening(hostname, int(port)):
@@ -926,10 +926,13 @@ class APIType:
     class aliyuncs(openai):
         pass
 
-    class cohere:
+    class cohere(openai):
         pass
 
-    class mistral:
+    class mistral(openai):
+        pass
+
+    class zhipuocr:
         pass
 
     def __eq__(self, value):
@@ -955,6 +958,8 @@ class APIType:
             self._value_ = APIType.cohere
         elif url.startswith("https://api.mistral.ai"):
             self._value_ = APIType.mistral
+        elif url == "https://open.bigmodel.cn/api/paas/v4/files/ocr":
+            self._value_ = APIType.zhipuocr
         else:
             self._value_ = APIType.openai
 
@@ -962,6 +967,8 @@ class APIType:
         if self == APIType.azure:
             return self.url
         if self == APIType.gemini:
+            return self.url
+        if self == APIType.zhipuocr:
             return self.url
         url = self.url
         if url.endswith(checkend):
@@ -1033,6 +1040,8 @@ def common_list_models(
         return parsecoheremodellist(proxies, apikey)
     elif apitype == APIType.gemini:
         return parsegeminimodellist(apitype, proxies, apikey)
+    elif apitype == APIType.zhipuocr:
+        return ["ocr"]
     elif apitype == APIType.claude:
         return parseclaudemodellist(proxies, apikey)
     params = dict(headers={"Authorization": "Bearer {}".format(apikey)})

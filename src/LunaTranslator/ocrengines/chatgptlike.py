@@ -30,6 +30,37 @@ class OCR(baseocr):
         h.update(extraheader)
         return h
 
+    def ocr_zhipu(self, _, imagebinary, extrabody, extraheader):
+
+        files = {
+            "file": ("example-file.png", imagebinary),
+            "tool_type": "hand_write",
+            "probability": "true",
+        }
+        files.update(extrabody)
+        response = self.proxysession.post(
+            "https://open.bigmodel.cn/api/paas/v4/files/ocr",
+            headers=self.createheaders(extraheader),
+            files=files,
+        )
+        try:
+            boxs = []
+            texts = []
+            for words_result in response.json()["words_result"]:
+                texts.append(words_result["words"])
+                location = words_result["location"]
+                boxs.append(
+                    [
+                        location["left"],
+                        location["top"],
+                        location["left"] + location["width"],
+                        location["top"] + location["height"],
+                    ]
+                )
+            return OCRResult(boxs=boxs, texts=texts)
+        except:
+            raise Exception(response)
+
     def ocr_mistral(self, _, base64_image, extrabody, extraheader):
         payload = {
             "model": self.config["model"],
@@ -126,6 +157,8 @@ class OCR(baseocr):
             )
         elif apitype == APIType.mistral:
             return self.ocr_mistral(prompt, base64_image, extrabody, extraheader)
+        elif apitype == APIType.zhipuocr:
+            return self.ocr_zhipu(prompt, imagebinary, extrabody, extraheader)
         else:
             response = self.ocr_normal(
                 apitype, prompt, base64_image, extrabody, extraheader

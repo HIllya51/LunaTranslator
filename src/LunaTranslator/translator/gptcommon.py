@@ -203,7 +203,7 @@ def parsestreamresp(
     getmodelhook=None,
 ):
     if (response.status_code != 200) and (
-        not response.headers["Content-Type"].startswith("text/event-stream")
+        not response.headers.get("Content-Type", "").startswith("text/event-stream")
     ):
         # application/json
         # text/html
