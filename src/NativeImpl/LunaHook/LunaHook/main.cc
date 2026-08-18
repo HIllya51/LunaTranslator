@@ -1,6 +1,7 @@
 
 #include "MinHook.h"
 #include "lunarpc.h"
+#include "../../fileversion.hpp"
 using rpc::RpcBlob;
 void HIJACK();
 void detachall();
@@ -529,7 +530,7 @@ bool is_memory_readable_ex(void *ptr, size_t size)
 		   mbi.RegionSize >= size;
 }
 
-static bool _queryversion(WORD *_1, WORD *_2, WORD *_3, WORD *_4)
+std::optional<version_t> queryversion()
 {
 	wchar_t fileName[MAX_PATH];
 	GetModuleFileNameW(NULL, fileName, MAX_PATH);
@@ -537,39 +538,7 @@ static bool _queryversion(WORD *_1, WORD *_2, WORD *_3, WORD *_4)
 	DWORD dwSize = GetFileVersionInfoSizeW(fileName, &dwHandle);
 	if (dwSize == 0)
 	{
-		return false;
-	}
-
-	std::vector<char> versionInfoBuffer(dwSize);
-	if (!GetFileVersionInfoW(fileName, dwHandle, dwSize, versionInfoBuffer.data()))
-	{
-		return false;
-	}
-
-	VS_FIXEDFILEINFO *pFileInfo;
-	UINT fileInfoSize;
-	if (!VerQueryValueW(versionInfoBuffer.data(), L"\\", reinterpret_cast<LPVOID *>(&pFileInfo), &fileInfoSize))
-	{
-		return false;
-	}
-
-	DWORD ms = pFileInfo->dwFileVersionMS;
-	DWORD ls = pFileInfo->dwFileVersionLS;
-
-	WORD majorVersion = HIWORD(ms);
-	WORD minorVersion = LOWORD(ms);
-	WORD buildNumber = HIWORD(ls);
-	WORD revisionNumber = LOWORD(ls);
-	*_1 = majorVersion;
-	*_2 = minorVersion;
-	*_3 = buildNumber;
-	*_4 = revisionNumber;
-	return true;
-}
-std::optional<version_t> queryversion()
-{
-	WORD _1, _2, _3, _4;
-	if (!_queryversion(&_1, &_2, &_3, &_4))
 		return {};
-	return std::make_tuple(_1, _2, _3, _4);
+	}
+	return QueryVersion(fileName);
 }
