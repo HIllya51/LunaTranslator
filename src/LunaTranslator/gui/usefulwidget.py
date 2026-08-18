@@ -1321,35 +1321,8 @@ def check_grid_append(grids: "list[list]", minlen=None):
     return notx
 
 
-def getcolorbutton(
-    parent,
-    d: dict,
-    key,
-    callback=None,
-    alpha=False,
-    tips="颜色",
-    cantzeroalpha=False,
-    default=None,
-):
-    qicon = qtawesome.icon("fa.paint-brush", color=d.get(key, default))
-    b = IconButton(None, qicon=qicon, tips=tips)
-    cb = functools.partial(
-        __selectcolor,
-        parent,
-        b,
-        d,
-        key,
-        callback,
-        alpha=alpha,
-        cantzeroalpha=cantzeroalpha,
-        default=default,
-    )
-    b.clicked.connect(cb)
-    return b
-
-
 def D_getcolorbutton(parent, d, key, callback, alpha=False, tips="颜色", default=None):
-    return lambda: getcolorbutton(
+    return lambda: ColorButton(
         parent, d, key, callback, alpha=alpha, tips=tips, default=default
     )
 
@@ -1466,7 +1439,7 @@ def getColor(color, parent, alpha=False):
     return color_dialog.selectedColor()
 
 
-def __selectcolor(
+def _selectcolor(
     parent: QWidget,
     button: QPushButton,
     configdict: dict,
@@ -3377,6 +3350,34 @@ class IconButton(LPushButton):
     def setEnabled(self, _):
         super().setEnabled(_)
         self.__seticon()
+
+
+class ColorButton(IconButton):
+    def __init__(
+        self,
+        parent,
+        d: dict,
+        key,
+        callback=None,
+        alpha=False,
+        tips="颜色",
+        cantzeroalpha=False,
+        default=None,
+    ):
+        qicon = qtawesome.icon("fa.paint-brush", color=d.get(key, default))
+        super().__init__(None, qicon=qicon, tips=tips)
+        cb = functools.partial(
+            _selectcolor,
+            parent,
+            self,
+            d,
+            key,
+            callback,
+            alpha=alpha,
+            cantzeroalpha=cantzeroalpha,
+            default=default,
+        )
+        self.clicked.connect(cb)
 
 
 class SplitLine(QFrame):

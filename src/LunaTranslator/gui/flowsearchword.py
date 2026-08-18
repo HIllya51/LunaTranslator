@@ -3,7 +3,7 @@ import functools
 import gobject, NativeUtils
 from myutils.config import globalconfig
 from gui.usefulwidget import (
-    getcolorbutton,
+    ColorButton,
     getspinbox,
     getsimpleswitch,
     getsmalllabel,
@@ -209,7 +209,7 @@ class dialog_syssetting(LDialog):
         formLayout.addRow("圆角", spin1)
 
         formLayout.addRow("窗口特效", lay)
-        color11 = getcolorbutton(
+        color11 = ColorButton(
             self,
             globalconfig,
             "WordViewTooltipColor",
@@ -219,7 +219,7 @@ class dialog_syssetting(LDialog):
             cantzeroalpha=True,
         )
         formLayout.addRow("背景颜色", color11)
-        color1 = getcolorbutton(
+        color1 = ColorButton(
             self,
             globalconfig,
             "WordViewTooltipContentColor",

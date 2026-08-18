@@ -24,7 +24,7 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     getspinbox,
     ClickableLabel,
-    getcolorbutton,
+    ColorButton,
     KeySequenceEdit,
     check_grid_append,
     DarkLightAutoResetIconHelper,
@@ -76,7 +76,7 @@ class multicolorset(LDialog, DarkLightAutoResetIconHelper):
                 callback=gobject.base.translation_ui.translate_text.setcolorstyle,
             )
 
-            p = getcolorbutton(
+            p = ColorButton(
                 self,
                 globalconfig["cixingcolor"],
                 k,

@@ -25,7 +25,7 @@ from gui.usefulwidget import (
     getspinbox,
     SplitLine,
     create_centered_rect,
-    getcolorbutton,
+    ColorButton,
     threeswitch,
     getsimplecombobox,
     request_delete_ok,
@@ -865,7 +865,7 @@ class dialog_savedgame_new(QSplitter):
         ]:
             formLayout.addRow(
                 name,
-                getcolorbutton(
+                ColorButton(
                     self,
                     globalconfig["dialog_savegame_layout"],
                     key,
@@ -905,7 +905,7 @@ class dialog_savedgame_new(QSplitter):
         )
         formLayout.addRow(
             "颜色_文字",
-            getcolorbutton(
+            ColorButton(
                 self,
                 globalconfig["dialog_savegame_layout"],
                 "textColor",
@@ -914,7 +914,7 @@ class dialog_savedgame_new(QSplitter):
         )
         formLayout.addRow(
             "颜色_文字区",
-            getcolorbutton(
+            ColorButton(
                 self,
                 globalconfig["dialog_savegame_layout"],
                 "textbackColor",

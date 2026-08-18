@@ -13,7 +13,7 @@ from gui.usefulwidget import (
     getboxlayout,
     getboxwidget,
     D_getcolorbutton,
-    getcolorbutton,
+    ColorButton,
     saveposwindow,
     create_centered_rect,
     listediter,
@@ -161,7 +161,7 @@ def createinternalfontsettings(self, forml: LFormLayout, group, _type):
         elif key in ["width_rate", "shadowR"]:
             continue
         if _type == "colorselect":
-            lineW = getcolorbutton(
+            lineW = ColorButton(
                 self,
                 dd,
                 key,
@@ -407,7 +407,7 @@ class TextAreaBack(NQGroupBox):
             "颜色",
             getboxlayout(
                 [
-                    getcolorbutton(
+                    ColorButton(
                         self,
                         globalconfig,
                         "text_area_background_color",

@@ -39,7 +39,7 @@ from gui.usefulwidget import (
     getboxlayout,
     VisLFormLayout,
     getIconButton,
-    getcolorbutton,
+    ColorButton,
     check_grid_append,
     CollapsibleBoxWithButton,
     getsimpleswitch,
@@ -71,7 +71,6 @@ from gui.dynalang import (
     LStandardItem,
     LTableView,
 )
-from gui.setting.about import offlinelinks
 
 
 def getallllms(l):
@@ -447,30 +446,24 @@ class GuideOverlay(QWidget):
             self._updating_geometry = False
 
 
-tscolor_setting_collector = []
+tscolor_setting_collector: "list[IconButtonWithOverlay]" = []
 
 
 def show_tscolor_setting_guide():
     for _ in tscolor_setting_collector:
-        _[1].show_at(_[0].color)
+        _.guide.show_at(_)
 
 
-class IconButtonWithOverlay(QWidget):
+class IconButtonWithOverlay(ColorButton):
     def __init__(self, *argc, **kw):
-        super().__init__()
-        self.color = getcolorbutton(*argc, **kw)
-        self.color.setParent(self)
+        super().__init__(*argc, **kw)
         self.guide = GuideOverlay(self)
         self.guide.hide()
-        self.color.clicked.connect(
-            lambda: [_[1].hide() for _ in tscolor_setting_collector]
-        )
-        tscolor_setting_collector.append((self, self.guide))
+        self.clicked.connect(lambda: [_.guide.hide() for _ in tscolor_setting_collector])
+        tscolor_setting_collector.append(self)
 
     def resizeEvent(self, a0):
         super().resizeEvent(a0)
-        if hasattr(self, "color"):
-            self.color.setGeometry(self.rect())
         if hasattr(self, "guide") and self.guide.isVisible():
             self.guide.update_position()
 
@@ -679,7 +672,6 @@ def initsome11(self, l, save=False):
 
 def initsome21(self, not_is_gpt_like):
     not_is_gpt_like = initsome11(self, not_is_gpt_like)
-    # not_is_gpt_like += [[(functools.partial(offlinelinks, "translate"), 0)]]
     grids = [
         [
             functools.partial(

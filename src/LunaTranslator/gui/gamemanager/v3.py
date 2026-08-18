@@ -24,7 +24,7 @@ from gui.usefulwidget import (
     MyInputDialog,
     request_delete_ok,
     IconButton,
-    getcolorbutton,
+    ColorButton,
     getspinbox,
     SplitLine,
 )
@@ -653,7 +653,7 @@ class dialog_savedgame_v3(QSplitter):
         ]:
             formLayout.addRow(
                 name,
-                getcolorbutton(
+                ColorButton(
                     self,
                     globalconfig["dialog_savegame_layout"],
                     key,

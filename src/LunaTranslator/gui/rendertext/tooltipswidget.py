@@ -6,7 +6,7 @@ from traceback import print_exc
 from sometypes import WordSegResult
 import windows
 from myutils.config import globalconfig
-from gui.usefulwidget import getcolorbutton, getspinbox, limitpos
+from gui.usefulwidget import ColorButton, getspinbox, limitpos
 from myutils.wrapper import Singleton, threader
 from gui.dynalang import LDialog, LFormLayout
 from gui.flowsearchword import createsomecontrols
@@ -46,7 +46,7 @@ class tooltipssetting(LDialog):
         formLayout.addRow("圆角", spin1)
         if lay:
             formLayout.addRow("窗口特效", lay)
-        color = getcolorbutton(
+        color = ColorButton(
             self,
             globalconfig,
             "word_hover_bg_color",
@@ -55,7 +55,7 @@ class tooltipssetting(LDialog):
             callback=self.__cb,
         )
         formLayout.addRow("背景颜色", color)
-        color = getcolorbutton(
+        color = ColorButton(
             self,
             globalconfig,
             "word_hover_text_color",
