@@ -1,5 +1,6 @@
 import gobject, os, uuid
 from ocrengines.baseocrclass import baseocr, OCRResult
+from gobject import unique_ptr
 import NativeUtils, threading
 import winreg
 from traceback import print_exc
@@ -16,7 +17,10 @@ class wcocr:
                 wechatocr_path, wechat_path = _
                 if any([not os.path.exists(_) for _ in (wechatocr_path, wechat_path)]):
                     continue
-                self.pobj = NativeUtils.wcocr_init(wechatocr_path, wechat_path)
+                self.pobj = unique_ptr(
+                    NativeUtils.wcocr_init(wechatocr_path, wechat_path),
+                    NativeUtils.wcocr_destroy,
+                )
                 if self.pobj:
                     break
             except:
@@ -82,9 +86,6 @@ class wcocr:
                 r"extracted\WeChatOCR.exe",
             )
         return wechatocr_path, wechat_path
-
-    def __del__(self):
-        NativeUtils.wcocr_destroy(self.pobj)
 
     def ocr(self, imagebinary):
         fname = gobject.gettempdir(str(uuid.uuid4()) + ".png")

@@ -39,6 +39,7 @@ from ctypes.wintypes import (
 from windows import AutoHandle
 from xml.sax.saxutils import escape
 import gobject, os, json
+from gobject import unique_ptr
 import windows, functools, re, csv
 from traceback import print_exc
 
@@ -119,13 +120,9 @@ def similarity(s1, s2):
     return levenshtein_normalized_similarity(len(s1), s1, len(s2), s2)
 
 
-class mecab(c_void_p):
-    @staticmethod
-    def create(path: str) -> "mecab":
-        return mecab_init(path.encode("utf8"))
-
-    def __del__(self):
-        mecab_end(self)
+class mecab(unique_ptr):
+    def __init__(self, path: str):
+        super().__init__(mecab_init(path.encode("utf8")), mecab_end)
 
     @property
     def dictionary_codec(self):
@@ -157,7 +154,7 @@ class mecab(c_void_p):
 
 mecab_init = utilsdll.mecab_init
 mecab_init.argtypes = (c_char_p,)
-mecab_init.restype = mecab
+mecab_init.restype = c_void_p
 mecab_parse_cb_a = CFUNCTYPE(None, c_char_p, c_char_p)
 mecab_parse_cb_w = CFUNCTYPE(None, c_wchar_p, c_wchar_p)
 mecab_parse = utilsdll.mecab_parse
@@ -461,19 +458,16 @@ class AbstractWebView:
     def bind(self, fname: str, fp):
         raise Exception()
 
-    def __del__(self):
-        self.destroy()
-
     def destroy(self):
-        _ = self.ptr
-        self.ptr = None
-        webview_destroy(_)
+        ptr = self.ptr.release()
+        if ptr:
+            webview_destroy(ptr)
 
     def __init__(self):
         self.html_limit = 2 * 1024 * 1024
         self.callbacks = []
         self.__menu_clicked_ptr = []
-        self.ptr = AbstractWebViewPTR()
+        self.ptr = unique_ptr(None, webview_destroy)
 
     def _init(self):
         ptr = webview_menu_handler_t(self.__menu_handler)
@@ -825,7 +819,7 @@ class MSHTML(AbstractWebView):
     def __init__(self, parent: HWND = None):
         super().__init__()
         self.html_limit = 1
-        self.browser = AbstractWebViewPTR()
+        self.browser = unique_ptr(None, webview_destroy)
         html_new(int(parent), pointer(self.browser))
         if gobject.is_running_on_wine() or (
             html_version() < 10001
@@ -1318,24 +1312,21 @@ record_with_vad_get_last_voice_CB = CFUNCTYPE(None, POINTER(c_char), c_size_t)
 record_with_vad_get_last_voice.argtypes = c_void_p, record_with_vad_get_last_voice_CB
 
 
-class record_with_vad:
+class record_with_vad(unique_ptr):
     def get(self) -> "bytes|None":
         ret = []
 
         def _cb(ptr, size):
             ret.append(ptr[:size])
 
-        record_with_vad_get_last_voice(self.ptr, record_with_vad_get_last_voice_CB(_cb))
+        record_with_vad_get_last_voice(self, record_with_vad_get_last_voice_CB(_cb))
         if not ret:
             return None
         return ret[0]
 
-    def __del__(self):
-        record_with_vad_delete(self.ptr)
-
     def __init__(self):
-        self.ptr = record_with_vad_create()
-        if not self.ptr:
+        super().__init__(record_with_vad_create(), record_with_vad_delete)
+        if not self:
             raise Exception()
 
 

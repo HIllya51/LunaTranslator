@@ -176,7 +176,7 @@ class mecab(_base):
             if not os.path.isdir(___):
                 continue
             for _dir, _, __ in os.walk(___):
-                self.kks = NativeUtils.mecab.create(os.path.abspath(_dir))
+                self.kks = NativeUtils.mecab(os.path.abspath(_dir))
                 if self.kks:
                     return
         raise Exception("not find")

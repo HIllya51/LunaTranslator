@@ -13,6 +13,7 @@ from ctypes import (
 )
 from qtsymbols import *
 import gobject
+from gobject import unique_ptr
 import functools
 import locale
 
@@ -32,17 +33,7 @@ def _DelayLoadCVUtils():
     return _CVUtils
 
 
-class _unique_ptr(c_void_p):
-    def __init__(self, ptr, deleter):
-        super().__init__(ptr)
-        self.deleter = deleter
-
-    def __del__(self):
-        if self:
-            self.deleter(self)
-
-
-class cvMat(_unique_ptr):
+class cvMat(unique_ptr):
     def __init__(self, image: QImage):
         if (image is None) or image.isNull() or (image.bits() is None):
             super().__init__(None, cvMatDestroy)
@@ -125,7 +116,7 @@ def GetDeviceInfoD3D12():
     return ret
 
 
-class LocalOCR(_unique_ptr):
+class LocalOCR(unique_ptr):
 
     def __init__(
         self, det, rec, key, thread: int, gpu: bool, luid, device_type: str
