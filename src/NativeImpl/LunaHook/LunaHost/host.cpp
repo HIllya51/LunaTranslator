@@ -1,6 +1,7 @@
 #include "host.h"
 #define HOOK_SEARCH_LENGTH STRING
 // #define HOOK_SEARCH_LENGTH 0
+using rpc::RpcBlob;
 namespace
 {
 	class ProcessRecord
@@ -21,22 +22,24 @@ namespace
 			UnmapViewOfFile(commonsharedmem);
 		}
 
-		template <typename T>
-		void Send_no_wait(T data)
-		{
-			static_assert(sizeof(data) < PIPE_BUFFER_SIZE);
-			std::thread([=]
-						{ WriteFile(pipe, &data, sizeof(data), DUMMY, nullptr); })
-				.detach();
-		}
-		template <typename T>
-		void Send(T data)
+		template <rpc::Id I, class... A>
+		void Send_no_wait(A &&...args)
 		{
 			std::thread(
-				[&, data]()
+				[this, args...]()
+				{
+					rpc::call<I>(pipe, args...);
+				})
+				.detach();
+		}
+		template <rpc::Id I, class... A>
+		void Send(A &&...args)
+		{
+			std::thread(
+				[this, args...]()
 				{
 					WaitForSingleObject(prepareWaiter, INFINITE);
-					Send_no_wait<T>(data);
+					rpc::call<I>(pipe, args...);
 				})
 				.detach();
 		}
@@ -119,6 +122,111 @@ namespace
 		size = -1;
 		WriteFile(hostPipe, &size, 4, &count, nullptr);
 	}
+	void registerHostRpcHandlers()
+	{
+		// Host-side handlers receive the source process id as the first argument
+		// (threaded through rpc::dispatch by __handlepipethread) — no thread-local.
+
+		rpc::on_ctx<rpc::Id::NotifyPreparedOK>([](DWORD pid)
+											   { SetEvent(processRecordsByIds->at(pid).prepareWaiter); });
+
+		rpc::on_ctx<rpc::Id::RequestI18N>([](DWORD pid, LANG_STRINGS_HOOK enum_, std::string key)
+										  {
+			auto ret = WideStringToString(i18nQueryCallback(StringToWideString(key)).value_or(L""));
+			processRecordsByIds->at(pid).Send_no_wait<rpc::Id::RespondI18N>(enum_, ret); });
+
+		rpc::on_ctx<rpc::Id::NotifyHookFound>([](DWORD pid, HookParam hp, RpcBlob text)
+											  {
+			auto OnHookFound = processRecordsByIds->at(pid).OnHookFound;
+			auto info_text = (wchar_t *)text.data; // may not be UTF-16; reused as raw bytes below
+			std::wstring wide = info_text;
+			if (wide.size() > HOOK_SEARCH_LENGTH)
+			{
+				wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, pid).c_str());
+				OnHookFound(hp, std::move(wide));
+			}
+			if (!(hp.type & CSHARP_STRING))
+			{
+				hp.type &= ~CODEC_UTF16;
+				if (auto converted = StringToWideString((char *)info_text, hp.codepage))
+					if (converted->size() > HOOK_SEARCH_LENGTH)
+					{
+						wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, pid).c_str());
+						OnHookFound(hp, std::move(converted.value()));
+					}
+				if (auto converted = StringToWideString((char *)info_text, hp.codepage = CP_UTF8))
+					if (converted->size() > HOOK_SEARCH_LENGTH)
+					{
+						wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, pid).c_str());
+						OnHookFound(hp, std::move(converted.value()));
+					}
+			} });
+
+		rpc::on_ctx<rpc::Id::NotifyHookRemoved>([](DWORD pid, uint64_t address)
+												{
+			auto sm = Host::GetCommonSharedMem(pid);
+			if (!sm)return;
+			for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+				if (sm->embedtps[i].use && (sm->embedtps[i].tp.addr == address) && (sm->embedtps[i].tp.processId == pid))
+					ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
+		RemoveThreads([&](ThreadParam tp)
+						{ return tp.processId == pid && tp.addr == address; }); });
+
+		rpc::on_ctx<rpc::Id::NotifyHookInserting>(HookInsert);
+
+		rpc::on<rpc::Id::NotifyEmuGameInfo>([](std::string id, std::string title, std::string version)
+											{ OnEmuGameInfo(StringToWideString(id), StringToWideString(title), StringToWideString(version)); });
+
+		rpc::on<rpc::Id::NotifyText>([](HOSTINFO type, UINT codepage, std::string message)
+									 { Host::InfoOutput(type, StringToWideString(message, codepage).value_or(L"")); });
+
+		rpc::on<rpc::Id::NotifyTextW>(Host::InfoOutput);
+
+		rpc::on_ctx<rpc::Id::OutputText>([](DWORD pid, ThreadParam tp, HookParam hp, uint64_t type, RpcBlob data)
+										 {
+											 auto length = data.size;
+											 auto _textThreadsByParams = textThreadsByParams.Acquire();
+
+											 auto thread = _textThreadsByParams->find(tp);
+											 if (thread == _textThreadsByParams->end())
+											 {
+												 try
+												 {
+													 thread = _textThreadsByParams->try_emplace(tp, tp, hp).first;
+												 }
+												 catch (std::out_of_range)
+												 {
+													 return;
+												 } // probably garbage data in pipe, try again
+												 OnCreate(thread->second);
+											 }
+
+											 thread->second.hp.type = type;
+											 thread->second.hp.detectedCodepage = hp.detectedCodepage;
+											 if (auto codepage = thread->second.RunDectectCodePage(data.data, length))
+												 processRecordsByIds->at(pid).Send<rpc::Id::SetDetectedCodepage>(codepage.value(), hp.address);
+											 thread->second.Push(data.data, length);
+
+											 auto &thp = thread->second.hp;
+											 if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
+												 return;
+											 auto sm = Host::GetCommonSharedMem(tp.processId);
+											 if (!sm)
+												 return;
+											 if (sm->clearText)
+												 return;
+											 auto codepage = Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage;
+											 if (thp.isAscii() && !codepage)
+												 return;
+											 auto t = commonparsestring(data.data, length, &thp, codepage);
+											 if (!t)
+												 return;
+											 auto text = t.value();
+											 if (text.empty())
+												 return;
+											 embedcallback(text, tp); });
+	}
+
 	void __handlepipethread(DWORD processId, HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
 	{
 		ConnectNamedPipe(hookPipe, nullptr);
@@ -132,145 +240,13 @@ namespace
 		Host::AddConsoleOutput(FormatString(TR[PROC_CONN], processId));
 		if (Host::enablePCHooks)
 		{
-			processRecordsByIds->at(processId).Send(InsertPCHooksCmd(0));
-			processRecordsByIds->at(processId).Send(InsertPCHooksCmd(1));
+			processRecordsByIds->at(processId).Send<rpc::Id::InsertPCHooks>(0);
+			processRecordsByIds->at(processId).Send<rpc::Id::InsertPCHooks>(1);
 		}
 		BYTE buffer[PIPE_BUFFER_SIZE] = {};
 		DWORD bytesRead;
 		while (ReadFile(hookPipe, buffer, PIPE_BUFFER_SIZE, &bytesRead, nullptr))
-			switch (*(HostNotificationType *)buffer)
-			{
-			case HOST_NOTIFICATION_PREPARED_OK:
-			{
-				SetEvent(processRecordsByIds->at(processId).prepareWaiter);
-			}
-			break;
-			case HOST_NOTIFICATION_I18N_RESP:
-			{
-				auto info = (HostInfoI18NReq *)buffer;
-				auto ret = WideStringToString(i18nQueryCallback(StringToWideString(info->key)).value_or(L""));
-				processRecordsByIds->at(processId).Send_no_wait(I18NResponse(info->enum_, ret));
-			}
-			break;
-			case HOST_NOTIFICATION_FOUND_HOOK:
-			{
-				auto info = (HookFoundNotif *)buffer;
-				auto OnHookFound = processRecordsByIds->at(processId).OnHookFound;
-				std::wstring wide = info->text;
-				if (wide.size() > HOOK_SEARCH_LENGTH)
-				{
-					wcscpy_s(info->hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info->hp, processId).c_str());
-					OnHookFound(info->hp, std::move(info->text));
-				}
-				if (!(info->hp.type & CSHARP_STRING))
-				{
-					info->hp.type &= ~CODEC_UTF16;
-					if (auto converted = StringToWideString((char *)info->text, info->hp.codepage))
-
-						if (converted->size() > HOOK_SEARCH_LENGTH)
-						{
-							wcscpy_s(info->hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info->hp, processId).c_str());
-							OnHookFound(info->hp, std::move(converted.value()));
-						}
-					if (auto converted = StringToWideString((char *)info->text, info->hp.codepage = CP_UTF8))
-						if (converted->size() > HOOK_SEARCH_LENGTH)
-						{
-							wcscpy_s(info->hp.hookcode, HOOKCODE_LEN, HookCode::Generate(info->hp, processId).c_str());
-							OnHookFound(info->hp, std::move(converted.value()));
-						}
-				}
-			}
-			break;
-			case HOST_NOTIFICATION_RMVHOOK:
-			{
-				auto info = (HookRemovedNotif *)buffer;
-				auto sm = Host::GetCommonSharedMem(processId);
-				if (sm)
-					for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
-						if (sm->embedtps[i].use && (sm->embedtps[i].tp.addr == info->address) && (sm->embedtps[i].tp.processId == processId))
-							ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
-				RemoveThreads([&](ThreadParam tp)
-							  { return tp.processId == processId && tp.addr == info->address; });
-			}
-			break;
-			case HOST_NOTIFICATION_INSERTING_HOOK:
-			{
-				auto info = (HookInsertingNotif *)buffer;
-				HookInsert(processId, info->addr, info->hookcode);
-			}
-			break;
-			case HOST_NOTIFICATION_EMUINFO:
-			{
-				auto info = (EmuGameInfoNotif *)buffer;
-				OnEmuGameInfo(StringToWideString(info->id), StringToWideString(info->title), StringToWideString(info->version));
-			}
-			break;
-			case HOST_NOTIFICATION_TEXT:
-			{
-				auto info = (HostInfoNotif *)buffer;
-				Host::InfoOutput(info->type, StringToWideString(info->message, info->codepage).value_or(L""));
-			}
-			break;
-			case HOST_NOTIFICATION_TEXT_W:
-			{
-				auto info = (HostInfoNotifW *)buffer;
-				Host::InfoOutput(info->type, info->message);
-			}
-			break;
-			default:
-			{
-				auto data = (TextOutput_T *)buffer;
-				auto length = bytesRead - sizeof(TextOutput_T);
-				auto tp = data->tp;
-				auto hp = data->hp;
-				auto _textThreadsByParams = textThreadsByParams.Acquire();
-
-				auto thread = _textThreadsByParams->find(tp);
-				if (thread == _textThreadsByParams->end())
-				{
-					try
-					{
-						thread = _textThreadsByParams->try_emplace(tp, tp, hp).first;
-					}
-					catch (std::out_of_range)
-					{
-						continue;
-					} // probably garbage data in pipe, try again
-					OnCreate(thread->second);
-				}
-
-				thread->second.hp.type = data->type;
-				thread->second.hp.detectedCodepage = data->hp.detectedCodepage;
-				if (auto codepage = thread->second.RunDectectCodePage(data->data, length))
-				{
-					SetDetectedCodepageCmd cmd{codepage.value(), hp.address};
-					processRecordsByIds->at(processId).Send(cmd);
-				}
-				thread->second.Push(data->data, length);
-				[&]()
-				{
-					auto &thp = thread->second.hp;
-					if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
-						return;
-					auto sm = Host::GetCommonSharedMem(tp.processId);
-					if (!sm)
-						return;
-					if (sm->clearText)
-						return;
-					auto codepage = Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage;
-					if (thp.isAscii() && !codepage)
-						return;
-					auto t = commonparsestring(data->data, length, &thp, codepage);
-					if (!t)
-						return;
-					auto text = t.value();
-					if (text.empty())
-						return;
-					embedcallback(text, tp);
-				}();
-			}
-			break;
-			}
+			rpc::dispatch(buffer, bytesRead, processId);
 
 		RemoveThreads([&](ThreadParam tp)
 					  { return tp.processId == processId; });
@@ -305,7 +281,7 @@ namespace Host
 		}
 		for (auto &[pid, rcd] : processRecordsByIds.Acquire().contents)
 		{
-			rcd.Send(ResetLanguageCmd{});
+			rcd.Send<rpc::Id::QueryI18N>();
 		}
 	}
 	void Start(std::optional<ProcessEventHandler> Connect,
@@ -344,6 +320,7 @@ namespace Host
 		{ IF_HASVAL_DISPATCH(outputmutex, embed); };
 		i18nQueryCallback = _i18nQueryCallback.value_or([](auto)
 														{ return std::nullopt; });
+		registerHostRpcHandlers();
 	}
 	bool CheckIfNeedInject(DWORD processId)
 	{
@@ -373,7 +350,7 @@ namespace Host
 		auto found = prs.find(processId);
 		if (found == prs.end())
 			return;
-		found->second.Send(HOST_COMMAND_DETACH);
+		found->second.Send<rpc::Id::Detach>();
 	}
 	void InsertPCHooks(DWORD processId, int which)
 	{
@@ -381,7 +358,7 @@ namespace Host
 		auto found = prs.find(processId);
 		if (found == prs.end())
 			return;
-		found->second.Send(InsertPCHooksCmd(which));
+		found->second.Send<rpc::Id::InsertPCHooks>(which);
 	}
 	void InsertHook(DWORD processId, HookParam hp)
 	{
@@ -389,7 +366,7 @@ namespace Host
 		auto found = prs.find(processId);
 		if (found == prs.end())
 			return;
-		found->second.Send(InsertHookCmd(hp));
+		found->second.Send<rpc::Id::NewHook>(hp);
 	}
 
 	void RemoveHook(DWORD processId, uint64_t address)
@@ -398,7 +375,7 @@ namespace Host
 		auto found = prs.find(processId);
 		if (found == prs.end())
 			return;
-		found->second.Send(RemoveHookCmd(address));
+		found->second.Send<rpc::Id::RemoveHook>(address);
 	}
 
 	void FindHooks(DWORD processId, SearchParam sp, HookEventHandler HookFound, LPCWSTR addresses)
@@ -422,7 +399,7 @@ namespace Host
 			wcscpy_s(sp.sharememname, ARRAYSIZE(sp.sharememname), name.c_str());
 			sp.sharememsize = size + 2;
 		}
-		prs.at(processId).Send(FindHookCmd(sp));
+		prs.at(processId).Send<rpc::Id::FindHook>(sp);
 	}
 
 	TextThread &GetThread(ThreadParam tp)

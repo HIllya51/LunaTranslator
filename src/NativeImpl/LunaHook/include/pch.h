@@ -32,6 +32,7 @@
 #include <sstream>
 #include <locale>
 #include <cstdint>
+#include <cstring>
 #include <list>
 #include <type_traits>
 #include <utility>
@@ -49,3 +50,4 @@
 #include "winevent.hpp"
 #include "lrucache.hpp"
 #include "InfoStrings.h"
+#include "lunarpc.h"
