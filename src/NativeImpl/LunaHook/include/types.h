@@ -282,9 +282,15 @@ struct TextOutput_T
 	BYTE data[0];
 };
 
+// Bytes reserved at the front of local_buffer so a TextOutput_T can be sent via
+// rpc::callRawBlob's zero-copy path: that writes its Header (8) + 4-byte length
+// into the bytes immediately before the blob. Rounded up to alignof(TextOutput_T)
+// so the struct's uint64_t members stay aligned (12 -> 16).
+constexpr size_t TEXT_BUFFER_PREFIX = 16;
+
 enum
 {
-	TEXT_BUFFER_SIZE = PIPE_BUFFER_SIZE - sizeof(TextOutput_T)
+	TEXT_BUFFER_SIZE = PIPE_BUFFER_SIZE - sizeof(TextOutput_T) - TEXT_BUFFER_PREFIX
 };
 
 struct TextBuffer

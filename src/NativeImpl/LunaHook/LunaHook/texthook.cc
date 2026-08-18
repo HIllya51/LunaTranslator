@@ -1,6 +1,7 @@
 
 #include "MinHook.h"
 #include "veh_hook.h"
+#include "lunarpc.h"
 extern WinMutex viewMutex;
 
 // - Unnamed helpers -
@@ -242,7 +243,7 @@ void TextHook::Send(uintptr_t lpDataBase)
 }
 void TextHook::Send(hook_context *context)
 {
-	auto buffer = (TextOutput_T *)local_buffer;
+	auto buffer = (TextOutput_T *)(local_buffer + TEXT_BUFFER_PREFIX);
 	TextBuffer buff{buffer->data, 0};
 	_InterlockedIncrement((long *)&useCount);
 	__try
@@ -491,7 +492,7 @@ bool SafeFilterFun(HookParam &hp, TextBuffer &buff)
 void TextHook::Read()
 {
 	// BYTE(*buffer)[PIPE_BUFFER_SIZE] = &::buffer, *pbData = *buffer + sizeof(ThreadParam);
-	auto buffer = (TextOutput_T *)local_buffer;
+	auto buffer = (TextOutput_T *)(local_buffer + TEXT_BUFFER_PREFIX);
 	buffer->type = hp.type;
 	TextBuffer buff{buffer->data, 1};
 	bool is_emu_hook = (hp.jittype != JITTYPE::PC) && (hp.jittype != JITTYPE::UNITY);

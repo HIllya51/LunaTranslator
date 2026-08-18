@@ -1,4 +1,5 @@
 #include "host.h"
+#include "lunarpc.h"
 #define HOOK_SEARCH_LENGTH STRING
 // #define HOOK_SEARCH_LENGTH 0
 using rpc::RpcBlob;
@@ -179,9 +180,15 @@ namespace
 
 		rpc::on<rpc::Id::NotifyTextW>(Host::InfoOutput);
 
-		rpc::on_ctx<rpc::Id::OutputText>([](DWORD pid, ThreadParam tp, HookParam hp, uint64_t type, RpcBlob data)
+		rpc::on_ctx<rpc::Id::OutputText>([](DWORD pid, RpcBlob blob)
 										 {
-											 auto length = data.size;
+											 if (blob.size < sizeof(TextOutput_T))
+												 return;
+											 auto data = (TextOutput_T*)blob.data;
+											 auto&& tp = data->tp;
+											 auto&& hp = data->hp;
+
+											 auto length = blob.size - sizeof(TextOutput_T);
 											 auto _textThreadsByParams = textThreadsByParams.Acquire();
 
 											 auto thread = _textThreadsByParams->find(tp);
@@ -198,11 +205,11 @@ namespace
 												 OnCreate(thread->second);
 											 }
 
-											 thread->second.hp.type = type;
+											 thread->second.hp.type = data->type;
 											 thread->second.hp.detectedCodepage = hp.detectedCodepage;
-											 if (auto codepage = thread->second.RunDectectCodePage(data.data, length))
+											 if (auto codepage = thread->second.RunDectectCodePage(data->data, length))
 												 processRecordsByIds->at(pid).Send<rpc::Id::SetDetectedCodepage>(codepage.value(), hp.address);
-											 thread->second.Push(data.data, length);
+											 thread->second.Push(data->data, length);
 
 											 auto &thp = thread->second.hp;
 											 if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
@@ -215,7 +222,7 @@ namespace
 											 auto codepage = Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage;
 											 if (thp.isAscii() && !codepage)
 												 return;
-											 auto t = commonparsestring(data.data, length, &thp, codepage);
+											 auto t = commonparsestring(data->data, length, &thp, codepage);
 											 if (!t)
 												 return;
 											 auto text = t.value();

@@ -14,6 +14,8 @@ namespace rpc
 		uint32_t payloadSize;
 	};
 
+	constexpr uint32_t BLOB_PREFIX = sizeof(Header) + 4;
+
 #define RPC_TABLE(X)                                                  \
 	/* ---- host -> hook (commands) ---- */                           \
 	X(NewHook, void(HookParam))                                       \
@@ -33,7 +35,7 @@ namespace rpc
 	X(NotifyEmuGameInfo, void(std::string, std::string, std::string)) \
 	X(RequestI18N, void(LANG_STRINGS_HOOK, std::string))              \
 	X(NotifyPreparedOK, void())                                       \
-	X(OutputText, void(ThreadParam, HookParam, uint64_t, RpcBlob))
+	X(OutputText, void(RpcBlob))
 
 	enum class Id : uint32_t
 	{
@@ -139,6 +141,20 @@ namespace rpc
 		WriteFile(pipe, base, sizeof(Header) + payload, &written, nullptr);
 	}
 
+	inline void callRawBlob(uint32_t id, HANDLE pipe, const RpcBlob &blob)
+	{
+		uint32_t payload = 4u + blob.size;
+		if (sizeof(Header) + payload > PIPE_BUFFER_SIZE)
+			return;
+		BYTE *base = blob.data - BLOB_PREFIX;
+		Header h{id, payload};
+		memcpy(base, &h, sizeof(Header));
+		uint32_t n = blob.size;
+		memcpy(base + sizeof(Header), &n, 4);
+		DWORD written = 0;
+		WriteFile(pipe, base, sizeof(Header) + payload, &written, nullptr);
+	}
+
 	using Handler = std::function<void(const BYTE *payload, uint32_t size, DWORD ctx)>;
 	inline std::array<Handler, (size_t)Id::COUNT> &registry()
 	{
@@ -204,6 +220,11 @@ namespace rpc
 			}
 		};
 
+		template <class Sig>
+		struct is_single_blob : std::false_type {};
+		template <class A>
+		struct is_single_blob<void(A)> : std::is_same<A, RpcBlob> {};
+
 		template <class Sig, class F>
 		struct make_handler;
 		template <class... A, class F>
@@ -268,7 +289,10 @@ namespace rpc
 					  "rpc::call: wrong number of arguments for signature");
 		static_assert(detail::args_convertible<Sig, std::tuple<Args...>, std::make_index_sequence<sizeof...(Args)>>::value,
 					  "rpc::call: arguments not convertible to declared signature");
-		callRaw((uint32_t)I, pipe, std::forward<Args>(args)...);
+		if constexpr (detail::is_single_blob<Sig>::value)
+			callRawBlob((uint32_t)I, pipe, std::forward<Args>(args)...);
+		else
+			callRaw((uint32_t)I, pipe, std::forward<Args>(args)...);
 	}
 
 #undef RPC_TABLE

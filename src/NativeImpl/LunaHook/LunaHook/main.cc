@@ -1,5 +1,6 @@
 
 #include "MinHook.h"
+#include "lunarpc.h"
 using rpc::RpcBlob;
 void HIJACK();
 void detachall();
@@ -159,7 +160,9 @@ void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T *buffer
 {
 	if (!len)
 		return;
-	rpc::call<rpc::Id::OutputText>(hookPipe, tp, hp, buffer->type, RpcBlob{buffer->data, (uint32_t)len});
+	buffer->tp = tp;
+	buffer->hp = hp;
+	rpc::call<rpc::Id::OutputText>(hookPipe, RpcBlob{(BYTE *)buffer, (uint32_t)(sizeof(TextOutput_T) + len)});
 }
 
 namespace Msg
