@@ -370,8 +370,7 @@ class TranslatorWindow(resizableframeless):
         self.refreshtoolicon()
         self.checksettop()
 
-    def addbuttons(self):
-
+    def create_buttons(self):
         functions = (
             ("luna", None),
             ("move", None),
@@ -597,12 +596,11 @@ class TranslatorWindow(resizableframeless):
             ("reset_TS_status", buttonfunctions(clicked=gobject.base.prepare)),
         )
 
-        _type = {"quit": 2}
-
+        results = []
         for __ in functions:
-            btn = clicked = iconstate = colorstate = rightclick = middleclick = None
+            name = clicked = iconstate = colorstate = rightclick = middleclick = None
             if len(__) == 2:
-                btn, funcs = __
+                name, funcs = __
                 if isinstance(funcs, buttonfunctions):
                     clicked = funcs.clicked
                     rightclick = funcs.rightclick
@@ -612,22 +610,28 @@ class TranslatorWindow(resizableframeless):
                 else:
                     clicked = funcs
             belong = (
-                globalconfig["toolbutton"]["buttons"][btn]["belong"]
-                if "belong" in globalconfig["toolbutton"]["buttons"][btn]
+                globalconfig["toolbutton"]["buttons"][name]["belong"]
+                if "belong" in globalconfig["toolbutton"]["buttons"][name]
                 else None
             )
-            tp = _type[btn] if btn in _type else 1
-            self.titlebar.takusanbuttons(
-                tp,
-                clicked,
-                rightclick,
-                globalconfig["toolbutton"]["buttons"][btn].get("tip", ""),
-                btn,
-                belong,
-                iconstate,
-                colorstate,
-                middleclick,
+            tip = globalconfig["toolbutton"]["buttons"][name].get("tip", "")
+            results.append(
+                (
+                    clicked,
+                    rightclick,
+                    tip,
+                    name,
+                    belong,
+                    iconstate,
+                    colorstate,
+                    middleclick,
+                )
             )
+        return results
+
+    def addbuttons(self):
+        for _ in self.create_buttons():
+            self.titlebar.takusanbuttons(*_)
 
     def callopensearchwordwindow(self):
         curr = self.translate_text.GetSelectedText()

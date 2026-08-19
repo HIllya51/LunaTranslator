@@ -7,7 +7,7 @@ from gui.rendertext.texttype import (
     FenciColor,
 )
 import gobject, windows, json, os, functools, time
-import hashlib, NativeUtils, qtawesome
+import hashlib, NativeUtils
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
@@ -342,6 +342,46 @@ class somecommon(dataget):
         self.setcolorstyle()
 
 
+def get_sorted_toolbuttonitems():
+    buttons = []
+    for (
+        clicked,
+        rightclick,
+        tip,
+        name,
+        belong,
+        iconstate,
+        colorstate,
+        middleclick,
+    ) in gobject.base.translation_ui.create_buttons():
+        if not clicked:
+            continue
+        if not tip:
+            continue
+        if (
+            name in globalconfig["toolbutton"]["buttons"]
+            and not globalconfig["toolbutton"]["buttons"][name]["use"]
+        ):
+            continue
+        if belong:
+            hide = True
+            for k in belong:
+                if (
+                    k in globalconfig["sourcestatus2"]
+                    and globalconfig["sourcestatus2"][k]["use"]
+                ):
+                    hide = False
+                    break
+            if hide:
+                continue
+        sorter = (
+            {0: 0, 1: 2, 2: 1}[globalconfig["toolbutton"]["buttons"][name]["align"]],
+            globalconfig["toolbutton"]["rank2"].index(name),
+        )
+        buttons.append((tip, clicked, sorter, iconstate if iconstate else colorstate))
+    return sorted(buttons, key=lambda _: _[2])
+
+
 class TextBrowser(WebviewWidget, somecommon):
     contentsChanged = pyqtSignal(QSize)
     _switchcursor = pyqtSignal(Qt.CursorShape)
@@ -412,9 +452,17 @@ class TextBrowser(WebviewWidget, somecommon):
             ]
             if globalconfig.get("hidetools", False):
                 gongjulan = MenuItem(text="工具按钮")
-                gongjulan.appendSub(MenuItem(text="工具按钮_1"))
-                gongjulan.appendSub(MenuItem(text="工具按钮_2"))
-                gongjulan.appendSub(MenuItem(text="工具按钮_3"))
+                for tip, clicked, _, check in get_sorted_toolbuttonitems():
+                    gongjulan.appendSub(
+                        MenuItem(
+                            text=tip,
+                            clicked=functools.partial(
+                                threader(gobject.base.safeinvokefunction.emit), clicked
+                            ),
+                            checkable=bool(check),
+                            checked=check() if check else None,
+                        )
+                    )
                 items.insert(2, gongjulan)
             return items
 

@@ -13,9 +13,10 @@ import gobject, functools, importlib, NativeUtils, uuid, requests
 from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
 from gui.usefulwidget import qwidget_screen
-from gui.dynalang import LAction
+from gui.dynalang import LAction, LMenu
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
+from gui.rendertext.webview import get_sorted_toolbuttonitems
 
 reference: "set[QLabel]" = set()
 
@@ -406,6 +407,17 @@ class TextBrowser(QWidget, dataget):
         hide.setChecked(globalconfig.get("hidetools", False))
         menu.addAction(search)
         menu.addAction(setting)
+        extras = {}
+        if globalconfig.get("hidetools", False):
+            toolbar = LMenu("工具按钮", menu)
+            menu.addMenu(toolbar)
+            for tip, clicked, _, check in get_sorted_toolbuttonitems():
+                action = LAction(tip, toolbar)
+                toolbar.addAction(action)
+                if check:
+                    action.setCheckable(True)
+                    action.setChecked(check())
+                extras[action] = clicked
         menu.addSeparator()
         menu.addAction(drag)
         menu.addAction(hide)
@@ -414,6 +426,8 @@ class TextBrowser(QWidget, dataget):
         if action == search:
             self.parent().clear(False)
             gobject.base.currenttext = ""
+        elif extras.get(action):
+            extras[action]()
         elif action == setting:
             gobject.base.settin_ui_showsignal.emit()
         elif action == drag:

@@ -229,7 +229,6 @@ class ButtonBar(QFrame):
         self._right = __(self.threelayout)
         self.cntbtn = 0
         self.buttons: "dict[str, IconLabelX]" = {}
-        self.stylebuttons: "dict[str, list]" = {}
         self.iconstate = {}
         self.colorstate = {}
 
@@ -283,7 +282,6 @@ class ButtonBar(QFrame):
 
     def takusanbuttons(
         self,
-        _type,
         clicked,
         rightclick,
         tips,
@@ -310,11 +308,8 @@ class ButtonBar(QFrame):
         if tips:
             button.setToolTip(tips)
             button.setAccessibleName(tips)
-        if _type not in self.stylebuttons:
-            self.stylebuttons[_type] = []
-        self.stylebuttons[_type].append(button)
         if clicked:
-            button.setObjectName("IconLabelX{}".format(_type))
+            button.setObjectName("IconLabelX{}".format(2 if name == "quit" else 1))
         else:
             button.setMouseTracking(True)
         button.reflayout = None
@@ -344,7 +339,7 @@ class ButtonBar(QFrame):
                     continue
             if (
                 name in globalconfig["toolbutton"]["buttons"]
-                and globalconfig["toolbutton"]["buttons"][name]["use"] == False
+                and not globalconfig["toolbutton"]["buttons"][name]["use"]
             ):
                 button.hideinlayout()
                 continue
