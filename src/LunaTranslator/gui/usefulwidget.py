@@ -1994,7 +1994,7 @@ class EdgeHtmlWidget(AbstractWebviewWidget):
             menu += [
                 MenuItem(issep=True),
                 MenuItem(
-                    text=_TR("复制"),
+                    text="复制",
                     clicked=functools.partial(NativeUtils.ClipBoard.setText, c),
                 ),
             ]
@@ -2031,7 +2031,7 @@ class MSHtmlWidget(AbstractWebviewWidget):
             menu += [
                 MenuItem(issep=True),
                 MenuItem(
-                    text=_TR("复制"),
+                    text="复制",
                     clicked=functools.partial(NativeUtils.ClipBoard.setText, c),
                 ),
             ]
@@ -2302,14 +2302,14 @@ class auto_select_webview(QWidget):
             menu += [
                 MenuItem(issep=True),
                 MenuItem(
-                    text=_TR("附加浏览器插件"),
+                    text="附加浏览器插件",
                     clicked=threader(self.internal.reloadx.emit),
                     checkable=True,
                     checked=globalconfig.get("webviewLoadExt_cishu", True),
                 ),
                 (
                     MenuItem(
-                        text=_TR("浏览器插件"),
+                        text="浏览器插件",
                         clicked=threader(self.internal.pluginsedit.emit),
                     )
                     if globalconfig.get("webviewLoadExt_cishu", True)

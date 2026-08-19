@@ -270,7 +270,7 @@ class wvtranshist(WebviewWidget, somecommon):
         if selecttext:
             return [
                 MenuItem(
-                    text=_TR("查词"),
+                    text="查词",
                     clicked=threader(
                         lambda: gobject.base.searchwordW.search_word.emit(
                             selecttext.replace("\n", "").strip(), None, False
@@ -278,11 +278,11 @@ class wvtranshist(WebviewWidget, somecommon):
                     ),
                 ),
                 MenuItem(
-                    text=_TR("翻译"),
+                    text="翻译",
                     clicked=functools.partial(gobject.base.textgetmethod, selecttext),
                 ),
                 MenuItem(
-                    text=_TR("朗读"),
+                    text="朗读",
                     clicked=functools.partial(gobject.base.read_text, selecttext),
                 ),
             ]
@@ -297,54 +297,54 @@ class wvtranshist(WebviewWidget, somecommon):
                 self.p.maybexocr()
 
             return [
-                MenuItem(text=_TR("清空"), clicked=self.clear),
-                MenuItem(text=_TR("字体"), clicked=self.seletcfont),
+                MenuItem(text="清空", clicked=self.clear),
+                MenuItem(text="字体", clicked=self.seletcfont),
                 MenuItem(
-                    text=_TR("自动滚动到最后"),
+                    text="自动滚动到最后",
                     clicked=self.scrollend,
                     checkable=True,
                     checked=gobject.tempconfig.get("autoscroll", True),
                 ),
                 MenuItem(issep=True),
                 MenuItem(
-                    text=_TR("保存"),
+                    text="保存",
                     clicked=lambda: sharedfunctions.savetxt(self, self.p.trace),
                 ),
                 (
                     MenuItem(
-                        text=_TR("保存_SRT"),
+                        text="保存_SRT",
                         clicked=lambda: sharedfunctions.savesrt(self, self.p.trace),
                     )
                     if ctrlx
                     else None
                 ),
                 MenuItem(
-                    text=_TR("自动保存"),
+                    text="自动保存",
                     clicked=self.autosavecb,
                     checkable=True,
                     checked=globalconfig["history"]["autosave"],
                 ),
                 MenuItem(issep=True),
                 MenuItem(
-                    text=_TR("显示原文"),
+                    text="显示原文",
                     clicked=self.showhideraw_,
                     checkable=True,
                     checked=globalconfig["history"]["showorigin"],
                 ),
                 MenuItem(
-                    text=_TR("显示翻译"),
+                    text="显示翻译",
                     clicked=self.showtrans_,
                     checkable=True,
                     checked=globalconfig["history"]["showtrans"],
                 ),
                 MenuItem(
-                    text=_TR("显示翻译器名称"),
+                    text="显示翻译器名称",
                     clicked=self.showtransname_,
                     checkable=True,
                     checked=globalconfig["history"]["showtransname"],
                 ),
                 MenuItem(
-                    text=_TR("显示时间"),
+                    text="显示时间",
                     clicked=self.showhidetime_,
                     checkable=True,
                     checked=globalconfig["history"]["showtime"],
@@ -352,7 +352,7 @@ class wvtranshist(WebviewWidget, somecommon):
                 MenuItem(issep=True) if isocr else None,
                 (
                     MenuItem(
-                        text=_TR("打开窗口时暂停自动OCR"),
+                        text="打开窗口时暂停自动OCR",
                         clicked=_,
                         checkable=True,
                         checked=globalconfig.get("suspendocrwhentranshistshow", False),
@@ -362,13 +362,13 @@ class wvtranshist(WebviewWidget, somecommon):
                 ),
                 MenuItem(issep=True),
                 MenuItem(
-                    text=_TR("使用Webview2显示"),
+                    text="使用Webview2显示",
                     clicked=self.useweb,
                     checkable=True,
                     checked=globalconfig["history"]["usewebview2"],
                 ),
                 MenuItem(
-                    text=_TR("附加HTML"),
+                    text="附加HTML",
                     clicked=functools.partial(
                         extrahtml,
                         self,
@@ -378,14 +378,14 @@ class wvtranshist(WebviewWidget, somecommon):
                     ),
                 ),
                 MenuItem(
-                    text=_TR("附加浏览器插件"),
+                    text="附加浏览器插件",
                     clicked=threader(self.reloadx.emit),
                     checkable=True,
                     checked=globalconfig["history"]["webviewLoadExt"],
                 ),
                 (
                     MenuItem(
-                        text=_TR("浏览器插件"),
+                        text="浏览器插件",
                         clicked=threader(self.pluginsedit.emit),
                     )
                     if globalconfig["history"]["webviewLoadExt"]

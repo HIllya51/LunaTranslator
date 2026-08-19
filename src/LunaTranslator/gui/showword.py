@@ -1588,20 +1588,20 @@ class WordViewer(QWidget):
 
             return [
                 MenuItem(
-                    text=_TR("查词"),
+                    text="查词",
                     clicked=functools.partial(
                         self.from_webview_search_word.emit, selectedtext.strip()
                     ),
                 ),
                 MenuItem(
-                    text=_TR("在新窗口中查词"),
+                    text="在新窗口中查词",
                     clicked=lambda: threader(
                         self.from_webview_search_word_in_new_window.emit
                     )(selectedtext.strip()),
                 ),
                 (
                     MenuItem(
-                        text=_TR("在浏览器中查词"),
+                        text="在浏览器中查词",
                         clicked=lambda: os.startfile(
                             gobject.base.cishus.get(
                                 self.tabks[self.tab.currentIndex()]
@@ -1612,27 +1612,27 @@ class WordViewer(QWidget):
                     else None
                 ),
                 MenuItem(
-                    text=_TR("翻译"),
+                    text="翻译",
                     clicked=functools.partial(gobject.base.textgetmethod, selectedtext),
                 ),
                 MenuItem(
-                    text=_TR("朗读"),
+                    text="朗读",
                     clicked=functools.partial(gobject.base.read_text, selectedtext),
                 ),
                 MenuItem(
-                    text=_TR("加亮"),
+                    text="加亮",
                     clicked=lambda: self.textOutput.eval("highlightSelection()"),
                 ),
             ]
         else:
             return [
                 MenuItem(
-                    text=_TR("加亮模式"),
+                    text="加亮模式",
                     clicked=self.switch_hightlightmode,
                     checkable=True,
                     checked=self.ishightlight,
                 ),
-                MenuItem(text=_TR("清除加亮"), clicked=self.clear_hightlight),
+                MenuItem(text="清除加亮", clicked=self.clear_hightlight),
             ]
 
     def __init__(self, parent=None, tabonehide=False, transp=False):

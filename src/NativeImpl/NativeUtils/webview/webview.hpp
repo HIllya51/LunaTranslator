@@ -9,12 +9,14 @@ typedef void (*contextmenu_notext_callback_t)();
 
 struct MenuItem
 {
+    std::optional<std::vector<MenuItem>> submenu;
+    std::wstring text;
     bool issep;
     bool checkable;
     bool checked;
     contextmenu_clicked_t clicked;
-    WCHAR text[256];
 };
+
 typedef std::function<std::vector<MenuItem>(LPCWSTR)> menu_handler_t;
 
 #define VIRTUAL_FUNCTIONS_PURE(__)                                              \

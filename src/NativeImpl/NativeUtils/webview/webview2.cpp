@@ -338,6 +338,7 @@ public:
         return S_OK;
     }
 };
+
 // ICoreWebView2ContextMenuRequestedEventHandler
 HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICoreWebView2ContextMenuRequestedEventArgs *args)
 {
@@ -351,39 +352,51 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICor
     if (!(((hasselection && (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT))) ||
           (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_PAGE)))
         return S_OK;
-    CComPtr<ICoreWebView2ContextMenuItemCollection> items;
-    CHECK_FAILURE(args->get_MenuItems(&items));
+    CComPtr<ICoreWebView2ContextMenuItemCollection> items_;
+    CHECK_FAILURE(args->get_MenuItems(&items_));
     CComHeapPtr<WCHAR> CurrSelectText;
     if (targetKind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT)
         CHECK_FAILURE(target->get_SelectionText(&CurrSelectText));
     CComPtr<ICoreWebView2Environment9> webviewEnvironment_5;
     CHECK_FAILURE(ref->m_env.QueryInterface(&webviewEnvironment_5));
     EventRegistrationToken token;
-    UINT idx = 0;
     auto menuitems = ref->menu_handler(CurrSelectText);
     if (menuitems.size())
     {
         MenuItem it;
         it.issep = true;
-        menuitems.push_back(it);
+        menuitems.push_back(std::move(it));
     }
-    for (auto &&context : menuitems)
+
+    auto recursiveparsemenuitems = [&webviewEnvironment_5, &token](auto &&self, const std::vector<MenuItem> &menuitems, CComPtr<ICoreWebView2ContextMenuItemCollection> items) -> void
     {
-        CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
-        if (context.issep)
+        UINT idx = 0;
+        for (auto &&context : menuitems)
         {
-            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(L"", nullptr, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+            CComPtr<ICoreWebView2ContextMenuItem> newMenuItem;
+            if (context.issep)
+            {
+                CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(L"", NULL, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SEPARATOR, &newMenuItem));
+            }
+            else if (context.submenu)
+            {
+                CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(context.text.c_str(), NULL, COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_SUBMENU, &newMenuItem));
+                CComPtr<ICoreWebView2ContextMenuItemCollection> subitems;
+                CHECK_FAILURE_CONTINUE(newMenuItem->get_Children(&subitems));
+                self(self, context.submenu.value(), subitems);
+            }
+            else
+            {
+                CComPtr<ContextMenuCallback> callbackhandler = new ContextMenuCallback(context.clicked);
+                CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(context.text.c_str(), NULL, context.checkable ? COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX : COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
+                newMenuItem->add_CustomItemSelected(callbackhandler, &token);
+                if (context.checkable)
+                    newMenuItem->put_IsChecked(context.checked);
+            }
+            CHECK_FAILURE_CONTINUE(items->InsertValueAtIndex(idx++, newMenuItem));
         }
-        else
-        {
-            CComPtr<ContextMenuCallback> callbackhandler = new ContextMenuCallback(context.clicked);
-            CHECK_FAILURE_CONTINUE(webviewEnvironment_5->CreateContextMenuItem(context.text, nullptr, context.checkable ? COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_CHECK_BOX : COREWEBVIEW2_CONTEXT_MENU_ITEM_KIND_COMMAND, &newMenuItem));
-            newMenuItem->add_CustomItemSelected(callbackhandler, &token);
-            if (context.checkable)
-                newMenuItem->put_IsChecked(context.checked);
-        }
-        CHECK_FAILURE_CONTINUE(items->InsertValueAtIndex(idx++, newMenuItem));
-    }
+    };
+    recursiveparsemenuitems(recursiveparsemenuitems, menuitems, items_);
     return S_OK;
 }
 void WebView2::WaitForLoad()

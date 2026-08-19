@@ -13,27 +13,64 @@ DECLARE_API void webview_resize(AbstractWebView *web, int w, int h)
         return;
     web->resize(w, h);
 }
-typedef void (*c_menu_handler_t)(LPCWSTR, size_t *, MenuItem **);
+
 DECLARE_API void *webview_allocate_buffer(size_t s)
 {
     return new BYTE[s];
 }
+
+DECLARE_API std::vector<MenuItem> *webview_menu_create()
+{
+    return new std::vector<MenuItem>;
+}
+DECLARE_API void webview_menu_delete(std::vector<MenuItem> *i)
+{
+    if (!i)
+        return;
+    delete i;
+}
+DECLARE_API void webview_menu_append(std::vector<MenuItem> *i, MenuItem *it)
+{
+    if (!i || !it)
+        return;
+    i->push_back(std::move(*it));
+}
+DECLARE_API MenuItem *webview_menuitem_create(LPCWSTR text, bool issep, bool checkable, bool checked, contextmenu_clicked_t clicked)
+{
+    auto item = new MenuItem{};
+    item->text = text;
+    item->issep = issep;
+    item->checked = checked;
+    item->clicked = clicked;
+    item->checkable = checkable;
+    return item;
+}
+DECLARE_API void webview_menuitem_append_submenu(MenuItem *parent, MenuItem *sub)
+{
+    if (!parent || !sub)
+        return;
+    if (!parent->submenu)
+        parent->submenu = std::vector<MenuItem>{};
+    parent->submenu->push_back(std::move(*sub));
+}
+DECLARE_API void webview_menuitem_delete(MenuItem *parent)
+{
+    if (!parent)
+        return;
+    delete parent;
+}
+typedef std::vector<MenuItem> *(*c_menu_handler_t)(LPCWSTR);
+
 DECLARE_API void webview_set_menu_handler(AbstractWebView *web, c_menu_handler_t h)
 {
     if (!web)
         return;
-    web->menu_handler = [=](LPCWSTR text)
+    web->menu_handler = [=](LPCWSTR text) -> std::vector<MenuItem>
     {
-        std::vector<MenuItem> items;
-        size_t num;
-        MenuItem *item;
-        h(text, &num, &item);
-        for (auto i = 0; i < num; i++)
-        {
-            items.push_back(item[i]);
-        }
-        delete[] item;
-        return items;
+        auto _ = h(text);
+        if (!_)
+            return {};
+        return std::move(*_);
     };
 }
 DECLARE_API double webview_get_ZoomFactor(AbstractWebView *web)
@@ -119,7 +156,7 @@ void NativeMenuHelper::CreateMenu(HWND hwndParent, const std::wstring &s, POINT 
                     flag |= MF_UNCHECKED;
             }
             auto command = CommandBase++;
-            AppendMenu(hMenu, flag, command, item.text);
+            AppendMenu(hMenu, flag, command, item.text.c_str());
             menucallbacks[command] = item.clicked;
         }
         idx += 1;

@@ -18,11 +18,7 @@ from ctypes import (
     c_uint64,
     c_int32,
     CFUNCTYPE,
-    Structure,
-    c_wchar,
-    sizeof,
 )
-import winreg
 from ctypes.wintypes import (
     WORD,
     HWND,
@@ -36,6 +32,7 @@ from ctypes.wintypes import (
     LPCWSTR,
     MAX_PATH,
 )
+from myutils.config import _TR
 from windows import AutoHandle
 from xml.sax.saxutils import escape
 import gobject, os, json
@@ -400,25 +397,65 @@ webview_resize.argtypes = AbstractWebViewPTR, c_int, c_int
 
 webview_contextmenu_clicked_t = CFUNCTYPE(None)
 
-
-class webview_c_MenuItem(Structure):
-    _fields_ = [
-        ("issep", c_bool),
-        ("checkable", c_bool),
-        ("checked", c_bool),
-        ("clicked", webview_contextmenu_clicked_t),
-        ("text", c_wchar * 256),
-    ]
+webview_menu_create = utilsdll.webview_menu_create
+webview_menu_create.restype = c_void_p
+webview_menu_delete = utilsdll.webview_menu_delete
+webview_menu_delete.argtypes = (c_void_p,)
+webview_menu_append = utilsdll.webview_menu_append
+webview_menu_append.argtypes = c_void_p, c_void_p
 
 
-webview_menu_handler_t = CFUNCTYPE(
-    None, LPCWSTR, POINTER(c_size_t), POINTER(POINTER(webview_c_MenuItem))
+class webview_menu(unique_ptr):
+    def __init__(self):
+        super().__init__(webview_menu_create(), webview_menu_delete)
+
+    def append(self, item: "webview_menu_item"):
+        webview_menu_append(self, item)
+
+
+webview_menuitem_create = utilsdll.webview_menuitem_create
+webview_menuitem_create.argtypes = (
+    LPCWSTR,
+    c_bool,
+    c_bool,
+    c_bool,
+    c_void_p,
 )
+webview_menuitem_create.restype = c_void_p
+webview_menuitem_append_submenu = utilsdll.webview_menuitem_append_submenu
+webview_menuitem_append_submenu.argtypes = c_void_p, c_void_p
+webview_menuitem_delete = utilsdll.webview_menuitem_delete
+webview_menuitem_delete.argtypes = (c_void_p,)
+
+class webview_menu_item(unique_ptr):
+    def __init__(self, text, issep, checkable, checked, clicked):
+        super().__init__(
+            webview_menuitem_create(text, issep, checkable, checked, clicked),
+            webview_menuitem_delete,
+        )
+
+    def appendSub(self, item: "webview_menu_item"):
+        webview_menuitem_append_submenu(self, item)
+
+
+class MenuItem:
+    def __init__(
+        self, issep=False, checkable=False, checked=False, clicked=None, text="", translate=True
+    ):
+        self.clicked = webview_contextmenu_clicked_t(clicked) if clicked else None
+        self.sub = []
+        self.item = webview_menu_item(
+            _TR(text) if translate else text, issep, checkable, checked, clicked=self.clicked
+        )
+
+    def appendSub(self, sub: "MenuItem"):
+        self.item.appendSub(sub.item)
+        self.sub.append(sub)
+
+
+webview_menu_handler_t = CFUNCTYPE(c_void_p, LPCWSTR)
 webview_set_menu_handler = utilsdll.webview_set_menu_handler
-webview_set_menu_handler.argtypes = (
-    AbstractWebViewPTR,
-    webview_menu_handler_t,
-)
+webview_set_menu_handler.argtypes = (AbstractWebViewPTR, webview_menu_handler_t)
 webview_set_menu_handler.restype = c_bool
 webview_allocate_buffer = utilsdll.webview_allocate_buffer
 webview_allocate_buffer.argtypes = (c_size_t,)
@@ -442,17 +479,6 @@ webview_get_ZoomFactor.argtypes = (AbstractWebViewPTR,)
 webview_get_ZoomFactor.restype = c_double
 
 
-class MenuItem:
-    def __init__(
-        self, issep=False, checkable=False, checked=False, clicked=lambda: 0, text=""
-    ):
-        self.issep = issep
-        self.checkable = checkable
-        self.checked = checked
-        self.clicked = clicked
-        self.text = text
-
-
 class AbstractWebView:
 
     def bind(self, fname: str, fp):
@@ -466,7 +492,6 @@ class AbstractWebView:
     def __init__(self):
         self.html_limit = 2 * 1024 * 1024
         self.callbacks = []
-        self.__menu_clicked_ptr = []
         self.ptr = unique_ptr(None, webview_destroy)
 
     def _init(self):
@@ -505,24 +530,18 @@ class AbstractWebView:
     def on_menu(self, selecttext) -> "list[MenuItem]":
         return []
 
-    def __menu_handler(self, selecttext, psizet, ppcmenu):
-        self.__menu_clicked_ptr.clear()
+    def __menu_handler(self, selecttext):
+        self.___menu = unique_ptr(webview_menu_create(), webview_menu_delete)
+        self.___menu_items = []
         menuitens = self.on_menu(selecttext)
-        menuitens = [_ for _ in menuitens if _]
-        psizet[0] = c_size_t(len(menuitens))
-        buffer = cast(
-            webview_allocate_buffer(len(menuitens) * sizeof(webview_c_MenuItem)),
-            POINTER(webview_c_MenuItem),
-        )
-        for i, item in enumerate(menuitens):
-            buffer[i].issep = item.issep
-            buffer[i].checkable = item.checkable
-            buffer[i].checked = item.checked
-            __ = webview_contextmenu_clicked_t(item.clicked)
-            self.__menu_clicked_ptr.append(__)
-            buffer[i].clicked = __
-            buffer[i].text = item.text
-        ppcmenu[0] = buffer
+        if not menuitens:
+            return
+        for item in menuitens:
+            if not item:
+                continue
+            webview_menu_append(self.___menu, item.item)
+            self.___menu_items.append(item)
+        return self.___menu.value
 
 
 # Abastract Webview end

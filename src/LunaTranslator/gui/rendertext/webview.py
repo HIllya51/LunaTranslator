@@ -7,7 +7,7 @@ from gui.rendertext.texttype import (
     FenciColor,
 )
 import gobject, windows, json, os, functools, time
-import hashlib, NativeUtils
+import hashlib, NativeUtils, qtawesome
 from urllib.parse import quote
 from myutils.config import globalconfig, static_data, _TR
 from myutils.wrapper import threader
@@ -352,17 +352,17 @@ class TextBrowser(WebviewWidget, somecommon):
         if selecttext:
             return [
                 MenuItem(
-                    text=_TR("查词"),
+                    text="查词",
                     clicked=functools.partial(self.menusearchword, selecttext.strip()),
                 ),
                 MenuItem(
-                    text=_TR("翻译"),
+                    text="翻译",
                     clicked=functools.partial(
                         gobject.base.textgetmethod, selecttext.strip()
                     ),
                 ),
                 MenuItem(
-                    text=_TR("朗读"),
+                    text="朗读",
                     clicked=functools.partial(
                         gobject.base.read_text, selecttext.strip()
                     ),
@@ -378,30 +378,30 @@ class TextBrowser(WebviewWidget, somecommon):
                 globalconfig["hidetools"] = not globalconfig.get("hidetools", False)
                 gobject.base.translation_ui.enterfunction()
 
-            return [
+            items = [
                 MenuItem(
-                    text=_TR("清空"),
+                    text="清空",
                     clicked=self.___cleartext,
                 ),
                 MenuItem(
-                    text=_TR("设置"),
+                    text="设置",
                     clicked=gobject.base.settin_ui_showsignal.emit,
                 ),
                 MenuItem(issep=True),
                 MenuItem(
-                    text=_TR("可拖动的"),
+                    text="可拖动的",
                     clicked=__cb,
                     checkable=True,
                     checked=globalconfig.get("dragable", True),
                 ),
                 MenuItem(
-                    text=_TR("隐藏工具栏"),
+                    text="隐藏工具栏",
                     clicked=__cb2,
                     checkable=True,
-                    checked=globalconfig.get("hidetools", True),
+                    checked=globalconfig.get("hidetools", False),
                 ),
                 MenuItem(
-                    text=_TR("鼠标滚动查看历史文本"),
+                    text="鼠标滚动查看历史文本",
                     clicked=lambda: globalconfig.__setitem__(
                         "enable_wheel_history",
                         not globalconfig.get("enable_wheel_history", True),
@@ -410,6 +410,13 @@ class TextBrowser(WebviewWidget, somecommon):
                     checked=globalconfig.get("enable_wheel_history", True),
                 ),
             ]
+            if globalconfig.get("hidetools", False):
+                gongjulan = MenuItem(text="工具按钮")
+                gongjulan.appendSub(MenuItem(text="工具按钮_1"))
+                gongjulan.appendSub(MenuItem(text="工具按钮_2"))
+                gongjulan.appendSub(MenuItem(text="工具按钮_3"))
+                items.insert(2, gongjulan)
+            return items
 
     def event(self, a0: QEvent) -> bool:
         if isinstance(a0, TransparentChangedEvent):
