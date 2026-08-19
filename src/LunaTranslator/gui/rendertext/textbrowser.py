@@ -408,16 +408,15 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(search)
         menu.addAction(setting)
         extras = {}
-        if globalconfig.get("hidetools", False):
-            toolbar = LMenu("工具按钮", menu)
-            menu.addMenu(toolbar)
-            for tip, clicked, _, check in get_sorted_toolbuttonitems():
-                action = LAction(tip, toolbar)
-                toolbar.addAction(action)
-                if check:
-                    action.setCheckable(True)
-                    action.setChecked(check())
-                extras[action] = clicked
+        toolbar = LMenu("工具按钮", menu)
+        menu.addMenu(toolbar)
+        for tip, clicked, _, check in get_sorted_toolbuttonitems():
+            action = LAction(tip, toolbar)
+            toolbar.addAction(action)
+            if check:
+                action.setCheckable(True)
+                action.setChecked(check())
+            extras[action] = clicked
         menu.addSeparator()
         menu.addAction(drag)
         menu.addAction(hide)

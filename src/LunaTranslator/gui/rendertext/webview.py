@@ -450,20 +450,20 @@ class TextBrowser(WebviewWidget, somecommon):
                     checked=globalconfig.get("enable_wheel_history", True),
                 ),
             ]
-            if globalconfig.get("hidetools", False):
-                gongjulan = MenuItem(text="工具按钮")
-                for tip, clicked, _, check in get_sorted_toolbuttonitems():
-                    gongjulan.appendSub(
-                        MenuItem(
-                            text=tip,
-                            clicked=functools.partial(
-                                threader(gobject.base.safeinvokefunction.emit), clicked
-                            ),
-                            checkable=bool(check),
-                            checked=check() if check else None,
-                        )
+            
+            gongjulan = MenuItem(text="工具按钮")
+            for tip, clicked, _, check in get_sorted_toolbuttonitems():
+                gongjulan.appendSub(
+                    MenuItem(
+                        text=tip,
+                        clicked=functools.partial(
+                            threader(gobject.base.safeinvokefunction.emit), clicked
+                        ),
+                        checkable=bool(check),
+                        checked=check() if check else None,
                     )
-                items.insert(2, gongjulan)
+                )
+            items.insert(2, gongjulan)
             return items
 
     def event(self, a0: QEvent) -> bool:
