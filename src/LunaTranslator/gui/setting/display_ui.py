@@ -232,13 +232,8 @@ def __rs():
             getsmalllabel("圆角"),
             spin,
             "",
-            getsmalllabel("任务栏中显示"),
-            D_getsimpleswitch(
-                globalconfig,
-                "showintab",
-                callback=lambda _: gobject.base.setshowintab(),
-                default=True,
-            ),
+            "",
+            "",
         ]
     )
 
@@ -274,13 +269,8 @@ def uisetting(self):
             default=True,
         ),
         "",
-        getsmalllabel("任务栏中显示"),
-        D_getsimpleswitch(
-            globalconfig,
-            "showintab_sub",
-            callback=lambda _: gobject.base.setshowintab(),
-            default=True,
-        ),
+        "",
+        "",
     ]
     if not gobject.sys_ge_win_11:
         list(windoweffects.append(("", windoweffects.pop(3))[0]) for _ in range(3))

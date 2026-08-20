@@ -232,8 +232,8 @@ class TranslatorWindow(resizableframeless):
         self.lastrefreshtime = time.time()
         self.autohidestart = True
         if globalconfig.get("autodisappear_which", 0) == 0:
-            flag = (globalconfig.get("showintab", True) and self.isMinimized()) or (
-                not globalconfig.get("showintab", True) and self.isHidden()
+            flag = (globalconfig.get("showintab", False) and self.isMinimized()) or (
+                not globalconfig.get("showintab", False) and self.isHidden()
             )
             if flag:
                 self.show_()
@@ -314,8 +314,8 @@ class TranslatorWindow(resizableframeless):
     def showhideui(self):
         if self._move_drag:
             return
-        flag = (globalconfig.get("showintab", True) and self.isMinimized()) or (
-            not globalconfig.get("showintab", True) and self.isHidden()
+        flag = (globalconfig.get("showintab", False) and self.isMinimized()) or (
+            not globalconfig.get("showintab", False) and self.isHidden()
         )
 
         if flag:
@@ -656,7 +656,7 @@ class TranslatorWindow(resizableframeless):
             self.translate_text.resize(self.width(), int(height))
 
     def hide_(self):
-        if globalconfig.get("showintab", True):
+        if globalconfig.get("showintab", False):
             self.showMinimized()
         else:
             self.hide()
@@ -666,7 +666,7 @@ class TranslatorWindow(resizableframeless):
             self.showNormal()
         if self.isHidden():
             self.show()
-        if not (globalconfig.get("showintab", True) or globalconfig["showna"]):
+        if not (globalconfig.get("showintab", False) or globalconfig["showna"]):
             windows.SetForegroundWindow(self.winid)
         gobject.base.commonstylebase.hide()
 
