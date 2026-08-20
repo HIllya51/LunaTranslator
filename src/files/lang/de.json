@@ -932,5 +932,6 @@
     "左键点击": "Linksklick",
     "已保存到剪贴板": "In die Zwischenablage gespeichert",
     "保存到文件": "In Datei speichern",
-    "保存到剪贴板": "In die Zwischenablage kopieren"
+    "保存到剪贴板": "In die Zwischenablage kopieren",
+    "放弃窗口焦点": "Fensterfokus aufgeben"
 }

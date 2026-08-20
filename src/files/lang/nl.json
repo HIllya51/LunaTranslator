@@ -932,5 +932,6 @@
     "左键点击": "Linksklikken",
     "已保存到剪贴板": "Opgeslagen naar klembord",
     "保存到文件": "Opslaan naar bestand",
-    "保存到剪贴板": "Naar klembord kopiëren"
+    "保存到剪贴板": "Naar klembord kopiëren",
+    "放弃窗口焦点": "Stop met het focussen op het venster"
 }

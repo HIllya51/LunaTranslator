@@ -932,5 +932,6 @@
     "左键点击": "Clique com o botão esquerdo",
     "已保存到剪贴板": "Salvo na área de transferência.",
     "保存到文件": "Salvar em arquivo",
-    "保存到剪贴板": "Copiar para a área de transferência"
+    "保存到剪贴板": "Copiar para a área de transferência",
+    "放弃窗口焦点": "Perder o foco da janela"
 }

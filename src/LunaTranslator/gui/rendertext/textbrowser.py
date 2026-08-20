@@ -394,6 +394,8 @@ class TextBrowser(QWidget, dataget):
         if currlabel and currlabel.isVisible():
             return
         menu = QMenu(gobject.base.commonstylebase)
+        toolbar = LMenu("工具按钮", menu)
+        menu.addMenu(toolbar)
         search = LAction("清空", menu)
         setting = LAction("设置", menu)
         drag = LAction("可拖动的", menu)
@@ -408,8 +410,6 @@ class TextBrowser(QWidget, dataget):
         menu.addAction(search)
         menu.addAction(setting)
         extras = {}
-        toolbar = LMenu("工具按钮", menu)
-        menu.addMenu(toolbar)
         for tip, clicked, _, check in get_sorted_toolbuttonitems():
             action = LAction(tip, toolbar)
             toolbar.addAction(action)

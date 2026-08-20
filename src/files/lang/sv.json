@@ -932,5 +932,6 @@
     "左键点击": "Vänsterklicka",
     "已保存到剪贴板": "Kopierat till urklipp",
     "保存到文件": "Spara till fil",
-    "保存到剪贴板": "Kopiera till urklipp"
+    "保存到剪贴板": "Kopiera till urklipp",
+    "放弃窗口焦点": "Släpp fönsterfokus"
 }

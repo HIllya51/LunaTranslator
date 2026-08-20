@@ -226,12 +226,7 @@ class rangeadjust(Mainw):
         self.customContextMenuRequested.connect(self.showmenu)
         for s in self.cornerGrips:
             s.raise_()
-        windows.SetWindowLong(
-            int(self.winId()),
-            windows.GWL_EXSTYLE,
-            windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
-            | windows.WS_EX_NOACTIVATE,
-        )
+        windows.WindowFocus.giveup(self.winId())
 
     def showmenu(self, _):
         menu = QMenu(self)

@@ -65,6 +65,13 @@
 1. #### Save configuration immediately {#anchor-50}
     Save the current user configuration immediately, rather than waiting until exit.
 
+1. #### Give up window focus. {#anchor-giveupfocus}
+    Switches all windows of the program to a state where they cannot obtain focus, so that they will not compete with the game for focus when interacting with the window, increasing immersion.
+
+    In some cases, such as some older games that exit fullscreen when they lose focus, this feature may alleviate this problem.
+
+    Triggering the hotkey again restores the original state, and the window will be able to obtain focus normally.
+
 ## HOOK
 
 >[!WARNING]

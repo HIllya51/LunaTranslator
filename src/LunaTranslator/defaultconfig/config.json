@@ -253,8 +253,7 @@
         },
         "websocket": {}
     },
-    "embedded": {
-    },
+    "embedded": {},
     "requestinterval": 0,
     "postprocess_rank": [
         "fulltohalf"
@@ -761,6 +760,9 @@
             },
             "50": {
                 "name": "立即保存配置"
+            },
+            "giveupfocus": {
+                "name": "放弃窗口焦点"
             },
             "_15": {
                 "name": "绑定窗口_（点击自己取消）"

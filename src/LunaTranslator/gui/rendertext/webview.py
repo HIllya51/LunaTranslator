@@ -463,7 +463,7 @@ class TextBrowser(WebviewWidget, somecommon):
                         checked=check() if check else None,
                     )
                 )
-            items.insert(2, gongjulan)
+            items.insert(0, gongjulan)
             return items
 
     def event(self, a0: QEvent) -> bool:

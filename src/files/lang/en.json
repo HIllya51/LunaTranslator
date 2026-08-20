@@ -932,5 +932,6 @@
     "左键点击": "Left-click.",
     "已保存到剪贴板": "Saved to clipboard.",
     "保存到文件": "Save to file.",
-    "保存到剪贴板": "Save to clipboard."
+    "保存到剪贴板": "Save to clipboard.",
+    "放弃窗口焦点": "Give up window focus."
 }

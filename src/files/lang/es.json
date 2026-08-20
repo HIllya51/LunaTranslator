@@ -932,5 +932,6 @@
     "左键点击": "Haz clic izquierdo",
     "已保存到剪贴板": "Copiado al portapapeles",
     "保存到文件": "Guardar en archivo",
-    "保存到剪贴板": "Guardar en el portapapeles"
+    "保存到剪贴板": "Guardar en el portapapeles",
+    "放弃窗口焦点": "Abandonar el enfoque de la ventana"
 }

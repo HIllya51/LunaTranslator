@@ -932,5 +932,6 @@
     "左键点击": "Clic gauche.",
     "已保存到剪贴板": "Copié dans le presse-papiers.",
     "保存到文件": "Enregistrer dans un fichier",
-    "保存到剪贴板": "Copier dans le presse-papiers"
+    "保存到剪贴板": "Copier dans le presse-papiers",
+    "放弃窗口焦点": "Abandonner le focus de la fenêtre"
 }

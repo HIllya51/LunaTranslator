@@ -256,6 +256,7 @@ def registrhotkeys(self):
         "50": safesaveall,
         "51": lambda: gobject.base.translation_ui.changemousetransparentstate(1),
         "disableothers": functools.partial(__enable, self, exception="disableothers"),
+        "giveupfocus": gobject.base.giveupfocus,
     }
 
     for name in globalconfig["myquickkeys"]:
@@ -287,6 +288,7 @@ hotkeys = [
             "53",
             "45",
             "50",
+            "giveupfocus",
         ],
     ],
     ["HOOK", ["_11", "_12"]],

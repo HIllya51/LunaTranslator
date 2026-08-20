@@ -137,6 +137,24 @@ WM_KEYDOWN = 0x0100
 WM_KEYUP = 0x0101
 
 
+class WindowFocus:
+    @staticmethod
+    def giveup(hwnd):
+        SetWindowLong(
+            int(hwnd),
+            GWL_EXSTYLE,
+            GetWindowLong(int(hwnd), GWL_EXSTYLE) | WS_EX_NOACTIVATE,
+        )
+
+    @staticmethod
+    def retrieve(hwnd):
+        SetWindowLong(
+            int(hwnd),
+            GWL_EXSTYLE,
+            GetWindowLong(int(hwnd), GWL_EXSTYLE) & ~WS_EX_NOACTIVATE,
+        )
+
+
 class MouseTrans:
     @staticmethod
     def set(hwnd):
@@ -586,9 +604,11 @@ def MoveWindow(hwnd, X, Y, w, h, bRepaint):
 def ShellExecute(hwnd: int, op: str, file: str, params: str, _dir: str, bShow):
     return _ShellExecuteW(hwnd, op, file, params, _dir, bShow)
 
+
 ERROR_FILE_NOT_FOUND = 2
 ERROR_PATH_NOT_FOUND = 3
 SE_ERR_ACCESSDENIED = ERROR_ACCESS_DENIED = 5
+
 
 def OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId):
     return _OpenProcess(dwDesiredAccess, bInheritHandle, dwProcessId)

@@ -1442,14 +1442,46 @@ class BASEOBJECT(QObject):
             int(widget.winId()), globalconfig.get("showintab_sub", True), False
         )
 
+    def giveupfocus_checked(self, widget: QWidget):
+        try:
+            self.translation_ui
+        except:
+            return
+        func = lambda: (
+            windows.WindowFocus.giveup(widget.winId())
+            if gobject.tempconfig.get("giveupfocus", False)
+            else windows.WindowFocus.retrieve(widget.winId())
+        )
+        if widget == self.translation_ui:
+            func()
+            return
+        if self.__dontshowintaborsetbackdrop(widget):
+            return
+        if isinstance(widget, (QMenu, QFrame)):
+            return
+        if (
+            isinstance(widget, QWidget)
+            and widget.parent() is None
+            and len(widget.children()) == 0
+        ):
+            # combobox的下拉框，然后这个widget会迅速销毁，会导致任务栏闪一下。没别的办法了姑且这样过滤一下
+            return
+        func()
+
     def createmenu1(self):
         trayMenu = QMenu(self.commonstylebase)
         showAction = LAction("显示", trayMenu)
         showAction.triggered.connect(self.translation_ui.show_)
         showcenter = LAction("屏幕中间显示__", trayMenu)
+
         def showatcenter():
-            self.translation_ui.setGeometry(create_centered_rect(self.translation_ui.width(), self.translation_ui.height()))
+            self.translation_ui.setGeometry(
+                create_centered_rect(
+                    self.translation_ui.width(), self.translation_ui.height()
+                )
+            )
             self.translation_ui.show_()
+
         showcenter.triggered.connect(showatcenter)
         settingAction = LAction(qtawesome.icon("fa.gear"), "设置", trayMenu)
         settingAction.triggered.connect(gobject.base.settin_ui_showsignal)
@@ -1503,6 +1535,13 @@ class BASEOBJECT(QObject):
     def setshowintab(self):
         for widget in QApplication.topLevelWidgets():
             self.setshowintab_checked(widget)
+
+    def giveupfocus(self):
+        isgiveupfocus = gobject.tempconfig.get("giveupfocus", False)
+        isgiveupfocus = not isgiveupfocus
+        gobject.tempconfig["giveupfocus"] = isgiveupfocus
+        for widget in QApplication.topLevelWidgets():
+            self.giveupfocus_checked(widget)
 
     def ismenulistframeless(self, widget: QWidget):
         ismenulist = isinstance(widget, (QMenu, PopupWidget)) or (
@@ -1746,6 +1785,7 @@ class BASEOBJECT(QObject):
             return
         self.cornerornot(obj)
         self.setshowintab_checked(obj)
+        self.giveupfocus_checked(obj)
         NativeUtils.SetWindowExtendFrame(int(hwnd))
         if self.currentisdark is not None:
             self.setdarkandbackdrop(obj, self.currentisdark)

@@ -64,6 +64,13 @@
 1. #### Lưu cấu hình ngay {#anchor-50}
     Lưu ngay cấu hình người dùng hiện tại thay vì đợi đến khi thoát.
 
+1. #### Từ bỏ tiêu điểm cửa sổ {#anchor-giveupfocus}
+    Chuyển tất cả cửa sổ của chương trình sang trạng thái không thể nhận tiêu điểm, nhờ đó khi thao tác cửa sổ sẽ không tranh tiêu điểm với trò chơi, tăng cảm giác đắm chìm.
+
+    Ngoài ra, trong một số trường hợp, chẳng hạn một số trò chơi cũ sẽ thoát toàn màn hình khi mất tiêu điểm ở chế độ toàn màn hình, tính năng này có thể giảm nhẹ vấn đề đó.
+
+    Khi kích hoạt lại phím tắt, trạng thái ban đầu sẽ được khôi phục và cửa sổ có thể nhận tiêu điểm bình thường.
+
 ## HOOK
 
 >[!WARNING]
