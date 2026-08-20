@@ -459,7 +459,9 @@ class IconButtonWithOverlay(ColorButton):
         super().__init__(*argc, **kw)
         self.guide = GuideOverlay(self)
         self.guide.hide()
-        self.clicked.connect(lambda: [_.guide.hide() for _ in tscolor_setting_collector])
+        self.clicked.connect(
+            lambda: [_.guide.hide() for _ in tscolor_setting_collector]
+        )
         tscolor_setting_collector.append(self)
 
     def resizeEvent(self, a0):
@@ -1501,6 +1503,7 @@ class llamalisttable(LTableView):
                 continue
             cudasdigest[maich.groups()[0]] = _["digest"]
             cudas[maich.groups()[0]] = _["browser_download_url"]
+        xpus = NativeUtils.ListXpuVendors().union(NativeUtils.ListXpuVendors(False))
         for _ in res["assets"]:
             name: str = _["name"]
             maich = re.match(r"llama-.*?-bin-win-(.*?)-x64\.zip", name)
@@ -1509,16 +1512,22 @@ class llamalisttable(LTableView):
             arch = maich.groups()[0]
             size = format_bytes(_["size"])
             _arch = arch
+            enable = True
             if arch == "sycl":
                 arch += " (Intel GPU/NPU)"
+                enable = "8086" in xpus
             elif arch.startswith("openvino"):
                 arch += " (Intel GPU/NPU)"
+                enable = "8086" in xpus
             elif arch.startswith("cuda"):
                 arch += " (Nvidia GPU)"
+                enable = "10DE" in xpus
             elif arch == "hip-radeon":
                 arch += " (AMD GPU/NPU)"
+                enable = "1022" in xpus
             elif arch.startswith("rocm"):
                 arch += " (AMD GPU/NPU)"
+                enable = "1022" in xpus
             elif arch == "vulkan":
                 arch += "_(通用)"
             item = LStandardItem(arch)
@@ -1532,7 +1541,9 @@ class llamalisttable(LTableView):
             item2 = QStandardItem(size)
             item2.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
             item3.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.Model.appendRow([item, item2, item3])
+            items = [item, item2, item3]
+            self.Model.appendRow(items)
+            [_.setEnabled(enable) for _ in items]
         gobject.base.connectsignal(gobject.base.llamacpparchcheck, self.__archcheck)
 
     def __archcheck(
@@ -1558,6 +1569,7 @@ class llamalisttable(LTableView):
                 else:
                     t = "重新下载"
             btn = LPushButton(t)
+            btn.setEnabled(item.isEnabled())
             btn.clicked.connect(
                 functools.partial(self.__click_download, i, arch, cudaonly)
             )

@@ -2,7 +2,8 @@
 
 #include <cstdio>
 #include <mmdeviceapi.h>
-
+#include <setupapi.h>
+#include <devguid.h>
 #include <Functiondiscoverykeys_devpkey.h>
 
 const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
@@ -50,4 +51,60 @@ DECLARE_API void ListEndpoints(bool input, void (*cb)(LPCWSTR, LPCWSTR))
         // Print the endpoint friendly name and endpoint ID.
         cb(varName->pwszVal, pwszID);
     }
+}
+DECLARE_API void ListXpuVendors(bool gpu, void (*cb)(LPCWSTR))
+{
+    HDEVINFO deviceInfoSet = SetupDiGetClassDevs(
+        gpu ? &GUID_DEVCLASS_DISPLAY : &GUID_DEVCLASS_COMPUTEACCELERATOR,
+        NULL,
+        NULL,
+        DIGCF_PRESENT);
+
+    if (deviceInfoSet == INVALID_HANDLE_VALUE)
+        return;
+
+    SP_DEVINFO_DATA deviceInfoData;
+    deviceInfoData.cbSize = sizeof(SP_DEVINFO_DATA);
+    DWORD deviceIndex = 0;
+
+    while (SetupDiEnumDeviceInfo(deviceInfoSet, deviceIndex, &deviceInfoData))
+    {
+        deviceIndex++;
+
+        auto find = [](const std::wstring &buffer) -> std::optional<std::wstring>
+        {
+            auto currentId = buffer.data();
+            while (*currentId)
+            {
+                std::wstring hwId(currentId);
+                size_t venPos = hwId.find(L"VEN_");
+                if (venPos != std::wstring::npos)
+                {
+                    std::wstring venCode = hwId.substr(venPos + 4, 4);
+                    std::transform(venCode.begin(), venCode.end(), venCode.begin(), ::towupper);
+                    return venCode;
+                }
+                currentId += wcslen(currentId) + 1;
+            }
+            return {};
+        };
+
+        wchar_t hardwareId[MAX_PATH] = {0};
+        if (!SetupDiGetDeviceRegistryProperty(
+                deviceInfoSet,
+                &deviceInfoData,
+                SPDRP_HARDWAREID,
+                NULL,
+                (PBYTE)hardwareId,
+                sizeof(hardwareId),
+                NULL))
+            continue;
+
+        auto vendorid = find(hardwareId);
+        if (!vendorid)
+            continue;
+        cb(vendorid.value().c_str());
+    }
+
+    SetupDiDestroyDeviceInfoList(deviceInfoSet);
 }

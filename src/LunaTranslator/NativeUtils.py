@@ -427,6 +427,7 @@ webview_menuitem_append_submenu.argtypes = c_void_p, c_void_p
 webview_menuitem_delete = utilsdll.webview_menuitem_delete
 webview_menuitem_delete.argtypes = (c_void_p,)
 
+
 class webview_menu_item(unique_ptr):
     def __init__(self, text, issep, checkable, checked, clicked):
         super().__init__(
@@ -440,12 +441,22 @@ class webview_menu_item(unique_ptr):
 
 class MenuItem:
     def __init__(
-        self, issep=False, checkable=False, checked=False, clicked=None, text="", translate=True
+        self,
+        issep=False,
+        checkable=False,
+        checked=False,
+        clicked=None,
+        text="",
+        translate=True,
     ):
         self.clicked = webview_contextmenu_clicked_t(clicked) if clicked else None
         self.sub = []
         self.item = webview_menu_item(
-            _TR(text) if translate else text, issep, checkable, checked, clicked=self.clicked
+            _TR(text) if translate else text,
+            issep,
+            checkable,
+            checked,
+            clicked=self.clicked,
         )
 
     def appendSub(self, sub: "MenuItem"):
@@ -1355,3 +1366,13 @@ GetProcessMemory.restype = c_uint64
 GetProcessVRAM = utilsdll.GetProcessVRAM
 GetProcessVRAM.argtypes = DWORD, c_bool
 GetProcessVRAM.restype = c_uint64
+
+_ListXpuVendors = utilsdll.ListXpuVendors
+_ListXpuVendorscb = CFUNCTYPE(None, LPCWSTR)
+_ListXpuVendors.argtypes = c_bool, _ListXpuVendorscb
+
+
+def ListXpuVendors(gpu: bool = True):
+    __ = set()
+    _ListXpuVendors(gpu, _ListXpuVendorscb(__.add))
+    return __

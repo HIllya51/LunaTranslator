@@ -30,16 +30,26 @@ add_subdirectory(vad)
 add_subdirectory(bass)
 add_library(NativeUtils SHARED
     memory.cpp
-    audiodevice.cpp
+    devices.cpp
     dllanalysis.cpp
     globalmessagelistener.cpp AreoAcrylic.cpp screenshot.cpp hwnd.cpp theme.cpp lnk.cpp muteprocess.cpp sapi_dll.cpp tools.cpp icon.cpp adapters.cpp
     ${loopbackaudio} ${winrt} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
-target_link_libraries(NativeUtils PRIVATE pdh vad tiny-aes Dbghelp libmecab rapidfuzz bassimp libbass webview mfuuid md4c-all dwmapi d3d11 version Mfplat DXGI Msimg32)
+target_link_libraries(NativeUtils PRIVATE pdh vad tiny-aes Dbghelp libmecab rapidfuzz bassimp libbass webview mfuuid md4c-all dwmapi d3d11 version 
+                    Mfplat 
+                    DXGI 
+                    Msimg32
+                    setupapi
+                    delayimp
+                    ${YY_Thunks}
+)
 
-target_link_libraries(NativeUtils PRIVATE ${YY_Thunks})
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:Dbghelp.dll")
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:SETUPAPI.dll")
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MSIMG32.dll")
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:pdh.dll")
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:GDI32.dll")
 if(NOT WINXP)
     target_link_libraries(NativeUtils PRIVATE ShCore)
     target_link_libraries(NativeUtils PRIVATE Mmdevapi)
@@ -48,7 +58,6 @@ if(NOT WINXP)
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:dxgi.dll")
     target_link_options(NativeUtils PRIVATE "/DELAYLOAD:d3d11.dll")
 endif()
-target_link_libraries(NativeUtils PRIVATE delayimp)
 
 
 if(WIN10ABOVE)
