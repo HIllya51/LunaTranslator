@@ -1,5 +1,6 @@
 from qtsymbols import *
 from myutils.config import globalconfig
+import gobject
 from sometypes import WordSegResult
 
 
@@ -145,11 +146,11 @@ class dataget:
 
     def _getfontinfo(self, texttype: TextType):
         if texttype == TextType.Origin:
-            fm = globalconfig.get("fonttype", "")
+            fm = globalconfig.get("fonttype", gobject.tempconfig["fonttype"])
             fs = globalconfig.get("fontsizeori", 16)
             bold = globalconfig.get("showbold", False)
         else:
-            fm = globalconfig.get("fonttype2", "")
+            fm = globalconfig.get("fonttype2", gobject.tempconfig["fonttype2"])
             fs = globalconfig.get("fontsize", 16)
             bold = globalconfig.get("showbold_trans", False)
         return fm, fs, bold

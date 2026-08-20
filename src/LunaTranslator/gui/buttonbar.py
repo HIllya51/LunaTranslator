@@ -4,6 +4,7 @@ from traceback import print_exc
 import qtawesome, gobject
 from myutils.config import (
     globalconfig,
+    ui_settings,
 )
 from myutils.utils import (
     str2rgba,
@@ -42,14 +43,14 @@ class IconLabelX(LLabel):
     @staticmethod
     def w():
         return (
-            globalconfig.get("buttonsize", 25)
+            ui_settings.get("buttonsize", 25)
             * gobject.Consts.toolwdivh
             * gobject.Consts.toolscale
         )
 
     @staticmethod
     def h():
-        return globalconfig.get("buttonsize", 25) * gobject.Consts.toolscale
+        return ui_settings.get("buttonsize", 25) * gobject.Consts.toolscale
 
     def setSize(self):
         sz = (QSizeF(IconLabelX.w(), IconLabelX.h())).toSize()
@@ -236,12 +237,12 @@ class ButtonBar(QFrame):
         for name in self.buttons:
             if name in self.colorstate:
                 color = (
-                    globalconfig.get("buttoncolor_1", "#ff03f2")
+                    ui_settings.get("buttoncolor_1", "#ff03f2")
                     if self.colorstate[name]()
-                    else globalconfig.get("buttoncolor", "#2e2eff")
+                    else ui_settings.get("buttoncolor", "#2e2eff")
                 )
             else:
-                color = globalconfig.get("buttoncolor", "#2e2eff")
+                color = ui_settings.get("buttoncolor", "#2e2eff")
             if name in self.iconstate:
                 icon = (
                     globalconfig["toolbutton"]["buttons"][name]["icon"]
@@ -270,12 +271,12 @@ class ButtonBar(QFrame):
             #titlebar{{border-width: 0;{bottomr};background-color: {color2}}}
         """.format(
             bottomr3=bottomr3,
-            color1=globalconfig.get("button_color_normal", "#FFFFFF"),
+            color1=ui_settings.get("button_color_normal", "#FFFFFF"),
             color0="red",
             bottomr=bottomr,
             color2=str2rgba(
-                globalconfig.get("backcolor_tool", "#ffaaff"),
-                globalconfig.get("transparent_tool", 50),
+                ui_settings.get("backcolor_tool", "#ffaaff"),
+                ui_settings.get("transparent_tool", 50),
             ),
         )
         self.setStyleSheet(style)

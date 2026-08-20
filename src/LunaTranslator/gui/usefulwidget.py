@@ -16,7 +16,7 @@ from NativeUtils import WebView2
 import re
 from myutils.hwnd import getExeIcon, getcurrexe
 from gui.qevent import DarkLightChangedEvent, DarkLightSettingChangedEvent
-from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink
+from myutils.config import _TR, globalconfig, mayberelpath, dynamiclink, ui_settings
 from myutils.wrapper import Singleton, threader, tryprint
 from myutils.utils import nowisdark
 from myutils.hwnd import getcurrexe
@@ -1948,7 +1948,7 @@ class WebviewWidget(AbstractWebviewWidget):
         super().__init__(parent)
         self.url = ""
         self.webview = WebView2(
-            int(self.winId()), transp, loadext, globalconfig.get("darklight2", 0)
+            int(self.winId()), transp, loadext, ui_settings.get("darklight2", 0)
         )
         self.webview.on_menu = self.__on_menu
         self.loadextensionwindow.connect(self.__loadextensionwindow)
@@ -3159,7 +3159,7 @@ class pixmapviewer(QWidget):
                                 return (yy) * scale + y
 
                             font = QFont()
-                            font.setFamily(globalconfig.get("fonttype", ""))
+                            font.setFamily(globalconfig.get("fonttype", gobject.tempconfig["fonttype"]))
                             font.setPointSizeF(globalconfig.get("fontsizeori", 16))
                             pen = QPen()
                             pen.setColor(

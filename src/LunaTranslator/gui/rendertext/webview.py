@@ -9,7 +9,7 @@ from gui.rendertext.texttype import (
 import gobject, windows, json, os, functools, time
 import hashlib, NativeUtils
 from urllib.parse import quote
-from myutils.config import globalconfig, static_data, _TR
+from myutils.config import globalconfig, static_data, ui_settings
 from myutils.wrapper import threader
 import copy, uuid
 from gui.usefulwidget import WebviewWidget
@@ -46,7 +46,7 @@ class somecommon(dataget):
         self.showhidetranslate(globalconfig.get("showfanyi", True))
         self.showhidename(globalconfig.get("showfanyisource", False))
         self.showatcenter(globalconfig.get("showatcenter", True))
-        self.showtextareabackground(globalconfig.get("text_area_background", False))
+        self.showtextareabackground(ui_settings.get("text_area_background", False))
         self.setTextAreaBackStyle()
         self.showhideclick()
         self.showhidert(globalconfig.get("isshowhira", True))
@@ -69,9 +69,9 @@ class somecommon(dataget):
 
     # js api
     def setbackgroudimageandopt(self):
-        use = not globalconfig.get("backtransparent", False)
-        opt = globalconfig.get("transparent_pic", 0) / 100 if use else 0
-        url: str = globalconfig.get(
+        use = not ui_settings.get("backtransparent", False)
+        opt = ui_settings.get("transparent_pic", 0) / 100 if use else 0
+        url: str = ui_settings.get(
             "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
         )
         if not any((url.lower().startswith(_)) for _ in ("https://", "http://")):
@@ -94,14 +94,14 @@ class somecommon(dataget):
         self.debugeval("showtextareabackground({})".format(int(show)))
 
     def setTextAreaBackStyle(self, **_):
-        c = QColor(globalconfig.get("text_area_background_color", "#ff0000"))
+        c = QColor(ui_settings.get("text_area_background_color", "#ff0000"))
         self.debugeval(
             "setTextAreaBackStyle({}, {}, {}, '{}', {})".format(
-                globalconfig.get("text_area_background_r", 5),
-                globalconfig.get("text_area_background_w", 5),
-                globalconfig.get("text_area_background_h", 5),
+                ui_settings.get("text_area_background_r", 5),
+                ui_settings.get("text_area_background_w", 5),
+                ui_settings.get("text_area_background_h", 5),
                 c.name(QColor.NameFormat.HexRgb),
-                globalconfig.get("text_area_background_alpha", 50) / 100,
+                ui_settings.get("text_area_background_alpha", 50) / 100,
             )
         )
 

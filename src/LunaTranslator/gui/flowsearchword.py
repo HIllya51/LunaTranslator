@@ -45,28 +45,30 @@ class DraggableQWidget(QWidget):
 
 
 def createsomecontrols(
-    callbackR, callbackDWM, kR, kRsys, kRsysDf, kDWM, kshadow, needcheck=True
+    callbackR, callbackDWM, kR, kRsys, kRsysDf, kDWM, kshadow, needcheck=True, dic=None
 ):
+    if dic is None:
+        dic = globalconfig
     def ___(callbackX, _):
         callbackX()
 
     spin1 = getspinbox(
-        0, 50, globalconfig, kR, callback=functools.partial(___, callbackR)
+        0, 50, dic, kR, callback=functools.partial(___, callbackR)
     )
     sw = None
     effectlayout = None
     if needcheck:
 
         def __vRsys(kRsys, kRsysDf):
-            return gobject.sys_ge_win_11 and globalconfig.get(kRsys, kRsysDf)
+            return gobject.sys_ge_win_11 and dic.get(kRsys, kRsysDf)
 
         vRsys = functools.partial(__vRsys, kRsys, kRsysDf)
 
         def __vR(kDWM, vRsys):
-            return globalconfig.get(kDWM, 0) == 0 and not vRsys()
+            return dic.get(kDWM, 0) == 0 and not vRsys()
 
         def __yinyinguse(kDWM, vRsys):
-            return globalconfig.get(kDWM, 0) != 0 and not vRsys()
+            return dic.get(kDWM, 0) != 0 and not vRsys()
 
         vR = functools.partial(__vR, kDWM, vRsys)
         if not vR():
@@ -74,7 +76,7 @@ def createsomecontrols(
         yinyinguse = functools.partial(__yinyinguse, kDWM, vRsys)
         __shadowxx = getsmalllabel("阴影")()
         __shadowxx2 = getsimpleswitch(
-            globalconfig,
+            dic,
             kshadow,
             callback=functools.partial(___, callbackDWM),
             default=True,
@@ -96,7 +98,7 @@ def createsomecontrols(
 
         if gobject.sys_ge_win_11:
             sw = getsimpleswitch(
-                globalconfig,
+                dic,
                 kRsys,
                 default=kRsysDf,
                 callback=functools.partial(
@@ -129,7 +131,7 @@ def createsomecontrols(
             [
                 getsimplecombobox(
                     ["Disable", "Acrylic", "Aero"],
-                    globalconfig,
+                    dic,
                     kDWM,
                     callback=functools.partial(
                         __cb,

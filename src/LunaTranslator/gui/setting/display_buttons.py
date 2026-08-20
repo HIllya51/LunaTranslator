@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, json
 import gobject
-from myutils.config import globalconfig
+from myutils.config import globalconfig, ui_settings
 from gui.usefulwidget import (
     D_getsimplecombobox,
     IconButton,
@@ -126,19 +126,19 @@ def refreshtoolicon():
     for (name, key), btn in savebtns.items():
 
         color = (
-            globalconfig.get("buttoncolor_1", "#ff03f2")
+            ui_settings.get("buttoncolor_1", "#ff03f2")
             if "icon" == key
             and globalconfig["toolbutton"]["buttons"][name].get("icon2")
-            else globalconfig.get("buttoncolor", "#2e2eff")
+            else ui_settings.get("buttoncolor", "#2e2eff")
         )
         btn.setColor(color)
 
 
 def createbtn(self, name, key, cb):
     color = (
-        globalconfig.get("buttoncolor_1", "#ff03f2")
+        ui_settings.get("buttoncolor_1", "#ff03f2")
         if "icon" == key and globalconfig["toolbutton"]["buttons"][name].get("icon2")
-        else globalconfig.get("buttoncolor", "#2e2eff")
+        else ui_settings.get("buttoncolor", "#2e2eff")
     )
     btn = getIconButton(
         icon=globalconfig["toolbutton"]["buttons"][name][key],
@@ -221,7 +221,7 @@ def createbuttonwidget(self, lay: QLayout):
             D_getspinbox(
                 5,
                 100,
-                globalconfig,
+                ui_settings,
                 "buttonsize",
                 callback=lambda _: toolcolorchange(),
                 default=25,
@@ -230,21 +230,21 @@ def createbuttonwidget(self, lay: QLayout):
             getsmalllabel("颜色"),
             D_getcolorbutton(
                 self,
-                globalconfig,
+                ui_settings,
                 "buttoncolor",
                 callback=lambda _: (toolcolorchange(), refreshtoolicon()),
                 default="#2e2eff",
             ),
             D_getcolorbutton(
                 self,
-                globalconfig,
+                ui_settings,
                 "buttoncolor_1",
                 callback=lambda _: (toolcolorchange(), refreshtoolicon()),
                 default="#ff03f2",
             ),
             D_getcolorbutton(
                 self,
-                globalconfig,
+                ui_settings,
                 "button_color_normal",
                 callback=lambda _: (toolcolorchange(), refreshtoolicon()),
                 default="#FFFFFF",

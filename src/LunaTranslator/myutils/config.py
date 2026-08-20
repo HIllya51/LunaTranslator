@@ -64,6 +64,7 @@ def tryreadconfig2(path):
     return x
 
 
+ui_settings = tryreadconfig("ui_settings.json")
 static_data: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = (
     tryreadconfig2("static_data.json")
 )
@@ -397,6 +398,46 @@ for key in globalconfig["toolbutton"]["rank2"]:
 for key in ___:
     globalconfig["toolbutton"]["rank2"].remove(key)
 
+
+def migrate_ui_settings():
+    for k in (
+        "transparent_pic",
+        "backtransparent",
+        "transparent_EX",
+        "transparent",
+        "transparent_tool",
+        "backgroundpic",
+        "settingfonttype",
+        "theme3",
+        "backcolor",
+        "backcolor_tool",
+        "darklight2",
+        "settingfontbold",
+        "settingfontsize",
+        "force_rect",
+        "WindowBackdrop",
+        "button_color_normal",
+        "buttoncolor_1",
+        "buttoncolor",
+        "buttonsize",
+        "yuanjiao_r",
+        "yuanjiao_sys",
+        "WindowEffect",
+        "WindowEffect_shadow",
+        "text_area_background",
+        "text_area_background_color",
+        "text_area_background_alpha",
+        "text_area_background_r",
+        "text_area_background_w",
+        "text_area_background_h",
+
+    ):
+        if k in globalconfig:
+            ui_settings[k] = globalconfig.pop(k)
+
+
+migrate_ui_settings()
+
 language_last = None
 
 languageshow = {}
@@ -493,6 +534,7 @@ def saveallconfig(test=False):
     _is_config_saving = True
     errorcollect = []
     safesave(errorcollect, gobject.getconfig("config.json"), globalconfig)
+    safesave(errorcollect, gobject.getconfig("ui_settings.json"), ui_settings)
     safesave(
         errorcollect, gobject.getconfig("postprocessconfig.json"), postprocessconfig
     )

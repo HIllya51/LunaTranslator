@@ -136,7 +136,7 @@ class SpecialFont(PopupWidget):
                     self.resetfont()
 
                 w = FocusFontCombo()
-                w.setCurrentFont(QFont(dd.get(k, globalconfig.get("fonttype2", ""))))
+                w.setCurrentFont(QFont(dd.get(k, globalconfig.get("fonttype2", gobject.tempconfig["fonttype2"]))))
                 w.currentTextChanged.connect(functools.partial(_f, dd, k))
             elif i == 1:
                 t = "大小"
@@ -1636,10 +1636,15 @@ class llamalistQwidget_internal(QStackedWidget):
     @threader
     def firstshow(self, _=None):
         try:
-            res = requests.get(
-                "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
-                proxies=getproxy(),
-            ).json()
+            try:
+                res = requests.get(
+                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest",
+                    proxies=getproxy(),
+                ).json()
+            except:
+                res = requests.get(
+                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/latest"
+                ).json()
             if not "tag_name" in res:
                 raise Exception(res)
         except Exception as e:

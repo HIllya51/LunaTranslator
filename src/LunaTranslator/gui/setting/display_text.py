@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import gobject, os
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig, static_data, ui_settings
 from myutils.wrapper import tryprint
 from myutils.utils import translate_exits, _TR, getannotatedapiname
 from gui.usefulwidget import (
@@ -50,13 +50,13 @@ def mayberealtimesetfont(_=None):
     gobject.base.translation_ui.translate_text.setfontstyle()
 
 
-def createtextfontcom(key):
+def createtextfontcom(key, df):
     def _f(key, x):
         globalconfig[key] = x
         mayberealtimesetfont()
 
     font_comboBox = FocusFontCombo()
-    font_comboBox.setCurrentFont(QFont(globalconfig.get(key, "")))
+    font_comboBox.setCurrentFont(QFont(globalconfig.get(key, df)))
     font_comboBox.currentTextChanged.connect(functools.partial(_f, key))
     return font_comboBox
 
@@ -409,7 +409,7 @@ class TextAreaBack(NQGroupBox):
                 [
                     ColorButton(
                         self,
-                        globalconfig,
+                        ui_settings,
                         "text_area_background_color",
                         callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
                         default="#ff0000",
@@ -418,7 +418,7 @@ class TextAreaBack(NQGroupBox):
                     getspinbox(
                         0,
                         100,
-                        globalconfig,
+                        ui_settings,
                         "text_area_background_alpha",
                         callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
                         default=50,
@@ -436,7 +436,7 @@ class TextAreaBack(NQGroupBox):
                 getspinbox(
                     0,
                     50,
-                    globalconfig,
+                    ui_settings,
                     key,
                     double=True,
                     step=0.2,
@@ -508,6 +508,7 @@ def xianshigrid_style(self):
                                     functools.partial(
                                         createtextfontcom,
                                         "fonttype",
+                                        gobject.tempconfig["fonttype"],
                                     ),
                                     "",
                                     "颜色",
@@ -573,6 +574,7 @@ def xianshigrid_style(self):
                                     functools.partial(
                                         createtextfontcom,
                                         "fonttype2",
+                                        gobject.tempconfig["fonttype2"],
                                     ),
                                     "",
                                     "颜色",
@@ -669,7 +671,7 @@ def xianshigrid_style(self):
                         "",
                         "文字区域背景",
                         D_getsimpleswitch(
-                            globalconfig,
+                            ui_settings,
                             "text_area_background",
                             callback=gobject.base.translation_ui.translate_text.showtextareabackground,
                             default=False,

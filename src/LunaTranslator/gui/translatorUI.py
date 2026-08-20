@@ -5,6 +5,7 @@ import windows, qtawesome, gobject, NativeUtils
 from myutils.wrapper import threader, tryprint
 from myutils.config import (
     globalconfig,
+    ui_settings,
     saveallconfig,
     _TR,
     mayberelpath,
@@ -458,7 +459,7 @@ class TranslatorWindow(resizableframeless):
                 "backtransbutton",
                 buttonfunctions(
                     clicked=lambda: self.changemousetransparentstate(1),
-                    colorstate=lambda: globalconfig.get("backtransparent", False),
+                    colorstate=lambda: ui_settings.get("backtransparent", False),
                 ),
             ),
             (
@@ -734,15 +735,15 @@ class TranslatorWindow(resizableframeless):
                 self.settop()
 
     def seteffect(self):
-        if globalconfig.get("WindowEffect", 0) == 0:
+        if ui_settings.get("WindowEffect", 0) == 0:
             NativeUtils.clearEffect(self.winid)
-        elif globalconfig.get("WindowEffect", 0) == 1:
+        elif ui_settings.get("WindowEffect", 0) == 1:
             NativeUtils.setAcrylicEffect(
-                self.winid, globalconfig.get("WindowEffect_shadow", True), 0x00FFFFFF
+                self.winid, ui_settings.get("WindowEffect_shadow", True), 0x00FFFFFF
             )
-        elif globalconfig.get("WindowEffect", 0) == 2:
+        elif ui_settings.get("WindowEffect", 0) == 2:
             NativeUtils.setAeroEffect(
-                self.winid, globalconfig.get("WindowEffect_shadow", True)
+                self.winid, ui_settings.get("WindowEffect_shadow", True)
             )
         self.changeextendstated()
 
@@ -1108,8 +1109,8 @@ class TranslatorWindow(resizableframeless):
 
     @property
     def radiu_valid(self):
-        return globalconfig.get("WindowEffect", 0) == 0 and not (
-            gobject.sys_ge_win_11 and globalconfig.get("yuanjiao_sys", False)
+        return ui_settings.get("WindowEffect", 0) == 0 and not (
+            gobject.sys_ge_win_11 and ui_settings.get("yuanjiao_sys", False)
         )
 
     def set_color_transparency(self):
@@ -1117,18 +1118,18 @@ class TranslatorWindow(resizableframeless):
         radiu_valid = self.radiu_valid
 
         NativeUtils.SetCornerNotRound(
-            self.winid, False, globalconfig.get("yuanjiao_sys", False)
+            self.winid, False, ui_settings.get("yuanjiao_sys", False)
         )
         self.changeextendstated()
         use_r1 = radiu_valid * min(
             self.translate_text.height() // 2,
             self.translate_text.width() // 2,
-            globalconfig.get("yuanjiao_r", 0),
+            ui_settings.get("yuanjiao_r", 0),
         )
         use_r2 = radiu_valid * min(
             self.titlebar.height() // 2,
             self.titlebar.width() // 2,
-            globalconfig.get("yuanjiao_r", 0),
+            ui_settings.get("yuanjiao_r", 0),
         )
         topr = self.createborderradiusstring(
             use_r1,
@@ -1139,16 +1140,16 @@ class TranslatorWindow(resizableframeless):
         bottomr3 = self.createborderradiusstring(use_r2, False)
         bottomr = self.createborderradiusstring(radiu_valid * use_r2, True, True)
         transparent_value_actually = max(
-            (1 - globalconfig.get("transparent_EX", False)) * 100 / 255,
-            globalconfig.get("transparent", 10)
-            * (not globalconfig.get("backtransparent", False)),
+            (1 - ui_settings.get("transparent_EX", False)) * 100 / 255,
+            ui_settings.get("transparent", 10)
+            * (not ui_settings.get("backtransparent", False)),
         )
         self.translate_text.setStyleSheet(
             "Textbrowser{border-width: 0;%s;background-color: %s}"
             % (
                 topr,
                 str2rgba(
-                    globalconfig.get("backcolor", "#ffaaff"), transparent_value_actually
+                    ui_settings.get("backcolor", "#ffaaff"), transparent_value_actually
                 ),
             )
         )
@@ -1239,15 +1240,15 @@ class TranslatorWindow(resizableframeless):
             )
             self.mousetransparent_check()
         elif idx == 1:
-            globalconfig["backtransparent"] = not globalconfig.get(
+            ui_settings["backtransparent"] = not ui_settings.get(
                 "backtransparent", False
             )
             self.set_color_transparency()
             gobject.base.backtransparentstatus.emit(
-                not globalconfig.get("backtransparent", False)
+                not ui_settings.get("backtransparent", False)
             )
             gobject.base.backtransparentstatus_2.emit(
-                not globalconfig.get("backtransparent", False)
+                not ui_settings.get("backtransparent", False)
             )
             self.translate_text.setbackgroudimageandopt()
         self.refreshtoolicon()

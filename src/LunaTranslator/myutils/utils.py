@@ -9,6 +9,7 @@ from myutils.config import (
     _TR,
     dynamiclink,
     globalconfig,
+    ui_settings,
     static_data,
     getlanguse,
     uid2gamepath,
@@ -230,7 +231,7 @@ def simplehtmlparser_all(text: str, tag: str, sign: str) -> "list[str]":
 
 
 def nowisdark() -> bool:
-    dl = globalconfig.get("darklight2", 0)
+    dl = ui_settings.get("darklight2", 0)
     if dl == 1:
         dark = False
     elif dl == 2:

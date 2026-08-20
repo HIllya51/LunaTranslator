@@ -1,5 +1,5 @@
 from qtsymbols import *
-from myutils.config import globalconfig, static_data
+from myutils.config import globalconfig, static_data, ui_settings
 from gui.rendertext.texttype import (
     dataget,
     TextType,
@@ -241,15 +241,15 @@ class TextAreaBack(QLabel):
     def paintEvent(self, a0):
         parent: TextBrowser = self.parent()
         parent.yinyinglabels
-        c = QColor(globalconfig.get("text_area_background_color", "#ff0000"))
-        c.setAlphaF(globalconfig.get("text_area_background_alpha", 50) / 100)
+        c = QColor(ui_settings.get("text_area_background_color", "#ff0000"))
+        c.setAlphaF(ui_settings.get("text_area_background_alpha", 50) / 100)
 
         painter = QPainter(self)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        __r = globalconfig.get("text_area_background_r", 5)
-        __h = globalconfig.get("text_area_background_h", 5)
-        __w = globalconfig.get("text_area_background_w", 5)
+        __r = ui_settings.get("text_area_background_r", 5)
+        __h = ui_settings.get("text_area_background_h", 5)
+        __w = ui_settings.get("text_area_background_w", 5)
         xpath = QPainterPath()
         for label in parent.yinyinglabels:
             if not label.isVisible():
@@ -496,7 +496,7 @@ class TextBrowser(QWidget, dataget):
         self.backimagelabel.move(0, 0)
         self.drawtextarealabel = TextAreaBack(self)
         self.drawtextarealabel.setMouseTracking(True)
-        self.showtextareabackground(globalconfig.get("text_area_background", False))
+        self.showtextareabackground(ui_settings.get("text_area_background", False))
         self.atback_color = QLabel(self)
         self.atback_color.setMouseTracking(True)
         self.atback2 = QLabel(self)
@@ -1343,11 +1343,11 @@ class TextBrowser(QWidget, dataget):
                 pass
 
     def setbackgroudimageandopt(self):
-        use = not globalconfig.get("backtransparent", False)
+        use = not ui_settings.get("backtransparent", False)
         self.__setimage_sig = __setimage_sig = uuid.uuid4()
-        opt = globalconfig.get("transparent_pic", 0) / 100 if use else 0
+        opt = ui_settings.get("transparent_pic", 0) / 100 if use else 0
         self.__setimagehelper.emit(
-            globalconfig.get(
+            ui_settings.get(
                 "backgroundpic", "https://image.lunatranslator.org/luna.jpg"
             ),
             opt,

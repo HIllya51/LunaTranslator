@@ -6,6 +6,7 @@ from urllib.parse import unquote
 from sometypes import TranslateResult, TranslateError, WordSegResult
 from myutils.config import (
     globalconfig,
+    ui_settings,
     savehook_new_list,
     findgameuidofpath,
     magpie_config,
@@ -1301,7 +1302,7 @@ class BASEOBJECT(QObject):
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         if ismenulist:
-            name = globalconfig.get("theme3", "PyQtDarkTheme")
+            name = ui_settings.get("theme3", "PyQtDarkTheme")
             NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
             if name == "QTWin11":
                 NativeUtils.setAcrylicEffect(
@@ -1555,14 +1556,14 @@ class BASEOBJECT(QObject):
             if self.ismenulistframeless(widget):
                 continue
             NativeUtils.SetCornerNotRound(
-                int(widget.winId()), globalconfig.get("force_rect", True), False
+                int(widget.winId()), ui_settings.get("force_rect", True), False
             )
 
     def setcommonstylesheet(self):
 
         dark = nowisdark()
         qtawesome.isdark = dark
-        __curr = (dark, globalconfig.get("WindowBackdrop", 3))
+        __curr = (dark, ui_settings.get("WindowBackdrop", 3))
         if (self.currentisdark, self.currentmica) != __curr:
             self.currentisdark, self.currentmica = __curr
             for widget in QApplication.allWidgets():
@@ -1574,7 +1575,7 @@ class BASEOBJECT(QObject):
         style = ""
         for _ in (0,):
             try:
-                name = globalconfig.get("theme3", "PyQtDarkTheme")
+                name = ui_settings.get("theme3", "PyQtDarkTheme")
                 _fn = None
                 for n in static_data["themes"]:
                     if n["name"] == name:
@@ -1598,21 +1599,21 @@ class BASEOBJECT(QObject):
                 print_exc()
         fontstr = lambda fsize: "font:{fontsize}pt  {fonttype}; {bold}".format(
             fontsize=fsize,
-            fonttype=globalconfig.get("settingfonttype", ""),
-            bold=("", "font-weight: bold;")[globalconfig.get("settingfontbold", False)],
+            fonttype=ui_settings.get("settingfonttype", gobject.tempconfig["settingfonttype"]),
+            bold=("", "font-weight: bold;")[ui_settings.get("settingfontbold", False)],
         )
-        style += "*{{  {}  }}".format(fontstr(globalconfig.get("settingfontsize", 12)))
+        style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
         style += "QListWidget {{ {} }}".format(
-            fontstr(globalconfig.get("settingfontsize", 12) + 2)
+            fontstr(ui_settings.get("settingfontsize", 12) + 2)
         )
         style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
         style += "#NOBORDER{border:0;margin:0;padding:0;}"
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
-        font.setFamily(globalconfig.get("settingfonttype", ""))
-        font.setPointSizeF(globalconfig.get("settingfontsize", 12))
-        font.setBold(globalconfig.get("settingfontbold", False))
+        font.setFamily(ui_settings.get("settingfonttype", gobject.tempconfig["settingfonttype"]))
+        font.setPointSizeF(ui_settings.get("settingfontsize", 12))
+        font.setBold(ui_settings.get("settingfontbold", False))
         if QApplication.instance().font() != font:
             QApplication.instance().setFont(font)
 
@@ -1639,19 +1640,13 @@ class BASEOBJECT(QObject):
 
         return font_default
 
-    def set_font_default(self, lang: Languages, fonttype: str) -> None:
-        globalconfig[fonttype] = self.get_font_default(
-            lang, True if fonttype == "settingfonttype" else False
-        )
-
     def parsedefaultfont(self):
         for k in ["fonttype", "fonttype2", "settingfonttype"]:
-            if not globalconfig.get(k, ""):
+            if not ui_settings.get(k, ""):
                 l = Languages.Japanese if k == "fonttype" else getlanguse()
-                self.set_font_default(l, k)
-                # globalconfig[k] = QFontDatabase.systemFont(
-                #     QFontDatabase.SystemFont.GeneralFont
-                # ).family()
+                gobject.tempconfig[k] = self.get_font_default(
+                    l, True if k == "settingfonttype" else False
+                )
 
     def loadui(self, startwithgameuid):
         QApplication.instance().installEventFilter(self)
@@ -1733,7 +1728,7 @@ class BASEOBJECT(QObject):
 
     def WindowMessageCallback(self, msg: UINT, value1: WPARAM, value2: LPARAM):
         if msg == 0:
-            if globalconfig.get("darklight2", 0) == 0:
+            if ui_settings.get("darklight2", 0) == 0:
                 self.setstylesheetsignal.emit()
         elif msg == 1:
             running = value1 or value2
