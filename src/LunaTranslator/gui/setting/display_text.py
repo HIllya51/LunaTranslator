@@ -508,7 +508,7 @@ def xianshigrid_style(self):
                                     functools.partial(
                                         createtextfontcom,
                                         "fonttype",
-                                        gobject.tempconfig["fonttype"],
+                                        gobject.tempconfig.get("fonttype", ""),
                                     ),
                                     "",
                                     "颜色",
@@ -574,7 +574,7 @@ def xianshigrid_style(self):
                                     functools.partial(
                                         createtextfontcom,
                                         "fonttype2",
-                                        gobject.tempconfig["fonttype2"],
+                                        gobject.tempconfig.get("fonttype2", ""),
                                     ),
                                     "",
                                     "颜色",

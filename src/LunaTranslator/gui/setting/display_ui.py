@@ -163,7 +163,7 @@ def createfontcombo():
         ui_settings.__setitem__("settingfonttype", x)
         gobject.base.setcommonstylesheet()
 
-    sfont_comboBox.setCurrentFont(QFont(ui_settings.get("settingfonttype", gobject.tempconfig["settingfonttype"])))
+    sfont_comboBox.setCurrentFont(QFont(ui_settings.get("settingfonttype", gobject.tempconfig.get("settingfonttype", ""))))
     sfont_comboBox.currentTextChanged.connect(callback)
     return sfont_comboBox
 

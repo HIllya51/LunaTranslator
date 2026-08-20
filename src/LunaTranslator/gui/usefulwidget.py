@@ -3159,7 +3159,7 @@ class pixmapviewer(QWidget):
                                 return (yy) * scale + y
 
                             font = QFont()
-                            font.setFamily(globalconfig.get("fonttype", gobject.tempconfig["fonttype"]))
+                            font.setFamily(globalconfig.get("fonttype", gobject.tempconfig.get("fonttype", "")))
                             font.setPointSizeF(globalconfig.get("fontsizeori", 16))
                             pen = QPen()
                             pen.setColor(

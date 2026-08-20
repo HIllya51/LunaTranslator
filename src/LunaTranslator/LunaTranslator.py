@@ -1599,7 +1599,7 @@ class BASEOBJECT(QObject):
                 print_exc()
         fontstr = lambda fsize: "font:{fontsize}pt  {fonttype}; {bold}".format(
             fontsize=fsize,
-            fonttype=ui_settings.get("settingfonttype", gobject.tempconfig["settingfonttype"]),
+            fonttype=ui_settings.get("settingfonttype", gobject.tempconfig.get("settingfonttype", "")),
             bold=("", "font-weight: bold;")[ui_settings.get("settingfontbold", False)],
         )
         style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
@@ -1611,7 +1611,7 @@ class BASEOBJECT(QObject):
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
-        font.setFamily(ui_settings.get("settingfonttype", gobject.tempconfig["settingfonttype"]))
+        font.setFamily(ui_settings.get("settingfonttype", gobject.tempconfig.get("settingfonttype", "")))
         font.setPointSizeF(ui_settings.get("settingfontsize", 12))
         font.setBold(ui_settings.get("settingfontbold", False))
         if QApplication.instance().font() != font:
