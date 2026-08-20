@@ -67,7 +67,6 @@ class Mainw(QMainWindow):
         QMainWindow.__init__(self, x)
 
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | self.windowFlags())
-
         self.sideGrips = [
             SideGrip(self, Qt.Edge.LeftEdge),
             SideGrip(self, Qt.Edge.TopEdge),
@@ -227,6 +226,12 @@ class rangeadjust(Mainw):
         self.customContextMenuRequested.connect(self.showmenu)
         for s in self.cornerGrips:
             s.raise_()
+        windows.SetWindowLong(
+            int(self.winId()),
+            windows.GWL_EXSTYLE,
+            windows.GetWindowLong(int(self.winId()), windows.GWL_EXSTYLE)
+            | windows.WS_EX_NOACTIVATE,
+        )
 
     def showmenu(self, _):
         menu = QMenu(self)

@@ -222,7 +222,7 @@ DECLARE_API void CreateSelectRangeWindow(HWND parent, float _ocrselectalpha, int
     DeleteDC(hdcBlack);
 
     ReleaseDC(NULL, hScreenDC);
-    auto &&[hwnd, _] = CreateWindowForWndProc(WindowProc, parent, screenX, screenY, screenWidth, screenHeight, LoadCursor(NULL, IDC_CROSS), WS_POPUP, WS_EX_TOPMOST);
+    auto &&[hwnd, _] = CreateWindowForWndProc(WindowProc, parent, screenX, screenY, screenWidth, screenHeight, LoadCursor(NULL, IDC_CROSS), WS_POPUP, WS_EX_TOPMOST | WS_EX_NOACTIVATE);
 
     ShowWindow(hwnd, SW_SHOW);
     UpdateWindow(hwnd);
