@@ -202,13 +202,6 @@ class AnkiWindow(QWidget):
     def asyncocr(self, img):
         self.__ocrsettext.emit(ocr_run(img).textonly)
 
-    def croprecord(self):
-
-        def ocroncefunction(rect, _):
-            ffmpeg_record(lambda x: self.settextsignal.emit(self.editpath, x), rect)
-
-        rangeselct_function(ocroncefunction, self.window())
-
     def crophide(self):
 
         def ocroncefunction(rect, img=None):
@@ -640,6 +633,39 @@ class AnkiWindow(QWidget):
             self.recorders[ii] = None
             self.settextsignal.emit(target, file)
 
+    def btn1context(self):
+        menu = QMenu(self)
+        crop2 = LAction("隐藏并截图", menu)
+        crophwnd = LAction("区域录制", menu)
+        menu.addAction(crop2)
+        menu.addAction(crophwnd)
+        action = menu.exec(QCursor.pos())
+        if action == crop2:
+            self.crophide()
+        elif action == crophwnd:
+
+            def ocroncefunction(rect, _):
+                ffmpeg_record(lambda x: self.settextsignal.emit(self.editpath, x), rect)
+
+            rangeselct_function(ocroncefunction, self.window())
+
+    def btn2context(self):
+        menu = QMenu(self)
+        crop2 = LAction("窗口截图", menu)
+        crophwnd = LAction("窗口录制", menu)
+        menu.addAction(crop2)
+        menu.addAction(crophwnd)
+        action = menu.exec(QCursor.pos())
+        if action == crop2:
+            grabwindow(
+                callback=functools.partial(
+                    sc_callback,
+                    functools.partial(self.settextsignal.emit, self.editpath),
+                )
+            )
+        elif action == crophwnd:
+            ffmpeg_record(lambda x: self.settextsignal.emit(self.editpath, x))
+
     def createaddtab(self):
         self.recorders: "dict[int, loopbackrecorder]" = {}
         wid = QWidget()
@@ -654,7 +680,7 @@ class AnkiWindow(QWidget):
             icon="fa.crop",
             callback=self.crophide,
             tips="隐藏并截图",
-            callback2=self.croprecord,
+            callback2=self.btn1context,
         )
         grabwindowbtn = getIconButton(
             icon="fa.camera",
@@ -664,9 +690,7 @@ class AnkiWindow(QWidget):
                     functools.partial(self.settextsignal.emit, self.editpath),
                 )
             ),
-            callback2=lambda: ffmpeg_record(
-                lambda x: self.settextsignal.emit(self.editpath, x)
-            ),
+            callback2=self.btn2context,
             tips="窗口截图",
         )
 
