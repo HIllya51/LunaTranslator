@@ -933,5 +933,6 @@
     "已保存到剪贴板": "Salvo na área de transferência.",
     "保存到文件": "Salvar em arquivo",
     "保存到剪贴板": "Copiar para a área de transferência",
-    "放弃窗口焦点": "Perder o foco da janela"
+    "放弃窗口焦点": "Perder o foco da janela",
+    "找不到依赖文件。请下载后解压到软件目录中": "Não foi possível encontrar o arquivo de dependência. Por favor, baixe-o e extraia-o para o diretório do software."
 }

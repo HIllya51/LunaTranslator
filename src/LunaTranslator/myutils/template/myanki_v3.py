@@ -3,6 +3,6 @@ def AnkiFields(luna_default_anki_fields: list):
     return luna_default_anki_fields
 
 
-def ParseFieldsData(text_fields: dict, audios: list, pictures: list):
+def ParseFieldsData(text_fields: dict, medias: "dict[str, list]"):
     print(text_fields.keys())
-    return text_fields, audios, pictures
+    return text_fields, medias

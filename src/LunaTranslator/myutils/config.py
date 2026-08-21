@@ -652,8 +652,8 @@ def checkintegrity():
 
     dllshared = [
         "LunaHook/" + ("LunaHost32.dll", "LunaHost64.dll")[runtime_bit_64],
-        "LunaSubprocess32.exe",
-        "LunaSubprocess64.exe",
+        "LunaSubProcess32.exe",
+        "LunaSubProcess64.exe",
         "Magpie/Magpie.Core.exe" if not runtime_for_xp else None,
         "LunaHook/LunaHook32.dll",
         "LunaHook/LunaHook64.dll",

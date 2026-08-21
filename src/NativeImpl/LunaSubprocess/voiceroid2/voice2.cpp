@@ -4,60 +4,63 @@
 #include "ebyutil.h"
 using ebyroid::Ebyroid;
 #include "types.h"
+#include "../../wav.hpp"
+#include "../pipehost.hpp"
 
 int voiceroid2wmain(int argc, wchar_t *wargv[])
 {
-    char **argv = new char *[argc];
-    for (int i = 0; i < argc; i++)
-    {
-        int length = WideCharToMultiByte(CP_ACP, 0, wargv[i], -1, NULL, 0, NULL, NULL);
-        argv[i] = new char[length];
-        WideCharToMultiByte(CP_ACP, 0, wargv[i], -1, argv[i], length, NULL, NULL);
-    }
-    HANDLE hPipe = CreateNamedPipeA(argv[3], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
+    // Ebyroid 接口需 ACP（Shift-JIS）窄串；仅转这四个 argv。管道/事件/映射名为 ASCII uuid，
+    // 直接以 wchar 交给 PipeHost（W 版 API）即可，不必再走 ACP 转换。
+    auto acp = [](const wchar_t *w) -> std::string {
+        if (!w)
+            return {};
+        int n = WideCharToMultiByte(CP_ACP, 0, w, -1, NULL, 0, NULL, NULL);
+        if (n <= 0)
+            return {};
+        std::string s(n, '\0'); // n 含结尾 '\0'
+        WideCharToMultiByte(CP_ACP, 0, w, -1, s.data(), n, NULL, NULL);
+        s.resize(n - 1);
+        return s;
+    };
+    std::string dlldir = acp(wargv[4]);
+    std::string dllpath = acp(wargv[5]);
 
-
-    std::string last;
-    float rate = -1;
-    auto handle = CreateFileMappingA(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, 1024 * 1024 * 16, argv[5]);
-
-    auto mapview = (char *)MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, 1024 * 1024 * 16);
-    memset(mapview, 0, 1024 * 1024 * 16);
-    SetEvent(CreateEventA(&allAccess, FALSE, FALSE, argv[4]));
-    ConnectNamedPipe(hPipe, NULL);
-    Ebyroid *ebyroid = Ebyroid::Create(argv[1], argv[2], argv[6], argv[7]);
+    lunasp::PipeHost host(wargv[1], wargv[2], wargv[3]);
+    if (!host.ok())
+        return 0;
+    Ebyroid *ebyroid = Ebyroid::Create(dlldir, dllpath, acp(wargv[6]), acp(wargv[7]));
 
     int freq1;
+    std::string last;
     char input_j[4096] = {0};
-    DWORD _;
     while (true)
     {
         ZeroMemory(input_j, sizeof(input_j));
 
-        if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
+        if (!host.read(input_j, 4096))
             break;
         std::string voice = (char *)input_j;
         ZeroMemory(input_j, sizeof(input_j));
 
-        if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
+        if (!host.read(input_j, 4096))
             break;
         std::string lang = (char *)input_j;
         float _rate;
-        if (!ReadFile(hPipe, &_rate, 4, &_, NULL))
+        if (!host.read(&_rate, 4))
             break;
         float _pitch;
-        if (!ReadFile(hPipe, &_pitch, 4, &_, NULL))
+        if (!host.read(&_pitch, 4))
             break;
         if (voice != last)
         {
             if (ebyroid)
                 delete ebyroid;
-            ebyroid = Ebyroid::Create(argv[1], argv[2], voice, lang);
+            ebyroid = Ebyroid::Create(dlldir, dllpath, voice, lang);
             last = voice;
         }
         ebyroid->Setparam(2, _rate, _pitch); // 0.5-4, 0.5-2
         ZeroMemory(input_j, sizeof(input_j));
-        if (!ReadFile(hPipe, input_j, 4096, &_, NULL))
+        if (!host.read(input_j, 4096))
             break;
         if (voice.find("_44") != voice.npos)
             freq1 = 44100;
@@ -69,7 +72,7 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
         std::vector<int16_t> binary;
         result = ebyroid->Speech(output.data(), binary);
         size_t output_size = binary.size() * 2;
-        int fsize = output_size + 44;
+        int fsize = (int)(output_size + 44);
         if (fsize > 1024 * 1024 * 16)
         {
             fsize = 0;
@@ -77,30 +80,13 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
         else
         {
 
-            int ptr = 0;
-            memcpy(mapview, "RIFF", 4);
-            ptr += 4;
-            memcpy(mapview + ptr, &fsize, 4);
-            ptr += 4;
-            memcpy(mapview + ptr, "WAVEfmt ", 8);
-            ptr += 8;
-            memcpy(mapview + ptr, "\x10\x00\x00\x00\x01\x00\x01\x00", 8);
-            ptr += 8;
-            int freq = freq1;
-            memcpy(mapview + ptr, &freq, 4);
-            ptr += 4;
-            freq = freq * 2;
-            memcpy(mapview + ptr, &freq, 4);
-            ptr += 4;
-            memcpy(mapview + ptr, "\x02\x00\x10\x00", 4);
-            ptr += 4;
-            memcpy(mapview + ptr, "data", 4);
-            ptr += 4;
-            memcpy(mapview + ptr, &output_size, 4);
-            ptr += 4;
-            memcpy(mapview + ptr, binary.data(), output_size);
+            const uint16_t channels = 1, bits = 16, block_align = 2;
+            const uint32_t freq = static_cast<uint32_t>(freq1);
+            auto header = wav::BuildHeader(static_cast<uint16_t>(WAVE_FORMAT_PCM), channels, freq, freq * 2, block_align, bits, static_cast<uint32_t>(output_size));
+            memcpy(host.mem(), header.data(), header.size());
+            memcpy(host.mem() + header.size(), binary.data(), output_size);
         }
-        WriteFile(hPipe, &fsize, 4, &_, NULL);
+        host.write(&fsize, 4);
     }
     return 0;
 }

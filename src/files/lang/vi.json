@@ -933,5 +933,6 @@
     "已保存到剪贴板": "Đã lưu vào clipboard",
     "保存到文件": "Lưu vào tệp",
     "保存到剪贴板": "Sao chép vào bảng tạm",
-    "放弃窗口焦点": "Từ bỏ tiêu điểm cửa sổ"
+    "放弃窗口焦点": "Từ bỏ tiêu điểm cửa sổ",
+    "找不到依赖文件。请下载后解压到软件目录中": "Không tìm thấy tệp phụ thuộc. Vui lòng tải xuống và giải nén vào thư mục phần mềm."
 }

@@ -8,7 +8,7 @@ import requests, base64
 import shutil, gobject
 from myutils.proxy import getproxy
 import zipfile, os
-import subprocess
+from LunaSubProcess import LunaSubProcess
 from traceback import print_exc
 
 versionchecktask = queue.Queue()
@@ -83,7 +83,7 @@ def doupdate():
     exe1 = gobject.getcachedir("update/Updater.exe")
     exe = os.path.abspath(exe1)
     shutil.copy(
-        r".\files\LunaSubprocess{}.exe".format(("32", "64")[runtime_bit_64]),
+        r".\files\LunaSubProcess{}.exe".format(("32", "64")[runtime_bit_64]),
         exe,
     )
     for dll in os.listdir(runtimedir):
@@ -106,11 +106,7 @@ def doupdate():
     ]
     text = "\n".join(texts).encode("utf8")
     b64 = base64.b64encode(text).decode()
-    subprocess.Popen(
-        r"{} update {} {} {} {}".format(
-            exe1, int(gobject.base.istriggertoupdate), found, os.getpid(), b64
-        )
-    )
+    LunaSubProcess.update(exe1, gobject.base.istriggertoupdate, found, os.getpid(), b64)
 
 
 def updatemethod_checkalready(savep, sha256):

@@ -1,4 +1,5 @@
 
+#include "pipehost.hpp"
 bool ehndSupport = false;
 class CTransEngine
 {
@@ -687,34 +688,25 @@ std::optional<std::wstring> CTextProcess::eztrans_proc(const std::wstring &input
     output = HangulDecode(output);
     return output;
 }
-void writestring(const wchar_t *text, HANDLE hPipe);
-
 int eztrans(int argc, wchar_t *argv[])
 {
-    HANDLE hPipe = CreateNamedPipe(argv[2], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
+    lunasp::PipeHost host(argv[1], argv[2]);
+    if (!host.ok())
+        return 0;
 
     // system("chcp 932");
 
-    std::wstring _p = argv[1]; //// LR"(C:\Program Files\ChangShinSoft\ezTrans XP)";
+    std::wstring _p = argv[3]; //// LR"(C:\Program Files\ChangShinSoft\ezTrans XP)";
     TransEngine = new CTransEngine();
     if (!TransEngine->Init(_p))
         return 0;
 
-    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[3]));
-    if (!ConnectNamedPipe(hPipe, NULL) && GetLastError() != ERROR_PIPE_CONNECTED)
-        return 0;
-    WCHAR buff[6000];
     while (true)
     {
-        DWORD _;
-        ZeroMemory(buff, 12000);
-        if (!ReadFile(hPipe, buff, sizeof(buff) - sizeof(WCHAR), &_, NULL))
+        auto src = host.readstring();
+        if (!src)
             break;
-        auto trans = CTextProcess::eztrans_proc(buff);
-        if (trans)
-            writestring(trans.value().c_str(), hPipe);
-        else
-            writestring(0, hPipe);
+        host.writestring(CTextProcess::eztrans_proc(*src));
     }
 
     return 0;

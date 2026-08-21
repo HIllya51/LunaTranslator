@@ -1,46 +1,19 @@
 #include "LoopbackCapture.h"
-
-struct WavHeader
-{
-    char riff[4] = {'R', 'I', 'F', 'F'};
-    unsigned int overallSize = 0;
-    char wave[4] = {'W', 'A', 'V', 'E'};
-    char fmtChunkMarker[4] = {'f', 'm', 't', ' '};
-    unsigned int lengthOfFmt = 16;
-    unsigned short formatType = 1;
-    unsigned short channels = 0;
-    unsigned int sampleRate = 0;
-    unsigned int byteRate = 0;
-    unsigned short blockAlign = 0;
-    unsigned short bitsPerSample = 0;
-    char dataChunkHeader[4] = {'d', 'a', 't', 'a'};
-    unsigned int dataSize = 0;
-};
+#include "../../wav.hpp"
 
 static void WriteWavHeader(std::string &file, WAVEFORMATEX *pwfx, size_t dataSize)
 {
-    WavHeader header;
-    header.dataSize = (unsigned int)dataSize;
-    header.overallSize = header.dataSize + 36;
-
-    header.channels = pwfx->nChannels;
-    header.sampleRate = pwfx->nSamplesPerSec;
-    header.byteRate = pwfx->nAvgBytesPerSec;
-    header.blockAlign = pwfx->nBlockAlign;
-    header.bitsPerSample = pwfx->wBitsPerSample;
-
     // 如果是 FLOAT 格式 (WASAPI 默认通常是 32-bit float)
+    unsigned short formatTag;
     if (pwfx->wFormatTag == WAVE_FORMAT_IEEE_FLOAT ||
         (pwfx->wFormatTag == WAVE_FORMAT_EXTENSIBLE && ((WAVEFORMATEXTENSIBLE *)pwfx)->SubFormat == KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
-    {
-        header.formatType = WAVE_FORMAT_IEEE_FLOAT;
-    }
+        formatTag = WAVE_FORMAT_IEEE_FLOAT;
     else
-    {
-        header.formatType = WAVE_FORMAT_PCM;
-    }
+        formatTag = WAVE_FORMAT_PCM;
 
-    file = std::string((char *)(&header), sizeof(WavHeader)) + file;
+    file = wav::BuildHeader(formatTag, pwfx->nChannels, pwfx->nSamplesPerSec,
+                            pwfx->nAvgBytesPerSec, pwfx->nBlockAlign, pwfx->wBitsPerSample,
+                            (unsigned int)dataSize) + file;
 }
 void LoopbackTranditional::RecordThread()
 {

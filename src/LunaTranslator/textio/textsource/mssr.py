@@ -2,6 +2,7 @@ from textio.textsource.textsourcebase import basetext
 from myutils.wrapper import threader
 import NativeUtils, windows, uuid, os, gobject, time
 from ctypes import c_int
+from LunaSubProcess import LunaSubProcess
 from myutils.config import globalconfig, _TR
 
 
@@ -64,11 +65,10 @@ class atendrestorwindow(NativeUtils.AutoKillProcess):
 
 class mssr(basetext):
     def end(self):
-        # listen里循环引用
         self.engine = None
 
     def runornot(self, _):
-        windows.SetEvent(self.notifyrun if _ else self.notifystop)
+        self.engine.runornot(_)
 
     cogdll = "Microsoft.CognitiveServices.Speech.extension.embedded.sr.dll"
 
@@ -132,7 +132,6 @@ class mssr(basetext):
             pidorexe, kill=globalconfig["sourcestatus2"]["mssr"]["autokill"]
         )
 
-        print(self.engine.pid)
         self.__dointernal(self.engine.pid)
 
     @threader
@@ -203,7 +202,8 @@ class mssr(basetext):
 
     def hwndChanged(self, hwnd):
         self.hwnd = hwnd
-        windows.WriteFile(self.hPipe2, bytes(c_int(self.gethwndppid(hwnd))))
+        if self.engine:
+            self.engine.write_pid(self.gethwndppid(hwnd))
 
     def init_direct(self):
 
@@ -224,35 +224,16 @@ class mssr(basetext):
             gobject.base.displayinfomessage(_TR("找不到运行时"), "<msg_error_Origin>")
             return
         print(path, dll, NativeUtils.QueryVersion(os.path.join(dll, self.cogdll)))
-        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
-        pipename2 = "\\\\.\\Pipe\\" + str(uuid.uuid4())
-        waitsignal = str(uuid.uuid4())
-        notify = str(uuid.uuid4())
-        notify2 = str(uuid.uuid4())
-        self.notifyrun = NativeUtils.SimpleCreateEvent(notify)
-        self.notifystop = NativeUtils.SimpleCreateEvent(notify2)
-        self.engine = NativeUtils.AutoKillProcess(
-            'files/LunaSubprocess64.exe mssr {} {} {} "{}" {} "{}" "{}" {} {}'.format(
-                pipename,
-                waitsignal,
-                notify,
-                path,
-                self.getsource(),
-                dll,
-                self.extralicense if (getlocaleandlv(path)[1] != "0") else "",
-                pipename2,
-                notify2,
-            )
+        self.engine = LunaSubProcess.mssr(
+            path,
+            self.getsource(),
+            dll,
+            self.extralicense if (getlocaleandlv(path)[1] != "0") else "",
         )
-        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
-        windows.WaitNamedPipe(pipename)
-        windows.WaitNamedPipe(pipename2)
-        self.hPipe = windows.CreateFile(pipename)
-        self.hPipe2 = windows.CreateFile(pipename2)
         self.hwndChanged(self.hwnd)
         self.listen()
         if globalconfig.get("autorun", True):
-            windows.SetEvent(self.notifyrun)
+            self.engine.runornot(True)
 
     @threader
     def listen(self):
@@ -260,10 +241,13 @@ class mssr(basetext):
         lastt = 0
         uid = self.uuid
         while (uid == self.uuid) and (not self.ending):
-            iserr = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-            if iserr:
-                sz = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-                text = windows.ReadFile(self.hPipe, sz).decode()
+            try:
+                rec = self.engine.read_record()
+            except BrokenPipeError:
+                break  # mssr 子进程已退出 / 管道断开，退出监听
+            kind = rec[0]
+            if kind == "error":
+                text = rec[1]
                 if text.startswith("??"):
                     err = text[2:]
                     text = _TR("系统不支持环回录制")
@@ -272,32 +256,22 @@ class mssr(basetext):
                         text += ": {} {}".format(hex(hr)[2:], windows.FormatMessage(hr))
                 gobject.base.displayinfomessage(text, "<msg_error_Origin>")
                 raise Exception(text)
-            else:
-                t = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-                if t == 0:
-                    ok = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-                    offset = c_int.from_buffer_copy(
-                        windows.ReadFile(self.hPipe, 4)
-                    ).value
-                    duration = c_int.from_buffer_copy(
-                        windows.ReadFile(self.hPipe, 4)
-                    ).value
-                    sz = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-                    text = windows.ReadFile(self.hPipe, sz).decode()
-                    # print(bool(ok), offset, duration, text)
-                    self.curr = text
-                    increased = text[len(last) :] if text.startswith(last) else ""
-                    #  print(increased, any(_ in punctuations for _ in increased))
-                    last = text
-                    thist = time.time()
-                    if ok or (
-                        thist - lastt
-                        > globalconfig["sourcestatus2"]["mssr"]["refreshinterval"]
-                    ):
-                        self.dispatchtext(text, updateTranslate=True, statusok=ok)
-                        lastt = thist
-                    self.updaterawtext(text)
-                elif t == 4:
+            elif kind == "result":
+                _, ok, offset, duration, text = rec
+                self.curr = text
+                increased = text[len(last) :] if text.startswith(last) else ""
+                last = text
+                thist = time.time()
+                if ok or (
+                    thist - lastt
+                    > globalconfig["sourcestatus2"]["mssr"]["refreshinterval"]
+                ):
+                    self.dispatchtext(text, updateTranslate=True, statusok=ok)
+                    lastt = thist
+                self.updaterawtext(text)
+            elif kind == "status":
+                t = rec[1]
+                if t == 4:
                     gobject.base.displayinfomessage(
                         _TR("正在加载语音识别模型"), "<msg_info_refresh>"
                     )
@@ -305,12 +279,7 @@ class mssr(basetext):
                     gobject.base.displayinfomessage(
                         _TR("加载完毕"), "<msg_info_refresh>"
                     )
-                elif t == 2:
-                    # 继续
-                    pass
-                elif t == 3:
-                    # 暂停
-                    pass
+                # t == 2 / 3：继续 / 暂停，忽略
 
     def gettextonce(self):
         return self.curr

@@ -933,5 +933,6 @@
     "已保存到剪贴板": "Copié dans le presse-papiers.",
     "保存到文件": "Enregistrer dans un fichier",
     "保存到剪贴板": "Copier dans le presse-papiers",
-    "放弃窗口焦点": "Abandonner le focus de la fenêtre"
+    "放弃窗口焦点": "Abandonner le focus de la fenêtre",
+    "找不到依赖文件。请下载后解压到软件目录中": "Fichier de dépendance introuvable. Veuillez le télécharger et le décompresser dans le répertoire du logiciel."
 }

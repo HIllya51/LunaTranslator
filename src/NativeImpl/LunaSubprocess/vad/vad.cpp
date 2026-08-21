@@ -1,6 +1,9 @@
-#include "../loopbackaudio/LoopbackCapture.h"
+#include "../../NativeUtils/loopbackaudio/LoopbackCapture.h"
+#include "../../wav.hpp"
+#include "../pipehost.hpp"
 #include <sherpa-onnx/c-api/cxx-api.h>
 #include "lockedqueue.hpp"
+#include <delayimp.h>
 
 constexpr int SAMPLE_RATE = 16000; // VAD 推理采样率（喂给检测器的单声道）
 constexpr int FRAME_SIZE = SAMPLE_RATE / 1000 * 20;
@@ -66,15 +69,10 @@ private:
 class VadWrapper
 {
 public:
-    explicit VadWrapper(int sample_rate)
+    explicit VadWrapper(int sample_rate, const std::string &silero_vad)
     {
         sherpa_onnx::cxx::VadModelConfig config;
-        // 在当前工作目录下查找 silero_vad.onnx，找不到则抛异常
-        const std::filesystem::path model_path = std::filesystem::current_path() / "silero_vad.onnx";
-        if (!std::filesystem::exists(model_path)){
-            throw std::runtime_error("");
-        }
-        config.silero_vad.model = model_path.string();
+        config.silero_vad.model = silero_vad;
         config.silero_vad.threshold = 0.3f;
         config.silero_vad.min_silence_duration = 0.3f;
         config.silero_vad.min_speech_duration = 0.1f;
@@ -176,36 +174,12 @@ static std::string BuildWav(const std::vector<int16_t> &pcm)
     const uint16_t bits = 16;
     const uint16_t block_align = static_cast<uint16_t>(channels * bits / 8);
     const uint32_t byte_rate = static_cast<uint32_t>(CAPTURE_RATE) * block_align;
+    const uint32_t sample_rate = static_cast<uint32_t>(CAPTURE_RATE);
     const uint32_t data_size = static_cast<uint32_t>(pcm.size() * sizeof(int16_t));
-    const uint32_t total_size = 36 + data_size;
 
-    std::string wav;
-    wav.reserve(44 + data_size);
-
-    // RIFF
-    wav.append("RIFF", 4);
-    wav.append(reinterpret_cast<const char *>(&total_size), 4);
-    wav.append("WAVE", 4);
-
-    // fmt
-    wav.append("fmt ", 4);
-    const uint32_t fmt_size = 16;
-    const uint16_t audio_fmt = 1;
-    const uint32_t sample_rate = CAPTURE_RATE;
-    wav.append(reinterpret_cast<const char *>(&fmt_size), 4);
-    wav.append(reinterpret_cast<const char *>(&audio_fmt), 2);
-    wav.append(reinterpret_cast<const char *>(&channels), 2);
-    wav.append(reinterpret_cast<const char *>(&sample_rate), 4);
-    wav.append(reinterpret_cast<const char *>(&byte_rate), 4);
-    wav.append(reinterpret_cast<const char *>(&block_align), 2);
-    wav.append(reinterpret_cast<const char *>(&bits), 2);
-
-    // data
-    wav.append("data", 4);
-    wav.append(reinterpret_cast<const char *>(&data_size), 4);
-    wav.append(reinterpret_cast<const char *>(pcm.data()), data_size);
-
-    return wav;
+    return wav::BuildHeader(static_cast<uint16_t>(1), channels, sample_rate, byte_rate,
+                             block_align, bits, data_size) +
+           std::string(reinterpret_cast<const char *>(pcm.data()), data_size);
 }
 
 // ============================================================
@@ -223,7 +197,9 @@ struct AudioProcessor
     std::mutex segment_mutex;
 
     // ---- 构造 ----
-    AudioProcessor()
+    // targetPid 为采集时"排除"的进程（PROCESS_LOOPBACK_MODE_EXCLUDE_TARGET_PROCESS_TREE），
+    // 即录制系统里除该进程树以外的音频（用于录制游戏语音、排除宿主进程的 TTS）。
+    explicit AudioProcessor(DWORD targetPid, const std::string &model_path)
     {
         capture = std::make_unique<SupperRecord>(CAPTURE_RATE, 16, CAPTURE_CHANNELS);
         if (!capture)
@@ -234,12 +210,19 @@ struct AudioProcessor
             queue.push(std::move(data));
         };
 
-        if (FAILED(capture->StartCaptureAsync(GetCurrentProcessId(), false)))
+        if (FAILED(capture->StartCaptureAsync(targetPid, false)))
         {
             return;
         }
 
-        vad = std::make_unique<VadWrapper>(SAMPLE_RATE);
+        try
+        {
+            vad = std::make_unique<VadWrapper>(SAMPLE_RATE, model_path);
+        }
+        catch (...)
+        {
+            return;
+        }
         running = true;
         worker = std::thread(&AudioProcessor::WorkerLoop, this);
     }
@@ -292,34 +275,48 @@ private:
     }
 };
 
-// ============================================================
-// C API
-// ============================================================
-DECLARE_API AudioProcessor *record_with_vad_create()
-{
-    auto *p = new AudioProcessor();
-    if (!p->IsValid())
-    {
-        delete p;
-        return nullptr;
-    }
-    return p;
-}
+constexpr size_t VAD_MEM_SIZE = 16 * 1024 * 1024;
 
-DECLARE_API void record_with_vad_delete(AudioProcessor *p)
+int vadwmain(int argc, wchar_t *wargv[])
 {
-    if (p)
-        delete p;
-}
+    SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+    // wargv[5]: sherpa-onnx 运行时 DLL 目录（宿主 os.walk 查找，可能为空）
+    if (wargv[5] && *wargv[5])
+        AddDllDirectory(wargv[5]);
 
-DECLARE_API void record_with_vad_get_last_voice(AudioProcessor *p,
-                                                void (*cb)(const char *, size_t))
-{
-    if (!p || !cb)
-        return;
-    auto wav = p->GetLastVoiceWav();
-    if (wav.has_value())
+    lunasp::PipeHost host(wargv[1], wargv[2], wargv[3], VAD_MEM_SIZE);
+    if (!host.ok())
+        return 1;
+
+    const DWORD targetPid = static_cast<DWORD>(_wtol(wargv[4]));
+    // wargv[6]: silero_vad.onnx 模型路径（宿主 os.walk 查找，可能为空）
+    const std::string model_path = (wargv[6] && *wargv[6]) ? std::filesystem::path(wargv[6]).string() : std::string{};
+
+    std::unique_ptr<AudioProcessor> proc;
+    try
     {
-        cb(wav->c_str(), wav->size());
+        proc = std::make_unique<AudioProcessor>(targetPid, model_path);
     }
+    catch (...)
+    {
+        proc = nullptr;
+    }
+    char trigger = 0;
+    while (host.read(&trigger, 1))
+    {
+        int size = 0;
+        if (proc && proc->IsValid())
+        {
+            auto wav = proc->GetLastVoiceWav();
+            if (wav.has_value() && wav->size() <= VAD_MEM_SIZE)
+            {
+                memcpy(host.mem(), wav->data(), wav->size());
+                size = static_cast<int>(wav->size());
+            }
+        }
+        host.write(&size, 4);
+    }
+
+    proc.reset();
+    return 0;
 }

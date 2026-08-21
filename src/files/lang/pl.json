@@ -933,5 +933,6 @@
     "已保存到剪贴板": "Skopiowano do schowka",
     "保存到文件": "Zapisz do pliku",
     "保存到剪贴板": "Skopiuj do schowka",
-    "放弃窗口焦点": "Porzuć fokus okna"
+    "放弃窗口焦点": "Porzuć fokus okna",
+    "找不到依赖文件。请下载后解压到软件目录中": "Nie można znaleźć pliku zależności. Proszę pobrać i rozpakować go do katalogu programu."
 }

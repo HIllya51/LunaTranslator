@@ -1,5 +1,6 @@
 
 #include "LoopbackCapture.h"
+#include "../../wav.hpp"
 
 HRESULT CLoopbackCapture::SetDeviceStateErrorIfFailed(HRESULT hr)
 {
@@ -143,31 +144,11 @@ HRESULT CLoopbackCapture::CreateWAVFile()
 {
     auto hr = [&]() -> HRESULT
     {
-        // Create and write the WAV header
-
-        // 1. RIFF chunk descriptor
-        DWORD header[] = {
-            FCC('RIFF'),            // RIFF header
-            0,                      // Total size of WAV (will be filled in later)
-            FCC('WAVE'),            // WAVE FourCC
-            FCC('fmt '),            // Start of 'fmt ' chunk
-            sizeof(m_CaptureFormat) // Size of fmt chunk
-        };
-        DWORD dwBytesWritten = 0;
+        // 写 WAV 头（sizes 占位为 0，采集结束后由 FixWAVHeader 补写）
+        auto header = wav::BuildHeader(&m_CaptureFormat, 0);
         std::lock_guard _(bufferlock);
-        buffer += std::string((char *)header, sizeof(header));
-        m_cbHeaderSize += sizeof(header);
-
-        // 2. The fmt sub-chunk
-        assert(m_CaptureFormat.cbSize == 0);
-        buffer += std::string((char *)&m_CaptureFormat, sizeof(m_CaptureFormat));
-        m_cbHeaderSize += sizeof(m_CaptureFormat);
-
-        // 3. The data sub-chunk
-        DWORD data[] = {FCC('data'), 0}; // Start of 'data' chunk
-        buffer += std::string((char *)data, sizeof(data));
-        m_cbHeaderSize += sizeof(data);
-
+        buffer += header;
+        m_cbHeaderSize += header.size();
         return S_OK;
     };
     return SetDeviceStateErrorIfFailed(hr());
@@ -180,19 +161,9 @@ HRESULT CLoopbackCapture::CreateWAVFile()
 //
 HRESULT CLoopbackCapture::FixWAVHeader()
 {
-
     std::lock_guard _(bufferlock);
-    // Write the size of the 'data' chunk first
-    auto offset = m_cbHeaderSize - sizeof(DWORD);
-    memcpy(buffer.data() + offset, &m_cbDataSize, sizeof(DWORD));
-    // Write the total file size, minus RIFF chunk and size
-    // sizeof(DWORD) == sizeof(FOURCC)
-
-    DWORD cbTotalSize = m_cbDataSize + m_cbHeaderSize - 8;
-
-    offset = sizeof(DWORD);
-    memcpy(buffer.data() + offset, &cbTotalSize, sizeof(DWORD));
-
+    // 补写 data 大小与 total 大小
+    wav::FixSizes(buffer, m_cbHeaderSize, m_cbDataSize);
     return S_OK;
 }
 

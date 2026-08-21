@@ -14,6 +14,7 @@ from myutils.config import (
 )
 from myutils.config import checkintegrity
 from textio.textsource.textsourcebase import basetext
+from LunaSubProcess import LunaSubProcess
 from myutils.utils import (
     getlangtgt,
     stringfyerror,
@@ -24,7 +25,7 @@ from myutils.kanjitrans import kanjitrans
 from myutils.hwnd import test_injectable, ListProcess
 from myutils.wrapper import threader
 from traceback import print_exc
-import subprocess, NativeUtils
+import NativeUtils
 from ctypes import (
     CDLL,
     CFUNCTYPE,
@@ -279,16 +280,7 @@ class texthook(basetext):
         return self.Luna_AllocString(_TR(querytext))
 
     def listprocessm(self):
-        cachefname = gobject.gettempdir("{}.txt".format(time.time()))
-        arch = "64" if self.is64bit else "32"
-        exe = os.path.abspath("files/LunaSubprocess{}.exe".format(arch))
-        pid = " ".join([str(_) for _ in self.pids[self.gameuid]])
-        subprocess.run('"{}"  listpm "{}" {}'.format(exe, cachefname, pid))
-
-        with open(cachefname, "r", encoding="utf-16-le") as ff:
-            readf = ff.read()
-        os.remove(cachefname)
-        _list = readf.split("\n")
+        _list = LunaSubProcess.listpm(self.pids[self.gameuid], self.is64bit)
         print("\n".join(sorted(_list)))
         ret = []
         hasprogram = "c:\\program files" in _list[0].lower()
@@ -459,28 +451,16 @@ class texthook(basetext):
 
     def injectdll(self, injectpids, bit, dll):
 
-        injecter = os.path.abspath("files/LunaSubprocess{}.exe".format(bit))
-        pid = " ".join([str(_) for _ in injectpids])
+        bit64 = bit == "64"
         for _ in (0,):
             if not test_injectable(injectpids):
                 break
 
-            ret = subprocess.run(
-                '"{}" dllinject {} "{}"'.format(injecter, pid, dll)
-            ).returncode
+            ret = LunaSubProcess.dllinject_run(injectpids, bit64, dll)
             if ret:
                 return
-            pids = NativeUtils.collect_running_pids(injectpids)
-            pid = " ".join([str(_) for _ in pids])
-
-        ret = windows.ShellExecute(
-            0,
-            "runas",
-            injecter,
-            'dllinject {} "{}"'.format(pid, dll),
-            None,
-            windows.SW_HIDE,
-        )
+        pids = NativeUtils.collect_running_pids(injectpids)
+        ret = LunaSubProcess.dllinject_elevated(pids, bit64, dll)
         if ret < 32:
             if ret in (windows.ERROR_ACCESS_DENIED,):
                 gobject.base.translation_ui.showMarkDownSig.emit(

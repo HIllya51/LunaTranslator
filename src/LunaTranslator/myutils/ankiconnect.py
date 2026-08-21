@@ -138,8 +138,7 @@ class Note:
         fields: dict,
         allowDuplicate: bool,
         tags: list,
-        audio: list,
-        picture: list,
+        medias: "dict[str, list]",
     ):
         return invoke(
             "addNote",
@@ -157,8 +156,9 @@ class Note:
                     # },
                 },
                 "tags": tags,
-                "audio": audio,
-                "picture": picture,
+                "audio": medias.get("audio", []),
+                "picture": medias.get("picture", []),
+                "video": medias.get("video", []),
             },
         )
 

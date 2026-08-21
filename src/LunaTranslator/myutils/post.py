@@ -344,7 +344,9 @@ for _ in _bads:
     globalconfig["postprocess_rank"].remove(_)
 
 
-def POSTSOLVE(line: str, isEx=False, isFromHook=False, useAll=False) -> str:
+def POSTSOLVE(line: str, isEx=False, isFromHook=False, useAll=False, skippreprocess=False) -> str:
+    if skippreprocess:
+        return line
     if not line:
         return ""
     useranklist = globalconfig["postprocess_rank"]

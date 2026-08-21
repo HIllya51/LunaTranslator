@@ -21,7 +21,7 @@ FARPROC WINAPI MyDelayLoadFailureHook(unsigned dliNotify, PDelayLoadInfo pdli)
     if (dliNotify == dliFailLoadLib)
     {
         CHAR error[255];
-        sprintf(error, "Failed to load DLL: %s\nError code: %lu\nIt's most likely because the VC++ runtime environment is missing. Please install vcredist.", pdli->szDll, pdli->dwLastError);
+        sprintf(error, "Error code: %lu. Failed to load DLL: %s\nThe file may be missing, or the VC++ runtime environment may be incomplete. \nPlease find the missing file or install the Visual C++ Redistributable.", pdli->dwLastError, pdli->szDll);
         MessageBoxA(NULL, error, "ERROR", MB_SYSTEMMODAL);
         return 0;
     }
@@ -35,9 +35,11 @@ int mssr(int argc, wchar_t *argv[])
     HANDLE hPipe2 = CreateNamedPipe(argv[8], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
 
     SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-    if (!ConnectNamedPipe(hPipe, NULL))
+    // ERROR_PIPE_CONNECTED：宿主在 ConnectNamedPipe 前已 CreateFile 连上，视为成功。
+    // 否则初始化竞态会在此 return 0，管道随即断开 → 宿主 ReadFile 得 0 字节而崩溃。
+    if (!ConnectNamedPipe(hPipe, NULL) && GetLastError() != ERROR_PIPE_CONNECTED)
         return 0;
-    if (!ConnectNamedPipe(hPipe2, NULL))
+    if (!ConnectNamedPipe(hPipe2, NULL) && GetLastError() != ERROR_PIPE_CONNECTED)
         return 0;
     RoInitialize(RO_INIT_MULTITHREADED); // 系统的版本必须roinit
 

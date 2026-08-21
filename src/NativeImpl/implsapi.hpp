@@ -1,5 +1,6 @@
 #include <sapi.h>
 #include <sphelper.h>
+#include "wav.hpp"
 namespace
 {
     const wchar_t SPCAT_VOICES_7[] = LR"(HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices)";
@@ -58,30 +59,14 @@ namespace
             pIstream->Stat(&stats, STATFLAG_NONAME);
 
             ULONG sSize = stats.cbSize.QuadPart; // size of the data to be read
-
-            ULONG bytesRead; //	this will tell the number of bytes that have been read
+            // 构造 WAV 头，再把 SAPI 数据读入其后
+            auto header = wav::BuildHeader(originalFmt.WaveFormatExPtr(), (uint32_t)sSize);
             std::vector<byte> datas;
-            datas.resize(sSize + 46);
-            auto pBuffer = datas.data(); // buffer to read the data
-            // memcpy(pBuffer,&wavHeader,sizeof(WAV_HEADER));
-            int fsize = sSize + 46;
-            int ptr = 0;
-            memcpy(pBuffer, "RIFF", 4);
-            ptr += 4;
-            memcpy(pBuffer + ptr, &fsize, 4);
-            ptr += 4;
-            memcpy(pBuffer + ptr, "WAVEfmt ", 8);
-            ptr += 8;
-            memcpy(pBuffer + ptr, "\x12\x00\x00\x00", 4);
-            ptr += 4;
-            memcpy(pBuffer + ptr, originalFmt.WaveFormatExPtr(), sizeof(WAVEFORMATEX));
-            ptr += sizeof(WAVEFORMATEX);
-            memcpy(pBuffer + ptr, "data", 4);
-            ptr += 4;
-            memcpy(pBuffer + ptr, &sSize, 4);
-            ptr += 4;
+            datas.resize(header.size() + sSize);
+            memcpy(datas.data(), header.data(), header.size());
+            ULONG bytesRead; //	this will tell the number of bytes that have been read
             // read the data into the buffer
-            pIstream->Read(pBuffer + ptr, sSize, &bytesRead);
+            pIstream->Read(datas.data() + header.size(), sSize, &bytesRead);
 
             ret = std::move(datas);
         }();

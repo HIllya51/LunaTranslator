@@ -16,6 +16,7 @@
 #include <Audiopolicy.h>
 #include <mmdeviceapi.h>
 #include <Psapi.h>
+#include <mmreg.h>
 #include <atlbase.h>
 #include <atlsync.h>
 #include <variant>

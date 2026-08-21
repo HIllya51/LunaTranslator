@@ -35,7 +35,7 @@ from ctypes.wintypes import (
 from myutils.config import _TR
 from windows import AutoHandle
 from xml.sax.saxutils import escape
-import gobject, os, json
+import gobject, os, json, subprocess
 from gobject import unique_ptr
 import windows, functools, re, csv
 from traceback import print_exc
@@ -944,12 +944,14 @@ class AutoKillProcess:
     def setkill(self, kill):
         SetJobAutoKill(self._refkep, kill)
 
-    def __init__(self, commandorpid: "str|int", path=None, hide=True, kill=True):
+    def __init__(self, commandorpid: "str|int|list[str]", path=None, hide=True, kill=True):
         if isinstance(commandorpid, int):
             self.pid = commandorpid
             self._refkep = CreateJobForProcess(commandorpid, kill)
         else:
             pid = DWORD()
+            if isinstance(commandorpid, list):
+                commandorpid = subprocess.list2cmdline(commandorpid)
             self._refkep = CreateProcessWithJob(
                 commandorpid, path, pointer(pid), hide, kill
             )
@@ -1313,51 +1315,7 @@ def AnalysisDllImports(file, needNameOnly=True, Allimports=True):
     return _res
 
 
-# print(
-#     AnalysisDllImports(
-#         r"D:\GitHub\LunaTranslator\src\files\DLL32\CVUtils.dll", False, False
-#     )
-# )
-# print(
-#     AnalysisDllImports(
-#         r"D:\GitHub\LunaTranslator\src\files\DLL64\NativeUtils.dll", False, False
-#     )
-# )
-# print(
-#     AnalysisDllExports(
-#         r"D:\GitHub\LunaTranslator\src\files\DLL64\NativeUtils.dll"
-#     )
-# )
 
-# print(
-#     AnalysisDllExports(r"D:\GitHub\LunaTranslator\src\files\DLL32\CVUtils.dll")
-# )
-
-record_with_vad_create = utilsdll.record_with_vad_create
-record_with_vad_create.restype = c_void_p
-record_with_vad_delete = utilsdll.record_with_vad_delete
-record_with_vad_delete.argtypes = (c_void_p,)
-record_with_vad_get_last_voice = utilsdll.record_with_vad_get_last_voice
-record_with_vad_get_last_voice_CB = CFUNCTYPE(None, POINTER(c_char), c_size_t)
-record_with_vad_get_last_voice.argtypes = c_void_p, record_with_vad_get_last_voice_CB
-
-
-class record_with_vad(unique_ptr):
-    def get(self) -> "bytes|None":
-        ret = []
-
-        def _cb(ptr, size):
-            ret.append(ptr[:size])
-
-        record_with_vad_get_last_voice(self, record_with_vad_get_last_voice_CB(_cb))
-        if not ret:
-            return None
-        return ret[0]
-
-    def __init__(self):
-        super().__init__(record_with_vad_create(), record_with_vad_delete)
-        if not self:
-            raise Exception()
 
 
 GetProcessMemory = utilsdll.GetProcessMemory

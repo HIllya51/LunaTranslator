@@ -933,5 +933,6 @@
     "已保存到剪贴板": "In die Zwischenablage gespeichert",
     "保存到文件": "In Datei speichern",
     "保存到剪贴板": "In die Zwischenablage kopieren",
-    "放弃窗口焦点": "Fensterfokus aufgeben"
+    "放弃窗口焦点": "Fensterfokus aufgeben",
+    "找不到依赖文件。请下载后解压到软件目录中": "Die Abhängigkeitsdatei wurde nicht gefunden. Bitte laden Sie sie herunter und entpacken Sie sie in das Softwareverzeichnis."
 }

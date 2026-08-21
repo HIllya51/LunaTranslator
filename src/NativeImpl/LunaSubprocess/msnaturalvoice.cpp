@@ -2,6 +2,8 @@
 #include <roapi.h>
 #include "../fileversion.hpp"
 #include <speechapi_cxx.h>
+#include "../wav.hpp"
+#include "pipehost.hpp"
 
 using namespace Microsoft::CognitiveServices::Speech;
 using namespace Microsoft::CognitiveServices::Speech::Audio;
@@ -20,25 +22,7 @@ std::shared_ptr<SpeechSynthesisCancellationDetails> CheckSynthesisResult(const s
 
     return details;
 }
-void writewavheader(char *pBuffer, int sSize)
-{
-    int fsize = sSize + 46;
-    int ptr = 0;
-    memcpy(pBuffer, "RIFF", 4);
-    ptr += 4;
-    memcpy(pBuffer + ptr, &fsize, 4);
-    ptr += 4;
-    memcpy(pBuffer + ptr, "WAVEfmt ", 8);
-    ptr += 8;
-    memcpy(pBuffer + ptr, "\x12\x00\x00\x00", 4);
-    ptr += 4;
-    memcpy(pBuffer + ptr, "\x01\x00\x01\x00\xc0\x5d\x00\x00\x80\xbb\x00\x00\x02\x00\x10\x00\x00\x00", sizeof(WAVEFORMATEX));
-    ptr += sizeof(WAVEFORMATEX);
-    memcpy(pBuffer + ptr, "data", 4);
-    ptr += 4;
-    memcpy(pBuffer + ptr, &sSize, 4);
-    ptr += 4;
-}
+// WAV 头改由 wav::BuildHeader 在 msnaturalvoice 主循环里就地构建
 static std::string getkey()
 {
     return "\x4b\x65\x79\x3a\x5a\x43\x6a\x5a\x37\x6e\x48\x44\x53\x4c\x76\x66\x34\x67\x70\x45\x4c\x74\x65\x4d\x34\x41\x6e\x7a\x61\x57\x55\x6a\x54\x70\x6e\x37\x55\x6b\x56\x37\x44\x40\x76\x76\x6b\x73\x6c\x30\x77\x31\x53\x4e\x67\x6f\x6e\x36\x64\x31\x39\x30\x35\x57\x41\x4e\x62\x6b\x74\x44\x63\x39\x53\x33\x39\x6f\x61\x41\x34\x72\x32\x39\x48\x4a\x4e\x61\x79\x58\x76\x54\x71\x38\x66\x4a\x73\x71";
@@ -57,16 +41,8 @@ std::string parsekey(std::string key)
 
 int msnaturalvoice(int argc, wchar_t *argv[])
 {
-
-    HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-
-    auto handle = CreateFileMappingW(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, 1024 * 1024 * 16, argv[3]);
-
-    auto mapview = (char *)MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, 1024 * 1024 * 16);
-    memset(mapview, 0, 1024 * 1024 * 16);
-
-    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-    if (!ConnectNamedPipe(hPipe, NULL))
+    lunasp::PipeHost host(argv[1], argv[2], argv[3]);
+    if (!host.ok())
         return 0;
 
     RoInitialize(RO_INIT_MULTITHREADED); // 系统的版本必须roinit
@@ -88,29 +64,33 @@ int msnaturalvoice(int argc, wchar_t *argv[])
     config->SetProperty(PropertyId::SpeechServiceConnection_SynthModelKey, extra.empty() ? parsekey(getkey()) : extra);
     auto synthesizer = SpeechSynthesizer::FromConfig(config, nullptr);
     wchar_t text[10000];
-    DWORD _;
     while (true)
     {
         ZeroMemory(text, sizeof(text));
-        if (!ReadFile(hPipe, (unsigned char *)text, 10000 * 2, &_, NULL))
+        if (!host.read(text, 10000 * 2))
             break;
         auto result = synthesizer->SpeakSsml(text);
         uint32_t len = 0;
         if (auto failed = CheckSynthesisResult(result))
         {
             len = -failed->ErrorDetails.size();
-            memcpy(mapview, failed->ErrorDetails.c_str(), failed->ErrorDetails.size());
-            WriteFile(hPipe, &len, 4, &_, NULL);
+            memcpy(host.mem(), failed->ErrorDetails.c_str(), failed->ErrorDetails.size());
+            host.write(&len, 4);
             continue;
         }
         auto stream = AudioDataStream::FromResult(result);
-        while (auto read = stream->ReadData(len, (uint8_t *)mapview + len + 46, 1024 * 1024 * 16))
+        while (auto got = stream->ReadData(len, (uint8_t *)host.mem() + len + sizeof(wav::Header), 1024 * 1024 * 16))
         {
-            len += read;
+            len += got;
         }
-        writewavheader(mapview, len);
-        len += 46;
-        WriteFile(hPipe, &len, 4, &_, NULL);
+        {
+            const uint16_t channels = 1, bits = 16, block_align = 2;
+            const uint32_t sample_rate = 24000, byte_rate = 48000;
+            auto header = wav::BuildHeader(static_cast<uint16_t>(WAVE_FORMAT_PCM), channels, sample_rate, byte_rate, block_align, bits, len);
+            memcpy(host.mem(), header.data(), header.size());
+            len += static_cast<uint32_t>(header.size());
+        }
+        host.write(&len, 4);
     }
     return 0;
 }

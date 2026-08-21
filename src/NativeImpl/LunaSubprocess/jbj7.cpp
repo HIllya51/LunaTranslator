@@ -1,4 +1,5 @@
 
+#include "pipehost.hpp"
 #define CODEPAGE_JA 932
 #define CODEPAGE_GB 936
 
@@ -6,10 +7,11 @@
 
 int jbjwmain(int argc, wchar_t *argv[])
 {
-    HANDLE hPipe = CreateNamedPipe(argv[2], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-
+    lunasp::PipeHost host(argv[1], argv[2]);
+    if (!host.ok())
+        return 0;
     // system("chcp 932");
-    HMODULE module = LoadLibraryW(argv[1]);
+    HMODULE module = LoadLibraryW(argv[3]);
     typedef int (*_JC_Transfer_Unicode)(int, UINT, UINT, int, int, LPCWSTR, LPWSTR, int &, LPWSTR, int &);
     typedef int(__cdecl * _DJC_OpenAllUserDic_Unicode)(LPWSTR, int unknown);
     auto JC_Transfer_Unicode = (_JC_Transfer_Unicode)GetProcAddress(module, "JC_Transfer_Unicode");
@@ -37,10 +39,6 @@ int jbjwmain(int argc, wchar_t *argv[])
     wchar_t *to = new wchar_t[3000];
     wchar_t *buf = new wchar_t[3000];
 
-    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[3]));
-    if (!ConnectNamedPipe(hPipe, NULL))
-        return 0;
-    unsigned char intcache[4];
     while (true)
     {
         memset(fr, 0, 3000 * sizeof(wchar_t));
@@ -49,16 +47,15 @@ int jbjwmain(int argc, wchar_t *argv[])
         int a = 3000;
         int b = 3000;
         UINT code;
-        DWORD _;
 
-        ReadFile(hPipe, &code, 4, &_, NULL);
+        host.read(&code, 4);
 
-        if (!ReadFile(hPipe, (unsigned char *)fr, 6000, &_, NULL))
+        if (!host.read(fr, 6000))
             break;
 
         JC_Transfer_Unicode(0, CODEPAGE_JA, code, 1, 1, fr, to, a, buf, b);
 
-        WriteFile(hPipe, (unsigned char *)to, 2 * wcslen(to), &_, NULL);
+        host.write(to, 2 * wcslen(to));
     }
 
     return 0;

@@ -1,4 +1,5 @@
 #include "Atlas.h"
+#include "pipehost.hpp"
 // https://github.com/uyjulian/AtlasTranslate
 
 wchar_t AtlasPath[2 * MAX_PATH];
@@ -491,19 +492,14 @@ char *TranslateFull(char *otext, int freeText, int NeedAbort(int line, int lines
 
 struct AtlasConfig atlcfg;
 
-void writestring(const wchar_t *text, HANDLE hPipe);
-wchar_t *readstring(HANDLE hPipe);
 int atlaswmain(int argc, wchar_t *argv[])
 {
-
-	HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-
-	SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-	if (!ConnectNamedPipe(hPipe, NULL))
+	lunasp::PipeHost host(argv[1], argv[2]);
+	if (!host.ok())
 		return 0;
 	while (true)
 	{
-		wchar_t *src = readstring(hPipe);
+		auto src = host.readstring();
 		if (!src)
 			break;
 
@@ -515,13 +511,12 @@ int atlaswmain(int argc, wchar_t *argv[])
 			InitAtlas(atlcfg, ATLAS_JAP_TO_ENG);
 			if (!AtlasIsLoaded())
 			{
-				writestring(0, hPipe);
+				host.writestring(std::nullopt);
 				return false;
 			}
 		}
-		wchar_t *text = TranslateFull(src, 0, NULL, NULL);
-		writestring(text, hPipe);
-		free(src);
+		wchar_t *text = TranslateFull(src->data(), 0, NULL, NULL);
+		host.writestring(text ? std::optional<std::wstring>{text} : std::nullopt);
 		free(text);
 	}
 

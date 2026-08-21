@@ -324,10 +324,10 @@ class spacy_wrapper(_base):
                 os.path.join(path, "Python312/python.exe")
             ) and os.path.isfile(os.path.join(path, "spacy_wrapper.py")):
                 self.proc = subprochiderun(
-                    '"{}" "{}"'.format(
+                    [
                         os.path.join(path, "Python312/python.exe"),
                         os.path.join(path, "spacy_wrapper.py"),
-                    ),
+                    ],
                     run=False,
                 )
                 self._ = NativeUtils.AutoKillProcess(self.proc.pid)

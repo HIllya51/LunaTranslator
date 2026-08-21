@@ -133,7 +133,7 @@ class MagpieBuiltin:
     def init(self):
         self.jspath = gobject.gettempdir("magpie.config.json")
         self.engine = NativeUtils.AutoKillProcess(
-            'files/Magpie/Magpie.Core.exe "{}"'.format(self.jspath),
+            ["files/Magpie/Magpie.Core.exe", self.jspath],
             "files/Magpie",
         )
         self.__reload()

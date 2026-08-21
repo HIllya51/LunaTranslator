@@ -1,4 +1,5 @@
 import NativeUtils, os, threading, uuid, windows
+from LunaSubProcess import LunaSubProcess
 from tts.basettsclass import TTSbase, SpeechParam
 import xml.etree.ElementTree as ET
 from ctypes import c_int32
@@ -98,27 +99,10 @@ class TTS(TTSbase):
             return
         dllp = self.finddlldirectory()
         print(path, dllp, NativeUtils.QueryVersion(os.path.join(dllp, self.cogdll)))
-        exepath = os.path.join(os.getcwd(), "files/LunaSubprocess64.exe")
-        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
-        waitsignal = str(uuid.uuid4())
-        mapname = str(uuid.uuid4())
         lv = self.getname(path)[1]
-        cmd = '"{}" msnaturalvoice {} {} {} "{}" "{}" "{}"'.format(
-            exepath,
-            pipename,
-            waitsignal,
-            mapname,
-            path,
-            dllp,
-            self.extralicense if (lv != "0") else "",
+        self._proc = LunaSubProcess.msnaturalvoice(
+            path, dllp, self.extralicense if (lv != "0") else ""
         )
-        self.engine = NativeUtils.AutoKillProcess(cmd)
-
-        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
-        windows.WaitNamedPipe(pipename)
-        self.hPipe = windows.CreateFile(pipename)
-        self.mappedFile2 = windows.OpenFileMapping(mapname)
-        self.mem = windows.MapViewOfFile(self.mappedFile2)
         self.lastvoice = path
 
     def init(self):
@@ -133,9 +117,4 @@ class TTS(TTSbase):
             with self.lock:
                 content = self.createSSML(content, None, param)
                 self.checkifnatural(voice_1)
-                windows.WriteFile(self.hPipe, content.encode("utf-16-le"))
-                size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-                if size < 0:
-                    error: bytes = self.mem[:-size]
-                    raise Exception(error.decode())
-                return self.mem[:size]
+                return self._proc.speak(content)

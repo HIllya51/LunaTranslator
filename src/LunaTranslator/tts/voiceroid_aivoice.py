@@ -1,6 +1,7 @@
 import uuid
 import os, io
 import windows, NativeUtils
+from LunaSubProcess import LunaSubProcess
 from tts.basettsclass import TTSbase, SpeechParam
 from ctypes import c_int32, c_float
 import xml.etree.ElementTree as ET
@@ -155,29 +156,11 @@ class TTS(TTSbase):
         if not os.path.isfile(dllpath):
             raise Exception()
 
-        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
-        waitsignal = str(uuid.uuid4())
-        mapname = str(uuid.uuid4())
         is64 = NativeUtils.IsDLLBit64(dllpath)
         # AIVoice & AIVoice2 -> 64位
-        exepath = os.path.abspath("files/LunaSubprocess{}.exe".format([32, 64][is64]))
-        self.engine = NativeUtils.AutoKillProcess(
-            '"{}" voiceroid2 "{}" "{}" {} {} {} {} {}'.format(
-                exepath,
-                os.path.dirname(dllpath),
-                dllpath,
-                pipename,
-                waitsignal,
-                mapname,
-                self.voice,
-                self.cacheDialect[self.voice],
-            )
+        self._proc = LunaSubProcess.voiceroid2(
+            os.path.dirname(dllpath), dllpath, self.voice, self.cacheDialect[self.voice]
         )
-        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
-        windows.WaitNamedPipe(pipename)
-        self.hPipe = windows.CreateFile(pipename)
-        self.mappedFile2 = windows.OpenFileMapping(mapname)
-        self.mem = windows.MapViewOfFile(self.mappedFile2)
 
     def linear_map(self, x):
         # 0.5-4
@@ -196,23 +179,11 @@ class TTS(TTSbase):
         return x
 
     def speak(self, content: str, voice: str, speed: SpeechParam):
-        __ = []
-        for c in content:
-            try:
-                __.append(c.encode("shift-jis"))
-            except:
-                pass
-        code1 = b"".join(__)
-        if not code1:
-            return
         with self.lock:
-            windows.WriteFile(self.hPipe, voice.encode())
-            windows.WriteFile(self.hPipe, self.cacheDialect[self.voice].encode())
-            windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map(speed.speed))))
-            windows.WriteFile(self.hPipe, bytes(c_float(self.linear_map2(speed.pitch))))
-            windows.WriteFile(self.hPipe, code1)
-
-            size = c_int32.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-            if size == 0:
-                return None
-            return self.mem[:size]
+            return self._proc.speak(
+                content,
+                voice,
+                self.cacheDialect[self.voice],
+                self.linear_map(speed.speed),
+                self.linear_map2(speed.pitch),
+            )

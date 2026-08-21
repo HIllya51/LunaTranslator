@@ -2,21 +2,15 @@
 
 1. Install Anki, https://apps.ankiweb.net/ go to the homepage to download and install.
 
-2. Search for Anki Connect, the first result.
-
-![img](https://image.lunatranslator.org/zh/anki/336449205-4eb7ce93-a9e9-489b-be8a-da67cfdca6ea.png)
-
-It will provide a number, currently 2055492159.
-
-3.
+2.
 
 ![img](https://image.lunatranslator.org/zh/anki/336449710-95f90d9a-cfe6-42c3-a44f-64d88d13833d.png)
 
-4.
+3.
 
 ![img](https://image.lunatranslator.org/zh/anki/336450025-9bf64445-f62e-4bfe-86f7-da99a7100e92.png)
 
-Enter the number and restart Anki.
+Enter the number `2055492159` and restart Anki.
 
 ---
 

@@ -12,12 +12,14 @@ import requests
 import gobject
 import windows
 import NativeUtils
+from LunaSubProcess import LunaSubProcess
 import traceback
 from collections import Counter
 from urllib.parse import urlparse
 import myutils.ankiconnect as anki
 from collections import OrderedDict
 from myutils.hwnd import grabwindow
+from collections import defaultdict
 from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.utils import (
     stringfyerror,
@@ -441,7 +443,7 @@ class AnkiWindow(QWidget):
                 [
                     getsimpleswitch(globalconfig, "usecustomankigen", default=False),
                     getIconButton(
-                        callback=functools.partial(selectdebugfile, "myanki_v2.py"),
+                        callback=functools.partial(selectdebugfile, "myanki_v3.py"),
                         icon="fa.edit",
                     ),
                     0,
@@ -636,7 +638,9 @@ class AnkiWindow(QWidget):
         self.editpath = pasteimageEdit()
         self.editpath.setReadOnly(True)
         self.viewimagelabel = pixmapviewer()
-        self.editpath.textChanged.connect(self.wrappedpixmap)
+        self.editpath.textChanged.connect(
+            lambda src: self.viewimagelabel.showpixmap(QPixmap(src))
+        )
         self.example = ctrlbedit()
         self.zhuyinedit = ctrlbedit()
         self.wordedit = FQLineEdit()
@@ -800,15 +804,10 @@ class AnkiWindow(QWidget):
         img.save(fname)
         self.editpath.setText(fname)
 
-    def wrappedpixmap(self, src):
-        if os.path.exists(src) == False:
-            pix = QPixmap()
-        else:
-            pix = QPixmap.fromImage(QImage(src))
-        self.viewimagelabel.showpixmap(pix)
-
     def selecfile2(self, item: QLineEdit):
-        f = QFileDialog.getOpenFileName(filter=getimagefilefilter() + ";;*")
+        f = QFileDialog.getOpenFileName(
+            filter=getimagefilefilter() + " *.avif *.gif *.mp4 *.mkv *.mov *.flv;;*"
+        )
         res = f[0]
         if res != "":
             item.setText(res)
@@ -877,6 +876,7 @@ class AnkiWindow(QWidget):
             )
             RichMessageBox(self, _TR("错误"), t)
         except anki.AnkiException as e:
+            print_exc()
             QMessageBox.critical(self, _TR("错误"), str(e))
         except:
             print_exc()
@@ -929,7 +929,7 @@ class AnkiWindow(QWidget):
         fields = static_data["model_fileds"]
         if globalconfig.get("usecustomankigen", False):
             module = checkmd5reloadmodule(
-                gobject.getconfig("myanki_v2.py"), "myanki_v2"
+                gobject.getconfig("myanki_v3.py"), "myanki_v3"
             )
             if module:
                 try:
@@ -962,55 +962,60 @@ class AnkiWindow(QWidget):
                         }
                     }
                 )
-        text_fields, audios, pictures = self.getfieldsdataall()
+        text_fields, medias = self.getfieldsdataall()
         self.lastankid = anki.Note.add(
-            DeckName, ModelName, text_fields, allowDuplicate, tags, audios, pictures
+            DeckName,
+            ModelName,
+            text_fields,
+            allowDuplicate,
+            tags,
+            medias,
         )
         self.lastankiword = self.currentword
 
     def getfieldsdataall(self):
         text_fields = self.loadfileds()
-        audios, pictures = self.loadankilikemediafield()
-        return self.custompass(text_fields, audios, pictures)
+        medias = self.loadankilikemediafield()
+        return self.custompass(text_fields, medias)
 
     def loadankilikemediafield(self):
-        media = []
+        medias = defaultdict(list)
         for k, _ in [
             ("audio_for_word", self.audiopath.text()),
             ("audio_for_example_sentence", self.audiopath_sentence.text()),
             ("screenshot", self.editpath.text()),
         ]:
             if len(_):
-                with open(_, "rb") as ff:
-                    b64 = base64.b64encode(ff.read()).decode()
-                media.append(
-                    [
-                        {
-                            "data": b64,
-                            "filename": str(uuid.uuid4()) + os.path.splitext(_)[1],
-                            "fields": [k],
-                        }
-                    ]
-                )
-            else:
-                media.append([])
-        audios = media[0] + media[1]
-        pictures = media[2]
-        return audios, pictures
+                ext = os.path.splitext(_)[1]
+                if k == 2:
+                    kk = "audio"
+                else:
+                    kk = (
+                        "video"
+                        if ext.lower() in (".mp4", ".mkv", ".mov", ".flv")
+                        else "picture"
+                    )
 
-    def custompass(self, text_fields: dict, audios: list, pictures: list):
+                medias[kk].append(
+                    {
+                        "path": _,
+                        "filename": str(uuid.uuid4()) + os.path.splitext(_)[1],
+                        "fields": [k],
+                    }
+                )
+        return medias
+
+    def custompass(self, text_fields: dict, medias: "dict[str, list]"):
         if globalconfig.get("usecustomankigen", False):
             module = checkmd5reloadmodule(
-                gobject.getconfig("myanki_v2.py"), "myanki_v2"
+                gobject.getconfig("myanki_v3.py"), "myanki_v3"
             )
             if module:
                 try:
-                    text_fields, audios, pictures = module.ParseFieldsData(
-                        text_fields, audios, pictures
-                    )
+                    text_fields, medias = module.ParseFieldsData(text_fields, medias)
                 except:
                     print_exc()
-        return text_fields, audios, pictures
+        return text_fields, medias
 
 
 class CustomTabBar(LTabBar):
@@ -1843,9 +1848,32 @@ class searchwordW(closeashidewindow):
         if not globalconfig["ankiconnect"]["autorecord"]:
             return
         try:
-            self.autorecorder = NativeUtils.record_with_vad()
+            self.autorecorder = LunaSubProcess.vad()
+        except LookupError as e:
+            dlldir, model = e.args[0]
+            links = []
+            if not dlldir:
+                links.append(
+                    [
+                        "sherpa-onnx-cxx-api.dll",
+                        "https://github.com/k2-fsa/sherpa-onnx/releases/download/v1.13.6/sherpa-onnx-v1.13.6-win-x64-shared-MD-Release.tar.bz2",
+                    ]
+                )
+            if not model:
+                links.append(
+                    [
+                        "silero_vad.onnx",
+                        "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx",
+                    ]
+                )
+            t = _TR("找不到依赖文件。请下载后解压到软件目录中\n{}").format(
+                "\n".join(['<a href="{}">{}</a>'.format(_[1], _[0]) for _ in links]),
+            )
+            gobject.base.safeinvokefunction.emit(
+                lambda: RichMessageBox(self, _TR("自动录音"), t)
+            )
         except:
-            self.autorecorder = None
+            print_exc()
 
     @threader
     def ocr_do_function(self, rect, img=None):

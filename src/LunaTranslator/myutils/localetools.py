@@ -1,8 +1,8 @@
 import windows, os, NativeUtils, functools, winreg
 from qtsymbols import *
 from myutils.config import savehook_new_data, get_launchpath, globalconfig, _TR, relpath
-from myutils.hwnd import subprochiderun
-from gobject import sys_le_xp, runtime_bit_64
+from LunaSubProcess import LunaSubProcess
+from gobject import sys_le_xp
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
 from traceback import print_exc
 import xml.etree.ElementTree as ET
@@ -19,30 +19,11 @@ class Launcher:
 
 def shellexecutehelper(_, op, exe, args, dirpath, bshow):
     # 主程序中的SetDllDirectoryW会被继承，导致执行错误。
-    subprochiderun(
-        [
-            r".\files\LunaSubprocess{}.exe".format(("32", "64")[runtime_bit_64]),
-            "shellexecutehelper",
-            op,
-            exe,
-            args,
-            dirpath,
-            str(bshow),
-        ],
-        run=False,
-    )
+    LunaSubProcess.shellexecutehelper(op, exe, args, dirpath, bshow)
 
 
 def createprocesshelper(_, cmd, _2, _3, _4, _5, _6, dirpath, _7):
-    subprochiderun(
-        [
-            r".\files\LunaSubprocess{}.exe".format(("32", "64")[runtime_bit_64]),
-            "createprocesshelper",
-            cmd,
-            dirpath,
-        ],
-        run=False,
-    )
+    LunaSubProcess.createprocesshelper(cmd, dirpath)
 
 
 class LEbase(Launcher):

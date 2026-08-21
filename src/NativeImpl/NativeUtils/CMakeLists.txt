@@ -26,7 +26,6 @@ target_link_libraries(md4c-all INTERFACE md4c md4c-html)
 aux_source_directory(loopbackaudio loopbackaudio)
 aux_source_directory(winrt winrt)
 add_subdirectory(webview)
-add_subdirectory(vad)
 add_subdirectory(bass)
 add_library(NativeUtils SHARED
     memory.cpp
@@ -36,7 +35,7 @@ add_library(NativeUtils SHARED
     ${loopbackaudio} ${winrt} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
-target_link_libraries(NativeUtils PRIVATE pdh vad tiny-aes Dbghelp libmecab rapidfuzz bassimp libbass webview mfuuid md4c-all dwmapi d3d11 version 
+target_link_libraries(NativeUtils PRIVATE pdh tiny-aes Dbghelp libmecab rapidfuzz bassimp libbass webview mfuuid md4c-all dwmapi d3d11 version
                     Mfplat 
                     DXGI 
                     Msimg32

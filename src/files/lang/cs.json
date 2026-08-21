@@ -933,5 +933,6 @@
     "已保存到剪贴板": "Uloženo do schránky",
     "保存到文件": "Uložit do souboru",
     "保存到剪贴板": "Zkopírovat do schránky",
-    "放弃窗口焦点": "Upustit od zaměření okna"
+    "放弃窗口焦点": "Upustit od zaměření okna",
+    "找不到依赖文件。请下载后解压到软件目录中": "Nelze najít závislý soubor. Stáhněte si jej a rozbalte do adresáře softwaru."
 }

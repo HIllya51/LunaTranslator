@@ -2,21 +2,15 @@
 
 1. Cài đặt Anki, truy cập https://apps.ankiweb.net/ để tải xuống và cài đặt.
 
-2. Tìm kiếm Anki Connect, kết quả đầu tiên.
-
-![img](https://image.lunatranslator.org/zh/anki/336449205-4eb7ce93-a9e9-489b-be8a-da67cfdca6ea.png)
-
-Nó sẽ cung cấp một số, hiện tại là 2055492159.
-
-3.
+2.
 
 ![img](https://image.lunatranslator.org/zh/anki/336449710-95f90d9a-cfe6-42c3-a44f-64d88d13833d.png)
 
-4.
+3.
 
 ![img](https://image.lunatranslator.org/zh/anki/336450025-9bf64445-f62e-4bfe-86f7-da99a7100e92.png)
 
-Nhập số và khởi động lại Anki.
+Nhập số `2055492159` và khởi động lại Anki.
 
 ---
 

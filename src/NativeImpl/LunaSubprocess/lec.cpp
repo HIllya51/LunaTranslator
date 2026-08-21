@@ -1,3 +1,4 @@
+#include "pipehost.hpp"
 // https://github.com/uyjulian/LECTranslate
 
 // #if 1
@@ -149,34 +150,10 @@ void SetUpLEC()
         RegCloseKey(key);
     }
 }
-void writestring(const wchar_t *text, HANDLE hPipe)
-{
-    DWORD _;
-    auto len = text ? (2 * wcslen(text)) : 0;
-    if (!WriteFile(hPipe, &len, 4, &_, NULL))
-        return;
-    if (text)
-        if (!WriteFile(hPipe, text, len, &_, NULL))
-            return;
-}
-wchar_t *readstring(HANDLE hPipe)
-{
-    DWORD _;
-    int len;
-    if (!ReadFile(hPipe, &len, 4, &_, NULL))
-        return nullptr;
-    wchar_t *otext = new wchar_t[len / 2 + 1];
-    if (!ReadFile(hPipe, otext, len, &_, NULL))
-        return nullptr;
-    otext[len / 2] = 0;
-    return otext;
-}
 int lecwmain(int argc, wchar_t *argv[])
 {
-    HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-
-    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-    if (!ConnectNamedPipe(hPipe, NULL))
+    lunasp::PipeHost host(argv[1], argv[2]);
+    if (!host.ok())
         return 0;
     std::wstring src = argv[3];
     std::wstring tgt = argv[4];
@@ -195,10 +172,9 @@ int lecwmain(int argc, wchar_t *argv[])
         CODEPAGE = 932;
         PATH = "Nova\\JaEn\\EngineDll_je.dll";
     }
-    DWORD _;
     while (true)
     {
-        wchar_t *otext = readstring(hPipe);
+        auto otext = host.readstring();
         if (!otext)
             break;
 
@@ -207,20 +183,19 @@ int lecwmain(int argc, wchar_t *argv[])
             SetUpLEC();
             if (lecState < 0)
             {
-                writestring(0, hPipe);
+                host.writestring(std::nullopt);
                 continue;
             }
         }
 
         if (lecState < 0)
         {
-            writestring(0, hPipe);
+            host.writestring(std::nullopt);
             continue;
         }
-        wchar_t *text = LECTranslateFull(otext);
-        delete[] otext;
-        writestring(text, hPipe);
-        delete[] text;
+        wchar_t *text = LECTranslateFull(otext->data());
+        host.writestring(text ? std::optional<std::wstring>{text} : std::nullopt);
+        free(text);
     }
 
     return 0;

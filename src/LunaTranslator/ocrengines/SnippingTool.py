@@ -2,6 +2,7 @@ import threading, NativeUtils, windows
 from qtsymbols import *
 from ctypes import Structure, memmove, c_longlong, c_int, c_float, c_int32, c_int64
 from ocrengines.baseocrclass import baseocr, OCRResult
+from LunaSubProcess import LunaSubProcess
 import os, zipfile, shutil
 from myutils.utils import stringfyerror, format_bytes
 from myutils.config import _TR, dynamiclink
@@ -266,25 +267,7 @@ class OCR(baseocr):
             raise Exception(_TR("未安装"))
         if dir_ != cachedir:
             shutil.copytree(dir_, cachedir)
-        self.lock = threading.Lock()
-        pipename = "\\\\.\\Pipe\\" + str(uuid.uuid4())
-        waitsignal = str(uuid.uuid4())
-        mapname = str(uuid.uuid4())
-        exepath = os.path.abspath("files/LunaSubprocess64.exe")
-        self.engine = NativeUtils.AutoKillProcess(
-            '"{}" SnippingTool {} {} {}'.format(
-                exepath,
-                pipename,
-                waitsignal,
-                mapname,
-            ),
-            cachedir,
-        )
-        windows.WaitForSingleObject(NativeUtils.SimpleCreateEvent(waitsignal))
-        windows.WaitNamedPipe(pipename)
-        self.hPipe = windows.CreateFile(pipename)
-        self.mappedFile2 = windows.OpenFileMapping(mapname)
-        self.mem = windows.MapViewOfFile(self.mappedFile2)
+        self._proc = LunaSubProcess.SnippingTool(cachedir)
 
     def ocr(self, qimage: QImage):
         try:
@@ -295,30 +278,13 @@ class OCR(baseocr):
     def ocr_(self, qimage: QImage):
         if qimage.format() != QImage.Format.Format_RGBA8888:
             qimage = qimage.convertToFormat(QImage.Format.Format_RGBA8888)
-        with self.lock:
-            img_struct = Img(
-                t=3,
-                col=qimage.width(),
-                row=qimage.height(),
-                _unk=0,
-                step=qimage.bytesPerLine(),
-            )
-            memmove(self.mem, int(qimage.bits()), qimage.sizeInBytes())
-            windows.WriteFile(self.hPipe, bytes(img_struct))
-            cnt = c_longlong.from_buffer_copy(windows.ReadFile(self.hPipe, 8)).value
-
-            if not cnt:
-                return
-            boxs = []
-            texts = []
-            for _ in range(cnt):
-                size = c_int.from_buffer_copy(windows.ReadFile(self.hPipe, 4)).value
-                if not size:
-                    continue
-                texts.append(windows.ReadFile(self.hPipe, size).decode())
-                box = OcrLineBoundingBox.from_buffer_copy(
-                    windows.ReadFile(self.hPipe, 32)
-                )
-                box = (box.x1, box.y1, box.x2, box.y2, box.x3, box.y3, box.x4, box.y4)
-                boxs.append(box)
-            return OCRResult(boxs=boxs, texts=texts)
+        r = self._proc.ocr(
+            int(qimage.bits()),
+            qimage.width(),
+            qimage.height(),
+            qimage.bytesPerLine(),
+            qimage.sizeInBytes(),
+        )
+        if r is None:
+            return
+        return OCRResult(boxs=r[0], texts=r[1])

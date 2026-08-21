@@ -1,3 +1,5 @@
+#include "pipehost.hpp"
+
 extern "C"
 {
     typedef int(__stdcall *MTInitCJ)(int);
@@ -6,8 +8,8 @@ extern "C"
 
 int dreyewmain(int argc, wchar_t *argv[])
 {
-    SetCurrentDirectory(argv[1]);
-    HMODULE h = LoadLibrary(argv[2]);
+    SetCurrentDirectory(argv[3]);
+    HMODULE h = LoadLibrary(argv[4]);
     /*wchar_t* apiinit = argv[3];
     wchar_t* apitrans = argv[4];*/
     if (h)
@@ -15,7 +17,7 @@ int dreyewmain(int argc, wchar_t *argv[])
 
         MTInitCJ _MTInitCJ;
         TranTextFlowCJ _TranTextFlowCJ;
-        if (_wtoi(argv[3]) == 3 || _wtoi(argv[3]) == 10)
+        if (_wtoi(argv[5]) == 3 || _wtoi(argv[5]) == 10)
         {
             _MTInitCJ = (MTInitCJ)GetProcAddress(h, "MTInitCJ");                   // WStrToStr(apiinit, 936).c_str());
             _TranTextFlowCJ = (TranTextFlowCJ)GetProcAddress(h, "TranTextFlowCJ"); // WStrToStr(apitrans, 936).c_str());
@@ -29,23 +31,20 @@ int dreyewmain(int argc, wchar_t *argv[])
         if (!_MTInitCJ || !_TranTextFlowCJ)
             return 0;
 
-        _MTInitCJ(_wtoi(argv[3]));
+        _MTInitCJ(_wtoi(argv[5]));
 
-        HANDLE hPipe = CreateNamedPipe(argv[4], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-
-        SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[5]));
-        if (!ConnectNamedPipe(hPipe, NULL) && GetLastError() != ERROR_PIPE_CONNECTED)
+        lunasp::PipeHost host(argv[1], argv[2]);
+        if (!host.ok())
             return 0;
         while (true)
         {
             char src[4096] = {0};
             char buffer[3000] = {0};
-            DWORD _;
-            if (!ReadFile(hPipe, src, sizeof(src) - 1, &_, NULL))
+            if (!host.read(src, sizeof(src) - 1))
                 break;
 
-            _TranTextFlowCJ(src, buffer, 3000, _wtoi(argv[3]));
-            WriteFile(hPipe, buffer, strlen(buffer), &_, NULL);
+            _TranTextFlowCJ(src, buffer, 3000, _wtoi(argv[5]));
+            host.write(buffer, strlen(buffer));
         }
     }
     return 0;

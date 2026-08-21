@@ -1,3 +1,4 @@
+#include "pipehost.hpp"
 // https://github.com/b1tg/win11-oneocr/blob/master/ocr.cpp
 typedef struct
 {
@@ -29,16 +30,8 @@ typedef void(__cdecl *ReleaseOcrResult_t)(__int64);
 
 int SnippingTool(int argc, wchar_t *argv[])
 {
-
-    HANDLE hPipe = CreateNamedPipe(argv[1], PIPE_ACCESS_DUPLEX, PIPE_TYPE_MESSAGE | PIPE_READMODE_MESSAGE | PIPE_WAIT, PIPE_UNLIMITED_INSTANCES, 65535, 65535, NMPWAIT_WAIT_FOREVER, 0);
-
-    auto handle = CreateFileMappingW(INVALID_HANDLE_VALUE, &allAccess, PAGE_EXECUTE_READWRITE, 0, 1024 * 1024 * 16, argv[3]);
-
-    auto mapview = (char *)MapViewOfFile(handle, FILE_MAP_ALL_ACCESS | FILE_MAP_EXECUTE, 0, 0, 1024 * 1024 * 16);
-    memset(mapview, 0, 1024 * 1024 * 16);
-
-    SetEvent(CreateEvent(&allAccess, FALSE, FALSE, argv[2]));
-    if (!ConnectNamedPipe(hPipe, NULL))
+    lunasp::PipeHost host(argv[1], argv[2], argv[3]);
+    if (!host.ok())
         return 0;
     auto onnxruntime = std::filesystem::current_path() / "onnxruntime.dll";
     auto oneocr = std::filesystem::current_path() / "oneocr.dll";
@@ -87,13 +80,12 @@ int SnippingTool(int argc, wchar_t *argv[])
     res = CreateOcrProcessOptions(&opt);
     assert(res == 0);
     res = OcrProcessOptionsSetMaxRecognitionLineCount(opt, 1000);
-    DWORD _;
     while (true)
     {
         Img img;
-        if (!ReadFile(hPipe, &img, sizeof(Img), &_, NULL))
+        if (!host.read(&img, sizeof(Img)))
             break;
-        img.data_ptr = (decltype(img.data_ptr))mapview;
+        img.data_ptr = (decltype(img.data_ptr))host.mem();
 
         res = RunOcrPipeline(pipeline, &img, opt, &instance);
 
@@ -101,8 +93,7 @@ int SnippingTool(int argc, wchar_t *argv[])
         auto succ = GetOcrLineCount(instance, &lc);
         assert(succ == 0);
         printf("Recognize %lld lines\n", lc);
-        DWORD _;
-        WriteFile(hPipe, &lc, sizeof(lc), &_, NULL);
+        host.write(&lc, sizeof(lc));
         for (__int64 lci = 0; lci < lc; lci++)
         {
             int len = 0;
@@ -111,7 +102,7 @@ int SnippingTool(int argc, wchar_t *argv[])
             GetOcrLine(instance, lci, &line);
             if (!line)
             {
-                WriteFile(hPipe, &len, 4, &_, NULL);
+                host.write(&len, 4);
                 continue;
             }
             __int64 line_content = 0;
@@ -120,13 +111,13 @@ int SnippingTool(int argc, wchar_t *argv[])
             printf("%02lld: %s\n", lci, lcs);
             len = strlen(lcs);
 
-            WriteFile(hPipe, &len, 4, &_, NULL);
+            host.write(&len, 4);
             if (len)
-                WriteFile(hPipe, lcs, len, &_, NULL);
+                host.write(lcs, len);
 
             GetOcrLineBoundingBox(line, &v106);
-            // WriteFile(hPipe, &v106, 8, &_, NULL);
-            WriteFile(hPipe, (void *)v106, 32, &_, NULL);
+            // host.write(&v106, 8);
+            host.write((void *)v106, 32);
             // __int64 lr = 0;
             // GetOcrLineWordCount(line, &lr);
             // for (__int64 j = 0; j < lr; j++)

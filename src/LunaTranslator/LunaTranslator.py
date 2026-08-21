@@ -530,7 +530,12 @@ class BASEOBJECT(QObject):
 
     def maybeneedtranslateshowhidetranslate(self):
         if globalconfig.get("showfanyi", True):
-            self.textgetmethod(self.currenttext_raw, is_auto_run=False, isRefresh=True)
+            self.textgetmethod(
+                self.currenttext,
+                is_auto_run=False,
+                isRefresh=True,
+                skippreprocess=True,
+            )
             self.translation_ui.translate_text.showhidetranslate(True)
         else:
             self.translation_ui.translate_text.showhidetranslate(False)
@@ -554,6 +559,7 @@ class BASEOBJECT(QObject):
         isFromHook=False,
         statusok=True,
         isRefresh=False,
+        skippreprocess=False,
     ):
         with self.solvegottextlock:
             succ = self.textgetmethod_1(
@@ -567,6 +573,7 @@ class BASEOBJECT(QObject):
                 isFromHook=isFromHook,
                 statusok=statusok,
                 isRefresh=isRefresh,
+                skippreprocess=skippreprocess,
             )
             if waitforresultcallback and not succ:
                 waitforresultcallback(TranslateResult())
@@ -592,6 +599,7 @@ class BASEOBJECT(QObject):
         isFromHook=False,
         statusok=True,
         isRefresh=False,
+        skippreprocess=False,
     ):
         if not text:
             return
@@ -603,7 +611,12 @@ class BASEOBJECT(QObject):
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
         currentsignature = uuid.uuid4() if not isRefresh else self.currentsignature
         try:
-            text = POSTSOLVE(text, isEx=waitforresultcallback, isFromHook=isFromHook)
+            text = POSTSOLVE(
+                text,
+                isEx=waitforresultcallback,
+                isFromHook=isFromHook,
+                skippreprocess=skippreprocess,
+            )
             gobject.base.showandsolvesig.emit(origin, text)
             if not text:
                 return
@@ -1599,7 +1612,9 @@ class BASEOBJECT(QObject):
                 print_exc()
         fontstr = lambda fsize: "font:{fontsize}pt  {fonttype}; {bold}".format(
             fontsize=fsize,
-            fonttype=ui_settings.get("settingfonttype", gobject.tempconfig.get("settingfonttype", "")),
+            fonttype=ui_settings.get(
+                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
+            ),
             bold=("", "font-weight: bold;")[ui_settings.get("settingfontbold", False)],
         )
         style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
@@ -1611,7 +1626,11 @@ class BASEOBJECT(QObject):
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
-        font.setFamily(ui_settings.get("settingfonttype", gobject.tempconfig.get("settingfonttype", "")))
+        font.setFamily(
+            ui_settings.get(
+                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
+            )
+        )
         font.setPointSizeF(ui_settings.get("settingfontsize", 12))
         font.setBold(ui_settings.get("settingfontbold", False))
         if QApplication.instance().font() != font:
@@ -1657,7 +1676,8 @@ class BASEOBJECT(QObject):
         NativeUtils.SetWindowInTaskbar(
             int(self.translation_ui.winId()), globalconfig.get("showintab", False), True
         )
-        self.translation_ui.show()
+        if not globalconfig.get("startupautohide", False):
+            self.translation_ui.show()
         self.translation_ui.aftershowdosomething()
         self.mainuiloadafter()
         startgame(startwithgameuid)
