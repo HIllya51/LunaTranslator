@@ -1,3 +1,24 @@
+
+#if WINDOWS_FOUNDATION_UNIVERSALAPICONTRACT_VERSION < 0x60000
+namespace ABI {
+    namespace Windows {
+        namespace Web {
+            namespace UI {
+                namespace Interop {
+                    enum WebViewControlMoveFocusReason : int
+                    {
+                        WebViewControlMoveFocusReason_Programmatic = 0,
+                        WebViewControlMoveFocusReason_Next = 1,
+                        WebViewControlMoveFocusReason_Previous = 2,
+                    };
+                } /* Interop */
+            } /* UI */
+        } /* Web */
+    } /* Windows */
+} /* ABI */
+#endif // WINDOWS_FOUNDATION_UNIVERSALAPICONTRACT_VERSION >= 0x60000
+
+
 #define ____x_ABI_CWindows_CFoundation_CIPropertyValueStatics_INTERFACE_DEFINED__
 extern const __declspec(selectany) _Null_terminated_ WCHAR InterfaceName_Windows_Foundation_IPropertyValueStatics[] = L"Windows.Foundation.IPropertyValueStatics";
 namespace ABI {
