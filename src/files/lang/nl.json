@@ -934,5 +934,8 @@
     "保存到文件": "Opslaan naar bestand",
     "保存到剪贴板": "Naar klembord kopiëren",
     "放弃窗口焦点": "Stop met het focussen op het venster",
-    "找不到依赖文件。请下载后解压到软件目录中": "Afhankelijkheidsbestand niet gevonden. Download het en pak het uit in de softwaremap."
+    "找不到依赖文件。请下载后解压到软件目录中": "Afhankelijkheidsbestand niet gevonden. Download het en pak het uit in de softwaremap.",
+    "插入视频": "Video invoegen",
+    "区域录制": "Regio-opname",
+    "窗口录制": "Vensteropname"
 }

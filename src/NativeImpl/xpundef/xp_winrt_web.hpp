@@ -1216,6 +1216,7 @@ namespace ABI {
                             ) = 0;
                         virtual HRESULT STDMETHODCALLTYPE Close(void) = 0;
                         virtual HRESULT STDMETHODCALLTYPE MoveFocus(
+                            ABI::Windows::Web::UI::Interop::WebViewControlMoveFocusReason reason
                             ) = 0;
                         virtual HRESULT STDMETHODCALLTYPE add_MoveFocusRequested(
                             ) = 0;

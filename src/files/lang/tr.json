@@ -934,5 +934,8 @@
     "保存到文件": "Dosyaya kaydet",
     "保存到剪贴板": "Panoya kopyala",
     "放弃窗口焦点": "Pencere odağını bırak",
-    "找不到依赖文件。请下载后解压到软件目录中": "Bağımlılık dosyası bulunamadı. Lütfen indirip açarak yazılım klasörüne yerleştirin."
+    "找不到依赖文件。请下载后解压到软件目录中": "Bağımlılık dosyası bulunamadı. Lütfen indirip açarak yazılım klasörüne yerleştirin.",
+    "插入视频": "Videoyu ekle",
+    "区域录制": "Bölge kaydı",
+    "窗口录制": "Pencere kaydı"
 }

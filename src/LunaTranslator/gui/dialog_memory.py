@@ -1,15 +1,17 @@
 from qtsymbols import *
-import gobject, qtawesome, os, json, functools, uuid
-import NativeUtils, re, shutil
+import gobject, qtawesome, os, json, functools, uuid, signal
+import NativeUtils, re, shutil, windows, subprocess, time
 from myutils.config import globalconfig, get_launchpath, savehook_new_data, relpath
 from myutils.wrapper import Singleton
 from myutils.utils import (
     getimagefilefilter,
     getimageformat,
     loopbackrecorder,
+    ffmpeg_record,
     _TR,
     get_time_stamp,
 )
+from myutils.wrapper import threader
 from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
 from myutils.mecab import mecab
@@ -335,6 +337,7 @@ class dialog_memory(saveposwindow):
         )
         self.insertaudiobtn = IconButton(parent=self, icon="fa.music", tips="插入音频")
         self.textbtn = IconButton(parent=self, icon="fa.text-height", tips="插入文本")
+        self.videobtn = IconButton(parent=self, icon="fa.film", tips="插入视频")
         openfile = IconButton(parent=self, icon="fa.external-link", tips="打开文件")
         openfile.clicked.connect(lambda: self.editororview.sourcefileopen())
         self.buttonslayout.addWidget(openfile)
@@ -342,7 +345,9 @@ class dialog_memory(saveposwindow):
         self.buttonslayout.addWidget(self.textbtn)
         self.buttonslayout.addWidget(self.insertaudiobtn)
         self.buttonslayout.addWidget(self.insertpicbtn)
+        self.buttonslayout.addWidget(self.videobtn)
         self.buttonslayout.addWidget(self.switch)
+        self.videobtn.clicked.connect(self.Videoselect)
         self.insertpicbtn.clicked.connect(self.Picselect)
         self.insertaudiobtn.clicked.connect(self.AudioSelect)
         self.textbtn.clicked.connect(self.TextInsert)
@@ -397,7 +402,7 @@ class dialog_memory(saveposwindow):
             return
         menu = QMenu(self)
         record = LAction("录音", menu)
-        audio = LAction("音频", menu)
+        audio = LAction("选择文件", menu)
         record.setIcon(qtawesome.icon("fa.microphone"))
         audio.setIcon(qtawesome.icon("fa.folder-open"))
         menu.addAction(record)
@@ -422,11 +427,50 @@ class dialog_memory(saveposwindow):
         )
         self.editor.insertPlainText(html)
 
+    def Videoselect(self):
+        menu = QMenu(self)
+        crop2 = LAction("区域录制", menu)
+        crophwnd = LAction("窗口录制", menu)
+        select = LAction("选择文件", menu)
+        crop2.setIcon(qtawesome.icon("fa.crop"))
+        crophwnd.setIcon(qtawesome.icon("fa.camera"))
+        select.setIcon(qtawesome.icon("fa.folder-open"))
+        menu.addAction(crop2)
+        menu.addAction(crophwnd)
+        menu.addAction(select)
+        action = menu.exec(QCursor.pos())
+        if action == crop2:
+
+            def ocroncefunction(rect, _):
+                ffmpeg_record(self.selectvedio, rect)
+
+            rangeselct_function(ocroncefunction, self.window())
+        elif action == crophwnd:
+            ffmpeg_record(self.selectvedio)
+        elif action == select:
+            f = QFileDialog.getOpenFileName(filter="*.mp4 *.mkv *.mov *.flv;;*")
+            res = f[0]
+            if not res:
+                return
+            self.selectvedio(res, move=False)
+
+    def selectvedio(self, path: "str", move=True):
+        tgt = os.path.join(self.rwpath, os.path.basename(path))
+        if move:
+            shutil.move(path, tgt)
+        else:
+            shutil.copy(path, tgt)
+        self.editor.insertPlainText(
+            """\n<video src="{}" controls="controls" style="max-width: 100%; height: auto;"></video>\n""".format(
+                quote(os.path.basename(path))
+            )
+        )
+
     def Picselect(self):
         menu = QMenu(self)
         crop2 = LAction("隐藏并截图", menu)
         crophwnd = LAction("窗口截图", menu)
-        select = LAction("图片", menu)
+        select = LAction("选择文件", menu)
         crop2.setIcon(qtawesome.icon("fa.crop"))
         crophwnd.setIcon(qtawesome.icon("fa.camera"))
         select.setIcon(qtawesome.icon("fa.folder-open"))
@@ -439,7 +483,9 @@ class dialog_memory(saveposwindow):
         elif action == crophwnd:
             grabwindow(callback=self.cropcallback1)
         elif action == select:
-            f = QFileDialog.getOpenFileName(filter=getimagefilefilter())
+            f = QFileDialog.getOpenFileName(
+                filter=getimagefilefilter() + " *.avif *.gif;;*"
+            )
             res = f[0]
             if not res:
                 return
@@ -539,6 +585,7 @@ class dialog_memory(saveposwindow):
         self.insertpicbtn.setVisible(i)
         self.insertaudiobtn.setVisible(i)
         self.textbtn.setVisible(i)
+        self.videobtn.setVisible(i)
 
     def tabmenu(self, position):
         index = self.tab.tabBar().tabAt(position)

@@ -2,7 +2,7 @@ import os, time
 import codecs, hashlib, shutil
 import socket, gobject, uuid, functools
 from collections import OrderedDict
-import importlib, json, requests
+import importlib, json, requests, subprocess, windows, signal
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -875,6 +875,44 @@ class loopbackrecorder:
         with open(file, "wb") as ff:
             ff.write(new)
         return file
+
+
+@threader
+def ffmpeg_record(callback, rect: QRect = None):
+    file = gobject.gettempdir(str(time.time()) + ".mp4")
+    if rect:
+        arg = "-offset_x {} -offset_y {} -video_size {}x{} -i desktop ".format(
+            rect.x(), rect.y(), rect.width(), rect.height()
+        )
+    else:
+        arg = '-i title="{}"'.format(
+            subprocess.list2cmdline([windows.GetWindowText(gobject.base.hwnd)])
+        )
+    ffmpeg = shutil.which("ffmpeg")
+    proc = subprocess.Popen(
+        r'''"{}" -f gdigrab -framerate 30 {} "{}"'''.format(ffmpeg, arg, file),
+        stdin=subprocess.PIPE,
+        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+    )
+    recorders = loopbackrecorder()
+    while True:
+        keystate = windows.GetKeyState(windows.VK_Q)
+        if keystate < 0:
+            time.sleep(0.1)
+            break
+    proc.send_signal(signal.CTRL_BREAK_EVENT)
+    proc.wait()
+    mp3 = recorders.stop_save()
+
+    tmsp = gobject.gettempdir(
+        get_time_stamp(forfilename=True).replace(" ", "_") + ".mp4"
+    )
+    subprocess.run(
+        r'''"{}" -i {} -i {} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 "{}"'''.format(
+            ffmpeg, file, mp3, tmsp
+        )
+    )
+    callback(tmsp)
 
 
 def copytree(src, dst, copy_function=shutil.copy2):

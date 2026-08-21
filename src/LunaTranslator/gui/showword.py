@@ -30,6 +30,7 @@ from myutils.utils import (
     getimageformatlist,
     getimagefilefilter,
     checkmd5reloadmodule,
+    ffmpeg_record,
     getimageformat,
 )
 from NativeUtils import MenuItem
@@ -200,6 +201,13 @@ class AnkiWindow(QWidget):
     @threader
     def asyncocr(self, img):
         self.__ocrsettext.emit(ocr_run(img).textonly)
+
+    def croprecord(self):
+
+        def ocroncefunction(rect, _):
+            ffmpeg_record(lambda x: self.settextsignal.emit(self.editpath, x), rect)
+
+        rangeselct_function(ocroncefunction, self.window())
 
     def crophide(self):
 
@@ -646,6 +654,7 @@ class AnkiWindow(QWidget):
             icon="fa.crop",
             callback=self.crophide,
             tips="隐藏并截图",
+            callback2=self.croprecord,
         )
         grabwindowbtn = getIconButton(
             icon="fa.camera",
@@ -654,6 +663,9 @@ class AnkiWindow(QWidget):
                     sc_callback,
                     functools.partial(self.settextsignal.emit, self.editpath),
                 )
+            ),
+            callback2=lambda: ffmpeg_record(
+                lambda x: self.settextsignal.emit(self.editpath, x)
             ),
             tips="窗口截图",
         )
