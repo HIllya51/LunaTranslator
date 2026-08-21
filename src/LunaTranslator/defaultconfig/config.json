@@ -1214,7 +1214,7 @@
                         "low",
                         "medium",
                         "high",
-                        "xhign"
+                        "xhigh"
                     ],
                     "list": [
                         "none",
@@ -1222,7 +1222,7 @@
                         "low",
                         "medium",
                         "high",
-                        "xhign"
+                        "xhigh"
                     ]
                 },
                 "customparams": {

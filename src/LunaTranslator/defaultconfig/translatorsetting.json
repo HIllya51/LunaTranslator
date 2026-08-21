@@ -516,7 +516,7 @@
 					"low",
 					"medium",
 					"high",
-					"xhign"
+					"xhigh"
 				],
 				"list": [
 					"none",
@@ -524,7 +524,7 @@
 					"low",
 					"medium",
 					"high",
-					"xhign"
+					"xhigh"
 				]
 			},
 			"use_max_completion_tokens": {
