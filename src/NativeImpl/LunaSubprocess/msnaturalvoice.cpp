@@ -56,7 +56,7 @@ int msnaturalvoice(int argc, wchar_t *argv[])
     AddDllDirectory(syspath1);
     AddDllDirectory(syspath2);
 
-    auto config = EmbeddedSpeechConfig::FromPath(WideStringToString(argv[4], CP_ACP));
+    auto config = EmbeddedSpeechConfig::FromPath(std::filesystem::path(argv[4]).string());
     std::string extra = WideStringToString(argv[6]);
     config->SetSpeechSynthesisOutputFormat(SpeechSynthesisOutputFormat::Riff24Khz16BitMonoPcm);
     config->SetProperty(PropertyId::SpeechServiceResponse_RequestSentenceBoundary, "true");

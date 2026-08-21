@@ -69,22 +69,24 @@ private:
 class VadWrapper
 {
 public:
-    explicit VadWrapper(int sample_rate, const std::string &silero_vad)
+    explicit VadWrapper(int sample_rate, const std::string &model_path, float threshold = 0.5f, float min_silence_duration = 0.5f, float min_speech_duration = 0.25f)
     {
         sherpa_onnx::cxx::VadModelConfig config;
-        config.silero_vad.model = silero_vad;
-        config.silero_vad.threshold = 0.3f;
-        config.silero_vad.min_silence_duration = 0.3f;
-        config.silero_vad.min_speech_duration = 0.1f;
+        config.silero_vad.model = model_path;
+        config.silero_vad.threshold = threshold;
+        config.silero_vad.min_silence_duration = min_silence_duration;
+        config.silero_vad.min_speech_duration = min_speech_duration;
+        config.silero_vad.max_speech_duration = 60.0f;
         config.sample_rate = sample_rate;
-        detector_ = std::make_unique<sherpa_onnx::cxx::VoiceActivityDetector>(sherpa_onnx::cxx::VoiceActivityDetector::Create(config, 30.0f));
+
+        detector_ = std::make_unique<sherpa_onnx::cxx::VoiceActivityDetector>(sherpa_onnx::cxx::VoiceActivityDetector::Create(config, 60.0f));
 
         resampler_ = std::make_unique<Resampler>(CAPTURE_RATE, sample_rate);
         ratio_ = static_cast<double>(CAPTURE_RATE) / static_cast<double>(sample_rate);
 
         // 检测器内部环形缓冲为 30s（按 16k 计），其 start 回溯不超过该容量；
         // 映射回采集帧后约 30s 的 44100 立体声。保留 60s 采集帧即可安全覆盖。
-        max_raw_frames_ = static_cast<size_t>(CAPTURE_RATE) * 60;
+        max_raw_frames_ = static_cast<size_t>(CAPTURE_RATE) * 120;
     }
 
     // 喂入采集到的立体声 int16（44100/16/2），返回本批次中新完成的所有语音段
@@ -178,7 +180,7 @@ static std::string BuildWav(const std::vector<int16_t> &pcm)
     const uint32_t data_size = static_cast<uint32_t>(pcm.size() * sizeof(int16_t));
 
     return wav::BuildHeader(static_cast<uint16_t>(1), channels, sample_rate, byte_rate,
-                             block_align, bits, data_size) +
+                            block_align, bits, data_size) +
            std::string(reinterpret_cast<const char *>(pcm.data()), data_size);
 }
 
@@ -199,7 +201,7 @@ struct AudioProcessor
     // ---- 构造 ----
     // targetPid 为采集时"排除"的进程（PROCESS_LOOPBACK_MODE_EXCLUDE_TARGET_PROCESS_TREE），
     // 即录制系统里除该进程树以外的音频（用于录制游戏语音、排除宿主进程的 TTS）。
-    explicit AudioProcessor(DWORD targetPid, const std::string &model_path)
+    explicit AudioProcessor(DWORD targetPid, const std::string &model_path, float threshold, float min_silence_duration, float min_speech_duration)
     {
         capture = std::make_unique<SupperRecord>(CAPTURE_RATE, 16, CAPTURE_CHANNELS);
         if (!capture)
@@ -217,7 +219,7 @@ struct AudioProcessor
 
         try
         {
-            vad = std::make_unique<VadWrapper>(SAMPLE_RATE, model_path);
+            vad = std::make_unique<VadWrapper>(SAMPLE_RATE, model_path, threshold, min_silence_duration, min_speech_duration);
         }
         catch (...)
         {
@@ -281,8 +283,7 @@ int vadwmain(int argc, wchar_t *wargv[])
 {
     SetDefaultDllDirectories(LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
     // wargv[5]: sherpa-onnx 运行时 DLL 目录（宿主 os.walk 查找，可能为空）
-    if (wargv[5] && *wargv[5])
-        AddDllDirectory(wargv[5]);
+    AddDllDirectory(wargv[5]);
 
     lunasp::PipeHost host(wargv[1], wargv[2], wargv[3], VAD_MEM_SIZE);
     if (!host.ok())
@@ -290,12 +291,12 @@ int vadwmain(int argc, wchar_t *wargv[])
 
     const DWORD targetPid = static_cast<DWORD>(_wtol(wargv[4]));
     // wargv[6]: silero_vad.onnx 模型路径（宿主 os.walk 查找，可能为空）
-    const std::string model_path = (wargv[6] && *wargv[6]) ? std::filesystem::path(wargv[6]).string() : std::string{};
+    const std::string model_path = std::filesystem::path(wargv[6]).string();
 
     std::unique_ptr<AudioProcessor> proc;
     try
     {
-        proc = std::make_unique<AudioProcessor>(targetPid, model_path);
+        proc = std::make_unique<AudioProcessor>(targetPid, model_path, std::stof(wargv[7]), std::stof(wargv[8]), std::stof(wargv[9]));
     }
     catch (...)
     {

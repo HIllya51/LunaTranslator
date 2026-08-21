@@ -78,12 +78,12 @@ class _Vad(_StatefulSubprocess):
                 break
         return dlldir, model
 
-    def __init__(self):
+    def __init__(self, threshold, min_silence_duration, min_speech_duration):
         dlldir, model = self._find_vad_assets()
         if not dlldir or not model:
             raise LookupError((dlldir, model))
         super().__init__(
-            "vad", gobject.runtime_bit_64, args=(str(os.getpid()), dlldir, model)
+            "vad", gobject.runtime_bit_64, args=(str(os.getpid()), dlldir, model, str(threshold), str(min_silence_duration), str(min_speech_duration))
         )
 
     def get(self):
@@ -344,8 +344,8 @@ class _Kingsoft(_StatefulSubprocess):
 
 class LunaSubProcess:
     @staticmethod
-    def vad():
-        return _Vad()
+    def vad(threshold, min_silence_duration, min_speech_duration):
+        return _Vad(threshold, min_silence_duration, min_speech_duration)
 
     @staticmethod
     def voiceroid2(dlldir, dllpath, voice, dialect):

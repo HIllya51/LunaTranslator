@@ -43,6 +43,7 @@ from gui.RichMessageBox import RichMessageBox
 from gui.usefulwidget import (
     closeashidewindow,
     auto_select_webview,
+    PopupWidget,
     WebviewWidget,
     MSHtmlWidget,
     EdgeHtmlWidget,
@@ -65,7 +66,7 @@ from gui.usefulwidget import (
     threeswitch,
     VisLFormLayout,
 )
-from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction
+from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction, LFormLayout
 from myutils.audioplayer import bass_code_cast
 from tts.basettsclass import TTSResult
 
@@ -446,7 +447,6 @@ class AnkiWindow(QWidget):
                         callback=functools.partial(selectdebugfile, "myanki_v3.py"),
                         icon="fa.edit",
                     ),
-                    0,
                 ]
             ),
         )
@@ -454,12 +454,64 @@ class AnkiWindow(QWidget):
             "截图后进行OCR",
             getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
         )
+
+        class zidongluyinw(PopupWidget):
+
+            def __init__(_self, parent):
+                super().__init__(parent)
+                form = LFormLayout(_self)
+                form.addRow(
+                    "Detection threshold",
+                    getspinbox(
+                        0,
+                        1,
+                        globalconfig,
+                        "vad_threshold",
+                        step=0.1,
+                        double=True,
+                        default=0.5,
+                        callback=self.refsearchw.safeloadrecorder,
+                    ),
+                )
+                form.addRow(
+                    "Minimum silence duration in seconds",
+                    getspinbox(
+                        0,
+                        2,
+                        globalconfig,
+                        "vad_min_silence_duration",
+                        step=0.1,
+                        double=True,
+                        default=0.5,
+                        callback=self.refsearchw.safeloadrecorder,
+                    ),
+                )
+                form.addRow(
+                    "Minimum speech duration in seconds",
+                    getspinbox(
+                        0,
+                        2,
+                        globalconfig,
+                        "vad_min_speech_duration",
+                        step=0.1,
+                        double=True,
+                        default=0.25,
+                        callback=self.refsearchw.safeloadrecorder,
+                    ),
+                )
+                _self.display()
+
         layout.addRow(
             "自动录音",
-            getsimpleswitch(
-                globalconfig["ankiconnect"],
-                "autorecord",
-                callback=self.refsearchw.safeloadrecorder,
+            getboxlayout(
+                [
+                    getsimpleswitch(
+                        globalconfig["ankiconnect"],
+                        "autorecord",
+                        callback=self.refsearchw.safeloadrecorder,
+                    ),
+                    getIconButton(callback=zidongluyinw),
+                ]
             ),
         )
 
@@ -1848,7 +1900,11 @@ class searchwordW(closeashidewindow):
         if not globalconfig["ankiconnect"]["autorecord"]:
             return
         try:
-            self.autorecorder = LunaSubProcess.vad()
+            self.autorecorder = LunaSubProcess.vad(
+                globalconfig.get("vad_threshold", 0.5),
+                globalconfig.get("vad_min_silence_duration", 0.5),
+                globalconfig.get("vad_min_speech_duration", 0.25),
+            )
         except LookupError as e:
             dlldir, model = e.args[0]
             links = []

@@ -52,7 +52,7 @@ int mssr(int argc, wchar_t *argv[])
     AddDllDirectory(syspath1);
     AddDllDirectory(syspath2);
     std::string extra = WideStringToString(argv[7]);
-    auto config = EmbeddedSpeechConfig::FromPath(WideStringToString(argv[4], CP_ACP));
+    auto config = EmbeddedSpeechConfig::FromPath(std::filesystem::path(argv[4]).string());
 
     for (auto &m : config->GetSpeechRecognitionModels())
     {
