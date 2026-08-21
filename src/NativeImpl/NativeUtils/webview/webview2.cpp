@@ -566,6 +566,10 @@ void WebView2::evaljs(const wchar_t *js, evaljs_callback_t cb)
     }
 }
 
+void WebView2::setfocus()
+{
+    m_webViewController->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+}
 void WebView2::navigate(LPCWSTR uri)
 {
     m_webView->Navigate(uri);

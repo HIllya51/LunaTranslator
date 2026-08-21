@@ -35,7 +35,7 @@ using ABI::Windows::Web::UI::Interop::IWebViewControlProcess;
 using ABI::Windows::Web::UI::Interop::IWebViewControlSite;
 using ABI::Windows::Web::UI::Interop::WebViewControl;
 using ABI::Windows::Web::UI::Interop::WebViewControlProcess;
-
+using ABI::Windows::Web::UI::Interop::WebViewControlMoveFocusReason;
 typedef void (*web_notify_callback_t)(LPCWSTR);
 
 class EdgeHtml;

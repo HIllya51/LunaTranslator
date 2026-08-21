@@ -568,6 +568,7 @@ class TextBrowser(WebviewWidget, somecommon):
         self.trans0checkercheck = None
         self.trans0checker = QTimer(self)
         self.trans0checker.timeout.connect(self.__checkmousestate)
+        self.webview.setfocus()
 
     def ___cleartext(self):
         self.parent().clear(False)

@@ -130,6 +130,10 @@ void MWebBrowserEx::resize(int w, int h)
     r.bottom = h;
     MoveWindow(r);
 }
+void MWebBrowserEx::setfocus()
+{
+    printf("not impl");
+}
 
 void MWebBrowserEx::evaljs(const wchar_t *js, evaljs_callback_t cb)
 {

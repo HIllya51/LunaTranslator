@@ -12,6 +12,10 @@ void EdgeHtml::put_ZoomFactor(double zoomFactor)
 {
     controlsite->put_Scale(zoomFactor);
 }
+void EdgeHtml::setfocus()
+{
+    controlsite->MoveFocus(WebViewControlMoveFocusReason::WebViewControlMoveFocusReason_Programmatic);
+}
 
 void EdgeHtml::resize(int w, int h)
 {

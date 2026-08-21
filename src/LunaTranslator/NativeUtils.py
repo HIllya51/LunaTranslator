@@ -389,11 +389,10 @@ clearEffect.argtypes = (HWND,)
 
 # Abastract Webview
 
-AbstractWebViewPTR = c_void_p
 webview_destroy = utilsdll.webview_destroy
-webview_destroy.argtypes = (AbstractWebViewPTR,)
+webview_destroy.argtypes = (c_void_p,)
 webview_resize = utilsdll.webview_resize
-webview_resize.argtypes = AbstractWebViewPTR, c_int, c_int
+webview_resize.argtypes = c_void_p, c_int, c_int
 
 webview_contextmenu_clicked_t = CFUNCTYPE(None)
 
@@ -466,31 +465,35 @@ class MenuItem:
 
 webview_menu_handler_t = CFUNCTYPE(c_void_p, LPCWSTR)
 webview_set_menu_handler = utilsdll.webview_set_menu_handler
-webview_set_menu_handler.argtypes = (AbstractWebViewPTR, webview_menu_handler_t)
+webview_set_menu_handler.argtypes = (c_void_p, webview_menu_handler_t)
 webview_set_menu_handler.restype = c_bool
 webview_allocate_buffer = utilsdll.webview_allocate_buffer
 webview_allocate_buffer.argtypes = (c_size_t,)
 webview_allocate_buffer.restype = c_void_p
+webview_setfocus = utilsdll.webview_setfocus
+webview_setfocus.argtypes=c_void_p,
 webview_evaljs = utilsdll.webview_evaljs
-webview_evaljs.argtypes = AbstractWebViewPTR, c_wchar_p, c_void_p
+webview_evaljs.argtypes = c_void_p, c_wchar_p, c_void_p
 webview_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)
 
 webview_bind = utilsdll.webview_bind
-webview_bind.argtypes = AbstractWebViewPTR, c_wchar_p, c_void_p
+webview_bind.argtypes = c_void_p, c_wchar_p, c_void_p
 webview_navigate = utilsdll.webview_navigate
-webview_navigate.argtypes = AbstractWebViewPTR, c_wchar_p
+webview_navigate.argtypes = c_void_p, c_wchar_p
 webview_sethtml = utilsdll.webview_sethtml
-webview_sethtml.argtypes = AbstractWebViewPTR, c_wchar_p
+webview_sethtml.argtypes = c_void_p, c_wchar_p
 webview_put_PreferredColorScheme = utilsdll.webview_put_PreferredColorScheme
-webview_put_PreferredColorScheme.argtypes = AbstractWebViewPTR, c_int
+webview_put_PreferredColorScheme.argtypes = c_void_p, c_int
 webview_put_ZoomFactor = utilsdll.webview_put_ZoomFactor
-webview_put_ZoomFactor.argtypes = AbstractWebViewPTR, c_double
+webview_put_ZoomFactor.argtypes = c_void_p, c_double
 webview_get_ZoomFactor = utilsdll.webview_get_ZoomFactor
-webview_get_ZoomFactor.argtypes = (AbstractWebViewPTR,)
+webview_get_ZoomFactor.argtypes = (c_void_p,)
 webview_get_ZoomFactor.restype = c_double
 
 
 class AbstractWebView:
+    def setfocus(self):
+        webview_setfocus(self.ptr)
 
     def bind(self, fname: str, fp):
         raise Exception()
@@ -560,7 +563,7 @@ class AbstractWebView:
 # WebView2
 webview2_create = utilsdll.webview2_create
 webview2_create.argtypes = (
-    POINTER(AbstractWebViewPTR),
+    POINTER(c_void_p),
     HWND,
     c_bool,
     c_bool,
@@ -574,7 +577,7 @@ webview2_FilesDropped_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_titlechange_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_IconChanged_callback_t = CFUNCTYPE(None, POINTER(c_char), c_size_t)
 webview2_set_callbacks.argtypes = (
-    AbstractWebViewPTR,
+    c_void_p,
     webview2_zoomchange_callback_t,
     webview2_navigating_callback_t,
     webview2_webmessage_callback_t,
@@ -774,11 +777,11 @@ class WebView2(AbstractWebView):
 # EdgeHtml
 
 edgehtml_new = utilsdll.edgehtml_new
-edgehtml_new.argtypes = (POINTER(AbstractWebViewPTR), HWND, c_bool)
+edgehtml_new.argtypes = (POINTER(c_void_p), HWND, c_bool)
 edgehtml_new.restype = HRESULT
 edgehtml_set_notify_callback = utilsdll.edgehtml_set_notify_callback
 web_notify_callback_t = CFUNCTYPE(None, LPCWSTR)
-edgehtml_set_notify_callback.argtypes = AbstractWebViewPTR, web_notify_callback_t
+edgehtml_set_notify_callback.argtypes = c_void_p, web_notify_callback_t
 
 
 class EdgeHtml(AbstractWebView):
@@ -809,27 +812,26 @@ class EdgeHtml(AbstractWebView):
 
 # EdgeHtml
 # MSHTML
-AbstractWebViewPTR
 html_version = utilsdll.html_version
 html_version.restype = DWORD
 html_new = utilsdll.html_new
-html_new.argtypes = (HWND, POINTER(AbstractWebViewPTR))
+html_new.argtypes = (HWND, POINTER(c_void_p))
 html_get_current_url = utilsdll.html_get_current_url
-html_get_current_url.argtypes = (AbstractWebViewPTR, c_void_p)
+html_get_current_url.argtypes = (c_void_p, c_void_p)
 html_get_select_text = utilsdll.html_get_select_text
 html_get_select_text_cb = CFUNCTYPE(None, c_wchar_p)
-html_get_select_text.argtypes = (AbstractWebViewPTR, c_void_p)
+html_get_select_text.argtypes = (c_void_p, c_void_p)
 html_get_html = utilsdll.html_get_html
-html_get_html.argtypes = (AbstractWebViewPTR, c_void_p, c_wchar_p)
+html_get_html.argtypes = (c_void_p, c_void_p, c_wchar_p)
 html_bind_function_FT = CFUNCTYPE(None, POINTER(c_wchar_p), c_int)
 html_check_ctrlc = utilsdll.html_check_ctrlc
-html_check_ctrlc.argtypes = (AbstractWebViewPTR,)
+html_check_ctrlc.argtypes = (c_void_p,)
 html_check_ctrlc.restype = c_bool
 
 
 class MSHTML(AbstractWebView):
     @property
-    def ptr(self) -> AbstractWebViewPTR:
+    def ptr(self) -> c_void_p:
         return self.browser
 
     @ptr.setter

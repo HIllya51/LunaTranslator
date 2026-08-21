@@ -24,6 +24,7 @@ typedef std::function<std::vector<MenuItem>(LPCWSTR)> menu_handler_t;
     virtual void evaljs(const wchar_t *js, evaljs_callback_t cb = nullptr)##__; \
     virtual void navigate(LPCWSTR uri)##__;                                     \
     virtual void sethtml(LPCWSTR html)##__;                                     \
+    virtual void setfocus()##__;                                                \
     virtual void bind(LPCWSTR funcname, void *)##__;
 
 #define VIRTUAL_FUNCTIONS_BASE VIRTUAL_FUNCTIONS_PURE(= 0)

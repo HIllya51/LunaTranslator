@@ -7,6 +7,12 @@ DECLARE_API void webview_destroy(AbstractWebView *web)
         return;
     delete web;
 }
+DECLARE_API void webview_setfocus(AbstractWebView *web)
+{
+    if (!web)
+        return;
+    web->setfocus();
+}
 DECLARE_API void webview_resize(AbstractWebView *web, int w, int h)
 {
     if (!web)
