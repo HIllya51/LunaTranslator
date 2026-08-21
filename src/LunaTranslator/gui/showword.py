@@ -447,6 +447,7 @@ class AnkiWindow(QWidget):
                         callback=functools.partial(selectdebugfile, "myanki_v3.py"),
                         icon="fa.edit",
                     ),
+                    0,
                 ]
             ),
         )
@@ -510,7 +511,8 @@ class AnkiWindow(QWidget):
                         "autorecord",
                         callback=self.refsearchw.safeloadrecorder,
                     ),
-                    getIconButton(callback=zidongluyinw),
+                    getIconButton(callback=functools.partial(zidongluyinw, self)),
+                    0,
                 ]
             ),
         )
