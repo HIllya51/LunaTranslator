@@ -114,25 +114,26 @@ def dedup_increasing_string(line: str) -> str:
 def dedup_multi_increasing_string(line: str) -> str:
     """AABABCABCDXXYXYZ -> ABCDXYZ"""
 
-    result = ""
-    idx = 0
-    while idx < len(line):
+    result = []
+    while len(line):
         # try to find the longest parttern unit
-        for length in range(isqrt((len(line) - idx) * 2), 0, -1):
-            sect = line[idx : idx + length * (length + 1) // 2]
+        for length in range(isqrt(len(line) * 2), 0, -1):
+            sect = line[-length * (length + 1) // 2 :]
             unit = sect[-length:]
             # match parttern
             if "".join(unit[: k - length] for k in range(length)) == sect[:-length]:
-                result += unit
-                idx += length * (length + 1) // 2
+                result.append(unit)
+                line = line[: -length * (length + 1) // 2]
                 break
         else:   # no parttern, copy one char
-            result += line[idx]
-            idx += 1
+            result.append(line[-1])
+            line = line[:-1]
+    result = "".join(reversed(result))
     return result
 
 
 def remove_braces(line: str) -> str:
+    line = re.sub(r"\{(\w+)(.*?)\}(.*?)\{\/\1\}", r"\3", line)
     line = re.sub(r"\{([^}]*?)[:/](.*?)\}", r"\1", line)
     line = re.sub(r"\{.*?\}", r"", line)
     return line
@@ -213,10 +214,10 @@ def _remove_not_in_ja_bracket(line: str) -> str:
 def slice_lines(line: str, args: dict) -> str:
     max_lines = args["maxzishu"]
     splits = line.splitlines()
-    if len(splits) > max_lines:
+    if len(splits) > abs(max_lines):
         reverse = args.get("cut_reverse", True)
         splits = splits[-max_lines:] if reverse else splits[:max_lines]
-        return "\n".join(splits)
+        return "\n".join(splits)    # ambiguous result when max_lines==0
     return line
 
 

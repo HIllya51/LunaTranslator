@@ -65,8 +65,8 @@
             "maxzishu": {
                 "name": "截取行数",
                 "type": "intspin",
-                "min": 1,
-                "max": 10000
+                "min": -99999999,
+                "max": 99999999
             },
             "cut_reverse": {
                 "name": "截取末尾",
