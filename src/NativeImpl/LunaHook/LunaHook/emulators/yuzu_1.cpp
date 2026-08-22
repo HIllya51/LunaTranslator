@@ -2654,11 +2654,19 @@ namespace
         CharFilter(buffer, L'\n');
         StringCharReplacer(buffer, TEXTANDLEN(L"<sprite=\"Emoji\" name=\"heart\">"), L'♥');
     }
+    template <bool engver = false>
     void F0100E9801CAC2000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        if (all_ascii(s) && (s != L"@PlayerName@"))
-            return buffer->clear();
+        if (!engver)
+        {
+            if (all_ascii(s) && (s != L"@PlayerName@"))
+                return buffer->clear();
+        }
+        else
+        {
+            strReplace(s, L"\n", L" ");
+        }
         if (re::match(s, LR"(\w+/.*)"))
             return buffer->clear();
         s = re::sub(s, LR"(<color=#[\w\d]{6}>)");
@@ -2962,6 +2970,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // The House in Fata Morgana - Dreams of the Revenants Edition
+    {0x80198D40, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100C9001E10C000, 0x010016101100A000ull, "1.0.0"}},
     // ハミダシクリエイティブ
     {0x8003F6D4, {FULL_STRING | CODEC_UTF8, 1, 0, 0, 0, 0x01006FF014152000ull, "1.0.0"}},
     // 君に惑い、君に溺れる。
@@ -3178,8 +3188,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x83470EA0, {CODEC_UTF16, 1, 0x14, 0, F010042300C4F6000_1, 0x01001A4021670000ull, "1.0.0"}},
     {0x83470ED0, {CODEC_UTF16, 1, 0x14, 0, F010042300C4F6000_1, 0x01001A4021670000ull, "1.0.2"}},
     // OVER REQUIEMZ
-    {0x8208F5C0, {CODEC_UTF16, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.0"}},
-    {0x8299E69C, {CODEC_UTF16, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.1"}},
+    {0x82341D2C, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100E9801CAC2000<true>, 0x0100859027B4C000ull, "1.0.0"}},
+    // OVER REQUIEMZ
+    {0x8208F5C0, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.0"}},
+    {0x8299E69C, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.1"}},
     {0x8299F9B0, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F0100E9801CAC2000, 0x0100E9801CAC2000ull, "1.0.1"}},
     // Memories Off
     {0x8003eeac, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100978013276000ull, "1.0.0"}},
@@ -4196,8 +4208,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x81729520, {CODEC_UTF16, 1, 0x14, 0, F0100DEF01D0C6000_2, 0x0100DEF01D0C6000ull, "1.0.0"}},
     {0x83375938, {CODEC_UTF16, 0, 0, T0100DEF01D0C6000_2, 0, 0x0100DEF01D0C6000ull, "1.0.0"}},
     // Dance with Devils
-    {0x81616034, {CODEC_UTF16, 0, 0x14, 0, F01004E5017C54000, 0x01004E5017C54000ull, "1.0.0"}},
-    {0x8185a800, {CODEC_UTF16, 0, 0x14, 0, F01004E5017C54000, 0x01004E5017C54000ull, "1.0.0"}},
+    {0x81616034, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F01004E5017C54000, 0x01004E5017C54000ull, "1.0"}},
+    {0x8185a800, {CODEC_UTF16 | FULL_STRING, 0, 0x14, 0, F01004E5017C54000, 0x01004E5017C54000ull, "1.0"}},
     // My9Swallows TOPSTARS LEAGUE
     {0x818554ac, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.0"}},
     {0x817b76d4, {CODEC_UTF16, 0, 0x14, 0, F01003BB01DF54000, 0x01003BB01DF54000ull, "1.0.0"}},

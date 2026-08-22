@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 010016101100A000 | The House in Fata Morgana - Dreams of the Revenants Edition |
 |  | 01006FF014152000 | ハミダシクリエイティブ |
 |  | 010079D02431E000 | 君に惑い、君に溺れる。 |
 |  | 01001D402587E000 | 千銃士:Rhodoknight |
@@ -81,6 +82,7 @@
 |  | 0100C30020F70000 | BYAKKO ～四神部隊炎恋記～ |
 |  | 01007250089F8000 | LoveR Kiss |
 |  | 01001A4021670000 | あやかしごはん ～おおもりっ！～ for S |
+|  | 0100859027B4C000 | OVER REQUIEMZ |
 |  | 0100E9801CAC2000 | OVER REQUIEMZ |
 |  | 0100978013276000 | Memories Off |
 |  | 0100B4A01326E000 | Memories Off ～それから～ |
