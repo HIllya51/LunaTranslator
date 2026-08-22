@@ -65,5 +65,6 @@ std::vector<ENGINE *> check_engines()
         new WillPlus,
         new THLabyrinth3,
         new CAPCOM,
+        new _5pb_2,
     };
 }
