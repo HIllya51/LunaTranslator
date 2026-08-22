@@ -604,7 +604,7 @@ def case_insensitive_replace(text: str, old: str, new: str) -> str:
 @tryprint
 def parsemayberegexreplace(lst: "list[dict]", line: str) -> str:
     if not line:
-        line = ""
+        return ""
     for fil in lst:
         key = fil.get("key", "")
         if not key:
@@ -1440,17 +1440,14 @@ def inrange(n, s, e):
 
 
 def inranges(n, *argc):
-    for s, e in argc:
-        if inrange(n, s, e):
-            return True
-    return False
+    return any(inrange(n, s, e) for s,e in argc)
 
 
 def cinranges(n, *argc):
     return inranges(ord(n), *argc)
 
 
-def is_ascii_symbo(c: str):
+def is_ascii_symbol(c: str):
     return cinranges(c, (0x21, 0x2F), (0x3A, 0x40), (0x5B, 0x60), (0x7B, 0x7E))
 
 
