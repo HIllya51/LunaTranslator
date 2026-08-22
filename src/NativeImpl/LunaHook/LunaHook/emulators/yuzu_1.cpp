@@ -2962,6 +2962,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ハミダシクリエイティブ
+    {0x8003F6D4, {FULL_STRING | CODEC_UTF8, 1, 0, 0, 0, 0x01006FF014152000ull, "1.0.0"}},
     // 君に惑い、君に溺れる。
     {0x8011C76C, {FULL_STRING | CODEC_UTF8, 1, 0, 0, F0100BDD01AAE4000, 0x010079D02431E000ull, "1.0.0"}},
     // 千銃士:Rhodoknight
