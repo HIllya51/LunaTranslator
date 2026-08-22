@@ -1,8 +1,8 @@
 import re, inspect, unicodedata
 from traceback import print_exc
 from collections import Counter
-from math import isqrt
 import gobject
+import math
 from myutils.utils import (
     checkmd5reloadmodule,
     LRUCache,
@@ -15,6 +15,10 @@ from myutils.utils import (
 from myutils.config import postprocessconfig, globalconfig, savehook_new_data
 
 lrucache = LRUCache(0)
+
+
+def isqrt(n):
+    return int(math.sqrt(n))
 
 
 def dedup_by_cache(line: str, args: dict) -> str:
@@ -31,7 +35,7 @@ def dedup_char(line: str, args: dict) -> str:
 
     if rept_len == 1:
         # record length of each repeating unit
-        hist = Counter({0:-1})  # placeholder
+        hist = Counter({0: -1})  # placeholder
         step, char = 0, 0
         for c in line:
             if c != char:  # found one repeating unit
@@ -43,7 +47,7 @@ def dedup_char(line: str, args: dict) -> str:
 
         # length of the most common repeating unit
         ncnt, mcnt = hist.pop(1, 0), max(hist.values())
-        rept_len = min(k for k,v in hist.items() if v == mcnt) if (ncnt <= mcnt) else 1
+        rept_len = min(k for k, v in hist.items() if v == mcnt) if (ncnt <= mcnt) else 1
 
     if fit_rept:
         result = ""
@@ -83,11 +87,11 @@ def dedup_multi_string(line: str) -> str:
             repts = 1
             while line[idx + repts * length : idx + (repts + 1) * length] == unit:
                 repts += 1
-            if repts > 1:   # found repetition
+            if repts > 1:  # found repetition
                 result += unit
                 idx += repts * length
                 break
-        else:   # no repetition, copy one char
+        else:  # no repetition, copy one char
             result += line[idx]
             idx += 1
     return result
@@ -125,7 +129,7 @@ def dedup_multi_increasing_string(line: str) -> str:
                 result.append(unit)
                 line = line[: -length * (length + 1) // 2]
                 break
-        else:   # no parttern, copy one char
+        else:  # no parttern, copy one char
             result.append(line[-1])
             line = line[:-1]
     result = "".join(reversed(result))
@@ -217,7 +221,7 @@ def slice_lines(line: str, args: dict) -> str:
     if len(splits) > abs(max_lines):
         reverse = args.get("cut_reverse", True)
         splits = splits[-max_lines:] if reverse else splits[:max_lines]
-        return "\n".join(splits)    # ambiguous result when max_lines==0
+        return "\n".join(splits)  # ambiguous result when max_lines==0
     return line
 
 
@@ -260,15 +264,16 @@ processfunctions = {
 }
 
 globalconfig["postprocess_rank"] = [
-    key for key in globalconfig["postprocess_rank"]
-    if key in processfunctions.keys()
+    key for key in globalconfig["postprocess_rank"] if key in processfunctions.keys()
 ]
 globalconfig["postprocess_rank"].extend(
     processfunctions.keys() - set(globalconfig["postprocess_rank"])
 )
 
 
-def POSTSOLVE(line: str, isEx=False, isFromHook=False, useAll=False, skippreprocess=False) -> str:
+def POSTSOLVE(
+    line: str, isEx=False, isFromHook=False, useAll=False, skippreprocess=False
+) -> str:
     if skippreprocess:
         return line
     if not line:
