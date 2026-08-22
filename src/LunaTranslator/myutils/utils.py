@@ -881,6 +881,18 @@ def ffmpeg_record(rect: QRect = None, split=False):
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
         raise Exception("can't find ffmpeg")
+    if "recordqhint1" not in globalconfig:
+        from gui.RichMessageBox import RichMessageBox
+
+        gobject.base.safeinvokefunction.emit(
+            functools.partial(
+                RichMessageBox,
+                gobject.base.translation_ui,
+                "",
+                "Press Q to stop record",
+            )
+        )
+        globalconfig["recordqhint1"] = True
     file = gobject.gettempdir(str(time.time()) + (".avif" if split else ".mp4"))
     if rect:
         arg = "-offset_x {} -offset_y {} -video_size {}x{} -i desktop ".format(
@@ -901,6 +913,7 @@ def ffmpeg_record(rect: QRect = None, split=False):
         stdin=subprocess.PIPE,
         creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
     )
+    h = NativeUtils.AutoKillProcess(proc.pid)
     recorders = loopbackrecorder()
     while True:
         keystate = windows.GetKeyState(windows.VK_Q)
