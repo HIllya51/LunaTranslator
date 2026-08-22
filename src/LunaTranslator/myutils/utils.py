@@ -877,20 +877,27 @@ class loopbackrecorder:
         return file
 
 
-@threader
-def ffmpeg_record(callback, rect: QRect = None):
-    file = gobject.gettempdir(str(time.time()) + ".mp4")
+def ffmpeg_record(rect: QRect = None, split=False):
+    ffmpeg = shutil.which("ffmpeg")
+    if not ffmpeg:
+        raise Exception("can't find ffmpeg")
+    file = gobject.gettempdir(str(time.time()) + (".avif" if split else ".mp4"))
     if rect:
         arg = "-offset_x {} -offset_y {} -video_size {}x{} -i desktop ".format(
             rect.x(), rect.y(), rect.width(), rect.height()
         )
     else:
-        arg = '-i title="{}"'.format(
-            subprocess.list2cmdline([windows.GetWindowText(gobject.base.hwnd)])
-        )
-    ffmpeg = shutil.which("ffmpeg")
+        title = windows.GetWindowText(gobject.base.hwnd)
+        if not title:
+            raise Exception("window title is none")
+        arg = '-i title="{}"'.format(subprocess.list2cmdline([title]))
+
+    codecarg = "-c:v libsvtav1" if split else ""
+
     proc = subprocess.Popen(
-        r'''"{}" -f gdigrab -framerate 30 {} "{}"'''.format(ffmpeg, arg, file),
+        r'''"{}" -f gdigrab -framerate 30 {} {} "{}"'''.format(
+            ffmpeg, arg, codecarg, file
+        ),
         stdin=subprocess.PIPE,
         creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
     )
@@ -903,16 +910,18 @@ def ffmpeg_record(callback, rect: QRect = None):
     proc.send_signal(signal.CTRL_BREAK_EVENT)
     proc.wait()
     mp3 = recorders.stop_save()
-
-    tmsp = gobject.gettempdir(
-        get_time_stamp(forfilename=True).replace(" ", "_") + ".mp4"
-    )
-    subprocess.run(
-        r'''"{}" -i {} -i {} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 "{}"'''.format(
-            ffmpeg, file, mp3, tmsp
+    if split:
+        return file, mp3
+    else:
+        tmsp = gobject.gettempdir(
+            get_time_stamp(forfilename=True).replace(" ", "_") + ".mp4"
         )
-    )
-    callback(tmsp)
+        subprocess.run(
+            r'''"{}" -i {} -i {} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 "{}"'''.format(
+                ffmpeg, file, mp3, tmsp
+            )
+        )
+        return tmsp
 
 
 def copytree(src, dst, copy_function=shutil.copy2):

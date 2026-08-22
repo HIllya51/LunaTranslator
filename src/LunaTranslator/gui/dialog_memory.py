@@ -19,6 +19,7 @@ from myutils.hwnd import grabwindow, getExeIcon
 from gui.usefulwidget import (
     saveposwindow,
     makesubtab_lazy,
+    RichMessageBox,
     request_delete_ok,
     MyInputDialog,
     IconButton,
@@ -442,11 +443,11 @@ class dialog_memory(saveposwindow):
         if action == crop2:
 
             def ocroncefunction(rect, _):
-                ffmpeg_record(self.selectvedio, rect)
+                self.selectvedio(rect)
 
             rangeselct_function(ocroncefunction, self.window())
         elif action == crophwnd:
-            ffmpeg_record(self.selectvedio)
+            self.selectvedio()
         elif action == select:
             f = QFileDialog.getOpenFileName(filter="*.mp4 *.mkv *.mov *.flv;;*")
             res = f[0]
@@ -454,15 +455,26 @@ class dialog_memory(saveposwindow):
                 return
             self.selectvedio(res, move=False)
 
-    def selectvedio(self, path: "str", move=True):
+    @threader
+    def selectvedio(self, path: "str|Exception" = None, move=True):
+        if not isinstance(path, str):
+            try:
+                path = ffmpeg_record(path)
+            except Exception as e:
+                gobject.base.safeinvokefunction.emit(
+                    functools.partial(RichMessageBox, self, _TR("错误"), str(e))
+                )
+                return
         tgt = os.path.join(self.rwpath, os.path.basename(path))
         if move:
             shutil.move(path, tgt)
         else:
             shutil.copy(path, tgt)
-        self.editor.insertPlainText(
-            """\n<video src="{}" controls="controls" style="max-width: 100%; height: auto;"></video>\n""".format(
-                quote(os.path.basename(path))
+        gobject.base.safeinvokefunction.emit(
+            lambda: self.editor.insertPlainText(
+                """\n<video src="{}" controls="controls" style="max-width: 100%; height: auto;"></video>\n""".format(
+                    quote(os.path.basename(path))
+                )
             )
         )
 

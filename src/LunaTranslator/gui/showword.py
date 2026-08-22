@@ -633,38 +633,31 @@ class AnkiWindow(QWidget):
             self.recorders[ii] = None
             self.settextsignal.emit(target, file)
 
-    def btn1context(self):
-        menu = QMenu(self)
-        crop2 = LAction("隐藏并截图", menu)
-        crophwnd = LAction("区域录制", menu)
-        menu.addAction(crop2)
-        menu.addAction(crophwnd)
-        action = menu.exec(QCursor.pos())
-        if action == crop2:
-            self.crophide()
-        elif action == crophwnd:
-
-            def ocroncefunction(rect, _):
-                ffmpeg_record(lambda x: self.settextsignal.emit(self.editpath, x), rect)
-
-            rangeselct_function(ocroncefunction, self.window())
-
-    def btn2context(self):
-        menu = QMenu(self)
-        crop2 = LAction("窗口截图", menu)
-        crophwnd = LAction("窗口录制", menu)
-        menu.addAction(crop2)
-        menu.addAction(crophwnd)
-        action = menu.exec(QCursor.pos())
-        if action == crop2:
-            grabwindow(
-                callback=functools.partial(
-                    sc_callback,
-                    functools.partial(self.settextsignal.emit, self.editpath),
-                )
+    @threader
+    def recordvediocallback(self, rect=None, *_):
+        try:
+            avif, mp3 = ffmpeg_record(rect, split=True)
+        except Exception as e:
+            gobject.base.safeinvokefunction.emit(
+                functools.partial(RichMessageBox, self, _TR("错误"), str(e))
             )
+            return
+        self.settextsignal.emit(self.editpath, avif)
+        self.settextsignal.emit(self.audiopath_sentence, mp3)
+
+    def Videoselect(self):
+        menu = QMenu(self)
+        crop2 = LAction("区域录制", menu)
+        crophwnd = LAction("窗口录制", menu)
+        crop2.setIcon(qtawesome.icon("fa.crop"))
+        crophwnd.setIcon(qtawesome.icon("fa.camera"))
+        menu.addAction(crop2)
+        menu.addAction(crophwnd)
+        action = menu.exec(QCursor.pos())
+        if action == crop2:
+            rangeselct_function(self.recordvediocallback, self.window())
         elif action == crophwnd:
-            ffmpeg_record(lambda x: self.settextsignal.emit(self.editpath, x))
+            self.recordvediocallback()
 
     def createaddtab(self):
         self.recorders: "dict[int, loopbackrecorder]" = {}
@@ -680,7 +673,6 @@ class AnkiWindow(QWidget):
             icon="fa.crop",
             callback=self.crophide,
             tips="隐藏并截图",
-            callback2=self.btn1context,
         )
         grabwindowbtn = getIconButton(
             icon="fa.camera",
@@ -690,8 +682,12 @@ class AnkiWindow(QWidget):
                     functools.partial(self.settextsignal.emit, self.editpath),
                 )
             ),
-            callback2=self.btn2context,
             tips="窗口截图",
+        )
+        insertvedio = getIconButton(
+            icon="fa.film",
+            callback=self.Videoselect,
+            tips="插入视频",
         )
 
         def createtbn(target: QLineEdit):
@@ -867,6 +863,7 @@ class AnkiWindow(QWidget):
                                     self.editpath,
                                     cropbutton2,
                                     grabwindowbtn,
+                                    insertvedio,
                                     folder_open3,
                                     functools.partial(createtbn, self.editpath),
                                 ]
@@ -896,7 +893,7 @@ class AnkiWindow(QWidget):
 
     def selecfile2(self, item: QLineEdit):
         f = QFileDialog.getOpenFileName(
-            filter=getimagefilefilter() + " *.avif *.gif *.mp4 *.mkv *.mov *.flv;;*"
+            filter=getimagefilefilter() + " *.avif *.gif;;*"
         )
         res = f[0]
         if res != "":
@@ -1070,21 +1067,18 @@ class AnkiWindow(QWidget):
 
     def loadankilikemediafield(self):
         medias = defaultdict(list)
-        for k, _ in [
-            ("audio_for_word", self.audiopath.text()),
-            ("audio_for_example_sentence", self.audiopath_sentence.text()),
-            ("screenshot", self.editpath.text()),
-        ]:
+        for i, (k, _) in enumerate(
+            [
+                ("audio_for_word", self.audiopath.text()),
+                ("audio_for_example_sentence", self.audiopath_sentence.text()),
+                ("screenshot", self.editpath.text()),
+            ]
+        ):
             if len(_):
-                ext = os.path.splitext(_)[1]
-                if k == 2:
+                if i in (0, 1):
                     kk = "audio"
                 else:
-                    kk = (
-                        "video"
-                        if ext.lower() in (".mp4", ".mkv", ".mov", ".flv")
-                        else "picture"
-                    )
+                    kk = "picture"
 
                 medias[kk].append(
                     {
