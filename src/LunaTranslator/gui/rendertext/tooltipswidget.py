@@ -1,11 +1,10 @@
 from qtsymbols import *
-from myutils.config import globalconfig
 from gui.rendertext.texttype import dataget, TextType
 import gobject
 from traceback import print_exc
 from sometypes import WordSegResult
 import windows
-from myutils.config import globalconfig
+from myutils.config import globalconfig, ui_settings
 from gui.usefulwidget import ColorButton, getspinbox, limitpos
 from myutils.wrapper import Singleton, threader
 from gui.dynalang import LDialog, LFormLayout
@@ -18,10 +17,10 @@ class tooltipssetting(LDialog):
     def __cb(self, *_):
         tooltipswidget.resetstyle()
         gobject.base.translation_ui.translate_text.settooltipsstyle(
-            globalconfig["word_hover_bg_color"],
-            globalconfig["word_hover_text_color"],
-            globalconfig["word_hover_border"],
-            globalconfig["word_hover_border_R"],
+            ui_settings.get("word_hover_bg_color", "#333"),
+            ui_settings.get("word_hover_text_color", "white"),
+            ui_settings.get("word_hover_border", 8),
+            ui_settings.get("word_hover_border_R", 4),
         )
 
     def __init__(self, parent) -> None:
@@ -29,7 +28,7 @@ class tooltipssetting(LDialog):
         self.setWindowTitle("设置")
         formLayout = LFormLayout(self)
 
-        spin = getspinbox(0, 50, globalconfig, "word_hover_border", callback=self.__cb)
+        spin = getspinbox(0, 50, ui_settings, "word_hover_border", callback=self.__cb, default=8)
         formLayout.addRow("边距", spin)
 
         spin1, lay = createsomecontrols(
@@ -42,25 +41,29 @@ class tooltipssetting(LDialog):
             "word_hover_DWM_1",
             (globalconfig["rendertext_using"] != "webview")
             or (not globalconfig.get("word_hover_action_usewb2", False)),
+            kRdf=4,
+            dic=ui_settings,
         )
         formLayout.addRow("圆角", spin1)
         if lay:
             formLayout.addRow("窗口特效", lay)
         color = ColorButton(
             self,
-            globalconfig,
+            ui_settings,
             "word_hover_bg_color",
             alpha=True,
             tips="背景颜色",
             callback=self.__cb,
+            default="#333",
         )
         formLayout.addRow("背景颜色", color)
         color = ColorButton(
             self,
-            globalconfig,
+            ui_settings,
             "word_hover_text_color",
             tips="文字颜色",
             callback=self.__cb,
+            default="white",
         )
         formLayout.addRow("文字颜色", color)
         self.show()
@@ -104,17 +107,17 @@ class tooltipswidget(QMainWindow, dataget):
             tooltipswidget.tooltipwindow._seteffect()
 
     def _seteffect(self):
-        if globalconfig.get("word_hover_DWM", 0) == 0:
+        if ui_settings.get("word_hover_DWM", 0) == 0:
             NativeUtils.clearEffect(int(self.winId()))
-        elif globalconfig.get("word_hover_DWM", 0) == 1:
+        elif ui_settings.get("word_hover_DWM", 0) == 1:
             NativeUtils.setAcrylicEffect(
                 int(self.winId()),
-                globalconfig.get("word_hover_DWM_1", True),
+                ui_settings.get("word_hover_DWM_1", True),
                 0x00FFFFFF,
             )
-        elif globalconfig.get("word_hover_DWM", 0) == 2:
+        elif ui_settings.get("word_hover_DWM", 0) == 2:
             NativeUtils.setAeroEffect(
-                int(self.winId()), globalconfig.get("word_hover_DWM_1", True)
+                int(self.winId()), ui_settings.get("word_hover_DWM_1", True)
             )
 
     tooltipwindow: "tooltipswidget" = None
@@ -133,11 +136,11 @@ class tooltipswidget(QMainWindow, dataget):
 
     def _setstyle(self):
         NativeUtils.SetCornerNotRound(
-            int(self.winId()), False, globalconfig.get("word_hover_border_R_SYS", False)
+            int(self.winId()), False, ui_settings.get("word_hover_border_R_SYS", False)
         )
 
-        radiu_valid = globalconfig.get("word_hover_DWM", 0) == 0 and not (
-            gobject.sys_ge_win_11 and globalconfig.get("word_hover_border_R_SYS", False)
+        radiu_valid = ui_settings.get("word_hover_DWM", 0) == 0 and not (
+            gobject.sys_ge_win_11 and ui_settings.get("word_hover_border_R_SYS", False)
         )
         self.qlabel.setStyleSheet(
             r""" 
@@ -146,10 +149,10 @@ class tooltipswidget(QMainWindow, dataget):
         padding: {}px;   
         border-radius: {}px; 
  """.format(
-                globalconfig["word_hover_bg_color"],
-                globalconfig["word_hover_text_color"],
-                globalconfig["word_hover_border"],
-                globalconfig["word_hover_border_R"] * radiu_valid,
+                ui_settings.get("word_hover_bg_color", "#333"),
+                ui_settings.get("word_hover_text_color", "white"),
+                ui_settings.get("word_hover_border", 8),
+                ui_settings.get("word_hover_border_R", 4) * radiu_valid,
             )
         )
 

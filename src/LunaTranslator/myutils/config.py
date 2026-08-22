@@ -431,6 +431,24 @@ def migrate_ui_settings():
         "text_area_background_r",
         "text_area_background_w",
         "text_area_background_h",
+
+        "WordViewTooltipColor",
+        "WordViewTooltipContentColor",
+        "WordViewTooltipHideFocus",
+        "WordViewTooltipHideLeave",
+        "WordViewTooltipRadius",
+        "WordViewTooltipRadiusSys",
+        "WordViewTooltipBorder",
+        "WordViewTooltipDWM",
+        "WordViewTooltipDWM_1",
+        "word_hover_bg_color",
+        "word_hover_text_color",
+        "word_hover_border_R",
+        "word_hover_border_R_SYS",
+        "word_hover_border",
+        "word_hover_DWM",
+        "word_hover_DWM_1",
+
     ):
         if k in globalconfig:
             ui_settings[k] = globalconfig.pop(k)

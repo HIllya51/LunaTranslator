@@ -1734,16 +1734,6 @@
         }
     },
     "realtime_edit_target": "realtime_edit",
-    "WordViewTooltipColor": "#c0ffc0ff",
-    "WordViewTooltipContentColor": "#c0ffffff",
-    "WordViewTooltipHideFocus": true,
-    "WordViewTooltipHideLeave": false,
-    "WordViewTooltipRadius": 4,
-    "WordViewTooltipBorder": 5,
-    "word_hover_border_R": 4,
-    "word_hover_border": 8,
-    "word_hover_bg_color": "#333",
-    "word_hover_text_color": "white",
     "minlength": 0,
     "maxlength": 10000,
     "ocr_trigger_events": [

@@ -54,10 +54,10 @@ class somecommon(dataget):
         self.setdisplayrank(globalconfig.get("displayrank", 0))
         self.sethovercolor(globalconfig.get("hovercolor", "#80000000"))
         self.settooltipsstyle(
-            globalconfig["word_hover_bg_color"],
-            globalconfig["word_hover_text_color"],
-            globalconfig["word_hover_border"],
-            globalconfig["word_hover_border_R"],
+            ui_settings.get("word_hover_bg_color", "#333"),
+            ui_settings.get("word_hover_text_color", "white"),
+            ui_settings.get("word_hover_border", 8),
+            ui_settings.get("word_hover_border_R", 4),
         )
         self.verticalhorizontal(globalconfig.get("verticalhorizontal", False))
         self.setwordhoveruse(globalconfig.get("word_hover_action_usewb2", False))

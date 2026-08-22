@@ -224,6 +224,7 @@ def __rs():
         "WindowEffect_shadow",
         True,
         dic=ui_settings,
+        kRdf=0,
     )
     return getboxlayout(
         [
