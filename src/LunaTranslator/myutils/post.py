@@ -102,7 +102,8 @@ def dedup_decreasing_string(line: str) -> str:
 
     # math trick with a strong assumption
     length = isqrt(len(line) * 2)
-    result = line[:length] if (length * (length + 1) == len(line) * 2) else line
+    sect = "".join(line[k:length] for k in range(length))
+    result = line[:length] if (sect == line) else line
     return result
 
 
@@ -111,7 +112,8 @@ def dedup_increasing_string(line: str) -> str:
 
     # math trick with a strong assumption
     length = isqrt(len(line) * 2)
-    result = line[-length:] if (length * (length + 1) == len(line) * 2) else line
+    sect = "".join(line[-length : k - length] for k in range(length))
+    result = line[-length:] if (sect == line[:-length]) else line
     return result
 
 
