@@ -291,32 +291,6 @@
     },
     "global_namemap2": [],
     "tagNameRemap": {},
-    "dialog_savegame_layout": {
-        "layout": "updown",
-        "textColor": "#000000",
-        "textbackColor": "#ffffffff",
-        "borderColor": "#10000000",
-        "borderColor2": "#ff000000",
-        "borderW": 1,
-        "itemw": 130,
-        "itemh": 190,
-        "margin": 6,
-        "margin2": 6,
-        "radius": 10,
-        "radius2": 10,
-        "textH2": 1,
-        "backcolor2": "#40ffffff",
-        "onselectcolor2": "#40007fff",
-        "onfilenoexistscolor2": "#40acacac",
-        "backcolor3": "#40ffffff",
-        "onselectcolor3": "#40007fff",
-        "onfilenoexistscolor3": "#40acacac",
-        "listitemheight": 30,
-        "listitemwidth_2": [
-            300,
-            500
-        ]
-    },
     "toolbutton": {
         "rank2": [
             "luna",

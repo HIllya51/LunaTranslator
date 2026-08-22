@@ -64,7 +64,7 @@ def tryreadconfig2(path):
     return x
 
 
-ui_settings = tryreadconfig("ui_settings.json")
+ui_settings: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = tryreadconfig("ui_settings.json")
 static_data: "dict[str, dict[str, str|dict|list] | list[str|dict] | str]" = (
     tryreadconfig2("static_data.json")
 )
@@ -401,6 +401,7 @@ for key in ___:
 
 def migrate_ui_settings():
     for k in (
+        "dialog_savegame_layout",
         "transparent_pic",
         "backtransparent",
         "transparent_EX",
@@ -430,10 +431,11 @@ def migrate_ui_settings():
         "text_area_background_r",
         "text_area_background_w",
         "text_area_background_h",
-
     ):
         if k in globalconfig:
             ui_settings[k] = globalconfig.pop(k)
+    if "dialog_savegame_layout" not in ui_settings:
+        ui_settings["dialog_savegame_layout"] = {}
 
 
 migrate_ui_settings()
