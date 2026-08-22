@@ -284,24 +284,10 @@
         "marginBottom": 0
     },
     "ankiconnect": {
-        "host": "127.0.0.1",
-        "port": 8765,
-        "DeckName_i": 0,
         "DeckNameS": [
             "lunadeck"
         ],
-        "ModelName6": "modelofluna",
-        "autoUpdateModel": true,
-        "ocrcroped": false,
-        "autoruntts": false,
-        "autoruntts2": false,
-        "autocrop": false,
-        "addsuccautoclose": false,
-        "addsuccautocloseEx": false,
-        "boldword": false,
-        "tags": [],
-        "allowDuplicate": true,
-        "autorecord": false
+        "tags": []
     },
     "global_namemap2": [],
     "tagNameRemap": {},

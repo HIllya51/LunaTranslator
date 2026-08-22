@@ -1194,9 +1194,9 @@ def D_getsimplecombobox(
     )
 
 
-def getlineedit(d, key, callback=None, readonly=False):
+def getlineedit(d: dict, key, callback=None, readonly=False, default=""):
     s = QLineEdit()
-    s.setText(d[key])
+    s.setText(d.get(key, default))
     s.setReadOnly(readonly)
     s.textChanged.connect(functools.partial(callbackwrap, d, key, callback))
     return s

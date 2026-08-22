@@ -214,7 +214,7 @@ class AnkiWindow(QWidget):
             fname = gobject.gettempdir(str(uuid.uuid4()) + "." + getimageformat())
             img.save(fname)
             self.settextsignal.emit(self.editpath, os.path.abspath(fname))
-            if globalconfig["ankiconnect"]["ocrcroped"]:
+            if globalconfig["ankiconnect"].get("ocrcroped", False):
                 self.asyncocr(img)
 
         rangeselct_function(ocroncefunction, self.window(), hideshow=True)
@@ -364,7 +364,7 @@ class AnkiWindow(QWidget):
         dictionarys = self.refsearchw.wordviewer.generate_dictionarys()
         remarks = self.remarks.toPlainText()
         example = self.example.toPlainText()
-        if globalconfig["ankiconnect"]["boldword"]:
+        if globalconfig["ankiconnect"].get("boldword", False):
             if self.example_hiras is None:
                 _hs = gobject.base.parsehira(example)
                 self.example_hiras = mecab.parseastarget(_hs)
@@ -494,15 +494,15 @@ class AnkiWindow(QWidget):
             savelay[0].setRowVisible(len(grid) - 2 + i, True)
 
         grid = [
-            ["端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")],
-            ["ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6")],
+            ["端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port", default=8765)],
+            ["ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6", default="modelofluna")],
             [
                 "允许重复",
-                getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
+                getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate", default=True),
             ],
             [
                 "添加时更新模板",
-                getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
+                getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel", default=True),
             ],
             [
                 "自定义Anki生成脚本",
@@ -521,7 +521,7 @@ class AnkiWindow(QWidget):
             ],
             [
                 "截图后进行OCR",
-                getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
+                getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped", default=False),
             ],
             [
                 "自动录音",
@@ -531,18 +531,19 @@ class AnkiWindow(QWidget):
                             globalconfig["ankiconnect"],
                             "autorecord",
                             callback=self.refsearchw.safeloadrecorder,
+                            default=False,
                         ),
                         getIconButton(callback=functools.partial(zidongluyinw, self)),
                         0,
                     ]
                 ),
             ],
-            ["自动TTS", getsimpleswitch(globalconfig["ankiconnect"], "autoruntts")],
+            ["自动TTS", getsimpleswitch(globalconfig["ankiconnect"], "autoruntts", default=False)],
             [
                 "自动TTS_例句",
-                getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2"),
+                getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2", default=False),
             ],
-            ["自动截图", getsimpleswitch(globalconfig["ankiconnect"], "autocrop")],
+            ["自动截图", getsimpleswitch(globalconfig["ankiconnect"], "autocrop", default=False)],
             [
                 "截图保存格式",
                 getsimplecombobox(
@@ -556,15 +557,15 @@ class AnkiWindow(QWidget):
             ],
             [
                 "例句中加粗单词",
-                getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
+                getsimpleswitch(globalconfig["ankiconnect"], "boldword", default=False),
             ],
             [
                 "成功添加后关闭窗口",
-                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
+                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose", default=False),
             ],
             [
                 "成功添加后隐藏Anki页面",
-                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautocloseEx"),
+                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautocloseEx", default=False),
             ],
             [
                 "音频编码",
@@ -799,6 +800,7 @@ class AnkiWindow(QWidget):
             globalconfig["ankiconnect"]["DeckNameS"],
             globalconfig["ankiconnect"],
             "DeckName_i",
+            default=0,
         )
 
         def refreshcombo(combo: QComboBox, changed):
@@ -972,8 +974,8 @@ class AnkiWindow(QWidget):
 
     def errorwrap(self, close=False):
         try:
-            anki.global_port = globalconfig["ankiconnect"]["port"]
-            anki.global_host = globalconfig["ankiconnect"]["host"]
+            anki.global_port = globalconfig["ankiconnect"].get("port", 8765)
+            anki.global_host = globalconfig["ankiconnect"].get("host", "127.0.0.1")
             if self.currentword == self.lastankiword:
                 response = QMessageBox.question(
                     self, _TR("警告"), _TR("检测到存在重复，是否覆盖？")
@@ -985,9 +987,9 @@ class AnkiWindow(QWidget):
                 else:
                     return
             self.addanki()
-            if globalconfig["ankiconnect"]["addsuccautocloseEx"] and self.isVisible():
+            if globalconfig["ankiconnect"].get("addsuccautocloseEx", False) and self.isVisible():
                 self.refsearchw.ankiconnect.click()
-            if close or globalconfig["ankiconnect"]["addsuccautoclose"]:
+            if close or globalconfig["ankiconnect"].get("addsuccautoclose", False):
                 self.window().close()
             QToolTip.showText(QCursor.pos(), _TR("添加成功"), self)
         except requests.exceptions.RequestException:
@@ -1039,14 +1041,14 @@ class AnkiWindow(QWidget):
 
     def addanki(self):
 
-        autoUpdateModel = globalconfig["ankiconnect"]["autoUpdateModel"]
-        allowDuplicate = globalconfig["ankiconnect"]["allowDuplicate"]
-        anki.global_port = globalconfig["ankiconnect"]["port"]
-        anki.global_host = globalconfig["ankiconnect"]["host"]
-        ModelName = globalconfig["ankiconnect"]["ModelName6"]
+        autoUpdateModel = globalconfig["ankiconnect"].get("autoUpdateModel", True)
+        allowDuplicate = globalconfig["ankiconnect"].get("allowDuplicate", True)
+        anki.global_port = globalconfig["ankiconnect"].get("port", 8765)
+        anki.global_host = globalconfig["ankiconnect"].get("host", "127.0.0.1")
+        ModelName = globalconfig["ankiconnect"].get("ModelName6", "modelofluna")
         try:
             DeckName = globalconfig["ankiconnect"]["DeckNameS"][
-                globalconfig["ankiconnect"]["DeckName_i"]
+                globalconfig["ankiconnect"].get("DeckName_i", 0)
             ]
         except:
             DeckName = "lunadeck"
@@ -1969,7 +1971,7 @@ class searchwordW(closeashidewindow):
     @threader
     def safeloadrecorder(self, _=None):
         self.autorecorder = None
-        if not globalconfig["ankiconnect"]["autorecord"]:
+        if not globalconfig["ankiconnect"].get("autorecord", False):
             return
         try:
             self.autorecorder = LunaSubProcess.vad(
@@ -2320,11 +2322,11 @@ class searchwordW(closeashidewindow):
         self.ankiwindow.example.setPlainText(
             sentence if sentence else gobject.base.currenttext
         )
-        if globalconfig["ankiconnect"]["autoruntts"]:
+        if globalconfig["ankiconnect"].get("autoruntts", False):
             self.ankiwindow.langdu()
-        if globalconfig["ankiconnect"]["autoruntts2"]:
+        if globalconfig["ankiconnect"].get("autoruntts2", False):
             self.ankiwindow.langdu2()
-        if globalconfig["ankiconnect"]["autorecord"] and self.autorecorder:
+        if globalconfig["ankiconnect"].get("autorecord", False) and self.autorecorder:
             data = self.autorecorder.get()
             if data:
                 self.ankiwindow.audiopath_sentence.sig = uuid.uuid4()
@@ -2334,7 +2336,7 @@ class searchwordW(closeashidewindow):
                     TTSResult(data),
                 )
         self.ankiwindow.remarks.setPlainText(gobject.base.currenttranslate)
-        if globalconfig["ankiconnect"]["autocrop"]:
+        if globalconfig["ankiconnect"].get("autocrop", False):
             grabwindow(
                 callback=functools.partial(
                     sc_callback,
