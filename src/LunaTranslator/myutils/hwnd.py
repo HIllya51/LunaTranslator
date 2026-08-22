@@ -1,7 +1,7 @@
 import windows
 from qtsymbols import *
 import gobject
-import os, subprocess, functools
+import os, functools
 import time, NativeUtils, hashlib
 from urllib.parse import quote
 from myutils.config import savehook_new_data, globalconfig, relpath, _TR
@@ -222,24 +222,3 @@ def safepixmap(bs):
         return QPixmap()
     return pixmap
 
-
-def subprochiderun(
-    cmd: "str|list[str]", cwd=None, encoding="utf8", run=True, env=None
-) -> "subprocess.CompletedProcess|subprocess.Popen":
-
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-    startupinfo.wShowWindow = subprocess.SW_HIDE
-
-    ss = (subprocess.run if run else subprocess.Popen)(
-        cmd,
-        cwd=cwd,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        stdin=subprocess.PIPE,
-        startupinfo=startupinfo,
-        encoding=encoding,
-        env=env,
-    )
-
-    return ss

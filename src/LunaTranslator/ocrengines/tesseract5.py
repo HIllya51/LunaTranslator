@@ -1,5 +1,5 @@
 import os, uuid, gobject, winreg
-from myutils.hwnd import subprochiderun
+from myutils.utils import subprochiderun
 from myutils.config import _TR, globalconfig
 from ocrengines.baseocrclass import baseocr
 from language import Languages

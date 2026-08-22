@@ -25,7 +25,7 @@ from myutils.utils import (
     format_bytes,
 )
 from myutils.proxy import getproxy
-from myutils.hwnd import subprochiderun
+from myutils.utils import subprochiderun
 import json, sqlite3, NativeUtils
 from traceback import print_exc
 from collections import Counter

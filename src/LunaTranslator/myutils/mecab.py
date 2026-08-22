@@ -1,7 +1,7 @@
 import NativeUtils
 import os, threading, gobject, json
 from myutils.config import globalconfig
-from myutils.hwnd import subprochiderun
+from myutils.utils import subprochiderun
 from traceback import print_exc
 from qtsymbols import *
 from sometypes import WordSegResult

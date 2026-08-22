@@ -11,7 +11,7 @@ from ctypes import (
 )
 import windows, NativeUtils, gobject
 from xml.sax.saxutils import escape
-from myutils.hwnd import subprochiderun
+from myutils.utils import subprochiderun
 
 
 def _exepath(bit64):

@@ -2,7 +2,7 @@ import os, time
 import codecs, hashlib, shutil
 import socket, gobject, uuid, functools
 from collections import OrderedDict
-import importlib, json, requests, subprocess, windows, signal
+import importlib, json, requests, subprocess, windows
 from qtsymbols import *
 from traceback import print_exc
 from myutils.config import (
@@ -876,8 +876,36 @@ class loopbackrecorder:
             ff.write(new)
         return file
 
+def subprochiderun(
+    cmd: "str|list[str]",
+    cwd=None,
+    encoding="utf8",
+    run=True,
+    env=None,
+    stdin=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+) -> "subprocess.CompletedProcess|subprocess.Popen":
 
-def ffmpeg_record(sema:threading.Semaphore, rect: QRect = None, split=False):
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    startupinfo.wShowWindow = subprocess.SW_HIDE
+
+    ss = (subprocess.run if run else subprocess.Popen)(
+        cmd,
+        cwd=cwd,
+        stdout=stdout,
+        stderr=stderr,
+        stdin=stdin,
+        startupinfo=startupinfo,
+        encoding=encoding,
+        env=env,
+    )
+
+    return ss
+
+
+def ffmpeg_record(sema: threading.Semaphore, rect: QRect = None, split=False):
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
         raise Exception("can't find ffmpeg")
@@ -894,17 +922,19 @@ def ffmpeg_record(sema:threading.Semaphore, rect: QRect = None, split=False):
 
     codecarg = "-c:v libsvtav1" if split else ""
 
-    proc = subprocess.Popen(
+    proc = subprochiderun(
         r'''"{}" -f gdigrab -framerate 30 {} {} "{}"'''.format(
             ffmpeg, arg, codecarg, file
         ),
-        stdin=subprocess.PIPE,
-        creationflags=subprocess.CREATE_NEW_PROCESS_GROUP,
+        run=False,
+        stdout=None,
+        stderr=None,
     )
     h = NativeUtils.AutoKillProcess(proc.pid)
     recorders = loopbackrecorder()
     sema.acquire()
-    proc.send_signal(signal.CTRL_BREAK_EVENT)
+    proc.stdin.write("q")
+    proc.stdin.flush()
     proc.wait()
     mp3 = recorders.stop_save()
     if split:
@@ -913,7 +943,7 @@ def ffmpeg_record(sema:threading.Semaphore, rect: QRect = None, split=False):
         tmsp = gobject.gettempdir(
             get_time_stamp(forfilename=True).replace(" ", "_") + ".mp4"
         )
-        subprocess.run(
+        subprochiderun(
             r'''"{}" -i {} -i {} -c:v copy -c:a aac -map 0:v:0 -map 1:a:0 "{}"'''.format(
                 ffmpeg, file, mp3, tmsp
             )
