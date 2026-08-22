@@ -192,6 +192,11 @@ def registrhotkeys(self):
     self.referlabels_data = {}
     self.registok = {}
     self.bindfunctions = {
+        "croprecord": lambda: gobject.base.searchwordW.ankiwindow.recordvediohotkeycallback(True),
+        "recordwindow": lambda: gobject.base.searchwordW.ankiwindow.recordvediohotkeycallback(False),
+        "playlastrecord": lambda: gobject.base.audioplayer.play(
+            gobject.base.searchwordW.autorecorder.get(), force=True
+        ),
         "_1": gobject.base.translation_ui.startTranslater,
         "_2": gobject.base.translation_ui.changeTranslateMode,
         "_3": gobject.base.settin_ui_showsignal.emit,
@@ -296,7 +301,7 @@ hotkeys = [
     ["剪贴板", ["36", "_4", "_28"]],
     ["TTS", ["_32", "_7", "_7_1"]],
     ["游戏", ["_10", "_15", "_21", "_22", "43", "41", "42"]],
-    ["查词", ["37", "40", "39", "_29", "_30", "_35", "_33"]],
+    ["查词", ["37", "40", "39"]],
 ]
 
 
@@ -457,13 +462,13 @@ def setTab_quick(self, l: QVBoxLayout):
     do()
 
 
-def setTab_quick_lazy(self, ls):
+def setTab_quick_lazy(self, ls, doc=True):
     grids = []
 
     for name in ls:
         d = globalconfig["quick_setting"]["all"][name]
-        l = [
-            D_getdoclink("fastkeys.html#anchor-" + name),
+        l = [D_getdoclink("fastkeys.html#anchor-" + name)] if doc else []
+        l += [
             (d["name"], 2),
             D_getsimpleswitch(
                 d,

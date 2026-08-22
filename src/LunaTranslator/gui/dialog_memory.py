@@ -1,6 +1,6 @@
 from qtsymbols import *
-import gobject, qtawesome, os, json, functools, uuid, signal
-import NativeUtils, re, shutil, windows, subprocess, time
+import gobject, qtawesome, os, json, functools, uuid
+import NativeUtils, re, shutil, threading
 from myutils.config import globalconfig, get_launchpath, savehook_new_data, relpath
 from myutils.wrapper import Singleton
 from myutils.utils import (
@@ -340,6 +340,7 @@ class dialog_memory(saveposwindow):
         self.textbtn = IconButton(parent=self, icon="fa.text-height", tips="插入文本")
         self.videobtn = IconButton(parent=self, icon="fa.film", tips="插入视频")
         openfile = IconButton(parent=self, icon="fa.external-link", tips="打开文件")
+        self.videosema = threading.Semaphore(0)
         openfile.clicked.connect(lambda: self.editororview.sourcefileopen())
         self.buttonslayout.addWidget(openfile)
         self.buttonslayout.addWidget(IconButton(none=True))
@@ -385,7 +386,7 @@ class dialog_memory(saveposwindow):
                 QMessageBox.critical(
                     self, _TR("错误"), _TR("系统不支持环回录制")
                 )  # str(e))
-                self.insertaudiobtn.click()
+                self.insertaudiobtn.setIconStr("fa.music")
         else:
             self.is_recording = False
             if not self.recorders:
@@ -396,6 +397,7 @@ class dialog_memory(saveposwindow):
             tgt = os.path.join(os.path.dirname(file), tmsp + os.path.splitext(file)[1])
             shutil.move(file, tgt)
             self.audiocallback(tgt)
+            self.insertaudiobtn.setIconStr("fa.music")
 
     def AudioSelect(self):
         if self.is_recording:
@@ -411,7 +413,7 @@ class dialog_memory(saveposwindow):
         action = menu.exec(QCursor.pos())
         if action == record:
             self.startorendrecord()
-            self.insertaudiobtn.setIcon(qtawesome.icon("fa.stop"))
+            self.insertaudiobtn.setIconStr("fa.stop")
         elif action == audio:
             f = QFileDialog.getOpenFileName()
             res = f[0]
@@ -429,6 +431,9 @@ class dialog_memory(saveposwindow):
         self.editor.insertPlainText(html)
 
     def Videoselect(self):
+        if self.is_recording:
+            self.videosema.release()
+            return
         menu = QMenu(self)
         crop2 = LAction("区域录制", menu)
         crophwnd = LAction("窗口录制", menu)
@@ -456,15 +461,21 @@ class dialog_memory(saveposwindow):
             self.selectvedio(res, move=False)
 
     @threader
-    def selectvedio(self, path: "str|Exception" = None, move=True):
+    def selectvedio(self, path: "str|QRect" = None, move=True):
         if not isinstance(path, str):
+            self.is_recording = True
+            self.videobtn.setIconStr("fa.stop")
             try:
-                path = ffmpeg_record(path)
+                path = ffmpeg_record(self.videosema, path)
             except Exception as e:
+                self.is_recording = False
+                self.videobtn.setIconStr("fa.film")
                 gobject.base.safeinvokefunction.emit(
                     functools.partial(RichMessageBox, self, _TR("错误"), str(e))
                 )
                 return
+            self.is_recording = False
+            self.videobtn.setIconStr("fa.film")
         tgt = os.path.join(self.rwpath, os.path.basename(path))
         if move:
             shutil.move(path, tgt)

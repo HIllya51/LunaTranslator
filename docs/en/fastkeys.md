@@ -195,17 +195,6 @@
 1. #### OCR Look Up Word {#anchor-39}
     Select the OCR range for one OCR and then search for words
 
-1. #### Anki Recording {#anchor-_29}
-    Shortcut key for the recording function in the Anki add interface in the dictionary lookup window.
-
-1. #### Anki Recording Example Sentence {#anchor-_30}
-    Shortcut key for the recording function in the Anki add interface in the dictionary lookup window, but this shortcut key sets the recorded audio to the example sentence field.
-
-1. #### Anki Add {#anchor-_35}
-    Adds the word to Anki.
-
-1. #### Read Aloud Word {#anchor-_33}
-    Reads the word in the current dictionary lookup window.
 
 ## Customize
 

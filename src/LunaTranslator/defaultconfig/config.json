@@ -810,10 +810,10 @@
                 "name": "OCR_查词"
             },
             "_29": {
-                "name": "Anki_录音"
+                "name": "录音"
             },
             "_30": {
-                "name": "Anki_录音_例句"
+                "name": "录音_例句"
             },
             "_32": {
                 "name": "自动朗读"
@@ -822,7 +822,16 @@
                 "name": "朗读_单词"
             },
             "_35": {
-                "name": "Anki_添加"
+                "name": "添加"
+            },
+            "playlastrecord": {
+                "name": "播放自动录音"
+            },
+            "croprecord": {
+                "name": "区域录制"
+            },
+            "recordwindow": {
+                "name": "窗口录制"
             }
         }
     },

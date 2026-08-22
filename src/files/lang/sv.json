@@ -937,5 +937,6 @@
     "找不到依赖文件。请下载后解压到软件目录中": "Beroendefilen hittades inte. Vänligen ladda ner och packa upp den till programmets katalog.",
     "插入视频": "Infoga video",
     "区域录制": "Regioninspelning",
-    "窗口录制": "Fönsterinspelning"
+    "窗口录制": "Fönsterinspelning",
+    "播放自动录音": "Spela upp automatisk inspelning"
 }

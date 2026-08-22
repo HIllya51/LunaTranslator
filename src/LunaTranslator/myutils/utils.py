@@ -877,22 +877,10 @@ class loopbackrecorder:
         return file
 
 
-def ffmpeg_record(rect: QRect = None, split=False):
+def ffmpeg_record(sema:threading.Semaphore, rect: QRect = None, split=False):
     ffmpeg = shutil.which("ffmpeg")
     if not ffmpeg:
         raise Exception("can't find ffmpeg")
-    if "recordqhint1" not in globalconfig:
-        from gui.RichMessageBox import RichMessageBox
-
-        gobject.base.safeinvokefunction.emit(
-            functools.partial(
-                RichMessageBox,
-                gobject.base.translation_ui,
-                "",
-                "Press Q to stop record",
-            )
-        )
-        globalconfig["recordqhint1"] = True
     file = gobject.gettempdir(str(time.time()) + (".avif" if split else ".mp4"))
     if rect:
         arg = "-offset_x {} -offset_y {} -video_size {}x{} -i desktop ".format(
@@ -915,11 +903,7 @@ def ffmpeg_record(rect: QRect = None, split=False):
     )
     h = NativeUtils.AutoKillProcess(proc.pid)
     recorders = loopbackrecorder()
-    while True:
-        keystate = windows.GetKeyState(windows.VK_Q)
-        if keystate < 0:
-            time.sleep(0.1)
-            break
+    sema.acquire()
     proc.send_signal(signal.CTRL_BREAK_EVENT)
     proc.wait()
     mp3 = recorders.stop_save()

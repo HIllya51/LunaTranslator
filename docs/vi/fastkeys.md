@@ -194,17 +194,6 @@
 1. #### OCR Tra từ {#anchor-39}
     Chọn phạm vi OCR để thực hiện OCR một lần và sau đó tra từ.
 
-1. #### Anki Ghi âm {#anchor-_29}
-    Phím tắt cho chức năng ghi âm trong giao diện thêm Anki trong cửa sổ tra từ điển.
-
-1. #### Anki Ghi âm Câu ví dụ {#anchor-_30}
-    Phím tắt cho chức năng ghi âm trong giao diện thêm Anki trong cửa sổ tra từ điển, nhưng phím tắt này đặt âm thanh ghi âm vào trường câu ví dụ.
-
-1. #### Anki Thêm {#anchor-_35}
-    Thêm từ vào Anki.
-
-1. #### Đọc thành tiếng Từ vựng {#anchor-_33}
-    Đọc từ trong cửa sổ tra từ điển hiện tại.
 
 ## Tùy Chỉnh
 

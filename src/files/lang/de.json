@@ -937,5 +937,6 @@
     "找不到依赖文件。请下载后解压到软件目录中": "Die Abhängigkeitsdatei wurde nicht gefunden. Bitte laden Sie sie herunter und entpacken Sie sie in das Softwareverzeichnis.",
     "插入视频": "Video einfügen",
     "区域录制": "Bereichsaufnahme",
-    "窗口录制": "Fensteraufnahme"
+    "窗口录制": "Fensteraufnahme",
+    "播放自动录音": "Automatische Aufnahme abspielen"
 }

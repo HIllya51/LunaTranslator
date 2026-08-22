@@ -2554,22 +2554,25 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
             grid.setRowVisible(nowr, False)
 
 
-def makegrid(grid=None, savelist=None, savelay=None, delay=False):
+def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None):
 
     class gridwidget(QWidget):
         pass
 
     gridlayoutwidget = gridwidget()
-    gridlay = QGridLayout(gridlayoutwidget)
+    if hiderows:
+        gridlay = VisGridLayout(gridlayoutwidget)
+    else:
+        gridlay = QGridLayout(gridlayoutwidget)
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
-    def do(gridlay, grid, savelist, savelay):
-        automakegrid(gridlay, grid, savelist)
+    def do(gridlay, grid, savelist, savelay, hiderows):
+        automakegrid(gridlay, grid, savelist, hiderows)
         if isinstance(savelay, list):
             savelay.append(gridlay)
 
-    __do = functools.partial(do, gridlay, grid, savelist, savelay)
+    __do = functools.partial(do, gridlay, grid, savelist, savelay, hiderows)
 
     if not delay:
         __do()
@@ -2584,14 +2587,13 @@ def makescroll():
     return scroll
 
 
-def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None):
-    wid, do = makegrid(grid, savelist, savelay, delay=True)
+def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=None):
+    wid, do = makegrid(grid, savelist, savelay, delay=True, hiderows=hiderows)
     swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)
     do()
     return wid
-
 
 def makesubtab_lazy(
     titles=None,
@@ -3159,7 +3161,11 @@ class pixmapviewer(QWidget):
                                 return (yy) * scale + y
 
                             font = QFont()
-                            font.setFamily(globalconfig.get("fonttype", gobject.tempconfig.get("fonttype", "")))
+                            font.setFamily(
+                                globalconfig.get(
+                                    "fonttype", gobject.tempconfig.get("fonttype", "")
+                                )
+                            )
                             font.setPointSizeF(globalconfig.get("fontsizeori", 16))
                             pen = QPen()
                             pen.setColor(
@@ -3309,6 +3315,15 @@ class IconButton(LPushButton):
     def iconStr(self):
         return self._icon
 
+    @property
+    def __curriconstr(self):
+        if not self.isCheckable():
+            return self._icon
+
+        if isinstance(self._icon, str):
+            return self._icon
+        return self._icon[self.isChecked()]
+
     def __seticon(self):
         if self.pixmap_ is not None:
             return self.setIcon(QIcon(self.pixmap_))
@@ -3319,11 +3334,6 @@ class IconButton(LPushButton):
                 # 用于虚拟占位度量
                 return
             if self.isCheckable() and self.__checkablechangecolor:
-                if isinstance(self._icon, str):
-                    icons = [self._icon, self._icon]
-                else:
-                    icons = self._icon
-                icon = icons[self.isChecked()]
                 color = (
                     self._color
                     if self._color
@@ -3339,8 +3349,7 @@ class IconButton(LPushButton):
                     if self._color
                     else gobject.Consts.btncolor.light.enabled.back
                 )
-                icon = self._icon
-            icon = qtawesome.icon(icon, color=color)
+            icon = qtawesome.icon(self.__curriconstr, color=color)
         self.setIcon(icon)
 
     def setChecked(self, a0):

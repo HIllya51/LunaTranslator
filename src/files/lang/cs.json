@@ -937,5 +937,6 @@
     "找不到依赖文件。请下载后解压到软件目录中": "Nelze najít závislý soubor. Stáhněte si jej a rozbalte do adresáře softwaru.",
     "插入视频": "Vložit video",
     "区域录制": "Záznam oblasti",
-    "窗口录制": "Záznam okna"
+    "窗口录制": "Záznam okna",
+    "播放自动录音": "Přehrát automatickou nahrávku"
 }

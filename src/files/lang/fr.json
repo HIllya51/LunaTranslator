@@ -937,5 +937,6 @@
     "找不到依赖文件。请下载后解压到软件目录中": "Fichier de dépendance introuvable. Veuillez le télécharger et le décompresser dans le répertoire du logiciel.",
     "插入视频": "Insérer une vidéo",
     "区域录制": "Enregistrement de zone",
-    "窗口录制": "Enregistrement de fenêtre"
+    "窗口录制": "Enregistrement de fenêtre",
+    "播放自动录音": "Lecture automatique de l'enregistrement"
 }

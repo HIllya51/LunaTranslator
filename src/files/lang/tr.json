@@ -937,5 +937,6 @@
     "找不到依赖文件。请下载后解压到软件目录中": "Bağımlılık dosyası bulunamadı. Lütfen indirip açarak yazılım klasörüne yerleştirin.",
     "插入视频": "Videoyu ekle",
     "区域录制": "Bölge kaydı",
-    "窗口录制": "Pencere kaydı"
+    "窗口录制": "Pencere kaydı",
+    "播放自动录音": "Otomatik kaydı çal"
 }

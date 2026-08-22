@@ -937,5 +937,6 @@
     "找不到依赖文件。请下载后解压到软件目录中": "No se encuentra el archivo de dependencia. Por favor, descárguelo y descomprímalo en el directorio del software.",
     "插入视频": "Insertar video",
     "区域录制": "Grabación de región",
-    "窗口录制": "Grabación de ventana"
+    "窗口录制": "Grabación de ventana",
+    "播放自动录音": "Reproducir la grabación automática"
 }

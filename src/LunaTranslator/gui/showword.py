@@ -4,7 +4,7 @@ import time
 import functools
 import os
 import base64
-import uuid
+import uuid, threading
 from urllib.parse import quote
 from traceback import print_exc
 import qtawesome
@@ -33,6 +33,7 @@ from myutils.utils import (
     ffmpeg_record,
     getimageformat,
 )
+from gui.setting.hotkey import setTab_quick_lazy
 from NativeUtils import MenuItem
 from cishu.cishubase import DictionaryRoot
 from sometypes import WordSegResult
@@ -48,6 +49,7 @@ from gui.usefulwidget import (
     WebviewWidget,
     MSHtmlWidget,
     EdgeHtmlWidget,
+    makescrollgrid,
     IconButton,
     getboxlayout,
     getboxwidget,
@@ -65,7 +67,7 @@ from gui.usefulwidget import (
     getIconButton,
     tabadd_lazy,
     threeswitch,
-    VisLFormLayout,
+    VisGridLayout,
 )
 from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction, LFormLayout
 from myutils.audioplayer import bass_code_cast
@@ -230,6 +232,7 @@ class AnkiWindow(QWidget):
         self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
         self.tabs.addTab(self.createaddtab(), "添加")
         tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
+        tabadd_lazy(self.tabs, "快捷键", self.createhotkeytab)
         tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
 
         l = QHBoxLayout(self)
@@ -259,7 +262,7 @@ class AnkiWindow(QWidget):
         self.orientswitch.move(x, 0)
 
     def ifshowrefresh(self, idx):
-        if idx == 2:
+        if idx == 3:
             self.refreshhtml.emit()
 
     def parse_template(self, template: str, data):
@@ -288,8 +291,10 @@ class AnkiWindow(QWidget):
             self.previewtab.currentIndex()
         ].toPlainText()
         model_css = self.csstext.toPlainText()
-        text_fields, audios, pictures = self.getfieldsdataall()
-        text_fields.update(self.parseaudiopictures(audios, pictures))
+        text_fields, medias = self.getfieldsdataall()
+        text_fields.update(
+            self.parseaudiopictures(medias.get("audio", []), medias.get("picture", []))
+        )
         html = self.parse_template(html, text_fields)
         html = '<style>{}</style><div class="card">{}</div>'.format(model_css, html)
         self.htmlbrowser.setHtml(html)
@@ -391,14 +396,21 @@ class AnkiWindow(QWidget):
         }
         return fields
 
-    def parseaudiopictures(self, audios: list, pictures: list):
+    def parseaudiopictures(
+        self, audios: "list[dict[str, str]]", pictures: "list[dict[str, str]]"
+    ):
         fields = {}
         for i, targets in enumerate([audios, pictures]):
             for target in targets:
+                uid = str(uuid.uuid4())
                 b64 = target.get("data")
                 if not b64:
+                    path = target.get("path")
+                    if path:
+                        with open(path, "rb") as ff:
+                            b64 = base64.b64encode(ff.read()).decode()
+                if not b64:
                     continue
-                uid = str(uuid.uuid4())
                 if i == 0:
                     html = """<button onclick='document.getElementById("{uid}").play()'>play audio<audio controls id="{uid}" style="display: none"><source src="data:audio/mpeg;base64,{b64}"></audio></button>""".format(
                         b64=b64, uid=uid
@@ -420,43 +432,13 @@ class AnkiWindow(QWidget):
         with open(gobject.getconfig("anki_2/style.css"), "w", encoding="utf8") as ff:
             ff.write(model_css)
 
+    def createhotkeytab(self, baselay: QVBoxLayout):
+        ls = ["_29", "_30", "_35", "_33", "playlastrecord", "croprecord", "recordwindow"]
+        makescrollgrid(
+            setTab_quick_lazy(gobject.base.settin_ui, ls, doc=False), baselay
+        )
+
     def creatsetdtab(self, baselay: QVBoxLayout):
-        wid = QWidget()
-        layout = VisLFormLayout(wid)
-        baselay.addWidget(wid)
-        layout.addRow(
-            "端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")
-        )
-        layout.addRow(
-            "ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6")
-        )
-
-        layout.addRow(
-            "允许重复",
-            getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
-        )
-        layout.addRow(
-            "添加时更新模板",
-            getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
-        )
-        layout.addRow(
-            "自定义Anki生成脚本",
-            getboxlayout(
-                [
-                    getsimpleswitch(globalconfig, "usecustomankigen", default=False),
-                    getIconButton(
-                        callback=functools.partial(selectdebugfile, "myanki_v3.py"),
-                        icon="fa.edit",
-                    ),
-                    0,
-                ]
-            ),
-        )
-        layout.addRow(
-            "截图后进行OCR",
-            getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
-        )
-
         class zidongluyinw(PopupWidget):
 
             def __init__(_self, parent):
@@ -503,90 +485,117 @@ class AnkiWindow(QWidget):
                 )
                 _self.display()
 
-        layout.addRow(
-            "自动录音",
-            getboxlayout(
-                [
-                    getsimpleswitch(
-                        globalconfig["ankiconnect"],
-                        "autorecord",
-                        callback=self.refsearchw.safeloadrecorder,
-                    ),
-                    getIconButton(callback=functools.partial(zidongluyinw, self)),
-                    0,
-                ]
-            ),
-        )
-
-        layout.addRow(
-            "自动TTS",
-            getsimpleswitch(globalconfig["ankiconnect"], "autoruntts"),
-        )
-        layout.addRow(
-            "自动TTS_例句",
-            getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2"),
-        )
-        layout.addRow(
-            "自动截图",
-            getsimpleswitch(globalconfig["ankiconnect"], "autocrop"),
-        )
-        layout.addRow(
-            "截图保存格式",
-            getsimplecombobox(
-                getimageformatlist(),
-                globalconfig,
-                "imageformat2",
-                static=True,
-                internal=getimageformatlist(),
-                default="webp",
-            ),
-        )
-        layout.addRow(
-            "例句中加粗单词",
-            getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
-        )
-        layout.addRow(
-            "成功添加后关闭窗口",
-            getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
-        )
-        layout.addRow(
-            "成功添加后隐藏Anki页面",
-            getsimpleswitch(globalconfig["ankiconnect"], "addsuccautocloseEx"),
-        )
-        cnt = layout.rowCount() + 1
+        savelay: "list[VisGridLayout]" = []
 
         def __(xx):
             i = ["mp3", "opus"].index(xx)
-            layout.setRowVisible(cnt + 0, False)
-            layout.setRowVisible(cnt + 1, False)
-            layout.setRowVisible(cnt + i, True)
+            savelay[0].setRowVisible(len(grid) - 2, False)
+            savelay[0].setRowVisible(len(grid) - 1, False)
+            savelay[0].setRowVisible(len(grid) - 2 + i, True)
 
-        layout.addRow(
-            "音频编码",
-            getsimplecombobox(
-                ["mp3", "opus(ogg)"],
-                globalconfig,
-                "audioformat",
-                internal=["mp3", "opus"],
-                callback=__,
-                default="mp3",
-            ),
+        grid = [
+            ["端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port")],
+            ["ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6")],
+            [
+                "允许重复",
+                getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate"),
+            ],
+            [
+                "添加时更新模板",
+                getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel"),
+            ],
+            [
+                "自定义Anki生成脚本",
+                getboxlayout(
+                    [
+                        getsimpleswitch(
+                            globalconfig, "usecustomankigen", default=False
+                        ),
+                        getIconButton(
+                            callback=functools.partial(selectdebugfile, "myanki_v3.py"),
+                            icon="fa.edit",
+                        ),
+                        0,
+                    ]
+                ),
+            ],
+            [
+                "截图后进行OCR",
+                getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped"),
+            ],
+            [
+                "自动录音",
+                getboxlayout(
+                    [
+                        getsimpleswitch(
+                            globalconfig["ankiconnect"],
+                            "autorecord",
+                            callback=self.refsearchw.safeloadrecorder,
+                        ),
+                        getIconButton(callback=functools.partial(zidongluyinw, self)),
+                        0,
+                    ]
+                ),
+            ],
+            ["自动TTS", getsimpleswitch(globalconfig["ankiconnect"], "autoruntts")],
+            [
+                "自动TTS_例句",
+                getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2"),
+            ],
+            ["自动截图", getsimpleswitch(globalconfig["ankiconnect"], "autocrop")],
+            [
+                "截图保存格式",
+                getsimplecombobox(
+                    getimageformatlist(),
+                    globalconfig,
+                    "imageformat2",
+                    static=True,
+                    internal=getimageformatlist(),
+                    default="webp",
+                ),
+            ],
+            [
+                "例句中加粗单词",
+                getsimpleswitch(globalconfig["ankiconnect"], "boldword"),
+            ],
+            [
+                "成功添加后关闭窗口",
+                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose"),
+            ],
+            [
+                "成功添加后隐藏Anki页面",
+                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautocloseEx"),
+            ],
+            [
+                "音频编码",
+                getsimplecombobox(
+                    ["mp3", "opus(ogg)"],
+                    globalconfig,
+                    "audioformat",
+                    internal=["mp3", "opus"],
+                    callback=__,
+                    default="mp3",
+                ),
+            ],
+            [
+                "MP3 bitrate",
+                getsimplecombobox(
+                    [str(8 * i) for i in range(1, 320 // 8 + 1)],
+                    globalconfig,
+                    "mp3kbps",
+                    internal=[8 * i for i in range(1, 320 // 8 + 1)],
+                    default=64,
+                ),
+            ],
+            [
+                "OPUS bitrate",
+                getspinbox(6, 256, globalconfig, "opusbitrate", default=10),
+            ],
+        ]
+        makescrollgrid(
+            grid, baselay, hiderows=[len(grid) - 2, len(grid) - 1], savelay=savelay
         )
 
-        layout.addRow(
-            "MP3 bitrate",
-            getsimplecombobox(
-                [str(8 * i) for i in range(1, 320 // 8 + 1)],
-                globalconfig,
-                "mp3kbps",
-                internal=[8 * i for i in range(1, 320 // 8 + 1)],
-                default=64,
-            ),
-        )
-        layout.addRow(
-            "OPUS bitrate",
-            getspinbox(6, 256, globalconfig, "opusbitrate", default=10),
-        )
         __(globalconfig.get("audioformat", "mp3"))
 
     @threader
@@ -636,16 +645,27 @@ class AnkiWindow(QWidget):
     @threader
     def recordvediocallback(self, rect=None, *_):
         try:
-            avif, mp3 = ffmpeg_record(rect, split=True)
+            self.recording = True
+            self.insertvedio.setIconStr("fa.stop")
+            avif, mp3 = ffmpeg_record(self.recordsema, rect, split=True)
         except Exception as e:
             gobject.base.safeinvokefunction.emit(
                 functools.partial(RichMessageBox, self, _TR("错误"), str(e))
             )
+            self.recording = False
+            self.insertvedio.setIconStr("fa.film")
             return
+        self.recording = False
+        self.insertvedio.setIconStr("fa.film")
         self.settextsignal.emit(self.editpath, avif)
         self.settextsignal.emit(self.audiopath_sentence, mp3)
 
     def Videoselect(self):
+        if self.recording:
+            self.recordsema.release()
+            self.recording = False
+            self.insertvedio.setIconStr("fa.film")
+            return
         menu = QMenu(self)
         crop2 = LAction("区域录制", menu)
         crophwnd = LAction("窗口录制", menu)
@@ -657,6 +677,18 @@ class AnkiWindow(QWidget):
         if action == crop2:
             rangeselct_function(self.recordvediocallback, self.window())
         elif action == crophwnd:
+            self.recordvediocallback()
+
+    @threader
+    def recordvediohotkeycallback(self, crop):
+        if self.recording:
+            self.recordsema.release()
+            self.recording = False
+            self.insertvedio.setIconStr("fa.film")
+            return
+        if crop:
+            rangeselct_function(self.recordvediocallback, self.window())
+        else:
             self.recordvediocallback()
 
     def createaddtab(self):
@@ -684,7 +716,9 @@ class AnkiWindow(QWidget):
             ),
             tips="窗口截图",
         )
-        insertvedio = getIconButton(
+        self.recordsema = threading.Semaphore(0)
+        self.recording = False
+        self.insertvedio = getIconButton(
             icon="fa.film",
             callback=self.Videoselect,
             tips="插入视频",
@@ -739,13 +773,19 @@ class AnkiWindow(QWidget):
         self.example.textChanged.connect(__)
         self.remarks = ctrlbedit()
         recordbtn1 = IconButton(
-            icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音"
+            icon=["fa.microphone", "fa.stop"],
+            checkable=True,
+            tips="录音",
+            checkablechangecolor=False,
         )
         recordbtn1.clicked.connect(
             functools.partial(self.startorendrecord, recordbtn1, 1, self.audiopath)
         )
         recordbtn2 = IconButton(
-            icon=["fa.microphone", "fa.stop"], checkable=True, tips="录音"
+            icon=["fa.microphone", "fa.stop"],
+            checkable=True,
+            tips="录音",
+            checkablechangecolor=False,
         )
         recordbtn2.clicked.connect(
             functools.partial(
@@ -863,7 +903,7 @@ class AnkiWindow(QWidget):
                                     self.editpath,
                                     cropbutton2,
                                     grabwindowbtn,
-                                    insertvedio,
+                                    self.insertvedio,
                                     folder_open3,
                                     functools.partial(createtbn, self.editpath),
                                 ]

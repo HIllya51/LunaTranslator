@@ -937,5 +937,6 @@
     "找不到依赖文件。请下载后解压到软件目录中": "Dependency file not found. Please download and extract it to the software directory.",
     "插入视频": "Insert video.",
     "区域录制": "Region recording.",
-    "窗口录制": "Window recording."
+    "窗口录制": "Window recording.",
+    "播放自动录音": "Play automatic recording."
 }
