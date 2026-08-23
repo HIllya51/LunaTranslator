@@ -1610,12 +1610,11 @@ class BASEOBJECT(QObject):
                         style = ff.read()
             except:
                 print_exc()
-        fontstr = lambda fsize: "font:{fontsize}pt  {fonttype}; {bold}".format(
+        fontstr = lambda fsize: "font:{fontsize}pt  {fonttype};".format(
             fontsize=fsize,
             fonttype=ui_settings.get(
                 "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
             ),
-            bold=("", "font-weight: bold;")[ui_settings.get("settingfontbold", False)],
         )
         style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
         style += "QListWidget {{ {} }}".format(
@@ -1632,7 +1631,6 @@ class BASEOBJECT(QObject):
             )
         )
         font.setPointSizeF(ui_settings.get("settingfontsize", 12))
-        font.setBold(ui_settings.get("settingfontbold", False))
         if QApplication.instance().font() != font:
             QApplication.instance().setFont(font)
 

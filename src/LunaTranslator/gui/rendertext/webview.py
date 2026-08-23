@@ -5,6 +5,7 @@ from gui.rendertext.texttype import (
     ColorControl,
     SpecialColor,
     FenciColor,
+    FontInfo,
 )
 import gobject, windows, json, os, functools, time
 import hashlib, NativeUtils
@@ -160,9 +161,8 @@ class somecommon(dataget):
                     marginBottom=lhdict.get("marginBottom", 0),
                 )
 
-        def loadfont(argc, lhdict=None):
-            fm, fs, bold = argc
-            args = dict(fontFamily=fm, fontSize=fs, bold=bold)
+        def loadfont(info: FontInfo, lhdict=None):
+            args = info.dict
             updateextra(args, lhdict)
             return args
 
@@ -175,6 +175,8 @@ class somecommon(dataget):
                 klassextra["fontSize"] = data["fontsize"]
             if (not data.get("showbold_df", True)) and ("showbold" in data):
                 klassextra["bold"] = data["showbold"]
+            if (not data.get("showitalic_df", True)) and ("showitalic" in data):
+                klassextra["italic"] = data["showitalic"]
             if not data.get("lineheight_df", True):
                 updateextra(klassextra, data)
             extra[klass] = klassextra
@@ -450,7 +452,7 @@ class TextBrowser(WebviewWidget, somecommon):
                     checked=globalconfig.get("enable_wheel_history", True),
                 ),
             ]
-            
+
             gongjulan = MenuItem(text="工具按钮")
             for tip, clicked, _, check in get_sorted_toolbuttonitems():
                 gongjulan.appendSub(

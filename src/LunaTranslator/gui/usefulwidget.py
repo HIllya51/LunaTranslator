@@ -1361,6 +1361,36 @@ def getsimpleswitch(
     return b
 
 
+def getIconSwitch(
+    d: dict,
+    key: str,
+    callback=None,
+    tips=None,
+    icon=None,
+    default=False,
+):
+    b = IconButton(icon, checkable=True, checked=d.get(key, default), tips=tips)
+
+    def __cb(d, k, callback, x):
+        d[k] = x
+        if callback:
+            callback(x)
+
+    b.clicked.connect(functools.partial(__cb, d, key, callback))
+    return b
+
+
+def D_getIconSwitch(
+    d: dict,
+    key: str,
+    callback=None,
+    tips=None,
+    icon=None,
+    default=False,
+):
+    return lambda: getIconSwitch(d, key, callback, tips, icon, default)
+
+
 def __getsmalllabel(text, tips=None):
     __ = LLabel(text)
     if tips:
@@ -2594,6 +2624,7 @@ def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=Non
     swid.setWidget(wid)
     do()
     return wid
+
 
 def makesubtab_lazy(
     titles=None,

@@ -125,7 +125,7 @@ class SpecialFont(PopupWidget):
         if "privatefont" not in globalconfig["fanyi"][apiuid]:
             globalconfig["fanyi"][apiuid]["privatefont"] = {}
         dd = globalconfig["fanyi"][apiuid]["privatefont"]
-        for i in range(4):
+        for i in range(5):
             if i == 0:
                 t = "字体"
                 k = "fontfamily"
@@ -157,6 +157,12 @@ class SpecialFont(PopupWidget):
                     dd, k, default=globalconfig.get(k, False), callback=self.resetfont
                 )
             elif i == 3:
+                t = "倾斜"
+                k = "showitalic"
+                w = getsimpleswitch(
+                    dd, k, default=globalconfig.get(k, False), callback=self.resetfont
+                )
+            elif i == 4:
                 t = "间距"
                 k = "lineheight"
                 w = QWidget()

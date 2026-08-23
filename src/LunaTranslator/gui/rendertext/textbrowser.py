@@ -1220,14 +1220,8 @@ class TextBrowser(QWidget, dataget):
             self.searchmasklabels_clicked_num += 1
 
     def _getfh(self, half, texttype: TextType = TextType.Origin, getfm=False):
-
-        font = QFont()
-        fm, fs, bold = self._getfontinfo(texttype)
-        font.setBold(bold)
-        font.setFamily(fm)
-        if half:
-            fs *= globalconfig.get("kanarate", 0.5)
-        font.setPointSizeF(fs)
+        info = self._getfontinfo_kana() if half else self._getfontinfo(texttype)
+        font = info.qfont
         fm = QFontMetricsF(font, self)
         if getfm:
             return fm

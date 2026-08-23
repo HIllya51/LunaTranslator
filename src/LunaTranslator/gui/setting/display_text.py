@@ -18,8 +18,10 @@ from gui.usefulwidget import (
     create_centered_rect,
     listediter,
     getIconButton,
+    D_getIconSwitch,
     getsimpleswitch,
     D_getsimpleswitch,
+    getIconSwitch,
     FocusFontCombo,
     SuperCombo,
     NQGroupBox,
@@ -55,7 +57,7 @@ def createtextfontcom(key, df):
         globalconfig[key] = x
         mayberealtimesetfont()
 
-    font_comboBox = FocusFontCombo()
+    font_comboBox = FocusFontCombo(sizeX=True)
     font_comboBox.setCurrentFont(QFont(globalconfig.get(key, df)))
     font_comboBox.currentTextChanged.connect(functools.partial(_f, key))
     return font_comboBox
@@ -455,16 +457,16 @@ def vistranslate_rank(self):
     )
 
 
-def __changeuibuttonstate2(self, x):
+def __changeuibuttonstate2(*_):
     gobject.base.translation_ui.refreshtoolicon()
     gobject.base.maybeneedtranslateshowhidetranslate()
 
 
-def _showhidefy(self):
+def _showhidefy():
     btn = getsimpleswitch(
         globalconfig,
         "showfanyi",
-        callback=functools.partial(__changeuibuttonstate2, self),
+        callback=__changeuibuttonstate2,
         default=True,
     )
     gobject.base.show_fany_switch.connect(btn.setChecked)
@@ -488,39 +490,20 @@ def xianshigrid_style(self):
             dict(
                 title="原文",
                 type="grid",
-                hiderows=[2],
+                hiderows=[1],
                 name="yuanwenobject",
                 parent=self,
                 grid=(
                     [
-                        "字体",
-                        (
-                            getboxlayout(
-                                [
-                                    functools.partial(
-                                        createtextfontcom,
-                                        "fonttype",
-                                        gobject.tempconfig.get("fonttype", ""),
-                                    ),
-                                    "",
-                                    "颜色",
-                                    D_getcolorbutton(
-                                        self,
-                                        globalconfig,
-                                        "rawtextcolor",
-                                        callback=gobject.base.translation_ui.translate_text.setcolorstyle,
-                                        default="#000000",
-                                    ),
-                                ]
-                            ),
-                            0,
-                        ),
-                        "",
-                        "显示",
+                        getsmalllabel("显示"),
                         functools.partial(__xianshi, self),
-                    ],
-                    [
-                        "大小",
+                        "",
+                        getsmalllabel("字体"),
+                        functools.partial(
+                            createtextfontcom,
+                            "fonttype",
+                            gobject.tempconfig.get("fonttype", ""),
+                        ),
                         D_getspinbox(
                             5,
                             100,
@@ -530,19 +513,34 @@ def xianshigrid_style(self):
                             callback=mayberealtimesetfont,
                             default=16,
                         ),
-                        "",
-                        "加粗",
-                        D_getsimpleswitch(
+                        D_getcolorbutton(
+                            self,
+                            globalconfig,
+                            "rawtextcolor",
+                            callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+                            default="#000000",
+                        ),
+                        D_getIconSwitch(
                             globalconfig,
                             "showbold",
                             callback=mayberealtimesetfont,
+                            tips="加粗",
                             default=False,
+                            icon="fa.bold",
+                        ),
+                        D_getIconSwitch(
+                            globalconfig,
+                            "showitalic",
+                            callback=mayberealtimesetfont,
+                            tips="倾斜",
+                            default=False,
+                            icon="fa.italic",
                         ),
                         "",
-                        "间距",
+                        getsmalllabel("间距"),
                         D_getIconButton(
                             callback=lambda: self.yuanwenobject.layout().setRowVisible(
-                                2, not self.yuanwenobject.layout().rowVisible(2)
+                                1, not self.yuanwenobject.layout().rowVisible(1)
                             ),
                         ),
                     ],
@@ -554,37 +552,20 @@ def xianshigrid_style(self):
             dict(
                 title="译文",
                 type="grid",
-                hiderows=[2],
+                hiderows=[1],
                 name="yiwenobject",
                 parent=self,
                 grid=(
                     [
-                        "字体",
-                        (
-                            getboxlayout(
-                                [
-                                    functools.partial(
-                                        createtextfontcom,
-                                        "fonttype2",
-                                        gobject.tempconfig.get("fonttype2", ""),
-                                    ),
-                                    "",
-                                    "颜色",
-                                    D_getIconButton(
-                                        icon="fa.paint-brush",
-                                        callback=gobject.base.switchtotspage.emit,
-                                        tips="颜色",
-                                    ),
-                                ]
-                            ),
-                            0,
-                        ),
+                        getsmalllabel("显示"),
+                        _showhidefy,
                         "",
-                        "显示",
-                        functools.partial(_showhidefy, self),
-                    ],
-                    [
-                        "大小",
+                        getsmalllabel("字体"),
+                        functools.partial(
+                            createtextfontcom,
+                            "fonttype2",
+                            gobject.tempconfig.get("fonttype2", ""),
+                        ),
                         D_getspinbox(
                             1,
                             100,
@@ -594,19 +575,32 @@ def xianshigrid_style(self):
                             callback=mayberealtimesetfont,
                             default=16,
                         ),
-                        "",
-                        "加粗",
-                        D_getsimpleswitch(
+                        D_getIconButton(
+                            icon="fa.paint-brush",
+                            callback=gobject.base.switchtotspage.emit,
+                            tips="颜色",
+                        ),
+                        D_getIconSwitch(
                             globalconfig,
                             "showbold_trans",
                             callback=mayberealtimesetfont,
+                            tips="加粗",
                             default=False,
+                            icon="fa.bold",
+                        ),
+                        D_getIconSwitch(
+                            globalconfig,
+                            "showitalic_trans",
+                            callback=mayberealtimesetfont,
+                            tips="倾斜",
+                            default=False,
+                            icon="fa.italic",
                         ),
                         "",
-                        "间距",
+                        getsmalllabel("间距"),
                         D_getIconButton(
                             callback=lambda: self.yiwenobject.layout().setRowVisible(
-                                2, not self.yiwenobject.layout().rowVisible(2)
+                                1, not self.yiwenobject.layout().rowVisible(1)
                             ),
                         ),
                     ],

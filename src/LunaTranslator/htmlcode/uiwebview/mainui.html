@@ -1002,6 +1002,7 @@
         if (args.fontFamily) style += `font-family: ${args.fontFamily};`
         if (args.fontSize) style += `font-size: ${args.fontSize}pt;`
         if (args.bold != undefined) style += `font-weight: ${args.bold ? "bold" : "normal"} ;`
+        if (args.italic != undefined) style += `font-style: ${args.italic ? "italic" : "normal"} ;`
         if (args.marginTop != undefined) style += `margin-top: ${args.marginTop};`
         if (args.marginBottom != undefined) style += `margin-bottom: ${args.marginBottom};`
         return `.${t}{${style}}`

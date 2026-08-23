@@ -413,7 +413,6 @@ def migrate_ui_settings():
         "backcolor",
         "backcolor_tool",
         "darklight2",
-        "settingfontbold",
         "settingfontsize",
         "force_rect",
         "WindowBackdrop",

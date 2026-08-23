@@ -69,8 +69,11 @@ class dialog_selecticon(LDialog):
         print(_)
         self.curr = _
         self.dict[self.key] = _
-        self.btn.setIconStr(_)
-        self.cb1()
+        try:
+            self.btn.setIconStr(_)
+            self.cb1()
+        except:
+            pass
 
     def selectcallback(self, _):
         print(_)

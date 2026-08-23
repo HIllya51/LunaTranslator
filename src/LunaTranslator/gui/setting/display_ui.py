@@ -347,14 +347,6 @@ def uisetting(self):
                                         callback=lambda _: gobject.base.setcommonstylesheet(),
                                         default=12,
                                     ),
-                                    "",
-                                    getsmalllabel("加粗"),
-                                    D_getsimpleswitch(
-                                        ui_settings,
-                                        "settingfontbold",
-                                        callback=lambda _: gobject.base.setcommonstylesheet(),
-                                        default=False,
-                                    ),
                                 ]
                             ],
                         )
