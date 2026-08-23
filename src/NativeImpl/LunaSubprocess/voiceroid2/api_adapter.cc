@@ -1,7 +1,5 @@
 #include "api_adapter.h"
 
-#include "ebyutil.h"
-
 namespace ebyroid
 {
 
@@ -34,7 +32,7 @@ namespace ebyroid
                     128,
                     "LoadLibrary failed with code %x (Check out the voiceroid path setting)",
                     GetLastError());
-      throw new std::runtime_error(m);
+      throw std::runtime_error(m);
     }
     ApiAdapter *adapter = new ApiAdapter(handle);
 #ifndef _WIN64
@@ -73,10 +71,6 @@ namespace ebyroid
   ApiAdapter::~ApiAdapter()
   {
     BOOL result = FreeLibrary(dll_instance_);
-    if (!result)
-    {
-      Eprintf("FreeLibrary(HMODULE) failed. Though the program will go on, may lead to fatal error.");
-    }
   }
 
   ResultCode ApiAdapter::Init(TConfig *config)

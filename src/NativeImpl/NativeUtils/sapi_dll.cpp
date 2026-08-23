@@ -2,8 +2,7 @@
 
 DECLARE_API bool SAPI_Speak(const wchar_t *Content, LPCWSTR voiceid, int rate, int volume, int pitch, void (*cb)(byte *, size_t))
 {
-    auto _c = std::wstring(Content);
-    if (auto _ = std::move(SAPI::Speak(_c, voiceid, rate, pitch, volume)))
+    if (auto _ = std::move(SAPI::Speak(Content, voiceid, rate, pitch, volume)))
     {
         cb(_.value().data(), _.value().size());
         return true;

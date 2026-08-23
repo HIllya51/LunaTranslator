@@ -24,7 +24,7 @@ DECLARE_API uint64_t GetProcessVRAM(DWORD pid, bool Dedicated)
         return 0;
 
     uint64_t totalBytes = 0;
-    auto returnX = [=]()
+    auto returnX = [&]()
     { PdhCloseQuery(hQuery);return totalBytes; };
 
     std::wstring path = L"\\GPU Process Memory(pid_" + std::to_wstring(pid) + (Dedicated ? L"_*)\\Dedicated Usage" : L"_*)\\Shared Usage");

@@ -1,7 +1,6 @@
 
 #include "ebyroid.h"
 #include "api_adapter.h"
-#include "ebyutil.h"
 using ebyroid::Ebyroid;
 #include "types.h"
 #include "../../wav.hpp"
@@ -28,10 +27,10 @@ int voiceroid2wmain(int argc, wchar_t *wargv[])
     lunasp::PipeHost host(wargv[1], wargv[2], wargv[3]);
     if (!host.ok())
         return 0;
-    Ebyroid *ebyroid = Ebyroid::Create(dlldir, dllpath, acp(wargv[6]), acp(wargv[7]));
+    std::string last = acp(wargv[6]);
+    Ebyroid *ebyroid = Ebyroid::Create(dlldir, dllpath, last, acp(wargv[7]));
 
     int freq1;
-    std::string last;
     char input_j[4096] = {0};
     while (true)
     {

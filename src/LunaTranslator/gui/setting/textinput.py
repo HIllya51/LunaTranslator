@@ -8,7 +8,7 @@ from language import Languages
 from gui.setting.textinput_ocr import getocrgrid_table
 from gui.dynalang import LLabel, LStandardItemModel, LDialog
 from myutils.wrapper import Singleton
-from textio.textsource.mssr import findallmodel, mssr
+from textio.textsource.mssr import MSSR, LiveCaptions
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -404,7 +404,7 @@ def hhforindirect():
                 globalconfig["sourcestatus2"]["mssr"],
                 "hidewindow",
                 callback=functools.partial(
-                    lambda _: (gobject.base.textsource.engine.show(not _)),
+                    lambda _: (gobject.base.textsource.engine.engine.show(not _)),
                 ),
             ),
             "",
@@ -413,7 +413,7 @@ def hhforindirect():
                 globalconfig["sourcestatus2"]["mssr"],
                 "autokill",
                 callback=functools.partial(
-                    lambda _: (gobject.base.textsource.engine.setkill(_)),
+                    lambda _: (gobject.base.textsource.engine.engine.setkill(_)),
                 ),
             ),
         ]
@@ -445,11 +445,11 @@ def modesW(self, __vis, paths):
 
 
 def getsrgrid(self):
-    __vis, paths = findallmodel()
+    __vis, paths = MSSR.findallmodel()
     if not paths and not gobject.sys_ge_win_10:
         return [["系统不支持"]]
 
-    if os.path.exists(mssr.lcexe):
+    if os.path.exists(LiveCaptions.lcexe):
         __w = modesW(self, __vis, paths)
     else:
         __w = hhfordirect(self, __vis, paths)

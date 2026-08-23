@@ -2,7 +2,6 @@
 
 #include "api_adapter.h"
 #include "api_settings.h"
-#include "ebyutil.h"
 
 namespace ebyroid
 {
@@ -185,16 +184,15 @@ namespace ebyroid
 
     ApiAdapter *NewAdapter(const string &base_dir, const string &dllpath, const string &voice, const string &Lang)
     {
-      SettingsBuilder builder(base_dir, voice, Lang);
-      Settings settings = builder.Build();
+      Settings settings = Settings::Create(base_dir, voice, Lang);
       std::unique_ptr<ApiAdapter> adapter{ApiAdapter::Create(dllpath.c_str())};
 
       TConfig config;
       config.hz_voice_db = settings.frequency;
-      config.dir_voice_dbs = settings.voice_dir;
+      config.dir_voice_dbs = settings.voice_dir.c_str();
       config.msec_timeout = msec_timeout;
-      config.path_license = settings.license_path;
-      config.code_auth_seed = settings.seed;
+      config.path_license = settings.license_path.c_str();
+      config.code_auth_seed = settings.seed.c_str();
       config.len_auth_seed = kLenSeedValue;
       ResultCode result = adapter->Init(&config);
       if (result != ERR_SUCCESS)
@@ -209,8 +207,8 @@ namespace ebyroid
         throw std::runtime_error(message);
       }
       SetDllDirectoryA(base_dir.c_str());
-      result = adapter->LangLoad(settings.language_dir);
-      result = adapter->VoiceLoad(settings.voice_name);
+      result = adapter->LangLoad(settings.language_dir.c_str());
+      result = adapter->VoiceLoad(settings.voice_name.c_str());
       if (result != ERR_SUCCESS)
       {
         string message = "API Load Voice failed (Could not load voice data) with code ";
