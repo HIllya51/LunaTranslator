@@ -918,10 +918,9 @@ def ffmpeg_record(sema: threading.Semaphore, rect: QRect = None, split=False):
         title = windows.GetWindowText(gobject.base.hwnd)
         if not title:
             raise Exception("window title is none")
-        arg = '-i title="{}"'.format(subprocess.list2cmdline([title]))
+        arg = '-i title="{}"'.format(title)
 
     codecarg = "-c:v libsvtav1" if split else ""
-
     proc = subprochiderun(
         r'''"{}" -f gdigrab -framerate 30 {} {} "{}"'''.format(
             ffmpeg, arg, codecarg, file

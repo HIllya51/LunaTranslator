@@ -9,7 +9,6 @@ class TextLine(base):
             self._basecolor.get(),
             self.config["fillcolor"],
             self.config["reverse"],
-            self.config["trace"],
             self.config["width"],
             self.config["width_rate"],
         )
@@ -27,7 +26,6 @@ class TextLine(base):
             self.config["width"] + font.pointSizeF() * self.config["width_rate"]
         )
         fontOutLineWidth *= 2
-        fontOutLineWidth += self.config["trace"]
         return (fontOutLineWidth, fontOutLineWidth)
 
     def colorpair(self):
@@ -67,18 +65,16 @@ class TextLine(base):
         pixpainter.strokePath(path, pen)
         pixpainter.end()
         painter.setRenderHint(QPainter.RenderHint.SmoothPixmapTransform)
-        for i in range(1 + int(10 * self.config["trace"])):
-
-            painter.drawPixmap(
-                QRectF(
-                    i / 10,
-                    i / 10,
-                    pix.width(),
-                    pix.height(),
-                ),
-                pix,
-                QRectF(0, 0, pix.width(), pix.height()),
-            )
+        painter.drawPixmap(
+            QRectF(
+                0,
+                0,
+                pix.width(),
+                pix.height(),
+            ),
+            pix,
+            QRectF(0, 0, pix.width(), pix.height()),
+        )
         path = QPainterPath()
         path.addText(
             fontOutLineWidth,
