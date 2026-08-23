@@ -2458,7 +2458,7 @@ namespace
     void wF0100A9B01D4AE000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
-        s = re::sub(s, LR"(@(.*?)@)", L"$1\n");
+        s = re::sub(s, LR"(@(.*?)@)", L"【$1】");
         buffer->from(s);
     }
     void aF0100A9B01D4AE000(TextBuffer *buffer, HookParam *hp)
@@ -2970,6 +2970,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // クドわふたー Converted Edition
+    {0x8016F7F0, {FULL_STRING | CODEC_UTF16, 8, 0, 0, F010048101D49E000, 0x0100F1B01C94E000ull, "1.0.0"}},
     // The House in Fata Morgana - Dreams of the Revenants Edition
     {0x8016E390, {FULL_STRING | CODEC_UTF16, 1, 0x14, 0, F0100C9001E10C000, 0x010016101100A000ull, "1.0.0"}},
     // ハミダシクリエイティブ
