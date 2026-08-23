@@ -1071,7 +1071,7 @@ class resizableframeless(saveposwindow_1):
             )
             self.setGeometry(self.x(), y, w, h)
         elif self._corner_drag_zuoshang:
-            self.setgeokeepminsize(
+            self.__setgeokeepminsize(
                 (gpos - self.startxp).x(),
                 (gpos - self.startxp).y(),
                 self.startw - (gpos.x() - self.startx),
@@ -1079,7 +1079,7 @@ class resizableframeless(saveposwindow_1):
             )
 
         elif self._left_drag:
-            self.setgeokeepminsize(
+            self.__setgeokeepminsize(
                 (gpos - self.startxp).x(),
                 self.y(),
                 self.startw - (gpos.x() - self.startx),
@@ -1088,7 +1088,7 @@ class resizableframeless(saveposwindow_1):
         elif self._bottom_drag:
             self.resize(self.width(), pos.y())
         elif self._top_drag:
-            self.setgeokeepminsize(
+            self.__setgeokeepminsize(
                 self.x(),
                 (gpos - self.startxp).y(),
                 self.width(),
@@ -1113,7 +1113,7 @@ class resizableframeless(saveposwindow_1):
         self.resetflags()
         self.isDragging.emit(False)
 
-    def setgeokeepminsize(self, *argc):
+    def __setgeokeepminsize(self, *argc):
         self.setGeometry(*self.calculatexywh(*argc))
 
     def calculatexywh(self, x, y, w, h):
@@ -1362,17 +1362,23 @@ def getsimpleswitch(
 
 
 def getIconSwitch(
-    d: dict,
-    key: str,
+    d: dict = None,
+    key: str = None,
     callback=None,
     tips=None,
     icon=None,
     default=False,
 ):
-    b = IconButton(icon, checkable=True, checked=d.get(key, default), tips=tips)
+    b = IconButton(
+        icon,
+        checkable=True,
+        checked=d.get(key, default) if d is not None else default,
+        tips=tips,
+    )
 
     def __cb(d, k, callback, x):
-        d[k] = x
+        if d is not None:
+            d[k] = x
         if callback:
             callback(x)
 

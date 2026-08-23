@@ -25,6 +25,7 @@ from gui.usefulwidget import (
     IconButton,
     auto_select_webview,
     create_centered_rect,
+    getIconSwitch,
 )
 from gui.dynalang import LAction
 from gui.markdownhighlighter import MarkdownHighlighter
@@ -328,11 +329,7 @@ class dialog_memory(saveposwindow):
         self.buttonslayout.setSpacing(0)
         self.btnplus = IconButton(parent=self, icon="fa.plus")
         self.btnplus.clicked.connect(self._plus)
-        self.switch = IconButton(
-            parent=self, icon="fa.edit", checkable=True, tips="编辑_/_查看"
-        )
-        self.switch.setChecked(True)
-        self.switch.clicked.connect(self.switchreadonly)
+        self.switch = getIconSwitch(icon="fa.edit", default=True, tips="编辑_/_查看", callback=self.switchreadonly)
         self.insertpicbtn = IconButton(
             parent=self, icon="fa.picture-o", tips="插入图片"
         )

@@ -44,6 +44,7 @@ from gui.rangeselect import rangeselct_function
 from gui.RichMessageBox import RichMessageBox
 from gui.usefulwidget import (
     closeashidewindow,
+    getIconSwitch,
     auto_select_webview,
     PopupWidget,
     WebviewWidget,
@@ -433,7 +434,15 @@ class AnkiWindow(QWidget):
             ff.write(model_css)
 
     def createhotkeytab(self, baselay: QVBoxLayout):
-        ls = ["_29", "_30", "_35", "_33", "playlastrecord", "croprecord", "recordwindow"]
+        ls = [
+            "_29",
+            "_30",
+            "_35",
+            "_33",
+            "playlastrecord",
+            "croprecord",
+            "recordwindow",
+        ]
         makescrollgrid(
             setTab_quick_lazy(gobject.base.settin_ui, ls, doc=False), baselay
         )
@@ -494,15 +503,27 @@ class AnkiWindow(QWidget):
             savelay[0].setRowVisible(len(grid) - 2 + i, True)
 
         grid = [
-            ["端口号", getspinbox(0, 65536, globalconfig["ankiconnect"], "port", default=8765)],
-            ["ModelName", getlineedit(globalconfig["ankiconnect"], "ModelName6", default="modelofluna")],
+            [
+                "端口号",
+                getspinbox(0, 65536, globalconfig["ankiconnect"], "port", default=8765),
+            ],
+            [
+                "ModelName",
+                getlineedit(
+                    globalconfig["ankiconnect"], "ModelName6", default="modelofluna"
+                ),
+            ],
             [
                 "允许重复",
-                getsimpleswitch(globalconfig["ankiconnect"], "allowDuplicate", default=True),
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "allowDuplicate", default=True
+                ),
             ],
             [
                 "添加时更新模板",
-                getsimpleswitch(globalconfig["ankiconnect"], "autoUpdateModel", default=True),
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "autoUpdateModel", default=True
+                ),
             ],
             [
                 "自定义Anki生成脚本",
@@ -521,7 +542,9 @@ class AnkiWindow(QWidget):
             ],
             [
                 "截图后进行OCR",
-                getsimpleswitch(globalconfig["ankiconnect"], "ocrcroped", default=False),
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "ocrcroped", default=False
+                ),
             ],
             [
                 "自动录音",
@@ -538,12 +561,22 @@ class AnkiWindow(QWidget):
                     ]
                 ),
             ],
-            ["自动TTS", getsimpleswitch(globalconfig["ankiconnect"], "autoruntts", default=False)],
+            [
+                "自动TTS",
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "autoruntts", default=False
+                ),
+            ],
             [
                 "自动TTS_例句",
-                getsimpleswitch(globalconfig["ankiconnect"], "autoruntts2", default=False),
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "autoruntts2", default=False
+                ),
             ],
-            ["自动截图", getsimpleswitch(globalconfig["ankiconnect"], "autocrop", default=False)],
+            [
+                "自动截图",
+                getsimpleswitch(globalconfig["ankiconnect"], "autocrop", default=False),
+            ],
             [
                 "截图保存格式",
                 getsimplecombobox(
@@ -561,11 +594,15 @@ class AnkiWindow(QWidget):
             ],
             [
                 "成功添加后关闭窗口",
-                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautoclose", default=False),
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "addsuccautoclose", default=False
+                ),
             ],
             [
                 "成功添加后隐藏Anki页面",
-                getsimpleswitch(globalconfig["ankiconnect"], "addsuccautocloseEx", default=False),
+                getsimpleswitch(
+                    globalconfig["ankiconnect"], "addsuccautocloseEx", default=False
+                ),
             ],
             [
                 "音频编码",
@@ -987,7 +1024,10 @@ class AnkiWindow(QWidget):
                 else:
                     return
             self.addanki()
-            if globalconfig["ankiconnect"].get("addsuccautocloseEx", False) and self.isVisible():
+            if (
+                globalconfig["ankiconnect"].get("addsuccautocloseEx", False)
+                and self.isVisible()
+            ):
                 self.refsearchw.ankiconnect.click()
             if close or globalconfig["ankiconnect"].get("addsuccautoclose", False):
                 self.window().close()
@@ -2132,8 +2172,7 @@ class searchwordW(closeashidewindow):
         self.searchtext = FQLineEdit()
         self.searchtext.textChanged.connect(self.ankiwindow.maybereset)
 
-        dictbutton = IconButton(icon="fa.book", checkable=True, tips="MDict")
-        dictbutton.clicked.connect(self.onceaddshowdictwidget)
+        dictbutton = getIconSwitch(icon="fa.book", default=False, tips="MDict", callback=self.onceaddshowdictwidget)
         history_btn = IconButton(icon="fa.history")
         history_btn.clicked.connect(self.historymenu)
 
@@ -2161,14 +2200,14 @@ class searchwordW(closeashidewindow):
         )
         self.searchlayout.addWidget(self.soundbutton)
 
-        ankiconnect = IconButton(icon="fa.adn", checkable=True, tips="Anki")
-        ankiconnect.clicked.connect(self.onceaddankiwindow)
-        ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        ankiconnect.customContextMenuRequested.connect(
+        self.ankiconnect = getIconSwitch(
+            icon="fa.adn", default=False, tips="Anki", callback=self.onceaddankiwindow
+        )
+        self.ankiconnect.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.ankiconnect.customContextMenuRequested.connect(
             lambda _: self.ankiwindow.errorwrap()
         )
-        self.ankiconnect = ankiconnect
-        self.searchlayout.addWidget(ankiconnect)
+        self.searchlayout.addWidget(self.ankiconnect)
 
         self.setCentralWidget(ww)
 
