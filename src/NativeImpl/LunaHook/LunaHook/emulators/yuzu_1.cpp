@@ -2971,7 +2971,7 @@ struct emfuncinfoX
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
     // The House in Fata Morgana - Dreams of the Revenants Edition
-    {0x80198D40, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F0100C9001E10C000, 0x010016101100A000ull, "1.0.0"}},
+    {0x8016E390, {FULL_STRING | CODEC_UTF16, 1, 0x14, 0, F0100C9001E10C000, 0x010016101100A000ull, "1.0.0"}},
     // ハミダシクリエイティブ
     {0x8003F6D4, {FULL_STRING | CODEC_UTF8, 1, 0, 0, 0, 0x01006FF014152000ull, "1.0.0"}},
     // 君に惑い、君に溺れる。
