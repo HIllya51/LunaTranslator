@@ -28,6 +28,8 @@ def checkusewhich():
         else:
             # win7上无边框窗口渲染有问题，所以一定不优先
             globalconfig["rendertext_using"] = "textbrowser"
+    elif gobject.sys_le_xp:
+        globalconfig["rendertext_using"] = "textbrowser"
 
 
 class Textbrowser(QFrame):

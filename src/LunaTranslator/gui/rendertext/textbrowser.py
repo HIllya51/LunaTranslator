@@ -1090,7 +1090,7 @@ class TextBrowser(QWidget, dataget):
 
     @property
     def maxvisheight(self):
-        return qwidget_screen(self).virtualGeometry().height() * 2
+        return qwidget_screen(self).geometry().height() * 2
 
     def _showyinyingtext(self, b1, b2, color: ColorControl, font: QFont):
         linei = self.yinyingposline

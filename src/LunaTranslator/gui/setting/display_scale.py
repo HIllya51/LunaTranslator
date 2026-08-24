@@ -356,7 +356,7 @@ def makescalew(profile=None):
                                     "右下角",
                                 ],
                                 profile,
-                                "destAlignment",
+                                "outputAlignment",
                             ),
                         ],
                         [
