@@ -1633,7 +1633,7 @@ class llamalistQwidget_internal(QStackedWidget):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
         l1.addWidget(self.link)
-        self.t = makehtml("https://github.com/ggml-org/llama.cpp/releases/tag/b10580")
+        self.t = makehtml("https://github.com/ggml-org/llama.cpp/releases/tag/b10605")
         self.link.setText("loading...")
         self.loadonce = True
         self.initialize.connect(functools.partial(table.initialize_, self, parnet))
@@ -1644,12 +1644,12 @@ class llamalistQwidget_internal(QStackedWidget):
         try:
             try:
                 res = requests.get(
-                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10580",
+                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10605",
                     proxies=getproxy(),
                 ).json()
             except:
                 res = requests.get(
-                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10580"
+                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10605"
                 ).json()
             if not "tag_name" in res:
                 raise Exception(res)

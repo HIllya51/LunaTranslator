@@ -309,7 +309,7 @@ class _Dreye(_StatefulSubprocess):
 
 class _Jb7(_StatefulSubprocess):
     def __init__(self, dllpath, dicts):
-        super().__init__("jbj7", False, args=(dllpath, *dicts))
+        super().__init__("jbj7", False, args=[dllpath] + list(dicts))
 
     def translate(self, content: str, codepage):
         content = content.replace("\r", "\n")

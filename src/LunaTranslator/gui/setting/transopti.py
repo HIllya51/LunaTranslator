@@ -62,21 +62,22 @@ def setTab7_lazy(self, basel: QLayout):
         ]
     ]
     sortlist: list = globalconfig["postprocess_rank"]
+    filteredlist = [post for post in sortlist if post in postprocessconfig]
     savelist = []
     savelay = []
     savescroll = []
 
     def changerank(item, up, tomax, savescroll):
 
-        idx = sortlist.index(item)
+        idx = filteredlist.index(item)
         if tomax:
-            idx2 = 0 if up else (len(sortlist) - 1)
+            idx2 = 0 if up else (len(filteredlist) - 1)
         else:
             idx2 = idx + (-1 if up else 1)
-        if idx2 < 0 or idx2 >= len(sortlist):
+        if idx2 < 0 or idx2 >= len(filteredlist):
             return
+        other = filteredlist[idx2]
         headoffset = 1
-        sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
         for i, ww in enumerate(savelist[idx + headoffset]):
             ll: QGridLayout = savelay[0]
             w1 = ll.indexOf(ww)
@@ -91,6 +92,9 @@ def setTab7_lazy(self, basel: QLayout):
             savelist[idx2 + headoffset],
             savelist[idx + headoffset],
         )
+        filteredlist[idx], filteredlist[idx2] = filteredlist[idx2], filteredlist[idx]
+        si1, si2 = sortlist.index(item), sortlist.index(other)
+        sortlist[si1], sortlist[si2] = sortlist[si2], sortlist[si1]
         if tomax:
             scroll: QScrollArea = savescroll[0]
             if up:
