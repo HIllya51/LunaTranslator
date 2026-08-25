@@ -210,6 +210,7 @@
     "处理": "Processing",
     "波兰语": "Polish",
     "窗口置顶": "Window Always On Top",
+    "任务栏中显示": "Show In Taskbar",
     "移除": "Remove",
     "复制特殊码": "Copy Hook Code",
     "搜索设置": "Search Settings",
@@ -842,7 +843,6 @@
     "通用文本翻译": "General Text Translation",
     "大模型文本翻译": "Large Model Text Translation",
     "无法加载，可能是系统缺少必要的运行库": "Unable to load, possibly due to missing necessary runtime libraries.",
-    "字体相对大小": "Relative font size",
     "修改游戏字体相对大小": "Adjust the relative font size in the game",
     "导入": "Import",
     "窗口背景透明": "Window background transparency",
@@ -938,5 +938,6 @@
     "区域录制": "Region recording.",
     "窗口录制": "Window recording.",
     "播放自动录音": "Play automatic recording.",
-    "倾斜": "Tilt"
+    "倾斜": "Tilt",
+    "相对大小": "Relative size"
 }

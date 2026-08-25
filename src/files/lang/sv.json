@@ -120,6 +120,7 @@
     "快捷按键": "Snabbtangenter",
     "捕获模式": "Inspelningsläge",
     "程序名": "Programnamn",
+    "任务栏中显示": "Visa i aktivitetsfältet",
     "通用文字识别（标准版）": "Universell textigenkänning (standardutgåva)",
     "过滤「」以外的字符": "Filtrera andra tecken än ''",
     "分析图像更新": "Analysera bilduppdateringar",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Allmän textöversättning",
     "大模型文本翻译": "Stor modell textöversättning",
     "无法加载，可能是系统缺少必要的运行库": "Det går inte att ladda, möjligen saknar systemet nödvändiga körbibliotek.",
-    "字体相对大小": "Relativ teckensnittsstorlek",
     "修改游戏字体相对大小": "Ändra relativ teckenstorlek i spelet",
     "导入": "Importera",
     "窗口背景透明": "Fönsterbakgrund genomskinlig",
@@ -938,5 +938,6 @@
     "区域录制": "Regioninspelning",
     "窗口录制": "Fönsterinspelning",
     "播放自动录音": "Spela upp automatisk inspelning",
-    "倾斜": "Lutande"
+    "倾斜": "Lutande",
+    "相对大小": "Relativ storlek"
 }

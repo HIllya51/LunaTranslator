@@ -450,3 +450,17 @@ DECLARE_API bool IsMultiDifferentDPI()
                             return TRUE; }, (LPARAM)&dpis);
     return dpis.size() >= 2;
 }
+DECLARE_API bool CreateUrlProtocol(LPCWSTR exe)
+{
+    auto base_path = LR"(Software\Classes\lunatranslator)";
+    CRegKey hkey;
+    if (ERROR_SUCCESS != hkey.Create(HKEY_CURRENT_USER, base_path))
+        return false;
+    hkey.SetStringValue(L"", L"URL:lunatranslator");
+    hkey.SetStringValue(L"URL Protocol", L"");
+    CRegKey hkey2;
+    if (ERROR_SUCCESS != hkey2.Create(hkey, LR"(shell\open\command)"))
+        return false;
+    hkey2.SetStringValue(NULL, (L"\"" + std::wstring(exe) + L"\" --URLProtocol \"%1\"").c_str());
+    return true;
+}

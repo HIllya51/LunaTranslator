@@ -1,4 +1,4 @@
-import windows, os, NativeUtils, functools, winreg
+import windows, os, NativeUtils, functools
 from qtsymbols import *
 from myutils.config import savehook_new_data, get_launchpath, globalconfig, _TR, relpath
 from LunaSubProcess import LunaSubProcess
@@ -6,6 +6,7 @@ from gobject import sys_le_xp
 from gui.usefulwidget import getlineedit, getsimplecombobox, getsimplepatheditor
 from traceback import print_exc
 import xml.etree.ElementTree as ET
+from myutils.regedit import CURRENT_USER, LOCAL_MACHINE
 
 
 class Launcher:
@@ -54,16 +55,12 @@ class LEbase(Launcher):
 
 
 def findsyslex(clsid, exe, xml):
-    for kk in (winreg.HKEY_CURRENT_USER, winreg.HKEY_LOCAL_MACHINE):
+    for kk in (CURRENT_USER, LOCAL_MACHINE):
         try:
-            k = winreg.OpenKeyEx(
-                kk,
-                r"Software\Classes\CLSID\{}\InprocServer32".format(clsid),
-                0,
-                winreg.KEY_QUERY_VALUE,
+            k = kk.open(
+                r"Software\Classes\CLSID\{}\InprocServer32".format(clsid), query=True
             )
-            base: str = winreg.QueryValueEx(k, "CodeBase")[0]
-            winreg.CloseKey(k)
+            base: str = k.query("CodeBase")
             if base.startswith("file:///"):
                 base = base[len("file:///") :]
             __ = os.path.join(os.path.dirname(base), exe)

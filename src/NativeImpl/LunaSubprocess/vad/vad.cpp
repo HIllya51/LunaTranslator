@@ -277,7 +277,6 @@ private:
     }
 };
 
-constexpr size_t VAD_MEM_SIZE = 16 * 1024 * 1024;
 
 int vadwmain(int argc, wchar_t *wargv[])
 {
@@ -285,7 +284,7 @@ int vadwmain(int argc, wchar_t *wargv[])
     // wargv[5]: sherpa-onnx 运行时 DLL 目录（宿主 os.walk 查找，可能为空）
     AddDllDirectory(wargv[5]);
 
-    lunasp::PipeHost host(wargv[1], wargv[2], wargv[3], VAD_MEM_SIZE);
+    lunasp::PipeHost host(wargv[1], wargv[2], wargv[3]);
     if (!host.ok())
         return 1;
 
@@ -309,7 +308,7 @@ int vadwmain(int argc, wchar_t *wargv[])
         if (proc && proc->IsValid())
         {
             auto wav = proc->GetLastVoiceWav();
-            if (wav.has_value() && wav->size() <= VAD_MEM_SIZE)
+            if (wav.has_value() && wav->size() <= lunasp::DEFAULT_MEM)
             {
                 memcpy(host.mem(), wav->data(), wav->size());
                 size = static_cast<int>(wav->size());

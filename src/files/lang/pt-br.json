@@ -210,6 +210,7 @@
     "处理": "Processando",
     "波兰语": "Polonês",
     "窗口置顶": "Janela Sempre no Topo",
+    "任务栏中显示": "Exibir na Barra de Tarefas",
     "移除": "Remover",
     "复制特殊码": "Copiar Código Hook",
     "搜索设置": "Configurações de Busca",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Tradução de Texto Universal",
     "大模型文本翻译": "Tradução de texto por modelos de linguagem de grande escala",
     "无法加载，可能是系统缺少必要的运行库": "Não foi possível carregar, pode ser que o sistema esteja faltando as bibliotecas de execução necessárias.",
-    "字体相对大小": "Tamanho relativo da fonte",
     "修改游戏字体相对大小": "Modificar o tamanho relativo da fonte do jogo",
     "导入": "Importar",
     "窗口背景透明": "Fundo da janela transparente",
@@ -938,5 +938,6 @@
     "区域录制": "Gravação de área",
     "窗口录制": "Gravação de janela",
     "播放自动录音": "Reproduzir gravação automática",
-    "倾斜": "Inclinado"
+    "倾斜": "Inclinado",
+    "相对大小": "Tamanho relativo"
 }

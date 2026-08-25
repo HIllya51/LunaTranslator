@@ -1,26 +1,16 @@
-import os, uuid, gobject, winreg
+import os, uuid, gobject
 from myutils.utils import subprochiderun
 from myutils.config import _TR, globalconfig
 from ocrengines.baseocrclass import baseocr
 from language import Languages
+from myutils.regedit import LOCAL_MACHINE
 
 
 class OCR(baseocr):
 
-    def findts__(self):
-        k = winreg.OpenKeyEx(
-            winreg.HKEY_LOCAL_MACHINE,
-            r"SOFTWARE\Tesseract-OCR",
-            0,
-            winreg.KEY_QUERY_VALUE,
-        )
-        base = winreg.QueryValueEx(k, "Path")[0]
-        winreg.CloseKey(k)
-        return base
-
     def findts(self):
         try:
-            _ = self.findts__()
+            _ = LOCAL_MACHINE.open(r"SOFTWARE\Tesseract-OCR", query=True).query("Path")
             _ = os.path.join(_, "tesseract.exe")
             return _
         except:

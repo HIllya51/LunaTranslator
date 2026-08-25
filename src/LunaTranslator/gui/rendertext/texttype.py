@@ -184,6 +184,10 @@ class dataget:
     def _getfontinfo_kana(self):
         info = self._getfontinfo(TextType.Origin)
         info.size *= globalconfig.get("kanarate", 0.5)
+        if not globalconfig.get("kanafontfollowdefault", True):
+            info.fm = globalconfig.get("kanafont", info.fm)
+            info.bold = globalconfig.get("kanabold", info.bold)
+            info.italic = globalconfig.get("kanaitalic", info.italic)
         return info
 
     def _createqfont(self, texttype: TextType, klass=None):

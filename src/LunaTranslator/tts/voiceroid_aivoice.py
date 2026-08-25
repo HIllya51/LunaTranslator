@@ -1,12 +1,11 @@
-import uuid
 import os, io
-import windows, NativeUtils
+import NativeUtils
 from LunaSubProcess import LunaSubProcess
 from tts.basettsclass import TTSbase, SpeechParam
-from ctypes import c_int32, c_float
 import xml.etree.ElementTree as ET
 import hashlib, zlib, threading
 from traceback import print_exc
+from myutils.regedit import LOCAL_MACHINE
 
 try:
     # 煞笔python3.12把pbkdf2_hmac放到openssl里去了，导致无法import
@@ -72,28 +71,10 @@ except Exception:
         return dkey[:dklen]
 
 
-class TTS(TTSbase):
-    def getvoicelist(self):
-        self.cacheDialect = {}
-        voicelist = []
-        vis = []
-        path = os.path.dirname(self.findtarget(self.config["path"]))
-        # AIVoice试用版语音路径在上一层
-        for l in [
-            os.path.join(path, "Voice"),
-            os.path.join(os.path.dirname(path), "Voice"),
-        ]:
-            if not os.path.isdir(l):
-                continue
-            for _ in os.listdir(l):
-                v = self.getvoicename(l, _)
-                if not v:
-                    continue
-                vis.append(v)
-                voicelist.append(_)
-        return voicelist, vis
+class _methods:
 
-    def voiceroid2_decrypt(self, stream: io.FileIO):
+    @staticmethod
+    def _voiceroid2_decrypt(stream: io.FileIO):
         a = b"jD5yPFM63olaOWC5fiGpLL5LJnpwTlsK"
         d = 16
         salt = stream.read(d)
@@ -107,59 +88,162 @@ class TTS(TTSbase):
             inflated += decompress.flush()
             return inflated
 
-        return inflate(NativeUtils.AES_decrypt(key, iv, bs)).decode()
+        result = inflate(NativeUtils.AES_decrypt(key, iv, bs)).decode()
+        print(result)
+        return result
 
-    def readinfobin(self, voicedir, voice):
-
-        voicedir = os.path.join(voicedir, voice)
-        # voiceroid2 & AIVoice -> info.bin
-        # AIVoice2 -> infox.bin
-        for f in ["info.bin", "infox.bin"]:
-            f = os.path.join(voicedir, f)
-            if not os.path.isfile(f):
-                continue
-            try:
-                with open(f, "rb") as ff:
-                    root = ET.fromstring(self.voiceroid2_decrypt(ff))
-                    self.cacheDialect[voice] = root.find("Dialect").text
-                    return root.find("Name").text
-            except:
-                print_exc()
-
-    def getvoicename(self, voicedir, voice):
-        Name = self.readinfobin(voicedir, voice)
-        if Name:
-            return Name
+    @staticmethod
+    def readinfobin(voicedir):
         try:
-            # voiceroid+
-            with open(
-                os.path.join(voicedir, voice, "dbconf.xml"), "r", encoding="utf8"
-            ) as ff:
-                root = ET.fromstring(ff.read())
-                self.cacheDialect[voice] = "standard"
-                return root.find("profile").attrib.get("name")
-        except:
-            pass
-        return None
+            # voiceroid2 & AIVoice -> info.bin
+            # AIVoice2 -> infox.bin
+            for f in ["info.bin", "infox.bin"]:
+                f = os.path.join(voicedir, f)
+                if not os.path.isfile(f):
+                    continue
+                try:
+                    with open(f, "rb") as ff:
+                        root = ET.fromstring(_methods._voiceroid2_decrypt(ff))
+                        return dict(
+                            name=root.find("Name").text,
+                            dialect=root.find("Dialect").text,
+                        )
+                except:
+                    print_exc()
 
-    def findtarget(self, path):
-        for _dir, _, __ in os.walk(path):
-            dll = os.path.join(_dir, "aitalked.dll")
-            if os.path.isfile(dll):
-                return os.path.abspath(dll)
+            # voiceroid+
+            with open(os.path.join(voicedir, "dbconf.xml"), "r", encoding="utf8") as ff:
+                root = ET.fromstring(ff.read())
+                return dict(name=root.find("profile").attrib.get("name"), dialect="")
+        except:
+            print_exc()
+            return {}
+
+    @staticmethod
+    def finddll(d, dll):
+        if not d or not os.path.isdir(d):
+            raise Exception()
+        for _dir, _, __ in os.walk(d):
+            for d, b64 in dll:
+                _dll = os.path.join(_dir, d)
+                if os.path.isfile(_dll) and (b64 == NativeUtils.IsDLLBit64(_dll)):
+                    return os.path.normpath(os.path.abspath(_dll))
+
+    @staticmethod
+    def findinstalled(ver):
+        try:
+            path = r"SOFTWARE\AI\AIVoice{}\AIVoice{}Editor\{}.0".format(
+                "" if ver == 1 else ver, "" if ver == 1 else ver, ver
+            )
+            k = LOCAL_MACHINE.open(path, query=True)
+            _dir = k.query("InstallDir")
+            dll = _methods.finddll(
+                _dir, [("AITalk_SDK.dll" if ver == 1 else "aitalk_engine.dll", True)]
+            )
+            path = r"SOFTWARE\AI\AIVoice{}\Voice\{}.0".format(
+                "" if ver == 1 else ver, ver
+            )
+            k = LOCAL_MACHINE.open(path, read=True)
+            voices = []
+            for sub in k.enum():
+                subkey = k.open(sub, query=True)
+                _dir_1 = subkey.query("InstallDir")
+                if not _dir_1 or not os.path.isdir(_dir_1):
+                    continue
+                voices.append(os.path.normpath(_dir_1))
+            return dll, voices
+        except:
+            print_exc()
+            return None, None
+
+    @staticmethod
+    def findinpath(skip, path):
+        try:
+            dll = _methods.finddll(
+                path,
+                [
+                    ("aitalked.dll", False),  # voiceroid+ & voiceroid2
+                    ("AITalk_SDK.dll", True),  # aivoice
+                    ("aitalk_engine.dll", True),  # aivoice2
+                ],
+            )
+            if dll in skip:
+                raise Exception()
+            if not dll:
+                raise Exception()
+            path = os.path.dirname(dll)
+            voicelist = []
+            for l in [
+                os.path.join(path, "Voice"),  # voiceroid+ & voiceroid2
+                os.path.join(os.path.dirname(path), "Voice"),  # aivoice
+                os.path.join(
+                    os.path.dirname(os.path.dirname(path)), "Voice"
+                ),  # aivoice2
+            ]:
+                if not os.path.isdir(l):
+                    continue
+                for _ in os.listdir(l):
+                    _ = os.path.join(l, _)
+                    if not os.path.isdir(_):
+                        continue
+                    voicelist.append(os.path.normpath(_))
+            return dll, voicelist
+        except:
+            return None, None
+
+    @staticmethod
+    def findall(path):
+        dll1, voicelist1 = _methods.findinstalled(1)
+        dll2, voicelist2 = _methods.findinstalled(2)
+        dll3, voicelist3 = _methods.findinpath((dll1, dll2), path)
+        join = lambda dll, lit: [(dll, _) for _ in lit] if lit else []
+        voicelists = (
+            join(dll2, voicelist2) + join(dll1, voicelist1) + join(dll3, voicelist3)
+        )
+        valids: "list[dict[str, str]]" = []
+        for dll, voicedir in voicelists:
+            ret = _methods.readinfobin(voicedir)
+            if not ret:
+                continue
+            ret["dll"] = dll
+            ret["voicedir"] = voicedir
+            ret["voice"] = os.path.basename(voicedir)
+            valids.append(ret)
+        return valids
+
+
+class TTS(TTSbase):
+
+    def getvoicelist(self):
+        self.saveinfos = _methods.findall(self.config["path"])
+        print(self.saveinfos)
+        return (
+            [_["voice"] for _ in self.saveinfos],
+            [_["name"] for _ in self.saveinfos],
+        )
+
+    def findinfo(self, voice):
+        for _ in self.saveinfos:
+            if _["voice"] == voice:
+                return _
+        return self.saveinfos[0]
 
     def init(self):
         self.lock = threading.Lock()
-        # voiceroid+ & voiceroid2 & AIVoice -> aitalked.dll
-        # AIVoice2 -> aitalk_engine.dll
-        dllpath = self.findtarget(self.config["path"])
-        if not os.path.isfile(dllpath):
+        if not self.saveinfos:
             raise Exception()
+        which = self.findinfo(self.voice)
+        self.runtime = None
+        self.invokeruntime(which)
 
-        is64 = NativeUtils.IsDLLBit64(dllpath)
-        # AIVoice & AIVoice2 -> 64位
-        self._proc = LunaSubProcess.voiceroid2(
-            os.path.dirname(dllpath), dllpath, self.voice, self.cacheDialect[self.voice]
+    def invokeruntime(self, which):
+        if which["dll"] == self.runtime:
+            return
+        self.runtime = which["dll"]
+        self._proc = LunaSubProcess.voiceroid_aivoice(
+            which["dll"],
+            which["voicedir"],
+            which["dialect"],
         )
 
     def linear_map(self, x):
@@ -180,10 +264,12 @@ class TTS(TTSbase):
 
     def speak(self, content: str, voice: str, speed: SpeechParam):
         with self.lock:
+            which = self.findinfo(voice)
+            self.invokeruntime(which)
             return self._proc.speak(
                 content,
-                voice,
-                self.cacheDialect[self.voice],
+                which["voicedir"],
+                which["dialect"],
                 self.linear_map(speed.speed),
                 self.linear_map2(speed.pitch),
             )

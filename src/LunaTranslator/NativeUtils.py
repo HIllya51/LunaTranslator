@@ -471,7 +471,7 @@ webview_allocate_buffer = utilsdll.webview_allocate_buffer
 webview_allocate_buffer.argtypes = (c_size_t,)
 webview_allocate_buffer.restype = c_void_p
 webview_setfocus = utilsdll.webview_setfocus
-webview_setfocus.argtypes=c_void_p,
+webview_setfocus.argtypes = (c_void_p,)
 webview_evaljs = utilsdll.webview_evaljs
 webview_evaljs.argtypes = c_void_p, c_wchar_p, c_void_p
 webview_evaljs_CALLBACK = CFUNCTYPE(None, c_wchar_p)
@@ -946,7 +946,9 @@ class AutoKillProcess:
     def setkill(self, kill):
         SetJobAutoKill(self._refkep, kill)
 
-    def __init__(self, commandorpid: "str|int|list[str]", path=None, hide=True, kill=True):
+    def __init__(
+        self, commandorpid: "str|int|list[str]", path=None, hide=True, kill=True
+    ):
         if isinstance(commandorpid, int):
             self.pid = commandorpid
             self._refkep = CreateJobForProcess(commandorpid, kill)
@@ -1317,9 +1319,6 @@ def AnalysisDllImports(file, needNameOnly=True, Allimports=True):
     return _res
 
 
-
-
-
 GetProcessMemory = utilsdll.GetProcessMemory
 GetProcessMemory.argtypes = (DWORD,)
 GetProcessMemory.restype = c_uint64
@@ -1336,3 +1335,7 @@ def ListXpuVendors(gpu: bool = True):
     __ = set()
     _ListXpuVendors(gpu, _ListXpuVendorscb(__.add))
     return __
+
+
+CreateUrlProtocol = utilsdll.CreateUrlProtocol
+CreateUrlProtocol.argtypes = (LPCWSTR,)

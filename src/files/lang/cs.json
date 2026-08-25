@@ -120,6 +120,7 @@
     "快捷按键": "Rychlé klávesy",
     "捕获模式": "Režim zachycení",
     "程序名": "Název programu",
+    "任务栏中显示": "Zobrazit na hlavním panelu",
     "通用文字识别（标准版）": "Univerzální rozpoznávání textu (Standard Edition)",
     "过滤「」以外的字符": "Filtrovat jiné znaky než ''",
     "分析图像更新": "Analyzovat aktualizace obrázků",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Univerzální překlad textu",
     "大模型文本翻译": "Velký model textového překladu",
     "无法加载，可能是系统缺少必要的运行库": "Nelze načíst, může to být způsobeno chybějícími nezbytnými knihovnami v systému.",
-    "字体相对大小": "Relativní velikost písma",
     "修改游戏字体相对大小": "Upravit relativní velikost písma ve hře",
     "导入": "Import",
     "窗口背景透明": "Průhledné pozadí okna",
@@ -938,5 +938,6 @@
     "区域录制": "Záznam oblasti",
     "窗口录制": "Záznam okna",
     "播放自动录音": "Přehrát automatickou nahrávku",
-    "倾斜": "Nakloněný"
+    "倾斜": "Nakloněný",
+    "相对大小": "Relativní velikost"
 }

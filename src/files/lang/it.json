@@ -210,6 +210,7 @@
     "处理": "maniglia",
     "波兰语": "Polacco",
     "窗口置顶": "Finestra in alto",
+    "任务栏中显示": "Mostra nella barra delle applicazioni",
     "移除": "rimuovere",
     "复制特殊码": "Copia codice speciale",
     "搜索设置": "Impostazioni di ricerca",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Traduzione di testo universale",
     "大模型文本翻译": "Traduzione di testo con modelli di grandi dimensioni",
     "无法加载，可能是系统缺少必要的运行库": "Impossibile caricare, potrebbe mancare una libreria di runtime necessaria al sistema.",
-    "字体相对大小": "Dimensione relativa del carattere",
     "修改游戏字体相对大小": "Modifica la dimensione relativa del font del gioco",
     "导入": "Importazione",
     "窗口背景透明": "Sfondo della finestra trasparente",
@@ -938,5 +938,6 @@
     "区域录制": "Registrazione di zona",
     "窗口录制": "Registrazione finestra",
     "播放自动录音": "Riproduci la registrazione automatica.",
-    "倾斜": "Inclinato"
+    "倾斜": "Inclinato",
+    "相对大小": "Dimensione relativa"
 }

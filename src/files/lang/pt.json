@@ -120,6 +120,7 @@
     "快捷按键": "Teclas rápidas",
     "捕获模式": "Modo de captura",
     "程序名": "Nome do Programa",
+    "任务栏中显示": "Mostrar na barra de tarefas",
     "通用文字识别（标准版）": "Reconhecimento Universal de Texto (Edição Normal)",
     "过滤「」以外的字符": "Filtrar caracteres diferentes de ''",
     "分析图像更新": "Analisar as actualizações das imagens",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Tradução de Texto Geral",
     "大模型文本翻译": "Tradução de texto de modelo de grande escala",
     "无法加载，可能是系统缺少必要的运行库": "Não foi possível carregar, pode ser que o sistema esteja faltando bibliotecas de execução necessárias.",
-    "字体相对大小": "Tamanho relativo da fonte",
     "修改游戏字体相对大小": "Modificar o tamanho relativo da fonte do jogo",
     "导入": "Importar",
     "窗口背景透明": "Fundo da janela transparente",
@@ -938,5 +938,6 @@
     "区域录制": "Gravação de área",
     "窗口录制": "Gravação de janela",
     "播放自动录音": "Reproduzir gravação automática",
-    "倾斜": "Inclinado"
+    "倾斜": "Inclinado",
+    "相对大小": "Tamanho relativo"
 }

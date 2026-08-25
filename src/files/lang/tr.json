@@ -210,6 +210,7 @@
     "处理": "Döndür",
     "波兰语": "Polonyca@ item Spelling dictionary",
     "窗口置顶": "Pencere Üst",
+    "任务栏中显示": "Görev çubuğunda göster",
     "移除": "Çıkar",
     "复制特殊码": "Özel Kodu Kopiyala",
     "搜索设置": "Arama Ayarları",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Genel Metin Çevirisi",
     "大模型文本翻译": "Büyük Model Metin Çevirisi",
     "无法加载，可能是系统缺少必要的运行库": "Yüklenemiyor, sistem gerekli çalışma kütüphanelerinden yoksun olabilir.",
-    "字体相对大小": "Yazı tipi göreceli boyutu",
     "修改游戏字体相对大小": "Oyun yazı tipi göreceli boyutunu değiştir",
     "导入": "İthalat",
     "窗口背景透明": "Pencere arka planı şeffaf",
@@ -938,5 +938,6 @@
     "区域录制": "Bölge kaydı",
     "窗口录制": "Pencere kaydı",
     "播放自动录音": "Otomatik kaydı çal",
-    "倾斜": "Eğik"
+    "倾斜": "Eğik",
+    "相对大小": "Göreceli boyut"
 }

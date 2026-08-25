@@ -93,26 +93,20 @@ class _Vad(_StatefulSubprocess):
         return self.mem[:size]
 
 
-class _Voiceroid2(_StatefulSubprocess):
-    def __init__(self, dlldir, dllpath, voice, dialect):
+class _voiceroid_aivoice(_StatefulSubprocess):
+    def __init__(self, dllpath, voicedir, dialect):
         super().__init__(
-            "voiceroid2",
+            "voiceroid_aivoice",
             NativeUtils.IsDLLBit64(dllpath),
-            args=(dlldir, dllpath, voice, dialect),
+            args=(dllpath, voicedir, dialect),
         )
 
-    def speak(self, content, voice: str, dialect: str, speed, pitch):
-        __ = []
-        for c in content:
-            try:
-                __.append(c.encode("shift-jis"))
-            except:
-                pass
-        code1 = b"".join(__)
+    def speak(self, content, voicedir: str, dialect: str, speed, pitch):
+        code1 = content.encode("shift-jis", "ignore")
         if not code1:
             return None
         size = self._exchange(
-            voice.encode(),
+            voicedir.encode(),
             dialect.encode(),
             bytes(c_float(speed)),
             bytes(c_float(pitch)),
@@ -348,8 +342,8 @@ class LunaSubProcess:
         return _Vad(threshold, min_silence_duration, min_speech_duration)
 
     @staticmethod
-    def voiceroid2(dlldir, dllpath, voice, dialect):
-        return _Voiceroid2(dlldir, dllpath, voice, dialect)
+    def voiceroid_aivoice(dllpath, voicedir, dialect):
+        return _voiceroid_aivoice(dllpath, voicedir, dialect)
 
     @staticmethod
     def neospeech():

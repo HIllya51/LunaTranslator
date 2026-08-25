@@ -234,8 +234,13 @@ def __rs():
             getsmalllabel("圆角"),
             spin,
             "",
-            "",
-            "",
+            getsmalllabel("任务栏中显示"),
+            D_getsimpleswitch(
+                globalconfig,
+                "showintab",
+                callback=lambda _: gobject.base.setshowintab(),
+                default=True,
+            ),
         ]
     )
 

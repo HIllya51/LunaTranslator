@@ -5,7 +5,7 @@ int shellexecutehelper(int argc, wchar_t *argv[]);
 int dllinjectwmain(int argc, wchar_t *argv[]);
 int updatewmain(int argc, wchar_t *wargv[]);
 bool checkisapatch();
-int voiceroid2wmain(int argc, wchar_t *argv[]);
+int voiceroid_aivoicewmain(int argc, wchar_t *argv[]);
 int vadwmain(int argc, wchar_t *argv[]);
 #ifndef _WIN64
 int lecwmain(int argc, wchar_t *argv[]);
@@ -67,7 +67,7 @@ int wmain(int argc, wchar_t *argv[])
         {L"dllinject", dllinjectwmain},
         {L"listpm", listprocessmodule},
         {L"update", updatewmain},
-        {L"voiceroid2", voiceroid2wmain},
+        {L"voiceroid_aivoice", voiceroid_aivoicewmain},
         {L"vad", vadwmain},
 #ifndef _WIN64
         {L"lec", lecwmain},

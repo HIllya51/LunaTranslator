@@ -2,8 +2,8 @@ import gobject, os, uuid
 from ocrengines.baseocrclass import baseocr, OCRResult
 from gobject import unique_ptr
 import NativeUtils, threading
-import winreg
 from traceback import print_exc
+from myutils.regedit import CURRENT_USER
 
 
 class wcocr:
@@ -39,23 +39,10 @@ class wcocr:
         return ocr, mojo
 
     def findwechat(self):
-        try:
-            # 4.x
-            k = winreg.OpenKeyEx(
-                winreg.HKEY_CURRENT_USER,
-                r"SOFTWARE\Tencent\Weixin",
-                0,
-                winreg.KEY_QUERY_VALUE,
-            )
-        except:
-            k = winreg.OpenKeyEx(
-                winreg.HKEY_CURRENT_USER,
-                r"SOFTWARE\Tencent\WeChat",
-                0,
-                winreg.KEY_QUERY_VALUE,
-            )
-        base = winreg.QueryValueEx(k, "InstallPath")[0]
-        winreg.CloseKey(k)
+        k = CURRENT_USER.open(r"SOFTWARE\Tencent\Weixin", query=True)
+        if not k:
+            k = CURRENT_USER.open(r"SOFTWARE\Tencent\WeChat", query=True)
+        base = k.query("InstallPath")
         WeChatexe = os.path.join(base, "WeChat.exe")
         if not os.path.exists(WeChatexe):
             # 4.x

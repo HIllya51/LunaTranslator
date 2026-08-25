@@ -210,6 +210,7 @@
     "处理": "Đang xử lý",
     "波兰语": "Tiếng Ba Lan",
     "窗口置顶": "Ghim cửa sổ trên cùng",
+    "任务栏中显示": "Hiển thị trên thanh Taskbar",
     "移除": "Xóa bỏ",
     "复制特殊码": "Sao chép Hook Code",
     "搜索设置": "Cài đặt tìm kiếm",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Dịch văn bản thông thường",
     "大模型文本翻译": "Dịch văn bản bằng LLM",
     "无法加载，可能是系统缺少必要的运行库": "Không thể tải, có thể hệ thống đang thiếu các thư viện runtime cần thiết.",
-    "字体相对大小": "Kích thước chữ tương đối",
     "修改游戏字体相对大小": "Chỉnh sửa kích thước phông chữ tương đối của trò chơi",
     "导入": "Import",
     "窗口背景透明": "Nền cửa sổ trong suốt",
@@ -938,5 +938,6 @@
     "区域录制": "Ghi hình khu vực",
     "窗口录制": "Ghi hình cửa sổ",
     "播放自动录音": "\"播放自动录音\" dịch sang tiếng Việt là: **Phát bản ghi âm tự động**",
-    "倾斜": "Nghiêng"
+    "倾斜": "Nghiêng",
+    "相对大小": "Kích thước tương đối"
 }

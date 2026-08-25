@@ -21,7 +21,6 @@ from gui.usefulwidget import (
     D_getIconSwitch,
     getsimpleswitch,
     D_getsimpleswitch,
-    getIconSwitch,
     FocusFontCombo,
     SuperCombo,
     NQGroupBox,

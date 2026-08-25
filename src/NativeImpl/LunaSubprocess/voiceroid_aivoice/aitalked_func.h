@@ -222,6 +222,7 @@ namespace ebyroid
     ResultCode SetParam(IntPtr p_param);
     ResultCode GetParam(IntPtr p_param, uint32_t *size);
     ResultCode LangLoad(const char *dir_lang);
+    ResultCode LangClear();
     ResultCode VoiceLoad(const char *voice_name);
     ResultCode VoiceClear();
     ResultCode TextToKana(int32_t *job_id, TJobParam *param, const char *text);
@@ -243,6 +244,7 @@ namespace ebyroid
     typedef ResultCode(__stdcall *ApiSetParam)(IntPtr);
     typedef ResultCode(__stdcall *ApiGetParam)(IntPtr, uint32_t *);
     typedef ResultCode(__stdcall *ApiLangLoad)(const char *);
+    typedef ResultCode(__stdcall *ApiLangClear)(void);
     typedef ResultCode(__stdcall *ApiVoiceLoad)(const char *);
     typedef ResultCode(__stdcall *ApiVoiceClear)(void);
     typedef ResultCode(__stdcall *ApiTextToKana)(int32_t *, TJobParam *, const char *);
@@ -258,6 +260,7 @@ namespace ebyroid
     ApiEnd end_;
     ApiVoiceLoad voice_load_;
     ApiVoiceClear voice_clear_;
+    ApiLangClear lang_clear_;
     ApiSetParam set_param_;
     ApiGetParam get_param_;
     ApiLangLoad lang_load_;

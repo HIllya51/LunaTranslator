@@ -1,5 +1,5 @@
 import time, uuid, json
-import os, threading, re, winreg, copy
+import os, threading, re, copy
 from qtsymbols import *
 from traceback import print_exc
 from urllib.parse import unquote
@@ -1714,7 +1714,7 @@ class BASEOBJECT(QObject):
         self.starttextsource()
         self.inittray()
         self.somedatabase = somedatabase()
-        self.urlprotocol()
+        NativeUtils.CreateUrlProtocol(getcurrexe())
         self.serviceinit()
         versioncheckthread()
         autostartllamacpp()
@@ -1819,18 +1819,3 @@ class BASEOBJECT(QObject):
                 targetmod[k] = importlib.import_module("metadata." + k).searcher(k)
             except:
                 print_exc()
-
-    @tryprint
-    def urlprotocol(self):
-
-        key = winreg.CreateKey(
-            winreg.HKEY_CURRENT_USER, r"Software\Classes\lunatranslator"
-        )
-        winreg.SetValue(key, None, winreg.REG_SZ, "URL:lunatranslator")
-        winreg.SetValueEx(key, r"URL Protocol", 0, winreg.REG_SZ, "")
-        keysub = winreg.CreateKey(
-            winreg.HKEY_CURRENT_USER,
-            r"Software\Classes\lunatranslator\shell\open\command",
-        )
-        command = '"{}" --URLProtocol "%1"'.format(getcurrexe())
-        winreg.SetValue(keysub, r"", winreg.REG_SZ, command)

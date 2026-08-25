@@ -14,7 +14,7 @@ from gui.usefulwidget import (
     listediter,
     D_getIconButton,
     LPushButton,
-    D_getspinbox,
+    NQGroupBox,
     getsmalllabel,
     getcenterX,
     D_getcolorbutton,
@@ -28,6 +28,8 @@ from gui.usefulwidget import (
     KeySequenceEdit,
     check_grid_append,
     DarkLightAutoResetIconHelper,
+    FocusFontCombo,
+    getIconSwitch,
 )
 import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
@@ -345,6 +347,83 @@ def setTabcishu_l(self):
             icon="fa.link",
         )
 
+    class fontsettings(NQGroupBox):
+
+        def createtextfontcom(self, key, df):
+            def _f(key, x):
+                globalconfig[key] = x
+                gobject.base.translation_ui.translate_text.setfontstyle()
+
+            font_comboBox = FocusFontCombo(sizeX=True)
+            font_comboBox.setCurrentFont(QFont(globalconfig.get(key, df)))
+            font_comboBox.currentTextChanged.connect(functools.partial(_f, key))
+            return font_comboBox
+
+        def __init__(self, parent):
+            super().__init__(parent)
+            form = LFormLayout(self)
+            form.addRow(
+                "相对大小",
+                getspinbox(
+                    0.1,
+                    1,
+                    globalconfig,
+                    "kanarate",
+                    double=True,
+                    step=0.05,
+                    callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                    default=0.5,
+                ),
+            )
+            form2 = VisLFormLayout()
+            form.addRow("字体", form2)
+            form2.addRow(
+                getboxlayout(
+                    [
+                        getsmalllabel("跟随默认"),
+                        getsimpleswitch(
+                            globalconfig,
+                            "kanafontfollowdefault",
+                            default=True,
+                            callback=lambda x: (
+                                form2.setRowVisible(1, not x),
+                                gobject.base.translation_ui.translate_text.setfontstyle(),
+                            ),
+                        ),
+                        "",
+                    ]
+                )
+            )
+            form2.addRow(
+                getboxlayout(
+                    [
+                        self.createtextfontcom(
+                            "kanafont",
+                            globalconfig.get(
+                                "fonttype", gobject.tempconfig.get("fonttype", "")
+                            ),
+                        ),
+                        getIconSwitch(
+                            globalconfig,
+                            "kanabold",
+                            callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                            tips="加粗",
+                            default=globalconfig.get("showbold", False),
+                            icon="fa.bold",
+                        ),
+                        getIconSwitch(
+                            globalconfig,
+                            "kanaitalic",
+                            callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                            tips="倾斜",
+                            default=globalconfig.get("showitalic", False),
+                            icon="fa.italic",
+                        ),
+                    ]
+                ),
+            )
+            form2.setRowVisible(1, not globalconfig.get("kanafontfollowdefault", True))
+
     grids = [
         grids_1,
         grids2,
@@ -356,6 +435,7 @@ def setTabcishu_l(self):
                 parent=self,
                 name="fenyinsettings",
                 enable=globalconfig.get("isshowrawtext", True),
+                hiderows=[1],
                 grid=(
                     [
                         "显示注音",
@@ -374,16 +454,11 @@ def setTabcishu_l(self):
                             default="black",
                         ),
                         "",
-                        "字体相对大小",
-                        D_getspinbox(
-                            0.1,
-                            1,
-                            globalconfig,
-                            "kanarate",
-                            double=True,
-                            step=0.05,
-                            callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                            default=0.5,
+                        getsmalllabel("字体"),
+                        D_getIconButton(
+                            callback=lambda: self.fenyinsettings.layout().setRowVisible(
+                                1, not self.fenyinsettings.layout().rowVisible(1)
+                            ),
                         ),
                         "",
                         "日语注音方案",
@@ -399,6 +474,7 @@ def setTabcishu_l(self):
                             default=0,
                         ),
                     ],
+                    [(functools.partial(fontsettings, self), 0)],
                     [
                         "语法加亮",
                         D_getsimpleswitch(

@@ -120,6 +120,7 @@
     "快捷按键": "Sneltoetsen",
     "捕获模式": "Opnamemodus",
     "程序名": "Programmanaam",
+    "任务栏中显示": "Weergeven in taakbalk",
     "通用文字识别（标准版）": "Universele tekstherkenning (Standard Edition)",
     "过滤「」以外的字符": "Andere tekens dan ''filteren",
     "分析图像更新": "Afbeeldingen-updates analyseren",
@@ -842,7 +843,6 @@
     "通用文本翻译": "Algemene tekstvertaling",
     "大模型文本翻译": "Grote modeltekstvertaling",
     "无法加载，可能是系统缺少必要的运行库": "Kan niet laden, mogelijk ontbreekt het systeem aan de benodigde runtime-bibliotheken.",
-    "字体相对大小": "Relatieve lettergrootte",
     "修改游戏字体相对大小": "Pas de relatieve grootte van het spellettertype aan",
     "导入": "Importeren",
     "窗口背景透明": "Vensterachtergrond transparant",
@@ -938,5 +938,6 @@
     "区域录制": "Regio-opname",
     "窗口录制": "Vensteropname",
     "播放自动录音": "Automatische opname afspelen",
-    "倾斜": "Helling"
+    "倾斜": "Helling",
+    "相对大小": "relatieve grootte"
 }
