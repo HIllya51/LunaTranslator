@@ -189,6 +189,19 @@
         ],
         "tts": [
             {
+                "name": "A.I.VOICE",
+                "links": [
+                    {
+                        "name": "A.I.VOICE",
+                        "link": "https://aivoice.jp/member/downloads/aivoice"
+                    },
+                    {
+                        "name": "A.I.VOICE2",
+                        "link": "https://aivoice.jp/member/downloads/aivoice2"
+                    }
+                ]
+            },
+            {
                 "name": "NeoSpeech",
                 "links": [
                     {
@@ -224,7 +237,7 @@
                 ]
             },
             {
-                "name": "VoiceRoid2",
+                "name": "VoiceRoid",
                 "links": [
                     {
                         "name": "整合包_[[結月ゆかり]]",

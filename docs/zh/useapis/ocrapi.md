@@ -89,7 +89,7 @@ https://ocr.space/
 
     如果使用Intel的CPU/NPU/GPU，那么可以替换推理引擎为OpenVINO来加速识别。
     
-    下载[onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)，解压后将**runtimes/win-x64/native**中的所有文件覆盖到**LunaTranslator/files/DLL64**中，然后选择使用的设备即可。
+    下载[onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.24.1.nupkg)，解压后将**runtimes/win-x64/native**中的所有文件覆盖到**LunaTranslator/files/DLL64**中，然后选择使用的设备即可。
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
 

@@ -87,7 +87,7 @@ Phần cài đặt cũng cung cấp một số mô hình độ chính xác cao, 
 
     Nếu sử dụng CPU/NPU/GPU của Intel, có thể thay thế công cụ suy luận bằng OpenVINO để tăng tốc nhận diện.
     
-    Tải xuống [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg). Sau khi giải nén, sao chép đè tất cả tệp trong **runtimes/win-x64/native** vào **LunaTranslator/files/DLL64**, sau đó chọn thiết bị sử dụng.
+    Tải xuống [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.24.1.nupkg). Sau khi giải nén, sao chép đè tất cả tệp trong **runtimes/win-x64/native** vào **LunaTranslator/files/DLL64**, sau đó chọn thiết bị sử dụng.
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
 

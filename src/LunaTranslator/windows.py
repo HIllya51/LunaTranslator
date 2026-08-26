@@ -807,13 +807,7 @@ _MapViewOfFile.argtypes = HANDLE, DWORD, DWORD, DWORD, c_size_t
 _MapViewOfFile.restype = POINTER(c_char)
 
 
-def MapViewOfFile(
-    hfmap,
-    size=1024 * 1024 * 16,
-    acc=FILE_MAP_READ | FILE_MAP_WRITE,
-    high=0,
-    low=0,
-):
+def MapViewOfFile(hfmap, size, acc=FILE_MAP_READ | FILE_MAP_WRITE, high=0, low=0):
     return _MapViewOfFile(hfmap, acc, high, low, size)
 
 

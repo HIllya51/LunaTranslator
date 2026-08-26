@@ -2,7 +2,7 @@
 
 namespace lunasp {
 
-inline constexpr SIZE_T DEFAULT_MEM = 16 * 1024 * 1024; // 与各 engine 原先用的一致
+inline constexpr SIZE_T DEFAULT_MEM = 32 * 1024 * 1024; // 与各 engine 原先用的一致
 
 class PipeHost
 {

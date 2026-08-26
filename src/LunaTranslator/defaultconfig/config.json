@@ -891,7 +891,7 @@
         },
         "voiceroid2": {
             "use": false,
-            "name": "VoiceRoid2",
+            "name": "VoiceRoid/A.I.VOICE",
             "type": "offline",
             "args": {
                 "path": ""

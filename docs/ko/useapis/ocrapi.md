@@ -90,7 +90,7 @@ https://ocr.space/
 
     Intel의 CPU/NPU/GPU를 사용하는 경우, 추론 엔진을 OpenVINO로 교체하여 인식을 가속화할 수 있습니다.
     
-    [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg)를 다운로드하고 압축을 해제한 후, **runtimes/win-x64/native** 내의 모든 파일을 **LunaTranslator/files/DLL64**로 덮어쓴 다음, 사용할 장치를 선택합니다.
+    [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.24.1.nupkg)를 다운로드하고 압축을 해제한 후, **runtimes/win-x64/native** 내의 모든 파일을 **LunaTranslator/files/DLL64**로 덮어쓴 다음, 사용할 장치를 선택합니다.
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
 

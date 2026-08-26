@@ -1,10 +1,26 @@
 
-#include "aitalked.h"
-#include "aitalk_engine.h"
 #include "../../wav.hpp"
 #include "../pipehost.hpp"
-#include "abstract.hpp"
-#include "api_settings.h"
+#include "engines.h"
+
+static float linear_map_pitch(float x)
+{
+    // 0.5-2
+    if (x >= 0)
+        x = 0.1 * x + 1.0;
+    else
+        x = 0.05 * x + 1.0;
+    return x;
+}
+static float linear_map_speed(float x)
+{
+    // 0.5-4
+    if (x >= 0)
+        x = 0.3 * x + 1.0;
+    else
+        x = 0.05 * x + 1.0;
+    return x;
+}
 
 int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
 {
@@ -19,16 +35,12 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
     try
     {
         settings = Settings::Create(dllpath, voicedir, std::filesystem::path(wargv[6]).string());
-#ifndef _WIN64
-        abstracttts = new aitalked(settings);
-#else
-        abstracttts = new aitalk_engine(settings);
-#endif
-        abstracttts->setvoice(settings);
+        abstracttts = createruntime(settings);
+        abstracttts->SetVoice(settings);
     }
     catch (std::exception &e)
     {
-        MessageBoxA(0, e.what(), "", 0);
+        MessageBoxA(0, e.what(), "voiceroid aivoice error", 0);
         return 0;
     }
 
@@ -52,11 +64,11 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
             try
             {
                 settings = Settings::Create(dllpath, _voicedir, lang);
-                abstracttts->setvoice(settings);
+                abstracttts->SetVoice(settings);
             }
             catch (std::exception &e)
             {
-                MessageBoxA(0, e.what(), "", 0);
+                MessageBoxA(0, e.what(), "voiceroid aivoice error", 0);
                 return 0;
             }
             voicedir = _voicedir;
@@ -70,7 +82,7 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
         ZeroMemory(input_j, sizeof(input_j));
         if (!host.read(input_j, 4096))
             break;
-        auto &&binary = abstracttts->Speech(_rate, _pitch, input_j);
+        auto &&binary = abstracttts->Speek(linear_map_speed(_rate), linear_map_pitch(_pitch), input_j);
         size_t output_size = binary.size() * 2;
         int fsize = (int)(output_size + 44);
         if (fsize > lunasp::DEFAULT_MEM)

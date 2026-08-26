@@ -21,11 +21,15 @@ On Windows 10, or if you don't want to add it to the system, you can download `M
 
 On Windows 10, the necessary runtime and recognition models are missing in the system; or the Windows 11 version is too low, and the built-in runtime version is outdated. In addition to downloading the voice package, you also need to download the [Natural Voice Runtime](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) and extract it to the software directory. 
 
-== VoiceRoid2
+== A.I.VOICE
+
+Download [A.I.VOICE](https://aivoice.jp/member/downloads/aivoice) or [A.I.VOICE2](https://aivoice.jp/member/downloads/aivoice2) from the official website and install it to use.
+
+== VoiceRoid
 
 In resource downloads, you can download related resources, then select the extraction path.
 
-However, please note that for **additional voice sources**, you must first download any **integration pack**, then extract it into the integration pack to use it. This is because the integration pack contains relatively popular voice sources and necessary runtimes; downloading only additional voice sources will lack the VoiceRoid2 runtime.
+However, please note that for **additional voice sources**, you must first download any **integration pack**, then extract it into the integration pack to use it. This is because the integration pack contains relatively popular voice sources and necessary runtimes; downloading only additional voice sources will lack the VoiceRoid runtime.
 
 == VOICEVOX
 

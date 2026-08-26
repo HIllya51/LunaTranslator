@@ -35,7 +35,7 @@ class _StatefulSubprocess:
         self.hPipe = windows.CreateFile(self.pipename)
         if use_map:
             self.mappedFile = windows.OpenFileMapping(self.mapname)
-            self.mem = windows.MapViewOfFile(self.mappedFile)
+            self.mem = windows.MapViewOfFile(self.mappedFile, 32 * 1024 * 1024)
 
     def _write_string(self, content: str):
         l = content.encode("utf-16-le")
@@ -101,16 +101,13 @@ class _voiceroid_aivoice(_StatefulSubprocess):
             args=(dllpath, voicedir, dialect),
         )
 
-    def speak(self, content, voicedir: str, dialect: str, speed, pitch):
-        code1 = content.encode("shift-jis", "ignore")
-        if not code1:
-            return None
+    def speak(self, content: str, voicedir: str, dialect: str, speed, pitch):
         size = self._exchange(
             voicedir.encode(),
             dialect.encode(),
             bytes(c_float(speed)),
             bytes(c_float(pitch)),
-            code1,
+            content.encode("utf8"),
         )
         if not size:
             raise Exception()

@@ -89,7 +89,7 @@ https://ocr.space/
 
     Если используется процессор Intel (CPU/NPU/GPU), механизм вывода можно заменить на OpenVINO для ускорения распознавания.
     
-    Скачайте [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg). После распаковки скопируйте все файлы из папки **runtimes/win-x64/native** в папку **LunaTranslator/files/DLL64**, затем выберите используемое устройство.
+    Скачайте [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.24.1.nupkg). После распаковки скопируйте все файлы из папки **runtimes/win-x64/native** в папку **LunaTranslator/files/DLL64**, затем выберите используемое устройство.
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
 

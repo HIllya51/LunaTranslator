@@ -1,11 +1,5 @@
-#ifndef API_ADAPTER_H
-#define API_ADAPTER_H
-
-// forward-declaration to avoid including Windows.h in header
-#ifndef _WINDEF_
-struct HINSTANCE__;
-typedef HINSTANCE__ *HINSTANCE;
-#endif
+#ifndef AITALKED_FUNC_H
+#define AITALKED_FUNC_H
 
 namespace ebyroid
 {
@@ -208,70 +202,6 @@ namespace ebyroid
   };
 #pragma pack(pop)
 
-  class ApiAdapter
-  {
-  public:
-    ApiAdapter(const ApiAdapter &) = delete;
-    ApiAdapter(ApiAdapter &&) = delete;
-    ~ApiAdapter();
-
-    static ApiAdapter *Create(const char *);
-
-    ResultCode Init(TConfig *config);
-    ResultCode End();
-    ResultCode SetParam(IntPtr p_param);
-    ResultCode GetParam(IntPtr p_param, uint32_t *size);
-    ResultCode LangLoad(const char *dir_lang);
-    ResultCode LangClear();
-    ResultCode VoiceLoad(const char *voice_name);
-    ResultCode VoiceClear();
-    ResultCode TextToKana(int32_t *job_id, TJobParam *param, const char *text);
-    ResultCode CloseKana(int32_t job_id, int32_t use_event = 0);
-    ResultCode GetKana(int32_t job_id,
-                       char *text_buf,
-                       uint32_t len_buf,
-                       uint32_t *size,
-                       uint32_t *pos);
-    ResultCode TextToSpeech(int32_t *job_id, TJobParam *param, const char *text);
-    ResultCode CloseSpeech(int32_t job_id, int32_t use_event = 0);
-    ResultCode GetData(int32_t job_id, int16_t *raw_buf, uint32_t len_buf, uint32_t *size);
-
-  private:
-    ApiAdapter(HINSTANCE dll_instance) : dll_instance_(dll_instance) {}
-
-    typedef ResultCode(__stdcall *ApiInit)(TConfig *);
-    typedef ResultCode(__stdcall *ApiEnd)(void);
-    typedef ResultCode(__stdcall *ApiSetParam)(IntPtr);
-    typedef ResultCode(__stdcall *ApiGetParam)(IntPtr, uint32_t *);
-    typedef ResultCode(__stdcall *ApiLangLoad)(const char *);
-    typedef ResultCode(__stdcall *ApiLangClear)(void);
-    typedef ResultCode(__stdcall *ApiVoiceLoad)(const char *);
-    typedef ResultCode(__stdcall *ApiVoiceClear)(void);
-    typedef ResultCode(__stdcall *ApiTextToKana)(int32_t *, TJobParam *, const char *);
-    typedef ResultCode(__stdcall *ApiCloseKana)(int32_t, int32_t);
-    typedef ResultCode(__stdcall *ApiGetKana)(int32_t, char *, uint32_t, uint32_t *, uint32_t *);
-    typedef ResultCode(__stdcall *ApiTextToSpeech)(int32_t *, TJobParam *, const char *);
-    typedef ResultCode(__stdcall *ApiCloseSpeech)(int32_t, int32_t);
-    typedef ResultCode(__stdcall *ApiGetData)(int32_t, int16_t *, uint32_t, uint32_t *);
-
-    HINSTANCE dll_instance_ = nullptr;
-
-    ApiInit init_;
-    ApiEnd end_;
-    ApiVoiceLoad voice_load_;
-    ApiVoiceClear voice_clear_;
-    ApiLangClear lang_clear_;
-    ApiSetParam set_param_;
-    ApiGetParam get_param_;
-    ApiLangLoad lang_load_;
-    ApiTextToKana text_to_kana_;
-    ApiCloseKana close_kana_;
-    ApiGetKana get_kana_;
-    ApiTextToSpeech text_to_speech_;
-    ApiCloseSpeech close_speech_;
-    ApiGetData get_data_;
-  };
-
 } // namespace ebyroid
 
-#endif // API_ADAPTER_H
+#endif // AITALKED_FUNC_H

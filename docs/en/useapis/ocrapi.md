@@ -87,7 +87,7 @@ To improve the recognition efficiency of high-precision models, the following me
 
     If using an Intel CPU/NPU/GPU, the inference engine can be replaced with OpenVINO to accelerate recognition.
     
-    Download [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.23.0.nupkg). After extracting, overwrite all files in **runtimes/win-x64/native** to **LunaTranslator/files/DLL64**, and then select the device to use.
+    Download [onnxruntime-openvino](https://globalcdn.nuget.org/packages/intel.ml.onnxruntime.openvino.1.24.1.nupkg). After extracting, overwrite all files in **runtimes/win-x64/native** to **LunaTranslator/files/DLL64**, and then select the device to use.
 
     ![img](https://image.lunatranslator.org/zh/ov_device.png)
 

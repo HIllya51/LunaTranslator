@@ -1,18 +1,7 @@
 #ifndef API_SETTINGS_H
 #define API_SETTINGS_H
 #include "lic_codec.h"
-namespace
-{
 
-  static const char *kDllFilename = "aitalked.dll";
-#ifndef _WIN64
-  static constexpr int32_t kFrequency44 = 0xAC44;
-  static constexpr int32_t kFrequency22 = 0x5622;
-#else
-  // AIVoice
-  static constexpr int32_t kFrequency44 = 0xbb80;
-#endif
-}
 struct Settings
 {
   static std::optional<std::string> findroot(const std::string &dllpath)
@@ -59,6 +48,10 @@ struct Settings
       return langdir.string();
     return {};
   }
+  static bool isaivoice1(const std::string &_dllpath)
+  {
+    return std::filesystem::path(_dllpath).filename() == "AITalk_SDK.dll";
+  }
   static Settings Create(const std::string &_dllpath, const std::string &voiceir, const std::string &Lang_)
   {
     auto root = findroot(_dllpath);
@@ -68,7 +61,7 @@ struct Settings
     settings.root = root.value();
     settings.dllpath = _dllpath;
     settings.voice_name = std::filesystem::path(voiceir).filename().string();
-    settings.license_path = (std::filesystem::path(_dllpath).parent_path() / "aitalk.lic").string();
+    settings.license_path = (std::filesystem::path(_dllpath).parent_path() / (isaivoice1(_dllpath) ? "aitalk5.lic" : "aitalk.lic")).string();
 
     auto &&ret = getseed(settings.license_path);
     if (!ret)
@@ -86,12 +79,16 @@ struct Settings
     if (settings.voice_name.find("_22") != std::string::npos)
     {
       // this means the given library is VOICEROID+
-      settings.frequency = kFrequency22;
+      settings.frequency = 0x5622;
     }
     else
 #endif
     {
-      settings.frequency = kFrequency44;
+#ifndef _WIN64
+      settings.frequency = 0xAC44;
+#else
+      settings.frequency = 0xbb80;
+#endif
     }
 
     SetDllDirectoryA(settings.root.c_str());

@@ -94,7 +94,7 @@ class TTSResult:
 
 
 class SpeechParam:
-    def __init__(self, speed, pitch):
+    def __init__(self, speed: float, pitch: float):
         self.speed = speed  # -10~10
         self.pitch = pitch  # -10~10
 
