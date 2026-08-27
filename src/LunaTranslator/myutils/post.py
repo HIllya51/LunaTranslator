@@ -27,115 +27,163 @@ def dedup_by_cache(line: str, args: dict) -> str:
     return "" if lrucache.test(line) else line
 
 
-def dedup_char(line: str, args: dict) -> str:
-    """AAABBBCCC -> ABC"""
+def _2_f(line, args):
+    if len(line) == 0:
+        return
+    keepnodump = args["保持非重复字符"]
+    times = args["重复次数(若为1则自动分析去重)"]
 
-    rept_len = args["重复次数(若为1则自动分析去重)"]
-    fit_rept = args["保持非重复字符"]
-
-    if rept_len == 1:
-        # record length of each repeating unit
-        hist = Counter({0: -1})  # placeholder
-        step, char = 0, 0
-        for c in line:
-            if c != char:  # found one repeating unit
-                hist[step] += 1
-                step, char = 0, c
-            step += 1
-        # last repeating unit
-        hist[step] += 1
-
-        # length of the most common repeating unit
-        ncnt, mcnt = hist.pop(1, 0), max(hist.values())
-        rept_len = min(k for k, v in hist.items() if v == mcnt) if (ncnt <= mcnt) else 1
-
-    if fit_rept:
-        result = ""
-        idx = 0
-        while idx < len(line):
-            result += line[idx]
-            sect = line[idx : idx + rept_len]
-            idx += rept_len if (len(sect) == rept_len * len(set(sect))) else 1
+    if times >= 2:
+        guesstimes = times
     else:
-        result = "".join(line[idx] for idx in range(0, len(line), rept_len))
-    return result
+        dumptime = Counter()
+        cntx = 1
+        lastc = None
+        for c in list(line) + [0]:
+            if c != lastc:
+                dumptime[cntx] += 1
+                lastc = c
+                cntx = 1
+            else:
+                cntx += 1
+        _max = max(dumptime.values())
+        xx = []
+        for _, _2 in dumptime.items():
+            if _2 == _max:
+                xx.append(_)
+
+        guesstimes = sorted(xx)
+        if guesstimes[0] == 1 and len(guesstimes) > 1:
+            guesstimes = guesstimes[1:]
+        guesstimes = guesstimes[0]
+    if keepnodump:
+        newline = []
+        i = 0
+        while i < len(line):
+            newline.append(line[i])
+            nextn = line[i : i + guesstimes]
+            # print(guesstimes,nextn,len(set(nextn)))
+            if len(nextn) == guesstimes and len(set(nextn)) == 1:
+                i += guesstimes
+            else:
+                i += 1
+        line = "".join(newline)
+    else:
+        newline = [line[i * guesstimes] for i in range(len(line) // guesstimes)]
+        line = "".join(newline)
+    return line
 
 
-def dedup_string(line: str, args: dict) -> str:
-    """ABCDABCDABCD -> ABCD"""
+def _3_f(line, args):
+    times = args["重复次数(若为1则自动分析去重)"]
 
-    rept_cnt = args["重复次数(若为1则自动分析去重)"]
-
-    if rept_cnt >= 2:
-        return line[: len(line) // rept_cnt]
-
-    # string doubling trick
-    idx = (line + line).find(line, 1, -1)
-    result = line[:idx] if idx != -1 else line
-    return result
-
-
-def dedup_multi_string(line: str) -> str:
-    """S1S1S1S2S2S3S3S3 -> S1S2S3"""
-
-    result = ""
-    idx = 0
-    while idx < len(line):
-        # try to find the longest repeating unit
-        for length in range((len(line) - idx) // 2, 0, -1):
-            unit = line[idx : idx + length]
-            repts = 1
-            while line[idx + repts * length : idx + (repts + 1) * length] == unit:
-                repts += 1
-            if repts > 1:  # found repetition
-                result += unit
-                idx += repts * length
+    if times >= 2:
+        guesstimes = times
+    else:
+        guesstimes = len(line)
+        while guesstimes >= 1:
+            if line[: len(line) // guesstimes] * guesstimes == line:
                 break
-        else:  # no repetition, copy one char
-            result += line[idx]
-            idx += 1
-    return result
+            guesstimes -= 1
+    line = line[: len(line) // guesstimes]
+    return line
 
 
-def dedup_decreasing_string(line: str) -> str:
-    """ABCDBCDCDD -> ABCD"""
+def _3_2(line):
+    cache = []
 
-    # math trick with a strong assumption
-    length = isqrt(len(line) * 2)
-    sect = "".join(line[k:length] for k in range(length))
-    result = line[:length] if (sect == line) else line
-    return result
-
-
-def dedup_increasing_string(line: str) -> str:
-    """AABABCABCD -> ABCD"""
-
-    # math trick with a strong assumption
-    length = isqrt(len(line) * 2)
-    sect = "".join(line[-length : k - length] for k in range(length))
-    result = line[-length:] if (sect == line[:-length]) else line
-    return result
-
-
-def dedup_multi_increasing_string(line: str) -> str:
-    """AABABCABCDXXYXYZ -> ABCDXYZ"""
-
-    result = []
     while len(line):
-        # try to find the longest parttern unit
-        for length in range(isqrt(len(line) * 2), 0, -1):
-            sect = line[-length * (length + 1) // 2 :]
-            unit = sect[-length:]
-            # match parttern
-            if "".join(unit[: k - length] for k in range(length)) == sect[:-length]:
-                result.append(unit)
-                line = line[: -length * (length + 1) // 2]
+        last = None
+        dumplength = len(line) // 2
+        while dumplength > 1:
+            bad = False
+            for i in range(dumplength):
+                _i = i + dumplength
+                if line[i] != line[_i]:
+                    bad = True
+                    break
+            if bad:
+                dumplength -= 1
+            else:
+                current = line[:dumplength]
+                if last and last != current:
+                    cache.append(current)
+                last = current
+                line = line[dumplength:]
                 break
-        else:  # no parttern, copy one char
-            result.append(line[-1])
-            line = line[:-1]
-    result = "".join(reversed(result))
-    return result
+        if last is None:
+            cache.append(line[0])
+            line = line[1:]
+
+    return "".join(cache)
+
+
+def _10_f(line: str):
+    cnt = Counter(line)
+    saveline = []
+    for k in sorted(cnt.keys(), key=lambda x: -cnt[x]):
+        last = line.rfind(k)
+
+        length = 1
+        while True:
+            if last - length < 0:
+                break
+
+            if line[last] == line[last - length]:
+                last = last - length
+            if last - length > 0:
+                length += 1
+            else:
+                break
+        saveline.append(line[last - length : last + 1])
+
+    line = sorted(saveline, key=len, reverse=True)[0]
+    return line
+
+
+def _13_f(line: str):  # 递增式
+    cnt = Counter(line)
+    saveline = []
+    for k in sorted(cnt.keys(), key=lambda x: -cnt[x]):
+
+        first = line.find(k)
+        length = 1
+        while True:
+            if first + length >= len(line):
+                break
+
+            if line[first] == line[first + length]:
+                first += length
+            if first + length < len(line):
+
+                length += 1
+            else:
+                break
+        saveline.append(line[first : first + length])
+
+    line = sorted(saveline, key=len, reverse=True)[0]
+    return line
+
+
+def _13_fEX(line: str):
+    saves = []
+    while len(line):
+        for i in range(len(line)):
+            maxlongline = line[i:]
+            shengyu = line
+            _maxlong = maxlongline
+            succ = True
+            while len(_maxlong):
+                if shengyu.endswith(_maxlong) == False:
+                    succ = False
+                    break
+                shengyu = shengyu[: -len(_maxlong)]
+                _maxlong = _maxlong[:-1]
+            if succ:
+                break
+        saves.append(maxlongline)
+        line = line[: -((len(maxlongline) * (1 + len(maxlongline)))) // 2]
+    return "".join(reversed(saves))
 
 
 def remove_braces(line: str) -> str:
@@ -239,10 +287,10 @@ def unicode_normalization(text: str, args: dict) -> str:
 
 processfunctions = {
     "_remove_symbo": _remove_symbol,
-    "_2": dedup_char,
-    "_3": dedup_string,
-    "_3_2": dedup_multi_string,
-    "_10": dedup_decreasing_string,
+    "_2": _2_f,
+    "_3": _3_f,
+    "_3_2": _3_2,
+    "_10": _10_f,
     "_1": remove_braces,
     "_4": remove_angle_brackets,
     "_6": remove_line_breaks,  # 废弃，重定向到新的实现
@@ -251,8 +299,8 @@ processfunctions = {
     "_92": remove_alphabets,
     "_7": legacy_string_replace,  # depracated
     "_8": legacy_regex_replace,  # depracated
-    "_13": dedup_increasing_string,  # depracated
-    "_13EX": dedup_multi_increasing_string,
+    "_13": _13_f,  # depracated
+    "_13EX": _13_fEX,
     "_7_zhuanyi": legacy_string_replace_with_escape,  # depracated
     "_remove_non_shiftjis_char": _remove_non_shiftjis_char,
     "_remove_control": _remove_control,
