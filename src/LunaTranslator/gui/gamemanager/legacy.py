@@ -206,13 +206,20 @@ class dialog_savedgame_legacy(QWidget):
         k = self.model.data(idx, self.KRole)
         savehook_new_data[k]["title"] = self.model.data(idx)
 
+    leave = pyqtSignal(bool)
+
     def __init__(self, parent) -> None:
-        # if dialog_savedgame._sigleton :
-        #         return
-        # dialog_savedgame._sigleton=True
         super().__init__(parent)
         self.parent_ = parent
-        formLayout = QVBoxLayout(self)  #
+        formLayout = QVBoxLayout(self)
+        w = QWidget()
+        self.leave.connect(w.setHidden)
+        hbox = QHBoxLayout(w)
+        formLayout.addWidget(w)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        hbox.setSpacing(0)
+        hbox.setAlignment(Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignTop)
+        parent.createviewswitch(hbox)
         model = LStandardItemModel()
         model.setHorizontalHeaderLabels(["转区", "", "设置", "游戏"])  # ,'HOOK'])
 
@@ -243,7 +250,5 @@ class dialog_savedgame_legacy(QWidget):
                 ("添加游戏", self.clicked3),
             )
         )
-        btn = IconButton(none=True)
-        formLayout.addWidget(btn)
         formLayout.addWidget(table)
         formLayout.addLayout(bottom)

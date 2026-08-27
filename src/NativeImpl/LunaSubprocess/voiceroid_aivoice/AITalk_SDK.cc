@@ -15,6 +15,7 @@ struct AITalk_SDK_impl
     X(Tts_new, AITalkReturnCode (*)(AITalk_Core_Tts **), "AITalk_Core_Tts_new")                                                                                                                  \
     X(Tts_delete, AITalkReturnCode (*)(AITalk_Core_Tts *), "AITalk_Core_Tts_delete")                                                                                                             \
     X(Tts_putKeyValue, AITalkReturnCode (*)(AITalk_Core_Tts *, AITalk_Core_TtsId, const char *, AITalkMixedType), "AITalk_Core_Tts_putKeyValue")                                                 \
+    X(Tts_hasKey, AITalkReturnCode (*)(AITalk_Core_Tts * ptr, const AITalk_Core_TtsId id, const char *key), "AITalk_Core_Tts_hasKey")                                                            \
     X(Tts_deleteKey, AITalkReturnCode (*)(AITalk_Core_Tts *, AITalk_Core_TtsId, const char *), "AITalk_Core_Tts_deleteKey")                                                                      \
     X(Tts_selectDefaultKey, AITalkReturnCode (*)(AITalk_Core_Tts *, AITalk_Core_TtsId, const char *), "AITalk_Core_Tts_selectDefaultKey")                                                        \
     X(Tts_run, AITalkReturnCode (*)(AITalk_Core_Tts *, const char *, AITalk_Core_TtsOutCallback, void *), "AITalk_Core_Tts_run")                                                                 \
@@ -39,8 +40,6 @@ struct AITalk_SDK_impl
     AITalk_Core_CallbackSelector *selector = nullptr;
     AITalk_Core_PresetSet *preset = nullptr;
     AITalk_Core_TtsParameter *param = nullptr;
-    std::pair<float, float> lastparam;
-    bool settedttsparam = false;
 
     AITalk_SDK_impl(const Settings &settings);
     ~AITalk_SDK_impl();
@@ -71,8 +70,16 @@ struct AITalk_SDK_impl
         return v;
     }
     template <typename T>
-    AITalkReturnCode putKV(AITalk_Core_TtsId id, const char *key, T path)
+    AITalkReturnCode putKV(AITalk_Core_TtsId id, const char *key, T path, bool existremove = false)
     {
+        if (AITalkReturnCode_Ok == api.Tts_hasKey(tts, id, key))
+        {
+            if (!existremove)
+                return AITalkReturnCode_Ok;
+            auto r = api.Tts_deleteKey(tts, id, key);
+            if (r != AITalkReturnCode_Ok)
+                return r;
+        }
         return api.Tts_putKeyValue(tts, id, key, createdata(path));
     };
     AITalkReturnCode select(AITalk_Core_TtsId id, const char *key)
@@ -80,9 +87,9 @@ struct AITalk_SDK_impl
         return api.Tts_selectDefaultKey(tts, id, key);
     };
     template <typename T>
-    bool loadAndSelect(AITalk_Core_TtsId id, const char *key, T path)
+    bool loadAndSelect(AITalk_Core_TtsId id, const char *key, T path, bool existremove = false)
     {
-        return putKV(id, key, path) == AITalkReturnCode_Ok && select(id, key) == AITalkReturnCode_Ok;
+        return putKV(id, key, path, existremove) == AITalkReturnCode_Ok && select(id, key) == AITalkReturnCode_Ok;
     };
 };
 struct Ctx
@@ -192,21 +199,11 @@ AITalk_SDK_impl::~AITalk_SDK_impl()
 
 std::vector<int16_t> AITalk_SDK_impl::Speek(float _rate, float _pitch, const std::string &text)
 {
-    if (lastparam != std::make_pair(_rate, _pitch))
-    {
-        lastparam = std::make_pair(_rate, _pitch);
-        if (settedttsparam)
-        {
-            api.Tts_deleteKey(tts, AITalk_Core_TtsId_TtsParameter, "key");
-            api.Tts_deleteKey(tts, AITalk_Core_TtsId_PresetSet, "key");
-        }
-        settedttsparam = true;
-        api.TtsParameter_putKeyValue(param, AITalk_Core_TtsParameterId_Rate, NULL, createdata(_rate));
-        api.TtsParameter_putKeyValue(param, AITalk_Core_TtsParameterId_Pitch, NULL, createdata(_pitch));
-        loadAndSelect(AITalk_Core_TtsId_TtsParameter, "key", param);
-        api.PresetSet_set(preset, AITalkPresetSetId_TtsParameter, createdata(param));
-        loadAndSelect(AITalk_Core_TtsId_PresetSet, "key", preset);
-    }
+    api.TtsParameter_putKeyValue(param, AITalk_Core_TtsParameterId_Rate, NULL, createdata(_rate));
+    api.TtsParameter_putKeyValue(param, AITalk_Core_TtsParameterId_Pitch, NULL, createdata(_pitch));
+    loadAndSelect(AITalk_Core_TtsId_TtsParameter, "key", param, true);
+    api.PresetSet_set(preset, AITalkPresetSetId_TtsParameter, createdata(param));
+    loadAndSelect(AITalk_Core_TtsId_PresetSet, "key", preset, true);
 
     Ctx ctx;
     ctx.pimpl = this;

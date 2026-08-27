@@ -55,13 +55,27 @@ from gui.gamemanager.common import (
 
 @Singleton
 class dialog_savedgame_integrated(saveposwindow):
+    def createviewswitch(self, layout: QLayout):
+        switch = threeswitch(
+            self,
+            icons=["fa.list", "fa.th-list", "fa.th"],
+            Direction=QBoxLayout.Direction.TopToBottom,
+        )
+        switch.setDirection(QBoxLayout.Direction.LeftToRight)
 
-    def selectlayout(self, type, init=False):
-        if not init:
-            self.syssettingbtn.setVisible(type != 0)
+        switch.selectlayout(
+            globalconfig.get("gamemanager_integrated_internal_layout", 2)
+        )
+        switch.btnclicked.connect(self.selectlayout)
+        if globalconfig.get("gamemanager_integrated_internal_layout", 2) != 0:
+            syssettingbtn = IconButton(icon="fa.gear", parent=self, tips="界面设置")
+            syssettingbtn.clicked.connect(lambda: dialog_syssetting(self.__internal))
+            layout.addWidget(syssettingbtn)
+        layout.addWidget(switch)
+
+    def selectlayout(self, type):
         try:
             globalconfig["gamemanager_integrated_internal_layout"] = type
-            self.do_resize()
             klass = [
                 dialog_savedgame_legacy,
                 dialog_savedgame_v3,
@@ -70,10 +84,12 @@ class dialog_savedgame_integrated(saveposwindow):
             _old = self.internallayout.takeAt(0).widget()
             _old.hide()
             _: dialog_savedgame_new = klass(self)
+            self.__internal = _
+            if not self.underMouse():
+                _.leave.emit(True)
             self.internallayout.addWidget(_)
             _.directshow()
             _old.deleteLater()
-            self.__internal = _
         except:
             print_exc()
 
@@ -98,61 +114,17 @@ class dialog_savedgame_integrated(saveposwindow):
         self.internallayout.addWidget(QWidget())
         self.setCentralWidget(w)
 
-        self.switch = threeswitch(
-            self,
-            icons=["fa.list", "fa.th-list", "fa.th"],
-            Direction=QBoxLayout.Direction.TopToBottom,
-        )
-        self.syssettingbtn = IconButton(icon="fa.gear", parent=self, tips="界面设置")
-        self.syssettingbtn.clicked.connect(lambda: dialog_syssetting(self.__internal))
-        self.syssettingbtn.sizeChanged.connect(self.do_resize)
-        self.switch.sizeChanged.connect(self.do_resize)
         self.show()
-        self.switch.selectlayout(
-            globalconfig.get("gamemanager_integrated_internal_layout", 2)
-        )
-        self.switch.btnclicked.connect(self.selectlayout)
-        self.selectlayout(
-            globalconfig.get("gamemanager_integrated_internal_layout", 2), True
-        )
-
-    def showEvent(self, a0):
-        self.__check()
-        return super().showEvent(a0)
-
-    def __check(self):
-        if not (self.hasFocus() and self.underMouse()):
-            if globalconfig.get("gamemanager_integrated_internal_layout", 2) != 0:
-                self.switch.hide()
-            self.syssettingbtn.hide()
-
-    def resizeEvent(self, e: QResizeEvent):
-        self.do_resize()
-
-    def do_resize(self, _=None):
-        if globalconfig.get("gamemanager_integrated_internal_layout", 2) in (2,):
-            self.switch.setDirection(QBoxLayout.Direction.TopToBottom)
-            self.switch.move(0, self.height() - self.switch.height())
-            self.syssettingbtn.move(
-                0, self.height() - self.switch.height() - self.syssettingbtn.height()
-            )
-        else:
-            self.switch.setDirection(QBoxLayout.Direction.LeftToRight)
-            x = self.width() - self.switch.width()
-            self.switch.move(x, 0)
-            x -= self.syssettingbtn.width()
-            self.syssettingbtn.move(x, 0)
+        self.selectlayout(globalconfig.get("gamemanager_integrated_internal_layout", 2))
 
     def leaveEvent(self, a0):
-        if globalconfig.get("gamemanager_integrated_internal_layout", 2) != 0:
-            self.switch.hide()
-        self.syssettingbtn.hide()
+        target_widget = QApplication.widgetAt(QCursor.pos())
+        if not isinstance(target_widget, QMenu):
+            self.__internal.leave.emit(True)
         return super().leaveEvent(a0)
 
     def enterEvent(self, a0):
-        self.switch.show()
-        if globalconfig.get("gamemanager_integrated_internal_layout", 2) != 0:
-            self.syssettingbtn.show()
+        self.__internal.leave.emit(False)
         return super().enterEvent(a0)
 
 
@@ -418,10 +390,9 @@ class ItemWidget(QWidget):
 
     @property
     def margin(self):
-        return (
-            ui_settings["dialog_savegame_layout"].get("margin2", 6)
-            + ui_settings["dialog_savegame_layout"].get("borderW", 1)
-        )
+        return ui_settings["dialog_savegame_layout"].get("margin2", 6) + ui_settings[
+            "dialog_savegame_layout"
+        ].get("borderW", 1)
 
     @property
     def imageheight(self):
@@ -452,7 +423,11 @@ class ItemWidget(QWidget):
 
     def paintEvent(self, a0):
         dialog_savegame_layout = ui_settings["dialog_savegame_layout"]
-        hasFocus = dialog_savegame_layout.get("onselectcolor2", "#40007fff") if self.isfucked else None
+        hasFocus = (
+            dialog_savegame_layout.get("onselectcolor2", "#40007fff")
+            if self.isfucked
+            else None
+        )
         if self.objectName() == "savegame_existsFalse":
             background = dialog_savegame_layout.get("onfilenoexistscolor2", "#40acacac")
         else:
@@ -505,7 +480,10 @@ class ItemWidget(QWidget):
         cutter_path.addRect(cutter)
         result_path = path.subtracted(cutter_path)
         painter.fillPath(
-            result_path, QColor(ui_settings["dialog_savegame_layout"].get("textbackColor", "#ffffffff"))
+            result_path,
+            QColor(
+                ui_settings["dialog_savegame_layout"].get("textbackColor", "#ffffffff")
+            ),
         )
 
     def get_out_path(self):
@@ -538,7 +516,8 @@ class ItemWidget(QWidget):
         return path
 
 
-class dialog_savedgame_new(QSplitter):
+class dialog_savedgame_new(QWidget):
+    leave = pyqtSignal(bool)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         if event.mimeData().hasUrls():
@@ -831,7 +810,9 @@ class dialog_savedgame_new(QSplitter):
             ]
         ):
             minv = 0 if i >= 2 else 32
-            spin = getspinbox(minv, 1000, ui_settings["dialog_savegame_layout"], key, default=default)
+            spin = getspinbox(
+                minv, 1000, ui_settings["dialog_savegame_layout"], key, default=default
+            )
             formLayout.addRow(name, spin)
             if "radius" == key:
                 spin.valueChanged.connect(self.callchange)
@@ -974,23 +955,17 @@ class dialog_savedgame_new(QSplitter):
             self.topw.setFixedHeight(self.topw.sizeHint().height())
         return super().event(e)
 
-    def createHandle(self):
-        class MySplitterHandle(QSplitterHandle):
-            def paintEvent(self1, event):
-                if self1.underMouse():
-                    super().paintEvent(event)
-                else:
-                    pass
+    def _showhidebar(self, leave):
+        self.topw.setHidden(leave)
 
-        return MySplitterHandle(self.orientation(), self)
-
-    def __init__(self, parent) -> None:
+    def __init__(self, parent: "dialog_savedgame_integrated") -> None:
         super().__init__(parent)
+        self.leave.connect(self._showhidebar)
+        self.lay = QVBoxLayout(self)
+        self.lay.setContentsMargins(0, 0, 0, 0)
         self._parent = parent
         dialog_savedgame_new.reference = self
         self.setObjectName("NOBORDER")
-        self.setOrientation(Qt.Orientation.Vertical)
-        self.setHandleWidth(1)
         _w = QWidget()
         self.topw = _w
         layout = QHBoxLayout(_w)
@@ -1012,14 +987,16 @@ class dialog_savedgame_new(QSplitter):
                 icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
             )
         )
-        self.addWidget(_w)
+        layout.addWidget(IconButton(None))
+        parent.createviewswitch(layout)
+        self.lay.addWidget(_w)
         __ = QWidget()
         self.flowcontainer = QHBoxLayout(__)
         self.flowcontainer.setContentsMargins(0, 0, 0, 0)
         self.flow = QWidget()
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
-        self.addWidget(__)
+        self.lay.addWidget(__)
         self.savebutton = []
 
         self.idxsave = []
@@ -1030,13 +1007,6 @@ class dialog_savedgame_new(QSplitter):
         else:
             self.tagschanged(tuple())
         self.installEventFilter(self)
-
-        def __(_):
-            globalconfig["dialogsplit"] = self.sizes()
-
-        if "dialogsplit" in globalconfig:
-            self.setSizes(globalconfig["dialogsplit"])
-        self.splitterMoved.connect(__)
 
     def eventFilter(self, obj, _):
         try:

@@ -208,8 +208,7 @@ def createbtnthemelight(self):
 
 def checkthemesettingvisandapply(self, _):
     lightsetting = getget_setting_window()
-    if not bool(lightsetting):
-        self.btnthemelight.hide()
+    self.btnthemelight.setVisible(bool(lightsetting))
     gobject.base.setcommonstylesheet()
 
 

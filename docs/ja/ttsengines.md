@@ -21,11 +21,13 @@ Windows 10上で、またはシステムに追加したくない場合、[NVDA �
 
 Windows 10では、システムに必要なランタイムおよび認識モデルが不足しています。または、Windows 11のバージョンが低すぎるため、システムに組み込まれているランタイムのバージョンが低くなっています。音声パックのダウンロードに加えて、[自然音声ランタイム](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)を追加でダウンロードし、ソフトウェアディレクトリに解凍する必要があります。
 
-== A.I.VOICE
+== VoiceRoid/A.I.VOICE
+
+#### A.I.VOICE
 
 公式サイトから[A.I.VOICE](https://aivoice.jp/member/downloads/aivoice)または[A.I.VOICE2](https://aivoice.jp/member/downloads/aivoice2)をダウンロードしてインストールすれば使用できます。
 
-== VoiceRoid
+#### VoiceRoid
 
 リソースダウンロードで関連リソースをダウンロードし、解凍先のパスを選択するだけです。
 

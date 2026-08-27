@@ -21,11 +21,13 @@
 
 在 Windows 10 上，系統內缺少必要的執行環境和辨識模型；或者 Windows 11 的版本過低，系統內建的執行環境版本過低。除了需要下載語音包外，還需補充下載[自然語音執行環境](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)並解壓縮到軟體目錄中。
 
-== A.I.VOICE
+== VoiceRoid/A.I.VOICE
+
+#### A.I.VOICE
 
 在官網下載[A.I.VOICE](https://aivoice.jp/member/downloads/aivoice)或[A.I.VOICE2](https://aivoice.jp/member/downloads/aivoice2)並安裝即可使用。
 
-== VoiceRoid
+#### VoiceRoid
 
 在資源下載中，可以下載到相關資源，然後選擇解壓縮的路徑即可。
 

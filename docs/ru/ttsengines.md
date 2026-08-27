@@ -21,11 +21,13 @@
 
 На Windows 10 в системе отсутствуют необходимые среды выполнения и модели распознавания; или версия Windows 11 слишком старая, и встроенная среда выполнения устарела. Помимо загрузки голосовых пакетов, необходимо дополнительно скачать [среду выполнения натуральной речи](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) и распаковать в директорию программы.
 
-== A.I.VOICE
+== VoiceRoid/A.I.VOICE
+
+#### A.I.VOICE
 
 Скачайте [A.I.VOICE](https://aivoice.jp/member/downloads/aivoice) или [A.I.VOICE2](https://aivoice.jp/member/downloads/aivoice2) с официального сайта и установите для использования.
 
-== VoiceRoid
+#### VoiceRoid
 
 В разделе загрузки ресурсов можно скачать соответствующие файлы, затем выбрать путь распаковки.
 

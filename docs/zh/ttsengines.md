@@ -21,11 +21,13 @@
 
 在Windows 10上，系统内缺少必要的运行时和语音模型；或者Windows 11的版本过低，系统自带的运行时版本过低。除了需要下载语音包外，还需补充下载[自然语音运行时](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)并解压到软件目录中。
 
-== A.I.VOICE
+== VoiceRoid/A.I.VOICE
+
+#### A.I.VOICE
 
 在官网下载[A.I.VOICE](https://aivoice.jp/member/downloads/aivoice)或[A.I.VOICE2](https://aivoice.jp/member/downloads/aivoice2)并安装即可使用。
 
-== VoiceRoid
+#### VoiceRoid
 
 在资源下载中，可以下载到相关资源，然后选择解压的路径即可。
 

@@ -164,7 +164,7 @@ def createsomecontrols(
 class dialog_syssetting(LDialog):
     def __init__(self, parent: "WordViewTooltip") -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("其他设置")
+        self.setWindowTitle("设置")
         formLayout = LFormLayout(self)
 
         formLayout.addRow(
@@ -273,7 +273,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             if (
                 focused_widget
                 and focused_widget.window()
-                and (self in (focused_widget, focused_widget.window().parent() == self))
+                and (self in (focused_widget.window(), focused_widget.window().parent()))
             ):
                 pass
             else:

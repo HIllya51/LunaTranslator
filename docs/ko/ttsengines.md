@@ -21,11 +21,13 @@ Windows 10에서, 또는 시스템에 추가하고 싶지 않은 경우 [NVDA �
 
 Windows 10에서는 시스템에 필요한 런타임과 인식 모델이 부족하거나, Windows 11의 버전이 너무 낮아 시스템에 내장된 런타임 버전이 낮을 수 있습니다. 음성 팩을 다운로드하는 것 외에도 [자연 음성 런타임](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech)을 추가로 다운로드하여 소프트웨어 디렉토리에 압축을 풀어야 합니다.
 
-== A.I.VOICE
+== VoiceRoid/A.I.VOICE
+
+#### A.I.VOICE
 
 공식 웹사이트에서 [A.I.VOICE](https://aivoice.jp/member/downloads/aivoice) 또는 [A.I.VOICE2](https://aivoice.jp/member/downloads/aivoice2)를 다운로드하여 설치하면 사용할 수 있습니다.
 
-== VoiceRoid
+#### VoiceRoid
 
 자원 다운로드에서 관련 자원을 다운로드한 후 압축을 풀 경로를 선택하면 됩니다.
 

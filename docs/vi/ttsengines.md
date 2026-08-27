@@ -21,11 +21,13 @@ Trên Windows 10, hoặc nếu bạn không muốn thêm vào hệ thống, bạ
 
 Trên Windows 10, hệ thống thiếu các runtime và mô hình nhận dạng cần thiết; hoặc phiên bản Windows 11 quá thấp, phiên bản runtime tích hợp sẵn trong hệ thống quá cũ. Ngoài việc tải gói giọng nói, bạn cần tải thêm [Runtime Giọng nói tự nhiên](https://lunatranslator.org/Resource/microsoft.cognitiveservices.speech) và giải nén vào thư mục phần mềm. 
 
-== A.I.VOICE
+== VoiceRoid/A.I.VOICE
+
+#### A.I.VOICE
 
 Tải xuống [A.I.VOICE](https://aivoice.jp/member/downloads/aivoice) hoặc [A.I.VOICE2](https://aivoice.jp/member/downloads/aivoice2) từ trang web chính thức và cài đặt để sử dụng.
 
-== VoiceRoid
+#### VoiceRoid
 
 Trong phần tải tài nguyên, bạn có thể tải xuống các tài nguyên liên quan, sau đó chọn đường dẫn giải nén là được.
 

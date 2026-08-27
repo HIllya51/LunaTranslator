@@ -634,8 +634,14 @@ class pixwrapper(QSplitter):
 
 class dialog_savedgame_v3(QSplitter):
     def createsettings(self, formLayout: QFormLayout):
-    
-        spin = getspinbox(10, 1000, ui_settings["dialog_savegame_layout"], "listitemheight", default=30)
+
+        spin = getspinbox(
+            10,
+            1000,
+            ui_settings["dialog_savegame_layout"],
+            "listitemheight",
+            default=30,
+        )
         formLayout.addRow("高度", spin)
         spin.valueChanged.connect(self.callchange)
         formLayout.addRow(
@@ -822,7 +828,9 @@ class dialog_savedgame_v3(QSplitter):
             ui_settings["dialog_savegame_layout"].get("backcolor3", "#40ffffff")
         )
         style += "#savegame_existsFalse{{background-color:{};}}".format(
-            ui_settings["dialog_savegame_layout"].get("onfilenoexistscolor3", "#40acacac")
+            ui_settings["dialog_savegame_layout"].get(
+                "onfilenoexistscolor3", "#40acacac"
+            )
         )
         style += "#savegame_onselectcolor1{{background-color: {};}}".format(
             ui_settings["dialog_savegame_layout"].get("onselectcolor3", "#40007fff")
@@ -847,6 +855,8 @@ class dialog_savedgame_v3(QSplitter):
             group0.w(idx2).click()
         except:
             pass
+
+    leave = pyqtSignal(bool)
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
@@ -909,13 +919,20 @@ class dialog_savedgame_v3(QSplitter):
             )
         )
         self.righttop.addTab(self.pixview, "_画廊_")
+        w = QWidget()
+        self.leave.connect(w.setHidden)
+        self.righttop.setCornerWidget(w)
+        hbox = QHBoxLayout(w)
+        parent.createviewswitch(hbox)
         self.addWidget(self.righttop)
         self.setObjectName("NOBORDER")
 
         def __(_):
             ui_settings["dialog_savegame_layout"]["listitemwidth_2"] = self.sizes()
 
-        self.setSizes(ui_settings["dialog_savegame_layout"].get("listitemwidth_2", [300, 500]))
+        self.setSizes(
+            ui_settings["dialog_savegame_layout"].get("listitemwidth_2", [300, 500])
+        )
         self.splitterMoved.connect(__)
         self.setStretchFactor(0, 0)
         self.setStretchFactor(1, 1)
