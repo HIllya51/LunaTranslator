@@ -684,13 +684,8 @@
     "注音颜色": "Màu của ngữ âm",
     "最小高度": "Chiều cao tối thiểu",
     "在WebView2内显示": "Hiển thị trong WebView2",
-    "鼠标悬停时": "Khi di chuột qua (Hover)",
     "显示详细信息": "Hiển thị thông tin chi tiết",
-    "点击单词时": "Khi nhấn vào từ",
-    "打开外部链接": "Mở liên kết ngoài",
-    "外部链接": "Liên kết ngoài",
     "需要键盘按下": "Cần thao tác nhấn phím",
-    "需要的键": "Phím yêu cầu",
     "在小窗口中": "Trong cửa sổ nhỏ",
     "显示单词信息": "Hiển thị thông tin từ vựng",
     "失去焦点时关闭": "Đóng khi mất tiêu điểm",
@@ -939,5 +934,10 @@
     "窗口录制": "Ghi hình cửa sổ",
     "播放自动录音": "\"播放自动录音\" dịch sang tiếng Việt là: **Phát bản ghi âm tự động**",
     "倾斜": "Nghiêng",
-    "相对大小": "Kích thước tương đối"
+    "相对大小": "Kích thước tương đối",
+    "触发功能": "Kích hoạt chức năng",
+    "Webview2崩溃，将切换为Qt显示。": "Webview2 bị sập, sẽ chuyển sang hiển thị bằng Qt.",
+    "鼠标悬停": "Di chuột qua",
+    "触发方式": "Phương thức kích hoạt",
+    "中键点击": "Nhấp chuột giữa"
 }

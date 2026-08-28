@@ -64,14 +64,12 @@ class TTS(TTSbase):
         return zip(names, paths)
 
     def getvoicelist(self):
-        self._7 = NativeUtils.SAPI.List(7)
-        self._10 = NativeUtils.SAPI.List(10)
         names = []
         vals = []
         for name, path in self.get_paths():
             names.append(name)
             vals.append((1, path))
-        for token, name in self._10 + self._7:
+        for token, name in NativeUtils.SAPI.List():
             names.append(name)
             vals.append((0, token))
         return vals, names

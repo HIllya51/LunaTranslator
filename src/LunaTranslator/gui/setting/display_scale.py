@@ -72,7 +72,6 @@ def __select(combo: SuperCombo):
     f = QFileDialog.getOpenFileName(directory=p, filter="config.json")
     res = f[0]
     if res:
-        print(res)
         with open(res, "r", encoding="utf8") as ff:
             __ = json.load(ff)
         combo.clear()
@@ -92,7 +91,7 @@ def __layout(isglobal, profile):
         return combo
     btn = LPushButton("导入")
     btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-    btn.clicked.connect(functools.partial(__select, profile, combo))
+    btn.clicked.connect(functools.partial(__select, combo))
     return getboxlayout([combo, btn])
 
 

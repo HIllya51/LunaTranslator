@@ -58,7 +58,7 @@ SuspendResumeProcess = utilsdll.SuspendResumeProcess
 SuspendResumeProcess.argtypes = (DWORD,)
 
 _SAPI_List = utilsdll.SAPI_List
-_SAPI_List.argtypes = (c_uint, c_void_p)
+_SAPI_List.argtypes = (c_void_p,)
 
 _SAPI_Speak = utilsdll.SAPI_Speak
 _SAPI_Speak.argtypes = (c_wchar_p, c_wchar_p, c_int, c_int, c_int, c_void_p)
@@ -67,13 +67,13 @@ _SAPI_Speak.restype = c_bool
 
 class SAPI:
     @staticmethod
-    def List(v):
+    def List():
         ret = []
 
         def __(ret: list, _id, name):
             ret.append((_id, name))
 
-        _SAPI_List(v, CFUNCTYPE(None, c_wchar_p, c_wchar_p)(functools.partial(__, ret)))
+        _SAPI_List(CFUNCTYPE(None, c_wchar_p, c_wchar_p)(functools.partial(__, ret)))
         return ret
 
     @staticmethod
@@ -576,6 +576,7 @@ webview2_webmessage_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_FilesDropped_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_titlechange_callback_t = CFUNCTYPE(None, c_wchar_p)
 webview2_IconChanged_callback_t = CFUNCTYPE(None, POINTER(c_char), c_size_t)
+webview2_Crashed_Callback_t = CFUNCTYPE(None, c_char_p)
 webview2_set_callbacks.argtypes = (
     c_void_p,
     webview2_zoomchange_callback_t,
@@ -584,6 +585,7 @@ webview2_set_callbacks.argtypes = (
     webview2_FilesDropped_callback_t,
     webview2_titlechange_callback_t,
     webview2_IconChanged_callback_t,
+    webview2_Crashed_Callback_t,
 )
 _webview2_detect_version = utilsdll.webview2_detect_version
 _webview2_detect_version.argtypes = c_wchar_p, c_void_p
@@ -687,6 +689,7 @@ class WebView2(AbstractWebView):
         FilesDropped_callback,
         titlechange_callback,
         IconChanged_callback,
+        Crashed_Callback,
     ):
         callbacks = []
         callbacks.append(webview2_zoomchange_callback_t(zoomchange_callback))
@@ -695,6 +698,7 @@ class WebView2(AbstractWebView):
         callbacks.append(webview2_FilesDropped_callback_t(FilesDropped_callback))
         callbacks.append(webview2_titlechange_callback_t(titlechange_callback))
         callbacks.append(webview2_IconChanged_callback_t(IconChanged_callback))
+        callbacks.append(webview2_Crashed_Callback_t(Crashed_Callback))
         self.callbacks.extend(callbacks)
         webview2_set_callbacks(self.ptr, *callbacks)
 

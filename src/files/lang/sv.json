@@ -684,13 +684,8 @@
     "注音颜色": "Fonetiska färger",
     "最小高度": "Minsta höjd",
     "在WebView2内显示": "Visas i WebView2",
-    "鼠标悬停时": "När du håller muspekaren över",
     "显示详细信息": "Visar detaljer",
-    "点击单词时": "När du klickar på ett ord",
-    "打开外部链接": "Öppna externa länkar",
-    "外部链接": "Externa länkar",
     "需要键盘按下": "Kräver en tangentbordstryckning",
-    "需要的键": "Nödvändiga nycklar",
     "在小窗口中": "i ett litet fönster",
     "显示单词信息": "Visar ordinformation",
     "失去焦点时关闭": "Stäng när du tappar fokus",
@@ -939,5 +934,10 @@
     "窗口录制": "Fönsterinspelning",
     "播放自动录音": "Spela upp automatisk inspelning",
     "倾斜": "Lutande",
-    "相对大小": "Relativ storlek"
+    "相对大小": "Relativ storlek",
+    "触发功能": "Utlösningsfunktion",
+    "Webview2崩溃，将切换为Qt显示。": "Webview2 kraschade, kommer att växla till Qt-visning.",
+    "鼠标悬停": "Håll muspekaren över",
+    "触发方式": "Utlösningssätt",
+    "中键点击": "Mellanklick"
 }

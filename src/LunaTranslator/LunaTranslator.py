@@ -148,6 +148,7 @@ class BASEOBJECT(QObject):
     show_original_switch = pyqtSignal(bool)
     sourceswitchs = pyqtSignal(str, bool)
     fenyinsettings = pyqtSignal(bool)
+    fencisettings = pyqtSignal(bool)
     dispatch_translate = pyqtSignal(str, str)
     createimageviewsig = pyqtSignal(QWidget)
     switchtotspage = pyqtSignal()
@@ -163,6 +164,7 @@ class BASEOBJECT(QObject):
     llamacppdownloadcheck = pyqtSignal(int)
     llamacppposttask = pyqtSignal(str, object)
     wheelhistory = pyqtSignal(int)
+    switchdisplayengine = pyqtSignal(str)
 
     def connectsignal(self, signal: pyqtBoundSignal, callback):
         if signal in self.__cachesignal:
@@ -196,6 +198,7 @@ class BASEOBJECT(QObject):
     def initsignals(self):
         self.__cachesignal: "dict[pyqtBoundSignal, tuple]" = {}
         self.__cachesignal2: "dict[pyqtBoundSignal, list]" = {}
+        self.__connect_internal(self.switchdisplayengine)
         self.__connect_internal_all(self.llamacppstdout)
         self.__connect_internal(self.llamacppdownloadprogress)
         self.__connect_internal(self.llamacppdownloadcheck)
@@ -1378,7 +1381,7 @@ class BASEOBJECT(QObject):
         os.startfile(link)
 
     @threader
-    def clickwordcallback(self, wordd: dict, append=False):
+    def clickwordcallback(self, wordd: dict, which: str):
         if isinstance(wordd, WordSegResult):
             word = wordd
         elif isinstance(wordd, dict):
@@ -1391,36 +1394,43 @@ class BASEOBJECT(QObject):
         ]
         sentence = self.currenttext
 
-        def __openlink(word1):
-            for link in globalconfig["useopenlinklink1"]:
-                os.startfile(
-                    link.replace("{word}", word1).replace("{sentence}", sentence)
-                )
-
         funcs = {
-            "copyword": lambda word1: NativeUtils.ClipBoard.setText(
-                (NativeUtils.ClipBoard.text + word1) if append else word1
+            "searchword": (
+                "usesearchword",
+                True,
+                "searchword_mousetrigger",
+                lambda word1, append: self.searchwordW.search_word.emit(
+                    word1, sentence, append
+                ),
             ),
-            "searchword": lambda word1: self.searchwordW.search_word.emit(
-                word1, sentence, append
-            ),
-            "openlink": __openlink,
-            "searchword_S": lambda word1: threader(gobject.base.hover_search_word.emit)(
-                word1, sentence, append, False, False
+            "searchword_S": (
+                "usesearchword_S",
+                False,
+                "searchword_S_mousetrigger",
+                lambda word1, append: threader(gobject.base.hover_search_word.emit)(
+                    word1, sentence, append, False, False
+                ),
             ),
         }
         noneedkeys = []
         keytriggered = []
+        append = False
         for k in funcs:
-            if not globalconfig.get("use" + k, k == "searchword"):
+            if not globalconfig.get(funcs[k][0], funcs[k][1]):
                 continue
+            if which != globalconfig.get(funcs[k][2], "left"):
+                if globalconfig.get(funcs[k][2], "left") == "left" and which == "right":
+                    append = True
+                else:
+                    continue
             result = self.checkkeypresssatisfy(k)
             if result == -1:
                 noneedkeys.append(k)
             elif result:
                 keytriggered.append(k)
-        for k in keytriggered if keytriggered else noneedkeys:
-            funcs[k](wordwhich(k))
+        useks = keytriggered if keytriggered else noneedkeys
+        for k in useks:
+            funcs[k][3](wordwhich(k), append)
 
     def __dontshowintaborsetbackdrop(self, widget: QWidget):
         window_flags = widget.windowFlags()

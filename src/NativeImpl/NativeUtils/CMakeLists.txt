@@ -42,6 +42,7 @@ target_link_libraries(NativeUtils PRIVATE pdh tiny-aes Dbghelp libmecab rapidfuz
                     setupapi
                     delayimp
                     ${YY_Thunks}
+                    magic_enum
 )
 
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:Dbghelp.dll")
@@ -52,12 +53,12 @@ target_link_options(NativeUtils PRIVATE "/DELAYLOAD:GDI32.dll")
 if(NOT WINXP)
     target_link_libraries(NativeUtils PRIVATE ShCore)
     target_link_libraries(NativeUtils PRIVATE Mmdevapi)
-    target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MMDevAPI.dll")
-    target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MFPlat.dll")
-    target_link_options(NativeUtils PRIVATE "/DELAYLOAD:dxgi.dll")
-    target_link_options(NativeUtils PRIVATE "/DELAYLOAD:d3d11.dll")
 endif()
 
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MMDevAPI.dll")
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MFPlat.dll")
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:dxgi.dll")
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:d3d11.dll")
 
 if(WIN10ABOVE)
 	target_link_libraries(NativeUtils PRIVATE windowsapp)

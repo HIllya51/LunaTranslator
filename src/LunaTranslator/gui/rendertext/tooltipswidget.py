@@ -12,9 +12,8 @@ from gui.flowsearchword import createsomecontrols
 import NativeUtils
 
 
-@Singleton
-class tooltipssetting(LDialog):
-    def __cb(self, *_):
+def tooltipssetting(self):
+    def __cb(*_):
         tooltipswidget.resetstyle()
         gobject.base.translation_ui.translate_text.settooltipsstyle(
             ui_settings.get("word_hover_bg_color", "#333"),
@@ -23,50 +22,46 @@ class tooltipssetting(LDialog):
             ui_settings.get("word_hover_border_R", 4),
         )
 
-    def __init__(self, parent) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("设置")
-        formLayout = LFormLayout(self)
+    l = []
+    spin = getspinbox(0, 50, ui_settings, "word_hover_border", callback=__cb, default=8)
+    l.append(("边距", spin))
 
-        spin = getspinbox(0, 50, ui_settings, "word_hover_border", callback=self.__cb, default=8)
-        formLayout.addRow("边距", spin)
-
-        spin1, lay = createsomecontrols(
-            self.__cb,
-            tooltipswidget.seteffect,
-            "word_hover_border_R",
-            "word_hover_border_R_SYS",
-            False,
-            "word_hover_DWM",
-            "word_hover_DWM_1",
-            (globalconfig["rendertext_using"] != "webview")
-            or (not globalconfig.get("word_hover_action_usewb2", False)),
-            kRdf=4,
-            dic=ui_settings,
-        )
-        formLayout.addRow("圆角", spin1)
-        if lay:
-            formLayout.addRow("窗口特效", lay)
-        color = ColorButton(
-            self,
-            ui_settings,
-            "word_hover_bg_color",
-            alpha=True,
-            tips="背景颜色",
-            callback=self.__cb,
-            default="#333",
-        )
-        formLayout.addRow("背景颜色", color)
-        color = ColorButton(
-            self,
-            ui_settings,
-            "word_hover_text_color",
-            tips="文字颜色",
-            callback=self.__cb,
-            default="white",
-        )
-        formLayout.addRow("文字颜色", color)
-        self.show()
+    spin1, lay = createsomecontrols(
+        __cb,
+        tooltipswidget.seteffect,
+        "word_hover_border_R",
+        "word_hover_border_R_SYS",
+        False,
+        "word_hover_DWM",
+        "word_hover_DWM_1",
+        (globalconfig["rendertext_using"] != "webview")
+        or (not globalconfig.get("word_hover_action_usewb2", False)),
+        kRdf=4,
+        dic=ui_settings,
+    )
+    l.append(("圆角", spin1))
+    if lay:
+        l.append(("窗口特效", lay))
+    color = ColorButton(
+        self,
+        ui_settings,
+        "word_hover_bg_color",
+        alpha=True,
+        tips="背景颜色",
+        callback=__cb,
+        default="#333",
+    )
+    l.append(("背景颜色", color))
+    color = ColorButton(
+        self,
+        ui_settings,
+        "word_hover_text_color",
+        tips="文字颜色",
+        callback=__cb,
+        default="white",
+    )
+    l.append(("文字颜色", color))
+    return l
 
 
 class TextEdit(QTextEdit):
@@ -191,15 +186,17 @@ class tooltipswidget(QMainWindow, dataget):
     @staticmethod
     def tracetooltipwindow(word: WordSegResult, pos):
         skip = False
-        if globalconfig.get("usesearchword_S_hover", False):
-            result = gobject.base.checkkeypresssatisfy("searchword_S_hover", False)
+        if globalconfig.get("usesearchword_S", False) and (
+            globalconfig.get("searchword_S_mousetrigger", "left") == "hover"
+        ):
+            result = gobject.base.checkkeypresssatisfy("searchword_S", False)
             result = result == -1 or result == True
             skip = result
             wordwhich = lambda k: (word.word, word.prototype)[
                 globalconfig["usewordoriginfor"].get(k, False)
             ]
             threader(gobject.base.hover_search_word.emit)(
-                wordwhich("searchword_S_hover"),
+                wordwhich("searchword_S"),
                 gobject.base.currenttext,
                 False,
                 True,

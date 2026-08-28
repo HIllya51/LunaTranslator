@@ -684,13 +684,8 @@
     "注音颜色": "Fonetické barvy",
     "最小高度": "Minimální výška",
     "在WebView2内显示": "Zobrazeno ve WebView2",
-    "鼠标悬停时": "Při najetí myší",
     "显示详细信息": "Zobrazí podrobnosti",
-    "点击单词时": "Když kliknete na slovo",
-    "打开外部链接": "Otevřít externí odkazy",
-    "外部链接": "Externí odkazy",
     "需要键盘按下": "Vyžaduje stisknutí klávesnice",
-    "需要的键": "Požadované klíče",
     "在小窗口中": "v malém okně",
     "显示单词信息": "Zobrazí informace aplikace Word",
     "失去焦点时关闭": "Zavření, když ztratíte pozornost",
@@ -939,5 +934,10 @@
     "窗口录制": "Záznam okna",
     "播放自动录音": "Přehrát automatickou nahrávku",
     "倾斜": "Nakloněný",
-    "相对大小": "Relativní velikost"
+    "相对大小": "Relativní velikost",
+    "触发功能": "Spouštěcí funkce",
+    "Webview2崩溃，将切换为Qt显示。": "Webview2 havaroval, přepne se na zobrazení Qt.",
+    "鼠标悬停": "Najetí myší",
+    "触发方式": "Způsob spuštění",
+    "中键点击": "Střední tlačítko kliknutí"
 }

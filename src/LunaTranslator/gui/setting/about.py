@@ -372,7 +372,6 @@ def setTab_about(self: QWidget, basel):
                         makelink("RapidAI/RapidOcrOnnx"),
                         makelink("PaddlePaddle/PaddleOCR"),
                         makelink("Blinue/Magpie"),
-                        makelink("nanokina/ebyroid"),
                         makelink("xupefei/Locale-Emulator"),
                         makelink("InWILL/Locale_Remulator"),
                         makelink("zxyacb/ntlea"),
@@ -397,6 +396,7 @@ def setTab_about(self: QWidget, basel):
                         makelink("WaterJuice/WjCryptLib"),
                         makelink("k2-fsa/sherpa-onnx"),
                         makelink("chromium/chromium"),
+                        makelink("Neargye/magic_enum"),
                     ],
                     "LICENSE",
                 )

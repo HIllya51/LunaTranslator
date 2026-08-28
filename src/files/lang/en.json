@@ -684,13 +684,8 @@
     "注音颜色": "Phonetic colors",
     "最小高度": "Minimum height",
     "在WebView2内显示": "Displayed in WebView2",
-    "鼠标悬停时": "On mouse hover",
     "显示详细信息": "Displays details",
-    "点击单词时": "When you click on a word",
-    "打开外部链接": "Open external links",
-    "外部链接": "External links",
     "需要键盘按下": "Requires a keyboard press",
-    "需要的键": "Required keys",
     "在小窗口中": "in a small window",
     "显示单词信息": "Displays word information",
     "失去焦点时关闭": "Close when you lose focus",
@@ -939,5 +934,10 @@
     "窗口录制": "Window recording.",
     "播放自动录音": "Play automatic recording.",
     "倾斜": "Tilt",
-    "相对大小": "Relative size"
+    "相对大小": "Relative size",
+    "触发功能": "Trigger function",
+    "Webview2崩溃，将切换为Qt显示。": "WebView2 has crashed and will switch to Qt display.",
+    "鼠标悬停": "Hover with the mouse.",
+    "触发方式": "Trigger method",
+    "中键点击": "Middle-click"
 }

@@ -86,7 +86,7 @@ namespace
             CHECK_FAILURE_NORET(CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pSpVoice));
             CHECK_FAILURE_NORET(SpEnumTokens(token, NULL, NULL, &pSpEnumTokens));
             ULONG ulTokensNumber = 0;
-            pSpEnumTokens->GetCount(&ulTokensNumber);
+            CHECK_FAILURE_NORET(pSpEnumTokens->GetCount(&ulTokensNumber));
             CComPtr<ISpObjectToken> m_pISpObjectToken;
             for (ULONG i = 0; i < ulTokensNumber; i++)
             {
@@ -95,7 +95,7 @@ namespace
                 CComHeapPtr<WCHAR> pszVoiceName;
                 CHECK_FAILURE_CONTINUE(m_pISpObjectToken->GetId(&pszVoiceId));
                 CHECK_FAILURE_CONTINUE(m_pISpObjectToken->GetStringValue(NULL, &pszVoiceName));
-                ret.emplace_back(std::move(pszVoiceId), std::move(pszVoiceName));
+                ret.emplace_back(pszVoiceId, pszVoiceName);
             }
         }();
         return ret;
@@ -107,19 +107,11 @@ namespace SAPI
     {
         return ::Speak(Content, voiceid, rate, pitch, volume);
     }
-    std::vector<std::pair<std::wstring, std::wstring>> List(int version)
+    std::vector<std::pair<std::wstring, std::wstring>> List()
     {
-        if (version == 7)
-        {
-            return ::List(SPCAT_VOICES_7);
-        }
-        else if (version == 10)
-        {
-            return ::List(SPCAT_VOICES_10);
-        }
-        else
-        {
-            return {};
-        }
+        auto __7 = ::List(SPCAT_VOICES_7);
+        auto __10 = ::List(SPCAT_VOICES_10);
+        __10.insert(__10.end(), std::make_move_iterator(__7.begin()), std::make_move_iterator(__7.end()));
+        return __10;
     }
 }

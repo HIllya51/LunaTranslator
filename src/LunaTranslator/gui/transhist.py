@@ -18,6 +18,7 @@ from gui.setting.display_text import extrahtml
 from network.server.servicecollection_1 import WSForEach, transhistwsoutputsave
 import time, threading, windows
 from NativeUtils import MenuItem
+from gui.RichMessageBox import RichMessageBox
 
 
 class somecommon:
@@ -265,6 +266,14 @@ class sharedfunctions:
 class wvtranshist(WebviewWidget, somecommon):
     pluginsedit = pyqtSignal()
     reloadx = pyqtSignal()
+
+    def crashed_callback(self, info: bytes):
+        RichMessageBox(
+            self,
+            _TR("错误"),
+            _TR("Webview2崩溃，将切换为Qt显示。") + "\n" + info.decode(),
+        )
+        self.useweb()
 
     def on_menu(self, selecttext):
         if selecttext:

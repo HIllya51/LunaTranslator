@@ -1,12 +1,22 @@
 
 #include "engines.h"
 #include "aitalked.def.h"
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize
+{
+  template <>
+  struct enum_range<ResultCode>
+  {
+    static constexpr int min = ERR_USERDIC_NOENTRY;
+    static constexpr int max = ERR_NOMORE_DATA;
+  };
+}
 
 using std::function;
 using std::pair;
 using std::string;
 using std::vector;
-using namespace ebyroid;
 
 #define AI_FNS(X)                                                                                                  \
   X(init, ResultCode(__stdcall *)(TConfig *), "_AITalkAPI_Init@4")                                                 \
@@ -26,42 +36,37 @@ using namespace ebyroid;
 DECLARE_API_STRUCT
 #undef AI_FNS
 
-namespace ebyroid
+struct ConvertParams
 {
+  bool needs_reload;
+  char *base_dir;
+  char *voice;
+  float volume;
+};
 
-  struct ConvertParams
+template <typename T>
+class Response
+{
+public:
+  Response(Api *adapter) : api_adapter_(adapter)
   {
-    bool needs_reload;
-    char *base_dir;
-    char *voice;
-    float volume;
-  };
-
-  template <typename T>
-  class Response
+    event.Create(NULL, FALSE, FALSE, NULL);
+  }
+  void Write(T *bytes, size_t size)
   {
-  public:
-    Response(Api *adapter) : api_adapter_(adapter)
-    {
-      event.Create(NULL, FALSE, FALSE, NULL);
-    }
-    void Write(T *bytes, size_t size)
-    {
-      buffer_.insert(std::end(buffer_), bytes, bytes + size);
-    }
-    std::vector<T> End()
-    {
-      return std::move(buffer_);
-    }
-    Api *api_adapter() { return api_adapter_; };
-    CEvent event;
+    buffer_.insert(std::end(buffer_), bytes, bytes + size);
+  }
+  std::vector<T> End()
+  {
+    return std::move(buffer_);
+  }
+  Api *api_adapter() { return api_adapter_; };
+  CEvent event;
 
-  private:
-    Api *api_adapter_;
-    std::vector<T> buffer_;
-  };
-
-} // namespace ebyroid
+private:
+  Api *api_adapter_;
+  std::vector<T> buffer_;
+};
 
 namespace
 {
@@ -146,164 +151,107 @@ struct aitalked_impl
   Api api;
   std::string lastlang_;
   bool hasloadvoice = false;
-  aitalked_impl(const Settings &settings);
-  void SetVoice(Settings &settings);
-  std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text);
-  void Setparam(float volume, float speed, float pitch);
-  int Hiragana(const char *inbytes, std::vector<char> &);
-  int Speek(const char *inbytes, std::vector<int16_t> &, uint32_t mode = 0u);
-};
-
-aitalked_impl::aitalked_impl(const Settings &settings)
-{
-  if (!api.load(settings.dllpath.c_str()))
-    throw std::runtime_error("load dll failed");
-  TConfig config;
-  config.hz_voice_db = settings.frequency;
-  config.dir_voice_dbs = settings.voice_base_dir.c_str();
-  config.msec_timeout = 1000;
-  config.path_license = settings.license_path.c_str();
-  config.code_auth_seed = settings.seed.c_str();
-  config.len_auth_seed = kLenSeedValue;
-  ResultCode result = api.init(&config);
-  if (result != ERR_SUCCESS)
+  aitalked_impl(const Settings &settings)
   {
-    config.code_auth_seed = "PROJECT-VOICeVIO-SFE";
-    result = api.init(&config);
-  }
-  if (result != ERR_SUCCESS)
-  {
-    string message = "API initialization failed with code ";
-    message += std::to_string(result);
-    throw std::runtime_error(message);
-  }
-}
-void aitalked_impl::SetVoice(Settings &settings)
-{
-  ResultCode result;
-
-  if (settings.language_dir != lastlang_)
-  {
-    lastlang_ = settings.language_dir;
-    api.lang_clear();
-    result = api.lang_load(settings.language_dir.c_str());
-    if (result != ERR_SUCCESS && result != ERR_ALREADY_LOADED)
-    {
-      string message = "API Load Lang failed (Could not load voice data) with code ";
-      message += std::to_string(result);
-      throw std::runtime_error(message);
-    }
-  }
-  if (hasloadvoice)
-    result = api.voice_clear();
-  hasloadvoice = true;
-  result = api.voice_load(settings.voice_name.c_str());
-  if (result != ERR_SUCCESS)
-  {
-    string message = "API Load Voice failed (Could not load voice data) with code ";
-    message += std::to_string(result);
-    throw std::runtime_error(message);
-  }
-}
-std::vector<int16_t> aitalked_impl::Speek(float _rate, float _pitch, const std::string &text)
-{
-  Setparam(2, _rate, _pitch); // 0.5-4, 0.5-2
-  std::vector<char> output;
-  auto sjis = WideStringToString(StringToWideString(text), 932);
-  int result = Hiragana(sjis.c_str(), output);
-  output.push_back(0);
-  std::vector<int16_t> binary;
-  result = Speek(output.data(), binary);
-  return binary;
-}
-
-int aitalked_impl::Hiragana(const char *inbytes, std::vector<char> &output)
-{
-  Response<char> response{&api};
-  TJobParam param;
-  param.mode_in_out = IOMODE_PLAIN_TO_AIKANA;
-  param.user_data = &response;
-
-  int32_t job_id;
-  ResultCode result = api.text_to_kana(&job_id, &param, inbytes);
-  if (result != ERR_SUCCESS)
-  {
-    static const char *format = "TextToKana failed with the result code %d\n"
-                                "Given inbytes: %s";
-
-    char m[0xFFFF];
-    std::snprintf(m, 0xFFFF, format, result, inbytes);
-    throw std::runtime_error(m);
-  }
-  WaitForSingleObject(response.event, INFINITE);
-  // finalize
-  result = api.close_kana(job_id, 0);
-  if (result != ERR_SUCCESS)
-  {
-    throw std::runtime_error("wtf");
-  }
-
-  // write to output memory
-  output = response.End();
-  return 0;
-}
-void aitalked_impl::Setparam(float volume, float speed, float pitch)
-{
-  uint32_t param_size = 0;
-  auto result = api.get_param((void *)0, &param_size);
-  if (result != ERR_INSUFFICIENT)
-  { // NOTE: Code -20 is expected here
-    string message = "API Get Param failed (Could not acquire the size) with code ";
-    message += std::to_string(result);
-    throw std::runtime_error(message);
-  }
-  if (param_size == sizeof(TTtsParam))
-  { // voiceroid2
-    TTtsParam param;
-    // TTtsParam* param = (TTtsParam*) param_buffer;
-    param.size = param_size;
-    result = api.get_param(&param, &param_size);
+    if (!api.load(settings.dllpath.c_str()))
+      throw std::runtime_error("load dll failed");
+    TConfig config;
+    config.hz_voice_db = settings.frequency;
+    config.dir_voice_dbs = settings.voice_base_dir.c_str();
+    config.msec_timeout = 1000;
+    config.path_license = settings.license_path.c_str();
+    config.code_auth_seed = settings.seed.c_str();
+    config.len_auth_seed = kLenSeedValue;
+    ResultCode result = api.init(&config);
     if (result != ERR_SUCCESS)
     {
-      string message = "API Get Param failed with code ";
-      message += std::to_string(result);
-      throw std::runtime_error(message);
+      config.code_auth_seed = "PROJECT-VOICeVIO-SFE";
+      result = api.init(&config);
     }
-    param.extend_format = BOTH;
-    param.proc_text_buf = HiraganaCallback;
-    param.proc_raw_buf = SpeechCallback;
-    param.proc_event_tts = nullptr;
-    param.len_raw_buf_bytes = kConfigRawbufSize;
-
-    param.volume = volume;
-    param.speaker[0].volume = volume;
-    /*
-    param.speaker[0].pause_middle = 80;
-    param.speaker[0].pause_sentence = 200;
-    param.speaker[0].pause_long = 100;
-    param.speaker[0].range = 0.893;*/
-    param.speaker[0].speed = speed;
-    param.speaker[0].pitch = pitch;
-    result = api.set_param(&param);
-    if (result != ERR_SUCCESS)
+    iferrorthrow(result);
+  }
+  void SetVoice(Settings &settings)
+  {
+    if (settings.language_dir != lastlang_)
     {
-      string message = "API Set Param failed with code ";
-      message += std::to_string(result);
-      throw std::runtime_error(message);
+      lastlang_ = settings.language_dir;
+      api.lang_clear();
+      iferrorthrow(api.lang_load(settings.language_dir.c_str()));
+    }
+    if (hasloadvoice)
+      api.voice_clear();
+    hasloadvoice = true;
+    iferrorthrow(api.voice_load(settings.voice_name.c_str()));
+  }
+  std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text)
+  {
+    Setparam(2, _rate, _pitch); // 0.5-4, 0.5-2
+    auto sjis = WideStringToString(StringToWideString(text), 932);
+    auto &&output = Hiragana(sjis.c_str());
+    output.push_back(0);
+    return Speek(output.data());
+  }
+  void Setparam(float volume, float speed, float pitch)
+  {
+    uint32_t param_size = 0;
+    iferrorthrow(api.get_param((void *)0, &param_size));
+    if (param_size == sizeof(AITalk_TTtsParamEx))
+    { // voiceroid2
+      SetparamInternal<AITalk_TTtsParamEx>(volume, speed, pitch);
+    }
+    else if (param_size == sizeof(AITalk_TTtsParam))
+    { // voiceroid+
+      SetparamInternal<AITalk_TTtsParam>(volume, speed, pitch);
     }
   }
-  else if (param_size == sizeof(AITalk_TTtsParam))
-  { // voiceroid+
+  std::vector<char> Hiragana(const char *inbytes)
+  {
+    Response<char> response{&api};
+    TJobParam param;
+    param.mode_in_out = IOMODE_PLAIN_TO_AIKANA;
+    param.user_data = &response;
+
+    int32_t job_id;
+    iferrorthrow(api.text_to_kana(&job_id, &param, inbytes));
+    WaitForSingleObject(response.event, INFINITE);
+    iferrorthrow(api.close_kana(job_id, 0));
+    return std::move(response.End());
+  }
+  std::vector<int16_t> Speek(const char *inbytes, uint32_t mode = 0u)
+  {
+    Response<int16_t> response{&api};
+
+    TJobParam param;
+    param.mode_in_out = mode == 0u ? IOMODE_AIKANA_TO_WAVE : (JobInOut)mode;
+    param.user_data = &response;
+    int32_t job_id;
+    iferrorthrow(api.text_to_speech(&job_id, &param, inbytes));
+    WaitForSingleObject(response.event, INFINITE);
+    iferrorthrow(api.close_speech(job_id, 0));
+    return std::move(response.End());
+  }
+
+  void iferrorthrow(ResultCode r)
+  {
+    if (r != ERR_SUCCESS && r != ERR_ALREADY_LOADED && r != ERR_INSUFFICIENT)
+      throw std::runtime_error(std::string(magic_enum::enum_name(r)));
+  }
+
+  template <typename T>
+  void setExtendFormatIfApplicable(T &param)
+  {
+    if constexpr (std::is_same_v<T, AITalk_TTtsParamEx>)
+      param.extend_format = BOTH;
+  }
+
+  template <typename T>
+  void SetparamInternal(float volume, float speed, float pitch)
+  {
     AITalk_TTtsParam param;
-    // TTtsParam* param = (TTtsParam*) param_buffer;
+    uint32_t param_size = sizeof(T);
     param.size = param_size;
-    result = api.get_param(&param, &param_size);
-    if (result != ERR_SUCCESS)
-    {
-      string message = "API Get Param failed with code ";
-      message += std::to_string(result);
-      throw std::runtime_error(message);
-    }
+    iferrorthrow(api.get_param(&param, &param_size));
+    setExtendFormatIfApplicable(param);
     param.proc_text_buf = HiraganaCallback;
     param.proc_raw_buf = SpeechCallback;
     param.proc_event_tts = nullptr;
@@ -313,49 +261,9 @@ void aitalked_impl::Setparam(float volume, float speed, float pitch)
     param.Speaker[0].volume = volume;
     param.Speaker[0].speed = speed;
     param.Speaker[0].pitch = pitch;
-    result = api.set_param(&param);
-    if (result != ERR_SUCCESS)
-    {
-      string message = "API Set Param failed with code ";
-      message += std::to_string(result);
-      throw std::runtime_error(message);
-    }
+    iferrorthrow(api.set_param(&param));
   }
-}
-int aitalked_impl::Speek(const char *inbytes, std::vector<int16_t> &output, uint32_t mode)
-{
-  Response<int16_t> response{&api};
-
-  TJobParam param;
-  param.mode_in_out = mode == 0u ? IOMODE_AIKANA_TO_WAVE : (JobInOut)mode;
-  param.user_data = &response;
-
-  int32_t job_id;
-  ResultCode result = api.text_to_speech(&job_id, &param, inbytes);
-
-  if (result != ERR_SUCCESS)
-  {
-    static const char *format = "TextToSpeech failed with the result code %d\n"
-                                "Given inbytes: %s";
-    char m[0xFFFF];
-    std::snprintf(m, 0xFFFF, format, result, inbytes);
-    throw std::runtime_error(m);
-  }
-
-  WaitForSingleObject(response.event, INFINITE);
-
-  // finalize
-  result = api.close_speech(job_id, 0);
-  if (result != ERR_SUCCESS)
-  {
-    throw std::runtime_error("wtf");
-  }
-
-  // write to output memory
-  output = response.End();
-
-  return 0;
-}
+};
 
 aitalked::aitalked(const Settings &settings)
 {

@@ -312,9 +312,9 @@
     }
 
     const urlParams = new URLSearchParams(window.location.search);
-    function safe_calllunaclickedword(e, word, app) {
+    function safe_calllunaclickedword(e, word, which) {
         if (window.LUNAJSObject)
-            LUNAJSObject.calllunaclickedword(word, app)
+            LUNAJSObject.calllunaclickedword(word, which)
         else {
             const url = new URL('/page/dictionary', window.location.origin);
             url.searchParams.append('word', word['word'])
@@ -324,7 +324,7 @@
                 flowclickdictionary(e, url.toString())
             }
             else {
-                //wsinvoke('calllunaclickedword', [word, app])
+                //wsinvoke('calllunaclickedword', [word, which])
                 //比起在luna里打开，用新的标签页打开似乎是更好的选择
                 window.open(url.toString())
             }
@@ -852,14 +852,18 @@
 
             eleori.setAttribute('word', JSON.stringify(word))
             eleori.addEventListener('click', function (e) {
-                safe_calllunaclickedword(e, JSON.parse(this.getAttribute('word')), false)
+                safe_calllunaclickedword(e, JSON.parse(this.getAttribute('word')), 'left')
+            })
+            eleori.addEventListener('auxclick', function (e) {
+                if (event.button === 1)
+                    safe_calllunaclickedword(e, JSON.parse(this.getAttribute('word')), 'mid')
             })
             eleori.oncontextmenu = function (e) {
                 if (!allowclickword) return
                 if (window.getSelection().toString()) { }
                 else {
                     event.preventDefault();
-                    safe_calllunaclickedword(e, JSON.parse(this.getAttribute('word')), true)
+                    safe_calllunaclickedword(e, JSON.parse(this.getAttribute('word')), 'right')
                 }
             }
 

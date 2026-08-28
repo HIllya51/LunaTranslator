@@ -16,8 +16,6 @@ from datetime import datetime
 import requests
 from myutils.utils import (
     useExCheck,
-    stringfyerror,
-    makehtml,
     selectdebugfile,
     splittranslatortypes,
     translate_exits,
@@ -43,7 +41,6 @@ from gui.usefulwidget import (
     check_grid_append,
     CollapsibleBoxWithButton,
     getsimpleswitch,
-    LinkLabel,
     D_getIconButton,
     MyInputDialog,
     D_getsimpleswitch,
@@ -136,7 +133,16 @@ class SpecialFont(PopupWidget):
                     self.resetfont()
 
                 w = FocusFontCombo()
-                w.setCurrentFont(QFont(dd.get(k, globalconfig.get("fonttype2", gobject.tempconfig.get("fonttype2", "")))))
+                w.setCurrentFont(
+                    QFont(
+                        dd.get(
+                            k,
+                            globalconfig.get(
+                                "fonttype2", gobject.tempconfig.get("fonttype2", "")
+                            ),
+                        )
+                    )
+                )
                 w.currentTextChanged.connect(functools.partial(_f, dd, k))
             elif i == 1:
                 t = "大小"
@@ -940,7 +946,7 @@ def __getfirstgguf(ggufdir: str):
                     return os.path.abspath(os.path.join(_dir, _f))
 
 
-def __getllamacppversion(llamaserver):
+def __getllamacppversion(llamaserver, std=False):
     if not llamaserver:
         return None
     cmd = '"{}" --version'.format(llamaserver)
@@ -952,9 +958,9 @@ def __getllamacppversion(llamaserver):
     if not version:
         version: "re.Match" = re.search(r"version: (\d+) \(.*?\)", proc.stderr)
     if not version:
-        return None
+        return (None, proc.stderr) if std else None
     version = int(version.groups()[0])
-    return version
+    return (version, proc.stderr) if std else version
 
 
 def __getllamacppdevices(llamaserver):
@@ -1223,9 +1229,10 @@ def autostartllamacpp(force=False):
 
     gobject.base.translation_ui.displayglobaltooltip.emit("loading llama.cpp")
 
-    version = __getllamacppversion(llamaserver)
+    version, std = __getllamacppversion(llamaserver, std=True)
     if not version:
         return
+    gobject.base.llamacppstdout.emit(std)
     cmd = getllamaservercmd(llamaserver, gguf, version)
     global llamacppautoHandle
     loghandle = open(gobject.getcachedir("llama-server.log"), "a", encoding="utf8")
@@ -1267,7 +1274,6 @@ def autostartllamacpp(force=False):
                 gobject.base.translation_ui.displayglobaltooltip.emit(
                     "llama.cpp loaded"
                 )
-                # print(NativeUtils.GetProcessMemory(proc.pid), NativeUtils.GetProcessVRAM(proc.pid, True))
                 gobject.base.llamacppstatus.emit(2)
             gobject.base.llamacppstdout.emit(l[:-1])
             print(l, file=loghandle, flush=True, end="")
@@ -1292,12 +1298,7 @@ class AdvancedTreeTable(QTreeWidget):
         self.setMinimumHeight(300)
 
     def setup_ui(self):
-        self.headers = [
-            ("模型"),
-            ("大小"),
-            ("更新时间"),
-            ("下载"),
-        ]
+        self.headers = [("模型"), ("大小"), ("更新时间"), ("下载")]
         self.setHeaderLabels(_TR(self.headers))
         header = self.header()
         header.setSectionsClickable(True)
@@ -1448,29 +1449,10 @@ class AdvancedTreeTable(QTreeWidget):
         self._itemDoubleClicked(False, item)
 
 
-class llamalistQwidget(QWidget):
-    def __init__(self):
-        super().__init__()
-        lay = QVBoxLayout(self)
-        self.versionlabel = getsmalllabel()()
-        self.newversionlabel = LinkLabel()
-        versions = QHBoxLayout()
-        lay.setContentsMargins(0, 0, 0, 0)
-        lay.addLayout(versions)
-        lay.addWidget(llamalistQwidget_internal(self))
-        versions.addWidget(getsmalllabel("当前版本")())
-        gobject.base.connectsignal(
-            gobject.base.llamacppcurrversion,
-            lambda v: self.versionlabel.setText(str(v) if v else "-"),
-        )
-        versions.addWidget(self.versionlabel)
-        versions.addWidget(getsmalllabel("最新版本")())
-        versions.addWidget(self.newversionlabel)
-
-
 class llamalisttable(LTableView):
     def __init__(self):
         super().__init__()
+        self.setMinimumHeight(250)
         self.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
@@ -1486,20 +1468,9 @@ class llamalisttable(LTableView):
                     else QHeaderView.ResizeMode.ResizeToContents
                 ),
             )
+        self.initialize_(tryreadconfig2("llama.cpp.version.json"))
 
-    def initialize_(
-        self,
-        p: "llamalistQwidget_internal",
-        parnet: llamalistQwidget,
-        res: "dict|Exception",
-    ):
-        if isinstance(res, Exception):
-            p.link.setText(stringfyerror(res) + "<br>" + p.t)
-            p.refs.show()
-            return
-
-        p.setCurrentIndex(1)
-        parnet.newversionlabel.setText(makehtml(res["html_url"], res["tag_name"][1:]))
+    def initialize_(self, res: "dict"):
         cudas = {}
         cudasdigest = {}
         for _ in res["assets"]:
@@ -1552,10 +1523,7 @@ class llamalisttable(LTableView):
             [_.setEnabled(enable) for _ in items]
         gobject.base.connectsignal(gobject.base.llamacpparchcheck, self.__archcheck)
 
-    def __archcheck(
-        self,
-        llamaserver: "None|str",
-    ):
+    def __archcheck(self, llamaserver: "None|str"):
         insarchs = detect_llama_installed_archs(llamaserver)
         for i in range(self.Model.rowCount()):
             arch: str = self.Model.item(i, 0).data(Qt.ItemDataRole.UserRole + 6)
@@ -1604,70 +1572,6 @@ class llamalisttable(LTableView):
                 "cudart-" + arch,
                 functools.partial(___, "cudart-" + arch, cudalink, cudadig, tag),
             )
-
-
-class llamalistQwidget_internal(QStackedWidget):
-    initialize = pyqtSignal(object)
-
-    def __init__(self, parnet: llamalistQwidget):
-        super().__init__()
-        self.setMinimumHeight(250)
-        self.setContentsMargins(0, 0, 0, 0)
-        w = QWidget()
-        table = llamalisttable()
-        self.addWidget(w)
-        self.addWidget(table)
-        l1 = QVBoxLayout(w)
-        hb = QHBoxLayout()
-        self.refs = IconButton("fa.refresh", tips="刷新")
-        self.refs.setFixedSize(QSize(75, 75))
-        self.refs.hide()
-        hb.addWidget(self.refs)
-        hb.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        l1.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        l1.addLayout(hb)
-        self.refs.clicked.connect(self.firstshow)
-        self.link = LinkLabel()
-        self.link.setWordWrap(True)
-        self.link.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-        )
-        l1.addWidget(self.link)
-        self.t = makehtml("https://github.com/ggml-org/llama.cpp/releases/tag/b10630")
-        self.link.setText("loading...")
-        self.loadonce = True
-        self.initialize.connect(functools.partial(table.initialize_, self, parnet))
-        self.firstshow()
-
-    @threader
-    def firstshow(self, _=None):
-        try:
-            try:
-                res = requests.get(
-                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10630",
-                    proxies=getproxy(),
-                ).json()
-            except:
-                res = requests.get(
-                    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10630"
-                ).json()
-            if not "tag_name" in res:
-                raise Exception(res)
-        except Exception as e:
-            self.initialize.emit(e)
-            return
-        if not self.loadonce:
-            return
-        self.loadonce = False
-        self.initialize.emit(res)
-
-
-def llamalist():
-    return llamalistQwidget()
-
-
-def modellist():
-    return AdvancedTreeTable()
 
 
 def _detect_runtime_lost(d, ff):
@@ -2043,10 +1947,10 @@ def llamacppgrid():
                 hiderows=[1, 2, 4],
                 grid=[
                     ["llama-server", _0, combollama, _2, _3, _4],
-                    [llamalist],
+                    [llamalisttable],
                     ["Device", devicelist],
                     ["Model", _02, _12, _22, _32, _42],
-                    [modellist],
+                    [AdvancedTreeTable],
                 ],
             ),
         ],

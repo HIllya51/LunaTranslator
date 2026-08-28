@@ -1,4 +1,5 @@
 #include "webview2.hpp"
+#include <magic_enum/magic_enum.hpp>
 
 class JSEvalCallback : public ComImpl<ICoreWebView2ExecuteScriptCompletedHandler>
 {
@@ -161,6 +162,63 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler2::Invoke(ICoreWebView2 *sender, IUn
     CHECK_FAILURE(w215->GetFavicon(COREWEBVIEW2_FAVICON_IMAGE_FORMAT_PNG, this));
     return S_OK;
 }
+// ICoreWebView2ProcessFailedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2 *sender, ICoreWebView2ProcessFailedEventArgs *args)
+{
+    COREWEBVIEW2_PROCESS_FAILED_KIND kind;
+    COREWEBVIEW2_PROCESS_FAILED_REASON reason;
+    CHECK_FAILURE(args->get_ProcessFailedKind(&kind));
+    CComPtr<ICoreWebView2ProcessFailedEventArgs2> args2;
+    if (SUCCEEDED(args->QueryInterface(&args2)))
+    {
+        CHECK_FAILURE(args2->get_Reason(&reason));
+    }
+    std::stringstream ss;
+    ss << magic_enum::enum_name(kind) << "\t" << magic_enum::enum_name(reason);
+    auto str = ss.str();
+    std::cout << str << std::endl;
+    switch (kind)
+    {
+    case COREWEBVIEW2_PROCESS_FAILED_KIND_BROWSER_PROCESS_EXITED:
+    case COREWEBVIEW2_PROCESS_FAILED_KIND_RENDER_PROCESS_EXITED:
+    case COREWEBVIEW2_PROCESS_FAILED_KIND_RENDER_PROCESS_UNRESPONSIVE:
+    {
+        if (ref->Crashed_Callback)
+            ref->Crashed_Callback(str.c_str());
+    }
+    break;
+    }
+    return S_OK;
+}
+// ICoreWebView2ProcessInfosChangedEventHandler
+HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(ICoreWebView2Environment *sender, IUnknown *args)
+{
+    [&]()
+    {
+        CComPtr<ICoreWebView2Environment8> env8;
+        CHECK_FAILURE_NORET(sender->QueryInterface(&env8));
+        CComPtr<ICoreWebView2ProcessInfoCollection> collection;
+        CHECK_FAILURE_NORET(env8->GetProcessInfos(&collection));
+        UINT32 count;
+        CHECK_FAILURE_NORET(collection->get_Count(&count));
+        std::stringstream ss;
+        for (auto i = 0; i < count; i++)
+        {
+            CComPtr<ICoreWebView2ProcessInfo> info;
+            CHECK_FAILURE_NORET(collection->GetValueAtIndex(i, &info));
+            INT32 pid;
+            COREWEBVIEW2_PROCESS_KIND kind;
+            CHECK_FAILURE_NORET(info->get_ProcessId(&pid));
+            CHECK_FAILURE_NORET(info->get_Kind(&kind));
+            if (i)
+                ss << "\n";
+            ss << "\t" << pid << "\t" << magic_enum::enum_name(kind);
+        }
+        std::cout << "ProcessInfosChanged" << "\n"
+                  << ss.str() << std::endl;
+    }();
+    return S_OK;
+}
 // ICoreWebView2CreateCoreWebView2ControllerCompletedHandler
 HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebView2Controller *controller)
 {
@@ -178,6 +236,7 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebVie
             ref->set_transparent(true);
         }();
         CHECK_FAILURE_NORET(ref->m_webViewController->get_CoreWebView2(&ref->m_webView));
+        ref->m_webView->add_ProcessFailed(this, &token);
         ref->m_webView->add_WebMessageReceived(this, &token);
         ref->m_webView->add_PermissionRequested(this, &token);
         ref->m_webView->add_NavigationStarting(this, &token);
@@ -234,6 +293,14 @@ HRESULT STDMETHODCALLTYPE WebView2ComHandler::Invoke(HRESULT result, ICoreWebVie
     auto hr = [&]()
     {
         CHECK_FAILURE(result);
+        [&]()
+        {
+            return;
+            CComPtr<ICoreWebView2Environment8> env8;
+            CHECK_FAILURE_NORET(env->QueryInterface(&env8));
+            EventRegistrationToken token;
+            env8->add_ProcessInfosChanged(this, &token);
+        }();
         auto _withoption = [&]() -> HRESULT
         {
             if (!ref->__init_backgroundtransparent)
@@ -515,7 +582,7 @@ void WebView2::set_transparent(bool ts)
     coreWebView2->put_DefaultBackgroundColor(color);
 }
 
-void WebView2::set_callbacks(zoomchange_callback_t _zoomchange_callback, navigating_callback_t _navigating_callback, webmessage_callback_t _webmessage_callback, FilesDropped_callback_t _FilesDropped_callback, titlechange_callback_t _titlechange_callback, IconChanged_callback_t _IconChanged_callback)
+void WebView2::set_callbacks(zoomchange_callback_t _zoomchange_callback, navigating_callback_t _navigating_callback, webmessage_callback_t _webmessage_callback, FilesDropped_callback_t _FilesDropped_callback, titlechange_callback_t _titlechange_callback, IconChanged_callback_t _IconChanged_callback, Crashed_Callback_t _Crashed_Callback)
 {
     zoomchange_callback = _zoomchange_callback;
     navigating_callback = _navigating_callback;
@@ -523,6 +590,7 @@ void WebView2::set_callbacks(zoomchange_callback_t _zoomchange_callback, navigat
     FilesDropped_callback = _FilesDropped_callback;
     titlechange_callback = _titlechange_callback;
     IconChanged_callback = _IconChanged_callback;
+    Crashed_Callback = _Crashed_Callback;
 }
 void WebView2::put_PreferredColorScheme(PREFERRED_COLOR_SCHEME scheme)
 {
@@ -687,11 +755,11 @@ DECLARE_API void webview2_get_userdir(void (*cb)(LPCWSTR))
     cb((*begin)->GetUserDataFolder().c_str());
 }
 
-DECLARE_API void webview2_set_callbacks(WebView2 *web, zoomchange_callback_t zoomchange_callback, navigating_callback_t navigating_callback, webmessage_callback_t webmessage_callback, FilesDropped_callback_t FilesDropped_callback, titlechange_callback_t titlechange_callback, IconChanged_callback_t IconChanged_callback)
+DECLARE_API void webview2_set_callbacks(WebView2 *web, zoomchange_callback_t zoomchange_callback, navigating_callback_t navigating_callback, webmessage_callback_t webmessage_callback, FilesDropped_callback_t FilesDropped_callback, titlechange_callback_t titlechange_callback, IconChanged_callback_t IconChanged_callback, Crashed_Callback_t Crashed_Callback)
 {
     if (!web)
         return;
-    web->set_callbacks(zoomchange_callback, navigating_callback, webmessage_callback, FilesDropped_callback, titlechange_callback, IconChanged_callback);
+    web->set_callbacks(zoomchange_callback, navigating_callback, webmessage_callback, FilesDropped_callback, titlechange_callback, IconChanged_callback, Crashed_Callback);
 }
 
 DECLARE_API double webview2_get_ZoomFactor(WebView2 *web)

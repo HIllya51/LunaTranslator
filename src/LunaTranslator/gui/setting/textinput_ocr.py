@@ -9,7 +9,6 @@ from gui.usefulwidget import (
     D_getIconButton,
     getIconButton,
     yuitsu_switch,
-    D_getcolorbutton,
     D_getsimpleswitch,
     clearlayout,
     D_getdoclink,

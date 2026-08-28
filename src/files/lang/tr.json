@@ -684,13 +684,8 @@
     "注音颜色": "Fonetik renkler",
     "最小高度": "Minimum yükseklik",
     "在WebView2内显示": "WebView2'de görüntülenir",
-    "鼠标悬停时": "Farenin üzerine gelindiğinde",
     "显示详细信息": "Ayrıntıları görüntüler",
-    "点击单词时": "Bir kelimeye tıkladığınızda",
-    "打开外部链接": "Harici bağlantıları aç",
-    "外部链接": "Dış bağlantılar",
     "需要键盘按下": "Klavyeye basılması gerekir",
-    "需要的键": "Gerekli tuşlar",
     "在小窗口中": "küçük bir pencerede",
     "显示单词信息": "Kelime bilgilerini görüntüler",
     "失去焦点时关闭": "Odağınızı kaybettiğinizde kapatın",
@@ -939,5 +934,10 @@
     "窗口录制": "Pencere kaydı",
     "播放自动录音": "Otomatik kaydı çal",
     "倾斜": "Eğik",
-    "相对大小": "Göreceli boyut"
+    "相对大小": "Göreceli boyut",
+    "触发功能": "Tetikleme işlevi",
+    "Webview2崩溃，将切换为Qt显示。": "Webview2 çöktü, Qt görünümüne geçilecek.",
+    "鼠标悬停": "Fareyle üzerine gelme",
+    "触发方式": "Tetikleme yöntemi",
+    "中键点击": "Orta tık"
 }

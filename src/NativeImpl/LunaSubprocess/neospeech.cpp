@@ -3,18 +3,15 @@
 int neospeechlist(int argc, wchar_t *argv[])
 {
     FILE *f = _wfopen(argv[1], L"wb");
-    for (auto key : {10, 7})
+    auto speechs = SAPI::List();
+    for (int i = 0; i < speechs.size(); i++)
     {
-        auto speechs = SAPI::List(key);
-        for (int i = 0; i < speechs.size(); i++)
+        if (speechs[i].second.substr(0, 2) == L"VW")
         {
-            //if (speechs[i].second.substr(0, 2) == L"VW")
-            {
-                fwrite(speechs[i].first.c_str(), 1, speechs[i].first.size() * 2, f);
-                fwrite(L"\n", 1, 2, f);
-                fwrite(speechs[i].second.c_str(), 1, speechs[i].second.size() * 2, f);
-                fwrite(L"\n", 1, 2, f);
-            }
+            fwrite(speechs[i].first.c_str(), 1, speechs[i].first.size() * 2, f);
+            fwrite(L"\n", 1, 2, f);
+            fwrite(speechs[i].second.c_str(), 1, speechs[i].second.size() * 2, f);
+            fwrite(L"\n", 1, 2, f);
         }
     }
     fclose(f);

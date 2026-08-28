@@ -40,7 +40,7 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
     }
     catch (std::exception &e)
     {
-        MessageBoxA(0, e.what(), "voiceroid aivoice error", 0);
+        MessageBoxA(0, e.what(), "voiceroid aivoice error", MB_SYSTEMMODAL);
         return 0;
     }
 
@@ -68,7 +68,7 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
             }
             catch (std::exception &e)
             {
-                MessageBoxA(0, e.what(), "voiceroid aivoice error", 0);
+                MessageBoxA(0, e.what(), "voiceroid aivoice error", MB_SYSTEMMODAL);
                 return 0;
             }
             voicedir = _voicedir;
@@ -82,10 +82,18 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
         ZeroMemory(input_j, sizeof(input_j));
         if (!host.read(input_j, 4096))
             break;
-        auto &&binary = abstracttts->Speek(linear_map_speed(_rate), linear_map_pitch(_pitch), input_j);
+        std::vector<int16_t> binary;
+        try
+        {
+            binary = std::move(abstracttts->Speek(linear_map_speed(_rate), linear_map_pitch(_pitch), input_j));
+        }
+        catch (std::exception &e)
+        {
+            MessageBoxA(0, e.what(), "voiceroid aivoice error", MB_SYSTEMMODAL);
+        }
         size_t output_size = binary.size() * 2;
         int fsize = (int)(output_size + 44);
-        if (fsize > lunasp::DEFAULT_MEM)
+        if ((output_size == 0) || (fsize > lunasp::DEFAULT_MEM))
         {
             fsize = 0;
         }

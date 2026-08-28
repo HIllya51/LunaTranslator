@@ -89,7 +89,6 @@ class _methods:
             return inflated
 
         result = inflate(NativeUtils.AES_decrypt(key, iv, bs)).decode()
-        print(result)
         return result
 
     @staticmethod
@@ -109,14 +108,13 @@ class _methods:
                             dialect=root.find("Dialect").text,
                         )
                 except:
-                    print_exc()
+                    pass
 
             # voiceroid+
             with open(os.path.join(voicedir, "dbconf.xml"), "r", encoding="utf8") as ff:
                 root = ET.fromstring(ff.read())
                 return dict(name=root.find("profile").attrib.get("name"), dialect="")
         except:
-            print_exc()
             return {}
 
     @staticmethod
@@ -153,7 +151,6 @@ class _methods:
                 voices.append(os.path.normpath(_dir_1))
             return dll, voices
         except:
-            print_exc()
             return None, None
 
     @staticmethod
@@ -216,7 +213,6 @@ class TTS(TTSbase):
 
     def getvoicelist(self):
         self.saveinfos = _methods.findall(self.config["path"])
-        print(self.saveinfos)
         return (
             [_["voice"] for _ in self.saveinfos],
             [_["name"] for _ in self.saveinfos],

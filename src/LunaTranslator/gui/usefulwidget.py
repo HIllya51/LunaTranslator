@@ -1161,7 +1161,6 @@ def getsimplecombobox(
     initvar = d.get(k, default)
     s = SuperCombo(static=static, sizeX=sizeX)
     s.addItems(lst, internal)
-
     if internal:
         s.setCurrentData(initvar)
         s.currentIndexChanged.connect(
@@ -1368,12 +1367,14 @@ def getIconSwitch(
     tips=None,
     icon=None,
     default=False,
+    checkablechangecolor=True,
 ):
     b = IconButton(
         icon,
         checkable=True,
         checked=d.get(key, default) if d is not None else default,
         tips=tips,
+        checkablechangecolor=checkablechangecolor,
     )
 
     def __cb(d, k, callback, x):
@@ -1387,14 +1388,17 @@ def getIconSwitch(
 
 
 def D_getIconSwitch(
-    d: dict,
-    key: str,
+    d: dict = None,
+    key: str = None,
     callback=None,
     tips=None,
     icon=None,
     default=False,
+    checkablechangecolor=True,
 ):
-    return lambda: getIconSwitch(d, key, callback, tips, icon, default)
+    return lambda: getIconSwitch(
+        d, key, callback, tips, icon, default, checkablechangecolor=checkablechangecolor
+    )
 
 
 def __getsmalllabel(text, tips=None):
@@ -1446,9 +1450,11 @@ def D_getsimpleswitch(
     )
 
 
-def getColor(color, parent, alpha=False):
+def getColor(color, parent, alpha=False, title=None):
 
     color_dialog = QColorDialog(parent)
+    if title:
+        color_dialog.setWindowTitle(_TR(title))
     if alpha:
         color_dialog.setOption(QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
     color_dialog.setCurrentColor(QColor(color))
@@ -1484,9 +1490,10 @@ def _selectcolor(
     alpha=False,
     cantzeroalpha=False,
     default=None,
+    title=None
 ):
 
-    color = getColor(QColor(configdict.get(configkey, default)), parent, alpha)
+    color = getColor(QColor(configdict.get(configkey, default)), parent, alpha, title=title)
     if not color.isValid():
         return
     if alpha and cantzeroalpha and (color.alpha() == 0):
@@ -1995,7 +2002,11 @@ class WebviewWidget(AbstractWebviewWidget):
             self.dropfilecallback.emit,
             self.titlechanged.emit,
             self.IconChangedF,
+            self.crashed_callback,
         )
+
+    def crashed_callback(self, info: bytes):
+        RichMessageBox(self, _TR("错误"), info.decode())
 
     def IconChangedF(self, ptr, size):
         pixmap = QPixmap()
@@ -3422,6 +3433,7 @@ class ColorButton(IconButton):
             alpha=alpha,
             cantzeroalpha=cantzeroalpha,
             default=default,
+            title=tips,
         )
         self.clicked.connect(cb)
 

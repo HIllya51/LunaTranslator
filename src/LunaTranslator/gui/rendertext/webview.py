@@ -10,10 +10,11 @@ from gui.rendertext.texttype import (
 import gobject, windows, json, os, functools, time
 import hashlib, NativeUtils
 from urllib.parse import quote
-from myutils.config import globalconfig, static_data, ui_settings
+from myutils.config import globalconfig, static_data, ui_settings, _TR
 from myutils.wrapper import threader
 import copy, uuid
 from gui.usefulwidget import WebviewWidget
+from gui.RichMessageBox import RichMessageBox
 from sometypes import WordSegResult
 from gui.rendertext.tooltipswidget import tooltipswidget
 from gui.qevent import TransparentChangedEvent
@@ -390,6 +391,16 @@ class TextBrowser(WebviewWidget, somecommon):
     _isDragging = pyqtSignal(bool)
     __tooltipshelper = pyqtSignal(object)
 
+    def crashed_callback(self, info: bytes):
+        RichMessageBox(
+            self,
+            _TR("错误"),
+            _TR("Webview2崩溃，将切换为Qt显示。") + "\n" + info.decode(),
+        )
+        globalconfig["rendertext_using"] = "textbrowser"
+        gobject.base.translation_ui.translate_text.loadinternal(True, True)
+        gobject.base.switchdisplayengine.emit("textbrowser")
+
     def on_menu(self, selecttext: str):
         if selecttext:
             return [
@@ -512,9 +523,10 @@ class TextBrowser(WebviewWidget, somecommon):
                 QCursor.pos(),
             )
         )
-        lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
+        lb1 = windows.GetKeyState(windows.VK_LBUTTON) < 0
         rb1 = windows.GetKeyState(windows.VK_RBUTTON) < 0
-        if not lb and not rb1:
+        mb1 = windows.GetKeyState(windows.VK_MBUTTON) < 0
+        if not lb1 and not rb1 and not mb1:
             return
         uid = uuid.uuid4()
         self.trans0checkercheck = uid
@@ -523,9 +535,12 @@ class TextBrowser(WebviewWidget, somecommon):
             return
         lb = windows.GetKeyState(windows.VK_LBUTTON) < 0
         rb = windows.GetKeyState(windows.VK_RBUTTON) < 0
-        if lb or rb:
+        mb = windows.GetKeyState(windows.VK_MBUTTON) < 0
+        if lb or rb or mb:
             return
-        gobject.base.clickwordcallback(word, rb1)
+        gobject.base.clickwordcallback(
+            word, "left" if lb1 else ("right" if rb1 else "mid")
+        )
 
     @threader
     def menusearchword(self, w: str):

@@ -273,7 +273,9 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             if (
                 focused_widget
                 and focused_widget.window()
-                and (self in (focused_widget.window(), focused_widget.window().parent()))
+                and (
+                    self in (focused_widget.window(), focused_widget.window().parent())
+                )
             ):
                 pass
             else:
@@ -448,10 +450,13 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         )
 
     def __detectkey(self):
-        if not globalconfig.get("usesearchword_S_hover", False):
+        if not (
+            globalconfig.get("usesearchword_S", False)
+            and (globalconfig.get("searchword_S_mousetrigger", "left") == "hover")
+        ):
             self.__f.stop()
             return
-        result = gobject.base.checkkeypresssatisfy("searchword_S_hover", False)
+        result = gobject.base.checkkeypresssatisfy("searchword_S", False)
         result = result == -1 or result == True
         if result:
             self.__f.stop()
@@ -505,7 +510,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
     def moveresult_1(self):
         if not self.isVisible():
             return
-        result = gobject.base.checkkeypresssatisfy("searchword_S_hover", False)
+        result = gobject.base.checkkeypresssatisfy("searchword_S", False)
         # 仅按着键盘时，才追踪，否则不要动。
         if result == True:
             self.move(limitpos(QCursor.pos(), self, QPoint(1, 10)))

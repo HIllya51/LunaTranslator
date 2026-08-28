@@ -64,10 +64,13 @@ class Qlabel_c(QLabel_w):
             if self.rect().contains(event.pos()):
                 try:
                     if self.pr:
-                        if event.button() == Qt.MouseButton.LeftButton:
-                            gobject.base.clickwordcallback(self.word, False)
-                        elif event.button() == Qt.MouseButton.RightButton:
-                            gobject.base.clickwordcallback(self.word, True)
+                        which = {
+                            Qt.MouseButton.LeftButton: "left",
+                            Qt.MouseButton.RightButton: "right",
+                            Qt.MouseButton.MidButton: "mid",
+                        }.get(event.button())
+                        if which:
+                            gobject.base.clickwordcallback(self.word, which)
                 except:
                     print_exc()
             self.pr = False
@@ -84,7 +87,9 @@ class Qlabel_c(QLabel_w):
                 reference.add(self.company.ref)
         except:
             pass
-        self.ref.setStyleSheet("background-color: " + globalconfig.get("hovercolor", "#80000000"))
+        self.ref.setStyleSheet(
+            "background-color: " + globalconfig.get("hovercolor", "#80000000")
+        )
         reference.add(self.ref)
         return super().enterEvent(a0)
 
@@ -158,13 +163,14 @@ class QTextBrowser_1(QTextEdit):
         try:
             label = self.getcurrlabel(event.pos())
             if label and label.refmask.word:
-                if event.button() == Qt.MouseButton.LeftButton:
-                    if self.prpos == event.pos() or not self.pr:
-                        gobject.base.clickwordcallback(label.refmask.word, False)
-                elif event.button() == Qt.MouseButton.RightButton:
-                    if not self.pr:
-                        gobject.base.clickwordcallback(label.refmask.word, True)
-                        return event.ignore()
+                if self.prpos == event.pos() or not self.pr:
+                    which = {
+                        Qt.MouseButton.LeftButton: "left",
+                        Qt.MouseButton.RightButton: "right",
+                        Qt.MouseButton.MidButton: "mid",
+                    }.get(event.button())
+                    if which:
+                        gobject.base.clickwordcallback(label.refmask.word, which)
         except:
             pass
         if self.ignorecount:
@@ -672,7 +678,9 @@ class TextBrowser(QWidget, dataget):
                 label.maybestylechanged()
 
     def checkskip(self, texttype: TextType):
-        if (texttype in (TextType.Origin,)) and (not globalconfig.get("isshowrawtext", True)):
+        if (texttype in (TextType.Origin,)) and (
+            not globalconfig.get("isshowrawtext", True)
+        ):
             return True
         if (texttype in (TextType.Translate, TextType.Error_translator)) and (
             not globalconfig.get("showfanyi", True)

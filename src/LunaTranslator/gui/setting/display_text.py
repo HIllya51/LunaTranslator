@@ -34,17 +34,11 @@ from gui.usefulwidget import (
 from gui.dynalang import LPushButton, LFormLayout
 
 
-def __changeuibuttonstate(self, x):
+def __changeuibuttonstate(x):
     gobject.base.translation_ui.refreshtoolicon()
     gobject.base.translation_ui.translate_text.showhideorigin(x)
-    try:
-        self.fenyinsettings.setEnabled(x)
-    except:
-        pass
-
-
-def changeshowerrorstate(self, x):
-    gobject.base.translation_ui.translate_text.showhideerror(x)
+    gobject.base.fenyinsettings.emit(x)
+    gobject.base.fencisettings.emit(x)
 
 
 def mayberealtimesetfont(_=None):
@@ -294,10 +288,6 @@ def resetgroudswitchcallback(self, group):
         )
     )
     gobject.base.translation_ui.translate_text.loadinternal(shoudong=True)
-    visengine_internal = ["textbrowser", "webview"]
-    self.seletengeinecombo.setCurrentIndex(
-        visengine_internal.index(globalconfig["rendertext_using"])
-    )
 
 
 def creategoodfontwid(self):
@@ -310,7 +300,7 @@ def creategoodfontwid(self):
 
 def _createseletengeinecombo(self):
 
-    self.seletengeinecombo = getsimplecombobox(
+    seletengeinecombo = getsimplecombobox(
         ["Qt", "Webview2"],
         globalconfig,
         "rendertext_using",
@@ -318,7 +308,8 @@ def _createseletengeinecombo(self):
         callback=functools.partial(resetgroudswitchcallback, self),
         static=True,
     )
-    return self.seletengeinecombo
+    gobject.base.connectsignal(gobject.base.switchdisplayengine, seletengeinecombo.setCurrentData)
+    return seletengeinecombo
 
 
 def GetFormForLineHeight(parent, dic, callback, wide=False):
@@ -472,11 +463,11 @@ def _showhidefy():
     return btn
 
 
-def __xianshi(self):
+def __xianshi():
     btn = getsimpleswitch(
         globalconfig,
         "isshowrawtext",
-        callback=functools.partial(__changeuibuttonstate, self),
+        callback=__changeuibuttonstate,
         default=True,
     )
     gobject.base.show_original_switch.connect(btn.setChecked)
@@ -495,7 +486,7 @@ def xianshigrid_style(self):
                 grid=(
                     [
                         getsmalllabel("显示"),
-                        functools.partial(__xianshi, self),
+                        __xianshi,
                         "",
                         getsmalllabel("字体"),
                         functools.partial(
@@ -537,10 +528,13 @@ def xianshigrid_style(self):
                         ),
                         "",
                         getsmalllabel("间距"),
-                        D_getIconButton(
-                            callback=lambda: self.yuanwenobject.layout().setRowVisible(
-                                1, not self.yuanwenobject.layout().rowVisible(1)
+                        D_getIconSwitch(
+                            icon="fa.gear",
+                            checkablechangecolor=False,
+                            callback=lambda x: self.yuanwenobject.layout().setRowVisible(
+                                1, x
                             ),
+                            tips="间距_设置"
                         ),
                     ],
                     [(functools.partial(Spacesetting, self, False), 0)],
@@ -597,10 +591,13 @@ def xianshigrid_style(self):
                         ),
                         "",
                         getsmalllabel("间距"),
-                        D_getIconButton(
-                            callback=lambda: self.yiwenobject.layout().setRowVisible(
-                                1, not self.yiwenobject.layout().rowVisible(1)
+                        D_getIconSwitch(
+                            icon="fa.gear",
+                            checkablechangecolor=False,
+                            callback=lambda x: self.yiwenobject.layout().setRowVisible(
+                                1, x
                             ),
+                            tips="间距_设置"
                         ),
                     ],
                     [(functools.partial(Spacesetting, self, True), 0)],
@@ -623,13 +620,6 @@ def xianshigrid_style(self):
                             default=True,
                         ),
                         "",
-                        # "显示错误信息",
-                        # D_getsimpleswitch(
-                        #     globalconfig,
-                        #     "showtranexception",
-                        #     callback=lambda x: changeshowerrorstate(self, x),
-                        #     default=True,
-                        # ),
                         "",
                         "",
                         "",
@@ -661,10 +651,13 @@ def xianshigrid_style(self):
                             callback=gobject.base.translation_ui.translate_text.showtextareabackground,
                             default=False,
                         ),
-                        D_getIconButton(
-                            callback=lambda: self.otherobject.layout().setRowVisible(
-                                2, not self.otherobject.layout().rowVisible(2)
+                        D_getIconSwitch(
+                            icon="fa.gear",
+                            checkablechangecolor=False,
+                            callback=lambda x: self.otherobject.layout().setRowVisible(
+                                2, x
                             ),
+                            tips="文字区域背景_设置"
                         ),
                     ],
                     [(functools.partial(TextAreaBack, self), 0)],

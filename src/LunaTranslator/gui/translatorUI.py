@@ -1280,6 +1280,7 @@ class TranslatorWindow(resizableframeless):
         self.refreshtoolicon()
         self.translate_text.showhideorigin(isshowrawtext)
         gobject.base.fenyinsettings.emit(isshowrawtext)
+        gobject.base.fencisettings.emit(isshowrawtext)
 
     def changeshowhidetrans(self):
         _ = not globalconfig.get("showfanyi", True)

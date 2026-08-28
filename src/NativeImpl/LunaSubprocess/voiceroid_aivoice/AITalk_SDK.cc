@@ -1,6 +1,17 @@
 
 #include "engines.h"
 #include "aitalk-sdk/core.h"
+#include <magic_enum/magic_enum.hpp>
+
+namespace magic_enum::customize
+{
+    template <>
+    struct enum_range<AITalkReturnCodeEnum>
+    {
+        static constexpr int min = AITalkReturnCode_NotImplementedError;
+        static constexpr int max = AITalkReturnCode_Ok;
+    };
+}
 
 struct AITalk_SDK_impl
 {
@@ -87,10 +98,18 @@ struct AITalk_SDK_impl
         return api.Tts_selectDefaultKey(tts, id, key);
     };
     template <typename T>
-    bool loadAndSelect(AITalk_Core_TtsId id, const char *key, T path, bool existremove = false)
+    AITalkReturnCode loadAndSelect(AITalk_Core_TtsId id, const char *key, T path, bool existremove = false)
     {
-        return putKV(id, key, path, existremove) == AITalkReturnCode_Ok && select(id, key) == AITalkReturnCode_Ok;
+        auto r = putKV(id, key, path, existremove);
+        if (r != AITalkReturnCode_Ok)
+            return r;
+        return select(id, key);
     };
+    void iferrorthrow(AITalkReturnCode r)
+    {
+        if (r != AITalkReturnCode_Ok)
+            throw std::runtime_error(std::string(magic_enum::enum_name(static_cast<AITalkReturnCodeEnum>(r))));
+    }
 };
 struct Ctx
 {
@@ -133,14 +152,7 @@ extern "C" AITalkReturnCode bufdone_cb(void *user_data, char *audio_buffer,
     Ctx *c = (Ctx *)user_data;
     (void)marker_buffer;
     (void)marker_buffer_size;
-    const size_t max_samples = 6'000'000; // ~125 s @ 48 kHz
     size_t n = audio_buffer_size / sizeof(int16_t);
-    if (c->pcm.size() + n > max_samples)
-    {
-        if (c->pcm.size() >= max_samples)
-            return AITalkReturnCode_CallbackSuccess;
-        n = max_samples - c->pcm.size();
-    }
     const int16_t *s = (const int16_t *)audio_buffer;
     c->pcm.insert(c->pcm.end(), s, s + n);
     return AITalkReturnCode_CallbackSuccess;
@@ -168,12 +180,8 @@ AITalk_SDK_impl::AITalk_SDK_impl(const Settings &settings)
     api.EngineLicense_setPath(settings.license_path.c_str());
     api.EngineLicense_setCode(settings.seed.c_str());
     api.EngineLicense_setValue(3, settings.product.c_str());
-    AITalkReturnCode a = api.authenticate();
-    if (a != AITalkReturnCode_Ok)
-        throw std::runtime_error("authenticate");
+    iferrorthrow(api.authenticate());
     api.Tts_new(&tts);
-    if (a != AITalkReturnCode_Ok)
-        throw std::runtime_error("Tts_new");
     api.CallbackSelector_new(&selector);
     api.CallbackSelector_putValue(selector, AITalk_Core_CallbackSelector_CallbackId_Bufreq, (void *)bufreq_cb);
     api.CallbackSelector_putValue(selector, AITalk_Core_CallbackSelector_CallbackId_Bufdone, (void *)bufdone_cb);
@@ -215,12 +223,9 @@ std::vector<int16_t> AITalk_SDK_impl::Speek(float _rate, float _pitch, const std
 
 void AITalk_SDK_impl::SetVoice(Settings &settings)
 {
-    if (!loadAndSelect(AITalk_Core_TtsId_LanguageDictionary, settings.language.c_str(), (std::filesystem::path(settings.language_dir) / (settings.language + ".aildic")).string().c_str()))
-        throw std::runtime_error("AITalk_Core_TtsId_LanguageDictionary");
-    if (putKV(AITalk_Core_TtsId_VoiceDictionaryLicense, settings.voice_name.c_str(), (std::filesystem::path(settings.voice_dir) / "voice.lic").string().c_str()) != AITalkReturnCode_Ok)
-        throw std::runtime_error("AITalk_Core_TtsId_VoiceDictionaryLicense");
-    if (!loadAndSelect(AITalk_Core_TtsId_VoiceDictionary, settings.voice_name.c_str(), (std::filesystem::path(settings.voice_dir) / (settings.voice_name + ".aivdic")).string().c_str()))
-        throw std::runtime_error("AITalk_Core_TtsId_VoiceDictionary");
+    iferrorthrow(loadAndSelect(AITalk_Core_TtsId_LanguageDictionary, settings.language.c_str(), (std::filesystem::path(settings.language_dir) / (settings.language + ".aildic")).string().c_str()));
+    iferrorthrow(putKV(AITalk_Core_TtsId_VoiceDictionaryLicense, settings.voice_name.c_str(), (std::filesystem::path(settings.voice_dir) / "voice.lic").string().c_str()));
+    iferrorthrow(loadAndSelect(AITalk_Core_TtsId_VoiceDictionary, settings.voice_name.c_str(), (std::filesystem::path(settings.voice_dir) / (settings.voice_name + ".aivdic")).string().c_str()));
 }
 
 AITalk_SDK::AITalk_SDK(const Settings &settings)

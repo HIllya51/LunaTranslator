@@ -684,13 +684,8 @@
     "注音颜色": "Fonetische kleuren",
     "最小高度": "Minimale hoogte",
     "在WebView2内显示": "Weergegeven in WebView2",
-    "鼠标悬停时": "Aan/muis aanwijzen",
     "显示详细信息": "Geeft details weer",
-    "点击单词时": "Wanneer u op een woord klikt",
-    "打开外部链接": "Open externe links",
-    "外部链接": "Externe links",
     "需要键盘按下": "Vereist een toetsenborddruk",
-    "需要的键": "Benodigde sleutels",
     "在小窗口中": "in een klein venster",
     "显示单词信息": "Geeft woordinformatie weer",
     "失去焦点时关闭": "Sluit af wanneer je de focus verliest",
@@ -939,5 +934,10 @@
     "窗口录制": "Vensteropname",
     "播放自动录音": "Automatische opname afspelen",
     "倾斜": "Helling",
-    "相对大小": "relatieve grootte"
+    "相对大小": "relatieve grootte",
+    "触发功能": "functionaliteit activeren",
+    "Webview2崩溃，将切换为Qt显示。": "Webview2 is gecrasht, er wordt overgeschakeld naar Qt-weergave.",
+    "鼠标悬停": "De muisaanwijzer erboven houden",
+    "触发方式": "Triggerswijze",
+    "中键点击": "Middenklik"
 }

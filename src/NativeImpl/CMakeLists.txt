@@ -57,6 +57,18 @@ include(${CMAKE_SOURCE_DIR}/version.cmake)
 add_library(pch pch.cpp)
 target_precompile_headers(pch PUBLIC pch.h)
 
+
+
+include(FetchContent)
+
+FetchContent_Declare(magic_enum
+    GIT_REPOSITORY https://github.com/Neargye/magic_enum
+    GIT_TAG master
+    GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(magic_enum)
+
+
 if(BUILD_EXEC_ONLY)
     add_subdirectory(exec)
 elseif(BUILD_S_EXE_ONLY)

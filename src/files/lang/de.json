@@ -684,13 +684,8 @@
     "注音颜色": "Phonetische Farben",
     "最小高度": "Mindesthöhe",
     "在WebView2内显示": "Wird in WebView2 angezeigt",
-    "鼠标悬停时": "Beim Mauszeiger darüber",
     "显示详细信息": "Zeigt Details an",
-    "点击单词时": "Wenn Sie auf ein Wort klicken",
-    "打开外部链接": "Externe Links öffnen",
-    "外部链接": "Externe Links",
     "需要键盘按下": "Erfordert einen Tastendruck auf der Tastatur",
-    "需要的键": "Erforderliche Schlüssel",
     "在小窗口中": "in einem kleinen Fenster",
     "显示单词信息": "Zeigt Wortinformationen an",
     "失去焦点时关闭": "Schließen, wenn Sie den Fokus verlieren",
@@ -939,5 +934,10 @@
     "窗口录制": "Fensteraufnahme",
     "播放自动录音": "Automatische Aufnahme abspielen",
     "倾斜": "geneigt",
-    "相对大小": "Relative Größe"
+    "相对大小": "Relative Größe",
+    "触发功能": "Funktion auslösen",
+    "Webview2崩溃，将切换为Qt显示。": "Webview2 ist abgestürzt und wird zur Qt-Anzeige wechseln.",
+    "鼠标悬停": "Mauszeiger darüber bewegen",
+    "触发方式": "Auslösemodus",
+    "中键点击": "Mittelklick"
 }

@@ -154,18 +154,17 @@ class SpecialColor:
 class dataget:
     @property
     def _clickable(self):
-        return (
-            globalconfig.get("usesearchword", True)
-            or globalconfig.get("usecopyword", False)
-            or globalconfig.get("usesearchword_S", False)
+        return (globalconfig.get("usesearchword", True)) or (
+            globalconfig.get("usesearchword_S", False)
+            and (globalconfig.get("searchword_S_mousetrigger", "left") != "hover")
         )
 
     @property
     def _clickhovershow(self):
         return (
-            self._clickable
+            globalconfig.get("usesearchword", True)
+            or globalconfig.get("usesearchword_S", False)
             or globalconfig.get("word_hover_show_word_info", False)
-            or globalconfig.get("usesearchword_S_hover", False)
         )
 
     def _getfontinfo(self, texttype: TextType):

@@ -14,11 +14,11 @@ from gui.usefulwidget import (
     FocusFontCombo,
     D_getsimpleswitch,
     getsimpleswitch,
-    D_getIconButton,
     getsmalllabel,
     getboxlayout,
     getsimplepatheditor,
     createfoldgrid,
+    D_getIconSwitch,
 )
 
 
@@ -47,9 +47,7 @@ def createhorizontal_slider_pic():
             changeHorizontal_pic, horizontal_slider, horizontal_slider_label
         )
     )
-    horizontal_slider_label.setText(
-        "{}%".format(ui_settings.get("transparent_pic", 0))
-    )
+    horizontal_slider_label.setText("{}%".format(ui_settings.get("transparent_pic", 0)))
 
     def dosomething(x):
         horizontal_slider.setEnabled(x)
@@ -163,7 +161,13 @@ def createfontcombo():
         ui_settings.__setitem__("settingfonttype", x)
         gobject.base.setcommonstylesheet()
 
-    sfont_comboBox.setCurrentFont(QFont(ui_settings.get("settingfonttype", gobject.tempconfig.get("settingfonttype", ""))))
+    sfont_comboBox.setCurrentFont(
+        QFont(
+            ui_settings.get(
+                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
+            )
+        )
+    )
     sfont_comboBox.currentTextChanged.connect(callback)
     return sfont_comboBox
 
@@ -376,26 +380,7 @@ def uisetting(self):
                                         ),
                                         default=0,
                                     ),
-                                ],
-                                [
-                                    "主题",
-                                    getboxlayout(
-                                        [
-                                            D_getsimplecombobox(
-                                                ["默认"] + themelist(),
-                                                ui_settings,
-                                                "theme3",
-                                                functools.partial(
-                                                    checkthemesettingvisandapply, self
-                                                ),
-                                                internal=["default"] + themelist(),
-                                                default="PyQtDarkTheme",
-                                            ),
-                                            functools.partial(
-                                                createbtnthemelight, self
-                                            ),
-                                        ],
-                                    ),
+                                    functools.partial(createbtnthemelight, self),
                                 ],
                             ],
                         )
@@ -451,6 +436,7 @@ def mainuisetting(self):
                             "backcolor_tool",
                             callback=lambda _: toolcolorchange(),
                             default="#ffaaff",
+                            tips="背景颜色",
                         ),
                         "",
                         "不透明度",
@@ -475,6 +461,7 @@ def mainuisetting(self):
                             "backcolor",
                             callback=lambda _: gobject.base.translation_ui.set_color_transparency(),
                             default="#ffaaff",
+                            tips="背景颜色",
                         ),
                         "",
                         "不透明度",
@@ -482,12 +469,13 @@ def mainuisetting(self):
                     ],
                     [
                         "背景图片",
-                        D_getIconButton(
+                        D_getIconSwitch(
                             icon="fa.picture-o",
-                            tips="背景图片",
-                            callback=lambda: self.textareaobject.layout().setRowVisible(
-                                2, not self.textareaobject.layout().rowVisible(2)
+                            checkablechangecolor=False,
+                            callback=lambda x: self.textareaobject.layout().setRowVisible(
+                                2, x
                             ),
+                            tips="背景图片",
                         ),
                         "",
                         "不透明度",
