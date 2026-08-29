@@ -522,6 +522,7 @@
         let rectscollect = []
 
         spans.forEach(span => {
+            if (span.classList.contains('span_ruby_flag')) return
             let rects = span.getClientRects()
             for (let i = 0; i < rects.length; i++) {
                 let rect = rects[i]
@@ -878,7 +879,9 @@
                 let ruby = document.createElement('ruby')
                 ruby.appendChild(eleori)
                 let rt = document.createElement('rt')
-                rt.appendChild(makeinlineblock(dispatch_text_style(style, styleargs, '', word.kana, { color: kanacolor })))
+                let span = dispatch_text_style(style, styleargs, '', word.kana, { color: kanacolor })
+                span.classList.add('span_ruby_flag')
+                rt.appendChild(makeinlineblock(span))
                 rt.classList.add('klass_font_hira')
                 rt.classList.add('lunatranslator_rt')
                 rt.setAttribute('aria-hidden', 'true')
