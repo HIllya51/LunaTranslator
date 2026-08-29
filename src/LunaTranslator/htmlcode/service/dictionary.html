@@ -25,6 +25,8 @@
     .centerdiv_1_internal {
         display: flex;
         justify-content: center;
+        gap: 0;          /* 按钮之间无空隙 */
+        flex-wrap: wrap; /* 宽度不足时自动换行（所有模式） */
     }
 
     .tab-widget_1_internal .tab-button_1_internals_1_internal {
@@ -32,13 +34,16 @@
     }
 
     .tab-widget_1_internal .tab-button_1_internal {
-        padding: 1em;
-        font-size: 2em;
+        /* 普通模式（非 internal）按钮尺寸，已改小 */
+        padding: 0.6em 1em;
+        font-size: 1.4em;        /* 原 2em，现在减小 */
         background-color: #cccccccc;
         border: none;
         cursor: pointer;
         display: inline-block;
-        line-height: 20px;
+        line-height: 1.4;        /* 调整行高 */
+        margin: 0;
+        flex-shrink: 0;
     }
 
     .tab-widget_1_internal .tab-button_1_internal.active {
@@ -52,6 +57,20 @@
 
     .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal.active {
         display: block;
+    }
+
+    /* 内部模式专用紧凑样式（更小） */
+    body.internal-mode .tab-button_1_internal {
+        font-size: 1em;          /* 比普通模式更小 */
+        padding: 0.4em 0.8em;
+        line-height: 1.2;
+    }
+    body.internal-mode .tab-pane_1_internal {
+        font-size: 0.9em;
+        padding: 5px !important;
+    }
+    body.internal-mode .tab-widget_1_internal .tab-content_1_internal .tab-pane_1_internal {
+        padding: 5px !important;
     }
 </style>
 <style>
@@ -212,6 +231,7 @@
         document.body.style.margin = 0
         document.querySelector('.search-container').style.display = 'none'
         document.documentElement.style.setProperty('--tab-pane_1_internal-padding', '0')
+        document.body.classList.add('internal-mode')
     }
     const word = urlParams.get('word');
     if (word) {
@@ -232,7 +252,6 @@
             div.id = `tab_1_internal${idx}`
             document.getElementById('contentsdiv').appendChild(div)
             let div2 = document.createElement('div')
-            //对于存在script的，shadow里面没法运行script，只好退而求其次放在外面。目前为止这样做没有问题。
             if (data.result.includes(`<script>`)) {
                 div.appendChild(div2)
                 _setHTMLWithScript(div2, data.result)
