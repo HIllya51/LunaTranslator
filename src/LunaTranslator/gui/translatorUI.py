@@ -622,8 +622,7 @@ class TranslatorWindow(resizableframeless):
                     middleclick,
                 )
             )
-        return results
-
+        return results 
     def buttondisplaychecker(self, name):
         belong = (
             globalconfig["toolbutton"]["buttons"][name]["belong"]
@@ -860,7 +859,12 @@ class TranslatorWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self.titlebar = ButtonBar(self)
-        self.titlebar.displaychecker = self.buttondisplaychecker
+        self.titlebar.buttonicon = lambda name, which:globalconfig["toolbutton"]["buttons"][name][which]
+        self.titlebar.buttondisplay = self.buttondisplaychecker
+        self.titlebar.buttonrank = lambda: globalconfig["toolbutton"]["rank2"]
+        self.titlebar.buttonalight = lambda name: globalconfig["toolbutton"]["buttons"][
+            name
+        ]["align"]
         self.titlebar.move(0, 0)  # 多显示屏下，谜之错位
         self.titlebar.setObjectName("titlebar")
         self.titlebar.setMouseTracking(True)

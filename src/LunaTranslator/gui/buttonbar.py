@@ -2,13 +2,8 @@ from qtsymbols import *
 import functools
 from traceback import print_exc
 import qtawesome, gobject
-from myutils.config import (
-    globalconfig,
-    ui_settings,
-)
-from myutils.utils import (
-    str2rgba,
-)
+from myutils.config import ui_settings
+from myutils.utils import str2rgba
 from myutils.hwnd import getExeIcon, getcurrexe
 from gui.usefulwidget import (
     resizableframeless,
@@ -213,7 +208,11 @@ class ButtonBar(QFrame):
     def __init__(self, *argc):
         super().__init__(*argc)
         self.v = False
-        self.displaychecker = lambda name: True
+        self.buttons: "dict[str, IconLabelX]" = {}
+        self.buttonicon = lambda _1, _2: ""
+        self.buttondisplay = lambda _: True
+        self.buttonalight = lambda _: 0
+        self.buttonrank = lambda: self.buttons.keys()
 
         def __(p: QBoxLayout = None, pp=None):
             _ = QBoxLayout(QBoxLayout.Direction.LeftToRight, pp)
@@ -230,7 +229,6 @@ class ButtonBar(QFrame):
         self.threelayout.addStretch()
         self._right = __(self.threelayout)
         self.cntbtn = 0
-        self.buttons: "dict[str, IconLabelX]" = {}
         self.iconstate = {}
         self.colorstate = {}
 
@@ -246,12 +244,12 @@ class ButtonBar(QFrame):
                 color = ui_settings.get("buttoncolor", "#2e2eff")
             if name in self.iconstate:
                 icon = (
-                    globalconfig["toolbutton"]["buttons"][name]["icon"]
+                    self.buttonicon(name, "icon")
                     if self.iconstate[name]()
-                    else globalconfig["toolbutton"]["buttons"][name]["icon2"]
+                    else self.buttonicon(name, "icon2")
                 )
             else:
-                icon = globalconfig["toolbutton"]["buttons"][name]["icon"]
+                icon = self.buttonicon(name, "icon")
             self.buttons[name].setIconStr(icon, color)
 
     def setstyle(self, bottomr, bottomr3):
@@ -323,14 +321,12 @@ class ButtonBar(QFrame):
     def adjustbuttons(self):
         __ = [self._left, self._right, self._center]
         cnt = 0
-        for name in globalconfig["toolbutton"]["rank2"]:
+        for name in self.buttonrank():
             button: IconLabelX = self.buttons[name]
-            if not self.displaychecker(name):
+            if not self.buttondisplay(name):
                 button.hideinlayout()
                 continue
-            layout: QBoxLayout = __[
-                globalconfig["toolbutton"]["buttons"][name]["align"]
-            ]
+            layout: QBoxLayout = __[self.buttonalight(name)]
             button.showinlayout(layout)
             cnt += 1
         self.cntbtn = cnt

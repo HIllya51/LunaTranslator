@@ -126,7 +126,6 @@ def useExCheck(fanyi, which=None, key="fanyi"):
         if not getattr(importlib.import_module(which), useExfunction)():
             return False
     except:
-        print_exc()
         pass
     return True
 

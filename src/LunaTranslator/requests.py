@@ -429,8 +429,6 @@ class Session:
         if server in ("127.0.0.1", "localhost"):
             # libcurl在本地地址走代理时有时会谜之502
             proxies = None
-            # 避免复用已被 llama.cpp 关掉的 keep-alive 连接导致 POST 挂死
-            headers["Connection"] = "close"
         databytes = b""
         contenttype = None
         if files:

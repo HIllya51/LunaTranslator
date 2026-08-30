@@ -45,7 +45,6 @@ from myutils.hwnd import getExeIcon, getcurrexe
 from textio.textsource.copyboard import copyboard
 from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext
-from textio.textsource.textsourcebase import basetext
 from textio.textsource.filetrans import filetrans
 from textio.textsource.mssr import mssr
 from gui.selecthook import hookselect
@@ -281,7 +280,7 @@ class BASEOBJECT(QObject):
         self.translators: "dict[str, basetrans]" = {}
         self.cishus: "dict[str, cishubase]" = {}
         self.specialreaders: "dict[object, TTSbase]" = {}
-        self.textsource_p: basetext = None
+        self.textsource_p: "copyboard|texthook|ocrtext|filetrans|mssr" = None
         self.currenttext = ""
         self.currenttext_raw = ""
         self.statusok = True
@@ -349,7 +348,7 @@ class BASEOBJECT(QObject):
         return self._internal_reader
 
     @reader.setter
-    def reader(self, _):
+    def reader(self, _: TTSbase):
         if _ is None:
             self._internal_reader = None
             self.reader_uid = None
@@ -361,7 +360,7 @@ class BASEOBJECT(QObject):
             gobject.base.voicelistsignal.emit(_)
 
     @property
-    def textsource(self) -> basetext:
+    def textsource(self):
         return self.textsource_p
 
     @property
@@ -1082,7 +1081,7 @@ class BASEOBJECT(QObject):
         self.audioplayer.timestamp = uuid.uuid4()
         self.reader.read(text, True, self.audioplayer.timestamp)
 
-    def loadreader(self, use, privateconfig=None, init=True, uid=None):
+    def loadreader(self, use, privateconfig=None, init=True, uid=None) -> TTSbase:
         aclass = importlib.import_module("tts." + use).TTS
         if uid is None:
             uid = uuid.uuid4()
