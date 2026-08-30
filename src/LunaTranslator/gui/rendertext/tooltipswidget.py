@@ -196,11 +196,13 @@ class tooltipswidget(QMainWindow, dataget):
                 globalconfig["usewordoriginfor"].get(k, False)
             ]
             threader(gobject.base.hover_search_word.emit)(
-                wordwhich("searchword_S"),
-                gobject.base.currenttext,
-                False,
-                True,
-                result,
+                dict(
+                    word=wordwhich("searchword_S"),
+                    sentence=gobject.base.currenttext,
+                    append=False,
+                    fromhover=True,
+                    show=result,
+                )
             )
         if skip:
             return

@@ -470,7 +470,7 @@ class TextBrowser(QWidget, dataget):
             if curr not in sentence:
                 sentence = None
             gobject.base.searchwordW.search_word.emit(
-                curr.replace("\n", "").strip(), sentence, False
+                dict(word=curr.replace("\n", "").strip(), sentence=sentence)
             )
         elif action == copy:
             NativeUtils.ClipBoard.text = curr

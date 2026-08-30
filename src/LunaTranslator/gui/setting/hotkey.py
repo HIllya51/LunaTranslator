@@ -243,7 +243,7 @@ def registrhotkeys(self):
             QPoint()
         ),
         "36": lambda: gobject.base.textgetmethod(NativeUtils.ClipBoard.text, False),
-        "37": lambda: gobject.base.searchwordW.search_word.emit(safeGet(), None, False),
+        "37": lambda: gobject.base.searchwordW.search_word.emit(safeGet()),
         "39": lambda: gobject.base.searchwordW.ocr_once_signal.emit(),
         "38": lambda: gobject.base.textgetmethod(safeGet(), False),
         "40": lambda: gobject.base.searchwordW.search_word_in_new_window.emit(

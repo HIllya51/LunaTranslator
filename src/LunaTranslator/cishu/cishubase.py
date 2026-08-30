@@ -59,6 +59,11 @@ class cishubase(commonbase):
     def canGetUrl(self) -> bool:
         return self.gconfig.get("canGetUrl", True)
 
+    @property
+    def support_langs(self):
+        # 支持的语言代码列表（如 ["ja"]）；未设置或为空表示不限定语言。
+        return self.gconfig.get("langs")
+
     def __init__(self, typename) -> None:
         super().__init__(typename)
         self.callback = print

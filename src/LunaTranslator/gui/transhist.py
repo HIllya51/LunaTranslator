@@ -282,7 +282,7 @@ class wvtranshist(WebviewWidget, somecommon):
                     text="查词",
                     clicked=threader(
                         lambda: gobject.base.searchwordW.search_word.emit(
-                            selecttext.replace("\n", "").strip(), None, False
+                            selecttext.replace("\n", "")
                         )
                     ),
                 ),
@@ -600,9 +600,7 @@ class Qtranshist(QPlainTextEdit):
             if baocunauto.isCheckable():
                 sharedfunctions.autosavecheckifneedninit(self.p.trace)
         elif action == search:
-            gobject.base.searchwordW.search_word.emit(
-                self.textCursor().selectedText(), None, False
-            )
+            gobject.base.searchwordW.search_word.emit(self.textCursor().selectedText())
         elif action == translate:
             gobject.base.textgetmethod(self.textCursor().selectedText(), False)
         elif action == tts:

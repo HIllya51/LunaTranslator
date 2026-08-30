@@ -354,11 +354,22 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             | Qt.WindowType.WindowStaysOnTopHint,
         )
         self.__state = 0
-        gobject.base.hover_search_word.connect(self.searchword)
+        gobject.base.hover_search_word.connect(self.__hover_search_word)
         self.__f = QTimer(self)
         self.__f.setInterval(50)
         self.__f.timeout.connect(self.__detectkey)
         self.__savestatus = None
+
+    def __hover_search_word(self, object: "dict[str, object]"):
+        self.searchword(
+            word=object["word"],
+            sentence=object.get("sentence", None),
+            append=object.get("append", False),
+            fromhover=object.get("fromhover", False),
+            show=object.get("show", False),
+            force=object.get("force", False),
+            checklangs=object.get("checklangs", False),
+        )
 
     def Leave(self):
         self.__f.stop()
@@ -474,6 +485,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
         fromhover=False,
         show=False,
         force=False,
+        checklangs=False,
     ):
         self.__load()
         if self.__state != 2:
@@ -493,7 +505,7 @@ class WordViewTooltip(resizableframeless, DraggableQWidget):
             word = self.view.currWord + word
         unuse = globalconfig[("ignoredict_S_click", "ignoredict_S_hover")[fromhover]]
         self.wordlabel.setText(word)
-        self.view.searchword(word, sentence, unuse=unuse)
+        self.view.searchword(word, sentence, unuse=unuse, checklangs=checklangs)
 
     def showresult(self):
         size = globalconfig.get("WordViewTooltip2")

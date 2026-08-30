@@ -137,7 +137,7 @@ class BASEOBJECT(QObject):
     progresssignal4 = pyqtSignal(str, int)
     versiontextsignal = pyqtSignal(str)
     clipboardcallback = pyqtSignal(bool, str)
-    hover_search_word = pyqtSignal(str, str, bool, bool, bool)
+    hover_search_word = pyqtSignal(dict)
     settin_ui_showsignal = pyqtSignal()
     showandsolvesig = pyqtSignal(str, str)
     selecthookbuttonstatus = pyqtSignal(bool)
@@ -1399,7 +1399,12 @@ class BASEOBJECT(QObject):
                 True,
                 "searchword_mousetrigger",
                 lambda word1, append: self.searchwordW.search_word.emit(
-                    word1, sentence, append
+                    dict(
+                        word=word1,
+                        sentence=sentence,
+                        append=append,
+                        checklangs=True,
+                    )
                 ),
             ),
             "searchword_S": (
@@ -1407,7 +1412,13 @@ class BASEOBJECT(QObject):
                 False,
                 "searchword_S_mousetrigger",
                 lambda word1, append: threader(gobject.base.hover_search_word.emit)(
-                    word1, sentence, append, False, False
+                    dict(
+                        word=word1,
+                        sentence=sentence,
+                        append=append,
+                        fromhover=which == "hover",
+                        checklangs=True,
+                    )
                 ),
             ),
             "copyword": (

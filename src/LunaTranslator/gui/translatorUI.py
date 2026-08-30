@@ -654,7 +654,7 @@ class TranslatorWindow(resizableframeless):
     def callopensearchwordwindow(self):
         curr = self.translate_text.GetSelectedText()
         if curr:
-            gobject.base.searchwordW.search_word.emit(curr, None, False)
+            gobject.base.searchwordW.search_word.emit(curr)
         else:
             gobject.base.searchwordW.showsignal.emit()
 

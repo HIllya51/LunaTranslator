@@ -533,7 +533,7 @@ class TextBrowser(WebviewWidget, somecommon):
         if w not in sentence:
             sentence = None
         gobject.base.searchwordW.search_word.emit(
-            w.replace("\n", "").strip(), sentence, False
+            dict(word=w.replace("\n", "").strip(), sentence=sentence)
         )
 
     def __init__(self, parent) -> None:

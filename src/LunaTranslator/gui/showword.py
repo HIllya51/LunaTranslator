@@ -1256,9 +1256,7 @@ class DynamicTreeModel(QStandardItemModel):
     def onDoubleClicked(self, index: QModelIndex):
         if not self.data(index, isWordNode):
             return
-        gobject.base.searchwordW.search_word.emit(
-            self.itemFromIndex(index).text(), None, False
-        )
+        gobject.base.searchwordW.search_word.emit(self.itemFromIndex(index).text())
 
 
 class kpQTreeView(QTreeView):
@@ -1603,7 +1601,12 @@ class WordViewer(QWidget):
         return self.__curr_word
 
     def searchword(
-        self, word: str, sentence: str = None, readydata: dict = None, unuse=None
+        self,
+        word: str,
+        sentence: str = None,
+        readydata: dict = None,
+        unuse=None,
+        checklangs=False,
     ):
         word = word.strip()
         self.__curr_word = word
@@ -1627,7 +1630,14 @@ class WordViewer(QWidget):
             if unuse:
                 if k in unuse:
                     continue
-            gobject.base.cishus[k].safesearch(
+            _cishu = gobject.base.cishus[k]
+            if checklangs and not _cishu.is_src_auto:
+                _langs = _cishu.support_langs
+                if _langs and _cishu.srclang_1.code not in _langs:
+                    self.thisps.pop(k, None)
+                    self.bad_result.add(k)
+                    continue
+            _cishu.safesearch(
                 functools.partial(self.__show_dict_result.emit, current, k),
                 word,
                 sentence,
@@ -1990,7 +2000,7 @@ playAudioList("""
 
 
 class searchwordW(closeashidewindow):
-    search_word = pyqtSignal(str, str, bool)
+    search_word = pyqtSignal(object)
     search_word_in_new_window = pyqtSignal(str)
     ocr_once_signal = pyqtSignal()
 
@@ -2002,11 +2012,22 @@ class searchwordW(closeashidewindow):
             ),
             possave=functools.partial(globalconfig.__setitem__, "sw_geo"),
         )
-        self.search_word.connect(self._click_word_search_function)
+        self.search_word.connect(self.__search_word)
         self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.ocr_once_signal.connect(lambda: rangeselct_function(self.ocr_do_function))
         self.__state = 0
         self.safeloadrecorder()
+
+    def __search_word(self, d: "str|dict[str, object]"):
+        if isinstance(d, str):
+            return self._click_word_search_function(d)
+        self._click_word_search_function(
+            word=d["word"],
+            sentence=d.get("sentence", None),
+            append=d.get("append", False),
+            readydata=d.get("readydata", None),
+            checklangs=d.get("checklangs", False),
+        )
 
     @threader
     def safeloadrecorder(self, _=None):
@@ -2053,7 +2074,7 @@ class searchwordW(closeashidewindow):
         if result.error:
             return result.displayerror()
         gobject.base.ocr_search_word_save_image.emit(img)
-        self.search_word.emit(result.textonly, None, False)
+        self.search_word.emit(result.textonly)
 
     def __load(self):
         if self.__state != 0:
@@ -2084,7 +2105,7 @@ class searchwordW(closeashidewindow):
             _ = searchwordW(gobject.base.searchwordW.parent())
             self.cachenewwindow.append(_)
         _.move(_.pos() + QPoint(20, 20))
-        _.search_word.emit(word, None, False)
+        _.search_word.emit(word)
 
     def _createnewwindowsearch(self, *_):
         word = self.searchtext.text()
@@ -2172,7 +2193,12 @@ class searchwordW(closeashidewindow):
         self.searchtext = FQLineEdit()
         self.searchtext.textChanged.connect(self.ankiwindow.maybereset)
 
-        dictbutton = getIconSwitch(icon="fa.book", default=False, tips="MDict", callback=self.onceaddshowdictwidget)
+        dictbutton = getIconSwitch(
+            icon="fa.book",
+            default=False,
+            tips="MDict",
+            callback=self.onceaddshowdictwidget,
+        )
         history_btn = IconButton(icon="fa.history")
         history_btn.clicked.connect(self.historymenu)
 
@@ -2214,9 +2240,7 @@ class searchwordW(closeashidewindow):
         self.spliter = QSplitter()
 
         self.wordviewer = WordViewer()
-        self.wordviewer.from_webview_search_word.connect(
-            lambda _1: self.search_word.emit(_1, None, False)
-        )
+        self.wordviewer.from_webview_search_word.connect(self.search_word.emit)
         self.wordviewer.from_webview_search_word_in_new_window.connect(
             self.search_word_in_new_window
         )
@@ -2343,21 +2367,38 @@ class searchwordW(closeashidewindow):
         else:
             self.ankiwindow.hide()
 
-    def _click_word_search_function(self, word: str, sentence, append, readydata=None):
+    def _click_word_search_function(
+        self, word: str, sentence=None, append=False, readydata=None, checklangs=False
+    ):
         self.showNormal()
         if self.__state != 2:
             return
         word = word.strip()
         if append:
             word = self.searchtext.text() + word
-        self.search_function(word, sentence, append, readydata=readydata)
+        self.search_function(
+            word, sentence, append, readydata=readydata, checklangs=checklangs
+        )
 
     def search_function(
-        self, word: str, sentence, append, readydata=None, isfromhist=False
+        self,
+        word: str,
+        sentence,
+        append,
+        readydata=None,
+        isfromhist=False,
+        checklangs=False,
     ):
         self.searchtext.setText(word)
         self.activate()
-        self.search(word, sentence, append, readydata, isfromhist=isfromhist)
+        self.search(
+            word,
+            sentence,
+            append,
+            readydata,
+            isfromhist=isfromhist,
+            checklangs=checklangs,
+        )
         self.ankiwindow.example.setPlainText(
             sentence if sentence else gobject.base.currenttext
         )
@@ -2401,6 +2442,7 @@ class searchwordW(closeashidewindow):
         append=False,
         readydata=None,
         isfromhist=False,
+        checklangs=False,
     ):
         word = word.strip()
         if not word:
@@ -2409,4 +2451,6 @@ class searchwordW(closeashidewindow):
         if globalconfig.get("is_search_word_auto_tts", False):
             gobject.base.read_text(self.searchtext.text())
         self.ankiwindow.maybereset(word)
-        self.wordviewer.searchword(word, sentence, readydata=readydata)
+        self.wordviewer.searchword(
+            word, sentence, readydata=readydata, checklangs=checklangs
+        )

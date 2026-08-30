@@ -1103,7 +1103,8 @@
         "mojidict": {
             "canGetUrl": false,
             "use": true,
-            "name": "Moji辞书"
+            "name": "Moji辞书",
+            "langs": ["ja"]
         },
         "youdao": {
             "use": true,
@@ -1111,19 +1112,23 @@
         },
         "jisho": {
             "use": true,
-            "name": "jisho"
+            "name": "jisho",
+            "langs": ["ja"]
         },
         "jpdb": {
             "use": true,
-            "name": "jpdb"
+            "name": "jpdb",
+            "langs": ["ja"]
         },
         "japandict": {
             "use": true,
-            "name": "JapanDict"
+            "name": "JapanDict",
+            "langs": ["ja"]
         },
         "weblio": {
             "use": true,
-            "name": "weblio"
+            "name": "weblio",
+            "langs": ["ja"]
         },
         "chatgptlike": {
             "canGetUrl": false,
