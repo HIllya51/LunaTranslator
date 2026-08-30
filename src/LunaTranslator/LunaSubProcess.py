@@ -64,14 +64,12 @@ class _StatefulSubprocess:
 class _Vad(_StatefulSubprocess):
 
     def _find_vad_assets(self):
-        want64 = gobject.runtime_bit_64
         dlldir = ""
         model = ""
         for root, _, files in os.walk("."):
             if not dlldir and "sherpa-onnx-cxx-api.dll" in files:
                 p = os.path.abspath(os.path.join(root, "sherpa-onnx-cxx-api.dll"))
-                if NativeUtils.IsDLLBit64(p) == want64:
-                    dlldir = os.path.dirname(p)
+                dlldir = os.path.dirname(p)
             if not model and "silero_vad.onnx" in files:
                 model = os.path.abspath(os.path.join(root, "silero_vad.onnx"))
             if dlldir and model:
@@ -82,8 +80,20 @@ class _Vad(_StatefulSubprocess):
         dlldir, model = self._find_vad_assets()
         if not dlldir or not model:
             raise LookupError((dlldir, model))
+        bit64 = NativeUtils.IsDLLBit64(
+            os.path.abspath(os.path.join(dlldir, "sherpa-onnx-cxx-api.dll"))
+        )
         super().__init__(
-            "vad", gobject.runtime_bit_64, args=(str(os.getpid()), dlldir, model, str(threshold), str(min_silence_duration), str(min_speech_duration))
+            "vad",
+            bit64,
+            args=(
+                str(os.getpid()),
+                dlldir,
+                model,
+                str(threshold),
+                str(min_silence_duration),
+                str(min_speech_duration),
+            ),
         )
 
     def get(self):
