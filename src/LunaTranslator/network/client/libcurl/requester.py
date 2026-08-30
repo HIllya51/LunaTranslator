@@ -144,6 +144,20 @@ class Requester(Requester_common):
             curl_easy_setopt(curl, CURLoption.PROXY, proxy.encode("utf8"))
         curl_easy_setopt(curl, CURLoption.FOLLOWLOCATION, int(allow_redirects))
         # curl_easy_setopt(curl, CURLoption.MAXREDIRS, 100) #默认50够了
+        try:
+            curl_easy_setopt(curl, CURLoption.TCP_KEEPALIVE, 1)
+            curl_easy_setopt(curl, CURLoption.TCP_KEEPIDLE, 30)
+            curl_easy_setopt(curl, CURLoption.TCP_KEEPINTVL, 10)
+        except Exception:
+            pass
+        if server in ("127.0.0.1", "localhost"):
+            # 本地 llama.cpp 会在空闲后关掉 keep-alive。libcurl 对 POST 不会换新连接重试，
+            # 且读超时为 0，下一次请求会永久卡住，CLI 也收不到新请求。
+            try:
+                curl_easy_setopt(curl, CURLoption.FRESH_CONNECT, 1)
+                curl_easy_setopt(curl, CURLoption.FORBID_REUSE, 1)
+            except Exception:
+                pass
         if databytes:
             curl_easy_setopt(curl, CURLoption.POSTFIELDS, databytes)
             curl_easy_setopt(curl, CURLoption.POSTFIELDSIZE, len(databytes))
@@ -170,13 +184,19 @@ class Requester(Requester_common):
         resp.keeprefs += [keepref1, keepref2]
 
         if stream:
+            # SSE 解析遇到 [DONE] 就会返回，早于 curl_easy_perform 结束。
+            # Response 可能立刻被回收；回调和 handle 必须活到 perform 返回，
+            # 且 occupied 不能提前放开，否则下一次请求会 reset 正在 perform 的 handle。
+            perform_keep = [curl, __, lheaders, keepref1, keepref2]
 
             def ___perform():
                 try:
                     curl_easy_perform(curl)
                 except Exception as e:
                     headerqueue.put(e)
-                resp.queue.put(None)
+                finally:
+                    resp.queue.put(None)
+                    perform_keep.clear()
 
             threading.Thread(target=___perform, daemon=True).start()
 
@@ -187,7 +207,15 @@ class Requester(Requester_common):
             resp.content = b"".join(resp.queue)
 
         resp.headers, resp.cookies, resp.reason = self._parseheader2dict(header)
-        resp.status_code = curl_easy_getinfo(curl, CURLINFO.RESPONSE_CODE, c_long)
-        resp.url = curl_easy_getinfo(curl, CURLINFO.EFFECTIVE_URL, c_char_p).decode()
+        if stream:
+            # perform 仍在后台跑，不能对同一 easy handle 调 getinfo
+            try:
+                resp.status_code = int(header.split("\n", 1)[0].split()[1])
+            except Exception:
+                resp.status_code = 0
+            resp.url = url
+        else:
+            resp.status_code = curl_easy_getinfo(curl, CURLINFO.RESPONSE_CODE, c_long)
+            resp.url = curl_easy_getinfo(curl, CURLINFO.EFFECTIVE_URL, c_char_p).decode()
 
         return resp
