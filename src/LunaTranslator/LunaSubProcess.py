@@ -255,7 +255,7 @@ class _Mssr:
 
 class _Atlas(_StatefulSubprocess):
     def __init__(self):
-        super().__init__("atlaswmain", False)
+        super().__init__("atlaswmain", False, use_map=False)
 
     def translate(self, content):
         with self.lock:
@@ -265,7 +265,7 @@ class _Atlas(_StatefulSubprocess):
 
 class _Lec(_StatefulSubprocess):
     def __init__(self, srclang, tgtlang):
-        super().__init__("lec", False, args=(srclang, tgtlang))
+        super().__init__("lec", False, args=(srclang, tgtlang), use_map=False)
 
     def translate(self, content):
         with self.lock:
@@ -275,7 +275,7 @@ class _Lec(_StatefulSubprocess):
 
 class _Eztrans(_StatefulSubprocess):
     def __init__(self, dirname):
-        super().__init__("eztrans", False, args=(dirname,))
+        super().__init__("eztrans", False, args=(dirname,), use_map=False)
 
     def translate(self, content: str):
         with self.lock:
@@ -285,7 +285,7 @@ class _Eztrans(_StatefulSubprocess):
 
 class _Dreye(_StatefulSubprocess):
     def __init__(self, path, path2, mp):
-        super().__init__("dreye", False, args=(path, path2, str(mp)))
+        super().__init__("dreye", False, args=(path, path2, str(mp)), use_map=False)
 
     def translate(self, content: str, src_codec, tgt_codec):
         ress = []
@@ -300,7 +300,7 @@ class _Dreye(_StatefulSubprocess):
 
 class _Jb7(_StatefulSubprocess):
     def __init__(self, dllpath, dicts):
-        super().__init__("jbj7", False, args=[dllpath] + list(dicts))
+        super().__init__("jbj7", False, args=[dllpath] + list(dicts), use_map=False)
 
     def translate(self, content: str, codepage):
         content = content.replace("\r", "\n")
@@ -319,7 +319,7 @@ class _Jb7(_StatefulSubprocess):
 
 class _Kingsoft(_StatefulSubprocess):
     def __init__(self, path, path2):
-        super().__init__("kingsoft", False, args=(path, path2))
+        super().__init__("kingsoft", False, args=(path, path2), use_map=False)
 
     def translate(self, content: str):
         ress = []
