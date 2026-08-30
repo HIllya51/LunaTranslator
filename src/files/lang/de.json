@@ -939,5 +939,6 @@
     "Webview2崩溃，将切换为Qt显示。": "Webview2 ist abgestürzt und wird zur Qt-Anzeige wechseln.",
     "鼠标悬停": "Mauszeiger darüber bewegen",
     "触发方式": "Auslösemodus",
-    "中键点击": "Mittelklick"
+    "中键点击": "Mittelklick",
+    "聚焦": "Fokussieren"
 }

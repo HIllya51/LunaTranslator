@@ -939,5 +939,6 @@
     "Webview2崩溃，将切换为Qt显示。": "WebView2 has crashed and will switch to Qt display.",
     "鼠标悬停": "Hover with the mouse.",
     "触发方式": "Trigger method",
-    "中键点击": "Middle-click"
+    "中键点击": "Middle-click",
+    "聚焦": "Focus."
 }

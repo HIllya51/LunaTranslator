@@ -1410,6 +1410,14 @@ class BASEOBJECT(QObject):
                     word1, sentence, append, False, False
                 ),
             ),
+            "copyword": (
+                "usecopyword",
+                False,
+                "copyword_S_mousetrigger",
+                lambda word1, append: NativeUtils.ClipBoard.setText(
+                    (NativeUtils.ClipBoard.text + word1) if append else word1
+                ),
+            ),
         }
         noneedkeys = []
         keytriggered = []

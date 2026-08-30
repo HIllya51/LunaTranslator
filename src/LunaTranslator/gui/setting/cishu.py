@@ -449,10 +449,14 @@ def setTabcishu_l(self):
             [
                 "触发方式",
                 D_getsimplecombobox(
-                    ["左键点击", "右键点击", "中键点击", "鼠标悬停"][:(4 if canhover else 3)],
+                    ["左键点击", "右键点击", "中键点击", "鼠标悬停"][
+                        : (4 if canhover else 3)
+                    ],
                     globalconfig,
                     k=k,
-                    internal=["left", "right", "mid", "hover"][:(4 if canhover else 3)],
+                    internal=["left", "right", "mid", "hover"][
+                        : (4 if canhover else 3)
+                    ],
                     default="left",
                     callback=gobject.base.translation_ui.translate_text.showhideclick,
                 ),
@@ -493,8 +497,22 @@ def setTabcishu_l(self):
                 ),
                 default=False,
             ),
-            functools.partial(showhidebutton, 1),
+            functools.partial(showhidebutton, 2),
             "",
+            "",
+            "复制到剪贴板",
+            D_getsimpleswitch(
+                globalconfig,
+                "usecopyword",
+                callback=gobject.base.translation_ui.translate_text.showhideclick,
+                default=False,
+            ),
+            functools.partial(showhidebutton, 3),
+            "",
+            "",
+            "",
+        ],
+        [
             "查词",
             D_getsimpleswitch(
                 globalconfig,
@@ -502,7 +520,7 @@ def setTabcishu_l(self):
                 callback=gobject.base.translation_ui.translate_text.showhideclick,
                 default=True,
             ),
-            functools.partial(showhidebutton, 2),
+            functools.partial(showhidebutton, 4),
             D_getIconButton(
                 lambda: gobject.base.searchwordW.showsignal.emit(),
                 icon="fa.search",
@@ -516,7 +534,7 @@ def setTabcishu_l(self):
                 callback=gobject.base.translation_ui.translate_text.showhideclick,
                 default=False,
             ),
-            functools.partial(showhidebutton, 3),
+            functools.partial(showhidebutton, 5),
         ],
         [
             dict(
@@ -534,6 +552,7 @@ def setTabcishu_l(self):
                 ],
             )
         ],
+        [manysettings("复制到剪贴板", "copyword_mousetrigger", "copyword", canhover=False)],
         [
             manysettings(
                 "查词",
@@ -614,7 +633,7 @@ def setTabcishu_l(self):
                     type="grid",
                     parent=self,
                     name="triggerfuncs",
-                    hiderows=[1, 2, 3],
+                    hiderows=[2, 3, 4, 5],
                     grid=triggerfuncs,
                 )
             ],

@@ -163,7 +163,7 @@ class ocrtext(basetext):
     def setrect(self, rect: QRect):
         self.ranges[-1].range_ui.setrect(rect)
 
-    def setstyle(self):
+    def setstyle(self, *_):
         [_.range_ui.setstyle() for _ in self.ranges]
 
     def showhiderangeui(self, b):

@@ -939,5 +939,6 @@
     "Webview2崩溃，将切换为Qt显示。": "Webview2 ha fallado, se cambiará a la visualización de Qt.",
     "鼠标悬停": "Pasar el ratón por encima",
     "触发方式": "Forma de activación",
-    "中键点击": "Clic en el botón central"
+    "中键点击": "Clic en el botón central",
+    "聚焦": "Enfocar"
 }

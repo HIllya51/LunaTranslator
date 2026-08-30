@@ -2,8 +2,10 @@ from qtsymbols import *
 import windows, NativeUtils, gobject
 from myutils.config import globalconfig
 from myutils.hwnd import safepixmap
-from gui.dynalang import LAction
+from gui.dynalang import LAction, LDialog, LFormLayout
+from gui.usefulwidget import getspinbox, ColorButton
 from traceback import print_exc
+from myutils.wrapper import Singleton_activate
 
 
 class SideGrip(QWidget):
@@ -132,6 +134,32 @@ class Mainw(QMainWindow):
         self.updateGrips()
 
 
+@Singleton_activate
+class yangshisetting(LDialog):
+    def __init__(self, p):
+        super().__init__(p, Qt.WindowType.WindowCloseButtonHint)
+        self.setWindowTitle("样式")
+        form = LFormLayout(self)
+        spin = getspinbox(
+            0,
+            20,
+            globalconfig,
+            "ocrrangewidth",
+            default=1,
+            callback=gobject.base.textsource.setstyle,
+        )
+        form.addRow("宽度", spin)
+        colorbtn = ColorButton(
+            self,
+            globalconfig,
+            "ocrrangecolor",
+            callback=gobject.base.textsource.setstyle,
+            default="#000000",
+        )
+        form.addRow("颜色", colorbtn)
+        self.show()
+
+
 class rangeadjust(Mainw):
     closesignal = pyqtSignal()
     traceoffsetsignal = pyqtSignal(QPoint)
@@ -216,6 +244,7 @@ class rangeadjust(Mainw):
         self.drag_label.setGeometry(0, 0, 4000, 2000)
         self._isTracking = False
         self._rect = QRect()
+        self._styledlg = None
         self.setWindowFlags(
             Qt.WindowType.WindowStaysOnTopHint
             | Qt.WindowType.FramelessWindowHint
@@ -230,12 +259,35 @@ class rangeadjust(Mainw):
 
     def showmenu(self, _):
         menu = QMenu(self)
+        multiregion = LAction("多重区域模式", menu)
+        multiregion.setCheckable(True)
+        multiregion.setChecked(globalconfig.get("multiregion", False))
+        menu.addAction(multiregion)
+        focus = None
+        if globalconfig.get("multiregion", False):
+            focus = LAction("聚焦", menu)
+            focus.setCheckable(True)
+            focus.setChecked(self.isfocus)
+            menu.addAction(focus)
+        menu.addSeparator()
+        style = LAction("样式", menu)
+        menu.addAction(style)
         close = LAction("关闭", menu)
         mousetransp = LAction("鼠标穿透窗口", menu)
         menu.addAction(mousetransp)
         menu.addAction(close)
         action = menu.exec(QCursor.pos())
-        if action == mousetransp:
+        if action == multiregion:
+            checked = multiregion.isChecked()
+            globalconfig["multiregion"] = checked
+            if not checked:
+                gobject.base.textsource.leaveone()
+        elif action == style:
+            yangshisetting(self)
+        elif focus is not None and action == focus:
+            self.isfocus = focus.isChecked()
+            gobject.base.translation_ui.startTranslater()
+        elif action == mousetransp:
             windows.MouseTrans.set(self.winId())
         elif action == close:
             self._rect = QRect()
