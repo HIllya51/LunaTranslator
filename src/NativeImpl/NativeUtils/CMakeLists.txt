@@ -3,7 +3,7 @@ include(FetchContent)
 
 FetchContent_Declare(md4c
     GIT_REPOSITORY https://github.com/mity/md4c
-    GIT_TAG master
+    GIT_TAG release-0.5.3
     GIT_SHALLOW TRUE
 )
 FetchContent_Declare(tiny-aes 
