@@ -325,7 +325,7 @@ class TranslatorWindow(resizableframeless):
             self.hide_()
 
     def refreshtoolicon(self):
-        self.titlebar.setbuttonsize()
+        self.titlebar.setbuttonsize(globalconfig.get("verticalhorizontal", False))
         self.titlebar.adjustminwidth()
         self.titlebar.refreshtoolicon()
         self.set_color_transparency()
@@ -610,11 +610,6 @@ class TranslatorWindow(resizableframeless):
                     colorstate = funcs.colorstate
                 else:
                     clicked = funcs
-            belong = (
-                globalconfig["toolbutton"]["buttons"][name]["belong"]
-                if "belong" in globalconfig["toolbutton"]["buttons"][name]
-                else None
-            )
             tip = globalconfig["toolbutton"]["buttons"][name].get("tip", "")
             results.append(
                 (
@@ -622,13 +617,36 @@ class TranslatorWindow(resizableframeless):
                     rightclick,
                     tip,
                     name,
-                    belong,
                     iconstate,
                     colorstate,
                     middleclick,
                 )
             )
         return results
+
+    def buttondisplaychecker(self, name):
+        belong = (
+            globalconfig["toolbutton"]["buttons"][name]["belong"]
+            if "belong" in globalconfig["toolbutton"]["buttons"][name]
+            else None
+        )
+        if belong:
+            hide = True
+            for k in belong:
+                if (
+                    k in globalconfig["sourcestatus2"]
+                    and globalconfig["sourcestatus2"][k]["use"]
+                ):
+                    hide = False
+                    break
+            if hide:
+                return False
+        if (
+            name in globalconfig["toolbutton"]["buttons"]
+            and not globalconfig["toolbutton"]["buttons"][name]["use"]
+        ):
+            return False
+        return True
 
     def addbuttons(self):
         for _ in self.create_buttons():
@@ -842,6 +860,7 @@ class TranslatorWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self.titlebar = ButtonBar(self)
+        self.titlebar.displaychecker = self.buttondisplaychecker
         self.titlebar.move(0, 0)  # 多显示屏下，谜之错位
         self.titlebar.setObjectName("titlebar")
         self.titlebar.setMouseTracking(True)
@@ -868,7 +887,7 @@ class TranslatorWindow(resizableframeless):
         self.translate_text.contentsChanged.connect(self.textAreaChanged)
         self.translate_text.setselectable(globalconfig.get("selectable", True))
         self.titlebar.raise_()
-        self.titlebar.setbuttonsize()
+        self.titlebar.setbuttonsize(globalconfig.get("verticalhorizontal", False))
         self.addbuttons()
         self._isentered = False
         t = QTimer(self)

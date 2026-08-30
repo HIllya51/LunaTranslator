@@ -247,7 +247,7 @@ struct aitalked_impl
   template <typename T>
   void SetparamInternal(float volume, float speed, float pitch)
   {
-    AITalk_TTtsParam param;
+    T param;
     uint32_t param_size = sizeof(T);
     param.size = param_size;
     iferrorthrow(api.get_param(&param, &param_size));

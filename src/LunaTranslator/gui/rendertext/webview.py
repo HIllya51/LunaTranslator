@@ -352,7 +352,6 @@ def get_sorted_toolbuttonitems():
         rightclick,
         tip,
         name,
-        belong,
         iconstate,
         colorstate,
         middleclick,
@@ -361,22 +360,8 @@ def get_sorted_toolbuttonitems():
             continue
         if not tip:
             continue
-        if (
-            name in globalconfig["toolbutton"]["buttons"]
-            and not globalconfig["toolbutton"]["buttons"][name]["use"]
-        ):
+        if not gobject.base.translation_ui.buttondisplaychecker(name):
             continue
-        if belong:
-            hide = True
-            for k in belong:
-                if (
-                    k in globalconfig["sourcestatus2"]
-                    and globalconfig["sourcestatus2"][k]["use"]
-                ):
-                    hide = False
-                    break
-            if hide:
-                continue
         sorter = (
             {0: 0, 1: 2, 2: 1}[globalconfig["toolbutton"]["buttons"][name]["align"]],
             globalconfig["toolbutton"]["rank2"].index(name),

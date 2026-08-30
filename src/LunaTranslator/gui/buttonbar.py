@@ -213,6 +213,7 @@ class ButtonBar(QFrame):
     def __init__(self, *argc):
         super().__init__(*argc)
         self.v = False
+        self.displaychecker = lambda name: True
 
         def __(p: QBoxLayout = None, pp=None):
             _ = QBoxLayout(QBoxLayout.Direction.LeftToRight, pp)
@@ -287,7 +288,6 @@ class ButtonBar(QFrame):
         rightclick,
         tips,
         name,
-        belong=None,
         iconstate=None,
         colorstate=None,
         middleclick=None,
@@ -314,7 +314,6 @@ class ButtonBar(QFrame):
         else:
             button.setMouseTracking(True)
         button.reflayout = None
-        button.belong = belong
         self.buttons[name] = button
         if iconstate:
             self.iconstate[name] = iconstate
@@ -326,22 +325,7 @@ class ButtonBar(QFrame):
         cnt = 0
         for name in globalconfig["toolbutton"]["rank2"]:
             button: IconLabelX = self.buttons[name]
-            if button.belong:
-                hide = True
-                for k in button.belong:
-                    if (
-                        k in globalconfig["sourcestatus2"]
-                        and globalconfig["sourcestatus2"][k]["use"]
-                    ):
-                        hide = False
-                        break
-                if hide:
-                    button.hideinlayout()
-                    continue
-            if (
-                name in globalconfig["toolbutton"]["buttons"]
-                and not globalconfig["toolbutton"]["buttons"][name]["use"]
-            ):
+            if not self.displaychecker(name):
                 button.hideinlayout()
                 continue
             layout: QBoxLayout = __[
@@ -363,9 +347,9 @@ class ButtonBar(QFrame):
             p.setMinimumWidth(max(int(w), 200))
             p.setMinimumHeight(self.height() * 1)
 
-    def setbuttonsize(self):
+    def setbuttonsize(self, verticalhorizontal):
 
-        if globalconfig.get("verticalhorizontal", False):
+        if verticalhorizontal:
             self.setFixedWidth(int(IconLabelX.w()))
         else:
             self.setFixedHeight(int(IconLabelX.h()))
