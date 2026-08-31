@@ -37,7 +37,6 @@ struct Abstracttts
     virtual void SetVoice(Settings &settings) = 0;
 };
 
-#ifndef _WIN64
 struct aitalked_impl;
 struct aitalked : public Abstracttts
 {
@@ -50,7 +49,7 @@ private:
     aitalked_impl *pimpl;
 };
 
-#else
+#ifdef _WIN64
 struct AITalk_SDK_impl;
 struct AITalk_SDK : public Abstracttts
 {
@@ -78,11 +77,16 @@ private:
 
 inline Abstracttts *createruntime(const Settings &settings)
 {
-#ifndef _WIN64
-    return new aitalked(settings);
-#else
-    if (std::filesystem::exists(std::filesystem::path(settings.dllpath).parent_path() / "AITalk_SDK.dll"))
+    switch (settings.apitype)
+    {
+    case APITYPE::aitalked:
+        return new aitalked(settings);
+#ifdef _WIN64
+    case APITYPE::AITalk_SDK:
         return new AITalk_SDK(settings);
-    return new aitalk_engine(settings);
+    case APITYPE::aitalk_engine:
+        return new aitalk_engine(settings);
 #endif
+    }
+    return nullptr;
 }

@@ -342,7 +342,8 @@ namespace PCSX2Types
     }
 }
 #define PCSX2_REG_OFFSET(reg) (offsetof(__named_regs__, reg) / sizeof(GPR_reg))
-#define PCSX2_REG(reg) ((uintptr_t)eeMem->Main + ((DWORD *)(&(_cpuRegistersPack ? _cpuRegistersPack->cpuRegs.GPR : _cpuRegistersPack_old->cpuRegs.GPR).n.reg.UQ))[0])
+#define PCSX2_REG_EMU(reg) (((DWORD *)(&(_cpuRegistersPack ? _cpuRegistersPack->cpuRegs.GPR : _cpuRegistersPack_old->cpuRegs.GPR).n.reg.UQ))[0])
+#define PCSX2_REG(reg) (emu_addr(PCSX2_REG_EMU(reg)))
 
 namespace RPCS3
 {

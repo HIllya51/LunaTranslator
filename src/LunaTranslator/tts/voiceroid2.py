@@ -120,15 +120,15 @@ class _methods:
     @staticmethod
     def finddll(d, dll):
         if not d or not os.path.isdir(d):
-            raise Exception()
+            return
         for _dir, _, __ in os.walk(d):
-            for d, b64 in dll:
+            for d in dll if isinstance(dll, list) else [dll]:
                 _dll = os.path.join(_dir, d)
-                if os.path.isfile(_dll) and (b64 == NativeUtils.IsDLLBit64(_dll)):
+                if os.path.isfile(_dll):
                     return os.path.normpath(os.path.abspath(_dll))
 
     @staticmethod
-    def findinstalled(ver):
+    def findinstalledaivoice(ver):
         try:
             path = r"SOFTWARE\AI\AIVoice{}\AIVoice{}Editor\{}.0".format(
                 "" if ver == 1 else ver, "" if ver == 1 else ver, ver
@@ -136,7 +136,7 @@ class _methods:
             k = LOCAL_MACHINE.open(path, query=True)
             _dir = k.query("InstallDir")
             dll = _methods.finddll(
-                _dir, [("AITalk_SDK.dll" if ver == 1 else "aitalk_engine.dll", True)]
+                _dir, "AITalk_SDK.dll" if ver == 1 else "aitalk_engine.dll"
             )
             path = r"SOFTWARE\AI\AIVoice{}\Voice\{}.0".format(
                 "" if ver == 1 else ver, ver
@@ -154,14 +154,32 @@ class _methods:
             return None, None
 
     @staticmethod
+    def findinstalledvoiceroid2():
+        try:
+            _dirx86 = r"C:\Program Files (x86)\AHS\VOICEROID2"
+            _dirx64 = r"C:\Program Files\AHS\VOICEROID2"
+            dll = _methods.finddll(_dirx64, "aitalked.dll") or _methods.finddll(
+                _dirx86, "aitalked.dll"
+            )
+            voices = []
+            for sub in os.listdir(os.path.join(_dirx86, "Voice")):
+                _dir_1 = os.path.join(_dirx86, "Voice", sub)
+                if not _dir_1 or not os.path.isdir(_dir_1):
+                    continue
+                voices.append(os.path.normpath(_dir_1))
+            return dll, voices
+        except:
+            return None, None
+
+    @staticmethod
     def findinpath(skip, path):
         try:
             dll = _methods.finddll(
                 path,
                 [
-                    ("aitalked.dll", False),  # voiceroid+ & voiceroid2
-                    ("AITalk_SDK.dll", True),  # aivoice
-                    ("aitalk_engine.dll", True),  # aivoice2
+                    "aitalked.dll",  # voiceroid+ & voiceroid2
+                    "AITalk_SDK.dll",  # aivoice
+                    "aitalk_engine.dll",  # aivoice2
                 ],
             )
             if dll in skip:
@@ -190,15 +208,21 @@ class _methods:
 
     @staticmethod
     def findall(path):
-        dll1, voicelist1 = _methods.findinstalled(1)
-        dll2, voicelist2 = _methods.findinstalled(2)
-        dll3, voicelist3 = _methods.findinpath((dll1, dll2), path)
+        dll1, voicelist1 = _methods.findinstalledaivoice(1)
+        dll2, voicelist2 = _methods.findinstalledaivoice(2)
+        dll4, voicelist4 = _methods.findinstalledvoiceroid2()
+        dll3, voicelist3 = _methods.findinpath((dll1, dll2, dll4), path)
         join = lambda dll, lit: [(dll, _) for _ in lit] if lit else []
         voicelists = (
-            join(dll2, voicelist2) + join(dll1, voicelist1) + join(dll3, voicelist3)
+            join(dll2, voicelist2)
+            + join(dll1, voicelist1)
+            + join(dll4, voicelist4)
+            + join(dll3, voicelist3)
         )
         valids: "list[dict[str, str]]" = []
         for dll, voicedir in voicelists:
+            if not dll:
+                continue
             ret = _methods.readinfobin(voicedir)
             if not ret:
                 continue

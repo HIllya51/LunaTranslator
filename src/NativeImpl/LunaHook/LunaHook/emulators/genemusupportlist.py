@@ -18,6 +18,7 @@ def psp():
             _id = " & ".join(
                 re.findall('"(.*?)"', content[match.span()[1] :].split("\n")[0])
             )
+        game = re.sub(r"\s\[.*?\]", "", game)
         ret.append((_id, game))
     return ret
 
@@ -41,6 +42,7 @@ def ns():
             )
             game = game.split("//")[0].strip()
 
+        game = re.sub(r"\s\[.*?\]", "", game)
         ret.append((_id, game))
     return ret
 
@@ -59,6 +61,7 @@ def psv():
             _id = " & ".join(
                 re.findall('"(.*?)"', content[match.span()[1] :].split("\n")[0])
             )
+        game = re.sub(r"\s\[.*?\]", "", game)
         ret.append((_id, game))
     return ret
 
@@ -93,6 +96,7 @@ def rpcs3():
     ret = []
     for name, ids in extract_game_info_robust(content).items():
         _id = " & ".join(ids)
+        name = re.sub(r"\s\[.*?\]", "", name)
         ret.append((_id, name))
     return ret
 
@@ -111,6 +115,7 @@ def pcsx2():
             _id = " & ".join(
                 re.findall('"(.*?)"', content[match.span()[1] :].split("\n")[0])
             )
+        game = re.sub(r"\s\[.*?\]", "", game)
         ret.append((_id, game))
     return ret
 

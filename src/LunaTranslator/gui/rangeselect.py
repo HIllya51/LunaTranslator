@@ -141,7 +141,7 @@ class yangshisetting(LDialog):
         self.setWindowTitle("样式")
         form = LFormLayout(self)
         spin = getspinbox(
-            0,
+            1,
             20,
             globalconfig,
             "ocrrangewidth",

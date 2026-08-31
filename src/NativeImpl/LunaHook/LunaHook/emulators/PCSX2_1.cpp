@@ -2159,6 +2159,37 @@ namespace
         s = re::sub(s, "[\r\n]");
         buffer->from(s);
     }
+    inline std::string SLPM66351_READSTRING(const void *p, int addr)
+    {
+        auto ptr = static_cast<const uint8_t *>(p);
+        const uint8_t *tab = (const uint8_t *)emu_addr(addr); // "\x83\x40\x83\x41\x83\x42\x83\x43\x83\x44\x83\x45\x83\x46\x83\x47\x83\x48\x83\x49";
+        const int ng = 7140 / 2;
+        std::string out;
+        while (*ptr)
+        {
+            while (true)
+            {
+                const uint16_t v = static_cast<uint16_t>(ptr[0] | (ptr[1] << 8));
+                if (v == 0 || v >= ng)
+                    break;
+                out.push_back(static_cast<char>(tab[2 * v]));
+                out.push_back(static_cast<char>(tab[2 * v + 1]));
+                ptr += 2;
+            }
+            out.push_back('\n');
+            ptr += 2;
+        }
+        return out;
+    }
+    template <int addr>
+    void SLPM66351(hook_context *_, HookParam *hp, TextBuffer *buffer, uintptr_t *role)
+    {
+        auto data = PCSX2_REG(a1);
+        auto s = SLPM66351_READSTRING((void *)data, addr);
+        s = re::sub(s, "\x81\x46\x81\x6b\x81\x93");
+        s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2166,6 +2197,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // そしてこの宇宙にきらめく君の詩
+    {0x12b1d0, {FULL_STRING, 0, 0, SLPM66351<0x1d8fd40>, 0, "SLPM-66351"}},
+    // そしてこの宇宙にきらめく君の詩 XXX
+    {0x1b6b70, {FULL_STRING, 0, 0, SLPM66351<0x1e7d400>, 0, "SLPM-66659"}},
     // 暴れん坊プリンセス
     {0x2D6490, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM65054, "SLPM-65054"}},
     // 緋色の欠片 ～玉依姫奇譚～
@@ -2725,7 +2760,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // マイネリーベⅡ ～誇りと正義と愛～
     {0x1FFD0DC, {DIRECT_READ, 0, 0, 0, SLPM66247, "SLPM-66247"}},
     // 幻想水滸伝V
-    {0x24CB94, {0, PCSX2_REG_OFFSET(a3), 0, 0, NewLineCharFilterA, std::vector<const char*>{"SLPM-66286", "SLPM-66170", "SLPM-74238"}}},
+    {0x24CB94, {0, PCSX2_REG_OFFSET(a3), 0, 0, NewLineCharFilterA, std::vector<const char *>{"SLPM-66286", "SLPM-66170", "SLPM-74238"}}},
     // セパレイトハーツ (Separate Hearts)
     {0x1F63320, {DIRECT_READ, 0, 0, 0, SLPM66352, "SLPM-66298"}}, //@mills
     // アカイイト

@@ -17,7 +17,24 @@ using std::function;
 using std::pair;
 using std::string;
 using std::vector;
+#ifdef _WIN64
+#define AI_FNS(X)                                                                                     \
+  X(init, ResultCode (*)(TConfig *), "AITalkAPI_Init")                                                \
+  X(end, ResultCode (*)(void), "AITalkAPI_End")                                                       \
+  X(voice_load, ResultCode (*)(const char *), "AITalkAPI_VoiceLoad")                                  \
+  X(voice_clear, ResultCode (*)(void), "AITalkAPI_VoiceClear")                                        \
+  X(lang_clear, ResultCode (*)(void), "AITalkAPI_LangClear")                                          \
+  X(set_param, ResultCode (*)(IntPtr), "AITalkAPI_SetParam")                                          \
+  X(get_param, ResultCode (*)(IntPtr, uint32_t *), "AITalkAPI_GetParam")                              \
+  X(lang_load, ResultCode (*)(const char *), "AITalkAPI_LangLoad")                                    \
+  X(text_to_kana, ResultCode (*)(int32_t *, TJobParam *, const char *), "AITalkAPI_TextToKana")       \
+  X(close_kana, ResultCode (*)(int32_t, int32_t), "AITalkAPI_CloseKana")                              \
+  X(get_kana, ResultCode (*)(int32_t, char *, uint32_t, uint32_t *, uint32_t *), "AITalkAPI_GetKana") \
+  X(text_to_speech, ResultCode (*)(int32_t *, TJobParam *, const char *), "AITalkAPI_TextToSpeech")   \
+  X(close_speech, ResultCode (*)(int32_t, int32_t), "AITalkAPI_CloseSpeech")                          \
+  X(get_data, ResultCode (*)(int32_t, int16_t *, uint32_t, uint32_t *), "AITalkAPI_GetData")
 
+#else
 #define AI_FNS(X)                                                                                                  \
   X(init, ResultCode(__stdcall *)(TConfig *), "_AITalkAPI_Init@4")                                                 \
   X(end, ResultCode(__stdcall *)(void), "_AITalkAPI_End@0")                                                        \
@@ -33,6 +50,7 @@ using std::vector;
   X(text_to_speech, ResultCode(__stdcall *)(int32_t *, TJobParam *, const char *), "_AITalkAPI_TextToSpeech@12")   \
   X(close_speech, ResultCode(__stdcall *)(int32_t, int32_t), "_AITalkAPI_CloseSpeech@8")                           \
   X(get_data, ResultCode(__stdcall *)(int32_t, int16_t *, uint32_t, uint32_t *), "_AITalkAPI_GetData@16")
+#endif
 DECLARE_API_STRUCT
 #undef AI_FNS
 
@@ -161,13 +179,15 @@ struct aitalked_impl
     config.msec_timeout = 1000;
     config.path_license = settings.license_path.c_str();
     config.code_auth_seed = settings.seed.c_str();
-    config.len_auth_seed = kLenSeedValue;
     ResultCode result = api.init(&config);
+
+#ifndef _WIN64
     if (result != ERR_SUCCESS)
     {
       config.code_auth_seed = "PROJECT-VOICeVIO-SFE";
       result = api.init(&config);
     }
+#endif
     iferrorthrow(result);
   }
   void SetVoice(Settings &settings)

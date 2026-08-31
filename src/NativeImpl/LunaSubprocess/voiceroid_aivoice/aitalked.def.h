@@ -112,7 +112,7 @@ struct TSpeakerParam
   int32_t pauseSentence;
 };
 
-struct TSpeakerParamEx:public TSpeakerParam
+struct TSpeakerParamEx : public TSpeakerParam
 {
   char style_rate[kMaxVoiceName];
 };
@@ -122,8 +122,8 @@ struct AITalk_TTtsParam
   ProcTextBuf proc_text_buf;
   ProcRawBuf proc_raw_buf;
   ProcEventTTS proc_event_tts;
-  uint32_t lenTextBufBytes;  // default 16384
-  uint32_t lenRawBufBytes;   // default 176400
+  uint32_t lenTextBufBytes;      // default 16384
+  uint32_t lenRawBufBytes;       // default 176400
   float volume;                  // default 1
   int pauseBegin;                // default -1
   int pauseTerm;                 // default -1
@@ -165,7 +165,7 @@ struct TConfig
   uint32_t msec_timeout;
   const char *path_license;
   const char *code_auth_seed;
-  uint32_t len_auth_seed;
+  uint32_t __reserved__ = 0;
 };
 #pragma pack(pop)
 

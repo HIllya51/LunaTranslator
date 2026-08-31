@@ -2,6 +2,13 @@
 #define API_SETTINGS_H
 #include "lic_codec.h"
 
+enum class APITYPE
+{
+  aitalked,
+  AITalk_SDK,
+  aitalk_engine
+};
+
 struct Settings
 {
   static std::optional<std::string> findroot(const std::string &dllpath)
@@ -48,20 +55,32 @@ struct Settings
       return langdir.string();
     return {};
   }
-  static bool isaivoice1(const std::string &_dllpath)
+  static std::optional<APITYPE> detecttype(const std::string &_dllpath)
   {
-    return std::filesystem::path(_dllpath).filename() == "AITalk_SDK.dll";
+    if (std::filesystem::exists(std::filesystem::path(_dllpath).parent_path() / "aitalked.dll"))
+      return APITYPE::aitalked;
+#ifdef _WIN64
+    if (std::filesystem::exists(std::filesystem::path(_dllpath).parent_path() / "AITalk_SDK.dll"))
+      return APITYPE::AITalk_SDK;
+    if (std::filesystem::exists(std::filesystem::path(_dllpath).parent_path() / "aitalk_engine.dll"))
+      return APITYPE::aitalk_engine;
+#endif
+    return {};
   }
   static Settings Create(const std::string &_dllpath, const std::string &voiceir, const std::string &Lang_)
   {
     auto root = findroot(_dllpath);
     if (!root)
       throw std::runtime_error("Can't find root");
+    auto type = detecttype(_dllpath);
+    if (!type)
+      throw std::runtime_error("Unknown API type");
     Settings settings;
+    settings.apitype = type.value();
     settings.root = root.value();
     settings.dllpath = _dllpath;
     settings.voice_name = std::filesystem::path(voiceir).filename().string();
-    settings.license_path = (std::filesystem::path(_dllpath).parent_path() / (isaivoice1(_dllpath) ? "aitalk5.lic" : "aitalk.lic")).string();
+    settings.license_path = (std::filesystem::path(_dllpath).parent_path() / (type == APITYPE::AITalk_SDK ? "aitalk5.lic" : "aitalk.lic")).string();
 
     auto &&ret = getseed(settings.license_path);
     if (!ret)
@@ -87,7 +106,7 @@ struct Settings
 #ifndef _WIN64
       settings.frequency = 0xAC44;
 #else
-      settings.frequency = 0xbb80;
+      settings.frequency = (settings.apitype == APITYPE::aitalked) ? 0xAC44 : 0xbb80;
 #endif
     }
 
@@ -107,6 +126,7 @@ struct Settings
   std::string seed;
   std::string product;
   uint32_t frequency;
+  APITYPE apitype;
 };
 
 #endif // API_SETTINGS_H
