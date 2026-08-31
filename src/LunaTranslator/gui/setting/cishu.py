@@ -7,13 +7,14 @@ from myutils.wrapper import Singleton
 from gui.inputdialog import autoinitdialog_items, autoinitdialog
 from gui.rcdownload import resourcewidget, resourcewidget2
 from gui.usefulwidget import (
+    getlabelminwidth,
     LGroupBox,
     VisLFormLayout,
     makescrollgrid,
     D_getsimpleswitch,
     listediter,
     D_getIconButton,
-    LPushButton,
+    IconButton,
     NQGroupBox,
     getsmalllabel,
     D_getdoclink,
@@ -140,6 +141,7 @@ def getrenameablellabel(uid, self):
     name = ClickableLabel(dynamiccishuname(uid))
     fn = functools.partial(renameapi, name, uid, self)
     name.clicked.connect(fn)
+    name.setMinimumWidth(getlabelminwidth("Youdao Dictionary"))
     return name
 
 
@@ -236,13 +238,16 @@ def fenciqisettings(self):
         ),
     )
     l1.addWidget(_3())
-    l1.addStretch(1)
-    btn = LPushButton("资源下载")
-    btn.setCheckable(True)
+    btn = IconButton(
+        icon="fa.download",
+        checkable=True,
+        checkablechangecolor=False,
+        tips="资源下载",
+    )
     reflist = []
     btn.clicked.connect(functools.partial(clickcallback, reflist, lay))
     l1.addWidget(btn)
-    l1.addStretch(8)
+    l1.addStretch(1)
     return box
 
 
@@ -271,13 +276,16 @@ def mdictsettings(self):
         ),
     )
     l1.addWidget(_3())
-    l1.addStretch(1)
-    btn = LPushButton("资源下载")
-    btn.setCheckable(True)
+    btn = IconButton(
+        icon="fa.download",
+        checkable=True,
+        checkablechangecolor=False,
+        tips="资源下载",
+    )
     reflist = []
     btn.clicked.connect(functools.partial(clickcallback2, reflist, lay))
     l1.addWidget(btn)
-    l1.addStretch(8)
+    l1.addStretch(1)
     return box
 
 
@@ -362,7 +370,7 @@ class fontsettings(NQGroupBox):
 def setTabcishu_l(self):
 
     grids_1 = [functools.partial(fenciqisettings, self)]
-    _, online = splitocrtypes(globalconfig["cishu"])
+    _, online, other = splitocrtypes(globalconfig["cishu"], other=True)
     cishu = dict(
         title="辞书",
         button=D_getdoclink("internaldict.html"),
@@ -374,6 +382,13 @@ def setTabcishu_l(self):
                     title="在线",
                     type="grid",
                     grid=initinternal(self, online),
+                )
+            ],
+            [
+                dict(
+                    title="其他",
+                    type="grid",
+                    grid=initinternal(self, other),
                 )
             ],
         ],
@@ -643,7 +658,6 @@ def setTabcishu_l(self):
     grids = [
         grids_1,
         [cishu],
-        [],
         [zhuyin],
         [fenci],
     ]

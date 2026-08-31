@@ -13,6 +13,7 @@ from gui.dynalang import LAction, LLabel
 from tts.basettsclass import TTSbase
 from gui.setting.about import offlinelinks
 from gui.usefulwidget import (
+    getlabelminwidth,
     D_getspinbox,
     D_getdoclink,
     makescrollgrid,
@@ -122,11 +123,13 @@ def checkclickable(name: ClickableLabel):
 
 def getrenameablellabel(uid):
     if globalconfig["reader"][uid].get("type") in ("offline",):
-        return LLabel(globalconfig["reader"][uid]["name"])
-    name = ClickableLabel(globalconfig["reader"][uid]["name"])
-    fn = functools.partial(renameapi, name, uid)
-    name.beforeEnter.connect(functools.partial(checkclickable, name))
-    name.clicked.connect(fn)
+        name = LLabel(globalconfig["reader"][uid]["name"])
+    else:
+        name = ClickableLabel(globalconfig["reader"][uid]["name"])
+        fn = functools.partial(renameapi, name, uid)
+        name.beforeEnter.connect(functools.partial(checkclickable, name))
+        name.clicked.connect(fn)
+    name.setMinimumWidth(getlabelminwidth("Volcengine TTS"))
     return name
 
 
@@ -195,13 +198,15 @@ def getttsgrid(self, names):
         i += 1
     if len(line):
         grids.append(line)
+    if grids:
+        grids[-1] += [""] * (11 - len(grids[-1]))
     check_grid_append(grids)
     return grids
 
 
 def setTab5lz(self):
     grids = []
-    offline, online = splitocrtypes(globalconfig["reader"])
+    offline, online, other = splitocrtypes(globalconfig["reader"], other=True)
     offilesgrid = getttsgrid(self, offline)
     offilesgrid += [
         [(functools.partial(offlinelinks, "tts"), 0)],
@@ -214,6 +219,7 @@ def setTab5lz(self):
                 grid=[
                     [dict(title="离线", type="grid", grid=offilesgrid)],
                     [dict(title="在线", type="grid", grid=getttsgrid(self, online))],
+                    [dict(title="其他", type="grid", grid=getttsgrid(self, other))],
                 ],
             ),
         ],

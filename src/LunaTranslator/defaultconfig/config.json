@@ -887,7 +887,8 @@
         },
         "selfbuild": {
             "use": false,
-            "name": "自定义"
+            "name": "自定义",
+            "type": "other"
         },
         "voiceroid2": {
             "use": false,
@@ -1317,7 +1318,8 @@
         },
         "selfbuild": {
             "use": false,
-            "name": "自定义"
+            "name": "自定义",
+            "type": "other"
         }
     },
     "useopenlinklink1": [

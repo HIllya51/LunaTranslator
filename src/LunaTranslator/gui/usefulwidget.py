@@ -1320,6 +1320,10 @@ def check_grid_append(grids: "list[list]", minlen=None):
     return notx
 
 
+def getlabelminwidth(reference: str, padding: int = 20) -> int:
+    return int(QFontMetricsF(QApplication.font()).horizontalAdvance(reference)) + padding
+
+
 def D_getcolorbutton(parent, d, key, callback, alpha=False, tips="颜色", default=None):
     return lambda: ColorButton(
         parent, d, key, callback, alpha=alpha, tips=tips, default=default

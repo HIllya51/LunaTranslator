@@ -4,6 +4,7 @@ from myutils.config import globalconfig, ocrsetting, ocrerrorfix
 from myutils.utils import splitocrtypes, getimagefilefilter, selectdebugfile
 from gui.inputdialog import postconfigdialog, autoinitdialog_items, autoinitdialog
 from gui.usefulwidget import (
+    getlabelminwidth,
     D_getsimplecombobox,
     D_getspinbox,
     D_getIconButton,
@@ -14,7 +15,6 @@ from gui.usefulwidget import (
     D_getdoclink,
     ClickableLabel,
     getboxlayout,
-    createfoldgrid,
     TableViewW,
     saveposwindow,
     check_grid_append,
@@ -163,11 +163,13 @@ def renameapi(qlabel: QLabel, apiuid):
 
 def getrenameablellabel(uid):
     if globalconfig["ocr"][uid].get("type") in ("offline",):
-        return LLabel(globalconfig["ocr"][uid]["name"])
-    name = ClickableLabel(globalconfig["ocr"][uid]["name"])
-    fn = functools.partial(renameapi, name, uid)
-    name.clicked.connect(fn)
-    name.beforeEnter.connect(functools.partial(checkclickable, name))
+        name = LLabel(globalconfig["ocr"][uid]["name"])
+    else:
+        name = ClickableLabel(globalconfig["ocr"][uid]["name"])
+        fn = functools.partial(renameapi, name, uid)
+        name.clicked.connect(fn)
+        name.beforeEnter.connect(functools.partial(checkclickable, name))
+    name.setMinimumWidth(getlabelminwidth("googlecloudvision"))
     return name
 
 
@@ -463,37 +465,38 @@ def internal(self):
             )
         ],
         [
-            (
-                functools.partial(
-                    createfoldgrid,
-                    [
-                        [
-                            dict(
-                                type="grid",
-                                title="其他",
-                                grid=initgridsources(self, other),
-                            )
-                        ],
-                        [
-                            dict(
-                                type="grid",
-                                title="过时的",
-                                grid=initgridsources(self, outdate),
-                            )
-                        ],
-                    ],
-                    "其他",
-                    d=globalconfig["foldstatus"]["ocr"],
-                    k="other",
-                ),
-                -1,
+            dict(
+                type="grid",
+                title="其他",
+                grid=initgridsources(self, other),
             )
         ],
         [
-            D_getIconButton(
-                callback=lambda: showocrimage(self), icon="fa.picture-o", tips="查看"
-            ),
-            "",
+            dict(
+                type="grid",
+                title="过时的",
+                grid=initgridsources(self, outdate),
+            )
+        ],
+        [
+            dict(
+                title="测试",
+                type="grid",
+                grid=[
+                    [
+                        getboxlayout(
+                            [
+                                D_getIconButton(
+                                    callback=lambda: showocrimage(self),
+                                    icon="fa.picture-o",
+                                    tips="测试",
+                                ),
+                                1,
+                            ]
+                        )
+                    ]
+                ],
+            )
         ],
     ]
     autorun = [
