@@ -1,10 +1,26 @@
-import requests, re, json
+import urllib.request
+import urllib.error
+import json
+import re
 import os
 
 os.chdir(os.path.abspath(os.path.dirname(__file__)))
-js = requests.get(
-    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10731"
-).json()
+
+url = "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10731"
+
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+req = urllib.request.Request(url, headers=headers)
+
+try:
+    with urllib.request.urlopen(req) as response:
+        data = response.read().decode("utf-8")
+        js = json.loads(data)
+except urllib.error.HTTPError as e:
+    print(f"HTTP 错误: {e.code} - {e.reason}")
+    raise
+except urllib.error.URLError as e:
+    print(f"网络错误: {e.reason}")
+    raise
 
 jss = {}
 jss["html_url"] = js["html_url"]
