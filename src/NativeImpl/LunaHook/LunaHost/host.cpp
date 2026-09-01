@@ -219,7 +219,7 @@ namespace
 												 return;
 											 if (sm->clearText)
 												 return;
-											 auto codepage = Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage;
+											 auto codepage = thp.codepage ? thp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
 											 if (thp.isAscii() && !codepage)
 												 return;
 											 auto t = commonparsestring(data->data, length, &thp, codepage);

@@ -414,6 +414,9 @@ if __name__ == "__main__":
         os.system(f"robocopy NativeImpl/builds/_x64_{target} files/DLL64 *.dll")
 
         os.system(
+            f"python {os.path.join(rootthisfiledir,'getllamacppinfo.py')}"
+        )
+        os.system(
             f"python {os.path.join(rootthisfiledir,'collectall.py')} {arch} {target}"
         )
     elif sys.argv[1] == "exedlls":

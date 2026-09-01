@@ -113,7 +113,7 @@ class _voiceroid_aivoice(_StatefulSubprocess):
 
     def speak(self, content: str, voicedir: str, dialect: str, speed, pitch):
         size = self._exchange(
-            voicedir.encode(),
+            voicedir.encode("utf-16-le"),
             dialect.encode(),
             bytes(c_float(speed)),
             bytes(c_float(pitch)),

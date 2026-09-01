@@ -30,6 +30,8 @@ void TextThread::Stop()
 }
 std::optional<DWORD> TextThread::RunDectectCodePage(BYTE *data, int length)
 {
+	if (hp.codepage)
+		return {};
 	if (hp.detectedCodepage)
 		return {};
 	if (UseForDetectRaw.size() > 32)
@@ -71,7 +73,7 @@ void TextThread::Push(BYTE *data, int length)
 		return;
 	std::scoped_lock lock(bufferMutex);
 
-	auto hostcodepage = Host::defaultCodepage ? Host::defaultCodepage : hp.detectedCodepage;
+	auto hostcodepage = hp.codepage ? hp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : hp.detectedCodepage);
 	if (hp.isAscii() && !hostcodepage)
 		return;
 	BYTE doubleByteChar[2];

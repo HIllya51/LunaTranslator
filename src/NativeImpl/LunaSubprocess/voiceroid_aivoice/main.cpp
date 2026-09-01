@@ -40,19 +40,20 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
     }
     catch (std::exception &e)
     {
-        MessageBoxA(0, e.what(), "voiceroid aivoice error", MB_SYSTEMMODAL);
+        MessageBoxA(0, e.what(), "VoiceRoid/A.I.VOICE Error", MB_SYSTEMMODAL);
         return 0;
     }
 
     int freq1;
     char input_j[4096] = {0};
+    wchar_t input_w[4096] = {0};
     while (true)
     {
-        ZeroMemory(input_j, sizeof(input_j));
+        ZeroMemory(input_w, sizeof(input_w));
 
-        if (!host.read(input_j, 4096))
+        if (!host.read(input_w, sizeof(input_w)))
             break;
-        std::string _voicedir = (char *)input_j;
+        std::string _voicedir = std::filesystem::path(input_w).string();
 
         ZeroMemory(input_j, sizeof(input_j));
 
@@ -68,7 +69,7 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
             }
             catch (std::exception &e)
             {
-                MessageBoxA(0, e.what(), "voiceroid aivoice error", MB_SYSTEMMODAL);
+                MessageBoxA(0, e.what(), "VoiceRoid/A.I.VOICE Error", MB_SYSTEMMODAL);
                 return 0;
             }
             voicedir = _voicedir;
@@ -89,7 +90,7 @@ int voiceroid_aivoicewmain(int argc, wchar_t *wargv[])
         }
         catch (std::exception &e)
         {
-            MessageBoxA(0, e.what(), "voiceroid aivoice error", MB_SYSTEMMODAL);
+            MessageBoxA(0, e.what(), "VoiceRoid/A.I.VOICE Error", MB_SYSTEMMODAL);
         }
         size_t output_size = binary.size() * 2;
         int fsize = (int)(output_size + 44);

@@ -1,10 +1,9 @@
 import requests, re, json
 import os
-from tqdm import tqdm
 
-os.chdir(os.path.dirname(__file__))
+os.chdir(os.path.abspath(os.path.dirname(__file__)))
 js = requests.get(
-    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10679"
+    "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10731"
 ).json()
 
 jss = {}

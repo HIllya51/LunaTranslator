@@ -179,16 +179,7 @@ struct aitalked_impl
     config.msec_timeout = 1000;
     config.path_license = settings.license_path.c_str();
     config.code_auth_seed = settings.seed.c_str();
-    ResultCode result = api.init(&config);
-
-#ifndef _WIN64
-    if (result != ERR_SUCCESS)
-    {
-      config.code_auth_seed = "PROJECT-VOICeVIO-SFE";
-      result = api.init(&config);
-    }
-#endif
-    iferrorthrow(result);
+    iferrorthrow(api.init(&config));
   }
   void SetVoice(Settings &settings)
   {

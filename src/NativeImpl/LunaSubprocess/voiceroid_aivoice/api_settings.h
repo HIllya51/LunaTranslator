@@ -93,7 +93,6 @@ struct Settings
       throw std::runtime_error("Can't find Lang");
     settings.language = Lang_;
     settings.language_dir = langdir.value();
-    settings.language_base_dir = std::filesystem::path(langdir.value()).parent_path().string();
 #ifndef _WIN64
     if (settings.voice_name.find("_22") != std::string::npos)
     {
@@ -121,7 +120,6 @@ struct Settings
   std::string voice_name;
   std::string language;
   std::string language_dir;
-  std::string language_base_dir;
   std::string license_path;
   std::string seed;
   std::string product;
