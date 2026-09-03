@@ -141,6 +141,16 @@ class yangshisetting(LDialog):
         self.setWindowTitle("样式")
         form = LFormLayout(self)
         spin = getspinbox(
+            0,
+            1,
+            globalconfig,
+            "ocrrangealpha",
+            default=0.1,
+            double=True,
+            callback=gobject.base.textsource.setstyle,
+        )
+        form.addRow("不透明度", spin)
+        spin = getspinbox(
             1,
             20,
             globalconfig,
@@ -233,6 +243,8 @@ class rangeadjust(Mainw):
 
     def __init__(self, parent, ranges):
         super().__init__(parent)
+        self._ready = False
+        self._mousetransp = False
         self.__isfocus = False
         self.ranges: list = ranges
         self.traceoffsetsignal.connect(self.traceoffset)
@@ -256,6 +268,8 @@ class rangeadjust(Mainw):
         for s in self.cornerGrips:
             s.raise_()
         windows.WindowFocus.giveup(self.winId())
+        self._ready = True
+        self._updateWindowRgn()
 
     def showmenu(self, _):
         menu = QMenu(self)
@@ -274,6 +288,8 @@ class rangeadjust(Mainw):
         menu.addAction(style)
         close = LAction("关闭", menu)
         mousetransp = LAction("鼠标穿透窗口", menu)
+        mousetransp.setCheckable(True)
+        mousetransp.setChecked(self._mousetransp)
         menu.addAction(mousetransp)
         menu.addAction(close)
         action = menu.exec(QCursor.pos())
@@ -288,11 +304,40 @@ class rangeadjust(Mainw):
             self.isfocus = focus.isChecked()
             gobject.base.translation_ui.startTranslater()
         elif action == mousetransp:
-            windows.MouseTrans.set(self.winId())
+            self.setmousetransp(mousetransp.isChecked())
         elif action == close:
             self._rect = QRect()
             self.isfocus = False
             self.close()
+
+    def _updateWindowRgn(self):
+        hwnd = int(self.winId())
+        if not hwnd:
+            return
+        # 鼠标穿透或透明度为 0 时，仅保留四条边框可响应鼠标，内部鼠标穿透。
+        if self._mousetransp or globalconfig.get("ocrrangealpha", 0.1) == 0:
+            geo = self.geometry()
+            if geo.width() > 0 and geo.height() > 0:
+                border = round(
+                    max(
+                        globalconfig.get("ocrrangewidth", 1),
+                        self.gripSize,
+                    )
+                    * self.devicePixelRatioF()
+                )
+                windows.WindowRgn.set_frame(
+                    hwnd, geo.width(), geo.height(), border
+                )
+        else:
+            windows.WindowRgn.clear(hwnd)
+
+    def setmousetransp(self, b):
+        self._mousetransp = b
+        if b:
+            # 穿透模式下不显示悬停半透明高亮，避免边框内侧出现额外半透明带
+            self.drag_label.setStyleSheet("background-color:none")
+        if getattr(self, "_ready", False):
+            self._updateWindowRgn()
 
     def setstyle(self):
         self.label.setStyleSheet(
@@ -303,6 +348,8 @@ class rangeadjust(Mainw):
                 1 / 255,
             )
         )
+        if getattr(self, "_ready", False):
+            self._updateWindowRgn()
 
     def mouseMoveEvent(self, e: QMouseEvent):
         if self._isTracking:
@@ -340,15 +387,25 @@ class rangeadjust(Mainw):
             self._rect = self.rectoffset(self.geometry())
 
     def enterEvent(self, _):
-        self.drag_label.setStyleSheet("background-color:rgba(0,0,0, 0.1)")
+        if self._mousetransp:
+            return
+        self.drag_label.setStyleSheet(
+            "background-color:rgba(0,0,0, {})".format(
+                globalconfig.get("ocrrangealpha", 0.1)
+            )
+        )
 
     def leaveEvent(self, _):
+        if self._mousetransp:
+            return
         self.drag_label.setStyleSheet("background-color:none")
 
     def resizeEvent(self, a0):
         self.label.setGeometry(self.rect())
         if self._rect.isValid():
             self._rect = self.rectoffset(self.geometry())
+        if getattr(self, "_ready", False):
+            self._updateWindowRgn()
         super().resizeEvent(a0)
 
     def getrect(self):

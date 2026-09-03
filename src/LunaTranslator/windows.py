@@ -137,6 +137,12 @@ VK_Q = 0x51
 WM_KEYDOWN = 0x0100
 WM_KEYUP = 0x0101
 
+RGN_AND = 1
+RGN_OR = 2
+RGN_XOR = 3
+RGN_DIFF = 4
+RGN_COPY = 5
+
 
 class WindowFocus:
     @staticmethod
@@ -172,6 +178,32 @@ class MouseTrans:
             GWL_EXSTYLE,
             GetWindowLong(int(hwnd), GWL_EXSTYLE) & ~WS_EX_TRANSPARENT,
         )
+
+
+class WindowRgn:
+    @staticmethod
+    def set_frame(hwnd, w, h, border):
+        # 将窗口命中测试区域限制为宽度为 border 的四条边框，内部鼠标穿透。
+        hwnd = int(hwnd)
+        border = max(1, int(border))
+        w = int(w)
+        h = int(h)
+        rgn = CreateRectRgn(0, 0, border, h)  # 左
+        tmp = CreateRectRgn(0, 0, w, border)  # 上
+        CombineRgn(rgn, rgn, tmp, RGN_OR)
+        DeleteObject(tmp)
+        tmp = CreateRectRgn(max(0, w - border), 0, w, h)  # 右
+        CombineRgn(rgn, rgn, tmp, RGN_OR)
+        DeleteObject(tmp)
+        tmp = CreateRectRgn(0, max(0, h - border), w, h)  # 下
+        CombineRgn(rgn, rgn, tmp, RGN_OR)
+        DeleteObject(tmp)
+        # SetWindowRgn 后系统接管 rgn，不可再 DeleteObject
+        SetWindowRgn(hwnd, rgn, True)
+
+    @staticmethod
+    def clear(hwnd):
+        SetWindowRgn(int(hwnd), 0, True)
 
 
 class STARTUPINFO(Structure):
@@ -253,6 +285,9 @@ GetWindowLong.restype = LONG
 SetWindowLong = _user32.SetWindowLongW
 SetWindowLong.argtypes = HWND, c_int, LONG
 SetWindowLong.restype = LONG
+SetWindowRgn = _user32.SetWindowRgn
+SetWindowRgn.argtypes = HWND, HANDLE, c_bool
+SetWindowRgn.restype = c_int
 BringWindowToTop = _user32.BringWindowToTop
 BringWindowToTop.argtypes = (HWND,)
 GetDC = _user32.GetDC
@@ -273,6 +308,15 @@ SetCursorPos.argtypes = (c_int, c_int)
 GetDeviceCaps = _gdi32.GetDeviceCaps
 GetDeviceCaps.argtypes = HDC, c_int
 GetDeviceCaps.restype = c_int
+CreateRectRgn = _gdi32.CreateRectRgn
+CreateRectRgn.argtypes = c_int, c_int, c_int, c_int
+CreateRectRgn.restype = HANDLE
+CombineRgn = _gdi32.CombineRgn
+CombineRgn.argtypes = HANDLE, HANDLE, HANDLE, c_int
+CombineRgn.restype = c_int
+DeleteObject = _gdi32.DeleteObject
+DeleteObject.argtypes = (HANDLE,)
+DeleteObject.restype = BOOL
 _SetWindowPos = _user32.SetWindowPos
 _SetWindowPos.argtypes = c_int, c_void_p, c_int, c_int, c_int, c_int, c_uint
 _GetWindowText = _user32.GetWindowTextW
