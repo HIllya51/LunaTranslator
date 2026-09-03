@@ -622,7 +622,8 @@ class TranslatorWindow(resizableframeless):
                     middleclick,
                 )
             )
-        return results 
+        return results
+
     def buttondisplaychecker(self, name):
         belong = (
             globalconfig["toolbutton"]["buttons"][name]["belong"]
@@ -859,7 +860,9 @@ class TranslatorWindow(resizableframeless):
         self.initvalues()
         self.initsignals()
         self.titlebar = ButtonBar(self)
-        self.titlebar.buttonicon = lambda name, which:globalconfig["toolbutton"]["buttons"][name][which]
+        self.titlebar.buttonicon = lambda name, which: globalconfig["toolbutton"][
+            "buttons"
+        ][name][which]
         self.titlebar.buttondisplay = self.buttondisplaychecker
         self.titlebar.buttonrank = lambda: globalconfig["toolbutton"]["rank2"]
         self.titlebar.buttonalight = lambda name: globalconfig["toolbutton"]["buttons"][
@@ -1080,7 +1083,7 @@ class TranslatorWindow(resizableframeless):
         self.firstshow = False
         self.cleanupdater()
 
-        self.mousetransparent_check()
+        self.update_mousetransparent_rgn()
         self.adjustbuttons()
         # 有个莫名其妙的加载时间
         self.enterfunction(2 + globalconfig["disappear_delay_tool"])
@@ -1238,22 +1241,30 @@ class TranslatorWindow(resizableframeless):
         usegeo = usegeo.intersected(self.rect())
         return usegeo
 
-    @threader
-    def mousetransparent_check(self):
-        hwnd = int(self.winid)
-        while globalconfig.get("mousetransparent", False):
-            cursor_pos = self.mapFromGlobal(QCursor.pos())
-            usegeo = self.titlebar.geometry()
-            btn: QWidget = self.titlebar.buttons["mousetransbutton"]
-            if (not btn.isVisible()) and (btn.reflayout is not None):
-                usegeo = self.mousetranscheckrect
-            if usegeo.contains(cursor_pos):
-                windows.MouseTrans.unset(hwnd)
-            else:
-                windows.MouseTrans.set(hwnd)
-            time.sleep(0.1)
-        # 结束时取消穿透(可能以快捷键终止)
-        windows.MouseTrans.unset(hwnd)
+    def update_mousetransparent_rgn(self):
+        hwnd = self.winid
+        if not hwnd:
+            return
+        if not globalconfig.get("mousetransparent", False):
+            # 非穿透：rgn 设为整个窗口（清除区域）
+            if getattr(self, "_mousetransp_rgn_set", False):
+                windows.WindowRgn.clear(hwnd)
+                self._mousetransp_rgn_set = False
+                self._mousetransp_rgn_last = None
+            return
+        # 穿透：非穿透区域 = 工具栏；工具栏外(文本区)鼠标穿透
+        dpr = self.devicePixelRatioF()
+        geo = self.titlebar.geometry()
+        rx = round(geo.x() * dpr)
+        ry = round(geo.y() * dpr)
+        rw = round(geo.width() * dpr)
+        rh = round(geo.height() * dpr)
+        last = (hwnd, rx, ry, rw, rh)
+        if last == getattr(self, "_mousetransp_rgn_last", None):
+            return
+        windows.WindowRgn.set_rect(hwnd, rx, ry, rw, rh)
+        self._mousetransp_rgn_set = True
+        self._mousetransp_rgn_last = last
 
     def changemousetransparentstate(self, idx):
         if idx == 0:
@@ -1261,7 +1272,7 @@ class TranslatorWindow(resizableframeless):
             globalconfig["mousetransparent"] = not globalconfig.get(
                 "mousetransparent", False
             )
-            self.mousetransparent_check()
+            self.update_mousetransparent_rgn()
         elif idx == 1:
             ui_settings["backtransparent"] = not ui_settings.get(
                 "backtransparent", False
@@ -1470,6 +1481,7 @@ class TranslatorWindow(resizableframeless):
                     self.smooth_resizer2.setStartValue(self.size())
                     self.smooth_resizer2.setEndValue(size)
                     self.smooth_resizer2.start()
+        self.update_mousetransparent_rgn()
 
     def clickRange(self):
         if globalconfig["sourcestatus2"]["ocr"]["use"] == False:
@@ -1608,6 +1620,7 @@ class TranslatorWindow(resizableframeless):
             self.translate_text.resize(self.width(), int(height))
             if e.oldSize().width() != e.size().width():
                 self.titlebar.setFixedWidth(self.width())
+        self.update_mousetransparent_rgn()
 
     def tryremoveuseless(self):
         try:
