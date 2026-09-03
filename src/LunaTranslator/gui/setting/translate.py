@@ -1875,6 +1875,7 @@ def llamacppgrid():
         else:
             statusbtn.setIconStr(("fa.play", "fa.spinner", "fa.stop")[status])
             statusbtn.setToolTip(("启动", "启动中", "停止")[status])
+            statusbtn.setAccessibleName(("启动", "启动中", "停止")[status])
         statusbtn.setEnabled(
             ((statusbtn.iconStr() == "fa.play") and BTNPlayEnable1 and BTNPlayEnable2)
             or (statusbtn.iconStr() != "fa.play")
@@ -2112,6 +2113,7 @@ def leftwidget(self, ref: "list[CollapsibleBoxWithButton]"):
     btn4 = AutoScaleImageButton(
         r"files\static\llama.cpp.light.png", r"files\static\llama.cpp.dark.png"
     )
+    btn4.setAccessibleName("llama.cpp Launcher")
     btn4.setToolTip("llama.cpp Launcher")
     btn4.clicked.connect(functools.partial(__showllamacpp, ref))
     lb = QLabel()

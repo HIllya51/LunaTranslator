@@ -127,6 +127,7 @@ class clickitem(QWidget):
         _ = QLabel(savehook_new_data[uid]["title"])
         # _.setWordWrap(True)
         _.setToolTip(savehook_new_data[uid]["title"])
+        _.setAccessibleName(savehook_new_data[uid]["title"])
         self._2 = _
         _.setObjectName("savegame_textfont2")
         self.lay.addWidget(_)

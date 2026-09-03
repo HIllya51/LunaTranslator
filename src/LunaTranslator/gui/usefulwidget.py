@@ -1405,6 +1405,7 @@ def __getsmalllabel(text, tips=None):
     __ = LLabel(text)
     if tips:
         __.setToolTip(tips)
+        __.setAccessibleName(tips)
     __.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Preferred)
     return __
 
@@ -3307,6 +3308,7 @@ class IconButton(LPushButton):
         super().__init__(parent)
         if tips:
             self.setToolTip(tips)
+            self.setAccessibleName(tips)
         self._FixedSize = None
         self.pixmap_ = None
         self._color = color

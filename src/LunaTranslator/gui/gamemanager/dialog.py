@@ -387,6 +387,7 @@ class ItemWidget(QWidget):
         exists = os.path.exists(get_launchpath(gameuid))
         self.setObjectName("savegame_exists" + str(exists))
         self.setToolTip(savehook_new_data[gameuid]["title"])
+        self.setAccessibleName(savehook_new_data[gameuid]["title"])
 
     @property
     def margin(self):
