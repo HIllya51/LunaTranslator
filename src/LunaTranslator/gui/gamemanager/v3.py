@@ -924,6 +924,7 @@ class dialog_savedgame_v3(QSplitter):
         self.leave.connect(w.setHidden)
         self.righttop.setCornerWidget(w)
         hbox = QHBoxLayout(w)
+        hbox.setSpacing(0)
         parent.createviewswitch(hbox)
         self.addWidget(self.righttop)
         self.setObjectName("NOBORDER")
