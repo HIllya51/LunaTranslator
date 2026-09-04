@@ -1,6 +1,7 @@
 import functools, os, hashlib, uuid
 import requests, gobject, qtawesome
 from qtsymbols import *
+from language import Languages
 from myutils.config import _TR, dynamiclink, globalconfig, saveallconfig
 from myutils.utils import makehtml, stringfyerror
 from myutils.proxy import getproxy
@@ -49,6 +50,15 @@ def _scan_cishu_sha256():
             except:
                 pass
     return result
+
+
+def _langdisplay(code):
+    if not code:
+        return ""
+    info = Languages.fromcode(code)
+    if not info:
+        return code
+    return info.zhsname
 
 
 class CommunityCishuDialog(LDialog):
@@ -113,7 +123,7 @@ class CommunityCishuDialog(LDialog):
         self.show()
 
     def _fetchcatalog(self):
-        self.status.setText(_TR("加载中……"))
+        self.status.setText("加载中……")
         self._fetchcatalog_safe()
 
     @threader
@@ -144,15 +154,15 @@ class CommunityCishuDialog(LDialog):
         for entry in self._entries:
             self._appendrow(entry)
 
-    def _appendrow(self, entry):
+    def _appendrow(self, entry: dict):
         row = self.model.rowCount()
-        src = LStandardItem(entry.get("srclang") or "")
+        src = LStandardItem(_langdisplay(entry.get("srclang")))
         src.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        tgt = LStandardItem(entry.get("tgtlang") or "")
+        tgt = LStandardItem(_langdisplay(entry.get("tgtlang")))
         tgt.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
         self.model.appendRow(
             [
-                LStandardItem(entry.get("name") or ""),
+                QStandardItem(entry.get("name") or ""),
                 src,
                 tgt,
                 LStandardItem(""),
@@ -174,9 +184,9 @@ class CommunityCishuDialog(LDialog):
     def _set_download_cell(self, row, entry):
         idx = self.model.index(row, 4)
         if self._is_downloaded(entry):
-            w: QWidget = LLabel(_TR("已下载"))
+            w: QWidget = LLabel("已下载")
         else:
-            w = LPushButton(_TR("下载"))
+            w = LPushButton("下载")
             w.clicked.connect(functools.partial(self._start_download, row))
         self.table.setIndexWidget(idx, _centered(w))
         self._refit_download_column()
@@ -198,7 +208,7 @@ class CommunityCishuDialog(LDialog):
             return
         entry = self._entries[row]
         idx = self.model.index(row, 4)
-        self.table.setIndexWidget(idx, _centered(LLabel(_TR("下载中……"))))
+        self.table.setIndexWidget(idx, _centered(LLabel("下载中……")))
         self._refit_download_column()
         self._download_safe(row, entry)
 

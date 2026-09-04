@@ -300,6 +300,7 @@ class LStandardItemModel(QStandardItemModel):
                 item.updatelangtext()
         for row in range(self.rowCount()):
             for col in range(self.columnCount()):
+                item = self.item(row, col)
                 if isinstance(item, LStandardItem):
                     item.updatelangtext()
 
