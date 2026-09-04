@@ -1334,11 +1334,13 @@ class TranslatorWindow(resizableframeless):
         globalconfig["locktoolsEx"] = True
         globalconfig["locktools"] = not globalconfig.get("locktools", False)
         self.refreshtoolicon()
+        self.translate_text.resendcontentsize()
 
     def changetoolslockstate(self):
         globalconfig["locktoolsEx"] = False
         globalconfig["locktools"] = not globalconfig.get("locktools", False)
         self.refreshtoolicon()
+        self.translate_text.resendcontentsize()
 
     def dynamicextraheight(self):
 
