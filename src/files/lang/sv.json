@@ -941,5 +941,10 @@
     "触发方式": "Utlösningssätt",
     "中键点击": "Mellanklick",
     "聚焦": "Fokusera",
-    "锁定": "Låst"
+    "锁定": "Låst",
+    "社区辞书": "Gemenskapslexikon",
+    "加载中……": "Laddar...",
+    "主页": "Hemsida",
+    "加载失败": "Inläsningen misslyckades",
+    "下载中……": "Laddar ner..."
 }

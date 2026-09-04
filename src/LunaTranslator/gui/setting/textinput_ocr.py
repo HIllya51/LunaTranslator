@@ -377,7 +377,8 @@ class showocrimage(saveposwindow):
         super().__init__(
             parent,
             posinit=gobject.tempconfig.get(
-                "showocrgeo", create_centered_rect(600, 300, gobject.base.settin_ui).getRect()
+                "showocrgeo",
+                create_centered_rect(600, 300, gobject.base.settin_ui).getRect(),
             ),
             possave=functools.partial(gobject.tempconfig.__setitem__, "showocrgeo"),
         )
@@ -451,7 +452,7 @@ def internal(self):
                 title="离线",
                 type="grid",
                 grid=offgrids,
-                button=D_getdoclink("useapis/ocrapi.html#anchor-offline"),
+                widget=D_getdoclink("useapis/ocrapi.html#anchor-offline"),
             )
         ],
         [
@@ -459,7 +460,7 @@ def internal(self):
                 title="在线",
                 type="grid",
                 grid=initgridsources(self, online),
-                button=D_getdoclink("useapis/ocrapi.html#anchor-online"),
+                widget=D_getdoclink("useapis/ocrapi.html#anchor-online"),
             )
         ],
         [
@@ -567,7 +568,7 @@ def internal(self):
 
     allothers = [
         [dict(title="识别设置", type="grid", grid=reco)],
-        [dict(title="自动化执行", grid=autorun, button=D_getdoclink("ocrparam.html"))],
+        [dict(title="自动化执行", grid=autorun, widget=D_getdoclink("ocrparam.html"))],
     ]
 
     return makesubtab_lazy(

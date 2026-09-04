@@ -1,8 +1,8 @@
 from qtsymbols import *
 import functools, os
 import gobject
-from myutils.utils import splitocrtypes, dynamiccishuname, selectdebugfile
-from myutils.config import globalconfig, _TR
+from myutils.utils import splitocrtypes, dynamiccishuname, selectdebugfile, cishuexits
+from myutils.config import globalconfig, _TR, saveallconfig
 from myutils.wrapper import Singleton
 from gui.inputdialog import autoinitdialog_items, autoinitdialog
 from gui.rcdownload import resourcewidget, resourcewidget2
@@ -27,14 +27,18 @@ from gui.usefulwidget import (
     ColorButton,
     KeySequenceEdit,
     check_grid_append,
+    automakegrid,
+    request_delete_ok,
     DarkLightAutoResetIconHelper,
     FocusFontCombo,
     getIconSwitch,
+    clearlayout,
 )
 import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
 from gui.rendertext.tooltipswidget import tooltipssetting
 from gui.showword import cishusX
+from gui.setting.cishucommunity import CommunityCishuDialog
 
 
 @Singleton
@@ -108,6 +112,36 @@ def vistranslate_rank(self):
     )
 
 
+def rebuildcishugrid(self):
+    layout = getattr(self, "cishugridinternal", None)
+    if layout is None:
+        return
+    clearlayout(layout)
+    _, online = splitocrtypes(globalconfig["cishu"])
+    automakegrid(layout, initinternal(self, online))
+
+
+def deletecishu(self, apiuid):
+    if not request_delete_ok(self, "99e3f96f-8659-457f-9e0b-52643f552889"):
+        return
+    _f = gobject.getconfig("copyed/{}.py".format(apiuid))
+    try:
+        os.remove(_f)
+    except:
+        pass
+    try:
+        globalconfig["cishu"][apiuid]["use"] = False
+    except:
+        pass
+    try:
+        gobject.base.cishus.pop(apiuid)
+    except:
+        pass
+    globalconfig["cishu"].pop(apiuid, None)
+    saveallconfig()
+    rebuildcishugrid(self)
+
+
 def renameapi(qlabel: QLabel, apiuid, self, _=None):
     menu = QMenu(qlabel)
     editname = LAction("重命名", menu)
@@ -120,6 +154,10 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
         menu.addSeparator()
         menu.addAction(useproxy)
         useproxy.setChecked(globalconfig["cishu"][apiuid].get("useproxy", True))
+    delete = LAction("删除", menu)
+    if cishuexits(apiuid, only_copy=True):
+        menu.addSeparator()
+        menu.addAction(delete)
     action = menu.exec(QCursor.pos())
 
     if action == editname:
@@ -135,6 +173,9 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
     elif action == useproxy:
         globalconfig["cishu"][apiuid]["useproxy"] = useproxy.isChecked()
 
+    elif action == delete:
+        deletecishu(self, apiuid)
+
 
 def getrenameablellabel(uid, self):
     name = ClickableLabel(dynamiccishuname(uid))
@@ -148,8 +189,8 @@ def initinternal(self, names):
     line = []
     i = 0
     for cishu in names:
-        _f = "LunaTranslator/cishu/{}.py".format(cishu)
-        if os.path.exists(_f) == False:
+        which = cishuexits(cishu)
+        if not which:
             continue
         reloadcb = functools.partial(gobject.base.startxiaoxueguan, cishu)
         line += [
@@ -161,14 +202,14 @@ def initinternal(self, names):
             items = autoinitdialog_items(globalconfig["cishu"][cishu])
             items[-1]["callback"] = reloadcb
 
-            def __(cishu):
+            def __(cishu, _which=which):
                 autoinitdialog(
                     self,
                     globalconfig["cishu"][cishu]["args"],
                     dynamiccishuname(cishu),
                     800,
                     items,
-                    "cishu." + cishu,
+                    _which,
                     cishu,
                 )
 
@@ -192,7 +233,8 @@ def initinternal(self, names):
         i += 1
     if len(line):
         cishugrid.append(line)
-    cishugrid[-1] += [""] * (4 + 4 + 3 - len(cishugrid[-1]))
+    if cishugrid:
+        cishugrid[-1] += [""] * (4 + 4 + 3 - len(cishugrid[-1]))
     check_grid_append(cishugrid)
     return cishugrid
 
@@ -359,13 +401,48 @@ class fontsettings(NQGroupBox):
         form2.setRowVisible(1, not globalconfig.get("kanafontfollowdefault", True))
 
 
+def _opencommunitycishu(self):
+    dlg = getattr(self, "_communitycishudlg", None)
+    if dlg is not None and dlg.isVisible():
+        dlg.raise_()
+        dlg.activateWindow()
+        return
+    self._communitycishudlg = CommunityCishuDialog(
+        self, oninstalled=functools.partial(rebuildcishugrid, self)
+    )
+
+
+def _headercishubuttons(self):
+    w = QWidget()
+    lay = QHBoxLayout(w)
+    lay.setContentsMargins(0, 0, 0, 0)
+    btns = [
+        D_getdoclink("internaldict.html")(),
+        D_getIconButton(
+            callback=functools.partial(_opencommunitycishu, self),
+            icon="fa.download",
+            tips="社区辞书",
+        )(),
+    ]
+    for b in btns:
+        lay.addWidget(b)
+
+    def _refit(*_):
+        w.setFixedSize(lay.sizeHint())
+
+    for b in btns:
+        b.sizeChanged.connect(_refit)
+    _refit()
+    return w
+
+
 def setTabcishu_l(self):
 
     grids_1 = [functools.partial(fenciqisettings, self)]
     _, online = splitocrtypes(globalconfig["cishu"])
     cishu = dict(
         title="辞书",
-        button=D_getdoclink("internaldict.html"),
+        widget=functools.partial(_headercishubuttons, self),
         type="grid",
         grid=[
             [(functools.partial(mdictsettings, self), 0)],
@@ -373,6 +450,8 @@ def setTabcishu_l(self):
                 dict(
                     title="在线",
                     type="grid",
+                    parent=self,
+                    internallayoutname="cishugridinternal",
                     grid=initinternal(self, online),
                 )
             ],
@@ -394,7 +473,7 @@ def setTabcishu_l(self):
         name="fenyinsettings",
         enable=globalconfig.get("isshowrawtext", True),
         hiderows=[1],
-        button=D_getdoclink("qa1.html"),
+        widget=D_getdoclink("qa1.html"),
         grid=(
             [
                 getsmalllabel("显示"),
@@ -552,7 +631,11 @@ def setTabcishu_l(self):
                 ],
             )
         ],
-        [manysettings("复制到剪贴板", "copyword_mousetrigger", "copyword", canhover=False)],
+        [
+            manysettings(
+                "复制到剪贴板", "copyword_mousetrigger", "copyword", canhover=False
+            )
+        ],
         [
             manysettings(
                 "查词",

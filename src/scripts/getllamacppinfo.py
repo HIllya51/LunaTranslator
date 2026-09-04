@@ -6,7 +6,7 @@ import os
 
 os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-url = "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10731"
+url = "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10798"
 
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 req = urllib.request.Request(url, headers=headers)

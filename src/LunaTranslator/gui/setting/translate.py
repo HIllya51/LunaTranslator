@@ -51,7 +51,7 @@ from gui.usefulwidget import (
     automakegrid,
     FocusFontCombo,
     getsmalllabel,
-    NQGroupBox,
+    clearlayout,
     makescrollgrid,
     IconButton,
     PopupWidget,
@@ -569,29 +569,12 @@ def selectllmcallback_2(self, countnum: list, fanyi, _=None):
         gobject.base.translators.pop(fanyi)
     except:
         pass
-    layout: QGridLayout = getattr(self, "damoxinggridinternal")
-    if not layout:
-        return
-    if fanyi not in countnum:
-        print(fanyi)
-        return
-    idx = countnum.index(fanyi)
-    line = idx // 3
-    off = line * 14 + (idx % 3) * 5
-    do = 0
-    i = 0
-    while do < 4:
-
-        w = layout.itemAt(off + i).widget()
-        i += 1
-        if isinstance(w, NQGroupBox):
-            continue
-        elif isinstance(w, QLabel) and w.text() == "":
-            continue
-        elif not w.isEnabled():
-            continue
-        w.setEnabled(False)
-        do += 1
+    layout: QGridLayout = getattr(self, "damoxinggridinternal", None)
+    if layout is not None:
+        clearlayout(layout)
+        automakegrid(
+            layout, initsome11(self, getallllms(globalconfig["fanyi"]), save=True)
+        )
 
     if not loadvisinternal(True)[0]:
         self.__del_btn.hide()
@@ -634,9 +617,17 @@ def initsome11(self, l, save=False):
     grids: "list[list]" = []
     i = 0
     line = []
-    countnum = []
     if save:
-        self.__countnum = countnum
+        # 复用已存在的 countnum 列表对象（+/- 按钮、标签右键菜单都捕获了它），
+        # 原地清空再重建，避免重建后这些回调持有的列表与实际网格脱节。
+        countnum = getattr(self, "__countnum", None)
+        if countnum is None:
+            countnum = []
+            self.__countnum = countnum
+        else:
+            countnum.clear()
+    else:
+        countnum = []
     for fanyi in l:
         which = translate_exits(fanyi)
         if not which:

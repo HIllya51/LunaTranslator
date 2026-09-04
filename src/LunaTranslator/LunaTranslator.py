@@ -34,6 +34,7 @@ from myutils.utils import (
     stringfyerror,
     targetmod,
     translate_exits,
+    cishuexits,
     useExCheck,
     safe_escape,
     getlangsrc,
@@ -1272,8 +1273,16 @@ class BASEOBJECT(QObject):
 
     def cishuinitmethod(self, type_):
 
-        aclass = importlib.import_module("cishu." + type_)
-        aclass = getattr(aclass, type_)
+        p = cishuexits(type_)
+        if not p:
+            raise Exception()
+        amodel = importlib.import_module(p)
+        if hasattr(amodel, type_):
+            aclass = getattr(amodel, type_)
+        elif hasattr(amodel, "MyCishu"):
+            aclass = getattr(amodel, "MyCishu")
+        else:
+            raise Exception()
         return aclass(type_)
 
     def maybesetedittext(self, text):

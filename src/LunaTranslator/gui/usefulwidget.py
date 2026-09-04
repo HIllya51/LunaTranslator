@@ -2466,11 +2466,11 @@ class NQGroupBox(QGroupBox):
         self.setObjectName("notitle")
 
 
-class BGroupBox(LGroupBox):
+class WGroupBox(LGroupBox):
     def __init__(self, *a, **k):
         super().__init__(*a, **k)
 
-        self.button: QPushButton = None
+        self.widget: QWidget = None
 
     def resizeEvent(self, event):
         opt = QStyleOptionGroupBox()
@@ -2481,14 +2481,14 @@ class BGroupBox(LGroupBox):
             QStyle.SubControl.SC_GroupBoxLabel,
             self,
         )
-        if self.button:
-            self.button.move(text_rect.right() + 5, text_rect.top())
+        if self.widget:
+            self.widget.move(text_rect.right() + 5, text_rect.top())
         super().resizeEvent(event)
 
 
 def makegroupingrid(args: dict):
     lis = args.get("grid")
-    button = args.get("button")
+    widget = args.get("widget")
     title = args.get("title", None)
     _type = args.get("type", "form")
     parent = args.get("parent", None)
@@ -2496,11 +2496,11 @@ def makegroupingrid(args: dict):
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
     hiderows = args.get("hiderows", [])
-    if button:
-        group = BGroupBox()
+    if widget:
+        group = WGroupBox()
         group.setTitle(title)
-        group.button = button()
-        group.button.setParent(group)
+        group.widget = widget()
+        group.widget.setParent(group)
     elif title:
         group = LGroupBox()
         group.setTitle(title)

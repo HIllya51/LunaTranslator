@@ -113,6 +113,27 @@ def translate_exits(fanyi, only_copy=False):
         return "copyed." + fanyi
 
 
+def __cishu_exits(cishu):
+    _fs = [
+        "LunaTranslator/cishu/{}.py".format(cishu),
+        gobject.getconfig("copyed/{}.py".format(cishu)),
+    ]
+    for i, _ in enumerate(_fs):
+        if os.path.exists(_):
+            return i
+    return None
+
+
+def cishuexits(cishu, only_copy=False):
+    _ = __cishu_exits(cishu)
+    if _ is None:
+        return None
+    if _ == 0 and (not only_copy):
+        return "cishu." + cishu
+    elif _ == 1:
+        return "copyed." + cishu
+
+
 def useExCheck(fanyi, which=None, key="fanyi"):
     # 当且仅当 useEx 调用并返回 False 时返回 False
     useExfunction = globalconfig[key][fanyi].get("useEx")

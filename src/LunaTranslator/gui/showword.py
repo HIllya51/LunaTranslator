@@ -24,6 +24,7 @@ from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.utils import (
     stringfyerror,
     dynamiccishuname,
+    cishuexits,
     loopbackrecorder,
     selectdebugfile,
     parsekeystringtomodvkcode,
@@ -78,7 +79,7 @@ from tts.basettsclass import TTSResult
 def cishusX():
     __ = []
     for K in globalconfig["cishu"]:
-        if os.path.isfile("LunaTranslator/cishu/{}.py".format(K)):
+        if cishuexits(K):
             __.append(K)
     return __
 

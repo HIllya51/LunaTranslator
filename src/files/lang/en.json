@@ -941,5 +941,10 @@
     "触发方式": "Trigger method",
     "中键点击": "Middle-click",
     "聚焦": "Focus.",
-    "锁定": "Locked"
+    "锁定": "Locked",
+    "社区辞书": "Community dictionary",
+    "加载中……": "Loading...",
+    "主页": "Homepage",
+    "加载失败": "Loading failed.",
+    "下载中……": "Downloading..."
 }
