@@ -2,7 +2,7 @@ import functools, os, hashlib, uuid
 import requests, gobject, qtawesome
 from qtsymbols import *
 from language import Languages
-from myutils.config import _TR, dynamiclink, globalconfig, saveallconfig
+from myutils.config import _TR, dynamiclink, globalconfig
 from myutils.utils import makehtml, stringfyerror
 from myutils.proxy import getproxy
 from myutils.wrapper import threader
@@ -33,14 +33,13 @@ def _centered(w: QWidget) -> QWidget:
 
 def _scan_cishu_sha256():
     result = set()
-    bases = ["LunaTranslator/cishu", gobject.getconfig(_COPYED_DIR)]
-    for base in bases:
-        if not os.path.isdir(base):
-            continue
-        for fn in os.listdir(base):
-            if not fn.endswith(".py"):
+    for cishu in globalconfig["cishu"]:
+        for p in (
+            "LunaTranslator/cishu/{}.py".format(cishu),
+            gobject.getconfig("copyed/{}.py".format(cishu)),
+        ):
+            if not os.path.isfile(p):
                 continue
-            p = os.path.join(base, fn)
             try:
                 h = hashlib.sha256()
                 with open(p, "rb") as ff:
@@ -239,13 +238,14 @@ class CommunityCishuDialog(LDialog):
     def _registercishu(self, entry, uid):
         if uid not in globalconfig["cishu"]:
             name = entry.get("name") or uid
-            globalconfig["cishu"][uid] = {
+            cfg = {
                 "use": False,
                 "name": name,
-                "type": entry.get("type", "online"),
-                "copyfrom": name,
             }
-        saveallconfig()
+            srclang = entry.get("srclang")
+            if srclang:
+                cfg["langs"] = [srclang]
+            globalconfig["cishu"][uid] = cfg
 
     def _ondownloadfinished(self, row, succ, failreason, uid):
         if not (0 <= row < self.model.rowCount()):

@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, os
 import gobject
 from myutils.utils import splitocrtypes, dynamiccishuname, selectdebugfile, cishuexits
-from myutils.config import globalconfig, _TR, saveallconfig
+from myutils.config import globalconfig, _TR
 from myutils.wrapper import Singleton
 from gui.inputdialog import autoinitdialog_items, autoinitdialog
 from gui.rcdownload import resourcewidget, resourcewidget2
@@ -138,7 +138,6 @@ def deletecishu(self, apiuid):
     except:
         pass
     globalconfig["cishu"].pop(apiuid, None)
-    saveallconfig()
     rebuildcishugrid(self)
 
 
