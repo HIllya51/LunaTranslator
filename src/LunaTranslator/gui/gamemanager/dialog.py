@@ -76,7 +76,7 @@ class dialog_savedgame_integrated(saveposwindow):
             icon=["fa.unlock", "fa.lock"],
             parent=self,
             checkable=True,
-            checked=globalconfig.get("gamemanager_extrabuttons_lock", False),
+            checked=globalconfig.get("gamemanager_extrabuttons_lock", True),
             tips="锁定",
         )
         lockbtn.clicked.connect(
@@ -99,7 +99,7 @@ class dialog_savedgame_integrated(saveposwindow):
             _: dialog_savedgame_new = klass(self)
             self.__internal = _
             if not self.underMouse() and not globalconfig.get(
-                "gamemanager_extrabuttons_lock", False
+                "gamemanager_extrabuttons_lock", True
             ):
                 _.leave.emit(True)
             self.internallayout.addWidget(_)
@@ -133,9 +133,10 @@ class dialog_savedgame_integrated(saveposwindow):
         self.selectlayout(globalconfig.get("gamemanager_integrated_internal_layout", 2))
 
     def leaveEvent(self, a0):
-        target_widget = QApplication.widgetAt(QCursor.pos())
-        if not isinstance(target_widget, QMenu) and not globalconfig.get(
-            "gamemanager_extrabuttons_lock", False
+        if (
+            self.__internal
+            and not self.geometry().contains(QCursor.pos())
+            and not globalconfig.get("gamemanager_extrabuttons_lock", True)
         ):
             self.__internal.leave.emit(True)
         return super().leaveEvent(a0)
