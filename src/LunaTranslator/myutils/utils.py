@@ -921,7 +921,7 @@ def ffmpeg_record(sema: threading.Semaphore, rect: QRect = None, split=False):
 
     codecarg = "-c:v libsvtav1" if split else ""
     proc = subprochiderun(
-        r'''"{}" -f gdigrab -framerate 30 {} {} "{}"'''.format(
+        r'''"{}" -f gdigrab -framerate 30 -draw_mouse 0 {} {} "{}"'''.format(
             ffmpeg, arg, codecarg, file
         ),
         run=False,
