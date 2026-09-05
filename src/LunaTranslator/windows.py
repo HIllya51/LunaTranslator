@@ -202,14 +202,6 @@ class WindowRgn:
         SetWindowRgn(hwnd, rgn, True)
 
     @staticmethod
-    def set_rect(hwnd, rx, ry, rw, rh):
-        # 可点击区域设为单个矩形 (rx,ry,rw,rh)，矩形外鼠标穿透
-        rgn = CreateRectRgn(
-            int(rx), int(ry), int(rx) + int(rw), int(ry) + int(rh)
-        )
-        SetWindowRgn(int(hwnd), rgn, True)
-
-    @staticmethod
     def clear(hwnd):
         SetWindowRgn(int(hwnd), 0, True)
 
