@@ -1831,8 +1831,6 @@ class BASEOBJECT(QObject):
         if not hwnd:  # window create/destroy,when destroy winId is None
             return
         windows.SetProp(int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1))
-        if gobject.istest:
-            return
         self.cornerornot(obj)
         self.setshowintab_checked(obj)
         self.giveupfocus_checked(obj)

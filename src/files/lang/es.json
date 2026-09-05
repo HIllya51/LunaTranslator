@@ -800,6 +800,7 @@
     "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "Es posible que el puerto de AnkiConnect esté ocupado; verifica y termina el proceso que está utilizando el puerto.",
     "请打开anki，并安装AnkiConnect插件": "Por favor, abre Anki e instala el complemento AnkiConnect.",
     "请先关闭软件，然后再导入！": "¡Por favor, cierra el software primero y luego importa!",
+    "检测到软件已在运行，是否再次启动？": "El software ya está en ejecución. ¿Desea iniciarlo de nuevo?",
     "立即保存配置": "Guardar la configuración inmediatamente",
     "其他语言": "Otros idiomas",
     "语言名称": "Nombre del idioma",

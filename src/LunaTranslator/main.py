@@ -154,7 +154,6 @@ def _parseargs():
     try:
         URLProtocol: str = args.URLProtocol
         Exec: str = args.Exec
-        gobject.istest = args.test
         if URLProtocol:
             print(URLProtocol)
             result = urlsplit(URLProtocol)
@@ -218,12 +217,9 @@ def parsellmapi(result):
 
 def checkargs():
     import gobject
-    import NativeUtils
-    import windows
     from traceback import format_exc
     from myutils.config import _TR
 
-    gobject.isRunningMutex = NativeUtils.SimpleCreateMutex("LUNA_IS_RUNNING_MUTEX")
     startwithgameuid = None
     error = None
     _ = _parseargs()
@@ -231,7 +227,7 @@ def checkargs():
         if _[0] == 1:
             startwithgameuid = _[1]
         elif _[0] == 2:
-            if windows.GetLastError() == windows.ERROR_ALREADY_EXISTS:
+            if gobject.isRunningAlreadyExists:
                 error = 1, _TR("请先关闭软件，然后再导入！")
             else:
                 try:
@@ -242,13 +238,42 @@ def checkargs():
     return startwithgameuid, error
 
 
+def checkrunning(args):
+    import hashlib
+    import gobject
+    import NativeUtils
+    import windows
+    from qtsymbols import QMessageBox
+    from myutils.config import _TR
+
+    # 将 userconfig 作为 mutex 名的一部分，使得不同 userconfig 文件夹之间互不干扰
+    _name = "LUNA_IS_RUNNING_MUTEX_{}".format(
+        hashlib.md5(os.path.abspath(gobject.thisuserconfig).encode("utf-8")).hexdigest()
+    )
+    gobject.isRunningMutex = NativeUtils.SimpleCreateMutex(_name)
+    gobject.isRunningAlreadyExists = (
+        windows.GetLastError() == windows.ERROR_ALREADY_EXISTS
+    )
+    # 仅在正常启动（非 URLProtocol / Exec 调起）时，若已有同类实例运行则询问是否再启动一次
+    if gobject.isRunningAlreadyExists and not (args.URLProtocol or args.Exec):
+        msg_box = QMessageBox(None)
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.setWindowTitle(_TR("警告"))
+        msg_box.setText(_TR("检测到软件已在运行，是否再次启动？"))
+        msg_box.setStandardButtons(
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        msg_box.setDefaultButton(QMessageBox.StandardButton.No)
+        if msg_box.exec_() != QMessageBox.StandardButton.Yes:
+            os._exit(0)
+
+
 def create_argparser():
     import argparse
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--URLProtocol", required=False)
     parser.add_argument("--Exec", required=False)
-    parser.add_argument("--test", required=False, action="store_true")
     parser.add_argument("--userconfig", required=False)
     args = parser.parse_args()
     return args
@@ -277,6 +302,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     # app.setQuitOnLastWindowClosed(False)
     mayberror(error2)
+    checkrunning(args)
     startwithgameuid, error = checkargs()
     mayberror(error)
     loadmainui(startwithgameuid)

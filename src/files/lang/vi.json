@@ -800,6 +800,7 @@
     "AnkiConnect端口可能被占用，请检查并终止占用端口的进程": "Cổng AnkiConnect có thể đang bị chiếm dụng. Vui lòng kiểm tra và tắt tiến trình dùng cổng này.",
     "请打开anki，并安装AnkiConnect插件": "Vui lòng mở Anki và cài đặt plugin AnkiConnect.",
     "请先关闭软件，然后再导入！": "Vui lòng đóng phần mềm trước, sau đó mới import!",
+    "检测到软件已在运行，是否再次启动？": "Phần mềm đang chạy. Khởi động lại?",
     "立即保存配置": "Lưu cấu hình ngay",
     "其他语言": "Ngôn ngữ khác",
     "语言名称": "Tên ngôn ngữ",
