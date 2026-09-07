@@ -1,0 +1,38 @@
+{
+  "chatgpt": {
+    "name": "ChatGPT Web",
+    "domain": "chatgpt.com",
+    "url": "https://chatgpt.com/",
+    "profile": "chatgpt_profile",
+    "default_port": 9223,
+    "input_selector": "#prompt-textarea, [contenteditable='true'], textarea:not([class*='fallback'])",
+    "send_btn_selector": "#composer-submit-button, button[data-testid='send-button'], button[aria-label*='Send' i], button[aria-label*='Gửi' i], button.wm-composer-submitButton, button[type='submit']",
+    "stop_btn_selector": "button[data-testid='stop-button'], button[aria-label*='Stop' i]",
+    "msg_selector": "[data-message-author-role='assistant'], article [data-message-author-role='assistant'], div[class*='messageCopy'], .markdown",
+    "send_key_modifiers": 0
+  },
+  "gemini": {
+    "name": "Gemini Web",
+    "domain": "gemini.google.com",
+    "url": "https://gemini.google.com/app",
+    "profile": "gemini_profile",
+    "default_port": 9224,
+    "input_selector": ".ql-editor, rich-textarea div[contenteditable='true'], [contenteditable='true']",
+    "send_btn_selector": ".send-button-container button, button[aria-label*='Send message' i], button[aria-label*='Gửi' i], button.send-button",
+    "stop_btn_selector": "button[aria-label*='Stop' i], .stop-button, mat-icon[data-mat-icon-name='stop']",
+    "msg_selector": "model-response, [class*='model-response'], message-content",
+    "send_key_modifiers": 2
+  },
+  "deepseek": {
+    "name": "DeepSeek Web",
+    "domain": "chat.deepseek.com",
+    "url": "https://chat.deepseek.com/",
+    "profile": "deepseek_profile",
+    "default_port": 9222,
+    "input_selector": "textarea.chat-input, textarea[placeholder*='DeepSeek'], textarea",
+    "send_btn_selector": "div[class*='ds-button--primary'][class*='ds-button--circle']:not([class*='floating']):not([class*='disabled']), div[class*='ds-button--primary']:not([class*='floating']), div[class*='send-button'], button[type='submit']",
+    "stop_btn_selector": "button[aria-label*='Stop' i], button[aria-label*='Dừng' i]",
+    "msg_selector": ".ds-markdown, article",
+    "send_key_modifiers": 0
+  }
+}

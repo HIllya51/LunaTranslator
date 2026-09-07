@@ -28,6 +28,9 @@ src/.cache
 src/userconfig*
 src/cache
 src/chrome_cache
+src/browser_profile
+src/browser_profile/*
+browser_profile
 src/files/ocrmodel
 src/files/*.exe
 src/files/DLL32
@@ -59,3 +62,6 @@ spacy_wrapper
 src/DirectLiveCaptions
 *.onnx
 src/LunaTranslator/defaultconfig/llama.cpp.version.json
+
+
+dist/

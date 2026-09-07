@@ -1524,7 +1524,7 @@
         "cdp_chatgpt": {
             "use": false,
             "color": "blue",
-            "name": "CDP_ChatGPT",
+            "name": "Web GPT",
             "useproxy": false,
             "type": "free"
         },
@@ -1724,6 +1724,20 @@
             "type": "pre",
             "color": "blue",
             "name": "实时编辑"
+        },
+        "cdp_deepseek": {
+            "use": false,
+            "color": "blue",
+            "name": "Web DeepSeek",
+            "useproxy": false,
+            "type": "free"
+        },
+        "cdp_gemini": {
+            "use": false,
+            "color": "blue",
+            "name": "Web Gemini",
+            "useproxy": false,
+            "type": "free"
         }
     },
     "realtime_edit_target": "realtime_edit",

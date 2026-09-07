@@ -70,103 +70,79 @@
 	},
 	"cdp_chatgpt": {
 		"args": {
-			"usewhich": 0,
 			"chromepath": "",
-			"debugport": 9222,
-			"target_url": "https://duckduckgo.com/?t=h_&q=hi&ia=chat",
-			"request_method": 0,
-			"checkneturlfunction": "url.includes(\"v1/chat\")",
-			"extracttextfunction": "thistext += chunk.message?chunk.message:\"\"",
-			"textarea_selector": "textarea",
-			"button_selector": "button[type=\"submit\"]",
-			"S": "",
-			"S2": "",
-			"usingstream": true,
+			"debugport": 9223,
+			"show_browser": true,
+			"custom_url": "",
 			"use_custom_prompt": false,
-			"custom_prompt": ""
+			"custom_prompt": "You are an expert Visual Novel translator. Translate the following text from {srclang} to {tgtlang}:\n「{content}」\nOutput ONLY the direct translation text without quotation marks, notes, or explanations.",
+			"prompt_hint": "• {content} or {sentence}: Original text to translate\n• {srclang}: Source language name (e.g. Japanese)\n• {tgtlang}: Target language name (e.g. Vietnamese)",
+			"use_custom_dom": false,
+			"dom_input_selector": "#prompt-textarea, [contenteditable='true']",
+			"dom_send_btn_selector": "button[data-testid='send-button'], button[aria-label*='Send' i], button[type='submit']",
+			"dom_msg_selector": "[data-message-author-role='assistant'], article [data-message-author-role='assistant']",
+			"dom_stop_btn_selector": "button[data-testid='stop-button'], button[aria-label*='Stop' i]",
+			"dom_tools": []
 		},
 		"argstype": {
 			"chromepath": {
-				"rank": 2,
-				"name": "Chromium_路径",
+				"rank": 1,
+				"name": "Chromium Path",
 				"type": "file",
 				"dir": false
 			},
 			"debugport": {
-				"rank": 3,
-				"name": "端口号",
+				"rank": 2,
+				"name": "Debug Port",
 				"type": "intspin",
 				"min": 0,
-				"max": 1000000
+				"max": 65535
 			},
-			"usewhich": {
-				"rank": 1,
-				"type": "combo",
-				"name": "类型",
-				"list": [
-					"chatgpt",
-					"mirror"
-				]
+			"show_browser": {
+				"rank": 3,
+				"name": "Show Browser Window",
+				"type": "switch"
 			},
-			"S2": {
+			"custom_url": {
 				"rank": 4,
-				"type": "split"
+				"name": "Custom URL (Mirror)",
+				"type": "lineedit"
 			},
-			"target_url": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 10
-			},
-			"textarea_selector": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 14,
-				"name": "CSS selector for textarea"
-			},
-			"button_selector": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 15,
-				"name": "CSS selector for button"
-			},
-			"extracttextfunction": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 13,
-				"name": "Function2 (extract text in stream chunk)"
-			},
-			"checkneturlfunction": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 12,
-				"name": "Function1 (check if url is backend url)"
-			},
-			"request_method": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 11,
-				"type": "combo",
-				"list": [
-					"fetch",
-					"xhr"
-				]
-			},
-			"S": {
-				"refcombo": "usewhich",
-				"refcombo_i": 1,
-				"rank": 19,
-				"type": "split"
-			},
-			"usingstream": {
-				"rank": 20,
-				"name": "流式输出",
+			"use_custom_prompt": {
 				"type": "switch"
 			},
 			"custom_prompt": {
-				"rank": 21,
-				"name": "自定义_promt",
+				"rank": 5,
+				"name": "Custom Prompt",
 				"type": "multiline",
-				"refswitch": "use_custom_prompt"
+				"refswitch": "use_custom_prompt",
+				"placeholder": "You are an expert Visual Novel translator. Translate the following text from {srclang} to {tgtlang}:\n「{content}」\nOutput ONLY the direct translation text without quotation marks, notes, or explanations."
+			},
+			"prompt_hint": {
+				"rank": 5.1,
+				"name": "Variables Guide",
+				"type": "label"
+			},
+			"dom_tools": {
+				"rank": 6,
+				"name": "Custom DOM",
+				"type": "custom",
+				"function": "dom_tools_widget"
+			},
+			"use_custom_dom": {
+				"hide": true
+			},
+			"dom_input_selector": {
+				"hide": true
+			},
+			"dom_send_btn_selector": {
+				"hide": true
+			},
+			"dom_msg_selector": {
+				"hide": true
+			},
+			"dom_stop_btn_selector": {
+				"hide": true
 			}
 		}
 	},
@@ -825,6 +801,162 @@
 				"min": 0,
 				"max": 2,
 				"step": 0.01
+			}
+		}
+	},
+	"cdp_deepseek": {
+		"args": {
+			"chromepath": "",
+			"debugport": 9222,
+			"show_browser": true,
+			"custom_url": "",
+			"use_custom_prompt": false,
+			"custom_prompt": "You are an expert Visual Novel translator. Translate the following text from {srclang} to {tgtlang}:\n「{content}」\nOutput ONLY the direct translation text without quotation marks, notes, or explanations.",
+			"prompt_hint": "• {content} or {sentence}: Original text to translate\n• {srclang}: Source language name (e.g. Japanese)\n• {tgtlang}: Target language name (e.g. Vietnamese)",
+			"use_custom_dom": false,
+			"dom_input_selector": "textarea.chat-input, textarea[placeholder*='DeepSeek'], textarea",
+			"dom_send_btn_selector": "div[class*='ds-button--primary'][class*='ds-button--circle']:not([class*='floating']):not([class*='disabled']), div[class*='ds-button--primary']:not([class*='floating']), div[class*='send-button'], button[type='submit']",
+			"dom_msg_selector": ".ds-markdown, article",
+			"dom_stop_btn_selector": "button[aria-label*='Stop' i], button[aria-label*='Dừng' i], div[class*='stop']",
+			"dom_tools": []
+		},
+		"argstype": {
+			"chromepath": {
+				"rank": 1,
+				"name": "Chromium Path",
+				"type": "file",
+				"dir": false
+			},
+			"debugport": {
+				"rank": 2,
+				"name": "Debug Port",
+				"type": "intspin",
+				"min": 0,
+				"max": 65535
+			},
+			"show_browser": {
+				"rank": 3,
+				"name": "Show Browser Window",
+				"type": "switch"
+			},
+			"custom_url": {
+				"rank": 4,
+				"name": "Custom URL (Mirror)",
+				"type": "lineedit"
+			},
+			"use_custom_prompt": {
+				"type": "switch"
+			},
+			"custom_prompt": {
+				"rank": 5,
+				"name": "Custom Prompt",
+				"type": "multiline",
+				"refswitch": "use_custom_prompt",
+				"placeholder": "You are an expert Visual Novel translator. Translate the following text from {srclang} to {tgtlang}:\n「{content}」\nOutput ONLY the direct translation text without quotation marks, notes, or explanations."
+			},
+			"prompt_hint": {
+				"rank": 5.1,
+				"name": "Variables Guide",
+				"type": "label"
+			},
+			"dom_tools": {
+				"rank": 6,
+				"name": "Custom DOM",
+				"type": "custom",
+				"function": "dom_tools_widget"
+			},
+			"use_custom_dom": {
+				"hide": true
+			},
+			"dom_input_selector": {
+				"hide": true
+			},
+			"dom_send_btn_selector": {
+				"hide": true
+			},
+			"dom_msg_selector": {
+				"hide": true
+			},
+			"dom_stop_btn_selector": {
+				"hide": true
+			}
+		}
+	},
+	"cdp_gemini": {
+		"args": {
+			"chromepath": "",
+			"debugport": 9224,
+			"show_browser": true,
+			"custom_url": "",
+			"use_custom_prompt": false,
+			"custom_prompt": "You are an expert Visual Novel translator. Translate the following text from {srclang} to {tgtlang}:\n「{content}」\nOutput ONLY the direct translation text without quotation marks, notes, or explanations.",
+			"prompt_hint": "• {content} or {sentence}: Original text to translate\n• {srclang}: Source language name (e.g. Japanese)\n• {tgtlang}: Target language name (e.g. Vietnamese)",
+			"use_custom_dom": false,
+			"dom_input_selector": ".ql-editor, rich-textarea div[contenteditable='true'], [contenteditable='true']",
+			"dom_send_btn_selector": ".send-button-container button, button[aria-label*='Send message' i], button.send-button",
+			"dom_msg_selector": "model-response, [class*='model-response'], message-content",
+			"dom_stop_btn_selector": "button[aria-label*='Stop' i], .stop-button, mat-icon[data-mat-icon-name='stop']",
+			"dom_tools": []
+		},
+		"argstype": {
+			"chromepath": {
+				"rank": 1,
+				"name": "Chromium Path",
+				"type": "file",
+				"dir": false
+			},
+			"debugport": {
+				"rank": 2,
+				"name": "Debug Port",
+				"type": "intspin",
+				"min": 0,
+				"max": 65535
+			},
+			"show_browser": {
+				"rank": 3,
+				"name": "Show Browser Window",
+				"type": "switch"
+			},
+			"custom_url": {
+				"rank": 4,
+				"name": "Custom URL (Mirror)",
+				"type": "lineedit"
+			},
+			"use_custom_prompt": {
+				"type": "switch"
+			},
+			"custom_prompt": {
+				"rank": 5,
+				"name": "Custom Prompt",
+				"type": "multiline",
+				"refswitch": "use_custom_prompt",
+				"placeholder": "You are an expert Visual Novel translator. Translate the following text from {srclang} to {tgtlang}:\n「{content}」\nOutput ONLY the direct translation text without quotation marks, notes, or explanations."
+			},
+			"prompt_hint": {
+				"rank": 5.1,
+				"name": "Variables Guide",
+				"type": "label"
+			},
+			"dom_tools": {
+				"rank": 6,
+				"name": "Custom DOM",
+				"type": "custom",
+				"function": "dom_tools_widget"
+			},
+			"use_custom_dom": {
+				"hide": true
+			},
+			"dom_input_selector": {
+				"hide": true
+			},
+			"dom_send_btn_selector": {
+				"hide": true
+			},
+			"dom_msg_selector": {
+				"hide": true
+			},
+			"dom_stop_btn_selector": {
+				"hide": true
 			}
 		}
 	}
