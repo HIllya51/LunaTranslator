@@ -6,9 +6,7 @@
 static std::filesystem::path getcurrpath()
 {
     WCHAR path[MAX_PATH];
-    HMODULE hd;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)getcurrpath, &hd);
-    GetModuleFileNameW(hd, path, MAX_PATH);
+    GetModuleFileNameW((HMODULE)&__ImageBase, path, MAX_PATH);
     return std::filesystem::path(path).parent_path();
 }
 static HMODULE load_bass_dll(const wchar_t *dll)

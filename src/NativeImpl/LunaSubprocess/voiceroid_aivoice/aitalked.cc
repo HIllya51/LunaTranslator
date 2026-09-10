@@ -164,12 +164,12 @@ namespace
   }
 } // namespace
 
-struct aitalked_impl
+struct aitalked : public Abstracttts
 {
   Api api;
   std::string lastlang_;
   bool hasloadvoice = false;
-  aitalked_impl(const Settings &settings)
+  aitalked(const Settings &settings)
   {
     if (!api.load(settings.dllpath.c_str()))
       throw std::runtime_error("load dll failed");
@@ -181,7 +181,7 @@ struct aitalked_impl
     config.code_auth_seed = settings.seed.c_str();
     iferrorthrow(api.init(&config));
   }
-  void SetVoice(Settings &settings)
+  void SetVoice(Settings &settings) override
   {
     if (settings.language_dir != lastlang_)
     {
@@ -194,7 +194,7 @@ struct aitalked_impl
     hasloadvoice = true;
     iferrorthrow(api.voice_load(settings.voice_name.c_str()));
   }
-  std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text)
+  std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text) override
   {
     Setparam(2, _rate, _pitch); // 0.5-4, 0.5-2
     auto sjis = WideStringToString(StringToWideString(text), 932);
@@ -276,20 +276,7 @@ struct aitalked_impl
   }
 };
 
-aitalked::aitalked(const Settings &settings)
+Abstracttts *create_aitalked(const Settings &settings)
 {
-  pimpl = new aitalked_impl(settings);
-}
-void aitalked::SetVoice(Settings &settings)
-{
-  pimpl->SetVoice(settings);
-}
-std::vector<int16_t> aitalked::Speek(float _rate, float _pitch, const std::string &text)
-{
-  return pimpl->Speek(_rate, _pitch, text);
-}
-aitalked::~aitalked()
-{
-  if (pimpl)
-    delete pimpl;
+  return new aitalked(settings);
 }

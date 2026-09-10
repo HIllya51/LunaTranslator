@@ -25,46 +25,24 @@ typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
 typedef void (*EmuGameInfoCallback)(const wchar_t *id, const wchar_t *title, const wchar_t *version);
 typedef wchar_t *(*I18NQueryCallback)(const wchar_t *text);
 typedef void (*findhookcallback_t)(wchar_t *hookcode, const wchar_t *text);
-template <typename T>
-std::optional<T> checkoption(bool check, T &&t)
-{
-    if (check)
-        return std::move(t);
-    return {};
-}
 
 C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed, I18NQueryCallback i18nQueryCallback, EmuGameInfoCallback emuGameInfoCallback)
 {
-    Host::Start(
-        checkoption(Connect, std::function<void(DWORD)>(Connect)),
-        checkoption(Disconnect, std::function<void(DWORD)>(Disconnect)),
-        checkoption(Create, [=](const TextThread &thread)
-                    { Create(thread.hp.hookcode, thread.hp.name, thread.tp, thread.hp.type & EMBED_ABLE); }),
-        checkoption(Destroy, [=](const TextThread &thread)
-                    { Destroy(thread.hp.hookcode, thread.hp.name, thread.tp); }),
-        checkoption(Output, [=](const TextThread &thread, std::wstring &output)
-                    { Output(thread.hp.hookcode, thread.hp.name, thread.tp, output.c_str()); }),
-        checkoption(hostinfo, [=](HOSTINFO type, const std::wstring &output)
-                    { hostinfo(type, output.c_str()); }),
-        checkoption(hookinsert, [=](DWORD pid, uint64_t addr, const std::wstring &hookcode)
-                    { hookinsert(pid, addr, hookcode.c_str()); }),
-        checkoption(embed, [=](const std::wstring &output, const ThreadParam &tp)
-                    { embed(output.c_str(), tp); }),
-        checkoption(i18nQueryCallback,
-                    [=](const std::wstring &str) -> std::optional<std::wstring>
-                    {
+    Host::Start(Connect, Disconnect, [=](const TextThread &thread)
+                { Create(thread.hp.hookcode, thread.hp.name, thread.tp, thread.hp.type & EMBED_ABLE); }, [=](const TextThread &thread)
+                { Destroy(thread.hp.hookcode, thread.hp.name, thread.tp); }, [=](const TextThread &thread, std::wstring &output)
+                { Output(thread.hp.hookcode, thread.hp.name, thread.tp, output.c_str()); }, [=](HOSTINFO type, const std::wstring &output)
+                { hostinfo(type, output.c_str()); }, [=](DWORD pid, uint64_t addr, const std::wstring &hookcode)
+                { hookinsert(pid, addr, hookcode.c_str()); }, [=](const std::wstring &output, const ThreadParam &tp)
+                { embed(output.c_str(), tp); }, [=](const std::wstring &str) -> std::optional<std::wstring>
+                {
                         auto s = i18nQueryCallback(str.c_str());
                         if (!s)
                             return std::nullopt;
                         std::wstring ret = s;
                         delete s;
-                        return ret;
-                    }),
-        checkoption(emuGameInfoCallback,
-                    [=](const std::wstring &id, const std::wstring &title, const std::wstring &version)
-                    {
-                        emuGameInfoCallback(id.c_str(), title.c_str(), version.c_str());
-                    }));
+                        return ret; }, [=](const std::wstring &id, const std::wstring &title, const std::wstring &version)
+                { emuGameInfoCallback(id.c_str(), title.c_str(), version.c_str()); });
 }
 #if 0
 C_LUNA_API void Luna_ConnectAndInjectProcess(DWORD pid)

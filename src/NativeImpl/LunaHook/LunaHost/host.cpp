@@ -264,7 +264,7 @@ namespace
 	if (X)                               \
 	{                                    \
 		std::lock_guard _(Lock);         \
-		X.value()(V);                    \
+		X(V);                            \
 	}
 #define IF_HASVAL_DISPATCH(Lock, X) IF_HASVAL_DISPATCH_1(Lock, X, std::forward<decltype(args)>(args)...)
 namespace Host
@@ -288,15 +288,15 @@ namespace Host
 			rcd.Send<rpc::Id::QueryI18N>();
 		}
 	}
-	void Start(std::optional<ProcessEventHandler> Connect,
-			   std::optional<ProcessEventHandler> Disconnect,
-			   std::optional<ThreadEventHandler> Create,
-			   std::optional<ThreadEventHandler> Destroy,
-			   std::optional<TextThread::OutputCallback> Output,
-			   std::optional<HostInfoHandler> hostinfo,
-			   std::optional<HookInsertHandler> hookinsert,
-			   std::optional<EmbedCallback> embed,
-			   std::optional<I18NQueryCallback> _i18nQueryCallback, std::optional<EmuGameInfoCallback> emuGameInfoCallback)
+	void Start(ProcessEventHandler Connect,
+			   ProcessEventHandler Disconnect,
+			   ThreadEventHandler Create,
+			   ThreadEventHandler Destroy,
+			   TextThread::OutputCallback Output,
+			   HostInfoHandler hostinfo,
+			   HookInsertHandler hookinsert,
+			   EmbedCallback embed,
+			   I18NQueryCallback _i18nQueryCallback, EmuGameInfoCallback emuGameInfoCallback)
 	{
 		OnEmuGameInfo = [=](auto &&...args)
 		{ IF_HASVAL_DISPATCH(procmutex, emuGameInfoCallback); };
@@ -322,8 +322,8 @@ namespace Host
 		{ IF_HASVAL_DISPATCH(threadmutex, hookinsert); };
 		embedcallback = [=](auto &&...args)
 		{ IF_HASVAL_DISPATCH(outputmutex, embed); };
-		i18nQueryCallback = _i18nQueryCallback.value_or([](auto)
-														{ return std::nullopt; });
+		i18nQueryCallback = _i18nQueryCallback ? _i18nQueryCallback : [](auto)
+		{ return std::nullopt; };
 		registerHostRpcHandlers();
 	}
 	bool CheckIfNeedInject(DWORD processId)

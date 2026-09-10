@@ -13,7 +13,7 @@ namespace magic_enum::customize
     };
 }
 
-struct AITalk_SDK_impl
+struct AITalk_SDK : public Abstracttts
 {
 #define AI_FNS(X)                                                                                                                                                                                \
     X(initialize, AITalkReturnCode (*)(), "AITalk_Core_initialize")                                                                                                                              \
@@ -52,10 +52,10 @@ struct AITalk_SDK_impl
     AITalk_Core_PresetSet *preset = nullptr;
     AITalk_Core_TtsParameter *param = nullptr;
 
-    AITalk_SDK_impl(const Settings &settings);
-    ~AITalk_SDK_impl();
-    void SetVoice(Settings &settings);
-    std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text);
+    AITalk_SDK(const Settings &settings);
+    ~AITalk_SDK() override;
+    void SetVoice(Settings &settings) override;
+    std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text) override;
 
     template <typename T>
     inline AITalkMixedType createdata(T value)
@@ -113,7 +113,7 @@ struct AITalk_SDK_impl
 };
 struct Ctx
 {
-    AITalk_SDK_impl *pimpl;
+    AITalk_SDK *pimpl;
     std::vector<int16_t> pcm;
     CEvent event;
 };
@@ -172,7 +172,7 @@ extern "C" AITalkReturnCode tts_out_cb(void *user_data, AITalk_Core_TtsOutEventI
     return r;
 }
 
-AITalk_SDK_impl::AITalk_SDK_impl(const Settings &settings)
+AITalk_SDK::AITalk_SDK(const Settings &settings)
 {
     if (!api.load(settings.dllpath.c_str()))
         throw std::runtime_error{"load dll failed"};
@@ -192,7 +192,7 @@ AITalk_SDK_impl::AITalk_SDK_impl(const Settings &settings)
     api.TtsParameter_putKeyValue(param, AITalk_Core_TtsParameterId_Volume, NULL, createdata(5.0f));
 }
 
-AITalk_SDK_impl::~AITalk_SDK_impl()
+AITalk_SDK::~AITalk_SDK()
 {
     if (selector)
         api.CallbackSelector_delete(selector);
@@ -205,7 +205,7 @@ AITalk_SDK_impl::~AITalk_SDK_impl()
     api.finalize();
 }
 
-std::vector<int16_t> AITalk_SDK_impl::Speek(float _rate, float _pitch, const std::string &text)
+std::vector<int16_t> AITalk_SDK::Speek(float _rate, float _pitch, const std::string &text)
 {
     api.TtsParameter_putKeyValue(param, AITalk_Core_TtsParameterId_Rate, NULL, createdata(_rate));
     api.TtsParameter_putKeyValue(param, AITalk_Core_TtsParameterId_Pitch, NULL, createdata(_pitch));
@@ -221,27 +221,14 @@ std::vector<int16_t> AITalk_SDK_impl::Speek(float _rate, float _pitch, const std
     return std::move(ctx.pcm);
 }
 
-void AITalk_SDK_impl::SetVoice(Settings &settings)
+void AITalk_SDK::SetVoice(Settings &settings)
 {
     iferrorthrow(loadAndSelect(AITalk_Core_TtsId_LanguageDictionary, settings.language.c_str(), (std::filesystem::path(settings.language_dir) / (settings.language + ".aildic")).string().c_str()));
     iferrorthrow(putKV(AITalk_Core_TtsId_VoiceDictionaryLicense, settings.voice_name.c_str(), (std::filesystem::path(settings.voice_dir) / "voice.lic").string().c_str()));
     iferrorthrow(loadAndSelect(AITalk_Core_TtsId_VoiceDictionary, settings.voice_name.c_str(), (std::filesystem::path(settings.voice_dir) / (settings.voice_name + ".aivdic")).string().c_str()));
 }
 
-AITalk_SDK::AITalk_SDK(const Settings &settings)
+Abstracttts *create_AITalk_SDK(const Settings &settings)
 {
-    pimpl = new AITalk_SDK_impl(settings);
-}
-AITalk_SDK::~AITalk_SDK()
-{
-    if (pimpl)
-        delete pimpl;
-}
-std::vector<int16_t> AITalk_SDK::Speek(float _rate, float _pitch, const std::string &text)
-{
-    return pimpl->Speek(_rate, _pitch, text);
-}
-void AITalk_SDK::SetVoice(Settings &settings)
-{
-    pimpl->SetVoice(settings);
+    return new AITalk_SDK(settings);
 }

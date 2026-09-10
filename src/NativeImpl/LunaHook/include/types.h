@@ -302,7 +302,7 @@ struct TextBuffer
 	{
 		if (!c)
 			return;
-		size = strlenEx(c) * sizeof(CharT);
+		size = strnlenEx(c, TEXT_BUFFER_SIZE) * sizeof(CharT);
 		if (size)
 			strncpyEx((CharT *)data, c, TEXT_BUFFER_SIZE);
 	}

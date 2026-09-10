@@ -41,6 +41,24 @@ struct MonoFunction
   decltype(HookParam::text_fun) text_fun; // HookParam::text_fun_t
 };
 
+void SpecialHookMonoString(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+{
+  if (auto sw = commonsolvemonostring(context->argof(1, hp)))
+    buffer->from(sw.value());
+
+#ifndef _WIN64
+  auto s = context->ecx;
+  for (int i = 0; i < 0x10; i++) // traverse pointers until a non-readable address is met
+    if (s && !::IsBadReadPtr((LPCVOID)s, sizeof(DWORD)))
+      s = *(DWORD *)s;
+    else
+      break;
+  if (!s)
+    s = hp->address;
+  if (hp->type & USING_SPLIT)
+    *split = s;
+#endif
+}
 #ifndef _WIN64
 
 #define MONO_FUNCTIONS_INITIALIZER \
@@ -53,3 +71,22 @@ struct MonoFunction
 #define MONO_FUNCTIONS_INITIALIZER \
   {"mono_string_to_utf8", 0, USING_STRING | CODEC_UTF16 | NO_CONTEXT, SpecialHookMonoString}, { "mono_string_to_utf16", 0, USING_STRING | CODEC_UTF16 | NO_CONTEXT, SpecialHookMonoString }
 #endif
+
+bool monodllhook(HMODULE module)
+{
+  HookParam hp;
+  const MonoFunction funcs[] = {MONO_FUNCTIONS_INITIALIZER};
+  for (auto func : funcs)
+  {
+    if (FARPROC addr = GetProcAddress(module, func.functionName))
+    {
+      hp.address = (uintptr_t)addr;
+      hp.type = USING_STRING | func.hookType;
+      hp.filter_fun = all_ascii_Filter;
+      hp.offset = stackoffset(func.textIndex);
+      hp.text_fun = (decltype(hp.text_fun))func.text_fun;
+      NewHook(hp, func.functionName);
+    }
+  }
+  return true;
+}

@@ -6,15 +6,34 @@ import os
 
 os.chdir(os.path.abspath(os.path.dirname(__file__)))
 
-url = "https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/b10825"
-
 headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
-req = urllib.request.Request(url, headers=headers)
+
+
+def api_get(url, accept="application/vnd.github+json"):
+    req = urllib.request.Request(url, headers={**headers, "Accept": accept})
+    with urllib.request.urlopen(req) as response:
+        return response.read().decode("utf-8")
+
 
 try:
-    with urllib.request.urlopen(req) as response:
-        data = response.read().decode("utf-8")
-        js = json.loads(data)
+    latest = json.loads(
+        api_get("https://api.github.com/repos/ggml-org/llama.cpp/releases/latest")
+    )
+    nightly_tag_asset = next(
+        (_ for _ in latest["assets"] if _["name"] == "nightly-tag.txt"), None
+    )
+    if nightly_tag_asset is None:
+        raise RuntimeError("")
+
+    nightly_tag = api_get(
+        nightly_tag_asset["url"], accept="application/octet-stream"
+    ).strip()
+
+    js = json.loads(
+        api_get(
+            f"https://api.github.com/repos/ggml-org/llama.cpp/releases/tags/{nightly_tag}"
+        )
+    )
 except urllib.error.HTTPError as e:
     print(f"HTTP 错误: {e.code} - {e.reason}")
     raise

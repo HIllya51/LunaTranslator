@@ -147,7 +147,7 @@ BOOL addClipboardFormatListener(HWND _hWnd)
     WNDCLASS wc = {};
     ZeroMemory(&wc, sizeof(WNDCLASS));
     wc.lpfnWndProc = WNDPROC_8DDD0332_D337_4F76_AF3C_D0CF23E94191;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
+    wc.hInstance = (HINSTANCE)&__ImageBase;
     wc.lpszClassName = KLASS_4420FB75_2931_459E_BA36_B2484F6DC9EE;
     RegisterClass(&wc);
     auto hwnd = CreateWindowEx(0, KLASS_4420FB75_2931_459E_BA36_B2484F6DC9EE, NULL, 0, 0, 0, 0, 0, HWND_MESSAGE, nullptr, wc.hInstance, nullptr);

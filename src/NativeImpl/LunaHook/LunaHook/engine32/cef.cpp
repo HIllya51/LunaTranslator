@@ -81,7 +81,7 @@ bool InsertlibcefHook(HMODULE module)
 	bool ret = false;
 
 	struct libcefFunction
-	{ // argument indices start from 0 for SpecialHookMonoString, otherwise 1
+	{
 		const char *functionName;
 		size_t textIndex;						// argument index
 		short lengthIndex;						// argument index

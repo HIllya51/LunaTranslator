@@ -157,9 +157,7 @@ static bool __OcrLoadRuntime()
     if (GetModuleHandleW(L"onnxruntime.dll"))
         return true;
     WCHAR path[MAX_PATH];
-    HMODULE hmodule;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCWSTR)&__OcrLoadRuntime, &hmodule);
-    GetModuleFileNameW(hmodule, path, MAX_PATH);
+    GetModuleFileNameW((HMODULE)&__ImageBase, path, MAX_PATH);
     auto currdir = std::filesystem::path(path).parent_path();
     auto myonnx = (currdir / "onnxruntime.dll").wstring();
     auto vermy = checkfileversion(myonnx);

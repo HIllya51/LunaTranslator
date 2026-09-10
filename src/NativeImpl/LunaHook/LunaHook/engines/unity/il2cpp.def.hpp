@@ -591,17 +591,3 @@ inline Il2CppChar *(*il2cpp_string_chars)(Il2CppString *str);
 inline int (*il2cpp_string_length)(Il2CppString *str);
 inline const Il2CppClass *(*il2cpp_image_get_class)(const Il2CppImage *image, size_t index);
 inline size_t (*il2cpp_image_get_class_count)(const Il2CppImage *image);
-namespace il2cppfunctions
-{
-	inline HMODULE game_dll;
-	void init(HMODULE dll);
-	uintptr_t get_method_pointer(const char *assemblyName, const char *namespaze,
-								 const char *klassName, const char *name, int argsCount, bool strict);
-	const MethodInfo *get_method_internal(const char *assemblyName, const char *namespaze,
-								   const char *klassName, const char *name, int argsCount, bool strict);
-	std::optional<std::wstring_view> get_string(void *);
-	void *create_string(std::wstring_view ws);
-	il2cpploopinfo loop_all_methods(std::optional<std::function<void(const std::string &)>>);
-	const Il2CppType *get_type_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
-	const Il2CppClass *get_class_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
-}

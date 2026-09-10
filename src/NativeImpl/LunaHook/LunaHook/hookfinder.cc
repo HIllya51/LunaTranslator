@@ -602,7 +602,7 @@ void _SearchForHooks(SearchParam spUser)
 		}
 		mergevector(addresses, addresses1);
 
-		auto limits = Util::QueryModuleLimits(GetModuleHandleW(LUNA_HOOK_DLL));
+		auto limits = Util::QueryModuleLimits((HMODULE)&__ImageBase);
 		addresses.erase(std::remove_if(addresses.begin(), addresses.end(),
 									   [&](auto addr)
 									   {
@@ -618,11 +618,9 @@ void _SearchForHooks(SearchParam spUser)
 		if (sp.searchTime == 0 || sp.maxAddress == 0)
 		{
 			std::stringstream cache;
-			auto callback = [&](const std::string &s)
-			{
-				cache << s << "\n";
-			};
-			loop_all_methods(callback);
+			if (g_monoil2cpp)
+				g_monoil2cpp->loop_all_methods([&](const std::string &s)
+											   { cache << s << "\n"; });
 			FILE *f;
 			fopen_s(&f, "JIT_ADDR_MAP_DUMP.txt", "w");
 			fprintf(f, "%s", cache.str().c_str());
@@ -631,7 +629,7 @@ void _SearchForHooks(SearchParam spUser)
 		}
 		else
 		{
-			auto methods = loop_all_methods({});
+			auto methods = g_monoil2cpp ? g_monoil2cpp->loop_all_methods({}) : std::variant<monoloopinfo, il2cpploopinfo>{};
 			try
 			{
 				*(void **)(trampoline + send_offset) = (void *)&SendCSharpString<JITTYPE::PC>;
@@ -682,7 +680,7 @@ void _SearchForHooks(SearchParam spUser)
 			{
 				for (auto addr : jitaddr2emuaddr)
 				{
-					fprintf(f, "%x => %p\n", addr.second.second, (void* )addr.first);
+					fprintf(f, "%x => %p\n", addr.second.second, (void *)addr.first);
 				}
 			}
 			fclose(f);

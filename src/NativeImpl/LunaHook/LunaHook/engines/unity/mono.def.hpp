@@ -410,22 +410,8 @@ inline void (*mono_profiler_install_allocation)(MonoProfileAllocFunc callback);
 inline void (*mono_profiler_install_jit_end)(MonoProfileJitResult end);
 inline void (*mono_profiler_install_exception)(MonoProfileExceptionFunc throw_callback, MonoProfileMethodFunc exc_method_leave, MonoProfileExceptionClauseFunc clause_callback);
 inline void (*mono_profiler_install_thread)(MonoProfileThreadFunc start, MonoProfileThreadFunc end);
-inline uint64_t *(*mono_compile_method)(MonoMethod *);
+inline void *(*mono_compile_method)(MonoMethod *);
 inline MonoTableInfo *(*mono_image_get_table_info)(MonoImage *, int);
 inline int (*mono_table_info_get_rows)(MonoTableInfo *);
 inline gunichar2 *(*mono_string_chars)(MonoString *str);
 inline int (*mono_string_length)(MonoString *str);
-namespace monofunctions
-{
-	void init(HMODULE dll);
-	uintptr_t get_method_pointer(const char *assemblyName, const char *namespaze,
-								 const char *klassName, const char *name, int argsCount, bool strict);
-	MonoMethod *get_method_internal(const char *assemblyName, const char *namespaze,
-									const char *klassName, const char *name, int argsCount, bool strict);
-
-	std::optional<std::wstring_view> get_string(void *);
-	void *create_string(std::wstring_view ws);
-	monoloopinfo loop_all_methods(std::optional<std::function<void(const std::string &)>>);
-	MonoType *get_type_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
-	MonoClass *get_class_pointer(const char *_dll, const char *_namespace, const char *_class, bool strict);
-}

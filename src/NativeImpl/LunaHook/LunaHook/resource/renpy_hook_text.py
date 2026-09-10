@@ -2,14 +2,9 @@ def callLunaHost(text, split):
     try:
         import ctypes
 
-        try:
-            luna_internal_renpy_call_host = ctypes.CDLL(
-                "LunaHook64"
-            ).luna_internal_renpy_call_host
-        except:
-            luna_internal_renpy_call_host = ctypes.CDLL(
-                "LunaHook32"
-            ).luna_internal_renpy_call_host
+        luna_internal_renpy_call_host = ctypes.CDLL(
+            "LunaHook64" if ctypes.sizeof(ctypes.c_void_p) == 8 else "LunaHook32"
+        ).luna_internal_renpy_call_host
         luna_internal_renpy_call_host.argtypes = ctypes.c_wchar_p, ctypes.c_int
         luna_internal_renpy_call_host.restype = ctypes.c_wchar_p
 
@@ -27,14 +22,9 @@ def callLunaIsUsingEmbed(split):
     try:
         import ctypes
 
-        try:
-            luna_internal_renpy_call_is_embed_using = ctypes.CDLL(
-                "LunaHook64"
-            ).luna_internal_renpy_call_is_embed_using
-        except:
-            luna_internal_renpy_call_is_embed_using = ctypes.CDLL(
-                "LunaHook32"
-            ).luna_internal_renpy_call_is_embed_using
+        luna_internal_renpy_call_is_embed_using = ctypes.CDLL(
+            "LunaHook64" if ctypes.sizeof(ctypes.c_void_p) == 8 else "LunaHook32"
+        ).luna_internal_renpy_call_is_embed_using
         luna_internal_renpy_call_is_embed_using.argstype = ctypes.c_int, ctypes.c_bool
         luna_internal_renpy_call_is_embed_using.restype = ctypes.c_bool
 

@@ -2,6 +2,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace LunaTmpFontLoader
@@ -10,12 +11,38 @@ namespace LunaTmpFontLoader
     {
         public static string BundleDir = @"";
 
-        static readonly string DiagPath = Path.Combine(".", "lunatmpfontloader.log.txt");
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void LogDelegate([MarshalAs(UnmanagedType.LPWStr)] string s);
+
+        static LogDelegate ResolveLog()
+        {
+            try
+            {
+                string name = IntPtr.Size == 8 ? "LunaHook64" : "LunaHook32";
+                IntPtr h = GetModuleHandle(name);
+                if (h == IntPtr.Zero) return null;
+                IntPtr p = GetProcAddress(h, "luna_internal_unity_font_log");
+                if (p == IntPtr.Zero) return null;
+                return (LogDelegate)Marshal.GetDelegateForFunctionPointer(p, typeof(LogDelegate));
+            }
+            catch { return null; }
+        }
+
         static void Diag(string s)
         {
-           try { File.AppendAllText(DiagPath, DateTime.Now.ToString("HH:mm:ss.fff") + " " + s + "\r\n"); }
-           catch { }
+            try
+            {
+                var fn = ResolveLog();
+                if (fn != null)
+                    fn(s);
+            }
+            catch { }
         }
+
+        [DllImport("kernel32", SetLastError = true)]
+        static extern IntPtr GetModuleHandle(string lpModuleName);
+        [DllImport("kernel32", SetLastError = true)]
+        static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
 
         static bool _resolved;
         static Type _tFontAsset, _tTMP_Text, _tSettings;

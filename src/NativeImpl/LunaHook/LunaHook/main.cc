@@ -153,7 +153,7 @@ DWORD WINAPI Pipe(LPVOID)
 		MH_Uninitialize();
 		for (auto &hook : *hooks)
 			hook.Clear();
-		FreeLibraryAndExitThread(GetModuleHandleW(LUNA_HOOK_DLL), 0);
+		FreeLibraryAndExitThread((HMODULE)&__ImageBase, 0);
 	}
 }
 
@@ -401,7 +401,7 @@ bool NewHook_2(HookParam hp, LPCSTR name, bool silentlyfail = false)
 		{
 			argcount = -1;
 		}
-		hp.address = tryfindmonoil2cpp(spls[0].c_str(), spls[1].c_str(), spls[2].c_str(), spls[3].c_str(), argcount);
+		hp.address = (decltype(hp.address))(g_monoil2cpp ? g_monoil2cpp->get_method_pointer(spls[0].c_str(), spls[1].c_str(), spls[2].c_str(), spls[3].c_str(), argcount, false) : 0);
 
 		if (!hp.address)
 		{

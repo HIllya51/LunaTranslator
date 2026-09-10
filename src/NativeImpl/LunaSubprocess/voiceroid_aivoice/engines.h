@@ -37,42 +37,10 @@ struct Abstracttts
     virtual void SetVoice(Settings &settings) = 0;
 };
 
-struct aitalked_impl;
-struct aitalked : public Abstracttts
-{
-    aitalked(const Settings &settings);
-    virtual std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text) override;
-    virtual ~aitalked() override;
-    virtual void SetVoice(Settings &settings) override;
-
-private:
-    aitalked_impl *pimpl;
-};
-
+Abstracttts *create_aitalked(const Settings &settings);
 #ifdef _WIN64
-struct AITalk_SDK_impl;
-struct AITalk_SDK : public Abstracttts
-{
-    AITalk_SDK(const Settings &settings);
-    virtual std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text) override;
-    virtual ~AITalk_SDK() override;
-    virtual void SetVoice(Settings &settings) override;
-
-private:
-    AITalk_SDK_impl *pimpl;
-};
-
-struct aitalk_engine_impl;
-struct aitalk_engine : public Abstracttts
-{
-    aitalk_engine(const Settings &settings);
-    virtual std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text) override;
-    virtual ~aitalk_engine() override;
-    virtual void SetVoice(Settings &settings) override;
-
-private:
-    aitalk_engine_impl *pimpl;
-};
+Abstracttts *create_AITalk_SDK(const Settings &settings);
+Abstracttts *create_aitalk_engine(const Settings &settings);
 #endif
 
 inline Abstracttts *createruntime(const Settings &settings)
@@ -80,12 +48,12 @@ inline Abstracttts *createruntime(const Settings &settings)
     switch (settings.apitype)
     {
     case APITYPE::aitalked:
-        return new aitalked(settings);
+        return create_aitalked(settings);
 #ifdef _WIN64
     case APITYPE::AITalk_SDK:
-        return new AITalk_SDK(settings);
+        return create_AITalk_SDK(settings);
     case APITYPE::aitalk_engine:
-        return new aitalk_engine(settings);
+        return create_aitalk_engine(settings);
 #endif
     }
     return nullptr;

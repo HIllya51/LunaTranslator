@@ -41,6 +41,9 @@
 #include <shlobj.h>
 #include <Shlwapi.h>
 
+extern "C" IMAGE_DOS_HEADER __ImageBase;
+
+
 #include "stringutils.h"
 #include "utils.h"
 #include "defs.h"

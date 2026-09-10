@@ -246,7 +246,7 @@ std::pair<HWND, WNDCLASS> CreateWindowForWndProc(WNDPROC WNDPROC_1, HWND parent 
     wc.lpfnWndProc = WNDPROC_1;
     wc.lpszClassName = CLASS_NAME.c_str();
     wc.hCursor = cursor;
-    GetModuleHandleEx(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS, (LPCTSTR)wc.lpfnWndProc, &wc.hInstance);
+    wc.hInstance = (HINSTANCE)&__ImageBase;
     RegisterClass(&wc);
     HWND hWnd = CreateWindowEx(exstyle, CLASS_NAME.c_str(), NULL, style, x, y, w, h, parent, nullptr, wc.hInstance, nullptr); // HWND_MESSAGE会收不到。
     return std::make_pair(hWnd, wc);

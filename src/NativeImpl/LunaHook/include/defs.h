@@ -27,11 +27,6 @@ constexpr auto PIPE_AVAILABLE_EVENT = L"LUNA_PIPE_AVAILABLE";
 constexpr auto LUNA_HOOK_DLL_64 = L"LunaHook64";
 constexpr auto LUNA_HOOK_DLL_32 = L"LunaHook32";
 
-#ifdef _WIN64
-constexpr auto LUNA_HOOK_DLL = LUNA_HOOK_DLL_64; // .dll but LoadLibrary automatically adds that
-#else
-constexpr auto LUNA_HOOK_DLL = LUNA_HOOK_DLL_32; // .dll but LoadLibrary automatically adds that
-#endif
 
 extern WORD LUNA_VERSION[4];
 

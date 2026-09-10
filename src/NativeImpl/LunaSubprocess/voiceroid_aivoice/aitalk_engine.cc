@@ -16,7 +16,7 @@ static const char *errMeaning(int code)
     return "error";
 }
 
-struct aitalk_engine_impl
+struct aitalk_engine : public Abstracttts
 {
 #define AI_FNS(X)                                                                                                                \
     X(ai_ttsLibraryConfigInitialize, int (*)(TTSConfig *), "ai_ttsLibraryConfigInitialize")                                      \
@@ -69,10 +69,10 @@ struct aitalk_engine_impl
     std::string lastlang;
     void *cfg = nullptr;
 
-    aitalk_engine_impl(const Settings &settings);
-    ~aitalk_engine_impl();
-    void SetVoice(Settings &settings);
-    std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text);
+    aitalk_engine(const Settings &settings);
+    ~aitalk_engine() override;
+    void SetVoice(Settings &settings) override;
+    std::vector<int16_t> Speek(float _rate, float _pitch, const std::string &text) override;
 };
 
 static constexpr size_t BUFFER_SAMPLES = 8192;
@@ -118,7 +118,7 @@ static int CALLBACK_TTS_HANDLER(void *userData, TtsEvent *event)
     return 0;
 }
 
-aitalk_engine_impl::aitalk_engine_impl(const Settings &settings)
+aitalk_engine::aitalk_engine(const Settings &settings)
 {
     if (!api.load(settings.dllpath.c_str()))
         throw std::runtime_error("load dll failed");
@@ -144,7 +144,7 @@ aitalk_engine_impl::aitalk_engine_impl(const Settings &settings)
     api.ai_TalkerConfig_setVolume(cfg, 2.0);
 }
 
-aitalk_engine_impl::~aitalk_engine_impl()
+aitalk_engine::~aitalk_engine()
 {
     if (cfg)
         api.ai_TalkerConfig_delete(talker);
@@ -153,7 +153,7 @@ aitalk_engine_impl::~aitalk_engine_impl()
     api.ai_ttsLibraryTerminate();
 }
 
-void aitalk_engine_impl::SetVoice(Settings &settings)
+void aitalk_engine::SetVoice(Settings &settings)
 {
     int r;
     if (settings.language_dir != lastlang)
@@ -186,7 +186,7 @@ void aitalk_engine_impl::SetVoice(Settings &settings)
     }
 }
 
-std::vector<int16_t> aitalk_engine_impl::Speek(float _rate, float _pitch, const std::string &text)
+std::vector<int16_t> aitalk_engine::Speek(float _rate, float _pitch, const std::string &text)
 {
     api.ai_TalkerConfig_setRate(cfg, _rate);
     api.ai_TalkerConfig_setPitch(cfg, _pitch);
@@ -213,23 +213,7 @@ std::vector<int16_t> aitalk_engine_impl::Speek(float _rate, float _pitch, const 
     return std::move(state.pcm);
 }
 
-aitalk_engine::aitalk_engine(const Settings &settings)
+Abstracttts *create_aitalk_engine(const Settings &settings)
 {
-    pimpl = new aitalk_engine_impl(settings);
-}
-
-aitalk_engine::~aitalk_engine()
-{
-    if (pimpl)
-        delete pimpl;
-}
-
-void aitalk_engine::SetVoice(Settings &settings)
-{
-    pimpl->SetVoice(settings);
-}
-
-std::vector<int16_t> aitalk_engine::Speek(float _rate, float _pitch, const std::string &text)
-{
-    return pimpl->Speek(_rate, _pitch, text);
+    return new aitalk_engine(settings);
 }

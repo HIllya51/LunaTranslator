@@ -81,6 +81,9 @@
 #include <d3d11.h>
 #include <dxgi.h>
 
+
+extern "C" IMAGE_DOS_HEADER __ImageBase;
+
 #include "common.hpp"
 #include "common2.hpp"
 

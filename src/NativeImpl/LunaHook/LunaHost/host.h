@@ -11,7 +11,7 @@ namespace Host
 	using EmbedCallback = std::function<void(const std::wstring &, const ThreadParam &)>;
 	using I18NQueryCallback = std::function<std::optional<std::wstring>(const std::wstring &str)>;
 	using EmuGameInfoCallback = std::function<void(const std::wstring &, const std::wstring &, const std::wstring &)>;
-	void Start(std::optional<ProcessEventHandler> Connect, std::optional<ProcessEventHandler> Disconnect, std::optional<ThreadEventHandler> Create, std::optional<ThreadEventHandler> Destroy, std::optional<TextThread::OutputCallback> Output, std::optional<HostInfoHandler> hostinfo, std::optional<HookInsertHandler> hookinsert, std::optional<EmbedCallback> embed, std::optional<I18NQueryCallback> i18nQueryCallback, std::optional<EmuGameInfoCallback> emuGameInfoCallback);
+	void Start(ProcessEventHandler Connect, ProcessEventHandler Disconnect, ThreadEventHandler Create, ThreadEventHandler Destroy, TextThread::OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed, I18NQueryCallback i18nQueryCallback, EmuGameInfoCallback emuGameInfoCallback);
 	void ConnectAndInjectProcess(DWORD processId);
 	void ConnectProcess(DWORD processId);
 	bool CheckIfNeedInject(DWORD processId);
