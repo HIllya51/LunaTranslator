@@ -24,3 +24,4 @@ kizfont CHARSET "resource/kizfont.tbl"
 sizfont CHARSET "resource/sizfont.tbl"
 
 PiAS CHARSET "resource/PiAS.txt"
+Fragments_Blue CHARSET "resource/Fragments_Blue.txt"

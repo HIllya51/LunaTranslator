@@ -302,9 +302,7 @@ class texthook(basetext):
     def EmuGameInfoCallback(self, _id, title, version):
         text = "{} {} {}".format(_id, title, version)
         gobject.base.displayinfomessage(text, "<msg_info_refresh>")
-        gobject.base.hookselectdialog.sysmessagesignal.emit(
-            HOSTINFO.Console, "[Game] " + text
-        )
+        self.sysmessage(HOSTINFO.Console, "[Game] " + text)
         uid = find_or_create_uid_for_emu(savehook_new_list, _id, self.gameuid, title)
         if uid not in savehook_new_list:
             savehook_new_list.insert(0, uid)

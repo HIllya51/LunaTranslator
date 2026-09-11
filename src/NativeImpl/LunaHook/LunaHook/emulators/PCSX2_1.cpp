@@ -2190,6 +2190,53 @@ namespace
         s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
         buffer->from(s);
     }
+    void SLPM66203(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        const uint8_t *ptr = (const uint8_t *)PCSX2_REG(a0);
+        std::wstring out;
+        while (true)
+        {
+            uint16_t v = ptr[0] | (ptr[1] << 8);
+            if (v == 0xffff || v == 0xfffb || v == 0xfffd || v == 0xff9e || v == 0xff5e || v == 0xff5f)
+                break; // STOP — end of segment
+            if (v == 0xfffe)
+            {
+                // out.push_back(L'\n');
+                ptr += 2;
+                continue;
+            } // newline
+            if (v == 0xfff0)
+                break; // voice-line cmd, rest is not text
+            if (v == 0xff6e || v == 0xff6f || v == 0xff65)
+            {
+                ptr += 4;
+                continue;
+            }
+            if (v == 0xffbe || v == 0xffbf || v == 0xffbd || v == 0xffc1 || v == 0xffc2)
+            {
+                ptr += 6;
+                continue;
+            }
+            if (v == 0xffc0 || v == 0xff84)
+            {
+                ptr += 8;
+                continue;
+            }
+            if (v >= 0xff00)
+            {
+                ptr += 2;
+                continue;
+            }
+            static auto fb_charset = strReplace(StringToWideString(LoadResData(L"Fragments_Blue", L"CHARSET")), L"\n");
+            out += fb_charset[v];
+            ptr += 2;
+        }
+        static std::wstring last;
+        if (endWith(last, out))
+            return buffer->clear();
+        last = out;
+        buffer->from(out);
+    }
 }
 struct emfuncinfoX
 {
@@ -2197,6 +2244,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // フラグメンツ・ブルー
+    {0x1b2c50, {FULL_STRING | CODEC_UTF16, 0, 0, SLPM66203, 0, "SLPM-66203"}},
     // そしてこの宇宙にきらめく君の詩
     {0x12b1d0, {FULL_STRING, 0, 0, SLPM66351<0x1d8fd40>, 0, "SLPM-66351"}},
     // そしてこの宇宙にきらめく君の詩 XXX
