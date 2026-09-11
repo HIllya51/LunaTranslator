@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100B9B00C6A4000 | この世の果てで恋を唄う少女ＹＵ－ＮＯ |
 |  | 010006200949E000 | The Charming Empire |
 |  | 0100F1B01C94E000 | クドわふたー Converted Edition |
 |  | 010016101100A000 | The House in Fata Morgana - Dreams of the Revenants Edition |

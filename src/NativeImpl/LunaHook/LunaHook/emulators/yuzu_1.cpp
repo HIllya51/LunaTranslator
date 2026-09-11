@@ -2970,6 +2970,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // この世の果てで恋を唄う少女ＹＵ－ＮＯ
+    {0x8003D3C4, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B9B00C6A4000ull, "1.0.0"}},
+    {0x8003D414, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B9B00C6A4000ull, "1.0.3"}},
     // The Charming Empire
     {0x8019030C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010006200949E000ull, "1.0.0"}},
     {0x8012AA0C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010006200949E000ull, "1.1.0"}},
