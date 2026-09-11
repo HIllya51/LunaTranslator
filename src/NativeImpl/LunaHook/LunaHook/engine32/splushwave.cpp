@@ -38,6 +38,42 @@ namespace
     return NewHook(hp, "splushwave");
   }
 }
+static bool umw()
+{
+  const BYTE bytes[] = {
+      0x8b, 0x54, 0x24, 0x04,
+      0x56, 0x57,
+      0x33, 0xf6,
+      0x8b, 0xfa,
+      0x83, 0xc9, 0xff,
+      0x33, 0xc0,
+      0x89, XX, XX4,
+      0xf2, 0xae,
+      0xf7, 0xd1,
+      0x49,
+      0x89, XX, XX4,
+      0xd1, 0xe9,
+      0x89, XX, XX4,
+      0x89, XX, XX4,
+      0x8b, XX, XX4,
+      0xb9, 0x14, 0x00, 0x00, 0x00,
+      0xb8, 0x18, 0x00, 0x00, 0x00};
+  auto addr = MemDbg::findBytes(bytes, sizeof(bytes), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.offset = stackoffset(1);
+  hp.type = USING_STRING | FULL_STRING | NO_CONTEXT;
+  hp.filter_fun = [](TextBuffer *buffer, HookParam *hp)
+  {
+    if ((*(char *)buffer->data) == '#')
+      return buffer->clear();
+    StringFilterBetween(buffer, TEXTANDLEN("["), TEXTANDLEN("]"));
+    StringFilter(buffer, TEXTANDLEN("CR"));
+  };
+  return NewHook(hp, "umw");
+}
 bool splushwave::attach_function()
 {
   // https://vndb.org/r113134
@@ -46,5 +82,5 @@ bool splushwave::attach_function()
   // ドラゴンアカデミー  http://gyutto.com/i/item98617?select_uaflag=1
   // ドラゴンアカデミー3  http://gyutto.com/i/item208616?select_uaflag=1
   char aCidS[] = "CID_%s\0";
-  return splushwave_(aErrMesbufS, sizeof(aErrMesbufS)) | splushwave_(aCidS, sizeof(aCidS));
+  return (splushwave_(aErrMesbufS, sizeof(aErrMesbufS)) | splushwave_(aCidS, sizeof(aCidS))) || umw();
 }
