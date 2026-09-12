@@ -1230,9 +1230,7 @@ namespace
         static std::string last;
         auto s = buffer->strA();
         if (endWith(last, s))
-        {
             return buffer->clear();
-        }
         last = s;
     }
     void SLPM55098(TextBuffer *buffer, HookParam *hp)
@@ -1240,9 +1238,7 @@ namespace
         static std::string last;
         auto s = buffer->strA();
         if (endWith(last, s))
-        {
             return buffer->clear();
-        }
         last = s;
         StringFilter(buffer, TEXTANDLEN("cr"));
         StringFilter(buffer, TEXTANDLEN("\x81\x40"));
@@ -1252,9 +1248,7 @@ namespace
         static std::string last;
         auto s = buffer->strA();
         if (endWith(last, s))
-        {
             return buffer->clear();
-        }
         last = s;
         SLPS25941(buffer, hp);
         auto s1 = buffer->strA();
@@ -2190,9 +2184,28 @@ namespace
         s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
         buffer->from(s);
     }
-    void SLPM66203(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    template <int which>
+    std::wstring fbstringread(const uint8_t *ptr)
     {
-        const uint8_t *ptr = (const uint8_t *)PCSX2_REG(a0);
+        static const uint8_t HR_ADV[0x100] = {
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x00-0x0f
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x10-0x1f
+            4, 2, 2, 4, 4, 4, 4, 4, 2, 2, 2, 2, 2, 2, 4, 4,  // 0x20-0x2f
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 2,  // 0x30-0x3f
+            1, 6, 2, 4, 2, 2, 2, 2, 2, 2, 6, 2, 2, 2, 12, 2, // 0x40-0x4f
+            2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x50-0x5f
+            2, 2, 4, 4, 6, 6, 6, 4, 2, 2, 2, 2, 2, 2, 4, 4,  // 0x60-0x6f
+            4, 4, 2, 4, 2, 2, 2, 6, 6, 2, 2, 6, 2, 6, 2, 1,  // 0x70-0x7f
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,  // 0x80-0x8f
+            4, 2, 2, 4, 2, 2, 4, 2, 4, 2, 2, 6, 6, 8, 4, 8,  // 0x90-0x9f
+            2, 2, 2, 6, 2, 6, 2, 6, 4, 10, 6, 4, 6, 4, 6, 6, // 0xa0-0xaf
+            2, 8, 2, 4, 2, 4, 2, 4, 2, 10, 6, 2, 6, 6, 6, 6, // 0xb0-0xbf
+            8, 6, 6, 4, 4, 4, 4, 4, 8, 2, 2, 2, 2, 2, 2, 2,  // 0xc0-0xcf
+            2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 2, 4, 2, 2, 2, 4,  // 0xd0-0xdf
+            2, 6, 1, 8, 8, 6, 2, 2, 2, 4, 2, 6, 4, 2, 2, 4,  // 0xe0-0xef
+            2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 6, 6, 2, 2, 2, 2   // 0xf0-0xff
+        };
+        static auto fb_charset = strReplace(strReplace(StringToWideString(LoadResData(which == 0 ? L"Fragments_Blue" : L"Hanayoi", L"CHARSET")), L"\n"), L"\r");
         std::wstring out;
         while (true)
         {
@@ -2224,13 +2237,18 @@ namespace
             }
             if (v >= 0xff00)
             {
-                ptr += 2;
+                ptr += HR_ADV[v & 0xff];
                 continue;
             }
-            static auto fb_charset = strReplace(StringToWideString(LoadResData(L"Fragments_Blue", L"CHARSET")), L"\n");
             out += fb_charset[v];
             ptr += 2;
         }
+        return out;
+    }
+    void SLPM66203(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        const uint8_t *ptr = (const uint8_t *)PCSX2_REG(a0);
+        auto out = fbstringread<0>(ptr);
         static std::wstring last;
         if (endWith(last, out))
             return buffer->clear();
@@ -2273,6 +2291,17 @@ namespace
         }
         buffer->from(out);
     }
+    void SLPS25868(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        uint32_t streamVA = *(uint32_t *)emu_addr(0x271d54);
+        const uint8_t *ptr = (const uint8_t *)emu_addr(streamVA);
+        auto out = fbstringread<1>(ptr);
+        static std::wstring last;
+        if (endWith(last, out))
+            return buffer->clear();
+        last = out;
+        buffer->from(out);
+    }
 }
 struct emfuncinfoX
 {
@@ -2280,6 +2309,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 花宵ロマネスク 愛と哀しみ−それは君のためのアリア
+    {0x13b3e0, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868, 0, "SLPS-25868"}},
     // フラグメンツ・ブルー
     {0x1b2c50, {FULL_STRING | CODEC_UTF16, 0, 0, SLPM66203, 0, "SLPM-66203"}},
     // Erde ～ネズの樹の下で～
