@@ -26,6 +26,8 @@ namespace
     auto s = buffer->strW();
     s = re::sub(s, LR"(<line-height=[^>]*?>)");
     s = re::sub(s, LR"(<sprite anim=[^>]*?>)");
+    s = re::sub(s, LR"(<noparse>)");
+    s = re::sub(s, LR"(</noparse>)");
     buffer->from(s);
   }
   void tmpembed(hook_context *context, TextBuffer buffer, HookParam *hp)

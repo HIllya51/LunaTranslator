@@ -2237,6 +2237,42 @@ namespace
         last = out;
         buffer->from(out);
     }
+    void SLPS25188(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"Erde", L"CHARSET")), L"\r"), L"\n");
+        uint32_t structVA = PCSX2_REG_EMU(a0);
+        if (!structVA)
+            return buffer->clear();
+        uint32_t textVA = *(uint32_t *)emu_addr(structVA + 0x20);
+        if (!textVA)
+            return buffer->clear();
+        const uint8_t *ptr = (const uint8_t *)emu_addr(textVA);
+        if (!ptr)
+            return buffer->clear();
+        std::wstring out;
+        for (int guard = 0; guard < 8192; guard++)
+        {
+            uint8_t b0 = ptr[0];
+            if (b0 == 0xff)
+                break; // end of message
+            if (b0 & 0x80)
+            { // 2-byte glyph-index code
+                uint16_t code = ((b0 & 0x7f) << 8) | ptr[1];
+                out += (code < charset.size()) ? charset[code] : L'?';
+                ptr += 2;
+            }
+            else if (b0 < 0x20)
+            { // control code — consumes only this byte
+                ptr += 1;
+            }
+            else
+            { // printable ASCII (0x20-0x7e)
+                out += (wchar_t)b0;
+                ptr += 1;
+            }
+        }
+        buffer->from(out);
+    }
 }
 struct emfuncinfoX
 {
@@ -2246,6 +2282,8 @@ struct emfuncinfoX
 static const emfuncinfoX emfunctionhooks_1[] = {
     // フラグメンツ・ブルー
     {0x1b2c50, {FULL_STRING | CODEC_UTF16, 0, 0, SLPM66203, 0, "SLPM-66203"}},
+    // Erde ～ネズの樹の下で～
+    {0x1062f8, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25188, 0, "SLPS-25188"}},
     // そしてこの宇宙にきらめく君の詩
     {0x12b1d0, {FULL_STRING, 0, 0, SLPM66351<0x1d8fd40>, 0, "SLPM-66351"}},
     // そしてこの宇宙にきらめく君の詩 XXX
