@@ -2135,6 +2135,10 @@ namespace
         last = s;
         buffer->from(parse(s));
     }
+    void F0100A9501759E000(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN(u8" 　"));
+    }
     void F0100A0001B9F0000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2970,6 +2974,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ファミコン探偵倶楽部 笑み男
+    {0x8002978C, {FULL_STRING | CODEC_UTF16, 0, 10, mages_readstring, F0100A9501759E000, 0x0100A9501759E000ull, "1.0.0"}},
     // CHAOS;HEAD / CHAOS;CHILD らぶChu☆Chu！ DOUBLE PACK
     {0x80032690, {FULL_STRING | CODEC_UTF16, 0, 9, mages_readstring, 0, 0x0100E8B024BE6001ull, "1.0.0"}},
     {0x800724E0, {FULL_STRING | CODEC_UTF16, 0, 9, mages_readstring, 0, 0x0100E8B024BE6002ull, "1.0.0"}},

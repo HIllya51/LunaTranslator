@@ -14,6 +14,7 @@ namespace mages
                                                L"compound_chars_SGHD",
                                                L"",
                                                L"",
+                                               L"",
                                            }[_idx],
                                            L"COMPOUND_CHARS");
         auto charsetA = LoadResData(std::vector<const wchar_t *>{
@@ -27,6 +28,7 @@ namespace mages
                                         L"charset_SGHD",
                                         L"charset_IwakuraAria",
                                         L"charset_9",
+                                        L"charset_Famicom_Detective_Club", // Dump 0100A9501759E000 ファミコン探偵倶楽部 笑み男 发现此文件直接存在。
                                     }[_idx],
                                     L"CHARSET");
 
@@ -59,7 +61,7 @@ namespace mages
         DWORD charCode;
         for (auto i = 0; i < charset.size(); i++)
         {
-            if (_idx == 9)
+            if (_idx == 9 || _idx == 10)
             {
                 /*
     while ( *v14 != 255 )
@@ -85,7 +87,7 @@ namespace mages
     std::wstring mages_decode(int _idx, uintptr_t &addr)
     {
         DWORD charCode;
-        if (_idx == 9)
+        if (_idx == 9 || _idx == 10)
         {
             charCode = *(DWORD *)addr;
             addr += 4;
