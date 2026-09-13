@@ -1693,6 +1693,12 @@ namespace
             return buffer->clear();
         last = s;
     }
+    void SLPM55259(TextBuffer *buffer, HookParam *hp)
+    {
+        if ((*(DWORD *)PCSX2_REG(a1) != 0x5b) && (*(DWORD *)PCSX2_REG(a1) != 0xffff))
+            return buffer->clear();
+        FSLPM65997(buffer, hp);
+    }
     void SLPM65717(TextBuffer *buffer, HookParam *hp)
     {
         static int idx = 0;
@@ -2336,6 +2342,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // デザート・キングダム
+    {0x106220, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPM55259, "SLPM-55259"}},
     // キミキス [eb!コレ+]
     {0x17f1e0, {0, PCSX2_REG_OFFSET(a1), 0, SLPS25850a1c, 0, "SLPS-25850"}},
     // キミキス
