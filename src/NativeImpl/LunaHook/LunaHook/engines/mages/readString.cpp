@@ -84,6 +84,15 @@ namespace mages
         return table;
     }
 
+    const std::map<DWORD, std::wstring> &getTable(int _idx)
+    {
+        static std::map<int, std::map<DWORD, std::wstring>> tables;
+        auto it = tables.find(_idx);
+        if (it == tables.end())
+            it = tables.emplace(_idx, createTable(_idx)).first;
+        return it->second;
+    }
+
     std::wstring mages_decode(int _idx, uintptr_t &addr)
     {
         DWORD charCode;
@@ -97,7 +106,7 @@ namespace mages
             charCode = *(WORD *)addr;
             addr += 2;
         }
-        static auto table = createTable(_idx);
+        const auto &table = getTable(_idx);
         auto found = table.find(charCode);
         if (found == table.end())
         {

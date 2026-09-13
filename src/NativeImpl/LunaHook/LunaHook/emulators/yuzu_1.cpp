@@ -2137,7 +2137,7 @@ namespace
     }
     void F0100A9501759E000(TextBuffer *buffer, HookParam *hp)
     {
-        StringFilter(buffer, TEXTANDLEN(u8" 　"));
+        StringFilter(buffer, TEXTANDLEN(L" 　"));
     }
     void F0100A0001B9F0000(TextBuffer *buffer, HookParam *hp)
     {
