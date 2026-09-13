@@ -1,5 +1,8 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100E8B024BE6001 & 0100E8B024BE6002 | CHAOS;HEAD / CHAOS;CHILD らぶChu☆Chu！ DOUBLE PACK |
+|  | 01004620180D2000 | CHAOS;CHILD |
+|  | 0100D650180CA000 | CHAOS;HEAD NOAH |
 |  | 0100B9B00C6A4000 | この世の果てで恋を唄う少女ＹＵ－ＮＯ |
 |  | 010006200949E000 | The Charming Empire |
 |  | 0100F1B01C94E000 | クドわふたー Converted Edition |

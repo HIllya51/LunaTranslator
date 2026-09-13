@@ -2970,9 +2970,16 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // CHAOS;HEAD / CHAOS;CHILD らぶChu☆Chu！ DOUBLE PACK
+    {0x80032690, {FULL_STRING | CODEC_UTF16, 0, 9, mages_readstring, 0, 0x0100E8B024BE6001ull, "1.0.0"}},
+    {0x800724E0, {FULL_STRING | CODEC_UTF16, 0, 9, mages_readstring, 0, 0x0100E8B024BE6002ull, "1.0.0"}},
+    // CHAOS;CHILD
+    {0x80034450, {FULL_STRING | CODEC_UTF16, 0, 0, mages_readstring, 0, 0x01004620180D2000ull, "1.0.0"}},
+    // CHAOS;HEAD NOAH
+    {0x8003A250, {FULL_STRING | CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100D650180CA000ull, "1.0.0"}},
     // この世の果てで恋を唄う少女ＹＵ－ＮＯ
-    {0x8003D3C4, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B9B00C6A4000ull, "1.0.0"}},
-    {0x8003D414, {CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B9B00C6A4000ull, "1.0.3"}},
+    {0x8003D3C4, {FULL_STRING | CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B9B00C6A4000ull, "1.0.0"}},
+    {0x8003D414, {FULL_STRING | CODEC_UTF16, 0, 0, mages_readstring, 0, 0x0100B9B00C6A4000ull, "1.0.3"}},
     // The Charming Empire
     {0x8019030C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010006200949E000ull, "1.0.0"}},
     {0x8012AA0C, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, F010042300C4F6000_1, 0x010006200949E000ull, "1.1.0"}},
@@ -4245,9 +4252,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x21a3e0, {0, 0, 0, 0, F0100E4000F616000, 0x0100E4000F616000ull, "1.0.0"}},
     // ひめひび -Princess Days-
     {0x20d7b8, {0, 0, 0, 0, F0100E4000F616000, 0x0100F8D0129F4000ull, "1.0.0"}},
-    {0x20da9c, {0, 0, 0, 0, F0100E4000F616000, 0x0100E4000F616000ull, "1.0.0"}},
+    {0x20da9c, {0, 0, 0, 0, F0100E4000F616000, 0x0100F8D0129F4000ull, "1.0.0"}},
     {0x20d834, {0, 0, 0, 0, F0100E4000F616000, 0x0100F8D0129F4000ull, "1.0.1"}},
-    {0x20dae8, {0, 0, 0, 0, F0100E4000F616000, 0x0100E4000F616000ull, "1.0.1"}},
+    {0x20dae8, {0, 0, 0, 0, F0100E4000F616000, 0x0100F8D0129F4000ull, "1.0.1"}},
     // オホーツクに消ゆ ～追憶の流氷・涙のニポポ人形～
     {0x83d4bda0, {CODEC_UTF16, 1, 0x14, 0, F010044701E9BC000, 0x010044701E9BC000ull, "1.2.0"}},
     {0x83d59320, {CODEC_UTF16, 0, 0x14, 0, F010044701E9BC000, 0x010044701E9BC000ull, "1.2.0"}},
