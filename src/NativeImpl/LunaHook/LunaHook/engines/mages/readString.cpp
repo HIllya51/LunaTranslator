@@ -112,7 +112,7 @@ namespace mages
     {
         auto edx = address;
         std::wstring s = L"", bottom = L"";
-        for (auto i = 0; i < 1000; i++)
+        while (true)
         {
             auto c = *(BYTE *)edx;
             if (c == 0xff)
