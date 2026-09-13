@@ -1523,6 +1523,30 @@ namespace
         last = s;
         buffer->from(s);
     }
+    void F0100AA1013B96000(std::string &collect)
+    {
+        strReplace(collect, "\x87\x85", "\x81\x5c");
+        strReplace(collect, "\x87\x86", "\x81\x5c");
+        strReplace(collect, "\x87\x87", "\x81\x5c");
+        strReplace(collect, "\x87\x6e");
+        strReplace(collect, "\n");
+        strReplace(collect, "\x81\x40");
+    }
+    void T01008030149FE000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto ptr = (char *)(YUZU::emu_arg(context, hp->emu_addr)[0xC]);
+        while (*ptr || *(ptr - 1))
+            ptr--;
+        while (!(*ptr && *(ptr + 1)))
+            ptr++;
+        auto len = *(int *)(ptr - 4);
+        if (len > 0xff)
+            return;
+        auto collect = std::string(ptr, len * 2);
+        strReplace(collect, "\x87\x6c\x87\x6d", "\x8e\xb5\x8a\x43\x8f\x74\x89\xcc");
+        F0100AA1013B96000(collect);
+        buffer->from(collect);
+    }
     void TF0100AA1013B96000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto ptr = (char *)(YUZU::emu_arg(context, hp->emu_addr)[0xb]);
@@ -1543,12 +1567,7 @@ namespace
                 ptr += strlen(ptr);
             }
         } while (*ptr || *(ptr + 1));
-        strReplace(collect, "\x87\x85", "\x81\x5c");
-        strReplace(collect, "\x87\x86", "\x81\x5c");
-        strReplace(collect, "\x87\x87", "\x81\x5c");
-        strReplace(collect, "\x87\x6e");
-        strReplace(collect, "\n");
-        strReplace(collect, "\x81\x40");
+        F0100AA1013B96000(collect);
         buffer->from(collect);
     }
     void T0100CF400F7CE000(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
@@ -3111,10 +3130,12 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // うたの☆プリンスさまっ♪ Repeat LOVE
     {0x800374a0, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}},
     {0x8002ea08, {0, 0, 0, 0, F0100068019996000, 0x010024200E00A000ull, "1.0.0"}},
-    // うたの☆プリンスさまっ♪All Star
-    {0x800102E4, {USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, 0x0100B3E0149FC000ull, "1.0.0"}},
     // うたの☆プリンスさまっ♪Debut
     {0x800104C4, {USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, 0x010088200EFE8000ull, "1.0.0"}},
+    // うたの☆プリンスさまっ♪All Star
+    {0x800102E4, {USING_CHAR | DATA_INDIRECT, 0, 0, 0, 0, 0x0100B3E0149FC000ull, "1.0.0"}},
+    // うたの☆プリンスさまっ♪All Star After Secret
+    {0x800586D4, {FULL_STRING, 0, 0, T01008030149FE000, 0, 0x01008030149FE000ull, "1.0.0"}},
     // 連呪
     {0x83700E60, {CODEC_UTF16, 0, 0X14, 0, F01007FD0211DA000, 0x01007FD0211DA000ull, "1.0.0"}},
     // DIG-ROCK -Documentary of Youthful Sounds-

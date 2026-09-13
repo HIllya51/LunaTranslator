@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100A9501759E000 | ファミコン探偵倶楽部 笑み男 |
 |  | 0100E8B024BE6001 & 0100E8B024BE6002 | CHAOS;HEAD / CHAOS;CHILD らぶChu☆Chu！ DOUBLE PACK |
 |  | 01004620180D2000 | CHAOS;CHILD |
 |  | 0100D650180CA000 | CHAOS;HEAD NOAH |
@@ -51,8 +52,9 @@
 |  | 0100C32023A1A000 | DYNAMIC CHORD feat.apple-polisher Remaster edition |
 |  | 0100D4300EBF8000 | うたの☆プリンスさまっ♪Amazing Aria & Sweet Serenade LOVE |
 |  | 010024200E00A000 | うたの☆プリンスさまっ♪ Repeat LOVE |
-|  | 0100B3E0149FC000 | うたの☆プリンスさまっ♪All Star |
 |  | 010088200EFE8000 | うたの☆プリンスさまっ♪Debut |
+|  | 0100B3E0149FC000 | うたの☆プリンスさまっ♪All Star |
+|  | 01008030149FE000 | うたの☆プリンスさまっ♪All Star After Secret |
 |  | 01007FD0211DA000 | 連呪 |
 |  | 010081D016E4E000 | DIG-ROCK -Documentary of Youthful Sounds- |
 |  | 010065402030A000 | 十鬼の絆 |
