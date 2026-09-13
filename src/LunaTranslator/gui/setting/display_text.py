@@ -396,7 +396,7 @@ class TextAreaBack(NQGroupBox):
                         ui_settings,
                         "text_area_background_color",
                         callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                        default="#ff0000",
+                        default="pink",
                     ),
                     getsmalllabel("不透明度"),
                     getspinbox(
@@ -405,7 +405,7 @@ class TextAreaBack(NQGroupBox):
                         ui_settings,
                         "text_area_background_alpha",
                         callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                        default=50,
+                        default=100,
                     ),
                 ]
             ),

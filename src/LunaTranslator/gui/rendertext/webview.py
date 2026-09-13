@@ -96,14 +96,14 @@ class somecommon(dataget):
         self.debugeval("showtextareabackground({})".format(int(show)))
 
     def setTextAreaBackStyle(self, **_):
-        c = QColor(ui_settings.get("text_area_background_color", "#ff0000"))
+        c = QColor(ui_settings.get("text_area_background_color", "pink"))
         self.debugeval(
             "setTextAreaBackStyle({}, {}, {}, '{}', {})".format(
                 ui_settings.get("text_area_background_r", 5),
                 ui_settings.get("text_area_background_w", 5),
                 ui_settings.get("text_area_background_h", 5),
                 c.name(QColor.NameFormat.HexRgb),
-                ui_settings.get("text_area_background_alpha", 50) / 100,
+                ui_settings.get("text_area_background_alpha", 100) / 100,
             )
         )
 
