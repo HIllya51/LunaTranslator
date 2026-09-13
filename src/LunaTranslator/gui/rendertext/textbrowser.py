@@ -248,7 +248,7 @@ class TextAreaBack(QLabel):
         parent: TextBrowser = self.parent()
         parent.yinyinglabels
         c = QColor(ui_settings.get("text_area_background_color", "pink"))
-        c.setAlphaF(ui_settings.get("text_area_background_alpha", 100) / 100)
+        c.setAlphaF(ui_settings.get("text_area_background_alpha", 85) / 100)
 
         painter = QPainter(self)
         painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Source)

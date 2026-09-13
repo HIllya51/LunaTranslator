@@ -103,7 +103,7 @@ class somecommon(dataget):
                 ui_settings.get("text_area_background_w", 5),
                 ui_settings.get("text_area_background_h", 5),
                 c.name(QColor.NameFormat.HexRgb),
-                ui_settings.get("text_area_background_alpha", 100) / 100,
+                ui_settings.get("text_area_background_alpha", 85) / 100,
             )
         )
 

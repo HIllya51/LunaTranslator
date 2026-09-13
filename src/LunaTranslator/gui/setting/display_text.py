@@ -405,7 +405,7 @@ class TextAreaBack(NQGroupBox):
                         ui_settings,
                         "text_area_background_alpha",
                         callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                        default=100,
+                        default=85,
                     ),
                 ]
             ),
