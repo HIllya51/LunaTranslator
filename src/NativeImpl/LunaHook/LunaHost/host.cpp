@@ -180,55 +180,58 @@ namespace
 
 		rpc::on<rpc::Id::NotifyTextW>(Host::InfoOutput);
 
-		rpc::on_ctx<rpc::Id::OutputText>([](DWORD pid, RpcBlob blob)
-										 {
-											 if (blob.size < sizeof(TextOutput_T))
-												 return;
-											 auto data = (TextOutput_T*)blob.data;
-											 auto&& tp = data->tp;
-											 auto&& hp = data->hp;
+		auto on_outputtext = [](DWORD pid, RpcBlob blob)
+		{
+			if (blob.size < sizeof(TextOutput_T))
+				return;
+			auto data = (TextOutput_T *)blob.data;
+			auto &&tp = data->tp;
+			auto &&hp = data->hp;
 
-											 auto length = blob.size - sizeof(TextOutput_T);
-											 auto _textThreadsByParams = textThreadsByParams.Acquire();
+			auto length = blob.size - sizeof(TextOutput_T);
+			auto _textThreadsByParams = textThreadsByParams.Acquire();
 
-											 auto thread = _textThreadsByParams->find(tp);
-											 if (thread == _textThreadsByParams->end())
-											 {
-												 try
-												 {
-													 thread = _textThreadsByParams->try_emplace(tp, tp, hp).first;
-												 }
-												 catch (std::out_of_range)
-												 {
-													 return;
-												 } // probably garbage data in pipe, try again
-												 OnCreate(thread->second);
-											 }
+			auto thread = _textThreadsByParams->find(tp);
+			if (thread == _textThreadsByParams->end())
+			{
+				try
+				{
+					thread = _textThreadsByParams->try_emplace(tp, tp, hp).first;
+				}
+				catch (std::out_of_range)
+				{
+					return;
+				} // probably garbage data in pipe, try again
+				OnCreate(thread->second);
+			}
 
-											 thread->second.hp.type = data->type;
-											 thread->second.hp.detectedCodepage = hp.detectedCodepage;
-											 if (auto codepage = thread->second.RunDectectCodePage(data->data, length))
-												 processRecordsByIds->at(pid).Send<rpc::Id::SetDetectedCodepage>(codepage.value(), hp.address);
-											 thread->second.Push(data->data, length);
+			thread->second.hp.type = data->type;
+			if (hp.detectedCodepage)
+				thread->second.hp.detectedCodepage = hp.detectedCodepage;
+			if (auto codepage = thread->second.RunDectectCodePage(data->data, length))
+				processRecordsByIds->at(pid).Send<rpc::Id::SetDetectedCodepage>(codepage.value(), hp.address);
+			thread->second.Push(data->data, length);
 
-											 auto &thp = thread->second.hp;
-											 if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
-												 return;
-											 auto sm = Host::GetCommonSharedMem(tp.processId);
-											 if (!sm)
-												 return;
-											 if (sm->clearText)
-												 return;
-											 auto codepage = thp.codepage ? thp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
-											 if (thp.isAscii() && !codepage)
-												 return;
-											 auto t = commonparsestring(data->data, length, &thp, codepage);
-											 if (!t)
-												 return;
-											 auto text = t.value();
-											 if (text.empty())
-												 return;
-											 embedcallback(text, tp); });
+			auto &thp = thread->second.hp;
+			if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
+				return;
+			auto sm = Host::GetCommonSharedMem(tp.processId);
+			if (!sm)
+				return;
+			if (sm->clearText)
+				return;
+			auto codepage = thp.codepage ? thp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
+			if (thp.isAscii() && !codepage)
+				return;
+			auto t = commonparsestring(data->data, length, &thp, codepage);
+			if (!t)
+				return;
+			auto text = t.value();
+			if (text.empty())
+				return;
+			embedcallback(text, tp);
+		};
+		rpc::on_ctx<rpc::Id::OutputText>(on_outputtext);
 	}
 
 	void __handlepipethread(DWORD processId, HANDLE hookPipe, HANDLE hostPipe, HANDLE pipeAvailableEvent)
