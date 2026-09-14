@@ -81,7 +81,9 @@ class ColorControl:
     def __hash__(self):
         return self._tuple_().__hash__()
 
-    def __eq__(self, value: "ColorControl"):
+    def __eq__(self, value):
+        if not isinstance(value, ColorControl):
+            return NotImplemented
         return self._tuple_() == value._tuple_()
 
 

@@ -57,12 +57,25 @@ class TextLine(TextLabel_0):
         return QColor(self.config["fillcolor"])
 
     def setShadow_internal(self, colorshadow, width=1, deepth=1):
-
+        color = QColor(colorshadow)
+        width = max(1, width)
+        effect = self.graphicsEffect()
+        if (
+            isinstance(effect, CachedQGraphicsDropShadowEffect_multi)
+            and effect.x == deepth
+            and effect.blurRadius() == width
+            and effect.color().rgba() == color.rgba()
+        ):
+            # Only the text changed (e.g. streaming); reuse the effect and just
+            # re-render its cached shadow on the next paint. setGraphicsEffect()
+            # triggers a full widget repaint, so avoid it when params are unchanged.
+            effect.shadow_pixmap = QPixmap()
+            return
         shadow2 = CachedQGraphicsDropShadowEffect_multi(self, deepth)
 
-        shadow2.setBlurRadius(max(1, width))
+        shadow2.setBlurRadius(width)
         shadow2.setOffset(0)
-        shadow2.setColor(QColor(colorshadow))
+        shadow2.setColor(color)
         self.setGraphicsEffect(shadow2)
 
     def setShadow(self):

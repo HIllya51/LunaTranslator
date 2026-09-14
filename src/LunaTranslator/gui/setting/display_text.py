@@ -6,6 +6,7 @@ from myutils.wrapper import tryprint
 from myutils.utils import translate_exits, _TR, getannotatedapiname
 from gui.usefulwidget import (
     getsimplecombobox,
+    D_getsimplecombobox,
     Singleton,
     saveposwindow,
     D_getspinbox,
@@ -190,16 +191,6 @@ class otherdisplaysetting(PopupWidget):
     def __init__(self, parent):
         super().__init__(parent)
         form = LFormLayout(self)
-        form.addRow(
-            "显示顺序",
-            getsimplecombobox(
-                ["原文_翻译", "翻译_原文"],
-                globalconfig,
-                "displayrank",
-                callback=gobject.base.translation_ui.translate_text.setdisplayrank,
-                default=0,
-            ),
-        )
         form.addRow(
             "显示方向",
             getsimplecombobox(
@@ -621,15 +612,6 @@ def xianshigrid_style(self):
                         ),
                         "",
                         "",
-                        "",
-                        "",
-                        "",
-                        "收到翻译时才刷新",
-                        D_getsimpleswitch(
-                            globalconfig, "refresh_on_get_trans", default=False
-                        ),
-                    ],
-                    [
                         "显示翻译器名称",
                         D_getsimpleswitch(
                             globalconfig,
@@ -638,11 +620,30 @@ def xianshigrid_style(self):
                             default=False,
                         ),
                         "",
+                        "",
+                        "收到翻译时才刷新",
+                        D_getsimpleswitch(
+                            globalconfig, "refresh_on_get_trans", default=False
+                        ),
+                    ],
+                    [
                         "固定翻译显示顺序",
                         D_getsimpleswitch(
                             globalconfig, "fix_translate_rank", default=False
                         ),
                         D_getIconButton(functools.partial(vistranslate_rank, self)),
+                        "",
+                        "显示顺序",
+                        (
+                            D_getsimplecombobox(
+                                ["原文_翻译", "翻译_原文"],
+                                globalconfig,
+                                "displayrank",
+                                callback=gobject.base.translation_ui.translate_text.setdisplayrank,
+                                default=0,
+                            ),
+                            2,
+                        ),
                         "",
                         "文字区域背景",
                         D_getsimpleswitch(

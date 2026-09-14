@@ -9,7 +9,8 @@ from gui.rendertext.texttype import (
 )
 from myutils.proxy import getproxy
 from myutils.wrapper import threader
-import gobject, functools, importlib, NativeUtils, uuid, requests
+from myutils.mecab import mecab
+import gobject, functools, importlib, NativeUtils, uuid, requests, copy
 from traceback import print_exc
 from gui.rendertext.textbrowser_imp.base import base
 from gui.usefulwidget import qwidget_screen
@@ -387,6 +388,7 @@ class TextBrowser(QWidget, dataget):
         self.contentsChanged.emit(QSize(sz.width(), visheight + self.labeloffset_y))
 
     def resizeEvent(self, event: QResizeEvent):
+        self._maxvisheight = None
         self.atback2.resize(event.size())
         self.atback_color.resize(event.size())
         self.drawtextarealabel.resize(event.size())
@@ -553,6 +555,14 @@ class TextBrowser(QWidget, dataget):
         self.__setimage_sig = None
         self.__setimagehelper.connect(self.____setimagehelper__)
         self.setbackgroudimageandopt()
+        self._buffering = False
+        self._reorder_refreshing = False
+        self._reorder_refresh_pending = False
+        self._reorder_refresh_timer = QTimer(self)
+        self._reorder_refresh_timer.setSingleShot(True)
+        self._reorder_refresh_timer.setInterval(50)
+        self._reorder_refresh_timer.timeout.connect(self._on_reorder_refresh)
+        self._maxvisheight = None
 
     def resets1(self):
         self.currenttype = globalconfig["rendertext_using_internal"]["textbrowser"]
@@ -615,10 +625,124 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.setTextCursor(c)
 
     def refreshcontent_before(self):
-        pass
+        # While the wrapper replays the trace, skip building the document in
+        # natural order; refreshcontent_after rebuilds it in display order.
+        self._buffering = self._needs_displayrank_reorder()
 
     def refreshcontent_after(self):
-        pass
+        if self._buffering:
+            self._buffering = False
+            self._rebuild_displayrank()
+
+    def _needs_displayrank_reorder(self):
+        return globalconfig.get("displayrank", 0) == 1
+
+    def _reorder_traces(self, traces):
+        # displayrank==1: render translation group before origin group.
+        origin_types = (TextType.Origin, TextType.Info, TextType.Error_origin)
+        groups = ([], [])
+        for entry in traces:
+            kind, args = entry
+            texttype = args[0] if kind == 2 else args[2]
+            groups[0 if texttype in origin_types else 1].append(entry)
+        ordered = groups[1] + groups[0]
+        result = []
+        for i, (kind, args) in enumerate(ordered):
+            args = list(args)
+            if kind == 0:
+                args[1] = i == 0
+            elif kind == 1:
+                args[0] = i == 0
+            result.append((kind, tuple(args)))
+        return result
+
+    def _schedule_reorder_refresh(self):
+        if self._reorder_refresh_pending:
+            return
+        self._reorder_refresh_pending = True
+        self._reorder_refresh_timer.start()
+
+    def _cancel_reorder_refresh(self):
+        self._reorder_refresh_pending = False
+        self._reorder_refresh_timer.stop()
+
+    def _do_reorder_refresh_now(self):
+        if self._reorder_refreshing:
+            return
+        self._cancel_reorder_refresh()
+        self._rebuild_displayrank()
+
+    def _on_reorder_refresh(self):
+        self._reorder_refresh_pending = False
+        self._rebuild_displayrank()
+
+    def _replay_self(self, kind, args):
+        if kind == 0:
+            updateTranslate, clear, texttype, name, text, tag, color, klass = args
+            self._do_append(
+                updateTranslate,
+                clear,
+                texttype,
+                name,
+                text,
+                mecab.parseastarget(copy.deepcopy(tag)),
+                color,
+                klass,
+            )
+        elif kind == 1:
+            clear, iter_context_class, texttype, name, text, color, klass = args
+            self._do_iter_append(
+                clear, iter_context_class, texttype, name, text, color, klass
+            )
+        elif kind == 2:
+            texttype, text, hira, color = args
+            self.updatetext(
+                texttype, text, mecab.parseastarget(copy.deepcopy(hira)), color
+            )
+
+    def _rebuild_displayrank(self):
+        traces = self.parent().trace.copy()
+        if self._needs_displayrank_reorder():
+            eng_traces = self._reorder_traces(traces)
+        else:
+            eng_traces = traces
+        self._reorder_refreshing = True
+        self.blockSignals(True)
+        self.setUpdatesEnabled(False)
+        try:
+            self.clear()
+            i = 0
+            n = len(eng_traces)
+            while i < n:
+                kind, args = eng_traces[i]
+                if kind == 1:
+                    # The rebuild reconstructs from scratch, so replaying every
+                    # streaming partial (each an in-place findsame/delete/insert
+                    # + document layout) is wasteful. Collapse a run of same-
+                    # class partials into one insert of the final text.
+                    cls = args[1]
+                    clear = args[0]
+                    lastargs = args
+                    j = i
+                    while j + 1 < n and eng_traces[j + 1][0] == 1 and eng_traces[j + 1][1][1] == cls:
+                        j += 1
+                        lastargs = eng_traces[j][1]
+                    _, _, texttype, name, text, color, klass = lastargs
+                    self._do_iter_append(
+                        clear, cls, texttype, name, text, color, klass
+                    )
+                    i = j + 1
+                else:
+                    self._replay_self(kind, args)
+                    i += 1
+        finally:
+            self.blockSignals(False)
+            self._reorder_refreshing = False
+            self.setUpdatesEnabled(True)
+        if traces:
+            # contentsChanged was blocked during the rebuild; re-emit the final
+            # size so the wrapper/UI adjusts the window.
+            self.contentchangedfunction()
 
     def showatcenter(self, center):
         self.showatcenterflag = center
@@ -721,6 +845,32 @@ class TextBrowser(QWidget, dataget):
         color: ColorControl,
         klass,
     ):
+        if self._buffering:
+            return
+        if (
+            not self._reorder_refreshing
+            and self._needs_displayrank_reorder()
+            and texttype == TextType.Translate
+        ):
+            # Live in-place streaming updates would shift the origin block
+            # without moving its kana/fenci overlays; let the debounced
+            # rebuild (which anchors overlays correctly) handle it instead.
+            self._schedule_reorder_refresh()
+            return
+        self._do_iter_append(
+            clear, iter_context_class, texttype, name, text, color, klass
+        )
+
+    def _do_iter_append(
+        self,
+        clear,
+        iter_context_class,
+        texttype: TextType,
+        name,
+        text,
+        color: ColorControl,
+        klass,
+    ):
         if clear:
             self.clear()
         if self.checkskip(texttype):
@@ -738,16 +888,21 @@ class TextBrowser(QWidget, dataget):
         currtext = self.saveiterclasspointer[iter_context_class]["currtext"]
         currlen = len(currtext)
         _samenum = self.__findsame(text, currtext)
-        if _samenum < currlen:
-            self._deletebetween(
+        self.textbrowser.document().blockSignals(True)
+        try:
+            if _samenum < currlen:
+                self._deletebetween(
+                    self.saveiterclasspointer[iter_context_class]["start"] + _samenum,
+                    self.saveiterclasspointer[iter_context_class]["curr"],
+                )
+            newtext = text[_samenum:]
+            self._insertatpointer(
                 self.saveiterclasspointer[iter_context_class]["start"] + _samenum,
-                self.saveiterclasspointer[iter_context_class]["curr"],
+                newtext,
             )
-        newtext = text[_samenum:]
-        self._insertatpointer(
-            self.saveiterclasspointer[iter_context_class]["start"] + _samenum,
-            newtext,
-        )
+        finally:
+            self.textbrowser.document().blockSignals(False)
+        self.textbrowser.document().contentsChanged.emit()
 
         self.saveiterclasspointer[iter_context_class]["currtext"] = text
         currcurrent = self._getcurrpointer()
@@ -773,9 +928,34 @@ class TextBrowser(QWidget, dataget):
         return self.textbrowser.textCursor().selectedText()
 
     def setdisplayrank(self, type):
-        pass
+        self._do_reorder_refresh_now()
 
     def append(
+        self,
+        updateTranslate,
+        clear,
+        texttype: TextType,
+        name,
+        text,
+        tag: "list[WordSegResult]",
+        color: ColorControl,
+        klass,
+    ):
+        if self._buffering:
+            return
+        if (
+            not self._reorder_refreshing
+            and self._needs_displayrank_reorder()
+            and texttype in (TextType.Translate, TextType.Error_translator)
+        ):
+            # Translate-group entries (translate + translator errors) belong on
+            # top for 翻译/原文; reorder immediately so an error doesn't sit
+            # below the origin until a later translate triggers the reorder.
+            self._do_reorder_refresh_now()
+            return
+        self._do_append(updateTranslate, clear, texttype, name, text, tag, color, klass)
+
+    def _do_append(
         self,
         updateTranslate,
         clear,
@@ -802,9 +982,9 @@ class TextBrowser(QWidget, dataget):
             tagshow = tag if isshowhira else []
         else:
             tagshow = []
-        self._textbrowser_append(texttype, text, tagshow, color, klass)
+        _tagstart = self._textbrowser_append(texttype, text, tagshow, color, klass)
         if len(tag):
-            self.addsearchwordmask(tag)
+            self.addsearchwordmask(tag, _tagstart)
         self.cleared = False
 
     def _getqalignment(self, atcenter):
@@ -821,8 +1001,12 @@ class TextBrowser(QWidget, dataget):
         _space = "" if self.cleared else "\n"
         blockcount = 0 if self.cleared else self.textbrowser.document().blockCount()
         hastag = len(tag) > 0
+        _insertstart = self.textbrowser.textCursor().position()
         self.textbrowser.insertPlainText(_space + text)
         blockcount_after = self.textbrowser.document().blockCount()
+        # the tagged text begins after the separator; kana/fenci labels must be
+        # anchored here (not 0) so they follow the text when it is not first.
+        _tagstart = _insertstart + len(_space)
 
         if hastag:
             self._setlineheight_x(blockcount, blockcount_after, self._split_tags(tag))
@@ -831,8 +1015,9 @@ class TextBrowser(QWidget, dataget):
         self.textbrowser.document().blockSignals(False)
         self.textbrowser.document().contentsChanged.emit()
         if hastag:
-            self._addtag(tag)
+            self._addtag(tag, _tagstart)
         self._showyinyingtext(blockcount, blockcount_after, color, font)
+        return _tagstart
 
     def _join_tags(self, tag: "list[list[WordSegResultX]]", space):
         tags: "list[WordSegResultX]" = []
@@ -1022,21 +1207,40 @@ class TextBrowser(QWidget, dataget):
         maxh = self.maxvisheight
         subtext = []
         subpos = []
-        lastpos = None
-        posx = pos
-        for i in range(len(text)):
-            self.textcursor.setPosition(posx)
-            posx += 1
-            tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
-            if tl1.y() > maxh:
-                break
-            if lastpos is None or tl1.y() != lastpos.y():
-                lastpos = tl1
-                subpos.append(lastpos)
-                subtext.append("")
-
-            if text[i] != "\n":
-                subtext[-1] += text[i]
+        doc = self.textbrowser.document()
+        _end = pos + len(text)
+        _stop = False
+        block = doc.findBlock(pos)
+        while block.isValid() and block.position() < _end and not _stop:
+            layout = block.layout()
+            blockstart = block.position()
+            blocktext = block.text()
+            for lineii in range(layout.lineCount()):
+                line = layout.lineAt(lineii)
+                l = line.textLength()
+                if l == 0:
+                    continue
+                s = line.textStart()
+                linestart = blockstart + s
+                lineend = linestart + l
+                if lineend <= pos:
+                    continue
+                if linestart >= _end:
+                    _stop = True
+                    break
+                segstart = max(pos, linestart)
+                self.textcursor.setPosition(segstart)
+                tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
+                if tl1.y() > maxh:
+                    _stop = True
+                    break
+                segend = min(_end, lineend)
+                subtext.append(
+                    blocktext[s + (segstart - linestart) : s + (segend - linestart)]
+                )
+                subpos.append(tl1)
+            block = block.next()
+        posx = _end
         collects = []
         for i in range(len(subtext)):
 
@@ -1071,23 +1275,19 @@ class TextBrowser(QWidget, dataget):
                 if label.y() >= thisy0:
                     collects.append(label)
         collects.sort(key=lambda label: label.y())
-        doc = self.textbrowser.document()
-        block = doc.findBlockByNumber(0)
         collecti = 0
-        for blocki in range(0, self.textbrowser.document().blockCount()):
-            block = doc.findBlockByNumber(blocki)
+        block = doc.findBlock(posx)
+        while block.isValid() and block.position() < posx:
+            block = block.next()
+        while block.isValid():
             layout = block.layout()
             blockstart = block.position()
-            lc = layout.lineCount()
-            if blockstart < posx:
-                continue
-            for lineii in range(lc):
+            for lineii in range(layout.lineCount()):
                 line = layout.lineAt(lineii)
-
-                s = line.textStart()
                 l = line.textLength()
                 if l == 0:
                     continue
+                s = line.textStart()
                 self.textcursor.setPosition(blockstart + s)
                 self.textbrowser.setTextCursor(self.textcursor)
                 tl1 = self.textbrowser.cursorRect(self.textcursor).topLeft()
@@ -1095,10 +1295,13 @@ class TextBrowser(QWidget, dataget):
                     return
                 collects[collecti].move(tl1.x(), tl1.y() + self.labeloffset_y)
                 collecti += 1
+            block = block.next()
 
     @property
     def maxvisheight(self):
-        return qwidget_screen(self).geometry().height() * 2
+        if self._maxvisheight is None:
+            self._maxvisheight = qwidget_screen(self).geometry().height() * 2
+        return self._maxvisheight
 
     def _showyinyingtext(self, b1, b2, color: ColorControl, font: QFont):
         linei = self.yinyingposline
@@ -1128,10 +1331,16 @@ class TextBrowser(QWidget, dataget):
                     self.yinyinglabels.append(self.currentclass(self.toplabel2))
                 _ = self.yinyinglabels[self.yinyinglabels_idx]
                 self.yinyinglabels_idx += 1
+                _linetext = block.text()[s : s + l]
                 _.setColor(color)
-                _.setText(block.text()[s : s + l])
-                _.setFont(font)
-                _.adjustSize()
+                if (
+                    _.text() != _linetext
+                    or _.font().toString != font.toString
+                    or _._stylestates != _.stylestates
+                ):
+                    _.setText(_linetext)
+                    _.setFont(font)
+                    _.adjustSize()
                 _.move(tl1.x(), tl1.y() + self.labeloffset_y)
                 _.show()
 
@@ -1160,7 +1369,8 @@ class TextBrowser(QWidget, dataget):
         self.searchmasklabels_clicked2[labeli].setGeometry(*pos1)
         self.searchmasklabels_clicked2[labeli].word = word
         self.searchmasklabels[labeli].setGeometry(*pos1)
-        self.searchmasklabels[labeli].setColor(color)
+        if self.searchmasklabels[labeli].color != color:
+            self.searchmasklabels[labeli].setColor(color)
         self.showhideclick_i(labeli)
 
     def showhideclick(self, _=None):
@@ -1183,12 +1393,12 @@ class TextBrowser(QWidget, dataget):
         )
         self.searchmasklabels[i].setVisible(True)
 
-    def addsearchwordmask(self, x: "list[WordSegResultX]"):
+    def addsearchwordmask(self, x: "list[WordSegResultX]", startpos=0):
         if len(x) == 0:
             return
-        pos = 0
+        pos = startpos
         labeli = 0
-        self.textcursor.setPosition(0)
+        self.textcursor.setPosition(startpos)
         self.textbrowser.setTextCursor(self.textcursor)
 
         heigth, _ = self._getfh(False)
@@ -1239,8 +1449,8 @@ class TextBrowser(QWidget, dataget):
     def labeloffset_y(self):
         return self.textbrowser.y()
 
-    def _addtag(self, x: "list[WordSegResultX]"):
-        pos = 0
+    def _addtag(self, x: "list[WordSegResultX]", startpos=0):
+        pos = startpos
         fha, fonthira = self._getfh(True)
         fontori_m = self._getfh(False, getfm=True)
 
@@ -1313,13 +1523,18 @@ class TextBrowser(QWidget, dataget):
             self.savetaglabels.append(self.currentclass(self.atback2))
         _: base = self.savetaglabels[idx]
         _.setColor(SpecialColor.KanaColor)
-        _.setText(word.kana)
+        if (
+            _.text() != word.kana
+            or _.font().toString != font.toString
+            or _._stylestates != _.stylestates
+        ):
+            _.setText(word.kana)
+            _.setFont(font)
+            _.adjustSize()
         origin = word.word_X
         w_origin = fontori_m.size(0, origin).width()
         y = tl1.y() - fha
         center = tl1.x() + w_origin / 2
-        _.setFont(font)
-        _.adjustSize()
         w = _.realw()
         _.move(int(center - w / 2), y + self.labeloffset_y)
         _.show()
@@ -1330,6 +1545,7 @@ class TextBrowser(QWidget, dataget):
         self.atback_color.move(0, y)
 
     def clear(self):
+        self._cancel_reorder_refresh()
         self.resets()
         self.yinyingposline = 0
         self.textbrowser.clear()
