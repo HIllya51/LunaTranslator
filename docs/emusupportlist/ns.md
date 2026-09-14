@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100A0001B9F0000 | PSYCHIC ECLIPSE -reload- |
 |  | 0100A9501759E000 | ファミコン探偵倶楽部 笑み男 |
 |  | 0100E8B024BE6001 & 0100E8B024BE6002 | CHAOS;HEAD / CHAOS;CHILD らぶChu☆Chu！ DOUBLE PACK |
 |  | 01004620180D2000 | CHAOS;CHILD |

@@ -2993,6 +2993,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // PSYCHIC ECLIPSE -reload-
+    {0x81541CB4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x0100A0001B9F0000ull, "1.2.0"}},
+    {0x81544CD0, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x0100A0001B9F0000ull, "1.2.0"}},
     // ファミコン探偵倶楽部 笑み男
     {0x8002978C, {FULL_STRING | CODEC_UTF16, 0, 10, mages_readstring, F0100A9501759E000, 0x0100A9501759E000ull, "1.0.0"}},
     // CHAOS;HEAD / CHAOS;CHILD らぶChu☆Chu！ DOUBLE PACK
