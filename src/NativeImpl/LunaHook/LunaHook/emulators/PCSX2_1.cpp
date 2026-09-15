@@ -2211,7 +2211,8 @@ namespace
             2, 6, 1, 8, 8, 6, 2, 2, 2, 4, 2, 6, 4, 2, 2, 4,  // 0xe0-0xef
             2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 6, 6, 2, 2, 2, 2   // 0xf0-0xff
         };
-        static auto fb_charset = strReplace(strReplace(StringToWideString(LoadResData(which == 0 ? L"Fragments_Blue" : L"Hanayoi", L"CHARSET")), L"\n"), L"\r");
+        static const wchar_t *whichx[] = {L"Fragments_Blue", L"Hanayoi", L"Nanatsuiro", L"Shana"};
+        static auto fb_charset = strReplace(strReplace(StringToWideString(LoadResData(whichx[which], L"CHARSET")), L"\n"), L"\r");
         std::wstring out;
         while (true)
         {
@@ -2297,11 +2298,12 @@ namespace
         }
         buffer->from(out);
     }
+    template <int which, int addr>
     void SLPS25868(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
     {
-        uint32_t streamVA = *(uint32_t *)emu_addr(0x271d54);
+        uint32_t streamVA = *(uint32_t *)emu_addr(addr);
         const uint8_t *ptr = (const uint8_t *)emu_addr(streamVA);
-        auto out = fbstringread<1>(ptr);
+        auto out = fbstringread<which>(ptr);
         static std::wstring last;
         if (endWith(last, out))
             return buffer->clear();
@@ -2335,6 +2337,52 @@ namespace
         uint16_t ch = (uint16_t)(PCSX2_REG_EMU(a0) & 0xFFFF);
         read_char_SLPS25850(buffer, ch);
     }
+    static std::string SLPM65703_decode(const uint8_t *ptr, uint32_t count)
+    {
+        uint32_t tableVA = *(uint32_t *)emu_addr(0x1618688); // [CKanjiTex(0x1618280)+0x408]
+        if (!tableVA || tableVA >= 0x2000000 || tableVA + 0xdae * 2 > 0x2000000)
+            return "";
+        const uint16_t *table = (const uint16_t *)emu_addr(tableVA);
+        std::string out;
+        for (uint32_t i = 0; i < count && i < 8192; i++)
+        {
+            uint16_t v = ptr[0] | (ptr[1] << 8);
+            ptr += 2;
+            if (v == 0xfffd || v == 0xfff0)
+                break; // end of message / voice-line cmd
+            if (v == 0xfffe)
+            {
+                // out += '\n';
+                continue;
+            }
+            if (v == 0xaa)
+            {
+                out += ' ';
+                continue;
+            }
+            if (v >= 0xff00)
+                continue;
+            if (v < 0xdae)
+            {
+                uint16_t s = table[v];
+                if (s)
+                {
+                    out += (char)(s & 0xff);
+                    out += (char)((s >> 8) & 0xff);
+                }
+            }
+        }
+        return out;
+    }
+    void SLPM65703init(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        auto w = SLPM65703_decode((const uint8_t *)PCSX2_REG(a2), PCSX2_REG_EMU(a3));
+        static std::string last;
+        if (endWith(last, w))
+            return buffer->clear();
+        last = w;
+        buffer->from(w);
+    }
 }
 struct emfuncinfoX
 {
@@ -2342,6 +2390,14 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 灼眼のシャナ
+    {0x1c1de0, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868<3, 0x324ec4>, 0, "SLPS-25599"}},
+    // Under the Moon ～クレセント～
+    {0x133e98, {USING_CHAR | CODEC_ANSI_BE, PCSX2_REG_OFFSET(a1), 0, 0, 0, "SLPM-55175"}},
+    // ダブルリアクション！ プラス
+    {0x1814b0, {FULL_STRING, 0, 0, SLPM65703init, 0, "SLPM-65703"}},
+    // ななついろ★ドロップス Pure！！
+    {0x1a8990, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868<2, 0x29f534>, 0, std::vector<const char *>{"SLPS-25757", "SLPS-25758"}}},
     // デザート・キングダム
     {0x106220, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPM55259, "SLPM-55259"}},
     // キミキス [eb!コレ+]
@@ -2349,7 +2405,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // キミキス
     {0x108b10, {0, PCSX2_REG_OFFSET(a0), 0, SLPS25850a0c, 0, "SLPS-25643"}},
     // 花宵ロマネスク 愛と哀しみ−それは君のためのアリア
-    {0x13b3e0, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868, 0, "SLPS-25868"}},
+    {0x13b3e0, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868<1, 0x271d54>, 0, "SLPS-25868"}},
     // フラグメンツ・ブルー
     {0x1b2c50, {FULL_STRING | CODEC_UTF16, 0, 0, SLPM66203, 0, "SLPM-66203"}},
     // Erde ～ネズの樹の下で～
@@ -2566,7 +2622,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // カラフルBOX ～to LOVE～
     {0xD1A970, {DIRECT_READ, 0, 0, 0, SLPM65589, "SLPM-65589"}},
     // PIZZICATO POLKA ～縁鎖現夜～
-    {0x4DD7C6, {DIRECT_READ, 0, 0, 0, SLPM55170, "SLPM-65611"}},
+    {0x1DA6C0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPM55170, "SLPM-65611"}},
     // なついろ ～星屑のメモリー～
     {0x16D22C, {USING_CHAR | DATA_INDIRECT, PCSX2_REG_OFFSET(s0), 0, 0, SLPM65785, "SLPM-65785"}},
     // こころの扉 初回限定版 [コレクターズエディション]

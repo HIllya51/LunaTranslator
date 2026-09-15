@@ -311,6 +311,11 @@ def ListProcesses():
     return ret
 
 
+GetProcessListenPort = utilsdll.GetProcessListenPort
+GetProcessListenPort.argtypes = (LPCWSTR,)
+GetProcessListenPort.restype = c_int
+
+
 SetWindowInTaskbar = utilsdll.SetWindowInTaskbar
 SetWindowInTaskbar.argtypes = HWND, c_bool, c_bool
 

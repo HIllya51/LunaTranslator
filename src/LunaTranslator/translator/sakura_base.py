@@ -1,6 +1,7 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
-import random
+import time
+from urllib.parse import urlsplit, urlunsplit
 from translator.gptcommon import list_models
 from myutils.utils import APIType
 from translator.gptcommon import (
@@ -10,7 +11,34 @@ from translator.gptcommon import (
     common_parse_normal_response,
 )
 from language import Languages
+import NativeUtils
 from gui.customparams import *
+
+
+def _maybe_override_local_llama_port(url: str):
+    if not url:
+        return url
+    url = url.strip()
+    parsed = urlsplit("http://" + url if "://" not in url else url)
+    host = (parsed.hostname or "").lower()
+    if host not in ("127.0.0.1", "localhost"):
+        return url
+    port = NativeUtils.GetProcessListenPort("llama-server.exe")
+    if not port:
+        return url
+    userinfo = ""
+    if parsed.username is not None:
+        userinfo = parsed.username
+        if parsed.password is not None:
+            userinfo += ":" + parsed.password
+        userinfo += "@"
+    hostpart = parsed.hostname
+    if ":" in hostpart:
+        hostpart = "[" + hostpart + "]"
+    netloc = "{}{}:{}".format(userinfo, hostpart, port)
+    return urlunsplit(
+        (parsed.scheme, netloc, parsed.path, parsed.query, parsed.fragment)
+    )
 
 
 class TS(basetrans):
@@ -251,7 +279,9 @@ Translate the following text into {}. Note that you must ONLY output the transla
         self.checkempty("API接口地址")
 
         gpt_dict = query_.dictionary
-        apitype = APIType(self.config.get("API接口地址", ""))
+        apitype = APIType(
+            _maybe_override_local_llama_port(self.config.get("API接口地址", ""))
+        )
         prompt_version = self.maybedetectprompttype(self.config["prompt_version_1"])
         query = (
             query_.rawtext if prompt_version != "SakuraLLM v0.9" else query_.parsedtext

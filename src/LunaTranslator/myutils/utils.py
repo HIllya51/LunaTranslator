@@ -474,6 +474,23 @@ def is_port_listening(host, port):
         return False
 
 
+def checkportavailable(port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.bind(("localhost", port))
+        return True
+    except OSError:
+        return False
+    finally:
+        sock.close()
+
+
+def get_free_port(host="127.0.0.1", sock_type=socket.SOCK_STREAM):
+    with socket.socket(socket.AF_INET, sock_type) as s:
+        s.bind((host, 0))
+        return s.getsockname()[1]
+
+
 def str2rgba(string, alpha100):
     c = QColor(string)
     c.setAlphaF(alpha100 / 100)
@@ -507,17 +524,6 @@ def stringfyerror(e: "Exception|str"):
             except:
                 print_exc()
     return error
-
-
-def checkportavailable(port):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    try:
-        sock.bind(("localhost", port))
-        return True
-    except OSError:
-        return False
-    finally:
-        sock.close()
 
 
 def splittranslatortypes():
@@ -895,6 +901,7 @@ class loopbackrecorder:
         with open(file, "wb") as ff:
             ff.write(new)
         return file
+
 
 def subprochiderun(
     cmd: "str|list[str]",
@@ -1459,7 +1466,7 @@ def inrange(n, s, e):
 
 
 def inranges(n, *argc):
-    return any(inrange(n, s, e) for s,e in argc)
+    return any(inrange(n, s, e) for s, e in argc)
 
 
 def cinranges(n, *argc):

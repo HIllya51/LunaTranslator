@@ -35,7 +35,21 @@ add_library(NativeUtils SHARED
     ${loopbackaudio} ${winrt} ${versioninfo}
 )
 target_precompile_headers(NativeUtils REUSE_FROM pch)
-target_link_libraries(NativeUtils PRIVATE pdh tiny-aes Dbghelp libmecab rapidfuzz bassimp libbass webview mfuuid md4c-all dwmapi d3d11 version
+target_link_libraries(NativeUtils PRIVATE 
+                    pdh 
+                    tiny-aes 
+                    Dbghelp 
+                    libmecab 
+                    rapidfuzz 
+                    bassimp 
+                    libbass 
+                    webview 
+                    mfuuid 
+                    md4c-all 
+                    dwmapi 
+                    d3d11 
+                    version 
+                    iphlpapi
                     Mfplat 
                     DXGI 
                     Msimg32
@@ -55,6 +69,7 @@ if(NOT WINXP)
     target_link_libraries(NativeUtils PRIVATE Mmdevapi)
 endif()
 
+target_link_options(NativeUtils PRIVATE "/DELAYLOAD:IPHLPAPI.dll")
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MMDevAPI.dll")
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:MFPlat.dll")
 target_link_options(NativeUtils PRIVATE "/DELAYLOAD:dxgi.dll")

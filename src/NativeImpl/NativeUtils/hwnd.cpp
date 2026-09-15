@@ -1,4 +1,5 @@
 #include <uiautomation.h>
+#include <iphlpapi.h>
 #include "filemapping.hpp"
 #include "osversion.hpp"
 #ifdef WINXP
@@ -164,6 +165,62 @@ DECLARE_API void ListProcesses(void (*cb)(DWORD, const wchar_t *))
             cb(pe32.th32ProcessID, pe32.szExeFile);
         } while (Process32Next(hSnapshot, &pe32));
     }
+}
+
+DECLARE_API int GetProcessListenPort(LPCWSTR exesubstr)
+{
+    std::wstring needle = exesubstr;
+    std::transform(needle.begin(), needle.end(), needle.begin(), tolower);
+
+    std::unordered_set<DWORD> pids;
+    {
+        CHandle hSnapshot{CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0)};
+        if (hSnapshot != INVALID_HANDLE_VALUE)
+        {
+            PROCESSENTRY32 pe32{};
+            pe32.dwSize = sizeof(pe32);
+            if (Process32First(hSnapshot, &pe32))
+            {
+                do
+                {
+                    std::wstring name = pe32.szExeFile;
+                    std::transform(name.begin(), name.end(), name.begin(), towlower);
+                    if (name == needle)
+                        pids.insert(pe32.th32ProcessID);
+                } while (Process32Next(hSnapshot, &pe32));
+            }
+        }
+    }
+    if (pids.empty())
+        return 0;
+
+    std::vector<BYTE> buf;
+    DWORD size = 0;
+    for (int attempt = 0; attempt < 3; attempt++)
+    {
+        DWORD r = GetExtendedTcpTable(nullptr, &size, FALSE, AF_INET,
+                                      TCP_TABLE_OWNER_PID_LISTENER, 0);
+        if (r != ERROR_INSUFFICIENT_BUFFER && size == 0)
+            return 0;
+        buf.assign(size, 0);
+        r = GetExtendedTcpTable(buf.data(), &size, FALSE, AF_INET,
+                                TCP_TABLE_OWNER_PID_LISTENER, 0);
+        if (r == NO_ERROR)
+            break;
+        if (r != ERROR_INSUFFICIENT_BUFFER)
+            return 0;
+    }
+    if (buf.empty())
+        return 0;
+    auto owners = (MIB_TCPTABLE_OWNER_PID *)buf.data();
+    for (DWORD k = 0; k < owners->dwNumEntries; k++)
+    {
+        auto item = owners->table[k];
+        if (pids.count(item.dwOwningPid) == 0)
+            continue;
+        return _byteswap_ushort(item.dwLocalPort);
+    }
+    return 0;
 }
 
 DECLARE_API bool IsWindowViewable(HWND hwnd)

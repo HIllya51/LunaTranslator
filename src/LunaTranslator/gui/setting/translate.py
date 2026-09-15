@@ -18,6 +18,7 @@ from myutils.utils import (
     useExCheck,
     selectdebugfile,
     splittranslatortypes,
+    get_free_port,
     translate_exits,
     getannotatedapiname,
     format_bytes,
@@ -918,6 +919,23 @@ def nglnum():
     return l
 
 
+def portnum():
+    l = QHBoxLayout()
+    l.setContentsMargins(0, 0, 0, 0)
+    spin = getspinbox(0, 65536, globalconfig["llama.cpp"], "port", default=8080)
+    switch = getsimpleswitch(
+        globalconfig["llama.cpp"],
+        "port-fixed",
+        default=False,
+        callback=lambda _: spin.setVisible(_),
+    )
+    if not globalconfig["llama.cpp"].get("port-fixed", False):
+        spin.setVisible(False)
+    l.addWidget(switch)
+    l.addWidget(spin)
+    return l
+
+
 llamacppautoHandle = None
 
 
@@ -1177,6 +1195,12 @@ def getllamaservercmd(llamaserver, gguf, version):
         device = "--device none"
     else:
         device = "--device {}".format(device.split(":")[0])
+    host = globalconfig["llama.cpp"].get("host", "127.0.0.1")
+    port = (
+        get_free_port(host)
+        if not globalconfig["llama.cpp"].get("port-fixed", False)
+        else globalconfig["llama.cpp"].get("port", 8080)
+    )
     cmd = '"{llamaserver}" -m "{gguf}" --host {host} --port {port} {ctx} {parallel} --gpu-layers {ngl} {load_mode} --metrics {device}'.format(
         load_mode=load_mode,
         ngl=ngl,
@@ -1185,8 +1209,8 @@ def getllamaservercmd(llamaserver, gguf, version):
         parallel=parallel,
         llamaserver=llamaserver,
         gguf=gguf,
-        host=globalconfig["llama.cpp"].get("host", "127.0.0.1"),
-        port=globalconfig["llama.cpp"].get("port", 8080),
+        host=host,
+        port=port,
         device=device,
     )
     return cmd
@@ -1952,13 +1976,11 @@ def llamacppgrid():
                 type="grid",
                 grid=[
                     [
-                        "--port",
-                        D_getspinbox(
-                            0, 65536, globalconfig["llama.cpp"], "port", default=8080
-                        ),
-                        "",
                         "--host",
                         functools.partial(_edit, "host", "127.0.0.1"),
+                        "",
+                        "--port",
+                        portnum,
                     ],
                 ],
             ),

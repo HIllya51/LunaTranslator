@@ -1,9 +1,4 @@
 {
-	"lingva": {
-		"args": {
-			"host": "translate.plausibility.cloud"
-		}
-	},
 	"google": {},
 	"chromeai": {
 		"args": {

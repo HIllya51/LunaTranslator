@@ -1570,18 +1570,6 @@
             "color": "#1839f0",
             "name": "LEC"
         },
-        "itrans": {
-            "use": false,
-            "color": "blue",
-            "useproxy": false,
-            "name": "itrans"
-        },
-        "lingva": {
-            "use": false,
-            "color": "blue",
-            "useproxy": false,
-            "name": "lingva"
-        },
         "TranslateCom": {
             "use": false,
             "color": "blue",
