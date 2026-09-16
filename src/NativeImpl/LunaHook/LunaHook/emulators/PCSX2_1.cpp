@@ -2383,6 +2383,44 @@ namespace
         last = w;
         buffer->from(w);
     }
+    static void SLPS25332_decode(const uint8_t *dlg, const uint8_t *tbl, std::string &out, uint8_t term)
+    {
+        for (int i = 0, guard = 0; guard < 4096 && i < 0x400; guard++)
+        {
+            uint8_t b0 = dlg[i];
+            if (b0 == 0 || b0 == term)
+                break;
+            if (b0 < 0x80)
+            {
+                i++; // 制御バイト(0x0a, 'R'=0x52, …)
+                continue;
+            }
+            if (i + 1 >= 0x400)
+                break;
+            uint8_t b1 = dlg[i + 1];
+            int idx = ((int)(b0 - 0xa0)) * 60 + ((int)(b1 - 0x40));
+            if (idx >= 0 && idx < 3408)
+            {
+                out += (char)tbl[idx * 2];
+                out += (char)tbl[idx * 2 + 1];
+            }
+            i += 2;
+        }
+    }
+    void SLPS25332(TextBuffer *buffer, HookParam *hp)
+    {
+        const uint8_t *dlg = (const uint8_t *)emu_addr(hp->emu_addr);
+        const uint8_t *spk = (const uint8_t *)emu_addr(0x2d7bc0);
+        const uint8_t *tbl = (const uint8_t *)emu_addr(0x320d48);
+        if (!dlg || !tbl)
+            return buffer->clear();
+        std::string out;
+        if (spk)
+            for (int i = 0; i < 0x28 && spk[i]; i++)
+                out += (char)spk[i];
+        SLPS25332_decode(dlg, tbl, out, 0);
+        buffer->from(out);
+    }
 }
 struct emfuncinfoX
 {
@@ -2390,6 +2428,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // SNOW
+    {0x2d7870, {DIRECT_READ, 0, 0, 0, SLPS25332, "SLPS-25332"}},
     // 灼眼のシャナ
     {0x1c1de0, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868<3, 0x324ec4>, 0, "SLPS-25599"}},
     // Under the Moon ～クレセント～
