@@ -1580,6 +1580,13 @@ namespace
         auto s = buffer->strAW();
         buffer->fromWA(strReplace(strReplace(s, L"@　"), L"@"));
     }
+    void SLPS25804(TextBuffer *buffer, HookParam *hp)
+    {
+        if (buffer->size > 1000)
+            return buffer->clear();
+        all_ascii_Filter(buffer, hp);
+        StringFilter(buffer, TEXTANDLEN("@n"));
+    }
     void SLPM65867(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strA();
@@ -2421,6 +2428,18 @@ namespace
         SLPS25332_decode(dlg, tbl, out, 0);
         buffer->from(out);
     }
+    void SLPM65988char(hook_context *, HookParam *hp, TextBuffer *buffer, uintptr_t *)
+    {
+        auto code = (uint16_t)(PCSX2_REG_EMU(a0) & 0xffff);
+        if (code >= 0xff00)
+            return;
+        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"Yoshitsune", L"CHARSET")), L"\n"), L"\r");
+        if (code >= charset.size())
+            return;
+        uint16_t ch = charset[code];
+        if (ch)
+            buffer->from_t(ch);
+    }
 }
 struct emfuncinfoX
 {
@@ -2428,6 +2447,13 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 少女義経伝
+    {0x19ae64, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM65988char, 0, "SLPM-65363"}},
+    // 少女義経伝・弐 ～刻を超える契り～
+    {0x1aa180, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM65988char, 0, "SLPM-65988"}},
+    // DEAR My SUN！！ ～ムスコ★育成★狂騒曲～
+    {0x1dad5c, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25804, std::vector<const char *>{"SLPS-25804", "SLPS-25810"}}},
+    {0x115fa0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25804, std::vector<const char *>{"SLPS-25804", "SLPS-25810"}}},
     // SNOW
     {0x2d7870, {DIRECT_READ, 0, 0, 0, SLPS25332, "SLPS-25332"}},
     // 灼眼のシャナ
