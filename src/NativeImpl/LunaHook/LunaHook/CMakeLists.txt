@@ -31,7 +31,7 @@ add_subdirectory(emulators)
 
 
 
-add_library(LunaHook MODULE ${texthook_src} resource.rc ${versioninfo})
+add_library(LunaHook MODULE ${texthook_src} resource/resource.rc ${versioninfo})
 add_library(trhelper ../include/InfoStrings.cpp)
 target_compile_definitions(trhelper PRIVATE -DBUILD_HOOK=1)
 

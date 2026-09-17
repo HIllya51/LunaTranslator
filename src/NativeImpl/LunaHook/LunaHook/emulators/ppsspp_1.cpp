@@ -240,6 +240,10 @@ namespace
         StringFilter(buffer, TEXTANDLEN("@I"));
         StringFilter(buffer, TEXTANDLEN("@P"));
     }
+    void ULJS00203(TextBuffer *buffer, HookParam *hp)
+    {
+        StringFilter(buffer, TEXTANDLEN("@r"));
+    }
     void ULJM06147(TextBuffer *buffer, HookParam *hp)
     {
         CharFilter(buffer, L'R');
@@ -1633,6 +1637,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // ソラユメportable
+    {0x8828924, {FULL_STRING, 1, 0, 0, ULJS00203, "ULJS00203"}},
     // Ｌの季節 ダブルポケット
     {0x887B6E8, {FULL_STRING, 0, 0, 0, ULJM06040_1, "ULJM05555"}},
     // あかね色に染まる坂ぽ～たぶる

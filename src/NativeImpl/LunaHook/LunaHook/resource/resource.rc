@@ -1,0 +1,39 @@
+charset_default CHARSET "resource/mages/charset_default.txt"
+charset_Robotics_Notes_Dash CHARSET "resource/mages/charset_Robotics_Notes_Dash.txt"
+charset_Robotics_Notes_Elite CHARSET "resource/mages/charset_Robotics_Notes_Elite.txt"
+charset_Famicom_Tantei_Club CHARSET "resource/mages/charset_Famicom_Tantei_Club.txt"
+charset_SINce_Memories CHARSET "resource/mages/charset_SINce_Memories.txt"
+charset_SG_My_Darlings_Embrace CHARSET "resource/mages/charset_SG_My_Darlings_Embrace.txt"
+charset_SG_Linear_Bounded_Phenogram CHARSET "resource/mages/charset_SG_Linear_Bounded_Phenogram.txt"
+charset_SGHD CHARSET "resource/mages/charset_SGHD.txt"
+charset_IwakuraAria CHARSET "resource/mages/charset_IwakuraAria.txt"
+charset_9 CHARSET "resource/mages/charset_9.txt"
+charset_Famicom_Detective_Club CHARSET "resource/mages/charset_Famicom_Detective_Club.txt"
+
+compound_chars_SGHD COMPOUND_CHARS "resource/mages/compound_chars_SGHD.txt"
+compound_chars_default COMPOUND_CHARS "resource/mages/compound_chars_default.txt"
+compound_chars_Robotics_Notes_Elite COMPOUND_CHARS "resource/mages/compound_chars_Robotics_Notes_Elite.txt"
+compound_chars_Robotics_Notes_Dash COMPOUND_CHARS "resource/mages/compound_chars_Robotics_Notes_Dash.txt"
+
+renpy_hook_font PYSOURCE "resource/renpy_hook_font.py"
+renpy_hook_text PYSOURCE "resource/renpy_hook_text.py"
+
+lunajspatch JSSOURCE "resource/lunajspatch.js"
+
+thfont CHARSET "resource/thfont.tbl"
+kizfont CHARSET "resource/kizfont.tbl"
+sizfont CHARSET "resource/sizfont.tbl"
+
+PiAS CHARSET "resource/PiAS.txt"
+
+Erde CHARSET "resource/Erde.txt"
+
+PS2COMMON CHARSET "resource/ps2/common.txt"
+Fragments_Blue CHARSET "resource/ps2/Fragments_Blue.txt"
+Hanayoi CHARSET "resource/ps2/Hanayoi.txt"
+Nanatsuiro CHARSET "resource/ps2/Nanatsuiro.txt"
+Shana CHARSET "resource/ps2/Shana.txt"
+Yoshitsune CHARSET "resource/ps2/Yoshitsune.txt"
+Kashimashi CHARSET "resource/ps2/Kashimashi.txt"
+EVE_New_Generation CHARSET "resource/ps2/EVE_New_Generation.txt"
+

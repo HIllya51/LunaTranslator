@@ -2197,8 +2197,11 @@ namespace
         s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
         buffer->from(s);
     }
-    template <int which>
-    std::wstring fbstringread(const uint8_t *ptr)
+    std::wstring load_charset_with_common(LPCWSTR s)
+    {
+        return strReplace(strReplace(StringToWideString(LoadResData(L"PS2COMMON", L"CHARSET")) + StringToWideString(LoadResData(s, L"CHARSET")), L"\r"), L"\n");
+    }
+    std::wstring fbstringread(const uint8_t *ptr, int which, bool space = false)
     {
         static const uint8_t HR_ADV[0x100] = {
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x00-0x0f
@@ -2218,8 +2221,8 @@ namespace
             2, 6, 1, 8, 8, 6, 2, 2, 2, 4, 2, 6, 4, 2, 2, 4,  // 0xe0-0xef
             2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 6, 6, 2, 2, 2, 2   // 0xf0-0xff
         };
-        static const wchar_t *whichx[] = {L"Fragments_Blue", L"Hanayoi", L"Nanatsuiro", L"Shana"};
-        static auto fb_charset = strReplace(strReplace(StringToWideString(LoadResData(whichx[which], L"CHARSET")), L"\n"), L"\r");
+        static const wchar_t *whichx[] = {L"Fragments_Blue", L"Hanayoi", L"Nanatsuiro", L"Shana", L"Kashimashi"};
+        static auto fb_charset = load_charset_with_common(whichx[which]);
         std::wstring out;
         while (true)
         {
@@ -2228,7 +2231,8 @@ namespace
                 break; // STOP — end of segment
             if (v == 0xfffe)
             {
-                // out.push_back(L'\n');
+                if (space)
+                    out.push_back(L'\n');
                 ptr += 2;
                 continue;
             } // newline
@@ -2254,7 +2258,7 @@ namespace
                 ptr += HR_ADV[v & 0xff];
                 continue;
             }
-            out += fb_charset[v];
+            out += (v < fb_charset.size()) ? fb_charset[v] : L'?';
             ptr += 2;
         }
         return out;
@@ -2262,7 +2266,7 @@ namespace
     void SLPM66203(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
     {
         const uint8_t *ptr = (const uint8_t *)PCSX2_REG(a0);
-        auto out = fbstringread<0>(ptr);
+        auto out = fbstringread(ptr, 0);
         static std::wstring last;
         if (endWith(last, out))
             return buffer->clear();
@@ -2310,7 +2314,7 @@ namespace
     {
         uint32_t streamVA = *(uint32_t *)emu_addr(addr);
         const uint8_t *ptr = (const uint8_t *)emu_addr(streamVA);
-        auto out = fbstringread<which>(ptr);
+        auto out = fbstringread(ptr, which);
         static std::wstring last;
         if (endWith(last, out))
             return buffer->clear();
@@ -2433,12 +2437,66 @@ namespace
         auto code = (uint16_t)(PCSX2_REG_EMU(a0) & 0xffff);
         if (code >= 0xff00)
             return;
-        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"Yoshitsune", L"CHARSET")), L"\n"), L"\r");
+        static auto charset = load_charset_with_common(L"Yoshitsune");
         if (code >= charset.size())
             return;
         uint16_t ch = charset[code];
         if (ch)
             buffer->from_t(ch);
+    }
+    void SLPS25621fff0(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        auto ipVA = *(uint32_t *)emu_addr(0x2DD2E4);
+        auto p = (uint8_t *)emu_addr(ipVA + 8);
+        std::wstring s = fbstringread(p, 4, true);
+        s = re::sub(s, L"　*\n　*");
+        buffer->from(s);
+    }
+    static std::wstring EVENG_readstring(uint8_t *fontobj, uint32_t idx)
+    {
+        if (!fontobj)
+            return {};
+        uint32_t count = *(uint32_t *)(fontobj + 0x10);
+        if (!count || count > 0x10000 || idx >= count)
+            return {};
+        uint32_t pairsVA = *(uint32_t *)(fontobj + 0xc);
+        uint32_t dataVA = *(uint32_t *)(fontobj + 0x14);
+        auto pair = (uint8_t *)emu_addr(pairsVA + idx * 4);
+        if (!pair)
+            return {};
+        uint16_t off = pair[0] | (pair[1] << 8);
+        uint16_t cnt = pair[2] | (pair[3] << 8);
+        auto p = (uint8_t *)emu_addr(dataVA + (uint32_t)off * 2);
+        if (!p)
+            return {};
+        std::wstring out;
+        for (uint32_t i = 0; i < cnt && i < 1024; i++)
+        {
+            uint16_t code = p[0] | (p[1] << 8);
+            p += 2;
+            if (code == 0xffff)
+                break;
+
+            static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"EVE_New_Generation", L"CHARSET")), L"\r"), L"\n");
+            out += (code < charset.size()) ? charset[code] : L'?';
+        }
+        return out;
+    }
+    void SLPM66338print(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        auto fontobj = (uint8_t *)PCSX2_REG(a0);
+        auto nameIdx = PCSX2_REG_EMU(a3);
+        auto textIdx = PCSX2_REG_EMU(t0);
+        std::wstring out;
+        if (!(nameIdx & 0xffff0000))
+        {
+            auto name = EVENG_readstring(fontobj, nameIdx);
+            if (!name.empty())
+                out += L"【" + name + L"】";
+        }
+        if (!(textIdx & 0xffff0000))
+            out += EVENG_readstring(fontobj, textIdx);
+        buffer->from(out);
     }
 }
 struct emfuncinfoX
@@ -2447,6 +2505,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // かしまし ～ガールミーツガール～「初めての夏物語。」
+    {0x1c1e60, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25621fff0, 0, "SLPS-25621"}},
+    // EVE ~new generation~
+    {0x10C7F0, {FULL_STRING | CODEC_UTF16, 0, 0, SLPM66338print, 0, "SLPM-66338"}},
     // 少女義経伝
     {0x19ae64, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM65988char, 0, "SLPM-65363"}},
     // 少女義経伝・弐 ～刻を超える契り～
