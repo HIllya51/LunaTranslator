@@ -36,7 +36,7 @@ def _DelayLoadCVUtils():
 class cvMat(unique_ptr):
     def __init__(self, image: QImage):
         if (image is None) or image.isNull() or (image.bits() is None):
-            super().__init__(None, cvMatDestroy)
+            super().__init__(None, None)
             return
         _CVUtils = _DelayLoadCVUtils()
         cvMatDestroy = _CVUtils.cvMatDestroy

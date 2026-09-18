@@ -542,6 +542,17 @@ namespace
         s = re::sub(s, R"(#[A-Za-z]+\[[\d\-,\.]*\])");
         buffer->from(s);
     }
+    void F010049A022BA0000(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        auto m = re::match(s, R"(^(.*)#n#Pos\[.*?\](.*?)$)");
+        if (m)
+        {
+            s = u8"【" + m.value()[2].str() + u8"】" + m.value()[1].str();
+        }
+        buffer->from(s);
+        F0100BDD01AAE4000(buffer, hp);
+    }
     void F010048101D49E000(TextBuffer *buffer, HookParam *hp)
     {
         auto s = buffer->strW();
@@ -2993,6 +3004,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // BLACK WOLVES SAGA -Weiβ und Schwarz-
+    {0x800981B0, {FULL_STRING | CODEC_UTF8, 0, 0, 0, F010049A022BA0000, 0x010049A022BA0000ull, "1.0.0"}},
     // PSYCHIC ECLIPSE -reload-
     {0x81541CB4, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x0100A0001B9F0000ull, "1.2.0"}},
     {0x81544CD0, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, 0, 0x0100A0001B9F0000ull, "1.2.0"}},

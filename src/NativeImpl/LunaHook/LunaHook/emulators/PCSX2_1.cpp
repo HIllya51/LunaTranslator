@@ -2498,6 +2498,18 @@ namespace
             out += EVENG_readstring(fontobj, textIdx);
         buffer->from(out);
     }
+    void GakuenSaiChar(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto code = (uint16_t)(PCSX2_REG_EMU(a3) & 0xffff);
+        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"GakuenSai", L"CHARSET")), L"\r"), L"\n");
+        if (code >= charset.size() || !charset[code])
+            return;
+        auto idx = PCSX2_REG_EMU(a1) & 0xff;
+        if (idx > 63)
+            return;
+        *split = FIXED_SPLIT_VALUE << idx;
+        buffer->from_t(charset[code]);
+    }
 }
 struct emfuncinfoX
 {
@@ -2505,6 +2517,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // テニスの王子様 ～学園祭の王子様～ 
+    {0x1558E0, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a3), 0, GakuenSaiChar, 0, "SLPM-66219"}},
     // かしまし ～ガールミーツガール～「初めての夏物語。」
     {0x1c1e60, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25621fff0, 0, "SLPS-25621"}},
     // EVE ~new generation~
