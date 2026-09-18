@@ -88,6 +88,10 @@
     rt {
         user-select: none;
     }
+
+    .lunatranslator_rt [data-kana]::before {
+        content: attr(data-kana);
+    }
 </style>
 <style id="tooltipstyle">
     .tooltip {
@@ -332,6 +336,20 @@
     }
 </script>
 <script>
+    // Keep CSS out of text selections, and remove it with its owning text.
+    const textStyles = new Map()
+    function appendTextStyle(ele, style) {
+        document.head.appendChild(style)
+        textStyles.set(style, ele)
+    }
+    new MutationObserver(() => {
+        for (const [style, ele] of textStyles) {
+            if (!ele.isConnected) {
+                style.remove()
+                textStyles.delete(style)
+            }
+        }
+    }).observe(document.getElementById('luna_root_div'), { childList: true, subtree: true })
     function _simpleuid() {
         return 'luna' + Math.random().toString(36).substr(2, 9);
     }
@@ -386,7 +404,7 @@
         style.classList.add('yinyingstyleklass')
         style.setAttribute('__color', args.color)
         style.setAttribute('__id', _id)
-        ele.appendChild(style)
+        appendTextStyle(ele, style)
         return ele
     }
     function createmiaobianstyle(styleargs, _id, color) {
@@ -413,7 +431,7 @@
         style.setAttribute('__color', args.color)
         style.setAttribute('__id', _id)
         style.classList.add('miaobiaostyleklass')
-        ele.appendChild(style)
+        appendTextStyle(ele, style)
         let p = createnameandtext(name, text, args)
         ele.appendChild(p)
         return ele
@@ -872,14 +890,16 @@
             if (word.specialinfo)
                 eleori.classList.add('lunatranslator_clickword_force')
             eleori.classList.add('lunatranslator_clickword')
-            eleori.appendChild(style1)
+            appendTextStyle(eleori, style1)
 
             if ((word.word != word.kana) && word.kana && (!word.hidekana) && (word.kana.trim().length)) {
 
                 let ruby = document.createElement('ruby')
                 ruby.appendChild(eleori)
                 let rt = document.createElement('rt')
-                let span = dispatch_text_style(style, styleargs, '', word.kana, { color: kanacolor })
+                let span = dispatch_text_style(style, styleargs, '', '', { color: kanacolor })
+                let kanaspan = span.querySelector('.lunatranslator_text_all') || span
+                kanaspan.dataset.kana = word.kana
                 span.classList.add('span_ruby_flag')
                 rt.appendChild(makeinlineblock(span))
                 rt.classList.add('klass_font_hira')
