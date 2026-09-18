@@ -36,5 +36,7 @@ Shana CHARSET "resource/ps2/Shana.txt"
 Yoshitsune CHARSET "resource/ps2/Yoshitsune.txt"
 Kashimashi CHARSET "resource/ps2/Kashimashi.txt"
 EVE_New_Generation CHARSET "resource/ps2/EVE_New_Generation.txt"
-GakuenSai CHARSET "resource/ps2/GakuenSai.txt"
+Tennis_no_Oujisama CHARSET "resource/ps2/Tennis_no_Oujisama.txt"
+Tennis_no_Oujisama_Mystic CHARSET "resource/ps2/Tennis_no_Oujisama_Mystic.txt"
+Tennis_no_Oujisama_GakuenSai CHARSET "resource/ps2/Tennis_no_Oujisama_GakuenSai.txt"
 

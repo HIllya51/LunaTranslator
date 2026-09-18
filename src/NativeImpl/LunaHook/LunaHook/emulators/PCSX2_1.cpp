@@ -2199,7 +2199,7 @@ namespace
     }
     std::wstring load_charset_with_common(LPCWSTR s)
     {
-        return strReplace(strReplace(StringToWideString(LoadResData(L"PS2COMMON", L"CHARSET")) + StringToWideString(LoadResData(s, L"CHARSET")), L"\r"), L"\n");
+        return strReplace(strReplace(StringToWideString(LoadResData(L"PS2COMMON", L"CHARSET") + LoadResData(s, L"CHARSET")), L"\r"), L"\n");
     }
     std::wstring fbstringread(const uint8_t *ptr, int which, bool space = false)
     {
@@ -2498,10 +2498,13 @@ namespace
             out += EVENG_readstring(fontobj, textIdx);
         buffer->from(out);
     }
-    void GakuenSaiChar(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *split)
+    template<int idx>
+    void SLPM66219(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *split)
     {
+        static const wchar_t *whichx[] = {L"Tennis_no_Oujisama_GakuenSai", L"Tennis_no_Oujisama_Mystic"};
+
         auto code = (uint16_t)(PCSX2_REG_EMU(a3) & 0xffff);
-        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"GakuenSai", L"CHARSET")), L"\r"), L"\n");
+        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"Tennis_no_Oujisama", L"CHARSET") + LoadResData(whichx[idx], L"CHARSET")), L"\r"), L"\n");
         if (code >= charset.size() || !charset[code])
             return;
         auto idx = PCSX2_REG_EMU(a1) & 0xff;
@@ -2517,8 +2520,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
-    // テニスの王子様 ～学園祭の王子様～ 
-    {0x1558E0, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a3), 0, GakuenSaiChar, 0, "SLPM-66219"}},
+    // テニスの王子様 ドキドキサバイバル 山麓のMystic
+    {0x15e1b0, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a3), 0, SLPM66219<1>, 0, "SLPM-66608"}},
+    // テニスの王子様 ～学園祭の王子様～
+    {0x1558E0, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a3), 0, SLPM66219<0>, 0, "SLPM-66219"}},
     // かしまし ～ガールミーツガール～「初めての夏物語。」
     {0x1c1e60, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25621fff0, 0, "SLPS-25621"}},
     // EVE ~new generation~
