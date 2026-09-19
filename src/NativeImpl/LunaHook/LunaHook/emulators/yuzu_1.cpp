@@ -3004,6 +3004,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Le Mirage Mystique
+    {0x81D08180, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100E81024F40000ull, "1.0.0"}},
+    {0x81D081B0, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100E81024F40000ull, "1.0.1"}},
     // BLACK WOLVES SAGA -Weiβ und Schwarz-
     {0x800981B0, {FULL_STRING | CODEC_UTF8, 0, 0, 0, F010049A022BA0000, 0x010049A022BA0000ull, "1.0.0"}},
     // PSYCHIC ECLIPSE -reload-

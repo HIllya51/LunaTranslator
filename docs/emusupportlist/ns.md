@@ -1,5 +1,6 @@
 |  | ID       | Game                |
 | ---- | ---------- | ------------------- |
+|  | 0100E81024F40000 | Le Mirage Mystique |
 |  | 010049A022BA0000 | BLACK WOLVES SAGA -Weiβ und Schwarz- |
 |  | 0100A0001B9F0000 | PSYCHIC ECLIPSE -reload- |
 |  | 0100A9501759E000 | ファミコン探偵倶楽部 笑み男 |
