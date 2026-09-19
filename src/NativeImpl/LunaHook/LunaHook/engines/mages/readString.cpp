@@ -17,7 +17,7 @@ namespace mages
                                                L"",
                                            }[_idx],
                                            L"COMPOUND_CHARS");
-        auto charsetA = LoadResData(std::vector<const wchar_t *>{
+        auto charset = LoadResCharSet(std::vector<const wchar_t *>{
                                         L"charset_default",
                                         L"charset_Robotics_Notes_Elite",
                                         L"charset_Robotics_Notes_Dash",
@@ -29,13 +29,9 @@ namespace mages
                                         L"charset_IwakuraAria",
                                         L"charset_9",
                                         L"charset_Famicom_Detective_Club", // Dump 0100A9501759E000 ファミコン探偵倶楽部 笑み男 发现此文件直接存在。
-                                    }[_idx],
-                                    L"CHARSET");
+                                    }[_idx]);
 
         auto compound_chars = StringToWideString(compound_charsA);
-        auto charset = StringToWideString(charsetA);
-        strReplace(charset, L"\n");
-        strReplace(charset, L"\r");
         std::map<DWORD, std::wstring> table = {};
 
         for (auto line : strSplit(compound_chars, L"\n"))

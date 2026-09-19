@@ -38,14 +38,14 @@ static bool h2()
   hp.type = CODEC_UTF16 | USING_CHAR;
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"PiAS", L"CHARSET")), L"\r"), L"\n");
+    static auto charset = LoadResCharSet(L"PiAS");
     buffer->from_t<WORD>(charset[(WORD)context->stack[1]]);
   };
   return NewHook(hp, "PiAS");
 }
 static void tf(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
 {
-  static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"PiAS", L"CHARSET")), L"\r"), L"\n");
+  static auto charset = LoadResCharSet(L"PiAS");
   std::wstring wss;
   for (auto i = 0; i < context->stack[2]; i++)
   {

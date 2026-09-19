@@ -485,6 +485,10 @@ void RemoveHook(uint64_t addr, int maxOffset)
 		if (abs((long long)(hook.address - addr)) <= maxOffset)
 			return hook.Clear();
 }
+std::wstring LoadResCharSet(LPCWSTR pszResID)
+{
+	return strReplace(strReplace(StringToWideString(LoadResData(pszResID, L"CHARSET")), L"\r"), L"\n");
+}
 std::string LoadResData(LPCWSTR pszResID, LPCWSTR _type)
 {
 	HMODULE hModule = hLUNAHOOKDLL;

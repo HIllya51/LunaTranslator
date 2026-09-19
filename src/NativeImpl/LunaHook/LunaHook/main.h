@@ -22,6 +22,7 @@ bool NewHook(HookParam hp, LPCSTR name);
 
 void RemoveHook(uint64_t addr, int maxOffset = 9);
 std::string LoadResData(LPCWSTR pszResID, LPCWSTR _type);
+std::wstring LoadResCharSet(LPCWSTR pszResID);
 inline SearchParam spDefault;
 inline JITTYPE jittypedefault = JITTYPE::PC;
 // EOF

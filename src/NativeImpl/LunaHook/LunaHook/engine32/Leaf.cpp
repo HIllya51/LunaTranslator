@@ -933,7 +933,7 @@ namespace
     hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
       WORD ch = context->stack[3];
-      static auto charset = StringToWideString(LoadResData(iskizuato ? L"kizfont" : (issizuku ? L"sizfont" : L"thfont"), L"CHARSET"));
+      static auto charset = LoadResCharSet(iskizuato ? L"kizfont" : (issizuku ? L"sizfont" : L"thfont"));
       buffer->from_t(charset[ch]);
     };
     return NewHook(hp, iskizuato ? "kizuato" : (issizuku ? "sizuku" : "toheart"));

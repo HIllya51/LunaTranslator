@@ -2199,7 +2199,7 @@ namespace
     }
     std::wstring load_charset_with_common(LPCWSTR s)
     {
-        return strReplace(strReplace(StringToWideString(LoadResData(L"PS2COMMON", L"CHARSET") + LoadResData(s, L"CHARSET")), L"\r"), L"\n");
+        return LoadResCharSet(L"PS2COMMON") + LoadResCharSet(s);
     }
     std::wstring fbstringread(const uint8_t *ptr, int which, bool space = false)
     {
@@ -2270,7 +2270,7 @@ namespace
     }
     void SLPS25188(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
     {
-        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"Erde", L"CHARSET")), L"\r"), L"\n");
+        static auto charset = LoadResCharSet(L"Erde");
         uint32_t structVA = PCSX2_REG_EMU(a0);
         if (!structVA)
             return buffer->clear();
@@ -2472,7 +2472,7 @@ namespace
             if (code == 0xffff)
                 break;
 
-            static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"EVE_New_Generation", L"CHARSET")), L"\r"), L"\n");
+            static auto charset = LoadResCharSet(L"EVE_New_Generation");
             out += (code < charset.size()) ? charset[code] : L'?';
         }
         return out;
@@ -2499,7 +2499,7 @@ namespace
         static const wchar_t *whichx[] = {L"Tennis_no_Oujisama_GakuenSai", L"Tennis_no_Oujisama_Mystic"};
 
         auto code = (uint16_t)(PCSX2_REG_EMU(a3) & 0xffff);
-        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"Tennis_no_Oujisama", L"CHARSET") + LoadResData(whichx[idx], L"CHARSET")), L"\r"), L"\n");
+        static auto charset = LoadResCharSet(L"Tennis_no_Oujisama") + LoadResCharSet(whichx[idx]);
         if (code >= charset.size() || !charset[code])
             return;
         auto idx = PCSX2_REG_EMU(a1) & 0xff;
@@ -2511,7 +2511,7 @@ namespace
     void DevilSummonerGlyph(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
     {
         uint32_t glyph = PCSX2_REG_EMU(a1) & 0xffff;
-        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"DevilSummoner", L"CHARSET")), L"\r"), L"\n");
+        static auto charset = LoadResCharSet(L"DevilSummoner");
         buffer->from_t(charset[glyph]);
     }
 }
