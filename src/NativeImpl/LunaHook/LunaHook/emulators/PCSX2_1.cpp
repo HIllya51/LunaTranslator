@@ -2609,6 +2609,17 @@ namespace
         s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
         buffer->from(s);
     }
+    void SLPS25516char(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        // 0x1902d0/0x1974e0
+        auto code = PCSX2_REG_EMU(a0) & 0xffff;
+        if (code >= 0xdd2)
+            return buffer->clear();
+        static auto charset = load_charset_with_common(L"Futakoi_Alternative");
+        if (code >= charset.size() || !charset[code])
+            return buffer->clear();
+        buffer->from_t(charset[code]);
+    }
 }
 struct emfuncinfoX
 {
@@ -2616,7 +2627,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
-    // 俺の下でAGAKE 
+    // フタコイ オルタナティブ 恋と少女とマシンガン
+    {0x1902d0, {USING_CHAR | CODEC_UTF16, 0, 0, SLPS25516char, 0, "SLPS-25516"}},
+    // 俺の下でAGAKE
     {0x119d68, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25796A, "SLPS-25796"}},
     // D・N・ANGEL TV Animation Series ～紅の翼～
     {0x139f6c, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65368M_1, SLPM65368M_F, "SLPM-65368"}},
