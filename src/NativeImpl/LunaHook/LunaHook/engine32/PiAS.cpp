@@ -38,11 +38,21 @@ static bool h2()
   hp.type = CODEC_UTF16 | USING_CHAR;
   hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
   {
-    static auto charset = StringToWideString(LoadResData(L"PiAS", L"CHARSET"));
+    static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"PiAS", L"CHARSET")), L"\r"), L"\n");
     buffer->from_t<WORD>(charset[(WORD)context->stack[1]]);
   };
   return NewHook(hp, "PiAS");
 }
+static void tf(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+{
+  static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"PiAS", L"CHARSET")), L"\r"), L"\n");
+  std::wstring wss;
+  for (auto i = 0; i < context->stack[2]; i++)
+  {
+    wss += charset[*(WORD *)(context->stack[1] + 2 * i)];
+  }
+  buffer->from(wss);
+};
 static bool h1()
 {
   // https://vndb.org/v10757
@@ -69,20 +79,41 @@ static bool h1()
   HookParam hp;
   hp.address = addr;
   hp.type = USING_STRING | CODEC_UTF16 | FULL_STRING;
-  hp.text_fun = [](hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
-  {
-    static auto charset = StringToWideString(LoadResData(L"PiAS", L"CHARSET"));
-    std::wstring wss;
-    for (auto i = 0; i < context->stack[2]; i++)
-    {
-      wss += charset[*(WORD *)(context->stack[1] + 2 * i)];
-    }
-    buffer->from(wss);
-  };
+  hp.text_fun = tf;
+  return NewHook(hp, "PiAS");
+}
+
+static bool h3()
+{
+  // ひいらぎ荘〜同じ屋根の下で〜
+  // https://vndb.org/v6134
+  BYTE bytes3[] = {
+      0x83, 0xec, 0x20,       // sub esp, 0x20
+      0x53,                   // push ebx
+      0x55,                   // push ebp
+      0x8b, 0x6c, 0x24, 0x30, // mov ebp, [esp+0x30]      (count)
+      0x56,                   // push esi
+      0x57,                   // push edi
+      0x89, 0x6c, 0x24, 0x10, // mov [esp+0x10], ebp
+      0xe8, XX4,              // call 0x411d30            (clear glyph cache)
+      0x8b, 0x35, XX4,        // mov esi, [0x41bd18]
+      0x8d, 0x44, 0x2d, 0x00, // lea eax, [ebp+ebp]
+      0x33, 0xdb,             // xor ebx, ebx
+      0x50,                   // push eax
+      0x6a, 0x08,             // push 8
+      0x89, 0x1d, XX4,        // mov [0x41bcb0], ebx
+      0x89, 0x2d, XX4};       // mov [0x41bcfc], ebp
+  auto addr = MemDbg::findBytes(bytes3, sizeof(bytes3), processStartAddress, processStopAddress);
+  if (!addr)
+    return false;
+  HookParam hp;
+  hp.address = addr;
+  hp.type = USING_STRING | CODEC_UTF16 | FULL_STRING;
+  hp.text_fun = tf;
   return NewHook(hp, "PiAS");
 }
 
 bool PiAS::attach_function()
 {
-  return h1() || h2();
+  return h1() || h2() || h3();
 }
