@@ -2514,6 +2514,49 @@ namespace
         static auto charset = LoadResCharSet(L"DevilSummoner");
         buffer->from_t(charset[glyph]);
     }
+    static const std::wstring &DNAngelCharset()
+    {
+        static auto charset = LoadResCharSet(L"DNAngel");
+        return charset;
+    }
+    void SLPM65368M_1(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        const auto &charset = DNAngelCharset();
+        uint8_t b = PCSX2_REG_EMU(v1) & 0xff;
+        uint32_t glyph = 0xFFFFFFFF;
+        if (b < 0xf0)
+            glyph = b;
+        else if (b == 0xf0)
+            glyph = 0xef;
+        else if (b == 0xf8)
+            glyph = 0xf8;
+        else if (b == 0xfc)
+        {
+            buffer->from_t(L'\n');
+            return;
+        }
+        else
+            return;
+        buffer->from_t(charset[glyph]);
+    }
+    void SLPM65368M_2(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        const auto &charset = DNAngelCharset();
+        uint32_t glyph = PCSX2_REG_EMU(v0) & 0xffff;
+        buffer->from_t(charset[glyph]);
+    }
+    DECLARE_FUNCTION(SLPM65368M, EXPAND_BRACKETS(const wchar_t *_));
+    void SLPM65368M_F(TextBuffer *buffer, HookParam *hpx)
+    {
+        auto s = buffer->strW();
+        HookParam hp;
+        hp.address = (uintptr_t)SLPM65368M;
+        hp.offset = GETARG(1);
+        hp.type = USING_STRING | CODEC_UTF16;
+        static auto _ = NewHook(hp, hpx->name);
+        SLPM65368M(s.c_str());
+        buffer->clear();
+    }
 }
 struct emfuncinfoX
 {
@@ -2521,6 +2564,9 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // D・N・ANGEL TV Animation Series ～紅の翼～
+    {0x139f6c, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65368M_1, SLPM65368M_F, "SLPM-65368"}},
+    {0x13a194, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65368M_2, SLPM65368M_F, "SLPM-65368"}},
     // リトルアンカー
     {0x1c2c60, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868<5, 0x355934>, 0, "SLPS-25929"}},
     // デビルサマナー 葛葉ライドウ対超力兵団

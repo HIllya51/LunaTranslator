@@ -4,32 +4,26 @@ namespace mages
 {
     std::map<DWORD, std::wstring> createTable(int _idx)
     {
-        auto compound_charsA = LoadResData(std::vector<const wchar_t *>{
-                                               L"compound_chars_default",
-                                               L"compound_chars_Robotics_Notes_Elite",
-                                               L"compound_chars_Robotics_Notes_Dash",
-                                               L"",
-                                               L"",
-                                               L"",
-                                               L"compound_chars_SGHD",
-                                               L"",
-                                               L"",
-                                               L"",
-                                           }[_idx],
-                                           L"COMPOUND_CHARS");
-        auto charset = LoadResCharSet(std::vector<const wchar_t *>{
-                                        L"charset_default",
-                                        L"charset_Robotics_Notes_Elite",
-                                        L"charset_Robotics_Notes_Dash",
-                                        L"charset_Famicom_Tantei_Club",
-                                        L"charset_SINce_Memories",
-                                        L"charset_SG_My_Darlings_Embrace",
-                                        L"charset_SG_Linear_Bounded_Phenogram",
-                                        L"charset_SGHD",
-                                        L"charset_IwakuraAria",
-                                        L"charset_9",
-                                        L"charset_Famicom_Detective_Club", // Dump 0100A9501759E000 ファミコン探偵倶楽部 笑み男 发现此文件直接存在。
-                                    }[_idx]);
+        struct __
+        {
+            const wchar_t *a;
+            const wchar_t *b;
+        };
+        static const __ charsets[] = {
+            {L"charset_default", L"compound_chars_default"},
+            {L"charset_Robotics_Notes_Elite", L"compound_chars_Robotics_Notes_Elite"},
+            {L"charset_Robotics_Notes_Dash", L"compound_chars_Robotics_Notes_Dash"},
+            {L"charset_Famicom_Tantei_Club", L""},
+            {L"charset_SINce_Memories", L""},
+            {L"charset_SG_My_Darlings_Embrace", L""},
+            {L"charset_SG_Linear_Bounded_Phenogram", L"compound_chars_SGHD"},
+            {L"charset_SGHD", L""},
+            {L"charset_IwakuraAria", L""},
+            {L"charset_9", L""},
+            {L"charset_Famicom_Detective_Club", L""}, // Dump 0100A9501759E000 ファミコン探偵倶楽部 笑み男 发现此文件直接存在。
+        };
+        auto charset = LoadResCharSet(charsets[_idx].a);
+        auto compound_charsA = LoadResData(charsets[_idx].b, L"COMPOUND_CHARS");
 
         auto compound_chars = StringToWideString(compound_charsA);
         std::map<DWORD, std::wstring> table = {};
