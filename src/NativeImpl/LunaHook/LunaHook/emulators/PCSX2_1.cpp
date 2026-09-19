@@ -2557,6 +2557,58 @@ namespace
         SLPM65368M(s.c_str());
         buffer->clear();
     }
+    static std::string SLPS25796Decode(const uint8_t *p, int maxlen)
+    {
+        std::string s;
+        for (int i = 0; i < maxlen;)
+        {
+            uint8_t b = p[i];
+            if (b == 0)
+                break;
+            if (b == 0x5e)
+            { // '^' = line break
+                s += '\n';
+                i++;
+                continue;
+            }
+            if (b < 0x80)
+            { // ASCII control codes are not rendered
+                i++;
+                continue;
+            }
+            uint8_t t = (i + 1 < maxlen) ? p[i + 1] : 0;
+            int idx = (b - 0xa0) * 60 + (t - 0x40);
+            if (b >= 0xa0 && b <= 0xdf && t >= 0x40 && t <= 0x7b && idx < 0xa68)
+            {
+                auto tab = (const uint8_t *)emu_addr(0x1CFF78 + idx * 2);
+                s += (char)tab[0]; // big-endian u16 SJIS code
+                s += (char)tab[1];
+                i += 2;
+            }
+            else if ((b >= 0x81 && b <= 0x9f) || (b >= 0xe0 && b <= 0xef))
+            { // plain Shift-JIS (first-pass strings / rodata system messages)
+                s += (char)b;
+                if (i + 1 < maxlen)
+                    s += (char)p[i + 1];
+                i += 2;
+            }
+            else
+                i++;
+        }
+        return s;
+    }
+    void SLPS25796A(TextBuffer *buffer, HookParam *)
+    {
+        auto raw = buffer->strA();
+        auto s = SLPS25796Decode((const uint8_t *)raw.c_str(), raw.size());
+        if (s.empty())
+            return buffer->clear();
+        static lru_cache<std::string> cache(8);
+        if (cache.touch(s))
+            return buffer->clear();
+        s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2564,6 +2616,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 俺の下でAGAKE 
+    {0x119d68, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25796A, "SLPS-25796"}},
     // D・N・ANGEL TV Animation Series ～紅の翼～
     {0x139f6c, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65368M_1, SLPM65368M_F, "SLPM-65368"}},
     {0x13a194, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65368M_2, SLPM65368M_F, "SLPM-65368"}},
