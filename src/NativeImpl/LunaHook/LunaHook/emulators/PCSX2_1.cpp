@@ -2427,17 +2427,17 @@ namespace
         SLPS25332_decode(dlg, tbl, out, 0);
         buffer->from(out);
     }
-    void SLPM65988char(hook_context *, HookParam *hp, TextBuffer *buffer, uintptr_t *)
+    template <int which, bool usesplit = false>
+    void SLPM65988char(hook_context *, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
+        static const wchar_t *whichx[] = {L"Yoshitsune", L"Futakoi_Alternative", L"Shounen_Onmyouji"};
+        static auto charset = load_charset_with_common(whichx[which]);
         auto code = (uint16_t)(PCSX2_REG_EMU(a0) & 0xffff);
-        if (code >= 0xff00)
-            return;
-        static auto charset = load_charset_with_common(L"Yoshitsune");
-        if (code >= charset.size())
-            return;
-        uint16_t ch = charset[code];
-        if (ch)
-            buffer->from_t(ch);
+        buffer->from_t(charset[code]);
+        if constexpr (usesplit)
+        {
+            *split = PCSX2_REG_EMU(v0);
+        }
     }
     void SLPS25621fff0(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
     {
@@ -2609,17 +2609,6 @@ namespace
         s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
         buffer->from(s);
     }
-    void SLPS25516char(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
-    {
-        // 0x1902d0/0x1974e0
-        auto code = PCSX2_REG_EMU(a0) & 0xffff;
-        if (code >= 0xdd2)
-            return buffer->clear();
-        static auto charset = load_charset_with_common(L"Futakoi_Alternative");
-        if (code >= charset.size() || !charset[code])
-            return buffer->clear();
-        buffer->from_t(charset[code]);
-    }
 }
 struct emfuncinfoX
 {
@@ -2627,8 +2616,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 少年陰陽師 翼よいま、天へ還れ
+    {0x1a4a40, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65988char<2, true>, 0, std::vector<const char *>{"SLPM-66729", "SLPM-66730"}}},
     // フタコイ オルタナティブ 恋と少女とマシンガン
-    {0x1902d0, {USING_CHAR | CODEC_UTF16, 0, 0, SLPS25516char, 0, "SLPS-25516"}},
+    {0x1902d0, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65988char<1>, 0, "SLPS-25516"}},
     // 俺の下でAGAKE
     {0x119d68, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25796A, "SLPS-25796"}},
     // D・N・ANGEL TV Animation Series ～紅の翼～
@@ -2649,9 +2640,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // EVE ~new generation~
     {0x10C7F0, {FULL_STRING | CODEC_UTF16, 0, 0, SLPM66338print, 0, "SLPM-66338"}},
     // 少女義経伝
-    {0x19ae64, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM65988char, 0, "SLPM-65363"}},
+    {0x19ae64, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM65988char<0>, 0, "SLPM-65363"}},
     // 少女義経伝・弐 ～刻を超える契り～
-    {0x1aa180, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM65988char, 0, "SLPM-65988"}},
+    {0x1aa180, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a0), 0, SLPM65988char<0>, 0, "SLPM-65988"}},
     // DEAR My SUN！！ ～ムスコ★育成★狂騒曲～
     {0x1dad5c, {FULL_STRING, PCSX2_REG_OFFSET(a0), 0, 0, SLPS25804, std::vector<const char *>{"SLPS-25804", "SLPS-25810"}}},
     {0x115fa0, {FULL_STRING, PCSX2_REG_OFFSET(a1), 0, 0, SLPS25804, std::vector<const char *>{"SLPS-25804", "SLPS-25810"}}},
