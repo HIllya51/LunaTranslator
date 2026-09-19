@@ -2498,7 +2498,7 @@ namespace
             out += EVENG_readstring(fontobj, textIdx);
         buffer->from(out);
     }
-    template<int idx>
+    template <int idx>
     void SLPM66219(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *split)
     {
         static const wchar_t *whichx[] = {L"Tennis_no_Oujisama_GakuenSai", L"Tennis_no_Oujisama_Mystic"};
@@ -2513,6 +2513,12 @@ namespace
         *split = FIXED_SPLIT_VALUE << idx;
         buffer->from_t(charset[code]);
     }
+    void DevilSummonerGlyph(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        uint32_t glyph = PCSX2_REG_EMU(a1) & 0xffff;
+        static auto charset = strReplace(strReplace(StringToWideString(LoadResData(L"DevilSummoner", L"CHARSET")), L"\r"), L"\n");
+        buffer->from_t(charset[glyph]);
+    }
 }
 struct emfuncinfoX
 {
@@ -2520,6 +2526,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // デビルサマナー 葛葉ライドウ対超力兵団
+    {0x17e928, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a1), 0, DevilSummonerGlyph, 0, "SLPM-66246"}},
+    // デビルサマナー 葛葉ライドウ 対 アバドン王 Plus
+    {0x193720, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a1), 0, DevilSummonerGlyph, 0, "SLPM-66679"}},
     // テニスの王子様 ドキドキサバイバル 山麓のMystic
     {0x15e1b0, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a3), 0, SLPM66219<1>, 0, "SLPM-66608"}},
     // テニスの王子様 ～学園祭の王子様～
