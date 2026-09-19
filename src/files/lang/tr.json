@@ -954,5 +954,6 @@
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载": "Unity TMP yazı tipi dosyası algılanmadı. Gömülü çeviri, oyun yazı tipini değiştirmek için bu dosyalara ihtiyaç duyar, lütfen indirmek için tıklayın.",
     "下载/解压失败": "İndirme/çıkarma başarısız oldu",
     "请手动下载并解压到软件目录下": "Lütfen manuel olarak indirip yazılım dizinine çıkarın.",
-    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity TMP yazı tipi dosyası algılanmadı. Gömülü çeviri, oyun yazı tipini değiştirmek için bu dosyalara ihtiyaç duyar. Lütfen indirmek için tıklayın:"
+    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity TMP yazı tipi dosyası algılanmadı. Gömülü çeviri, oyun yazı tipini değiştirmek için bu dosyalara ihtiyaç duyar. Lütfen indirmek için tıklayın:",
+    "插入": "Ekle"
 }

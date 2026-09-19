@@ -954,5 +954,6 @@
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载": "No se detectaron archivos de fuente TMP de Unity. La traducción integrada que modifica las fuentes del juego requiere estos archivos. Por favor, haga clic para descargarlos.",
     "下载/解压失败": "La descarga/extracción falló",
     "请手动下载并解压到软件目录下": "Por favor, descargue manualmente y descomprima en el directorio del software.",
-    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "No se detectaron archivos de fuente TMP de Unity. La traducción integrada necesita estos archivos para modificar la fuente del juego. Por favor, haga clic para descargar:"
+    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "No se detectaron archivos de fuente TMP de Unity. La traducción integrada necesita estos archivos para modificar la fuente del juego. Por favor, haga clic para descargar:",
+    "插入": "Insertar"
 }

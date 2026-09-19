@@ -709,12 +709,12 @@ class hookselect(closeashidewindow):
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
         self.userhook.returnPressed.connect(self.inserthook)
-        userhookinsert = getIconButton(icon="fa.plus", callback=self.inserthook)
+        userhookinsert = getIconButton(icon="fa.plus", callback=self.inserthook, tips="插入")
         self.searchtextlayout.addWidget(userhookinsert)
 
         self.searchtextlayout.addWidget(D_getdoclink("hooksettings.html#特殊码格式")())
 
-        self.userhookfind = getIconButton(icon="fa.search", callback=self.findhook)
+        self.userhookfind = getIconButton(icon="fa.search", callback=self.findhook, tips="搜索")
         self.searchtextlayout.addWidget(self.userhookfind)
         self.searchtextlayout.addWidget(__)
 

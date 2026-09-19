@@ -1254,10 +1254,10 @@ def getIconButton(
     return b
 
 
-def D_getdoclink(link):
+def D_getdoclink(link, tipsfor=""):
     return D_getIconButton(
         callback=lambda: os.startfile(dynamiclink(link, docs=True)),
-        tips="使用说明",
+        tips=((tipsfor + "_") if tipsfor else "") + "使用说明",
         icon="fa.question",
     )
 
@@ -1288,9 +1288,9 @@ def __mousefollowfunction(btn: "IconButton", functionorigin):
 
 
 def D_getIconButton_mousefollow(
-    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True
+    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True, tips=None
 ):
-    b = IconButton(icon, enable, qicon, fix=fix)
+    b = IconButton(icon, enable, qicon, fix=fix, tips=tips)
 
     if callback:
         b.clicked_1.connect(functools.partial(__mousefollowfunction, b, callback))
@@ -1491,10 +1491,12 @@ def _selectcolor(
     alpha=False,
     cantzeroalpha=False,
     default=None,
-    title=None
+    title=None,
 ):
 
-    color = getColor(QColor(configdict.get(configkey, default)), parent, alpha, title=title)
+    color = getColor(
+        QColor(configdict.get(configkey, default)), parent, alpha, title=title
+    )
     if not color.isValid():
         return
     if alpha and cantzeroalpha and (color.alpha() == 0):

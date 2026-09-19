@@ -954,5 +954,6 @@
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载": "Unity TMP font file not detected. Embedded translation requires these files to modify the game font. Please click to download.",
     "下载/解压失败": "Download/extraction failed.",
     "请手动下载并解压到软件目录下": "Please manually download and extract it to the software directory.",
-    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity TMP font file not detected. These files are required for embedded translation to modify the game font. Please click to download:"
+    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity TMP font file not detected. These files are required for embedded translation to modify the game font. Please click to download:",
+    "插入": "Insert"
 }

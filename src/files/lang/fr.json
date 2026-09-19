@@ -954,5 +954,6 @@
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载": "Fichier de police Unity TMP non détecté. La traduction intégrée nécessite ces fichiers pour modifier la police du jeu, veuillez cliquer pour télécharger.",
     "下载/解压失败": "Échec du téléchargement / de la décompression",
     "请手动下载并解压到软件目录下": "Veuillez télécharger manuellement et décompresser dans le répertoire du logiciel.",
-    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Fichier de police Unity TMP non détecté. La modification de la police du jeu par traduction intégrée nécessite ces fichiers, veuillez cliquer pour télécharger :"
+    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Fichier de police Unity TMP non détecté. La modification de la police du jeu par traduction intégrée nécessite ces fichiers, veuillez cliquer pour télécharger :",
+    "插入": "Insérer"
 }

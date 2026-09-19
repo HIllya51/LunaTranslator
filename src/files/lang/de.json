@@ -954,5 +954,6 @@
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载": "Unity-TMP-Schriftartdatei nicht erkannt. Für die Änderung der Spielschriftart durch eingebettete Übersetzung werden diese Dateien benötigt. Bitte klicken Sie zum Herunterladen.",
     "下载/解压失败": "Download/Entpacken fehlgeschlagen",
     "请手动下载并解压到软件目录下": "Bitte manuell herunterladen und in das Softwareverzeichnis entpacken.",
-    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity-TMP-Schriftdatei nicht erkannt. Für die Änderung der Spielschriftart durch eingebettete Übersetzung werden diese Dateien benötigt. Bitte zum Herunterladen klicken:"
+    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Unity-TMP-Schriftdatei nicht erkannt. Für die Änderung der Spielschriftart durch eingebettete Übersetzung werden diese Dateien benötigt. Bitte zum Herunterladen klicken:",
+    "插入": "Einfügen"
 }

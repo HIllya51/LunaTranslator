@@ -954,5 +954,6 @@
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载": "Nie wykryto plików czcionek Unity TMP. Wbudowane tłumaczenie wymaga tych plików do modyfikacji czcionek gry, kliknij, aby pobrać.",
     "下载/解压失败": "Pobieranie/rozpakowywanie nie powiodło się",
     "请手动下载并解压到软件目录下": "Proszę ręcznie pobrać i rozpakować do katalogu programu.",
-    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Nie wykryto plików czcionek Unity TMP. Osadzone tłumaczenie wymaga tych plików do modyfikacji czcionek gry, kliknij, aby pobrać:"
+    "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Nie wykryto plików czcionek Unity TMP. Osadzone tłumaczenie wymaga tych plików do modyfikacji czcionek gry, kliknij, aby pobrać:",
+    "插入": "Wstawić"
 }

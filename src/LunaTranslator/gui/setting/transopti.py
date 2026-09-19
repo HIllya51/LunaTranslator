@@ -111,7 +111,9 @@ def setTab7_lazy(self, basel: QLayout):
             continue
         if post == "_11":
             config = D_getIconButton(
-                callback=lambda: selectdebugfile("mypost.py"), icon="fa.edit"
+                callback=lambda: selectdebugfile("mypost.py"),
+                icon="fa.edit",
+                tips=postprocessconfig[post]["name"] + "_编辑",
             )
         else:
             if "args" in postprocessconfig[post]:
@@ -140,7 +142,10 @@ def setTab7_lazy(self, basel: QLayout):
                         600,
                         items,
                     )
-                config = D_getIconButton(callback=callback)
+                config = D_getIconButton(
+                    callback=callback,
+                    tips=postprocessconfig[post]["name"] + "_设置",
+                )
             else:
                 config = ""
 
@@ -148,15 +153,20 @@ def setTab7_lazy(self, basel: QLayout):
             callback=functools.partial(changerank, post, True, False, savescroll),
             icon="fa.arrow-up",
             callback2=functools.partial(changerank, post, True, True, savescroll),
+            tips=postprocessconfig[post]["name"] + "_上移",
         )
         button_down = D_getIconButton_mousefollow(
             callback=functools.partial(changerank, post, False, False, savescroll),
             icon="fa.arrow-down",
             callback2=functools.partial(changerank, post, False, True, savescroll),
+            tips=postprocessconfig[post]["name"] + "_下移",
         )
 
         l = [
-            D_getdoclink("textprocess.html#anchor-" + post),
+            D_getdoclink(
+                "textprocess.html#anchor-" + post,
+                tipsfor=postprocessconfig[post]["name"],
+            ),
             ((postprocessconfig[post]["name"]), 5),
             D_getsimpleswitch(postprocessconfig[post], "use"),
             config,
@@ -174,7 +184,7 @@ def setTab7_lazy(self, basel: QLayout):
         if checkpostlangmatch(name):
             grids2.append(
                 [
-                    D_getdoclink("transoptimi.html#anchor-" + name),
+                    D_getdoclink("transoptimi.html#anchor-" + name, tipsfor=visname),
                     ((visname), 5),
                     D_getsimpleswitch(globalconfig["transoptimi"], name),
                 ]
@@ -186,8 +196,10 @@ def setTab7_lazy(self, basel: QLayout):
 
             if setting:
                 kwarg = dict(callback=functools.partial(__, setting, self))
+                kwarg.update(tips=visname + "_设置")
                 if name == "myprocess":
                     kwarg.update(icon="fa.edit")
+                    kwarg.update(tips=visname + "_编辑")
                 grids2[-1].append(D_getIconButton(**kwarg))
     grids2 += [[("", 15)]]
 
