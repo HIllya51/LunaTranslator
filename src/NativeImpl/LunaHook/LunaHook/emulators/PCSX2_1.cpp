@@ -2212,7 +2212,7 @@ namespace
             2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  // 0x50-0x5f
             2, 2, 4, 4, 6, 6, 6, 4, 2, 2, 2, 2, 2, 2, 4, 4,  // 0x60-0x6f
             4, 4, 2, 4, 2, 2, 2, 6, 6, 2, 2, 6, 2, 6, 2, 1,  // 0x70-0x7f
-            2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,  // 0x80-0x8f
+            2, 2, 2, 2, 8, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,  // 0x80-0x8f
             4, 2, 2, 4, 2, 2, 4, 2, 4, 2, 2, 6, 6, 8, 4, 8,  // 0x90-0x9f
             2, 2, 2, 6, 2, 6, 2, 6, 4, 10, 6, 4, 6, 4, 6, 6, // 0xa0-0xaf
             2, 8, 2, 4, 2, 4, 2, 4, 2, 10, 6, 2, 6, 6, 6, 6, // 0xb0-0xbf
@@ -2221,7 +2221,7 @@ namespace
             2, 6, 1, 8, 8, 6, 2, 2, 2, 4, 2, 6, 4, 2, 2, 4,  // 0xe0-0xef
             2, 2, 2, 2, 2, 2, 4, 4, 4, 4, 6, 6, 2, 2, 2, 2   // 0xf0-0xff
         };
-        static const wchar_t *whichx[] = {L"Fragments_Blue", L"Hanayoi", L"Nanatsuiro", L"Shana", L"Kashimashi"};
+        static const wchar_t *whichx[] = {L"Fragments_Blue", L"Hanayoi", L"Nanatsuiro", L"Shana", L"Kashimashi", L"LittleAnchor"};
         static auto fb_charset = load_charset_with_common(whichx[which]);
         std::wstring out;
         while (true)
@@ -2237,20 +2237,15 @@ namespace
                 continue;
             } // newline
             if (v == 0xfff0)
-                break; // voice-line cmd, rest is not text
-            if (v == 0xff6e || v == 0xff6f || v == 0xff65)
-            {
-                ptr += 4;
-                continue;
-            }
-            if (v == 0xffbe || v == 0xffbf || v == 0xffbd || v == 0xffc1 || v == 0xffc2)
-            {
-                ptr += 6;
-                continue;
-            }
-            if (v == 0xffc0 || v == 0xff84)
-            {
-                ptr += 8;
+            { // voice cmd: fff0 <voice-id> <name/extra codes…> ffff <text…> — skip through the terminator
+                int k = 0;
+                const uint8_t *p = ptr + 4;
+                while (k < 64 && (p[0] | (p[1] << 8)) != 0xffff)
+                {
+                    k++;
+                    p += 2;
+                }
+                ptr += (k + 2) * 2;
                 continue;
             }
             if (v >= 0xff00)
@@ -2526,6 +2521,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // リトルアンカー
+    {0x1c2c60, {FULL_STRING | CODEC_UTF16, 0, 0, SLPS25868<5, 0x355934>, 0, "SLPS-25929"}},
     // デビルサマナー 葛葉ライドウ対超力兵団
     {0x17e928, {USING_CHAR | CODEC_UTF16, PCSX2_REG_OFFSET(a1), 0, DevilSummonerGlyph, 0, "SLPM-66246"}},
     // デビルサマナー 葛葉ライドウ 対 アバドン王 Plus
