@@ -2430,7 +2430,7 @@ namespace
     template <int which, bool usesplit = false>
     void SLPM65988char(hook_context *, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
-        static const wchar_t *whichx[] = {L"Yoshitsune", L"Futakoi_Alternative", L"Shounen_Onmyouji"};
+        static const wchar_t *whichx[] = {L"Yoshitsune", L"Futakoi_Alternative", L"Shounen_Onmyouji", L"Darling"};
         static auto charset = load_charset_with_common(whichx[which]);
         auto code = (uint16_t)(PCSX2_REG_EMU(a0) & 0xffff);
         buffer->from_t(charset[code]);
@@ -2609,6 +2609,52 @@ namespace
         s = re::sub(s, R"((\x81\x40)*\n(\x81\x40)*)");
         buffer->from(s);
     }
+    static std::wstring SLPM65886ReadFF(const uint8_t *ptr)
+    {
+        static auto charset = LoadResCharSet(L"Guisard_Revolution");
+        std::wstring out;
+        for (int guard = 0; guard < 1024; guard++)
+        {
+            uint8_t b = *ptr++;
+            if (b == 0xff)
+                break;    // 终止
+            if (b & 0x80) // 双字节字形码
+                out += charset[((b & 0x7f) << 8) | *ptr++];
+            else if (b == 4)
+                ptr++; // 颜色转义 0x8000+param
+            // 其他控制字节: 游戏跳过不画
+        }
+        return out;
+    }
+    void SLPM65886(hook_context *, HookParam *, TextBuffer *buffer, uintptr_t *)
+    {
+        uint32_t win = PCSX2_REG_EMU(a0) & 0xff;
+        uint32_t id = PCSX2_REG_EMU(a1) & 0xffff;
+        if (win > 7)
+            return buffer->clear();
+        auto ppool = (uint32_t *)emu_addr(0x40fe28 + win * 4);
+        if (!ppool)
+            return buffer->clear();
+        uint32_t pool = *ppool;
+        if (pool < 0x100000 || pool >= 0x2000000)
+            return buffer->clear();
+        auto poolp = (uint32_t *)emu_addr(pool);
+        if (!poolp)
+            return buffer->clear();
+        uint32_t tblOff = poolp[1];
+        uint32_t tblVA = pool + tblOff;
+        auto tbl = (uint32_t *)emu_addr(tblVA + id * 4);
+        if (!tbl)
+            return buffer->clear();
+        uint32_t textOff = *tbl;
+        auto ptr = (const uint8_t *)emu_addr(pool + textOff);
+        if (!ptr)
+            return buffer->clear();
+        auto s = SLPM65886ReadFF(ptr);
+        if (s.empty())
+            return buffer->clear();
+        buffer->from(s);
+    }
 }
 struct emfuncinfoX
 {
@@ -2616,6 +2662,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Darling Special Backlash ～恋のエキゾースト・ヒート～
+    {0x1890c0, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65988char<0>, 0, "SLPM-65653"}},
+    // ガイザード・レボリューション ～ 僕らは想いを身に纏う ～
+    {0x11ac90, {FULL_STRING | CODEC_UTF16, 0, 0, SLPM65886, 0, "SLPM-65886"}},
     // 少年陰陽師 翼よいま、天へ還れ
     {0x1a4a40, {USING_CHAR | CODEC_UTF16, 0, 0, SLPM65988char<2, true>, 0, std::vector<const char *>{"SLPM-66729", "SLPM-66730"}}},
     // フタコイ オルタナティブ 恋と少女とマシンガン
