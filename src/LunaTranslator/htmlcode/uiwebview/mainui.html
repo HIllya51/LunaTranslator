@@ -92,6 +92,10 @@
     .lunatranslator_rt [data-kana]::before {
         content: attr(data-kana);
     }
+
+    .lunatranslator_clickword {
+        background: var(--luna_word_bg);
+    }
 </style>
 <style id="tooltipstyle">
     .tooltip {
@@ -336,23 +340,6 @@
     }
 </script>
 <script>
-    // Keep CSS out of text selections, and remove it with its owning text.
-    const textStyles = new Map()
-    function appendTextStyle(ele, style) {
-        document.head.appendChild(style)
-        textStyles.set(style, ele)
-    }
-    new MutationObserver(() => {
-        for (const [style, ele] of textStyles) {
-            if (!ele.isConnected) {
-                style.remove()
-                textStyles.delete(style)
-            }
-        }
-    }).observe(document.getElementById('luna_root_div'), { childList: true, subtree: true })
-    function _simpleuid() {
-        return 'luna' + Math.random().toString(36).substr(2, 9);
-    }
     function maybesethtml(ele, args, text) {
         if (args.userawhtml) {
             ele.innerHTML = text
@@ -383,66 +370,69 @@
         ele.style.color = `var(--${args.color})`
         return ele
     }
-    function createyinyingstyle(styleargs, _id, color) {
+    function createyinyingrule(styleargs) {
         let ntimes = ""
         for (let i = 0; i < styleargs.shadowforce; i++) {
-            ntimes += `0px 0px calc(${styleargs.shadowR}em + ${styleargs.shadowR_ex}px) var(--${color})`
+            ntimes += `0px 0px calc(${styleargs.shadowR}em + ${styleargs.shadowR_ex}px) var(--luna_sc)`
             if (i == styleargs.shadowforce - 1)
                 ntimes += ";"
             else
                 ntimes += ","
         }
-        return `#${_id}{text-shadow:${ntimes}}`
+        return `.lunatranslator_ts_yinying{text-shadow:${ntimes}}`
     }
     function yinying_create_internal(styleargs, name, text, args) {
         let ele = createnameandtext(name, text, args)
         ele.style.color = `var(--YINYING_FILLCOLOR)`
-        let _id = _simpleuid()
-        ele.id = _id
-        let style = document.createElement('style')
-        style.innerHTML = createyinyingstyle(styleargs, _id, args.color)
-        style.classList.add('yinyingstyleklass')
-        style.setAttribute('__color', args.color)
-        style.setAttribute('__id', _id)
-        appendTextStyle(ele, style)
+        ele.classList.add('lunatranslator_ts_yinying')
+        ele.style.setProperty('--luna_sc', `var(--${args.color})`)
         return ele
     }
-    function createmiaobianstyle(styleargs, _id, color) {
+    function createmiaobianrule(styleargs) {
 
-        let c2 = `var(--${color})`
+        let c2 = `var(--luna_mb_color)`
         let c1 = `var(--miaobianfillcolor)`
         if (styleargs.reverse) {
             c2 = `var(--miaobianfillcolor)`
-            c1 = `var(--${color})`
+            c1 = `var(--luna_mb_color)`
         }
         //paint-order: stroke; 需要123,不再支持低版本webview2
-        return `#${_id} span{ 
+        return `.lunatranslator_ts_miaobian span{
         color: ${c2};
         -webkit-text-stroke: calc(${styleargs.width_rate}em + ${styleargs.width}px) ${c1};
-        paint-order: stroke; 
+        paint-order: stroke;
         }`
     }
     function miaobian12_common(styleargs, name, text, args) {
         let ele = document.createElement('span')
-        let _id = _simpleuid()
-        ele.id = _id
-        let style = document.createElement('style')
-        style.innerHTML = createmiaobianstyle(styleargs, _id, args.color)
-        style.setAttribute('__color', args.color)
-        style.setAttribute('__id', _id)
-        style.classList.add('miaobiaostyleklass')
-        appendTextStyle(ele, style)
+        ele.classList.add('lunatranslator_ts_miaobian')
+        ele.style.setProperty('--luna_mb_color', `var(--${args.color})`)
         let p = createnameandtext(name, text, args)
         ele.appendChild(p)
         return ele
-
     }
     regist_style_imp = {
         normal: normal_create_internal,
         yinying: yinying_create_internal,
         miaobian1: miaobian12_common,
     }
+    regist_style_rules = {
+        normal: (_) => "",
+        yinying: createyinyingrule,
+        miaobian1: createmiaobianrule,
+    }
+    const _textstyle_args = {}
+    function settextstylecontrol(style, styleargs) {
+        const key = JSON.stringify(styleargs)
+        if (_textstyle_args[style] && _textstyle_args[style].key === key) return
+        _textstyle_args[style] = { key: key, styleargs: styleargs }
+        let css = ''
+        for (const s in _textstyle_args)
+            css += regist_style_rules[s](_textstyle_args[s].styleargs)
+        document.getElementById('textstylecontrol').innerHTML = css
+    }
     function dispatch_text_style(style, styleargs, name, text, args) {
+        settextstylecontrol(style, styleargs)
         return regist_style_imp[style](styleargs, name, text, args)
     }
 </script>
@@ -460,6 +450,7 @@
 </style>
 <style id="maybeshowatcenter"></style>
 <style id="styleforfont"></style>
+<style id="textstylecontrol"></style>
 <style id="clickwordhover">
     :root {
         --clickwordhover: rgba(0, 0, 0, 0.5)
@@ -686,11 +677,11 @@
         let text = decodeURIComponent(textu)
         let div = document.getElementById(get_out_div(_id))
         div.dir = isRTL(text) ? 'rtl' : 'auto'
-        let innerele = dispatch_text_style(style, styleargs, name, text, args);
         let ele = document.getElementById(_id)
         if (clear)
             clearparent(ele)
         ele.innerHTML = ''
+        let innerele = dispatch_text_style(style, styleargs, name, text, args);
         ele.appendChild(innerele)
         drawBackgrounds()
         safe_calllunaheightchange()
@@ -861,13 +852,9 @@
                 return
             }
             eleori = makeinlineblock(eleori)//还是得用这个，没辙，不然：无法ruby-overhang:none，而且注音和文字有overlap。至于如果一个被注音文字很长，导致换行不正常的问题，暂时没办法了。
-            let uid = _simpleuid()
             let mark = document.createElement('mark')
             mark.appendChild(eleori)
             eleori = mark
-            eleori.classList.add(uid)
-            let style1 = document.createElement('style')
-            style1.innerHTML += `.${uid} {background: var(--${word.color}); } `
 
             eleori.setAttribute('word', JSON.stringify(word))
             eleori.addEventListener('click', function (e) {
@@ -890,7 +877,7 @@
             if (word.specialinfo)
                 eleori.classList.add('lunatranslator_clickword_force')
             eleori.classList.add('lunatranslator_clickword')
-            appendTextStyle(eleori, style1)
+            eleori.style.setProperty('--luna_word_bg', `var(--${word.color})`)
 
             if ((word.word != word.kana) && word.kana && (!word.hidekana) && (word.kana.trim().length)) {
 
@@ -1053,23 +1040,11 @@
         safe_calllunaheightchange()
     }
     function yinying_dynamic(styleargs) {
-        document.querySelectorAll('.yinyingstyleklass').forEach(
-            (ele) => {
-                let __color = ele.getAttribute('__color')
-                let __id = ele.getAttribute('__id')
-                ele.innerHTML = createyinyingstyle(styleargs, __id, __color)
-            }
-        )
+        settextstylecontrol('yinying', styleargs)
         return `--YINYING_FILLCOLOR:${styleargs.fillcolor};`
     }
     function miaobian12_dynamic(styleargs) {
-        document.querySelectorAll('.miaobiaostyleklass').forEach(
-            (ele) => {
-                let __color = ele.getAttribute('__color')
-                let __id = ele.getAttribute('__id')
-                ele.innerHTML = createmiaobianstyle(styleargs, __id, __color)
-            }
-        )
+        settextstylecontrol('miaobian1', styleargs)
         return `--miaobianfillcolor:${styleargs.fillcolor};`
     }
     regist_style_dynamic = {
