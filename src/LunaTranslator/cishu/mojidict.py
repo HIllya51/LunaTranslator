@@ -493,7 +493,7 @@ style = r"""
 """
 
 
-class mojidict(cishubase):
+class Cishu(cishubase):
     def mojiclicksearch(self, word):
 
         headers = {

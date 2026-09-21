@@ -18,7 +18,7 @@ namespace rpc
 
 #define RPC_TABLE(X)                                                  \
 	/* ---- host -> hook (commands) ---- */                           \
-	X(NewHook, void(HookParam))                                       \
+	X(InsertHook, void(std::wstring))                                 \
 	X(RemoveHook, void(uint64_t))                                     \
 	X(FindHook, void(SearchParam))                                    \
 	X(Detach, void())                                                 \
@@ -29,7 +29,7 @@ namespace rpc
 	/* ---- hook -> host (notifications) ---- */                      \
 	X(NotifyText, void(HOSTINFO, UINT, std::string))                  \
 	X(NotifyTextW, void(HOSTINFO, std::wstring))                      \
-	X(NotifyHookFound, void(HookParam, RpcBlob))                      \
+	X(NotifyHookFound, void(std::wstring, std::wstring))              \
 	X(NotifyHookRemoved, void(uint64_t))                              \
 	X(NotifyHookInserting, void(uint64_t, std::wstring))              \
 	X(NotifyEmuGameInfo, void(std::string, std::string, std::string)) \
@@ -161,7 +161,7 @@ namespace rpc
 		static std::array<Handler, (size_t)Id::COUNT> r;
 		return r;
 	}
-	inline uint32_t dispatch(const BYTE *msg, uint32_t total, DWORD ctx=0)
+	inline uint32_t dispatch(const BYTE *msg, uint32_t total, DWORD ctx = 0)
 	{
 		Header h;
 		memcpy(&h, msg, sizeof(Header));
@@ -221,9 +221,13 @@ namespace rpc
 		};
 
 		template <class Sig>
-		struct is_single_blob : std::false_type {};
+		struct is_single_blob : std::false_type
+		{
+		};
 		template <class A>
-		struct is_single_blob<void(A)> : std::is_same<A, RpcBlob> {};
+		struct is_single_blob<void(A)> : std::is_same<A, RpcBlob>
+		{
+		};
 
 		template <class Sig, class F>
 		struct make_handler;

@@ -1,7 +1,5 @@
 #include "host.h"
 #include "lunarpc.h"
-#define HOOK_SEARCH_LENGTH STRING
-// #define HOOK_SEARCH_LENGTH 0
 using rpc::RpcBlob;
 namespace
 {
@@ -123,6 +121,40 @@ namespace
 		size = -1;
 		WriteFile(hostPipe, &size, 4, &count, nullptr);
 	}
+	template <typename T>
+	void EmbedParser(const T &thread, const ThreadParam &tp, const size_t length, const void *data)
+	{
+		auto &thp = thread->second.hp;
+		if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
+			return;
+		auto isEmbedClearText = [&]()
+		{
+			__try
+			{
+				auto sm = Host::GetCommonSharedMem(tp.processId);
+				if (!sm)
+					return true;
+				if (sm->clearText)
+					return true;
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+			}
+			return false;
+		}();
+		if (isEmbedClearText)
+			return;
+		auto codepage = thp.codepage ? thp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
+		if (thp.isAscii() && !codepage)
+			return;
+		auto t = commonparsestring(data, length, &thp, codepage);
+		if (!t)
+			return;
+		auto text = t.value();
+		if (text.empty())
+			return;
+		embedcallback(text, tp);
+	}
 	void registerHostRpcHandlers()
 	{
 		rpc::on_ctx<rpc::Id::NotifyPreparedOK>([](DWORD pid)
@@ -133,42 +165,33 @@ namespace
 			auto ret = WideStringToString(i18nQueryCallback(StringToWideString(key)).value_or(L""));
 			processRecordsByIds->at(pid).Send_no_wait<rpc::Id::RespondI18N>(enum_, ret); });
 
-		rpc::on_ctx<rpc::Id::NotifyHookFound>([](DWORD pid, HookParam hp, RpcBlob text)
+		rpc::on_ctx<rpc::Id::NotifyHookFound>([](DWORD pid, std::wstring hcode, std::wstring str)
 											  {
 			auto OnHookFound = processRecordsByIds->at(pid).OnHookFound;
-			auto info_text = (wchar_t *)text.data;
-			std::wstring wide = info_text;
-			if (wide.size() > HOOK_SEARCH_LENGTH)
-			{
-				wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, pid).c_str());
-				OnHookFound(hp, std::move(wide));
-			}
-			if (!(hp.type & CSHARP_STRING))
-			{
-				hp.type &= ~CODEC_UTF16;
-				if (auto converted = StringToWideString((char *)info_text, hp.codepage))
-					if (converted->size() > HOOK_SEARCH_LENGTH)
-					{
-						wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, pid).c_str());
-						OnHookFound(hp, std::move(converted.value()));
-					}
-				if (auto converted = StringToWideString((char *)info_text, hp.codepage = CP_UTF8))
-					if (converted->size() > HOOK_SEARCH_LENGTH)
-					{
-						wcscpy_s(hp.hookcode, HOOKCODE_LEN, HookCode::Generate(hp, pid).c_str());
-						OnHookFound(hp, std::move(converted.value()));
-					}
-			} });
+			OnHookFound(hcode, str); });
 
-		rpc::on_ctx<rpc::Id::NotifyHookRemoved>([](DWORD pid, uint64_t address)
-												{
-			auto sm = Host::GetCommonSharedMem(pid);
-			if (!sm)return;
-			for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
-				if (sm->embedtps[i].use && (sm->embedtps[i].tp.addr == address) && (sm->embedtps[i].tp.processId == pid))
-					ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
-		RemoveThreads([&](ThreadParam tp)
-						{ return tp.processId == pid && tp.addr == address; }); });
+		auto hookremoved = [](DWORD pid, uint64_t address)
+		{
+			__try
+			{
+				auto sm = Host::GetCommonSharedMem(pid);
+				if (!sm)
+					return;
+				for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+					if (sm->embedtps[i].use && (sm->embedtps[i].tp.addr == address) && (sm->embedtps[i].tp.processId == pid))
+						ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+				printf("error in NotifyHookRemoved\n");
+			}
+			[&]()
+			{
+				RemoveThreads([&](ThreadParam tp)
+							  { return tp.processId == pid && tp.addr == address; });
+			}();
+		};
+		rpc::on_ctx<rpc::Id::NotifyHookRemoved>(hookremoved);
 
 		rpc::on_ctx<rpc::Id::NotifyHookInserting>(HookInsert);
 
@@ -212,24 +235,7 @@ namespace
 				processRecordsByIds->at(pid).Send<rpc::Id::SetDetectedCodepage>(codepage.value(), hp.address);
 			thread->second.Push(data->data, length);
 
-			auto &thp = thread->second.hp;
-			if (!(thp.type & EMBED_ABLE && Host::CheckIsUsingEmbed(thread->second.tp)))
-				return;
-			auto sm = Host::GetCommonSharedMem(tp.processId);
-			if (!sm)
-				return;
-			if (sm->clearText)
-				return;
-			auto codepage = thp.codepage ? thp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
-			if (thp.isAscii() && !codepage)
-				return;
-			auto t = commonparsestring(data->data, length, &thp, codepage);
-			if (!t)
-				return;
-			auto text = t.value();
-			if (text.empty())
-				return;
-			embedcallback(text, tp);
+			EmbedParser(thread, tp, length, data->data);
 		};
 		rpc::on_ctx<rpc::Id::OutputText>(on_outputtext);
 	}
@@ -367,13 +373,13 @@ namespace Host
 			return;
 		found->second.Send<rpc::Id::InsertPCHooks>(which);
 	}
-	void InsertHook(DWORD processId, HookParam hp)
+	void InsertHook(DWORD processId, const std::wstring &hcode)
 	{
 		auto &prs = processRecordsByIds.Acquire().contents;
 		auto found = prs.find(processId);
 		if (found == prs.end())
 			return;
-		found->second.Send<rpc::Id::NewHook>(hp);
+		found->second.Send<rpc::Id::InsertHook>(hcode);
 	}
 
 	void RemoveHook(DWORD processId, uint64_t address)
@@ -456,7 +462,7 @@ namespace Host
 			return;
 		case HOSTINFO::Warning:
 		case HOSTINFO::EmuWarning:
-			OnHostInfo(HOSTINFO::Console, FormatString(L"[%s]", TR[T_WARNING]) + text);
+			OnHostInfo(HOSTINFO::Console, FormatString(L"[%s] %s", TR[T_WARNING], text.c_str()));
 			break;
 		default:
 
@@ -465,14 +471,22 @@ namespace Host
 	}
 	bool CheckIsUsingEmbed(ThreadParam tp)
 	{
-		auto sm = Host::GetCommonSharedMem(tp.processId);
-		if (!sm)
-			return false;
-		for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+		__try
 		{
-			if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))
-				return true;
+			auto sm = Host::GetCommonSharedMem(tp.processId);
+			if (!sm)
+				return false;
+			for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+			{
+				if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))
+					return true;
+			}
+			return false;
 		}
-		return false;
+		__except (EXCEPTION_EXECUTE_HANDLER)
+		{
+			printf("error in CheckIsUsingEmbed\n");
+			return false;
+		}
 	}
 }

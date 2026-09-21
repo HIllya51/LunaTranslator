@@ -24,7 +24,7 @@ typedef void (*HookInsertHandler)(DWORD pid, uint64_t address, const wchar_t *ho
 typedef void (*EmbedCallback)(const wchar_t *text, ThreadParam);
 typedef void (*EmuGameInfoCallback)(const wchar_t *id, const wchar_t *title, const wchar_t *version);
 typedef wchar_t *(*I18NQueryCallback)(const wchar_t *text);
-typedef void (*findhookcallback_t)(wchar_t *hookcode, const wchar_t *text);
+typedef void (*findhookcallback_t)(const wchar_t *hookcode, const wchar_t *text);
 
 C_LUNA_API void Luna_Start(ProcessEvent Connect, ProcessEvent Disconnect, ThreadEvent_maybe_embed Create, ThreadEvent Destroy, OutputCallback Output, HostInfoHandler hostinfo, HookInsertHandler hookinsert, EmbedCallback embed, I18NQueryCallback i18nQueryCallback, EmuGameInfoCallback emuGameInfoCallback)
 {
@@ -82,19 +82,26 @@ C_LUNA_API void Luna_Settings(int flushDelay, int defaultCodepage, int maxBuffer
 }
 C_LUNA_API void Luna_SettingsEx(DWORD pid, UINT32 waittime, UINT8 fontCharSet, bool fontCharSetEnabled, wchar_t *fontFamily, Displaymode displaymode, bool fastskipignore, bool clearText, bool changeFontSize, float FontSizeRelative, bool tryvehhook, const wchar_t *unityfontdir)
 {
-    auto sm = Host::GetCommonSharedMem(pid);
-    if (!sm)
-        return;
-    sm->waittime = waittime;
-    sm->fontCharSet = fontCharSet;
-    sm->fontCharSetEnabled = fontCharSetEnabled;
-    wcscpy_s(sm->fontFamily, ARRAYSIZE(sm->fontFamily), fontFamily);
-    sm->displaymode = displaymode;
-    sm->fastskipignore = fastskipignore;
-    sm->clearText = clearText;
-    sm->FontSizeRelative = changeFontSize ? FontSizeRelative : 1.;
-    sm->tryvehhook = tryvehhook;
-    wcscpy_s(sm->unityfontdir, ARRAYSIZE(sm->unityfontdir), unityfontdir);
+    __try
+    {
+        auto sm = Host::GetCommonSharedMem(pid);
+        if (!sm)
+            return;
+        sm->waittime = waittime;
+        sm->fontCharSet = fontCharSet;
+        sm->fontCharSetEnabled = fontCharSetEnabled;
+        wcscpy_s(sm->fontFamily, ARRAYSIZE(sm->fontFamily), fontFamily);
+        sm->displaymode = displaymode;
+        sm->fastskipignore = fastskipignore;
+        sm->clearText = clearText;
+        sm->FontSizeRelative = changeFontSize ? FontSizeRelative : 1.;
+        sm->tryvehhook = tryvehhook;
+        wcscpy_s(sm->unityfontdir, ARRAYSIZE(sm->unityfontdir), unityfontdir);
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        printf("error in Luna_SettingsEx\n");
+    }
 }
 C_LUNA_API void Luna_ResetLang()
 {
@@ -104,12 +111,9 @@ C_LUNA_API void Luna_InsertPCHooks(DWORD pid, int which)
 {
     Host::InsertPCHooks(pid, which);
 }
-C_LUNA_API bool Luna_InsertHookCode(DWORD pid, LPCWSTR hookcode)
+C_LUNA_API void Luna_InsertHookCode(DWORD pid, LPCWSTR hookcode)
 {
-    auto hp = HookCode::Parse(hookcode);
-    if (hp)
-        Host::InsertHook(pid, hp.value());
-    return hp.has_value();
+    Host::InsertHook(pid, hookcode);
 }
 C_LUNA_API void Luna_QueryThreadHistory(ThreadParam tp, bool latest, void (*callback)(const wchar_t *))
 {
@@ -124,11 +128,8 @@ C_LUNA_API void Luna_RemoveHook(DWORD pid, uint64_t addr)
 }
 C_LUNA_API void Luna_FindHooks(DWORD pid, SearchParam sp, findhookcallback_t findhookcallback, LPCWSTR addresses)
 {
-    Host::FindHooks(pid, sp, [=](HookParam hp, std::wstring text)
-                    {
-                            wchar_t hookcode[HOOKCODE_LEN];
-                            wcscpy_s(hookcode,HOOKCODE_LEN, hp.hookcode);
-                            findhookcallback(hookcode,text.c_str()); }, addresses);
+    Host::FindHooks(pid, sp, [=](const std::wstring &hcode, const std::wstring &text)
+                    { findhookcallback(hcode.c_str(), text.c_str()); }, addresses);
 }
 C_LUNA_API bool Luna_CheckIsUsingEmbed(ThreadParam tp)
 {
@@ -136,38 +137,56 @@ C_LUNA_API bool Luna_CheckIsUsingEmbed(ThreadParam tp)
 }
 C_LUNA_API void Luna_UseEmbed(ThreadParam tp, bool use)
 {
-    auto sm = Host::GetCommonSharedMem(tp.processId);
-    if (!sm)
-        return;
-    sm->codepage = Host::defaultCodepage;
-    for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+    __try
     {
-        if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))
-            if (!use)
-                ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
-    }
-    if (use)
+        auto sm = Host::GetCommonSharedMem(tp.processId);
+        if (!sm)
+            return;
+        sm->codepage = Host::defaultCodepage;
         for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
         {
-            if (!sm->embedtps[i].use)
-            {
-                sm->embedtps[i].use = true;
-                sm->embedtps[i].tp = tp;
-                break;
-            }
+            if (sm->embedtps[i].use && (sm->embedtps[i].tp == tp))
+                if (!use)
+                    ZeroMemory(sm->embedtps + i, sizeof(sm->embedtps[i]));
         }
+        if (use)
+            for (int i = 0; i < ARRAYSIZE(sm->embedtps); i++)
+            {
+                if (!sm->embedtps[i].use)
+                {
+                    sm->embedtps[i].use = true;
+                    sm->embedtps[i].tp = tp;
+                    break;
+                }
+            }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        printf("error in Luna_UseEmbed\n");
+    }
 }
 
 C_LUNA_API void Luna_EmbedCallback(ThreadParam tp, LPCWSTR text, LPCWSTR trans)
 {
-    auto sm = Host::GetCommonSharedMem(tp.processId);
-    if (!sm)
+    __try
+    {
+        auto sm = Host::GetCommonSharedMem(tp.processId);
+        if (!sm)
+            return;
+        wcsncpy_s(sm->text, ARRAYSIZE(sm->text), trans, ARRAYSIZE(sm->text));
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        printf("error in Luna_EmbedCallback\n");
         return;
-    wcsncpy_s(sm->text, ARRAYSIZE(sm->text), trans, ARRAYSIZE(sm->text));
-    char eventname[1000];
-    sprintf(eventname, LUNA_EMBED_notify_event, tp.processId, simplehash::djb2_n2((const unsigned char *)(text), wcslen(text) * 2));
-    win_event event1(eventname);
-    event1.signal(true);
+    }
+    [&]()
+    {
+        char eventname[1000];
+        sprintf(eventname, LUNA_EMBED_notify_event, tp.processId, simplehash::djb2_n2((const unsigned char *)(text), wcslen(text) * 2));
+        win_event event1(eventname);
+        event1.signal(true);
+    }();
 }
 
 C_LUNA_API void Luna_SyncThread(ThreadParam tp, bool sync)

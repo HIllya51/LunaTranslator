@@ -4,7 +4,7 @@ from myutils.utils import simplehtmlparser_all, simplehtmlparser, localcachehelp
 import re, threading
 
 
-class weblio(cishubase):
+class Cishu(cishubase):
     backgroundparser = """
             document.querySelectorAll('.lunawb').forEach((ele) => {
                 ele.style.backgroundColor = {color}

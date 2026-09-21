@@ -3,7 +3,7 @@ from cishu.cishubase import cishubase
 from myutils.utils import get_element_by, simplehtmlparser_all, localcachehelper
 
 
-class jisho(cishubase):
+class Cishu(cishubase):
     backgroundparser = "document.querySelectorAll('.lunajisho').forEach((ele) => { ele.style.backgroundColor = {color} });"
 
     def init(self):

@@ -3,7 +3,7 @@ from myutils.utils import get_element_by, localcachehelper
 import re
 
 
-class japandict(cishubase):
+class Cishu(cishubase):
     backgroundparser = """document.querySelectorAll('.lunajpdc').forEach((ele) => {
                 ele.style.backgroundColor = {color}
                 ele.querySelectorAll('.list-group-item').forEach((ele) => {

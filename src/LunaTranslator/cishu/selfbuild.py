@@ -3,7 +3,7 @@ import gobject
 from cishu.cishubase import cishubase
 
 
-class selfbuild(cishubase):
+class Cishu(cishubase):
     def __init__(self, *a):
         self.internal = None
         self.__lastm = None

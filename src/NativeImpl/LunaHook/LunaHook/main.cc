@@ -2,7 +2,6 @@
 #include "MinHook.h"
 #include "lunarpc.h"
 #include "../../fileversion.hpp"
-using rpc::RpcBlob;
 void HIJACK();
 void detachall();
 #if EMUADD_MAP_MULTI
@@ -19,14 +18,62 @@ WinMutex viewMutex;
 CommonSharedMem *commonsharedmem;
 std::vector<std::wstring> checkFileHelperVector;
 Synchronized<std::map<uint32_t, std::pair<std::string, HookParam>>> delayinserthook;
+AutoHandle<> hookPipe = INVALID_HANDLE_VALUE;
 namespace
 {
-	AutoHandle<> hookPipe = INVALID_HANDLE_VALUE,
-				 mappedFile = INVALID_HANDLE_VALUE,
+	AutoHandle<> mappedFile = INVALID_HANDLE_VALUE,
 				 mappedFile3 = INVALID_HANDLE_VALUE;
 	TextHook (*hooks)[MAX_HOOK];
 	int currentHook = 0;
 }
+
+namespace Msg
+{
+#define vhostinfoA(_type, cp)                                                        \
+	{                                                                                \
+		va_list args;                                                                \
+		va_start(args, text);                                                        \
+		char buf[MESSAGE_SIZE];                                                      \
+		vsnprintf(buf, MESSAGE_SIZE, text, args);                                    \
+		va_end(args);                                                                \
+		rpc::call<rpc::Id::NotifyText>(hookPipe, _type, (UINT)cp, std::string(buf)); \
+	}
+
+#define vhostinfoW(_type)                                                    \
+	{                                                                        \
+		va_list args;                                                        \
+		va_start(args, text);                                                \
+		wchar_t buf[MESSAGE_SIZE];                                           \
+		_vsnwprintf_s(buf, MESSAGE_SIZE, _TRUNCATE, text, args);             \
+		va_end(args);                                                        \
+		rpc::call<rpc::Id::NotifyTextW>(hookPipe, _type, std::wstring(buf)); \
+	}
+
+#define definefunction(funcname, type)             \
+	template <>                                    \
+	void funcname<char>(LPCSTR text, ...)          \
+		vhostinfoA(type, CP_UTF8);                 \
+	template <>                                    \
+	void funcname<wchar_t>(LPCWSTR text, ...)      \
+		vhostinfoW(type);                          \
+	void funcname(UINT codepage, LPCSTR text, ...) \
+		vhostinfoA(type, codepage);
+
+	definefunction(Log, HOSTINFO::Console);
+	definefunction(Warning, HOSTINFO::Warning);
+	definefunction(EmuConnected, HOSTINFO::EmuConnected);
+	definefunction(EmuWarning, HOSTINFO::EmuWarning);
+	definefunction(EngineType, HOSTINFO::EngineType);
+	void EmuGameInfo(const char *id, const char *title, const char *version)
+	{
+		rpc::call<rpc::Id::NotifyEmuGameInfo>(hookPipe, std::string(id), std::string(title), std::string(version ? version : ""));
+	}
+
+#undef definefunction
+#undef vhostinfoW
+#undef vhostinfoA
+}
+
 void Send_I18N_Keys()
 {
 	for (auto &[_en, data] : TR.get_hook())
@@ -38,10 +85,15 @@ void registerHookRpcHandlers()
 {
 	rpc::on<rpc::Id::RespondI18N>([](LANG_STRINGS_HOOK enum_, std::string result)
 								  { TR.get_hook()[enum_].set(std::move(result)); });
-	rpc::on<rpc::Id::NewHook>([](HookParam hp)
-							  {
+	auto insertnewhook = [](std::wstring hcode)
+	{
 		static int userHooks = 0;
-		NewHook(hp, ("UserHook" + std::to_string(userHooks += 1)).c_str()); });
+		if (auto hp = HookCode::Parse(hcode))
+			NewHook(hp.value(), ("UserHook" + std::to_string(userHooks += 1)).c_str());
+		else
+			Msg::Warning(TR[INVALIDHOOKCODE]);
+	};
+	rpc::on<rpc::Id::InsertHook>(insertnewhook);
 	rpc::on<rpc::Id::InsertPCHooks>([](int which)
 									{
 		if (which == 0)
@@ -163,89 +215,9 @@ void TextOutput(const ThreadParam &tp, const HookParam &hp, TextOutput_T *buffer
 		return;
 	buffer->tp = tp;
 	buffer->hp = hp;
-	rpc::call<rpc::Id::OutputText>(hookPipe, RpcBlob{(BYTE *)buffer, (uint32_t)(sizeof(TextOutput_T) + len)});
+	rpc::call<rpc::Id::OutputText>(hookPipe, rpc::RpcBlob{(BYTE *)buffer, (uint32_t)(sizeof(TextOutput_T) + len)});
 }
 
-namespace Msg
-{
-#define vhostinfoA(_type, cp)                                                        \
-	{                                                                                \
-		va_list args;                                                                \
-		va_start(args, text);                                                        \
-		char buf[MESSAGE_SIZE];                                                      \
-		vsnprintf(buf, MESSAGE_SIZE, text, args);                                    \
-		va_end(args);                                                                \
-		rpc::call<rpc::Id::NotifyText>(hookPipe, _type, (UINT)cp, std::string(buf)); \
-	}
-
-#define vhostinfoW(_type)                                                    \
-	{                                                                        \
-		va_list args;                                                        \
-		va_start(args, text);                                                \
-		wchar_t buf[MESSAGE_SIZE];                                           \
-		_vsnwprintf_s(buf, MESSAGE_SIZE, _TRUNCATE, text, args);             \
-		va_end(args);                                                        \
-		rpc::call<rpc::Id::NotifyTextW>(hookPipe, _type, std::wstring(buf)); \
-	}
-
-#define definefunction(funcname, type)             \
-	template <>                                    \
-	void funcname<char>(LPCSTR text, ...)          \
-		vhostinfoA(type, CP_UTF8);                 \
-	template <>                                    \
-	void funcname<wchar_t>(LPCWSTR text, ...)      \
-		vhostinfoW(type);                          \
-	void funcname(UINT codepage, LPCSTR text, ...) \
-		vhostinfoA(type, codepage);
-
-	definefunction(Log, HOSTINFO::Console);
-	definefunction(Warning, HOSTINFO::Warning);
-	definefunction(EmuConnected, HOSTINFO::EmuConnected);
-	definefunction(EmuWarning, HOSTINFO::EmuWarning);
-	definefunction(EngineType, HOSTINFO::EngineType);
-	void EmuGameInfo(const char *id, const char *title, const char *version)
-	{
-		rpc::call<rpc::Id::NotifyEmuGameInfo>(hookPipe, std::string(id), std::string(title), std::string(version ? version : ""));
-	}
-
-#undef definefunction
-#undef vhostinfoW
-#undef vhostinfoA
-}
-Synchronized<std::unordered_map<uintptr_t, std::wstring>> modulecache;
-std::wstring &querymodule(uintptr_t addr)
-{
-	auto &re = modulecache.Acquire().contents;
-	auto found = re.find(addr);
-	if (found != re.end())
-		return found->second;
-	WCHAR fn[MAX_PATH];
-	if (GetModuleFileNameW((HMODULE)addr, fn, MAX_PATH))
-	{
-		re[addr] = wcsrchr(fn, L'\\') + 1;
-	}
-	else
-	{
-		re[addr] = L"";
-	}
-	return re[addr];
-}
-void NotifyHookFound(HookParam hp, wchar_t *text)
-{
-	if (hp.jittype == JITTYPE::PC)
-		if (!(hp.type & MODULE_OFFSET))
-			if (MEMORY_BASIC_INFORMATION info = {}; VirtualQuery((LPCVOID)hp.address, &info, sizeof(info)))
-			{
-				auto mm = querymodule((uintptr_t)info.AllocationBase);
-				if (mm.size())
-				{
-					hp.type |= MODULE_OFFSET;
-					hp.address -= (uint64_t)info.AllocationBase;
-					wcsncpy_s(hp.module, mm.c_str(), MAX_MODULE_SIZE - 1);
-				}
-			}
-	rpc::call<rpc::Id::NotifyHookFound>(hookPipe, hp, RpcBlob{(BYTE *)text, (uint32_t)((wcslen(text) + 1) * sizeof(wchar_t))});
-}
 void NotifyHookRemove(uint64_t addr, LPCSTR name)
 {
 	if (name)

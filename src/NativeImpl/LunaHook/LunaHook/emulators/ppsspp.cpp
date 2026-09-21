@@ -319,23 +319,20 @@ namespace ppsspp
         auto op = found->second;
 #ifndef _WIN64
         BYTE sig[] = {
-            0x8b,
-            XX2, // mov reg,[ebp-off]
-            0x8b,
-            0xc6, // mov eax,esi
-            0x25,
-            0xff,
-            0xff,
-            0xff,
-            0x3f, // and eax,0x3fffffff
-            0x89,
-            XX,
-            XX4, // mov [eax+base+off],reg
-
+            0x8b, XX2,                    // mov reg,[ebp-off]
+            0x8b, 0xc6,                   // mov eax,esi
+            0x25, 0xff, 0xff, 0xff, 0x3f, // and eax,0x3fffffff
+            0x89, XX, XX4                 // mov [eax+base+off],reg
         };
-        auto findbase = MemDbg::findBytes(sig, sizeof(sig), ret, ret + 0x20);
+        BYTE sig2[] = {
+            0x8b, XX2,                    // mov reg,[ebp-off]
+            0x8b, 0xc1,                   // mov eax,esi
+            0x25, 0xff, 0xff, 0xff, 0x3f, // and eax,0x3fffffff
+            0x8b, XX, XX4                 // mov [eax+base+off],reg
+        };
+        auto findbase = MemDbg::findBytes(sig, sizeof(sig), ret, ret + 0x40);
         if (!findbase)
-            findbase = MemDbg::findBytes(sig, sizeof(sig), ret - 0x1000, ret + 0x1000);
+            findbase = MemDbg::findBytes(sig2, sizeof(sig2), ret, ret + 0x40);
         if (!findbase)
             Msg::Log("can't find emu_baseaddr");
         PPSSPP::x86_baseaddr = (*(DWORD *)(findbase + 12)) & 0xffff0000;

@@ -4,7 +4,7 @@ from myutils.utils import get_element_by, simplehtmlparser, simplehtmlparser_all
 from language import Languages
 
 
-class youdao(cishubase):
+class Cishu(cishubase):
     backgroundparser = "document.querySelectorAll('*').forEach((ele) => {ele.style.backgroundColor = {color}});"
 
     def search(self, word: str):

@@ -3,7 +3,7 @@ from myutils.utils import simplehtmlparser, localcachehelper, simplehtmlparser_a
 import re
 
 
-class jpdb(cishubase):
+class Cishu(cishubase):
     backgroundparser = "document.querySelectorAll('.lunajpdb').forEach((ele) => { ele.style.backgroundColor = {color} });"
 
     def init(self):

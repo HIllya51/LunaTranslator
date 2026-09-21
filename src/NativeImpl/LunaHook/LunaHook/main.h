@@ -40,6 +40,7 @@ extern std::mutex maplock;
 
 extern std::vector<HookParam> JIT_HP_Records;
 extern std::mutex JIT_HP_Records_lock;
+extern AutoHandle<> hookPipe;
 void jitaddraddr(uint32_t em_addr, uintptr_t jitaddr, JITTYPE);
 void jitaddrclear();
 

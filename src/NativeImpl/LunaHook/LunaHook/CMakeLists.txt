@@ -16,6 +16,7 @@ target_precompile_headers(pchhook PUBLIC pchhook.h)
 
 set(texthook_src
 		main.cc
+		hookcode.cpp
 		texthook.cc
 		hookfinder.cc
 		${enginessrc}

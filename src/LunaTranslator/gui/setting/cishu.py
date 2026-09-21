@@ -415,14 +415,7 @@ def _headercishubuttons(self):
     w = QWidget()
     lay = QHBoxLayout(w)
     lay.setContentsMargins(0, 0, 0, 0)
-    btns = [
-        D_getdoclink("internaldict.html")(),
-        D_getIconButton(
-            callback=functools.partial(_opencommunitycishu, self),
-            icon="fa.download",
-            tips="社区辞书",
-        )(),
-    ]
+    btns = [D_getdoclink("internaldict.html")()]
     for b in btns:
         lay.addWidget(b)
 

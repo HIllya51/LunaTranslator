@@ -835,13 +835,15 @@ class hookselect(closeashidewindow):
 
     def opensolvetext(self):
         try:
-            dialog_setting_game(self, gobject.base.gameuid, 3)
+            if gobject.base.gameuid:
+                dialog_setting_game(self, gobject.base.gameuid, 3)
         except:
             print_exc()
 
     def opengamesetting(self):
         try:
-            dialog_setting_game(self, gobject.base.gameuid, 1)
+            if gobject.base.gameuid:
+                dialog_setting_game(self, gobject.base.gameuid, 1)
         except:
             print_exc()
 
@@ -942,32 +944,63 @@ class hookselect(closeashidewindow):
             self.getnewsentence(_TR("！未选定进程！"))
 
     def getfoundhook(self, hooks):
+        if len(hooks) == 0:
+            return
 
         searchtext = self.searchtext2.text()
 
+        # 先只算数据，最后一次性批量更新UI：
+        # 逐行 insertRow/setItem/setRowHidden 交错执行会让视图反复重排全部行，行数多时是 O(K²)
+        rowstart = self.ttCombomodelmodel2.rowCount()
+        rowof = {hc: row for row, hc in enumerate(self.allres)}
+        newrows = []  # (hookcode, 显示文本, 是否隐藏)
+        rowupdates = []  # (行号, 显示文本, 是否隐藏)
         for hookcode in hooks:
             string = hooks[hookcode][-1]
-            if hookcode not in self.allres:
-                self.allres[hookcode] = hooks[hookcode].copy()
-                self.ttCombomodelmodel2.insertRow(
-                    self.ttCombomodelmodel2.rowCount(),
-                    [QStandardItem(hookcode), QStandardItem(string[:100])],
-                )
-            else:
+            if hookcode in rowof:
                 self.allres[hookcode] += hooks[hookcode].copy()
-                self.ttCombomodelmodel2.setItem(
-                    list(self.allres.keys()).index(hookcode),
-                    1,
-                    QStandardItem(string[:100]),
-                )
-
+            else:
+                self.allres[hookcode] = hooks[hookcode].copy()
             resbatch = self.allres[hookcode]
             hide = all(
-                [(searchtext not in res) or self.gethide(res) for res in resbatch]
+                (searchtext not in res) or self.gethide(res) for res in resbatch
             )
-            self.tttable2.setRowHidden(list(self.allres.keys()).index(hookcode), hide)
-        if len(hooks) == 0:
-            return
+            if hookcode in rowof:
+                rowupdates.append((rowof[hookcode], string[:100], hide))
+            else:
+                newrows.append((hookcode, string[:100], hide))
+
+        self.tttable2.setUpdatesEnabled(False)
+        try:
+            model = self.ttCombomodelmodel2
+            if newrows:
+                if model.columnCount() < 2:
+                    model.setColumnCount(2)
+                model.insertRows(rowstart, len(newrows))
+            # 屏蔽信号批量写入，最后补发一次 dataChanged，避免每个条目都触发视图更新
+            model.blockSignals(True)
+            try:
+                for i, (hookcode, text, _) in enumerate(newrows):
+                    model.setItem(rowstart + i, 0, QStandardItem(hookcode))
+                    model.setItem(rowstart + i, 1, QStandardItem(text))
+                for row, text, _ in rowupdates:
+                    model.setItem(row, 1, QStandardItem(text))
+            finally:
+                model.blockSignals(False)
+            if model.rowCount() and model.columnCount():
+                model.dataChanged.emit(
+                    model.index(0, 0),
+                    model.index(model.rowCount() - 1, model.columnCount() - 1),
+                )
+            # 行的显示/隐藏放在所有模型操作之后
+            for i, (_, _, hide) in enumerate(newrows):
+                if hide:
+                    self.tttable2.setRowHidden(rowstart + i, True)
+            for row, _, hide in rowupdates:
+                if self.tttable2.isRowHidden(row) != hide:
+                    self.tttable2.setRowHidden(row, hide)
+        finally:
+            self.tttable2.setUpdatesEnabled(True)
         self.hidesearchhookbuttons(False)
 
     def accept(self, key, select):

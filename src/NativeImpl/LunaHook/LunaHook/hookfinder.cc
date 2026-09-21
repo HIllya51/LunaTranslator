@@ -1,8 +1,11 @@
 
 #include "MinHook.h"
 #include "veh_hook.h"
+#include "lunarpc.h"
 #define HOOK_SEARCH_UNSAFE 0
 #define HOOK_SEARCH_CHAR 0
+#define HOOK_SEARCH_LENGTH STRING
+// #define HOOK_SEARCH_LENGTH 0
 namespace
 {
 	SearchParam sp;
@@ -169,9 +172,9 @@ void DoSend(int i, uintptr_t address, char *str, intptr_t padding, JITTYPE jitty
 #endif
 
 #if HOOK_SEARCH_CHAR || HOOK_SEARCH_UNSAFE
-		if (((length > STRING) || maybeIsJa(str)) && length < MAX_STRING_SIZE - 1)
+		if (((length > HOOK_SEARCH_LENGTH) || maybeIsJa(str)) && length < MAX_STRING_SIZE - 1)
 #else
-		if (length > STRING && length < MAX_STRING_SIZE - 1)
+		if (length > HOOK_SEARCH_LENGTH && length < MAX_STRING_SIZE - 1)
 #endif
 		{
 			// many duplicate results with same address, offset, and third/fourth character will be found: filter them out
@@ -355,9 +358,38 @@ void mergevector(std::vector<uintptr_t> &v1, const std::vector<uintptr_t> &v2)
 		}
 	}
 }
+
+void NotifyHookFound(DWORD pid, HookParam hp, wchar_t *text)
+{
+	disable_mbwc = true;
+	auto dosend = [](const std::wstring &hcode, const std::wstring &str)
+	{
+		rpc::call<rpc::Id::NotifyHookFound>(hookPipe, hcode, str);
+	};
+	std::wstring wide = text;
+	if (wide.size() > HOOK_SEARCH_LENGTH)
+	{
+		dosend(HookCode::Generate(hp, pid), wide);
+	}
+	if (!(hp.type & CSHARP_STRING))
+	{
+		hp.type &= ~CODEC_UTF16;
+		if (auto converted = StringToWideString((char *)text, hp.codepage))
+			if (converted->size() > HOOK_SEARCH_LENGTH)
+			{
+				dosend(HookCode::Generate(hp, pid), converted.value());
+			}
+		if (auto converted = StringToWideString((char *)text, hp.codepage = CP_UTF8))
+			if (converted->size() > HOOK_SEARCH_LENGTH)
+			{
+				dosend(HookCode::Generate(hp, pid), converted.value());
+			}
+	}
+}
 void SearchForHooks_Return()
 {
 	Msg::Log(TR[HOOK_SEARCH_FINISHED], sp.maxRecords - recordsAvailable);
+	auto pid = GetCurrentProcessId();
 	for (int i = 0, results = 0; i < sp.maxRecords; ++i)
 	{
 		HookParam hp;
@@ -390,7 +422,7 @@ void SearchForHooks_Return()
 			hp.emu_addr = records[i].em_addr;
 			hp.type = CODEC_UTF16 | USING_STRING | BREAK_POINT | NO_CONTEXT;
 		}
-		NotifyHookFound(hp, (wchar_t *)records[i].text);
+		NotifyHookFound(pid, hp, (wchar_t *)records[i].text);
 		if (++results % 100'000 == 0)
 			Msg::Log(TR[ResultsNum], results);
 	}

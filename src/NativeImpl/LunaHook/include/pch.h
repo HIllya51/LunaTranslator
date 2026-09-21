@@ -49,7 +49,6 @@ extern "C" IMAGE_DOS_HEADER __ImageBase;
 #include "defs.h"
 #include "const.h"
 #include "types.h"
-#include "hookcode.h"
 #include "winevent.hpp"
 #include "lrucache.hpp"
 #include "InfoStrings.h"

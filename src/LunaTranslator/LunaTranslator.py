@@ -1277,7 +1277,9 @@ class BASEOBJECT(QObject):
         if not p:
             raise Exception()
         amodel = importlib.import_module(p)
-        if hasattr(amodel, type_):
+        if hasattr(amodel, "Cishu"):
+            aclass = getattr(amodel, "Cishu")
+        elif hasattr(amodel, type_):
             aclass = getattr(amodel, type_)
         elif hasattr(amodel, "MyCishu"):
             aclass = getattr(amodel, "MyCishu")

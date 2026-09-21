@@ -6,7 +6,7 @@ namespace Host
 	using HostInfoHandler = std::function<void(HOSTINFO type, const std::wstring &)>;
 	using ProcessEventHandler = std::function<void(DWORD)>;
 	using ThreadEventHandler = std::function<void(TextThread &)>;
-	using HookEventHandler = std::function<void(const HookParam &, const std::wstring &text)>;
+	using HookEventHandler = std::function<void(const std::wstring &hcode, const std::wstring &text)>;
 	using HookInsertHandler = std::function<void(DWORD, uint64_t, const std::wstring &)>;
 	using EmbedCallback = std::function<void(const std::wstring &, const ThreadParam &)>;
 	using I18NQueryCallback = std::function<std::optional<std::wstring>(const std::wstring &str)>;
@@ -16,7 +16,7 @@ namespace Host
 	void ConnectProcess(DWORD processId);
 	bool CheckIfNeedInject(DWORD processId);
 	void DetachProcess(DWORD processId);
-	void InsertHook(DWORD processId, HookParam hp);
+	void InsertHook(DWORD processId, const std::wstring &hcode);
 	void ResetLanguage();
 	void InsertPCHooks(DWORD processId, int which);
 	void RemoveHook(DWORD processId, uint64_t address);

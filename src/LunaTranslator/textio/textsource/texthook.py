@@ -212,7 +212,6 @@ class texthook(basetext):
         self.Luna_CheckIfNeedInject.restype = c_bool
         self.Luna_InsertHookCode = LunaHost.Luna_InsertHookCode
         self.Luna_InsertHookCode.argtypes = DWORD, LPCWSTR
-        self.Luna_InsertHookCode.restype = c_bool
         self.Luna_RemoveHook = LunaHost.Luna_RemoveHook
         self.Luna_RemoveHook.argtypes = DWORD, c_uint64
         self.Luna_DetachProcess = LunaHost.Luna_DetachProcess
@@ -762,13 +761,8 @@ class texthook(basetext):
         gobject.base.hookselectdialog.getfoundhooksignal.emit(savefound)
 
     def inserthook(self, hookcode):
-        succ = True
         for pid in self.pids[self.gameuid].copy():
-            succ = self.Luna_InsertHookCode(pid, hookcode) and succ
-        if succ == False:
-            QMessageBox.critical(
-                gobject.base.hookselectdialog, _TR("错误"), _TR("特殊码无效")
-            )
+            self.Luna_InsertHookCode(pid, hookcode)
 
     @threader
     def delaycollectallselectedoutput(self):

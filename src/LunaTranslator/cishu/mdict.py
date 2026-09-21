@@ -190,7 +190,7 @@ from cishu.cishubase import cishubase
 import re
 
 
-class mdict(cishubase):
+class Cishu(cishubase):
     def getdistance(self, f):
         _ = self.extraconf[f]
 

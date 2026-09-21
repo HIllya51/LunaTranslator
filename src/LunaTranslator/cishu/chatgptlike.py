@@ -21,7 +21,7 @@ def list_models(typename, regist):
     )
 
 
-class chatgptlike(cishubase):
+class Cishu(cishubase):
     use_github_md_css = True
     backgroundparser = 'document.querySelector("#luna_dict_internal_view > article").style.backgroundColor="rgba(0,0,0,0)"'
 

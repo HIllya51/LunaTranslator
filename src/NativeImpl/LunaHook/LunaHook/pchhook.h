@@ -17,6 +17,7 @@
 #include "engine.h"
 #include "embed_util.h"
 #include "hijackfuns.h"
+#include "hookcode.h"
 
 #include "emulators/emujitarg.hpp"
 #include "engines/unity/monoil2cpp.h"
