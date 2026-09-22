@@ -80,6 +80,11 @@ def trygetupdate():
 def doupdate():
     if not gobject.base.update_avalable:
         return
+    # uncompress已把更新包规范到固定目录，这里直接使用并校验完整，
+    # 不能os.walk现找：退出瞬间若正在重新解压，会扫到解压了一半的残缺目录并当成更新源
+    found = gobject.getcachedir("update/LunaTranslator")
+    if not os.path.isfile(os.path.join(found, "LunaTranslator.exe")):
+        return
     exe1 = gobject.getcachedir("update/Updater.exe")
     exe = os.path.abspath(exe1)
     shutil.copy(
@@ -91,11 +96,6 @@ def doupdate():
             continue
         _ = os.path.join(runtimedir, dll)
         shutil.copy(_, gobject.getcachedir("update/" + dll))
-
-    for _dir, _, _fs in os.walk(r".\cache\update"):
-        for _f in _fs:
-            if _f.lower() == "lunatranslator.exe":
-                found = _dir
 
     texts: "list[str]" = [
         _TR("错误"),
@@ -161,9 +161,25 @@ def updatemethod(urls: "tuple[str, str]"):
 
 def uncompress(savep):
     gobject.base.progresssignal4.emit(_TR("正在解压"), 10000)
-    shutil.rmtree(gobject.getcachedir("update/LunaTranslator/"))
+    # 先解压到暂存目录，再整体换入到cache\update\LunaTranslator，
+    # 保证该目录任何时刻要么不存在、要么是完整的，退出时不会被更新器拿到半个包
+    tmpbase = gobject.getcachedir("update_tmp")
+    shutil.rmtree(tmpbase, ignore_errors=True)
     with zipfile.ZipFile(savep) as zipf:
-        zipf.extractall(gobject.getcachedir("update"))
+        zipf.extractall(tmpbase)
+    found = None
+    for _dir, _, _fs in os.walk(tmpbase):
+        for _f in _fs:
+            if _f.lower() == "lunatranslator.exe":
+                found = _dir
+    if not found:
+        shutil.rmtree(tmpbase, ignore_errors=True)
+        raise Exception("unexpected update package layout")
+    target = gobject.getcachedir("update/LunaTranslator")
+    shutil.rmtree(target, ignore_errors=True)
+    os.rename(found, target)
+    if os.path.abspath(found) != os.path.abspath(tmpbase):
+        shutil.rmtree(tmpbase, ignore_errors=True)
 
 
 @threader

@@ -448,10 +448,17 @@ class LunaSubProcess:
 
     @staticmethod
     def update(exe1, istriggertoupdate, found, pid, b64):
+        # 必须用列表参数：format拼接的命令行在路径含空格时会被拆参，
+        # 更新器argv错位后会对错误的路径执行复制/删除
         subprocess.Popen(
-            r"{} update {} {} {} {}".format(
-                exe1, int(istriggertoupdate), found, pid, b64
-            )
+            [
+                exe1,
+                "update",
+                str(int(istriggertoupdate)),
+                found,
+                str(pid),
+                b64,
+            ]
         )
 
     @staticmethod

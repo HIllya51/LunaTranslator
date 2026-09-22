@@ -2013,7 +2013,11 @@ class searchwordW(closeashidewindow):
             ),
             possave=functools.partial(globalconfig.__setitem__, "sw_geo"),
         )
-        self.search_word.connect(self.__search_word)
+        # 必须排队连接：首次查词会触发setupUi（内含WebView2创建的嵌套消息泵），
+        # 不能让它在菜单点击/COM事件回调的栈上同步执行
+        self.search_word.connect(
+            self.__search_word, Qt.ConnectionType.QueuedConnection
+        )
         self.search_word_in_new_window.connect(self.searchwinnewwindow)
         self.ocr_once_signal.connect(lambda: rangeselct_function(self.ocr_do_function))
         self.__state = 0

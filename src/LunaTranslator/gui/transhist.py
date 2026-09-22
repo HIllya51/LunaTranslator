@@ -418,7 +418,6 @@ class wvtranshist(WebviewWidget, somecommon):
     def __init__(self, p: "transhist"):
         super().__init__(p, loadext=globalconfig["history"]["webviewLoadExt"])
         self.bind("calllunaloadready", self.calllunaloadready)
-        gobject.tempconfig = {}
         self.pluginsedit.connect(functools.partial(Exteditor, self))
         self.reloadx.connect(self.appendext)
         self.loadex()
@@ -596,8 +595,8 @@ class Qtranshist(QPlainTextEdit):
             globalconfig["history"]["usewebview2"] = webview2qt.isChecked()
             self.p.loadviewer(True)
         elif action == baocunauto:
-            globalconfig["history"]["autosave"] = baocunauto.isCheckable()
-            if baocunauto.isCheckable():
+            globalconfig["history"]["autosave"] = baocunauto.isChecked()
+            if baocunauto.isChecked():
                 sharedfunctions.autosavecheckifneedninit(self.p.trace)
         elif action == search:
             gobject.base.searchwordW.search_word.emit(self.textCursor().selectedText())

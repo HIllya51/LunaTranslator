@@ -1288,7 +1288,13 @@ def __mousefollowfunction(btn: "IconButton", functionorigin):
 
 
 def D_getIconButton_mousefollow(
-    callback=None, icon="fa.gear", enable=True, qicon=None, callback2=None, fix=True, tips=None
+    callback=None,
+    icon="fa.gear",
+    enable=True,
+    qicon=None,
+    callback2=None,
+    fix=True,
+    tips=None,
 ):
     b = IconButton(icon, enable, qicon, fix=fix, tips=tips)
 
@@ -1950,6 +1956,7 @@ class WebviewWidget(AbstractWebviewWidget):
     loadextensionwindow = pyqtSignal(str)
     titlechanged = pyqtSignal(str)
     IconChanged = pyqtSignal(QIcon)
+    crashedsignal = pyqtSignal(bytes)
 
     def getHtml(self, elementid):
         # 不可以在bind函数里调用，否则会阻塞
@@ -1993,6 +2000,7 @@ class WebviewWidget(AbstractWebviewWidget):
     def __init__(self, parent=None, transp=False, loadext=False) -> None:
         super().__init__(parent)
         self.url = ""
+        self.crashedsignal.connect(self.___crashed_handle)
         self.webview = WebView2(
             int(self.winId()), transp, loadext, ui_settings.get("darklight2", 0)
         )
@@ -2005,8 +2013,11 @@ class WebviewWidget(AbstractWebviewWidget):
             self.dropfilecallback.emit,
             self.titlechanged.emit,
             self.IconChangedF,
-            self.crashed_callback,
+            self.crashedsignal.emit,
         )
+
+    def ___crashed_handle(self, _):
+        self.crashed_callback(_)
 
     def crashed_callback(self, info: bytes):
         RichMessageBox(self, _TR("错误"), info.decode())
