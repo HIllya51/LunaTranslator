@@ -9,8 +9,9 @@ namespace
         s = re::sub(s, "<br>");
         s = re::sub(s, "%CF11F");
         s = re::sub(s, "%CFFFF");
-        s = re::sub(s, "%K%P");
-        s = re::sub(s, "%K%N");
+        s = re::sub(s, "%P");
+        s = re::sub(s, "%K");
+        s = re::sub(s, R"(%N(\x81\x40)*)");
         s = re::sub(s, "\n");
         buffer->from(s);
     }
@@ -1114,7 +1115,9 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // シルヴァリオ トリニティ -Beyond the Horizon-
     {0x800B7702, {0, 3, 0, 0, 0, "PCSG01259"}},
     // 追放選挙
-    {0x8002e176, {0, 0, 0, 0, FPCSG01023, "PCSG01023"}}, // dialogue+name,sjis
+    {0x8002e176, {FULL_STRING, 0, 0, 0, FPCSG01023, "PCSG01023"}},
+    {0x8003B256, {FULL_STRING, 0, 0, 0, FPCSG01023, "PCSG01023"}},
+    {0x8003B4A0, {FULL_STRING, 0, 0, 0, FPCSG01023, "PCSG01023"}},
     // 死神と少女
     {0x800204ba, {0, 2, 0, 0, FPCSG01282<0>, "PCSG01282"}}, // dialogueNVL,sjis
     {0x8000f00e, {0, 1, 0, 0, FPCSG01282<1>, "PCSG01282"}}, // dialogue main
