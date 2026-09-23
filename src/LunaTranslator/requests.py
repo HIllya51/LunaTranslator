@@ -242,7 +242,7 @@ class _Functions:
     def _parseurl(url: str, param):
         url = url.lstrip()
         scheme, server, path, query, frag = urlsplit(url)
-        path = quote(path, safe=":/=")
+        path = quote(path, safe=":/=%")
         if scheme not in ["https", "http"]:
             raise exceptions.RequestException(
                 "unknown scheme {} for invalid url {}".format(scheme, url)

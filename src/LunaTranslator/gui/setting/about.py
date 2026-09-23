@@ -268,16 +268,15 @@ class aboutwidget(NQGroupBox):
 
 
 class delayloadsvg(QSvgWidget):
-    def __init__(self, REPO):
+    def __init__(self, img, url):
         super().__init__()
-        self.REPO = REPO
-        link = "https://img.shields.io/github/license/" + REPO
-        self._load(link)
+        self.url = url
+        self._load(img)
         self.setCursor(Qt.CursorShape.PointingHandCursor)
 
     def mouseReleaseEvent(self, _: QMouseEvent):
         if _.button() == Qt.MouseButton.LeftButton:
-            os.startfile("https://github.com/{repo}".format(repo=self.REPO))
+            os.startfile(self.url)
 
     def event(self, a0: QEvent) -> bool:
         if a0.type() == QEvent.Type.FontChange:
@@ -298,11 +297,18 @@ class delayloadsvg(QSvgWidget):
 
 
 def makelink(repo):
+    if repo == "uchardet/uchardet":
+        url = "https://gitlab.freedesktop.org/uchardet/uchardet"
+        img = "https://img.shields.io/gitlab/license/uchardet%2Fuchardet?gitlab_url=https%3A%2F%2Fgitlab.freedesktop.org%2F"
+    else:
+        url = "https://github.com/" + repo
+        img = "https://img.shields.io/github/license/" + repo
+
     return [
-        functools.partial(delayloadsvg, repo),
+        functools.partial(delayloadsvg, img, url),
         functools.partial(
             LinkLabel,
-            '<a href="https://github.com/{repo}">{repo}</a>'.format(repo=repo),
+            '<a href="{url}">{repo}</a>'.format(url=url, repo=repo),
         ),
     ]
 
@@ -356,10 +362,7 @@ def setTab_about(self: QWidget, basel):
                     createfoldgrid,
                     [
                         [
-                            functools.partial(
-                                delayloadsvg,
-                                "HIllya51/LunaTranslator",
-                            ),
+                            makelink("HIllya51/LunaTranslator")[0],
                             functools.partial(
                                 MDLabel,
                                 "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。",
@@ -398,6 +401,7 @@ def setTab_about(self: QWidget, basel):
                         makelink("chromium/chromium"),
                         makelink("Neargye/magic_enum"),
                         makelink("bbepis/XUnity.AutoTranslator"),
+                        makelink("uchardet/uchardet"),
                     ],
                     "LICENSE",
                 )

@@ -1,3 +1,11 @@
+include(FetchContent)
+FetchContent_Declare(minhook
+GIT_REPOSITORY https://github.com/TsudaKageyu/minhook
+	GIT_TAG master
+	GIT_SHALLOW TRUE
+)
+FetchContent_MakeAvailable(minhook)
+
 include_directories(. util engines)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8) 
 	aux_source_directory("engine64" enginessrc)

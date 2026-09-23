@@ -1,5 +1,6 @@
 #include "textthread.h"
 #include "host.h"
+#include <uchardet.h>
 
 // return true if repetition found (see https://github.com/Artikash/Textractor/issues/40)
 static bool RemoveRepetition(std::wstring &text)
@@ -28,6 +29,48 @@ void TextThread::Stop()
 {
 	timer = NULL;
 }
+
+struct uchardetwrapper
+{
+	// 其实可以用uchardet_reset，但是这样得加锁。这个的开销很小，就这样吧无所谓。
+	uchardet_t ud;
+	uchardetwrapper() : ud(uchardet_new()) {};
+	~uchardetwrapper()
+	{
+		uchardet_delete(ud);
+	}
+	DWORD maptocodepag(const std::string &enc)
+	{
+		if (enc == "UTF-8")
+			return CP_UTF8;
+		else if (enc == "GB18030")
+			return 936;
+		else if (enc == "BIG5")
+			return 950;
+		else if (enc == "SHIFT_JIS")
+			return 932;
+		else if (enc == "EUC-KR" || enc == "UHC")
+			return 949;
+		return 0;
+	}
+	static inline float accept_threshold = 2.0f / 3.0f;
+	DWORD detect(const std::string &s)
+	{
+		if (0 != uchardet_handle_data(ud, s.data(), s.size()))
+			return 0;
+		uchardet_data_end(ud);
+		for (auto i = 0; i < uchardet_get_n_candidates(ud); i++)
+		{
+			auto conf = uchardet_get_confidence(ud, i);
+			auto enc = uchardet_get_encoding(ud, i);
+			auto codepage = maptocodepag(enc);
+			printf("%f %s %d\n", conf, enc, codepage);
+			if (conf >= accept_threshold)
+				return codepage;
+		}
+		return 0;
+	}
+};
 std::optional<DWORD> TextThread::RunDectectCodePage(BYTE *data, int length)
 {
 	if (hp.codepage)
@@ -52,41 +95,9 @@ std::optional<DWORD> TextThread::RunDectectCodePage(BYTE *data, int length)
 	}
 	else
 	{
-		auto decode = [&](DWORD cp) -> std::optional<std::wstring>
-		{
-			auto _ = StringToWideString(UseForDetectRaw, cp);
-			if (!_ || WideStringToString(_.value(), cp) != UseForDetectRaw)
-				return {};
-			return _.value();
-		};
-		auto countInRange = [](const std::wstring &ws, wchar_t lo, wchar_t hi)
-		{
-			return (int)std::count_if(ws.begin(), ws.end(), [lo, hi](wchar_t c)
-									  { return c >= lo && c <= hi; });
-		};
-		auto hasKana = [&](DWORD cp) -> bool
-		{
-			auto ws = decode(cp);
-			return ws && ((countInRange(*ws, 0x3040, 0x309F) + countInRange(*ws, 0x30A0, 0x30FF)) >= 2);
-		};
-		auto hasHangul = [&](DWORD cp) -> bool
-		{
-			auto ws = decode(cp);
-			return ws && (countInRange(*ws, 0xAC00, 0xD7AF) >= 2);
-		};
-		if (hasKana(932))
-			hp.detectedCodepage = 932;
-		else if (hasHangul(949))
-			hp.detectedCodepage = 949;
-		else if (decode(936))
-			hp.detectedCodepage = 936;
-		else if (decode(950))
-			hp.detectedCodepage = 950;
-	}
-	if (!hp.detectedCodepage)
-	{
-		UseForDetectRaw.clear();
-		return {};
+		hp.detectedCodepage = uchardetwrapper().detect(UseForDetectRaw);
+		if (!hp.detectedCodepage)
+			UseForDetectRaw.clear();
 	}
 	return hp.detectedCodepage;
 }
@@ -97,11 +108,12 @@ void TextThread::Push(BYTE *data, int length)
 	std::scoped_lock lock(bufferMutex);
 
 	auto hostcodepage = hp.codepage ? hp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : hp.detectedCodepage);
-	if (hp.isAscii() && !hostcodepage)
-		return;
 	BYTE doubleByteChar[2];
 	if (length == 1) // doublebyte characters must be processed as pairs
 	{
+		if (hp.isAscii() && !hostcodepage)
+			return;
+
 		if (leadByte)
 		{
 			doubleByteChar[0] = leadByte;
@@ -118,6 +130,14 @@ void TextThread::Push(BYTE *data, int length)
 	}
 	if (length)
 	{
+		if (hp.isAscii() && !hostcodepage)
+		{
+			if (all_ascii((const char *)data, length))
+				hostcodepage = CP_UTF8;
+			else
+				return;
+		}
+
 		if (auto converted = commonparsestring(data, length, &hp, hostcodepage))
 		{
 			bufferDecoded.append(converted.value());

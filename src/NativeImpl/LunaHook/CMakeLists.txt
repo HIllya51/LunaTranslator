@@ -23,7 +23,6 @@ if(MSVC)
   endif()
   add_compile_options(/utf-8)
 endif()
-include(FetchContent)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
@@ -55,13 +54,6 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY $<1:${binary_out_putpath}>)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${binary_out_putpath}>)
 
 include_directories(.)
-
-FetchContent_Declare(minhook 
-  GIT_REPOSITORY https://github.com/TsudaKageyu/minhook
-    GIT_TAG master
-    GIT_SHALLOW TRUE
-)
-FetchContent_MakeAvailable(minhook)
 
 include_directories(include)
 

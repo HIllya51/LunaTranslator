@@ -277,8 +277,13 @@ bool checktranslatedok(TextBuffer buff)
 bool TextHook::waitfornotify(TextBuffer *buff, ThreadParam tp)
 {
   auto hostcodepage = hp.codepage ? hp.codepage : (commonsharedmem->codepage ? commonsharedmem->codepage : hp.detectedCodepage);
-  if (hp.isAscii() && (hostcodepage == 0))
-    return false;
+  if (hp.isAscii() && !hostcodepage)
+  {
+    if (all_ascii(buff->viewA()))
+      hostcodepage = CP_UTF8;
+    else
+      return false;
+  }
   if (commonsharedmem->clearText)
   {
     if (hp.isAscii() && (hostcodepage == 932))

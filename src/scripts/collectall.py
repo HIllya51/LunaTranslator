@@ -5,7 +5,7 @@ import urllib.request
 import urllib.error
 
 
-def get_json(url: str, headers=None):
+def get_text(url: str, headers=None):
     if headers is None:
         headers = {}
 
@@ -13,14 +13,19 @@ def get_json(url: str, headers=None):
     headers.setdefault("User-Agent", "Mozilla/5.0")
 
     req = urllib.request.Request(url, headers=headers)
+
+    with urllib.request.urlopen(req) as response:
+        # 读取响应内容
+        data = response.read()
+        # 解码为字符串
+        text = data.decode("utf-8")
+        return text
+
+
+def get_json(url: str, headers=None):
+
     try:
-        with urllib.request.urlopen(req) as response:
-            # 读取响应内容
-            data = response.read()
-            # 解码为字符串
-            text = data.decode("utf-8")
-            # 解析JSON
-            return json.loads(text)
+        return json.loads(get_text(url, headers=headers))
     except:
         return {}
 
@@ -94,21 +99,26 @@ shutil.copy(
     r"..\LICENSE", os.path.join(targetdir, "LICENSES", "LICENSE.LunaTranslator")
 )
 with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
-    for _ in re.findall(r'makelink\(".*?"\)', ff.read()):
-        _js: dict[str, str] = get_json(
-            rf"https://api.github.com/repos/{_[10:-2]}/license"
-        )
-        content = _js.get("content")
-        if content:
+    for _ in re.findall(r'makelink\(".*?"\),', ff.read()):
+        repo: str = _[10:-2]
+        if repo == "uchardet/uchardet":
+            content = get_text(
+                "https://gitlab.freedesktop.org/uchardet/uchardet/-/raw/master/COPYING?ref_type=heads&inline=false"
+            )
+        else:
+            _js: dict[str, str] = get_json(
+                rf"https://api.github.com/repos/{repo}/license"
+            )
+            content = _js.get("content")
+            if not content:
+                content
             content = base64.b64decode(content.encode()).decode()
-            with open(
-                os.path.join(
-                    targetdir, "LICENSES", "LICENSE." + _[10:-2].replace("/", ".")
-                ),
-                "w",
-                encoding="utf8 ",
-            ) as ff:
-                ff.write(content)
+        with open(
+            os.path.join(targetdir, "LICENSES", "LICENSE." + repo.replace("/", ".")),
+            "w",
+            encoding="utf8 ",
+        ) as ff:
+            ff.write(content)
 collect = []
 for _dir, _, fs in os.walk(targetdir):
     for f in fs:

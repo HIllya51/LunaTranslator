@@ -146,7 +146,12 @@ namespace
 			return;
 		auto codepage = thp.codepage ? thp.codepage : (Host::defaultCodepage ? Host::defaultCodepage : thp.detectedCodepage);
 		if (thp.isAscii() && !codepage)
-			return;
+		{
+			if (all_ascii((const char *)data, length))
+				codepage = CP_UTF8;
+			else
+				return;
+		}
 		auto t = commonparsestring(data, length, &thp, codepage);
 		if (!t)
 			return;

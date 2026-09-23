@@ -254,9 +254,9 @@ class voiceselect(LDialog):
         )
         _layout.addRow("引擎", combo)
         self._layout = _layout
+        self.voicelistsignal.connect(self.loadedvoice)
         combo.currentIndexChanged.emit(combo.currentIndex())
         _layout.addRow(button)
-        self.voicelistsignal.connect(self.loadedvoice)
         self.object = None
         self.lastwidget = None
 
