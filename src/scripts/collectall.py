@@ -99,7 +99,7 @@ shutil.copy(
     r"..\LICENSE", os.path.join(targetdir, "LICENSES", "LICENSE.LunaTranslator")
 )
 with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
-    for _ in re.findall(r'makelink\(".*?"\),', ff.read()):
+    for _ in re.findall(r'makelink\(([\'"]).*?\1\),', ff.read()):
         repo: str = _[10:-2]
         if repo == "uchardet/uchardet":
             content = get_text(
