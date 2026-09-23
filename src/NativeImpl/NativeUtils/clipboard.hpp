@@ -144,6 +144,9 @@ LRESULT CALLBACK WNDPROC_8DDD0332_D337_4F76_AF3C_D0CF23E94191(HWND hwnd, UINT ms
 #endif
 BOOL addClipboardFormatListener(HWND _hWnd)
 {
+    auto pAddClipboardFormatListener = (BOOL(WINAPI *)(HWND))GetProcAddress(GetModuleHandle(TEXT("user32.dll")), "AddClipboardFormatListener");
+    if (pAddClipboardFormatListener)
+        return pAddClipboardFormatListener(_hWnd);
     WNDCLASS wc = {};
     ZeroMemory(&wc, sizeof(WNDCLASS));
     wc.lpfnWndProc = WNDPROC_8DDD0332_D337_4F76_AF3C_D0CF23E94191;
@@ -162,6 +165,9 @@ BOOL addClipboardFormatListener(HWND _hWnd)
 }
 BOOL removeClipboardFormatListener(HWND _hWnd)
 {
+    auto pRemoveClipboardFormatListener = (BOOL(WINAPI *)(HWND))GetProcAddress(GetModuleHandle(TEXT("user32.dll")), "RemoveClipboardFormatListener");
+    if (pRemoveClipboardFormatListener)
+        return pRemoveClipboardFormatListener(_hWnd);
     auto hwnd = (HWND)GetProp(_hWnd, PROP_5B7BE8DE_E87B_4FC7_8562_48E4E42880DB);
     if (!hwnd)
         return TRUE;
