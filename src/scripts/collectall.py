@@ -111,7 +111,6 @@ with open("LunaTranslator/gui/setting/about.py", "r", encoding="utf8") as ff:
             )
             content = _js.get("content")
             if not content:
-                print(f"no license found for {repo}, skip")
                 continue
             content = base64.b64decode(content.encode()).decode()
         with open(
