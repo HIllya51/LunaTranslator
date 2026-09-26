@@ -47,7 +47,7 @@
     自訂 System Prompt 和 User Message 中可以使用變數來引用一些訊息：
     - `{sentence}`：目前欲翻譯的文字。
     - `{srclang}`和`{tgtlang}`：來源語言和目標語言。如果 Prompt 中僅使用英文，則會取代成語言名稱的英文翻譯，否則會取代成語言名稱的目前 UI 語言翻譯。
-    - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextBoth[N]}`：`N`筆歷史原文、譯文、兩者。若輸入是 `contextBoth[N]`，則會引用 `附帶上下文個數` 的值；若輸入是 `contextBoth[10]`，則會使用輸入的 10 條數目。
+    - `{contextOriginal[N]}`和`{contextTranslation[N]}`和`{contextBoth[N]}`：`N`筆歷史原文、譯文、兩者。若輸入是`contextBoth[N]`，則會引用`附帶上下文個數`的值；若輸入是`contextBoth[10]`，則會使用輸入的 10 條數目。
     - `{DictWithPrompt[XXXXX]}`：此欄位可以引用「專有名詞翻譯」中的詞條。**當沒有匹配到的詞條時，該欄位會被清除以避免破壞翻譯內容**。其中，`XXXXX`是一段引導 LLM 使用給定的詞條來優化翻譯的 Prompt，可以自行定義，或停用自訂使用者訊息以使用預設的引導 Prompt。
 
 1. #### Temperature／Max Tokens／Top P／Frequency Penalty
@@ -62,7 +62,7 @@
     none/minimal -> 0（停用思考，但不適用於 Gemini-2.5-Pro 模型），low -> 512，medium -> -1（開啟動態思維），high/xhigh -> 24576。
 
 1. #### thinking.type
-    部分平台（主要是DeepSeek）支援的思考模式開關。
+    部份平台（主要是 DeepSeek）支援的思考模式開關。
 
 1. #### 其他參數
 
@@ -195,13 +195,13 @@
 
 存在一些專為離線翻譯所設計，或針對特定場景微調的離線翻譯大模型。
 
-大部分模型部署好後，直接使用**大模型通用介面**呼叫即可。但部分模型，可能需要使用專用的prompt格式，來發揮其更好的翻譯效果。
+大部份模型部署好後，直接使用**大模型通用介面**呼叫即可。但部份模型，可能需要使用專用的 Prompt 格式，來發揮其更好的翻譯效果。
 
-該介面專為這類需要專用prompt格式的模型而來。因此本介面不提供使用者自訂的prompt設定，而是使用模型發佈者提供的prompt格式。
+該介面專為這類需要專用 Prompt 格式的模型而來。因此本介面不提供使用者自訂的 Prompt 設定，而是使用模型發佈者提供的 Prompt 格式。
 
 目前，本介面支援以下模型：
 
 | 作者 | 模型 | 語言 |
 | ---- | ---------- | ---------- | 
 | tencent | Hy-MT2 | 通用 |
-| SakuraLLM | SakuraLLM & GalTransl | 日語 -> 中文 |
+| SakuraLLM | SakuraLLM & GalTransl | 日文 -> 中文 |
