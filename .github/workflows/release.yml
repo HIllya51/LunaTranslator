@@ -75,7 +75,6 @@ jobs:
           tag_name: ${{ needs.loadversion.outputs.version }}
           files: |
             build/signed/LunaTranslator_x86_winxp.zip
-            build/signed/LunaTranslator_x86_win7.zip
             build/signed/LunaTranslator_x64_win7.zip
             build/signed/LunaTranslator_x64.zip
         env:

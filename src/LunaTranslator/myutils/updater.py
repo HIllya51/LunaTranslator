@@ -44,12 +44,12 @@ def tryqueryfromhost():
         @trypass
         def __(i, main_server, proxy):
 
-            if runtime_for_xp:
-                target = "winxp"
-            elif runtime_for_win10:
+            if runtime_for_win10:
                 target = "win10"
-            else:
+            elif runtime_bit_64:
                 target = "win7"
+            else:
+                target = "winxp"
             res = requests.get(
                 "{main_server}/version".format(main_server=main_server),
                 params={"arch": ("x86", "x64")[runtime_bit_64], "target": target},
