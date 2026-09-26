@@ -25,7 +25,7 @@ extern "C"
 #ifdef WIN10ABOVE
 #define RUNTIME L"runtime3.13-64"
 #else
-#ifdef WINXP
+#if 0 // def WINXP
 #define RUNTIME L"runtime3.4-32"
 #else
 #ifdef _WIN64
@@ -36,7 +36,7 @@ extern "C"
 #endif
 #endif
 
-#ifndef WINXP
+#if 1 // ndef WINXP
 #define PYDLL L"python3.dll"
 #else
 #define PYDLL L"python34.dll"
@@ -139,7 +139,7 @@ bool PyStand::LoadPython()
 	WCHAR env[65535];
 	GetEnvironmentVariableW(L"PATH", env, 65535);
 	auto newenv = std::wstring(env) + L";" + _runtime;
-#ifndef WINXP
+#if 1 // ndef WINXP
 	// win7版优先使用系统自带的，系统没有再用自带的
 	;
 #else
@@ -207,7 +207,7 @@ int PyStand::RunString(const wchar_t *script)
 
 	auto Py_SetPath = (void (*)(const wchar_t *))GetProcAddress(_hDLL, "Py_SetPath");
 	std::wstring path = std::wstring() +
-#ifdef WINXP
+#if 0 // def WINXP
 						FILESRUNTIME + L"\\Lib;" +
 						FILESRUNTIME + L"\\Lib\\pylibs.zip;" +
 						FILESRUNTIME + L"\\DLLs;" +

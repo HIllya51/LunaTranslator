@@ -34,7 +34,7 @@ arch = sys.argv[1]
 target = sys.argv[2]
 if target != "win10":
     os.system(f"python scripts/generate_xp_code.py {target}")
-if target == "winxp":
+if 0 and target == "winxp":
     os.system("git clone --depth 1 https://github.com/HIllya51/py3.4_pyqt5.5.1")
     os.rename("py3.4_pyqt5.5.1/Python34", "runtime")
     pyrt = "runtime"
@@ -82,7 +82,7 @@ copycheck(r".\files", targetdir)
 copycheck(pyrt, targetdir + "/files")
 if target == "win10":
     runtimedir = "runtime3.13-64"
-elif target == "winxp":
+elif 0 and target == "winxp":
     runtimedir = "runtime3.4-32"
 elif arch == "x64":
     runtimedir = "runtime3.7-64"
@@ -123,7 +123,7 @@ collect = []
 for _dir, _, fs in os.walk(targetdir):
     for f in fs:
         collect.append(os.path.join(_dir, f))
-if target in ("win10", "winxp"):
+if target in ("win10",):  # "winxp"):
     collect.clear()
 for f in collect:
     if f.endswith(".pyc") or f.endswith("Thumbs.db"):

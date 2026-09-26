@@ -38,7 +38,7 @@ def typeHintRemover(source):
 def parsecode(code: str, arch):
     code = re.sub("from typing import .*", "", code)
     code = typeHintRemover(code)
-    if arch == "winxp":
+    if 0 and arch == "winxp":
         # PyQt
         code = code.replace("self.parent().devicePixelRatioF()", "1")
         code = code.replace("self.devicePixelRatioF()", "1")
@@ -52,8 +52,7 @@ def parsecode(code: str, arch):
         code1 = re.sub(pattern, replacement, code)
         if code1 != code:
             code = code1
-            code = (
-                r"""
+            code = r"""
 
 def isascii(s: str):
     try:
@@ -65,9 +64,7 @@ def isascii(s: str):
         except:
             return False
 
-"""
-                + code
-            )
+""" + code
     return code
 
 

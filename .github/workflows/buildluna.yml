@@ -15,9 +15,6 @@ jobs:
         include:  
           - arch: x86
             target: winxp
-         #   os: windows-2022
-          - arch: x86
-            target: win7
             pythonversion: '3.7.9' 
           - arch: x64
             target: win7
@@ -50,7 +47,7 @@ jobs:
       # - uses: GuillaumeFalourd/setup-windows10-sdk-action@v2
       #   with:
       #     sdk-version: 26100
-      - if: matrix.target != 'winxp'
+      - if: 1==1  || matrix.target != 'winxp'
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.pythonversion }}
@@ -62,7 +59,7 @@ jobs:
           architecture: x64
       - run: C:\hostedtoolcache\windows\Python\3.13.13\x64\python src/scripts/build_lunatranslator.py cpp ${{ matrix.arch }} ${{ matrix.target }}
       - run: C:\hostedtoolcache\windows\Python\3.13.13\x64\python src/scripts/build_lunatranslator.py hook ${{ matrix.arch }} ${{ matrix.target }}
-      - if: matrix.target != 'winxp'
+      - if: 1==1  || matrix.target != 'winxp'
         run:  C:\hostedtoolcache\windows\Python\3.13.13\x64\python src/scripts/build_lunatranslator.py pyrt ${{ matrix.arch }} ${{ matrix.pythonversion }} ${{ matrix.target }}
       - run:  C:\hostedtoolcache\windows\Python\3.13.13\x64\python src/scripts/build_lunatranslator.py merge ${{ matrix.arch }} ${{ matrix.target }}
 
