@@ -150,7 +150,7 @@ targetpyqtbindir = os.path.join(targetpyqtdir, f"{qtver}/bin")
 targetpyqtplgdir = os.path.join(targetpyqtdir, f"{qtver}/plugins")
 
 
-if target == "win7":
+if target == "win7" or target == "winxp":
     copycheck(rf"{downlevel}\ucrtbase.dll", runtime)
 
     copycheck(os.path.join(pyqtbindir, f"vcruntime140.dll"), runtime)
