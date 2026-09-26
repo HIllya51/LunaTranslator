@@ -150,7 +150,7 @@ targetpyqtbindir = os.path.join(targetpyqtdir, f"{qtver}/bin")
 targetpyqtplgdir = os.path.join(targetpyqtdir, f"{qtver}/plugins")
 
 
-if target == "win7" or target == "winxp":
+if target == "win7":
     copycheck(rf"{downlevel}\ucrtbase.dll", runtime)
 
     copycheck(os.path.join(pyqtbindir, f"vcruntime140.dll"), runtime)
@@ -213,3 +213,14 @@ if target == "winxp":
                 print("replace", os.path.join(_dir, _f), "<-", src)
                 with open(os.path.join(_dir, _f), "wb") as ff:
                     ff.write(zipf.read(src))
+        with open(os.path.join(runtime, "vcruntime140.dll"), "wb") as ff:
+            ff.write(zipf.read("vcruntime140.dll"))
+
+    ltlurl = "https://github.com/Chuyu-Team/VC-LTL5/releases/download/v5.3.1/VC-LTL.Redist.Dlls.zip"
+    ltlzip = os.path.join(embeddir, "VC-LTL.Redist.Dlls.zip")
+    urllib.request.urlretrieve(ltlurl, ltlzip)
+    with zipfile.ZipFile(ltlzip) as zipf:
+        ltldll = f"Dlls/{'x86' if x86 else 'x64'}/ucrtbase.dll"
+        print("vcltl", ltldll)
+        with open(os.path.join(runtime, "ucrtbase.dll"), "wb") as ff:
+            ff.write(zipf.read(ltldll))
