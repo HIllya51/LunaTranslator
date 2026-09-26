@@ -189,10 +189,10 @@ def downloadNtlea():
 
 
 def downloadCurl(target):
-    if target == "winxp":
+    if 0 and target == "winxp":
         downloadcopylibcurl("xp", "files/DLL32")
         return
-    downloadcopylibcurl("32", "files/DLL32")
+    downloadcopylibcurl("xp", "files/DLL32")
     downloadcopylibcurl("64", "files/DLL64")
 
 
@@ -326,7 +326,7 @@ def downloadalls(target):
     downloadCurl(target)
     downloadLocaleEmulator()
     downloadlr()
-    if target == "winxp":
+    if 0 and target == "winxp":
         return
     downloadmapie()
     downloadOCRModel()
@@ -427,7 +427,7 @@ if __name__ == "__main__":
         for _ in (
             "LunaTranslator_x64",
             "LunaTranslator_x64_win7",
-            "LunaTranslator_x86_win7",
+            # "LunaTranslator_x86_win7",
             "LunaTranslator_x86_winxp",
         ):
             for __ in myfiles:
