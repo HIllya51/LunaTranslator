@@ -1,7 +1,7 @@
 import os
 import modulefinder, shutil, os, sys
 import builtins, platform
-import sys, zipfile
+import sys, zipfile, urllib.request
 
 target = sys.argv[1]
 rootDir = os.path.dirname(__file__)
@@ -192,3 +192,24 @@ copycheck(
     os.path.join(pyqtplgdir, f"styles/qwindowsvistastyle.dll"),
     os.path.join(targetpyqtplgdir, f"styles"),
 )
+
+if target == "winxp":
+    embedurl = "https://github.com/R-YaTian/CPython3.7.17WinXP/releases/download/3.7.17_final/python-3.7.17-embed-win32.zip"
+    embeddir = os.path.dirname(os.path.abspath(runtime))
+    embedzip = os.path.join(embeddir, "python-3.7.17-embed-win32.zip")
+    os.makedirs(embeddir, exist_ok=True)
+    urllib.request.urlretrieve(embedurl, embedzip)
+    with zipfile.ZipFile(embedzip) as zipf:
+        embedfiles = {
+            os.path.basename(_).lower(): _
+            for _ in zipf.namelist()
+            if _.lower().endswith((".dll", ".exe", ".pyd"))
+        }
+        for _dir, _, _fs in os.walk(runtime):
+            for _f in _fs:
+                if _f.lower() not in embedfiles:
+                    continue
+                src = embedfiles[_f.lower()]
+                print("replace", os.path.join(_dir, _f), "<-", src)
+                with open(os.path.join(_dir, _f), "wb") as ff:
+                    ff.write(zipf.read(src))
