@@ -341,14 +341,11 @@ class __delayloadlangs(QHBoxLayout):
 
 
 def setTab_about(self: QWidget, basel):
-    from gui.fluent.card import create_card
+    from gui.fluent.card import make_card, make_trailing_combo, ICON_GLOBE, ICON_COLOR, ICON_SYNC
     from gui.usefulwidget import makescroll
-
-    def ____():
-        tabadd_lazy(
-            self.tab_widget, _TR("年度总结"), functools.partial(yearsummary, self)
-        )
-        self.tab_widget.adjust_list_widget_width()
+    from gui.setting.display_ui import switch_darklight
+    from gui.usefulwidget import getsimplecombobox
+    from myutils.config import ui_settings as _uis
 
     # ---- 卡片式布局 ----
     content = QWidget()
@@ -357,42 +354,30 @@ def setTab_about(self: QWidget, basel):
     vlay.setSpacing(8)
     vlay.setAlignment(Qt.AlignmentFlag.AlignTop)
 
+    # 界面语言（不能抽出 combo 重挂——延迟加载会丢 item，必须用 widget 包裹布局）
     lang_holder = QWidget()
     lang_holder.setLayout(__delayloadlangs())
     lang_holder.layout().setContentsMargins(0, 0, 0, 0)
-    # UI 语言卡片
-    vlay.addWidget(create_card(
-        "",  # Globe
-        "界面语言", "选择软件界面显示的语言",
+    vlay.addWidget(make_card(
+        ICON_GLOBE, "界面语言", "选择软件界面显示的语言",
         lang_holder,
     ))
 
-    # 明暗卡片
-    from gui.setting.display_ui import switch_darklight
-    from gui.usefulwidget import getsimplecombobox
-    from myutils.config import ui_settings as _uis
-    darklight_holder = QWidget()
-    darklight_lay = QHBoxLayout(darklight_holder)
-    darklight_lay.setContentsMargins(0, 0, 0, 0)
+    # 应用主题
     darklight_combo = getsimplecombobox(
-        ["跟随系统", "明亮", "黑暗"],
-        _uis,
-        "darklight2",
+        ["跟随系统", "明亮", "黑暗"], _uis, "darklight2",
         callback=lambda _: (
             gobject.base.setcommonstylesheet(),
             switch_darklight(),
         ),
         default=0,
     )
-    darklight_combo.setMinimumWidth(170)
-    darklight_lay.addWidget(darklight_combo)
-    vlay.addWidget(create_card(
-        "",  # Color
-        "应用主题", "选择应用的明暗模式",
-        darklight_holder,
+    vlay.addWidget(make_card(
+        ICON_COLOR, "应用主题", "选择应用的明暗模式",
+        make_trailing_combo(darklight_combo),
     ))
 
-    # 自动更新卡片（含版本号 + 进度条）
+    # 自动更新
     update_switch = D_getsimpleswitch(
         globalconfig, "autoupdate",
         callback=lambda _: versionchecktask.put(_),
@@ -404,7 +389,6 @@ def setTab_about(self: QWidget, basel):
         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
     self.downloadprogress.setVisible(False)
-
     version_link = createversionlabel()
 
     update_trailing = QWidget()
@@ -419,9 +403,8 @@ def setTab_about(self: QWidget, basel):
     ut_lay.addLayout(ut_row)
     ut_lay.addWidget(self.downloadprogress)
 
-    vlay.addWidget(create_card(
-        "",  # Sync
-        "自动更新", "启动时检查新版本",
+    vlay.addWidget(make_card(
+        ICON_SYNC, "自动更新", "启动时检查新版本",
         update_trailing,
     ))
 
