@@ -15,7 +15,6 @@ from gui.usefulwidget import (
     SuperCombo,
     getsmalllabel,
     getboxlayout,
-    NQGroupBox,
     LinkLabel,
     SClickableLabel,
     VisLFormLayout,

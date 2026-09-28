@@ -21,13 +21,13 @@ from gui.usefulwidget import (
     pixmapviewer,
     LStandardItemModel,
     SuperCombo,
-    NQGroupBox,
     GroupCardWidget,
     getsmalllabel,
     manybuttonlayout,
     makesubtab_lazy,
     create_centered_rect,
     makescrollgrid,
+    maketabholder,
 )
 from gui.specialwidget import KeyPressDetector
 from traceback import print_exc
@@ -581,6 +581,7 @@ def internal(self):
         ],
         delay=True,
         padding=True,
+        pagecard=True,
     )
     return tab, dotab
 
@@ -590,5 +591,5 @@ def getocrgrid_table(self, basel: QVBoxLayout):
     self.ocrswitchs = {}
 
     gridlayoutwidget, do = internal(self)
-    basel.addWidget(gridlayoutwidget)
+    basel.addWidget(maketabholder(gridlayoutwidget, top=8))
     do()

@@ -192,12 +192,14 @@ def uisetting(self):
         [
             dict(
                 type="grid",
+                card=True,
                 grid=([__rs],),
             )
         ],
         [
             dict(
                 type="grid",
+                card=True,
                 grid=(
                     [
                         "游戏窗口移动时同步移动",

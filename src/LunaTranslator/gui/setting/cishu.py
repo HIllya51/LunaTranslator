@@ -13,6 +13,7 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     listediter,
     D_getIconButton,
+    getIconButton,
     LPushButton,
     NQGroupBox,
     getsmalllabel,
@@ -28,6 +29,7 @@ from gui.usefulwidget import (
     KeySequenceEdit,
     check_grid_append,
     automakegrid,
+    makegrid,
     request_delete_ok,
     DarkLightAutoResetIconHelper,
     FocusFontCombo,
@@ -36,6 +38,7 @@ from gui.usefulwidget import (
 )
 import qtawesome
 from gui.dynalang import LFormLayout, LLabel, LAction, LDialog
+from gui.fluent.expander import ExExpander
 from gui.rendertext.tooltipswidget import tooltipssetting
 from gui.showword import cishusX
 from gui.setting.cishucommunity import CommunityCishuDialog
@@ -322,7 +325,7 @@ def mdictsettings(self):
     return box
 
 
-class fontsettings(NQGroupBox):
+class fontsettings(GroupCardWidget):
 
     def createtextfontcom(self, key, df):
         def _f(key, x):
@@ -335,8 +338,8 @@ class fontsettings(NQGroupBox):
         return font_comboBox
 
     def __init__(self, parent):
-        super().__init__(parent)
-        form = LFormLayout(self)
+        super().__init__(parent=parent)
+        form = LFormLayout(self.contentWidget())
         form.addRow(
             "相对大小",
             getspinbox(
@@ -508,12 +511,31 @@ def setTabcishu_l(self):
         ),
     )
 
-    def showhidebutton(idx):
-        return getIconSwitch(
-            icon="fa.gear",
-            checkablechangecolor=False,
-            callback=lambda x: self.triggerfuncs.layout().setRowVisible(idx, x),
-        )
+    def __fenciexpander(title, switch, trailing=None, grid=()):
+        """触发功能折叠卡（同 LICENSE 的 ExExpander）：标题 + 开关（折叠按钮左边）。"""
+        exp = ExExpander()
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        # 同 LICENSE：HeaderButton 自带左边距与 chevron 预留区，只留上下边距
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel(title)
+        titlefont = titlelabel.font()
+        titlefont.setBold(True)
+        titlefont.setPixelSize(14)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        hlay.addStretch(1)
+        if trailing is not None:
+            hlay.addWidget(trailing)
+        hlay.addWidget(switch)
+        exp.setHeaderWidget(header)
+        exp.addContentWidget(makegrid(list(grid)))
+        return exp
+
+    def _notitled(d):
+        d["title"] = None
+        return d
 
     def manysettings(title, k, k2, extra=None, canhover=True):
         grid = [
@@ -554,120 +576,175 @@ def setTabcishu_l(self):
         grid[-1] += [""]
         return dict(title=title, type="form", grid=grid)
 
-    triggerfuncs = [
-        [
-            "显示详细信息",
-            D_getsimpleswitch(
-                globalconfig,
-                "word_hover_show_word_info",
-                callback=lambda _: (
-                    gobject.base.translation_ui.translate_text.set_word_hover_show_word_info(
-                        _
-                    ),
-                    gobject.base.translation_ui.translate_text.showhideclick(_),
+    # ---- 触发功能：四个独立折叠卡（不再嵌在“触发功能”分组下） ----
+    hoverinfoexp = __fenciexpander(
+        "显示详细信息",
+        getsimpleswitch(
+            globalconfig,
+            "word_hover_show_word_info",
+            callback=lambda _: (
+                gobject.base.translation_ui.translate_text.set_word_hover_show_word_info(
+                    _
                 ),
-                default=False,
+                gobject.base.translation_ui.translate_text.showhideclick(_),
             ),
-            functools.partial(showhidebutton, 2),
-            "",
-            "",
-            "复制到剪贴板",
-            D_getsimpleswitch(
-                globalconfig,
-                "usecopyword",
-                callback=gobject.base.translation_ui.translate_text.showhideclick,
-                default=False,
-            ),
-            functools.partial(showhidebutton, 3),
-            "",
-            "",
-            "",
-        ],
-        [
-            "查词",
-            D_getsimpleswitch(
-                globalconfig,
-                "usesearchword",
-                callback=gobject.base.translation_ui.translate_text.showhideclick,
-                default=True,
-            ),
-            functools.partial(showhidebutton, 4),
-            D_getIconButton(
-                lambda: gobject.base.searchwordW.showsignal.emit(),
-                icon="fa.search",
-                tips="查词",
-            ),
-            "",
-            "查词_在小窗口中",
-            D_getsimpleswitch(
-                globalconfig,
-                "usesearchword_S",
-                callback=gobject.base.translation_ui.translate_text.showhideclick,
-                default=False,
-            ),
-            functools.partial(showhidebutton, 5),
-        ],
-        [
-            dict(
-                title="显示详细信息",
-                type="form",
-                grid=[
-                    ["触发方式", "鼠标悬停"],
-                    [
-                        dict(
-                            title="样式",
-                            type="form",
-                            grid=tooltipssetting(self),
-                        )
+            default=False,
+        ),
+        grid=(
+            [
+                dict(
+                    type="form",
+                    grid=[
+                        ["触发方式", "鼠标悬停"],
+                        [
+                            dict(
+                                title="样式",
+                                type="form",
+                                grid=tooltipssetting(self),
+                            )
+                        ],
                     ],
-                ],
-            )
-        ],
-        [
-            manysettings(
-                "复制到剪贴板", "copyword_mousetrigger", "copyword", canhover=False
-            )
-        ],
-        [
-            manysettings(
-                "查词",
-                "searchword_mousetrigger",
-                "searchword",
-                [
-                    getsmalllabel("辞书显示顺序"),
-                    D_getIconButton(functools.partial(vistranslate_rank, self)),
-                ],
-                canhover=False,
-            )
-        ],
-        [
-            manysettings(
-                "查词_在小窗口中",
-                "searchword_S_mousetrigger",
-                "searchword_S",
-                [
-                    getsmalllabel("辞书显示顺序"),
-                    D_getIconButton(functools.partial(vistranslate_rank, self)),
-                    getsmalllabel(""),
-                    getsmalllabel("不使用的辞书"),
-                    D_getIconButton(
-                        callback=functools.partial(
-                            listediter,
-                            self,
-                            "不使用的辞书",
-                            globalconfig["ignoredict_S_hover"],
-                            candidates=cishusX(),
-                            namemapfunction=dynamiccishuname,
-                            exec=True,
-                        ),
-                        tips="不使用的辞书",
-                    ),
-                ],
-                canhover=True,
-            )
-        ],
-    ]
+                )
+            ],
+        ),
+    )
+    copywordexp = __fenciexpander(
+        "复制到剪贴板",
+        getsimpleswitch(
+            globalconfig,
+            "usecopyword",
+            callback=gobject.base.translation_ui.translate_text.showhideclick,
+            default=False,
+        ),
+        grid=(
+            [
+                _notitled(
+                    manysettings(
+                        "复制到剪贴板",
+                        "copyword_mousetrigger",
+                        "copyword",
+                        canhover=False,
+                    )
+                )
+            ],
+        ),
+    )
+    searchwordexp = __fenciexpander(
+        "查词",
+        getsimpleswitch(
+            globalconfig,
+            "usesearchword",
+            callback=gobject.base.translation_ui.translate_text.showhideclick,
+            default=True,
+        ),
+        trailing=getIconButton(
+            lambda: gobject.base.searchwordW.showsignal.emit(),
+            icon="fa.search",
+            tips="查词",
+        ),
+        grid=(
+            [
+                _notitled(
+                    manysettings(
+                        "查词",
+                        "searchword_mousetrigger",
+                        "searchword",
+                        [
+                            getsmalllabel("辞书显示顺序"),
+                            D_getIconButton(functools.partial(vistranslate_rank, self)),
+                        ],
+                        canhover=False,
+                    )
+                )
+            ],
+        ),
+    )
+    searchword_Sexp = __fenciexpander(
+        "查词_在小窗口中",
+        getsimpleswitch(
+            globalconfig,
+            "usesearchword_S",
+            callback=gobject.base.translation_ui.translate_text.showhideclick,
+            default=False,
+        ),
+        grid=(
+            [
+                _notitled(
+                    manysettings(
+                        "查词_在小窗口中",
+                        "searchword_S_mousetrigger",
+                        "searchword_S",
+                        [
+                            getsmalllabel("辞书显示顺序"),
+                            D_getIconButton(
+                                functools.partial(vistranslate_rank, self)
+                            ),
+                            getsmalllabel(""),
+                            getsmalllabel("不使用的辞书"),
+                            D_getIconButton(
+                                callback=functools.partial(
+                                    listediter,
+                                    self,
+                                    "不使用的辞书",
+                                    globalconfig["ignoredict_S_hover"],
+                                    candidates=cishusX(),
+                                    namemapfunction=dynamiccishuname,
+                                    exec=True,
+                                ),
+                                tips="不使用的辞书",
+                            ),
+                        ],
+                        canhover=True,
+                    )
+                )
+            ],
+        ),
+    )
+    # 语法加亮：一行卡片，switch 在最右边
+    yufajialiang = QWidget()
+    yufajialiang.setAttribute(Qt.WA_StyledBackground, True)
+    yufajialiang.setProperty("isCard", True)
+    yufajialiang.setMinimumHeight(48)
+    ylay = QHBoxLayout(yufajialiang)
+    ylay.setContentsMargins(18, 8, 18, 8)
+    ylay.setSpacing(8)
+    ytitle = LLabel("语法加亮")
+    yfont = ytitle.font()
+    yfont.setPixelSize(15)
+    ytitle.setFont(yfont)
+    ylay.addWidget(ytitle)
+    ylay.addStretch(1)
+    ylay.addWidget(
+        D_getIconButton(
+            icon="fa.paint-brush",
+            callback=lambda: multicolorset(self),
+            tips="语法加亮_颜色设置",
+        )()
+    )
+    ylay.addWidget(
+        D_getcolorbutton(
+            self,
+            globalconfig,
+            "hovercolor",
+            callback=gobject.base.translation_ui.translate_text.sethovercolor,
+            alpha=True,
+            default="#80000000",
+            tips="鼠标悬停_颜色设置",
+        )()
+    )
+    ylay.addWidget(
+        getsimpleswitch(
+            globalconfig,
+            "show_fenci",
+            callback=lambda _: (
+                gobject.base.translation_ui.translate_text.setcolorstyle(),
+                gobject.base.translation_ui.translate_text.showhideclick(_),
+            ),
+            default=True,
+        )
+    )
 
+    # 分词卡：四个触发功能折叠卡，每行两个
     fenci = dict(
         title="分词",
         type="grid",
@@ -675,43 +752,8 @@ def setTabcishu_l(self):
         name="fencisettings",
         enable=globalconfig.get("isshowrawtext", True),
         grid=(
-            [
-                getsmalllabel("语法加亮"),
-                D_getsimpleswitch(
-                    globalconfig,
-                    "show_fenci",
-                    callback=lambda _: (
-                        gobject.base.translation_ui.translate_text.setcolorstyle(),
-                        gobject.base.translation_ui.translate_text.showhideclick(_),
-                    ),
-                    default=True,
-                ),
-                D_getIconButton(
-                    icon="fa.paint-brush",
-                    callback=lambda: multicolorset(self),
-                    tips="语法加亮_颜色设置",
-                ),
-                D_getcolorbutton(
-                    self,
-                    globalconfig,
-                    "hovercolor",
-                    callback=gobject.base.translation_ui.translate_text.sethovercolor,
-                    alpha=True,
-                    default="#80000000",
-                    tips="鼠标悬停_颜色设置",
-                ),
-                "",
-            ],
-            [
-                dict(
-                    title="触发功能",
-                    type="grid",
-                    parent=self,
-                    name="triggerfuncs",
-                    hiderows=[2, 3, 4, 5],
-                    grid=triggerfuncs,
-                )
-            ],
+            [hoverinfoexp, copywordexp],
+            [searchwordexp, searchword_Sexp],
         ),
     )
 
@@ -720,6 +762,7 @@ def setTabcishu_l(self):
         [cishu],
         [],
         [zhuyin],
+        [yufajialiang],
         [fenci],
     ]
     return grids

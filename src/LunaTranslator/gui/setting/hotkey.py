@@ -421,7 +421,6 @@ def selfdefkeys(self, lay: QLayout):
 def setTab_quick(self, l: QVBoxLayout):
     from gui.fluent.card import make_card
     from gui.fluent.icons import ICON_KEYBOARD_CLASSIC
-    from gui.fluent.tabwidget import apply_navigation_tabbar
 
     # ---- “使用快捷键”卡片 ----
     card_holder = QWidget()
@@ -453,8 +452,6 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
     tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True, pagecard=True)
-    # Navigation TabBar（Gallery setupNavigationTabs 同款）：左侧垂直导航页签
-    apply_navigation_tabbar(tab)
 
     # ---- tabwidget 只加页边距，页内容各自用紧邻 tabbar 的卡片包裹 ----
     l.addWidget(maketabholder(tab))

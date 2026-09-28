@@ -2455,12 +2455,13 @@ def makegroupingrid(args: dict):
     internallayoutname = args.get("internallayoutname", None)
     hiderows = args.get("hiderows", [])
     card = args.get("card", False)
-    # 有标题（或显式 card=True）的分组 → WinUI 卡片；无标题容器保持透明（避免卡中卡）
+    # 有标题（或显式 card=True）的分组 → WinUI 卡片；无标题容器用普通 QWidget
+    # （插件会给无 isCard 的 QGroupBox 画边框，看起来仍是 groupbox）
     if title or widget or card:
         group = GroupCardWidget(title, widget)
         host = group.contentWidget()
     else:
-        group = NQGroupBox()
+        group = QWidget()
         host = group
     if not enable:
         group.setEnabled(False)

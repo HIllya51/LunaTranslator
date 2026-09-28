@@ -802,6 +802,7 @@ def __hooksubtabs():
         ],
         delay=True,
         padding=True,
+        pagecard=True,
     )
     return tab, do
 
