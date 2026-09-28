@@ -671,43 +671,15 @@ def xianshigrid_style(self):
                 0,
             )
         ],
-        [
-            (
-                makecardrow(
-                    "显示翻译器名称",
-                    D_getsimpleswitch(
-                        globalconfig,
-                        "showfanyisource",
-                        callback=gobject.base.translation_ui.translate_text.showhidename,
-                        default=False,
-                    ),
-                ),
-                0,
-            )
-        ],
-        [
-            (
-                makecardrow(
-                    "收到翻译时才刷新",
-                    D_getsimpleswitch(
-                        globalconfig, "refresh_on_get_trans", default=False
-                    ),
-                ),
-                0,
-            )
-        ],
-        [
-            (
-                makecardrow(
-                    "固定翻译显示顺序",
-                    D_getsimpleswitch(
-                        globalconfig, "fix_translate_rank", default=False
-                    ),
-                    D_getIconButton(functools.partial(vistranslate_rank, self)),
-                ),
-                0,
-            )
-        ],
+        [(__textbackexpander(self), 0)],
+    ]
+    # 字体样式卡需先建（引擎下拉初值变化触发的回调会写它），放置顺序在后
+    fontexp = __fontstyleexpander(self)
+    engineexp = __engineexpander(self)
+    textgrid.append([(engineexp, 0)])
+    textgrid.append([(fontexp, 0)])
+    # 显示顺序 倒数第四、固定翻译显示顺序 倒数第三
+    textgrid.append(
         [
             (
                 makecardrow(
@@ -722,12 +694,50 @@ def xianshigrid_style(self):
                 ),
                 0,
             )
-        ],
-        [(__textbackexpander(self), 0)],
-    ]
-    # 字体样式卡需先建（引擎下拉初值变化触发的回调会写它），放置顺序在后
-    fontexp = __fontstyleexpander(self)
-    engineexp = __engineexpander(self)
-    textgrid.append([(engineexp, 0)])
-    textgrid.append([(fontexp, 0)])
+        ]
+    )
+    textgrid.append(
+        [
+            (
+                makecardrow(
+                    "固定翻译显示顺序",
+                    D_getsimpleswitch(
+                        globalconfig, "fix_translate_rank", default=False
+                    ),
+                    D_getIconButton(functools.partial(vistranslate_rank, self)),
+                ),
+                0,
+            )
+        ]
+    )
+    # 次要行为开关放最下面
+    textgrid.append(
+        [
+            (
+                makecardrow(
+                    "收到翻译时才刷新",
+                    D_getsimpleswitch(
+                        globalconfig, "refresh_on_get_trans", default=False
+                    ),
+                ),
+                0,
+            )
+        ]
+    )
+    textgrid.append(
+        [
+            (
+                makecardrow(
+                    "显示翻译器名称",
+                    D_getsimpleswitch(
+                        globalconfig,
+                        "showfanyisource",
+                        callback=gobject.base.translation_ui.translate_text.showhidename,
+                        default=False,
+                    ),
+                ),
+                0,
+            )
+        ]
+    )
     return textgrid
