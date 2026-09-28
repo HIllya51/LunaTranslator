@@ -3628,6 +3628,11 @@ class _FoldHeaderButton(QAbstractButton):
         self.layout().insertWidget(self._leftcount + 1, w)
         self._leftcount += 1
 
+    def addRightWidget(self, w):
+        # 开关等挂件放在右端、折叠按钮左边（预留自绘 chevron 区域）
+        self.layout().addWidget(w)
+        self.layout().setContentsMargins(12, 12, 48, 12)
+
     def _on_toggled(self, checked):
         if not self.isVisible():
             self._progress = 1.0 if checked else 0.0
@@ -3710,6 +3715,12 @@ class CollapsibleBoxWithButton(QWidget):
         for w in ws:
             self.toggle_button.addLeftWidget(w)
 
+    def addRightWidget(self, ws):
+        if not isinstance(ws, (tuple, list)):
+            ws = [ws]
+        for w in ws:
+            self.toggle_button.addRightWidget(w)
+
     def __toggled(self, checked):
         self.toggle_button.setChecked(checked)
         self.content_area.toggle(checked)
@@ -3727,6 +3738,7 @@ def createfoldgrid(
     internallayoutname=None,
     parent=None,
     leftwidget=None,
+    switch=None,
 ):
 
     def __(grid, internallayoutname, parent, lay: QLayout):
@@ -3748,6 +3760,10 @@ def createfoldgrid(
     )
     if leftwidget:
         box.addLeftWidget(leftwidget())
+    if switch is not None:
+        if callable(switch):
+            switch = switch()
+        box.addRightWidget(switch)
     if d:
         box.toggled.connect(functools.partial(d.__setitem__, k))
     return box
