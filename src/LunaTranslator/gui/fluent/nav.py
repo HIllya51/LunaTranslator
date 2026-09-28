@@ -23,6 +23,7 @@ from qtsymbols import (
     Qt,
     QVariantAnimation,
     pyqtSignal,
+    QTimer,
     QTreeWidget,
     QTreeWidgetItem,
 )
@@ -76,6 +77,11 @@ class FluentNavTree(QTreeWidget):
         self.setFrameShape(QFrame.NoFrame)
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        # 构造期树高度未定（30px 默认），项添加后 range>0 会让滚动条
+        # 进入可见态、首次显示时闪现一下再消失——首次布局完成前保持
+        # 关闭，之后恢复按需显示
+        self._vscroll_pending = True
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setTextElideMode(Qt.ElideRight)
         self.setProperty("navigationViewIndicator", True)
         self.setProperty("ItemHeight", 38)
@@ -92,6 +98,19 @@ class FluentNavTree(QTreeWidget):
         self._width_animation.finished.connect(self._on_width_animation_finished)
 
         self.currentItemChanged.connect(self._handle_item_selection)
+
+    # ---- 滚动条 ----
+    def showEvent(self, e):
+        super().showEvent(e)
+        if self._vscroll_pending:
+            # 等本轮流式布局（树到达最终高度、range 归零）后再放开
+            QTimer.singleShot(0, self._enable_vscroll_asneeded)
+
+    def _enable_vscroll_asneeded(self):
+        if not self.isVisible():
+            return  # 已被隐藏：留待下次显示再试
+        self._vscroll_pending = False
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
     # ---- 项管理 ----
     def addNavigationItem(self, text, page_index, icon_code="", auto_select=True):
