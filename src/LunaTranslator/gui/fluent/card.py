@@ -18,6 +18,7 @@ from qtsymbols import (
     QVBoxLayout,
     QWidget,
 )
+from gui.dynalang import LLabel
 
 from gui.fluent.icons import (
     ICON_COLOR,
@@ -61,14 +62,14 @@ class FluentCard(QWidget):
         text_layout.setContentsMargins(0, 0, 0, 0)
         text_layout.setSpacing(1)
 
-        title_label = QLabel(title, text_widget)
+        title_label = LLabel(title, text_widget)
         title_font = title_label.font()
         title_font.setPixelSize(15)
         title_label.setFont(title_font)
         text_layout.addWidget(title_label)
 
         if description:
-            desc_label = QLabel(description, text_widget)
+            desc_label = LLabel(description, text_widget)
             desc_font = desc_label.font()
             desc_font.setPixelSize(13)
             desc_label.setFont(desc_font)
@@ -115,14 +116,14 @@ def make_card_contents(icon_code, title, description="", trailing=None, parent=N
     text_layout.setContentsMargins(0, 0, 0, 0)
     text_layout.setSpacing(1)
 
-    title_label = QLabel(title, text_widget)
+    title_label = LLabel(title, text_widget)
     title_font = title_label.font()
     title_font.setPixelSize(15)
     title_label.setFont(title_font)
     text_layout.addWidget(title_label)
 
     if description:
-        desc_label = QLabel(description, text_widget)
+        desc_label = LLabel(description, text_widget)
         desc_font = desc_label.font()
         desc_font.setPixelSize(13)
         desc_label.setFont(desc_font)

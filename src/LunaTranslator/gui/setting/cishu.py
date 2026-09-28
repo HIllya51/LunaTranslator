@@ -377,7 +377,6 @@ def fontsettings(parent):
                     callback=gobject.base.translation_ui.translate_text.setfontstyle,
                     default=0.5,
                 ),
-                1,
             ]
         )
     )
