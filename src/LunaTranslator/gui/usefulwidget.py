@@ -56,6 +56,8 @@ class FocusCombo(QComboBox):
     def __init__(self, parent: QWidget = None, sizeX=False) -> None:
         super().__init__(parent)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
+        # Gallery 修复：默认内部视图在弹出列表的选中项上下会画黑线
+        self.setView(QListView(self))
         if sizeX:
             self.setSizeAdjustPolicy(
                 QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
@@ -87,9 +89,6 @@ class SuperCombo(FocusCombo):
 
     def __init__(self, parent=None, static=False, sizeX=False) -> None:
         super().__init__(parent=parent, sizeX=sizeX)
-        # FluentUI3：Gallery 的优化——默认内部视图在弹出列表的选中项上下
-        # 会画两条全宽黑线，换成干净的 QListView 消除
-        self.setView(QListView(self))
         self.static = static
         self.__resizedirect()
 
@@ -3595,13 +3594,13 @@ class CollapsibleBox(QWidget):
 
 
 class _FoldHeaderButton(QAbstractButton):
-    """折叠卡片头（同 ExExpander header）：加粗标题 + 右端 chevron
+    """折叠卡片头（同 ExExpander header）：标题 + 右端 chevron
     （随展开旋转 180°，悬停时 chevron 区 subtle 高亮，鼠标指针不变）。"""
 
     _CHEVRON_SIZE = 32
     _CHEVRON_TRAILING = 8
 
-    def __init__(self, title="", parent=None):
+    def __init__(self, title="", parent=None, bold=True):
         super().__init__(parent)
         self.setCheckable(True)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -3614,7 +3613,7 @@ class _FoldHeaderButton(QAbstractButton):
         self._leftcount = 0
         self.titlelabel = LLabel(title)
         titlefont = self.titlelabel.font()
-        titlefont.setBold(True)
+        titlefont.setBold(bold)
         titlefont.setPixelSize(14)
         self.titlelabel.setFont(titlefont)
         self.titlelabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
@@ -3695,12 +3694,14 @@ class _FoldHeaderButton(QAbstractButton):
 class CollapsibleBoxWithButton(QWidget):
     toggled = pyqtSignal(bool)
 
-    def __init__(self, delayloadfunction=None, title="", parent=None, toggled=False):
+    def __init__(
+        self, delayloadfunction=None, title="", parent=None, toggled=False, bold=True
+    ):
         super(CollapsibleBoxWithButton, self).__init__(parent)
         # WinUI 卡片外观（同 GroupCardWidget / ExExpander）
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setProperty("isCard", True)
-        self.toggle_button = _FoldHeaderButton(title, self)
+        self.toggle_button = _FoldHeaderButton(title, self, bold=bold)
         self.toggle_button.toggled.connect(self.__toggled)
         self.toggle_button.toggled.connect(self.toggled)
         self.content_area = CollapsibleBox(delayloadfunction, self)
@@ -3742,6 +3743,7 @@ def createfoldgrid(
     parent=None,
     leftwidget=None,
     switch=None,
+    bold=True,
 ):
 
     def __(grid, internallayoutname, parent, lay: QLayout):
@@ -3760,6 +3762,7 @@ def createfoldgrid(
         functools.partial(__, grid, internallayoutname, parent),
         title,
         toggled=toggled,
+        bold=bold,
     )
     if leftwidget:
         box.addLeftWidget(leftwidget())
