@@ -41,7 +41,12 @@ def __create():
         gobject.base.createattachprocess,
         icon=globalconfig["toolbutton"]["buttons"]["selectgame"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
+        fix=False,
     )
+    selectbutton.setText("选择游戏")
+    # IconButton 自带的 transparent 边框样式会盖掉插件的按钮渲染
+    selectbutton.setStyleSheet("")
+    selectbutton.setFixedHeight(32)
     gobject.base.selecthookbuttonstatus.connect(selectbutton.setEnabled)
     return selectbutton
 
@@ -51,9 +56,25 @@ def __create2():
         lambda: gobject.base.hookselectdialog.showsignal.emit(),
         icon=globalconfig["toolbutton"]["buttons"]["selecttext"]["icon"],
         enable=globalconfig["sourcestatus2"]["texthook"]["use"],
+        fix=False,
     )
+    selecthookbutton.setText("选择文本")
+    selecthookbutton.setStyleSheet("")
+    selecthookbutton.setFixedHeight(32)
     gobject.base.selecthookbuttonstatus.connect(selecthookbutton.setEnabled)
     return selecthookbutton
+
+
+def __create3():
+    gamebutton = getIconButton(
+        lambda: gobject.base.translation_ui.showsavegame_signal.emit(),
+        icon=globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"],
+        fix=False,
+    )
+    gamebutton.setText("游戏管理")
+    gamebutton.setStyleSheet("")
+    gamebutton.setFixedHeight(32)
+    return gamebutton
 
 
 def gethookgrid_em(dic=None):
@@ -810,17 +831,11 @@ def __hooksubtabs():
 def setTabOne_lazy_h(self, basel: QVBoxLayout):
     grids = [
         [
-            "选择游戏",
             __create,
             "",
-            "选择文本",
             __create2,
             "",
-            "游戏管理",
-            D_getIconButton(
-                lambda: gobject.base.translation_ui.showsavegame_signal.emit(),
-                icon=globalconfig["toolbutton"]["buttons"]["gamepad_new"]["icon"],
-            ),
+            __create3,
             "",
         ],
         [
