@@ -217,10 +217,15 @@ def load_scaled_pixmap(
         return img
 
 
-class aboutwidget(NQGroupBox):
+class aboutwidget(QWidget):
+    """关于信息卡片（FluentUI isCard）。"""
+
     def __init__(self, *a):
         super().__init__(*a)
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setProperty("isCard", True)
         self.grid = QFormLayout(self)
+        self.grid.setContentsMargins(16, 12, 16, 12)
         self.labels: "list[QWidget]" = []
         self.mdlabel = MDLabel1("")
         self.grid.addRow(self.mdlabel)
@@ -336,83 +341,129 @@ class __delayloadlangs(QHBoxLayout):
 
 
 def setTab_about(self: QWidget, basel):
+    from gui.fluent.card import create_card
+    from gui.usefulwidget import makescroll
+
     def ____():
         tabadd_lazy(
             self.tab_widget, _TR("年度总结"), functools.partial(yearsummary, self)
         )
         self.tab_widget.adjust_list_widget_width()
 
-    makescrollgrid(
-        [
-            [
-                dict(
-                    name="aboutlayout",
-                    parent=self,
-                    hiderows=[2],
-                    grid=[
-                        ["UI语言", __delayloadlangs],
-                        ["自动更新", functools.partial(updatexx, self)],
-                        [functools.partial(progress___, self)],
-                    ],
-                ),
-            ],
-            [aboutwidget],
-            [
-                functools.partial(
-                    createfoldgrid,
-                    [
-                        [
-                            makelink("HIllya51/LunaTranslator")[0],
-                            functools.partial(
-                                MDLabel,
-                                "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。",
-                            ),
-                        ],
-                        [("引用的项目", -1)],
-                        makelink("opencv/opencv"),
-                        makelink("microsoft/onnxruntime"),
-                        makelink("Artikash/Textractor"),
-                        makelink("RapidAI/RapidOcrOnnx"),
-                        makelink("PaddlePaddle/PaddleOCR"),
-                        makelink("Blinue/Magpie"),
-                        makelink("xupefei/Locale-Emulator"),
-                        makelink("InWILL/Locale_Remulator"),
-                        makelink("zxyacb/ntlea"),
-                        makelink("Chuyu-Team/YY-Thunks"),
-                        makelink("Chuyu-Team/VC-LTL5"),
-                        makelink("uyjulian/AtlasTranslate"),
-                        makelink("ilius/pyglossary"),
-                        makelink("ikegami-yukino/mecab"),
-                        makelink("AngusJohnson/Clipper2"),
-                        makelink("rapidfuzz/rapidfuzz-cpp"),
-                        makelink("TsudaKageyu/minhook"),
-                        makelink("lobehub/lobe-icons"),
-                        makelink("kokke/tiny-AES-c"),
-                        makelink("AuroraWright/owocr"),
-                        makelink("b1tg/win11-oneocr"),
-                        makelink("mity/md4c"),
-                        makelink("swigger/wechat-ocr"),
-                        makelink("rupeshk/MarkdownHighlighter"),
-                        makelink("sindresorhus/github-markdown-css"),
-                        makelink("gexgd0419/NaturalVoiceSAPIAdapter"),
-                        makelink("microsoft/PowerToys"),
-                        makelink("WaterJuice/WjCryptLib"),
-                        makelink("k2-fsa/sherpa-onnx"),
-                        makelink("chromium/chromium"),
-                        makelink("Neargye/magic_enum"),
-                        makelink("bbepis/XUnity.AutoTranslator"),
-                        makelink("uchardet/uchardet"),
-                    ],
-                    "LICENSE",
-                )
-            ],
-            # [getboxlayout([D_getIconButton(____, icon="fa.calendar"), ""])],
-        ],
-        basel,
+    # ---- 卡片式布局 ----
+    content = QWidget()
+    vlay = QVBoxLayout(content)
+    vlay.setContentsMargins(16, 8, 16, 12)
+    vlay.setSpacing(8)
+    vlay.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+    lang_holder = QWidget()
+    lang_holder.setLayout(__delayloadlangs())
+    # UI 语言卡片
+    vlay.addWidget(create_card(
+        "",  # Globe
+        "界面语言", "选择软件界面显示的语言",
+        lang_holder,
+    ))
+
+    # 自动更新卡片（含版本号 + 进度条）
+    update_switch = D_getsimpleswitch(
+        globalconfig, "autoupdate",
+        callback=lambda _: versionchecktask.put(_),
+        default=True,
+    )()
+    self.downloadprogress = QProgressBar(self)
+    self.downloadprogress.setRange(0, 10000)
+    self.downloadprogress.setAlignment(
+        Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
     )
+    self.downloadprogress.setVisible(False)
+
+    version_link = createversionlabel()
+
+    update_trailing = QWidget()
+    ut_lay = QVBoxLayout(update_trailing)
+    ut_lay.setContentsMargins(0, 0, 0, 0)
+    ut_lay.setSpacing(2)
+    ut_row = QHBoxLayout()
+    ut_row.setContentsMargins(0, 0, 0, 0)
+    ut_row.addWidget(update_switch)
+    ut_row.addSpacing(12)
+    ut_row.addWidget(version_link)
+    ut_lay.addLayout(ut_row)
+    ut_lay.addWidget(self.downloadprogress)
+
+    vlay.addWidget(create_card(
+        "",  # Sync
+        "自动更新", "启动时检查新版本",
+        update_trailing,
+    ))
+
+    # 自动更新进度回调
     gobject.base.connectsignal(
         gobject.base.progresssignal4,
-        functools.partial(
-            _progresssignal4, self.aboutlayout.layout(), self.downloadprogress
-        ),
+        lambda text, val: _progresssignal4_card(
+            self.downloadprogress, text, val),
     )
+
+    # 关于卡片
+    vlay.addWidget(aboutwidget())
+
+    # LICENSE 折叠
+    vlay.addWidget(createfoldgrid(
+        [
+            [
+                makelink("HIllya51/LunaTranslator")[0],
+                functools.partial(
+                    MDLabel,
+                    "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。",
+                ),
+            ],
+            [("引用的项目", -1)],
+            makelink("opencv/opencv"),
+            makelink("microsoft/onnxruntime"),
+            makelink("Artikash/Textractor"),
+            makelink("RapidAI/RapidOcrOnnx"),
+            makelink("PaddlePaddle/PaddleOCR"),
+            makelink("Blinue/Magpie"),
+            makelink("xupefei/Locale-Emulator"),
+            makelink("InWILL/Locale_Remulator"),
+            makelink("zxyacb/ntlea"),
+            makelink("Chuyu-Team/YY-Thunks"),
+            makelink("Chuyu-Team/VC-LTL5"),
+            makelink("uyjulian/AtlasTranslate"),
+            makelink("ilius/pyglossary"),
+            makelink("ikegami-yukino/mecab"),
+            makelink("AngusJohnson/Clipper2"),
+            makelink("rapidfuzz/rapidfuzz-cpp"),
+            makelink("TsudaKageyu/minhook"),
+            makelink("lobehub/lobe-icons"),
+            makelink("kokke/tiny-AES-c"),
+            makelink("AuroraWright/owocr"),
+            makelink("b1tg/win11-oneocr"),
+            makelink("mity/md4c"),
+            makelink("swigger/wechat-ocr"),
+            makelink("rupeshk/MarkdownHighlighter"),
+            makelink("sindresorhus/github-markdown-css"),
+            makelink("gexgd0419/NaturalVoiceSAPIAdapter"),
+            makelink("microsoft/PowerToys"),
+            makelink("WaterJuice/WjCryptLib"),
+            makelink("k2-fsa/sherpa-onnx"),
+            makelink("chromium/chromium"),
+            makelink("Neargye/magic_enum"),
+            makelink("bbepis/XUnity.AutoTranslator"),
+            makelink("uchardet/uchardet"),
+        ],
+        "LICENSE",
+    ))
+
+    scroll = makescroll()
+    scroll.setWidget(content)
+    basel.addWidget(scroll)
+
+
+def _progresssignal4_card(progressbar: QProgressBar, text, val):
+    progressbar.setValue(val)
+    progressbar.setFormat(text)
+    progressbar.setVisible(bool(val or text))
+

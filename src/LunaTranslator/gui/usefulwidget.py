@@ -3507,7 +3507,7 @@ else:
         pass
 
 
-class CollapsibleBox(NQGroupBox):
+class CollapsibleBox(QWidget):
     def __init__(self, delayloadfunction=None, parent=None, margin0=True):
         super(CollapsibleBox, self).__init__(parent)
         lay = QVBoxLayout(self)
