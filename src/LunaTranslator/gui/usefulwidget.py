@@ -2306,8 +2306,8 @@ def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
     v = QVBoxLayout(q)
     v.setContentsMargins(0, 0, 0, 0)
     if pagecard:
-        # 页内容包进紧邻 tabbar 的卡片（零内边距，内容由自身网格边距撑开）
-        v.setContentsMargins(0, 8, 0, 0)
+        # 页内容包进紧邻 tabbar 的卡片（零内边距，卡片与 tabbar 无间隔）
+        v.setContentsMargins(0, 0, 0, 0)
         card = QWidget()
         card.setAttribute(Qt.WA_StyledBackground, True)
         card.setProperty("isCard", True)
@@ -2316,6 +2316,9 @@ def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
         innerlay.setContentsMargins(0, 0, 0, 0)
         q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
     else:
+        if isinstance(tab, QTabWidget):
+            # 普通子页签页：标记给 makescrollgrid —— 网格首卡紧贴 tabbar
+            v.setProperty("_fluent_tabbar_page", True)
         q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     tab.addTab(q, title)
 
@@ -2610,7 +2613,7 @@ def maketabholder(tab, top=0):
     return holder
 
 
-def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None):
+def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None, toptouch=False):
 
     class gridwidget(QWidget):
         pass
@@ -2621,8 +2624,9 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None)
     else:
         gridlay = QGridLayout(gridlayoutwidget)
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
-    # FluentUI3：页面级网格留边距（卡片不贴窗口边），卡片行间距 8
-    gridlay.setContentsMargins(16, 8, 16, 12)
+    # FluentUI3：页面级网格留边距（卡片不贴窗口边），卡片行间距 8；
+    # toptouch=True 时仅顶部不留边距（首卡紧贴 tabbar，其余间隔保留）
+    gridlay.setContentsMargins(16, 0 if toptouch else 8, 16, 12)
     gridlay.setVerticalSpacing(8)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
@@ -2647,7 +2651,9 @@ def makescroll():
 
 
 def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=None):
-    wid, do = makegrid(grid, savelist, savelay, delay=True, hiderows=hiderows)
+    # 子页签页（tabadd_lazy 标记）的网格顶部紧贴 tabbar，其余场景保留顶部边距
+    flush = bool(getattr(lay, "property", lambda *_: None)("_fluent_tabbar_page"))
+    wid, do = makegrid(grid, savelist, savelay, delay=True, hiderows=hiderows, toptouch=flush)
     swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)
