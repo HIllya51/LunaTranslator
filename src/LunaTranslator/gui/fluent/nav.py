@@ -94,10 +94,10 @@ class FluentNavTree(QTreeWidget):
         self.currentItemChanged.connect(self._handle_item_selection)
 
     # ---- 项管理 ----
-    def addNavigationItem(self, text, page_index, icon_code=""):
+    def addNavigationItem(self, text, page_index, icon_code="", auto_select=True):
         item = QTreeWidgetItem(self)
         self.configureNavigationItem(item, text, page_index, icon_code)
-        if self.topLevelItemCount() == 1 and self.currentItem() is None:
+        if auto_select and self.topLevelItemCount() == 1 and self.currentItem() is None:
             self.setCurrentItem(item)
         return item
 
