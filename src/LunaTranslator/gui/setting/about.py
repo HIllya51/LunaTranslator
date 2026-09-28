@@ -420,15 +420,17 @@ def setTab_about(self: QWidget, basel):
 
     # LICENSE 折叠（ExExpander，同 Gallery 强调色折叠面板的用法）
     from gui.fluent.expander import ExExpander
-    from gui.fluent.card import FluentCard, ICON_SETTINGS_DISPLAY_SOUND
+    from gui.fluent.card import make_card_contents
+    from gui.fluent.icons import ICON_SETTINGS_DISPLAY_SOUND
 
     license_expander = ExExpander(content)
     license_expander.setObjectName("settingsLicenseExpander")
 
-    license_header = FluentCard(
+    # 同 Gallery：用 make_card_contents（不设 isCard——ExExpander 自己画卡片底色）
+    license_header = make_card_contents(
         ICON_SETTINGS_DISPLAY_SOUND, "LICENSE", "查看许可证与引用的项目",
         None, license_expander)
-    # 同 Gallery：HeaderButton 自带 16px 左内边距与 chevron 预留区，内容只留上下边距
+    # 同 C++：HeaderButton 自带 16px 左内边距与 chevron 预留区，内容只留上下边距
     license_header.layout().setContentsMargins(0, 12, 0, 12)
     license_expander.setHeaderWidget(license_header)
 

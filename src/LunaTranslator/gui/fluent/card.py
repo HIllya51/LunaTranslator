@@ -87,8 +87,58 @@ class FluentCard(QWidget):
 
 
 def make_card(icon_code, title, description="", trailing=None, parent=None):
-    """Gallery make_card 同款。"""
+    """Gallery make_card 同款：isCard 卡片。"""
     return FluentCard(icon_code, title, description, trailing, parent)
+
+
+def make_card_contents(icon_code, title, description="", trailing=None, parent=None):
+    """Gallery make_card_contents 同款：只有图标+文字+尾部控件的布局，
+    不设 isCard（ExExpander 的 header 用这个——面板自己画卡片底色）。"""
+    contents = QWidget(parent)
+    layout = QHBoxLayout(contents)
+    layout.setContentsMargins(18, 12, 18, 12)
+    layout.setSpacing(14)
+
+    if icon_code:
+        icon_label = QLabel(contents)
+        icon_font = QFont("Segoe Fluent Icons")
+        icon_font.setPixelSize(22)
+        icon_label.setFont(icon_font)
+        icon_label.setText(icon_code)
+        icon_label.setAlignment(Qt.AlignCenter)
+        icon_label.setFixedWidth(36)
+        layout.addWidget(icon_label)
+
+    text_widget = QWidget(contents)
+    text_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
+    text_layout = QVBoxLayout(text_widget)
+    text_layout.setContentsMargins(0, 0, 0, 0)
+    text_layout.setSpacing(1)
+
+    title_label = QLabel(title, text_widget)
+    title_font = title_label.font()
+    title_font.setPixelSize(15)
+    title_label.setFont(title_font)
+    text_layout.addWidget(title_label)
+
+    if description:
+        desc_label = QLabel(description, text_widget)
+        desc_font = desc_label.font()
+        desc_font.setPixelSize(13)
+        desc_label.setFont(desc_font)
+        desc_label.setWordWrap(True)
+        text_layout.addWidget(desc_label)
+
+    layout.addWidget(text_widget, 1)
+
+    if trailing is not None:
+        if callable(trailing):
+            trailing = trailing()
+        if trailing is not None:
+            layout.addSpacing(16)
+            layout.addWidget(trailing, 0, Qt.AlignVCenter)
+
+    return contents
 
 
 def make_trailing_combo(combo, width=170, height=32):
