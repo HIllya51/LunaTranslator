@@ -521,7 +521,6 @@ def setTabcishu_l(self):
         hlay.setSpacing(8)
         titlelabel = LLabel(title)
         titlefont = titlelabel.font()
-        titlefont.setBold(True)
         titlefont.setPixelSize(14)
         titlelabel.setFont(titlefont)
         hlay.addWidget(titlelabel)
@@ -553,8 +552,9 @@ def setTabcishu_l(self):
                     default="left",
                     callback=gobject.base.translation_ui.translate_text.showhideclick,
                 ),
-                "",
-                getsmalllabel("需要键盘按下"),
+            ],
+            [
+                "需要键盘按下",
                 D_getsimpleswitch(
                     globalconfig["wordclickkbtriggerneed"],
                     k2,
@@ -571,9 +571,9 @@ def setTabcishu_l(self):
                 ),
             ],
         ]
+        # extra：每一项单独一行，避免行过宽
         if extra:
-            grid[-1] += [getsmalllabel("")] + extra
-        grid[-1] += [""]
+            grid += [list(_r) for _r in extra]
         return dict(title=title, type="form", grid=grid)
 
     # ---- 触发功能：四个独立折叠卡（不再嵌在“触发功能”分组下） ----
@@ -650,8 +650,12 @@ def setTabcishu_l(self):
                         "searchword_mousetrigger",
                         "searchword",
                         [
-                            getsmalllabel("辞书显示顺序"),
-                            D_getIconButton(functools.partial(vistranslate_rank, self)),
+                            [
+                                "辞书显示顺序",
+                                D_getIconButton(
+                                    functools.partial(vistranslate_rank, self)
+                                ),
+                            ],
                         ],
                         canhover=False,
                     )
@@ -675,24 +679,27 @@ def setTabcishu_l(self):
                         "searchword_S_mousetrigger",
                         "searchword_S",
                         [
-                            getsmalllabel("辞书显示顺序"),
-                            D_getIconButton(
-                                functools.partial(vistranslate_rank, self)
-                            ),
-                            getsmalllabel(""),
-                            getsmalllabel("不使用的辞书"),
-                            D_getIconButton(
-                                callback=functools.partial(
-                                    listediter,
-                                    self,
-                                    "不使用的辞书",
-                                    globalconfig["ignoredict_S_hover"],
-                                    candidates=cishusX(),
-                                    namemapfunction=dynamiccishuname,
-                                    exec=True,
+                            [
+                                "辞书显示顺序",
+                                D_getIconButton(
+                                    functools.partial(vistranslate_rank, self)
                                 ),
-                                tips="不使用的辞书",
-                            ),
+                            ],
+                            [
+                                "不使用的辞书",
+                                D_getIconButton(
+                                    callback=functools.partial(
+                                        listediter,
+                                        self,
+                                        "不使用的辞书",
+                                        globalconfig["ignoredict_S_hover"],
+                                        candidates=cishusX(),
+                                        namemapfunction=dynamiccishuname,
+                                        exec=True,
+                                    ),
+                                    tips="不使用的辞书",
+                                ),
+                            ],
                         ],
                         canhover=True,
                     )
@@ -744,7 +751,7 @@ def setTabcishu_l(self):
         )
     )
 
-    # 分词卡：四个触发功能折叠卡，每行两个
+    # 分词卡：语法加亮一行卡 + 四个触发功能折叠卡（每行两个）
     fenci = dict(
         title="分词",
         type="grid",
@@ -752,6 +759,7 @@ def setTabcishu_l(self):
         name="fencisettings",
         enable=globalconfig.get("isshowrawtext", True),
         grid=(
+            [(yufajialiang, 0)],
             [hoverinfoexp, copywordexp],
             [searchwordexp, searchword_Sexp],
         ),
@@ -762,7 +770,6 @@ def setTabcishu_l(self):
         [cishu],
         [],
         [zhuyin],
-        [yufajialiang],
         [fenci],
     ]
     return grids
