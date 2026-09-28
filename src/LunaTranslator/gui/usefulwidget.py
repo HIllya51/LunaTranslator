@@ -469,7 +469,7 @@ class TableViewW(DelayLoadTableView, LTableView):
             row, [QStandardItem() for _ in range(self.model().columnCount())]
         )
 
-    def dedumpmodel(self, col):
+    def dedumpmodel(self, col, removeblank=False):
 
         rows = self.model().rowCount()
         dedump = set()
@@ -479,7 +479,7 @@ class TableViewW(DelayLoadTableView, LTableView):
                 k = self.getdata(row, col)
             elif callable(col):
                 k = col(row)
-            if k is None or k in dedump:
+            if k is None or k in dedump or (removeblank and not k):
                 needremoves.append(row)
                 continue
             dedump.add(k)

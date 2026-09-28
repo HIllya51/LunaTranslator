@@ -803,8 +803,8 @@ class extralangs(LDialog):
         )
 
     def apply(self):
-        self.table.dedumpmodel(0)
-        self.table.dedumpmodel(1)
+        self.table.dedumpmodel(0, removeblank=True)
+        self.table.dedumpmodel(1, removeblank=True)
         globalconfig["extraLangs"].clear()
         for row in range(self.model.rowCount()):
             switch = self.table.getdata(row, 0)
