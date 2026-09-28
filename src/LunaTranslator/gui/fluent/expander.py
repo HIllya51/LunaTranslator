@@ -540,6 +540,27 @@ class ExExpander(QWidget):
     def hasContentWidgets(self):
         return bool(self._content_panels)
 
+    def removeContentWidget(self, widget):
+        """移除一个内容面板（内容随引擎/样式切换整体重建的场景）。"""
+        if widget not in self._content_widgets:
+            return
+        idx = self._content_widgets.index(widget)
+        panel = self._content_panels[idx]
+        self._content_widgets.pop(idx)
+        self._content_panels.pop(idx)
+        self._content_layout.removeWidget(panel)
+        # 先 hide 再脱离父对象：setParent(None) 会把它变成顶层窗口，
+        # 保持可见态就会闪现一下
+        panel.hide()
+        panel.setParent(None)
+        panel.deleteLater()
+        self._rebuild_content_layout()
+        self._refresh_content_geometry()
+
+    def clearContentWidgets(self):
+        for widget in list(self._content_widgets):
+            self.removeContentWidget(widget)
+
     # ---- 展开/收起 ----
     def setFoldable(self, foldable):
         """无内容时退化为普通卡：不画折叠箭头、不可展开（如 Qt 引擎的
