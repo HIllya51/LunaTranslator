@@ -13,7 +13,7 @@
 import ctypes
 import ctypes.wintypes as wt
 
-from qtsymbols import QEvent, QPoint, QRect, Qt
+from qtsymbols import QEvent, QPoint, QRect, Qt, QTimer
 
 # Win32 常量
 WM_DESTROY = 0x0002
@@ -44,7 +44,7 @@ user32 = ctypes.windll.user32
 user32.GetSystemMenu.restype = ctypes.c_void_p
 user32.GetSystemMenu.argtypes = [wt.HWND, wt.BOOL]
 user32.TrackPopupMenu.restype = wt.BOOL
-user32.TrackPopupMenu.argtypes = [ctypes.c_void_p, wt.UINT,
+user32.TrackPopupMenu.argtypes = [wt.HWND, wt.UINT,
                                   ctypes.c_int, ctypes.c_int, ctypes.c_int,
                                   wt.HWND, ctypes.c_void_p]
 
@@ -93,6 +93,8 @@ class FluentFramelessWindowMixin:
         ):
             self._fluent_frameless_initialized = True
             self._setup_frameless_native()
+            # 标题栏原生化监控（见 eventFilter）
+            self._fluent_title_bar.installEventFilter(self)
 
     def closeEvent(self, event):
         # 停掉仍在运行的动画（导航宽度动画等），避免销毁期间定时器触发已删对象
@@ -119,7 +121,23 @@ class FluentFramelessWindowMixin:
                     self.style().polish(bar)
                 except:
                     pass
+        elif (
+            watched is getattr(self, "_fluent_title_bar", None)
+            and event.type() == QEvent.Type.WinIdChange
+        ):
+            # 根本修复：有原生子窗口注入本窗口时（如弹窗容器残留），Qt 会把
+            # 重叠的子控件（标题栏）提升为原生窗口——其自身 HWND 会盖住自己、
+            # 吞掉全部鼠标命中（无 WM_NCHITTEST，只剩转发的
+            # SETCURSOR/MOUSEACTIVATE/PARENTNOTIFY）。检测到即重新内嵌。
+            QTimer.singleShot(0, self._fluent_reembed_titlebar)
         return super().eventFilter(watched, event)
+
+    def _fluent_reembed_titlebar(self):
+        bar = getattr(self, "_fluent_title_bar", None)
+        if bar is not None and bar.testAttribute(Qt.WA_NativeWindow):
+            bar.setAttribute(Qt.WA_NativeWindow, False)
+            bar.hide()
+            bar.show()
 
     # ---- 原生层 ----
     def _setup_frameless_native(self):
