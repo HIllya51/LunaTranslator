@@ -64,16 +64,16 @@ def apply_fluent_style(dark):
 
     # setStyle 的 re-polish 会把控件字体重置；setcommonstylesheet 末尾的
     # 无条件 setFont 会恢复 app 字体，但弹出容器内的视图与常驻菜单不跟随——额外恢复
-    QTimer.singleShot(0, _restore_font_reset_widgets)
+    QTimer.singleShot(0, _restore_combo_view_fonts)
     _applied_key = key
 
 
-def _restore_font_reset_widgets():
-    """setStyle 重扫描（延迟生效）会把弹出视图、常驻菜单、内部 lineEdit
-    等的字体重置为系统默认(9pt)。对已知受害控件无条件设显式字体——显式
-    字体能在后续的延迟重置中存活。构造式 QFont(family, size)：拷贝式带空
-    resolve mask，setFont 等于清除显式字体，无效。"""
-    from qtsymbols import QComboBox, QMenu, QLineEdit
+def _restore_combo_view_fonts():
+    """setStyle 重扫描（延迟生效）会把 combo 弹出视图的字体重置为系统
+    默认(9pt)。对受害控件无条件设显式字体——显式字体能在后续的延迟重置
+    中存活。构造式 QFont(family, size)：拷贝式带空 resolve mask，
+    setFont 等于清除显式字体，无效。"""
+    from qtsymbols import QComboBox
 
     app = QApplication.instance()
     if app is None:
@@ -85,10 +85,8 @@ def _restore_font_reset_widgets():
         newf = QFont(appf.family())
         newf.setPixelSize(max(1, appf.pixelSize()))
     for w in QApplication.allWidgets():
-        try:
-            if isinstance(w, QComboBox):
+        if isinstance(w, QComboBox):
+            try:
                 w.view().setFont(QFont(newf))
-            elif isinstance(w, (QMenu, QLineEdit)):
-                w.setFont(QFont(newf))
-        except RuntimeError:
-            pass
+            except RuntimeError:
+                pass
