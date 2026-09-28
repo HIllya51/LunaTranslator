@@ -218,7 +218,7 @@ def load_scaled_pixmap(
 
 
 class aboutwidget(QWidget):
-    """关于信息卡片（FluentUI isCard）。"""
+    """关于信息卡片（「如果使用中…」等内容）。"""
 
     def __init__(self, *a):
         super().__init__(*a)
@@ -341,16 +341,14 @@ class __delayloadlangs(QHBoxLayout):
 
 
 def setTab_about(self: QWidget, basel):
-    from gui.fluent.card import make_card, make_trailing_combo, ICON_GLOBE, ICON_COLOR, ICON_SYNC
-    from gui.usefulwidget import makescroll
+    from gui.fluent.card import make_trailing_combo
+    from gui.usefulwidget import makescroll, makecardrow
     from gui.setting.display_ui import switch_darklight
     from gui.usefulwidget import getsimplecombobox
     from myutils.config import ui_settings as _uis
 
-    # ---- 卡片式布局：整页一张大卡（同 pagecard 页的观感） ----
+    # ---- 各设置项独立卡片 ----
     content = QWidget()
-    content.setAttribute(Qt.WA_StyledBackground, True)
-    content.setProperty("isCard", True)
     vlay = QVBoxLayout(content)
     vlay.setContentsMargins(16, 16, 16, 12)
     vlay.setSpacing(8)
@@ -360,10 +358,7 @@ def setTab_about(self: QWidget, basel):
     lang_holder = QWidget()
     lang_holder.setLayout(__delayloadlangs())
     lang_holder.layout().setContentsMargins(0, 0, 0, 0)
-    vlay.addWidget(make_card(
-        ICON_GLOBE, "界面语言", "选择软件界面显示的语言",
-        lang_holder,
-    ))
+    vlay.addWidget(makecardrow("界面语言", lang_holder))
 
     # 应用主题
     darklight_combo = getsimplecombobox(
@@ -374,10 +369,7 @@ def setTab_about(self: QWidget, basel):
         ),
         default=0,
     )
-    vlay.addWidget(make_card(
-        ICON_COLOR, "应用主题", "选择应用的明暗模式",
-        make_trailing_combo(darklight_combo),
-    ))
+    vlay.addWidget(makecardrow("应用主题", make_trailing_combo(darklight_combo)))
 
     # 自动更新
     update_switch = D_getsimpleswitch(
@@ -392,23 +384,9 @@ def setTab_about(self: QWidget, basel):
     )
     self.downloadprogress.setVisible(False)
     version_link = createversionlabel()
-
-    update_trailing = QWidget()
-    ut_lay = QVBoxLayout(update_trailing)
-    ut_lay.setContentsMargins(0, 0, 0, 0)
-    ut_lay.setSpacing(2)
-    ut_row = QHBoxLayout()
-    ut_row.setContentsMargins(0, 0, 0, 0)
-    ut_row.addWidget(update_switch)
-    ut_row.addSpacing(12)
-    ut_row.addWidget(version_link)
-    ut_lay.addLayout(ut_row)
-    ut_lay.addWidget(self.downloadprogress)
-
-    vlay.addWidget(make_card(
-        ICON_SYNC, "自动更新", "启动时检查新版本",
-        update_trailing,
-    ))
+    vlay.addWidget(makecardrow("自动更新", update_switch, version_link))
+    # 下载进度条：显示时出现在卡片下方
+    vlay.addWidget(self.downloadprogress)
 
     # 自动更新进度回调
     gobject.base.connectsignal(
@@ -490,8 +468,6 @@ def setTab_about(self: QWidget, basel):
 
     scroll = makescroll()
     scroll.setWidget(content)
-    # 大卡四周留 16 边距（同 maketabholder 的 pagecard 页）
-    basel.setContentsMargins(16, 16, 16, 12)
     basel.addWidget(scroll)
 
 
