@@ -247,13 +247,18 @@ class FluentNavTree(QTreeWidget):
     def mousePressEvent(self, event):
         pos = event.pos()
         index = self.indexAt(pos)
-        # 有子项的父项：单击整行 = 选中（切到该页）并展开/折叠；
-        # 图标模式子项隐藏，父项仅作为普通项选中
+        # 有子项的父项：单击整行 = 选中（切到该页）并展开。仅当已经处于
+        # 此项时，再次单击才折叠（从别的项切过来不关）；图标模式子项
+        # 隐藏，父项仅作为普通项选中
         if (index.isValid() and self.model().hasChildren(index)
                 and not self.property("navigationIconMode")):
+            is_current = (self.currentIndex() == index)
             self.setCurrentIndex(index)
-            if self.isExpanded(index):
-                self.collapse(index)
+            if is_current:
+                if self.isExpanded(index):
+                    self.collapse(index)
+                else:
+                    self.expand(index)
             else:
                 self.expand(index)
             event.accept()
