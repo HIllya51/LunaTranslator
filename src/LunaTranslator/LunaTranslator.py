@@ -216,11 +216,7 @@ class BASEOBJECT(QObject):
         self.__connect_internal(self.setresult)
         self.__connect_internal(self.setimage)
         self.safeinvokefunction.connect(self.__safeinvoke)
-        # QueuedConnection：确保不在调用者的信号处理器栈内同步执行
-        # （组合框下拉的关闭序列中同步 setStyle 会破坏标题栏鼠标响应）
-        self.setstylesheetsignal.connect(
-            self.setcommonstylesheet, Qt.QueuedConnection
-        )
+        self.setstylesheetsignal.connect(self.setcommonstylesheet)
         self.__connect_internal(self.progresssignal2)
         self.__connect_internal(self.progresssignal3)
         self.__connect_internal(self.progresssignal4)
@@ -1342,20 +1338,6 @@ class BASEOBJECT(QObject):
                 )
             else:
                 NativeUtils.clearEffect(int(widget.winId()))
-        elif widget.property("fluentFrameless"):
-            # Fluent 无边框窗口：不能调 NativeUtils.SetTheme（其内部
-            # DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE) 会破坏
-            # WM_NCCALCSIZE 去掉标题栏后的非客户区处理——标题栏无法拖动/右键。
-            # 同 Gallery 的 apply_dwm_dark_titlebar：只设暗色模式属性
-            try:
-                import ctypes as _ct
-                _v = _ct.c_int(1 if dark else 0)
-                _ct.windll.dwmapi.DwmSetWindowAttribute(
-                    _ct.wintypes.HWND(int(widget.winId())),
-                    _ct.wintypes.DWORD(20),  # DWMWA_USE_IMMERSIVE_DARK_MODE
-                    _ct.byref(_v), _ct.sizeof(_v))
-            except:
-                pass
         else:
             NativeUtils.SetTheme(int(widget.winId()), dark, self.currentmica)
 
@@ -1705,9 +1687,8 @@ class BASEOBJECT(QObject):
             )
         )
         font.setPointSizeF(ui_settings.get("settingfontsize", 12))
-        # 无条件 setFont：app.setStyle 的 re-polish 会把控件字体重置为系统默认，
-        # 有 != 守卫时会跳过不变化的字体导致全部变小
-        QApplication.instance().setFont(font)
+        if QApplication.instance().font() != font:
+            QApplication.instance().setFont(font)
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:
 
