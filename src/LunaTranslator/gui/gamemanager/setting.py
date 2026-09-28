@@ -626,8 +626,10 @@ class dialog_setting_game_internal(QWidget):
                 )
             except:
                 print_exc()
-            # 当前方式无设置项时收起（同原 box.hide 语义）
-            exp.setExpanded(method_lay.count() > 0)
+            # 当前方式无设置项（如 直接启动）时退化为普通卡；有设置为折叠卡
+            _has = method_lay.count() > 0
+            exp.setFoldable(_has)
+            exp.setExpanded(_has)
 
         __launch_method.currentIndexChanged.connect(__)
         formLayout.addRow(makecardrow("启动程序", self.lauchpath, fill=True))

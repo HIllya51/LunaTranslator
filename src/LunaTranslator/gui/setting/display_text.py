@@ -257,8 +257,10 @@ def resetgroudswitchcallback(self, group):
             ),
         )
 
-    # 引擎无专属设置（Qt）时收起，避免展开出空白内容面板
-    self.engineexpander.setExpanded(group == "webview")
+    # 引擎无专属设置（Qt）时退化为普通卡（无折叠箭头），webview 为折叠卡
+    foldable = group == "webview"
+    self.engineexpander.setFoldable(foldable)
+    self.engineexpander.setExpanded(foldable)
 
     # 字体样式折叠卡：头部（标题+样式组下拉）与内容随引擎一并重建
     clearlayout(self.goodfontsettingsformlayout)

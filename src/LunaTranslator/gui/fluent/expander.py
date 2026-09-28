@@ -370,31 +370,33 @@ class _ExpanderHeaderButton(QAbstractButton):
         painter.setPen(QPen(_exp_card_border(self.palette()), 1.0))
         painter.drawPath(header_path)
 
-        # chevron 按钮区（悬停/按下时 subtle 高亮）
-        rtl = self.layoutDirection() == Qt.RightToLeft
-        chevron_x = (_EXP_CHEVRON_TRAILING_MARGIN if rtl
-                     else self.width() - _EXP_CHEVRON_TRAILING_MARGIN - _EXP_CHEVRON_BUTTON_SIZE)
-        chevron_rect = QRectF(chevron_x, (self.height() - _EXP_CHEVRON_BUTTON_SIZE) * 0.5,
-                              _EXP_CHEVRON_BUTTON_SIZE, _EXP_CHEVRON_BUTTON_SIZE)
-        if self.isEnabled() and (self.underMouse() or self.isDown()):
-            painter.setPen(Qt.NoPen)
-            painter.setBrush(_exp_chevron_button_background(self.palette(), self.isDown()))
-            painter.drawRoundedRect(chevron_rect, _EXP_CORNER_RADIUS, _EXP_CORNER_RADIUS)
+        # chevron 按钮区（悬停/按下时 subtle 高亮）与折叠箭头——仅可折叠时
+        # 绘制；无内容时折叠卡退化为普通卡（setFoldable(False)）
+        if self._expander._foldable:
+            rtl = self.layoutDirection() == Qt.RightToLeft
+            chevron_x = (_EXP_CHEVRON_TRAILING_MARGIN if rtl
+                         else self.width() - _EXP_CHEVRON_TRAILING_MARGIN - _EXP_CHEVRON_BUTTON_SIZE)
+            chevron_rect = QRectF(chevron_x, (self.height() - _EXP_CHEVRON_BUTTON_SIZE) * 0.5,
+                                  _EXP_CHEVRON_BUTTON_SIZE, _EXP_CHEVRON_BUTTON_SIZE)
+            if self.isEnabled() and (self.underMouse() or self.isDown()):
+                painter.setPen(Qt.NoPen)
+                painter.setBrush(_exp_chevron_button_background(self.palette(), self.isDown()))
+                painter.drawRoundedRect(chevron_rect, _EXP_CORNER_RADIUS, _EXP_CORNER_RADIUS)
 
-        # chevron 图标随展开进度旋转 180°
-        angle = 180.0 * self._progress
-        painter.save()
-        painter.translate(chevron_rect.center())
-        painter.rotate(angle)
-        painter.setPen(self.palette().color(
-            QPalette.Active if self.isEnabled() else QPalette.Disabled, QPalette.Text))
-        icon_font = QFont("Segoe Fluent Icons")
-        icon_font.setPixelSize(15)
-        painter.setFont(icon_font)
-        glyph_rect = QRectF(-_EXP_CHEVRON_BUTTON_SIZE * 0.5, -_EXP_CHEVRON_BUTTON_SIZE * 0.5,
-                            _EXP_CHEVRON_BUTTON_SIZE, _EXP_CHEVRON_BUTTON_SIZE)
-        painter.drawText(glyph_rect, Qt.AlignCenter, ICON_CHEVRON_DOWN_MED)
-        painter.restore()
+            # chevron 图标随展开进度旋转 180°
+            angle = 180.0 * self._progress
+            painter.save()
+            painter.translate(chevron_rect.center())
+            painter.rotate(angle)
+            painter.setPen(self.palette().color(
+                QPalette.Active if self.isEnabled() else QPalette.Disabled, QPalette.Text))
+            icon_font = QFont("Segoe Fluent Icons")
+            icon_font.setPixelSize(15)
+            painter.setFont(icon_font)
+            glyph_rect = QRectF(-_EXP_CHEVRON_BUTTON_SIZE * 0.5, -_EXP_CHEVRON_BUTTON_SIZE * 0.5,
+                                _EXP_CHEVRON_BUTTON_SIZE, _EXP_CHEVRON_BUTTON_SIZE)
+            painter.drawText(glyph_rect, Qt.AlignCenter, ICON_CHEVRON_DOWN_MED)
+            painter.restore()
 
         if self.hasFocus():
             option = QStyleOptionFocusRect()
@@ -426,6 +428,7 @@ class ExExpander(QWidget):
         # content_pad：内容右侧让出折叠按钮区（60px，与折叠条控件右缘对齐）
         self._content_pad = content_pad
         self._expanded = False
+        self._foldable = True
         self._expand_direction = "down"
         self._animation_enabled = True
         self._animation_duration = 167
@@ -538,7 +541,19 @@ class ExExpander(QWidget):
         return bool(self._content_panels)
 
     # ---- 展开/收起 ----
+    def setFoldable(self, foldable):
+        """无内容时退化为普通卡：不画折叠箭头、不可展开（如 Qt 引擎的
+        显示引擎、直接启动的启动方式）；有内容时恢复折叠形态。"""
+        if self._foldable == foldable:
+            return
+        self._foldable = foldable
+        if not foldable:
+            self.setExpanded(False)
+        self._header_button.update()
+
     def setExpanded(self, expanded):
+        if not self._foldable and expanded:
+            return  # 已退化为普通卡：不可展开
         if self._expanded == expanded:
             return
         self._expanded = expanded
