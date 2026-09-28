@@ -12,10 +12,8 @@ from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
 from gui.setting.transopti import setTab7_lazy
 from gui.setting.about import setTab_about
-from gui.dynalang import LListWidgetItem, LListWidget
 
-# FluentUI3 主题（非 Fluent 主题时 mixin 全部钩子直通，行为与原来一致）
-import gui.fluent as _fluent
+# FluentUI3 主题
 from gui.fluent.frameless import FluentFramelessWindowMixin
 from gui.fluent.titlebar import FluentTitleBar
 from gui.fluent.tabwidget import FluentTabWidget
@@ -23,62 +21,6 @@ from gui.fluent.tabwidget import FluentTabWidget
 
 class _SettingBase(FluentFramelessWindowMixin, closeashidewindow):
     pass
-
-
-class TabWidget(QWidget):
-    currentChanged = pyqtSignal(int)
-
-    def adjust_list_widget_width(self):
-        list_widget = self.list_widget
-        font_metrics = list_widget.fontMetrics()
-        max_width = 0
-        for i in range(list_widget.count()):
-            item = list_widget.item(i)
-            width = font_metrics.size(
-                0, item.text() + item.text()[0] + item.text()[-1]
-            ).width()
-            max_width = max(max_width, width)
-            item.setSizeHint(QSize(0, int(font_metrics.ascent() * 2)))
-        list_widget.setFixedWidth(max_width)
-
-    def changeEvent(self, a0: QEvent):
-        if a0.type() in (QEvent.Type.LanguageChange, QEvent.Type.FontChange):
-            self.adjust_list_widget_width()
-        return super().changeEvent(a0)
-
-    def setCurrentIndex(self, idx):
-        self.list_widget.setCurrentRow(idx)
-
-    def __currentChanged(self, idx):
-        self.tab_widget.setCurrentIndex(idx)
-
-    def __init__(self, parent=None):
-        super(TabWidget, self).__init__(parent)
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-        self.list_widget = LListWidget(self)
-        self.list_widget.setObjectName("NOBORDER")
-        self.list_widget.setStyleSheet(
-            "QListWidget:focus {outline: 0px;} QListWidget {border: none;}"
-        )
-        self.tab_widget = QTabWidget(self)
-        self.tab_widget.tabBar().hide()
-        layout.addWidget(self.list_widget)
-        layout.addWidget(self.tab_widget)
-        self.currentChanged.connect(self.__currentChanged)
-        self.list_widget.currentRowChanged.connect(self.currentChanged)
-        self.titles = []
-
-    def addTab(self, widget, title):
-        self.titles.append(title)
-        self.tab_widget.addTab(widget, title)
-        item = LListWidgetItem(title)
-        item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.list_widget.addItem(item)
-
-    def currentWidget(self):
-        return self.tab_widget.currentWidget()
 
 
 class Setting(_SettingBase):
@@ -93,8 +35,7 @@ class Setting(_SettingBase):
         )
         self.setWindowIcon(qtawesome.icon("fa.gear"))
         self._fluent_title_bar = None
-        if _fluent.is_fluent_theme():
-            self._install_fluent_chrome()
+        self._install_fluent_chrome()
         self.isfirst = True
         registrhotkeys(self)
         gobject.base.settin_ui_showsignal.connect(self.showsignal)
@@ -128,7 +69,7 @@ class Setting(_SettingBase):
 
     def firstshow(self):
 
-        self.setMinimumSize(560 if self._fluent_title_bar else 100, 360 if self._fluent_title_bar else 100)
+        self.setMinimumSize(560, 360)
         self.setWindowTitleWithVersionWithUserconfig("设置")
 
         self.tab_widget, do = makesubtab_lazy(
@@ -152,7 +93,7 @@ class Setting(_SettingBase):
                 functools.partial(setTab_quick, self),
                 functools.partial(setTab_about, self),
             ],
-            klass=(FluentTabWidget if self._fluent_title_bar is not None else TabWidget),
+            klass=FluentTabWidget,
             delay=True,
         )
         self.setCentralWidget(self.tab_widget)

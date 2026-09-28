@@ -7,9 +7,11 @@ currentChanged / updatelangtext 的全部调用面。
 
 from qtsymbols import (
     QEvent,
+    Qt,
     QFrame,
     QHBoxLayout,
     QModelIndex,
+    QTabBar,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -34,6 +36,18 @@ NAV_ICONS = [
     ICON_SETTINGS, ICON_CHARACTERS, ICON_SETTINGS_DISPLAY_SOUND,
     ICON_PROCESSING, ICON_DICTIONARY, ICON_AUDIO, ICON_KEYBOARD_CLASSIC,
 ]
+
+# fluentui3styleproperties.h —— enum TabBarStyle
+TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
+
+
+def apply_segmented_tabbar(bar: QTabBar):
+    """把 QTabBar 配成 Segmented WinUI3 风格
+    （Gallery pagetab.cpp setupSegmentedTabs / addTabBarSection 同款）。"""
+    bar.setProperty("tabBarStyle", TABBAR_STYLE_SEGMENTED_WINUI3)
+    bar.setAttribute(Qt.WA_StyledBackground, True)
+    bar.setDrawBase(False)
+    bar.setExpanding(False)
 
 
 class FluentTabWidget(QWidget):

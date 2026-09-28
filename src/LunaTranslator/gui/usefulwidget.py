@@ -37,9 +37,6 @@ from gui.dynalang import (
     LToolButton,
 )
 
-# FluentUI3 主题判定（切回旧主题时下面的守卫走原逻辑）
-from gui.fluent import is_fluent_theme as _isfluent
-
 
 def load_specific_icon_size(ico_path):
     reader = QImageReader(ico_path)
@@ -214,16 +211,14 @@ class FocusSpinBase(QAbstractSpinBox):
 class FocusSpin(QSpinBox, FocusSpinBase):
     def __init__(self, parent=None):
         super().__init__(parent)
-        if _isfluent():
-            # WinUI 标准控件高度 32px：插件下 QSpinBox 默认偏矮
-            self.setMinimumHeight(32)
+        # WinUI 标准控件高度 32px：插件下 QSpinBox 默认偏矮
+        self.setMinimumHeight(32)
 
 
 class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
     def __init__(self, parent=None):
         super().__init__(parent)
-        if _isfluent():
-            self.setMinimumHeight(32)
+        self.setMinimumHeight(32)
 
 
 class DelayLoadScrollArea(QAbstractScrollArea):
@@ -2427,7 +2422,7 @@ def makegroupingrid(args: dict):
         group.setTitle(title)
     else:
         group = NQGroupBox()
-    if title and _isfluent():
+    if title:
         # FluentUI3：有标题的分组渲染为 WinUI 卡片（插件 PE_Widget 消费 isCard）；
         # 无标题容器保持透明，避免卡中卡
         group.setAttribute(Qt.WA_StyledBackground, True)
@@ -2539,10 +2534,9 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None)
     else:
         gridlay = QGridLayout(gridlayoutwidget)
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
-    if _isfluent():
-        # FluentUI3：页面级网格留边距（卡片不贴窗口边），卡片行间距 8
-        gridlay.setContentsMargins(16, 8, 16, 12)
-        gridlay.setVerticalSpacing(8)
+    # FluentUI3：页面级网格留边距（卡片不贴窗口边），卡片行间距 8
+    gridlay.setContentsMargins(16, 8, 16, 12)
+    gridlay.setVerticalSpacing(8)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
     def do(gridlay, grid, savelist, savelay, hiderows):
@@ -2585,8 +2579,6 @@ def makesubtab_lazy(
     padding=False,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
-    if padding and isinstance(titles, list) and not _isfluent():
-        titles = [("_" + _ + "_") for _ in titles]
     if klass:
         tab: LTabWidget = klass()
     else:

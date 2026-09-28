@@ -21,7 +21,6 @@ from gui.usefulwidget import (
     getspinbox,
     request_delete_ok,
     MyInputDialog,
-    makegrid,
     getboxlayout,
     VisLFormLayout,
     IconButton,
@@ -419,31 +418,28 @@ def selfdefkeys(self, lay: QLayout):
 
 
 def setTab_quick(self, l: QVBoxLayout):
+    from gui.fluent.card import make_card
+    from gui.fluent.icons import ICON_KEYBOARD_CLASSIC
+    from gui.fluent.tabwidget import apply_segmented_tabbar
 
-    tab1grids = [
-        [
-            dict(
-                grid=[
-                    [
-                        "使用快捷键",
-                        getboxlayout(
-                            [
-                                D_getsimpleswitch(
-                                    globalconfig["quick_setting"],
-                                    "use",
-                                    callback=functools.partial(__enable, self),
-                                ),
-                                0,
-                            ],
-                        ),
-                    ]
-                ]
-            )
-        ],
-    ]
-    gridlayoutwidget, do = makegrid(tab1grids, delay=True)
-    l.addWidget(gridlayoutwidget)
-    do()
+    # ---- “使用快捷键”卡片 ----
+    card_holder = QWidget()
+    card_lay = QVBoxLayout(card_holder)
+    card_lay.setContentsMargins(16, 8, 16, 12)
+    card_lay.setSpacing(0)
+    card_lay.addWidget(
+        make_card(
+            ICON_KEYBOARD_CLASSIC,
+            "使用快捷键",
+            "启用后，下方各项快捷键才会生效",
+            D_getsimpleswitch(
+                globalconfig["quick_setting"],
+                "use",
+                callback=functools.partial(__enable, self),
+            ),
+        )
+    )
+    l.addWidget(card_holder)
     __ = []
     __vis = []
 
@@ -456,6 +452,9 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
     tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True)
+    # Segmented WinUI3 TabBar（Gallery setupSegmentedTabs 同款），并去掉 pane 边框
+    apply_segmented_tabbar(tab.tabBar())
+    tab.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
 
     l.addWidget(tab)
     l.setSpacing(0)

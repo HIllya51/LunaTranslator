@@ -14,7 +14,6 @@ if isqt5:
 import os
 
 _applied_key = None
-_legacy_style_key = None
 _plugin_path_done = False
 
 
@@ -26,13 +25,6 @@ def _ensure_plugin_path():
     path = os.path.abspath("files/plugins")
     if os.path.isdir(path):
         QCoreApplication.addLibraryPath(path)
-
-
-def is_fluent_theme():
-    """当前是否处于 FluentUI3 主题（theme3 == FluentUI3）。"""
-    from myutils.config import ui_settings
-
-    return ui_settings.get("theme3") == "FluentUI3"
 
 
 def get_windows_accent_color():
@@ -52,7 +44,7 @@ def get_windows_accent_color():
 
 def apply_fluent_style(dark):
     """app 级应用 FluentUI3 样式。同 Gallery 的 refresh_fluent_style。"""
-    global _applied_key, _legacy_style_key
+    global _applied_key
     app = QApplication.instance()
 
     app.setProperty("_q_scrollHint_center", False)
@@ -68,8 +60,6 @@ def apply_fluent_style(dark):
 
     _ensure_plugin_path()
     app.setProperty("_q_colorscheme", 1 if dark else 0)
-    if _legacy_style_key is None:
-        _legacy_style_key = app.style().objectName()
     app.setStyle("FluentUI3")
 
     # setStyle 的 re-polish 会把控件字体重置；setcommonstylesheet 末尾的
@@ -91,14 +81,3 @@ def _restore_combo_view_fonts():
                 w.view().setFont(QFont(font))
             except RuntimeError:
                 pass
-
-
-def clear_fluent_style():
-    """切回传统主题时还原 app 样式。"""
-    global _applied_key
-    if _applied_key is None:
-        return
-    app = QApplication.instance()
-    if _legacy_style_key is not None:
-        app.setStyle(_legacy_style_key)
-    _applied_key = None

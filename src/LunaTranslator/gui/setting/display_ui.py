@@ -1,16 +1,14 @@
 from qtsymbols import *
-import functools, importlib
-from traceback import print_exc
+import functools
 import gobject
-from myutils.config import globalconfig, static_data, ui_settings
-from myutils.utils import nowisdark, getimagefilefilter
+from myutils.config import globalconfig, ui_settings
+from myutils.utils import getimagefilefilter
 from gui.flowsearchword import createsomecontrols
 from gui.qevent import DarkLightSettingChangedEvent
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getcolorbutton,
-    getIconButton,
     FocusFontCombo,
     D_getsimpleswitch,
     getsimpleswitch,
@@ -170,50 +168,6 @@ def createfontcombo():
     )
     sfont_comboBox.currentTextChanged.connect(callback)
     return sfont_comboBox
-
-
-def getget_setting_window():
-    try:
-        name = ui_settings.get("theme3", "FluentUI3")
-        _fn = None
-        for n in static_data["themes"]:
-            if n["name"] == name:
-                _fn = n["file"].get("setting")
-                break
-
-        if not _fn:
-            return None
-        try:
-            return importlib.import_module(
-                "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
-            ).get_setting_window
-        except:
-            return None
-    except:
-        print_exc()
-        return None
-
-
-def opensettingwindow(self):
-    get_setting_window = getget_setting_window()
-    try:
-        get_setting_window(self, gobject.base.setcommonstylesheet, nowisdark())
-    except:
-        print_exc()
-
-
-def createbtnthemelight(self):
-    self.btnthemelight = getIconButton(functools.partial(opensettingwindow, self))
-    lightsetting = getget_setting_window()
-    if not bool(lightsetting):
-        self.btnthemelight.hide()
-    return self.btnthemelight
-
-
-def checkthemesettingvisandapply(self, _):
-    lightsetting = getget_setting_window()
-    self.btnthemelight.setVisible(bool(lightsetting))
-    gobject.base.setcommonstylesheet()
 
 
 def __rs():
@@ -452,7 +406,3 @@ def mainuisetting(self):
             ),
         ],
     ]
-
-
-def themelist():
-    return [_["name"] for _ in static_data["themes"]]

@@ -1,9 +1,4 @@
 {
-    "themes": [
-        {
-            "name": "FluentUI3"
-        }
-    ],
     "font_type_default": {
         "default": [
             "Segoe UI",

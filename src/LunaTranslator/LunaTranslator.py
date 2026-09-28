@@ -278,7 +278,6 @@ class BASEOBJECT(QObject):
         self.history = HistoryHelper()
         self.currentisdark = None
         self.currentmica = None
-        self._fluent_applied = False
         self.update_avalable = False
         self.translators: "dict[str, basetrans]" = {}
         self.cishus: "dict[str, cishubase]" = {}
@@ -1618,59 +1617,11 @@ class BASEOBJECT(QObject):
                 QApplication.postEvent(widget, DarkLightChangedEvent(dark))
             for widget in QApplication.topLevelWidgets():
                 self.setdarkandbackdrop(widget, dark)
-        darklight = ["light", "dark"][dark]
-
+        gui.fluent.apply_fluent_style(dark)
+        # FluentUI3：子树根不得挂任何 QSS——祖先样式表会给全部后代套
+        # QStyleSheetStyle 包装，导致调色板继承中断（页面发白）与析构不稳。
+        # 字体由下方 app 级 setFont 生效。
         style = ""
-        fluentactive = gui.fluent.is_fluent_theme()
-        if fluentactive:
-            self._fluent_applied = True
-            gui.fluent.apply_fluent_style(dark)
-        elif self._fluent_applied:
-            self._fluent_applied = False
-            gui.fluent.clear_fluent_style()
-        if not fluentactive:
-            for _ in (0,):
-                try:
-                    name = ui_settings.get("theme3", "FluentUI3")
-                    _fn = None
-                    for n in static_data["themes"]:
-                        if n["name"] == name:
-                            _fn = n["file"][darklight]
-                            break
-
-                    if not _fn:
-                        break
-
-                    if _fn.endswith(".py"):
-                        style = importlib.import_module(
-                            "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
-                        ).stylesheet()
-                    elif _fn.endswith(".qss"):
-                        with open(
-                            "files/LunaTranslator_qss/{}".format(_fn),
-                            "r",
-                        ) as ff:
-                            style = ff.read()
-                except:
-                    print_exc()
-        fontstr = lambda fsize: "font:{fontsize}pt  {fonttype};".format(
-            fontsize=fsize,
-            fonttype=ui_settings.get(
-                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
-            ),
-        )
-        if fluentactive:
-            # FluentUI3：子树根不得挂任何 QSS——祖先样式表会给全部后代套
-            # QStyleSheetStyle 包装，导致调色板继承中断（页面发白）与析构不稳。
-            # 字体由下方 app 级 setFont 生效。
-            style = ""
-        else:
-            style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
-            style += "QListWidget {{ {} }}".format(
-                fontstr(ui_settings.get("settingfontsize", 12) + 2)
-            )
-            style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
-            style += "#NOBORDER{border:0;margin:0;padding:0;}"
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
