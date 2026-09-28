@@ -59,6 +59,7 @@ from gui.usefulwidget import (
     PopupWidget,
     getsimplecombobox,
     GroupCardWidget,
+    FocusSpin,
 )
 from gui.setting.display_text import GetFormForLineHeight
 from gui.dynalang import (
@@ -822,7 +823,7 @@ def _c_slice_spin(
     context_length.setRange(range0, range1)
     context_length.setPageStep(step)
     context_length.setValue(f1(globalconfig["llama.cpp"].get(keyvalue, default)))
-    context_length_input = QSpinBox()
+    context_length_input = FocusSpin()
     context_length_input.setRange(range20, range21)
     context_length_input.setSingleStep(step2)
     context_length_input.setValue(globalconfig["llama.cpp"].get(keyvalue, default))
@@ -2090,9 +2091,6 @@ def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):
         ref[0].internalLayout.setSpacing(0)
         ref[0].internalLayout.addWidget(w)
         l = QHBoxLayout(w)
-        margin = l.contentsMargins()
-        margin.setTop(0)
-        l.setContentsMargins(margin)
         box = GroupCardWidget("llama.cpp Launcher")
         l.addWidget(box)
         grid = QGridLayout(box.contentWidget())
