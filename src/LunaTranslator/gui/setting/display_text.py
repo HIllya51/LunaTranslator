@@ -369,53 +369,6 @@ class Spacesetting(GroupCardWidget):
         )
 
 
-def TextAreaBack(parent):
-    w = QWidget()
-    form = LFormLayout(w)
-    form.addRow(
-        "颜色",
-        getboxlayout(
-            [
-                ColorButton(
-                    parent,
-                    ui_settings,
-                    "text_area_background_color",
-                    callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                    default="pink",
-                ),
-                getsmalllabel("不透明度"),
-                getspinbox(
-                    0,
-                    100,
-                    ui_settings,
-                    "text_area_background_alpha",
-                    callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                    default=85,
-                ),
-            ]
-        ),
-    )
-    for text, key in (
-        ("圆角", "text_area_background_r"),
-        ("延展宽度", "text_area_background_w"),
-        ("延展高度", "text_area_background_h"),
-    ):
-        form.addRow(
-            text,
-            getspinbox(
-                0,
-                50,
-                ui_settings,
-                key,
-                double=True,
-                step=0.2,
-                callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                default=5,
-            ),
-        )
-    return w
-
-
 def vistranslate_rank(self):
     _not = []
     for i, k in enumerate(globalconfig["fix_translate_rank_rank"]):
@@ -484,7 +437,8 @@ def __textstyleexpander(self, title, showswitch, grid):
 
 
 def __textbackexpander(self):
-    """文字区域背景折叠卡：头部 = 标题 + 开关，内容 = 颜色/圆角等各项。"""
+    """文字区域背景折叠卡：头部 = 标题 + 开关，内容 = 各设置为子项
+    （同 自动录音 折叠卡：每项一行 addContentWidget）。"""
     exp = ExExpander()
     header = QWidget()
     hlay = QHBoxLayout(header)
@@ -505,7 +459,60 @@ def __textbackexpander(self):
         )()
     )
     exp.setHeaderWidget(header)
-    exp.addContentWidget(TextAreaBack(self))
+    exp.addContentWidget(
+        getboxwidget(
+            [
+                "颜色",
+                1,
+                ColorButton(
+                    self,
+                    ui_settings,
+                    "text_area_background_color",
+                    callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                    default="pink",
+                ),
+            ]
+        )
+    )
+    exp.addContentWidget(
+        getboxwidget(
+            [
+                "不透明度",
+                1,
+                getspinbox(
+                    0,
+                    100,
+                    ui_settings,
+                    "text_area_background_alpha",
+                    callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                    default=85,
+                ),
+            ]
+        )
+    )
+    for text, key in (
+        ("圆角", "text_area_background_r"),
+        ("延展宽度", "text_area_background_w"),
+        ("延展高度", "text_area_background_h"),
+    ):
+        exp.addContentWidget(
+            getboxwidget(
+                [
+                    text,
+                    1,
+                    getspinbox(
+                        0,
+                        50,
+                        ui_settings,
+                        key,
+                        double=True,
+                        step=0.2,
+                        callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                        default=5,
+                    ),
+                ]
+            )
+        )
     return exp
 
 
