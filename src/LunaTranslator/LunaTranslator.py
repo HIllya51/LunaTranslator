@@ -1625,7 +1625,9 @@ class BASEOBJECT(QObject):
         # 原"其他界面"的字体/大小设置已删除：字体跟随语言默认，字号固定
         font = QFont()
         font.setFamily(gobject.tempconfig.get("settingfonttype", ""))
-        font.setPointSizeF(12)
+        # 原版为 QSS font-size:12（px）；fluent 重构时误换成 setPointSizeF(12)
+        # （pt=16px，整体放大 33%）。改回像素单位。
+        font.setPixelSize(12)
         if QApplication.instance().font() != font:
             QApplication.instance().setFont(font)
 
