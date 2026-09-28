@@ -234,6 +234,9 @@ class dialog_savedgame_legacy(QWidget):
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         table.setWordWrap(False)
+        # Fluent 表格：无网格线、行交替色
+        table.setShowGrid(False)
+        table.setAlternatingRowColors(True)
         self.table = table
         self.savelist = []
         for row, k in enumerate(savehook_new_list):  # 2

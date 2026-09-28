@@ -673,6 +673,9 @@ class hookselect(closeashidewindow):
         )
         self.tttable.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.tttable.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        # Fluent 表格：无网格线、行交替色
+        self.tttable.setShowGrid(False)
+        self.tttable.setAlternatingRowColors(True)
 
         self.tttable.doubleClicked.connect(self.table1doubleclicked)
         self.tttable.clicked.connect(self.ViewThread)
