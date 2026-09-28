@@ -208,6 +208,8 @@ def setTab7_lazy(self, basel: QLayout):
         vboxw = QWidget()
         vbox = QVBoxLayout(vboxw)
         vbox.setContentsMargins(0, 0, 0, 0)
+        # pagecard 内的中间容器：标记让卡内网格顶边距与左边距一致
+        vbox.setProperty("_fluent_card_grid", True)
         lay.addWidget(vboxw)
         makescrollgrid(grids, vbox, savelist, savelay)
         savescroll.append(vbox.itemAt(vbox.count() - 1).widget())

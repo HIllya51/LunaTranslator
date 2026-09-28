@@ -73,7 +73,6 @@ from gui.usefulwidget import (
     getsimpleswitch,
     makesubtab_lazy,
     getIconButton,
-    GroupCardWidget,
     tabadd_lazy,
     threeswitch,
     VisGridLayout,
@@ -238,11 +237,15 @@ class AnkiWindow(QWidget):
         self.currentword = ""
         self.lastankid = None
         self.lastankiword = None
+        # 每个子页都包进紧贴 tabbar 的卡片（pagecard）
         self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
-        self.tabs.addTab(self.createaddtab(), "添加")
-        tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
-        tabadd_lazy(self.tabs, "快捷键", self.createhotkeytab)
-        tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
+        _addwid = self.createaddtab()
+        tabadd_lazy(
+            self.tabs, "添加", lambda l: l.addWidget(_addwid), pagecard=True
+        )
+        tabadd_lazy(self.tabs, "设置", self.creatsetdtab, pagecard=True)
+        tabadd_lazy(self.tabs, "快捷键", self.createhotkeytab, pagecard=True)
+        tabadd_lazy(self.tabs, "模板", self.creattemplatetab, pagecard=True)
 
         l = QHBoxLayout(self)
         l.setContentsMargins(0, 0, 0, 0)
@@ -309,7 +312,8 @@ class AnkiWindow(QWidget):
         self.htmlbrowser.setHtml(html)
 
     def creattemplatetab(self, baselay: QVBoxLayout):
-
+        # 编辑器分栏自身带边框：卡内边距为 0，spliter 填满整卡
+        baselay.setContentsMargins(0, 0, 0, 0)
         spliter = QSplitter()
         baselay.addWidget(spliter)
         edittemptab = LTabWidget()
@@ -659,11 +663,8 @@ class AnkiWindow(QWidget):
             ),
             _widen(audioexp),
         ]
-        # 所有设置包在一个大空卡片里
-        bigcard = GroupCardWidget("")
-        for it in items:
-            bigcard.addContentWidget(it)
-        makescrollgrid([[(bigcard, 0)]], baselay)
+        # pagecard 卡片即外层大卡：卡片+折叠卡直接排进网格
+        makescrollgrid([[(it, 0)] for it in items], baselay)
 
     @threader
     def simulate_key(self, i):
@@ -762,6 +763,8 @@ class AnkiWindow(QWidget):
         self.recorders: "dict[int, loopbackrecorder]" = {}
         wid = QWidget()
         layout = QVBoxLayout(wid)
+        # pagecard 卡内边距与其他页一致
+        layout.setContentsMargins(16, 16, 16, 12)
         soundbutton = IconButton("fa.music", tips="语音合成")
         soundbutton.clicked.connect(self.langdu)
 
