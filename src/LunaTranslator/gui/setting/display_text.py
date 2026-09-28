@@ -32,6 +32,7 @@ from gui.usefulwidget import (
     Exteditor,
     GroupCardWidget,
     makegrid,
+    makecardrow,
 )
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 from gui.fluent.expander import ExExpander
@@ -283,17 +284,6 @@ def resetgroudswitchcallback(self, group):
     gobject.base.translation_ui.translate_text.loadinternal(shoudong=True)
 
 
-def creategoodfontwid(self):
-
-    self.goodfontsettingsWidget = GroupCardWidget()
-    self.goodfontsettingsformlayout = LFormLayout(
-        self.goodfontsettingsWidget.contentWidget()
-    )
-    self.goodfontsettingsWidget.setContentLayout(self.goodfontsettingsformlayout)
-    resetgroudswitchcallback(self, globalconfig["rendertext_using"])
-    return self.goodfontsettingsWidget
-
-
 def _createseletengeinecombo(self):
 
     seletengeinecombo = getsimplecombobox(
@@ -379,51 +369,51 @@ class Spacesetting(GroupCardWidget):
         )
 
 
-class TextAreaBack(GroupCardWidget):
-    def __init__(self, parent):
-        super().__init__(parent=parent)
-        form = LFormLayout(self.contentWidget())
-        form.addRow(
-            "颜色",
-            getboxlayout(
-                [
-                    ColorButton(
-                        self,
-                        ui_settings,
-                        "text_area_background_color",
-                        callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                        default="pink",
-                    ),
-                    getsmalllabel("不透明度"),
-                    getspinbox(
-                        0,
-                        100,
-                        ui_settings,
-                        "text_area_background_alpha",
-                        callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                        default=85,
-                    ),
-                ]
-            ),
-        )
-        for text, key in (
-            ("圆角", "text_area_background_r"),
-            ("延展宽度", "text_area_background_w"),
-            ("延展高度", "text_area_background_h"),
-        ):
-            form.addRow(
-                text,
+def TextAreaBack(parent):
+    w = QWidget()
+    form = LFormLayout(w)
+    form.addRow(
+        "颜色",
+        getboxlayout(
+            [
+                ColorButton(
+                    parent,
+                    ui_settings,
+                    "text_area_background_color",
+                    callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                    default="pink",
+                ),
+                getsmalllabel("不透明度"),
                 getspinbox(
                     0,
-                    50,
+                    100,
                     ui_settings,
-                    key,
-                    double=True,
-                    step=0.2,
+                    "text_area_background_alpha",
                     callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
-                    default=5,
+                    default=85,
                 ),
-            )
+            ]
+        ),
+    )
+    for text, key in (
+        ("圆角", "text_area_background_r"),
+        ("延展宽度", "text_area_background_w"),
+        ("延展高度", "text_area_background_h"),
+    ):
+        form.addRow(
+            text,
+            getspinbox(
+                0,
+                50,
+                ui_settings,
+                key,
+                double=True,
+                step=0.2,
+                callback=gobject.base.translation_ui.translate_text.setTextAreaBackStyle,
+                default=5,
+            ),
+        )
+    return w
 
 
 def vistranslate_rank(self):
@@ -491,6 +481,55 @@ def __textstyleexpander(self, title, showswitch, grid):
     content = makegrid(grid, hiderows=[1])
     exp.addContentWidget(content)
     return exp, content
+
+
+def __textbackexpander(self):
+    """文字区域背景折叠卡：头部 = 标题 + 开关，内容 = 颜色/圆角等各项。"""
+    exp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("文字区域背景")
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(
+        D_getsimpleswitch(
+            ui_settings,
+            "text_area_background",
+            callback=gobject.base.translation_ui.translate_text.showtextareabackground,
+            default=False,
+        )()
+    )
+    exp.setHeaderWidget(header)
+    exp.addContentWidget(TextAreaBack(self))
+    return exp
+
+
+def __engineexpander(self):
+    """显示引擎折叠卡：头部 = 标题 + 引擎下拉，内容 = 所选引擎的样式设置。"""
+    # 表单布局需先于下拉创建——下拉初值变化即触发 resetgroudswitchcallback
+    content = QWidget()
+    self.goodfontsettingsformlayout = LFormLayout(content)
+    exp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("显示引擎")
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(_createseletengeinecombo(self))
+    exp.setHeaderWidget(header)
+    exp.addContentWidget(content)
+    resetgroudswitchcallback(self, globalconfig["rendertext_using"])
+    return exp
 
 
 def xianshigrid_style(self):
@@ -612,88 +651,72 @@ def xianshigrid_style(self):
         [yuanwenexp],
         [yiwenexp],
         [
-            dict(
-                type="grid",
-                card=True,
-                hiderows=[2],
-                name="otherobject",
-                parent=self,
-                grid=(
-                    [
-                        "居中显示",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "showatcenter",
-                            callback=gobject.base.translation_ui.translate_text.showatcenter,
-                            default=True,
-                        ),
-                        "",
-                        "",
-                        "显示翻译器名称",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "showfanyisource",
-                            callback=gobject.base.translation_ui.translate_text.showhidename,
-                            default=False,
-                        ),
-                        "",
-                        "",
-                        "收到翻译时才刷新",
-                        D_getsimpleswitch(
-                            globalconfig, "refresh_on_get_trans", default=False
-                        ),
-                    ],
-                    [
-                        "固定翻译显示顺序",
-                        D_getsimpleswitch(
-                            globalconfig, "fix_translate_rank", default=False
-                        ),
-                        D_getIconButton(functools.partial(vistranslate_rank, self)),
-                        "",
-                        "显示顺序",
-                        (
-                            D_getsimplecombobox(
-                                ["原文_翻译", "翻译_原文"],
-                                globalconfig,
-                                "displayrank",
-                                callback=gobject.base.translation_ui.translate_text.setdisplayrank,
-                                default=0,
-                            ),
-                            2,
-                        ),
-                        "",
-                        "文字区域背景",
-                        D_getsimpleswitch(
-                            ui_settings,
-                            "text_area_background",
-                            callback=gobject.base.translation_ui.translate_text.showtextareabackground,
-                            default=False,
-                        ),
-                        D_getIconSwitch(
-                            icon="fa.gear",
-                            checkablechangecolor=False,
-                            callback=lambda x: self.otherobject.layout().setRowVisible(
-                                2, x
-                            ),
-                            tips="文字区域背景_设置"
-                        ),
-                    ],
-                    [(functools.partial(TextAreaBack, self), 0)],
+            (
+                makecardrow(
+                    "居中显示",
+                    D_getsimpleswitch(
+                        globalconfig,
+                        "showatcenter",
+                        callback=gobject.base.translation_ui.translate_text.showatcenter,
+                        default=True,
+                    ),
                 ),
-            ),
+                0,
+            )
         ],
         [
-            dict(
-                type="grid",
-                card=True,
-                grid=(
-                    [
-                        "显示引擎",
-                        functools.partial(_createseletengeinecombo, self),
-                    ],
-                    [functools.partial(creategoodfontwid, self)],
+            (
+                makecardrow(
+                    "显示翻译器名称",
+                    D_getsimpleswitch(
+                        globalconfig,
+                        "showfanyisource",
+                        callback=gobject.base.translation_ui.translate_text.showhidename,
+                        default=False,
+                    ),
                 ),
-            ),
+                0,
+            )
         ],
+        [
+            (
+                makecardrow(
+                    "收到翻译时才刷新",
+                    D_getsimpleswitch(
+                        globalconfig, "refresh_on_get_trans", default=False
+                    ),
+                ),
+                0,
+            )
+        ],
+        [
+            (
+                makecardrow(
+                    "固定翻译显示顺序",
+                    D_getsimpleswitch(
+                        globalconfig, "fix_translate_rank", default=False
+                    ),
+                    D_getIconButton(functools.partial(vistranslate_rank, self)),
+                ),
+                0,
+            )
+        ],
+        [
+            (
+                makecardrow(
+                    "显示顺序",
+                    D_getsimplecombobox(
+                        ["原文_翻译", "翻译_原文"],
+                        globalconfig,
+                        "displayrank",
+                        callback=gobject.base.translation_ui.translate_text.setdisplayrank,
+                        default=0,
+                    ),
+                ),
+                0,
+            )
+        ],
+        [(__textbackexpander(self), 0)],
+        [(__engineexpander(self), 0)],
     ]
     return textgrid
