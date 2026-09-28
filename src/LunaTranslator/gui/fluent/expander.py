@@ -44,6 +44,8 @@ _EXP_CONTENT_PADDING = 16
 _EXP_CHEVRON_CONTENT_SPACING = 20
 _EXP_CHEVRON_TRAILING_MARGIN = 8
 _EXP_CHEVRON_BUTTON_SIZE = 32
+# 内容面板右侧让位（chevron_side 60 - 面板边距 16），使内容右缘与折叠条控件对齐
+_EXP_CONTENT_CHEVRON_RESERVE = 44
 
 
 def _exp_is_dark_palette(palette):
@@ -128,15 +130,17 @@ def _exp_rounded_panel_path(rect, round_top_left, round_top_right, round_bottom_
 class _ExpanderContentPanel(QWidget):
     """Content 面板：与 Header 组成连续容器，只有最远端保留外圆角。"""
 
-    def __init__(self, expander, content):
+    def __init__(self, expander, content, pad_right=False):
         super().__init__(expander)
         self._expander = expander
         self._outer_edge = False
         self.setMinimumHeight(_EXP_HEADER_MIN_HEIGHT)
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(_EXP_CONTENT_PADDING, _EXP_CONTENT_PADDING,
-                                  _EXP_CONTENT_PADDING, _EXP_CONTENT_PADDING)
+        layout.setContentsMargins(
+            _EXP_CONTENT_PADDING, _EXP_CONTENT_PADDING,
+            _EXP_CONTENT_PADDING + (_EXP_CONTENT_CHEVRON_RESERVE if pad_right else 0),
+            _EXP_CONTENT_PADDING)
         layout.setSpacing(0)
         content.setParent(self)
         layout.addWidget(content)
@@ -412,8 +416,10 @@ class ExExpander(QWidget):
     expansionFinished = pyqtSignal(bool)
     headerChanged = pyqtSignal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, content_pad=False):
         super().__init__(parent)
+        # content_pad：内容右侧让出折叠按钮区（60px，与折叠条控件右缘对齐）
+        self._content_pad = content_pad
         self._expanded = False
         self._expand_direction = "down"
         self._animation_enabled = True
@@ -518,7 +524,7 @@ class ExExpander(QWidget):
             return
         if widget in self._content_widgets:
             return
-        panel = _ExpanderContentPanel(self, widget)
+        panel = _ExpanderContentPanel(self, widget, self._content_pad)
         self._content_widgets.append(widget)
         self._content_panels.append(panel)
         self._rebuild_content_layout()

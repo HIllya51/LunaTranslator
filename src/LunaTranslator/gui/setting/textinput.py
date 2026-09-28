@@ -273,16 +273,10 @@ def creategamefont_comboBox(dic: dict):
     return gamefont_comboBox
 
 
-def _padfoldrow(row):
-    """折叠卡内容行右侧让出折叠按钮区（44+16=60，与折叠条控件右缘对齐）。"""
-    row.layout().setContentsMargins(0, 0, 44, 0)
-    return row
-
-
 def clipusage(self):
     """剪贴板折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     折叠条 = 标题 + 自动输出文本开关；内容 = 原文 / 翻译 两行面板。"""
-    exp = ExExpander()
+    exp = ExExpander(content_pad=True)
 
     # 同「应用主题」卡片的形式：标题在左、控件在右端
     originrow = getboxwidget(
@@ -332,8 +326,8 @@ def clipusage(self):
     )
     exp.setHeaderWidget(header)
 
-    exp.addContentWidget(_padfoldrow(originrow))
-    exp.addContentWidget(_padfoldrow(transrow))
+    exp.addContentWidget(originrow)
+    exp.addContentWidget(transrow)
     return exp
 
 
@@ -549,7 +543,7 @@ def getftsgrid(self):
 def netusage(self):
     """网络服务折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     折叠条 = 标题 + doclink + 开启开关；内容 = 打开 / 端口号 两行面板。"""
-    exp = ExExpander()
+    exp = ExExpander(content_pad=True)
 
     # 同「应用主题」卡片的形式：标题在左、控件在右端
     openrow = getboxwidget(
@@ -567,10 +561,12 @@ def netusage(self):
             ),
         ]
     )
+    # 冲突提示在控件左侧，保证控件右缘与其他行对齐
     portrow = getboxwidget(
         [
             getsmalllabel("端口号"),
             1,
+            __portconflict,
             D_getspinbox(
                 0,
                 65535,
@@ -579,7 +575,6 @@ def netusage(self):
                 callback=lambda _: gobject.base.serviceinit(),
                 default=2333,
             ),
-            __portconflict,
         ]
     )
     rows = [openrow, portrow]
@@ -613,8 +608,8 @@ def netusage(self):
     )
     exp.setHeaderWidget(header)
 
-    exp.addContentWidget(_padfoldrow(openrow))
-    exp.addContentWidget(_padfoldrow(portrow))
+    exp.addContentWidget(openrow)
+    exp.addContentWidget(portrow)
     return exp
 
 
@@ -641,12 +636,13 @@ def validator(createproxyedit_check: QLabel, text):
 def proxyusage(self):
     """代理设置折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     折叠条 = 标题 + 使用开关；内容 = 使用系统代理 / 手动设置代理 两行面板。"""
-    exp = ExExpander()
+    exp = ExExpander(content_pad=True)
 
     # 子设置 2：手动设置代理
     check = QLabel()
     proxy = QLineEdit(globalconfig.get("proxy", "127.0.0.1:7890"))
-    manualrow = getboxwidget(["手动设置代理", 1, proxy, check])
+    # 校验标签在控件左侧，保证控件右缘与其他行对齐
+    manualrow = getboxwidget(["手动设置代理", 1, check, proxy])
 
     def __sys(x):
         manualrow.setEnabled(not x)
@@ -695,8 +691,8 @@ def proxyusage(self):
     exp.setHeaderWidget(header)
 
     # 多行子设置：每行独立 ContentPanel（同 C++ 多次 addContentWidget）
-    exp.addContentWidget(_padfoldrow(sysrow))
-    exp.addContentWidget(_padfoldrow(manualrow))
+    exp.addContentWidget(sysrow)
+    exp.addContentWidget(manualrow)
     return exp
 
 

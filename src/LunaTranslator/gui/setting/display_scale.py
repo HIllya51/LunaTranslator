@@ -203,10 +203,8 @@ def _cardrow(label, *controls):
 
 def _foldrow(label, headerctl, contentrow, pad=True):
     """折叠设置卡：标题+主控件在折叠条上，内容行为独立面板。
-    pad：内容行右侧让出折叠按钮区（44+16=60，与折叠条控件右缘对齐）。"""
-    if pad:
-        contentrow.layout().setContentsMargins(0, 0, 44, 0)
-    exp = ExExpander()
+    pad：内容右侧让出折叠按钮区（ExExpander 的 content_pad 参数处理）。"""
+    exp = ExExpander(content_pad=pad)
     header = QWidget()
     hlay = QHBoxLayout(header)
     hlay.setContentsMargins(0, 12, 0, 12)
