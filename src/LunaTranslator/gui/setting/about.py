@@ -359,8 +359,7 @@ def setTab_about(self: QWidget, basel):
 
     lang_holder = QWidget()
     lang_holder.setLayout(__delayloadlangs())
-    for _c in lang_holder.findChildren(SuperCombo):
-        _c.setMinimumWidth(170)
+    lang_holder.layout().setContentsMargins(0, 0, 0, 0)
     # UI 语言卡片
     vlay.addWidget(create_card(
         "",  # Globe
