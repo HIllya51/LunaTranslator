@@ -7,6 +7,7 @@ isCard 属性由 FluentUI3 插件渲染为 WinUI 圆角卡片。
 
 from qtsymbols import (
     QEvent,
+    QColor,
     Qt,
     QFont,
     QHBoxLayout,
@@ -65,6 +66,8 @@ class FluentCard(QWidget):
             self._desc_label.setFont(desc_font)
             self._desc_label.setWordWrap(True)
             text_layout.addWidget(self._desc_label)
+            # 同 Gallery 实际观感：两行文字颜色一致，仅以字号区分（15/13px）
+            # 不设任何调色板覆盖
 
         layout.addWidget(text_widget, 1)
 
@@ -75,29 +78,6 @@ class FluentCard(QWidget):
             if trailing is not None:
                 layout.addSpacing(16)
                 layout.addWidget(trailing, 0, Qt.AlignVCenter)
-
-        self._update_desc_color()
-
-    def _update_desc_color(self):
-        """从当前应用调色板读 Mid 色设为描述文字颜色（主题切换时跟随）。"""
-        if self._desc_label is None:
-            return
-        from qtsymbols import QApplication
-
-        app_pal = QApplication.instance().palette()
-        mid = app_pal.color(QPalette.Mid)
-        pal = self._desc_label.palette()
-        pal.setColor(QPalette.WindowText, mid)
-        self._desc_label.setPalette(pal)
-
-    def changeEvent(self, event):
-        super().changeEvent(event)
-        if event.type() in (
-            QEvent.Type.PaletteChange,
-            QEvent.Type.StyleChange,
-            QEvent.Type.ApplicationPaletteChange,
-        ):
-            self._update_desc_color()
 
 
 def create_card(icon_code, title, description="", trailing=None, parent=None):
