@@ -580,18 +580,13 @@ class dialog_setting_game_internal(QWidget):
         self.setWindowIcon(_icon)
 
     def starttab(self, formLayout: LFormLayout, gameuid):
-        # 每项一张卡；启动方式为折叠卡，子项随方式切换（无设置时收起）
+        # 每项一张卡；启动方式为折叠卡，子项随方式切换（无设置时收起）。
+        # 注意不能用 QStackedWidget——其高度=最高页，一行的方式也会被
+        # 撑到多行高度；按当前方式重建（同原版 box 行为）。
         tools = getgamecamptools(get_launchpath(gameuid))
-        method_stack = QStackedWidget()
-        for tool in tools:
-            page = QWidget()
-            lay = LFormLayout(page)
-            lay.setContentsMargins(0, 0, 0, 0)
-            try:
-                maycreatesettings(lay, savehook_new_data[gameuid], tool.id)
-            except:
-                print_exc()
-            method_stack.addWidget(page)
+        method_page = QWidget()
+        method_lay = LFormLayout(method_page)
+        method_lay.setContentsMargins(0, 0, 0, 0)
 
         __launch_method = getsimplecombobox(
             [_.name for _ in tools],
@@ -618,12 +613,20 @@ class dialog_setting_game_internal(QWidget):
         hlay.addStretch(1)
         hlay.addWidget(__launch_method)
         exp.setHeaderWidget(header)
-        exp.addContentWidget(method_stack)
+        exp.addContentWidget(method_page)
 
-        def __(_):
-            method_stack.setCurrentIndex(__launch_method.currentIndex())
+        def __(idx):
+            clearlayout(method_lay)
+            try:
+                maycreatesettings(
+                    method_lay,
+                    savehook_new_data[gameuid],
+                    tools[idx].id,
+                )
+            except:
+                print_exc()
             # 当前方式无设置项时收起（同原 box.hide 语义）
-            exp.setExpanded(method_stack.currentWidget().layout().count() > 0)
+            exp.setExpanded(method_lay.count() > 0)
 
         __launch_method.currentIndexChanged.connect(__)
         formLayout.addRow(makecardrow("启动程序", self.lauchpath))
@@ -639,7 +642,7 @@ class dialog_setting_game_internal(QWidget):
                 ),
             )
         )
-        __(None)
+        __( __launch_method.currentIndex() )
 
     @tryprint
     def __refresh(self):
