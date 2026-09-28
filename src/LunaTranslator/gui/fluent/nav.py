@@ -247,23 +247,16 @@ class FluentNavTree(QTreeWidget):
     def mousePressEvent(self, event):
         pos = event.pos()
         index = self.indexAt(pos)
-        self.setCurrentIndex(index)
-        # 文本模式下插件在有子项的 Item 右端 22px 画展开箭头
-        # （CE_ItemViewItem 的 ChevronDownMed）：箭头区(右端30px)点击应为
-        # 展开/折叠而非选中；图标模式无箭头，整行点击都作为选中
-        # （同 C++ ExNavTreeWidget::mousePressEvent）
+        # 有子项的父项：单击整行 = 选中（切到该页）并展开/折叠；
+        # 图标模式子项隐藏，父项仅作为普通项选中
         if (index.isValid() and self.model().hasChildren(index)
                 and not self.property("navigationIconMode")):
-            r = self.visualRect(index)
-            is_reverse = self.layoutDirection() == Qt.RightToLeft
-            arrow_zone = 30
-            is_arrow_click = (pos.x() < r.left() + arrow_zone if is_reverse
-                              else pos.x() > r.right() - arrow_zone)
-            if is_arrow_click:
-                if self.isExpanded(index):
-                    self.collapse(index)
-                else:
-                    self.expand(index)
-                event.accept()
-                return
+            self.setCurrentIndex(index)
+            if self.isExpanded(index):
+                self.collapse(index)
+            else:
+                self.expand(index)
+            event.accept()
+            return
+        self.setCurrentIndex(index)
         super().mousePressEvent(event)

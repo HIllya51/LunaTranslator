@@ -270,9 +270,7 @@ class FluentTabWidget(QWidget):
             child = QTreeWidgetItem(parent)
             self.nav.configureNavigationItem(child, _TR(title), page_index, "")
             self.__child_pages.append((child, title))
-            if parent.childCount() == 1:
-                # 首个子节点加入时展开父项，层级立即可见
-                parent.setExpanded(True)
+            # 父项默认折叠（单击父项整行展开/折叠，见 FluentNavTree）
         return page_index
 
     def _find_item_by_page(self, page_index):
