@@ -472,7 +472,8 @@ def setTabcishu_l(self):
         return edit
 
     def __fenciexpander(
-        title, switch, trailing=None, grid=(), switchlabel=None, leading=None, afterswitch=None
+        title, switch, trailing=None, grid=(), switchlabel=None, leading=None,
+        afterswitch=None, bold=False
     ):
         """折叠卡（同 LICENSE 的 ExExpander）：标题 +（doclink 紧随）+ 开关（折叠按钮左边）。"""
         exp = ExExpander()
@@ -484,6 +485,7 @@ def setTabcishu_l(self):
         titlelabel = LLabel(title)
         titlefont = titlelabel.font()
         titlefont.setPixelSize(14)
+        titlefont.setBold(bold)
         titlelabel.setFont(titlefont)
         hlay.addWidget(titlelabel)
         if leading is not None:
@@ -510,7 +512,8 @@ def setTabcishu_l(self):
 
     zhuyinexp = __fenciexpander(
         "注音",
-        getsimpleswitch(
+        bold=True,
+        switch=getsimpleswitch(
             globalconfig,
             "isshowhira",
             callback=gobject.base.translation_ui.translate_text.showhidert,

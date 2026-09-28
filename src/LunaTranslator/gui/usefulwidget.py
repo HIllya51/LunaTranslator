@@ -215,12 +215,15 @@ class FocusSpin(QSpinBox, FocusSpinBase):
         super().__init__(parent)
         # WinUI 标准控件高度 32px：插件下 QSpinBox 默认偏矮
         self.setMinimumHeight(32)
+        # 插件的上下按钮区占 ~64px，minimumSizeHint 太窄时文本框会被挤没
+        self.setMinimumWidth(120)
 
 
 class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setMinimumHeight(32)
+        self.setMinimumWidth(120)
 
 
 class DelayLoadScrollArea(QAbstractScrollArea):

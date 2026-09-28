@@ -273,30 +273,22 @@ def creategamefont_comboBox(dic: dict):
 
 def getTabclip(_):
 
-    grids = [
+    return [
         [
-            dict(
-                type="grid",
-                title="输出内容",
-                grid=(
-                    [
-                        "原文",
-                        D_getsimpleswitch(
-                            globalconfig["textoutputer"]["clipboard"],
-                            "origin",
-                        ),
-                        "",
-                        "翻译",
-                        D_getsimpleswitch(
-                            globalconfig["textoutputer"]["clipboard"],
-                            "trans",
-                        ),
-                    ],
-                ),
+            "原文",
+            D_getsimpleswitch(
+                globalconfig["textoutputer"]["clipboard"],
+                "origin",
             ),
+            "",
+            "翻译",
+            D_getsimpleswitch(
+                globalconfig["textoutputer"]["clipboard"],
+                "trans",
+            ),
+            "",
         ],
     ]
-    return grids
 
 
 def selectfile(self):
