@@ -20,8 +20,8 @@ def setTabThree_lazy(self, basel: QLayout):
         funcs,
         delay=True,
         padding=True,
-        pagecard=True,
+        gallery=True,
     )
 
-    basel.addWidget(maketabholder(tab, top=16))
+    basel.addWidget(maketabholder(tab, top=48))
     do()

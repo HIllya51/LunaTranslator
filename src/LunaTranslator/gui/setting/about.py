@@ -370,23 +370,17 @@ class __delayloadlangs(QHBoxLayout):
 
 def setTab_about(self: QWidget, basel):
     from gui.fluent.card import make_trailing_combo
-    from gui.usefulwidget import makescroll, makecardrow
+    from gui.usefulwidget import makecardrow, makescrollgrid
     from gui.setting.display_ui import switch_darklight
     from gui.usefulwidget import getsimplecombobox
     from myutils.config import ui_settings as _uis
 
-    # ---- 各设置项独立卡片 ----
-    content = QWidget()
-    vlay = QVBoxLayout(content)
-    vlay.setContentsMargins(16, 16, 16, 12)
-    vlay.setSpacing(8)
-    vlay.setAlignment(Qt.AlignmentFlag.AlignTop)
+    # 与其他设置页同一条代码路径（makescrollgrid）——不手搓容器
 
     # 界面语言（不能抽出 combo 重挂——延迟加载会丢 item，必须用 widget 包裹布局）
     lang_holder = QWidget()
     lang_holder.setLayout(__delayloadlangs())
     lang_holder.layout().setContentsMargins(0, 0, 0, 0)
-    vlay.addWidget(makecardrow("界面语言", lang_holder))
 
     # 应用主题
     darklight_combo = getsimplecombobox(
@@ -397,7 +391,6 @@ def setTab_about(self: QWidget, basel):
         ),
         default=0,
     )
-    vlay.addWidget(makecardrow("应用主题", make_trailing_combo(darklight_combo)))
 
     # 自动更新
     update_switch = D_getsimpleswitch(
@@ -412,9 +405,6 @@ def setTab_about(self: QWidget, basel):
     )
     self.downloadprogress.setVisible(False)
     version_link = createversionlabel()
-    vlay.addWidget(makecardrow("自动更新", update_switch, version_link))
-    # 下载进度条：显示时出现在卡片下方
-    vlay.addWidget(self.downloadprogress)
 
     # 自动更新进度回调
     gobject.base.connectsignal(
@@ -428,7 +418,7 @@ def setTab_about(self: QWidget, basel):
     from gui.fluent.card import make_card_contents
     from gui.fluent.icons import ICON_SETTINGS_DISPLAY_SOUND
 
-    license_expander = ExExpander(content)
+    license_expander = ExExpander()
     license_expander.setObjectName("settingsLicenseExpander")
 
     # 同 Gallery：用 make_card_contents（不设 isCard——ExExpander 自己画卡片底色）
@@ -488,15 +478,17 @@ def setTab_about(self: QWidget, basel):
     license_expander.addContentWidget(license_content)
     license_expander.setExpanded(False)
 
-    # 关于卡片
-    vlay.addWidget(aboutwidget())
-
-    # LICENSE 折叠放到最后
-    vlay.addWidget(license_expander)
-
-    scroll = makescroll()
-    scroll.setWidget(content)
-    basel.addWidget(scroll)
+    # 与其他设置页完全相同的排版路径（makescrollgrid）
+    grid = [
+        [(makecardrow("界面语言", lang_holder), 0)],
+        [(makecardrow("应用主题", make_trailing_combo(darklight_combo)), 0)],
+        [(makecardrow("自动更新", update_switch, version_link), 0)],
+        # 下载进度条：显示时出现在卡片下方（隐藏时布局不占位）
+        [(self.downloadprogress, 0)],
+        [(aboutwidget(), 0)],
+        [(license_expander, 0)],
+    ]
+    makescrollgrid(grid, basel)
 
 
 def _progresssignal4_card(progressbar: QProgressBar, text, val):

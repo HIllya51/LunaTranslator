@@ -425,7 +425,7 @@ def setTab_quick(self, l: QVBoxLayout):
     # ---- “使用快捷键”卡片 ----
     card_holder = QWidget()
     card_lay = QVBoxLayout(card_holder)
-    card_lay.setContentsMargins(16, 16, 16, 12)
+    card_lay.setContentsMargins(48, 48, 48, 40)
     card_lay.setSpacing(0)
     card_lay.addWidget(
         make_card(
@@ -451,7 +451,7 @@ def setTab_quick(self, l: QVBoxLayout):
         __.append(functools.partial(___x, _[1]))
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
-    tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True, pagecard=True)
+    tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True, gallery=True)
 
     # ---- tabwidget 只加页边距，页内容各自用紧邻 tabbar 的卡片包裹 ----
     l.addWidget(maketabholder(tab))

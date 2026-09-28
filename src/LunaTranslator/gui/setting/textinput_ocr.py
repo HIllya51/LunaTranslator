@@ -581,7 +581,7 @@ def internal(self):
         ],
         delay=True,
         padding=True,
-        pagecard=True,
+        gallery=True,
     )
     return tab, dotab
 
