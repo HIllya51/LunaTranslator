@@ -2651,6 +2651,9 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None,
         _top = 8
     gridlay.setContentsMargins(sidemargin, _top, sidemargin, bottommargin)
     gridlay.setVerticalSpacing(8)
+    # 该 QSS 与 makescroll 的 QSS 配套：去掉后页面卡底色会被盖掉（见
+    # makescroll 注释）
+    gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
     def do(gridlay, grid, savelist, savelay, hiderows):
         automakegrid(gridlay, grid, savelist, hiderows)
@@ -2666,12 +2669,12 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None,
 
 
 def makescroll():
-    # 不用 QSS（会给子树套 QStyleSheetStyle，破坏插件渲染与字体继承）：
-    # 透明视口 + 无边框（同 Gallery 的属性做法）
+    # 注意：这里的 QSS 不能去掉——不用 QSS 时（属性方式做透明），插件的
+    # polish 会让 viewport 以 PE_Widget 画背景色（Window 243），把页面卡
+    # 的底色(249)盖掉。QSS 的 QAbstractScrollArea 背景规则作用于 viewport，
+    # 是唯一可靠的透明途径。
     scroll = QScrollArea()
-    scroll.setFrameShape(QFrame.NoFrame)
-    scroll.viewport().setAutoFillBackground(False)
-    scroll.viewport().setAttribute(Qt.WA_StyledBackground, False)
+    scroll.setStyleSheet("""QScrollArea{background-color:transparent;border:0px}""")
     scroll.setWidgetResizable(True)
     return scroll
 
