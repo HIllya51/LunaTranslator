@@ -489,12 +489,13 @@ def __textstyleexpander(self, title, showswitch, grid):
     hlay.addWidget(getsmalllabel("显示")())
     hlay.addWidget(showswitch)
     exp.setHeaderWidget(header)
-    exp.addContentWidget(makegrid(grid))
-    return exp
+    content = makegrid(grid, hiderows=[1])
+    exp.addContentWidget(content)
+    return exp, content
 
 
 def xianshigrid_style(self):
-    yuanwenexp = __textstyleexpander(
+    yuanwenexp, self.yuanwenobject = __textstyleexpander(
         self,
         "原文",
         __xianshi(),
@@ -538,11 +539,21 @@ def xianshigrid_style(self):
                     default=False,
                     icon="fa.italic",
                 ),
+                "",
+                getsmalllabel("间距"),
+                D_getIconSwitch(
+                    icon="fa.gear",
+                    checkablechangecolor=False,
+                    callback=lambda x: self.yuanwenobject.layout().setRowVisible(
+                        1, x
+                    ),
+                    tips="间距_设置"
+                ),
             ],
             [(functools.partial(Spacesetting, self, False), 0)],
         ),
     )
-    yiwenexp = __textstyleexpander(
+    yiwenexp, self.yiwenobject = __textstyleexpander(
         self,
         "译文",
         _showhidefy(),
@@ -583,6 +594,16 @@ def xianshigrid_style(self):
                     tips="倾斜",
                     default=False,
                     icon="fa.italic",
+                ),
+                "",
+                getsmalllabel("间距"),
+                D_getIconSwitch(
+                    icon="fa.gear",
+                    checkablechangecolor=False,
+                    callback=lambda x: self.yiwenobject.layout().setRowVisible(
+                        1, x
+                    ),
+                    tips="间距_设置"
                 ),
             ],
             [(functools.partial(Spacesetting, self, True), 0)],

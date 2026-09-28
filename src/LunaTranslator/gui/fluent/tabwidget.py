@@ -11,6 +11,7 @@ from qtsymbols import (
     QFrame,
     QHBoxLayout,
     QModelIndex,
+    QTabBar,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -38,6 +39,7 @@ NAV_ICONS = [
 
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
+TABBAR_STYLE_NAVIGATION = 8  # Navigation
 
 
 def apply_segmented_tabbar(tabwidget: QTabWidget):
@@ -49,6 +51,22 @@ def apply_segmented_tabbar(tabwidget: QTabWidget):
     bar.setAttribute(Qt.WA_StyledBackground, True)
     bar.setDrawBase(False)
     bar.setExpanding(False)
+    tabwidget.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
+
+
+def apply_navigation_tabbar(tabwidget: QTabWidget):
+    """把 QTabWidget 配成 Navigation TabBar（Gallery pagetab.cpp setupNavigationTabs
+    同款）：左侧垂直导航页签，选中指示条变长效果。"""
+    bar = tabwidget.tabBar()
+    tabwidget.setTabPosition(QTabWidget.West)
+    bar.setShape(QTabBar.RoundedWest)
+    bar.setDrawBase(False)
+    bar.setExpanding(False)
+    bar.setAttribute(Qt.WA_StyledBackground, False)
+    bar.setProperty(
+        "TextAlign", int(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
+    )
+    bar.setProperty("tabBarStyle", TABBAR_STYLE_NAVIGATION)
     tabwidget.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
 
 
