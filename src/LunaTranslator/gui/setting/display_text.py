@@ -536,6 +536,7 @@ def __engineexpander(self):
     exp.setHeaderWidget(header)
     exp.addContentWidget(content)
     resetgroudswitchcallback(self, globalconfig["rendertext_using"])
+    exp.setExpanded(True)
     return exp
 
 
