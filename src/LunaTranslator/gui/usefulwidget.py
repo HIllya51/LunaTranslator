@@ -3681,7 +3681,7 @@ class _FoldHeaderButton(QAbstractButton):
     _CHEVRON_SIZE = 32
     _CHEVRON_TRAILING = 8
 
-    def __init__(self, title="", parent=None, bold=True, fullheight=False):
+    def __init__(self, title="", parent=None, fullheight=False):
         super().__init__(parent)
         self.setCheckable(True)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -3695,8 +3695,7 @@ class _FoldHeaderButton(QAbstractButton):
         self._leftcount = 0
         self.titlelabel = LLabel(title)
         titlefont = self.titlelabel.font()
-        titlefont.setBold(bold)
-        titlefont.setPixelSize(14)
+        titlefont.setPixelSize(15)
         self.titlelabel.setFont(titlefont)
         self.titlelabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         lay.addWidget(self.titlelabel)
@@ -3778,14 +3777,14 @@ class CollapsibleBoxWithButton(QWidget):
 
     def __init__(
         self, delayloadfunction=None, title="", parent=None, toggled=False,
-        bold=True, fullheight=False,
+        fullheight=False,
     ):
         super(CollapsibleBoxWithButton, self).__init__(parent)
         # WinUI 卡片外观（同 GroupCardWidget / ExExpander）
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setProperty("isCard", True)
         self.toggle_button = _FoldHeaderButton(
-            title, self, bold=bold, fullheight=fullheight)
+            title, self, fullheight=fullheight)
         self.toggle_button.toggled.connect(self.__toggled)
         self.toggle_button.toggled.connect(self.toggled)
         self.content_area = CollapsibleBox(delayloadfunction, self)
@@ -3827,7 +3826,6 @@ def createfoldgrid(
     parent=None,
     leftwidget=None,
     switch=None,
-    bold=True,
     fullheight=False,
 ):
 
@@ -3847,7 +3845,6 @@ def createfoldgrid(
         functools.partial(__, grid, internallayoutname, parent),
         title,
         toggled=toggled,
-        bold=bold,
         fullheight=fullheight,
     )
     if leftwidget:

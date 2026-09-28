@@ -297,6 +297,11 @@ class _ExpanderHeaderButton(QAbstractButton):
         self._update_layout_margins()
 
         self._label = QLabel(self)
+        # 同 makecardrow 卡片标题 15px：不设显式字体时继承应用字体(13px)，
+        # 会与普通卡标题不一致
+        labelfont = self._label.font()
+        labelfont.setPixelSize(15)
+        self._label.setFont(labelfont)
         self._label.setWordWrap(True)
         self._label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self._layout.addWidget(self._label, 1)

@@ -84,7 +84,7 @@ def delayloadlinks(key):
 
 
 def offlinelinks(key):
-    box = createfoldgrid(delayloadlinks(key), "资源下载", bold=False)
+    box = createfoldgrid(delayloadlinks(key), "资源下载")
     return box
 
 

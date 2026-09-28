@@ -607,7 +607,7 @@ class dialog_setting_game_internal(QWidget):
         hlay.setSpacing(8)
         titlelabel = LLabel("启动方式")
         titlefont = titlelabel.font()
-        titlefont.setPixelSize(14)
+        titlefont.setPixelSize(15)
         titlelabel.setFont(titlefont)
         hlay.addWidget(titlelabel)
         hlay.addStretch(1)

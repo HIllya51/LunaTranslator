@@ -413,7 +413,7 @@ def fontsettings(parent):
     hlay.setSpacing(8)
     titlelabel = LLabel("字体")
     titlefont = titlelabel.font()
-    titlefont.setPixelSize(14)
+    titlefont.setPixelSize(15)
     titlelabel.setFont(titlefont)
     hlay.addWidget(titlelabel)
     hlay.addStretch(1)
@@ -486,7 +486,7 @@ def setTabcishu_l(self):
 
     def __fenciexpander(
         title, switch, trailing=None, grid=(), switchlabel=None, leading=None,
-        afterswitch=None, bold=False, content=None
+        afterswitch=None, content=None
     ):
         """折叠卡（同 LICENSE 的 ExExpander）：标题 +（doclink 紧随）+ 开关（折叠按钮左边）。"""
         # content= 子项面板形式时内容右侧让出折叠按钮区（60px）
@@ -498,8 +498,7 @@ def setTabcishu_l(self):
         hlay.setSpacing(8)
         titlelabel = LLabel(title)
         titlefont = titlelabel.font()
-        titlefont.setPixelSize(14)
-        titlefont.setBold(bold)
+        titlefont.setPixelSize(15)
         titlelabel.setFont(titlefont)
         hlay.addWidget(titlelabel)
         if leading is not None:
@@ -531,7 +530,6 @@ def setTabcishu_l(self):
 
     zhuyinexp = __fenciexpander(
         "注音",
-        bold=True,
         switch=getsimpleswitch(
             globalconfig,
             "isshowhira",

@@ -465,14 +465,14 @@ class AnkiWindow(QWidget):
         """Fluent 设置页：每项一张单行卡片；自动录音/音频编码为折叠卡。"""
 
         def _foldheader(title):
-            """折叠卡头部：加粗标题在左，控件由调用方追加在右。"""
+            """折叠卡头部：标题在左，控件由调用方追加在右。"""
             header = QWidget()
             hlay = QHBoxLayout(header)
             hlay.setContentsMargins(0, 12, 0, 12)
             hlay.setSpacing(8)
             titlelabel = LLabel(title)
             titlefont = titlelabel.font()
-            titlefont.setPixelSize(14)
+            titlefont.setPixelSize(15)
             titlelabel.setFont(titlefont)
             hlay.addWidget(titlelabel)
             hlay.addStretch(1)
