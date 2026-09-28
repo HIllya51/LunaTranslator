@@ -1330,14 +1330,7 @@ class BASEOBJECT(QObject):
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         if ismenulist:
-            name = ui_settings.get("theme3", "FluentUI3")
-            NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
-            if name == "QTWin11":
-                NativeUtils.setAcrylicEffect(
-                    int(widget.winId()), True, [0x40F7F7FA, 0x40212121][dark]
-                )
-            else:
-                NativeUtils.clearEffect(int(widget.winId()))
+            pass
         else:
             NativeUtils.SetTheme(int(widget.winId()), dark, self.currentmica)
 

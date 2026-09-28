@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, importlib, threading
+import functools, importlib
 from traceback import print_exc
 import gobject
 from myutils.config import globalconfig, static_data, ui_settings
@@ -375,13 +375,8 @@ def uisetting(self):
                                         ui_settings,
                                         "darklight2",
                                         lambda _: (
-                                            threading.Thread(
-                                                target=lambda: (
-                                                    gobject.base.setstylesheetsignal.emit(),
-                                                    switch_darklight(),
-                                                ),
-                                                daemon=True,
-                                            ).start(),
+                                            gobject.base.setcommonstylesheet(),
+                                            switch_darklight(),
                                         ),
                                         default=0,
                                     ),
