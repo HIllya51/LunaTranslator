@@ -21,7 +21,6 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     MyInputDialog,
     getboxlayout,
-    getboxwidget,
     getsimpleswitch,
     D_getsimplecombobox,
     getspinbox,
@@ -511,55 +510,28 @@ def setTabcishu_l(self):
         exp.addContentWidget(makegrid(list(grid)))
         return exp
 
-    # 注音折叠卡：折叠条 = 标题 + doclink + 显示开关 + 注音颜色按钮；
-    # 内容为两个子项面板：日语注音方案 / 字体折叠卡
-    zhuyinexp = ExExpander(content_pad=True)
-
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("注音")
-    titlefont = titlelabel.font()
-    titlefont.setBold(True)
-    titlefont.setPixelSize(14)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    doclink = D_getdoclink("qa1.html")
-    if callable(doclink):
-        doclink = doclink()
-    if doclink is not None:
-        hlay.addWidget(doclink)
-    hlay.addStretch(1)
-    hlay.addWidget(getsmalllabel("显示")())
-    hlay.addWidget(
-        getsimpleswitch(
+    zhuyinexp = __fenciexpander(
+        "注音",
+        bold=True,
+        switch=getsimpleswitch(
             globalconfig,
             "isshowhira",
             callback=gobject.base.translation_ui.translate_text.showhidert,
             default=True,
-        )
-    )
-    colorbtn = D_getcolorbutton(
-        self,
-        globalconfig,
-        "jiamingcolor",
-        callback=gobject.base.translation_ui.translate_text.setcolorstyle,
-        tips="注音颜色",
-        default="black",
-    )
-    if callable(colorbtn):
-        colorbtn = colorbtn()
-    if colorbtn is not None:
-        hlay.addWidget(colorbtn)
-    zhuyinexp.setHeaderWidget(header)
-
-    # 子项 1：日语注音方案（标题在左、下拉框在右端）
-    zhuyinexp.addContentWidget(
-        getboxwidget(
+        ),
+        leading=D_getdoclink("qa1.html"),
+        switchlabel="显示",
+        afterswitch=D_getcolorbutton(
+            self,
+            globalconfig,
+            "jiamingcolor",
+            callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+            tips="注音颜色",
+            default="black",
+        ),
+        grid=(
             [
                 getsmalllabel("日语注音方案"),
-                1,
                 D_getsimplecombobox(
                     [
                         "平假名",
@@ -571,12 +543,11 @@ def setTabcishu_l(self):
                     callback=lambda _: gobject.base.translation_ui.translate_text.refreshcontent(),
                     default=0,
                 ),
-            ]
-        )
+            ],
+            # 字体折叠卡（跟随默认在折叠条上）
+            [(functools.partial(fontsettings, self), 0)],
+        ),
     )
-    # 子项 2：字体折叠卡（跟随默认在折叠条上）
-    zhuyinexp.addContentWidget(fontsettings(self))
-
     zhuyinexp.setEnabled(globalconfig.get("isshowrawtext", True))
     self.fenyinsettings = zhuyinexp
 
