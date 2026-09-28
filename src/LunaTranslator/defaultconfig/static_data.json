@@ -1,19 +1,7 @@
 {
     "themes": [
         {
-            "name": "PyQtDarkTheme",
-            "file": {
-                "dark": "PyQtDarkTheme/dark.py",
-                "light": "PyQtDarkTheme/light.py",
-                "setting": "PyQtDarkTheme/setting.py"
-            }
-        },
-        {
-            "name": "QTWin11",
-            "file": {
-                "dark": "QTWin11/dark.py",
-                "light": "QTWin11/light.py"
-            }
+            "name": "FluentUI3"
         }
     ],
     "font_type_default": {

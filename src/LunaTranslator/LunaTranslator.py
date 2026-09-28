@@ -51,6 +51,7 @@ from textio.textsource.mssr import mssr
 from gui.selecthook import hookselect
 from gui.translatorUI import TranslatorWindow
 import functools, gobject
+import gui.fluent
 from gui.transhist import transhist
 from gui.edittext import edittext
 from gui.flowsearchword import WordViewTooltip
@@ -215,7 +216,11 @@ class BASEOBJECT(QObject):
         self.__connect_internal(self.setresult)
         self.__connect_internal(self.setimage)
         self.safeinvokefunction.connect(self.__safeinvoke)
-        self.setstylesheetsignal.connect(self.setcommonstylesheet)
+        # QueuedConnection：确保不在调用者的信号处理器栈内同步执行
+        # （组合框下拉的关闭序列中同步 setStyle 会破坏标题栏鼠标响应）
+        self.setstylesheetsignal.connect(
+            self.setcommonstylesheet, Qt.QueuedConnection
+        )
         self.__connect_internal(self.progresssignal2)
         self.__connect_internal(self.progresssignal3)
         self.__connect_internal(self.progresssignal4)
@@ -277,6 +282,7 @@ class BASEOBJECT(QObject):
         self.history = HistoryHelper()
         self.currentisdark = None
         self.currentmica = None
+        self._fluent_applied = False
         self.update_avalable = False
         self.translators: "dict[str, basetrans]" = {}
         self.cishus: "dict[str, cishubase]" = {}
@@ -1328,7 +1334,7 @@ class BASEOBJECT(QObject):
         if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
             return
         if ismenulist:
-            name = ui_settings.get("theme3", "PyQtDarkTheme")
+            name = ui_settings.get("theme3", "FluentUI3")
             NativeUtils.SetCornerNotRound(int(widget.winId()), False, name == "QTWin11")
             if name == "QTWin11":
                 NativeUtils.setAcrylicEffect(
@@ -1336,6 +1342,20 @@ class BASEOBJECT(QObject):
                 )
             else:
                 NativeUtils.clearEffect(int(widget.winId()))
+        elif widget.property("fluentFrameless"):
+            # Fluent 无边框窗口：不能调 NativeUtils.SetTheme（其内部
+            # DwmSetWindowAttribute(DWMWA_SYSTEMBACKDROP_TYPE) 会破坏
+            # WM_NCCALCSIZE 去掉标题栏后的非客户区处理——标题栏无法拖动/右键。
+            # 同 Gallery 的 apply_dwm_dark_titlebar：只设暗色模式属性
+            try:
+                import ctypes as _ct
+                _v = _ct.c_int(1 if dark else 0)
+                _ct.windll.dwmapi.DwmSetWindowAttribute(
+                    _ct.wintypes.HWND(int(widget.winId())),
+                    _ct.wintypes.DWORD(20),  # DWMWA_USE_IMMERSIVE_DARK_MODE
+                    _ct.byref(_v), _ct.sizeof(_v))
+            except:
+                pass
         else:
             NativeUtils.SetTheme(int(widget.winId()), dark, self.currentmica)
 
@@ -1605,7 +1625,8 @@ class BASEOBJECT(QObject):
     def cornerornot(self, w=None):
         __ = [w] if w else QApplication.topLevelWidgets()
         for widget in __:
-            if self.ismenulistframeless(widget):
+            if self.ismenulistframeless(widget) or widget.property("fluentFrameless"):
+                # fluentFrameless：Fluent 无边框窗口由自身维护 DWMWCP_ROUND
                 continue
             NativeUtils.SetCornerNotRound(
                 int(widget.winId()), ui_settings.get("force_rect", True), False
@@ -1625,42 +1646,56 @@ class BASEOBJECT(QObject):
         darklight = ["light", "dark"][dark]
 
         style = ""
-        for _ in (0,):
-            try:
-                name = ui_settings.get("theme3", "PyQtDarkTheme")
-                _fn = None
-                for n in static_data["themes"]:
-                    if n["name"] == name:
-                        _fn = n["file"][darklight]
+        fluentactive = gui.fluent.is_fluent_theme()
+        if fluentactive:
+            self._fluent_applied = True
+            gui.fluent.apply_fluent_style(dark)
+        elif self._fluent_applied:
+            self._fluent_applied = False
+            gui.fluent.clear_fluent_style()
+        if not fluentactive:
+            for _ in (0,):
+                try:
+                    name = ui_settings.get("theme3", "FluentUI3")
+                    _fn = None
+                    for n in static_data["themes"]:
+                        if n["name"] == name:
+                            _fn = n["file"][darklight]
+                            break
+
+                    if not _fn:
                         break
 
-                if not _fn:
-                    break
-
-                if _fn.endswith(".py"):
-                    style = importlib.import_module(
-                        "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
-                    ).stylesheet()
-                elif _fn.endswith(".qss"):
-                    with open(
-                        "files/LunaTranslator_qss/{}".format(_fn),
-                        "r",
-                    ) as ff:
-                        style = ff.read()
-            except:
-                print_exc()
+                    if _fn.endswith(".py"):
+                        style = importlib.import_module(
+                            "files.LunaTranslator_qss." + _fn[:-3].replace("/", ".")
+                        ).stylesheet()
+                    elif _fn.endswith(".qss"):
+                        with open(
+                            "files/LunaTranslator_qss/{}".format(_fn),
+                            "r",
+                        ) as ff:
+                            style = ff.read()
+                except:
+                    print_exc()
         fontstr = lambda fsize: "font:{fontsize}pt  {fonttype};".format(
             fontsize=fsize,
             fonttype=ui_settings.get(
                 "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
             ),
         )
-        style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
-        style += "QListWidget {{ {} }}".format(
-            fontstr(ui_settings.get("settingfontsize", 12) + 2)
-        )
-        style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
-        style += "#NOBORDER{border:0;margin:0;padding:0;}"
+        if fluentactive:
+            # FluentUI3：子树根不得挂任何 QSS——祖先样式表会给全部后代套
+            # QStyleSheetStyle 包装，导致调色板继承中断（页面发白）与析构不稳。
+            # 字体由下方 app 级 setFont 生效。
+            style = ""
+        else:
+            style += "*{{  {}  }}".format(fontstr(ui_settings.get("settingfontsize", 12)))
+            style += "QListWidget {{ {} }}".format(
+                fontstr(ui_settings.get("settingfontsize", 12) + 2)
+            )
+            style += "QGroupBox{ background:transparent; } QGroupBox#notitle{ margin-top:0px;} QGroupBox#notitle:title {margin-top: 0px;}"
+            style += "#NOBORDER{border:0;margin:0;padding:0;}"
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
         font = QFont()
@@ -1670,8 +1705,9 @@ class BASEOBJECT(QObject):
             )
         )
         font.setPointSizeF(ui_settings.get("settingfontsize", 12))
-        if QApplication.instance().font() != font:
-            QApplication.instance().setFont(font)
+        # 无条件 setFont：app.setStyle 的 re-polish 会把控件字体重置为系统默认，
+        # 有 != 守卫时会跳过不变化的字体导致全部变小
+        QApplication.instance().setFont(font)
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:
 

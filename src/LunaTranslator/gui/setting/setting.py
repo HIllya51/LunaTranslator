@@ -14,6 +14,16 @@ from gui.setting.transopti import setTab7_lazy
 from gui.setting.about import setTab_about
 from gui.dynalang import LListWidgetItem, LListWidget
 
+# FluentUI3 主题（非 Fluent 主题时 mixin 全部钩子直通，行为与原来一致）
+import gui.fluent as _fluent
+from gui.fluent.frameless import FluentFramelessWindowMixin
+from gui.fluent.titlebar import FluentTitleBar
+from gui.fluent.tabwidget import FluentTabWidget
+
+
+class _SettingBase(FluentFramelessWindowMixin, closeashidewindow):
+    pass
+
 
 class TabWidget(QWidget):
     currentChanged = pyqtSignal(int)
@@ -71,7 +81,7 @@ class TabWidget(QWidget):
         return self.tab_widget.currentWidget()
 
 
-class Setting(closeashidewindow):
+class Setting(_SettingBase):
 
     def __init__(self, parent):
         super(Setting, self).__init__(
@@ -82,9 +92,33 @@ class Setting(closeashidewindow):
             possave=functools.partial(globalconfig.__setitem__, "setting_geo_2"),
         )
         self.setWindowIcon(qtawesome.icon("fa.gear"))
+        self._fluent_title_bar = None
+        if _fluent.is_fluent_theme():
+            self._install_fluent_chrome()
         self.isfirst = True
         registrhotkeys(self)
         gobject.base.settin_ui_showsignal.connect(self.showsignal)
+
+    # ---- Fluent 标题栏 / 无边框 ----
+    def _install_fluent_chrome(self):
+        self._fluent_title_bar = FluentTitleBar(self)
+        self._fluent_title_bar.navToggleRequested.connect(self._toggle_fluent_nav)
+        self.setMenuWidget(self._fluent_title_bar)
+        self.setProperty("fluentFrameless", True)
+        # 窗口激活态 -> 标题栏 bar-active 属性（插件据此调标题栏底色）
+        self.installEventFilter(self)
+
+    def _toggle_fluent_nav(self):
+        if getattr(self, "tab_widget", None) is not None and hasattr(
+            self.tab_widget, "toggleNavigation"
+        ):
+            self.tab_widget.toggleNavigation()
+
+    def hitTestWidgets(self):
+        bar = self._fluent_title_bar
+        if bar is None:
+            return []
+        return [bar.navButton(), bar.minButton(), bar.maxButton(), bar.closeButton()]
 
     def showEvent(self, e: QShowEvent):
         if self.isfirst:
@@ -94,7 +128,7 @@ class Setting(closeashidewindow):
 
     def firstshow(self):
 
-        self.setMinimumSize(100, 100)
+        self.setMinimumSize(560 if self._fluent_title_bar else 100, 360 if self._fluent_title_bar else 100)
         self.setWindowTitleWithVersionWithUserconfig("设置")
 
         self.tab_widget, do = makesubtab_lazy(
@@ -118,7 +152,7 @@ class Setting(closeashidewindow):
                 functools.partial(setTab_quick, self),
                 functools.partial(setTab_about, self),
             ],
-            klass=TabWidget,
+            klass=(FluentTabWidget if self._fluent_title_bar is not None else TabWidget),
             delay=True,
         )
         self.setCentralWidget(self.tab_widget)

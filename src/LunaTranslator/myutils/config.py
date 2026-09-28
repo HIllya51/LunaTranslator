@@ -453,6 +453,12 @@ def migrate_ui_settings():
             ui_settings[k] = globalconfig.pop(k)
     if "dialog_savegame_layout" not in ui_settings:
         ui_settings["dialog_savegame_layout"] = {}
+    # 一次性迁移到 FluentUI3 主题（marker 键保证之后手动改回不被覆盖）
+    if ui_settings.get("theme3") != "FluentUI3" and not ui_settings.get(
+        "theme3_fluent_migrated"
+    ):
+        ui_settings["theme3_fluent_migrated"] = True
+        ui_settings["theme3"] = "FluentUI3"
 
 
 migrate_ui_settings()

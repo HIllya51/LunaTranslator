@@ -37,6 +37,9 @@ from gui.dynalang import (
     LToolButton,
 )
 
+# FluentUI3 主题判定（切回旧主题时下面的守卫走原逻辑）
+from gui.fluent import is_fluent_theme as _isfluent
+
 
 def load_specific_icon_size(ico_path):
     reader = QImageReader(ico_path)
@@ -85,6 +88,9 @@ class SuperCombo(FocusCombo):
 
     def __init__(self, parent=None, static=False, sizeX=False) -> None:
         super().__init__(parent=parent, sizeX=sizeX)
+        # FluentUI3：Gallery 的优化——默认内部视图在弹出列表的选中项上下
+        # 会画两条全宽黑线，换成干净的 QListView 消除
+        self.setView(QListView(self))
         self.static = static
         self.__resizedirect()
 
@@ -775,143 +781,38 @@ class closeashidewindow(saveposwindow):
         super().closeEvent(event)
 
 
-class MySwitch(QAbstractButton):
+class MySwitch(QCheckBox):
+    """FluentUI3 原生开关：QCheckBox + 插件 isSwitchButton 属性，
+    由样式插件渲染为 WinUI ToggleSwitch（滑块动画、悬停缩放、按压拉伸、
+    拖拽切换全部内建）。保留旧 MySwitch 的调用面（sign/enable/clicksignal）。"""
+
     clicksignal = pyqtSignal()
-
-    def event(self, a0: QEvent) -> bool:
-        if a0.type() == QEvent.Type.MouseButtonDblClick:
-            return True
-        elif a0.type() == QEvent.Type.FontChange:
-            self.__loadsize()
-        return super().event(a0)
-
-    def __loadsize(self):
-        h = QFontMetricsF(self.font(), self).height()
-        sz = QSizeF(1.62 * h * gobject.Consts.btnscale, h * gobject.Consts.btnscale)
-        self.setFixedSize(sz.toSize())
 
     def __init__(self, parent=None, sign=True, enable=True):
         super().__init__(parent)
+        self.setProperty("isSwitchButton", True)
         self.setCheckable(True)
-        super().setChecked(sign)
-        super().setEnabled(enable)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setFixedSize(44, 20)  # 插件 PM 40x20 + SE_CheckBoxIndicator 右移的 contentItemHMargin(4)
         self.clicksignal.connect(self.click)
-        self.__currv = 0
-        if sign:
-            self.__currv = 20
-
-        self.animation = QVariantAnimation()
-        self.animation.setDuration(80)
-        self.animation.setStartValue(0)
-        self.animation.setEndValue(20)
-        self.animation.valueChanged.connect(self.update11)
-        self.animation.finished.connect(self.onAnimationFinished)
-        self.__loadsize()
-
-    def click(self):
-        super().click()
-        self.runanime()
+        super().setEnabled(enable)
+        self.setChecked(sign)
 
     def setChecked(self, check):
         if check == self.isChecked():
             return
         super().setChecked(check)
-        self.runanime()
-
-    def update11(self):
-        self.__currv = self.animation.currentValue()
-        self.update()
-
-    def runanime(self):
-        self.animation.setDirection(
-            QVariantAnimation.Direction.Forward
-            if self.isChecked()
-            else QVariantAnimation.Direction.Backward
-        )
-        self.animation.start()
-
-    def paintanime(self, painter: QPainter):
-        if qtawesome.isdark:
-            backcolor = QColor(
-                [
-                    gobject.Consts.btncolor.dark.disabled.back,
-                    gobject.Consts.btncolor.dark.enabled.back,
-                ][self.isChecked()]
+        if not self.isVisible():
+            # 显示前同步插件的状态跟踪属性：否则首帧绘制会当作 off→on 状态
+            # 变化，播放 150ms 切换动画（初始化为 On 的开关每次显示都闪一下）
+            state = int(QStyle.State_Enabled) | (
+                int(QStyle.State_On) if check else 0
             )
-            centercolor = QColor(
-                [
-                    gobject.Consts.btncolor.dark.disabled.center,
-                    gobject.Consts.btncolor.dark.enabled.center,
-                ][self.isChecked()]
-            )
-        else:
-            backcolor = QColor(
-                [
-                    gobject.Consts.btncolor.light.disabled.back,
-                    gobject.Consts.btncolor.light.enabled.back,
-                ][self.isChecked()]
-            )
-            centercolor = QColor(
-                [
-                    gobject.Consts.btncolor.light.disabled.center,
-                    gobject.Consts.btncolor.light.enabled.center,
-                ][self.isChecked()]
-            )
-        checkdisabled = lambda c: c if self.isEnabled() else qtawesome.disablecolor(c)
-        wb = self.width() * 0.1
-        hb = self.height() * 0.125
-        if not self.isChecked():
-            painter.setBrush(Qt.BrushStyle.NoBrush)
-            pen = QPen(checkdisabled(centercolor))
-            pen.setWidth(1)
-            painter.setPen(pen)
-        else:
-            painter.setBrush(checkdisabled(backcolor))
-        painter.drawRoundedRect(
-            QRectF(
-                wb,
-                hb,
-                self.width() - 2 * wb,
-                self.height() - 2 * hb,
-            ),
-            self.height() / 2 - hb,
-            self.height() / 2 - hb,
-        )
-        r = self.height() * 0.275 - 1
-        rb = self.height() / 2 - hb - r
-        offset = self.__currv * (self.width() - 2 * wb - 2 * r - 2 * rb) / 20
-        painter.setBrush(checkdisabled(centercolor))
-        painter.drawEllipse(
-            QPointF(
-                (wb + r + rb) + offset,
-                (self.height() / 2),
-            ),
-            r,
-            r,
-        )
+            self.setProperty("_q_stylestate", state)
 
-    def paintEvent(self, _):
-        painter = QPainter(self)
-        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
-        painter.setPen(Qt.PenStyle.NoPen)
-        self.paintanime(painter)
-
-    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
-        if not self.isEnabled():
-            return
-        if event.button() != Qt.MouseButton.LeftButton:
-            return
-        try:
-            super().setChecked(not self.isChecked())
-            self.clicked.emit(self.isChecked())
-            self.runanime()
-            # 父窗口deletelater
-        except:
-            pass
-
-    def onAnimationFinished(self):
-        pass
+    def event(self, a0: QEvent) -> bool:
+        if a0.type() == QEvent.Type.MouseButtonDblClick:
+            return True  # 双击不重复切换（沿用旧行为）
+        return super().event(a0)
 
 
 class resizableframeless(saveposwindow_1):
@@ -2519,6 +2420,11 @@ def makegroupingrid(args: dict):
         group.setTitle(title)
     else:
         group = NQGroupBox()
+    if title and _isfluent():
+        # FluentUI3：有标题的分组渲染为 WinUI 卡片（插件 PE_Widget 消费 isCard）；
+        # 无标题容器保持透明，避免卡中卡
+        group.setAttribute(Qt.WA_StyledBackground, True)
+        group.setProperty("isCard", True)
     if not enable:
         group.setEnabled(False)
     if groupname and (parent is not None):
@@ -2626,6 +2532,10 @@ def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None)
     else:
         gridlay = QGridLayout(gridlayoutwidget)
     gridlay.setAlignment(Qt.AlignmentFlag.AlignTop)
+    if _isfluent():
+        # FluentUI3：页面级网格留边距（卡片不贴窗口边），卡片行间距 8
+        gridlay.setContentsMargins(16, 8, 16, 12)
+        gridlay.setVerticalSpacing(8)
     gridlayoutwidget.setStyleSheet("gridwidget{background-color:transparent;}")
 
     def do(gridlay, grid, savelist, savelay, hiderows):
@@ -2667,7 +2577,8 @@ def makesubtab_lazy(
     fast=False,
     padding=False,
 ):
-    if padding and isinstance(titles, list):
+    # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
+    if padding and isinstance(titles, list) and not _isfluent():
         titles = [("_" + _ + "_") for _ in titles]
     if klass:
         tab: LTabWidget = klass()

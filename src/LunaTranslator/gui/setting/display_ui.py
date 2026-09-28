@@ -174,7 +174,7 @@ def createfontcombo():
 
 def getget_setting_window():
     try:
-        name = ui_settings.get("theme3", "PyQtDarkTheme")
+        name = ui_settings.get("theme3", "FluentUI3")
         _fn = None
         for n in static_data["themes"]:
             if n["name"] == name:
@@ -375,7 +375,9 @@ def uisetting(self):
                                         ui_settings,
                                         "darklight2",
                                         lambda _: (
-                                            gobject.base.setcommonstylesheet(),
+                                            # 同"跟随系统"路径：通过信号异步切换，
+                                            # 不在下拉弹出的关闭序列中同步执行
+                                            gobject.base.setstylesheetsignal.emit(),
                                             switch_darklight(),
                                         ),
                                         default=0,
