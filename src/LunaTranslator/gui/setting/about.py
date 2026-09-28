@@ -189,13 +189,95 @@ def get_about_info():
         return _TR("\n\n".join([t6, t4]))
 
 
+def _rgb_to_hsl(r, g, b):
+    """r,g,b in [0,255] -> h in [0,360), s,l in [0,1]"""
+    r /= 255.0
+    g /= 255.0
+    b /= 255.0
+    mx = max(r, g, b)
+    mn = min(r, g, b)
+    l = (mx + mn) / 2.0
+    if mx == mn:
+        return 0.0, 0.0, l
+    d = mx - mn
+    s = d / (2.0 - mx - mn) if l > 0.5 else d / (mx + mn)
+    if mx == r:
+        h = (g - b) / d + (6 if g < b else 0)
+    elif mx == g:
+        h = (b - r) / d + 2
+    else:
+        h = (r - g) / d + 4
+    h *= 60.0
+    return h, s, l
+
+
+def _hsl_to_rgb(h, s, l):
+    """h in [0,360), s,l in [0,1] -> r,g,b in [0,255]"""
+    if s == 0:
+        v = int(round(l * 255))
+        return v, v, v
+
+    def hue2rgb(p, q, t):
+        if t < 0:
+            t += 1
+        if t > 1:
+            t -= 1
+        if t < 1 / 6:
+            return p + (q - p) * 6 * t
+        if t < 1 / 2:
+            return q
+        if t < 2 / 3:
+            return p + (q - p) * (2 / 3 - t) * 6
+        return p
+
+    q = l * (1 + s) if l < 0.5 else l + s - l * s
+    p = 2 * l - q
+    hk = h / 360.0
+    r = hue2rgb(p, q, hk + 1 / 3)
+    g = hue2rgb(p, q, hk)
+    b = hue2rgb(p, q, hk - 1 / 3)
+    return int(round(r * 255)), int(round(g * 255)), int(round(b * 255))
+
+
+def _hsl_invert_luminance(qimg: QImage) -> QImage:
+    """HSL 只反转亮度（保留色相/饱和度）。灰阶像素（s=0）走快速路径——
+    亮度反转等价于 255-r，避免整图纯 Python HSL 往返。"""
+    qimg = qimg.convertToFormat(QImage.Format_RGB32)
+    w, h = qimg.width(), qimg.height()
+    out = QImage(w, h, QImage.Format_RGB32)
+    src = memoryview(qimg.bits().asarray(w * h * 4))
+    dst = memoryview(out.bits().asarray(w * h * 4))
+    for i in range(0, w * h * 4, 4):
+        b = src[i]
+        g = src[i + 1]
+        r = src[i + 2]
+        mx = r if r >= g else g
+        if b > mx:
+            mx = b
+        mn = r if r <= g else g
+        if b < mn:
+            mn = b
+        if mx == mn:
+            v = 255 - r
+            dst[i] = v
+            dst[i + 1] = v
+            dst[i + 2] = v
+        else:
+            hh, ss, ll = _rgb_to_hsl(r, g, b)
+            r2, g2, b2 = _hsl_to_rgb(hh, ss, 1.0 - ll)
+            dst[i] = b2
+            dst[i + 1] = g2
+            dst[i + 2] = r2
+        dst[i + 3] = 255
+    return out
+
+
 def load_scaled_pixmap_darkadapt(file_path: str, target_width: int, dpr: float, isdark=None):
-    """暗色适配包装：黑暗模式下反转图片颜色（二维码等黑白图不刺眼）。
-    isdark 显式传入时以它为准（用于明暗切换事件），否则取当前模式。"""
+    """暗色适配包装：黑暗模式下 HSL 反转亮度（二维码等黑白图不刺眼，
+    彩色部分保留色相）。isdark 显式传入时以它为准（用于明暗切换事件）。"""
     img = load_scaled_pixmap(file_path, target_width, dpr)
     if nowisdark() if isdark is None else isdark:
-        qimg = img.toImage()
-        qimg.invertPixels(QImage.InvertRgb)
+        qimg = _hsl_invert_luminance(img.toImage())
         img = QPixmap.fromImage(qimg)
         img.setDevicePixelRatio(dpr)
     return img

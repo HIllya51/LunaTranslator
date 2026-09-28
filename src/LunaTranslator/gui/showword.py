@@ -1219,6 +1219,8 @@ class AnkiWindow(QWidget):
 class CustomTabBar(LTabBar):
     def __init__(self) -> None:
         super().__init__()
+        # 查词结果页签：统一 Segmented WinUI3 tabbar
+        apply_segmented_tabbar_style(self)
         self.savesizehint = QSize()
 
     def sizeHint(self):
@@ -1578,9 +1580,9 @@ class showdiction(QWidget):
         root = self.model.invisibleRootItem()
         rows = []
 
-        from cishu.mdict import mdict
+        from cishu.mdict import Cishu
 
-        cishus: list[mdict] = []
+        cishus: "list[Cishu]" = []
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.base.cishus.get(k)
             if not hasattr(cishu, "tree"):
