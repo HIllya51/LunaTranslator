@@ -1,5 +1,9 @@
 from qtsymbols import *
 from gui.fluent.messagebox import ExMessageBox
+from gui.fluent.tabwidget import (
+    apply_segmented_tabbar,
+    apply_segmented_tabbar_style,
+)
 import json, re
 import time
 import functools
@@ -307,7 +311,9 @@ class AnkiWindow(QWidget):
         spliter = QSplitter()
         baselay.addWidget(spliter)
         edittemptab = LTabWidget()
+        apply_segmented_tabbar(edittemptab)
         self.previewtab = LTabBar()
+        apply_segmented_tabbar_style(self.previewtab)
         revertbtn = LPushButton("恢复")
         revertbtn.clicked.connect(self.loadedits)
         savebtn = LPushButton("保存")

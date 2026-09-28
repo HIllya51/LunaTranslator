@@ -42,15 +42,20 @@ TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
 
 
-def apply_segmented_tabbar(tabwidget: QTabWidget):
-    """把 QTabWidget 配成 Segmented WinUI3 风格
-    （Gallery pagetab.cpp setupSegmentedTabs / addTabBarSection 同款），
-    并去掉 pane 边框。"""
-    bar = tabwidget.tabBar()
+def apply_segmented_tabbar_style(bar: QTabBar):
+    """QTabBar 本体的 Segmented WinUI3 配置
+    （QTabWidget 与裸 QTabBar 通用，Gallery pagetab.cpp winUi3IconOnlyBar 同款）。"""
     bar.setProperty("tabBarStyle", TABBAR_STYLE_SEGMENTED_WINUI3)
     bar.setAttribute(Qt.WA_StyledBackground, True)
     bar.setDrawBase(False)
     bar.setExpanding(False)
+
+
+def apply_segmented_tabbar(tabwidget: QTabWidget):
+    """把 QTabWidget 配成 Segmented WinUI3 风格
+    （Gallery pagetab.cpp setupSegmentedTabs / addTabBarSection 同款），
+    并去掉 pane 边框。"""
+    apply_segmented_tabbar_style(tabwidget.tabBar())
     tabwidget.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
 
 
