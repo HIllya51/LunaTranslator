@@ -2321,6 +2321,9 @@ def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
         if isinstance(tab, QTabWidget):
             # 普通子页签页：标记给 makescrollgrid —— 网格首卡紧贴 tabbar
             v.setProperty("_fluent_tabbar_page", True)
+        else:
+            # 主设置页（FluentTabWidget，无 tabbar）：顶部边距与左边距统一
+            v.setProperty("_fluent_main_grid", True)
         q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     tab.addTab(q, title)
 
@@ -2660,12 +2663,13 @@ def makescroll():
 
 
 def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=None):
-    # 子页签页（tabadd_lazy 标记）的网格顶部紧贴 tabbar，其余场景保留顶部边距；
-    # 卡内网格（pagecard 的 innerlay）顶边距与左边距统一为 16
+    # 子页签页（tabadd_lazy 标记）的网格顶部紧贴 tabbar；
+    # 卡内网格（pagecard）与主设置页的顶边距统一为 16（与左边距一致）
     flush = bool(getattr(lay, "property", lambda *_: None)("_fluent_tabbar_page"))
     incard = bool(getattr(lay, "property", lambda *_: None)("_fluent_card_grid"))
+    mainpg = bool(getattr(lay, "property", lambda *_: None)("_fluent_main_grid"))
     wid, do = makegrid(grid, savelist, savelay, delay=True, hiderows=hiderows,
-                       toptouch=flush, topmargin=16 if incard else None)
+                       toptouch=flush, topmargin=16 if (incard or mainpg) else None)
     swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)

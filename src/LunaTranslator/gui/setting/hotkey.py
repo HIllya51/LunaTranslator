@@ -425,7 +425,7 @@ def setTab_quick(self, l: QVBoxLayout):
     # ---- “使用快捷键”卡片 ----
     card_holder = QWidget()
     card_lay = QVBoxLayout(card_holder)
-    card_lay.setContentsMargins(16, 8, 16, 12)
+    card_lay.setContentsMargins(16, 16, 16, 12)
     card_lay.setSpacing(0)
     card_lay.addWidget(
         make_card(

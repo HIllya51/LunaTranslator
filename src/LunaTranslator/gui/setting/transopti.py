@@ -222,5 +222,5 @@ def setTab7_lazy(self, basel: QLayout):
         padding=True,
         pagecard=True,
     )
-    basel.addWidget(maketabholder(tab, top=8))
+    basel.addWidget(maketabholder(tab, top=16))
     dotab()

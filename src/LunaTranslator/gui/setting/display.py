@@ -23,5 +23,5 @@ def setTabThree_lazy(self, basel: QLayout):
         pagecard=True,
     )
 
-    basel.addWidget(maketabholder(tab, top=8))
+    basel.addWidget(maketabholder(tab, top=16))
     do()

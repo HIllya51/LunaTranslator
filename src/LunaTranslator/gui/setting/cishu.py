@@ -265,6 +265,8 @@ def clickcallback(l: list, lay: VisLFormLayout, checked):
 def fenciqisettings(self):
     box = GroupCardWidget("分词器", parent=self)
     lay = VisLFormLayout(box.contentWidget())
+    # 表单边距归零：内容与标题对齐在卡片统一的 12px 内边距上
+    lay.setContentsMargins(0, 0, 0, 0)
     box.setContentLayout(lay)
     l1 = QHBoxLayout()
 

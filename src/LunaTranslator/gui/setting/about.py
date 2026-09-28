@@ -350,7 +350,7 @@ def setTab_about(self: QWidget, basel):
     # ---- 卡片式布局 ----
     content = QWidget()
     vlay = QVBoxLayout(content)
-    vlay.setContentsMargins(16, 8, 16, 12)
+    vlay.setContentsMargins(16, 16, 16, 12)
     vlay.setSpacing(8)
     vlay.setAlignment(Qt.AlignmentFlag.AlignTop)
 
