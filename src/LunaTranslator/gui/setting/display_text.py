@@ -208,9 +208,8 @@ class otherdisplaysetting(PopupWidget):
 
 
 def resetgroudswitchcallback(self, group):
-    clearlayout(self.goodfontsettingsformlayout)
-
-    goodfontgroupswitch = SuperCombo()
+    # 显示引擎折叠卡内容：引擎专属设置（仅 webview；Qt 引擎无）
+    clearlayout(self.enginesettingsformlayout)
     if group == "webview":
         _btn = getIconButton(
             callback=functools.partial(
@@ -241,7 +240,7 @@ def resetgroudswitchcallback(self, group):
             ),
             default=True,
         )
-        self.goodfontsettingsformlayout.addRow(
+        self.enginesettingsformlayout.addRow(
             getboxlayout(
                 [
                     "附加HTML",
@@ -257,13 +256,27 @@ def resetgroudswitchcallback(self, group):
                 ]
             ),
         )
-        self.goodfontsettingsformlayout.addRow(SplitLine())
 
-    __form = LFormLayout()
-    __form.addRow("字体样式", goodfontgroupswitch)
-    self.goodfontsettingsformlayout.addRow(__form)
+    # 引擎无专属设置（Qt）时收起，避免展开出空白内容面板
+    self.engineexpander.setExpanded(group == "webview")
+
+    # 字体样式折叠卡：头部（标题+样式组下拉）与内容随引擎一并重建
+    clearlayout(self.goodfontsettingsformlayout)
+    goodfontgroupswitch = SuperCombo()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("字体样式")
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(goodfontgroupswitch)
+    self.fontstyleexpander.setHeaderWidget(header)
     forml = LFormLayout()
-    __form.addRow(forml)
+    self.goodfontsettingsformlayout.addRow(forml)
 
     goodfontgroupswitch.addItems(
         [
@@ -517,10 +530,12 @@ def __textbackexpander(self):
 
 
 def __engineexpander(self):
-    """显示引擎折叠卡：头部 = 标题 + 引擎下拉，内容 = 所选引擎的样式设置。"""
-    # 表单布局需先于下拉创建——下拉初值变化即触发 resetgroudswitchcallback
+    """显示引擎折叠卡：头部 = 标题 + 引擎下拉，内容 = 引擎专属设置
+    （webview 的附加HTML等；Qt 引擎无内容）。注意 goodfontsettingsformlayout
+    （字体样式卡）需先于本卡创建——引擎下拉初值变化即触发
+    resetgroudswitchcallback，会同时重建两张卡。"""
     content = QWidget()
-    self.goodfontsettingsformlayout = LFormLayout(content)
+    self.enginesettingsformlayout = LFormLayout(content)
     exp = ExExpander()
     header = QWidget()
     hlay = QHBoxLayout(header)
@@ -535,8 +550,19 @@ def __engineexpander(self):
     hlay.addWidget(_createseletengeinecombo(self))
     exp.setHeaderWidget(header)
     exp.addContentWidget(content)
+    self.engineexpander = exp
     resetgroudswitchcallback(self, globalconfig["rendertext_using"])
-    exp.setExpanded(True)
+    return exp
+
+
+def __fontstyleexpander(self):
+    """字体样式折叠卡（从显示引擎中抽出）：头部（标题+样式组下拉）与
+    内容由 resetgroudswitchcallback 随引擎重建。"""
+    content = QWidget()
+    self.goodfontsettingsformlayout = LFormLayout(content)
+    exp = ExExpander()
+    self.fontstyleexpander = exp
+    exp.addContentWidget(content)
     return exp
 
 
@@ -725,6 +751,11 @@ def xianshigrid_style(self):
             )
         ],
         [(__textbackexpander(self), 0)],
-        [(__engineexpander(self), 0)],
     ]
+    # 字体样式卡需先建（引擎下拉初值变化触发的回调会写它），放置顺序在后
+    fontexp = __fontstyleexpander(self)
+    engineexp = __engineexpander(self)
+    fontexp.setExpanded(True)
+    textgrid.append([(engineexp, 0)])
+    textgrid.append([(fontexp, 0)])
     return textgrid
