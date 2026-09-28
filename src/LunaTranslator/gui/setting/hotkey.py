@@ -404,8 +404,8 @@ def plusclicked(self, form):
 
 
 def selfdefkeys(self, lay: QLayout):
-    # tabbar 下的内容整体包一张内容卡
-    inner = makecardcontainer(lay)
+    # tabbar 下的内容整体包一张内容卡（bare 页：maketabholder 已留页边距）
+    inner = makecardcontainer(lay, sidemargin=0, topmargin=0, bottommargin=0)
     wid = QWidget()
     wid.setObjectName("FUCKYOU")
     wid.setStyleSheet("QWidget#FUCKYOU{background:transparent}")
@@ -447,7 +447,7 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis = []
 
     def ___x(ls, l):
-        inner = makecardcontainer(l)
+        inner = makecardcontainer(l, sidemargin=0, topmargin=0, bottommargin=0)
         wid = makescrollgrid(setTab_quick_lazy(self, ls), inner)
         wid.layout().setContentsMargins(0, 0, 0, 0)
 
@@ -456,7 +456,9 @@ def setTab_quick(self, l: QVBoxLayout):
         __.append(functools.partial(___x, _[1]))
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
-    tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True, pagecard=True)
+    tab, do = makesubtab_lazy(
+        __vis, __, delay=True, padding=True, pagecard=True, bare=True
+    )
 
     # ---- tabwidget 只加页边距，页内容各自用紧邻 tabbar 的卡片包裹 ----
     l.addWidget(maketabholder(tab))

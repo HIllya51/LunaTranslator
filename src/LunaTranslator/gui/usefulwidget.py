@@ -2319,10 +2319,18 @@ def manybuttonlayout(textandfunctions: list):
     return layout
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
+def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False, bare=False):
     # 每个 tab 页都包 FluentPageCard 圆角卡（底色与内容卡形成对比）：
-    # 子页签页紧邻 tabbar、主设置页填满内容区；pagecard 参数保留兼容
-    q = make_lazy_page(getrealwidgetfunction, main=not isinstance(tab, QTabWidget))
+    # 子页签页紧邻 tabbar、主设置页填满内容区；pagecard 参数保留兼容。
+    # bare=True 时页签页不包页卡（透明，直落在外层页卡上）——页内容自带
+    # 内容卡时用，避免卡中卡的双层边框
+    if bare:
+        q = QWidget()
+        v = QVBoxLayout(q)
+        v.setContentsMargins(0, 0, 0, 0)
+        q.lazyfunction = functools.partial(getrealwidgetfunction, v)
+    else:
+        q = make_lazy_page(getrealwidgetfunction, main=not isinstance(tab, QTabWidget))
     tab.addTab(q, title)
 
 
@@ -2606,10 +2614,12 @@ def makegroupcard(title, grid, savelist=None, savelay=None, hiderows=None):
     return card
 
 
-def makecardcontainer(lay):
-    """页面内容整体包一张内容卡（GroupCardWidget 无标题形态）：页边距 16，
-    返回卡内零边距布局供 makescrollgrid 等构建——卡内网格需自行清零
-    makegrid 的默认边距（同 makegroupcard）。"""
+def makecardcontainer(lay, sidemargin=16, topmargin=16, bottommargin=12):
+    """页面内容整体包一张内容卡（GroupCardWidget 无标题形态）：默认页边距
+    (16,16,16,12)；bare 页签页（外层 maketabholder 已提供页边距）传
+    sidemargin=0/bottommargin=0，让内容卡与页签 bar 对齐。返回卡内零边距
+    布局供 makescrollgrid 等构建——卡内网格需自行清零 makegrid 的默认边距
+    （同 makegroupcard）。"""
     card = GroupCardWidget()
     host = card.contentWidget()
     hostlay = QVBoxLayout(host)
@@ -2617,7 +2627,7 @@ def makecardcontainer(lay):
     hostlay.setSpacing(8)
     holder = QWidget()
     holderlay = QVBoxLayout(holder)
-    holderlay.setContentsMargins(16, 16, 16, 12)
+    holderlay.setContentsMargins(sidemargin, topmargin, sidemargin, bottommargin)
     holderlay.addWidget(card)
     lay.addWidget(holder)
     return hostlay
@@ -2710,6 +2720,7 @@ def makesubtab_lazy(
     fast=False,
     padding=False,
     pagecard=False,
+    bare=False,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
     if klass:
@@ -2742,16 +2753,16 @@ def makesubtab_lazy(
     if not can:
         tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
 
-    def __do(tab: LTabWidget, titles, functions, initial, pagecard):
+    def __do(tab: LTabWidget, titles, functions, initial, pagecard, bare):
         if titles and functions:
             for i, func in enumerate(functions):
-                tabadd_lazy(tab, titles[i], func, pagecard=pagecard)
+                tabadd_lazy(tab, titles[i], func, pagecard=pagecard, bare=bare)
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
             tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
             tab.currentChanged.emit(initial[0][initial[1]])
 
-    ___do = functools.partial(__do, tab, titles, functions, initial, pagecard)
+    ___do = functools.partial(__do, tab, titles, functions, initial, pagecard, bare)
     if not delay:
         ___do()
         return tab

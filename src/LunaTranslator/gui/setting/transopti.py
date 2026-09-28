@@ -206,15 +206,15 @@ def setTab7_lazy(self, basel: QLayout):
     grids2 += [[("", 15)]]
 
     def ___(lay: QVBoxLayout):
-        # tabbar 下的内容整体包一张内容卡
-        inner = makecardcontainer(lay)
+        # tabbar 下的内容整体包一张内容卡（bare 页：maketabholder 已留页边距）
+        inner = makecardcontainer(lay, sidemargin=0, topmargin=0, bottommargin=0)
         wid = makescrollgrid(grids, inner, savelist, savelay)
         wid.layout().setContentsMargins(0, 0, 0, 0)
         savescroll.append(inner.itemAt(inner.count() - 1).widget())
         inner.addWidget(getcomparelayout(self))
 
     def ___2(lay: QVBoxLayout):
-        inner = makecardcontainer(lay)
+        inner = makecardcontainer(lay, sidemargin=0, topmargin=0, bottommargin=0)
         wid = makescrollgrid(grids2, inner)
         wid.layout().setContentsMargins(0, 0, 0, 0)
 
@@ -224,6 +224,7 @@ def setTab7_lazy(self, basel: QLayout):
         delay=True,
         padding=True,
         pagecard=True,
+        bare=True,
     )
     basel.addWidget(maketabholder(tab, top=16))
     dotab()
