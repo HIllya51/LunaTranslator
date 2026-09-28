@@ -108,6 +108,23 @@ class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
             table.horizontalHeader().setSectionResizeMode(
                 _, QHeaderView.ResizeMode.ResizeToContents
             )
+        # Fluent 风格表格（同 Gallery pageinstalledsoftware）：
+        # 隐藏行号列、无网格线、行交替色、整行选择、表头左对齐
+        vh = table.verticalHeader()
+        vh.setVisible(False)
+        vh.setMinimumSectionSize(44)
+        vh.setDefaultSectionSize(44)
+        table.setAlternatingRowColors(True)
+        table.setShowGrid(False)
+        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        hh = table.horizontalHeader()
+        hh.setFixedHeight(44)
+        hh.setDefaultAlignment(
+            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+        )
+        hfont = hh.font()
+        hfont.setPixelSize(14)
+        hh.setFont(hfont)
 
         self.table = table
 
