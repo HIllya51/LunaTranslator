@@ -36,7 +36,6 @@ from gui.dynalang import (
     LMainWindow,
 )
 from gui.fluent.tabwidget import apply_segmented_tabbar, FluentPageCard
-from gui.fluent.menuicons import apply_standard_menu_icons
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from gui.fluent.expander import _exp_chevron_button_background
 
@@ -64,20 +63,6 @@ class FocusCombo(QComboBox):
                 QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
             )
             self.view().setTextElideMode(Qt.TextElideMode.ElideRight)
-
-    def contextMenuEvent(self, e):
-        # 同 C++ Gallery 的 QComboBox::contextMenuEvent：可编辑时给
-        # lineEdit 标准菜单装 Segoe 图标
-        le = self.lineEdit()
-        if le is not None:
-            menu = le.createStandardContextMenu()
-            if menu is not None:
-                apply_standard_menu_icons(menu, self)
-                menu.setAttribute(Qt.WA_DeleteOnClose, True)
-                menu.exec(e.globalPos())
-                e.accept()
-                return
-        super().contextMenuEvent(e)
 
     def showPopup(self):
         # 样式重建/明暗切换后，弹出视图的字体会被重置为系统默认(9pt)，
@@ -233,32 +218,6 @@ class FocusSpinBase(QAbstractSpinBox):
     def __init__(self, parent: QWidget = None) -> None:
         super().__init__(parent)
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
-
-    def contextMenuEvent(self, e):
-        # 同 C++ Gallery 的 QAbstractSpinBox::contextMenuEvent：
-        # 标准菜单 + 上调/下调 + Segoe 图标
-        edit = self.lineEdit()
-        if not edit:
-            super().contextMenuEvent(e)
-            return
-        menu = edit.createStandardContextMenu()
-        if menu is None:
-            super().contextMenuEvent(e)
-            return
-        menu.addSeparator()
-        se = self.stepEnabled()
-        stepUpAction = menu.addAction("上调")
-        stepUpAction.setEnabled(bool(se & QAbstractSpinBox.StepUpEnabled))
-        stepDownAction = menu.addAction("下调")
-        stepDownAction.setEnabled(bool(se & QAbstractSpinBox.StepDownEnabled))
-        apply_standard_menu_icons(menu, self)
-        action = menu.exec(e.globalPos())
-        menu.deleteLater()
-        if action == stepUpAction:
-            self.stepBy(1)
-        elif action == stepDownAction:
-            self.stepBy(-1)
-        e.accept()
 
     def wheelEvent(self, e: QWheelEvent) -> None:
         if not self.hasFocus():
@@ -3566,34 +3525,12 @@ class FQPlainTextEdit(QPlainTextEdit):
         windows.SetFocus(int(self.winId()))
         return super().mousePressEvent(a0)
 
-    def contextMenuEvent(self, e):
-        # 同 C++ Gallery 的 QTextEdit::contextMenuEvent
-        menu = self.createStandardContextMenu()
-        if menu is not None:
-            apply_standard_menu_icons(menu, self)
-            menu.setAttribute(Qt.WA_DeleteOnClose, True)
-            menu.exec(e.globalPos())
-            e.accept()
-        else:
-            super().contextMenuEvent(e)
-
 
 class FQLineEdit(QLineEdit):
     def mousePressEvent(self, a0: QMouseEvent) -> None:
         # 点击浏览器后，无法重新获取焦点。
         windows.SetFocus(int(self.winId()))
         return super().mousePressEvent(a0)
-
-    def contextMenuEvent(self, e):
-        # 同 C++ Gallery 的 QLineEdit::contextMenuEvent
-        menu = self.createStandardContextMenu()
-        if menu is not None:
-            apply_standard_menu_icons(menu, self)
-            menu.setAttribute(Qt.WA_DeleteOnClose, True)
-            menu.exec(e.globalPos())
-            e.accept()
-        else:
-            super().contextMenuEvent(e)
 
 
 class VisGridLayout(QGridLayout):
