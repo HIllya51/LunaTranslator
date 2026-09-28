@@ -273,6 +273,12 @@ def creategamefont_comboBox(dic: dict):
     return gamefont_comboBox
 
 
+def _padfoldrow(row):
+    """折叠卡内容行右侧让出折叠按钮区（44+16=60，与折叠条控件右缘对齐）。"""
+    row.layout().setContentsMargins(0, 0, 44, 0)
+    return row
+
+
 def clipusage(self):
     """剪贴板折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     折叠条 = 标题 + 自动输出文本开关；内容 = 原文 / 翻译 两行面板。"""
@@ -326,8 +332,8 @@ def clipusage(self):
     )
     exp.setHeaderWidget(header)
 
-    exp.addContentWidget(originrow)
-    exp.addContentWidget(transrow)
+    exp.addContentWidget(_padfoldrow(originrow))
+    exp.addContentWidget(_padfoldrow(transrow))
     return exp
 
 
@@ -607,8 +613,8 @@ def netusage(self):
     )
     exp.setHeaderWidget(header)
 
-    exp.addContentWidget(openrow)
-    exp.addContentWidget(portrow)
+    exp.addContentWidget(_padfoldrow(openrow))
+    exp.addContentWidget(_padfoldrow(portrow))
     return exp
 
 
@@ -689,8 +695,8 @@ def proxyusage(self):
     exp.setHeaderWidget(header)
 
     # 多行子设置：每行独立 ContentPanel（同 C++ 多次 addContentWidget）
-    exp.addContentWidget(sysrow)
-    exp.addContentWidget(manualrow)
+    exp.addContentWidget(_padfoldrow(sysrow))
+    exp.addContentWidget(_padfoldrow(manualrow))
     return exp
 
 
