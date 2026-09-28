@@ -13,9 +13,13 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getsmalllabel,
     getboxlayout,
+    getboxwidget,
+    makecardrow,
     getsimplepatheditor,
     D_getIconSwitch,
 )
+from gui.fluent.expander import ExExpander
+from gui.dynalang import LLabel
 
 
 def changeHorizontal_pic(
@@ -169,14 +173,6 @@ def __rs():
             "",
             getsmalllabel("圆角"),
             spin,
-            "",
-            getsmalllabel("任务栏中显示"),
-            D_getsimpleswitch(
-                globalconfig,
-                "showintab",
-                callback=lambda _: gobject.base.setshowintab(),
-                default=True,
-            ),
         ]
     )
 
@@ -188,6 +184,54 @@ def switch_darklight():
 
 
 def uisetting(self):
+    # 自动隐藏：折叠卡（子项 = 隐藏目标/隐藏延迟）。先建延迟控件——
+    # 隐藏目标下拉的初值回调会引用 self.disappear_delay
+    delay = createdynamicdelay(self)
+    target = createdynamicswitch(self)
+    autohideexp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("自动隐藏")
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(
+        D_getsimpleswitch(globalconfig, "autodisappear", default=False)()
+    )
+    autohideexp.setHeaderWidget(header)
+    autohideexp.addContentWidget(getboxwidget(["隐藏目标", 1, target]))
+    autohideexp.addContentWidget(getboxwidget(["隐藏延迟_(s)", 1, delay]))
+
+    # 自动调整高度：折叠卡（子项 = 最小高度）
+    adaptiveexp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("自动调整高度")
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(
+        D_getsimpleswitch(globalconfig, "adaptive_height", default=True)()
+    )
+    adaptiveexp.setHeaderWidget(header)
+    adaptiveexp.addContentWidget(
+        getboxwidget(
+            [
+                "最小高度_(px)",
+                1,
+                D_getspinbox(0, 9999, globalconfig, "min_auto_height", default=0)(),
+            ]
+        )
+    )
+
     __ = mainuisetting(self) + [
         [
             dict(
@@ -197,48 +241,39 @@ def uisetting(self):
             )
         ],
         [
-            dict(
-                type="grid",
-                card=True,
-                grid=(
-                    [
-                        "游戏窗口移动时同步移动",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "movefollow",
-                            default=True,
-                        ),
-                        "",
-                        "自动隐藏",
-                        D_getsimpleswitch(globalconfig, "autodisappear", default=False),
-                        lambda: createdynamicswitch(self),
-                        getboxlayout([lambda: createdynamicdelay(self), "(s)"]),
-                    ],
-                    [
-                        "游戏失去焦点时取消置顶",
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "focusnotop",
-                            default=False,
-                        ),
-                        "",
-                        "自动调整高度",
-                        D_getsimpleswitch(
-                            globalconfig, "adaptive_height", default=True
-                        ),
-                        getboxlayout(
-                            [
-                                "最小高度",
-                                D_getspinbox(
-                                    0, 9999, globalconfig, "min_auto_height", default=0
-                                ),
-                                "px",
-                            ]
-                        ),
-                    ],
+            (
+                makecardrow(
+                    "任务栏中显示",
+                    D_getsimpleswitch(
+                        globalconfig,
+                        "showintab",
+                        callback=lambda _: gobject.base.setshowintab(),
+                        default=True,
+                    ),
                 ),
-            ),
+                0,
+            )
         ],
+        [
+            (
+                makecardrow(
+                    "游戏窗口移动时同步移动",
+                    D_getsimpleswitch(globalconfig, "movefollow", default=True),
+                ),
+                0,
+            )
+        ],
+        [
+            (
+                makecardrow(
+                    "游戏失去焦点时取消置顶",
+                    D_getsimpleswitch(globalconfig, "focusnotop", default=False),
+                ),
+                0,
+            )
+        ],
+        [(autohideexp, 0)],
+        [(adaptiveexp, 0)],
     ]
 
     return __
