@@ -46,6 +46,7 @@ from gui.setting.textinput import gethookgrid_em, gethookgrid
 from gui.specialwidget import chartwidget
 from gui.usefulwidget import (
     makecardrow,
+    makescroll,
     DarkLightAutoResetIconHelper,
     clearlayout,
     makescrollgrid,
@@ -1541,7 +1542,10 @@ class dialog_setting_game_internal(QWidget):
             self.gethooktab_internal(formLayout, gameuid)
             self.getembedtab(formLayout, gameuid)
 
-        return _w, __
+        # 两个折叠卡全展开时内容过长——包滚动区
+        scroll = makescroll()
+        scroll.setWidget(_w)
+        return scroll, __
 
 
 @Singleton
