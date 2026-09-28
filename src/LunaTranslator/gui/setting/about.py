@@ -347,8 +347,10 @@ def setTab_about(self: QWidget, basel):
     from gui.usefulwidget import getsimplecombobox
     from myutils.config import ui_settings as _uis
 
-    # ---- 卡片式布局 ----
+    # ---- 卡片式布局：整页一张大卡（同 pagecard 页的观感） ----
     content = QWidget()
+    content.setAttribute(Qt.WA_StyledBackground, True)
+    content.setProperty("isCard", True)
     vlay = QVBoxLayout(content)
     vlay.setContentsMargins(16, 16, 16, 12)
     vlay.setSpacing(8)
@@ -488,6 +490,8 @@ def setTab_about(self: QWidget, basel):
 
     scroll = makescroll()
     scroll.setWidget(content)
+    # 大卡四周留 16 边距（同 maketabholder 的 pagecard 页）
+    basel.setContentsMargins(16, 16, 16, 12)
     basel.addWidget(scroll)
 
 

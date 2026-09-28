@@ -900,7 +900,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
             (__hooksubtabs, 0)
         ],
     ]
-    gridlayoutwidget, do = makegrid(grids, delay=True)
+    gridlayoutwidget, do = makegrid(grids, delay=True, topmargin=16)
     basel.addWidget(gridlayoutwidget)
     do()
 
