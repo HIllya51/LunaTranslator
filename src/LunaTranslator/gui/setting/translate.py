@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import functools, os, re, shutil, zipfile
 import gobject, math, NativeUtils, hashlib, uuid
 from myutils.config import (
@@ -2218,7 +2219,7 @@ def sqlite2json2(self, sqlitefile, targetjson=None, existsmerge=False):
                     collect.extend(list(mtjs.keys()))
     except:
         print_exc()
-        QMessageBox.critical(self, _TR("错误"), _TR("所选文件格式错误！"))
+        ExMessageBox.critical(self, _TR("错误"), _TR("所选文件格式错误！"))
         return
     _collect = []
     for _, __ in Counter(collect).most_common():

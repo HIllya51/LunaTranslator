@@ -7,6 +7,7 @@ from myutils.config import _TR, mayberelpath, dynamiclink
 from myutils.wrapper import threader
 from myutils.proxy import getproxy
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 from gui.dynalang import LPushButton
 
 
@@ -18,9 +19,9 @@ class resourcewidget(GroupCardWidget):
         self.btninstall.setVisible(not succ)
         self.btninstall.setEnabled(True)
         if succ:
-            QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
+            ExMessageBox.information(self, _TR("成功"), _TR("添加成功"))
         else:
-            QMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
+            ExMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
 
     @property
     def oldlink(self):
@@ -140,9 +141,9 @@ class resourcewidget2(GroupCardWidget):
         self.btninstall.setVisible(not succ)
         self.btninstall.setEnabled(True)
         if succ:
-            QMessageBox.information(self, _TR("成功"), _TR("添加成功"))
+            ExMessageBox.information(self, _TR("成功"), _TR("添加成功"))
         else:
-            QMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
+            ExMessageBox.critical(self, _TR("添加失败"), _TR("错误") + "\n" + failreason)
 
     @property
     def oldlink(self):

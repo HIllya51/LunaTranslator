@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import functools, importlib
 from traceback import print_exc
 import os, gobject, requests, sys, uuid
@@ -576,9 +577,9 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                         text += "\n"
                     text += e.args[1]
                 print(title, text)
-                QMessageBox.information(self, title, text)
+                ExMessageBox.information(self, title, text)
             else:
-                QMessageBox.information(self, str(type(e))[8:-2], str(e))
+                ExMessageBox.information(self, str(type(e))[8:-2], str(e))
 
     def createobject(self, line: "dict", dd: "dict[dict,str|dict]", sub=False):
         if "k" in line:

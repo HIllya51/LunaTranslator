@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import time, functools, threading, os, shutil, uuid
 from traceback import print_exc
 import windows, qtawesome, gobject, NativeUtils
@@ -1651,7 +1652,7 @@ class TranslatorWindow(resizableframeless):
                 errors = saveallconfig()
                 if errors:
                     errors = [f + "\n\t" + stringfyerror(e) for e, f in errors]
-                    QMessageBox.critical(
+                    ExMessageBox.critical(
                         gobject.base.commonstylebase,
                         _TR("错误"),
                         "\n\n".join(errors),

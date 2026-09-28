@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import os, functools
 from traceback import print_exc
 from myutils.wrapper import threader, Singleton
@@ -221,7 +222,7 @@ def addgamesingle(parent, callback, targetlist):
     uid = find_or_create_uid(targetlist, res)
     if uid in targetlist:
         idx = targetlist.index(uid)
-        response = QMessageBox.question(
+        response = ExMessageBox.question(
             parent,
             "?",
             _TR("游戏已存在，是否重复添加？"),

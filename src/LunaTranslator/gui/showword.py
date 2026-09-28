@@ -1,4 +1,5 @@
 from qtsymbols import *
+from gui.fluent.messagebox import ExMessageBox
 import json, re
 import time
 import functools
@@ -668,7 +669,7 @@ class AnkiWindow(QWidget):
                 self.recorders[ii] = loopbackrecorder()
             except Exception as e:
                 self.recorders[ii] = None
-                QMessageBox.critical(
+                ExMessageBox.critical(
                     self, _TR("错误"), _TR("系统不支持环回录制")
                 )  # str(e))
                 btn.click()
@@ -1015,7 +1016,7 @@ class AnkiWindow(QWidget):
             anki.global_port = globalconfig["ankiconnect"].get("port", 8765)
             anki.global_host = globalconfig["ankiconnect"].get("host", "127.0.0.1")
             if self.currentword == self.lastankiword:
-                response = QMessageBox.question(
+                response = ExMessageBox.question(
                     self, _TR("警告"), _TR("检测到存在重复，是否覆盖？")
                 )
                 if response == QMessageBox.StandardButton.Yes:
@@ -1047,7 +1048,7 @@ class AnkiWindow(QWidget):
             RichMessageBox(self, _TR("错误"), t)
         except anki.AnkiException as e:
             print_exc()
-            QMessageBox.critical(self, _TR("错误"), str(e))
+            ExMessageBox.critical(self, _TR("错误"), str(e))
         except:
             print_exc()
 
