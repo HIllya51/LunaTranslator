@@ -245,6 +245,13 @@ class LTabWidget(QTabWidget):
         super().__init__(*argc, **kwarg)
         self.__titles = []
 
+    def paintEvent(self, e):
+        # QTabWidget::paintEvent 只画 pane（插件的 PE_FrameTabWidget：
+        # 1px 边框 + Base 底色）。置空以去掉 pane。不能用 QSS——
+        # 容器级样式表会给全部后代套 QStyleSheetStyle，破坏插件渲染
+        # 与字体继承（弹出菜单/内部 lineEdit 均受害）。
+        pass
+
     def addTab(self, w, t):
         self.__titles.append(t)
         super().addTab(w, _TR(t))

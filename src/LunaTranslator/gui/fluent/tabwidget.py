@@ -99,8 +99,9 @@ def apply_segmented_tabbar(tabwidget: QTabWidget):
     """把 QTabWidget 配成 Segmented WinUI3 风格
     （Gallery pagetab.cpp setupSegmentedTabs / addTabBarSection 同款），
     并去掉 pane 边框。"""
+    # pane 的去除由 LTabWidget.paintEvent 置空完成（不用 QSS——
+    # 容器级样式表会给全部后代套 QStyleSheetStyle）
     apply_segmented_tabbar_style(tabwidget.tabBar())
-    tabwidget.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
 
 
 def apply_navigation_tabbar(tabwidget: QTabWidget):
@@ -116,7 +117,15 @@ def apply_navigation_tabbar(tabwidget: QTabWidget):
         "TextAlign", int(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
     )
     bar.setProperty("tabBarStyle", TABBAR_STYLE_NAVIGATION)
-    tabwidget.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
+
+
+class _NoPaneTabWidget(QTabWidget):
+    """QTabWidget::paintEvent 只画 pane（PE_FrameTabWidget：1px 边框 +
+    Base 底色）。置空以去掉 pane——不能用 QSS，容器级样式表会给全部
+    后代套 QStyleSheetStyle，破坏插件渲染与字体继承。"""
+
+    def paintEvent(self, e):
+        pass
 
 
 class FluentTabWidget(QWidget):
@@ -164,13 +173,8 @@ class FluentTabWidget(QWidget):
         nav_lay.addWidget(self._nav_separator, 0)
         nav_lay.addWidget(footer_container, 0)
 
-        self.tab_widget = QTabWidget(self)
+        self.tab_widget = _NoPaneTabWidget(self)
         self.tab_widget.tabBar().hide()
-        # 插件给 QTabWidget 的 pane 画 1px 边框 + Base 底色（PE_FrameTabWidget），
-        # 会与页面卡的描边叠成双边框——去掉 pane 绘制
-        self.tab_widget.setStyleSheet(
-            "QTabWidget::pane{border:0;background:transparent;}"
-        )
 
         lay.addWidget(nav_pane)
         lay.addWidget(self.tab_widget, 1)
