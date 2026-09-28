@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     D_getdoclink,
     getboxlayout,
     makescrollgrid,
+    makecardcontainer,
     makesubtab_lazy,
     maketabholder,
 )
@@ -205,19 +206,21 @@ def setTab7_lazy(self, basel: QLayout):
     grids2 += [[("", 15)]]
 
     def ___(lay: QVBoxLayout):
-        vboxw = QWidget()
-        vbox = QVBoxLayout(vboxw)
-        vbox.setContentsMargins(0, 0, 0, 0)
-        # pagecard 内的中间容器：标记让卡内网格顶边距与左边距一致
-        vbox.setProperty("_fluent_card_grid", True)
-        lay.addWidget(vboxw)
-        makescrollgrid(grids, vbox, savelist, savelay)
-        savescroll.append(vbox.itemAt(vbox.count() - 1).widget())
-        lay.addWidget(getcomparelayout(self))
+        # tabbar 下的内容整体包一张内容卡
+        inner = makecardcontainer(lay)
+        wid = makescrollgrid(grids, inner, savelist, savelay)
+        wid.layout().setContentsMargins(0, 0, 0, 0)
+        savescroll.append(inner.itemAt(inner.count() - 1).widget())
+        inner.addWidget(getcomparelayout(self))
+
+    def ___2(lay: QVBoxLayout):
+        inner = makecardcontainer(lay)
+        wid = makescrollgrid(grids2, inner)
+        wid.layout().setContentsMargins(0, 0, 0, 0)
 
     tab, dotab = makesubtab_lazy(
         ["文本预处理", "翻译优化"],
-        [___, functools.partial(makescrollgrid, grids2)],
+        [___, ___2],
         delay=True,
         padding=True,
         pagecard=True,

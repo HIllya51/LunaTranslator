@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getIconButton,
     makegrid,
+    makecardcontainer,
     MySwitch,
     PopupWidget,
 )
@@ -218,6 +219,8 @@ specialbuttonsettings = {
 
 
 def createbuttonwidget(self, lay: QLayout):
+    # 整页内容包一张内容卡
+    inner = makecardcontainer(lay)
     grids = [
         [
             getsmalllabel("大小"),
@@ -256,7 +259,8 @@ def createbuttonwidget(self, lay: QLayout):
         ]
     ]
     wid, do = makegrid(grids, delay=True)
-    lay.addWidget(wid)
+    wid.layout().setContentsMargins(0, 0, 0, 0)
+    inner.addWidget(wid)
     do()
 
     sortlist = globalconfig["toolbutton"]["rank2"]
@@ -352,5 +356,6 @@ def createbuttonwidget(self, lay: QLayout):
         l.append(D_getdoclink("alltoolbuttons.html#anchor-" + k))
         l.append(t)
         grids.append(l)
-    makescrollgrid(grids, lay, savelist, savelay)
-    savescroll.append(lay.itemAt(lay.count() - 1).widget())
+    wid = makescrollgrid(grids, inner, savelist, savelay)
+    wid.layout().setContentsMargins(0, 0, 0, 0)
+    savescroll.append(inner.itemAt(inner.count() - 1).widget())

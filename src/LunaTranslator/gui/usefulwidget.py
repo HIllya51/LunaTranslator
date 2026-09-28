@@ -2606,6 +2606,23 @@ def makegroupcard(title, grid, savelist=None, savelay=None, hiderows=None):
     return card
 
 
+def makecardcontainer(lay):
+    """页面内容整体包一张内容卡（GroupCardWidget 无标题形态）：页边距 16，
+    返回卡内零边距布局供 makescrollgrid 等构建——卡内网格需自行清零
+    makegrid 的默认边距（同 makegroupcard）。"""
+    card = GroupCardWidget()
+    host = card.contentWidget()
+    hostlay = QVBoxLayout(host)
+    hostlay.setContentsMargins(0, 0, 0, 0)
+    hostlay.setSpacing(8)
+    holder = QWidget()
+    holderlay = QVBoxLayout(holder)
+    holderlay.setContentsMargins(16, 16, 16, 12)
+    holderlay.addWidget(card)
+    lay.addWidget(holder)
+    return hostlay
+
+
 def maketabholder(tab, top=0):
     """给子页签 QTabWidget 加页边距（tabwidget 本体不包卡片，
     页内容各自用紧邻 tabbar 的卡片包裹）。"""

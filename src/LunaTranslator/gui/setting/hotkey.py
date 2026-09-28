@@ -16,6 +16,7 @@ from gui.usefulwidget import (
     D_getsimplekeyseq,
     D_getdoclink,
     makescrollgrid,
+    makecardcontainer,
     D_getIconButton,
     makesubtab_lazy,
     getspinbox,
@@ -403,12 +404,14 @@ def plusclicked(self, form):
 
 
 def selfdefkeys(self, lay: QLayout):
+    # tabbar 下的内容整体包一张内容卡
+    inner = makecardcontainer(lay)
     wid = QWidget()
     wid.setObjectName("FUCKYOU")
     wid.setStyleSheet("QWidget#FUCKYOU{background:transparent}")
     form = VisLFormLayout(wid)
     swid = makescroll()
-    lay.addWidget(swid)
+    inner.addWidget(swid)
     swid.setWidget(wid)
     plus = IconButton(icon="fa.plus")
     plus.clicked.connect(functools.partial(plusclicked, self, form))
@@ -444,7 +447,9 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis = []
 
     def ___x(ls, l):
-        makescrollgrid(setTab_quick_lazy(self, ls), l)
+        inner = makecardcontainer(l)
+        wid = makescrollgrid(setTab_quick_lazy(self, ls), inner)
+        wid.layout().setContentsMargins(0, 0, 0, 0)
 
     for _ in hotkeys:
         __vis.append(_[0])
