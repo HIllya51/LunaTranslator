@@ -1535,7 +1535,14 @@ class dialog_setting_game_internal(QWidget):
         formLayout.addRow(exp)
 
     def gethooktab(self, gameuid):
-        _w = QWidget()
+        # 滚动区内容控件必须同 makegrid 的 gridwidget 一样用 QSS 类做透明：
+        # 否则会被设上 autofill，以 Window(243) 盖掉页面卡底色(249)
+        # （见 makegrid/makescroll 的配套注释）
+        class hookscrollcontent(QWidget):
+            pass
+
+        _w = hookscrollcontent()
+        _w.setStyleSheet("hookscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
 
         def __():
