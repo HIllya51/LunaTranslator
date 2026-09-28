@@ -16,11 +16,13 @@ from gui.usefulwidget import (
     SuperCombo,
     getsmalllabel,
     getboxlayout,
+    getboxwidget,
     LinkLabel,
     SClickableLabel,
     VisLFormLayout,
     tabadd_lazy,
 )
+from gui.dynalang import LLabel
 from gui.setting.setting_year import yearsummary
 from language import UILanguages, Languages
 from myutils.updater import versionchecktask
@@ -495,8 +497,25 @@ def setTab_about(self: QWidget, basel):
             self.downloadprogress, text, val),
     )
 
-    # LICENSE 折叠（ExExpander，同 Gallery 强调色折叠面板的用法）
+    # 自动更新折叠卡（子项 = 最新版本）
     from gui.fluent.expander import ExExpander
+
+    updateexp = ExExpander()
+    updateheader = QWidget()
+    uhlay = QHBoxLayout(updateheader)
+    uhlay.setContentsMargins(0, 12, 0, 12)
+    uhlay.setSpacing(8)
+    utitlelabel = LLabel("自动更新")
+    utitlefont = utitlelabel.font()
+    utitlefont.setPixelSize(15)
+    utitlelabel.setFont(utitlefont)
+    uhlay.addWidget(utitlelabel)
+    uhlay.addStretch(1)
+    uhlay.addWidget(update_switch)
+    updateexp.setHeaderWidget(updateheader)
+    updateexp.addContentWidget(getboxwidget(["最新版本", 1, version_link]))
+
+    # LICENSE 折叠（ExExpander，同 Gallery 强调色折叠面板的用法）
     from gui.fluent.card import make_card_contents
     from gui.fluent.icons import ICON_SETTINGS_DISPLAY_SOUND
 
@@ -563,7 +582,7 @@ def setTab_about(self: QWidget, basel):
     grid = [
         [(makecardrow("界面语言", lang_holder), 0)],
         [(makecardrow("应用主题", make_trailing_combo(darklight_combo)), 0)],
-        [(makecardrow("自动更新", update_switch, version_link), 0)],
+        [(updateexp, 0)],
         # 下载进度条：显示时出现在卡片下方（隐藏时布局不占位）
         [(self.downloadprogress, 0)],
         [(aboutwidget(), 0)],
