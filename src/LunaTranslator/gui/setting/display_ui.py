@@ -333,62 +333,6 @@ def uisetting(self):
                 ),
             ),
         ],
-        [
-            functools.partial(
-                createfoldgrid,
-                (
-                    [
-                        dict(
-                            type="grid",
-                            grid=[
-                                [
-                                    getsmalllabel("字体"),
-                                    createfontcombo,
-                                    "",
-                                    getsmalllabel("大小"),
-                                    D_getspinbox(
-                                        5,
-                                        100,
-                                        ui_settings,
-                                        "settingfontsize",
-                                        double=True,
-                                        callback=lambda _: gobject.base.setcommonstylesheet(),
-                                        default=12,
-                                    ),
-                                ]
-                            ],
-                        )
-                    ],
-                    [
-                        dict(
-                            type="grid",
-                            grid=[windoweffects],
-                        )
-                    ],
-                    [
-                        dict(
-                            grid=[
-                                [
-                                    "明暗",
-                                    D_getsimplecombobox(
-                                        ["跟随系统", "明亮", "黑暗"],
-                                        ui_settings,
-                                        "darklight2",
-                                        lambda _: (
-                                            gobject.base.setcommonstylesheet(),
-                                            switch_darklight(),
-                                        ),
-                                        default=0,
-                                    ),
-                                    functools.partial(createbtnthemelight, self),
-                                ],
-                            ],
-                        )
-                    ],
-                ),
-                "其他界面",
-            )
-        ],
     ]
 
     return __

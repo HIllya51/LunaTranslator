@@ -359,11 +359,38 @@ def setTab_about(self: QWidget, basel):
 
     lang_holder = QWidget()
     lang_holder.setLayout(__delayloadlangs())
+    for _c in lang_holder.findChildren(SuperCombo):
+        _c.setMinimumWidth(170)
     # UI 语言卡片
     vlay.addWidget(create_card(
         "",  # Globe
         "界面语言", "选择软件界面显示的语言",
         lang_holder,
+    ))
+
+    # 明暗卡片
+    from gui.setting.display_ui import switch_darklight
+    from gui.usefulwidget import getsimplecombobox
+    from myutils.config import ui_settings as _uis
+    darklight_holder = QWidget()
+    darklight_lay = QHBoxLayout(darklight_holder)
+    darklight_lay.setContentsMargins(0, 0, 0, 0)
+    darklight_combo = getsimplecombobox(
+        ["跟随系统", "明亮", "黑暗"],
+        _uis,
+        "darklight2",
+        callback=lambda _: (
+            gobject.base.setcommonstylesheet(),
+            switch_darklight(),
+        ),
+        default=0,
+    )
+    darklight_combo.setMinimumWidth(170)
+    darklight_lay.addWidget(darklight_combo)
+    vlay.addWidget(create_card(
+        "",  # Color
+        "应用主题", "选择应用的明暗模式",
+        darklight_holder,
     ))
 
     # 自动更新卡片（含版本号 + 进度条）
