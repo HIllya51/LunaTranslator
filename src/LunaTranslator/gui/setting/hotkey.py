@@ -423,7 +423,6 @@ def selfdefkeys(self, lay: QLayout):
 
 def setTab_quick(self, l: QVBoxLayout):
     from gui.fluent.card import make_card
-    from gui.fluent.icons import ICON_KEYBOARD_CLASSIC
 
     # ---- “使用快捷键”卡片 ----
     card_holder = QWidget()
@@ -432,9 +431,9 @@ def setTab_quick(self, l: QVBoxLayout):
     card_lay.setSpacing(0)
     card_lay.addWidget(
         make_card(
-            ICON_KEYBOARD_CLASSIC,
+            "",
             "使用快捷键",
-            "启用后，下方各项快捷键才会生效",
+            "",
             D_getsimpleswitch(
                 globalconfig["quick_setting"],
                 "use",

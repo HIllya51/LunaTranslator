@@ -671,14 +671,30 @@ def xianshigrid_style(self):
                 0,
             )
         ],
-        [(__textbackexpander(self), 0)],
+        [
+            (
+                makecardrow(
+                    "显示翻译器名称",
+                    D_getsimpleswitch(
+                        globalconfig,
+                        "showfanyisource",
+                        callback=gobject.base.translation_ui.translate_text.showhidename,
+                        default=False,
+                    ),
+                ),
+                0,
+            )
+        ],
     ]
     # 字体样式卡需先建（引擎下拉初值变化触发的回调会写它），放置顺序在后
+    textbackexp = __textbackexpander(self)
     fontexp = __fontstyleexpander(self)
     engineexp = __engineexpander(self)
     textgrid.append([(engineexp, 0)])
     textgrid.append([(fontexp, 0)])
-    # 显示顺序 倒数第四、固定翻译显示顺序 倒数第三
+    # 文字区域背景 倒数第四
+    textgrid.append([(textbackexp, 0)])
+    # 显示顺序 倒数第三、固定翻译显示顺序 倒数第二
     textgrid.append(
         [
             (
@@ -718,22 +734,6 @@ def xianshigrid_style(self):
                     "收到翻译时才刷新",
                     D_getsimpleswitch(
                         globalconfig, "refresh_on_get_trans", default=False
-                    ),
-                ),
-                0,
-            )
-        ]
-    )
-    textgrid.append(
-        [
-            (
-                makecardrow(
-                    "显示翻译器名称",
-                    D_getsimpleswitch(
-                        globalconfig,
-                        "showfanyisource",
-                        callback=gobject.base.translation_ui.translate_text.showhidename,
-                        default=False,
                     ),
                 ),
                 0,

@@ -37,7 +37,11 @@ class FluentCard(QWidget):
         super().__init__(parent)
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setProperty("isCard", True)
-        self.setMinimumHeight(72)
+        # 有图标/描述时为 72px 双行卡；仅标题+尾部控件时为矮卡（同 makecardrow 48px）
+        if icon_code or description:
+            self.setMinimumHeight(72)
+        else:
+            self.setMinimumHeight(48)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
 
         layout = QHBoxLayout(self)
