@@ -22,6 +22,7 @@ from myutils.wrapper import tryprint
 import sqlite3
 from gui.dialog_memory import dialog_memory
 from myutils.localetools import getgamecamptools, maycreatesettings
+from gui.fluent.expander import ExExpander
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton
 from myutils.utils import (
@@ -44,6 +45,7 @@ from gui.inputdialog import (
 from gui.setting.textinput import gethookgrid_em, gethookgrid
 from gui.specialwidget import chartwidget
 from gui.usefulwidget import (
+    makecardrow,
     DarkLightAutoResetIconHelper,
     clearlayout,
     makescrollgrid,
@@ -578,25 +580,24 @@ class dialog_setting_game_internal(QWidget):
         self.setWindowIcon(_icon)
 
     def starttab(self, formLayout: LFormLayout, gameuid):
-        box = NQGroupBox()
-        settinglayout = LFormLayout(box)
-
-        def __(box, layout, config, uid):
-            clearlayout(layout)
-            maycreatesettings(layout, config, uid)
-            if layout.count() == 0:
-                box.hide()
-            else:
-                box.show()
+        # 每项一张卡；启动方式为折叠卡，子项随方式切换（无设置时收起）
+        tools = getgamecamptools(get_launchpath(gameuid))
+        method_stack = QStackedWidget()
+        for tool in tools:
+            page = QWidget()
+            lay = LFormLayout(page)
+            lay.setContentsMargins(0, 0, 0, 0)
+            try:
+                maycreatesettings(lay, savehook_new_data[gameuid], tool.id)
+            except:
+                print_exc()
+            method_stack.addWidget(page)
 
         __launch_method = getsimplecombobox(
-            [_.name for _ in getgamecamptools(get_launchpath(gameuid))],
+            [_.name for _ in tools],
             savehook_new_data[gameuid],
             "launch_method",
-            internal=[_.id for _ in getgamecamptools(get_launchpath(gameuid))],
-            callback=functools.partial(
-                __, box, settinglayout, savehook_new_data[gameuid]
-            ),
+            internal=[_.id for _ in tools],
         )
         self.lauchpath = getsimplepatheditor(
             get_launchpath(gameuid),
@@ -604,21 +605,41 @@ class dialog_setting_game_internal(QWidget):
             icons=("fa.gear", "fa.undo"),
             clearset=lambda: uid2gamepath[gameuid],
         )
-        formLayout.addRow("启动程序", self.lauchpath)
-        formLayout.addRow("启动方式", __launch_method)
-        formLayout.addRow(box)
+        exp = ExExpander(content_pad=True)
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel("启动方式")
+        titlefont = titlelabel.font()
+        titlefont.setPixelSize(14)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        hlay.addStretch(1)
+        hlay.addWidget(__launch_method)
+        exp.setHeaderWidget(header)
+        exp.addContentWidget(method_stack)
 
+        def __(_):
+            method_stack.setCurrentIndex(__launch_method.currentIndex())
+            # 当前方式无设置项时收起（同原 box.hide 语义）
+            exp.setExpanded(method_stack.currentWidget().layout().count() > 0)
+
+        __launch_method.currentIndexChanged.connect(__)
+        formLayout.addRow(makecardrow("启动程序", self.lauchpath))
+        formLayout.addRow(exp)
         formLayout.addRow(
-            "自动切换到模式",
-            getsimplecombobox(
-                ["不切换", "HOOK", "剪贴板", "OCR"],
-                savehook_new_data[gameuid],
-                "onloadautochangemode2",
-                default=0,
-            ),
+            makecardrow(
+                "自动切换到模式",
+                getsimplecombobox(
+                    ["不切换", "HOOK", "剪贴板", "OCR"],
+                    savehook_new_data[gameuid],
+                    "onloadautochangemode2",
+                    default=0,
+                ),
+            )
         )
-
-        __launch_method.currentIndexChanged.emit(__launch_method.currentIndex())
+        __(None)
 
     @tryprint
     def __refresh(self):

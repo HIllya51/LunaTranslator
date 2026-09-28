@@ -74,10 +74,17 @@ def _restore_combo_view_fonts():
     app = QApplication.instance()
     if app is None:
         return
-    font = QFont(app.font())
+    font = app.font()
+    if font.pointSize() > 0:
+        newf = QFont(font.family(), font.pointSize())
+    else:
+        newf = QFont(font.family())
+        newf.setPixelSize(max(1, font.pixelSize()))
     for w in QApplication.allWidgets():
         if isinstance(w, QComboBox):
             try:
-                w.view().setFont(QFont(font))
+                # 构造式 QFont(family, size)：QFont(font) 拷贝带空 resolve
+                # mask，setFont 等于清除显式字体，无法覆盖重置
+                w.view().setFont(QFont(newf))
             except RuntimeError:
                 pass

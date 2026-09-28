@@ -64,6 +64,24 @@ class FocusCombo(QComboBox):
             )
             self.view().setTextElideMode(Qt.TextElideMode.ElideRight)
 
+    def showPopup(self):
+        # 样式重建/明暗切换后，弹出视图的字体会被重置为系统默认(9pt)，
+        # 且 _restore_combo_view_fonts 只覆盖切换时刻已存在的 combo——
+        # 弹出前显式跟随本体字体。注意必须用构造式 QFont(family, size)：
+        # QFont(font) 拷贝会带上空的 resolve mask，setFont 等于清除显式
+        # 字体（回落继承），无法覆盖重置
+        vf, cf = self.view().font(), self.font()
+        if (vf.family(), vf.pointSize(), vf.pixelSize()) != (
+            cf.family(), cf.pointSize(), cf.pixelSize()
+        ):
+            if cf.pointSize() > 0:
+                self.view().setFont(QFont(cf.family(), cf.pointSize()))
+            else:
+                _f = QFont(cf.family())
+                _f.setPixelSize(max(1, cf.pixelSize()))
+                self.view().setFont(_f)
+        super().showPopup()
+
     def wheelEvent(self, e: QWheelEvent) -> None:
 
         if not self.hasFocus():
