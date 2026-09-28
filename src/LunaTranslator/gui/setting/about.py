@@ -505,8 +505,7 @@ def setTab_about(self: QWidget, basel):
 
     # 同 Gallery：用 make_card_contents（不设 isCard——ExExpander 自己画卡片底色）
     license_header = make_card_contents(
-        ICON_SETTINGS_DISPLAY_SOUND, "LICENSE", "查看许可证与引用的项目",
-        None, license_expander)
+        "", "LICENSE", "", None, license_expander)
     # 同 C++：HeaderButton 自带 16px 左内边距与 chevron 预留区，内容只留上下边距
     license_header.layout().setContentsMargins(0, 12, 0, 12)
     license_expander.setHeaderWidget(license_header)

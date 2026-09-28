@@ -2563,6 +2563,7 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
         nowc = 0
         if save:
             ll = []
+        rowwids = []
         for item in line:
             if type(item) == str:
                 cols = 1
@@ -2601,10 +2602,15 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
                 do()
             if save:
                 ll.append(wid)
+            rowwids.append(wid)
             nowc += cols
         if save:
             savelist.append(ll)
-        grid.setRowMinimumHeight(nowr, 25)
+        # 整行均为显式隐藏的控件时不设行最小高——隐藏时整行完全收起
+        # （如 关于软件 的下载进度条行；显示时控件自身高度生效）
+        if not (rowwids and all(
+                isinstance(w, QWidget) and w.isHidden() for w in rowwids)):
+            grid.setRowMinimumHeight(nowr, 25)
         if nowr in hiderows if hiderows else []:
             grid.setRowVisible(nowr, False)
 

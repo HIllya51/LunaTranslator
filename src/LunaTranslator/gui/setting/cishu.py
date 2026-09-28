@@ -528,26 +528,32 @@ def setTabcishu_l(self):
             exp.addContentWidget(makegrid(list(grid)))
         return exp
 
-    zhuyinexp = __fenciexpander(
-        "注音",
-        switch=getsimpleswitch(
-            globalconfig,
-            "isshowhira",
-            callback=gobject.base.translation_ui.translate_text.showhidert,
-            default=True,
-        ),
-        leading=D_getdoclink("qa1.html"),
-        switchlabel="显示",
-        afterswitch=D_getcolorbutton(
-            self,
-            globalconfig,
-            "jiamingcolor",
-            callback=gobject.base.translation_ui.translate_text.setcolorstyle,
-            tips="注音颜色",
-            default="black",
-        ),
+    zhuyin = dict(
+        title="注音",
+        type="grid",
+        parent=self,
+        name="fenyinsettings",
+        enable=globalconfig.get("isshowrawtext", True),
+        hiderows=[1],
+        widget=D_getdoclink("qa1.html"),
         grid=(
             [
+                getsmalllabel("显示"),
+                D_getsimpleswitch(
+                    globalconfig,
+                    "isshowhira",
+                    callback=gobject.base.translation_ui.translate_text.showhidert,
+                    default=True,
+                ),
+                D_getcolorbutton(
+                    self,
+                    globalconfig,
+                    "jiamingcolor",
+                    callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+                    tips="注音颜色",
+                    default="black",
+                ),
+                "",
                 getsmalllabel("日语注音方案"),
                 D_getsimplecombobox(
                     [
@@ -560,13 +566,18 @@ def setTabcishu_l(self):
                     callback=lambda _: gobject.base.translation_ui.translate_text.refreshcontent(),
                     default=0,
                 ),
+                "",
+                getsmalllabel("字体"),
+                getIconSwitch(
+                    icon="fa.gear",
+                    checkablechangecolor=False,
+                    callback=lambda x: self.fenyinsettings.layout().setRowVisible(1, x),
+                ),
             ],
             # 字体折叠卡（跟随默认在折叠条上）
             [(functools.partial(fontsettings, self), 0)],
         ),
     )
-    zhuyinexp.setEnabled(globalconfig.get("isshowrawtext", True))
-    self.fenyinsettings = zhuyinexp
 
     def manysettings(k, k2, extra=None, canhover=True):
         """触发设置子项面板列表（标题在左、控件在右端）。
@@ -764,7 +775,7 @@ def setTabcishu_l(self):
         grids_1,
         [cishu],
         [],
-        [zhuyinexp],
+        [zhuyin],
         [fenci],
     ]
     return grids

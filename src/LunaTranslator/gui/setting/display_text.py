@@ -684,7 +684,8 @@ def xianshigrid_style(self):
         ],
         [
             dict(
-                title="样式",
+                type="grid",
+                card=True,
                 grid=(
                     [
                         "显示引擎",
