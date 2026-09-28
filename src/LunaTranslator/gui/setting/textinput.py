@@ -28,6 +28,7 @@ from gui.usefulwidget import (
     yuitsu_switch,
     D_getsimpleswitch,
     getboxwidget,
+    GroupCardWidget,
     makesubtab_lazy,
     makescrollgrid,
     FocusFontCombo,
@@ -274,11 +275,6 @@ def getTabclip(_):
 
     grids = [
         [
-            getsmalllabel("自动输出文本"),
-            D_getsimpleswitch(globalconfig["textoutputer"]["clipboard"], "use"),
-            "",
-        ],
-        [
             dict(
                 type="grid",
                 title="输出内容",
@@ -447,9 +443,12 @@ def modesW(self, __vis, paths):
     w = QWidget()
     layout = VisLFormLayout(w)
     layout.setContentsMargins(0, 0, 0, 0)
+    # 模式下面的各种设置放进卡片
+    card = GroupCardWidget()
+    cardlay = VisLFormLayout(card.contentWidget())
     setvisrow = lambda _: (
-        layout.setRowVisible(1, _ == "direct"),
-        layout.setRowVisible(2, _ == "indirect"),
+        cardlay.setRowVisible(0, _ == "direct"),
+        cardlay.setRowVisible(1, _ == "indirect"),
     )
     layout.addRow(
         "模式",
@@ -461,10 +460,18 @@ def modesW(self, __vis, paths):
             callback=lambda _: (gobject.base.textsource.init(), setvisrow(_)),
         ),
     )
-    layout.addRow(hhfordirect(self, __vis, paths))
-    layout.addRow(hhforindirect())
+    layout.addRow(card)
+    cardlay.addRow(hhfordirect(self, __vis, paths))
+    cardlay.addRow(hhforindirect())
     setvisrow(globalconfig["sourcestatus2"]["mssr"]["mode"])
     return w
+
+
+def _setlazywidgetenabled(self, attr, en):
+    """懒构建的设置控件可能尚未创建（折叠区未展开过）。"""
+    w = getattr(self, attr, None)
+    if w is not None:
+        w.setEnabled(en)
 
 
 def getsrgrid(self):
@@ -477,30 +484,10 @@ def getsrgrid(self):
     else:
         __w = hhfordirect(self, __vis, paths)
     __w.setEnabled(globalconfig["sourcestatus2"]["mssr"]["use"])
+    self._srsettingswidget = __w
 
     return [
-        [
-            getsmalllabel("使用"),
-            D_getsimpleswitch(
-                globalconfig["sourcestatus2"]["mssr"],
-                "use",
-                name="mssr",
-                parent=self,
-                callback=functools.partial(
-                    yuitsu_switch,
-                    self,
-                    globalconfig["sourcestatus2"],
-                    "sourceswitchs",
-                    "mssr",
-                    lambda _, _2: (
-                        gobject.base.starttextsource(_, _2),
-                        __w.setEnabled(_2),
-                    ),
-                ),
-                pair="sourceswitchs",
-            ),
-            __w,
-        ],
+        [__w],
     ]
 
 
@@ -524,25 +511,15 @@ def getftsgrid(self):
 def getnetgrid(self):
     return [
         [
-            getsmalllabel("开启"),
-            getboxlayout(
-                [
-                    D_getsimpleswitch(
-                        globalconfig,
-                        "networktcpenable",
-                        callback=lambda _: gobject.base.serviceinit(),
-                        default=False,
-                    ),
-                    D_getIconButton(
-                        icon="fa.chrome",
-                        callback=lambda: os.startfile(
-                            "http://127.0.0.1:{}".format(
-                                globalconfig.get("networktcpport", 2333)
-                            )
-                        ),
-                        tips="打开",
-                    ),
-                ]
+            getsmalllabel("打开"),
+            D_getIconButton(
+                icon="fa.chrome",
+                callback=lambda: os.startfile(
+                    "http://127.0.0.1:{}".format(
+                        globalconfig.get("networktcpport", 2333)
+                    )
+                ),
+                tips="打开",
             ),
         ],
         [
@@ -562,26 +539,6 @@ def getnetgrid(self):
             ),
             "",
         ],
-        # [
-        #     (
-        #         functools.partial(
-        #             MDLabel2,
-        #             ("&nbsp;" * 4).join(
-        #                 fuckyou(_)
-        #                 for _ in (
-        #                     "/",
-        #                     "/page/mainui",
-        #                     "/page/transhist",
-        #                     "/page/dictionary",
-        #                     "/page/translate",
-        #                     "/page/ocr",
-        #                     "/page/tts",
-        #                 )
-        #             ),
-        #         ),
-        #         0,
-        #     )
-        # ],
     ]
 
 
@@ -605,18 +562,10 @@ def validator(createproxyedit_check: QLabel, text):
     createproxyedit_check.setText("Invalid")
 
 
-def proxyusage():
-    hbox = QHBoxLayout()
-    hbox.setContentsMargins(0, 0, 0, 0)
+def proxyusage(self):
     w2 = QWidget()
     w2.setEnabled(globalconfig.get("useproxy", True))
-    switch1 = D_getsimpleswitch(
-        globalconfig, "useproxy", callback=w2.setEnabled, default=True
-    )()
-    hbox.addWidget(switch1)
-    hbox.addWidget(QLabel())
-    hbox.addWidget(w2)
-    hbox.setAlignment(Qt.AlignmentFlag.AlignTop)
+    self._proxywidget = w2
     vbox = VisLFormLayout(w2)
     vbox.setContentsMargins(0, 0, 0, 0)
     check = QLabel()
@@ -641,7 +590,7 @@ def proxyusage():
     __(globalconfig.get("usesysproxy", True))
     validator(check, globalconfig.get("proxy", "127.0.0.1:7890"))
     proxy.textChanged.connect(functools.partial(validator, check))
-    return hbox
+    return w2
 
 
 def filetranslate(self):
@@ -653,6 +602,14 @@ def filetranslate(self):
                 "剪贴板",
                 globalconfig["foldstatus"]["others"],
                 "copy",
+                switch=getboxwidget(
+                    [
+                        getsmalllabel("自动输出文本"),
+                        D_getsimpleswitch(
+                            globalconfig["textoutputer"]["clipboard"], "use"
+                        ),
+                    ]
+                ),
             )
         ],
         [
@@ -663,6 +620,31 @@ def filetranslate(self):
                 globalconfig["foldstatus"]["others"],
                 "sr",
                 leftwidget=D_getdoclink("sr.html"),
+                switch=getboxwidget(
+                    [
+                        getsmalllabel("使用"),
+                        D_getsimpleswitch(
+                            globalconfig["sourcestatus2"]["mssr"],
+                            "use",
+                            name="mssr",
+                            parent=self,
+                            callback=functools.partial(
+                                yuitsu_switch,
+                                self,
+                                globalconfig["sourcestatus2"],
+                                "sourceswitchs",
+                                "mssr",
+                                lambda _, _2: (
+                                    gobject.base.starttextsource(_, _2),
+                                    _setlazywidgetenabled(
+                                        self, "_srsettingswidget", _2
+                                    ),
+                                ),
+                            ),
+                            pair="sourceswitchs",
+                        ),
+                    ]
+                ),
             )
         ],
         [
@@ -677,10 +659,23 @@ def filetranslate(self):
         [
             functools.partial(
                 createfoldgrid,
-                [["使用代理", proxyusage]],
+                [[functools.partial(proxyusage, self)]],
                 "代理设置",
                 globalconfig["foldstatus"]["others"],
                 "proxy",
+                switch=getboxwidget(
+                    [
+                        getsmalllabel("使用"),
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "useproxy",
+                            callback=lambda x: _setlazywidgetenabled(
+                                self, "_proxywidget", x
+                            ),
+                            default=True,
+                        ),
+                    ]
+                ),
             )
         ],
         [
@@ -691,6 +686,17 @@ def filetranslate(self):
                 globalconfig["foldstatus"]["others"],
                 "netservice",
                 leftwidget=D_getdoclink("apiservice.html"),
+                switch=getboxwidget(
+                    [
+                        getsmalllabel("开启"),
+                        D_getsimpleswitch(
+                            globalconfig,
+                            "networktcpenable",
+                            callback=lambda _: gobject.base.serviceinit(),
+                            default=False,
+                        ),
+                    ]
+                ),
             )
         ],
     ]
