@@ -17,6 +17,7 @@ from gui.usefulwidget import (
     getboxlayout,
     makescrollgrid,
     makesubtab_lazy,
+    maketabholder,
 )
 from gui.inputdialog import (
     postconfigdialog,
@@ -217,6 +218,7 @@ def setTab7_lazy(self, basel: QLayout):
         [___, functools.partial(makescrollgrid, grids2)],
         delay=True,
         padding=True,
+        pagecard=True,
     )
-    basel.addWidget(tab)
+    basel.addWidget(maketabholder(tab, top=8))
     dotab()

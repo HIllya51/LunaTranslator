@@ -4,7 +4,7 @@ from gui.setting.display_buttons import createbuttonwidget
 from gui.setting.display_text import xianshigrid_style
 from gui.setting.display_ui import uisetting
 from gui.setting.display_scale import makescalew
-from gui.usefulwidget import makesubtab_lazy, makescrollgrid
+from gui.usefulwidget import makesubtab_lazy, makescrollgrid, maketabholder
 
 
 def setTabThree_lazy(self, basel: QLayout):
@@ -20,7 +20,8 @@ def setTabThree_lazy(self, basel: QLayout):
         funcs,
         delay=True,
         padding=True,
+        pagecard=True,
     )
 
-    basel.addWidget(tab)
+    basel.addWidget(maketabholder(tab, top=8))
     do()

@@ -21,7 +21,7 @@ from gui.usefulwidget import (
     getspinbox,
     request_delete_ok,
     MyInputDialog,
-    GroupCardWidget,
+    maketabholder,
     getboxlayout,
     VisLFormLayout,
     IconButton,
@@ -452,23 +452,12 @@ def setTab_quick(self, l: QVBoxLayout):
         __.append(functools.partial(___x, _[1]))
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
-    tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True)
+    tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True, pagecard=True)
     # Navigation TabBar（Gallery setupNavigationTabs 同款）：左侧垂直导航页签
     apply_navigation_tabbar(tab)
-    # tab 页内容背景与卡片本体区分：中性半透明叠加（明暗模式自适应），圆角内嵌
-    tab.setStyleSheet(
-        "QTabWidget::pane{border:0;border-radius:4px;"
-        "background:rgba(128,128,128,16);}"
-    )
 
-    # ---- 无标题卡片包裹导航页签 ----
-    navcard = GroupCardWidget()
-    navcard.addContentWidget(tab)
-    nav_holder = QWidget()
-    nav_lay = QVBoxLayout(nav_holder)
-    nav_lay.setContentsMargins(16, 0, 16, 12)
-    nav_lay.addWidget(navcard)
-    l.addWidget(nav_holder)
+    # ---- tabwidget 只加页边距，页内容各自用紧邻 tabbar 的卡片包裹 ----
+    l.addWidget(maketabholder(tab))
     l.setSpacing(0)
     do()
 

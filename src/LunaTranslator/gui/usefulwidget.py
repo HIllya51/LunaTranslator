@@ -2295,11 +2295,22 @@ def manybuttonlayout(textandfunctions: list):
     return layout
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction):
+def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
     q = QWidget()
     v = QVBoxLayout(q)
     v.setContentsMargins(0, 0, 0, 0)
-    q.lazyfunction = functools.partial(getrealwidgetfunction, v)
+    if pagecard:
+        # 页内容包进紧邻 tabbar 的卡片（零内边距，内容由自身网格边距撑开）
+        v.setContentsMargins(0, 8, 0, 0)
+        card = QWidget()
+        card.setAttribute(Qt.WA_StyledBackground, True)
+        card.setProperty("isCard", True)
+        v.addWidget(card)
+        innerlay = QVBoxLayout(card)
+        innerlay.setContentsMargins(0, 0, 0, 0)
+        q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
+    else:
+        q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     tab.addTab(q, title)
 
 
@@ -2560,6 +2571,16 @@ def makegroupcard(title, grid, savelist=None, savelay=None, hiderows=None):
     return card
 
 
+def maketabholder(tab, top=0):
+    """给子页签 QTabWidget 加页边距（tabwidget 本体不包卡片，
+    页内容各自用紧邻 tabbar 的卡片包裹）。"""
+    holder = QWidget()
+    lay = QVBoxLayout(holder)
+    lay.setContentsMargins(16, top, 16, 12)
+    lay.addWidget(tab)
+    return holder
+
+
 def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None):
 
     class gridwidget(QWidget):
@@ -2614,6 +2635,7 @@ def makesubtab_lazy(
     initial=None,
     fast=False,
     padding=False,
+    pagecard=False,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
     if klass:
@@ -2646,16 +2668,16 @@ def makesubtab_lazy(
     if not can:
         tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
 
-    def __do(tab: LTabWidget, titles, functions, initial):
+    def __do(tab: LTabWidget, titles, functions, initial, pagecard):
         if titles and functions:
             for i, func in enumerate(functions):
-                tabadd_lazy(tab, titles[i], func)
+                tabadd_lazy(tab, titles[i], func, pagecard=pagecard)
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
             tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
             tab.currentChanged.emit(initial[0][initial[1]])
 
-    ___do = functools.partial(__do, tab, titles, functions, initial)
+    ___do = functools.partial(__do, tab, titles, functions, initial, pagecard)
     if not delay:
         ___do()
         return tab

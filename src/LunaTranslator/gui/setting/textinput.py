@@ -23,6 +23,7 @@ from gui.usefulwidget import (
     manybuttonlayout,
     makegrid,
     makegroupcard,
+    maketabholder,
     getsimplecombobox,
     yuitsu_switch,
     D_getsimpleswitch,
@@ -878,8 +879,9 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         funcs,
         delay=True,
         padding=True,
+        pagecard=True,
     )
-    basel.addWidget(tab)
+    basel.addWidget(maketabholder(tab))
     basel.setSpacing(0)
     dotab()
 
