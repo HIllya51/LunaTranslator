@@ -461,23 +461,48 @@ def setTabcishu_l(self):
         )
         return edit
 
-    zhuyin = dict(
-        title="注音",
-        type="grid",
-        parent=self,
-        name="fenyinsettings",
-        enable=globalconfig.get("isshowrawtext", True),
-        hiderows=[1],
-        widget=D_getdoclink("qa1.html"),
+    def __fenciexpander(title, switch, trailing=None, grid=(), switchlabel=None, leading=None):
+        """折叠卡（同 LICENSE 的 ExExpander）：标题 +（doclink 紧随）+ 开关（折叠按钮左边）。"""
+        exp = ExExpander()
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        # 同 LICENSE：HeaderButton 自带左边距与 chevron 预留区，只留上下边距
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel(title)
+        titlefont = titlelabel.font()
+        titlefont.setPixelSize(14)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        if leading is not None:
+            # doclink 等紧随标题
+            if callable(leading):
+                leading = leading()
+            if leading is not None:
+                hlay.addWidget(leading)
+        hlay.addStretch(1)
+        if trailing is not None:
+            hlay.addWidget(trailing)
+        if switchlabel is not None:
+            hlay.addWidget(getsmalllabel(switchlabel)())
+        hlay.addWidget(switch)
+        exp.setHeaderWidget(header)
+        exp.addContentWidget(makegrid(list(grid)))
+        return exp
+
+    zhuyinexp = __fenciexpander(
+        "注音",
+        getsimpleswitch(
+            globalconfig,
+            "isshowhira",
+            callback=gobject.base.translation_ui.translate_text.showhidert,
+            default=True,
+        ),
+        leading=D_getdoclink("qa1.html"),
+        switchlabel="显示",
         grid=(
             [
-                getsmalllabel("显示"),
-                D_getsimpleswitch(
-                    globalconfig,
-                    "isshowhira",
-                    callback=gobject.base.translation_ui.translate_text.showhidert,
-                    default=True,
-                ),
+                getsmalllabel("注音颜色"),
                 D_getcolorbutton(
                     self,
                     globalconfig,
@@ -486,7 +511,8 @@ def setTabcishu_l(self):
                     tips="注音颜色",
                     default="black",
                 ),
-                "",
+            ],
+            [
                 getsmalllabel("日语注音方案"),
                 D_getsimplecombobox(
                     [
@@ -499,38 +525,13 @@ def setTabcishu_l(self):
                     callback=lambda _: gobject.base.translation_ui.translate_text.refreshcontent(),
                     default=0,
                 ),
-                "",
-                getsmalllabel("字体"),
-                getIconSwitch(
-                    icon="fa.gear",
-                    checkablechangecolor=False,
-                    callback=lambda x: self.fenyinsettings.layout().setRowVisible(1, x),
-                ),
             ],
+            # 字体：卡片（不折叠）
             [(functools.partial(fontsettings, self), 0)],
         ),
     )
-
-    def __fenciexpander(title, switch, trailing=None, grid=()):
-        """触发功能折叠卡（同 LICENSE 的 ExExpander）：标题 + 开关（折叠按钮左边）。"""
-        exp = ExExpander()
-        header = QWidget()
-        hlay = QHBoxLayout(header)
-        # 同 LICENSE：HeaderButton 自带左边距与 chevron 预留区，只留上下边距
-        hlay.setContentsMargins(0, 12, 0, 12)
-        hlay.setSpacing(8)
-        titlelabel = LLabel(title)
-        titlefont = titlelabel.font()
-        titlefont.setPixelSize(14)
-        titlelabel.setFont(titlefont)
-        hlay.addWidget(titlelabel)
-        hlay.addStretch(1)
-        if trailing is not None:
-            hlay.addWidget(trailing)
-        hlay.addWidget(switch)
-        exp.setHeaderWidget(header)
-        exp.addContentWidget(makegrid(list(grid)))
-        return exp
+    zhuyinexp.setEnabled(globalconfig.get("isshowrawtext", True))
+    self.fenyinsettings = zhuyinexp
 
     def _notitled(d):
         d["title"] = None
@@ -769,7 +770,7 @@ def setTabcishu_l(self):
         grids_1,
         [cishu],
         [],
-        [zhuyin],
+        [zhuyinexp],
         [fenci],
     ]
     return grids
