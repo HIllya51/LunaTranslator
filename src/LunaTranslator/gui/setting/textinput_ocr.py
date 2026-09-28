@@ -29,6 +29,7 @@ from gui.usefulwidget import (
     makescrollgrid,
 )
 from gui.specialwidget import KeyPressDetector
+from gui.fluent.tabwidget import apply_segmented_tabbar
 from traceback import print_exc
 import gobject, qtawesome, importlib
 from gui.dynalang import LFormLayout, LDialog, LAction, LLabel
@@ -571,7 +572,7 @@ def internal(self):
         [dict(title="自动化执行", grid=autorun, widget=D_getdoclink("ocrparam.html"))],
     ]
 
-    return makesubtab_lazy(
+    tab, dotab = makesubtab_lazy(
         ["OCR引擎", "其他设置"],
         [
             lambda l: makescrollgrid(engines, l),
@@ -580,6 +581,8 @@ def internal(self):
         delay=True,
         padding=True,
     )
+    apply_segmented_tabbar(tab)
+    return tab, dotab
 
 
 def getocrgrid_table(self, basel: QVBoxLayout):

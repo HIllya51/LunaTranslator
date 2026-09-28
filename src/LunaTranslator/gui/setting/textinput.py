@@ -22,6 +22,7 @@ from gui.usefulwidget import (
     getIconButton,
     manybuttonlayout,
     makegrid,
+    makegroupcard,
     getsimplecombobox,
     yuitsu_switch,
     D_getsimpleswitch,
@@ -32,6 +33,7 @@ from gui.usefulwidget import (
     getboxlayout,
     getsmalllabel,
 )
+from gui.fluent.tabwidget import apply_segmented_tabbar
 
 
 def __create():
@@ -791,6 +793,20 @@ def setTablanglz(self):
     ]
 
 
+def __hooksubtabs():
+    tab, do = makesubtab_lazy(
+        ["默认设置", "内嵌翻译"],
+        [
+            lambda l: makescrollgrid(gethookgrid(), l),
+            lambda l: makescrollgrid(gethookgrid_em(), l),
+        ],
+        delay=True,
+        padding=True,
+    )
+    apply_segmented_tabbar(tab)
+    return tab, do
+
+
 def setTabOne_lazy_h(self, basel: QVBoxLayout):
     grids = [
         [
@@ -808,18 +824,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
             "",
         ],
         [
-            (
-                lambda: makesubtab_lazy(
-                    ["默认设置", "内嵌翻译"],
-                    [
-                        lambda l: makescrollgrid(gethookgrid(), l),
-                        lambda l: makescrollgrid(gethookgrid_em(), l),
-                    ],
-                    delay=True,
-                    padding=True,
-                ),
-                0,
-            )
+            (__hooksubtabs, 0)
         ],
     ]
     gridlayoutwidget, do = makegrid(grids, delay=True)
@@ -854,12 +859,15 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
             )
         )
         __.append("")
-    tab1grids = [
-        [dict(title="语言设置", type="grid", grid=setTablanglz(self))],
-        [dict(title="文本输入", type="grid", grid=[__])],
-    ]
-    gridlayoutwidget, do = makegrid(tab1grids, delay=True)
-    basel.addWidget(gridlayoutwidget)
+    # 语言设置/文本输入：标题分组卡片（内部内容不变）
+    content = QWidget()
+    vlay = QVBoxLayout(content)
+    vlay.setContentsMargins(16, 8, 16, 12)
+    vlay.setSpacing(8)
+    vlay.setAlignment(Qt.AlignmentFlag.AlignTop)
+    vlay.addWidget(makegroupcard("语言设置", setTablanglz(self)))
+    vlay.addWidget(makegroupcard("文本输入", [__]))
+    basel.addWidget(content)
     titles = ["HOOK设置", "OCR设置", "其他"]
     funcs = [
         lambda l: setTabOne_lazy_h(self, l),
@@ -873,9 +881,9 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         delay=True,
         padding=True,
     )
+    apply_segmented_tabbar(tab)
     basel.addWidget(tab)
     basel.setSpacing(0)
-    do()
     dotab()
 
     def ___(k, x):

@@ -11,7 +11,6 @@ from qtsymbols import (
     QFrame,
     QHBoxLayout,
     QModelIndex,
-    QTabBar,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -41,13 +40,16 @@ NAV_ICONS = [
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 
 
-def apply_segmented_tabbar(bar: QTabBar):
-    """把 QTabBar 配成 Segmented WinUI3 风格
-    （Gallery pagetab.cpp setupSegmentedTabs / addTabBarSection 同款）。"""
+def apply_segmented_tabbar(tabwidget: QTabWidget):
+    """把 QTabWidget 配成 Segmented WinUI3 风格
+    （Gallery pagetab.cpp setupSegmentedTabs / addTabBarSection 同款），
+    并去掉 pane 边框。"""
+    bar = tabwidget.tabBar()
     bar.setProperty("tabBarStyle", TABBAR_STYLE_SEGMENTED_WINUI3)
     bar.setAttribute(Qt.WA_StyledBackground, True)
     bar.setDrawBase(False)
     bar.setExpanding(False)
+    tabwidget.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
 
 
 class FluentTabWidget(QWidget):

@@ -2523,6 +2523,28 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
             grid.setRowVisible(nowr, False)
 
 
+def makegroupcard(title, grid, savelist=None, savelay=None, hiderows=None):
+    """标题分组卡片（Gallery addCardSection 同款）：
+    isCard 卡片 + 加粗标题 + 网格内容（内部网格零边距）。"""
+    card = QWidget()
+    card.setAttribute(Qt.WA_StyledBackground, True)
+    card.setProperty("isCard", True)
+    card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+    lay = QVBoxLayout(card)
+    lay.setContentsMargins(12, 12, 12, 12)
+    lay.setSpacing(10)
+    titlelabel = LLabel(title)
+    titlefont = titlelabel.font()
+    titlefont.setBold(True)
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    lay.addWidget(titlelabel)
+    content = makegrid(grid, savelist, savelay, hiderows=hiderows)
+    content.layout().setContentsMargins(0, 0, 0, 0)
+    lay.addWidget(content)
+    return card
+
+
 def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None):
 
     class gridwidget(QWidget):

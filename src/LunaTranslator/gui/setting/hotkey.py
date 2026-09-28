@@ -452,9 +452,8 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
     tab, do = makesubtab_lazy(__vis, __, delay=True, padding=True)
-    # Segmented WinUI3 TabBar（Gallery setupSegmentedTabs 同款），并去掉 pane 边框
-    apply_segmented_tabbar(tab.tabBar())
-    tab.setStyleSheet("QTabWidget::pane{border:0;background:transparent;}")
+    # Segmented WinUI3 TabBar（Gallery setupSegmentedTabs 同款）
+    apply_segmented_tabbar(tab)
 
     l.addWidget(tab)
     l.setSpacing(0)
