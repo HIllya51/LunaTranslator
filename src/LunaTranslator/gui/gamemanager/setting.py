@@ -1026,6 +1026,46 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.setContentsMargins(0, 0, 0, 0)
         return formLayout2
 
+    def createfollowdefaultfold(self, dic: dict, key: str, callback=None):
+        """跟随默认折叠卡（HOOK设置/内嵌翻译）：头部标题+跟随开关，
+        内容为各设置行子项（开关开启=跟随默认时内容禁用）。
+        返回 (折叠卡, 内容网格)——调用方填充网格后 addRow 并 setExpanded。"""
+        exp = ExExpander()
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel("跟随默认")
+        titlefont = titlelabel.font()
+        titlefont.setPixelSize(15)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        hlay.addStretch(1)
+        content = QWidget()
+        grid = VisGridLayout(content)
+        grid.setContentsMargins(0, 0, 0, 0)
+
+        def __function(content, callback, _):
+            content.setEnabled(not _)
+            if callback:
+                try:
+                    callback()
+                except:
+                    print_exc()
+
+        hlay.addWidget(
+            getsimpleswitch(
+                dic,
+                key,
+                callback=functools.partial(__function, content, callback),
+                default=True,
+            )
+        )
+        exp.setHeaderWidget(header)
+        exp.addContentWidget(content)
+        content.setEnabled(not dic.get(key, True))
+        return exp, grid
+
     def getttssetting(self, formLayout: LFormLayout, gameuid):
         formLayout2 = self.createfollowdefault(
             savehook_new_data[gameuid],
@@ -1393,111 +1433,103 @@ class dialog_setting_game_internal(QWidget):
 
     def getembedtab(self, formLayout: LFormLayout, gameuid):
 
-        formLayout2 = self.createfollowdefault(
+        # 跟随默认 → 折叠卡（各设置行为子项）
+        exp, grid = self.createfollowdefaultfold(
             savehook_new_data[gameuid],
             "embed_follow_default",
-            formLayout,
             callback=lambda: gobject.base.textsource.set_settings_ex(),
-            klass=VisGridLayout,
         )
         automakegrid(
-            formLayout2,
+            grid,
             gethookgrid_em(savehook_new_data[gameuid]["embed_setting_private"]),
         )
+        formLayout.addRow(exp)
+        exp.setExpanded(True)
         if savehook_new_data[gameuid].get("embedablehook"):
-            box = NQGroupBox()
-            settinglayout = LFormLayout(box)
-
-            settinglayout.addRow(
-                "已激活的",
-                listediterline(
+            formLayout.addRow(
+                makecardrow(
                     "已激活的",
-                    savehook_new_data[gameuid]["embedablehook"],
-                    specialklass=embeddisabler,
-                ),
+                    listediterline(
+                        "已激活的",
+                        savehook_new_data[gameuid]["embedablehook"],
+                        specialklass=embeddisabler,
+                    ),
+                )
             )
-            formLayout.addRow(box)
 
     def gethooktab_internal(self, formLayout: LFormLayout, gameuid):
 
-        box = NQGroupBox()
-        settinglayout = LFormLayout(box)
-        formLayout.addRow(box)
         __label = getsmalllabel("重新启动后生效")()
         __label.hide()
-        settinglayout.addRow(
-            "延迟注入_(ms)",
-            getboxlayout(
-                [
-                    getspinbox(
-                        0,
-                        1000000,
-                        savehook_new_data[gameuid],
-                        "inserthooktimeout",
-                        default=500,
-                        callback=lambda _: __label.show(),
-                    ),
-                    __label,
-                ]
-            ),
+        formLayout.addRow(
+            makecardrow(
+                "延迟注入_(ms)",
+                getspinbox(
+                    0,
+                    1000000,
+                    savehook_new_data[gameuid],
+                    "inserthooktimeout",
+                    default=500,
+                    callback=lambda _: __label.show(),
+                ),
+                __label,
+            )
         )
         __label2 = getsmalllabel("重新启动后生效")()
         __label2.hide()
-        settinglayout.addRow(
-            "Win32通用钩子",
-            getboxlayout(
-                [
-                    getsimpleswitch(
-                        savehook_new_data[gameuid],
-                        "insertpchooks_string",
-                        callback=lambda _: (
-                            (
-                                gobject.base.textsource.InsertPCHooks()
-                                if _
-                                else __label2.show()
-                            )
-                        ),
-                        default=False,
+        formLayout.addRow(
+            makecardrow(
+                "Win32通用钩子",
+                getsimpleswitch(
+                    savehook_new_data[gameuid],
+                    "insertpchooks_string",
+                    callback=lambda _: (
+                        (
+                            gobject.base.textsource.InsertPCHooks()
+                            if _
+                            else __label2.show()
+                        )
                     ),
-                    "",
-                    __label2,
-                ]
-            ),
+                    default=False,
+                ),
+                __label2,
+            )
         )
         if "needinserthookcode" not in savehook_new_data[gameuid]:
             savehook_new_data[gameuid]["needinserthookcode"] = []
-        settinglayout.addRow(
-            "特殊码",
-            listediterline(
+        formLayout.addRow(
+            makecardrow(
                 "特殊码",
-                savehook_new_data[gameuid]["needinserthookcode"],
-            ),
-        )
-        if savehook_new_data[gameuid].get("removeforeverhook"):
-
-            settinglayout.addRow(
-                "移除且总是移除",
                 listediterline(
-                    "移除且总是移除",
-                    savehook_new_data[gameuid]["removeforeverhook"],
-                    specialklass=embeddisabler,
+                    "特殊码",
+                    savehook_new_data[gameuid]["needinserthookcode"],
                 ),
             )
-        box = NQGroupBox()
-        settinglayout = LFormLayout(box)
-        formLayout.addRow(box)
+        )
+        if savehook_new_data[gameuid].get("removeforeverhook"):
+            formLayout.addRow(
+                makecardrow(
+                    "移除且总是移除",
+                    listediterline(
+                        "移除且总是移除",
+                        savehook_new_data[gameuid]["removeforeverhook"],
+                        specialklass=embeddisabler,
+                    ),
+                )
+            )
 
-        formLayout2 = self.createfollowdefault(
+        # 跟随默认 → 折叠卡（各设置行为子项）
+        exp, grid = self.createfollowdefaultfold(
             savehook_new_data[gameuid],
             "hooksetting_follow_default",
-            settinglayout,
-            lambda: gobject.base.textsource.setsettings(),
-            klass=VisGridLayout,
+            callback=lambda: gobject.base.textsource.setsettings(),
         )
         automakegrid(
-            formLayout2,
+            grid,
             gethookgrid(savehook_new_data[gameuid]["hooksetting_private"]),
         )
+        formLayout.addRow(exp)
+        exp.setExpanded(True)
 
     def gethooktab(self, gameuid):
         _w = QWidget()
