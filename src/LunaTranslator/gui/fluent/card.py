@@ -19,13 +19,14 @@ from qtsymbols import (
     QWidget,
 )
 
-# Segoe Fluent Icons 码点（Gallery settings_page.py 同款）
-ICON_COLOR = ""
-ICON_GLOBE = ""
-ICON_SYNC = ""
-ICON_PICTURE = ""
-ICON_TASK_VIEW = ""
-ICON_SETTINGS_DISPLAY_SOUND = ""
+from gui.fluent.icons import (
+    ICON_COLOR,
+    ICON_GLOBE,
+    ICON_SYNC,
+    ICON_PICTURE,
+    ICON_TASK_VIEW,
+    ICON_SETTINGS_DISPLAY_SOUND,
+)
 
 
 class FluentCard(QWidget):

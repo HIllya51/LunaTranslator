@@ -18,11 +18,22 @@ from qtsymbols import (
 
 from gui.fluent.nav import FluentNavTree, NAV_PAGE_ROLE, NAV_ICON_ROLE
 
-# 7 个主分类的 Segoe Fluent Icons 码点（兜底 E9D2）
-NAV_ICONS = ["", "", "", "", "", "", ""]
-NAV_ICON_FALLBACK = ""
-# 底部固定项（关于软件）
-FOOTER_ICON = ""
+from gui.fluent.icons import (
+    ICON_SETTINGS,
+    ICON_CHARACTERS,
+    ICON_SETTINGS_DISPLAY_SOUND,
+    ICON_PROCESSING,
+    ICON_DICTIONARY,
+    ICON_AUDIO,
+    ICON_KEYBOARD_CLASSIC,
+    ICON_INFO,
+    ICON_NAV_FALLBACK,
+)
+
+NAV_ICONS = [
+    ICON_SETTINGS, ICON_CHARACTERS, ICON_SETTINGS_DISPLAY_SOUND,
+    ICON_PROCESSING, ICON_DICTIONARY, ICON_AUDIO, ICON_KEYBOARD_CLASSIC,
+]
 
 
 class FluentTabWidget(QWidget):
@@ -100,9 +111,9 @@ class FluentTabWidget(QWidget):
         if "关于" in title:
             # 底部固定导航，不自动选中
             self.nav_footer.addNavigationItem(
-                _TR(title), idx, FOOTER_ICON, auto_select=False)
+                _TR(title), idx, ICON_INFO, auto_select=False)
         else:
-            icon = (NAV_ICONS[idx] if idx < len(NAV_ICONS) else NAV_ICON_FALLBACK)
+            icon = (NAV_ICONS[idx] if idx < len(NAV_ICONS) else ICON_NAV_FALLBACK)
             self.nav.addNavigationItem(_TR(title), idx, icon)
 
     def setCurrentIndex(self, idx):

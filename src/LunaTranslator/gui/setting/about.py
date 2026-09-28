@@ -418,53 +418,54 @@ def setTab_about(self: QWidget, basel):
     # 关于卡片
     vlay.addWidget(aboutwidget())
 
-    # LICENSE 折叠
-    vlay.addWidget(createfoldgrid(
-        [
-            [
-                makelink("HIllya51/LunaTranslator")[0],
-                functools.partial(
-                    MDLabel,
-                    "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。",
-                ),
-            ],
-            [("引用的项目", -1)],
-            makelink("opencv/opencv"),
-            makelink("microsoft/onnxruntime"),
-            makelink("Artikash/Textractor"),
-            makelink("RapidAI/RapidOcrOnnx"),
-            makelink("PaddlePaddle/PaddleOCR"),
-            makelink("Blinue/Magpie"),
-            makelink("xupefei/Locale-Emulator"),
-            makelink("InWILL/Locale_Remulator"),
-            makelink("zxyacb/ntlea"),
-            makelink("Chuyu-Team/YY-Thunks"),
-            makelink("Chuyu-Team/VC-LTL5"),
-            makelink("uyjulian/AtlasTranslate"),
-            makelink("ilius/pyglossary"),
-            makelink("ikegami-yukino/mecab"),
-            makelink("AngusJohnson/Clipper2"),
-            makelink("rapidfuzz/rapidfuzz-cpp"),
-            makelink("TsudaKageyu/minhook"),
-            makelink("lobehub/lobe-icons"),
-            makelink("kokke/tiny-AES-c"),
-            makelink("AuroraWright/owocr"),
-            makelink("b1tg/win11-oneocr"),
-            makelink("mity/md4c"),
-            makelink("swigger/wechat-ocr"),
-            makelink("rupeshk/MarkdownHighlighter"),
-            makelink("sindresorhus/github-markdown-css"),
-            makelink("gexgd0419/NaturalVoiceSAPIAdapter"),
-            makelink("microsoft/PowerToys"),
-            makelink("WaterJuice/WjCryptLib"),
-            makelink("k2-fsa/sherpa-onnx"),
-            makelink("chromium/chromium"),
-            makelink("Neargye/magic_enum"),
-            makelink("bbepis/XUnity.AutoTranslator"),
-            makelink("uchardet/uchardet"),
-        ],
-        "LICENSE",
+    # LICENSE 折叠（ExExpander，同 Gallery 强调色折叠面板的用法）
+    from gui.fluent.expander import ExExpander
+    from gui.fluent.card import FluentCard, ICON_SETTINGS_DISPLAY_SOUND
+
+    license_expander = ExExpander(content)
+    license_expander.setObjectName("settingsLicenseExpander")
+
+    license_header = FluentCard(
+        ICON_SETTINGS_DISPLAY_SOUND, "LICENSE", "查看许可证与引用的项目",
+        None, license_expander)
+    # 同 Gallery：HeaderButton 自带 16px 左内边距与 chevron 预留区，内容只留上下边距
+    license_header.layout().setContentsMargins(0, 12, 0, 12)
+    license_expander.setHeaderWidget(license_header)
+
+    license_content = QWidget()
+    lc_lay = QVBoxLayout(license_content)
+    lc_lay.setContentsMargins(16, 8, 16, 12)
+    lc_lay.setSpacing(4)
+
+    lc_lay.addWidget(MDLabel(
+        "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。"
     ))
+    for _repo in [
+        "opencv/opencv", "microsoft/onnxruntime", "Artikash/Textractor",
+        "RapidAI/RapidOcrOnnx", "PaddlePaddle/PaddleOCR", "Blinue/Magpie",
+        "xupefei/Locale-Emulator", "InWILL/Locale_Remulator", "zxyacb/ntlea",
+        "Chuyu-Team/YY-Thunks", "Chuyu-Team/VC-LTL5", "uyjulian/AtlasTranslate",
+        "ilius/pyglossary", "ikegami-yukino/mecab", "AngusJohnson/Clipper2",
+        "rapidfuzz/rapidfuzz-cpp", "TsudaKageyu/minhook", "lobehub/lobe-icons",
+        "kokke/tiny-AES-c", "AuroraWright/owocr", "b1tg/win11-oneocr",
+        "mity/md4c", "swigger/wechat-ocr", "rupeshk/MarkdownHighlighter",
+        "sindresorhus/github-markdown-css", "gexgd0419/NaturalVoiceSAPIAdapter",
+        "microsoft/PowerToys", "WaterJuice/WjCryptLib", "k2-fsa/sherpa-onnx",
+        "chromium/chromium", "Neargye/magic_enum", "bbepis/XUnity.AutoTranslator",
+        "uchardet/uchardet",
+    ]:
+        _link = makelink(_repo)
+        _row = QWidget()
+        _rl = QHBoxLayout(_row)
+        _rl.setContentsMargins(0, 0, 0, 0)
+        _rl.setSpacing(8)
+        _rl.addWidget(_link[0]())
+        _rl.addWidget(_link[1]())
+        lc_lay.addWidget(_row)
+
+    license_expander.addContentWidget(license_content)
+    license_expander.setExpanded(False)
+    vlay.addWidget(license_expander)
 
     scroll = makescroll()
     scroll.setWidget(content)

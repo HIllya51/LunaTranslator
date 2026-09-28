@@ -18,12 +18,13 @@ from qtsymbols import (
     pyqtSignal,
 )
 
-# Segoe Fluent Icons 码点
-ICON_GLOBAL_NAV = "\ue700"
-ICON_MINIMIZE = "\ue921"
-ICON_MAXIMIZE = "\ue922"
-ICON_RESTORE = "\ue923"
-ICON_CLOSE = "\ue8bb"
+from gui.fluent.icons import (
+    ICON_MINIMIZE,
+    ICON_MAXIMIZE,
+    ICON_RESTORE,
+    ICON_CLOSE,
+    ICON_GLOBAL_NAV,
+)
 
 
 def _caption_icon_font(pixel_size=11):
