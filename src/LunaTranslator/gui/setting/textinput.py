@@ -9,6 +9,7 @@ from gui.setting.textinput_ocr import getocrgrid_table
 from gui.dynalang import LLabel, LStandardItemModel, LDialog
 from myutils.wrapper import Singleton
 from textio.textsource.mssr import MSSR, LiveCaptions
+from gui.fluent.expander import ExExpander
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -25,6 +26,7 @@ from gui.usefulwidget import (
     makegroupcard,
     maketabholder,
     getsimplecombobox,
+    getsimpleswitch,
     yuitsu_switch,
     D_getsimpleswitch,
     getboxwidget,
@@ -271,24 +273,61 @@ def creategamefont_comboBox(dic: dict):
     return gamefont_comboBox
 
 
-def getTabclip(_):
+def clipusage(self):
+    """剪贴板折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
+    折叠条 = 标题 + 自动输出文本开关；内容 = 原文 / 翻译 两行面板。"""
+    exp = ExExpander()
 
-    return [
+    originrow = getboxwidget(
         [
             "原文",
             D_getsimpleswitch(
-                globalconfig["textoutputer"]["clipboard"],
-                "origin",
+                globalconfig["textoutputer"]["clipboard"], "origin"
             ),
-            "",
+            0,
+        ]
+    )
+    transrow = getboxwidget(
+        [
             "翻译",
             D_getsimpleswitch(
-                globalconfig["textoutputer"]["clipboard"],
-                "trans",
+                globalconfig["textoutputer"]["clipboard"], "trans"
             ),
-            "",
-        ],
-    ]
+            0,
+        ]
+    )
+    rows = [originrow, transrow]
+
+    def __use(x):
+        for r in rows:
+            r.setEnabled(x)
+
+    __use(globalconfig["textoutputer"]["clipboard"].get("use", False))
+
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("剪贴板")
+    titlefont = titlelabel.font()
+    titlefont.setBold(True)
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(getsmalllabel("自动输出文本")())
+    hlay.addWidget(
+        getsimpleswitch(
+            globalconfig["textoutputer"]["clipboard"],
+            "use",
+            callback=__use,
+        )
+    )
+    exp.setHeaderWidget(header)
+
+    exp.addContentWidget(originrow)
+    exp.addContentWidget(transrow)
+    return exp
 
 
 def selectfile(self):
@@ -500,8 +539,12 @@ def getftsgrid(self):
     ]
 
 
-def getnetgrid(self):
-    return [
+def netusage(self):
+    """网络服务折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
+    折叠条 = 标题 + doclink + 开启开关；内容 = 打开 / 端口号 两行面板。"""
+    exp = ExExpander()
+
+    openrow = getboxwidget(
         [
             getsmalllabel("打开"),
             D_getIconButton(
@@ -513,25 +556,57 @@ def getnetgrid(self):
                 ),
                 tips="打开",
             ),
-        ],
+            0,
+        ]
+    )
+    portrow = getboxwidget(
         [
             getsmalllabel("端口号"),
-            getboxlayout(
-                [
-                    D_getspinbox(
-                        0,
-                        65535,
-                        globalconfig,
-                        "networktcpport",
-                        callback=lambda _: gobject.base.serviceinit(),
-                        default=2333,
-                    ),
-                    __portconflict,
-                ]
+            D_getspinbox(
+                0,
+                65535,
+                globalconfig,
+                "networktcpport",
+                callback=lambda _: gobject.base.serviceinit(),
+                default=2333,
             ),
-            "",
-        ],
-    ]
+            __portconflict,
+        ]
+    )
+    rows = [openrow, portrow]
+
+    def __setrows(x):
+        for r in rows:
+            r.setEnabled(x)
+
+    __setrows(globalconfig.get("networktcpenable", False))
+
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("网络服务")
+    titlefont = titlelabel.font()
+    titlefont.setBold(True)
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addWidget(D_getdoclink("apiservice.html")())
+    hlay.addStretch(1)
+    hlay.addWidget(getsmalllabel("开启")())
+    hlay.addWidget(
+        getsimpleswitch(
+            globalconfig,
+            "networktcpenable",
+            callback=lambda x: (__setrows(x), gobject.base.serviceinit()),
+            default=False,
+        )
+    )
+    exp.setHeaderWidget(header)
+
+    exp.addContentWidget(openrow)
+    exp.addContentWidget(portrow)
+    return exp
 
 
 def validator(createproxyedit_check: QLabel, text):
@@ -555,54 +630,70 @@ def validator(createproxyedit_check: QLabel, text):
 
 
 def proxyusage(self):
-    w2 = QWidget()
-    w2.setEnabled(globalconfig.get("useproxy", True))
-    self._proxywidget = w2
-    vbox = VisLFormLayout(w2)
-    vbox.setContentsMargins(0, 0, 0, 0)
+    """代理设置折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
+    折叠条 = 标题 + 使用开关；内容 = 使用系统代理 / 手动设置代理 两行面板。"""
+    exp = ExExpander()
+
+    # 子设置 2：手动设置代理
     check = QLabel()
     proxy = QLineEdit(globalconfig.get("proxy", "127.0.0.1:7890"))
-    __p = getboxwidget(["手动设置代理", proxy, check])
+    manualrow = getboxwidget(["手动设置代理", proxy, check])
 
-    def __(x):
-        __p.setEnabled(not x)
+    def __sys(x):
+        manualrow.setEnabled(not x)
 
-    vbox.addRow(
-        getboxlayout(
-            [
-                "使用系统代理",
-                D_getsimpleswitch(
-                    globalconfig, "usesysproxy", callback=__, default=True
-                )(),
-                0,
-            ]
-        ),
+    # 子设置 1：使用系统代理
+    sysrow = getboxwidget(
+        [
+            "使用系统代理",
+            D_getsimpleswitch(
+                globalconfig, "usesysproxy", callback=__sys, default=True
+            ),
+            0,
+        ]
     )
-    vbox.addRow(__p)
-    __(globalconfig.get("usesysproxy", True))
+    __sys(globalconfig.get("usesysproxy", True))
     validator(check, globalconfig.get("proxy", "127.0.0.1:7890"))
     proxy.textChanged.connect(functools.partial(validator, check))
-    return w2
+
+    rows = [sysrow, manualrow]
+
+    def __use(x):
+        for r in rows:
+            r.setEnabled(x)
+        if x:
+            __sys(globalconfig.get("usesysproxy", True))
+
+    __use(globalconfig.get("useproxy", True))
+
+    # 折叠条：标题 + 使用开关
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("代理设置")
+    titlefont = titlelabel.font()
+    titlefont.setBold(True)
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(getsmalllabel("使用")())
+    hlay.addWidget(
+        getsimpleswitch(globalconfig, "useproxy", callback=__use, default=True)
+    )
+    exp.setHeaderWidget(header)
+
+    # 多行子设置：每行独立 ContentPanel（同 C++ 多次 addContentWidget）
+    exp.addContentWidget(sysrow)
+    exp.addContentWidget(manualrow)
+    return exp
 
 
 def filetranslate(self):
     grids = [
         [
-            functools.partial(
-                createfoldgrid,
-                functools.partial(getTabclip, self),
-                "剪贴板",
-                globalconfig["foldstatus"]["others"],
-                "copy",
-                switch=getboxwidget(
-                    [
-                        getsmalllabel("自动输出文本"),
-                        D_getsimpleswitch(
-                            globalconfig["textoutputer"]["clipboard"], "use"
-                        ),
-                    ]
-                ),
-            )
+            functools.partial(clipusage, self),
         ],
         [
             functools.partial(
@@ -649,47 +740,10 @@ def filetranslate(self):
             )
         ],
         [
-            functools.partial(
-                createfoldgrid,
-                [[functools.partial(proxyusage, self)]],
-                "代理设置",
-                globalconfig["foldstatus"]["others"],
-                "proxy",
-                switch=getboxwidget(
-                    [
-                        getsmalllabel("使用"),
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "useproxy",
-                            callback=lambda x: _setlazywidgetenabled(
-                                self, "_proxywidget", x
-                            ),
-                            default=True,
-                        ),
-                    ]
-                ),
-            )
+            functools.partial(proxyusage, self),
         ],
         [
-            functools.partial(
-                createfoldgrid,
-                functools.partial(getnetgrid, self),
-                "网络服务",
-                globalconfig["foldstatus"]["others"],
-                "netservice",
-                leftwidget=D_getdoclink("apiservice.html"),
-                switch=getboxwidget(
-                    [
-                        getsmalllabel("开启"),
-                        D_getsimpleswitch(
-                            globalconfig,
-                            "networktcpenable",
-                            callback=lambda _: gobject.base.serviceinit(),
-                            default=False,
-                        ),
-                    ]
-                ),
-            )
+            functools.partial(netusage, self),
         ],
     ]
     return grids

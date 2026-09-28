@@ -7,10 +7,12 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
+    getboxwidget,
     SuperCombo,
     getsimplecombobox,
 )
-from gui.dynalang import LPushButton
+from gui.dynalang import LPushButton, LLabel
+from gui.fluent.expander import ExExpander
 from myutils.magpie_builtin import AdapterService
 import functools, os, json
 
@@ -93,6 +95,69 @@ def __layout(isglobal, profile):
     btn.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
     btn.clicked.connect(functools.partial(__select, combo))
     return getboxlayout([combo, btn])
+
+
+def developerexpander():
+    """开发者选项折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
+    每行设置独立面板；展开/收起状态对应 magpie 的 developerMode（同原折叠区）。"""
+    exp = ExExpander()
+
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("开发者选项")
+    titlefont = titlelabel.font()
+    titlefont.setBold(True)
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    exp.setHeaderWidget(header)
+
+    rows = [
+        ["调试模式", D_getsimpleswitch(magpie_config, "debugMode")],
+        ["性能测试模式", D_getsimpleswitch(magpie_config, "benchmarkMode")],
+        ["禁用缩放窗口置顶", D_getsimpleswitch(magpie_config, "disableTopmost")],
+        ["禁用效果缓存", D_getsimpleswitch(magpie_config, "disableEffectCache")],
+        [
+            "解析效果时保存源代码",
+            D_getsimpleswitch(magpie_config, "saveEffectSources"),
+        ],
+        [
+            "编译效果时将警告视为错误",
+            D_getsimpleswitch(magpie_config, "warningsAreErrors"),
+        ],
+        [
+            "禁止在着色器中使用 FP16",
+            D_getsimpleswitch(magpie_config, "disableFP16"),
+        ],
+        ["禁用字体缓存", D_getsimpleswitch(magpie_config, "disableFontCache")],
+        [
+            "检测重复帧",
+            D_getsimplecombobox(
+                ["总是检测", "动态检测", "从不检测"],
+                magpie_config,
+                "duplicateFrameDetectionMode",
+            ),
+        ],
+        [
+            "启用动态检测统计",
+            D_getsimpleswitch(
+                magpie_config, "enableStatisticsForDynamicDetection"
+            ),
+        ],
+    ]
+    for row in rows:
+        exp.addContentWidget(getboxwidget(list(row) + [0]))
+
+    # 原折叠区把打开状态存在 developerMode，保持该语义
+    exp.expandedChanged.connect(
+        lambda v: magpie_config.__setitem__("developerMode", v)
+    )
+    if magpie_config.get("developerMode", False):
+        exp.setExpanded(True)
+    return exp
 
 
 def makescalew(profile=None):
@@ -378,87 +443,7 @@ def makescalew(profile=None):
             ),
         ],
         (
-            [
-                functools.partial(
-                    createfoldgrid,
-                    [
-                        [
-                            "调试模式",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "debugMode",
-                            ),
-                        ],
-                        [
-                            "性能测试模式",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "benchmarkMode",
-                            ),
-                        ],
-                        [
-                            "禁用缩放窗口置顶",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "disableTopmost",
-                            ),
-                        ],
-                        [
-                            "禁用效果缓存",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "disableEffectCache",
-                            ),
-                        ],
-                        [
-                            "解析效果时保存源代码",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "saveEffectSources",
-                            ),
-                        ],
-                        [
-                            "编译效果时将警告视为错误",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "warningsAreErrors",
-                            ),
-                        ],
-                        [
-                            "禁止在着色器中使用 FP16",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "disableFP16",
-                            ),
-                        ],
-                        [
-                            "禁用字体缓存",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "disableFontCache",
-                            ),
-                        ],
-                        [
-                            "检测重复帧",
-                            D_getsimplecombobox(
-                                ["总是检测", "动态检测", "从不检测"],
-                                magpie_config,
-                                "duplicateFrameDetectionMode",
-                            ),
-                        ],
-                        [
-                            "启用动态检测统计",
-                            D_getsimpleswitch(
-                                magpie_config,
-                                "enableStatisticsForDynamicDetection",
-                            ),
-                        ],
-                    ],
-                    "开发者选项",
-                    magpie_config,
-                    "developerMode",
-                )
-            ]
+            [functools.partial(developerexpander)]
             if isglobal
             else None
         ),
