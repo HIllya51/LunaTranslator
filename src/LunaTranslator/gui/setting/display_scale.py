@@ -8,6 +8,7 @@ from gui.usefulwidget import (
     getsimplepatheditor,
     getboxlayout,
     getboxwidget,
+    getsimpleswitch,
     SuperCombo,
     getsimplecombobox,
 )
@@ -191,6 +192,38 @@ def _cardrow(label, *controls):
     return [[(card, 0)]]
 
 
+def _foldrow(label, headerctl, contentrow):
+    """折叠设置卡：标题+主控件在折叠条上，内容行为独立面板。"""
+    exp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel(label)
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(getboxwidget([headerctl]))
+    exp.setHeaderWidget(header)
+    exp.addContentWidget(contentrow)
+    return [[(exp, 0)]]
+
+
+def _switchfold(label, dic, key, contentlabel, contentctl, default=False):
+    """开关式折叠设置卡：开关在折叠条上，关闭时内容行禁用。"""
+    contentrow = getboxwidget([contentlabel, 1, contentctl])
+    contentrow.setEnabled(dic.get(key, default))
+    return _foldrow(
+        label,
+        getsimpleswitch(
+            dic, key, callback=lambda x: contentrow.setEnabled(x), default=default
+        ),
+        contentrow,
+    )
+
+
 def makescalew(profile=None):
     isglobal = profile is None
     if profile is None:
@@ -274,15 +307,18 @@ def makescalew(profile=None):
         )
         + _srow("性能")
         + _cardrow("显示卡", functools.partial(createadaptercombo, profile))
-        + _cardrow(
-            "帧率限制", D_getsimpleswitch(profile, "frameRateLimiterEnabled")
+        + _switchfold(
+            "帧率限制",
+            profile,
+            "frameRateLimiterEnabled",
+            "最大帧率",
+            D_getspinbox(0, 9999, profile, "maxFrameRate"),
         )
-        + _cardrow("最大帧率", D_getspinbox(0, 9999, profile, "maxFrameRate"))
         + _srow("源窗口")
         + _cardrow("捕获标题栏", D_getsimpleswitch(profile, "captureTitleBar"))
         + _cardrow("自定义剪裁", D_getsimpleswitch(profile, "croppingEnabled"))
         + _srow("光标")
-        + _cardrow(
+        + _foldrow(
             "缩放系数",
             D_getsimplecombobox(
                 [
@@ -297,18 +333,20 @@ def makescalew(profile=None):
                 profile,
                 "cursorScaling",
             ),
-        )
-        + _cardrow(
-            "插值算法",
-            D_getsimplecombobox(
-                ["最邻近", "双线性"], profile, "cursorInterpolationMode"
+            getboxwidget(
+                [
+                    "插值算法",
+                    1,
+                    D_getsimplecombobox(
+                        ["最邻近", "双线性"], profile, "cursorInterpolationMode"
+                    ),
+                ]
             ),
         )
-        + _cardrow(
+        + _switchfold(
             "光标静止时自动隐藏",
-            D_getsimpleswitch(profile, "autoHideCursorEnabled"),
-        )
-        + _cardrow(
+            profile,
+            "autoHideCursorEnabled",
             "隐藏延迟（秒）",
             D_getspinbox(
                 0.1,
