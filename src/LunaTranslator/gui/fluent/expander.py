@@ -252,7 +252,10 @@ class _ExpanderContentViewport(QWidget):
         height = self._layout_height()
         if self.maximumHeight() == height:
             return
+        # min 与 max 同步：否则父布局（如滚动区里空间不足的 QGridLayout）
+        # 会把 Maximum 垂直策略的折叠卡压缩到只剩头部
         self.setMaximumHeight(height)
+        self.setMinimumHeight(height)
         self.updateGeometry()
         self._expander._root_layout.invalidate()
         self._expander.updateGeometry()
