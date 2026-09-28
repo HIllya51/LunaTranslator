@@ -32,6 +32,7 @@ from gui.usefulwidget import (
     automakegrid,
     makegrid,
     makegroupingrid,
+    makecardrow,
     request_delete_ok,
     DarkLightAutoResetIconHelper,
     FocusFontCombo,
@@ -718,27 +719,13 @@ def setTabcishu_l(self):
         ),
     )
     # 语法加亮：一行卡片，switch 在最右边
-    yufajialiang = QWidget()
-    yufajialiang.setAttribute(Qt.WA_StyledBackground, True)
-    yufajialiang.setProperty("isCard", True)
-    yufajialiang.setMinimumHeight(48)
-    ylay = QHBoxLayout(yufajialiang)
-    ylay.setContentsMargins(18, 8, 18, 8)
-    ylay.setSpacing(8)
-    ytitle = LLabel("语法加亮")
-    yfont = ytitle.font()
-    yfont.setPixelSize(15)
-    ytitle.setFont(yfont)
-    ylay.addWidget(ytitle)
-    ylay.addStretch(1)
-    ylay.addWidget(
+    yufajialiang = makecardrow(
+        "语法加亮",
         D_getIconButton(
             icon="fa.paint-brush",
             callback=lambda: multicolorset(self),
             tips="语法加亮_颜色设置",
-        )()
-    )
-    ylay.addWidget(
+        ),
         D_getcolorbutton(
             self,
             globalconfig,
@@ -747,9 +734,7 @@ def setTabcishu_l(self):
             alpha=True,
             default="#80000000",
             tips="鼠标悬停_颜色设置",
-        )()
-    )
-    ylay.addWidget(
+        ),
         getsimpleswitch(
             globalconfig,
             "show_fenci",
@@ -758,7 +743,7 @@ def setTabcishu_l(self):
                 gobject.base.translation_ui.translate_text.showhideclick(_),
             ),
             default=True,
-        )
+        ),
     )
 
     # 分词卡：语法加亮一行卡 + 四个触发功能折叠卡（每行两个）

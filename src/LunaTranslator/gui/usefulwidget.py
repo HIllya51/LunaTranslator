@@ -2447,6 +2447,28 @@ class GroupCardWidget(QWidget):
         return super().layout()
 
 
+def makecardrow(label, *controls):
+    """单行设置卡片（WinUI SettingsCard 形式）：标题在左、控件靠右。
+    controls 遵循 getboxwidget 约定（callable 会调用、int 为 stretch）。
+    返回卡片 QWidget，可直接作为网格项使用。"""
+    card = QWidget()
+    card.setAttribute(Qt.WA_StyledBackground, True)
+    card.setProperty("isCard", True)
+    card.setMinimumHeight(48)
+    lay = QHBoxLayout(card)
+    lay.setContentsMargins(18, 8, 8, 8)
+    lay.setSpacing(8)
+    titlelabel = LLabel(label)
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(15)
+    titlelabel.setFont(titlefont)
+    lay.addWidget(titlelabel)
+    lay.addStretch(1)
+    if controls:
+        lay.addWidget(getboxwidget(list(controls)))
+    return card
+
+
 def makegroupingrid(args: dict):
     lis = args.get("grid")
     widget = args.get("widget")

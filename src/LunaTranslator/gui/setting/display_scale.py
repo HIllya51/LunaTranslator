@@ -9,6 +9,7 @@ from gui.usefulwidget import (
     getboxlayout,
     getboxwidget,
     getsimpleswitch,
+    makecardrow,
     SuperCombo,
     getsimplecombobox,
 )
@@ -182,23 +183,8 @@ def _srow(title):
 
 
 def _cardrow(label, *controls):
-    """设置行卡片（同「应用主题」卡片：标题在左、控件在右端）。
-    返回行的列表，便于用 + 拼接/条件省略。"""
-    card = QWidget()
-    card.setAttribute(Qt.WA_StyledBackground, True)
-    card.setProperty("isCard", True)
-    card.setMinimumHeight(48)
-    lay = QHBoxLayout(card)
-    lay.setContentsMargins(18, 8, 18, 8)
-    lay.setSpacing(8)
-    titlelabel = LLabel(label)
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    lay.addWidget(titlelabel)
-    lay.addStretch(1)
-    lay.addWidget(_widenctl(getboxwidget(list(controls))))
-    return [[(card, 0)]]
+    """设置行卡片：makecardrow + 控件加宽，包装为行列表（便于 + 拼接）。"""
+    return [[(_widenctl(makecardrow(label, *controls)), 0)]]
 
 
 def _foldrow(label, headerctl, contentrow, pad=True):
