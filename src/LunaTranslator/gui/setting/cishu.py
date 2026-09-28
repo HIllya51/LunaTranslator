@@ -339,13 +339,70 @@ def _createnewtextfontcom(key, df):
 
 
 def fontsettings(parent):
-    """字体折叠卡：「跟随默认」开关放在折叠条上（不联动折叠）。"""
-    exp = ExExpander()
+    """字体折叠卡：「跟随默认」开关放在折叠条上；跟随默认时子项禁用。"""
+    exp = ExExpander(content_pad=True)
+
+    # 子项 1：相对大小（标题在左、spin 在右端）
+    sizerow = getboxwidget(
+        [
+            "相对大小",
+            1,
+            getspinbox(
+                0.1,
+                1,
+                globalconfig,
+                "kanarate",
+                double=True,
+                step=0.05,
+                callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                default=0.5,
+            ),
+        ]
+    )
+    # 子项 2：字体（combo + 加粗/倾斜）
+    fontrow = getboxwidget(
+        [
+            "字体",
+            1,
+            _createnewtextfontcom(
+                "kanafont",
+                globalconfig.get(
+                    "fonttype", gobject.tempconfig.get("fonttype", "")
+                ),
+            ),
+            getIconSwitch(
+                globalconfig,
+                "kanabold",
+                callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                tips="加粗",
+                default=globalconfig.get("showbold", False),
+                icon="fa.bold",
+            ),
+            getIconSwitch(
+                globalconfig,
+                "kanaitalic",
+                callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                tips="倾斜",
+                default=globalconfig.get("showitalic", False),
+                icon="fa.italic",
+            ),
+        ]
+    )
+    rows = [sizerow, fontrow]
+
+    def __follow(x):
+        # 跟随默认（x=True）时子项禁用
+        for r in rows:
+            r.setEnabled(not x)
+        gobject.base.translation_ui.translate_text.setfontstyle()
+
+    __follow(globalconfig.get("kanafontfollowdefault", True))
+
     followswitch = getsimpleswitch(
         globalconfig,
         "kanafontfollowdefault",
         default=True,
-        callback=lambda _: gobject.base.translation_ui.translate_text.setfontstyle(),
+        callback=__follow,
     )
     header = QWidget()
     hlay = QHBoxLayout(header)
@@ -360,56 +417,9 @@ def fontsettings(parent):
     hlay.addWidget(getsmalllabel("跟随默认")())
     hlay.addWidget(followswitch)
     exp.setHeaderWidget(header)
-    # 子项 1：相对大小（标题在左、spin 在右端）
-    exp.addContentWidget(
-        getboxwidget(
-            [
-                "相对大小",
-                1,
-                getspinbox(
-                    0.1,
-                    1,
-                    globalconfig,
-                    "kanarate",
-                    double=True,
-                    step=0.05,
-                    callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                    default=0.5,
-                ),
-            ]
-        )
-    )
-    # 子项 2：字体（combo + 加粗/倾斜）
-    exp.addContentWidget(
-        getboxwidget(
-            [
-                "字体",
-                1,
-                _createnewtextfontcom(
-                    "kanafont",
-                    globalconfig.get(
-                        "fonttype", gobject.tempconfig.get("fonttype", "")
-                    ),
-                ),
-                getIconSwitch(
-                    globalconfig,
-                    "kanabold",
-                    callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                    tips="加粗",
-                    default=globalconfig.get("showbold", False),
-                    icon="fa.bold",
-                ),
-                getIconSwitch(
-                    globalconfig,
-                    "kanaitalic",
-                    callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                    tips="倾斜",
-                    default=globalconfig.get("showitalic", False),
-                    icon="fa.italic",
-                ),
-            ]
-        )
-    )
+
+    exp.addContentWidget(sizerow)
+    exp.addContentWidget(fontrow)
     return exp
 
 
@@ -476,7 +486,8 @@ def setTabcishu_l(self):
         afterswitch=None, bold=False, content=None
     ):
         """折叠卡（同 LICENSE 的 ExExpander）：标题 +（doclink 紧随）+ 开关（折叠按钮左边）。"""
-        exp = ExExpander()
+        # content= 子项面板形式时内容右侧让出折叠按钮区（60px）
+        exp = ExExpander(content_pad=content is not None)
         header = QWidget()
         hlay = QHBoxLayout(header)
         # 同 LICENSE：HeaderButton 自带左边距与 chevron 预留区，只留上下边距
