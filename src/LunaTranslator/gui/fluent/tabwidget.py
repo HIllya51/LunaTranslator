@@ -111,6 +111,11 @@ class FluentTabWidget(QWidget):
 
         self.tab_widget = QTabWidget(self)
         self.tab_widget.tabBar().hide()
+        # 插件给 QTabWidget 的 pane 画 1px 边框 + Base 底色（PE_FrameTabWidget），
+        # 会与页面卡的描边叠成双边框——去掉 pane 绘制
+        self.tab_widget.setStyleSheet(
+            "QTabWidget::pane{border:0;background:transparent;}"
+        )
 
         lay.addWidget(nav_pane)
         lay.addWidget(self.tab_widget, 1)
