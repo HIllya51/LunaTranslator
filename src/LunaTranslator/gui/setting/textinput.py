@@ -900,9 +900,7 @@ def setTabOne_lazy_h(self, basel: QVBoxLayout):
             (__hooksubtabs, 0)
         ],
     ]
-    gridlayoutwidget, do = makegrid(
-        grids, delay=True, toptouch=True, sidemargin=48, bottommargin=40
-    )
+    gridlayoutwidget, do = makegrid(grids, delay=True, topmargin=16)
     basel.addWidget(gridlayoutwidget)
     do()
 
@@ -937,7 +935,7 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
     # 语言设置/文本输入：标题分组卡片（内部内容不变）
     content = QWidget()
     vlay = QVBoxLayout(content)
-    vlay.setContentsMargins(48, 48, 48, 40)
+    vlay.setContentsMargins(16, 16, 16, 12)
     vlay.setSpacing(8)
     vlay.setAlignment(Qt.AlignmentFlag.AlignTop)
     vlay.addWidget(makegroupcard("语言设置", setTablanglz(self)))
@@ -955,7 +953,7 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         funcs,
         delay=True,
         padding=True,
-        gallery=True,
+        pagecard=True,
     )
     basel.addWidget(maketabholder(tab))
     basel.setSpacing(0)

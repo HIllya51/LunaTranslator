@@ -2301,7 +2301,7 @@ def manybuttonlayout(textandfunctions: list):
     return layout
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False, gallery=False):
+def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
     q = QWidget()
     v = QVBoxLayout(q)
     v.setContentsMargins(0, 0, 0, 0)
@@ -2317,17 +2317,21 @@ def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False, gallery=False
         # 卡内网格：顶边距与左边距统一（16）
         innerlay.setProperty("_fluent_card_grid", True)
         q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
-    else:
-        if isinstance(tab, QTabWidget):
-            # 普通子页签页：标记给 makescrollgrid —— 网格首卡紧贴 tabbar
-            v.setProperty("_fluent_tabbar_page", True)
-        else:
-            # 主设置页（FluentTabWidget，无 tabbar）：顶部边距与左边距统一
-            v.setProperty("_fluent_main_grid", True)
-        if gallery:
-            # Gallery 子设置页：无包裹卡，边距参考 PyQt5Examples settings_page
-            v.setProperty("_fluent_gallery_page", True)
+    elif isinstance(tab, QTabWidget):
+        # 普通子页签页：标记给 makescrollgrid —— 网格首卡紧贴 tabbar
+        v.setProperty("_fluent_tabbar_page", True)
         q.lazyfunction = functools.partial(getrealwidgetfunction, v)
+    else:
+        # 主设置页（FluentTabWidget）：整页包圆角卡填满内容区
+        # （同 Gallery initialize_fluent_border_widgets——每个 tab 页都是 isCard）
+        card = QWidget()
+        card.setAttribute(Qt.WA_StyledBackground, True)
+        card.setProperty("isCard", True)
+        v.addWidget(card)
+        innerlay = QVBoxLayout(card)
+        innerlay.setContentsMargins(0, 0, 0, 0)
+        innerlay.setProperty("_fluent_main_grid", True)
+        q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
     tab.addTab(q, title)
 
 
@@ -2612,11 +2616,11 @@ def makegroupcard(title, grid, savelist=None, savelay=None, hiderows=None):
 
 
 def maketabholder(tab, top=0):
-    """给子页签 QTabWidget 加页边距（tabwidget 本体不包卡片；
-    左右 48 与 Gallery 子设置页的内容网格对齐）。"""
+    """给子页签 QTabWidget 加页边距（tabwidget 本体不包卡片，
+    页内容各自用紧邻 tabbar 的卡片包裹）。"""
     holder = QWidget()
     lay = QVBoxLayout(holder)
-    lay.setContentsMargins(48, top, 48, 12)
+    lay.setContentsMargins(16, top, 16, 12)
     lay.addWidget(tab)
     return holder
 
@@ -2668,21 +2672,13 @@ def makescroll():
 
 def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=None):
     # 子页签页（tabadd_lazy 标记）的网格顶部紧贴 tabbar；
-    # Gallery 子设置页：左右 48、底部 40（参考 PyQt5Examples settings_page）；
-    # 主设置页：四边 48（顶=左右）；卡内网格（pagecard，查词窗口）：16/16/16/12
+    # 卡内网格（pagecard / 主页卡）顶边距统一为 16（与左边距一致）
     flush = bool(getattr(lay, "property", lambda *_: None)("_fluent_tabbar_page"))
     incard = bool(getattr(lay, "property", lambda *_: None)("_fluent_card_grid"))
     mainpg = bool(getattr(lay, "property", lambda *_: None)("_fluent_main_grid"))
-    gallery = bool(getattr(lay, "property", lambda *_: None)("_fluent_gallery_page"))
-    kw = {}
-    if gallery:
-        kw = dict(sidemargin=48, bottommargin=40)
-    elif mainpg:
-        kw = dict(sidemargin=48, topmargin=48, bottommargin=40)
-    if incard:
-        kw["topmargin"] = 16
     wid, do = makegrid(grid, savelist, savelay, delay=True, hiderows=hiderows,
-                       toptouch=flush, **kw)
+                       toptouch=flush,
+                       topmargin=16 if (incard or mainpg) else None)
     swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)
@@ -2700,7 +2696,6 @@ def makesubtab_lazy(
     fast=False,
     padding=False,
     pagecard=False,
-    gallery=False,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
     if klass:
@@ -2733,16 +2728,16 @@ def makesubtab_lazy(
     if not can:
         tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
 
-    def __do(tab: LTabWidget, titles, functions, initial, pagecard, gallery):
+    def __do(tab: LTabWidget, titles, functions, initial, pagecard):
         if titles and functions:
             for i, func in enumerate(functions):
-                tabadd_lazy(tab, titles[i], func, pagecard=pagecard, gallery=gallery)
+                tabadd_lazy(tab, titles[i], func, pagecard=pagecard)
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
             tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
             tab.currentChanged.emit(initial[0][initial[1]])
 
-    ___do = functools.partial(__do, tab, titles, functions, initial, pagecard, gallery)
+    ___do = functools.partial(__do, tab, titles, functions, initial, pagecard)
     if not delay:
         ___do()
         return tab
