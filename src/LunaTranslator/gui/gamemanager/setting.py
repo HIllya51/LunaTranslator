@@ -1026,8 +1026,9 @@ class dialog_setting_game_internal(QWidget):
         formLayout2.setContentsMargins(0, 0, 0, 0)
         return formLayout2
 
-    def createfollowdefaultfold(self, dic: dict, key: str, callback=None):
-        """跟随默认折叠卡（HOOK设置/内嵌翻译）：头部标题+跟随开关，
+    def createfollowdefaultfold(self, dic: dict, key: str, callback=None,
+                                title="跟随默认"):
+        """跟随默认折叠卡：头部标题 + [跟随默认]开关（文字在开关旁），
         内容为各设置行子项（开关开启=跟随默认时内容禁用）。
         返回 (折叠卡, 内容网格)——调用方填充网格后 addRow 并 setExpanded。"""
         exp = ExExpander()
@@ -1035,7 +1036,7 @@ class dialog_setting_game_internal(QWidget):
         hlay = QHBoxLayout(header)
         hlay.setContentsMargins(0, 12, 0, 12)
         hlay.setSpacing(8)
-        titlelabel = LLabel("跟随默认")
+        titlelabel = LLabel(title)
         titlefont = titlelabel.font()
         titlefont.setPixelSize(15)
         titlelabel.setFont(titlefont)
@@ -1053,6 +1054,7 @@ class dialog_setting_game_internal(QWidget):
                 except:
                     print_exc()
 
+        hlay.addWidget(getsmalllabel("跟随默认")())
         hlay.addWidget(
             getsimpleswitch(
                 dic,
@@ -1438,13 +1440,13 @@ class dialog_setting_game_internal(QWidget):
             savehook_new_data[gameuid],
             "embed_follow_default",
             callback=lambda: gobject.base.textsource.set_settings_ex(),
+            title="内嵌翻译",
         )
         automakegrid(
             grid,
             gethookgrid_em(savehook_new_data[gameuid]["embed_setting_private"]),
         )
         formLayout.addRow(exp)
-        exp.setExpanded(True)
         if savehook_new_data[gameuid].get("embedablehook"):
             formLayout.addRow(
                 makecardrow(
@@ -1523,34 +1525,23 @@ class dialog_setting_game_internal(QWidget):
             savehook_new_data[gameuid],
             "hooksetting_follow_default",
             callback=lambda: gobject.base.textsource.setsettings(),
+            title="HOOK设置",
         )
         automakegrid(
             grid,
             gethookgrid(savehook_new_data[gameuid]["hooksetting_private"]),
         )
         formLayout.addRow(exp)
-        exp.setExpanded(True)
 
     def gethooktab(self, gameuid):
         _w = QWidget()
-        formLayout = QVBoxLayout(_w)
-        formLayout.setContentsMargins(0, 0, 0, 0)
-        functs = [
-            ("HOOK设置", functools.partial(self.___tabf, self.gethooktab_internal)),
-            ("内嵌翻译", functools.partial(self.___tabf, self.getembedtab)),
-        ]
-        methodtab, do = makesubtab_lazy(
-            [_[0] for _ in functs],
-            [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
-            delay=True,
-            initial=(
-                (self.keepindexobject, "gamesettinghook")
-                if (self.keepindexobject is not None)
-                else None
-            ),
-        )
-        formLayout.addWidget(methodtab)
-        return _w, do
+        formLayout = LFormLayout(_w)
+
+        def __():
+            self.gethooktab_internal(formLayout, gameuid)
+            self.getembedtab(formLayout, gameuid)
+
+        return _w, __
 
 
 @Singleton
