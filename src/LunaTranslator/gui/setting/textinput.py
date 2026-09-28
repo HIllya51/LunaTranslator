@@ -743,7 +743,6 @@ def filetranslate(self):
                 "文件翻译",
                 globalconfig["foldstatus"]["others"],
                 "fts",
-                fullheight=True,
             )
         ],
         [
