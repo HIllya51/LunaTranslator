@@ -31,6 +31,7 @@ from gui.usefulwidget import (
     SplitLine,
     PopupWidget,
     Exteditor,
+    GroupCardWidget,
 )
 from gui.dynalang import LPushButton, LFormLayout
 
@@ -283,8 +284,11 @@ def resetgroudswitchcallback(self, group):
 
 def creategoodfontwid(self):
 
-    self.goodfontsettingsWidget = NQGroupBox()
-    self.goodfontsettingsformlayout = LFormLayout(self.goodfontsettingsWidget)
+    self.goodfontsettingsWidget = GroupCardWidget()
+    self.goodfontsettingsformlayout = LFormLayout(
+        self.goodfontsettingsWidget.contentWidget()
+    )
+    self.goodfontsettingsWidget.setContentLayout(self.goodfontsettingsformlayout)
     resetgroudswitchcallback(self, globalconfig["rendertext_using"])
     return self.goodfontsettingsWidget
 
@@ -598,6 +602,7 @@ def xianshigrid_style(self):
         [
             dict(
                 type="grid",
+                card=True,
                 hiderows=[2],
                 name="otherobject",
                 parent=self,

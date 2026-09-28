@@ -256,6 +256,7 @@ def setTab5lz(self):
                     [
                         dict(
                             type="grid",
+                            card=True,
                             grid=[
                                 [
                                     "自动朗读",

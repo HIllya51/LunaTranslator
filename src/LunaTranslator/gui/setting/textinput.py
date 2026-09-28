@@ -33,7 +33,6 @@ from gui.usefulwidget import (
     getboxlayout,
     getsmalllabel,
 )
-from gui.fluent.tabwidget import apply_segmented_tabbar
 
 
 def __create():
@@ -803,7 +802,6 @@ def __hooksubtabs():
         delay=True,
         padding=True,
     )
-    apply_segmented_tabbar(tab)
     return tab, do
 
 
@@ -881,7 +879,6 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         delay=True,
         padding=True,
     )
-    apply_segmented_tabbar(tab)
     basel.addWidget(tab)
     basel.setSpacing(0)
     dotab()

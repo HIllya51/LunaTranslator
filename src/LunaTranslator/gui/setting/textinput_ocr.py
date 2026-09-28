@@ -22,6 +22,7 @@ from gui.usefulwidget import (
     LStandardItemModel,
     SuperCombo,
     NQGroupBox,
+    GroupCardWidget,
     getsmalllabel,
     manybuttonlayout,
     makesubtab_lazy,
@@ -29,7 +30,6 @@ from gui.usefulwidget import (
     makescrollgrid,
 )
 from gui.specialwidget import KeyPressDetector
-from gui.fluent.tabwidget import apply_segmented_tabbar
 from traceback import print_exc
 import gobject, qtawesome, importlib
 from gui.dynalang import LFormLayout, LDialog, LAction, LLabel
@@ -334,8 +334,9 @@ def _ocrparam_create(self, f):
 
 
 def _ocrparam(self):
-    self._ocrparam = NQGroupBox()
-    self._ocrparaml = LFormLayout(self._ocrparam)
+    self._ocrparam = GroupCardWidget()
+    self._ocrparaml = LFormLayout(self._ocrparam.contentWidget())
+    self._ocrparam.setContentLayout(self._ocrparaml)
     _ocrparam_create(self, globalconfig.get("ocr_auto_method_v2", "period"))
     return self._ocrparam
 
@@ -581,7 +582,6 @@ def internal(self):
         delay=True,
         padding=True,
     )
-    apply_segmented_tabbar(tab)
     return tab, dotab
 
 

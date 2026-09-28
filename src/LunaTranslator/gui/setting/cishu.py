@@ -7,7 +7,7 @@ from myutils.wrapper import Singleton
 from gui.inputdialog import autoinitdialog_items, autoinitdialog
 from gui.rcdownload import resourcewidget, resourcewidget2
 from gui.usefulwidget import (
-    LGroupBox,
+    GroupCardWidget,
     VisLFormLayout,
     makescrollgrid,
     D_getsimpleswitch,
@@ -257,9 +257,9 @@ def clickcallback(l: list, lay: VisLFormLayout, checked):
 
 
 def fenciqisettings(self):
-    box = LGroupBox(self)
-    box.setTitle("分词器")
-    lay = VisLFormLayout(box)
+    box = GroupCardWidget("分词器", parent=self)
+    lay = VisLFormLayout(box.contentWidget())
+    box.setContentLayout(lay)
     l1 = QHBoxLayout()
 
     lay.addRow(l1)
@@ -288,9 +288,9 @@ def fenciqisettings(self):
 
 
 def mdictsettings(self):
-    box = LGroupBox(self)
-    box.setTitle("离线")
-    lay = VisLFormLayout(box)
+    box = GroupCardWidget("离线", parent=self)
+    lay = VisLFormLayout(box.contentWidget())
+    box.setContentLayout(lay)
     l1 = QHBoxLayout()
 
     lay.addRow(l1)

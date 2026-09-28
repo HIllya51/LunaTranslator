@@ -27,15 +27,15 @@ from gui.dynalang import (
     LLabel,
     LPushButton,
     LAction,
-    LGroupBox,
     LFormLayout,
     LTabWidget,
     LStandardItemModel,
     LDialog,
     LTableView,
     LMainWindow,
-    LToolButton,
 )
+from gui.fluent.tabwidget import apply_segmented_tabbar
+from gui.fluent.icons import ICON_CHEVRON_DOWN_MED, ICON_CHEVRON_UP_MED
 
 
 def load_specific_icon_size(ico_path):
@@ -2382,24 +2382,53 @@ class NQGroupBox(QGroupBox):
         self.setObjectName("notitle")
 
 
-class WGroupBox(LGroupBox):
-    def __init__(self, *a, **k):
-        super().__init__(*a, **k)
+class GroupCardWidget(QWidget):
+    """WinUI 分组卡片（Gallery addCardSection 同款）：
+    isCard + 加粗标题（右侧可挂 doclink 等控件）+ 内容。
+    layout() 返回内容网格/表单，供 <name>.layout().setRowVisible 等旧用法使用。"""
 
-        self.widget: QWidget = None
+    def __init__(self, title="", widget=None, parent=None):
+        super().__init__(parent)
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setProperty("isCard", True)
+        self._vlay = QVBoxLayout(self)
+        self._vlay.setContentsMargins(12, 12, 12, 12)
+        self._vlay.setSpacing(10)
+        if title or widget:
+            # 标题行：加粗标题 + 右侧可挂控件（无标题时不生成，纯内容卡片）
+            titlerow = QHBoxLayout()
+            titlerow.setContentsMargins(0, 0, 0, 0)
+            if title:
+                titlelabel = LLabel(title)
+                titlefont = titlelabel.font()
+                titlefont.setBold(True)
+                titlefont.setPixelSize(14)
+                titlelabel.setFont(titlefont)
+                titlerow.addWidget(titlelabel)
+            titlerow.addStretch(1)
+            if widget is not None:
+                if callable(widget):
+                    widget = widget()
+                if widget is not None:
+                    titlerow.addWidget(widget)
+            self._vlay.addLayout(titlerow)
+        self._contentlayout = None
 
-    def resizeEvent(self, event):
-        opt = QStyleOptionGroupBox()
-        self.initStyleOption(opt)
-        text_rect = self.style().subControlRect(
-            QStyle.ComplexControl.CC_GroupBox,
-            opt,
-            QStyle.SubControl.SC_GroupBoxLabel,
-            self,
-        )
-        if self.widget:
-            self.widget.move(text_rect.right() + 5, text_rect.top())
-        super().resizeEvent(event)
+    def contentWidget(self):
+        w = QWidget()
+        self._vlay.addWidget(w)
+        return w
+
+    def addContentWidget(self, w):
+        self._vlay.addWidget(w)
+
+    def setContentLayout(self, lay):
+        self._contentlayout = lay
+
+    def layout(self):
+        if self._contentlayout is not None:
+            return self._contentlayout
+        return super().layout()
 
 
 def makegroupingrid(args: dict):
@@ -2412,21 +2441,14 @@ def makegroupingrid(args: dict):
     enable = args.get("enable", True)
     internallayoutname = args.get("internallayoutname", None)
     hiderows = args.get("hiderows", [])
-    if widget:
-        group = WGroupBox()
-        group.setTitle(title)
-        group.widget = widget()
-        group.widget.setParent(group)
-    elif title:
-        group = LGroupBox()
-        group.setTitle(title)
+    card = args.get("card", False)
+    # 有标题（或显式 card=True）的分组 → WinUI 卡片；无标题容器保持透明（避免卡中卡）
+    if title or widget or card:
+        group = GroupCardWidget(title, widget)
+        host = group.contentWidget()
     else:
         group = NQGroupBox()
-    if title:
-        # FluentUI3：有标题的分组渲染为 WinUI 卡片（插件 PE_Widget 消费 isCard）；
-        # 无标题容器保持透明，避免卡中卡
-        group.setAttribute(Qt.WA_StyledBackground, True)
-        group.setProperty("isCard", True)
+        host = group
     if not enable:
         group.setEnabled(False)
     if groupname and (parent is not None):
@@ -2436,15 +2458,19 @@ def makegroupingrid(args: dict):
             setattr(parent, groupname, group)
     if _type == "grid":
         if hiderows:
-            grid = VisGridLayout(group)
+            grid = VisGridLayout(host)
         else:
-            grid = QGridLayout(group)
+            grid = QGridLayout(host)
         automakegrid(grid, lis, hiderows=hiderows)
+        if host is not group:
+            group.setContentLayout(grid)
         if internallayoutname:
             setattr(parent, internallayoutname, grid)
     elif _type == "form":
-        lay = VisLFormLayout(group)
+        lay = VisLFormLayout(host)
         makeforms(lay, lis, hiderows)
+        if host is not group:
+            group.setContentLayout(lay)
         if internallayoutname:
             setattr(parent, internallayoutname, lay)
     return group
@@ -2524,24 +2550,11 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
 
 
 def makegroupcard(title, grid, savelist=None, savelay=None, hiderows=None):
-    """标题分组卡片（Gallery addCardSection 同款）：
-    isCard 卡片 + 加粗标题 + 网格内容（内部网格零边距）。"""
-    card = QWidget()
-    card.setAttribute(Qt.WA_StyledBackground, True)
-    card.setProperty("isCard", True)
-    card.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-    lay = QVBoxLayout(card)
-    lay.setContentsMargins(12, 12, 12, 12)
-    lay.setSpacing(10)
-    titlelabel = LLabel(title)
-    titlefont = titlelabel.font()
-    titlefont.setBold(True)
-    titlefont.setPixelSize(14)
-    titlelabel.setFont(titlefont)
-    lay.addWidget(titlelabel)
+    """标题分组卡片：GroupCardWidget + makegrid 内容（内部网格零边距）。"""
+    card = GroupCardWidget(title)
     content = makegrid(grid, savelist, savelay, hiderows=hiderows)
     content.layout().setContentsMargins(0, 0, 0, 0)
-    lay.addWidget(content)
+    card.addContentWidget(content)
     return card
 
 
@@ -2605,6 +2618,9 @@ def makesubtab_lazy(
         tab: LTabWidget = klass()
     else:
         tab = LTabWidget()
+    if isinstance(tab, QTabWidget):
+        # 子页签统一 Segmented WinUI3 TabBar（FluentTabWidget 主导航的 bar 隐藏，跳过）
+        apply_segmented_tabbar(tab)
 
     def __(fast, t: LTabWidget, initial, i):
         if initial:
@@ -3549,28 +3565,66 @@ class CollapsibleBox(QWidget):
         return self.__lay
 
 
+class _FoldHeaderButton(QAbstractButton):
+    """折叠卡片头（同 ExExpander header）：左侧控件 + 加粗标题 + 右端 chevron。"""
+
+    def __init__(self, title="", parent=None):
+        super().__init__(parent)
+        self.setCheckable(True)
+        self.setCursor(Qt.CursorShape.PointingHandCursor)
+        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(12, 12, 12, 12)
+        lay.setSpacing(8)
+        self._leftcount = 0
+        self.titlelabel = LLabel(title)
+        titlefont = self.titlelabel.font()
+        titlefont.setBold(True)
+        titlefont.setPixelSize(14)
+        self.titlelabel.setFont(titlefont)
+        self.titlelabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        lay.addWidget(self.titlelabel)
+        lay.addStretch(1)
+        self.chevronlabel = QLabel(self)
+        chevronfont = QFont("Segoe Fluent Icons")
+        chevronfont.setPixelSize(15)
+        self.chevronlabel.setFont(chevronfont)
+        self.chevronlabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
+        lay.addWidget(self.chevronlabel)
+        self.toggled.connect(self._updatechevron)
+        self._updatechevron(False)
+
+    def addLeftWidget(self, w):
+        self.layout().insertWidget(self._leftcount, w)
+        self._leftcount += 1
+
+    def paintEvent(self, _):
+        pass  # 内容全部由子控件绘制（标题/chevron 标签）
+
+    def _updatechevron(self, checked):
+        # 同 ExExpander：收起时 chevron 朝下，展开时朝上
+        self.chevronlabel.setText(
+            ICON_CHEVRON_UP_MED if checked else ICON_CHEVRON_DOWN_MED
+        )
+
+
 class CollapsibleBoxWithButton(QWidget):
     toggled = pyqtSignal(bool)
 
     def __init__(self, delayloadfunction=None, title="", parent=None, toggled=False):
         super(CollapsibleBoxWithButton, self).__init__(parent)
-        self.toggle_button = LToolButton(text=title, checkable=True, checked=False)
-        self.toggle_button.setCursor(Qt.CursorShape.PointingHandCursor)
-        self.toggle_button.setToolButtonStyle(
-            Qt.ToolButtonStyle.ToolButtonTextBesideIcon
-        )
+        # WinUI 卡片外观（同 GroupCardWidget / ExExpander）
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setProperty("isCard", True)
+        self.toggle_button = _FoldHeaderButton(title, self)
         self.toggle_button.toggled.connect(self.__toggled)
         self.toggle_button.toggled.connect(self.toggled)
         self.content_area = CollapsibleBox(delayloadfunction, self)
+        self.content_area.layout().setContentsMargins(12, 0, 12, 12)
         lay = QVBoxLayout(self)
         lay.setSpacing(0)
         lay.setContentsMargins(0, 0, 0, 0)
-        _ = QWidget()
-        self.lay1 = QHBoxLayout(_)
-        self.lay1.setContentsMargins(0, 0, 0, 0)
-        self.lay1.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.lay1.addWidget(self.toggle_button)
-        lay.addWidget(_)
+        lay.addWidget(self.toggle_button)
         lay.addWidget(self.content_area)
         self.__toggled(toggled)
 
@@ -3578,14 +3632,11 @@ class CollapsibleBoxWithButton(QWidget):
         if not isinstance(ws, (tuple, list)):
             ws = [ws]
         for w in ws:
-            self.lay1.addWidget(w)
+            self.toggle_button.addLeftWidget(w)
 
     def __toggled(self, checked):
         self.toggle_button.setChecked(checked)
         self.content_area.toggle(checked)
-        self.toggle_button.setIcon(
-            qtawesome.icon("fa.chevron-down" if checked else "fa.chevron-right")
-        )
 
     @property
     def internalLayout(self):
@@ -3606,6 +3657,8 @@ def createfoldgrid(
         if callable(grid):
             grid = grid()
         w, do = makegrid(grid, delay=True)
+        # 卡片内网格零边距（边距由卡片自身提供）
+        w.layout().setContentsMargins(0, 0, 0, 0)
         lay.addWidget(w)
         if internallayoutname:
             setattr(parent, internallayoutname, w.layout())

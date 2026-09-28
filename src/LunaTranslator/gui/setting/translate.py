@@ -57,10 +57,10 @@ from gui.usefulwidget import (
     IconButton,
     PopupWidget,
     getsimplecombobox,
+    GroupCardWidget,
 )
 from gui.setting.display_text import GetFormForLineHeight
 from gui.dynalang import (
-    LGroupBox,
     LPushButton,
     LAction,
     LFormLayout,
@@ -1927,8 +1927,9 @@ def llamacppgrid():
     )
     form.addRow(_loglable)
     form.setRowVisible(1, False)
-    group = LGroupBox("下载")
-    downloadtasks = QFormLayout(group)
+    group = GroupCardWidget("下载")
+    downloadtasks = QFormLayout(group.contentWidget())
+    group.setContentLayout(downloadtasks)
     form.addRow(group)
     form.setRowVisible(2, False)
     logopenbtn.clicked.connect(lambda c: form.setRowVisible(1, c))
@@ -2091,10 +2092,10 @@ def __showllamacpp(ref: "list[CollapsibleBoxWithButton]", checked):
         margin = l.contentsMargins()
         margin.setTop(0)
         l.setContentsMargins(margin)
-        box = QGroupBox()
-        box.setTitle("llama.cpp Launcher")
+        box = GroupCardWidget("llama.cpp Launcher")
         l.addWidget(box)
-        grid = QGridLayout(box)
+        grid = QGridLayout(box.contentWidget())
+        box.setContentLayout(grid)
         do, grids = llamacppgrid()
         automakegrid(grid, grids)
         do()
