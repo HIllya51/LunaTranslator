@@ -416,29 +416,6 @@ def __xianshi():
     return btn
 
 
-def __textstyleexpander(self, title, showswitch, grid):
-    """原文/译文折叠卡（同 LICENSE 的 ExExpander）：
-    头部 = 标题 + 「显示」标签和开关（折叠按钮左边），内容 = 字体等具体设置。"""
-    exp = ExExpander()
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    # 同 LICENSE：HeaderButton 自带 16px 左内边距与 chevron 预留区，只留上下边距
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel(title)
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(getsmalllabel("显示")())
-    hlay.addWidget(showswitch)
-    exp.setHeaderWidget(header)
-    content = makegrid(grid, hiderows=[1])
-    exp.addContentWidget(content)
-    return exp, content
-
-
 def __textbackexpander(self):
     """文字区域背景折叠卡：头部 = 标题 + 开关，内容 = 各设置为子项
     （同 自动录音 折叠卡：每项一行 addContentWidget）。"""
@@ -551,12 +528,19 @@ def __fontstyleexpander(self):
 
 
 def xianshigrid_style(self):
-    yuanwenexp, self.yuanwenobject = __textstyleexpander(
-        self,
-        "原文",
-        __xianshi(),
-        (
+    # 原文/译文：有标题分组卡（最原始形态），显示开关在字体前，
+    # 间距行为隐藏行（齿轮展开）
+    yuanwen = dict(
+        title="原文",
+        type="grid",
+        hiderows=[1],
+        name="yuanwenobject",
+        parent=self,
+        grid=(
             [
+                getsmalllabel("显示"),
+                __xianshi,
+                "",
                 getsmalllabel("字体"),
                 functools.partial(
                     createtextfontcom,
@@ -609,12 +593,17 @@ def xianshigrid_style(self):
             [(functools.partial(Spacesetting, self, False), 0)],
         ),
     )
-    yiwenexp, self.yiwenobject = __textstyleexpander(
-        self,
-        "译文",
-        _showhidefy(),
-        (
+    yiwen = dict(
+        title="译文",
+        type="grid",
+        hiderows=[1],
+        name="yiwenobject",
+        parent=self,
+        grid=(
             [
+                getsmalllabel("显示"),
+                _showhidefy,
+                "",
                 getsmalllabel("字体"),
                 functools.partial(
                     createtextfontcom,
@@ -666,8 +655,8 @@ def xianshigrid_style(self):
         ),
     )
     textgrid = [
-        [yuanwenexp],
-        [yiwenexp],
+        [yuanwen],
+        [yiwen],
         [
             (
                 makecardrow(
