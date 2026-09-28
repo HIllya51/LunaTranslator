@@ -278,22 +278,23 @@ def clipusage(self):
     折叠条 = 标题 + 自动输出文本开关；内容 = 原文 / 翻译 两行面板。"""
     exp = ExExpander()
 
+    # 同「应用主题」卡片的形式：标题在左、控件在右端
     originrow = getboxwidget(
         [
             "原文",
+            1,
             D_getsimpleswitch(
                 globalconfig["textoutputer"]["clipboard"], "origin"
             ),
-            0,
         ]
     )
     transrow = getboxwidget(
         [
             "翻译",
+            1,
             D_getsimpleswitch(
                 globalconfig["textoutputer"]["clipboard"], "trans"
             ),
-            0,
         ]
     )
     rows = [originrow, transrow]
@@ -544,9 +545,11 @@ def netusage(self):
     折叠条 = 标题 + doclink + 开启开关；内容 = 打开 / 端口号 两行面板。"""
     exp = ExExpander()
 
+    # 同「应用主题」卡片的形式：标题在左、控件在右端
     openrow = getboxwidget(
         [
             getsmalllabel("打开"),
+            1,
             D_getIconButton(
                 icon="fa.chrome",
                 callback=lambda: os.startfile(
@@ -556,12 +559,12 @@ def netusage(self):
                 ),
                 tips="打开",
             ),
-            0,
         ]
     )
     portrow = getboxwidget(
         [
             getsmalllabel("端口号"),
+            1,
             D_getspinbox(
                 0,
                 65535,
@@ -637,19 +640,20 @@ def proxyusage(self):
     # 子设置 2：手动设置代理
     check = QLabel()
     proxy = QLineEdit(globalconfig.get("proxy", "127.0.0.1:7890"))
-    manualrow = getboxwidget(["手动设置代理", proxy, check])
+    manualrow = getboxwidget(["手动设置代理", 1, proxy, check])
 
     def __sys(x):
         manualrow.setEnabled(not x)
 
     # 子设置 1：使用系统代理
+    # 同「应用主题」卡片的形式：标题在左、控件在右端
     sysrow = getboxwidget(
         [
             "使用系统代理",
+            1,
             D_getsimpleswitch(
                 globalconfig, "usesysproxy", callback=__sys, default=True
             ),
-            0,
         ]
     )
     __sys(globalconfig.get("usesysproxy", True))

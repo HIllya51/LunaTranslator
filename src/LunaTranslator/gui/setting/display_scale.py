@@ -148,8 +148,9 @@ def developerexpander():
             ),
         ],
     ]
+    # 同「应用主题」卡片的形式：标题在左、控件在右端
     for row in rows:
-        exp.addContentWidget(getboxwidget(list(row) + [0]))
+        exp.addContentWidget(getboxwidget([row[0], 1, row[1]]))
 
     # 原折叠区把打开状态存在 developerMode，保持该语义
     exp.expandedChanged.connect(
