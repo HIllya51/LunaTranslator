@@ -10,7 +10,7 @@ from gui.setting.display import display_nav_children
 from gui.setting.tts import setTab5
 from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
-from gui.setting.transopti import setTab7_lazy
+from gui.setting.transopti import transopti_nav_children
 from gui.setting.about import setTab_about
 
 # FluentUI3 主题
@@ -73,6 +73,7 @@ class Setting(_SettingBase):
         self.setWindowTitleWithVersionWithUserconfig("设置")
 
         display_children = display_nav_children(self)
+        transopti_children = transopti_nav_children(self)
         self.tab_widget, do = makesubtab_lazy(
             [
                 "核心设置",
@@ -88,7 +89,7 @@ class Setting(_SettingBase):
                 functools.partial(setTabOne_lazy, self),
                 functools.partial(setTabTwo_lazy, self),
                 display_children[0][1],  # 显示设置页 = 首子页（文本设置）
-                functools.partial(setTab7_lazy, self),
+                transopti_children[0][1],  # 文本处理页 = 首子页（文本预处理）
                 functools.partial(setTabcishu, self),
                 functools.partial(setTab5, self),
                 functools.partial(setTab_quick, self),
@@ -106,6 +107,12 @@ class Setting(_SettingBase):
             page_index=self.tab_widget.navPageIndex("显示设置"))
         for _title, _func in display_children[1:]:
             self.tab_widget.addNavChildPage("显示设置", _title, _func)
+        # 文本处理的两个子页 → 主导航层级子节点
+        self.tab_widget.addNavChildPage(
+            "文本处理", transopti_children[0][0], transopti_children[0][1],
+            page_index=self.tab_widget.navPageIndex("文本处理"))
+        for _title, _func in transopti_children[1:]:
+            self.tab_widget.addNavChildPage("文本处理", _title, _func)
         self.tab_widget.adjust_list_widget_width()
         index = 0
         self.tab_widget.setCurrentIndex(index)

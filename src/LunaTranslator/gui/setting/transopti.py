@@ -17,8 +17,6 @@ from gui.usefulwidget import (
     getboxlayout,
     makescrollgrid,
     makecardcontainer,
-    makesubtab_lazy,
-    maketabholder,
 )
 from gui.inputdialog import (
     postconfigdialog,
@@ -52,7 +50,8 @@ def getcomparelayout(self):
     return w
 
 
-def setTab7_lazy(self, basel: QLayout):
+def _make_preprocess_grid(self):
+    """文本预处理 列表（行工厂），返回 (grids, savelist, savelay, savescroll)。"""
     grids = [
         [
             "",
@@ -179,6 +178,11 @@ def setTab7_lazy(self, basel: QLayout):
             ),
         ]
         grids.append(l)
+    return grids, savelist, savelay, savescroll
+
+
+def _make_transoptimi_grid(self):
+    """翻译优化 列表。"""
     grids2 = []
     for item in static_data["transoptimi"]:
         name = item["name"]
@@ -204,27 +208,26 @@ def setTab7_lazy(self, basel: QLayout):
                     kwarg.update(tips=visname + "_编辑")
                 grids2[-1].append(D_getIconButton(**kwarg))
     grids2 += [[("", 15)]]
+    return grids2
+
+
+def transopti_nav_children(self):
+    """文本处理的两个子页（原页内子页签 文本预处理/翻译优化）：由设置窗口
+    挂到主导航 文本处理 节点下（FluentTabWidget.addNavChildPage）；首项
+    同时作为父项页面内容。"""
 
     def ___(lay: QVBoxLayout):
-        # tabbar 下的内容整体包一张内容卡（bare 页：maketabholder 已留页边距）
-        inner = makecardcontainer(lay, sidemargin=0, topmargin=0, bottommargin=0)
+        grids, savelist, savelay, savescroll = _make_preprocess_grid(self)
+        inner = makecardcontainer(lay)
         wid = makescrollgrid(grids, inner, savelist, savelay)
         wid.layout().setContentsMargins(0, 0, 0, 0)
         savescroll.append(inner.itemAt(inner.count() - 1).widget())
         inner.addWidget(getcomparelayout(self))
 
     def ___2(lay: QVBoxLayout):
-        inner = makecardcontainer(lay, sidemargin=0, topmargin=0, bottommargin=0)
+        grids2 = _make_transoptimi_grid(self)
+        inner = makecardcontainer(lay)
         wid = makescrollgrid(grids2, inner)
         wid.layout().setContentsMargins(0, 0, 0, 0)
 
-    tab, dotab = makesubtab_lazy(
-        ["文本预处理", "翻译优化"],
-        [___, ___2],
-        delay=True,
-        padding=True,
-        pagecard=True,
-        bare=True,
-    )
-    basel.addWidget(maketabholder(tab, top=16))
-    dotab()
+    return [("文本预处理", ___), ("翻译优化", ___2)]
