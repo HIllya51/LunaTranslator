@@ -98,6 +98,15 @@ def __layout(isglobal, profile):
     return getboxlayout([combo, btn])
 
 
+def _widenctl(w):
+    """行内 combobox/spinbox 统一最小宽度（170）对齐。"""
+    for c in w.findChildren(QComboBox):
+        c.setMinimumWidth(170)
+    for c in w.findChildren(QAbstractSpinBox):
+        c.setMinimumWidth(170)
+    return w
+
+
 def developerexpander():
     """开发者选项折叠卡（同 Gallery ExExpander「高级设置」的多行子设置）：
     每行设置独立面板；展开/收起状态对应 magpie 的 developerMode（同原折叠区）。"""
@@ -149,9 +158,9 @@ def developerexpander():
             ),
         ],
     ]
-    # 同「应用主题」卡片的形式：标题在左、控件在右端
+    # 同「应用主题」卡片的形式：标题在左、控件在右端（不加右侧让位）
     for row in rows:
-        exp.addContentWidget(getboxwidget([row[0], 1, row[1]]))
+        exp.addContentWidget(_widenctl(getboxwidget([row[0], 1, row[1]])))
 
     # 原折叠区把打开状态存在 developerMode，保持该语义
     exp.expandedChanged.connect(
@@ -188,12 +197,15 @@ def _cardrow(label, *controls):
     titlelabel.setFont(titlefont)
     lay.addWidget(titlelabel)
     lay.addStretch(1)
-    lay.addWidget(getboxwidget(list(controls)))
+    lay.addWidget(_widenctl(getboxwidget(list(controls))))
     return [[(card, 0)]]
 
 
-def _foldrow(label, headerctl, contentrow):
-    """折叠设置卡：标题+主控件在折叠条上，内容行为独立面板。"""
+def _foldrow(label, headerctl, contentrow, pad=True):
+    """折叠设置卡：标题+主控件在折叠条上，内容行为独立面板。
+    pad：内容行右侧让出折叠按钮区（44+16=60，与折叠条控件右缘对齐）。"""
+    if pad:
+        contentrow.layout().setContentsMargins(0, 0, 44, 0)
     exp = ExExpander()
     header = QWidget()
     hlay = QHBoxLayout(header)
@@ -205,22 +217,18 @@ def _foldrow(label, headerctl, contentrow):
     titlelabel.setFont(titlefont)
     hlay.addWidget(titlelabel)
     hlay.addStretch(1)
-    hlay.addWidget(getboxwidget([headerctl]))
+    hlay.addWidget(_widenctl(getboxwidget([headerctl])))
     exp.setHeaderWidget(header)
-    exp.addContentWidget(contentrow)
+    exp.addContentWidget(_widenctl(contentrow))
     return [[(exp, 0)]]
 
 
 def _switchfold(label, dic, key, contentlabel, contentctl, default=False):
-    """开关式折叠设置卡：开关在折叠条上，关闭时内容行禁用。"""
-    contentrow = getboxwidget([contentlabel, 1, contentctl])
-    contentrow.setEnabled(dic.get(key, default))
+    """开关式折叠设置卡：开关在折叠条上。"""
     return _foldrow(
         label,
-        getsimpleswitch(
-            dic, key, callback=lambda x: contentrow.setEnabled(x), default=default
-        ),
-        contentrow,
+        getsimpleswitch(dic, key, default=default),
+        getboxwidget([contentlabel, 1, contentctl]),
     )
 
 

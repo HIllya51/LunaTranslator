@@ -5,6 +5,8 @@ chevron 按钮随展开进度旋转 180°。"""
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 
 from qtsymbols import (
+    QAbstractSpinBox,
+    QComboBox,
     QObject,
     QEvent,
     QEasingCurve,
@@ -490,6 +492,16 @@ class ExExpander(QWidget):
             self._header_button.takeHeaderWidget()
         self._header_button.setHeaderWidget(widget)
         self._header_widget = widget
+        # 折叠条上带控件（开关/下拉/spin/按钮）时，高度对齐两行文字卡片
+        # （72px），避免控件上下没有呼吸空间
+        hasctl = bool(
+            widget.findChildren(QComboBox)
+            or widget.findChildren(QAbstractSpinBox)
+            or widget.findChildren(QAbstractButton)
+        )
+        self._header_button.setMinimumHeight(
+            72 if hasctl else _EXP_HEADER_MIN_HEIGHT
+        )
         self.updateGeometry()
 
     def takeHeaderWidget(self):
