@@ -325,57 +325,63 @@ def mdictsettings(self):
     return box
 
 
-class fontsettings(GroupCardWidget):
+def _createnewtextfontcom(key, df):
+    def _f(key, x):
+        globalconfig[key] = x
+        gobject.base.translation_ui.translate_text.setfontstyle()
 
-    def createtextfontcom(self, key, df):
-        def _f(key, x):
-            globalconfig[key] = x
-            gobject.base.translation_ui.translate_text.setfontstyle()
+    font_comboBox = FocusFontCombo(sizeX=True)
+    font_comboBox.setCurrentFont(QFont(globalconfig.get(key, df)))
+    font_comboBox.currentTextChanged.connect(functools.partial(_f, key))
+    return font_comboBox
 
-        font_comboBox = FocusFontCombo(sizeX=True)
-        font_comboBox.setCurrentFont(QFont(globalconfig.get(key, df)))
-        font_comboBox.currentTextChanged.connect(functools.partial(_f, key))
-        return font_comboBox
 
-    def __init__(self, parent):
-        super().__init__(parent=parent)
-        form = LFormLayout(self.contentWidget())
-        form.addRow(
-            "相对大小",
-            getspinbox(
-                0.1,
-                1,
-                globalconfig,
-                "kanarate",
-                double=True,
-                step=0.05,
-                callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                default=0.5,
-            ),
-        )
-        form2 = VisLFormLayout()
-        form.addRow("字体", form2)
-        form2.addRow(
-            getboxlayout(
+def fontsettings(parent):
+    """字体折叠卡：「跟随默认」开关放在折叠条上，
+    关闭跟随默认即展开自定义字体设置。"""
+    exp = ExExpander()
+
+    def _follow(x):
+        exp.setExpanded(not x)
+        gobject.base.translation_ui.translate_text.setfontstyle()
+
+    followswitch = getsimpleswitch(
+        globalconfig,
+        "kanafontfollowdefault",
+        default=True,
+        callback=_follow,
+    )
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel("字体")
+    titlefont = titlelabel.font()
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(getsmalllabel("跟随默认")())
+    hlay.addWidget(followswitch)
+    exp.setHeaderWidget(header)
+    exp.addContentWidget(
+        makegrid(
+            (
                 [
-                    getsmalllabel("跟随默认"),
-                    getsimpleswitch(
+                    getsmalllabel("相对大小"),
+                    getspinbox(
+                        0.1,
+                        1,
                         globalconfig,
-                        "kanafontfollowdefault",
-                        default=True,
-                        callback=lambda x: (
-                            form2.setRowVisible(1, not x),
-                            gobject.base.translation_ui.translate_text.setfontstyle(),
-                        ),
+                        "kanarate",
+                        double=True,
+                        step=0.05,
+                        callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                        default=0.5,
                     ),
-                    "",
-                ]
-            )
-        )
-        form2.addRow(
-            getboxlayout(
+                ],
                 [
-                    self.createtextfontcom(
+                    _createnewtextfontcom(
                         "kanafont",
                         globalconfig.get(
                             "fonttype", gobject.tempconfig.get("fonttype", "")
@@ -397,10 +403,12 @@ class fontsettings(GroupCardWidget):
                         default=globalconfig.get("showitalic", False),
                         icon="fa.italic",
                     ),
-                ]
-            ),
+                ],
+            )
         )
-        form2.setRowVisible(1, not globalconfig.get("kanafontfollowdefault", True))
+    )
+    exp.setExpanded(not globalconfig.get("kanafontfollowdefault", True))
+    return exp
 
 
 def _opencommunitycishu(self):
@@ -461,7 +469,9 @@ def setTabcishu_l(self):
         )
         return edit
 
-    def __fenciexpander(title, switch, trailing=None, grid=(), switchlabel=None, leading=None):
+    def __fenciexpander(
+        title, switch, trailing=None, grid=(), switchlabel=None, leading=None, afterswitch=None
+    ):
         """折叠卡（同 LICENSE 的 ExExpander）：标题 +（doclink 紧随）+ 开关（折叠按钮左边）。"""
         exp = ExExpander()
         header = QWidget()
@@ -486,6 +496,12 @@ def setTabcishu_l(self):
         if switchlabel is not None:
             hlay.addWidget(getsmalllabel(switchlabel)())
         hlay.addWidget(switch)
+        if afterswitch is not None:
+            # 开关右边的挂件（如注音颜色按钮）
+            if callable(afterswitch):
+                afterswitch = afterswitch()
+            if afterswitch is not None:
+                hlay.addWidget(afterswitch)
         exp.setHeaderWidget(header)
         exp.addContentWidget(makegrid(list(grid)))
         return exp
@@ -500,18 +516,15 @@ def setTabcishu_l(self):
         ),
         leading=D_getdoclink("qa1.html"),
         switchlabel="显示",
+        afterswitch=D_getcolorbutton(
+            self,
+            globalconfig,
+            "jiamingcolor",
+            callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+            tips="注音颜色",
+            default="black",
+        ),
         grid=(
-            [
-                getsmalllabel("注音颜色"),
-                D_getcolorbutton(
-                    self,
-                    globalconfig,
-                    "jiamingcolor",
-                    callback=gobject.base.translation_ui.translate_text.setcolorstyle,
-                    tips="注音颜色",
-                    default="black",
-                ),
-            ],
             [
                 getsmalllabel("日语注音方案"),
                 D_getsimplecombobox(
@@ -526,7 +539,7 @@ def setTabcishu_l(self):
                     default=0,
                 ),
             ],
-            # 字体：卡片（不折叠）
+            # 字体折叠卡（跟随默认在折叠条上）
             [(functools.partial(fontsettings, self), 0)],
         ),
     )
