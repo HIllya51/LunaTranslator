@@ -24,7 +24,6 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     FocusFontCombo,
     SuperCombo,
-    NQGroupBox,
     D_getIconButton,
     getspinbox,
     getsmalllabel,
@@ -32,8 +31,10 @@ from gui.usefulwidget import (
     PopupWidget,
     Exteditor,
     GroupCardWidget,
+    makegrid,
 )
-from gui.dynalang import LPushButton, LFormLayout
+from gui.dynalang import LPushButton, LFormLayout, LLabel
+from gui.fluent.expander import ExExpander
 
 
 def __changeuibuttonstate(x):
@@ -367,21 +368,21 @@ def GetFormForLineHeight(parent, dic, callback, wide=False):
     form.addRow("行高", lineheigth)
 
 
-class Spacesetting(NQGroupBox):
+class Spacesetting(GroupCardWidget):
     def __init__(self, parent, trans):
-        super().__init__(parent)
+        super().__init__(parent=parent)
         GetFormForLineHeight(
-            self,
+            self.contentWidget(),
             globalconfig[["lineheights", "lineheightstrans"][trans]],
             mayberealtimesetfont,
             wide=True,
         )
 
 
-class TextAreaBack(NQGroupBox):
+class TextAreaBack(GroupCardWidget):
     def __init__(self, parent):
-        super().__init__(parent)
-        form = LFormLayout(self)
+        super().__init__(parent=parent)
+        form = LFormLayout(self.contentWidget())
         form.addRow(
             "颜色",
             getboxlayout(
@@ -469,136 +470,148 @@ def __xianshi():
     return btn
 
 
+def __textstyleexpander(self, title, showswitch, grid):
+    """原文/译文折叠卡（同 LICENSE 的 ExExpander）：
+    头部 = 标题 + 「显示」标签和开关（折叠按钮左边），内容 = 字体等具体设置。"""
+    exp = ExExpander()
+    header = QWidget()
+    hlay = QHBoxLayout(header)
+    # 同 LICENSE：HeaderButton 自带 16px 左内边距与 chevron 预留区，只留上下边距
+    hlay.setContentsMargins(0, 12, 0, 12)
+    hlay.setSpacing(8)
+    titlelabel = LLabel(title)
+    titlefont = titlelabel.font()
+    titlefont.setBold(True)
+    titlefont.setPixelSize(14)
+    titlelabel.setFont(titlefont)
+    hlay.addWidget(titlelabel)
+    hlay.addStretch(1)
+    hlay.addWidget(getsmalllabel("显示")())
+    hlay.addWidget(showswitch)
+    exp.setHeaderWidget(header)
+    content = makegrid(grid, hiderows=[1])
+    exp.addContentWidget(content)
+    return exp, content
+
+
 def xianshigrid_style(self):
+    yuanwenexp, self.yuanwenobject = __textstyleexpander(
+        self,
+        "原文",
+        __xianshi(),
+        (
+            [
+                getsmalllabel("字体"),
+                functools.partial(
+                    createtextfontcom,
+                    "fonttype",
+                    gobject.tempconfig.get("fonttype", ""),
+                ),
+                D_getspinbox(
+                    5,
+                    100,
+                    globalconfig,
+                    "fontsizeori",
+                    double=True,
+                    callback=mayberealtimesetfont,
+                    default=16,
+                ),
+                D_getcolorbutton(
+                    self,
+                    globalconfig,
+                    "rawtextcolor",
+                    callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+                    default="#000000",
+                ),
+                D_getIconSwitch(
+                    globalconfig,
+                    "showbold",
+                    callback=mayberealtimesetfont,
+                    tips="加粗",
+                    default=False,
+                    icon="fa.bold",
+                ),
+                D_getIconSwitch(
+                    globalconfig,
+                    "showitalic",
+                    callback=mayberealtimesetfont,
+                    tips="倾斜",
+                    default=False,
+                    icon="fa.italic",
+                ),
+                "",
+                getsmalllabel("间距"),
+                D_getIconSwitch(
+                    icon="fa.gear",
+                    checkablechangecolor=False,
+                    callback=lambda x: self.yuanwenobject.layout().setRowVisible(
+                        1, x
+                    ),
+                    tips="间距_设置"
+                ),
+            ],
+            [(functools.partial(Spacesetting, self, False), 0)],
+        ),
+    )
+    yiwenexp, self.yiwenobject = __textstyleexpander(
+        self,
+        "译文",
+        _showhidefy(),
+        (
+            [
+                getsmalllabel("字体"),
+                functools.partial(
+                    createtextfontcom,
+                    "fonttype2",
+                    gobject.tempconfig.get("fonttype2", ""),
+                ),
+                D_getspinbox(
+                    1,
+                    100,
+                    globalconfig,
+                    "fontsize",
+                    double=True,
+                    callback=mayberealtimesetfont,
+                    default=16,
+                ),
+                D_getIconButton(
+                    icon="fa.paint-brush",
+                    callback=gobject.base.switchtotspage.emit,
+                    tips="颜色",
+                ),
+                D_getIconSwitch(
+                    globalconfig,
+                    "showbold_trans",
+                    callback=mayberealtimesetfont,
+                    tips="加粗",
+                    default=False,
+                    icon="fa.bold",
+                ),
+                D_getIconSwitch(
+                    globalconfig,
+                    "showitalic_trans",
+                    callback=mayberealtimesetfont,
+                    tips="倾斜",
+                    default=False,
+                    icon="fa.italic",
+                ),
+                "",
+                getsmalllabel("间距"),
+                D_getIconSwitch(
+                    icon="fa.gear",
+                    checkablechangecolor=False,
+                    callback=lambda x: self.yiwenobject.layout().setRowVisible(
+                        1, x
+                    ),
+                    tips="间距_设置"
+                ),
+            ],
+            [(functools.partial(Spacesetting, self, True), 0)],
+        ),
+    )
     textgrid = [
-        [
-            dict(
-                title="原文",
-                type="grid",
-                hiderows=[1],
-                name="yuanwenobject",
-                parent=self,
-                grid=(
-                    [
-                        getsmalllabel("显示"),
-                        __xianshi,
-                        "",
-                        getsmalllabel("字体"),
-                        functools.partial(
-                            createtextfontcom,
-                            "fonttype",
-                            gobject.tempconfig.get("fonttype", ""),
-                        ),
-                        D_getspinbox(
-                            5,
-                            100,
-                            globalconfig,
-                            "fontsizeori",
-                            double=True,
-                            callback=mayberealtimesetfont,
-                            default=16,
-                        ),
-                        D_getcolorbutton(
-                            self,
-                            globalconfig,
-                            "rawtextcolor",
-                            callback=gobject.base.translation_ui.translate_text.setcolorstyle,
-                            default="#000000",
-                        ),
-                        D_getIconSwitch(
-                            globalconfig,
-                            "showbold",
-                            callback=mayberealtimesetfont,
-                            tips="加粗",
-                            default=False,
-                            icon="fa.bold",
-                        ),
-                        D_getIconSwitch(
-                            globalconfig,
-                            "showitalic",
-                            callback=mayberealtimesetfont,
-                            tips="倾斜",
-                            default=False,
-                            icon="fa.italic",
-                        ),
-                        "",
-                        getsmalllabel("间距"),
-                        D_getIconSwitch(
-                            icon="fa.gear",
-                            checkablechangecolor=False,
-                            callback=lambda x: self.yuanwenobject.layout().setRowVisible(
-                                1, x
-                            ),
-                            tips="间距_设置"
-                        ),
-                    ],
-                    [(functools.partial(Spacesetting, self, False), 0)],
-                ),
-            ),
-        ],
-        [
-            dict(
-                title="译文",
-                type="grid",
-                hiderows=[1],
-                name="yiwenobject",
-                parent=self,
-                grid=(
-                    [
-                        getsmalllabel("显示"),
-                        _showhidefy,
-                        "",
-                        getsmalllabel("字体"),
-                        functools.partial(
-                            createtextfontcom,
-                            "fonttype2",
-                            gobject.tempconfig.get("fonttype2", ""),
-                        ),
-                        D_getspinbox(
-                            1,
-                            100,
-                            globalconfig,
-                            "fontsize",
-                            double=True,
-                            callback=mayberealtimesetfont,
-                            default=16,
-                        ),
-                        D_getIconButton(
-                            icon="fa.paint-brush",
-                            callback=gobject.base.switchtotspage.emit,
-                            tips="颜色",
-                        ),
-                        D_getIconSwitch(
-                            globalconfig,
-                            "showbold_trans",
-                            callback=mayberealtimesetfont,
-                            tips="加粗",
-                            default=False,
-                            icon="fa.bold",
-                        ),
-                        D_getIconSwitch(
-                            globalconfig,
-                            "showitalic_trans",
-                            callback=mayberealtimesetfont,
-                            tips="倾斜",
-                            default=False,
-                            icon="fa.italic",
-                        ),
-                        "",
-                        getsmalllabel("间距"),
-                        D_getIconSwitch(
-                            icon="fa.gear",
-                            checkablechangecolor=False,
-                            callback=lambda x: self.yiwenobject.layout().setRowVisible(
-                                1, x
-                            ),
-                            tips="间距_设置"
-                        ),
-                    ],
-                    [(functools.partial(Spacesetting, self, True), 0)],
-                ),
-            ),
-        ],
+        [yuanwenexp],
+        [yiwenexp],
         [
             dict(
                 type="grid",

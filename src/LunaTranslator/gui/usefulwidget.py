@@ -35,7 +35,8 @@ from gui.dynalang import (
     LMainWindow,
 )
 from gui.fluent.tabwidget import apply_segmented_tabbar
-from gui.fluent.icons import ICON_CHEVRON_DOWN_MED, ICON_CHEVRON_UP_MED
+from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
+from gui.fluent.expander import _exp_chevron_button_background
 
 
 def load_specific_icon_size(ico_path):
@@ -3567,13 +3568,19 @@ class CollapsibleBox(QWidget):
 
 
 class _FoldHeaderButton(QAbstractButton):
-    """折叠卡片头（同 ExExpander header）：左侧控件 + 加粗标题 + 右端 chevron。"""
+    """折叠卡片头（同 ExExpander header）：加粗标题 + 右端 chevron
+    （随展开旋转 180°，悬停时 chevron 区 subtle 高亮，鼠标指针不变）。"""
+
+    _CHEVRON_SIZE = 32
+    _CHEVRON_TRAILING = 8
 
     def __init__(self, title="", parent=None):
         super().__init__(parent)
         self.setCheckable(True)
-        self.setCursor(Qt.CursorShape.PointingHandCursor)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        self.setMinimumHeight(48)
+        self.setAttribute(Qt.WA_Hover, True)
+        self._progress = 0.0
         lay = QHBoxLayout(self)
         lay.setContentsMargins(12, 12, 12, 12)
         lay.setSpacing(8)
@@ -3586,28 +3593,71 @@ class _FoldHeaderButton(QAbstractButton):
         self.titlelabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         lay.addWidget(self.titlelabel)
         lay.addStretch(1)
-        self.chevronlabel = QLabel(self)
-        chevronfont = QFont("Segoe Fluent Icons")
-        chevronfont.setPixelSize(15)
-        self.chevronlabel.setFont(chevronfont)
-        self.chevronlabel.setAttribute(Qt.WA_TransparentForMouseEvents, True)
-        lay.addWidget(self.chevronlabel)
-        self.toggled.connect(self._updatechevron)
-        self._updatechevron(False)
+        self._anim = QVariantAnimation(self)
+        self._anim.setDuration(167)
+        self._anim.setEasingCurve(QEasingCurve.OutCubic)
+        self._anim.valueChanged.connect(self._on_anim_value)
+        self.toggled.connect(self._on_toggled)
 
     def addLeftWidget(self, w):
         # 挂件（doclink 等）紧随标题之后，不跑到最右端
         self.layout().insertWidget(self._leftcount + 1, w)
         self._leftcount += 1
 
-    def paintEvent(self, _):
-        pass  # 内容全部由子控件绘制（标题/chevron 标签）
+    def _on_toggled(self, checked):
+        if not self.isVisible():
+            self._progress = 1.0 if checked else 0.0
+            self.update()
+            return
+        self._anim.stop()
+        self._anim.setStartValue(self._progress)
+        self._anim.setEndValue(1.0 if checked else 0.0)
+        self._anim.start()
 
-    def _updatechevron(self, checked):
-        # 同 ExExpander：收起时 chevron 朝下，展开时朝上
-        self.chevronlabel.setText(
-            ICON_CHEVRON_UP_MED if checked else ICON_CHEVRON_DOWN_MED
+    def _on_anim_value(self, v):
+        self._progress = float(v)
+        self.update()
+
+    def paintEvent(self, _):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        # chevron 按钮区（悬停/按下时 subtle 高亮）——同 ExExpander
+        chevron_rect = QRectF(
+            self.width() - self._CHEVRON_TRAILING - self._CHEVRON_SIZE,
+            (self.height() - self._CHEVRON_SIZE) * 0.5,
+            self._CHEVRON_SIZE,
+            self._CHEVRON_SIZE,
         )
+        if self.isEnabled() and (self.underMouse() or self.isDown()):
+            painter.setPen(Qt.NoPen)
+            painter.setBrush(
+                _exp_chevron_button_background(self.palette(), self.isDown())
+            )
+            painter.drawRoundedRect(chevron_rect, 4, 4)
+        # chevron 随展开旋转 180°——同 ExExpander
+        painter.save()
+        painter.translate(chevron_rect.center())
+        painter.rotate(180.0 * self._progress)
+        painter.setPen(
+            self.palette().color(
+                QPalette.Active if self.isEnabled() else QPalette.Disabled,
+                QPalette.Text,
+            )
+        )
+        chevronfont = QFont("Segoe Fluent Icons")
+        chevronfont.setPixelSize(15)
+        painter.setFont(chevronfont)
+        painter.drawText(
+            QRectF(
+                -self._CHEVRON_SIZE * 0.5,
+                -self._CHEVRON_SIZE * 0.5,
+                self._CHEVRON_SIZE,
+                self._CHEVRON_SIZE,
+            ),
+            Qt.AlignCenter,
+            ICON_CHEVRON_DOWN_MED,
+        )
+        painter.restore()
 
 
 class CollapsibleBoxWithButton(QWidget):
