@@ -9,13 +9,11 @@ from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
     D_getcolorbutton,
-    FocusFontCombo,
     D_getsimpleswitch,
     getsimpleswitch,
     getsmalllabel,
     getboxlayout,
     getsimplepatheditor,
-    createfoldgrid,
     D_getIconSwitch,
 )
 
@@ -151,25 +149,6 @@ def createhorizontal_slider_tool():
     return getboxlayout([horizontal_slider_tool, horizontal_slider_tool_label])
 
 
-def createfontcombo():
-
-    sfont_comboBox = FocusFontCombo()
-
-    def callback(x):
-        ui_settings.__setitem__("settingfonttype", x)
-        gobject.base.setcommonstylesheet()
-
-    sfont_comboBox.setCurrentFont(
-        QFont(
-            ui_settings.get(
-                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
-            )
-        )
-    )
-    sfont_comboBox.currentTextChanged.connect(callback)
-    return sfont_comboBox
-
-
 def __rs():
     spin, lay = createsomecontrols(
         gobject.base.translation_ui.set_color_transparency,
@@ -209,35 +188,6 @@ def switch_darklight():
 
 
 def uisetting(self):
-    windoweffects = [
-        getsmalllabel("窗口特效"),
-        D_getsimplecombobox(
-            [
-                "Solid",
-                "Acrylic",
-                "Mica",
-                "MicaAlt",
-            ],
-            ui_settings,
-            "WindowBackdrop",
-            callback=lambda _: gobject.base.setcommonstylesheet(),
-            static=True,
-            default=3,
-        ),
-        "",
-        getsmalllabel("强制直角"),
-        D_getsimpleswitch(
-            ui_settings,
-            "force_rect",
-            callback=lambda _: gobject.base.cornerornot(),
-            default=True,
-        ),
-        "",
-        "",
-        "",
-    ]
-    if not gobject.sys_ge_win_11:
-        list(windoweffects.append(("", windoweffects.pop(3))[0]) for _ in range(3))
     __ = mainuisetting(self) + [
         [
             dict(

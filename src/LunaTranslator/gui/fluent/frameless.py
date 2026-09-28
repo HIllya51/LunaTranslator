@@ -130,7 +130,7 @@ class FluentFramelessWindowMixin:
 
             # 保留 WS_SYSMENU：HTCAPTION 右键/Alt+Space 由 DefWindowProc 弹出
             # 原生系统菜单（WM_NCCALCSIZE 已去掉标题栏区，不会透出原生按钮）
-            # Win11：显式启用系统圆角（Luna 的 cornerornot/force_rect 会把顶层窗口
+            # Win11：显式启用系统圆角（Luna 的 cornerornot 会把顶层窗口
             # 设成直角，这里在每次显示时重新声明）
             value = wt.DWORD(DWMWCP_ROUND)
             ctypes.windll.dwmapi.DwmSetWindowAttribute(

@@ -277,7 +277,6 @@ class BASEOBJECT(QObject):
         self.willshutdown = False
         self.history = HistoryHelper()
         self.currentisdark = None
-        self.currentmica = None
         self.update_avalable = False
         self.translators: "dict[str, basetrans]" = {}
         self.cishus: "dict[str, cishubase]" = {}
@@ -1331,7 +1330,8 @@ class BASEOBJECT(QObject):
         if ismenulist:
             pass
         else:
-            NativeUtils.SetTheme(int(widget.winId()), dark, self.currentmica)
+            # 原"窗口特效"设置（其他界面）已删除，固定 MicaAlt（TABBEDWINDOW）
+            NativeUtils.SetTheme(int(widget.winId()), dark, 3)
 
     def checkkeypresssatisfy(self, key, df=False):
         if not globalconfig["wordclickkbtriggerneed"].get(key, df):
@@ -1602,17 +1602,15 @@ class BASEOBJECT(QObject):
             if self.ismenulistframeless(widget) or widget.property("fluentFrameless"):
                 # fluentFrameless：Fluent 无边框窗口由自身维护 DWMWCP_ROUND
                 continue
-            NativeUtils.SetCornerNotRound(
-                int(widget.winId()), ui_settings.get("force_rect", True), False
-            )
+            # 原"强制直角"设置（其他界面）已删除，固定直角
+            NativeUtils.SetCornerNotRound(int(widget.winId()), True, False)
 
     def setcommonstylesheet(self):
 
         dark = nowisdark()
         qtawesome.isdark = dark
-        __curr = (dark, ui_settings.get("WindowBackdrop", 3))
-        if (self.currentisdark, self.currentmica) != __curr:
-            self.currentisdark, self.currentmica = __curr
+        if self.currentisdark != dark:
+            self.currentisdark = dark
             for widget in QApplication.allWidgets():
                 QApplication.postEvent(widget, DarkLightChangedEvent(dark))
             for widget in QApplication.topLevelWidgets():
@@ -1624,13 +1622,10 @@ class BASEOBJECT(QObject):
         style = ""
         if self.commonstylebase.styleSheet() != style:
             self.commonstylebase.setStyleSheet(style)
+        # 原"其他界面"的字体/大小设置已删除：字体跟随语言默认，字号固定
         font = QFont()
-        font.setFamily(
-            ui_settings.get(
-                "settingfonttype", gobject.tempconfig.get("settingfonttype", "")
-            )
-        )
-        font.setPointSizeF(ui_settings.get("settingfontsize", 12))
+        font.setFamily(gobject.tempconfig.get("settingfonttype", ""))
+        font.setPointSizeF(12)
         if QApplication.instance().font() != font:
             QApplication.instance().setFont(font)
 
@@ -1658,12 +1653,12 @@ class BASEOBJECT(QObject):
         return font_default
 
     def parsedefaultfont(self):
-        for k in ["fonttype", "fonttype2", "settingfonttype"]:
+        # 设置界面字体：固定跟随语言默认（不再读取用户配置）
+        gobject.tempconfig["settingfonttype"] = self.get_font_default(getlanguse(), True)
+        for k in ["fonttype", "fonttype2"]:
             if not ui_settings.get(k, ""):
                 l = Languages.Japanese if k == "fonttype" else getlanguse()
-                gobject.tempconfig[k] = self.get_font_default(
-                    l, True if k == "settingfonttype" else False
-                )
+                gobject.tempconfig[k] = self.get_font_default(l, False)
 
     def loadui(self, startwithgameuid):
         QApplication.instance().installEventFilter(self)
