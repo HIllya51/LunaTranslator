@@ -16,6 +16,13 @@ from qtsymbols import (
     QVBoxLayout,
     QWidget,
     pyqtSignal,
+    QApplication,
+    QColor,
+    QPainter,
+    QPainterPath,
+    QPen,
+    QPalette,
+    QRectF,
 )
 
 from gui.fluent.nav import FluentNavTree, NAV_PAGE_ROLE, NAV_ICON_ROLE
@@ -40,6 +47,35 @@ NAV_ICONS = [
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
+
+
+class FluentPageCard(QWidget):
+    """tab 页的圆角包裹卡：底色与内容卡形成对比——
+    浅色=纯白（同 Gallery 设置页的白色页面上放 253 卡片；
+    Gallery 未装插件调色板，页面即系统白），暗色=窗口底色。"""
+
+    def paintEvent(self, e):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.Antialiasing)
+        dark = False
+        app = QApplication.instance()
+        if app is not None:
+            cs = app.property("_q_colorscheme")
+            if cs is not None:
+                try:
+                    dark = int(cs) == 1
+                except Exception:
+                    dark = self.palette().color(QPalette.Window).lightness() < 128
+        fill = (QColor(self.palette().color(QPalette.Window)) if dark
+                else QColor(255, 255, 255))
+        border = QColor(0x25, 0x25, 0x25) if dark else QColor(0xE9, 0xE9, 0xE9)
+        path = QPainterPath()
+        path.addRoundedRect(
+            QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5), 4, 4)
+        painter.fillPath(path, fill)
+        painter.setPen(QPen(border, 1.0))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawPath(path)
 
 
 def apply_segmented_tabbar_style(bar: QTabBar):

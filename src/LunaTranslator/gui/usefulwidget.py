@@ -35,7 +35,7 @@ from gui.dynalang import (
     LTableView,
     LMainWindow,
 )
-from gui.fluent.tabwidget import apply_segmented_tabbar
+from gui.fluent.tabwidget import apply_segmented_tabbar, FluentPageCard
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from gui.fluent.expander import _exp_chevron_button_background
 
@@ -2308,9 +2308,7 @@ def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
     if pagecard:
         # 页内容包进紧邻 tabbar 的卡片（零内边距，卡片与 tabbar 无间隔）
         v.setContentsMargins(0, 0, 0, 0)
-        card = QWidget()
-        card.setAttribute(Qt.WA_StyledBackground, True)
-        card.setProperty("isCard", True)
+        card = FluentPageCard()
         v.addWidget(card)
         innerlay = QVBoxLayout(card)
         innerlay.setContentsMargins(0, 0, 0, 0)
@@ -2323,10 +2321,8 @@ def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
         q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     else:
         # 主设置页（FluentTabWidget）：整页包圆角卡填满内容区
-        # （同 Gallery initialize_fluent_border_widgets——每个 tab 页都是 isCard）
-        card = QWidget()
-        card.setAttribute(Qt.WA_StyledBackground, True)
-        card.setProperty("isCard", True)
+        # （同 Gallery initialize_fluent_border_widgets——每个 tab 页都是卡）
+        card = FluentPageCard()
         v.addWidget(card)
         innerlay = QVBoxLayout(card)
         innerlay.setContentsMargins(0, 0, 0, 0)
