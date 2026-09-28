@@ -65,7 +65,36 @@ def apply_fluent_style(dark):
     # setStyle 的 re-polish 会把控件字体重置；setcommonstylesheet 末尾的
     # 无条件 setFont 会恢复 app 字体，但弹出容器内的视图与常驻菜单不跟随——额外恢复
     QTimer.singleShot(0, _restore_combo_view_fonts)
+    _install_menu_font_gate()
     _applied_key = key
+
+
+_menu_font_gate = None
+
+
+def _install_menu_font_gate():
+    """应用级事件过滤：QMenu 显示时统一 12px 字号（菜单不跟随 12pt
+    应用字体——那样偏大）。QApplication.setFont(f, "QMenu") 类字体
+    在 app.setFont 之后对新建控件失效，事件过滤是可靠途径；
+    先判 ev.type() 再判 isinstance，逐事件开销极小。"""
+    global _menu_font_gate
+    if _menu_font_gate is not None:
+        return
+    from qtsymbols import QEvent, QObject, QMenu
+
+    class _Gate(QObject):
+        def eventFilter(self, obj, ev):
+            if ev.type() == QEvent.Show and isinstance(obj, QMenu):
+                f = obj.font()
+                if f.pointSize() > 0:
+                    nf = QFont(f.family())
+                    nf.setPixelSize(12)
+                    obj.setFont(nf)
+            return False
+
+    _app = QApplication.instance()
+    _menu_font_gate = _Gate(_app)
+    _app.installEventFilter(_menu_font_gate)
 
 
 def _restore_combo_view_fonts():

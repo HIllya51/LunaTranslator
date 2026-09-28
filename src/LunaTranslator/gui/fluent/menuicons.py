@@ -35,6 +35,7 @@ _GLYPHS = (
 def apply_standard_menu_icons(menu: QMenu, widget=None):
     if menu is None:
         return
+    # 字号由 QApplication.setFont(font, "QMenu") 类级字体统一处理
     color = None
     if widget is not None:
         color = widget.palette().color(QPalette.Text)
