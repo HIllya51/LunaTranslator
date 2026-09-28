@@ -630,7 +630,7 @@ class dialog_setting_game_internal(QWidget):
             exp.setExpanded(method_lay.count() > 0)
 
         __launch_method.currentIndexChanged.connect(__)
-        formLayout.addRow(makecardrow("启动程序", self.lauchpath))
+        formLayout.addRow(makecardrow("启动程序", self.lauchpath, fill=True))
         formLayout.addRow(exp)
         formLayout.addRow(
             makecardrow(

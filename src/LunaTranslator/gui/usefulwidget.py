@@ -2464,9 +2464,10 @@ class GroupCardWidget(QWidget):
         return super().layout()
 
 
-def makecardrow(label, *controls):
+def makecardrow(label, *controls, fill=False):
     """单行设置卡片（WinUI SettingsCard 形式）：标题在左、控件靠右。
     controls 遵循 getboxwidget 约定（callable 会调用、int 为 stretch）。
+    fill=True 时控件区横向填满卡片（路径编辑等宽输入框用）。
     返回卡片 QWidget，可直接作为网格项使用。"""
     card = QWidget()
     card.setAttribute(Qt.WA_StyledBackground, True)
@@ -2480,9 +2481,12 @@ def makecardrow(label, *controls):
     titlefont.setPixelSize(15)
     titlelabel.setFont(titlefont)
     lay.addWidget(titlelabel)
-    lay.addStretch(1)
-    if controls:
-        lay.addWidget(getboxwidget(list(controls)))
+    if controls and fill:
+        lay.addWidget(getboxwidget(list(controls)), 1)
+    else:
+        lay.addStretch(1)
+        if controls:
+            lay.addWidget(getboxwidget(list(controls)))
     return card
 
 
