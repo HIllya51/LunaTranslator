@@ -287,6 +287,7 @@ def setTab5lz(self):
                     [
                         dict(
                             type="grid",
+                            card=True,
                             grid=[
                                 [
                                     "语音指定",

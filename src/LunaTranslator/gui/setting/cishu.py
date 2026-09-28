@@ -1,5 +1,5 @@
 from qtsymbols import *
-import functools, os
+import functools, os, shutil, uuid, copy
 import gobject
 from myutils.utils import splitocrtypes, dynamiccishuname, selectdebugfile, cishuexits
 from myutils.config import globalconfig, _TR
@@ -141,10 +141,41 @@ def deletecishu(self, apiuid):
     rebuildcishugrid(self)
 
 
+def _cishu_copyable(apiuid):
+    # 自定义（selfbuild）/大模型（chatgptlike）及其副本可复制
+    return apiuid in ("selfbuild", "chatgptlike") or globalconfig["cishu"].get(
+        apiuid, {}
+    ).get("copyfrom") in ("selfbuild", "chatgptlike")
+
+
+def copycishu(self, apiuid):
+    newuid = str(uuid.uuid4())
+    _f11 = "LunaTranslator/cishu/{}.py".format(apiuid)
+    _f12 = gobject.getconfig("copyed/{}.py".format(apiuid))
+    _f2 = gobject.getconfig("copyed/{}.py".format(newuid))
+    try:
+        shutil.copy(_f11, _f2)
+    except:
+        shutil.copy(_f12, _f2)
+    globalconfig["cishu"][newuid] = copy.deepcopy(globalconfig["cishu"][apiuid])
+    globalconfig["cishu"][newuid]["use"] = False
+    globalconfig["cishu"][newuid]["name"] = dynamiccishuname(apiuid) + "_copy"
+    globalconfig["cishu"][newuid]["copyfrom"] = globalconfig["cishu"][apiuid].get(
+        "copyfrom", apiuid
+    )
+    if "name_self_set" in globalconfig["cishu"][newuid]:
+        globalconfig["cishu"][newuid].pop("name_self_set")
+    rebuildcishugrid(self)
+
+
 def renameapi(qlabel: QLabel, apiuid, self, _=None):
     menu = QMenu(qlabel)
     editname = LAction("重命名", menu)
     menu.addAction(editname)
+    copyact = None
+    if _cishu_copyable(apiuid):
+        copyact = LAction("复制", menu)
+        menu.addAction(copyact)
     useproxy = LAction("使用代理", menu)
     useproxy.setCheckable(True)
     if globalconfig.get("useproxy", True) and globalconfig["cishu"][apiuid].get(
@@ -168,6 +199,9 @@ def renameapi(qlabel: QLabel, apiuid, self, _=None):
             return
         globalconfig["cishu"][apiuid]["name_self_set"] = title
         qlabel.setText(title)
+
+    elif copyact is not None and action == copyact:
+        copycishu(self, apiuid)
 
     elif action == useproxy:
         globalconfig["cishu"][apiuid]["useproxy"] = useproxy.isChecked()

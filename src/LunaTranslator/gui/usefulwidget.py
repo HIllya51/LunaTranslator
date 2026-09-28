@@ -2395,7 +2395,8 @@ class GroupCardWidget(QWidget):
         self._vlay.setContentsMargins(12, 12, 12, 12)
         self._vlay.setSpacing(10)
         if title or widget:
-            # 标题行：加粗标题 + 右侧可挂控件（无标题时不生成，纯内容卡片）
+            # 标题行：加粗标题 + 紧随其后的挂件（doclink 等）+ stretch
+            # （无标题时不生成，纯内容卡片）
             titlerow = QHBoxLayout()
             titlerow.setContentsMargins(0, 0, 0, 0)
             if title:
@@ -2405,12 +2406,12 @@ class GroupCardWidget(QWidget):
                 titlefont.setPixelSize(14)
                 titlelabel.setFont(titlefont)
                 titlerow.addWidget(titlelabel)
-            titlerow.addStretch(1)
             if widget is not None:
                 if callable(widget):
                     widget = widget()
                 if widget is not None:
                     titlerow.addWidget(widget)
+            titlerow.addStretch(1)
             self._vlay.addLayout(titlerow)
         self._contentlayout = None
 
@@ -3595,7 +3596,8 @@ class _FoldHeaderButton(QAbstractButton):
         self._updatechevron(False)
 
     def addLeftWidget(self, w):
-        self.layout().insertWidget(self._leftcount, w)
+        # 挂件（doclink 等）紧随标题之后，不跑到最右端
+        self.layout().insertWidget(self._leftcount + 1, w)
         self._leftcount += 1
 
     def paintEvent(self, _):
