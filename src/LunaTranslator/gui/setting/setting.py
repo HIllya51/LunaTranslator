@@ -6,7 +6,7 @@ from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy, create_centered_rect
 from gui.setting.textinput import setTabOne_lazy
 from gui.setting.translate import setTabTwo_lazy, show_tscolor_setting_guide
-from gui.setting.display import setTabThree_lazy
+from gui.setting.display import display_nav_children
 from gui.setting.tts import setTab5
 from gui.setting.cishu import setTabcishu
 from gui.setting.hotkey import setTab_quick, registrhotkeys
@@ -72,6 +72,7 @@ class Setting(_SettingBase):
         self.setMinimumSize(560, 360)
         self.setWindowTitleWithVersionWithUserconfig("设置")
 
+        display_children = display_nav_children(self)
         self.tab_widget, do = makesubtab_lazy(
             [
                 "核心设置",
@@ -86,7 +87,7 @@ class Setting(_SettingBase):
             [
                 functools.partial(setTabOne_lazy, self),
                 functools.partial(setTabTwo_lazy, self),
-                functools.partial(setTabThree_lazy, self),
+                display_children[0][1],  # 显示设置页 = 首子页（文本设置）
                 functools.partial(setTab7_lazy, self),
                 functools.partial(setTabcishu, self),
                 functools.partial(setTab5, self),
@@ -98,6 +99,13 @@ class Setting(_SettingBase):
         )
         self.setCentralWidget(self.tab_widget)
         do()
+        # 显示设置的四个子页 → 主导航层级子节点（同 Gallery add_nav_child）；
+        # 首子项复用父项页面，点击父项即进入首个子页
+        self.tab_widget.addNavChildPage(
+            "显示设置", display_children[0][0], display_children[0][1],
+            page_index=self.tab_widget.navPageIndex("显示设置"))
+        for _title, _func in display_children[1:]:
+            self.tab_widget.addNavChildPage("显示设置", _title, _func)
         self.tab_widget.adjust_list_widget_width()
         index = 0
         self.tab_widget.setCurrentIndex(index)

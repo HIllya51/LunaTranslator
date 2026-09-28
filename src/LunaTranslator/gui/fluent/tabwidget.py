@@ -13,6 +13,7 @@ from qtsymbols import (
     QModelIndex,
     QTabBar,
     QTabWidget,
+    QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
     pyqtSignal,
@@ -25,6 +26,8 @@ from qtsymbols import (
     QRectF,
     QSizePolicy,
 )
+
+import functools
 
 from gui.fluent.nav import FluentNavTree, NAV_PAGE_ROLE, NAV_ICON_ROLE
 
@@ -40,10 +43,16 @@ from gui.fluent.icons import (
     ICON_NAV_FALLBACK,
 )
 
-NAV_ICONS = [
-    ICON_SETTINGS, ICON_CHARACTERS, ICON_SETTINGS_DISPLAY_SOUND,
-    ICON_PROCESSING, ICON_DICTIONARY, ICON_AUDIO, ICON_KEYBOARD_CLASSIC,
-]
+# 按标题取图标：层级子页加入主 stack 后，位置索引与树序不再一一对应
+NAV_ICONS = {
+    "核心设置": ICON_SETTINGS,
+    "翻译设置": ICON_CHARACTERS,
+    "显示设置": ICON_SETTINGS_DISPLAY_SOUND,
+    "文本处理": ICON_PROCESSING,
+    "辞书设置": ICON_DICTIONARY,
+    "语音合成": ICON_AUDIO,
+    "快捷按键": ICON_KEYBOARD_CLASSIC,
+}
 
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
@@ -128,12 +137,29 @@ class _NoPaneTabWidget(QTabWidget):
         pass
 
 
+def make_lazy_page(getrealwidgetfunction, main=True):
+    """懒加载页占位：FluentPageCard 圆角卡包裹 + lazyfunction（构建由
+    首次选中触发）。main=True 主 stack 页（_fluent_main_grid），否则为
+    子页签卡内网格（_fluent_card_grid）。"""
+    q = QWidget()
+    v = QVBoxLayout(q)
+    v.setContentsMargins(0, 0, 0, 0)
+    card = FluentPageCard()
+    v.addWidget(card)
+    innerlay = QVBoxLayout(card)
+    innerlay.setContentsMargins(0, 0, 0, 0)
+    innerlay.setProperty("_fluent_main_grid" if main else "_fluent_card_grid", True)
+    q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
+    return q
+
+
 class FluentTabWidget(QWidget):
     currentChanged = pyqtSignal(int)
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.__titles = []
+        self.__child_pages = []  # (QTreeWidgetItem, 原始标题)——层级子节点
         self.__syncing = False
 
         lay = QHBoxLayout(self)
@@ -216,26 +242,74 @@ class FluentTabWidget(QWidget):
             self.nav_footer.addNavigationItem(
                 _TR(title), idx, ICON_INFO, auto_select=False)
         else:
-            icon = (NAV_ICONS[idx] if idx < len(NAV_ICONS) else ICON_NAV_FALLBACK)
+            icon = NAV_ICONS.get(title, ICON_NAV_FALLBACK)
             self.nav.addNavigationItem(_TR(title), idx, icon)
+
+    # ---- 层级子导航（同 Gallery mainwindow 的 add_nav_child） ----
+    def navPageIndex(self, title):
+        """顶层页标题 -> stack 索引（__titles 与 stack 顺序一致）。"""
+        try:
+            return self.__titles.index(title)
+        except ValueError:
+            return None
+
+    def addNavChildPage(self, parent_title, title, getrealwidgetfunction=None,
+                        page_index=None):
+        """把页面挂为 parent_title 导航项的子节点（WinUI 层级导航）。
+        page_index 给定时复用已有页面（父项与首子项同页），否则新建
+        懒加载页加入主 stack。返回页索引。"""
+        from myutils.config import _TR
+
+        if page_index is None:
+            q = make_lazy_page(getrealwidgetfunction)
+            self.tab_widget.addTab(q, _TR(title))
+            page_index = self.tab_widget.count() - 1
+        parent_page = self.navPageIndex(parent_title)
+        parent = self._find_item_by_page(parent_page) if parent_page is not None else None
+        if parent is not None:
+            child = QTreeWidgetItem(parent)
+            self.nav.configureNavigationItem(child, _TR(title), page_index, "")
+            self.__child_pages.append((child, title))
+            if parent.childCount() == 1:
+                # 首个子节点加入时展开父项，层级立即可见
+                parent.setExpanded(True)
+        return page_index
+
+    def _find_item_by_page(self, page_index):
+        """在主导航/底部导航中递归查找指向 page_index 的节点（含子节点）。"""
+        if page_index is None:
+            return None
+        for tree in (self.nav, self.nav_footer):
+            item = self._find_item_by_page_r(tree.invisibleRootItem(), page_index)
+            if item is not None:
+                return item
+        return None
+
+    @staticmethod
+    def _find_item_by_page_r(root, page_index):
+        for i in range(root.childCount()):
+            item = root.child(i)
+            if item.data(0, NAV_PAGE_ROLE) == page_index:
+                return item
+            found = FluentTabWidget._find_item_by_page_r(item, page_index)
+            if found is not None:
+                return found
+        return None
 
     def setCurrentIndex(self, idx):
         if idx < 0 or idx >= self.tab_widget.count():
             return
-        # 主导航
-        for i in range(self.nav.topLevelItemCount()):
-            item = self.nav.topLevelItem(i)
-            if item.data(0, NAV_PAGE_ROLE) == idx:
-                if self.nav.currentItem() is not item:
-                    self.nav.setCurrentItem(item)
-                return
-        # 底部导航
-        for i in range(self.nav_footer.topLevelItemCount()):
-            item = self.nav_footer.topLevelItem(i)
-            if item.data(0, NAV_PAGE_ROLE) == idx:
-                if self.nav_footer.currentItem() is not item:
-                    self.nav_footer.setCurrentItem(item)
-                return
+        item = self._find_item_by_page(idx)
+        if item is not None:
+            # 子节点需展开祖先链才可见
+            p = item.parent()
+            while p is not None:
+                p.setExpanded(True)
+                p = p.parent()
+            tree = item.treeWidget()
+            if tree.currentItem() is not item:
+                tree.setCurrentItem(item)
+            return
         # 兜底：直接切 stack
         if self.tab_widget.currentIndex() != idx:
             self.tab_widget.setCurrentIndex(idx)
@@ -280,6 +354,10 @@ class FluentTabWidget(QWidget):
                 self.nav_footer.configureNavigationItem(
                     item, _TR(self.__titles[item.data(0, NAV_PAGE_ROLE)]),
                     item.data(0, NAV_PAGE_ROLE), item.data(0, NAV_ICON_ROLE))
+        for item, title in self.__child_pages:
+            if item is not None:
+                self.nav.configureNavigationItem(
+                    item, _TR(title), item.data(0, NAV_PAGE_ROLE), "")
 
     def changeEvent(self, event):
         if event is not None and event.type() == QEvent.Type.LanguageChange:

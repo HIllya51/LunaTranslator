@@ -35,7 +35,7 @@ from gui.dynalang import (
     LTableView,
     LMainWindow,
 )
-from gui.fluent.tabwidget import apply_segmented_tabbar, FluentPageCard
+from gui.fluent.tabwidget import apply_segmented_tabbar, make_lazy_page
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from gui.fluent.expander import _exp_chevron_button_background
 
@@ -2322,19 +2322,7 @@ def manybuttonlayout(textandfunctions: list):
 def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
     # 每个 tab 页都包 FluentPageCard 圆角卡（底色与内容卡形成对比）：
     # 子页签页紧邻 tabbar、主设置页填满内容区；pagecard 参数保留兼容
-    q = QWidget()
-    v = QVBoxLayout(q)
-    v.setContentsMargins(0, 0, 0, 0)
-    card = FluentPageCard()
-    v.addWidget(card)
-    innerlay = QVBoxLayout(card)
-    innerlay.setContentsMargins(0, 0, 0, 0)
-    if isinstance(tab, QTabWidget):
-        # 卡内网格：顶边距与左边距统一（16）
-        innerlay.setProperty("_fluent_card_grid", True)
-    else:
-        innerlay.setProperty("_fluent_main_grid", True)
-    q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
+    q = make_lazy_page(getrealwidgetfunction, main=not isinstance(tab, QTabWidget))
     tab.addTab(q, title)
 
 
