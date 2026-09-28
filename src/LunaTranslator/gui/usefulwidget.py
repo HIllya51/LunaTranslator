@@ -212,11 +212,18 @@ class FocusSpinBase(QAbstractSpinBox):
 
 
 class FocusSpin(QSpinBox, FocusSpinBase):
-    pass
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if _isfluent():
+            # WinUI 标准控件高度 32px：插件下 QSpinBox 默认偏矮
+            self.setMinimumHeight(32)
 
 
 class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
-    pass
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if _isfluent():
+            self.setMinimumHeight(32)
 
 
 class DelayLoadScrollArea(QAbstractScrollArea):
