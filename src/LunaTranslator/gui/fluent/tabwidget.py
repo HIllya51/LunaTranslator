@@ -23,6 +23,7 @@ from qtsymbols import (
     QPen,
     QPalette,
     QRectF,
+    QSizePolicy,
 )
 
 from gui.fluent.nav import FluentNavTree, NAV_PAGE_ROLE, NAV_ICON_ROLE
@@ -50,9 +51,9 @@ TABBAR_STYLE_NAVIGATION = 8  # Navigation
 
 
 class FluentPageCard(QWidget):
-    """tab 页的圆角包裹卡：底色与内容卡形成对比——
-    浅色=纯白（同 Gallery 设置页的白色页面上放 253 卡片；
-    Gallery 未装插件调色板，页面即系统白），暗色=窗口底色。"""
+    """tab 页的圆角包裹卡：底色介于窗口与内容卡之间——
+    浅色 = 调色板 Base(249)，暗色 = 窗口色上叠 4% 白(≈41)——
+    使「窗口 243/32 → 页面 249/41 → 内容卡 253/50」三级都可分辨。"""
 
     def paintEvent(self, e):
         painter = QPainter(self)
@@ -66,9 +67,16 @@ class FluentPageCard(QWidget):
                     dark = int(cs) == 1
                 except Exception:
                     dark = self.palette().color(QPalette.Window).lightness() < 128
-        fill = (QColor(self.palette().color(QPalette.Window)) if dark
-                else QColor(255, 255, 255))
-        border = QColor(0x25, 0x25, 0x25) if dark else QColor(0xE9, 0xE9, 0xE9)
+        if dark:
+            w = self.palette().color(QPalette.Window)
+            fill = QColor(
+                round(w.red() + (255 - w.red()) * 0.04),
+                round(w.green() + (255 - w.green()) * 0.04),
+                round(w.blue() + (255 - w.blue()) * 0.04))
+            border = QColor(0x25, 0x25, 0x25)
+        else:
+            fill = QColor(self.palette().color(QPalette.Base))
+            border = QColor(0xE9, 0xE9, 0xE9)
         path = QPainterPath()
         path.addRoundedRect(
             QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5), 4, 4)
@@ -123,27 +131,38 @@ class FluentTabWidget(QWidget):
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
 
+        # ---- 导航栏结构照抄 Gallery ExWinUINavigationView ----
         nav_pane = QWidget(self)
         nav_lay = QVBoxLayout(nav_pane)
-        nav_lay.setContentsMargins(6, 6, 6, 6)
+        nav_lay.setContentsMargins(0, 0, 0, 0)
         nav_lay.setSpacing(0)
 
-        # 主导航（可伸展）
-        self.nav = FluentNavTree(nav_pane)
-        nav_lay.addWidget(self.nav, 1)
+        # 主导航（可伸展）；容器边距 (6,6,6,0)——下边贴分隔线
+        main_container = QWidget(nav_pane)
+        main_lay = QVBoxLayout(main_container)
+        main_lay.setContentsMargins(6, 6, 6, 0)
+        main_lay.setSpacing(0)
+        self.nav = FluentNavTree(main_container)
+        main_lay.addWidget(self.nav)
 
-        # 分隔线
+        # 分隔线：整宽、无边距（与窗口边缘/页面卡描边连成闭合回路）
         self._nav_separator = QFrame(nav_pane)
         self._nav_separator.setFrameShape(QFrame.HLine)
         self._nav_separator.setFrameShadow(QFrame.Sunken)
-        nav_lay.addSpacing(4)
-        nav_lay.addWidget(self._nav_separator)
-        nav_lay.addSpacing(4)
+        self._nav_separator.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
 
-        # 底部固定导航（关于软件，不参与伸展）
-        self.nav_footer = FluentNavTree(nav_pane)
+        # 底部固定导航（关于软件，不参与伸展）；容器边距 (6,0,6,6)——上边贴分隔线
+        footer_container = QWidget(nav_pane)
+        footer_lay = QVBoxLayout(footer_container)
+        footer_lay.setContentsMargins(6, 0, 6, 6)
+        footer_lay.setSpacing(0)
+        self.nav_footer = FluentNavTree(footer_container)
         self.nav_footer.setFixedHeight(38)
-        nav_lay.addWidget(self.nav_footer)
+        footer_lay.addWidget(self.nav_footer)
+
+        nav_lay.addWidget(main_container, 1)
+        nav_lay.addWidget(self._nav_separator, 0)
+        nav_lay.addWidget(footer_container, 0)
 
         self.tab_widget = QTabWidget(self)
         self.tab_widget.tabBar().hide()

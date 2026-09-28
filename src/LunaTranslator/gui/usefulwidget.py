@@ -2302,32 +2302,21 @@ def manybuttonlayout(textandfunctions: list):
 
 
 def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False):
+    # 每个 tab 页都包 FluentPageCard 圆角卡（底色与内容卡形成对比）：
+    # 子页签页紧邻 tabbar、主设置页填满内容区；pagecard 参数保留兼容
     q = QWidget()
     v = QVBoxLayout(q)
     v.setContentsMargins(0, 0, 0, 0)
-    if pagecard:
-        # 页内容包进紧邻 tabbar 的卡片（零内边距，卡片与 tabbar 无间隔）
-        v.setContentsMargins(0, 0, 0, 0)
-        card = FluentPageCard()
-        v.addWidget(card)
-        innerlay = QVBoxLayout(card)
-        innerlay.setContentsMargins(0, 0, 0, 0)
+    card = FluentPageCard()
+    v.addWidget(card)
+    innerlay = QVBoxLayout(card)
+    innerlay.setContentsMargins(0, 0, 0, 0)
+    if isinstance(tab, QTabWidget):
         # 卡内网格：顶边距与左边距统一（16）
         innerlay.setProperty("_fluent_card_grid", True)
-        q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
-    elif isinstance(tab, QTabWidget):
-        # 普通子页签页：标记给 makescrollgrid —— 网格首卡紧贴 tabbar
-        v.setProperty("_fluent_tabbar_page", True)
-        q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     else:
-        # 主设置页（FluentTabWidget）：整页包圆角卡填满内容区
-        # （同 Gallery initialize_fluent_border_widgets——每个 tab 页都是卡）
-        card = FluentPageCard()
-        v.addWidget(card)
-        innerlay = QVBoxLayout(card)
-        innerlay.setContentsMargins(0, 0, 0, 0)
         innerlay.setProperty("_fluent_main_grid", True)
-        q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
+    q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
     tab.addTab(q, title)
 
 
