@@ -58,6 +58,10 @@ class FocusCombo(QComboBox):
         self.setFocusPolicy(Qt.FocusPolicy.StrongFocus)
         # Gallery 修复：默认内部视图在弹出列表的选中项上下会画黑线
         self.setView(QListView(self))
+        # 宽度自适应内容（AdjustToContents：条目显示后增删也会重算，
+        # 宽度不足以容纳文字时自动扩展），并给最小宽度避免短文本过窄
+        self.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
+        self.setMinimumWidth(120)
         if sizeX:
             self.setSizeAdjustPolicy(
                 QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
