@@ -9,6 +9,7 @@ import os, NativeUtils
 from traceback import print_exc
 from gui.usefulwidget import (
     D_getsimpleswitch,
+    makegrid,
     makescrollgrid,
     createfoldgrid,
     SuperCombo,
@@ -415,9 +416,6 @@ def setTab_about(self: QWidget, basel):
             self.downloadprogress, text, val),
     )
 
-    # 关于卡片
-    vlay.addWidget(aboutwidget())
-
     # LICENSE 折叠（ExExpander，同 Gallery 强调色折叠面板的用法）
     from gui.fluent.expander import ExExpander
     from gui.fluent.card import make_card_contents
@@ -434,39 +432,59 @@ def setTab_about(self: QWidget, basel):
     license_header.layout().setContentsMargins(0, 12, 0, 12)
     license_expander.setHeaderWidget(license_header)
 
-    license_content = QWidget()
-    lc_lay = QVBoxLayout(license_content)
-    lc_lay.setContentsMargins(16, 8, 16, 12)
-    lc_lay.setSpacing(4)
-
-    lc_lay.addWidget(MDLabel(
-        "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。"
-    ))
-    for _repo in [
-        "opencv/opencv", "microsoft/onnxruntime", "Artikash/Textractor",
-        "RapidAI/RapidOcrOnnx", "PaddlePaddle/PaddleOCR", "Blinue/Magpie",
-        "xupefei/Locale-Emulator", "InWILL/Locale_Remulator", "zxyacb/ntlea",
-        "Chuyu-Team/YY-Thunks", "Chuyu-Team/VC-LTL5", "uyjulian/AtlasTranslate",
-        "ilius/pyglossary", "ikegami-yukino/mecab", "AngusJohnson/Clipper2",
-        "rapidfuzz/rapidfuzz-cpp", "TsudaKageyu/minhook", "lobehub/lobe-icons",
-        "kokke/tiny-AES-c", "AuroraWright/owocr", "b1tg/win11-oneocr",
-        "mity/md4c", "swigger/wechat-ocr", "rupeshk/MarkdownHighlighter",
-        "sindresorhus/github-markdown-css", "gexgd0419/NaturalVoiceSAPIAdapter",
-        "microsoft/PowerToys", "WaterJuice/WjCryptLib", "k2-fsa/sherpa-onnx",
-        "chromium/chromium", "Neargye/magic_enum", "bbepis/XUnity.AutoTranslator",
-        "uchardet/uchardet",
-    ]:
-        _link = makelink(_repo)
-        _row = QWidget()
-        _rl = QHBoxLayout(_row)
-        _rl.setContentsMargins(0, 0, 0, 0)
-        _rl.setSpacing(8)
-        _rl.addWidget(_link[0]())
-        _rl.addWidget(_link[1]())
-        lc_lay.addWidget(_row)
-
+    license_content = makegrid(
+        (
+            [
+                makelink("HIllya51/LunaTranslator")[0],
+                functools.partial(
+                    MDLabel,
+                    "[LunaTranslator](https://github.com/HIllya51/LunaTranslator)使用[GPLv3](https://github.com/HIllya51/LunaTranslator/blob/main/LICENSE)许可证。",
+                ),
+            ],
+            [("引用的项目", -1)],
+            makelink("opencv/opencv"),
+            makelink("microsoft/onnxruntime"),
+            makelink("Artikash/Textractor"),
+            makelink("RapidAI/RapidOcrOnnx"),
+            makelink("PaddlePaddle/PaddleOCR"),
+            makelink("Blinue/Magpie"),
+            makelink("xupefei/Locale-Emulator"),
+            makelink("InWILL/Locale_Remulator"),
+            makelink("zxyacb/ntlea"),
+            makelink("Chuyu-Team/YY-Thunks"),
+            makelink("Chuyu-Team/VC-LTL5"),
+            makelink("uyjulian/AtlasTranslate"),
+            makelink("ilius/pyglossary"),
+            makelink("ikegami-yukino/mecab"),
+            makelink("AngusJohnson/Clipper2"),
+            makelink("rapidfuzz/rapidfuzz-cpp"),
+            makelink("TsudaKageyu/minhook"),
+            makelink("lobehub/lobe-icons"),
+            makelink("kokke/tiny-AES-c"),
+            makelink("AuroraWright/owocr"),
+            makelink("b1tg/win11-oneocr"),
+            makelink("mity/md4c"),
+            makelink("swigger/wechat-ocr"),
+            makelink("rupeshk/MarkdownHighlighter"),
+            makelink("sindresorhus/github-markdown-css"),
+            makelink("gexgd0419/NaturalVoiceSAPIAdapter"),
+            makelink("microsoft/PowerToys"),
+            makelink("WaterJuice/WjCryptLib"),
+            makelink("k2-fsa/sherpa-onnx"),
+            makelink("chromium/chromium"),
+            makelink("Neargye/magic_enum"),
+            makelink("bbepis/XUnity.AutoTranslator"),
+            makelink("uchardet/uchardet"),
+            makelink("XHY-ChuJian/FluentUIStyle"),
+        ),
+    )
     license_expander.addContentWidget(license_content)
     license_expander.setExpanded(False)
+
+    # 关于卡片
+    vlay.addWidget(aboutwidget())
+
+    # LICENSE 折叠放到最后
     vlay.addWidget(license_expander)
 
     scroll = makescroll()
