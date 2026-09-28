@@ -708,6 +708,7 @@ def filetranslate(self):
                 "语音识别",
                 globalconfig["foldstatus"]["others"],
                 "sr",
+                fullheight=True,
                 leftwidget=D_getdoclink("sr.html"),
                 switch=getboxwidget(
                     [
@@ -743,6 +744,7 @@ def filetranslate(self):
                 "文件翻译",
                 globalconfig["foldstatus"]["others"],
                 "fts",
+                fullheight=True,
             )
         ],
         [
