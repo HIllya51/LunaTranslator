@@ -1625,7 +1625,8 @@ class BASEOBJECT(QObject):
         # 原"其他界面"的字体/大小设置已删除：字体跟随语言默认，字号固定
         font = QFont()
         font.setFamily(gobject.tempconfig.get("settingfonttype", ""))
-        font.setPointSizeF(12)
+        # 同 Gallery：正文 13px（原 setPointSizeF(12)=16px 偏大）
+        font.setPixelSize(13)
         if QApplication.instance().font() != font:
             QApplication.instance().setFont(font)
         # QMenu 统一 12px 字号由 gui.fluent 的应用级事件过滤处理

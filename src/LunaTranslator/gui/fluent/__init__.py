@@ -73,10 +73,11 @@ _menu_font_gate = None
 
 
 def _install_menu_font_gate():
-    """应用级事件过滤：QMenu 显示时统一 12px 字号（菜单不跟随 12pt
-    应用字体——那样偏大）。QApplication.setFont(f, "QMenu") 类字体
-    在 app.setFont 之后对新建控件失效，事件过滤是可靠途径；
-    先判 ev.type() 再判 isinstance，逐事件开销极小。"""
+    """应用级事件过滤：QMenu 显示时统一 13px 字号（同应用字体/Gallery；
+    并治愈切换明暗后 setStyle 重扫描把菜单字体重置为默认的问题）。
+    QApplication.setFont(f, "QMenu") 类字体在 app.setFont 之后对新建
+    控件失效，事件过滤是可靠途径；先判 ev.type() 再判 isinstance，
+    逐事件开销极小。"""
     global _menu_font_gate
     if _menu_font_gate is not None:
         return
@@ -86,9 +87,9 @@ def _install_menu_font_gate():
         def eventFilter(self, obj, ev):
             if ev.type() == QEvent.Show and isinstance(obj, QMenu):
                 f = obj.font()
-                if f.pointSize() > 0:
+                if f.pixelSize() != 13:
                     nf = QFont(f.family())
-                    nf.setPixelSize(12)
+                    nf.setPixelSize(13)
                     obj.setFont(nf)
             return False
 
