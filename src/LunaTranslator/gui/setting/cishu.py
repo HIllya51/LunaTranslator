@@ -337,19 +337,13 @@ def _createnewtextfontcom(key, df):
 
 
 def fontsettings(parent):
-    """字体折叠卡：「跟随默认」开关放在折叠条上，
-    关闭跟随默认即展开自定义字体设置。"""
+    """字体折叠卡：「跟随默认」开关放在折叠条上（不联动折叠）。"""
     exp = ExExpander()
-
-    def _follow(x):
-        exp.setExpanded(not x)
-        gobject.base.translation_ui.translate_text.setfontstyle()
-
     followswitch = getsimpleswitch(
         globalconfig,
         "kanafontfollowdefault",
         default=True,
-        callback=_follow,
+        callback=lambda _: gobject.base.translation_ui.translate_text.setfontstyle(),
     )
     header = QWidget()
     hlay = QHBoxLayout(header)
@@ -364,50 +358,59 @@ def fontsettings(parent):
     hlay.addWidget(getsmalllabel("跟随默认")())
     hlay.addWidget(followswitch)
     exp.setHeaderWidget(header)
-    exp.addContentWidget(
-        makegrid(
-            (
-                [
-                    getsmalllabel("相对大小"),
-                    getspinbox(
-                        0.1,
-                        1,
-                        globalconfig,
-                        "kanarate",
-                        double=True,
-                        step=0.05,
-                        callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                        default=0.5,
-                    ),
-                ],
-                [
-                    _createnewtextfontcom(
-                        "kanafont",
-                        globalconfig.get(
-                            "fonttype", gobject.tempconfig.get("fonttype", "")
-                        ),
-                    ),
-                    getIconSwitch(
-                        globalconfig,
-                        "kanabold",
-                        callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                        tips="加粗",
-                        default=globalconfig.get("showbold", False),
-                        icon="fa.bold",
-                    ),
-                    getIconSwitch(
-                        globalconfig,
-                        "kanaitalic",
-                        callback=gobject.base.translation_ui.translate_text.setfontstyle,
-                        tips="倾斜",
-                        default=globalconfig.get("showitalic", False),
-                        icon="fa.italic",
-                    ),
-                ],
-            )
+    # 内容：相对大小一行 + 字体一行（HBox 布局，combo 可伸展）
+    content = QWidget()
+    clay = QVBoxLayout(content)
+    clay.setContentsMargins(0, 0, 0, 0)
+    clay.setSpacing(8)
+    clay.addLayout(
+        getboxlayout(
+            [
+                getsmalllabel("相对大小"),
+                getspinbox(
+                    0.1,
+                    1,
+                    globalconfig,
+                    "kanarate",
+                    double=True,
+                    step=0.05,
+                    callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                    default=0.5,
+                ),
+                1,
+            ]
         )
     )
-    exp.setExpanded(not globalconfig.get("kanafontfollowdefault", True))
+    clay.addLayout(
+        getboxlayout(
+            [
+                getsmalllabel("字体"),
+                _createnewtextfontcom(
+                    "kanafont",
+                    globalconfig.get(
+                        "fonttype", gobject.tempconfig.get("fonttype", "")
+                    ),
+                ),
+                getIconSwitch(
+                    globalconfig,
+                    "kanabold",
+                    callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                    tips="加粗",
+                    default=globalconfig.get("showbold", False),
+                    icon="fa.bold",
+                ),
+                getIconSwitch(
+                    globalconfig,
+                    "kanaitalic",
+                    callback=gobject.base.translation_ui.translate_text.setfontstyle,
+                    tips="倾斜",
+                    default=globalconfig.get("showitalic", False),
+                    icon="fa.italic",
+                ),
+            ]
+        )
+    )
+    exp.addContentWidget(content)
     return exp
 
 
