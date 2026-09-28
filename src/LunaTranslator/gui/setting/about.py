@@ -3,6 +3,7 @@ import functools, re
 from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.wrapper import threader
 from myutils.utils import makehtml, getlanguse, nowisdark
+from gui.qevent import DarkLightChangedEvent
 import requests, importlib
 import gobject
 import os, NativeUtils
@@ -188,10 +189,11 @@ def get_about_info():
         return _TR("\n\n".join([t6, t4]))
 
 
-def load_scaled_pixmap_darkadapt(file_path: str, target_width: int, dpr: float):
-    """暗色适配包装：黑暗模式下反转图片颜色（二维码等黑白图不刺眼）。"""
+def load_scaled_pixmap_darkadapt(file_path: str, target_width: int, dpr: float, isdark=None):
+    """暗色适配包装：黑暗模式下反转图片颜色（二维码等黑白图不刺眼）。
+    isdark 显式传入时以它为准（用于明暗切换事件），否则取当前模式。"""
     img = load_scaled_pixmap(file_path, target_width, dpr)
-    if nowisdark():
+    if nowisdark() if isdark is None else isdark:
         qimg = img.toImage()
         qimg.invertPixels(QImage.InvertRgb)
         img = QPixmap.fromImage(qimg)
@@ -238,9 +240,19 @@ class aboutwidget(QWidget):
         self.grid = QFormLayout(self)
         self.grid.setContentsMargins(16, 12, 16, 12)
         self.labels: "list[QWidget]" = []
+        # (label, 路径, 宽度)：明暗切换事件到来时重新加载
+        self._darkadapt_labels: "list[tuple[QLabel, str, int]]" = []
         self.mdlabel = MDLabel1("")
         self.grid.addRow(self.mdlabel)
         self.updatelangtext()
+
+    def event(self, a0):
+        # 明暗切换：暗色适配图片（如赞助二维码）随之翻转
+        if isinstance(a0, DarkLightChangedEvent):
+            for lb, path, w in self._darkadapt_labels:
+                lb.setPixmap(load_scaled_pixmap_darkadapt(
+                    path, w, self.devicePixelRatioF(), a0.isdark()))
+        return super().event(a0)
 
     def createlabel(self, img: str, w, link=None, darkadapt=False):
         if link:
@@ -251,9 +263,12 @@ class aboutwidget(QWidget):
         sp = lb.sizePolicy()
         sp.setHorizontalPolicy(QSizePolicy.Policy.Fixed)
         lb.setSizePolicy(sp)
-        loader = load_scaled_pixmap_darkadapt if darkadapt else load_scaled_pixmap
-        img = loader(img, w, self.devicePixelRatioF())
-        lb.setPixmap(img)
+        if darkadapt:
+            lb.setPixmap(load_scaled_pixmap_darkadapt(
+                img, w, self.devicePixelRatioF()))
+            self._darkadapt_labels.append((lb, img, w))
+        else:
+            lb.setPixmap(load_scaled_pixmap(img, w, self.devicePixelRatioF()))
         self.labels.append(lb)
         self.grid.addRow(lb)
 
@@ -263,6 +278,7 @@ class aboutwidget(QWidget):
         for _ in self.labels:
             _.deleteLater()
         self.labels.clear()
+        self._darkadapt_labels.clear()
         if lang == Languages.Chinese:
             self.createlabel(
                 "files/static/button-sponsorme.png",
