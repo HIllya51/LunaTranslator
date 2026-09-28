@@ -108,9 +108,6 @@ class noundictconfigdialog1___(LDialog, DarkLightAutoResetIconHelper):
             table.horizontalHeader().setSectionResizeMode(
                 _, QHeaderView.ResizeMode.ResizeToContents
             )
-        # Fluent 表格：无网格线、行交替色
-        table.setShowGrid(False)
-        table.setAlternatingRowColors(True)
 
         self.table = table
 
@@ -395,9 +392,6 @@ class yuyinzhidingsetting(LDialog):
             table.horizontalHeader().setSectionResizeMode(
                 _, QHeaderView.ResizeMode.ResizeToContents
             )
-        # Fluent 表格：无网格线、行交替色
-        table.setShowGrid(False)
-        table.setAlternatingRowColors(True)
         table.getindexdata = self.__getindexwidgetdata
         table.setindexdata = self.__setindexwidget
         table.insertplainrow = lambda row: self.newline(

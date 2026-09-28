@@ -255,6 +255,15 @@ class LTabWidget(QTabWidget):
 
 
 class LTableView(QTableView):
+    def __init__(self, *argc, **kwarg):
+        super().__init__(*argc, **kwarg)
+        self.apply_fluent_table()
+
+    def apply_fluent_table(self):
+        """Fluent 表格统一外观：无网格线、行交替色。"""
+        self.setShowGrid(False)
+        self.setAlternatingRowColors(True)
+
     def updatelangtext(self):
         m = self.model()
         if isinstance(m, LStandardItemModel):

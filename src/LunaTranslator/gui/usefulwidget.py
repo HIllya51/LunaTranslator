@@ -292,7 +292,10 @@ class DelayLoadTableView(QTableView, DelayLoadScrollArea):
 
     def __init__(self, *a, **k):
         QTableView.__init__(self)
+        # DelayLoadScrollArea.__init__ 会重新初始化基类段，覆盖链中间设置的
+        # 属性——fluent 表格配置（定义在 LTableView）必须在链尾调用
         DelayLoadScrollArea.__init__(self)
+        LTableView.apply_fluent_table(self)
         self.isstartObserveInserted = False
 
     def setIndexWidget_1(self, index: QModelIndex, w: QWidget):

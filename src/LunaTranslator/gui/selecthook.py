@@ -40,6 +40,7 @@ from gui.dynalang import (
     LTabWidget,
     LCheckBox,
 )
+from gui.fluent.tabwidget import apply_segmented_tabbar
 
 
 def getformlayoutw(w=None, cls=LFormLayout, hide=False):
@@ -673,9 +674,6 @@ class hookselect(closeashidewindow):
         )
         self.tttable.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
         self.tttable.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        # Fluent 表格：无网格线、行交替色
-        self.tttable.setShowGrid(False)
-        self.tttable.setAlternatingRowColors(True)
 
         self.tttable.doubleClicked.connect(self.table1doubleclicked)
         self.tttable.clicked.connect(self.ViewThread)
@@ -763,7 +761,10 @@ class hookselect(closeashidewindow):
 
         self.tabwidget = LTabWidget()
         self.vboxlayout.addWidget(self.tabwidget)
-        self.tabwidget.setTabPosition(QTabWidget.TabPosition.East)
+        # WinUI3 分段 tabbar（同设置子页签）：插件的 Segmented_WinUI3 仅支持
+        # 横向，原 East 竖排无法正确渲染
+        self.tabwidget.setTabPosition(QTabWidget.TabPosition.North)
+        apply_segmented_tabbar(self.tabwidget)
         self.tabwidget.addTab(self.textOutput, ("文本"))
         self.tabwidget.addTab(self.sysOutput, ("日志"))
         self.tabwidget.setCurrentIndex(1)

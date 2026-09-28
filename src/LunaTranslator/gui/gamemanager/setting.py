@@ -78,7 +78,7 @@ from gui.dynalang import (
     LAction,
     LLabel,
     LDialog,
-    LGroupBox,
+    LTableView,
 )
 from gui.gamemanager.common import tagitem
 from gui.inputdialog import postconfigdialog_
@@ -214,7 +214,7 @@ class timelistediter(LDialog, DarkLightAutoResetIconHelper):
         model = LStandardItemModel()
         model.setHorizontalHeaderLabels(["开始", "结束", "删除"])
         self.hcmodel = model
-        table = QTableView()
+        table = LTableView()
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
@@ -1518,7 +1518,7 @@ class embeddisabler(LDialog):
         self.setWindowTitle(name)
         model = QStandardItemModel()
         self.hcmodel = model
-        table = QTableView()
+        table = LTableView()
         table.horizontalHeader().setVisible(False)
         table.horizontalHeader().setStretchLastSection(True)
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
