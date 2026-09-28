@@ -163,12 +163,10 @@ def developerexpander():
     for row in rows:
         exp.addContentWidget(_widenctl(getboxwidget([row[0], 1, row[1]])))
 
-    # 原折叠区把打开状态存在 developerMode，保持该语义
+    # 展开状态仍写入 developerMode（保持原语义），但默认折叠、不恢复上次状态
     exp.expandedChanged.connect(
         lambda v: magpie_config.__setitem__("developerMode", v)
     )
-    if magpie_config.get("developerMode", False):
-        exp.setExpanded(True)
     return exp
 
 

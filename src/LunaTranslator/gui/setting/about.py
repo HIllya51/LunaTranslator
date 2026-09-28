@@ -2,7 +2,7 @@ from qtsymbols import *
 import functools, re
 from myutils.config import globalconfig, static_data, _TR, dynamiclink
 from myutils.wrapper import threader
-from myutils.utils import makehtml, getlanguse
+from myutils.utils import makehtml, getlanguse, nowisdark
 import requests, importlib
 import gobject
 import os, NativeUtils
@@ -188,6 +188,17 @@ def get_about_info():
         return _TR("\n\n".join([t6, t4]))
 
 
+def load_scaled_pixmap_darkadapt(file_path: str, target_width: int, dpr: float):
+    """暗色适配包装：黑暗模式下反转图片颜色（二维码等黑白图不刺眼）。"""
+    img = load_scaled_pixmap(file_path, target_width, dpr)
+    if nowisdark():
+        qimg = img.toImage()
+        qimg.invertPixels(QImage.InvertRgb)
+        img = QPixmap.fromImage(qimg)
+        img.setDevicePixelRatio(dpr)
+    return img
+
+
 def load_scaled_pixmap(
     file_path: str,
     target_width: int,
@@ -231,7 +242,7 @@ class aboutwidget(QWidget):
         self.grid.addRow(self.mdlabel)
         self.updatelangtext()
 
-    def createlabel(self, img: str, w, link=None):
+    def createlabel(self, img: str, w, link=None, darkadapt=False):
         if link:
             lb = SClickableLabel()
             lb.clicked.connect(lambda: os.startfile(link))
@@ -240,7 +251,8 @@ class aboutwidget(QWidget):
         sp = lb.sizePolicy()
         sp.setHorizontalPolicy(QSizePolicy.Policy.Fixed)
         lb.setSizePolicy(sp)
-        img = load_scaled_pixmap(img, w, self.devicePixelRatioF())
+        loader = load_scaled_pixmap_darkadapt if darkadapt else load_scaled_pixmap
+        img = loader(img, w, self.devicePixelRatioF())
         lb.setPixmap(img)
         self.labels.append(lb)
         self.grid.addRow(lb)
@@ -257,7 +269,7 @@ class aboutwidget(QWidget):
                 200,
                 "https://afdian.com/a/HIllya51",
             )
-            self.createlabel("files/static/zan.jpg", 300)
+            self.createlabel("files/static/zan.jpg", 300, darkadapt=True)
         elif lang == Languages.TradChinese:
             self.createlabel(
                 "files/static/become_a_patron_4x1_black_logo_white_text_on_coral.svg",
