@@ -587,8 +587,11 @@ class _gamelistnav(FluentNavTree):
         self.setAcceptDrops(True)
         self._dragitem = None
         self._dragpos = None
-        # 双击才展开/折叠主项（单击只选中切网格页）
+        # 双击才展开/折叠主项（单击只选中切网格页）。
+        # Qt 默认 expandsOnDoubleClick 也会 toggle 一次，与 _navdouble
+        # 的 toggle 互相抵消（表现为"双击无反应"）——关掉默认的
         self._expand_on_doubleclick = True
+        self.setExpandsOnDoubleClick(False)
         self._icon_pending = {}
         self._icon_timer = QTimer(self)
         self._icon_timer.setInterval(25)
@@ -836,8 +839,12 @@ class _gridpage(QWidget):
 
     def showEvent(self, e):
         super().showEvent(e)
-        # 初始化时 showtag 发生在本页显示之前（尺寸为 0），fakegeos 全无效
-        # ——显示时重算一次布局
+        # showtag 可能发生在本页不可见/切页瞬间（visibleRegion 为空、
+        # 尺寸未定）——布局与懒加载都没跑。显示后延后一拍重算
+        if isinstance(self.flow, lazyscrollflow):
+            QTimer.singleShot(0, self._refit_flow)
+
+    def _refit_flow(self):
         if isinstance(self.flow, lazyscrollflow):
             self.flow.resizeandshow(procevent=False)
 
@@ -1293,8 +1300,8 @@ class dialog_savedgame_v3(QWidget):
         savegametaged.insert(dst_idx, savegametaged.pop(src_idx))
         self.nav.setCurrentItem(item)
 
-    def _gridmove(self, uid, dst_uid):
-        """网格项拖到另一图表上：移到目标之后一位。"""
+    def _gridmove(self, uid, dst_uid, before=False):
+        """网格项拖到另一图表上：before=插到目标前，否则目标之后一位。"""
         lst = self.reallist.get(self.gridpage.reftagid) or []
         if dst_uid is None or dst_uid not in lst or uid not in lst:
             self._gridmove_to(uid, len(lst))
@@ -1302,7 +1309,10 @@ class dialog_savedgame_v3(QWidget):
         iu = lst.index(uid)
         idst = lst.index(dst_uid)
         # remove(uid) 后目标会前移一位（当 uid 原在目标之前）
-        self._gridmove_to(uid, idst + 1 if iu > idst else idst)
+        if before:
+            self._gridmove_to(uid, idst if iu > idst else idst - 1)
+        else:
+            self._gridmove_to(uid, idst + 1 if iu > idst else idst)
 
     def _gridmove_to(self, uid, idx):
         """网格内把 uid 移到 reallist 的 idx 位置（0..len，len=末尾）。

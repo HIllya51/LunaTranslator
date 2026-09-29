@@ -212,7 +212,7 @@ class imagehelper:
 class ItemWidget(QWidget):
     focuschanged = pyqtSignal(bool, str)
     doubleclicked = pyqtSignal(str)
-    droppedgame = pyqtSignal(str, str)  # 拖动uid, 目标uid（网格内排序）
+    droppedgame = pyqtSignal(str, str, bool)  # 拖动uid, 目标uid, 插到目标前
     globallashfocus = None
 
     @classmethod
@@ -264,7 +264,8 @@ class ItemWidget(QWidget):
         if uid == self.gameuid:
             return
         e.acceptProposedAction()
-        self.droppedgame.emit(uid, self.gameuid)
+        # 按落点在目标中心的哪一侧决定插前/插后
+        self.droppedgame.emit(uid, self.gameuid, e.pos().x() < self.width() / 2)
 
     def focusOut(self):
         self.isfucked = False
