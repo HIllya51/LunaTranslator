@@ -2,7 +2,7 @@ from qtsymbols import *
 from gui.fluent.messagebox import ExMessageBox
 import functools, importlib
 from traceback import print_exc
-import os, gobject, requests, sys, uuid
+import os, gobject, requests, uuid
 from myutils.commonbase import maybejson
 from myutils.config import globalconfig, _TR, static_data
 from myutils.utils import selectdebugfile, makehtml
@@ -516,7 +516,6 @@ def autoinitdialog_items(dic):
         if "argstype" in dic and arg in dic["argstype"]:
             default.update(dic["argstype"][arg])
         items.append(default)
-    items.append(dict(type="okcancel", rank=-sys.float_info.min))
     return items
 
 
@@ -686,18 +685,6 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                     )
                 )
             lineW.addWidget(combo)
-        elif line["type"] == "okcancel":
-            lineW = QDialogButtonBox(
-                QDialogButtonBox.StandardButton.Ok
-                | QDialogButtonBox.StandardButton.Cancel
-            )
-            lineW.rejected.connect(self.close)
-            lineW.accepted.connect(
-                functools.partial(self.save, line.get("callback", None))
-            )
-
-            lineW.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
-            lineW.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
         elif line["type"] == "multiline":
             lineW = QPlainTextEdit(dd[key])
             lineW.setPlaceholderText(line.get("placeholder", ""))
@@ -769,6 +756,7 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
         modelfile=None,
         maybehasextrainfo=None,
         exec_=False,
+        callback=None,
     ) -> None:
         super().__init__(
             parent,
@@ -789,7 +777,23 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
         self._scroll.setWidget(self._content)
         rootlay = QVBoxLayout(self)
         rootlay.setContentsMargins(0, 0, 0, 0)
-        rootlay.addWidget(self._scroll)
+        rootlay.setSpacing(0)
+        rootlay.addWidget(self._scroll, 1)
+        # okcancel 写死在滚动区之外、固定右下角——只有设置项参与滚动
+        btnbox = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok
+            | QDialogButtonBox.StandardButton.Cancel
+        )
+        btnbox.rejected.connect(self.close)
+        btnbox.accepted.connect(functools.partial(self.save, callback))
+        btnbox.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
+        btnbox.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
+        btnlay = QHBoxLayout()
+        btnlay.setContentsMargins(16, 8, 16, 12)
+        btnlay.addStretch()
+        btnlay.addWidget(btnbox)
+        rootlay.addLayout(btnlay)
+        self._btnh = btnlay.sizeHint().height()
         formLayout = VisLFormLayout(self._content)
         self.regist = {}
         self.dd = dd
@@ -925,11 +929,11 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
             self.cachecombo[comboname].currentIndexChanged.emit(
                 self.cachecombo[comboname].currentIndex()
             )
-        # 窗口高度 = 内容需求（表单 sizeHint + 滚动框边），封顶 maxh
+        # 窗口高度 = 内容需求（表单 sizeHint + 底部按钮行 + 滚动框边），封顶 maxh
         self._content.adjustSize()
         fh = self._content.sizeHint().height()
         frame = self.frameGeometry().height() - self.geometry().height()
-        targeth = min(fh + frame + 8, maxh)
+        targeth = min(fh + self._btnh + frame + 8, maxh)
         targetw = max(width, self._content.sizeHint().width() + 24)
         self.resize(QSize(targetw, targeth))
         if exec_:

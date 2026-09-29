@@ -1402,12 +1402,9 @@ class dialog_setting_game_internal(QWidget):
                     "k": "k",
                     "list": __viss,
                 },
-                {
-                    "type": "okcancel",
-                    "callback": functools.partial(__callback, _internal, __d),
-                },
             ],
             exec_=True,
+            callback=functools.partial(__callback, _internal, __d),
         )
 
     def getlangtab(self, formLayout: LFormLayout, gameuid):

@@ -205,7 +205,6 @@ def initinternal(self, names):
         if "args" in globalconfig["cishu"][cishu]:
 
             items = autoinitdialog_items(globalconfig["cishu"][cishu])
-            items[-1]["callback"] = reloadcb
 
             def __(cishu, _which=which):
                 autoinitdialog(
@@ -216,6 +215,7 @@ def initinternal(self, names):
                     items,
                     _which,
                     cishu,
+                    callback=reloadcb,
                 )
 
             line += [
@@ -273,7 +273,6 @@ def fenciqisettings(self):
     lay.addRow(l1)
     l1.addWidget(QLabel("Mecab"))
     items = autoinitdialog_items(globalconfig["hirasetting"]["mecab"])
-    items[-1]["callback"] = gobject.base.startmecab
     _3 = D_getIconButton(
         callback=functools.partial(
             autoinitdialog,
@@ -282,6 +281,7 @@ def fenciqisettings(self):
             "Mecab",
             800,
             items,
+            callback=gobject.base.startmecab,
         ),
     )
     l1.addWidget(_3())
@@ -308,7 +308,6 @@ def mdictsettings(self):
         getsimpleswitch(globalconfig["cishu"]["mdict"], "use", callback=reloadcb)
     )
     items = autoinitdialog_items(globalconfig["cishu"]["mdict"])
-    items[-1]["callback"] = reloadcb
     _3 = D_getIconButton(
         callback=functools.partial(
             autoinitdialog,
@@ -317,6 +316,7 @@ def mdictsettings(self):
             dynamiccishuname("mdict"),
             800,
             items,
+            callback=reloadcb,
         ),
     )
     l1.addWidget(_3())
