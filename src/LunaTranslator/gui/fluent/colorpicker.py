@@ -48,6 +48,7 @@ from PyQt5.QtGui import QLinearGradient
 
 from gui.dynalang import LLabel, LPushButton, LDialog
 from gui.fluent.tabwidget import apply_segmented_tabbar_style
+from gui.fluent import _disable_dwm_nc_chrome
 
 # ---- 飞层登记（非客户区点击关闭用） ----
 _open_flyouts = []
@@ -539,6 +540,8 @@ class FluentColorPicker(QWidget):
         if popup:
             # 保持固定宽（sizeHint 宽度不含布局约束），高度按布局收紧
             self.adjustSize()
+            # 提前创建窗口并关闭 DWM 非客户区渲染（首次合成前，同 QMenu）
+            _disable_dwm_nc_chrome(self)
 
     # ---- UI ----
     def _setup_spectrum_page(self):

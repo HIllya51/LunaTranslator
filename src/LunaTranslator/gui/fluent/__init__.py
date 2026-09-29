@@ -72,6 +72,26 @@ def apply_fluent_style(dark):
 _menu_font_gate = None
 
 
+def _disable_dwm_nc_chrome(widget):
+    """提前创建原生窗口并关闭 DWM 非客户区渲染（系统边框+阴影）。
+
+    DWM 在窗口**首次合成**时画上系统边框/阴影；若等 WinIdChange（首次
+    显示过程中）再设属性，第一次显示仍带边框、第二次才干净——这正是
+    "每个右键菜单首次唤出时有右/下边框"的根源。必须在显示前完成：
+    先 winId() 强制创建窗口（尚未合成），再设 DWM 属性。"""
+    try:
+        import ctypes
+
+        hwnd = int(widget.winId())
+        dwmapi = ctypes.windll.dwmapi
+        policy = ctypes.c_uint(1)  # DWMNCRP_DISABLED（边框+阴影全关）
+        dwmapi.DwmSetWindowAttribute(hwnd, 2, ctypes.byref(policy), 4)
+        color = ctypes.c_uint(0xFFFFFFFE)  # DWMWA_COLOR_NONE
+        dwmapi.DwmSetWindowAttribute(hwnd, 34, ctypes.byref(color), 4)
+    except:
+        pass
+
+
 def _install_menu_font_gate():
     """应用级事件过滤：QMenu 显示时统一 13px 字号（同应用字体/Gallery；
     并治愈切换明暗后 setStyle 重扫描把菜单字体重置为默认的问题）。
