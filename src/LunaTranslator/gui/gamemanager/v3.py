@@ -29,7 +29,7 @@ from gui.usefulwidget import (
     getspinbox,
 )
 
-from gui.gamemanager.common import loadvisinternal, dialog_syssetting
+from gui.gamemanager.common import loadvisinternal, dialog_syssetting, tagitem
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
     getfonteditor,
@@ -1029,10 +1029,9 @@ class _gridpage(QWidget):
                 continue
             self.flow.addwidget(functools.partial(self._makeitem, k))
             idx += 1
-        # directshow() 里 processEvents 会在 mousePress 栈内重入（主项点击
-        # 触发本函数），把 mouseRelease 消化掉导致主项拖拽无法启动——
-        # 用不泵事件的等价路径
-        self.flow.resizeandshow(procevent=False)
+        # 事件处理栈内（搜索/排序/点击）布局未激活，直接算无效——
+        # 延后一拍重算（_refit_flow 内先泵事件让布局完成）
+        QTimer.singleShot(0, self._refit_flow)
 
     def _flow_find(self, uid):
         """flow.widgets 中的索引（未实例化的 partial 工厂也携带 uid）。"""
@@ -1168,7 +1167,6 @@ class _gridpage(QWidget):
 
         if action in (sortbytime, sortbytimede):
             self.reflist.sort(key=unsafetrygettime, reverse=action != sortbytimede)
-            self.tagschanged(self.currtags)
         elif action in (sortbyname, sortbynamedesc):
             def paircmp(a, b):
                 return windows.StrCmpLogicalW(
@@ -1178,7 +1176,11 @@ class _gridpage(QWidget):
                 key=cmp_to_key(paircmp),
                 reverse=action == sortbynamedesc,
             )
-            self.tagschanged(self.currtags)
+        else:
+            return
+        # 持久列表顺序已变：同步 reallist + nav 子项，再重建网格
+        self.ref._sync_from_reflist(self.reftagid)
+        self.tagschanged(self.currtags)
 
 class dialog_savedgame_v3(QWidget):
     # 当前实例（游戏设置页点标签时联动网格页的标签过滤）
@@ -1382,6 +1384,32 @@ class dialog_savedgame_v3(QWidget):
         self._updatetagtext(src_group)
         if self.gridpage.reftagid == src_tag:
             self.gridpage.flow_move_idx(ca, _idx)
+
+    def _sync_from_reflist(self, tagid):
+        """排序等操作改写持久列表后，同步 reallist + nav 子项顺序
+        （reallist 项集可能被 hide_not_exists 过滤，按持久序重建）。"""
+        if tagid == 1:
+            # 最近游戏是动态列表：排序只影响本次展示（gridpage.reflist），
+            # reallist/nav 同步跳过
+            return
+        reflist = getreflist(tagid)
+        if reflist is None:
+            return
+        oldset = set(self.reallist.get(tagid, []))
+        newlist = [u for u in reflist if u in oldset]
+        self.reallist[tagid] = newlist
+        group = self._itemfortag(tagid)
+        if group is None:
+            return
+        items = {}
+        for j in range(group.childCount()):
+            ch = group.child(j)
+            items[ch.data(0, GAMEUID_ROLE)] = ch
+        for ch in list(items.values()):
+            group.removeChild(ch)
+        for u in newlist:
+            if u in items:
+                group.addChild(items[u])
 
     def _tagmove(self, tagid, dst_idx):
         """主项（列表）拖动：nav 树 + savegametaged 同步重排（位置任意）。"""
