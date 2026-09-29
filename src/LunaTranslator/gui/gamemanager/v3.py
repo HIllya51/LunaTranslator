@@ -1798,7 +1798,8 @@ class dialog_savedgame_v3(QWidget):
         pass
 
     def callexists(self, _):
-        pass
+        # 隐藏不存在开关：直接过滤刷新（不进面包屑）
+        self.gridpage.tagschanged(self.gridpage.currtags)
 
     def callchange(self, _=None):
         self.nav.setProperty(
