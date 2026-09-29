@@ -866,13 +866,19 @@ class _gridpage(QWidget):
         self.setAcceptDrops(True)
 
     def _bgclicked(self):
-        # 网格空白点击：清网格高亮 + 侧边栏选中回到主项（保持一致）
+        # 网格空白点击：清网格高亮 + 侧边栏选中回到主项（保持一致）。
+        # 不依赖信号链（_click_pending 等状态可能拦截），直接清。
         ItemWidget.clearfocus()
         self.currentfocusuid = None
-        tagid = self.reftagid
-        group = self.ref._itemfortag(tagid) if tagid is not None else None
+        self.ref.currentfocusuid = None
+        # 注意 tagid=None 是「所有游戏」的合法值，不能当无效处理
+        group = self.ref._itemfortag(self.reftagid)
         if group is not None:
-            self.ref.nav.setCurrentItem(group)
+            self.ref.nav.blockSignals(True)
+            try:
+                self.ref.nav.setCurrentItem(group)
+            finally:
+                self.ref.nav.blockSignals(False)
 
     def dragEnterEvent(self, e):
         if e.mimeData().text().startswith("lunamovegame:"):
