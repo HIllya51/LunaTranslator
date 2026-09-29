@@ -743,9 +743,9 @@ class _gamelistnav(FluentNavTree):
         uid = src.data(0, GAMEUID_ROLE)
         src_tag = src.parent().data(0, TAGID_ROLE)
         if dst_item.parent() is None:
-            # 最近目标是主项：追加为该列表末尾
+            # 最近目标是主项：上半 -> 列表最前，下半 -> 末尾
             dst_tag = dst_item.data(0, TAGID_ROLE)
-            dst_idx = dst_item.childCount()
+            dst_idx = dst_item.childCount() if below else 0
         else:
             dst_tag = dst_item.parent().data(0, TAGID_ROLE)
             base = dst_item.parent().indexOfChild(dst_item)
@@ -851,22 +851,29 @@ class _gridpage(QWidget):
 
     def _insertion_index_at(self, p):
         """内容坐标 p 处的插入索引：项间隙按行内就近（左侧最近项之后）；
-        不在任何行（下方空白）= 末尾。"""
+        最上行之上 = 最前；最下行之下 = 末尾。"""
         if not isinstance(self.flow, lazyscrollflow):
             return 0
         rl = self.ref.reallist.get(self.reftagid, [])
-        best_i, best_x = None, None
+        best_i, best_d = None, None
+        min_top = None
         for i, g in enumerate(self.flow.fakegeos):
             if not g.isValid():
                 continue
+            if min_top is None or g.top() < min_top:
+                min_top = g.top()
             if p.y() < g.top() or p.y() > g.bottom():
                 continue
-            cx = g.center().x()
-            if p.x() >= cx and (best_x is None or cx > best_x):
-                best_x, best_i = cx, i
+            d = abs(g.center().x() - p.x())
+            if best_d is None or d < best_d:
+                best_d, best_i = d, i
         if best_i is None:
-            return len(rl)
-        return min(best_i + 1, len(rl))
+            if min_top is not None and p.y() < min_top:
+                return 0  # 最上行之上 -> 最前
+            return len(rl)  # 最下行之下 -> 末尾
+        # 行内：最近项中心的左右侧决定插前/插后
+        g = self.flow.fakegeos[best_i]
+        return best_i + 1 if p.x() >= g.center().x() else best_i
 
     def showEvent(self, e):
         super().showEvent(e)
