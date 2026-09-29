@@ -549,6 +549,18 @@ class pixwrapper(QSplitter):
 TAGID_ROLE = Qt.ItemDataRole.UserRole + 5   # 列表 tagid（主项）
 GAMEUID_ROLE = TAGID_ROLE + 1               # 游戏 uid（子项）
 
+_placeholder_icon_cache = None
+
+
+def _placeholder_icon():
+    """透明占位图标：无图标的游戏也保留图标区，文字与有图标的对齐。"""
+    global _placeholder_icon_cache
+    if _placeholder_icon_cache is None:
+        pm = QPixmap(20, 20)
+        pm.fill(Qt.GlobalColor.transparent)
+        _placeholder_icon_cache = QIcon(pm)
+    return _placeholder_icon_cache
+
 _ICON_TAG_ALL = ""    # Library
 _ICON_TAG_RECENT = ""  # Recent
 _ICON_TAG_CUSTOM = ""  # List
@@ -593,8 +605,10 @@ class _gamelistnav(FluentNavTree):
                 self._icon_pending.pop(key)
                 try:
                     icon = getpixfunctionAlign(uid, small=True, iconfirst=True)
-                    icon.setDevicePixelRatio(self.devicePixelRatioF())
-                    item.setIcon(0, QIcon(icon))
+                    if not icon.isNull():
+                        icon.setDevicePixelRatio(self.devicePixelRatioF())
+                        item.setIcon(0, QIcon(icon))
+                    # 无图标：保留占位，文字仍对齐
                 except Exception:
                     print_exc()
                 if not self._icon_pending:
@@ -703,7 +717,8 @@ class dialog_savedgame_v3(QSplitter):
         # 经 configure 设 NAV_TEXT_ROLE（展开模式刷新靠它回填文字）
         self.nav.configureNavigationItem(child, title, None, "")
         child.setData(0, GAMEUID_ROLE, uid)
-        # 图标延迟按需加载（见 _gamelistnav）
+        # 先挂占位图标保证文字对齐；真图标延迟按需加载（见 _gamelistnav）
+        child.setIcon(0, _placeholder_icon())
         self.nav.request_item_icon(child, uid)
         return child
 

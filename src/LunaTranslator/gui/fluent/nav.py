@@ -85,6 +85,8 @@ class FluentNavTree(QTreeWidget):
         self.setTextElideMode(Qt.ElideRight)
         self.setProperty("navigationViewIndicator", True)
         self.setProperty("ItemHeight", 38)
+        # Gallery 同款：子项缩进 20（插件 PM_TreeViewIndentation 默认 30，偏大）
+        self.setIndentation(20)
         self.header().setSectionResizeMode(0, QHeaderView.Fixed)
         self.setHeaderHidden(True)
         self.setColumnWidth(0, self._navigation_compact_width)
