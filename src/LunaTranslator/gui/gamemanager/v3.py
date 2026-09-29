@@ -900,7 +900,10 @@ class _gridpage(QWidget):
                 continue
             self.flow.addwidget(functools.partial(self._makeitem, k))
             idx += 1
-        self.flow.directshow()
+        # directshow() 里 processEvents 会在 mousePress 栈内重入（主项点击
+        # 触发本函数），把 mouseRelease 消化掉导致主项拖拽无法启动——
+        # 用不泵事件的等价路径
+        self.flow.resizeandshow(procevent=False)
 
     def _flow_find(self, uid):
         """flow.widgets 中的索引（未实例化的 partial 工厂也携带 uid）。"""
@@ -1236,9 +1239,10 @@ class dialog_savedgame_v3(QWidget):
             pl_src.remove(uid)
         if pl_dst is not None:
             pl_dst.insert(min(_idx, len(pl_dst)), uid)
-        # 计数 + 网格同步（单项移动，不重建）
+        # 计数 + 网格同步（单项移动，不重建）——仅当网格正显示该列表
         self._updatetagtext(src_group)
-        self.gridpage.flow_move_idx(ca, _idx)
+        if self.gridpage.reftagid == src_tag:
+            self.gridpage.flow_move_idx(ca, _idx)
 
     def _tagmove(self, tagid, dst_idx):
         """主项（列表）拖动：nav 树 + savegametaged 同步重排。
@@ -1274,7 +1278,7 @@ class dialog_savedgame_v3(QWidget):
         pl = self._getreflist(tagid)
         if pl is not None and uid in pl:
             i1 = pl.index(uid)
-            i2 = pl.index(dst_uid)
+            i2 = len(pl) - 1 if dst_uid is None else pl.index(dst_uid)
             pl.insert(i2, pl.pop(i1))
         # flow.widgets / fakegeos 同步移动（单项，不重建）
         a = self.gridpage._flow_find(uid)
