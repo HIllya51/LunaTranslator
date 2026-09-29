@@ -1534,11 +1534,24 @@ class dialog_savedgame_v3(QWidget):
             child = group.child(j)
             if child.data(0, GAMEUID_ROLE) == uid:
                 if self.nav.currentItem() is not child:
-                    self.nav.setCurrentItem(child)
+                    # setCurrentItem 会让隐藏项可见——QTreeView::scrollTo 的
+                    # EnsureVisible 会展开折叠的父项。未展开的主项保持折叠，
+                    # 且自动展开/回折都不写 opened 存档
+                    was_expanded = group.isExpanded()
+                    self._suppress_navexpand = True
+                    try:
+                        self.nav.setCurrentItem(child)
+                        if not was_expanded and group.isExpanded():
+                            group.setExpanded(False)
+                    finally:
+                        self._suppress_navexpand = False
                 return
 
     def _navexpand(self, exp, item):
         if item.parent() is not None:
+            return
+        # point_game 选中隐藏子项引起的自动展开/回折不写存档
+        if getattr(self, "_suppress_navexpand", False):
             return
         # 侧栏收起（图标模式）引起的自动折叠不改列表展开存档——
         # 否则收起侧栏会把所有列表记成"已折叠"
