@@ -1321,18 +1321,6 @@ class BASEOBJECT(QObject):
         except:
             print_exc()
 
-    def setdarkandbackdrop(self, widget, dark):
-        ismenulist = isinstance(widget, (QMenu, PopupWidget)) or (
-            type(widget) == QFrame
-        )
-        if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
-            return
-        if ismenulist:
-            pass
-        else:
-            # 原"窗口特效"设置（其他界面）已删除，固定 MicaAlt（TABBEDWINDOW）
-            NativeUtils.SetTheme(int(widget.winId()), dark, 3)
-
     def checkkeypresssatisfy(self, key, df=False):
         if not globalconfig["wordclickkbtriggerneed"].get(key, df):
             return -1
@@ -1590,21 +1578,6 @@ class BASEOBJECT(QObject):
         for widget in QApplication.topLevelWidgets():
             self.giveupfocus_checked(widget)
 
-    def ismenulistframeless(self, widget: QWidget):
-        ismenulist = isinstance(widget, (QMenu, PopupWidget)) or (
-            type(widget) == QFrame
-        )
-        return ismenulist or self.__dontshowintaborsetbackdrop(widget)
-
-    def cornerornot(self, w=None):
-        __ = [w] if w else QApplication.topLevelWidgets()
-        for widget in __:
-            if self.ismenulistframeless(widget) or widget.property("fluentFrameless"):
-                # fluentFrameless：Fluent 无边框窗口由自身维护 DWMWCP_ROUND
-                continue
-            # 原"强制直角"设置（其他界面）已删除，固定直角
-            NativeUtils.SetCornerNotRound(int(widget.winId()), True, False)
-
     def setcommonstylesheet(self):
 
         dark = nowisdark()
@@ -1613,8 +1586,6 @@ class BASEOBJECT(QObject):
             self.currentisdark = dark
             for widget in QApplication.allWidgets():
                 QApplication.postEvent(widget, DarkLightChangedEvent(dark))
-            for widget in QApplication.topLevelWidgets():
-                self.setdarkandbackdrop(widget, dark)
         gui.fluent.apply_fluent_style(dark)
         # FluentUI3：子树根不得挂任何 QSS——祖先样式表会给全部后代套
         # QStyleSheetStyle 包装，导致调色板继承中断（页面发白）与析构不稳。
@@ -1786,18 +1757,18 @@ class BASEOBJECT(QObject):
             self.RichMessageBox.emit((_TR(title if title else "错误"), _TR(msg)))
 
     def _dowhenwndcreate(self, obj):
+        # 同 Gallery：FluentUI3 插件全权接管窗口外观，不做任何 DWM
+        # 窗口处理（旧的 SetWindowExtendFrame/SetTheme/SetCornerNotRound
+        # 是旧 QSS 主题的遗留，会给菜单/窗口制造系统边框与灰底）。
+        # 只保留功能性处理：Magpie 标记、任务栏显示、焦点让渡。
         if not isinstance(obj, QWidget):
             return
         hwnd = obj.winId()
         if not hwnd:  # window create/destroy,when destroy winId is None
             return
         windows.SetProp(int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1))
-        self.cornerornot(obj)
         self.setshowintab_checked(obj)
         self.giveupfocus_checked(obj)
-        NativeUtils.SetWindowExtendFrame(int(hwnd))
-        if self.currentisdark is not None:
-            self.setdarkandbackdrop(obj, self.currentisdark)
 
     def eventFilter(self, obj: QObject, event: QEvent):
         if event.type() == QEvent.Type.LanguageChange:

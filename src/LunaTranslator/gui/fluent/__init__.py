@@ -66,6 +66,7 @@ def apply_fluent_style(dark):
     # 无条件 setFont 会恢复 app 字体，但弹出容器内的视图与常驻菜单不跟随——额外恢复
     QTimer.singleShot(0, _restore_combo_view_fonts)
     _install_menu_font_gate()
+    _install_exec_menu_gate()
     _applied_key = key
 
 
@@ -116,6 +117,46 @@ def _install_menu_font_gate():
     _app = QApplication.instance()
     _menu_font_gate = _Gate(_app)
     _app.installEventFilter(_menu_font_gate)
+
+
+_exec_menu_gate = None
+
+
+def _install_exec_menu_gate():
+    """QLineEdit/QPlainTextEdit/QComboBox 的标准右键菜单改走 exec()。
+
+    同 PyQt5Examples 的 StandardContextMenuFilter（对应 C++ Gallery 重写的
+    各 contextMenuEvent）：Qt 默认路径用 QMenu::popup()——窗口在 show 过程
+    中创建，DWM 首次合成会给菜单画上系统边框（右/下侧，首个 hwnd 每次
+    首次显示可见）；exec() 先 createWinId() 再显示，无此问题（spinbox 的
+    菜单正是 exec 路径）。QSpinBox 不拦（本来就正常）。"""
+    global _exec_menu_gate
+    if _exec_menu_gate is not None:
+        return
+    from qtsymbols import QEvent, QObject, Qt, QLineEdit, QPlainTextEdit, QComboBox
+
+    class _Gate(QObject):
+        def eventFilter(self, watched, ev):
+            if ev.type() != QEvent.ContextMenu:
+                return False
+            if watched.contextMenuPolicy() != Qt.ContextMenuPolicy.DefaultContextMenu:
+                return False
+            menu = None
+            if isinstance(watched, QLineEdit):
+                menu = watched.createStandardContextMenu()
+            elif isinstance(watched, QPlainTextEdit):
+                menu = watched.createStandardContextMenu(ev.pos())
+            elif isinstance(watched, QComboBox) and watched.lineEdit() is not None:
+                menu = watched.lineEdit().createStandardContextMenu()
+            if menu is None:
+                return False
+            menu.setAttribute(Qt.WA_DeleteOnClose)
+            menu.exec_(ev.globalPos())
+            return True
+
+    _app = QApplication.instance()
+    _exec_menu_gate = _Gate(_app)
+    _app.installEventFilter(_exec_menu_gate)
 
 
 def _restore_combo_view_fonts():
