@@ -1390,34 +1390,18 @@ def D_getsimpleswitch(
 
 
 def getColor(color, parent, alpha=False, title=None):
+    # Fluent 取色器（WinUI3 CommunityToolkit ColorPicker 移植，
+    # 见 gui/fluent/colorpicker.py），替换原 QColorDialog 魔改
+    from gui.fluent.colorpicker import FluentColorDialog
 
-    color_dialog = QColorDialog(parent)
+    color_dialog = FluentColorDialog(parent)
     if title:
         color_dialog.setWindowTitle(_TR(title))
-    if alpha:
-        color_dialog.setOption(QColorDialog.ColorDialogOption.ShowAlphaChannel, True)
-    color_dialog.setCurrentColor(QColor(color))
-
-    layout = color_dialog.layout()
-    colorpicker = layout.itemAt(0).layout().itemAt(0).takeAt(2)
-    clearlayout(layout.itemAt(0).layout().takeAt(0))
-    layout = layout.itemAt(0).layout().itemAt(0).layout().itemAt(2).widget().layout()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-    layout.takeAt(1).widget().hide()
-
-    if alpha:
-        layout.takeAt(layout.count() - 1).widget().hide()
-        layout.takeAt(layout.count() - 1).widget().hide()
-    color_dialog.layout().insertItem(0, colorpicker)
-    color_dialog.layout().itemAt(color_dialog.layout().count() - 1).widget().setFocus()
-
-    if color_dialog.exec() != QColorDialog.DialogCode.Accepted:
+    color_dialog.setAlphaEnabled(alpha)
+    color_dialog.setColor(QColor(color))
+    if color_dialog.exec() != QDialog.DialogCode.Accepted:
         return QColor()
-    return color_dialog.selectedColor()
+    return color_dialog.color()
 
 
 def _selectcolor(
