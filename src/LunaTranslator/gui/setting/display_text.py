@@ -619,11 +619,7 @@ def xianshigrid_style(self):
                     callback=mayberealtimesetfont,
                     default=16,
                 ),
-                D_getIconButton(
-                    icon="fa.paint-brush",
-                    callback=gobject.base.switchtotspage.emit,
-                    tips="颜色",
-                ),
+                lambda: _translate_color_button(self),
                 D_getIconSwitch(
                     globalconfig,
                     "showbold_trans",
@@ -741,3 +737,34 @@ def xianshigrid_style(self):
         ]
     )
     return textgrid
+
+
+def _current_translate_color():
+    """当前显示顺序里第一个启用的译器颜色（与渲染端 TranslateColor
+    的取值口径一致）。"""
+    from myutils.utils import translate_exits
+
+    for uid in globalconfig["fix_translate_rank_rank"]:
+        if (
+            uid in globalconfig["fanyi"]
+            and globalconfig["fanyi"][uid].get("use")
+            and translate_exits(uid)
+        ):
+            return globalconfig["fanyi"][uid].get("color", "#ff0000")
+    return "#ff0000"
+
+
+def _translate_color_button(parent):
+    """译文颜色的指示按钮：外观同 ColorPickerButton（色块+箭头），
+    色块显示当前生效译器的颜色；不带取色功能，点击跳转翻译设置
+    （switchtotspage）。"""
+    from gui.fluent.colorpicker import ColorPickerButton
+    from PyQt5.QtWidgets import QAction
+
+    btn = ColorPickerButton()
+    btn.setSelectedColor(QColor(_current_translate_color()))
+    act = QAction(btn)
+    act.triggered.connect(gobject.base.switchtotspage.emit)
+    btn.setDefaultAction(act)
+    btn.setToolTip(_TR("颜色"))
+    return btn

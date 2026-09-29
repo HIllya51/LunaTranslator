@@ -1081,6 +1081,11 @@ class ColorPickerButton(QToolButton):
         self.selectedColorChanged.emit(QColor(color))
 
     def _show_picker(self):
+        action = self.defaultAction()
+        if action is not None:
+            # 挂了 defaultAction = 跳转指示按钮（无取色功能）：执行动作
+            action.trigger()
+            return
         self._ensure_picker()
         self._picker.showPopup(self)
 
