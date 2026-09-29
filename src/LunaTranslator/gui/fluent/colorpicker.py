@@ -43,17 +43,31 @@ from qtsymbols import (
     QBrush,
 )
 
-from PyQt5.QtWidgets import QStyleOptionSlider, QStyleOptionToolButton
+from PyQt5.QtWidgets import QStyleOptionSlider, QStyleOptionToolButton, QStyleOption
 from PyQt5.QtGui import QLinearGradient
 
 from gui.dynalang import LLabel, LPushButton, LDialog
 from gui.fluent.tabwidget import apply_segmented_tabbar_style
-from gui.fluent.expander import _exp_card_background, _exp_card_border
+
+# ---- 飞层登记（非客户区点击关闭用） ----
+_open_flyouts = []
+_nc_closer = None
+
+
+def close_color_flyouts():
+    """关闭所有打开的颜色飞层（无边框窗口的非客户区点击由
+    gui/fluent/frameless.py 的 WM_NCLBUTTONDOWN 处理调用）。"""
+    for flyout in list(_open_flyouts):
+        try:
+            flyout.hide()
+        except RuntimeError:
+            _open_flyouts.remove(flyout)
+
 
 # Segoe Fluent Icons：ChevronDown（ColorPickerButton 右端箭头）
 _ICON_CHEVRON_DOWN = ""
 _FLYOUT_WIDTH = 360
-_CORNER_RADIUS = 8
+_SHADOW_MARGIN = 8
 
 # ---- 常量（同 excolorpicker.cpp 匿名命名空间）----
 _CHANNEL_THICKNESS = 24
@@ -473,13 +487,18 @@ class FluentColorPicker(QWidget):
         self._h, self._s, self._v, self._a = self._color.getHsvF()
 
         if popup:
-            # 飞层形态（ColorPickerButton 弹出）：无边框弹层 + 自绘圆角卡
+            # 飞层形态（ColorPickerButton 弹出）：无边框弹层，卡片表面由
+            # 插件 PE_FluentFlyoutSurface 绘制（阴影区=边距 8）
             self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
             self.setAttribute(Qt.WA_TranslucentBackground)
-            self.setFixedWidth(_FLYOUT_WIDTH)
+            self.setFixedWidth(_FLYOUT_WIDTH + 2 * _SHADOW_MARGIN)
 
         root = QVBoxLayout(self)
-        root.setContentsMargins(10, 10, 10, 10) if popup else root.setContentsMargins(12, 8, 12, 12)
+        if popup:
+            root.setContentsMargins(_SHADOW_MARGIN + 12, _SHADOW_MARGIN + 8,
+                                    _SHADOW_MARGIN + 12, _SHADOW_MARGIN + 12)
+        else:
+            root.setContentsMargins(12, 8, 12, 12)
         root.setSpacing(8)
 
         # 当前色预览条
@@ -514,6 +533,9 @@ class FluentColorPicker(QWidget):
         self._apply_color(self._color, False, True)
         self._tabbar.setCurrentIndex(0)
         self._stack.setCurrentIndex(0)
+        if popup:
+            # 保持固定宽（sizeHint 宽度不含布局约束），高度按布局收紧
+            self.adjustSize()
 
     # ---- UI ----
     def _setup_spectrum_page(self):
@@ -622,29 +644,60 @@ class FluentColorPicker(QWidget):
         if not self._popup_mode:
             super().paintEvent(event)
             return
+        # 同 C++ ExColorPicker::paintEvent(popup)：卡片表面交给插件的
+        # PE_FluentFlyoutSurface（WinUI 飞层阴影 + 圆角 + 描边）绘制，
+        # 阴影画在边距(8px)的透明区里
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
-        bounds = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
-        path = QPainterPath()
-        path.addRoundedRect(bounds, _CORNER_RADIUS, _CORNER_RADIUS)
-        p.fillPath(path, _exp_card_background(self.palette()))
-        p.setBrush(Qt.NoBrush)
-        p.setPen(QPen(_exp_card_border(self.palette()), 1))
-        p.drawPath(path)
+        card = self.rect().adjusted(
+            _SHADOW_MARGIN - 1, _SHADOW_MARGIN, -_SHADOW_MARGIN, -_SHADOW_MARGIN)
+        opt = QStyleOption()
+        opt.initFrom(self)
+        opt.rect = card
+        self.style().drawPrimitive(
+            QStyle.PrimitiveElement(QStyle.PE_CustomBase + 1), opt, p, self)
 
     def isPopupMode(self):
         return self._popup_mode
 
     def showPopup(self, anchor):
-        """在 anchor（颜色按钮）上方弹出飞层。"""
+        """在 anchor（颜色按钮）上方弹出飞层（同 C++ showPopup）：
+        飞层外框左缘=按钮左缘-阴影边距、外框底缘=按钮顶缘——即卡片左缘
+        与按钮左缘对齐、卡片底缘距按钮 8px。上方放不下时回退到下方，
+        并钳制在屏幕工作区内。"""
         if not self._popup_mode or anchor is None:
             return
         self.adjustSize()
-        topleft = anchor.mapToGlobal(QPoint(0, 0))
-        self.move(topleft.x() - 6, topleft.y() - self.height())
+        anchor_pos = anchor.mapToGlobal(QPoint(0, 0))
+        screen = None
+        window = anchor.window()
+        if window is not None and window.windowHandle() is not None:
+            screen = window.windowHandle().screen()
+        if screen is None:
+            screen = QApplication.primaryScreen()
+        avail = screen.availableGeometry()
+
+        x = anchor_pos.x() - _SHADOW_MARGIN
+        y = anchor_pos.y() - self.height()
+        if y < avail.top():
+            # 上方放不下 → 放到按钮下方（内部边距 8px 即为与按钮的间隙）
+            y = anchor_pos.y() + anchor.height()
+        # 屏内钳制（阴影边距允许出屏，卡片保住）
+        x = max(avail.left() - _SHADOW_MARGIN,
+                min(x, avail.right() + 1 - self.width() + _SHADOW_MARGIN))
+        y = max(avail.top() - _SHADOW_MARGIN,
+                min(y, avail.bottom() + 1 - self.height() + _SHADOW_MARGIN))
+        self.move(x, y)
+        if self not in _open_flyouts:
+            _open_flyouts.append(self)
         self.show()
         self.raise_()
         self.activateWindow()
+
+    def hideEvent(self, event):
+        if self in _open_flyouts:
+            _open_flyouts.remove(self)
+        super().hideEvent(event)
 
     def color(self):
         c = QColor(self._color.toRgb())

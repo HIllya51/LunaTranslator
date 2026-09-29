@@ -22,6 +22,7 @@ WM_NCCALCSIZE = 0x0083
 WM_NCHITTEST = 0x0084
 WM_NCRBUTTONUP = 0x00A5
 WM_SYSCOMMAND = 0x0112
+WM_NCLBUTTONDOWN = 0x00A1
 WM_NCDESTROY = 0x0082
 WM_UAHDESTROYWINDOW = 0x0090        # 未公开消息
 WM_UNREGISTER_WINDOW_SERVICES = 0x0272  # 未公开消息
@@ -213,6 +214,13 @@ class FluentFramelessWindowMixin:
                 result = self._hit_test(int(msg.lParam))
                 if result is not None:
                     return True, result
+
+            if msg.message == WM_NCLBUTTONDOWN:
+                # 非客户区（标题栏/边框）按下——Qt::Popup 的鼠标抓取收不到
+                # 非客户区点击，颜色取色飞层会残留，在这里手动关闭
+                from gui.fluent.colorpicker import close_color_flyouts
+
+                close_color_flyouts()
 
             if msg.message == WM_NCRBUTTONUP:
                 # Qt 会把 WM_NCRBUTTONUP 转成 QContextMenuEvent（DefWindowProc
