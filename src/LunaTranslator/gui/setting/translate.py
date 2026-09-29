@@ -465,8 +465,16 @@ tscolor_setting_collector: "list[IconButtonWithOverlay]" = []
 
 
 def show_tscolor_setting_guide():
+    # 页签懒加载重建后，旧收集项的 C++ 对象可能已被删除——
+    # 挨个尝试并清掉死引用（自愈，不再对已删除控件抛 RuntimeError）
+    dead = []
     for _ in tscolor_setting_collector:
-        _.guide.show_at(_)
+        try:
+            _.guide.show_at(_)
+        except RuntimeError:
+            dead.append(_)
+    for _ in dead:
+        tscolor_setting_collector.remove(_)
 
 
 class IconButtonWithOverlay(ColorButton):
