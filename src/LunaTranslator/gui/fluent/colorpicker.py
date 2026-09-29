@@ -539,7 +539,6 @@ class FluentColorPicker(QWidget):
         for glyph, tip in ((_ICON_SPECTRUM, "光谱"), (_ICON_PALETTE, "色板"),
                            (_ICON_SLIDERS, "滑条")):
             self._tabbar.addTab(glyph)
-            self._tabbar.setTabToolTip(self._tabbar.count() - 1, _TR(tip))
         root.addWidget(self._tabbar)
 
         self._stack = QStackedWidget(self)
