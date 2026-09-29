@@ -652,6 +652,7 @@ class _gridpage(QWidget):
         super().__init__()
         self.ref = ref
         self.reftagid = None
+        self._loaded = False  # 区分"未显示过"与"显示所有游戏(None)"
         self.reflist = []
         self.currtags = tuple()
         self.currentfocusuid = None
@@ -694,6 +695,7 @@ class _gridpage(QWidget):
 
     def showtag(self, tagid):
         self.reftagid = tagid
+        self._loaded = True
         # 与建树同款三分支（getreflist(None) 会返回哨兵 1，不可迭代）
         if tagid is None:
             self.reflist = savehook_new_list
@@ -993,11 +995,15 @@ class dialog_savedgame_v3(QWidget):
             self.currentfocusuid = uid
             self.gridpage.focusgame(uid)
         else:
-            # 主项：右侧切网格页（大图表），展示该列表
+            # 主项：右侧切网格页（大图表），展示该列表。
+            # 网格已在该列表（子项→主项返回）时不重建，只清高亮
             tagid = item.data(0, TAGID_ROLE)
             self.reftagid = tagid
             self.currentfocusuid = None
-            self.gridpage.showtag(tagid)
+            if (not self.gridpage._loaded) or (self.gridpage.reftagid != tagid):
+                self.gridpage.showtag(tagid)
+            else:
+                ItemWidget.clearfocus()
             self.stack.setCurrentWidget(self.gridpage)
 
     def _navdouble(self, item, _col):
