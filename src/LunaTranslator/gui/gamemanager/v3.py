@@ -4,6 +4,7 @@ from functools import cmp_to_key
 from traceback import print_exc
 from myutils.config import (
     savehook_new_list,
+    _TR,
     savehook_new_data,
     savegametaged,
     get_launchpath,
@@ -654,6 +655,7 @@ class _gridpage(QWidget):
         self.reflist = []
         self.currtags = tuple()
         self.currentfocusuid = None
+        self._focus_programmatic = False
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
@@ -712,8 +714,8 @@ class _gridpage(QWidget):
 
     def _itemfocus(self, b, k):
         self.currentfocusuid = k if b else None
-        if b:
-            # 图表单击：侧栏指向该游戏（_navcurrent 接管切页与加载）
+        if b and not getattr(self, "_focus_programmatic", False):
+            # 图表单击：侧栏指向该游戏（focusgame 的被动高亮不回写）
             self.ref.point_game(k)
 
     def tagschanged(self, tags):
@@ -775,6 +777,22 @@ class _gridpage(QWidget):
             self.flow.addwidget(functools.partial(self._makeitem, k))
             idx += 1
         self.flow.directshow()
+
+    def focusgame(self, uid):
+        """侧栏选中子项时，网格页中对应图表高亮（懒加载未创建的项忽略）。
+        高亮是被动联动：不回写侧栏（同一游戏可能在多个列表，回写会把
+        选中拉到当前网格列表里的同名子项上）。"""
+        if not isinstance(self.flow, lazyscrollflow):
+            return
+        self._focus_programmatic = True
+        try:
+            ItemWidget.clearfocus()
+            for w in self.flow.widgets:
+                if isinstance(w, ItemWidget) and w.gameuid == uid:
+                    w.click()
+                    return
+        finally:
+            self._focus_programmatic = False
 
     def _keypressed(self, e):
         if self.currentfocusuid:
@@ -903,11 +921,12 @@ class dialog_savedgame_v3(QWidget):
         return _ICON_TAG_CUSTOM
 
     def _tagtitle(self, tagid):
+        # 内置两项动态 i18n（updatelangtext 刷新）；自定义列表名不翻译
         if tagid is None:
-            return "所有游戏"
+            return _TR("所有游戏")
         if tagid == 1:
-            return "最近游戏"
-        return "[[{}]]".format(savegametaged[calculatetagidx(tagid)]["title"])
+            return _TR("最近游戏")
+        return savegametaged[calculatetagidx(tagid)]["title"]
 
     def _addtagitem(self, index, tagid, opened):
         self.reallist[tagid] = []
@@ -952,9 +971,10 @@ class dialog_savedgame_v3(QWidget):
             return
         uid = item.data(0, GAMEUID_ROLE)
         if uid:
+            # 单击子项：只更新状态并联动网格高亮（不打开画廊——双击才打开）
             self.reftagid = item.parent().data(0, TAGID_ROLE)
-            self.viewitem(uid)
-            self.stack.setCurrentWidget(self.righttop)
+            self.currentfocusuid = uid
+            self.gridpage.focusgame(uid)
         else:
             # 主项：右侧切网格页（大图表），展示该列表
             tagid = item.data(0, TAGID_ROLE)
@@ -962,6 +982,13 @@ class dialog_savedgame_v3(QWidget):
             self.currentfocusuid = None
             self.gridpage.showtag(tagid)
             self.stack.setCurrentWidget(self.gridpage)
+
+    def _navdouble(self, item, _col):
+        uid = item.data(0, GAMEUID_ROLE)
+        if not uid:
+            return
+        self.viewitem(uid)
+        self.stack.setCurrentWidget(self.righttop)
 
     def point_game(self, uid):
         """网格页图表点击：侧栏指向该游戏子项（_navcurrent 接管切页加载）。"""
@@ -971,10 +998,7 @@ class dialog_savedgame_v3(QWidget):
         for j in range(group.childCount()):
             child = group.child(j)
             if child.data(0, GAMEUID_ROLE) == uid:
-                if self.nav.currentItem() is child:
-                    # 已选中（如从该子项所属主项的网格点击它）：确保切页
-                    self.stack.setCurrentWidget(self.righttop)
-                else:
+                if self.nav.currentItem() is not child:
                     self.nav.setCurrentItem(child)
                 return
 
@@ -1111,6 +1135,7 @@ class dialog_savedgame_v3(QWidget):
         self.nav.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.nav.customContextMenuRequested.connect(self.nav_showmenu)
         self.nav.currentItemChanged.connect(self._navcurrent)
+        self.nav.itemDoubleClicked.connect(self._navdouble)
         self.nav.itemExpanded.connect(functools.partial(self._navexpand, True))
         self.nav.itemCollapsed.connect(functools.partial(self._navexpand, False))
         self.setstyle()
@@ -1161,7 +1186,6 @@ class dialog_savedgame_v3(QWidget):
         lay.addWidget(self.stack, 1)
         self.setObjectName("NOBORDER")
 
-        isfirst = True
         for i, tag in enumerate(savegametaged):
             if tag is None:
                 lst = savehook_new_list
@@ -1182,18 +1206,32 @@ class dialog_savedgame_v3(QWidget):
                     if not os.path.exists(get_launchpath(k)):
                         continue
                 self.reallist[tagid].append(k)
-                child = self._makegameitem(k)
-                group0.addChild(child)
-                if opened and isfirst and (rowreal == 0):
-                    self.nav.setCurrentItem(child)
-                    isfirst = False
+                group0.addChild(self._makegameitem(k))
                 rowreal += 1
             self._updatetagtext(group0)
+        # 初始聚焦第一个（展开的）主项：右侧先显示网格页，而非游戏子项
+        first = None
+        for i in range(self.nav.topLevelItemCount()):
+            it = self.nav.topLevelItem(i)
+            if it.childCount() and it.isExpanded():
+                first = it
+                break
+        if first is None and self.nav.topLevelItemCount():
+            first = self.nav.topLevelItem(0)
+        if first is not None:
+            self.nav.setCurrentItem(first)
         # 树建好后应用存档的折叠/展开：图标模式会折叠全部父项并把
         # 选中的子项提升到顶层（指示条位置正确）
         self.nav.setNavigationExpanded(
             not globalconfig.get("gamemanager_nav_collapsed", False), animated=False
         )
+
+    def updatelangtext(self):
+        # 语言切换：内置列表项（所有游戏/最近游戏）刷新；自定义列表名不翻译
+        for i in range(self.nav.topLevelItemCount()):
+            item = self.nav.topLevelItem(i)
+            if item.data(0, TAGID_ROLE) in (None, 1):
+                self._updatetagtext(item)
 
     def _toggle_nav(self):
         exp = not self.nav.navigationExpanded()
