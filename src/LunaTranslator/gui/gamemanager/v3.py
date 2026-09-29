@@ -663,6 +663,14 @@ class _gamelistnav(FluentNavTree):
         # 单击的页面动作延迟到双击窗口后（双击会取消）
         self._click_pending = True
         self._click_timer.start()
+        if (
+            self._dragitem is not None
+            and self._dragitem.parent() is None
+            and self._dragitem is self.currentItem()
+        ):
+            # 点击的已是当前主项（如双击展开后再单击）：
+            # currentItemChanged 不会触发，手动记录延迟动作
+            self._deferred_item = self._dragitem
         return super().mousePressEvent(ev)
 
     def _flush_click(self):
@@ -1526,26 +1534,17 @@ class dialog_savedgame_v3(QWidget):
         self.stack.setCurrentWidget(self.righttop)
 
     def point_game(self, uid):
-        """网格页图表点击：侧栏指向该游戏子项（_navcurrent 接管切页加载）。"""
+        """网格页图表点击：选中留在主项上（不跳到子项），仅更新聚焦状态；
+        网格高亮由 ItemWidget.click 的 focuschanged 链完成。"""
         group = self._itemfortag(self.gridpage.reftagid)
         if group is None:
             return
-        for j in range(group.childCount()):
-            child = group.child(j)
-            if child.data(0, GAMEUID_ROLE) == uid:
-                if self.nav.currentItem() is not child:
-                    # setCurrentItem 会让隐藏项可见——QTreeView::scrollTo 的
-                    # EnsureVisible 会展开折叠的父项。未展开的主项保持折叠，
-                    # 且自动展开/回折都不写 opened 存档
-                    was_expanded = group.isExpanded()
-                    self._suppress_navexpand = True
-                    try:
-                        self.nav.setCurrentItem(child)
-                        if not was_expanded and group.isExpanded():
-                            group.setExpanded(False)
-                    finally:
-                        self._suppress_navexpand = False
-                return
+        self.currentfocusuid = uid
+        self.reftagid = group.data(0, TAGID_ROLE)
+        if self.nav.currentItem() is not group:
+            # 选中主项（_navcurrent 主项分支：同列表不重建网格）
+            self.nav.setCurrentItem(group)
+            self.currentfocusuid = uid  # 主项分支会清聚焦，补回
 
     def _navexpand(self, exp, item):
         if item.parent() is not None:
