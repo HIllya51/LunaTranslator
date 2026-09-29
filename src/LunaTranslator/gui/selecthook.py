@@ -147,7 +147,7 @@ class searchhookparam(LDialog):
             # usestruct.codepage=self.codepage.value()
             usestruct.text = self.searchtext.text()[:30]
             if len(usestruct.text) < 3:
-                ExMessageBox.information(self, _TR("警告"), _TR("搜索文本过短！"))
+                ExMessageBox.warning(self, _TR("警告"), _TR("搜索文本过短！"))
                 return
         elif idx == 2:
             for k, widget in self.regists.items():
@@ -165,7 +165,7 @@ class searchhookparam(LDialog):
                 try:
                     p = pattern.replace(" ", "").replace("??", "11")
                     if ("?" in p) or (len(p) % 2 != 0):
-                        ExMessageBox.information(self, _TR("警告"), _TR("无效"))
+                        ExMessageBox.warning(self, _TR("警告"), _TR("无效"))
                         raise Exception()
                     bs = bytes.fromhex(p)
                     usestruct.pattern = bs[:30]

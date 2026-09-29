@@ -577,9 +577,9 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                         text += "\n"
                     text += e.args[1]
                 print(title, text)
-                ExMessageBox.information(self, title, text)
+                ExMessageBox.critical(self, title, text)
             else:
-                ExMessageBox.information(self, str(type(e))[8:-2], str(e))
+                ExMessageBox.critical(self, str(type(e))[8:-2], str(e))
 
     def createobject(self, line: "dict", dd: "dict[dict,str|dict]", sub=False):
         if "k" in line:
