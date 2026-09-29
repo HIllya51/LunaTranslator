@@ -1122,7 +1122,7 @@ class _gridpage(QWidget):
             self.flow.addwidget(functools.partial(self._makeitem, k))
 
     def _apply_tag_filter(self):
-        """隐藏不匹配项（网格 + 侧边栏子项），不销毁 flow。"""
+        """隐藏不匹配项（网格 + 侧边栏子项 + 主项计数），不销毁 flow。"""
         tags = self.currtags
         # 网格
         for i, w in enumerate(self.flow.widgets):
@@ -1135,7 +1135,7 @@ class _gridpage(QWidget):
                 continue
             self.flow.setWidgetHidden(i, not self._matches_tags(uid, tags))
         self.flow.resizeandshow()
-        # 侧边栏
+        # 侧边栏子项 + 主项计数
         nav = self.ref.nav
         for ti in range(nav.topLevelItemCount()):
             top = nav.topLevelItem(ti)
@@ -1145,6 +1145,7 @@ class _gridpage(QWidget):
                 if uid is None:
                     continue
                 child.setHidden(not self._matches_tags(uid, tags))
+            self.ref._updatetagtext(top)
 
     def tagschanged(self, tags):
         """tag 变化：更新过滤（隐藏/显示），不销毁重建 flow。"""
@@ -1169,14 +1170,18 @@ class _gridpage(QWidget):
         return None
 
     def flow_move_idx(self, i1, i2):
-        """网格内单项移动（不重建整个 flow）。"""
+        """网格内单项移动（不重建整个 flow）。结构变化后 hidden 索引失效，
+        需重算过滤。"""
         if not isinstance(self.flow, lazyscrollflow):
             return
         if i1 == i2 or i1 < 0 or i2 < 0:
             return
         self.flow.widgets.insert(i2, self.flow.widgets.pop(i1))
         self.flow.fakegeos.insert(i2, self.flow.fakegeos.pop(i1))
-        self.flow.resizeandshow()
+        if self.currtags:
+            self._apply_tag_filter()
+        else:
+            self.flow.resizeandshow()
 
     def flow_remove(self, uid):
         """从网格移除一项（跨列表移出时；不重建）。"""
@@ -1188,17 +1193,22 @@ class _gridpage(QWidget):
         if isinstance(w, QWidget):
             w.hide()
             w.deleteLater()
-        self.flow.resizeandshow()
+        if self.currtags:
+            self._apply_tag_filter()
+        else:
+            self.flow.resizeandshow()
 
     def flow_insert(self, uid, idx):
-        """网格插入一项（跨列表移入当前列表时；不重建）。
-        reflist 即持久列表引用，数据层由 _navmove 维护，这里只动 flow。"""
+        """网格插入一项（跨列表移入当前列表时；不重建）。"""
         if not isinstance(self.flow, lazyscrollflow):
             return
         idx = min(max(idx, 0), len(self.flow.widgets))
         self.flow.widgets.insert(idx, functools.partial(self._makeitem, uid))
         self.flow.fakegeos.insert(idx, QRect())
-        self.flow.resizeandshow()
+        if self.currtags:
+            self._apply_tag_filter()
+        else:
+            self.flow.resizeandshow()
 
     def focusgame(self, uid):
         """侧栏选中子项时，网格页对应图表高亮并滚动到可视区。
@@ -1484,10 +1494,18 @@ class dialog_savedgame_v3(QWidget):
 
     def _updatetagtext(self, item):
         tagid = item.data(0, TAGID_ROLE)
-        n = len(self.reallist.get(tagid, []))
+        total = len(self.reallist.get(tagid, []))
+        gp = self.gridpage
+        if gp.currtags:
+            visible = sum(
+                1 for uid in self.reallist.get(tagid, [])
+                if gp._matches_tags(uid, gp.currtags))
+            count = "{}/{}".format(visible, total)
+        else:
+            count = str(total)
         self.nav.configureNavigationItem(
             item,
-            "{} ({})".format(self._tagtitle(tagid), n),
+            "{} ({})".format(self._tagtitle(tagid), count),
             None,
             self._tagicon(tagid),
         )
