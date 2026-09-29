@@ -67,6 +67,8 @@ class FluentNavTree(QTreeWidget):
         self._navigation_compact_width = 44
         self._navigation_expanded_width = 200
         self._restorable_child = None
+        # 双击才展开/折叠父项（单击只选中）；默认关闭=单击选中并展开
+        self._expand_on_doubleclick = False
 
         self.setAnimated(True)
         self.setIconSize(QSize(20, 20))
@@ -277,6 +279,11 @@ class FluentNavTree(QTreeWidget):
         # 隐藏，父项仅作为普通项选中
         if (index.isValid() and self.model().hasChildren(index)
                 and not self.property("navigationIconMode")):
+            if self._expand_on_doubleclick:
+                # 双击展开模式：单击仅选中（展开/折叠交给 itemDoubleClicked）
+                self.setCurrentIndex(index)
+                event.accept()
+                return
             is_current = (self.currentIndex() == index)
             self.setCurrentIndex(index)
             if is_current:

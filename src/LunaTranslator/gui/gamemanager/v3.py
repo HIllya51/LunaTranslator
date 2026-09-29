@@ -587,6 +587,8 @@ class _gamelistnav(FluentNavTree):
         self.setAcceptDrops(True)
         self._dragitem = None
         self._dragpos = None
+        # 双击才展开/折叠主项（单击只选中切网格页）
+        self._expand_on_doubleclick = True
         self._icon_pending = {}
         self._icon_timer = QTimer(self)
         self._icon_timer.setInterval(25)
@@ -804,7 +806,40 @@ class _gridpage(QWidget):
             e.ignore()
             return
         e.acceptProposedAction()
-        self.ref._gridmove(txt.split(":", 1)[1], None)
+        uid = txt.split(":", 1)[1]
+        # 内容坐标（viewport + 滚动偏移）
+        p = self.flow.mapFrom(self, e.pos())
+        p = QPoint(
+            p.x() + self.flow.horizontalScrollBar().value(),
+            p.y() + self.flow.verticalScrollBar().value(),
+        )
+        self.ref._gridmove_to(uid, self._insertion_index_at(p))
+
+    def _insertion_index_at(self, p):
+        """内容坐标 p 处的插入索引：项间隙按行内就近（左侧最近项之后）；
+        不在任何行（下方空白）= 末尾。"""
+        if not isinstance(self.flow, lazyscrollflow):
+            return 0
+        rl = self.ref.reallist.get(self.reftagid, [])
+        best_i, best_x = None, None
+        for i, g in enumerate(self.flow.fakegeos):
+            if not g.isValid():
+                continue
+            if p.y() < g.top() or p.y() > g.bottom():
+                continue
+            cx = g.center().x()
+            if p.x() >= cx and (best_x is None or cx > best_x):
+                best_x, best_i = cx, i
+        if best_i is None:
+            return len(rl)
+        return min(best_i + 1, len(rl))
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        # 初始化时 showtag 发生在本页显示之前（尺寸为 0），fakegeos 全无效
+        # ——显示时重算一次布局
+        if isinstance(self.flow, lazyscrollflow):
+            self.flow.resizeandshow(procevent=False)
 
     def showmenu(self, p):
         # 网格页右键：图表上（右键按下已先触发 click 选中）-> 游戏菜单；
@@ -1259,56 +1294,76 @@ class dialog_savedgame_v3(QWidget):
         self.nav.setCurrentItem(item)
 
     def _gridmove(self, uid, dst_uid):
-        """网格页拖动排序：flow + reallist + 持久列表 + nav 树四方同步。
-        dst_uid=None 表示移到末尾（拖到空白处）。"""
+        """网格项拖到另一图表上：移到目标之后一位。"""
+        lst = self.reallist.get(self.gridpage.reftagid) or []
+        if dst_uid is None or dst_uid not in lst or uid not in lst:
+            self._gridmove_to(uid, len(lst))
+            return
+        iu = lst.index(uid)
+        idst = lst.index(dst_uid)
+        # remove(uid) 后目标会前移一位（当 uid 原在目标之前）
+        self._gridmove_to(uid, idst + 1 if iu > idst else idst)
+
+    def _gridmove_to(self, uid, idx):
+        """网格内把 uid 移到 reallist 的 idx 位置（0..len，len=末尾）。
+        flow + reallist + 持久列表 + nav 树四方同步（单项，不重建）。
+        所有同步都以"移动后 uid 的后一项"为参照锚点——pl/flow 与
+        reallist 的项集可能不同（过滤/懒加载），裸索引换算会错位。"""
         tagid = self.gridpage.reftagid
         if tagid == 1:
             return  # 最近游戏不排序
         lst = self.reallist.get(tagid)
         if not lst or uid not in lst:
             return
-        i1 = lst.index(uid)
-        if dst_uid is None:
-            i2 = len(lst) - 1
-        else:
-            if dst_uid not in lst:
-                return
-            i2 = lst.index(dst_uid)
-        lst.insert(i2, lst.pop(i1))
+        lst.remove(uid)
+        idx = max(0, min(idx, len(lst)))
+        lst.insert(idx, uid)
+        nxt = lst[idx + 1] if idx + 1 < len(lst) else None
+        prv = lst[idx - 1] if idx > 0 else None
+        # 持久列表：参照锚点插入（可能含 reallist 没有的项）
         pl = self._getreflist(tagid)
         if pl is not None and uid in pl:
-            i1 = pl.index(uid)
-            i2 = len(pl) - 1 if dst_uid is None else pl.index(dst_uid)
-            pl.insert(i2, pl.pop(i1))
-        # flow.widgets / fakegeos 同步移动（单项，不重建）
+            pl.remove(uid)
+            if nxt is not None and nxt in pl:
+                pl.insert(pl.index(nxt), uid)
+            elif prv is not None and prv in pl:
+                pl.insert(pl.index(prv) + 1, uid)
+            else:
+                pl.append(uid)
+        # flow.widgets / fakegeos（工厂也支持参照）
+        fw = self.gridpage.flow
         a = self.gridpage._flow_find(uid)
-        b = (len(self.gridpage.flow.widgets) - 1 if dst_uid is None
-             else self.gridpage._flow_find(dst_uid))
-        if a is not None and b is not None:
-            self.gridpage.flow_move_idx(a, b)
-        # nav 树同步（同列表内移动；dst=None 移到末尾）
+        if a is not None:
+            w = fw.widgets.pop(a)
+            g = fw.fakegeos.pop(a)
+            nxtf = self.gridpage._flow_find(nxt) if nxt else None
+            if nxtf is not None:
+                fw.widgets.insert(nxtf, w)
+                fw.fakegeos.insert(nxtf, g)
+            else:
+                fw.widgets.append(w)
+                fw.fakegeos.append(g)
+            fw.resizeandshow()
+        # nav 树
         group = self._itemfortag(tagid)
         ca = self._findchild(group, uid)
-        if ca is None:
-            return
-        ch = group.takeChild(ca)
-        if dst_uid is None:
-            group.insertChild(min(len(self.reallist[tagid]) - 1,
-                                  group.childCount()), ch)
-        else:
-            cb2 = self._findchild(group, dst_uid)
-            if cb2 is None:
-                group.insertChild(ca, ch)
-                return
-            group.insertChild(min(cb2 + 1, group.childCount()), ch)
-        self.nav.setCurrentItem(ch)
+        if ca is not None:
+            ch = group.takeChild(ca)
+            cb = self._findchild(group, nxt) if nxt else None
+            if cb is not None:
+                group.insertChild(cb, ch)
+            else:
+                group.addChild(ch)
+            self.nav.setCurrentItem(ch)
 
     def _navdouble(self, item, _col):
         uid = item.data(0, GAMEUID_ROLE)
-        if not uid:
-            return
-        self.viewitem(uid)
-        self.stack.setCurrentWidget(self.righttop)
+        if uid:
+            self.viewitem(uid)
+            self.stack.setCurrentWidget(self.righttop)
+        else:
+            # 双击主项：展开/折叠（单击只选中切网格页）
+            item.setExpanded(not item.isExpanded())
 
     def point_game(self, uid):
         """网格页图表点击：侧栏指向该游戏子项（_navcurrent 接管切页加载）。"""
