@@ -474,8 +474,10 @@ class FluentColorPicker(QWidget):
         self._tabbar = QTabBar(self)
         self._tabbar.setAttribute(Qt.WA_StyledBackground, True)
         self._tabbar.setDrawBase(False)
-        self._tabbar.setExpanding(True)
         apply_segmented_tabbar_style(self._tabbar)
+        # 同 gallery 取色器：页签扩展三等分铺满整行
+        # （apply_segmented_tabbar_style 默认紧凑排布，其他场景用）
+        self._tabbar.setExpanding(True)
         iconfont = QFont("Segoe Fluent Icons")
         iconfont.setPixelSize(14)
         self._tabbar.setFont(iconfont)
