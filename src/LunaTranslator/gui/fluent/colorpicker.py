@@ -489,7 +489,10 @@ class FluentColorPicker(QWidget):
         if popup:
             # 飞层形态（ColorPickerButton 弹出）：无边框弹层，卡片表面由
             # 插件 PE_FluentFlyoutSurface 绘制（阴影区=边距 8）
-            self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
+            # NoDropShadowWindowHint 同 C++：不设的话 DWM 会给 hwnd
+            # 附带原生阴影/边框，在透明边距区显出多余的系统边框
+            self.setWindowFlags(
+                Qt.Popup | Qt.FramelessWindowHint | Qt.NoDropShadowWindowHint)
             self.setAttribute(Qt.WA_TranslucentBackground)
             self.setFixedWidth(_FLYOUT_WIDTH + 2 * _SHADOW_MARGIN)
 
