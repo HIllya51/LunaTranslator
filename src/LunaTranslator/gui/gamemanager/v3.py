@@ -681,27 +681,54 @@ class _gamelistnav(FluentNavTree):
         else:
             e.ignore()
 
-    def _indicator_pos(self, dst_item, pos):
-        # 上/下 1/3 分割（同 QAbstractItemView 默认指示逻辑）
-        rect = self.visualRect(self.indexFromItem(dst_item))
-        if pos.y() < rect.top() + rect.height() // 3:
-            return "above"
-        if pos.y() > rect.bottom() - rect.height() // 3:
-            return "below"
-        return "on"
+    def _visible_candidates(self, top_only=False):
+        """视口内可见的候选项 [(item, rect)]（折叠/滚动外的项不可见，
+        不参与直觉判断）。"""
+        vp = self.viewport().rect()
+        cands = []
+        for i in range(self.topLevelItemCount()):
+            top = self.topLevelItem(i)
+            items = [top]
+            if not top_only:
+                items += [top.child(j) for j in range(top.childCount())]
+            for item in items:
+                if item is None or item.isHidden():
+                    continue
+                r = self.visualRect(self.indexFromItem(item))
+                if r.isValid() and r.intersects(vp):
+                    cands.append((item, r))
+        return cands
 
     def dropEvent(self, e):
         if not e.mimeData().text().startswith("lunanavmove:"):
             e.ignore()
             return
         src = self._dragitem
-        dst_index = self.indexAt(e.pos())
-        if src is None or not dst_index.isValid():
+        if src is None:
             e.ignore()
             return
-        dst_item = self.itemFromIndex(dst_index)
-        pos = self._indicator_pos(dst_item, e.pos())
+        pos = e.pos()
+        top_only = src.parent() is None
+        cands = self._visible_candidates(top_only=top_only)
+        if not cands:
+            e.ignore()
+            return
         e.acceptProposedAction()
+        # 拖到可见内容之上/之下：主项 -> 内容最前/最后；
+        # 子项 -> 最近可见项判定（下面统一处理，走最近分支）
+        if top_only and pos.y() > max(r.bottom() for _, r in cands):
+            self.ref._tagmove(src.data(0, TAGID_ROLE), self.topLevelItemCount())
+            return
+        if top_only and pos.y() < min(r.top() for _, r in cands):
+            self.ref._tagmove(src.data(0, TAGID_ROLE), 0)
+            return
+        # 最近可见项（按中心距离）
+        dst_item, dst_rect = min(
+            cands,
+            key=lambda ir: (ir[1].center().x() - pos.x()) ** 2
+            + (ir[1].center().y() - pos.y()) ** 2,
+        )
+        below = pos.y() > dst_rect.center().y()
         if src.parent() is None:
             # ---- 主项拖动：调整列表顺序（含内置项，位置任意）----
             src_tag = src.data(0, TAGID_ROLE)
@@ -710,22 +737,19 @@ class _gamelistnav(FluentNavTree):
             if dst_item.data(0, TAGID_ROLE) == src_tag:
                 return
             base = self.indexOfTopLevelItem(dst_item)
-            self.ref._tagmove(src_tag, base + 1 if pos == "below" else base)
+            self.ref._tagmove(src_tag, base + 1 if below else base)
             return
         # ---- 子项拖动 ----
         uid = src.data(0, GAMEUID_ROLE)
         src_tag = src.parent().data(0, TAGID_ROLE)
         if dst_item.parent() is None:
-            # 拖到主项上：追加为该列表末尾
-            if pos != "on":
-                return
+            # 最近目标是主项：追加为该列表末尾
             dst_tag = dst_item.data(0, TAGID_ROLE)
             dst_idx = dst_item.childCount()
         else:
             dst_tag = dst_item.parent().data(0, TAGID_ROLE)
             base = dst_item.parent().indexOfChild(dst_item)
-            # above/on -> 插到目标前；below -> 目标后
-            dst_idx = base + 1 if pos == "below" else base
+            dst_idx = base + 1 if below else base
         if dst_tag == 1:
             return  # 最近游戏是动态列表，不可拖入（拖出是复制，允许）
         self.ref._navmove(uid, src_tag, dst_tag, dst_idx)
@@ -853,7 +877,10 @@ class _gridpage(QWidget):
 
     def _refit_flow(self):
         if isinstance(self.flow, lazyscrollflow):
-            self.flow.resizeandshow(procevent=False)
+            # zero-timer 会先于排队的 LayoutRequest 执行——此刻 flow 的
+            # 布局仍可能未激活（尺寸 0），必须先泵一轮事件让布局完成
+            QApplication.processEvents()
+            self.flow.resizeandshow()
 
     def showmenu(self, p):
         # 网格页右键：图表上（右键按下已先触发 click 选中）-> 游戏菜单；
