@@ -1006,6 +1006,12 @@ class dialog_savedgame_v3(QWidget):
                 ItemWidget.clearfocus()
             self.stack.setCurrentWidget(self.gridpage)
 
+    def _navclicked(self, item, _col):
+        uid = item.data(0, GAMEUID_ROLE)
+        if uid:
+            # 网格空白区清焦后重选同一子项：恢复高亮（focusgame 幂等）
+            self.gridpage.focusgame(uid)
+
     def _navdouble(self, item, _col):
         uid = item.data(0, GAMEUID_ROLE)
         if not uid:
@@ -1159,6 +1165,8 @@ class dialog_savedgame_v3(QWidget):
         self.nav.customContextMenuRequested.connect(self.nav_showmenu)
         self.nav.currentItemChanged.connect(self._navcurrent)
         self.nav.itemDoubleClicked.connect(self._navdouble)
+        # 重复点击同一子项（current 不变，currentItemChanged 不触发）也要联动
+        self.nav.itemClicked.connect(self._navclicked)
         self.nav.itemExpanded.connect(functools.partial(self._navexpand, True))
         self.nav.itemCollapsed.connect(functools.partial(self._navexpand, False))
         self.setstyle()
