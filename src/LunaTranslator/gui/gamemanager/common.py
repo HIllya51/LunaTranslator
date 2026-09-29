@@ -317,17 +317,7 @@ def loadrecentlist():
         datas[uid] = tm
     ks = list(_ for _ in datas if _ in savehook_new_data and _ in savehook_new_list)
     ks.sort(key=lambda uid: -datas[uid])
-    num = globalconfig.get("recentgamelistnum", 10)
-    if not globalconfig.get("hide_not_exists", False):
-        return ks[:num]
-    # 隐藏不存在时往后补足：跳过路径不存在的，直到取满 num 个
-    out = []
-    for uid in ks:
-        if len(out) >= num:
-            break
-        if os.path.exists(get_launchpath(uid)):
-            out.append(uid)
-    return out
+    return ks[: globalconfig.get("recentgamelistnum", 10)]
 
 
 def getreflist(reftagid):

@@ -1056,6 +1056,8 @@ class _gridpage(QWidget):
 
     def _makeitem(self, k):
         gameitem = ItemWidget(k)
+        gameitem.setAcceptDrops(
+            not (self.currtags or globalconfig.get("hide_not_exists", False)))
         gameitem.doubleclicked.connect(
             functools.partial(startgamecheck, self, self.reflist)
         )
@@ -1070,9 +1072,12 @@ class _gridpage(QWidget):
             # 图表单击：侧栏指向该游戏（focusgame 的被动高亮不回写）
             self.ref.point_game(k)
 
-    def _matches_tags(self, k, tags):
-        """游戏 k 是否通过 tag 过滤（含 hide_not_exists）。"""
-        if globalconfig.get("hide_not_exists", False):
+    def _matches_tags(self, k, tags, tagid=None):
+        """游戏 k 是否通过 tag 过滤。hide_not_exists 不作用于最近游戏。"""
+        if (
+            tagid != 1
+            and globalconfig.get("hide_not_exists", False)
+        ):
             if not os.path.exists(get_launchpath(k)):
                 return False
         webtags = [
@@ -1122,8 +1127,14 @@ class _gridpage(QWidget):
             self.flow.addwidget(functools.partial(self._makeitem, k))
 
     def _apply_tag_filter(self):
-        """隐藏不匹配项（网格 + 侧边栏子项 + 主项计数），不销毁 flow。"""
+        """隐藏不匹配项（网格 + 侧边栏子项 + 主项计数），不销毁 flow。
+        有过滤时直接关闭 drag/drop（比事件拦截可靠）。"""
         tags = self.currtags
+        # 有过滤（tag 或 hide_not_exists）-> 禁拖；无过滤 -> 恢复
+        _no_drag = bool(tags) or globalconfig.get("hide_not_exists", False)
+        self.ref.nav.setDragEnabled(not _no_drag)
+        self.ref.nav.setAcceptDrops(not _no_drag)
+        self.setAcceptDrops(not _no_drag)
         # 网格
         for i, w in enumerate(self.flow.widgets):
             uid = None
@@ -1133,7 +1144,12 @@ class _gridpage(QWidget):
                 uid = w.args[0]
             if uid is None:
                 continue
-            self.flow.setWidgetHidden(i, not self._matches_tags(uid, tags))
+            self.flow.setWidgetHidden(i, not self._matches_tags(
+                uid, tags, self.reftagid))
+        # 已实例化的网格项也切 acceptDrops
+        for w in self.flow.widgets:
+            if isinstance(w, ItemWidget):
+                w.setAcceptDrops(not _no_drag)
         self.flow.resizeandshow()
         # 侧边栏子项 + 主项计数
         nav = self.ref.nav
@@ -1144,7 +1160,8 @@ class _gridpage(QWidget):
                 uid = child.data(0, GAMEUID_ROLE)
                 if uid is None:
                     continue
-                child.setHidden(not self._matches_tags(uid, tags))
+                _tagid = top.data(0, TAGID_ROLE)
+                child.setHidden(not self._matches_tags(uid, tags, _tagid))
             self.ref._updatetagtext(top)
 
     def tagschanged(self, tags):
@@ -1502,10 +1519,11 @@ class dialog_savedgame_v3(QWidget):
         tagid = item.data(0, TAGID_ROLE)
         total = len(self.reallist.get(tagid, []))
         gp = self.gridpage
-        if gp.currtags:
+        # 有 tag 或隐藏不存在开关时显示 (可见/总数)
+        if gp.currtags or globalconfig.get("hide_not_exists", False):
             visible = sum(
                 1 for uid in self.reallist.get(tagid, [])
-                if gp._matches_tags(uid, gp.currtags))
+                if gp._matches_tags(uid, gp.currtags, tagid))
             count = "{}/{}".format(visible, total)
         else:
             count = str(total)
@@ -1872,8 +1890,11 @@ class dialog_savedgame_v3(QWidget):
         pass
 
     def callexists(self, _):
-        # 隐藏不存在开关：直接过滤刷新（不进面包屑）
-        self.gridpage.tagschanged(self.gridpage.currtags)
+        # 隐藏不存在开关：过滤刷新（含 drag/drop 切换）+ 计数刷新
+        gp = self.gridpage
+        gp.tagschanged(gp.currtags)  # 内部走 _apply_tag_filter（切 drag/drop）
+        for i in range(self.nav.topLevelItemCount()):
+            self._updatetagtext(self.nav.topLevelItem(i))
 
     def callchange(self, _=None):
         self.nav.setProperty(
@@ -1974,9 +1995,6 @@ class dialog_savedgame_v3(QWidget):
             group0 = self._addtagitem(i, tagid, opened)
             rowreal = 0
             for k in lst:
-                if globalconfig.get("hide_not_exists", False):
-                    if not os.path.exists(get_launchpath(k)):
-                        continue
                 self.reallist[tagid].append(k)
                 group0.addChild(self._makegameitem(k))
                 rowreal += 1
@@ -1984,7 +2002,9 @@ class dialog_savedgame_v3(QWidget):
         # 初始聚焦排在最前的主项：右侧先显示网格页，而非游戏子项
         if self.nav.topLevelItemCount():
             self.nav.setCurrentItem(self.nav.topLevelItem(0))
-        # 树建好后应用存档的折叠/展开：图标模式会折叠全部父项并把
+        # 树建好后应用当前过滤（hide_not_exists / tag）
+        self.gridpage._apply_tag_filter()
+        # 应用存档的折叠/展开：图标模式会折叠全部父项并把
         # 选中的子项提升到顶层（指示条位置正确）
         self.nav.setNavigationExpanded(
             not globalconfig.get("gamemanager_nav_collapsed", False), animated=False

@@ -241,8 +241,9 @@ class ItemWidget(QWidget):
         self.click()
 
     def mouseMoveEvent(self, e) -> None:
-        # 按住拖动超过阈值 -> 启动拖拽（网格内排序）
-        if e.buttons() & Qt.MouseButton.LeftButton and (
+        # 按住拖动超过阈值 -> 启动拖拽（acceptDrops=False 时 dropEvent 不会触发，
+        # 拖拽启动本身由 gridpage 的 acceptDrops 状态控制——见 _apply_tag_filter）
+        if e.buttons() & Qt.MouseButton.LeftButton and self.acceptDrops() and (
             e.pos() - getattr(self, "_presspos", e.pos())
         ).manhattanLength() >= QApplication.startDragDistance():
             drag = QDrag(self)
