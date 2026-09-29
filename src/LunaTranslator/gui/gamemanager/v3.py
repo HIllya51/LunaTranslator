@@ -1962,6 +1962,20 @@ class dialog_savedgame_v3(QWidget):
         hamburger.clicked.connect(self._toggle_nav)
         navlay.addWidget(hamburger)
         navlay.addWidget(self.nav, 1)
+        # 底部：分隔线 + 设置项（Gallery footerNav 同款结构）
+        _sep = QFrame()
+        _sep.setFrameShape(QFrame.Shape.HLine)
+        _sep.setStyleSheet("QFrame{color:rgba(128,128,128,0.3)}")
+        _sep.setFixedHeight(1)
+        navlay.addWidget(_sep)
+        self._footernav = FluentNavTree()
+        self._footernav.setProperty("ItemHeight", 38)
+        self._footernav.setFixedHeight(38)
+        self._footernav.addNavigationItem("设置", -1, ICON_SETTINGS,
+                                          auto_select=False)
+        self._footernav.pageIndexChanged.connect(
+            lambda _: self._open_settings())
+        navlay.addWidget(self._footernav)
         self.righttop = makesubtab_lazy()
         self.righttop.currentChanged.connect(
             lambda idx: (
@@ -2016,9 +2030,10 @@ class dialog_savedgame_v3(QWidget):
         self.gridpage._apply_tag_filter()
         # 应用存档的折叠/展开：图标模式会折叠全部父项并把
         # 选中的子项提升到顶层（指示条位置正确）
-        self.nav.setNavigationExpanded(
-            not globalconfig.get("gamemanager_nav_collapsed", False), animated=False
-        )
+        _nav_expanded = not globalconfig.get(
+            "gamemanager_nav_collapsed", False)
+        self.nav.setNavigationExpanded(_nav_expanded, animated=False)
+        self._footernav.setNavigationExpanded(_nav_expanded, animated=False)
 
     def updatelangtext(self):
         # 语言切换：内置列表项（所有游戏/最近游戏）刷新；自定义列表名不翻译
@@ -2030,6 +2045,7 @@ class dialog_savedgame_v3(QWidget):
     def _toggle_nav(self):
         exp = not self.nav.navigationExpanded()
         self.nav.setNavigationExpanded(exp)
+        self._footernav.setNavigationExpanded(exp)
         globalconfig["gamemanager_nav_collapsed"] = not exp
 
     def taglistrerank(self, tagid, dx):
