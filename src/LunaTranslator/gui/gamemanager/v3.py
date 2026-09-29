@@ -593,6 +593,14 @@ class _gamelistnav(FluentNavTree):
         self._expand_on_doubleclick = True
         self.setExpandsOnDoubleClick(False)   # 关掉 QTreeView 默认（会双重 toggle）
         self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        # 双击窗口延迟：鼠标单击的页面切换动作延迟 doubleClickInterval 执行，
+        # 期间发生双击则取消——避免"双击先触发单击副作用"
+        self._click_pending = False
+        self._deferred_item = None
+        self._click_timer = QTimer(self)
+        self._click_timer.setSingleShot(True)
+        self._click_timer.setInterval(QApplication.doubleClickInterval())
+        self._click_timer.timeout.connect(self._flush_click)
         self._icon_pending = {}
         self._icon_timer = QTimer(self)
         self._icon_timer.setInterval(25)
@@ -652,14 +660,26 @@ class _gamelistnav(FluentNavTree):
         ):
             ev.accept()
             return
+        # 单击的页面动作延迟到双击窗口后（双击会取消）
+        self._click_pending = True
+        self._click_timer.start()
         return super().mousePressEvent(ev)
 
+    def _flush_click(self):
+        self._click_pending = False
+        item, self._deferred_item = self._deferred_item, None
+        if item is not None:
+            try:
+                self.ref._navcurrent(item)
+            except Exception:
+                print_exc()
+
     def mouseDoubleClickEvent(self, e):
+        # 双击：取消单击的延迟副作用
+        self._click_timer.stop()
+        self._click_pending = False
+        self._deferred_item = None
         item = self.itemAt(e.pos())
-        print("V3DBG dbl item=%s parent=%s pos=%r" % (
-            item is not None,
-            item.parent() is not None if item else None,
-            e.pos()), flush=True)
         if item is not None and item.parent() is None:
             # 主项：双击展开/折叠（单击只选中）
             item.setExpanded(not item.isExpanded())
@@ -1269,6 +1289,10 @@ class dialog_savedgame_v3(QWidget):
     def _navcurrent(self, item, _=None):
         if item is None:
             return
+        if self.nav._click_pending:
+            # 鼠标单击驱动：延迟到双击窗口后执行（双击会取消）
+            self.nav._deferred_item = item
+            return
         uid = item.data(0, GAMEUID_ROLE)
         if uid:
             # 单击子项：右侧显示其所属主项的网格（多列表展开时跟随切换），
@@ -1442,6 +1466,9 @@ class dialog_savedgame_v3(QWidget):
         uid = item.data(0, GAMEUID_ROLE)
         if not uid:
             return
+        # 单击的延迟被取消：状态在此补齐
+        self.reftagid = item.parent().data(0, TAGID_ROLE)
+        self.currentfocusuid = uid
         self.viewitem(uid)
         self.stack.setCurrentWidget(self.righttop)
 
