@@ -6,6 +6,7 @@ new 视图共用这些控件）。
 
 from qtsymbols import *
 import os
+from traceback import print_exc
 import qtawesome
 from myutils.utils import targetmod
 from myutils.config import savehook_new_data, extradatas, ui_settings, globalconfig, get_launchpath

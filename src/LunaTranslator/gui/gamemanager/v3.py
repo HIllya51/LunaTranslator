@@ -1524,6 +1524,10 @@ class dialog_savedgame_v3(QWidget):
             self.createlist(True, None)
 
     def _gamemenu(self):
+        if not self.currentfocusuid or (
+            self.currentfocusuid not in savehook_new_data
+        ):
+            return  # 无有效选中游戏（右键空白/主项时防御）
         menu = QMenu(self)
         startgame = LAction("开始游戏", menu)
         delgame = LAction("删除游戏", menu)
@@ -1693,17 +1697,9 @@ class dialog_savedgame_v3(QWidget):
                 group0.addChild(self._makegameitem(k))
                 rowreal += 1
             self._updatetagtext(group0)
-        # 初始聚焦第一个（展开的）主项：右侧先显示网格页，而非游戏子项
-        first = None
-        for i in range(self.nav.topLevelItemCount()):
-            it = self.nav.topLevelItem(i)
-            if it.childCount() and it.isExpanded():
-                first = it
-                break
-        if first is None and self.nav.topLevelItemCount():
-            first = self.nav.topLevelItem(0)
-        if first is not None:
-            self.nav.setCurrentItem(first)
+        # 初始聚焦排在最前的主项：右侧先显示网格页，而非游戏子项
+        if self.nav.topLevelItemCount():
+            self.nav.setCurrentItem(self.nav.topLevelItem(0))
         # 树建好后应用存档的折叠/展开：图标模式会折叠全部父项并把
         # 选中的子项提升到顶层（指示条位置正确）
         self.nav.setNavigationExpanded(
@@ -1767,6 +1763,8 @@ class dialog_savedgame_v3(QWidget):
             self.createlist(action == addlist, tagid)
 
         elif action == dellist:
+            if not request_delete_ok(self, "v3-dellist-confirm"):
+                return
             i = calculatetagidx(tagid)
             savegametaged.pop(i)
             navidx = self.nav.indexOfTopLevelItem(self._itemfortag(tagid))
