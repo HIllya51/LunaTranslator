@@ -2,8 +2,7 @@ from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
 import time
 from urllib.parse import urlsplit, urlunsplit
-from translator.gptcommon import list_models
-from myutils.utils import APIType
+from myutils.utils import APIType, common_list_models
 from translator.gptcommon import (
     createheaders,
     common_create_gpt_data,
@@ -38,6 +37,21 @@ def _maybe_override_local_llama_port(url: str):
     netloc = "{}{}:{}".format(userinfo, hostpart, port)
     return urlunsplit(
         (parsed.scheme, netloc, parsed.path, parsed.query, parsed.fragment)
+    )
+
+
+def list_models(typename, regist: dict):
+    """同 gptcommon.list_models，但本类翻译时会用
+    _maybe_override_local_llama_port 猜测本地 llama-server 的实际
+    端口——模型列表也要走同样的地址，否则本地部署时列表拉取失败。"""
+    from myutils.proxy import getproxy
+
+    return common_list_models(
+        getproxy(("fanyi", typename)),
+        APIType(
+            _maybe_override_local_llama_port(regist["API接口地址"]())
+        ),
+        regist.get("SECRET_KEY", lambda: "")().split("|")[0],
     )
 
 
