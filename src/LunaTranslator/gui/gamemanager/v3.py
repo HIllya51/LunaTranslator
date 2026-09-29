@@ -691,6 +691,8 @@ class _gamelistnav(FluentNavTree):
         if item is not None and item.parent() is None:
             # 主项：双击展开/折叠（单击只选中）
             item.setExpanded(not item.isExpanded())
+            # 双击切换列表时，若网格聚焦的游戏属于新列表，侧边栏跟随选中
+            self.ref._sync_current_to_gridlist(item)
             e.accept()
             return
         super().mouseDoubleClickEvent(e)
@@ -1523,6 +1525,18 @@ class dialog_savedgame_v3(QWidget):
                 group.addChild(ch)
             self.nav.setCurrentItem(ch)
 
+    def _sync_current_to_gridlist(self, main_item):
+        """双击主项展开/折叠后调用：网格正聚焦着该列表的游戏时，
+        侧边栏选中移到该主项（子项 -> 主项，聚焦保持）。"""
+        uid = self.currentfocusuid
+        if not uid or uid not in savehook_new_data:
+            return
+        if self.gridpage.reftagid != main_item.data(0, TAGID_ROLE):
+            return  # 网格聚焦的游戏不属于该列表：不动
+        if self.nav.currentItem() is not main_item:
+            self.nav.setCurrentItem(main_item)
+            self.currentfocusuid = uid  # 主项分支会清，补回
+
     def _navdouble(self, item, _col):
         uid = item.data(0, GAMEUID_ROLE)
         if not uid:
@@ -1534,15 +1548,23 @@ class dialog_savedgame_v3(QWidget):
         self.stack.setCurrentWidget(self.righttop)
 
     def point_game(self, uid):
-        """网格页图表点击：选中留在主项上（不跳到子项），仅更新聚焦状态；
-        网格高亮由 ItemWidget.click 的 focuschanged 链完成。"""
+        """网格页图表点击：侧边栏指向该游戏——主项展开时选中子项；
+        主项折叠时选中留在主项（不展开它），仅更新聚焦状态。"""
         group = self._itemfortag(self.gridpage.reftagid)
         if group is None:
             return
         self.currentfocusuid = uid
         self.reftagid = group.data(0, TAGID_ROLE)
-        if self.nav.currentItem() is not group:
-            # 选中主项（_navcurrent 主项分支：同列表不重建网格）
+        if group.isExpanded():
+            # 展开：选中子项（_navcurrent 子项分支联动高亮）
+            for j in range(group.childCount()):
+                child = group.child(j)
+                if child.data(0, GAMEUID_ROLE) == uid:
+                    if self.nav.currentItem() is not child:
+                        self.nav.setCurrentItem(child)
+                    return
+        elif self.nav.currentItem() is not group:
+            # 折叠：选中留在主项（_navcurrent 主项分支：同列表不重建网格）
             self.nav.setCurrentItem(group)
             self.currentfocusuid = uid  # 主项分支会清聚焦，补回
 
