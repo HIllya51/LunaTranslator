@@ -284,8 +284,22 @@ class FluentNavTree(QTreeWidget):
                 self.setCurrentIndex(index)
                 event.accept()
                 return
-            is_current = (self.currentIndex() == index)
-            self.setCurrentIndex(index)
+            # 已处于此项（父项或其子项被选中）时再点 -> 折叠
+            cur = self.currentIndex()
+            is_current = (cur == index) or (
+                cur.isValid() and cur.parent() == index
+            )
+            # 首子项复用父项页面（同 page_index）时，选中焦点跳到首子项
+            # ——否则页面显示的是首子页、焦点却停在父项上
+            target = index
+            child = index.child(0, 0)
+            if (
+                child.isValid()
+                and child.data(NAV_PAGE_ROLE) is not None
+                and child.data(NAV_PAGE_ROLE) == index.data(NAV_PAGE_ROLE)
+            ):
+                target = child
+            self.setCurrentIndex(target)
             if is_current:
                 if self.isExpanded(index):
                     self.collapse(index)
