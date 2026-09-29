@@ -779,18 +779,35 @@ class _gridpage(QWidget):
         self.flow.directshow()
 
     def focusgame(self, uid):
-        """侧栏选中子项时，网格页中对应图表高亮（懒加载未创建的项忽略）。
-        高亮是被动联动：不回写侧栏（同一游戏可能在多个列表，回写会把
-        选中拉到当前网格列表里的同名子项上）。"""
+        """侧栏选中子项时，网格页对应图表高亮并滚动到可视区。
+        懒加载未实例化的项先手动建出（同 doshowlazywidget 的步骤——
+        工厂 partial 携带 uid）。高亮是被动联动：不回写侧栏（同一游戏
+        可能在多个列表，回写会把选中拉到当前网格列表的同名子项上）。"""
         if not isinstance(self.flow, lazyscrollflow):
             return
         self._focus_programmatic = True
         try:
             ItemWidget.clearfocus()
-            for w in self.flow.widgets:
-                if isinstance(w, ItemWidget) and w.gameuid == uid:
-                    w.click()
-                    return
+            for i, w in enumerate(self.flow.widgets):
+                if isinstance(w, ItemWidget):
+                    _uid = w.gameuid
+                elif callable(w) and getattr(w, "args", None):
+                    _uid = w.args[0]
+                else:
+                    continue
+                if _uid != uid:
+                    continue
+                if not isinstance(w, QWidget):
+                    self.flow.widgets[i] = None
+                    w = w()
+                    w.setParent(self.flow.internalwid)
+                    w.adjustSize()
+                    w.setVisible(True)
+                    w.setGeometry(self.flow.fakegeos[i])
+                    self.flow.widgets[i] = w
+                self.flow.ensureWidgetVisible(w)
+                w.click()
+                return
         finally:
             self._focus_programmatic = False
 
