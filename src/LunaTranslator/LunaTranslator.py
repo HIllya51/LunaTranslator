@@ -1321,6 +1321,18 @@ class BASEOBJECT(QObject):
         except:
             print_exc()
 
+    def setdarkandbackdrop(self, widget, dark):
+        ismenulist = isinstance(widget, (QMenu, PopupWidget)) or (
+            type(widget) == QFrame
+        )
+        if ((not ismenulist)) and self.__dontshowintaborsetbackdrop(widget):
+            return
+        if ismenulist:
+            pass
+        else:
+            # 原"窗口特效"设置（其他界面）已删除，固定 MicaAlt（TABBEDWINDOW）
+            NativeUtils.SetTheme(int(widget.winId()), dark, 3)
+
     def checkkeypresssatisfy(self, key, df=False):
         if not globalconfig["wordclickkbtriggerneed"].get(key, df):
             return -1
@@ -1588,6 +1600,8 @@ class BASEOBJECT(QObject):
             self.currentisdark = dark
             for widget in QApplication.allWidgets():
                 QApplication.postEvent(widget, DarkLightChangedEvent(dark))
+            for widget in QApplication.topLevelWidgets():
+                self.setdarkandbackdrop(widget, dark)
         gui.fluent.apply_fluent_style(dark)
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:
@@ -1759,6 +1773,8 @@ class BASEOBJECT(QObject):
         windows.SetProp(int(obj.winId()), "Magpie.ToolWindow", windows.HANDLE(1))
         self.setshowintab_checked(obj)
         self.giveupfocus_checked(obj)
+        if self.currentisdark is not None:
+            self.setdarkandbackdrop(obj, self.currentisdark)
 
     def eventFilter(self, obj: QObject, event: QEvent):
         if event.type() == QEvent.Type.LanguageChange:
