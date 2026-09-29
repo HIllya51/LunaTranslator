@@ -2984,11 +2984,42 @@ class ClickableLine(QLineEdit):
         super().__init__()
         self.issecret = issecret
 
+    def enterEvent(self, e):
+        # 悬停显隐切换时需要主动触发一次重绘
+        self.update()
+        super().enterEvent(e)
+
+    def leaveEvent(self, e):
+        self.update()
+        super().leaveEvent(e)
+
     def paintEvent(self, a0):
         if self.text() and self.issecret and not (self.underMouse() or self.hasFocus()):
+            # 不用 Password echo 模式（会禁掉复制粘贴），直接把文本画成 *
             painter = QPainter(self)
-            painter.setCompositionMode(QPainter.CompositionMode.CompositionMode_Clear)
-            painter.fillRect(self.rect(), Qt.GlobalColor.transparent)
+            opt = QStyleOptionFrame()
+            self.initStyleOption(opt)
+            style = self.style()
+            style.drawPrimitive(QStyle.PE_PanelLineEdit, opt, painter, self)
+            cr = style.subElementRect(QStyle.SE_LineEditContents, opt, self)
+            tm = self.textMargins()
+            cr.adjust(tm.left(), tm.top(), -tm.right(), -tm.bottom())
+            fm = self.fontMetrics()
+            stars = "*" * len(self.text())
+            while len(stars) > 1 and fm.horizontalAdvance(stars) > cr.width():
+                stars = stars[1:]
+            style.drawItemText(
+                painter,
+                cr,
+                self.alignment() | Qt.AlignVCenter,
+                self.palette(),
+                self.isEnabled(),
+                stars,
+                QPalette.Text,
+            )
+            # PyQt5 的 QPainter 不随作用域自动析构，必须显式 end()，
+            # 否则 painter 带 active 状态活到下一次 paint → Qt 内部崩溃
+            painter.end()
         else:
             super().paintEvent(a0)
 
