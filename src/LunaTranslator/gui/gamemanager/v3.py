@@ -690,8 +690,12 @@ class _gridpage(QWidget):
         self.customContextMenuRequested.connect(self.showmenu)
 
     def showmenu(self, p):
-        # 复用 v3 的右键分发：图表上 -> 游戏菜单；空白 -> 创建列表
-        self.ref.nav_showmenu(self.ref.nav.mapFrom(self, p))
+        # 网格页右键：图表上（右键按下已先触发 click 选中）-> 游戏菜单；
+        # 空白（bgclicked 已清焦）-> 创建列表。按焦点状态分发，不做坐标换算
+        if self.currentfocusuid:
+            self.ref._gamemenu()
+        else:
+            self.ref._blankmenu()
 
     def showtag(self, tagid):
         self.reftagid = tagid
