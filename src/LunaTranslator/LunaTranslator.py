@@ -1622,12 +1622,6 @@ class BASEOBJECT(QObject):
     def loadui(self, startwithgameuid):
         QApplication.instance().installEventFilter(self)
         self.parsedefaultfont()
-        # app 级 UI 字体：语言默认 + 13px（同 Gallery）。窗口创建前设置避免
-        # 闪烁；语言切换时由 changeUIlanguage 重设
-        font = QFont()
-        font.setFamily(self.get_font_default(getlanguse(), True))
-        font.setPixelSize(13)
-        QApplication.instance().setFont(font)
         self.loadmetadatas()
 
         self.translation_ui = TranslatorWindow()
@@ -1678,6 +1672,11 @@ class BASEOBJECT(QObject):
         self.serviceinit()
         versioncheckthread()
         autostartllamacpp()
+
+        font = QFont()
+        font.setFamily(self.get_font_default(getlanguse(), True))
+        font.setPixelSize(13)
+        QApplication.instance().setFont(font)
 
     @property
     def focusWindow(self):
