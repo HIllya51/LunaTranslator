@@ -1462,7 +1462,13 @@ class dialog_savedgame_v3(QWidget):
             return _TR("所有游戏")
         if tagid == 1:
             return _TR("最近游戏")
-        return savegametaged[calculatetagidx(tagid)]["title"]
+        idx = calculatetagidx(tagid)
+        if idx is None or idx >= len(savegametaged):
+            return ""  # tag 已不在 savegametaged（清理竞态防御）
+        t = savegametaged[idx]
+        if not isinstance(t, dict):
+            return ""
+        return t["title"]
 
     def _addtagitem(self, index, tagid, opened):
         self.reallist[tagid] = []
