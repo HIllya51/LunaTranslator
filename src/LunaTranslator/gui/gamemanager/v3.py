@@ -48,7 +48,6 @@ from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
-from gui.usefulwidget import FocusCombo, FQLineEdit
 from gui.specialwidget import lazyscrollflow
 from gui.usefulwidget import getIconButton
 from gui.fluent.icons import ICON_GLOBAL_NAV
@@ -851,12 +850,12 @@ class _gridpage(QWidget):
         toplay = QHBoxLayout(top)
         toplay.setContentsMargins(8, 4, 8, 4)
         toplay.setSpacing(4)
-        self.searchedit = FocusCombo()
-        self.searchedit.setEditable(True)
-        self.searchedit.setLineEdit(FQLineEdit())
-        edit = self.searchedit.lineEdit()
-        edit.returnPressed.connect(self._search)
-        edit.setPlaceholderText("搜索")
+        self.searchedit = QLineEdit()
+        self.searchedit.returnPressed.connect(self._search)
+        self.searchedit.setPlaceholderText("搜索")
+        self.searchedit.setMinimumHeight(32)
+        # Windows 下鼠标移出后 IBeam 光标偶发不恢复——enter/leave 显式切换
+        self.searchedit.installEventFilter(self)
         self.searchedit.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         toplay.addWidget(self.searchedit, 1)
@@ -903,12 +902,20 @@ class _gridpage(QWidget):
             finally:
                 self.ref.nav.blockSignals(False)
 
+    def eventFilter(self, obj, ev):
+        if obj is self.searchedit:
+            if ev.type() == QEvent.Type.Enter:
+                obj.setCursor(Qt.CursorShape.IBeamCursor)
+            elif ev.type() == QEvent.Type.Leave:
+                obj.unsetCursor()   # 恢复继承（比 setCursor(Arrow) 更彻底）
+        return super().eventFilter(obj, ev)
+
     def _search(self):
         text = self.searchedit.currentText().strip()
         if text:
             self._apply_tags(tuple(self.currtags)
                              + ((text, tagitem.TYPE_SEARCH, None),))
-            self.searchedit.clearEditText()
+            self.searchedit.clear()
 
     def _breadcrumb_clicked(self, index, item):
         # 点任意层级（ALL 或中间 tag）：截断到该层级（后面的 tag 清除）
