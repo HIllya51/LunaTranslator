@@ -546,6 +546,7 @@ def selectllmcallback(self, countnum: list, fanyi, newname=None):
         globalconfig["fanyi"][uid],
         "color",
         callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+        width=44,
     )
 
     offset = 5 * (len(countnum) % 3)
@@ -660,6 +661,7 @@ def initsome11(self, l, save=False):
                 globalconfig["fanyi"][fanyi],
                 "color",
                 callback=gobject.base.translation_ui.translate_text.setcolorstyle,
+                width=44,
             ),
             last,
         ]

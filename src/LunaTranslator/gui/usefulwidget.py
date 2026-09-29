@@ -3465,8 +3465,9 @@ class ColorButton(ColorPickerButton):
         tips="颜色",
         cantzeroalpha=False,
         default=None,
+        width=68,
     ):
-        super().__init__(None)
+        super().__init__(None, width=width)
         self._configdict = d
         self._configkey = key
         self._callback = callback

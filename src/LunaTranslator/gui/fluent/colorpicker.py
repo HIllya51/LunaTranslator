@@ -1019,14 +1019,17 @@ class ColorPickerButton(QToolButton):
     _CONTENT_ITEM_HMARGIN = 5
     _SWATCH_VMARGIN = 5
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, width=68):
         super().__init__(parent)
         self._picker = None
         self._color = QColor(Qt.blue)
         self._pressed = False
+        # 窄按钮（如翻译设置的 44px）用紧凑布局：小边距 + 小箭头，
+        # 否则色块被挤没了，整个按钮看起来只有一个倒三角
+        self._compact = width < 60
         self.setToolButtonStyle(Qt.ToolButtonTextOnly)
         self.setPopupMode(QToolButton.InstantPopup)
-        self.setFixedSize(68, 32)
+        self.setFixedSize(width, 32)
         self.clicked.connect(self._show_picker)
 
     # ---- 颜色 ----
@@ -1090,24 +1093,29 @@ class ColorPickerButton(QToolButton):
         option.text = ""
         option.arrowType = Qt.NoArrow
         option.features = QStyleOptionToolButton.None_
+        # QStyleOptionComplex 默认 subControls=SC_All 会带上
+        # SC_ToolButtonMenu——插件的 CC_ToolButton 据此在 menu 区画
+        # PE_IndicatorArrowDown（色块下的黑色实心倒三角）。只保留按钮本体。
+        option.subControls = QStyle.SC_ToolButton
         # drawComplexControl 是 QStyle/QStylePainter 的接口（QPainter 没有）
         self.style().drawComplexControl(QStyle.CC_ToolButton, option, p, self)
 
-        arrow_width = self.style().pixelMetric(
-            QStyle.PM_MenuButtonIndicator, option, self)
+        hmargin = 5 if self._compact else self._CONTENT_HMARGIN
+        arrow_width = (12 if self._compact else self.style().pixelMetric(
+            QStyle.PM_MenuButtonIndicator, option, self))
         arrow_area = QRectF(self.width() - arrow_width - 2, 0,
                             arrow_width, self.height())
         swatch = QRectF(self.rect()).adjusted(
-            self._CONTENT_HMARGIN, self._SWATCH_VMARGIN,
-            -self._CONTENT_HMARGIN, -self._SWATCH_VMARGIN)
-        swatch.setRight(arrow_area.left() - self._CONTENT_ITEM_HMARGIN)
+            hmargin, self._SWATCH_VMARGIN, -hmargin, -self._SWATCH_VMARGIN)
+        swatch.setRight(arrow_area.left() - (2 if self._compact
+                                             else self._CONTENT_ITEM_HMARGIN))
 
         p.setPen(Qt.NoPen)
         p.setBrush(QBrush(self._color))
         p.drawRoundedRect(swatch, 3, 3)
 
         arrowfont = QFont("Segoe Fluent Icons")
-        arrowfont.setPixelSize(11)
+        arrowfont.setPixelSize(9 if self._compact else 11)
         p.setFont(arrowfont)
         arrowcolor = self.palette().color(
             QPalette.Disabled if not self.isEnabled() else QPalette.Active,
