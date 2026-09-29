@@ -46,7 +46,9 @@ from gui.gamemanager.common import (
 )
 from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree
-from gui.gamemanager.widgets import TagWidget, ItemWidget
+from gui.gamemanager.widgets import ItemWidget
+from gui.fluent.breadcrumb import ExBreadcrumbBar
+from gui.usefulwidget import FocusCombo, FQLineEdit
 from gui.specialwidget import lazyscrollflow
 from gui.usefulwidget import getIconButton
 from gui.fluent.icons import ICON_GLOBAL_NAV
@@ -844,14 +846,20 @@ class _gridpage(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
-        # 顶栏：标签过滤 + 排序
+        # 顶栏：搜索 + 排序/设置
         top = QWidget()
         toplay = QHBoxLayout(top)
         toplay.setContentsMargins(8, 4, 8, 4)
         toplay.setSpacing(4)
-        self.tagswidget = TagWidget(self)
-        self.tagswidget.tagschanged.connect(self.tagschanged)
-        toplay.addWidget(self.tagswidget, 1)
+        self.searchedit = FocusCombo()
+        self.searchedit.setEditable(True)
+        self.searchedit.setLineEdit(FQLineEdit())
+        edit = self.searchedit.lineEdit()
+        edit.returnPressed.connect(self._search)
+        edit.setPlaceholderText("搜索")
+        self.searchedit.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
+        toplay.addWidget(self.searchedit, 1)
         toplay.addWidget(
             getIconButton(
                 icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
@@ -865,6 +873,11 @@ class _gridpage(QWidget):
             )
         )
         lay.addWidget(top)
+        # 面包屑：搜索框之下，有 tag 时显示；root 为 ALL，点击 ALL 清空全部
+        self.breadcrumb = ExBreadcrumbBar(self)
+        self.breadcrumb.itemClicked.connect(self._breadcrumb_clicked)
+        self.breadcrumb.hide()
+        lay.addWidget(self.breadcrumb)
         _w = QWidget()
         self.flowcontainer = QHBoxLayout(_w)
         self.flowcontainer.setContentsMargins(0, 0, 0, 0)
@@ -889,6 +902,31 @@ class _gridpage(QWidget):
                 self.ref.nav.setCurrentItem(group)
             finally:
                 self.ref.nav.blockSignals(False)
+
+    def _search(self):
+        text = self.searchedit.currentText().strip()
+        if text:
+            self._apply_tags(tuple(self.currtags)
+                             + ((text, tagitem.TYPE_SEARCH, None),))
+            self.searchedit.clearEditText()
+
+    def _breadcrumb_clicked(self, index, item):
+        # 点任意层级（ALL 或中间 tag）：截断到该层级（后面的 tag 清除）
+        # 面包屑项 0=ALL（清空全部），项 i 对应 currtags[i-1]
+        self._apply_tags(tuple(self.currtags[:index]))
+
+    def _apply_tags(self, tags):
+        """统一入口：更新 tag -> 刷新面包屑 -> 重建网格。"""
+        self.currtags = tuple(tags)
+        # 面包屑：无 tag 隐藏；有 tag 显示 [ALL, tag...]
+        if not self.currtags:
+            self.breadcrumb.hide()
+            self.breadcrumb.setItemsSource([])
+        else:
+            self.breadcrumb.setItemsSource(
+                ["ALL"] + [t for t, _ty, _d in self.currtags])
+            self.breadcrumb.show()
+        self.tagschanged(self.currtags)
 
     def dragEnterEvent(self, e):
         if e.mimeData().text().startswith("lunamovegame:"):
