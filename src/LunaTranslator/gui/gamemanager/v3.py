@@ -599,7 +599,7 @@ class _gamelistnav(FluentNavTree):
         self._deferred_item = None
         self._click_timer = QTimer(self)
         self._click_timer.setSingleShot(True)
-        self._click_timer.setInterval(QApplication.doubleClickInterval())
+        self._click_timer.setInterval(QApplication.doubleClickInterval() // 2)
         self._click_timer.timeout.connect(self._flush_click)
         self._icon_pending = {}
         self._icon_timer = QTimer(self)
