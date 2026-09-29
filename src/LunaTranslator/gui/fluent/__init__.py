@@ -133,21 +133,30 @@ def _install_exec_menu_gate():
     global _exec_menu_gate
     if _exec_menu_gate is not None:
         return
-    from qtsymbols import QEvent, QObject, Qt, QLineEdit, QPlainTextEdit, QComboBox
+    from qtsymbols import (
+        QEvent, QObject, Qt, QWidget, QLineEdit, QPlainTextEdit, QTextEdit, QComboBox,
+    )
 
     class _Gate(QObject):
         def eventFilter(self, watched, ev):
             if ev.type() != QEvent.ContextMenu:
                 return False
-            if watched.contextMenuPolicy() != Qt.ContextMenuPolicy.DefaultContextMenu:
+            target = watched
+            # QPlainTextEdit/QTextEdit 是滚动区：真实右键事件落在其
+            # viewport 子件上（viewport 的 parent 即编辑器本体）
+            if isinstance(target, QWidget):
+                parent = target.parentWidget()
+                if isinstance(parent, (QPlainTextEdit, QTextEdit)):
+                    target = parent
+            if target.contextMenuPolicy() != Qt.ContextMenuPolicy.DefaultContextMenu:
                 return False
             menu = None
-            if isinstance(watched, QLineEdit):
-                menu = watched.createStandardContextMenu()
-            elif isinstance(watched, QPlainTextEdit):
-                menu = watched.createStandardContextMenu(ev.pos())
-            elif isinstance(watched, QComboBox) and watched.lineEdit() is not None:
-                menu = watched.lineEdit().createStandardContextMenu()
+            if isinstance(target, QLineEdit):
+                menu = target.createStandardContextMenu()
+            elif isinstance(target, (QPlainTextEdit, QTextEdit)):
+                menu = target.createStandardContextMenu(ev.pos())
+            elif isinstance(target, QComboBox) and target.lineEdit() is not None:
+                menu = target.lineEdit().createStandardContextMenu()
             if menu is None:
                 return False
             menu.setAttribute(Qt.WA_DeleteOnClose)
