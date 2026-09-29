@@ -235,8 +235,9 @@ class FocusSpinBase(QAbstractSpinBox):
 class FocusSpin(QSpinBox, FocusSpinBase):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # WinUI 标准控件高度 32px：插件下 QSpinBox 默认偏矮
-        self.setMinimumHeight(32)
+        # 固定 34：与 combo/lineedit 的 CT_ComboBox/CT_LineEdit(34) 统一
+        # （spin 的自然 sizeHint 是 36，差 2px 会不齐）
+        self.setFixedHeight(34)
         # 插件的上下按钮区占 ~64px，minimumSizeHint 太窄时文本框会被挤没
         self.setMinimumWidth(120)
 
@@ -244,7 +245,7 @@ class FocusSpin(QSpinBox, FocusSpinBase):
 class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setMinimumHeight(32)
+        self.setFixedHeight(34)
         self.setMinimumWidth(120)
 
 

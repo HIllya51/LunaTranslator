@@ -8,6 +8,7 @@ from myutils.config import globalconfig, _TR, static_data
 from myutils.utils import selectdebugfile, makehtml
 from myutils.wrapper import Singleton
 from gui.usefulwidget import (
+    makescroll,
     MySwitch,
     getsimpleswitch,
     manybuttonlayout,
@@ -776,8 +777,20 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
         )
         self.setWindowIcon(parent.windowIcon())
         self.setWindowTitle(title)
+        # 行数很多时窗口过高——内容放进滚动区，窗口高度封顶 600px
+        # （仍不超过屏幕工作区 80%，小屏保护）
+        from PyQt5.QtGui import QGuiApplication
+
+        screen = QGuiApplication.primaryScreen()
+        maxh = min(600, int(screen.availableGeometry().height() * 0.8))
         self.resize(QSize(width, 10))
-        formLayout = VisLFormLayout(self)
+        self._scroll = makescroll()
+        self._content = QWidget()
+        self._scroll.setWidget(self._content)
+        rootlay = QVBoxLayout(self)
+        rootlay.setContentsMargins(0, 0, 0, 0)
+        rootlay.addWidget(self._scroll)
+        formLayout = VisLFormLayout(self._content)
         self.regist = {}
         self.dd = dd
         self.updater = {}
@@ -902,7 +915,7 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
                 for row in viss:
                     formLayout.setRowVisible(row, True)
                 QApplication.processEvents()
-                self.resize(self.width(), 1)
+                self._content.adjustSize()
 
             self.cachecombo[comboname].currentIndexChanged.connect(
                 functools.partial(
@@ -912,6 +925,13 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
             self.cachecombo[comboname].currentIndexChanged.emit(
                 self.cachecombo[comboname].currentIndex()
             )
+        # 窗口高度 = 内容需求（表单 sizeHint + 滚动框边），封顶 maxh
+        self._content.adjustSize()
+        fh = self._content.sizeHint().height()
+        frame = self.frameGeometry().height() - self.geometry().height()
+        targeth = min(fh + frame + 8, maxh)
+        targetw = max(width, self._content.sizeHint().width() + 24)
+        self.resize(QSize(targetw, targeth))
         if exec_:
             self.exec()
         else:
