@@ -782,7 +782,7 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
         btnbox.button(QDialogButtonBox.StandardButton.Ok).setText(_TR("确定"))
         btnbox.button(QDialogButtonBox.StandardButton.Cancel).setText(_TR("取消"))
         btnlay = QHBoxLayout()
-        btnlay.setContentsMargins(16, 8, 16, 12)
+        btnlay.setContentsMargins(12, 3, 12, 12)
         btnlay.addStretch()
         btnlay.addWidget(btnbox)
         rootlay.addLayout(btnlay)
