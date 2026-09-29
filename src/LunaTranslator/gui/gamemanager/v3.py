@@ -743,9 +743,15 @@ class _gamelistnav(FluentNavTree):
         uid = src.data(0, GAMEUID_ROLE)
         src_tag = src.parent().data(0, TAGID_ROLE)
         if dst_item.parent() is None:
-            # 最近目标是主项：上半 -> 列表最前，下半 -> 末尾
+            # 最近目标是主项：
+            # - 上半 -> 列表最前
+            # - 展开主项的下半（紧贴第一个子项，即"第一个子项之前"）-> 最前
+            # - 收起主项的下半 -> 追加末尾
             dst_tag = dst_item.data(0, TAGID_ROLE)
-            dst_idx = dst_item.childCount() if below else 0
+            if below and not dst_item.isExpanded():
+                dst_idx = dst_item.childCount()
+            else:
+                dst_idx = 0
         else:
             dst_tag = dst_item.parent().data(0, TAGID_ROLE)
             base = dst_item.parent().indexOfChild(dst_item)
