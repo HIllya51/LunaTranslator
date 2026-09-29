@@ -13,7 +13,8 @@
 import ctypes
 import ctypes.wintypes as wt
 
-from qtsymbols import QEvent, QPoint, QRect, Qt, QTimer
+from qtsymbols import QEvent, QPoint, QRect, Qt, QTimer, QVariantAnimation
+from gui.fluent.colorpicker import close_color_flyouts
 
 # Win32 常量
 WM_DESTROY = 0x0002
@@ -100,8 +101,6 @@ class FluentFramelessWindowMixin:
     def closeEvent(self, event):
         # 停掉仍在运行的动画（导航宽度动画等），避免销毁期间定时器触发已删对象
         try:
-            from qtsymbols import QVariantAnimation
-
             for anim in self.findChildren(QVariantAnimation):
                 anim.stop()
         except:
@@ -218,8 +217,6 @@ class FluentFramelessWindowMixin:
             if msg.message == WM_NCLBUTTONDOWN:
                 # 非客户区（标题栏/边框）按下——Qt::Popup 的鼠标抓取收不到
                 # 非客户区点击，颜色取色飞层会残留，在这里手动关闭
-                from gui.fluent.colorpicker import close_color_flyouts
-
                 close_color_flyouts()
 
             if msg.message == WM_NCRBUTTONUP:

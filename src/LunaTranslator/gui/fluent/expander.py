@@ -25,6 +25,8 @@ from qtsymbols import (
     QPalette,
     QPen,
     QAbstractButton,
+    QStyle,
+    QStyleOptionFocusRect,
     QHBoxLayout,
     QLabel,
     QSizePolicy,
@@ -98,8 +100,6 @@ def _exp_chevron_button_background(palette, is_down):
 
 
 def _exp_rounded_panel_path(rect, round_top_left, round_top_right, round_bottom_right, round_bottom_left):
-    from PyQt5.QtGui import QPainterPath
-
     radius = min(float(_EXP_CORNER_RADIUS), min(rect.width(), rect.height()) * 0.5)
     path = QPainterPath()
     path.moveTo(rect.left() + (radius if round_top_left else 0.0), rect.top())
@@ -153,8 +153,6 @@ class _ExpanderContentPanel(QWidget):
         self.update()
 
     def paintEvent(self, event):
-        from PyQt5.QtGui import QPainterPath
-
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 
@@ -355,9 +353,6 @@ class _ExpanderHeaderButton(QAbstractButton):
         return result
 
     def paintEvent(self, event):
-        from PyQt5.QtGui import QPainterPath
-        from PyQt5.QtWidgets import QStyle, QStyleOptionFocusRect
-
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
 

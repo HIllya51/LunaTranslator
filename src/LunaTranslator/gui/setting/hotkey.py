@@ -30,6 +30,7 @@ from gui.usefulwidget import (
     SClickableLabel,
 )
 from gui.dynalang import LLabel, LAction, LDialog, LFormLayout
+from gui.fluent.card import make_card
 
 
 def delaycreatereferlabels(self, name):
@@ -422,7 +423,6 @@ def selfdefkeys(self, lay: QLayout):
 
 
 def setTab_quick(self, l: QVBoxLayout):
-    from gui.fluent.card import make_card
 
     # ---- “使用快捷键”卡片 ----
     card_holder = QWidget()

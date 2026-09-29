@@ -36,6 +36,7 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LPushButton, LFormLayout, LLabel
 from gui.fluent.expander import ExExpander
+from gui.fluent.colorpicker import ColorPickerButton
 
 
 def __changeuibuttonstate(x):
@@ -742,7 +743,6 @@ def xianshigrid_style(self):
 def _current_translate_color():
     """当前显示顺序里第一个启用的译器颜色（与渲染端 TranslateColor
     的取值口径一致）。"""
-    from myutils.utils import translate_exits
 
     for uid in globalconfig["fix_translate_rank_rank"]:
         if (
@@ -758,8 +758,6 @@ def _translate_color_button(parent):
     """译文颜色的指示按钮：外观同 ColorPickerButton（色块+箭头），
     色块显示当前生效译器的颜色；不带取色功能，点击跳转翻译设置
     （switchtotspage）。"""
-    from gui.fluent.colorpicker import ColorPickerButton
-    from PyQt5.QtWidgets import QAction
 
     btn = ColorPickerButton()
     btn.setSelectedColor(QColor(_current_translate_color()))

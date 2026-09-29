@@ -1,6 +1,6 @@
 from qtsymbols import *
 import functools, re
-from myutils.config import globalconfig, static_data, _TR, dynamiclink
+from myutils.config import globalconfig, static_data, _TR, dynamiclink, ui_settings
 from myutils.wrapper import threader
 from myutils.utils import makehtml, getlanguse, nowisdark
 from gui.qevent import DarkLightChangedEvent
@@ -21,8 +21,14 @@ from gui.usefulwidget import (
     SClickableLabel,
     VisLFormLayout,
     tabadd_lazy,
+    makecardrow,
+    getsimplecombobox,
 )
 from gui.dynalang import LLabel
+from gui.fluent.card import make_trailing_combo, make_card_contents
+from gui.fluent.icons import ICON_SETTINGS_DISPLAY_SOUND
+from gui.fluent.expander import ExExpander
+from gui.setting.display_ui import switch_darklight
 from gui.setting.setting_year import yearsummary
 from language import UILanguages, Languages
 from myutils.updater import versionchecktask
@@ -453,11 +459,7 @@ class __delayloadlangs(QHBoxLayout):
 
 
 def setTab_about(self: QWidget, basel):
-    from gui.fluent.card import make_trailing_combo
-    from gui.usefulwidget import makecardrow, makescrollgrid
-    from gui.setting.display_ui import switch_darklight
-    from gui.usefulwidget import getsimplecombobox
-    from myutils.config import ui_settings as _uis
+    _uis = ui_settings
 
     # 与其他设置页同一条代码路径（makescrollgrid）——不手搓容器
 
@@ -498,7 +500,6 @@ def setTab_about(self: QWidget, basel):
     )
 
     # 自动更新折叠卡（子项 = 最新版本）
-    from gui.fluent.expander import ExExpander
 
     updateexp = ExExpander()
     updateheader = QWidget()
@@ -516,8 +517,6 @@ def setTab_about(self: QWidget, basel):
     updateexp.addContentWidget(getboxwidget(["最新版本", 1, version_link]))
 
     # LICENSE 折叠（ExExpander，同 Gallery 强调色折叠面板的用法）
-    from gui.fluent.card import make_card_contents
-    from gui.fluent.icons import ICON_SETTINGS_DISPLAY_SOUND
 
     license_expander = ExExpander()
     license_expander.setObjectName("settingsLicenseExpander")

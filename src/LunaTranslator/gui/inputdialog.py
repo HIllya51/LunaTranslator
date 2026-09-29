@@ -767,8 +767,6 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
         self.setWindowTitle(title)
         # 行数很多时窗口过高——内容放进滚动区，窗口高度封顶 600px
         # （仍不超过屏幕工作区 80%，小屏保护）
-        from PyQt5.QtGui import QGuiApplication
-
         screen = QGuiApplication.primaryScreen()
         maxh = min(600, int(screen.availableGeometry().height() * 0.8))
         self.resize(QSize(width, 10))

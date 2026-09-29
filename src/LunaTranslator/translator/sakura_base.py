@@ -3,6 +3,7 @@ import requests
 import time
 from urllib.parse import urlsplit, urlunsplit
 from myutils.utils import APIType, common_list_models
+from myutils.proxy import getproxy
 from translator.gptcommon import (
     createheaders,
     common_create_gpt_data,
@@ -44,7 +45,6 @@ def list_models(typename, regist: dict):
     """同 gptcommon.list_models，但本类翻译时会用
     _maybe_override_local_llama_port 猜测本地 llama-server 的实际
     端口——模型列表也要走同样的地址，否则本地部署时列表拉取失败。"""
-    from myutils.proxy import getproxy
 
     return common_list_models(
         getproxy(("fanyi", typename)),

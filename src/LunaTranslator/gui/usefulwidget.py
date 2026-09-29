@@ -36,7 +36,7 @@ from gui.dynalang import (
     LMainWindow,
 )
 from gui.fluent.tabwidget import apply_segmented_tabbar, make_lazy_page
-from gui.fluent.colorpicker import ColorPickerButton
+from gui.fluent.colorpicker import ColorPickerButton, FluentColorDialog, paint_fluent_flyout_surface
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from gui.fluent.expander import _exp_chevron_button_background
 
@@ -1398,7 +1398,6 @@ def D_getsimpleswitch(
 def getColor(color, parent, alpha=False, title=None):
     # Fluent 取色器（WinUI3 CommunityToolkit ColorPicker 移植，
     # 见 gui/fluent/colorpicker.py），替换原 QColorDialog 魔改
-    from gui.fluent.colorpicker import FluentColorDialog
 
     color_dialog = FluentColorDialog(parent)
     if title:
@@ -3999,7 +3998,6 @@ class PopupWidget(QWidget):
         return super().showEvent(a0)
 
     def paintEvent(self, a0):
-        from gui.fluent.colorpicker import paint_fluent_flyout_surface
 
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)

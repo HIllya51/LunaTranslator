@@ -12,6 +12,7 @@ from qtsymbols import (
     QFont,
     QHBoxLayout,
     QLabel,
+    QComboBox,
     QListView,
     QPalette,
     QSizePolicy,
@@ -148,8 +149,6 @@ def make_card_contents(icon_code, title, description="", trailing=None, parent=N
 
 def make_trailing_combo(combo, width=170, height=32):
     """把已有下拉框包装成卡片尾部控件（固定尺寸，零边距容器）。"""
-    from qtsymbols import QComboBox
-
     if isinstance(combo, QComboBox):
         combo.setMinimumWidth(width)
         combo.setMinimumHeight(height)

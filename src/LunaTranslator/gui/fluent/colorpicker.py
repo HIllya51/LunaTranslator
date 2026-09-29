@@ -48,6 +48,7 @@ from PyQt5.QtGui import QLinearGradient
 
 from gui.dynalang import LLabel, LPushButton, LDialog
 from gui.fluent.tabwidget import apply_segmented_tabbar_style
+from myutils.config import _TR
 from gui.fluent import _disable_dwm_nc_chrome
 
 # ---- 飞层登记（非客户区点击关闭用） ----
@@ -535,7 +536,6 @@ class FluentColorPicker(QWidget):
         iconfont = QFont("Segoe Fluent Icons")
         iconfont.setPixelSize(14)
         self._tabbar.setFont(iconfont)
-        from myutils.config import _TR
         for glyph, tip in ((_ICON_SPECTRUM, "光谱"), (_ICON_PALETTE, "色板"),
                            (_ICON_SLIDERS, "滑条")):
             self._tabbar.addTab(glyph)
@@ -749,7 +749,6 @@ class FluentColorPicker(QWidget):
         self._apply_color(color, True, True)
 
     def _on_hex(self):
-        from myutils.config import _TR  # noqa: F401
         digits = self._hexedit.text().strip()
         if digits.startswith("#"):
             digits = digits[1:]

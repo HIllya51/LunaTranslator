@@ -29,6 +29,7 @@ from qtsymbols import (
 
 import functools
 
+from myutils.config import _TR
 from gui.fluent.nav import FluentNavTree, NAV_PAGE_ROLE, NAV_ICON_ROLE
 
 from gui.fluent.icons import (
@@ -233,8 +234,6 @@ class FluentTabWidget(QWidget):
     # ---- TabWidget 兼容面 ----
     def addTab(self, widget, title):
         self.__titles.append(title)
-        from myutils.config import _TR
-
         self.tab_widget.addTab(widget, _TR(title))
         idx = self.tab_widget.count() - 1
         if "关于" in title:
@@ -258,8 +257,6 @@ class FluentTabWidget(QWidget):
         """把页面挂为 parent_title 导航项的子节点（WinUI 层级导航）。
         page_index 给定时复用已有页面（父项与首子项同页），否则新建
         懒加载页加入主 stack。返回页索引。"""
-        from myutils.config import _TR
-
         if page_index is None:
             q = make_lazy_page(getrealwidgetfunction)
             self.tab_widget.addTab(q, _TR(title))
@@ -336,8 +333,6 @@ class FluentTabWidget(QWidget):
 
     # ---- 语言切换 ----
     def updatelangtext(self):
-        from myutils.config import _TR
-
         for i, title in enumerate(self.__titles):
             self.tab_widget.setTabText(i, _TR(title))
         for i in range(self.nav.topLevelItemCount()):

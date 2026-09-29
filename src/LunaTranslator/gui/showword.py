@@ -1580,9 +1580,7 @@ class showdiction(QWidget):
         root = self.model.invisibleRootItem()
         rows = []
 
-        from cishu.mdict import Cishu
-
-        cishus: "list[Cishu]" = []
+        cishus = []
         for k in globalconfig["cishuvisrank"]:
             cishu = gobject.base.cishus.get(k)
             if not hasattr(cishu, "tree"):

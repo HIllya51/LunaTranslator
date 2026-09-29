@@ -5,13 +5,19 @@ refresh_fluent_style）。明暗切换通过 setstylesheetsignal 的
 QueuedConnection 进入（不在组合框弹出的关闭序列中同步执行）。
 """
 
-from qtsymbols import QApplication, QColor, QFont, QTimer, isqt5
+from qtsymbols import (
+    QApplication, QColor, QFont, QTimer, isqt5,
+    QEvent, QObject, QMenu, Qt, QWidget,
+    QLineEdit, QPlainTextEdit, QTextEdit, QComboBox,
+)
 
 if isqt5:
     from PyQt5.QtWidgets import QStyleFactory
     from PyQt5.QtCore import QCoreApplication
 
+import ctypes
 import os
+from winreg import ConnectRegistry, OpenKey, QueryValueEx, HKEY_CURRENT_USER
 
 _applied_key = None
 _plugin_path_done = False
@@ -29,8 +35,6 @@ def _ensure_plugin_path():
 
 def get_windows_accent_color():
     """读取 Windows 系统强调色。失败返回无效 QColor。"""
-    from winreg import ConnectRegistry, OpenKey, QueryValueEx, HKEY_CURRENT_USER
-
     registry = ConnectRegistry(None, HKEY_CURRENT_USER)
     key = OpenKey(
         registry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent"
@@ -81,8 +85,6 @@ def _disable_dwm_nc_chrome(widget):
     "每个右键菜单首次唤出时有右/下边框"的根源。必须在显示前完成：
     先 winId() 强制创建窗口（尚未合成），再设 DWM 属性。"""
     try:
-        import ctypes
-
         hwnd = int(widget.winId())
         dwmapi = ctypes.windll.dwmapi
         policy = ctypes.c_uint(1)  # DWMNCRP_DISABLED（边框+阴影全关）
@@ -102,7 +104,6 @@ def _install_menu_font_gate():
     global _menu_font_gate
     if _menu_font_gate is not None:
         return
-    from qtsymbols import QEvent, QObject, QMenu
 
     class _Gate(QObject):
         def eventFilter(self, obj, ev):
@@ -133,9 +134,6 @@ def _install_exec_menu_gate():
     global _exec_menu_gate
     if _exec_menu_gate is not None:
         return
-    from qtsymbols import (
-        QEvent, QObject, Qt, QWidget, QLineEdit, QPlainTextEdit, QTextEdit, QComboBox,
-    )
 
     class _Gate(QObject):
         def eventFilter(self, watched, ev):
@@ -173,8 +171,6 @@ def _restore_combo_view_fonts():
     默认(9pt)。对受害控件无条件设显式字体——显式字体能在后续的延迟重置
     中存活。构造式 QFont(family, size)：拷贝式带空 resolve mask，
     setFont 等于清除显式字体，无效。"""
-    from qtsymbols import QComboBox
-
     app = QApplication.instance()
     if app is None:
         return

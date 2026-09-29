@@ -15,6 +15,7 @@ from qtsymbols import (
     QSize,
     QToolButton,
     QWidget,
+    QApplication,
     pyqtSignal,
 )
 
@@ -142,8 +143,6 @@ class FluentTitleBar(QWidget):
         self._title_label.setText(self._window.windowTitle())
 
     def updateIcon(self):
-        from qtsymbols import QApplication
-
         icon = self._window.windowIcon()
         if icon.isNull():
             icon = QApplication.windowIcon()
