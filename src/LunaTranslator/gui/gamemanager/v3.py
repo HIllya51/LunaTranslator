@@ -1401,15 +1401,25 @@ class dialog_savedgame_v3(QWidget):
         group = self._itemfortag(tagid)
         if group is None:
             return
-        items = {}
-        for j in range(group.childCount()):
-            ch = group.child(j)
-            items[ch.data(0, GAMEUID_ROLE)] = ch
-        for ch in list(items.values()):
-            group.removeChild(ch)
-        for u in newlist:
-            if u in items:
-                group.addChild(items[u])
+        # 重排期间屏蔽 nav 信号：removeChild 循环会让 current 在子项间
+        # 跳变，每次跳变都触发 _navcurrent -> focusgame 的
+        # ensureWidgetVisible，表现为"疯狂滚动显示所有项"。
+        # 排序即取消聚焦（选中回到主项），滚动风暴与错位高亮一并消除。
+        self.currentfocusuid = None
+        self.nav.blockSignals(True)
+        try:
+            items = {}
+            for j in range(group.childCount()):
+                ch = group.child(j)
+                items[ch.data(0, GAMEUID_ROLE)] = ch
+            for ch in list(items.values()):
+                group.removeChild(ch)
+            for u in newlist:
+                if u in items:
+                    group.addChild(items[u])
+            self.nav.setCurrentItem(group)
+        finally:
+            self.nav.blockSignals(False)
 
     def _tagmove(self, tagid, dst_idx):
         """主项（列表）拖动：nav 树 + savegametaged 同步重排（位置任意）。"""
