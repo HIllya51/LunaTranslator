@@ -587,11 +587,8 @@ class _gamelistnav(FluentNavTree):
         self.setAcceptDrops(True)
         self._dragitem = None
         self._dragpos = None
-        # 双击才展开/折叠主项（单击只选中切网格页）。
-        # Qt 默认 expandsOnDoubleClick 也会 toggle 一次，与 _navdouble
-        # 的 toggle 互相抵消（表现为"双击无反应"）——关掉默认的
-        self._expand_on_doubleclick = True
-        self.setExpandsOnDoubleClick(False)
+        # 按住 Ctrl/Alt/Shift 点击主项：不触发选中/展开（见 mousePressEvent），
+        # 鼠标用于拖动主项排序
         self._icon_pending = {}
         self._icon_timer = QTimer(self)
         self._icon_timer.setInterval(25)
@@ -638,12 +635,24 @@ class _gamelistnav(FluentNavTree):
     def mousePressEvent(self, ev):
         self._dragitem = self.itemAt(ev.pos())
         self._dragpos = ev.pos()
+        # 按住 Ctrl/Alt/Shift 点主项：不触发选中/展开/切页，专门用于拖动
+        if (
+            self._dragitem is not None
+            and self._dragitem.parent() is None
+            and ev.modifiers()
+            & (
+                Qt.KeyboardModifier.ControlModifier
+                | Qt.KeyboardModifier.AltModifier
+                | Qt.KeyboardModifier.ShiftModifier
+            )
+        ):
+            ev.accept()
+            return
         return super().mousePressEvent(ev)
 
     def mouseMoveEvent(self, e):
         if (
             self._dragitem is not None
-            and self._dragitem is self.currentItem()
             and (e.buttons() & Qt.MouseButton.LeftButton)
             and (e.pos() - self._dragpos).manhattanLength()
             >= QApplication.startDragDistance()
@@ -694,10 +703,8 @@ class _gamelistnav(FluentNavTree):
         pos = self._indicator_pos(dst_item, e.pos())
         e.acceptProposedAction()
         if src.parent() is None:
-            # ---- 主项拖动：调整列表顺序（仅自定义列表；内置两项固定在首）----
+            # ---- 主项拖动：调整列表顺序（含内置项，位置任意）----
             src_tag = src.data(0, TAGID_ROLE)
-            if src_tag in (None, 1):
-                return
             if dst_item.parent() is not None:
                 dst_item = dst_item.parent()
             if dst_item.data(0, TAGID_ROLE) == src_tag:
@@ -859,6 +866,9 @@ class _gridpage(QWidget):
     def showtag(self, tagid):
         self.reftagid = tagid
         self._loaded = True
+        # tagschanged 重建 flow 时布局尚未激活（可能在 mousePress 栈内），
+        # fakegeos/懒加载基于零尺寸——延后一拍重算
+        QTimer.singleShot(0, self._refit_flow)
         # 与建树同款三分支（getreflist(None) 会返回哨兵 1，不可迭代）
         if tagid is None:
             self.reflist = savehook_new_list
@@ -1287,15 +1297,14 @@ class dialog_savedgame_v3(QWidget):
             self.gridpage.flow_move_idx(ca, _idx)
 
     def _tagmove(self, tagid, dst_idx):
-        """主项（列表）拖动：nav 树 + savegametaged 同步重排。
-        内置的 所有游戏(None)/最近游戏(1) 固定在最前（dst_idx 钳制 >= 2）。"""
+        """主项（列表）拖动：nav 树 + savegametaged 同步重排（位置任意）。"""
         src_idx = self.nav.indexOfTopLevelItem(self._itemfortag(tagid))
         if src_idx < 0:
             return
         item = self.nav.takeTopLevelItem(src_idx)
         if dst_idx > src_idx:
             dst_idx -= 1
-        dst_idx = max(2, min(dst_idx, self.nav.topLevelItemCount()))
+        dst_idx = max(0, min(dst_idx, self.nav.topLevelItemCount()))
         self.nav.insertTopLevelItem(dst_idx, item)
         savegametaged.insert(dst_idx, savegametaged.pop(src_idx))
         self.nav.setCurrentItem(item)
@@ -1368,12 +1377,10 @@ class dialog_savedgame_v3(QWidget):
 
     def _navdouble(self, item, _col):
         uid = item.data(0, GAMEUID_ROLE)
-        if uid:
-            self.viewitem(uid)
-            self.stack.setCurrentWidget(self.righttop)
-        else:
-            # 双击主项：展开/折叠（单击只选中切网格页）
-            item.setExpanded(not item.isExpanded())
+        if not uid:
+            return
+        self.viewitem(uid)
+        self.stack.setCurrentWidget(self.righttop)
 
     def point_game(self, uid):
         """网格页图表点击：侧栏指向该游戏子项（_navcurrent 接管切页加载）。"""
