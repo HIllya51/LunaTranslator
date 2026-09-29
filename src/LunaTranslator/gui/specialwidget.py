@@ -538,6 +538,7 @@ class lazyscrollflow(ScrollArea):
     def __init__(self, keypressed):
         super().__init__()
         self._keypressed = keypressed
+        self._hidden_indices = set()  # tag 过滤隐藏的项索引
         self.setStyleSheet("lazyscrollflow{background: transparent;border:none;}")
         self.widgets = []
         self.fakegeos = []
@@ -675,6 +676,19 @@ class lazyscrollflow(ScrollArea):
             widfunc.setGeometry(self.fakegeos[i])
             self.widgets[i] = widfunc
 
+    def setWidgetHidden(self, i, hidden):
+        """隐藏/显示第 i 项（tag 过滤用——不销毁，不占布局空间）。"""
+        if hidden:
+            self._hidden_indices.add(i)
+            w = self.widgets[i]
+            if isinstance(w, QWidget):
+                w.hide()
+        else:
+            self._hidden_indices.discard(i)
+            w = self.widgets[i]
+            if isinstance(w, QWidget):
+                w.show()
+
     def fakeresize(self):
         with self.lock:
             scrollw = (
@@ -699,6 +713,9 @@ class lazyscrollflow(ScrollArea):
             self.widgetlogicposmap = []
             currline = []
             for i, wid in enumerate(self.widgets):
+                if i in self._hidden_indices:
+                    self.fakegeos[i] = QRect()  # 零尺寸：不占布局空间
+                    continue
                 if isinstance(wid, QWidget):
                     resize = True
                 else:

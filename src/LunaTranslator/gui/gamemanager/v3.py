@@ -1040,9 +1040,6 @@ class _gridpage(QWidget):
     def showtag(self, tagid):
         self.reftagid = tagid
         self._loaded = True
-        # tagschanged 重建 flow 时布局尚未激活（可能在 mousePress 栈内），
-        # fakegeos/懒加载基于零尺寸——延后一拍重算
-        QTimer.singleShot(0, self._refit_flow)
         # 与建树同款三分支（getreflist(None) 会返回哨兵 1，不可迭代）
         if tagid is None:
             self.reflist = savehook_new_list
@@ -1050,6 +1047,11 @@ class _gridpage(QWidget):
             self.reflist = loadrecentlist()
         else:
             self.reflist = getreflist(tagid)
+        # 创建 flow（全部项），再应用 tag 过滤
+        self._build_flow()
+        if self.currtags:
+            self._apply_tag_filter()
+        QTimer.singleShot(0, self._refit_flow)
         self.tagschanged(self.currtags)
 
     def _makeitem(self, k):
@@ -1068,11 +1070,43 @@ class _gridpage(QWidget):
             # 图表单击：侧栏指向该游戏（focusgame 的被动高亮不回写）
             self.ref.point_game(k)
 
-    def tagschanged(self, tags):
-        self.currtags = tags
-        newtags = tags
-        self.flow.hide()
-        self.flow.deleteLater()
+    def _matches_tags(self, k, tags):
+        """游戏 k 是否通过 tag 过滤（含 hide_not_exists）。"""
+        if globalconfig.get("hide_not_exists", False):
+            if not os.path.exists(get_launchpath(k)):
+                return False
+        webtags = [
+            globalconfig["tagNameRemap"].get(tag, tag)
+            for tag in savehook_new_data[k]["webtags"]
+        ]
+        for tag, _type, _ in tags:
+            if _type == tagitem.TYPE_EXISTS:
+                if not os.path.exists(get_launchpath(k)):
+                    return False
+            elif _type == tagitem.TYPE_DEVELOPER:
+                if tag not in savehook_new_data[k]["developers"]:
+                    return False
+            elif _type == tagitem.TYPE_TAG:
+                if tag not in webtags:
+                    return False
+            elif _type == tagitem.TYPE_USERTAG:
+                if tag not in savehook_new_data[k]["usertags"]:
+                    return False
+            elif _type == tagitem.TYPE_SEARCH:
+                if (
+                    tag not in webtags
+                    and tag not in savehook_new_data[k]["usertags"]
+                    and tag not in savehook_new_data[k]["title"]
+                    and tag not in savehook_new_data[k]["developers"]
+                ):
+                    return False
+        return True
+
+    def _build_flow(self):
+        """创建包含全部游戏项的 flow。"""
+        if isinstance(self.flow, lazyscrollflow):
+            self.flow.hide()
+            self.flow.deleteLater()
         self.flow = lazyscrollflow(self._keypressed)
         self.flow.setObjectName("NOBORDER")
         self.flow.bgclicked.connect(self._bgclicked)
@@ -1084,51 +1118,40 @@ class _gridpage(QWidget):
         )
         self.flow.setSpacing(ui_settings["dialog_savegame_layout"].get("margin", 6))
         self.flowcontainer.addWidget(self.flow)
-        idx = 0
         for k in self.reflist:
-            if newtags != self.currtags:
-                break
-            if globalconfig.get("hide_not_exists", False):
-                if not os.path.exists(get_launchpath(k)):
-                    continue
-            notshow = False
-            webtags = [
-                globalconfig["tagNameRemap"].get(tag, tag)
-                for tag in savehook_new_data[k]["webtags"]
-            ]
-            for tag, _type, _ in tags:
-                if _type == tagitem.TYPE_EXISTS:
-                    if os.path.exists(get_launchpath(k)) == False:
-                        notshow = True
-                        break
-                elif _type == tagitem.TYPE_DEVELOPER:
-                    if tag not in savehook_new_data[k]["developers"]:
-                        notshow = True
-                        break
-                elif _type == tagitem.TYPE_TAG:
-                    if tag not in webtags:
-                        notshow = True
-                        break
-                elif _type == tagitem.TYPE_USERTAG:
-                    if tag not in savehook_new_data[k]["usertags"]:
-                        notshow = True
-                        break
-                elif _type == tagitem.TYPE_SEARCH:
-                    if (
-                        tag not in webtags
-                        and tag not in savehook_new_data[k]["usertags"]
-                        and tag not in savehook_new_data[k]["title"]
-                        and tag not in savehook_new_data[k]["developers"]
-                    ):
-                        notshow = True
-                        break
-            if notshow:
-                continue
             self.flow.addwidget(functools.partial(self._makeitem, k))
-            idx += 1
-        # 事件处理栈内（搜索/排序/点击）布局未激活，直接算无效——
-        # 延后一拍重算（_refit_flow 内先泵事件让布局完成）
-        QTimer.singleShot(0, self._refit_flow)
+
+    def _apply_tag_filter(self):
+        """隐藏不匹配项（网格 + 侧边栏子项），不销毁 flow。"""
+        tags = self.currtags
+        # 网格
+        for i, w in enumerate(self.flow.widgets):
+            uid = None
+            if isinstance(w, ItemWidget):
+                uid = w.gameuid
+            elif callable(w) and getattr(w, "args", None):
+                uid = w.args[0]
+            if uid is None:
+                continue
+            self.flow.setWidgetHidden(i, not self._matches_tags(uid, tags))
+        self.flow.resizeandshow()
+        # 侧边栏
+        nav = self.ref.nav
+        for ti in range(nav.topLevelItemCount()):
+            top = nav.topLevelItem(ti)
+            for ci in range(top.childCount()):
+                child = top.child(ci)
+                uid = child.data(0, GAMEUID_ROLE)
+                if uid is None:
+                    continue
+                child.setHidden(not self._matches_tags(uid, tags))
+
+    def tagschanged(self, tags):
+        """tag 变化：更新过滤（隐藏/显示），不销毁重建 flow。"""
+        self.currtags = tags
+        if not isinstance(self.flow, lazyscrollflow):
+            return
+        self._apply_tag_filter()
 
     def _flow_find(self, uid):
         """flow.widgets 中的索引（未实例化的 partial 工厂也携带 uid）。"""
