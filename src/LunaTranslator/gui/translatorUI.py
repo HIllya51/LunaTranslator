@@ -905,7 +905,6 @@ class TranslatorWindow(resizableframeless):
         t.start()
         self.adjustbuttons = self.titlebar.adjustbuttons
         self.verticalhorizontal(globalconfig.get("verticalhorizontal", False))
-        self.screengeochanged.connect(self.checksettop)
 
     def showmenu(self, _):
         child = self.titlebar.childAt(_)

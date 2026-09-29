@@ -668,7 +668,6 @@ class TableViewW(DelayLoadTableView, LTableView):
 
 
 class saveposwindow_1(LMainWindow):
-    screengeochanged = pyqtSignal()
 
     def __gettitlewithversion(self, t):
         version = NativeUtils.QueryVersion(getcurrexe())
@@ -699,31 +698,6 @@ class saveposwindow_1(LMainWindow):
         if self.posinit:
             self.setGeometry(QRect(*self.posinit))
         self.adjust_window_to_screen_bounds(qwidget_screen(self).geometry())
-        self.___firstshow = True
-
-    def showEvent(self, a0):
-        if self.___firstshow:
-            self.___firstshow = False
-            self.windowHandle().screenChanged.connect(self.__screenChanged)
-            self.__screenChanged(qwidget_screen(self))
-        return super().showEvent(a0)
-
-    @tryprint
-    def _changed(self, _id: str, geo: QRect):
-        try:
-            if _id != qwidget_screen(self).serialNumber():
-                return
-        except:
-            pass
-        self.adjust_window_to_screen_bounds(geo)
-        self.screengeochanged.emit()
-
-    def __screenChanged(self, screen: QScreen):
-        try:
-            _id = screen.serialNumber()
-        except:
-            return
-        screen.geometryChanged.connect(functools.partial(self._changed, _id))
 
     @tryprint
     def adjust_window_to_screen_bounds(self, screen_rect: QRect):
