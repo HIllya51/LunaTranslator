@@ -862,7 +862,7 @@ class _gridpage(QWidget):
         self.searchedit.setPlaceholderText("搜索")
         self.searchedit.setFixedHeight(32)
         self.searchedit.setClearButtonEnabled(True)
-        _act = QAction(self.searchedit)
+        self._search_action = _act = QAction(self.searchedit)
         _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32))
         self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
         self.searchedit.installEventFilter(self)
@@ -912,6 +912,22 @@ class _gridpage(QWidget):
                 self.ref.nav.setCurrentItem(group)
             finally:
                 self.ref.nav.blockSignals(False)
+
+    def changeEvent(self, event):
+        super().changeEvent(event)
+        if event is None:
+            return
+        if event.type() in (
+            QEvent.Type.PaletteChange,
+            QEvent.Type.ApplicationPaletteChange,
+        ):
+            # 明暗切换：重画搜索图标（create_fluent_icon 按当前调色板着色）
+            self._refresh_search_icon()
+
+    def _refresh_search_icon(self):
+        act = getattr(self, "_search_action", None)
+        if act is not None:
+            act.setIcon(create_fluent_icon(ICON_SEARCH))
 
     def eventFilter(self, obj, ev):
         if obj is self.searchedit:
