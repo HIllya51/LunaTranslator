@@ -46,7 +46,6 @@ from gui.gamemanager.common import (
 from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree
 from gui.gamemanager.widgets import TagWidget, ItemWidget
-from gui.usefulwidget import IconButton
 from gui.specialwidget import lazyscrollflow
 from gui.usefulwidget import getIconButton
 from gui.fluent.icons import ICON_GLOBAL_NAV
@@ -671,6 +670,13 @@ class _gridpage(QWidget):
                 icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
             )
         )
+        toplay.addWidget(
+            getIconButton(
+                icon="fa.gear",
+                callback=lambda: dialog_syssetting(self.ref),
+                tips="界面设置",
+            )
+        )
         lay.addWidget(top)
         _w = QWidget()
         self.flowcontainer = QHBoxLayout(_w)
@@ -1091,8 +1097,6 @@ class dialog_savedgame_v3(QWidget):
             _f.fromString(fontstring)
             self.nav.setFont(_f)
 
-    leave = pyqtSignal(bool)
-
     def __init__(self, parent) -> None:
         super().__init__(parent)
         dialog_savedgame_v3.reference = self
@@ -1145,27 +1149,6 @@ class dialog_savedgame_v3(QWidget):
             )
         )
         self.righttop.addTab(self.pixview, "_画廊_")
-        w = QWidget()
-        self.leave.connect(w.setHidden)
-        self.righttop.setCornerWidget(w)
-        hbox = QHBoxLayout(w)
-        hbox.setSpacing(0)
-        syssettingbtn = IconButton(icon="fa.gear", parent=self, tips="界面设置")
-        syssettingbtn.clicked.connect(lambda: dialog_syssetting(self))
-        hbox.addWidget(syssettingbtn)
-        lockbtn = IconButton(
-            icon=["fa.unlock", "fa.lock"],
-            parent=self,
-            checkable=True,
-            checked=globalconfig.get("gamemanager_extrabuttons_lock", True),
-            tips="锁定",
-        )
-        lockbtn.clicked.connect(
-            lambda checked: globalconfig.__setitem__(
-                "gamemanager_extrabuttons_lock", bool(checked)
-            )
-        )
-        hbox.addWidget(lockbtn)
         # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）
         self.stack = QStackedWidget()
         self.gridpage = _gridpage(self)

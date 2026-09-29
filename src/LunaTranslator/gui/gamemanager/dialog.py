@@ -20,10 +20,6 @@ class dialog_savedgame_integrated(saveposwindow):
             _old.hide()
             _ = klass(self)
             self.__internal = _
-            if not self.underMouse() and not globalconfig.get(
-                "gamemanager_extrabuttons_lock", True
-            ):
-                _.leave.emit(True)
             self.internallayout.addWidget(_)
             _.directshow()
             _old.deleteLater()
@@ -53,16 +49,3 @@ class dialog_savedgame_integrated(saveposwindow):
 
         self.show()
         self.selectlayout(globalconfig.get("gamemanager_integrated_internal_layout", 1))
-
-    def leaveEvent(self, a0):
-        if (
-            self.__internal
-            and not self.geometry().contains(QCursor.pos())
-            and not globalconfig.get("gamemanager_extrabuttons_lock", True)
-        ):
-            self.__internal.leave.emit(True)
-        return super().leaveEvent(a0)
-
-    def enterEvent(self, a0):
-        self.__internal.leave.emit(False)
-        return super().enterEvent(a0)
