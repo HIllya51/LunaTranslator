@@ -911,7 +911,7 @@ class _gridpage(QWidget):
         return super().eventFilter(obj, ev)
 
     def _search(self):
-        text = self.searchedit.currentText().strip()
+        text = self.searchedit.text().strip()
         if text:
             self._apply_tags(tuple(self.currtags)
                              + ((text, tagitem.TYPE_SEARCH, None),))
