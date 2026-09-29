@@ -66,6 +66,7 @@ class FluentNavTree(QTreeWidget):
         self._navigation_expanded = False
         self._navigation_compact_width = 44
         self._navigation_expanded_width = 200
+        self._restorable_child = None
 
         self.setAnimated(True)
         self.setIconSize(QSize(20, 20))
@@ -206,6 +207,25 @@ class FluentNavTree(QTreeWidget):
         old_icon_mode = self.property("navigationIconMode")
         will_be_icon_mode = not show_text
         mode_flipped = (bool(old_icon_mode) != will_be_icon_mode)
+        if mode_flipped:
+            # 同 Gallery：选中子项时收起——把选中（指示条）提升到顶层
+            # 祖先（图标模式只有顶层可见，指示条跟随选中项）；展开时恢复
+            if will_be_icon_mode:
+                current = self.currentItem()
+                if current is not None and current.parent() is not None:
+                    top_level = current
+                    while top_level.parent() is not None:
+                        top_level = top_level.parent()
+                    # 保存真实子节点，恢复展开模式时重新选中
+                    self._restorable_child = current
+                    self.setCurrentItem(top_level)
+            else:
+                current = self.currentItem()
+                if current is not None and current.parent() is None:
+                    saved_child = self._restorable_child
+                    if saved_child is not None:
+                        self.setCurrentItem(saved_child)
+                        self._restorable_child = None
 
         self.setProperty("navigationIconMode", will_be_icon_mode)
 
