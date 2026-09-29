@@ -1527,15 +1527,23 @@ class dialog_savedgame_v3(QWidget):
 
     def _sync_current_to_gridlist(self, main_item):
         """双击主项展开/折叠后调用：网格正聚焦着该列表的游戏时，
-        侧边栏选中移到该主项（子项 -> 主项，聚焦保持）。"""
+        侧边栏立即聚焦到对应的子项（展开时）或主项（折叠时）。"""
         uid = self.currentfocusuid
         if not uid or uid not in savehook_new_data:
             return
         if self.gridpage.reftagid != main_item.data(0, TAGID_ROLE):
             return  # 网格聚焦的游戏不属于该列表：不动
-        if self.nav.currentItem() is not main_item:
-            self.nav.setCurrentItem(main_item)
-            self.currentfocusuid = uid  # 主项分支会清，补回
+        target = main_item
+        if main_item.isExpanded():
+            # 展开：聚焦到网格当前聚焦游戏对应的子项
+            for j in range(main_item.childCount()):
+                child = main_item.child(j)
+                if child.data(0, GAMEUID_ROLE) == uid:
+                    target = child
+                    break
+        if self.nav.currentItem() is not target:
+            self.nav.setCurrentItem(target)
+        self.currentfocusuid = uid  # 分支可能清聚焦，补回
 
     def _navdouble(self, item, _col):
         uid = item.data(0, GAMEUID_ROLE)
