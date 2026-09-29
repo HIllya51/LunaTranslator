@@ -877,10 +877,8 @@ class dialog_savedgame_v3(QWidget):
         self.keepindexobject = {}
 
         self.nav = _gamelistnav(self)
-        # 初始按存档：44（图标模式）/200（文字模式）两档，汉堡切换
-        self.nav.setNavigationExpanded(
-            not globalconfig.get("gamemanager_nav_collapsed", False), animated=False
-        )
+        # 折叠/展开模式在建树之后应用（见建树循环后）——放建树前时树为空，
+        # 父项折叠空转，建树又会按存档把子项展开
         self.nav.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.nav.customContextMenuRequested.connect(self.nav_showmenu)
         self.nav.currentItemChanged.connect(self._navcurrent)
@@ -963,6 +961,11 @@ class dialog_savedgame_v3(QWidget):
                     isfirst = False
                 rowreal += 1
             self._updatetagtext(group0)
+        # 树建好后应用存档的折叠/展开：图标模式会折叠全部父项并把
+        # 选中的子项提升到顶层（指示条位置正确）
+        self.nav.setNavigationExpanded(
+            not globalconfig.get("gamemanager_nav_collapsed", False), animated=False
+        )
 
     def _toggle_nav(self):
         exp = not self.nav.navigationExpanded()
