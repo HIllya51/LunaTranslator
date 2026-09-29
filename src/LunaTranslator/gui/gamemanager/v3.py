@@ -44,6 +44,7 @@ from gui.gamemanager.common import (
 )
 from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree
+from gui.fluent.icons import ICON_GLOBAL_NAV
 
 
 class fadeoutlabel(QWidget):
@@ -636,7 +637,7 @@ class _gamelistnav(FluentNavTree):
         super().keyPressEvent(e)
 
 
-class dialog_savedgame_v3(QSplitter):
+class dialog_savedgame_v3(QWidget):
     def createsettings(self, formLayout: QFormLayout):
 
         spin = getspinbox(
@@ -749,6 +750,10 @@ class dialog_savedgame_v3(QSplitter):
 
     def _navexpand(self, exp, item):
         if item.parent() is not None:
+            return
+        # 侧栏收起（图标模式）引起的自动折叠不改列表展开存档——
+        # 否则收起侧栏会把所有列表记成"已折叠"
+        if (not exp) and self.nav.property("navigationIconMode"):
             return
         tagid = item.data(0, TAGID_ROLE)
         if tagid is None:
@@ -872,8 +877,10 @@ class dialog_savedgame_v3(QSplitter):
         self.keepindexobject = {}
 
         self.nav = _gamelistnav(self)
-        # 常驻展开（200px 文字模式）：列表主项 + 游戏子项可见
-        self.nav.setNavigationExpanded(True, animated=False)
+        # 初始按存档：44（图标模式）/200（文字模式）两档，汉堡切换
+        self.nav.setNavigationExpanded(
+            not globalconfig.get("gamemanager_nav_collapsed", False), animated=False
+        )
         self.nav.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.nav.customContextMenuRequested.connect(self.nav_showmenu)
         self.nav.currentItemChanged.connect(self._navcurrent)
@@ -881,10 +888,25 @@ class dialog_savedgame_v3(QSplitter):
         self.nav.itemCollapsed.connect(functools.partial(self._navexpand, False))
         self.setstyle()
 
-        self.setHandleWidth(1)
-        self.setStyleSheet("QSplitter::handle {margin:0}")
-
-        self.addWidget(self.nav)
+        # 侧边栏容器：第一项是折叠/展开汉堡（同设置窗口标题栏汉堡），
+        # 下面是导航树
+        navcontainer = QWidget()
+        navlay = QVBoxLayout(navcontainer)
+        navlay.setContentsMargins(0, 0, 0, 0)
+        navlay.setSpacing(0)
+        hamburger = QToolButton()
+        hamburger.setObjectName("win_caption_pin")
+        hamburger.setAutoRaise(True)
+        hamburger.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
+        _f = QFont("Segoe Fluent Icons")
+        _f.setPixelSize(16)
+        hamburger.setFont(_f)
+        hamburger.setText(ICON_GLOBAL_NAV)
+        hamburger.setFixedSize(44, 38)
+        hamburger.setToolTip("折叠/展开侧边栏")
+        hamburger.clicked.connect(self._toggle_nav)
+        navlay.addWidget(hamburger)
+        navlay.addWidget(self.nav, 1)
         self.righttop = makesubtab_lazy()
         self.righttop.currentChanged.connect(
             lambda idx: (
@@ -906,18 +928,12 @@ class dialog_savedgame_v3(QSplitter):
         hbox = QHBoxLayout(w)
         hbox.setSpacing(0)
         parent.createviewswitch(hbox)
-        self.addWidget(self.righttop)
+        lay = QHBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(0)
+        lay.addWidget(navcontainer)
+        lay.addWidget(self.righttop, 1)
         self.setObjectName("NOBORDER")
-
-        def __(_):
-            ui_settings["dialog_savegame_layout"]["listitemwidth_2"] = self.sizes()
-
-        self.setSizes(
-            ui_settings["dialog_savegame_layout"].get("listitemwidth_2", [300, 500])
-        )
-        self.splitterMoved.connect(__)
-        self.setStretchFactor(0, 0)
-        self.setStretchFactor(1, 1)
 
         isfirst = True
         for i, tag in enumerate(savegametaged):
@@ -947,6 +963,11 @@ class dialog_savedgame_v3(QSplitter):
                     isfirst = False
                 rowreal += 1
             self._updatetagtext(group0)
+
+    def _toggle_nav(self):
+        exp = not self.nav.navigationExpanded()
+        self.nav.setNavigationExpanded(exp)
+        globalconfig["gamemanager_nav_collapsed"] = not exp
 
     def taglistrerank(self, tagid, dx):
         idx1 = calculatetagidx(tagid)
