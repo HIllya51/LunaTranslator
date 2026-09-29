@@ -17,7 +17,6 @@ from myutils.utils import (
     targetmod,
     getimagefilefilter,
 )
-from gui.specialwidget import stackedlist, shrinkableitem, shownumQPushButton
 from gui.usefulwidget import (
     pixmapviewer,
     makesubtab_lazy,
@@ -25,9 +24,7 @@ from gui.usefulwidget import (
     MyInputDialog,
     request_delete_ok,
     IconButton,
-    ColorButton,
     getspinbox,
-    SplitLine,
 )
 
 from gui.gamemanager.common import loadvisinternal
@@ -46,91 +43,7 @@ from gui.gamemanager.common import (
     addgamebatch,
 )
 from gui.dynalang import LAction, LLabel, LMenu
-
-
-class clickitem(QWidget):
-    focuschanged = pyqtSignal(bool, str)
-    doubleclicked = pyqtSignal(str)
-    globallashfocus = None
-
-    @classmethod
-    def clearfocus(cls):
-        try:  # 可能已被删除
-            if clickitem.globallashfocus:
-                clickitem.globallashfocus.focusOut()
-        except:
-            pass
-        clickitem.globallashfocus = None
-
-    def mouseDoubleClickEvent(self, e):
-        self.doubleclicked.emit(self.uid)
-
-    def click(self):
-        try:
-            self.bottommask.show()
-            if self != clickitem.globallashfocus:
-                clickitem.clearfocus()
-            clickitem.globallashfocus = self
-            self.focuschanged.emit(True, self.uid)
-        except:
-            print_exc()
-
-    def mousePressEvent(self, ev) -> None:
-        self.click()
-
-    def focusOut(self):
-        self.bottommask.hide()
-        self.focuschanged.emit(False, self.uid)
-
-    def resizeEvent(self, a0: QResizeEvent) -> None:
-        self.bottommask.resize(a0.size())
-        self.maskshowfileexists.resize(a0.size())
-        self.bottomline.resize(a0.size())
-        size = ui_settings["dialog_savegame_layout"].get("listitemheight", 30)
-        margin = min(3, int(size / 15))
-        self.lay1.setContentsMargins(margin, margin, margin, margin)
-        self._.setFixedSize(QSize(size - 2 * margin, size - 2 * margin))
-        self._2.setFixedHeight(size)
-
-    def __init__(self, uid):
-        super().__init__()
-
-        self.uid = uid
-        self.lay = QHBoxLayout(self)
-        self.lay.setSpacing(0)
-        lay1 = QHBoxLayout()
-        self.lay1 = lay1
-        self.lay.setContentsMargins(0, 0, 0, 0)
-        self.maskshowfileexists = QLabel(self)
-        exists = os.path.exists(get_launchpath(uid))
-        self.maskshowfileexists.setObjectName("savegame_exists" + str(exists))
-        self.bottommask = QLabel(self)
-        self.bottommask.hide()
-        self.bottommask.setObjectName("savegame_onselectcolor1")
-        _ = QLabel(self)
-        _.setStyleSheet("background:transparent")
-        self.bottomline = _
-        _ = QLabel()
-        self._ = _
-        _.setScaledContents(True)
-        _.setStyleSheet("background:transparent")
-        _.setObjectName("NOBORDER")
-        for image in savehook_new_data[uid].get("imagepath_all", []):
-            fr = extradatas["imagefrom"].get(image)
-            if fr:
-                targetmod.get(fr).dispatchdownloadtask(image)
-        icon = getpixfunctionAlign(uid, small=True, iconfirst=True)
-        icon.setDevicePixelRatio(self.devicePixelRatioF())
-        _.setPixmap(icon)
-        lay1.addWidget(_)
-        self.lay.addLayout(lay1)
-        _ = QLabel(savehook_new_data[uid]["title"])
-        # _.setWordWrap(True)
-        _.setToolTip(savehook_new_data[uid]["title"])
-        _.setAccessibleName(savehook_new_data[uid]["title"])
-        self._2 = _
-        _.setObjectName("savegame_textfont2")
-        self.lay.addWidget(_)
+from gui.fluent.nav import FluentNavTree
 
 
 class fadeoutlabel(QWidget):
@@ -633,6 +546,82 @@ class pixwrapper(QSplitter):
         self.pixview.bottombtn.setVisible(os.path.exists(get_launchpath(k)))
 
 
+TAGID_ROLE = Qt.ItemDataRole.UserRole + 5   # 列表 tagid（主项）
+GAMEUID_ROLE = TAGID_ROLE + 1               # 游戏 uid（子项）
+
+_ICON_TAG_ALL = ""    # Library
+_ICON_TAG_RECENT = ""  # Recent
+_ICON_TAG_CUSTOM = ""  # List
+
+
+class _gamelistnav(FluentNavTree):
+    """游戏管理左侧导航：列表=主项，游戏=子项（同设置窗口的 NavTree）。
+    常驻展开（200px 文字模式）。游戏图标延迟加载：仅 viewport 可见的
+    待加载项被逐个生成（25ms/个），滚动/展开时再激活——大量游戏时
+    建树零图标成本。"""
+
+    def __init__(self, ref=None):
+        super().__init__(ref)
+        self.ref = ref
+        self._icon_pending = {}
+        self._icon_timer = QTimer(self)
+        self._icon_timer.setInterval(25)
+        self._icon_timer.timeout.connect(self._load_one_visible_icon)
+        self.verticalScrollBar().valueChanged.connect(self._kick_icon_timer)
+        self.itemExpanded.connect(lambda _1: self._kick_icon_timer())
+
+    def request_item_icon(self, item, uid):
+        self._icon_pending[id(item)] = (item, uid)
+        self._icon_timer.start()
+
+    def _kick_icon_timer(self, *_):
+        if self._icon_pending:
+            self._icon_timer.start()
+
+    def _load_one_visible_icon(self):
+        if not self._icon_pending:
+            self._icon_timer.stop()
+            return
+        vp = self.viewport().rect()
+        for key in list(self._icon_pending):
+            item, uid = self._icon_pending[key]
+            try:
+                rect = self.visualItemRect(item)
+            except Exception:
+                rect = QRect()
+            if rect.isValid() and rect.intersects(vp):
+                self._icon_pending.pop(key)
+                try:
+                    icon = getpixfunctionAlign(uid, small=True, iconfirst=True)
+                    icon.setDevicePixelRatio(self.devicePixelRatioF())
+                    item.setIcon(0, QIcon(icon))
+                except Exception:
+                    print_exc()
+                if not self._icon_pending:
+                    self._icon_timer.stop()
+                return
+        # 可见区暂无待加载项：停下等滚动/展开再激活
+        self._icon_timer.stop()
+
+    def keyPressEvent(self, e):
+        ref = self.ref
+        if ref.currentfocusuid:
+            if e.key() in (Qt.Key.Key_Up, Qt.Key.Key_Down):
+                if e.modifiers() & Qt.KeyboardModifier.ControlModifier:
+                    ref.moverank(1 if e.key() == Qt.Key.Key_Down else -1)
+                    e.ignore()
+                    return
+            elif e.key() == Qt.Key.Key_Return:
+                startgamecheck(ref, getreflist(ref.reftagid), ref.currentfocusuid)
+                e.ignore()
+                return
+            elif e.key() == Qt.Key.Key_Delete:
+                ref.shanchuyouxi()
+                e.ignore()
+                return
+        super().keyPressEvent(e)
+
+
 class dialog_savedgame_v3(QSplitter):
     def createsettings(self, formLayout: QFormLayout):
 
@@ -651,23 +640,7 @@ class dialog_savedgame_v3(QSplitter):
                 d=globalconfig, k="savegame_textfont2", callback=self.setstyle
             ),
         )
-        formLayout.addRow(SplitLine())
-        for key, name, default in [
-            ("backcolor3", "颜色", "#40ffffff"),
-            ("onselectcolor3", "颜色_选中时", "#40007fff"),
-            ("onfilenoexistscolor3", "游戏不存在时颜色", "#40acacac"),
-        ]:
-            formLayout.addRow(
-                name,
-                ColorButton(
-                    self,
-                    ui_settings["dialog_savegame_layout"],
-                    key,
-                    callback=self.setstyle,
-                    alpha=True,
-                    default=default,
-                ),
-            )
+        # 列表底色/选中色不再适用——导航树外观由 FluentUI3 插件渲染
 
     def deleteLater(self):
 
@@ -698,85 +671,133 @@ class dialog_savedgame_v3(QSplitter):
         except:
             print_exc()
 
-    def itemfocuschanged(self, reftagid, b, k):
+    # ---- 导航树辅助 ----
+    def _tagicon(self, tagid):
+        if tagid is None:
+            return _ICON_TAG_ALL
+        if tagid == 1:
+            return _ICON_TAG_RECENT
+        return _ICON_TAG_CUSTOM
 
-        self.reftagid = reftagid
-        if b:
-            self.currentfocusuid = k
-        else:
-            self.currentfocusuid = None
+    def _tagtitle(self, tagid):
+        if tagid is None:
+            return "所有游戏"
+        if tagid == 1:
+            return "最近游戏"
+        return "[[{}]]".format(savegametaged[calculatetagidx(tagid)]["title"])
 
-        if self.currentfocusuid:
-            self.viewitem(k)
-
-    def delayitemcreater(self, k, select, reftagid, reflist):
-
-        item = clickitem(k)
-        item.doubleclicked.connect(functools.partial(startgamecheck, self, reflist))
-        item.focuschanged.connect(functools.partial(self.itemfocuschanged, reftagid))
-        if select:
-            item.click()
+    def _addtagitem(self, index, tagid, opened):
+        self.reallist[tagid] = []
+        item = QTreeWidgetItem()
+        self.nav.configureNavigationItem(
+            item, self._tagtitle(tagid), None, self._tagicon(tagid)
+        )
+        item.setData(0, TAGID_ROLE, tagid)
+        self.nav.insertTopLevelItem(index, item)
+        item.setExpanded(opened)
         return item
+
+    def _makegameitem(self, uid):
+        child = QTreeWidgetItem()
+        title = savehook_new_data[uid]["title"]
+        # 经 configure 设 NAV_TEXT_ROLE（展开模式刷新靠它回填文字）
+        self.nav.configureNavigationItem(child, title, None, "")
+        child.setData(0, GAMEUID_ROLE, uid)
+        # 图标延迟按需加载（见 _gamelistnav）
+        self.nav.request_item_icon(child, uid)
+        return child
+
+    def _itemfortag(self, tagid):
+        for i in range(self.nav.topLevelItemCount()):
+            it = self.nav.topLevelItem(i)
+            if it.data(0, TAGID_ROLE) == tagid:
+                return it
+
+    def _updatetagtext(self, item):
+        tagid = item.data(0, TAGID_ROLE)
+        n = len(self.reallist.get(tagid, []))
+        self.nav.configureNavigationItem(
+            item,
+            "{} ({})".format(self._tagtitle(tagid), n),
+            None,
+            self._tagicon(tagid),
+        )
+
+    def _navcurrent(self, item, _=None):
+        if item is None:
+            return
+        uid = item.data(0, GAMEUID_ROLE)
+        if not uid:
+            return
+        self.reftagid = item.parent().data(0, TAGID_ROLE)
+        self.viewitem(uid)
+
+    def _navexpand(self, exp, item):
+        if item.parent() is not None:
+            return
+        tagid = item.data(0, TAGID_ROLE)
+        if tagid is None:
+            globalconfig["global_list_opened"] = exp
+        elif tagid == 1:
+            globalconfig["recent_list_opened"] = exp
+        else:
+            savegametaged[calculatetagidx(tagid)]["opened"] = exp
 
     def newline(self, res):
         self.reallist[self.reftagid].insert(0, res)
-        group = self.stack.w(calculatetagidx(self.reftagid))
-        group.insertw(
-            0,
-            functools.partial(
-                self.delayitemcreater,
-                res,
-                True,
-                self.reftagid,
-                getreflist(self.reftagid),
-            ),
-        )
-        group.button().setnum(len(self.reallist[self.reftagid]))
-        self.stack.directshow()
+        group = self._itemfortag(self.reftagid)
+        group.insertChild(0, self._makegameitem(res))
+        self._updatetagtext(group)
 
-    def stack_showmenu(self, p):
+    def nav_showmenu(self, p):
+        item = self.nav.itemAt(p)
+        if item is None:
+            self._blankmenu()
+        elif item.parent() is None:
+            self.tagbuttonmenu(item.data(0, TAGID_ROLE))
+        else:
+            self.nav.setCurrentItem(item)
+            self._gamemenu()
+
+    def _blankmenu(self):
         menu = QMenu(self)
-
         addlist = LAction("创建列表", menu)
+        menu.addAction(addlist)
+        action = menu.exec(QCursor.pos())
+        if addlist == action:
+            self.createlist(True, None)
+
+    def _gamemenu(self):
+        menu = QMenu(self)
         startgame = LAction("开始游戏", menu)
         delgame = LAction("删除游戏", menu)
         opendir = LAction("打开目录", menu)
         createlnk = LAction("创建快捷方式", menu)
-        if not self.currentfocusuid:
+        lc = get_launchpath(self.currentfocusuid)
+        if os.path.exists(lc):
+            menu.addAction(startgame)
+            menu.addAction(opendir)
+            menu.addAction(createlnk)
+        elif os.path.exists(os.path.dirname(lc)):
+            menu.addAction(opendir)
 
-            menu.addAction(addlist)
-        else:
-            exists = os.path.exists(get_launchpath(self.currentfocusuid))
-            lc = get_launchpath(self.currentfocusuid)
-            exists = os.path.exists(lc)
-            if exists:
-                menu.addAction(startgame)
-                menu.addAction(opendir)
-                menu.addAction(createlnk)
-            elif os.path.exists(os.path.dirname(lc)):
-                menu.addAction(opendir)
-
-            if self.reftagid not in (1,):
-                menu.addAction(delgame)
-            menu.addSeparator()
-            __vis, __uid = loadvisinternal(
-                True, self.reftagid, recent=False, global_=False
-            )
-            if __uid:
-                addtolist = LMenu("添加到列表", menu)
-                menu.addMenu(addtolist)
-                for _ in range(len(__vis)):
-                    a = LAction(__vis[_], addtolist)
-                    a.setData(__uid[_])
-                    addtolist.addAction(a)
+        if self.reftagid not in (1,):
+            menu.addAction(delgame)
+        menu.addSeparator()
+        __vis, __uid = loadvisinternal(
+            True, self.reftagid, recent=False, global_=False
+        )
+        if __uid:
+            addtolist = LMenu("添加到列表", menu)
+            menu.addMenu(addtolist)
+            for _ in range(len(__vis)):
+                a = LAction(__vis[_], addtolist)
+                a.setData(__uid[_])
+                addtolist.addAction(a)
 
         action = menu.exec(QCursor.pos())
         if action == startgame:
             startgamecheck(self, getreflist(self.reftagid), self.currentfocusuid)
-        elif addlist == action:
-
-            self.createlist(True, None)
-
         elif action == delgame:
             self.shanchuyouxi()
         elif action == opendir:
@@ -799,63 +820,32 @@ class dialog_savedgame_v3(QSplitter):
         else:
             idx = getreflist(self.reftagid).index(gameuid)
             getreflist(self.reftagid).insert(0, getreflist(self.reftagid).pop(idx))
-            self.stack.w(calculatetagidx(self.reftagid)).torank1(idx)
+            group = self._itemfortag(self.reftagid)
+            child = group.takeChild(idx)
+            group.insertChild(0, child)
         self.reftagid = __save
 
     def directshow(self):
-        self.stack.directshow()
+        pass
 
     def callexists(self, _):
         pass
 
     def callchange(self, _=None):
-        self.stack.setheight(
-            ui_settings["dialog_savegame_layout"].get("listitemheight", 30) + 1
+        self.nav.setProperty(
+            "ItemHeight",
+            ui_settings["dialog_savegame_layout"].get("listitemheight", 30),
         )
-        self.stack.directshow_1()
+        self.nav.style().unpolish(self.nav)
+        self.nav.style().polish(self.nav)
+        self.nav.doItemsLayout()
 
     def setstyle(self, _=None):
-        key = "savegame_textfont2"
-        fontstring = globalconfig.get(key, "")
-        _style = """background-color: rgba(255,255,255, 0);"""
+        fontstring = globalconfig.get("savegame_textfont2", "")
         if fontstring:
             _f = QFont()
             _f.fromString(fontstring)
-            _style += "font-size:{}pt;".format(_f.pointSize())
-            _style += 'font-family:"{}";'.format(_f.family())
-        style = "#{}{{ {} }}".format(key, _style)
-
-        style += "#savegame_existsTrue{{background-color:{};}}".format(
-            ui_settings["dialog_savegame_layout"].get("backcolor3", "#40ffffff")
-        )
-        style += "#savegame_existsFalse{{background-color:{};}}".format(
-            ui_settings["dialog_savegame_layout"].get(
-                "onfilenoexistscolor3", "#40acacac"
-            )
-        )
-        style += "#savegame_onselectcolor1{{background-color: {};}}".format(
-            ui_settings["dialog_savegame_layout"].get("onselectcolor3", "#40007fff")
-        )
-        self.stack.setStyleSheet(style)
-
-    def movefocus(self, dx):
-        uid = self.currentfocusuid
-        idx1 = self.reallist[self.reftagid].index(uid)
-        idx2 = (idx1 + dx) % len(self.reallist[self.reftagid])
-        group0 = self.stack.w(calculatetagidx(self.reftagid))
-        if idx1 == 0 and dx == -1:
-            self.stack.verticalScrollBar().setValue(
-                self.stack.verticalScrollBar().maximum()
-            )
-        else:
-            try:
-                self.stack.ensureWidgetVisible(group0.w(idx2))
-            except:
-                pass
-        try:
-            group0.w(idx2).click()
-        except:
-            pass
+            self.nav.setFont(_f)
 
     leave = pyqtSignal(bool)
 
@@ -866,45 +856,20 @@ class dialog_savedgame_v3(QSplitter):
         self.reallist: "dict[str,list]" = {}
         self.keepindexobject = {}
 
-        class stackedlist11(stackedlist):
-            def __init__(self_, ref: dialog_savedgame_v3):
-                super().__init__()
-                self_.ref = ref
-
-            def keyPressEvent(self_, e: QKeyEvent):
-                if self_.ref.currentfocusuid:
-                    if e.key() == Qt.Key.Key_Return:
-                        startgamecheck(
-                            self_.ref,
-                            getreflist(self_.ref.reftagid),
-                            self_.ref.currentfocusuid,
-                        )
-                    elif e.key() == Qt.Key.Key_Delete:
-                        self_.ref.shanchuyouxi()
-                    elif e.key() in (Qt.Key.Key_Down, Qt.Key.Key_Up):
-                        offset = 1 if e.key() == Qt.Key.Key_Down else -1
-                        if e.modifiers() & Qt.KeyboardModifier.ControlModifier:
-                            self_.ref.moverank(offset)
-                        else:
-                            self_.ref.movefocus(offset)
-                        return e.ignore()
-                super().keyPressEvent(e)
-
-        self.stack = stackedlist11(self)
-        self.stack.setheight(
-            ui_settings["dialog_savegame_layout"].get("listitemheight", 30) + 1
-        )
-        self.stack.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.stack.customContextMenuRequested.connect(self.stack_showmenu)
-
-        self.stack.bgclicked.connect(clickitem.clearfocus)
-        self.stack.setObjectName("NOBORDER")
+        self.nav = _gamelistnav(self)
+        # 常驻展开（200px 文字模式）：列表主项 + 游戏子项可见
+        self.nav.setNavigationExpanded(True, animated=False)
+        self.nav.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.nav.customContextMenuRequested.connect(self.nav_showmenu)
+        self.nav.currentItemChanged.connect(self._navcurrent)
+        self.nav.itemExpanded.connect(functools.partial(self._navexpand, True))
+        self.nav.itemCollapsed.connect(functools.partial(self._navexpand, False))
         self.setstyle()
 
         self.setHandleWidth(1)
         self.setStyleSheet("QSplitter::handle {margin:0}")
 
-        self.addWidget(self.stack)
+        self.addWidget(self.nav)
         self.righttop = makesubtab_lazy()
         self.righttop.currentChanged.connect(
             lambda idx: (
@@ -942,47 +907,39 @@ class dialog_savedgame_v3(QSplitter):
         isfirst = True
         for i, tag in enumerate(savegametaged):
             if tag is None:
-                title = "所有游戏"
                 lst = savehook_new_list
                 tagid = None
                 opened = globalconfig.get("global_list_opened", True)
             elif tag == 1:
-                title = "最近游戏"
                 lst = loadrecentlist()
                 tagid = 1
                 opened = globalconfig.get("recent_list_opened", True)
             else:
                 lst = tag["games"]
-                title = "[[{}]]".format(tag["title"])
                 tagid = tag["uid"]
                 opened = tag.get("opened", True)
-            group0, btn = self.createtaglist(self.stack, title, tagid, opened)
-            self.stack.insertw(i, group0)
+            group0 = self._addtagitem(i, tagid, opened)
             rowreal = 0
-            for row, k in enumerate(lst):
+            for k in lst:
                 if globalconfig.get("hide_not_exists", False):
                     if not os.path.exists(get_launchpath(k)):
                         continue
                 self.reallist[tagid].append(k)
+                child = self._makegameitem(k)
+                group0.addChild(child)
                 if opened and isfirst and (rowreal == 0):
-                    vis = True
+                    self.nav.setCurrentItem(child)
                     isfirst = False
-                else:
-                    vis = False
-                group0.insertw(
-                    rowreal,
-                    functools.partial(self.delayitemcreater, k, vis, tagid, lst),
-                )
-
                 rowreal += 1
-            btn.setnum(rowreal)
+            self._updatetagtext(group0)
 
     def taglistrerank(self, tagid, dx):
         idx1 = calculatetagidx(tagid)
 
         idx2 = (idx1 + dx) % len(savegametaged)
         savegametaged.insert(idx2, savegametaged.pop(idx1))
-        self.stack.switchidx(idx1, idx2)
+        item = self.nav.takeTopLevelItem(idx1)
+        self.nav.insertTopLevelItem(idx2, item)
 
     def tagbuttonmenu(self, tagid):
         self.currentfocusuid = None
@@ -1023,7 +980,8 @@ class dialog_savedgame_v3(QSplitter):
         elif action == dellist:
             i = calculatetagidx(tagid)
             savegametaged.pop(i)
-            self.stack.popw(i)
+            navidx = self.nav.indexOfTopLevelItem(self._itemfortag(tagid))
+            self.nav.takeTopLevelItem(navidx)
             self.reallist.pop(tagid)
 
     def createlist(self, create, tagid):
@@ -1040,11 +998,11 @@ class dialog_savedgame_v3(QSplitter):
                     "opened": True,
                 }
                 savegametaged.insert(i, tag)
-                group0, btn = self.createtaglist(self.stack, title, tag["uid"], True)
-                self.stack.insertw(i, group0)
+                group0 = self._addtagitem(i, tag["uid"], True)
+                self._updatetagtext(group0)
             else:
-                self.stack.w(i).settitle(title)
                 savegametaged[i]["title"] = title
+                self._updatetagtext(self._itemfortag(tagid))
 
         __ = "" if create else savegametaged[calculatetagidx(tagid)]["title"]
         cb(
@@ -1055,32 +1013,6 @@ class dialog_savedgame_v3(QSplitter):
                 __,
             )
         )
-
-    def createtaglist(self, p, title, tagid, opened):
-
-        self.reallist[tagid] = []
-        _btn = shownumQPushButton(title)
-        _btn.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        _btn.clicked.connect(functools.partial(self._revertoepn, tagid))
-        _btn.customContextMenuRequested.connect(
-            functools.partial(self.tagbuttonmenu, tagid)
-        )
-        return shrinkableitem(p, _btn, opened), _btn
-
-    def _revertoepn(self, tagid):
-        item = savegametaged[calculatetagidx(tagid)]
-        if item is None:
-            globalconfig["global_list_opened"] = not globalconfig.get(
-                "global_list_opened", True
-            )
-        elif item == 1:
-            globalconfig["recent_list_opened"] = not globalconfig.get(
-                "recent_list_opened", True
-            )
-        else:
-            savegametaged[calculatetagidx(tagid)]["opened"] = not savegametaged[
-                calculatetagidx(tagid)
-            ]["opened"]
 
     def moverank(self, dx):
         if self.reftagid == 1:
@@ -1093,13 +1025,10 @@ class dialog_savedgame_v3(QSplitter):
             idx2, self.reallist[self.reftagid].pop(idx1)
         )
 
-        self.stack.w(calculatetagidx(self.reftagid)).switchidx(idx1, idx2)
-        try:
-            self.stack.ensureWidgetVisible(
-                self.stack.w(calculatetagidx(self.reftagid)).w(idx2)
-            )
-        except:
-            pass
+        group0 = self._itemfortag(self.reftagid)
+        child = group0.takeChild(idx1)
+        group0.insertChild(idx2, child)
+        self.nav.setCurrentItem(child)
         idx1 = getreflist(self.reftagid).index(uid)
         idx2 = getreflist(self.reftagid).index(uid2)
         getreflist(self.reftagid).insert(idx2, getreflist(self.reftagid).pop(idx1))
@@ -1116,15 +1045,14 @@ class dialog_savedgame_v3(QSplitter):
 
             idx2 = self.reallist[self.reftagid].index(uid)
             self.reallist[self.reftagid].pop(idx2)
-            clickitem.clearfocus()
-            group0 = self.stack.w(calculatetagidx(self.reftagid))
-            group0.button().setnum(len(self.reallist[self.reftagid]))
-            group0.popw(idx2)
-            try:
-                group0.w(idx2).click()
-            except:
-                group0.w(idx2 - 1).click()
-
+            group0 = self._itemfortag(self.reftagid)
+            group0.takeChild(idx2)
+            self._updatetagtext(group0)
+            cnt = group0.childCount()
+            if cnt:
+                self.nav.setCurrentItem(group0.child(min(idx2, cnt - 1)))
+            else:
+                self.currentfocusuid = None
         except:
             print_exc()
 
@@ -1138,10 +1066,11 @@ class dialog_savedgame_v3(QSplitter):
             idx = self.reallist[self.reftagid].index(uid)
             self.reallist[self.reftagid].pop(idx)
             self.reallist[self.reftagid].insert(0, uid)
-            self.stack.w(calculatetagidx(self.reftagid)).torank1(idx)
-        self.stack.w(calculatetagidx(self.reftagid)).button().setnum(
-            len(self.reallist[self.reftagid])
-        )
+            group = self._itemfortag(self.reftagid)
+            child = group.takeChild(idx)
+            group.insertChild(0, child)
+            self.nav.setCurrentItem(child)
+        self._updatetagtext(self._itemfortag(self.reftagid))
 
     def clicked3_batch(self):
         addgamebatch(self.addgame, getreflist(self.reftagid))
