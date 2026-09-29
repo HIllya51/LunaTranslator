@@ -897,9 +897,9 @@ class dialog_setting_game_internal(QWidget):
 
         def safeaddtags(_):
             try:
-                from gui.gamemanager.dialog import dialog_savedgame_new
+                from gui.gamemanager.v3 import dialog_savedgame_v3
 
-                dialog_savedgame_new.reference.tagswidget.addTag(*_)
+                dialog_savedgame_v3.reference.gridpage.tagswidget.addTag(*_)
             except:
                 NativeUtils.ClipBoard.text = _[0]
                 QToolTip.showText(QCursor.pos(), _TR("已复制到剪贴板"), self)

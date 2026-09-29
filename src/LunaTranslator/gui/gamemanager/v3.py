@@ -1,5 +1,6 @@
 from qtsymbols import *
-import os, functools, uuid, threading, NativeUtils
+import os, functools, uuid, threading, NativeUtils, windows, qtawesome
+from functools import cmp_to_key
 from traceback import print_exc
 from myutils.config import (
     savehook_new_list,
@@ -27,7 +28,7 @@ from gui.usefulwidget import (
     getspinbox,
 )
 
-from gui.gamemanager.common import loadvisinternal
+from gui.gamemanager.common import loadvisinternal, dialog_syssetting
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
     getfonteditor,
@@ -44,6 +45,10 @@ from gui.gamemanager.common import (
 )
 from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree
+from gui.gamemanager.widgets import TagWidget, ItemWidget
+from gui.usefulwidget import IconButton
+from gui.specialwidget import lazyscrollflow
+from gui.usefulwidget import getIconButton
 from gui.fluent.icons import ICON_GLOBAL_NAV
 
 
@@ -637,7 +642,204 @@ class _gamelistnav(FluentNavTree):
         super().keyPressEvent(e)
 
 
+
+
+class _gridpage(QWidget):
+    """网格视图页：当前列表的游戏大图表（原 dialog_savedgame_new 视图
+    的核心，并入 v3）。单击图表 -> 侧栏指向该游戏（右侧切画廊/设置）；双击启动。"""
+
+    def __init__(self, ref: "dialog_savedgame_v3"):
+        super().__init__()
+        self.ref = ref
+        self.reftagid = None
+        self.reflist = []
+        self.currtags = tuple()
+        self.currentfocusuid = None
+        lay = QVBoxLayout(self)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.setSpacing(0)
+        # 顶栏：标签过滤 + 排序
+        top = QWidget()
+        toplay = QHBoxLayout(top)
+        toplay.setContentsMargins(8, 4, 8, 4)
+        toplay.setSpacing(4)
+        self.tagswidget = TagWidget(self)
+        self.tagswidget.tagschanged.connect(self.tagschanged)
+        toplay.addWidget(self.tagswidget, 1)
+        toplay.addWidget(
+            getIconButton(
+                icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
+            )
+        )
+        lay.addWidget(top)
+        _w = QWidget()
+        self.flowcontainer = QHBoxLayout(_w)
+        self.flowcontainer.setContentsMargins(0, 0, 0, 0)
+        self.flow = QWidget()
+        lay.addWidget(_w, 1)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self.showmenu)
+
+    def showmenu(self, p):
+        # 复用 v3 的右键分发：图表上 -> 游戏菜单；空白 -> 创建列表
+        self.ref.nav_showmenu(self.ref.nav.mapFrom(self, p))
+
+    def showtag(self, tagid):
+        self.reftagid = tagid
+        # 与建树同款三分支（getreflist(None) 会返回哨兵 1，不可迭代）
+        if tagid is None:
+            self.reflist = savehook_new_list
+        elif tagid == 1:
+            self.reflist = loadrecentlist()
+        else:
+            self.reflist = getreflist(tagid)
+        self.tagschanged(self.currtags)
+
+    def _makeitem(self, k):
+        gameitem = ItemWidget(k)
+        gameitem.doubleclicked.connect(
+            functools.partial(startgamecheck, self, self.reflist)
+        )
+        gameitem.focuschanged.connect(self._itemfocus)
+        # 不做初始 click 高亮：click 会经 point_game 联动侧栏抢走选中
+        return gameitem
+
+    def _itemfocus(self, b, k):
+        self.currentfocusuid = k if b else None
+        if b:
+            # 图表单击：侧栏指向该游戏（_navcurrent 接管切页与加载）
+            self.ref.point_game(k)
+
+    def tagschanged(self, tags):
+        self.currtags = tags
+        newtags = tags
+        self.flow.hide()
+        self.flow.deleteLater()
+        self.flow = lazyscrollflow(self._keypressed)
+        self.flow.setObjectName("NOBORDER")
+        self.flow.bgclicked.connect(ItemWidget.clearfocus)
+        self.flow.setsize(
+            QSize(
+                ui_settings["dialog_savegame_layout"].get("itemw", 130),
+                ui_settings["dialog_savegame_layout"].get("itemh", 190),
+            )
+        )
+        self.flow.setSpacing(ui_settings["dialog_savegame_layout"].get("margin", 6))
+        self.flowcontainer.addWidget(self.flow)
+        idx = 0
+        for k in self.reflist:
+            if newtags != self.currtags:
+                break
+            if globalconfig.get("hide_not_exists", False):
+                if not os.path.exists(get_launchpath(k)):
+                    continue
+            notshow = False
+            webtags = [
+                globalconfig["tagNameRemap"].get(tag, tag)
+                for tag in savehook_new_data[k]["webtags"]
+            ]
+            for tag, _type, _ in tags:
+                if _type == tagitem.TYPE_EXISTS:
+                    if os.path.exists(get_launchpath(k)) == False:
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_DEVELOPER:
+                    if tag not in savehook_new_data[k]["developers"]:
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_TAG:
+                    if tag not in webtags:
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_USERTAG:
+                    if tag not in savehook_new_data[k]["usertags"]:
+                        notshow = True
+                        break
+                elif _type == tagitem.TYPE_SEARCH:
+                    if (
+                        tag not in webtags
+                        and tag not in savehook_new_data[k]["usertags"]
+                        and tag not in savehook_new_data[k]["title"]
+                        and tag not in savehook_new_data[k]["developers"]
+                    ):
+                        notshow = True
+                        break
+            if notshow:
+                continue
+            self.flow.addwidget(functools.partial(self._makeitem, k))
+            idx += 1
+        self.flow.directshow()
+
+    def _keypressed(self, e):
+        if self.currentfocusuid:
+            if e.key() == Qt.Key.Key_Return:
+                startgamecheck(self, self.reflist, self.currentfocusuid)
+            elif e.key() == Qt.Key.Key_Delete:
+                self.ref.shanchuyouxi()
+
+    def directshow(self):
+        self.flow.directshow()
+
+    def callchange(self, _=None):
+        self.flow.setsize(
+            QSize(
+                ui_settings["dialog_savegame_layout"].get("itemw", 130),
+                ui_settings["dialog_savegame_layout"].get("itemh", 190),
+            )
+        )
+        self.flow.setSpacing(ui_settings["dialog_savegame_layout"].get("margin", 6))
+        self.flow.resizeandshow()
+        for _ in self.flow.widgets:
+            if not isinstance(_, ItemWidget):
+                continue
+            _.others()
+
+    def sortgamecallback(self):
+        if self.reflist == 1:
+            return
+        menu = QMenu(self)
+        sortbytime = LAction("按添加时间排序", menu)
+        sortbytime.setIcon(qtawesome.icon("fa.sort-numeric-asc"))
+        menu.addAction(sortbytime)
+        sortbytimede = LAction("按添加时间排序_降序", menu)
+        sortbytimede.setIcon(qtawesome.icon("fa.sort-numeric-desc"))
+        menu.addAction(sortbytimede)
+        sortbyname = LAction("按名称排序", menu)
+        sortbyname.setIcon(qtawesome.icon("fa.sort-alpha-asc"))
+        menu.addAction(sortbyname)
+        sortbynamedesc = LAction("按名称排序_降序", menu)
+        sortbynamedesc.setIcon(qtawesome.icon("fa.sort-alpha-desc"))
+        menu.addAction(sortbynamedesc)
+        action = menu.exec(QCursor.pos())
+
+        def unsafetrygettime(uid: str):
+            __ = savehook_new_data[uid]
+            t = __.get("createtime")
+            if not t:
+                try:
+                    t = float(uid.split("_")[0])
+                except:
+                    t = 0
+            return t
+
+        if action in (sortbytime, sortbytimede):
+            self.reflist.sort(key=unsafetrygettime, reverse=action != sortbytimede)
+            self.tagschanged(self.currtags)
+        elif action in (sortbyname, sortbynamedesc):
+            def paircmp(a, b):
+                return windows.StrCmpLogicalW(
+                    savehook_new_data[a]["title"], savehook_new_data[b]["title"]
+                )
+            self.reflist.sort(
+                key=cmp_to_key(paircmp),
+                reverse=action == sortbynamedesc,
+            )
+            self.tagschanged(self.currtags)
+
 class dialog_savedgame_v3(QWidget):
+    # 当前实例（游戏设置页点标签时联动网格页的标签过滤）
+    reference = None
+
     def createsettings(self, formLayout: QFormLayout):
 
         spin = getspinbox(
@@ -743,10 +945,32 @@ class dialog_savedgame_v3(QWidget):
         if item is None:
             return
         uid = item.data(0, GAMEUID_ROLE)
-        if not uid:
+        if uid:
+            self.reftagid = item.parent().data(0, TAGID_ROLE)
+            self.viewitem(uid)
+            self.stack.setCurrentWidget(self.righttop)
+        else:
+            # 主项：右侧切网格页（大图表），展示该列表
+            tagid = item.data(0, TAGID_ROLE)
+            self.reftagid = tagid
+            self.currentfocusuid = None
+            self.gridpage.showtag(tagid)
+            self.stack.setCurrentWidget(self.gridpage)
+
+    def point_game(self, uid):
+        """网格页图表点击：侧栏指向该游戏子项（_navcurrent 接管切页加载）。"""
+        group = self._itemfortag(self.gridpage.reftagid)
+        if group is None:
             return
-        self.reftagid = item.parent().data(0, TAGID_ROLE)
-        self.viewitem(uid)
+        for j in range(group.childCount()):
+            child = group.child(j)
+            if child.data(0, GAMEUID_ROLE) == uid:
+                if self.nav.currentItem() is child:
+                    # 已选中（如从该子项所属主项的网格点击它）：确保切页
+                    self.stack.setCurrentWidget(self.righttop)
+                else:
+                    self.nav.setCurrentItem(child)
+                return
 
     def _navexpand(self, exp, item):
         if item.parent() is not None:
@@ -871,6 +1095,7 @@ class dialog_savedgame_v3(QWidget):
 
     def __init__(self, parent) -> None:
         super().__init__(parent)
+        dialog_savedgame_v3.reference = self
         self.currentfocusuid = None
         self.reftagid: str = None
         self.reallist: "dict[str,list]" = {}
@@ -925,12 +1150,32 @@ class dialog_savedgame_v3(QWidget):
         self.righttop.setCornerWidget(w)
         hbox = QHBoxLayout(w)
         hbox.setSpacing(0)
-        parent.createviewswitch(hbox)
+        syssettingbtn = IconButton(icon="fa.gear", parent=self, tips="界面设置")
+        syssettingbtn.clicked.connect(lambda: dialog_syssetting(self))
+        hbox.addWidget(syssettingbtn)
+        lockbtn = IconButton(
+            icon=["fa.unlock", "fa.lock"],
+            parent=self,
+            checkable=True,
+            checked=globalconfig.get("gamemanager_extrabuttons_lock", True),
+            tips="锁定",
+        )
+        lockbtn.clicked.connect(
+            lambda checked: globalconfig.__setitem__(
+                "gamemanager_extrabuttons_lock", bool(checked)
+            )
+        )
+        hbox.addWidget(lockbtn)
+        # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）
+        self.stack = QStackedWidget()
+        self.gridpage = _gridpage(self)
+        self.stack.addWidget(self.gridpage)
+        self.stack.addWidget(self.righttop)
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
         lay.addWidget(navcontainer)
-        lay.addWidget(self.righttop, 1)
+        lay.addWidget(self.stack, 1)
         self.setObjectName("NOBORDER")
 
         isfirst = True

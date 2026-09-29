@@ -14,7 +14,7 @@ from myutils.config import (
 from gui.unityfontdownload import UnityFontDownloadDialog
 from myutils.wrapper import threader
 from myutils.utils import get_time_stamp, is_ascii_control
-from gui.gamemanager.dialog import dialog_setting_game
+from gui.gamemanager.setting import dialog_setting_game
 from textio.textsource.texthook import texthook
 from gui.usefulwidget import (
     closeashidewindow,

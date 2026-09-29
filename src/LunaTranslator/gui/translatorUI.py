@@ -17,7 +17,7 @@ from myutils.config import (
 from textio.textsource.texthook import texthook
 from gui.setting.about import get_about_info
 from myutils.magpie_builtin import MagpieBuiltin, AdapterService
-from gui.gamemanager.dialog import dialog_setting_game
+from gui.gamemanager.setting import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.mecab import WordSegResult
 from myutils.utils import (

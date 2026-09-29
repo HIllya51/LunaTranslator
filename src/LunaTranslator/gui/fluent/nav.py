@@ -216,9 +216,12 @@ class FluentNavTree(QTreeWidget):
                     top_level = current
                     while top_level.parent() is not None:
                         top_level = top_level.parent()
-                    # 保存真实子节点，恢复展开模式时重新选中
+                    # 保存真实子节点，恢复展开模式时重新选中。
+                    # 程序性提升不通知宿主（避免收起侧栏时宿主切页/加载数据）
                     self._restorable_child = current
+                    self.blockSignals(True)
                     self.setCurrentItem(top_level)
+                    self.blockSignals(False)
             else:
                 current = self.currentItem()
                 if current is not None and current.parent() is None:
