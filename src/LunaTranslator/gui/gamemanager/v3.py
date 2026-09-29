@@ -714,8 +714,8 @@ class _gamelistnav(FluentNavTree):
             base = dst_item.parent().indexOfChild(dst_item)
             # above/on -> 插到目标前；below -> 目标后
             dst_idx = base + 1 if pos == "below" else base
-        if src_tag == 1 or dst_tag == 1:
-            return  # 最近游戏是动态列表，不允许拖入拖出
+        if dst_tag == 1:
+            return  # 最近游戏是动态列表，不可拖入（拖出是复制，允许）
         self.ref._navmove(uid, src_tag, dst_tag, dst_idx)
 
     def keyPressEvent(self, e):
@@ -783,6 +783,28 @@ class _gridpage(QWidget):
         lay.addWidget(_w, 1)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
+        # 接受网格拖拽（空白处）：拖到空白 = 移到末尾
+        self.setAcceptDrops(True)
+
+    def dragEnterEvent(self, e):
+        if e.mimeData().text().startswith("lunamovegame:"):
+            e.acceptProposedAction()
+        else:
+            e.ignore()
+
+    def dragMoveEvent(self, e):
+        if e.mimeData().text().startswith("lunamovegame:"):
+            e.acceptProposedAction()
+        else:
+            e.ignore()
+
+    def dropEvent(self, e):
+        txt = e.mimeData().text()
+        if not txt.startswith("lunamovegame:"):
+            e.ignore()
+            return
+        e.acceptProposedAction()
+        self.ref._gridmove(txt.split(":", 1)[1], None)
 
     def showmenu(self, p):
         # 网格页右键：图表上（右键按下已先触发 click 选中）-> 游戏菜单；
@@ -1174,21 +1196,38 @@ class dialog_savedgame_v3(QWidget):
         return None
 
     def _navmove(self, uid, src_tag, dst_tag, dst_idx):
-        """侧边栏拖动：item + reallist + 持久列表 + 网格 四方同步。"""
+        """侧边栏拖动。同列表 = 移动；跨列表 = 复制（源保留；目标已有
+        该 uid 则丢弃）。item + reallist + 持久列表 + 网格 四方同步。"""
         src_group = self._itemfortag(src_tag)
         dst_group = self._itemfortag(dst_tag)
+        if src_group is None or dst_group is None:
+            return
+        if src_tag != dst_tag:
+            # ---- 跨列表：复制 ----
+            if uid in self.reallist.get(dst_tag, []):
+                return  # 目标已有该游戏：丢弃
+            _idx = max(0, min(dst_idx, dst_group.childCount()))
+            dst_group.insertChild(_idx, self._makegameitem(uid))
+            self.reallist[dst_tag].insert(_idx, uid)
+            pl_dst = self._getreflist(dst_tag)
+            if pl_dst is not None and uid not in pl_dst:
+                pl_dst.insert(min(_idx, len(pl_dst)), uid)
+            self._updatetagtext(dst_group)
+            if self.gridpage.reftagid == dst_tag:
+                self.gridpage.flow_insert(uid, _idx)
+            return
+        # ---- 同列表：移动 ----
         ca = self._findchild(src_group, uid)
         if ca is None:
             return
-        # 1) item
         ch = src_group.takeChild(ca)
         _idx = dst_idx
-        if src_group is dst_group and _idx > ca:
+        if _idx > ca:
             _idx -= 1
         _idx = max(0, min(_idx, dst_group.childCount()))
         dst_group.insertChild(_idx, ch)
         self.nav.setCurrentItem(ch)
-        # 2) 数据
+        # 数据
         self.reallist[src_tag].remove(uid)
         self.reallist[dst_tag].insert(_idx, uid)
         pl_src = self._getreflist(src_tag)
@@ -1197,17 +1236,9 @@ class dialog_savedgame_v3(QWidget):
             pl_src.remove(uid)
         if pl_dst is not None:
             pl_dst.insert(min(_idx, len(pl_dst)), uid)
-        # 3) 计数 + 网格同步（单项移动/删除/插入，不重建）
+        # 计数 + 网格同步（单项移动，不重建）
         self._updatetagtext(src_group)
-        if dst_group is not src_group:
-            self._updatetagtext(dst_group)
-        cur = self.gridpage.reftagid
-        if cur == src_tag == dst_tag:
-            self.gridpage.flow_move_idx(ca, _idx)
-        elif cur == src_tag:
-            self.gridpage.flow_remove(uid)
-        elif cur == dst_tag:
-            self.gridpage.flow_insert(uid, _idx)
+        self.gridpage.flow_move_idx(ca, _idx)
 
     def _tagmove(self, tagid, dst_idx):
         """主项（列表）拖动：nav 树 + savegametaged 同步重排。
@@ -1224,15 +1255,21 @@ class dialog_savedgame_v3(QWidget):
         self.nav.setCurrentItem(item)
 
     def _gridmove(self, uid, dst_uid):
-        """网格页拖动排序：flow + reallist + 持久列表 + nav 树四方同步。"""
+        """网格页拖动排序：flow + reallist + 持久列表 + nav 树四方同步。
+        dst_uid=None 表示移到末尾（拖到空白处）。"""
         tagid = self.gridpage.reftagid
         if tagid == 1:
             return  # 最近游戏不排序
         lst = self.reallist.get(tagid)
-        if not lst or uid not in lst or dst_uid not in lst:
+        if not lst or uid not in lst:
             return
         i1 = lst.index(uid)
-        i2 = lst.index(dst_uid)
+        if dst_uid is None:
+            i2 = len(lst) - 1
+        else:
+            if dst_uid not in lst:
+                return
+            i2 = lst.index(dst_uid)
         lst.insert(i2, lst.pop(i1))
         pl = self._getreflist(tagid)
         if pl is not None and uid in pl:
@@ -1241,19 +1278,26 @@ class dialog_savedgame_v3(QWidget):
             pl.insert(i2, pl.pop(i1))
         # flow.widgets / fakegeos 同步移动（单项，不重建）
         a = self.gridpage._flow_find(uid)
-        b = self.gridpage._flow_find(dst_uid)
+        b = (len(self.gridpage.flow.widgets) - 1 if dst_uid is None
+             else self.gridpage._flow_find(dst_uid))
         if a is not None and b is not None:
             self.gridpage.flow_move_idx(a, b)
-        # nav 树同步（同列表内移动）
+        # nav 树同步（同列表内移动；dst=None 移到末尾）
         group = self._itemfortag(tagid)
         ca = self._findchild(group, uid)
-        cb = self._findchild(group, dst_uid)
-        if ca is not None and cb is not None:
-            ch = group.takeChild(ca)
-            # 与 reallist 同语义：插到目标之后一位
+        if ca is None:
+            return
+        ch = group.takeChild(ca)
+        if dst_uid is None:
+            group.insertChild(min(len(self.reallist[tagid]) - 1,
+                                  group.childCount()), ch)
+        else:
             cb2 = self._findchild(group, dst_uid)
+            if cb2 is None:
+                group.insertChild(ca, ch)
+                return
             group.insertChild(min(cb2 + 1, group.childCount()), ch)
-            self.nav.setCurrentItem(ch)
+        self.nav.setCurrentItem(ch)
 
     def _navdouble(self, item, _col):
         uid = item.data(0, GAMEUID_ROLE)
