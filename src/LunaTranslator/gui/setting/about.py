@@ -97,6 +97,14 @@ def offlinelinks(key):
 
 
 def changeUIlanguage(_):
+    # 语言切换：只重设 UI 字体（新语言的默认字体 + 13px）。
+    # 不走 parsedefaultfont/setcommonstylesheet——它们还会动文本区字体、
+    # 重扫样式等，语言切换只需要换 app 级字体（setFont 对全部窗口立即生效）
+    font = QFont()
+    font.setFamily(gobject.base.get_font_default(getlanguse(), True))
+    font.setPixelSize(13)
+    if QApplication.instance().font() != font:
+        QApplication.instance().setFont(font)
     languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
     QApplication.sendEvent(QApplication.instance(), languageChangeEvent)
     try:

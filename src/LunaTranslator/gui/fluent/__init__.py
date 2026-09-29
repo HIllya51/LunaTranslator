@@ -66,8 +66,8 @@ def apply_fluent_style(dark):
     app.setProperty("_q_colorscheme", 1 if dark else 0)
     app.setStyle("FluentUI3")
 
-    # setStyle 的 re-polish 会把控件字体重置；setcommonstylesheet 末尾的
-    # 无条件 setFont 会恢复 app 字体，但弹出容器内的视图与常驻菜单不跟随——额外恢复
+    # setStyle 的 re-polish 会把控件字体 resolve 回 app 字体（loadui 已设好
+    # 语言默认 + 13px），但弹出容器内的视图与常驻菜单不跟随——额外恢复
     QTimer.singleShot(0, _restore_combo_view_fonts)
     _install_menu_font_gate()
     _install_exec_menu_gate()

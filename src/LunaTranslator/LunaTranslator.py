@@ -1579,7 +1579,9 @@ class BASEOBJECT(QObject):
             self.giveupfocus_checked(widget)
 
     def setcommonstylesheet(self):
-
+        # 只负责明暗切换：qtawesome 图标翻转 + 广播 DarkLightChangedEvent
+        # + FluentUI3 明暗重扫。UI 字体在 loadui 设置、语言切换时由
+        # changeUIlanguage 重设，与此无关。
         dark = nowisdark()
         qtawesome.isdark = dark
         if self.currentisdark != dark:
@@ -1587,21 +1589,6 @@ class BASEOBJECT(QObject):
             for widget in QApplication.allWidgets():
                 QApplication.postEvent(widget, DarkLightChangedEvent(dark))
         gui.fluent.apply_fluent_style(dark)
-        # FluentUI3：子树根不得挂任何 QSS——祖先样式表会给全部后代套
-        # QStyleSheetStyle 包装，导致调色板继承中断（页面发白）与析构不稳。
-        # 字体由下方 app 级 setFont 生效。
-        style = ""
-        if self.commonstylebase.styleSheet() != style:
-            self.commonstylebase.setStyleSheet(style)
-        # 原"其他界面"的字体/大小设置已删除：字体跟随语言默认，字号固定
-        font = QFont()
-        font.setFamily(gobject.tempconfig.get("settingfonttype", ""))
-        # 同 Gallery：正文 13px（原 setPointSizeF(12)=16px 偏大）
-        font.setPixelSize(13)
-        if QApplication.instance().font() != font:
-            QApplication.instance().setFont(font)
-        # QMenu 统一 12px 字号由 gui.fluent 的应用级事件过滤处理
-        # （QApplication.setFont(f, "QMenu") 类字体在 app.setFont 之后失效）
 
     def get_font_default(self, lang: Languages, issetting: bool) -> str:
 
@@ -1627,8 +1614,6 @@ class BASEOBJECT(QObject):
         return font_default
 
     def parsedefaultfont(self):
-        # 设置界面字体：固定跟随语言默认（不再读取用户配置）
-        gobject.tempconfig["settingfonttype"] = self.get_font_default(getlanguse(), True)
         for k in ["fonttype", "fonttype2"]:
             if not ui_settings.get(k, ""):
                 l = Languages.Japanese if k == "fonttype" else getlanguse()
@@ -1637,6 +1622,12 @@ class BASEOBJECT(QObject):
     def loadui(self, startwithgameuid):
         QApplication.instance().installEventFilter(self)
         self.parsedefaultfont()
+        # app 级 UI 字体：语言默认 + 13px（同 Gallery）。窗口创建前设置避免
+        # 闪烁；语言切换时由 changeUIlanguage 重设
+        font = QFont()
+        font.setFamily(self.get_font_default(getlanguse(), True))
+        font.setPixelSize(13)
+        QApplication.instance().setFont(font)
         self.loadmetadatas()
 
         self.translation_ui = TranslatorWindow()
