@@ -1543,17 +1543,6 @@ class dialog_savedgame_v3(QWidget):
 
         if self.reftagid not in (1,):
             menu.addAction(delgame)
-        menu.addSeparator()
-        __vis, __uid = loadvisinternal(
-            True, self.reftagid, recent=False, global_=False
-        )
-        if __uid:
-            addtolist = LMenu("添加到列表", menu)
-            menu.addMenu(addtolist)
-            for _ in range(len(__vis)):
-                a = LAction(__vis[_], addtolist)
-                a.setData(__uid[_])
-                addtolist.addAction(a)
 
         action = menu.exec(QCursor.pos())
         if action == startgame:
@@ -1564,10 +1553,6 @@ class dialog_savedgame_v3(QWidget):
             self.clicked4()
         elif action == createlnk:
             CreateShortcutForUid(self.currentfocusuid)
-        elif action:  # addtolist
-            __uid = action.data()
-            if __uid:
-                self.addtolistcallback(__uid, self.currentfocusuid)
 
     def addtolistcallback(self, uid, gameuid):
 
@@ -1837,6 +1822,9 @@ class dialog_savedgame_v3(QWidget):
             self.reallist[self.reftagid].pop(idx2)
             group0 = self._itemfortag(self.reftagid)
             group0.takeChild(idx2)
+            # 网格同步删除（当前显示该列表时）
+            if self.gridpage.reftagid == self.reftagid:
+                self.gridpage.flow_remove(uid)
             self._updatetagtext(group0)
             cnt = group0.childCount()
             if cnt:
