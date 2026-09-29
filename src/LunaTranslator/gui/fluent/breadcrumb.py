@@ -37,8 +37,8 @@ _ITEM_HORIZONTAL_PADDING = 8
 _ITEM_HEIGHT = 28
 _ITEM_CORNER_RADIUS = 4.0
 
-_ICON_CHEVRON_RIGHT = ""   # ChevronRight
-_ICON_CHEVRON_LEFT = ""    # ChevronLeft
+_ICON_CHEVRON_RIGHT = "\ue76c"   # ChevronRight
+_ICON_CHEVRON_LEFT = "\ue76b"    # ChevronLeft
 
 
 def _is_dark_palette(palette):

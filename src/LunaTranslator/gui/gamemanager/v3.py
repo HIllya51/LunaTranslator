@@ -45,12 +45,30 @@ from gui.gamemanager.common import (
     addgamebatch,
 )
 from gui.dynalang import LAction, LLabel, LMenu
-from gui.fluent.nav import FluentNavTree
+from gui.fluent.nav import FluentNavTree, create_fluent_icon
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
 from gui.specialwidget import lazyscrollflow
 from gui.usefulwidget import getIconButton, SplitLine, ColorButton, getsimplecombobox
-from gui.fluent.icons import ICON_GLOBAL_NAV
+from gui.fluent.icons import (
+    ICON_GLOBAL_NAV,
+    ICON_SEARCH,
+    ICON_SETTINGS,
+    ICON_LIBRARY,
+    ICON_RECENT,
+    ICON_LIST,
+)
+
+
+# ---- 模块常量 ----
+PathRole = Qt.ItemDataRole.UserRole + 1
+ImageRequestedRole = PathRole + 1
+TAGID_ROLE = Qt.ItemDataRole.UserRole + 5   # 列表 tagid（主项）
+GAMEUID_ROLE = TAGID_ROLE + 1               # 游戏 uid（子项）
+# 列表主项图标
+_ICON_TAG_ALL = ICON_LIBRARY
+_ICON_TAG_RECENT = ICON_RECENT
+_ICON_TAG_CUSTOM = ICON_LIST
 
 
 class fadeoutlabel(QWidget):
@@ -129,10 +147,6 @@ class fadeoutlabel(QWidget):
         action = menu.exec(QCursor.pos())
         if action == copy:
             NativeUtils.ClipBoard.text = self.text.text()
-
-
-PathRole = Qt.ItemDataRole.UserRole + 1
-ImageRequestedRole = PathRole + 1
 
 
 class ImageDelegate(QStyledItemDelegate):
@@ -553,9 +567,6 @@ class pixwrapper(QSplitter):
         self.pixview.bottombtn.setVisible(os.path.exists(get_launchpath(k)))
 
 
-TAGID_ROLE = Qt.ItemDataRole.UserRole + 5   # 列表 tagid（主项）
-GAMEUID_ROLE = TAGID_ROLE + 1               # 游戏 uid（子项）
-
 _placeholder_icon_cache = None
 
 
@@ -567,10 +578,6 @@ def _placeholder_icon():
         pm.fill(Qt.GlobalColor.transparent)
         _placeholder_icon_cache = QIcon(pm)
     return _placeholder_icon_cache
-
-_ICON_TAG_ALL = ""    # Library
-_ICON_TAG_RECENT = ""  # Recent
-_ICON_TAG_CUSTOM = ""  # List
 
 
 class _gamelistnav(FluentNavTree):
@@ -853,11 +860,10 @@ class _gridpage(QWidget):
         self.searchedit = QLineEdit()
         self.searchedit.returnPressed.connect(self._search)
         self.searchedit.setPlaceholderText("搜索")
-        self.searchedit.setMinimumHeight(32)
-        from gui.fluent.nav import create_fluent_icon
-        from PyQt5.QtWidgets import QAction as _QAct
-        _act = _QAct(self.searchedit)
-        _act.setIcon(create_fluent_icon("", size=32))
+        self.searchedit.setFixedHeight(32)
+        self.searchedit.setClearButtonEnabled(True)
+        _act = QAction(self.searchedit)
+        _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32))
         self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
         self.searchedit.installEventFilter(self)
         self.searchedit.setSizePolicy(
