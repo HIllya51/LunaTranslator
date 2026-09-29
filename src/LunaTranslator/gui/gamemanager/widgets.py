@@ -212,6 +212,7 @@ class imagehelper:
 class ItemWidget(QWidget):
     focuschanged = pyqtSignal(bool, str)
     doubleclicked = pyqtSignal(str)
+    droppedgame = pyqtSignal(str, str)  # 拖动uid, 目标uid（网格内排序）
     globallashfocus = None
 
     @classmethod
@@ -235,7 +236,35 @@ class ItemWidget(QWidget):
             print_exc()
 
     def mousePressEvent(self, ev) -> None:
+        self._presspos = ev.pos()
         self.click()
+
+    def mouseMoveEvent(self, e) -> None:
+        # 按住拖动超过阈值 -> 启动拖拽（网格内排序）
+        if e.buttons() & Qt.MouseButton.LeftButton and (
+            e.pos() - getattr(self, "_presspos", e.pos())
+        ).manhattanLength() >= QApplication.startDragDistance():
+            drag = QDrag(self)
+            mime = QMimeData()
+            mime.setText("lunamovegame:" + self.gameuid)
+            drag.setMimeData(mime)
+            drag.exec(Qt.DropAction.MoveAction)
+            return
+        super().mouseMoveEvent(e)
+
+    def dragEnterEvent(self, e) -> None:
+        if e.mimeData().text().startswith("lunamovegame:"):
+            e.acceptProposedAction()
+
+    def dropEvent(self, e) -> None:
+        txt = e.mimeData().text()
+        if not txt.startswith("lunamovegame:"):
+            return
+        uid = txt.split(":", 1)[1]
+        if uid == self.gameuid:
+            return
+        e.acceptProposedAction()
+        self.droppedgame.emit(uid, self.gameuid)
 
     def focusOut(self):
         self.isfucked = False
@@ -263,6 +292,7 @@ class ItemWidget(QWidget):
     def __init__(self, gameuid) -> None:
         super().__init__()
         self.isfucked = False
+        self.setAcceptDrops(True)
         self.gameuid = gameuid
 
         for image in savehook_new_data[gameuid].get("imagepath_all", []):
