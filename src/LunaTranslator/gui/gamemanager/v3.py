@@ -49,7 +49,7 @@ from gui.fluent.nav import FluentNavTree
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
 from gui.specialwidget import lazyscrollflow
-from gui.usefulwidget import getIconButton
+from gui.usefulwidget import getIconButton, SplitLine, ColorButton, getsimplecombobox
 from gui.fluent.icons import ICON_GLOBAL_NAV
 
 
@@ -1257,23 +1257,107 @@ class dialog_savedgame_v3(QWidget):
     reference = None
 
     def createsettings(self, formLayout: QFormLayout):
+        # 网格（图表）设置（原 dialog_savedgame_new 的全套）
+        for i, (key, name, default) in enumerate(
+            [
+                ("itemw", "宽度", 130),
+                ("itemh", "高度", 190),
+                ("margin", "边距_inter", 6),
+                ("margin2", "边距_intra", 6),
+                ("radius", "圆角", 10),
+                ("borderW", "边框宽度", 1),
+            ]
+        ):
+            minv = 0 if i >= 2 else 32
+            spin = getspinbox(
+                minv, 1000, ui_settings["dialog_savegame_layout"], key, default=default
+            )
+            formLayout.addRow(name, spin)
+            spin.valueChanged.connect(self.gridpage.callchange)
 
-        spin = getspinbox(
-            10,
-            1000,
-            ui_settings["dialog_savegame_layout"],
-            "listitemheight",
-            default=30,
+        formLayout.addRow(
+            "缩放",
+            getsimplecombobox(
+                ["填充", "适应", "拉伸", "居中"],
+                globalconfig,
+                "imagewrapmode",
+                callback=self.gridpage.callchange,
+                default=0,
+            ),
         )
-        formLayout.addRow("高度", spin)
-        spin.valueChanged.connect(self.callchange)
+
+        formLayout.addRow(SplitLine())
+        for key, name, default in [
+            ("backcolor2", "颜色", "#40ffffff"),
+            ("onselectcolor2", "颜色_选中时", "#40007fff"),
+            ("onfilenoexistscolor2", "游戏不存在时颜色", "#40acacac"),
+            ("borderColor", "边框颜色", "#10000000"),
+            ("borderColor2", "边框颜色_选中时", "#ff000000"),
+        ]:
+            formLayout.addRow(
+                name,
+                ColorButton(
+                    self,
+                    ui_settings["dialog_savegame_layout"],
+                    key,
+                    callback=self.gridpage.callchange,
+                    alpha=True,
+                    default=default,
+                ),
+            )
+        formLayout.addRow(SplitLine())
+        formLayout.addRow(
+            "文字区_高度",
+            getspinbox(
+                0,
+                1000,
+                ui_settings["dialog_savegame_layout"],
+                "textH2",
+                callback=self.gridpage.callchange,
+                double=False,
+                default=1,
+            ),
+        )
+        formLayout.addRow(
+            "文字区_布局",
+            getsimplecombobox(
+                ["上下", "悬浮"],
+                ui_settings["dialog_savegame_layout"],
+                "layout",
+                callback=self.gridpage.callchange,
+                internal=["updown", "overlay"],
+                default="updown",
+            ),
+        )
         formLayout.addRow(
             "字体",
             getfonteditor(
-                d=globalconfig, k="savegame_textfont2", callback=self.setstyle
+                d=globalconfig,
+                k="savegame_textfont1",
+                callback=self.gridpage.callchange,
             ),
         )
-        # 列表底色/选中色不再适用——导航树外观由 FluentUI3 插件渲染
+        formLayout.addRow(
+            "颜色_文字",
+            ColorButton(
+                self,
+                ui_settings["dialog_savegame_layout"],
+                "textColor",
+                callback=self.gridpage.callchange,
+                default="#000000",
+            ),
+        )
+        formLayout.addRow(
+            "颜色_文字区",
+            ColorButton(
+                self,
+                ui_settings["dialog_savegame_layout"],
+                "textbackColor",
+                callback=self.gridpage.callchange,
+                alpha=True,
+                default="#ffffffff",
+            ),
+        )
 
     def deleteLater(self):
 
