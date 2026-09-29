@@ -765,11 +765,6 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
         )
         self.setWindowIcon(parent.windowIcon())
         self.setWindowTitle(title)
-        # 行数很多时窗口过高——内容放进滚动区，窗口高度封顶 600px
-        # （仍不超过屏幕工作区 80%，小屏保护）
-        screen = QGuiApplication.primaryScreen()
-        maxh = min(600, int(screen.availableGeometry().height() * 0.8))
-        self.resize(QSize(width, 10))
         self._scroll = makescroll()
         self._content = QWidget()
         self._scroll.setWidget(self._content)
@@ -931,7 +926,7 @@ class autoinitdialog(LDialog, DarkLightAutoResetIconHelper):
         self._content.adjustSize()
         fh = self._content.sizeHint().height()
         frame = self.frameGeometry().height() - self.geometry().height()
-        targeth = min(fh + self._btnh + frame + 8, maxh)
+        targeth = min(fh + self._btnh + frame + 8, parent.height() - 200)
         targetw = max(width, self._content.sizeHint().width() + 24)
         self.resize(QSize(targetw, targeth))
         if exec_:
