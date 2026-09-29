@@ -865,6 +865,15 @@ class _gridpage(QWidget):
         # 接受网格拖拽（空白处）：拖到空白 = 移到末尾
         self.setAcceptDrops(True)
 
+    def _bgclicked(self):
+        # 网格空白点击：清网格高亮 + 侧边栏选中回到主项（保持一致）
+        ItemWidget.clearfocus()
+        self.currentfocusuid = None
+        tagid = self.reftagid
+        group = self.ref._itemfortag(tagid) if tagid is not None else None
+        if group is not None:
+            self.ref.nav.setCurrentItem(group)
+
     def dragEnterEvent(self, e):
         if e.mimeData().text().startswith("lunamovegame:"):
             e.acceptProposedAction()
@@ -978,7 +987,7 @@ class _gridpage(QWidget):
         self.flow.deleteLater()
         self.flow = lazyscrollflow(self._keypressed)
         self.flow.setObjectName("NOBORDER")
-        self.flow.bgclicked.connect(ItemWidget.clearfocus)
+        self.flow.bgclicked.connect(self._bgclicked)
         self.flow.setsize(
             QSize(
                 ui_settings["dialog_savegame_layout"].get("itemw", 130),
