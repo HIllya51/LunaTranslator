@@ -589,6 +589,10 @@ class _gamelistnav(FluentNavTree):
         self._dragpos = None
         # 按住 Ctrl/Alt/Shift 点击主项：不触发选中/展开（见 mousePressEvent），
         # 鼠标用于拖动主项排序
+        # 单击主项只选中（切网格页），双击才展开/折叠
+        self._expand_on_doubleclick = True
+        self.setExpandsOnDoubleClick(False)   # 关掉 QTreeView 默认（会双重 toggle）
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self._icon_pending = {}
         self._icon_timer = QTimer(self)
         self._icon_timer.setInterval(25)
@@ -649,6 +653,19 @@ class _gamelistnav(FluentNavTree):
             ev.accept()
             return
         return super().mousePressEvent(ev)
+
+    def mouseDoubleClickEvent(self, e):
+        item = self.itemAt(e.pos())
+        print("V3DBG dbl item=%s parent=%s pos=%r" % (
+            item is not None,
+            item.parent() is not None if item else None,
+            e.pos()), flush=True)
+        if item is not None and item.parent() is None:
+            # 主项：双击展开/折叠（单击只选中）
+            item.setExpanded(not item.isExpanded())
+            e.accept()
+            return
+        super().mouseDoubleClickEvent(e)
 
     def mouseMoveEvent(self, e):
         if (
