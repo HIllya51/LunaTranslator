@@ -1271,9 +1271,15 @@ class dialog_savedgame_v3(QWidget):
             return
         uid = item.data(0, GAMEUID_ROLE)
         if uid:
-            # 单击子项：只更新状态并联动网格高亮（不打开画廊——双击才打开）
+            # 单击子项：右侧显示其所属主项的网格（多列表展开时跟随切换），
+            # 并联动高亮；不打开画廊（双击才打开）
             self.reftagid = item.parent().data(0, TAGID_ROLE)
             self.currentfocusuid = uid
+            if (not self.gridpage._loaded) or (
+                self.gridpage.reftagid != self.reftagid
+            ):
+                self.gridpage.showtag(self.reftagid)
+            self.stack.setCurrentWidget(self.gridpage)
             self.gridpage.focusgame(uid)
         else:
             # 主项：右侧切网格页（大图表），展示该列表。
