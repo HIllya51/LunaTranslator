@@ -706,8 +706,13 @@ class _gamelistnav(FluentNavTree):
         super().mouseDoubleClickEvent(e)
 
     def mouseMoveEvent(self, e):
+        _filtered = bool(self.ref.gridpage.currtags) or globalconfig.get(
+            "hide_not_exists", False)
+        _is_child = self._dragitem is not None and (
+            self._dragitem.parent() is not None)
         if (
             self._dragitem is not None
+            and not (_filtered and _is_child)  # 有过滤时子项不拖
             and (e.buttons() & Qt.MouseButton.LeftButton)
             and (e.pos() - self._dragpos).manhattanLength()
             >= QApplication.startDragDistance()
@@ -759,6 +764,11 @@ class _gamelistnav(FluentNavTree):
             e.ignore()
             return
         src = self._dragitem
+        _filtered = bool(self.ref.gridpage.currtags) or globalconfig.get(
+            "hide_not_exists", False)
+        if _filtered and src is not None and src.parent() is not None:
+            e.ignore()  # 有过滤时子项拖放无效（主项排序仍可用）
+            return
         if src is None:
             e.ignore()
             return
@@ -1130,11 +1140,10 @@ class _gridpage(QWidget):
         """隐藏不匹配项（网格 + 侧边栏子项 + 主项计数），不销毁 flow。
         有过滤时直接关闭 drag/drop（比事件拦截可靠）。"""
         tags = self.currtags
-        # 有过滤（tag 或 hide_not_exists）-> 禁拖；无过滤 -> 恢复
-        _no_drag = bool(tags) or globalconfig.get("hide_not_exists", False)
-        self.ref.nav.setDragEnabled(not _no_drag)
-        self.ref.nav.setAcceptDrops(not _no_drag)
-        self.setAcceptDrops(not _no_drag)
+        # 有过滤时网格禁拖（侧边栏保留 drag/drop——主项排序仍可用，
+        # 子项拖拽在 mouseMoveEvent/dropEvent 里按过滤状态拦截）
+        self.setAcceptDrops(not (
+            bool(tags) or globalconfig.get("hide_not_exists", False)))
         # 网格
         for i, w in enumerate(self.flow.widgets):
             uid = None
@@ -1149,7 +1158,8 @@ class _gridpage(QWidget):
         # 已实例化的网格项也切 acceptDrops
         for w in self.flow.widgets:
             if isinstance(w, ItemWidget):
-                w.setAcceptDrops(not _no_drag)
+                w.setAcceptDrops(not (
+                    bool(tags) or globalconfig.get("hide_not_exists", False)))
         self.flow.resizeandshow()
         # 侧边栏子项 + 主项计数
         nav = self.ref.nav
