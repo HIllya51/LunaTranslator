@@ -65,6 +65,21 @@ def close_color_flyouts():
             _open_flyouts.remove(flyout)
 
 
+def paint_fluent_flyout_surface(widget, painter, margin=None):
+    """给弹层窗口绘制 FluentUI 飞层表面：插件的 PE_FluentFlyoutSurface
+    （WinUI 飞层阴影 + 圆角 + 描边）。margin 为四周透明阴影区宽度
+    （默认 8px）；要求窗口已设 WA_TranslucentBackground 且内容布局
+    留出对应边距。"""
+    if margin is None:
+        margin = _SHADOW_MARGIN
+    card = widget.rect().adjusted(margin - 1, margin, -margin, -margin)
+    opt = QStyleOption()
+    opt.initFrom(widget)
+    opt.rect = card
+    widget.style().drawPrimitive(
+        QStyle.PrimitiveElement(QStyle.PE_CustomBase + 1), opt, painter, widget)
+
+
 # Segoe Fluent Icons：ChevronDown（ColorPickerButton 右端箭头）
 _ICON_CHEVRON_DOWN = ""
 _FLYOUT_WIDTH = 360
@@ -655,13 +670,7 @@ class FluentColorPicker(QWidget):
         # 阴影画在边距(8px)的透明区里
         p = QPainter(self)
         p.setRenderHint(QPainter.Antialiasing)
-        card = self.rect().adjusted(
-            _SHADOW_MARGIN - 1, _SHADOW_MARGIN, -_SHADOW_MARGIN, -_SHADOW_MARGIN)
-        opt = QStyleOption()
-        opt.initFrom(self)
-        opt.rect = card
-        self.style().drawPrimitive(
-            QStyle.PrimitiveElement(QStyle.PE_CustomBase + 1), opt, p, self)
+        paint_fluent_flyout_surface(self, p)
 
     def isPopupMode(self):
         return self._popup_mode

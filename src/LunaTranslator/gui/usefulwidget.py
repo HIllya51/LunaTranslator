@@ -3931,16 +3931,42 @@ def limitpos(pos: QPoint, w: QWidget, offset: QPoint):
 
 
 class PopupWidget(QWidget):
+    """FluentUI 飞层弹窗（同取色器 flyout）：插件 PE_FluentFlyoutSurface
+    绘制卡片表面（WinUI 阴影+圆角+描边），四周 8px 透明阴影区，内容
+    布局在首次显示时统一补 16px 边距（8 阴影 + 8 内边距）。"""
+
     def __init__(self, parent):
         super().__init__(parent)
-        self.setWindowFlags(Qt.WindowType.Popup | self.windowFlags())
+        # FramelessWindowHint 必须有：Windows 上 WA_TranslucentBackground
+        # 依赖它（Qt::Popup 不隐含）——缺了的话阴影区叠在不透明黑底上，
+        # 显出纯黑边框
+        self.setWindowFlags(
+            Qt.WindowType.Popup
+            | Qt.WindowType.FramelessWindowHint
+            | Qt.WindowType.NoDropShadowWindowHint
+            | self.windowFlags()
+        )
+        # 阴影区/圆角外需要透明窗口
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.dragging = False
         self.offset = None
 
     def showEvent(self, a0):
+        # 子类在构造里 setLayout 到本体——布局就绪后统一补边距（只补一次）
+        lay = self.layout()
+        if lay is not None and not self.property("_fluent_flyout_padded"):
+            self.setProperty("_fluent_flyout_padded", True)
+            lay.setContentsMargins(16, 16, 16, 16)
         pos = self.pos()
         self.move(limitpos(pos, self, QPoint()))
         return super().showEvent(a0)
+
+    def paintEvent(self, a0):
+        from gui.fluent.colorpicker import paint_fluent_flyout_surface
+
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        paint_fluent_flyout_surface(self, p)
 
     def display(self, pos=None):
         self.move(pos if pos else QCursor.pos())
