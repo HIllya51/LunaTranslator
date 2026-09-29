@@ -38,13 +38,22 @@ from qtsymbols import (
     QRegularExpressionValidator,
     QRegularExpression,
     QStyle,
+    QPoint,
+    QToolButton,
+    QBrush,
 )
 
-from PyQt5.QtWidgets import QStyleOptionSlider
+from PyQt5.QtWidgets import QStyleOptionSlider, QStyleOptionToolButton
 from PyQt5.QtGui import QLinearGradient
 
 from gui.dynalang import LLabel, LPushButton, LDialog
 from gui.fluent.tabwidget import apply_segmented_tabbar_style
+from gui.fluent.expander import _exp_card_background, _exp_card_border
+
+# Segoe Fluent Icons：ChevronDown（ColorPickerButton 右端箭头）
+_ICON_CHEVRON_DOWN = ""
+_FLYOUT_WIDTH = 360
+_CORNER_RADIUS = 8
 
 # ---- 常量（同 excolorpicker.cpp 匿名命名空间）----
 _CHANNEL_THICKNESS = 24
@@ -454,16 +463,23 @@ class FluentColorPicker(QWidget):
 
     _RGBA, _HSVA = 0, 1
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, popup=False):
         super().__init__(parent)
         self._color = QColor(0x94, 0x4E, 0x9B)
         self._alpha_enabled = True
         self._representation = FluentColorPicker._RGBA
         self._updating = False
+        self._popup_mode = popup
         self._h, self._s, self._v, self._a = self._color.getHsvF()
 
+        if popup:
+            # 飞层形态（ColorPickerButton 弹出）：无边框弹层 + 自绘圆角卡
+            self.setWindowFlags(Qt.Popup | Qt.FramelessWindowHint)
+            self.setAttribute(Qt.WA_TranslucentBackground)
+            self.setFixedWidth(_FLYOUT_WIDTH)
+
         root = QVBoxLayout(self)
-        root.setContentsMargins(12, 8, 12, 12)
+        root.setContentsMargins(10, 10, 10, 10) if popup else root.setContentsMargins(12, 8, 12, 12)
         root.setSpacing(8)
 
         # 当前色预览条
@@ -602,6 +618,34 @@ class FluentColorPicker(QWidget):
         return __
 
     # ---- 公共 API ----
+    def paintEvent(self, event):
+        if not self._popup_mode:
+            super().paintEvent(event)
+            return
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        bounds = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
+        path = QPainterPath()
+        path.addRoundedRect(bounds, _CORNER_RADIUS, _CORNER_RADIUS)
+        p.fillPath(path, _exp_card_background(self.palette()))
+        p.setBrush(Qt.NoBrush)
+        p.setPen(QPen(_exp_card_border(self.palette()), 1))
+        p.drawPath(path)
+
+    def isPopupMode(self):
+        return self._popup_mode
+
+    def showPopup(self, anchor):
+        """在 anchor（颜色按钮）上方弹出飞层。"""
+        if not self._popup_mode or anchor is None:
+            return
+        self.adjustSize()
+        topleft = anchor.mapToGlobal(QPoint(0, 0))
+        self.move(topleft.x() - 6, topleft.y() - self.height())
+        self.show()
+        self.raise_()
+        self.activateWindow()
+
     def color(self):
         c = QColor(self._color.toRgb())
         if not self._alpha_enabled:
@@ -890,3 +934,129 @@ class FluentColorDialog(LDialog):
         if result == QDialog.DialogCode.Accepted:
             self.colorSelected.emit(selected)
         self._finishing = False
+
+
+# ============================================================================
+# ColorPickerButton（excolorpickerbutton.cpp 移植）：
+# 内容显示当前颜色的色块，点击弹出取色器飞层，选色实时生效
+# ============================================================================
+
+
+class ColorPickerButton(QToolButton):
+    """带 Flyout 的颜色选择按钮（CommunityToolkit ColorPickerButton）。"""
+
+    selectedColorChanged = pyqtSignal(QColor)
+
+    _CONTENT_HMARGIN = 8
+    _CONTENT_ITEM_HMARGIN = 5
+    _SWATCH_VMARGIN = 5
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._picker = None
+        self._color = QColor(Qt.blue)
+        self._pressed = False
+        self.setToolButtonStyle(Qt.ToolButtonTextOnly)
+        self.setPopupMode(QToolButton.InstantPopup)
+        self.setFixedSize(68, 32)
+        self.clicked.connect(self._show_picker)
+
+    # ---- 颜色 ----
+    def selectedColor(self):
+        if self._picker is not None:
+            return self._picker.color()
+        return QColor(self._color)
+
+    def setSelectedColor(self, color):
+        if not color.isValid():
+            return
+        if self._picker is not None:
+            if self._picker.color() == color:
+                return
+            self._picker.setColor(color)
+            self._color = QColor(self._picker.color())
+        else:
+            if self._color == color:
+                return
+            self._color = QColor(color)
+        self.update()
+        self.selectedColorChanged.emit(QColor(self._color))
+
+    def colorPicker(self):
+        return self._picker
+
+    def setAlphaEnabled(self, enabled):
+        """飞层取色器的 Alpha 通道（在首次弹出前调用）。"""
+        self._alpha_enabled = bool(enabled)
+        if self._picker is not None:
+            self._picker.setAlphaEnabled(enabled)
+
+    # ---- 弹层 ----
+    def _ensure_picker(self):
+        if self._picker is not None:
+            return
+        self._picker = FluentColorPicker(self, popup=True)
+        if getattr(self, "_alpha_enabled", True) is False:
+            self._picker.setAlphaEnabled(False)
+        self._picker.setColor(self._color)
+        self._picker.colorChanged.connect(self._on_picker_changed)
+
+    def _on_picker_changed(self, _):
+        color = self._picker.color()
+        if self._color == color:
+            return
+        self._color = QColor(color)
+        self.update()
+        self.selectedColorChanged.emit(QColor(color))
+
+    def _show_picker(self):
+        self._ensure_picker()
+        self._picker.showPopup(self)
+
+    # ---- 绘制 ----
+    def paintEvent(self, _):
+        p = QPainter(self)
+        p.setRenderHint(QPainter.Antialiasing)
+        option = QStyleOptionToolButton()
+        option.initFrom(self)
+        option.text = ""
+        option.arrowType = Qt.NoArrow
+        option.features = QStyleOptionToolButton.None_
+        # drawComplexControl 是 QStyle/QStylePainter 的接口（QPainter 没有）
+        self.style().drawComplexControl(QStyle.CC_ToolButton, option, p, self)
+
+        arrow_width = self.style().pixelMetric(
+            QStyle.PM_MenuButtonIndicator, option, self)
+        arrow_area = QRectF(self.width() - arrow_width - 2, 0,
+                            arrow_width, self.height())
+        swatch = QRectF(self.rect()).adjusted(
+            self._CONTENT_HMARGIN, self._SWATCH_VMARGIN,
+            -self._CONTENT_HMARGIN, -self._SWATCH_VMARGIN)
+        swatch.setRight(arrow_area.left() - self._CONTENT_ITEM_HMARGIN)
+
+        p.setPen(Qt.NoPen)
+        p.setBrush(QBrush(self._color))
+        p.drawRoundedRect(swatch, 3, 3)
+
+        arrowfont = QFont("Segoe Fluent Icons")
+        arrowfont.setPixelSize(11)
+        p.setFont(arrowfont)
+        arrowcolor = self.palette().color(
+            QPalette.Disabled if not self.isEnabled() else QPalette.Active,
+            QPalette.ButtonText)
+        p.setPen(arrowcolor)
+        if self._pressed:
+            arrow_area.setTop(arrow_area.top() + 2)
+        p.drawText(arrow_area, Qt.AlignCenter, _ICON_CHEVRON_DOWN)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            self._pressed = True
+            self.update()
+        super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event):
+        if event.button() == Qt.LeftButton and self._pressed:
+            self._pressed = False
+            self.update()
+        super().mouseReleaseEvent(event)

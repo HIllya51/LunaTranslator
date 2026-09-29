@@ -36,6 +36,7 @@ from gui.dynalang import (
     LMainWindow,
 )
 from gui.fluent.tabwidget import apply_segmented_tabbar, make_lazy_page
+from gui.fluent.colorpicker import ColorPickerButton
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from gui.fluent.expander import _exp_chevron_button_background
 
@@ -1402,35 +1403,6 @@ def getColor(color, parent, alpha=False, title=None):
     if color_dialog.exec() != QDialog.DialogCode.Accepted:
         return QColor()
     return color_dialog.color()
-
-
-def _selectcolor(
-    parent: QWidget,
-    button: QPushButton,
-    configdict: dict,
-    configkey,
-    callback=None,
-    alpha=False,
-    cantzeroalpha=False,
-    default=None,
-    title=None,
-):
-
-    color = getColor(
-        QColor(configdict.get(configkey, default)), parent, alpha, title=title
-    )
-    if not color.isValid():
-        return
-    if alpha and cantzeroalpha and (color.alpha() == 0):
-        color.setAlpha(1)
-    colorname = color.name(QColor.NameFormat.HexArgb) if alpha else color.name()
-    button.setIcon(qtawesome.icon("fa.paint-brush", color=colorname))
-    configdict[configkey] = colorname
-    if callback:
-        try:
-            callback(colorname)
-        except:
-            print_exc()
 
 
 def __getboxlayout(widgets, lc=QHBoxLayout, makewidget=False, delay=False):
@@ -3479,7 +3451,10 @@ class IconButton(LPushButton):
         self.__seticon()
 
 
-class ColorButton(IconButton):
+class ColorButton(ColorPickerButton):
+    """取色按钮（CommunityToolkit ColorPickerButton）：色块显示当前颜色，
+    点击弹出 Fluent 取色器飞层，选色实时写回配置并回调。"""
+
     def __init__(
         self,
         parent,
@@ -3491,21 +3466,38 @@ class ColorButton(IconButton):
         cantzeroalpha=False,
         default=None,
     ):
-        qicon = qtawesome.icon("fa.paint-brush", color=d.get(key, default))
-        super().__init__(None, qicon=qicon, tips=tips)
-        cb = functools.partial(
-            _selectcolor,
-            parent,
-            self,
-            d,
-            key,
-            callback,
-            alpha=alpha,
-            cantzeroalpha=cantzeroalpha,
-            default=default,
-            title=tips,
+        super().__init__(None)
+        self._configdict = d
+        self._configkey = key
+        self._callback = callback
+        self._alpha = alpha
+        self._cantzeroalpha = cantzeroalpha
+        self._default = default
+        init = QColor(d.get(key, default) or "")
+        if not init.isValid():
+            init = QColor(Qt.GlobalColor.black)
+        self.setAlphaEnabled(alpha)
+        self.setSelectedColor(init)
+        if tips:
+            self.setToolTip(_TR(tips))
+            self.setAccessibleName(_TR(tips))
+        self.selectedColorChanged.connect(self._on_color_changed)
+
+    def _on_color_changed(self, color: QColor):
+        if self._alpha and self._cantzeroalpha and color.alpha() == 0:
+            color = QColor(color)
+            color.setAlpha(1)
+            self.setSelectedColor(color)  # 同步飞层/色块后经再次信号落值
+            return
+        colorname = (
+            color.name(QColor.NameFormat.HexArgb) if self._alpha else color.name()
         )
-        self.clicked.connect(cb)
+        self._configdict[self._configkey] = colorname
+        if self._callback:
+            try:
+                self._callback(colorname)
+            except:
+                print_exc()
 
 
 class SplitLine(QFrame):
