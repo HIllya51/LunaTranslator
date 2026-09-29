@@ -63,6 +63,8 @@ class FocusCombo(QComboBox):
         # 宽度不足以容纳文字时自动扩展），并给最小宽度避免短文本过窄
         self.setSizeAdjustPolicy(QComboBox.SizeAdjustPolicy.AdjustToContents)
         self.setMinimumWidth(120)
+        # 同 gallery make_combo：combo 最小高 32
+        self.setMinimumHeight(32)
         if sizeX:
             self.setSizeAdjustPolicy(
                 QComboBox.SizeAdjustPolicy.AdjustToMinimumContentsLengthWithIcon
@@ -235,9 +237,9 @@ class FocusSpinBase(QAbstractSpinBox):
 class FocusSpin(QSpinBox, FocusSpinBase):
     def __init__(self, parent=None):
         super().__init__(parent)
-        # 固定 34：与 combo/lineedit 的 CT_ComboBox/CT_LineEdit(34) 统一
-        # （spin 的自然 sizeHint 是 36，差 2px 会不齐）
-        self.setFixedHeight(34)
+        # 最小高 32（gallery make_combo 同款防压缩）：约束布局
+        # （VisGridLayout 行高 25 等）会把无最小高的控件压到 23px
+        self.setMinimumHeight(32)
         # 插件的上下按钮区占 ~64px，minimumSizeHint 太窄时文本框会被挤没
         self.setMinimumWidth(120)
 
@@ -245,7 +247,7 @@ class FocusSpin(QSpinBox, FocusSpinBase):
 class FocusDoubleSpin(QDoubleSpinBox, FocusSpinBase):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFixedHeight(34)
+        self.setMinimumHeight(32)
         self.setMinimumWidth(120)
 
 
@@ -1131,6 +1133,8 @@ def getlineedit(d: dict, key, callback=None, readonly=False, default=""):
     s = QLineEdit()
     s.setText(d.get(key, default))
     s.setReadOnly(readonly)
+    # 最小高 32：防止约束布局把 lineedit 压扁（同 spin/combo）
+    s.setMinimumHeight(32)
     s.textChanged.connect(functools.partial(callbackwrap, d, key, callback))
     return s
 
