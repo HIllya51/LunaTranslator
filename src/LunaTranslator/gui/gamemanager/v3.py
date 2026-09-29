@@ -1811,6 +1811,8 @@ class dialog_savedgame_v3(QWidget):
     def shanchuyouxi(self):
         if not self.currentfocusuid:
             return
+        if self.reftagid == 1:
+            return  # 最近游戏是动态只读列表，不可删除
         if not request_delete_ok(self, "bf4aa76a-41a5-4b07-a095-0c34c616ed2d"):
             return
         try:
