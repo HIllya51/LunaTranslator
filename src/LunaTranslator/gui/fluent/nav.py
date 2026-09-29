@@ -35,9 +35,10 @@ NAV_TEXT_ROLE = Qt.UserRole + 2      # 文本（紧凑模式下清空显示）
 NAV_WAS_EXPANDED_ROLE = Qt.UserRole + 3
 
 
-def create_fluent_icon(icon_code, color=None):
+def create_fluent_icon(icon_code, color=None, size=30):
     """用 Segoe Fluent Icons 字体绘制 30x30 图标（插件构造时已注册内嵌字体）。"""
-    pixmap = QPixmap(30, 30)
+    pixmap = QPixmap(size, size)
+    pixmap.setDevicePixelRatio(1)
     pixmap.fill(Qt.transparent)
     painter = QPainter(pixmap)
     painter.setRenderHints(

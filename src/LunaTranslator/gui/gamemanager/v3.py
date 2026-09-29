@@ -854,11 +854,21 @@ class _gridpage(QWidget):
         self.searchedit.returnPressed.connect(self._search)
         self.searchedit.setPlaceholderText("搜索")
         self.searchedit.setMinimumHeight(32)
-        # Windows 下鼠标移出后 IBeam 光标偶发不恢复——enter/leave 显式切换
+        from gui.fluent.nav import create_fluent_icon
+        from PyQt5.QtWidgets import QAction as _QAct
+        _act = _QAct(self.searchedit)
+        _act.setIcon(create_fluent_icon("", size=32))
+        self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
         self.searchedit.installEventFilter(self)
         self.searchedit.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
         toplay.addWidget(self.searchedit, 1)
+        # 面包屑：搜索框右边、从右向左；有 tag 时显示；root 为 ALL，点 ALL 清空
+        self.breadcrumb = ExBreadcrumbBar(self)
+        self.breadcrumb.itemClicked.connect(self._breadcrumb_clicked)
+        self.breadcrumb.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+        self.breadcrumb.hide()
+        toplay.addWidget(self.breadcrumb)
         toplay.addWidget(
             getIconButton(
                 icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
@@ -872,11 +882,6 @@ class _gridpage(QWidget):
             )
         )
         lay.addWidget(top)
-        # 面包屑：搜索框之下，有 tag 时显示；root 为 ALL，点击 ALL 清空全部
-        self.breadcrumb = ExBreadcrumbBar(self)
-        self.breadcrumb.itemClicked.connect(self._breadcrumb_clicked)
-        self.breadcrumb.hide()
-        lay.addWidget(self.breadcrumb)
         _w = QWidget()
         self.flowcontainer = QHBoxLayout(_w)
         self.flowcontainer.setContentsMargins(0, 0, 0, 0)

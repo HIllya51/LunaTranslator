@@ -295,14 +295,17 @@ class ExBreadcrumbBar(QWidget):
         y = self.contentsRect().top() + (self.contentsRect().height() - h) // 2
 
         def place(widget, left, w):
-            widget.setGeometry(
-                QRect(max(0, left), y, max(0, w), h))
+            # visualRect：RTL 时自动镜像到右端（同 C++ ExBreadcrumbBar）
+            widget.setGeometry(QStyle.visualRect(
+                self.layoutDirection(), self.contentsRect(),
+                QRect(left, y, max(0, w), h)))
 
         if overflow:
             place(self._overflow_button, x, min(available, overflow_width))
             x += overflow_width
-            self._separators.append(
-                QRect(x, y, _SEPARATOR_WIDTH, h))
+            self._separators.append(QStyle.visualRect(
+                self.layoutDirection(), self.contentsRect(),
+                QRect(x, y, _SEPARATOR_WIDTH, h)))
             x += _SEPARATOR_WIDTH
 
         for i in range(count):
@@ -311,8 +314,9 @@ class ExBreadcrumbBar(QWidget):
             if i < first:
                 continue
             if i > first:
-                self._separators.append(
-                    QRect(x, y, _SEPARATOR_WIDTH, h))
+                self._separators.append(QStyle.visualRect(
+                    self.layoutDirection(), self.contentsRect(),
+                    QRect(x, y, _SEPARATOR_WIDTH, h)))
                 x += _SEPARATOR_WIDTH
             w = min(button.sizeHint().width(),
                     max(0, self.contentsRect().right() + 1 - x))
