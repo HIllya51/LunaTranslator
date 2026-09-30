@@ -46,6 +46,15 @@ def _create_caption_button(parent, object_name, glyph, width=46, pixel_size=11):
     return button
 
 
+def create_fluent_caption_button(parent, glyph, tooltip="", width=40):
+    """Gallery 标题栏「置顶/主题」同款的 caption 风格按钮
+    （win_caption_pin 悬停由插件渲染，40x40、16px 字形）。"""
+    button = _create_caption_button(parent, "win_caption_pin", glyph, width, 16)
+    if tooltip:
+        button.setToolTip(tooltip)
+    return button
+
+
 class FluentTitleBar(QWidget):
     navToggleRequested = pyqtSignal()
 

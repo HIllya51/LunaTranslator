@@ -46,14 +46,16 @@ from gui.gamemanager.common import (
 from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree, create_fluent_icon
 from gui.fluent.tabwidget import FluentPageCard
+from gui.fluent.titlebar import create_fluent_caption_button
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
 from gui.fluent.carousel import ExCarousel
 from gui.specialwidget import lazyscrollflow
-from gui.usefulwidget import getIconButton, SplitLine, ColorButton, getsimplecombobox, makescroll
+from gui.usefulwidget import SplitLine, ColorButton, getsimplecombobox, makescroll
 from gui.fluent.icons import (
     ICON_GLOBAL_NAV,
     ICON_SEARCH,
+    ICON_SORT,
     ICON_SETTINGS,
     ICON_LIBRARY,
     ICON_RECENT,
@@ -177,6 +179,9 @@ class previewimages(QListWidget):
     def __init__(self, p=None):
         super(previewimages, self).__init__(p)
         self.setObjectName("NOBORDER")
+        # 背景透明：缩略图浮在所在内容卡(isCard)上（单控件级 QSS，
+        # 不影响后代之外的渲染）
+        self.setStyleSheet("previewimages{background:transparent;}")
         self.imageDelegate = ImageDelegate(self)
         self.setItemDelegate(self.imageDelegate)
         self.lock = threading.Lock()
@@ -1009,7 +1014,8 @@ class _gridpage(QWidget):
 
     def build_titlebar(self, titlebar):
         """把本页的控件装进宿主无边框窗口的标题栏：搜索居中，
-        面包屑/排序/齿轮在右侧 caption 按钮之前（跨页常驻）。"""
+        面包屑/排序/齿轮在右侧 caption 按钮之前（排序/齿轮仅网格页显示，
+        见 dialog_savedgame_v3._sync_titlebar_pagecontrols）。"""
         self.searchedit = QLineEdit()
         self.searchedit.returnPressed.connect(self._search)
         self.searchedit.setPlaceholderText("搜索")
@@ -1028,18 +1034,16 @@ class _gridpage(QWidget):
         self.breadcrumb.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         self.breadcrumb.hide()
         titlebar.addTrailingWidget(self.breadcrumb)
-        titlebar.addTrailingWidget(
-            getIconButton(
-                icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
-            )
-        )
-        titlebar.addTrailingWidget(
-            getIconButton(
-                icon="fa.gear",
-                callback=self.toggle_settings_panel,
-                tips="设置",
-            )
-        )
+        # 排序/齿轮：Gallery「置顶窗口」同款 caption 按钮（win_caption_pin
+        # 悬停由插件渲染）
+        self.sortbtn = create_fluent_caption_button(
+            titlebar, ICON_SORT, "排序")
+        self.sortbtn.clicked.connect(self.sortgamecallback)
+        titlebar.addTrailingWidget(self.sortbtn)
+        self.gearbtn = create_fluent_caption_button(
+            titlebar, ICON_SETTINGS, "设置")
+        self.gearbtn.clicked.connect(self.toggle_settings_panel)
+        titlebar.addTrailingWidget(self.gearbtn)
 
     def toggle_settings_panel(self):
         """常驻顶栏齿轮：切回网格页并切换右侧设置面板显隐（首次构建内容）。
@@ -1635,6 +1639,13 @@ class dialog_savedgame_v3(QWidget):
         页卡才是 stack 的页）。"""
         self.stack.setCurrentWidget(self.gridpage_card)
 
+    def _sync_titlebar_pagecontrols(self, _=None):
+        """标题栏的排序/齿轮当且仅当网格页显示时可见（作用于网格列表，
+        其他页隐藏）。"""
+        ongrid = self.stack.currentWidget() is self.gridpage_card
+        self.gridpage.sortbtn.setVisible(ongrid)
+        self.gridpage.gearbtn.setVisible(ongrid)
+
     # ---- 导航树辅助 ----
     def _tagicon(self, tagid):
         if tagid is None:
@@ -2155,12 +2166,18 @@ class dialog_savedgame_v3(QWidget):
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        # 画廊页包 FluentPageCard 背景卡（同设置窗口页卡；
-        # "_设置_"页由 tabadd_lazy 自带页卡）
+        # 画廊页：页卡(249) + 内容 isCard(253)（同设置窗口页卡的层级，
+        # 缩略图列表/轮播透明浮在内容卡上）
         gallerycard = FluentPageCard()
         _glay = QVBoxLayout(gallerycard)
-        _glay.setContentsMargins(0, 0, 0, 0)
-        _glay.addWidget(self.pixview)
+        _glay.setContentsMargins(8, 8, 8, 8)
+        _ginner = QWidget()
+        _ginner.setAttribute(Qt.WA_StyledBackground, True)
+        _ginner.setProperty("isCard", True)
+        _gil = QVBoxLayout(_ginner)
+        _gil.setContentsMargins(0, 0, 0, 0)
+        _gil.addWidget(self.pixview)
+        _glay.addWidget(_ginner)
         self.righttop.addTab(gallerycard, "_画廊_")
         # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）
         self.stack = QStackedWidget()
@@ -2173,9 +2190,12 @@ class dialog_savedgame_v3(QWidget):
         self.gridpage_card = gridcard
         self.stack.addWidget(gridcard)
         self.stack.addWidget(self.righttop)
+        # 标题栏的排序/齿轮只作用于网格列表——仅网格页显示
+        self.stack.currentChanged.connect(self._sync_titlebar_pagecontrols)
         # 标题栏控件（搜索居中/面包屑/排序/齿轮尾部）装进宿主无边框
         # 窗口的 FluentTitleBar（跨页常驻）
         self.gridpage.build_titlebar(parent._fluent_title_bar)
+        self._sync_titlebar_pagecontrols()
         # 布局：侧边栏 | 内容。内容区四周留 8px——页卡浮在窗口底色上，
         # 边框/圆角可见（卡片才能被看出来）
         lay = QHBoxLayout(self)
