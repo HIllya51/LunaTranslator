@@ -9,15 +9,12 @@ from myutils.utils import (
 from myutils.config import globalconfig, postprocessconfig, static_data
 from gui.usefulwidget import (
     D_getIconButton,
-    D_getIconButton_mousefollow,
     getIconButton,
     D_getsimpleswitch,
-    getcenterX,
     D_getdoclink,
-    getboxlayout,
-    makescrollgrid,
-    makecardcontainer,
 )
+from gui.dynalang import LLabel
+from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
 from gui.inputdialog import (
     postconfigdialog,
     autoinitdialog,
@@ -50,165 +47,144 @@ def getcomparelayout(self):
     return w
 
 
-def _make_preprocess_grid(self):
-    """文本预处理 列表（行工厂），返回 (grids, savelist, savelay, savescroll)。"""
-    grids = [
-        [
-            "",
-            ("预处理方法", 6),
-            "",
-            "",
-            getcenterX("调整执行顺序"),
-            ("", 5),
-        ]
-    ]
-    sortlist: list = globalconfig["postprocess_rank"]
-    filteredlist = [post for post in sortlist if post in postprocessconfig]
-    savelist = []
-    savelay = []
-    savescroll = []
+class _PreProcessTree(FluentSettingTree):
+    """文本预处理列表：使用 / 设置（无标题列）/预处理方法 三列，拖拽排序。排序写回
+    postprocess_rank：可见项按新序填回原可见槽位（不在 postprocessconfig
+    的项原地保留，等价于旧版逐次交换的累计效果）。"""
 
-    def changerank(item, up, tomax, savescroll):
-
-        idx = filteredlist.index(item)
-        if tomax:
-            idx2 = 0 if up else (len(filteredlist) - 1)
-        else:
-            idx2 = idx + (-1 if up else 1)
-        if idx2 < 0 or idx2 >= len(filteredlist):
-            return
-        other = filteredlist[idx2]
-        headoffset = 1
-        for i, ww in enumerate(savelist[idx + headoffset]):
-            ll: QGridLayout = savelay[0]
-            w1 = ll.indexOf(ww)
-            w2 = ll.indexOf(savelist[idx2 + headoffset][i])
-            p1 = ll.getItemPosition(w1)
-            p2 = ll.getItemPosition(w2)
-            ll.removeWidget(ww)
-            ll.removeWidget(savelist[idx2 + headoffset][i])
-            ll.addWidget(savelist[idx2 + headoffset][i], *p1)
-            ll.addWidget(ww, *p2)
-        savelist[idx + headoffset], savelist[idx2 + headoffset] = (
-            savelist[idx2 + headoffset],
-            savelist[idx + headoffset],
+    def __init__(self, host, parent=None):
+        super().__init__(
+            parent,
+            titles=["使用", "", "预处理方法"],
+            draggable=True,
         )
-        filteredlist[idx], filteredlist[idx2] = filteredlist[idx2], filteredlist[idx]
-        si1, si2 = sortlist.index(item), sortlist.index(other)
-        sortlist[si1], sortlist[si2] = sortlist[si2], sortlist[si1]
-        if tomax:
-            scroll: QScrollArea = savescroll[0]
-            if up:
-                scroll.verticalScrollBar().setValue(
-                    scroll.verticalScrollBar().minimum()
-                )
-            else:
-                scroll.verticalScrollBar().setValue(
-                    scroll.verticalScrollBar().maximum()
-                )
+        self._host = host
+        hdr = self.header()
+        for c in (0, 1):
+            hdr.setSectionResizeMode(
+                c, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.rebuild()
 
-    for i, post in enumerate(sortlist):
-        if post not in postprocessconfig:
-            continue
+    def rebuild(self):
+        self.clear()
+        for post in globalconfig["postprocess_rank"]:
+            if post not in postprocessconfig:
+                continue
+            conf = postprocessconfig[post]
+            item = QTreeWidgetItem()
+            item.setData(0, Qt.ItemDataRole.UserRole, post)
+            self.addTopLevelItem(item)
+            btn = self._configbtn(post, conf)
+            namecell = self._cell(
+                D_getdoclink(
+                    "textprocess.html#anchor-" + post,
+                    tipsfor=conf["name"],
+                )(),
+                LLabel(conf["name"]),
+            )
+            self.setItemWidget(
+                item, 0, self._cell(
+                    D_getsimpleswitch(conf, "use")(), center=True))
+            # 设置按钮独占一列（无标题；缺席则空）
+            if btn is not None:
+                self.setItemWidget(item, 1, self._cell(btn, center=True))
+            self.setItemWidget(item, 2, namecell)
+
+    def _configbtn(self, post, conf):
+        """设置按钮：_11=编辑脚本；有 args=设置弹窗；无=None（槽位）。"""
         if post == "_11":
-            config = D_getIconButton(
+            return D_getIconButton(
                 callback=lambda: selectdebugfile("mypost.py"),
                 icon="fa.edit",
-                tips=postprocessconfig[post]["name"] + "_编辑",
+                tips=conf["name"] + "_编辑",
+            )()
+        if "args" not in conf:
+            return None
+        if post == "stringreplace":
+            callback = functools.partial(
+                stringreplacedialog, self._host, conf)
+        elif isinstance(list(conf["args"].values())[0], dict):
+            callback = functools.partial(
+                postconfigdialog,
+                self._host,
+                conf["args"]["替换内容"],
+                conf["name"],
+                ["原文内容", "替换为"],
             )
         else:
-            if "args" in postprocessconfig[post]:
-
-                if post == "stringreplace":
-                    callback = functools.partial(
-                        stringreplacedialog, self, postprocessconfig[post]
-                    )
-                elif isinstance(
-                    list(postprocessconfig[post]["args"].values())[0], dict
-                ):
-                    callback = functools.partial(
-                        postconfigdialog,
-                        self,
-                        postprocessconfig[post]["args"]["替换内容"],
-                        postprocessconfig[post]["name"],
-                        ["原文内容", "替换为"],
-                    )
-                else:
-                    items = autoinitdialog_items(postprocessconfig[post])
-                    callback = functools.partial(
-                        autoinitdialog,
-                        self,
-                        postprocessconfig[post]["args"],
-                        postprocessconfig[post]["name"],
-                        600,
-                        items,
-                    )
-                config = D_getIconButton(
-                    callback=callback,
-                    tips=postprocessconfig[post]["name"] + "_设置",
-                )
-            else:
-                config = ""
-
-        button_up = D_getIconButton_mousefollow(
-            callback=functools.partial(changerank, post, True, False, savescroll),
-            icon="fa.arrow-up",
-            callback2=functools.partial(changerank, post, True, True, savescroll),
-            tips=postprocessconfig[post]["name"] + "_上移",
-        )
-        button_down = D_getIconButton_mousefollow(
-            callback=functools.partial(changerank, post, False, False, savescroll),
-            icon="fa.arrow-down",
-            callback2=functools.partial(changerank, post, False, True, savescroll),
-            tips=postprocessconfig[post]["name"] + "_下移",
-        )
-
-        l = [
-            D_getdoclink(
-                "textprocess.html#anchor-" + post,
-                tipsfor=postprocessconfig[post]["name"],
-            ),
-            ((postprocessconfig[post]["name"]), 5),
-            D_getsimpleswitch(postprocessconfig[post], "use"),
-            config,
-            "",
-            getcenterX(
-                getboxlayout([0, button_up, button_down, 0]),
-                widget=True,
-            ),
-        ]
-        grids.append(l)
-    return grids, savelist, savelay, savescroll
-
-
-def _make_transoptimi_grid(self):
-    """翻译优化 列表。"""
-    grids2 = []
-    for item in static_data["transoptimi"]:
-        name = item["name"]
-        visname = item["visname"]
-        if checkpostlangmatch(name):
-            grids2.append(
-                [
-                    D_getdoclink("transoptimi.html#anchor-" + name, tipsfor=visname),
-                    ((visname), 5),
-                    D_getsimpleswitch(globalconfig["transoptimi"], name),
-                ]
+            items = autoinitdialog_items(conf)
+            callback = functools.partial(
+                autoinitdialog, self._host, conf["args"],
+                conf["name"], 600, items,
             )
+        return D_getIconButton(
+            callback=callback, tips=conf["name"] + "_设置")()
+
+    def _ondrop(self, idx1, idx2):
+        rank = globalconfig["postprocess_rank"]
+        filtered = [p for p in rank if p in postprocessconfig]
+        post = filtered.pop(idx1)
+        filtered.insert(idx2, post)
+        it = iter(filtered)
+        globalconfig["postprocess_rank"] = [
+            next(it) if p in postprocessconfig else p for p in rank]
+        self.rebuild()
+
+
+class _TransOptimiTree(FluentSettingTree):
+    """翻译优化列表：使用 / 设置（无标题列）/名称 三列（静态，无排序）。"""
+
+    def __init__(self, host, parent=None):
+        super().__init__(
+            parent,
+            titles=["使用", "", "名称"],
+        )
+        self._host = host
+        hdr = self.header()
+        for c in (0, 1):
+            hdr.setSectionResizeMode(
+                c, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.rebuild()
+
+    def rebuild(self):
+        self.clear()
+        for item_ in static_data["transoptimi"]:
+            name = item_["name"]
+            visname = item_["visname"]
+            if not checkpostlangmatch(name):
+                continue
+            item = QTreeWidgetItem()
+            item.setData(0, Qt.ItemDataRole.UserRole, name)
+            self.addTopLevelItem(item)
             setting = loadpostsettingwindowmethod(name)
 
-            def __(_f, _1):
-                return _f(_1)
+            def __(f, host):
+                return f(host)
 
+            btn = None
             if setting:
-                kwarg = dict(callback=functools.partial(__, setting, self))
+                kwarg = dict(
+                    callback=functools.partial(__, setting, self._host))
                 kwarg.update(tips=visname + "_设置")
                 if name == "myprocess":
                     kwarg.update(icon="fa.edit")
                     kwarg.update(tips=visname + "_编辑")
-                grids2[-1].append(D_getIconButton(**kwarg))
-    grids2 += [[("", 15)]]
-    return grids2
+                btn = D_getIconButton(**kwarg)()
+            namecell = self._cell(
+                D_getdoclink(
+                    "transoptimi.html#anchor-" + name, tipsfor=visname)(),
+                LLabel(visname),
+            )
+            self.setItemWidget(
+                item, 0, self._cell(
+                    D_getsimpleswitch(globalconfig["transoptimi"], name)(),
+                    center=True))
+            # 设置按钮独占一列（无标题；缺席则空）
+            if btn is not None:
+                self.setItemWidget(item, 1, self._cell(btn, center=True))
+            self.setItemWidget(item, 2, namecell)
 
 
 def transopti_nav_children(self):
@@ -217,17 +193,19 @@ def transopti_nav_children(self):
     同时作为父项页面内容。"""
 
     def ___(lay: QVBoxLayout):
-        grids, savelist, savelay, savescroll = _make_preprocess_grid(self)
-        inner = makecardcontainer(lay)
-        wid = makescrollgrid(grids, inner, savelist, savelay)
-        wid.layout().setContentsMargins(0, 0, 0, 0)
-        savescroll.append(inner.itemAt(inner.count() - 1).widget())
-        inner.addWidget(getcomparelayout(self))
+        content = QWidget()
+        vlay = QVBoxLayout(content)
+        vlay.setContentsMargins(16, 16, 16, 12)
+        vlay.setSpacing(8)
+        lay.addWidget(content)
+        vlay.addWidget(wrap_setting_tree(_PreProcessTree(self)), 1)
+        vlay.addWidget(getcomparelayout(self))
 
     def ___2(lay: QVBoxLayout):
-        grids2 = _make_transoptimi_grid(self)
-        inner = makecardcontainer(lay)
-        wid = makescrollgrid(grids2, inner)
-        wid.layout().setContentsMargins(0, 0, 0, 0)
+        content = QWidget()
+        vlay = QVBoxLayout(content)
+        vlay.setContentsMargins(16, 16, 16, 12)
+        lay.addWidget(content)
+        vlay.addWidget(wrap_setting_tree(_TransOptimiTree(self)), 1)
 
     return [("文本预处理", ___), ("翻译优化", ___2)]

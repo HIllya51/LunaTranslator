@@ -15,21 +15,17 @@ from gui.usefulwidget import (
     D_getsimpleswitch,
     D_getsimplekeyseq,
     D_getdoclink,
-    makescrollgrid,
-    makecardcontainer,
     D_getIconButton,
-    makesubtab_lazy,
     getspinbox,
     request_delete_ok,
     MyInputDialog,
-    maketabholder,
-    getboxlayout,
-    VisLFormLayout,
     IconButton,
-    makescroll,
     SClickableLabel,
+    makesubtab_lazy,
+    maketabholder,
 )
 from gui.dynalang import LLabel, LAction, LDialog, LFormLayout
+from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
 from gui.fluent.card import make_card
 
 
@@ -329,96 +325,138 @@ class liandianqi(LDialog):
 hotkeysettings = {"53": liandianqi}
 
 
-def renameapi(qlabel: QLabel, name, self, form: VisLFormLayout, cnt, _=None):
-    menu = QMenu(self)
-    editname = LAction("重命名", menu)
-    delete = LAction("删除", menu)
-    menu.addAction(editname)
-    menu.addAction(delete)
-    action = menu.exec(QCursor.pos())
-    if action == delete:
-        if request_delete_ok(self, "1ac8bc89-7049-4e1c-9d36-b30698ad104a"):
-            form.setRowVisible(cnt, False)
+def _setupkeycolumns(tree):
+    """快捷键树的五列：使用/设置（无标题）/名称/快捷键/说明。"""
+    tree.setColumnCount(5)
+    tree.setExpandsOnDoubleClick(False)
+    hdr = tree.header()
+    for c in (0, 1, 3, 4):
+        hdr.setSectionResizeMode(
+            c, QHeaderView.ResizeMode.ResizeToContents)
+    hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+
+
+def _customnamelabel(tree, item, name):
+    """自定义键的名称标签：点击菜单重命名/删除。"""
+    bl = SClickableLabel(globalconfig["quick_setting"]["all"][name]["name"])
+
+    def clickmenu(*_):
+        menu = QMenu(tree._host)
+        editname = LAction("重命名", menu)
+        delete = LAction("删除", menu)
+        menu.addAction(editname)
+        menu.addAction(delete)
+        action = menu.exec(QCursor.pos())
+        if action == delete:
+            if not request_delete_ok(
+                    tree._host, "1ac8bc89-7049-4e1c-9d36-b30698ad104a"):
+                return
             globalconfig["myquickkeys"].remove(name)
             globalconfig["quick_setting"]["all"][name]["use"] = False
-            regist_or_not_key(self, name)
-    elif action == editname:
-        before = globalconfig["quick_setting"]["all"][name]["name"]
-        title = MyInputDialog(self, "重命名", "名称", before)
-        if not title:
-            return
-        if title == before:
-            return
-        globalconfig["quick_setting"]["all"][name]["name"] = title
-        qlabel.setText(title)
+            regist_or_not_key(tree._host, name)
+            if item.parent() is not None:
+                item.parent().removeChild(item)
+            else:
+                tree.takeTopLevelItem(tree.indexOfTopLevelItem(item))
+        elif action == editname:
+            before = globalconfig["quick_setting"]["all"][name]["name"]
+            title = MyInputDialog(tree._host, "重命名", "名称", before)
+            if not title or title == before:
+                return
+            globalconfig["quick_setting"]["all"][name]["name"] = title
+            bl.setText(title)
 
-
-def getrenameablellabel(form: VisLFormLayout, cnt: int, uid: str, self):
-    bl = SClickableLabel(globalconfig["quick_setting"]["all"][uid]["name"])
-    fn = functools.partial(renameapi, bl, uid, self, form, cnt)
-    bl.clicked.connect(fn)
+    bl.clicked.connect(clickmenu)
     return bl
 
 
-def createmykeyline(self, form: QFormLayout, name):
-    cnt = form.rowCount()
-    form.addRow(
-        getrenameablellabel(form, cnt, name, self),
-        getboxlayout(
-            [
-                D_getsimpleswitch(
-                    globalconfig["quick_setting"]["all"][name],
-                    "use",
-                    callback=functools.partial(regist_or_not_key, self, name),
-                ),
-                D_getIconButton(
-                    callback=lambda: selectdebugfile(
-                        "myhotkeys/{}.py".format(name), ishotkey=True
-                    ),
-                    icon="fa.edit",
-                ),
-                D_getsimplekeyseq(
-                    globalconfig["quick_setting"]["all"][name],
-                    "keystring",
-                    functools.partial(regist_or_not_key, self, name),
-                ),
-                functools.partial(delaycreatereferlabels, self, name),
-            ]
-        ),
-    )
+def _fillkeyrow(tree, host, item, name, doc=True, custom=False):
+    """快捷键行（五列：使用/设置/名称/快捷键/说明）。设置列为特设按钮
+    （如 连点器）或自定义行的编辑脚本按钮（均独占一列，无标题）。
+    custom 行的名称可点菜单重命名/删除。"""
+    item.setData(0, Qt.ItemDataRole.UserRole, name)
+    d = globalconfig["quick_setting"]["all"][name]
+    if custom:
+        namew = _customnamelabel(tree, item, name)
+        docw = None
+        # 自定义行：编辑脚本按钮
+        setbtn = D_getIconButton(
+            callback=lambda: selectdebugfile(
+                "myhotkeys/{}.py".format(name), ishotkey=True),
+            icon="fa.edit")()
+    else:
+        namew = LLabel(d["name"])
+        docw = (D_getdoclink("fastkeys.html#anchor-" + name)()
+                if doc else None)
+        setbtn = (D_getIconButton(
+            callback=functools.partial(hotkeysettings[name], host))()
+            if name in hotkeysettings else None)
+    tree.setItemWidget(item, 0, tree._cell(
+        D_getsimpleswitch(
+            d, "use",
+            callback=functools.partial(regist_or_not_key, host, name))(),
+        center=True))
+    if setbtn is not None:
+        tree.setItemWidget(item, 1, tree._cell(setbtn, center=True))
+    tree.setItemWidget(item, 2, tree._cell(docw, namew))
+    tree.setItemWidget(item, 3, tree._cell(
+        D_getsimplekeyseq(
+            d, "keystring",
+            functools.partial(regist_or_not_key, host, name))(),
+        center=True))
+    tree.setItemWidget(item, 4, tree._cell(delaycreatereferlabels(host, name)))
 
 
-def plusclicked(self, form):
-    name = str(uuid.uuid4())
-    self.bindfunctions[name] = functools.partial(createreloadablewrapper, self, name)
-    globalconfig["myquickkeys"].append(name)
-    globalconfig["quick_setting"]["all"][name] = {
-        "use": False,
-        "name": name,
-        "keystring": "",
-    }
-    shutil.copy(
-        "LunaTranslator/myutils/template/hotkey.py",
-        gobject.getconfig("myhotkeys/{}.py".format(name)),
-    )
-    createmykeyline(self, form, name)
+class HotkeyListTree(FluentSettingTree):
+    """快捷键行列表（无分组、无标题四列）：查词窗口的快捷键页复用。"""
+
+    def __init__(self, host, names, doc=True, parent=None):
+        super().__init__(parent, titles=None, draggable=False)
+        self._host = host
+        self._customroot = None
+        _setupkeycolumns(self)
+        for name in names:
+            item = QTreeWidgetItem()
+            self.addTopLevelItem(item)
+            _fillkeyrow(self, host, item, name, doc=doc)
 
 
-def selfdefkeys(self, lay: QLayout):
-    # tabbar 下的内容整体包一张内容卡（bare 页：maketabholder 已留页边距）
-    wid = QWidget()
-    wid.setObjectName("FUCKYOU")
-    wid.setStyleSheet("QWidget#FUCKYOU{background:transparent}")
-    form = VisLFormLayout(wid)
-    swid = makescroll()
-    lay.addWidget(swid)
-    swid.setWidget(wid)
-    plus = IconButton(icon="fa.plus")
-    plus.clicked.connect(functools.partial(plusclicked, self, form))
-    form.addRow(plus)
-    for name in globalconfig["myquickkeys"]:
-        createmykeyline(self, form, name)
-    return wid
+class _CustomKeyTree(HotkeyListTree):
+    """自定义快捷键列表（快捷键页 自定义 tab）：键行（名称菜单重命名/
+    删除）+ 末尾 + 行点击追加。"""
+
+    def __init__(self, host, parent=None):
+        super().__init__(host, globalconfig["myquickkeys"], doc=False,
+                         parent=parent)
+        self._addplusrow()
+
+    # ---- + 行追加 ----
+    def _addplusrow(self):
+        item = QTreeWidgetItem()
+        item.setFlags(Qt.ItemFlag.ItemIsEnabled)
+        self.addTopLevelItem(item)
+        plus = IconButton(icon="fa.plus")
+        plus.clicked.connect(self._plusclicked)
+        self.setItemWidget(item, 0, self._cell(plus, center=True))
+
+    def _plusclicked(self):
+        name = str(uuid.uuid4())
+        self._host.bindfunctions[name] = functools.partial(
+            createreloadablewrapper, self._host, name)
+        globalconfig["myquickkeys"].append(name)
+        globalconfig["quick_setting"]["all"][name] = {
+            "use": False,
+            "name": name,
+            "keystring": "",
+        }
+        shutil.copy(
+            "LunaTranslator/myutils/template/hotkey.py",
+            gobject.getconfig("myhotkeys/{}.py".format(name)),
+        )
+        # 插到 + 行之前
+        item = QTreeWidgetItem()
+        self.insertTopLevelItem(self.topLevelItemCount() - 1, item)
+        _fillkeyrow(self, self._host, item, name, custom=True)
 
 
 def setTab_quick(self, l: QVBoxLayout):
@@ -426,7 +464,7 @@ def setTab_quick(self, l: QVBoxLayout):
     # ---- “使用快捷键”卡片 ----
     card_holder = QWidget()
     card_lay = QVBoxLayout(card_holder)
-    card_lay.setContentsMargins(16, 16, 16, 0 )
+    card_lay.setContentsMargins(16, 16, 16, 0)
     card_lay.setSpacing(0)
     card_lay.addWidget(
         make_card(
@@ -441,59 +479,27 @@ def setTab_quick(self, l: QVBoxLayout):
         )
     )
     l.addWidget(card_holder)
-    __ = []
-    __vis = []
 
-    def ___x(ls, l):
-        makescrollgrid(setTab_quick_lazy(self, ls), l)
+    # ---- 分组页签（原 tab 结构保留），每个 tab 页 = 快捷键树 ----
+    def ___group(names, lay):
+        lay.addWidget(
+            wrap_setting_tree(HotkeyListTree(self, names)), 1)
 
-    for _ in hotkeys:
-        __vis.append(_[0])
-        __.append(functools.partial(___x, _[1]))
+    def ___custom(lay):
+        lay.addWidget(wrap_setting_tree(_CustomKeyTree(self)), 1)
+
+    __vis, __ = [], []
+    for _title, _names in hotkeys:
+        __vis.append(_title)
+        __.append(functools.partial(___group, _names))
     __vis.append("自定义")
-    __.append(functools.partial(selfdefkeys, self))
+    __.append(___custom)
     tab, do = makesubtab_lazy(
         __vis, __, delay=True, bare=True, type=1,
     )
-
-    # ---- tabwidget 只加页边距，页内容各自用紧邻 tabbar 的卡片包裹 ----
     l.addWidget(maketabholder(tab))
     l.setSpacing(0)
     do()
-
-
-def setTab_quick_lazy(self, ls, doc=True):
-    grids = []
-
-    for name in ls:
-        d = globalconfig["quick_setting"]["all"][name]
-        l = [D_getdoclink("fastkeys.html#anchor-" + name)] if doc else []
-        l += [
-            (d["name"], 2),
-            D_getsimpleswitch(
-                d,
-                "use",
-                callback=functools.partial(regist_or_not_key, self, name),
-            ),
-            D_getsimplekeyseq(
-                d,
-                "keystring",
-                functools.partial(regist_or_not_key, self, name),
-            ),
-            (functools.partial(delaycreatereferlabels, self, name), 0),
-        ]
-        if name in hotkeysettings:
-            l[1] = (l[1][0], 1)
-            l.insert(
-                2,
-                D_getIconButton(
-                    callback=functools.partial(hotkeysettings[name], self),
-                    tips="设置",
-                ),
-            )
-        grids.append(l)
-    grids.append([("", 40)])
-    return grids
 
 
 def __enable(self, exception=None, *_):

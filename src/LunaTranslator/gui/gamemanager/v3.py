@@ -2226,10 +2226,6 @@ class dialog_savedgame_v3(QWidget):
             lambda exp: globalconfig.__setitem__(
                 "gamemanager_nav_collapsed", not exp))
         self.righttop = makesubtab_lazy(type=1)
-        # tabbar 左缩走 QSS；下移走外层容器顶边距（QSS ::tab-bar 的 top
-        # 只移 bar 不移内容起点，会把页卡顶盖到 bar 之下）。注意此处
-        # setStyleSheet 会整体替换 apply_segmented_tabbar 的 pane 清零，
-        # 必须带上 pane 规则
         self.righttop.setStyleSheet(
             "QTabWidget::pane{border:0;margin:0;padding:0;}"
             "QTabWidget::tab-bar{left:8px;}")

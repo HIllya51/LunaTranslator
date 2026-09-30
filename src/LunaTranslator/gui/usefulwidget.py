@@ -36,7 +36,7 @@ from gui.dynalang import (
     LMainWindow,
 )
 from gui.fluent.tabwidget import (
-    apply_segmented_tabbar, make_lazy_page, FluentPaneTabWidget,
+    make_lazy_page, FluentPaneTabWidget,
 )
 from gui.fluent.colorpicker import ColorPickerButton, FluentColorDialog, paint_fluent_flyout_surface
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
@@ -2675,9 +2675,6 @@ def makesubtab_lazy(
     else:
         # 统一 Gallery 式页签组：Pivot_Grow bar + 各页直角面板
         tab = FluentPaneTabWidget(colorstyle=type)
-    if isinstance(tab, QTabWidget)             and not isinstance(tab, FluentPaneTabWidget):
-        # 其余（FluentTabWidget 主导航，bar 隐藏）沿用 Segmented 配置
-        apply_segmented_tabbar(tab)
 
     def __(fast, t: LTabWidget, initial, i):
         if initial:

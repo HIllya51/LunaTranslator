@@ -40,7 +40,8 @@ from myutils.utils import (
     ffmpeg_record,
     getimageformat,
 )
-from gui.setting.hotkey import setTab_quick_lazy
+from gui.setting.hotkey import HotkeyListTree
+from gui.fluent.settingtree import wrap_setting_tree
 from NativeUtils import MenuItem
 from cishu.cishubase import DictionaryRoot
 from sometypes import WordSegResult
@@ -454,9 +455,9 @@ class AnkiWindow(QWidget):
             "croprecord",
             "recordwindow",
         ]
-        makescrollgrid(
-            setTab_quick_lazy(gobject.base.settin_ui, ls, doc=False), baselay
-        )
+        baselay.addWidget(
+            wrap_setting_tree(
+                HotkeyListTree(gobject.base.settin_ui, ls, doc=False)), 1)
 
     def creatsetdtab(self, baselay: QVBoxLayout):
         """Fluent 设置页：每项一张单行卡片；自动录音/音频编码为折叠卡。"""

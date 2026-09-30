@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, json
 import gobject
-from myutils.config import globalconfig, ui_settings, _TR
+from myutils.config import globalconfig, ui_settings
 from gui.usefulwidget import (
     D_getsimplecombobox,
     IconButton,
@@ -19,6 +19,7 @@ from gui.usefulwidget import (
 )
 from gui.dynalang import LDialog, LLabel
 from gui.setting.display_ui import toolcolorchange
+from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
 
 
 class dialog_selecticon(LDialog):
@@ -87,64 +88,23 @@ def doadjust(*_):
     gobject.base.translation_ui.enterfunction()
 
 
-class _ToolButtonList(QTreeWidget):
-    """工具按钮列表：使用/对齐/图标/说明 四列（列为标题，_TR 翻译 +
-    居中），行内控件经 setItemWidget 挂载。可选控件（使用列的特设
-    按钮、图标列的 icon2）缺席时保留等宽槽位，各行控件对齐。排序为
-    自管拖拽——Qt 的 InternalMove 对带 item widget 的行是 remove+insert
-    重建，widget 全部丢失（同侧栏导航树，见 _gamelistnav 注释），故
-    自管 DnD：拖拽落点改写 rank2 后整体重建行（几十行小控件，重建
-    成本可忽略）。"""
-
-    _HEADER_TITLES = ["使用", "对齐", "图标", "说明"]
+class _ToolButtonList(FluentSettingTree):
+    """工具按钮列表：使用/设置（无标题列）/对齐/图标/说明 五列，
+    拖拽排序改写 rank2。"""
 
     def __init__(self, host, parent=None):
-        super().__init__(parent)
+        super().__init__(
+            parent,
+            titles=["使用", "", "对齐", "图标", "说明"],
+            draggable=True,
+        )
         self._host = host
-        self._dragitem = None
-        self._dragpos = None
-        self.setColumnCount(4)
-        self.setHeaderLabels([_TR(t) for t in self._HEADER_TITLES])
         hdr = self.header()
-        hdr.setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
-        for c in range(3):
+        for c in (0, 1, 2, 3):
             hdr.setSectionResizeMode(
                 c, QHeaderView.ResizeMode.ResizeToContents)
-        hdr.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
-        self.setRootIsDecorated(False)
-        self.setIndentation(0)
-        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        # 自管拖拽（不启用 Qt 的 dragDropMode）
-        self.setAcceptDrops(True)
-        self.viewport().setAcceptDrops(True)
-        self.setDropIndicatorShown(True)
-        # 透明：让内容卡底色透出（QSS 只作用于本控件类，见 makescroll 注释）
-        self.setStyleSheet(
-            "QTreeWidget{background-color:transparent;border:0;}")
-        self.setSizePolicy(QSizePolicy.Policy.Expanding,
-                           QSizePolicy.Policy.Expanding)
+        hdr.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
         self.rebuild()
-
-    def updatelangtext(self):
-        # 语言切换：表头标题重翻译（app 级事件过滤器驱动，同 LLabel）
-        for i, t in enumerate(self._HEADER_TITLES):
-            self.headerItem().setText(i, _TR(t))
-
-    # ---- 行构建 ----
-    def _cell(self, *ws, center=False):
-        w = QWidget()
-        lay = QHBoxLayout(w)
-        lay.setContentsMargins(6, 4, 6, 4)
-        lay.setSpacing(8)
-        if center:
-            lay.addStretch(1)
-        for x in ws:
-            if x is not None:
-                lay.addWidget(x)
-        if center:
-            lay.addStretch(1)
-        return w
 
     def rebuild(self):
         self.clear()
@@ -160,115 +120,44 @@ class _ToolButtonList(QTreeWidget):
             iconbtn = createbtn(self._host, k, "icon", _refreshtoolicon)
             icon2btn = (createbtn(self._host, k, "icon2", _refreshtoolicon)
                         if "icon2" in conf else None)
-
-            def _slot():
-                # 等宽占位：可选按钮缺席时仍保留槽位（同尺寸按钮），行间对齐
-                sp = QWidget()
-                sp.setFixedSize(iconbtn.size())
-                return sp
-
             # 特设按钮：点击时才构造 setter 弹窗（PopupWidget 构造即显示）
             specialbtn = (D_getIconButton(
                 callback=functools.partial(specialbuttonsettings[k],
                                            self._host))()
                 if k in specialbuttonsettings else None)
-            usecell = self._cell(
-                D_getsimpleswitch(conf, "use", callback=doadjust)(),
-                specialbtn if specialbtn is not None else _slot(),
-                center=True,
-            )
-            aligncell = self._cell(
-                D_getsimplecombobox(
-                    ["居左", "居右", "居中"], conf, "align",
-                    callback=doadjust, fixedsize=True)(),
-                center=True,
-            )
-            iconcell = self._cell(
-                iconbtn,
-                icon2btn if icon2btn is not None else _slot(),
-                center=True,
-            )
             t = conf.get("tip", "")
             if "belong" in conf:
                 t += "_(仅{}模式下可用)".format(
                     ",".join({"texthook": "HOOK", "ocr": "OCR"}.get(_, "?")
                              for _ in conf["belong"]))
-            tipcell = self._cell(
+            self.setItemWidget(item, 0, self._cell(
+                D_getsimpleswitch(conf, "use", callback=doadjust)(),
+                center=True))
+            # 特设按钮独占一列（无标题；缺席则空）
+            if specialbtn is not None:
+                self.setItemWidget(item, 1, self._cell(specialbtn,
+                                                       center=True))
+            self.setItemWidget(item, 2, self._cell(
+                D_getsimplecombobox(
+                    ["居左", "居右", "居中"], conf, "align",
+                    callback=doadjust, fixedsize=True)(),
+                center=True))
+            # 图标列：icon + 可选 icon2（缺席保留等宽槽位，行间对齐）
+            self.setItemWidget(item, 3, self._cell(
+                iconbtn,
+                icon2btn if icon2btn is not None else self._slot(iconbtn),
+                center=True))
+            self.setItemWidget(item, 4, self._cell(
                 D_getdoclink("alltoolbuttons.html#anchor-" + k)(),
                 LLabel(t),
-            )
-            self.setItemWidget(item, 0, usecell)
-            self.setItemWidget(item, 1, aligncell)
-            self.setItemWidget(item, 2, iconcell)
-            self.setItemWidget(item, 3, tipcell)
+            ))
 
-    # ---- 自管拖拽排序（DnD 事件坐标均为 viewport 坐标）----
-    def mousePressEvent(self, ev):
-        self._dragitem = self.itemAt(ev.pos())
-        self._dragpos = ev.pos()
-        return super().mousePressEvent(ev)
-
-    def mouseMoveEvent(self, e):
-        if (
-            self._dragitem is not None
-            and (e.buttons() & Qt.MouseButton.LeftButton)
-            and (e.pos() - self._dragpos).manhattanLength()
-            >= QApplication.startDragDistance()
-        ):
-            mime = QMimeData()
-            mime.setText("lunatoolbtnrankmove")
-            drag = QDrag(self)
-            drag.setMimeData(mime)
-            drag.exec(Qt.DropAction.MoveAction)
-            return
-        super().mouseMoveEvent(e)
-
-    def _isrankmove(self, e):
-        return e.mimeData().text().startswith("lunatoolbtnrankmove")
-
-    def dragEnterEvent(self, e):
-        if self._isrankmove(e):
-            e.acceptProposedAction()
-        else:
-            e.ignore()
-
-    def dragMoveEvent(self, e):
-        if self._isrankmove(e):
-            e.acceptProposedAction()
-        else:
-            e.ignore()
-
-    def dropEvent(self, e):
-        if not self._isrankmove(e):
-            e.ignore()
-            return
-        src = self._dragitem
-        self._dragitem = None
-        if src is None:
-            e.ignore()
-            return
-        idx1 = self.indexOfTopLevelItem(src)
-        if idx1 < 0:
-            e.ignore()
-            return
-        pos = e.pos()
-        dst = self.itemAt(pos)
-        if dst is None:
-            # 落在内容之下：移到末尾
-            idx2 = self.topLevelItemCount()
-        else:
-            r = self.visualItemRect(dst)
-            idx2 = self.indexOfTopLevelItem(dst) + (
-                1 if pos.y() > r.center().y() else 0)
-        if idx1 < idx2:
-            idx2 -= 1
+    def _ondrop(self, idx1, idx2):
         rank = globalconfig["toolbutton"]["rank2"]
-        if 0 <= idx2 < len(rank) and idx2 != idx1:
-            k = rank.pop(idx1)
-            rank.insert(idx2, k)
-            self.rebuild()
-            doadjust()
-        e.acceptProposedAction()
+        k = rank.pop(idx1)
+        rank.insert(idx2, k)
+        self.rebuild()
+        doadjust()
 
 
 savebtns: "dict[tuple[str, str], IconButton]" = {}
@@ -422,11 +311,5 @@ def createbuttonwidget(self, lay: QLayout):
     do()
     vlay.addWidget(card)
 
-    # 包 2：工具按钮列表——tree 包 QFrame::StyledPanel（Gallery 包表格/树
-    # 的方式：插件 PE_Frame = Base 底色 + 6px 圆角 + lineEdit 式描边）
-    frame = QFrame()
-    frame.setFrameShape(QFrame.Shape.StyledPanel)
-    flay = QVBoxLayout(frame)
-    flay.setContentsMargins(0, 0, 0, 0)
-    flay.addWidget(_ToolButtonList(self))
-    vlay.addWidget(frame, 1)
+    # 包 2：工具按钮列表（StyledPanel 包裹，Gallery 包表格/树的方式）
+    vlay.addWidget(wrap_setting_tree(_ToolButtonList(self)), 1)
