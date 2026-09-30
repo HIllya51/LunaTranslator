@@ -2,7 +2,7 @@
 
 移植自 FluentUIStyle/PyQt5Examples/exwidgets.py 的 ExNavTreeWidget
 （对应 C++ ExWidgets/navigation/exnavtreewidget.cpp）：
-- 紧凑(44px)/展开(200px)两种宽度 + 280ms OutCubic 动画
+- 紧凑(30px)/展开(200px)两种宽度 + 280ms OutCubic 动画
 - navigationViewIndicator / navigationIconMode / ItemHeight 属性由
   FluentUI3 插件消费（选中指示条、图标模式等）
 - 图标用 Segoe Fluent Icons 字形绘制（插件内嵌字体），随调色板/样式变化刷新
@@ -37,6 +37,10 @@ NAV_PAGE_ROLE = Qt.UserRole          # 页面索引
 NAV_ICON_ROLE = Qt.UserRole + 1      # 图标码点
 NAV_TEXT_ROLE = Qt.UserRole + 2      # 文本（紧凑模式下清空显示）
 NAV_WAS_EXPANDED_ROLE = Qt.UserRole + 3
+
+# 折叠（图标模式）宽度：图标的绘制区是贴格左缘的 30px 画布（原生尺寸），
+# 格宽 30 时图标恰好居中（ink 中心≈14 vs 格中心 15）；汉堡按钮同宽对齐
+NAV_COMPACT_WIDTH = 38
 
 
 def create_fluent_icon(icon_code, color=None, size=30, glyph=None):
@@ -74,8 +78,8 @@ class FluentNavToggleButton(QToolButton):
     PE_Widget 分支末尾 drawRect），与导航项的 subtle 圆角填充不一致：
     - 悬停/按下：2px 内缩 + 4px 圆角的 subtle 填充
       （winUI3Colors：浅色=黑 4%/5.5% alpha，深色=白 6.05%/4.19%）
-    - 图标：16px 字形（WinUI NavigationView 的窗格切换钮规格）居中在
-      贴左缘的 30px 图标区——与导航项图标（30px 画布贴格左缘）同列"""
+    - 图标：16px 字形（WinUI NavigationView 的窗格切换钮规格）在按钮内
+      居中——按钮宽 = 折叠宽度 NAV_COMPACT_WIDTH，与导航项图标列对齐"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -84,7 +88,7 @@ class FluentNavToggleButton(QToolButton):
         _f = QFont("Segoe Fluent Icons")
         _f.setPixelSize(16)
         self.setFont(_f)
-        self.setFixedSize(44, 38)
+        self.setFixedSize(NAV_COMPACT_WIDTH, 38)
 
     def paintEvent(self, _):
         painter = QPainter(self)
@@ -113,7 +117,7 @@ class FluentNavToggleButton(QToolButton):
                 QRectF(self.rect()).adjusted(2, 2, -2, -2), 4, 4)
         painter.setFont(self.font())
         painter.setPen(self.palette().color(QPalette.Active, QPalette.Text))
-        painter.drawText(QRect(0, 0, 30, self.height()),
+        painter.drawText(QRect(0, 0, self.width(), self.height()),
                          Qt.AlignmentFlag.AlignCenter, self.text())
 
 
@@ -124,7 +128,7 @@ class FluentNavTree(QTreeWidget):
         super().__init__(parent)
         self.setObjectName("FluentNavTree")
         self._navigation_expanded = False
-        self._navigation_compact_width = 44
+        self._navigation_compact_width = NAV_COMPACT_WIDTH
         self._navigation_expanded_width = 200
         self._restorable_child = None
         # 双击才展开/折叠父项（单击只选中）；默认关闭=单击选中并展开
