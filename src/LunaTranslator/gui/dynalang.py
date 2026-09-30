@@ -261,6 +261,7 @@ class LTabWidget(QTabWidget):
             self.setTabText(i, _TR(self.__titles[i]))
 
 
+
 class LTableView(QTableView):
     def __init__(self, *argc, **kwarg):
         super().__init__(*argc, **kwarg)

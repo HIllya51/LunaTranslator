@@ -37,6 +37,7 @@ from gui.dynalang import (
 )
 from gui.fluent.tabwidget import (
     apply_segmented_tabbar, make_lazy_page, make_iscard_page,
+    FluentPaneTabWidget,
 )
 from gui.fluent.colorpicker import ColorPickerButton, FluentColorDialog, paint_fluent_flyout_surface
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
@@ -2262,7 +2263,8 @@ def manybuttonlayout(textandfunctions: list):
 def tabadd_lazy(tab, title, getrealwidgetfunction, bare=False,
                 iscard=False):
     # tab 页统一工厂：iscard=True -> (8,0,8,8)+isCard(253)（所有层级
-    # 共用）；默认 -> FluentPageCard 满铺；bare=True -> 透明不包卡；
+    # 共用）；默认 -> FluentPageCard 满铺；bare=True -> 透明不包卡
+    # （FluentPaneTabWidget 的页由其 addTab 自行包直角面板）；
     if bare:
         q = QWidget()
         v = QVBoxLayout(q)
@@ -2672,13 +2674,17 @@ def makesubtab_lazy(
     padding=False,
     bare=False,
     iscard=False,
+    panebar_style=None,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
     if klass:
         tab: LTabWidget = klass()
+    elif panebar_style is not None:
+        # Gallery 式页签组：bar 样式参数化 + 各页直角面板（类自带配置）
+        tab = FluentPaneTabWidget(tabbar_style=panebar_style)
     else:
         tab = LTabWidget()
-    if isinstance(tab, QTabWidget):
+    if isinstance(tab, QTabWidget)             and not isinstance(tab, FluentPaneTabWidget):
         # 子页签统一 Segmented WinUI3 TabBar（FluentTabWidget 主导航的 bar 隐藏，跳过）
         apply_segmented_tabbar(tab)
 
@@ -2708,7 +2714,9 @@ def makesubtab_lazy(
              iscard):
         if titles and functions:
             for i, func in enumerate(functions):
-                tabadd_lazy(tab, titles[i], func, bare=bare,
+                # FluentPaneTabWidget 的 addTab 自行包直角面板，页须裸
+                tabadd_lazy(tab, titles[i], func,
+                            bare=bare or isinstance(tab, FluentPaneTabWidget),
                             iscard=iscard)
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])

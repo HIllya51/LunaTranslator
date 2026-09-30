@@ -30,6 +30,7 @@ from qtsymbols import (
 import functools
 
 from myutils.config import _TR
+from gui.dynalang import LTabWidget
 from gui.fluent.nav import FluentNavTree, FluentNavToggleButton, NAV_PAGE_ROLE, NAV_ICON_ROLE
 
 from gui.fluent.icons import (
@@ -59,11 +60,12 @@ NAV_ICONS = {
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
+TABBAR_STYLE_PIVOT_SLIDE = 3  # Pivot_Slide
 
 
 class FluentCardSeparator(QFrame):
     """侧边栏分割线（游戏管理与设置窗口共用）：颜色与页卡描边一致
-    （浅色 #E9E9E9、深色 #252525——同 FluentPageCard 的边框配方）。
+    （_pagecard_colors 的描边色，随明暗主题）。
     默认隐藏，followNavScroll 后仅在导航内容溢出（需要滚动）时显示。"""
 
     def __init__(self, parent=None):
@@ -74,18 +76,7 @@ class FluentCardSeparator(QFrame):
 
     def paintEvent(self, _):
         painter = QPainter(self)
-        dark = False
-        app = QApplication.instance()
-        if app is not None:
-            cs = app.property("_q_colorscheme")
-            if cs is not None:
-                try:
-                    dark = int(cs) == 1
-                except Exception:
-                    dark = self.palette().color(
-                        QPalette.Active, QPalette.Window).lightness() < 128
-        fill = QColor(0x25, 0x25, 0x25) if dark else QColor(0xE9, 0xE9, 0xE9)
-        painter.fillRect(self.rect(), fill)
+        painter.fillRect(self.rect(), _pagecard_colors(self)[1])
 
     def followNavScroll(self, nav):
         """导航内容溢出（需要滚动）时才显示分割线；空间充足时留白。"""
@@ -93,6 +84,33 @@ class FluentCardSeparator(QFrame):
             self.setVisible(nav.verticalScrollBar().maximum() > 0)
         nav.verticalScrollBar().rangeChanged.connect(sync)
         sync()
+
+
+def _pagecard_colors(w: QWidget):
+    """页卡配色（FluentPageCard / FluentSquarePane / 分割线共用）：
+    浅色 = 调色板 Base(249) + #E9E9E9 描边；暗色 = 窗口色上叠 4% 白
+    (≈41) + 白@0x12 描边（插件 pane 的 frameColorLight——偏白，与
+    Gallery 暗色页卡一致）。"""
+    dark = False
+    app = QApplication.instance()
+    if app is not None:
+        cs = app.property("_q_colorscheme")
+        if cs is not None:
+            try:
+                dark = int(cs) == 1
+            except Exception:
+                dark = w.palette().color(QPalette.Window).lightness() < 128
+    if dark:
+        wc = w.palette().color(QPalette.Window)
+        fill = QColor(
+            round(wc.red() + (255 - wc.red()) * 0.04),
+            round(wc.green() + (255 - wc.green()) * 0.04),
+            round(wc.blue() + (255 - wc.blue()) * 0.04))
+        border = QColor(255, 255, 255, 0x12)
+    else:
+        fill = QColor(w.palette().color(QPalette.Base))
+        border = QColor(0xE9, 0xE9, 0xE9)
+    return fill, border
 
 
 class FluentPageCard(QWidget):
@@ -103,25 +121,7 @@ class FluentPageCard(QWidget):
     def paintEvent(self, e):
         painter = QPainter(self)
         painter.setRenderHint(QPainter.Antialiasing)
-        dark = False
-        app = QApplication.instance()
-        if app is not None:
-            cs = app.property("_q_colorscheme")
-            if cs is not None:
-                try:
-                    dark = int(cs) == 1
-                except Exception:
-                    dark = self.palette().color(QPalette.Window).lightness() < 128
-        if dark:
-            w = self.palette().color(QPalette.Window)
-            fill = QColor(
-                round(w.red() + (255 - w.red()) * 0.04),
-                round(w.green() + (255 - w.green()) * 0.04),
-                round(w.blue() + (255 - w.blue()) * 0.04))
-            border = QColor(0x25, 0x25, 0x25)
-        else:
-            fill = QColor(self.palette().color(QPalette.Base))
-            border = QColor(0xE9, 0xE9, 0xE9)
+        fill, border = _pagecard_colors(self)
         path = QPainterPath()
         path.addRoundedRect(
             QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5), 4, 4)
@@ -129,6 +129,20 @@ class FluentPageCard(QWidget):
         painter.setPen(QPen(border, 1.0))
         painter.setBrush(Qt.NoBrush)
         painter.drawPath(path)
+
+
+class FluentSquarePane(QWidget):
+    """直角面板（Gallery 子页签内容的统一包裹，插件 QTabWidget::pane
+    直角面板的等价自绘）：配色同 FluentPageCard，四角直角。"""
+
+    def paintEvent(self, e):
+        painter = QPainter(self)
+        fill, border = _pagecard_colors(self)
+        rect = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
+        painter.fillRect(rect, fill)
+        painter.setPen(QPen(border, 1.0))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(rect)
 
 
 def apply_segmented_tabbar_style(bar: QTabBar):
@@ -148,6 +162,55 @@ def apply_segmented_tabbar(tabwidget: QTabWidget):
     tabwidget.setStyleSheet(
         "QTabWidget::pane{border:0;margin:0;padding:0;}")
     apply_segmented_tabbar_style(tabwidget.tabBar())
+
+
+class FluentPaneTabWidget(LTabWidget):
+    """Gallery 式页签组（pageaudiolevelmeter.cpp 基础/刻度/动画/颜色
+    tab 同款）：tabbar 样式可参数化（tabbar_style，默认 Pivot_Slide——
+    无底文字页签 + 选中底部 24px 强调色圆头短横线滑动过渡），各页
+    统一包在直角面板里（配色同页卡、四角直角，面板顶边紧贴 tabbar）。
+    addTab 自动包裹页 widget（懒加载页的 lazyfunction 属性随页迁移）。
+    宿主一般再包一张内容卡（make_content_card）。"""
+
+    def __init__(self, parent=None, tabbar_style=TABBAR_STYLE_PIVOT_SLIDE):
+        super().__init__(parent)
+        bar = self.tabBar()
+        bar.setProperty("tabBarStyle", tabbar_style)
+        if tabbar_style == TABBAR_STYLE_SEGMENTED_WINUI3:
+            apply_segmented_tabbar_style(bar)
+        else:
+            # 无底文字页签（Pivot 等）：bar 无样式化底（drawBase 默认值
+            # 经插件 PE_FrameTabBarBase 空实现不画任何东西）
+            bar.setAttribute(Qt.WA_StyledBackground, False)
+            bar.setDrawBase(True)
+        # pane 清零：面板由页自带，插件 pane 内边距不叠加
+        self.setStyleSheet(
+            "QTabWidget::pane{border:0;margin:0;padding:0;}")
+
+    def addTab(self, w, t):
+        q = QWidget()
+        v = QVBoxLayout(q)
+        v.setContentsMargins(0, 0, 0, 0)
+        pane = FluentSquarePane()
+        v.addWidget(pane)
+        inner = QVBoxLayout(pane)
+        inner.setContentsMargins(0, 0, 0, 0)
+        inner.addWidget(w)
+        if hasattr(w, "lazyfunction"):
+            q.lazyfunction = w.lazyfunction
+        return LTabWidget.addTab(self, q, t)
+
+
+def make_content_card(w, margins=(16, 8, 16, 16)):
+    """内容卡（isCard）包裹——Gallery propertiesCard 同款；
+    margins 默认 (16, 8, 16, 16)：内容距卡左右 16、顶 8（bar 下移）、底 16。"""
+    card = QWidget()
+    card.setAttribute(Qt.WA_StyledBackground, True)
+    card.setProperty("isCard", True)
+    lay = QVBoxLayout(card)
+    lay.setContentsMargins(*margins)
+    lay.addWidget(w)
+    return card
 
 
 def apply_navigation_tabbar(tabwidget: QTabWidget):
@@ -205,6 +268,7 @@ def make_lazy_page(getrealwidgetfunction, main=True):
     innerlay.setProperty("_fluent_main_grid" if main else "_fluent_card_grid", True)
     q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
     return q
+
 
 
 class FluentTabWidget(QWidget):
