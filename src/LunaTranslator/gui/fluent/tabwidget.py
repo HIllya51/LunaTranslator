@@ -62,9 +62,15 @@ TABBAR_STYLE_NAVIGATION = 8  # Navigation
 
 
 class FluentCardSeparator(QFrame):
-    """侧边栏分割线（游戏管理与设置窗口共用）：颜色与页卡底色一致——
-    浅色=调色板 Base(0xf9f9f9)、深色=窗口色叠 4% 白（同 FluentPageCard
-    的配方）。取 Active 组——Inactive 组是白色（插件设计），失焦会变色。"""
+    """侧边栏分割线（游戏管理与设置窗口共用）：颜色与页卡描边一致
+    （浅色 #E9E9E9、深色 #252525——同 FluentPageCard 的边框配方）。
+    默认隐藏，followNavScroll 后仅在导航内容溢出（需要滚动）时显示。"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setFixedHeight(1)
+        self.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self.hide()
 
     def paintEvent(self, _):
         painter = QPainter(self)
@@ -78,15 +84,15 @@ class FluentCardSeparator(QFrame):
                 except Exception:
                     dark = self.palette().color(
                         QPalette.Active, QPalette.Window).lightness() < 128
-        if dark:
-            w = self.palette().color(QPalette.Active, QPalette.Window)
-            fill = QColor(
-                round(w.red() + (255 - w.red()) * 0.04),
-                round(w.green() + (255 - w.green()) * 0.04),
-                round(w.blue() + (255 - w.blue()) * 0.04))
-        else:
-            fill = QColor(self.palette().color(QPalette.Active, QPalette.Base))
+        fill = QColor(0x25, 0x25, 0x25) if dark else QColor(0xE9, 0xE9, 0xE9)
         painter.fillRect(self.rect(), fill)
+
+    def followNavScroll(self, nav):
+        """导航内容溢出（需要滚动）时才显示分割线；空间充足时留白。"""
+        def sync(*_):
+            self.setVisible(nav.verticalScrollBar().maximum() > 0)
+        nav.verticalScrollBar().rangeChanged.connect(sync)
+        sync()
 
 
 class FluentPageCard(QWidget):
@@ -216,10 +222,9 @@ class FluentTabWidget(QWidget):
         self.nav = FluentNavTree(main_container)
         main_lay.addWidget(self.nav)
 
-        # 分隔线：整宽、页卡底色（同游戏管理侧边栏，共用组件）
+        # 分隔线：整宽、页卡描边色；仅导航溢出（可滚动）时显示
         self._nav_separator = FluentCardSeparator(nav_pane)
-        self._nav_separator.setFixedHeight(1)
-        self._nav_separator.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
+        self._nav_separator.followNavScroll(self.nav)
 
         # 底部固定导航（关于软件，不参与伸展）；容器边距 (6,0,6,6)——上边贴分隔线
         footer_container = QWidget(nav_pane)

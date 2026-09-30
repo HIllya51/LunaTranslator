@@ -2163,9 +2163,9 @@ class dialog_savedgame_v3(QWidget):
         main_lay.addWidget(hamburger)
         main_lay.addWidget(self.nav, 1)
         navlay.addWidget(main_container, 1)
-        # 底部：分隔线（页卡底色，共用组件） + 设置项
+        # 底部：分隔线（页卡描边色，仅导航溢出时显示，共用组件） + 设置项
         _sep = FluentCardSeparator()
-        _sep.setFixedHeight(1)
+        _sep.followNavScroll(self.nav)
         navlay.addWidget(_sep)
         self._footernav = FluentNavTree()
         self._footernav.setProperty("ItemHeight", 38)

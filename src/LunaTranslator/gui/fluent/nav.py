@@ -74,15 +74,15 @@ class FluentNavToggleButton(QToolButton):
     PE_Widget 分支末尾 drawRect），与导航项的 subtle 圆角填充不一致：
     - 悬停/按下：2px 内缩 + 4px 圆角的 subtle 填充
       （winUI3Colors：浅色=黑 4%/5.5% alpha，深色=白 6.05%/4.19%）
-    - 图标：25px 字形画在贴左缘的 30px 图标区居中——与导航项图标
-      （30px 画布贴格左缘）逐像素对齐"""
+    - 图标：16px 字形（WinUI NavigationView 的窗格切换钮规格）居中在
+      贴左缘的 30px 图标区——与导航项图标（30px 画布贴格左缘）同列"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setAutoRaise(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
         _f = QFont("Segoe Fluent Icons")
-        _f.setPixelSize(25)
+        _f.setPixelSize(16)
         self.setFont(_f)
         self.setFixedSize(44, 38)
 
