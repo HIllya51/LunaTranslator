@@ -1021,14 +1021,13 @@ class _gridpage(QWidget):
         self.searchedit.returnPressed.connect(self._search)
         self.searchedit.setPlaceholderText("搜索")
         # Gallery 同款：宽 300、高度走样式自然尺寸；图标 32x32 画布 32px 字形
-        self.searchedit.setFixedWidth(300)
-        self.searchedit.adjustSize()
         self.searchedit.setClearButtonEnabled(True)
         self._search_action = _act = QAction(self.searchedit)
         _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32, glyph=32))
         self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
         self.searchedit.installEventFilter(self)
-        titlebar.addCenterWidget(self.searchedit)
+        # 期望宽 300（空间不足时按 让位次序 收窄，见 FluentTitleBar）
+        titlebar.addCenterWidget(self.searchedit, 300)
         # 面包屑：紧贴搜索框右侧、从左向右；有 tag 时显示；root 为 ALL，
         # 点 ALL 清空（显隐不移动搜索框）
         self.breadcrumb = ExBreadcrumbBar(self)

@@ -14,6 +14,7 @@ from qtsymbols import (
     QLabel,
     QSize,
     QToolButton,
+    QTimer,
     QWidget,
     QApplication,
     pyqtSignal,
@@ -57,6 +58,9 @@ def create_fluent_caption_button(parent, glyph, tooltip="", width=40):
 
 class FluentTitleBar(QWidget):
     navToggleRequested = pyqtSignal()
+
+    # 居中控件（搜索框）的最小宽度——收窄到此为止，之后才轮到侧控件省略
+    _CENTER_MIN_WIDTH = 150
 
     def __init__(self, window, parent=None):
         super().__init__(parent or window)
@@ -143,17 +147,22 @@ class FluentTitleBar(QWidget):
     def setNavButtonVisible(self, visible):
         self._nav_button.setVisible(visible)
 
-    def addCenterWidget(self, w):
-        """居中控件（搜索框）：不进布局、手动定位——空间充足时始终水平
-        居中，右侧按钮/面包屑的增减显隐不会推动或缩放它（WinUI 居中搜索
-        行为）。"""
+    def addCenterWidget(self, w, pref_width=None):
+        """居中控件（搜索框）：不进布局、手动定位。空间充足时保持
+        pref_width 原宽居中；不足时依次：向左让位 -> 收窄到最小宽
+        -> 才轮到侧控件（面包屑）溢出省略。"""
         self._center_widget = w
+        if pref_width is None:
+            pref_width = w.width()
+        self._center_pref = max(int(pref_width), self._CENTER_MIN_WIDTH)
         w.setParent(self)
+        w.adjustSize()
         w.setVisible(True)
         self._layout_center()
 
     def addSideWidget(self, w):
-        """紧挨居中控件右侧的控件（面包屑，从左向右）；显隐不移动居中控件。"""
+        """紧挨居中控件右侧的控件（面包屑，从左向右）；显隐/重建
+        触发重定位（让位次序见 _layout_center）。"""
         self._center_side = w
         w.setParent(self)
         w.installEventFilter(self)
@@ -163,6 +172,8 @@ class FluentTitleBar(QWidget):
         """插入尾部控件（最小化按钮之前，标题栏右侧）。"""
         lay = self.layout()
         lay.insertWidget(lay.indexOf(self._min_button), w)
+        # 显隐会改变右簇宽度 -> 居中控件需重定位
+        w.installEventFilter(self)
 
     # ---- 居中控件定位 ----
     def _right_edge(self):
@@ -180,24 +191,51 @@ class FluentTitleBar(QWidget):
         w = getattr(self, "_center_widget", None)
         if w is None:
             return
-        title_right = self._title_label.geometry().right()
-        right_edge = self._right_edge()
+        L = self._title_label.geometry().right() + 12
+        R = self._right_edge() - 8
+        gap = 8
+        pref = self._center_pref
+        minw = self._CENTER_MIN_WIDTH
         side = getattr(self, "_center_side", None)
         side_on = side is not None and side.isVisibleTo(self)
-        side_w = side.width() if side_on else 0
-        gap = 8 if side_on else 0
-        x = (self.width() - w.width()) // 2
-        x = max(x, title_right + 12)
-        # 空间不足：向左收（贴标题右侧为下限）；充足时保持正中不动
-        if x + w.width() + gap + side_w > right_edge - 8:
-            x = max(title_right + 12,
-                    right_edge - 8 - w.width() - gap - side_w)
-        w.move(x, (self.height() - w.height()) // 2)
-        if side is not None:
-            avail = max(24, right_edge - 8 - (x + w.width() + gap))
+        bh = side.sizeHint().width() if side_on else 0
+        avail = R - L
+
+        if not side_on:
+            # 无侧控件：居中 -> 左移 -> 收窄
+            sw = pref
+            x = (self.width() - sw) // 2
+            if x + sw > R:
+                x = R - sw
+            if x < L:
+                x = L
+                sw = min(pref, max(60, R - L))
+        elif avail >= pref + gap + bh:
+            # 充足：原宽居中；放不下侧控件再整体左移（侧控件保持完整）
+            sw = pref
+            x = (self.width() - sw) // 2
+            if x + sw + gap + bh > R:
+                x = R - sw - gap - bh
+            x = max(L, x)
+        elif avail >= minw + gap + bh:
+            # 左移到头：收窄搜索，侧控件仍保持完整
+            sw = avail - gap - bh
+            x = L
+        else:
+            # 搜索已到最窄：侧控件溢出省略；窗口再窄时为保住侧控件的
+            # 最小（省略号）形态，搜索可继续收窄（60 兜底，绝不重叠）
+            bmin = side.minimumSizeHint().width() if side is not None else 0
+            sw = min(minw, max(60, avail - gap - bmin))
+            x = L
+        sw = max(sw, 60)
+        h = w.sizeHint().height() or w.height()
+        w.resize(sw, h)
+        w.move(x, (self.height() - h) // 2)
+        if side is not None and side_on:
+            avail_side = max(0, R - (x + sw + gap))
             hint = side.sizeHint()
-            side.resize(min(hint.width(), avail), hint.height())
-            side.move(x + w.width() + gap,
+            side.resize(min(hint.width(), avail_side), hint.height())
+            side.move(x + sw + gap,
                       (self.height() - hint.height()) // 2)
 
     def resizeEvent(self, event):
@@ -213,9 +251,17 @@ class FluentTitleBar(QWidget):
                 self.updateTitle()
             elif event.type() == QEvent.Type.WindowStateChange:
                 self.updateMaxButton()
-        elif watched is getattr(self, "_center_side", None) and \
-                event.type() in (QEvent.Type.ShowToParent,
-                                 QEvent.Type.HideToParent):
+        elif watched is getattr(self, "_center_side", None):
+            if event.type() in (QEvent.Type.ShowToParent,
+                                QEvent.Type.HideToParent):
+                self._layout_center()
+            elif event.type() in (QEvent.Type.ChildAdded,
+                                  QEvent.Type.ChildRemoved):
+                # 面包屑重建按钮（items 变化）后 sizeHint 已变——下一拍重定位
+                QTimer.singleShot(0, self._layout_center)
+        elif event.type() in (QEvent.Type.ShowToParent,
+                              QEvent.Type.HideToParent):
+            # 尾部控件显隐（右簇宽度变化）-> 居中控件重定位
             self._layout_center()
         return super().eventFilter(watched, event)
 
