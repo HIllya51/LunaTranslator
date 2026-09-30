@@ -14,7 +14,7 @@ from myutils.config import (
 from gui.unityfontdownload import UnityFontDownloadDialog
 from myutils.wrapper import threader
 from myutils.utils import get_time_stamp, is_ascii_control
-from gui.gamemanager.setting import dialog_setting_game
+from gui.gamemanager.dialog import opengamesettings
 from textio.textsource.texthook import texthook
 from gui.usefulwidget import (
     closeashidewindow,
@@ -841,14 +841,15 @@ class hookselect(closeashidewindow):
     def opensolvetext(self):
         try:
             if gobject.base.gameuid:
-                dialog_setting_game(self, gobject.base.gameuid, 3)
+                opengamesettings(gobject.base.gameuid, 3)
         except:
             print_exc()
 
     def opengamesetting(self):
+        # 游戏管理窗口导航到该游戏的 游戏设置（HOOK 页），不再开小窗口
         try:
             if gobject.base.gameuid:
-                dialog_setting_game(self, gobject.base.gameuid, 1)
+                opengamesettings(gobject.base.gameuid, 1)
         except:
             print_exc()
 

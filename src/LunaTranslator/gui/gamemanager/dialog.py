@@ -2,12 +2,45 @@ from qtsymbols import *
 import functools
 from traceback import print_exc
 import qtawesome
+import gobject
 from gui.gamemanager.v3 import dialog_savedgame_v3
 from myutils.wrapper import Singleton
 from myutils.config import globalconfig
 from gui.usefulwidget import saveposwindow, create_centered_rect
 from gui.fluent.frameless import FluentFramelessWindowMixin
 from gui.fluent.titlebar import FluentTitleBar
+
+try:
+    from PyQt5 import sip
+except ImportError:
+    from PyQt6 import sip
+
+
+def opengamesettings(gameuid, setindexhook=None):
+    """打开游戏管理窗口（已开则复用该窗口）并导航到该游戏的
+    游戏设置 页——替代原独立小窗口 dialog_setting_game 的各入口。
+    setindexhook：游戏设置 内的 L3 子页签（1=HOOK、3=文本处理）。
+    注意不能靠"再调一次 dialog_savedgame_integrated"来复用——其
+    Singleton 语义是再次调用即关闭现有窗口，只能另径找回实例。"""
+    # 已打开的窗口经 v3.reference 找回（窗口关闭后为悬空引用，判活）
+    ref = dialog_savedgame_v3.reference
+    dlg = None
+    if ref is not None and not sip.isdeleted(ref):
+        try:
+            dlg = ref.window()
+        except RuntimeError:
+            dlg = None
+    if dlg is None:
+        dlg = dialog_savedgame_integrated(gobject.base.commonstylebase)
+        ref = dialog_savedgame_v3.reference
+        if dlg is None or ref is None:
+            return
+    ref.navigate_to_settings(gameuid, setindexhook)
+    if dlg.isMinimized():
+        dlg.showNormal()
+    dlg.show()
+    dlg.raise_()
+    dlg.activateWindow()
 
 
 @Singleton

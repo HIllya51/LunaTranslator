@@ -1669,6 +1669,34 @@ class dialog_savedgame_v3(QWidget):
         except:
             print_exc()
 
+    def navigate_to_settings(self, uid, setindexhook=None):
+        """外部入口（选择文本窗口/托盘菜单）：导航到该游戏的 游戏设置
+        页。侧边栏同步指向该游戏（仅当选中项可见——列表已展开且未被
+        过滤；不主动展开列表），右侧重建 游戏设置/游戏数据 两页并停在
+        游戏设置。setindexhook 为其 L3 子页签（1=HOOK、3=文本处理），
+        写入 keepindexobject，构建时经 initial 直达。"""
+        child = None
+        for i in range(self.nav.topLevelItemCount()):
+            top = self.nav.topLevelItem(i)
+            if not top.isExpanded():
+                continue
+            for j in range(top.childCount()):
+                c = top.child(j)
+                if not c.isHidden() and c.data(0, GAMEUID_ROLE) == uid:
+                    child = c
+                    break
+            if child is not None:
+                break
+        # setCurrentItem 触发 _navcurrent 子项分支（网格切到所属列表并
+        # 高亮；其 _show_gridpage 随后被下方的 stack 切换覆盖）
+        if child is not None and self.nav.currentItem() is not child:
+            self.nav.setCurrentItem(child)
+        if setindexhook is not None:
+            self.keepindexobject["gamesetting"] = setindexhook
+        self.viewitem(uid)
+        self.stack.setCurrentWidget(self.righttop_card)
+        self.righttop.setCurrentIndex(1)   # 1=游戏设置（0=画廊 2=游戏数据）
+
     def _show_gridpage(self):
         """右侧切到网格页（gridpage 包在 FluentPageCard 页卡里，
         页卡才是 stack 的页）。"""

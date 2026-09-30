@@ -17,7 +17,6 @@ from myutils.config import (
 from textio.textsource.texthook import texthook
 from gui.setting.about import get_about_info
 from myutils.magpie_builtin import MagpieBuiltin, AdapterService
-from gui.gamemanager.setting import dialog_setting_game
 from myutils.ocrutil import ocr_run, imageCut
 from myutils.mecab import WordSegResult
 from myutils.utils import (
@@ -41,7 +40,10 @@ from gui.usefulwidget import (
     qwidget_screen,
 )
 from gui.edittext import edittrans
-from gui.gamemanager.dialog import dialog_savedgame_integrated
+from gui.gamemanager.dialog import (
+    dialog_savedgame_integrated,
+    opengamesettings,
+)
 from gui.gamemanager.common import startgame
 from gui.dynalang import LAction
 from gui.buttonbar import buttonfunctions, IconLabelX, ButtonBar
@@ -576,9 +578,7 @@ class TranslatorWindow(resizableframeless):
             ),
             (
                 "open_game_setting",
-                lambda: dialog_setting_game(
-                    gobject.base.commonstylebase, gobject.base.gameuid, 1
-                ),
+                lambda: opengamesettings(gobject.base.gameuid, 1),
             ),
             ("ocr_once", self.ocr_once_signal.emit),
             (

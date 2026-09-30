@@ -1463,34 +1463,3 @@ class embeddisabler(LDialog):
 
     def closeEvent(self, _):
         self.closecallback(self.changed)
-
-
-@Singleton
-class dialog_setting_game(QDialog):
-    reference: "dialog_setting_game" = None
-
-    def __init__(self, parent, gameuid, setindexhook=0) -> None:
-        super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        dialog_setting_game.reference = self
-
-        self.setWindowTitle(savehook_new_data[gameuid]["title"])
-
-        self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
-        dgi = dialog_setting_game_internal(
-            self, gameuid, keepindexobject={"gamesetting": setindexhook}
-        )
-        # 游戏设置/游戏数据 两页直接作为顶层 tab（同游戏管理 righttop）
-        functs = dgi.toplevelpages()
-        methodtab, do = makesubtab_lazy(
-            [_[0] for _ in functs],
-            [functools.partial(dgi.doaddtab, _[1], gameuid) for _ in functs],
-            delay=True,
-            iscard=True,
-            fast=True,
-        )
-        methodtab.setMinimumWidth(600)
-        l = QHBoxLayout(self)
-        l.addWidget(methodtab)
-        l.setContentsMargins(0, 8, 0, 0)
-        do()
-        self.show()
