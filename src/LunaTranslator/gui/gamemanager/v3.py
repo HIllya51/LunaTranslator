@@ -44,8 +44,8 @@ from gui.gamemanager.common import (
     addgamebatch,
 )
 from gui.dynalang import LAction, LLabel, LMenu
-from gui.fluent.nav import FluentNavTree, create_fluent_icon
-from gui.fluent.tabwidget import FluentPageCard
+from gui.fluent.nav import FluentNavTree, FluentNavToggleButton, create_fluent_icon
+from gui.fluent.tabwidget import FluentPageCard, FluentCardSeparator
 from gui.fluent.titlebar import create_fluent_caption_button
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
@@ -2147,7 +2147,7 @@ class dialog_savedgame_v3(QWidget):
         self.setstyle()
 
         # 侧边栏容器：内容距边 6px（同设置窗口 FluentTabWidget 的
-        # main/footer 容器边距），汉堡是导航窗格第一行
+        # main/footer 容器边距），汉堡是导航窗格第一行（共用组件）
         navcontainer = QWidget()
         navlay = QVBoxLayout(navcontainer)
         navlay.setContentsMargins(0, 0, 0, 0)
@@ -2156,24 +2156,15 @@ class dialog_savedgame_v3(QWidget):
         main_lay = QVBoxLayout(main_container)
         main_lay.setContentsMargins(6, 6, 6, 0)
         main_lay.setSpacing(0)
-        hamburger = QToolButton()
-        hamburger.setObjectName("win_caption_pin")
-        hamburger.setAutoRaise(True)
-        hamburger.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
-        _f = QFont("Segoe Fluent Icons")
-        _f.setPixelSize(16)
-        hamburger.setFont(_f)
+        hamburger = FluentNavToggleButton()
         hamburger.setText(ICON_GLOBAL_NAV)
-        hamburger.setFixedSize(44, 38)
         hamburger.setToolTip("折叠/展开侧边栏")
         hamburger.clicked.connect(self._toggle_nav)
         main_lay.addWidget(hamburger)
         main_lay.addWidget(self.nav, 1)
         navlay.addWidget(main_container, 1)
-        # 底部：分隔线 + 设置项（Gallery footerNav 同款结构）
-        _sep = QFrame()
-        _sep.setFrameShape(QFrame.Shape.HLine)
-        _sep.setStyleSheet("QFrame{color:rgba(128,128,128,0.3)}")
+        # 底部：分隔线（页卡底色，共用组件） + 设置项
+        _sep = FluentCardSeparator()
         _sep.setFixedHeight(1)
         navlay.addWidget(_sep)
         self._footernav = FluentNavTree()
@@ -2239,15 +2230,15 @@ class dialog_savedgame_v3(QWidget):
         # 窗口的 FluentTitleBar（跨页常驻）
         self.gridpage.build_titlebar(parent._fluent_title_bar)
         self._sync_titlebar_pagecontrols()
-        # 布局：侧边栏 | 内容。内容区：左侧 0——页卡紧贴侧边栏容器右缘
-        # （同设置窗口）；右侧 0 与窗口框重合；仅上边留 8px
+        # 布局：侧边栏 | 内容。内容区四边 0 边距——页卡与侧边栏右缘、
+        # 标题栏下沿、窗口右/下框完全重合（同设置窗口的满铺页卡）
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
         lay.addWidget(navcontainer)
         body = QWidget()
         bodylay = QHBoxLayout(body)
-        bodylay.setContentsMargins(0, 8, 0, 8)
+        bodylay.setContentsMargins(0, 0, 0, 0)
         bodylay.addWidget(self.stack, 1)
         lay.addWidget(body, 1)
         self.setObjectName("NOBORDER")

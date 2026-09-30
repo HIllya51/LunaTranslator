@@ -10,6 +10,7 @@
 
 from qtsymbols import (
     QAbstractItemView,
+    QColor,
     QEvent,
     QEasingCurve,
     QFont,
@@ -19,8 +20,11 @@ from qtsymbols import (
     QPainter,
     QPalette,
     QPixmap,
+    QRect,
+    QRectF,
     QSize,
     Qt,
+    QToolButton,
     QVariantAnimation,
     pyqtSignal,
     QTimer,
@@ -60,6 +64,57 @@ def create_fluent_icon(icon_code, color=None, size=30, glyph=None):
     painter.drawText(pixmap.rect(), Qt.AlignCenter, icon_code)
     painter.end()
     return QIcon(pixmap)
+
+
+class FluentNavToggleButton(QToolButton):
+    """导航窗格的折叠/展开汉堡（游戏管理与设置窗口共用）。
+
+    与导航项（尤其折叠态）同款渲染，而不是 caption 按钮样式——插件对
+    win_caption_* 的悬停画的是无圆角全幅矩形（fluentui3style.cpp
+    PE_Widget 分支末尾 drawRect），与导航项的 subtle 圆角填充不一致：
+    - 悬停/按下：2px 内缩 + 4px 圆角的 subtle 填充
+      （winUI3Colors：浅色=黑 4%/5.5% alpha，深色=白 6.05%/4.19%）
+    - 图标：25px 字形画在贴左缘的 30px 图标区居中——与导航项图标
+      （30px 画布贴格左缘）逐像素对齐"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setAutoRaise(True)
+        self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
+        _f = QFont("Segoe Fluent Icons")
+        _f.setPixelSize(25)
+        self.setFont(_f)
+        self.setFixedSize(44, 38)
+
+    def paintEvent(self, _):
+        painter = QPainter(self)
+        painter.setRenderHint(QPainter.RenderHint.Antialiasing)
+        dark = False
+        app = QApplication.instance()
+        if app is not None:
+            cs = app.property("_q_colorscheme")
+            if cs is not None:
+                try:
+                    dark = int(cs) == 1
+                except Exception:
+                    dark = self.palette().color(
+                        QPalette.Active, QPalette.Window).lightness() < 128
+        fill = None
+        if self.isDown():
+            # subtlePressed：浅=黑 5.5% (alpha 14)，深=白 4.19% (alpha 11)
+            fill = QColor(255, 255, 255, 11) if dark else QColor(0, 0, 0, 14)
+        elif self.underMouse():
+            # subtleHighlight：浅=黑 4% (alpha 10)，深=白 6.05% (alpha 15)
+            fill = QColor(255, 255, 255, 15) if dark else QColor(0, 0, 0, 10)
+        if fill is not None:
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.setBrush(fill)
+            painter.drawRoundedRect(
+                QRectF(self.rect()).adjusted(2, 2, -2, -2), 4, 4)
+        painter.setFont(self.font())
+        painter.setPen(self.palette().color(QPalette.Active, QPalette.Text))
+        painter.drawText(QRect(0, 0, 30, self.height()),
+                         Qt.AlignmentFlag.AlignCenter, self.text())
 
 
 class FluentNavTree(QTreeWidget):

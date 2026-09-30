@@ -8,13 +8,11 @@ currentChanged / updatelangtext 的全部调用面。
 from qtsymbols import (
     QEvent,
     Qt,
-    QFont,
     QFrame,
     QHBoxLayout,
     QModelIndex,
     QTabBar,
     QTabWidget,
-    QToolButton,
     QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
@@ -32,7 +30,7 @@ from qtsymbols import (
 import functools
 
 from myutils.config import _TR
-from gui.fluent.nav import FluentNavTree, NAV_PAGE_ROLE, NAV_ICON_ROLE
+from gui.fluent.nav import FluentNavTree, FluentNavToggleButton, NAV_PAGE_ROLE, NAV_ICON_ROLE
 
 from gui.fluent.icons import (
     ICON_SETTINGS,
@@ -61,6 +59,34 @@ NAV_ICONS = {
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
+
+
+class FluentCardSeparator(QFrame):
+    """侧边栏分割线（游戏管理与设置窗口共用）：颜色与页卡底色一致——
+    浅色=调色板 Base(0xf9f9f9)、深色=窗口色叠 4% 白（同 FluentPageCard
+    的配方）。取 Active 组——Inactive 组是白色（插件设计），失焦会变色。"""
+
+    def paintEvent(self, _):
+        painter = QPainter(self)
+        dark = False
+        app = QApplication.instance()
+        if app is not None:
+            cs = app.property("_q_colorscheme")
+            if cs is not None:
+                try:
+                    dark = int(cs) == 1
+                except Exception:
+                    dark = self.palette().color(
+                        QPalette.Active, QPalette.Window).lightness() < 128
+        if dark:
+            w = self.palette().color(QPalette.Active, QPalette.Window)
+            fill = QColor(
+                round(w.red() + (255 - w.red()) * 0.04),
+                round(w.green() + (255 - w.green()) * 0.04),
+                round(w.blue() + (255 - w.blue()) * 0.04))
+        else:
+            fill = QColor(self.palette().color(QPalette.Active, QPalette.Base))
+        painter.fillRect(self.rect(), fill)
 
 
 class FluentPageCard(QWidget):
@@ -181,27 +207,18 @@ class FluentTabWidget(QWidget):
         main_lay = QVBoxLayout(main_container)
         main_lay.setContentsMargins(6, 6, 6, 0)
         main_lay.setSpacing(0)
-        # 汉堡：导航窗格第一行（同游戏管理器；标题栏不放导航按钮）
-        self.nav_toggle_button = QToolButton(main_container)
-        self.nav_toggle_button.setObjectName("win_caption_pin")
-        self.nav_toggle_button.setAutoRaise(True)
-        self.nav_toggle_button.setToolButtonStyle(
-            Qt.ToolButtonStyle.ToolButtonTextOnly)
-        _f = QFont("Segoe Fluent Icons")
-        _f.setPixelSize(16)
-        self.nav_toggle_button.setFont(_f)
+        # 汉堡：导航窗格第一行（同游戏管理器共用组件；标题栏不放导航按钮）
+        self.nav_toggle_button = FluentNavToggleButton(main_container)
         self.nav_toggle_button.setText(ICON_GLOBAL_NAV)
-        self.nav_toggle_button.setFixedSize(44, 38)
         self.nav_toggle_button.setToolTip("折叠/展开侧边栏")
         self.nav_toggle_button.clicked.connect(self.toggleNavigation)
         main_lay.addWidget(self.nav_toggle_button)
         self.nav = FluentNavTree(main_container)
         main_lay.addWidget(self.nav)
 
-        # 分隔线：整宽、无边距（与窗口边缘/页面卡描边连成闭合回路）
-        self._nav_separator = QFrame(nav_pane)
-        self._nav_separator.setFrameShape(QFrame.HLine)
-        self._nav_separator.setFrameShadow(QFrame.Sunken)
+        # 分隔线：整宽、页卡底色（同游戏管理侧边栏，共用组件）
+        self._nav_separator = FluentCardSeparator(nav_pane)
+        self._nav_separator.setFixedHeight(1)
         self._nav_separator.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
 
         # 底部固定导航（关于软件，不参与伸展）；容器边距 (6,0,6,6)——上边贴分隔线
