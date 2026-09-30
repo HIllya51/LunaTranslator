@@ -2239,15 +2239,15 @@ class dialog_savedgame_v3(QWidget):
         # 窗口的 FluentTitleBar（跨页常驻）
         self.gridpage.build_titlebar(parent._fluent_title_bar)
         self._sync_titlebar_pagecontrols()
-        # 布局：侧边栏 | 内容。内容区边距：上/左 8px 让页卡浮起，
-        # 右侧 0——页卡与窗口框架完全重合（同设置窗口）
+        # 布局：侧边栏 | 内容。内容区：左侧 0——页卡紧贴侧边栏容器右缘
+        # （同设置窗口）；右侧 0 与窗口框重合；仅上边留 8px
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
         lay.addWidget(navcontainer)
         body = QWidget()
         bodylay = QHBoxLayout(body)
-        bodylay.setContentsMargins(8, 8, 0, 8)
+        bodylay.setContentsMargins(0, 8, 0, 8)
         bodylay.addWidget(self.stack, 1)
         lay.addWidget(body, 1)
         self.setObjectName("NOBORDER")
