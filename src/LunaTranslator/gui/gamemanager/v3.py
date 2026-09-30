@@ -722,8 +722,6 @@ class _gamelistnav(FluentNavTree):
         self.setAcceptDrops(True)
         self._dragitem = None
         self._dragpos = None
-        # 按住 Ctrl/Alt/Shift 点击主项：不触发选中/展开（见 mousePressEvent），
-        # 鼠标用于拖动主项排序
         # 单击主项只选中（切网格页），双击才展开/折叠
         self._expand_on_doubleclick = True
         self.setExpandsOnDoubleClick(False)   # 关掉 QTreeView 默认（会双重 toggle）
@@ -782,19 +780,6 @@ class _gamelistnav(FluentNavTree):
     def mousePressEvent(self, ev):
         self._dragitem = self.itemAt(ev.pos())
         self._dragpos = ev.pos()
-        # 按住 Ctrl/Alt/Shift 点主项：不触发选中/展开/切页，专门用于拖动
-        if (
-            self._dragitem is not None
-            and self._dragitem.parent() is None
-            and ev.modifiers()
-            & (
-                Qt.KeyboardModifier.ControlModifier
-                | Qt.KeyboardModifier.AltModifier
-                | Qt.KeyboardModifier.ShiftModifier
-            )
-        ):
-            ev.accept()
-            return
         # 单击的页面动作延迟到双击窗口后（双击会取消）
         self._click_pending = True
         self._click_timer.start()
