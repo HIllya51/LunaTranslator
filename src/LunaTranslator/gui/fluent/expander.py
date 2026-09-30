@@ -494,21 +494,25 @@ class ExExpander(QWidget):
     def headerWidget(self):
         return self._header_widget
 
-    def setHeaderWidget(self, widget):
+    def setHeaderWidget(self, widget, tall=False):
         if widget in (self, self._header_button, self._content_container, self._content_stack):
             return
         if self._header_widget is not None:
             self._header_button.takeHeaderWidget()
         self._header_button.setHeaderWidget(widget)
         self._header_widget = widget
-        # 仅下拉/spin 这类高控件需要 72px 呼吸空间；
-        # 开关/小按钮足够矮，维持 48px
-        hasctl = bool(
-            widget.findChildren(QComboBox)
-            or widget.findChildren(QAbstractSpinBox)
-        )
+        # 头部高度统一矮版（48），不再按内容控件自动拔高；tall=True
+        # 显式用高版（72，供含下拉/微调等高控件时使用）。矮版下同时
+        # 压住头部控件布局的上下边距（≤6）——34px 的下拉/微调也能收进
+        # 48px，各折叠卡头部高度一致（矮内容居中，视觉不变）
+        if not tall:
+            lay = widget.layout()
+            if lay is not None:
+                m = lay.contentsMargins()
+                lay.setContentsMargins(
+                    m.left(), min(m.top(), 6), m.right(), min(m.bottom(), 6))
         self._header_button.setMinimumHeight(
-            72 if hasctl else _EXP_HEADER_MIN_HEIGHT
+            72 if tall else _EXP_HEADER_MIN_HEIGHT
         )
         self.updateGeometry()
 
