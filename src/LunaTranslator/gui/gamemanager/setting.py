@@ -1295,7 +1295,8 @@ class dialog_setting_game_internal(QWidget):
     def getlangcard(self, formLayout: LFormLayout, gameuid):
         """语言（原独立 tab，并入 启动-启动方式 之下）：跟随默认折叠卡，
         源语言/目标语言各为一个子项（独立内容面板）。"""
-        exp = ExExpander()
+        # content_pad：子项右缘与头部跟随默认开关右缘对齐
+        exp = ExExpander(content_pad=True)
         header = QWidget()
         hlay = QHBoxLayout(header)
         hlay.setContentsMargins(0, 12, 0, 12)

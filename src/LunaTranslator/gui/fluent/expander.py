@@ -424,7 +424,8 @@ class ExExpander(QWidget):
 
     def __init__(self, parent=None, content_pad=False):
         super().__init__(parent)
-        # content_pad：内容右侧让出折叠按钮区（60px，与折叠条控件右缘对齐）
+        # content_pad：内容右侧让出折叠按钮区（chevron_side 60px -
+        # 面板边距 16px = 44px），内容右缘与头部控件（开关等）右缘对齐
         self._content_pad = content_pad
         self._expanded = False
         self._foldable = True
