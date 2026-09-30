@@ -13,7 +13,7 @@ from gui.usefulwidget import (
     D_getcolorbutton,
     D_getIconButton,
     makegrid,
-    makecardcontainer,
+    GroupCardWidget,
     MySwitch,
     PopupWidget,
 )
@@ -339,8 +339,18 @@ specialbuttonsettings = {
 
 
 def createbuttonwidget(self, lay: QLayout):
-    # 整页内容包一张内容卡
-    inner = makecardcontainer(lay)
+    # 页面内容：两张独立包裹（间距 8，同核心设置页多卡布局）
+    content = QWidget()
+    vlay = QVBoxLayout(content)
+    vlay.setContentsMargins(16, 16, 16, 12)
+    vlay.setSpacing(8)
+    lay.addWidget(content)
+
+    # 卡 1：大小 / 颜色
+    card = GroupCardWidget()
+    host = card.contentWidget()
+    hostlay = QVBoxLayout(host)
+    hostlay.setContentsMargins(0, 0, 0, 0)
     grids = [
         [
             getsmalllabel("大小"),
@@ -380,8 +390,15 @@ def createbuttonwidget(self, lay: QLayout):
     ]
     wid, do = makegrid(grids, delay=True)
     wid.layout().setContentsMargins(0, 0, 0, 0)
-    inner.addWidget(wid)
+    hostlay.addWidget(wid)
     do()
+    vlay.addWidget(card)
 
-    # 工具按钮列表：使用/对齐/图标/说明 四列（标题）+ 拖拽排序
-    inner.addWidget(_ToolButtonList(self), 1)
+    # 包 2：工具按钮列表——tree 包 QFrame::StyledPanel（Gallery 包表格/树
+    # 的方式：插件 PE_Frame = Base 底色 + 6px 圆角 + lineEdit 式描边）
+    frame = QFrame()
+    frame.setFrameShape(QFrame.Shape.StyledPanel)
+    flay = QVBoxLayout(frame)
+    flay.setContentsMargins(0, 0, 0, 0)
+    flay.addWidget(_ToolButtonList(self))
+    vlay.addWidget(frame, 1)
