@@ -2146,12 +2146,16 @@ class dialog_savedgame_v3(QWidget):
         self.nav.itemCollapsed.connect(functools.partial(self._navexpand, False))
         self.setstyle()
 
-        # 侧边栏容器：第一项是折叠/展开汉堡（导航窗格的切换行，
-        # 随导航树 44↔200 一起收展），下面是导航树
+        # 侧边栏容器：内容距边 6px（同设置窗口 FluentTabWidget 的
+        # main/footer 容器边距），汉堡是导航窗格第一行
         navcontainer = QWidget()
         navlay = QVBoxLayout(navcontainer)
         navlay.setContentsMargins(0, 0, 0, 0)
         navlay.setSpacing(0)
+        main_container = QWidget()
+        main_lay = QVBoxLayout(main_container)
+        main_lay.setContentsMargins(6, 6, 6, 0)
+        main_lay.setSpacing(0)
         hamburger = QToolButton()
         hamburger.setObjectName("win_caption_pin")
         hamburger.setAutoRaise(True)
@@ -2163,8 +2167,9 @@ class dialog_savedgame_v3(QWidget):
         hamburger.setFixedSize(44, 38)
         hamburger.setToolTip("折叠/展开侧边栏")
         hamburger.clicked.connect(self._toggle_nav)
-        navlay.addWidget(hamburger)
-        navlay.addWidget(self.nav, 1)
+        main_lay.addWidget(hamburger)
+        main_lay.addWidget(self.nav, 1)
+        navlay.addWidget(main_container, 1)
         # 底部：分隔线 + 设置项（Gallery footerNav 同款结构）
         _sep = QFrame()
         _sep.setFrameShape(QFrame.Shape.HLine)
@@ -2178,7 +2183,12 @@ class dialog_savedgame_v3(QWidget):
                                           auto_select=False)
         self._footernav.pageIndexChanged.connect(
             lambda _: self._open_settings())
-        navlay.addWidget(self._footernav)
+        footer_container = QWidget()
+        footer_lay = QVBoxLayout(footer_container)
+        footer_lay.setContentsMargins(6, 0, 6, 6)
+        footer_lay.setSpacing(0)
+        footer_lay.addWidget(self._footernav)
+        navlay.addWidget(footer_container)
         self.righttop = makesubtab_lazy()
         self.righttop.currentChanged.connect(
             lambda idx: (
@@ -2229,15 +2239,15 @@ class dialog_savedgame_v3(QWidget):
         # 窗口的 FluentTitleBar（跨页常驻）
         self.gridpage.build_titlebar(parent._fluent_title_bar)
         self._sync_titlebar_pagecontrols()
-        # 布局：侧边栏 | 内容。内容区四周留 8px——页卡浮在窗口底色上，
-        # 边框/圆角可见（卡片才能被看出来）
+        # 布局：侧边栏 | 内容。内容区边距：上/左 8px 让页卡浮起，
+        # 右侧 0——页卡与窗口框架完全重合（同设置窗口）
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
         lay.addWidget(navcontainer)
         body = QWidget()
         bodylay = QHBoxLayout(body)
-        bodylay.setContentsMargins(8, 8, 8, 8)
+        bodylay.setContentsMargins(8, 8, 0, 8)
         bodylay.addWidget(self.stack, 1)
         lay.addWidget(body, 1)
         self.setObjectName("NOBORDER")
