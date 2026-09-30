@@ -839,7 +839,7 @@ class hookselect(closeashidewindow):
     def opensolvetext(self):
         try:
             if gobject.base.gameuid:
-                opengamesettings(gobject.base.gameuid, 3)
+                opengamesettings(gobject.base.gameuid, 2)
         except:
             print_exc()
 

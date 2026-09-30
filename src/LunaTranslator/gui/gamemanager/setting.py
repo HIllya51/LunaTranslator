@@ -65,6 +65,7 @@ from gui.usefulwidget import (
     getIconButton,
     makesubtab_lazy,
     manybuttonlayout,
+    GroupCardWidget,
     CollapsibleBox,
     getsmalllabel,
     listediterline,
@@ -550,7 +551,6 @@ class dialog_setting_game_internal(QWidget):
         functs = [
             ("启动", functools.partial(self.___tabf, self.starttab)),
             ("HOOK", self.gethooktab),
-            ("语言", functools.partial(self.___tabf, self.getlangtab)),
             ("文本处理", functools.partial(self.___tabf, self.gettextproctab)),
             ("语音", functools.partial(self.___tabf, self.getttssetting)),
             ("预翻译", functools.partial(self.___tabf, self.getpretranstab)),
@@ -767,6 +767,8 @@ class dialog_setting_game_internal(QWidget):
         __launch_method.currentIndexChanged.connect(__)
         formLayout.addRow(makecardrow("启动程序", self.lauchpath, fill=True))
         formLayout.addRow(exp)
+        # 语言（原独立 tab）：启动方式之下的跟随默认折叠卡
+        self.getlangcard(formLayout, gameuid)
         formLayout.addRow(
             makecardrow(
                 "自动切换到模式",
@@ -1158,10 +1160,15 @@ class dialog_setting_game_internal(QWidget):
             if x:
                 MagpieConfig.remove(gameuid)
             else:
+                # 取消跟随时创建的全部设置项包一张内容卡
+                card = GroupCardWidget()
+                hostlay = QVBoxLayout(card.contentWidget())
+                hostlay.setContentsMargins(0, 0, 0, 0)
                 makescrollgrid(
                     makescalew(MagpieConfig.find(gameuid, notexitscreate=True)),
-                    internal,
+                    hostlay,
                 )
+                internal.addWidget(card)
 
         internal = QGridLayout()
         internal.setContentsMargins(0, 0, 0, 0)
@@ -1285,31 +1292,40 @@ class dialog_setting_game_internal(QWidget):
             callback=functools.partial(__callback, _internal, __d),
         )
 
-    def getlangtab(self, formLayout: LFormLayout, gameuid):
-
-        formLayout2 = self.createfollowdefault(
-            savehook_new_data[gameuid], "lang_follow_default", formLayout
+    def getlangcard(self, formLayout: LFormLayout, gameuid):
+        """语言（原独立 tab，并入 启动-启动方式 之下）：跟随默认折叠卡，
+        源/目标语言两项为卡内子项。"""
+        exp, grid = self.createfollowdefaultfold(
+            savehook_new_data[gameuid],
+            "lang_follow_default",
+            title="语言",
         )
-        formLayout2.addRow(
-            "源语言",
-            getsimplecombobox(
-                all_langs()[0],
-                savehook_new_data[gameuid],
-                "private_srclang_2",
-                internal=all_langs()[1],
-                default=globalconfig.get("srclang4", "auto"),
-            ),
+        automakegrid(
+            grid,
+            [
+                [
+                    getsmalllabel("源语言"),
+                    getsimplecombobox(
+                        all_langs()[0],
+                        savehook_new_data[gameuid],
+                        "private_srclang_2",
+                        internal=all_langs()[1],
+                        default=globalconfig.get("srclang4", "auto"),
+                    ),
+                ],
+                [
+                    getsmalllabel("目标语言"),
+                    getsimplecombobox(
+                        all_langs(False)[0],
+                        savehook_new_data[gameuid],
+                        "private_tgtlang_2",
+                        internal=all_langs(False)[1],
+                        default=globalconfig.get("tgtlang4", "zh"),
+                    ),
+                ],
+            ],
         )
-        formLayout2.addRow(
-            "目标语言",
-            getsimplecombobox(
-                all_langs(False)[0],
-                savehook_new_data[gameuid],
-                "private_tgtlang_2",
-                internal=all_langs(False)[1],
-                default=globalconfig.get("tgtlang4", "zh"),
-            ),
-        )
+        formLayout.addRow(exp)
 
     def getembedtab(self, formLayout: LFormLayout, gameuid):
 
