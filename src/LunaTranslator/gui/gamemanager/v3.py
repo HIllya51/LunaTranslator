@@ -2187,10 +2187,14 @@ class dialog_savedgame_v3(QWidget):
             lambda exp: globalconfig.__setitem__(
                 "gamemanager_nav_collapsed", not exp))
         self.righttop = makesubtab_lazy()
+        # tabbar 左缩走 QSS；下移走外层容器顶边距（QSS ::tab-bar 的 top
+        # 只移 bar 不移内容起点，会把画廊卡顶盖到 bar 之下）
+        _tabbar_qss = "QTabWidget::tab-bar{left:8px;}"
         self.righttop.currentChanged.connect(
             lambda idx: (
                 self.righttop.setStyleSheet(
-                    "QTabWidget::pane{border:0;margin:0;padding:0;}" if idx == 0 else ""
+                    "QTabWidget::pane{border:0;margin:0;padding:0;}"
+                    + _tabbar_qss if idx == 0 else _tabbar_qss
                 ),
             )
         )
@@ -2201,10 +2205,10 @@ class dialog_savedgame_v3(QWidget):
             )
         )
         # 画廊 tab 页：内容 isCard(253)（页卡由外层 righttopcard 提供，
-        # 缩略图列表/轮播透明浮在内容卡上）
+        # 缩略图列表/轮播透明浮在内容卡上）；顶边距 0——紧贴 tabbar
         _gpage = QWidget()
         _gpl = QVBoxLayout(_gpage)
-        _gpl.setContentsMargins(8, 8, 8, 8)
+        _gpl.setContentsMargins(8, 0, 8, 8)
         _ginner = QWidget()
         _ginner.setAttribute(Qt.WA_StyledBackground, True)
         _ginner.setProperty("isCard", True)
@@ -2217,7 +2221,7 @@ class dialog_savedgame_v3(QWidget):
         # righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
         righttopcard = FluentPageCard()
         _rl = QVBoxLayout(righttopcard)
-        _rl.setContentsMargins(0, 0, 0, 0)
+        _rl.setContentsMargins(0, 8, 0, 0)  # 顶部：tabbar 从卡缘下移
         _rl.addWidget(self.righttop)
         self.righttop_card = righttopcard
         self.stack = QStackedWidget()

@@ -55,7 +55,6 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
-    clearlayout,
     IconButton,
     getsimplecombobox,
     D_getIconButton,
@@ -64,9 +63,7 @@ from gui.usefulwidget import (
     ClickableLabel,
     getIconButton,
     makesubtab_lazy,
-    getsimpleswitch,
     manybuttonlayout,
-    getspinbox,
     CollapsibleBox,
     getsmalllabel,
     listediterline,
@@ -278,6 +275,9 @@ class dialog_setting_game_internal(QWidget):
         self.__quanju_wc = False
         self.keepindexobject = keepindexobject
         vbox = QVBoxLayout(self)
+        # 页面卡内统一边距（同 makegrid 惯例：左右 16、顶 8、底 12），
+        # 下级 methodtab 的页不再包卡（bare），全部内容对齐同一网格
+        vbox.setContentsMargins(16, 8, 16, 12)
         self.lauchpath = None
         formLayout = LFormLayout()
         self.gameuid = gameuid
@@ -332,21 +332,42 @@ class dialog_setting_game_internal(QWidget):
             ),
             fast=True,
         )
+        # 插件给 QTabWidget pane 自带 2-4px 内边距，嵌套 tab 会逐层叠加——
+        # 清零后内容与表单行对齐同一网格
+        methodtab.setStyleSheet(
+            "QTabWidget::pane{border:0;margin:0;padding:0;}")
         vbox.addLayout(formLayout)
         vbox.addWidget(methodtab)
         do()
 
     def ___tabf(self, function, gameuid):
-        _w = QWidget()
+        # 滚动内容控件同 makegrid 的 gridwidget 用 QSS 类做透明（否则被
+        # autofill 以 Window(243) 盖掉页面卡底色，见 gethooktab 注释）；
+        # 表单 0 边距——页内缩由 dgi 顶层 vbox 的 16px 统一提供
+        class formscrollcontent(QWidget):
+            pass
+
+        _w = formscrollcontent()
+        _w.setStyleSheet("formscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
+        formLayout.setContentsMargins(16, 8, 16, 12)
         do = functools.partial(function, formLayout, gameuid)
-        return _w, do
+        scroll = makescroll()
+        scroll.setWidget(_w)
+        return scroll, do
 
     def ___tabf2(self, function, gameuid):
-        _w = QWidget()
+        class formscrollcontent2(QWidget):
+            pass
+
+        _w = formscrollcontent2()
+        _w.setStyleSheet("formscrollcontent2{background-color:transparent;}")
         formLayout = QVBoxLayout(_w)
+        formLayout.setContentsMargins(16, 8, 16, 12)
         do = functools.partial(function, formLayout, gameuid)
-        return _w, do
+        scroll = makescroll()
+        scroll.setWidget(_w)
+        return scroll, do
 
     def ___tabf3(self, function, gameuid):
         _w = QWidget()
@@ -372,6 +393,8 @@ class dialog_setting_game_internal(QWidget):
             ),
             fast=True,
         )
+        methodtab.setStyleSheet(
+            "QTabWidget::pane{border:0;margin:0;padding:0;}")
         vbox.addWidget(methodtab)
         do()
 
@@ -398,6 +421,8 @@ class dialog_setting_game_internal(QWidget):
             ),
             fast=True,
         )
+        methodtab.setStyleSheet(
+            "QTabWidget::pane{border:0;margin:0;padding:0;}")
 
         self.methodtab = methodtab
         vbox.addWidget(methodtab)
@@ -517,12 +542,30 @@ class dialog_setting_game_internal(QWidget):
 
     def starttab(self, formLayout: LFormLayout, gameuid):
         # 每项一张卡；启动方式为折叠卡，子项随方式切换（无设置时收起）。
-        # 注意不能用 QStackedWidget——其高度=最高页，一行的方式也会被
-        # 撑到多行高度；按当前方式重建（同原版 box 行为）。
+        # 方式的每行设置经 _MethodRows 转为折叠卡的一个子项。
         tools = getgamecamptools(get_launchpath(gameuid))
-        method_page = QWidget()
-        method_lay = LFormLayout(method_page)
-        method_lay.setContentsMargins(0, 0, 0, 0)
+
+        class _MethodRows:
+            """launcher.setting(layout, config) 的 layout 适配：
+            每行 addRow(标签, 控件) -> 折叠卡子项（同设置窗口
+            ExExpander 的行式子项），不再走平铺表单。"""
+
+            def __init__(self, expander):
+                self._expander = expander
+
+            def addRow(self, label, widget):
+                row = QWidget()
+                lay = QHBoxLayout(row)
+                lay.setContentsMargins(0, 0, 0, 0)
+                lay.addWidget(LLabel(label) if isinstance(label, str) else label)
+                lay.addStretch(1)
+                # 控件伸展：更长，且各行控件同宽对齐（setting() 可能传
+                # QWidget 或 QLayout）
+                if isinstance(widget, QLayout):
+                    lay.addLayout(widget, 1)
+                else:
+                    lay.addWidget(widget, 1)
+                self._expander.addContentWidget(row)
 
         __launch_method = getsimplecombobox(
             [_.name for _ in tools],
@@ -537,6 +580,7 @@ class dialog_setting_game_internal(QWidget):
             clearset=lambda: uid2gamepath[gameuid],
         )
         exp = ExExpander(content_pad=True)
+        rows = _MethodRows(exp)
         header = QWidget()
         hlay = QHBoxLayout(header)
         hlay.setContentsMargins(0, 12, 0, 12)
@@ -549,22 +593,21 @@ class dialog_setting_game_internal(QWidget):
         hlay.addStretch(1)
         hlay.addWidget(__launch_method)
         exp.setHeaderWidget(header)
-        exp.addContentWidget(method_page)
 
         def __(idx):
-            clearlayout(method_lay)
+            exp.clearContentWidgets()
             try:
                 maycreatesettings(
-                    method_lay,
+                    rows,
                     savehook_new_data[gameuid],
                     tools[idx].id,
                 )
             except:
                 print_exc()
-            # 当前方式无设置项（如 直接启动）时退化为普通卡；有设置为折叠卡
-            _has = method_lay.count() > 0
-            exp.setFoldable(_has)
-            exp.setExpanded(_has)
+            # 当前方式无设置项（如 直接启动）时退化为普通卡；
+            # 有设置为折叠卡。不触碰展开态：默认折叠（ExExpander 初始
+            # 态），切换方式保留用户当前的展开/折叠
+            exp.setFoldable(exp.hasContentWidgets())
 
         __launch_method.currentIndexChanged.connect(__)
         formLayout.addRow(makecardrow("启动程序", self.lauchpath, fill=True))
@@ -1366,6 +1409,7 @@ class dialog_setting_game_internal(QWidget):
         _w = hookscrollcontent()
         _w.setStyleSheet("hookscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
+        formLayout.setContentsMargins(16, 8, 16, 12)
 
         def __():
             self.gethooktab_internal(formLayout, gameuid)
