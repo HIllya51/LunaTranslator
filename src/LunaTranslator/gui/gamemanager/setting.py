@@ -335,7 +335,7 @@ class dialog_setting_game_internal(QWidget):
             fast=True,
         )
         vbox.addLayout(formLayout)
-        vbox.addWidget(methodtab)
+        formLayout.addRow(methodtab)
         do()
 
     def ___tabf(self, function, gameuid):
