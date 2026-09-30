@@ -43,7 +43,7 @@ from gui.gamemanager.common import (
     addgamesingle,
     addgamebatch,
 )
-from gui.dynalang import LAction, LLabel, LMenu
+from gui.dynalang import LAction, LLabel, LMenu, LFormLayout
 from gui.fluent.nav import FluentNavTree, FluentNavToggleButton, create_fluent_icon
 from gui.fluent.tabwidget import FluentPageCard, FluentCardSeparator
 from gui.fluent.titlebar import create_fluent_caption_button
@@ -1090,9 +1090,8 @@ class _gridpage(QWidget):
         )
         host = QVBoxLayout(self._settings_panel_inner)
         host.setContentsMargins(0, 0, 0, 0)
-        # 只有网格设置（通用两项在侧边栏 footernav 的设置页里）
-        from PyQt5.QtWidgets import QFormLayout
-        _fl = QFormLayout()
+        # LFormLayout：行标签经 LLabel 翻译（语言切换自动更新）
+        _fl = LFormLayout()
         _fl.setContentsMargins(16, 8, 16, 16)
         host.addLayout(_fl)
         self.ref.createsettings(_fl)
