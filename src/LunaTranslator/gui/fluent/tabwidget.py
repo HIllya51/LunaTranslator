@@ -372,13 +372,13 @@ class FluentTabWidget(QWidget):
         pass  # 导航宽度固定（44/200），无需按字体测量
 
     def toggleNavigation(self):
+        # 底部导航由 navigationExpandedChanged 信号跟随——这里再显式
+        # toggle 会把它翻回去（信号先设一次，相对翻转会抵消）
         self.nav.toggleNavigationMode()
-        self.nav_footer.toggleNavigationMode()
 
     def setNavigationExpanded(self, expanded, animated=True):
-        """展开/收起侧边栏（主导航 + 底部导航）。"""
+        """展开/收起侧边栏（主导航；底部导航经信号跟随）。"""
         self.nav.setNavigationExpanded(expanded, animated)
-        self.nav_footer.setNavigationExpanded(expanded, animated)
 
     def navigationExpanded(self):
         return self.nav.navigationExpanded()
