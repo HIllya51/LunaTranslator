@@ -7,11 +7,8 @@ from gui.usefulwidget import (
     IconButton,
     getIconButton,
     D_getdoclink,
-    D_getIconButton_mousefollow,
-    makescrollgrid,
     D_getsimpleswitch,
     getsmalllabel,
-    getcenterX,
     D_getspinbox,
     D_getcolorbutton,
     D_getIconButton,
@@ -90,37 +87,160 @@ def doadjust(*_):
     gobject.base.translation_ui.enterfunction()
 
 
-def changerank(item, up, tomax, sortlist: list, savelist, savelay, savescroll):
-    idx = sortlist.index(item)
-    if tomax:
-        idx2 = 0 if up else (len(sortlist) - 1)
-    else:
-        idx2 = idx + (-1 if up else 1)
-    if idx2 < 0 or idx2 >= len(sortlist):
-        return
-    headoffset = 1
-    sortlist[idx], sortlist[idx2] = sortlist[idx2], sortlist[idx]
-    for i, ww in enumerate(savelist[idx + headoffset]):
-        ll: QGridLayout = savelay[0]
-        w1 = ll.indexOf(ww)
-        w2 = ll.indexOf(savelist[idx2 + headoffset][i])
-        p1 = ll.getItemPosition(w1)
-        p2 = ll.getItemPosition(w2)
-        ll.removeWidget(ww)
-        ll.removeWidget(savelist[idx2 + headoffset][i])
-        ll.addWidget(savelist[idx2 + headoffset][i], *p1)
-        ll.addWidget(ww, *p2)
-    savelist[idx + headoffset], savelist[idx2 + headoffset] = (
-        savelist[idx2 + headoffset],
-        savelist[idx + headoffset],
-    )
-    if tomax:
-        scroll: QScrollArea = savescroll[0]
-        if up:
-            scroll.verticalScrollBar().setValue(scroll.verticalScrollBar().minimum())
+class _ToolButtonList(QTreeWidget):
+    """工具按钮列表：使用/对齐/图标/说明 四列（列为标题），行内控件经
+    setItemWidget 挂载。排序为自管拖拽——Qt 的 InternalMove 对带 item
+    widget 的行是 remove+insert 重建，widget 全部丢失（同侧栏导航树，
+    见 _gamelistnav 注释），故自管 DnD：拖拽落点改写 rank2 后整体重建
+    行（十几行小控件，重建成本可忽略）。"""
+
+    def __init__(self, host, parent=None):
+        super().__init__(parent)
+        self._host = host
+        self._dragitem = None
+        self._dragpos = None
+        self.setColumnCount(4)
+        self.setHeaderLabels(["使用", "对齐", "图标", "说明"])
+        hdr = self.header()
+        for c in range(3):
+            hdr.setSectionResizeMode(
+                c, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+        self.setRootIsDecorated(False)
+        self.setIndentation(0)
+        self.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+        self.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        # 自管拖拽（不启用 Qt 的 dragDropMode）
+        self.setAcceptDrops(True)
+        self.viewport().setAcceptDrops(True)
+        self.setDropIndicatorShown(True)
+        # 透明：让内容卡底色透出（QSS 只作用于本控件类，见 makescroll 注释）
+        self.setStyleSheet(
+            "QTreeWidget{background-color:transparent;border:0;}")
+        self.setSizePolicy(QSizePolicy.Policy.Expanding,
+                           QSizePolicy.Policy.Expanding)
+        self.rebuild()
+
+    # ---- 行构建 ----
+    def _cell(self, *ws):
+        w = QWidget()
+        lay = QHBoxLayout(w)
+        lay.setContentsMargins(6, 4, 6, 4)
+        lay.setSpacing(8)
+        for x in ws:
+            if x is not None:
+                lay.addWidget(x)
+        return w
+
+    def rebuild(self):
+        self.clear()
+        for k in globalconfig["toolbutton"]["rank2"]:
+            conf = globalconfig["toolbutton"]["buttons"][k]
+            item = QTreeWidgetItem()
+            item.setData(0, Qt.ItemDataRole.UserRole, k)
+            self.addTopLevelItem(item)
+
+            def _refreshtoolicon():
+                gobject.base.translation_ui.titlebar.refreshtoolicon()
+
+            usecell = self._cell(
+                D_getsimpleswitch(conf, "use", callback=doadjust)(),
+                # 特设按钮：点击时才构造 setter 弹窗（PopupWidget 构造即显示）
+                (D_getIconButton(
+                    callback=functools.partial(specialbuttonsettings[k],
+                                               self._host))()
+                 if k in specialbuttonsettings else None),
+            )
+            aligncell = self._cell(
+                D_getsimplecombobox(
+                    ["居左", "居右", "居中"], conf, "align",
+                    callback=doadjust, fixedsize=True)())
+            iconws = [createbtn(self._host, k, "icon", _refreshtoolicon)]
+            if "icon2" in conf:
+                iconws.append(
+                    createbtn(self._host, k, "icon2", _refreshtoolicon))
+            iconcell = self._cell(*iconws)
+            t = conf.get("tip", "")
+            if "belong" in conf:
+                t += "_(仅{}模式下可用)".format(
+                    ",".join({"texthook": "HOOK", "ocr": "OCR"}.get(_, "?")
+                             for _ in conf["belong"]))
+            tipcell = self._cell(
+                D_getdoclink("alltoolbuttons.html#anchor-" + k)(),
+                LLabel(t),
+            )
+            self.setItemWidget(item, 0, usecell)
+            self.setItemWidget(item, 1, aligncell)
+            self.setItemWidget(item, 2, iconcell)
+            self.setItemWidget(item, 3, tipcell)
+
+    # ---- 自管拖拽排序（DnD 事件坐标均为 viewport 坐标）----
+    def mousePressEvent(self, ev):
+        self._dragitem = self.itemAt(ev.pos())
+        self._dragpos = ev.pos()
+        return super().mousePressEvent(ev)
+
+    def mouseMoveEvent(self, e):
+        if (
+            self._dragitem is not None
+            and (e.buttons() & Qt.MouseButton.LeftButton)
+            and (e.pos() - self._dragpos).manhattanLength()
+            >= QApplication.startDragDistance()
+        ):
+            mime = QMimeData()
+            mime.setText("lunatoolbtnrankmove")
+            drag = QDrag(self)
+            drag.setMimeData(mime)
+            drag.exec(Qt.DropAction.MoveAction)
+            return
+        super().mouseMoveEvent(e)
+
+    def _isrankmove(self, e):
+        return e.mimeData().text().startswith("lunatoolbtnrankmove")
+
+    def dragEnterEvent(self, e):
+        if self._isrankmove(e):
+            e.acceptProposedAction()
         else:
-            scroll.verticalScrollBar().setValue(scroll.verticalScrollBar().maximum())
-    doadjust()
+            e.ignore()
+
+    def dragMoveEvent(self, e):
+        if self._isrankmove(e):
+            e.acceptProposedAction()
+        else:
+            e.ignore()
+
+    def dropEvent(self, e):
+        if not self._isrankmove(e):
+            e.ignore()
+            return
+        src = self._dragitem
+        self._dragitem = None
+        if src is None:
+            e.ignore()
+            return
+        idx1 = self.indexOfTopLevelItem(src)
+        if idx1 < 0:
+            e.ignore()
+            return
+        pos = e.pos()
+        dst = self.itemAt(pos)
+        if dst is None:
+            # 落在内容之下：移到末尾
+            idx2 = self.topLevelItemCount()
+        else:
+            r = self.visualItemRect(dst)
+            idx2 = self.indexOfTopLevelItem(dst) + (
+                1 if pos.y() > r.center().y() else 0)
+        if idx1 < idx2:
+            idx2 -= 1
+        rank = globalconfig["toolbutton"]["rank2"]
+        if 0 <= idx2 < len(rank) and idx2 != idx1:
+            k = rank.pop(idx1)
+            rank.insert(idx2, k)
+            self.rebuild()
+            doadjust()
+        e.acceptProposedAction()
 
 
 savebtns: "dict[tuple[str, str], IconButton]" = {}
@@ -263,99 +383,5 @@ def createbuttonwidget(self, lay: QLayout):
     inner.addWidget(wid)
     do()
 
-    sortlist = globalconfig["toolbutton"]["rank2"]
-    savelist = []
-    savelay = []
-    savescroll = []
-    grids = [
-        [
-            getcenterX("使用"),
-            "",
-            "",
-            "",
-            getcenterX("对齐"),
-            "",
-            (getcenterX("图标"), 2),
-            "",
-            ("说明", 2),
-        ]
-    ]
-    for i, k in enumerate(sortlist):
-
-        button_up = D_getIconButton_mousefollow(
-            callback=functools.partial(
-                changerank, k, True, False, sortlist, savelist, savelay, savescroll
-            ),
-            icon="fa.arrow-up",
-            callback2=functools.partial(
-                changerank, k, True, True, sortlist, savelist, savelay, savescroll
-            ),
-        )
-        button_down = D_getIconButton_mousefollow(
-            callback=functools.partial(
-                changerank, k, False, False, sortlist, savelist, savelay, savescroll
-            ),
-            icon="fa.arrow-down",
-            callback2=functools.partial(
-                changerank, k, False, True, sortlist, savelist, savelay, savescroll
-            ),
-        )
-
-        l = [
-            D_getsimpleswitch(
-                globalconfig["toolbutton"]["buttons"][k],
-                "use",
-                callback=doadjust,
-            ),
-            (
-                D_getIconButton(
-                    callback=functools.partial(specialbuttonsettings[k], self)
-                )
-                if k in specialbuttonsettings
-                else getsmalllabel()
-            ),
-            button_up,
-            button_down,
-            D_getsimplecombobox(
-                ["居左", "居右", "居中"],
-                globalconfig["toolbutton"]["buttons"][k],
-                "align",
-                callback=doadjust,
-                fixedsize=True,
-            ),
-            getsmalllabel(),
-            functools.partial(
-                createbtn,
-                self,
-                k,
-                "icon",
-                lambda: gobject.base.translation_ui.titlebar.refreshtoolicon(),
-            ),
-        ]
-        if "icon2" in globalconfig["toolbutton"]["buttons"][k]:
-            l.append(
-                functools.partial(
-                    createbtn,
-                    self,
-                    k,
-                    "icon2",
-                    lambda: gobject.base.translation_ui.titlebar.refreshtoolicon(),
-                )
-            )
-        else:
-            l.append("")
-        l.append(getsmalllabel())
-        t = globalconfig["toolbutton"]["buttons"][k].get("tip", "")
-        if "belong" in globalconfig["toolbutton"]["buttons"][k]:
-            t += "_(仅{}模式下可用)".format(
-                ",".join(
-                    {"texthook": "HOOK", "ocr": "OCR"}.get(_, "?")
-                    for _ in globalconfig["toolbutton"]["buttons"][k]["belong"]
-                )
-            )
-        l.append(D_getdoclink("alltoolbuttons.html#anchor-" + k))
-        l.append(t)
-        grids.append(l)
-    wid = makescrollgrid(grids, inner, savelist, savelay)
-    wid.layout().setContentsMargins(0, 0, 0, 0)
-    savescroll.append(inner.itemAt(inner.count() - 1).widget())
+    # 工具按钮列表：使用/对齐/图标/说明 四列（标题）+ 拖拽排序
+    inner.addWidget(_ToolButtonList(self), 1)
