@@ -29,7 +29,7 @@ from gui.usefulwidget import (
     getspinbox,
 )
 
-from gui.gamemanager.common import loadvisinternal, dialog_syssetting, tagitem
+from gui.gamemanager.common import loadvisinternal, tagitem
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
     getfonteditor,
@@ -49,7 +49,7 @@ from gui.fluent.nav import FluentNavTree, create_fluent_icon
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
 from gui.specialwidget import lazyscrollflow
-from gui.usefulwidget import getIconButton, SplitLine, ColorButton, getsimplecombobox
+from gui.usefulwidget import getIconButton, SplitLine, ColorButton, getsimplecombobox, makescroll
 from gui.fluent.icons import (
     ICON_GLOBAL_NAV,
     ICON_SEARCH,
@@ -893,20 +893,61 @@ class _gridpage(QWidget):
         toplay.addWidget(
             getIconButton(
                 icon="fa.gear",
-                callback=lambda: dialog_syssetting(self.ref),
-                tips="界面设置",
+                callback=self.toggle_settings_panel,
+                tips="设置",
             )
         )
         lay.addWidget(top)
+        # 内容区：网格 + 右侧设置面板（隐藏，齿轮切换显隐）
+        _content = QWidget()
+        _cl = QHBoxLayout(_content)
+        _cl.setContentsMargins(0, 0, 0, 0)
+        _cl.setSpacing(0)
         _w = QWidget()
         self.flowcontainer = QHBoxLayout(_w)
         self.flowcontainer.setContentsMargins(0, 0, 0, 0)
         self.flow = QWidget()
-        lay.addWidget(_w, 1)
+        _cl.addWidget(_w, 1)
+        # 右侧设置面板
+        self._settings_panel = QWidget()
+        self._settings_panel.setFixedWidth(320)
+        _sl = QVBoxLayout(self._settings_panel)
+        _sl.setContentsMargins(0, 0, 0, 0)
+        self._settings_scroll = makescroll()
+        self._settings_panel_inner = QWidget()
+        self._settings_scroll.setWidget(self._settings_panel_inner)
+        _sl.addWidget(self._settings_scroll)
+        self._settings_panel.hide()
+        _cl.addWidget(self._settings_panel)
+        lay.addWidget(_content, 1)
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
         self.customContextMenuRequested.connect(self.showmenu)
         # 接受网格拖拽（空白处）：拖到空白 = 移到末尾
         self.setAcceptDrops(True)
+
+    def toggle_settings_panel(self):
+        """齿轮/侧栏设置项：切换右侧设置面板显隐（首次构建内容）。"""
+        if not self._settings_panel.isVisible():
+            if not getattr(self, "_settings_built", False):
+                self._build_settings_panel()
+                self._settings_built = True
+            self._settings_panel.show()
+        else:
+            self._settings_panel.hide()
+
+    def _build_settings_panel(self):
+        """在右侧面板中构建全部设置（通用两项 + 网格设置）。"""
+        from gui.usefulwidget import (
+            makescrollgrid, makecardrow, D_getsimpleswitch,
+        )
+        host = QVBoxLayout(self._settings_panel_inner)
+        host.setContentsMargins(0, 0, 0, 0)
+        # 只有网格设置（通用两项在侧边栏 footernav 的设置页里）
+        from PyQt5.QtWidgets import QFormLayout
+        _fl = QFormLayout()
+        _fl.setContentsMargins(16, 8, 16, 16)
+        host.addLayout(_fl)
+        self.ref.createsettings(_fl)
 
     def _bgclicked(self):
         # 网格空白点击：清网格高亮 + 侧边栏选中回到主项（保持一致）。
@@ -2048,11 +2089,10 @@ class dialog_savedgame_v3(QWidget):
                 self._updatetagtext(item)
 
     def _open_settings(self):
-        # footernav 选中 -> 清主 nav 的选中（两棵树互斥）
+        # footernav「设置」：清主 nav 选中（互斥）+ 卡片式设置页（两个通用项）
         self.nav.blockSignals(True)
         self.nav.setCurrentItem(None)
         self.nav.blockSignals(False)
-        # 卡片式设置页（类似设置窗口「关于软件」），在右侧 stack 显示
         if getattr(self, "_settingspage", None) is not None:
             self.stack.setCurrentWidget(self._settingspage)
             return
@@ -2067,12 +2107,13 @@ class dialog_savedgame_v3(QWidget):
                 "隐藏不存在的游戏",
                 D_getsimpleswitch(
                     globalconfig, "hide_not_exists",
-                    callback=lambda v: self.callexists(v), default=False)(),
+                    callback=lambda v: self.callexists(v),
+                    default=False)(),
             ), 0)],
             [(makecardrow(
                 "启动游戏不修改顺序",
                 D_getsimpleswitch(
-                    globalconfig, "startgamenototop", default=True)(),
+                    globalconfig, "startgamenotop", default=True)(),
             ), 0)],
         ]
         makescrollgrid(grid, _host)
