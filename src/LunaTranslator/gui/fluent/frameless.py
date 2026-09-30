@@ -303,6 +303,10 @@ class FluentFramelessWindowMixin:
         bar_rect = QRect(bar.mapTo(self, QPoint(0, 0)), bar.size())
         if bar_rect.contains(local):
             for widget in self.hitTestWidgets():
+                # 隐藏的控件（如本窗口不放导航按钮）不占客户区——
+                # 其残留 geometry 会盖住相邻的拖动区
+                if not widget.isVisible():
+                    continue
                 wr = QRect(widget.mapTo(self, QPoint(0, 0)), widget.size())
                 if wr.contains(local):
                     return None  # 交给 Qt 处理（HTCLIENT）

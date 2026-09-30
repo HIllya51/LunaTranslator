@@ -974,42 +974,8 @@ class _gridpage(QWidget):
         lay = QVBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
-        # 顶栏：搜索 + 排序/设置
-        top = QWidget()
-        toplay = QHBoxLayout(top)
-        toplay.setContentsMargins(8, 4, 8, 4)
-        toplay.setSpacing(4)
-        self.searchedit = QLineEdit()
-        self.searchedit.returnPressed.connect(self._search)
-        self.searchedit.setPlaceholderText("搜索")
-        self.searchedit.setFixedHeight(32)
-        self.searchedit.setClearButtonEnabled(True)
-        self._search_action = _act = QAction(self.searchedit)
-        _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32))
-        self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
-        self.searchedit.installEventFilter(self)
-        self.searchedit.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum)
-        toplay.addWidget(self.searchedit, 1)
-        # 面包屑：搜索框右边、从右向左；有 tag 时显示；root 为 ALL，点 ALL 清空
-        self.breadcrumb = ExBreadcrumbBar(self)
-        self.breadcrumb.itemClicked.connect(self._breadcrumb_clicked)
-        self.breadcrumb.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
-        self.breadcrumb.hide()
-        toplay.addWidget(self.breadcrumb)
-        toplay.addWidget(
-            getIconButton(
-                icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
-            )
-        )
-        toplay.addWidget(
-            getIconButton(
-                icon="fa.gear",
-                callback=self.toggle_settings_panel,
-                tips="设置",
-            )
-        )
-        lay.addWidget(top)
+        # 顶栏控件（搜索/面包屑/排序/齿轮）不建在本页——由 build_topbar
+        # 建到对话框的常驻顶栏里（跨页可见）
         # 内容区：网格 + 右侧设置面板（隐藏，齿轮切换显隐）
         _content = QWidget()
         _cl = QHBoxLayout(_content)
@@ -1020,13 +986,16 @@ class _gridpage(QWidget):
         self.flowcontainer.setContentsMargins(0, 0, 0, 0)
         self.flow = QWidget()
         _cl.addWidget(_w, 1)
-        # 右侧设置面板
+        # 右侧设置面板：内容整体包在一张大 isCard 卡里
         self._settings_panel = QWidget()
         self._settings_panel.setFixedWidth(320)
         _sl = QVBoxLayout(self._settings_panel)
-        _sl.setContentsMargins(0, 0, 0, 0)
+        _sl.setContentsMargins(8, 8, 8, 8)
         self._settings_scroll = makescroll()
         self._settings_panel_inner = QWidget()
+        # 大卡（同 FluentCard/makecardrow 配方：插件渲染 WinUI 圆角卡底）
+        self._settings_panel_inner.setAttribute(Qt.WA_StyledBackground, True)
+        self._settings_panel_inner.setProperty("isCard", True)
         self._settings_scroll.setWidget(self._settings_panel_inner)
         _sl.addWidget(self._settings_scroll)
         self._settings_panel.hide()
@@ -1037,9 +1006,43 @@ class _gridpage(QWidget):
         # 接受网格拖拽（空白处）：拖到空白 = 移到末尾
         self.setAcceptDrops(True)
 
+    def build_titlebar(self, titlebar):
+        """把本页的控件装进宿主无边框窗口的标题栏：搜索居中，
+        面包屑/排序/齿轮在右侧 caption 按钮之前（跨页常驻）。"""
+        self.searchedit = QLineEdit()
+        self.searchedit.returnPressed.connect(self._search)
+        self.searchedit.setPlaceholderText("搜索")
+        self.searchedit.setFixedSize(300, 32)
+        self.searchedit.setClearButtonEnabled(True)
+        self._search_action = _act = QAction(self.searchedit)
+        _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32))
+        self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
+        self.searchedit.installEventFilter(self)
+        titlebar.addCenterWidget(self.searchedit)
+        # 面包屑：搜索框右边、从右向左；有 tag 时显示；root 为 ALL，点 ALL 清空
+        self.breadcrumb = ExBreadcrumbBar(self)
+        self.breadcrumb.itemClicked.connect(self._breadcrumb_clicked)
+        self.breadcrumb.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
+        self.breadcrumb.hide()
+        titlebar.addTrailingWidget(self.breadcrumb)
+        titlebar.addTrailingWidget(
+            getIconButton(
+                icon="fa.sort-amount-asc", callback=self.sortgamecallback, tips="排序"
+            )
+        )
+        titlebar.addTrailingWidget(
+            getIconButton(
+                icon="fa.gear",
+                callback=self.toggle_settings_panel,
+                tips="设置",
+            )
+        )
+
     def toggle_settings_panel(self):
-        """齿轮/侧栏设置项：切换右侧设置面板显隐（首次构建内容）。"""
-        if not self._settings_panel.isVisible():
+        """常驻顶栏齿轮：切回网格页并切换右侧设置面板显隐（首次构建内容）。
+        用 isHidden 判逻辑开合——人在其他页时 isVisible 会因祖先隐藏而误判。"""
+        self.ref.stack.setCurrentWidget(self)
+        if self._settings_panel.isHidden():
             if not getattr(self, "_settings_built", False):
                 self._build_settings_panel()
                 self._settings_built = True
@@ -1103,6 +1106,8 @@ class _gridpage(QWidget):
     def _search(self):
         text = self.searchedit.text().strip()
         if text:
+            # 顶栏常驻：在其他页回车时先切回网格页再过滤
+            self.ref.stack.setCurrentWidget(self)
             self._apply_tags(tuple(self.currtags)
                              + ((text, tagitem.TYPE_SEARCH, None),))
             self.searchedit.clear()
@@ -1442,6 +1447,8 @@ class _gridpage(QWidget):
     def sortgamecallback(self):
         if self.reflist == 1:
             return
+        # 顶栏常驻：排序作用于网格列表，先切回网格页
+        self.ref.stack.setCurrentWidget(self)
         menu = QMenu(self)
         sortbytime = LAction("按添加时间排序", menu)
         sortbytime.setIcon(qtawesome.icon("fa.sort-numeric-asc"))
@@ -2093,8 +2100,8 @@ class dialog_savedgame_v3(QWidget):
         self.nav.itemCollapsed.connect(functools.partial(self._navexpand, False))
         self.setstyle()
 
-        # 侧边栏容器：第一项是折叠/展开汉堡（同设置窗口标题栏汉堡），
-        # 下面是导航树
+        # 侧边栏容器：第一项是折叠/展开汉堡（导航窗格的切换行，
+        # 随导航树 44↔200 一起收展），下面是导航树
         navcontainer = QWidget()
         navlay = QVBoxLayout(navcontainer)
         navlay.setContentsMargins(0, 0, 0, 0)
@@ -2146,6 +2153,10 @@ class dialog_savedgame_v3(QWidget):
         self.gridpage = _gridpage(self)
         self.stack.addWidget(self.gridpage)
         self.stack.addWidget(self.righttop)
+        # 标题栏控件（搜索居中/面包屑/排序/齿轮尾部）装进宿主无边框
+        # 窗口的 FluentTitleBar（跨页常驻）
+        self.gridpage.build_titlebar(parent._fluent_title_bar)
+        # 布局：侧边栏 | 内容（标题栏由宿主窗口的 menuWidget 提供）
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
