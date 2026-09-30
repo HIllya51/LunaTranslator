@@ -57,6 +57,7 @@ from gui.fluent.icons import (
     ICON_SEARCH,
     ICON_SORT,
     ICON_SETTINGS,
+    ICON_SETTINGS_SOLID,
     ICON_LIBRARY,
     ICON_RECENT,
     ICON_LIST,
@@ -1040,22 +1041,25 @@ class _gridpage(QWidget):
             titlebar, ICON_SORT, "排序")
         self.sortbtn.clicked.connect(self.sortgamecallback)
         titlebar.addTrailingWidget(self.sortbtn)
-        # 齿轮带开关态（Gallery 置顶按钮同款 checkable）：勾选=面板开
+        # 齿轮带开关态（Gallery updatePinButton 同款字形切换；不用
+        # checkable——插件把勾选态 caption 字形画成白色，浅色下不可见）：
+        # 实心齿轮=面板开
         self.gearbtn = create_fluent_caption_button(
             titlebar, ICON_SETTINGS, "设置")
-        self.gearbtn.setCheckable(True)
-        self.gearbtn.toggled.connect(self._gear_toggled)
+        self.gearbtn.clicked.connect(self.toggle_settings_panel)
         titlebar.addTrailingWidget(self.gearbtn)
 
-    def _gear_toggled(self, on):
-        """标题栏齿轮的开关态与设置面板显隐保持一致（勾选=开）。"""
-        if on == self._settings_panel.isHidden():
-            self.toggle_settings_panel()
+    def _sync_gear_state(self):
+        """齿轮按钮的开关态与设置面板显隐同步（实心=开）。"""
+        on = not self._settings_panel.isHidden()
+        self.gearbtn.setText(ICON_SETTINGS_SOLID if on else ICON_SETTINGS)
+        self.gearbtn.setToolTip("收起设置" if on else "设置")
+        self.gearbtn.update()
 
     def toggle_settings_panel(self):
         """常驻顶栏齿轮：切回网格页并切换右侧设置面板显隐（首次构建内容）。
         用 isHidden 判逻辑开合——人在其他页时 isVisible 会因祖先隐藏而误判。
-        面板状态回写齿轮的开关态（屏蔽信号防环）。"""
+        面板状态回写齿轮的开关态字形。"""
         self.ref._show_gridpage()
         if self._settings_panel.isHidden():
             if not getattr(self, "_settings_built", False):
@@ -1064,9 +1068,7 @@ class _gridpage(QWidget):
             self._settings_panel.show()
         else:
             self._settings_panel.hide()
-        self.gearbtn.blockSignals(True)
-        self.gearbtn.setChecked(not self._settings_panel.isHidden())
-        self.gearbtn.blockSignals(False)
+        self._sync_gear_state()
 
     def _build_settings_panel(self):
         """在右侧面板中构建全部设置（通用两项 + 网格设置）。"""
