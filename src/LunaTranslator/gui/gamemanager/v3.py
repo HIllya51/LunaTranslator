@@ -69,6 +69,7 @@ from gui.fluent.icons import (
 # ---- 模块常量 ----
 PathRole = Qt.ItemDataRole.UserRole + 1
 ImageRequestedRole = PathRole + 1
+ImageSizeRole = ImageRequestedRole + 1   # 缩略图原始尺寸（QSize，按比例定项高/宽）
 TAGID_ROLE = Qt.ItemDataRole.UserRole + 5   # 列表 tagid（主项）
 GAMEUID_ROLE = TAGID_ROLE + 1               # 游戏 uid（子项）
 # 列表主项图标
@@ -162,6 +163,12 @@ class ImageDelegate(QStyledItemDelegate):
         if not index.data(ImageRequestedRole):
             opt.features |= QStyleOptionViewItem.ViewItemFeature.HasDecoration
             opt.decorationSize = QSize(100, 100)
+        else:
+            # 已加载：图标铺满项矩形（项尺寸已按图片长宽比设置，
+            # 见 previewimages._itemsize），避免方形 decoration 留边
+            sz = index.data(Qt.ItemDataRole.SizeHintRole)
+            if isinstance(sz, QSize) and sz.isValid():
+                opt.decorationSize = sz
 
 
 class previewimages(QListWidget):
@@ -196,15 +203,33 @@ class previewimages(QListWidget):
         self.setDragDropMode(QListWidget.DragDropMode.InternalMove)
         self.setDefaultDropAction(Qt.DropAction.MoveAction)
 
+    # 长宽比钳制：极端比例（如长截图）的项不过高/过宽
+    _RATIO_MIN = 1 / 3
+    _RATIO_MAX = 3
+
+    def _itemsize(self, imgsize):
+        """项尺寸跟随图片长宽比（未加载时方形占位；比例钳制在
+        [_RATIO_MIN, _RATIO_MAX]）。横向条带：高 = 条带厚度、
+        宽 = 厚度×宽高比；纵向条带反之。"""
+        base = self.iconSize()
+        if (not isinstance(imgsize, QSize) or not imgsize.isValid()
+                or imgsize.width() <= 0 or imgsize.height() <= 0):
+            return base
+        s = base.width()
+        ratio = max(self._RATIO_MIN, min(
+            self._RATIO_MAX, imgsize.width() / imgsize.height()))
+        if self.flow() == QListView.Flow.LeftToRight:
+            return QSize(max(1, round(s * ratio)), s)
+        return QSize(s, max(1, round(s / ratio)))
+
     def _syncitemsize(self):
-        """显式设置项尺寸 = 图标尺寸。插件 CT_ItemViewItem 对 ListMode
-        强制 32px 行高，大于行高的缩略图会被压扁堆叠（左/右位置的
+        """显式设置项尺寸（按各图长宽比）。插件 CT_ItemViewItem 对
+        ListMode 强制 32px 行高，缩略图会被压扁堆叠（左/右位置的
         单列条带最明显）；显式 item sizeHint 绕开该强制。"""
-        sz = self.iconSize()
         for i in range(self.count()):
             it = self.item(i)
             if it is not None:
-                it.setSizeHint(sz)
+                it.setSizeHint(self._itemsize(it.data(ImageSizeRole)))
 
     def loadImage(self):
         try:
@@ -230,6 +255,8 @@ class previewimages(QListWidget):
                             if self.item(self.currentRow()).isHidden():
                                 self.setCurrentRow(row)
                             item.setIcon(QIcon(image))
+                            item.setData(ImageSizeRole, image.size())
+                            item.setSizeHint(self._itemsize(image.size()))
 
         except:
             print_exc()
@@ -428,11 +455,12 @@ class viewpixmap_x(QWidget):
             pass
 
         self.infoview.setText(t)
-        # 缩略图选中 -> 轮播翻到对应页（同页不重复触发）
+        # 缩略图选中 -> 轮播翻到对应页。不做 idx != currentIndex() 前置
+        # 判断——动画中 currentIndex 仍是起点，点回起点会被整个吞掉
+        # （切换完成即把选中拉回目标页）；轮播自身会判定同页/目标页
+        # 为无操作，动画中则记入 pending
         if path in self._paths:
-            idx = self._paths.index(path)
-            if idx != self.carousel.currentIndex():
-                self.carousel.setCurrentIndex(idx)
+            self.carousel.setCurrentIndex(self._paths.index(path))
 
     # ---- 轮播内容管理 ----
     def setpaths(self, paths, currentpath):
@@ -699,6 +727,11 @@ class pixwrapper(QSplitter):
         缩略图选中（按路径同步；setpathcurrent 同行不动，无回环）。"""
         paths = self.pixview._paths
         if self.k is None or idx < 0 or idx >= len(paths):
+            return
+        if self.pixview.carousel._pendingIndex >= 0:
+            # 快速连点：动画队列里还有下一次切换，这是中间态——
+            # 不同步缩略图选中（否则会把刚点的项拉回上一个），
+            # 最终态的 currentIndexChanged 会再进来同步
             return
         path = paths[idx]
         if not path:
