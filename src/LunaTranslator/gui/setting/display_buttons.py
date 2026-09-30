@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools, json
 import gobject
-from myutils.config import globalconfig, ui_settings
+from myutils.config import globalconfig, ui_settings, _TR
 from gui.usefulwidget import (
     D_getsimplecombobox,
     IconButton,
@@ -88,11 +88,15 @@ def doadjust(*_):
 
 
 class _ToolButtonList(QTreeWidget):
-    """工具按钮列表：使用/对齐/图标/说明 四列（列为标题），行内控件经
-    setItemWidget 挂载。排序为自管拖拽——Qt 的 InternalMove 对带 item
-    widget 的行是 remove+insert 重建，widget 全部丢失（同侧栏导航树，
-    见 _gamelistnav 注释），故自管 DnD：拖拽落点改写 rank2 后整体重建
-    行（十几行小控件，重建成本可忽略）。"""
+    """工具按钮列表：使用/对齐/图标/说明 四列（列为标题，_TR 翻译 +
+    居中），行内控件经 setItemWidget 挂载。可选控件（使用列的特设
+    按钮、图标列的 icon2）缺席时保留等宽槽位，各行控件对齐。排序为
+    自管拖拽——Qt 的 InternalMove 对带 item widget 的行是 remove+insert
+    重建，widget 全部丢失（同侧栏导航树，见 _gamelistnav 注释），故
+    自管 DnD：拖拽落点改写 rank2 后整体重建行（几十行小控件，重建
+    成本可忽略）。"""
+
+    _HEADER_TITLES = ["使用", "对齐", "图标", "说明"]
 
     def __init__(self, host, parent=None):
         super().__init__(parent)
@@ -100,8 +104,9 @@ class _ToolButtonList(QTreeWidget):
         self._dragitem = None
         self._dragpos = None
         self.setColumnCount(4)
-        self.setHeaderLabels(["使用", "对齐", "图标", "说明"])
+        self.setHeaderLabels([_TR(t) for t in self._HEADER_TITLES])
         hdr = self.header()
+        hdr.setDefaultAlignment(Qt.AlignmentFlag.AlignCenter)
         for c in range(3):
             hdr.setSectionResizeMode(
                 c, QHeaderView.ResizeMode.ResizeToContents)
@@ -121,15 +126,24 @@ class _ToolButtonList(QTreeWidget):
                            QSizePolicy.Policy.Expanding)
         self.rebuild()
 
+    def updatelangtext(self):
+        # 语言切换：表头标题重翻译（app 级事件过滤器驱动，同 LLabel）
+        for i, t in enumerate(self._HEADER_TITLES):
+            self.headerItem().setText(i, _TR(t))
+
     # ---- 行构建 ----
-    def _cell(self, *ws):
+    def _cell(self, *ws, center=False):
         w = QWidget()
         lay = QHBoxLayout(w)
         lay.setContentsMargins(6, 4, 6, 4)
         lay.setSpacing(8)
+        if center:
+            lay.addStretch(1)
         for x in ws:
             if x is not None:
                 lay.addWidget(x)
+        if center:
+            lay.addStretch(1)
         return w
 
     def rebuild(self):
@@ -143,23 +157,37 @@ class _ToolButtonList(QTreeWidget):
             def _refreshtoolicon():
                 gobject.base.translation_ui.titlebar.refreshtoolicon()
 
+            iconbtn = createbtn(self._host, k, "icon", _refreshtoolicon)
+            icon2btn = (createbtn(self._host, k, "icon2", _refreshtoolicon)
+                        if "icon2" in conf else None)
+
+            def _slot():
+                # 等宽占位：可选按钮缺席时仍保留槽位（同尺寸按钮），行间对齐
+                sp = QWidget()
+                sp.setFixedSize(iconbtn.size())
+                return sp
+
+            # 特设按钮：点击时才构造 setter 弹窗（PopupWidget 构造即显示）
+            specialbtn = (D_getIconButton(
+                callback=functools.partial(specialbuttonsettings[k],
+                                           self._host))()
+                if k in specialbuttonsettings else None)
             usecell = self._cell(
                 D_getsimpleswitch(conf, "use", callback=doadjust)(),
-                # 特设按钮：点击时才构造 setter 弹窗（PopupWidget 构造即显示）
-                (D_getIconButton(
-                    callback=functools.partial(specialbuttonsettings[k],
-                                               self._host))()
-                 if k in specialbuttonsettings else None),
+                specialbtn if specialbtn is not None else _slot(),
+                center=True,
             )
             aligncell = self._cell(
                 D_getsimplecombobox(
                     ["居左", "居右", "居中"], conf, "align",
-                    callback=doadjust, fixedsize=True)())
-            iconws = [createbtn(self._host, k, "icon", _refreshtoolicon)]
-            if "icon2" in conf:
-                iconws.append(
-                    createbtn(self._host, k, "icon2", _refreshtoolicon))
-            iconcell = self._cell(*iconws)
+                    callback=doadjust, fixedsize=True)(),
+                center=True,
+            )
+            iconcell = self._cell(
+                iconbtn,
+                icon2btn if icon2btn is not None else _slot(),
+                center=True,
+            )
             t = conf.get("tip", "")
             if "belong" in conf:
                 t += "_(仅{}模式下可用)".format(
