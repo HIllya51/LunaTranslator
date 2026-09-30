@@ -43,6 +43,9 @@ class Setting(_SettingBase):
     # ---- Fluent 标题栏 / 无边框 ----
     def _install_fluent_chrome(self):
         self._fluent_title_bar = FluentTitleBar(self)
+        # 汉堡在导航窗格第一行（FluentTabWidget 内，同游戏管理器），
+        # 标题栏不放导航按钮
+        self._fluent_title_bar.setNavButtonVisible(False)
         self._fluent_title_bar.navToggleRequested.connect(self._toggle_fluent_nav)
         self.setMenuWidget(self._fluent_title_bar)
         self.setProperty("fluentFrameless", True)

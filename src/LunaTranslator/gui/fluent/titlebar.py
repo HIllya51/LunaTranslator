@@ -80,10 +80,13 @@ class FluentTitleBar(QWidget):
 
         layout = QHBoxLayout(self)
         layout.setContentsMargins(2, 0, 0, 0)
+        # spacing=0 是为了 caption 按钮紧密相邻（WinUI 同款）；原 Gallery
+        # 用全局 spacing=8（图标/标题间距即来自它），这里按处单独补
         layout.setSpacing(0)
         layout.addWidget(self._nav_button)
-        layout.addSpacing(8)
+        layout.addSpacing(8)  # 导航按钮->图标；导航按钮隐藏时兼作左边距
         layout.addWidget(self._icon_label)
+        layout.addSpacing(8)  # 图标->标题（原 Gallery spacing=8）
         layout.addWidget(self._title_label)
         layout.addStretch()
         layout.addWidget(self._min_button)

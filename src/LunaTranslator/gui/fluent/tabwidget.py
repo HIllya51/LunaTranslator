@@ -8,11 +8,13 @@ currentChanged / updatelangtext 的全部调用面。
 from qtsymbols import (
     QEvent,
     Qt,
+    QFont,
     QFrame,
     QHBoxLayout,
     QModelIndex,
     QTabBar,
     QTabWidget,
+    QToolButton,
     QTreeWidgetItem,
     QVBoxLayout,
     QWidget,
@@ -42,6 +44,7 @@ from gui.fluent.icons import (
     ICON_KEYBOARD_CLASSIC,
     ICON_INFO,
     ICON_NAV_FALLBACK,
+    ICON_GLOBAL_NAV,
 )
 
 # 按标题取图标：层级子页加入主 stack 后，位置索引与树序不再一一对应
@@ -178,6 +181,20 @@ class FluentTabWidget(QWidget):
         main_lay = QVBoxLayout(main_container)
         main_lay.setContentsMargins(6, 6, 6, 0)
         main_lay.setSpacing(0)
+        # 汉堡：导航窗格第一行（同游戏管理器；标题栏不放导航按钮）
+        self.nav_toggle_button = QToolButton(main_container)
+        self.nav_toggle_button.setObjectName("win_caption_pin")
+        self.nav_toggle_button.setAutoRaise(True)
+        self.nav_toggle_button.setToolButtonStyle(
+            Qt.ToolButtonStyle.ToolButtonTextOnly)
+        _f = QFont("Segoe Fluent Icons")
+        _f.setPixelSize(16)
+        self.nav_toggle_button.setFont(_f)
+        self.nav_toggle_button.setText(ICON_GLOBAL_NAV)
+        self.nav_toggle_button.setFixedSize(44, 38)
+        self.nav_toggle_button.setToolTip("折叠/展开侧边栏")
+        self.nav_toggle_button.clicked.connect(self.toggleNavigation)
+        main_lay.addWidget(self.nav_toggle_button)
         self.nav = FluentNavTree(main_container)
         main_lay.addWidget(self.nav)
 
