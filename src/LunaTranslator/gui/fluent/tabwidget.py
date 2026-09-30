@@ -60,7 +60,7 @@ NAV_ICONS = {
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
-TABBAR_STYLE_PIVOT_GROW = 2  # Pivot_Grow
+TABBAR_STYLE_PIVOT_GROW = 3  # Pivot_Grow
 
 
 class FluentCardSeparator(QFrame):
