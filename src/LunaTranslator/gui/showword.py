@@ -322,23 +322,23 @@ class AnkiWindow(QWidget):
         savebtn = LPushButton("保存")
         savebtn.clicked.connect(self.saveedits)
 
-        spliter.addWidget(
-            getboxwidget(
+        w = getboxwidget(
                 [
                     edittemptab,
                     getboxlayout([revertbtn, savebtn]),
                 ],
                 lc=QVBoxLayout,
             )
-        )
+        w.layout().setSpacing(0)
+        spliter.addWidget(w)
 
         self.htmlbrowser = auto_select_webview(self, False)
         self.htmlbrowser.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
-        spliter.addWidget(
-            getboxwidget([self.previewtab, self.htmlbrowser], lc=QVBoxLayout)
-        )
+        w = getboxwidget([self.previewtab, self.htmlbrowser], lc=QVBoxLayout)
+        w.layout().setSpacing(0)
+        spliter.addWidget(w)
         self.fronttext = FQPlainTextEdit()
         self.backtext = FQPlainTextEdit()
         self.csstext = FQPlainTextEdit()
