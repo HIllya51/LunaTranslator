@@ -330,7 +330,7 @@ class dialog_setting_game_internal(QWidget):
         _w = formscrollcontent()
         _w.setStyleSheet("formscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
-        formLayout.setContentsMargins(16, 16, 16, 16)
+        formLayout.setContentsMargins(16, 16, 16, 12 )
         do = functools.partial(function, formLayout, gameuid)
         scroll = makescroll()
         scroll.setWidget(_w)
@@ -343,7 +343,7 @@ class dialog_setting_game_internal(QWidget):
         _w = formscrollcontent2()
         _w.setStyleSheet("formscrollcontent2{background-color:transparent;}")
         formLayout = QVBoxLayout(_w)
-        formLayout.setContentsMargins(16, 16, 16, 16)
+        formLayout.setContentsMargins(16, 16, 16, 12 )
         do = functools.partial(function, formLayout, gameuid)
         scroll = makescroll()
         scroll.setWidget(_w)
@@ -1396,7 +1396,7 @@ class dialog_setting_game_internal(QWidget):
         _w = hookscrollcontent()
         _w.setStyleSheet("hookscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
-        formLayout.setContentsMargins(16, 16, 16, 16)
+        formLayout.setContentsMargins(16, 16, 16, 12 )
 
         def __():
             self.gethooktab_internal(formLayout, gameuid)

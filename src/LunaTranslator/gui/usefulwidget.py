@@ -3969,7 +3969,7 @@ class PopupWidget(QWidget):
         lay = self.layout()
         if lay is not None and not self.property("_fluent_flyout_padded"):
             self.setProperty("_fluent_flyout_padded", True)
-            lay.setContentsMargins(16, 16, 16, 16)
+            lay.setContentsMargins(16, 16, 16, 12 )
         pos = self.pos()
         self.move(limitpos(pos, self, QPoint()))
         return super().showEvent(a0)

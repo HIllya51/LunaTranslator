@@ -406,13 +406,12 @@ def plusclicked(self, form):
 
 def selfdefkeys(self, lay: QLayout):
     # tabbar 下的内容整体包一张内容卡（bare 页：maketabholder 已留页边距）
-    inner = makecardcontainer(lay, sidemargin=0, topmargin=0, bottommargin=0)
     wid = QWidget()
     wid.setObjectName("FUCKYOU")
     wid.setStyleSheet("QWidget#FUCKYOU{background:transparent}")
     form = VisLFormLayout(wid)
     swid = makescroll()
-    inner.addWidget(swid)
+    lay.addWidget(swid)
     swid.setWidget(wid)
     plus = IconButton(icon="fa.plus")
     plus.clicked.connect(functools.partial(plusclicked, self, form))
@@ -427,7 +426,7 @@ def setTab_quick(self, l: QVBoxLayout):
     # ---- “使用快捷键”卡片 ----
     card_holder = QWidget()
     card_lay = QVBoxLayout(card_holder)
-    card_lay.setContentsMargins(16, 16, 16, 12)
+    card_lay.setContentsMargins(16, 16, 16, 0 )
     card_lay.setSpacing(0)
     card_lay.addWidget(
         make_card(
@@ -446,9 +445,7 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis = []
 
     def ___x(ls, l):
-        inner = makecardcontainer(l, sidemargin=0, topmargin=0, bottommargin=0)
-        wid = makescrollgrid(setTab_quick_lazy(self, ls), inner)
-        wid.layout().setContentsMargins(0, 0, 0, 0)
+        makescrollgrid(setTab_quick_lazy(self, ls), l)
 
     for _ in hotkeys:
         __vis.append(_[0])

@@ -759,7 +759,7 @@ class AnkiWindow(QWidget):
         self.recorders: "dict[int, loopbackrecorder]" = {}
         wid = QWidget()
         layout = QVBoxLayout(wid)
-        layout.setContentsMargins(16, 16, 16, 12)
+        layout.setContentsMargins(16, 16, 16, 12 )
         soundbutton = IconButton("fa.music", tips="语音合成")
         soundbutton.clicked.connect(self.langdu)
 

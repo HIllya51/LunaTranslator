@@ -919,7 +919,7 @@ class FluentColorDialog(LDialog):
         root.setSpacing(0)
 
         body = QVBoxLayout()
-        body.setContentsMargins(16, 16, 16, 16)
+        body.setContentsMargins(16, 16, 16, 12 )
         body.setSpacing(16)
         self._title_label = QLabel(self)
         self._title_label.setWordWrap(True)
@@ -937,7 +937,7 @@ class FluentColorDialog(LDialog):
 
         footer = QWidget(self)
         buttons = QHBoxLayout(footer)
-        buttons.setContentsMargins(16, 16, 16, 16)
+        buttons.setContentsMargins(16, 16, 16, 12 )
         buttons.setSpacing(8)
         self._accept = LPushButton("确定")
         self._accept.setProperty("accent", True)
