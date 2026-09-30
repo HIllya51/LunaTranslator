@@ -10,7 +10,7 @@ from gui.dynalang import LLabel, LStandardItemModel, LDialog
 from myutils.wrapper import Singleton
 from textio.textsource.mssr import MSSR, LiveCaptions
 from gui.fluent.expander import ExExpander
-from gui.fluent.tabwidget import TABBAR_STYLE_PIVOT_SLIDE, make_content_card
+from gui.fluent.tabwidget import make_content_card
 from gui.usefulwidget import (
     D_getsimplecombobox,
     D_getspinbox,
@@ -951,13 +951,12 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         lambda l: __otherspage(self, l),
     ]
 
-    # Gallery pageaudiolevelmeter 配方：内容卡包裹 [Pivot 页签组]——
-    # bar 样式参数化（FluentPaneTabWidget），各页直角面板紧贴 bar
+    # Gallery pageaudiolevelmeter 配方：内容卡包裹 [Pivot 页签组]
+    # （FluentPaneTabWidget 默认 Pivot_Grow，各页直角面板紧贴 bar）
     tab, dotab = makesubtab_lazy(
         titles,
         funcs,
         delay=True,
-        panebar_style=TABBAR_STYLE_PIVOT_SLIDE,
     )
     basel.addWidget(maketabholder(make_content_card(tab)))
     basel.setSpacing(0)

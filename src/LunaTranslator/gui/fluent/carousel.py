@@ -128,6 +128,11 @@ class CarouselImageSlide(QWidget):
             | QPainter.RenderHint.TextAntialiasing
         )
         r = QRectF(self.rect())
+        # 自身圆角剪裁（静态展示与快照生成时保持圆角）
+        if self._borderRadius > 0:
+            clip = QPainterPath()
+            clip.addRoundedRect(r, self._borderRadius, self._borderRadius)
+            painter.setClipPath(clip)
 
         if not self._pixmap.isNull():
             dpr = self.devicePixelRatioF()
@@ -144,27 +149,17 @@ class CarouselImageSlide(QWidget):
                 drawW, drawH = pw * scale / dpr, ph * scale / dpr
             drawX = r.left() + (r.width() - drawW) / 2.0
             drawY = r.top() + (r.height() - drawH) / 2.0
-            target = QRectF(drawX, drawY, drawW, drawH)
-            # 圆角作用于图像实际绘制区（与页面矩形取交集：KeepAspectRatio
-            # 时图像不满铺，对图像矩形取圆角——静止与动画快照一致；
-            # Expanding 裁切满铺时退化为整页圆角）
-            if self._borderRadius > 0:
-                clip = QPainterPath()
-                clip.addRoundedRect(
-                    target.intersected(r),
-                    self._borderRadius, self._borderRadius)
-                painter.setClipPath(clip)
             painter.drawPixmap(
-                target, self._pixmap, QRectF(self._pixmap.rect()),
+                QRectF(drawX, drawY, drawW, drawH),
+                self._pixmap, QRectF(self._pixmap.rect()),
             )
         else:
             # 空图占位不填底（透明）——由所在卡片的底色透出
             pass
 
-        # 底部图文渐变暗色遮罩（整宽，不随图像圆角剪裁）
+        # 底部图文渐变暗色遮罩
         if not (self._title or self._subtitle):
             return
-        painter.setClipping(False)
         bannerHeight = 56 if not self._subtitle else 76
         bannerRect = QRectF(
             r.left(), r.bottom() - bannerHeight + 1, r.width(), bannerHeight)

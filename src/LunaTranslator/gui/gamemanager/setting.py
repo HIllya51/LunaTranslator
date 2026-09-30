@@ -367,7 +367,6 @@ class dialog_setting_game_internal(QWidget):
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
-            iscard=True,
             initial=(
                 (self.keepindexobject, "gamedata")
                 if (self.keepindexobject is not None)
@@ -394,7 +393,6 @@ class dialog_setting_game_internal(QWidget):
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
-            iscard=True,
             initial=(
                 (self.keepindexobject, "gamesetting")
                 if (self.keepindexobject is not None)

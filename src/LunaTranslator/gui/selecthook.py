@@ -37,10 +37,9 @@ from gui.dynalang import (
     LStandardItemModel,
     LDialog,
     LAction,
-    LTabWidget,
     LCheckBox,
 )
-from gui.fluent.tabwidget import apply_segmented_tabbar
+from gui.fluent.tabwidget import FluentPaneTabWidget
 
 
 def getformlayoutw(w=None, cls=LFormLayout, hide=False):
@@ -759,12 +758,11 @@ class hookselect(closeashidewindow):
         self.sysOutput.setUndoRedoEnabled(False)
         self.sysOutput.setReadOnly(True)
 
-        self.tabwidget = LTabWidget()
+        self.tabwidget = FluentPaneTabWidget()
         self.vboxlayout.addWidget(self.tabwidget)
-        # WinUI3 分段 tabbar（同设置子页签）：插件的 Segmented_WinUI3 仅支持
-        # 横向，原 East 竖排无法正确渲染
+        # 统一 Gallery 式页签组（Pivot_Grow bar + 各页直角面板）；
+        # 插件样式仅支持横向，保持 North
         self.tabwidget.setTabPosition(QTabWidget.TabPosition.North)
-        apply_segmented_tabbar(self.tabwidget)
         self.tabwidget.addTab(self.textOutput, ("文本"))
         self.tabwidget.addTab(self.sysOutput, ("日志"))
         self.tabwidget.setCurrentIndex(1)

@@ -60,7 +60,7 @@ NAV_ICONS = {
 # fluentui3styleproperties.h —— enum TabBarStyle
 TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
-TABBAR_STYLE_PIVOT_SLIDE = 3  # Pivot_Slide
+TABBAR_STYLE_PIVOT_GROW = 2  # Pivot_Grow
 
 
 class FluentCardSeparator(QFrame):
@@ -166,13 +166,14 @@ def apply_segmented_tabbar(tabwidget: QTabWidget):
 
 class FluentPaneTabWidget(LTabWidget):
     """Gallery 式页签组（pageaudiolevelmeter.cpp 基础/刻度/动画/颜色
-    tab 同款）：tabbar 样式可参数化（tabbar_style，默认 Pivot_Slide——
-    无底文字页签 + 选中底部 24px 强调色圆头短横线滑动过渡），各页
-    统一包在直角面板里（配色同页卡、四角直角，面板顶边紧贴 tabbar）。
-    addTab 自动包裹页 widget（懒加载页的 lazyfunction 属性随页迁移）。
-    宿主一般再包一张内容卡（make_content_card）。"""
+    tab 同款）：tabbar 样式可参数化（tabbar_style，默认 Pivot_Grow——
+    无底文字页签 + 选中底部 24px 强调色圆头短横线，切换时指示条自
+    旧位置拉伸过渡至新位置），各页统一包在直角面板里（配色同页卡、
+    四角直角，面板顶边紧贴 tabbar）。addTab 自动包裹页 widget（懒
+    加载页的 lazyfunction 属性随页迁移）。宿主一般再包一张内容卡
+    （make_content_card）。"""
 
-    def __init__(self, parent=None, tabbar_style=TABBAR_STYLE_PIVOT_SLIDE):
+    def __init__(self, parent=None, tabbar_style=TABBAR_STYLE_PIVOT_GROW):
         super().__init__(parent)
         bar = self.tabBar()
         bar.setProperty("tabBarStyle", tabbar_style)
@@ -235,23 +236,6 @@ class _NoPaneTabWidget(QTabWidget):
 
     def paintEvent(self, e):
         pass
-
-
-def make_iscard_page(getrealwidgetfunction):
-    """统一的 tab 页工厂：(8,0,8,8) 边距 + isCard(253) 内容卡
-    （顶 0 紧贴 tabbar）。所有层级的 tab 页共用这一个样式——
-    画廊/设置、游戏设置/游戏数据、启动/HOOK/……不再各自手写包裹。"""
-    q = QWidget()
-    v = QVBoxLayout(q)
-    v.setContentsMargins(8, 0, 8, 8)
-    card = QWidget()
-    card.setAttribute(Qt.WA_StyledBackground, True)
-    card.setProperty("isCard", True)
-    innerlay = QVBoxLayout(card)
-    innerlay.setContentsMargins(0, 0, 0, 0)
-    v.addWidget(card)
-    q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
-    return q
 
 
 def make_lazy_page(getrealwidgetfunction, main=True):

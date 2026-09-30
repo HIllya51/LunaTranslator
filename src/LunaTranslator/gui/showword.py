@@ -1,7 +1,7 @@
 from qtsymbols import *
 from gui.fluent.messagebox import ExMessageBox
 from gui.fluent.tabwidget import (
-    apply_segmented_tabbar,
+    FluentPaneTabWidget,
     apply_segmented_tabbar_style,
 )
 from gui.fluent.expander import ExExpander
@@ -77,7 +77,7 @@ from gui.usefulwidget import (
     threeswitch,
     VisGridLayout,
 )
-from gui.dynalang import LPushButton, LLabel, LTabWidget, LTabBar, LAction, LFormLayout
+from gui.dynalang import LPushButton, LLabel, LTabBar, LAction, LFormLayout
 from myutils.audioplayer import bass_code_cast
 from tts.basettsclass import TTSResult
 
@@ -314,8 +314,7 @@ class AnkiWindow(QWidget):
         baselay.setContentsMargins(0, 0, 0, 0)
         spliter = QSplitter()
         baselay.addWidget(spliter)
-        edittemptab = LTabWidget()
-        apply_segmented_tabbar(edittemptab)
+        edittemptab = FluentPaneTabWidget()
         self.previewtab = LTabBar()
         apply_segmented_tabbar_style(self.previewtab)
         revertbtn = LPushButton("恢复")

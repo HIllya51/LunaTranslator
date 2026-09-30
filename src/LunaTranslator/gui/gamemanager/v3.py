@@ -1658,11 +1658,12 @@ class dialog_savedgame_v3(QWidget):
             self.fuckqt6 = dgi
             # 游戏设置/游戏数据 上提为 righttop 顶层 tab（画廊之后）
             for title, wfunct in dgi.toplevelpages():
+                # bare：直角面板由 FluentPaneTabWidget.addTab 统一包裹
                 tabadd_lazy(
                     self.righttop,
                     title,
                     functools.partial(dgi.doaddtab, wfunct, k),
-                    iscard=True,
+                    bare=True,
                 )
             self.righttop.setCurrentIndex(
                 min(currvis, self.righttop.count() - 1))
@@ -2238,10 +2239,10 @@ class dialog_savedgame_v3(QWidget):
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        # 画廊/游戏设置/游戏数据 共用统一的 iscard 页工厂（边距+isCard）；
-        # 后两页由 viewitem 按当前游戏重建（见 viewitem）
+        # 画廊/游戏设置/游戏数据：页为裸容器，直角面板由
+        # FluentPaneTabWidget.addTab 统一包裹；后两页由 viewitem 重建
         tabadd_lazy(self.righttop, "画廊",
-                    lambda lay: lay.addWidget(self.pixview), iscard=True)
+                    lambda lay: lay.addWidget(self.pixview), bare=True)
         # 右侧两页：0=网格大图表（主项点击） 1=画廊/游戏设置/游戏数据
         # （子项点击）。righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
         righttopcard = FluentPageCard()
