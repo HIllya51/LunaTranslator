@@ -1647,25 +1647,13 @@ class dialog_savedgame_v3(QWidget):
                 self.righttop.removeTab(1)
 
             def __(v: QLayout):
-                # 设置页内容包 isCard（同画廊页：(8,0,8,8) 边距、紧贴
-                # tabbar），内部各级卡再对齐同一网格（见 setting.py）
-                holder = QWidget()
-                hlay = QVBoxLayout(holder)
-                hlay.setContentsMargins(8, 0, 8, 8)
-                inner = QWidget()
-                inner.setAttribute(Qt.WA_StyledBackground, True)
-                inner.setProperty("isCard", True)
-                ilay = QVBoxLayout(inner)
-                ilay.setContentsMargins(0, 0, 0, 0)
                 _ = dialog_setting_game_internal(
                     self, k, keepindexobject=self.keepindexobject
                 )
                 self.fuckqt6 = _
-                ilay.addWidget(_)
-                hlay.addWidget(inner)
-                v.addWidget(holder)
+                v.addWidget(_)
 
-            tabadd_lazy(self.righttop, "_设置_", __, bare=True)
+            tabadd_lazy(self.righttop, "_设置_", __, iscard=True)
             self.righttop.setCurrentIndex(currvis)
         except:
             print_exc()
@@ -2199,35 +2187,21 @@ class dialog_savedgame_v3(QWidget):
                 "gamemanager_nav_collapsed", not exp))
         self.righttop = makesubtab_lazy()
         # tabbar 左缩走 QSS；下移走外层容器顶边距（QSS ::tab-bar 的 top
-        # 只移 bar 不移内容起点，会把画廊卡顶盖到 bar 之下）
-        _tabbar_qss = "QTabWidget::tab-bar{left:8px;}"
-        self.righttop.currentChanged.connect(
-            lambda idx: (
-                self.righttop.setStyleSheet(
-                    "QTabWidget::pane{border:0;margin:0;padding:0;}"
-                    + _tabbar_qss if idx == 0 else _tabbar_qss
-                ),
-            )
-        )
+        # 只移 bar 不移内容起点，会把页卡顶盖到 bar 之下）。注意此处
+        # setStyleSheet 会整体替换 apply_segmented_tabbar 的 pane 清零，
+        # 必须带上 pane 规则
+        self.righttop.setStyleSheet(
+            "QTabWidget::pane{border:0;margin:0;padding:0;}"
+            "QTabWidget::tab-bar{left:8px;}")
         self.pixview = pixwrapper(self)
         self.pixview.startgame.connect(
             lambda: startgamecheck(
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        # 画廊 tab 页：内容 isCard(253)（页卡由外层 righttopcard 提供，
-        # 缩略图列表/轮播透明浮在内容卡上）；顶边距 0——紧贴 tabbar
-        _gpage = QWidget()
-        _gpl = QVBoxLayout(_gpage)
-        _gpl.setContentsMargins(8, 0, 8, 8)
-        _ginner = QWidget()
-        _ginner.setAttribute(Qt.WA_StyledBackground, True)
-        _ginner.setProperty("isCard", True)
-        _gil = QVBoxLayout(_ginner)
-        _gil.setContentsMargins(0, 0, 0, 0)
-        _gil.addWidget(self.pixview)
-        _gpl.addWidget(_ginner)
-        self.righttop.addTab(_gpage, "_画廊_")
+        # 画廊/设置 两个 tab 页共用统一的 iscard 页工厂（边距+isCard）
+        tabadd_lazy(self.righttop, "_画廊_",
+                    lambda lay: lay.addWidget(self.pixview), iscard=True)
         # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）。
         # righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
         righttopcard = FluentPageCard()

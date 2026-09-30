@@ -326,6 +326,7 @@ class dialog_setting_game_internal(QWidget):
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
+            iscard=True,
             initial=(
                 (self.keepindexobject, "p1")
                 if (self.keepindexobject is not None)
@@ -333,10 +334,6 @@ class dialog_setting_game_internal(QWidget):
             ),
             fast=True,
         )
-        # 插件给 QTabWidget pane 自带 2-4px 内边距，嵌套 tab 会逐层叠加——
-        # 清零后内容与表单行对齐同一网格
-        methodtab.setStyleSheet(
-            "QTabWidget::pane{border:0;margin:0;padding:0;}")
         vbox.addLayout(formLayout)
         vbox.addWidget(methodtab)
         do()
@@ -387,6 +384,7 @@ class dialog_setting_game_internal(QWidget):
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
+            iscard=True,
             initial=(
                 (self.keepindexobject, "gamedata")
                 if (self.keepindexobject is not None)
@@ -394,8 +392,6 @@ class dialog_setting_game_internal(QWidget):
             ),
             fast=True,
         )
-        methodtab.setStyleSheet(
-            "QTabWidget::pane{border:0;margin:0;padding:0;}")
         vbox.addWidget(methodtab)
         do()
 
@@ -415,6 +411,7 @@ class dialog_setting_game_internal(QWidget):
             [_[0] for _ in functs],
             [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
             delay=True,
+            iscard=True,
             initial=(
                 (self.keepindexobject, "gamesetting")
                 if (self.keepindexobject is not None)
@@ -422,8 +419,6 @@ class dialog_setting_game_internal(QWidget):
             ),
             fast=True,
         )
-        methodtab.setStyleSheet(
-            "QTabWidget::pane{border:0;margin:0;padding:0;}")
 
         self.methodtab = methodtab
         vbox.addWidget(methodtab)

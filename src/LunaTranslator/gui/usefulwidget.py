@@ -35,7 +35,9 @@ from gui.dynalang import (
     LTableView,
     LMainWindow,
 )
-from gui.fluent.tabwidget import apply_segmented_tabbar, make_lazy_page
+from gui.fluent.tabwidget import (
+    apply_segmented_tabbar, make_lazy_page, make_iscard_page,
+)
 from gui.fluent.colorpicker import ColorPickerButton, FluentColorDialog, paint_fluent_flyout_surface
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from gui.fluent.expander import _exp_chevron_button_background
@@ -2257,16 +2259,18 @@ def manybuttonlayout(textandfunctions: list):
     return layout
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False, bare=False):
-    # 每个 tab 页都包 FluentPageCard 圆角卡（底色与内容卡形成对比）：
-    # 子页签页紧邻 tabbar、主设置页填满内容区；pagecard 参数保留兼容。
-    # bare=True 时页签页不包页卡（透明，直落在外层页卡上）——页内容自带
-    # 内容卡时用，避免卡中卡的双层边框
+def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False, bare=False,
+                iscard=False):
+    # tab 页统一工厂：iscard=True -> (8,0,8,8)+isCard(253)（所有层级
+    # 共用）；默认 -> FluentPageCard 满铺；bare=True -> 透明不包卡；
+    # pagecard 参数保留兼容
     if bare:
         q = QWidget()
         v = QVBoxLayout(q)
         v.setContentsMargins(0, 0, 0, 0)
         q.lazyfunction = functools.partial(getrealwidgetfunction, v)
+    elif iscard:
+        q = make_iscard_page(getrealwidgetfunction)
     else:
         q = make_lazy_page(getrealwidgetfunction, main=not isinstance(tab, QTabWidget))
     tab.addTab(q, title)
@@ -2669,6 +2673,7 @@ def makesubtab_lazy(
     padding=False,
     pagecard=False,
     bare=False,
+    iscard=False,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
     if klass:
@@ -2701,16 +2706,19 @@ def makesubtab_lazy(
     if not can:
         tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
 
-    def __do(tab: LTabWidget, titles, functions, initial, pagecard, bare):
+    def __do(tab: LTabWidget, titles, functions, initial, pagecard, bare,
+             iscard):
         if titles and functions:
             for i, func in enumerate(functions):
-                tabadd_lazy(tab, titles[i], func, pagecard=pagecard, bare=bare)
+                tabadd_lazy(tab, titles[i], func, pagecard=pagecard, bare=bare,
+                            iscard=iscard)
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
             tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
             tab.currentChanged.emit(initial[0][initial[1]])
 
-    ___do = functools.partial(__do, tab, titles, functions, initial, pagecard, bare)
+    ___do = functools.partial(__do, tab, titles, functions, initial,
+                              pagecard, bare, iscard)
     if not delay:
         ___do()
         return tab

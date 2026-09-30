@@ -143,9 +143,10 @@ def apply_segmented_tabbar_style(bar: QTabBar):
 def apply_segmented_tabbar(tabwidget: QTabWidget):
     """把 QTabWidget 配成 Segmented WinUI3 风格
     （Gallery pagetab.cpp setupSegmentedTabs / addTabBarSection 同款），
-    并去掉 pane 边框。"""
-    # pane 的去除由 LTabWidget.paintEvent 置空完成（不用 QSS——
-    # 容器级样式表会给全部后代套 QStyleSheetStyle）
+    并去掉 pane 边框/内边距（插件自带 2-4px 内边距，嵌套 tab 会
+    逐层叠加错位——统一在此清零，调用方不再单独设 QSS）。"""
+    tabwidget.setStyleSheet(
+        "QTabWidget::pane{border:0;margin:0;padding:0;}")
     apply_segmented_tabbar_style(tabwidget.tabBar())
 
 
@@ -171,6 +172,23 @@ class _NoPaneTabWidget(QTabWidget):
 
     def paintEvent(self, e):
         pass
+
+
+def make_iscard_page(getrealwidgetfunction):
+    """统一的 tab 页工厂：(8,0,8,8) 边距 + isCard(253) 内容卡
+    （顶 0 紧贴 tabbar）。所有层级的 tab 页共用这一个样式——
+    画廊/设置、游戏设置/游戏数据、启动/HOOK/……不再各自手写包裹。"""
+    q = QWidget()
+    v = QVBoxLayout(q)
+    v.setContentsMargins(8, 0, 8, 8)
+    card = QWidget()
+    card.setAttribute(Qt.WA_StyledBackground, True)
+    card.setProperty("isCard", True)
+    innerlay = QVBoxLayout(card)
+    innerlay.setContentsMargins(0, 0, 0, 0)
+    v.addWidget(card)
+    q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
+    return q
 
 
 def make_lazy_page(getrealwidgetfunction, main=True):
