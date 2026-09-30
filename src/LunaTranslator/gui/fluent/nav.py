@@ -132,6 +132,8 @@ class FluentNavTree(QTreeWidget):
         self._navigation_expanded_width = 200
         self._restorable_child = None
         self._in_mode_update = False  # 模式切换内部处理中（不触发联动）
+        self._auto_expand_suppressed = False  # 收起后的保护窗（见 setNavigationExpanded）
+        self._suppress_token = None
         # 双击才展开/折叠父项（单击只选中）；默认关闭=单击选中并展开
         self._expand_on_doubleclick = False
 
@@ -182,7 +184,9 @@ class FluentNavTree(QTreeWidget):
         if not self.isVisible():
             return  # 已被隐藏：留待下次显示再试
         self._vscroll_pending = False
-        self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        if not self.property("navigationIconMode"):
+            # 图标模式由 _update_navigation_view_by_width 保持隐藏
+            self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
     # ---- 项管理 ----
     def addNavigationItem(self, text, page_index, icon_code="", auto_select=True):
@@ -246,6 +250,14 @@ class FluentNavTree(QTreeWidget):
         # 新状态优先：终止进行中的过渡（animation.start() 会同步投递一次
         # 起始值的 valueChanged，残留的旧动画会与新状态竞态）
         self._width_animation.stop()
+        if not expanded:
+            # 收起后的短保护窗：期间"展开子项/选中子项 -> 自动展开侧边栏"
+            # 的联动一律忽略——收起动画与各类恢复链（保存的展开态/选中
+            # 恢复、延迟构建的页面切换）竞态时会把收起立刻顶回展开。
+            # 手动点汉堡展开不受影响（直接走 setNavigationExpanded）。
+            self._auto_expand_suppressed = True
+            token = self._suppress_token = object()
+            QTimer.singleShot(500, lambda: self._clear_suppression(token))
         target_width = (self._navigation_expanded_width if expanded
                         else self._navigation_compact_width)
         if not animated:
@@ -257,6 +269,10 @@ class FluentNavTree(QTreeWidget):
         self._width_animation.setStartValue(current_width)
         self._width_animation.setEndValue(target_width)
         self._width_animation.start()
+
+    def _clear_suppression(self, token):
+        if token is self._suppress_token:
+            self._auto_expand_suppressed = False
 
     def navigationExpanded(self):
         return self._navigation_expanded
@@ -303,6 +319,12 @@ class FluentNavTree(QTreeWidget):
 
         self.setProperty("navigationIconMode", will_be_icon_mode)
 
+        # 折叠（图标）模式隐藏滚动条——窄列放不下；溢出仍可滚轮滚动
+        policy = (Qt.ScrollBarPolicy.ScrollBarAsNeeded if show_text
+                  else Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        if self.verticalScrollBarPolicy() != policy:
+            self.setVerticalScrollBarPolicy(policy)
+
         # 模式切换自身的展开/收起（保存态恢复）不应再触发"展开侧边栏"联动
         self._in_mode_update = True
         try:
@@ -342,22 +364,28 @@ class FluentNavTree(QTreeWidget):
     def _on_item_expanded(self, item):
         """折叠（图标）模式下任何分组被展开：图标模式子项不可见，保持
         折叠会表现为"展开丢失"——记录展开态（退出图标模式时保持）并
-        自动展开侧边栏。构造期建树（恢复保存的展开态）不触发。"""
+        自动展开侧边栏。构造期建树（恢复保存的展开态）与收起保护窗内
+        不触发。"""
         if item is None or self._navigation_expanded:
             return
-        if self._in_mode_update or not self.isVisible():
+        if (self._in_mode_update or not self.isVisible()
+                or self._auto_expand_suppressed):
             return
         item.setData(0, NAV_WAS_EXPANDED_ROLE, True)
         self.setNavigationExpanded(True)
 
     def _reveal_child(self, item):
         """子项被（程序性）选中：展开其祖先链；若侧边栏处于折叠模式
-        则一并展开——否则选中落在不可见的子项上（指示条消失）。"""
+        则一并展开——否则选中落在不可见的子项上（指示条消失）。
+        模式切换内部（如收起时恢复保存的选中）与收起保护窗内不触发，
+        否则收起会被立刻顶回展开。"""
         p = item.parent()
         while p is not None:
             p.setExpanded(True)  # 图标模式下经 _on_item_expanded 记录并展开侧边栏
             p = p.parent()
-        if not self._navigation_expanded and self.isVisible():
+        if (not self._navigation_expanded and self.isVisible()
+                and not self._in_mode_update
+                and not self._auto_expand_suppressed):
             self.setNavigationExpanded(True)
 
     def changeEvent(self, event):
