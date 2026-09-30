@@ -746,11 +746,25 @@ class _gamelistnav(FluentNavTree):
         self._icon_timer.setInterval(25)
         self._icon_timer.timeout.connect(self._load_one_visible_icon)
         self.verticalScrollBar().valueChanged.connect(self._kick_icon_timer)
+        # rangeChanged：布局/尺寸变化使滚动范围变动时也能重新激活
+        self.verticalScrollBar().rangeChanged.connect(
+            lambda *_: self._kick_icon_timer())
         self.itemExpanded.connect(lambda _1: self._kick_icon_timer())
 
     def request_item_icon(self, item, uid):
         self._icon_pending[id(item)] = (item, uid)
         self._icon_timer.start()
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        # 建树发生在 show 之前：那段时间的 tick 会因 rect 未就绪空转一轮
+        # 然后 _load_one_visible_icon 把计时器停掉——首显后（布局完成）
+        # 必须重新激活，否则子项图标有概率不加载（resize 才恢复）
+        QTimer.singleShot(0, self._kick_icon_timer)
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        self._kick_icon_timer()
 
     def _kick_icon_timer(self, *_):
         if self._icon_pending:

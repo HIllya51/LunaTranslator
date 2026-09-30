@@ -61,6 +61,10 @@ class FluentTitleBar(QWidget):
 
     # 居中控件（搜索框）的最小宽度——收窄到此为止，之后才轮到侧控件省略
     _CENTER_MIN_WIDTH = 150
+    # 侧控件（面包屑）最小形态的保守下限（空面包屑 minimumSizeHint=0，
+    # 但有标签时的省略号形态需要 ~56px；窗口最小宽取恒定值，避免增删
+    # 标签时最小宽跳动）
+    _CENTER_SIDE_FLOOR = 64
 
     def __init__(self, window, parent=None):
         super().__init__(parent or window)
@@ -159,6 +163,7 @@ class FluentTitleBar(QWidget):
         w.adjustSize()
         w.setVisible(True)
         self._layout_center()
+        self._apply_window_min()
 
     def addSideWidget(self, w):
         """紧挨居中控件右侧的控件（面包屑，从左向右）；显隐/重建
@@ -167,6 +172,17 @@ class FluentTitleBar(QWidget):
         w.setParent(self)
         w.installEventFilter(self)
         self._layout_center()
+        self._apply_window_min()
+
+    def _apply_window_min(self):
+        """把标题栏的最小宽度需求抬到窗口上（QMainWindow 不一定采用
+        menuWidget 的 minimumSizeHint，显式设置才可靠）——窗口不可能
+        缩到搜索框与按钮重叠。"""
+        win = getattr(self, "_window", None)
+        if win is not None and self._window is not None:
+            need = self.minimumSizeHint().width()
+            if need > win.minimumWidth():
+                win.setMinimumWidth(need)
 
     def addTrailingWidget(self, w):
         """插入尾部控件（最小化按钮之前，标题栏右侧）。"""
@@ -241,6 +257,23 @@ class FluentTitleBar(QWidget):
     def resizeEvent(self, event):
         super().resizeEvent(event)
         self._layout_center()
+        # 布局完成后标题等的最小尺寸才测得准——每次重取窗口最小宽
+        self._apply_window_min()
+
+    def minimumSizeHint(self):
+        """窗口最小宽的依据：布局最小（左簇+右簇）+ 居中控件链的最小
+        形态（标题间隙 12 + 搜索最小宽 + 间隙 + 侧控件最小形态下限）。
+        布局最小在首测时可能偏小（标题尚未测量），_apply_window_min
+        会在每次布局变化后重取。"""
+        base = super().minimumSizeHint()
+        if getattr(self, "_center_widget", None) is not None:
+            need = self._CENTER_MIN_WIDTH + 12
+            side = getattr(self, "_center_side", None)
+            if side is not None:
+                need += 8 + max(side.minimumSizeHint().width(),
+                                self._CENTER_SIDE_FLOOR)
+            base = QSize(base.width() + need, base.height())
+        return base
 
     # ---- 更新 ----
     def eventFilter(self, watched, event):
@@ -259,6 +292,7 @@ class FluentTitleBar(QWidget):
                                   QEvent.Type.ChildRemoved):
                 # 面包屑重建按钮（items 变化）后 sizeHint 已变——下一拍重定位
                 QTimer.singleShot(0, self._layout_center)
+                QTimer.singleShot(0, self._apply_window_min)
         elif event.type() in (QEvent.Type.ShowToParent,
                               QEvent.Type.HideToParent):
             # 尾部控件显隐（右簇宽度变化）-> 居中控件重定位
