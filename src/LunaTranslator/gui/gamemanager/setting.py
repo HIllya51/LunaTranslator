@@ -23,6 +23,7 @@ import sqlite3
 from gui.dialog_memory import dialog_memory
 from myutils.localetools import getgamecamptools, maycreatesettings
 from gui.fluent.expander import ExExpander
+from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
 from myutils.hwnd import getExeIcon
 from myutils.wrapper import Singleton
 from myutils.utils import (
@@ -51,7 +52,6 @@ from gui.usefulwidget import (
     clearlayout,
     makescrollgrid,
     automakegrid,
-    TableViewW,
     getsimpleswitch,
     maketabholder,
     getsimplepatheditor,
@@ -131,6 +131,176 @@ def maybehavebutton(self, gameuid, post):
             return getIconButton(callback=callback)
         else:
             return None
+
+
+class _GameTextProcTree(FluentSettingTree):
+    """游戏设置-文本处理 列表（原 TableViewW 改树）：使用 / 设置（无标题列）
+    /预处理方法 / 移动（末列），拖拽或上下移按钮排序（循环）。无文档链接。
+    行内容写 save_text_process_info（rank 序 + 每方法私有配置）。"""
+
+    def __init__(self, host, gameuid, parent=None):
+        super().__init__(
+            parent,
+            titles=["使用", "", "预处理方法", ""],
+            draggable=True,
+        )
+        self._host = host
+        self._gameuid = gameuid
+        hdr = self.header()
+        for c in (0, 1, 3):
+            hdr.setSectionResizeMode(
+                c, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._showmenu)
+        self.rebuild()
+
+    # ---- 数据 ----
+    def _rank(self):
+        return savehook_new_data[self._gameuid][
+            "save_text_process_info"]["rank"]
+
+    def _pconf(self):
+        return savehook_new_data[self._gameuid][
+            "save_text_process_info"]["postprocessconfig"]
+
+    def _ensureconf(self, k):
+        """该游戏的私有配置副本（原 __checkaddnewmethod 的初始化）。"""
+        pconf = self._pconf()
+        if k not in pconf:
+            if k == "stringreplace":
+                pconf[k] = copy.deepcopy(defaultpost[k])
+            else:
+                pconf[k] = copy.deepcopy(postprocessconfig[k])
+            pconf[k]["use"] = True
+        return pconf[k]
+
+    # ---- 行构建 ----
+    def rebuild(self):
+        self.clear()
+        for k in self._rank():
+            if k not in postprocessconfig:
+                continue
+            conf = self._ensureconf(k)
+            item = QTreeWidgetItem()
+            item.setData(0, Qt.ItemDataRole.UserRole, k)
+            self.addTopLevelItem(item)
+            self.setItemWidget(item, 0, self._cell(
+                getsimpleswitch(conf, "use"), center=True))
+            btn = maybehavebutton(self._host, self._gameuid, k)
+            if btn is not None:
+                self.setItemWidget(item, 1, self._cell(btn, center=True))
+            self.setItemWidget(item, 2, self._cell(
+                LLabel(_TR(postprocessconfig[k]["name"]))))
+            self.setItemWidget(
+                item, 3, self._movecell(functools.partial(self._move, k)))
+
+    # ---- 排序（拖拽 / 上下移按钮共用）----
+    def _applymove(self, idx1, idx2):
+        rank = self._rank()
+        k = rank.pop(idx1)
+        rank.insert(idx2, k)
+        self.rebuild()
+
+    def _ondrop(self, idx1, idx2):
+        self._applymove(idx1, idx2)
+
+    def _move(self, k, up, tomax):
+        """循环移一位（首行再上移到末尾、末行再下移到开头），
+        右键（tomax）置顶/置底。"""
+        rank = self._rank()
+        idx1 = rank.index(k)
+        if tomax:
+            idx2 = 0 if up else len(rank) - 1
+        else:
+            idx2 = (idx1 + (-1 if up else 1)) % len(rank)
+        if idx2 == idx1:
+            return
+        self._applymove(idx1, idx2)
+
+    # ---- 增删 ----
+    def addmethod(self, k):
+        """添加行回调：新方法插到最前（同旧版）。"""
+        rank = self._rank()
+        if k not in rank:
+            rank.insert(0, k)
+        self._ensureconf(k)
+        self.rebuild()
+
+    def removecurrent(self):
+        item = self.currentItem()
+        if item is None:
+            return
+        k = item.data(0, Qt.ItemDataRole.UserRole)
+        rank = self._rank()
+        if k in rank:
+            rank.remove(k)
+        pconf = self._pconf()
+        if k in pconf:
+            pconf.pop(k)
+        self.rebuild()
+
+    def _showmenu(self, p):
+        item = self.itemAt(p)
+        if item is None:
+            return
+        self.setCurrentItem(item)
+        menu = QMenu(self)
+        remove = LAction("删除", menu)
+        menu.addAction(remove)
+        action = menu.exec(QCursor.pos())
+        if action == remove:
+            self.removecurrent()
+
+
+class _GameTransOptimiTree(FluentSettingTree):
+    """游戏设置-翻译优化 列表：使用 / 设置（无标题列）/ 名称（静态，
+    无排序、无文档链接）。开关写 savehook_new_data[gameuid][name_use]，
+    设置按钮为该游戏的私有设置窗口（仅有私有设置项的行）。"""
+
+    def __init__(self, host, gameuid, parent=None):
+        super().__init__(parent, titles=["使用", "", "名称"])
+        self._host = host
+        self._gameuid = gameuid
+        hdr = self.header()
+        for c in (0, 1):
+            hdr.setSectionResizeMode(
+                c, QHeaderView.ResizeMode.ResizeToContents)
+        hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        self.rebuild()
+
+    def rebuild(self):
+        self.clear()
+        for item_ in static_data["transoptimi"]:
+            name = item_["name"]
+            visname = item_["visname"]
+            if not checkpostlangmatch(name):
+                continue
+            setting = loadpostsettingwindowmethod_private(name)
+            if not setting:
+                continue
+            item = QTreeWidgetItem()
+            item.setData(0, Qt.ItemDataRole.UserRole, name)
+            self.addTopLevelItem(item)
+
+            def __(f, host, gameuid):
+                return f(host, gameuid)
+
+            self.setItemWidget(item, 0, self._cell(
+                getsimpleswitch(
+                    savehook_new_data[self._gameuid],
+                    name + "_use",
+                    default=False,
+                ),
+                center=True,
+            ))
+            self.setItemWidget(item, 1, self._cell(
+                getIconButton(
+                    callback=functools.partial(
+                        __, setting, self._host, self._gameuid)),
+                center=True,
+            ))
+            self.setItemWidget(item, 2, self._cell(LLabel(visname)))
 
 
 class timelistediter(LDialog, DarkLightAutoResetIconHelper):
@@ -381,8 +551,7 @@ class dialog_setting_game_internal(QWidget):
             ("启动", functools.partial(self.___tabf, self.starttab)),
             ("HOOK", self.gethooktab),
             ("语言", functools.partial(self.___tabf, self.getlangtab)),
-            ("文本处理", functools.partial(self.___tabf, self.gettextproc)),
-            ("翻译优化", functools.partial(self.___tabf, self.gettransoptimi)),
+            ("文本处理", functools.partial(self.___tabf, self.gettextproctab)),
             ("语音", functools.partial(self.___tabf, self.getttssetting)),
             ("预翻译", functools.partial(self.___tabf, self.getpretranstab)),
             ("窗口缩放", functools.partial(self.___tabf, self.getmagpietab)),
@@ -1040,185 +1209,46 @@ class dialog_setting_game_internal(QWidget):
             ),
         )
 
-    def gettransoptimi(self, formLayout: LFormLayout, gameuid):
-
-        vbox: QGridLayout = self.createfollowdefault(
+    def gettextproctab(self, formLayout: LFormLayout, gameuid):
+        """文本处理 tab（原 文本处理/翻译优化 两 tab 合并）：各一张
+        跟随默认折叠卡（头部右侧 跟随默认 + 开关，开启跟随时内容禁用），
+        卡内为对应的树列表。"""
+        # 文本预处理
+        exp, grid = self.createfollowdefaultfold(
+            savehook_new_data[gameuid],
+            "textproc_follow_default",
+            title="文本预处理",
+        )
+        tree = _GameTextProcTree(self, gameuid)
+        tree.setMinimumHeight(120)
+        self.__textproctree = tree
+        grid.addWidget(wrap_setting_tree(tree), 0, 0)
+        # 排序由树的移动按钮/拖拽承担，这里只留增删
+        grid.addLayout(
+            manybuttonlayout(
+                [
+                    ("添加行", self.__privatetextproc_btn1),
+                    ("删除行", self.__privatetextproc_btn2),
+                ]
+            ),
+            1, 0,
+        )
+        exp.setExpanded(True)
+        formLayout.addRow(exp)
+        # 翻译优化
+        exp2, grid2 = self.createfollowdefaultfold(
             savehook_new_data[gameuid],
             "transoptimi_followdefault",
-            formLayout,
-            klass=QGridLayout,
+            title="翻译优化",
         )
-        objects = [["", "", "", ""]]
-
-        for item in static_data["transoptimi"]:
-
-            name = item["name"]
-            visname = item["visname"]
-            if not checkpostlangmatch(name):
-                continue
-
-            setting = loadpostsettingwindowmethod_private(name)
-            if not setting:
-                continue
-
-            def __(_f, _1, gameuid):
-                return _f(_1, gameuid)
-
-            obj = [
-                getsmalllabel(visname),
-                getsimpleswitch(
-                    savehook_new_data[gameuid],
-                    name + "_use",
-                    default=False,
-                ),
-                getIconButton(callback=functools.partial(__, setting, self, gameuid)),
-            ]
-            objects.append(obj)
-        automakegrid(vbox, objects)
-
-    def gettextproc(self, formLayout: LFormLayout, gameuid):
-
-        vbox = self.createfollowdefault(
-            savehook_new_data[gameuid], "textproc_follow_default", formLayout
-        )
-
-        model = LStandardItemModel()
-        model.setHorizontalHeaderLabels(["预处理方法", "使用", "设置"])
-
-        table = TableViewW()
-
-        table.setModel(model)
-        table.horizontalHeader().setSectionResizeMode(
-            2, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(
-            1, QHeaderView.ResizeMode.ResizeToContents
-        )
-        table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
-        table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
-        table.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
-        table.setWordWrap(False)
-
-        table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        table.customContextMenuRequested.connect(self.__privatetextproc_showmenu)
-        self.__textprocinternaltable = table
-        self.__textprocinternalmodel = model
-        self.__privatetextproc_gameuid = gameuid
-        for row, k in enumerate(
-            savehook_new_data[gameuid]["save_text_process_info"]["rank"]
-        ):
-            self.__checkaddnewmethod(row, k)
-        vbox.addWidget(table)
-        button = manybuttonlayout(
-            [
-                ("添加行", self.__privatetextproc_btn1),
-                ("删除行", self.removerows),
-                ("上移", functools.partial(self.__privatetextproc_moverank, -1)),
-                ("下移", functools.partial(self.__privatetextproc_moverank, 1)),
-            ]
-        )
-        vbox.addRow(button)
-
-    def __privatetextproc_showmenu(self, p):
-        r = self.__textprocinternaltable.currentIndex().row()
-        if r < 0:
-            return
-        menu = QMenu(self.__textprocinternaltable)
-        remove = LAction("删除", menu)
-        up = LAction("上移", menu)
-        down = LAction("下移", menu)
-        menu.addAction(remove)
-        menu.addAction(up)
-        menu.addAction(down)
-        action = menu.exec(self.__textprocinternaltable.cursor().pos())
-
-        if action == remove:
-            self.__privatetextproc_btn2()
-        elif action == up:
-            self.__privatetextproc_moverank(-1)
-        elif action == down:
-            self.__privatetextproc_moverank(1)
-
-    def __privatetextproc_moverank(self, dy):
-        __row = self.__textprocinternaltable.currentIndex().row()
-
-        __list = savehook_new_data[self.__privatetextproc_gameuid][
-            "save_text_process_info"
-        ]["rank"]
-        game = __list[__row]
-        idx1 = __list.index(game)
-        idx2 = (idx1 + dy) % len(__list)
-        __list.insert(idx2, __list.pop(idx1))
-        self.__textprocinternalmodel.removeRow(idx1)
-        self.__checkaddnewmethod(idx2, game)
-        self.__textprocinternaltable.setCurrentIndex(
-            self.__textprocinternalmodel.index(__row, 0)
-        )
-
-    def __checkaddnewmethod(self, row, _internal):
-        if _internal not in postprocessconfig:
-            return
-        self.__textprocinternalmodel.insertRow(
-            row,
-            [
-                QStandardItem(_TR(postprocessconfig[_internal]["name"])),
-                QStandardItem(),
-                QStandardItem(),
-            ],
-        )
-        __dict = savehook_new_data[self.__privatetextproc_gameuid][
-            "save_text_process_info"
-        ]["postprocessconfig"]
-        if _internal not in __dict:
-            if _internal == "stringreplace":
-                __dict[_internal] = copy.deepcopy(defaultpost[_internal])
-            else:
-                __dict[_internal] = copy.deepcopy(postprocessconfig[_internal])
-            __dict[_internal]["use"] = True
-        btn = maybehavebutton(self, self.__privatetextproc_gameuid, _internal)
-
-        self.__textprocinternaltable.setIndexWidget(
-            self.__textprocinternalmodel.index(row, 1),
-            getsimpleswitch(__dict[_internal], "use"),
-        )
-        if btn:
-            self.__textprocinternaltable.setIndexWidget(
-                self.__textprocinternalmodel.index(row, 2),
-                btn,
-            )
-
-    def removerows(self):
-
-        skip = []
-        for index in self.__textprocinternaltable.selectedIndexes():
-            if index.row() in skip:
-                continue
-            skip.append(index.row())
-        skip = reversed(sorted(skip))
-
-        for row in skip:
-            self.__textprocinternalmodel.removeRow(row)
-            _dict = savehook_new_data[self.__privatetextproc_gameuid][
-                "save_text_process_info"
-            ]
-            post = _dict["rank"][row]
-            _dict["rank"].pop(row)
-            if post in _dict["postprocessconfig"]:
-                _dict["postprocessconfig"].pop(post)
+        tree2 = _GameTransOptimiTree(self, gameuid)
+        tree2.setMinimumHeight(120)
+        grid2.addWidget(wrap_setting_tree(tree2), 0, 0)
+        exp2.setExpanded(True)
+        formLayout.addRow(exp2)
 
     def __privatetextproc_btn2(self):
-        row = self.__textprocinternaltable.currentIndex().row()
-        if row < 0:
-            return
-        self.__textprocinternalmodel.removeRow(row)
-        _dict = savehook_new_data[self.__privatetextproc_gameuid][
-            "save_text_process_info"
-        ]
-        post = _dict["rank"][row]
-        _dict["rank"].pop(row)
-        if post in _dict["postprocessconfig"]:
-            _dict["postprocessconfig"].pop(post)
+        self.__textproctree.removecurrent()
 
     def __privatetextproc_btn1(self):
 
@@ -1227,9 +1257,7 @@ class dialog_setting_game_internal(QWidget):
         for xx in postprocessconfig:
             if xx not in processfunctions:
                 continue
-            __list = savehook_new_data[self.__privatetextproc_gameuid][
-                "save_text_process_info"
-            ]["rank"]
+            __list = self.__textproctree._rank()
             if xx in __list:
                 continue
             __viss.append(postprocessconfig[xx]["name"])
@@ -1237,8 +1265,7 @@ class dialog_setting_game_internal(QWidget):
 
         def __callback(_internal, d):
             __ = _internal[d["k"]]
-            __list.insert(0, __)
-            self.__checkaddnewmethod(0, __)
+            self.__textproctree.addmethod(__)
 
         __d = {"k": 0}
         autoinitdialog(
