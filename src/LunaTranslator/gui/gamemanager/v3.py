@@ -2333,14 +2333,6 @@ class dialog_savedgame_v3(QWidget):
         self.nav.setNavigationExpanded(exp)
         self._footernav.setNavigationExpanded(exp)
 
-    def taglistrerank(self, tagid, dx):
-        idx1 = calculatetagidx(tagid)
-
-        idx2 = (idx1 + dx) % len(savegametaged)
-        savegametaged.insert(idx2, savegametaged.pop(idx1))
-        item = self.nav.takeTopLevelItem(idx1)
-        self.nav.insertTopLevelItem(idx2, item)
-
     def tagbuttonmenu(self, tagid):
         self.currentfocusuid = None
         self.reftagid = tagid
@@ -2348,13 +2340,8 @@ class dialog_savedgame_v3(QWidget):
         editname = LAction("修改列表名称", menu)
         addlist = LAction("创建列表", menu)
         dellist = LAction("删除列表", menu)
-        Upaction = LAction("上移", menu)
-        Downaction = LAction("下移", menu)
         addgame = LAction("添加游戏", menu)
         batchadd = LAction("批量添加", menu)
-        menu.addAction(Upaction)
-        menu.addAction(Downaction)
-        menu.addSeparator()
         if tagid not in (None, 1):
             menu.addAction(editname)
         menu.addAction(addlist)
@@ -2370,10 +2357,6 @@ class dialog_savedgame_v3(QWidget):
             self.clicked3()
         elif action == batchadd:
             self.clicked3_batch()
-        elif action == Upaction:
-            self.taglistrerank(tagid, -1)
-        elif action == Downaction:
-            self.taglistrerank(tagid, 1)
         elif action == editname or action == addlist:
             self.createlist(action == addlist, tagid)
 
