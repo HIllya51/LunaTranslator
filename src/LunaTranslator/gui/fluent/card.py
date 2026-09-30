@@ -6,29 +6,16 @@
 """
 
 from qtsymbols import (
-    QEvent,
-    QColor,
     Qt,
     QFont,
     QHBoxLayout,
     QLabel,
     QComboBox,
-    QListView,
-    QPalette,
     QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
 from gui.dynalang import LLabel
-
-from gui.fluent.icons import (
-    ICON_COLOR,
-    ICON_GLOBE,
-    ICON_SYNC,
-    ICON_PICTURE,
-    ICON_TASK_VIEW,
-    ICON_SETTINGS_DISPLAY_SOUND,
-)
 
 
 class FluentCard(QWidget):

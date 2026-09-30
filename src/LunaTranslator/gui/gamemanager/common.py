@@ -2,16 +2,14 @@ from qtsymbols import *
 from gui.fluent.messagebox import ExMessageBox
 import os, functools
 from traceback import print_exc
-from myutils.wrapper import threader, Singleton
+from myutils.wrapper import threader
 from myutils.utils import find_or_create_uid, duplicateconfig
 from myutils.hwnd import getExeIcon, getcurrexe
 import gobject, hashlib, NativeUtils, uuid, re
-from gui.dynalang import LFormLayout, LDialog
 from myutils.localetools import localeswitchedrun
 from myutils.config import (
     savehook_new_data,
     savegametaged,
-    uid2gamepath,
     get_launchpath,
     _TR,
     extradatas,
@@ -20,9 +18,7 @@ from myutils.config import (
 )
 from gui.usefulwidget import (
     getIconButton,
-    getsimpleswitch,
     SClickableLabel,
-    SplitLine,
 )
 
 

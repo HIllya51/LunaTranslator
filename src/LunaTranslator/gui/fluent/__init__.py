@@ -12,7 +12,6 @@ from qtsymbols import (
 )
 
 if isqt5:
-    from PyQt5.QtWidgets import QStyleFactory
     from PyQt5.QtCore import QCoreApplication
 
 import ctypes

@@ -46,9 +46,8 @@ from qtsymbols import (
 from PyQt5.QtWidgets import QStyleOptionSlider, QStyleOptionToolButton, QStyleOption
 from PyQt5.QtGui import QLinearGradient
 
-from gui.dynalang import LLabel, LPushButton, LDialog
+from gui.dynalang import LPushButton, LDialog
 from gui.fluent.tabwidget import apply_segmented_tabbar_style
-from myutils.config import _TR
 from gui.fluent import _disable_dwm_nc_chrome
 
 # ---- 飞层登记（非客户区点击关闭用） ----

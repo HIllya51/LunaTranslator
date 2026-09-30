@@ -20,16 +20,14 @@ from gui.usefulwidget import (
     LinkLabel,
     SClickableLabel,
     VisLFormLayout,
-    tabadd_lazy,
     makecardrow,
     getsimplecombobox,
 )
 from gui.dynalang import LLabel
 from gui.fluent.card import make_trailing_combo, make_card_contents
-from gui.fluent.icons import ICON_SETTINGS_DISPLAY_SOUND
 from gui.fluent.expander import ExExpander
+from gui.fluent import repolish_style
 from gui.setting.display_ui import switch_darklight
-from gui.setting.setting_year import yearsummary
 from language import UILanguages, Languages
 from myutils.updater import versionchecktask
 
@@ -107,7 +105,6 @@ def changeUIlanguage(_):
         QApplication.instance().setFont(font)
         # app.setFont 的运行期传播只对无显式字体的控件生效（侧边栏）；
         # 插件 polish 过的控件需要 setStyle re-polish 整体重解析
-        from gui.fluent import repolish_style
         repolish_style()
     languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
     QApplication.sendEvent(QApplication.instance(), languageChangeEvent)

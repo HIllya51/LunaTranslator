@@ -14,7 +14,7 @@ from qtsymbols import (
     QEvent,
     QFont,
     QFontMetrics,
-    QHBoxLayout,
+    
     QMenu,
     QPainter,
     QPalette,

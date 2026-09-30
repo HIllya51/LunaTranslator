@@ -16,7 +16,6 @@ from myutils.hwnd import clipboard_set_image
 from myutils.utils import (
     get_time_stamp,
     getimageformatlist,
-    targetmod,
     getimagefilefilter,
 )
 from gui.usefulwidget import (
@@ -26,9 +25,12 @@ from gui.usefulwidget import (
     request_delete_ok,
     IconButton,
     getspinbox,
+    makescrollgrid,
+    makecardrow,
+    D_getsimpleswitch,
 )
 
-from gui.gamemanager.common import loadvisinternal, tagitem
+from gui.gamemanager.common import tagitem
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
     getfonteditor,
@@ -757,9 +759,7 @@ class _gamelistnav(FluentNavTree):
 
     def showEvent(self, e):
         super().showEvent(e)
-        # 建树发生在 show 之前：那段时间的 tick 会因 rect 未就绪空转一轮
-        # 然后 _load_one_visible_icon 把计时器停掉——首显后（布局完成）
-        # 必须重新激活，否则子项图标有概率不加载（resize 才恢复）
+        # 建树发生在 show 前，图标计时器可能已空转停止——布局完成后重启
         QTimer.singleShot(0, self._kick_icon_timer)
 
     def resizeEvent(self, e):
@@ -1084,10 +1084,7 @@ class _gridpage(QWidget):
         self._sync_gear_state()
 
     def _build_settings_panel(self):
-        """在右侧面板中构建全部设置（通用两项 + 网格设置）。"""
-        from gui.usefulwidget import (
-            makescrollgrid, makecardrow, D_getsimpleswitch,
-        )
+        """在右侧面板中构建网格设置（行标签经 LFormLayout 翻译）。"""
         host = QVBoxLayout(self._settings_panel_inner)
         host.setContentsMargins(0, 0, 0, 0)
         # LFormLayout：行标签经 LLabel 翻译（语言切换自动更新）
@@ -2299,9 +2296,6 @@ class dialog_savedgame_v3(QWidget):
         if getattr(self, "_settingspage", None) is not None:
             self.stack.setCurrentWidget(self._settingspage)
             return
-        from gui.usefulwidget import (
-            makescrollgrid, makecardrow, D_getsimpleswitch,
-        )
         # 页面包 FluentPageCard 背景卡（同设置窗口主页面），内容卡浮其上
         page = FluentPageCard()
         _host = QVBoxLayout(page)

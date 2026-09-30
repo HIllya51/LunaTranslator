@@ -7,10 +7,10 @@ from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from qtsymbols import (
     QAbstractSpinBox,
     QComboBox,
-    QObject,
+    
     QEvent,
     QEasingCurve,
-    QPointF,
+    
     QRect,
     QRectF,
     QSize,

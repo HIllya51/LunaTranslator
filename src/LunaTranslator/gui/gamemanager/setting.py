@@ -55,7 +55,6 @@ from gui.usefulwidget import (
     getsimpleswitch,
     getsimplepatheditor,
     getboxlayout,
-    NQGroupBox,
     clearlayout,
     IconButton,
     getsimplecombobox,
@@ -71,7 +70,6 @@ from gui.usefulwidget import (
     CollapsibleBox,
     getsmalllabel,
     listediterline,
-    FocusCombo,
     VisGridLayout,
 )
 from gui.dynalang import (
@@ -83,7 +81,6 @@ from gui.dynalang import (
     LDialog,
     LTableView,
 )
-from gui.inputdialog import postconfigdialog_
 
 
 def maybehavebutton(self, gameuid, post):

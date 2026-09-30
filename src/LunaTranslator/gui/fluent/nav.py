@@ -2,7 +2,7 @@
 
 移植自 FluentUIStyle/PyQt5Examples/exwidgets.py 的 ExNavTreeWidget
 （对应 C++ ExWidgets/navigation/exnavtreewidget.cpp）：
-- 紧凑(30px)/展开(200px)两种宽度 + 280ms OutCubic 动画
+- 紧凑(NAV_COMPACT_WIDTH)/展开(200px)两种宽度 + 280ms OutCubic 动画
 - navigationViewIndicator / navigationIconMode / ItemHeight 属性由
   FluentUI3 插件消费（选中指示条、图标模式等）
 - 图标用 Segoe Fluent Icons 字形绘制（插件内嵌字体），随调色板/样式变化刷新
@@ -10,6 +10,7 @@
 
 from qtsymbols import (
     QAbstractItemView,
+    QApplication,
     QColor,
     QEvent,
     QEasingCurve,
@@ -24,24 +25,23 @@ from qtsymbols import (
     QRectF,
     QSize,
     Qt,
+    QTimer,
     QToolButton,
     QVariantAnimation,
     pyqtSignal,
-    QTimer,
     QTreeWidget,
     QTreeWidgetItem,
 )
-from qtsymbols import QApplication
 from myutils.config import _TR
 
 NAV_PAGE_ROLE = Qt.UserRole          # 页面索引
 NAV_ICON_ROLE = Qt.UserRole + 1      # 图标码点
 NAV_TEXT_ROLE = Qt.UserRole + 2      # 文本（紧凑模式下清空显示）
-NAV_WAS_EXPANDED_ROLE = Qt.UserRole + 3
+NAV_WAS_EXPANDED_ROLE = Qt.UserRole + 3  # 进入图标模式前的展开态（退出恢复）
 NAV_GROUP_RESTORE_ROLE = Qt.UserRole + 4  # 折叠分组时记住的子项（展开恢复）
 
-# 折叠（图标模式）宽度：图标的绘制区是贴格左缘的 30px 画布（原生尺寸），
-# 格宽 30 时图标恰好居中（ink 中心≈14 vs 格中心 15）；汉堡按钮同宽对齐
+# 折叠（图标模式）宽度。图标绘制区是贴格左缘的 30px 画布（原生尺寸），
+# 38 时图标近居中且不裁切；汉堡按钮同宽对齐
 NAV_COMPACT_WIDTH = 38
 
 

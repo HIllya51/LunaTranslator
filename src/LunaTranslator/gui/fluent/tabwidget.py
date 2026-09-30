@@ -241,9 +241,8 @@ class FluentTabWidget(QWidget):
 
         self.tab_widget = _NoPaneTabWidget(self)
         self.tab_widget.tabBar().hide()
-        # 插件给 QTabWidget pane 自带内边距（实测页卡四边被缩进 2-4px，
-        # 右侧离窗口框架不贴）——置空 pane 的边距/内边距，页卡与窗口
-        # 边缘完全重合
+        # 插件给 QTabWidget pane 自带内边距（页卡四边被缩进 2-4px，
+        # 右侧离窗口框架不贴）——置空 pane 边距，页卡与窗口边缘重合
         self.tab_widget.setStyleSheet(
             "QTabWidget::pane{border:0;margin:0;padding:0;}")
 

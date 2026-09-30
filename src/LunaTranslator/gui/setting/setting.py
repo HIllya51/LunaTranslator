@@ -1,7 +1,7 @@
 from qtsymbols import *
 import functools
 import qtawesome
-import time, gobject
+import gobject
 from myutils.config import globalconfig
 from gui.usefulwidget import closeashidewindow, makesubtab_lazy, create_centered_rect
 from gui.setting.textinput import setTabOne_lazy
