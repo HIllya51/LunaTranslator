@@ -495,7 +495,7 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis.append("自定义")
     __.append(___custom)
     tab, do = makesubtab_lazy(
-        __vis, __, delay=True, bare=True, type=1,
+        __vis, __, delay=True, type=1,
     )
     l.addWidget(maketabholder(tab))
     l.setSpacing(0)

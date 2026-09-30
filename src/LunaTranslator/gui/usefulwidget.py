@@ -2259,7 +2259,7 @@ def manybuttonlayout(textandfunctions: list):
     return layout
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction, bare=False):
+def tabadd_lazy(tab, title, getrealwidgetfunction, bare=True):
     # tab 页统一工厂：默认 -> FluentPageCard 满铺；bare=True -> 透明
     # 不包卡（FluentPaneTabWidget 的页由其 addTab 自行包直角面板）
     if bare:
@@ -2666,7 +2666,7 @@ def makesubtab_lazy(
     delay=False,
     initial=None,
     fast=False,
-    bare=False,
+    bare=True,
     type=0,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要

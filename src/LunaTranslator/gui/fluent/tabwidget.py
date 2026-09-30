@@ -58,6 +58,7 @@ NAV_ICONS = {
 }
 
 # fluentui3styleproperties.h —— enum TabBarStyle
+TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
 TABBAR_STYLE_PIVOT_GROW = 3  # Pivot_Grow
 
@@ -275,7 +276,12 @@ def make_lazy_page(getrealwidgetfunction, main=True):
     q = QWidget()
     v = QVBoxLayout(q)
     v.setContentsMargins(0, 0, 0, 0)
-    q.lazyfunction = functools.partial(getrealwidgetfunction, v)
+    card = FluentPageCard()
+    v.addWidget(card)
+    innerlay = QVBoxLayout(card)
+    innerlay.setContentsMargins(0, 0, 0, 0)
+    innerlay.setProperty("_fluent_main_grid" if main else "_fluent_card_grid", True)
+    q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
     return q
 
 

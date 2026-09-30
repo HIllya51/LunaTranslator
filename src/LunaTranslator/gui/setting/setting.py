@@ -101,6 +101,7 @@ class Setting(_SettingBase):
             ],
             klass=FluentTabWidget,
             delay=True,
+            bare=False,
         )
         self.setCentralWidget(self.tab_widget)
         do()
