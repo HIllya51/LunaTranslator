@@ -20,7 +20,6 @@ from myutils.utils import (
     getimagefilefilter,
 )
 from gui.usefulwidget import (
-    pixmapviewer,
     makesubtab_lazy,
     tabadd_lazy,
     MyInputDialog,
@@ -48,6 +47,7 @@ from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree, create_fluent_icon
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
+from gui.fluent.carousel import ExCarousel
 from gui.specialwidget import lazyscrollflow
 from gui.usefulwidget import getIconButton, SplitLine, ColorButton, getsimplecombobox, makescroll
 from gui.fluent.icons import (
@@ -289,6 +289,14 @@ class previewimages(QListWidget):
             pixmap_ = item.data(PathRole)
         self.changepixmappath.emit(pixmap_)
 
+    def setpathcurrent(self, path):
+        """按路径选中行（轮播翻页联动；已是当前行则不动，避免回环）。"""
+        for i in range(self.count()):
+            if self.item(i).data(PathRole) == path:
+                if self.currentRow() != i:
+                    self.setCurrentRow(i)
+                return
+
     def removecurrent(self, delfile):
         idx = self.currentRow()
         item = self.currentItem()
@@ -339,7 +347,10 @@ class hoverbtn(LLabel):
 
 
 class viewpixmap_x(QWidget):
-    tolastnext = pyqtSignal(int)
+    """画廊主视图：ExCarousel 轮播图集（替换原自绘 pixmapviewer）。
+    图片全分辨率延迟加载（25ms/张；异步下载未就绪的页 1.5s 后重试，
+    上限 20 轮，超时丢弃——同缩略图的隐藏语义）。"""
+
     startgame = pyqtSignal()
 
     def sizeHint(self):
@@ -347,21 +358,38 @@ class viewpixmap_x(QWidget):
 
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
-        self.pixmapviewer = pixmapviewer(self)
-        self.pixmapviewer.tolastnext.connect(self.tolastnext)
+        self.carousel = ExCarousel(self)
+        # 导航按钮悬停显现（同画廊 infoview/开始按钮的悬停风格，平时不遮图）
+        self.carousel.setNavigationButtonTrigger(ExCarousel.OnHover)
+        # 自动播放不因悬停暂停——轮播占满整个画廊视图，鼠标常驻其上，
+        # 默认的 pauseOnHover 会让自动播放永远不触发
+        self.carousel.setPauseOnHover(False)
         self.bottombtn = hoverbtn("开始游戏", self)
         self.bottombtn.clicked.connect(self.startgame)
-        self.infoview = fadeoutlabel(self, self.pixmapviewer, parent)
+        self.infoview = fadeoutlabel(self, self.carousel, parent)
         self.currentimage = None
+        # 轮播页序对应的路径（与 slide 一一对应；同步全部按路径而非行号，
+        # 缩略图隐藏/轮播丢页不会错位）
+        self._paths = []
+        self._pending = []  # [(slide, path)] 待延迟加载
+        self._failed = []   # 未就绪（异步下载中）的 (slide, path)
+        self._rounds = 0    # 重试轮数（每轮 1.5s，上限 20）
+        self._loadtimer = QTimer(self)
+        self._loadtimer.setInterval(25)
+        self._loadtimer.timeout.connect(self._load_one)
 
     def resizeEvent(self, e: QResizeEvent):
-        self.pixmapviewer.resize(e.size())
-        self.infoview.resize(e.size().width(), self.infoview.height())
+        size = e.size()
+        self.carousel.resize(size)
+        self.infoview.resize(size.width(), self.infoview.height())
+        # 底部让出轮播 pips 指示区（约 30px）
+        btnh = max(40, 3 * size.height() // 10)
+        btnbottom = max(size.height() - 36, btnh)
         self.bottombtn.setGeometry(
-            e.size().width() // 5,
-            7 * e.size().height() // 10,
-            3 * e.size().width() // 5,
-            3 * e.size().height() // 10,
+            size.width() // 5,
+            btnbottom - btnh,
+            3 * size.width() // 5,
+            btnh,
         )
         super().resizeEvent(e)
 
@@ -378,13 +406,96 @@ class viewpixmap_x(QWidget):
             pass
 
         self.infoview.setText(t)
-        if not path:
-            pixmap = QPixmap()
+        # 缩略图选中 -> 轮播翻到对应页（同页不重复触发）
+        if path in self._paths:
+            idx = self._paths.index(path)
+            if idx != self.carousel.currentIndex():
+                self.carousel.setCurrentIndex(idx)
+
+    # ---- 轮播内容管理 ----
+    def setpaths(self, paths, currentpath):
+        """重建轮播（切换游戏）。画廊是查看器语义：全分辨率、保持宽高比。"""
+        self._loadtimer.stop()
+        self._pending.clear()
+        self._failed.clear()
+        self._rounds = 0
+        self._paths = []  # 先断开映射：clear 期间残留的信号按越界丢弃
+        car = self.carousel
+        car.clear()
+        self._paths = list(paths)
+        if not self._paths:
+            return
+        slides = []
+        for _p in self._paths:
+            slides.append(car.slideAt(car.addPixmap(
+                QPixmap(), aspectMode=Qt.AspectRatioMode.KeepAspectRatio)))
+        self._pending = list(zip(slides, self._paths))
+        if currentpath in self._paths:
+            ci = self._paths.index(currentpath)
+            # 内容整体重建：直接就位不播动画，且当前页优先加载
+            car.setCurrentIndexImmediate(ci)
+            self._pending = self._pending[ci:] + self._pending[:ci]
+        self._loadtimer.start()
+
+    def reorderpaths(self, newpaths):
+        """路径集不变、仅顺序变化（缩略图拖拽重排）：takeSlide/insertSlide
+        复用已加载页，不重建不闪空。集合变化则回退整建。"""
+        if sorted(newpaths) != sorted(self._paths):
+            self.setpaths(newpaths, self.currentimage)
+            return
+        car = self.carousel
+        car.stopTransition()
+        widgets = {}
+        for p in list(self._paths):
+            widgets[p] = car.takeSlide(0)
+        self._paths = []
+        for p in newpaths:
+            if widgets.get(p) is not None:
+                car.addSlide(widgets[p])
+        self._paths = list(newpaths)
+        # 待加载队列按新页序重排
+        order = {p: i for i, p in enumerate(newpaths)}
+        self._pending.sort(key=lambda sp: order.get(sp[1], 0))
+        if self.currentimage in newpaths:
+            car.setCurrentIndexImmediate(newpaths.index(self.currentimage))
+
+    def removepath(self, path):
+        """删除一页（缩略图删除联动）。"""
+        if path not in self._paths:
+            return
+        slide = self.carousel.slideAt(self._paths.index(path))
+        if slide is not None:
+            self.carousel.removeSlideWidget(slide)
+        self._paths.pop(self._paths.index(path))
+        self._pending = [(s, p) for s, p in self._pending if p != path]
+        self._failed = [(s, p) for s, p in self._failed if p != path]
+
+    def _load_one(self):
+        if not self._pending:
+            self._loadtimer.stop()
+            if self._failed and self._rounds < 20:
+                self._rounds += 1
+                self._pending = self._failed
+                self._failed = []
+                QTimer.singleShot(1500, self._kickload)
+                return
+            # 超时仍失效：丢弃该页（同缩略图隐藏语义）
+            for slide, p in self._failed:
+                self.carousel.removeSlideWidget(slide)
+                if p in self._paths:
+                    self._paths.pop(self._paths.index(p))
+            self._failed = []
+            return
+        slide, path = self._pending.pop(0)
+        pix = getcachedimage(path, False)
+        if pix.isNull():
+            self._failed.append((slide, path))
         else:
-            pixmap = QPixmap.fromImage(
-                QImage(extradatas["localedpath"].get(path, path))
-            )
-        self.pixmapviewer.showpixmap(pixmap)
+            slide.setPixmap(pix)
+
+    def _kickload(self):
+        if self._pending:
+            self._loadtimer.start()
 
 
 class pixwrapper(QSplitter):
@@ -445,6 +556,8 @@ class pixwrapper(QSplitter):
         lst: list = savehook_new_data[self.k]["imagepath_all"]
         lst.clear()
         lst.extend(self.previewimages.dumppaths())
+        # 轮播页序跟随（集合不变时复用已加载页，不闪空）
+        self.pixview.reorderpaths(self.previewimages.dumppaths())
 
     def setrank(self, rank):
         if rank:
@@ -479,9 +592,9 @@ class pixwrapper(QSplitter):
         self.setHandleWidth(1)
         self.setrank(rank)
         self.sethor(hor)
-        self.pixview.tolastnext.connect(self.previewimages.tolastnext)
         self.previewimages.changepixmappath.connect(self.changepixmappath)
         self.previewimages.removepath.connect(self.removepath)
+        self.pixview.carousel.currentIndexChanged.connect(self._carouselindex)
         self.k = None
         self.removecurrent = self.previewimages.removecurrent
 
@@ -552,11 +665,24 @@ class pixwrapper(QSplitter):
     def removepath(self, path):
         lst: list = savehook_new_data[self.k].get("imagepath_all", [])
         lst.pop(lst.index(path))
+        self.pixview.removepath(path)
 
     def changepixmappath(self, path):
         if path:
             savehook_new_data[self.k]["currentvisimage"] = path
         self.pixview.changepixmappath(path)
+
+    def _carouselindex(self, idx):
+        """轮播翻页（按钮/圆点/滚轮/自动播放）-> currentvisimage +
+        缩略图选中（按路径同步；setpathcurrent 同行不动，无回环）。"""
+        paths = self.pixview._paths
+        if self.k is None or idx < 0 or idx >= len(paths):
+            return
+        path = paths[idx]
+        if not path:
+            return
+        savehook_new_data[self.k]["currentvisimage"] = path
+        self.previewimages.setpathcurrent(path)
 
     def setpix(self, k):
         self.k = k
@@ -564,6 +690,7 @@ class pixwrapper(QSplitter):
         self.previewimages.setpixmaps(
             pixmaps, savehook_new_data[k].get("currentvisimage")
         )
+        self.pixview.setpaths(pixmaps, savehook_new_data[k].get("currentvisimage"))
         self.pixview.bottombtn.setVisible(os.path.exists(get_launchpath(k)))
 
 
@@ -1119,7 +1246,10 @@ class _gridpage(QWidget):
 
     def _itemfocus(self, b, k):
         self.currentfocusuid = k if b else None
-        if b and not getattr(self, "_focus_programmatic", False):
+        if not b:
+            # 焦点清除（空白点击/主项选中/联动清焦）
+            return
+        if not getattr(self, "_focus_programmatic", False):
             # 图表单击：侧栏指向该游戏（focusgame 的被动高亮不回写）
             self.ref.point_game(k)
 
