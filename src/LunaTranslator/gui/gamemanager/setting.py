@@ -275,11 +275,12 @@ class dialog_setting_game_internal(QWidget):
         self.__quanju_wc = False
         self.keepindexobject = keepindexobject
         vbox = QVBoxLayout(self)
-        # 页面卡内统一边距（同 makegrid 惯例：左右 16、顶 8、底 12），
-        # 下级 methodtab 的页不再包卡（bare），全部内容对齐同一网格
-        vbox.setContentsMargins(16, 8, 16, 12)
+        # 0 边距：methodtab 满铺 isCard——其 bar 药丸与外层 tabbar 药丸
+        # 对齐（插件 bar 内距 8px 两侧一致）；路径/标题 行单独 16 内缩
+        vbox.setContentsMargins(0, 8, 0, 0)
         self.lauchpath = None
         formLayout = LFormLayout()
+        formLayout.setContentsMargins(16, 0, 16, 0)
         self.gameuid = gameuid
         formLayout.addRow(
             "路径",
@@ -350,7 +351,7 @@ class dialog_setting_game_internal(QWidget):
         _w = formscrollcontent()
         _w.setStyleSheet("formscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
-        formLayout.setContentsMargins(16, 8, 16, 12)
+        formLayout.setContentsMargins(16, 16, 16, 16)
         do = functools.partial(function, formLayout, gameuid)
         scroll = makescroll()
         scroll.setWidget(_w)
@@ -363,7 +364,7 @@ class dialog_setting_game_internal(QWidget):
         _w = formscrollcontent2()
         _w.setStyleSheet("formscrollcontent2{background-color:transparent;}")
         formLayout = QVBoxLayout(_w)
-        formLayout.setContentsMargins(16, 8, 16, 12)
+        formLayout.setContentsMargins(16, 16, 16, 16)
         do = functools.partial(function, formLayout, gameuid)
         scroll = makescroll()
         scroll.setWidget(_w)
@@ -1013,10 +1014,9 @@ class dialog_setting_game_internal(QWidget):
         btn = getsimpleswitch(
             {}, None, default=not MagpieConfig.find(gameuid), callback=__
         )
-        formLayout.setContentsMargins(0, 0, 0, 0)
-        formLayout.setSpacing(0)
         _w = QWidget()
         btnline = LFormLayout(_w)
+        btnline.setContentsMargins(0, 0, 0, 0)
         btnline.addRow("跟随默认", btn)
         formLayout.addRow(_w)
         formLayout.addRow(internal)
@@ -1409,7 +1409,7 @@ class dialog_setting_game_internal(QWidget):
         _w = hookscrollcontent()
         _w.setStyleSheet("hookscrollcontent{background-color:transparent;}")
         formLayout = LFormLayout(_w)
-        formLayout.setContentsMargins(16, 8, 16, 12)
+        formLayout.setContentsMargins(16, 16, 16, 16)
 
         def __():
             self.gethooktab_internal(formLayout, gameuid)

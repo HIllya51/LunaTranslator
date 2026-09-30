@@ -1647,13 +1647,24 @@ class dialog_savedgame_v3(QWidget):
                 self.righttop.removeTab(1)
 
             def __(v: QLayout):
+                # 设置页内容包 isCard（同画廊页：(8,0,8,8) 边距、紧贴
+                # tabbar），内部各级卡再对齐同一网格（见 setting.py）
+                holder = QWidget()
+                hlay = QVBoxLayout(holder)
+                hlay.setContentsMargins(8, 0, 8, 8)
+                inner = QWidget()
+                inner.setAttribute(Qt.WA_StyledBackground, True)
+                inner.setProperty("isCard", True)
+                ilay = QVBoxLayout(inner)
+                ilay.setContentsMargins(0, 0, 0, 0)
                 _ = dialog_setting_game_internal(
                     self, k, keepindexobject=self.keepindexobject
                 )
                 self.fuckqt6 = _
-                v.addWidget(_)
+                ilay.addWidget(_)
+                hlay.addWidget(inner)
+                v.addWidget(holder)
 
-            # bare：不包页卡（外层 righttopcard 已是页卡），内容卡直落其上
             tabadd_lazy(self.righttop, "_设置_", __, bare=True)
             self.righttop.setCurrentIndex(currvis)
         except:
