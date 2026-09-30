@@ -17,7 +17,6 @@ from gui.rangeselect import rangeselct_function
 from myutils.ocrutil import imageCut
 from myutils.mecab import mecab
 from myutils.hwnd import grabwindow, getExeIcon
-from gui.fluent.tabwidget import FluentPageCard
 from gui.usefulwidget import (
     saveposwindow,
     makesubtab_lazy,
@@ -573,10 +572,13 @@ class dialog_memory(saveposwindow):
 
     @property
     def editororview(self) -> editswitchTextBrowserEx:
-        w = self.tab.currentWidget().layout().itemAt(0).widget()
-        if isinstance(w, FluentPageCard):
-            # tabadd_lazy 的页签页外层包了 FluentPageCard（_plus 手动加的页没有）
-            w = w.layout().itemAt(0).widget()
+        # 页签页外层的包裹层随容器实现而变（FluentPaneTabWidget 的
+        # 直角面板 / tabadd_lazy 的 FluentPageCard / _plus 手动加页无
+        # 包裹）——按类型直接找视图控件，不再逐层手工解包
+        w = self.tab.currentWidget()
+        found = w.findChildren(editswitchTextBrowserEx)
+        if found:
+            return found[0]
         return w
 
     def switchreadonly(self, i):
