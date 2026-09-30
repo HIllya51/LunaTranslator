@@ -1643,18 +1643,29 @@ class dialog_savedgame_v3(QWidget):
             self.pixview.setpix(k)
             self.currentfocusuid = k
             currvis = self.righttop.currentIndex()
-            if self.righttop.count() > 1:
+            # 画廊(0) 常驻；移除旧的游戏设置/游戏数据两页。升序删：
+            # 当前页随索引左移（同一控件）不触发多余的懒构建
+            while self.righttop.count() > 1:
                 self.righttop.removeTab(1)
-
-            def __(v: QLayout):
-                _ = dialog_setting_game_internal(
-                    self, k, keepindexobject=self.keepindexobject
+            # 上一游戏的状态宿主回收：统计 页的刷新 QTimer 以它为
+            # parent，不删会常驻滴答
+            old = getattr(self, "fuckqt6", None)
+            if old is not None:
+                old.deleteLater()
+            dgi = dialog_setting_game_internal(
+                self, k, keepindexobject=self.keepindexobject
+            )
+            self.fuckqt6 = dgi
+            # 游戏设置/游戏数据 上提为 righttop 顶层 tab（画廊之后）
+            for title, wfunct in dgi.toplevelpages():
+                tabadd_lazy(
+                    self.righttop,
+                    title,
+                    functools.partial(dgi.doaddtab, wfunct, k),
+                    iscard=True,
                 )
-                self.fuckqt6 = _
-                v.addWidget(_)
-
-            tabadd_lazy(self.righttop, "_设置_", __, iscard=True)
-            self.righttop.setCurrentIndex(currvis)
+            self.righttop.setCurrentIndex(
+                min(currvis, self.righttop.count() - 1))
         except:
             print_exc()
 
@@ -2199,11 +2210,12 @@ class dialog_savedgame_v3(QWidget):
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        # 画廊/设置 两个 tab 页共用统一的 iscard 页工厂（边距+isCard）
-        tabadd_lazy(self.righttop, "_画廊_",
+        # 画廊/游戏设置/游戏数据 共用统一的 iscard 页工厂（边距+isCard）；
+        # 后两页由 viewitem 按当前游戏重建（见 viewitem）
+        tabadd_lazy(self.righttop, "画廊",
                     lambda lay: lay.addWidget(self.pixview), iscard=True)
-        # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）。
-        # righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
+        # 右侧两页：0=网格大图表（主项点击） 1=画廊/游戏设置/游戏数据
+        # （子项点击）。righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
         righttopcard = FluentPageCard()
         _rl = QVBoxLayout(righttopcard)
         _rl.setContentsMargins(0, 8, 0, 0)  # 顶部：tabbar 从卡缘下移

@@ -274,30 +274,19 @@ class dialog_setting_game_internal(QWidget):
         super().__init__(parent)
         self.__quanju_wc = False
         self.keepindexobject = keepindexobject
-        vbox = QVBoxLayout(self)
-        # 0 边距：methodtab 满铺 isCard——其 bar 药丸与外层 tabbar 药丸
-        # 对齐（插件 bar 内距 8px 两侧一致）
-        vbox.setContentsMargins(0, 8, 0, 0)
         self.lauchpath = None
         self.gameuid = gameuid
-        functs = [
+
+    def toplevelpages(self):
+        """游戏设置/游戏数据 两页的构建器——原 L2 methodtab 已上提，
+        页直接挂到宿主 tab（游戏管理 righttop / 独立设置窗口）。
+        本控件只作状态宿主（对话框 parent / keepindexobject / lauchpath
+        等），自身无 UI。构建器经 doaddtab 调用：wfunct(gameuid) ->
+        (页 QWidget, do)。"""
+        return [
             ("游戏设置", functools.partial(self.___tabf3, self.makegamesettings)),
             ("游戏数据", functools.partial(self.___tabf3, self.makegamedata)),
         ]
-        methodtab, do = makesubtab_lazy(
-            [_[0] for _ in functs],
-            [functools.partial(self.doaddtab, _[1], gameuid) for _ in functs],
-            delay=True,
-            iscard=True,
-            initial=(
-                (self.keepindexobject, "p1")
-                if (self.keepindexobject is not None)
-                else None
-            ),
-            fast=True,
-        )
-        vbox.addWidget(methodtab)
-        do()
 
     def _addtitlerow(self, vbox: QVBoxLayout, gameuid):
         """标题卡：标题编辑 + 搜索 + 记忆列表按钮（游戏数据页顶部，
@@ -1487,11 +1476,21 @@ class dialog_setting_game(QDialog):
         self.setWindowTitle(savehook_new_data[gameuid]["title"])
 
         self.setWindowIcon(getExeIcon(get_launchpath(gameuid), cache=True))
-        _ = dialog_setting_game_internal(
+        dgi = dialog_setting_game_internal(
             self, gameuid, keepindexobject={"gamesetting": setindexhook}
         )
-        _.setMinimumWidth(600)
+        # 游戏设置/游戏数据 两页直接作为顶层 tab（同游戏管理 righttop）
+        functs = dgi.toplevelpages()
+        methodtab, do = makesubtab_lazy(
+            [_[0] for _ in functs],
+            [functools.partial(dgi.doaddtab, _[1], gameuid) for _ in functs],
+            delay=True,
+            iscard=True,
+            fast=True,
+        )
+        methodtab.setMinimumWidth(600)
         l = QHBoxLayout(self)
-        l.addWidget(_)
-        l.setContentsMargins(0, 0, 0, 0)
+        l.addWidget(methodtab)
+        l.setContentsMargins(0, 8, 0, 0)
+        do()
         self.show()
