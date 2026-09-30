@@ -282,23 +282,6 @@ class dialog_setting_game_internal(QWidget):
         formLayout = LFormLayout()
         formLayout.setContentsMargins(16, 0, 16, 0)
         self.gameuid = gameuid
-        formLayout.addRow(
-            "路径",
-            getboxlayout(
-                [
-                    getsimplepatheditor(
-                        uid2gamepath[gameuid],
-                        callback=self.selectexe,
-                        clearable=False,
-                        icons=("fa.gear",),
-                    ),
-                    getIconButton(
-                        lambda: dialog_memory(self, gameuid=gameuid),
-                        icon="fa.list-ul",
-                    ),
-                ]
-            ),
-        )
         titleedit = QLineEdit(savehook_new_data[gameuid]["title"])
 
         def _titlechange():
@@ -575,6 +558,25 @@ class dialog_setting_game_internal(QWidget):
             icons=("fa.gear", "fa.undo"),
             clearset=lambda: uid2gamepath[gameuid],
         )
+        # 路径（游戏本体路径 + 记忆列表按钮）——与 启动程序 相邻成组
+        formLayout.addRow(makecardrow(
+            "路径",
+            getboxlayout(
+                [
+                    getsimplepatheditor(
+                        uid2gamepath[gameuid],
+                        callback=self.selectexe,
+                        clearable=False,
+                        icons=("fa.gear",),
+                    ),
+                    getIconButton(
+                        lambda: dialog_memory(self, gameuid=gameuid),
+                        icon="fa.list-ul",
+                    ),
+                ]
+            ),
+            fill=True,
+        ))
         exp = ExExpander(content_pad=True)
         rows = _MethodRows(exp)
         header = QWidget()
