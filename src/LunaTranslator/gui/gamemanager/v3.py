@@ -2186,6 +2186,10 @@ class dialog_savedgame_v3(QWidget):
         # 主导航展开/收起（含双击展开分组触发的自动展开）-> 底部导航跟随
         self.nav.navigationExpandedChanged.connect(
             self._footernav.setNavigationExpanded)
+        # 折叠状态持久化：任意来源（汉堡/双击展开联动/程序性）都保存
+        self.nav.navigationExpandedChanged.connect(
+            lambda exp: globalconfig.__setitem__(
+                "gamemanager_nav_collapsed", not exp))
         self.righttop = makesubtab_lazy()
         self.righttop.currentChanged.connect(
             lambda idx: (
@@ -2324,10 +2328,10 @@ class dialog_savedgame_v3(QWidget):
         self.stack.setCurrentWidget(page)
 
     def _toggle_nav(self):
+        # 折叠状态由 navigationExpandedChanged 信号统一持久化
         exp = not self.nav.navigationExpanded()
         self.nav.setNavigationExpanded(exp)
         self._footernav.setNavigationExpanded(exp)
-        globalconfig["gamemanager_nav_collapsed"] = not exp
 
     def taglistrerank(self, tagid, dx):
         idx1 = calculatetagidx(tagid)
@@ -2395,8 +2399,10 @@ class dialog_savedgame_v3(QWidget):
                     "uid": str(uuid.uuid4()),
                     "opened": True,
                 }
-                savegametaged.insert(i, tag)
-                group0 = self._addtagitem(i, tag["uid"], True)
+                # 新列表放到最后（而非插入到来源列表之前）
+                savegametaged.append(tag)
+                group0 = self._addtagitem(
+                    len(savegametaged) - 1, tag["uid"], True)
                 self._updatetagtext(group0)
             else:
                 savegametaged[i]["title"] = title

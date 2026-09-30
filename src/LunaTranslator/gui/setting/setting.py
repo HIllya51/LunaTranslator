@@ -56,10 +56,8 @@ class Setting(_SettingBase):
         if getattr(self, "tab_widget", None) is not None and hasattr(
             self.tab_widget, "toggleNavigation"
         ):
+            # 折叠状态由 navigationExpandedChanged 信号统一持久化
             self.tab_widget.toggleNavigation()
-            # 侧边栏折叠状态存档（firstshow 恢复）
-            globalconfig["setting_nav_collapsed"] = (
-                not self.tab_widget.navigationExpanded())
 
     def hitTestWidgets(self):
         bar = self._fluent_title_bar
@@ -120,7 +118,10 @@ class Setting(_SettingBase):
         for _title, _func in transopti_children[1:]:
             self.tab_widget.addNavChildPage("文本处理", _title, _func)
         self.tab_widget.adjust_list_widget_width()
-        # 侧边栏折叠状态恢复（_toggle_fluent_nav 存档）
+        # 侧边栏折叠状态：任意来源（汉堡/程序性展开）都经信号持久化
+        self.tab_widget.nav.navigationExpandedChanged.connect(
+            lambda exp: globalconfig.__setitem__(
+                "setting_nav_collapsed", not exp))
         self.tab_widget.setNavigationExpanded(
             not globalconfig.get("setting_nav_collapsed", False), animated=False)
         index = 0
