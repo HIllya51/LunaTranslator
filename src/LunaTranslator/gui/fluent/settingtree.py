@@ -24,6 +24,9 @@ from qtsymbols import (
     QVBoxLayout,
     QWidget,
 )
+import functools
+
+from gui.usefulwidget import D_getIconButton_mousefollow
 from myutils.config import _TR
 
 # 自管拖拽的 mime 标记（同视图内重排，无携带数据）
@@ -88,6 +91,25 @@ class FluentSettingTree(QTreeWidget):
         sp = QWidget()
         sp.setFixedSize(ref.size())
         return sp
+
+    def _movecell(self, onmove):
+        """上下移按钮（右键 = 置顶/置底），独占一列（无标题）。
+        onmove(up: bool, tomax: bool) 由子类实现数据序调整 + 重建。"""
+        return self._cell(
+            D_getIconButton_mousefollow(
+                callback=functools.partial(onmove, True, False),
+                icon="fa.arrow-up",
+                callback2=functools.partial(onmove, True, True),
+                tips="上移",
+            ),
+            D_getIconButton_mousefollow(
+                callback=functools.partial(onmove, False, False),
+                icon="fa.arrow-down",
+                callback2=functools.partial(onmove, False, True),
+                tips="下移",
+            ),
+            center=True,
+        )
 
     # ---- 自管拖拽（子类实现 _ondrop：改写数据序 + 重建行）----
     def mousePressEvent(self, ev):

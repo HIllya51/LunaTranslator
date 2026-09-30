@@ -48,19 +48,21 @@ def getcomparelayout(self):
 
 
 class _PreProcessTree(FluentSettingTree):
-    """文本预处理列表：使用 / 设置（无标题列）/预处理方法 三列，拖拽排序。排序写回
-    postprocess_rank：可见项按新序填回原可见槽位（不在 postprocessconfig
-    的项原地保留，等价于旧版逐次交换的累计效果）。"""
+    """文本预处理列表：使用 / 设置（无标题列）/预处理方法 / 移动（末列），
+    拖拽或上下移按钮排序。上下移在可见列表内循环（首行再上移到末尾、
+    末行再下移到开头；右键置顶/置底）。排序写回 postprocess_rank：
+    可见项按新序填回原可见槽位（不在 postprocessconfig 的项原地保留，
+    等价于旧版逐次交换的累计效果）。"""
 
     def __init__(self, host, parent=None):
         super().__init__(
             parent,
-            titles=["使用", "", "预处理方法"],
+            titles=["使用", "", "预处理方法", ""],
             draggable=True,
         )
         self._host = host
         hdr = self.header()
-        for c in (0, 1):
+        for c in (0, 1, 3):
             hdr.setSectionResizeMode(
                 c, QHeaderView.ResizeMode.ResizeToContents)
         hdr.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
@@ -90,6 +92,9 @@ class _PreProcessTree(FluentSettingTree):
             if btn is not None:
                 self.setItemWidget(item, 1, self._cell(btn, center=True))
             self.setItemWidget(item, 2, namecell)
+            # 上下移按钮列（末列，右键置顶/置底）
+            self.setItemWidget(
+                item, 3, self._movecell(functools.partial(self._move, post)))
 
     def _configbtn(self, post, conf):
         """设置按钮：_11=编辑脚本；有 args=设置弹窗；无=None（槽位）。"""
@@ -121,7 +126,8 @@ class _PreProcessTree(FluentSettingTree):
         return D_getIconButton(
             callback=callback, tips=conf["name"] + "_设置")()
 
-    def _ondrop(self, idx1, idx2):
+    def _applymove(self, idx1, idx2):
+        """可见列表内 idx1 -> idx2，重映射回 postprocess_rank。"""
         rank = globalconfig["postprocess_rank"]
         filtered = [p for p in rank if p in postprocessconfig]
         post = filtered.pop(idx1)
@@ -130,6 +136,23 @@ class _PreProcessTree(FluentSettingTree):
         globalconfig["postprocess_rank"] = [
             next(it) if p in postprocessconfig else p for p in rank]
         self.rebuild()
+
+    def _ondrop(self, idx1, idx2):
+        self._applymove(idx1, idx2)
+
+    def _move(self, post, up, tomax):
+        """上下移按钮：可见列表内循环移一位（首行再上移到末尾、末行
+        再下移到开头），右键（tomax）置顶/置底。"""
+        filtered = [p for p in globalconfig["postprocess_rank"]
+                    if p in postprocessconfig]
+        idx1 = filtered.index(post)
+        if tomax:
+            idx2 = 0 if up else len(filtered) - 1
+        else:
+            idx2 = (idx1 + (-1 if up else 1)) % len(filtered)
+        if idx2 == idx1:
+            return
+        self._applymove(idx1, idx2)
 
 
 class _TransOptimiTree(FluentSettingTree):

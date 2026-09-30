@@ -89,18 +89,19 @@ def doadjust(*_):
 
 
 class _ToolButtonList(FluentSettingTree):
-    """工具按钮列表：使用/设置（无标题列）/对齐/图标/说明 五列，
-    拖拽排序改写 rank2。"""
+    """工具按钮列表：使用/设置（无标题列）/对齐/图标/说明/移动（末列），
+    拖拽或上下移按钮排序改写 rank2。上下移循环：首行再上移到末尾、
+    末行再下移到开头；右键置顶/置底。"""
 
     def __init__(self, host, parent=None):
         super().__init__(
             parent,
-            titles=["使用", "", "对齐", "图标", "说明"],
+            titles=["使用", "", "对齐", "图标", "说明", ""],
             draggable=True,
         )
         self._host = host
         hdr = self.header()
-        for c in (0, 1, 2, 3):
+        for c in (0, 1, 2, 3, 5):
             hdr.setSectionResizeMode(
                 c, QHeaderView.ResizeMode.ResizeToContents)
         hdr.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
@@ -151,13 +152,32 @@ class _ToolButtonList(FluentSettingTree):
                 D_getdoclink("alltoolbuttons.html#anchor-" + k)(),
                 LLabel(t),
             ))
+            # 上下移按钮列（末列，右键置顶/置底）
+            self.setItemWidget(
+                item, 5, self._movecell(functools.partial(self._move, k)))
 
-    def _ondrop(self, idx1, idx2):
+    def _applymove(self, idx1, idx2):
         rank = globalconfig["toolbutton"]["rank2"]
         k = rank.pop(idx1)
         rank.insert(idx2, k)
         self.rebuild()
         doadjust()
+
+    def _ondrop(self, idx1, idx2):
+        self._applymove(idx1, idx2)
+
+    def _move(self, k, up, tomax):
+        """上下移按钮：循环移一位（首行再上移到末尾、末行再下移到
+        开头），右键（tomax）置顶/置底。"""
+        rank = globalconfig["toolbutton"]["rank2"]
+        idx1 = rank.index(k)
+        if tomax:
+            idx2 = 0 if up else len(rank) - 1
+        else:
+            idx2 = (idx1 + (-1 if up else 1)) % len(rank)
+        if idx2 == idx1:
+            return
+        self._applymove(idx1, idx2)
 
 
 savebtns: "dict[tuple[str, str], IconButton]" = {}

@@ -916,7 +916,7 @@ class hookselect(closeashidewindow):
         self.checkfilt_notshiftjis.setHidden(hide)
 
     def findhook(self):
-        if not self.textsource.pids:
+        if not self.textsource.gameuid or not not self.textsource.pids.get(self.textsource.gameuid):
             return
         if globalconfig["sourcestatus2"]["texthook"]["use"] == False:
             return
