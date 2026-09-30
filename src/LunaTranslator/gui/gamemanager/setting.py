@@ -53,6 +53,7 @@ from gui.usefulwidget import (
     automakegrid,
     TableViewW,
     getsimpleswitch,
+    maketabholder,
     getsimplepatheditor,
     getboxlayout,
     IconButton,
@@ -313,12 +314,7 @@ class dialog_setting_game_internal(QWidget):
         if savehook_new_data[gameuid].get("emugameid"):
             __list.insert(1, getsmalllabel(savehook_new_data[gameuid].get("emugameid")))
         # 卡片 16 内缩（与 L3 页内表单同缩进），下接 统计/元数据 bar
-        holder = QWidget()
-        hl = QVBoxLayout(holder)
-        hl.setContentsMargins(16, 16, 16, 0)
-        hl.setSpacing(0)
-        hl.addWidget(makecardrow("标题", getboxlayout(__list), fill=True))
-        vbox.addWidget(holder)
+        vbox.addWidget(makecardrow("标题", getboxlayout(__list), fill=True))
 
     def ___tabf(self, function, gameuid):
         # 滚动内容控件同 makegrid 的 gridwidget 用 QSS 类做透明（否则被
@@ -359,6 +355,8 @@ class dialog_setting_game_internal(QWidget):
     def makegamedata(self, vbox: QVBoxLayout, gameuid):
         # 标题行在 统计/元数据 之上（游戏数据 tab 内容顶部）
         self._addtitlerow(vbox, gameuid)
+        vbox.setContentsMargins(16, 16, 16, 12)
+        vbox.setSpacing(0)
         functs = [
             ("统计", functools.partial(self.___tabf2, self.getstatistic)),
             ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
@@ -402,7 +400,7 @@ class dialog_setting_game_internal(QWidget):
         )
 
         self.methodtab = methodtab
-        vbox.addWidget(methodtab)
+        vbox.addWidget(maketabholder(methodtab))
         do()
 
     def openrefmainpage(self, key, idname, gameuid):

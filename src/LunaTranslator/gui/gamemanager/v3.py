@@ -2247,9 +2247,7 @@ class dialog_savedgame_v3(QWidget):
         # （子项点击）。righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
         righttopcard = FluentPageCard()
         _rl = QVBoxLayout(righttopcard)
-        m = _rl.contentsMargins()
-        m.setTop(0)
-        _rl.setContentsMargins(m)
+        _rl.setContentsMargins(16, 0, 16, 12)
         _rl.addWidget(self.righttop)
         self.righttop_card = righttopcard
         self.stack = QStackedWidget()
