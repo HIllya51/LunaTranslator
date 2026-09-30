@@ -47,7 +47,7 @@ from PyQt5.QtWidgets import QStyleOptionSlider, QStyleOptionToolButton, QStyleOp
 from PyQt5.QtGui import QLinearGradient
 
 from gui.dynalang import LPushButton, LDialog
-from gui.fluent.tabwidget import apply_segmented_tabbar_style
+from gui.fluent.tabwidget import TABBAR_STYLE_PIVOT_GROW
 from gui.fluent import _disable_dwm_nc_chrome
 
 # ---- 飞层登记（非客户区点击关闭用） ----
@@ -524,13 +524,13 @@ class FluentColorPicker(QWidget):
         self._shade = _ShadeStrip()
         root.addWidget(self._shade)
 
-        # 分段页签（图标 + tooltip）
+        # 分段页签（图标 + tooltip）：保留带底容器形态——插件对带
+        # WA_StyledBackground 的 QTabBar 画分段容器底，与指示条叠加
         self._tabbar = QTabBar(self)
+        self._tabbar.setProperty("tabBarStyle", TABBAR_STYLE_PIVOT_GROW)
         self._tabbar.setAttribute(Qt.WA_StyledBackground, True)
         self._tabbar.setDrawBase(False)
-        apply_segmented_tabbar_style(self._tabbar)
         # 同 gallery 取色器：页签扩展三等分铺满整行
-        # （apply_segmented_tabbar_style 默认紧凑排布，其他场景用）
         self._tabbar.setExpanding(True)
         iconfont = QFont("Segoe Fluent Icons")
         iconfont.setPixelSize(14)

@@ -2,7 +2,7 @@ from qtsymbols import *
 from gui.fluent.messagebox import ExMessageBox
 from gui.fluent.tabwidget import (
     FluentPaneTabWidget,
-    apply_segmented_tabbar_style,
+    apply_pivot_bar_style,
 )
 from gui.fluent.expander import ExExpander
 import json, re
@@ -41,7 +41,6 @@ from myutils.utils import (
     getimageformat,
 )
 from gui.setting.hotkey import HotkeyListTree
-from gui.fluent.settingtree import wrap_setting_tree
 from NativeUtils import MenuItem
 from cishu.cishubase import DictionaryRoot
 from sometypes import WordSegResult
@@ -315,9 +314,9 @@ class AnkiWindow(QWidget):
         baselay.setContentsMargins(0, 0, 0, 0)
         spliter = QSplitter()
         baselay.addWidget(spliter)
-        edittemptab = FluentPaneTabWidget()
+        edittemptab = FluentPaneTabWidget(colorstyle=3)
         self.previewtab = LTabBar()
-        apply_segmented_tabbar_style(self.previewtab)
+        apply_pivot_bar_style(self.previewtab)
         revertbtn = LPushButton("恢复")
         revertbtn.clicked.connect(self.loadedits)
         savebtn = LPushButton("保存")
@@ -456,8 +455,7 @@ class AnkiWindow(QWidget):
             "recordwindow",
         ]
         baselay.addWidget(
-            wrap_setting_tree(
-                HotkeyListTree(gobject.base.settin_ui, ls, doc=False)), 1)
+                HotkeyListTree(gobject.base.settin_ui, ls, doc=False))
 
     def creatsetdtab(self, baselay: QVBoxLayout):
         """Fluent 设置页：每项一张单行卡片；自动录音/音频编码为折叠卡。"""
@@ -1215,8 +1213,8 @@ class AnkiWindow(QWidget):
 class CustomTabBar(LTabBar):
     def __init__(self) -> None:
         super().__init__()
-        # 查词结果页签：统一 Segmented WinUI3 tabbar
-        apply_segmented_tabbar_style(self)
+        # 查词结果页签：统一 Pivot_Grow
+        apply_pivot_bar_style(self)
         self.savesizehint = QSize()
 
     def sizeHint(self):

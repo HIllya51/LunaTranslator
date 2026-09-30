@@ -758,7 +758,7 @@ class hookselect(closeashidewindow):
         self.sysOutput.setUndoRedoEnabled(False)
         self.sysOutput.setReadOnly(True)
 
-        self.tabwidget = FluentPaneTabWidget()
+        self.tabwidget = FluentPaneTabWidget(colorstyle=3)
         self.vboxlayout.addWidget(self.tabwidget)
         # 统一 Gallery 式页签组（Pivot_Grow bar + 各页直角面板）；
         # 插件样式仅支持横向，保持 North

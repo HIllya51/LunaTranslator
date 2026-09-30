@@ -58,7 +58,6 @@ NAV_ICONS = {
 }
 
 # fluentui3styleproperties.h —— enum TabBarStyle
-TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
 TABBAR_STYLE_PIVOT_GROW = 3  # Pivot_Grow
 
@@ -182,12 +181,14 @@ class FluentSquarePane(QWidget):
         painter.drawRect(rect)
 
 
-def apply_segmented_tabbar_style(bar: QTabBar):
-    """QTabBar 本体的 Segmented WinUI3 配置
-    （QTabWidget 与裸 QTabBar 通用，Gallery pagetab.cpp winUi3IconOnlyBar 同款）。"""
+def apply_pivot_bar_style(bar: QTabBar):
+    """裸 QTabBar 的 Pivot_Grow 配置（segmented 全面退场的替代）：
+    无样式化底（插件对带底 QTabBar 画分段容器底）、drawBase 默认值经
+    插件 PE_FrameTabBarBase 空实现不画、紧凑排布（不均分宽度；
+    需均分的调用方随后自行 setExpanding(True)）。"""
     bar.setProperty("tabBarStyle", TABBAR_STYLE_PIVOT_GROW)
-    bar.setAttribute(Qt.WA_StyledBackground, True)
-    bar.setDrawBase(False)
+    bar.setAttribute(Qt.WA_StyledBackground, False)
+    bar.setDrawBase(True)
     bar.setExpanding(False)
 
 
@@ -207,18 +208,17 @@ class FluentPaneTabWidget(LTabWidget):
         self._colorstyle = colorstyle
         bar = self.tabBar()
         bar.setProperty("tabBarStyle", tabbar_style)
-        if tabbar_style == TABBAR_STYLE_SEGMENTED_WINUI3:
-            apply_segmented_tabbar_style(bar)
-        else:
-            # 无底文字页签（Pivot 等）：bar 无样式化底（drawBase 默认值
-            # 经插件 PE_FrameTabBarBase 空实现不画任何东西）
-            bar.setAttribute(Qt.WA_StyledBackground, False)
-            bar.setDrawBase(True)
+        # 无底文字页签：bar 无样式化底（drawBase 默认值经插件
+        # PE_FrameTabBarBase 空实现不画任何东西）
+        bar.setAttribute(Qt.WA_StyledBackground, False)
+        bar.setDrawBase(True)
         # pane 清零：面板由页自带，插件 pane 内边距不叠加
         self.setStyleSheet(
             "QTabWidget::pane{border:0;margin:0;padding:0;}")
 
     def addTab(self, w, t):
+        if self._colorstyle == 3:
+            return LTabWidget.addTab(self, w, t)
         q = QWidget()
         v = QVBoxLayout(q)
         v.setContentsMargins(0, 0, 0, 0)
@@ -275,12 +275,7 @@ def make_lazy_page(getrealwidgetfunction, main=True):
     q = QWidget()
     v = QVBoxLayout(q)
     v.setContentsMargins(0, 0, 0, 0)
-    card = FluentPageCard()
-    v.addWidget(card)
-    innerlay = QVBoxLayout(card)
-    innerlay.setContentsMargins(0, 0, 0, 0)
-    innerlay.setProperty("_fluent_main_grid" if main else "_fluent_card_grid", True)
-    q.lazyfunction = functools.partial(getrealwidgetfunction, innerlay)
+    q.lazyfunction = functools.partial(getrealwidgetfunction, v)
     return q
 
 
