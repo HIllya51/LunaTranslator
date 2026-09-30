@@ -1,4 +1,4 @@
-"""游戏管理通用控件（原 dialog.py 中的 TagWidget / imagehelper / ItemWidget）。
+"""游戏管理通用控件（原 dialog.py 中的 imagehelper / ItemWidget）。
 
 独立成模块以打破 v3 <-> dialog 的循环导入（v3 的网格页与 dialog 的
 new 视图共用这些控件）。
@@ -12,117 +12,7 @@ from myutils.utils import targetmod
 from myutils.config import savehook_new_data, extradatas, ui_settings, globalconfig, get_launchpath
 from gui.usefulwidget import FocusCombo, FQLineEdit, getsimplecombobox
 from gui.gamemanager.common import tagitem, getpixfunction
-from gui.gamemanager.setting import userlabelset
 from myutils.wrapper import tryprint
-
-
-class TagWidget(QWidget):
-    tagschanged = pyqtSignal(tuple)  # ((tag,type,refdata),)
-    linepressedenter = pyqtSignal(str)
-    tagclicked = pyqtSignal(tuple)  # tag,type,refdata
-
-    def __init__(self, parent=None, exfoucus=True):
-        super().__init__(parent)
-        tagitem.setstyles(self)
-        layout = QHBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-        self.lineEdit = FocusCombo()
-        if exfoucus:
-            self.lineEdit.setLineEdit(FQLineEdit())
-            # FQLineEdit导致游戏管理页面里，点击编辑框后，下边界消失。
-            # FQLineEdit仅用于和webview同一窗口内焦点缺失问题，所以既然用不到那就不要多此一举了
-        else:
-            self.lineEdit.setEditable(True)
-        edit = self.lineEdit.lineEdit()
-        action = QAction(edit)
-        action.setIcon(qtawesome.icon("fa.search"))
-        edit.addAction(action, QLineEdit.ActionPosition.LeadingPosition)
-        edit.returnPressed.connect(
-            lambda: self.linepressedenter.emit(self.lineEdit.currentText())
-        )
-
-        self.lineEdit.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Maximum
-        )
-        self.tagtypes = ["usertags", "developers", "webtags", "usertags"]
-        self.tagtypes_zh = ["全部", "开发商", "标签", "自定义"]
-        self.tagtypes_1 = [
-            tagitem.TYPE_SEARCH,
-            tagitem.TYPE_DEVELOPER,
-            tagitem.TYPE_TAG,
-            tagitem.TYPE_USERTAG,
-        ]
-        layout.addWidget(self.lineEdit)
-
-        def __(idx):
-            t = self.lineEdit.currentText()
-            self.lineEdit.clear()
-            self.lineEdit.addItems(userlabelset(self.tagtypes[idx]))
-            self.lineEdit.setCurrentText(t)
-
-        self.typecombo = getsimplecombobox(self.tagtypes_zh, callback=__)
-        layout.addWidget(self.typecombo)
-        self.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-
-        self.tag2widget = {}
-
-        def callback(t):
-            if not t:
-                return
-            self.addTag(t, self.tagtypes_1[self.typecombo.currentIndex()])
-            self.lineEdit.clearEditText()
-
-        self.linepressedenter.connect(callback)
-        self.typecombo.currentIndexChanged.emit(0)
-
-    def addTags(self, tags, signal=True):
-        for key in tags:
-            self.__addTag(key)
-        self.__calltagschanged(signal)
-
-    @tryprint
-    def __addTag(self, key):
-        tag, _type, refdata = key
-        if not tag:
-            return
-        if key in self.tag2widget:
-            return
-        qw = tagitem(tag, _type=_type, refdata=refdata)
-        qw.removesignal.connect(self.removeTag)
-        qw.labelclicked.connect(self.tagclicked.emit)
-        layout: QHBoxLayout = self.layout()
-        layout.insertWidget(layout.count() - 2, qw)
-        self.tag2widget[key] = qw
-        self.lineEdit.setFocus()
-
-    def addTag(self, tag, _type, refdata=None, signal=True):
-        self.__addTag((tag, _type, refdata))
-        self.__calltagschanged(signal)
-
-    def __removeTag(self, key):
-        _w = self.tag2widget[key]
-        self.layout().removeWidget(_w)
-        self.tag2widget.pop(key)
-
-    def removeTag(self, key, signal=True):
-        try:
-            self.__removeTag(key)
-            self.__calltagschanged(signal)
-        except:
-            pass
-
-    def __calltagschanged(self, signal):
-        if signal:
-            self.tagschanged.emit(tuple(self.tag2widget.keys()))
-
-    def clearTag(self, signal=True):
-        for key in self.tag2widget.copy():
-            try:
-                self.__removeTag(key)
-            except:
-                pass
-        self.__calltagschanged(signal)
 
 
 class imagehelper:
