@@ -1241,6 +1241,8 @@ class _gridpage(QWidget):
     def showtag(self, tagid):
         self.reftagid = tagid
         self._loaded = True
+        # 列表切换：最近游戏下排序按钮隐藏（其余列表恢复）
+        self.ref._sync_titlebar_pagecontrols()
         # 与建树同款三分支（getreflist(None) 会返回哨兵 1，不可迭代）
         if tagid is None:
             self.reflist = savehook_new_list
@@ -1667,11 +1669,12 @@ class dialog_savedgame_v3(QWidget):
         self.stack.setCurrentWidget(self.gridpage_card)
 
     def _sync_titlebar_pagecontrols(self, _=None):
-        """标题栏的排序/齿轮当且仅当网格页显示时可见（作用于网格列表，
-        其他页隐藏）。"""
+        """标题栏的排序/齿轮只在网格页显示（作用于网格列表）；排序不适用
+        于最近游戏（动态只读列表），该列表下排序按钮也隐藏。"""
+        gp = self.gridpage
         ongrid = self.stack.currentWidget() is self.gridpage_card
-        self.gridpage.sortbtn.setVisible(ongrid)
-        self.gridpage.gearbtn.setVisible(ongrid)
+        gp.sortbtn.setVisible(ongrid and gp.reftagid != 1)
+        gp.gearbtn.setVisible(ongrid)
 
     # ---- 导航树辅助 ----
     def _tagicon(self, tagid):

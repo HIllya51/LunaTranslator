@@ -57,6 +57,9 @@ class Setting(_SettingBase):
             self.tab_widget, "toggleNavigation"
         ):
             self.tab_widget.toggleNavigation()
+            # 侧边栏折叠状态存档（firstshow 恢复）
+            globalconfig["setting_nav_collapsed"] = (
+                not self.tab_widget.navigationExpanded())
 
     def hitTestWidgets(self):
         bar = self._fluent_title_bar
@@ -117,6 +120,9 @@ class Setting(_SettingBase):
         for _title, _func in transopti_children[1:]:
             self.tab_widget.addNavChildPage("文本处理", _title, _func)
         self.tab_widget.adjust_list_widget_width()
+        # 侧边栏折叠状态恢复（_toggle_fluent_nav 存档）
+        self.tab_widget.setNavigationExpanded(
+            not globalconfig.get("setting_nav_collapsed", False), animated=False)
         index = 0
         self.tab_widget.setCurrentIndex(index)
         gobject.base.switchtotspage.connect(
