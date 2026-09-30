@@ -1294,37 +1294,58 @@ class dialog_setting_game_internal(QWidget):
 
     def getlangcard(self, formLayout: LFormLayout, gameuid):
         """语言（原独立 tab，并入 启动-启动方式 之下）：跟随默认折叠卡，
-        源/目标语言两项为卡内子项。"""
-        exp, grid = self.createfollowdefaultfold(
-            savehook_new_data[gameuid],
-            "lang_follow_default",
-            title="语言",
+        源语言/目标语言各为一个子项（独立内容面板）。"""
+        exp = ExExpander()
+        header = QWidget()
+        hlay = QHBoxLayout(header)
+        hlay.setContentsMargins(0, 12, 0, 12)
+        hlay.setSpacing(8)
+        titlelabel = LLabel("语言")
+        titlefont = titlelabel.font()
+        titlefont.setPixelSize(15)
+        titlelabel.setFont(titlefont)
+        hlay.addWidget(titlelabel)
+        hlay.addStretch(1)
+        rows = []
+
+        def __use(v):
+            for r in rows:
+                r.setEnabled(not v)
+
+        hlay.addWidget(getsmalllabel("跟随默认")())
+        hlay.addWidget(
+            getsimpleswitch(
+                savehook_new_data[gameuid],
+                "lang_follow_default",
+                callback=__use,
+                default=True,
+            )
         )
-        automakegrid(
-            grid,
-            [
-                [
-                    getsmalllabel("源语言"),
-                    getsimplecombobox(
-                        all_langs()[0],
-                        savehook_new_data[gameuid],
-                        "private_srclang_2",
-                        internal=all_langs()[1],
-                        default=globalconfig.get("srclang4", "auto"),
-                    ),
-                ],
-                [
-                    getsmalllabel("目标语言"),
-                    getsimplecombobox(
-                        all_langs(False)[0],
-                        savehook_new_data[gameuid],
-                        "private_tgtlang_2",
-                        internal=all_langs(False)[1],
-                        default=globalconfig.get("tgtlang4", "zh"),
-                    ),
-                ],
-            ],
-        )
+        exp.setHeaderWidget(header)
+
+        def _langrow(label, key, langs, dflt):
+            row = QWidget()
+            lay = QHBoxLayout(row)
+            lay.setContentsMargins(0, 0, 0, 0)
+            lay.addWidget(LLabel(label))
+            lay.addStretch(1)
+            lay.addWidget(
+                getsimplecombobox(
+                    langs[0],
+                    savehook_new_data[gameuid],
+                    key,
+                    internal=langs[1],
+                    default=dflt,
+                )
+            )
+            rows.append(row)
+            exp.addContentWidget(row)
+
+        _langrow("源语言", "private_srclang_2", all_langs(),
+                 globalconfig.get("srclang4", "auto"))
+        _langrow("目标语言", "private_tgtlang_2", all_langs(False),
+                 globalconfig.get("tgtlang4", "zh"))
+        __use(savehook_new_data[gameuid].get("lang_follow_default", True))
         formLayout.addRow(exp)
 
     def getembedtab(self, formLayout: LFormLayout, gameuid):

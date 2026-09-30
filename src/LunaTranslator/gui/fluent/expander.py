@@ -43,6 +43,8 @@ _EXPANDER_MIN_WIDTH = 96
 _EXP_HEADER_MIN_HEIGHT = 48
 _EXP_HEADER_CONTENT_PADDING = 16
 _EXP_CONTENT_PADDING = 16
+# 子项上下内边距（小值）：常规行连边距不超过头部高度，子项与本体同高
+_EXP_CONTENT_V_PADDING = 6
 _EXP_CHEVRON_CONTENT_SPACING = 20
 _EXP_CHEVRON_TRAILING_MARGIN = 8
 _EXP_CHEVRON_BUTTON_SIZE = 32
@@ -128,7 +130,9 @@ def _exp_rounded_panel_path(rect, round_top_left, round_top_right, round_bottom_
 
 
 class _ExpanderContentPanel(QWidget):
-    """Content 面板：与 Header 组成连续容器，只有最远端保留外圆角。"""
+    """Content 面板：与 Header 组成连续容器，只有最远端保留外圆角。
+    上下内边距用小值（_EXP_CONTENT_V_PADDING）：常规行（开关/下拉）
+    连同边距不超过头部高度（48），子项与折叠条本体同高。"""
 
     def __init__(self, expander, content, pad_right=False):
         super().__init__(expander)
@@ -138,9 +142,9 @@ class _ExpanderContentPanel(QWidget):
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
         layout = QVBoxLayout(self)
         layout.setContentsMargins(
-            _EXP_CONTENT_PADDING, _EXP_CONTENT_PADDING,
+            _EXP_CONTENT_PADDING, _EXP_CONTENT_V_PADDING,
             _EXP_CONTENT_PADDING + (_EXP_CONTENT_CHEVRON_RESERVE if pad_right else 0),
-            _EXP_CONTENT_PADDING)
+            _EXP_CONTENT_V_PADDING)
         layout.setSpacing(0)
         content.setParent(self)
         layout.addWidget(content)
