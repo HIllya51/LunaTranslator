@@ -1013,41 +1013,49 @@ class _gridpage(QWidget):
         self.setAcceptDrops(True)
 
     def build_titlebar(self, titlebar):
-        """把本页的控件装进宿主无边框窗口的标题栏：搜索居中，
-        面包屑/排序/齿轮在右侧 caption 按钮之前（排序/齿轮仅网格页显示，
-        见 dialog_savedgame_v3._sync_titlebar_pagecontrols）。"""
+        """把本页的控件装进宿主无边框窗口的标题栏：搜索手动居中
+        （右侧按钮/面包屑变化不推动它），面包屑紧贴其右（从左向右），
+        排序/齿轮在右侧（仅网格页显示，见 _sync_titlebar_pagecontrols）。"""
         self.searchedit = QLineEdit()
         self.searchedit.returnPressed.connect(self._search)
         self.searchedit.setPlaceholderText("搜索")
-        # Gallery 同款（exwidgets FluentTitleBar）：仅最小宽 300，高度走
-        # 样式自然尺寸；图标 32x32 画布 32px 字形
-        self.searchedit.setMinimumWidth(300)
+        # Gallery 同款：宽 300、高度走样式自然尺寸；图标 32x32 画布 32px 字形
+        self.searchedit.setFixedWidth(300)
+        self.searchedit.adjustSize()
         self.searchedit.setClearButtonEnabled(True)
         self._search_action = _act = QAction(self.searchedit)
         _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32, glyph=32))
         self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
         self.searchedit.installEventFilter(self)
         titlebar.addCenterWidget(self.searchedit)
-        # 面包屑：搜索框右边、从右向左；有 tag 时显示；root 为 ALL，点 ALL 清空
+        # 面包屑：紧贴搜索框右侧、从左向右；有 tag 时显示；root 为 ALL，
+        # 点 ALL 清空（显隐不移动搜索框）
         self.breadcrumb = ExBreadcrumbBar(self)
         self.breadcrumb.itemClicked.connect(self._breadcrumb_clicked)
-        self.breadcrumb.setLayoutDirection(Qt.LayoutDirection.RightToLeft)
         self.breadcrumb.hide()
-        titlebar.addTrailingWidget(self.breadcrumb)
+        titlebar.addSideWidget(self.breadcrumb)
         # 排序/齿轮：Gallery「置顶窗口」同款 caption 按钮（win_caption_pin
         # 悬停由插件渲染）
         self.sortbtn = create_fluent_caption_button(
             titlebar, ICON_SORT, "排序")
         self.sortbtn.clicked.connect(self.sortgamecallback)
         titlebar.addTrailingWidget(self.sortbtn)
+        # 齿轮带开关态（Gallery 置顶按钮同款 checkable）：勾选=面板开
         self.gearbtn = create_fluent_caption_button(
             titlebar, ICON_SETTINGS, "设置")
-        self.gearbtn.clicked.connect(self.toggle_settings_panel)
+        self.gearbtn.setCheckable(True)
+        self.gearbtn.toggled.connect(self._gear_toggled)
         titlebar.addTrailingWidget(self.gearbtn)
+
+    def _gear_toggled(self, on):
+        """标题栏齿轮的开关态与设置面板显隐保持一致（勾选=开）。"""
+        if on == self._settings_panel.isHidden():
+            self.toggle_settings_panel()
 
     def toggle_settings_panel(self):
         """常驻顶栏齿轮：切回网格页并切换右侧设置面板显隐（首次构建内容）。
-        用 isHidden 判逻辑开合——人在其他页时 isVisible 会因祖先隐藏而误判。"""
+        用 isHidden 判逻辑开合——人在其他页时 isVisible 会因祖先隐藏而误判。
+        面板状态回写齿轮的开关态（屏蔽信号防环）。"""
         self.ref._show_gridpage()
         if self._settings_panel.isHidden():
             if not getattr(self, "_settings_built", False):
@@ -1056,6 +1064,9 @@ class _gridpage(QWidget):
             self._settings_panel.show()
         else:
             self._settings_panel.hide()
+        self.gearbtn.blockSignals(True)
+        self.gearbtn.setChecked(not self._settings_panel.isHidden())
+        self.gearbtn.blockSignals(False)
 
     def _build_settings_panel(self):
         """在右侧面板中构建全部设置（通用两项 + 网格设置）。"""
@@ -1629,7 +1640,8 @@ class dialog_savedgame_v3(QWidget):
                 self.fuckqt6 = _
                 v.addWidget(_)
 
-            tabadd_lazy(self.righttop, "_设置_", __)
+            # bare：不包页卡（外层 righttopcard 已是页卡），内容卡直落其上
+            tabadd_lazy(self.righttop, "_设置_", __, bare=True)
             self.righttop.setCurrentIndex(currvis)
         except:
             print_exc()
@@ -1960,7 +1972,7 @@ class dialog_savedgame_v3(QWidget):
         self.reftagid = item.parent().data(0, TAGID_ROLE)
         self.currentfocusuid = uid
         self.viewitem(uid)
-        self.stack.setCurrentWidget(self.righttop)
+        self.stack.setCurrentWidget(self.righttop_card)
 
     def point_game(self, uid):
         """网格页图表点击：侧边栏指向该游戏——主项展开时选中子项；
@@ -2166,20 +2178,26 @@ class dialog_savedgame_v3(QWidget):
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        # 画廊页：页卡(249) + 内容 isCard(253)（同设置窗口页卡的层级，
+        # 画廊 tab 页：内容 isCard(253)（页卡由外层 righttopcard 提供，
         # 缩略图列表/轮播透明浮在内容卡上）
-        gallerycard = FluentPageCard()
-        _glay = QVBoxLayout(gallerycard)
-        _glay.setContentsMargins(8, 8, 8, 8)
+        _gpage = QWidget()
+        _gpl = QVBoxLayout(_gpage)
+        _gpl.setContentsMargins(8, 8, 8, 8)
         _ginner = QWidget()
         _ginner.setAttribute(Qt.WA_StyledBackground, True)
         _ginner.setProperty("isCard", True)
         _gil = QVBoxLayout(_ginner)
         _gil.setContentsMargins(0, 0, 0, 0)
         _gil.addWidget(self.pixview)
-        _glay.addWidget(_ginner)
-        self.righttop.addTab(gallerycard, "_画廊_")
-        # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）
+        _gpl.addWidget(_ginner)
+        self.righttop.addTab(_gpage, "_画廊_")
+        # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）。
+        # righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
+        righttopcard = FluentPageCard()
+        _rl = QVBoxLayout(righttopcard)
+        _rl.setContentsMargins(0, 0, 0, 0)
+        _rl.addWidget(self.righttop)
+        self.righttop_card = righttopcard
         self.stack = QStackedWidget()
         self.gridpage = _gridpage(self)
         gridcard = FluentPageCard()
@@ -2189,7 +2207,7 @@ class dialog_savedgame_v3(QWidget):
         # gridpage 包在页卡里：切页统一走 _show_gridpage（页卡是 stack 的页）
         self.gridpage_card = gridcard
         self.stack.addWidget(gridcard)
-        self.stack.addWidget(self.righttop)
+        self.stack.addWidget(righttopcard)
         # 标题栏的排序/齿轮只作用于网格列表——仅网格页显示
         self.stack.currentChanged.connect(self._sync_titlebar_pagecontrols)
         # 标题栏控件（搜索居中/面包屑/排序/齿轮尾部）装进宿主无边框

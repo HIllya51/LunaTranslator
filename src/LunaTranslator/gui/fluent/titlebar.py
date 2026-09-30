@@ -102,6 +102,9 @@ class FluentTitleBar(QWidget):
         layout.addWidget(self._max_button)
         layout.addWidget(self._close_button)
 
+        self._center_widget = None   # 居中控件（手动定位，不进布局）
+        self._center_side = None     # 紧挨其右侧的控件（面包屑）
+
         self._min_button.clicked.connect(window.showMinimized)
 
         def toggle_maximized():
@@ -141,17 +144,65 @@ class FluentTitleBar(QWidget):
         self._nav_button.setVisible(visible)
 
     def addCenterWidget(self, w):
-        """插入居中控件（原有 stretch 与新 stretch 之间；垂直居中，
-        Gallery 标题栏搜索框的 addWidget(w, 0, Qt.AlignCenter) 同款）。"""
-        lay = self.layout()
-        idx = lay.indexOf(self._min_button)
-        lay.insertStretch(idx)
-        lay.insertWidget(idx, w, 0, Qt.AlignVCenter)
+        """居中控件（搜索框）：不进布局、手动定位——空间充足时始终水平
+        居中，右侧按钮/面包屑的增减显隐不会推动或缩放它（WinUI 居中搜索
+        行为）。"""
+        self._center_widget = w
+        w.setParent(self)
+        w.setVisible(True)
+        self._layout_center()
+
+    def addSideWidget(self, w):
+        """紧挨居中控件右侧的控件（面包屑，从左向右）；显隐不移动居中控件。"""
+        self._center_side = w
+        w.setParent(self)
+        w.installEventFilter(self)
+        self._layout_center()
 
     def addTrailingWidget(self, w):
         """插入尾部控件（最小化按钮之前，标题栏右侧）。"""
         lay = self.layout()
         lay.insertWidget(lay.indexOf(self._min_button), w)
+
+    # ---- 居中控件定位 ----
+    def _right_edge(self):
+        """右簇最左沿（布局里图标/标题以外的最左可见控件）。"""
+        x = self.width()
+        lay = self.layout()
+        for i in range(lay.count()):
+            w = lay.itemAt(i).widget()
+            if (w is not None and w.isVisible()
+                    and w not in (self._icon_label, self._title_label)):
+                x = min(x, w.x())
+        return x
+
+    def _layout_center(self):
+        w = getattr(self, "_center_widget", None)
+        if w is None:
+            return
+        title_right = self._title_label.geometry().right()
+        right_edge = self._right_edge()
+        side = getattr(self, "_center_side", None)
+        side_on = side is not None and side.isVisibleTo(self)
+        side_w = side.width() if side_on else 0
+        gap = 8 if side_on else 0
+        x = (self.width() - w.width()) // 2
+        x = max(x, title_right + 12)
+        # 空间不足：向左收（贴标题右侧为下限）；充足时保持正中不动
+        if x + w.width() + gap + side_w > right_edge - 8:
+            x = max(title_right + 12,
+                    right_edge - 8 - w.width() - gap - side_w)
+        w.move(x, (self.height() - w.height()) // 2)
+        if side is not None:
+            avail = max(24, right_edge - 8 - (x + w.width() + gap))
+            hint = side.sizeHint()
+            side.resize(min(hint.width(), avail), hint.height())
+            side.move(x + w.width() + gap,
+                      (self.height() - hint.height()) // 2)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._layout_center()
 
     # ---- 更新 ----
     def eventFilter(self, watched, event):
@@ -162,6 +213,10 @@ class FluentTitleBar(QWidget):
                 self.updateTitle()
             elif event.type() == QEvent.Type.WindowStateChange:
                 self.updateMaxButton()
+        elif watched is getattr(self, "_center_side", None) and \
+                event.type() in (QEvent.Type.ShowToParent,
+                                 QEvent.Type.HideToParent):
+            self._layout_center()
         return super().eventFilter(watched, event)
 
     def updateTitle(self):
