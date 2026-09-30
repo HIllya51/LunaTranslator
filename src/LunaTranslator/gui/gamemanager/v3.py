@@ -1124,36 +1124,25 @@ class _gridpage(QWidget):
             self.ref.point_game(k)
 
     def _matches_tags(self, k, tags, tagid=None):
-        """游戏 k 是否通过 tag 过滤。hide_not_exists 不作用于最近游戏。"""
+        """游戏 k 是否通过 tag 过滤（TYPE_SEARCH 大小写不敏感 /
+        TYPE_EXISTS 路径存在）。hide_not_exists 不作用于最近游戏。"""
         if (
             tagid != 1
             and globalconfig.get("hide_not_exists", False)
         ):
             if not os.path.exists(get_launchpath(k)):
                 return False
-        webtags = [
-            globalconfig["tagNameRemap"].get(tag, tag)
-            for tag in savehook_new_data[k]["webtags"]
-        ]
         for tag, _type, _ in tags:
             if _type == tagitem.TYPE_EXISTS:
                 if not os.path.exists(get_launchpath(k)):
                     return False
-            elif _type == tagitem.TYPE_DEVELOPER:
-                if tag not in savehook_new_data[k]["developers"]:
-                    return False
-            elif _type == tagitem.TYPE_TAG:
-                if tag not in webtags:
-                    return False
-            elif _type == tagitem.TYPE_USERTAG:
-                if tag not in savehook_new_data[k]["usertags"]:
-                    return False
             elif _type == tagitem.TYPE_SEARCH:
+                tag_l = tag.lower()
+                _d = savehook_new_data[k]
                 if (
-                    tag not in webtags
-                    and tag not in savehook_new_data[k]["usertags"]
-                    and tag not in savehook_new_data[k]["title"]
-                    and tag not in savehook_new_data[k]["developers"]
+                    tag_l not in _d["title"].lower()
+                    and not any(
+                        tag_l in d.lower() for d in _d.get("developers", []))
                 ):
                     return False
         return True
