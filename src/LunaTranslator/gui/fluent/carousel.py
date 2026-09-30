@@ -31,7 +31,9 @@ from qtsymbols import (
     QRect,
     QRectF,
     QPropertyAnimation,
+    QRegion,
     QSize,
+    QSizeF,
     QSizePolicy,
     Qt,
     QTimer,
@@ -628,14 +630,8 @@ class ExCarousel(QWidget):
             bounded = _wrap_index(index, len(self._slides))
         else:
             bounded = max(0, min(index, len(self._slides) - 1))
-        direction = 1 if bounded >= self._currentIndex else -1
-        if self._wrap and self._currentIndex == len(self._slides) - 1 \
-                and bounded == 0:
-            direction = 1
-        elif self._wrap and self._currentIndex == 0 \
-                and bounded == len(self._slides) - 1:
-            direction = -1
-        self._goTo(bounded, direction)
+        # 方向未知：由 _goTo 按索引就近推断（含首尾环绕修正）
+        self._goTo(bounded, 0)
 
     def setCurrentIndexImmediate(self, index):
         """直接就位到 index（不播切换动画）——内容重建/初次定位用。"""
@@ -742,6 +738,25 @@ class ExCarousel(QWidget):
         self._updateChromeVisibility()
 
     # ---- 内部 ----
+    @staticmethod
+    def _grabSlide(slide, size):
+        """透明底快照。grab() 会先以调色板 Window 色填底（并叠加
+        DrawWindowBackground），KeepAspectRatio 的留白（letterbox）
+        在切换动画期间会闪现窗口底色、结束后才复原。改为透明填底 +
+        render()（不带 DrawWindowBackground），动画帧与闲置态渲染
+        一致，留白始终透出所在卡片的底色。"""
+        dpr = slide.devicePixelRatioF()
+        phys = QSizeF(size.width() * dpr, size.height() * dpr).toSize()
+        pm = QPixmap(phys)
+        pm.setDevicePixelRatio(dpr)
+        pm.fill(Qt.GlobalColor.transparent)
+        slide.render(
+            pm, QPoint(0, 0),
+            QRegion(0, 0, size.width(), size.height()),
+            QWidget.RenderFlag.DrawChildren,
+        )
+        return pm
+
     def _relayoutChrome(self):
         r = self.rect()
         self.viewport.setGeometry(r)
@@ -799,24 +814,27 @@ class ExCarousel(QWidget):
             self._restartTimer()
             return
         if direction == 0:
+            # 方向未知（圆点跳转 / 外部 setCurrentIndex）：按索引就近推断，
+            # 首尾环绕修正。仅 >2 页时修正——2 页时首尾互为相邻，修正分支
+            # 会把正向 0->1 误判成环绕反向（next 朝反方向滑）
             direction = 1 if index >= self._currentIndex else -1
-        if self._wrap and self._currentIndex == len(self._slides) - 1 \
-                and index == 0:
-            direction = 1
-        elif self._wrap and self._currentIndex == 0 \
-                and index == len(self._slides) - 1:
-            direction = -1
+            if self._wrap and len(self._slides) > 2:
+                if self._currentIndex == len(self._slides) - 1 and index == 0:
+                    direction = 1
+                elif self._currentIndex == 0 \
+                        and index == len(self._slides) - 1:
+                    direction = -1
 
         src = self._slides[self._currentIndex]
         dst = self._slides[index]
         vpSize = self.viewport.size()
-        # grab() 抓取实际屏幕映射，自动对齐高 DPI 物理与逻辑尺寸
+        # 透明底快照（_grabSlide：高 DPI 对齐 + 留白不填窗口底色）
         src.setGeometry(QRect(QPoint(0, 0), vpSize))
         src.show()
-        fromPix = src.grab(QRect(QPoint(0, 0), vpSize))
+        fromPix = self._grabSlide(src, vpSize)
         dst.setGeometry(QRect(QPoint(0, 0), vpSize))
         dst.show()
-        toPix = dst.grab(QRect(QPoint(0, 0), vpSize))
+        toPix = self._grabSlide(dst, vpSize)
         src.hide()
         dst.hide()
 
