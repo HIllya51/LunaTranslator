@@ -196,6 +196,16 @@ class previewimages(QListWidget):
         self.setDragDropMode(QListWidget.DragDropMode.InternalMove)
         self.setDefaultDropAction(Qt.DropAction.MoveAction)
 
+    def _syncitemsize(self):
+        """显式设置项尺寸 = 图标尺寸。插件 CT_ItemViewItem 对 ListMode
+        强制 32px 行高，大于行高的缩略图会被压扁堆叠（左/右位置的
+        单列条带最明显）；显式 item sizeHint 绕开该强制。"""
+        sz = self.iconSize()
+        for i in range(self.count()):
+            it = self.item(i)
+            if it is not None:
+                it.setSizeHint(sz)
+
     def loadImage(self):
         try:
             start = self.indexAt(self.viewport().rect().topLeft()).row()
@@ -240,6 +250,7 @@ class previewimages(QListWidget):
             self.setIconSize(QSize(self.height(), self.height()))
         else:
             self.setIconSize(QSize(self.width(), self.width()))
+        self._syncitemsize()
 
     def sizeHint(self):
         return QSize(100, 100)
@@ -279,6 +290,7 @@ class previewimages(QListWidget):
             else:
                 self.addItem(item)
         self.blockSignals(False)
+        self._syncitemsize()
         if first:
             self.setCurrentItem(first)
 
@@ -325,6 +337,7 @@ class previewimages(QListWidget):
             self.setIconSize(QSize(self.height(), self.height()))
         else:
             self.setIconSize(QSize(self.width(), self.width()))
+        self._syncitemsize()
         return super().resizeEvent(e)
 
 
