@@ -276,31 +276,10 @@ class dialog_setting_game_internal(QWidget):
         self.keepindexobject = keepindexobject
         vbox = QVBoxLayout(self)
         # 0 边距：methodtab 满铺 isCard——其 bar 药丸与外层 tabbar 药丸
-        # 对齐（插件 bar 内距 8px 两侧一致）；路径/标题 行单独 16 内缩
+        # 对齐（插件 bar 内距 8px 两侧一致）
         vbox.setContentsMargins(0, 8, 0, 0)
         self.lauchpath = None
-        formLayout = LFormLayout()
-        formLayout.setContentsMargins(16, 0, 16, 0)
         self.gameuid = gameuid
-        titleedit = QLineEdit(savehook_new_data[gameuid]["title"])
-
-        def _titlechange():
-            x = titleedit.text()
-            titlechangedtask(gameuid, x)
-            self.setWindowTitle(x)
-
-        titleedit.textEdited.connect(
-            functools.partial(savehook_new_data[gameuid].__setitem__, "title")
-        )
-        titleedit.returnPressed.connect(_titlechange)
-        __list = [
-            titleedit,
-            getIconButton(_titlechange, icon="fa.search"),
-        ]
-        if savehook_new_data[gameuid].get("emugameid"):
-            __list.insert(1, getsmalllabel(savehook_new_data[gameuid].get("emugameid")))
-        formLayout.addRow("标题", getboxlayout(__list))
-
         functs = [
             ("游戏设置", functools.partial(self.___tabf3, self.makegamesettings)),
             ("游戏数据", functools.partial(self.___tabf3, self.makegamedata)),
@@ -317,9 +296,40 @@ class dialog_setting_game_internal(QWidget):
             ),
             fast=True,
         )
-        vbox.addLayout(formLayout)
-        formLayout.addRow(methodtab)
+        vbox.addWidget(methodtab)
         do()
+
+    def _addtitlerow(self, vbox: QVBoxLayout, gameuid):
+        """标题卡：标题编辑 + 搜索 + 记忆列表按钮（游戏数据页顶部，
+        统计/元数据 之上）。"""
+        titleedit = QLineEdit(savehook_new_data[gameuid]["title"])
+
+        def _titlechange():
+            x = titleedit.text()
+            titlechangedtask(gameuid, x)
+            self.setWindowTitle(x)
+
+        titleedit.textEdited.connect(
+            functools.partial(savehook_new_data[gameuid].__setitem__, "title")
+        )
+        titleedit.returnPressed.connect(_titlechange)
+        __list = [
+            titleedit,
+            getIconButton(_titlechange, icon="fa.search"),
+            getIconButton(
+                lambda: dialog_memory(self, gameuid=gameuid),
+                icon="fa.list-ul",
+            ),
+        ]
+        if savehook_new_data[gameuid].get("emugameid"):
+            __list.insert(1, getsmalllabel(savehook_new_data[gameuid].get("emugameid")))
+        # 卡片 16 内缩（与 L3 页内表单同缩进），下接 统计/元数据 bar
+        holder = QWidget()
+        hl = QVBoxLayout(holder)
+        hl.setContentsMargins(16, 16, 16, 0)
+        hl.setSpacing(0)
+        hl.addWidget(makecardrow("标题", getboxlayout(__list), fill=True))
+        vbox.addWidget(holder)
 
     def ___tabf(self, function, gameuid):
         # 滚动内容控件同 makegrid 的 gridwidget 用 QSS 类做透明（否则被
@@ -358,7 +368,8 @@ class dialog_setting_game_internal(QWidget):
         return _w, do
 
     def makegamedata(self, vbox: QVBoxLayout, gameuid):
-
+        # 标题行在 统计/元数据 之上（游戏数据 tab 内容顶部）
+        self._addtitlerow(vbox, gameuid)
         functs = [
             ("统计", functools.partial(self.___tabf2, self.getstatistic)),
             ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
@@ -558,22 +569,14 @@ class dialog_setting_game_internal(QWidget):
             icons=("fa.gear", "fa.undo"),
             clearset=lambda: uid2gamepath[gameuid],
         )
-        # 路径（游戏本体路径 + 记忆列表按钮）——与 启动程序 相邻成组
+        # 路径（游戏本体路径；记忆列表按钮随标题行走）——与 启动程序 相邻成组
         formLayout.addRow(makecardrow(
             "路径",
-            getboxlayout(
-                [
-                    getsimplepatheditor(
-                        uid2gamepath[gameuid],
-                        callback=self.selectexe,
-                        clearable=False,
-                        icons=("fa.gear",),
-                    ),
-                    getIconButton(
-                        lambda: dialog_memory(self, gameuid=gameuid),
-                        icon="fa.list-ul",
-                    ),
-                ]
+            getsimplepatheditor(
+                uid2gamepath[gameuid],
+                callback=self.selectexe,
+                clearable=False,
+                icons=("fa.gear",),
             ),
             fill=True,
         ))

@@ -806,11 +806,11 @@ class _gamelistnav(FluentNavTree):
         self._click_timer.start()
         if (
             self._dragitem is not None
-            and self._dragitem.parent() is None
             and self._dragitem is self.currentItem()
         ):
-            # 点击的已是当前主项（如双击展开后再单击）：
-            # currentItemChanged 不会触发，手动记录延迟动作
+            # 点击的已是当前项（主项或子项，如双击展开/打开画廊后再
+            # 单击）：currentItemChanged 不会触发，手动记录延迟动作
+            # （子项：切回网格页；主项：同列表不重建）
             self._deferred_item = self._dragitem
         return super().mousePressEvent(ev)
 
