@@ -74,6 +74,18 @@ def apply_fluent_style(dark):
     _applied_key = key
 
 
+def repolish_style():
+    """重新 setStyle（re-polish），把控件字体 resolve 回当前 app 字体。
+
+    语言切换改 app 字体后必须调用：插件 polish 过的控件字体是显式的，
+    QApplication.setFont 的运行期传播对它们无效（只有无显式字体的
+    控件——如导航树——跟随），re-polish 才会整体重解析（明暗切换即
+    走此路径）。弹出容器视图的字体恢复同 apply_fluent_style。"""
+    app = QApplication.instance()
+    app.setStyle("FluentUI3")
+    QTimer.singleShot(0, _restore_combo_view_fonts)
+
+
 _menu_font_gate = None
 
 

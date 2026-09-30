@@ -105,6 +105,10 @@ def changeUIlanguage(_):
     font.setPixelSize(13)
     if QApplication.instance().font() != font:
         QApplication.instance().setFont(font)
+        # app.setFont 的运行期传播只对无显式字体的控件生效（侧边栏）；
+        # 插件 polish 过的控件需要 setStyle re-polish 整体重解析
+        from gui.fluent import repolish_style
+        repolish_style()
     languageChangeEvent = QEvent(QEvent.Type.LanguageChange)
     QApplication.sendEvent(QApplication.instance(), languageChangeEvent)
     try:
