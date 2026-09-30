@@ -525,6 +525,16 @@ class ScrollArea(QScrollArea):
         super().keyPressEvent(e)
 
 
+class _NoPaintViewport(QWidget):
+    """滚动区视口：paintEvent 置空。FluentUI3 插件的 polish 会给视口设
+    WA_StyledBackground 并以 PE_Widget 画 Window(243) 底色，把所在页卡
+    (249) 的底色与边框全盖掉；QSS 的背景规则实测拦不住（含 makescroll
+    配方）。直接不画最可靠——子控件与滚动条不受影响。"""
+
+    def paintEvent(self, _):
+        pass
+
+
 class lazyscrollflow(ScrollArea):
     bgclicked = pyqtSignal()
 
@@ -539,7 +549,8 @@ class lazyscrollflow(ScrollArea):
         super().__init__()
         self._keypressed = keypressed
         self._hidden_indices = set()  # tag 过滤隐藏的项索引
-        self.setStyleSheet("lazyscrollflow{background: transparent;border:none;}")
+        self.setViewport(_NoPaintViewport())
+        self.setStyleSheet("lazyscrollflow{border:none;}")
         self.widgets = []
         self.fakegeos = []
         self.widgetlogicposmap = []
@@ -549,6 +560,9 @@ class lazyscrollflow(ScrollArea):
         self.internalwid = QWidget(self)
         self.setWidgetResizable(True)
         self.setWidget(self.internalwid)
+        # QScrollArea::setWidget 会给内容控件设 autoFillBackground(True)
+        # ——Window(243) 底色会盖住所在页卡(249)；关掉（图表自绘不受影响）
+        self.internalwid.setAutoFillBackground(False)
         self.scrolled.connect(lambda _: self.doshowlazywidget(True, _))
 
     def resizeEvent(self, a0: QResizeEvent) -> None:

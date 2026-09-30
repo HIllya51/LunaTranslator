@@ -1013,10 +1013,12 @@ class _gridpage(QWidget):
         self.searchedit = QLineEdit()
         self.searchedit.returnPressed.connect(self._search)
         self.searchedit.setPlaceholderText("搜索")
-        self.searchedit.setFixedSize(300, 34)
+        # Gallery 同款（exwidgets FluentTitleBar）：仅最小宽 300，高度走
+        # 样式自然尺寸；图标 32x32 画布 32px 字形
+        self.searchedit.setMinimumWidth(300)
         self.searchedit.setClearButtonEnabled(True)
         self._search_action = _act = QAction(self.searchedit)
-        _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32))
+        _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32, glyph=32))
         self.searchedit.addAction(_act, QLineEdit.ActionPosition.TrailingPosition)
         self.searchedit.installEventFilter(self)
         titlebar.addCenterWidget(self.searchedit)
@@ -2174,12 +2176,17 @@ class dialog_savedgame_v3(QWidget):
         # 标题栏控件（搜索居中/面包屑/排序/齿轮尾部）装进宿主无边框
         # 窗口的 FluentTitleBar（跨页常驻）
         self.gridpage.build_titlebar(parent._fluent_title_bar)
-        # 布局：侧边栏 | 内容（标题栏由宿主窗口的 menuWidget 提供）
+        # 布局：侧边栏 | 内容。内容区四周留 8px——页卡浮在窗口底色上，
+        # 边框/圆角可见（卡片才能被看出来）
         lay = QHBoxLayout(self)
         lay.setContentsMargins(0, 0, 0, 0)
         lay.setSpacing(0)
         lay.addWidget(navcontainer)
-        lay.addWidget(self.stack, 1)
+        body = QWidget()
+        bodylay = QHBoxLayout(body)
+        bodylay.setContentsMargins(8, 8, 8, 8)
+        bodylay.addWidget(self.stack, 1)
+        lay.addWidget(body, 1)
         self.setObjectName("NOBORDER")
 
         for i, tag in enumerate(savegametaged):

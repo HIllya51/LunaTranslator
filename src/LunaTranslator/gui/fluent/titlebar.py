@@ -132,11 +132,12 @@ class FluentTitleBar(QWidget):
         self._nav_button.setVisible(visible)
 
     def addCenterWidget(self, w):
-        """插入居中控件（原有 stretch 与新 stretch 之间，如搜索框）。"""
+        """插入居中控件（原有 stretch 与新 stretch 之间；垂直居中，
+        Gallery 标题栏搜索框的 addWidget(w, 0, Qt.AlignCenter) 同款）。"""
         lay = self.layout()
         idx = lay.indexOf(self._min_button)
         lay.insertStretch(idx)
-        lay.insertWidget(idx, w)
+        lay.insertWidget(idx, w, 0, Qt.AlignVCenter)
 
     def addTrailingWidget(self, w):
         """插入尾部控件（最小化按钮之前，标题栏右侧）。"""

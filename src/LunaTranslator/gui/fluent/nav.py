@@ -35,8 +35,12 @@ NAV_TEXT_ROLE = Qt.UserRole + 2      # 文本（紧凑模式下清空显示）
 NAV_WAS_EXPANDED_ROLE = Qt.UserRole + 3
 
 
-def create_fluent_icon(icon_code, color=None, size=30):
-    """用 Segoe Fluent Icons 字体绘制 30x30 图标（插件构造时已注册内嵌字体）。"""
+def create_fluent_icon(icon_code, color=None, size=30, glyph=None):
+    """用 Segoe Fluent Icons 字形绘制图标（插件构造时已注册内嵌字体）。
+    glyph=字形像素字号，缺省 25（导航图标惯例）；Gallery 标题栏搜索图标
+    用 glyph=size（exwidgets._search_icon 同款：32x32 画布 32px 字形）。"""
+    if glyph is None:
+        glyph = 25
     pixmap = QPixmap(size, size)
     pixmap.setDevicePixelRatio(1)
     pixmap.fill(Qt.transparent)
@@ -45,7 +49,7 @@ def create_fluent_icon(icon_code, color=None, size=30):
         QPainter.Antialiasing | QPainter.TextAntialiasing | QPainter.SmoothPixmapTransform
     )
     font = QFont("Segoe Fluent Icons")
-    font.setPixelSize(25)
+    font.setPixelSize(glyph)
     painter.setFont(font)
     if color is not None and color.isValid():
         pen_color = color
