@@ -131,6 +131,7 @@ class FluentNavTree(QTreeWidget):
         self._navigation_compact_width = NAV_COMPACT_WIDTH
         self._navigation_expanded_width = 200
         self._restorable_child = None
+        self._in_mode_update = False  # 模式切换内部处理中（不触发联动）
         # 双击才展开/折叠父项（单击只选中）；默认关闭=单击选中并展开
         self._expand_on_doubleclick = False
 
@@ -167,6 +168,8 @@ class FluentNavTree(QTreeWidget):
         self._width_animation.finished.connect(self._on_width_animation_finished)
 
         self.currentItemChanged.connect(self._handle_item_selection)
+        # 折叠模式下任何形式展开/选中子项 -> 自动展开侧边栏
+        self.itemExpanded.connect(self._on_item_expanded)
 
     # ---- 滚动条 ----
     def showEvent(self, e):
@@ -240,6 +243,9 @@ class FluentNavTree(QTreeWidget):
     # ---- 展开 / 紧凑 ----
     def setNavigationExpanded(self, expanded, animated=True):
         self._navigation_expanded = expanded
+        # 新状态优先：终止进行中的过渡（animation.start() 会同步投递一次
+        # 起始值的 valueChanged，残留的旧动画会与新状态竞态）
+        self._width_animation.stop()
         target_width = (self._navigation_expanded_width if expanded
                         else self._navigation_compact_width)
         if not animated:
@@ -248,7 +254,6 @@ class FluentNavTree(QTreeWidget):
         current_width = self.width()
         if current_width == target_width:
             return
-        self._width_animation.stop()
         self._width_animation.setStartValue(current_width)
         self._width_animation.setEndValue(target_width)
         self._width_animation.start()
@@ -298,33 +303,62 @@ class FluentNavTree(QTreeWidget):
 
         self.setProperty("navigationIconMode", will_be_icon_mode)
 
-        self.setUpdatesEnabled(False)
-        self.setFixedWidth(width)
+        # 模式切换自身的展开/收起（保存态恢复）不应再触发"展开侧边栏"联动
+        self._in_mode_update = True
+        try:
+            self.setUpdatesEnabled(False)
+            self.setFixedWidth(width)
 
-        scroll_bar_extent = self.style().pixelMetric(self.style().PM_ScrollBarExtent, None, self)
-        frame_border_width = self.frameWidth() * 2
-        safe_column_width = max(self._navigation_compact_width,
-                                width - scroll_bar_extent - frame_border_width)
-        self.setColumnWidth(0, safe_column_width)
+            scroll_bar_extent = self.style().pixelMetric(self.style().PM_ScrollBarExtent, None, self)
+            frame_border_width = self.frameWidth() * 2
+            safe_column_width = max(self._navigation_compact_width,
+                                    width - scroll_bar_extent - frame_border_width)
+            self.setColumnWidth(0, safe_column_width)
 
-        for i in range(self.topLevelItemCount()):
-            item = self.topLevelItem(i)
-            self._update_navigation_item_text(item, show_text)
-            self._update_navigation_item_visibility_for_depth(item, visible_depth)
-            if mode_flipped:
-                self._update_navigation_item_expansion(item, show_text)
+            for i in range(self.topLevelItemCount()):
+                item = self.topLevelItem(i)
+                self._update_navigation_item_text(item, show_text)
+                self._update_navigation_item_visibility_for_depth(item, visible_depth)
+                if mode_flipped:
+                    self._update_navigation_item_expansion(item, show_text)
+        finally:
+            self._in_mode_update = False
 
         self.setUpdatesEnabled(True)
         self.viewport().update()
 
     # ---- 事件 ----
     def _handle_item_selection(self, current, _previous):
+        if current is not None and current.parent() is not None:
+            self._reveal_child(current)
         if current is None:
             return
         page_data = current.data(0, NAV_PAGE_ROLE)
         if page_data is None:
             return
         self.pageIndexChanged.emit(int(page_data))
+
+    # ---- 子项可见性联动 ----
+    def _on_item_expanded(self, item):
+        """折叠（图标）模式下任何分组被展开：图标模式子项不可见，保持
+        折叠会表现为"展开丢失"——记录展开态（退出图标模式时保持）并
+        自动展开侧边栏。构造期建树（恢复保存的展开态）不触发。"""
+        if item is None or self._navigation_expanded:
+            return
+        if self._in_mode_update or not self.isVisible():
+            return
+        item.setData(0, NAV_WAS_EXPANDED_ROLE, True)
+        self.setNavigationExpanded(True)
+
+    def _reveal_child(self, item):
+        """子项被（程序性）选中：展开其祖先链；若侧边栏处于折叠模式
+        则一并展开——否则选中落在不可见的子项上（指示条消失）。"""
+        p = item.parent()
+        while p is not None:
+            p.setExpanded(True)  # 图标模式下经 _on_item_expanded 记录并展开侧边栏
+            p = p.parent()
+        if not self._navigation_expanded and self.isVisible():
+            self.setNavigationExpanded(True)
 
     def changeEvent(self, event):
         super().changeEvent(event)
