@@ -877,7 +877,6 @@ def __hooksubtabs():
             lambda l: makescrollgrid(gethookgrid_em(), l),
         ],
         delay=True,
-        padding=True,
     )
     return tab, do
 

@@ -2666,7 +2666,6 @@ def makesubtab_lazy(
     delay=False,
     initial=None,
     fast=False,
-    padding=False,
     bare=False,
     type=0,
 ):

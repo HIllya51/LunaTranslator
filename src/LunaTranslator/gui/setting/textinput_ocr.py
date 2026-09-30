@@ -580,7 +580,6 @@ def internal(self):
             lambda l: makescrollgrid(allothers, l),
         ],
         delay=True,
-        padding=True,
     )
     return tab, dotab
 
