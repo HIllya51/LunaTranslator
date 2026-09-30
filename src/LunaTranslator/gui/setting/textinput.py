@@ -34,7 +34,6 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     makescrollgrid,
     FocusFontCombo,
-    getboxlayout,
     getsmalllabel,
 )
 
@@ -878,7 +877,6 @@ def __hooksubtabs():
         ],
         delay=True,
         padding=True,
-        pagecard=True,
     )
     return tab, do
 
@@ -950,7 +948,6 @@ def setTabOne_lazy(self, basel: QVBoxLayout):
         funcs,
         delay=True,
         padding=True,
-        pagecard=True,
     )
     basel.addWidget(maketabholder(tab))
     basel.setSpacing(0)

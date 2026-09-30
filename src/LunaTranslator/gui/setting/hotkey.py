@@ -456,7 +456,7 @@ def setTab_quick(self, l: QVBoxLayout):
     __vis.append("自定义")
     __.append(functools.partial(selfdefkeys, self))
     tab, do = makesubtab_lazy(
-        __vis, __, delay=True, padding=True, pagecard=True, bare=True
+        __vis, __, delay=True, padding=True, bare=True
     )
 
     # ---- tabwidget 只加页边距，页内容各自用紧邻 tabbar 的卡片包裹 ----

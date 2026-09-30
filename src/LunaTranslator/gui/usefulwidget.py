@@ -2259,11 +2259,10 @@ def manybuttonlayout(textandfunctions: list):
     return layout
 
 
-def tabadd_lazy(tab, title, getrealwidgetfunction, pagecard=False, bare=False,
+def tabadd_lazy(tab, title, getrealwidgetfunction, bare=False,
                 iscard=False):
     # tab 页统一工厂：iscard=True -> (8,0,8,8)+isCard(253)（所有层级
     # 共用）；默认 -> FluentPageCard 满铺；bare=True -> 透明不包卡；
-    # pagecard 参数保留兼容
     if bare:
         q = QWidget()
         v = QVBoxLayout(q)
@@ -2671,7 +2670,6 @@ def makesubtab_lazy(
     initial=None,
     fast=False,
     padding=False,
-    pagecard=False,
     bare=False,
     iscard=False,
 ):
@@ -2706,11 +2704,11 @@ def makesubtab_lazy(
     if not can:
         tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
 
-    def __do(tab: LTabWidget, titles, functions, initial, pagecard, bare,
+    def __do(tab: LTabWidget, titles, functions, initial, bare,
              iscard):
         if titles and functions:
             for i, func in enumerate(functions):
-                tabadd_lazy(tab, titles[i], func, pagecard=pagecard, bare=bare,
+                tabadd_lazy(tab, titles[i], func, bare=bare,
                             iscard=iscard)
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
@@ -2718,7 +2716,7 @@ def makesubtab_lazy(
             tab.currentChanged.emit(initial[0][initial[1]])
 
     ___do = functools.partial(__do, tab, titles, functions, initial,
-                              pagecard, bare, iscard)
+                              bare, iscard)
     if not delay:
         ___do()
         return tab

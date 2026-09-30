@@ -240,12 +240,10 @@ class AnkiWindow(QWidget):
         # 每个子页都包进紧贴 tabbar 的卡片（pagecard）
         self.tabs = makesubtab_lazy(callback=self.ifshowrefresh)
         _addwid = self.createaddtab()
-        tabadd_lazy(
-            self.tabs, "添加", lambda l: l.addWidget(_addwid), pagecard=True
-        )
-        tabadd_lazy(self.tabs, "设置", self.creatsetdtab, pagecard=True)
-        tabadd_lazy(self.tabs, "快捷键", self.createhotkeytab, pagecard=True)
-        tabadd_lazy(self.tabs, "模板", self.creattemplatetab, pagecard=True)
+        tabadd_lazy(self.tabs, "添加", lambda l: l.addWidget(_addwid))
+        tabadd_lazy(self.tabs, "设置", self.creatsetdtab)
+        tabadd_lazy(self.tabs, "快捷键", self.createhotkeytab)
+        tabadd_lazy(self.tabs, "模板", self.creattemplatetab)
 
         l = QHBoxLayout(self)
         l.setContentsMargins(0, 0, 0, 0)
@@ -663,7 +661,6 @@ class AnkiWindow(QWidget):
             ),
             _widen(audioexp),
         ]
-        # pagecard 卡片即外层大卡：卡片+折叠卡直接排进网格
         makescrollgrid([[(it, 0)] for it in items], baselay)
 
     @threader
@@ -763,7 +760,6 @@ class AnkiWindow(QWidget):
         self.recorders: "dict[int, loopbackrecorder]" = {}
         wid = QWidget()
         layout = QVBoxLayout(wid)
-        # pagecard 卡内边距与其他页一致
         layout.setContentsMargins(16, 16, 16, 12)
         soundbutton = IconButton("fa.music", tips="语音合成")
         soundbutton.clicked.connect(self.langdu)
