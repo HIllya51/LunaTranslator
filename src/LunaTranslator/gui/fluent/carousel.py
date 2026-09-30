@@ -481,7 +481,7 @@ class ExCarousel(QWidget):
     AlwaysVisible = 0
     OnHover = 1
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, rounded=False):
         super().__init__(parent)
         self.setObjectName("exCarousel")
         self._slides = []
@@ -497,7 +497,9 @@ class ExCarousel(QWidget):
         self._pauseOnHover = True
         self._hovered = False
         self._animating = False
-        self._borderRadius = _DEFAULT_CORNER_RADIUS
+        # 圆角可选（rounded，默认直角）
+        self._borderRadius = (
+            _DEFAULT_CORNER_RADIUS if rounded else 0.0)
         self._navTrigger = ExCarousel.AlwaysVisible
         self._anim = None
 
