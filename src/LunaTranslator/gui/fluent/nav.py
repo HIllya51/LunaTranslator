@@ -37,6 +37,7 @@ NAV_PAGE_ROLE = Qt.UserRole          # 页面索引
 NAV_ICON_ROLE = Qt.UserRole + 1      # 图标码点
 NAV_TEXT_ROLE = Qt.UserRole + 2      # 文本（紧凑模式下清空显示）
 NAV_WAS_EXPANDED_ROLE = Qt.UserRole + 3
+NAV_GROUP_RESTORE_ROLE = Qt.UserRole + 4  # 折叠分组时记住的子项（展开恢复）
 
 # 折叠（图标模式）宽度：图标的绘制区是贴格左缘的 30px 画布（原生尺寸），
 # 格宽 30 时图标恰好居中（ink 中心≈14 vs 格中心 15）；汉堡按钮同宽对齐
@@ -172,6 +173,8 @@ class FluentNavTree(QTreeWidget):
         self.currentItemChanged.connect(self._handle_item_selection)
         # 折叠模式下任何形式展开/选中子项 -> 自动展开侧边栏
         self.itemExpanded.connect(self._on_item_expanded)
+        # 滚动条出现/消失（内容增减）时重算列宽，避免滚动条覆盖项内容
+        self.verticalScrollBar().rangeChanged.connect(self._refit_column_width)
 
     # ---- 滚动条 ----
     def showEvent(self, e):
@@ -330,12 +333,7 @@ class FluentNavTree(QTreeWidget):
         try:
             self.setUpdatesEnabled(False)
             self.setFixedWidth(width)
-
-            scroll_bar_extent = self.style().pixelMetric(self.style().PM_ScrollBarExtent, None, self)
-            frame_border_width = self.frameWidth() * 2
-            safe_column_width = max(self._navigation_compact_width,
-                                    width - scroll_bar_extent - frame_border_width)
-            self.setColumnWidth(0, safe_column_width)
+            self._apply_column_width(width)
 
             for i in range(self.topLevelItemCount()):
                 item = self.topLevelItem(i)
@@ -359,6 +357,24 @@ class FluentNavTree(QTreeWidget):
         if page_data is None:
             return
         self.pageIndexChanged.emit(int(page_data))
+
+    def _refit_column_width(self, *_):
+        """滚动条出现/消失时重算列宽（在其下留出厚度，不遮挡折叠
+        箭头/指示图标）。"""
+        if not self._in_mode_update:
+            self._apply_column_width(self.width())
+
+    def _apply_column_width(self, width):
+        """列宽 = 树宽 -（可见滚动条厚度 + 边框）。滚动条按 range 与
+        策略判断（图标模式策略隐藏，不预留）。"""
+        sb = self.verticalScrollBar()
+        needs_sb = (sb.maximum() > 0 and self.verticalScrollBarPolicy()
+                    != Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        extent = (self.style().pixelMetric(
+            self.style().PM_ScrollBarExtent, None, self) if needs_sb else 0)
+        frame_border_width = self.frameWidth() * 2
+        self.setColumnWidth(0, max(self._navigation_compact_width,
+                                   width - extent - frame_border_width))
 
     # ---- 子项可见性联动 ----
     def _on_item_expanded(self, item):
@@ -410,11 +426,20 @@ class FluentNavTree(QTreeWidget):
                 self.setCurrentIndex(index)
                 event.accept()
                 return
-            # 已处于此项（父项或其子项被选中）时再点 -> 折叠
+            # 已处于此项（父项或其子项被选中）时再点 -> 折叠/展开切换：
+            # 折叠保持当前页面不变（不切到首子项），选中提升到父项，
+            # 记住原子项，展开时恢复
             cur = self.currentIndex()
             is_current = (cur == index) or (
                 cur.isValid() and cur.parent() == index
             )
+            if is_current:
+                if self.isExpanded(index):
+                    self._collapse_group_keep_page(index)
+                else:
+                    self._expand_group_restore(index)
+                event.accept()
+                return
             # 首子项复用父项页面（同 page_index）时，选中焦点跳到首子项
             # ——否则页面显示的是首子页、焦点却停在父项上
             target = index
@@ -426,14 +451,36 @@ class FluentNavTree(QTreeWidget):
             ):
                 target = child
             self.setCurrentIndex(target)
-            if is_current:
-                if self.isExpanded(index):
-                    self.collapse(index)
-                else:
-                    self.expand(index)
-            else:
-                self.expand(index)
+            self.expand(index)
             event.accept()
             return
         self.setCurrentIndex(index)
         super().mousePressEvent(event)
+
+    def _collapse_group_keep_page(self, index):
+        """点击父项折叠分组：页面保持不变——选中（指示条）提升到父项
+        （屏蔽信号避免切页），原子项记在父项上，展开时恢复。"""
+        parent = self.itemFromIndex(index)
+        cur = self.currentIndex()
+        if parent is not None and cur.isValid() and cur.parent() == index:
+            parent.setData(0, NAV_GROUP_RESTORE_ROLE, self.itemFromIndex(cur))
+            self.blockSignals(True)
+            self.setCurrentIndex(index)
+            self.blockSignals(False)
+        self.collapse(index)
+
+    def _expand_group_restore(self, index):
+        """点击父项展开分组：恢复折叠前记住的子项选中（页面切回）；
+        无记录则维持父项选中（父项页面即首子页，页面不变）。"""
+        parent = self.itemFromIndex(index)
+        self.expand(index)
+        if parent is None:
+            return
+        child = parent.data(0, NAV_GROUP_RESTORE_ROLE)
+        parent.setData(0, NAV_GROUP_RESTORE_ROLE, None)
+        try:
+            ok = isinstance(child, QTreeWidgetItem) and child.parent() is parent
+        except RuntimeError:
+            ok = False  # 子项已被删除
+        if ok:
+            self.setCurrentIndex(self.indexFromItem(child))
