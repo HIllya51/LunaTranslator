@@ -45,6 +45,7 @@ from gui.gamemanager.common import (
 )
 from gui.dynalang import LAction, LLabel, LMenu
 from gui.fluent.nav import FluentNavTree, create_fluent_icon
+from gui.fluent.tabwidget import FluentPageCard
 from gui.gamemanager.widgets import ItemWidget
 from gui.fluent.breadcrumb import ExBreadcrumbBar
 from gui.fluent.carousel import ExCarousel
@@ -1012,7 +1013,7 @@ class _gridpage(QWidget):
         self.searchedit = QLineEdit()
         self.searchedit.returnPressed.connect(self._search)
         self.searchedit.setPlaceholderText("搜索")
-        self.searchedit.setFixedSize(300, 32)
+        self.searchedit.setFixedSize(300, 34)
         self.searchedit.setClearButtonEnabled(True)
         self._search_action = _act = QAction(self.searchedit)
         _act.setIcon(create_fluent_icon(ICON_SEARCH, size=32))
@@ -1041,7 +1042,7 @@ class _gridpage(QWidget):
     def toggle_settings_panel(self):
         """常驻顶栏齿轮：切回网格页并切换右侧设置面板显隐（首次构建内容）。
         用 isHidden 判逻辑开合——人在其他页时 isVisible 会因祖先隐藏而误判。"""
-        self.ref.stack.setCurrentWidget(self)
+        self.ref._show_gridpage()
         if self._settings_panel.isHidden():
             if not getattr(self, "_settings_built", False):
                 self._build_settings_panel()
@@ -1107,7 +1108,7 @@ class _gridpage(QWidget):
         text = self.searchedit.text().strip()
         if text:
             # 顶栏常驻：在其他页回车时先切回网格页再过滤
-            self.ref.stack.setCurrentWidget(self)
+            self.ref._show_gridpage()
             self._apply_tags(tuple(self.currtags)
                              + ((text, tagitem.TYPE_SEARCH, None),))
             self.searchedit.clear()
@@ -1448,7 +1449,7 @@ class _gridpage(QWidget):
         if self.reflist == 1:
             return
         # 顶栏常驻：排序作用于网格列表，先切回网格页
-        self.ref.stack.setCurrentWidget(self)
+        self.ref._show_gridpage()
         menu = QMenu(self)
         sortbytime = LAction("按添加时间排序", menu)
         sortbytime.setIcon(qtawesome.icon("fa.sort-numeric-asc"))
@@ -1627,6 +1628,11 @@ class dialog_savedgame_v3(QWidget):
         except:
             print_exc()
 
+    def _show_gridpage(self):
+        """右侧切到网格页（gridpage 包在 FluentPageCard 页卡里，
+        页卡才是 stack 的页）。"""
+        self.stack.setCurrentWidget(self.gridpage_card)
+
     # ---- 导航树辅助 ----
     def _tagicon(self, tagid):
         if tagid is None:
@@ -1718,7 +1724,7 @@ class dialog_savedgame_v3(QWidget):
                 self.gridpage.reftagid != self.reftagid
             ):
                 self.gridpage.showtag(self.reftagid)
-            self.stack.setCurrentWidget(self.gridpage)
+            self._show_gridpage()
             self.gridpage.focusgame(uid)
         else:
             # 主项：右侧切网格页（大图表），展示该列表。
@@ -1730,7 +1736,7 @@ class dialog_savedgame_v3(QWidget):
                 self.gridpage.showtag(tagid)
             else:
                 ItemWidget.clearfocus()
-            self.stack.setCurrentWidget(self.gridpage)
+            self._show_gridpage()
 
     def _navclicked(self, item, _col):
         uid = item.data(0, GAMEUID_ROLE)
@@ -2147,11 +2153,23 @@ class dialog_savedgame_v3(QWidget):
                 self, getreflist(self.reftagid), self.currentfocusuid
             )
         )
-        self.righttop.addTab(self.pixview, "_画廊_")
+        # 画廊页包 FluentPageCard 背景卡（同设置窗口页卡；
+        # "_设置_"页由 tabadd_lazy 自带页卡）
+        gallerycard = FluentPageCard()
+        _glay = QVBoxLayout(gallerycard)
+        _glay.setContentsMargins(0, 0, 0, 0)
+        _glay.addWidget(self.pixview)
+        self.righttop.addTab(gallerycard, "_画廊_")
         # 右侧两页：0=网格大图表（主项点击） 1=画廊/设置（子项点击）
         self.stack = QStackedWidget()
         self.gridpage = _gridpage(self)
-        self.stack.addWidget(self.gridpage)
+        gridcard = FluentPageCard()
+        _glay2 = QVBoxLayout(gridcard)
+        _glay2.setContentsMargins(0, 0, 0, 0)
+        _glay2.addWidget(self.gridpage)
+        # gridpage 包在页卡里：切页统一走 _show_gridpage（页卡是 stack 的页）
+        self.gridpage_card = gridcard
+        self.stack.addWidget(gridcard)
         self.stack.addWidget(self.righttop)
         # 标题栏控件（搜索居中/面包屑/排序/齿轮尾部）装进宿主无边框
         # 窗口的 FluentTitleBar（跨页常驻）
@@ -2214,9 +2232,11 @@ class dialog_savedgame_v3(QWidget):
         from gui.usefulwidget import (
             makescrollgrid, makecardrow, D_getsimpleswitch,
         )
-        page = QWidget()
+        # 页面包 FluentPageCard 背景卡（同设置窗口主页面），内容卡浮其上
+        page = FluentPageCard()
         _host = QVBoxLayout(page)
         _host.setContentsMargins(0, 0, 0, 0)
+        _host.setProperty("_fluent_main_grid", True)
         grid = [
             [(makecardrow(
                 "隐藏不存在的游戏",

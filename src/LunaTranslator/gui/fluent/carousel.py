@@ -151,7 +151,9 @@ class CarouselImageSlide(QWidget):
                 self._pixmap, QRectF(self._pixmap.rect()),
             )
         else:
-            painter.fillRect(r, self.palette().color(QPalette.Window))
+            # Base（页卡底色）而非 Window：画廊页卡上占位不突兀，
+            # 与 CarouselViewport 的闲置填充一致
+            painter.fillRect(r, self.palette().color(QPalette.Base))
 
         # 底部图文渐变暗色遮罩
         if not (self._title or self._subtitle):
