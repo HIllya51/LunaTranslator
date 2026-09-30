@@ -375,6 +375,11 @@ class FluentTabWidget(QWidget):
         self.nav.toggleNavigationMode()
         self.nav_footer.toggleNavigationMode()
 
+    def setNavigationExpanded(self, expanded, animated=True):
+        """展开/收起侧边栏（主导航 + 底部导航）。"""
+        self.nav.setNavigationExpanded(expanded, animated)
+        self.nav_footer.setNavigationExpanded(expanded, animated)
+
     def navigationExpanded(self):
         return self.nav.navigationExpanded()
 
