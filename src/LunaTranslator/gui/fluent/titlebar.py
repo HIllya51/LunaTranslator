@@ -27,6 +27,7 @@ from gui.fluent.icons import (
     ICON_CLOSE,
     ICON_GLOBAL_NAV,
 )
+from myutils.config import _TR
 
 
 def _caption_icon_font(pixel_size=11):
@@ -47,10 +48,33 @@ def _create_caption_button(parent, object_name, glyph, width=46, pixel_size=11):
     return button
 
 
+class FluentCaptionButton(QToolButton):
+    """caption 风格按钮 + i18n 工具提示（LanguageChange -> updatelangtext，
+    由应用级事件过滤器驱动，同 LLabel 的机制）。"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self._tr_tip = None
+
+    def setToolTip(self, t):
+        self._tr_tip = t
+        super().setToolTip(_TR(t))
+
+    def updatelangtext(self):
+        if self._tr_tip is not None:
+            super().setToolTip(_TR(self._tr_tip))
+
+
 def create_fluent_caption_button(parent, glyph, tooltip="", width=40):
     """Gallery 标题栏「置顶/主题」同款的 caption 风格按钮
-    （win_caption_pin 悬停由插件渲染，40x40、16px 字形）。"""
-    button = _create_caption_button(parent, "win_caption_pin", glyph, width, 16)
+    （win_caption_pin 悬停由插件渲染，40x40、16px 字形；tooltip 经 _TR）。"""
+    button = FluentCaptionButton(parent)
+    button.setObjectName("win_caption_pin")
+    button.setAutoRaise(True)
+    button.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
+    button.setFont(_caption_icon_font(16))
+    button.setText(glyph)
+    button.setFixedSize(width, 40)
     if tooltip:
         button.setToolTip(tooltip)
     return button

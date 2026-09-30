@@ -32,6 +32,7 @@ from qtsymbols import (
     QTreeWidgetItem,
 )
 from qtsymbols import QApplication
+from myutils.config import _TR
 
 NAV_PAGE_ROLE = Qt.UserRole          # 页面索引
 NAV_ICON_ROLE = Qt.UserRole + 1      # 图标码点
@@ -84,12 +85,22 @@ class FluentNavToggleButton(QToolButton):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._tr_tip = None
         self.setAutoRaise(True)
         self.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextOnly)
         _f = QFont("Segoe Fluent Icons")
         _f.setPixelSize(16)
         self.setFont(_f)
         self.setFixedSize(NAV_COMPACT_WIDTH, 38)
+
+    def setToolTip(self, t):
+        # i18n：LanguageChange -> updatelangtext（应用级事件过滤器驱动）
+        self._tr_tip = t
+        super().setToolTip(_TR(t))
+
+    def updatelangtext(self):
+        if self._tr_tip is not None:
+            super().setToolTip(_TR(self._tr_tip))
 
     def paintEvent(self, _):
         painter = QPainter(self)

@@ -955,5 +955,15 @@
     "下载/解压失败": "Falha no download/extração",
     "请手动下载并解压到软件目录下": "Por favor, baixe manualmente e descompacte para o diretório do software.",
     "未检测到Unity TMP字体文件。内嵌翻译修改游戏字体需要这些文件，请点击下载：": "Arquivo de fonte Unity TMP não detectado. A tradução incorporada para modificar a fonte do jogo requer esses arquivos, clique para baixar:",
-    "插入": "Inserir"
+    "插入": "Inserir",
+    "收起设置": "Ocultar definições",
+    "折叠/展开侧边栏": "Recolher/expandir barra lateral",
+    "上一张": "Anterior",
+    "下一张": "Seguinte",
+    "展开/收起导航": "Expandir/recolher navegação",
+    "界面语言": "Idioma da interface",
+    "应用主题": "Aplicar tema",
+    "隐藏目标": "Ocultar objetivo",
+    "隐藏延迟": "Ocultar atraso",
+    "编辑颜色": "Editar cor"
 }

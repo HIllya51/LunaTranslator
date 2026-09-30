@@ -41,6 +41,7 @@ from qtsymbols import (
     pyqtSignal,
 )
 from PyQt5.QtGui import QLinearGradient
+from myutils.config import _TR
 
 # ---- 常量（同 excarousel.cpp 匿名命名空间）----
 _DEFAULT_WIDTH = 560
@@ -198,7 +199,9 @@ class CarouselImageSlide(QWidget):
 
 
 class CarouselNavButton(QToolButton):
-    """圆形浮动导航按钮（自绘，Chevron 箭头）。"""
+    """圆形浮动导航按钮（自绘，Chevron 箭头）。工具提示走 i18n：
+    setToolTip 记原文并翻译，LanguageChange -> updatelangtext 刷新
+    （由应用级事件过滤器驱动，同 LLabel）。"""
 
     _ARROW_GLYPHS = {
         Qt.ArrowType.LeftArrow: _ICON_CHEVRON_LEFT,
@@ -209,8 +212,17 @@ class CarouselNavButton(QToolButton):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self._tr_tip = None
         self._hovered = False
         self._pressed = False
+
+    def setToolTip(self, t):
+        self._tr_tip = t
+        super().setToolTip(_TR(t))
+
+    def updatelangtext(self):
+        if self._tr_tip is not None:
+            super().setToolTip(_TR(self._tr_tip))
 
     def paintEvent(self, _):
         painter = QPainter(self)
