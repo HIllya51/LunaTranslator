@@ -1545,6 +1545,11 @@ class dialog_savedgame_v3(QWidget):
         )
 
     def _navcurrent(self, item, _=None):
+        # 主 nav 选中 -> 清 footernav 的选中（两棵树互斥）
+        if item is not None:
+            self._footernav.blockSignals(True)
+            self._footernav.setCurrentItem(None)
+            self._footernav.blockSignals(False)
         if item is None:
             return
         if self.nav._click_pending:
@@ -2041,6 +2046,39 @@ class dialog_savedgame_v3(QWidget):
             item = self.nav.topLevelItem(i)
             if item.data(0, TAGID_ROLE) in (None, 1):
                 self._updatetagtext(item)
+
+    def _open_settings(self):
+        # footernav 选中 -> 清主 nav 的选中（两棵树互斥）
+        self.nav.blockSignals(True)
+        self.nav.setCurrentItem(None)
+        self.nav.blockSignals(False)
+        # 卡片式设置页（类似设置窗口「关于软件」），在右侧 stack 显示
+        if getattr(self, "_settingspage", None) is not None:
+            self.stack.setCurrentWidget(self._settingspage)
+            return
+        from gui.usefulwidget import (
+            makescrollgrid, makecardrow, D_getsimpleswitch,
+        )
+        page = QWidget()
+        _host = QVBoxLayout(page)
+        _host.setContentsMargins(0, 0, 0, 0)
+        grid = [
+            [(makecardrow(
+                "隐藏不存在的游戏",
+                D_getsimpleswitch(
+                    globalconfig, "hide_not_exists",
+                    callback=lambda v: self.callexists(v), default=False)(),
+            ), 0)],
+            [(makecardrow(
+                "启动游戏不修改顺序",
+                D_getsimpleswitch(
+                    globalconfig, "startgamenototop", default=True)(),
+            ), 0)],
+        ]
+        makescrollgrid(grid, _host)
+        self._settingspage = page
+        self.stack.addWidget(page)
+        self.stack.setCurrentWidget(page)
 
     def _toggle_nav(self):
         exp = not self.nav.navigationExpanded()

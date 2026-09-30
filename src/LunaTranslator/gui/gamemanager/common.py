@@ -371,25 +371,12 @@ def getfonteditor(d: dict, k: str, callback=None):
 
 @Singleton
 class dialog_syssetting(LDialog):
+    """网格设置弹窗（「隐藏不存在」「不修改顺序」已移至侧边栏设置页）。"""
 
     def __init__(self, parent) -> None:
         super().__init__(parent, Qt.WindowType.WindowCloseButtonHint)
-        self.setWindowTitle("其他设置")
+        self.setWindowTitle("网格设置")
         formLayout = LFormLayout(self)
-
-        formLayout.addRow(
-            "隐藏不存在的游戏",
-            getsimpleswitch(
-                globalconfig, "hide_not_exists", callback=self.parent().callexists,
-                default=False,
-            ),
-        )
-
-        formLayout.addRow(
-            "启动游戏不修改顺序",
-            getsimpleswitch(globalconfig, "startgamenototop", default=True),
-        )
-
         formLayout.addRow(SplitLine())
         self.parent().createsettings(formLayout)
         self.show()
