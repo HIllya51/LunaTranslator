@@ -202,8 +202,11 @@ def startgamecheck(self: QWidget, reflist: list, gameuid):
     if not os.path.exists(get_launchpath(gameuid)):
         return
     if not globalconfig.get("startgamenototop", True):
-        idx = reflist.index(gameuid)
-        reflist.insert(0, reflist.pop(idx))
+        # 最近游戏的 getreflist 返回哨兵 1（动态列表，启动后自然置顶），
+        # 非列表/不在列表中时跳过手动置顶
+        if isinstance(reflist, list) and gameuid in reflist:
+            idx = reflist.index(gameuid)
+            reflist.insert(0, reflist.pop(idx))
     self.window().close()
     startgame(gameuid)
 
