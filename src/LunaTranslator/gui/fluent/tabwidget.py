@@ -62,6 +62,10 @@ TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
 TABBAR_STYLE_NAVIGATION = 8  # Navigation
 TABBAR_STYLE_PIVOT_GROW = 3  # Pivot_Grow
 
+# 直角面板（FluentSquarePane）配色
+PANE_COLORS_PAGE = 0  # 同页卡（FluentPageCard 配方）
+PANE_COLORS_CARD = 1  # 同内容卡（插件 isCard 配方）
+
 
 class FluentCardSeparator(QFrame):
     """侧边栏分割线（游戏管理与设置窗口共用）：颜色与页卡描边一致
@@ -86,21 +90,25 @@ class FluentCardSeparator(QFrame):
         sync()
 
 
-def _pagecard_colors(w: QWidget):
-    """页卡配色（FluentPageCard / FluentSquarePane / 分割线共用）：
-    浅色 = 调色板 Base(249) + #E9E9E9 描边；暗色 = 窗口色上叠 4% 白
-    (≈41) + 白@0x12 描边（插件 pane 的 frameColorLight——偏白，与
-    Gallery 暗色页卡一致）。"""
-    dark = False
+def _is_dark_theme(w: QWidget):
+    """明暗判定：应用级 _q_colorscheme 优先，回退调色板亮度。"""
     app = QApplication.instance()
     if app is not None:
         cs = app.property("_q_colorscheme")
         if cs is not None:
             try:
-                dark = int(cs) == 1
+                return int(cs) == 1
             except Exception:
-                dark = w.palette().color(QPalette.Window).lightness() < 128
-    if dark:
+                pass
+    return w.palette().color(QPalette.Window).lightness() < 128
+
+
+def _pagecard_colors(w: QWidget):
+    """页卡配色（FluentPageCard / FluentSquarePane(page) / 分割线共用）：
+    浅色 = 调色板 Base(249) + #E9E9E9 描边；暗色 = 窗口色上叠 4% 白
+    (≈41) + 白@0x12 描边（插件 pane 的 frameColorLight——偏白，与
+    Gallery 暗色页卡一致）。"""
+    if _is_dark_theme(w):
         wc = w.palette().color(QPalette.Window)
         fill = QColor(
             round(wc.red() + (255 - wc.red()) * 0.04),
@@ -110,6 +118,27 @@ def _pagecard_colors(w: QWidget):
     else:
         fill = QColor(w.palette().color(QPalette.Base))
         border = QColor(0xE9, 0xE9, 0xE9)
+    return fill, border
+
+
+def _contentcard_colors(w: QWidget):
+    """内容卡配色（FluentSquarePane(card)，插件 isCard 的 PE_Widget
+    配方）：底色 = winUI3CardBackgroundColor（浅色白@179 叠 Base≈253、
+    暗色白@13 叠 Base），描边 = cardStrokeColorBalanced（#E9E9E9 /
+    #252525，不透明）。"""
+    dark = _is_dark_theme(w)
+    base = QColor(w.palette().color(QPalette.Base))
+    if base.alpha() == 0:
+        base = QColor(w.palette().color(QPalette.Window))
+    if base.alpha() == 0:
+        base = QColor(0x1E, 0x1E, 0x1E) if dark else QColor(0xFF, 0xFF, 0xFF)
+    card = QColor(255, 255, 255, 13) if dark else QColor(255, 255, 255, 179)
+    alpha = card.alphaF()
+    fill = QColor(
+        round(base.red() * (1 - alpha) + card.red() * alpha),
+        round(base.green() * (1 - alpha) + card.green() * alpha),
+        round(base.blue() * (1 - alpha) + card.blue() * alpha))
+    border = QColor(0x25, 0x25, 0x25) if dark else QColor(0xE9, 0xE9, 0xE9)
     return fill, border
 
 
@@ -133,11 +162,19 @@ class FluentPageCard(QWidget):
 
 class FluentSquarePane(QWidget):
     """直角面板（Gallery 子页签内容的统一包裹，插件 QTabWidget::pane
-    直角面板的等价自绘）：配色同 FluentPageCard，四角直角。"""
+    直角面板的等价自绘）：四角直角。colorstyle 选配色——'page' 同
+    页卡（_pagecard_colors）或 'card' 同内容卡（_contentcard_colors）。"""
+
+    def __init__(self, parent=None, colorstyle=PANE_COLORS_PAGE):
+        super().__init__(parent)
+        self.colorstyle = colorstyle
 
     def paintEvent(self, e):
         painter = QPainter(self)
-        fill, border = _pagecard_colors(self)
+        if self.colorstyle == PANE_COLORS_CARD:
+            fill, border = _contentcard_colors(self)
+        else:
+            fill, border = _pagecard_colors(self)
         rect = QRectF(self.rect()).adjusted(0.5, 0.5, -0.5, -0.5)
         painter.fillRect(rect, fill)
         painter.setPen(QPen(border, 1.0))
@@ -168,13 +205,16 @@ class FluentPaneTabWidget(LTabWidget):
     """Gallery 式页签组（pageaudiolevelmeter.cpp 基础/刻度/动画/颜色
     tab 同款）：tabbar 样式可参数化（tabbar_style，默认 Pivot_Grow——
     无底文字页签 + 选中底部 24px 强调色圆头短横线，切换时指示条自
-    旧位置拉伸过渡至新位置），各页统一包在直角面板里（配色同页卡、
-    四角直角，面板顶边紧贴 tabbar）。addTab 自动包裹页 widget（懒
-    加载页的 lazyfunction 属性随页迁移）。宿主一般再包一张内容卡
-    （make_content_card）。"""
+    旧位置拉伸过渡至新位置），各页统一包在直角面板里（四角直角，
+    面板顶边紧贴 tabbar）。colorstyle 选面板配色——PANE_COLORS_PAGE
+    （同页卡，默认）或 PANE_COLORS_CARD（同内容卡 isCard）。
+    addTab 自动包裹页 widget（懒加载页的 lazyfunction 属性随页迁移）。
+    宿主一般再包一张内容卡（make_content_card）。"""
 
-    def __init__(self, parent=None, tabbar_style=TABBAR_STYLE_PIVOT_GROW):
+    def __init__(self, parent=None, tabbar_style=TABBAR_STYLE_PIVOT_GROW,
+                 colorstyle=PANE_COLORS_PAGE):
         super().__init__(parent)
+        self._colorstyle = colorstyle
         bar = self.tabBar()
         bar.setProperty("tabBarStyle", tabbar_style)
         if tabbar_style == TABBAR_STYLE_SEGMENTED_WINUI3:
@@ -192,7 +232,7 @@ class FluentPaneTabWidget(LTabWidget):
         q = QWidget()
         v = QVBoxLayout(q)
         v.setContentsMargins(0, 0, 0, 0)
-        pane = FluentSquarePane()
+        pane = FluentSquarePane(colorstyle=self._colorstyle)
         v.addWidget(pane)
         inner = QVBoxLayout(pane)
         inner.setContentsMargins(0, 0, 0, 0)

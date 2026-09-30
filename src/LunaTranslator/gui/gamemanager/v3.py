@@ -2225,7 +2225,7 @@ class dialog_savedgame_v3(QWidget):
         self.nav.navigationExpandedChanged.connect(
             lambda exp: globalconfig.__setitem__(
                 "gamemanager_nav_collapsed", not exp))
-        self.righttop = makesubtab_lazy()
+        self.righttop = makesubtab_lazy(type=1)
         # tabbar 左缩走 QSS；下移走外层容器顶边距（QSS ::tab-bar 的 top
         # 只移 bar 不移内容起点，会把页卡顶盖到 bar 之下）。注意此处
         # setStyleSheet 会整体替换 apply_segmented_tabbar 的 pane 清零，
@@ -2247,7 +2247,9 @@ class dialog_savedgame_v3(QWidget):
         # （子项点击）。righttop 整体（含 tabbar）包一张页卡——tabbar 也在卡内
         righttopcard = FluentPageCard()
         _rl = QVBoxLayout(righttopcard)
-        _rl.setContentsMargins(0, 8, 0, 0)  # 顶部：tabbar 从卡缘下移
+        m = _rl.contentsMargins()
+        m.setTop(0)
+        _rl.setContentsMargins(m)
         _rl.addWidget(self.righttop)
         self.righttop_card = righttopcard
         self.stack = QStackedWidget()

@@ -2668,13 +2668,14 @@ def makesubtab_lazy(
     fast=False,
     padding=False,
     bare=False,
+    type=0,
 ):
     # FluentUI3 插件对 QTabBar 自带内边距，"_标题_" 的下划线补白不再需要
     if klass:
         tab: LTabWidget = klass()
     else:
         # 统一 Gallery 式页签组：Pivot_Grow bar + 各页直角面板
-        tab = FluentPaneTabWidget()
+        tab = FluentPaneTabWidget(colorstyle=type)
     if isinstance(tab, QTabWidget)             and not isinstance(tab, FluentPaneTabWidget):
         # 其余（FluentTabWidget 主导航，bar 隐藏）沿用 Segmented 配置
         apply_segmented_tabbar(tab)
