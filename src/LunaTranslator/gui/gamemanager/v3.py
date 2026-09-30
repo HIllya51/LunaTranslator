@@ -2183,6 +2183,9 @@ class dialog_savedgame_v3(QWidget):
         footer_lay.setSpacing(0)
         footer_lay.addWidget(self._footernav)
         navlay.addWidget(footer_container)
+        # 主导航展开/收起（含双击展开分组触发的自动展开）-> 底部导航跟随
+        self.nav.navigationExpandedChanged.connect(
+            self._footernav.setNavigationExpanded)
         self.righttop = makesubtab_lazy()
         self.righttop.currentChanged.connect(
             lambda idx: (

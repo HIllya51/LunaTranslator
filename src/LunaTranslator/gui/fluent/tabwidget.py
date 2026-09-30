@@ -253,6 +253,9 @@ class FluentTabWidget(QWidget):
         # 单一发射点：stack 变化 -> currentChanged（makesubtab_lazy 据此懒加载）
         self.nav.pageIndexChanged.connect(self.__nav_changed)
         self.nav_footer.pageIndexChanged.connect(self.__nav_changed)
+        # 主导航展开/收起 -> 底部导航跟随（两棵树独立）
+        self.nav.navigationExpandedChanged.connect(
+            self.nav_footer.setNavigationExpanded)
         self.tab_widget.currentChanged.connect(self.__stack_changed)
 
         # 跨导航取消选中（点主导航时清底部，反之亦然）

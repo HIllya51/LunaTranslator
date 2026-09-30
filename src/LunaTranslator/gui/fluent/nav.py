@@ -124,6 +124,10 @@ class FluentNavToggleButton(QToolButton):
 
 class FluentNavTree(QTreeWidget):
     pageIndexChanged = pyqtSignal(int)
+    # 展开/收起状态变化（含折叠模式下"展开/选中子项 -> 自动展开"）。
+    # 同窗格的底部导航树接它跟随（两棵树各自独立，汉堡点击之外的变化
+    # ——如自动展开——只有经此信号才能同步到底部）
+    navigationExpandedChanged = pyqtSignal(bool)
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -250,6 +254,7 @@ class FluentNavTree(QTreeWidget):
     # ---- 展开 / 紧凑 ----
     def setNavigationExpanded(self, expanded, animated=True):
         self._navigation_expanded = expanded
+        self.navigationExpandedChanged.emit(expanded)
         # 新状态优先：终止进行中的过渡（animation.start() 会同步投递一次
         # 起始值的 valueChanged，残留的旧动画会与新状态竞态）
         self._width_animation.stop()
