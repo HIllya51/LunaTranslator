@@ -842,6 +842,11 @@ class ExCarousel(QWidget):
 
         self.viewport.startTransition(fromPix, toPix, direction)
         self._animating = True
+        # 动画期间停掉自动播放计时：临近的定时触发会在动画中排入
+        # pending，动画一结束就紧跟再翻一页——手动反向/跳页时与手动
+        # 目标不同，表现为"手动切换后自动轮播时间没有重置、紧跟着
+        # 又跳了一张"。动画结束由 _finishAnimation 重新武装计时。
+        self._timer.stop()
         self.prevButton.raise_()
         self.nextButton.raise_()
         self.pips.raise_()
