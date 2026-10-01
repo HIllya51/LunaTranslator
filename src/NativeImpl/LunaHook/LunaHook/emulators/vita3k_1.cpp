@@ -581,6 +581,18 @@ namespace
         }
         buffer->from(final_string);
     }
+    void PCSG00992(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
+    {
+        auto address = (char *)VITA3K::emu_arg(context)[1];
+        std::string final_string;
+        while (*address)
+        {
+            std::string text = address;
+            address += text.size() + 1;
+            final_string += strReplace(text, "\n");
+        }
+        buffer->from(final_string);
+    }
     void TPCSG00291(hook_context *context, HookParam *hp, TextBuffer *buffer, uintptr_t *split)
     {
         auto a2 = VITA3K::emu_arg(context)[0];
@@ -1050,6 +1062,10 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // 遙かなる時空の中で Ultimate
+    {0x800608F0, {FULL_STRING, 4, 0, 0, NewLineCharFilterA, "PCSG01157"}},
+    // 遙かなる時空の中で３ Ultimate
+    {0x800A927E, {FULL_STRING, 1, 0, PCSG00992, 0, "PCSG00992"}},
     // ソラユメ
     {0x8000C1C8, {FULL_STRING, 0, 0, 0, PCSG00401, "PCSG00401"}},
     // Princess Arthur
