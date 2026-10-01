@@ -164,9 +164,13 @@ class FluentNavTree(QTreeWidget):
 
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         # 构造期树高度未定（30px 默认），项添加后 range>0 会让滚动条
-        # 进入可见态、首次显示时闪现一下再消失——首次布局完成前保持
-        # 关闭，之后恢复按需显示
+        # 进入可见态、首次显示时闪现一下再消失——几何稳定前保持关闭，
+        # 之后恢复按需显示（showEvent/resizeEvent 顺延 _vscroll_release）
         self._vscroll_pending = True
+        self._vscroll_release = QTimer(self)
+        self._vscroll_release.setSingleShot(True)
+        self._vscroll_release.setInterval(80)
+        self._vscroll_release.timeout.connect(self._enable_vscroll_asneeded)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setTextElideMode(Qt.ElideRight)
         self.setProperty("navigationViewIndicator", True)
@@ -195,8 +199,14 @@ class FluentNavTree(QTreeWidget):
     def showEvent(self, e):
         super().showEvent(e)
         if self._vscroll_pending:
-            # 等本轮流式布局（树到达最终高度、range 归零）后再放开
-            QTimer.singleShot(0, self._enable_vscroll_asneeded)
+            self._vscroll_release.start()
+
+    def resizeEvent(self, e):
+        super().resizeEvent(e)
+        if self._vscroll_pending and self.isVisible():
+            # 初始化期窗口/侧栏尺寸仍在变：每次变化顺延放开时刻，
+            # 策略保持关闭，滚动条不会闪现
+            self._vscroll_release.start()
 
     def _enable_vscroll_asneeded(self):
         if not self.isVisible():
@@ -338,8 +348,11 @@ class FluentNavTree(QTreeWidget):
 
         self.setProperty("navigationIconMode", will_be_icon_mode)
 
-        # 折叠（图标）模式隐藏滚动条——窄列放不下；溢出仍可滚轮滚动
-        policy = (Qt.ScrollBarPolicy.ScrollBarAsNeeded if show_text
+        # 折叠（图标）模式隐藏滚动条——窄列放不下；溢出仍可滚轮滚动。
+        # 首次布局未稳定期间（_vscroll_pending，含启动恢复展开态的
+        # animated=False 调用）保持关闭，否则滚动条初始化时闪现
+        policy = (Qt.ScrollBarPolicy.ScrollBarAsNeeded
+                  if show_text and not self._vscroll_pending
                   else Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
         if self.verticalScrollBarPolicy() != policy:
             self.setVerticalScrollBarPolicy(policy)

@@ -227,7 +227,7 @@ def uisetting(self):
             [
                 "最小高度_(px)",
                 1,
-                D_getspinbox(0, 9999, globalconfig, "min_auto_height", default=0)(),
+                D_getspinbox(0, 9999, ui_settings, "min_auto_height", default=0, callback=lambda _: gobject.base.translation_ui.titlebar.adjustminwidth())(),
             ]
         )
     )

@@ -442,6 +442,7 @@ def migrate_ui_settings():
         "word_hover_border",
         "word_hover_DWM",
         "word_hover_DWM_1",
+        "min_auto_height",
 
     ):
         if k in globalconfig:

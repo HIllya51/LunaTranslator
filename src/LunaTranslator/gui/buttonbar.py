@@ -337,11 +337,11 @@ class ButtonBar(QFrame):
         if self.v:
             w = self.cntbtn * IconLabelX.h()
             p.setMinimumHeight(max(int(w), 200))
-            p.setMinimumWidth(self.width() * 1)
+            p.setMinimumWidth(max(self.width() * 1, ui_settings.get('min_auto_height', 0)))
         else:
             w = self.cntbtn * IconLabelX.w()
             p.setMinimumWidth(max(int(w), 200))
-            p.setMinimumHeight(self.height() * 1)
+            p.setMinimumHeight(max(self.height() * 1, ui_settings.get('min_auto_height', 0)))
 
     def setbuttonsize(self, verticalhorizontal):
 
