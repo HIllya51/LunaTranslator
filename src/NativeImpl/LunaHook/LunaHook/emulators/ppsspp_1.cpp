@@ -591,6 +591,15 @@ namespace
         StringFilter(buffer, TEXTANDLEN("\x81\x40"));
         ULJM05943F(buffer, hp);
     }
+    void ULJM06104(TextBuffer *buffer, HookParam *hp)
+    {
+        auto s = buffer->strA();
+        if (s.find("[f size=") == s.npos)
+            return buffer->clear();
+        s = strReplace(s, "[br]");
+        s = re::sub(s, R"(\[f.*?\](.*?)\[/f\])", "$1");
+        buffer->from(s);
+    }
     void ULJM05995_2(TextBuffer *buffer, HookParam *hp)
     {
         auto ws = buffer->strW();
@@ -1685,7 +1694,6 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // Starry☆Sky～After Summer～Portable //ULJM06208
     // Starry☆Sky～After Autumn～Portable //ULJM06209
     // Starry☆Sky～After Winter～Portable //ULJM06210
-    // アラビアンズ・ロスト //ULJM06104
     // MEMORIES OFF //ULJM05334
 
     // しろくまベルスターズ♪ ハッピー・ホリデーズ！
@@ -1862,7 +1870,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x888A26C, {FULL_STRING, 0, 0, 0, ULJM06289, "ULJM06289"}},
     {0x8919E30, {FULL_STRING, 0, 0, 0, ULJM06289, "ULJM06289"}},
     {0x8962EA0, {FULL_STRING, 1, 0, 0, ULJM06289, "ULJM06289"}},
-    // ジョーカーの国のアリス～Wonderful Wonder World～ 
+    // ジョーカーの国のアリス～Wonderful Wonder World～
     {0x880F8F0, {FULL_STRING, 0, 0, 0, ULJM06344, "ULJM05973"}},
     // ダイヤの国のアリス～Wonderful Wonder World～
     {0x8857E3C, {0, 0, 0, 0, 0, "ULJM06216"}},
@@ -2087,8 +2095,10 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // ヒイロノカケラ-Piece of Future-
     {0x88FAF08, {0, 0, 0, 0, ULJM05823_2, "ULJM05913"}},
     {0x88FAF20, {0, 1, 0, 0, ULJM05913, "ULJM05913"}},
+    // アラビアンズ・ロスト
+    {0x884E020, {FULL_STRING, 0xf, 0, 0, ULJM06104, "ULJM06104"}}, // 这个只是补充部分sceFontGetCharInfo提取不到的。仍需要sceFontGetCharInfo
     // アラビアンズ・ダウト
-    {0x88406FC, {0, 0, 0, 0, 0, "NPJH50834"}},
+    {0x8846CF4, {FULL_STRING, 1, 0, 0, ULJM06344, "NPJH50834"}},
     // いざ、出陣！恋戦 第二幕 ～甲斐編～
     {0x8945C20, {CODEC_UTF16, 1, 0, 0, ULJM06346, "ULJM06346"}},
     {0x8804950, {CODEC_UTF16, 1, 0, 0, ULJM06346, "ULJM06347"}},

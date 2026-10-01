@@ -1323,8 +1323,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     // １２時の鐘とシンデレラ～シンデレラシリーズ　トリプル全巻パック～
     {0x8001701C, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00561"}},
     // ハートの国のアリス～Wonderful Wonder World～
-    {0x8100F0CA, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}}, // 手动解压
-    {0x800173F4, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}},
+    {0x8100F0CA, {FULL_STRING | CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}}, // 手动解压
+    {0x8001290A, {FULL_STRING | CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00614"}},
     // 新装版魔法使いとご主人様～Wizard and The Master～
     {0x8001733C, {CODEC_UTF8, 1, 0, 0, NewLineCharFilterA, "PCSG00580"}},
     // 円環のメモーリア -カケラ灯し-
