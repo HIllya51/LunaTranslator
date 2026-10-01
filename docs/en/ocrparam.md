@@ -2,6 +2,22 @@
 
 To accommodate the different text refresh methods of various games, the software offers four distinct methods to automatically capture screenshots from the game at a certain frequency.
 
+## Show translations over OCR regions
+
+Enable **Show translations over OCR regions** under **Text Input → OCR Settings → Other Settings → Translation Overlay** to display translations directly inside the selected OCR regions. This feature is disabled by default.
+
+With multiple regions enabled, each selection is recognized, translated, and displayed independently. Adding a selection immediately recognizes only the new region and preserves existing translations. Automatic recognition and manual refresh continue to work. Moving or resizing a selection clears its old translation until recognition at the new location completes. Results from recognition spanning a move, resize, reselection, or removal cannot update caches or translations. Hiding a selection also hides its overlay.
+
+Overlays let mouse input pass through to the game or webpage below. Windows 10 2004 and later use system capture exclusion when available, so OCR does not recognize its own translations. On other systems, overlays are temporarily hidden during capture.
+
+Adjust **Overlay translation font size** and **Overlay background opacity**, or enable **Match background color automatically**. Sampling favors flat areas inside the selection to reduce the influence of borders and slight selection overshoot. Complex image backgrounds may still produce an unsuitable color.
+
+In overlay mode, the main translation window defaults to a toolbar. Enable **Show main translation window** to restore the full window. This setting takes effect immediately, is saved, and does not restart translation.
+
+The OCR selection's context menu also offers the overlay switch and style settings. OCR capture pauses while the menu is open, preserves existing translations, and resumes after it closes so menu text is not recognized.
+
+When settings, style dialogs, or other application windows cover an OCR region, capture pauses for that region and its existing translation is preserved. Uncovered regions continue recognizing. Capture resumes when the window moves away or closes; frames spanning popup visibility or geometry changes are discarded.
+
 
 ## Periodic Execution
 

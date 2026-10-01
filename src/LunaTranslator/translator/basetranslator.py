@@ -352,10 +352,18 @@ class basetrans(commonbase):
                 callback(None, 0)
                 continue
             try:
-                checktutukufunction = (
-                    lambda: ((waitforresultcallback is not None) or self.queue.empty())
-                    and self.using
-                )
+                if getattr(waitforresultcallback, "ocr_overlay_task", False):
+                    checktutukufunction = (
+                        lambda task=waitforresultcallback: task.is_current()
+                        and self.using
+                    )
+                else:
+                    checktutukufunction = (
+                        lambda: (
+                            (waitforresultcallback is not None) or self.queue.empty()
+                        )
+                        and self.using
+                    )
                 if not checktutukufunction():
                     # 检查请求队列是否空，请求队列有新的请求，则放弃当前请求。但对于内嵌翻译请求，不可以放弃。
                     continue

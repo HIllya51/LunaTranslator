@@ -46,6 +46,11 @@ from myutils.hwnd import getExeIcon, getcurrexe
 from textio.textsource.copyboard import copyboard
 from textio.textsource.texthook import texthook
 from textio.textsource.ocrtext import ocrtext
+from gui.ocrtranslationoverlay import (
+    route_overlay_translation,
+    overlay_source_is_current,
+    OCRRegionTask,
+)
 from textio.textsource.filetrans import filetrans
 from textio.textsource.mssr import mssr
 from gui.selecthook import hookselect
@@ -413,6 +418,12 @@ class BASEOBJECT(QObject):
             self.hwnd = None
             self.gameuid = 0
         self.textsource_p = _
+        ui = getattr(self, "translation_ui", None)
+        if ui is not None:
+            ui.ocroverlaymodesignal.emit(
+                isinstance(_, ocrtext)
+                and globalconfig.get("ocr_translation_overlay", False)
+            )
 
     @threader
     def safeloadprocessmodels(self):
@@ -506,6 +517,7 @@ class BASEOBJECT(QObject):
 
     def displayinfomessage(self, text, infotype):
         if infotype == "<notrans>":
+            route_overlay_translation(text, "ocr", text)
             self.translation_ui.displayres.emit(
                 dict(
                     color=SpecialColor.RawTextColor,
@@ -565,21 +577,27 @@ class BASEOBJECT(QObject):
         skippreprocess=False,
     ):
         with self.solvegottextlock:
-            succ = self.textgetmethod_1(
-                text,
-                is_auto_run=is_auto_run,
-                waitforresultcallback=waitforresultcallback,
-                waitforresultcallbackengine=waitforresultcallbackengine,
-                waitforresultcallbackengine_force=waitforresultcallbackengine_force,
-                erroroutput=erroroutput,
-                updateTranslate=updateTranslate,
-                isFromHook=isFromHook,
-                statusok=statusok,
-                isRefresh=isRefresh,
-                skippreprocess=skippreprocess,
-            )
-            if waitforresultcallback and not succ:
-                waitforresultcallback(TranslateResult())
+            sources = getattr(text, "ocr_region_sources", None)
+            requests = sources if sources and waitforresultcallback is None else (text,)
+            for region_text in requests:
+                if getattr(region_text, "ocr_direct_translation", False):
+                    self.displayinfomessage(region_text, "<notrans>")
+                    continue
+                succ = self.textgetmethod_1(
+                    region_text,
+                    is_auto_run=is_auto_run,
+                    waitforresultcallback=waitforresultcallback,
+                    waitforresultcallbackengine=waitforresultcallbackengine,
+                    waitforresultcallbackengine_force=waitforresultcallbackengine_force,
+                    erroroutput=erroroutput,
+                    updateTranslate=updateTranslate,
+                    isFromHook=isFromHook,
+                    statusok=statusok,
+                    isRefresh=isRefresh,
+                    skippreprocess=skippreprocess,
+                )
+                if waitforresultcallback and not succ:
+                    waitforresultcallback(TranslateResult())
 
     def __erroroutput(self, klass, erroroutput, _showrawfunction, e, t):
 
@@ -608,7 +626,13 @@ class BASEOBJECT(QObject):
             return
         if not text.strip():
             return
-        if is_auto_run and text == self.currenttext_raw and statusok == self.statusok:
+        if (
+            is_auto_run
+            and text == self.currenttext_raw
+            and statusok == self.statusok
+            and getattr(text, "ocr_overlay_context", None)
+            == getattr(self.currenttext_raw, "ocr_overlay_context", None)
+        ):
             return
         origin = text
         __erroroutput = functools.partial(self.__erroroutput, None, erroroutput, None)
@@ -629,7 +653,13 @@ class BASEOBJECT(QObject):
             __erroroutput(stringfyerror(e), TextType.Error_origin)
             return
 
-        if is_auto_run and text == self.currenttext and statusok == self.statusok:
+        if (
+            is_auto_run
+            and text == self.currenttext
+            and statusok == self.statusok
+            and getattr(origin, "ocr_overlay_context", None)
+            == getattr(self.currenttext_raw, "ocr_overlay_context", None)
+        ):
             return
         self.currentsignature = currentsignature
         if is_auto_run and (
@@ -754,6 +784,14 @@ class BASEOBJECT(QObject):
         if not (updateTranslate or globalconfig.get("refresh_on_get_trans", False)):
             _showrawfunction()
             _showrawfunction = None
+        ocr_overlay_source = None
+        if (
+            globalconfig.get("ocr_translation_overlay", False)
+            and not waitforresultcallback
+        ):
+            candidate = self.currenttext_raw if isRefresh else origin
+            if overlay_source_is_current(candidate):
+                ocr_overlay_source = candidate
         read_trans_once_check = []
         for engine in real_fix_rank:
             if engine in globalconfig["fanyi"]:
@@ -774,6 +812,7 @@ class BASEOBJECT(QObject):
                 read_trans_once_check=read_trans_once_check,
                 erroroutput=erroroutput,
                 statusok=statusok,
+                ocr_overlay_source=ocr_overlay_source,
             )
         return True
 
@@ -816,6 +855,7 @@ class BASEOBJECT(QObject):
         read_trans_once_check: list,
         erroroutput,
         statusok=True,
+        ocr_overlay_source=None,
     ):
         callback = partial(
             self.GetTranslationCallback,
@@ -830,11 +870,20 @@ class BASEOBJECT(QObject):
             erroroutput,
             statusok=statusok,
             is_auto_run=is_auto_run,
+            ocr_overlay_source=ocr_overlay_source,
         )
+        # The legacy queue's third slot also protects synchronous API requests.
+        # OCRRegionTask uses that slot only when no external callback exists;
+        # the worker distinguishes it by ocr_overlay_task, never calls it, and
+        # cancels it by this region's provenance rather than the shared queue.
         task = (
             callback,
             text_solved,
-            waitforresultcallback,
+            (
+                OCRRegionTask(ocr_overlay_source)
+                if waitforresultcallback is None and ocr_overlay_source is not None
+                else waitforresultcallback
+            ),
             is_auto_run,
             optimization_params,
         )
@@ -875,13 +924,30 @@ class BASEOBJECT(QObject):
         iserror=False,
         statusok=True,
         is_auto_run=True,
+        ocr_overlay_source=None,
     ):
         with self.gettranslatelock:
             usefultranslators.discard(classname)
+            if ocr_overlay_source is not None and not overlay_source_is_current(
+                ocr_overlay_source
+            ):
+                return
             if (
                 waitforresultcallback is None
                 and currentsignature != self.currentsignature
             ):
+                # Other OCR regions remain current when the main window advances.
+                if ocr_overlay_source is None or iserror:
+                    return
+                res = self.solveaftertrans(res, optimization_params)
+                if res:
+                    route_overlay_translation(ocr_overlay_source, classname, res)
+                    if iter_res_status in (0, 2) and statusok:
+                        self.history.appendtrans(currentsignature, classname, res)
+                        try:
+                            self.textsource.sqlqueueput((contentraw, classname, res))
+                        except:
+                            pass
                 return
 
             safe_callback = functools.partial(
@@ -903,6 +969,14 @@ class BASEOBJECT(QObject):
                     safe_callback()
                 return
             self._delayshowraw(_showrawfunction)
+            if ocr_overlay_source is not None and not waitforresultcallback:
+                route_overlay_translation(ocr_overlay_source, classname, res)
+            elif (
+                currentsignature == self.currentsignature
+                and not waitforresultcallback
+                and self.history.viewptr == -1
+            ):
+                route_overlay_translation(self.currenttext_raw, classname, res)
             if (
                 (currentsignature == self.currentsignature)
                 and (iter_res_status in (0, 1))
