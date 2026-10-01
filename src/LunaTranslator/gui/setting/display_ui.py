@@ -199,38 +199,10 @@ def uisetting(self):
     titlelabel.setFont(titlefont)
     hlay.addWidget(titlelabel)
     hlay.addStretch(1)
-    hlay.addWidget(
-        D_getsimpleswitch(globalconfig, "autodisappear", default=False)()
-    )
+    hlay.addWidget(D_getsimpleswitch(globalconfig, "autodisappear", default=False)())
     autohideexp.setHeaderWidget(header)
     autohideexp.addContentWidget(getboxwidget(["隐藏目标", 1, target]))
     autohideexp.addContentWidget(getboxwidget(["隐藏延迟_(s)", 1, delay]))
-
-    # 自动调整高度：折叠卡（子项 = 最小高度）
-    adaptiveexp = ExExpander()
-    header = QWidget()
-    hlay = QHBoxLayout(header)
-    hlay.setContentsMargins(0, 12, 0, 12)
-    hlay.setSpacing(8)
-    titlelabel = LLabel("自动调整高度")
-    titlefont = titlelabel.font()
-    titlefont.setPixelSize(15)
-    titlelabel.setFont(titlefont)
-    hlay.addWidget(titlelabel)
-    hlay.addStretch(1)
-    hlay.addWidget(
-        D_getsimpleswitch(globalconfig, "adaptive_height", default=True)()
-    )
-    adaptiveexp.setHeaderWidget(header)
-    adaptiveexp.addContentWidget(
-        getboxwidget(
-            [
-                "最小高度_(px)",
-                1,
-                D_getspinbox(0, 9999, ui_settings, "min_auto_height", default=0, callback=lambda _: gobject.base.translation_ui.titlebar.adjustminwidth())(),
-            ]
-        )
-    )
 
     __ = mainuisetting(self) + [
         [
@@ -273,7 +245,31 @@ def uisetting(self):
             )
         ],
         [(autohideexp, 0)],
-        [(adaptiveexp, 0)],
+        [
+            (
+                makecardrow(
+                    "自动调整高度",
+                    D_getsimpleswitch(globalconfig, "adaptive_height", default=True),
+                ),
+                0,
+            )
+        ],
+        [
+            (
+                makecardrow(
+                    "最小高度_(px)",
+                    D_getspinbox(
+                        0,
+                        9999,
+                        ui_settings,
+                        "min_auto_height",
+                        default=0,
+                        callback=lambda _: gobject.base.translation_ui.titlebar.adjustminwidth(),
+                    ),
+                ),
+                0,
+            )
+        ],
     ]
 
     return __

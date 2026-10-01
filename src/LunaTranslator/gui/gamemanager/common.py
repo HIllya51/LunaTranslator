@@ -149,6 +149,28 @@ def getcachedimage(src, small) -> QPixmap:
     return _pix
 
 
+def loadgridimage(uid) -> QImage:
+    """网格项图标（工作线程调用）：currentmainimage -> 其余图片依次
+    解码。全程 QImage（可跨线程；QPixmap 仅限 GUI 线程），无可用图
+    返回 null——exe 图标兜底含 QPixmap/原生调用，由 GUI 线程回调做
+    （widgets.ItemWidget.applyimage）。"""
+    data = savehook_new_data.get(uid) or {}
+    _all = data.get("imagepath_all", [])
+    checks = [data.get("currentmainimage")]
+    if data.get("currentmainimage") not in _all:
+        checks += _all
+    for _ in checks:
+        if not _:
+            continue
+        src = extradatas["localedpath"].get(_, _)
+        if not os.path.exists(src):
+            continue
+        img = QImage(src)
+        if not img.isNull():
+            return img
+    return QImage()
+
+
 def getpixfunction(kk, small=False, iconfirst=False) -> QPixmap:
     key = ["currentmainimage", "currenticon"][iconfirst]
     checks = [savehook_new_data[kk].get(key)]

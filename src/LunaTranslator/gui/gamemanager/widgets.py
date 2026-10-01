@@ -5,11 +5,12 @@ new 视图共用这些控件）。
 """
 
 from qtsymbols import *
-import os
+import os, queue, threading
 from traceback import print_exc
 from myutils.utils import targetmod
 from myutils.config import savehook_new_data, extradatas, ui_settings, globalconfig, get_launchpath
-from gui.gamemanager.common import getpixfunction
+from myutils.hwnd import getExeIcon
+from gui.gamemanager.common import loadgridimage
 
 
 class imagehelper:
@@ -90,11 +91,60 @@ class imagehelper:
         rect.setSize(size)
         return rect
 
+    def setpixmap(self, pixmap: QPixmap):
+        """后台加载完成后替换源图（清尺寸重算缓存并按当前尺寸渲染）。"""
+        if pixmap.isNull():
+            return
+        self._pixmap = pixmap
+        self.__last = None
+        self.setimg()
+
     def __init__(self, p: "ItemWidget", pixmap) -> None:
         self.p = p
         self._pixmap = pixmap
         self.__last = None
         self.pixmap = QPixmap()
+
+
+class _GridImageLoader(QObject):
+    """网格项图标后台加载：单一工作线程 + 任务队列（滚动成批建项时
+    不会线程爆炸），解码不占 GUI 线程；完成后经信号排队回 GUI 线程
+    套用（见 ItemWidget.applyimage）。"""
+
+    loaded = pyqtSignal(object, object)
+
+    def __init__(self):
+        super().__init__()
+        self._tasks = queue.Queue()
+        self._thread = None
+        self.loaded.connect(self._apply)
+
+    def submit(self, widget, uid):
+        if self._thread is None:
+            self._thread = threading.Thread(target=self._run, daemon=True)
+            self._thread.start()
+        self._tasks.put((widget, uid))
+
+    def _run(self):
+        while True:
+            widget, uid = self._tasks.get()
+            try:
+                img = loadgridimage(uid)
+            except:
+                print_exc()
+                img = QImage()
+            # 跨线程 emit -> 排队到 GUI 线程执行 _apply
+            self.loaded.emit(widget, img)
+
+    def _apply(self, widget, img):
+        # 项可能已随网格重建销毁（C++ 对象删、Python 包装还在）
+        try:
+            widget.applyimage(img)
+        except RuntimeError:
+            pass
+
+
+_gridimageloader = _GridImageLoader()
 
 
 class ItemWidget(QWidget):
@@ -190,11 +240,26 @@ class ItemWidget(QWidget):
             if fr:
                 targetmod.get(fr).dispatchdownloadtask(image)
 
-        self._img = imagehelper(self, getpixfunction(gameuid))
+        # 图标后台加载：先空占位（背景卡/文字照常绘制），解码完成后
+        # 回调显示——大图解码不再卡住 GUI 线程（_GridImageLoader）
+        self._img = imagehelper(self, QPixmap())
+        _gridimageloader.submit(self, gameuid)
         exists = os.path.exists(get_launchpath(gameuid))
         self.setObjectName("savegame_exists" + str(exists))
         self.setToolTip(savehook_new_data[gameuid]["title"])
         self.setAccessibleName(savehook_new_data[gameuid]["title"])
+
+    def applyimage(self, img: QImage):
+        """后台加载回调（GUI 线程）：图片缺失时 exe 图标兜底
+        （getExeIcon 含 QPixmap/原生调用，只能在 GUI 线程跑）。"""
+        if img is not None and not img.isNull():
+            pix = QPixmap.fromImage(img)
+        else:
+            pix = getExeIcon(get_launchpath(self.gameuid), False, cache=True, large=True)
+        if pix is None or pix.isNull():
+            return
+        self._img.setpixmap(pix)
+        self.update()
 
     @property
     def margin(self):
