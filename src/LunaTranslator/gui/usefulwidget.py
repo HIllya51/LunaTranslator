@@ -3377,7 +3377,7 @@ class IconButton(LPushButton):
         self.setCheckable(checkable)
         if checked and checkable:
             self.setChecked(checked)
-        self.setEnabled(enable and (bool(icon) or bool(qicon)))
+        self.setEnabled(enable and ((icon is not None) or bool(qicon)))
         self.setFocusPolicy(Qt.FocusPolicy.NoFocus)
         self.resizedirect()
 
@@ -3386,8 +3386,6 @@ class IconButton(LPushButton):
         self.__seticon()
 
     def _setIconStr(self, icon):
-        if icon == "":
-            icon = " "
         if self._is_pixmap_icon(icon):
             self.pixmap_ = self._load_pixmap(icon)
             self._icon = None
