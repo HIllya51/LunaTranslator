@@ -424,7 +424,7 @@ class hookselect(closeashidewindow):
     removehooksignal = pyqtSignal(tuple)
     getfoundhooksignal = pyqtSignal(dict)
     update_item_new_line = pyqtSignal(tuple, str)
-    consoleoutput  = pyqtSignal(str)
+    consoleoutput = pyqtSignal(str)
     SaveTextThreadRole = Qt.ItemDataRole.UserRole + 1
 
     @property
@@ -710,12 +710,16 @@ class hookselect(closeashidewindow):
         self.userhook = QLineEdit()
         self.searchtextlayout.addWidget(self.userhook)
         self.userhook.returnPressed.connect(self.inserthook)
-        userhookinsert = getIconButton(icon="fa.plus", callback=self.inserthook, tips="插入")
+        userhookinsert = getIconButton(
+            icon="fa.plus", callback=self.inserthook, tips="插入"
+        )
         self.searchtextlayout.addWidget(userhookinsert)
 
         self.searchtextlayout.addWidget(D_getdoclink("hooksettings.html#特殊码格式")())
 
-        self.userhookfind = getIconButton(icon="fa.search", callback=self.findhook, tips="搜索")
+        self.userhookfind = getIconButton(
+            icon="fa.search", callback=self.findhook, tips="搜索"
+        )
         self.searchtextlayout.addWidget(self.userhookfind)
         self.searchtextlayout.addWidget(__)
 
@@ -916,7 +920,9 @@ class hookselect(closeashidewindow):
         self.checkfilt_notshiftjis.setHidden(hide)
 
     def findhook(self):
-        if not self.textsource.gameuid or not not self.textsource.pids.get(self.textsource.gameuid):
+        if (not self.textsource.gameuid) or (
+            not self.textsource.pids.get(self.textsource.gameuid)
+        ):
             return
         if globalconfig["sourcestatus2"]["texthook"]["use"] == False:
             return
@@ -966,9 +972,7 @@ class hookselect(closeashidewindow):
             else:
                 self.allres[hookcode] = hooks[hookcode].copy()
             resbatch = self.allres[hookcode]
-            hide = all(
-                (searchtext not in res) or self.gethide(res) for res in resbatch
-            )
+            hide = all((searchtext not in res) or self.gethide(res) for res in resbatch)
             if hookcode in rowof:
                 rowupdates.append((rowof[hookcode], string[:100], hide))
             else:

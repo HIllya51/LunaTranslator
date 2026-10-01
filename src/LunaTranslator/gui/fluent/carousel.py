@@ -879,6 +879,12 @@ class ExCarousel(QWidget):
         index = max(0, min(index, len(self._slides) - 1))
         self._currentIndex = index
         self._placeIdle()
+        # 排队目标恰为本页（动画中滚轮/连点以旧索引算出的下一步与
+        # 本次落位相同）：属无效 pending，先丢弃——否则下方信号会被
+        # 使用方按"中间态"跳过同步（轮播已切走、缩略图焦点不动），
+        # 且 pending==current 不会再链式补发
+        if self._pendingIndex == self._currentIndex:
+            self._pendingIndex = -1
         self.currentIndexChanged.emit(self._currentIndex)
 
         if self._pendingIndex >= 0 and self._pendingIndex != self._currentIndex:

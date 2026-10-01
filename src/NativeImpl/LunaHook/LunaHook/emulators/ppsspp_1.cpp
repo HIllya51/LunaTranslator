@@ -591,6 +591,16 @@ namespace
         StringFilter(buffer, TEXTANDLEN("\x81\x40"));
         ULJM05943F(buffer, hp);
     }
+    void ULJM05995_2(TextBuffer *buffer, HookParam *hp)
+    {
+        auto ws = buffer->strW();
+        if (all_ascii(ws))
+            return buffer->clear();
+        ws = strReplace(ws, L"[br]");
+        ws = strReplace(ws, L"[macropop]");
+        ws = strReplace(ws, L"[firstname]", L"アリス");
+        buffer->from(ws);
+    }
     void ULJM05995(TextBuffer *buffer, HookParam *hp)
     {
         static std::wstring last;
@@ -598,7 +608,10 @@ namespace
         if (last == ws)
             return buffer->clear();
         last = ws;
-        buffer->from(strReplace(ws, L"[br]"));
+        ws = strReplace(ws, L"[br]");
+        ws = strReplace(ws, L"[macropop]");
+        ws = strReplace(ws, L"[firstname]", L"アリス");
+        buffer->from(ws);
     }
     DECLARE_FUNCTION(ULJM06167N, const char *_);
     void ULJM06167(TextBuffer *buffer, HookParam *hp)
@@ -1849,6 +1862,8 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x888A26C, {FULL_STRING, 0, 0, 0, ULJM06289, "ULJM06289"}},
     {0x8919E30, {FULL_STRING, 0, 0, 0, ULJM06289, "ULJM06289"}},
     {0x8962EA0, {FULL_STRING, 1, 0, 0, ULJM06289, "ULJM06289"}},
+    // ジョーカーの国のアリス～Wonderful Wonder World～ 
+    {0x880F8F0, {FULL_STRING, 0, 0, 0, ULJM06344, "ULJM05973"}},
     // ダイヤの国のアリス～Wonderful Wonder World～
     {0x8857E3C, {0, 0, 0, 0, 0, "ULJM06216"}},
     // ダイヤの国のアリス～ Wonderful Mirror World ～
@@ -1857,6 +1872,7 @@ static const emfuncinfoX emfunctionhooks_1[] = {
     {0x8881CAC, {0, 1, 0, 0, 0, "NPJH50872"}},
     // おもちゃ箱の国のアリス～Wonderful Wonder World～
     {0x8884A0C, {CODEC_UTF16, 5, 0, 0, ULJM05995, "ULJM05995"}},
+    {0x88831BC, {CODEC_UTF16, 0xc, 0, 0, ULJM05995_2, "ULJM05995"}},
     // 新装版 ハートの国のアリス～Wonderful Wonder World～
     {0x886B610, {0, 1, 0, 0, 0, "ULJM06332"}},
     // 新装版クローバーの国のアリス～Wonderful Wonder World～
