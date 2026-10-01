@@ -516,7 +516,9 @@ class pixwrapper(QSplitter):
             return
         self.addimages(newf)
 
-    def addimages(self, files):
+    def addimages(self, files, insert=True):
+        """insert=True 插到当前选中之后（拖拽）；False 追加到列表末尾
+        （末尾"添加图片"按钮——按钮在哪，加的图就落在哪）。"""
         newf = []
         for f in files:
             if f in savehook_new_data[self.k].get("imagepath_all", []):
@@ -526,7 +528,7 @@ class pixwrapper(QSplitter):
             return
         if "imagepath_all" not in savehook_new_data[self.k]:
             savehook_new_data[self.k]["imagepath_all"] = []
-        self.previewimages.additems(newf, clear=False, insert=True)
+        self.previewimages.additems(newf, clear=False, insert=insert)
         self._rowsMoved()
 
     def _rowsMoved(self):
@@ -593,7 +595,8 @@ class pixwrapper(QSplitter):
 
         self.previewimages = previewimages(self)
         self.previewimages.model().rowsMoved.connect(self._rowsMoved)
-        self.previewimages.requestaddimages.connect(self.addimages)
+        self.previewimages.requestaddimages.connect(
+            lambda fs: self.addimages(fs, insert=False))
         self.pixview = viewpixmap_x(self)
         self.setHandleWidth(1)
         self.setrank(rank)
