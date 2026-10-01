@@ -81,6 +81,55 @@ from gui.dynalang import (
 )
 
 
+class _MetaSettingRows:
+    """元数据源 querysettingwindow(gameuid, layout) 的行式适配：
+    addRow(标签, 控件) -> 折叠卡子项（同 语言/启动方式 的行式子项）。
+    QLayout 控件（含输入框的组）与 fill=True 的控件填满标签右侧；
+    其余 QWidget 控件右对齐，右缘与头部开关/按钮一致（ExExpander
+    content_pad 让位）。addDynamicRow 为初始隐藏的动态子项（内容
+    到达后经返回句柄显示）。addLayout 为旧式模块的后备。"""
+
+    def __init__(self, expander):
+        self._expander = expander
+
+    def addRow(self, label, widget, fill=False):
+        row = QWidget()
+        lay = QHBoxLayout(row)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(LLabel(label) if isinstance(label, str) else label)
+        if isinstance(widget, QLayout):
+            lay.addLayout(widget, 1)
+        elif fill:
+            lay.addWidget(widget, 1)
+        else:
+            lay.addStretch(1)
+            lay.addWidget(widget)
+        self._expander.addContentWidget(row)
+        return row
+
+    def addDynamicRow(self, widget):
+        """动态子项：整块放一个控件，初始隐藏（连同卡片底）；返回
+        show(vis) 句柄——内容到达后显示、清空后隐藏。"""
+        row = QWidget()
+        lay = QHBoxLayout(row)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addWidget(widget)
+        self._expander.addContentWidget(row)
+        self._expander.setContentPanelVisible(row, False)
+
+        def _show(vis):
+            self._expander.setContentPanelVisible(row, vis)
+
+        return _show
+
+    def addLayout(self, sub):
+        w = QWidget()
+        lay = QVBoxLayout(w)
+        lay.setContentsMargins(0, 0, 0, 0)
+        lay.addLayout(sub)
+        self._expander.addContentWidget(w)
+
+
 def maybehavebutton(self, gameuid, post):
     save_text_process_info = savehook_new_data[gameuid]["save_text_process_info"]
     if post == "_11":
@@ -658,19 +707,17 @@ class dialog_setting_game_internal(QWidget):
                 key, name, labelw, vndbid, switch, btns, header=has_setting
             )
             if has_setting:
-                # 折叠卡：头部 = 同款行，设置表单放折叠里
+                # 折叠卡：头部 = 同款行，设置项为行式子项
+                # （_MetaSettingRows 适配 addRow(标签, 控件)）
                 exp = ExExpander(content_pad=True)
                 exp.setHeaderWidget(row)
-                content = QWidget()
-                clayout = QVBoxLayout(content)
-                clayout.setContentsMargins(0, 0, 0, 0)
+                rows = _MetaSettingRows(exp)
                 try:
-                    __settting(gameuid, clayout)
+                    __settting(gameuid, rows)
                 except:
                     print_exc()
-                    continue
-                exp.addContentWidget(content)
-                formLayout.addRow(exp)
+                if exp.hasContentWidgets():
+                    formLayout.addRow(exp)
             else:
                 row.setAttribute(Qt.WA_StyledBackground, True)
                 row.setProperty("isCard", True)

@@ -6,7 +6,13 @@ from metadata.abstract import common
 from myutils.wrapper import threader
 
 
-class bgmsettings(QFormLayout):
+class bgmsettings(QWidget):
+    """token 输入 + OAuth（折叠卡第一子项，fill 使编辑框尽量大）；
+    校验信息为动态第二子项（取到后显示，见 bindinforow）。checkvalid
+    在工作线程，控件更新经 _infosig 信号排队到 GUI 线程；本控件作为
+    field 随子项入树存活（绑定方法的连接依赖实例存活）。"""
+
+    _infosig = pyqtSignal(str)
 
     @property
     def headers(self):
@@ -23,7 +29,8 @@ class bgmsettings(QFormLayout):
 
     @threader
     def checkvalid(self, k):
-        self.lbinfo.setText("")
+        # 工作线程：不直接动控件（旧版 setText 属越线程操作），信息经
+        # _infosig 排队到 GUI 线程；输入过程中保留上次信息（不闪隐）
         t = time.time()
         self.tm = t
         if k != self._ref.config["access-token"]:
@@ -69,7 +76,7 @@ class bgmsettings(QFormLayout):
             info = " ".join(
                 (response.get("error", ""), response.get("error_description", ""))
             )
-        self.lbinfo.setText(info)
+        self._infosig.emit(info)
 
     def __oauth(self):
         bangumioauth = gobject.getcachedir("bangumioauth")
@@ -117,25 +124,33 @@ class bgmsettings(QFormLayout):
             # print(self._ref.config)
             break
 
-    def __init__(self, layout: QVBoxLayout, _ref: common, gameuid: str) -> None:
-        super().__init__(None)
-        layout.addLayout(self)
+    def __init__(self, _ref: common, gameuid: str) -> None:
+        super().__init__()
         self.tm = None
         self._ref = _ref
-        vbox = QVBoxLayout()
-        hbox = QHBoxLayout()
-        s = QLineEdit()
         self.lbinfo = QLabel()
+        self._showinfo = None
+        hbox = QHBoxLayout(self)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        s = QLineEdit()
         s.textChanged.connect(self.checkvalid)
         s.setText(_ref.config["access-token"])
         self._token = s
-        vbox.addLayout(hbox)
-        hbox.addWidget(s)
+        hbox.addWidget(s, 1)
         oauth = QPushButton("OAuth")
         hbox.addWidget(oauth)
         oauth.clicked.connect(self.__oauth)
-        vbox.addWidget(self.lbinfo)
-        self.addRow("access-token", vbox)
+        self._infosig.connect(self.__applyinfo)
+
+    def bindinforow(self, show):
+        """动态信息子项的显隐句柄（行式适配 addDynamicRow 的返回值）。"""
+        self._showinfo = show
+
+    def __applyinfo(self, info):
+        # GUI 线程（checkvalid 在工作线程 emit，排队送达）
+        self.lbinfo.setText(info)
+        if self._showinfo is not None:
+            self._showinfo(bool(info.strip()))
 
 
 class searcher(common):
@@ -164,7 +179,12 @@ class searcher(common):
                 self.config["refresh_token"] = ""
 
     def querysettingwindow(self, gameuid, layout):
-        bgmsettings(layout, self, gameuid)
+        # layout 为行式适配（gui/gamemanager/setting.py _MetaSettingRows）：
+        # 第一子项 = token 输入 + OAuth（fill：编辑框尽量大）；第二子项
+        # 为动态信息行（取到信息后显示）
+        bgm = bgmsettings(self, gameuid)
+        layout.addRow("access-token", bgm, fill=True)
+        bgm.bindinforow(layout.addDynamicRow(bgm.lbinfo))
 
     def getidbytitle(self, title):
 

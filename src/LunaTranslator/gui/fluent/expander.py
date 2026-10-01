@@ -565,6 +565,18 @@ class ExExpander(QWidget):
         for widget in list(self._content_widgets):
             self.removeContentWidget(widget)
 
+    def setContentPanelVisible(self, widget, visible):
+        """动态子项显隐（连同其卡片底）。隐藏期间整体外圆角移交给
+        最后一个可见面板。widget 须为 addContentWidget 加入的控件。"""
+        if widget not in self._content_widgets:
+            return
+        panel = self._content_panels[self._content_widgets.index(widget)]
+        if panel.isHidden() == (not visible):
+            return
+        panel.setVisible(visible)
+        self._refresh_outer_edges()
+        self._refresh_content_geometry()
+
     # ---- 展开/收起 ----
     def setFoldable(self, foldable):
         """无内容时退化为普通卡：不画折叠箭头、不可展开（如 Qt 引擎的
@@ -674,9 +686,17 @@ class ExExpander(QWidget):
             return
         for panel in self._content_panels:
             self._content_layout.addWidget(panel)
-            panel.show()
-        # 最后追加的 Content 距离 Header 最远，负责整体外圆角
-        self._content_panels[-1].setOuterEdge(True)
+            # 动态隐藏的面板不强制显示（见 setContentPanelVisible）
+            if not panel.isHidden():
+                panel.show()
+        self._refresh_outer_edges()
+
+    def _refresh_outer_edges(self):
+        # 整体外圆角由最后一个"未隐藏"面板承担（动态子项隐藏时移交给
+        # 它前面的可见面板）
+        shown = [p for p in self._content_panels if not p.isHidden()]
+        for p in self._content_panels:
+            p.setOuterEdge(bool(shown) and p is shown[-1])
 
     def _refresh_content_geometry(self):
         self._content_layout.activate()
