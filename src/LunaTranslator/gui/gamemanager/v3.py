@@ -739,6 +739,8 @@ class _gamelistnav(FluentNavTree):
         self.ref._menuopen = False
         self.ref._menuclosestamp = -1e9
         self.ref._dismissstamp = -1e9
+        # 本次选中是否来自右键菜单（见 nav_showmenu / _navcurrent）
+        self.ref._frommenu = False
         # 单击主项只选中（切网格页），双击才展开/折叠
         self._expand_on_doubleclick = True
         self.setExpandsOnDoubleClick(False)   # 关掉 QTreeView 默认（会双重 toggle）
@@ -809,9 +811,6 @@ class _gamelistnav(FluentNavTree):
     def mousePressEvent(self, ev):
         self._dragitem = self.itemAt(ev.pos())
         self._dragpos = ev.pos()
-        # 仅左键参与单击延迟窗口（双击会取消）——右键（唤出菜单）的
-        # 选中走程序化路径：_navcurrent 子项分支 = 网格同步 + 高亮，
-        # 不会被延迟 flush 成 _navopen（误开画廊/设置页）
         if ev.button() == Qt.MouseButton.LeftButton:
             # 关闭右键菜单的那次左键（菜单 exec 期间被回放给本控件，
             # 或 exec 刚返回时送达）不作为单击：它不产生任何副作用，
@@ -825,14 +824,24 @@ class _gamelistnav(FluentNavTree):
                 return
             self._click_pending = True
             self._click_timer.start()
-        if (
-            self._dragitem is not None
-            and self._dragitem is self.currentItem()
-        ):
-            # 点击的已是当前项（主项或子项，如双击展开/打开画廊后再
-            # 单击）：currentItemChanged 不会触发，手动记录延迟动作
-            # （子项：唤出画廊/设置页；主项：同列表不重建）
-            self._deferred_item = self._dragitem
+            if (
+                self._dragitem is not None
+                and self._dragitem is self.currentItem()
+            ):
+                # 点击的已是当前项（主项或子项，如双击展开/打开画廊后
+                # 再单击）：currentItemChanged 不会触发，手动记录延迟
+                # 动作（子项：唤出画廊/设置页；主项：切网格页）
+                self._deferred_item = self._dragitem
+        if ev.button() == Qt.MouseButton.RightButton:
+            # 右键按下 Qt 默认也会选中项（下方 super() 内）——该选中
+            # 属于"即将唤出的右键菜单"：_frommenu 让 _navcurrent 不切
+            # 视图，只按当前视图聚焦对应项（网格：高亮网格项；
+            # 画廊/设置：显示该游戏）
+            self.ref._frommenu = True
+            try:
+                return super().mousePressEvent(ev)
+            finally:
+                self.ref._frommenu = False
         return super().mousePressEvent(ev)
 
     def _flush_click(self):
@@ -1834,6 +1843,16 @@ class dialog_savedgame_v3(QWidget):
             self._footernav.blockSignals(False)
         if item is None:
             return
+        # 来自右键菜单的选中子项（nav_showmenu）：右键不切视图，按当前
+        # 视图聚焦对应项——画廊/设置视图 = 显示该游戏（同单击，停留
+        # 本页）；网格视图落到下方网格同步（切列表+高亮，停留网格）
+        if (
+            getattr(self, "_frommenu", False)
+            and item.data(0, GAMEUID_ROLE)
+            and self.stack.currentWidget() is self.righttop_card
+        ):
+            self._navopen(item)
+            return
         if self.nav._click_pending:
             # 鼠标单击驱动：延迟到双击窗口后执行（双击会取消）
             self.nav._deferred_item = item
@@ -2135,6 +2154,11 @@ class dialog_savedgame_v3(QWidget):
     def nav_showmenu(self, p):
         # exec 期间送达本树的左键 = 关菜单的那次点击被回放，须吞掉
         self._menuopen = True
+        # 右键接管导航：取消尚未执行的单击延迟动作——250ms 窗口内
+        # "左键A后立刻右键B"时，残留 flush 会把菜单目标/页面顶掉
+        self.nav._click_timer.stop()
+        self.nav._click_pending = False
+        self.nav._deferred_item = None
         try:
             item = self.nav.itemAt(p)
             if item is None:
@@ -2142,7 +2166,17 @@ class dialog_savedgame_v3(QWidget):
             elif item.parent() is None:
                 self.tagbuttonmenu(item.data(0, TAGID_ROLE))
             else:
-                self.nav.setCurrentItem(item)
+                # 选中子项；"来自菜单"的分流在 _navcurrent 里做（按当前
+                # 视图聚焦对应项，不切视图）。已是当前项时信号不触发，
+                # 手动走一遍
+                self._frommenu = True
+                try:
+                    if self.nav.currentItem() is item:
+                        self._navcurrent(item)
+                    else:
+                        self.nav.setCurrentItem(item)
+                finally:
+                    self._frommenu = False
                 self._gamemenu()
         finally:
             self._menuopen = False
