@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, functools, uuid, threading, NativeUtils, windows, qtawesome
+import os, time, functools, uuid, threading, NativeUtils, windows, qtawesome
 from functools import cmp_to_key
 from traceback import print_exc
 from myutils.config import (
@@ -733,6 +733,12 @@ class _gamelistnav(FluentNavTree):
         self.setAcceptDrops(True)
         self._dragitem = None
         self._dragpos = None
+        # 右键菜单状态（见 nav_showmenu / mousePressEvent /
+        # mouseDoubleClickEvent）：exec 期间旗标 + 关闭时刻 + 吞掉的
+        # "关菜单左键"时刻
+        self.ref._menuopen = False
+        self.ref._menuclosestamp = -1e9
+        self.ref._dismissstamp = -1e9
         # 单击主项只选中（切网格页），双击才展开/折叠
         self._expand_on_doubleclick = True
         self.setExpandsOnDoubleClick(False)   # 关掉 QTreeView 默认（会双重 toggle）
@@ -807,6 +813,16 @@ class _gamelistnav(FluentNavTree):
         # 选中走程序化路径：_navcurrent 子项分支 = 网格同步 + 高亮，
         # 不会被延迟 flush 成 _navopen（误开画廊/设置页）
         if ev.button() == Qt.MouseButton.LeftButton:
+            # 关闭右键菜单的那次左键（菜单 exec 期间被回放给本控件，
+            # 或 exec 刚返回时送达）不作为单击：它不产生任何副作用，
+            # 但要记下时刻——OS 会把它算作双击的前半，用户的下一次
+            # 点击会被合成 MouseButtonDblClick（见 mouseDoubleClickEvent）
+            if self.ref._menuopen or (
+                time.monotonic() - self.ref._menuclosestamp < 0.15
+            ):
+                self.ref._dismissstamp = time.monotonic()
+                ev.accept()
+                return
             self._click_pending = True
             self._click_timer.start()
         if (
@@ -833,6 +849,28 @@ class _gamelistnav(FluentNavTree):
                 print_exc()
 
     def mouseDoubleClickEvent(self, e):
+        # 右键双击（唤菜单等）不是双击语义：不取消单击延迟副作用
+        if e.button() != Qt.MouseButton.LeftButton:
+            e.accept()
+            return
+        # 菜单刚关闭后的"双击"，其实是【关闭菜单的那次左键 + 用户的
+        # 单击】被系统合成的：关闭菜单的点击本身无单击副作用（见
+        # mousePressEvent），但 OS 仍把它记作双击的前半。此时按普通
+        # 单击处理（延迟窗口后唤出画廊/设置），不能当成真双击去做
+        # 网格同步——否则表现为"用完菜单后单击打不开画廊/设置"
+        if time.monotonic() - max(
+            self.ref._dismissstamp, self.ref._menuclosestamp
+        ) < (QApplication.doubleClickInterval() / 1000 + 0.1):
+            item = self.itemAt(e.pos())
+            if item is not None:
+                self._click_pending = True
+                self._deferred_item = item
+                if item is not self.currentItem():
+                    # 正常选中链（_navcurrent 因 pending 只记录不执行）
+                    self.setCurrentItem(item)
+                self._click_timer.start()
+            e.accept()
+            return
         # 双击：取消单击的延迟副作用
         self._click_timer.stop()
         self._click_pending = False
@@ -2095,14 +2133,24 @@ class dialog_savedgame_v3(QWidget):
         self._updatetagtext(group)
 
     def nav_showmenu(self, p):
-        item = self.nav.itemAt(p)
-        if item is None:
-            self._blankmenu()
-        elif item.parent() is None:
-            self.tagbuttonmenu(item.data(0, TAGID_ROLE))
-        else:
-            self.nav.setCurrentItem(item)
-            self._gamemenu()
+        # exec 期间送达本树的左键 = 关菜单的那次点击被回放，须吞掉
+        self._menuopen = True
+        try:
+            item = self.nav.itemAt(p)
+            if item is None:
+                self._blankmenu()
+            elif item.parent() is None:
+                self.tagbuttonmenu(item.data(0, TAGID_ROLE))
+            else:
+                self.nav.setCurrentItem(item)
+                self._gamemenu()
+        finally:
+            self._menuopen = False
+            # 菜单（模态 exec）关闭时刻：关闭菜单的那次左键可能被回放
+            # 到本树（mousePressEvent 会在短暂窗口内吞掉它并记
+            # _dismissstamp）；OS 仍会把它算作双击前半——用户的下一次
+            # 点击会被合成双击，由 mouseDoubleClickEvent 转回单击
+            self._menuclosestamp = time.monotonic()
 
     def _blankmenu(self):
         menu = QMenu(self)
