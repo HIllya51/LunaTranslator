@@ -215,6 +215,9 @@ class FluentNavTree(QTreeWidget):
         if not self.property("navigationIconMode"):
             # 图标模式由 _update_navigation_view_by_width 保持隐藏
             self.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        # 策略 Off->AsNeeded 不触发 rangeChanged（range 未变），列宽
+        # 若不重算，滚动条出现会盖住项文本右侧——补一次按策略预留厚度
+        self._apply_column_width(self.width())
 
     # ---- 项管理 ----
     def addNavigationItem(self, text, page_index, icon_code="", auto_select=True):
