@@ -1,5 +1,5 @@
 from qtsymbols import *
-import os, time, functools, uuid, threading, NativeUtils, windows, qtawesome
+import os, time, functools, uuid, threading, windows, qtawesome
 from functools import cmp_to_key
 from traceback import print_exc
 from myutils.config import (
@@ -14,7 +14,6 @@ from myutils.config import (
 )
 from myutils.hwnd import clipboard_set_image
 from myutils.utils import (
-    get_time_stamp,
     getimageformatlist,
     getimagefilefilter,
 )
@@ -23,7 +22,6 @@ from gui.usefulwidget import (
     tabadd_lazy,
     MyInputDialog,
     request_delete_ok,
-    IconButton,
     getspinbox,
     makescrollgrid,
     makecardrow,
@@ -78,85 +76,29 @@ _ICON_TAG_RECENT = ICON_RECENT
 _ICON_TAG_CUSTOM = ICON_LIST
 
 
-class fadeoutlabel(QWidget):
-    def setText(self, t):
-        self.text.setText(t)
-        self.resize(
-            self.width(),
-            max(self.btn.height() * 2, self.text.heightForWidth(self.text.width())),
-        )
-
-    def wheelEvent(self, e: QWheelEvent) -> None:
-        self.wheelto.wheelEvent(e)
-
-    def addimage(self):
-        f = QFileDialog.getOpenFileNames(filter=getimagefilefilter())
-        res = f[0]
-        self.parent1.addimages(res)
-
-    def delimage(self):
-        if not request_delete_ok(self, "9b524251-9639-478c-b3f9-2d254ef50084"):
-            return
-        self.parent1.removecurrent(False)
-
-    def __init__(self, p, wheelto: QWidget, parent: "pixwrapper"):
-        super().__init__(p)
-        self.parent1 = parent
-        l = QHBoxLayout(self)
-        l.setContentsMargins(0, 0, 0, 0)
-        l.setSpacing(0)
-        self.text = QLabel()
-        self.text.setAlignment(Qt.AlignmentFlag.AlignRight)
-        self.text.setScaledContents(True)
-        l.addWidget(self.text)
-        hb = QVBoxLayout()
-        hb.setContentsMargins(0, 0, 0, 0)
-        hb.setSpacing(0)
-        l.addLayout(hb)
-        self.btn = IconButton("fa.plus", tips="添加图片")
-        self.xbtn = IconButton("fa.times", tips="删除图片")
-        self.btn.clicked.connect(self.addimage)
-        self.xbtn.clicked.connect(self.delimage)
-        hb.addWidget(self.btn)
-        hb.addWidget(self.xbtn)
-        self.wheelto = wheelto
-        self.text.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.text.customContextMenuRequested.connect(self.showmenu)
-        effect = QGraphicsOpacityEffect(self)
-        effect.setOpacity(0)
-        self.setGraphicsEffect(effect)
-        self.effect = effect
-        self.setStyleSheet("""QLabel{background-color: rgba(255,255,255, 0);}""")
-        self.animation = QPropertyAnimation(effect, b"opacity")
-        self.animation.setDuration(2000)
-        self.animation.setStartValue(1.0)
-        self.animation.setEndValue(0.0)
-        self.animation.setDirection(QPropertyAnimation.Direction.Forward)
-        self.setText("")
-
-    def enterEvent(self, a0):
-        self.animation.stop()
-        self.effect.setOpacity(1)
-        return super().enterEvent(a0)
-
-    def leaveEvent(self, a0):
-        self.animation.start()
-        return super().leaveEvent(a0)
-
-    def showmenu(self, _):
-        t = self.text.text()
-        if not t:
-            return
-        menu = QMenu(self)
-        copy = LAction("复制", menu)
-        menu.addAction(copy)
-
-        action = menu.exec(QCursor.pos())
-        if action == copy:
-            NativeUtils.ClipBoard.text = self.text.text()
-
-
 class ImageDelegate(QStyledItemDelegate):
+
+    def paint(self, painter: QPainter, opt: QStyleOptionViewItem,
+              index: QModelIndex):
+        if index.data(PathRole) is None:
+            # "添加图片"按钮项（previewimages 末尾）：卡片描边 + 居中
+            # Add 字形（颜色随主题调色板）
+            painter.save()
+            painter.setRenderHints(
+                QPainter.RenderHint.Antialiasing
+                | QPainter.RenderHint.TextAntialiasing)
+            r = QRectF(opt.rect).adjusted(1.0, 1.0, -1.0, -1.0)
+            painter.setPen(QPen(opt.palette.color(QPalette.Mid), 1.0))
+            painter.setBrush(Qt.BrushStyle.NoBrush)
+            painter.drawRoundedRect(r, 6, 6)
+            font = QFont("Segoe Fluent Icons")
+            font.setPixelSize(max(12, int(min(r.width(), r.height()) * 0.35)))
+            painter.setFont(font)
+            painter.setPen(opt.palette.color(QPalette.Text))
+            painter.drawText(r, Qt.AlignmentFlag.AlignCenter, "")
+            painter.restore()
+            return
+        super().paint(painter, opt, index)
 
     def initStyleOption(self, opt: QStyleOptionViewItem, index: QModelIndex):
         super().initStyleOption(opt, index)
@@ -174,6 +116,7 @@ class ImageDelegate(QStyledItemDelegate):
 class previewimages(QListWidget):
     changepixmappath = pyqtSignal(str)
     removepath = pyqtSignal(str)
+    requestaddimages = pyqtSignal(list)
 
     def wheelEvent(self, event: QWheelEvent):
         if self.flow() == QListView.Flow.LeftToRight:
@@ -202,6 +145,9 @@ class previewimages(QListWidget):
         self.setDragEnabled(True)
         self.setDragDropMode(QListWidget.DragDropMode.InternalMove)
         self.setDefaultDropAction(Qt.DropAction.MoveAction)
+        # 末尾"添加图片"按钮项（点击弹文件选择，见 _itemclicked）
+        self.itemClicked.connect(self._itemclicked)
+        self._ensureaddbtn()
 
     # 长宽比钳制：极端比例（如长截图）的项不过高/过宽
     _RATIO_MIN = 1 / 3
@@ -231,6 +177,36 @@ class previewimages(QListWidget):
             if it is not None:
                 it.setSizeHint(self._itemsize(it.data(ImageSizeRole)))
 
+    def _ensureaddbtn(self):
+        """末尾的"添加图片"按钮项（PathRole=None 标记；不可选中/拖动，
+        始终保持在最后）。"""
+        item = None
+        for i in range(self.count()):
+            if self.item(i).data(PathRole) is None:
+                item = self.item(i)
+                break
+        if item is None:
+            item = QListWidgetItem()
+            item.setToolTip(_TR("添加图片"))
+            item.setFlags(Qt.ItemFlag.ItemIsEnabled)
+            self.addItem(item)
+        elif self.row(item) != self.count() - 1:
+            self.takeItem(self.row(item))
+            self.insertItem(self.count(), item)
+        item.setSizeHint(self._itemsize(None))
+
+    def _itemclicked(self, item):
+        if item is None or item.data(PathRole) is not None:
+            return
+        f = QFileDialog.getOpenFileNames(filter=getimagefilefilter())
+        if f[0]:
+            self.requestaddimages.emit(f[0])
+
+    def dropEvent(self, e):
+        super().dropEvent(e)
+        # 拖拽重排可能把项插到按钮项之后：归位到末尾
+        self._ensureaddbtn()
+
     def loadImage(self):
         try:
             start = self.indexAt(self.viewport().rect().topLeft()).row()
@@ -243,6 +219,8 @@ class previewimages(QListWidget):
                     end = model.rowCount()
                 for row in range(start, end + 1):
                     index = model.index(row, 0)
+                    if index.data(PathRole) is None:
+                        continue  # "添加图片"按钮项
                     if not index.data(ImageRequestedRole):
                         self.model().setData(index, True, ImageRequestedRole)
                         image = getcachedimage(index.data(PathRole), True)
@@ -288,7 +266,8 @@ class previewimages(QListWidget):
         first = (self.currentRow() + dx) % self.count()
         test = first
         while True:
-            if not self.item(test).isHidden():
+            _it = self.item(test)
+            if not _it.isHidden() and _it.data(PathRole) is not None:
                 self.setCurrentRow(test)
                 break
             test = (test + dx) % self.count()
@@ -298,7 +277,9 @@ class previewimages(QListWidget):
     def dumppaths(self):
         nlst = []
         for i in range(self.model().rowCount()):
-            nlst.append(self.model().data(self.model().index(i, 0), PathRole))
+            _p = self.model().data(self.model().index(i, 0), PathRole)
+            if _p:  # 跳过末尾"添加图片"按钮项
+                nlst.append(_p)
         return nlst
 
     def additems(self, paths, clear=True, insert=False):
@@ -316,6 +297,7 @@ class previewimages(QListWidget):
                 self.insertItem(self.currentRow() + 1, item)
             else:
                 self.addItem(item)
+        self._ensureaddbtn()
         self.blockSignals(False)
         self._syncitemsize()
         if first:
@@ -348,7 +330,7 @@ class previewimages(QListWidget):
     def removecurrent(self, delfile):
         idx = self.currentRow()
         item = self.currentItem()
-        if item is None:
+        if item is None or item.data(PathRole) is None:
             return
         path = item.data(PathRole)
         self.removepath.emit(path)
@@ -379,12 +361,11 @@ class viewpixmap_x(QWidget):
     def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.carousel = ExCarousel(self)
-        # 导航按钮悬停显现（同画廊 infoview/开始按钮的悬停风格，平时不遮图）
+        # 导航按钮悬停显现（平时不遮图）
         self.carousel.setNavigationButtonTrigger(ExCarousel.OnHover)
         # 自动播放不因悬停暂停——轮播占满整个画廊视图，鼠标常驻其上，
         # 默认的 pauseOnHover 会让自动播放永远不触发
         self.carousel.setPauseOnHover(False)
-        self.infoview = fadeoutlabel(self, self.carousel, parent)
         self.currentimage = None
         # 轮播页序对应的路径（与 slide 一一对应；同步全部按路径而非行号，
         # 缩略图隐藏/轮播丢页不会错位）
@@ -399,22 +380,10 @@ class viewpixmap_x(QWidget):
     def resizeEvent(self, e: QResizeEvent):
         size = e.size()
         self.carousel.resize(size)
-        self.infoview.resize(size.width(), self.infoview.height())
         super().resizeEvent(e)
 
     def changepixmappath(self, path):
-        t = path
         self.currentimage = path
-        try:
-            if not os.path.isfile(extradatas["localedpath"].get(path, path)):
-                raise Exception()
-            t += "\n" + get_time_stamp(
-                ct=os.path.getctime(extradatas["localedpath"].get(path, path)), ms=False
-            )
-        except:
-            pass
-
-        self.infoview.setText(t)
         # 缩略图选中 -> 轮播翻到对应页。不做 idx != currentIndex() 前置
         # 判断——动画中 currentIndex 仍是起点，点回起点会被整个吞掉
         # （切换完成即把选中拉回目标页）；轮播自身会判定同页/目标页
@@ -575,6 +544,35 @@ class pixwrapper(QSplitter):
             self.addWidget(self.previewimages)
             self.addWidget(self.pixview)
 
+    # ---- 分割条位置记忆（按 viewlistpos 布局分别记忆）----
+    def _savesizes(self, *_):
+        # splitterMoved 仅由用户拖动触发；写内存配置，随应用统一持久化
+        globalconfig.setdefault("gallerysplitterpos", {})[
+            str(globalconfig.get("viewlistpos", 0))
+        ] = list(self.sizes())
+
+    def _applysavedsizes(self):
+        pos = str(globalconfig.get("viewlistpos", 0))
+        if pos in self._splitterapplied:
+            return
+        saved = globalconfig.get("gallerysplitterpos", {}).get(pos)
+        if not (isinstance(saved, (list, tuple)) and len(saved) == 2):
+            return
+        cur = self.sizes()
+        tot, stot = sum(cur), sum(saved)
+        if tot <= 0 or stot <= 0:
+            return
+        if stot != tot:
+            # 窗口尺寸与记忆时不同：按比例换算
+            saved = [s * tot / stot for s in saved]
+        self.setSizes(saved)
+        self._splitterapplied.add(pos)
+
+    def showEvent(self, e):
+        super().showEvent(e)
+        # 布局稳定后恢复（显示瞬间尺寸尚未就绪）
+        QTimer.singleShot(0, self._applysavedsizes)
+
     def sethor(self, hor):
         if hor:
 
@@ -595,10 +593,14 @@ class pixwrapper(QSplitter):
 
         self.previewimages = previewimages(self)
         self.previewimages.model().rowsMoved.connect(self._rowsMoved)
+        self.previewimages.requestaddimages.connect(self.addimages)
         self.pixview = viewpixmap_x(self)
         self.setHandleWidth(1)
         self.setrank(rank)
         self.sethor(hor)
+        # 分割条位置记忆：拖动即存（splitterMoved），显示/换布局后恢复
+        self._splitterapplied = set()
+        self.splitterMoved.connect(self._savesizes)
         self.previewimages.changepixmappath.connect(self.changepixmappath)
         self.previewimages.removepath.connect(self.removepath)
         self.pixview.carousel.currentIndexChanged.connect(self._carouselindex)
@@ -668,6 +670,9 @@ class pixwrapper(QSplitter):
         hor = (pos % 2) == 0
         self.setrank(rank)
         self.sethor(hor)
+        # 顺序/朝向重排会重置尺寸：布局稳定后恢复该布局记忆的位置
+        self._splitterapplied.clear()
+        QTimer.singleShot(0, self._applysavedsizes)
 
     def removepath(self, path):
         lst: list = savehook_new_data[self.k].get("imagepath_all", [])
