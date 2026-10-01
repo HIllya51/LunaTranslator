@@ -31,6 +31,7 @@ from gui.usefulwidget import (
 from gui.gamemanager.common import tagitem
 from gui.gamemanager.setting import dialog_setting_game_internal
 from gui.gamemanager.common import (
+    decode_scaled,
     getfonteditor,
     loadrecentlist,
     startgamecheck,
@@ -207,6 +208,25 @@ class previewimages(QListWidget):
         # 拖拽重排可能把项插到按钮项之后：归位到末尾
         self._ensureaddbtn()
 
+    def _loadpreview(self, path):
+        """预览缩略：直接从源图按显示需求解码（icon3 缓存已废弃）——
+        横向条带显示高度 = 条带厚度、
+        纵向显示宽度 = 厚度，按 厚度×dpr 解码即像素级清晰且内存有界
+        （解码核心见 common.decode_scaled）。"""
+        src = extradatas["localedpath"].get(path, path)
+        if not os.path.exists(src):
+            return QPixmap()
+        base = self.iconSize()
+        dpr = self.devicePixelRatioF()
+        if self.flow() == QListView.Flow.LeftToRight:
+            kw = {"by_height": max(1, round(base.height() * dpr))}
+        else:
+            kw = {"by_width": max(1, round(base.width() * dpr))}
+        img = decode_scaled(src, **kw)
+        if img.isNull():
+            return QPixmap()
+        return QPixmap.fromImage(img)
+
     def loadImage(self):
         try:
             start = self.indexAt(self.viewport().rect().topLeft()).row()
@@ -223,7 +243,7 @@ class previewimages(QListWidget):
                         continue  # "添加图片"按钮项
                     if not index.data(ImageRequestedRole):
                         self.model().setData(index, True, ImageRequestedRole)
-                        image = getcachedimage(index.data(PathRole), True)
+                        image = self._loadpreview(index.data(PathRole))
                         item = self.itemFromIndex(index)
                         if not item:
                             continue

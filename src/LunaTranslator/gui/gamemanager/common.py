@@ -5,7 +5,7 @@ from traceback import print_exc
 from myutils.wrapper import threader
 from myutils.utils import find_or_create_uid, duplicateconfig
 from myutils.hwnd import getExeIcon, getcurrexe
-import gobject, hashlib, NativeUtils, uuid, re
+import gobject, NativeUtils, uuid, re
 from myutils.localetools import localeswitchedrun
 from myutils.config import (
     savehook_new_data,
@@ -112,47 +112,40 @@ def startgame(gameuid):
         print_exc()
 
 
-def __b64string(a: str):
-    return hashlib.md5(a.encode("utf8")).hexdigest()
-
-
-def _loadscaledthumb(src, cap=400) -> QImage:
-    """按目标尺寸直接解码（shrink-on-load）：全量解码再缩既慢又吃
-    内存——9448px 实测全量 730ms/~213MB，按 ≤400 解码 265ms/~0.4MB
-    （Qt JPEG 解码走 DCT 缩放，加速比 ~2.8x，与目标尺寸无关）。
-    返回 QImage（可跨线程；QPixmap 仅限 GUI 线程）。"""
+def decode_scaled(src, by_max=None, by_height=None, by_width=None) -> QImage:
+    """按目标尺寸直接解码（shrink-on-load，缩略路径共用核心）：全量
+    解码再缩既慢又吃内存——9448px 实测全量 730ms/~213MB，按目标解码
+    ~265ms/~0.4MB（Qt JPEG 走 DCT 缩放）。三种定尺寸方式（互斥）：
+    by_max    长边不超过 by_max
+    by_height 高度恰为 by_height（横向条带）
+    by_width  宽度恰为 by_width（纵向条带）
+    均仅缩小不放大；尺寸未知/无需缩时原样解码。返回 QImage（可跨
+    线程；QPixmap 仅限 GUI 线程）。"""
     reader = QImageReader(src)
     sz = reader.size()
-    if sz.isValid() and max(sz.width(), sz.height()) > cap:
-        if sz.width() > sz.height():
+    if sz.isValid() and sz.width() > 0 and sz.height() > 0:
+        w, h = sz.width(), sz.height()
+        if by_max and max(w, h) > by_max:
+            if w > h:
+                reader.setScaledSize(QSize(by_max, max(1, by_max * h // w)))
+            else:
+                reader.setScaledSize(QSize(max(1, w * by_max // h), by_max))
+        elif by_height and by_height < h:
             reader.setScaledSize(QSize(
-                cap, max(1, cap * sz.height() // sz.width())))
-        else:
+                max(1, round(w * by_height / h)), by_height))
+        elif by_width and by_width < w:
             reader.setScaledSize(QSize(
-                max(1, sz.width() * cap // sz.height()), cap))
+                by_width, max(1, round(h * by_width / w))))
     return reader.read()
 
 
-def _loadthumb_cached(src) -> QImage:
-    """缩略（icon3 webp 缓存命中 / 未命中按 ≤400 解码并落缓存），
-    QImage 版——GUI 线程与网格后台线程（loadgridimage）共用。"""
-    srcsave = gobject.getcachedir("icon3/{}.webp".format(__b64string(src)))
-    img = QImage(srcsave)
-    if not img.isNull():
-        return img
-    img = _loadscaledthumb(src)
-    if not img.isNull():
-        img.save(srcsave)
-    return img
-
-
 def getcachedimage(src, small) -> QPixmap:
+    """small=True 取缩略（≤400，按需解码不落盘）；False 原图全量
+    （画廊轮播的查看器语义）。解码核心见 decode_scaled。"""
     src = extradatas["localedpath"].get(src, src)
     if not small:
         return QPixmap(src)
-    if not os.path.exists(src):
-        return QPixmap()
-    img = _loadthumb_cached(src)
+    img = decode_scaled(src, by_max=400)
     if img.isNull():
         return QPixmap()
     return QPixmap.fromImage(img)
