@@ -61,7 +61,6 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getsimpleswitch,
     getspinbox,
-    ClickableLabel,
     getIconButton,
     makesubtab_lazy,
     manybuttonlayout,
@@ -626,20 +625,16 @@ class dialog_setting_game_internal(QWidget):
         except:
             print_exc()
 
-    def _metaheader(self, key, name, labelw, edit, switch, btns, header=False):
-        """元数据卡头行：标签列定宽（各卡控件几何一致：开关/输入框/
-        按钮的总长度与位置对齐），其后 [自动开关][ID 输入框(伸展)]
-        [跳转/搜索按钮]。
-        header=True 供折叠卡头部：ExExpander 头部自带左 16/右 60
-        (chevron) 让位，控件右缘与普通卡的右边距 60 一致。"""
+    def _metaheader(self, name, labelw, edit, switch, btns):
+        """元数据卡头行（折叠卡头部，所有源均为折叠卡）：标签列定宽
+        （各卡控件几何一致：开关/输入框/按钮的总长度与位置对齐），
+        其后 [自动开关][ID 输入框(伸展)][跳转/搜索按钮]。
+        ExExpander 头部自带左 16/右 60(chevron) 让位。"""
         row = QWidget()
         lay = QHBoxLayout(row)
-        if header:
-            lay.setContentsMargins(0, 12, 0, 12)
-        else:
-            lay.setContentsMargins(16, 8, 60, 8)
+        lay.setContentsMargins(0, 12, 0, 12)
         lay.setSpacing(8)
-        label = self.getrenameablellabel(key, name)
+        label = LLabel(name)
         font = label.font()
         font.setPixelSize(15)
         label.setFont(font)
@@ -652,9 +647,10 @@ class dialog_setting_game_internal(QWidget):
         return row
 
     def metadataorigin(self, formLayout: LFormLayout, gameuid):
-        # 每源一张卡；有设置项（querysettingwindow）的源为折叠卡，
-        # 设置内容放折叠里（原 CollapsibleBox + "设置"按钮移除）。
-        # 标签列按全部源名计算定宽（名字可被用户改），各卡控件对齐。
+        # 每源一张折叠卡：第一子项 = 使用代理（原名称点击菜单移除，
+        # 设置挪进折叠），其后为该源的设置项（querysettingwindow，
+        # 行式子项）。标签列按全部源名计算定宽（名字可被用户改），
+        # 各卡控件对齐。
         srcs = []
         for key in targetmod:
             try:
@@ -698,55 +694,28 @@ class dialog_setting_game_internal(QWidget):
             except:
                 print_exc()
                 continue
+            exp = ExExpander(content_pad=True)
+            exp.setHeaderWidget(
+                self._metaheader(name, labelw, vndbid, switch, btns)
+            )
+            rows = _MetaSettingRows(exp)
+            # 第一子项：使用代理（getproxy 按此决定该源是否走代理）
+            rows.addRow(
+                "使用代理",
+                getsimpleswitch(
+                    globalconfig["metadata"][key], "useproxy", default=True
+                ),
+            )
             try:
                 __settting = targetmod[key].querysettingwindow
-                has_setting = True
             except:
-                has_setting = False
-            row = self._metaheader(
-                key, name, labelw, vndbid, switch, btns, header=has_setting
-            )
-            if has_setting:
-                # 折叠卡：头部 = 同款行，设置项为行式子项
-                # （_MetaSettingRows 适配 addRow(标签, 控件)）
-                exp = ExExpander(content_pad=True)
-                exp.setHeaderWidget(row)
-                rows = _MetaSettingRows(exp)
+                __settting = None
+            if __settting is not None:
                 try:
                     __settting(gameuid, rows)
                 except:
                     print_exc()
-                if exp.hasContentWidgets():
-                    formLayout.addRow(exp)
-            else:
-                row.setAttribute(Qt.WA_StyledBackground, True)
-                row.setProperty("isCard", True)
-                row.setMinimumHeight(48)
-                formLayout.addRow(row)
-
-    def renameapi(self, qlabel: QLabel, apiuid):
-        menu = QMenu(qlabel)
-        useproxy = LAction("使用代理", menu)
-        useproxy.setCheckable(True)
-
-        menu.addAction(useproxy)
-        useproxy.setChecked(globalconfig["metadata"][apiuid].get("useproxy", True))
-        pos = QCursor.pos()
-        action = menu.exec(pos)
-
-        if action == useproxy:
-            globalconfig["metadata"][apiuid]["useproxy"] = useproxy.isChecked()
-
-    def getrenameablellabel(self, key, name):
-
-        def checkclickable(name: ClickableLabel):
-            name.setClickable(globalconfig.get("useproxy", True))
-
-        name = ClickableLabel(name)
-        fn = functools.partial(self.renameapi, name, key)
-        name.clicked.connect(fn)
-        name.beforeEnter.connect(functools.partial(checkclickable, name))
-        return name
+            formLayout.addRow(exp)
 
     def doaddtab(self, wfunct, exe, layout: QLayout):
         w, do = wfunct(exe)
