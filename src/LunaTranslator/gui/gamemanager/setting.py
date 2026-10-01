@@ -66,7 +66,6 @@ from gui.usefulwidget import (
     makesubtab_lazy,
     manybuttonlayout,
     GroupCardWidget,
-    CollapsibleBox,
     getsmalllabel,
     listediterline,
     VisGridLayout,
@@ -578,19 +577,49 @@ class dialog_setting_game_internal(QWidget):
         except:
             print_exc()
 
+    def _metaheader(self, key, name, labelw, edit, switch, btns, header=False):
+        """元数据卡头行：标签列定宽（各卡控件几何一致：开关/输入框/
+        按钮的总长度与位置对齐），其后 [自动开关][ID 输入框(伸展)]
+        [跳转/搜索按钮]。
+        header=True 供折叠卡头部：ExExpander 头部自带左 16/右 60
+        (chevron) 让位，控件右缘与普通卡的右边距 60 一致。"""
+        row = QWidget()
+        lay = QHBoxLayout(row)
+        if header:
+            lay.setContentsMargins(0, 12, 0, 12)
+        else:
+            lay.setContentsMargins(16, 8, 60, 8)
+        lay.setSpacing(8)
+        label = self.getrenameablellabel(key, name)
+        font = label.font()
+        font.setPixelSize(15)
+        label.setFont(font)
+        label.setFixedWidth(labelw)
+        lay.addWidget(label)
+        lay.addWidget(switch)
+        lay.addWidget(edit, 1)
+        for b in btns:
+            lay.addWidget(b)
+        return row
+
     def metadataorigin(self, formLayout: LFormLayout, gameuid):
-        vislf = VisGridLayout()
-        formLayout.addRow(vislf)
-        vislf.setColumnStretch(0, 0)
-        vislf.setColumnStretch(1, 1)
-
-        linei = 0
-        notvislineis = []
-        for i, key in enumerate(targetmod):
+        # 每源一张卡；有设置项（querysettingwindow）的源为折叠卡，
+        # 设置内容放折叠里（原 CollapsibleBox + "设置"按钮移除）。
+        # 标签列按全部源名计算定宽（名字可被用户改），各卡控件对齐。
+        srcs = []
+        for key in targetmod:
             try:
-                idname = targetmod[key].idname
-                name = targetmod[key].name
+                srcs.append((key, targetmod[key].idname, targetmod[key].name))
+            except:
+                print_exc()
+                continue
+        font = self.font()
+        font.setPixelSize(15)
+        fm = QFontMetrics(font)
+        labelw = min(240, max([80] + [fm.horizontalAdvance(_[2]) for _ in srcs]) + 16)
 
+        for key, idname, name in srcs:
+            try:
                 vndbid = QLineEdit()
                 vndbid.setText(str(savehook_new_data[gameuid].get(idname, "")))
                 vndbid.setSizePolicy(
@@ -603,12 +632,11 @@ class dialog_setting_game_internal(QWidget):
                 vndbid.returnPressed.connect(
                     functools.partial(gamdidchangedtask, key, idname, gameuid)
                 )
-                _vbox_internal = [
-                    getsimpleswitch(
-                        globalconfig["metadata"][key],
-                        "auto",
-                    ),
-                    vndbid,
+                switch = getsimpleswitch(
+                    globalconfig["metadata"][key],
+                    "auto",
+                )
+                btns = [
                     getIconButton(
                         functools.partial(self.openrefmainpage, key, idname, gameuid),
                         icon="fa.chrome",
@@ -623,30 +651,31 @@ class dialog_setting_game_internal(QWidget):
                 continue
             try:
                 __settting = targetmod[key].querysettingwindow
-                coll = CollapsibleBox(
-                    functools.partial(__settting, gameuid), self, margin0=False
-                )
-
-                def _revert(c: CollapsibleBox, li):
-                    vis = c.isVisible()
-                    vislf.setRowVisible(li, not vis)
-                    c.toggle(not vis)
-
-                _vbox_internal.insert(
-                    2,
-                    getIconButton(functools.partial(_revert, coll, linei + 1)),
-                )
-                vislf.addWidget(self.getrenameablellabel(key, name), linei, 0)
-                vislf.addLayout(getboxlayout(_vbox_internal), linei, 1)
-                vislf.addWidget(coll, linei + 1, 0, 1, 2)
-                notvislineis.append(linei + 1)
-                linei += 2
+                has_setting = True
             except:
-                vislf.addWidget(self.getrenameablellabel(key, name), linei, 0)
-                vislf.addLayout(getboxlayout(_vbox_internal), linei, 1)
-                linei += 1
-        for _ in notvislineis:
-            vislf.setRowVisible(_, False)
+                has_setting = False
+            row = self._metaheader(
+                key, name, labelw, vndbid, switch, btns, header=has_setting
+            )
+            if has_setting:
+                # 折叠卡：头部 = 同款行，设置表单放折叠里
+                exp = ExExpander(content_pad=True)
+                exp.setHeaderWidget(row)
+                content = QWidget()
+                clayout = QVBoxLayout(content)
+                clayout.setContentsMargins(0, 0, 0, 0)
+                try:
+                    __settting(gameuid, clayout)
+                except:
+                    print_exc()
+                    continue
+                exp.addContentWidget(content)
+                formLayout.addRow(exp)
+            else:
+                row.setAttribute(Qt.WA_StyledBackground, True)
+                row.setProperty("isCard", True)
+                row.setMinimumHeight(48)
+                formLayout.addRow(row)
 
     def renameapi(self, qlabel: QLabel, apiuid):
         menu = QMenu(qlabel)
