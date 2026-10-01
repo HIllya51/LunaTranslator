@@ -26,7 +26,9 @@ from gui.inputdialog import (
 def getcomparelayout(self):
 
     w = QWidget()
+    w.setFixedHeight(100)
     layout = QHBoxLayout(w)
+    layout.setContentsMargins(0, 0, 0, 0)
     fromtext = QPlainTextEdit()
     totext = QPlainTextEdit()
     solvebutton = getIconButton(
