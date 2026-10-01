@@ -803,9 +803,12 @@ class _gamelistnav(FluentNavTree):
     def mousePressEvent(self, ev):
         self._dragitem = self.itemAt(ev.pos())
         self._dragpos = ev.pos()
-        # 单击的页面动作延迟到双击窗口后（双击会取消）
-        self._click_pending = True
-        self._click_timer.start()
+        # 仅左键参与单击延迟窗口（双击会取消）——右键（唤出菜单）的
+        # 选中走程序化路径：_navcurrent 子项分支 = 网格同步 + 高亮，
+        # 不会被延迟 flush 成 _navopen（误开画廊/设置页）
+        if ev.button() == Qt.MouseButton.LeftButton:
+            self._click_pending = True
+            self._click_timer.start()
         if (
             self._dragitem is not None
             and self._dragitem is self.currentItem()
