@@ -560,13 +560,14 @@ class pixwrapper(QSplitter):
         saved = globalconfig.get("gallerysplitterpos", {}).get(pos)
         if not (isinstance(saved, (list, tuple)) and len(saved) == 2):
             return
+        saved = [int(s) for s in saved]  # setSizes 只收 int（防手改配置）
         cur = self.sizes()
         tot, stot = sum(cur), sum(saved)
         if tot <= 0 or stot <= 0:
             return
         if stot != tot:
-            # 窗口尺寸与记忆时不同：按比例换算
-            saved = [s * tot / stot for s in saved]
+            # 窗口尺寸与记忆时不同：按比例换算（round 保 int）
+            saved = [round(s * tot / stot) for s in saved]
         self.setSizes(saved)
         self._splitterapplied.add(pos)
 
