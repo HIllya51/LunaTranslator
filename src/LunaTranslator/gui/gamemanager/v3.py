@@ -45,7 +45,7 @@ from gui.gamemanager.common import (
     addgamesingle,
     addgamebatch,
 )
-from gui.dynalang import LAction, LLabel, LMenu, LFormLayout
+from gui.dynalang import LAction, LMenu, LFormLayout
 from gui.fluent.nav import FluentNavTree, FluentNavToggleButton, create_fluent_icon
 from gui.fluent.tabwidget import FluentPageCard, FluentCardSeparator
 from gui.fluent.titlebar import create_fluent_caption_button
@@ -368,39 +368,10 @@ class previewimages(QListWidget):
         return super().resizeEvent(e)
 
 
-class hoverbtn(LLabel):
-    clicked = pyqtSignal()
-
-    def mousePressEvent(self, a0: QMouseEvent) -> None:
-        if a0.button() == Qt.MouseButton.LeftButton:
-            self.clicked.emit()
-        return super().mousePressEvent(a0)
-
-    def __init__(self, *argc):
-        super().__init__(*argc)
-        self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-    def resizeEvent(self, e):
-        style = r"""QLabel{
-                background: transparent; 
-                border-radius:0;
-                font-size: %spx;
-                color:transparent; 
-            }
-            QLabel:hover{
-                background-color: rgba(255,255,255,0.5); 
-                color:black;
-            }""" % (min(self.height(), self.width()) // 3)
-        self.setStyleSheet(style)
-        super().resizeEvent(e)
-
-
 class viewpixmap_x(QWidget):
     """画廊主视图：ExCarousel 轮播图集（替换原自绘 pixmapviewer）。
     图片全分辨率延迟加载（25ms/张；异步下载未就绪的页 1.5s 后重试，
     上限 20 轮，超时丢弃——同缩略图的隐藏语义）。"""
-
-    startgame = pyqtSignal()
 
     def sizeHint(self):
         return QSize(400, 400)
@@ -413,8 +384,6 @@ class viewpixmap_x(QWidget):
         # 自动播放不因悬停暂停——轮播占满整个画廊视图，鼠标常驻其上，
         # 默认的 pauseOnHover 会让自动播放永远不触发
         self.carousel.setPauseOnHover(False)
-        self.bottombtn = hoverbtn("开始游戏", self)
-        self.bottombtn.clicked.connect(self.startgame)
         self.infoview = fadeoutlabel(self, self.carousel, parent)
         self.currentimage = None
         # 轮播页序对应的路径（与 slide 一一对应；同步全部按路径而非行号，
@@ -431,15 +400,6 @@ class viewpixmap_x(QWidget):
         size = e.size()
         self.carousel.resize(size)
         self.infoview.resize(size.width(), self.infoview.height())
-        # 底部让出轮播 pips 指示区（约 30px）
-        btnh = max(40, 3 * size.height() // 10)
-        btnbottom = max(size.height() - 36, btnh)
-        self.bottombtn.setGeometry(
-            size.width() // 5,
-            btnbottom - btnh,
-            3 * size.width() // 5,
-            btnh,
-        )
         super().resizeEvent(e)
 
     def changepixmappath(self, path):
@@ -549,8 +509,6 @@ class viewpixmap_x(QWidget):
 
 
 class pixwrapper(QSplitter):
-    startgame = pyqtSignal()
-
     def keyPressEvent(self, e: QKeyEvent):
         if e.key() == Qt.Key.Key_Delete:
             self.removecurrent(False)
@@ -638,7 +596,6 @@ class pixwrapper(QSplitter):
         self.previewimages = previewimages(self)
         self.previewimages.model().rowsMoved.connect(self._rowsMoved)
         self.pixview = viewpixmap_x(self)
-        self.pixview.startgame.connect(self.startgame)
         self.setHandleWidth(1)
         self.setrank(rank)
         self.sethor(hor)
@@ -746,7 +703,6 @@ class pixwrapper(QSplitter):
             pixmaps, savehook_new_data[k].get("currentvisimage")
         )
         self.pixview.setpaths(pixmaps, savehook_new_data[k].get("currentvisimage"))
-        self.pixview.bottombtn.setVisible(os.path.exists(get_launchpath(k)))
 
 
 _placeholder_icon_cache = None
@@ -856,7 +812,7 @@ class _gamelistnav(FluentNavTree):
         ):
             # 点击的已是当前项（主项或子项，如双击展开/打开画廊后再
             # 单击）：currentItemChanged 不会触发，手动记录延迟动作
-            # （子项：切回网格页；主项：同列表不重建）
+            # （子项：唤出画廊/设置页；主项：同列表不重建）
             self._deferred_item = self._dragitem
         return super().mousePressEvent(ev)
 
@@ -865,7 +821,11 @@ class _gamelistnav(FluentNavTree):
         item, self._deferred_item = self._deferred_item, None
         if item is not None:
             try:
-                self.ref._navcurrent(item)
+                if item.data(0, GAMEUID_ROLE):
+                    # 单击子项：唤出画廊/设置页（网格同步由双击承担）
+                    self.ref._navopen(item)
+                else:
+                    self.ref._navcurrent(item)
             except Exception:
                 print_exc()
 
@@ -1839,8 +1799,9 @@ class dialog_savedgame_v3(QWidget):
             return
         uid = item.data(0, GAMEUID_ROLE)
         if uid:
-            # 单击子项：右侧显示其所属主项的网格（多列表展开时跟随切换），
-            # 并联动高亮；不打开画廊（双击才打开）
+            # 程序化选中子项（网格图表点击/同步等）：右侧显示其所属
+            # 主项的网格并联动高亮——鼠标单击/双击经延迟窗口分流，
+            # 不进此分支（见 _gamelistnav._flush_click / _navdouble）
             self.reftagid = item.parent().data(0, TAGID_ROLE)
             self.currentfocusuid = uid
             if (not self.gridpage._loaded) or (
@@ -1861,11 +1822,19 @@ class dialog_savedgame_v3(QWidget):
                 ItemWidget.clearfocus()
             self._show_gridpage()
 
-    def _navclicked(self, item, _col):
+    def _navopen(self, item):
+        """单击子项：唤出画廊/设置页（双击窗口后执行，见 _flush_click）。
+        已在展示该游戏时不重建（原地刷新会闪、tab/设置页全部重建），
+        只确保停在画廊/设置页。"""
         uid = item.data(0, GAMEUID_ROLE)
-        if uid:
-            # 网格空白区清焦后重选同一子项：恢复高亮（focusgame 幂等）
-            self.gridpage.focusgame(uid)
+        if not uid:
+            return
+        self.reftagid = item.parent().data(0, TAGID_ROLE)
+        self.currentfocusuid = uid
+        dgi = getattr(self, "fuckqt6", None)
+        if dgi is None or dgi.gameuid != uid:
+            self.viewitem(uid)
+        self.stack.setCurrentWidget(self.righttop_card)
 
     def _getreflist(self, tagid):
         # 持久列表（最近游戏(1)是动态的，返回 None 表示不可改）
@@ -2066,11 +2035,16 @@ class dialog_savedgame_v3(QWidget):
         uid = item.data(0, GAMEUID_ROLE)
         if not uid:
             return
-        # 单击的延迟被取消：状态在此补齐
+        # 双击子项：与其所属主项的网格同步（切网格页 + 高亮）；
+        # 打开画廊/设置由单击承担（与单击语义交换）
         self.reftagid = item.parent().data(0, TAGID_ROLE)
         self.currentfocusuid = uid
-        self.viewitem(uid)
-        self.stack.setCurrentWidget(self.righttop_card)
+        if (not self.gridpage._loaded) or (
+            self.gridpage.reftagid != self.reftagid
+        ):
+            self.gridpage.showtag(self.reftagid)
+        self._show_gridpage()
+        self.gridpage.focusgame(uid)
 
     def point_game(self, uid):
         """网格页图表点击：侧边栏指向该游戏——主项展开时选中子项；
@@ -2223,8 +2197,6 @@ class dialog_savedgame_v3(QWidget):
         self.nav.customContextMenuRequested.connect(self.nav_showmenu)
         self.nav.currentItemChanged.connect(self._navcurrent)
         self.nav.itemDoubleClicked.connect(self._navdouble)
-        # 重复点击同一子项（current 不变，currentItemChanged 不触发）也要联动
-        self.nav.itemClicked.connect(self._navclicked)
         self.nav.itemExpanded.connect(functools.partial(self._navexpand, True))
         self.nav.itemCollapsed.connect(functools.partial(self._navexpand, False))
         self.setstyle()
@@ -2275,11 +2247,6 @@ class dialog_savedgame_v3(QWidget):
             "QTabWidget::pane{border:0;margin:0;padding:0;}"
             "QTabWidget::tab-bar{left:8px;}")
         self.pixview = pixwrapper(self)
-        self.pixview.startgame.connect(
-            lambda: startgamecheck(
-                self, getreflist(self.reftagid), self.currentfocusuid
-            )
-        )
         # 画廊/游戏设置/游戏数据：页为裸容器，直角面板由
         # FluentPaneTabWidget.addTab 统一包裹；后两页由 viewitem 重建
         tabadd_lazy(self.righttop, "画廊",
