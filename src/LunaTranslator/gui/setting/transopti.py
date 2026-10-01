@@ -29,8 +29,11 @@ def getcomparelayout(self):
     w.setFixedHeight(100)
     layout = QHBoxLayout(w)
     layout.setContentsMargins(0, 0, 0, 0)
-    fromtext = QPlainTextEdit()
-    totext = QPlainTextEdit()
+    fromtext = QTextEdit()
+    totext = QTextEdit()
+    fromtext.setAcceptRichText(False)
+    totext.setAcceptRichText(False)
+    totext.setReadOnly(True)
     solvebutton = getIconButton(
         callback=lambda: totext.setPlainText(
             POSTSOLVE(fromtext.toPlainText(), useAll=True)

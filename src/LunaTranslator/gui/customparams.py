@@ -18,7 +18,7 @@ class typeswitcheditor(QWidget):
         self.t = None
         self.l = QHBoxLayout(self)
         self.l.setContentsMargins(0, 0, 0, 0)
-        self.w: "FocusDoubleSpin|FocusSpin|QLineEdit|MySwitch|QPlainTextEdit" = None
+        self.w: "FocusDoubleSpin|FocusSpin|QLineEdit|MySwitch|QPlainTextEdit|QTextEdit" = None
 
     def gettype(self):
         return self.t
@@ -40,7 +40,8 @@ class typeswitcheditor(QWidget):
         elif t == "bool":
             self.w = MySwitch()
         elif t == "other":
-            self.w = QPlainTextEdit()
+            self.w = QTextEdit()
+            self.w.setAcceptRichText(False)
         else:
             self.w = QLineEdit()
         self.l.addWidget(self.w)
