@@ -36,9 +36,14 @@ from gui.dynalang import (
     LMainWindow,
 )
 from gui.fluent.tabwidget import (
-    make_lazy_page, FluentPaneTabWidget,
+    make_lazy_page,
+    FluentPaneTabWidget,
 )
-from gui.fluent.colorpicker import ColorPickerButton, FluentColorDialog, paint_fluent_flyout_surface
+from gui.fluent.colorpicker import (
+    ColorPickerButton,
+    FluentColorDialog,
+    paint_fluent_flyout_surface,
+)
 from gui.fluent.icons import ICON_CHEVRON_DOWN_MED
 from gui.fluent.expander import _exp_chevron_button_background
 
@@ -81,7 +86,9 @@ class FocusCombo(QComboBox):
         # 字体（回落继承），无法覆盖重置
         vf, cf = self.view().font(), self.font()
         if (vf.family(), vf.pointSize(), vf.pixelSize()) != (
-            cf.family(), cf.pointSize(), cf.pixelSize()
+            cf.family(),
+            cf.pointSize(),
+            cf.pixelSize(),
         ):
             if cf.pointSize() > 0:
                 self.view().setFont(QFont(cf.family(), cf.pointSize()))
@@ -803,7 +810,9 @@ class MySwitch(QCheckBox):
         super().__init__(parent)
         self.setProperty("isSwitchButton", True)
         self.setCheckable(True)
-        self.setFixedSize(44, 20)  # 插件 PM 40x20 + SE_CheckBoxIndicator 右移的 contentItemHMargin(4)
+        self.setFixedSize(
+            44, 20
+        )  # 插件 PM 40x20 + SE_CheckBoxIndicator 右移的 contentItemHMargin(4)
         self.clicksignal.connect(self.click)
         super().setEnabled(enable)
         self.setChecked(sign)
@@ -815,9 +824,7 @@ class MySwitch(QCheckBox):
         if not self.isVisible():
             # 显示前同步插件的状态跟踪属性：否则首帧绘制会当作 off→on 状态
             # 变化，播放 150ms 切换动画（初始化为 On 的开关每次显示都闪一下）
-            state = int(QStyle.State_Enabled) | (
-                int(QStyle.State_On) if check else 0
-            )
+            state = int(QStyle.State_Enabled) | (int(QStyle.State_On) if check else 0)
             self.setProperty("_q_stylestate", state)
 
     def event(self, a0: QEvent) -> bool:
@@ -2546,8 +2553,9 @@ def automakegrid(grid: "VisGridLayout", lis, savelist=None, hiderows=None):
             savelist.append(ll)
         # 整行均为显式隐藏的控件时不设行最小高——隐藏时整行完全收起
         # （如 关于软件 的下载进度条行；显示时控件自身高度生效）
-        if not (rowwids and all(
-                isinstance(w, QWidget) and w.isHidden() for w in rowwids)):
+        if not (
+            rowwids and all(isinstance(w, QWidget) and w.isHidden() for w in rowwids)
+        ):
             grid.setRowMinimumHeight(nowr, 25)
         if nowr in hiderows if hiderows else []:
             grid.setRowVisible(nowr, False)
@@ -2591,8 +2599,17 @@ def maketabholder(tab, top=0):
     return holder
 
 
-def makegrid(grid=None, savelist=None, savelay=None, delay=False, hiderows=None,
-             toptouch=False, topmargin=None, sidemargin=16, bottommargin=12):
+def makegrid(
+    grid=None,
+    savelist=None,
+    savelay=None,
+    delay=False,
+    hiderows=None,
+    toptouch=False,
+    topmargin=None,
+    sidemargin=16,
+    bottommargin=12,
+):
 
     class gridwidget(QWidget):
         pass
@@ -2648,9 +2665,15 @@ def makescrollgrid(grid, lay: QLayout, savelist=None, savelay=None, hiderows=Non
     flush = bool(getattr(lay, "property", lambda *_: None)("_fluent_tabbar_page"))
     incard = bool(getattr(lay, "property", lambda *_: None)("_fluent_card_grid"))
     mainpg = bool(getattr(lay, "property", lambda *_: None)("_fluent_main_grid"))
-    wid, do = makegrid(grid, savelist, savelay, delay=True, hiderows=hiderows,
-                       toptouch=flush,
-                       topmargin=16 if (incard or mainpg) else None)
+    wid, do = makegrid(
+        grid,
+        savelist,
+        savelay,
+        delay=True,
+        hiderows=hiderows,
+        toptouch=flush,
+        topmargin=16 if (incard or mainpg) else None,
+    )
     swid = makescroll()
     lay.addWidget(swid)
     swid.setWidget(wid)
@@ -2702,15 +2725,18 @@ def makesubtab_lazy(
         if titles and functions:
             for i, func in enumerate(functions):
                 # FluentPaneTabWidget 的 addTab 自行包直角面板，页须裸
-                tabadd_lazy(tab, titles[i], func,
-                            bare=bare or isinstance(tab, FluentPaneTabWidget))
+                tabadd_lazy(
+                    tab,
+                    titles[i],
+                    func,
+                    bare=bare or isinstance(tab, FluentPaneTabWidget),
+                )
         if can:
             tab.setCurrentIndex(initial[0][initial[1]])
             tab.currentChanged.connect(functools.partial(__, fast, tab, initial))
             tab.currentChanged.emit(initial[0][initial[1]])
 
-    ___do = functools.partial(__do, tab, titles, functions, initial,
-                              bare)
+    ___do = functools.partial(__do, tab, titles, functions, initial, bare)
     if not delay:
         ___do()
         return tab
@@ -3395,15 +3421,13 @@ class IconButton(LPushButton):
 
     @staticmethod
     def _is_pixmap_icon(icon) -> bool:
-        return (
-            isinstance(icon, str)
-            and len(icon) > 1
-            and (icon == "luna" or not icon.startswith("fa."))
+        return (icon == "" or icon == "luna") or (
+            isinstance(icon, str) and len(icon) > 1 and (not icon.startswith("fa."))
         )
 
     @staticmethod
     def _load_pixmap(icon: str):
-        if icon == "luna":
+        if icon == "" or icon == "luna":
             return getExeIcon(getcurrexe(), icon=False, large=True)
         return load_specific_icon_size(icon)
 
@@ -3776,15 +3800,18 @@ class CollapsibleBoxWithButton(QWidget):
     toggled = pyqtSignal(bool)
 
     def __init__(
-        self, delayloadfunction=None, title="", parent=None, toggled=False,
+        self,
+        delayloadfunction=None,
+        title="",
+        parent=None,
+        toggled=False,
         fullheight=False,
     ):
         super(CollapsibleBoxWithButton, self).__init__(parent)
         # WinUI 卡片外观（同 GroupCardWidget / ExExpander）
         self.setAttribute(Qt.WA_StyledBackground, True)
         self.setProperty("isCard", True)
-        self.toggle_button = _FoldHeaderButton(
-            title, self, fullheight=fullheight)
+        self.toggle_button = _FoldHeaderButton(title, self, fullheight=fullheight)
         self.toggle_button.toggled.connect(self.__toggled)
         self.toggle_button.toggled.connect(self.toggled)
         self.content_area = CollapsibleBox(delayloadfunction, self)
@@ -3966,7 +3993,7 @@ class PopupWidget(QWidget):
         lay = self.layout()
         if lay is not None and not self.property("_fluent_flyout_padded"):
             self.setProperty("_fluent_flyout_padded", True)
-            lay.setContentsMargins(16, 16, 16, 12 )
+            lay.setContentsMargins(16, 16, 16, 12)
         pos = self.pos()
         self.move(limitpos(pos, self, QPoint()))
         return super().showEvent(a0)

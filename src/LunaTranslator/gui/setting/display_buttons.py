@@ -1,6 +1,7 @@
 from qtsymbols import *
-import functools, json
+import functools
 import gobject
+import qtawesome
 from myutils.config import globalconfig, ui_settings
 from gui.usefulwidget import (
     D_getsimplecombobox,
@@ -22,6 +23,58 @@ from gui.setting.display_ui import toolcolorchange
 from gui.fluent.settingtree import FluentSettingTree, wrap_setting_tree
 
 
+class _IconLibDelegate(QStyledItemDelegate):
+    """Gallery 图标库同款卡片（pagesegoeicongallery）：悬停/按下圆角
+    高亮 + 30px 图标字形 + 名称（不画 16 进制行）。图标为 qtawesome
+    （FontAwesome 4.7）字形。"""
+
+    _GRID = QSize(96, 80)
+
+    def sizeHint(self, option, index):
+        return self._GRID
+
+    def paint(self, painter, opt, index):
+        name = index.data(Qt.ItemDataRole.DisplayRole)
+        if not name:
+            return
+        painter.save()
+        painter.setRenderHints(
+            QPainter.RenderHint.Antialiasing
+            | QPainter.RenderHint.TextAntialiasing)
+        rect = QRectF(opt.rect).adjusted(3, 3, -3, -3)
+        isdark = opt.palette.color(QPalette.ColorRole.Base).lightness() < 128
+        ishover = bool(opt.state & QStyle.StateFlag.State_MouseOver)
+        ispressed = bool(opt.state & QStyle.StateFlag.State_Sunken)
+        if ishover or ispressed:
+            bg = QColor(255, 255, 255) if isdark else QColor(0, 0, 0)
+            bg.setAlpha(24 if ispressed else 12)
+            painter.setPen(Qt.PenStyle.NoPen)
+            painter.setBrush(bg)
+            painter.drawRoundedRect(rect, 6, 6)
+        inst = qtawesome._instance()
+        char = chr(int(inst.charmap[name], 16))
+        # 图标字形（30px，同 Gallery）
+        painter.setFont(inst.font(30))
+        painter.setPen(
+            QColor(255, 255, 255) if isdark else QColor(26, 26, 26))
+        painter.drawText(
+            QRectF(rect.left(), rect.top() + 4, rect.width(), 36),
+            Qt.AlignmentFlag.AlignCenter, char)
+        # 名称（11px，超宽省略；无 16 进制行）
+        namefont = QFont(opt.font)
+        namefont.setPixelSize(11)
+        painter.setFont(namefont)
+        painter.setPen(
+            QColor(230, 230, 230) if isdark else QColor(32, 32, 32))
+        fm = QFontMetrics(namefont)
+        painter.drawText(
+            QRectF(rect.left() + 4, rect.top() + 44, rect.width() - 8, 16),
+            Qt.AlignmentFlag.AlignHCenter | Qt.AlignmentFlag.AlignTop,
+            fm.elidedText(
+                name, Qt.TextElideMode.ElideRight, int(rect.width()) - 8))
+        painter.restore()
+
+
 class dialog_selecticon(LDialog):
     def __init__(
         self, parent, cb1, dict: dict, name, key, btn: IconButton, color
@@ -34,38 +87,48 @@ class dialog_selecticon(LDialog):
         self.name = name
         self.key = key
         self.setWindowTitle("选择图标")
-        with open(
-            "files/static/fonts/fontawesome4.7-webfont-charmap.json",
-            "r",
-            encoding="utf8",
-        ) as ff:
-            js = json.load(ff)
 
         self.curr = self.dict.get(self.key)
         lineEdit = QLineEdit(self)
         lineEdit.setText(self.curr)
         lineEdit.textChanged.connect(self.cb)
+        self.lineEdit = lineEdit
         hb = QHBoxLayout()
-        hb.addWidget(LLabel("图标_|_字符_|_图片路径_|_luna"))
+        hb.addWidget(LLabel("图标_|_字符_|_图片路径"))
         hb.addWidget(lineEdit)
         vbox = QVBoxLayout(self)
         vbox.addLayout(hb)
-        layout = QGridLayout()
-        vbox.addLayout(layout)
-        for i, name in enumerate(js):
-            layout.addWidget(
-                getIconButton(
-                    functools.partial(self.selectcallback, "fa." + name),
-                    icon="fa." + name,
-                    color=color,
-                ),
-                i // 30,
-                i % 30,
-            )
+
+        # 图标库：Gallery 同款 IconMode 列表（悬停高亮卡片 + 名称），
+        # qtawesome 全量字形经 delegate 绘制（不再为每个图标建按钮）
+        self._model = QStringListModel(
+            sorted(qtawesome._instance().charmap.keys()))
+        lv = QListView(self)
+        lv.setViewMode(QListView.ViewMode.IconMode)
+        lv.setResizeMode(QListView.ResizeMode.Adjust)
+        lv.setUniformItemSizes(True)
+        lv.setMovement(QListView.Movement.Static)
+        lv.setSpacing(4)
+        lv.setGridSize(_IconLibDelegate._GRID)
+        lv.setSelectionMode(QAbstractItemView.SelectionMode.NoSelection)
+        lv.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
+        lv.setVerticalScrollMode(QAbstractItemView.ScrollMode.ScrollPerPixel)
+        lv.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        lv.setMouseTracking(True)
+        lv.setItemDelegate(_IconLibDelegate(lv))
+        lv.setModel(self._model)
+        # 点击图标：应用（等价在输入框填入 fa.<名>），不关闭窗口
+        lv.clicked.connect(self._pick)
+        vbox.addWidget(lv)
+        self.resize(760, 560)
         self.show()
 
+    def _pick(self, index):
+        name = index.data(Qt.ItemDataRole.DisplayRole)
+        if name:
+            self.lineEdit.setText("fa." + name)
+
     def cb(self, _):
-        print(_)
         self.curr = _
         self.dict[self.key] = _
         try:
@@ -73,14 +136,6 @@ class dialog_selecticon(LDialog):
             self.cb1()
         except:
             pass
-
-    def selectcallback(self, _):
-        print(_)
-        self.curr = _
-        self.dict[self.key] = _
-        self.close()
-        self.btn.setIconStr(_)
-        self.cb1()
 
 
 def doadjust(*_):
