@@ -54,19 +54,25 @@ else:
 os.makedirs(targetdir, exist_ok=True)
 
 
-def downloadfluentstyleplugin(arch, targetdir):
-    """FluentUI3 样式插件：并入 files/plugins/styles（运行时 gui.fluent
-    以 addLibraryPath(files/plugins) 挂载，app.setStyle("FluentUI3")
-    生效；缺失时自动回退基础样式）。SDK 为 Qt5.15.2-x64 构建，仅并入
-    x64 包（winxp 的 x86 包跳过）；插件自包含——导入表仅 Qt5*/VCRT/
-    dwmapi，无需 SDK bin 下其它 dll。"""
-    if arch != "x64":
+def downloadfluentstyleplugin(arch, target, targetdir):
+    """FluentUI3 样式插件：按构建目标取 HIllya51/FluentUIStyle 的
+    common release 对应变体（x64 / x64-Win7 / x86-XP 各自独立构建），
+    并入 files/plugins/styles（运行时 gui.fluent 以 addLibraryPath(
+    files/plugins) 挂载，app.setStyle("FluentUI3") 生效；缺失时自动
+    回退基础样式）。插件自包含——导入表仅 Qt5*/VCRT/dwmapi，无需
+    SDK bin 下其它 dll。"""
+    variant = {
+        ("x64", "win10"): "x64",
+        ("x64", "win7"): "x64-Win7",
+        ("x86", "winxp"): "x86-XP",
+    }.get((arch, target))
+    if variant is None:
         return
+    fname = "FluentUI3-SDK-common-Windows-Qt5.15.2-{}.zip".format(variant)
     url = (
-        "https://github.com/XHY-ChuJian/FluentUIStyle/releases/download/"
-        "4.0/FluentUI3-SDK-4.0-Windows-Qt5.15.2-x64.zip"
+        "https://github.com/HIllya51/FluentUIStyle/releases/download/"
+        "common/" + fname
     )
-    fname = os.path.basename(url)
     os.makedirs("scripts/temp", exist_ok=True)
     zipp = os.path.join("scripts/temp", fname)
     if not os.path.exists(zipp):
@@ -119,7 +125,7 @@ try:
     shutil.rmtree(rf"{targetdir}\files\{baddll}")
 except:
     pass
-downloadfluentstyleplugin(arch, targetdir)
+downloadfluentstyleplugin(arch, target, targetdir)
 
 os.makedirs(os.path.join(targetdir, "LICENSES"))
 shutil.copy(
