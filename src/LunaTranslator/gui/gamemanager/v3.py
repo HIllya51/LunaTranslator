@@ -1220,8 +1220,7 @@ class _gridpage(QWidget):
     def _search(self):
         text = self.searchedit.text().strip()
         if text:
-            # 顶栏常驻：在其他页回车时先切回网格页再过滤
-            self.ref._show_gridpage()
+            # 只更新过滤（面包屑 + 网格后台过滤），不切到网格页
             self._apply_tags(tuple(self.currtags)
                              + ((text, tagitem.TYPE_SEARCH, None),))
             self.searchedit.clear()
@@ -1233,11 +1232,10 @@ class _gridpage(QWidget):
 
     def _addtagfilter(self, tag, _type, refdata=None):
         """游戏数据-标签 tab 的 chip 点击：作为带类型的过滤 tag 追加
-        （原 tagswidget.addTag 的现行等价物，同顶栏搜索）。已在过滤
-        中则忽略。"""
+        （原 tagswidget.addTag 的现行等价物）。已在过滤中则忽略。
+        只更新过滤，不切到网格页——留在当前视图（同 tagschange）。"""
         if any(t == tag and ty == _type for t, ty, _d in self.currtags):
             return
-        self.ref._show_gridpage()
         self._apply_tags(tuple(self.currtags) + ((tag, _type, refdata),))
 
     def _apply_tags(self, tags):
@@ -1369,8 +1367,8 @@ class _gridpage(QWidget):
             self.ref.point_game(k)
 
     def _matches_tags(self, k, tags, tagid=None):
-        """游戏 k 是否通过 tag 过滤（TYPE_SEARCH 大小写不敏感 /
-        TYPE_EXISTS 路径存在 / DEVELOPER·TAG 精确匹配，来源见
+        """游戏 k 是否通过 tag 过滤（TYPE_SEARCH 仅按标题、大小写不
+        敏感 / TYPE_EXISTS 路径存在 / DEVELOPER·TAG 精确匹配，来源见
         游戏数据-标签 tab）。hide_not_exists 不作用于最近游戏。"""
         if (
             tagid != 1
@@ -1391,13 +1389,7 @@ class _gridpage(QWidget):
                 if tag not in webtags:
                     return False
             elif _type == tagitem.TYPE_SEARCH:
-                tag_l = tag.lower()
-                if (
-                    tag_l not in _d["title"].lower()
-                    and not any(
-                        tag_l in d.lower() for d in _d.get("developers", []))
-                    and tag not in webtags
-                ):
+                if tag.lower() not in _d["title"].lower():
                     return False
         return True
 
