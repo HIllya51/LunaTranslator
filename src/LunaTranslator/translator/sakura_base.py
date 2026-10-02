@@ -198,6 +198,35 @@ class TS(basetrans):
             messages.append({"role": "user", "content": content})
         return messages
 
+    def index_make_messages(self, query, gpt_dict: GptDict = None):
+        src = self.srclang_1.zhsname
+        tgt = self.tgtlang_1.zhsname
+        pairs = "、".join(
+            "{}→{}".format(
+                item.src, self.checklangzhconv(self.srclang, item.dst))
+            for item in gpt_dict or []
+            if item.src and item.dst
+        )
+        if not (pairs):
+            content = (
+                "请将以下{}文本翻译为{}，直接输出翻译结果，"
+                "不要进行任何解释。\n\n{}".format(src, tgt, query)
+            )
+        else:
+            constraints = []
+            constraints.append(
+                    "1. 【硬性要求】专名/术语对照: " + pairs)
+            constraints.append(
+                    " 2. 【注意】保持流畅通顺的日本轻小说的风格")   
+            content = (
+                "请将以下{}{}翻译成{}，并且严格遵循所有约束要求。\n\n"
+                "【源文】\n{}\n\n"
+                "【约束要求】\n{}\n\n"
+                "只输出译文，不要有任何额外说明。".format(
+                    src, "文本", tgt, query, "\n".join(constraints))
+            )
+        return [{"role": "user", "content": content}]
+
     def hymt2_make_messages(self, contextnum, query, gpt_dict: GptDict = None):
         if not gpt_dict:
             if self.tgtlang_1 in (Languages.Chinese, Languages.TradChinese):
@@ -265,6 +294,9 @@ Translate the following text into {}. Note that you must ONLY output the transla
         elif prompt_version == "Hy-MT2":
             messages = self.hymt2_make_messages(contextnum, query, gpt_dict)
             self.needzhconv = False
+        elif prompt_version == "Index-Translate":
+            messages = self.index_make_messages(query, gpt_dict)
+            self.needzhconv = False
         return messages
 
     def maybedetectprompttype(self, prompt_version):
@@ -276,6 +308,8 @@ Translate the following text into {}. Note that you must ONLY output the transla
             mlow = m.lower()
             if "hy-mt2" in mlow:
                 return "Hy-MT2"
+            if "index-translate" in mlow:
+                return "Index-Translate"
             if "galtransl" in mlow:
                 return "GalTransl"
             if "sakura" in mlow:
