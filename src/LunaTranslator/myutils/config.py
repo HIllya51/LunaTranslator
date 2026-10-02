@@ -212,7 +212,6 @@ def getdefaultsavehook(title=None):
         # "steamid": 0,
         "title": "",
         # "imagepath_all": [],
-        "usertags": [],
         "developers": [],
         "webtags": [],  # 标签
         # "createtime":xx  添加时间

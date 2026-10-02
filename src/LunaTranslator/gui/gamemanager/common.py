@@ -27,7 +27,6 @@ class tagitem(QFrame):
     TYPE_SEARCH = 0
     TYPE_DEVELOPER = 1
     TYPE_TAG = 2
-    TYPE_USERTAG = 3
     TYPE_EXISTS = 4
     removesignal = pyqtSignal(tuple)
     labelclicked = pyqtSignal(tuple)
@@ -44,9 +43,6 @@ class tagitem(QFrame):
             tagitem#green {
                 border: 1px solid green;
             }
-            tagitem#blue {
-                border: 1px solid blue;
-            }
             tagitem#yellow {
                 border: 1px solid yellow;
             }
@@ -60,8 +56,6 @@ class tagitem(QFrame):
             border_color = "red"
         elif _type == tagitem.TYPE_TAG:
             border_color = "green"
-        elif _type == tagitem.TYPE_USERTAG:
-            border_color = "blue"
         elif _type == tagitem.TYPE_EXISTS:
             border_color = "yellow"
         self.setObjectName(border_color)

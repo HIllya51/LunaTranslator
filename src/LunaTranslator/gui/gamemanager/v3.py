@@ -1231,6 +1231,15 @@ class _gridpage(QWidget):
         # 面包屑项 0=ALL（清空全部），项 i 对应 currtags[i-1]
         self._apply_tags(tuple(self.currtags[:index]))
 
+    def _addtagfilter(self, tag, _type, refdata=None):
+        """游戏数据-标签 tab 的 chip 点击：作为带类型的过滤 tag 追加
+        （原 tagswidget.addTag 的现行等价物，同顶栏搜索）。已在过滤
+        中则忽略。"""
+        if any(t == tag and ty == _type for t, ty, _d in self.currtags):
+            return
+        self.ref._show_gridpage()
+        self._apply_tags(tuple(self.currtags) + ((tag, _type, refdata),))
+
     def _apply_tags(self, tags):
         """统一入口：更新 tag -> 刷新面包屑 -> 重建网格。"""
         self.currtags = tuple(tags)
@@ -1361,24 +1370,33 @@ class _gridpage(QWidget):
 
     def _matches_tags(self, k, tags, tagid=None):
         """游戏 k 是否通过 tag 过滤（TYPE_SEARCH 大小写不敏感 /
-        TYPE_EXISTS 路径存在）。hide_not_exists 不作用于最近游戏。"""
+        TYPE_EXISTS 路径存在 / DEVELOPER·TAG 精确匹配，来源见
+        游戏数据-标签 tab）。hide_not_exists 不作用于最近游戏。"""
         if (
             tagid != 1
             and globalconfig.get("hide_not_exists", False)
         ):
             if not os.path.exists(get_launchpath(k)):
                 return False
+        _d = savehook_new_data[k]
+        webtags = _d.get("webtags", [])
         for tag, _type, _ in tags:
             if _type == tagitem.TYPE_EXISTS:
                 if not os.path.exists(get_launchpath(k)):
                     return False
+            elif _type == tagitem.TYPE_DEVELOPER:
+                if tag not in _d.get("developers", []):
+                    return False
+            elif _type == tagitem.TYPE_TAG:
+                if tag not in webtags:
+                    return False
             elif _type == tagitem.TYPE_SEARCH:
                 tag_l = tag.lower()
-                _d = savehook_new_data[k]
                 if (
                     tag_l not in _d["title"].lower()
                     and not any(
                         tag_l in d.lower() for d in _d.get("developers", []))
+                    and tag not in webtags
                 ):
                     return False
         return True

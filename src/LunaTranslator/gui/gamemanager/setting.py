@@ -45,6 +45,7 @@ from gui.inputdialog import (
 )
 from gui.setting.textinput import gethookgrid_em, gethookgrid
 from gui.specialwidget import chartwidget
+from gui.gamemanager.common import tagitem
 from gui.usefulwidget import (
     makecardrow,
     makescroll,
@@ -61,6 +62,7 @@ from gui.usefulwidget import (
     D_getIconButton,
     D_getsimpleswitch,
     getspinbox,
+    FocusCombo,
     getIconButton,
     makesubtab_lazy,
     manybuttonlayout,
@@ -179,6 +181,65 @@ def maybehavebutton(self, gameuid, post):
             return getIconButton(callback=callback)
         else:
             return None
+
+
+class FlowWidget(QWidget):
+    """标签 chip 的多组流式布局（组内自动换行；游戏数据-标签用）。"""
+
+    def __init__(self, parent=None, groups=3):
+        super().__init__(parent)
+        self.margin = QMargins(5, 5, 5, 5)
+        self.spacing = 5
+        self._item_list: "list[list[QWidget]]" = [[] for _ in range(groups)]
+
+    def insertWidget(self, group: int, index, w: QWidget):
+        w.setParent(self)
+        w.show()
+        self._item_list[group].insert(index, w)
+        self.doresize()
+
+    def addWidget(self, group, w: QWidget):
+        self.insertWidget(group, len(self._item_list[group]), w)
+
+    def removeWidget(self, w: QWidget):
+        for _ in self._item_list:
+            if w in _:
+                _.remove(w)
+                w.deleteLater()
+                self.doresize()
+                break
+
+    def doresize(self):
+        line_height = 0
+        spacing = self.spacing
+        y = self.margin.left()
+        for listi in self._item_list:
+            x = self.margin.top()
+            for i, item in enumerate(listi):
+                next_x = x + item.sizeHint().width() + spacing
+                if (
+                    next_x - spacing + self.margin.right() > self.width()
+                    and line_height > 0
+                ):
+                    x = self.margin.top()
+                    y = y + line_height + spacing
+                    next_x = x + item.sizeHint().width() + spacing
+                size = item.sizeHint()
+                item.setGeometry(QRect(QPoint(x, y), size))
+                line_height = max(line_height, size.height())
+                x = next_x
+            y = y + line_height + spacing
+        self.setFixedHeight(y + self.margin.bottom() - spacing)
+
+    def resizeEvent(self, a0):
+        self.doresize()
+
+
+def userlabelset(key):
+    s = set()
+    for gameuid in savehook_new_data:
+        s = s.union(savehook_new_data[gameuid].get(key, []))
+    return sorted(list(s))
 
 
 class _GameTextProcTree(FluentSettingTree):
@@ -578,6 +639,7 @@ class dialog_setting_game_internal(QWidget):
         functs = [
             ("统计", functools.partial(self.___tabf2, self.getstatistic)),
             ("元数据", functools.partial(self.___tabf, self.metadataorigin)),
+            ("标签", functools.partial(self.___tabf2, self.getlabelsetting)),
         ]
         methodtab, do = makesubtab_lazy(
             [_[0] for _ in functs],
@@ -716,6 +778,109 @@ class dialog_setting_game_internal(QWidget):
                 except:
                     print_exc()
             formLayout.addRow(exp)
+
+    def tagenewitem(
+        self,
+        gameuid,
+        text,
+        refkey,
+        first=False,
+        _type=tagitem.TYPE_SEARCH,
+    ):
+        qw = tagitem(text, True, _type)
+
+        def __(text, gameuid, _qw, refkey, _):
+            try:
+                savehook_new_data[gameuid][refkey].remove(text)
+                self.flowwidget.removeWidget(_qw)
+            except:
+                print_exc()
+
+        qw.removesignal.connect(functools.partial(__, text, gameuid, qw, refkey))
+
+        def safeaddtags(_):
+            # chip 点击 = 按该标签过滤网格（原 tagswidget.addTag 的现行
+            # 等价物 gridpage._addtagfilter）；网格不可达时复制到剪贴板
+            try:
+                from gui.gamemanager.v3 import dialog_savedgame_v3
+
+                ref = dialog_savedgame_v3.reference
+                if ref is not None:
+                    ref.gridpage._addtagfilter(*_)
+                    return
+            except:
+                print_exc()
+            NativeUtils.ClipBoard.text = _[0]
+            QToolTip.showText(QCursor.pos(), _TR("已复制到剪贴板"), self)
+
+        qw.labelclicked.connect(safeaddtags)
+        if first:
+            self.flowwidget.insertWidget(self.labelflowmap[refkey], 1, qw)
+        else:
+            self.flowwidget.addWidget(self.labelflowmap[refkey], qw)
+
+    def getlabelsetting(self, formLayout: QVBoxLayout, gameuid):
+        """游戏数据-标签：开发商/标签(源站 webtags) 两组 chip。chip
+        点击 = 按该标签过滤网格（_matches_tags 的类型化分支），× 删除
+        该标签；底部行 = 添加标签（类型选择 + 补全）。"""
+        self.labelflowmap = {}
+        flowwidget = FlowWidget(groups=4)
+        tagitem.setstyles(flowwidget)
+        self.flowwidget = flowwidget
+        scroll = QScrollArea()
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(flowwidget)
+        formLayout.addWidget(scroll)
+        self.tagtypes = ["developers", "webtags"]
+        self.tagtypes_zh = ["开发商", "标签"]
+        self.tagtypes_1 = [
+            tagitem.TYPE_DEVELOPER,
+            tagitem.TYPE_TAG,
+        ]
+
+        def createflows(label, key, _t, index):
+            self.labelflowmap[key] = index
+            flowwidget.addWidget(index, LLabel(label))
+            for tag in savehook_new_data[gameuid].get(key, []):
+                self.tagenewitem(gameuid, tag, key, _type=_t)
+
+        for i in range(len(self.tagtypes)):
+            createflows(self.tagtypes_zh[i], self.tagtypes[i], self.tagtypes_1[i], i)
+
+        button = LPushButton("添加")
+        typecombo = getsimplecombobox(self.tagtypes_zh, default=1)
+        combo = FocusCombo()
+        combo.setEditable(True)
+
+        def __(idx):
+            t = combo.currentText()
+            combo.clear()
+            combo.addItems(userlabelset(self.tagtypes[idx]))
+            combo.setCurrentText(t)
+
+        typecombo.currentIndexChanged.connect(__)
+        __(1)
+
+        def _add(_):
+            tag = combo.currentText()
+            tp = self.tagtypes[typecombo.currentIndex()]
+            if (not tag) or (tag in savehook_new_data[gameuid][tp]):
+                return
+            savehook_new_data[gameuid][tp].insert(0, tag)
+            self.tagenewitem(
+                gameuid,
+                tag,
+                tp,
+                first=True,
+                _type=self.tagtypes_1[typecombo.currentIndex()],
+            )
+            combo.clearEditText()
+
+        button.clicked.connect(_add)
+
+        formLayout.addLayout(
+            getboxlayout([combo, typecombo, button])
+        )
 
     def doaddtab(self, wfunct, exe, layout: QLayout):
         w, do = wfunct(exe)
