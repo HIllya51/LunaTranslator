@@ -261,6 +261,10 @@ class ItemWidget(QWidget):
         self._img.setpixmap(pix)
         self.update()
 
+    def reloadimage(self):
+        """立即重载图标（设为封面/设为图标后调用；后台线程，同初始加载）。"""
+        _gridimageloader.submit(self, self.gameuid)
+
     @property
     def margin(self):
         return ui_settings["dialog_savegame_layout"].get("margin2", 6) + ui_settings[

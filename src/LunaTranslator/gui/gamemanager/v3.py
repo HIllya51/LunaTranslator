@@ -645,9 +645,12 @@ class pixwrapper(QSplitter):
         setimage = LAction("设为封面", menu)
         curr = savehook_new_data[self.k].get("currentvisimage")
         curricon = savehook_new_data[self.k].get("currenticon")
+        currmain = savehook_new_data[self.k].get("currentmainimage")
         seticon = LAction("设为图标", menu)
         seticon.setCheckable(True)
         seticon.setChecked(curr == curricon)
+        setimage.setCheckable(True)
+        setimage.setChecked(curr == currmain)
         deleteimage = LAction("删除图片", menu)
         copyimage = LAction("复制图片", menu)
         deleteimage_x = LAction("删除图片文件", menu)
@@ -681,12 +684,32 @@ class pixwrapper(QSplitter):
             self.switchpos(sxzy.index(action))
 
         elif action == setimage:
-            savehook_new_data[self.k]["currentmainimage"] = curr
+            # checkable 开关：再次点击取消（回落默认封面）
+            if curr == currmain:
+                savehook_new_data[self.k].pop("currentmainimage")
+            else:
+                savehook_new_data[self.k]["currentmainimage"] = curr
+            self._refreshgameicons()
         elif action == seticon:
             if curr == curricon:
                 savehook_new_data[self.k].pop("currenticon")
             else:
                 savehook_new_data[self.k]["currenticon"] = curr
+            self._refreshgameicons()
+
+    def _refreshgameicons(self):
+        """设为封面/设为图标后立即生效：重载该游戏的网格项图标与
+        侧边栏子项图标（后台解码，同初始加载路径）。"""
+        for w in self.ref.gridpage.flow.widgets:
+            if isinstance(w, ItemWidget) and w.gameuid == self.k:
+                w.reloadimage()
+        nav = self.ref.nav
+        for ti in range(nav.topLevelItemCount()):
+            top = nav.topLevelItem(ti)
+            for ci in range(top.childCount()):
+                child = top.child(ci)
+                if child.data(0, GAMEUID_ROLE) == self.k:
+                    nav.request_item_icon(child, self.k)
 
     def switchpos(self, pos):
         globalconfig["viewlistpos"] = pos
