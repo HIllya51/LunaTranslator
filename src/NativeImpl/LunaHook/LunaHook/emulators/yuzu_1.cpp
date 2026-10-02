@@ -3004,6 +3004,8 @@ struct emfuncinfoX
     emfuncinfo info;
 };
 static const emfuncinfoX emfunctionhooks_1[] = {
+    // Sullyland Nursery Rhyme
+    {0x8001B580, {FULL_STRING | CODEC_UTF8, 0, 0, 0, F0100BDD01AAE4000, 0x01005E5023A0A000ull, "1.0.0"}},
     // Le Mirage Mystique
     {0x81D08180, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100E81024F40000ull, "1.0.0"}},
     {0x81D081B0, {FULL_STRING | CODEC_UTF16, 0, 0x14, 0, f0100D2A02101C000, 0x0100E81024F40000ull, "1.0.1"}},
