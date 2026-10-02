@@ -33,12 +33,21 @@ def _ensure_plugin_path():
 
 
 def get_windows_accent_color():
-    """读取 Windows 系统强调色。失败返回无效 QColor。"""
-    registry = ConnectRegistry(None, HKEY_CURRENT_USER)
-    key = OpenKey(
-        registry, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent"
-    )
-    accent_int = QueryValueEx(key, "AccentColorMenu")[0]  # 0xAABBGGRR
+    """读取 Windows 系统强调色。失败返回无效 QColor。
+    Accent 键为 Win8+ 才有——XP/Win7 上 OpenKey 抛 OSError；本函数
+    经 setstylesheetsignal 的 Queued 分发进入（事件处理器），异常
+    穿透会触发 Qt 的 "exception thrown from an event handler" 致命
+    退出，必须就地捕获。注册表句柄经 with 关闭（PyHKEY 上下文管理）。"""
+    try:
+        with ConnectRegistry(None, HKEY_CURRENT_USER) as registry:
+            with OpenKey(
+                registry,
+                r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Accent",
+            ) as key:
+                # AccentColorMenu: 0xAABBGGRR
+                accent_int = QueryValueEx(key, "AccentColorMenu")[0]
+    except OSError:
+        return QColor()
     bb = (accent_int >> 16) & 0xFF
     gg = (accent_int >> 8) & 0xFF
     rr = accent_int & 0xFF
