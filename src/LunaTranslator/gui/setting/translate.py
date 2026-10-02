@@ -1526,12 +1526,9 @@ class llamalisttable(LTableView):
             elif arch.startswith("cuda"):
                 arch += " (Nvidia)"
                 enable = "10DE" in xpus
-            elif arch == "hip-radeon":
-                arch += " (AMD)"
-                enable = "1022" in xpus
             elif arch.startswith("rocm"):
                 arch += " (AMD)"
-                enable = "1022" in xpus
+                enable = "1022" in xpus or "1002" in xpus
             elif arch == "vulkan":
                 arch += "_(通用)"
             item = LStandardItem(arch)
