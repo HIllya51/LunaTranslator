@@ -207,4 +207,5 @@
 | 作者 | モデル | 言語 |
 | ---- | ---------- | ---------- | 
 | tencent | Hy-MT2 | 汎用 |
+| IndexTeam | Index-Translate | 汎用 |
 | SakuraLLM | SakuraLLM & GalTransl | 日本語 -> 中国語 |

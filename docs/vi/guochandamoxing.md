@@ -205,4 +205,5 @@ Hiện tại, giao diện này hỗ trợ các mô hình sau:
 | Tác giả | Mô hình | Ngôn ngữ |
 | ---- | ---------- | ---------- | 
 | tencent | Hy-MT2 | Đa năng |
+| IndexTeam | Index-Translate | Đa năng |
 | SakuraLLM | SakuraLLM & GalTransl | Tiếng Nhật -> Tiếng Trung |

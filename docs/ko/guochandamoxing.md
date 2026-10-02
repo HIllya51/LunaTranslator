@@ -205,4 +205,5 @@
 | 저자 | 모델 | 언어 |
 | ---- | ---------- | ---------- | 
 | tencent | Hy-MT2 | 범용 |
+| IndexTeam | Index-Translate | 범용 |
 | SakuraLLM | SakuraLLM & GalTransl | 일본어 -> 중국어 |
