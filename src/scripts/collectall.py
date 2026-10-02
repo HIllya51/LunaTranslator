@@ -1,5 +1,6 @@
 import shutil, os, base64
 import sys, re, json
+import zipfile
 from importanalysis import importanalysis
 import urllib.request
 import urllib.error
@@ -53,6 +54,31 @@ else:
 os.makedirs(targetdir, exist_ok=True)
 
 
+def downloadfluentstyleplugin(arch, targetdir):
+    """FluentUI3 样式插件：并入 files/plugins/styles（运行时 gui.fluent
+    以 addLibraryPath(files/plugins) 挂载，app.setStyle("FluentUI3")
+    生效；缺失时自动回退基础样式）。SDK 为 Qt5.15.2-x64 构建，仅并入
+    x64 包（winxp 的 x86 包跳过）；插件自包含——导入表仅 Qt5*/VCRT/
+    dwmapi，无需 SDK bin 下其它 dll。"""
+    if arch != "x64":
+        return
+    url = (
+        "https://github.com/XHY-ChuJian/FluentUIStyle/releases/download/"
+        "4.0/FluentUI3-SDK-4.0-Windows-Qt5.15.2-x64.zip"
+    )
+    fname = os.path.basename(url)
+    os.makedirs("scripts/temp", exist_ok=True)
+    zipp = os.path.join("scripts/temp", fname)
+    if not os.path.exists(zipp):
+        urllib.request.urlretrieve(url, zipp)
+    with zipfile.ZipFile(zipp) as zipf:
+        dst = os.path.join(targetdir, "files/plugins/styles")
+        os.makedirs(dst, exist_ok=True)
+        with zipf.open("plugins/styles/FluentUI3StylePlugin.dll") as src, \
+                open(os.path.join(dst, "FluentUI3StylePlugin.dll"), "wb") as ff:
+            ff.write(src.read())
+
+
 def copycheck(src, tgt):
     print(src, tgt, os.path.exists(src))
     if not os.path.exists(src):
@@ -93,6 +119,7 @@ try:
     shutil.rmtree(rf"{targetdir}\files\{baddll}")
 except:
     pass
+downloadfluentstyleplugin(arch, targetdir)
 
 os.makedirs(os.path.join(targetdir, "LICENSES"))
 shutil.copy(
