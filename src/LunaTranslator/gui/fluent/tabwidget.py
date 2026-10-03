@@ -58,9 +58,6 @@ NAV_ICONS = {
 }
 
 # fluentui3styleproperties.h —— enum TabBarStyle
-TABBAR_STYLE_PILLTABS = 5  # PillTabs
-TABBAR_STYLE_SEGMENTED_WINUI3 = 9  # Segmented_WinUI3
-TABBAR_STYLE_NAVIGATION = 8  # Navigation
 TABBAR_STYLE_PIVOT_GROW = 3  # Pivot_Grow
 
 # 直角面板（FluentSquarePane）配色
@@ -244,21 +241,6 @@ def make_content_card(w, margins=(16, 8, 16, 16)):
     lay.setContentsMargins(*margins)
     lay.addWidget(w)
     return card
-
-
-def apply_navigation_tabbar(tabwidget: QTabWidget):
-    """把 QTabWidget 配成 Navigation TabBar（Gallery pagetab.cpp setupNavigationTabs
-    同款）：左侧垂直导航页签，选中指示条变长效果。"""
-    bar = tabwidget.tabBar()
-    tabwidget.setTabPosition(QTabWidget.West)
-    bar.setShape(QTabBar.RoundedWest)
-    bar.setDrawBase(False)
-    bar.setExpanding(False)
-    bar.setAttribute(Qt.WA_StyledBackground, False)
-    bar.setProperty(
-        "TextAlign", int(Qt.AlignmentFlag.AlignVCenter | Qt.AlignmentFlag.AlignLeft)
-    )
-    bar.setProperty("tabBarStyle", TABBAR_STYLE_NAVIGATION)
 
 
 class _NoPaneTabWidget(QTabWidget):

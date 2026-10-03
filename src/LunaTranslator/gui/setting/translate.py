@@ -26,7 +26,7 @@ from myutils.utils import (
 )
 from myutils.proxy import getproxy
 from myutils.utils import subprochiderun
-import json, sqlite3, NativeUtils
+import json, sqlite3
 from traceback import print_exc
 from collections import Counter
 from language import Languages
@@ -34,14 +34,12 @@ from myutils.wrapper import tryprint, threader
 from gui.inputdialog import autoinitdialog, autoinitdialog_items
 from gui.usefulwidget import (
     SuperCombo,
-    D_getspinbox,
     AutoScaleImageButton,
     getboxlayout,
     VisLFormLayout,
     getIconButton,
     ColorButton,
     check_grid_append,
-    CollapsibleBoxWithButton,
     getsimpleswitch,
     D_getIconButton,
     MyInputDialog,
@@ -1031,7 +1029,6 @@ def downloadgguf(key, url: str):
         shutil.move(savep, gobject.getcachedir("llamacpp-models/" + key))
         globalconfig["llama.cpp"]["models"] = gobject.getcachedir("llamacpp-models")
         globalconfig["llama.cpp"]["model"] = key
-        global GGUF_REFRESH_BTN
         if GGUF_REFRESH_BTN:
             gobject.base.safeinvokefunction.emit(GGUF_REFRESH_BTN.click)
         return True
@@ -1140,7 +1137,6 @@ def merge_copy_llamacpps(llamaserver, tag):
     globalconfig["llama.cpp"]["llama-server.exe.dir"] = tgt
     globalconfig["llama.cpp"]["llama-server.exe"] = "llama-server.exe"
 
-    global LLAMA_CPP_REFRESH_BTN
     if LLAMA_CPP_REFRESH_BTN:
         gobject.base.safeinvokefunction.emit(LLAMA_CPP_REFRESH_BTN.click)
 
@@ -1216,7 +1212,6 @@ def getllamaservercmd(llamaserver, gguf, version):
     cmd = '"{llamaserver}" -m "{gguf}" --host {host} --port {port} {ctx} {parallel} --gpu-layers {ngl} {load_mode} --metrics {device}'.format(
         load_mode=load_mode,
         ngl=ngl,
-        fa=fa,
         ctx=ctx,
         parallel=parallel,
         llamaserver=llamaserver,
@@ -1269,7 +1264,7 @@ def autostartllamacpp(force=False):
             gobject.base.llamacppstatus.emit(0)
             loghandle.close()
 
-    __scopeexits = _scopeexits()
+    __scopeexits = _scopeexits()  # 保留引用：__del__ 时关日志/复位状态
     gobject.base.llamacppstatus.emit(1)
     gobject.base.llamacppstdout.emit(cmd)
     print(cmd, file=loghandle, flush=True)
@@ -1887,8 +1882,6 @@ def llamacppgrid():
     gobject.base.connectsignal(gobject.base.llamacppstdoutstatus, label.test)
 
     def __status(status: int):
-        global BTNPlayEnable1, BTNPlayEnable2
-
         if status == -3:
             pass
         elif status < 0:

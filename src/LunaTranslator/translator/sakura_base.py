@@ -1,6 +1,5 @@
 from translator.basetranslator import basetrans, GptTextWithDict, GptDict
 import requests
-import time
 from urllib.parse import urlsplit, urlunsplit
 from myutils.utils import APIType, common_list_models
 from myutils.proxy import getproxy
@@ -266,9 +265,12 @@ class TS(basetrans):
                     {
                         "role": "user",
                         "content": """Reference the following translations:
-{self.make_gpt_dict_text(gpt_dict, False, ' translates to ')}
+{}
 Translate the following text into {}. Note that you must ONLY output the translated result without any additional explanation:\n\n{}""".format(
-                            self.tgtlang_1.engname, query
+                            self.make_gpt_dict_text(
+                                gpt_dict, False, " translates to "),
+                            self.tgtlang_1.engname,
+                            query,
                         ),
                     }
                 ]

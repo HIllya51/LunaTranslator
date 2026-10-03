@@ -65,12 +65,12 @@ from gui.fluent.icons import (
 )
 
 
-# ---- 模块常量 ----
-PathRole = Qt.ItemDataRole.UserRole + 1
-ImageRequestedRole = PathRole + 1
-ImageSizeRole = ImageRequestedRole + 1   # 缩略图原始尺寸（QSize，按比例定项高/宽）
-TAGID_ROLE = Qt.ItemDataRole.UserRole + 5   # 列表 tagid（主项）
-GAMEUID_ROLE = TAGID_ROLE + 1               # 游戏 uid（子项）
+# ---- 模块常量（预览列表项数据角色 + 侧边栏项数据角色，依次编号）----
+PathRole = Qt.ItemDataRole.UserRole + 1          # 预览项：图片路径
+ImageRequestedRole = PathRole + 1                # 预览项：已请求加载标记
+ImageSizeRole = ImageRequestedRole + 1           # 预览项：图片原始尺寸（QSize）
+TAGID_ROLE = ImageSizeRole + 1                   # 侧边栏主项：列表 tagid
+GAMEUID_ROLE = TAGID_ROLE + 1                    # 侧边栏子项：游戏 uid
 # 列表主项图标
 _ICON_TAG_ALL = ICON_LIBRARY
 _ICON_TAG_RECENT = ICON_RECENT
@@ -2286,22 +2286,6 @@ class dialog_savedgame_v3(QWidget):
             self.clicked4()
         elif action == createlnk:
             CreateShortcutForUid(self.currentfocusuid)
-
-    def addtolistcallback(self, uid, gameuid):
-
-        __save = self.reftagid
-        self.reftagid = uid
-
-        if gameuid not in getreflist(self.reftagid):
-            getreflist(self.reftagid).insert(0, gameuid)
-            self.newline(gameuid)
-        else:
-            idx = getreflist(self.reftagid).index(gameuid)
-            getreflist(self.reftagid).insert(0, getreflist(self.reftagid).pop(idx))
-            group = self._itemfortag(self.reftagid)
-            child = group.takeChild(idx)
-            group.insertChild(0, child)
-        self.reftagid = __save
 
     def directshow(self):
         pass

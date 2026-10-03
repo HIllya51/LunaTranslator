@@ -32,22 +32,6 @@ class tagitem(QFrame):
     labelclicked = pyqtSignal(tuple)
 
     @staticmethod
-    def setstyles(parent: QWidget):
-        parent.setStyleSheet("""
-            tagitem#red {
-                border: 1px solid red;
-            }
-            tagitem#black {
-                border: 1px solid black;
-            }
-            tagitem#green {
-                border: 1px solid green;
-            }
-            tagitem#yellow {
-                border: 1px solid yellow;
-            }
-        """)
-
     def __init__(self, tag, removeable=True, _type=TYPE_SEARCH, refdata=None) -> None:
         super().__init__()
         if _type == tagitem.TYPE_SEARCH:

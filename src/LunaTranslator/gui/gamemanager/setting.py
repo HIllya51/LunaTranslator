@@ -90,7 +90,7 @@ class _MetaSettingRows:
     QLayout 控件（含输入框的组）与 fill=True 的控件填满标签右侧；
     其余 QWidget 控件右对齐，右缘与头部开关/按钮一致（ExExpander
     content_pad 让位）。addDynamicRow 为初始隐藏的动态子项（内容
-    到达后经返回句柄显示）。addLayout 为旧式模块的后备。"""
+    到达后经返回句柄显示）。"""
 
     def __init__(self, expander):
         self._expander = expander
@@ -124,14 +124,6 @@ class _MetaSettingRows:
             self._expander.setContentPanelVisible(row, vis)
 
         return _show
-
-    def addLayout(self, sub):
-        w = QWidget()
-        lay = QVBoxLayout(w)
-        lay.setContentsMargins(0, 0, 0, 0)
-        lay.addLayout(sub)
-        self._expander.addContentWidget(w)
-
 
 def maybehavebutton(self, gameuid, post):
     save_text_process_info = savehook_new_data[gameuid]["save_text_process_info"]

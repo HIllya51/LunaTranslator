@@ -110,10 +110,6 @@ class CarouselImageSlide(QWidget):
         self._title = title
         self.update()
 
-    def setSubtitle(self, subtitle):
-        self._subtitle = subtitle
-        self.update()
-
     def setBorderRadius(self, radius):
         if self._borderRadius == radius:
             return
@@ -410,9 +406,6 @@ class CarouselViewport(QWidget):
         self._updateClipPath()
         self.update()
 
-    def borderRadius(self):
-        return self._borderRadius
-
     def startTransition(self, fromPix, toPix, direction):
         self._fromPix = fromPix
         self._toPix = toPix
@@ -431,9 +424,6 @@ class CarouselViewport(QWidget):
         self._toPix = QPixmap()
         self._progress = 0.0
         self.update()
-
-    def isAnimating(self):
-        return self._animating
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
@@ -553,10 +543,6 @@ class ExCarousel(QWidget):
                                    self.viewport)
         slide.setBorderRadius(self._borderRadius)
         return self.addSlide(slide)
-
-    def addImage(self, filePath, title="", subtitle="",
-                 aspectMode=Qt.AspectRatioMode.KeepAspectRatioByExpanding):
-        return self.addPixmap(QPixmap(filePath), title, subtitle, aspectMode)
 
     def insertSlide(self, index, widget):
         if widget is None:
@@ -682,37 +668,12 @@ class ExCarousel(QWidget):
         self._goTo(index, -1)
 
     # ---- 选项 ----
-    def setAutoPlay(self, enabled):
-        if self._autoPlay == enabled:
-            return
-        self._autoPlay = enabled
-        self._restartTimer()
-
     def setInterval(self, msec):
         msec = max(200, msec)
         if self._interval == msec:
             return
         self._interval = msec
         self._restartTimer()
-
-    def setWrap(self, wrap):
-        if self._wrap == wrap:
-            return
-        self._wrap = wrap
-        self._updateChromeVisibility()
-        self._restartTimer()
-
-    def setShowNavigationButtons(self, show):
-        if self._showNavigationButtons == show:
-            return
-        self._showNavigationButtons = show
-        self._updateChromeVisibility()
-
-    def setShowIndicators(self, show):
-        if self._showIndicators == show:
-            return
-        self._showIndicators = show
-        self._updateChromeVisibility()
 
     def setAnimationDuration(self, msec):
         self._animationDuration = max(0, msec)
